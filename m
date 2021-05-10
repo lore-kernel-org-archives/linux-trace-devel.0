@@ -2,168 +2,144 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C6CAC433ED
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 10 May 2021 03:24:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE6E8C433B4
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 10 May 2021 06:16:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CA91B610A7
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 10 May 2021 03:24:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BD7B7610CB
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 10 May 2021 06:16:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbhEJDZM (ORCPT
+        id S229653AbhEJGRp (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 9 May 2021 23:25:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56774 "EHLO
+        Mon, 10 May 2021 02:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhEJDZM (ORCPT
+        with ESMTP id S229608AbhEJGRp (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 9 May 2021 23:25:12 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 868F3C061573
-        for <linux-trace-devel@vger.kernel.org>; Sun,  9 May 2021 20:24:08 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id gc22-20020a17090b3116b02901558435aec1so9464969pjb.4
-        for <linux-trace-devel@vger.kernel.org>; Sun, 09 May 2021 20:24:08 -0700 (PDT)
+        Mon, 10 May 2021 02:17:45 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EB0C061574
+        for <linux-trace-devel@vger.kernel.org>; Sun,  9 May 2021 23:16:40 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id l4so22697660ejc.10
+        for <linux-trace-devel@vger.kernel.org>; Sun, 09 May 2021 23:16:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2NFUenPTzEaYXI6GFz4ZMnnIEn9Zd3WvJaQWYF60R+c=;
-        b=VKL5deNH7jXUJIYjQHdY15ZFqzYd+nF3HzJNs1/ppJ5X9FnPe7k0dUeJknK7omUqWl
-         nXyL6bSb7ykr1OV7QZPFr3rP+3VhouxjbI+Ua0ftZ+pW5Kzde9fS3HUjbY6PiMluDhUM
-         vXAa6740eM3Wh3xpuFGCzmGh9ED0mFwayfMhPpQSZCfRS6ApmEUodjCJvgFR70PZX1bC
-         S/ZbsiyAL96/3X+IPTuUWiz6YWSuUvPraAmnaMoqL9u6fa33Si3fKWcAWNkHaWZJOazC
-         k9PR0tuUvBBOm8T8RCrl63D06C9ddC09wHnXoxTApJCbSZTdVnJNpK9+DwW0ssd0zfPX
-         l/nw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=0C6D0NjdPESwV62T7kxwWiilnywFWC5ZrocmTLNRsC4=;
+        b=hJVkk80zpK6g6eldPd5byQ8j3rpaQU+qU1njU9uUhp2z5f3H4/cC4Ul+sleebc8y37
+         h5EEfiRtC6VL5TWOaMXC/4hwwilPhtUtTAhuOPawc0qQh+vKV3UhvpTowg1RqYiB9s7Z
+         7xWdXZhOcmeH2pUWx5bzjTI/gs2UuW8M7P1obH/0oJTuqwfQlQsl+4Hmn86hliFtxHMB
+         hIC/eaohZohIqdrjn4j0He44YFyDK0ehE/E2xDMunRK4GQm0LiGf4QhP3QUMNHGAEQeS
+         y5dCAAzgr91y5MJXExoUHvzNPglxSNQTH5aQZH9pdopXwY/4/oxYv/4gCmaCqS0lbXb5
+         ue+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2NFUenPTzEaYXI6GFz4ZMnnIEn9Zd3WvJaQWYF60R+c=;
-        b=unb3CM1X9sO9Mb/7rbZHTJVbED9h8cXTC0LasJE6zLJ7uDwY66aWRbQryZFenU5YMs
-         cxmj5yGKoMkUlMXIiCIzHyoA0EPuODuBi3P7GrY2jaulFzQeZvC2IGWMBwEMABlY80lT
-         h3hlFbzasHYu2t9Qh8cCHUQu374WjBqvlPNWDo5qxWKJZ3bq/wCmlYKNg7dyHk0Jm9QP
-         RFo6mQsXJYaVPis8yprc2u4U9nNOggmWmTpLNd2+LtRisbSuVfZ9V0f8V0C/Ssnxgx6/
-         0P4SWoV5qGlztwSmHx4O1mC4rbfuPABvyPwrHlTZfbBr4WU1OCB787/chA6+/hs5RvK3
-         viuQ==
-X-Gm-Message-State: AOAM5311yaiJnFZ33RPsI3+yAHMBNYbZVSGkvvbAm3BAIlIzeKhCk2Ix
-        GNX/2Ie1toPCF9NBBofvKRacT0dWvNQWG00gHr5GmHiCzf8=
-X-Google-Smtp-Source: ABdhPJwJxNNDnAfVrf9lIwboJk0t5wQV5uR/gtRow7Ohez9jgfh7qRiyITu7pZ1Fle7xtEZT4XcR+BjIvJMityXW1Sk=
-X-Received: by 2002:a17:902:d491:b029:ee:5aa3:7d57 with SMTP id
- c17-20020a170902d491b02900ee5aa37d57mr22600930plg.26.1620617048080; Sun, 09
- May 2021 20:24:08 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=0C6D0NjdPESwV62T7kxwWiilnywFWC5ZrocmTLNRsC4=;
+        b=SlNfE9TqphH4hIzEHYrAsSVPuqkayIRJVLt7z9J/4yCehyUkseCdP5vlAgkhQBl5sF
+         snq/Ojo1lbeuYYl4CGWUHAAFKjokqXGW/ZZcQTvEj13sNo8h1+AignsJ6Vmk8w7p0Q6D
+         no1swTfCxTw+8Y0QwpbKU/N/LbMCGSxkt70LFoAfNKuzGXHWWoNOqOrcWf1fK8EvL2Id
+         J3Y7hkOLmuwrjtEaeQueCqu+UWImaUoGgOd5uGOatA6wkOqyRo6YBwMXSOoOEdIJI4Qu
+         CWDd5ZXEplxNhrwWEfF+sVhaGhl4tCZsGetokAJ4td/S9qxB4oGmoQFVNSWKs2lVetZ4
+         pJTw==
+X-Gm-Message-State: AOAM533mJL+4pEWvC7pgWZ9WvYJw1Vgf5wA26EBVGEYxxgWSV0/jq13i
+        FNQ3a3xgMTSNYprJ/M3f378=
+X-Google-Smtp-Source: ABdhPJzvcuggvEyml1M3+RsxzVPi7Pas35KpvEZCKp7IeKu4I2v7wX867o9yVas3gcbYo6njttWI9w==
+X-Received: by 2002:a17:906:b7d8:: with SMTP id fy24mr644516ejb.543.1620627399007;
+        Sun, 09 May 2021 23:16:39 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id u3sm5055205eja.25.2021.05.09.23.16.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 09 May 2021 23:16:38 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v2 01/21] trace-cmd library: Remove unused private APIs for creating trace files
+Date:   Mon, 10 May 2021 09:16:16 +0300
+Message-Id: <20210510061636.1794357-2-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210510061636.1794357-1-tz.stoyanov@gmail.com>
+References: <20210510061636.1794357-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
-References: <20210507135615.033a6121@gandalf.local.home>
-In-Reply-To: <20210507135615.033a6121@gandalf.local.home>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Mon, 10 May 2021 06:23:51 +0300
-Message-ID: <CAPpZLN4wnkEdvAC37p-7c94axRz6bvsvO=9dXJAQfFZ7LtLDEg@mail.gmail.com>
-Subject: Re: [PATCH] trace-cmd: Trace timesync to find pids that map vCPUs
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, May 7, 2021 at 8:56 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
->
-> If qemu is not found, then there's no mapping between the vCPUs of the
-> guest and the threads that run them. As the time sync has the agent run on
-> all the guest's CPUs, trace it, looking for all kvm_entry, which state
-> which vCPU the host thread is entering on the guest, and then use that to
-> create the mapping for the data files.
->
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  tracecmd/include/trace-local.h |   2 +
->  tracecmd/trace-record.c        | 196 ++++++++++++++++++++++++++++++++-
->  2 files changed, 197 insertions(+), 1 deletion(-)
->
-> diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-> index b3997d00..4c5669c9 100644
-> --- a/tracecmd/include/trace-local.h
-> +++ b/tracecmd/include/trace-local.h
-> @@ -298,11 +298,13 @@ void update_first_instance(struct buffer_instance *instance, int topt);
->  void show_instance_file(struct buffer_instance *instance, const char *name);
->
->  struct trace_guest {
-> +       struct tracefs_instance *instance;
->         char *name;
->         int cid;
->         int pid;
->         int cpu_max;
->         int *cpu_pid;
-> +       int *task_pids;
->  };
->  struct trace_guest *trace_get_guest(unsigned int cid, const char *name);
->  bool trace_have_guests_pid(void);
-> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-> index 5dd8be4a..143ece6a 100644
-> --- a/tracecmd/trace-record.c
-> +++ b/tracecmd/trace-record.c
-> @@ -3230,6 +3230,38 @@ static int do_accept(int sd)
->         return -1;
->  }
->
-> +/* Find all the tasks associated with the guest pid */
-> +static void find_tasks(struct trace_guest *guest)
-> +{
-> +       struct dirent *dent;
-> +       char *path;
-> +       DIR *dir;
-> +       int ret;
-> +       int tasks = 0;
-> +
-> +       ret = asprintf(&path, "/proc/%d/task", guest->pid);
-> +       if (ret < 0)
-> +               return;
-> +
-> +       dir = opendir(path);
-> +       free(path);
-> +       if (!dir)
-> +               return;
-> +
-> +       while ((dent = readdir(dir))) {
-> +               int *pids;
-> +               if (!(dent->d_type == DT_DIR && is_digits(dent->d_name)))
-> +                       continue;
-> +               pids = realloc(guest->task_pids, sizeof(int) * (tasks + 2));
-> +               if (!pids)
-> +                       break;
-> +               pids[tasks++] = strtol(dent->d_name, NULL, 0);
-> +               pids[tasks] = -1;
-> +               guest->task_pids = pids;
-> +       }
-> +       closedir(dir);
-> +}
-> +
->  static char *parse_guest_name(char *gname, int *cid, int *port)
->  {
->         struct trace_guest *guest;
-> @@ -3250,10 +3282,12 @@ static char *parse_guest_name(char *gname, int *cid, int *port)
->         } else if (is_digits(gname))
->                 *cid = atoi(gname);
->
-> -       read_qemu_guests();
+Remove these unused private trace-cmd library APIs:
+  tracecmd_create_file()
+  tracecmd_create_file_glob()
 
-I would suggest to leave the legacy logic for reading existing qemu
-VMs. We can reimplement it - instead of parsing the qemu command line,
-virhs can be used to get that information, as Stefano Garzarella
-suggested in other thread. We can even implement similar auto
-discovery logics for other VM emulators. The VMs auto discovery will
-be a best effort, if the user passes "-A <guest>" to the command line,
-and a guest with that name is not known - trace-cmd will die,
-suggesting  to use the more robust "-A <guest>@cid:port" method.
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
+ .../include/private/trace-cmd-private.h       |  6 ----
+ lib/trace-cmd/trace-output.c                  | 29 -------------------
+ 2 files changed, 35 deletions(-)
 
-[...]
+diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
+index 42e739fa..8ec33ea2 100644
+--- a/lib/trace-cmd/include/private/trace-cmd-private.h
++++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+@@ -263,12 +263,6 @@ struct tracecmd_option;
+ struct tracecmd_msg_handle;
+ 
+ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, int cpus);
+-struct tracecmd_output *tracecmd_create_file(const char *output_file,
+-					     int cpus, char * const *cpu_data_files);
+-struct tracecmd_output *
+-tracecmd_create_file_glob(const char *output_file,
+-			  int cpus, char * const *cpu_data_files,
+-			  struct tracecmd_event_list *event_globs);
+ struct tracecmd_output *
+ tracecmd_create_init_file_glob(const char *output_file,
+ 			       struct tracecmd_event_list *list);
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index a4a1eecc..9231c319 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -1614,35 +1614,6 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
+ 	return NULL;
+ }
+ 
+-struct tracecmd_output *
+-tracecmd_create_file_glob(const char *output_file,
+-			  int cpus, char * const *cpu_data_files,
+-			  struct tracecmd_event_list *list)
+-{
+-	struct tracecmd_output *handle;
+-
+-	handle = create_file(output_file, NULL, NULL, NULL, list);
+-	if (!handle)
+-		return NULL;
+-
+-	if (tracecmd_write_cmdlines(handle))
+-		return NULL;
+-
+-	if (tracecmd_append_cpu_data(handle, cpus, cpu_data_files) < 0) {
+-		tracecmd_output_close(handle);
+-		return NULL;
+-	}
+-
+-	return handle;
+-}
+-
+-struct tracecmd_output *tracecmd_create_file(const char *output_file,
+-					     int cpus, char * const *cpu_data_files)
+-{
+-	return tracecmd_create_file_glob(output_file, cpus,
+-					 cpu_data_files, &all_event_list);
+-}
+-
+ struct tracecmd_output *tracecmd_create_init_fd(int fd)
+ {
+ 	return create_file_fd(fd, NULL, NULL, NULL, &all_event_list, NULL);
+-- 
+2.31.1
 
-
---
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
