@@ -2,173 +2,317 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA602C433ED
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 14 May 2021 04:11:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BDBD8C433B4
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 14 May 2021 04:11:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 95403613D6
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 14 May 2021 04:11:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 955B261355
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 14 May 2021 04:11:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231310AbhENEMW (ORCPT
+        id S232062AbhENEM5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 14 May 2021 00:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55552 "EHLO
+        Fri, 14 May 2021 00:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbhENEMW (ORCPT
+        with ESMTP id S231171AbhENEM5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 14 May 2021 00:12:22 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C817FC061574
-        for <linux-trace-devel@vger.kernel.org>; Thu, 13 May 2021 21:11:09 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id v6so36329483ljj.5
-        for <linux-trace-devel@vger.kernel.org>; Thu, 13 May 2021 21:11:09 -0700 (PDT)
+        Fri, 14 May 2021 00:12:57 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D219C061574
+        for <linux-trace-devel@vger.kernel.org>; Thu, 13 May 2021 21:11:45 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id a25so9117506edr.12
+        for <linux-trace-devel@vger.kernel.org>; Thu, 13 May 2021 21:11:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dnJBMRqs/H+kruSn9ClCrwBK38/67bkgBKAAFf7f76k=;
-        b=iq1BzOloErzIIUE1DOmADTakhMB++wvgHHOt/PYa4445Zi5ynjAuB0LJXg7jbiXKJG
-         nLEiW3jGajbIRKcCv7du+1EPRxE1ytei5IZ0RjYON1KfVJAO2/G4jI+0OLcCDqk3Qxfe
-         noZ70WC0N//RjB3TwDCQMujkO/5mDOCdGHLo5n4dnsSFGlI/osvi9CfoCBwIT03yUFKB
-         teKb/SX7mkt32Z3dkhe7SdEZ4sJt3LEFVIDBcVs1S5iKoJw+4DsP3j6QLNzx6WzsZSff
-         ZCsVDXX5GUkv/7u5JYxCHZjvlLv5M2LnH9hKrBUWr0jVcRZDds8HvPGp28Y/UlRUyYtM
-         VOaA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IX0KKZglghbbf8vkSv88hhEs38ClBJYgzakn+vbrzbA=;
+        b=cjwrnPKhAZN+86CNpXxa4LoPF3gNQhgdfRLOGJxUzWq7xobhAXF1tsjkzkeTOPOBgP
+         DkELMWALdFt7+w1Bx+v/AFIxzd+4vRkJt0Fc0Q8DVJBldhRdAzz6x0nS78CgrOhzqNm8
+         m6OuJgaJepDaPCFwbu09uj+F7IIcNbd4V4dMPBcW2EAXEJ0Q30rhqfOOtrSdCMlPS89f
+         dgLKIcF1jmZT6Bnhz32IeLFLdk9RIEaXxaoUbPlAeNI1F2gaISmX32pEpSm+7F3YTC/V
+         ZBAbppRhSzjxwpMDXX7Apr6ZYP1dXn8gd03BjTZb9FPSIojLbVTPoQkDdF6ELtxzt6sr
+         3zlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dnJBMRqs/H+kruSn9ClCrwBK38/67bkgBKAAFf7f76k=;
-        b=Mv9/Dmi8FeQ6hETlLTPNUFXZ1kUyEZP+LXsPZCrZnGd9t0qs+Uj2KmWlT91IpX/Oa2
-         O/aT/roI2alrwXAp46jUhMBqi7rZyoWbT0io8Kr++/8t5fpi0zqXHYcAptJiW63dL2Fc
-         IH60HnhesGLzNibb8wUnDWxh6oY8ytVsSiWWImpXm4pvT/mUcDgHCg1qCk8R7ITA5RBC
-         hils3tfSOZE8xlFGKIbS0gV3acelJz9kHqYj7k2LjY6vSCAZ/bT0cDNF33I/jTgyklUj
-         4rt3w7ZPmhIfV6F3hQIrHwLZju9rw0BQSLgEN90fwHAdr52gK5heMo5+tMtghWd72mFu
-         UWbQ==
-X-Gm-Message-State: AOAM533hmbLdU2elbbdcNFouKWRpZ2EXK2eHoTC+JXjTlZcleXA+6hZ2
-        uHqp/nJFVVSFHvu41vBWwclj9Q0kyafPTwd0iTEVksjfEf7REQ==
-X-Google-Smtp-Source: ABdhPJwmqPqTejsPf3OUoFQwok4n+TLufsjskEBIyMOWq2VEnKFR52VS6SOi6VA7szqIXWk8SCDobASY7zHpX+HjeRY=
-X-Received: by 2002:a2e:910a:: with SMTP id m10mr12665139ljg.456.1620965468281;
- Thu, 13 May 2021 21:11:08 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IX0KKZglghbbf8vkSv88hhEs38ClBJYgzakn+vbrzbA=;
+        b=BBw1cQEAXFr/8mysm0P9Hdi/KlhlR3+KI1SQL9aKwbqOctb+UVVxX+yLS+94AgRNBY
+         obwieg75BrKsnmaCN41DrYo0v1JQuQ5iM2DFxox3SalUCLaqhHzo/qFVCBbwonTJM7Nk
+         LlFU9QNA7KUorDp7sBSKfHkFgP5Z94F4HdAxYZRjOinGrIDDUqOj5tPbAjEd50qrIzBE
+         i4Fgu8wuygn5olzf5pNrMbZGNjg8551fckVbOLsfnsgdPBjfC4UUqmvRxfNtv+5SSWWL
+         dmzgrw8H0vD1Qwz6o2hg4UMEPzf4Q7Z9jYridi4AYaQu/I1qbaS3OsfBskLHgqx9oSTN
+         QAHg==
+X-Gm-Message-State: AOAM532yFExphmrqNgrGianXsBX1yFNunnDI4QlDbkaZmM9qjNZR9nep
+        y0ZykQK21ptEOTZ5GfRlMsDAMrde6gFGmA==
+X-Google-Smtp-Source: ABdhPJznp3QA3CEvbp0PKcGkgrAZS7nVUYHbmkHVXxSoSBa+Q+Gp0x5z4kyCgzj0lozPDfayox5/qg==
+X-Received: by 2002:a05:6402:883:: with SMTP id e3mr1080727edy.1.1620965503118;
+        Thu, 13 May 2021 21:11:43 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id n25sm3638839edb.26.2021.05.13.21.11.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 21:11:42 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v2] trace-cmd: Auto discover running KVM VMs using virsh
+Date:   Fri, 14 May 2021 07:11:41 +0300
+Message-Id: <20210514041141.11319-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210513204315.1206204-1-rostedt@goodmis.org> <20210513204315.1206204-3-rostedt@goodmis.org>
-In-Reply-To: <20210513204315.1206204-3-rostedt@goodmis.org>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Fri, 14 May 2021 07:10:51 +0300
-Message-ID: <CAPpZLN6p2UgghB16=eqpacica6XEOLuCqTds+SdhFbZkPUZ0Hw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] trace-cmd: Trace timesync to find pids that map vCPUs
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, May 14, 2021 at 3:33 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
->
-> If qemu is not found, then there's no mapping between the vCPUs of the
-> guest and the threads that run them. As the time sync has the agent run on
-> all the guest's CPUs, trace it, looking for all kvm_entry, which state
-> which vCPU the host thread is entering on the guest, and then use that to
-> create the mapping for the data files.
->
-> Only parse for qemu if no CID is given on the command line.
->
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
-> Changes since v1:
->  - Skipped v2 (added to v3 of this patch series)
->  - Used some of the new APIs of libtracefs 1.2
->  - Call read_qemu_guests is CID is not supplied on the command line.
->
->  tracecmd/include/trace-local.h |   2 +
->  tracecmd/trace-record.c        | 202 ++++++++++++++++++++++++++++++++-
->  2 files changed, 203 insertions(+), 1 deletion(-)
->
-> diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-> index b3997d00..4c5669c9 100644
-> --- a/tracecmd/include/trace-local.h
-> +++ b/tracecmd/include/trace-local.h
-> @@ -298,11 +298,13 @@ void update_first_instance(struct buffer_instance *instance, int topt);
->  void show_instance_file(struct buffer_instance *instance, const char *name);
->
->  struct trace_guest {
-> +       struct tracefs_instance *instance;
->         char *name;
->         int cid;
->         int pid;
->         int cpu_max;
->         int *cpu_pid;
-> +       int *task_pids;
->  };
->  struct trace_guest *trace_get_guest(unsigned int cid, const char *name);
->  bool trace_have_guests_pid(void);
-> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-> index 5dd8be4a..5219d60b 100644
-> --- a/tracecmd/trace-record.c
-> +++ b/tracecmd/trace-record.c
-> @@ -3230,6 +3230,38 @@ static int do_accept(int sd)
->         return -1;
->  }
->
-> +/* Find all the tasks associated with the guest pid */
-> +static void find_tasks(struct trace_guest *guest)
-> +{
-> +       struct dirent *dent;
-> +       char *path;
-> +       DIR *dir;
-> +       int ret;
-> +       int tasks = 0;
-> +
-> +       ret = asprintf(&path, "/proc/%d/task", guest->pid);
-> +       if (ret < 0)
-> +               return;
-> +
-> +       dir = opendir(path);
-> +       free(path);
-> +       if (!dir)
-> +               return;
-> +
-> +       while ((dent = readdir(dir))) {
-> +               int *pids;
-> +               if (!(dent->d_type == DT_DIR && is_digits(dent->d_name)))
-> +                       continue;
-> +               pids = realloc(guest->task_pids, sizeof(int) * (tasks + 2));
-> +               if (!pids)
-> +                       break;
-> +               pids[tasks++] = strtol(dent->d_name, NULL, 0);
-> +               pids[tasks] = -1;
-> +               guest->task_pids = pids;
-> +       }
-> +       closedir(dir);
-> +}
-> +
->  static char *parse_guest_name(char *gname, int *cid, int *port)
->  {
->         struct trace_guest *guest;
-> @@ -3250,10 +3282,18 @@ static char *parse_guest_name(char *gname, int *cid, int *port)
->         } else if (is_digits(gname))
->                 *cid = atoi(gname);
->
-> -       read_qemu_guests();
-> +       if (*cid < 0)
-> +               read_qemu_guests();
-> +
-> +       if (*cid < 0)
-> +               return NULL;
+The "trace-cmd record -A <guest>" option, used for guest tracing,
+accepts VM name as parameter. But trace-cmd needs cid of that VM, in
+order to perform the tracing. The old logic searches for a process with
+name "qemu-system-" and parses its command line, to get guest name to
+cid relation. Using a hardcoded process name and relying on specific
+process command line arguments is not reliable way.
+There is no API to get VM name to cid relation, but virsh can be used
+instead of the old logic. As virsh is the official user interface to
+libvirt, it should be more reliable than the old approach.
 
-This check is not needed. If cid is not part of the string, let
-read_qemu_guests() to try discover the VMs, instead of returning NULL.
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
 
-[ ... ]
+This patch depends on patch set:
+ "[PATCH v3 0/2] trace-cmd: Use vsock tracing to find cids and threads"
+ https://lore.kernel.org/linux-trace-devel/20210513204315.1206204-1-rostedt@goodmis.org/
 
+v2 changes:
+ - Remove the die() in case virsh is not available.
 
+ tracecmd/trace-vm.c | 177 ++++++++++----------------------------------
+ 1 file changed, 41 insertions(+), 136 deletions(-)
+
+diff --git a/tracecmd/trace-vm.c b/tracecmd/trace-vm.c
+index 163536ca..d204411c 100644
+--- a/tracecmd/trace-vm.c
++++ b/tracecmd/trace-vm.c
+@@ -10,6 +10,7 @@
+ #include <dirent.h>
+ #include <limits.h>
+ #include <unistd.h>
++#include <errno.h>
+ 
+ #include "trace-local.h"
+ #include "trace-msg.h"
+@@ -17,25 +18,6 @@
+ static struct trace_guest *guests;
+ static size_t guests_len;
+ 
+-static int set_vcpu_pid_mapping(struct trace_guest *guest, int cpu, int pid)
+-{
+-	int *cpu_pid;
+-	int i;
+-
+-	if (cpu >= guest->cpu_max) {
+-		cpu_pid = realloc(guest->cpu_pid, (cpu + 1) * sizeof(int));
+-		if (!cpu_pid)
+-			return -1;
+-		/* Handle sparse CPU numbers */
+-		for (i = guest->cpu_max; i < cpu; i++)
+-			cpu_pid[i] = -1;
+-		guest->cpu_max = cpu + 1;
+-		guest->cpu_pid = cpu_pid;
+-	}
+-	guest->cpu_pid[cpu] = pid;
+-	return 0;
+-}
+-
+ static struct trace_guest *get_guest_by_cid(unsigned int guest_cid)
+ {
+ 	int i;
+@@ -330,140 +312,63 @@ struct trace_guest *trace_get_guest(unsigned int cid, const char *name)
+ 	return guest;
+ }
+ 
+-static char *get_qemu_guest_name(char *arg)
+-{
+-	char *tok, *end = arg;
+-
+-	while ((tok = strsep(&end, ","))) {
+-		if (strncmp(tok, "guest=", 6) == 0)
+-			return tok + 6;
+-	}
+-
+-	return arg;
+-}
+-
+-static int read_qemu_guests_pids(char *guest_task, struct trace_guest *guest)
++#define VM_CID_CMD	"virsh dumpxml"
++#define VM_CID_LINE	"<cid auto="
++#define VM_CID_ID	"address='"
++static void read_guest_cid(char *name)
+ {
+-	struct dirent *entry;
+-	char path[PATH_MAX];
+-	char *buf = NULL;
+-	size_t n = 0;
+-	int ret = 0;
+-	long vcpu;
+-	long pid;
+-	DIR *dir;
++	struct trace_guest *guest;
++	char *cmd = NULL;
++	char line[512];
++	char *cid;
++	unsigned int cid_id = 0;
+ 	FILE *f;
+ 
+-	snprintf(path, sizeof(path), "/proc/%s/task", guest_task);
+-	dir = opendir(path);
+-	if (!dir)
+-		return -1;
++	asprintf(&cmd, "%s %s", VM_CID_CMD, name);
++	f = popen(cmd, "r");
++	free(cmd);
++	if (f == NULL)
++		return;
+ 
+-	while (!ret && (entry = readdir(dir))) {
+-		if (!(entry->d_type == DT_DIR && is_digits(entry->d_name)))
++	while (fgets(line, sizeof(line), f) != NULL) {
++		if (!strstr(line, VM_CID_LINE))
+ 			continue;
+-
+-		snprintf(path, sizeof(path), "/proc/%s/task/%s/comm",
+-			 guest_task, entry->d_name);
+-		f = fopen(path, "r");
+-		if (!f)
++		cid = strstr(line, VM_CID_ID);
++		if (!cid)
+ 			continue;
+-
+-		if (getline(&buf, &n, f) >= 0 &&
+-		    strncmp(buf, "CPU ", 4) == 0) {
+-			vcpu = strtol(buf + 4, NULL, 10);
+-			pid = strtol(entry->d_name, NULL, 10);
+-			if (vcpu < INT_MAX && pid < INT_MAX &&
+-			    vcpu >= 0 && pid >= 0) {
+-				if (set_vcpu_pid_mapping(guest, vcpu, pid))
+-					ret = -1;
+-			}
+-		}
+-
+-		fclose(f);
++		cid_id = strtol(cid + strlen(VM_CID_ID), NULL, 10);
++		if ((cid_id == LONG_MIN || cid_id == LONG_MAX) && errno == ERANGE)
++			continue;
++		guest = add_guest(cid_id, name);
++		if (guest)
++			find_pid_by_cid(guest);
++		break;
+ 	}
+-	free(buf);
+-	return ret;
++
++	/* close */
++	pclose(f);
+ }
+ 
++#define VM_NAME_CMD	"virsh list --name"
+ void read_qemu_guests(void)
+ {
+-	static bool initialized;
+-	struct dirent *entry;
+-	char path[PATH_MAX];
+-	DIR *dir;
++	char name[256];
++	FILE *f;
+ 
+-	if (initialized)
++	f = popen(VM_NAME_CMD, "r");
++	if (f == NULL)
+ 		return;
+ 
+-	initialized = true;
+-	dir = opendir("/proc");
+-	if (!dir)
+-		die("Can not open /proc");
+-
+-	while ((entry = readdir(dir))) {
+-		bool is_qemu = false, last_was_name = false;
+-		struct trace_guest guest = {};
+-		char *p, *arg = NULL;
+-		size_t arg_size = 0;
+-		FILE *f;
+-
+-		if (!(entry->d_type == DT_DIR && is_digits(entry->d_name)))
+-			continue;
+-
+-		guest.pid = atoi(entry->d_name);
+-		snprintf(path, sizeof(path), "/proc/%s/cmdline", entry->d_name);
+-		f = fopen(path, "r");
+-		if (!f)
++	while (fgets(name, sizeof(name), f) != NULL) {
++		if (name[0] == '\n')
+ 			continue;
+-
+-		while (getdelim(&arg, &arg_size, 0, f) != -1) {
+-			if (!is_qemu && strstr(arg, "qemu-system-")) {
+-				is_qemu = true;
+-				continue;
+-			}
+-
+-			if (!is_qemu)
+-				continue;
+-
+-			if (strcmp(arg, "-name") == 0) {
+-				last_was_name = true;
+-				continue;
+-			}
+-
+-			if (last_was_name) {
+-				guest.name = strdup(get_qemu_guest_name(arg));
+-				if (!guest.name)
+-					die("allocating guest name");
+-				last_was_name = false;
+-				continue;
+-			}
+-
+-			p = strstr(arg, "guest-cid=");
+-			if (p) {
+-				guest.cid = atoi(p + 10);
+-				continue;
+-			}
+-		}
+-
+-		if (!is_qemu)
+-			goto next;
+-
+-		if (read_qemu_guests_pids(entry->d_name, &guest))
+-			warning("Failed to retrieve VPCU - PID mapping for guest %s",
+-					guest.name ? guest.name : "Unknown");
+-
+-		guests = realloc(guests, (guests_len + 1) * sizeof(*guests));
+-		if (!guests)
+-			die("Can not allocate guest buffer");
+-		guests[guests_len++] = guest;
+-
+-next:
+-		free(arg);
+-		fclose(f);
++		if (name[strlen(name) - 1] == '\n')
++			name[strlen(name) - 1] = '\0';
++		read_guest_cid(name);
+ 	}
+ 
+-	closedir(dir);
++	/* close */
++	pclose(f);
+ }
+ 
+ int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu)
 -- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+2.31.1
+
