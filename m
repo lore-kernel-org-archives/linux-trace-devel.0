@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19FBAC43460
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60DD3C43461
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 14 May 2021 12:18:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E0C896145B
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 14 May 2021 12:18:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 41EB86145B
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 14 May 2021 12:18:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232969AbhENMTz (ORCPT
+        id S233028AbhENMT4 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 14 May 2021 08:19:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51300 "EHLO
+        Fri, 14 May 2021 08:19:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232478AbhENMTx (ORCPT
+        with ESMTP id S232671AbhENMTx (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 14 May 2021 08:19:53 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56C6C06174A
-        for <linux-trace-devel@vger.kernel.org>; Fri, 14 May 2021 05:18:39 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id s6so34405983edu.10
-        for <linux-trace-devel@vger.kernel.org>; Fri, 14 May 2021 05:18:39 -0700 (PDT)
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 907CCC061574
+        for <linux-trace-devel@vger.kernel.org>; Fri, 14 May 2021 05:18:40 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id di13so34474175edb.2
+        for <linux-trace-devel@vger.kernel.org>; Fri, 14 May 2021 05:18:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KztrVVn3EIMYdDMvJzGCzItRMyVQFSqBgkxfy+ofgeU=;
-        b=i2diZGQhgx214wiAS2gBna9GzO8pIwWPaZ6SmEAFsU4A3825edqDuJVxD1Ny9hl230
-         QvS77x7iUBEab8apJ//IXZd9gz2kpmE9tZMWSg4G/RpAfn71FHobpIGZyZDooACRQFgX
-         uVFl7u7mVQzDZBealxxi/qVacxPxtSd+ww611E8puDqXaaEY3d4bmQYgpnmti9CZIgQy
-         cJ2Yk1l40CIYqh8S+Rxgk0k5G1dJkWmMz02CXIbSGD5XH5TKfvaF2+FdIxXgIGQ8MyMi
-         paPBSl1VA3kRArmFTvW4XM3kp4N52rLMNC4aApqxRfZPe8Z7P4XTUdB87HnuGOnPZ6oE
-         7MIA==
+        bh=TTG39X9zxsef8MpXaTofsFoEUYLaTQ03yVrBJYfMqm4=;
+        b=Gt3rul8FLp6GP6hsgpa4jFglKegqMCIsat1XhXDLjS+H7F5uupLHQ1pCKaGMFFSdB8
+         AZGz9UyaGWgm2I5Q8W9fiT9YWuIWvtsU9jIO6H7qr2CLacG5U0wY+T/yIXY9bZljx0Qf
+         +PJ3rp1PvkOIsUQ3QngcCAWm2e7QRDvTsLnRqubrG/i2Fz2/8lNf/1XOxPGdtSK+Vhzu
+         9e/Tn0SgheyMne9ZNW4T7PlY6wxalmc7JleIv749RPqFlWfz8ndyomzZ5JqIj1w7CLOD
+         wRkCLlBWwvXWz3oauh1Sv158oSF2qlfrtOoNXDltWJ86anw1EQwpIdDgr8isMqvOcunc
+         w2IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KztrVVn3EIMYdDMvJzGCzItRMyVQFSqBgkxfy+ofgeU=;
-        b=DxlTeHVscndnwZ4DjNI6wYOIwmGhmij9RfG3abWtc4iKWdHGxMJ4n3uQRYIjQgqvAd
-         hJjNQRuO/MLnGPbZtmfx7lMZIeF1SmiowDVf8yhEil0mTb8Mhs6YmADKl3QW7Wwh7KEp
-         Apaj4oJvIoAQ9d61fXnrh1FNQO0th+svTsQTtVMvxB1SXOcBkFKLwTWK6sJwogitWvOE
-         wgDZOz81p3gAWn3qoLWjHqF1BB3NYnHO9sVs9JyKkQSfycnZi1W3Dr6ikU1G8DNECPLM
-         JAIzJTCIIWUUzmIRMUcqoQjweN2d+ao6VA+Ny2y0NcWy22CpFzXCHQwBLH/sYre29CSN
-         rurg==
-X-Gm-Message-State: AOAM532Q4gPR1l/MEtrt8drSc+pLUM3ck2lpeKEJNLERqpCXhSCdkeol
-        84HfNsUr/PeIwpC7CJjEfVn++LqgseA=
-X-Google-Smtp-Source: ABdhPJxLfkDO4iCiuUeswZwtunGkBt8+tw1TG/F4iu5B5T8B7OmBKBW9HA2yhyQKEDTUnbsvokDlYw==
-X-Received: by 2002:aa7:c7cc:: with SMTP id o12mr56942124eds.291.1620994718359;
-        Fri, 14 May 2021 05:18:38 -0700 (PDT)
+        bh=TTG39X9zxsef8MpXaTofsFoEUYLaTQ03yVrBJYfMqm4=;
+        b=W+Jbn8QiVqi5Wi14lS2KMb1cAQTAx1l1hwRddH+uHeeqEaBomXR8Ydhsq8VEqKYgCU
+         8jaUsQbxdSVGYTr57LEw1Y+2L8AOpuKLVRHS8iJE+4r3b0Gi2uS7EzcfeCfYCQauwmkQ
+         cDRCDHBHaV5VLM2IOI50v48fyzK+GDBacPY5+ECqMHX2wsrnnLjqo/OEMD6MgwnA3iNy
+         cMuHPPjkgAy/Pix7dYXRpnALGwmcB8jrkLg/slnnyIe/Qca2bKNTDcBYdtsHxFkiFhv5
+         CcZjRvLKSFDBdnE4p3O1qEMWU6Ez15am5NqE0dja1Rd3MwfVh3fwA0igaRK+gYOdLBX9
+         Hxow==
+X-Gm-Message-State: AOAM530++ADLSz3aNqiJivGMXNtRMEWwnQC+Iiv26DQnzHE+0+IKAzE4
+        ioPU+SI8QhTe9KEN/ZGBTYV3UJhkKeI=
+X-Google-Smtp-Source: ABdhPJz5Hke0mCSZ6FuC/R726as3QSk3tYkBBckIpZeWe1p5mBwSE/PpPZ8kZxziti8/khWKiacziQ==
+X-Received: by 2002:a05:6402:30b0:: with SMTP id df16mr3091065edb.85.1620994719074;
+        Fri, 14 May 2021 05:18:39 -0700 (PDT)
 Received: from localhost.localdomain ([84.40.73.176])
-        by smtp.gmail.com with ESMTPSA id cr21sm3435157ejc.2.2021.05.14.05.18.37
+        by smtp.gmail.com with ESMTPSA id cr21sm3435157ejc.2.2021.05.14.05.18.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 05:18:37 -0700 (PDT)
+        Fri, 14 May 2021 05:18:38 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 1/7] kernel-shark: Preserve markers when appending data
-Date:   Fri, 14 May 2021 15:18:20 +0300
-Message-Id: <20210514121826.161749-2-y.karadz@gmail.com>
+Subject: [PATCH 2/7] kernel-shark: Preserve open graphs when appending data
+Date:   Fri, 14 May 2021 15:18:21 +0300
+Message-Id: <20210514121826.161749-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210514121826.161749-1-y.karadz@gmail.com>
 References: <20210514121826.161749-1-y.karadz@gmail.com>
@@ -73,79 +73,187 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When an entry is selected in the KernelShark GUI (using marker A and
-marker B) we only keep track the index of this entry inside the array
-of entries loaded at the moment of selecting. However, then a data
-file is appended, the new entries are merged to this array and the
-array is sorted. As a result the index of the marker can/will point
-to completely different entry.
+If the user has already made some selection of graphs to be displayed
+by the GUI, those particular graphs are likely to be important for him,
+so it is better to keep this configuration after the data file is
+appended. The opposite can be annoying for the user.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/KsDualMarker.hpp |  6 ++++++
- src/KsMainWindow.cpp | 24 ++++++++++++++++++++++--
- 2 files changed, 28 insertions(+), 2 deletions(-)
+ src/KsGLWidget.cpp   | 40 ++++++++++++++++++++++++++--------------
+ src/KsGLWidget.hpp   |  4 +++-
+ src/KsMainWindow.cpp |  7 ++++---
+ src/KsTraceGraph.cpp | 10 +++++++---
+ src/KsTraceGraph.hpp |  2 +-
+ src/KsUtils.cpp      |  1 +
+ 6 files changed, 42 insertions(+), 22 deletions(-)
 
-diff --git a/src/KsDualMarker.hpp b/src/KsDualMarker.hpp
-index 0dcaf93..39c0ce2 100644
---- a/src/KsDualMarker.hpp
-+++ b/src/KsDualMarker.hpp
-@@ -154,6 +154,12 @@ public:
+diff --git a/src/KsGLWidget.cpp b/src/KsGLWidget.cpp
+index 9f8e43b..8aab7b3 100644
+--- a/src/KsGLWidget.cpp
++++ b/src/KsGLWidget.cpp
+@@ -409,25 +409,12 @@ void KsGLWidget::keyReleaseEvent(QKeyEvent *event)
+  */
+ #define KS_MAX_START_PLOTS 16
  
- 	void updateLabels();
+-/**
+- * @brief Load and show trace data.
+- *
+- * @param data: Input location for the KsDataStore object.
+- *	  KsDataStore::loadDataFile() must be called first.
+- */
+-void KsGLWidget::loadData(KsDataStore *data)
++void KsGLWidget::_defaultPlots(kshark_context *kshark_ctx)
+ {
+-	kshark_context *kshark_ctx(nullptr);
+ 	QVector<int> streamIds, plotVec;
+ 	uint64_t tMin, tMax;
+ 	int nCPUs, nBins;
  
-+	/** Get the index inside the data array marker A points to. */
-+	ssize_t markerAPos() {return markerA()._isSet ? markerA()._pos : -1;}
+-	if (!kshark_instance(&kshark_ctx) || !kshark_ctx->n_streams)
+-		return;
+-
+-	loadColors();
+-
+-	_data = data;
+ 	_model.reset();
+ 	_streamPlots.clear();
+ 
+@@ -463,6 +450,31 @@ void KsGLWidget::loadData(KsDataStore *data)
+ 	tMin = _data->rows()[0]->ts;
+ 	tMax = _data->rows()[_data->size() - 1]->ts;
+ 	ksmodel_set_bining(_model.histo(), nBins, tMin, tMax);
++}
 +
-+	/** Get the index inside the data array marker B points to. */
-+	ssize_t markerBPos() {return markerB()._isSet ? markerB()._pos : -1;}
++/**
++ * @brief Load and show trace data.
++ *
++ * @param data: Input location for the KsDataStore object.
++ *		KsDataStore::loadDataFile() must be called first.
++ * @param resetPlots: If true, all existing graphs are closed
++ *		      and a default configuration of graphs is displayed
++ *		      (all CPU plots). If false, the current set of graphs
++ *		      is preserved.
++ */
++void KsGLWidget::loadData(KsDataStore *data, bool resetPlots)
++{
++	kshark_context *kshark_ctx(nullptr);
 +
- signals:
- 	/**
- 	 * This signal is emitted when the Table View has to switch the color
++	if (!kshark_instance(&kshark_ctx) || !kshark_ctx->n_streams)
++		return;
++
++	loadColors();
++
++	_data = data;
++	if (resetPlots)
++		_defaultPlots(kshark_ctx);
++
+ 	_model.fill(_data);
+ }
+ 
+diff --git a/src/KsGLWidget.hpp b/src/KsGLWidget.hpp
+index 629ae37..6a72a35 100644
+--- a/src/KsGLWidget.hpp
++++ b/src/KsGLWidget.hpp
+@@ -101,7 +101,7 @@ public:
+ 
+ 	void keyReleaseEvent(QKeyEvent *event);
+ 
+-	void loadData(KsDataStore *data);
++	void loadData(KsDataStore *data, bool resetPlots);
+ 
+ 	void loadColors();
+ 
+@@ -326,6 +326,8 @@ private:
+ 	int _getLastCPU(struct kshark_trace_histo *histo,
+ 			int bin, int sd, int pid);
+ 
++	void _defaultPlots(kshark_context *kshark_ctx);
++
+ 	void _deselect();
+ 
+ 	int _bin0Offset() {return _labelSize + 2 * _hMargin;}
 diff --git a/src/KsMainWindow.cpp b/src/KsMainWindow.cpp
-index d0a434a..fa893ce 100644
+index fa893ce..1cbec55 100644
 --- a/src/KsMainWindow.cpp
 +++ b/src/KsMainWindow.cpp
-@@ -571,8 +571,15 @@ void KsMainWindow::markEntry(ssize_t row, DualMarkerState st)
- /** Select given kshark_entry with a given maker. */
- void KsMainWindow::markEntry(const kshark_entry *e, DualMarkerState st)
- {
--	ssize_t row = kshark_find_entry_by_time(e->ts, _data.rows(),
--						0, _data.size() - 1);
-+	ssize_t row;
-+
-+	if (!e) {
-+		_mState.getMarker(st).reset();
-+		return;
-+	}
-+
-+	row = kshark_find_entry_by_time(e->ts, _data.rows(),
-+					0, _data.size() - 1);
+@@ -1283,7 +1283,8 @@ void KsMainWindow::_load(const QString& fileName, bool append)
+ 	QApplication::processEvents();
  
- 	markEntry(row, st);
- }
-@@ -1341,7 +1348,20 @@ void KsMainWindow::loadDataFile(const QString& fileName)
- /** Append trace data for file. */
- void KsMainWindow::appendDataFile(const QString& fileName)
- {
-+	kshark_entry *eMarkA(nullptr), *eMarkB(nullptr);
-+	int rowA = _mState.markerAPos();
-+	int rowB = _mState.markerBPos();
-+
-+	if (rowA >= 0)
-+		eMarkA = _data.rows()[rowA];
-+
-+	if (rowB >= 0)
-+		eMarkB = _data.rows()[rowB];
-+
- 	_load(fileName, true);
-+
-+	markEntry(eMarkA, DualMarkerState::A);
-+	markEntry(eMarkB, DualMarkerState::B);
+ 	_view.reset();
+-	_graph.reset();
++	if (!append)
++		_graph.reset();
+ 
+ 	auto lamLoadJob = [&, this] () {
+ 		QVector<kshark_dpi *> v;
+@@ -1333,7 +1334,7 @@ void KsMainWindow::_load(const QString& fileName, bool append)
+ 	_view.loadData(&_data);
+ 	pb.setValue(175);
+ 
+-	_graph.loadData(&_data);
++	_graph.loadData(&_data, !append);
+ 	pb.setValue(195);
  }
  
- void KsMainWindow::_error(const QString &mesg,
+@@ -1454,7 +1455,7 @@ void KsMainWindow::loadSession(const QString &fileName)
+ 	_view.loadData(&_data);
+ 	pb.setValue(155);
+ 
+-	_graph.loadData(&_data);
++	_graph.loadData(&_data, true);
+ 	_filterSyncCBoxUpdate(kshark_ctx);
+ 	pb.setValue(175);
+ 
+diff --git a/src/KsTraceGraph.cpp b/src/KsTraceGraph.cpp
+index 1e976df..65e5a79 100644
+--- a/src/KsTraceGraph.cpp
++++ b/src/KsTraceGraph.cpp
+@@ -148,12 +148,16 @@ KsTraceGraph::KsTraceGraph(QWidget *parent)
+  * @brief Load and show trace data.
+  *
+  * @param data: Input location for the KsDataStore object.
+- *	  KsDataStore::loadDataFile() must be called first.
++ *	  	KsDataStore::loadDataFile() must be called first.
++ * @param resetPlots: If true, all existing graphs are closed
++ *		      and a default configuration of graphs is displayed
++ *		      (all CPU plots). If false, the current set of graphs
++ *		      is preserved.
+  */
+-void KsTraceGraph::loadData(KsDataStore *data)
++void KsTraceGraph::loadData(KsDataStore *data, bool resetPlots)
+ {
+ 	_data = data;
+-	_glWindow.loadData(data);
++	_glWindow.loadData(data, resetPlots);
+ 	updateGeom();
+ }
+ 
+diff --git a/src/KsTraceGraph.hpp b/src/KsTraceGraph.hpp
+index 6e83f21..b1132e0 100644
+--- a/src/KsTraceGraph.hpp
++++ b/src/KsTraceGraph.hpp
+@@ -45,7 +45,7 @@ class KsTraceGraph : public KsWidgetsLib::KsDataWidget
+ public:
+ 	explicit KsTraceGraph(QWidget *parent = nullptr);
+ 
+-	void loadData(KsDataStore *data);
++	void loadData(KsDataStore *data, bool resetPlots);
+ 
+ 	void setMarkerSM(KsDualMarkerSM *m);
+ 
+diff --git a/src/KsUtils.cpp b/src/KsUtils.cpp
+index ec53267..757f49c 100644
+--- a/src/KsUtils.cpp
++++ b/src/KsUtils.cpp
+@@ -785,6 +785,7 @@ int KsDataStore::appendDataFile(const QString &file, int64_t offset)
+ 	_rows = mergedRows;
+ 
+ 	registerCPUCollections();
++	emit updateWidgets(this);
+ 
+ 	return sd;
+ }
 -- 
 2.27.0
 
