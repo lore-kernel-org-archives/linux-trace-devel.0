@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA33DC433B4
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 14 May 2021 18:29:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 073A8C43460
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 14 May 2021 18:29:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 896C661446
+	by mail.kernel.org (Postfix) with ESMTP id DEA8561446
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 14 May 2021 18:29:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233491AbhENSao (ORCPT
+        id S229701AbhENSap (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 14 May 2021 14:30:44 -0400
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:34873 "EHLO
+        Fri, 14 May 2021 14:30:45 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:34874 "EHLO
         EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229701AbhENSao (ORCPT
+        by vger.kernel.org with ESMTP id S233492AbhENSao (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 14 May 2021 14:30:44 -0400
 Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
  EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Fri, 14 May 2021 11:29:28 -0700
+ 15.0.1156.6; Fri, 14 May 2021 11:29:29 -0700
 Received: from vypre.com (unknown [10.21.244.184])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 16F34204B1;
-        Fri, 14 May 2021 11:29:31 -0700 (PDT)
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id BAA78204A0;
+        Fri, 14 May 2021 11:29:32 -0700 (PDT)
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     <linux-trace-devel@vger.kernel.org>
 CC:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v4 1/2] trace-cmd: Find PID of host-guest task from tracing vsock connection
-Date:   Fri, 14 May 2021 14:29:27 -0400
-Message-ID: <20210514182928.1378121-2-rostedt@goodmis.org>
+Subject: [PATCH v4 2/2] trace-cmd: Trace timesync to find pids that map vCPUs
+Date:   Fri, 14 May 2021 14:29:28 -0400
+Message-ID: <20210514182928.1378121-3-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210514182928.1378121-1-rostedt@goodmis.org>
 References: <20210514182928.1378121-1-rostedt@goodmis.org>
@@ -47,294 +47,281 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-When a CID is specified on the command line to connect to an agent running
-in a KVM guest, in order to use the KVM information for the guest clock,
-the main PID of that guest needs to be found.
+If qemu is not found, then there's no mapping between the vCPUs of the
+guest and the threads that run them. As the time sync has the agent run on
+all the guest's CPUs, trace it, looking for all kvm_entry, which state
+which vCPU the host thread is entering on the guest, and then use that to
+create the mapping for the data files.
 
-The problem is that there's no interface that maps CIDs to tasks on the
-host. Currently, the code has a hack to search all tasks, looking for
-"qemu" tasks and then parsing its command line to see if it can find the
-CID that it used. This is not robust and does not work for non qemu guests
-running in a KVM environment.
-
-Instead, trace the flow of "wake ups" from the trace-cmd task to a task
-that does a "kvm_exit" when connecting to the given CID.
-
-That is, when a connect() call is done on the give CID, tracing the
-following flow:
-
- trace-cmd wakes up "vhost-<pid>"
- vhost-<pid> wakes up "CPUX/KVM"
- CPUX/KVM calls "kvm_exit"
-
-Looking at only wake up events that happen outside of interrupt context
-(interrupt wake ups can be for other tasks), finding the task that does
-the "kvm_exit" is the task that is running a guest vCPU.
-
-The CPUX/KVM is the task that runs the vCPU of the guest, but we still
-need the task group leader of this task to find the task that KVM has
-for timestamp offsets and multipliers. To do that, look at the proc
-file system for the PID of the CPUX/KVM and read its status file.
-This holds "Tgid:    <pid>" where "<pid>" is the PID of the task that
+Only parse for qemu if no CID is given on the command line.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tracecmd/trace-vm.c | 227 +++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 226 insertions(+), 1 deletion(-)
+Changes since v3:
 
-diff --git a/tracecmd/trace-vm.c b/tracecmd/trace-vm.c
-index c0333b67..163536ca 100644
---- a/tracecmd/trace-vm.c
-+++ b/tracecmd/trace-vm.c
-@@ -9,6 +9,7 @@
- #include <sys/types.h>
- #include <dirent.h>
- #include <limits.h>
-+#include <unistd.h>
+ - Removed unnecessary check of *cid < 0
+
+ tracecmd/include/trace-local.h |   2 +
+ tracecmd/trace-record.c        | 199 ++++++++++++++++++++++++++++++++-
+ 2 files changed, 200 insertions(+), 1 deletion(-)
+
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index b3997d00..4c5669c9 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -298,11 +298,13 @@ void update_first_instance(struct buffer_instance *instance, int topt);
+ void show_instance_file(struct buffer_instance *instance, const char *name);
  
- #include "trace-local.h"
- #include "trace-msg.h"
-@@ -87,6 +88,227 @@ static struct trace_guest *add_guest(unsigned int cid, const char *name)
- 	return &guests[guests_len - 1];
+ struct trace_guest {
++	struct tracefs_instance *instance;
+ 	char *name;
+ 	int cid;
+ 	int pid;
+ 	int cpu_max;
+ 	int *cpu_pid;
++	int *task_pids;
+ };
+ struct trace_guest *trace_get_guest(unsigned int cid, const char *name);
+ bool trace_have_guests_pid(void);
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 08029a07..bf911895 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -3251,6 +3251,38 @@ static int do_accept(int sd)
+ 	return -1;
  }
  
-+static struct tracefs_instance *start_trace_connect(void)
++/* Find all the tasks associated with the guest pid */
++static void find_tasks(struct trace_guest *guest)
 +{
-+	struct tracefs_instance *open_instance;
++	struct dirent *dent;
++	char *path;
++	DIR *dir;
++	int ret;
++	int tasks = 0;
 +
-+	open_instance = tracefs_instance_create("vsock_find_pid");
-+	if (!open_instance)
-+		return NULL;
-+
-+	tracefs_event_enable(open_instance, "sched", "sched_waking");
-+	tracefs_event_enable(open_instance, "kvm", "kvm_exit");
-+	tracefs_trace_on(open_instance);
-+	return open_instance;
-+}
-+
-+struct pids {
-+	struct pids		*next;
-+	int			pid;
-+};
-+
-+struct trace_fields {
-+	struct tep_event		*sched_waking;
-+	struct tep_event		*kvm_exit;
-+	struct tep_format_field		*common_pid;
-+	struct tep_format_field		*sched_next;
-+	struct pids			*pids;
-+	int				found_pid;
-+};
-+
-+static void free_pids(struct pids *pids)
-+{
-+	struct pids *next;
-+
-+	while (pids) {
-+		next = pids;
-+		pids = pids->next;
-+		free(next);
-+	}
-+}
-+
-+static void add_pid(struct pids **pids, int pid)
-+{
-+	struct pids *new_pid;
-+
-+	new_pid = malloc(sizeof(*new_pid));
-+	if (!new_pid)
++	ret = asprintf(&path, "/proc/%d/task", guest->pid);
++	if (ret < 0)
 +		return;
 +
-+	new_pid->pid = pid;
-+	new_pid->next = *pids;
-+	*pids = new_pid;
-+}
++	dir = opendir(path);
++	free(path);
++	if (!dir)
++		return;
 +
-+static bool match_pid(struct pids *pids, int pid)
-+{
-+	while (pids) {
-+		if (pids->pid == pid)
-+			return true;
-+		pids = pids->next;
++	while ((dent = readdir(dir))) {
++		int *pids;
++		if (!(dent->d_type == DT_DIR && is_digits(dent->d_name)))
++			continue;
++		pids = realloc(guest->task_pids, sizeof(int) * (tasks + 2));
++		if (!pids)
++			break;
++		pids[tasks++] = strtol(dent->d_name, NULL, 0);
++		pids[tasks] = -1;
++		guest->task_pids = pids;
 +	}
-+	return false;
++	closedir(dir);
 +}
 +
-+static int callback(struct tep_event *event, struct tep_record *record, int cpu,
-+		    void *data)
+ static char *parse_guest_name(char *gname, int *cid, int *port)
+ {
+ 	struct trace_guest *guest;
+@@ -3271,10 +3303,15 @@ static char *parse_guest_name(char *gname, int *cid, int *port)
+ 	} else if (is_digits(gname))
+ 		*cid = atoi(gname);
+ 
+-	read_qemu_guests();
++	if (*cid < 0)
++		read_qemu_guests();
++
+ 	guest = trace_get_guest(*cid, gname);
+ 	if (guest) {
+ 		*cid = guest->cid;
++		/* Mapping not found, search for them */
++		if (!guest->cpu_pid)
++			find_tasks(guest);
+ 		return guest->name;
+ 	}
+ 
+@@ -3733,6 +3770,162 @@ static int open_guest_fifos(const char *guest, int **fds)
+ 	return i;
+ }
+ 
++struct trace_mapping {
++	struct tep_event		*kvm_entry;
++	struct tep_format_field		*vcpu_id;
++	struct tep_format_field		*common_pid;
++	int				*pids;
++	int				*map;
++	int				max_cpus;
++};
++
++static void start_mapping_vcpus(struct trace_guest *guest)
 +{
-+	struct trace_fields *fields = data;
-+	struct tep_handle *tep = event->tep;
++	char *pids = NULL;
++	char *t;
++	int len = 0;
++	int s;
++	int i;
++
++	if (!guest->task_pids)
++		return;
++
++	guest->instance = tracefs_instance_create("map_guest_pids");
++	if (!guest->instance)
++		return;
++
++	for (i = 0; guest->task_pids[i] >= 0; i++) {
++		s = snprintf(NULL, 0, "%d ", guest->task_pids[i]);
++		t = realloc(pids, len + s + 1);
++		if (!t) {
++			free(pids);
++			pids = NULL;
++			break;
++		}
++		pids = t;
++		sprintf(pids + len, "%d ", guest->task_pids[i]);
++		len += s;
++	}
++	if (pids) {
++		tracefs_instance_file_write(guest->instance, "set_event_pid", pids);
++		free(pids);
++	}
++	tracefs_instance_file_write(guest->instance, "events/kvm/kvm_entry/enable", "1");
++}
++
++static int map_vcpus(struct tep_event *event, struct tep_record *record,
++		     int cpu, void *context)
++{
++	struct trace_mapping *tmap = context;
 +	unsigned long long val;
-+	int flags;
 +	int type;
 +	int pid;
 +	int ret;
++	int i;
 +
-+	ret = tep_read_number_field(fields->common_pid, record->data, &val);
++	/* Do we have junk in the buffer? */
++	type = tep_data_type(event->tep, record);
++	if (type != tmap->kvm_entry->id)
++		return 0;
++
++	ret = tep_read_number_field(tmap->common_pid, record->data, &val);
++	if (ret < 0)
++		return 0;
++	pid = (int)val;
++
++	for (i = 0; tmap->pids[i] >= 0; i++) {
++		if (pid == tmap->pids[i])
++			break;
++	}
++	/* Is this thread one we care about ? */
++	if (tmap->pids[i] < 0)
++		return 0;
++
++	ret = tep_read_number_field(tmap->vcpu_id, record->data, &val);
 +	if (ret < 0)
 +		return 0;
 +
-+	flags = tep_data_flags(tep, record);
++	cpu = (int)val;
 +
-+	/* Ignore events in interrupts */
-+	if (flags & (TRACE_FLAG_HARDIRQ | TRACE_FLAG_SOFTIRQ))
++	/* Sanity check, warn? */
++	if (cpu >= tmap->max_cpus)
 +		return 0;
 +
-+	/*
-+	 * First make sure that this event comes from a PID from
-+	 * this task (or a task woken by this task)
-+	 */
-+	pid = val;
-+	if (!match_pid(fields->pids, pid))
++	/* Already have this one? Should we check if it is the same? */
++	if (tmap->map[cpu] >= 0)
 +		return 0;
 +
-+	type = tep_data_type(tep, record);
++	tmap->map[cpu] = pid;
 +
-+	/*
-+	 * If this event is a kvm_exit, we have our PID
-+	 * and we can stop processing.
-+	 */
-+	if (type == fields->kvm_exit->id) {
-+		fields->found_pid = pid;
-+		return -1;
++	/* Did we get them all */
++	for (i = 0; i < tmap->max_cpus; i++) {
++		if (tmap->map[i] < 0)
++			break;
 +	}
 +
-+	if (type != fields->sched_waking->id)
-+		return 0;
-+
-+	ret = tep_read_number_field(fields->sched_next, record->data, &val);
-+	if (ret < 0)
-+		return 0;
-+
-+	/* This is a task woken by our task or a chain of wake ups */
-+	add_pid(&fields->pids, (int)val);
-+	return 0;
++	return i == tmap->max_cpus;
 +}
 +
-+static int find_tgid(int pid)
++static void stop_mapping_vcpus(struct buffer_instance *instance,
++			       struct trace_guest *guest)
 +{
-+	FILE *fp;
-+	char *path;
-+	char *buf = NULL;
-+	char *save;
-+	size_t l = 0;
-+	int tgid = -1;
-+
-+	if (asprintf(&path, "/proc/%d/status", pid) < 0)
-+		return -1;
-+
-+	fp = fopen(path, "r");
-+	free(path);
-+	if (!fp)
-+		return -1;
-+
-+	while (getline(&buf, &l, fp) > 0) {
-+		char *tok;
-+
-+		if (strncmp(buf, "Tgid:", 5) != 0)
-+			continue;
-+		tok = strtok_r(buf, ":", &save);
-+		if (!tok)
-+			continue;
-+		tok = strtok_r(NULL, ":", &save);
-+		if (!tok)
-+			continue;
-+		while (isspace(*tok))
-+			tok++;
-+		tgid = strtol(tok, NULL, 0);
-+		break;
-+	}
-+	free(buf);
-+	fclose(fp);
-+
-+	return tgid;
-+}
-+
-+static int stop_trace_connect(struct tracefs_instance *open_instance)
-+{
-+	const char *systems[] = { "kvm", "sched", NULL};
++	struct trace_mapping tmap = { };
 +	struct tep_handle *tep;
-+	struct trace_fields trace_fields;
-+	int tgid = -1;
++	const char *systems[] = { "kvm", NULL };
++	int i;
 +
-+	if (!open_instance)
-+		return -1;
++	if (!guest->instance)
++		return;
 +
-+	/* The connection is finished, stop tracing, we have what we want */
-+	tracefs_trace_off(open_instance);
-+	tracefs_event_disable(open_instance, NULL, NULL);
++	tmap.pids = guest->task_pids;
++	tmap.max_cpus = instance->cpu_count;
++
++	tmap.map = malloc(sizeof(*tmap.map) * tmap.max_cpus);
++	if (!tmap.map)
++		return;
++
++	for (i = 0; i < tmap.max_cpus; i++)
++		tmap.map[i] = -1;
++
++	tracefs_instance_file_write(guest->instance, "events/kvm/kvm_entry/enable", "0");
 +
 +	tep = tracefs_local_events_system(NULL, systems);
-+
-+	trace_fields.sched_waking = tep_find_event_by_name(tep, "sched", "sched_waking");
-+	if (!trace_fields.sched_waking)
-+		goto out;
-+	trace_fields.kvm_exit = tep_find_event_by_name(tep, "kvm", "kvm_exit");
-+	if (!trace_fields.kvm_exit)
-+		goto out;
-+	trace_fields.common_pid = tep_find_common_field(trace_fields.sched_waking,
-+							"common_pid");
-+	if (!trace_fields.common_pid)
-+		goto out;
-+	trace_fields.sched_next = tep_find_any_field(trace_fields.sched_waking,
-+							"pid");
-+	if (!trace_fields.sched_next)
++	if (!tep)
 +		goto out;
 +
-+	trace_fields.found_pid = -1;
-+	trace_fields.pids = NULL;
-+	add_pid(&trace_fields.pids, getpid());
-+	tracefs_iterate_raw_events(tep, open_instance, NULL, 0, callback, &trace_fields);
-+	free_pids(trace_fields.pids);
++	tmap.kvm_entry = tep_find_event_by_name(tep, "kvm", "kvm_entry");
++	if (!tmap.kvm_entry)
++		goto out_free;
++
++	tmap.vcpu_id = tep_find_field(tmap.kvm_entry, "vcpu_id");
++	if (!tmap.vcpu_id)
++		goto out_free;
++
++	tmap.common_pid = tep_find_any_field(tmap.kvm_entry, "common_pid");
++	if (!tmap.common_pid)
++		goto out_free;
++
++	tracefs_iterate_raw_events(tep, guest->instance, NULL, 0, map_vcpus, &tmap);
++
++	for (i = 0; i < tmap.max_cpus; i++) {
++		if (tmap.map[i] < 0)
++			break;
++	}
++	/* We found all the mapped CPUs */
++	if (i == tmap.max_cpus) {
++		guest->cpu_pid = tmap.map;
++		guest->cpu_max = tmap.max_cpus;
++		tmap.map = NULL;
++	}
++
++ out_free:
++	tep_free(tep);
 + out:
-+	tracefs_instance_destroy(open_instance);
-+	tracefs_instance_free(open_instance);
-+
-+	if (trace_fields.found_pid > 0)
-+		tgid = find_tgid(trace_fields.found_pid);
-+
-+	return tgid;
++	free(tmap.map);
++	tracefs_instance_destroy(guest->instance);
++	tracefs_instance_free(guest->instance);
 +}
 +
-+/*
-+ * In order to find the guest that is associated to the given cid,
-+ * trace the sched_waking and kvm_exit events, connect to the cid
-+ * (doesn't matter what port, use -1 to not connect to anything)
-+ * and find what task gets woken up from this code and calls kvm_exit,
-+ * then that is the task that is running the guest.
-+ * Then look at the /proc/<guest-pid>/status file to find the task group
-+ * id (Tgid), and this is the PID of the task running all the threads.
-+ */
-+static void find_pid_by_cid(struct trace_guest *guest)
-+{
-+	struct tracefs_instance *instance;
-+	int fd;
-+
-+	instance = start_trace_connect();
-+	fd = trace_open_vsock(guest->cid, -1);
-+	guest->pid = stop_trace_connect(instance);
-+	/* Just in case! */
-+	if (fd >= 0)
-+		close(fd);
-+}
-+
- struct trace_guest *trace_get_guest(unsigned int cid, const char *name)
- {
- 	struct trace_guest *guest = NULL;
-@@ -99,8 +321,11 @@ struct trace_guest *trace_get_guest(unsigned int cid, const char *name)
+ static int host_tsync(struct common_record_context *ctx,
+ 		      struct buffer_instance *instance,
+ 		      unsigned int tsync_port, char *proto)
+@@ -3745,11 +3938,15 @@ static int host_tsync(struct common_record_context *ctx,
+ 	if (guest == NULL)
+ 		return -1;
  
- 	if (cid > 0) {
- 		guest = get_guest_by_cid(cid);
--		if (!guest && name)
-+		if (!guest && name) {
- 			guest = add_guest(cid, name);
-+			if (guest)
-+				find_pid_by_cid(guest);
-+		}
- 	}
- 	return guest;
- }
++	start_mapping_vcpus(guest);
++
+ 	instance->tsync = tracecmd_tsync_with_guest(top_instance.trace_id,
+ 						    instance->tsync_loop_interval,
+ 						    instance->cid, tsync_port,
+ 						    guest->pid, instance->cpu_count,
+ 						    proto, ctx->clock);
++	stop_mapping_vcpus(instance, guest);
++
+ 	if (!instance->tsync)
+ 		return -1;
+ 
 -- 
 2.29.2
 
