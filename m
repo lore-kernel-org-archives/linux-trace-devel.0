@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7363C43600
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E24DBC43603
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 14 May 2021 12:18:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 896C661285
+	by mail.kernel.org (Postfix) with ESMTP id BF3BB61285
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 14 May 2021 12:18:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232963AbhENMT6 (ORCPT
+        id S232354AbhENMT6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 14 May 2021 08:19:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51324 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232354AbhENMTz (ORCPT
+        with ESMTP id S232478AbhENMT4 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 14 May 2021 08:19:55 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64975C061761
-        for <linux-trace-devel@vger.kernel.org>; Fri, 14 May 2021 05:18:43 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id lz27so3045200ejb.11
+        Fri, 14 May 2021 08:19:56 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C32CC061763
+        for <linux-trace-devel@vger.kernel.org>; Fri, 14 May 2021 05:18:44 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id b25so44315972eju.5
         for <linux-trace-devel@vger.kernel.org>; Fri, 14 May 2021 05:18:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zUYNHfjMNsJRyZJGjcbcerI76uJyF4Rnzq4Si4Zxp14=;
-        b=Sg542uTuYVYzeEW4HT0mRLUFps5pIAU3ljTnx46S/0g89h1n08rIk3QXthJkLsnFHS
-         FW1eIltkav1BgzXr/4gnToqteJZzGhQoboKkHXajpxLOthLzhLKkf2ItN2ejJAr3Nbjk
-         5WhJLOAvnor2oseWDukJg17Vrws527Fd+n3QS9PiNyoHb93cAgb7rSPXYA/omliBTy1l
-         81U94to6VAiiqqf/Ng1Ra0g9t8pBXEM+5NM5IGgAhY68SSp3hzibJTicNwRU11bJtO53
-         /WSGPMgxk9hTP+IAf7KxjOz0PRzq9mhHS6m3SLjxFkpJI4shdd4IhATgpiCdTDSl9kEc
-         Bohg==
+        bh=BnoEnZS3w88xtGosGlgdepOl60qxJWhr2OKhUZWO20Y=;
+        b=r8imbmeLezFq7r9LKiBeC86NAzrww8qdSnoTSPriL5FzUXaWaM62UTx3z8ajfpUpzh
+         tVp6nE0suWnsSKv5oU1c0HZ2uJreuIvsxZumme3HVfWhzDHdPrNrIzMHa+le47RMFB9G
+         yz0pawChpqjejBHFRLakqUR86fNTmjvt4wtXDrDtsPJ2srQnWOXTlkrLDY67WEXA/i6C
+         UOzGbNvIObhOJ9c7J2LbD8iOypJBzVM2nj0wckL1yAdeAHqXA/vv9/+JmOQbSJrU7DsX
+         v94G0y7obQLdoQn2Vcs0pXd1ANzGTKxEmAgxfnD2aEC5EU82dTFY3AljcRJHG70Uu3FH
+         5A/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zUYNHfjMNsJRyZJGjcbcerI76uJyF4Rnzq4Si4Zxp14=;
-        b=QjFx7hUk2oNnAaNdEBi4gfvb/Ifwt3hXDNwkjQnR+k51pYcVnfpDW6kw3xWiLqWbc+
-         vv+rsvELDqLxOvM4BsVM0cHLqHmG/3MZttC2ro8rLd2FeSyFgtnbpH9SdJAOzQR5MaBp
-         INX3fhO54B4MwkkAa7TUhgDkocGy2QqFOkKRuaSnKMsFpSmivXu1Oo9T77moFB+ECKj6
-         De1miF0c93bq5kU9GPUbAQwHAnHeJNxByKltwIMo7+lp/QossmZCIiAhViwz0cjgGXpA
-         b01XHnnvWKbLhV9mf8PB378bBu7yqYtVjXnFTeeH4JM6/denqoHrVb/VMr2f80EMSVuk
-         cEfQ==
-X-Gm-Message-State: AOAM531BcA6lJwV4f3pZmjWshi1+RY7nSHWZWfG3SoPunt6sFLcczRmH
-        UiUJxbBkeHVnzeZN6OUUy507aNFcOFM=
-X-Google-Smtp-Source: ABdhPJzus4t4AB6Mp2jif9ZnTuBPRR8XdnBDKo5TPlQ9aqbOPONgXYGWyMlLSMwD/kufaaVzLVaZYw==
-X-Received: by 2002:a17:906:63d2:: with SMTP id u18mr48831243ejk.186.1620994721850;
-        Fri, 14 May 2021 05:18:41 -0700 (PDT)
+        bh=BnoEnZS3w88xtGosGlgdepOl60qxJWhr2OKhUZWO20Y=;
+        b=PDjP2YOHlsuSL/ski81VryIuWOnsQTge26ezvuVb12A2cyIBfrCd60tCz1OnZaP98L
+         ApBCuqQgZzg/sPjj8aNl3UX4Kx5TQdIXc243p7ZtIyhp3VJadxRwB50bO3TV9M0R5cre
+         pSS+ZX1leSvhilhVfpO+O6LJnl4QX+oVAOH5sh0cvinKwRw7WS0VCzy2YqIM/dexw0xf
+         3NwftjpFNEeJcNYCXX3VFFYwBKFcHe5fP22p/QOfRZhFONJAwYQQnDB6Q9Eggb50Ve4q
+         8QUUWI+neJ2affffj8rhFeQ5mtS2HLHbV92pWrhCy45hR0vh8qUp5UC1Z91B2b/LywzY
+         +9dw==
+X-Gm-Message-State: AOAM5305Q8ohsOYl5ZMifF1qdyDEbc93NveNjlELxcfcoPmkH0W/NaaA
+        wVW4fo010MKwumuYuALYcK1m/XAgE2U=
+X-Google-Smtp-Source: ABdhPJwItGzKGr5yw1E0GILrfr7mp/Yh/4C8CeTtieZ5iWsQuijRcjIGB33wlUlmFpnb6IkTqB+z+A==
+X-Received: by 2002:a17:907:248c:: with SMTP id zg12mr1176418ejb.268.1620994722645;
+        Fri, 14 May 2021 05:18:42 -0700 (PDT)
 Received: from localhost.localdomain ([84.40.73.176])
         by smtp.gmail.com with ESMTPSA id cr21sm3435157ejc.2.2021.05.14.05.18.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 05:18:41 -0700 (PDT)
+        Fri, 14 May 2021 05:18:42 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 6/7] kernel-shark: Check if "trace_seq" was destroyed before using it
-Date:   Fri, 14 May 2021 15:18:25 +0300
-Message-Id: <20210514121826.161749-7-y.karadz@gmail.com>
+Subject: [PATCH 7/7] kernel-shark: Quiet the warning printing from libtraceevent
+Date:   Fri, 14 May 2021 15:18:26 +0300
+Message-Id: <20210514121826.161749-8-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210514121826.161749-1-y.karadz@gmail.com>
 References: <20210514121826.161749-1-y.karadz@gmail.com>
@@ -73,42 +73,33 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When closing a "tep" data stream we destroy the "trace_seq" object.
-However, trace_seq_destroy() sets the buffer to "TRACE_SEQ_POISON"
-which is different from NULL.
-
-It is unfortunate that TRACE_SEQ_POISON is an internal definition
-of libtraceevent, so we have to redefine it here, but this can be
-fixed in the future.
+All those warning messages are not really relevant for the users
+of the GUI.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/libkshark-tepdata.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ src/libkshark-tepdata.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/src/libkshark-tepdata.c b/src/libkshark-tepdata.c
-index bc5babb..4a84141 100644
+index 4a84141..323383f 100644
 --- a/src/libkshark-tepdata.c
 +++ b/src/libkshark-tepdata.c
-@@ -29,11 +29,17 @@
- #include "libkshark-plugin.h"
- #include "libkshark-tepdata.h"
- 
-+/**
-+ * The TEP_SEQ_POISON is to catch the use of
-+ * a trace_seq structure after it was destroyed.
-+ */
-+#define TEP_SEQ_POISON	((void *)0xdeadbeef)
-+
- static __thread struct trace_seq seq;
- 
- static bool init_thread_seq(void)
- {
--	if (!seq.buffer)
-+	if (!seq.buffer || seq.buffer == TEP_SEQ_POISON)
- 		trace_seq_init(&seq);
- 
+@@ -45,6 +45,14 @@ static bool init_thread_seq(void)
  	return seq.buffer != NULL;
+ }
+ 
++//! @cond Doxygen_Suppress
++
++void tep_warning(const char *fmt, ...) {}
++
++void pr_stat(const char *fmt, ...) {}
++
++//! @endcond
++
+ /** Structure for handling all unique attributes of the FTRACE data. */
+ struct tepdata_handle {
+ 	/** Page event used to parse the page. */
 -- 
 2.27.0
 
