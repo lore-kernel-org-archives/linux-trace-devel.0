@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1565BC43462
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 17 May 2021 14:59:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46360C43470
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 17 May 2021 14:59:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E4523610A1
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 17 May 2021 14:59:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 26FFA60BBB
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 17 May 2021 14:59:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240275AbhEQPBI (ORCPT
+        id S241660AbhEQPBJ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 17 May 2021 11:01:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47390 "EHLO
+        Mon, 17 May 2021 11:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240968AbhEQO7H (ORCPT
+        with ESMTP id S241999AbhEQO7J (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 17 May 2021 10:59:07 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A8A3C08E89A
+        Mon, 17 May 2021 10:59:09 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA59C08E89D
         for <linux-trace-devel@vger.kernel.org>; Mon, 17 May 2021 07:21:55 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id u21so9413436ejo.13
+Received: by mail-ej1-x62b.google.com with SMTP id lz27so9455099ejb.11
         for <linux-trace-devel@vger.kernel.org>; Mon, 17 May 2021 07:21:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ULNvnvi4EPBXgjFJ6GGT87XhDpqkwwO0rwMfrOQc7vY=;
-        b=OUejYcEN7taegVIJhAUXqfiC6yABQ2MVKvh1DHYV97PKqTgerKdvAD+24bVGjFXwbR
-         orDyRwPHug+eYFgGd1WgcPM5irExf4eZwZOqzcwlvNg70ZsVleJBJ3tzLD5zAd68ignd
-         Zb54ykMiJKwZDVwUx1gjA0HZOkt/ImgbSpL9v7uFgBxqddcY9vRWLzb4s3aOOvHISAlq
-         dznObutAAsCqgtSNytPBgOtXnGXwOv79g7EOasvSRs4FPJ9doNhn3wEZtnh3Xj5m9iTc
-         G04F3jF86PwtudKZAO+9HWXlf6FP2u2WFzDiyhikBDtN1dHh24TdOPJkpumpmHSiz+BC
-         6nYw==
+        bh=rUP8dy+x6VbSfLOd5kMRkaXxDNtZoou4qX0mjGI5Yyg=;
+        b=KoEekqleQnWxxEiDyNQvC+sa14FfBUTtrwQC82umOfkE7fS+g4REsxzbHBv/LgMgZW
+         lPR7VQB1VF0BeJo3aG+ZStEHfEf0YGB9xLqKJdeAHGqh34Yo/DfzmRRpiHYT8f9yKnUl
+         IJNuS7dy5d7y8omU9IxvzAsd4YaZIkvc1+WWVD13uOpZh1BMsW5o99SiAYjxuCHw3/4/
+         VV64U74e7wds9/RtiGqKf0hU9Nu81Hynn8tcF5WSKQUPpDbJyLrkARpqD3CUmSjlBAr/
+         2+q0nLGE/Q6xV31P+X87GdlchYvc/UHL66SovrzP2IBlhahyfBDKXeIogB7ymGsDcjjq
+         4RNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ULNvnvi4EPBXgjFJ6GGT87XhDpqkwwO0rwMfrOQc7vY=;
-        b=Evm0vzwwsXI+8qCv/wNIuLQfJil397k7tBhQWI6GvnsSx43hgHNQ+t4AL8o7UQszjS
-         ar/MVQ+IZXj6UpI3b3r/hFbuNOnd2qquxlsGXszWFhn7a3IOFVPdT5UPYeQfZyqOmH/d
-         NQGVIBwvQ1RiVbr+xtYxjJ6ratWnQh2+UHOd7gJJ8rP43690lb9vf/Xl2QvSo4gkFbl+
-         aRCwBfwqVlEmvNZQQLcUEXhtnfDSnKybbWKohLbXmyq9p9ZDgYcXSOdKQwFdYI3/xsvH
-         YI17s+siUHKGjbGou+kxInXR9S0brmNHpCZOrZJhItPdDv4trU2kfDUyN09GWLTpl7oE
-         WlFA==
-X-Gm-Message-State: AOAM531ByYYwwcjgLCgLkY91ufu4FqrwDB0Bb5ak0qSTHIaBpQq3Au1Q
-        DVmwxSGQMPIaSgIqafQLSOupoF6jdjI=
-X-Google-Smtp-Source: ABdhPJw44bgDBGqd9WUBWz/MPdGYQhkgGYM+nc8OvdgHRQufA4D8leqqx6fjkEH8z1JPNkp+FwwCVQ==
-X-Received: by 2002:a17:907:3f16:: with SMTP id hq22mr190760ejc.20.1621261313902;
-        Mon, 17 May 2021 07:21:53 -0700 (PDT)
+        bh=rUP8dy+x6VbSfLOd5kMRkaXxDNtZoou4qX0mjGI5Yyg=;
+        b=jJjsrBwx9xeMxXObx8sei3drDtnhJNywFy1tVi7B9AhFDzEDbSRmFwy+8gatifRfRv
+         sgCYoa3bwPlz4MLMYOwfUvsQO9MI/FTrLVNZ8qsct+qWzyrFXBKilI2lKIo09yNcBcq2
+         empBGpoDdY+cJ/3sIAgh8Hfyfa69NLsCtjaEkVl+QM5p4cuo8yKaP9EHft+WYVyHr/JM
+         aVWX5oPTUPtsySpp6wMDmJvoRGGuqnuc71X3eGnGiddy4l1M8ubXRwiSqvkUlEOrwPXj
+         KwAjeIMD6bgJssm6TMNjNInThgvp8Fk1VP4aZRc3YSYSNksdNqZ5wWPJcNebm3fTNo2a
+         ZM3A==
+X-Gm-Message-State: AOAM5320E9jbGlv3kV/JuYjKPxC/JjeGiFWVQ2IKqlvugspwBlKI0IUq
+        jucv0ND9jlrTt2qqvCwzIAYghqo8MMs=
+X-Google-Smtp-Source: ABdhPJy5j15qU8bnT4ZiO7M1ASDGW0XN0zpestWZXg+iLBBRPNgaROjJ5027zJCq3xJ40JvQF45PBg==
+X-Received: by 2002:a17:906:e0d5:: with SMTP id gl21mr157052ejb.93.1621261314570;
+        Mon, 17 May 2021 07:21:54 -0700 (PDT)
 Received: from localhost.localdomain ([84.40.73.151])
         by smtp.gmail.com with ESMTPSA id t2sm8484849edd.58.2021.05.17.07.21.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 07:21:53 -0700 (PDT)
+        Mon, 17 May 2021 07:21:54 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 6/7] kernel-shark: Fix the checking if "trace_seq" was destroyed
-Date:   Mon, 17 May 2021 17:21:39 +0300
-Message-Id: <20210517142140.286153-7-y.karadz@gmail.com>
+Subject: [PATCH v2 7/7] kernel-shark: No slash at the end of KS_PLUGIN_INSTALL_PREFIX
+Date:   Mon, 17 May 2021 17:21:40 +0300
+Message-Id: <20210517142140.286153-8-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210517142140.286153-1-y.karadz@gmail.com>
 References: <20210517142140.286153-1-y.karadz@gmail.com>
@@ -73,35 +73,26 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When closing a "tep" data stream we destroy the "trace_seq" object.
-However, trace_seq_destroy() sets the buffer to "TRACE_SEQ_POISON"
-which is different from NULL.
-
-Because TRACE_SEQ_POISON is an internal definition of libtraceevent,
-we have to set the buffer to NULL in order to indicate that it was
-destroyed.
+This trailing slash is redundant.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/libkshark-tepdata.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/libkshark-tepdata.c b/src/libkshark-tepdata.c
-index bc5babb..acc554b 100644
---- a/src/libkshark-tepdata.c
-+++ b/src/libkshark-tepdata.c
-@@ -1615,8 +1615,10 @@ int kshark_tep_close_interface(struct kshark_data_stream *stream)
- 	if (!tep_handle)
- 		return -EFAULT;
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 94023a8..cef6f05 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -111,7 +111,7 @@ if (NOT CMAKE_CXX_FLAGS_PACKAGE)
+     set(CMAKE_CXX_FLAGS_PACKAGE "-O3")
+ endif (NOT CMAKE_CXX_FLAGS_PACKAGE)
  
--	if (seq.buffer)
-+	if (seq.buffer) {
- 		trace_seq_destroy(&seq);
-+		seq.buffer = NULL;
-+	}
+-set(KS_PLUGIN_INSTALL_PREFIX ${_LIBDIR}/${KS_APP_NAME}/plugins/)
++set(KS_PLUGIN_INSTALL_PREFIX ${_LIBDIR}/${KS_APP_NAME}/plugins)
  
- 	if (tep_handle->advanced_event_filter) {
- 		tep_filter_reset(tep_handle->advanced_event_filter);
+ set(KS_ICON        KS_icon_shark.svg)
+ set(KS_ICON_FIN    KS_icon_fin.svg)
 -- 
 2.27.0
 
