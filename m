@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D096C433B4
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 May 2021 03:20:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B6CDC433ED
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 May 2021 03:20:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 526E561184
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 May 2021 03:20:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4E8D3611AB
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 May 2021 03:20:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbhETDV3 (ORCPT
+        id S230185AbhETDVb (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 19 May 2021 23:21:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46432 "EHLO
+        Wed, 19 May 2021 23:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229978AbhETDV2 (ORCPT
+        with ESMTP id S230113AbhETDVb (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 19 May 2021 23:21:28 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED30C06175F
-        for <linux-trace-devel@vger.kernel.org>; Wed, 19 May 2021 20:20:07 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id a25so17633660edr.12
-        for <linux-trace-devel@vger.kernel.org>; Wed, 19 May 2021 20:20:07 -0700 (PDT)
+        Wed, 19 May 2021 23:21:31 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62ADAC061574
+        for <linux-trace-devel@vger.kernel.org>; Wed, 19 May 2021 20:20:09 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id l1so22954518ejb.6
+        for <linux-trace-devel@vger.kernel.org>; Wed, 19 May 2021 20:20:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=n4BM1BOF4S5lHeHaOEJIuOPiyiWwnSuhagC/nfywwWE=;
-        b=onsieDlzy5j6PxXiH2lZb1B2H1RArntGf67hAyzkO/Lv7ZnO76IXviDvcSM0ihurpO
-         wEo+4oIiWqur1KSlXfC2YEYSbEbdaYsc0pTeRNPxkGz8TNp5B5+m6qI8S1OP1eeKnIRe
-         a3cA94xcjRc864FcM+erZAE02MPw545G8Mg/ALG+ZmRnCf5JBJWS23LrZQdxINf2UtcL
-         vl1/9M/nGT4ndXhPpZBnTtjzFjHMEoDct37pI36PSklyFy1NQd8sSdbHvJljwZZX+Uc3
-         bER5SmxLLvDsKE3Cf72T3uy6pbtj7Y1rjkWj2+xy7couznywuktYKABAGfIU6DVLuctr
-         iupA==
+        bh=9HuGT59fpnbaV/Ei2fhVY2rS3y5IDn6cNc88pcWTIj8=;
+        b=bTgUXz3t1IavBA1SuDARQhcVJeV9uR/FOsYIAVxPKQ18qKAlfH8r1AS11wMI07cLWA
+         nu2BjaMHS7A2hC34HhxFXHkwi+/HwfZnN0Can98dTXEFWqdY+8OTMwnpJScyM59Ebvs4
+         a7LcPf0u3sXq2sWKnG3ox9fWiMeCVmTugSji+h2EqHMtj+pnPG5aosePljjQC0FD/u62
+         hvLrNa9xiDZphN28sJXo6NhX0bONhzuuZojvaBHKV5J42S1UEwJOWq+LpV3LC5457dEw
+         qRzjbgghY0g+JYd9E0wuWKcfLzsNzmCPpHFKYslk4+fMUTiX5L5wSdc7oWnqOWKr6SGl
+         N5xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=n4BM1BOF4S5lHeHaOEJIuOPiyiWwnSuhagC/nfywwWE=;
-        b=UiwdjOygLUFO9Z427q0eGtRTSVYtyh/K+7D7h6BEALgeWzZdIFAU0+PW8EhiG3zLpT
-         A6Ja3l0olvdZMI1eQFdZXcMZf43DbYKUKxRyJ3ACFlpohi7dYYvTmYiFu0VtUxTOcawA
-         /QjfIhU3dRvPds9bM/0m9tXXf49657m3Wh4WPb4IV97cSeRtKlCKAu3eoewFz29z/Wo1
-         UKFwAyzTlSJWAC3CcDUP3htQoWCFg1+u36Smuo18tQe7pTqRp8CQTdQEnGdblUdYwoQY
-         +DsGMXkj0OyLTC78nJJEfqMxKfk+4YM+pDXhZd1mcpUn+C6m93NDCkmEwpwipT7yMM7g
-         JcsQ==
-X-Gm-Message-State: AOAM532YfxdUggofU/mo4UdEJnhF7BYZnX4BOllIsxxMqneXhhaIyzCT
-        QFOyDTKD3j9r5zd33xzLJ+P4RYYuOQ/r1Q==
-X-Google-Smtp-Source: ABdhPJy05fb2kAuCHmkvX+0JBEEvFdQBX2bIH3nvF/a4/yJpapYp5YOLO72o87oKtIQX+6veTPKNJg==
-X-Received: by 2002:aa7:db48:: with SMTP id n8mr2583170edt.11.1621480805758;
-        Wed, 19 May 2021 20:20:05 -0700 (PDT)
+        bh=9HuGT59fpnbaV/Ei2fhVY2rS3y5IDn6cNc88pcWTIj8=;
+        b=kxUCAimYLlYwYfBmBvX/X7BzEVWFUnOiY3CYNZxdoee/5/XoUCNDbiHiC/LX/Kqh4+
+         ZtOhssum4TW6nkn3hzrkxNHYmzWHzIi58k2B20YDkEsb3RrGp4Ofoe8mHxTG1bD92vxF
+         7BYNOpf+UObDJMHdErosvdavZn1miQxFpCe+ORj2wODsrGlL8JGOl/gzQaBEot3pat9F
+         9i8ty5URIRgZDhV7eYODdcCUjROySsRsxvUu958J5MyPavYnzykClVhvYocRqU96VtNs
+         iHfKM3FhPsh4Jqu8kpwdRjzRkFgK2zO9BfYru6j6ItsGnRHIIPhKsfO0SOZ+VT+Cju7F
+         ML1g==
+X-Gm-Message-State: AOAM530x3jSwOCwJJCvfEs5n/2DqQuvoxRyQWX2qzD2v4PpWPzdnaS8R
+        Wq33WByben2qSHTITrTYO3Y=
+X-Google-Smtp-Source: ABdhPJxkrl40oqlmmVnoodyrkBJ0yTfuZEmndw6sgYwnTkQyICESdosHKL3Gha0cR954XSTMa7H6Xg==
+X-Received: by 2002:a17:906:2bd0:: with SMTP id n16mr2530788ejg.110.1621480808073;
+        Wed, 19 May 2021 20:20:08 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id f5sm763280eds.55.2021.05.19.20.20.04
+        by smtp.gmail.com with ESMTPSA id f5sm763280eds.55.2021.05.19.20.20.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 20:20:04 -0700 (PDT)
+        Wed, 19 May 2021 20:20:07 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 03/29] trace-cmd: Check if file version is supported
-Date:   Thu, 20 May 2021 06:19:33 +0300
-Message-Id: <20210520031959.346165-4-tz.stoyanov@gmail.com>
+Subject: [PATCH v4 05/29] trace-cmd library: Select the file version when writing trace file
+Date:   Thu, 20 May 2021 06:19:35 +0300
+Message-Id: <20210520031959.346165-6-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520031959.346165-1-tz.stoyanov@gmail.com>
 References: <20210520031959.346165-1-tz.stoyanov@gmail.com>
@@ -73,118 +73,73 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When reading a trace file, version of the file is ignored. This could
-case problems when bumping the version number because of changes in
-in the structure of the file. The old code should detect unsupported
-file version and should not try to read it.
-A new trace-cmd library API is added to check if version is supported:
- tracecmd_is_version_supported()
-Checks are added in the code to ensure not trying to read trace file
-from unsupported version.
+When a new output handler to trace file is allocated, select the proper
+file version. If this output handler is based on an existing input trace
+file handler, inherit the trace file version.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/include/private/trace-cmd-private.h |  2 ++
- lib/trace-cmd/trace-input.c                       | 10 ++++++++++
- lib/trace-cmd/trace-util.c                        |  7 +++++++
- tracecmd/trace-dump.c                             |  7 +++++++
- 4 files changed, 26 insertions(+)
+ lib/trace-cmd/trace-output.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index ecd172ca..136057b4 100644
---- a/lib/trace-cmd/include/private/trace-cmd-private.h
-+++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -42,6 +42,8 @@ void tracecmd_record_ref(struct tep_record *record);
- void tracecmd_set_debug(bool set_debug);
- bool tracecmd_get_debug(void);
- 
-+bool tracecmd_is_version_supported(unsigned int version);
-+
- struct tracecmd_output;
- struct tracecmd_recorder;
- struct hook_list;
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 5ee69b14..97ad0a5d 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -131,6 +131,7 @@ struct tracecmd_input {
- 	bool			use_trace_clock;
- 	bool			read_page;
- 	bool			use_pipe;
-+	int			file_version;
- 	struct cpu_data 	*cpu_data;
- 	long long		ts_offset;
- 	struct tsc2nsec		tsc_calc;
-@@ -3269,6 +3270,7 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
- 	unsigned int page_size;
- 	char *version;
- 	char buf[BUFSIZ];
-+	unsigned long ver;
- 
- 	handle = malloc(sizeof(*handle));
- 	if (!handle)
-@@ -3293,6 +3295,14 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
- 	if (!version)
- 		goto failed_read;
- 	tracecmd_info("version = %s\n", version);
-+	ver = strtol(version, NULL, 10);
-+	if (!ver && errno)
-+		goto failed_read;
-+	if (!tracecmd_is_version_supported(ver)) {
-+		tracecmd_warning("Unsupported file version %lu", ver);
-+		goto failed_read;
-+	}
-+	handle->file_version = ver;
- 	free(version);
- 
- 	if (do_read_check(handle, buf, 1))
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index b65f9dec..b0c98c72 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -617,3 +617,10 @@ unsigned long long tracecmd_generate_traceid(void)
- 	free(str);
- 	return hash;
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index c0aa58cf..3c30edc1 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -57,6 +57,7 @@ struct tracecmd_output {
+ 	int			nr_options;
+ 	bool			quiet;
+ 	unsigned long		file_state;
++	unsigned long		file_version;
+ 	struct list_head	options;
+ 	struct tracecmd_msg_handle *msg_handle;
+ 	char			*trace_clock;
+@@ -907,6 +908,17 @@ out_free:
+ 	return ret;
  }
-+
-+bool tracecmd_is_version_supported(unsigned int version)
+ 
++static int select_file_version(struct tracecmd_output *handle,
++				struct tracecmd_input *ihandle)
 +{
-+	if (version <= FILE_VERSION)
-+		return true;
-+	return false;
++	if (ihandle)
++		handle->file_version = tracecmd_get_file_version(ihandle);
++	else
++		handle->file_version = FILE_VERSION;
++
++	return 0;
 +}
-diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
-index 98425b98..03cc82b4 100644
---- a/tracecmd/trace-dump.c
-+++ b/tracecmd/trace-dump.c
-@@ -10,6 +10,7 @@
- #include <getopt.h>
- #include <sys/stat.h>
- #include <fcntl.h>
-+#include <errno.h>
++
+ static struct tracecmd_output *
+ create_file_fd(int fd, struct tracecmd_input *ihandle,
+ 	       const char *tracing_dir,
+@@ -933,6 +945,9 @@ create_file_fd(int fd, struct tracecmd_input *ihandle,
  
- #include "trace-local.h"
+ 	handle->msg_handle = msg_handle;
  
-@@ -145,6 +146,7 @@ static void dump_initial_format(int fd)
- 	char magic[] = TRACECMD_MAGIC;
- 	char buf[DUMP_SIZE];
- 	int val4;
-+	unsigned long ver;
++	if (select_file_version(handle, ihandle))
++		goto out_free;
++
+ 	list_head_init(&handle->options);
  
- 	do_print(SUMMARY, "\t[Initial format]\n");
+ 	buf[0] = 23;
+@@ -943,7 +958,8 @@ create_file_fd(int fd, struct tracecmd_input *ihandle,
+ 	if (do_write_check(handle, buf, 10))
+ 		goto out_free;
  
-@@ -166,6 +168,11 @@ static void dump_initial_format(int fd)
- 		die("no version string");
+-	if (do_write_check(handle, FILE_VERSION_STRING, strlen(FILE_VERSION_STRING) + 1))
++	sprintf(buf, "%lu", handle->file_version);
++	if (do_write_check(handle, buf, strlen(buf) + 1))
+ 		goto out_free;
  
- 	do_print(SUMMARY, "\t\t%s\t[Version]\n", buf);
-+	ver = strtol(buf, NULL, 10);
-+	if (!ver && errno)
-+		die("Invalid file version string %s", buf);
-+	if (!tracecmd_is_version_supported(ver))
-+		die("Unsupported file version %lu", ver);
+ 	/* get endian and page size */
+@@ -1562,6 +1578,7 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
+ 	handle->pevent = tracecmd_get_tep(ihandle);
+ 	tep_ref(handle->pevent);
+ 	handle->page_size = tracecmd_page_size(ihandle);
++	handle->file_version = tracecmd_get_file_version(ihandle);
+ 	list_head_init(&handle->options);
  
- 	/* get file endianness*/
- 	if (read_file_bytes(fd, buf, 1))
+ 	tracecmd_close(ihandle);
 -- 
 2.31.1
 
