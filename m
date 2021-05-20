@@ -2,423 +2,177 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 805A4C43461
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 19 May 2021 12:34:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FDE6C433ED
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 May 2021 03:20:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 650E86124C
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 19 May 2021 12:34:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7DA4961184
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 May 2021 03:20:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353232AbhESMfY (ORCPT
+        id S230102AbhETDVZ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 19 May 2021 08:35:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43086 "EHLO
+        Wed, 19 May 2021 23:21:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346433AbhESMfY (ORCPT
+        with ESMTP id S229598AbhETDVZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 19 May 2021 08:35:24 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941D7C06175F
-        for <linux-trace-devel@vger.kernel.org>; Wed, 19 May 2021 05:34:04 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id lz27so19686631ejb.11
-        for <linux-trace-devel@vger.kernel.org>; Wed, 19 May 2021 05:34:04 -0700 (PDT)
+        Wed, 19 May 2021 23:21:25 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BC1C061574
+        for <linux-trace-devel@vger.kernel.org>; Wed, 19 May 2021 20:20:03 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id l1so22954311ejb.6
+        for <linux-trace-devel@vger.kernel.org>; Wed, 19 May 2021 20:20:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mQ0RAXpwZ7NyqEJbGlu3nX8ruMAPaYr/7EZxGIoxly8=;
-        b=PEIOOuR5/cdo/dYTtu+wmFDC2l/oUk04apvIaOCJ65YcfrpDXpxOlb7evV3+3AToIl
-         bUtLLyKxCPOKIEZSHnVyJkDX0oga/rjosnqUuSCdGXvc8WqnzPs679f+0jHFXlUvLeZD
-         EfyNheDT7tJfdu6icusfXN3YUIf9FPPbPlodMteczGKoJKggzbyg+BMuL9kI1LfQ2Q7x
-         fCDyOe0xH+hq0r9KimjXRKiX7thL4/Mn5i8lXKRiYeh00ouNKfzSbo+RA9LJCVNqiF+4
-         iux7MASls67W0UtbWmiNlByf+mQ8NEffGJoot5N4heSZ862FGdCn7G/cIlAqWi2tHBPG
-         eE/A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IO6bdzXRIseBH/sb0GDiGn7Vo9nvWcrPwq7BmG9xH2U=;
+        b=op7QheF/eQP96N6ut1X0J6CEAbhwX2Aap/RXCRrutcSbryUwxgiuIv2NjuzgfAqlhQ
+         S9b5TpVijf0RghikbIMw7gZDsp5KQLaIlBrnTUOqpInCJ0yv9VwEy91bIOHIvijzxg12
+         yWrz/19hSf6XuTaeJwr6Fh3XFHecLcMlRezUHQsbUpheQGxMEK3l97b3dPFAvGs3O1jj
+         MICVUGceZ3kmVDhJanPIQIlfisUClL3rdDbQvW/dKDuUZd0ePGAYHK1ejT5ZYbRpOBhn
+         Wgl1m/AyO5wPErBo6o1qdyboAK2SZMGfwsb3pRLhuEg+8xP5/nUwUv7cYVvgRwmz0xer
+         92XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=mQ0RAXpwZ7NyqEJbGlu3nX8ruMAPaYr/7EZxGIoxly8=;
-        b=d1KUYbV8l1qE1bxenduseKP3lm/HLq/KWum3m/RIet/KW16NqV2V4gqYURN8n2g9sf
-         hJtgFkWKefRErg+x1YxF31r8QMZb/+ozV10qMZ1yDHMWc053gKXK3xxtNtQ50myP4gPl
-         ZNJegjOj5TfuF3OalNs/Veaq/vKZZk3niJ9dHcO+4h0PCYehL4uFqXpxQCUPgKkCrVPf
-         ZkIZ0RexZ/JaQ7zrrVKz3Zpfur2Fc4CtXrQ4y2ibOo9OKst0al2I7ovnexiamfNdxGu+
-         0cWb65pefp/31EceAPR8CGTrRraF8zsR8n+9ihIPNTpnLLN3FRyNplrpISrUdDauG5sP
-         K+YQ==
-X-Gm-Message-State: AOAM533VP6lGMNGQsXXIAEnK5elnUvInng+C82RJHiHufgp/mlynGPu3
-        coyYZRNfW+dLF0vzw2l0014=
-X-Google-Smtp-Source: ABdhPJyuTdnnAwtAqRxiO7ToXFQ9BjiSPDatEZAinimSoDTq8Ofj9NqtSH52Fiucj9y609z1MfjKaA==
-X-Received: by 2002:a17:907:94c3:: with SMTP id dn3mr12101104ejc.26.1621427643151;
-        Wed, 19 May 2021 05:34:03 -0700 (PDT)
-Received: from [192.168.0.106] ([84.40.73.151])
-        by smtp.gmail.com with ESMTPSA id bm24sm9084754edb.45.2021.05.19.05.34.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 05:34:02 -0700 (PDT)
-Subject: Re: [RFC v2] Simple tool for VMEnters/VMExits matching and trace
- validation
-To:     Stefano De Venuto <stefano.devenuto99@gmail.com>,
-        rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org, dfaggioli@suse.com
-References: <20210501060744.5053-1-stefano.devenuto99@gmail.com>
-From:   Yordan Karadzhov <y.karadz@gmail.com>
-Message-ID: <6cc7402d-f1ac-12b4-6af9-e59880648355@gmail.com>
-Date:   Wed, 19 May 2021 15:34:01 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        bh=IO6bdzXRIseBH/sb0GDiGn7Vo9nvWcrPwq7BmG9xH2U=;
+        b=rFXXsXZsWS3utqRhyIcSQ6mkDJz77ngSkJCmCboAGGEzK8LxZ2ieqSNv32tKWmYTgA
+         UhqiqL0Ai1ZR4a8vtGoQEYLG2NMu8vGJ+4DOShKgbZcpVnanRqmprIhFZ7yDEO1TsDjN
+         dg0HazFLZzyvosuBHeCEXP4TOqTs2PvoFQMsre+YlL+M916SiJVqFGWqPlWWZ8t2U0Ce
+         3AofoUYZ3WmoP/68pJKIBs9tbPJSriyYtac4UNSgCMFRl0tCsltPnqlwz7/U5xc7D43K
+         9I2RnFtBh9AZNVLoZoYBQZ+ca7tnRCdhMwxQ5OG7eulv8nCATdgd6VVKxAVkqjeCHnY1
+         3Khw==
+X-Gm-Message-State: AOAM5319yY2hZUNUan4owQNsnNVSLLNu0aLb0UPnLnvI9N9Ju8NvGONQ
+        xntbqhe3t0ILN54oZecZEcnLQwVJpi9B+A==
+X-Google-Smtp-Source: ABdhPJwzutDJMOyulokg7Anec+AzeCPTWUF4p33pbtoEJ9Ufr+MI5lHPbZlZCE2UiR3SnMJBB1WMWA==
+X-Received: by 2002:a17:906:fc0d:: with SMTP id ov13mr2406528ejb.504.1621480801935;
+        Wed, 19 May 2021 20:20:01 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id f5sm763280eds.55.2021.05.19.20.20.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 20:20:01 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v4 00/29] Add trace file compression
+Date:   Thu, 20 May 2021 06:19:30 +0300
+Message-Id: <20210520031959.346165-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210501060744.5053-1-stefano.devenuto99@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Ciao Stefano,
+A new PoC implementation, adding a compression to trace file.
+A basic infrastructure for compression support is added into the trace-cmd
+library. The zlib is used for compression, but more libraries and algorithms
+can be added. Trace data is commpressed and part of the trace file metadata: 
+ - ftrace events format
+ - format of recorded events
+ - information about the mapping of function addresses to the function names
+ - trace_printk() format strings
+ - information of the mapping a PID to a process name
+ - options
 
-Sorry for the very long delay of my reply!
-My review is below.
+Note: not all trace-cmd commands are tested with these changes. These are
+verified to work with compressed trace files:
+ trace-cmd record
+ trace-cmd report
+ trace-cmd dump
+ trace-cmd agent
+ trace-cmd profile
+ trace-cmd split
 
-On 1.05.21 г. 9:07, Stefano De Venuto wrote:
-> Add a tool in examples/ that scans a merged host + guest trace and
-> search for host events that are inside a vmentry/vmexit block (and
-> vice-versa for guest events ouside the block) and report the found
-> ones.
-> 
-> It can be useful as a starting point for identifying issues of for
-Do you mean "identifying issues or"?
+Todo list, in order to have complete trace file compression:
+ - Add support for more compression libraries.
+ - Add new trace-cmd command to convert trace files from version 6 to
+   version 7 and vise versa.
+ - Test all trace-cmd commands with trace file v7.
+ - Update trace-cmd documentation.
 
-> checking the effectiveness of host/guest traces synchronization, or
-> even for improving the placing of the tracepoints in the kernel.
-> 
-> v2 changes:
->   - Addressed Yordan's comments.
->   - Added a way to not mark as invalid the initial guests event.
->   - Used kshark_read_event_field_int() for the vCPU field recovering.
-> 
-> Signed-off-by: Stefano De Venuto <stefano.devenuto99@gmail.com>
-> ---
+v4 changes:
+ - Tested and fixed profile and split subcommands with compression files.
+ - Bug fixes.
 
-The description of the changes in v2 must go here. This way it is visible in the patch, but it is not going to be part 
-of the commit message once the final version of the patch is applied to the repo.
+v3 changes:
+ - Compress the trace data.
+ - Added documentation to all compression APIs.
+ - A few minor fixes.
+v2 changes:
+ - Refactored compression APIs.
+ - Moved the trace buffers description out of the trace options section.
+ - Added compression of "options" section of the trace file.
+ - Updated "trace-cmd list" to show available compression algorithms.
+ - Tested with host-guest tracing.
+ - Merged with the patchset that bumps the trace file version.
 
->   examples/CMakeLists.txt |   4 +
->   examples/checker.c      | 224 ++++++++++++++++++++++++++++++++++++++++
->   2 files changed, 228 insertions(+)
->   create mode 100644 examples/checker.c
-> 
-> diff --git a/examples/CMakeLists.txt b/examples/CMakeLists.txt
-> index c2f4c01..91badb8 100644
-> --- a/examples/CMakeLists.txt
-> +++ b/examples/CMakeLists.txt
-> @@ -12,6 +12,10 @@ message(STATUS "multibufferload")
->   add_executable(mbload          multibufferload.c)
->   target_link_libraries(mbload   kshark)
->   
-> +message(STATUS "checker")
-> +add_executable(checker          checker.c)
+Tzvetomir Stoyanov (VMware) (29):
+  trace-cmd library: Remove unused private APIs for creating trace files
+  trace-cmd library: Remove unused API tracecmd_update_option
+  trace-cmd: Check if file version is supported
+  trace-cmd library: Add new API to get file version of input handler
+  trace-cmd library: Select the file version when writing trace file
+  trace-cmd: Add APIs for library initialization and free
+  trace-cmd library: Add support for compression algorithms
+  trace-cmd list: Show supported compression algorithms
+  trace-cmd library: Bump the trace file version to 7
+  trace-cmd library: Compress part of the trace file
+  trace-cmd library: Read compressed trace file
+  trace-cmd library: Add new API to get compression of input handler
+  trace-cmd library: Inherit compression algorithm from input file
+  trace-cmd library: Extend the create file APIs to support different
+    compression
+  trace-cmd record: Add new parameter --compression
+  trace-cmd dump: Add support for trace files version 7
+  trace-cmd library: Add support for zlib compression library
+  trace-cmd library: Hide the logic for updating buffer offset
+  trace-cmd: Move buffers description outside of options
+  trace-cmd library: Track the offset in the option section in the trace
+    file
+  trace-cmd library: Add compression of the option section of the trace
+    file
+  trace-cmd library: Refactor the logic for writing trace data in the
+    file
+  trace-cmd library: Add APIs for read and write compressed data in
+    chunks
+  trace-cmd: Compress trace data
+  trace-cmd: Read compressed trace data
+  trace-cmd library: Reuse within the library the function that checks
+    file state.
+  trace-cmd library: New internal API to set file state of output
+    handler
+  trace-cmd library: Make tracecmd_copy_headers() to work with output
+    handler
+  trace-cmd: Do not use trace file compression with streams
 
-The name "checker" has too broad meaning. Try to replace it with
-something that it not very long but in the same time says something
-about the usage of the tool.
+ lib/trace-cmd/Makefile                        |  11 +
+ .../include/private/trace-cmd-private.h       |  79 +-
+ lib/trace-cmd/include/trace-cmd-local.h       |  25 +-
+ lib/trace-cmd/trace-compress-zlib.c           | 172 ++++
+ lib/trace-cmd/trace-compress.c                | 787 ++++++++++++++++++
+ lib/trace-cmd/trace-input.c                   | 711 +++++++++++-----
+ lib/trace-cmd/trace-output.c                  | 738 ++++++++++------
+ lib/trace-cmd/trace-util.c                    |  60 ++
+ tracecmd/trace-cmd.c                          |  11 +-
+ tracecmd/trace-dump.c                         | 162 +++-
+ tracecmd/trace-list.c                         |  26 +
+ tracecmd/trace-listen.c                       |   3 +
+ tracecmd/trace-read.c                         |   8 +
+ tracecmd/trace-record.c                       |  42 +-
+ tracecmd/trace-restore.c                      |   4 +-
+ tracecmd/trace-stream.c                       |   2 +-
+ tracecmd/trace-usage.c                        |   6 +
+ 17 files changed, 2342 insertions(+), 505 deletions(-)
+ create mode 100644 lib/trace-cmd/trace-compress-zlib.c
+ create mode 100644 lib/trace-cmd/trace-compress.c
 
-> +target_link_libraries(checker   kshark)
-> +
->   message(STATUS "datahisto")
->   add_executable(dhisto          datahisto.c)
->   target_link_libraries(dhisto   kshark)
-> diff --git a/examples/checker.c b/examples/checker.c
-> new file mode 100644
-> index 0000000..425de58
-> --- /dev/null
-> +++ b/examples/checker.c
-> @@ -0,0 +1,224 @@
-
-The file must start with a SPDX license identifier. All other
-examples are under GPL-2.0, but Public domain will work as well.
-
-Next in the file you must have a copyright statement with your
-name and your email address. I guess the copyright will go to
-your university or Suse. Discuss this with Dario.
-
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +
-> +#include "libkshark.h"
-> +#include "libkshark-tepdata.h"
-> +
-> +#define KVM_ENTRY "kvm/kvm_entry"
-> +#define KVM_EXIT "kvm/kvm_exit"
-> +
-> +struct custom_stream
-> +{
-> +	struct kshark_data_stream* original_stream;
-> +	int* cpus;
-> +};
-> +
-> +/**
-
-When a comment starts with "/**" Doxygen will take the text of
-this comment and will try to use it for generating documentation.
-Since you don't need to generate documentation for this example,
-just use normal comments (/* .... */.)
-
-> + * Checks if a stream_id represents a guest.
-> + * If so, @host contains the corresponding host stream_id
-> + */
-> +int is_guest(int stream_id,
-> +	     struct kshark_host_guest_map* mapping,
-> +	     int n_mapping, int* host)
-> +{
-> +	for (int i = 0; i < n_mapping; i++) {
-> +		if (mapping[i].guest_id == stream_id) {
-> +			*host = mapping[i].host_id;
-> +			return 1;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * Recover guest stream_id from host VMentry/VMexit event.
-> + * In case of success, @guest_id will contain the guest stream_id.
-> + */
-> +int guest_id_from_host_entry_exit(struct kshark_host_guest_map* mapping,
-> +				  int n_mapping, int* guest_id,
-> +				  struct kshark_entry* entry)
-> +{
-> +	struct kshark_data_stream* stream;
-> +	int pid;
-> +
-> +	stream = kshark_get_stream_from_entry(entry);
-> +	pid = kshark_get_pid(entry);
-> +
-> +	for (int i = 0; i < n_mapping; i++)
-> +		if (mapping[i].host_id == stream->stream_id)
-> +			for (int j = 0; j < mapping[i].vcpu_count; j++)
-> +				if (mapping[i].cpu_pid[j] == pid) {
-> +					*guest_id = mapping[i].guest_id;
-> +					return 1;
-> +				}
-> +
-> +	return 0;
-> +}
-> +
-> +void print_entry(struct kshark_entry* entry)
-> +{
-> +	struct kshark_data_stream* stream;
-> +	char* event_name;
-> +
-> +	stream = kshark_get_stream_from_entry(entry);
-> +	event_name = kshark_get_event_name(entry);
-> +
-> +	printf("      %d: %s-%d, %" PRId64 " [%03d]:%s\t%s\n",
-> +		stream->stream_id,
-> +		kshark_get_task(entry),
-> +		kshark_get_pid(entry),
-> +		entry->ts,
-> +		entry->cpu,
-> +		event_name,
-> +		kshark_get_info(entry));
-> +}
-
-This function is similar to what kshark_dump_entry() is doing.
-
-Is there a reason for not using kshark_dump_entry()?
-
-> +
-> +void free_data(struct kshark_context *kshark_ctx,
-> +	       struct custom_stream** custom_streams,
-> +	       struct kshark_entry** entries, int n_entries,
-> +	       struct kshark_host_guest_map* host_guest_mapping,
-> +	       int n_guest)
-> +{
-> +	struct custom_stream* custom_stream;
-> +
-> +	for (int i = 0; i < kshark_ctx->n_streams; i++) {
-> +		custom_stream = custom_streams[i];
-> +
-> +		free(custom_stream->cpus);
-> +		free(custom_stream);
-> +	}
-> +	free(custom_streams);
-> +
-> +	for (int i = 0; i < n_entries; i++)
-> +		free(entries[i]);
-> +	free(entries);
-> +
-> +	kshark_tracecmd_free_hostguest_map(host_guest_mapping, n_guest);
-> +}
-> +
-> +int main(int argc, char **argv)
-> +{
-> +	struct kshark_host_guest_map* host_guest_mapping;
-> +	struct custom_stream** custom_streams;
-> +	struct custom_stream* custom_stream;
-> +	struct custom_stream* guest_stream;
-> +	struct custom_stream* host_stream;
-> +	struct kshark_data_stream* stream;
-> +	struct kshark_context* kshark_ctx;
-> +	struct kshark_entry** entries;
-> +	struct kshark_entry* current;
-> +	ssize_t n_entries;
-> +	char* event_name;
-> +	int64_t vcpu;
-> +	int guest_id;
-> +	int n_guest;
-> +	int host;
-> +	int v_i;
-> +	int sd;
-> +
-> +	kshark_ctx = NULL;
-> +	if (!kshark_instance(&kshark_ctx))
-> +		return 1;
-> +
-> +	custom_streams = malloc(sizeof(*custom_streams) * (argc-1));
-> +
-> +	for (int i = 1; i < argc; i++) {
-> +		sd = kshark_open(kshark_ctx, argv[i]);
-> +		if (sd < 0) {
-> +			kshark_free(kshark_ctx);
-> +			return 1;
-> +		}
-> +
-> +		kshark_tep_init_all_buffers(kshark_ctx, sd);
-> +
-> +		/**
-> +		 * Creating custom streams in order to keep track if a
-> +		 * pCPU is executing code of a vCPU and, if so, which vCPU.
-> +		 */
-> +		custom_stream = malloc(sizeof(*custom_stream));
-> +		custom_stream->original_stream = kshark_get_data_stream(kshark_ctx, sd);
-> +		custom_stream->cpus = malloc(custom_stream->original_stream->n_cpus * sizeof(int));
-> +		memset(custom_stream->cpus, -1, custom_stream->original_stream->n_cpus * sizeof(int));
-> +
-> +		custom_streams[i-1] = custom_stream;
-> +	}
-> +
-> +	host_guest_mapping = NULL;
-> +	n_guest = kshark_tracecmd_get_hostguest_mapping(&host_guest_mapping);
-> +	if (n_guest < 0) {
-> +		printf("Failed mapping: %d\n", n_guest);
-> +		return 1;
-> +	}
-> +
-> +	entries = NULL;
-> +	n_entries = kshark_load_all_entries(kshark_ctx, &entries);
-> +
-> +	for (int i = 0; i < n_entries; ++i) {
-> +		current = entries[i];
-
-Rename this to "current_entry"
-
-> +
-> +		stream = kshark_get_stream_from_entry(current);
-
-> +		event_name = kshark_get_event_name(current);
-> +
-> +		custom_stream = custom_streams[stream->stream_id];
-
-and this can be "current_stream"
-
-> +
-> +		if (!strcmp(event_name, KVM_ENTRY) || !strcmp(event_name, KVM_EXIT)) {
-> +			if (kshark_read_event_field_int(current, "vcpu_id", &vcpu)) {
-> +				printf("Error on recovering the vCPU field\n");
-> +				return 1;
-> +			}
-> +
-> +			if (!guest_id_from_host_entry_exit(host_guest_mapping, n_guest, &guest_id, current)) {
-> +				printf("Error on recovering guest stream ID\n");
-> +				return 1;
-> +			}
-> +
-> +			/**
-> +			 * Mark the vCPU upcoming events as checkable.
-> +			 * Workaround implemented in order to not mark as invalid initial guests events.
-> +			 * Done in this way since we can't know if we'll find a kvm_exit (consistent state)
-> +			 * or a kvm_entry.
-> +			 */
-> +			guest_stream = custom_streams[guest_id];
-> +			guest_stream->cpus[vcpu] = 1;
-
-I don't understand the reason for this. Is it some kind of initialization
-problem. If it is an initialization, the right place for doing it is
-before you start looping over the data.
-
-> +
-> +			if (!strcmp(event_name, KVM_ENTRY))
-> +				custom_stream->cpus[current->cpu] = vcpu;
-> +			else
-> +				custom_stream->cpus[current->cpu] = -1;
-
-
-You can have above
-#define INSIDE_KVM_WINDOW -1 // Change the name if you don't like it
-
-and here you can have
-				custom_stream->cpus[current->cpu] = INSIDE_KVM_WINDOW;
-
-> +
-> +		} else {
-> +
-> +			/**
-> +			 * If the event comes from a guest, recover the pCPU where the event was executed
-> +			 * and check if it's NOT OUTSIDE a kvm_entry/kvm_exit block.
-> +			 */
-> +			if (is_guest(stream->stream_id, host_guest_mapping, n_guest, &host)) {
-> +				host_stream = custom_streams[host];
-> +
-> +				for (v_i = 0; v_i < host_stream->original_stream->n_cpus; v_i++) {
-> +					if (current->cpu == host_stream->cpus[v_i])
-> +					break;
-> +				}
-> +
-> +				if (v_i == host_stream->original_stream->n_cpus && custom_stream->cpus[current->cpu] != -1)
-
-Avoid having lines longer than 100 characters. Split the ''if" in two lines
-
-                                 if (v_i == host_stream->original_stream->n_cpus &&
-                                     custom_stream->cpus[current->cpu] !=-1)
-
-
-> +					printf("%d G out:\t", i);
-
-This printout is really cryptic. Make it more informative.
-
-> +
-> +			/**
-> +			 * If the event comes from a host, recover the CPU that executed the event
-> +			 * and check if it's NOT INSIDE a kvm_entry/kvm_exit block.
-> +			 */
-> +			} else {
-
-It seems to me that the right place for the comment above is here (inside the "else").
-
-> +				if (custom_stream->cpus[current->cpu] != -1)
-> +					printf("%d H in:\t", i);
-
-This one is cryptic as well.
-
-> +			}
-> +		}
-> +
-> +		print_entry(entries[i]);
-> +	}
-> +
-> +	free_data(kshark_ctx, custom_streams, entries, n_entries, host_guest_mapping, n_guest);
-> +
-> +	kshark_free(kshark_ctx);
-> +}
-> 
-
-Thanks!
-Yordan
+-- 
+2.31.1
 
