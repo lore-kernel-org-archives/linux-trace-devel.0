@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFAC8C433B4
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 May 2021 03:20:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7E2BC433ED
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 May 2021 03:20:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9C080611AE
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 May 2021 03:20:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B94BE61186
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 May 2021 03:20:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbhETDVZ (ORCPT
+        id S230062AbhETDV1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 19 May 2021 23:21:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46422 "EHLO
+        Wed, 19 May 2021 23:21:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230062AbhETDVZ (ORCPT
+        with ESMTP id S229978AbhETDV1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 19 May 2021 23:21:25 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74ED6C06175F
-        for <linux-trace-devel@vger.kernel.org>; Wed, 19 May 2021 20:20:04 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id gb17so4920024ejc.8
-        for <linux-trace-devel@vger.kernel.org>; Wed, 19 May 2021 20:20:04 -0700 (PDT)
+        Wed, 19 May 2021 23:21:27 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D080EC061574
+        for <linux-trace-devel@vger.kernel.org>; Wed, 19 May 2021 20:20:05 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id df21so17683371edb.3
+        for <linux-trace-devel@vger.kernel.org>; Wed, 19 May 2021 20:20:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0C6D0NjdPESwV62T7kxwWiilnywFWC5ZrocmTLNRsC4=;
-        b=cxs4R6o3NU/8XjqhYJlMCtjkJhav2rY69OD+4+Vi5A2aVdFwsjDcBbsaG0ynz157Ig
-         a+i9+Ui11nFh31GqueZawP9Z2IV11K+NxVLnKFK8E1/NQcAvuRkscCXaIPvd+7jKkHaw
-         MlHYNRfTGUEmO8AaTfn/tpL8oaP1WvBZVW7Lpwr28jGZTempABROHtVCOBHfiPnxXqAN
-         qAP4S3Bf7qn96Y3XmqPKx1G955QTBIowIOLAa2xP/O7CA12plyXI5NtRj4CYEvq0FqQW
-         7tv8y6OtgNb0z0seNU1mtgVk0efJ4XNbZAgE5q5khHgw3wIXnfqYs504rMFI3/qgXvFJ
-         Yz7g==
+        bh=dR9cwZyRjBzKaGdEXi13MgximQSnOMDkCL1jWfZl6fY=;
+        b=AO/VJJDHradvS4IpLQcS2qED4FpfbC//OAmUzocsuX3yS50u7CAMD+SouvR/skL3aP
+         hvb8k6t+GmthZsN1LqlNg/bsLnvqepnWZGHo9IY6NxIJSCOjXZcUYrlQiT84V5avt5HW
+         8IQRWU1hY1TUph5CvE1Qx2tir38+Wgi7WFlBnWbwgvDxIOmE7RR2nimxvL/lcyNmmTIQ
+         bxsIY606AsfmU835Rs3hviaw9eKYzw48x8eF6a60YEBJvLamyzZPXp3/UwI5A3tyjQY4
+         O6VShD3rnjm9U3aJ6O3/rxVEW4vNI6ZKhMrdxV705iHeN0qR9J08vNt5UTRHOc7MvWEX
+         aG+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0C6D0NjdPESwV62T7kxwWiilnywFWC5ZrocmTLNRsC4=;
-        b=IbWOEX2a0yVaOWHRpHPKnw4qC5sIlJqq5ZBSbFo1My5MNJWS572SbenDUhuEVe2s8+
-         zlHBCW5lk1nOlqofiI4B3EFvjmdflGRpizyNjWY6dIsmKeg0FShVcwfoZbRcDFSA1nJy
-         SGp6Wx/rvErCqBwaXBydBTDW/2xbEnl1WBcVZGWkUdxxRqQLbIafJDkbN0ykTDKAccA4
-         t/c0bVP+fgqm4BN398jHOrJAyQy4/MFqF5Kt6waou3j2ZyKWufgX5sW5dVONvmWE2Si4
-         aCrbixGlrEoneYvTuKWx9v2Rb9xH30vVIbpY0/Pn5gS1q1iznqN6U/q9xn4W5JCQ6Q9N
-         RszA==
-X-Gm-Message-State: AOAM530jLRF/T96Y+sR3HMM34o2k56R+CVyG7OvVdqG5MzH+yRBxs/AJ
-        7mKFnqQVO0vprzSUREy0ToU=
-X-Google-Smtp-Source: ABdhPJwDADZ4O+2UZLpP9Rjm8lvktLYom+d5s2Rtf7nBf4C4EUorokHnxtRSKpuraMq17FSgI22nXw==
-X-Received: by 2002:a17:906:914d:: with SMTP id y13mr2404741ejw.489.1621480803112;
-        Wed, 19 May 2021 20:20:03 -0700 (PDT)
+        bh=dR9cwZyRjBzKaGdEXi13MgximQSnOMDkCL1jWfZl6fY=;
+        b=TYvarKcUunmqsxeF0E1EOQLYU8oA/xxnuUyINg8pPmRnzWrC/KT0mfDZWuD1c5WCt3
+         xeEg/B0DSq9080t6kDVE60GDzsjJiTn59swsNdxcYcQmc3PHu0PRFiqjTmrbTcGrPMhB
+         TBukKa1z5s/ygR6npdREAeyswQ9/Uf6PKuJt+Ai80I1GqSY97VrR5BG47uXokn/0mK4W
+         b8tHD7JMYTyR0zHhP9abbtObbwg8x5JDf0o8dv2CUeAm5EbtRgTz9XnHN3ieux4lRTnj
+         7s2xT6zH9pInUcnA6wgAGPXmcr5epr4/n8U2raPx9A0BDR1+1YY+bLKR1dO7et5igsyf
+         +dNQ==
+X-Gm-Message-State: AOAM533F+J9w3O897WyItV6Iv1eOu6WcdapEZokFD+sutN9sU41AICIP
+        SmvSiH7v2UPZ8aspKACKAFyskEd04qJAtA==
+X-Google-Smtp-Source: ABdhPJzCcOkQsPjJeApdn5GgQkEpyFIxXGBk6KLbbCpLvjAPvFEVERMUR88YMZCJMcILP6XdTekliA==
+X-Received: by 2002:aa7:de1a:: with SMTP id h26mr2574617edv.240.1621480804411;
+        Wed, 19 May 2021 20:20:04 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id f5sm763280eds.55.2021.05.19.20.20.02
+        by smtp.gmail.com with ESMTPSA id f5sm763280eds.55.2021.05.19.20.20.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 20:20:02 -0700 (PDT)
+        Wed, 19 May 2021 20:20:03 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 01/29] trace-cmd library: Remove unused private APIs for creating trace files
-Date:   Thu, 20 May 2021 06:19:31 +0300
-Message-Id: <20210520031959.346165-2-tz.stoyanov@gmail.com>
+Subject: [PATCH v4 02/29] trace-cmd library: Remove unused API tracecmd_update_option
+Date:   Thu, 20 May 2021 06:19:32 +0300
+Message-Id: <20210520031959.346165-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520031959.346165-1-tz.stoyanov@gmail.com>
 References: <20210520031959.346165-1-tz.stoyanov@gmail.com>
@@ -73,73 +73,81 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Remove these unused private trace-cmd library APIs:
-  tracecmd_create_file()
-  tracecmd_create_file_glob()
+Removed not used trace-cmd library API for updating the options section
+of already written trace file:
+ tracecmd_update_option()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- .../include/private/trace-cmd-private.h       |  6 ----
- lib/trace-cmd/trace-output.c                  | 29 -------------------
- 2 files changed, 35 deletions(-)
+ .../include/private/trace-cmd-private.h       |  3 --
+ lib/trace-cmd/trace-output.c                  | 40 -------------------
+ 2 files changed, 43 deletions(-)
 
 diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 42e739fa..8ec33ea2 100644
+index 8ec33ea2..ecd172ca 100644
 --- a/lib/trace-cmd/include/private/trace-cmd-private.h
 +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -263,12 +263,6 @@ struct tracecmd_option;
- struct tracecmd_msg_handle;
- 
- struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, int cpus);
--struct tracecmd_output *tracecmd_create_file(const char *output_file,
--					     int cpus, char * const *cpu_data_files);
--struct tracecmd_output *
--tracecmd_create_file_glob(const char *output_file,
--			  int cpus, char * const *cpu_data_files,
--			  struct tracecmd_event_list *event_globs);
- struct tracecmd_output *
- tracecmd_create_init_file_glob(const char *output_file,
- 			       struct tracecmd_event_list *list);
+@@ -290,9 +290,6 @@ int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus);
+ int tracecmd_write_cmdlines(struct tracecmd_output *handle);
+ int tracecmd_write_options(struct tracecmd_output *handle);
+ int tracecmd_append_options(struct tracecmd_output *handle);
+-int tracecmd_update_option(struct tracecmd_output *handle,
+-			   struct tracecmd_option *option, int size,
+-			   const void *data);
+ void tracecmd_output_close(struct tracecmd_output *handle);
+ void tracecmd_output_free(struct tracecmd_output *handle);
+ struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle,
 diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index a4a1eecc..9231c319 100644
+index 9231c319..c0aa58cf 100644
 --- a/lib/trace-cmd/trace-output.c
 +++ b/lib/trace-cmd/trace-output.c
-@@ -1614,35 +1614,6 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
- 	return NULL;
+@@ -1229,46 +1229,6 @@ int tracecmd_append_options(struct tracecmd_output *handle)
+ 	return 0;
  }
  
--struct tracecmd_output *
--tracecmd_create_file_glob(const char *output_file,
--			  int cpus, char * const *cpu_data_files,
--			  struct tracecmd_event_list *list)
+-int tracecmd_update_option(struct tracecmd_output *handle,
+-			   struct tracecmd_option *option, int size,
+-			   const void *data)
 -{
--	struct tracecmd_output *handle;
+-	tsize_t offset;
+-	stsize_t ret;
 -
--	handle = create_file(output_file, NULL, NULL, NULL, list);
--	if (!handle)
--		return NULL;
--
--	if (tracecmd_write_cmdlines(handle))
--		return NULL;
--
--	if (tracecmd_append_cpu_data(handle, cpus, cpu_data_files) < 0) {
--		tracecmd_output_close(handle);
--		return NULL;
+-	if (size > option->size) {
+-		tracecmd_warning("Can't update option with more data than allocated");
+-		return -1;
 -	}
 -
--	return handle;
+-	if (handle->file_state < TRACECMD_FILE_OPTIONS) {
+-		/* Hasn't been written yet. Just update current pointer */
+-		option->size = size;
+-		memcpy(option->data, data, size);
+-		return 0;
+-	}
+-
+-	/* Save current offset */
+-	offset = lseek64(handle->fd, 0, SEEK_CUR);
+-
+-	ret = lseek64(handle->fd, option->offset, SEEK_SET);
+-	if (ret == (off64_t)-1) {
+-		tracecmd_warning("could not seek to %lld\n", option->offset);
+-		return -1;
+-	}
+-
+-	if (do_write_check(handle, data, size))
+-		return -1;
+-
+-	ret = lseek64(handle->fd, offset, SEEK_SET);
+-	if (ret == (off64_t)-1) {
+-		tracecmd_warning("could not seek to %lld\n", offset);
+-		return -1;
+-	}
+-
+-	return 0;
 -}
 -
--struct tracecmd_output *tracecmd_create_file(const char *output_file,
--					     int cpus, char * const *cpu_data_files)
--{
--	return tracecmd_create_file_glob(output_file, cpus,
--					 cpu_data_files, &all_event_list);
--}
--
- struct tracecmd_output *tracecmd_create_init_fd(int fd)
- {
- 	return create_file_fd(fd, NULL, NULL, NULL, &all_event_list, NULL);
+ struct tracecmd_option *
+ tracecmd_add_buffer_option(struct tracecmd_output *handle, const char *name,
+ 			   int cpus)
 -- 
 2.31.1
 
