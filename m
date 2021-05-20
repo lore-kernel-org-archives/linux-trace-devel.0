@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7E2BC433ED
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 May 2021 03:20:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A443C43460
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 May 2021 03:20:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B94BE61186
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 May 2021 03:20:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6CB87611AD
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 May 2021 03:20:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230062AbhETDV1 (ORCPT
+        id S229978AbhETDV3 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 19 May 2021 23:21:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
+        Wed, 19 May 2021 23:21:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229978AbhETDV1 (ORCPT
+        with ESMTP id S230113AbhETDV2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 19 May 2021 23:21:27 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D080EC061574
-        for <linux-trace-devel@vger.kernel.org>; Wed, 19 May 2021 20:20:05 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id df21so17683371edb.3
-        for <linux-trace-devel@vger.kernel.org>; Wed, 19 May 2021 20:20:05 -0700 (PDT)
+        Wed, 19 May 2021 23:21:28 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4933EC061574
+        for <linux-trace-devel@vger.kernel.org>; Wed, 19 May 2021 20:20:08 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id c20so22976952ejm.3
+        for <linux-trace-devel@vger.kernel.org>; Wed, 19 May 2021 20:20:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dR9cwZyRjBzKaGdEXi13MgximQSnOMDkCL1jWfZl6fY=;
-        b=AO/VJJDHradvS4IpLQcS2qED4FpfbC//OAmUzocsuX3yS50u7CAMD+SouvR/skL3aP
-         hvb8k6t+GmthZsN1LqlNg/bsLnvqepnWZGHo9IY6NxIJSCOjXZcUYrlQiT84V5avt5HW
-         8IQRWU1hY1TUph5CvE1Qx2tir38+Wgi7WFlBnWbwgvDxIOmE7RR2nimxvL/lcyNmmTIQ
-         bxsIY606AsfmU835Rs3hviaw9eKYzw48x8eF6a60YEBJvLamyzZPXp3/UwI5A3tyjQY4
-         O6VShD3rnjm9U3aJ6O3/rxVEW4vNI6ZKhMrdxV705iHeN0qR9J08vNt5UTRHOc7MvWEX
-         aG+A==
+        bh=dyNKoXfwKbcpwqBj3pYeS8+00BKdpmjvZYvw5dv9nuI=;
+        b=i3Ka+M+hD3NMkC7NvgYzR/tfGc04A/UkOY2F5MF+Qp42kSCndOwjNQROYwO2TawMAo
+         JLZlX5rH3sq02WbPbWSuCds/y3MGqnPLDaVfXoH7YexiSh2AUFnyli1pEnctWA5N2eTI
+         2nN52sVeEMiRLDQtmukRJ8l4kScoUXLxuAQFVWdzC7WpeMkIMbh4N4CKkkUzdJ3FoVJ+
+         SaQRPBl1MZZ3rX3XN6Gc/D4SDVPmc2E+GqWu+ZUgDLzpNgXphkDEnByWoL4Ej5JN4/jg
+         YWtUQ6jc7BnVVGBu1lsksHUnRH/4C8OzhHgOIKiOEA8G24a0DICvrsZqVXAkdyKClll1
+         5QOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dR9cwZyRjBzKaGdEXi13MgximQSnOMDkCL1jWfZl6fY=;
-        b=TYvarKcUunmqsxeF0E1EOQLYU8oA/xxnuUyINg8pPmRnzWrC/KT0mfDZWuD1c5WCt3
-         xeEg/B0DSq9080t6kDVE60GDzsjJiTn59swsNdxcYcQmc3PHu0PRFiqjTmrbTcGrPMhB
-         TBukKa1z5s/ygR6npdREAeyswQ9/Uf6PKuJt+Ai80I1GqSY97VrR5BG47uXokn/0mK4W
-         b8tHD7JMYTyR0zHhP9abbtObbwg8x5JDf0o8dv2CUeAm5EbtRgTz9XnHN3ieux4lRTnj
-         7s2xT6zH9pInUcnA6wgAGPXmcr5epr4/n8U2raPx9A0BDR1+1YY+bLKR1dO7et5igsyf
-         +dNQ==
-X-Gm-Message-State: AOAM533F+J9w3O897WyItV6Iv1eOu6WcdapEZokFD+sutN9sU41AICIP
-        SmvSiH7v2UPZ8aspKACKAFyskEd04qJAtA==
-X-Google-Smtp-Source: ABdhPJzCcOkQsPjJeApdn5GgQkEpyFIxXGBk6KLbbCpLvjAPvFEVERMUR88YMZCJMcILP6XdTekliA==
-X-Received: by 2002:aa7:de1a:: with SMTP id h26mr2574617edv.240.1621480804411;
-        Wed, 19 May 2021 20:20:04 -0700 (PDT)
+        bh=dyNKoXfwKbcpwqBj3pYeS8+00BKdpmjvZYvw5dv9nuI=;
+        b=f3pA57280T+mhemNdGzW7AHzZrM+ZJOxOrrnKi/9YzRMZAk0ncFNSMzDkdSeeS1bwd
+         qXZRZgKR/BBMbBUpgbae7u5K0lCcB71dHHP2Jy2QvRuj7pyg86lU6WTohRmqEMMRYHkt
+         t1uqU1IUonBICzIcTKJIWtakv58JjFfwJiS0X6wZJTqVEwuyqFe6b9OF5aJMNW6nsm+A
+         hCRPPH06Y461N5n6279dE+VjhgVz+MEdODz/bz1KQ1j2kpiyAT989P9rSuwWPCtS4ctr
+         pGDHibWU56ETo7lzmspZZjx+wMHZTXlxiZY68siXBCcselF5O3spjDfMgYeROgQ3Ynx5
+         URTQ==
+X-Gm-Message-State: AOAM53169bjsVOoRDiMZp9EgvBwYZ0ancrXBGqCpl2ja0EH2twlHo5UE
+        ovBrvbXLuguNwbxufYEGtOQ=
+X-Google-Smtp-Source: ABdhPJyKankNcLjPMoVf45I9F1qjhKevX3r1JRIH/dY9AySB+eH5i31nO/GYe3uHV8pw0g74GyZQUQ==
+X-Received: by 2002:a17:907:b09:: with SMTP id h9mr2388094ejl.430.1621480806939;
+        Wed, 19 May 2021 20:20:06 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id f5sm763280eds.55.2021.05.19.20.20.03
+        by smtp.gmail.com with ESMTPSA id f5sm763280eds.55.2021.05.19.20.20.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 20:20:03 -0700 (PDT)
+        Wed, 19 May 2021 20:20:06 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 02/29] trace-cmd library: Remove unused API tracecmd_update_option
-Date:   Thu, 20 May 2021 06:19:32 +0300
-Message-Id: <20210520031959.346165-3-tz.stoyanov@gmail.com>
+Subject: [PATCH v4 04/29] trace-cmd library: Add new API to get file version of input handler
+Date:   Thu, 20 May 2021 06:19:34 +0300
+Message-Id: <20210520031959.346165-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520031959.346165-1-tz.stoyanov@gmail.com>
 References: <20210520031959.346165-1-tz.stoyanov@gmail.com>
@@ -73,81 +73,49 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Removed not used trace-cmd library API for updating the options section
-of already written trace file:
- tracecmd_update_option()
+Added an API to get the version of the trace file, associated with given
+input file handler.
+  tracecmd_get_file_version()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- .../include/private/trace-cmd-private.h       |  3 --
- lib/trace-cmd/trace-output.c                  | 40 -------------------
- 2 files changed, 43 deletions(-)
+ lib/trace-cmd/include/private/trace-cmd-private.h | 2 ++
+ lib/trace-cmd/trace-input.c                       | 9 +++++++++
+ 2 files changed, 11 insertions(+)
 
 diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 8ec33ea2..ecd172ca 100644
+index 136057b4..6a211333 100644
 --- a/lib/trace-cmd/include/private/trace-cmd-private.h
 +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -290,9 +290,6 @@ int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus);
- int tracecmd_write_cmdlines(struct tracecmd_output *handle);
- int tracecmd_write_options(struct tracecmd_output *handle);
- int tracecmd_append_options(struct tracecmd_output *handle);
--int tracecmd_update_option(struct tracecmd_output *handle,
--			   struct tracecmd_option *option, int size,
--			   const void *data);
- void tracecmd_output_close(struct tracecmd_output *handle);
- void tracecmd_output_free(struct tracecmd_output *handle);
- struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle,
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index 9231c319..c0aa58cf 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -1229,46 +1229,6 @@ int tracecmd_append_options(struct tracecmd_output *handle)
- 	return 0;
+@@ -232,6 +232,8 @@ int tracecmd_set_cursor(struct tracecmd_input *handle,
+ unsigned long long
+ tracecmd_get_cursor(struct tracecmd_input *handle, int cpu);
+ 
++unsigned long tracecmd_get_file_version(struct tracecmd_input *handle);
++
+ int tracecmd_ftrace_overrides(struct tracecmd_input *handle, struct tracecmd_ftrace *finfo);
+ bool tracecmd_get_use_trace_clock(struct tracecmd_input *handle);
+ tracecmd_show_data_func
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 97ad0a5d..67e73c4c 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -4046,6 +4046,15 @@ struct tep_handle *tracecmd_get_tep(struct tracecmd_input *handle)
+ 	return handle->pevent;
  }
  
--int tracecmd_update_option(struct tracecmd_output *handle,
--			   struct tracecmd_option *option, int size,
--			   const void *data)
--{
--	tsize_t offset;
--	stsize_t ret;
--
--	if (size > option->size) {
--		tracecmd_warning("Can't update option with more data than allocated");
--		return -1;
--	}
--
--	if (handle->file_state < TRACECMD_FILE_OPTIONS) {
--		/* Hasn't been written yet. Just update current pointer */
--		option->size = size;
--		memcpy(option->data, data, size);
--		return 0;
--	}
--
--	/* Save current offset */
--	offset = lseek64(handle->fd, 0, SEEK_CUR);
--
--	ret = lseek64(handle->fd, option->offset, SEEK_SET);
--	if (ret == (off64_t)-1) {
--		tracecmd_warning("could not seek to %lld\n", option->offset);
--		return -1;
--	}
--
--	if (do_write_check(handle, data, size))
--		return -1;
--
--	ret = lseek64(handle->fd, offset, SEEK_SET);
--	if (ret == (off64_t)-1) {
--		tracecmd_warning("could not seek to %lld\n", offset);
--		return -1;
--	}
--
--	return 0;
--}
--
- struct tracecmd_option *
- tracecmd_add_buffer_option(struct tracecmd_output *handle, const char *name,
- 			   int cpus)
++/**
++ * tracecmd_get_file_version - return the trace.dat file version
++ * @handle: input handle for the trace.dat file
++ */
++unsigned long tracecmd_get_file_version(struct tracecmd_input *handle)
++{
++	return handle->file_version;
++}
++
+ /**
+  * tracecmd_get_use_trace_clock - return use_trace_clock
+  * @handle: input handle for the trace.dat file
 -- 
 2.31.1
 
