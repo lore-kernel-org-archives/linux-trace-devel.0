@@ -7,31 +7,31 @@ X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EE90C48BE6
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Jun 2021 21:24:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1066FC4743F
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Jun 2021 21:29:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5951E6108D
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Jun 2021 21:24:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E6F5061375
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Jun 2021 21:28:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234212AbhFHV0J (ORCPT
+        id S231830AbhFHVaw (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 8 Jun 2021 17:26:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39988 "EHLO mail.kernel.org"
+        Tue, 8 Jun 2021 17:30:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234293AbhFHV0G (ORCPT
+        id S234102AbhFHV3j (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 8 Jun 2021 17:26:06 -0400
+        Tue, 8 Jun 2021 17:29:39 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2AC3960FD8;
-        Tue,  8 Jun 2021 21:24:13 +0000 (UTC)
-Date:   Tue, 8 Jun 2021 17:24:11 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id ADD5660FF0;
+        Tue,  8 Jun 2021 21:27:45 +0000 (UTC)
+Date:   Tue, 8 Jun 2021 17:27:44 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Cc:     Julia Lawall <julia.lawall@inria.fr>
-Subject: [PATCH] libtraceevent: Handle parsing of "(REC)->" case
-Message-ID: <20210608172411.318503bb@gandalf.local.home>
+Subject: [PATCH v2] libtraceevent: Handle parsing of "(REC)->" case
+Message-ID: <20210608172744.796e93b7@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -54,10 +54,20 @@ The parser then failed to parse the "(REC)->" portion, as it expected the
 "->" to appear directly after the "REC". This is not a requirement, and
 the parser should be able to handle such cases.
 
+When this occurred, trace-cmd would error with the following message:
+
+trace-cmd: No such file or directory
+  Error: expected type 4 but read 5
+
 Fixes: 6582b0a ("tools/events: Add files to create libtraceevent.a")
 Reported-by: Julia Lawall <julia.lawall@inria.fr>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
+
+Changes since v1:
+    Update the change log to show the error message, in case
+    it happens again, it can be something to reference.
+
  src/event-parse.c | 27 ++++++++++++++++++++++++---
  1 file changed, 24 insertions(+), 3 deletions(-)
 
