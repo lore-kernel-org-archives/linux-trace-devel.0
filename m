@@ -2,100 +2,117 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF361C47082
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Jun 2021 13:56:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EE90C48BE6
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Jun 2021 21:24:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C7F8D61351
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Jun 2021 13:56:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5951E6108D
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Jun 2021 21:24:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232752AbhFHN6X (ORCPT
+        id S234212AbhFHV0J (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 8 Jun 2021 09:58:23 -0400
-Received: from mail-wm1-f49.google.com ([209.85.128.49]:42644 "EHLO
-        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233017AbhFHN6W (ORCPT
+        Tue, 8 Jun 2021 17:26:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39988 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234293AbhFHV0G (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 8 Jun 2021 09:58:22 -0400
-Received: by mail-wm1-f49.google.com with SMTP id l7-20020a05600c1d07b02901b0e2ebd6deso1934836wms.1
-        for <linux-trace-devel@vger.kernel.org>; Tue, 08 Jun 2021 06:56:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=55oWRdipxyNAdejx6zL6X9rpYX6wUCaJnDfUsVrLRsE=;
-        b=gAE1DyfNcoBi3YsZ2dG/jN3TMkeLmcFPzNEscn7d8zNbW9g5+7CcfpPhO9FkhG92+y
-         aVHCbkNk1+kJalW7xCD7xVM8Ra4ZPBN7awyXlFxzHIH4HhOX3QG3w7Ds0nDbkU9Pa3r5
-         MyMd08H7OqXgLN02Uw5078cXKiJ4rVee7g9+kZ8eHuYJaZxVo6Od7CHfNR9he8GcMJ5D
-         2ESD1g45lQbFI2XZmqUl1qo2jDjI1UZf9kL9w2zrQsYQMSLJC7qQ8Y1mDHiVAfICC0+Q
-         YTWLFBLAh108kDrug4F0hIDeIUOJD2utWXcBO4CYIHad/sH2VBdzdAYKKtSqnImAhTaz
-         0VMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=55oWRdipxyNAdejx6zL6X9rpYX6wUCaJnDfUsVrLRsE=;
-        b=IMBthfYSab7xagROdg3Dr5fYVx7RCjIRwOG5oqpvQC5IiqWHa8Fymwy6eXIIX1QLDV
-         NT9x1UN0z3gDcsFVkDb4eFuSX5Tz8p34/4QKnVnCi3mAo4+1MqfNGHBwgprRgKoJOdMh
-         H+6sJH1WJ410VNBh1uJotYSGpoc4xvwew1LyH/iutskn2CRLMTD+F11eY5TK7AquhJYH
-         2eJTMONyf/VH0KLuCYYWDkWk4hjTzJ8sM+I2Bu+eYjlFH/J1BqxM8wNYp//iEMM4DfFf
-         d2x6rkhXhzKNhScBGqzLOaZdA7p4CHv5j749dIFsudQ39mBebEF2NQHIQc+zSzv1CzfF
-         GV1A==
-X-Gm-Message-State: AOAM531U/62tXGFnka0OG846ZcOHlUlJqbAw5+zLyDdY9SmrsUf44Z97
-        AfnWKllIB7uufJPXLtCBwgQ=
-X-Google-Smtp-Source: ABdhPJw1gUc+9kG4DW11IvaE5qrWtT7lgCk0fa9dMU90usgQnloMrEQfcE/LVWkXQLKNv31DMSE41Q==
-X-Received: by 2002:a05:600c:5122:: with SMTP id o34mr14200388wms.168.1623160516070;
-        Tue, 08 Jun 2021 06:55:16 -0700 (PDT)
-Received: from localhost.localdomain ([84.40.73.164])
-        by smtp.gmail.com with ESMTPSA id w13sm6806973wmi.48.2021.06.08.06.55.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 06:55:15 -0700 (PDT)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 1/4] libtracefs: Fix enable_disable_all() return value
-Date:   Tue,  8 Jun 2021 16:55:00 +0300
-Message-Id: <20210608135503.12135-1-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 8 Jun 2021 17:26:06 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2AC3960FD8;
+        Tue,  8 Jun 2021 21:24:13 +0000 (UTC)
+Date:   Tue, 8 Jun 2021 17:24:11 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc:     Julia Lawall <julia.lawall@inria.fr>
+Subject: [PATCH] libtraceevent: Handle parsing of "(REC)->" case
+Message-ID: <20210608172411.318503bb@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-enable_disable_all() is a static method used internally by the
-tracefs_event_enable/disable() API. In some cases its return
-value gets propagated as a return of the API function but this
-value do not obey the description given in the documentation.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Fixes: fc94d1a (libtracefs: Add tracefs_event_enable/disable() API)
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+If a trace event wraps the special __entry variable to dereference it with
+parenthesis, it shows up in the trace event format file wrapping the
+"(REC)" as well. For example, the "func_repeats" event passed the __entry
+into a helper macro in the TP_printk() portion, and the macro correctly
+wrapped its parameter in parenthesis. This caused the output to show:
+
+ "(((u64)(REC)->top_delta_ts << 32) | (REC)->bottom_delta_ts)"
+
+The parser then failed to parse the "(REC)->" portion, as it expected the
+"->" to appear directly after the "REC". This is not a requirement, and
+the parser should be able to handle such cases.
+
+Fixes: 6582b0a ("tools/events: Add files to create libtraceevent.a")
+Reported-by: Julia Lawall <julia.lawall@inria.fr>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- src/tracefs-events.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ src/event-parse.c | 27 ++++++++++++++++++++++++---
+ 1 file changed, 24 insertions(+), 3 deletions(-)
 
-diff --git a/src/tracefs-events.c b/src/tracefs-events.c
-index 55316c6..8b2d9ef 100644
---- a/src/tracefs-events.c
-+++ b/src/tracefs-events.c
-@@ -822,8 +822,10 @@ static int enable_disable_all(struct tracefs_instance *instance,
- 			      bool enable)
- {
- 	const char *str = enable ? "1" : "0";
-+	int ret;
+diff --git a/src/event-parse.c b/src/event-parse.c
+index 97c1a97..1217491 100644
+--- a/src/event-parse.c
++++ b/src/event-parse.c
+@@ -2311,8 +2311,19 @@ process_entry(struct tep_event *event __maybe_unused, struct tep_print_arg *arg,
+ 	char *field;
+ 	char *token;
  
--	return tracefs_instance_file_write(instance, "events/enable", str);
-+	ret = tracefs_instance_file_write(instance, "events/enable", str);
-+	return ret < 0 ? ret : 0;
+-	if (read_expected(TEP_EVENT_OP, "->") < 0)
+-		goto out_err;
++	type = read_token_item(&token);
++	/*
++	 * Check if REC happens to be surrounded by parenthesis, and
++	 * return if that's the case, as "(REC)->" is valid.
++	 * but return TEP_EVENT_ITEM.
++	 */
++	if (type == TEP_EVENT_DELIM && strcmp(token, ")") == 0) {
++		*tok = token;
++		return TEP_EVENT_ITEM;
++	}
++
++	if (test_type_token(type, token,  TEP_EVENT_OP, "->"))
++		goto out_free;
+ 
+ 	if (read_expect_type(TEP_EVENT_ITEM, &token) < 0)
+ 		goto out_free;
+@@ -2338,7 +2349,6 @@ process_entry(struct tep_event *event __maybe_unused, struct tep_print_arg *arg,
+ 
+  out_free:
+ 	free_token(token);
+- out_err:
+ 	*tok = NULL;
+ 	return TEP_EVENT_ERROR;
  }
+@@ -3033,6 +3043,17 @@ process_paren(struct tep_event *event, struct tep_print_arg *arg, char **tok)
+ 	if (type == TEP_EVENT_ERROR)
+ 		goto out_free;
  
- static int event_enable_disable(struct tracefs_instance *instance,
++	/*
++	 * If REC is surrounded by parenthesis, the process_arg()
++	 * will return TEP_EVENT_ITEM with token == ")". In
++	 * this case, we need to continue processing the item
++	 * and return.
++	 */
++	if (type == TEP_EVENT_ITEM && strcmp(token, ")") == 0) {
++		free_token(token);
++		return process_entry(event, arg, tok);
++	}
++
+ 	if (test_type_token(type, token, TEP_EVENT_DELIM, ")"))
+ 		goto out_free;
+ 
 -- 
-2.27.0
+2.29.2
 
