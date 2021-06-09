@@ -6,35 +6,34 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81990C48BCF
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Jun 2021 17:00:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FB6EC48BCF
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Jun 2021 20:17:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 63C92613C8
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Jun 2021 17:00:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1BCF3613DC
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Jun 2021 20:17:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbhFIRCP (ORCPT
+        id S229517AbhFIUTO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 9 Jun 2021 13:02:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48152 "EHLO mail.kernel.org"
+        Wed, 9 Jun 2021 16:19:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230205AbhFIRCO (ORCPT
+        id S229504AbhFIUTO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 9 Jun 2021 13:02:14 -0400
+        Wed, 9 Jun 2021 16:19:14 -0400
 Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 106B76139A;
-        Wed,  9 Jun 2021 17:00:19 +0000 (UTC)
-Date:   Wed, 9 Jun 2021 13:00:18 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id EEA0D613D4;
+        Wed,  9 Jun 2021 20:17:18 +0000 (UTC)
+Date:   Wed, 9 Jun 2021 16:17:17 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 4/4] libtracefs: Propagate the return value of the
- callback function
-Message-ID: <20210609130018.2dd877ef@oasis.local.home>
-In-Reply-To: <20210608135503.12135-4-y.karadz@gmail.com>
-References: <20210608135503.12135-1-y.karadz@gmail.com>
-        <20210608135503.12135-4-y.karadz@gmail.com>
+Subject: Re: [PATCH] trace-cmd: Add option to poll trace buffers
+Message-ID: <20210609161717.10e259b2@oasis.local.home>
+In-Reply-To: <20210602100542.076a4b4e@oasis.local.home>
+References: <20210602090803.12233-1-nsaenzju@redhat.com>
+        <20210602100542.076a4b4e@oasis.local.home>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -43,117 +42,28 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-[ Sending again, but this time with "Reply-all" to include the mailing list ]
+On Wed, 2 Jun 2021 10:05:42 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-On Tue,  8 Jun 2021 16:55:03 +0300
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
-
-> Currently the return value of the callback function can be used to
-> stop pulling data from the trace buffer, however this return value
-> is lost and the user has no idea if tracefs_iterate_raw_events()
-> terminated because there was no more data or because this was
-> requested from the callback function. If we propagate the return
-> value of the callback, this can be used in cases like the one below:
+> On Wed,  2 Jun 2021 11:08:03 +0200
+> Nicolas Saenz Julienne <nsaenzju@redhat.com> wrote:
 > 
-> int callback(struct tep_event *event, struct tep_record *record,
-> 	     int cpu, void *py_func)
-> {
-> 	....
+> > NOTE: I'm aware that TRACECMD_RECORD_POLL kind of clashes with
+> >       TRACECMD_RECORD_BLOCK. That's why I renamed it. There might be a
+> >       clean way to merge them into a single flag, but it's not clear to
+> >       me why was TRACECMD_RECORD_BLOCK needed in the first place (since
+> >       it only affects splicing).  
 > 
-> 	return (something) ? 0 : 1
-> }
+> Yeah that was poorly named, and was added when streaming was added (not
+> recording to a file, but to simply read from splice). I don't remember
+> exactly all that happened back them, but you are correct, it can
+> probably be better organized.
 > 
-> int main()
-> {
-> 	int ret;
-> 
-> 	....
-> 
-> 	while(ret == 0)
-> 		ret = tracefs_iterate_raw_events(tep, instance,
-> 		                                 NULL, 0,
-> 		                                 callback, NULL);
-> 
-> 	....
-> 
-> Here the user can effectively terminate the pulling the data
-> from inside the callback.
+> Thanks for sending the patch, I'll have a look at it this week.
 
-With this change, the user can't tell if returned -1 due to an error or
-because the callback ended early, (which is not considered an error).
+FYI, I pushed this patch up to the git repo.
 
-The proper way for an application to handle this, is to pass in a
-context structure, and have the callback set a value if it exits early
-or not. I've done this already for needing the same information.
-
-No change to libtracefs is needed. This functionality is already
-available with the current design:
-
-struct my_struct {
-	bool	stopped;
-};
-
-int callback(struct tep_event *event, struct tep_record *record,
-		    int cpu, void *data)
-{
-	struct my_struct *my_data = data;
-
-	[..]
-	if (condition) {
-		my_data->stopped = true;
-		return 1;
-	}
-	return 0;
-}
-
-int main()
-{
-	struct my_struct my_data = { .stopped = false };
-	int ret = 0;
-
-	while (!ret && !my_data.stopped)
-		ret = tracefs_iterate_raw_events(tep, instance, NULL, 0,
-					callback, &my_data);
-}
-
-Now, if you are using this within python, and you want the python
-wrapper to pass data as well, you just need to add that to the struct:
-
-struct my_struct {
-	bool		stopped;
-	func		*python_callback;
-	void		*python_data;
-}
-
-int callback(struct tep_event *event, struct tep_record *record,
-		    int cpu, void *data)
-{
-	struct my_struct *my_data = data;
-	int ret;
-
-	[..]
-	ret = my_data->python_callback(event, record, cpu, data->python_data);
-
-	if (ret) {
-		my_data->stopped = true;
-		return 1;
-	}
-	return 0;
-}
-
-int python_iterator(pthyon_callback, python_data)
-{
-	struct my_struct my_data = { .stopped = false };
-	int ret = 0;
-
-	my_data.python_data = python_data;
-	my_data.python_callback = python_callback;
-
-	while (!ret && !my_data.stopped)
-		ret = tracefs_iterate_raw_events(tep, instance, NULL, 0,
-					callback, &my_data);
-}
-
-So this patch isn't needed.
+Thanks,
 
 -- Steve
+
