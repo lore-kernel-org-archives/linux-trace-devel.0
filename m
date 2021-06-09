@@ -2,39 +2,38 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4767EC48BCF
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Jun 2021 11:07:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 980C9C48BCD
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Jun 2021 13:24:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 24D1C6139A
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Jun 2021 11:07:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7CC94613BC
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Jun 2021 13:24:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232750AbhFILJN (ORCPT
+        id S236369AbhFIN0T (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 9 Jun 2021 07:09:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33076 "EHLO mail.kernel.org"
+        Wed, 9 Jun 2021 09:26:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238062AbhFILJM (ORCPT
+        id S236258AbhFIN0S (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:09:12 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        Wed, 9 Jun 2021 09:26:18 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3171A61364;
-        Wed,  9 Jun 2021 11:07:18 +0000 (UTC)
-Date:   Wed, 9 Jun 2021 07:07:16 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C0FE613B8
+        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Jun 2021 13:24:24 +0000 (UTC)
+Date:   Wed, 9 Jun 2021 09:24:22 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH v2] libtraceevent: Handle parsing of "(REC)->" case
-Message-ID: <20210609070716.5f7d4a4e@gandalf.local.home>
-In-Reply-To: <alpine.DEB.2.22.394.2106090741080.2930@hadrien>
-References: <20210608172744.796e93b7@gandalf.local.home>
-        <alpine.DEB.2.22.394.2106090741080.2930@hadrien>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To:     "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] libtracefs: Do not free filter regex if it was not created
+ in update_filter()
+Message-ID: <20210609092422.65edc8c2@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -42,32 +41,32 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 9 Jun 2021 07:43:08 +0200 (CEST)
-Julia Lawall <julia.lawall@inria.fr> wrote:
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-> > If a trace event wraps the special __entry variable to dereference it with
-> > parenthesis, it shows up in the trace event format file wrapping the
-> > "(REC)" as well. For example, the "func_repeats" event passed the __entry
-> > into a helper macro in the TP_printk() portion, and the macro correctly
-> > wrapped its parameter in parenthesis. This caused the output to show:
-> >
-> >  "(((u64)(REC)->top_delta_ts << 32) | (REC)->bottom_delta_ts)"
-> >
-> > The parser then failed to parse the "(REC)->" portion, as it expected the
-> > "->" to appear directly after the "REC". This is not a requirement, and
-> > the parser should be able to handle such cases.
-> >
-> > When this occurred, trace-cmd would error with the following message:
-> >
-> > trace-cmd: No such file or directory
-> >   Error: expected type 4 but read 5  
-> 
-> For the record, I have tried tracing two programs with Linux v5.13-rc4 or
-> rc5 and both of them had this problem, while they didn't have this problem
-> when traced with the same arguments with earlier Linux versions.  So it
-> may be systematic for Linux v5.13.
+If the filter is NULL and reset is set in update_filter(), the filter
+regex is not created, in which case it must not be freed, as the call to
+regfree() does not handle a case of an uninitialized regex.
 
-The event mentioned in the change log was added in 5.13. But it is a valid
-pattern, and not a bug in the 5.13 kernel.
+Fixes: 8f26581f ("libtracefs: Allow filter be NULL if RESET flag is set")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ src/tracefs-tools.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
--- Steve
+diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
+index 993fb3c..f202a15 100644
+--- a/src/tracefs-tools.c
++++ b/src/tracefs-tools.c
+@@ -816,7 +816,8 @@ static int update_filter(const char *filter_path, int *fd,
+ 	}
+ 
+  out_free:
+-	regfree(&func_filter.re);
++	if (filter)
++		regfree(&func_filter.re);
+ 	free_func_list(func_list);
+  out:
+ 	pthread_mutex_unlock(lock);
+-- 
+2.29.2
+
