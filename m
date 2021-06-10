@@ -8,59 +8,59 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51F8AC47094
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FA11C48BE0
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:36:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3C61E61406
+	by mail.kernel.org (Postfix) with ESMTP id 634CE613E9
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:36:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhFJLh5 (ORCPT
+        id S230265AbhFJLh5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Thu, 10 Jun 2021 07:37:57 -0400
-Received: from mail-wm1-f53.google.com ([209.85.128.53]:44991 "EHLO
-        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbhFJLh5 (ORCPT
+Received: from mail-wm1-f48.google.com ([209.85.128.48]:54863 "EHLO
+        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230238AbhFJLh5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 10 Jun 2021 07:37:57 -0400
-Received: by mail-wm1-f53.google.com with SMTP id m41-20020a05600c3b29b02901b9e5d74f02so3101243wms.3
-        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Jun 2021 04:35:53 -0700 (PDT)
+Received: by mail-wm1-f48.google.com with SMTP id m3so742634wms.4
+        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Jun 2021 04:35:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=O4tw/vtCdoHAkqVILpd8GpKTrQc88oL92rc/FfJiJWk=;
-        b=DEWgAuq7qbCRRGbek9yHsnc8D5UeBUhbqLNpiLYFh7Hd+YTRXpSH84z+zU1AsXjbTk
-         htwtpn/vIdjia2L1J5Hp1jvLhFCx7csa8+Oj4RaOxilrSv6KEJlK4rFC0pAd349tW4bW
-         rspjTS0yATlpB0QXArrXQ17ZVe7PZnn3zCa7P9XOedmPBCrmi+D+Dom//FpJ8Zrik1s7
-         hvHeVRJNaDvFzCYAfTmJ82/hI+avqUX0wDsS78QMKGlZ5PE2gnajw/K3RU3Jzlb6veZH
-         rEy428oYtYFSBvGCX+MbklzNUMbFIOG3cjTBhZMBiL9zcQ1xxPVIRVjDIYKLjtoy/XpQ
-         xMSQ==
+        bh=GoJm7VsZJlhF8Q1T9Z+WwKmc6H4hjRgw29T+P08ERkU=;
+        b=LzoZT11vZH2AMqbdOL0MH/SqbKnA25KkbIU4GhI/h5J+DBNEH82FgUaefukCqFH5uh
+         arDp8DShoC8V3DOzeMnEdGS4sbi0OlIkOYf0q7u7SoJgO/UddeWKKyQkrt17SQhTREQw
+         4UnVG+VpRN5WKWptbf5CIP1wzcxlasO9a3kiw5ES8K3wasta6wDF8asgKilgOrpx2zvK
+         +x7E8ix0+AGIFwVLndombdmkOFLlG2jSMjgsQ20V/jCH4D7n6yX54azfCkEQ9OWWpHEh
+         8KPhMOOPIE+pHoctI3L2OakhEYZ3nSf8tuh7mEck1fz5b8XlSLvUBV6xhxQk/gfh3go7
+         bfUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=O4tw/vtCdoHAkqVILpd8GpKTrQc88oL92rc/FfJiJWk=;
-        b=B+Pw0GvzmQSPe1zyNLnY8mpFnj3eGt3AMbbjES8ROZR2dubLSowkiV1/s8rFMldjUw
-         iM4dbX3nVaf9wipXyy5JgfwQ+qFNLdGTY8RpxmgGlCWL96hgboB2diTQ7YP1ogsnL4mn
-         gwJoi18WYR6lEvvbCFkM1RcGYsDIa/sF7rd7pfzzW1NQEHN7MQT+dvcPvFyx4NJM+yJR
-         ayULpt8JxQMpKcqMAhHwmrPv1P1t3G9PDFtjYGv5m4CGyPIVcA1akpAtZmx1CPDpkyYh
-         NWZ1xlZsKp4bH3b3sc5th0c/xllfWlqDJOWLs8PX1RVqlkpvMheMmxWC9uchk6PHCeBd
-         lHeQ==
-X-Gm-Message-State: AOAM532iQ1PeiwiXxVfytQ52AQoW8obm2XC1jF800ANpH5XIQBpl+Uz4
-        Wq8SQw0DmYOUFXzfSysseqY/+HrDVCPSOQ==
-X-Google-Smtp-Source: ABdhPJwXAMr2Y2+5yKjdTOPVXlzJ9gj9LQJzK1QB2TAuG9xwZbeHCLdllH/f5aGBPbrsAhsrNGfC8g==
-X-Received: by 2002:a7b:c19a:: with SMTP id y26mr14529901wmi.132.1623324893501;
-        Thu, 10 Jun 2021 04:34:53 -0700 (PDT)
+        bh=GoJm7VsZJlhF8Q1T9Z+WwKmc6H4hjRgw29T+P08ERkU=;
+        b=PzWTtneyP1JbDFln3PepNxEAiR9/5ro0B7en0LwDp5LtZsF1B1L5RgWp1uXtGUHRGX
+         2SQiRES/zmpIrnz1QtbkIfedbQR1mX2Msckepov48l2ccjIjJHuSfeFOv1omdLgbRP83
+         wpuIrOy/CXVfELbbpOdZ3p/JK94gU4QA45sTTg8Mi+9C0+IK8pMtQx+xapbZwu4BOBTK
+         Vj7xDMFJqWG54hy+DWY7nyRN6SP30tsjEvGeqs4AVMHhhzKAZpDUGb4yLi8xVe2+D9zj
+         i4f+DioIVnMQrjKSiLARkZ53eX5eR71DlxpGxS50aASS5LShb6iB3xFFcKCWwoQmBnsu
+         Q6Pg==
+X-Gm-Message-State: AOAM531FYlkVSb3RF6tqmvJngWelr7E00WY9Vj2UZueVfQViALcdXVLT
+        QEcSW6xK5lme4UR/x27YwjE=
+X-Google-Smtp-Source: ABdhPJzC21RnvfC1wx2/tsI9nrJpfDr1JiEIIsEygUuxH+2mLT4jK/1snIMR8RBIEJH4zuWFJz9lNQ==
+X-Received: by 2002:a1c:9dcd:: with SMTP id g196mr14879230wme.135.1623324888959;
+        Thu, 10 Jun 2021 04:34:48 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id n42sm8898391wms.29.2021.06.10.04.34.52
+        by smtp.gmail.com with ESMTPSA id n42sm8898391wms.29.2021.06.10.04.34.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 04:34:53 -0700 (PDT)
+        Thu, 10 Jun 2021 04:34:48 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v5 27/40] trace-cmd: Read compressed latency trace data
-Date:   Thu, 10 Jun 2021 14:34:13 +0300
-Message-Id: <20210610113426.257931-28-tz.stoyanov@gmail.com>
+Subject: [PATCH v5 22/40] trace-cmd library: Refactor the logic for writing trace data in the file
+Date:   Thu, 10 Jun 2021 14:34:08 +0300
+Message-Id: <20210610113426.257931-23-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210610113426.257931-1-tz.stoyanov@gmail.com>
 References: <20210610113426.257931-1-tz.stoyanov@gmail.com>
@@ -70,140 +70,165 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When reading trace file version 7 with latency trace data, uncompress the
-data. A new trace-cmd API is introduced to handle that case:
-  tracecmd_latency_data_read()
+Refactored the internal logic of tracecmd_write_cpu_data() API to be
+suitable for adding trace data compression.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- .../include/private/trace-cmd-private.h       |  2 +
- lib/trace-cmd/trace-input.c                   | 42 ++++++++++++++++++-
- tracecmd/trace-read.c                         |  6 +--
- 3 files changed, 46 insertions(+), 4 deletions(-)
+ lib/trace-cmd/trace-output.c | 94 +++++++++++++++++-------------------
+ 1 file changed, 44 insertions(+), 50 deletions(-)
 
-diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 067ba34d..4a3eb1bc 100644
---- a/lib/trace-cmd/include/private/trace-cmd-private.h
-+++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -208,6 +208,8 @@ tracecmd_peek_data_ref(struct tracecmd_input *handle, int cpu)
- 	return rec;
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index 81d97d4a..860be759 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -1679,11 +1679,17 @@ static char *get_clock(struct tracecmd_output *handle)
+ 	return handle->trace_clock;
  }
  
-+int tracecmd_latency_data_read(struct tracecmd_input *handle, void *buf, size_t size);
++struct data_file_write {
++	int file_size;
++	off64_t soffset;
++	off64_t data_offset;
++	off64_t doffset;
++};
 +
- struct tep_record *
- tracecmd_read_prev(struct tracecmd_input *handle, struct tep_record *record);
- 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 327082a2..12876838 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -137,6 +137,9 @@ struct tracecmd_input {
- 	bool			read_page;
- 	bool			use_pipe;
- 	int			file_version;
-+	/* temporary file for uncompressed latency data */
-+	int			lat_cfd;
-+	char			lat_cfile[26]; /* strlen(COMPR_TEMP_FILE) */
- 	struct cpu_data 	*cpu_data;
- 	long long		ts_offset;
- 	struct tsc2nsec		tsc_calc;
-@@ -2995,6 +2998,35 @@ static int read_options_type(struct tracecmd_input *handle)
- 	return 0;
- }
- 
-+int tracecmd_latency_data_read(struct tracecmd_input *handle, void *buf, size_t size)
-+{
-+	int fd, r;
-+
-+	if (handle->file_state != TRACECMD_FILE_CPU_LATENCY)
-+		return -1;
-+	if (handle->lat_cfd >= 0)
-+		fd = handle->lat_cfd;
-+	else
-+		fd = handle->fd;
-+	r = read(fd, buf, size);
-+
-+	return r;
-+}
-+
-+static int latency_data_uncompress(struct tracecmd_input *handle)
-+{
-+	int ret;
-+
-+	strcpy(handle->lat_cfile, COMPR_TEMP_FILE);
-+	handle->lat_cfd = mkstemp(handle->lat_cfile);
-+	if (handle->lat_cfd < 0)
-+		return -1;
-+	ret = tracecmd_uncompress_copy_to(handle->compress, handle->lat_cfd, NULL, NULL);
-+	if (!ret)
-+		lseek64(handle->lat_cfd, 0, SEEK_SET);
-+	return ret;
-+}
-+
- static int read_cpu_data(struct tracecmd_input *handle)
+ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
+ 			    int cpus, char * const *cpu_data_files)
  {
- 	struct tep_handle *pevent = handle->pevent;
-@@ -3009,8 +3041,11 @@ static int read_cpu_data(struct tracecmd_input *handle)
- 	/*
- 	 * Check if this is a latency report or not.
- 	 */
--	if (handle->file_state == TRACECMD_FILE_CPU_LATENCY)
-+	if (handle->file_state == TRACECMD_FILE_CPU_LATENCY) {
-+		if (handle->file_version >= 7 && latency_data_uncompress(handle))
-+			return -1;
- 		return 1;
-+	}
+-	off64_t *offsets = NULL;
+-	unsigned long long *sizes = NULL;
++	struct data_file_write *data_files = NULL;
+ 	off64_t offset;
+ 	unsigned long long endian8;
+ 	char *clock = NULL;
+@@ -1705,37 +1711,11 @@ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
+ 	if (do_write_check(handle, "flyrecord", 10))
+ 		goto out_free;
  
- 	/* We expect this to be flyrecord */
- 	if (handle->file_state != TRACECMD_FILE_CPU_FLYRECORD)
-@@ -3448,6 +3483,7 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
+-	offsets = malloc(sizeof(*offsets) * cpus);
+-	if (!offsets)
+-		goto out_free;
+-	sizes = malloc(sizeof(*sizes) * cpus);
+-	if (!sizes)
+-		goto out_free;
+-
+-	offset = lseek64(handle->fd, 0, SEEK_CUR);
+-
+-	/* hold any extra data for data */
+-	offset += cpus * (16);
+-
+-	/*
+-	 * Unfortunately, the trace_clock data was placed after the
+-	 * cpu data, and wasn't accounted for with the offsets.
+-	 * We need to save room for the trace_clock file. This means
+-	 * we need to find the size of it before we define the final
+-	 * offsets.
+-	 */
+-	clock = get_clock(handle);
+-	if (!clock)
++	data_files = calloc(cpus, sizeof(struct data_file_write));
++	if (!data_files)
+ 		goto out_free;
+-	/* Save room for storing the size */
+-	offset += 8;
+-	offset += strlen(clock);
+-	/* 2 bytes for [] around the clock */
+-	offset += 2;
+-
+-	/* Page align offset */
+-	offset = (offset + (handle->page_size - 1)) & ~(handle->page_size - 1);
  
- 	handle->fd = fd;
- 	handle->ref = 1;
-+	handle->lat_cfd = -1;
- 
- 	if (do_read_check(handle, buf, 3))
- 		goto failed_read;
-@@ -3698,6 +3734,10 @@ void tracecmd_close(struct tracecmd_input *handle)
- 	free(handle->uname);
- 	free(handle->trace_clock);
- 	close(handle->fd);
-+	if (handle->lat_cfd >= 0) {
-+		close(handle->lat_cfd);
-+		unlink(handle->lat_cfile);
-+	}
- 
- 	tracecmd_free_hooks(handle->hooks);
- 	handle->hooks = NULL;
-diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
-index d605d05a..dfb814b7 100644
---- a/tracecmd/trace-read.c
-+++ b/tracecmd/trace-read.c
-@@ -948,13 +948,13 @@ void trace_show_data(struct tracecmd_input *handle, struct tep_record *record)
- 	printf("\n");
- }
- 
--static void read_rest(void)
-+static void read_latency(struct tracecmd_input *handle)
- {
- 	char buf[BUFSIZ + 1];
- 	int r;
- 
- 	do {
--		r = read(input_fd, buf, BUFSIZ);
-+		r = tracecmd_latency_data_read(handle, buf, BUFSIZ);
- 		if (r > 0) {
- 			buf[r] = 0;
- 			printf("%s", buf);
-@@ -1241,7 +1241,7 @@ static void read_data_info(struct list_head *handle_list, enum output_type otype
- 		if (ret > 0) {
- 			if (multi_inputs)
- 				die("latency traces do not work with multiple inputs");
--			read_rest();
-+			read_latency(handles->handle);
- 			return;
++	/* Write 0 for trace data offset and size and store offsets of these fields */
+ 	for (i = 0; i < cpus; i++) {
+ 		file = cpu_data_files[i];
+ 		ret = stat(file, &st);
+@@ -1743,53 +1723,67 @@ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
+ 			tracecmd_warning("can not stat '%s'", file);
+ 			goto out_free;
  		}
+-		offsets[i] = offset;
+-		sizes[i] = st.st_size;
+-		offset += st.st_size;
+-		offset = (offset + (handle->page_size - 1)) & ~(handle->page_size - 1);
++		data_files[i].file_size = st.st_size;
+ 
+-		endian8 = convert_endian_8(handle, offsets[i]);
++		endian8 = 0;
++		data_files[i].doffset = lseek64(handle->fd, 0, SEEK_CUR);
+ 		if (do_write_check(handle, &endian8, 8))
+ 			goto out_free;
+-		endian8 = convert_endian_8(handle, sizes[i]);
++		data_files[i].soffset = lseek64(handle->fd, 0, SEEK_CUR);
+ 		if (do_write_check(handle, &endian8, 8))
+ 			goto out_free;
+ 	}
+ 
+-	if (save_clock(handle, clock))
++	clock = get_clock(handle);
++	if (clock && save_clock(handle, clock))
+ 		goto out_free;
+ 
+ 	for (i = 0; i < cpus; i++) {
++		data_files[i].data_offset = lseek64(handle->fd, 0, SEEK_CUR);
++		/* Page align offset */
++		data_files[i].data_offset = (data_files[i].data_offset + (handle->page_size - 1)) & ~(handle->page_size - 1);
++		data_files[i].data_offset = lseek64(handle->fd, data_files[i].data_offset, SEEK_SET);
++		if (data_files[i].data_offset == (off64_t)-1)
++			goto out_free;
+ 		if (!tracecmd_get_quiet(handle))
+ 			fprintf(stderr, "CPU%d data recorded at offset=0x%llx\n",
+-				i, (unsigned long long) offsets[i]);
+-		offset = lseek64(handle->fd, offsets[i], SEEK_SET);
+-		if (offset == (off64_t)-1) {
+-			tracecmd_warning("could not seek to %lld\n", offsets[i]);
+-			goto out_free;
+-		}
++				i, (unsigned long long) data_files[i].data_offset);
++
+ 		check_size = copy_file(handle, cpu_data_files[i]);
+-		if (check_size != sizes[i]) {
++		if (check_size != data_files[i].file_size) {
+ 			errno = EINVAL;
+ 			tracecmd_warning("did not match size of %lld to %lld",
+-					 check_size, sizes[i]);
++					 check_size, data_files[i].file_size);
+ 			goto out_free;
+ 		}
++		/* Write the real CPU data offset inthe file */
++		offset = lseek64(handle->fd, data_files[i].doffset, SEEK_SET);
++		endian8 = convert_endian_8(handle, data_files[i].data_offset);
++		if (do_write_check(handle, &endian8, 8))
++			goto out_free;
++		/* Write the real CPU data size in the file */
++		offset = lseek64(handle->fd, data_files[i].soffset, SEEK_SET);
++		endian8 = convert_endian_8(handle, check_size);
++		if (do_write_check(handle, &endian8, 8))
++			goto out_free;
++		offset = data_files[i].data_offset + check_size;
++		offset = lseek64(handle->fd, offset, SEEK_SET);
+ 		if (!tracecmd_get_quiet(handle))
+ 			fprintf(stderr, "    %llu bytes in size\n",
+ 				(unsigned long long)check_size);
+ 	}
+ 
+-	free(offsets);
+-	free(sizes);
++	if (lseek64(handle->fd, 0, SEEK_END) == (off64_t)-1)
++		goto out_free;
+ 
++	free(data_files);
+ 	handle->file_state = TRACECMD_FILE_CPU_FLYRECORD;
+ 
+ 	return 0;
+ 
+  out_free:
+-	free(offsets);
+-	free(sizes);
++	lseek64(handle->fd, 0, SEEK_END);
++	free(data_files);
+ 	return -1;
+ }
  
 -- 
 2.31.1
