@@ -8,59 +8,59 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D26BC48BD1
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:36:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46E66C47094
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:36:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 464DE613FF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:36:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 27BC3613FE
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:36:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhFJLiC (ORCPT
+        id S230272AbhFJLiI (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 10 Jun 2021 07:38:02 -0400
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:54861 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhFJLiC (ORCPT
+        Thu, 10 Jun 2021 07:38:08 -0400
+Received: from mail-wm1-f53.google.com ([209.85.128.53]:42934 "EHLO
+        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230438AbhFJLiF (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 10 Jun 2021 07:38:02 -0400
-Received: by mail-wm1-f43.google.com with SMTP id m3so742688wms.4
-        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Jun 2021 04:35:51 -0700 (PDT)
+        Thu, 10 Jun 2021 07:38:05 -0400
+Received: by mail-wm1-f53.google.com with SMTP id l7-20020a05600c1d07b02901b0e2ebd6deso6209926wms.1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Jun 2021 04:35:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=NEhPGyloHjAqC5x3xEBshV9EuN0/dWE1r+Si3CUPt1k=;
-        b=G30HsMaMMu4EvvDPCSKlOjil0xwynpFrQY0QC5dD3Xc6YAfuAdll07bGvPFKY+XbOK
-         DD5ccjZxAqhf8Akm6JrvFYPNRf8rmIYN+588ohHORL4TrGggjeeSK4DkRGgA65vOZVmH
-         WCas7pfbg4sfB3uL1UV0q75hYdYVl/oUPY/v3c0zGhMx6SLbwqH9WYV8yLMYvTfXuwuO
-         VKy5JePMbM+nFmQGMGY64rSgoGjEUK75xrI1u4k9nyADfbCPz3j3ApE0/w3sCGd6Kecv
-         AbzB140R03d21R8LYbBy2/EXjAqTV+7z1eYKEuVLBQLN+8JHpHCXDsDr5wYPS+Z7TzvT
-         LS3A==
+        bh=ovTO2+bhZPsYG830hwQ0yxKfzcFEyCIHS3+j+KQAJbM=;
+        b=NCI3y1AZzKbGTHm2DfAbluTuuvArMIhuJa+mP4g57FKkfy9BZap+p947ByhvYI4jEF
+         Isu4c27QmaA+MbngUVqq0Pk3spy5ctsvfqK8dE1XVkWy/XhxJY+0+Kr8Qd180xF48t7y
+         U0LOjvrwQ3oUlxwY9NR0kGbOTcimjjawj4xi/GUlSCZMV/4kl6wkC1159R+KoVMaRvaE
+         jSzWKonBoV2qAyLgI9mvNGt6Uvj/BaSsH2eno4IiY+mf4GFLtgqxc1FzyllLd0LhnyhJ
+         0zkzPVIjecEZbG2Ye3sS6thzunHgJS6ln6b2wBF+F0LiloHJzLj8xjYFy1J85s33oFEL
+         sumA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NEhPGyloHjAqC5x3xEBshV9EuN0/dWE1r+Si3CUPt1k=;
-        b=JW1ue03ZiCQzlBW/+70pVhauqihbrTAzMrDo/L3PQVhY11oEprT/1Aj/WnunakKaWM
-         OD3glMJWGJSk+h+3I1V4/99gz3xDnhoQ8ukxDFw0wvuqsGv1A1JG3eMBkFBXUanl5IA0
-         by1EtXvcY+/vICoG2zS066Ndmm33cH0YIKgUfVD7m20Q4CfmlpWXljGQFLNQAjNPEAYA
-         LhyycXs4neMB5L/ENeMgKya4sHtorSOxUXvma/vDXeEvz8FXRPbKhRc4WcccJmHJZfU8
-         1/ed+L9hA8gAT77MplDrynUtfmHKSGDpMngLj0WRZSsB+TEnMEBL2yjHqRI/z5MLlJJ0
-         xlLg==
-X-Gm-Message-State: AOAM533jwH2mT8Cxnd4cO91m1kCG7nv3v+hABj3ifY5s+oqVIhCWvkey
-        vspSfhUGf1fsqY5w5lodfA8=
-X-Google-Smtp-Source: ABdhPJxZ+OuofO5t6Y9LFrzV7NKcqqyRoI+wkaCVybS84KhOpk8TMqa++aNpoNKhhoKbQ8JzOb4r6Q==
-X-Received: by 2002:a1c:e91a:: with SMTP id q26mr14748660wmc.170.1623324890838;
-        Thu, 10 Jun 2021 04:34:50 -0700 (PDT)
+        bh=ovTO2+bhZPsYG830hwQ0yxKfzcFEyCIHS3+j+KQAJbM=;
+        b=ejQ8d+9rek6wkAzVSRJPtKvDvYHzUp539FS/ADEtpOObz0iI/QA+evi9ex+NdsC8IQ
+         N4r+Ov+L7HMraH2UmvGKVG/P6vMoUhBxY4dmZto04OuJaPG0cYsgZRsb4Z3CVUP/a9QZ
+         mEx0+4fVq/aIcGhVmZj+Y6ijRMFXCtQWRI3q1CQiWKoQniqyrm2KLdqJ6O8YwKtxa4qg
+         VvHwmV0YCO3NaOxDIrJJD/AvdP9rlaJYE8rq1BB9SGrHwhVw1ORYNLml4GnG3+TDX/12
+         zKVCvJ3Av5snuH8kWLMF3B1dX3vvHmUIxunxrT5Mz+P1qkydymMPT+o04cS8qnrY57HZ
+         ihRA==
+X-Gm-Message-State: AOAM531ZVfIN6htxOD3vJon69KywtLeKjGbkG1qwVe1ABd8BiKxBNNS2
+        fQG4VT1Y+0ehO0gVmerNwTpdZiHlwBXVAA==
+X-Google-Smtp-Source: ABdhPJzCu8nja4HolmIxUD3S4phalU0ZBI9F1TbqvJ8IV1xCbPg6NpE3/iFGSlFA1WXbnvESms+8Zg==
+X-Received: by 2002:a7b:cf18:: with SMTP id l24mr14183369wmg.160.1623324898929;
+        Thu, 10 Jun 2021 04:34:58 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id n42sm8898391wms.29.2021.06.10.04.34.50
+        by smtp.gmail.com with ESMTPSA id n42sm8898391wms.29.2021.06.10.04.34.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 04:34:50 -0700 (PDT)
+        Thu, 10 Jun 2021 04:34:58 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v5 24/40] trace-cmd: Compress trace data
-Date:   Thu, 10 Jun 2021 14:34:10 +0300
-Message-Id: <20210610113426.257931-25-tz.stoyanov@gmail.com>
+Subject: [PATCH v5 33/40] trace-cmd: Copy CPU count in tracecmd_copy
+Date:   Thu, 10 Jun 2021 14:34:19 +0300
+Message-Id: <20210610113426.257931-34-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210610113426.257931-1-tz.stoyanov@gmail.com>
 References: <20210610113426.257931-1-tz.stoyanov@gmail.com>
@@ -70,105 +70,76 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When creating a trace.dat file of version 7, compress the trace data.
-The data is compressed in chunks. The chunk size is a compile time
-parameter, set by default to 1MB.
+Extend the tracecmd_copy() API to support copying of CPU count from
+input to output trace hanlder.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-output.c | 50 +++++++++++++++++++++++++++++++-----
- 1 file changed, 43 insertions(+), 7 deletions(-)
+ lib/trace-cmd/trace-input.c  | 30 ++++++++++++++++++++++++++++++
+ lib/trace-cmd/trace-output.c |  2 +-
+ 2 files changed, 31 insertions(+), 1 deletion(-)
 
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index 860be759..bd14452a 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -321,6 +321,41 @@ static tsize_t copy_file(struct tracecmd_output *handle,
- 	return size;
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 74d1ebf7..289102bf 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -4043,6 +4043,23 @@ error:
+ 	return -1;
  }
  
-+#define COMPRESS_CHUNK_SIZE (1*1024*1024)
-+static tsize_t copy_file_compress(struct tracecmd_output *handle,
-+				  const char *file, unsigned long long *write_size)
++static int copy_cpu_count(struct tracecmd_input *in_handle, struct tracecmd_output *out_handle)
 +{
-+	unsigned long long rsize = 0;
-+	unsigned long long wsize = 0;
-+	tsize_t size;
-+	int ret;
-+	int fd;
++	unsigned int size;
 +
-+	fd = open(file, O_RDONLY);
-+	if (fd < 0) {
-+		tracecmd_warning("Can't read '%s'", file);
-+		return 0;
-+	}
++	if (!check_in_state(in_handle, TRACECMD_FILE_CPU_COUNT) ||
++	    !check_out_state(out_handle, TRACECMD_FILE_CPU_COUNT))
++		return -1;
 +
-+	if (handle->file_version >= 7) {
-+		ret = tracecmd_compress_copy_from(handle->compress, fd,
-+						  COMPRESS_CHUNK_SIZE, &rsize, &wsize);
-+		if (ret < 0) {
-+			tracecmd_warning("Can't compress '%s'", file);
-+			close(fd);
-+			return 0;
-+		}
-+		size = rsize;
-+		*write_size = wsize;
-+	} else {
-+		size = copy_file_fd(handle, fd);
-+		*write_size = size;
-+	}
++	if (read_copy_size4(in_handle, out_handle, &size) < 0)
++		return -1;
 +
-+	close(fd);
-+	return size;
++	in_handle->file_state = TRACECMD_FILE_CPU_COUNT;
++	out_set_file_state(out_handle, in_handle->file_state);
++
++	return 0;
 +}
 +
- /*
-  * Finds the path to the debugfs/tracing
-  * Allocates the string and stores it.
-@@ -1692,8 +1727,9 @@ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
- 	struct data_file_write *data_files = NULL;
- 	off64_t offset;
- 	unsigned long long endian8;
-+	unsigned long long read_size;
-+	unsigned long long write_size;
- 	char *clock = NULL;
--	off64_t check_size;
- 	char *file;
- 	struct stat st;
- 	int ret;
-@@ -1749,11 +1785,11 @@ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
- 			fprintf(stderr, "CPU%d data recorded at offset=0x%llx\n",
- 				i, (unsigned long long) data_files[i].data_offset);
+ /**
+  * tracecmd_copy_headers - Copy headers from a tracecmd_input handle to a file descriptor
+  * @in_handle: input handle for the trace.dat file to copy from.
+@@ -4135,6 +4152,19 @@ int tracecmd_copy_headers(struct tracecmd_input *in_handle,
+ 			return 0;
  
--		check_size = copy_file(handle, cpu_data_files[i]);
--		if (check_size != data_files[i].file_size) {
-+		read_size = copy_file_compress(handle, cpu_data_files[i], &write_size);
-+		if (read_size != data_files[i].file_size) {
- 			errno = EINVAL;
- 			tracecmd_warning("did not match size of %lld to %lld",
--					 check_size, data_files[i].file_size);
-+					 read_size, data_files[i].file_size);
- 			goto out_free;
- 		}
- 		/* Write the real CPU data offset inthe file */
-@@ -1763,14 +1799,14 @@ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
- 			goto out_free;
- 		/* Write the real CPU data size in the file */
- 		offset = lseek64(handle->fd, data_files[i].soffset, SEEK_SET);
--		endian8 = convert_endian_8(handle, check_size);
-+		endian8 = convert_endian_8(handle, write_size);
- 		if (do_write_check(handle, &endian8, 8))
- 			goto out_free;
--		offset = data_files[i].data_offset + check_size;
-+		offset = data_files[i].data_offset + write_size;
- 		offset = lseek64(handle->fd, offset, SEEK_SET);
- 		if (!tracecmd_get_quiet(handle))
- 			fprintf(stderr, "    %llu bytes in size\n",
--				(unsigned long long)check_size);
-+				(unsigned long long)write_size);
+ 		ret = copy_command_lines(in_handle, out_handle);
++		if (ret < 0)
++			goto out;
++
++		/* fallthrough */
++	case TRACECMD_FILE_CPU_COUNT:
++		if (end_state <= in_handle->file_state)
++			return 0;
++
++		ret = copy_cpu_count(in_handle, out_handle);
++		if (ret < 0)
++			goto out;
++
++		/* fallthrough */
+ 	default:
+ 		break;
  	}
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index e3b018aa..a3d0f037 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -1949,7 +1949,7 @@ struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle, const char
+ 	if (!handle)
+ 		return NULL;
  
- 	if (lseek64(handle->fd, 0, SEEK_END) == (off64_t)-1)
+-	fstate = state > TRACECMD_FILE_CMD_LINES ? TRACECMD_FILE_CMD_LINES : state;
++	fstate = state > TRACECMD_FILE_CPU_COUNT ? TRACECMD_FILE_CPU_COUNT : state;
+ 	if (tracecmd_copy_headers(ihandle, handle, 0, fstate) < 0)
+ 		goto out_free;
+ 
 -- 
 2.31.1
 
