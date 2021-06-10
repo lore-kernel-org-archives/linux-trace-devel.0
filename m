@@ -8,59 +8,59 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A22AC47094
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:35:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1560C48BD1
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:35:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4578A61406
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:35:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9D5A261406
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:35:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbhFJLho (ORCPT
+        id S230447AbhFJLhq (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 10 Jun 2021 07:37:44 -0400
-Received: from mail-wr1-f50.google.com ([209.85.221.50]:40923 "EHLO
-        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230410AbhFJLhh (ORCPT
+        Thu, 10 Jun 2021 07:37:46 -0400
+Received: from mail-wr1-f42.google.com ([209.85.221.42]:41787 "EHLO
+        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230400AbhFJLhi (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 10 Jun 2021 07:37:37 -0400
-Received: by mail-wr1-f50.google.com with SMTP id y7so1900133wrh.7
-        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Jun 2021 04:35:40 -0700 (PDT)
+        Thu, 10 Jun 2021 07:37:38 -0400
+Received: by mail-wr1-f42.google.com with SMTP id o3so1903044wri.8
+        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Jun 2021 04:35:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jNmgwtkM7E5IR4z79tTsl2FEDjRbmtrhOhWVpEAWIrY=;
-        b=WHAcUlEZkJNb6az1QFZONW6qg3fOu3WK9nb8PPGQCwyPj366Rk55yiilTH7kQIbOQA
-         3KdeATDV2m52tUD/9ShigZLd0YqgAtVTu71kyBXWCdyDADiU+aP2Csxy90pBGbzEPPu1
-         8NP/ZNxIgD7HPr4M54p4Gt7JCAlTcoTyfPdSifeh/VEYOemtcXn+MlGlgPArYLBftKjj
-         hBLbX952cmIadu0R4wP5oEoGXwrrgMUHsbE3jfMvt8deEFaYQRvaUgXZlo3g9k5MAoBY
-         IR1dOAtAzz0Wbk/N2VVcoO9OcFGLY4UwVg8Kg21h98vm+ZQIq6i9bdpERfY9IzsHkpRu
-         5tQg==
+        bh=SL302fTyFfaFnXlErdYp1JrAPy3ZPN35AL5S03E1of4=;
+        b=Puz9pVBcmVgloVl3X0jDBoqce+pByemJkeQvKnfJi+6I09vxXWeYS8hkhIg5ILXwNo
+         PVVJsy3sIx1oD5TCcoagb8lELKBqBbzP0JZEU/5UX1m69of2WiqhX5R5mGMBb/02iJM0
+         CW48Mg9mcIJf9jarz1mFhPRjsQ94ZWfLKP5zzMUwUi+N8hEEXl9740+3TNuG5kwxAU2V
+         bcyr/Pp+3Xg3nR31NXbEJzvb6K1F2OJLp+KkJYVFsZl9WbRk4rBAD/oy67WtiN/XW1Nq
+         //YEW3fQ65w034fvQ4rL5fE/Kn+ADvX0+5lvGsNcWgPZXT80fg1aFLodJJ5A/zKhpcN/
+         GJng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jNmgwtkM7E5IR4z79tTsl2FEDjRbmtrhOhWVpEAWIrY=;
-        b=m7P7/eA3vh6QrvcRaALFu4RK0+b67KPXm10dvjXR6gbBhYCO/DgdBi3u5SCwZj/fzo
-         rbY/0KoSNVjjbHlTwSb792vgAhj7oKzLEB38cNA7yBN/26vd4pjozr1XevbSptP2TbrX
-         CRRo3eM3wqlul7iGEleBzbyJKIuPncTpW8WSwO+6Sp6GirsCBkUXNpuzOgkIcgjQ1CQc
-         O2XGSw2RH/Dtuz60PIDxzJN8VfMV6Vw860xGLoRa2wN9gfyxlIic/Zly2yg2ATZ8cpsM
-         FSpR4j/S2WI/2ab9ix0UBPm35ScqtkU5+4ftGwbBkdLRH0sPqcAwtUUYe8Tq/9bnA4EO
-         HNLQ==
-X-Gm-Message-State: AOAM5330o/Nj3OE9FGF4ZMRbNHD9Muy61tontVTl4iokVPkcX58LYwIs
-        +KqY55ukl+PTnT2ldXCoJB8=
-X-Google-Smtp-Source: ABdhPJy6uXnsIwsUAGIMQXYYGutdUK1+UzXUkfgfA11EumqB3PBRp9R/NNtg13MWXwm3jzJvZ4h5nQ==
-X-Received: by 2002:adf:a45a:: with SMTP id e26mr5001065wra.222.1623324880153;
-        Thu, 10 Jun 2021 04:34:40 -0700 (PDT)
+        bh=SL302fTyFfaFnXlErdYp1JrAPy3ZPN35AL5S03E1of4=;
+        b=degBIJerounnvH7XqQdlKYn5Rkey3fvqm+eXtN8z2qMixi7F8IgPK8PHUhIP6rReI8
+         6+Dz+pmPhCcUYn5j/gO/zvKc/enbcfypoOLPPqRa7e91k2Si7Xmz7sptfFeM9BYi5Sby
+         Bcv74bAkmES2DFsFQEgVXu0iezbC1yQJJFupm4Zm7yaPZGBaNZWNo2yB2KaNfxwh0tg2
+         j49HY4OnY0eewOcKqt88SO92Z3J5vm9fqYhNwotj2IHr78vzexuMyh1+oLj81x4cG8If
+         P+sS/HHZzCOQinhQpDfUmi5jSFGrpoNyFfLOC0M6FVgSe3tczM/tJV3H+1InHI5WEY7A
+         IPcg==
+X-Gm-Message-State: AOAM531pyJfAQIXA+xFZGwxQ1oKeWFpXod4FXm+FplUlLo/wIjAdvbQt
+        zV9/QnrI9rBIFjEIDwr5G6x65tWU5dEsMQ==
+X-Google-Smtp-Source: ABdhPJwjAdbNAaXr5aNU8SpqQ7JG/yP+BvBlmbJDVS9deJdMclPItoaZlMUo0f+AR3lymCEkwuDXmA==
+X-Received: by 2002:a05:6000:18f:: with SMTP id p15mr4990565wrx.102.1623324869770;
+        Thu, 10 Jun 2021 04:34:29 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id n42sm8898391wms.29.2021.06.10.04.34.39
+        by smtp.gmail.com with ESMTPSA id n42sm8898391wms.29.2021.06.10.04.34.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 04:34:39 -0700 (PDT)
+        Thu, 10 Jun 2021 04:34:29 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v5 12/40] trace-cmd library: Add new API to get compression of input handler
-Date:   Thu, 10 Jun 2021 14:33:58 +0300
-Message-Id: <20210610113426.257931-13-tz.stoyanov@gmail.com>
+Subject: [PATCH v5 01/40] trace-cmd library: Remove unused private APIs for creating trace files
+Date:   Thu, 10 Jun 2021 14:33:47 +0300
+Message-Id: <20210610113426.257931-2-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210610113426.257931-1-tz.stoyanov@gmail.com>
 References: <20210610113426.257931-1-tz.stoyanov@gmail.com>
@@ -70,56 +70,73 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The new API returns name and version of the compression algorithm,
-used to compress the trace file associated with given input file handler:
- tracecmd_get_file_compress_proto()
+Remove these unused private trace-cmd library APIs:
+  tracecmd_create_file()
+  tracecmd_create_file_glob()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- .../include/private/trace-cmd-private.h          |  2 ++
- lib/trace-cmd/trace-input.c                      | 16 ++++++++++++++++
- 2 files changed, 18 insertions(+)
+ .../include/private/trace-cmd-private.h       |  6 ----
+ lib/trace-cmd/trace-output.c                  | 29 -------------------
+ 2 files changed, 35 deletions(-)
 
 diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index ec534d51..624d0afb 100644
+index 5c2ab4ca..4bd36baa 100644
 --- a/lib/trace-cmd/include/private/trace-cmd-private.h
 +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -236,6 +236,8 @@ unsigned long long
- tracecmd_get_cursor(struct tracecmd_input *handle, int cpu);
+@@ -263,12 +263,6 @@ struct tracecmd_option;
+ struct tracecmd_msg_handle;
  
- unsigned long tracecmd_get_in_file_version(struct tracecmd_input *handle);
-+int tracecmd_get_file_compress_proto(struct tracecmd_input *handle,
-+				     const char **name, const char **version);
- 
- int tracecmd_ftrace_overrides(struct tracecmd_input *handle, struct tracecmd_ftrace *finfo);
- bool tracecmd_get_use_trace_clock(struct tracecmd_input *handle);
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 43d731e0..0b17b58d 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -4148,6 +4148,22 @@ unsigned long tracecmd_get_in_file_version(struct tracecmd_input *handle)
- 	return handle->file_version;
+ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, int cpus);
+-struct tracecmd_output *tracecmd_create_file(const char *output_file,
+-					     int cpus, char * const *cpu_data_files);
+-struct tracecmd_output *
+-tracecmd_create_file_glob(const char *output_file,
+-			  int cpus, char * const *cpu_data_files,
+-			  struct tracecmd_event_list *event_globs);
+ struct tracecmd_output *
+ tracecmd_create_init_file_glob(const char *output_file,
+ 			       struct tracecmd_event_list *list);
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index a4a1eecc..9231c319 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -1614,35 +1614,6 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
+ 	return NULL;
  }
  
-+/**
-+ * tracecmd_get_file_compress_proto - get name and version of compression algorithm,
-+ *				      used to compress the trace file
-+ * @handle: input handle for the trace.dat file
-+ * @name: return, name of the compression algorithm.
-+ * @version: return, version of the compression algorithm.
-+ *
-+ * Returns 0 on success, or -1 in case of an error. If 0 is returned, the name and version of the
-+ * algorithm are stored in @name and @version. The returned strings must *not* be freed.
-+ */
-+int tracecmd_get_file_compress_proto(struct tracecmd_input *handle,
-+				     const char **name, const char **version)
-+{
-+	return tracecmd_compress_proto_get_name(handle->compress, name, version);
-+}
-+
- /**
-  * tracecmd_get_use_trace_clock - return use_trace_clock
-  * @handle: input handle for the trace.dat file
+-struct tracecmd_output *
+-tracecmd_create_file_glob(const char *output_file,
+-			  int cpus, char * const *cpu_data_files,
+-			  struct tracecmd_event_list *list)
+-{
+-	struct tracecmd_output *handle;
+-
+-	handle = create_file(output_file, NULL, NULL, NULL, list);
+-	if (!handle)
+-		return NULL;
+-
+-	if (tracecmd_write_cmdlines(handle))
+-		return NULL;
+-
+-	if (tracecmd_append_cpu_data(handle, cpus, cpu_data_files) < 0) {
+-		tracecmd_output_close(handle);
+-		return NULL;
+-	}
+-
+-	return handle;
+-}
+-
+-struct tracecmd_output *tracecmd_create_file(const char *output_file,
+-					     int cpus, char * const *cpu_data_files)
+-{
+-	return tracecmd_create_file_glob(output_file, cpus,
+-					 cpu_data_files, &all_event_list);
+-}
+-
+ struct tracecmd_output *tracecmd_create_init_fd(int fd)
+ {
+ 	return create_file_fd(fd, NULL, NULL, NULL, &all_event_list, NULL);
 -- 
 2.31.1
 
