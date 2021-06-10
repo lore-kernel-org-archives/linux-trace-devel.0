@@ -8,59 +8,59 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46E66C47094
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:36:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 183B0C47094
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:36:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 27BC3613FE
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:36:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ED7DA613FE
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:36:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230272AbhFJLiI (ORCPT
+        id S230188AbhFJLiO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 10 Jun 2021 07:38:08 -0400
-Received: from mail-wm1-f53.google.com ([209.85.128.53]:42934 "EHLO
-        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbhFJLiF (ORCPT
+        Thu, 10 Jun 2021 07:38:14 -0400
+Received: from mail-wm1-f48.google.com ([209.85.128.48]:34761 "EHLO
+        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230245AbhFJLiO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 10 Jun 2021 07:38:05 -0400
-Received: by mail-wm1-f53.google.com with SMTP id l7-20020a05600c1d07b02901b0e2ebd6deso6209926wms.1
-        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Jun 2021 04:35:59 -0700 (PDT)
+        Thu, 10 Jun 2021 07:38:14 -0400
+Received: by mail-wm1-f48.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso4597515wmc.1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Jun 2021 04:36:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ovTO2+bhZPsYG830hwQ0yxKfzcFEyCIHS3+j+KQAJbM=;
-        b=NCI3y1AZzKbGTHm2DfAbluTuuvArMIhuJa+mP4g57FKkfy9BZap+p947ByhvYI4jEF
-         Isu4c27QmaA+MbngUVqq0Pk3spy5ctsvfqK8dE1XVkWy/XhxJY+0+Kr8Qd180xF48t7y
-         U0LOjvrwQ3oUlxwY9NR0kGbOTcimjjawj4xi/GUlSCZMV/4kl6wkC1159R+KoVMaRvaE
-         jSzWKonBoV2qAyLgI9mvNGt6Uvj/BaSsH2eno4IiY+mf4GFLtgqxc1FzyllLd0LhnyhJ
-         0zkzPVIjecEZbG2Ye3sS6thzunHgJS6ln6b2wBF+F0LiloHJzLj8xjYFy1J85s33oFEL
-         sumA==
+        bh=laA4gGGumfq0sJQFfiL10durfgyLHHcEFJonCoS0JyE=;
+        b=hOLOw8o2Z/un6Pl9tTd65a50CD8cKU649RBQi9NFV6jAzPPKu8lpOjw2ZVFbkJk0F0
+         +875qUTlVI/Bw2qlQieb/hPWkI+42U1clnnGAkNSG4QWqcoIqz+A1Oqt4XFF3gD3N2Ot
+         YjWZB2B/9eLcoth4B0uemBE95wN691QvLdkvqUmLNi/rsRpNxsoMZN14u7ir/P2QU7ZR
+         bNNJezT7iyxCJw/CKqj1sIeQ3ru7iE6G5GM9EVdPIcODHN2yw8P9IKBCtoEZBd+x8EM0
+         6WhXqKGPIIR/IKOniKYSDVdlUsv5NG0OVhIQMak7j/sHD4LIj5bNGVebWt2Nb1c/N2Iu
+         8Vfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ovTO2+bhZPsYG830hwQ0yxKfzcFEyCIHS3+j+KQAJbM=;
-        b=ejQ8d+9rek6wkAzVSRJPtKvDvYHzUp539FS/ADEtpOObz0iI/QA+evi9ex+NdsC8IQ
-         N4r+Ov+L7HMraH2UmvGKVG/P6vMoUhBxY4dmZto04OuJaPG0cYsgZRsb4Z3CVUP/a9QZ
-         mEx0+4fVq/aIcGhVmZj+Y6ijRMFXCtQWRI3q1CQiWKoQniqyrm2KLdqJ6O8YwKtxa4qg
-         VvHwmV0YCO3NaOxDIrJJD/AvdP9rlaJYE8rq1BB9SGrHwhVw1ORYNLml4GnG3+TDX/12
-         zKVCvJ3Av5snuH8kWLMF3B1dX3vvHmUIxunxrT5Mz+P1qkydymMPT+o04cS8qnrY57HZ
-         ihRA==
-X-Gm-Message-State: AOAM531ZVfIN6htxOD3vJon69KywtLeKjGbkG1qwVe1ABd8BiKxBNNS2
-        fQG4VT1Y+0ehO0gVmerNwTpdZiHlwBXVAA==
-X-Google-Smtp-Source: ABdhPJzCu8nja4HolmIxUD3S4phalU0ZBI9F1TbqvJ8IV1xCbPg6NpE3/iFGSlFA1WXbnvESms+8Zg==
-X-Received: by 2002:a7b:cf18:: with SMTP id l24mr14183369wmg.160.1623324898929;
-        Thu, 10 Jun 2021 04:34:58 -0700 (PDT)
+        bh=laA4gGGumfq0sJQFfiL10durfgyLHHcEFJonCoS0JyE=;
+        b=o0SpmtGjHP3ZYcFQDnIdnl7HnNRwIIF4Xj32k0lTSNpJS6ve4xxFPWcmtgfTi7nPw9
+         AXMrZAvlmMJj3zzdNcs0NLpgXpK3NGdpLdurFAOpcpxAFck/pHtZENbIZfgHZQb/LpH3
+         rt1h4gZfayndC7rwsHTBqQEhBXuYMJoI1lHAminGNQYShPDQ+akqDbsw2t3ROGE4IehH
+         wOkn7shXW+66E9YAIzC1AWdaUuJt+oPNEmB9g/UesVlLVPDzfMB+zDHZnAKh7atbka5b
+         gbe1mCnqpZKAVwBknOwPuexgLhlfa69cGADk2cUD9Qxfq7E0iquOXSbUDzjMIps+zx5E
+         5rhQ==
+X-Gm-Message-State: AOAM533ErCxfZcstcOACmjUvhfi8sfKWzec9we5vmysDeJWXCujWAdLE
+        KR7brbos4wmuWSIL5bbmJlQ=
+X-Google-Smtp-Source: ABdhPJxOME9x8oRMsaP2KZCxLDRLueHLrTCSCbRIitXmLLceysn379p+4B/mJbfCFS1QsfpGDat6QA==
+X-Received: by 2002:a7b:c394:: with SMTP id s20mr4574229wmj.33.1623324902836;
+        Thu, 10 Jun 2021 04:35:02 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id n42sm8898391wms.29.2021.06.10.04.34.58
+        by smtp.gmail.com with ESMTPSA id n42sm8898391wms.29.2021.06.10.04.35.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 04:34:58 -0700 (PDT)
+        Thu, 10 Jun 2021 04:35:02 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v5 33/40] trace-cmd: Copy CPU count in tracecmd_copy
-Date:   Thu, 10 Jun 2021 14:34:19 +0300
-Message-Id: <20210610113426.257931-34-tz.stoyanov@gmail.com>
+Subject: [PATCH v5 37/40] trace-cmd library: Refactor the logic for writing CPU instance trace data
+Date:   Thu, 10 Jun 2021 14:34:23 +0300
+Message-Id: <20210610113426.257931-38-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210610113426.257931-1-tz.stoyanov@gmail.com>
 References: <20210610113426.257931-1-tz.stoyanov@gmail.com>
@@ -70,76 +70,56 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Extend the tracecmd_copy() API to support copying of CPU count from
-input to output trace hanlder.
+Added a helper function, internal to the library, for updating CPU
+instance offset in the trace file. This allows to reuse the logic inside
+the library, will be used in the tracecmd_copy API.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c  | 30 ++++++++++++++++++++++++++++++
- lib/trace-cmd/trace-output.c |  2 +-
- 2 files changed, 31 insertions(+), 1 deletion(-)
+ lib/trace-cmd/include/trace-cmd-local.h |  2 ++
+ lib/trace-cmd/trace-output.c            | 11 +++++++++--
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 74d1ebf7..289102bf 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -4043,6 +4043,23 @@ error:
- 	return -1;
+diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
+index e8c7968f..14908f3c 100644
+--- a/lib/trace-cmd/include/trace-cmd-local.h
++++ b/lib/trace-cmd/include/trace-cmd-local.h
+@@ -72,4 +72,6 @@ struct cpu_data_source {
+ int out_write_cpu_data(struct tracecmd_output *handle, int cpus,
+ 		       struct cpu_data_source *data);
+ 
++int out_update_buffer_cpu_offset(struct tracecmd_output *handle, const char *name);
++
+ #endif /* _TRACE_CMD_LOCAL_H */
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index a3ccfba5..9933224c 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -1853,8 +1853,7 @@ int tracecmd_append_cpu_data(struct tracecmd_output *handle,
+ 	return tracecmd_write_cpu_data(handle, cpus, cpu_data_files);
  }
  
-+static int copy_cpu_count(struct tracecmd_input *in_handle, struct tracecmd_output *out_handle)
-+{
-+	unsigned int size;
-+
-+	if (!check_in_state(in_handle, TRACECMD_FILE_CPU_COUNT) ||
-+	    !check_out_state(out_handle, TRACECMD_FILE_CPU_COUNT))
-+		return -1;
-+
-+	if (read_copy_size4(in_handle, out_handle, &size) < 0)
-+		return -1;
-+
-+	in_handle->file_state = TRACECMD_FILE_CPU_COUNT;
-+	out_set_file_state(out_handle, in_handle->file_state);
-+
+-int tracecmd_append_buffer_cpu_data(struct tracecmd_output *handle,
+-				    const char *name, int cpus, char * const *cpu_data_files)
++__hidden int out_update_buffer_cpu_offset(struct tracecmd_output *handle, const char *name)
+ {
+ 	tsize_t b_offset;
+ 	tsize_t offset;
+@@ -1883,6 +1882,14 @@ int tracecmd_append_buffer_cpu_data(struct tracecmd_output *handle,
+ 		tracecmd_warning("could not seek to %lld\n", offset);
+ 		return -1;
+ 	}
 +	return 0;
 +}
 +
- /**
-  * tracecmd_copy_headers - Copy headers from a tracecmd_input handle to a file descriptor
-  * @in_handle: input handle for the trace.dat file to copy from.
-@@ -4135,6 +4152,19 @@ int tracecmd_copy_headers(struct tracecmd_input *in_handle,
- 			return 0;
++int tracecmd_append_buffer_cpu_data(struct tracecmd_output *handle,
++				    const char *name, int cpus, char * const *cpu_data_files)
++{
++	if (out_update_buffer_cpu_offset(handle, name))
++		return -1;
  
- 		ret = copy_command_lines(in_handle, out_handle);
-+		if (ret < 0)
-+			goto out;
-+
-+		/* fallthrough */
-+	case TRACECMD_FILE_CPU_COUNT:
-+		if (end_state <= in_handle->file_state)
-+			return 0;
-+
-+		ret = copy_cpu_count(in_handle, out_handle);
-+		if (ret < 0)
-+			goto out;
-+
-+		/* fallthrough */
- 	default:
- 		break;
- 	}
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index e3b018aa..a3d0f037 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -1949,7 +1949,7 @@ struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle, const char
- 	if (!handle)
- 		return NULL;
- 
--	fstate = state > TRACECMD_FILE_CMD_LINES ? TRACECMD_FILE_CMD_LINES : state;
-+	fstate = state > TRACECMD_FILE_CPU_COUNT ? TRACECMD_FILE_CPU_COUNT : state;
- 	if (tracecmd_copy_headers(ihandle, handle, 0, fstate) < 0)
- 		goto out_free;
- 
+ 	return tracecmd_write_cpu_data(handle, cpus, cpu_data_files);
+ }
 -- 
 2.31.1
 
