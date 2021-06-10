@@ -8,59 +8,59 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D734FC48BE8
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:35:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28241C48BE6
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:35:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C437B61419
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:35:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 15FAE61406
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:35:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbhFJLhu (ORCPT
+        id S230401AbhFJLhv (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 10 Jun 2021 07:37:50 -0400
-Received: from mail-wm1-f45.google.com ([209.85.128.45]:55886 "EHLO
-        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230446AbhFJLhq (ORCPT
+        Thu, 10 Jun 2021 07:37:51 -0400
+Received: from mail-wr1-f43.google.com ([209.85.221.43]:36493 "EHLO
+        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230265AbhFJLhu (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 10 Jun 2021 07:37:46 -0400
-Received: by mail-wm1-f45.google.com with SMTP id g204so5954906wmf.5
-        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Jun 2021 04:35:50 -0700 (PDT)
+        Thu, 10 Jun 2021 07:37:50 -0400
+Received: by mail-wr1-f43.google.com with SMTP id e11so1926898wrg.3
+        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Jun 2021 04:35:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XThZzPdOYJaqw5JOXWGo2FbsQo5b9Di4gify468C2WE=;
-        b=oS4j3+cwJ7XOIHFjOrhYjqvALzBGey/oR3bGyQPcvyFL/tPCDOxhq/xJ1U9bU4Aj3T
-         PVMGm4FM9nBv+8U6rzLfglZR5sxofb7KJrwOO4A/11miBgGemLS5sjJIWeL+Bueqg4nq
-         Vre9+7lJMCzrg9ooZLO1Vwx/MJ6naCEMaRdmuzih4JZcicYCj9eWZIWN8ekVZwrLX0/Q
-         vcfh8OsEWBPLDz4fh9BkFwz+0BXG+23BFRY6DkEtY6d0q+XZxRmY51pcT0mxXdsI693/
-         u5GeaR+j8pyOH7k/tJj/xGjbIg5NjIgAbhwkqTUoQH8LVonPB9ui3ZKzfV5kDXT8Ckay
-         6q4Q==
+        bh=NqdwP9PtDAQbN3d2HuWkt3iR2ue3U7FNAnglrV9syuU=;
+        b=QwSyCj3aa43HO6qdXWLGHjfvmreS05gt8zwUIi/bvJmRoupazvjGXD9IqwUmvkXC6s
+         Jn1sunsO3IxlXgSX8ZYUJfDS1Bc1jN21aEhc6ZFEH4UhiPjHKwVN4mHsEwFtBVDY7vsL
+         PH+H1oYjogdLj3nSvQz+LYt8Q3aQpAD0Pim2SwfmQLH7Mp8ICdXaYB4fz4yQJlzlDxR6
+         aMPAlR+BE8vN8hZG7Em/KwHKGr7Qb4x2z8h9D3hDyqI9pxYeGfAjI5vDJD0liyzE1/6T
+         GPnN+aM+va5vJgbHT3XiTqZviaRzbhdYPrC8M+Mh7AknXafj43NKoNUDuliFqK8NL2O1
+         Tygw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XThZzPdOYJaqw5JOXWGo2FbsQo5b9Di4gify468C2WE=;
-        b=hcXTBiDr9u4SyV+93Bm826Rt5XP0Exk+RKKdt1K4VVpajIo6bkin1g0cqpvwt8eZGJ
-         9ef4JmpOoFEQdFRlm5CZ3/mfk0o7xPUCOuy/qXnVOmERe11d7+dkq4NKl4bZ/GbeYsw/
-         Ne2TTST3eVqvSDXejQprKL54C5p0nkr6WlcquQRXAxZ0cJnOwXOIjylLp4uWsLgUSwGK
-         u4mCpgAY34+rJyeRrIHmheth1w/HVjsbDrAABEj87ygcqxJK1bX0NzRJPiDGZfCqnQHB
-         V9bxjJLlzRZPEhzTLdIS7WHdf0qwUhAX19r//4jopUICNIX3H14EI5Udd2H738fByM/a
-         utUQ==
-X-Gm-Message-State: AOAM533UTiK9SqDzftWF19HVfaSIngAQU75g7eIGu9je9zjNZojvizTK
-        cBcfEhvqdvHQ6M0vQomNky6o0hXGq7poxw==
-X-Google-Smtp-Source: ABdhPJwJ3xCbl+pyOjhtS2LRH593cWjGA9mZaMu9zbCWaF4PXmcbkiJGwa9c9TOP2Wkuo+BNDqLizg==
-X-Received: by 2002:a7b:c20a:: with SMTP id x10mr4502370wmi.141.1623324889952;
-        Thu, 10 Jun 2021 04:34:49 -0700 (PDT)
+        bh=NqdwP9PtDAQbN3d2HuWkt3iR2ue3U7FNAnglrV9syuU=;
+        b=YJHxiuebYYJlhV0O7YaX9Y+HFALxh0AbMvCtItd/Cmoxfj3/i8kMpA2RzSlTKx9iNC
+         ftEaTU0K4nTjP+TSt99MEWnviuGhO3c4FMkJxyrnMZwHVq7BglKtnIJPovaR151PIdGs
+         8v4zlWfegVZdxlkKXt6g4c0coEEDeMG9xoVY0+hECRDyqWUO4tRuMTLbidgQvUgkjWzG
+         FnA39IltuGm2DLh5COYsfN4FCqM6M6FznzU3piW0WHSgaApOTlEmud0puYQZsFICmTLb
+         IB7KxF7yjitTmikx0NQHEiHJq+8vebj+M6YJekP2mO0bQiwaSkZBIGiGzNbulav68gsu
+         ZEbg==
+X-Gm-Message-State: AOAM533OK3Df5qcaCRGQjq9Ii5Qq7UF68OGPu9GdMPA+8tVFEUIlD/lA
+        Ju6d9jqiBetwpQ6zQ1WGhvdtlgw7o1ZMyw==
+X-Google-Smtp-Source: ABdhPJyOvGVKoYAM043XkJ6k/JwFEecBPU+uo4gB4+5b4M8b5CEvofhi0ShkK66L+cSHJ94lXlRpXw==
+X-Received: by 2002:a5d:4692:: with SMTP id u18mr4785552wrq.318.1623324881910;
+        Thu, 10 Jun 2021 04:34:41 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id n42sm8898391wms.29.2021.06.10.04.34.49
+        by smtp.gmail.com with ESMTPSA id n42sm8898391wms.29.2021.06.10.04.34.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 04:34:49 -0700 (PDT)
+        Thu, 10 Jun 2021 04:34:41 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v5 23/40] trace-cmd library: Add APIs for read and write compressed data in chunks
-Date:   Thu, 10 Jun 2021 14:34:09 +0300
-Message-Id: <20210610113426.257931-24-tz.stoyanov@gmail.com>
+Subject: [PATCH v5 14/40] trace-cmd library: Extend the create file APIs to support different compression
+Date:   Thu, 10 Jun 2021 14:34:00 +0300
+Message-Id: <20210610113426.257931-15-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210610113426.257931-1-tz.stoyanov@gmail.com>
 References: <20210610113426.257931-1-tz.stoyanov@gmail.com>
@@ -70,247 +70,337 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-New compression APIs are added for writing and reading compressed data
-from / to files in chunks:
- tracecmd_compress_copy_from()
- tracecmd_uncompress_copy_to()
-Format of the compressed data, used by these APIs, is:
- - 4 bytes, chunks count
-   - for each chunk:
-     - 4 bytes, size of compressed data in this chunk
-     - 4 bytes, uncompressed size of the data in this chunk
-     - data, bytes of <size of compressed data in this chunk>
+Added additional parameter for file compression to all trace-cmd library
+APIs for creating a new trace file. The caller could specify what
+compression algorithm should be used when creating a new trace file:
+ tracecmd_create_file_latency
+ tracecmd_create_init_file_glob
+ tracecmd_create_init_fd_glob
+ tracecmd_create_init_fd_msg
+ tracecmd_create_init_file
+ tracecmd_create_init_file_override
+ tracecmd_create_init_fd
+
+The new parameter is of type string and can be one of:
+ "any" - auto select the best available compression algorithm
+ "none" - do not compress the trace file
+ name - the name of the desired compression algorithms
+
+If a compression is used, trace file version 7 is selected, otherwise
+trace file version 6 is used.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- .../include/private/trace-cmd-private.h       |   5 +-
- lib/trace-cmd/trace-compress.c                | 200 ++++++++++++++++++
- 2 files changed, 204 insertions(+), 1 deletion(-)
+ .../include/private/trace-cmd-private.h       | 19 +++--
+ lib/trace-cmd/trace-output.c                  | 79 ++++++++++++-------
+ tracecmd/trace-record.c                       | 12 ++-
+ tracecmd/trace-restore.c                      |  4 +-
+ tracecmd/trace-stream.c                       |  2 +-
+ 5 files changed, 70 insertions(+), 46 deletions(-)
 
 diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 10089389..067ba34d 100644
+index 624d0afb..ee73325c 100644
 --- a/lib/trace-cmd/include/private/trace-cmd-private.h
 +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -494,7 +494,10 @@ int tracecmd_compress_proto_register(const char *name, const char *version, int
- 						       char *out, unsigned int *out_bytes),
- 				     unsigned int (*comress_size)(unsigned int bytes),
- 				     bool (*is_supported)(const char *name, const char *version));
--
-+int tracecmd_compress_copy_from(struct tracecmd_compression *handle, int fd, int chunk_size,
-+				unsigned long long *read_size, unsigned long long *write_size);
-+int tracecmd_uncompress_copy_to(struct tracecmd_compression *handle, int fd,
-+				unsigned long long *read_size, unsigned long long *write_size);
- /* --- Plugin handling --- */
- extern struct tep_plugin_option trace_ftrace_options[];
+@@ -271,20 +271,23 @@ struct tracecmd_event_list {
+ struct tracecmd_option;
+ struct tracecmd_msg_handle;
  
-diff --git a/lib/trace-cmd/trace-compress.c b/lib/trace-cmd/trace-compress.c
-index 2b329d00..4a4707c2 100644
---- a/lib/trace-cmd/trace-compress.c
-+++ b/lib/trace-cmd/trace-compress.c
-@@ -594,3 +594,203 @@ error:
- 	free(v);
- 	return -1;
+-struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, int cpus);
++struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, int cpus,
++						     const char *compression);
+ struct tracecmd_output *
+-tracecmd_create_init_file_glob(const char *output_file,
+-			       struct tracecmd_event_list *list);
+-struct tracecmd_output *tracecmd_create_init_fd(int fd);
++tracecmd_create_init_file_glob(const char *output_file, struct tracecmd_event_list *list,
++			       const char *compression);
++struct tracecmd_output *tracecmd_create_init_fd(int fd, const char *compression);
+ struct tracecmd_output *
+-tracecmd_create_init_fd_glob(int fd, struct tracecmd_event_list *list);
++tracecmd_create_init_fd_glob(int fd, struct tracecmd_event_list *list, const char *compression);
+ struct tracecmd_output *
+ tracecmd_create_init_fd_msg(struct tracecmd_msg_handle *msg_handle,
+-			    struct tracecmd_event_list *list);
+-struct tracecmd_output *tracecmd_create_init_file(const char *output_file);
++			    struct tracecmd_event_list *list,
++			    const char *compression);
++struct tracecmd_output *tracecmd_create_init_file(const char *output_file, const char *compression);
+ struct tracecmd_output *tracecmd_create_init_file_override(const char *output_file,
+ 							   const char *tracing_dir,
+-							   const char *kallsyms);
++							   const char *kallsyms,
++							   const char *compression);
+ struct tracecmd_option *tracecmd_add_option(struct tracecmd_output *handle,
+ 					    unsigned short id, int size,
+ 					    const void *data);
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index 172462e7..f249ee91 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -978,24 +978,41 @@ out_free:
  }
-+
-+/**
-+ * tracecmd_compress_copy_from - Copy and compress data from a file
-+ * @handle: compression handler
-+ * @fd: file descriptor to uncompressed data
-+ * @chunk_size: size of one compression chunk
-+ * @read_size: in - max bytes to read from @fd, 0 to read till the EOF
-+ *	       out - size of the uncompressed data read from @fd
-+ * @write_size: return, size of the compressed data written into @handle
-+ *
-+ * This function reads uncompressed data from given @fd until EOF is reached, compresses
-+ * the data using the @handle compression context and writes the compressed data into the fd
-+ * associated with the @handle. The data is compressed on chunks with given @chunk_size size.
-+ * The compressed data is written in the format:
-+ *  - 4 bytes, chunks count
-+ *  - for each chunk:
-+ *    - 4 bytes, size of compressed data in this chunk
-+ *    - 4 bytes, uncompressed size of the data in this chunk
-+ *    - data, bytes of <size of compressed data in this chunk>
-+ *
-+ * On success 0 is returned, @read_size and @write_size are updated with the size of
-+ * read and written data.
-+ */
-+int tracecmd_compress_copy_from(struct tracecmd_compression *handle, int fd, int chunk_size,
-+				unsigned long long *read_size, unsigned long long *write_size)
-+{
-+	unsigned int chunks = 0;
-+	unsigned int rsize = 0;
-+	unsigned int rmax = 0;
-+	unsigned int wsize = 0;
-+	unsigned int csize;
-+	unsigned int rchunk = 0;
-+	unsigned int size;
-+	unsigned int r;
-+	off64_t offset;
-+	char *buf_from;
-+	char *buf_to;
-+	int endian4;
-+	int ret;
-+
-+	if (!handle || !handle->proto ||
-+	    !handle->proto->comress_block || !handle->proto->comress_size)
-+		return 0;
-+	if (read_size)
-+		rmax = *read_size;
-+	csize = handle->proto->comress_size(chunk_size);
-+	buf_from = malloc(chunk_size);
-+	if (!buf_from)
-+		return -1;
-+	buf_to = malloc(csize);
-+	if (!buf_to)
-+		return -1;
-+	/* save the initial offset and write 0 chunks */
-+	offset = lseek64(handle->fd, 0, SEEK_CUR);
-+	write_fd(handle->fd, &chunks, 4);
-+
-+	do {
-+		if (rmax > 0 && (rmax - rsize) < chunk_size)
-+			rchunk = (rmax - rsize);
-+		else
-+			rchunk = chunk_size;
-+
-+		r = read(fd, buf_from, rchunk);
-+		if (r < 0 || (rmax > 0 && rsize >= rmax))
-+			break;
-+		rsize += r;
-+		size = csize;
-+		if (r > 0) {
-+			ret = handle->proto->comress_block(buf_from, r, buf_to, &size);
-+			if (ret < 0) {
-+				if (errno == EINTR)
-+					continue;
-+				break;
+ 
+ static int select_file_version(struct tracecmd_output *handle,
+-				struct tracecmd_input *ihandle)
++				struct tracecmd_input *ihandle,
++				const char *compression)
+ {
+ 	const char *cname = NULL;
+ 	const char *cver = NULL;
+ 
+-	if (ihandle) {
+-		handle->file_version = tracecmd_get_in_file_version(ihandle);
++	if (compression) { /* If compression is specified - use it */
++		if (!strcmp(compression, "any")) {
++			handle->compress = tracecmd_compress_alloc(NULL, NULL, handle->fd,
++								   handle->pevent, handle->msg_handle);
++			if (!handle->compress) {
++				tracecmd_warning("No compression algorithms are not supported");
++				return -1;
 +			}
-+			/* Write compressed data size */
-+			endian4 = tep_read_number(handle->tep, &size, 4);
-+			ret = write_fd(handle->fd, &endian4, 4);
-+			if (ret != 4)
-+				break;
-+			/* Write uncompressed data size */
-+			endian4 = tep_read_number(handle->tep, &r, 4);
-+			ret = write_fd(handle->fd, &endian4, 4);
-+			if (ret != 4)
-+				break;
-+			/* Write the compressed data */
-+			ret = write_fd(handle->fd, buf_to, size);
-+			if (ret != size)
-+				break;
-+			/* data + compress header */
-+			wsize += (size + 8);
-+			chunks++;
++		} else if (strcmp(compression, "none")) {
++			handle->compress = tracecmd_compress_alloc(compression, NULL, handle->fd,
++								   handle->pevent, handle->msg_handle);
++			if (!handle->compress) {
++				tracecmd_warning("Compression algorithm %s is not supported",
++						  compression);
++				return -1;
++			}
 +		}
-+	} while (r > 0);
-+	free(buf_from);
-+	free(buf_to);
-+	if (r)
-+		return -1;
-+	if (lseek64(handle->fd, offset, SEEK_SET) == (off_t)-1)
-+		return -1;
-+	endian4 = tep_read_number(handle->tep, &chunks, 4);
-+	/* write chunks count*/
-+	write_fd(handle->fd, &chunks, 4);
-+	lseek64(handle->fd, offset, SEEK_SET);
-+	if (lseek64(handle->fd, 0, SEEK_END) == (off_t)-1)
-+		return -1;
-+	if (read_size)
-+		*read_size = rsize;
-+	if (write_size)
-+		*write_size = wsize;
-+	return 0;
-+}
-+
-+/**
-+ * tracecmd_uncompress_copy_to - Uncompress data and copy to a file
-+ * @handle: compression handler
-+ * @fd: file descriptor to uncompressed data
-+ * @read_size: return, size of the compressed data read from @handle
-+ * @write_size: return, size of the uncompressed data written into @fd
-+ *
-+ * This function reads compressed data from the fd, associated with @handle, uncompresses it
-+ * using the @handle compression context and writes the uncompressed data into the fd.
-+ * The compressed data must be in the format:
-+ *  - 4 bytes, chunks count
-+ *  - for each chunk:
-+ *    - 4 bytes, size of compressed data in this chunk
-+ *    - 4 bytes, uncompressed size of the data in this chunk
-+ *    - data, bytes of <size of compressed data in this chunk>
-+ *
-+ * On success 0 is returned, @read_size and @write_size are updated with the size of
-+ * read and written data.
-+ */
-+int tracecmd_uncompress_copy_to(struct tracecmd_compression *handle, int fd,
-+				unsigned long long *read_size, unsigned long long *write_size)
-+{
-+	unsigned int s_uncompressed;
-+	unsigned int s_compressed;
-+	unsigned int rsize = 0;
-+	unsigned int wsize = 0;
-+	char *bytes_out = NULL;
-+	char *bytes_in = NULL;
-+	int size_out;
-+	int size_in;
-+	int chunks;
-+	char buf[4];
-+	char *tmp;
-+	int ret;
-+
-+	if (!handle || !handle->proto || !handle->proto->uncompress_block)
-+		return -1;
-+
-+	if (read(handle->fd, buf, 4) != 4)
-+		return -1;
-+	chunks = tep_read_number(handle->tep, buf, 4);
-+	rsize += 4;
-+	while (chunks) {
-+		if (read(handle->fd, buf, 4) != 4)
-+			break;
-+		s_compressed = tep_read_number(handle->tep, buf, 4);
-+		rsize += 4;
-+		if (read(handle->fd, buf, 4) != 4)
-+			break;
-+		s_uncompressed = tep_read_number(handle->tep, buf, 4);
-+		rsize += 4;
-+		if (!bytes_in || size_in < s_compressed) {
-+			tmp = realloc(bytes_in, s_compressed);
-+			if (!tmp)
-+				break;
-+			bytes_in = tmp;
-+			size_in = s_compressed;
-+		}
-+
-+		if (!bytes_out || size_out < s_uncompressed) {
-+			tmp = realloc(bytes_out, s_uncompressed);
-+			if (!tmp)
-+				break;
-+			bytes_out = tmp;
-+			size_out = s_uncompressed;
-+		}
-+
-+		if (read_fd(handle->fd, bytes_in, s_compressed) < 0)
-+			break;
-+		rsize += s_compressed;
-+		ret = handle->proto->uncompress_block(bytes_in, s_compressed,
-+						      bytes_out, &s_uncompressed);
-+		if (ret)
-+			break;
-+		write_fd(fd, bytes_out, s_uncompressed);
-+		wsize += s_uncompressed;
-+		chunks--;
-+	}
-+	free(bytes_in);
-+	free(bytes_out);
-+	if (chunks)
-+		return -1;
-+	if (read_size)
-+		*read_size = rsize;
-+	if (write_size)
-+		*write_size = wsize;
-+	return 0;
-+}
++	} else if (ihandle) { /* If there is input handler - inherit compression */
+ 		if (!tracecmd_get_file_compress_proto(ihandle, &cname, &cver)) {
+ 			handle->compress = tracecmd_compress_alloc(cname, cver, handle->fd,
+ 								   handle->pevent, handle->msg_handle);
+ 			if (!handle->compress)
+ 				return -1;
+ 		}
+-		return 0;
++	} else { /* default - auto select the best available compression algorithm */
++		handle->compress = tracecmd_compress_alloc(NULL, NULL, handle->fd,
++							    handle->pevent, handle->msg_handle);
+ 	}
+ 
+-	handle->compress = tracecmd_compress_alloc(NULL, NULL, handle->fd,
+-						   handle->pevent, handle->msg_handle);
+ 	if (handle->compress)
+ 		handle->file_version = 7;
+ 	else
+@@ -1028,7 +1045,8 @@ create_file_fd(int fd, struct tracecmd_input *ihandle,
+ 	       const char *tracing_dir,
+ 	       const char *kallsyms,
+ 	       struct tracecmd_event_list *list,
+-	       struct tracecmd_msg_handle *msg_handle)
++	       struct tracecmd_msg_handle *msg_handle,
++	       const char *compression)
+ {
+ 	struct tracecmd_output *handle;
+ 	struct tep_handle *pevent;
+@@ -1049,7 +1067,7 @@ create_file_fd(int fd, struct tracecmd_input *ihandle,
+ 
+ 	handle->msg_handle = msg_handle;
+ 
+-	if (select_file_version(handle, ihandle))
++	if (select_file_version(handle, ihandle, compression))
+ 		goto out_free;
+ 
+ 	list_head_init(&handle->options);
+@@ -1128,7 +1146,8 @@ static struct tracecmd_output *create_file(const char *output_file,
+ 					   struct tracecmd_input *ihandle,
+ 					   const char *tracing_dir,
+ 					   const char *kallsyms,
+-					   struct tracecmd_event_list *list)
++					   struct tracecmd_event_list *list,
++					   const char *compression)
+ {
+ 	struct tracecmd_output *handle;
+ 	int fd;
+@@ -1137,7 +1156,7 @@ static struct tracecmd_output *create_file(const char *output_file,
+ 	if (fd < 0)
+ 		return NULL;
+ 
+-	handle = create_file_fd(fd, ihandle, tracing_dir, kallsyms, list, NULL);
++	handle = create_file_fd(fd, ihandle, tracing_dir, kallsyms, list, NULL, compression);
+ 	if (!handle) {
+ 		close(fd);
+ 		unlink(output_file);
+@@ -1403,13 +1422,14 @@ int tracecmd_write_cmdlines(struct tracecmd_output *handle)
+ 	return ret;
+ }
+ 
+-struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, int cpus)
++struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, int cpus,
++						     const char *compression)
+ {
+ 	struct tracecmd_output *handle;
+ 	char *path;
+ 	int ret;
+ 
+-	handle = create_file(output_file, NULL, NULL, NULL, &all_event_list);
++	handle = create_file(output_file, NULL, NULL, NULL, &all_event_list, compression);
+ 	if (!handle)
+ 		return NULL;
+ 
+@@ -1710,41 +1730,43 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
+ 	return NULL;
+ }
+ 
+-struct tracecmd_output *tracecmd_create_init_fd(int fd)
++struct tracecmd_output *tracecmd_create_init_fd(int fd, const char *compression)
+ {
+-	return create_file_fd(fd, NULL, NULL, NULL, &all_event_list, NULL);
++	return create_file_fd(fd, NULL, NULL, NULL, &all_event_list, NULL, compression);
+ }
+ 
+ struct tracecmd_output *
+ tracecmd_create_init_fd_msg(struct tracecmd_msg_handle *msg_handle,
+-			    struct tracecmd_event_list *list)
++			    struct tracecmd_event_list *list, const char *compression)
+ {
+-	return create_file_fd(msg_handle->fd, NULL, NULL, NULL, list, msg_handle);
++	return create_file_fd(msg_handle->fd, NULL, NULL, NULL,
++			      list, msg_handle, compression);
+ }
+ 
+ struct tracecmd_output *
+-tracecmd_create_init_fd_glob(int fd, struct tracecmd_event_list *list)
++tracecmd_create_init_fd_glob(int fd, struct tracecmd_event_list *list, const char *compression)
+ {
+-	return create_file_fd(fd, NULL, NULL, NULL, list, NULL);
++	return create_file_fd(fd, NULL, NULL, NULL, list, NULL, compression);
+ }
+ 
+ struct tracecmd_output *
+-tracecmd_create_init_file_glob(const char *output_file,
+-			       struct tracecmd_event_list *list)
++tracecmd_create_init_file_glob(const char *output_file, struct tracecmd_event_list *list,
++			       const char *compression)
+ {
+-	return create_file(output_file, NULL, NULL, NULL, list);
++	return create_file(output_file, NULL, NULL, NULL, list, compression);
+ }
+ 
+-struct tracecmd_output *tracecmd_create_init_file(const char *output_file)
++struct tracecmd_output *tracecmd_create_init_file(const char *output_file, const char *compression)
+ {
+-	return create_file(output_file, NULL, NULL, NULL, &all_event_list);
++	return create_file(output_file, NULL, NULL, NULL, &all_event_list, compression);
+ }
+ 
+ struct tracecmd_output *tracecmd_create_init_file_override(const char *output_file,
+ 							   const char *tracing_dir,
+-							   const char *kallsyms)
++							   const char *kallsyms,
++							   const char *compression)
+ {
+-	return create_file(output_file, NULL, tracing_dir, kallsyms, &all_event_list);
++	return create_file(output_file, NULL, tracing_dir, kallsyms, &all_event_list, compression);
+ }
+ 
+ /**
+@@ -1756,12 +1778,13 @@ struct tracecmd_output *tracecmd_create_init_file_override(const char *output_fi
+  * with the same characteristics (events and all) and returns
+  * tracecmd_output handle to this new file.
+  */
+-struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle,
+-				      const char *file)
++struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle, const char *file)
+ {
+ 	struct tracecmd_output *handle;
++	const char *compr_name = NULL;
+ 
+-	handle = create_file(file, ihandle, NULL, NULL, &all_event_list);
++	tracecmd_get_file_compress_proto(ihandle, &compr_name, NULL);
++	handle = create_file(file, ihandle, NULL, NULL, &all_event_list, compr_name);
+ 	if (!handle)
+ 		return NULL;
+ 
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 60ee5fb3..29f84b7c 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -3700,7 +3700,7 @@ setup_connection(struct buffer_instance *instance, struct common_record_context
+ 
+ 	/* Now create the handle through this socket */
+ 	if (msg_handle->version == V3_PROTOCOL) {
+-		network_handle = tracecmd_create_init_fd_msg(msg_handle, listed_events);
++		network_handle = tracecmd_create_init_fd_msg(msg_handle, listed_events, NULL);
+ 		if (!network_handle)
+ 			goto error;
+ 		tracecmd_set_quiet(network_handle, quiet);
+@@ -3718,8 +3718,7 @@ setup_connection(struct buffer_instance *instance, struct common_record_context
+ 		if (ret)
+ 			goto error;
+ 	} else {
+-		network_handle = tracecmd_create_init_fd_glob(msg_handle->fd,
+-							      listed_events);
++		network_handle = tracecmd_create_init_fd_glob(msg_handle->fd, listed_events, NULL);
+ 		if (!network_handle)
+ 			goto error;
+ 		tracecmd_set_quiet(network_handle, quiet);
+@@ -4067,8 +4066,7 @@ static void setup_agent(struct buffer_instance *instance,
+ {
+ 	struct tracecmd_output *network_handle;
+ 
+-	network_handle = tracecmd_create_init_fd_msg(instance->msg_handle,
+-						     listed_events);
++	network_handle = tracecmd_create_init_fd_msg(instance->msg_handle, listed_events, NULL);
+ 	add_options(network_handle, ctx);
+ 	tracecmd_write_cmdlines(network_handle);
+ 	tracecmd_write_cpus(network_handle, instance->cpu_count);
+@@ -4460,7 +4458,7 @@ static void record_data(struct common_record_context *ctx)
+ 		return;
+ 
+ 	if (latency) {
+-		handle = tracecmd_create_file_latency(ctx->output, local_cpu_count);
++		handle = tracecmd_create_file_latency(ctx->output, local_cpu_count, NULL);
+ 		tracecmd_set_quiet(handle, quiet);
+ 	} else {
+ 		if (!local_cpu_count)
+@@ -4491,7 +4489,7 @@ static void record_data(struct common_record_context *ctx)
+ 				touch_file(temp_files[i]);
+ 		}
+ 
+-		handle = tracecmd_create_init_file_glob(ctx->output, listed_events);
++		handle = tracecmd_create_init_file_glob(ctx->output, listed_events, NULL);
+ 		if (!handle)
+ 			die("Error creating output file");
+ 		tracecmd_set_quiet(handle, quiet);
+diff --git a/tracecmd/trace-restore.c b/tracecmd/trace-restore.c
+index 280a37f0..96b4fb5d 100644
+--- a/tracecmd/trace-restore.c
++++ b/tracecmd/trace-restore.c
+@@ -91,7 +91,7 @@ void trace_restore (int argc, char **argv)
+ 		}
+ 
+ 		handle = tracecmd_create_init_file_override(output, tracing_dir,
+-							    kallsyms);
++							    kallsyms, NULL);
+ 		if (!handle)
+ 			die("Unabled to create output file %s", output);
+ 		if (tracecmd_write_cmdlines(handle) < 0)
+@@ -128,7 +128,7 @@ void trace_restore (int argc, char **argv)
+ 		handle = tracecmd_copy(ihandle, output);
+ 		tracecmd_close(ihandle);
+ 	} else
+-		handle = tracecmd_create_init_file(output);
++		handle = tracecmd_create_init_file(output, NULL);
+ 
+ 	if (!handle)
+ 		die("error writing to %s", output);
+diff --git a/tracecmd/trace-stream.c b/tracecmd/trace-stream.c
+index b47b208c..317de1b2 100644
+--- a/tracecmd/trace-stream.c
++++ b/tracecmd/trace-stream.c
+@@ -43,7 +43,7 @@ trace_stream_init(struct buffer_instance *instance, int cpu, int fd, int cpus,
+ 		tfd = fileno(fp);
+ 
+ 		ofd = dup(tfd);
+-		trace_output = tracecmd_create_init_fd(ofd);
++		trace_output = tracecmd_create_init_fd(ofd, NULL);
+ 		if (!trace_output) {
+ 			fclose(fp);
+ 			return NULL;
 -- 
 2.31.1
 
