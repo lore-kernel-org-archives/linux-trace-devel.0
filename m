@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B37BDC48BE6
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:35:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE12AC47094
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:35:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 903D6613F1
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:35:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DAA2961410
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:35:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbhFJLhG (ORCPT
+        id S230356AbhFJLhK (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 10 Jun 2021 07:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34854 "EHLO
+        Thu, 10 Jun 2021 07:37:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbhFJLhD (ORCPT
+        with ESMTP id S230329AbhFJLhD (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 10 Jun 2021 07:37:03 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C13EC0617A8
-        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Jun 2021 04:35:01 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id i94so1917419wri.4
-        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Jun 2021 04:35:01 -0700 (PDT)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA19C0617A6
+        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Jun 2021 04:34:59 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 3-20020a05600c0243b029019f2f9b2b8aso6214462wmj.2
+        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Jun 2021 04:34:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GOtu+Wh1wifdgaEDNzuuGtxIZ37pnZ0Ef/YmVURzFrM=;
-        b=CO368FZMkGAYMtt4ZKFGjxwxHHzjGuppVPcZlRJgXNXS1Ucq8SkRi5bG9R+cywZadO
-         XdcFkg4xtuG926lSqJNBR+HJaH2QJerwH4eY0tNjSSrkYAYYnZ9rPuncQaaHluAfWZVb
-         sYIgwmWbkdgBur/I8Vpskk/GwcpHCC0qSCKzDF2LyBUbblvMT2PxKKjEEdcyY044VmbU
-         Dv6FU72hO+LOkgqtVGW411TdAIBk9qGkzwLUACxBMGArh5nzpHWqgTaN/rOetIxQy2qn
-         t/15gERTHLssjM00O8MNzMIBd8Qu6tuW02ijfXdLQnZGheQEWhqvdMeVQaZ5G4suF/sl
-         FK7A==
+        bh=6d+ps2XI6q8t8p5XkZiTzQSOgVeK23JVAY/zSugXJQ0=;
+        b=FVdEySxM5hs5y8uTrZC3+t/+/XhbukG9noL33LKU5fsEE2qK4ihNd4TdcL80D8boPb
+         l77mypErCW/Lh/BSOJccnwq0oJCEIWUz0DDp/rRQM8FGDoDH6g2bjgsWE+Z1u1sfqKTw
+         zaKmbzsDGMJ6LNMjeeonfyvME3krKk4zaWWZBk+0Nd2rRxX5jseMp9zSdQP5M4YdqRDD
+         NhqKJ5ZrreUYFC3rCWZLqCA26Gfl58ka6rYWv+zM0KokD8VtSjsJii90qgbp7DHWsKT1
+         6g3byp8hP787YWHay0rTmp+9ZA1tmVVvRNS46ITKDxhRlwUT+aMzI+oIZ+XwyBSBzgak
+         egiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GOtu+Wh1wifdgaEDNzuuGtxIZ37pnZ0Ef/YmVURzFrM=;
-        b=tYIiDv2rNauIpcMpbil79LFez61koDdLMsX8RpXIFMjv8vulXcAtTNo6PD8JiTC1xR
-         CPLvY5mLaT8g0OUUZiA8XmDyoyUDYJvoHNG4Nem9YrSNT3EczuBJn8fJzulXqVI/BjP5
-         EQYOh5H7Gz7fOiz5Soy5UEsC0D01D2gVOLdnWFYPTtsW+oU672MyTrezQfb50f/feFED
-         9Y3Gs22UHMKjkqxp8DWX2VH00LNZxjwlOVg5Wm4XNi+fbCTK3KULuFOwDFfTcmSfgSkc
-         MoPcKWD+eiO/WXn/64GbU3xBWUbZrUMvA8+Pvc+/BZakvx3ruWmgb6vo9dme6iEn93VO
-         bPQA==
-X-Gm-Message-State: AOAM530qUj7l7eU/AQUGA9FMZgEmJgEJeaqtRXyxJP0VO3VsAdxuk6En
-        8RjhABK66J5yyogyyi508JCUfLSBXdH/pg==
-X-Google-Smtp-Source: ABdhPJxuPiIHMYAFnfD6Csax1zyNUGjB5CEs+fL47nSxkvSAFwDnCXB8Wk+lZwDsdlXD2DjFI506Qg==
-X-Received: by 2002:a5d:5151:: with SMTP id u17mr5050940wrt.302.1623324899914;
-        Thu, 10 Jun 2021 04:34:59 -0700 (PDT)
+        bh=6d+ps2XI6q8t8p5XkZiTzQSOgVeK23JVAY/zSugXJQ0=;
+        b=MRzmv2Y68oJogiG9ghBFIgftXNHJMgNjSIidUHRB253dOwkUbDgOnYj0h0Je2Hxdla
+         3BZevq0FETTvuVg7f/zs4x45se2IpyGSO65ShQv4JFtmSFFn1vdlZWGZhKHSxe2+JEzK
+         dpp8cWbiYYJDnaUKtYUVkhnbtY2ALr15wPl+0E5KqvaIva69ErKlyWKPui3icoSkhl8/
+         aWv5c7Qig0AbW5mIAg2+CN6QVS0AfRAtG+AJ6mfLJXqKpphaVeVMOZfmTQlHbobL/Gml
+         jejlhepTT+AxWbU7jqff4ADn+a4Vo3b9UQC84CbYrR8oMUqteDMDvEeHy4et1eNQULyI
+         v+Xw==
+X-Gm-Message-State: AOAM531mmFMAEwNrb8xX1akqvMC3dQ2/swLJIWVo5tTpgOD0pmb/Mw/+
+        q+GuyhvvN1plkW8lPIKQGB9Kp8CHX1uG9g==
+X-Google-Smtp-Source: ABdhPJyEEsZ7G3RHFSF6gzDoS4WLW0jESO7+R0yZ4ERk+hzMh7HOnAaLqbRNJktrG3O6n7oa3NFxHw==
+X-Received: by 2002:a1c:4b0d:: with SMTP id y13mr4530876wma.179.1623324898041;
+        Thu, 10 Jun 2021 04:34:58 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id n42sm8898391wms.29.2021.06.10.04.34.59
+        by smtp.gmail.com with ESMTPSA id n42sm8898391wms.29.2021.06.10.04.34.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 04:34:59 -0700 (PDT)
+        Thu, 10 Jun 2021 04:34:57 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v5 34/40] trace-cmd: Copy buffers description in tracecmd_copy
-Date:   Thu, 10 Jun 2021 14:34:20 +0300
-Message-Id: <20210610113426.257931-35-tz.stoyanov@gmail.com>
+Subject: [PATCH v5 32/40] trace-cmd: Add file state parameter to tracecmd_copy
+Date:   Thu, 10 Jun 2021 14:34:18 +0300
+Message-Id: <20210610113426.257931-33-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210610113426.257931-1-tz.stoyanov@gmail.com>
 References: <20210610113426.257931-1-tz.stoyanov@gmail.com>
@@ -73,92 +73,94 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Extend the tracecmd_copy() API to support copying of trace buffers
-description from input to output trace handler.
+The tracecmd_copy() API is used to create output trace handler from
+given input trace handler and to copy data from it. Currently it is used
+by trace-cmd split and restore commands, that's why it is hardcoded what
+data to be copied from input to output handler. Addig desired output
+handler file state makes the API more generic and allows it to be used
+in more use cases.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- .../include/private/trace-cmd-private.h       |  2 +
- lib/trace-cmd/trace-input.c                   | 38 +++++++++++++++++++
- lib/trace-cmd/trace-output.c                  |  3 ++
- 3 files changed, 43 insertions(+)
+ lib/trace-cmd/include/private/trace-cmd-private.h | 4 ++--
+ lib/trace-cmd/trace-output.c                      | 8 ++++++--
+ tracecmd/trace-restore.c                          | 2 +-
+ tracecmd/trace-split.c                            | 2 +-
+ 4 files changed, 10 insertions(+), 6 deletions(-)
 
 diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 2c31be5f..3735586d 100644
+index 9a08a960..2c31be5f 100644
 --- a/lib/trace-cmd/include/private/trace-cmd-private.h
 +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -174,6 +174,8 @@ int tracecmd_copy_headers(struct tracecmd_input *in_handle,
- 			  struct tracecmd_output *out_handle,
- 			  enum tracecmd_file_states start_state,
- 			  enum tracecmd_file_states end_state);
-+int tracecmd_copy_buffer_descr(struct tracecmd_input *in_handle,
-+			       struct tracecmd_output *out_handle);
- void tracecmd_set_flag(struct tracecmd_input *handle, int flag);
- void tracecmd_clear_flag(struct tracecmd_input *handle, int flag);
- unsigned long tracecmd_get_flags(struct tracecmd_input *handle);
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 289102bf..7d0a41c2 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -4173,6 +4173,44 @@ int tracecmd_copy_headers(struct tracecmd_input *in_handle,
- 	return ret < 0 ? -1 : 0;
- }
+@@ -309,8 +309,8 @@ int tracecmd_write_options(struct tracecmd_output *handle);
+ int tracecmd_append_options(struct tracecmd_output *handle);
+ void tracecmd_output_close(struct tracecmd_output *handle);
+ void tracecmd_output_free(struct tracecmd_output *handle);
+-struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle,
+-				      const char *file);
++struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle, const char *file,
++				      enum tracecmd_file_states state);
  
-+static int skip_buffers(struct tracecmd_input *handle)
-+{
-+	unsigned long long offset;
-+	unsigned int count;
-+	char *bname;
-+	int i;
-+
-+	if (read4(handle, &count) < 0)
-+		return -1;
-+
-+	for (i = 0; i < count; i++) {
-+		if (read8(handle, &offset) < 0)
-+			return -1;
-+		bname = read_string(handle);
-+		free(bname);
-+	}
-+
-+	handle->file_state = TRACECMD_FILE_BUFERS;
-+	return 0;
-+}
-+
-+int tracecmd_copy_buffer_descr(struct tracecmd_input *in_handle,
-+			       struct tracecmd_output *out_handle)
-+{
-+	int i;
-+
-+	if (in_handle->file_version >= 7) {
-+		if (!check_in_state(in_handle, TRACECMD_FILE_BUFERS))
-+			return -1;
-+		skip_buffers(in_handle);
-+	}
-+	for (i = 0; i < in_handle->nr_buffers; i++)
-+		tracecmd_add_buffer_description(out_handle,
-+						in_handle->buffers[i].name, 0);
-+
-+	return tracecmd_write_buffers_description(out_handle);
-+}
-+
- /**
-  * tracecmd_record_at_buffer_start - return true if record is first on subbuffer
-  * @handle: input handle for the trace.dat file
+ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
+ 			    int cpus, char * const *cpu_data_files);
 diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index a3d0f037..960d9a44 100644
+index ff9c9a34..e3b018aa 100644
 --- a/lib/trace-cmd/trace-output.c
 +++ b/lib/trace-cmd/trace-output.c
-@@ -1952,6 +1952,9 @@ struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle, const char
- 	fstate = state > TRACECMD_FILE_CPU_COUNT ? TRACECMD_FILE_CPU_COUNT : state;
- 	if (tracecmd_copy_headers(ihandle, handle, 0, fstate) < 0)
+@@ -1931,13 +1931,16 @@ struct tracecmd_output *tracecmd_create_init_file_override(const char *output_fi
+  * tracecmd_copy - copy the headers of one trace.dat file for another
+  * @ihandle: input handle of the trace.dat file to copy
+  * @file: the trace.dat file to create
++ * @state: what data will be copied from the source handle
+  *
+  * Reads the header information and creates a new trace data file
+  * with the same characteristics (events and all) and returns
+  * tracecmd_output handle to this new file.
+  */
+-struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle, const char *file)
++struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle, const char *file,
++				      enum tracecmd_file_states state)
+ {
++	enum tracecmd_file_states fstate;
+ 	struct tracecmd_output *handle;
+ 	const char *compr_name = NULL;
+ 
+@@ -1946,7 +1949,8 @@ struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle, const char
+ 	if (!handle)
+ 		return NULL;
+ 
+-	if (tracecmd_copy_headers(ihandle, handle, 0, 0) < 0)
++	fstate = state > TRACECMD_FILE_CMD_LINES ? TRACECMD_FILE_CMD_LINES : state;
++	if (tracecmd_copy_headers(ihandle, handle, 0, fstate) < 0)
  		goto out_free;
-+	if (state >= TRACECMD_FILE_BUFERS &&
-+	    tracecmd_copy_buffer_descr(ihandle, handle) < 0)
-+		goto out_free;
  
  	/* The file is all ready to have cpu data attached */
- 	return handle;
+diff --git a/tracecmd/trace-restore.c b/tracecmd/trace-restore.c
+index 96b4fb5d..7d439fd2 100644
+--- a/tracecmd/trace-restore.c
++++ b/tracecmd/trace-restore.c
+@@ -125,7 +125,7 @@ void trace_restore (int argc, char **argv)
+ 		if (tracecmd_read_headers(ihandle, TRACECMD_FILE_CMD_LINES) < 0)
+ 			die("error reading file %s headers", input);
+ 
+-		handle = tracecmd_copy(ihandle, output);
++		handle = tracecmd_copy(ihandle, output, TRACECMD_FILE_CMD_LINES);
+ 		tracecmd_close(ihandle);
+ 	} else
+ 		handle = tracecmd_create_init_file(output, NULL);
+diff --git a/tracecmd/trace-split.c b/tracecmd/trace-split.c
+index 8366d128..401e1d29 100644
+--- a/tracecmd/trace-split.c
++++ b/tracecmd/trace-split.c
+@@ -345,7 +345,7 @@ static double parse_file(struct tracecmd_input *handle,
+ 	dir = dirname(output);
+ 	base = basename(output);
+ 
+-	ohandle = tracecmd_copy(handle, output_file);
++	ohandle = tracecmd_copy(handle, output_file, TRACECMD_FILE_CMD_LINES);
+ 
+ 	cpus = tracecmd_cpus(handle);
+ 	cpu_data = malloc(sizeof(*cpu_data) * cpus);
 -- 
 2.31.1
 
