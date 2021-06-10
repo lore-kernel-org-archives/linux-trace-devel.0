@@ -8,59 +8,59 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CB8FC47094
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA5FFC48BE0
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:35:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6794061406
+	by mail.kernel.org (Postfix) with ESMTP id B03B861407
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Jun 2021 11:35:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbhFJLhs (ORCPT
+        id S230425AbhFJLht (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 10 Jun 2021 07:37:48 -0400
-Received: from mail-wr1-f53.google.com ([209.85.221.53]:37689 "EHLO
-        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230396AbhFJLhl (ORCPT
+        Thu, 10 Jun 2021 07:37:49 -0400
+Received: from mail-wr1-f50.google.com ([209.85.221.50]:37721 "EHLO
+        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230443AbhFJLhn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 10 Jun 2021 07:37:41 -0400
-Received: by mail-wr1-f53.google.com with SMTP id i94so1915553wri.4
-        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Jun 2021 04:35:32 -0700 (PDT)
+        Thu, 10 Jun 2021 07:37:43 -0400
+Received: by mail-wr1-f50.google.com with SMTP id i94so1916459wri.4
+        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Jun 2021 04:35:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=RiwZC1yBs8SQ9z1BwUSlU9j5di5yu+Mv55pgJ5/bATY=;
-        b=fT1pr+fmf9fOX14E7zGu8I80lb5GZs55WkvEO/wKbQDuMfj3FwTLQu0M6Pizhxd7Uz
-         GVjNbB4miIFJjEwQaRQ1P+kbzW5AEb97EXfgBCyvQZcblKcNH3Vh57UqbhUC9G7JlVQf
-         1Te8QNAgv6bB82lXavBoH7jDry1P1CaJsTH5ffWji5LeRBLyZ3fA1cgs4pQ3PxlmeLLT
-         jbLpqiqtDDoAijuFYS3IUmdDcjfwkCKVISdZpVc+BdF1AI2fiZsmdWhxN00S0K57Ei8U
-         Ob2P+TKh7XitU7SQUoh7qEavGWBLq9paeVj//EVn+lUuyUjljOhLIfavO5eAp8XEZ+IW
-         VkaA==
+        bh=56+tOMEVuLQdZHVTYFPELp0wqhvqnbET+paZQ1bbMLQ=;
+        b=Qa66b/xm6CoGztsfyQWjur9wHw03J8aiHaQFYCXHDhyB30DRXlYbrd579Y36kk0PV5
+         fw1JPgE/7mo4RJ1n0iLkQWuogVQhGyfErfV2FSu1gyLHPw8CT3RAqd4ee0A6oZHCCcK+
+         H/Mc/LWI9BYkT76HWYLNGWGQGAk6qP7dWdP/CS3U5Bpie4EMnP9ifJJ/E+5LPUytuxo9
+         Ko6vCHEuI6kLSqOPEKjX3XtZObZ0vMr18WSr8nY0iLd++KPl3hrgy6Ph0pzk8qq46S0t
+         ACPIwpzxPvGNZDHGkHknl3rT0e1g9LxwJhya9Uh3Wpo9HDM74SSv4wXQxjzVlXw8bjXi
+         GQCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RiwZC1yBs8SQ9z1BwUSlU9j5di5yu+Mv55pgJ5/bATY=;
-        b=iJnWvqtyMsOmIFKn2ZVmh91OuZlbhhh9EFHvxLSEUWNuC6krhwFH8UQuf3aAPfsEPp
-         fSf84d35mdLahzQtxOo8R10Q8AY+G84wOjZKFDcHF1sKGUvBifzb8gO7llzPox1LTT+g
-         LtiJXUtDonjbZwmhfhHqSMp/3FsuUUt7VkruRye83RPyRQqTBW+6MGNqZUaps28x4Sjq
-         Z4C8GTwwVhcy4vu3JDG8vhtF9ebi0cgbyAT+ahxPPkBZjwQHa48B+R943H2kKT9udsLD
-         CADy68t90ixrXQb1BljRSJy4K8CuU+Uih6belPTJLD0GTBFX0iXfpbpKopI071N5kpXz
-         rd1g==
-X-Gm-Message-State: AOAM5318bpvjN7sK54KvU+tCaZHuvXw38u6oRGcY4n7A78pUD/NjkZPy
-        Ihd2DzeW9W53IhYFgmj4h8drzZiyZA4jTg==
-X-Google-Smtp-Source: ABdhPJzRivtwfLGkmepixYhe1bTqgjVepCQJi4joGhzKtMbNxNV0Rhy7P+HucfUBCp20ETfRz8AOaA==
-X-Received: by 2002:a5d:4e4d:: with SMTP id r13mr5028339wrt.218.1623324871693;
-        Thu, 10 Jun 2021 04:34:31 -0700 (PDT)
+        bh=56+tOMEVuLQdZHVTYFPELp0wqhvqnbET+paZQ1bbMLQ=;
+        b=bffZWtkkvLBTrdFKIZGAouPRnAXX5Wjii76FwhvhVwb94lW8dBsXXTJBUSOTt5XB/e
+         a4s/mdlQGDHKSMFAekeBp/CwuTEq1xUqBbMYK+v+bbIvyHE2M21S16TjEjrQW7yoRYW4
+         eQRoY/ssB7GEBnkTUMb5CYCFAf+nyLIfrIVkCK7EhBQ1MuYbOUcb6xxJCGKbJX5f4uKT
+         /Nw9E1RQWvYlyLgl12bJD2GlEcnANKLMz/LhO9ujvn1tkOxECVQHIrYvjNdiBe3sjfJc
+         3IlMt1V4Z9N6DuUnYt4SdHGcM8tuaM4704wZE6NDPc0gRvve0Gv4hWRhGfkdNL+KRAkp
+         1Ukg==
+X-Gm-Message-State: AOAM530HP6Uo56p4IU85Mnsn9psQagdQ+d0uIDn4JieYXB1KD8Uhhrxv
+        +ZRbnsq+V3ANt0JXHFZ/icF9NCxftpccTA==
+X-Google-Smtp-Source: ABdhPJxKQAEOEK3oXX3ijzMOkLF7Wkrl8vYXnCBhZzoLtMy5eFDOLP5CRqCw8C1Hz8PLKgMDeTjAbA==
+X-Received: by 2002:a05:6000:cb:: with SMTP id q11mr4952204wrx.13.1623324886356;
+        Thu, 10 Jun 2021 04:34:46 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id n42sm8898391wms.29.2021.06.10.04.34.30
+        by smtp.gmail.com with ESMTPSA id n42sm8898391wms.29.2021.06.10.04.34.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 04:34:31 -0700 (PDT)
+        Thu, 10 Jun 2021 04:34:45 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v5 03/40] trace-cmd: Check if file version is supported
-Date:   Thu, 10 Jun 2021 14:33:49 +0300
-Message-Id: <20210610113426.257931-4-tz.stoyanov@gmail.com>
+Subject: [PATCH v5 19/40] trace-cmd: Move buffers description outside of options
+Date:   Thu, 10 Jun 2021 14:34:05 +0300
+Message-Id: <20210610113426.257931-20-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210610113426.257931-1-tz.stoyanov@gmail.com>
 References: <20210610113426.257931-1-tz.stoyanov@gmail.com>
@@ -70,118 +70,336 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When reading a trace file, version of the file is ignored. This could
-case problems when bumping the version number because of changes in
-in the structure of the file. The old code should detect unsupported
-file version and should not try to read it.
-A new trace-cmd library API is added to check if version is supported:
- tracecmd_is_version_supported()
-Checks are added in the code to ensure not trying to read trace file
-from unsupported version.
+When a new buffer data are written in the trace file, the file offset is
+stored in the buffer description. As the buffer description is part of
+the trace options, which are already written in the file, the offset field
+in this option is updated with the new value. This causes a serious
+problem when option section of the file is compressed. Updating a value
+in already compressed section may change the size of this section, which
+can make the calculated offset of the buffer trace data invalid. To
+solve that problem and to enable the compression of the option section
+of the file, the structure of the trace file is changed:
+ - In trace file v7, the description of the buffers is moved to a
+   separate section in the trace file medatata. It is stored after the
+   CPU count section and before the option section. The format of this
+   new buffers description is:
+    4 bytes - count of the buffers, stored in the file. The top buffer
+      is not counted.
+    For each buffer:
+     8 bytes, offset of the trace data for this buffer in the file.
+     null-terminated string, name of the buffer.
+   The new section is mandatory, in case of no buffers - the count 0 is
+   stored in the first 4 bytes.
+ - In trace file v6, the description of the buffers is not changed.
+
+These changes are needed for compression of the options sections from
+the trace file.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/include/private/trace-cmd-private.h |  2 ++
- lib/trace-cmd/trace-input.c                       | 10 ++++++++++
- lib/trace-cmd/trace-util.c                        |  7 +++++++
- tracecmd/trace-dump.c                             |  7 +++++++
- 4 files changed, 26 insertions(+)
+ .../include/private/trace-cmd-private.h       |  1 +
+ lib/trace-cmd/include/trace-cmd-local.h       |  3 +
+ lib/trace-cmd/trace-input.c                   | 40 +++++++++
+ lib/trace-cmd/trace-output.c                  | 85 ++++++++++++++++++-
+ tracecmd/trace-dump.c                         | 24 ++++++
+ tracecmd/trace-listen.c                       |  3 +
+ tracecmd/trace-record.c                       |  4 +
+ 7 files changed, 156 insertions(+), 4 deletions(-)
 
 diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 49539432..6fc18938 100644
+index cbb578ec..faa8c533 100644
 --- a/lib/trace-cmd/include/private/trace-cmd-private.h
 +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -42,6 +42,8 @@ void tracecmd_record_ref(struct tep_record *record);
- void tracecmd_set_debug(bool set_debug);
- bool tracecmd_get_debug(void);
+@@ -112,6 +112,7 @@ enum tracecmd_file_states {
+ 	TRACECMD_FILE_PRINTK,
+ 	TRACECMD_FILE_CMD_LINES,
+ 	TRACECMD_FILE_CPU_COUNT,
++	TRACECMD_FILE_BUFERS,
+ 	TRACECMD_FILE_OPTIONS,
+ 	TRACECMD_FILE_CPU_LATENCY,
+ 	TRACECMD_FILE_CPU_FLYRECORD,
+diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
+index 80304141..59148930 100644
+--- a/lib/trace-cmd/include/trace-cmd-local.h
++++ b/lib/trace-cmd/include/trace-cmd-local.h
+@@ -46,4 +46,7 @@ void out_compression_reset(struct tracecmd_output *handle);
+ void in_uncompress_reset(struct tracecmd_input *handle);
+ int in_uncompress_block(struct tracecmd_input *handle);
  
-+bool tracecmd_is_version_supported(unsigned int version);
++int write_buffers_description_v7(struct tracecmd_output *handle);
++int write_buffers_description_v6(struct tracecmd_output *handle);
 +
- struct tracecmd_output;
- struct tracecmd_recorder;
- struct hook_list;
+ #endif /* _TRACE_CMD_LOCAL_H */
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 5ee69b14..97ad0a5d 100644
+index 0b17b58d..e953909f 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -131,6 +131,7 @@ struct tracecmd_input {
- 	bool			use_trace_clock;
- 	bool			read_page;
- 	bool			use_pipe;
-+	int			file_version;
- 	struct cpu_data 	*cpu_data;
- 	long long		ts_offset;
- 	struct tsc2nsec		tsc_calc;
-@@ -3269,6 +3270,7 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
- 	unsigned int page_size;
- 	char *version;
- 	char buf[BUFSIZ];
-+	unsigned long ver;
- 
- 	handle = malloc(sizeof(*handle));
- 	if (!handle)
-@@ -3293,6 +3295,14 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
- 	if (!version)
- 		goto failed_read;
- 	tracecmd_info("version = %s\n", version);
-+	ver = strtol(version, NULL, 10);
-+	if (!ver && errno)
-+		goto failed_read;
-+	if (!tracecmd_is_version_supported(ver)) {
-+		tracecmd_warning("Unsupported file version %lu", ver);
-+		goto failed_read;
-+	}
-+	handle->file_version = ver;
- 	free(version);
- 
- 	if (do_read_check(handle, buf, 1))
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index b65f9dec..b0c98c72 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -617,3 +617,10 @@ unsigned long long tracecmd_generate_traceid(void)
- 	free(str);
- 	return hash;
+@@ -881,6 +881,39 @@ static int read_cpus(struct tracecmd_input *handle)
+ 	return 0;
  }
-+
-+bool tracecmd_is_version_supported(unsigned int version)
+ 
++static int read_buffers(struct tracecmd_input *handle)
 +{
-+	if (version <= FILE_VERSION)
-+		return true;
-+	return false;
++	struct input_buffer_instance *buffer;
++	unsigned long long offset;
++	unsigned int count;
++	int i;
++
++	if (handle->file_version < 7 || handle->file_state >= TRACECMD_FILE_BUFERS)
++		return 0;
++
++	if (read4(handle, &count) < 0)
++		return -1;
++	i = handle->nr_buffers;
++	handle->nr_buffers += count;
++	handle->buffers = realloc(handle->buffers,
++				  sizeof(*handle->buffers) * handle->nr_buffers);
++	if (!handle->buffers)
++		return -1;
++
++	for (; i < handle->nr_buffers; i++) {
++		buffer = &handle->buffers[i];
++		if (read8(handle, &offset) < 0)
++			return -1;
++		buffer->offset = offset;
++		buffer->name = read_string(handle);
++		if (!buffer->name)
++			return -1;
++	}
++
++	handle->file_state = TRACECMD_FILE_BUFERS;
++	return 0;
 +}
++
+ /**
+  * tracecmd_read_headers - read the header information from trace.dat
+  * @handle: input handle for the trace.dat file
+@@ -955,6 +988,13 @@ int tracecmd_read_headers(struct tracecmd_input *handle,
+ 	if (state <= handle->file_state)
+ 		return 0;
+ 
++	if (read_buffers(handle) < 0)
++		return -1;
++
++	if (state <= handle->file_state)
++		return 0;
++
++
+ 	if (read_options_type(handle) < 0)
+ 		return -1;
+ 
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index 8abd6fb9..5bd33b70 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -376,6 +376,17 @@ static int check_out_state(struct tracecmd_output *handle, int new_state)
+ 	if (!handle)
+ 		return -1;
+ 
++	if (handle->file_version < 7) {
++		switch (new_state) {
++		case TRACECMD_FILE_BUFERS:
++			tracecmd_warning("State %d is not supported in trace file version %d",
++					 new_state, handle->file_version);
++			return -1;
++		default:
++			break;
++		}
++	}
++
+ 	switch (new_state) {
+ 	case TRACECMD_FILE_HEADERS:
+ 	case TRACECMD_FILE_FTRACE_EVENTS:
+@@ -384,10 +395,16 @@ static int check_out_state(struct tracecmd_output *handle, int new_state)
+ 	case TRACECMD_FILE_PRINTK:
+ 	case TRACECMD_FILE_CMD_LINES:
+ 	case TRACECMD_FILE_CPU_COUNT:
+-	case TRACECMD_FILE_OPTIONS:
++	case TRACECMD_FILE_BUFERS:
+ 		if (handle->file_state == (new_state - 1))
+ 			return 0;
+ 		break;
++	case TRACECMD_FILE_OPTIONS:
++		if (handle->file_version < 7 && handle->file_state == TRACECMD_FILE_CPU_COUNT)
++			return 0;
++		if (handle->file_version >= 7 && handle->file_state == TRACECMD_FILE_BUFERS)
++			return 0;
++		break;
+ 	case TRACECMD_FILE_CPU_LATENCY:
+ 	case TRACECMD_FILE_CPU_FLYRECORD:
+ 		if (handle->file_state == TRACECMD_FILE_OPTIONS)
+@@ -1433,7 +1450,7 @@ int tracecmd_add_buffer_description(struct tracecmd_output *handle, const char *
+ 	return 0;
+ }
+ 
+-int tracecmd_write_buffers_description(struct tracecmd_output *handle)
++__hidden int write_buffers_description_v6(struct tracecmd_output *handle)
+ {
+ 	struct tracecmd_option *option;
+ 	struct tracecmd_buffer *buf;
+@@ -1447,6 +1464,63 @@ int tracecmd_write_buffers_description(struct tracecmd_output *handle)
+ 	return 0;
+ }
+ 
++__hidden int write_buffers_description_v7(struct tracecmd_output *handle)
++{
++	struct tracecmd_buffer *buf;
++	char *data = NULL;
++	int count = 0;
++	int size;
++	int ret;
++
++	if (!check_out_state(handle, TRACECMD_FILE_BUFERS)) {
++		tracecmd_warning("Cannot write buffers descriptions");
++		return -1;
++	}
++
++	list_for_each_entry(buf, &handle->buffers, list) {
++		count++;
++	}
++
++	count = convert_endian_4(handle, count);
++	ret = do_write_check(handle, &count, 4);
++	if (ret < 0)
++		return ret;
++
++	list_for_each_entry(buf, &handle->buffers, list) {
++		size = 8 + strlen(buf->name) + 1;
++		data = malloc(size);
++		if (!data)
++			goto error;
++		*(tsize_t *)data = 0;
++		strcpy(data + 8, buf->name);
++		/* Save the data location in case it needs to be updated */
++		buf->offset = do_lseek(handle, 0, SEEK_CUR);
++		if (do_write_check(handle, data, size))
++			goto error;
++
++		/*
++		 * In case a buffer instance has different number of CPUs as the
++		 * local machine.
++		 */
++		if (buf->cpus)
++			tracecmd_add_option(handle, TRACECMD_OPTION_CPUCOUNT,
++					    sizeof(int), &buf->cpus);
++	}
++
++	handle->file_state = TRACECMD_FILE_BUFERS;
++	return 0;
++error:
++	return -1;
++}
++
++int tracecmd_write_buffers_description(struct tracecmd_output *handle)
++{
++	if (handle->file_version >= 7)
++		return write_buffers_description_v7(handle);
++
++	return write_buffers_description_v6(handle);
++}
++
+ static tsize_t get_buffer_file_offset(struct tracecmd_output *handle, const char *name)
+ {
+ 	struct tracecmd_buffer *buf;
+@@ -1505,7 +1579,8 @@ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, in
+ 
+ 	if (tracecmd_write_cpus(handle, cpus) < 0)
+ 		goto out_free;
+-
++	if (tracecmd_write_buffers_description(handle) < 0)
++		goto out_free;
+ 	if (tracecmd_write_options(handle) < 0)
+ 		goto out_free;
+ 
+@@ -1698,7 +1773,9 @@ int tracecmd_append_cpu_data(struct tracecmd_output *handle,
+ 	ret = tracecmd_write_cpus(handle, cpus);
+ 	if (ret)
+ 		return ret;
+-
++	ret = tracecmd_write_buffers_description(handle);
++	if (ret)
++		return ret;
+ 	ret = tracecmd_write_options(handle);
+ 	if (ret)
+ 		return ret;
 diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
-index 98425b98..03cc82b4 100644
+index ed82104b..56acb01d 100644
 --- a/tracecmd/trace-dump.c
 +++ b/tracecmd/trace-dump.c
-@@ -10,6 +10,7 @@
- #include <getopt.h>
- #include <sys/stat.h>
- #include <fcntl.h>
-+#include <errno.h>
+@@ -420,6 +420,29 @@ static void dump_cpus_count(int fd)
+ 	do_print(SUMMARY, "\t%d [CPUs with tracing data]\n", trace_cpus);
+ }
  
- #include "trace-local.h"
++static void dump_buffers(int fd)
++{
++	unsigned long long offset;
++	char name[DUMP_SIZE];
++	int count;
++
++	if (file_version < 7)
++		return;
++
++	if (read_file_number(fd, &count, 4))
++		die("cannot read the buffers count");
++	do_print(SUMMARY, "\t%d [buffers with tracing data]\n", count);
++
++	while (count) {
++		if (read_file_number(fd, &offset, 8))
++			die("cannot read the buffer offset");
++		if (read_file_string(fd, name, DUMP_SIZE))
++			die("cannot read the buffer name");
++		do_print(SUMMARY, "\t\t 0x%llx %s[data offset, buffer name]\n", offset, name);
++		count--;
++	}
++}
++
+ static void dump_option_string(int fd, int size, char *desc)
+ {
+ 	do_print(OPTIONS, "\t\t[Option %s, %d bytes]\n", desc, size);
+@@ -762,6 +785,7 @@ static void dump_file(const char *file)
+ 	dump_printk(fd);
+ 	dump_cmdlines(fd);
+ 	dump_cpus_count(fd);
++	dump_buffers(fd);
+ 	dump_therest(fd);
  
-@@ -145,6 +146,7 @@ static void dump_initial_format(int fd)
- 	char magic[] = TRACECMD_MAGIC;
- 	char buf[DUMP_SIZE];
- 	int val4;
-+	unsigned long ver;
+ 	tep_free(tep);
+diff --git a/tracecmd/trace-listen.c b/tracecmd/trace-listen.c
+index 0ae1c948..62debdb6 100644
+--- a/tracecmd/trace-listen.c
++++ b/tracecmd/trace-listen.c
+@@ -604,6 +604,9 @@ static int put_together_file(int cpus, int ofd, const char *node,
  
- 	do_print(SUMMARY, "\t[Initial format]\n");
- 
-@@ -166,6 +168,11 @@ static void dump_initial_format(int fd)
- 		die("no version string");
- 
- 	do_print(SUMMARY, "\t\t%s\t[Version]\n", buf);
-+	ver = strtol(buf, NULL, 10);
-+	if (!ver && errno)
-+		die("Invalid file version string %s", buf);
-+	if (!tracecmd_is_version_supported(ver))
-+		die("Unsupported file version %lu", ver);
- 
- 	/* get file endianness*/
- 	if (read_file_bytes(fd, buf, 1))
+ 	if (write_options) {
+ 		ret = tracecmd_write_cpus(handle, cpus);
++		if (ret)
++			goto out;
++		ret = tracecmd_write_buffers_description(handle);
+ 		if (ret)
+ 			goto out;
+ 		ret = tracecmd_write_options(handle);
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 3921071d..8bd771e0 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -3711,6 +3711,9 @@ setup_connection(struct buffer_instance *instance, struct common_record_context
+ 		if (ret)
+ 			goto error;
+ 		ret = tracecmd_write_cpus(network_handle, instance->cpu_count);
++		if (ret)
++			goto error;
++		ret = tracecmd_write_buffers_description(network_handle);
+ 		if (ret)
+ 			goto error;
+ 		ret = tracecmd_write_options(network_handle);
+@@ -4074,6 +4077,7 @@ static void setup_agent(struct buffer_instance *instance,
+ 	add_options(network_handle, ctx);
+ 	tracecmd_write_cmdlines(network_handle);
+ 	tracecmd_write_cpus(network_handle, instance->cpu_count);
++	tracecmd_write_buffers_description(network_handle);
+ 	tracecmd_write_options(network_handle);
+ 	tracecmd_msg_finish_sending_data(instance->msg_handle);
+ 	instance->network_handle = network_handle;
 -- 
 2.31.1
 
