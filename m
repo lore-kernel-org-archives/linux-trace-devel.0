@@ -2,68 +2,68 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F9F6C48BE0
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Jun 2021 11:40:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3150FC48BE5
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Jun 2021 11:40:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3D44B613CC
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Jun 2021 11:40:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 13B5B613CC
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Jun 2021 11:40:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbhFKLmW (ORCPT
+        id S231553AbhFKLmX (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Jun 2021 07:42:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45246 "EHLO
+        Fri, 11 Jun 2021 07:42:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230450AbhFKLmW (ORCPT
+        with ESMTP id S230370AbhFKLmW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 11 Jun 2021 07:42:22 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74048C061574
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Jun 2021 04:40:13 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id q5so5727779wrm.1
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Jun 2021 04:40:13 -0700 (PDT)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F68C0617AF
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Jun 2021 04:40:15 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id y13-20020a1c4b0d0000b02901c20173e165so409423wma.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Jun 2021 04:40:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6cd21+D+GG8bC4ShVrEfOeAdncE6KGpG+t+NxnM7/2I=;
-        b=dv7ogMRs6oJQKcQQIfbSvLEylEWT0uooMYYhmKAswPKkaDprfV0b60HeYg5iAPV3k+
-         6W97FH7MGeVJDGrvToPSOQIeZI8g3wmBW8NUQPp8iQRJwfkq7zdp+RpoLa6hmB2re6WA
-         94JaRpsNA6sFpbnrDrkkrFu3TgozvSB0KtLRU0VI8aFcNtYItj07UKDqmflHNMW7Fj5n
-         H1vvhMKhNQQ7xMX2ErmGGvepfqG4eirmjCu4smQfqO+SUDpB7iOJksEamie9Q5zON2/A
-         /k8Ebl8uvXpqvMBfa/Z4WHWnCLJVinaGoe28A3T7xEP+710+jTf602evh2SydV84aLEL
-         LKmQ==
+        bh=bdek54BxHStxo8oNaW3unHhknbTsCDJUVuc0kaxw3IY=;
+        b=ZX52ozOjryzmhXnZqixc4rezkDP1s6OcpwCS7h5p6lpX7+lABC0uXxavziP6KWg/x6
+         d2erZw1q7EgYyR9VkInmP2radulZmxk8e6G+n0UeA++JRHnmxC6q5jZSqFBQ4UuC6mPZ
+         ORKHZcitY+LGi3RW2qwt/vb4QSSyC/lodp4DrqDcWqZIPdxEqI6OUMq0D6PaGxpcgHbd
+         7HVaxhnmp29cbhxVwt8KP5gNzTySXiJfDJcTcw+nBDC5LlOo+PwxM0X4zEllXU8KGuHF
+         AcMuce9Lm9UQDpeMb06theStRKHcQu6x2tJL8JTzkcE+e/7xVOKjLaJRn9Ms324qbzat
+         IfIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6cd21+D+GG8bC4ShVrEfOeAdncE6KGpG+t+NxnM7/2I=;
-        b=QMLhDU4GfYWilPAwrC5niaTBZEI2lIcU7RzbDNM2kLdRX0iMNbd9tqrnH/9iTlrn3y
-         F6ZIVU5t+1fgBJJ6wG6QrPPOzjephOmFB0QRTKSWJifZgjX3Bw0La3Q+3eGI2O2BP2M2
-         hRJfkGyEJ38KYYVK/shKxNM/sRgXpukUCx6LMNKQ5tLgAG/wMb8O9i2h+A9w4fEp7Kz7
-         Q+SMbsH+Gpd54y7xQ8fakZdWPOnHvds7EIJhxEXaDophcaVvWuV7P5rATNQ5tW1qh2V3
-         2wvo1xzKJnbJP+tp548BiGH3AjiI42bOsDSp4pob6UGYweXBnYa8ovaCjaFjs3oGvzBi
-         6z9g==
-X-Gm-Message-State: AOAM530/A4Gj+VssXzX6fdLGR7amNIwH0oJ6Mjgjk0BYJF3YeOZtcRq9
-        EEm3ttBgEDMRAzLBWwzkDnmWrBwrb+o=
-X-Google-Smtp-Source: ABdhPJwqkiDVdgQ5iBw+4tlwwWRpRLYB9Q74fDlWHEdeuOl3t6qUIoHvfSQGy3ooGaeU5rqaniOZYg==
-X-Received: by 2002:a5d:6382:: with SMTP id p2mr3718143wru.338.1623411611524;
-        Fri, 11 Jun 2021 04:40:11 -0700 (PDT)
+        bh=bdek54BxHStxo8oNaW3unHhknbTsCDJUVuc0kaxw3IY=;
+        b=REIaJTUILvGJ8YU36zC1SUGRpxium5Q9yLefvZr2vxRkMK4FIC4KFFtYCo1NNATfBe
+         N9MJT7qZusAmHnHIlFzJz/lHN93BDuIQYvpTmbbXdMtAUovSprT+T13n3mxii4wCu1Ke
+         RVx/N7puj+WnHtaeFi6ZFBRa8MM46M2i/Yw6xnJzPhwru4vVDcTaR4QxtTPOz6YCjz0t
+         4Xbozjp7UAubz3IEc3rhx2DvNhbfW0cr9xeMoQSQi6+87AKZqtWlsl/qiPRtou3Y9Unn
+         Q6xl2DMJ5jeJzmsQEULTcVD1AUF5zbFN0Q35urKVs1Pp7OrLYM5s9j0APuuzb/DCVazx
+         Q+9Q==
+X-Gm-Message-State: AOAM5320vgQbCxFnyFsh+cPWGQxVz+mJObnH5XBElmHYxTPtrIGwZk9m
+        +Sy2lKd0olWD102/k2M6uiKG5+xpWqo=
+X-Google-Smtp-Source: ABdhPJyjf5HQgZP7nUrvvLVgLiMjFprfgAgY29BVDhDWKVLNZ6A9FH7Jzym8a/faFYj92OEVuCp4xg==
+X-Received: by 2002:a1c:6782:: with SMTP id b124mr19415323wmc.159.1623411613272;
+        Fri, 11 Jun 2021 04:40:13 -0700 (PDT)
 Received: from localhost.localdomain ([84.40.73.164])
-        by smtp.gmail.com with ESMTPSA id c7sm6856464wrs.23.2021.06.11.04.40.10
+        by smtp.gmail.com with ESMTPSA id c7sm6856464wrs.23.2021.06.11.04.40.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 04:40:11 -0700 (PDT)
+        Fri, 11 Jun 2021 04:40:12 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 2/9] trace-cruncher: Refactor the part that wraps libkshark
-Date:   Fri, 11 Jun 2021 14:39:51 +0300
-Message-Id: <20210611113958.38142-3-y.karadz@gmail.com>
+Subject: [PATCH v2 4/9] trace-cruncher: Refactor the examples
+Date:   Fri, 11 Jun 2021 14:39:53 +0300
+Message-Id: <20210611113958.38142-5-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210611113958.38142-1-y.karadz@gmail.com>
 References: <20210611113958.38142-1-y.karadz@gmail.com>
@@ -73,902 +73,628 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The part of the interface that relies on libkshark gets
-re-implemented as an extension called "tracecruncher.ksharkpy".
-The new extension gets build together with the previously
-implemented "tracecruncher.ftracefy" extension.
+For the moment we will keep only one example that is "sched_wakeup.py".
+"gpareto_fit.py" gets removed because it doesn't really demonstrate
+anything conceptually different compared to "sched_wakeup.py". The
+difference comes from the more advanced statistical analysis of the data,
+however this goes beyond the scope of trace-cruncher. "page_faults.py"
+gets removed only temporally, because it requires some functionalities
+that are not yet implemented in the ftrace libraries. Once those
+functionalities are made available, the example will be added to
+trace-cruncher again.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- setup.py              |  17 +-
- src/ksharkpy-utils.c  | 411 ++++++++++++++++++++++++++++++++++++++++++
- src/ksharkpy-utils.h  |  41 +++++
- src/ksharkpy.c        |  94 ++++++++++
- src/npdatawrapper.pyx | 203 +++++++++++++++++++++
- src/trace2matrix.c    |  40 ++++
- 6 files changed, 804 insertions(+), 2 deletions(-)
- create mode 100644 src/ksharkpy-utils.c
- create mode 100644 src/ksharkpy-utils.h
- create mode 100644 src/ksharkpy.c
- create mode 100644 src/npdatawrapper.pyx
- create mode 100644 src/trace2matrix.c
+ examples/gpareto_fit.py  | 328 ---------------------------------------
+ examples/page_faults.py  | 120 --------------
+ examples/sched_wakeup.py |  70 ++++-----
+ 3 files changed, 30 insertions(+), 488 deletions(-)
+ delete mode 100755 examples/gpareto_fit.py
+ delete mode 100755 examples/page_faults.py
 
-diff --git a/setup.py b/setup.py
-index 450f043..c3d0352 100644
---- a/setup.py
-+++ b/setup.py
-@@ -11,22 +11,26 @@ from distutils.core import Extension
- from Cython.Build import cythonize
+diff --git a/examples/gpareto_fit.py b/examples/gpareto_fit.py
+deleted file mode 100755
+index 4a2bb2a..0000000
+--- a/examples/gpareto_fit.py
++++ /dev/null
+@@ -1,328 +0,0 @@
+-#!/usr/bin/env python3
+-
+-"""
+-SPDX-License-Identifier: LGPL-2.1
+-
+-Copyright 2019 VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
+-"""
+-
+-import sys
+-import json
+-
+-import matplotlib.pyplot as plt
+-import scipy.stats as st
+-import numpy as np
+-
+-from scipy.stats import genpareto as gpareto
+-from scipy.optimize import curve_fit as cfit
+-
+-from ksharksetup import setup
+-# Always call setup() before importing ksharkpy!!!
+-setup()
+-
+-import ksharkpy as ks
+-
+-def chi2_test(hist, n_bins, c, loc, scale, norm):
+-    """ Simple Chi^2 test for the goodness of the fit.
+-    """
+-    chi2 = n_empty_bins = 0
+-    for i in range(len(hist[0])):
+-        if hist[0][i] == 0:
+-            # Ignore this empty bin.
+-            n_empty_bins += 1
+-            continue
+-
+-        # Get the center of bin i.
+-        x = (hist[1][i] + hist[1][i + 1]) / 2
+-        fit_val = gpareto.pdf(x, c=c, loc=loc, scale=scale)
+-        chi = (fit_val - hist[0][i]) / np.sqrt(hist[0][i])
+-        chi2 += chi**2
+-
+-    return  norm * chi2 / (n_bins - n_empty_bins)
+-
+-def quantile(p, P, c, loc, scale):
+-    """ The quantile function of the Generalized Pareto distribution.
+-    """
+-    return loc + scale / c * ((P / p)**(c) - 1)
+-
+-
+-def dq_dscale(p, P, c, scale):
+-    """ Partial derivative of the quantile function.
+-    """
+-    return ((P / p)**c - 1) / c
+-
+-
+-def dq_dc(p, P, c, scale):
+-    """ Partial derivative of the quantile function.
+-    """
+-    return (scale * (np.log(P / p) * (P / p)**c ) / c
+-          - scale * ((P / p)**c - 1) / (c**2))
+-
+-
+-def dq_dP(p, P, c, scale):
+-    """ Partial derivative of the quantile function.
+-    """
+-    return scale / P * (P / p)**c
+-
+-
+-def error_P(n, N):
+-    return np.sqrt(n) / N
+-
+-
+-def error(p, P, c, scale, err_P, err_c, err_scale):
+-    return np.sqrt((dq_dP(p, P, c, scale) * err_P)**2
+-                 + (dq_dc(p, P, c, scale) * err_c)**2
+-                 + (dq_dscale(p, P, c, scale) * err_scale)**2)
+-
+-
+-def quantile_conf_bound(p, P, n, c, loc, scale, err_P, err_c, err_scale):
+-    return (quantile(p=p, P=P, c=c, loc=loc, scale=scale)
+-          + n * error(p=p, P=P, c=c, scale=scale,
+-                      err_P=err_P, err_c=err_c, err_scale=err_scale));
+-
+-
+-def get_latency(t0, t1):
+-    """ Get the value of the latency in microseconds
+-    """
+-    return (t1 - t0) / 1000 - 1000
+-
+-
+-def get_cpu_data(data, task_pid, start_id, stop_id, threshold):
+-    """ Loop over the tracing data for a given CPU and find all latencies bigger
+-        than the specified threshold.
+-    """
+-    # Get the size of the data.
+-    size = ks.data_size(data)
+-    #print("data size:", size)
+-
+-    time_start = -1
+-    dt_ot = []
+-    tot = 0
+-    i = 0
+-    i_start = 0;
+-
+-    while i < size:
+-        if data["pid"][i] == task_pid and data['event'][i] == start_id:
+-            time_start = data['time'][i]
+-            i_start = i;
+-            i = i + 1
+-
+-            while i < size:
+-                if data["pid"][i] == task_pid and data['event'][i] == stop_id:
+-                    delta = get_latency(time_start, data['time'][i])
+-
+-                    if delta > threshold and tot != 0:
+-                        print('lat. over threshold: ', delta, i_start, i)
+-                        dt_ot.append([delta, i_start, i])               
+-
+-                    tot = tot + 1
+-                    break
+-
+-                i = i + 1
+-        i = i + 1
+-
+-    print(task_pid, 'tot:', len(dt_ot), '/', tot)
+-    return dt_ot, tot
+-
+-
+-def make_ks_session(fname, data, start, stop):
+-    """ Save a KernelShark session descriptor file (Json).
+-        The sessions is zooming around the maximum observed latency.
+-    """
+-    sname = 'max_lat.json'
+-    ks.new_session(fname, sname)
+-    i_start = int(start)
+-    i_stop = int(stop)
+-
+-    with open(sname, 'r+') as s:
+-        session = json.load(s)
+-        session['TaskPlots'] = [int(data['pid'][i_start])]
+-        session['CPUPlots'] = [int(data['cpu'][i_start])]
+-
+-        delta = data['time'][i_stop] - data['time'][i_start]
+-        tmin = int(data['time'][i_start] - delta)
+-        tmax = int(data['time'][i_stop] + delta)
+-        session['Model']['range'] = [tmin, tmax]
+-
+-        session['Markers']['markA']['isSet'] = True
+-        session['Markers']['markA']['row'] = i_start)
+-
+-        session['Markers']['markB']['isSet'] = True
+-        session['Markers']['markB']['row'] = i_stop)
+-
+-        session['ViewTop'] = i_start) - 5
+-
+-        ks.save_session(session, s)
+-
+-
+-fname = str(sys.argv[1])
+-status = ks.open_file(fname)
+-if not status:
+-    print ("Failed to open file ", fname)
+-    sys.exit()
+-
+-ks.register_plugin('reg_pid')
+-data = ks.load_data()
+-
+-# Get the Event Ids of the hrtimer_start and print events.
+-start_id = ks.event_id('timer', 'hrtimer_start')
+-stop_id = ks.event_id('ftrace', 'print')
+-print("start_id", start_id)
+-print("stop_id", stop_id)
+-
+-tasks = ks.get_tasks()
+-jdb_pids = tasks['jitterdebugger']
+-print('jitterdeburrer pids:', jdb_pids)
+-jdb_pids.pop(0)
+-
+-threshold = 10
+-data_ot = []
+-tot = 0
+-
+-for task_pid in jdb_pids:
+-    cpu_data, cpu_tot = get_cpu_data(data=data,
+-                                     task_pid=task_pid,
+-                                     start_id=start_id,
+-                                     stop_id=stop_id,
+-                                     threshold=threshold)
+-
+-    data_ot.extend(cpu_data)
+-    tot += cpu_tot
+-
+-ks.close()
+-
+-dt_ot = np.array(data_ot)
+-np.savetxt('peak_over_threshold_loaded.txt', dt_ot)
+-
+-make_ks_session(fname=fname, data=data, i_start=int(dt_ot[i_max_lat][1]),
+-                                        i_stop=int(dt_ot[i_max_lat][2]))
+-
+-P = len(dt_ot) / tot
+-err_P = error_P(n=len(dt_ot), N=tot)
+-print('tot:', tot, ' P =', P)
+-
+-lat = dt_ot[:,0]
+-#print(lat)
+-i_max_lat = lat.argmax()
+-print('imax:', i_max_lat, int(dt_ot[i_max_lat][1]))
+-
+-print('max', np.amax(dt_ot))
+-
+-start = threshold
+-stop = 31
+-n_bins = (stop - start) * 2
+-
+-bin_size = (stop - start) / n_bins
+-
+-x = np.linspace(start=start + bin_size / 2,
+-                stop=stop - bin_size / 2,
+-                num=n_bins)
+-
+-bins_ot = np.linspace(start=start, stop=stop, num=n_bins + 1)
+-#print(bins_ot)
+-
+-fig, ax = plt.subplots(nrows=2, ncols=2)
+-fig.tight_layout()
+-ax[-1, -1].axis('off')
+-
+-hist_ot = ax[0][0].hist(x=lat, bins=bins_ot, histtype='stepfilled', alpha=0.3)
+-ax[0][0].set_xlabel('latency [\u03BCs]', fontsize=8)
+-ax[0][0].set_yscale('log')
+-#print(hist_ot[0])
+-
+-hist_ot_norm = ax[1][0].hist(x=lat, bins=bins_ot,
+-                             density=True, histtype='stepfilled', alpha=0.3)
+-
+-# Fit using the fitter of the genpareto class (shown in red).
+-ret = gpareto.fit(lat, loc=threshold)
+-ax[1][0].plot(x, gpareto.pdf(x, c=ret[0],  loc=ret[1],  scale=ret[2]),
+-              'r-', lw=1, color='red',  alpha=0.8)
+-
+-ax[1][0].set_xlabel('latency [\u03BCs]', fontsize=8)
+-print(ret)
+-print('\ngoodness-of-fit: ' + '{:03.3f}'.format(chi2_test(hist_ot_norm,
+-                                                          n_bins=n_bins,
+-                                                          c=ret[0],
+-                                                          loc=ret[1],
+-                                                          scale=ret[2],
+-                                                          norm=len(lat))))
+-
+-print("\n curve_fit:")
+-# Fit using the curve_fit fitter. Fix the value of the "loc" parameter.
+-popt, pcov = cfit(lambda x, c, scale: gpareto.pdf(x, c=c, loc=threshold, scale=scale),
+-                  x, hist_ot_norm[0],
+-                  p0=[ret[0], ret[2]])
+-
+-print(popt)
+-print(pcov)
+-
+-ax[1][0].plot(x, gpareto.pdf(x, c=popt[0], loc=threshold, scale=popt[1]),
+-              'r-', lw=1, color='blue', alpha=0.8)
+-
+-fit_legend = str('\u03BE = ' + '{:05.3f}'.format(popt[0]) +
+-                 ' +- ' + '{:05.3f}'.format(pcov[0][0]**0.5) +
+-                 ' (' + '{:03.2f}'.format(pcov[0][0]**0.5 / abs(popt[0]) * 100) + '%)')
+-
+-fit_legend += str('\n\u03C3 = ' + '{:05.3f}'.format(popt[1]) +
+-                  ' +- ' + '{:05.3f}'.format(pcov[1][1]**0.5) +
+-                  ' (' + '{:03.2f}'.format(pcov[1][1]**0.5 / abs(popt[1]) * 100) + '%)')
+-
+-fit_legend += '\n\u03BC = ' + str(threshold) + ' (const)'
+-
+-fit_legend += '\ngoodness-of-fit: ' + '{:03.3f}'.format(chi2_test(hist_ot_norm,
+-                                                        n_bins=n_bins,
+-                                                        c=popt[0],
+-                                                        loc=threshold,
+-                                                        scale=popt[1],
+-                                                        norm=len(lat)))
+-print(fit_legend)
+-
+-ax[0][1].set_xscale('log')
+-##ax[0][1].set_yscale('log')
+-ax[0][1].set_xlabel('Return period', fontsize=8)
+-ax[0][1].set_ylabel('Return level [\u03BCs]', fontsize=6)
+-ax[0][1].grid(True, linestyle=":", which="both")
+-
+-y = np.linspace(200000, 5000000, 400)
+-ax[0][1].plot(y,
+-              quantile(1 / y,
+-                       P=P,
+-                       c=popt[0],
+-                       loc=threshold,
+-                       scale=popt[1]),
+-              'r-', lw=1, color='blue', alpha=0.8)
+-
+-ax[0][1].plot(y,
+-              quantile_conf_bound(1 / y,
+-                                  P=P,
+-                                  n=+1, 
+-                                  c=popt[0],
+-                                  loc=threshold,
+-                                  scale=popt[1],
+-                                  err_P=err_P,
+-                                  err_c= pcov[0][0]**0.5,
+-                                  err_scale=pcov[1][1]**0.5),
+-              'r-', lw=1, color='green', alpha=0.8)
+-
+-ax[0][1].plot(y,
+-              quantile_conf_bound(1 / y,
+-                                  P=P,
+-                                  n=-1, 
+-                                  c=popt[0],
+-                                  loc=threshold,
+-                                  scale=popt[1],
+-                                  err_P=err_P,
+-                                  err_c= pcov[0][0]**0.5,
+-                                  err_scale=pcov[1][1]**0.5),
+-              'r-', lw=1, color='green', alpha=0.8)
+-
+-props = dict(boxstyle='round', color='black', alpha=0.05)
+-
+-ax[1][1].text(0.05, 0.85,
+-              fit_legend,
+-              fontsize=9,
+-              verticalalignment='top',
+-              bbox=props)
+-
+-plt.savefig('figfit-all-loaded.png')
+-#plt.show()
+diff --git a/examples/page_faults.py b/examples/page_faults.py
+deleted file mode 100755
+index 446b12d..0000000
+--- a/examples/page_faults.py
++++ /dev/null
+@@ -1,120 +0,0 @@
+-#!/usr/bin/env python3
+-
+-"""
+-SPDX-License-Identifier: LGPL-2.1
+-
+-Copyright 2019 VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
+-"""
+-
+-import os
+-import sys
+-import subprocess as sp
+-import json
+-
+-import pprint as pr
+-import matplotlib.pyplot as plt
+-import scipy.stats as st
+-import numpy as np
+-from collections import Counter
+-from tabulate import tabulate
+-
+-from ksharksetup import setup
+-# Always call setup() before importing ksharkpy!!!
+-setup()
+-
+-import ksharkpy as ks
+-
+-def gdb_decode_address(obj_file, obj_address):
+-    """ Use gdb to examine the contents of the memory at this
+-        address.
+-    """
+-    result = sp.run(['gdb',
+-                     '--batch',
+-                     '-ex',
+-                     'x/i ' + str(obj_address),
+-                     obj_file],
+-                    stdout=sp.PIPE)
+-
+-    symbol = result.stdout.decode("utf-8").splitlines()
+-
+-    if symbol:
+-        func = [symbol[0].split(':')[0], symbol[0].split(':')[1]]
+-    else:
+-        func = [obj_address]
+-
+-    func.append(obj_file)
+-
+-    return func
+-
+-# Get the name of the tracing data file.
+-fname = str(sys.argv[1])
+-
+-ks.open_file(fname)
+-ks.register_plugin('reg_pid')
+-
+-data = ks.load_data()
+-tasks = ks.get_tasks()
+-#pr.pprint(tasks)
+-
+-# Get the Event Ids of the page_fault_user or page_fault_kernel events.
+-pf_eid = ks.event_id('exceptions', 'page_fault_user')
+-
+-# Gey the size of the data.
+-d_size = ks.data_size(data)
+-
+-# Get the name of the user program.
+-prog_name = str(sys.argv[2])
+-
+-table_headers = ['N p.f.', 'function', 'value', 'obj. file']
+-table_list = []
+-
+-# Loop over all tasks associated with the user program.
+-for j in range(len(tasks[prog_name])):
+-    count = Counter()
+-    task_pid = tasks[prog_name][j]
+-    for i in range(0, d_size):
+-        if data['event'][i] == pf_eid and data['pid'][i] == task_pid:
+-            address = ks.read_event_field(offset=data['offset'][i],
+-                                          event_id=pf_eid,
+-                                          field='address')
+-            ip = ks.read_event_field(offset=data['offset'][i],
+-                                     event_id=pf_eid,
+-                                     field='ip')
+-            count[ip] += 1
+-
+-    pf_list = count.items()
+-
+-    # Sort the counters of the page fault instruction pointers. The most
+-    # frequent will be on top.
+-    pf_list = sorted(pf_list, key=lambda cnt: cnt[1], reverse=True)
+-
+-    i_max = 25
+-    if i_max > len(pf_list):
+-        i_max = len(pf_list)
+-
+-    for i in range(0, i_max):
+-        func = ks.get_function(pf_list[i][0])
+-        func_info = [func]
+-        if func.startswith('0x'):
+-            # The name of the function cannot be determined. We have an
+-            # instruction pointer instead. Most probably this is a user-space
+-            # function.
+-            address = int(func, 0)
+-            instruction = ks.map_instruction_address(task_pid, address)
+-
+-            if instruction['obj_file'] != 'UNKNOWN':
+-                func_info = gdb_decode_address(instruction['obj_file'],
+-                                               instruction['address'])
+-            else:
+-                func_info += ['', instruction['obj_file']]
+-
+-        else:
+-            func_info = [func]
+-
+-        table_list.append([pf_list[i][1]] + func_info)
+-
+-ks.close()
+-
+-print("\n", tabulate(table_list,
+-                     headers=table_headers,
+-                     tablefmt='simple'))
+diff --git a/examples/sched_wakeup.py b/examples/sched_wakeup.py
+index 52f2688..acf3682 100755
+--- a/examples/sched_wakeup.py
++++ b/examples/sched_wakeup.py
+@@ -15,28 +15,20 @@ import matplotlib.pyplot as plt
+ import scipy.stats as st
+ import numpy as np
  
- import pkgconfig as pkg
-+import numpy as np
+-from ksharksetup import setup
+-# Always call setup() before importing ksharkpy!!!
+-setup()
++import tracecruncher.ks_utils as tc
  
+-import ksharkpy as ks
+ # Get the name of the user program.
+ if len(sys.argv) >= 2:
+     fname = str(sys.argv[1])
+ else:
+     fname = input('choose a trace file: ')
  
- def third_party_paths():
-     pkg_traceevent = pkg.parse('libtraceevent')
-     pkg_ftracepy = pkg.parse('libtracefs')
-     pkg_tracecmd = pkg.parse('libtracecmd')
-+    pkg_kshark = pkg.parse('libkshark')
+-status = ks.open_file(fname)
+-if not status:
+-    print ("Failed to open file ", fname)
+-    sys.exit()
+-
+-ks.register_plugin('reg_pid')
++f = tc.open_file(file_name=fname)
  
--    include_dirs = []
-+    include_dirs = [np.get_include()]
-     include_dirs.extend(pkg_traceevent['include_dirs'])
-     include_dirs.extend(pkg_ftracepy['include_dirs'])
-     include_dirs.extend(pkg_tracecmd['include_dirs'])
-+    include_dirs.extend(pkg_kshark['include_dirs'])
+ # We do not need the Process Ids of the records.
+ # Do not load the "pid" data.
+-data = ks.load_data(pid_data=False)
+-tasks = ks.get_tasks()
++data = f.load(pid_data=False)
++tasks = f.get_tasks()
  
-     library_dirs = []
-     library_dirs.extend(pkg_traceevent['library_dirs'])
-     library_dirs.extend(pkg_ftracepy['library_dirs'])
-     library_dirs.extend(pkg_tracecmd['library_dirs'])
-+    library_dirs.extend(pkg_kshark['library_dirs'])
-     library_dirs = list(set(library_dirs))
+ # Get the name of the user program.
+ if len(sys.argv) >= 3:
+@@ -48,11 +40,11 @@ else:
+ task_pid = tasks[prog_name][0]
  
-     return include_dirs, library_dirs
-@@ -48,6 +52,15 @@ def main():
-                             sources=['src/ftracepy.c', 'src/ftracepy-utils.c'],
-                             libraries=['traceevent', 'tracefs'])
+ # Get the Event Ids of the sched_switch and sched_waking events.
+-ss_eid = ks.event_id('sched', 'sched_switch')
+-w_eid = ks.event_id('sched', 'sched_waking')
++ss_eid = f.event_id(name='sched/sched_switch')
++w_eid = f.event_id(name='sched/sched_waking')
  
-+    cythonize('src/npdatawrapper.pyx', language_level = "3")
-+    module_data = extension(name='tracecruncher.npdatawrapper',
-+                            sources=['src/npdatawrapper.c'],
-+                            libraries=['kshark'])
-+
-+    module_ks   = extension(name='tracecruncher.ksharkpy',
-+                            sources=['src/ksharkpy.c', 'src/ksharkpy-utils.c'],
-+                            libraries=['kshark'])
-+
-     setup(name='tracecruncher',
-           version='0.1.0',
-           description='NumPy based interface for accessing tracing data in Python.',
-@@ -56,7 +69,7 @@ def main():
-           url='https://github.com/vmware/trace-cruncher',
-           license='LGPL-2.1',
-           packages=find_packages(),
--          ext_modules=[module_ft],
-+          ext_modules=[module_ft, module_data, module_ks],
-           classifiers=[
-               'Development Status :: 3 - Alpha',
-               'Programming Language :: Python :: 3',
-diff --git a/src/ksharkpy-utils.c b/src/ksharkpy-utils.c
-new file mode 100644
-index 0000000..12972fb
---- /dev/null
-+++ b/src/ksharkpy-utils.c
-@@ -0,0 +1,411 @@
-+// SPDX-License-Identifier: LGPL-2.1
-+
-+/*
-+ * Copyright (C) 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+ */
-+
-+#ifndef _GNU_SOURCE
-+/** Use GNU C Library. */
-+#define _GNU_SOURCE
-+#endif // _GNU_SOURCE
-+
-+// C
-+#include <string.h>
-+
-+// KernelShark
-+#include "libkshark.h"
-+#include "libkshark-plugin.h"
-+#include "libkshark-model.h"
-+#include "libkshark-tepdata.h"
-+
-+// trace-cruncher
-+#include "ksharkpy-utils.h"
-+
-+PyObject *KSHARK_ERROR = NULL;
-+PyObject *TRACECRUNCHER_ERROR = NULL;
-+
-+PyObject *PyKShark_open(PyObject *self, PyObject *args, PyObject *kwargs)
-+{
-+	struct kshark_context *kshark_ctx = NULL;
-+	char *fname;
-+	int sd;
-+
-+	static char *kwlist[] = {"file_name", NULL};
-+	if(!PyArg_ParseTupleAndKeywords(args,
-+					kwargs,
-+					"s",
-+					kwlist,
-+					&fname)) {
-+		return NULL;
-+	}
-+
-+	if (!kshark_instance(&kshark_ctx)) {
-+		KS_INIT_ERROR
-+		return NULL;
-+	}
-+
-+	sd = kshark_open(kshark_ctx, fname);
-+	if (sd < 0) {
-+		PyErr_Format(KSHARK_ERROR, "Failed to open file \'%s\'", fname);
-+		return NULL;
-+	}
-+
-+	return PyLong_FromLong(sd);
-+}
-+
-+PyObject *PyKShark_close(PyObject* self, PyObject* noarg)
-+{
-+	struct kshark_context *kshark_ctx = NULL;
-+
-+	if (!kshark_instance(&kshark_ctx)) {
-+		KS_INIT_ERROR
-+		return NULL;
-+	}
-+
-+	kshark_close_all(kshark_ctx);
-+
-+	Py_RETURN_NONE;
-+}
-+
-+static bool is_tep_data(const char *file_name)
-+{
-+	if (!kshark_tep_check_data(file_name)) {
-+		PyErr_Format(KSHARK_ERROR, "\'%s\' is not a TEP data file.",
-+			     file_name);
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
-+PyObject *PyKShark_open_tep_buffer(PyObject *self, PyObject *args,
-+						   PyObject *kwargs)
-+{
-+	struct kshark_context *kshark_ctx = NULL;
-+	char *file_name, *buffer_name;
-+	int sd, sd_top;
-+
-+	static char *kwlist[] = {"file_name", "buffer_name", NULL};
-+	if(!PyArg_ParseTupleAndKeywords(args,
-+					kwargs,
-+					"ss",
-+					kwlist,
-+					&file_name,
-+					&buffer_name)) {
-+		return NULL;
-+	}
-+
-+	if (!kshark_instance(&kshark_ctx)) {
-+		KS_INIT_ERROR
-+		return NULL;
-+	}
-+
-+	if (!is_tep_data(file_name))
-+		return NULL;
-+
-+	sd_top = kshark_tep_find_top_stream(kshark_ctx, file_name);
-+	if (sd_top < 0) {
-+		/* The "top" steam has to be initialized first. */
-+		sd_top = kshark_open(kshark_ctx, file_name);
-+	}
-+
-+	if (sd_top < 0)
-+		return NULL;
-+
-+	sd = kshark_tep_open_buffer(kshark_ctx, sd_top, buffer_name);
-+	if (sd < 0) {
-+		PyErr_Format(KSHARK_ERROR,
-+			     "Failed to open buffer \'%s\' in file \'%s\'",
-+			     buffer_name, file_name);
-+		return NULL;
-+	}
-+
-+	return PyLong_FromLong(sd);
-+}
-+
-+static struct kshark_data_stream *get_stream(int stream_id)
-+{
-+	struct kshark_context *kshark_ctx = NULL;
-+	struct kshark_data_stream *stream;
-+
-+	if (!kshark_instance(&kshark_ctx)) {
-+		KS_INIT_ERROR
-+		return NULL;
-+	}
-+
-+	stream = kshark_get_data_stream(kshark_ctx, stream_id);
-+	if (!stream) {
-+		PyErr_Format(KSHARK_ERROR,
-+			     "No data stream %i loaded.",
-+			     stream_id);
-+		return NULL;
-+	}
-+
-+	return stream;
-+}
-+
-+PyObject *PyKShark_set_clock_offset(PyObject* self, PyObject* args,
-+						    PyObject *kwargs)
-+{
-+	struct kshark_data_stream *stream;
-+	int64_t offset;
-+	int stream_id;
-+
-+	static char *kwlist[] = {"stream_id", "offset", NULL};
-+	if (!PyArg_ParseTupleAndKeywords(args,
-+					 kwargs,
-+					 "iL",
-+					 kwlist,
-+					 &stream_id,
-+					 &offset)) {
-+		return NULL;
-+	}
-+
-+	stream = get_stream(stream_id);
-+	if (!stream)
-+		return NULL;
-+
-+	if (stream->calib_array)
-+		free(stream->calib_array);
-+
-+	stream->calib_array = malloc(sizeof(*stream->calib_array));
-+	if (!stream->calib_array) {
-+		MEM_ERROR
-+		return NULL;
-+	}
-+
-+	stream->calib_array[0] = offset;
-+	stream->calib_array_size = 1;
-+
-+	stream->calib = kshark_offset_calib;
-+
-+	Py_RETURN_NONE;
-+}
-+
-+static int compare(const void *a, const void *b)
-+{
-+	int a_i, b_i;
-+
-+	a_i = *(const int *) a;
-+	b_i = *(const int *) b;
-+
-+	if (a_i > b_i)
-+		return +1;
-+
-+	if (a_i < b_i)
-+		return -1;
-+
-+	return 0;
-+}
-+
-+PyObject *PyKShark_get_tasks(PyObject* self, PyObject* args, PyObject *kwargs)
-+{
-+	struct kshark_context *kshark_ctx = NULL;
-+	const char *comm;
-+	int sd, *pids;
-+	ssize_t i, n;
-+
-+	static char *kwlist[] = {"stream_id", NULL};
-+	if (!PyArg_ParseTupleAndKeywords(args,
-+					 kwargs,
-+					 "i",
-+					 kwlist,
-+					 &sd)) {
-+		return NULL;
-+	}
-+
-+	if (!kshark_instance(&kshark_ctx)) {
-+		KS_INIT_ERROR
-+		return NULL;
-+	}
-+
-+	n = kshark_get_task_pids(kshark_ctx, sd, &pids);
-+	if (n <= 0) {
-+		PyErr_SetString(KSHARK_ERROR,
-+				"Failed to retrieve the PID-s of the tasks");
-+		return NULL;
-+	}
-+
-+	qsort(pids, n, sizeof(*pids), compare);
-+
-+	PyObject *tasks, *pid_list, *pid_val;
-+
-+	tasks = PyDict_New();
-+	for (i = 0; i < n; ++i) {
-+		comm = kshark_comm_from_pid(sd, pids[i]);
-+		pid_val = PyLong_FromLong(pids[i]);
-+		pid_list = PyDict_GetItemString(tasks, comm);
-+		if (!pid_list) {
-+			pid_list = PyList_New(1);
-+			PyList_SET_ITEM(pid_list, 0, pid_val);
-+			PyDict_SetItemString(tasks, comm, pid_list);
-+		} else {
-+			PyList_Append(pid_list, pid_val);
-+		}
-+	}
-+
-+	return tasks;
-+}
-+
-+PyObject *PyKShark_event_id(PyObject *self, PyObject *args, PyObject *kwargs)
-+{
-+	struct kshark_data_stream *stream;
-+	int stream_id, event_id;
-+	const char *name;
-+
-+	static char *kwlist[] = {"stream_id", "name", NULL};
-+	if (!PyArg_ParseTupleAndKeywords(args,
-+					 kwargs,
-+					 "is",
-+					 kwlist,
-+					 &stream_id,
-+					 &name)) {
-+		return NULL;
-+	}
-+
-+	stream = get_stream(stream_id);
-+	if (!stream)
-+		return NULL;
-+
-+	event_id = kshark_find_event_id(stream, name);
-+	if (event_id < 0) {
-+		PyErr_Format(KSHARK_ERROR,
-+			     "Failed to retrieve the Id of event \'%s\' in stream \'%s\'",
-+			     name, stream->file);
-+		return NULL;
-+	}
-+
-+	return PyLong_FromLong(event_id);
-+}
-+
-+PyObject *PyKShark_event_name(PyObject *self, PyObject *args,
-+					      PyObject *kwargs)
-+{
-+	struct kshark_data_stream *stream;
-+	struct kshark_entry entry;
-+	int stream_id, event_id;
-+	PyObject *ret;
-+	char *name;
-+
-+	static char *kwlist[] = {"stream_id", "event_id", NULL};
-+	if (!PyArg_ParseTupleAndKeywords(args,
-+					 kwargs,
-+					 "ii",
-+					 kwlist,
-+					 &stream_id,
-+					 &event_id)) {
-+		return NULL;
-+	}
-+
-+	stream = get_stream(stream_id);
-+	if (!stream)
-+		return NULL;
-+
-+	entry.event_id = event_id;
-+	entry.stream_id = stream_id;
-+	entry.visible = 0xFF;
-+	name = kshark_get_event_name(&entry);
-+	if (!name) {
-+		PyErr_Format(KSHARK_ERROR,
-+			     "Failed to retrieve the name of event \'id=%i\' in stream \'%s\'",
-+			     event_id, stream->file);
-+		return NULL;
-+	}
-+
-+	ret = PyUnicode_FromString(name);
-+	free(name);
-+
-+	return ret;
-+}
-+
-+PyObject *PyKShark_read_event_field(PyObject *self, PyObject *args,
-+						    PyObject *kwargs)
-+{
-+	struct kshark_context *kshark_ctx = NULL;
-+	struct kshark_entry entry;
-+	int event_id, ret, sd;
-+	const char *field;
-+	int64_t offset;
-+	int64_t val;
-+
-+	static char *kwlist[] = {"stream_id", "offset", "event_id", "field", NULL};
-+	if(!PyArg_ParseTupleAndKeywords(args,
-+					kwargs,
-+					"iLis",
-+					kwlist,
-+					&sd,
-+					&offset,
-+					&event_id,
-+					&field)) {
-+		return NULL;
-+	}
-+
-+	if (!kshark_instance(&kshark_ctx)) {
-+		KS_INIT_ERROR
-+		return NULL;
-+	}
-+
-+	entry.event_id = event_id;
-+	entry.offset = offset;
-+	entry.stream_id = sd;
-+
-+	ret = kshark_read_event_field_int(&entry, field, &val);
-+	if (ret != 0) {
-+		PyErr_Format(KSHARK_ERROR,
-+			     "Failed to read field '%s' of event '%i'",
-+			     field, event_id);
-+		return NULL;
-+	}
-+
-+	return PyLong_FromLong(val);
-+}
-+
-+PyObject *PyKShark_new_session_file(PyObject *self, PyObject *args,
-+						    PyObject *kwargs)
-+{
-+	struct kshark_context *kshark_ctx = NULL;
-+	struct kshark_config_doc *session;
-+	struct kshark_config_doc *plugins;
-+	struct kshark_config_doc *markers;
-+	struct kshark_config_doc *model;
-+	struct kshark_trace_histo histo;
-+	const char *session_file;
-+
-+	static char *kwlist[] = {"session_file", NULL};
-+	if (!PyArg_ParseTupleAndKeywords(args,
-+					 kwargs,
-+					 "s",
-+					 kwlist,
-+					 &session_file)) {
-+		return NULL;
-+	}
-+
-+	if (!kshark_instance(&kshark_ctx)) {
-+		KS_INIT_ERROR
-+		return NULL;
-+	}
-+
-+	session = kshark_config_new("kshark.config.session",
-+				    KS_CONFIG_JSON);
-+
-+	kshark_ctx->filter_mask = KS_TEXT_VIEW_FILTER_MASK |
-+				  KS_GRAPH_VIEW_FILTER_MASK |
-+				  KS_EVENT_VIEW_FILTER_MASK;
-+
-+	kshark_export_all_dstreams(kshark_ctx, &session);
-+
-+	ksmodel_init(&histo);
-+	model = kshark_export_model(&histo, KS_CONFIG_JSON);
-+	kshark_config_doc_add(session, "Model", model);
-+
-+	markers = kshark_config_new("kshark.config.markers", KS_CONFIG_JSON);
-+	kshark_config_doc_add(session, "Markers", markers);
-+
-+	plugins = kshark_config_new("kshark.config.plugins", KS_CONFIG_JSON);
-+	kshark_config_doc_add(session, "User Plugins", plugins);
-+
-+	kshark_save_config_file(session_file, session);
-+	kshark_free_config_doc(session);
-+
-+	Py_RETURN_NONE;
-+}
-diff --git a/src/ksharkpy-utils.h b/src/ksharkpy-utils.h
-new file mode 100644
-index 0000000..6d17d2e
---- /dev/null
-+++ b/src/ksharkpy-utils.h
-@@ -0,0 +1,41 @@
-+/* SPDX-License-Identifier: LGPL-2.1 */
-+
-+/*
-+ * Copyright (C) 2021 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
-+ */
-+
-+#ifndef _TC_KSHARK_PY_UTILS
-+#define _TC_KSHARK_PY_UTILS
-+
-+// Python
-+#include <Python.h>
-+
-+// trace-cruncher
-+#include "common.h"
-+
-+C_OBJECT_WRAPPER_DECLARE(kshark_data_stream, PyKSharkStream)
-+
-+PyObject *PyKShark_open(PyObject *self, PyObject *args, PyObject *kwargs);
-+
-+PyObject *PyKShark_close(PyObject* self, PyObject* noarg);
-+
-+PyObject *PyKShark_open_tep_buffer(PyObject *self, PyObject *args,
-+						   PyObject *kwargs);
-+
-+PyObject *PyKShark_set_clock_offset(PyObject* self, PyObject* args,
-+						    PyObject *kwargs);
-+
-+PyObject *PyKShark_get_tasks(PyObject* self, PyObject* args, PyObject *kwargs);
-+
-+PyObject *PyKShark_event_id(PyObject *self, PyObject *args, PyObject *kwargs);
-+
-+PyObject *PyKShark_event_name(PyObject *self, PyObject *args,
-+					      PyObject *kwargs);
-+
-+PyObject *PyKShark_read_event_field(PyObject *self, PyObject *args,
-+						    PyObject *kwargs);
-+
-+PyObject *PyKShark_new_session_file(PyObject *self, PyObject *args,
-+						    PyObject *kwargs);
-+
-+#endif
-diff --git a/src/ksharkpy.c b/src/ksharkpy.c
-new file mode 100644
-index 0000000..7cfb94b
---- /dev/null
-+++ b/src/ksharkpy.c
-@@ -0,0 +1,94 @@
-+// SPDX-License-Identifier: LGPL-2.1
-+
-+/*
-+ * Copyright (C) 2019 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+ */
-+
-+/** Use GNU C Library. */
-+#define _GNU_SOURCE 1
-+
-+// C
-+#include <stdio.h>
-+#include <dlfcn.h>
-+
-+// Python
-+#include <Python.h>
-+
-+// trace-cruncher
-+#include "ksharkpy-utils.h"
-+#include "common.h"
-+
-+extern PyObject *KSHARK_ERROR;
-+extern PyObject *TRACECRUNCHER_ERROR;
-+
-+static PyMethodDef ksharkpy_methods[] = {
-+	{"open",
-+	 (PyCFunction) PyKShark_open,
-+	 METH_VARARGS | METH_KEYWORDS,
-+	 "Open trace data file"
-+	},
-+	{"close",
-+	 (PyCFunction) PyKShark_close,
-+	 METH_VARARGS | METH_KEYWORDS,
-+	 "Close trace data file"
-+	},
-+	{"open_tep_buffer",
-+	 (PyCFunction) PyKShark_open_tep_buffer,
-+	 METH_VARARGS | METH_KEYWORDS,
-+	 "Open trace data buffer"
-+	},
-+	{"set_clock_offset",
-+	 (PyCFunction) PyKShark_set_clock_offset,
-+	 METH_VARARGS | METH_KEYWORDS,
-+	 "Set the clock offset of the data stream"
-+	},
-+	{"get_tasks",
-+	 (PyCFunction) PyKShark_get_tasks,
-+	 METH_VARARGS | METH_KEYWORDS,
-+	 "Get all tasks recorded in a trace file"
-+	},
-+	{"event_id",
-+	 (PyCFunction) PyKShark_event_id,
-+	 METH_VARARGS | METH_KEYWORDS,
-+	 "Get the Id of the event from its name"
-+	},
-+	{"event_name",
-+	 (PyCFunction) PyKShark_event_name,
-+	 METH_VARARGS | METH_KEYWORDS,
-+	 "Get the name of the event from its Id number"
-+	},
-+	{"read_event_field",
-+	 (PyCFunction) PyKShark_read_event_field,
-+	 METH_VARARGS | METH_KEYWORDS,
-+	 "Get the value of an event field having a given name"
-+	},
-+	{"new_session_file",
-+	 (PyCFunction) PyKShark_new_session_file,
-+	 METH_VARARGS | METH_KEYWORDS,
-+	 "Create new session description file"
-+	},
-+	{NULL, NULL, 0, NULL}
-+};
-+
-+static struct PyModuleDef ksharkpy_module = {
-+	PyModuleDef_HEAD_INIT,
-+	"ksharkpy",
-+	"",
-+	-1,
-+	ksharkpy_methods
-+};
-+
-+PyMODINIT_FUNC PyInit_ksharkpy(void)
-+{
-+	PyObject *module = PyModule_Create(&ksharkpy_module);
-+
-+	KSHARK_ERROR = PyErr_NewException("tracecruncher.ksharkpy.ks_error",
-+					  NULL, NULL);
-+	PyModule_AddObject(module, "ks_error", KSHARK_ERROR);
-+
-+	TRACECRUNCHER_ERROR = PyErr_NewException("tracecruncher.tc_error",
-+						 NULL, NULL);
-+	PyModule_AddObject(module, "tc_error", TRACECRUNCHER_ERROR);
-+
-+	return module;
-+}
-diff --git a/src/npdatawrapper.pyx b/src/npdatawrapper.pyx
-new file mode 100644
-index 0000000..da55d67
---- /dev/null
-+++ b/src/npdatawrapper.pyx
-@@ -0,0 +1,203 @@
-+"""
-+SPDX-License-Identifier: LGPL-2.1
-+
-+Copyright 2019 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+"""
-+
-+import ctypes
-+
-+# Import the Python-level symbols of numpy
-+import numpy as np
-+# Import the C-level symbols of numpy
-+cimport numpy as np
-+
-+import json
-+
-+from libcpp cimport bool
-+
-+from libc.stdlib cimport free
-+
-+from cpython cimport PyObject, Py_INCREF
-+
-+from libc cimport stdint
-+ctypedef stdint.int16_t int16_t
-+ctypedef stdint.uint16_t uint16_t
-+ctypedef stdint.int32_t int32_t
-+ctypedef stdint.uint32_t uint32_t
-+ctypedef stdint.int64_t int64_t
-+ctypedef stdint.uint64_t uint64_t
-+
-+cdef extern from 'numpy/ndarraytypes.h':
-+    int NPY_ARRAY_CARRAY
-+
-+# Numpy must be initialized!!!
-+np.import_array()
-+
-+cdef extern from 'trace2matrix.c':
-+    ssize_t trace2matrix(int stream_id,
-+                         int16_t **event_array,
-+                         int16_t **cpu_array,
-+                         int32_t **pid_array,
-+                         int64_t **offset_array,
-+                         int64_t **ts_array)
-+
-+data_columns = ['event', 'cpu', 'pid', 'offset', 'time']
-+
-+data_column_types = {
-+    data_columns[0]: np.NPY_INT16,
-+    data_columns[1]: np.NPY_INT16,
-+    data_columns[2]: np.NPY_INT32,
-+    data_columns[3]: np.NPY_INT64,
-+    data_columns[4]: np.NPY_UINT64
-+    }
-+
-+cdef class KsDataWrapper:
-+    cdef int item_size
-+    cdef int data_size
-+    cdef int data_type
-+    cdef void* data_ptr
-+
-+    cdef init(self, int data_type,
-+                    int data_size,
-+                    int item_size,
-+                    void* data_ptr):
-+        """ This initialization cannot be done in the constructor because
-+            we use C-level arguments.
-+        """
-+        self.item_size = item_size
-+        self.data_size = data_size
-+        self.data_type = data_type
-+        self.data_ptr = data_ptr
-+
-+    def __array__(self):
-+        """ Here we use the __array__ method, that is called when numpy
-+            tries to get an array from the object.
-+        """
-+        cdef np.npy_intp shape[1]
-+        shape[0] = <np.npy_intp> self.data_size
-+
-+        ndarray = np.PyArray_New(np.ndarray,
-+                                 1, shape,
-+                                 self.data_type,
-+                                 NULL,
-+                                 self.data_ptr,
-+                                 self.item_size,
-+                                 NPY_ARRAY_CARRAY,
-+                                 <object>NULL)
-+
-+        return ndarray
-+
-+    def __dealloc__(self):
-+        """ Free the data. This is called by Python when all the references to
-+            the object are gone.
-+        """
-+        free(<void*>self.data_ptr)
-+
-+
-+def load(stream_id, evt_data=True, cpu_data=True, pid_data=True,
-+                    ofst_data=True, ts_data=True):
-+    """ Python binding of the 'kshark_load_data_matrix' function that does not
-+        copy the data. The input parameters can be used to avoid loading the
-+        data from the unnecessary fields.
-+    """
-+    cdef int16_t *evt_c
-+    cdef int16_t *cpu_c
-+    cdef int32_t *pid_c
-+    cdef int64_t *ofst_c
-+    cdef int64_t *ts_c
-+
-+    cdef np.ndarray evt, cpu, pid, ofst, ts
-+
-+    if not evt_data:
-+        evt_c = NULL
-+
-+    if not cpu_data:
-+        cpu_c = NULL
-+
-+    if not pid_data:
-+        pid_c = NULL
-+
-+    if not ofst_data:
-+        ofst_c = NULL
-+
-+    if not ts_data:
-+        ts_c = NULL
-+
-+    data_dict = {}
-+
-+    cdef ssize_t size
-+
-+    size = trace2matrix(stream_id, &evt_c, &cpu_c, &pid_c, &ofst_c, &ts_c)
-+    if size <= 0:
-+        raise Exception('No data has been loaded.')
-+
-+    if evt_data:
-+        column = 'event'
-+        array_wrapper_evt = KsDataWrapper()
-+        array_wrapper_evt.init(data_type=data_column_types[column],
-+                               data_size=size,
-+                               item_size=0,
-+                               data_ptr=<void *>evt_c)
-+
-+        evt = np.array(array_wrapper_evt, copy=False)
-+        evt.base = <PyObject *> array_wrapper_evt
-+        data_dict.update({column: evt})
-+        Py_INCREF(array_wrapper_evt)
-+
-+    if cpu_data:
-+        column = 'cpu'
-+        array_wrapper_cpu = KsDataWrapper()
-+        array_wrapper_cpu.init(data_type=data_column_types[column],
-+                               data_size=size,
-+                               item_size=0,
-+                               data_ptr=<void *> cpu_c)
-+
-+        cpu = np.array(array_wrapper_cpu, copy=False)
-+        cpu.base = <PyObject *> array_wrapper_cpu
-+        data_dict.update({column: cpu})
-+        Py_INCREF(array_wrapper_cpu)
-+
-+    if pid_data:
-+        column = 'pid'
-+        array_wrapper_pid = KsDataWrapper()
-+        array_wrapper_pid.init(data_type=data_column_types[column],
-+                               data_size=size,
-+                               item_size=0,
-+                               data_ptr=<void *>pid_c)
-+
-+        pid = np.array(array_wrapper_pid, copy=False)
-+        pid.base = <PyObject *> array_wrapper_pid
-+        data_dict.update({column: pid})
-+        Py_INCREF(array_wrapper_pid)
-+
-+    if ofst_data:
-+        column = 'offset'
-+        array_wrapper_ofst = KsDataWrapper()
-+        array_wrapper_ofst.init(data_type=data_column_types[column],
-+                                data_size=size,
-+                                item_size=0,
-+                                data_ptr=<void *> ofst_c)
-+
-+
-+        ofst = np.array(array_wrapper_ofst, copy=False)
-+        ofst.base = <PyObject *> array_wrapper_ofst
-+        data_dict.update({column: ofst})
-+        Py_INCREF(array_wrapper_ofst)
-+
-+    if ts_data:
-+        column = 'time'
-+        array_wrapper_ts = KsDataWrapper()
-+        array_wrapper_ts.init(data_type=data_column_types[column],
-+                              data_size=size,
-+                              item_size=0,
-+                              data_ptr=<void *> ts_c)
-+
-+        ts = np.array(array_wrapper_ts, copy=False)
-+        ts.base = <PyObject *> array_wrapper_ts
-+        data_dict.update({column: ts})
-+        Py_INCREF(array_wrapper_ts)
-+
-+    return data_dict
-+
-+def columns():
-+    return data_columns
-diff --git a/src/trace2matrix.c b/src/trace2matrix.c
-new file mode 100644
-index 0000000..1151ebe
---- /dev/null
-+++ b/src/trace2matrix.c
-@@ -0,0 +1,40 @@
-+// SPDX-License-Identifier: LGPL-2.1
-+
-+/*
-+ * Copyright 2019 VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
-+ */
-+
-+// KernelShark
-+#include "libkshark.h"
-+
-+ssize_t trace2matrix(int sd,
-+		     int16_t **event_array,
-+		     int16_t **cpu_array,
-+		     int32_t **pid_array,
-+		     int64_t **offset_array,
-+		     int64_t **ts_array)
-+{
-+	struct kshark_generic_stream_interface *interface;
-+	struct kshark_context *kshark_ctx = NULL;
-+	struct kshark_data_stream *stream;
-+	ssize_t total = 0;
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return -1;
-+
-+	stream = kshark_get_data_stream(kshark_ctx, sd);
-+	if (!stream)
-+		return -1;
-+
-+	interface = stream->interface;
-+	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
-+	    interface->load_matrix) {
-+		total = interface->load_matrix(stream, kshark_ctx, event_array,
-+								   cpu_array,
-+								   pid_array,
-+								   offset_array,
-+								   ts_array);
-+	}
-+
-+	return total;
-+}
+ # Gey the size of the data.
+-i = data['offset'].size
++i = tc.size(data)
+ 
+ dt = []
+ delta_max = i_ss_max = i_sw_max = 0
+@@ -60,7 +52,7 @@ delta_max = i_ss_max = i_sw_max = 0
+ while i > 0:
+     i = i - 1
+     if data['event'][i] == ss_eid:
+-        next_pid = ks.read_event_field(offset=data['offset'][i],
++        next_pid = f.read_event_field(offset=data['offset'][i],
+                                        event_id=ss_eid,
+                                        field='next_pid')
+ 
+@@ -73,13 +65,13 @@ while i > 0:
+                 i = i - 1
+ 
+                 if data['event'][i] < 0 and cpu_ss == data['cpu'][i]:
+-			# Ring buffer overflow. Ignore this case and continue.
++                        # Ring buffer overflow. Ignore this case and continue.
+                         break
+ 
+                 if data['event'][i] == ss_eid:
+-                    next_pid = ks.read_event_field(offset=data['offset'][i],
+-                                       event_id=ss_eid,
+-                                       field='next_pid')
++                    next_pid = f.read_event_field(offset=data['offset'][i],
++                                                  event_id=ss_eid,
++                                                  field='next_pid')
+                     if next_pid == task_pid:
+                         # Second sched_switch for the same task. ?
+                         time_ss = data['time'][i]
+@@ -89,7 +81,7 @@ while i > 0:
+                     continue
+ 
+                 if (data['event'][i] == w_eid):
+-                    waking_pid = ks.read_event_field(offset=data['offset'][i],
++                    waking_pid = f.read_event_field(offset=data['offset'][i],
+                                                      event_id=w_eid,
+                                                      field='pid')
+ 
+@@ -107,6 +99,7 @@ while i > 0:
+ desc = st.describe(np.array(dt))
+ print(desc)
+ 
++# Plot the latency distribution.
+ fig, ax = plt.subplots(nrows=1, ncols=1)
+ fig.set_figheight(6)
+ fig.set_figwidth(7)
+@@ -119,30 +112,27 @@ ax.set_xlabel('latency [$\mu$s]')
+ ax.hist(dt, bins=(100), histtype='step')
+ plt.show()
+ 
+-sname = 'sched.json'
+-ks.new_session(fname, sname)
++# Prepare a session description for KernelShark.
++s = tc.ks_session('sched')
+ 
+-with open(sname, 'r+') as s:
+-    session = json.load(s)
+-    session['TaskPlots'] = [task_pid]
+-    session['CPUPlots'] = [int(data['cpu'][i_sw_max])]
++delta = data['time'][i_ss_max] - data['time'][i_sw_max]
++tmin = data['time'][i_sw_max] - delta
++tmax = data['time'][i_ss_max] + delta
+ 
+-    if data['cpu'][i_ss_max] != data['cpu'][i_sw_max]:
+-        session['CPUPlots'].append(int(data['cpu'][i_ss_max]))
++s.set_time_range(tmin=tmin, tmax=tmax)
+ 
+-    delta = data['time'][i_ss_max] - data['time'][i_sw_max]
+-    tmin = int(data['time'][i_sw_max] - delta)
+-    tmax = int(data['time'][i_ss_max] + delta)
+-    session['Model']['range'] = [tmin, tmax]
++cpu_plots = [data['cpu'][i_sw_max]]
++if data['cpu'][i_ss_max] != data['cpu'][i_sw_max]:
++    cpu_plots.append(data['cpu'][i_ss_max])
+ 
+-    session['Markers']['markA']['isSet'] = True
+-    session['Markers']['markA']['row'] = int(i_sw_max)
++s.set_cpu_plots(f, cpu_plots)
++s.set_task_plots(f, [task_pid])
+ 
+-    session['Markers']['markB']['isSet'] = True
+-    session['Markers']['markB']['row'] = int(i_ss_max)
++s.set_marker_a(i_sw_max)
++s.set_marker_b(i_ss_max)
+ 
+-    session['ViewTop'] = int(i_sw_max) - 5
++s.set_first_visible_row(i_sw_max - 5)
+ 
+-    ks.save_session(session, s)
++s.add_plugin(stream=f, plugin='sched_events')
+ 
+-ks.close()
++s.save()
 -- 
 2.27.0
 
