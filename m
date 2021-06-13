@@ -6,39 +6,36 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE76EC48BDF
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 13 Jun 2021 23:29:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 704D8C48BE8
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 13 Jun 2021 23:30:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C87D5611CA
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 13 Jun 2021 23:29:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 47B036136E
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 13 Jun 2021 23:30:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232199AbhFMXbb (ORCPT
+        id S232181AbhFMXcl (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 13 Jun 2021 19:31:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50956 "EHLO mail.kernel.org"
+        Sun, 13 Jun 2021 19:32:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232156AbhFMXba (ORCPT
+        id S232156AbhFMXcl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 13 Jun 2021 19:31:30 -0400
+        Sun, 13 Jun 2021 19:32:41 -0400
 Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2864761159;
-        Sun, 13 Jun 2021 23:29:28 +0000 (UTC)
-Date:   Sun, 13 Jun 2021 19:29:26 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 16AD861159;
+        Sun, 13 Jun 2021 23:30:39 +0000 (UTC)
+Date:   Sun, 13 Jun 2021 19:30:37 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Ian Rogers <irogers@google.com>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+Cc:     linux-trace-devel@vger.kernel.org,
         Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
         Claire Jensen <cjense@google.com>
-Subject: Re: [PATCH 2/2] libtraceevent: Changed angled brackets to double
- quotes.
-Message-ID: <20210613192926.6cb6b983@rorschach.local.home>
-In-Reply-To: <CAP-5=fX1riLr6y8KapEhmxk3BW1Xq9kV_zMywoQ+B8Dgs6fxeg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] libtraceevent: Add eof checks.
+Message-ID: <20210613193037.2ec40453@rorschach.local.home>
+In-Reply-To: <20210612014501.890593-2-irogers@google.com>
 References: <20210612014501.890593-1-irogers@google.com>
-        <20210612014501.890593-3-irogers@google.com>
-        <20210612190049.7e09d8c6@rorschach.local.home>
-        <CAP-5=fX1riLr6y8KapEhmxk3BW1Xq9kV_zMywoQ+B8Dgs6fxeg@mail.gmail.com>
+        <20210612014501.890593-2-irogers@google.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -47,17 +44,14 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Sun, 13 Jun 2021 14:31:42 -0700
+On Fri, 11 Jun 2021 18:45:00 -0700
 Ian Rogers <irogers@google.com> wrote:
 
+> From: Claire Jensen <cjense@google.com>
+> 
+> Added checking for __read_char and peek_char to make sure value is not at end
+> of file.
 
-> Would it be more conventional in this situation to use quotes within
-> the library and angles outside? This change is within the library and
-> not with code trying to link against it.
-
-Does it matter? If not, what's the purpose of changing it?
-
-Note, the change log is empty, and is where rationale for the change is
-suppose to be added.
+Was there a case where this happened?
 
 -- Steve
