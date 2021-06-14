@@ -8,59 +8,59 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 868DCC49360
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62BF9C49361
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:52:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6D7446138C
+	by mail.kernel.org (Postfix) with ESMTP id 5019761380
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:52:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232632AbhFNHyW (ORCPT
+        id S232637AbhFNHyW (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Mon, 14 Jun 2021 03:54:22 -0400
-Received: from mail-ed1-f53.google.com ([209.85.208.53]:39444 "EHLO
-        mail-ed1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232636AbhFNHyV (ORCPT
+Received: from mail-ed1-f49.google.com ([209.85.208.49]:33675 "EHLO
+        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232632AbhFNHyV (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 14 Jun 2021 03:54:21 -0400
-Received: by mail-ed1-f53.google.com with SMTP id dj8so45193135edb.6
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:52:03 -0700 (PDT)
+Received: by mail-ed1-f49.google.com with SMTP id f5so40211937eds.0
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:52:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OL6z+eplL6Um4JCUwgrmpOe7SOkUvFTEKsytnrQIMvs=;
-        b=tBL3xhbBePer2qFA8n+wh1wMGgG5QKX90Beaa1kkTB/PVeviOio91LjqUUAKr0t7Or
-         S4C4Rq9L6XmXwAZAxpYPE3SY80A1MAgjeGhbQGRufIonIv78A8ABPLASjUXI896Zi4uq
-         6iW9zb7d+VwCHognbVkw8XIkaCa4ZYpjJx5NIUB1dufRYHx/kuQba9uR13/7FunHkV6C
-         RlVHr3pLcUj5m+YNTb0yd+xmjMOnRyGadgHTFXTgCWfwX6qT80RHQe3vskacmCWYNUq+
-         tLFkJH8jwbg8iVlp01ElLLPMIPU8gJ0j7UOd/PzrHb1uBlh7hSbFo0ClqKcuFjZZoVEQ
-         G9ZQ==
+        bh=Rl0kPyNRg0Ei1SdJ3rLL1247YtZ7+uNI5K11AvHuLvs=;
+        b=l1lJIpg19UrVJ7NmqrdKNTYM0n0CiQNHeFevNE57OYSRXQ0Pa0Xs5/wC4DispzdeTN
+         YuEYK+zBSWCT50/6DsKFaU33VpWluBd+sLVDZiqB5yT7+O8UwsqhV99mW73Ql/EzQTFf
+         h0rEyzWUAhIUBNr/mRdZN7gYYCVJLVr2fuSzELqaF43CTs+qF6p0YOkwGY9KzbmNUjuO
+         byqhhdRzuwoYVDV1WFKBsbdy5SOxQ5765UMhbq6+rkQpTKln1+qtKmR9DJDpGD1I/+wg
+         faE2MXoLJnGhaJ5LuVAXrI27fkYQu0xcf4H3kYaJent9XDa/B4ytpBEJGlRnlf+S2998
+         buDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OL6z+eplL6Um4JCUwgrmpOe7SOkUvFTEKsytnrQIMvs=;
-        b=PJe5L4AVxEpBu50M4phmceyf4QD+VZUQ6Gj59iwXwLs9Sd4hzXPJZvobJwdgC6MkT/
-         sVtGK7ZdjTTV6w/6kVzx7hdKwwTLRD4yGcCQaRmONAKZW10irifZXTdRbftvCjXaI7H1
-         nMdejvy8Vr07+DCKzAOn8LSfuNHF7p7JdWomAaDvrfTm25GeTGsyuhdK6CjhdvV9vy0p
-         o+VVHIlXP5BgzCtmqDwYJsa28FzlEyAq3ZywJ1r5/ERwa6L4jK++r65nhvt9sp6fAWPD
-         g4YOkBg4qQXvKGamqconzlyb+kCIrAbZoQT9LVsAldx2FPeaJAFY1fXAvdRCWdn9RVg2
-         ZcPQ==
-X-Gm-Message-State: AOAM5337XmPLtwpBHd+eypGLb7WiWkx6qMcvJulWM6qxI0sM7lxTk0Ku
-        KV5PGmSHu4wJOPaEIH3BgsU=
-X-Google-Smtp-Source: ABdhPJxlpZdOavn/g0aLy2mM6QjLU5Rtf+nCfH+dG9EljhBGQq3yhh9tqSlQqgV8y2f2hj8RURW+Eg==
-X-Received: by 2002:aa7:c584:: with SMTP id g4mr15291731edq.335.1623657062489;
-        Mon, 14 Jun 2021 00:51:02 -0700 (PDT)
+        bh=Rl0kPyNRg0Ei1SdJ3rLL1247YtZ7+uNI5K11AvHuLvs=;
+        b=UNQGpLmQkXJF4VPbcPXqrMtSmQnxxeJk1QtbXWPaxBuiJzZEtbMFZmPbzpk9lrMvME
+         duLPMp5eGaxyAz+Y7o6a43kKlk8exM2shyvetqwSkFBOLBMCmhP3BNQ6Rb8DG1ibtzyt
+         UwMhNdroOplSojZrinA4gpnCSOBdpGzXIofLj7DGp8ZmGTVjxngdYma7tu51E2yNb1+P
+         YNL36sej4MAm4TZxotQqbYBQUbv1XE9cXIBP4zNX5eQot8H9bxUSnnldQCW5t1Y1fqjA
+         0M4VSNK/Rq1dnhIl+ANPnzQ4ae3WZ87c1CqiN+VOaqOBH/ZBg1YJbi8rGC0ytWt5zxd2
+         GTBQ==
+X-Gm-Message-State: AOAM532cOjP/4Dm3SEA8nhwUTqabvIYk2Afz4LfN0JpJ8zN6org08gYA
+        IKJjsR59yYPy5I+G2A3kp0I=
+X-Google-Smtp-Source: ABdhPJyu7RPBhYCclmSfMurRz1dKuVZHsuKY5EnBQv9GB2XhNddfGkLz4EAI4yeUSArHMRk+fJ9eag==
+X-Received: by 2002:aa7:c7c7:: with SMTP id o7mr15919084eds.231.1623657065263;
+        Mon, 14 Jun 2021 00:51:05 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id f6sm6536444eja.108.2021.06.14.00.51.01
+        by smtp.gmail.com with ESMTPSA id f6sm6536444eja.108.2021.06.14.00.51.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 00:51:01 -0700 (PDT)
+        Mon, 14 Jun 2021 00:51:04 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 32/45] trace-cmd: Add file state parameter to tracecmd_copy
-Date:   Mon, 14 Jun 2021 10:50:16 +0300
-Message-Id: <20210614075029.598048-33-tz.stoyanov@gmail.com>
+Subject: [PATCH v6 35/45] trace-cmd: Copy options in tracecmd_copy
+Date:   Mon, 14 Jun 2021 10:50:19 +0300
+Message-Id: <20210614075029.598048-36-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210614075029.598048-1-tz.stoyanov@gmail.com>
 References: <20210614075029.598048-1-tz.stoyanov@gmail.com>
@@ -70,94 +70,159 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The tracecmd_copy() API is used to create output trace handler from
-given input trace handler and to copy data from it. Currently it is used
-by trace-cmd split and restore commands, that's why it is hardcoded what
-data to be copied from input to output handler. Addig desired output
-handler file state makes the API more generic and allows it to be used
-in more use cases.
+Extend the tracecmd_copy() API to support copying of trace options
+section from input to output trace handler.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/include/private/trace-cmd-private.h | 4 ++--
- lib/trace-cmd/trace-output.c                      | 8 ++++++--
- tracecmd/trace-restore.c                          | 2 +-
- tracecmd/trace-split.c                            | 2 +-
- 4 files changed, 10 insertions(+), 6 deletions(-)
+ .../include/private/trace-cmd-private.h       |  2 +
+ lib/trace-cmd/include/trace-cmd-local.h       |  1 +
+ lib/trace-cmd/trace-input.c                   | 80 +++++++++++++++++++
+ lib/trace-cmd/trace-output.c                  |  8 ++
+ 4 files changed, 91 insertions(+)
 
 diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 9a08a960..2c31be5f 100644
+index 3735586d..595ba688 100644
 --- a/lib/trace-cmd/include/private/trace-cmd-private.h
 +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -309,8 +309,8 @@ int tracecmd_write_options(struct tracecmd_output *handle);
- int tracecmd_append_options(struct tracecmd_output *handle);
- void tracecmd_output_close(struct tracecmd_output *handle);
- void tracecmd_output_free(struct tracecmd_output *handle);
--struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle,
--				      const char *file);
-+struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle, const char *file,
-+				      enum tracecmd_file_states state);
+@@ -176,6 +176,8 @@ int tracecmd_copy_headers(struct tracecmd_input *in_handle,
+ 			  enum tracecmd_file_states end_state);
+ int tracecmd_copy_buffer_descr(struct tracecmd_input *in_handle,
+ 			       struct tracecmd_output *out_handle);
++int tracecmd_copy_options(struct tracecmd_input *in_handle,
++			  struct tracecmd_output *out_handle);
+ void tracecmd_set_flag(struct tracecmd_input *handle, int flag);
+ void tracecmd_clear_flag(struct tracecmd_input *handle, int flag);
+ unsigned long tracecmd_get_flags(struct tracecmd_input *handle);
+diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
+index 8fb391fc..2e5682c0 100644
+--- a/lib/trace-cmd/include/trace-cmd-local.h
++++ b/lib/trace-cmd/include/trace-cmd-local.h
+@@ -52,6 +52,7 @@ void in_uncompress_reset(struct tracecmd_input *handle);
+ int in_uncompress_block(struct tracecmd_input *handle);
  
- int tracecmd_write_cpu_data(struct tracecmd_output *handle,
- 			    int cpus, char * const *cpu_data_files);
+ void out_set_file_state(struct tracecmd_output *handle, int new_state);
++void out_save_options_offset(struct tracecmd_output *handle);
+ 
+ int write_buffers_description_v7(struct tracecmd_output *handle);
+ int write_buffers_description_v6(struct tracecmd_output *handle);
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 7d0a41c2..794f8ea3 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -4211,6 +4211,86 @@ int tracecmd_copy_buffer_descr(struct tracecmd_input *in_handle,
+ 	return tracecmd_write_buffers_description(out_handle);
+ }
+ 
++static int copy_options(struct tracecmd_input *in_handle, struct tracecmd_output *out_handle)
++{
++	unsigned short option;
++	unsigned short en2;
++	unsigned int size;
++	unsigned int en4;
++
++	if (in_uncompress_block(in_handle))
++		return -1;
++	out_save_options_offset(out_handle);
++	out_compression_start(out_handle);
++	for (;;) {
++		if (do_read_check(in_handle, &option, 2))
++			goto error;
++		en2 = tep_read_number(in_handle->pevent, &option, 2);
++		if (en2 == TRACECMD_OPTION_DONE)
++			break;
++		/* next 4 bytes is the size of the option */
++		if (do_read_check(in_handle, &size, 4))
++			goto error;
++		en4 = tep_read_number(in_handle->pevent, &size, 4);
++		/* Do not copy buffers description, as there is a file specific offset */
++		if (en2 == TRACECMD_OPTION_BUFFER) {
++			/* Skip the option */
++			do_lseek(in_handle, en4, SEEK_CUR);
++			continue;
++		}
++
++		if (do_write_check(out_handle, &option, 2))
++			goto error;
++		if (do_write_check(out_handle, &size, 4))
++			goto error;
++		if (read_copy_data(in_handle, en4, out_handle))
++			goto error;
++	}
++	if (do_write_check(out_handle, &option, 2))
++		goto error;
++	in_uncompress_reset(in_handle);
++	if (out_compression_end(out_handle))
++		goto error;
++	in_handle->file_state = TRACECMD_FILE_OPTIONS;
++	out_set_file_state(out_handle, in_handle->file_state);
++	/* Append local options */
++	return tracecmd_append_options(out_handle);
++error:
++	out_compression_reset(out_handle);
++	in_uncompress_reset(in_handle);
++	return 0;
++}
++
++int tracecmd_copy_options(struct tracecmd_input *in_handle,
++			  struct tracecmd_output *out_handle)
++{
++	off64_t offset;
++	char buf[10];
++
++	if (!check_in_state(in_handle, TRACECMD_FILE_OPTIONS) ||
++	    !check_out_state(out_handle, TRACECMD_FILE_OPTIONS))
++		return -1;
++
++	/* Save where we currently are */
++	offset = lseek64(in_handle->fd, 0, SEEK_CUR);
++
++	if (do_read_check(in_handle, buf, 10))
++		return -1;
++	/* check if this handles options */
++	if (strncmp(buf, "options", 7) == 0) {
++		if (do_write_check(out_handle, "options  ", 10))
++			return -1;
++		if (copy_options(in_handle, out_handle) < 0)
++			return -1;
++	} else {
++		if (lseek64(in_handle->fd, offset, SEEK_SET) == (off_t)-1)
++			return -1;
++		in_handle->file_state = TRACECMD_FILE_OPTIONS;
++		out_set_file_state(out_handle, in_handle->file_state);
++	}
++	return 0;
++}
++
+ /**
+  * tracecmd_record_at_buffer_start - return true if record is first on subbuffer
+  * @handle: input handle for the trace.dat file
 diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index 9b83eb76..806c833c 100644
+index ca9024bf..95ca483c 100644
 --- a/lib/trace-cmd/trace-output.c
 +++ b/lib/trace-cmd/trace-output.c
-@@ -1931,13 +1931,16 @@ struct tracecmd_output *tracecmd_create_init_file_override(const char *output_fi
-  * tracecmd_copy - copy the headers of one trace.dat file for another
-  * @ihandle: input handle of the trace.dat file to copy
-  * @file: the trace.dat file to create
-+ * @state: what data will be copied from the source handle
-  *
-  * Reads the header information and creates a new trace data file
-  * with the same characteristics (events and all) and returns
-  * tracecmd_output handle to this new file.
-  */
--struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle, const char *file)
-+struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle, const char *file,
-+				      enum tracecmd_file_states state)
- {
-+	enum tracecmd_file_states fstate;
- 	struct tracecmd_output *handle;
- 	const char *compr_name = NULL;
- 
-@@ -1946,7 +1949,8 @@ struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle, const char
- 	if (!handle)
- 		return NULL;
- 
--	if (tracecmd_copy_headers(ihandle, handle, 0, 0) < 0)
-+	fstate = state > TRACECMD_FILE_CMD_LINES ? TRACECMD_FILE_CMD_LINES : state;
-+	if (tracecmd_copy_headers(ihandle, handle, 0, fstate) < 0)
+@@ -1955,6 +1955,9 @@ struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle, const char
+ 	if (state >= TRACECMD_FILE_BUFERS &&
+ 	    tracecmd_copy_buffer_descr(ihandle, handle) < 0)
  		goto out_free;
++	if (state >= TRACECMD_FILE_OPTIONS &&
++	    tracecmd_copy_options(ihandle, handle) < 0)
++		goto out_free;
  
  	/* The file is all ready to have cpu data attached */
-diff --git a/tracecmd/trace-restore.c b/tracecmd/trace-restore.c
-index 96b4fb5d..7d439fd2 100644
---- a/tracecmd/trace-restore.c
-+++ b/tracecmd/trace-restore.c
-@@ -125,7 +125,7 @@ void trace_restore (int argc, char **argv)
- 		if (tracecmd_read_headers(ihandle, TRACECMD_FILE_CMD_LINES) < 0)
- 			die("error reading file %s headers", input);
+ 	return handle;
+@@ -1974,6 +1977,11 @@ __hidden bool check_out_state(struct tracecmd_output *handle, int new_state)
+ 	return check_file_state(handle->file_version, handle->file_state, new_state);
+ }
  
--		handle = tracecmd_copy(ihandle, output);
-+		handle = tracecmd_copy(ihandle, output, TRACECMD_FILE_CMD_LINES);
- 		tracecmd_close(ihandle);
- 	} else
- 		handle = tracecmd_create_init_file(output, NULL);
-diff --git a/tracecmd/trace-split.c b/tracecmd/trace-split.c
-index 8366d128..401e1d29 100644
---- a/tracecmd/trace-split.c
-+++ b/tracecmd/trace-split.c
-@@ -345,7 +345,7 @@ static double parse_file(struct tracecmd_input *handle,
- 	dir = dirname(output);
- 	base = basename(output);
- 
--	ohandle = tracecmd_copy(handle, output_file);
-+	ohandle = tracecmd_copy(handle, output_file, TRACECMD_FILE_CMD_LINES);
- 
- 	cpus = tracecmd_cpus(handle);
- 	cpu_data = malloc(sizeof(*cpu_data) * cpus);
++__hidden void out_save_options_offset(struct tracecmd_output *handle)
++{
++	handle->options_start = lseek64(handle->fd, 0, SEEK_CUR);
++}
++
+ /**
+  * tracecmd_get_out_file_version - return the trace.dat file version
+  * @handle: output handle for the trace.dat file
 -- 
 2.31.1
 
