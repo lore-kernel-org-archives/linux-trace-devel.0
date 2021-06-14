@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5C5EC48BE6
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:50:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A03AC49360
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:50:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 88EF161352
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:50:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1E2FC61352
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:50:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232552AbhFNHwm (ORCPT
+        id S232562AbhFNHwo (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 14 Jun 2021 03:52:42 -0400
+        Mon, 14 Jun 2021 03:52:44 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232499AbhFNHwm (ORCPT
+        with ESMTP id S232499AbhFNHwn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:52:42 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA696C061767
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:50:39 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id c10so15025158eja.11
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:50:39 -0700 (PDT)
+        Mon, 14 Jun 2021 03:52:43 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D4B9C061767
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:50:41 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id ce15so15023277ejb.4
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:50:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=2G0CILf23KT9a1hgIdunlhYcwh2NDqtDLL7z1ixvlIw=;
-        b=BgszJMdOXI9TWHx6C+RFfz5ANOBl59lke5w+pxtbG6aPZazrH34xbSsVUf7A7tTQCF
-         BdUvgCYnXzzq2dlS/2PN7CfaSP2ZIJY9ryd5qdXwTHgRM5x6gXLaiXzAwMRe3itYApst
-         08VH21/YhNNIr/JUTmpS5RYL0ewDlIghR0AiZgV/42PhFARSCpbbonRoMs5xs+6pPsPz
-         ED5Z37XjQkXWY+u8N3Tvhs03xXxEchdCe80CYYJyIrMogYd/dzKQqEVcUeSIoP1ftLy/
-         k6JWuwWf4RQR/bapzHj+qxrxnBlfqc+CYPo+nHsJDetmcGpJa0RY/XdIBkdIfrYKdKsj
-         xZDQ==
+        bh=3KFLzzFKc9m2UFTOpsVh7cbeeh2hvHNTp1bJlNMgn90=;
+        b=E2dFiMh6DNYbyVIK563rxIvBJU7uJtlOIKAkFi5brRsyrpeZadcVvOb24HtBqgpEW6
+         fkd9sBgdYlzFk8m0uIb77XhelAwYJ+DuXf8qbqLYSQFOzs9eBlPyXPf6aUXZG2SyVPYI
+         tMImgyrbM+Ir8BDk7CAbDa+gnXqqOaGOM2YwyGkhrwz5AMD1Cm6zzsjzbxcokOvzau3T
+         Koourv1Cx0vvWyYxAt886LjA0REhLqSraKk9S1RDTO6NOeYo1L6ZHVJIhRs2e2NaAsyf
+         QfRv+sVrPNId3A4iWX3EDlG4IqnPvYkWzxaLD9tqyHdU9indKOBanQ8FHhQApU4Vn8IW
+         7nHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2G0CILf23KT9a1hgIdunlhYcwh2NDqtDLL7z1ixvlIw=;
-        b=P/3oULEr1fPXMG+J9/OwRT2V/ABmws70GyAIotuvttlcXSBmfF/slfXMA1LkIUk3zP
-         3hA8oznPAKE9cf9Lt7X7nQ9NaUaGFbgNYxVktCyo3b0fDiZeqvEiNSlGQ29bX0LwWINd
-         Dkw85Hh2avWAKJfz8v55PQxuSQpbIUS9w6w7zDkM7ExoHhbcSWwCxzHMT54Is0piDoIy
-         aQHWpliNBuBM5IQMDrvfFHx3YbopAeCIXUy5T0tR5VSjVRF4PuZo8ry9BfFSjNt9Nh8L
-         E05zLxGQ40LfSwdkeAIifriDFQos+eAgz4YtaNlDRugPXtFL3AirCOVORQHw3444p0Sr
-         nvfQ==
-X-Gm-Message-State: AOAM53297tn0Xr9EG77dL++ZyJBtNcmNqb12bc2FUl5C6TLj6nFc+DfW
-        nZxF/GfPz0to1i7P7SO3PdI=
-X-Google-Smtp-Source: ABdhPJw0t7h9Tsiw3Vx+wKJbKpVhA4XA3bmxtlxugKd66T8DxWVNnmwtTRKssXG/3ersxYAif+o2cA==
-X-Received: by 2002:a17:906:3888:: with SMTP id q8mr13969007ejd.15.1623657037751;
-        Mon, 14 Jun 2021 00:50:37 -0700 (PDT)
+        bh=3KFLzzFKc9m2UFTOpsVh7cbeeh2hvHNTp1bJlNMgn90=;
+        b=lep6P4uoBI3tQXAxczoJEqQ1385LSf0xmGv7OS6HOUe69l6IOBF8Xyi2GUMmMgEEyH
+         7djXirtCFGpN/kSukBSPdD1T8JGbaVkUYny4+2fXLiIG66teA75UfqLq4g/sHeOUS25D
+         pVLeCAbx1yQ6id1qsdEFC22dQ5k7n+H/PS10YmEWVNqa8AZrOgMBkWlfv9pCeql8T6n7
+         ZCgc6t5facOcEqIWBxGwV/y4IS3IB/IrfQsNEJN5E41aeNvfJz4+WlkjVNxOevEeoceY
+         BfPg/a7vg2Tp9zu3RoH1Jj0VqNCfdJjmItrIdcP3cSk4tqktfCLCCZ5DDaTA6/S39djw
+         XsEA==
+X-Gm-Message-State: AOAM533Nm5x+DBJ7iwG4ouFhRPDIUfzgaouWhMqXqgkw6ii2/l9dq2SA
+        XDVzzuX6oZj3qQ51gYfGd5aUnF2Eo74kxQ==
+X-Google-Smtp-Source: ABdhPJzThOnSkCcGBbKmjEVOHRBhOGQkjZtJLtJ7GJw6kZWpaJ4L2t2/XT5tDGq163jxBip40J5FDA==
+X-Received: by 2002:a17:906:6dc3:: with SMTP id j3mr14265692ejt.448.1623657039817;
+        Mon, 14 Jun 2021 00:50:39 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id f6sm6536444eja.108.2021.06.14.00.50.36
+        by smtp.gmail.com with ESMTPSA id f6sm6536444eja.108.2021.06.14.00.50.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 00:50:37 -0700 (PDT)
+        Mon, 14 Jun 2021 00:50:39 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 06/45] trace-cmd: Add APIs for library initialization and free
-Date:   Mon, 14 Jun 2021 10:49:50 +0300
-Message-Id: <20210614075029.598048-7-tz.stoyanov@gmail.com>
+Subject: [PATCH v6 08/45] trace-cmd list: Show supported compression algorithms
+Date:   Mon, 14 Jun 2021 10:49:52 +0300
+Message-Id: <20210614075029.598048-9-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210614075029.598048-1-tz.stoyanov@gmail.com>
 References: <20210614075029.598048-1-tz.stoyanov@gmail.com>
@@ -73,78 +73,92 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The trace-cmd library has no APIs for initialization and free of the
-whole library. Added these new APIs:
- tracecmd_lib_init()
- tracecmd_lib_free()
-and call them in trace-cmd main function.
+Add new parameter "trace-cmd list -c" to show supported compression
+algorithms.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/include/private/trace-cmd-private.h |  3 +++
- lib/trace-cmd/trace-util.c                        |  9 +++++++++
- tracecmd/trace-cmd.c                              | 11 ++++++++---
- 3 files changed, 20 insertions(+), 3 deletions(-)
+ tracecmd/trace-list.c  | 26 ++++++++++++++++++++++++++
+ tracecmd/trace-usage.c |  1 +
+ 2 files changed, 27 insertions(+)
 
-diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 01b12c47..be8b3c48 100644
---- a/lib/trace-cmd/include/private/trace-cmd-private.h
-+++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -29,6 +29,9 @@
- 
- struct tep_plugin_list *trace_load_plugins(struct tep_handle *tep, int flags);
- 
-+int tracecmd_lib_init(void);
-+void tracecmd_lib_free(void);
-+
- int *tracecmd_add_id(int *list, int id, int len);
- 
- enum {
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index b0c98c72..61054ad2 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -624,3 +624,12 @@ bool tracecmd_is_version_supported(unsigned int version)
- 		return true;
- 	return false;
+diff --git a/tracecmd/trace-list.c b/tracecmd/trace-list.c
+index d060c810..900da73b 100644
+--- a/tracecmd/trace-list.c
++++ b/tracecmd/trace-list.c
+@@ -549,6 +549,24 @@ static void show_plugins(void)
+ 	tep_free(pevent);
  }
-+
-+int tracecmd_lib_init(void)
-+{
-+	return 0;
-+}
-+
-+void tracecmd_lib_free(void)
-+{
-+}
-diff --git a/tracecmd/trace-cmd.c b/tracecmd/trace-cmd.c
-index 00cdaa37..71c8f6d6 100644
---- a/tracecmd/trace-cmd.c
-+++ b/tracecmd/trace-cmd.c
-@@ -142,15 +142,20 @@ int main (int argc, char **argv)
- 	if (argc < 2)
- 		trace_usage(argc, argv);
  
-+	tracecmd_lib_init();
++static void show_compression(void)
++{
++	char **versions, **names;
++	int c, i;
 +
- 	for (i = 0; i < ARRAY_SIZE(commands); ++i) {
- 		if (strcmp(argv[1], commands[i].name) == 0 ){
- 			commands[i].run(argc, argv);
--			goto out;
-+			break;
- 		}
++	c = tracecmd_compress_protos_get(&names, &versions);
++	if (c <= 0) {
++		printf("No compression algorithms are supported\n");
++		return;
++	}
++	printf("Supported compression algorithms:\n");
++	for (i = 0; i < c; i++)
++		printf("\t%s, %s\n", names[i], versions[i]);
++
++	free(names);
++	free(versions);
++}
++
+ void trace_list(int argc, char **argv)
+ {
+ 	int events = 0;
+@@ -562,6 +580,7 @@ void trace_list(int argc, char **argv)
+ 	int flags = 0;
+ 	int systems = 0;
+ 	int show_all = 1;
++	int compression = 0;
+ 	int i;
+ 	const char *arg;
+ 	const char *funcre = NULL;
+@@ -626,6 +645,10 @@ void trace_list(int argc, char **argv)
+ 				systems = 1;
+ 				show_all = 0;
+ 				break;
++			case 'c':
++				compression = 1;
++				show_all = 0;
++				break;
+ 			case '-':
+ 				if (strcmp(argv[i], "--debug") == 0) {
+ 					tracecmd_set_debug(true);
+@@ -670,6 +693,8 @@ void trace_list(int argc, char **argv)
+ 		show_clocks();
+ 	if (systems)
+ 		show_systems();
++	if (compression)
++		show_compression();
+ 	if (show_all) {
+ 		printf("event systems:\n");
+ 		show_systems();
+@@ -679,6 +704,7 @@ void trace_list(int argc, char **argv)
+ 		show_tracers();
+ 		printf("\noptions:\n");
+ 		show_options();
++		show_compression();
  	}
  
-+	tracecmd_lib_free();
-+
- 	/* No valid command found, show help */
--	trace_usage(argc, argv);
--out:
-+	if (i == ARRAY_SIZE(commands))
-+		trace_usage(argc, argv);
-+
- 	exit(0);
- }
+ 	return;
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index c0033ce8..cd8ca391 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -331,6 +331,7 @@ static struct usage_help usage_help[] = {
+ 		"          -O list plugin options\n"
+ 		"          -B list defined buffer instances\n"
+ 		"          -C list the defined clocks (and active one)\n"
++		"          -c list the supported trace file compression algorithms\n"
+ 	},
+ 	{
+ 		"restore",
 -- 
 2.31.1
 
