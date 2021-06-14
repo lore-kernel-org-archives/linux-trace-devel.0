@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2483C48BE6
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:50:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 324F0C49360
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:50:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9A76D61289
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:50:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 156F261352
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:50:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232536AbhFNHwj (ORCPT
+        id S232524AbhFNHwj (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Mon, 14 Jun 2021 03:52:39 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232499AbhFNHwi (ORCPT
+        with ESMTP id S232499AbhFNHwj (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:52:38 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BFAC061767
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:50:35 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id s6so45187695edu.10
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:50:35 -0700 (PDT)
+        Mon, 14 Jun 2021 03:52:39 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF5BCC061767
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:50:36 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id ce15so15022963ejb.4
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:50:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=RiwZC1yBs8SQ9z1BwUSlU9j5di5yu+Mv55pgJ5/bATY=;
-        b=sGSJoTy0SCqAzTU/GK5DRHpuaMY7B6dtjYBJEZUExFpEGSL+awarkPikl8xYmrGQuh
-         UJKT4LTnzNbjIEu4yggZXWl12FykwnfOyYKWY1wzhtPI3Z+X1fDD+yyi4gjRA5lcm1a9
-         Bav37EgzvxIDNI+0OPVfrXJ3E80ff/QuSLwHpCCrma1Wccpdx58pcCuEcnL/uyPG7FZj
-         9/EU0Pa6qmruTKrtYQ7IPClBnBTy6bb6sB2cPujh+t+TGXT43HhOTu4d06gWNYntBD/k
-         oG0WWOH0UT+Z20CnExOUgsmPFKNAF1hDIYyb554q+RxZ1f0xog9Oeh6hClfINLpafL1J
-         A9Ug==
+        bh=K/wi6U7hzPtl4la0xaLhqgtGsmlwcZ2Gfg6Lcb4Uo4I=;
+        b=MCXDc4hyPCmO7+2hpgCdHowZwmARcJNrHYomUI1iXwuEKJPVgBZW0JyIRaeZM9sTZr
+         xuEAUdgTUHlcBSoy1S3p0/8mm5O+UM/iMlxqzdoJGVoQB5lp7NoDi2lwspJfemIfXFA+
+         yyGyPPeUXWse42+SOyg4olljS6LDs9mJ8pLz5o4V7pljEPE6v2S4VpWWRfmLKxodXqSe
+         xV79LTHAP+dYZsWQap+BbR1dg/Jkl2ZGDzshKgDr/MeHv1UqUey16kPtoasYIY//neR7
+         H+uuVrJHxbYpaaLAS5nbi6XpbNMlvRHLGw30bY/vDCpiTpZJ9jQetvNZS1MKuYCiKq54
+         WlPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RiwZC1yBs8SQ9z1BwUSlU9j5di5yu+Mv55pgJ5/bATY=;
-        b=Xr8iY0LWvjIXzSnK41QC8NrDi6w64DQ+Lk/ka8NdL6KloF7LWZp5R+AQzNQeTSZa+P
-         y7jhDBKwkXNYt3c/+HNB8e0FW+mPk29HE+v84NZGSiUlQHbjj/uteDHRGmygiUm7VOhB
-         6LSs1HA+HkI4mFFWo+UIIoMj6+KIP1O9/kqVSi6t82dFjDb1So2Jma+xetO4e8Ua7FVj
-         cW/PZvcmItuJNR7C7XU60DmFkAKnozhZPEej0pRjo/JadP0CZlwOJtfBwAYisZzI4X4m
-         J8CVboXpzFF0085rI3LNaABXjgPMNS+AQAg9l+Wfu8xCJc0Cr7l7bNTwar/6xDNSvkh5
-         nF9A==
-X-Gm-Message-State: AOAM532UturMiHKJMxIJBQEh9C6jyGMJ6RJyR5bfxWep0gFOmhfZXOje
-        EtzgplYgP70nmN0z/1jqLEeP8BtKqK3zMQ==
-X-Google-Smtp-Source: ABdhPJyorSvqLD7IggN+XFxWwGwgPBEL1PrGp4bzcHMTkBFfFEEA1cFrBsaoIN7oQsApEcgRzZB2/g==
-X-Received: by 2002:aa7:d785:: with SMTP id s5mr2115550edq.19.1623657034423;
-        Mon, 14 Jun 2021 00:50:34 -0700 (PDT)
+        bh=K/wi6U7hzPtl4la0xaLhqgtGsmlwcZ2Gfg6Lcb4Uo4I=;
+        b=QqGSLcRc0l59WVvf92FtpQFi7dlvgzFB5HeIiUkz1Q2E+JGCFKaUzrzce4AE0YI1oC
+         775ZIj6JWBU9MIueTnuU4wOI1vHUYKVWUmwBac9A/F2dLM4lx0ntgOT6IG3+Ab2mq6W2
+         CHWiMW+J6nO7hYsitnVSkzikCg3D5T026O7pxOxy3diagMksSh8gQhRo91muUDxHHgb9
+         vRsRbxGwNAumPnIdaJ1mX4PHnEpB9le8nCMlsXoDNqwYPaFdQj9DE6L4vaapjGsQcNsd
+         PTTMtUjb7YMocs1ISnucwVkZHyE0Vo7EfM42LaXaR5ON7Th1br15hwlW7KKVIAR5oODF
+         JWBg==
+X-Gm-Message-State: AOAM533l1jaIZx9IUe4JribhVuqkYOsrj32oCUQ8+H+V7CLOceRrOPWP
+        h+Dr1mZHHR5DvnOZTyEY5LJQXIjsHxLpuw==
+X-Google-Smtp-Source: ABdhPJwmxeFFKrPZLnh8xhfXca/5CfBAtrWrDUJFFnpf7BoUwHvkjxik24hX1rgOsOrIM0i6QR+xHQ==
+X-Received: by 2002:a17:906:5488:: with SMTP id r8mr14260199ejo.374.1623657035620;
+        Mon, 14 Jun 2021 00:50:35 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id f6sm6536444eja.108.2021.06.14.00.50.33
+        by smtp.gmail.com with ESMTPSA id f6sm6536444eja.108.2021.06.14.00.50.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 00:50:34 -0700 (PDT)
+        Mon, 14 Jun 2021 00:50:35 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 03/45] trace-cmd: Check if file version is supported
-Date:   Mon, 14 Jun 2021 10:49:47 +0300
-Message-Id: <20210614075029.598048-4-tz.stoyanov@gmail.com>
+Subject: [PATCH v6 04/45] trace-cmd library: Add new API to get file version of input handler
+Date:   Mon, 14 Jun 2021 10:49:48 +0300
+Message-Id: <20210614075029.598048-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210614075029.598048-1-tz.stoyanov@gmail.com>
 References: <20210614075029.598048-1-tz.stoyanov@gmail.com>
@@ -73,118 +73,49 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When reading a trace file, version of the file is ignored. This could
-case problems when bumping the version number because of changes in
-in the structure of the file. The old code should detect unsupported
-file version and should not try to read it.
-A new trace-cmd library API is added to check if version is supported:
- tracecmd_is_version_supported()
-Checks are added in the code to ensure not trying to read trace file
-from unsupported version.
+Added an API to get the version of the trace file, associated with given
+input file handler.
+  tracecmd_get_in_file_version()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/include/private/trace-cmd-private.h |  2 ++
- lib/trace-cmd/trace-input.c                       | 10 ++++++++++
- lib/trace-cmd/trace-util.c                        |  7 +++++++
- tracecmd/trace-dump.c                             |  7 +++++++
- 4 files changed, 26 insertions(+)
+ lib/trace-cmd/include/private/trace-cmd-private.h | 2 ++
+ lib/trace-cmd/trace-input.c                       | 9 +++++++++
+ 2 files changed, 11 insertions(+)
 
 diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 49539432..6fc18938 100644
+index 6fc18938..01b12c47 100644
 --- a/lib/trace-cmd/include/private/trace-cmd-private.h
 +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -42,6 +42,8 @@ void tracecmd_record_ref(struct tep_record *record);
- void tracecmd_set_debug(bool set_debug);
- bool tracecmd_get_debug(void);
+@@ -232,6 +232,8 @@ int tracecmd_set_cursor(struct tracecmd_input *handle,
+ unsigned long long
+ tracecmd_get_cursor(struct tracecmd_input *handle, int cpu);
  
-+bool tracecmd_is_version_supported(unsigned int version);
++unsigned long tracecmd_get_in_file_version(struct tracecmd_input *handle);
 +
- struct tracecmd_output;
- struct tracecmd_recorder;
- struct hook_list;
+ int tracecmd_ftrace_overrides(struct tracecmd_input *handle, struct tracecmd_ftrace *finfo);
+ bool tracecmd_get_use_trace_clock(struct tracecmd_input *handle);
+ tracecmd_show_data_func
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 5ee69b14..97ad0a5d 100644
+index 97ad0a5d..46619ac7 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -131,6 +131,7 @@ struct tracecmd_input {
- 	bool			use_trace_clock;
- 	bool			read_page;
- 	bool			use_pipe;
-+	int			file_version;
- 	struct cpu_data 	*cpu_data;
- 	long long		ts_offset;
- 	struct tsc2nsec		tsc_calc;
-@@ -3269,6 +3270,7 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
- 	unsigned int page_size;
- 	char *version;
- 	char buf[BUFSIZ];
-+	unsigned long ver;
- 
- 	handle = malloc(sizeof(*handle));
- 	if (!handle)
-@@ -3293,6 +3295,14 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
- 	if (!version)
- 		goto failed_read;
- 	tracecmd_info("version = %s\n", version);
-+	ver = strtol(version, NULL, 10);
-+	if (!ver && errno)
-+		goto failed_read;
-+	if (!tracecmd_is_version_supported(ver)) {
-+		tracecmd_warning("Unsupported file version %lu", ver);
-+		goto failed_read;
-+	}
-+	handle->file_version = ver;
- 	free(version);
- 
- 	if (do_read_check(handle, buf, 1))
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index b65f9dec..b0c98c72 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -617,3 +617,10 @@ unsigned long long tracecmd_generate_traceid(void)
- 	free(str);
- 	return hash;
+@@ -4046,6 +4046,15 @@ struct tep_handle *tracecmd_get_tep(struct tracecmd_input *handle)
+ 	return handle->pevent;
  }
-+
-+bool tracecmd_is_version_supported(unsigned int version)
+ 
++/**
++ * tracecmd_get_in_file_version - return the trace.dat file version
++ * @handle: input handle for the trace.dat file
++ */
++unsigned long tracecmd_get_in_file_version(struct tracecmd_input *handle)
 +{
-+	if (version <= FILE_VERSION)
-+		return true;
-+	return false;
++	return handle->file_version;
 +}
-diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
-index 98425b98..03cc82b4 100644
---- a/tracecmd/trace-dump.c
-+++ b/tracecmd/trace-dump.c
-@@ -10,6 +10,7 @@
- #include <getopt.h>
- #include <sys/stat.h>
- #include <fcntl.h>
-+#include <errno.h>
- 
- #include "trace-local.h"
- 
-@@ -145,6 +146,7 @@ static void dump_initial_format(int fd)
- 	char magic[] = TRACECMD_MAGIC;
- 	char buf[DUMP_SIZE];
- 	int val4;
-+	unsigned long ver;
- 
- 	do_print(SUMMARY, "\t[Initial format]\n");
- 
-@@ -166,6 +168,11 @@ static void dump_initial_format(int fd)
- 		die("no version string");
- 
- 	do_print(SUMMARY, "\t\t%s\t[Version]\n", buf);
-+	ver = strtol(buf, NULL, 10);
-+	if (!ver && errno)
-+		die("Invalid file version string %s", buf);
-+	if (!tracecmd_is_version_supported(ver))
-+		die("Unsupported file version %lu", ver);
- 
- 	/* get file endianness*/
- 	if (read_file_bytes(fd, buf, 1))
++
+ /**
+  * tracecmd_get_use_trace_clock - return use_trace_clock
+  * @handle: input handle for the trace.dat file
 -- 
 2.31.1
 
