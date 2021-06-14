@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 324F0C49360
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:50:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5C5EC48BE6
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:50:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 156F261352
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:50:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 88EF161352
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:50:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbhFNHwj (ORCPT
+        id S232552AbhFNHwm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 14 Jun 2021 03:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
+        Mon, 14 Jun 2021 03:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232499AbhFNHwj (ORCPT
+        with ESMTP id S232499AbhFNHwm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:52:39 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF5BCC061767
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:50:36 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id ce15so15022963ejb.4
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:50:36 -0700 (PDT)
+        Mon, 14 Jun 2021 03:52:42 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA696C061767
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:50:39 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id c10so15025158eja.11
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:50:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=K/wi6U7hzPtl4la0xaLhqgtGsmlwcZ2Gfg6Lcb4Uo4I=;
-        b=MCXDc4hyPCmO7+2hpgCdHowZwmARcJNrHYomUI1iXwuEKJPVgBZW0JyIRaeZM9sTZr
-         xuEAUdgTUHlcBSoy1S3p0/8mm5O+UM/iMlxqzdoJGVoQB5lp7NoDi2lwspJfemIfXFA+
-         yyGyPPeUXWse42+SOyg4olljS6LDs9mJ8pLz5o4V7pljEPE6v2S4VpWWRfmLKxodXqSe
-         xV79LTHAP+dYZsWQap+BbR1dg/Jkl2ZGDzshKgDr/MeHv1UqUey16kPtoasYIY//neR7
-         H+uuVrJHxbYpaaLAS5nbi6XpbNMlvRHLGw30bY/vDCpiTpZJ9jQetvNZS1MKuYCiKq54
-         WlPg==
+        bh=2G0CILf23KT9a1hgIdunlhYcwh2NDqtDLL7z1ixvlIw=;
+        b=BgszJMdOXI9TWHx6C+RFfz5ANOBl59lke5w+pxtbG6aPZazrH34xbSsVUf7A7tTQCF
+         BdUvgCYnXzzq2dlS/2PN7CfaSP2ZIJY9ryd5qdXwTHgRM5x6gXLaiXzAwMRe3itYApst
+         08VH21/YhNNIr/JUTmpS5RYL0ewDlIghR0AiZgV/42PhFARSCpbbonRoMs5xs+6pPsPz
+         ED5Z37XjQkXWY+u8N3Tvhs03xXxEchdCe80CYYJyIrMogYd/dzKQqEVcUeSIoP1ftLy/
+         k6JWuwWf4RQR/bapzHj+qxrxnBlfqc+CYPo+nHsJDetmcGpJa0RY/XdIBkdIfrYKdKsj
+         xZDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=K/wi6U7hzPtl4la0xaLhqgtGsmlwcZ2Gfg6Lcb4Uo4I=;
-        b=QqGSLcRc0l59WVvf92FtpQFi7dlvgzFB5HeIiUkz1Q2E+JGCFKaUzrzce4AE0YI1oC
-         775ZIj6JWBU9MIueTnuU4wOI1vHUYKVWUmwBac9A/F2dLM4lx0ntgOT6IG3+Ab2mq6W2
-         CHWiMW+J6nO7hYsitnVSkzikCg3D5T026O7pxOxy3diagMksSh8gQhRo91muUDxHHgb9
-         vRsRbxGwNAumPnIdaJ1mX4PHnEpB9le8nCMlsXoDNqwYPaFdQj9DE6L4vaapjGsQcNsd
-         PTTMtUjb7YMocs1ISnucwVkZHyE0Vo7EfM42LaXaR5ON7Th1br15hwlW7KKVIAR5oODF
-         JWBg==
-X-Gm-Message-State: AOAM533l1jaIZx9IUe4JribhVuqkYOsrj32oCUQ8+H+V7CLOceRrOPWP
-        h+Dr1mZHHR5DvnOZTyEY5LJQXIjsHxLpuw==
-X-Google-Smtp-Source: ABdhPJwmxeFFKrPZLnh8xhfXca/5CfBAtrWrDUJFFnpf7BoUwHvkjxik24hX1rgOsOrIM0i6QR+xHQ==
-X-Received: by 2002:a17:906:5488:: with SMTP id r8mr14260199ejo.374.1623657035620;
-        Mon, 14 Jun 2021 00:50:35 -0700 (PDT)
+        bh=2G0CILf23KT9a1hgIdunlhYcwh2NDqtDLL7z1ixvlIw=;
+        b=P/3oULEr1fPXMG+J9/OwRT2V/ABmws70GyAIotuvttlcXSBmfF/slfXMA1LkIUk3zP
+         3hA8oznPAKE9cf9Lt7X7nQ9NaUaGFbgNYxVktCyo3b0fDiZeqvEiNSlGQ29bX0LwWINd
+         Dkw85Hh2avWAKJfz8v55PQxuSQpbIUS9w6w7zDkM7ExoHhbcSWwCxzHMT54Is0piDoIy
+         aQHWpliNBuBM5IQMDrvfFHx3YbopAeCIXUy5T0tR5VSjVRF4PuZo8ry9BfFSjNt9Nh8L
+         E05zLxGQ40LfSwdkeAIifriDFQos+eAgz4YtaNlDRugPXtFL3AirCOVORQHw3444p0Sr
+         nvfQ==
+X-Gm-Message-State: AOAM53297tn0Xr9EG77dL++ZyJBtNcmNqb12bc2FUl5C6TLj6nFc+DfW
+        nZxF/GfPz0to1i7P7SO3PdI=
+X-Google-Smtp-Source: ABdhPJw0t7h9Tsiw3Vx+wKJbKpVhA4XA3bmxtlxugKd66T8DxWVNnmwtTRKssXG/3ersxYAif+o2cA==
+X-Received: by 2002:a17:906:3888:: with SMTP id q8mr13969007ejd.15.1623657037751;
+        Mon, 14 Jun 2021 00:50:37 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id f6sm6536444eja.108.2021.06.14.00.50.34
+        by smtp.gmail.com with ESMTPSA id f6sm6536444eja.108.2021.06.14.00.50.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 00:50:35 -0700 (PDT)
+        Mon, 14 Jun 2021 00:50:37 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 04/45] trace-cmd library: Add new API to get file version of input handler
-Date:   Mon, 14 Jun 2021 10:49:48 +0300
-Message-Id: <20210614075029.598048-5-tz.stoyanov@gmail.com>
+Subject: [PATCH v6 06/45] trace-cmd: Add APIs for library initialization and free
+Date:   Mon, 14 Jun 2021 10:49:50 +0300
+Message-Id: <20210614075029.598048-7-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210614075029.598048-1-tz.stoyanov@gmail.com>
 References: <20210614075029.598048-1-tz.stoyanov@gmail.com>
@@ -73,49 +73,78 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Added an API to get the version of the trace file, associated with given
-input file handler.
-  tracecmd_get_in_file_version()
+The trace-cmd library has no APIs for initialization and free of the
+whole library. Added these new APIs:
+ tracecmd_lib_init()
+ tracecmd_lib_free()
+and call them in trace-cmd main function.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/include/private/trace-cmd-private.h | 2 ++
- lib/trace-cmd/trace-input.c                       | 9 +++++++++
- 2 files changed, 11 insertions(+)
+ lib/trace-cmd/include/private/trace-cmd-private.h |  3 +++
+ lib/trace-cmd/trace-util.c                        |  9 +++++++++
+ tracecmd/trace-cmd.c                              | 11 ++++++++---
+ 3 files changed, 20 insertions(+), 3 deletions(-)
 
 diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 6fc18938..01b12c47 100644
+index 01b12c47..be8b3c48 100644
 --- a/lib/trace-cmd/include/private/trace-cmd-private.h
 +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -232,6 +232,8 @@ int tracecmd_set_cursor(struct tracecmd_input *handle,
- unsigned long long
- tracecmd_get_cursor(struct tracecmd_input *handle, int cpu);
+@@ -29,6 +29,9 @@
  
-+unsigned long tracecmd_get_in_file_version(struct tracecmd_input *handle);
+ struct tep_plugin_list *trace_load_plugins(struct tep_handle *tep, int flags);
+ 
++int tracecmd_lib_init(void);
++void tracecmd_lib_free(void);
 +
- int tracecmd_ftrace_overrides(struct tracecmd_input *handle, struct tracecmd_ftrace *finfo);
- bool tracecmd_get_use_trace_clock(struct tracecmd_input *handle);
- tracecmd_show_data_func
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 97ad0a5d..46619ac7 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -4046,6 +4046,15 @@ struct tep_handle *tracecmd_get_tep(struct tracecmd_input *handle)
- 	return handle->pevent;
- }
+ int *tracecmd_add_id(int *list, int id, int len);
  
-+/**
-+ * tracecmd_get_in_file_version - return the trace.dat file version
-+ * @handle: input handle for the trace.dat file
-+ */
-+unsigned long tracecmd_get_in_file_version(struct tracecmd_input *handle)
+ enum {
+diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
+index b0c98c72..61054ad2 100644
+--- a/lib/trace-cmd/trace-util.c
++++ b/lib/trace-cmd/trace-util.c
+@@ -624,3 +624,12 @@ bool tracecmd_is_version_supported(unsigned int version)
+ 		return true;
+ 	return false;
+ }
++
++int tracecmd_lib_init(void)
 +{
-+	return handle->file_version;
++	return 0;
 +}
 +
- /**
-  * tracecmd_get_use_trace_clock - return use_trace_clock
-  * @handle: input handle for the trace.dat file
++void tracecmd_lib_free(void)
++{
++}
+diff --git a/tracecmd/trace-cmd.c b/tracecmd/trace-cmd.c
+index 00cdaa37..71c8f6d6 100644
+--- a/tracecmd/trace-cmd.c
++++ b/tracecmd/trace-cmd.c
+@@ -142,15 +142,20 @@ int main (int argc, char **argv)
+ 	if (argc < 2)
+ 		trace_usage(argc, argv);
+ 
++	tracecmd_lib_init();
++
+ 	for (i = 0; i < ARRAY_SIZE(commands); ++i) {
+ 		if (strcmp(argv[1], commands[i].name) == 0 ){
+ 			commands[i].run(argc, argv);
+-			goto out;
++			break;
+ 		}
+ 	}
+ 
++	tracecmd_lib_free();
++
+ 	/* No valid command found, show help */
+-	trace_usage(argc, argv);
+-out:
++	if (i == ARRAY_SIZE(commands))
++		trace_usage(argc, argv);
++
+ 	exit(0);
+ }
 -- 
 2.31.1
 
