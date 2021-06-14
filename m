@@ -8,59 +8,59 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26755C48BE8
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:52:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68A5BC48BE6
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:52:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1230261357
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:52:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 532F4613D3
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:52:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232622AbhFNHyL (ORCPT
+        id S232530AbhFNHyT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 14 Jun 2021 03:54:11 -0400
-Received: from mail-ej1-f42.google.com ([209.85.218.42]:40676 "EHLO
+        Mon, 14 Jun 2021 03:54:19 -0400
+Received: from mail-ej1-f42.google.com ([209.85.218.42]:37520 "EHLO
         mail-ej1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232623AbhFNHyK (ORCPT
+        with ESMTP id S232632AbhFNHyR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:54:10 -0400
-Received: by mail-ej1-f42.google.com with SMTP id my49so15063856ejc.7
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:51:54 -0700 (PDT)
+        Mon, 14 Jun 2021 03:54:17 -0400
+Received: by mail-ej1-f42.google.com with SMTP id ce15so15025882ejb.4
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:52:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fK0+f39KReYwmIZ4HszCv/9BYALVUEKPLQVsLsNwq94=;
-        b=OOv7N4OfuJhyAxhW0lNISF/K2fJdgp5VZ6aoNGj2JwlSeTgrklZ37sf1qic5VUvXyT
-         i3eb2tlGlu999P/whSSiuRCw+ABPJjRKfxJyTlgyufTqau/Z/DggkIshUs5Mf4V55a0F
-         AFOgmO77o2Y5MZmOtZ3tiIbh2pXol/YdKF5wGYr1NKPHAQa2LLS0M7LfONY0JCbF3KQC
-         Tdtwrhy2FXQ5c/nFbXyur2CsaH94fjbUikqaUFtkG+Oopsz221ELQxsJ2ZChcSTTfy4f
-         U/0ogWgz1C04vdF+N9d6jPln5k6JA5KLthHwpWDgnQBRIEMAI4Ygh+tsXoCTgmKvHAZN
-         Z3Dg==
+        bh=VbCjSkYiTayTZj1R7pN7UweSLyf1bgnBl/z0BvUhG2o=;
+        b=fV9xtVDsZ4wObptp2M7zGdLeGh4gVaBVeAprPEg1eOPfHpeI6kXhcIAAxdVxy2vcl6
+         dU+a6BEzesIvqJarjzPZLmyAQDXYEaoIS1bdMPlSQOYsM8Y9zhccc7BmlPLYKqukfKUW
+         98WXX6M5hgs6VMznelbKOUUr3xmbMSG/9b6e0wD/NbzTwOEtV4ukvxO+tX899MNS2KJP
+         nhrDnGAByty8QpK5mJXL40Zlqrgxv9kgFdPSj1gsDIJTp3jJlK4oNEbtey1+fECBX3Dw
+         V4GB1fGdkHC9xTOxoFcrp8Or9t743BFUj6nNyvmRds++WK5nSf1IPuG+bgT0sqRraDiS
+         L6Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fK0+f39KReYwmIZ4HszCv/9BYALVUEKPLQVsLsNwq94=;
-        b=a3eqjm/HaOlO4Xima81X1ZlCQCgfjyBJNxSV3Gjk5G6J0lAhDSD14q5TXLenWp3w+r
-         oMrqC+GPNwlwj9N2iczbvrAgulB/fQj+phQ1QOlIkAzr0mUwYmZTRZt/Ir2c/h1CGY9N
-         Ya9/FRa/2+x0xhzdPfP3zTAgra/lJqiLJRy1Si/Bd1tat8pFosp4zyBQvfeKcu25iS2k
-         QJDiUTmxLnop+oeeoPdpMentnwQypO4ZMwlJ9dx/cfkIbgsK+C9PtMMaZxBHij/cP52z
-         Pjkt585Xd3uqrGtKogSRAFd8Umk7YTnxv6nGsNr9NFGQF7ksaXBFAGVYzSQ7LNm/DC9p
-         w2ZA==
-X-Gm-Message-State: AOAM532KjLsr+AeZXzG+NZmxiydX21adYKXZapHxsmPikxHddnmp5+jE
-        dEiWsCLq1jvD2UT0MFGmAA3vmltCTO0kRg==
-X-Google-Smtp-Source: ABdhPJyU1wEzfgG1GIS53C5EGqItGWlo05979nYIo9kyfDUFhaiV7OZ2bGhehtNPUeg0YHtMhQMtUg==
-X-Received: by 2002:a17:906:1912:: with SMTP id a18mr14152458eje.117.1623657054072;
-        Mon, 14 Jun 2021 00:50:54 -0700 (PDT)
+        bh=VbCjSkYiTayTZj1R7pN7UweSLyf1bgnBl/z0BvUhG2o=;
+        b=KmO3SrT+ZajN0GHsqJwI0qXmx8F+djB+nbtrDsWANQKTCRDsJ5UV6M27dGzjmpDH1J
+         JVfVpyGSmI1cXprKEnWRuJxkTyRW68a3ndN9M2DAD/4uhATq4evrKWzjx13L0wnLYiod
+         oCsQYBsrJ+A0Zg2rToLSIjYmkYndEvLtb4SGIE6E2pgaTl3o70Yk/jopOvuL1Lims7TV
+         9T1z7zq3ucztZsU8Z4f9MCrwsGnvIsIonmd7+3OdqzIJpi1vnDAV6mwpSpa872O4M2Hn
+         NcswJrmYPmdP1fAC/Yt4PNu0pCq6JFNmkZUqoFewBBIBi9arRIe+VPlBj+UJNXwHgnA3
+         WNjQ==
+X-Gm-Message-State: AOAM530lRuGNq97yw96dEuZtwopQUffZMSaeiefilDOZQW63brhA51Om
+        oF9S9xMbmW0Gbxv3cTR7xGI=
+X-Google-Smtp-Source: ABdhPJyBBOMO3/EDeFe+T27UJD/XtF85O8B6VsoK4yPzUDX9tWnbfbqOXYWXRJrB1qx/ZNwAQuI8oQ==
+X-Received: by 2002:a17:906:3888:: with SMTP id q8mr13970665ejd.15.1623657074508;
+        Mon, 14 Jun 2021 00:51:14 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id f6sm6536444eja.108.2021.06.14.00.50.53
+        by smtp.gmail.com with ESMTPSA id f6sm6536444eja.108.2021.06.14.00.51.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 00:50:53 -0700 (PDT)
+        Mon, 14 Jun 2021 00:51:14 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 23/45] trace-cmd library: Add APIs for read and write compressed data in chunks
-Date:   Mon, 14 Jun 2021 10:50:07 +0300
-Message-Id: <20210614075029.598048-24-tz.stoyanov@gmail.com>
+Subject: [PATCH v6 45/45] trace-cmd: Update trace.dat man page
+Date:   Mon, 14 Jun 2021 10:50:29 +0300
+Message-Id: <20210614075029.598048-46-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210614075029.598048-1-tz.stoyanov@gmail.com>
 References: <20210614075029.598048-1-tz.stoyanov@gmail.com>
@@ -70,247 +70,146 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-New compression APIs are added for writing and reading compressed data
-from / to files in chunks:
- tracecmd_compress_copy_from()
- tracecmd_uncompress_copy_to()
-Format of the compressed data, used by these APIs, is:
- - 4 bytes, chunks count
-   - for each chunk:
-     - 4 bytes, size of compressed data in this chunk
-     - 4 bytes, uncompressed size of the data in this chunk
-     - data, bytes of <size of compressed data in this chunk>
+Updated the trace.dat man page with the changes related to file
+version 7 and compression.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- .../include/private/trace-cmd-private.h       |   5 +-
- lib/trace-cmd/trace-compress.c                | 200 ++++++++++++++++++
- 2 files changed, 204 insertions(+), 1 deletion(-)
+ Documentation/trace-cmd/trace-cmd.dat.5.txt | 56 ++++++++++++++++++---
+ 1 file changed, 50 insertions(+), 6 deletions(-)
 
-diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 10089389..067ba34d 100644
---- a/lib/trace-cmd/include/private/trace-cmd-private.h
-+++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -494,7 +494,10 @@ int tracecmd_compress_proto_register(const char *name, const char *version, int
- 						       char *out, unsigned int *out_bytes),
- 				     unsigned int (*comress_size)(unsigned int bytes),
- 				     bool (*is_supported)(const char *name, const char *version));
--
-+int tracecmd_compress_copy_from(struct tracecmd_compression *handle, int fd, int chunk_size,
-+				unsigned long long *read_size, unsigned long long *write_size);
-+int tracecmd_uncompress_copy_to(struct tracecmd_compression *handle, int fd,
-+				unsigned long long *read_size, unsigned long long *write_size);
- /* --- Plugin handling --- */
- extern struct tep_plugin_option trace_ftrace_options[];
+diff --git a/Documentation/trace-cmd/trace-cmd.dat.5.txt b/Documentation/trace-cmd/trace-cmd.dat.5.txt
+index 8d285353..e80d460e 100644
+--- a/Documentation/trace-cmd/trace-cmd.dat.5.txt
++++ b/Documentation/trace-cmd/trace-cmd.dat.5.txt
+@@ -52,6 +52,23 @@ INITIAL FORMAT
+   The next 4 bytes are a 32-bit word that defines what the traced
+   host machine page size was.
  
-diff --git a/lib/trace-cmd/trace-compress.c b/lib/trace-cmd/trace-compress.c
-index 039f60c5..dfed7b0e 100644
---- a/lib/trace-cmd/trace-compress.c
-+++ b/lib/trace-cmd/trace-compress.c
-@@ -595,3 +595,203 @@ error:
- 	free(v);
- 	return -1;
- }
++  If the file version is 7 or greater, the compression header is
++  written next:
++     "name version\0"
++  where "name" and "version" are strings, name and version of the
++  compression algorithm used to compress the trace file.
 +
-+/**
-+ * tracecmd_compress_copy_from - Copy and compress data from a file
-+ * @handle: compression handler
-+ * @fd: file descriptor to uncompressed data to copy from
-+ * @chunk_size: size of one compression chunk
-+ * @read_size: in - max bytes to read from @fd, 0 to read till the EOF
-+ *	       out - size of the uncompressed data read from @fd
-+ * @write_size: return, size of the compressed data written into @handle
-+ *
-+ * This function reads uncompressed data from given @fd, compresses the data using the @handle
-+ * compression context and writes the compressed data into the fd associated with the @handle.
-+ * The data is compressed on chunks with given @chunk_size size.
-+ * The compressed data is written in the format:
-+ *  - 4 bytes, chunks count
-+ *  - for each chunk:
-+ *    - 4 bytes, size of compressed data in this chunk
-+ *    - 4 bytes, uncompressed size of the data in this chunk
-+ *    - data, bytes of <size of compressed data in this chunk>
-+ *
-+ * On success 0 is returned, @read_size and @write_size are updated with the size of
-+ * read and written data.
-+ */
-+int tracecmd_compress_copy_from(struct tracecmd_compression *handle, int fd, int chunk_size,
-+				unsigned long long *read_size, unsigned long long *write_size)
-+{
-+	unsigned int rchunk = 0;
-+	unsigned int chunks = 0;
-+	unsigned int wsize = 0;
-+	unsigned int rsize = 0;
-+	unsigned int rmax = 0;
-+	unsigned int csize;
-+	unsigned int size;
-+	unsigned int r;
-+	off64_t offset;
-+	char *buf_from;
-+	char *buf_to;
-+	int endian4;
-+	int ret;
++COMPRESSION FORMAT OF THE HEADER SECTIONS
++-----------------------------------------
++  If the file version is 7 or greater, some header sections are compressed
++  with the compression algorithm, specified in the compression header.
++  The format of these compressed sections is:
++     <4 bytes> unsigned int, size of compressed data in the next block.
++     <4 bytes> unsigned int, size of uncompressed data.
++     <data> binary compressed data, with the specified size.
++  These sections must be uncompressed on reading. The described format of
++  the sections refers to the uncomperssed data.
 +
-+	if (!handle || !handle->proto ||
-+	    !handle->proto->compress_block || !handle->proto->compress_size)
-+		return 0;
-+	if (read_size)
-+		rmax = *read_size;
-+	csize = handle->proto->compress_size(chunk_size);
-+	buf_from = malloc(chunk_size);
-+	if (!buf_from)
-+		return -1;
-+	buf_to = malloc(csize);
-+	if (!buf_to)
-+		return -1;
-+	/* save the initial offset and write 0 chunks */
-+	offset = lseek64(handle->fd, 0, SEEK_CUR);
-+	write_fd(handle->fd, &chunks, 4);
+ HEADER INFO FORMAT
+ ------------------
+ 
+@@ -93,7 +110,8 @@ FTRACE EVENT FORMATS
+ 
+   Directly after the header information comes the information about
+   the Ftrace specific events. These are the events used by the Ftrace plugins
+-  and are not enabled by the event tracing.
++  and are not enabled by the event tracing. If the file version is 7 or
++  greater, this section is compressed.
+ 
+   The next 4 bytes contain a 32-bit word of the number of Ftrace event
+   format files that are stored in the file.
+@@ -110,7 +128,8 @@ EVENT FORMATS
+ -------------
+ 
+   Directly after the Ftrace formats comes the information about
+-  the event layout.
++  the event layout. If the file version is 7 or greater, this section
++  is compressed.
+ 
+   The next 4 bytes are a 32-bit word containing the number of
+   event systems that are stored in the file. These are the
+@@ -137,7 +156,8 @@ KALLSYMS INFORMATION
+ --------------------
+ 
+   Directly after the event formats comes the information of the mapping
+-  of function addresses to the function names.
++  of function addresses to the function names. If the file version is 7
++  or greater, this section is compressed.
+ 
+   The next 4 bytes are a 32-bit word containing the size of the
+   data holding the function mappings.
+@@ -154,6 +174,7 @@ TRACE_PRINTK INFORMATION
+   store the format string outside the ring buffer.
+   This information can be found in:
+   debugfs/tracing/printk_formats
++  If the file version is 7 or greater, this section is compressed.
+ 
+   The next 4 bytes are a 32-bit word containing the size of the
+   data holding the printk formats.
+@@ -166,7 +187,8 @@ PROCESS INFORMATION
+ -------------------
+ 
+   Directly after the trace_printk formats comes the information mapping
+-  a PID to a process name.
++  a PID to a process name. If the file version is 7 or greater, this
++  section is compressed.
+ 
+   The next 8 bytes contain a 64-bit word that holds the size of the
+   data mapping the PID to a process name.
+@@ -193,10 +215,11 @@ REST OF TRACE-CMD HEADER
+ 
+     "flyrecord\0"
+ 
+-  If it is "options  \0" then:
++  If it is "options  \0" then follows a section with trace options.
++  If the file version is 7 or greater, this section is compressed.
+ 
+   The next 2 bytes are a 16-bit word defining the current option.
+-  If the the value is zero then there are no more options.
++  If the value is zero then there are no more options.
+ 
+   Otherwise, the next 4 bytes contain a 32-bit word containing the
+   option size. If the reader does not know how to handle the option
+@@ -206,6 +229,25 @@ REST OF TRACE-CMD HEADER
+   The next option will be directly after the previous option, and
+   the options ends with a zero in the option type field.
+ 
++COMPRESSION FORMAT OF THE TRACE DATA
++------------------------------------
 +
-+	do {
-+		if (rmax > 0 && (rmax - rsize) < chunk_size)
-+			rchunk = (rmax - rsize);
-+		else
-+			rchunk = chunk_size;
++  If the file version is 7 or greater, the tarce data is compressed
++  with the compression algorithm, specified in the compression header.
++  The data is compressed in chunks. The size of one compression chunk
++  is defined when the file is written. The format of compressed trace
++  data is:
++     <4 bytes> unsigned int, count of chunks.
++     Follows the compressed chunks of givent count. For each chunk:
++        <4 bytes> unsigned int, size of compressed data in this chunk.
++        <4 bytes> unsigned int, size of uncompressed data.
++        <data> binary compressed data, with the specified size.
++  These chunks must be uncompressed on reading. The described format of
++  trace data refers to the uncomperssed data.
 +
-+		r = read(fd, buf_from, rchunk);
-+		if (r < 0 || (rmax > 0 && rsize >= rmax))
-+			break;
-+		rsize += r;
-+		size = csize;
-+		if (r > 0) {
-+			ret = handle->proto->compress_block(buf_from, r, buf_to, &size);
-+			if (ret < 0) {
-+				if (errno == EINTR)
-+					continue;
-+				break;
-+			}
-+			/* Write compressed data size */
-+			endian4 = tep_read_number(handle->tep, &size, 4);
-+			ret = write_fd(handle->fd, &endian4, 4);
-+			if (ret != 4)
-+				break;
-+			/* Write uncompressed data size */
-+			endian4 = tep_read_number(handle->tep, &r, 4);
-+			ret = write_fd(handle->fd, &endian4, 4);
-+			if (ret != 4)
-+				break;
-+			/* Write the compressed data */
-+			ret = write_fd(handle->fd, buf_to, size);
-+			if (ret != size)
-+				break;
-+			/* data + compress header */
-+			wsize += (size + 8);
-+			chunks++;
-+		}
-+	} while (r > 0);
-+	free(buf_from);
-+	free(buf_to);
-+	if (r)
-+		return -1;
-+	if (lseek64(handle->fd, offset, SEEK_SET) == (off_t)-1)
-+		return -1;
-+	endian4 = tep_read_number(handle->tep, &chunks, 4);
-+	/* write chunks count*/
-+	write_fd(handle->fd, &chunks, 4);
-+	lseek64(handle->fd, offset, SEEK_SET);
-+	if (lseek64(handle->fd, 0, SEEK_END) == (off_t)-1)
-+		return -1;
-+	if (read_size)
-+		*read_size = rsize;
-+	if (write_size)
-+		*write_size = wsize;
-+	return 0;
-+}
++TRACE DATA
++----------
 +
-+/**
-+ * tracecmd_uncompress_copy_to - Uncompress data and copy to a file
-+ * @handle: compression handler
-+ * @fd: file descriptor to uncompressed data to copy into
-+ * @read_size: return, size of the compressed data read from @handle
-+ * @write_size: return, size of the uncompressed data written into @fd
-+ *
-+ * This function reads compressed data from the fd, associated with @handle, uncompresses it
-+ * using the @handle compression context and writes the uncompressed data into the fd.
-+ * The compressed data must be in the format:
-+ *  - 4 bytes, chunks count
-+ *  - for each chunk:
-+ *    - 4 bytes, size of compressed data in this chunk
-+ *    - 4 bytes, uncompressed size of the data in this chunk
-+ *    - data, bytes of <size of compressed data in this chunk>
-+ *
-+ * On success 0 is returned, @read_size and @write_size are updated with the size of
-+ * read and written data.
-+ */
-+int tracecmd_uncompress_copy_to(struct tracecmd_compression *handle, int fd,
-+				unsigned long long *read_size, unsigned long long *write_size)
-+{
-+	unsigned int s_uncompressed;
-+	unsigned int s_compressed;
-+	unsigned int rsize = 0;
-+	unsigned int wsize = 0;
-+	char *bytes_out = NULL;
-+	char *bytes_in = NULL;
-+	int size_out;
-+	int size_in;
-+	int chunks;
-+	char buf[4];
-+	char *tmp;
-+	int ret;
-+
-+	if (!handle || !handle->proto || !handle->proto->uncompress_block)
-+		return -1;
-+
-+	if (read(handle->fd, buf, 4) != 4)
-+		return -1;
-+	chunks = tep_read_number(handle->tep, buf, 4);
-+	rsize += 4;
-+	while (chunks) {
-+		if (read(handle->fd, buf, 4) != 4)
-+			break;
-+		s_compressed = tep_read_number(handle->tep, buf, 4);
-+		rsize += 4;
-+		if (read(handle->fd, buf, 4) != 4)
-+			break;
-+		s_uncompressed = tep_read_number(handle->tep, buf, 4);
-+		rsize += 4;
-+		if (!bytes_in || size_in < s_compressed) {
-+			tmp = realloc(bytes_in, s_compressed);
-+			if (!tmp)
-+				break;
-+			bytes_in = tmp;
-+			size_in = s_compressed;
-+		}
-+
-+		if (!bytes_out || size_out < s_uncompressed) {
-+			tmp = realloc(bytes_out, s_uncompressed);
-+			if (!tmp)
-+				break;
-+			bytes_out = tmp;
-+			size_out = s_uncompressed;
-+		}
-+
-+		if (read_fd(handle->fd, bytes_in, s_compressed) < 0)
-+			break;
-+		rsize += s_compressed;
-+		ret = handle->proto->uncompress_block(bytes_in, s_compressed,
-+						      bytes_out, &s_uncompressed);
-+		if (ret)
-+			break;
-+		write_fd(fd, bytes_out, s_uncompressed);
-+		wsize += s_uncompressed;
-+		chunks--;
-+	}
-+	free(bytes_in);
-+	free(bytes_out);
-+	if (chunks)
-+		return -1;
-+	if (read_size)
-+		*read_size = rsize;
-+	if (write_size)
-+		*write_size = wsize;
-+	return 0;
-+}
+   The next 10 bytes after the options are one of the following:
+ 
+   "latency  \0"
+@@ -217,6 +259,7 @@ REST OF TRACE-CMD HEADER
+   If the value is "latency  \0", then the rest of the file is
+   simply ASCII text that was taken from the target's:
+   debugfs/tracing/trace
++  If the file version is 7 or greater, the latency data is compressed.
+ 
+   If the value is "flyrecord\0", the following is present:
+ 
+@@ -232,6 +275,7 @@ REST OF TRACE-CMD HEADER
+ CPU DATA
+ --------
+ 
++  If the file version is 7 or greater, the CPU data is compressed.
+   The CPU data is located in the part of the file that is specified
+   in the end of the header. Padding is placed between the header and
+   the CPU data, placing the CPU data at a page aligned (target page) position
 -- 
 2.31.1
 
