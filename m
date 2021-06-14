@@ -2,171 +2,115 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D379EC48BE6
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:52:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FAF9C4743C
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 16:14:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BADB561357
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:52:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4E810613DB
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 16:14:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232520AbhFNHy2 (ORCPT
+        id S234612AbhFNQQk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 14 Jun 2021 03:54:28 -0400
-Received: from mail-ed1-f45.google.com ([209.85.208.45]:42890 "EHLO
-        mail-ed1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232640AbhFNHy1 (ORCPT
+        Mon, 14 Jun 2021 12:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232920AbhFNQQj (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:54:27 -0400
-Received: by mail-ed1-f45.google.com with SMTP id i13so45213607edb.9
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:52:12 -0700 (PDT)
+        Mon, 14 Jun 2021 12:16:39 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A74C061767
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 09:14:22 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id s70-20020a1ca9490000b02901a589651424so213432wme.0
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 09:14:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jHACQ9rJPj63PN8NI3v2/826PmbhUMZq2PCaQYXnCRE=;
-        b=nFbH8tG/n69h1cVkLpq/gjIirJdJjDytxW1mq0yvNNY7HHvlksFIctR2dUuTZs4dEH
-         DdhcvTKitJtD/27WpelnU9Gbjsh+35lSjiQ6UdCsfCEE+u27jKRO9V9DGzMmgTf+ifKG
-         NBq7Vi9NVILa2ZgYNxwZyC2eATivlRALBfNu4nePNC9ckveB3Z4P0uaww1Y/LMApWw3X
-         +P+RSQaI1ep3ese1gh3nAcUXqrMAqeYzOCq+fK4XMHdA0fdCawN/ShbfHJmF5kYKkSrB
-         9OWGky77e4bu6mL+IKw9nyfWQS2KKNH/j9KWkjfx377eWgLg5PDMXvYGbdS076b1M4Kt
-         TAGw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4yiF2vhip9zwhmZ9+/R6HIJAlAqAXdCRvYu1mvEtcdU=;
+        b=Q6ygX6FW1PV4W/XLTWDNGAoTE4IoPTndAG/4BonEkXAfZOFu5Wpv7BaSGw5lo9Ra5f
+         QVgFEBWj6M2XiQB5+Hxr/KmO/W9hTB667UFrluXkAKuNmRKqUFjH4PcERhhn514uW4N6
+         zmFYV20ILTwB8CeeduuIVN7H3HdVEps7NvDjJm36S+qJoGtpHZMiqnQobLDJhz17xEHe
+         zvV1+TlsCI0mgWd0WgdKYfsL85mfSxRynfV2Z5qH+0q2HkvvEtl1iKw98kF8XABcMEPY
+         cVq0F0GstJH2S7IhlZonCYycnbEVnzYRPeJsaxQ8I76yK5ASE6tIx59OHTaSKkKuF0Aq
+         I9BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jHACQ9rJPj63PN8NI3v2/826PmbhUMZq2PCaQYXnCRE=;
-        b=rJhvnn3om9gfe49VPEKURxbBvXxdKy80gbeFV1mfMpfLEu/YnuBG6UPJjdi2wuQKQO
-         XvSfilpY+Gi4ux2lJWOIGzafv8L0BWbyumhdPDpOw96S4hiA4WXMFKW2v2nySE+Fi4UO
-         yNAd+Mdl1SUEriz/fNd37SN83NjdUcuVVLSC/PApkUKXW3NK5P8nO+QUjd4OjuDqaG8o
-         cgDJW5CLsCse01X0BQ7czGGn+4urtMSKy+dl8lL7/PAzHpIfbWIJ4OgMPZfLpufTLWSb
-         fH7TbN2Tjw0/wwwWQtmjTCpsVmTSAqRj+3yjShhpOp+05rDu77FIcbR+58G5iGZvkdO/
-         DvVg==
-X-Gm-Message-State: AOAM530vemCVnJvH5jqiI4qAotB/FBV5jK/DBFFljD5U/1hJXyccpPkH
-        zU6ycNGl/Q9jlxUN/c+Mcw0=
-X-Google-Smtp-Source: ABdhPJz5DVScUchxcHmyvvsuqUjZs4IShrnvFLQ55tZ4mHlItHNvc4rLe18f0phU0qslH1hKIdkJoA==
-X-Received: by 2002:aa7:d7cf:: with SMTP id e15mr15803588eds.114.1623657071646;
-        Mon, 14 Jun 2021 00:51:11 -0700 (PDT)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id f6sm6536444eja.108.2021.06.14.00.51.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 00:51:11 -0700 (PDT)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 42/45] trace-cmd: Add convert man page
-Date:   Mon, 14 Jun 2021 10:50:26 +0300
-Message-Id: <20210614075029.598048-43-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210614075029.598048-1-tz.stoyanov@gmail.com>
-References: <20210614075029.598048-1-tz.stoyanov@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4yiF2vhip9zwhmZ9+/R6HIJAlAqAXdCRvYu1mvEtcdU=;
+        b=iieltct1cT6vO01GUh8t3qjNzVqu3ZXTZMrMoQTe3fMFctlXRqIAlxz2quSzGJ0pDA
+         Nt7ljGw0jM3iBQQgRMLojkhFNVrcxruvXJRbdBL514hHRO/NVXhSo50e/mFpgD6ERq/y
+         8rBktfJb91ncQbudEH1jv7i8QmhMo88DMgX1E4VmQZ2d2EJBELw57Y9qi5KO/PgzD5JK
+         FgsdYBJ6VBXfhmBFdHYgAa8H1gySZFX8klR5cq+oPVFInqoI2YnYVdh3qw1Y4RtZ78Me
+         9oJBODZzK5KhviQ+m2B8GnUSAd32Vqyxu7ozv+NOViX1+XjX2by6BGA5hXoZEWfIBRwJ
+         FPpw==
+X-Gm-Message-State: AOAM532kUKbGyZyvpI2QKGOfuBY8lXulYkBKrPdJ0hKQtW2+5yqa0XtJ
+        JH4JUvKTav3Ubp2/ioI7PeKkaBK9gSH4+KecrGFJxg==
+X-Google-Smtp-Source: ABdhPJyr1W34f1fzTdbXuPdHGksw+RboOnrQItkWMrnVmWKwPtskdczbT1WYM+GGmZIzEXohLvyyyvN/QSBBpgAKbgE=
+X-Received: by 2002:a1c:2015:: with SMTP id g21mr33945315wmg.87.1623687261445;
+ Mon, 14 Jun 2021 09:14:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210612014501.890593-1-irogers@google.com> <20210612014501.890593-3-irogers@google.com>
+ <20210612190049.7e09d8c6@rorschach.local.home> <CAP-5=fX1riLr6y8KapEhmxk3BW1Xq9kV_zMywoQ+B8Dgs6fxeg@mail.gmail.com>
+ <20210613192926.6cb6b983@rorschach.local.home>
+In-Reply-To: <20210613192926.6cb6b983@rorschach.local.home>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 14 Jun 2021 09:14:08 -0700
+Message-ID: <CAP-5=fX00qHJmNeEpPCaCj5tqUkjbMc_Lk18o6Dv_ux6ESvSHw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] libtraceevent: Changed angled brackets to double quotes.
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        Claire Jensen <cjense@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Added new man page, documenting the "trace-cmd convert" command.
+On Sun, Jun 13, 2021 at 4:29 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Sun, 13 Jun 2021 14:31:42 -0700
+> Ian Rogers <irogers@google.com> wrote:
+>
+>
+> > Would it be more conventional in this situation to use quotes within
+> > the library and angles outside? This change is within the library and
+> > not with code trying to link against it.
+>
+> Does it matter? If not, what's the purpose of changing it?
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- .../trace-cmd/trace-cmd-convert.1.txt         | 60 +++++++++++++++++++
- Documentation/trace-cmd/trace-cmd.1.txt       |  4 +-
- 2 files changed, 63 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/trace-cmd/trace-cmd-convert.1.txt
+Sorry for not having this in the body, in the cover message I added to
+Claire's email with:
 
-diff --git a/Documentation/trace-cmd/trace-cmd-convert.1.txt b/Documentation/trace-cmd/trace-cmd-convert.1.txt
-new file mode 100644
-index 00000000..e8d65843
---- /dev/null
-+++ b/Documentation/trace-cmd/trace-cmd-convert.1.txt
-@@ -0,0 +1,60 @@
-+TRACE-CMD-CONVERT(1)
-+===================
-+
-+NAME
-+----
-+trace-cmd-convert - convert trace files
-+
-+SYNOPSIS
-+--------
-+*trace-cmd convert* ['OPTIONS'] ['output-file']
-+
-+DESCRIPTION
-+-----------
-+The trace-cmd(1) convert command converts trace file. It reads the input file and copies the data
-+into an output file. The output file may be in different format, depending on the command line
-+arguments.
-+
-+OPTIONS
-+-------
-+*-i* 'input-file'::
-+    By default, trace-cmd convert will read the file 'trace.dat'. But the *-i*
-+    option open up the given 'input-file' instead.
-+*-o* 'out-file'::
-+    The name of the output file, this parameter is mandatory. Note, the output file may also be
-+    specified as the last item on the command line.
-+*--compression*::
-+    Compression of the trace output file, one of these strings can be passed:
-+
-+    'any'  - auto select the best available compression algorithm
-+
-+    'none' - do not compress the trace file
-+
-+    'name' - the name of the desired compression algorithms. Available algorithms can be listed with
-+    trace-cmd list -c
-+
-+*--help*::
-+    Print usage information.
-+
-+EXAMPLES
-+--------
-+
-+# trace-cmd convert --compression any trace_compress.dat
-+
-+SEE ALSO
-+--------
-+trace-cmd(1), trace-cmd.dat(1)
-+
-+AUTHOR
-+------
-+*Steven Rostedt* <rostedt@goodmis.org>, author of *trace-cmd*.
-+*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>, author of this man page.
-+
-+RESOURCES
-+---------
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
-+
-+COPYING
-+-------
-+Copyright \(C) 2021 VMware. Free use of this software is granted under
-+the terms of the GNU Public License (GPL).
-diff --git a/Documentation/trace-cmd/trace-cmd.1.txt b/Documentation/trace-cmd/trace-cmd.1.txt
-index b330b4fe..27c6e973 100644
---- a/Documentation/trace-cmd/trace-cmd.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd.1.txt
-@@ -58,6 +58,8 @@ COMMANDS
-   check-events - parse format strings for all trace events and return
-                  whether all formats are parseable
- 
-+  convert   - convert trace files
-+
- OPTIONS
- -------
- 
-@@ -70,7 +72,7 @@ SEE ALSO
- --------
- trace-cmd-record(1), trace-cmd-report(1), trace-cmd-hist(1), trace-cmd-start(1),
- trace-cmd-stop(1), trace-cmd-extract(1), trace-cmd-reset(1),
--trace-cmd-restore(1), trace-cmd-stack(1),
-+trace-cmd-restore(1), trace-cmd-stack(1), trace-cmd-convert(1),
- trace-cmd-split(1), trace-cmd-list(1), trace-cmd-listen(1),
- trace-cmd.dat(5), trace-cmd-check-events(1) trace-cmd-stat(1)
- 
--- 
-2.31.1
+> Some build systems are picky about angled vs quotes, fix this minor issue.
 
+The problem is with certain build system, we use bazel at Google,
+where iquote is used for includes within the library, and other
+flavors outside the library. There's a similar conversation here:
+https://groups.google.com/g/bazel-discuss/c/6MNuZ5bKoa8?pli=1
+
+the failure you see when building is:
+
+In file included from src/event-parse.c:27:
+src/event-utils.h:13:10: error: 'event-parse.h' file not found with
+<angled> include; use "quotes" instead
+#include <event-parse.h>
+         ^~~~~~~~~~~~~~~
+         "event-parse.h"
+
+Arguably -iquote is more correct within the library build, hence bazel
+using it. The libtraceevent Makefile is using -I, hence this not being
+a problem for others. We prefer not to carry internal patches, hence
+wanting to send this upstream.
+
+Thanks,
+Ian
+
+> Note, the change log is empty, and is where rationale for the change is
+> suppose to be added.
+>
+> -- Steve
