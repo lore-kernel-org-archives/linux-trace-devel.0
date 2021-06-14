@@ -8,59 +8,59 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62BF9C49361
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:52:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A97FC48BE8
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:52:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5019761380
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:52:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 37E2361357
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:52:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232637AbhFNHyW (ORCPT
+        id S232642AbhFNHyY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 14 Jun 2021 03:54:22 -0400
-Received: from mail-ed1-f49.google.com ([209.85.208.49]:33675 "EHLO
-        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232632AbhFNHyV (ORCPT
+        Mon, 14 Jun 2021 03:54:24 -0400
+Received: from mail-ej1-f41.google.com ([209.85.218.41]:45707 "EHLO
+        mail-ej1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232636AbhFNHyX (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:54:21 -0400
-Received: by mail-ed1-f49.google.com with SMTP id f5so40211937eds.0
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:52:05 -0700 (PDT)
+        Mon, 14 Jun 2021 03:54:23 -0400
+Received: by mail-ej1-f41.google.com with SMTP id k7so15034156ejv.12
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:52:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Rl0kPyNRg0Ei1SdJ3rLL1247YtZ7+uNI5K11AvHuLvs=;
-        b=l1lJIpg19UrVJ7NmqrdKNTYM0n0CiQNHeFevNE57OYSRXQ0Pa0Xs5/wC4DispzdeTN
-         YuEYK+zBSWCT50/6DsKFaU33VpWluBd+sLVDZiqB5yT7+O8UwsqhV99mW73Ql/EzQTFf
-         h0rEyzWUAhIUBNr/mRdZN7gYYCVJLVr2fuSzELqaF43CTs+qF6p0YOkwGY9KzbmNUjuO
-         byqhhdRzuwoYVDV1WFKBsbdy5SOxQ5765UMhbq6+rkQpTKln1+qtKmR9DJDpGD1I/+wg
-         faE2MXoLJnGhaJ5LuVAXrI27fkYQu0xcf4H3kYaJent9XDa/B4ytpBEJGlRnlf+S2998
-         buDA==
+        bh=dpwXI5URK9HmN13gX7A6+hGktVkSdJlOwZaZ0ky6UkA=;
+        b=lLLXmkpTIXzNnZo5TtaeBCEucOYurjv1vQa4UajGN/OzaWzH7pfHCWJU2tz5d4AdOs
+         2FGrx7F+BAPmuz3hnslLYGsCLZqoPmXS0y5B/4ogzs2R0Ka8u0vS2nZXYmbp8n1Qn+kr
+         NzG4m06hJme3JUim96RNtKi0Qe+iAvv0JfTLaKPW1DXAoQdEyKGViQTDHQeaGdWw+yDa
+         ZyMzUX/oZqBE6lXyMwHhYMpFiIHRt43phFJuMmkNldSteoopVygHaKL0hA44zjDn5x3t
+         YigmWx0l66WWe6yL8lc+YNpiCXs7vCOoCOjWqow4jpqzUF/sqr8ZvJLDWkjYhJRkWcod
+         bcGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Rl0kPyNRg0Ei1SdJ3rLL1247YtZ7+uNI5K11AvHuLvs=;
-        b=UNQGpLmQkXJF4VPbcPXqrMtSmQnxxeJk1QtbXWPaxBuiJzZEtbMFZmPbzpk9lrMvME
-         duLPMp5eGaxyAz+Y7o6a43kKlk8exM2shyvetqwSkFBOLBMCmhP3BNQ6Rb8DG1ibtzyt
-         UwMhNdroOplSojZrinA4gpnCSOBdpGzXIofLj7DGp8ZmGTVjxngdYma7tu51E2yNb1+P
-         YNL36sej4MAm4TZxotQqbYBQUbv1XE9cXIBP4zNX5eQot8H9bxUSnnldQCW5t1Y1fqjA
-         0M4VSNK/Rq1dnhIl+ANPnzQ4ae3WZ87c1CqiN+VOaqOBH/ZBg1YJbi8rGC0ytWt5zxd2
-         GTBQ==
-X-Gm-Message-State: AOAM532cOjP/4Dm3SEA8nhwUTqabvIYk2Afz4LfN0JpJ8zN6org08gYA
-        IKJjsR59yYPy5I+G2A3kp0I=
-X-Google-Smtp-Source: ABdhPJyu7RPBhYCclmSfMurRz1dKuVZHsuKY5EnBQv9GB2XhNddfGkLz4EAI4yeUSArHMRk+fJ9eag==
-X-Received: by 2002:aa7:c7c7:: with SMTP id o7mr15919084eds.231.1623657065263;
-        Mon, 14 Jun 2021 00:51:05 -0700 (PDT)
+        bh=dpwXI5URK9HmN13gX7A6+hGktVkSdJlOwZaZ0ky6UkA=;
+        b=pNZeTYeq4G1rvGFcZpSMCYVKkXvjusfeoOPgyGUaI1hWOuKnmaqizfpBsbjO/gYDSX
+         LfhT9PyZE8QsWitlllnrrQ1IbSfb3U625dvocnAQDI7lfewi52Gzq5PtZA8JjjQebvD3
+         TgOoBxGVh9debFDzlUFKK8Am9vIoCruqFEx6JiO+6Ne8JYpy6+GvNLbaLKdAydky6eVa
+         uYIKTf4L6po88DjN5myAiui5jM5cGrM8owfZibzJdyJJMrWcMDz+eZBPuZZFWWrWCplD
+         5hpIlAolK8T19gpGk4I4uHp9bVih/9txVUlmL7YTRO3doBgSuHYnK10hGOxzaShb7ubO
+         7xkQ==
+X-Gm-Message-State: AOAM532dU6Teiopg+MyWPzBxY2jfgzSGoGK7moGzf53/jWrzAYyRcrUZ
+        aot3KpnUqYaY0LsJXLkXQfM=
+X-Google-Smtp-Source: ABdhPJwPrOIJzelTAlZNmvrm15CxroEnOAT7wLQHEVvwBapa5IZ51H0iVSKGby+aQFGZIUP8BxkoPQ==
+X-Received: by 2002:a17:906:3d9:: with SMTP id c25mr14392535eja.63.1623657069842;
+        Mon, 14 Jun 2021 00:51:09 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id f6sm6536444eja.108.2021.06.14.00.51.04
+        by smtp.gmail.com with ESMTPSA id f6sm6536444eja.108.2021.06.14.00.51.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 00:51:04 -0700 (PDT)
+        Mon, 14 Jun 2021 00:51:09 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 35/45] trace-cmd: Copy options in tracecmd_copy
-Date:   Mon, 14 Jun 2021 10:50:19 +0300
-Message-Id: <20210614075029.598048-36-tz.stoyanov@gmail.com>
+Subject: [PATCH v6 40/45] trace-cmd: Add new command "trace-cmd convert"
+Date:   Mon, 14 Jun 2021 10:50:24 +0300
+Message-Id: <20210614075029.598048-41-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210614075029.598048-1-tz.stoyanov@gmail.com>
 References: <20210614075029.598048-1-tz.stoyanov@gmail.com>
@@ -70,159 +70,191 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Extend the tracecmd_copy() API to support copying of trace options
-section from input to output trace handler.
+A new trace-cmd subcommand is added, used to convert trace files:
+
+trace-cmd convert -i <input file> -o <output file> --compression
+<out file compression>
+
+The command reads the given input trace file and creates output trace
+file with given compression. The --compression parameter is optional:
+ - no --compression parameter: the output file inherits the compression
+   from the input file.
+ --compression none - the output file is not compressed.
+ --compression any  - use the best available compression algorithm to
+   compress the output file
+ --compression <algorithm> - use the specified compression algorithm, if
+   available, to compress the output file.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- .../include/private/trace-cmd-private.h       |  2 +
- lib/trace-cmd/include/trace-cmd-local.h       |  1 +
- lib/trace-cmd/trace-input.c                   | 80 +++++++++++++++++++
- lib/trace-cmd/trace-output.c                  |  8 ++
- 4 files changed, 91 insertions(+)
+ tracecmd/Makefile              |  1 +
+ tracecmd/include/trace-local.h |  2 +
+ tracecmd/trace-cmd.c           |  1 +
+ tracecmd/trace-convert.c       | 94 ++++++++++++++++++++++++++++++++++
+ tracecmd/trace-usage.c         | 12 +++++
+ 5 files changed, 110 insertions(+)
+ create mode 100644 tracecmd/trace-convert.c
 
-diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 3735586d..595ba688 100644
---- a/lib/trace-cmd/include/private/trace-cmd-private.h
-+++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -176,6 +176,8 @@ int tracecmd_copy_headers(struct tracecmd_input *in_handle,
- 			  enum tracecmd_file_states end_state);
- int tracecmd_copy_buffer_descr(struct tracecmd_input *in_handle,
- 			       struct tracecmd_output *out_handle);
-+int tracecmd_copy_options(struct tracecmd_input *in_handle,
-+			  struct tracecmd_output *out_handle);
- void tracecmd_set_flag(struct tracecmd_input *handle, int flag);
- void tracecmd_clear_flag(struct tracecmd_input *handle, int flag);
- unsigned long tracecmd_get_flags(struct tracecmd_input *handle);
-diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
-index 8fb391fc..2e5682c0 100644
---- a/lib/trace-cmd/include/trace-cmd-local.h
-+++ b/lib/trace-cmd/include/trace-cmd-local.h
-@@ -52,6 +52,7 @@ void in_uncompress_reset(struct tracecmd_input *handle);
- int in_uncompress_block(struct tracecmd_input *handle);
+diff --git a/tracecmd/Makefile b/tracecmd/Makefile
+index 80c69bbb..35086b71 100644
+--- a/tracecmd/Makefile
++++ b/tracecmd/Makefile
+@@ -36,6 +36,7 @@ TRACE_CMD_OBJS += trace-usage.o
+ TRACE_CMD_OBJS += trace-dump.o
+ TRACE_CMD_OBJS += trace-clear.o
+ TRACE_CMD_OBJS += trace-vm.o
++TRACE_CMD_OBJS += trace-convert.o
  
- void out_set_file_state(struct tracecmd_output *handle, int new_state);
-+void out_save_options_offset(struct tracecmd_output *handle);
+ ifeq ($(VSOCK_DEFINED), 1)
+ TRACE_CMD_OBJS += trace-agent.o
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index e9a0aea8..13dab44c 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -110,6 +110,8 @@ void trace_usage(int argc, char **argv);
  
- int write_buffers_description_v7(struct tracecmd_output *handle);
- int write_buffers_description_v6(struct tracecmd_output *handle);
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 7d0a41c2..794f8ea3 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -4211,6 +4211,86 @@ int tracecmd_copy_buffer_descr(struct tracecmd_input *in_handle,
- 	return tracecmd_write_buffers_description(out_handle);
- }
+ void trace_dump(int argc, char **argv);
  
-+static int copy_options(struct tracecmd_input *in_handle, struct tracecmd_output *out_handle)
-+{
-+	unsigned short option;
-+	unsigned short en2;
-+	unsigned int size;
-+	unsigned int en4;
++void trace_convert(int argc, char **argv);
 +
-+	if (in_uncompress_block(in_handle))
-+		return -1;
-+	out_save_options_offset(out_handle);
-+	out_compression_start(out_handle);
+ int trace_record_agent(struct tracecmd_msg_handle *msg_handle,
+ 		       int cpus, int *fds,
+ 		       int argc, char **argv, bool use_fifos,
+diff --git a/tracecmd/trace-cmd.c b/tracecmd/trace-cmd.c
+index 71c8f6d6..e6274c35 100644
+--- a/tracecmd/trace-cmd.c
++++ b/tracecmd/trace-cmd.c
+@@ -130,6 +130,7 @@ struct command commands[] = {
+ 	{"list", trace_list},
+ 	{"help", trace_usage},
+ 	{"dump", trace_dump},
++	{"convert", trace_convert},
+ 	{"-h", trace_usage},
+ };
+ 
+diff --git a/tracecmd/trace-convert.c b/tracecmd/trace-convert.c
+new file mode 100644
+index 00000000..555e0c0a
+--- /dev/null
++++ b/tracecmd/trace-convert.c
+@@ -0,0 +1,94 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2021, VMware, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
++ */
++#include <stdlib.h>
++#include <unistd.h>
++#include <getopt.h>
++#include <fcntl.h>
++#include <errno.h>
++
++#include "trace-local.h"
++#include "trace-cmd.h"
++#include "trace-cmd-private.h"
++
++static void convert_file(const char *in, const char *out, char *compr)
++{
++	struct tracecmd_input *ihandle;
++	struct tracecmd_output *ohandle;
++
++	ihandle = tracecmd_open(in, 0);
++	if (!ihandle)
++		die("error reading %s", in);
++
++	ohandle = tracecmd_copy(ihandle, out, TRACECMD_FILE_CPU_FLYRECORD, compr);
++	if (!ohandle)
++		die("error writing %s", out);
++	tracecmd_output_close(ohandle);
++	tracecmd_close(ihandle);
++}
++
++enum {
++	OPT_comporession	= 255,
++};
++
++void trace_convert(int argc, char **argv)
++{
++	char *input_file = NULL;
++	char *output_file = NULL;
++	char *compression = NULL;
++	int c;
++
++	if (argc < 2)
++		usage(argv);
++
++	if (strcmp(argv[1], "convert") != 0)
++		usage(argv);
 +	for (;;) {
-+		if (do_read_check(in_handle, &option, 2))
-+			goto error;
-+		en2 = tep_read_number(in_handle->pevent, &option, 2);
-+		if (en2 == TRACECMD_OPTION_DONE)
++		int option_index = 0;
++		static struct option long_options[] = {
++			{"compression", required_argument, NULL, OPT_comporession},
++			{"help", no_argument, NULL, '?'},
++			{NULL, 0, NULL, 0}
++		};
++
++		c = getopt_long (argc-1, argv+1, "+hi:o:", long_options, &option_index);
++		if (c == -1)
 +			break;
-+		/* next 4 bytes is the size of the option */
-+		if (do_read_check(in_handle, &size, 4))
-+			goto error;
-+		en4 = tep_read_number(in_handle->pevent, &size, 4);
-+		/* Do not copy buffers description, as there is a file specific offset */
-+		if (en2 == TRACECMD_OPTION_BUFFER) {
-+			/* Skip the option */
-+			do_lseek(in_handle, en4, SEEK_CUR);
-+			continue;
++		switch (c) {
++		case 'i':
++			if (input_file)
++				die("Only one input file is supported, %s already set", input_file);
++			input_file = optarg;
++			break;
++		case 'o':
++			if (output_file)
++				die("Only one output file is supported, %s already set", output_file);
++			output_file = optarg;
++			break;
++		case OPT_comporession:
++			if (strcmp(optarg, "any") && strcmp(optarg, "none") &&
++			    !tracecmd_compress_is_supported(optarg, NULL))
++				die("Compression algorithm  %s is not supported", optarg);
++			compression = optarg;
++			break;
++		case 'h':
++		case '?':
++		default:
++			usage(argv);
 +		}
-+
-+		if (do_write_check(out_handle, &option, 2))
-+			goto error;
-+		if (do_write_check(out_handle, &size, 4))
-+			goto error;
-+		if (read_copy_data(in_handle, en4, out_handle))
-+			goto error;
 +	}
-+	if (do_write_check(out_handle, &option, 2))
-+		goto error;
-+	in_uncompress_reset(in_handle);
-+	if (out_compression_end(out_handle))
-+		goto error;
-+	in_handle->file_state = TRACECMD_FILE_OPTIONS;
-+	out_set_file_state(out_handle, in_handle->file_state);
-+	/* Append local options */
-+	return tracecmd_append_options(out_handle);
-+error:
-+	out_compression_reset(out_handle);
-+	in_uncompress_reset(in_handle);
-+	return 0;
-+}
 +
-+int tracecmd_copy_options(struct tracecmd_input *in_handle,
-+			  struct tracecmd_output *out_handle)
-+{
-+	off64_t offset;
-+	char buf[10];
-+
-+	if (!check_in_state(in_handle, TRACECMD_FILE_OPTIONS) ||
-+	    !check_out_state(out_handle, TRACECMD_FILE_OPTIONS))
-+		return -1;
-+
-+	/* Save where we currently are */
-+	offset = lseek64(in_handle->fd, 0, SEEK_CUR);
-+
-+	if (do_read_check(in_handle, buf, 10))
-+		return -1;
-+	/* check if this handles options */
-+	if (strncmp(buf, "options", 7) == 0) {
-+		if (do_write_check(out_handle, "options  ", 10))
-+			return -1;
-+		if (copy_options(in_handle, out_handle) < 0)
-+			return -1;
-+	} else {
-+		if (lseek64(in_handle->fd, offset, SEEK_SET) == (off_t)-1)
-+			return -1;
-+		in_handle->file_state = TRACECMD_FILE_OPTIONS;
-+		out_set_file_state(out_handle, in_handle->file_state);
++	if ((argc - optind) >= 2) {
++		if (output_file)
++			usage(argv);
++		output_file = argv[optind + 1];
 +	}
-+	return 0;
-+}
 +
- /**
-  * tracecmd_record_at_buffer_start - return true if record is first on subbuffer
-  * @handle: input handle for the trace.dat file
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index ca9024bf..95ca483c 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -1955,6 +1955,9 @@ struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle, const char
- 	if (state >= TRACECMD_FILE_BUFERS &&
- 	    tracecmd_copy_buffer_descr(ihandle, handle) < 0)
- 		goto out_free;
-+	if (state >= TRACECMD_FILE_OPTIONS &&
-+	    tracecmd_copy_options(ihandle, handle) < 0)
-+		goto out_free;
- 
- 	/* The file is all ready to have cpu data attached */
- 	return handle;
-@@ -1974,6 +1977,11 @@ __hidden bool check_out_state(struct tracecmd_output *handle, int new_state)
- 	return check_file_state(handle->file_version, handle->file_state, new_state);
- }
- 
-+__hidden void out_save_options_offset(struct tracecmd_output *handle)
-+{
-+	handle->options_start = lseek64(handle->fd, 0, SEEK_CUR);
-+}
++	if (!input_file)
++		input_file = DEFAULT_INPUT_FILE;
++	if (!output_file)
++		usage(argv);
 +
- /**
-  * tracecmd_get_out_file_version - return the trace.dat file version
-  * @handle: output handle for the trace.dat file
++	convert_file(input_file, output_file, compression);
++}
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index c70f9919..d0d12e87 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -392,6 +392,18 @@ static struct usage_help usage_help[] = {
+ 		"          --clock trace clock, saved in the file\n"
+ 		"          -h, --help show usage information\n"
+ 	},
++	{
++		"convert",
++		"convert trace file to different version",
++		" %s convert [options]\n"
++		"          -i input file, default is trace.dat\n"
++		"          -o output file, mandatory parameter.\n"
++		"             The output file can be specified also as last argument of the command\n"
++		"          --compression compress the trace output file, one of these strings can be passed:\n"
++		"                            any  - auto select the best available compression algorithm\n"
++		"                            none - do not compress the trace file\n"
++		"                            name - the name of the desired compression algorithms\n"
++		"                        available algorithms can be listed with trace-cmd list -c\n"	},
+ 	{
+ 		NULL, NULL, NULL
+ 	}
 -- 
 2.31.1
 
