@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85280C48BE8
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:51:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 446D1C49360
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:51:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6FB5961246
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:51:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2D8AE610A1
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:51:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbhFNHxe (ORCPT
+        id S232602AbhFNHxe (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Mon, 14 Jun 2021 03:53:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53104 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232607AbhFNHxa (ORCPT
+        with ESMTP id S232608AbhFNHxa (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 14 Jun 2021 03:53:30 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19748C061767
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:51:12 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id ho18so15043735ejc.8
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:51:12 -0700 (PDT)
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A3BC0613A2
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:51:14 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id s6so45190070edu.10
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:51:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HiQsMk0wkHXTkHUtFtlVTetDCQMIW2DvIJ+jQNwbSjM=;
-        b=STeJt63MgJdahmxKGQQ/ZH55vt8Shv0uli3rB5/3HhHhcPE41iisGeDq0bR4BULuJl
-         hwErpJq9+aBE1rmDROuGnKGyacZM+hiwYIq0B5qSfV7+QsTWpfBZ80TUT+tmLJJBJiqU
-         hd9P0JMcJ9+wpjCOXp7EgsGpb5iFT9mewZ8yaZ9yAF3J1lypHxB66tHHVhwChVdx5TcB
-         CYVanMN69Zs3XSNU5jzyDkwpQFVNeR73wSzt90XuOPHhNigO6KhVHicvVVcdcCXvJ3/K
-         /cAYO8MKuraDzzFa9arvE4lZCTrBYh/9G8qSEkfNRaOlJaVRyWjVr9VwCxR8y3eVmJep
-         xsWA==
+        bh=+arG/TI83+6RRm6R28kM8v5MCinHpDND+5u8cLV9aC0=;
+        b=de+Yq16lU+D5lLpd8UnrQURXa+1OxCLD6FZRP/3MsKEc8NdtbSwRkyPWGLBJdf0bYT
+         Az2TqaRcV8UxNriQbAqYo5PyFonJETUGPBZbETuLKFfuyZpBFr6nILTKmFcoAwXfUqa9
+         J9xmWKRhRyNFTjmYhx7bVPww8CbvUj4kWQGQEj3nERMvyTY/SgqLpJGdxbePN1n5V7Y4
+         mJcs+CCOB+2ipcceRLFjYWM3co+Z6wNN3oUN4DxiEhdSiSg9lzD2tylHiHZz5OE8k5b4
+         trzcUk8aJYtvIXwmqoNr//kDpvWe+OG38Nc0mLn8/RbZRhXwFRhR+hQX8uv/tofwqgjM
+         a+hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HiQsMk0wkHXTkHUtFtlVTetDCQMIW2DvIJ+jQNwbSjM=;
-        b=Dg9Nhswj9d0MU4CtvOoVcXkDwcXz+aARAtcDEYUK1aO9DwLIRDqpHg53pb6nx66ZQD
-         z3AzSblSwR+76q+BufYiPQcmUGbfue5b1jpOrx/e/6XobyPb7Uw+EIHRaaBx8nH5dEhd
-         r5VYKo7RbCki41Z8wEoUMSGG5Epd4hZ4bnnYkVSf++YhsayPBMA21i9V67gkw38NibCC
-         GPdue86DGqygVD6GGBUFACy5+3HnRrMZUQ4zOSDKYpOe47qx9boKU1pfmOtQl6uye5bg
-         vIMpM6DaFvMcdcZqIR296qGC+UONiPquphKF6O7FCXAiDqNpaqT0dlvUCkj4tN5STcrF
-         x3xg==
-X-Gm-Message-State: AOAM5318Q3WHuDamgGG3nczQRoDrtzkWL6Go3EEMbBEpSg8EE6BY+p+7
-        vc+yh8izQ7VXnMaY/x27EJc=
-X-Google-Smtp-Source: ABdhPJx+kgegdOORL684FJjGelyUxIqmtwedp5RGYHC4J3mvDXhZWafTEJOP9r84+5bb0NkLbz4hvA==
-X-Received: by 2002:a17:906:919:: with SMTP id i25mr13608046ejd.171.1623657070634;
-        Mon, 14 Jun 2021 00:51:10 -0700 (PDT)
+        bh=+arG/TI83+6RRm6R28kM8v5MCinHpDND+5u8cLV9aC0=;
+        b=NPIOrvSqYdHAcaDr57JgXyimzipFBlfclH7fDPTgOodgZgrlRsxQNVWoTqMnHyujkZ
+         YPzpZLTal6wqYBEMjy4avhndqZKsSTGVz/zD71EDgkCchxVjkUubefgerbFVR1npsPiQ
+         sF/HhrqkMgwsIDjKFydTQTr8tCKWDGi22un2OJSSg9tzX4DF+N3Y4x/FWiqjA1klcPpq
+         /fQmMPjBWBSek1iVSaV70grc+w7LEgxddODE0zrAoKS2dM2YfdLPT/nyWFx3TJP6qmpg
+         fyvDOjvcLYvsaF0XY3emYGqhx4oDEldoq5wanyaBmGpGvGZmD1uaXKzLUAY7uNoPZvU6
+         unMA==
+X-Gm-Message-State: AOAM530YmesOTnexRtzqqt4dYIy08VDQm80gIxMcQmItuAe7yZiixSJk
+        QstLbMQHrB0ztpoopGUtUKY=
+X-Google-Smtp-Source: ABdhPJwzMdpgagElqq9NpVLQC4ZEUB0079fiLvNC+Xf3TZM+tmoYq6zNiVykOWIpkLWVGHQFp+jVjQ==
+X-Received: by 2002:a05:6402:b5a:: with SMTP id bx26mr15163160edb.81.1623657073489;
+        Mon, 14 Jun 2021 00:51:13 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id f6sm6536444eja.108.2021.06.14.00.51.09
+        by smtp.gmail.com with ESMTPSA id f6sm6536444eja.108.2021.06.14.00.51.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 00:51:10 -0700 (PDT)
+        Mon, 14 Jun 2021 00:51:13 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 41/45] trace-cmd record: Update man page
-Date:   Mon, 14 Jun 2021 10:50:25 +0300
-Message-Id: <20210614075029.598048-42-tz.stoyanov@gmail.com>
+Subject: [PATCH v6 44/45] trace-cmd list: Update the man page
+Date:   Mon, 14 Jun 2021 10:50:28 +0300
+Message-Id: <20210614075029.598048-45-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210614075029.598048-1-tz.stoyanov@gmail.com>
 References: <20210614075029.598048-1-tz.stoyanov@gmail.com>
@@ -73,35 +73,28 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Added documentation of the 'trace-cmd record --compression' parameter
-in the man page.
+Added documentation of the 'trace-cmd list -c' parameter in the man
+page.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- Documentation/trace-cmd/trace-cmd-record.1.txt | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ Documentation/trace-cmd/trace-cmd-list.1.txt | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/trace-cmd/trace-cmd-record.1.txt b/Documentation/trace-cmd/trace-cmd-record.1.txt
-index 5d063cc2..c5a7fb75 100644
---- a/Documentation/trace-cmd/trace-cmd-record.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-record.1.txt
-@@ -367,6 +367,16 @@ OPTIONS
-     Traces are extracted by busy waiting, which will hog the CPUs, so only use
-     when really needed.
+diff --git a/Documentation/trace-cmd/trace-cmd-list.1.txt b/Documentation/trace-cmd/trace-cmd-list.1.txt
+index a5c6b16c..b77e3460 100644
+--- a/Documentation/trace-cmd/trace-cmd-list.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-list.1.txt
+@@ -71,6 +71,9 @@ OPTIONS
+     List defined clocks that can be used with trace-cmd record -C.
+     The one in brackets ([]) is the active clock.
  
-+*--compression*::
-+    Compression of the trace output file, one of these strings can be passed:
++*-c*::
++    List the available trace file compression algorithms.
 +
-+    'any'  - auto select the best available compression algorithm
-+
-+    'none' - do not compress the trace file
-+
-+    'name' - the name of the desired compression algorithms. Available algorithms can be listed with
-+    trace-cmd list -c
-+
- EXAMPLES
+ SEE ALSO
  --------
- 
+ trace-cmd(1), trace-cmd-record(1), trace-cmd-report(1), trace-cmd-start(1),
 -- 
 2.31.1
 
