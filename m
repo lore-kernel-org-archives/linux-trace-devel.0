@@ -8,59 +8,59 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE86BC48BE6
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:51:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3644FC48BE6
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:51:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9F30861370
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:51:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 107C561380
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jun 2021 07:51:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232604AbhFNHxk (ORCPT
+        id S232605AbhFNHxr (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 14 Jun 2021 03:53:40 -0400
-Received: from mail-ed1-f50.google.com ([209.85.208.50]:43888 "EHLO
-        mail-ed1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232606AbhFNHxj (ORCPT
+        Mon, 14 Jun 2021 03:53:47 -0400
+Received: from mail-ej1-f50.google.com ([209.85.218.50]:43782 "EHLO
+        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232594AbhFNHxq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:53:39 -0400
-Received: by mail-ed1-f50.google.com with SMTP id s6so45187810edu.10
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:51:37 -0700 (PDT)
+        Mon, 14 Jun 2021 03:53:46 -0400
+Received: by mail-ej1-f50.google.com with SMTP id ci15so15063005ejc.10
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jun 2021 00:51:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=sP2SzL+jTkso72skt+AgZYS5f7e9OZMAJYuOulQ00BI=;
-        b=S4haf12kr3TO4abFGlBUhYOhk5asaVXq8a7Eaq6oJziRN4BIcqXz0CU7MotyTNJBZq
-         TGJzbFqPDpju/ZKGXLm57W0764ro5edVXMsYK/oa+98bZs56hX/VdDEqLLSOTLHAWzjd
-         s0STcfUbf5WrRysIJVSI4Fw8mWuTsjF5dEMckkiPZo7y4V+Gvn7SHDtZEszyncO8g5AW
-         ht4G1plEsgN7SWzRE6MMp0T/N2V2xUETscMwvNoz6cb032ALNuNTBjidf6zCC4Fdj+zg
-         ThpTRrbJ5LveeWu0UArjy13XOHn3vrhBf+Wva8whFx0I33Y1qG82pL5uJbJfCCnBh0dc
-         qj7g==
+        bh=jNmgwtkM7E5IR4z79tTsl2FEDjRbmtrhOhWVpEAWIrY=;
+        b=rw9F4E3BGgxGQWiG9Mi0L3R0Fs8NyXGs5JqpJEYgsVxT21wkNAOLsLMloj15/5nRSe
+         TRr9cuYR9nB9df0AQ6E4vuZJ5C/OEw+z07YlqieDpMmgHSfmOyi9iv6kGcGaBEuvFPbW
+         RhM2e7OEOkZFaloUiB78tA+EwhOO54wKz2P4jFvITpwNb4xOa3PcncsAuX3r9DPjhvrS
+         H3D/0atbwg6+BJRJ5E3aPpikCxIqf7qsu9IVOfUljjcoC1BYN5Kt2oJQoV8ESd2qoup0
+         7++3YB2bZWevaH+ls4rr8yB/5+HYUCGF9rnokSmF2/JPUOjkB1K2H16Q6vBHwfUKhC1R
+         ImEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=sP2SzL+jTkso72skt+AgZYS5f7e9OZMAJYuOulQ00BI=;
-        b=Z1phzeqrAhk5by7eWDRJPF/jF7t47VIT+2CTt9dHuAp8ZAxsYHJ3p2auOhYVOeBO42
-         Ky9lRbTCyPW8B9XYihC8/hWEYiOcSz+USXfNs1jdtyD7K+/yWOQd+M6JbcYt+AgsKL2b
-         YOFsoui7mV1pINsngZz/4GsYFHhE6vWu9y4AHklSX+mBXtDUz+49oCcCvQwcRNBipK6p
-         wUelCMZsSPoPTLUzRUVRMHqO5+vWn3cB97OzIZTpgtbOATul3t22o4vK6Yefd/l8Q+Pd
-         85ISyDkjTmsQ2Jz83Qx1CeoEWZct+6zj+gMBzVhisjXtXQCZTtvpQFSSivG8Xkz40lwg
-         Pydg==
-X-Gm-Message-State: AOAM5308h3z3C7yjJJ089ftTYczQl3Rq/eXPSh7jB3UHfERgzz9gcMl9
-        hdAP7tzlHxMDVpChFHAG+EY=
-X-Google-Smtp-Source: ABdhPJxzeksHSJv9Uu7/s5Bx2mDE4Ki/6oRXy2UK1ATKlubPyA4ZeimlIoTp56EsuDiJBrrjZQ7rig==
-X-Received: by 2002:a05:6402:31f3:: with SMTP id dy19mr15541436edb.153.1623657036609;
-        Mon, 14 Jun 2021 00:50:36 -0700 (PDT)
+        bh=jNmgwtkM7E5IR4z79tTsl2FEDjRbmtrhOhWVpEAWIrY=;
+        b=NDlf31h5ACIzPh2BtRP4nnnnPEsR7Chzl6vDOs8VyPodto8SrMGqqpsiUVrmIZvW7T
+         GNWLrUOijeJZPUWQmQ2TaMn5crIOMu02ATnr4HdJRBKEMFa4hA0/exoOg4tVft13PcwP
+         M4g+MANrdAf6yK0myWAtv+XSB47jVbwuzFq+3OtHJFvzKVAiLT8289NRHJiPjNTx8kik
+         TOKFrvsXTytKE6hwu2OS5W1yUlhzQpWGbaCv9FrogLWxRmDtddoGiym7xKfWUvyqzEI2
+         1l0tO0NxIBrDsB32ERLYXyEjvw6IFKbjP7bxSY97mLa3T5WKshcldPx1PMjOenxqB1So
+         nooA==
+X-Gm-Message-State: AOAM533Er2fHnHsmXH9IwBSxx22qGf2icvp3RHuykMAk/z82TgLv7UsP
+        Jt3pTQNteYfOSLU5VG0GFhA=
+X-Google-Smtp-Source: ABdhPJxYRS1oWX2IFxliO5zME40BqfMrbVWdIf1EouFsl12XWdXijU7uxkQQhX11KiAil5XzTZi43w==
+X-Received: by 2002:a17:906:d8cf:: with SMTP id re15mr14157190ejb.278.1623657043782;
+        Mon, 14 Jun 2021 00:50:43 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id f6sm6536444eja.108.2021.06.14.00.50.35
+        by smtp.gmail.com with ESMTPSA id f6sm6536444eja.108.2021.06.14.00.50.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 00:50:36 -0700 (PDT)
+        Mon, 14 Jun 2021 00:50:43 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 05/45] trace-cmd library: Select the file version when writing trace file
-Date:   Mon, 14 Jun 2021 10:49:49 +0300
-Message-Id: <20210614075029.598048-6-tz.stoyanov@gmail.com>
+Subject: [PATCH v6 12/45] trace-cmd library: Add new API to get compression of input handler
+Date:   Mon, 14 Jun 2021 10:49:56 +0300
+Message-Id: <20210614075029.598048-13-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210614075029.598048-1-tz.stoyanov@gmail.com>
 References: <20210614075029.598048-1-tz.stoyanov@gmail.com>
@@ -70,73 +70,56 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When a new output handler to trace file is allocated, select the proper
-file version. If this output handler is based on an existing input trace
-file handler, inherit the trace file version.
+The new API returns name and version of the compression algorithm,
+used to compress the trace file associated with given input file handler:
+ tracecmd_get_file_compress_proto()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-output.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ .../include/private/trace-cmd-private.h          |  2 ++
+ lib/trace-cmd/trace-input.c                      | 16 ++++++++++++++++
+ 2 files changed, 18 insertions(+)
 
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index c0aa58cf..bacda23b 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -57,6 +57,7 @@ struct tracecmd_output {
- 	int			nr_options;
- 	bool			quiet;
- 	unsigned long		file_state;
-+	unsigned long		file_version;
- 	struct list_head	options;
- 	struct tracecmd_msg_handle *msg_handle;
- 	char			*trace_clock;
-@@ -907,6 +908,17 @@ out_free:
- 	return ret;
+diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
+index ec534d51..624d0afb 100644
+--- a/lib/trace-cmd/include/private/trace-cmd-private.h
++++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+@@ -236,6 +236,8 @@ unsigned long long
+ tracecmd_get_cursor(struct tracecmd_input *handle, int cpu);
+ 
+ unsigned long tracecmd_get_in_file_version(struct tracecmd_input *handle);
++int tracecmd_get_file_compress_proto(struct tracecmd_input *handle,
++				     const char **name, const char **version);
+ 
+ int tracecmd_ftrace_overrides(struct tracecmd_input *handle, struct tracecmd_ftrace *finfo);
+ bool tracecmd_get_use_trace_clock(struct tracecmd_input *handle);
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 43d731e0..0b17b58d 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -4148,6 +4148,22 @@ unsigned long tracecmd_get_in_file_version(struct tracecmd_input *handle)
+ 	return handle->file_version;
  }
  
-+static int select_file_version(struct tracecmd_output *handle,
-+				struct tracecmd_input *ihandle)
++/**
++ * tracecmd_get_file_compress_proto - get name and version of compression algorithm,
++ *				      used to compress the trace file
++ * @handle: input handle for the trace.dat file
++ * @name: return, name of the compression algorithm.
++ * @version: return, version of the compression algorithm.
++ *
++ * Returns 0 on success, or -1 in case of an error. If 0 is returned, the name and version of the
++ * algorithm are stored in @name and @version. The returned strings must *not* be freed.
++ */
++int tracecmd_get_file_compress_proto(struct tracecmd_input *handle,
++				     const char **name, const char **version)
 +{
-+	if (ihandle)
-+		handle->file_version = tracecmd_get_in_file_version(ihandle);
-+	else
-+		handle->file_version = FILE_VERSION;
-+
-+	return 0;
++	return tracecmd_compress_proto_get_name(handle->compress, name, version);
 +}
 +
- static struct tracecmd_output *
- create_file_fd(int fd, struct tracecmd_input *ihandle,
- 	       const char *tracing_dir,
-@@ -933,6 +945,9 @@ create_file_fd(int fd, struct tracecmd_input *ihandle,
- 
- 	handle->msg_handle = msg_handle;
- 
-+	if (select_file_version(handle, ihandle))
-+		goto out_free;
-+
- 	list_head_init(&handle->options);
- 
- 	buf[0] = 23;
-@@ -943,7 +958,8 @@ create_file_fd(int fd, struct tracecmd_input *ihandle,
- 	if (do_write_check(handle, buf, 10))
- 		goto out_free;
- 
--	if (do_write_check(handle, FILE_VERSION_STRING, strlen(FILE_VERSION_STRING) + 1))
-+	sprintf(buf, "%lu", handle->file_version);
-+	if (do_write_check(handle, buf, strlen(buf) + 1))
- 		goto out_free;
- 
- 	/* get endian and page size */
-@@ -1562,6 +1578,7 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
- 	handle->pevent = tracecmd_get_tep(ihandle);
- 	tep_ref(handle->pevent);
- 	handle->page_size = tracecmd_page_size(ihandle);
-+	handle->file_version = tracecmd_get_in_file_version(ihandle);
- 	list_head_init(&handle->options);
- 
- 	tracecmd_close(ihandle);
+ /**
+  * tracecmd_get_use_trace_clock - return use_trace_clock
+  * @handle: input handle for the trace.dat file
 -- 
 2.31.1
 
