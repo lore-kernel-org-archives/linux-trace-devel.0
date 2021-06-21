@@ -6,34 +6,35 @@ X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0DC1C4743C
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Jun 2021 22:27:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DE07C4743C
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Jun 2021 22:36:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BDAB66124B
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Jun 2021 22:27:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 38A8C6124B
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Jun 2021 22:36:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhFUWaC (ORCPT
+        id S231744AbhFUWin (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 21 Jun 2021 18:30:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52214 "EHLO mail.kernel.org"
+        Mon, 21 Jun 2021 18:38:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229789AbhFUWaC (ORCPT
+        id S231669AbhFUWin (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 21 Jun 2021 18:30:02 -0400
+        Mon, 21 Jun 2021 18:38:43 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91D6D60FE9;
-        Mon, 21 Jun 2021 22:27:47 +0000 (UTC)
-Date:   Mon, 21 Jun 2021 18:27:46 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B7186113E;
+        Mon, 21 Jun 2021 22:36:28 +0000 (UTC)
+Date:   Mon, 21 Jun 2021 18:36:26 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
 Subject: Re: [PATCH v6 03/45] trace-cmd: Check if file version is supported
-Message-ID: <20210621182746.58f2f175@gandalf.local.home>
-In-Reply-To: <20210614075029.598048-4-tz.stoyanov@gmail.com>
+Message-ID: <20210621183626.37f63b2f@gandalf.local.home>
+In-Reply-To: <20210621182746.58f2f175@gandalf.local.home>
 References: <20210614075029.598048-1-tz.stoyanov@gmail.com>
         <20210614075029.598048-4-tz.stoyanov@gmail.com>
+        <20210621182746.58f2f175@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -42,21 +43,15 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 14 Jun 2021 10:49:47 +0300
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+On Mon, 21 Jun 2021 18:27:46 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> When reading a trace file, version of the file is ignored. This could
-> case problems when bumping the version number because of changes in
-> in the structure of the file. The old code should detect unsupported
-> file version and should not try to read it.
-> A new trace-cmd library API is added to check if version is supported:
->  tracecmd_is_version_supported()
-> Checks are added in the code to ensure not trying to read trace file
-> from unsupported version.
+> After applying this patch, I get:
+> 
+> $ ./tracecmd/trace-cmd report 
+>   error reading header for trace.dat
 
-After applying this patch, I get:
-
-$ ./tracecmd/trace-cmd report 
-  error reading header for trace.dat
+Never mind, I tested on a leftover trace.dat that had version 7 already set!
+So the patch did work :-)
 
 -- Steve
