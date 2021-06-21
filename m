@@ -8,129 +8,112 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94DF0C48BE5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Jun 2021 08:49:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C43EC49361
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Jun 2021 08:49:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7567161164
+	by mail.kernel.org (Postfix) with ESMTP id EFD2C611B0
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Jun 2021 08:49:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbhFUIvn (ORCPT
+        id S229618AbhFUIvo (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 21 Jun 2021 04:51:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37424 "EHLO
+        Mon, 21 Jun 2021 04:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhFUIvm (ORCPT
+        with ESMTP id S229943AbhFUIvn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 21 Jun 2021 04:51:42 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8455AC061574
-        for <linux-trace-devel@vger.kernel.org>; Mon, 21 Jun 2021 01:49:28 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id nb6so27346079ejc.10
-        for <linux-trace-devel@vger.kernel.org>; Mon, 21 Jun 2021 01:49:28 -0700 (PDT)
+        Mon, 21 Jun 2021 04:51:43 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B162C061574
+        for <linux-trace-devel@vger.kernel.org>; Mon, 21 Jun 2021 01:49:29 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id he7so27423352ejc.13
+        for <linux-trace-devel@vger.kernel.org>; Mon, 21 Jun 2021 01:49:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XBkyVf8LdsX1dzi9PDOmC1HVc/nHCdtgoNE2nHvIqnY=;
-        b=oKmJTiwzma9U1B4sWDwdqHRNPhKJaDWIyaHRIFwXSQFhO4uEWJvwD9vG9NwOX33pNu
-         af5jgHPUmRsm/MhSo0zJbsJZX8oRF820n0F4L3dlkQL01evu3WInTT1XCGR2+Xvov9O9
-         FPQh7NO9DldT9G2WiYahpzmHVPgxcyuo65hsDPihfxXY5BoJCimlW4WLhGpQDsk+6vOu
-         OoY7Qluvc+BWmFuq7Yf16youudydu6381SYtNaLHhcaToO6JjqLHnWNcvMmbXfXK0YgL
-         qn9RrEAX4x0EihlrKH7zL2pGa9oOFn2qs8XPFxotAHEiFxfcoV2RCazYZPlSJTDHWK24
-         MHWA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=qHXXJ1Qf86fLbiKRHZoZzaKglScrxnuzC3xQaVrbrxo=;
+        b=FTfhxHutwP6mqiZ7P9cOc0GEjOGUz8GHIP9JU3dbbdCKYGjHx2hjKmmvt+nyyhEa1e
+         a9/3LCvTAyKEuLUWT59ka/DkCFnRtowbOAB3RwsmYOebhkhx+DlfKN0uBjHsTZS/o5Tc
+         Mymj4S0SB1Jkva9Hcq5ROhT4fkPv2O2lpygToSLHmt8UUoxP0xP+qaJW0LDcyZpnz5pe
+         cOy4iuW4b6x45UZ59KdFFx7xmWatQ+u8gqdgKtqbP8Y7f8wwhuGsrwPPWwHZlDpOjuRU
+         df2z3HKSvkGCOKJxJWtFk5QAY0Nj6kHIL8ivyJ3a4w9RDEEBOYxf6DdjAi2iC3GZJN8h
+         dUfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XBkyVf8LdsX1dzi9PDOmC1HVc/nHCdtgoNE2nHvIqnY=;
-        b=Btluo+/BrT4PDM+zEc9BlV8PMxrj9AdoIYqNxtl4Dd1K6gdaL1j+pLPhNQiBnL5gNU
-         ErXJbS1+qrMetw+Zd2RKp0yE6gGZrxdIb88CxJsZIVNWYyBZr9+AEcJPKHwQeX4bbAoJ
-         kx97uUCKID3k/V+oz0I4gBWmZKKXGD1zBOmVZwP5PaumpOC+YXPiI5veExMxElpFXcz0
-         0lyURtWVe+e3sJKi2t3DMr8UEu7zJkl6wfNGzHBTEl+Ghp5bjlbBqs5X68YIv2yzEXG6
-         sHdmSO3RWkXUvnBUsv9z7R9T2WwkW5Qiy17zLDAVHbopGW233R6HVBPTFWeVZMeScJs2
-         g4WA==
-X-Gm-Message-State: AOAM531q2bQEUaoJ47CgO8jI21RA74Euypr7ByrgPKPF2s+hg5hCD6Ra
-        7Fh8NgYXuyAgaJ85EypLSospUbFZeRY=
-X-Google-Smtp-Source: ABdhPJw+QfhO7+8j19nA6HuSNI41GFOwL/Vpfi2j1lmdkIuHJUbWFF72Yk/9pn2IehKIcapV27JKsg==
-X-Received: by 2002:a17:906:4fc6:: with SMTP id i6mr15249603ejw.472.1624265367119;
-        Mon, 21 Jun 2021 01:49:27 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qHXXJ1Qf86fLbiKRHZoZzaKglScrxnuzC3xQaVrbrxo=;
+        b=SpvYVjHpFg/RylluYZBiOeey2wZkCBRwENpv4kTvOZdZbto3zkoTL3CEgVUpluAAP9
+         ut27tBed19zg857rH7+6x6oJ14KvWp/dAJ9ZgGf0u/Fbwh/smO+ldWOtf1VQDzeDt2cW
+         2DcFjev3foWqw3FYENHOyPivlOkrBtQIJqJ4QJ9BHOmGS5HFlCfFQjS87D2Qcv+lEgVH
+         KUWAVCu1nJkDUbZxPjt8TYxfDulYg8ucVML0jEO2Yp57VjtSZsq1Pl5WfAEhXx0Wgi8D
+         OGdGzXy96FU5ac53MDOeB6MsLcKvkrtDdSNZ9zOrZlcIhc+Lnnaz6UYnP6Rlrca3Hs9K
+         nuKg==
+X-Gm-Message-State: AOAM531f1zZz75n6/+ouUYVC0I7+EPF9SP1o7WcuSwIoPAIjoTiQ1O96
+        UKomJzR3twPCQVwgf7bVV0A=
+X-Google-Smtp-Source: ABdhPJwHZ7Nw94u9EGCd67PvVeSCJpxldII6g8kac0bnwbu5khX1rgQSof481WQTwZ5P9XtHZkN3Ag==
+X-Received: by 2002:a17:906:17d8:: with SMTP id u24mr23749930eje.106.1624265368062;
+        Mon, 21 Jun 2021 01:49:28 -0700 (PDT)
 Received: from localhost.localdomain ([84.40.73.164])
-        by smtp.gmail.com with ESMTPSA id s11sm9608656edd.65.2021.06.21.01.49.26
+        by smtp.gmail.com with ESMTPSA id s11sm9608656edd.65.2021.06.21.01.49.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 01:49:26 -0700 (PDT)
+        Mon, 21 Jun 2021 01:49:27 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 1/2] libtracefs: Fix typo in documentation
-Date:   Mon, 21 Jun 2021 11:49:13 +0300
-Message-Id: <20210621084914.336821-1-y.karadz@gmail.com>
+Subject: [PATCH 2/2] libtracefs: Fix utest compilation
+Date:   Mon, 21 Jun 2021 11:49:14 +0300
+Message-Id: <20210621084914.336821-2-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210621084914.336821-1-y.karadz@gmail.com>
+References: <20210621084914.336821-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The typo in the name of the API was fixed already, but we need
-to change/fix the documentation as well.
+The typo in the name of the API was fixed in a previous patch,
+but we need to update the unit tests accordingly.
 
-Fixes: 5c013e7 (libtracefs: New APIs for trace options)
 Fixes: f415871 (libtracefs: Fix typo in function name)
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- Documentation/libtracefs-option-misc.txt | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ utest/tracefs-utest.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/libtracefs-option-misc.txt b/Documentation/libtracefs-option-misc.txt
-index 1cd7c88..4258910 100644
---- a/Documentation/libtracefs-option-misc.txt
-+++ b/Documentation/libtracefs-option-misc.txt
-@@ -3,7 +3,7 @@ libtracefs(3)
- 
- NAME
- ----
--tracefs_option_enable, tracefs_option_diasble, tracefs_option_name -
-+tracefs_option_enable, tracefs_option_disable, tracefs_option_name -
- Various trace option functions.
- 
- SYNOPSIS
-@@ -13,7 +13,7 @@ SYNOPSIS
- *#include <tracefs.h>*
- 
- int *tracefs_option_enable*(struct tracefs_instance pass:[*]_instance_, enum tracefs_option_id _id_);
--int *tracefs_option_diasble*(struct tracefs_instance pass:[*]_instance_, enum tracefs_option_id _id_);
-+int *tracefs_option_disable*(struct tracefs_instance pass:[*]_instance_, enum tracefs_option_id _id_);
- const char pass:[*]*tracefs_option_name*(enum tracefs_option_id _id_);
- --
- 
-@@ -24,7 +24,7 @@ This set of APIs can be used to enable and disable ftrace options and to get the
- The _tracefs_option_enable()_ function enables the option with _id_ in the given _instance_. If
- _instance_ is NULL, the option is enabled in the top trace instance.
- 
--The _tracefs_option_diasble()_ function disables the option with _id_ in the given _instance_. If
-+The _tracefs_option_disable()_ function disables the option with _id_ in the given _instance_. If
- _instance_ is NULL, the option is disabled in the top trace instance.
- 
- The _tracefs_option_name()_ function returns a string, representing the option with _id_. The string
-@@ -33,7 +33,7 @@ must *not* be freed.
- 
- RETURN VALUE
- ------------
--The _tracefs_option_enable()_ and _tracefs_option_diasble()_ functions return 0 if the state of the
-+The _tracefs_option_enable()_ and _tracefs_option_disable()_ functions return 0 if the state of the
- option is set successfully, or -1 in case of an error.
- 
- The _tracefs_option_name()_ function returns string with option name, or "unknown" in case of an
-@@ -49,7 +49,7 @@ if (tracefs_option_enable(NULL, TRACEFS_OPTION_ANNOTATE)) {
- 	/* Failed to enable annotate option in top trace instance */
- }
- ...
--if (tracefs_option_diasble(NULL, TRACEFS_OPTION_CONTEXT_INFO)) {
-+if (tracefs_option_disable(NULL, TRACEFS_OPTION_CONTEXT_INFO)) {
- 	/* Failed to disable context info option in top trace instance */
- }
- ...
+diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
+index 9186656..a982b1d 100644
+--- a/utest/tracefs-utest.c
++++ b/utest/tracefs-utest.c
+@@ -729,7 +729,7 @@ static void test_instance_tracing_options(struct tracefs_instance *instance)
+ 	CU_TEST(!tracefs_option_is_supported(instance, TRACEFS_OPTION_INVALID));
+ 	CU_TEST(!tracefs_option_is_enabled(instance, TRACEFS_OPTION_INVALID));
+ 	CU_TEST(tracefs_option_enable(instance, TRACEFS_OPTION_INVALID) == -1);
+-	CU_TEST(tracefs_option_diasble(instance, TRACEFS_OPTION_INVALID) == -1);
++	CU_TEST(tracefs_option_disable(instance, TRACEFS_OPTION_INVALID) == -1);
+ 	name = tracefs_option_name(TRACEFS_OPTION_INVALID);
+ 	CU_TEST(!strcmp(name, "unknown"));
+ 	/* Test all valid options */
+@@ -751,7 +751,7 @@ static void test_instance_tracing_options(struct tracefs_instance *instance)
+ 			CU_TEST(check_option(instance, i, true, 1));
+ 			CU_TEST(tracefs_option_is_supported(instance, i));
+ 			CU_TEST(tracefs_option_is_enabled(instance, i));
+-			CU_TEST(tracefs_option_diasble(instance, i) == 0);
++			CU_TEST(tracefs_option_disable(instance, i) == 0);
+ 			CU_TEST(check_option(instance, i, true, 0));
+ 			CU_TEST(tracefs_option_enable(instance, i) == 0);
+ 			CU_TEST(check_option(instance, i, true, 1));
+@@ -761,7 +761,7 @@ static void test_instance_tracing_options(struct tracefs_instance *instance)
+ 			CU_TEST(!tracefs_option_is_enabled(instance, i));
+ 			CU_TEST(tracefs_option_enable(instance, i) == 0);
+ 			CU_TEST(check_option(instance, i, true, 1));
+-			CU_TEST(tracefs_option_diasble(instance, i) == 0);
++			CU_TEST(tracefs_option_disable(instance, i) == 0);
+ 			CU_TEST(check_option(instance, i, true, 0));
+ 		}
+ 	}
 -- 
 2.27.0
 
