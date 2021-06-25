@@ -2,361 +2,390 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.2 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB15AC2B9F4
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 25 Jun 2021 18:27:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 766C8C2B9F4
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 25 Jun 2021 20:30:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CE6A26195B
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 25 Jun 2021 18:27:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3E88561969
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 25 Jun 2021 20:30:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbhFYSaA (ORCPT
+        id S229629AbhFYUcg (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 25 Jun 2021 14:30:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229531AbhFYSaA (ORCPT
+        Fri, 25 Jun 2021 16:32:36 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:38882 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229573AbhFYUcg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 25 Jun 2021 14:30:00 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39ACD61954;
-        Fri, 25 Jun 2021 18:27:39 +0000 (UTC)
-Date:   Fri, 25 Jun 2021 14:27:37 -0400
+        Fri, 25 Jun 2021 16:32:36 -0400
+X-Greylist: delayed 902 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Jun 2021 16:32:36 EDT
+Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Fri, 25 Jun 2021 13:15:10 -0700
+Received: from oasis.vmware.com (unknown [10.84.232.102])
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id A384820337;
+        Fri, 25 Jun 2021 13:15:13 -0700 (PDT)
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yordan Karadzhov <y.karadz@gmail.com>
-Cc:     "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v5] libtracefs: Add APIs for data streaming
-Message-ID: <20210625142737.6c028a93@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To:     <linux-trace-devel@vger.kernel.org>
+CC:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 1/3] trace-cmd: Do not require --verbose to have an argument
+Date:   Fri, 25 Jun 2021 16:15:09 -0400
+Message-ID: <20210625201511.1206465-2-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210625201511.1206465-1-rostedt@goodmis.org>
+References: <20210625201511.1206465-1-rostedt@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: rostedt@goodmis.org does not
+ designate permitted sender hosts)
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-The new APIs can be used to dump the content of "trace_pipe" into a
-file or directly to "stdout". The "splice" system call is used to
-moves the data without copying. The new functionality is essentially
-identical to what 'trace-cmd show -p' does.
+In most applications, when specifying a "verbose" argument, they do not
+require adding a level of verbosity. Just saying "--verbose" should be
+sufficient, unless they want a specific type of verbosity.
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-[ Updated to fix writing to STDOUT ]
+Have --verbose be acceptable as an argument without specifying a level.
+Unfortunately, it appears that getopt_long() does not recognize the next
+argument on the command line as an optional argument, but requires an
+equal sign between the "--verbose" and the level. That is, when the user
+wants to specify a specific level, they need to do it like so:
+
+  trace-cmd report --verbose=debug
+
+And not like
+
+  trace-cmd report --verbose debug
+
+The man pages are updated to reflect this.
+
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
-Changes since v4:
+ Documentation/trace-cmd/trace-cmd-check-events.1.txt | 5 +++--
+ Documentation/trace-cmd/trace-cmd-dump.1.txt         | 5 +++--
+ Documentation/trace-cmd/trace-cmd-extract.1.txt      | 5 +++--
+ Documentation/trace-cmd/trace-cmd-listen.1.txt       | 5 +++--
+ Documentation/trace-cmd/trace-cmd-profile.1.txt      | 5 +++--
+ Documentation/trace-cmd/trace-cmd-record.1.txt       | 5 +++--
+ Documentation/trace-cmd/trace-cmd-report.1.txt       | 5 +++--
+ Documentation/trace-cmd/trace-cmd-set.1.txt          | 5 +++--
+ Documentation/trace-cmd/trace-cmd-stack.1.txt        | 5 +++--
+ tracecmd/trace-agent.c                               | 2 +-
+ tracecmd/trace-check-events.c                        | 2 +-
+ tracecmd/trace-cmd.c                                 | 3 ++-
+ tracecmd/trace-dump.c                                | 2 +-
+ tracecmd/trace-listen.c                              | 2 +-
+ tracecmd/trace-read.c                                | 2 +-
+ tracecmd/trace-record.c                              | 2 +-
+ tracecmd/trace-stack.c                               | 2 +-
+ 17 files changed, 36 insertions(+), 26 deletions(-)
 
- - Simplified. Have tracefs_trace_pipe_stream() test the output file
-   descriptor if it is safe to splice to. If it is, then it splices to
-   the output. If not, it then simply reads the trace and writes it.
-
- - The tracefs_trace_pipe_print() goes back to just calling
-   tracefs_trace_pipe_stream().
-
- Documentation/libtracefs-stream.txt | 106 +++++++++++++++++++++
- include/tracefs-local.h             |   1 +
- include/tracefs.h                   |   5 +
- src/tracefs-tools.c                 | 143 ++++++++++++++++++++++++++++
- 4 files changed, 255 insertions(+)
- create mode 100644 Documentation/libtracefs-stream.txt
-
-diff --git a/Documentation/libtracefs-stream.txt b/Documentation/libtracefs-stream.txt
-new file mode 100644
-index 0000000..b9692e3
---- /dev/null
-+++ b/Documentation/libtracefs-stream.txt
-@@ -0,0 +1,106 @@
-+libtracefs(3)
-+=============
-+
-+NAME
-+----
-+tracefs_trace_pipe_stream, tracefs_trace_pipe_print -
-+redirect the stream of trace data to an output or stdout.
-+
-+SYNOPSIS
-+--------
-+[verse]
-+--
-+*#include <tracefs.h>*
-+
-+ssize_t tracefs_trace_pipe_stream(int fd, struct tracefs_instance *instance, int flags);
-+ssize_t tracefs_trace_pipe_print(struct tracefs_instance *instance);
-+
-+--
-+
-+DESCRIPTION
-+-----------
-+If NULL is passed as _instance_, the top trace instance is used.
-+The user can interrupt the streaming of the data by pressing Ctrl-c.
-+
-+The _tracefs_trace_pipe_stream()_ function redirects the stream of trace data to an output
-+file. The "splice" system call is used to moves the data without copying between kernel
-+address space and user address space. The _fd_ is the file descriptor of the output file
-+and _flags_ is a bit mask of flags to be passed to the "splice" system call.
-+
-+The _tracefs_trace_pipe_print()_ function is similar to _tracefs_trace_pipe_stream()_, but
-+the stream of trace data is redirected to stdout.
-+
-+
-+RETURN VALUE
-+------------
-+The _tracefs_trace_pipe_stream()_, and _tracefs_trace_pipe_print()_ functions return the
-+number of bytes transfered if the operation is successful, or -1 in case of an error.
-+
-+EXAMPLE
-+-------
-+[source,c]
-+--
-+#include <unistd.h>
-+#include <signal.h>
-+
-+#include <tracefs.h>
-+
-+void stop(int sig)
-+{
-+	tracefs_trace_pipe_stop(NULL);
-+}
-+
-+int main()
-+{
-+	mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
-+	const char *filename = "trace.txt";
-+	int fd = creat(filename, mode);
-+	int ret;
-+
-+	signal(SIGINT, stop);
-+	ret = tracefs_trace_pipe_stream(fd, NULL, SPLICE_F_NONBLOCK);
-+	close(fd);
-+
-+	return ret;
-+}
-+--
-+FILES
-+-----
-+[verse]
-+--
-+*tracefs.h*
-+	Header file to include in order to have access to the library APIs.
-+*-ltracefs*
-+	Linker switch to add when building a program that uses the library.
-+--
-+
-+SEE ALSO
-+--------
-+_libtracefs(3)_,
-+_libtraceevent(3)_,
-+_trace-cmd(1)_,
-+Documentation/trace/ftrace.rst from the Linux kernel tree
-+
-+AUTHOR
-+------
-+[verse]
-+--
-+*Steven Rostedt* <rostedt@goodmis.org>
-+*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>
-+--
-+REPORTING BUGS
-+--------------
-+Report bugs to  <linux-trace-devel@vger.kernel.org>
-+
-+LICENSE
-+-------
-+libtracefs is Free Software licensed under the GNU LGPL 2.1
-+
-+RESOURCES
-+---------
-+https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-+
-+COPYING
-+-------
-+Copyright \(C) 2021 VMware, Inc. Free use of this software is granted under
-+the terms of the GNU Public License (GPL).
-diff --git a/include/tracefs-local.h b/include/tracefs-local.h
-index 9e3aa18..73698e8 100644
---- a/include/tracefs-local.h
-+++ b/include/tracefs-local.h
-@@ -30,6 +30,7 @@ struct tracefs_instance {
- 	int				ftrace_notrace_fd;
- 	int				ftrace_marker_fd;
- 	int				ftrace_marker_raw_fd;
-+	bool				pipe_keep_going;
- };
+diff --git a/Documentation/trace-cmd/trace-cmd-check-events.1.txt b/Documentation/trace-cmd/trace-cmd-check-events.1.txt
+index 40c3c8cd..debab6c5 100644
+--- a/Documentation/trace-cmd/trace-cmd-check-events.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-check-events.1.txt
+@@ -24,14 +24,15 @@ OPTIONS
+ -------
+ *-N* - Don't load plugins
  
- extern pthread_mutex_t toplevel_lock;
-diff --git a/include/tracefs.h b/include/tracefs.h
-index e29b550..23a3c7d 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -184,4 +184,9 @@ int tracefs_function_notrace(struct tracefs_instance *instance, const char *filt
- /* Control library logs */
- void tracefs_set_loglevel(enum tep_loglevel level);
+-*--verbose* 'level'::
++*--verbose*[='level']::
+      Set the log level. Supported log levels are "none", "critical", "error", "warning",
+      "info", "debug", "all" or their identifiers "0", "1", "2", "3", "4", "5", "6". Setting the log
+      level to specific value enables all logs from that and all previous levels.
++     The level will default to "info" if one is not specified.
  
-+ssize_t tracefs_trace_pipe_stream(int fd, struct tracefs_instance *instance, int flags);
-+ssize_t tracefs_trace_pipe_print(struct tracefs_instance *instance);
-+void tracefs_trace_pipe_stop(struct tracefs_instance *instance);
-+
-+
- #endif /* _TRACE_FS_H */
-diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
-index 0cbb56d..48ef928 100644
---- a/src/tracefs-tools.c
-+++ b/src/tracefs-tools.c
-@@ -912,3 +912,146 @@ int tracefs_function_notrace(struct tracefs_instance *instance, const char *filt
- 	tracefs_put_tracing_file(filter_path);
- 	return ret;
- }
-+
-+static bool splice_safe(int fd, int pfd)
-+{
-+	int ret;
-+
-+	errno = 0;
-+	ret = splice(pfd, NULL, fd, NULL,
-+		     10, SPLICE_F_NONBLOCK | SPLICE_F_MOVE);
-+
-+	return !ret || (ret < 0 && errno == EAGAIN);
-+}
-+
-+static ssize_t read_trace_pipe(bool *keep_going, int in_fd, int out_fd)
-+{
-+	char buf[BUFSIZ];
-+	ssize_t bread = 0;
-+	int ret;
-+
-+	do {
-+		ret = read(in_fd, buf, BUFSIZ);
-+		if (ret > 0) {
-+			ret = write(STDOUT_FILENO, buf, ret);
-+			if (ret > 0)
-+				bread += ret;
-+		}
-+	} while (ret > 0 && *(volatile bool *)keep_going);
-+
-+	if (ret < 0 && (errno == EAGAIN || errno == EINTR))
-+		ret = 0;
-+
-+	return ret < 0 ? ret : bread;
-+}
-+
-+static bool top_pipe_keep_going;
-+
-+/**
-+ * tracefs_trace_pipe_stream - redirect the stream of trace data to an output
-+ * file. The "splice" system call is used to moves the data without copying
-+ * between kernel address space and user address space. The user can interrupt
-+ * the streaming of the data by pressing Ctrl-c.
-+ * @fd: The file descriptor of the output file.
-+ * @instance: ftrace instance, can be NULL for top tracing instance.
-+ * @flags: flags to be passed to the "splice" system call.
-+ *
-+ * Returns -1 in case of an error or number of bytes transferred otherwise.
-+ */
-+ssize_t tracefs_trace_pipe_stream(int fd, struct tracefs_instance *instance,
-+				 int flags)
-+{
-+	bool *keep_going = instance ? &instance->pipe_keep_going :
-+				      &top_pipe_keep_going;
-+	const char *file = "trace_pipe";
-+	int brass[2], in_fd, ret = -1;
-+	int oflags = flags & SPLICE_F_NONBLOCK ? O_NONBLOCK: 0;
-+	off_t data_size;
-+	ssize_t bread = 0;
-+
-+	(*(volatile bool *)keep_going) = true;
-+
-+	in_fd = tracefs_instance_file_open(instance, file, O_RDONLY | oflags);
-+	if (in_fd < 0) {
-+		tracefs_warning("Failed to open 'trace_pipe'.");
-+		return ret;
-+	}
-+
-+	if(pipe(brass) < 0) {
-+		tracefs_warning("Failed to open pipe.");
-+		goto close_file;
-+	}
-+
-+	data_size = fcntl(brass[0], F_GETPIPE_SZ);
-+	if (data_size <= 0) {
-+		tracefs_warning("Failed to open pipe (size=0).");
-+		goto close_all;
-+	}
-+
-+	/* Test if the output is splice safe */
-+	if (!splice_safe(fd, brass[0])) {
-+		close(brass[0]);
-+		close(brass[1]);
-+		return read_trace_pipe(keep_going, in_fd, fd);
-+	}
-+
-+	errno = 0;
-+
-+	while (*(volatile bool *)keep_going) {
-+		ret = splice(in_fd, NULL,
-+			     brass[1], NULL,
-+			     data_size, flags);
-+		if (ret < 0)
-+			break;
-+
-+		ret = splice(brass[0], NULL,
-+			     fd, NULL,
-+			     data_size, flags);
-+		if (ret < 0)
-+			break;
-+		bread += ret;
-+	}
-+
-+	/*
-+	 * Do not return error in the case when the "splice" system call
-+	 * was interrupted by the user (pressing Ctrl-c).
-+	 * Or if NONBLOCK was specified.
-+	 */
-+	if (!keep_going || errno == EAGAIN || errno == EINTR)
-+		ret = 0;
-+
-+ close_all:
-+	close(brass[0]);
-+	close(brass[1]);
-+ close_file:
-+	close(in_fd);
-+
-+	return ret ? ret : bread;
-+}
-+
-+/**
-+ * tracefs_trace_pipe_print - redirect the stream of trace data to "stdout".
-+ * The "splice" system call is used to moves the data without copying
-+ * between kernel address space and user address space.
-+ * @instance: ftrace instance, can be NULL for top tracing instance.
-+ *
-+ * Returns -1 in case of an error or number of bytes transferred otherwise.
-+ */
-+
-+ssize_t tracefs_trace_pipe_print(struct tracefs_instance *instance)
-+{
-+	return tracefs_trace_pipe_stream(STDOUT_FILENO, instance,
-+					 SPLICE_F_NONBLOCK);
-+}
-+
-+/**
-+ * tracefs_trace_pipe_stop - stop the streaming of trace data.
-+ * @instance: ftrace instance, can be NULL for top tracing instance.
-+ */
-+void tracefs_trace_pipe_stop(struct tracefs_instance *instance)
-+{
-+	if (instance)
-+		instance->pipe_keep_going = false;
-+	else
-+		top_pipe_keep_going = false;
-+}
+      Example: enable all critical, error and warning logs
+ 
+-      trace-cmd check-events --verbose warning
++      trace-cmd check-events --verbose=warning
+ 
+ SEE ALSO
+ --------
+diff --git a/Documentation/trace-cmd/trace-cmd-dump.1.txt b/Documentation/trace-cmd/trace-cmd-dump.1.txt
+index b1a3f90d..9c95244b 100644
+--- a/Documentation/trace-cmd/trace-cmd-dump.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-dump.1.txt
+@@ -52,14 +52,15 @@ OPTIONS
+     Print all meta data from the file.
+ *--help*::
+     Print usage information.
+-*--verbose* 'level'::
++*--verbose*[='level']::
+      Set the log level. Supported log levels are "none", "critical", "error", "warning",
+      "info", "debug", "all" or their identifiers "0", "1", "2", "3", "4", "5", "6". Setting the log
+      level to specific value enables all logs from that and all previous levels.
++     The level will default to "info" if one is not specified.
+ 
+      Example: enable all critical, error and warning logs
+ 
+-      trace-cmd report --verbose warning
++      trace-cmd report --verbose=warning
+ 
+ EXAMPLES
+ --------
+diff --git a/Documentation/trace-cmd/trace-cmd-extract.1.txt b/Documentation/trace-cmd/trace-cmd-extract.1.txt
+index 88749da7..776da6e1 100644
+--- a/Documentation/trace-cmd/trace-cmd-extract.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-extract.1.txt
+@@ -67,14 +67,15 @@ OPTIONS
+     this is the same as the default. But if *-B* or *-a* is used, this is
+     required if the top level instance buffer should also be extracted.
+ 
+-*--verbose* 'level'::
++*--verbose*[='level']::
+      Set the log level. Supported log levels are "none", "critical", "error", "warning",
+      "info", "debug", "all" or their identifiers "0", "1", "2", "3", "4", "5", "6". Setting the log
+      level to specific value enables all logs from that and all previous levels.
++     The level will default to "info" if one is not specified.
+ 
+      Example: enable all critical, error and warning logs
+ 
+-      trace-cmd extract --verbose warning
++      trace-cmd extract --verbose=warning
+ 
+ SEE ALSO
+ --------
+diff --git a/Documentation/trace-cmd/trace-cmd-listen.1.txt b/Documentation/trace-cmd/trace-cmd-listen.1.txt
+index da841867..aa6a307f 100644
+--- a/Documentation/trace-cmd/trace-cmd-listen.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-listen.1.txt
+@@ -36,14 +36,15 @@ OPTIONS
+ *-l* 'filename'::
+     This option writes the output messages to a log file instead of standard output.
+ 
+-*--verbose* 'level'::
++*--verbose*[='level']::
+      Set the log level. Supported log levels are "none", "critical", "error", "warning",
+      "info", "debug", "all" or their identifiers "0", "1", "2", "3", "4", "5", "6". Setting the log
+      level to specific value enables all logs from that and all previous levels.
++     The level will default to "info" if one is not specified.
+ 
+      Example: enable all critical, error and warning logs
+ 
+-      trace-cmd listen --verbose warning
++      trace-cmd listen --verbose=warning
+ 
+ SEE ALSO
+ --------
+diff --git a/Documentation/trace-cmd/trace-cmd-profile.1.txt b/Documentation/trace-cmd/trace-cmd-profile.1.txt
+index 0d285ff7..078ae9e0 100644
+--- a/Documentation/trace-cmd/trace-cmd-profile.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-profile.1.txt
+@@ -90,14 +90,15 @@ These are the same as trace-cmd-record(1) with the *--profile* option.
+     is not changed. This allows watching the command execute and saving the
+     output of the profile to another file.
+ 
+-*--verbose* 'level'::
++*--verbose*[='level']::
+      Set the log level. Supported log levels are "none", "critical", "error", "warning",
+      "info", "debug", "all" or their identifiers "0", "1", "2", "3", "4", "5", "6". Setting the log
+      level to specific value enables all logs from that and all previous levels.
++     The level will default to "info" if one is not specified.
+ 
+      Example: enable all critical, error and warning logs
+ 
+-      trace-cmd profile --verbose warning
++      trace-cmd profile --verbose=warning
+ 
+ EXAMPLES
+ --------
+diff --git a/Documentation/trace-cmd/trace-cmd-record.1.txt b/Documentation/trace-cmd/trace-cmd-record.1.txt
+index d8065641..96c27108 100644
+--- a/Documentation/trace-cmd/trace-cmd-record.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-record.1.txt
+@@ -367,14 +367,15 @@ OPTIONS
+     Traces are extracted by busy waiting, which will hog the CPUs, so only use
+     when really needed.
+ 
+-*--verbose* 'level'::
++*--verbose*[='level']::
+      Set the log level. Supported log levels are "none", "critical", "error", "warning",
+      "info", "debug", "all" or their identifiers "0", "1", "2", "3", "4", "5", "6". Setting the log
+      level to specific value enables all logs from that and all previous levels.
++     The level will default to "info" if one is not specified.
+ 
+      Example: enable all critical, error and warning logs
+ 
+-      trace-cmd record --verbose warning
++      trace-cmd record --verbose=warning
+ 
+ EXAMPLES
+ --------
+diff --git a/Documentation/trace-cmd/trace-cmd-report.1.txt b/Documentation/trace-cmd/trace-cmd-report.1.txt
+index 3b801a1c..a6c863a8 100644
+--- a/Documentation/trace-cmd/trace-cmd-report.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-report.1.txt
+@@ -315,14 +315,15 @@ OPTIONS
+ *--align-ts*::
+      Display timestamps aligned to the first event.
+ 
+-*--verbose* 'level'::
++*--verbose*[='level']::
+      Set the log level. Supported log levels are "none", "critical", "error", "warning",
+      "info", "debug", "all" or their identifiers "0", "1", "2", "3", "4", "5", "6". Setting the log
+      level to specific value enables all logs from that and all previous levels.
++     The level will default to "info" if one is not specified.
+ 
+      Example: enable all critical, error and warning logs
+ 
+-      trace-cmd report --verbose warning
++      trace-cmd report --verbose=warning
+ 
+ EXAMPLES
+ --------
+diff --git a/Documentation/trace-cmd/trace-cmd-set.1.txt b/Documentation/trace-cmd/trace-cmd-set.1.txt
+index 50af7677..a182d191 100644
+--- a/Documentation/trace-cmd/trace-cmd-set.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-set.1.txt
+@@ -227,14 +227,15 @@ OPTIONS
+     unless the *--fork* option is specified. Then it will fork the command and
+     return immediately.
+ 
+-*--verbose* 'level'::
++*--verbose*[='level']::
+      Set the log level. Supported log levels are "none", "critical", "error", "warning",
+      "info", "debug", "all" or their identifiers "0", "1", "2", "3", "4", "5", "6". Setting the log
+      level to specific value enables all logs from that and all previous levels.
++     The level will default to "info" if one is not specified.
+ 
+      Example: enable all critical, error and warning logs
+ 
+-      trace-cmd set --verbose warning
++      trace-cmd set --verbose=warning
+ 
+ EXAMPLES
+ --------
+diff --git a/Documentation/trace-cmd/trace-cmd-stack.1.txt b/Documentation/trace-cmd/trace-cmd-stack.1.txt
+index 75bd50ba..20752407 100644
+--- a/Documentation/trace-cmd/trace-cmd-stack.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-stack.1.txt
+@@ -24,9 +24,10 @@ stack found since the start was enabled.
+ 
+ Use *--reset* to reset the stack counter to zero.
+ 
+-User *--verbose* 'level' to set the log level. Supported log levels are "none", "critical", "error",
++User *--verbose*[='level'] to set the log level. Supported log levels are "none", "critical", "error",
+ "warning", "info", "debug", "all" or their identifiers "0", "1", "2", "3", "4", "5", "6". Setting
+-the log level to specific value enables all logs from that and all previous levels.
++the log level to specific value enables all logs from that and all previous levels. The level will
++default to "info" if one is not specified.
+ 
+ SEE ALSO
+ --------
+diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
+index 0dc339b4..b83d3ac1 100644
+--- a/tracecmd/trace-agent.c
++++ b/tracecmd/trace-agent.c
+@@ -302,7 +302,7 @@ void trace_agent(int argc, char **argv)
+ 			{"port", required_argument, NULL, 'p'},
+ 			{"help", no_argument, NULL, '?'},
+ 			{"debug", no_argument, NULL, DO_DEBUG},
+-			{"verbose", required_argument, NULL, OPT_verbose},
++			{"verbose", optional_argument, NULL, OPT_verbose},
+ 			{NULL, 0, NULL, 0}
+ 		};
+ 
+diff --git a/tracecmd/trace-check-events.c b/tracecmd/trace-check-events.c
+index cf34912a..46f57e17 100644
+--- a/tracecmd/trace-check-events.c
++++ b/tracecmd/trace-check-events.c
+@@ -24,7 +24,7 @@ void trace_check_events(int argc, char **argv)
+ 	int open_flags = 0;
+ 	int option_index = 0;
+ 	static struct option long_options[] = {
+-		{"verbose", required_argument, NULL, OPT_verbose},
++		{"verbose", optional_argument, NULL, OPT_verbose},
+ 		{NULL, 0, NULL, 0}
+ 	};
+ 
+diff --git a/tracecmd/trace-cmd.c b/tracecmd/trace-cmd.c
+index 00cdaa37..7f5d1ffd 100644
+--- a/tracecmd/trace-cmd.c
++++ b/tracecmd/trace-cmd.c
+@@ -62,8 +62,9 @@ int trace_set_verbose(char *level)
+ {
+ 	int id;
+ 
++	/* Default level is info */
+ 	if (!level)
+-		return -1;
++		level = "info";
+ 
+ 	if (isdigit(level[0])) {
+ 		id = atoi(level);
+diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
+index cf47e7fb..2334b57e 100644
+--- a/tracecmd/trace-dump.c
++++ b/tracecmd/trace-dump.c
+@@ -730,7 +730,7 @@ void trace_dump(int argc, char **argv)
+ 			{"clock", no_argument, NULL, OPT_clock},
+ 			{"validate", no_argument, NULL, 'v'},
+ 			{"help", no_argument, NULL, '?'},
+-			{"verbose", required_argument, NULL, OPT_verbose},
++			{"verbose", optional_argument, NULL, OPT_verbose},
+ 			{NULL, 0, NULL, 0}
+ 		};
+ 
+diff --git a/tracecmd/trace-listen.c b/tracecmd/trace-listen.c
+index a72365a2..0cb70b7d 100644
+--- a/tracecmd/trace-listen.c
++++ b/tracecmd/trace-listen.c
+@@ -939,7 +939,7 @@ void trace_listen(int argc, char **argv)
+ 			{"port", required_argument, NULL, 'p'},
+ 			{"help", no_argument, NULL, '?'},
+ 			{"debug", no_argument, NULL, OPT_debug},
+-			{"verbose", required_argument, NULL, OPT_verbose},
++			{"verbose", optional_argument, NULL, OPT_verbose},
+ 			{NULL, 0, NULL, 0}
+ 		};
+ 
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index d5687f03..8695f0a4 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -1603,7 +1603,7 @@ void trace_report (int argc, char **argv)
+ 			{"ts-check", no_argument, NULL, OPT_tscheck},
+ 			{"raw-ts", no_argument, NULL, OPT_raw_ts},
+ 			{"align-ts", no_argument, NULL, OPT_align_ts},
+-			{"verbose", required_argument, NULL, OPT_verbose},
++			{"verbose", optional_argument, NULL, OPT_verbose},
+ 			{"help", no_argument, NULL, '?'},
+ 			{NULL, 0, NULL, 0}
+ 		};
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index b5f9c5a0..1767a6c6 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -6175,7 +6175,7 @@ static void parse_record_options(int argc,
+ 			{"fork", no_argument, NULL, OPT_fork},
+ 			{"tsc2nsec", no_argument, NULL, OPT_tsc2nsec},
+ 			{"poll", no_argument, NULL, OPT_poll},
+-			{"verbose", required_argument, NULL, OPT_verbose},
++			{"verbose", optional_argument, NULL, OPT_verbose},
+ 			{NULL, 0, NULL, 0}
+ 		};
+ 
+diff --git a/tracecmd/trace-stack.c b/tracecmd/trace-stack.c
+index 6f57387a..80364949 100644
+--- a/tracecmd/trace-stack.c
++++ b/tracecmd/trace-stack.c
+@@ -164,7 +164,7 @@ void trace_stack (int argc, char **argv)
+ 			{"stop", no_argument, NULL, OPT_stop},
+ 			{"reset", no_argument, NULL, OPT_reset},
+ 			{"help", no_argument, NULL, '?'},
+-			{"verbose", required_argument, NULL, OPT_verbose},
++			{"verbose", optional_argument, NULL, OPT_verbose},
+ 			{NULL, 0, NULL, 0}
+ 		};
+ 
 -- 
-2.29.2
+2.30.2
 
