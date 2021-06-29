@@ -7,33 +7,33 @@ X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32114C11F64
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 29 Jun 2021 02:26:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FB30C11F64
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 29 Jun 2021 02:40:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0A7E861D02
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 29 Jun 2021 02:26:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0AF4661D0B
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 29 Jun 2021 02:40:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbhF2C2h (ORCPT
+        id S230152AbhF2CnK (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 28 Jun 2021 22:28:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55792 "EHLO mail.kernel.org"
+        Mon, 28 Jun 2021 22:43:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231194AbhF2C2h (ORCPT
+        id S231743AbhF2CnK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 28 Jun 2021 22:28:37 -0400
+        Mon, 28 Jun 2021 22:43:10 -0400
 Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E146861CEF;
-        Tue, 29 Jun 2021 02:26:10 +0000 (UTC)
-Date:   Mon, 28 Jun 2021 22:26:09 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id CDD4561D13;
+        Tue, 29 Jun 2021 02:40:43 +0000 (UTC)
+Date:   Mon, 28 Jun 2021 22:40:42 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "linux-trace-devel@vger.kernel.org" 
         <linux-trace-devel@vger.kernel.org>,
         Julia Lawall <julia.lawall@inria.fr>
-Subject: [PATCH] trace-cmd split: Fix off-by-one error when calculating
- record len
-Message-ID: <20210628222609.01ea12ad@oasis.local.home>
+Subject: [PATCH] trace-cmd split: Assert if the calculated record size is
+ too big
+Message-ID: <20210628224042.0ecc2030@oasis.local.home>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -44,43 +44,37 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-When a record has 112 or fewer bytes (28 * 4) for size, it has a 4 byte
-record that contains 5 bits for the size of the event divided by 4, and 27
-bits for the time delta. (0, 29, 30 31 are special values for those 5
-bits.
+With a discovery of a bug that caused a record to be written passed the
+end of a page (and this was a possible memory corruption bug), check that
+the calculated length is no bigger than the record it is copying. If it
+is, then crash, as this can cause the data to write pass the allocated
+page.
 
-The split logic recreates the record header for each event it copies over
-from the source trace file to the destination trace file. To decide the
-header, it incorrectly checked for "less than" instead of "less than or
-equal to" of size "28 * 4". This caused the copying of the event to add
-the extended header.
+Now that bug would crash on the split command with:
 
-The issue happened, because of the added 4 bytes, it ended up overwriting
-the end of the page. The "\0" ended at the edge and was cut off.
-(There should be a better check for this as well).
+  Bad calculation of record len (expect:116 actual:120)
 
-Fix the header check to use the compact header for 112 byte events.
+Link: https://lore.kernel.org/linux-trace-devel/20210628222609.01ea12ad@oasis.local.home/
 
-Fixes: 87d2a344a ("trace-cmd: Add split feature")
-Reported-by: Julia Lawall <julia.lawall@inria.fr>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tracecmd/trace-split.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tracecmd/trace-split.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/tracecmd/trace-split.c b/tracecmd/trace-split.c
-index 233feb89..9b1a8d7a 100644
+index 9b1a8d7a..775611c1 100644
 --- a/tracecmd/trace-split.c
 +++ b/tracecmd/trace-split.c
-@@ -106,7 +106,7 @@ static int write_record(struct tracecmd_input *handle,
- 		return 0;
- 	}
+@@ -118,6 +118,9 @@ static int write_record(struct tracecmd_input *handle,
  
--	if (record->size && (record->size < 28 * 4))
-+	if (record->size && (record->size <= 28 * 4))
- 		len = record->size / 4;
- 
- 	time = (unsigned)diff;
+ 	if (!len) {
+ 		len = record->size + 4;
++		if ((len + 4) > record->record_size)
++			die("Bad calculation of record len (expect:%d actual:%d)",
++			    record->record_size, len + 4);
+ 		*(unsigned *)ptr = tep_read_number(pevent, &len, 4);
+ 		ptr += 4;
+ 		index += 4;
 -- 
 2.29.2
 
