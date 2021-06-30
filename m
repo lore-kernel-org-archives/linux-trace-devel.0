@@ -7,34 +7,34 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EA15C11F6E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18A05C11F6C
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 30 Jun 2021 15:47:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 43C8F61477
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 30 Jun 2021 15:47:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EF73361477
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 30 Jun 2021 15:47:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235892AbhF3PuC (ORCPT
+        id S235884AbhF3PuC (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 30 Jun 2021 11:50:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59424 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:59422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235893AbhF3PuA (ORCPT
+        id S235889AbhF3PuA (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 30 Jun 2021 11:50:00 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3040861493;
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DC9761466;
         Wed, 30 Jun 2021 15:47:31 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1lycR0-000XoV-0b; Wed, 30 Jun 2021 11:47:30 -0400
+        id 1lycR0-000Xoe-33; Wed, 30 Jun 2021 11:47:30 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v2 1/4] libtracefs: Implement tracefs_instances()
-Date:   Wed, 30 Jun 2021 11:47:26 -0400
-Message-Id: <20210630154729.129873-2-rostedt@goodmis.org>
+Subject: [PATCH v2 4/4] libtracefs: Implement tracefs_kprobe_clear_probe()
+Date:   Wed, 30 Jun 2021 11:47:29 -0400
+Message-Id: <20210630154729.129873-5-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210630154729.129873-1-rostedt@goodmis.org>
 References: <20210630154729.129873-1-rostedt@goodmis.org>
@@ -46,123 +46,63 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Implement tracefs_instances() that will take a regex (or NULL for all) and
-return a list of instances in the system.
+Add the function tracefs_kprobe_clear_probe() that will remove a single
+kprobe. If the @force parameter is set, it will disable that probe in all
+instances (including the top level instance) before removing it.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/tracefs.h      |  1 +
- src/tracefs-instance.c | 78 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 79 insertions(+)
+ include/tracefs.h     |  1 +
+ src/tracefs-kprobes.c | 29 +++++++++++++++++++++++++++++
+ 2 files changed, 30 insertions(+)
 
 diff --git a/include/tracefs.h b/include/tracefs.h
-index da8ad4189d4d..a21d2d2f22a6 100644
+index 19b9b49d2dae..d7980c773b3d 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
-@@ -44,6 +44,7 @@ int tracefs_instance_file_read_number(struct tracefs_instance *instance,
- int tracefs_instance_file_open(struct tracefs_instance *instance,
- 			       const char *file, int mode);
- int tracefs_instances_walk(int (*callback)(const char *, void *), void *context);
-+char **tracefs_instances(const char *regex);
- 
- bool tracefs_instance_exists(const char *name);
- bool tracefs_file_exists(struct tracefs_instance *instance, const char *name);
-diff --git a/src/tracefs-instance.c b/src/tracefs-instance.c
-index 2aeb529903bd..d833fae0fb0c 100644
---- a/src/tracefs-instance.c
-+++ b/src/tracefs-instance.c
-@@ -14,6 +14,7 @@
- #include <sys/stat.h>
- #include <fcntl.h>
- #include <dirent.h>
-+#include <regex.h>
- #include <limits.h>
- #include <pthread.h>
- #include "tracefs.h"
-@@ -630,6 +631,83 @@ out:
- 	return fret;
+@@ -218,4 +218,5 @@ void tracefs_trace_pipe_stop(struct tracefs_instance *instance);
+ int tracefs_kprobe_raw(const char *system, const char *event,
+ 		       const char *addr, const char *format);
+ int tracefs_kprobe_clear(bool force);
++int tracefs_kprobe_clear_probe(const char *system, const char *event, bool force);
+ #endif /* _TRACE_FS_H */
+diff --git a/src/tracefs-kprobes.c b/src/tracefs-kprobes.c
+index a6faf69fc010..6f3fbac35d76 100644
+--- a/src/tracefs-kprobes.c
++++ b/src/tracefs-kprobes.c
+@@ -184,3 +184,32 @@ int tracefs_kprobe_clear(bool force)
+ 	free(content);
+ 	return ret;
  }
- 
-+static inline bool match(const char *str, regex_t *re)
++
++int tracefs_kprobe_clear_probe(const char *system, const char *event, bool force)
 +{
-+	if (!re)
-+		return true;
-+	return regexec(re, str, 0, NULL, 0) == 0;
-+}
-+
-+struct instance_list {
-+	regex_t		*re;
-+	char		**list;
-+	int		size;
-+	int		failed;
-+};
-+
-+static int build_list(const char *name, void *data)
-+{
-+	struct instance_list *list = data;
-+	char **instances;
-+	int ret = -1;
-+
-+	if (!match(name, list->re))
-+		return 0;
-+
-+	instances = realloc(list->list, list->size + 2);
-+	if (!instances)
-+		goto out;
-+
-+	list->list = instances;
-+	list->list[list->size] = strdup(name);
-+	if (!list->list[list->size])
-+		goto out;
-+
-+	list->size++;
-+	ret = 0;
-+
-+ out:
-+	list->failed = ret;
-+	return ret;
-+}
-+
-+/**
-+ * tracefs_instances - return a list of instance names
-+ * @regex: A regex of instances to filter on (NULL to match all)
-+ *
-+ * Returns a list of names of existing instances, that must be
-+ * freed with tracefs_list_free(). Note, if there are no matches
-+ * then an empty list will be returned (not NULL).
-+ * NULL on error.
-+ */
-+char **tracefs_instances(const char *regex)
-+{
-+	struct instance_list list = { .re = NULL, .list = NULL };
-+	regex_t re;
++	char **instance_list;
++	char *content;
 +	int ret;
 +
-+	if (regex) {
-+		ret = regcomp(&re, regex, REG_ICASE|REG_NOSUB);
-+		if (ret < 0)
-+			return NULL;
-+		list.re = &re;
++	if (!system)
++		system = "kprobes";
++
++	ret = asprintf(&content, "-:%s/%s", system, event);
++	if (ret < 0)
++		return -1;
++
++	/*
++	 * Since we know we are disabling a specific event, try
++	 * to disable it first before clearing it.
++	 */
++	if (force) {
++		instance_list = tracefs_instances(NULL);
++		disable_events(system, event, instance_list);
++		tracefs_list_free(instance_list);
 +	}
 +
-+	ret = tracefs_instances_walk(build_list, &list);
-+	if (ret < 0 || list.failed) {
-+		tracefs_list_free(list.list);
-+		list.list = NULL;
-+	} else {
-+		if (!list.list) {
-+			/* No matches should produce an empty list */
-+			list.list = malloc(sizeof(*list.list));
-+			if (list.list)
-+				list.list[0] = NULL;
-+		}
-+	}
-+	return list.list;
++	ret = tracefs_instance_file_append(NULL, KPROBE_EVENTS, content);
++	free(content);
++
++	return ret < 0 ? -1 : 0;
 +}
-+
- /**
-  * tracefs_get_clock - Get the current trace clock
-  * @instance: ftrace instance, can be NULL for the top instance
 -- 
 2.30.2
 
