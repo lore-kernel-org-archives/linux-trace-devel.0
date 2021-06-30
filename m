@@ -2,200 +2,113 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A24D2C11F67
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 29 Jun 2021 20:55:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43DD5C11F65
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 30 Jun 2021 14:19:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 864DF61D4B
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 29 Jun 2021 20:55:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2AD9E6144B
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 30 Jun 2021 14:19:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235559AbhF2U5i (ORCPT
+        id S234895AbhF3OVz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 29 Jun 2021 16:57:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235520AbhF2U5h (ORCPT
+        Wed, 30 Jun 2021 10:21:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234851AbhF3OVy (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 29 Jun 2021 16:57:37 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E7DCC61D05
-        for <linux-trace-devel@vger.kernel.org>; Tue, 29 Jun 2021 20:55:09 +0000 (UTC)
-Date:   Tue, 29 Jun 2021 16:55:08 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] libtracefs: Implement tracefs_error_last/all()
-Message-ID: <20210629165508.166371da@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 30 Jun 2021 10:21:54 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED60C061756
+        for <linux-trace-devel@vger.kernel.org>; Wed, 30 Jun 2021 07:19:25 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id o33-20020a05600c5121b02901e360c98c08so4542684wms.5
+        for <linux-trace-devel@vger.kernel.org>; Wed, 30 Jun 2021 07:19:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VWBcVTgMCF2mvMjJbRmp9h3BfaZjXxsQKVdFZZ8Idr0=;
+        b=VEBiHC020aVeDZqdZpv+pFfDQZNb8duQQeR88zkee6PTjivB5atSwYssMr0xdAuPGR
+         Yh70eTGG5tTpUX0qPmjuXiZITYJLHfWfIB3W7d6UcnI4s3F409czeBXFhDRCEIUz/Tm8
+         yeSqAmte9EDfUdNlFS0RR8zLBZRfzBEqna0N2M/HV5rwl8LlXEenPAi6eZOcaK2WEs5Z
+         i5w19QmXxRl7zFV4ndQPw+XXRec6kKbW817FBFpqP2jqlzfDAsfy9DO6Ql8tXrETsZgo
+         bZ6/ahCfagLmCcbP1sWmPAnK8zoAgARQkkX9EPX4/SC4iqCchqcXFEtmetgVKyqCL5iv
+         WrJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VWBcVTgMCF2mvMjJbRmp9h3BfaZjXxsQKVdFZZ8Idr0=;
+        b=Umfo5++Is5IJID+9bmdBtL+9NHWILMP7UH+8IRrXRm4XmgRSXb6uB3VEFQa4TOPrxe
+         6MxPYM2pcl22JI4w6rolXRfM83X3bC3r0600okgZKuMGD1bLNFyftgVbr4E7niQBVCUL
+         nr5QEzLgrcXrgN4W0G7hcdk5EZXYqPfc8QVHgKrGeVS+IxiSEigvm08RgHOyHYtGvNUd
+         KcW+VhehnCdSgyCwu6VWhBDk/oMZ2Mmp3cWT7kxTJYvGiFP34GhTtlKSzrj1MLnRz9SD
+         3b7aInR4SPGU7A/XPfMQw9vY+oBySU/a68SJ0swZp3bh4Mq6coAWgc9gkG1UVtJVmL/X
+         r9KA==
+X-Gm-Message-State: AOAM533Vz+eWL8Qi2+3V3xNaNabp4NRIVcyQlE5GPzS41nGoKz1sErl4
+        Pg9GtK/rr1MtLRSDe8rS58I=
+X-Google-Smtp-Source: ABdhPJx4Hjtrboiy7X18SKMpGDWcVPbDFzDBQ9zvhcYFCu4l9E+62tUAPY3aeMmlMAVOxVwypap0lQ==
+X-Received: by 2002:a05:600c:2301:: with SMTP id 1mr4924004wmo.132.1625062764453;
+        Wed, 30 Jun 2021 07:19:24 -0700 (PDT)
+Received: from bucy.eng.vmware.com ([146.247.46.134])
+        by smtp.gmail.com with ESMTPSA id r12sm22935958wrn.2.2021.06.30.07.19.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 07:19:24 -0700 (PDT)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH] libtraceevent: Fix bug in tep_print_event()
+Date:   Wed, 30 Jun 2021 17:19:13 +0300
+Message-Id: <20210630141913.20675-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+We must handle the case when the "tep_event" object is not found.
 
-Add a helper function that will read an instance error_log file, and
-either return the entire content of the error log (tracefs_error_all()) or
-just the last error (tracefs_error_last()).
-
-Also add tracefs_error_clear() to clear the error log.
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- include/tracefs.h   |   4 ++
- src/tracefs-utils.c | 112 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 116 insertions(+)
+ src/event-parse.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 447821e..b478684 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -58,6 +58,10 @@ int tracefs_trace_off_fd(int fd);
- int tracefs_event_enable(struct tracefs_instance *instance, const char *system, const char *event);
- int tracefs_event_disable(struct tracefs_instance *instance, const char *system, const char *event);
+diff --git a/src/event-parse.c b/src/event-parse.c
+index de28b3b..d3f1bba 100644
+--- a/src/event-parse.c
++++ b/src/event-parse.c
+@@ -6418,17 +6418,21 @@ void tep_print_event(struct tep_handle *tep, struct trace_seq *s,
+ 		     struct tep_record *record, const char *fmt, ...)
+ {
+ 	struct print_event_type type;
+-	char *format = strdup(fmt);
+-	char *current = format;
+-	char *str = format;
++	char *format, *current, *str;
+ 	int offset;
+ 	va_list args;
+ 	struct tep_event *event;
  
-+char *tracefs_error_last(struct tracefs_instance *instance);
-+char *tracefs_error_all(struct tracefs_instance *instance);
-+int tracefs_error_clear(struct tracefs_instance *instance);
-+
- /**
-  * tracefs_trace_on_get_fd - Get a file descriptor of "tracing_on" in given instance
-  * @instance: ftrace instance, can be NULL for the top instance
-diff --git a/src/tracefs-utils.c b/src/tracefs-utils.c
-index 9e37e75..2028bee 100644
---- a/src/tracefs-utils.c
-+++ b/src/tracefs-utils.c
-@@ -23,6 +23,8 @@
- #define TRACEFS_PATH "/sys/kernel/tracing"
- #define DEBUGFS_PATH "/sys/kernel/debug"
- 
-+#define ERROR_LOG "error_log"
-+
- #define _STR(x) #x
- #define STR(x) _STR(x)
- 
-@@ -253,3 +255,113 @@ __hidden int str_read_file(const char *file, char **buffer, bool warn)
- 
- 	return size;
- }
-+
-+/**
-+ * tracefs_error_all - return the content of the error log
-+ * @instance: The instance to read the error log from (NULL for top level)
-+ *
-+ * Return NULL if the log is empty, or on error (where errno will be
-+ * set. Otherwise the content of the entire log is returned in a string
-+ * that must be freed with free().
-+ */
-+char *tracefs_error_all(struct tracefs_instance *instance)
-+{
-+	char *content;
-+	char *path;
-+	int size;
-+
-+	errno = 0;
-+
-+	path = tracefs_instance_get_file(instance, ERROR_LOG);
-+	if (!path)
-+		return NULL;
-+	size = str_read_file(path, &content, false);
-+	tracefs_put_tracing_file(path);
-+
-+	if (size <= 0)
-+		return NULL;
-+
-+	return content;
-+}
-+
-+enum line_states {
-+	START,
-+	CARROT,
-+};
-+
-+/**
-+ * tracefs_error_last - return the last error logged
-+ * @instance: The instance to read the error log from (NULL for top level)
-+ *
-+ * Return NULL if the log is empty, or on error (where errno will be
-+ * set. Otherwise a string containing the content of the last error shown
-+* in the log that must be freed with free().
-+ */
-+char *tracefs_error_last(struct tracefs_instance *instance)
-+{
-+	enum line_states state = START;
-+	char *content;
-+	char *ret;
-+	bool done = false;
-+	int size;
-+	int i;
-+
-+	content = tracefs_error_all(instance);
-+	if (!content)
-+		return NULL;
-+
-+	size = strlen(content);
-+	if (!size) /* Should never happen */
-+		return content;
-+
-+	for (i = size - 1; i > 0; i--) {
-+		switch (state) {
-+		case START:
-+			if (content[i] == '\n') {
-+				/* Remove extra new lines */
-+				content[i] = '\0';
-+				break;
-+			}
-+			if (content[i] == '^')
-+				state = CARROT;
-+			break;
-+		case CARROT:
-+			if (content[i] == '\n') {
-+				/* Remember last new line */
-+				size = i;
-+				break;
-+			}
-+			if (content[i] == '^') {
-+				/* Go just passed the last newline */
-+				i = size + 1;
-+				done = true;
-+			}
-+			break;
-+		}
-+		if (done)
-+			break;
++	event = tep_find_event_by_record(tep, record);
++	if (!event) {
++		trace_seq_printf(s, "[UNKNOWN EVENT]");
++		return;
 +	}
 +
-+	if (i) {
-+		ret = strdup(content + i);
-+		free(content);
-+	} else {
-+		ret = content;
-+	}
-+
-+	return ret;
-+}
-+
-+/**
-+ * tracefs_error_clear - clear the error log of an instance
-+ * @instance: The instance to clear (NULL for top level)
-+ *
-+ * Clear the content of the error log.
-+ *
-+ * Returns 0 on success, -1 otherwise.
-+ */
-+int tracefs_error_clear(struct tracefs_instance *instance)
-+{
-+	return tracefs_instance_file_clear(instance, ERROR_LOG);
-+}
-+
++	str = current = format = strdup(fmt);
+ 	if (!format)
+ 		return;
+ 
+-	event = tep_find_event_by_record(tep, record);
+ 	va_start(args, fmt);
+ 	while (*current) {
+ 		current = strchr(str, '%');
 -- 
-2.29.2
+2.27.0
 
