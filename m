@@ -2,78 +2,196 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8257C11F65
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 30 Jun 2021 15:06:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46E2EC11F6B
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 30 Jun 2021 15:47:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A200361477
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 30 Jun 2021 15:06:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2364861483
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 30 Jun 2021 15:47:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235504AbhF3PJH (ORCPT
+        id S235914AbhF3PuA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 30 Jun 2021 11:09:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53038 "EHLO mail.kernel.org"
+        Wed, 30 Jun 2021 11:50:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235352AbhF3PJG (ORCPT
+        id S235871AbhF3PuA (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 30 Jun 2021 11:09:06 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        Wed, 30 Jun 2021 11:50:00 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8262D61420;
-        Wed, 30 Jun 2021 15:06:37 +0000 (UTC)
-Date:   Wed, 30 Jun 2021 11:06:35 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 2967961474;
+        Wed, 30 Jun 2021 15:47:31 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
+        (envelope-from <rostedt@rostedt.homelinux.com>)
+        id 1lycR0-000XoZ-2I; Wed, 30 Jun 2021 11:47:30 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH] libtraceevent: Fix bug in tep_print_event()
-Message-ID: <20210630110635.57411548@oasis.local.home>
-In-Reply-To: <20210630141913.20675-1-y.karadz@gmail.com>
-References: <20210630141913.20675-1-y.karadz@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To:     linux-trace-devel@vger.kernel.org
+Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH v2 3/4] libtracefs: Implement tracefs_kprobe_clear() to remove all kprobes
+Date:   Wed, 30 Jun 2021 11:47:28 -0400
+Message-Id: <20210630154729.129873-4-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210630154729.129873-1-rostedt@goodmis.org>
+References: <20210630154729.129873-1-rostedt@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 30 Jun 2021 17:19:13 +0300
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-> {
->  	struct print_event_type type;
-> -	char *format = strdup(fmt);
-> -	char *current = format;
-> -	char *str = format;
-> +	char *format, *current, *str;
+A call to tracefs_kprobe_clear() will attempt to disable all kprobes. If
+any kprobe is set, and the @force parameter is set, it will fail with
+errno set to EBUSY. If @force is set, then it will attempt to disable all
+the defined kprobe events and then clear it.
 
-Nit, but please keep the above each on a separate line.
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ include/tracefs.h     |   2 +-
+ src/tracefs-kprobes.c | 116 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 117 insertions(+), 1 deletion(-)
 
-	char *current;
-	char *format;
-	char *str;
+diff --git a/include/tracefs.h b/include/tracefs.h
+index bc504bcb0188..19b9b49d2dae 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -217,5 +217,5 @@ void tracefs_trace_pipe_stop(struct tracefs_instance *instance);
+ 
+ int tracefs_kprobe_raw(const char *system, const char *event,
+ 		       const char *addr, const char *format);
+-
++int tracefs_kprobe_clear(bool force);
+ #endif /* _TRACE_FS_H */
+diff --git a/src/tracefs-kprobes.c b/src/tracefs-kprobes.c
+index e4b28cff9f08..a6faf69fc010 100644
+--- a/src/tracefs-kprobes.c
++++ b/src/tracefs-kprobes.c
+@@ -68,3 +68,119 @@ int tracefs_kprobe_raw(const char *system, const char *event,
+ 
+ 	return ret < 0 ? ret : 0;
+ }
++
++struct instance_list {
++	struct instance_list	*next;
++	struct tracefs_instance	*instance;
++};
++
++static void disable_events(const char *system, const char *event,
++			   char **list)
++{
++	struct tracefs_instance *instance;
++	int i;
++
++	/*
++	 * Note, this will not fail even on error.
++	 * That is because even if something fails, it may still
++	 * work enough to clear the kprobes. If that's the case
++	 * the clearing after the loop will succeed and the function
++	 * is a success, even though other parts had failed. If
++	 * one of the kprobe events is enabled in one of the
++	 * instances that fail, then the clearing will fail too
++	 * and the function will return an error.
++	 */
++
++	tracefs_event_disable(NULL, system, event);
++	/* No need to test results */
++
++	if (!list)
++		return;
++
++	for (i = 0; list[i]; i++) {
++		instance = tracefs_instance_alloc(NULL, list[i]);
++		/* If this fails, try the next one */
++		if (!instance)
++			continue;
++		tracefs_event_disable(instance, system, event);
++		tracefs_instance_free(instance);
++	}
++	return;
++}
++
++/**
++ * tracefs_kprobe_clear - clear kprobe events
++ * @force: Will attempt to disable all kprobe events and clear them
++ *
++ * Will remove all defined kprobe events. If any of them are enabled,
++ * and @force is not set, then it will error with -1 and errno to be
++ * EBUSY. If @force is set, then it will attempt to disable all the kprobe
++ * events in all instances, and try again.
++ *
++ * Returns zero on success, -1 otherwise.
++ */
++int tracefs_kprobe_clear(bool force)
++{
++	char **instance_list;
++	char *content;
++	char *saveptr;
++	char *system;
++	char *event;
++	char *p;
++	int ret;
++
++	ret = tracefs_instance_file_clear(NULL, KPROBE_EVENTS);
++	if (!ret)
++		return 0;
++
++	if (!force)
++		return -1;
++
++	/* Attempt to disable all kprobe events */
++	content = tracefs_instance_file_read(NULL, KPROBE_EVENTS, NULL);
++	if (!content)
++		return -1;
++
++	instance_list = tracefs_instances(NULL);
++	/*
++	 * Even if the above failed and instance_list is NULL,
++	 * keep going, as the enabled event may simply be in the
++	 * top level.
++	 */
++
++	ret = -1;
++	p = strtok_r(content, ":", &saveptr);
++	if (!p)
++		goto out;
++
++	for (;;) {
++		p = strtok_r(NULL, "/", &saveptr);
++		if (!p)
++			goto out;
++
++		system = p;
++
++		p = strtok_r(NULL," ", &saveptr);
++		if (!p)
++			goto out;
++		event = p;
++
++		disable_events(system, event, instance_list);
++
++		ret = tracefs_instance_file_clear(NULL, KPROBE_EVENTS);
++		/* On success stop the loop */
++		if (!ret)
++			goto out;
++
++		ret = -1;
++		p = strtok_r(NULL, "\n", &saveptr);
++		if (!p)
++			goto out;
++
++		p = strtok_r(NULL, ":", &saveptr);
++	}
++ out:
++	tracefs_list_free(instance_list);
++	free(content);
++	return ret;
++}
+-- 
+2.30.2
 
-I try to avoid having pointers on a single line, it's just easier to
-manage when they are separate.
-
-Thanks!
-
--- Steve
-
->  	int offset;
->  	va_list args;
->  	struct tep_event *event;
->  
-> +	event = tep_find_event_by_record(tep, record);
-> +	if (!event) {
-> +		trace_seq_printf(s, "[UNKNOWN EVENT]");
-> +		return;
-> +	}
-> +
-> +	str = current = format = strdup(fmt);
->  	if (!format)
->  		return;
