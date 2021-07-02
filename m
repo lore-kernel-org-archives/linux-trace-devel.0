@@ -7,34 +7,34 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D679C11F6E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 752BDC11F6C
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jul 2021 14:22:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7841A61433
+	by mail.kernel.org (Postfix) with ESMTP id 5DE3861436
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jul 2021 14:22:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233072AbhGBOZR (ORCPT
+        id S233069AbhGBOZR (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 2 Jul 2021 10:25:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56554 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:56556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233076AbhGBOZQ (ORCPT
+        id S233072AbhGBOZQ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 2 Jul 2021 10:25:16 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2E3161431;
+        by mail.kernel.org (Postfix) with ESMTPSA id C1A966142F;
         Fri,  2 Jul 2021 14:22:43 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1lzK42-000ggC-L7; Fri, 02 Jul 2021 10:22:42 -0400
+        id 1lzK42-000gg8-Ja; Fri, 02 Jul 2021 10:22:42 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v5 4/7] libtracefs: Implement tracefs_get_kprobes()
-Date:   Fri,  2 Jul 2021 10:22:39 -0400
-Message-Id: <20210702142242.163989-5-rostedt@goodmis.org>
+Subject: [PATCH v5 2/7] libtracefs: Implement tracefs_kprobe_raw()
+Date:   Fri,  2 Jul 2021 10:22:37 -0400
+Message-Id: <20210702142242.163989-3-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210702142242.163989-1-rostedt@goodmis.org>
 References: <20210702142242.163989-1-rostedt@goodmis.org>
@@ -46,104 +46,120 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add the function tracefs_get_kprobes() that returns a list of kprobes that
-are registered. The list contains strings that are of the format
-"group/event" (i.e. "kprobes/open"). The last element in the list is a
-NULL pointer. In the case that there are no kprobes, the list will return
-a single entry of a NULL pointer.
-
-NULL is returned in the case of error (mainly a memory issue, or bad
-parsing).
+Add a function to facilitate creating a kprobe event. It has the "raw" in
+its name because it still requires knowing the format of the kprobe. But
+does handle the kprobe naming better and writing to the kprobe_event file.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/tracefs.h     |  1 +
- src/tracefs-kprobes.c | 66 +++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 67 insertions(+)
+ include/tracefs.h     |  4 +++
+ src/Makefile          |  1 +
+ src/tracefs-kprobes.c | 72 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 77 insertions(+)
+ create mode 100644 src/tracefs-kprobes.c
 
 diff --git a/include/tracefs.h b/include/tracefs.h
-index 64164c8c2b20..5f59c480d572 100644
+index a21d2d2f22a6..bc504bcb0188 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
-@@ -219,4 +219,5 @@ int tracefs_kprobe_raw(const char *system, const char *event,
- 		       const char *addr, const char *format);
- int tracefs_kretprobe_raw(const char *system, const char *event,
- 			  const char *addr, const char *format);
-+char **tracefs_get_kprobes(void);
+@@ -214,4 +214,8 @@ int tracefs_tracer_clear(struct tracefs_instance *instance);
+ ssize_t tracefs_trace_pipe_stream(int fd, struct tracefs_instance *instance, int flags);
+ ssize_t tracefs_trace_pipe_print(struct tracefs_instance *instance, int flags);
+ void tracefs_trace_pipe_stop(struct tracefs_instance *instance);
++
++int tracefs_kprobe_raw(const char *system, const char *event,
++		       const char *addr, const char *format);
++
  #endif /* _TRACE_FS_H */
+diff --git a/src/Makefile b/src/Makefile
+index b4cff07efc50..0697a047f4bc 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -8,6 +8,7 @@ OBJS += tracefs-instance.o
+ OBJS += tracefs-events.o
+ OBJS += tracefs-tools.o
+ OBJS += tracefs-marker.o
++OBJS += tracefs-kprobes.o
+ 
+ OBJS := $(OBJS:%.o=$(bdir)/%.o)
+ DEPS := $(OBJS:$(bdir)/%.o=$(bdir)/.%.d)
 diff --git a/src/tracefs-kprobes.c b/src/tracefs-kprobes.c
-index 4970620b28f2..e875d6e8a65f 100644
---- a/src/tracefs-kprobes.c
+new file mode 100644
+index 000000000000..d50191d55181
+--- /dev/null
 +++ b/src/tracefs-kprobes.c
-@@ -103,3 +103,69 @@ int tracefs_kretprobe_raw(const char *system, const char *event,
- {
- 	return insert_kprobe("r", system, event, addr, format);
- }
+@@ -0,0 +1,72 @@
++// SPDX-License-Identifier: LGPL-2.1
++/*
++ * Copyright (C) 2021 VMware Inc, Steven Rostedt <rostedt@goodmis.org>
++ *
++ * Updates:
++ * Copyright (C) 2021, VMware, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
++ *
++ */
++#include <stdio.h>
++#include <stdlib.h>
++#include <dirent.h>
++#include <unistd.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <limits.h>
++
++#include "tracefs.h"
++#include "tracefs-local.h"
++
++#define KPROBE_EVENTS "kprobe_events"
 +
 +/**
-+ * tracefs_get_kprobes - return a list kprobes (by group/event name)
++ * tracefs_kprobe_raw - Create a kprobe using raw format
++ * @system: The system name (NULL for the default kprobes)
++ * @event: The event to create (NULL to use @addr for the event)
++ * @addr: The function and offset (or address) to insert the probe
++ * @format: The raw format string to define the probe.
 + *
-+ * Returns a list of strings that contain the kprobes that exist
-+ * in the kprobe_events files. The strings returned are in the
-+ * "group/event" format.
-+ * The list must be freed with tracefs_list_free().
-+ * If there are no kprobes, a list is still returned, but it contains
-+ * only a NULL pointer.
-+ * On error, NULL is returned.
++ * Create a kprobe that will be in the @system group (or kprobes if
++ * @system is NULL). Have the name of @event (or @addr if @event is
++ * NULL). Will be inserted to @addr (function name, with or without
++ * offset, or a address). And the @format will define the raw format
++ * of the kprobe. See the Linux documentation file under:
++ * Documentation/trace/kprobetrace.rst
++ *
++ * Return 0 on success, or -1 on error.
++ *   If the syntex of @format was incorrect, running
++ *   tracefs_error_last(NULL) may show what went wrong.
++ *
++ * errno will be set to EBADMSG if addr or format is NULL.
 + */
-+char **tracefs_get_kprobes(void)
++int tracefs_kprobe_raw(const char *system, const char *event,
++		       const char *addr, const char *format)
 +{
-+	char **list = NULL;
-+	char *content;
-+	char *saveptr;
-+	char *event;
-+	char *p;
-+	int cnt = 0;
++	char *str;
++	int ret;
 +
-+	content = tracefs_instance_file_read(NULL, KPROBE_EVENTS, NULL);
-+	if (!content)
-+		return NULL;
++	if (!tracefs_file_exists(NULL, KPROBE_EVENTS))
++		return -1;
 +
-+	p = strtok_r(content, ":", &saveptr);
++	errno = EBADMSG;
++	if (!addr || !format)
++		return -1;
 +
-+	while (p) {
-+		char **tmp;
++	if (!event)
++		event = addr;
 +
-+		/* Failed parsing always return a failure */
-+		p = strtok_r(NULL, " ", &saveptr);
-+		if (!p)
-+			break;
++	if (system)
++		ret = asprintf(&str, "p:%s/%s %s %s\n",
++			       system, event, addr, format);
++	else
++		ret = asprintf(&str, "p:%s %s %s\n",
++			       event, addr, format);
 +
-+		event = strdup(p);
-+		if (!event)
-+			goto fail;
++	if (ret < 0)
++		return -1;
 +
-+		tmp = realloc(list, sizeof(*list) * (cnt + 2));
-+		if (!tmp)
-+			goto fail;
++	ret = tracefs_instance_file_append(NULL, KPROBE_EVENTS, str);
++	free(str);
 +
-+		list = tmp;
-+		list[cnt++] = event;
-+		list[cnt] = NULL;
-+
-+		p = strtok_r(NULL, "\n", &saveptr);
-+		/* Could be end of content */
-+		if (!p)
-+			break;
-+
-+		/* p is NULL on end of content */
-+		p = strtok_r(NULL, ":", &saveptr);
-+	}
-+
-+	if (!list)
-+		list = calloc(1, sizeof(*list));
-+ out:
-+	free(content);
-+	return list;
-+ fail:
-+	free(list);
-+	list = NULL;
-+	goto out;
++	return ret < 0 ? ret : 0;
 +}
 -- 
 2.30.2
