@@ -8,70 +8,70 @@ X-Spam-Status: No, score=-14.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CC62C11F68
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jul 2021 11:15:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F796C11F68
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jul 2021 11:17:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 83C7F613F4
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jul 2021 11:15:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 21EAB613F4
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jul 2021 11:17:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbhGBLST (ORCPT
+        id S231283AbhGBLU1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 2 Jul 2021 07:18:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54756 "EHLO
+        Fri, 2 Jul 2021 07:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231130AbhGBLST (ORCPT
+        with ESMTP id S231130AbhGBLU1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 2 Jul 2021 07:18:19 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A04C1C061762
-        for <linux-trace-devel@vger.kernel.org>; Fri,  2 Jul 2021 04:15:46 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id a8so337305wrp.5
-        for <linux-trace-devel@vger.kernel.org>; Fri, 02 Jul 2021 04:15:46 -0700 (PDT)
+        Fri, 2 Jul 2021 07:20:27 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C2AC061762
+        for <linux-trace-devel@vger.kernel.org>; Fri,  2 Jul 2021 04:17:55 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id w13so6428275wmc.3
+        for <linux-trace-devel@vger.kernel.org>; Fri, 02 Jul 2021 04:17:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=aIIejwdHeDDVAQutFVPUTVEmKRtuiDh0GaaeD6G2cSc=;
-        b=gfjKhgJsVMEYacTbSHix3DLKeYj/33ADaf+jRY2H7Ka/U9GSJKfMvVJJFdpdSLlheW
-         RiWygo3cUZ7N+xfniAeUOXYF4/SR0pgNmHhi9m9KpmdpOz6z0l3czvGo7McLgMIljp+5
-         zU7zYgi5o+RPAQdG33UiMA0bFtW8NlshJI2DkIXKdRtlr2UmSDqpg04PqWDix7RH0C4N
-         3LE7L6VqfX06OVP7LmftFvhgzzrNmb+wwPmhbeLfrAyt6OUzCI8z4idFKZcXE6Q1Uvio
-         Qyid9+mJ/bHduPrh2XRq8YYrd/uf3hYwZvKECJpcmz8BgNL4mr8hwq0IHs1vlnRb+OqL
-         /sjw==
+        bh=APyfl8Uf7/ooNxd7zsCrwPh5jQXuyNGY1UcoIcJslo8=;
+        b=nZWxqwfds0dh6DlziJaKAtAcWlI6acFC7USVIU0D6Ie1MMu8vcjffT5i2CVH/BFu5s
+         ROM4SXjrbQGdiYorttIZNidblkQIKsDtCorSZBvKNliMU/w8Qkb20BX2I/tOpKhdngXy
+         tsMLpPYh2Z1zPTbd6Fbm+RoxgzorYZiSMEKfJBGnWpTBn9CkrsJDAdLLYGvLyGZQJ3/q
+         XCr4TdMu9G2l3UsFiHy5g8A56CAj9mAXst1lGgQs4Kd5K7UuQZY9Sny2Eqm/dMcEOMcm
+         EQQtSBsepxzvTe/WWwUj4ueYTauaiUts7cVhBBTX7Ab3ZZqjand+PhUG3A4S/gFkw3Hm
+         7eqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=aIIejwdHeDDVAQutFVPUTVEmKRtuiDh0GaaeD6G2cSc=;
-        b=hdI10XxhFVw9ZDgPp5BkWSHs8/+EUu/nnp8sDP9eTyouxqZDo0KFkQt7llHtSAfWHO
-         3Y22da8fxqyvH9TQI14IUycZ9owt/PRCSOC5SyOWW/NItT72W3JrsBlGEPCVsT2fwMNz
-         yj15bRqeN935Rx6gDmezdew81MSQ//ACYMy55UuJpUqc5ERBZHnO8EY03JVxr/jM8aw1
-         6f9+JsZSR8Gp1002jcmBV89wy2TUJLrKXYOCdAiEkouv1cSZtI2eeDnlC5KobClXxa5/
-         MKUN/Y/pjsyJYpZ6aBBBNMM+mb6YkdC6QNk1wHzcsIrEChql+8Q8VYSSoCYvqaXg+nSz
-         ErqA==
-X-Gm-Message-State: AOAM533rOuZPfGT0ZJvKkcUL9H28G4yNFio/P/1d9KezoJHPhLi+uAsD
-        ahdM3AW5ayk1sN40PZb9MYDcX50QkYs=
-X-Google-Smtp-Source: ABdhPJxxVjt18YalzozWIfOL2/iDku5SepByPAveYkR49+IRRaZm9BGh8uy8wN+mQjNpNICOGwTthg==
-X-Received: by 2002:a5d:64ab:: with SMTP id m11mr5334312wrp.336.1625224545060;
-        Fri, 02 Jul 2021 04:15:45 -0700 (PDT)
+        bh=APyfl8Uf7/ooNxd7zsCrwPh5jQXuyNGY1UcoIcJslo8=;
+        b=daKSPfxZ/BpjuxdduIOIT1uNWAQIG8tS6NmUjsqKKqTioc+MNLK7pIxBM/6II0vnho
+         OQCcYM8HZhHKYA3vLiz4alYUViGgvTKuJ3ZBJfNjz23H3XWvgAqqWhXsl0MzlMdJtfyh
+         uHQSCKyePs62G7njCAtSNs59iQLHS//GoL0P1Un22APXpeX3Z4rWl2tW94yLp+DAjwZJ
+         9ppTywrvVruWWEjnO+zI71uT1msR2mSlgqjoMVlBarDR8jYlfn902n50Ug1oQ6XUZ2j1
+         M2Lm7DtD0EqZuFLoELgb5Qz2+jAx1BGWMxn2YlNFFIc3ANchjEteKlagD8f72L/WhBSG
+         CCBg==
+X-Gm-Message-State: AOAM532isv39PWWKRIYj0EZ4lwU5a97yiRDgAi/YECqiTqpkAZleqk+f
+        Pb3BADziqGTbMy8wOeSMoqnr3lSpGtw=
+X-Google-Smtp-Source: ABdhPJys0chnQ6sYLy7sABbiZUiXfPSwKW9pHI4KqhHy7ZUyLp4APaLV+/lbwI+OPKnpjc90eg863w==
+X-Received: by 2002:a1c:a704:: with SMTP id q4mr4863543wme.112.1625224673786;
+        Fri, 02 Jul 2021 04:17:53 -0700 (PDT)
 Received: from [10.93.171.151] ([146.247.46.134])
-        by smtp.gmail.com with ESMTPSA id s7sm2864761wrp.97.2021.07.02.04.15.44
+        by smtp.gmail.com with ESMTPSA id y20sm12088561wmi.31.2021.07.02.04.17.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Jul 2021 04:15:44 -0700 (PDT)
-Subject: Re: [PATCH v4 5/7] libtracefs: Implement tracefs_kprobe_clear_all()
- to remove all kprobes
+        Fri, 02 Jul 2021 04:17:53 -0700 (PDT)
+Subject: Re: [PATCH] libtracefs: Fix tracefs_event_enable/disable() to not
+ have open regex
 To:     Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org
-References: <20210702035443.154729-1-rostedt@goodmis.org>
- <20210702035443.154729-6-rostedt@goodmis.org>
+        "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>
+References: <20210629164046.48f8b323@oasis.local.home>
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <e01fb2ef-a51f-f573-3869-829dd93f777d@gmail.com>
-Date:   Fri, 2 Jul 2021 14:15:44 +0300
+Message-ID: <48ad3a02-f4bf-1579-df6a-f4dc206a7e4e@gmail.com>
+Date:   Fri, 2 Jul 2021 14:17:52 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210702035443.154729-6-rostedt@goodmis.org>
+In-Reply-To: <20210629164046.48f8b323@oasis.local.home>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,146 +81,77 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 
 
-On 2.07.21 г. 6:54, Steven Rostedt wrote:
+On 29.06.21 г. 23:40, Steven Rostedt wrote:
 > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 > 
-> A call to tracefs_kprobe_clear_all() will attempt to disable all kprobes. If
-> any kprobe is set, and the @force parameter is set, it will fail with
-> errno set to EBUSY. If @force is set, then it will attempt to disable all
-> the defined kprobe events and then clear it.
+> Found that calling tracefs_event_enable/disable() will match all content
+> of the passed in strings and not just what is passed in.
 > 
+> That is, if you have two events, "open" and "open2", and call
+> 
+>   tracefs_event_enable(NULL, NULL, "open");
+> 
+> it will match both the "open" event as well as the "open2" event. This is
+> because the regex is open ended.
+> 
+> To fix this, add a '^' to the beginning of the match and a '$' to the end
+> (if they do not already exist).
+> 
+> Fixes: fc94d1a8 ("libtracefs: Add tracefs_event_enable/disable() API")
 > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 > ---
->   include/tracefs.h     |   1 +
->   src/tracefs-kprobes.c | 103 ++++++++++++++++++++++++++++++++++++++++++
->   2 files changed, 104 insertions(+)
+>   src/tracefs-events.c | 23 ++++++++++++++++++++++-
+>   1 file changed, 22 insertions(+), 1 deletion(-)
 > 
-> diff --git a/include/tracefs.h b/include/tracefs.h
-> index 5f59c480d572..3b57c596feab 100644
-> --- a/include/tracefs.h
-> +++ b/include/tracefs.h
-> @@ -220,4 +220,5 @@ int tracefs_kprobe_raw(const char *system, const char *event,
->   int tracefs_kretprobe_raw(const char *system, const char *event,
->   			  const char *addr, const char *format);
->   char **tracefs_get_kprobes(void);
-> +int tracefs_kprobe_clear_all(bool force);
->   #endif /* _TRACE_FS_H */
-> diff --git a/src/tracefs-kprobes.c b/src/tracefs-kprobes.c
-> index e875d6e8a65f..fe61a25baa10 100644
-> --- a/src/tracefs-kprobes.c
-> +++ b/src/tracefs-kprobes.c
-> @@ -169,3 +169,106 @@ char **tracefs_get_kprobes(void)
->   	list = NULL;
->   	goto out;
+> diff --git a/src/tracefs-events.c b/src/tracefs-events.c
+> index 0fef64f..b6d3136 100644
+> --- a/src/tracefs-events.c
+> +++ b/src/tracefs-events.c
+> @@ -828,6 +828,26 @@ static int enable_disable_all(struct tracefs_instance *instance,
+>   	return ret < 0 ? ret : 0;
 >   }
+>   
+> +static int make_regex(regex_t *re, const char *match)
+> +{
+> +	int len = strlen(match);
+> +	char str[len + 3];
+> +	char *p = &str[0];
 > +
-> +struct instance_list {
-> +	struct instance_list	*next;
-> +	struct tracefs_instance	*instance;
-> +};
+> +	if (!len || match[0] != '^')
+> +		*(p++) = '^';
+> +
+> +	strcpy(p, match);
+> +	p += len;
+> +
+> +	if (!len || match[len-1] != '$')
+> +		*(p++) = '$';
+> +
+> +	*p = '\0';
+> +
+> +	return regcomp(re, str, REG_ICASE|REG_NOSUB);
+> +}
+> +
+>   static int event_enable_disable(struct tracefs_instance *instance,
+>   				const char *system, const char *event,
+>   				bool enable)
+> @@ -847,12 +867,13 @@ static int event_enable_disable(struct tracefs_instance *instance,
+>   		goto out_free;
+>   
+>   	if (system) {
+> +		ret = make_regex(&system_re, system);
+>   		ret = regcomp(&system_re, system, REG_ICASE|REG_NOSUB);
 
-This is not used in this source file. I see that it was moved to 
-tracefs-instance.c
-
+I think we forgot to remove the line above.
 Thanks!
 Y.
 
-> +
-> +static void disable_events(const char *system, const char *event,
-> +			   char **list)
-> +{
-> +	struct tracefs_instance *instance;
-> +	int i;
-> +
-> +	/*
-> +	 * Note, this will not fail even on error.
-> +	 * That is because even if something fails, it may still
-> +	 * work enough to clear the kprobes. If that's the case
-> +	 * the clearing after the loop will succeed and the function
-> +	 * is a success, even though other parts had failed. If
-> +	 * one of the kprobe events is enabled in one of the
-> +	 * instances that fail, then the clearing will fail too
-> +	 * and the function will return an error.
-> +	 */
-> +
-> +	tracefs_event_disable(NULL, system, event);
-> +	/* No need to test results */
-> +
-> +	if (!list)
-> +		return;
-> +
-> +	for (i = 0; list[i]; i++) {
-> +		instance = tracefs_instance_alloc(NULL, list[i]);
-> +		/* If this fails, try the next one */
-> +		if (!instance)
-> +			continue;
-> +		tracefs_event_disable(instance, system, event);
-> +		tracefs_instance_free(instance);
-> +	}
-> +	return;
-> +}
-> +
-> +/**
-> + * tracefs_kprobe_clear_all - clear kprobe events
-> + * @force: Will attempt to disable all kprobe events and clear them
-> + *
-> + * Will remove all defined kprobe events. If any of them are enabled,
-> + * and @force is not set, then it will error with -1 and errno to be
-> + * EBUSY. If @force is set, then it will attempt to disable all the kprobe
-> + * events in all instances, and try again.
-> + *
-> + * Returns zero on success, -1 otherwise.
-> + */
-> +int tracefs_kprobe_clear_all(bool force)
-> +{
-> +	char **instance_list;
-> +	char **kprobe_list;
-> +	char *saveptr;
-> +	char *system;
-> +	char *kprobe;
-> +	char *event;
-> +	int ret;
-> +	int i;
-> +
-> +	ret = tracefs_instance_file_clear(NULL, KPROBE_EVENTS);
-> +	if (!ret)
-> +		return 0;
-> +
-> +	if (!force)
-> +		return -1;
-> +
-> +	kprobe_list = tracefs_get_kprobes();
-> +	if (!kprobe_list)
-> +		return -1;
-> +
-> +	instance_list = tracefs_instances(NULL);
-> +	/*
-> +	 * Even if the above failed and instance_list is NULL,
-> +	 * keep going, as the enabled event may simply be in the
-> +	 * top level.
-> +	 */
-> +
-> +	for (i = 0; kprobe_list[i]; i++) {
-> +		kprobe = kprobe_list[i];
-> +
-> +		system = strtok_r(kprobe, "/", &saveptr);
-> +		if (!system)
-> +			goto out;
-> +
-> +		event = strtok_r(NULL," ", &saveptr);
-> +		if (!event)
-> +			goto out;
-> +
-> +		disable_events(system, event, instance_list);
-> +
-> +		ret = tracefs_instance_file_clear(NULL, KPROBE_EVENTS);
-> +		/* On success stop the loop */
-> +		if (!ret)
-> +			goto out;
-> +	}
-> + out:
-> +	tracefs_list_free(instance_list);
-> +	tracefs_list_free(kprobe_list);
-> +	return ret;
-> +}
+>   		if (ret < 0)
+>   			goto out_free;
+>   	}
+>   	if (event) {
+> -		ret = regcomp(&event_re, event, REG_ICASE|REG_NOSUB);
+> +		ret = make_regex(&event_re, event);
+>   		if (ret < 0) {
+>   			if (system)
+>   				regfree(&system_re);
 > 
