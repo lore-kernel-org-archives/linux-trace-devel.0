@@ -2,76 +2,70 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-20.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B3E3C11F68
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jul 2021 03:54:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E42DC11F68
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jul 2021 03:57:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6E14F61430
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jul 2021 03:54:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 284B76140A
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jul 2021 03:57:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235054AbhGBD5U (ORCPT
+        id S229536AbhGBEAF (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 1 Jul 2021 23:57:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56450 "EHLO mail.kernel.org"
+        Fri, 2 Jul 2021 00:00:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235044AbhGBD5S (ORCPT
+        id S229499AbhGBEAE (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 1 Jul 2021 23:57:18 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        Fri, 2 Jul 2021 00:00:04 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6331A61424;
-        Fri,  2 Jul 2021 03:54:46 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
-        (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1lzAGL-000eHQ-C3; Thu, 01 Jul 2021 23:54:45 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E9C16140A
+        for <linux-trace-devel@vger.kernel.org>; Fri,  2 Jul 2021 03:57:33 +0000 (UTC)
+Date:   Thu, 1 Jul 2021 23:57:31 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v4 7/7] libtracefs: Add man pages for kprobe functions
-Date:   Thu,  1 Jul 2021 23:54:43 -0400
-Message-Id: <20210702035443.154729-8-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210702035443.154729-1-rostedt@goodmis.org>
-References: <20210702035443.154729-1-rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] libtracefs: Add man pages for tracefs_error_*() functions
+Message-ID: <20210701235731.26c5441c@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add man pages that describe the following functions:
+Add a man page for the following functions:
 
-    tracefs_kprobe_raw
-    tracefs_kretprobe_raw
-    tracefs_get_kprobes
-    tracefs_kprobe_clear_all
-    tracefs_kprobe_clear_probe
+    tracefs_error_last()
+    tracefs_error_all()
+    tracefs_error_clear()
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Documentation/libtracefs-kprobes.txt | 275 +++++++++++++++++++++++++++
- 1 file changed, 275 insertions(+)
- create mode 100644 Documentation/libtracefs-kprobes.txt
+ Documentation/libtracefs-error.txt | 132 +++++++++++++++++++++++++++++
+ 1 file changed, 132 insertions(+)
+ create mode 100644 Documentation/libtracefs-error.txt
 
-diff --git a/Documentation/libtracefs-kprobes.txt b/Documentation/libtracefs-kprobes.txt
+diff --git a/Documentation/libtracefs-error.txt b/Documentation/libtracefs-error.txt
 new file mode 100644
-index 000000000000..0787382ae8b2
+index 0000000..3f6a154
 --- /dev/null
-+++ b/Documentation/libtracefs-kprobes.txt
-@@ -0,0 +1,275 @@
++++ b/Documentation/libtracefs-error.txt
+@@ -0,0 +1,132 @@
 +libtracefs(3)
 +=============
 +
 +NAME
 +----
-+tracefs_kprobe_raw, tracefs_kretprobe_raw, tracefs_get_kprobes, tracefs_kprobe_clear_all, tracefs_kprobe_clear_probe - Create, list, and destroy kprobes
++tracefs_error_last, tracefs_error_all, tracefs_error_clear -
++functions to read and clear the tracefs error log.
 +
 +SYNOPSIS
 +--------
@@ -79,77 +73,33 @@ index 000000000000..0787382ae8b2
 +--
 +*#include <tracefs.h>*
 +
-+int tracefs_kprobe_raw(const char pass:[*]system, const char pass:[*]event, const char pass:[*]addr, const char pass:[*]format);
-+int tracefs_kretprobe_raw(const char pass:[*]system, const char pass:[*]event, const char pass:[*]addr, const char pass:[*]format);
-+char pass:[*]pass:[*]tracefs_get_kprobes(void);
-+int tracefs_kprobe_clear_all(bool force);
-+int tracefs_kprobe_clear_probe(const char pass:[*]system, const char pass:[*]event, bool force);
++char pass:[*]*tracefs_error_last*(struct tracefs_instance pass:[*]_instance_);
++char pass:[*]*tracefs_error_last*(struct tracefs_instance pass:[*]_instance_);
++int *tracefs_error_clear*(struct tracefs_instance pass:[*]_instance_);
 +--
 +
 +DESCRIPTION
 +-----------
-+*tracefs_kprobe_raw*() will create a kprobe event. If _system_ is NULL, then
-+the default "kprobes" is used for the group (event system). Otherwise if _system_
-+is specified then the kprobe will be created under the group by that name. The
-+_event_ is the name of the kprobe event to create. The _addr_ can be a function,
-+a function and offset, or a kernel address. This is where the location of the
-+kprobe will be inserted in the kernel. The _format_ is the kprobe format as
-+specified as FETCHARGS in the Linux kernel source in the Documentation/trace/kprobetrace.rst
-+document.
++The *tracefs_error_last*() returns the last error message in the tracefs
++error log. Several actions that require proper syntax written into the
++tracefs file system may produce error messages in the error log. This
++function will show the most recent error in the error log.
 +
-+*tracefs_kretprobe_raw*() is the same as *tracefs_kprobe_raw()*, except that it
-+creates a kretprobe instead of a kprobe. The difference is also described
-+in the Linux kernel source in the Documentation/trace/kprobetrace.rst file.
++The *tracefs_error_all*() returns all messages saved in the error log.
++Note, this may not be all messages that were ever produced, as the kernel
++only keeps a limited amount of messages, and older ones may be discarded
++by the kernel.
 +
-+*tracefs_get_kprobes*() returns an array of strings (char pass:[*]) that contain
-+the registered kprobes and kretprobes. The names are in the "system/event" format.
-+That is, one string holds both the kprobe's name as well as the group it is
-+defined under. These strings are allocated and may be modified with the
-+*strtok*(3) and *strtok_r*(3) functions. The string returned must be freed with
-+*tracefs_list_free*(3).
-+
-+*tracefs_kprobe_clear_all*() will try to remove all kprobes that have been
-+registered. If the @force flag is set, it will then disable those kprobe events
-+if they are enabled and then try to clear the kprobes.
-+
-+*tracefs_kprobe_clear_probe*() will try to clear specified kprobes. If _system_
-+is NULL, then it will only clear the default kprobes under the "kprobes" group.
-+If _event_ is NULL, it will clear all kprobes under the given _system_. If the
-+_force_ flag is set, then it will disable the given kprobe events before clearing
-+them.
++The *tracefs_error_clear*() will clear the error log.
 +
 +RETURN VALUE
 +------------
++Both *tracefs_error_last*() and *tracefs_error_all*() will return an allocated
++string an error exists in the log, otherwise NULL is returned. If an error
++occurs, errno will be set, otherwise if there is no error messages to display
++then errno is not touched.
 +
-+*tracefs_kprobe_raw*(), *tracefs_kretprobe_raw*(), *tracefs_kprobe_clear_all*(),
-+and *tracefs_kprobe_clear_probe*() return 0 on success, or -1 on error.
-+
-+If a parsing error occurs on *tracefs_kprobe_raw*() or *tracefs_kretprobe_raw*()
-+then *tracefs_error_last*(3) may be used to retrieve the error message explaining
-+the parsing issue.
-+
-+*tracefs_get_kprobes*() returns an allocate string list of allocated strings
-+on success that must be freed with *tracefs_list_free*(3) and returns
-+NULL on error.
-+
-+ERRORS
-+------
-+The following errors are for all the above calls:
-+
-+*EPERM* Not run as root user
-+
-+*ENODEV* Kprobe events are not configured for the running kernel.
-+
-+*ENOMEM* Memory allocation error.
-+
-+*tracefs_kprobe_raw*(), *tracefs_kretprobe_raw*() can fail with the following errors:
-+
-+*EBADMSG* Either _addr_ or _format_ are NULL.
-+
-+*EINVAL*  Most likely a parsing error occurred (use *tracefs_error_last*(3) to possibly
-+          see what that error was).
-+
-+Other errors may also happen caused by internal system calls.
++*tracefs_error_clear*() returns 0 on success or -1 on error.
 +
 +EXAMPLE
 +-------
@@ -157,150 +107,51 @@ index 000000000000..0787382ae8b2
 +--
 +#include <stdlib.h>
 +#include <unistd.h>
-+#include <sys/wait.h>
++#include <errno.h>
 +
 +#include <tracefs/tracefs.h>
 +
-+static struct tep_event *open_event;
-+static struct tep_format_field *file_field;
-+
-+static struct tep_event *openret_event;
-+static struct tep_format_field *ret_field;
-+
-+static int callback(struct tep_event *event, struct tep_record *record,
-+		    int cpu, void *data)
-+{
-+	struct trace_seq seq;
-+
-+	trace_seq_init(&seq);
-+	tep_print_event(event->tep, &seq, record, "%d-%s: ", TEP_PRINT_PID, TEP_PRINT_COMM);
-+
-+	if (event->id == open_event->id) {
-+		trace_seq_puts(&seq, "open file='");
-+		tep_print_field(&seq, record->data, file_field);
-+		trace_seq_puts(&seq, "'\n");
-+	} else if (event->id == openret_event->id) {
-+		unsigned long long ret;
-+		tep_read_number_field(ret_field, record->data, &ret);
-+		trace_seq_printf(&seq, "open ret=%lld\n", ret);
-+	} else {
-+		goto out;
-+	}
-+
-+	trace_seq_terminate(&seq);
-+	trace_seq_do_printf(&seq);
-+out:
-+	trace_seq_destroy(&seq);
-+
-+	return 0;
-+}
-+
-+static pid_t run_exec(char **argv, char **env)
-+{
-+	pid_t pid;
-+
-+	pid = fork();
-+	if (pid)
-+		return pid;
-+
-+	execve(argv[0], argv, env);
-+	perror("exec");
-+	exit(-1);
-+}
-+
-+const char *mykprobe = "my_kprobes";
-+
-+enum kprobe_type {
-+	KPROBE,
-+	KRETPROBE,
-+};
-+
-+static void __kprobe_create(enum kprobe_type type, const char *event,
-+			    const char *addr, const char *fmt)
-+{
-+	char *err;
-+	int r;
-+
-+	if (type == KPROBE)
-+		r = tracefs_kprobe_raw(mykprobe, event, addr, fmt);
-+	else
-+		r = tracefs_kretprobe_raw(mykprobe, event, addr, fmt);
-+	if (r < 0) {
-+		err = tracefs_error_last(NULL);
-+		perror("Failed to create kprobe:");
-+		if (err && strlen(err))
-+			fprintf(stderr, "%s\n", err);
-+	}
-+}
-+
-+static void kprobe_create(const char *event, const char *addr,
-+			  const char *fmt)
-+{
-+	__kprobe_create(KPROBE, event, addr, fmt);
-+}
-+
-+static void kretprobe_create(const char *event, const char *addr,
-+			     const char *fmt)
-+{
-+	__kprobe_create(KRETPROBE, event, addr, fmt);
-+}
-+
 +int main (int argc, char **argv, char **env)
 +{
-+	struct tracefs_instance *instance;
-+	struct tep_handle *tep;
-+	const char *sysnames[] = { mykprobe, NULL };
-+	pid_t pid;
++	char *system = NULL;
++	char *kprobe;
++	char *format;
++	char *addr;
++	int arg = 1;
++	int ret;
 +
-+	if (argc < 2) {
-+		printf("usage: %s command\n", argv[0]);
++	if (argc < 4) {
++		printf("usage: %s [system] kprobe addr fmt\n", argv[0]);
 +		exit(-1);
 +	}
 +
-+	instance = tracefs_instance_create("exec_open");
-+	if (!instance) {
-+		perror("creating instance");
-+		exit(-1);
++	if (argc > 5)
++		system = argv[arg++];
++
++	kprobe = argv[arg++];
++	addr = argv[arg++];
++	format = argv[arg++];
++
++	tracefs_error_clear(NULL);
++	tracefs_kprobe_clear_probe(system, kprobe, true);
++
++	ret = tracefs_kprobe_raw(system, kprobe, addr, format);
++	if (ret < 0) {
++		char *err;
++
++		perror("Failed creating kprobe");
++		errno = 0;
++		err = tracefs_error_last(NULL);
++		if (err)
++			fprintf(stderr, "%s\n", err);
++		else if (errno)
++			perror("Failed reading error log");
++		free(err);
 +	}
 +
-+	tracefs_kprobe_clear_probe(mykprobe, NULL, true);
-+
-+	kprobe_create("open", "do_sys_openat2",
-+		      "file=+0($arg2):ustring flags=+0($arg3):x64 mode=+8($arg3):x64\n");
-+
-+	kretprobe_create("openret", "do_sys_openat2", "ret=%ax");
-+
-+	tep = tracefs_local_events_system(NULL, sysnames);
-+	if (!tep) {
-+		perror("reading events");
-+		exit(-1);
-+	}
-+	open_event = tep_find_event_by_name(tep, mykprobe, "open");
-+	file_field = tep_find_field(open_event, "file");
-+
-+	openret_event = tep_find_event_by_name(tep, mykprobe, "openret");
-+	ret_field = tep_find_field(openret_event, "ret");
-+
-+	tracefs_event_enable(instance, mykprobe, NULL);
-+	pid = run_exec(&argv[1], env);
-+
-+	/* Let the child start to run */
-+	sched_yield();
-+
-+	do {
-+		tracefs_load_cmdlines(NULL, tep);
-+		tracefs_iterate_raw_events(tep, instance, NULL, 0, callback, NULL);
-+	} while (waitpid(pid, NULL, WNOHANG) != pid);
-+
-+	/* Will disable the events */
-+	tracefs_kprobe_clear_probe(mykprobe, NULL, true);
-+	tracefs_instance_destroy(instance);
-+	tep_free(tep);
-+
-+	return 0;
++	exit(ret);
 +}
 +--
-+
 +FILES
 +-----
 +[verse]
@@ -323,7 +174,6 @@ index 000000000000..0787382ae8b2
 +--
 +*Steven Rostedt* <rostedt@goodmis.org>
 +*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>
-+*sameeruddin shaik* <sameeruddin.shaik8@gmail.com>
 +--
 +REPORTING BUGS
 +--------------
@@ -342,5 +192,5 @@ index 000000000000..0787382ae8b2
 +Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
 +the terms of the GNU Public License (GPL).
 -- 
-2.30.2
+2.31.1
 
