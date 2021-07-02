@@ -7,34 +7,34 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DD01C11F6A
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jul 2021 03:54:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6901EC11F68
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jul 2021 03:54:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2465961420
+	by mail.kernel.org (Postfix) with ESMTP id 5045F61420
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jul 2021 03:54:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235059AbhGBD5S (ORCPT
+        id S235033AbhGBD5T (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 1 Jul 2021 23:57:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56432 "EHLO mail.kernel.org"
+        Thu, 1 Jul 2021 23:57:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235054AbhGBD5R (ORCPT
+        id S235017AbhGBD5R (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 1 Jul 2021 23:57:17 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5FF5D61422;
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E6476141A;
         Fri,  2 Jul 2021 03:54:46 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1lzAGL-000eHE-8G; Thu, 01 Jul 2021 23:54:45 -0400
+        id 1lzAGL-000eHN-As; Thu, 01 Jul 2021 23:54:45 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v4 3/7] libtracefs: Implement tracefs_kretprobe_raw()
-Date:   Thu,  1 Jul 2021 23:54:39 -0400
-Message-Id: <20210702035443.154729-4-rostedt@goodmis.org>
+Subject: [PATCH v4 6/7] libtracefs: Implement tracefs_kprobe_clear_probe()
+Date:   Thu,  1 Jul 2021 23:54:42 -0400
+Message-Id: <20210702035443.154729-7-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210702035443.154729-1-rostedt@goodmis.org>
 References: <20210702035443.154729-1-rostedt@goodmis.org>
@@ -46,139 +46,188 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add an interface that is similar to tracefs_kprobe_raw() but creates a
-"kretprobe". The difference between a kprobe and a kretprobe is that a
-kretprobe comes at the end of a function.
+Add the function tracefs_kprobe_clear_probe() that will remove a single
+kprobe. If the @force parameter is set, it will disable that probe in all
+instances (including the top level instance) before removing it.
 
-See Documentation/trace/kprobetrace.rst in the Linux kernel source code
-for more information. Note, kprobes are started with "p" and kretprobe
-lines start with an "r".
+If the @event parameter is NULL, then it will clear all events that are
+defined by the @system parameter. If the @system parameter is NULL,
+then it will use the default "kprobes" group.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/tracefs.h     |  3 +-
- src/tracefs-kprobes.c | 85 ++++++++++++++++++++++++++++++-------------
- 2 files changed, 61 insertions(+), 27 deletions(-)
+ include/tracefs.h     |   1 +
+ src/tracefs-kprobes.c | 123 +++++++++++++++++++++++++++++++++---------
+ 2 files changed, 100 insertions(+), 24 deletions(-)
 
 diff --git a/include/tracefs.h b/include/tracefs.h
-index bc504bcb0188..64164c8c2b20 100644
+index 3b57c596feab..2771fad6d0ef 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
-@@ -217,5 +217,6 @@ void tracefs_trace_pipe_stop(struct tracefs_instance *instance);
- 
- int tracefs_kprobe_raw(const char *system, const char *event,
- 		       const char *addr, const char *format);
--
-+int tracefs_kretprobe_raw(const char *system, const char *event,
-+			  const char *addr, const char *format);
+@@ -221,4 +221,5 @@ int tracefs_kretprobe_raw(const char *system, const char *event,
+ 			  const char *addr, const char *format);
+ char **tracefs_get_kprobes(void);
+ int tracefs_kprobe_clear_all(bool force);
++int tracefs_kprobe_clear_probe(const char *system, const char *event, bool force);
  #endif /* _TRACE_FS_H */
 diff --git a/src/tracefs-kprobes.c b/src/tracefs-kprobes.c
-index d50191d55181..4970620b28f2 100644
+index fe61a25baa10..7ca34fe6c7b7 100644
 --- a/src/tracefs-kprobes.c
 +++ b/src/tracefs-kprobes.c
-@@ -19,28 +19,9 @@
- 
- #define KPROBE_EVENTS "kprobe_events"
+@@ -209,18 +209,17 @@ static void disable_events(const char *system, const char *event,
+ 	return;
+ }
  
 -/**
-- * tracefs_kprobe_raw - Create a kprobe using raw format
-- * @system: The system name (NULL for the default kprobes)
-- * @event: The event to create (NULL to use @addr for the event)
-- * @addr: The function and offset (or address) to insert the probe
-- * @format: The raw format string to define the probe.
+- * tracefs_kprobe_clear_all - clear kprobe events
+- * @force: Will attempt to disable all kprobe events and clear them
 - *
-- * Create a kprobe that will be in the @system group (or kprobes if
-- * @system is NULL). Have the name of @event (or @addr if @event is
-- * NULL). Will be inserted to @addr (function name, with or without
-- * offset, or a address). And the @format will define the raw format
-- * of the kprobe. See the Linux documentation file under:
-- * Documentation/trace/kprobetrace.rst
+- * Will remove all defined kprobe events. If any of them are enabled,
+- * and @force is not set, then it will error with -1 and errno to be
+- * EBUSY. If @force is set, then it will attempt to disable all the kprobe
+- * events in all instances, and try again.
 - *
-- * Return 0 on success, or -1 on error.
-- *   If the syntex of @format was incorrect, running
-- *   tracefs_error_last(NULL) may show what went wrong.
-- *
-- * errno will be set to EBADMSG if addr or format is NULL.
+- * Returns zero on success, -1 otherwise.
 - */
--int tracefs_kprobe_raw(const char *system, const char *event,
--		       const char *addr, const char *format)
-+static int insert_kprobe(const char *type, const char *system,
-+			 const char *event, const char *addr,
-+			 const char *format)
+-int tracefs_kprobe_clear_all(bool force)
++static int clear_kprobe(const char *system, const char *event)
++{
++	/* '-' + ':' + '/' + '\n' + '\0' = 5 bytes */
++	int len = strlen(system) + strlen(event) + 5;
++	char content[len];
++
++	sprintf(content, "-:%s/%s", system, event);
++	return tracefs_instance_file_append(NULL, KPROBE_EVENTS, content);
++}
++
++static int kprobe_clear_probes(const char *group, bool force)
  {
- 	char *str;
+ 	char **instance_list;
+ 	char **kprobe_list;
+@@ -231,13 +230,6 @@ int tracefs_kprobe_clear_all(bool force)
  	int ret;
-@@ -56,11 +37,11 @@ int tracefs_kprobe_raw(const char *system, const char *event,
- 		event = addr;
+ 	int i;
  
- 	if (system)
--		ret = asprintf(&str, "p:%s/%s %s %s\n",
--			       system, event, addr, format);
-+		ret = asprintf(&str, "%s:%s/%s %s %s\n",
-+			       type, system, event, addr, format);
- 	else
--		ret = asprintf(&str, "p:%s %s %s\n",
--			       event, addr, format);
-+		ret = asprintf(&str, "%s:%s %s %s\n",
-+			       type, event, addr, format);
- 
- 	if (ret < 0)
+-	ret = tracefs_instance_file_clear(NULL, KPROBE_EVENTS);
+-	if (!ret)
+-		return 0;
+-
+-	if (!force)
+-		return -1;
+-
+ 	kprobe_list = tracefs_get_kprobes();
+ 	if (!kprobe_list)
  		return -1;
-@@ -70,3 +51,55 @@ int tracefs_kprobe_raw(const char *system, const char *event,
+@@ -249,6 +241,13 @@ int tracefs_kprobe_clear_all(bool force)
+ 	 * top level.
+ 	 */
  
- 	return ret < 0 ? ret : 0;
++	/*
++	 * If a system is defined, the default is to pass unless
++	 * an event fails to be removed. If a system is not defined,
++	 * the default is to fail, unless all are removed.
++	 */
++	ret = group ? 0 : -1;
++
+ 	for (i = 0; kprobe_list[i]; i++) {
+ 		kprobe = kprobe_list[i];
+ 
+@@ -260,15 +259,91 @@ int tracefs_kprobe_clear_all(bool force)
+ 		if (!event)
+ 			goto out;
+ 
+-		disable_events(system, event, instance_list);
++		/* Skip if this does not match a given system */
++		if (group && strcmp(system, group) != 0)
++			continue;
+ 
+-		ret = tracefs_instance_file_clear(NULL, KPROBE_EVENTS);
+-		/* On success stop the loop */
+-		if (!ret)
+-			goto out;
++		if (force)
++			disable_events(system, event, instance_list);
++
++		if (group) {
++			ret = clear_kprobe(system, event);
++			if (ret < 0)
++				goto out;
++		} else {
++			ret = tracefs_instance_file_clear(NULL, KPROBE_EVENTS);
++			/* On success stop the loop */
++			if (!ret)
++				goto out;
++		}
++
++		/* Set the default for whether a system is defined or not */
++		ret = group ? 0 : -1;
+ 	}
+  out:
+ 	tracefs_list_free(instance_list);
+ 	tracefs_list_free(kprobe_list);
+ 	return ret;
  }
 +
 +/**
-+ * tracefs_kprobe_raw - Create a kprobe using raw format
-+ * @system: The system name (NULL for the default kprobes)
-+ * @event: The event to create (NULL to use @addr for the event)
-+ * @addr: The function and offset (or address) to insert the probe
-+ * @format: The raw format string to define the probe.
++ * tracefs_kprobe_clear_all - clear kprobe events
++ * @force: Will attempt to disable all kprobe events and clear them
 + *
-+ * Create a kprobe that will be in the @system group (or kprobes if
-+ * @system is NULL). Have the name of @event (or @addr if @event is
-+ * NULL). Will be inserted to @addr (function name, with or without
-+ * offset, or a address). And the @format will define the raw format
-+ * of the kprobe. See the Linux documentation file under:
-+ * Documentation/trace/kprobetrace.rst
++ * Will remove all defined kprobe events. If any of them are enabled,
++ * and @force is not set, then it will error with -1 and errno to be
++ * EBUSY. If @force is set, then it will attempt to disable all the kprobe
++ * events in all instances, and try again.
 + *
-+ * Return 0 on success, or -1 on error.
-+ *   If the syntex of @format was incorrect, running
-+ *   tracefs_error_last(NULL) may show what went wrong.
-+ *
-+ * errno will be set to EBADMSG if addr or format is NULL.
++ * Returns zero on success, -1 otherwise.
 + */
-+int tracefs_kprobe_raw(const char *system, const char *event,
-+		       const char *addr, const char *format)
++int tracefs_kprobe_clear_all(bool force)
 +{
-+	return insert_kprobe("p", system, event, addr, format);
++	if (tracefs_instance_file_clear(NULL, KPROBE_EVENTS) == 0)
++		return 0;
++
++	if (!force)
++		return -1;
++
++	/* Attempt to disable all kprobe events */
++	return kprobe_clear_probes(NULL, force);
 +}
 +
 +/**
-+ * tracefs_kretprobe_raw - Create a kretprobe using raw format
-+ * @system: The system name (NULL for the default kprobes)
-+ * @event: The event to create (NULL to use @addr for the event)
-+ * @addr: The function and offset (or address) to insert the retprobe
-+ * @format: The raw format string to define the retprobe.
++ * tracefs_kprobe_clear_all - clear kprobe events
++ * @system: System to clear (NULL means default)
++ * @event: Name of probe to clear in system (NULL for all probes in system)
++ * @force: Will attempt to disable all kprobe events and clear them
 + *
-+ * Create a kretprobe that will be in the @system group (or kprobes if
-+ * @system is NULL). Have the name of @event (or @addr if @event is
-+ * NULL). Will be inserted to @addr (function name, with or without
-+ * offset, or a address). And the @format will define the raw format
-+ * of the kprobe. See the Linux documentation file under:
-+ * Documentation/trace/kprobetrace.rst
++ * Will remove the kprobes that match the @system and @event. If @system
++ * is NULL, then "kprobes" is used and will ignore all other system
++ * groups of kprobes. The @event is NULL then all events under the given
++ * @system are removed, otherwise only the event that matches.
 + *
-+ * Return 0 on success, or -1 on error.
-+ *   If the syntex of @format was incorrect, running
-+ *   tracefs_error_last(NULL) may show what went wrong.
-+ *
-+ * errno will be set to EBADMSG if addr or format is NULL.
++ * Returns zero on success, -1 otherwise.
 + */
-+int tracefs_kretprobe_raw(const char *system, const char *event,
-+			  const char *addr, const char *format)
++int tracefs_kprobe_clear_probe(const char *system, const char *event, bool force)
 +{
-+	return insert_kprobe("r", system, event, addr, format);
++	char **instance_list;
++	int ret;
++
++	if (!system)
++		system = "kprobes";
++
++	if (!event)
++		return kprobe_clear_probes(system, force);
++
++	/*
++	 * Since we know we are disabling a specific event, try
++	 * to disable it first before clearing it.
++	 */
++	if (force) {
++		instance_list = tracefs_instances(NULL);
++		disable_events(system, event, instance_list);
++		tracefs_list_free(instance_list);
++	}
++
++	ret = clear_kprobe(system, event);
++
++	return ret < 0 ? -1 : 0;
 +}
 -- 
 2.30.2
