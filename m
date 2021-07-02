@@ -7,34 +7,34 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB867C07E96
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jul 2021 20:17:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02FC3C07E98
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jul 2021 20:17:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C0C5E6142B
+	by mail.kernel.org (Postfix) with ESMTP id DE14861430
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jul 2021 20:17:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhGBUUD (ORCPT
+        id S232734AbhGBUUE (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 2 Jul 2021 16:20:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42700 "EHLO mail.kernel.org"
+        Fri, 2 Jul 2021 16:20:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232734AbhGBUUD (ORCPT
+        id S232743AbhGBUUD (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 2 Jul 2021 16:20:03 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E0C9D600CC;
+        by mail.kernel.org (Postfix) with ESMTPSA id E496261421;
         Fri,  2 Jul 2021 20:17:30 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1lzPbN-000i0K-NN; Fri, 02 Jul 2021 16:17:29 -0400
+        id 1lzPbN-000i0S-QU; Fri, 02 Jul 2021 16:17:29 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v7 01/10] libtracefs: Implement tracefs_instances()
-Date:   Fri,  2 Jul 2021 16:17:18 -0400
-Message-Id: <20210702201727.169080-2-rostedt@goodmis.org>
+Subject: [PATCH v7 05/10] libtracefs: Add helper function to parse kprobes
+Date:   Fri,  2 Jul 2021 16:17:22 -0400
+Message-Id: <20210702201727.169080-6-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210702201727.169080-1-rostedt@goodmis.org>
 References: <20210702201727.169080-1-rostedt@goodmis.org>
@@ -46,121 +46,135 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Implement tracefs_instances() that will take a regex (or NULL for all) and
-return a list of instances in the system.
+Add a helper function to parse kprobes and use that for
+tracefs_get_kprobes(). This will allow other functions to easily parse the
+kprobe_events file without having to duplicate the parsing code.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/tracefs.h      |  1 +
- src/tracefs-instance.c | 76 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 77 insertions(+)
+ src/tracefs-kprobes.c | 76 +++++++++++++++++++++++++++++++++----------
+ 1 file changed, 59 insertions(+), 17 deletions(-)
 
-diff --git a/include/tracefs.h b/include/tracefs.h
-index da8ad4189d4d..a21d2d2f22a6 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -44,6 +44,7 @@ int tracefs_instance_file_read_number(struct tracefs_instance *instance,
- int tracefs_instance_file_open(struct tracefs_instance *instance,
- 			       const char *file, int mode);
- int tracefs_instances_walk(int (*callback)(const char *, void *), void *context);
-+char **tracefs_instances(const char *regex);
- 
- bool tracefs_instance_exists(const char *name);
- bool tracefs_file_exists(struct tracefs_instance *instance, const char *name);
-diff --git a/src/tracefs-instance.c b/src/tracefs-instance.c
-index 2aeb529903bd..ba7667349be2 100644
---- a/src/tracefs-instance.c
-+++ b/src/tracefs-instance.c
-@@ -14,6 +14,7 @@
- #include <sys/stat.h>
- #include <fcntl.h>
- #include <dirent.h>
-+#include <regex.h>
- #include <limits.h>
- #include <pthread.h>
- #include "tracefs.h"
-@@ -630,6 +631,81 @@ out:
- 	return fret;
+diff --git a/src/tracefs-kprobes.c b/src/tracefs-kprobes.c
+index 3bba3683f29b..713715e96f4f 100644
+--- a/src/tracefs-kprobes.c
++++ b/src/tracefs-kprobes.c
+@@ -104,6 +104,58 @@ int tracefs_kretprobe_raw(const char *system, const char *event,
+ 	return insert_kprobe("r", system, event, addr, format);
  }
  
-+static inline bool match(const char *str, regex_t *re)
-+{
-+	if (!re)
-+		return true;
-+	return regexec(re, str, 0, NULL, 0) == 0;
-+}
-+
-+struct instance_list {
-+	regex_t		*re;
-+	char		**list;
-+	int		size;
-+	int		failed;
-+};
-+
-+static int build_list(const char *name, void *data)
-+{
-+	struct instance_list *list = data;
-+	char **instances;
-+	int ret = -1;
-+
-+	if (!match(name, list->re))
-+		return 0;
-+
-+	instances = realloc(list->list, sizeof(*instances) * (list->size + 2));
-+	if (!instances)
-+		goto out;
-+
-+	list->list = instances;
-+	instances[list->size] = strdup(name);
-+	if (!instances[list->size])
-+		goto out;
-+
-+	list->size++;
-+	instances[list->size] = NULL;
-+	ret = 0;
-+
-+ out:
-+	list->failed = ret;
-+	return ret;
-+}
-+
-+/**
-+ * tracefs_instances - return a list of instance names
-+ * @regex: A regex of instances to filter on (NULL to match all)
-+ *
-+ * Returns a list of names of existing instances, that must be
-+ * freed with tracefs_list_free(). Note, if there are no matches
-+ * then an empty list will be returned (not NULL).
-+ * NULL on error.
++/*
++ * Helper function to parse kprobes.
++ * @content: The content of kprobe_events on the first iteration.
++ *           NULL on next iterations.
++ * @saveptr: Same as saveptr for strtok_r
++ * @type: Where to store the type (before ':')
++ * @system: Store the system of the kprobe (NULL to have event contain
++ *          both system and event, as in "kprobes/myprobe").
++ * @event: Where to store the event.
++ * @addr: Where to store the addr (may be NULL to ignore)
++ * @format: Where to store the format (may be NULL to ignore)
 + */
-+char **tracefs_instances(const char *regex)
++static int parse_kprobe(char *content, char **saveptr,
++			char **type, char **system, char **event,
++			char **addr, char **format)
 +{
-+	struct instance_list list = { .re = NULL, .list = NULL };
-+	regex_t re;
-+	int ret;
++	char *p;
 +
-+	if (regex) {
-+		ret = regcomp(&re, regex, REG_ICASE|REG_NOSUB);
-+		if (ret < 0)
-+			return NULL;
-+		list.re = &re;
++	p = strtok_r(content, ":", saveptr);
++	if (!p)
++		return 1; /* eof */
++	*type = p;
++
++	if (system) {
++		p = strtok_r(NULL, "/", saveptr);
++		if (!p)
++			return -1;
++		*system = p;
 +	}
 +
-+	ret = tracefs_instances_walk(build_list, &list);
-+	if (ret < 0 || list.failed) {
-+		tracefs_list_free(list.list);
-+		list.list = NULL;
-+	} else {
-+		/* No matches should produce an empty list */
-+		if (!list.list)
-+			list.list = calloc(1, sizeof(*list.list));
++	p = strtok_r(NULL, " ", saveptr);
++	if (!p)
++		return -1;
++	*event = p;
++
++	if (addr || format) {
++		p = strtok_r(NULL, " ", saveptr);
++		if (!p)
++			return -1;
++		if (addr)
++			*addr = p;
 +	}
-+	return list.list;
++
++	p = strtok_r(NULL, "\n", saveptr);
++	if (!p)
++		return -1;
++	if (format)
++		*format = p;
++
++	return 0;
 +}
 +
  /**
-  * tracefs_get_clock - Get the current trace clock
-  * @instance: ftrace instance, can be NULL for the top instance
+  * tracefs_get_kprobes - return a list kprobes (by group/event name)
+  * @type: The type of kprobes to return.
+@@ -127,8 +179,9 @@ char **tracefs_get_kprobes(enum tracefs_kprobe_type type)
+ 	char *content;
+ 	char *saveptr;
+ 	char *event;
+-	char *p;
++	char *ktype;
+ 	int cnt = 0;
++	int ret;
+ 
+ 	errno = 0;
+ 	content = tracefs_instance_file_read(NULL, KPROBE_EVENTS, NULL);
+@@ -140,13 +193,13 @@ char **tracefs_get_kprobes(enum tracefs_kprobe_type type)
+ 		return list;
+ 	}
+ 
+-	p = strtok_r(content, ":", &saveptr);
++	ret = parse_kprobe(content, &saveptr, &ktype, NULL, &event, NULL, NULL);
+ 
+-	while (p) {
++	while (!ret) {
+ 		char **tmp;
+ 
+ 		if (type != TRACEFS_ALL_KPROBES) {
+-			switch (*p) {
++			switch (*ktype) {
+ 			case 'p':
+ 				if (type != TRACEFS_KPROBE)
+ 					goto next;
+@@ -160,12 +213,7 @@ char **tracefs_get_kprobes(enum tracefs_kprobe_type type)
+ 			}
+ 		}
+ 
+-		/* Failed parsing always return a failure */
+-		p = strtok_r(NULL, " ", &saveptr);
+-		if (!p)
+-			break;
+-
+-		event = strdup(p);
++		event = strdup(event);
+ 		if (!event)
+ 			goto fail;
+ 
+@@ -177,13 +225,7 @@ char **tracefs_get_kprobes(enum tracefs_kprobe_type type)
+ 		list[cnt++] = event;
+ 		list[cnt] = NULL;
+  next:
+-		p = strtok_r(NULL, "\n", &saveptr);
+-		/* Could be end of content */
+-		if (!p)
+-			break;
+-
+-		/* p is NULL on end of content */
+-		p = strtok_r(NULL, ":", &saveptr);
++		ret = parse_kprobe(NULL, &saveptr, &ktype, NULL, &event, NULL, NULL);
+ 	}
+ 
+ 	if (!list)
 -- 
 2.30.2
 
