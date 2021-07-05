@@ -2,400 +2,190 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C07CC07E96
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jul 2021 20:35:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2D49C07E99
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  5 Jul 2021 12:27:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2D0D361420
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jul 2021 20:35:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 98D1A61374
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  5 Jul 2021 12:27:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhGBUhg (ORCPT
+        id S230200AbhGEM37 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 2 Jul 2021 16:37:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44554 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230157AbhGBUhf (ORCPT
+        Mon, 5 Jul 2021 08:29:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230131AbhGEM36 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 2 Jul 2021 16:37:35 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C94BE613D1;
-        Fri,  2 Jul 2021 20:35:02 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
-        (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1lzPsL-000i7Y-LW; Fri, 02 Jul 2021 16:35:01 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 2/2] libtracefs: Restructure how string lists work
-Date:   Fri,  2 Jul 2021 16:34:59 -0400
-Message-Id: <20210702203459.169473-3-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210702203459.169473-1-rostedt@goodmis.org>
-References: <20210702203459.169473-1-rostedt@goodmis.org>
+        Mon, 5 Jul 2021 08:29:58 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0014C061574
+        for <linux-trace-devel@vger.kernel.org>; Mon,  5 Jul 2021 05:27:21 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id w13so11301154wmc.3
+        for <linux-trace-devel@vger.kernel.org>; Mon, 05 Jul 2021 05:27:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=m8UX9OyhAUJxiW/9OWcqyjgCaijho/tkJ54c5wHAlvU=;
+        b=LLQ+vSibrWHl9XFC10OMQ/5WG2laYhI72Y4A0/B4pn8Y/vxzrLYTj9W9PVXUwZVyhK
+         pQlDHx8IDuy84V3pMT5nj0Z+jzaCD726ZmeftzhuMjFM/OEZH2+TkK+HRrLigCHLDDzb
+         ufr11Jg2KpKFfgrnXnrlz0pVBqmwiSmsCh2ZAWvn9z45g3kwDMxcb+n/1gXCHza6jdo6
+         unuiu0HMNiCxe2yYbL2taawlPfBwlPjew99KpQqGUisGFq7jSEI5X5JTjwxdyOvWO86w
+         kvcaafAElHP6AAYpAlY57CtJVmzYmJicl2EcoaC+5Bk0X7WpMf9hnR3qefeF/38FJ2l2
+         skgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=m8UX9OyhAUJxiW/9OWcqyjgCaijho/tkJ54c5wHAlvU=;
+        b=hKP9yW4sQICXPyUFMzC634Nbl2fT77NYWWh/h46b15XzAJFP2gahiuCK5tknsRXRZE
+         SR4KpVD0Vd0Z3j+LWDkUeqBAAQcWG1RD+FQiuBmL1lJqSBCXZ9e7BI7ePJUxQ3weGXcZ
+         x1UWKoiIY7067gGje6d80LksU1R2+F+kkYGdZSPXn20AyM89XrrR1OdI67qWAJxEns7e
+         d1pt1UFKn/XooAeJ1kR3BOJ09VXqGRAcd6tOVR0m96dJ9AeJsTpzobPhYAqWX0gKuFL+
+         h9tpgxYyt8+ProFdT/iouZoIewjLL+5vhZ2MQ1neVgcNcO+WrhrNfhMdNrENq5wc09QU
+         wlnw==
+X-Gm-Message-State: AOAM533KWIkKdqlzK673xcN6JH5ts03kBtb6Jvb9HQ0JrJvMrKwCEHnx
+        AexoTaDiOuXaRuxny0i8OqY=
+X-Google-Smtp-Source: ABdhPJzFdokYGvR8DIwSIwW+nyrSF3MpsCD4tWi/z80pRBSMeAwczPkago9cBH//1WvqTmlo5evdgA==
+X-Received: by 2002:a05:600c:282:: with SMTP id 2mr14342621wmk.77.1625488040468;
+        Mon, 05 Jul 2021 05:27:20 -0700 (PDT)
+Received: from bucy.eng.vmware.com ([146.247.46.134])
+        by smtp.gmail.com with ESMTPSA id 16sm12094914wmk.18.2021.07.05.05.27.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 05:27:20 -0700 (PDT)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [RFC PATCH] libtracefs: Add tracefs_iterate_stop()
+Date:   Mon,  5 Jul 2021 15:27:06 +0300
+Message-Id: <20210705122706.146428-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+In the API for data streaming we implemented a special
+function (tracefs_trace_pipe_stop()) that can be called from
+the user in order to terminate the continuous streaming of the
+tracing data. Here we add similar functionality that can be
+used to terminate the continuous iteration over the raw events.
 
-Add the size of the string list to the allocated list, and return to the
-user the address of the second element. That is:
-
-  char **list;
-
-  list[0] = (char *)size;
-  list[1] = string1;
-  list[2] = string2;
-  [..]
-  list[n] = NULL
-
-The size will contain the number of strings in the list.
-
-The users of this list will not have access to the size (they should not
-know about it). This is why all tracefs strings must be freed with
-tracefs_list_free() as this will handle the allocations correctly.
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
  include/tracefs-local.h |  1 +
- include/tracefs.h       |  4 ++-
- src/tracefs-events.c    | 41 +++++++++++++--------------
- src/tracefs-instance.c  |  9 +-----
- src/tracefs-kprobes.c   | 17 +++--------
- src/tracefs-tools.c     |  6 +---
- src/tracefs-utils.c     | 63 +++++++++++++++++++++++++++++++++++++++++
- 7 files changed, 92 insertions(+), 49 deletions(-)
+ include/tracefs.h       |  1 +
+ src/tracefs-events.c    | 27 ++++++++++++++++++++++++---
+ 3 files changed, 26 insertions(+), 3 deletions(-)
 
 diff --git a/include/tracefs-local.h b/include/tracefs-local.h
-index 73698e8014bd..92ad7e6d58e9 100644
+index 73698e8..5a469f9 100644
 --- a/include/tracefs-local.h
 +++ b/include/tracefs-local.h
-@@ -65,4 +65,5 @@ supported_opts_mask(struct tracefs_instance *instance);
- struct tracefs_options_mask *
- enabled_opts_mask(struct tracefs_instance *instance);
+@@ -31,6 +31,7 @@ struct tracefs_instance {
+ 	int				ftrace_marker_fd;
+ 	int				ftrace_marker_raw_fd;
+ 	bool				pipe_keep_going;
++	bool				iterate_keep_going;
+ };
  
-+char **trace_list_create_empty(void);
- #endif /* _TRACE_FS_LOCAL_H */
+ extern pthread_mutex_t toplevel_lock;
 diff --git a/include/tracefs.h b/include/tracefs.h
-index 1c8703ae7e26..04e2aec431ee 100644
+index 1c8703a..07124ef 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
-@@ -63,6 +63,9 @@ char *tracefs_error_last(struct tracefs_instance *instance);
- char *tracefs_error_all(struct tracefs_instance *instance);
- int tracefs_error_clear(struct tracefs_instance *instance);
+@@ -97,6 +97,7 @@ int tracefs_iterate_raw_events(struct tep_handle *tep,
+ 						struct tep_record *,
+ 						int, void *),
+ 				void *callback_context);
++void tracefs_iterate_stop(struct tracefs_instance *instance);
  
-+void tracefs_list_free(char **list);
-+char **tracefs_list_add(char **list, const char *string);
-+
- /**
-  * tracefs_trace_on_get_fd - Get a file descriptor of "tracing_on" in given instance
-  * @instance: ftrace instance, can be NULL for the top instance
-@@ -87,7 +90,6 @@ int tracefs_binary_write(struct tracefs_instance *instance, void *data, int len)
- void tracefs_binary_close(struct tracefs_instance *instance);
+ char **tracefs_tracers(const char *tracing_dir);
  
- /* events */
--void tracefs_list_free(char **list);
- char **tracefs_event_systems(const char *tracing_dir);
- char **tracefs_system_events(const char *tracing_dir, const char *system);
- int tracefs_iterate_raw_events(struct tep_handle *tep,
 diff --git a/src/tracefs-events.c b/src/tracefs-events.c
-index 77f4624776e2..59044822cdf6 100644
+index 568bfe6..3093bdd 100644
 --- a/src/tracefs-events.c
 +++ b/src/tracefs-events.c
-@@ -256,22 +256,19 @@ out:
+@@ -109,7 +109,8 @@ static int read_cpu_pages(struct tep_handle *tep, struct cpu_iterate *cpus, int
+ 			  int (*callback)(struct tep_event *,
+ 					  struct tep_record *,
+ 					  int, void *),
+-			  void *callback_context)
++			  void *callback_context,
++			  bool *keep_going)
+ {
+ 	bool has_data = false;
+ 	int ret;
+@@ -121,7 +122,7 @@ static int read_cpu_pages(struct tep_handle *tep, struct cpu_iterate *cpus, int
+ 			has_data = true;
+ 	}
+ 
+-	while (has_data) {
++	while (has_data && *(volatile bool *)keep_going) {
+ 		j = count;
+ 		for (i = 0; i < count; i++) {
+ 			if (!cpus[i].event)
+@@ -205,6 +206,8 @@ out:
  	return ret;
  }
  
--static char **add_list_string(char **list, const char *name, int len)
-+static int add_list_string(char ***list, const char *name)
++static bool top_iterate_keep_going;
++
+ /*
+  * tracefs_iterate_raw_events - Iterate through events in trace_pipe_raw,
+  *				per CPU trace buffers
+@@ -230,18 +233,24 @@ int tracefs_iterate_raw_events(struct tep_handle *tep,
+ 						int, void *),
+ 				void *callback_context)
  {
--	if (!list)
--		list = malloc(sizeof(*list) * 2);
--	else
--		list = realloc(list, sizeof(*list) * (len + 2));
--	if (!list)
--		return NULL;
--
--	list[len] = strdup(name);
--	if (!list[len])
--		return NULL;
-+	char **tmp;
- 
--	list[len + 1] = NULL;
-+	tmp = tracefs_list_add(*list, name);
-+	if (!tmp) {
-+		tracefs_list_free(*list);
-+		*list = NULL;
-+		return -1;
-+	}
- 
--	return list;
-+	*list = tmp;
-+	return 0;
- }
- 
- __hidden char *trace_append_file(const char *dir, const char *name)
-@@ -300,7 +297,6 @@ char **tracefs_event_systems(const char *tracing_dir)
- 	char *events_dir;
- 	struct stat st;
- 	DIR *dir;
--	int len = 0;
++	bool *keep_going = instance ? &instance->pipe_keep_going :
++				      &top_iterate_keep_going;
+ 	struct cpu_iterate *all_cpus = NULL;
+ 	int count = 0;
  	int ret;
+ 	int i;
  
- 	if (!tracing_dir)
-@@ -344,9 +340,10 @@ char **tracefs_event_systems(const char *tracing_dir)
- 		enable = trace_append_file(sys, "enable");
++	(*(volatile bool *)keep_going) = true;
++
+ 	if (!tep || !callback)
+ 		return -1;
  
- 		ret = stat(enable, &st);
--		if (ret >= 0)
--			systems = add_list_string(systems, name, len++);
--
-+		if (ret >= 0) {
-+			if (add_list_string(&systems, name) < 0)
-+				goto out_free;
-+		}
- 		free(enable);
- 		free(sys);
- 	}
-@@ -374,7 +371,6 @@ char **tracefs_system_events(const char *tracing_dir, const char *system)
- 	char *system_dir = NULL;
- 	struct stat st;
- 	DIR *dir;
--	int len = 0;
- 	int ret;
- 
- 	if (!tracing_dir)
-@@ -410,7 +406,8 @@ char **tracefs_system_events(const char *tracing_dir, const char *system)
- 			continue;
- 		}
- 
--		events = add_list_string(events, name, len++);
-+		if (add_list_string(&events, name) < 0)
-+			goto out_free;
- 
- 		free(event);
- 	}
-@@ -428,7 +425,7 @@ char **tracefs_system_events(const char *tracing_dir, const char *system)
-  * @tracing_dir: The directory that contains the tracing directory
-  *
-  * Returns an allocate list of plugins. The array ends with NULL
-- * Both the plugin names and array must be freed with free()
-+ * Both the plugin names and array must be freed with tracefs_list_free()
-  */
- char **tracefs_tracers(const char *tracing_dir)
- {
-@@ -460,7 +457,6 @@ char **tracefs_tracers(const char *tracing_dir)
- 	if (len <= 0)
- 		goto out_free;
- 
--	len = 0;
- 	for (str = buf; ; str = NULL) {
- 		plugin = strtok_r(str, " ", &saveptr);
- 		if (!plugin)
-@@ -478,7 +474,8 @@ char **tracefs_tracers(const char *tracing_dir)
- 		    strcmp(plugin, "none") == 0)
- 			continue;
- 
--		plugins = add_list_string(plugins, plugin, len++);
-+		if (add_list_string(&plugins, plugin) < 0)
-+			break;
- 	}
- 	free(buf);
- 
-diff --git a/src/tracefs-instance.c b/src/tracefs-instance.c
-index ba7667349be2..11fb580456ff 100644
---- a/src/tracefs-instance.c
-+++ b/src/tracefs-instance.c
-@@ -641,7 +641,6 @@ static inline bool match(const char *str, regex_t *re)
- struct instance_list {
- 	regex_t		*re;
- 	char		**list;
--	int		size;
- 	int		failed;
- };
- 
-@@ -654,17 +653,11 @@ static int build_list(const char *name, void *data)
- 	if (!match(name, list->re))
- 		return 0;
- 
--	instances = realloc(list->list, sizeof(*instances) * (list->size + 2));
-+	instances = tracefs_list_add(list->list, name);
- 	if (!instances)
+ 	ret = open_cpu_files(instance, cpus, cpu_size, &all_cpus, &count);
+ 	if (ret < 0)
  		goto out;
+-	ret = read_cpu_pages(tep, all_cpus, count, callback, callback_context);
++	ret = read_cpu_pages(tep, all_cpus, count,
++			     callback, callback_context,
++			     keep_going);
  
- 	list->list = instances;
--	instances[list->size] = strdup(name);
--	if (!instances[list->size])
--		goto out;
--
--	list->size++;
--	instances[list->size] = NULL;
- 	ret = 0;
- 
-  out:
-diff --git a/src/tracefs-kprobes.c b/src/tracefs-kprobes.c
-index 2bc589a82627..6fdd8f90a6ca 100644
---- a/src/tracefs-kprobes.c
-+++ b/src/tracefs-kprobes.c
-@@ -181,7 +181,6 @@ char **tracefs_get_kprobes(enum tracefs_kprobe_type type)
- 	char *saveptr;
- 	char *event;
- 	char *ktype;
--	int cnt = 0;
- 	int ret;
- 
- 	errno = 0;
-@@ -190,8 +189,7 @@ char **tracefs_get_kprobes(enum tracefs_kprobe_type type)
- 		if (errno)
- 			return NULL;
- 		/* content is NULL on empty file, return an empty list */
--		list = calloc(1, sizeof(*list));
--		return list;
-+		return trace_list_create_empty();
- 	}
- 
- 	ret = parse_kprobe(content, &saveptr, &ktype, NULL, &event, NULL, NULL);
-@@ -214,28 +212,21 @@ char **tracefs_get_kprobes(enum tracefs_kprobe_type type)
- 			}
- 		}
- 
--		event = strdup(event);
--		if (!event)
--			goto fail;
--
--		tmp = realloc(list, sizeof(*list) * (cnt + 2));
-+		tmp = tracefs_list_add(list, event);
- 		if (!tmp)
- 			goto fail;
--
- 		list = tmp;
--		list[cnt++] = event;
--		list[cnt] = NULL;
-  next:
- 		ret = parse_kprobe(NULL, &saveptr, &ktype, NULL, &event, NULL, NULL);
- 	}
- 
- 	if (!list)
--		list = calloc(1, sizeof(*list));
-+		list = trace_list_create_empty();
-  out:
- 	free(content);
- 	return list;
-  fail:
--	free(list);
-+	tracefs_list_free(list);
- 	list = NULL;
- 	goto out;
+ out:
+ 	if (all_cpus) {
+@@ -256,6 +265,18 @@ out:
+ 	return ret;
  }
-diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
-index 42dc68cf164b..ca0ed58ab8cd 100644
---- a/src/tracefs-tools.c
-+++ b/src/tracefs-tools.c
-@@ -1238,7 +1238,6 @@ int tracefs_filter_functions(const char *filter, const char *module, char ***lis
- 	struct func_filter func_filter;
- 	struct func_list *func_list, *f;
- 	char **funcs = NULL;
--	int cnt = 0;
- 	int ret;
  
- 	if (!filter)
-@@ -1256,14 +1255,11 @@ int tracefs_filter_functions(const char *filter, const char *module, char ***lis
- 	for (f = func_list; f; f = f->next) {
- 		char **tmp;
- 
--		tmp = realloc(funcs, sizeof(*funcs) * (cnt + 2));
-+		tmp = tracefs_list_add(funcs, f->func);
- 		if (!tmp) {
- 			tracefs_list_free(funcs);
- 			goto out;
- 		}
--		tmp[cnt++] = f->func;
--		tmp[cnt] = NULL;
--		f->func = NULL;
- 		funcs = tmp;
- 	}
- 
-diff --git a/src/tracefs-utils.c b/src/tracefs-utils.c
-index b29131ecf0c5..ec5ecb08ed2e 100644
---- a/src/tracefs-utils.c
-+++ b/src/tracefs-utils.c
-@@ -382,5 +382,68 @@ void tracefs_list_free(char **list)
- 	for (i = 0; list[i]; i++)
- 		free(list[i]);
- 
-+	/* The allocated list is before the user visible portion */
-+	list--;
- 	free(list);
- }
-+
-+
-+__hidden char ** trace_list_create_empty(void)
-+{
-+	char **list;
-+
-+	list = calloc(2, sizeof(*list));
-+
-+	return list ? &list[1] : NULL;
-+}
-+
 +/**
-+ * tracefs_list_add - create or extend a string list
-+ * @list: The list to add to (NULL to create a new one)
-+ * @string: The string to append to @list.
-+ *
-+ * If @list is NULL, a new list is created with the first element
-+ * a copy of @string, and the second element is NULL.
-+ *
-+ * If @list is not NULL, it is then reallocated to include
-+ * a new element and a NULL terminator, and will return the new
-+ * allocated array on success, and the one passed in should be
-+ * ignored.
-+ *
-+ * Returns an allocated string array that must be freed with
-+ * tracefs_list_free() on success. On failure, NULL is returned
-+ * and the @list is untouched.
++ * tracefs_iterate_stop - stop the iteration over the raw events.
++ * @instance: ftrace instance, can be NULL for top tracing instance.
 + */
-+char **tracefs_list_add(char **list, const char *string)
++void tracefs_iterate_stop(struct tracefs_instance *instance)
 +{
-+	unsigned long size = 0;
-+	char *str = strdup(string);
-+	char **new_list;
-+
-+	if (!str)
-+		return NULL;
-+
-+	/*
-+	 * The returned list is really the address of the
-+	 * second entry of the list (&list[1]), the first
-+	 * entry contains the number of strings in the list.
-+	 */
-+	if (list) {
-+		list--;
-+		size = *(unsigned long *)list;
-+	}
-+
-+	new_list = realloc(list, sizeof(*list) * (size + 3));
-+	if (!new_list) {
-+		free(str);
-+		return NULL;
-+	}
-+
-+	list = new_list;
-+	list[0] = (char *)(size + 1);
-+	list++;
-+	list[size++] = str;
-+	list[size] = NULL;
-+
-+	return list;
++	if (instance)
++		instance->iterate_keep_going = false;
++	else
++		top_iterate_keep_going = false;
 +}
++
+ static char **add_list_string(char **list, const char *name, int len)
+ {
+ 	if (!list)
 -- 
-2.30.2
+2.27.0
 
