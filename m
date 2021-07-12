@@ -2,282 +2,95 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 901BEC07E96
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  8 Jul 2021 13:53:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DBD5C07E99
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Jul 2021 12:07:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 720BF61459
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  8 Jul 2021 13:53:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6A7BA61004
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Jul 2021 12:07:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231833AbhGHNzm (ORCPT
+        id S233396AbhGLMKQ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 8 Jul 2021 09:55:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40992 "EHLO
+        Mon, 12 Jul 2021 08:10:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231152AbhGHNzm (ORCPT
+        with ESMTP id S229604AbhGLMKO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 8 Jul 2021 09:55:42 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC0DC061574
-        for <linux-trace-devel@vger.kernel.org>; Thu,  8 Jul 2021 06:52:59 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id b2so9771593ejg.8
-        for <linux-trace-devel@vger.kernel.org>; Thu, 08 Jul 2021 06:52:59 -0700 (PDT)
+        Mon, 12 Jul 2021 08:10:14 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 161E0C0613DD
+        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Jul 2021 05:07:25 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id w14so15943352edc.8
+        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Jul 2021 05:07:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ZGSiSJFlPrAjk5k6XV8HTFEsLLbB43WFjQH3G3F68dw=;
-        b=pNZn3SgUsVyKkx6IBEW75kVm5VspLwUOe/2jTIOoyI0lMuzmckMRBdCG49AHE79ETJ
-         DGpbNeswQfLNPdrwFGszKlnrOU/0CF2us3s9qOyAZOxOtIakWAfn7i9A9mWOTmim1V2s
-         D6oAI4Ms541s7SEK+5bII4DzTUQvDNkt4Fyuqwq36Y8/oGml/W0OgSQzs3Ap24uNaSYD
-         GTVrhRM2MfgD++V6aIsbgKEUKwU6yfi1cFC55laBHIXRBnNKH5E0HzZsVlnZiSR2QtGy
-         QZQUCq9qW692e4o69ZnmYRThUhhnGp7gnYdA5halYyEuWzWGeRJtPpiQWNIfOTcmL3n5
-         gQoA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9uMiqwnd0zjp7/Ed/+z9qw/Nou0iiC6DmPRo+fHVeTc=;
+        b=kCj80pPWRkaRjLpojDLc0U1xqdE248UCRHnWHURah5M+nqufFIAaLiNAUWun9mafAt
+         AtuTPBQYmXGSVxsfsBaklT5zJLtR6Hp75h+ib3mWGGbM93XtbCIhP5wpKGw3FpiEy1d9
+         jKRslPhTHjzZEGGzz2dl/qQs5Qwvs4ZLVZvhuG+kQGOsON0ua0Oxs5uvwQfUU8pDTiuG
+         rcpCu7kJ2Ixe71Y+X+dgJ8evCFAWcdWQlxFhc1FAZV3VxbxI/CpFv5c//WSopFNacAi6
+         6noabtSJmGBObGp8VzGSAMBdfJXCzpMvu95h85x91IUV1fhgO//ogeJmY+3QGGOTtZr3
+         iELQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZGSiSJFlPrAjk5k6XV8HTFEsLLbB43WFjQH3G3F68dw=;
-        b=ghWMYBygxbc4wRSOYIUqXcPoRHXp1DhFA/I8mRSiMiUHIlTB9soPu0N9LnxqHbBX49
-         R4VAzACaXspmD/4hJwdC5Anz308F5kAz9U2bEFMUMbNsT1HmHOKhsj/5TNQvELJOPcTZ
-         tj6spFmB7mC1phf/ETzYQzn6tlq7iZo3a9dsgFXDj+7hgoDvExA2z2R7+9HEJduM2L22
-         U1Ta4WygO3ADQJIcUWUUuv1dI17H4uG0PTWkRpW689JoOcrMuzBQ/VGGIvj1Wxi76Frh
-         TxAxtL1sQFcklNPVrzsRamXvrz2hS1J9qBk5jz6u8vGMPBnB5NYSfgLkNJoNW7Ycv9zy
-         dVGg==
-X-Gm-Message-State: AOAM531TpM5uRm6yqxSeQP4osoIR+uCPOHGeL6NumlSbY+ig5ftUtm3P
-        IFqUccRbLmAKKq+VPTOshxtoQZB0R4w=
-X-Google-Smtp-Source: ABdhPJxHbcrlMSsrrFHygnJFthApcddl9iPKYfws7kn54YqgDBOfdKGm5ypd1CBlWcNVTyda3bjUkA==
-X-Received: by 2002:a17:906:7f95:: with SMTP id f21mr31511728ejr.548.1625752377808;
-        Thu, 08 Jul 2021 06:52:57 -0700 (PDT)
-Received: from localhost.localdomain ([95.87.199.215])
-        by smtp.gmail.com with ESMTPSA id hz7sm996487ejc.27.2021.07.08.06.52.57
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9uMiqwnd0zjp7/Ed/+z9qw/Nou0iiC6DmPRo+fHVeTc=;
+        b=KYGSYBVtAbPHF73OT60+uKP5C9BSYcgxLWY5ygFf5IUcNkj899iwpw/UEnjvQqwvOh
+         l28YXM/DdB5ijNFUXDpKZjPhTzeRASgGbJWGgrUCapVFsm12KeqFzRF60bMI701gVoy4
+         JxPg41vUi1jCIHZ7ISknKRh0ThnMfQ42zvtCzf4Fef1F/UF+Xp3xcdwflG3PYIdUvdJL
+         1YSnbIY6npKiddjipQkhyuIWjisL+A7PDfQELtmUAI+LhNb+/vJ1TbB/QG5LE2YwufJP
+         XLvU0j/3W20CJaJhat8gVjR/OI7H6aXpYoIGyTuN6B2hnDiDsnB2g7rKNwTfnW+DH2OG
+         75hw==
+X-Gm-Message-State: AOAM532PRz7lL6vRmyKe6jAivRYx1qLbQCSmG5f2cyjjd6ehX8GbHDqj
+        f3I0g9nCXRGxeXPM3PvANF29jPSh0vQ=
+X-Google-Smtp-Source: ABdhPJya0EP+3raHwRHWcB3pq9dqo22K5wEhy+1R9hjpOW8gLUVRUj83jFzztLYFLntk9YhF3xOOIg==
+X-Received: by 2002:a05:6402:406:: with SMTP id q6mr64203573edv.149.1626091643285;
+        Mon, 12 Jul 2021 05:07:23 -0700 (PDT)
+Received: from localhost.localdomain ([95.87.199.98])
+        by smtp.gmail.com with ESMTPSA id ee29sm2900809edb.39.2021.07.12.05.07.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 06:52:57 -0700 (PDT)
+        Mon, 12 Jul 2021 05:07:22 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 2/3] trace-cruncher: Add events to utils
-Date:   Thu,  8 Jul 2021 16:52:42 +0300
-Message-Id: <20210708135243.25229-3-y.karadz@gmail.com>
+Subject: [PATCH v2 0/3] trace-cruncher: Add Kprobes
+Date:   Mon, 12 Jul 2021 15:07:03 +0300
+Message-Id: <20210712120706.221921-1-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210708135243.25229-1-y.karadz@gmail.com>
-References: <20210708135243.25229-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Define a hierarchy of Python classes, to be used for easy manipulation
-of Staic events and Kprobes.
+This adds to trace-cruncher a basic support for Kprobes.
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- tracecruncher/ft_utils.py | 182 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 182 insertions(+)
+Changes in v2:
+  - Fixed naming clash in ftracepy-utils
+  - Fixed naming clash in tests
 
-diff --git a/tracecruncher/ft_utils.py b/tracecruncher/ft_utils.py
-index eae161c..4c083ef 100644
---- a/tracecruncher/ft_utils.py
-+++ b/tracecruncher/ft_utils.py
-@@ -6,6 +6,7 @@ Copyright 2019 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
- 
- import sys
- import time
-+import ctypes
- 
- from . import ftracepy as ft
- 
-@@ -17,3 +18,184 @@ def find_event_id(system, event):
-     tep.init_local(dir=ft.dir(), systems=[system]);
- 
-     return tep.get_event(system=system, name=event).id()
-+
-+
-+class event:
-+    def __init__(self, system, name, static=True):
-+        """ Constructor.
-+        """
-+        self.system = system
-+        self.name = name
-+        self.instance_list = []
-+        if static:
-+            self.evt_id = find_event_id(system, name)
-+        else:
-+            self.evt_id = -1
-+
-+    def id(self):
-+        """ Retrieve the unique ID of the kprobe event.
-+        """
-+        return int(self.evt_id)
-+
-+    def enable(self, instance=None):
-+        """ Enable this event.
-+        """
-+        if instance is None:
-+            ft.enable_event(system=self.system, event=self.name)
-+            self.instance_list.append('top')
-+        else:
-+            ft.enable_event(instance=instance, system=self.system, event=self.name)
-+            self.instance_list.append(instance)
-+
-+        self.instance_list = list(set(self.instance_list))
-+
-+    def disable(self, instance=None):
-+        """ Disable this event.
-+        """
-+        if instance is None:
-+            ft.disable_event(system=self.system, event=self.name)
-+            self.instance_list.remove('top')
-+        else:
-+            ft.disable_event(instance=instance,system=self.system, event=self.name)
-+            self.instance_list.remove(instance)
-+
-+    def set_filter(self, filter, instance=None):
-+        """ Define a filter for this event.
-+        """
-+        if instance is None:
-+            ft.set_event_filter(system=self.system,
-+                                event=self.name,
-+                                filter=filter)
-+        else:
-+            ft.set_event_filter(instance=instance,
-+                                system=self.system,
-+                                event=self.name,
-+                                filter=filter)
-+
-+    def clear_filter(self, instance=None):
-+        """ Define the filter for this event.
-+        """
-+        if instance is None:
-+            ft.clear_event_filter(system=self.system,
-+                                  event=self.name)
-+        else:
-+            ft.clear_event_filter(instance=instance,
-+                                  system=self.system,
-+                                  event=self.name)
-+
-+
-+class kprobe(event):
-+    def __init__(self, name, func=''):
-+        """ Constructor.
-+        """
-+        super().__init__(system=ft.tc_event_system(), name=name, static=False)
-+        self.func = func
-+
-+    def set_function(self, name):
-+        """ Set the name of the function to be traced.
-+        """
-+        self.func = name
-+
-+    def unregister(self):
-+        """ Unregister this probe from Ftrace.
-+        """
-+        inst_list = self.instance_list.copy()
-+        for instance in inst_list:
-+            self.disable(instance)
-+
-+        ft.unregister_kprobe(event=self.name);
-+
-+
-+class kprobe(kprobe):
-+    def __init__(self, name, func=''):
-+        """ Constructor.
-+        """
-+        super().__init__(name, func)
-+        self.fields = {}
-+
-+    def add_raw_field(self, name, probe):
-+        """ Add a raw definition of a data field to this probe.
-+        """
-+        self.fields[str(name)] = str(probe)
-+
-+    def add_arg(self, name, param_id, param_type):
-+        """ Add a function parameter data field to this probe.
-+        """
-+        probe = '$arg{0}:{1}'.format(param_id, param_type)
-+        self.add_raw_field(name, probe)
-+
-+    def add_ptr_arg(self, name, param_id, param_type, offset=0):
-+        """ Add a pointer function parameter data field to this probe.
-+        """
-+        probe = '+{0}($arg{1}):{2}'.format(offset, param_id, param_type)
-+        self.add_raw_field(name, probe)
-+
-+    def add_array_arg(self, name, param_id, param_type, offset=0, size=-1):
-+        """ Add a array parameter data field to this probe.
-+        """
-+        if size < 0:
-+            size = 10
-+
-+        ptr_size = ctypes.sizeof(ctypes.c_voidp)
-+        for i in range(size):
-+            field_name = name + str(i)
-+            probe = '+{0}(+{1}'.format(offset, i * ptr_size)
-+            probe += '($arg{0})):{1}'.format(param_id, param_type)
-+            self.add_raw_field(field_name, probe)
-+
-+    def add_string_arg(self, name, param_id, offset=0, usr_space=False):
-+        """ Add a pointer function parameter data field to this probe.
-+        """
-+        p_type = 'ustring' if usr_space else 'string'
-+        self.add_ptr_arg(name=name,
-+                         param_id=param_id,
-+                         param_type=p_type,
-+                         offset=offset)
-+
-+    def add_string_array_arg(self, name, param_id, offset=0, usr_space=False, size=-1):
-+        """ Add a string array parameter data field to this probe.
-+        """
-+        p_type = 'ustring' if usr_space else 'string'
-+        self.add_array_arg(name=name,
-+                           param_id=param_id,
-+                           param_type=p_type,
-+                           offset=offset,
-+                           size=size)
-+
-+    def register(self):
-+        """ Register this probe to Ftrace.
-+        """
-+        probe = ' '.join('{!s}={!s}'.format(key,val) for (key, val) in self.fields.items())
-+
-+        ft.register_kprobe(event=self.name, function=self.func, probe=probe);
-+        self.evt_id = find_event_id(system=ft.tc_event_system(), event=self.name)
-+
-+
-+def parse_record_array_field(event, record, field, size=-1):
-+    """ Register this probe to Ftrace.
-+    """
-+    if size < 0:
-+        size = 10
-+
-+    arr = []
-+    for i in range(size):
-+        field_name = field + str(i)
-+        val = event.parse_record_field(record=record, field=field_name)
-+        if (val == '(nil)'):
-+            break
-+        arr.append(val)
-+
-+    return arr
-+
-+
-+class kretval_probe(kprobe):
-+    def __init__(self, name, func=''):
-+        """ Constructor.
-+        """
-+        super().__init__(name, func)
-+
-+    def register(self):
-+        """ Register this probe to Ftrace.
-+        """
-+        ft.register_kprobe(event=self.name, function=self.func);
-+        self.evt_id = find_event_id(system=ft.tc_event_system(), event=self.name)
+Yordan Karadzhov (VMware) (3):
+  trace-cruncher: Add support for Kprobes
+  trace-cruncher: Add events to utils
+  trace-cruncher: Add Kprobe example
+
+ examples/kprobe_open.py               |  44 ++++
+ src/ftracepy-utils.c                  | 366 ++++++++++++++++++++++++--
+ src/ftracepy-utils.h                  |  30 +++
+ src/ftracepy.c                        |  55 ++++
+ tests/1_unit/test_01_ftracepy_unit.py |  57 ++++
+ tracecruncher/ft_utils.py             | 182 +++++++++++++
+ 6 files changed, 716 insertions(+), 18 deletions(-)
+ create mode 100755 examples/kprobe_open.py
+
 -- 
 2.27.0
 
