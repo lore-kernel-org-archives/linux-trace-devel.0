@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED898C12002
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 17 Jul 2021 02:06:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10A36C12002
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 17 Jul 2021 02:19:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BC1C1613F1
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 17 Jul 2021 02:06:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DAFF861154
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 17 Jul 2021 02:19:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232319AbhGQCJr (ORCPT
+        id S232322AbhGQCWt (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 16 Jul 2021 22:09:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39684 "EHLO mail.kernel.org"
+        Fri, 16 Jul 2021 22:22:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230176AbhGQCJr (ORCPT
+        id S232184AbhGQCWs (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 16 Jul 2021 22:09:47 -0400
+        Fri, 16 Jul 2021 22:22:48 -0400
 Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7055D61279;
-        Sat, 17 Jul 2021 02:06:51 +0000 (UTC)
-Date:   Fri, 16 Jul 2021 22:06:49 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id E3F1361154;
+        Sat, 17 Jul 2021 02:19:52 +0000 (UTC)
+Date:   Fri, 16 Jul 2021 22:19:51 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Cc:     John 'Warthog9' Hawley <warthog9@kernel.org>
-Subject: [PATCH] libtracefs: Remove "traceevent/" from referencing
- libtraceevent headers
-Message-ID: <20210716220649.46aab3f7@rorschach.local.home>
+Subject: [PATCH for v2.9 ] trace-cmd: For libtraceevent 1.3 have warning
+ equal tep_warning
+Message-ID: <20210716221951.76b79bdf@rorschach.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -43,63 +43,33 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-"pkg-config --cflags --libtraceevent" produces the full path to the
-libtraceevent headers (including the "traceevent/" portion). There is no
-need to add that part in the headers.
-
-Particularly the one in the main tracefs.h that trace-cmd uses. The
-version 2.9.4 causes the header to include the libtraceevent/event-parse.h
-that is local, when it should be using the system headers, and causes it
-to fail the build.
+In version libtracevent 1.3, warning() turned to tep_warning(), because
+"warning" was too generic. Although a compiled version of trace-cmd may
+still work because of the use of weak functions, building this version of
+trace-cmd may cause several warnings because warning is not declared.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/tracefs.h    | 2 +-
- src/tracefs-events.c | 2 +-
- src/tracefs-utils.c  | 4 ++--
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ Makefile | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 7e1927b..2649417 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -9,7 +9,7 @@
- #include <sys/stat.h>
- #include <fcntl.h>
- #include <sched.h>
--#include <traceevent/event-parse.h>
-+#include <event-parse.h>
+diff --git a/Makefile b/Makefile
+index 755db3f1..06cf5946 100644
+--- a/Makefile
++++ b/Makefile
+@@ -241,7 +241,11 @@ TEST_LIBTRACEFS = $(shell sh -c "$(PKG_CONFIG) --cflags $(LIBTRACEFS) > /dev/nul
+ endif
  
- char *tracefs_get_tracing_file(const char *name);
- void tracefs_put_tracing_file(char *name);
-diff --git a/src/tracefs-events.c b/src/tracefs-events.c
-index 7febc2a..8d84838 100644
---- a/src/tracefs-events.c
-+++ b/src/tracefs-events.c
-@@ -15,7 +15,7 @@
- #include <fcntl.h>
- #include <limits.h>
- 
--#include <traceevent/kbuffer.h>
-+#include <kbuffer.h>
- 
- #include "tracefs.h"
- #include "tracefs-local.h"
-diff --git a/src/tracefs-utils.c b/src/tracefs-utils.c
-index 6750336..600cdf2 100644
---- a/src/tracefs-utils.c
-+++ b/src/tracefs-utils.c
-@@ -15,8 +15,8 @@
- #include <unistd.h>
- #include <errno.h>
- 
--#include <traceevent/event-parse.h>
--#include <traceevent/event-utils.h>
-+#include <event-parse.h>
-+#include <event-utils.h>
- #include "tracefs.h"
- #include "tracefs-local.h"
- 
+ ifeq ("$(TEST_LIBTRACEEVENT)", "y")
+-LIBTRACEEVENT_CFLAGS = $(shell sh -c "$(PKG_CONFIG) --cflags $(LIBTRACEEVENT)")
++TRACEEVENT_V13 = $(shell sh -c "$(PKG_CONFIG) --atleast-version 1.3 $(LIBTRACEEVENT) > /dev/null 2>&1 && echo y")
++ifeq ("$(TRACEEVENT_V13)", "y")
++   TEP_WARNING=-Dwarning=tep_warning
++endif
++LIBTRACEEVENT_CFLAGS = $(shell sh -c "$(PKG_CONFIG) --cflags $(LIBTRACEEVENT)") $(TEP_WARNING)
+ LIBTRACEEVENT_LDLAGS = $(shell sh -c "$(PKG_CONFIG) --libs $(LIBTRACEEVENT)")
+ TRACEEVENT_PLUGINS =
+ TRACEEVENT_PLUGINS_INSTALL =
 -- 
 2.31.1
 
