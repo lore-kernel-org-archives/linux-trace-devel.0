@@ -2,42 +2,42 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69CA9C636C8
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93CD8C6377D
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 22 Jul 2021 03:39:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3EC2361287
+	by mail.kernel.org (Postfix) with ESMTP id 7EC8261279
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 22 Jul 2021 03:39:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhGVC67 (ORCPT
+        id S229900AbhGVC7A (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 21 Jul 2021 22:58:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52582 "EHLO mail.kernel.org"
+        Wed, 21 Jul 2021 22:59:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229900AbhGVC67 (ORCPT
+        id S230294AbhGVC67 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 21 Jul 2021 22:58:59 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F0EDC610CC;
+        by mail.kernel.org (Postfix) with ESMTPSA id F1FAB611C1;
         Thu, 22 Jul 2021 03:39:34 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1m6PYb-001Xmo-NW; Wed, 21 Jul 2021 23:39:33 -0400
+        id 1m6PYb-001Xmq-Ob; Wed, 21 Jul 2021 23:39:33 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     Tom Zanussi <zanussi@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 3/4] libtracefs: Add TRACEFS_TIMESTAMP and TRACEFS_TIMESTAMP_USECS to synth
-Date:   Wed, 21 Jul 2021 23:39:16 -0400
-Message-Id: <20210722033917.367982-4-rostedt@goodmis.org>
+Subject: [PATCH 4/4] libtracefs: Add man pages for creating synthetic events
+Date:   Wed, 21 Jul 2021 23:39:17 -0400
+Message-Id: <20210722033917.367982-5-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210722033917.367982-1-rostedt@goodmis.org>
 References: <20210722033917.367982-1-rostedt@goodmis.org>
@@ -49,164 +49,373 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add the fields of TRACEFS_TIMESTAMP and TRACEFS_TIMESTAMP_USECS that can
-be used to calculate the timestamps between the events for the synthetic
-event creation.
+Add the man pages that describe all the synthetic event operations.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/tracefs.h  |  3 +++
- src/tracefs-hist.c | 50 ++++++++++++++++++++++++++++++++++------------
- 2 files changed, 40 insertions(+), 13 deletions(-)
+ Documentation/libtracefs-synth.txt | 353 +++++++++++++++++++++++++++++
+ 1 file changed, 353 insertions(+)
+ create mode 100644 Documentation/libtracefs-synth.txt
 
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 226ddff17f2f..f4cd1cbefdbb 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -324,6 +324,9 @@ enum tracefs_synth_compare {
- 	TRACEFS_COMPARE_AND,
- };
- 
-+#define TRACEFS_TIMESTAMP "common_timestamp"
-+#define TRACEFS_TIMESTAMP_USECS "common_timestamp.usecs"
+diff --git a/Documentation/libtracefs-synth.txt b/Documentation/libtracefs-synth.txt
+new file mode 100644
+index 000000000000..090f7787a70f
+--- /dev/null
++++ b/Documentation/libtracefs-synth.txt
+@@ -0,0 +1,353 @@
++libtracefs(3)
++=============
 +
- struct tracefs_synth *tracefs_synth_init(struct tep_handle *tep,
- 					 const char *name,
- 					 const char *start_system,
-diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index 77aff4e9d8e4..62eff6baa044 100644
---- a/src/tracefs-hist.c
-+++ b/src/tracefs-hist.c
-@@ -563,6 +563,18 @@ struct tracefs_synth {
- 	int			arg_cnt;
- };
- 
-+static const struct tep_format_field common_timestamp = {
-+	.type			= "u64",
-+	.name			= "common_timestamp",
-+	.size			= 8,
-+};
++NAME
++----
++tracefs_synth_init, tracefs_synth_add_match_field, tracefs_synth_add_compare_field, tracefs_synth_add_start_field,
++tracefs_synth_add_end_field, tracefs_synth_add_start_filter, tracefs_synth_add_end_filter, tracefs_synth_create,
++tracefs_synth_destroy, tracefs_synth_free, tracefs_synth_show - Creation of synthetic events
 +
-+static const struct tep_format_field common_timestamp_usecs = {
-+	.type			= "u64",
-+	.name			= "common_timestamp.usecs",
-+	.size			= 8,
-+};
++SYNOPSIS
++--------
++[verse]
++--
++*#include <tracefs.h>*
 +
- void tracefs_synth_free(struct tracefs_synth *synth)
- {
- 	if (!synth)
-@@ -583,21 +595,33 @@ void tracefs_synth_free(struct tracefs_synth *synth)
- 	free(synth);
- }
- 
-+static const struct tep_format_field *get_event_field(struct tep_event *event,
-+					 const char *field_name)
++struct tracefs_synth pass:[*]tracefs_synth_init(struct tep_handle pass:[*]tep,
++					 const char pass:[*]name,
++					 const char pass:[*]start_system,
++					 const char pass:[*]start_event,
++					 const char pass:[*]end_system,
++					 const char pass:[*]end_event,
++					 const char pass:[*]match_name,
++					 const char pass:[*]start_match_field,
++					 const char pass:[*]end_match_field);
++int tracefs_synth_add_match_field(struct tracefs_synth pass:[*]synth,
++				  const char pass:[*]name,
++				  const char pass:[*]start_match_field,
++				  const char pass:[*]end_match_field);
++int tracefs_synth_add_compare_field(struct tracefs_synth pass:[*]synth,
++				    const char pass:[*]name,
++				    const char pass:[*]start_compare_field,
++				    const char pass:[*]end_compare_field,
++				    enum tracefs_synth_calc calc);
++int tracefs_synth_add_start_field(struct tracefs_synth pass:[*]synth,
++				  const char pass:[*]name,
++				  const char pass:[*]start_field);
++int tracefs_synth_add_end_field(struct tracefs_synth pass:[*]synth,
++				const char pass:[*]name,
++				const char pass:[*]end_field);
++int tracefs_synth_add_start_filter(struct tracefs_synth pass:[*]synth,
++				   const char pass:[*]field,
++				   enum tracefs_synth_compare compare,
++				   const char pass:[*]val,
++				   bool neg, bool or);
++int tracefs_synth_add_end_filter(struct tracefs_synth pass:[*]synth,
++				 const char pass:[*]field,
++				 enum tracefs_synth_compare compare,
++				 const char pass:[*]val,
++				 bool neg, bool or);
++int tracefs_synth_create(struct tracefs_instance pass:[*]instance,
++			 struct tracefs_synth pass:[*]synth);
++int tracefs_synth_destroy(struct tracefs_instance pass:[*]instance,
++			  struct tracefs_synth pass:[*]synth);
++void tracefs_synth_free(struct tracefs_synth pass:[*]synth);
++int tracefs_synth_show(struct trace_seq pass:[*]seq, struct tracefs_instance pass:[*]instance,
++		       struct tracefs_synth pass:[*]synth);
++
++--
++
++DESCRIPTION
++-----------
++Synthetic events are dynamic events that are created by matching
++two other events which triggers a synthetic event. One event is the starting
++event which some field is recorded, and when the second event is executed,
++if it has a field (or fields) that matches the starting event's field (or fields)
++then it will trigger the synthetic event. The field values other than the matching
++fields may be passed from the starting event to the end event to perform calculations
++on, or to simply pass as a parameter to the synthetic event.
++
++One common use case is to set "sched_waking" as the starting event. This event is
++triggered when a process is awoken. Then set "sched_switch" as the ending event.
++This event is triggered when a new task is scheduled on the CPU. By setting
++the "common_pid" of both events as the matching fields, the time between the
++two events is considered the wake up latency of that process. Use *TRACEFS_TIMESTAMP*
++as a field for both events to calculate the delta in nanoseconds, or use
++*TRACEFS_TIMESTAMP_USECS" as the compare fields for both events to calculate the
++delta in microseconds. This is used as the example below.
++
++*tracefs_synth_init*() allocates and initializes a synthetic event.
++It does not create the synthetic event, but supplies the minimal information
++to do so. See *tracefs_synth_create*() below for how to create the synthetic
++event in the system. It requires a _tep_ handler that can be created by
++*tracefs_local_events*(3) for more information. The _name_ holds the name
++of the synthetic event that will be created. The _start_system is the name
++of the system for the starting event. It may be NULL and the first event
++with the name of _start_event_ will be chosen. The _end_system_ is the
++name of the system for theh ending event. It may be NULL and the first event
++with the name of _end_event_ will be chosen as the ending event. If _match_name_
++is given, then this will be the field of the created synthetic event that
++holds the matching keys of the starting event's _start_match_field_ and
++the ending event's _end_match_field_. If _match_name_ is NULL, then it will
++not be recorded in the created synthetic event.
++
++*tracefs_synth_add_match_field*() will add a second key to match between the
++starting event and the ending event. If _name_ is given, then the content
++of the matching field will be saved by this _name_ in the synthetic event.
++The _start_match_field_ is the field of the starting event to mach with the
++ending event's _end_match_field.
++
++*tracefs_synth_add_compare_field*() is used to compare the _start_compare_field_
++of the starting event with the _end_compare_field_ of the ending event. The _name_
++must be given so that the result will be saved by the synthetic event. It makes
++no sense to not pass this to the synthetic event after doing the work of
++the compared fields, as it serves no other purpose. The _calc_ parameter
++can be one of:
++
++*TRACEFS_SYNTH_DELTA_END* - calculate the difference between the content in
++ the _end_compare_field_ from the content of the _start_compare_field_.
++
++ _name_ = _end_compare_field_ - _start_compare_field_
++
++*TRACEFS_SYNTH_DELTA_START* - calculate the difference between the content in
++ the _start_compare_field_ from the content of the _end_compare_field_.
++
++ _name_ = _start_compare_field_ - _end_compare_field_
++
++*TRACEFS_SYNTH_ADD* - Add the content of the _start_compare_field_ to the
++  content of the _end_compare_field_.
++
++ _name_ = _start_compare_field_ + _end_compare_field_
++
++*tracefs_synth_add_start_field*() - Records the _start_field_ of the starting
++event as _name_ in the synthetic event. If _name_ is NULL, then the name used
++will be the same as _start_field_.
++
++*tracefs_synth_add_end_field*() - Records the _end_field_ of the ending
++event as _name_ in the synthetic event. If _name_ is NULL, then the name used
++will be the same as _end_field_.
++
++*tracefs_synth_add_start_filter*() adds a filter to the starting event
++comparing the content of the starting event's _field_ to _val_ based
++on _compare_. If _neg_ is set, then the compare is wrapped in parenthesis
++and negated. The _or_ field only is used if more than one call to
++*tracefs_synth_add_start_filter*() is done, and if _or_ is set, the
++next compare is "or'd" (||), otherwise it is "and'd" (&&). _compare_
++may be one of:
++
++*TRACEFS_COMPARE_EQ* - _field_ == _val_
++
++*TRACEFS_COMPARE_NQ* - _field_ != _val_
++
++*TRACEFS_COMPARE_GR* - _field_ > _val_
++
++*TRACEFS_COMPARE_GE* - _field_ >= _val_
++
++*TRACEFS_COMPARE_LT* - _field_ < _val_
++
++*TRACEFS_COMPARE_LE* - _field_ <pass:[=] _val_
++
++*TRACEFS_COMPARE_RE* - _field_ ~ "_val_" : where _field_ is a string.
++
++*TRACEFS_COMPARE_AND* - _field_ & _val_ : where _field_ is a flags field.
++
++*tracefs_synth_add_end_filter*() is the same as *tracefs_synth_add_start_filter* but
++filters on the ending event.
++
++*tracefs_synth_create*() creates the synthetic event in the system in the system
++in the _instance_ provided. Note, synthetic events apply across all instances,
++but some creation requires histograms to be established, which are local to
++instances.
++
++*tracefs_synth_destroy*() destroys the synthetic event. It will attempt to stop
++the running of it in the given _instance_, but if its running in another instance
++this may fail as busy.
++
++*tracefs_synth_free*() frees the allocated descriptor returned by
++*tracefs_synth_init*().
++
++*tracefs_synth_show*() acts like *tracefs_synth_create*(), but instead of creating
++the synthetic event in the given _instance_, it will write the echo commands to
++manually create it in the _seq_ given.
++
++RETURN VALUE
++------------
++*tracefs_synth_init*() returns an allocated struct tracefs_synth descriptor
++on sucess or NULL on error.
++
++All other functions that return an integer returns zero on success or -1
++on error.
++
++ERRORS
++------
++The following errors are for all the above calls:
++
++*EPERM* Not run as root user when required.
++
++*EINVAL* Either a parameter is not valid (NULL when it should not be)
++  or a field that is not compatible for calculations.
++
++*ENODEV* An event or one of its fields is not found.
++
++*EBADE* The fields of the start and end events are not compatible for
++  either matching or comparing.
++
++*ENOMEM* not enough memory is available.
++
++And more errors may have happened from the system calls to the system.
++
++EXAMPLE
++-------
++[source,c]
++--
++#include <stdlib.h>
++#include <tracefs.h>
++
++#define start_event "sched_waking"
++#define start_field "pid"
++
++#define end_event "sched_switch"
++#define end_field "next_pid"
++
++#define match_name "pid"
++
++static struct tracefs_synth *synth;
++
++static void make_event(void)
 +{
-+	if (!strcmp(field_name, TRACEFS_TIMESTAMP))
-+		return &common_timestamp;
++	struct tep_handle *tep;
 +
-+	if (!strcmp(field_name, TRACEFS_TIMESTAMP_USECS))
-+		return &common_timestamp_usecs;
++	/* Load all events from the system */
++	tep = tracefs_local_events(NULL);
++	
++	/* Initialize the synthetic event */
++	synth = tracefs_synth_init(tep, "wakeup_lat",
++				   NULL, start_event,
++				   NULL, end_event,
++				   match_name,
++				   start_field, end_field);
 +
-+	return tep_find_any_field(event, field_name);
++	/* The tep is no longer needed */
++	tep_free(tep);
++
++
++	/* Save the "prio" field as "prio" from the start event */
++	tracefs_synth_add_start_field(synth, NULL, "prio");
++
++	/* Save the "next_comm" as "comm" from the end event */
++	tracefs_synth_add_end_field(synth, "comm", "next_comm");
++
++	/* Save the "prev_prio" as "prev_prio" from the end event */
++	tracefs_synth_add_end_field(synth, NULL, "prev_prio");
++
++	/*
++	 * Take a microsecond time difference between end and start
++	 * and record as "delta"
++	 */
++	tracefs_synth_add_compare_field(synth, "delta", TRACEFS_TIMESTAMP_USECS,
++					TRACEFS_TIMESTAMP_USECS,
++					TRACEFS_SYNTH_DELTA_END);
++
++	/* Only record if start event "prio" is less than 100 */
++	tracefs_synth_add_start_filter(synth, "prio",
++				       TRACEFS_COMPARE_LT, "100",
++				       false, false);
++
++	/*
++	 * Only record if end event "next_prio" is less than 50
++	 * or the previous task's prio was less than 100.
++	 */
++	tracefs_synth_add_end_filter(synth, "next_prio",
++				       TRACEFS_COMPARE_LT, "50",
++				       false, false);
++	tracefs_synth_add_end_filter(synth, "prev_prio",
++				       TRACEFS_COMPARE_LT, "100",
++				       false, true);
 +}
 +
- static bool verify_event_fields(struct tep_event *start_event,
- 				struct tep_event *end_event,
- 				const char *start_field_name,
- 				const char *end_field_name,
--				struct tep_format_field **ptr_start_field)
-+				const struct tep_format_field **ptr_start_field)
- {
--	struct tep_format_field *start_field;
--	struct tep_format_field *end_field;
-+	const struct tep_format_field *start_field;
-+	const struct tep_format_field *end_field;
- 
--	start_field = tep_find_any_field(start_event, start_field_name);
-+	start_field = get_event_field(start_event, start_field_name);
- 	if (!start_field)
- 		goto nodev;
- 
- 	if (end_event) {
--		end_field = tep_find_any_field(end_event, end_field_name);
-+		end_field = get_event_field(end_event, end_field_name);
- 		if (!start_field)
- 			goto nodev;
- 
-@@ -644,7 +668,7 @@ static char *append_string(char *str, const char *space, const char *add)
- 	return str;
- }
- 
--static char *add_synth_field(struct tep_format_field *field,
-+static char *add_synth_field(const struct tep_format_field *field,
- 			     const char *name)
- {
- 	const char *type;
-@@ -829,7 +853,7 @@ struct tracefs_synth *tracefs_synth_init(struct tep_handle *tep,
- }
- 
- static int add_synth_fields(struct tracefs_synth *synth,
--			    struct tep_format_field *field,
-+			    const struct tep_format_field *field,
- 			    const char *name)
- {
- 	char **list;
-@@ -886,7 +910,7 @@ int tracefs_synth_add_match_field(struct tracefs_synth *synth,
- 				  const char *start_match_field,
- 				  const char *end_match_field)
- {
--	struct tep_format_field *key_field;
-+	const struct tep_format_field *key_field;
- 	char **list;
- 	int ret;
- 
-@@ -976,7 +1000,7 @@ int tracefs_synth_add_compare_field(struct tracefs_synth *synth,
- 				    const char *end_compare_field,
- 				    enum tracefs_synth_calc calc)
- {
--	struct tep_format_field *start_field;
-+	const struct tep_format_field *start_field;
- 	char *start_arg;
- 	char *compare;
- 	int ret;
-@@ -1061,7 +1085,7 @@ int tracefs_synth_add_start_field(struct tracefs_synth *synth,
- 				  const char *name,
- 				  const char *start_field)
- {
--	struct tep_format_field *field;
-+	const struct tep_format_field *field;
- 	char *start_arg;
- 	int ret;
- 
-@@ -1115,7 +1139,7 @@ int tracefs_synth_add_end_field(struct tracefs_synth *synth,
- 				const char *name,
- 				const char *end_field)
- {
--	struct tep_format_field *field;
-+	const struct tep_format_field *field;
- 	int ret;
- 
- 	if (!synth || !end_field) {
-@@ -1236,7 +1260,7 @@ int tracefs_synth_add_start_filter(struct tracefs_synth *synth,
- 				   const char *val,
- 				   bool neg, bool or)
- {
--	struct tep_format_field *start_field;
-+	const struct tep_format_field *start_field;
- 	bool is_string;
- 
- 	if (!field || !val)
-@@ -1265,7 +1289,7 @@ int tracefs_synth_add_end_filter(struct tracefs_synth *synth,
- 				 const char *val,
- 				 bool neg, bool or)
- {
--	struct tep_format_field *end_field;
-+	const struct tep_format_field *end_field;
- 	bool is_string;
- 
- 	if (!field || !val)
++/* Display how to create the synthetic event */
++static void show_event(void)
++{
++	struct trace_seq s;
++
++	trace_seq_init(&s);
++
++	tracefs_synth_show(&s, NULL, synth);
++	trace_seq_terminate(&s);
++	trace_seq_do_printf(&s);
++	trace_seq_destroy(&s);
++}
++
++int main (int argc, char **argv)
++{
++	make_event();
++
++	if (argc > 1) {
++		if (!strcmp(argv[1], "create")) {
++			/* Create the synthetic event */
++			tracefs_synth_create(NULL, synth);
++		} else if (!strcmp(argv[1], "delete")) {
++			/* Delete the synthetic event */
++			tracefs_synth_destroy(NULL, synth);
++		} else {
++			printf("usage: %s [create|delete]\n", argv[0]);
++			exit(-1);
++		}
++	} else
++		show_event();
++
++	tracefs_synth_free(synth);
++
++	return 0;
++}
++--
++
++FILES
++-----
++[verse]
++--
++*tracefs.h*
++	Header file to include in order to have access to the library APIs.
++*-ltracefs*
++	Linker switch to add when building a program that uses the library.
++--
++
++SEE ALSO
++--------
++_libtracefs(3)_,
++_libtraceevent(3)_,
++_trace-cmd(1)_,
++_tracefs_hist_alloc(3)_,
++_tracefs_hist_free(3)_,
++_tracefs_hist_add_key(3)_,
++_tracefs_hist_add_value(3)_,
++_tracefs_hist_add_name(3)_,
++_tracefs_hist_start(3)_,
++_tracefs_hist_destory(3)_,
++_tracefs_hist_add_sort_key(3)_,
++_tracefs_hist_sort_key_direction(3)_
++
++AUTHOR
++------
++[verse]
++--
++*Steven Rostedt* <rostedt@goodmis.org>
++*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>
++*sameeruddin shaik* <sameeruddin.shaik8@gmail.com>
++--
++REPORTING BUGS
++--------------
++Report bugs to  <linux-trace-devel@vger.kernel.org>
++
++LICENSE
++-------
++libtracefs is Free Software licensed under the GNU LGPL 2.1
++
++RESOURCES
++---------
++https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
++
++COPYING
++-------
++Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
++the terms of the GNU Public License (GPL).
 -- 
 2.30.2
 
