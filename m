@@ -2,174 +2,181 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C216C4338F
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 26 Jul 2021 09:34:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFE4CC4338F
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 26 Jul 2021 09:41:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E66E860F11
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 26 Jul 2021 09:34:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9484E60F42
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 26 Jul 2021 09:41:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232617AbhGZIxy (ORCPT
+        id S233005AbhGZJB1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 26 Jul 2021 04:53:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46270 "EHLO
+        Mon, 26 Jul 2021 05:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232482AbhGZIxx (ORCPT
+        with ESMTP id S232760AbhGZJB1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 26 Jul 2021 04:53:53 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A9A8C061757
-        for <linux-trace-devel@vger.kernel.org>; Mon, 26 Jul 2021 02:34:22 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id g15so10278684wrd.3
-        for <linux-trace-devel@vger.kernel.org>; Mon, 26 Jul 2021 02:34:22 -0700 (PDT)
+        Mon, 26 Jul 2021 05:01:27 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B875C061760
+        for <linux-trace-devel@vger.kernel.org>; Mon, 26 Jul 2021 02:41:56 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id l4-20020a05600c1d04b02902506f89ad2dso1779232wms.1
+        for <linux-trace-devel@vger.kernel.org>; Mon, 26 Jul 2021 02:41:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IDV+AtlpeWbRbn08dJg9c+0DN4oIcaO0IDcBeoD35OI=;
-        b=LcOXHdPEWvQtauKRGpjGnNJg763TfuQDemO0+osCJv3/hvrQWvrkbNwG4Or7PYvBAe
-         m7c3foPYpcD4p5TXjYgUo9rtEL1KyJ33l48nXpYBvy4WjUqjZpd/fnlH+8tqqGT5eF5Q
-         n/utK2Ne5ZmpbiUZubXjiIQjM69ax+OikqR5ANlmGDVU2dwHx9gvVeH8cTuIG51C2/5o
-         GDcUacYjeFnMeneZd5gjNRiQkxBveQvxpUk+qatCgOtLf5s48aBsyVrHIcYUtm9IHo13
-         FjjmW3/KiQXEaWQD9Gm6hlZz6lzoHfuGr5Uuv2a0U5OHA9NCsKD2o3vAL23CeSAQN87y
-         TcIA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=oTNzR4PmC98esA7TTxE31tq/QUDiGH9v7Tmna7qvEUE=;
+        b=UUZ/71NOxcNfo2xssrOvnpvsfwsK4vq7DpIVwFb0PGrGhEK72a42sD8erJwCSVoOj8
+         q0e3ZGZGJr4neybpqzwmdnf1+quFANxWp1r3znvLRghm3DOPK21fknWlo1C2Yy1gn2L1
+         xCb5TIFpTgS55DqdO4N+GbH38v7SKnxMIBx3lgY9WEtwEHS3tXFGy5KwqxH1wKYj9i28
+         4kOgtaYLFXRGOrT1x96zGVMSbO/92oxlQdl4FMcr0/QkWHdRZrV7edcwCIxAQ+G1lJWg
+         Mqn6u19fZdrP7pytHpb8rqkAaLBxwr90GmatW6MJnCvMteq4s/EyfuZr28YgdSCjxOUA
+         /6JA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IDV+AtlpeWbRbn08dJg9c+0DN4oIcaO0IDcBeoD35OI=;
-        b=Jw7Ue4P9jYJq249xc6Z+V0maOn6nV5tUAgpWtpw+JAlBd9DnHY0+1gSs289WF37G81
-         CqgT8FYby2gHKf1h3CadcWZS4NsJNcL55ahBjNJKb8fzTq3ii6xtC0uJIZLb11cTWhjn
-         dbcAR4aXfh3oBlVEPEGP5PNB/DW8vKDg8UthZ1E5C9UfrNaaugc/A6gGObhZkLKXZ1jK
-         zol5w/gLN/r+5PU47u9LxEjyAdBwJH+xbEkz+z9CLVU0yFRllfno1Z+ObZGE1OKDPjn3
-         OvNRB5T9cXdgG7WkdBnSLf2GnvnuOFWwoDRH+CSvltfDO6AHG2vdWIAjnR/LPDXd02MO
-         +7ZA==
-X-Gm-Message-State: AOAM530yiy6JgT+AjeHkuywrQjrSNFEfacgDRr+Xz7DSKRjl/FJ4ifgm
-        esppWjdeTPHeO7B5W9yGPfGs5RQGdfs=
-X-Google-Smtp-Source: ABdhPJw3Zmw3u8ACd6VB55zGFH5kMIcfN0aR/jWxdm9gLPZzUcK4Pi8glrIlD0MMoG6zp7Zv4QW5Ow==
-X-Received: by 2002:adf:f80f:: with SMTP id s15mr4346485wrp.330.1627292061081;
-        Mon, 26 Jul 2021 02:34:21 -0700 (PDT)
-Received: from [10.93.171.151] ([146.247.46.134])
-        by smtp.gmail.com with ESMTPSA id u11sm261027wrr.44.2021.07.26.02.34.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 02:34:20 -0700 (PDT)
-Subject: Re: [PATCH 1/4] trace-cruncher: Add set_ftrace_loglevel()
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org
-References: <20210712123242.223500-1-y.karadz@gmail.com>
- <20210722171551.6a640651@oasis.local.home>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=oTNzR4PmC98esA7TTxE31tq/QUDiGH9v7Tmna7qvEUE=;
+        b=cM6eci6QJLtokNWIDdKDW0dtmJglKgTpi4pjEb4nzt/ykeRzWXe7IEwXWHZ13yYMS3
+         Dq0H1d06LFu120wBkC8MzrtWF9KLhEfbqfPoyULX5KhlkDVMH6Pbl03vrAyuGsYeDDc5
+         FP5xCMT3FNhsVEVAQ5BhvJGr+U3ETbHW5sjZ932hi2EGI9grrzYEAbmgnfc9kRFpybt1
+         IkzRSZ6Hoi6A83oU+1VKplRv0MV/Hmf8e7zSKm9QN0NovK5knokVuI2LcTJ9ddWkbLM5
+         6frHch2CDkljdn3OdBfE58ZwqsOow5jv1Gr7OqBSRQGXAXOv0SuUk8PzKoRRXNVoN3DV
+         MhjA==
+X-Gm-Message-State: AOAM530WmyjYtKcyPaB8gQDMyDS95U0bzBq0zeuQKnMFkkvNglzh7J6j
+        4WHqNmbjS3PixLJGMJZ2hk1zqnTRny8=
+X-Google-Smtp-Source: ABdhPJyqEtR9nwC3Z+/tz+nTE4EAv3hop7++85TOBFb/q3WG60GU8VLnO6y5prsuBXTqSBBwSn6QFg==
+X-Received: by 2002:a05:600c:214a:: with SMTP id v10mr16308666wml.67.1627292514874;
+        Mon, 26 Jul 2021 02:41:54 -0700 (PDT)
+Received: from localhost.localdomain ([146.247.46.131])
+        by smtp.gmail.com with ESMTPSA id t6sm42005030wru.75.2021.07.26.02.41.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 02:41:54 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <b65d92d5-4978-a9c1-e04d-52f58638d8c5@gmail.com>
-Date:   Mon, 26 Jul 2021 12:34:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+To:     linux-trace-devel@vger.kernel.org
+Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH 2/2] kernel-shark: Treat all tracing headers as library headers
+Date:   Mon, 26 Jul 2021 12:41:41 +0300
+Message-Id: <20210726094141.191579-2-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210726094141.191579-1-y.karadz@gmail.com>
+References: <20210726094141.191579-1-y.karadz@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210722171551.6a640651@oasis.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+The CMake scripts used to discover all tracing libraries are modified
+such that the full path to the header is determined. Later there is
+no need to add that part when the headers are included. Using angular
+brackets ('<' and '>') denotes that it is a library header and not a
+local one.
 
+1. Note that this patch actually fixes a build failure, caused by the
+following commit in libtracefs:
+880885d (libtracefs: Remove "traceevent/" from referencing libtraceevent headers)
+It seems that so far the discovery of the headers was working more or
+less by chance.
 
-On 23.07.21 г. 0:15, Steven Rostedt wrote:
-> On Mon, 12 Jul 2021 15:32:39 +0300
-> "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
-> 
-> -ENOCOMMITMESSAGE
-> 
-> Please describe what you are doing and why. The subject is not enough.
-> 
-> Even on simple changes, there should be some commentary.
+2. Note that after applying the patch you may need to clean the Cmake
+cache (running cmake_clean.sh).
 
-There was a message for this commit. I guess I somehow deleted it with 
-the last rebase. Will fix this in v2.
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+---
+ build/FindTraceCmd.cmake     | 2 +-
+ build/FindTraceEvent.cmake   | 2 +-
+ build/FindTraceFS.cmake      | 2 +-
+ src/KsAdvFilteringDialog.cpp | 2 +-
+ src/libkshark-tepdata.c      | 3 +--
+ src/plugins/sched_events.c   | 2 +-
+ 6 files changed, 6 insertions(+), 7 deletions(-)
 
-Thanks!
-Yordan
+diff --git a/build/FindTraceCmd.cmake b/build/FindTraceCmd.cmake
+index 23eefed..602eac5 100644
+--- a/build/FindTraceCmd.cmake
++++ b/build/FindTraceCmd.cmake
+@@ -42,7 +42,7 @@ pkg_check_modules(PC_TraceCmd QUIET libtracecmd)
+ set(TraceCmd_VERSION     ${PC_TraceCmd_VERSION})
+ set(TraceCmd_DEFINITIONS ${PC_TraceCmd_CFLAGS_OTHER})
+ 
+-find_path(TraceCmd_INCLUDE_DIR NAMES trace-cmd/trace-cmd.h
++find_path(TraceCmd_INCLUDE_DIR NAMES trace-cmd.h
+                                HINTS ${PC_TraceCmd_INCLUDE_DIRS}
+                                      ${PC_TraceCmd_INCLUDEDIR})
+ 
+diff --git a/build/FindTraceEvent.cmake b/build/FindTraceEvent.cmake
+index ae391b6..668a5de 100644
+--- a/build/FindTraceEvent.cmake
++++ b/build/FindTraceEvent.cmake
+@@ -42,7 +42,7 @@ pkg_check_modules(PC_TraceEvent QUIET libtraceevent)
+ set(TraceEvent_VERSION     ${PC_TraceEvent_VERSION})
+ set(TraceEvent_DEFINITIONS ${PC_TraceEvent_CFLAGS_OTHER})
+ 
+-find_path(TraceEvent_INCLUDE_DIR  NAMES traceevent/event-parse.h
++find_path(TraceEvent_INCLUDE_DIR  NAMES event-parse.h
+                                   HINTS ${PC_TraceEvent_INCLUDE_DIRS}
+                                         ${PC_TraceEvent_INCLUDEDIR})
+ 
+diff --git a/build/FindTraceFS.cmake b/build/FindTraceFS.cmake
+index 82fa012..251b506 100644
+--- a/build/FindTraceFS.cmake
++++ b/build/FindTraceFS.cmake
+@@ -42,7 +42,7 @@ pkg_check_modules(PC_TraceFS QUIET libtracefs)
+ set(TraceFS_VERSION     ${PC_TraceFS_VERSION})
+ set(TraceFS_DEFINITIONS ${PC_TraceFS_CFLAGS_OTHER})
+ 
+-find_path(TraceFS_INCLUDE_DIR  NAMES tracefs/tracefs.h
++find_path(TraceFS_INCLUDE_DIR  NAMES tracefs.h
+                                HINTS ${PC_TraceFS_INCLUDE_DIRS}
+                                      ${PC_TraceFS_INCLUDEDIR})
+ 
+diff --git a/src/KsAdvFilteringDialog.cpp b/src/KsAdvFilteringDialog.cpp
+index 2fdb624..f01467d 100644
+--- a/src/KsAdvFilteringDialog.cpp
++++ b/src/KsAdvFilteringDialog.cpp
+@@ -10,7 +10,7 @@
+  */
+ 
+ // trace-cmd
+-#include "trace-cmd/trace-cmd.h"
++#include <trace-cmd.h>
+ 
+ // KernelShark
+ #include "libkshark.h"
+diff --git a/src/libkshark-tepdata.c b/src/libkshark-tepdata.c
+index acc554b..865ca82 100644
+--- a/src/libkshark-tepdata.c
++++ b/src/libkshark-tepdata.c
+@@ -21,8 +21,7 @@
+ #include <string.h>
+ 
+ // trace-cmd
+-#include "trace-cmd/trace-cmd.h"
+-#include "tracefs/tracefs.h"
++#include <trace-cmd.h>
+ 
+ // KernelShark
+ #include "libkshark.h"
+diff --git a/src/plugins/sched_events.c b/src/plugins/sched_events.c
+index 659ecc3..83c2520 100644
+--- a/src/plugins/sched_events.c
++++ b/src/plugins/sched_events.c
+@@ -14,7 +14,7 @@
+ #include <stdio.h>
+ 
+ // trace-cmd
+-#include "trace-cmd/trace-cmd.h"
++#include <trace-cmd.h>
+ 
+ // KernelShark
+ #include "plugins/sched_events.h"
+-- 
+2.27.0
 
-> The rest looks fine.
-> 
-> -- Steve
-> 
-> 
->> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
->> ---
->>   src/ftracepy-utils.c | 23 +++++++++++++++++++++++
->>   src/ftracepy-utils.h |  3 +++
->>   src/ftracepy.c       |  5 +++++
->>   3 files changed, 31 insertions(+)
->>
->> diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
->> index dfb0669..8f4b50c 100644
->> --- a/src/ftracepy-utils.c
->> +++ b/src/ftracepy-utils.c
->> @@ -1801,6 +1801,29 @@ PyObject *PyFtrace_kprobe_is_enabled(PyObject *self, PyObject *args,
->>   	return event_is_enabled(instance, TC_SYS, event);
->>   }
->>   
->> +PyObject *PyFtrace_set_ftrace_loglevel(PyObject *self, PyObject *args,
->> +						       PyObject *kwargs)
->> +{
->> +	static char *kwlist[] = {"level", NULL};
->> +	int level;
->> +
->> +	if (!PyArg_ParseTupleAndKeywords(args,
->> +					 kwargs,
->> +					 "i",
->> +					 kwlist,
->> +					 &level)) {
->> +		return NULL;
->> +	}
->> +
->> +	if (level < 0)
->> +		level = 0;
->> +
->> +	tracefs_set_loglevel(level);
->> +	tep_set_loglevel(level);
->> +
->> +	Py_RETURN_NONE;
->> +}
->> +
->>   static bool set_fork_options(struct tracefs_instance *instance, bool enable)
->>   {
->>   	if (enable) {
->> diff --git a/src/ftracepy-utils.h b/src/ftracepy-utils.h
->> index d826427..5d7c19c 100644
->> --- a/src/ftracepy-utils.h
->> +++ b/src/ftracepy-utils.h
->> @@ -155,6 +155,9 @@ PyObject *PyFtrace_disable_kprobe(PyObject *self, PyObject *args,
->>   PyObject *PyFtrace_kprobe_is_enabled(PyObject *self, PyObject *args,
->>   						     PyObject *kwargs);
->>   
->> +PyObject *PyFtrace_set_ftrace_loglevel(PyObject *self, PyObject *args,
->> +						       PyObject *kwargs);
->> +
->>   PyObject *PyFtrace_trace_process(PyObject *self, PyObject *args,
->>   						 PyObject *kwargs);
->>   
->> diff --git a/src/ftracepy.c b/src/ftracepy.c
->> index e5fcd54..e3fec7b 100644
->> --- a/src/ftracepy.c
->> +++ b/src/ftracepy.c
->> @@ -269,6 +269,11 @@ static PyMethodDef ftracepy_methods[] = {
->>   	 METH_VARARGS | METH_KEYWORDS,
->>   	 "Check if kprobe event is enabled."
->>   	},
->> +	{"set_ftrace_loglevel",
->> +	 (PyCFunction) PyFtrace_set_ftrace_loglevel,
->> +	 METH_VARARGS | METH_KEYWORDS,
->> +	 "Set the verbose level of the ftrace libraries."
->> +	},
->>   	{"trace_process",
->>   	 (PyCFunction) PyFtrace_trace_process,
->>   	 METH_VARARGS | METH_KEYWORDS,
-> 
