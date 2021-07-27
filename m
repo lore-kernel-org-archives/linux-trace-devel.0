@@ -2,112 +2,777 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-26.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90BCDC4338F
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 27 Jul 2021 13:50:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18542C4338F
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 27 Jul 2021 19:35:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 710E461A8D
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 27 Jul 2021 13:50:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0208360FA0
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 27 Jul 2021 19:35:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbhG0Num (ORCPT
+        id S232027AbhG0Tfk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 27 Jul 2021 09:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230500AbhG0Num (ORCPT
+        Tue, 27 Jul 2021 15:35:40 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:55240 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231932AbhG0Tfk (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:50:42 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C96DC061757
-        for <linux-trace-devel@vger.kernel.org>; Tue, 27 Jul 2021 06:50:42 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id l4so15310129wrs.4
-        for <linux-trace-devel@vger.kernel.org>; Tue, 27 Jul 2021 06:50:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RikzM6cTsYzhnVVh1sROd7OhkUxUTi9rVZY1ONcNHEU=;
-        b=HB/dLy6e0KLXn9SySEJNCawsCwSjpsVhWIQnynSrS1UpRHH0PqCDN/bpmOoXpMP2R0
-         bjS5TD7gz2drybcQVT9eWlAvxpBFdQg6lRDmQvmTSiEZKki4Joh76Qf3XM6lSX5LB3BT
-         a+mfOnKKmOe5Oo9ZtPL2KDOibKFOyaSStQec4Yt2rt0aySPq3iqjgczttiqXaIapqVYG
-         xWxMiuNDQkxN0WbaaXh0cen2VMq1Nh41u6f8+3SKb/KYuyP82AEc3cn/zAw44L2LoGzM
-         ICjJd6VNyr8bmQdK1GMlbg/WiPMMz5M2sP9Dq7gWDX/F3L6ta/aUZ10lTncgTakvGG6v
-         rJ1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RikzM6cTsYzhnVVh1sROd7OhkUxUTi9rVZY1ONcNHEU=;
-        b=n97dbKkFbGmusmpmrMrgPAWrDSgajyDS3XU+Am2aMlugh85hn6A4HfklqC1YzGnjSF
-         PXnPvHovW47XMHrl65l9CP1sjYDGj3tgddnjlOLGz5S0tgGdD1tI/tAar8sWmmaQFx8r
-         zIsbBn0XbRaYZoVF18x3jWkjldTb8EckLY7DDDP4PzmQVBKBCsWC1jb42tMMCgzz4H9G
-         GsadheJtpAxJzYbtyUe9+WDtmxlXtPln26S8EWL9TklFAqs5FL1hCyUz2q+UKbZ/BB9i
-         Z4MlnsX4GL1kv413a7VALj4dVNyx2eDIZsSu13Pbl7e3w6cFYsrujWnQOIRFPRFL3hpY
-         nxQg==
-X-Gm-Message-State: AOAM533OVk5agKkdzFiaMPwYR3K4Vzq8B5ICdcFmJWlJrZrndoQOeQYm
-        QKgt4wcC9oh1AwOSrQd8Tn1pSlu1BQc=
-X-Google-Smtp-Source: ABdhPJykcX2lfV0QkeEZDJlQvEtWGxPhYSUcpVU/7iBOg/zFf1pV3N0yLPPSRI7Qzk8uGPiVrbzwNQ==
-X-Received: by 2002:a5d:610b:: with SMTP id v11mr24910950wrt.58.1627393840786;
-        Tue, 27 Jul 2021 06:50:40 -0700 (PDT)
-Received: from crow.eng.vmware.com ([146.247.46.133])
-        by smtp.gmail.com with ESMTPSA id q20sm3026432wmj.27.2021.07.27.06.50.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 06:50:40 -0700 (PDT)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+        Tue, 27 Jul 2021 15:35:40 -0400
+Received: from localhost.localdomain (unknown [24.17.193.74])
+        by linux.microsoft.com (Postfix) with ESMTPSA id C338C20B36E0;
+        Tue, 27 Jul 2021 12:35:39 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C338C20B36E0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1627414539;
+        bh=Pdkqb0O27kCWpjVRDSEOXlaus6Z5BnbRt29n8k5IV6c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NzOXwqSI3U7DswPstAGCUahXOEd8zKsllRdtRtcid/PjCEJmISKUBydyMVtqRmsct
+         iLxgFIR4SdArLdmlioirHVaUUxr1PhYAWwjzAkSvdS0UGPeHOc1mhISQiXN5w6OURp
+         bDwsnipVyrEsdEnJMJr0ErR5iw3UpLaoHo7snmRo=
+From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     linux-trace-devel@vger.kernel.org
-Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH] libtracefs: Do not use "or" as function parameter name
-Date:   Tue, 27 Jul 2021 16:50:30 +0300
-Message-Id: <20210727135030.25914-1-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Cc:     beaub@linux.microsoft.com, rostedt@goodmis.org
+Subject: [RFC PATCH] udiag - User mode to trace_event (ftrace, perf, eBPF) ABI
+Date:   Tue, 27 Jul 2021 12:35:35 -0700
+Message-Id: <20210727193535.10326-1-beaub@linux.microsoft.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-"or" is a keyword in C++. Using it as a function argument name in
-the public header of the library makes it impossible to include
-this header from C++ code.
+User mode processes that require emitting diagnostic data are currently
+limited to using uprobes to get data into trace_events. The udiag ABI
+offers a way for user mode processes to write diagnostic data to
+trace_events much faster than the uprobe die chain handler.
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+In addition a shared page is exposed out to registered user processes
+that is used to enable single branch checking for if the trace_event is
+being traced. This allows equivalent overhead as a uprobe site when
+tracing is not enabled.
+
+User processes register a trace_event to use via a device exposed at
+/dev/udiag. System owners can write udev rules to decide the security
+boundary. udiag is limited to only a page size worth of trace_events
+that are isolated and put under the udiag subsystem. User processes
+write events out via /dev/udiag. This allows for many languages and
+processes to contribute the same events regardless of where in the code
+the event was generated. This allows common code to be shared and
+centrally processed on the machine within a eBPF program regardless how
+the code has evolved as long as the data within the event follows the
+same data format as before.
+
+An example of this is common error conditions that can happen across a
+suite of processes. A single eBPF program can watch for the single event
+across all processes, regardless of binary location or language used to
+create the process. Once problems are found, additional eBPF programs
+can be launched to impose further tracing, run mitigations, etc.
+
+Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
+ kernel/trace/Kconfig              |  15 +
+ kernel/trace/Makefile             |   1 +
+ kernel/trace/trace_events_udiag.c | 650 ++++++++++++++++++++++++++++++
+ 3 files changed, 666 insertions(+)
+ create mode 100644 kernel/trace/trace_events_udiag.c
 
-Hi Steven,
-
-This patch is optional. Us it only if it makes sense to you.
-Note that this fix is not needed by KernelShark.
-
-Thanks,
-Yordan
-
- include/tracefs.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 9cfd257..877e03a 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -355,12 +355,12 @@ int tracefs_synth_add_start_filter(struct tracefs_synth *synth,
- 				   const char *field,
- 				   enum tracefs_synth_compare compare,
- 				   const char *val,
--				   bool neg, bool or);
-+				   bool neg, bool do_OR);
- int tracefs_synth_add_end_filter(struct tracefs_synth *synth,
- 				 const char *field,
- 				 enum tracefs_synth_compare compare,
- 				 const char *val,
--				 bool neg, bool or);
-+				 bool neg, bool do_OR);
- int tracefs_synth_create(struct tracefs_instance *instance,
- 			 struct tracefs_synth *synth);
- int tracefs_synth_destroy(struct tracefs_instance *instance,
+diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+index 7fa82778c3e6..b31f5980760d 100644
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -658,6 +658,21 @@ config SYNTH_EVENTS
+ 
+ 	  If in doubt, say N.
+ 
++config UDIAG_EVENTS
++	bool "User diagnostic trace events"
++	select TRACING
++	default n
++	help
++	  User diagnostic events are user-defined trace events that
++	  can combine many user diagnostic events into a single
++	  trace event from multiple processes.  User diagnostic
++	  events are generated by writing to a device file.  User
++	  processes can determine if their diagnostic events should
++	  be generated by memory mapping a device file and checking
++	  for an associated byte being non-zero.
++
++	  If in doubt, say N.
++
+ config HIST_TRIGGERS
+ 	bool "Histogram triggers"
+ 	depends on ARCH_HAVE_NMI_SAFE_CMPXCHG
+diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
+index b28d3e5013cd..d7cc143c6a38 100644
+--- a/kernel/trace/Makefile
++++ b/kernel/trace/Makefile
+@@ -79,6 +79,7 @@ obj-$(CONFIG_EVENT_TRACING) += trace_events_trigger.o
+ obj-$(CONFIG_TRACE_EVENT_INJECT) += trace_events_inject.o
+ obj-$(CONFIG_SYNTH_EVENTS) += trace_events_synth.o
+ obj-$(CONFIG_HIST_TRIGGERS) += trace_events_hist.o
++obj-$(CONFIG_UDIAG_EVENTS) += trace_events_udiag.o
+ obj-$(CONFIG_BPF_EVENTS) += bpf_trace.o
+ obj-$(CONFIG_KPROBE_EVENTS) += trace_kprobe.o
+ obj-$(CONFIG_TRACEPOINTS) += error_report-traces.o
+diff --git a/kernel/trace/trace_events_udiag.c b/kernel/trace/trace_events_udiag.c
+new file mode 100644
+index 000000000000..aecd0dd687fe
+--- /dev/null
++++ b/kernel/trace/trace_events_udiag.c
+@@ -0,0 +1,650 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2021, Microsoft Corporation.
++ *
++ * Authors:
++ *   Beau Belgrave <beaub@linux.microsoft.com>
++ */
++
++#include <linux/bitmap.h>
++#include <linux/cdev.h>
++#include <linux/hashtable.h>
++#include <linux/io.h>
++#include <linux/ioctl.h>
++#include <linux/jhash.h>
++#include <linux/list.h>
++#include <linux/trace_events.h>
++#include <linux/types.h>
++#include <linux/uaccess.h>
++#include "trace.h"
++
++#define DIAG_SYSTEM "udiag"
++
++/*
++ * Limits how many trace_event calls user processes can create:
++ * Must be multiple of PAGE_SIZE.
++ */
++#define MAX_PROVIDERS PAGE_SIZE
++
++/* Limit how long of an event name within the subsystem. */
++#define MAX_EVENT_NAME 96
++#define DIAG_NAME(diag) ((diag)->tracepoint.name)
++
++#define DIAG_IOC_MAGIC '*'
++#define DIAG_IOCSREG _IOW(DIAG_IOC_MAGIC, 0, char*)
++#define DIAG_IOCSDEL _IOW(DIAG_IOC_MAGIC, 1, char*)
++
++static struct cdev diag_device;
++static struct class *diag_class;
++static struct device *diag_udevice;
++
++static char *register_page_data;
++static char *print_fmt = "\"datalen=%d\", REC->datalen";
++
++static DEFINE_HASHTABLE(register_table, 4);
++static DEFINE_MUTEX(register_mutex);
++static DEFINE_SPINLOCK(page_lock);
++static DECLARE_BITMAP(page_bitmap, MAX_PROVIDERS);
++
++struct diag_event {
++	struct tracepoint tracepoint;
++	struct trace_event_call call;
++	struct trace_event_class class;
++	struct hlist_node node;
++	atomic_t refs;
++	int index;
++};
++
++struct diag_trace_event {
++	struct trace_entry ent;
++	u64 fields[2];
++};
++
++#ifdef CONFIG_PERF_EVENTS
++struct diag_trace_perf_event {
++	struct trace_entry ent;
++	int udatalen;
++	char udata[];
++};
++
++struct diag_bpf_context {
++	int udatalen;
++	const char __user *udata;
++};
++#endif
++
++typedef void (*diag_probe_func_t) (struct diag_event *diag,
++				   const char __user *udata,
++				   size_t udatalen, void *tpdata);
++
++static int diag_event_define_fields(struct trace_event_call *call)
++{
++	struct diag_trace_event trace;
++	int offset = offsetof(typeof(trace), fields);
++	int ret;
++
++	ret = trace_define_field(call, "int", "datalen", offset,
++				 sizeof(int), false, FILTER_OTHER);
++
++	if (ret != 0)
++		return ret;
++
++	offset += sizeof(int);
++
++	return trace_define_field(call, "__data_loc char[]", "data", offset,
++				  sizeof(int), true, FILTER_OTHER);
++}
++
++static struct trace_event_fields diag_event_fields_array[] = {
++	{ .type = TRACE_FUNCTION_TYPE,
++	  .define_fields = diag_event_define_fields },
++	{}
++};
++
++static enum print_line_t diag_event_print_trace(struct trace_iterator *iter,
++						int flags,
++						struct trace_event *event)
++{
++	struct diag_trace_event *entry = (struct diag_trace_event *)iter->ent;
++
++	trace_seq_printf(&iter->seq,
++			 "\%s: datalen=%lld\n",
++			 DIAG_SYSTEM,
++			 entry->fields[0]);
++
++	return trace_handle_return(&iter->seq);
++}
++
++static struct trace_event_functions diag_event_funcs = {
++	.trace = diag_event_print_trace
++};
++
++static int destroy_diag_event(struct diag_event *diag)
++{
++	int ret;
++
++	/*
++	 * trace_remove_event_call invokes unregister_trace_event:
++	 * Pick the correct one based on if we set the data or not
++	 */
++	if (diag->call.data) {
++		/* Can race with register callbacks, requires event_mutex */
++		mutex_lock(&event_mutex);
++		ret = trace_remove_event_call(&diag->call);
++		mutex_unlock(&event_mutex);
++
++		if (ret)
++			return ret;
++	} else {
++		unregister_trace_event(&diag->call.event);
++	}
++
++	if (diag->index != 0) {
++		register_page_data[diag->index] = 0;
++		clear_bit(diag->index, page_bitmap);
++		hash_del(&diag->node);
++	}
++
++	kfree(DIAG_NAME(diag));
++	kfree(diag);
++
++	return 0;
++}
++
++static struct diag_event *find_diag_event(u32 key, char *name)
++{
++	struct diag_event *diag;
++
++	hash_for_each_possible(register_table, diag, node, key)
++		if (!strcmp(DIAG_NAME(diag), name))
++			return diag;
++
++	return NULL;
++}
++
++/*
++ * Update the register page that is shared between user processes.
++ */
++static void update_reg_page_for(struct diag_event *diag)
++{
++	spin_lock(&page_lock);
++
++	if (atomic_read(&diag->tracepoint.key.enabled) > 0)
++		register_page_data[diag->index] = 1;
++	else
++		register_page_data[diag->index] = 0;
++
++	spin_unlock(&page_lock);
++}
++
++/*
++ * Register callback for our events from tracing sub-systems.
++ */
++static int diag_event_reg(struct trace_event_call *call,
++			  enum trace_reg type,
++			  void *data)
++{
++	struct diag_event *diag = (struct diag_event *)call->data;
++	int ret = 0;
++
++	if (!diag)
++		return -ENOENT;
++
++	switch (type) {
++	case TRACE_REG_REGISTER:
++		ret = tracepoint_probe_register(call->tp,
++						call->class->probe,
++						data);
++		if (!ret)
++			goto inc;
++		break;
++
++	case TRACE_REG_UNREGISTER:
++		tracepoint_probe_unregister(call->tp,
++					    call->class->probe,
++					    data);
++		goto dec;
++
++#ifdef CONFIG_PERF_EVENTS
++	case TRACE_REG_PERF_REGISTER:
++		ret = tracepoint_probe_register(call->tp,
++						call->class->perf_probe,
++						data);
++		if (!ret)
++			goto inc;
++		break;
++
++	case TRACE_REG_PERF_UNREGISTER:
++		tracepoint_probe_unregister(call->tp,
++					    call->class->perf_probe,
++					    data);
++		goto dec;
++
++	case TRACE_REG_PERF_OPEN:
++	case TRACE_REG_PERF_CLOSE:
++	case TRACE_REG_PERF_ADD:
++	case TRACE_REG_PERF_DEL:
++		break;
++#endif
++	}
++
++	return ret;
++inc:
++	atomic_inc(&diag->refs);
++	update_reg_page_for(diag);
++	return 0;
++dec:
++	update_reg_page_for(diag);
++	atomic_dec(&diag->refs);
++	return 0;
++}
++
++/*
++ * Writes the user supplied payload out to a trace file.
++ */
++static void diag_probe_trace(struct diag_event *diag, const char __user *udata,
++			     size_t udatalen, void *tpdata)
++{
++	struct trace_event_file *file;
++	struct diag_trace_event *entry;
++	struct trace_event_buffer event_buffer;
++	u64 copy_offset;
++
++	file = (struct trace_event_file *)tpdata;
++
++	if (!file ||
++	    !(file->flags & EVENT_FILE_FL_ENABLED) ||
++	    trace_trigger_soft_disabled(file))
++		return;
++
++	entry = trace_event_buffer_reserve(&event_buffer, file,
++					   sizeof(*entry) + udatalen);
++
++	if (!entry)
++		return;
++
++	copy_offset = sizeof(*entry);
++
++	entry->fields[0] = udatalen;
++	entry->fields[1] = copy_offset;
++
++	if (!copy_from_user(((char *)entry) + copy_offset, udata, udatalen))
++		trace_event_buffer_commit(&event_buffer);
++}
++
++#ifdef CONFIG_PERF_EVENTS
++/*
++ * Writes the user supplied payload out to perf ring buffer or eBPF program.
++ */
++static void diag_probe_perf(struct diag_event *diag, const char __user *udata,
++			    size_t udatalen, void *tpdata)
++{
++	struct hlist_head *perf_head;
++
++	if (bpf_prog_array_valid(&diag->call)) {
++		struct diag_bpf_context context = {0};
++
++		context.udatalen = udatalen;
++		context.udata = udata;
++
++		trace_call_bpf(&diag->call, &context);
++	}
++
++	perf_head = this_cpu_ptr(diag->call.perf_events);
++
++	if (perf_head && !hlist_empty(perf_head)) {
++		struct diag_trace_perf_event *perf_entry;
++		struct pt_regs *regs;
++		size_t size = sizeof(*perf_entry) + udatalen;
++		int context;
++
++		perf_entry = perf_trace_buf_alloc(ALIGN(size, 8),
++						  &regs, &context);
++
++		if (!perf_entry)
++			return;
++
++		perf_fetch_caller_regs(regs);
++		perf_entry->udatalen = udatalen;
++
++		if (copy_from_user(perf_entry->udata,
++				   udata,
++				   udatalen))
++			return;
++
++		perf_trace_buf_submit(perf_entry, size, context,
++				      diag->call.event.type, 1, regs,
++				      perf_head, NULL);
++	}
++}
++#endif
++
++static u32 diag_event_key(char *name)
++{
++	return jhash(name, strlen(name), 0);
++}
++
++/*
++ * Register a trace_event into the system, either find or create.
++ */
++static int register_diag_event(char *name,
++			       struct diag_event **newdiag)
++{
++	int ret;
++	int index;
++	u32 key = diag_event_key(name);
++	struct diag_event *diag = find_diag_event(key, name);
++
++	if (diag) {
++		*newdiag = diag;
++		ret = 0;
++		goto put_name;
++	}
++
++	index = find_first_zero_bit(page_bitmap, MAX_PROVIDERS);
++
++	if (index == MAX_PROVIDERS) {
++		ret = -EMFILE;
++		goto put_name;
++	}
++
++	diag = kzalloc(sizeof(*diag), GFP_KERNEL);
++
++	if (!diag) {
++		ret = -ENOMEM;
++		goto put_name;
++	}
++
++	INIT_LIST_HEAD(&diag->class.fields);
++
++	diag->tracepoint.name = name;
++
++	diag->call.class = &diag->class;
++	diag->call.name = name;
++	diag->call.print_fmt = print_fmt;
++	diag->call.flags = TRACE_EVENT_FL_TRACEPOINT;
++	diag->call.tp = &diag->tracepoint;
++	diag->call.event.funcs = &diag_event_funcs;
++
++	diag->class.system = DIAG_SYSTEM;
++	diag->class.fields_array = diag_event_fields_array;
++	diag->class.reg = diag_event_reg;
++	diag->class.probe = diag_probe_trace;
++#ifdef CONFIG_PERF_EVENTS
++	diag->class.perf_probe = diag_probe_perf;
++#endif
++
++	ret = register_trace_event(&diag->call.event);
++
++	if (!ret) {
++		kfree(diag);
++		ret = -ENODEV;
++		goto put_name;
++	}
++
++	ret = trace_add_event_call(&diag->call);
++
++	if (ret) {
++		destroy_diag_event(diag);
++		goto out;
++	}
++
++	diag->call.data = diag;
++	diag->index = index;
++
++	set_bit(diag->index, page_bitmap);
++	hash_add(register_table, &diag->node, key);
++
++	*newdiag = diag;
++	return 0;
++
++put_name:
++	kfree(name);
++out:
++	return ret;
++}
++
++/*
++ * Deletes a previously created event if it is no longer being used.
++ */
++static int delete_diag_event(char *name)
++{
++	u32 key = diag_event_key(name);
++	struct diag_event *diag = find_diag_event(key, name);
++	int refs;
++
++	if (!diag)
++		return -ENOENT;
++
++	refs = atomic_read(&diag->refs);
++
++	if (refs != 0)
++		return -EBUSY;
++
++	return destroy_diag_event(diag);
++}
++
++/*
++ * Validates the user payload and writes to the appropriate sub-system.
++ */
++static ssize_t diag_dev_write(struct file *file, const char __user *ubuf,
++			      size_t count, loff_t *ppos)
++{
++	struct diag_event *diag;
++	struct tracepoint *tp;
++
++	if (*ppos != 0 || count <= 0)
++		return -EFAULT;
++
++	diag = file->private_data;
++
++	if (!diag)
++		return -ENOENT;
++
++	tp = &diag->tracepoint;
++
++	if (likely(atomic_read(&tp->key.enabled) > 0)) {
++		struct tracepoint_func *probe_func_ptr;
++		diag_probe_func_t probe_func;
++		void *tpdata;
++
++		preempt_disable();
++
++		if (unlikely(!(cpu_online(raw_smp_processor_id()))))
++			goto preempt_out;
++
++		probe_func_ptr = rcu_dereference_sched(tp->funcs);
++
++		if (probe_func_ptr) {
++			do {
++				probe_func = probe_func_ptr->func;
++				tpdata = probe_func_ptr->data;
++				probe_func(diag, ubuf, count, tpdata);
++			} while ((++probe_func_ptr)->func);
++		}
++preempt_out:
++		preempt_enable();
++	}
++
++	return count;
++}
++
++/*
++ * Maps the shared page into the user process for checking if event is enabled.
++ */
++static int diag_dev_mmap(struct file *filp, struct vm_area_struct *vma)
++{
++	unsigned long size = vma->vm_end - vma->vm_start;
++
++	if (size != MAX_PROVIDERS)
++		return -EFAULT;
++
++	return remap_pfn_range(vma, vma->vm_start,
++			       virt_to_phys(register_page_data) >> PAGE_SHIFT,
++			       size, PAGE_READONLY);
++}
++
++/*
++ * Handles the ioctl from user mode to register or alter operations.
++ */
++static long diag_dev_ioctl(struct file *file, unsigned int cmd,
++			   unsigned long arg)
++{
++	void __user *ubuf = (void __user *)arg;
++	struct diag_event *diag;
++	char *name;
++	long ret;
++
++	switch (cmd) {
++	case DIAG_IOCSREG:
++		/* Register/lookup on behalf of user process */
++		name = strndup_user(ubuf, MAX_EVENT_NAME);
++
++		if (IS_ERR(name)) {
++			ret = PTR_ERR(name);
++			goto out;
++		}
++
++		mutex_lock(&register_mutex);
++
++		if (file->private_data) {
++			/* Already associated with an event */
++			ret = -EMFILE;
++			goto reg_out;
++		}
++
++		ret = register_diag_event(name, &diag);
++
++		if (!ret) {
++			file->private_data = diag;
++			atomic_inc(&diag->refs);
++		}
++
++reg_out:
++		mutex_unlock(&register_mutex);
++
++		if (ret < 0)
++			goto out;
++
++		/* Return page index to check before writes */
++		ret = diag->index;
++		break;
++
++	case DIAG_IOCSDEL:
++		/* Delete on behalf of user process */
++		name = strndup_user(ubuf, MAX_EVENT_NAME);
++
++		if (IS_ERR(name)) {
++			ret = PTR_ERR(name);
++			goto out;
++		}
++
++		mutex_lock(&register_mutex);
++		ret = delete_diag_event(name);
++		mutex_unlock(&register_mutex);
++
++		kfree(name);
++		break;
++
++	default:
++		ret = -ENOTTY;
++		break;
++	}
++
++out:
++	return ret;
++}
++
++/*
++ * Handles the final close of the device from user mode.
++ */
++static int diag_dev_release(struct inode *node, struct file *file)
++{
++	struct diag_event *diag = file->private_data;
++
++	if (diag)
++		atomic_dec(&diag->refs);
++
++	return 0;
++}
++
++static const struct file_operations diag_dev_fops = {
++	.write = diag_dev_write,
++	.mmap = diag_dev_mmap,
++	.unlocked_ioctl	= diag_dev_ioctl,
++	.release = diag_dev_release,
++};
++
++/*
++ * Creates a char device for the user processes to use to generate diagnostic
++ * events. This allows udev rules to define permission boundaries.
++ */
++static int create_user_diag_device(void)
++{
++	int ret;
++	dev_t devid;
++
++	ret = alloc_chrdev_region(&devid, 0, 1, DIAG_SYSTEM);
++
++	if (ret)
++		return ret;
++
++	cdev_init(&diag_device, &diag_dev_fops);
++	ret = cdev_add(&diag_device, devid, 1);
++
++	if (ret)
++		goto cleanup_region;
++
++	diag_class = class_create(NULL, DIAG_SYSTEM);
++
++	if (IS_ERR(diag_class)) {
++		ret = PTR_ERR(diag_class);
++		goto cleanup_cdev;
++	}
++
++	diag_udevice = device_create(diag_class, NULL, devid,
++				     NULL, DIAG_SYSTEM);
++
++	if (IS_ERR(diag_udevice)) {
++		ret = PTR_ERR(diag_udevice);
++		goto cleanup_class;
++	}
++
++	return 0;
++
++cleanup_class:
++	class_destroy(diag_class);
++cleanup_cdev:
++	cdev_del(&diag_device);
++cleanup_region:
++	unregister_chrdev_region(devid, 1);
++
++	return ret;
++}
++
++static int __init trace_events_user_diag_init(void)
++{
++	int ret;
++
++	/* Zero all bits beside 0 (which is reserved for failures) */
++	bitmap_zero(page_bitmap, MAX_PROVIDERS);
++	set_bit(0, page_bitmap);
++
++	register_page_data = kmalloc(MAX_PROVIDERS, GFP_KERNEL);
++
++	if (!register_page_data)
++		return -ENOMEM;
++
++	SetPageReserved(virt_to_page(register_page_data));
++
++	ret = create_user_diag_device();
++
++	if (ret) {
++		kfree(register_page_data);
++		return ret;
++	}
++
++	return 0;
++}
++
++fs_initcall(trace_events_user_diag_init);
 -- 
-2.30.2
+2.17.1
 
