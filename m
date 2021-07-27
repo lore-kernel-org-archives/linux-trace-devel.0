@@ -2,118 +2,112 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF4DBC4320A
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 27 Jul 2021 13:46:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90BCDC4338F
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 27 Jul 2021 13:50:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C066D61A7A
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 27 Jul 2021 13:46:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 710E461A8D
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 27 Jul 2021 13:50:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236963AbhG0Nqx (ORCPT
+        id S232185AbhG0Num (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 27 Jul 2021 09:46:53 -0400
-Received: from mail.efficios.com ([167.114.26.124]:36740 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236782AbhG0NqV (ORCPT
+        Tue, 27 Jul 2021 09:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230500AbhG0Num (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:46:21 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 8585933F472;
-        Tue, 27 Jul 2021 09:46:20 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id SocnfGjM-Ps8; Tue, 27 Jul 2021 09:46:19 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 776FC33F7C1;
-        Tue, 27 Jul 2021 09:46:19 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 776FC33F7C1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1627393579;
-        bh=QekCrnP9rYFc2wAyaOh6WSKOcQvIPetOoyVWnd/Y2Q4=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=hlee9Wbze4iM5XafRrYQIDuHeEIEG7SziGm1PKHeoPdNw5sJSX1i03ULd/U0aipq/
-         LtAy+mvT/YaOSejzhxLm/WhNYlJsheT2//2tPY7PvoxOevGUOwtThgNPP6yp6HmALE
-         rLbezCpSfpViQpbbu92Je014KBokrprDIPBONqqzz5tXhpPqhBQ1Lsf4r5bqXUwH1E
-         kYLXojlTv/W3qioiavU+A106jAfJqth+0gDScJ2nA0EGi4Wk8qTlWJBwTzmzkE02J9
-         Fcn1IHGOUSMa63E5qqNkapn6abVm93MfpKbszsP1NADr+h2j43gz/uvSsr6VpyPEO4
-         L8VhACkhqRYGA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id kfudg1aQlenU; Tue, 27 Jul 2021 09:46:19 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 6425C33F7B1;
-        Tue, 27 Jul 2021 09:46:19 -0400 (EDT)
-Date:   Tue, 27 Jul 2021 09:46:19 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     rostedt <rostedt@goodmis.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stefan Metzmacher <metze@samba.org>,
-        io-uring <io-uring@vger.kernel.org>, paulmck <paulmck@kernel.org>
-Message-ID: <1899212311.7583.1627393579305.JavaMail.zimbra@efficios.com>
-In-Reply-To: <YP/xjnGx+CRYr5RR@hirez.programming.kicks-ass.net>
-References: <20210722223320.53900ddc@rorschach.local.home> <715282075.6481.1627314401745.JavaMail.zimbra@efficios.com> <20210726125604.55bb6655@oasis.local.home> <682927571.6760.1627321158652.JavaMail.zimbra@efficios.com> <20210726144903.7736b9ad@oasis.local.home> <YP/xjnGx+CRYr5RR@hirez.programming.kicks-ass.net>
-Subject: Re: [PATCH] tracepoints: Update static_call before tp_funcs when
- adding a tracepoint
+        Tue, 27 Jul 2021 09:50:42 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C96DC061757
+        for <linux-trace-devel@vger.kernel.org>; Tue, 27 Jul 2021 06:50:42 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id l4so15310129wrs.4
+        for <linux-trace-devel@vger.kernel.org>; Tue, 27 Jul 2021 06:50:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RikzM6cTsYzhnVVh1sROd7OhkUxUTi9rVZY1ONcNHEU=;
+        b=HB/dLy6e0KLXn9SySEJNCawsCwSjpsVhWIQnynSrS1UpRHH0PqCDN/bpmOoXpMP2R0
+         bjS5TD7gz2drybcQVT9eWlAvxpBFdQg6lRDmQvmTSiEZKki4Joh76Qf3XM6lSX5LB3BT
+         a+mfOnKKmOe5Oo9ZtPL2KDOibKFOyaSStQec4Yt2rt0aySPq3iqjgczttiqXaIapqVYG
+         xWxMiuNDQkxN0WbaaXh0cen2VMq1Nh41u6f8+3SKb/KYuyP82AEc3cn/zAw44L2LoGzM
+         ICjJd6VNyr8bmQdK1GMlbg/WiPMMz5M2sP9Dq7gWDX/F3L6ta/aUZ10lTncgTakvGG6v
+         rJ1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RikzM6cTsYzhnVVh1sROd7OhkUxUTi9rVZY1ONcNHEU=;
+        b=n97dbKkFbGmusmpmrMrgPAWrDSgajyDS3XU+Am2aMlugh85hn6A4HfklqC1YzGnjSF
+         PXnPvHovW47XMHrl65l9CP1sjYDGj3tgddnjlOLGz5S0tgGdD1tI/tAar8sWmmaQFx8r
+         zIsbBn0XbRaYZoVF18x3jWkjldTb8EckLY7DDDP4PzmQVBKBCsWC1jb42tMMCgzz4H9G
+         GsadheJtpAxJzYbtyUe9+WDtmxlXtPln26S8EWL9TklFAqs5FL1hCyUz2q+UKbZ/BB9i
+         Z4MlnsX4GL1kv413a7VALj4dVNyx2eDIZsSu13Pbl7e3w6cFYsrujWnQOIRFPRFL3hpY
+         nxQg==
+X-Gm-Message-State: AOAM533OVk5agKkdzFiaMPwYR3K4Vzq8B5ICdcFmJWlJrZrndoQOeQYm
+        QKgt4wcC9oh1AwOSrQd8Tn1pSlu1BQc=
+X-Google-Smtp-Source: ABdhPJykcX2lfV0QkeEZDJlQvEtWGxPhYSUcpVU/7iBOg/zFf1pV3N0yLPPSRI7Qzk8uGPiVrbzwNQ==
+X-Received: by 2002:a5d:610b:: with SMTP id v11mr24910950wrt.58.1627393840786;
+        Tue, 27 Jul 2021 06:50:40 -0700 (PDT)
+Received: from crow.eng.vmware.com ([146.247.46.133])
+        by smtp.gmail.com with ESMTPSA id q20sm3026432wmj.27.2021.07.27.06.50.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 06:50:40 -0700 (PDT)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH] libtracefs: Do not use "or" as function parameter name
+Date:   Tue, 27 Jul 2021 16:50:30 +0300
+Message-Id: <20210727135030.25914-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4059 (ZimbraWebClient - FF90 (Linux)/8.8.15_GA_4059)
-Thread-Topic: tracepoints: Update static_call before tp_funcs when adding a tracepoint
-Thread-Index: KLxfoKgSNLUnAf2BhIiig6gz8CNLlQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
------ On Jul 27, 2021, at 7:44 AM, Peter Zijlstra peterz@infradead.org wrote:
+"or" is a keyword in C++. Using it as a function argument name in
+the public header of the library makes it impossible to include
+this header from C++ code.
 
-> On Mon, Jul 26, 2021 at 02:49:03PM -0400, Steven Rostedt wrote:
->> OK. I see the issue you are saying. And this came from my assumption
->> that the tracepoint code did a synchronization when unregistering the
->> last callback. But of course it wont because that would make a lot of
->> back to back synchronizations of a large number of tracepoints being
->> unregistered at once.
->> 
->> And doing it for all 0->1 or 1->0 or even a 1->0->1 can be costly.
->> 
->> One way to handle this is when going from 1->0, set off a worker that
->> will do the synchronization asynchronously, and if a 0->1 comes in,
->> have that block until the synchronization is complete. This should
->> work, and not have too much of an overhead.
->> 
->> If one 1->0 starts the synchronization, and one or more 1->0
->> transitions happen, it will be recorded where the worker will do
->> another synchronization, to make sure all 1->0 have went through a full
->> synchronization before a 0->1 can happen.
->> 
->> If a 0->1 comes in while a synchronization is happening, it will note
->> the current "number" for the synchronizations (if another one is
->> queued, it will wait for one more), before it can begin. As locks will
->> be held while waiting for synchronizations to finish, we don't need to
->> worry about another 1->0 coming in while a 0->1 is waiting.
-> 
-> Wouldn't get_state_synchronize_rcu() and cond_synchronize_rcu() get you
-> what you need?
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+---
 
-Indeed, snapshotting the state and conditionally waiting for a grace period
-if none happened since the snapshot appears to be the intent here. Using
-get_state+cond_sync should allow us to do this without any additional worker
-thread.
+Hi Steven,
+
+This patch is optional. Us it only if it makes sense to you.
+Note that this fix is not needed by KernelShark.
 
 Thanks,
+Yordan
 
-Mathieu
+ include/tracefs.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/include/tracefs.h b/include/tracefs.h
+index 9cfd257..877e03a 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -355,12 +355,12 @@ int tracefs_synth_add_start_filter(struct tracefs_synth *synth,
+ 				   const char *field,
+ 				   enum tracefs_synth_compare compare,
+ 				   const char *val,
+-				   bool neg, bool or);
++				   bool neg, bool do_OR);
+ int tracefs_synth_add_end_filter(struct tracefs_synth *synth,
+ 				 const char *field,
+ 				 enum tracefs_synth_compare compare,
+ 				 const char *val,
+-				 bool neg, bool or);
++				 bool neg, bool do_OR);
+ int tracefs_synth_create(struct tracefs_instance *instance,
+ 			 struct tracefs_synth *synth);
+ int tracefs_synth_destroy(struct tracefs_instance *instance,
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.30.2
+
