@@ -8,204 +8,90 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A529BC4338F
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 27 Jul 2021 13:42:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05C2EC432BE
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 27 Jul 2021 13:42:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 879F761A87
+	by mail.kernel.org (Postfix) with ESMTP id DAF3B61A8F
 	for <linux-trace-devel@archiver.kernel.org>; Tue, 27 Jul 2021 13:42:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236685AbhG0Nml (ORCPT
+        id S236609AbhG0Nmm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 27 Jul 2021 09:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37380 "EHLO
+        Tue, 27 Jul 2021 09:42:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236609AbhG0Nml (ORCPT
+        with ESMTP id S236613AbhG0Nml (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 27 Jul 2021 09:42:41 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515ACC061760
-        for <linux-trace-devel@vger.kernel.org>; Tue, 27 Jul 2021 06:42:41 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id g15so15304853wrd.3
-        for <linux-trace-devel@vger.kernel.org>; Tue, 27 Jul 2021 06:42:41 -0700 (PDT)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8792BC061757
+        for <linux-trace-devel@vger.kernel.org>; Tue, 27 Jul 2021 06:42:40 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id n12so11724688wrr.2
+        for <linux-trace-devel@vger.kernel.org>; Tue, 27 Jul 2021 06:42:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=L87eVHcjD4boJXwtqTgjpMO7ctPkMtX7TpeO7uWVwpI=;
-        b=vLyEbN4G7MPGrBcm5D3XkoKlJCsR0aRyQMxOQZxAHgSe9uDfrddYDzobKcFTPk6LpS
-         ySBDZ1g/EwC3SUDiKvznHxk35NFbNALB8NskeTKqTZBEem6Bp1PsCfi5/FOJDsMqJe5E
-         EkHgCW/5rS2WGTnFb0c3lNkUEG9s+OkBfCvZoCe/Ygn0+bkTMRJ4cWT+MwF9idpoicaa
-         NfuuE4qVXzWWDD0VQbYa2mmykVKIsHTOgDtXEdSBIBL6CQKX64eKOIdnz2iHHnFA6pUe
-         wqc4NHnmDrBNvw/kyFC71HJa7t0B29bFN02fiy2LTOU7Ev4liV1B1T1wU7bf7+l/9fga
-         1HTQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CRRHkPhe5BEv84eniIjXS0jK7LL0m+0Wg2X5uCNyUrE=;
+        b=IQlS7yyJDLWS0A4n2Po9K69t8yFpTkEqtcczuV+/m+gmnQXwzC+DD/1pFa+EKocgQb
+         pu436TPvlMoz06m9us/VrHWa2jKUEV9CauJ3HG0g9cc9QqfIh3zCwVJZn1lN6jF8FHj0
+         +HjZ+dHwQcrM763U90FNvOTbVbmsJqqFZMBZsvJMCpHiMAjmOQnq6qW0NBAAD95m4A9y
+         wsEVhN157kxI9Yibm7upLEQlm3SqkpMLUufVIyBkm3YSG6X672fEUNOjBYqHLC7O3UJk
+         y8F28ve69gpxvtkY69GxrTaTs5i7ebsZIjW9QdyYFcWaAMiAzYp3gSAY1x3YfSD5E+G3
+         RZEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=L87eVHcjD4boJXwtqTgjpMO7ctPkMtX7TpeO7uWVwpI=;
-        b=NTcjY/63+YeHonx+EKMxh1lEv9CDHKI3fPgTIzpFysPVgYaaS+14xWOZHVUuNgD8H+
-         a6H1w4SDQm9As0WjuZmvOLI06MHsT3zf5fsD8VIQStoNWsVlcHMNWzCt2gUNJkqDgP2+
-         3knCoT/Xpb7CMGa/nsKBICuuG17rA8ogNp/ma+591kaD5i2USpWvS1wYwwKphvFDh08z
-         0ashXK4xlCDpCuXTLHSScwKIzC1fEyaHquJlJ3DYOCEvEGa8ggOcbf//kE1LYaaxv7mi
-         aOSEm0M2qkELvRoJtJ1cQbUoLZO/Gx9Pd/8e3eaelmE/QiEVKucrgUb77x/EcwhnMq+B
-         f2hQ==
-X-Gm-Message-State: AOAM531Qt8T+sUFLc5D8M9T/+xqhAyMlB/uNaCOdJMc9lCWoXSLDFsK1
-        Sl0PGdakvSrpUVKzMe0HoCxT83NZVkg=
-X-Google-Smtp-Source: ABdhPJzyrR5pXSDntJpZSwK8xTZq+baFxYy2kd++Vm0wqO+7+a8MYkeSuT7K0i08DvcPsyIqmpQUdw==
-X-Received: by 2002:a5d:4348:: with SMTP id u8mr21826123wrr.28.1627393359766;
-        Tue, 27 Jul 2021 06:42:39 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CRRHkPhe5BEv84eniIjXS0jK7LL0m+0Wg2X5uCNyUrE=;
+        b=he5wjR6KnBV6zqWygoSdsmmceeJ7hfCOtfhZ3vFDpqC0dt8RM9oWrR07a0c3bKNZeA
+         3RCYVjtxST1kFa+hP/K5v5BOm/9hzBzaOxR3TEp6+Gg+kmzUts8y80EaOxdGSIUG2YUi
+         oLmgzGARKfXpDfUcxFRr2Q7lfBs6jvjwm/7IeBLW7i6Y4/MwS0UxCkZAYqDwYzsjIJOH
+         W/QpWaSv0LRz2SUH/TOEyMYXqfsl2Ub6FHa3HsbJ6E76XqKGx0eZmFaK2Lgv2Y3JPZsj
+         js6RVL01oY2Kve6yLINZf0GWvxYuqlITGBlExTM6OCzgNkYPK7LCyi2+eZakV56jItYj
+         IF0A==
+X-Gm-Message-State: AOAM533zVrKtNhMED17st7DmK0Yt7mS8tZyE6ek9Zo5yO0EQV5JmFkFU
+        AGi0cafzDE0O1a5PxSOQay9RE3CJt9c=
+X-Google-Smtp-Source: ABdhPJz1u4YSRcJcvV9wcrHpRwgjiCsmxF+lLuFO3biHbFqu9XtBvx9265XxzjDrQCuLALijLp+fmw==
+X-Received: by 2002:a5d:64c8:: with SMTP id f8mr24867944wri.290.1627393358962;
+        Tue, 27 Jul 2021 06:42:38 -0700 (PDT)
 Received: from crow.eng.vmware.com ([146.247.46.133])
-        by smtp.gmail.com with ESMTPSA id i7sm3500667wre.64.2021.07.27.06.42.39
+        by smtp.gmail.com with ESMTPSA id i7sm3500667wre.64.2021.07.27.06.42.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 06:42:39 -0700 (PDT)
+        Tue, 27 Jul 2021 06:42:38 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 2/2] kernel-shark: Fix warnings from deprecated Qt APIs
-Date:   Tue, 27 Jul 2021 16:42:25 +0300
-Message-Id: <20210727134225.25025-2-y.karadz@gmail.com>
+Subject: [PATCH 1/2] kernel-shark: Do not include trace-cmd.h in KsAdvFilteringDialog.cpp
+Date:   Tue, 27 Jul 2021 16:42:24 +0300
+Message-Id: <20210727134225.25025-1-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210727134225.25025-1-y.karadz@gmail.com>
-References: <20210727134225.25025-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Couple of APIs used by KernelShark have been marked as deprecated
-in the recent version of Qt. Fix all compilation warnings caused
-by the usage of these deprecated APIs.
+This header is not needed.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- CMakeLists.txt      |  6 ++++++
- build/deff.h.cmake  |  1 +
- src/KsGLWidget.cpp  | 12 ++++++++++--
- src/KsUtils.cpp     |  6 +++---
- src/KsUtils.hpp     | 10 ++++++++++
- src/kernelshark.cpp |  2 +-
- 6 files changed, 31 insertions(+), 6 deletions(-)
+ src/KsAdvFilteringDialog.cpp | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 67dfb81..c2c0983 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -83,6 +83,12 @@ if (Qt5Widgets_FOUND)
- 
-     endif()
- 
-+    if(Qt5Widgets_VERSION VERSION_LESS "5.15")
-+
-+        set(QT_VERSION_LESS_5_15 TRUE)
-+
-+    endif()
-+
- endif (Qt5Widgets_FOUND)
- 
- find_package (Boost COMPONENTS unit_test_framework)
-diff --git a/build/deff.h.cmake b/build/deff.h.cmake
-index 06cbf16..82379df 100644
---- a/build/deff.h.cmake
-+++ b/build/deff.h.cmake
-@@ -31,6 +31,7 @@
- 
- /** Qt - old version detected. */
- #cmakedefine QT_VERSION_LESS_5_11
-+#cmakedefine QT_VERSION_LESS_5_15
- 
- /** Location of the KernelShark tests. */
- #cmakedefine KS_TEST_DIR "@KS_TEST_DIR@"
-diff --git a/src/KsGLWidget.cpp b/src/KsGLWidget.cpp
-index 8aab7b3..3b2e0d4 100644
---- a/src/KsGLWidget.cpp
-+++ b/src/KsGLWidget.cpp
-@@ -345,10 +345,18 @@ void KsGLWidget::wheelEvent(QWheelEvent * event)
- 		 * Use the position of the mouse as a focus point for the
- 		 * zoom.
- 		 */
--		zoomFocus = event->pos().x() - _bin0Offset();
-+#ifdef QT_VERSION_LESS_5_15
-+
-+	zoomFocus = event->pos().x() - _bin0Offset();
-+
-+#else
-+
-+	zoomFocus = event->position().x() - _bin0Offset();
-+
-+#endif // QT_VERSION_LESS_5_15
- 	}
- 
--	if (event->delta() > 0) {
-+	if (event->angleDelta().y() > 0) {
- 		_model.zoomIn(.05, zoomFocus);
- 	} else {
- 		_model.zoomOut(.05, zoomFocus);
-diff --git a/src/KsUtils.cpp b/src/KsUtils.cpp
-index 3db8951..364c25d 100644
---- a/src/KsUtils.cpp
-+++ b/src/KsUtils.cpp
-@@ -486,7 +486,7 @@ QString getSaveFile(QWidget *parent,
+diff --git a/src/KsAdvFilteringDialog.cpp b/src/KsAdvFilteringDialog.cpp
+index f01467d..20412a7 100644
+--- a/src/KsAdvFilteringDialog.cpp
++++ b/src/KsAdvFilteringDialog.cpp
+@@ -9,9 +9,6 @@
+  *  @brief   GUI Dialog for Advanced filtering settings.
   */
- QStringList splitArguments(QString cmd)
- {
--	QString::SplitBehavior opt = QString::SkipEmptyParts;
-+	auto opt = KS_SPLIT_SkipEmptyParts;
- 	int i, progress = 0, size;
- 	QStringList argv;
- 	QChar quote = 0;
-@@ -527,7 +527,7 @@ QStringList splitArguments(QString cmd)
-  */
- QVector<int> parseIdList(QString v_str)
- {
--	QStringList list = v_str.split(",", QString::SkipEmptyParts);
-+	QStringList list = v_str.split(",", KS_SPLIT_SkipEmptyParts);
- 	QVector<int> v;
  
- 	for (auto item: list) {
-@@ -553,7 +553,7 @@ QVector<int> parseIdList(QString v_str)
-  */
- QMap<int, QVector<int>> parseTaskList(QString v_str)
- {
--	QStringList taskList = v_str.split(",", QString::SkipEmptyParts);
-+	QStringList taskList = v_str.split(",", KS_SPLIT_SkipEmptyParts);
- 	QVector<int> streamIds, allPids;
- 	kshark_context *kshark_ctx(nullptr);
- 	QMap<int, QVector<int>> ret;
-diff --git a/src/KsUtils.hpp b/src/KsUtils.hpp
-index cf209bc..1a97d9e 100644
---- a/src/KsUtils.hpp
-+++ b/src/KsUtils.hpp
-@@ -86,6 +86,16 @@ typedef std::chrono::high_resolution_clock::time_point  hd_time;
- std::chrono::duration_cast<std::chrono::duration<double>>( \
- std::chrono::high_resolution_clock::now() - t0).count()
- 
-+#ifdef QT_VERSION_LESS_5_15
-+
-+	#define KS_SPLIT_SkipEmptyParts QString::SkipEmptyParts
-+
-+#else
-+
-+	#define KS_SPLIT_SkipEmptyParts Qt::SkipEmptyParts
-+
-+#endif // QT_VERSION_LESS_5_15
-+
- //! @endcond
- 
- namespace KsUtils {
-diff --git a/src/kernelshark.cpp b/src/kernelshark.cpp
-index 8ed4948..92bc1f1 100644
---- a/src/kernelshark.cpp
-+++ b/src/kernelshark.cpp
-@@ -87,7 +87,7 @@ int main(int argc, char **argv)
- 			break;
- 
- 		case 'a':
--			appInputFiles << QString(optarg).split(" ", QString::SkipEmptyParts);
-+			appInputFiles << QString(optarg).split(" ", KS_SPLIT_SkipEmptyParts);
- 			break;
- 
- 		case 'p':
+-// trace-cmd
+-#include <trace-cmd.h>
+-
+ // KernelShark
+ #include "libkshark.h"
+ #include "libkshark-tepdata.h"
 -- 
 2.30.2
 
