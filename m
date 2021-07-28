@@ -7,33 +7,33 @@ X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49435C4338F
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 01:24:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC50BC4338F
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 03:40:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 29D6360FBF
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 01:24:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B356B60F5E
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 03:40:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbhG1BYd (ORCPT
+        id S234208AbhG1DkC (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 27 Jul 2021 21:24:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41712 "EHLO mail.kernel.org"
+        Tue, 27 Jul 2021 23:40:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233089AbhG1BYc (ORCPT
+        id S233705AbhG1DkB (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Jul 2021 21:24:32 -0400
+        Tue, 27 Jul 2021 23:40:01 -0400
 Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8699260F91;
-        Wed, 28 Jul 2021 01:24:31 +0000 (UTC)
-Date:   Tue, 27 Jul 2021 21:24:24 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D01C60FA0;
+        Wed, 28 Jul 2021 03:40:00 +0000 (UTC)
+Date:   Tue, 27 Jul 2021 23:39:53 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "linux-trace-devel@vger.kernel.org" 
         <linux-trace-devel@vger.kernel.org>
 Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: [PATCH] libtracefs: Add "precedence" to
+Subject: [PATCH v2] libtracefs: Add "precedence" to
  tracefs_synth_add_start/end_filter()
-Message-ID: <20210727212424.02985258@oasis.local.home>
+Message-ID: <20210727233953.2c1638b3@oasis.local.home>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -98,6 +98,10 @@ keyword in C++ as reported by Yordan Karadzhov:
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
+Changes since v1:
+
+  - Fixed the return of add_synth_filter()
+
  include/tracefs.h  |   8 +-
  src/tracefs-hist.c | 206 +++++++++++++++++++++++++--------------------
  2 files changed, 117 insertions(+), 97 deletions(-)
@@ -125,7 +129,7 @@ index 9cfd257..25d99f8 100644
  			 struct tracefs_synth *synth);
  int tracefs_synth_destroy(struct tracefs_instance *instance,
 diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index 8b90787..6313487 100644
+index 8b90787..969944a 100644
 --- a/src/tracefs-hist.c
 +++ b/src/tracefs-hist.c
 @@ -559,7 +559,8 @@ struct tracefs_synth {
@@ -272,7 +276,7 @@ index 8b90787..6313487 100644
 +	trace_seq_destroy(&seq);
  
 -	return 0;
-+	return *filter != NULL;
++	return *filter == NULL ? -1 : 0;
  inval:
  	errno = -EINVAL;
  	return -1;
