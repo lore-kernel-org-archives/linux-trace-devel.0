@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 701FEC4338F
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD41BC432BE
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5B96060EC0
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 99BE361019
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236659AbhG1Nd0 (ORCPT
+        id S236656AbhG1Nd1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 28 Jul 2021 09:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54146 "EHLO
+        Wed, 28 Jul 2021 09:33:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236645AbhG1NdZ (ORCPT
+        with ESMTP id S236645AbhG1Nd1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:33:25 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F709C061757
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:23 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id o5so4673644ejy.2
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:23 -0700 (PDT)
+        Wed, 28 Jul 2021 09:33:27 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 746F4C061765
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:24 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id qk33so4575488ejc.12
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=YP3jhVGSPjqa15AFnGWCn3ConUuAPycu+JXnSVhNb3M=;
-        b=HPUNzhXOtsR3rq0STx/iMzkuvgoX7SppWQu9LuvRSPmJ4sRVm5Mv115qnSLs66I4qA
-         cYXyeO3BrtRzXG7NVQ1K0Sb36K4TNWBmeWI/ad4hN43KVRJT7l/AsCywzTgcG75JRlFp
-         eVQbAbk0++PvEfPRnECaNlXvsbe9ZgUvP/MWt+K9d3Q5kvLy5hq9x4oU9jpoEoOYO7Fk
-         HSC9ZKxh/31ZRNn3TBRhUXYd3gCGIF0Q3OnqU6kBpEWDjwlu0cnGOEAqX3oXTL+tuYAQ
-         6dLHRyL4/N2JWvVivkQrLXn9wq0ebhY8p4x2AtjjIiog71ackT3kRbUO7y+7hzDPqS3h
-         lx7Q==
+        bh=09FaF4ZoHaHVUGUgFuS3lYTOmsYFHWJ751RiZ3S/Oqg=;
+        b=H3MUDdYhZupxQ7IeiEiGW/CdpZPPtH1Yqdp+Dj/+FJAT44qKHbp2Mx9dLFw+vEX7Ns
+         y7yQ4m0pZyU74sRexSXnQnm39q4xJYeavrk/yAnxHYLtBKhNn/HVGZLdn8o1+BSnkDlM
+         lmrOSajJs4FGBhwiMg31RkKWA7x7HhsBAFFFePEdoAK8S0mQFFI5mS1Zbv7kCc61l0px
+         JluCIT3smLX6KX1wcPuT5T6wxO/NaB3BUmA6+iArNaeFXCoi+OAO9aXgY+2KYvFgyBuU
+         DoMi53jFXtG/VxHzRNTtwG0Bkh6uRw8BuJVDL0AXrkaXvAKd3fyTsOzmEPgE/Ujkn8iy
+         Turw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=YP3jhVGSPjqa15AFnGWCn3ConUuAPycu+JXnSVhNb3M=;
-        b=NWAyUyzi4PJiQS/A0B+qOY9M5R8AXIrOAiSysf1InuQtw8DhXY9X6rBO57NaFhBmGf
-         ldTZq8VSHnZfvp3/Yy6BNjcU9JPWZ1Q++NrnTX9G57sMLD5dWk0aEjQRMQI7MKS3w3Rv
-         X08s3pOgtDBr2f9ZAhs5/1JOEGSrcsrByGEgVnMtSGzWpF9tfDlXe66/aHnUJx7ik8SY
-         P9L/WsfWfV1vX4raMLFyk9bbwQhkoVgph9zDpff8fdqJKFGNltSsBDAiDi0W6f6n1teS
-         Enje1DIkqqqnOTcG46S9ut/7Dl8FYru1Kr6wWVzbPEpjUXbrxs79wXJE1x92mi7k1f27
-         fQNA==
-X-Gm-Message-State: AOAM532sMYOWgOtNC24Co5svpcGxJUaigZWjZgp6kZMeDR2/3Z4en2Pp
-        wxUCJkhwuxsfU3OOZH8MadUvVoV/YXICiw==
-X-Google-Smtp-Source: ABdhPJxs50reInAgJf9pxGFlDzxqbXfUuTBYi/BwnQGI3seKLz0U9HHXMW9Wc6XZyKeUkqW30lBD/A==
-X-Received: by 2002:a17:907:1b29:: with SMTP id mp41mr27368458ejc.459.1627479202171;
-        Wed, 28 Jul 2021 06:33:22 -0700 (PDT)
+        bh=09FaF4ZoHaHVUGUgFuS3lYTOmsYFHWJ751RiZ3S/Oqg=;
+        b=dEeX76hwyH6ESLJbNma8/pNJ5K6Go/rYdGKNiHvAk4EGdMT4LYtAromov1FgPKyvgJ
+         hZ6v/0l93PSdbH6ABL2gbduEaBRwe9pNhxzYlaoy6N7sO6uTab15p1KDsfjPF3CtAI+I
+         BkDE36gjt1mgU6zSOjLpcNc2M+d6tdvPbLBZBUUoe5bDS+KQFJXz3SXprNqg7mnsnFF/
+         jHRpmmwE/f4ynhZEn/VGK678ip1+yy/ESf7xrmpgIUe6Zl7EwRcu+Jhm1JmX0hRKXh4F
+         M4m7N+4V+LvHqPCEISyDdh2S3fSz/GneNqDLfMxkT01/J7tHhfMGHcrRQPkg9vg4lbka
+         ZCsg==
+X-Gm-Message-State: AOAM530jlINqcl6EHsaEyBr+L3vX0SGRJ0J2JDhZ9ZhWVSNxyV2GNaUS
+        8ilgwdAq1JKqS+XbDPHpAvw=
+X-Google-Smtp-Source: ABdhPJwe3PWfNmMa+BLlySf/XJ0BkIKLA5ohT4bldOIPk+wb2mIwwRNGCn+afV9jGxbQa9QZ1pbDng==
+X-Received: by 2002:a17:907:7e9a:: with SMTP id qb26mr27619384ejc.490.1627479203107;
+        Wed, 28 Jul 2021 06:33:23 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.33.21
+        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.33.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 06:33:21 -0700 (PDT)
+        Wed, 28 Jul 2021 06:33:22 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 30/87] trace-cmd library: Add section header before flyrecord trace data
-Date:   Wed, 28 Jul 2021 16:31:53 +0300
-Message-Id: <20210728133250.234140-31-tz.stoyanov@gmail.com>
+Subject: [PATCH 31/87] trace-cmd library: Fit CPU latency trace data in the new trace file version 7 format
+Date:   Wed, 28 Jul 2021 16:31:54 +0300
+Message-Id: <20210728133250.234140-32-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210728133250.234140-1-tz.stoyanov@gmail.com>
 References: <20210728133250.234140-1-tz.stoyanov@gmail.com>
@@ -73,58 +73,142 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In trace file version 7, write a section header at the beginning of each
-section with flyrecord trace data.
+Trace file version 7 format is based on sections. To fit the latency
+trace data in this structure, a new section and option for it is
+defined:
+  BUFFER_LAT
+It is similar to the BUFFER section which holds the flyrecord data, but
+has a latency specific design. The BUFFER_LAT section has:
+ - section header, as all other sections
+ - compression of the trace data, optional
+ - corresponding trace option, pointing to the section
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-output.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ .../include/private/trace-cmd-private.h       |  3 +-
+ lib/trace-cmd/trace-output.c                  | 36 ++++++++++++++++---
+ tracecmd/trace-record.c                       |  2 +-
+ 3 files changed, 35 insertions(+), 6 deletions(-)
 
+diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
+index 4e718c40..f2868576 100644
+--- a/lib/trace-cmd/include/private/trace-cmd-private.h
++++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+@@ -135,6 +135,7 @@ enum {
+ 	TRACECMD_OPTION_TIME_SHIFT,
+ 	TRACECMD_OPTION_GUEST,
+ 	TRACECMD_OPTION_TSC2NSEC,
++	TRACECMD_OPTION_BUFFER_LAT,
+ 	TRACECMD_OPTION_HEADER_INFO,
+ 	TRACECMD_OPTION_FTRACE_EVENTS,
+ 	TRACECMD_OPTION_EVENT_FORMATS,
+@@ -294,7 +295,7 @@ int tracecmd_output_write_headers(struct tracecmd_output *handler,
+ 				  struct tracecmd_event_list *list);
+ 
+ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, int cpus,
+-						     int file_version);
++						     int file_version, const char *compression);
+ struct tracecmd_output *tracecmd_create_init_fd(int fd);
+ 
+ struct tracecmd_output *tracecmd_create_init_file(const char *output_file);
 diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index 3470e6dc..e027dd93 100644
+index e027dd93..e6dadba5 100644
 --- a/lib/trace-cmd/trace-output.c
 +++ b/lib/trace-cmd/trace-output.c
-@@ -2142,10 +2142,12 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
- 				int cpus, struct cpu_data_source *data, const char *buff_name)
- {
- 	struct data_file_write *data_files = NULL;
-+	enum tracecmd_section_flags flags = 0;
- 	tsize_t data_offs, offset;
- 	unsigned long long endian8;
- 	unsigned long long read_size;
- 	char *clock;
-+	char *str;
- 	int ret;
- 	int i;
+@@ -2030,9 +2030,11 @@ out_add_buffer_option_v7(struct tracecmd_output *handle, const char *name,
+ }
  
-@@ -2164,6 +2166,16 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
- 	if (handle->file_version < 7 && do_write_check(handle, "flyrecord", 10))
+ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, int cpus,
+-						     int file_version)
++						     int file_version, const char *compression)
+ {
++	enum tracecmd_section_flags flags = 0;
+ 	struct tracecmd_output *handle;
++	tsize_t offset;
+ 	char *path;
+ 	int fd;
+ 
+@@ -2045,6 +2047,12 @@ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, in
+ 		goto out_free;
+ 	if (file_version && tracecmd_output_set_version(handle, file_version))
+ 		goto out_free;
++	if (compression) {
++		if (tracecmd_output_set_compression(handle, compression))
++			goto out_free;
++	} else if (file_version >= 7) {
++		tracecmd_output_set_compression(handle, "any");
++	}
+ 	if (tracecmd_output_write_init(handle))
+ 		goto out_free;
+ 	if (tracecmd_output_write_headers(handle, NULL))
+@@ -2057,7 +2065,8 @@ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, in
+ 
+ 	if (tracecmd_write_cpus(handle, cpus) < 0)
+ 		goto out_free;
+-
++	if (tracecmd_write_buffer_info(handle) < 0)
++		goto out_free;
+ 	if (tracecmd_write_options(handle) < 0)
  		goto out_free;
  
+@@ -2067,23 +2076,42 @@ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, in
+ 		goto out_free;
+ 	}
+ 
+-	if (do_write_check(handle, "latency  ", 10))
++	if (handle->file_version < 7 && do_write_check(handle, "latency  ", 10))
+ 		goto out_free;
+ 
+ 	path = get_tracing_file(handle, "trace");
+ 	if (!path)
+ 		goto out_free;
+ 
++	offset = do_lseek(handle, 0, SEEK_CUR);
++	if (handle->file_version >= 7 &&
++	    !out_add_buffer_option_v7(handle, "", TRACECMD_OPTION_BUFFER_LAT, offset, 0, NULL))
++		goto out_free;
 +	if (handle->compress)
 +		flags |= TRACECMD_SEC_FL_COMPRESS;
-+	if (asprintf(&str, "buffer flyrecord %s", buff_name) < 1)
-+		goto out_free;
 +
-+	offset = out_write_section_header(handle, TRACECMD_OPTION_BUFFER, str, flags, false);
-+	free(str);
-+	if (offset == (off_t)-1)
-+		goto out_free;
++	offset = out_write_section_header(handle, TRACECMD_OPTION_BUFFER_LAT,
++					  "buffer latency", flags, false);
 +
- 	data_files = calloc(cpus, sizeof(struct data_file_write));
- 	if (!data_files)
- 		goto out_free;
-@@ -2244,6 +2256,9 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
- 	if (do_lseek(handle, 0, SEEK_END) == (off64_t)-1)
- 		goto out_free;
- 
+ 	copy_file_compress(handle, path, NULL);
 +	if (out_update_section_header(handle, offset))
 +		goto out_free;
-+
- 	free(data_files);
- 	handle->file_state = TRACECMD_FILE_CPU_FLYRECORD;
  
+ 	put_tracing_file(path);
+ 
+ 	handle->file_state = TRACECMD_FILE_CPU_LATENCY;
+ 
++	if (tracecmd_get_out_file_version(handle) >= 7)
++		tracecmd_write_options(handle);
++
+ 	return handle;
+ 
+ out_free:
+-	tracecmd_output_close(handle);
++	if (handle)
++		tracecmd_output_close(handle);
++	else
++		close(fd);
++	unlink(output_file);
+ 	return NULL;
+ }
+ 
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index f8c1c090..2e8db8a4 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -4531,7 +4531,7 @@ static void record_data(struct common_record_context *ctx)
+ 
+ 	if (latency) {
+ 		handle = tracecmd_create_file_latency(ctx->output, local_cpu_count,
+-						      ctx->file_version);
++						      ctx->file_version, ctx->compression);
+ 		tracecmd_set_quiet(handle, quiet);
+ 	} else {
+ 		if (!local_cpu_count)
 -- 
 2.31.1
 
