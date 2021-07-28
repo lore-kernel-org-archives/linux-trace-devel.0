@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0E8EC04FE3
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D179C43216
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:34:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9DE9560FED
+	by mail.kernel.org (Postfix) with ESMTP id 580BC60FED
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:34:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236724AbhG1NeJ (ORCPT
+        id S236254AbhG1NeJ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 28 Jul 2021 09:34:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54376 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236717AbhG1NeI (ORCPT
+        with ESMTP id S236711AbhG1NeI (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 28 Jul 2021 09:34:08 -0400
 Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC028C061757
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:34:06 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id hp25so4597016ejc.11
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:34:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEF4C0613C1
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:34:03 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id hp25so4596778ejc.11
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:34:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qoEjd4kpECpwm4kWQBTFWKqptq8l7VI7OTfY1a0jtfE=;
-        b=u7C0AzlTKzLAgUgJch8HWn2pRBpMhn+U3/Rxxh/fpdWNe+cHNoCHHLMdD2eFzwgMgd
-         D4JFrY/Hgpx6mIgy/p/DsV1O099X4YVK6bC+SnHfv/xAGLcvnxGuL2kgE5Nv588gtcyu
-         GE3ah6+IfbGCmtGRPCR5vc+MXFS7NGd89U9995F3lTPkj1nraVVSBbHBdzuFHpsonf3Q
-         B0jKXt6XLZ8lY01vkQ3sls2zqRDmrf18b4LSj2aUs64p15fKe1zBTUU2yUiYr7lHAxou
-         6j2a0EtZzLB+dKEuiR97wqJSa0yO/IUFotQDT7v+aIXLF62eu78dqAIq/V3GJBYF1JQy
-         zx1A==
+        bh=zV0CqwA9/wXmtBv9QTZRvsjfkc0zh38RvP8876u1PMw=;
+        b=uYpMLTyLuF3Zg0rJ8MyRPlSXumraHB8oBdwuRDETy32ROxEhMWcch4NFXaF+5HN39w
+         tac7FO6RwdHle3xrjDhtYuiMiaw8B5LuCbT7wdJR1a2yhURfsh8SA5WfCoK8q+FBZHFW
+         hVqRPp2fsGbz28BEEKPigqSzqWp/T4lnSUb+Se3AR5sB2ySChEn/wll5PL9MCjwoBsI+
+         0DRkjot0LFgNxGjx/DEe/MBTUNEoJ2njOcQMNNSoCjPD7FOZ4GVEqztBfHtWHYZHypNk
+         ziL8XVoGEcK1iPa3iVuzBMgUlQJGm9sSzkXCvlYBw5bVrqmSAjd/foNsAc+HBSuLDxF7
+         jugg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qoEjd4kpECpwm4kWQBTFWKqptq8l7VI7OTfY1a0jtfE=;
-        b=SVhUdcA97yF72R9Hgf8nVOkD99p/io3Rbu337E9QtNihZ1wGHmA/HflzhB3iIevrDk
-         OxmoW8nzVPLOK9PlhavDBNmsT7kRJE4GcJpmZRGcVuIgRbC5Kv9IPOSD3Oge8VbVDR6w
-         hJe1n/8i6kjR2s6Xhg40zDc7OANaVCdzC5luZdlrnWV9uOffOCba9/WrW4AGVqEuvHGw
-         JesUOkNTFSWQjcbRV221c304HcC/srrwqbQmMUv9O5OX4/nmSbBqHv+xjNLm3N7XdDC3
-         AX4yN31peu0YW30GoY1iYwTSCotBOS+pVu/Ep8MjLHVfvA9ncpfAJynbZ9188VhFLBEd
-         dpuw==
-X-Gm-Message-State: AOAM530JtszXNTOcKh/LBnly7WftXr0Csgi/OPPtqwfuXwgnctFtOqoL
-        NLR4N8K46nVSb+uFTpsNtZ0=
-X-Google-Smtp-Source: ABdhPJwmnRjRWtj7mfsyJVu8SXrXjDedD0EfeXknFQX+MGZV22uQJyLPqGZiZpAT38Gmy+Ns40OPqg==
-X-Received: by 2002:a17:906:14c8:: with SMTP id y8mr21011364ejc.475.1627479245513;
-        Wed, 28 Jul 2021 06:34:05 -0700 (PDT)
+        bh=zV0CqwA9/wXmtBv9QTZRvsjfkc0zh38RvP8876u1PMw=;
+        b=Re6ADAjqUgT3WeUUIoUrk1jUPNtY837/Nq8ng78o9pIUwIScDuOn05kPKn+Gg6yFJ2
+         7e23jjROuScDHEdhKQ5AsYbc3OrMRSW/W+/5Y6NR2kUfov4ASOsb/Nv9+Ol6s6cH87+B
+         3JNFXr2BHdc5AuqdDVRFFHCIFsy8XpG14L/FR2REgld9ACB8Toz28vKY3ZXEFZIY9Uw4
+         t3pGk+WWuL+jscmzX439qRMNMPTn6RQP3PzkuxLXLYv8EzjbdrWQlll2av5n1U4nN1q8
+         /M4oZllwHvq7UXqAaSUuGZqxes6Vz9BxtXkoBtndpUtM9XoIMY1rDc6zNa6BhDVcXlQc
+         eSIg==
+X-Gm-Message-State: AOAM533g61cN85wn9cCVXoBqlcOyc34YtspGZDFiGwsXbtOxzKxp9ddr
+        ReoLnmxWLCVQZlbpF4zDIPRRTNEofYQmvA==
+X-Google-Smtp-Source: ABdhPJzfUVvdh4YoeK78+rSYB3uwCgAU3ob+52mfW8pE07nZz9W4g1n1BgPjidQlb+98KyG2GQCOwQ==
+X-Received: by 2002:a17:906:4103:: with SMTP id j3mr26775778ejk.526.1627479242619;
+        Wed, 28 Jul 2021 06:34:02 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.34.04
+        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.34.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 06:34:05 -0700 (PDT)
+        Wed, 28 Jul 2021 06:34:02 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 67/87] trace-cmd dump: Dump sections
-Date:   Wed, 28 Jul 2021 16:32:30 +0300
-Message-Id: <20210728133250.234140-68-tz.stoyanov@gmail.com>
+Subject: [PATCH 64/87] trace-cmd dump: Add helpers for processing trace file sections
+Date:   Wed, 28 Jul 2021 16:32:27 +0300
+Message-Id: <20210728133250.234140-65-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210728133250.234140-1-tz.stoyanov@gmail.com>
 References: <20210728133250.234140-1-tz.stoyanov@gmail.com>
@@ -73,76 +73,64 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In trace file version 7, headers are stored as sections. This allows
-their position in the file not to be fixed. Poters to these sections are
-stored as trace options. Add logic to handle these new options:
- HEADER_INFO
- FTRACE_EVENTS
- EVENT_FORMATS
- KALLSYM
- PRINTK
- CMDLINES
+Added a new local databse for storing sections, found in trace file
+version 7.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-dump.c | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+ tracecmd/trace-dump.c | 23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
 
 diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
-index 6a779d82..8e95e884 100644
+index e6f774bd..010a8188 100644
 --- a/tracecmd/trace-dump.c
 +++ b/tracecmd/trace-dump.c
-@@ -668,6 +668,24 @@ void dump_option_tsc2nsec(int fd, int size)
- 	do_print(OPTIONS, "%d %d %llu [multiplier, shift, offset]\n", mult, shift, offset);
+@@ -43,8 +43,18 @@ enum dump_items {
+ 	OPTIONS		= (1 << 9),
+ 	FLYRECORD	= (1 << 10),
+ 	CLOCK		= (1 << 11),
++	SECTIONS	= (1 << 12),
+ };
+ 
++struct file_section {
++	int id;
++	unsigned long long offset;
++	struct file_section *next;
++	enum dump_items verbosity;
++};
++
++static struct file_section *sections;
++
+ enum dump_items verbosity;
+ 
+ #define DUMP_CHECK(X) ((X) & verbosity)
+@@ -723,6 +733,17 @@ static void dump_therest(int fd)
+ 	}
  }
  
-+static void dump_option_section(int fd, unsigned int size,
-+				unsigned short id, char *desc, enum dump_items v)
++static void free_sections(void)
 +{
-+	struct file_section *sec;
++	struct file_section *del;
 +
-+	sec = calloc(1, sizeof(struct file_section));
-+	if (!sec)
-+		die("cannot allocate new section");
-+	sec->next = sections;
-+	sections = sec;
-+	sec->id = id;
-+	sec->verbosity = v;
-+	if (read_file_number(fd, &sec->offset, 8))
-+		die("cannot read the option %d offset", id);
-+	do_print(OPTIONS, "\t\t[Option %s, %d bytes]\n", desc, size);
-+	do_print(OPTIONS, "%lld\n", sec->offset);
++	while (sections) {
++		del = sections;
++		sections = sections->next;
++		free(del);
++	}
 +}
 +
- static int dump_options_read(int fd);
- 
- static int dump_option_done(int fd, int size)
-@@ -755,6 +773,25 @@ static int dump_options_read(int fd)
- 		case TRACECMD_OPTION_TSC2NSEC:
- 			dump_option_tsc2nsec(fd, size);
- 			break;
-+		case TRACECMD_OPTION_HEADER_INFO:
-+			dump_option_section(fd, size, option, "HEADERS", HEAD_PAGE | HEAD_EVENT);
-+			break;
-+		case TRACECMD_OPTION_FTRACE_EVENTS:
-+			dump_option_section(fd, size, option, "FTRACE EVENTS", FTRACE_FORMAT);
-+			break;
-+		case TRACECMD_OPTION_EVENT_FORMATS:
-+			dump_option_section(fd, size, option,
-+					    "EVENT FORMATS", EVENT_SYSTEMS | EVENT_FORMAT);
-+			break;
-+		case TRACECMD_OPTION_KALLSYMS:
-+			dump_option_section(fd, size, option, "KALLSYMS", KALLSYMS);
-+			break;
-+		case TRACECMD_OPTION_PRINTK:
-+			dump_option_section(fd, size, option, "PRINTK", TRACE_PRINTK);
-+			break;
-+		case TRACECMD_OPTION_CMDLINES:
-+			dump_option_section(fd, size, option, "CMDLINES", CMDLINES);
-+			break;
- 		case TRACECMD_OPTION_DONE:
- 			uncompress_reset();
- 			count += dump_option_done(fd, size);
+ static void dump_file(const char *file)
+ {
+ 	int fd;
+@@ -748,7 +769,7 @@ static void dump_file(const char *file)
+ 	dump_cmdlines(fd);
+ 	dump_cpus_count(fd);
+ 	dump_therest(fd);
+-
++	free_sections();
+ 	tep_free(tep);
+ 	tep = NULL;
+ 	close(fd);
 -- 
 2.31.1
 
