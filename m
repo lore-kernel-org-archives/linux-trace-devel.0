@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45E51C4320A
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:34:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D6AEC43214
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:34:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 313DC60EC0
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:34:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 18F2560D07
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:34:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236718AbhG1NeI (ORCPT
+        id S236269AbhG1NeJ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 28 Jul 2021 09:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54366 "EHLO
+        Wed, 28 Jul 2021 09:34:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236711AbhG1NeH (ORCPT
+        with ESMTP id S236254AbhG1NeH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 28 Jul 2021 09:34:07 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C162FC061764
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:34:02 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id v21so4690185ejg.1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:34:02 -0700 (PDT)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7FFC0613D3
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:34:05 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id e19so4612729ejs.9
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:34:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=O3MlOCSVZr10henjb/kOmATFSY+Wwfn0tH13upLABCo=;
-        b=nHTRaVXq2FBKW5Dfe5mtwqH/UPS38w5kM1IfPRIJEY2xT3AJcCgjtR3W/SwZtzGw7a
-         JVKDtr0Yis+ln5mjzl5Asu+4jQW2HJGpUuRD/gNqdp91eDrIz0wGHRFU8e/3VbjUIvyE
-         c+Gce3uLUz8yMx4i6ZErMIFbRIJ1utGWJvtEp3t5nkdBgkmeabeskFDuQosq0Nw43xA8
-         oYoPaf88vyaHhmJBaxA8qIF98TbUhwm87qOtiF1WUROG4rcLcJlF+msKQQKWUNAGzIic
-         SoCLkgPKinXhSFUX7WGf6uwvISBwkbwopgQ/I7m5r/h8Oell/ulWf9O6stRrU23NKTJs
-         cF8A==
+        bh=fXGJz1FHssI38tYlJ0cp55UvOkAPzYvDy+ygODMfgFw=;
+        b=iMkMY9jM+6BNFAkyx2SVdsljctp+TjzBpezxuzsU2MAQmFB6Zyn3gDkwOn/IduR0lV
+         WewNT1Or57Ar0FZrXe/6NVoNGYOFjiO8cQklXsPvskBUbSJpKAw+NtfXqutIrWlfkXHq
+         Ivz6+9kIDc8BuRQxgXsh62zlJyxgWfERZOz4SBJ73cHnsfWYYci0aT7UXv5japbokG0u
+         iRmuX/+YEuLSJgu7RknQsQpZC459Vs/W1vy84684Oo5Aa2xLnBk8Nuoqh/KroqbX16Mk
+         KdO3v2oRl3zS0xPaW98PSQfwltnvVNL3tTENBylVAgRR2sdst2faicVUHuHunPb/c+LB
+         sqeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=O3MlOCSVZr10henjb/kOmATFSY+Wwfn0tH13upLABCo=;
-        b=UuD1jN+MX/q+DRdQNi9U7tI/rGGLE/mk1qx1m7arT6lCFjvanJZD074pZaUTWpUZR2
-         WIAwJ6f4JXcbsW2v+YyQjszcuzVd1jcVVvx3T76b2GJ0viWK7VVD95+N+t03T1jAQB/q
-         fpBM0dp9KQ5yN4CR8Sv2nIMrwrdQlHNKrzu5kSkyqS9Z87OFv6/YiMi1cUJNuY0xSpLQ
-         WnwNAPrCKT+6pTFH75T0ZEktOfnf7ApEah6G/KggjCZLlKPo2d/t3dEH+qMYz+cizWbg
-         lmk+pQnjU6ROnNbu9ef7efmy7O4Jz/qVRendM7kwXr0jsPSejIup2tvz/bNxzy+O2erI
-         6ZBQ==
-X-Gm-Message-State: AOAM53290uHjGcRg3ryA0AAOZ8TJKNrNDlS6fIAVIcIjKfjv+Sts1Cve
-        mOxefncBESOQXyBXaVB/r6LqBDSCwWRzJQ==
-X-Google-Smtp-Source: ABdhPJw3adNtqjzIebWJ8fTET2Nc7sYVz7VvqgzM7cWC/PcgtlTZ+4VY9tTLsgt5yFRlbGsihHo+zg==
-X-Received: by 2002:a17:906:2a8e:: with SMTP id l14mr27113835eje.321.1627479237452;
-        Wed, 28 Jul 2021 06:33:57 -0700 (PDT)
+        bh=fXGJz1FHssI38tYlJ0cp55UvOkAPzYvDy+ygODMfgFw=;
+        b=NbhjLy2fswghGOuY1DebYbL8cKfJuMXcsNr1th/6wB8X0KXO1LZa7k0L4B+RMGzeDN
+         wcYpK4NOggzgsGNRMOY6LBbK+Vej8gP+YQAl1RgcqYHWHp+MQLXvSy0t+TEmK/7QaGbi
+         K911MA54HUvm2wgpE2OJz9LvcDLmPyTamP8gJSv2LFBYkfUStEoOUNKCpmOO1I8KtF3j
+         DfQ4R1AnxMPGBlBKq4qpqi8bV4RqO7BocAEvfmr69bSlK7EXzor/kPg7ICLFpubeoZTL
+         qY5xRew0eEw74hMtAZrjNDrJD6MpXAjcW5ECSg7okJE6I2PffDVnIoGJNwJKPKjbk4Sq
+         UFag==
+X-Gm-Message-State: AOAM53257hm5KXphu57FnT4qHj3Xj8OSBsvhiCLwptMZakkryACeSz0u
+        CbQqVCagSj3VL/ZDBt83jgLGy8ETCj0q4Q==
+X-Google-Smtp-Source: ABdhPJzYp6WyrWspXvmIIQyluIdAyq+27MfB0yZ/Vt6VjieNkMqu0US/rIzmUwbP9ll9wGI8xvk0fg==
+X-Received: by 2002:a17:906:40e:: with SMTP id d14mr18202804eja.338.1627479244538;
+        Wed, 28 Jul 2021 06:34:04 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.33.53
+        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.34.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 06:33:53 -0700 (PDT)
+        Wed, 28 Jul 2021 06:34:04 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 61/87] trace-cmd: Call additional APIs when creating trace file
-Date:   Wed, 28 Jul 2021 16:32:24 +0300
-Message-Id: <20210728133250.234140-62-tz.stoyanov@gmail.com>
+Subject: [PATCH 66/87] trace-cmd dump: Read extended BUFFER option
+Date:   Wed, 28 Jul 2021 16:32:29 +0300
+Message-Id: <20210728133250.234140-67-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210728133250.234140-1-tz.stoyanov@gmail.com>
 References: <20210728133250.234140-1-tz.stoyanov@gmail.com>
@@ -73,95 +73,107 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When creating a trace file, two more APIs should be called, compared to
-the old flow:
- - tracecmd_write_buffer_info(), to write version 6 buffers metadata in
-   the file.
- - tracecmd_write_options() after the trace data is written, for version
-   7 trace files, as the buffer metadata is appended to the options at
-   the end.
+In trace file version 7 the BUFFER option is extended to hold a trace
+metadata, related to the recorded instance. Also, a new BUFFER_LAT
+option is added for latency trace data. Implemended logic for reading
+and printing these extended options.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-listen.c  | 6 ++++++
- tracecmd/trace-record.c  | 4 ++++
- tracecmd/trace-restore.c | 3 ++-
- tracecmd/trace-split.c   | 3 +++
- 4 files changed, 15 insertions(+), 1 deletion(-)
+ tracecmd/trace-dump.c | 64 +++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 59 insertions(+), 5 deletions(-)
 
-diff --git a/tracecmd/trace-listen.c b/tracecmd/trace-listen.c
-index d812145b..3312a042 100644
---- a/tracecmd/trace-listen.c
-+++ b/tracecmd/trace-listen.c
-@@ -604,6 +604,9 @@ static int put_together_file(int cpus, int ofd, const char *node,
- 
- 	if (write_options) {
- 		ret = tracecmd_write_cpus(handle, cpus);
-+		if (ret)
-+			goto out;
-+		ret = tracecmd_write_buffer_info(handle);
- 		if (ret)
- 			goto out;
- 		ret = tracecmd_write_options(handle);
-@@ -612,6 +615,9 @@ static int put_together_file(int cpus, int ofd, const char *node,
- 	}
- 	ret = tracecmd_write_cpu_data(handle, cpus, temp_files, "");
- 
-+	if (!ret && tracecmd_get_out_file_version(handle) >= 7)
-+		tracecmd_write_options(handle);
-+
- out:
- 	tracecmd_output_close(handle);
- 	for (cpu--; cpu >= 0; cpu--) {
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 2e8db8a4..ddab7798 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -3738,6 +3738,9 @@ setup_connection(struct buffer_instance *instance, struct common_record_context
- 		if (ret)
- 			goto error;
- 		ret = tracecmd_write_cpus(network_handle, instance->cpu_count);
-+		if (ret)
-+			goto error;
-+		ret = tracecmd_write_buffer_info(network_handle);
- 		if (ret)
- 			goto error;
- 		ret = tracecmd_write_options(network_handle);
-@@ -4109,6 +4112,7 @@ static void setup_agent(struct buffer_instance *instance,
- 	add_options(network_handle, ctx);
- 	tracecmd_write_cmdlines(network_handle);
- 	tracecmd_write_cpus(network_handle, instance->cpu_count);
-+	tracecmd_write_buffer_info(network_handle);
- 	tracecmd_write_options(network_handle);
- 	tracecmd_msg_finish_sending_data(instance->msg_handle);
- 	instance->network_handle = network_handle;
-diff --git a/tracecmd/trace-restore.c b/tracecmd/trace-restore.c
-index 8d2fcae8..fbda42dd 100644
---- a/tracecmd/trace-restore.c
-+++ b/tracecmd/trace-restore.c
-@@ -163,6 +163,7 @@ void trace_restore (int argc, char **argv)
- 
- 	if (tracecmd_append_cpu_data(handle, args, &argv[first_arg]) < 0)
- 		die("failed to append data");
--
-+	if (tracecmd_get_out_file_version(handle) >= 7)
-+		tracecmd_write_options(handle);
- 	return;
+diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
+index 82c49e09..6a779d82 100644
+--- a/tracecmd/trace-dump.c
++++ b/tracecmd/trace-dump.c
+@@ -446,19 +446,72 @@ static void dump_section_header(int fd, enum dump_items v, unsigned short *flags
+ 		*flags = fl;
  }
-diff --git a/tracecmd/trace-split.c b/tracecmd/trace-split.c
-index e4a0c3b3..0768329f 100644
---- a/tracecmd/trace-split.c
-+++ b/tracecmd/trace-split.c
-@@ -391,6 +391,9 @@ static double parse_file(struct tracecmd_input *handle,
- 	if (tracecmd_append_cpu_data(ohandle, cpus, cpu_list) < 0)
- 		die("Failed to append tracing data\n");
  
-+	if (tracecmd_get_out_file_version(ohandle) >= 7)
-+		tracecmd_write_options(ohandle);
+-static void dump_option_buffer(int fd, int size)
++static void dump_option_buffer(int fd, unsigned short option, int size)
+ {
++	unsigned long long total_size = 0;
++	unsigned long long data_size;
++	unsigned long long current;
+ 	unsigned long long offset;
++	unsigned short flags;
++	char clock[DUMP_SIZE];
++	char name[DUMP_SIZE];
++	int cpus = 0;
++	int id;
++	int i;
+ 
+ 	if (size < 8)
+ 		die("broken buffer option with size %d", size);
+ 
+ 	if (read_file_number(fd, &offset, 8))
+ 		die("cannot read the offset of the buffer option");
++	if (read_file_string(fd, name, DUMP_SIZE))
++		die("cannot read the name of the buffer option");
++	if (file_version < 7) {
++		do_print(OPTIONS|FLYRECORD, "\t\t[Option BUFFER, %d bytes]\n", size);
++		do_print(OPTIONS|FLYRECORD, "%lld [offset]\n", offset);
++		do_print(OPTIONS|FLYRECORD, "\"%s\" [name]\n", name);
++		return;
++	}
 +
- 	current = end;
- 	for (cpu = 0; cpu < cpus; cpu++) {
- 		/* Set the tracecmd cursor to the next set of records */
++	current = lseek64(fd, 0, SEEK_CUR);
++	if (lseek64(fd, offset, SEEK_SET) == (off_t)-1)
++		die("cannot goto buffer offset %lld", offset);
++
++	dump_section_header(fd, FLYRECORD, &flags);
++
++	if (lseek64(fd, current, SEEK_SET) == (off_t)-1)
++		die("cannot go back to buffer option");
++
++	do_print(OPTIONS|FLYRECORD, "\t\t[Option BUFFER, %d bytes]\n", size);
++	do_print(OPTIONS|FLYRECORD, "%lld [offset]\n", offset);
++	do_print(OPTIONS|FLYRECORD, "\"%s\" [name]\n", name);
++
++	if (read_file_string(fd, clock, DUMP_SIZE))
++		die("cannot read clock of the buffer option");
++	do_print(OPTIONS|FLYRECORD, "\"%s\" [clock]\n", clock);
++	if (option == TRACECMD_OPTION_BUFFER) {
++		if (read_file_number(fd, &cpus, 4))
++			die("cannot read the cpu count of the buffer option");
++
++		do_print(OPTIONS|FLYRECORD, "%d [CPUs]:\n", cpus);
++		for (i = 0; i < cpus; i++) {
++			if (read_file_number(fd, &id, 4))
++				die("cannot read the id of cpu %d from the buffer option", i);
++			if (read_file_number(fd, &offset, 8))
++				die("cannot read the offset of cpu %d from the buffer option", i);
++			if (read_file_number(fd, &data_size, 8))
++				die("cannot read the data size of cpu %d from the buffer option", i);
++			total_size += data_size;
++			do_print(OPTIONS|FLYRECORD, "   %d %lld\t%lld\t[id, data offset and size]\n",
++				 id, offset, data_size);
++		}
++		do_print(SUMMARY, "\t\[buffer \"%s\", \"%s\" clock, "
++			 "%d cpus, %lld bytes flyrecord data]\n",
++			 name, clock, cpus, total_size);
++	} else {
++		do_print(SUMMARY, "\t\[buffer \"%s\", \"%s\" clock, latency data]\n", name, clock);
++	}
+ 
+-	do_print(OPTIONS, "\t\t[Option BUFFER, %d bytes]\n", size);
+-	do_print(OPTIONS, "%lld [offset]\n", offset);
+-	read_dump_string(fd, size - 8, OPTIONS);
+ }
+ 
+ static void dump_option_int(int fd, int size, char *desc)
+@@ -664,7 +717,8 @@ static int dump_options_read(int fd)
+ 			dump_option_string(fd, size, "CPUSTAT");
+ 			break;
+ 		case TRACECMD_OPTION_BUFFER:
+-			dump_option_buffer(fd, size);
++		case TRACECMD_OPTION_BUFFER_LAT:
++			dump_option_buffer(fd, option, size);
+ 			break;
+ 		case TRACECMD_OPTION_TRACECLOCK:
+ 			do_print(OPTIONS, "\t\t[Option TRACECLOCK, %d bytes]\n", size);
 -- 
 2.31.1
 
