@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DA40C432BE
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:34:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4030C4338F
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:34:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 472B360EC0
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:34:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BD2BD60EC0
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:34:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236804AbhG1NeY (ORCPT
+        id S236285AbhG1Ne0 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 28 Jul 2021 09:34:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54458 "EHLO
+        Wed, 28 Jul 2021 09:34:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236798AbhG1NeX (ORCPT
+        with ESMTP id S236805AbhG1Ne0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:34:23 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C73C061757
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:34:21 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id o5so4678634ejy.2
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:34:21 -0700 (PDT)
+        Wed, 28 Jul 2021 09:34:26 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88245C061764
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:34:24 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id f13so3188983edq.13
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:34:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=MWZzrv494veUtpk3Vcs7uK4zsL4FcQwiH8pTZuD9Qgk=;
-        b=rEHif3JW333Ylq97DXdjEbT85e/oF6o3ceiPqBPcDtJ4F1iG4EJvl8WdinelXXSR8T
-         LF1s/CWpPmbKSahLLe7GO6r1s6N/YBgtH1VvQhK20/6lV2bR1FQCcitRXjRvsvr3+sPm
-         OXHdSyR23yxn/70OwawhIGLTToDTKX9jCwNJZJDpvPH/DIue7R7Pk2I3JxsgX4v+GSNB
-         LhZRpPnTzG/XBsSSQk9hqYs8NDupsaGRSKn6iIAdt/3et1I9ggLZi84Oml/TGZ/HgRfu
-         M8q90pf/BzbpTEn7j0YGptjBg6HCoyCjF6xBec5REnkwp6itmjdzuFF6YYyR+oAai2gN
-         9gXQ==
+        bh=bDE5H6ouGRCAEZ9YfNrgle8dTCkLnHF61NMoDExWoeY=;
+        b=DLLJ7sINsieMyqsKE6C7Y74Rs4RQ6JpITxLyv+CagtDryO2uk1p2BMOQXdpOi5sA4c
+         7ww5mQZJdSUMn2OK7aPjZDQtWcyHuw8sgYBUnoX28cXxmEKuRcLd6M0F2ff5Es9WMd1p
+         TosD5QDcpXF1Mm50m1IdeYU8yDQX+XCwUSliX20AxHS2wKfPboYAF5rHkxdV4IvMCQ0J
+         cOl/3KAfQlxYQ5MYNt535OhVfzuQt7pL0TLfsXG7s0dkxVBpT0RLUN3cOswekJ4xUzRQ
+         /S9HRXHqZUEsvWacKcBkR0iGDHx+QvCmEJrGkYwsb/rWonDhbTI+2dxw19zs8lu5sMU3
+         yivQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MWZzrv494veUtpk3Vcs7uK4zsL4FcQwiH8pTZuD9Qgk=;
-        b=URKI+brts6EF3odpa3aFaTxz5HEcqgTRd2qQjZiCHQddL5CQsP0Ho981hWOyKunhZu
-         u5pws4KE0JCAsQ/udEiy+esQUTT0W/Q37hwEpkQ5f+hoVRck+c8hFCwt9qK4aWfatZhh
-         RjmH+eS5+tkFVug4dC8W0EcLVbwkVjAzYmd0PrEoSG0HMTodoawVEgCESLWXA1P2kSCB
-         xhtpLtfyAZrFtukzx+HzrGQ2eweTOSm6nitiSUB31dmhKt2dSkBKAeYI9VCjmTNJT+P4
-         LzOIH0ji+Sl2dlEB0nmhBal+s9Ylt4mXDz9EXqeWsWq/fKX6QnGs5JFjPXMEg9dvhyd+
-         E5kg==
-X-Gm-Message-State: AOAM531lwLM6AAylj6x19LN81diWOD45AZWbwcgOuDqPEjbuPG2Rh5hB
-        HAqxWziqi0HtN9jbZF6jyWZnaTtypnprHA==
-X-Google-Smtp-Source: ABdhPJxnh4aVThc44SZ20eD/gxxXW+gy8yYXcErKKj4if/STz+hMDAkX6Bp9ErvrlwVP6LGyrRWahA==
-X-Received: by 2002:a17:906:6046:: with SMTP id p6mr23765989ejj.344.1627479260400;
-        Wed, 28 Jul 2021 06:34:20 -0700 (PDT)
+        bh=bDE5H6ouGRCAEZ9YfNrgle8dTCkLnHF61NMoDExWoeY=;
+        b=h2Am4Twm4s1A4nzG5L6gIBpmzFRPBqqwaaehpxfxS7Aj+NtoATWniWDeRLIO9CcpAS
+         4EltAWjAbhWNhsV30af9AwVGXwSTjBXnPQTX1SjZgJe4CrN/EQPkdXwn/ORRbTJ8wDAo
+         o5mfWOLLZvJKzCsEh6B/ejhb6OzdlBVqewqxO24yn1LGr2irq1EWz68JOPKU8lbuXBdl
+         PPVIBY6RTeXFSzZKuBBHWT7TGF3mhltNSDZ5atNcVDxcR8bxlqMWTlQ1XhN0BKygBJs5
+         4IhgbdeQwFnXmuYr9Jsh9ZiVvQ7QGMiNdGRG60EuVQqQiVQ3VrzOQc7boEOY0fy/VSfG
+         JBDQ==
+X-Gm-Message-State: AOAM531KVCjEpEnHZJmCwVou+dlWWxoULkMJE3XpbeE9Ve+qAdIa0VSG
+        YKF79Y3tDpSC1jArtZAbKe0=
+X-Google-Smtp-Source: ABdhPJwOQcqKtkyOjBusglhlsZy78HNs5Xgox2UZ5FOWyi4n7e0w/wdO+k9PED6MlPyGJHQWbOh4ug==
+X-Received: by 2002:aa7:d285:: with SMTP id w5mr6085415edq.132.1627479263149;
+        Wed, 28 Jul 2021 06:34:23 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.34.19
+        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.34.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 06:34:19 -0700 (PDT)
+        Wed, 28 Jul 2021 06:34:22 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 82/87] trace-cmd: Add new subcommand "convert"
-Date:   Wed, 28 Jul 2021 16:32:45 +0300
-Message-Id: <20210728133250.234140-83-tz.stoyanov@gmail.com>
+Subject: [PATCH 84/87] trace-cmd: Update bash completion
+Date:   Wed, 28 Jul 2021 16:32:47 +0300
+Message-Id: <20210728133250.234140-85-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210728133250.234140-1-tz.stoyanov@gmail.com>
 References: <20210728133250.234140-1-tz.stoyanov@gmail.com>
@@ -73,196 +73,82 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-There is a need to convert trace files between different versions. A new
-"trace-cmd convert" subcommand is introduced, which reads and input
-trace file and copies to an output trace file. Both files can be from
-different versions.
- trace-cmd convert -i <input file> -o <output file> --file-version <ver>
---compression <compression>
+Added convert subcommand and its arguments to bash completion logic.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/Makefile              |   1 +
- tracecmd/include/trace-local.h |   2 +
- tracecmd/trace-cmd.c           |   1 +
- tracecmd/trace-convert.c       | 106 +++++++++++++++++++++++++++++++++
- tracecmd/trace-usage.c         |  13 ++++
- 5 files changed, 123 insertions(+)
- create mode 100644 tracecmd/trace-convert.c
+ tracecmd/trace-cmd.bash | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-diff --git a/tracecmd/Makefile b/tracecmd/Makefile
-index b7a23dc4..56742f0a 100644
---- a/tracecmd/Makefile
-+++ b/tracecmd/Makefile
-@@ -36,6 +36,7 @@ TRACE_CMD_OBJS += trace-usage.o
- TRACE_CMD_OBJS += trace-dump.o
- TRACE_CMD_OBJS += trace-clear.o
- TRACE_CMD_OBJS += trace-vm.o
-+TRACE_CMD_OBJS += trace-convert.o
+diff --git a/tracecmd/trace-cmd.bash b/tracecmd/trace-cmd.bash
+index b01c7a07..6639c143 100644
+--- a/tracecmd/trace-cmd.bash
++++ b/tracecmd/trace-cmd.bash
+@@ -64,6 +64,13 @@ plugin_options()
+     COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+ }
  
- ifeq ($(VSOCK_DEFINED), 1)
- TRACE_CMD_OBJS += trace-agent.o
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index e9a0aea8..13dab44c 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -110,6 +110,8 @@ void trace_usage(int argc, char **argv);
- 
- void trace_dump(int argc, char **argv);
- 
-+void trace_convert(int argc, char **argv);
-+
- int trace_record_agent(struct tracecmd_msg_handle *msg_handle,
- 		       int cpus, int *fds,
- 		       int argc, char **argv, bool use_fifos,
-diff --git a/tracecmd/trace-cmd.c b/tracecmd/trace-cmd.c
-index 9fc126e4..a83a8d0b 100644
---- a/tracecmd/trace-cmd.c
-+++ b/tracecmd/trace-cmd.c
-@@ -133,6 +133,7 @@ struct command commands[] = {
- 	{"list", trace_list},
- 	{"help", trace_usage},
- 	{"dump", trace_dump},
-+	{"convert", trace_convert},
- 	{"-h", trace_usage},
- };
- 
-diff --git a/tracecmd/trace-convert.c b/tracecmd/trace-convert.c
-new file mode 100644
-index 00000000..2484d529
---- /dev/null
-+++ b/tracecmd/trace-convert.c
-@@ -0,0 +1,106 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2021, VMware, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-+ */
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <getopt.h>
-+#include <fcntl.h>
-+#include <errno.h>
-+
-+#include "trace-local.h"
-+#include "trace-cmd.h"
-+#include "trace-cmd-private.h"
-+
-+static void convert_file(const char *in, const char *out, int file_version, char *compr)
++compression_param()
 +{
-+	struct tracecmd_input *ihandle;
-+	struct tracecmd_output *ohandle;
-+
-+	ihandle = tracecmd_open_head(in, 0);
-+	if (!ihandle)
-+		die("error reading %s", in);
-+	ohandle = tracecmd_copy(ihandle, out, TRACECMD_FILE_CPU_FLYRECORD, file_version, compr);
-+	if (!ohandle)
-+		die("error writing %s", out);
-+	tracecmd_output_close(ohandle);
-+	tracecmd_close(ihandle);
++    local opts=$(trace-cmd list -c | grep -v 'Supported' | cut -d "," -f1)
++    opts+=" any none "
++    COMPREPLY=( $(compgen -W "${opts}") )
 +}
 +
-+enum {
-+	OPT_file_version	= 254,
-+	OPT_comporession	= 255,
-+};
-+
-+void trace_convert(int argc, char **argv)
+ __trace_cmd_list_complete()
+ {
+     local prev=$1
+@@ -181,6 +188,9 @@ __trace_cmd_record_complete()
+ 		cmd_options record "$cur"
+ 	    fi
+ 	    ;;
++	--compression)
++	    compression_param
++	    ;;
+         *)
+ 	    # stream start and profile do not show all options
+ 	    cmd_options record "$cur"
+@@ -222,6 +232,29 @@ __trace_cmd_dump_complete()
+     esac
+ }
+ 
++__trace_cmd_convert_complete()
 +{
-+	char *input_file = NULL;
-+	char *output_file = NULL;
-+	char *compression = NULL;
-+	int file_version = FILE_VERSION_DEFAULT;
-+	int c;
++    local prev=$1
++    local cur=$2
++    shift 2
++    local words=("$@")
 +
-+	if (argc < 2)
-+		usage(argv);
-+
-+	if (strcmp(argv[1], "convert") != 0)
-+		usage(argv);
-+	for (;;) {
-+		int option_index = 0;
-+		static struct option long_options[] = {
-+			{"compression", required_argument, NULL, OPT_comporession},
-+			{"file-version", required_argument, NULL, OPT_file_version},
-+			{"help", no_argument, NULL, '?'},
-+			{NULL, 0, NULL, 0}
-+		};
-+
-+		c = getopt_long (argc-1, argv+1, "+hi:o:", long_options, &option_index);
-+		if (c == -1)
-+			break;
-+		switch (c) {
-+		case 'i':
-+			if (input_file)
-+				die("Only one input file is supported, %s already set",
-+				    input_file);
-+			input_file = optarg;
-+			break;
-+		case 'o':
-+			if (output_file)
-+				die("Only one output file is supported, %s already set",
-+				    output_file);
-+			output_file = optarg;
-+			break;
-+		case OPT_comporession:
-+			if (strcmp(optarg, "any") && strcmp(optarg, "none") &&
-+			    !tracecmd_compress_is_supported(optarg, NULL))
-+				die("Compression algorithm  %s is not supported", optarg);
-+			compression = optarg;
-+			break;
-+		case OPT_file_version:
-+			file_version = atoi(optarg);
-+			if (file_version < FILE_VERSION_MIN || file_version > FILE_VERSION_MAX)
-+				die("Unsupported file version %d, "
-+				    "supported versions are from %d to %d",
-+				    file_version, FILE_VERSION_MIN, FILE_VERSION_MAX);
-+
-+			break;
-+		case 'h':
-+		case '?':
-+		default:
-+			usage(argv);
-+		}
-+	}
-+
-+	if ((argc - optind) >= 2) {
-+		if (output_file)
-+			usage(argv);
-+		output_file = argv[optind + 1];
-+	}
-+
-+	if (!input_file)
-+		input_file = DEFAULT_INPUT_FILE;
-+	if (!output_file)
-+		usage(argv);
-+
-+	convert_file(input_file, output_file, file_version, compression);
++    case "$prev" in
++	-i)
++	    __show_files
++	    ;;
++	-o)
++	    __show_files
++	    ;;
++	--compression)
++	    compression_param
++	    ;;
++	*)
++	    cmd_options convert "$cur"
++	    ;;
++    esac
 +}
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index f463465a..9eb13ecb 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -407,6 +407,19 @@ static struct usage_help usage_help[] = {
- 		"          -h, --help show usage information\n"
- 		"          --verbose 'level' Set the desired log level\n"
- 	},
-+	{
-+		"convert",
-+		"convert trace file to different version",
-+		" %s convert [options]\n"
-+		"          -i input file, default is trace.dat\n"
-+		"          -o output file, mandatory parameter.\n"
-+		"             The output file can be specified also as last argument of the command\n"
-+		"          --file-version set the desired trace file version\n"
-+		"          --compression compress the trace output file, one of these strings can be passed:\n"
-+		"                            any  - auto select the best available compression algorithm\n"
-+		"                            none - do not compress the trace file\n"
-+		"                            name - the name of the desired compression algorithms\n"
-+		"                        available algorithms can be listed with trace-cmd list -c\n"	},
- 	{
- 		NULL, NULL, NULL
- 	}
++
+ __show_command_options()
+ {
+     local command="$1"
+@@ -298,6 +331,10 @@ _trace_cmd_complete()
+ 	    __trace_cmd_dump_complete "${prev}" "${cur}" ${words[@]}
+ 	    return 0
+ 	    ;;
++	convert)
++	    __trace_cmd_convert_complete "${prev}" "${cur}" ${words[@]}
++	    return 0
++	    ;;
+         *)
+ 	    __show_command_options "$w" "${prev}" "${cur}"
+             ;;
 -- 
 2.31.1
 
