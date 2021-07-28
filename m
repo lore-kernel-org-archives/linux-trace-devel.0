@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2753BC432BE
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EE10C43214
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 140DB61019
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6960D60EC0
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236662AbhG1NdL (ORCPT
+        id S236583AbhG1NdM (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 28 Jul 2021 09:33:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54036 "EHLO
+        Wed, 28 Jul 2021 09:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236661AbhG1NdI (ORCPT
+        with ESMTP id S236626AbhG1NdK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:33:08 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E3B6C061796
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:05 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id v21so4685059ejg.1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:05 -0700 (PDT)
+        Wed, 28 Jul 2021 09:33:10 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D6A2C06179A
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:07 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id go31so4626636ejc.6
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CbQOJdUfRJzpGeEB/1s2xwAKz7y+X57DsEnL9v3nIzs=;
-        b=vhU4Yfh49H/0PIS1aSFHAFE9YXS8u/m+fk/iGTG6NG+hCZFQdCr0NUEuYMWOpOeOm+
-         gnvu+XSMbNy5YOa2IW6zkyXXRAMknWn/dLSS0F4N/4QMN3nEcYpRvoJQokmmhvab2CB7
-         Tb25dQCksA1aVpmQZKRqhHC0S3oEmMQFH2HTIS6kReyI6cFfj64UpcVBdwl+zoKP5LMR
-         VjBdJVuqWjN61+f65faZCupT8puMhmL5md9VbkB6xylHSCcDnCHwt9Y1j63Y3QHUUzeP
-         JnHSTfG2at7Vf9vVj9tO+PRCKzbC597RA4YOom45UhzEmgBy23s/whCSYrK8E5GF7MRa
-         Z4NQ==
+        bh=jCMtxPqEe1a5AAIfnkpFko69pDnfv/KURGQjXlgGhJE=;
+        b=ifcjGrnTbd9DyWQxGjMhwXvv+hiZHXKelDiYvaCKrbmuOP9Un+sQZPRBBeeCx8jovt
+         WNwNNWLhxUOA0EAJLBxiwDAVpPbLswbW9EhqpP7hhZORzv3uEZZzVJkQfaND22uS4eym
+         Adyukcvn244yuYxV2W5afLWHqBsJ5OQRIiVXSyT8gNxf9N7vwie5Bs0h3sRCNkhDV7zZ
+         tbukDT9qkQF0apI3ouRm/ngFKQ3TmmgyQ/QgIfs1TbaeNiZJf7o7ceqj3crKNaRrsadj
+         idQBE07PdWS6De1ip1FRxYLWTAsy+My0Xvd2OIy165QyHHvZo+cGt/pWDxjATZZj/isJ
+         OPeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CbQOJdUfRJzpGeEB/1s2xwAKz7y+X57DsEnL9v3nIzs=;
-        b=IMF8+L24mt+T75VPrWOpxOuV7TiL9OH+lfzxqwYsSROeQIupTZPlXOAxanqc8yfZzl
-         8UnPCJc6F6lPgvS91iN45Y0WfRxdae0oVzCXjbOZ4wHUBnp+ApZl6kGsE4NWg/t4Jrbp
-         YGbrr3yCBolhcFTsL6LpYdpMhD+ZxKUDEaafgpWIIE99P7P9ThBXWqqacOVVRp8oryb6
-         AeiY9DHyHAWAH616ngHfWn9SILw7lbCojcvUDNzIF+HbBouoCTeJanXjMjwe4Gr88rfd
-         FY0Z/tuBt7sSpDbZUQ6GSDqFF/GzObyTCT/s6N4JsWQUmLrJCl3E933KLoa4OwagbR30
-         /z1Q==
-X-Gm-Message-State: AOAM532X6mazPIPAV/pvrc2AnOftPbVSyiCUdrFrbTrqBFJ9M8Uj3YeE
-        IYIDsuE6hnvqSMVQlVriQBw=
-X-Google-Smtp-Source: ABdhPJxclEB15Cd3qvdIetQ2odxz8UgXbVMz8Y+qY2Bj5tENTvpzD2XAsLovVMOo+814HHoWJv2ysQ==
-X-Received: by 2002:a17:906:4f97:: with SMTP id o23mr20874814eju.418.1627479184146;
-        Wed, 28 Jul 2021 06:33:04 -0700 (PDT)
+        bh=jCMtxPqEe1a5AAIfnkpFko69pDnfv/KURGQjXlgGhJE=;
+        b=FIH4zobknNFAf1XkxrW9exJmx/QPk5rKtQ0nJd4FRwcSQpr1PUSExO6bzzUd/Z8Ov3
+         XKDcHeXdZqb4yfZbRWlND91naG/5YlQF61y7eWJe1g64nO8tyCjeUEpwe4AxIxIpkUPK
+         BSlPT8v+VEMrBrT3kbXadwNIRtb6GWBCqyU1oCmJJDSruSjrHgrxJRm7Cdybczz8o+iZ
+         pub/euov/IGRM4Tkqxd3N2bJMp/2fujoL8Pak+p9KrGT+7v9v2PW7yD08kHaKNgvmwOh
+         3e03quyJ4YXAl0u7/lXAfL+UhSGqh6pK64AbAuHUVhFUmvxoxJIfenwCLzOy64Z3e2pU
+         DMRw==
+X-Gm-Message-State: AOAM532+4sNrQPnIr5XCfxIEz9G7XQwZdVQW8O9kltTayeX/NmMAebuB
+        ZKNAsJbLwAEVemQc132NzxcCnDPPH31jJQ==
+X-Google-Smtp-Source: ABdhPJyb38zwmKKAqsQ0bYOQwFxVlssuQTAadQvaIjbstO45H51L/MI4jpWlI+A2ogd5exjG1jE8LA==
+X-Received: by 2002:a17:907:970f:: with SMTP id jg15mr7712231ejc.175.1627479186220;
+        Wed, 28 Jul 2021 06:33:06 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.33.03
+        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.33.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 06:33:03 -0700 (PDT)
+        Wed, 28 Jul 2021 06:33:05 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 12/87] trace-cmd library: Define trace file version 7
-Date:   Wed, 28 Jul 2021 16:31:35 +0300
-Message-Id: <20210728133250.234140-13-tz.stoyanov@gmail.com>
+Subject: [PATCH 14/87] trace-cmd library: Reuse within the library the function that checks file state.
+Date:   Wed, 28 Jul 2021 16:31:37 +0300
+Message-Id: <20210728133250.234140-15-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210728133250.234140-1-tz.stoyanov@gmail.com>
 References: <20210728133250.234140-1-tz.stoyanov@gmail.com>
@@ -73,96 +73,226 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Added a define for file version 7, but keep the default file version to
-6.
+Make the function, that checks if the next file state is valid, global
+for the tracmd-library, so it can be reused. It is important the same check
+logic to be used in the whole library.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/include/private/trace-cmd-private.h | 3 +++
- lib/trace-cmd/include/trace-cmd-local.h           | 7 -------
- lib/trace-cmd/trace-output.c                      | 2 +-
- lib/trace-cmd/trace-util.c                        | 2 +-
- tracecmd/trace-record.c                           | 2 ++
- 5 files changed, 7 insertions(+), 9 deletions(-)
+ lib/trace-cmd/include/trace-cmd-local.h |  4 ++
+ lib/trace-cmd/trace-input.c             |  5 +++
+ lib/trace-cmd/trace-output.c            | 59 +++++++------------------
+ lib/trace-cmd/trace-util.c              | 31 +++++++++++++
+ 4 files changed, 57 insertions(+), 42 deletions(-)
 
-diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 72729c57..c3b407a0 100644
---- a/lib/trace-cmd/include/private/trace-cmd-private.h
-+++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -31,6 +31,9 @@ struct tep_plugin_list *trace_load_plugins(struct tep_handle *tep, int flags);
- 
- int *tracecmd_add_id(int *list, int id, int len);
- 
-+#define FILE_VERSION_DEFAULT	6
-+#define FILE_VERSION_MIN	6
-+#define FILE_VERSION_MAX	7
- enum {
- 	RINGBUF_TYPE_PADDING		= 29,
- 	RINGBUF_TYPE_TIME_EXTEND	= 30,
 diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
-index 670af8e4..faeb3de2 100644
+index faeb3de2..77a82cc1 100644
 --- a/lib/trace-cmd/include/trace-cmd-local.h
 +++ b/lib/trace-cmd/include/trace-cmd-local.h
-@@ -14,13 +14,6 @@ void tracecmd_warning(const char *fmt, ...);
- void tracecmd_critical(const char *fmt, ...);
- void tracecmd_info(const char *fmt, ...);
+@@ -27,6 +27,10 @@ void tracecmd_info(const char *fmt, ...);
+ void tracecmd_compress_init(void);
+ void tracecmd_compress_free(void);
  
--/* trace.dat file format version */
--#define FILE_VERSION 6
--
--#define _STR(x)	#x
--#define STR(x)	_STR(x)
--#define FILE_VERSION_STRING STR(FILE_VERSION)
--
- #ifndef htonll
- # if __BYTE_ORDER == __LITTLE_ENDIAN
- #define htonll(x) __bswap_64(x)
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index 552889c6..ae35c12d 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -976,7 +976,7 @@ static int select_file_version(struct tracecmd_output *handle,
- 	if (ihandle)
- 		handle->file_version = tracecmd_get_in_file_version(ihandle);
- 	else
--		handle->file_version = FILE_VERSION;
-+		handle->file_version = FILE_VERSION_DEFAULT;
++bool check_file_state(unsigned long file_version, int current_state, int new_state);
++bool check_in_state(struct tracecmd_input *handle, int new_state);
++bool check_out_state(struct tracecmd_output *handle, int new_state);
++
+ int out_uncompress_block(struct tracecmd_output *handle);
+ int out_compression_start(struct tracecmd_output *handle);
+ int out_compression_end(struct tracecmd_output *handle);
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index da6825b8..07613135 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -4260,3 +4260,8 @@ int tracecmd_enable_tsync(struct tracecmd_input *handle, bool enable)
  
  	return 0;
  }
++
++__hidden bool check_in_state(struct tracecmd_input *handle, int new_state)
++{
++	return check_file_state(handle->file_version, handle->file_state, new_state);
++}
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index e1373e80..8e402d35 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -365,33 +365,6 @@ int tracecmd_ftrace_enable(int set)
+ 	return ret;
+ }
+ 
+-static int check_out_state(struct tracecmd_output *handle, int new_state)
+-{
+-	if (!handle)
+-		return -1;
+-
+-	switch (new_state) {
+-	case TRACECMD_FILE_HEADERS:
+-	case TRACECMD_FILE_FTRACE_EVENTS:
+-	case TRACECMD_FILE_ALL_EVENTS:
+-	case TRACECMD_FILE_KALLSYMS:
+-	case TRACECMD_FILE_PRINTK:
+-	case TRACECMD_FILE_CMD_LINES:
+-	case TRACECMD_FILE_CPU_COUNT:
+-	case TRACECMD_FILE_OPTIONS:
+-		if (handle->file_state == (new_state - 1))
+-			return 0;
+-		break;
+-	case TRACECMD_FILE_CPU_LATENCY:
+-	case TRACECMD_FILE_CPU_FLYRECORD:
+-		if (handle->file_state == TRACECMD_FILE_OPTIONS)
+-			return 0;
+-		break;
+-	}
+-
+-	return -1;
+-}
+-
+ static int read_header_files(struct tracecmd_output *handle)
+ {
+ 	tsize_t size, check_size, endian8;
+@@ -400,7 +373,7 @@ static int read_header_files(struct tracecmd_output *handle)
+ 	int fd;
+ 	int ret;
+ 
+-	if (check_out_state(handle, TRACECMD_FILE_HEADERS) < 0) {
++	if (!check_out_state(handle, TRACECMD_FILE_HEADERS)) {
+ 		tracecmd_warning("Cannot read header files, unexpected state 0x%X",
+ 				 handle->file_state);
+ 		return -1;
+@@ -712,7 +685,7 @@ static int read_ftrace_files(struct tracecmd_output *handle)
+ 	struct tracecmd_event_list list = { .glob = "ftrace/*" };
+ 	int ret;
+ 
+-	if (check_out_state(handle, TRACECMD_FILE_FTRACE_EVENTS) < 0) {
++	if (!check_out_state(handle, TRACECMD_FILE_FTRACE_EVENTS)) {
+ 		tracecmd_warning("Cannot read ftrace files, unexpected state 0x%X",
+ 				 handle->file_state);
+ 		return -1;
+@@ -753,7 +726,7 @@ static int read_event_files(struct tracecmd_output *handle,
+ 	int endian4;
+ 	int ret;
+ 
+-	if (check_out_state(handle, TRACECMD_FILE_ALL_EVENTS) < 0) {
++	if (!check_out_state(handle, TRACECMD_FILE_ALL_EVENTS)) {
+ 		tracecmd_warning("Cannot read event files, unexpected state 0x%X",
+ 				 handle->file_state);
+ 		return -1;
+@@ -844,7 +817,7 @@ static int read_proc_kallsyms(struct tracecmd_output *handle)
+ 	struct stat st;
+ 	int ret;
+ 
+-	if (check_out_state(handle, TRACECMD_FILE_KALLSYMS) < 0) {
++	if (!check_out_state(handle, TRACECMD_FILE_KALLSYMS)) {
+ 		tracecmd_warning("Cannot read kallsyms, unexpected state 0x%X",
+ 				 handle->file_state);
+ 		return -1;
+@@ -889,7 +862,7 @@ static int read_ftrace_printk(struct tracecmd_output *handle)
+ 	char *path;
+ 	int ret;
+ 
+-	if (check_out_state(handle, TRACECMD_FILE_PRINTK) < 0) {
++	if (!check_out_state(handle, TRACECMD_FILE_PRINTK)) {
+ 		tracecmd_warning("Cannot read printk, unexpected state 0x%X",
+ 				 handle->file_state);
+ 		return -1;
+@@ -1326,11 +1299,10 @@ int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus)
+ {
+ 	int ret;
+ 
+-	ret = check_out_state(handle, TRACECMD_FILE_CPU_COUNT);
+-	if (ret < 0) {
++	if (!check_out_state(handle, TRACECMD_FILE_CPU_COUNT)) {
+ 		tracecmd_warning("Cannot write CPU count into the file, unexpected state 0x%X",
+ 				 handle->file_state);
+-		return ret;
++		return -1;
+ 	}
+ 	cpus = convert_endian_4(handle, cpus);
+ 	ret = do_write_check(handle, &cpus, 4);
+@@ -1346,16 +1318,14 @@ int tracecmd_write_options(struct tracecmd_output *handle)
+ 	unsigned short option;
+ 	unsigned short endian2;
+ 	unsigned int endian4;
+-	int ret;
+ 
+ 	/* If already written, ignore */
+ 	if (handle->file_state == TRACECMD_FILE_OPTIONS)
+ 		return 0;
+-	ret = check_out_state(handle, TRACECMD_FILE_OPTIONS);
+-	if (ret < 0) {
++	if (!check_out_state(handle, TRACECMD_FILE_OPTIONS)) {
+ 		tracecmd_warning("Cannot write options into the file, unexpected state 0x%X",
+ 				 handle->file_state);
+-		return ret;
++		return -1;
+ 	}
+ 
+ 	if (do_write_check(handle, "options  ", 10))
+@@ -1473,11 +1443,10 @@ int tracecmd_write_cmdlines(struct tracecmd_output *handle)
+ {
+ 	int ret;
+ 
+-	ret = check_out_state(handle, TRACECMD_FILE_CMD_LINES);
+-	if (ret < 0) {
++	if (!check_out_state(handle, TRACECMD_FILE_CMD_LINES)) {
+ 		tracecmd_warning("Cannot write command lines into the file, unexpected state 0x%X",
+ 				 handle->file_state);
+-		return ret;
++		return -1;
+ 	}
+ 	ret = save_tracing_file_data(handle, "saved_cmdlines");
+ 	if (ret < 0)
+@@ -1868,3 +1837,9 @@ out_free:
+ 	tracecmd_output_close(handle);
+ 	return NULL;
+ }
++
++__hidden bool check_out_state(struct tracecmd_output *handle, int new_state)
++{
++	return check_file_state(handle->file_version, handle->file_state, new_state);
++}
++
 diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index c97c633b..7f9765ac 100644
+index 7f9765ac..cda125c4 100644
 --- a/lib/trace-cmd/trace-util.c
 +++ b/lib/trace-cmd/trace-util.c
-@@ -620,7 +620,7 @@ unsigned long long tracecmd_generate_traceid(void)
- 
- bool tracecmd_is_version_supported(unsigned int version)
- {
--	if (version <= FILE_VERSION)
-+	if (version >= FILE_VERSION_MIN && version <= FILE_VERSION_MAX)
- 		return true;
- 	return false;
- }
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 1767a6c6..9780cedd 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -214,6 +214,7 @@ struct common_record_context {
- 	int topt;
- 	int run_command;
- 	int saved_cmdlines_size;
-+	int file_version;
- };
- 
- static void add_reset_file(const char *file, const char *val, int prio)
-@@ -5937,6 +5938,7 @@ static void init_common_record_context(struct common_record_context *ctx,
- 	ctx->instance = &top_instance;
- 	ctx->curr_cmd = curr_cmd;
- 	local_cpu_count = tracecmd_count_cpus();
-+	ctx->file_version = FILE_VERSION_DEFAULT;
- 	init_top_instance();
+@@ -635,4 +635,35 @@ static void __attribute__((destructor)) tracecmd_lib_free(void)
+ 	tracecmd_compress_free();
  }
  
++__hidden bool check_file_state(unsigned long file_version, int current_state, int new_state)
++{
++	if (file_version >= 7) {
++		if (current_state < TRACECMD_FILE_INIT)
++			return false;
++		return true;
++	}
+ 
++	switch (new_state) {
++	case TRACECMD_FILE_HEADERS:
++	case TRACECMD_FILE_FTRACE_EVENTS:
++	case TRACECMD_FILE_ALL_EVENTS:
++	case TRACECMD_FILE_KALLSYMS:
++	case TRACECMD_FILE_PRINTK:
++	case TRACECMD_FILE_CMD_LINES:
++	case TRACECMD_FILE_CPU_COUNT:
++		if (current_state == (new_state - 1))
++			return true;
++		break;
++	case TRACECMD_FILE_OPTIONS:
++		if (file_version < 7 && current_state == TRACECMD_FILE_CPU_COUNT)
++			return true;
++		break;
++	case TRACECMD_FILE_CPU_LATENCY:
++	case TRACECMD_FILE_CPU_FLYRECORD:
++		if (current_state == TRACECMD_FILE_OPTIONS)
++			return true;
++		break;
++	}
++
++	return false;
++}
 -- 
 2.31.1
 
