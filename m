@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9185AC4338F
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56884C43214
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7A46D60FED
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 44D3A60FED
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236279AbhG1NdJ (ORCPT
+        id S236610AbhG1NdJ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 28 Jul 2021 09:33:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53982 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236608AbhG1NdE (ORCPT
+        with ESMTP id S236641AbhG1NdG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:33:04 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65703C061757
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:02 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id f13so3182624edq.13
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:02 -0700 (PDT)
+        Wed, 28 Jul 2021 09:33:06 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D341C0613C1
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:03 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id v21so4684910ejg.1
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fv+FJkb2Lkjik897xvnzRSMdiYDW4XmLvXrISE7YIac=;
-        b=MOI5vbKpsMFxwqMi9Ki5fcr0BsVLfVnr4DC1QGdrb/lKCPSZE+Tj9pOfYdzEF3Z6P0
-         WnfwHfXazvCp7jcaYAqIabkRbJycVaXuI6zWGivQ8LhtGXOQyZxGDkzJdn7DJFHcYkag
-         BfY9wEXyAmanWUlgeTQ+uTXFWxBbBgyzT+kW5e5ctJ/KCQ9xwEDQRYXHDdIBOx6Xvw+F
-         hHMAA9TabGiJHpje/GskmgdFvVr4cx3DsEpmu2YLonH5GwlKJTmFdgzJj7vqFydtlQ/B
-         dv5kSuY3eT26XCHq0KvB0KdjKzlaImoKCpjvkjim71pcGFfCjMSlObuqEWjZIdHdEqT9
-         UThA==
+        bh=gD1fFlFDk8THxLOYebfD7ec/YaNLUhOYZ1Q7DZHtULo=;
+        b=ncjJM9wEnuhnJsw1r/0e0jWnyvl3Z6xUqOKdXsCE8ZamfNSy9F1AndwiK2VWGYFCe9
+         oS76dsm9U4ggKBlbfVZtvKi6wBd5QbA7kzth9quDR+OFDXU1Q1CPdrDeeN6QE1KTweUX
+         zXpGtOAFDTZJSKqL0ZJb4ba8kDr/eoFwiy3p0kTQ+J5X2ZtH3ibO+E7IMNnwJ4T44Zfn
+         TtVRXQE3gZT0sw4W7hp5FGIQVH6wmhuleJYoDFKUFt+Twq2J+8+2DpY4OI9CUhgENUfd
+         OAIvUyXVZ7NX3byuOeu6cn/+EngixB6DA1HfJIwIFHo37/tBTPykvgV5dnD4disHWt5c
+         9zaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fv+FJkb2Lkjik897xvnzRSMdiYDW4XmLvXrISE7YIac=;
-        b=KWYYeD2PO0mBRxI6gyITkWTzVsUtFnixM3wjGlTG24NDtea3yq87KLMupM2vKEvQqJ
-         BNL01W4AGepAK1CzoUTsRO+pOjDuEe3nE0P7oc4PFhP/WEEt/YYmDVxoIXdZ2EzI+PLx
-         QhbDj4o7l2tVbxhLiz9HPoogLNyhZodlf5Wvz4fgXcPfFYWxI/h2Clf6a95/9nJzyhEg
-         1DRuov7khFYKDVH1lbKV2fuS3Mcgu7zYKeNi+xiHh/32r7YBO0glze/g4EFuH5twTJ09
-         zRDWW/mB7tf8yT8S8fe8sOgGO2PmE4eEQ4x88nEDLCezBfl4UJKIq65ICITNHB5QHcvP
-         8mfA==
-X-Gm-Message-State: AOAM530Yq7NTfzsobhzUJBzuqnwFLeWnxEpQeq9AlXgj3o2xevhQIUzl
-        DBBYC0H2sV+8/wX15uYRIcUaD39oPTjPIQ==
-X-Google-Smtp-Source: ABdhPJyr3d9idcYZZf32IrukaTVOswr0o/3TGCDhcFlse5YxXVDP+xPqeqTs9gXP2I3WcQJxapXzug==
-X-Received: by 2002:a50:954c:: with SMTP id v12mr34184059eda.313.1627479180975;
-        Wed, 28 Jul 2021 06:33:00 -0700 (PDT)
+        bh=gD1fFlFDk8THxLOYebfD7ec/YaNLUhOYZ1Q7DZHtULo=;
+        b=KdBaWW7bD/15onjqPcyzLpSHOIlWz7nlQlsz4nEgawhB4ll+ZtWkdp7OSCpk7b3M92
+         2PAavORE4BIkZGqE3wWkYKmnITI2z5w2OImAaR5affg9jZsUNJJuW24rr6W71VdK92tn
+         TwX6WMGGtPt2kPkj8uH/9JW/2jX9hGyQj2ZxguvG6S/FgNP0oPUQbLcuZjxQZLzc4vBo
+         +62AkyfOlLZi0dIXFwvzpOBqI4rVamGt+cfLUJ1aQglMY98O5lHCFXMUE3P5nx6ECuN7
+         08e9QA7pyaeFjC6XlDRBgaCoQyxG3ERHz7Xsnc0xTehvVm6BQvTziJ/fyn77lwFIExvA
+         euDg==
+X-Gm-Message-State: AOAM530kdx5YGvFc/3XuGFznMLEsdOcla980Riq0TM/QqkV/qKvBrQBo
+        Ve/n8vNSSqxR2Q8LJ3ACECU=
+X-Google-Smtp-Source: ABdhPJyOZ3BvpFPt27WVvS3JnAESzBUDkKlkEiIeYq0HCrxoHMt75CJ68NqQ8jlwezi2QcoTqrEqvQ==
+X-Received: by 2002:a17:906:24d3:: with SMTP id f19mr16069781ejb.391.1627479182265;
+        Wed, 28 Jul 2021 06:33:02 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.33.00
+        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.33.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 06:33:00 -0700 (PDT)
+        Wed, 28 Jul 2021 06:33:01 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 09/87] trace-cmd list: Show supported compression algorithms
-Date:   Wed, 28 Jul 2021 16:31:32 +0300
-Message-Id: <20210728133250.234140-10-tz.stoyanov@gmail.com>
+Subject: [PATCH 10/87] trace-cmd library: Internal helpers for compressing data
+Date:   Wed, 28 Jul 2021 16:31:33 +0300
+Message-Id: <20210728133250.234140-11-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210728133250.234140-1-tz.stoyanov@gmail.com>
 References: <20210728133250.234140-1-tz.stoyanov@gmail.com>
@@ -73,107 +73,131 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add new parameter "trace-cmd list -c" to show supported compression
-algorithms.
+New library internal helper functions are introduced, to add compression
+functionality to the output trace handler.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- Documentation/trace-cmd/trace-cmd-list.1.txt |  3 +++
- tracecmd/trace-list.c                        | 26 ++++++++++++++++++++
- tracecmd/trace-usage.c                       |  1 +
- 3 files changed, 30 insertions(+)
+ lib/trace-cmd/include/trace-cmd-local.h |  8 ++++
+ lib/trace-cmd/trace-output.c            | 64 ++++++++++++++++++++++++-
+ 2 files changed, 70 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/trace-cmd/trace-cmd-list.1.txt b/Documentation/trace-cmd/trace-cmd-list.1.txt
-index a5c6b16c..b77e3460 100644
---- a/Documentation/trace-cmd/trace-cmd-list.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-list.1.txt
-@@ -71,6 +71,9 @@ OPTIONS
-     List defined clocks that can be used with trace-cmd record -C.
-     The one in brackets ([]) is the active clock.
+diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
+index eb85f095..fa361766 100644
+--- a/lib/trace-cmd/include/trace-cmd-local.h
++++ b/lib/trace-cmd/include/trace-cmd-local.h
+@@ -34,7 +34,15 @@ void tracecmd_info(const char *fmt, ...);
+ void tracecmd_compress_init(void);
+ void tracecmd_compress_free(void);
  
-+*-c*::
-+    List the available trace file compression algorithms.
++int out_uncompress_block(struct tracecmd_output *handle);
++int out_compression_start(struct tracecmd_output *handle);
++int out_compression_end(struct tracecmd_output *handle);
++void out_compression_reset(struct tracecmd_output *handle);
++unsigned long long out_copy_fd_compress(struct tracecmd_output *handle,
++					int fd, unsigned long long max,
++					unsigned long long *write_size);
+ 
+ off64_t msg_lseek(struct tracecmd_msg_handle *msg_handle, off_t offset, int whence);
+ 
 +
- SEE ALSO
- --------
- trace-cmd(1), trace-cmd-record(1), trace-cmd-report(1), trace-cmd-start(1),
-diff --git a/tracecmd/trace-list.c b/tracecmd/trace-list.c
-index d060c810..900da73b 100644
---- a/tracecmd/trace-list.c
-+++ b/tracecmd/trace-list.c
-@@ -549,6 +549,24 @@ static void show_plugins(void)
- 	tep_free(pevent);
+ #endif /* _TRACE_CMD_LOCAL_H */
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index a8de107c..552889c6 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -59,6 +59,8 @@ struct tracecmd_output {
+ 	unsigned long		file_state;
+ 	unsigned long		file_version;
+ 	size_t			options_start;
++	bool			do_compress;
++	struct tracecmd_compression *compress;
+ 
+ 	struct list_head	options;
+ 	struct tracecmd_msg_handle *msg_handle;
+@@ -77,15 +79,36 @@ struct list_event_system {
+ 	char				*name;
+ };
+ 
+-static stsize_t
+-do_write_check(struct tracecmd_output *handle, const void *data, tsize_t size)
++__hidden long long
++do_write_check(struct tracecmd_output *handle, const void *data, long long size)
+ {
++	if (handle->do_compress)
++		return tracecmd_compress_write(handle->compress, data, size);
++
+ 	if (handle->msg_handle)
+ 		return tracecmd_msg_data_send(handle->msg_handle, data, size);
+ 
+ 	return __do_write_check(handle->fd, data, size);
  }
  
-+static void show_compression(void)
++static inline off64_t do_lseek(struct tracecmd_output *handle, off_t offset, int whence)
 +{
-+	char **versions, **names;
-+	int c, i;
-+
-+	c = tracecmd_compress_protos_get(&names, &versions);
-+	if (c <= 0) {
-+		printf("No compression algorithms are supported\n");
-+		return;
-+	}
-+	printf("Supported compression algorithms:\n");
-+	for (i = 0; i < c; i++)
-+		printf("\t%s, %s\n", names[i], versions[i]);
-+
-+	free(names);
-+	free(versions);
++	if (handle->do_compress)
++		return tracecmd_compress_lseek(handle->compress, offset, whence);
++	else if (handle->msg_handle)
++		return msg_lseek(handle->msg_handle, offset, whence);
++	else
++		return lseek64(handle->fd, offset, whence);
 +}
 +
- void trace_list(int argc, char **argv)
++static inline int do_preed(struct tracecmd_output *handle, void *dst, int len, off_t offset)
++{
++	if (handle->do_compress)
++		return tracecmd_compress_pread(handle->compress, dst, len, offset);
++	else
++		return pread(handle->fd, dst, len, offset);
++}
++
+ static short convert_endian_2(struct tracecmd_output *handle, short val)
  {
- 	int events = 0;
-@@ -562,6 +580,7 @@ void trace_list(int argc, char **argv)
- 	int flags = 0;
- 	int systems = 0;
- 	int show_all = 1;
-+	int compression = 0;
- 	int i;
- 	const char *arg;
- 	const char *funcre = NULL;
-@@ -626,6 +645,10 @@ void trace_list(int argc, char **argv)
- 				systems = 1;
- 				show_all = 0;
- 				break;
-+			case 'c':
-+				compression = 1;
-+				show_all = 0;
-+				break;
- 			case '-':
- 				if (strcmp(argv[i], "--debug") == 0) {
- 					tracecmd_set_debug(true);
-@@ -670,6 +693,8 @@ void trace_list(int argc, char **argv)
- 		show_clocks();
- 	if (systems)
- 		show_systems();
-+	if (compression)
-+		show_compression();
- 	if (show_all) {
- 		printf("event systems:\n");
- 		show_systems();
-@@ -679,6 +704,7 @@ void trace_list(int argc, char **argv)
- 		show_tracers();
- 		printf("\noptions:\n");
- 		show_options();
-+		show_compression();
- 	}
+ 	if (!handle->pevent)
+@@ -111,6 +134,43 @@ static unsigned long long convert_endian_8(struct tracecmd_output *handle,
+ 	return tep_read_number(handle->pevent, &val, 8);
+ }
  
- 	return;
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index 32b38bfd..f463465a 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -348,6 +348,7 @@ static struct usage_help usage_help[] = {
- 		"          -O list plugin options\n"
- 		"          -B list defined buffer instances\n"
- 		"          -C list the defined clocks (and active one)\n"
-+		"          -c list the supported trace file compression algorithms\n"
- 	},
- 	{
- 		"restore",
++__hidden void out_compression_reset(struct tracecmd_output *handle)
++{
++	if (!handle->compress)
++		return;
++	tracecmd_compress_reset(handle->compress);
++	handle->do_compress = false;
++}
++
++__hidden int out_uncompress_block(struct tracecmd_output *handle)
++{
++	int ret = 0;
++
++	if (!handle->compress)
++		return 0;
++	ret = tracecmd_uncompress_block(handle->compress);
++	if (!ret)
++		handle->do_compress = true;
++	return ret;
++}
++
++__hidden int out_compression_start(struct tracecmd_output *handle)
++{
++	if (!handle->compress)
++		return 0;
++	tracecmd_compress_reset(handle->compress);
++	handle->do_compress = true;
++	return 0;
++}
++
++__hidden int out_compression_end(struct tracecmd_output *handle)
++{
++	if (!handle->compress)
++		return 0;
++	handle->do_compress = false;
++	return tracecmd_compress_block(handle->compress);
++}
++
+ /**
+  * tracecmd_set_quiet - Set if to print output to the screen
+  * @quiet: If non zero, print no output to the screen
 -- 
 2.31.1
 
