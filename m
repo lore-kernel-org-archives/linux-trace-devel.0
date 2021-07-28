@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3375FC4320A
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 519E9C4338F
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1E60B6101B
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3D0FB60FED
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236672AbhG1Ndi (ORCPT
+        id S236691AbhG1Ndk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 28 Jul 2021 09:33:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54214 "EHLO
+        Wed, 28 Jul 2021 09:33:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236676AbhG1Ndh (ORCPT
+        with ESMTP id S236690AbhG1Ndj (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:33:37 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC00C061764
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:36 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id nb11so4659545ejc.4
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:36 -0700 (PDT)
+        Wed, 28 Jul 2021 09:33:39 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA93C061757
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:37 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id o5so4674813ejy.2
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=th3Ym/PrENfYQiogjPXg1dvVX0U8mGwKa1iPRmTHF04=;
-        b=K/aApaX1KkOkznhlOxNjfvwFtnsS908C2tXFxYdP3iQKl8lJc6e8NTQLPfK2UQRpXj
-         jf9ZBLUdzfJYY1jpxq7jhYYaLnApIG/IVWbq1DcpI8DmE1uloKBUEQBwjsRZKwDCjmlJ
-         JeAsn9zwWQj1E7D5m4TYeLrvMfcB7f6EGgGs+YMYp2/uGKb41EOpY/nemDK8AvOQ76It
-         Fim2O627qpKeemoZI83t9cs3c9vFhcmxVWYjUChmFa3OvNr6E5zb/rQU4H50SjHR4Mds
-         RC1CxDLKUF4YW95JWYj2crtkSKFWJZLxhb1e9kPezSUNtl+W0EXPn9m7744xJsP0pl9e
-         0ibA==
+        bh=PdhhaRZu41xbnymtvLOW79QcMvaLBUSFkyZPoEgZ8Eo=;
+        b=GUkM67fnCZ3gvpdUgNE+fSghEMfZRR2w33G+SjaF8ru1FkeKSg9WGXgVgiduGjQqJh
+         9CdJA1Cj+vh3M42agAnemaQigHqsWLoQhnZxvfBRtJqbayApvj9PM4V/nFMkxuQ5e+gT
+         anhfsBBt2Vh0KqKc9QZFcX53HogrBuTBavCA2Vl0wGY9kTTKu13JkX3WgAFXO7R0F6sE
+         4yGFOUHiv/V+Ws2pApxKveW2r7Xq8u1GVRg6HDpIMlTecf/n5UgFpvIQEBed3CdEcn0P
+         3Rw51qC2HaNDxx0aLGYLY2t2bzly4WJrTFv1vceLIWBQ/wU8v5wCiwDkfu06srbssMtF
+         Kd+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=th3Ym/PrENfYQiogjPXg1dvVX0U8mGwKa1iPRmTHF04=;
-        b=bpd4LtiuS9304CyMxD6JJvx99M2skPpbLgcPSXxUvzbq0gFNf1KdJwvDTi7MOFxkVD
-         yzgw1WjqZBf3w22yibFZa0ACMVXhtlheyiiQhdiQb+FfKcv8giQGhcv083x8Vlv/iXCF
-         e++4px1XsGIxwerumQETduE7MpykpTtMFSxaA/56KzNeYXrdDX5qkSXXKO4HOdJtrfgN
-         nZDNKLw3IzZZOEEbD2836+0/wBF8QCC9y/mP/5aCkOgrWBCHVDPpcux6zMIHSnGh0egS
-         RJ0NFwkZONF5M0zJkBu3F0lLDKZmMzdsVxP7vUiDLAeJGLpdIQXv3dljzlXsuc1EIXvz
-         USOA==
-X-Gm-Message-State: AOAM531WiUcULmDHzm0EDZ2+mFnb8ywBy+VLUJe1qtGV+rm05p/eKGr0
-        5I+HXmYbL/YOwvcMXGhmbaA=
-X-Google-Smtp-Source: ABdhPJzmzAUQUDTdPfjfypg4DOhrodOuOvPTlinjTLVKvc3fIgA+k/ds9as9njp1ajrHMa4fhV0FYw==
-X-Received: by 2002:a17:906:2a8e:: with SMTP id l14mr27112443eje.321.1627479214746;
-        Wed, 28 Jul 2021 06:33:34 -0700 (PDT)
+        bh=PdhhaRZu41xbnymtvLOW79QcMvaLBUSFkyZPoEgZ8Eo=;
+        b=qgn4sKci4IB6MhBVvjFroZRrVOx4v/9+mrMmJ5WA/+r523ID9hInnv+yu+/jucl5cW
+         Hpq6q4h1TXp/OAenQf8n5+yF/5fXA2o2e4pkYsRJLKBAwDrZWib9g6TdqWaNRL6hhGnx
+         DFVhuCjxMglC8g87QYhidARmeVEv7QN68mWddGQSjSDw0ns6GhmMpBlZn96nCssXl7Sj
+         h0u/76502P1CZt7rAi/blXwQZb7uxpti6BeD5j2i5yIH1sAb9fGL3+CooUAYmGYGK+5X
+         duMuq8AGNlkB4lTxjjeagD2BpEnXxFMTKXc+F0iK3GRGvpGuRgmhoQZ1fxcwrVzD4iGx
+         v26Q==
+X-Gm-Message-State: AOAM531IPnpYq2pU5XsjuLg3cOQA16B3HvnJ6Q2QkDu+giKq9CHYbO4D
+        inRUTwsDjT6IkEfdrMO/Nag=
+X-Google-Smtp-Source: ABdhPJyIV7gjrKQYT20c70WoFtzxE3514vC4FeUYXG3NH52PJjPZYC8JMy4fZW4EIfFF+7Ppa1q3XQ==
+X-Received: by 2002:a17:907:aa7:: with SMTP id bz7mr26512127ejc.396.1627479215742;
+        Wed, 28 Jul 2021 06:33:35 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.33.33
+        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.33.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 06:33:34 -0700 (PDT)
+        Wed, 28 Jul 2021 06:33:35 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 42/87] trace-cmd library: Fix possible memory leak in read_and_parse_cmdlines()
-Date:   Wed, 28 Jul 2021 16:32:05 +0300
-Message-Id: <20210728133250.234140-43-tz.stoyanov@gmail.com>
+Subject: [PATCH 43/87] trace-cmd library: Track maximum CPUs count in input handler
+Date:   Wed, 28 Jul 2021 16:32:06 +0300
+Message-Id: <20210728133250.234140-44-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210728133250.234140-1-tz.stoyanov@gmail.com>
 References: <20210728133250.234140-1-tz.stoyanov@gmail.com>
@@ -73,55 +73,57 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Some error paths in read_and_parse_cmdlines() may lead to a memory leak.
-Improved the error handling of this internal function to avoid it.
+In trace file version 7, only CPUs with trace data are stored in the
+file. Each instance may have its own CPU count, depending on collected
+traces. As the main input handler is used by the top trace instance, the
+CPU count there is for the top trace instance and may differ with cpu
+counts of the other instances. Added a new "max_cpu" member of the input
+handler, that tracks the maximum CPU count of all instances, recorded in
+the file.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ lib/trace-cmd/trace-input.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 5eaf030e..1cc72092 100644
+index 1cc72092..b66436ab 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -3122,7 +3122,8 @@ static int read_and_parse_cmdlines(struct tracecmd_input *handle)
+@@ -133,6 +133,7 @@ struct tracecmd_input {
+ 	int			long_size;
+ 	int			page_size;
+ 	int			page_map_size;
++	int			max_cpu;
+ 	int			cpus;
+ 	int			ref;
+ 	int			nr_buffers;	/* buffer instances */
+@@ -953,6 +954,7 @@ static int read_cpus(struct tracecmd_input *handle)
+ 		return -1;
+ 
+ 	handle->cpus = cpus;
++	handle->max_cpu = cpus;
+ 	tep_set_cpus(handle->pevent, handle->cpus);
+ 	handle->file_state = TRACECMD_FILE_CPU_COUNT;
+ 
+@@ -2908,6 +2910,8 @@ static int handle_options(struct tracecmd_input *handle)
+ 		case TRACECMD_OPTION_CPUCOUNT:
+ 			cpus = *(int *)buf;
+ 			handle->cpus = tep_read_number(handle->pevent, &cpus, 4);
++			handle->max_cpu = handle->cpus;
++			tep_set_cpus(handle->pevent, handle->cpus);
+ 			break;
+ 		case TRACECMD_OPTION_PROCMAPS:
+ 			if (buf[size-1] == '\0')
+@@ -4216,7 +4220,7 @@ int tracecmd_page_size(struct tracecmd_input *handle)
+  */
+ int tracecmd_cpus(struct tracecmd_input *handle)
  {
- 	struct tep_handle *pevent = handle->pevent;
- 	unsigned long long size;
--	char *cmdlines;
-+	char *cmdlines = NULL;
-+	int ret;
- 
- 	if (CHECK_READ_STATE(handle, TRACECMD_FILE_CMD_LINES))
- 		return 0;
-@@ -3131,15 +3132,20 @@ static int read_and_parse_cmdlines(struct tracecmd_input *handle)
- 		add_section(handle, TRACECMD_OPTION_CMDLINES, 0, 0,
- 			    lseek64(handle->fd, 0, SEEK_CUR));
- 
--	if (read_data_and_size(handle, &cmdlines, &size) < 0)
--		return -1;
-+	ret = read_data_and_size(handle, &cmdlines, &size);
-+	if (ret < 0)
-+		goto out;
-+	if (!size) {
-+		handle->file_state = TRACECMD_FILE_CMD_LINES;
-+		goto out;
-+	}
- 	cmdlines[size] = 0;
- 	tep_parse_saved_cmdlines(pevent, cmdlines);
--	free(cmdlines);
--
- 	handle->file_state = TRACECMD_FILE_CMD_LINES;
--
--	return 0;
-+	ret = 0;
-+out:
-+	free(cmdlines);
-+	return ret;
+-	return handle->cpus;
++	return handle->max_cpu;
  }
  
- static void extract_trace_clock(struct tracecmd_input *handle, char *line)
+ /**
 -- 
 2.31.1
 
