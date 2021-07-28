@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB089C43214
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F225C432BE
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9411960FED
+	by mail.kernel.org (Postfix) with ESMTP id 2740F6101B
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236674AbhG1Ndg (ORCPT
+        id S236665AbhG1Ndg (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 28 Jul 2021 09:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54202 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236689AbhG1Ndf (ORCPT
+        with ESMTP id S236686AbhG1Ndf (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 28 Jul 2021 09:33:35 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD54CC061765
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:32 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id x90so3223446ede.8
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:32 -0700 (PDT)
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06628C0613C1
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:34 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id p21so3211500edi.9
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8fraYLkViCjDtoS94b5SOg3GdLRutkM2yqEppBmJufs=;
-        b=LDC5Ujww6miIO4tjjOeTRe1Sfc7gCfe5vQV1BxVW9IASAH9hCyw0/dXX/MdzA7MB8G
-         Xkoi9kY1h3YqHvmANzNdOD2qEv6Ksju8WZrerbOk+CPW3eCxj8npXi8mKmD0xZgK6bCE
-         mJ0zDjbgaW4sijkXzoZPujLvUP9qW2MM6kAQ9IBwwz0Vp5xS9rxiJ1xXmObSkU4Nyfwh
-         1o1NV9adxuQ9rSYdCvO6/TnvGK0WKcyV5AjiRopMAuym+N6vZXlJPcPPgyUYMlDtqKTP
-         Q0v86rbqgdnlwLEdID7xx/Oc9dXmIfOnvGEKDSu/YnGNBLwBKsllxKx30uKdBAswbuGA
-         qpWw==
+        bh=WjqWfP0gnWvbUJBcsK0qEhbRrb1eFSFaLEQ2DWNepgg=;
+        b=p8y36F4JzXMEUM0fFtq4+yKTwyTcymU4M6+s9XW/n4XQN+5JM6vTXiVtpmUPZWQJLs
+         2tY2lSB/kSJrw+g+3DgrLN2pXXInrfQuUlykA5sPZPJnDC2f2Q0QLO6S3pMm0iroP91r
+         j+WI2oY8iW65dvGsA/pKuroL7UK3jM6nuoqserztMgAf1Xya3HwYAxHN1SlwXgUju4r7
+         VHSdpX16Cux2r5R4Nz6h5DQkYzUZGOaeGLBze4AFo/FV2/IEjk971AdvaPR+5fxBpqRk
+         vPK5x0pwkcJkENA5UktkvJE097NGnRhXvbTOfayR62TkQ4iAMnOJfaG4VZ/Mk1Lp/8fD
+         xwnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8fraYLkViCjDtoS94b5SOg3GdLRutkM2yqEppBmJufs=;
-        b=LbgVwKb9FfDT0xnVcYwfPolc11FVbE5IexYbGFjieGJ0zFjP6tqIrqWPElsamJ1anf
-         /3fJ/6fjRyqN4vdMtVa8N2zjmvR8ZPiwaSXnhgEngEopnN3y/KGIaY0vN4YLCO//4xBS
-         1MJZ+fDcmiN++CXuB2k0gWM3ud+r1pCic62fTt0ys1/YOykKe8u8c7ePEOWSjGY0R+tT
-         DfLGk3enQXHmWXuj+AJz8DLNFCOCps2Tw6Q6YkZPwCZzntSDTrOkU7hhC66hlMj+sjzd
-         ICtdPb08S5oTixdDGT5V0J2pJj0x7xK/jtq2FL052yznkIgXgrHQteNHP1kS7ZKeQ0F9
-         sJKA==
-X-Gm-Message-State: AOAM531STPsqic6JCVOt41ypXaxLBBol2jJQJcsVio74lYQWSkiO0u8x
-        hGgZzP+b2IjJ6UC4Vyy6EjCiCT15RXm1/g==
-X-Google-Smtp-Source: ABdhPJy3ceni/Yc/vTTJOAJi4fTpneU5MGnw1fUlb1QRVNh7Blf6Heh6R/4dysC/nJ6d9f5F9tU1IA==
-X-Received: by 2002:a05:6402:8cf:: with SMTP id d15mr15937903edz.8.1627479211606;
-        Wed, 28 Jul 2021 06:33:31 -0700 (PDT)
+        bh=WjqWfP0gnWvbUJBcsK0qEhbRrb1eFSFaLEQ2DWNepgg=;
+        b=LrSkj5cKZXLayc/rpoMYmyASqHoBylVCs/dYVwwRRzPcvt3/HS9ayHl5MsPbQxplIs
+         AuoWjXK6cW+zyWhG7mzOvoHnDVh3jOZH0oLEDaoKSSMeqNJX3OQrAA/v8ucB8h3hbvoP
+         aXyWwyjFLpBKk8MaBmG6v2qsGSPdQOKsBgur1XjsKeAlAGs7p5NF00CCYakauz9hacle
+         VydcKt7Iqc19YADRDNepsAb1suMz+2WrqPdQSisLnAnQWm3IJPe7KmL0cT3/ic2MIKJ7
+         mFMh2fELyvpxhu8SQKZZF9dGXnnH9k3yZhlyz15V32EbDLtSU+PZQtmwbxg4LeiEZS6X
+         zEzw==
+X-Gm-Message-State: AOAM530Wmyo7i0YAWnjxL/7JMpA2MR+N4rq2QWioXHK8J/b+Gxq2S2mw
+        JF4oDXzZwJiCuqqapBX1M8M=
+X-Google-Smtp-Source: ABdhPJxzQOgD/mOUeKZ5S6AhgpdoAyuVswqMVydKW5QHxtSBTIm2mcunCdoNhUh7YsFJ8EJP/GsjTw==
+X-Received: by 2002:a05:6402:d5a:: with SMTP id ec26mr34711049edb.4.1627479212639;
+        Wed, 28 Jul 2021 06:33:32 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.33.30
+        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.33.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 06:33:31 -0700 (PDT)
+        Wed, 28 Jul 2021 06:33:32 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 39/87] trace-cmd library: Fix possible memory leak in read_event_files()
-Date:   Wed, 28 Jul 2021 16:32:02 +0300
-Message-Id: <20210728133250.234140-40-tz.stoyanov@gmail.com>
+Subject: [PATCH 40/87] trace-cmd library: Fix possible memory leak in read_proc_kallsyms()
+Date:   Wed, 28 Jul 2021 16:32:03 +0300
+Message-Id: <20210728133250.234140-41-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210728133250.234140-1-tz.stoyanov@gmail.com>
 References: <20210728133250.234140-1-tz.stoyanov@gmail.com>
@@ -73,99 +73,79 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Some error paths in read_event_files() may lead to a memory leak.
+Some error paths in read_proc_kallsyms() may lead to a memory leak.
 Improved the error handling of this internal function to avoid it.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 39 ++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 20 deletions(-)
+ lib/trace-cmd/trace-input.c | 40 ++++++++++++++++++++-----------------
+ 1 file changed, 22 insertions(+), 18 deletions(-)
 
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index de1f0399..ec717296 100644
+index ec717296..14052a11 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -748,7 +748,7 @@ out:
- static int read_event_files(struct tracecmd_input *handle, const char *regex)
- {
- 	unsigned long long size;
--	char *system;
-+	char *system = NULL;
- 	regex_t spreg;
- 	regex_t epreg;
- 	regex_t *sreg = NULL;
-@@ -777,13 +777,16 @@ static int read_event_files(struct tracecmd_input *handle, const char *regex)
- 			return -1;
- 	}
+@@ -846,9 +846,10 @@ static int read_event_files(struct tracecmd_input *handle, const char *regex)
  
--	if (read4(handle, &systems) < 0)
+ static int read_proc_kallsyms(struct tracecmd_input *handle)
+ {
+-	struct tep_handle *pevent = handle->pevent;
++	struct tep_handle *tep = handle->pevent;
+ 	unsigned int size;
+-	char *buf;
++	char *buf = NULL;
++	int ret;
+ 
+ 	if (CHECK_READ_STATE(handle, TRACECMD_FILE_KALLSYMS))
+ 		return 0;
+@@ -857,28 +858,31 @@ static int read_proc_kallsyms(struct tracecmd_input *handle)
+ 		add_section(handle, TRACECMD_OPTION_KALLSYMS, 0, 0,
+ 			    lseek64(handle->fd, 0, SEEK_CUR));
+ 
+-
+-	if (read4(handle, &size) < 0)
 -		return -1;
-+	ret = read4(handle, &systems);
+-	if (!size)
+-		return 0; /* OK? */
++	ret = read4(handle, &size);
++	if (ret < 0)
++		goto out;
++	if (!size) {
++		handle->file_state = TRACECMD_FILE_KALLSYMS;
++		goto out; /* OK? */
++	}
+ 
+ 	buf = malloc(size+1);
+-	if (!buf)
+-		return -1;
+-	if (do_read_check(handle, buf, size)){
+-		free(buf);
+-		return -1;
++	if (!buf) {
++		ret = -1;
++		goto out;
+ 	}
+-	buf[size] = 0;
+-
+-	tep_parse_kallsyms(pevent, buf);
++	ret = do_read_check(handle, buf, size);
 +	if (ret < 0)
 +		goto out;
  
- 	for (i = 0; i < systems; i++) {
- 		system = read_string(handle);
--		if (!system)
--			return -1;
-+		if (!system) {
-+			ret = -1;
-+			goto out;
-+		}
+-	free(buf);
++	buf[size] = 0;
++	tep_parse_kallsyms(tep, buf);
  
- 		sys_printed = 0;
- 		print_all = 0;
-@@ -810,39 +813,35 @@ static int read_event_files(struct tracecmd_input *handle, const char *regex)
- 			}
- 		}
- 
--		if (read4(handle, &count) < 0)
--			goto failed;
-+		ret = read4(handle, &count);
-+		if (ret < 0)
-+			goto out;
- 
- 		for (x=0; x < count; x++) {
--			if (read8(handle, &size) < 0)
--				goto failed;
-+			ret = read8(handle, &size);
-+			if (ret < 0)
-+				goto out;
- 
- 			ret = read_event_file(handle, system, size,
- 					      print_all, &sys_printed,
- 					      reg);
- 			if (ret < 0)
--				goto failed;
-+				goto out;
- 		}
- 		free(system);
--	}
--
--	if (sreg) {
--		regfree(sreg);
--		regfree(ereg);
-+		system = NULL;
- 	}
- 
- 	handle->file_state = TRACECMD_FILE_ALL_EVENTS;
+ 	handle->file_state = TRACECMD_FILE_KALLSYMS;
 -
 -	return 0;
--
-- failed:
 +	ret = 0;
-+ out:
- 	if (sreg) {
- 		regfree(sreg);
- 		regfree(ereg);
- 	}
- 
- 	free(system);
--	return -1;
++out:
++	free(buf);
 +	return ret;
  }
  
- static int read_proc_kallsyms(struct tracecmd_input *handle)
+ static int read_ftrace_printk(struct tracecmd_input *handle)
 -- 
 2.31.1
 
