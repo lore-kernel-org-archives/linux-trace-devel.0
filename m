@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D179C43216
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:34:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 019D0C4338F
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:34:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 580BC60FED
+	by mail.kernel.org (Postfix) with ESMTP id E03F460D07
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:34:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236254AbhG1NeJ (ORCPT
+        id S236717AbhG1NeJ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 28 Jul 2021 09:34:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54368 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236711AbhG1NeI (ORCPT
+        with ESMTP id S236711AbhG1NeJ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:34:08 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEF4C0613C1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:34:03 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id hp25so4596778ejc.11
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:34:03 -0700 (PDT)
+        Wed, 28 Jul 2021 09:34:09 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4EEEC061757
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:34:07 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id f13so3187776edq.13
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:34:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zV0CqwA9/wXmtBv9QTZRvsjfkc0zh38RvP8876u1PMw=;
-        b=uYpMLTyLuF3Zg0rJ8MyRPlSXumraHB8oBdwuRDETy32ROxEhMWcch4NFXaF+5HN39w
-         tac7FO6RwdHle3xrjDhtYuiMiaw8B5LuCbT7wdJR1a2yhURfsh8SA5WfCoK8q+FBZHFW
-         hVqRPp2fsGbz28BEEKPigqSzqWp/T4lnSUb+Se3AR5sB2ySChEn/wll5PL9MCjwoBsI+
-         0DRkjot0LFgNxGjx/DEe/MBTUNEoJ2njOcQMNNSoCjPD7FOZ4GVEqztBfHtWHYZHypNk
-         ziL8XVoGEcK1iPa3iVuzBMgUlQJGm9sSzkXCvlYBw5bVrqmSAjd/foNsAc+HBSuLDxF7
-         jugg==
+        bh=Ic8xJhlyJSCo1MuvLaj0vyNt7EBk5JnRJRvOFZn8+F8=;
+        b=sJkG9NFIccuJWvfK07L7TUKJqeeTyTInBhcxWKN4I2qxW6JAnv0Fmj+KIcM12/WH7g
+         3Zeki/Z+13b+4sfUguXgKjewrwT8FFpUCrOClz5hhybJ3WTrDFcGRoDMe9UU1rO7XnUG
+         e3vw/HYoNJ3MKInV5q3zfk4+674hfUFeb1nXtRvq5nBD8+pQCakJyDxC/SteMfcdlPbg
+         iPSsnnozKXY36CGBWRoR49LYnzM5onc60UzgGqtYKuj+SAEukFqNli/Ya+wsqQ6kQIfY
+         H5bHnQIzBDwHTgrQoxnqHzAmBbOZWbbayq/D5o1XRdag9CBLOW5Eq/FbySxQGU4Lz8Bg
+         g4FA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zV0CqwA9/wXmtBv9QTZRvsjfkc0zh38RvP8876u1PMw=;
-        b=Re6ADAjqUgT3WeUUIoUrk1jUPNtY837/Nq8ng78o9pIUwIScDuOn05kPKn+Gg6yFJ2
-         7e23jjROuScDHEdhKQ5AsYbc3OrMRSW/W+/5Y6NR2kUfov4ASOsb/Nv9+Ol6s6cH87+B
-         3JNFXr2BHdc5AuqdDVRFFHCIFsy8XpG14L/FR2REgld9ACB8Toz28vKY3ZXEFZIY9Uw4
-         t3pGk+WWuL+jscmzX439qRMNMPTn6RQP3PzkuxLXLYv8EzjbdrWQlll2av5n1U4nN1q8
-         /M4oZllwHvq7UXqAaSUuGZqxes6Vz9BxtXkoBtndpUtM9XoIMY1rDc6zNa6BhDVcXlQc
-         eSIg==
-X-Gm-Message-State: AOAM533g61cN85wn9cCVXoBqlcOyc34YtspGZDFiGwsXbtOxzKxp9ddr
-        ReoLnmxWLCVQZlbpF4zDIPRRTNEofYQmvA==
-X-Google-Smtp-Source: ABdhPJzfUVvdh4YoeK78+rSYB3uwCgAU3ob+52mfW8pE07nZz9W4g1n1BgPjidQlb+98KyG2GQCOwQ==
-X-Received: by 2002:a17:906:4103:: with SMTP id j3mr26775778ejk.526.1627479242619;
-        Wed, 28 Jul 2021 06:34:02 -0700 (PDT)
+        bh=Ic8xJhlyJSCo1MuvLaj0vyNt7EBk5JnRJRvOFZn8+F8=;
+        b=EU41FR406iG68GGFybR8xfnlzQc7LxOgKyJM4T9SEKeTC9qE/omgFAFxd1l6AATIcB
+         olJEpiPf0TTDIYK15krZvBbgc01+lttNQZ+I7ArE0OSWYcf7RptFuAgrRAKyDSYRshiu
+         afWkqmGutDJJ4r6N3cokr6QL86GePLPWv23d0nOVCEoAk7+lu5ZmGOffR7V6cmV4cp+X
+         W9x69ngpL57T+Ar4PVWPqk2TRd4DGq6+DJYmMoIpE6WwJkRZnJ8cdTOpjQj2+cPhTnJb
+         Cd9jDzpcLExEV6pzx8ELxcmwF9qvDfsiSj1Eeu1stLyQuV2dG/YNpv3e5CGVClPMgsYj
+         N5vg==
+X-Gm-Message-State: AOAM533eZdjroQitOLf5i2Rs37wNxMapn7toLVApG5X9Fh9ap5HuGEGE
+        M6toxqrkl9IEvLWFyNDpRRE=
+X-Google-Smtp-Source: ABdhPJzDds/dAQ2XMrSDhmGj53gQr64ST50zdhbNZXet9ouosQEpU7a0iQzY/ODh6x13YGiRYs41oA==
+X-Received: by 2002:a05:6402:b19:: with SMTP id bm25mr17016169edb.213.1627479246467;
+        Wed, 28 Jul 2021 06:34:06 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.34.01
+        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.34.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 06:34:02 -0700 (PDT)
+        Wed, 28 Jul 2021 06:34:06 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 64/87] trace-cmd dump: Add helpers for processing trace file sections
-Date:   Wed, 28 Jul 2021 16:32:27 +0300
-Message-Id: <20210728133250.234140-65-tz.stoyanov@gmail.com>
+Subject: [PATCH 68/87] trace-cmd dump: Dump trace file version 7
+Date:   Wed, 28 Jul 2021 16:32:31 +0300
+Message-Id: <20210728133250.234140-69-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210728133250.234140-1-tz.stoyanov@gmail.com>
 References: <20210728133250.234140-1-tz.stoyanov@gmail.com>
@@ -73,64 +73,70 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Added a new local databse for storing sections, found in trace file
-version 7.
+Trace file version 7 has different structure than version 6. Separates
+parsing both versions in different flows.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-dump.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+ tracecmd/trace-dump.c | 38 +++++++++++++++++++++++++++++---------
+ 1 file changed, 29 insertions(+), 9 deletions(-)
 
 diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
-index e6f774bd..010a8188 100644
+index 8e95e884..99dc0ea4 100644
 --- a/tracecmd/trace-dump.c
 +++ b/tracecmd/trace-dump.c
-@@ -43,8 +43,18 @@ enum dump_items {
- 	OPTIONS		= (1 << 9),
- 	FLYRECORD	= (1 << 10),
- 	CLOCK		= (1 << 11),
-+	SECTIONS	= (1 << 12),
- };
- 
-+struct file_section {
-+	int id;
-+	unsigned long long offset;
-+	struct file_section *next;
-+	enum dump_items verbosity;
-+};
-+
-+static struct file_section *sections;
-+
- enum dump_items verbosity;
- 
- #define DUMP_CHECK(X) ((X) & verbosity)
-@@ -723,6 +733,17 @@ static void dump_therest(int fd)
+@@ -883,6 +883,31 @@ static void dump_therest(int fd)
  	}
  }
  
-+static void free_sections(void)
++static void dump_v6_file(int fd)
 +{
-+	struct file_section *del;
-+
-+	while (sections) {
-+		del = sections;
-+		sections = sections->next;
-+		free(del);
-+	}
++	dump_header_page(fd);
++	dump_header_event(fd);
++	dump_ftrace_events_format(fd);
++	dump_events_format(fd);
++	dump_kallsyms(fd);
++	dump_printk(fd);
++	dump_cmdlines(fd);
++	dump_cpus_count(fd);
++	dump_therest(fd);
 +}
 +
- static void dump_file(const char *file)
++static void dump_v7_file(int fd)
++{
++	long long offset;
++
++	if (read_file_number(fd, &offset, 8))
++		die("cannot read offset of the first option section");
++
++	if (lseek64(fd, offset, SEEK_SET) == (off64_t)-1)
++		die("cannot goto options offset %lld", offset);
++	dump_options(fd);
++}
++
+ static void free_sections(void)
  {
- 	int fd;
-@@ -748,7 +769,7 @@ static void dump_file(const char *file)
- 	dump_cmdlines(fd);
- 	dump_cpus_count(fd);
- 	dump_therest(fd);
--
-+	free_sections();
+ 	struct file_section *del;
+@@ -910,15 +935,10 @@ static void dump_file(const char *file)
+ 
+ 	dump_initial_format(fd);
+ 	dump_compress(fd);
+-	dump_header_page(fd);
+-	dump_header_event(fd);
+-	dump_ftrace_events_format(fd);
+-	dump_events_format(fd);
+-	dump_kallsyms(fd);
+-	dump_printk(fd);
+-	dump_cmdlines(fd);
+-	dump_cpus_count(fd);
+-	dump_therest(fd);
++	if (file_version < 7)
++		dump_v6_file(fd);
++	else
++		dump_v7_file(fd);
+ 	free_sections();
  	tep_free(tep);
  	tep = NULL;
- 	close(fd);
 -- 
 2.31.1
 
