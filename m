@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92ABAC04FE3
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4252EC432BE
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7BC9B60FED
+	by mail.kernel.org (Postfix) with ESMTP id 2D69B61019
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:33:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236567AbhG1NdP (ORCPT
+        id S236577AbhG1NdO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 28 Jul 2021 09:33:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53984 "EHLO
+        Wed, 28 Jul 2021 09:33:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236626AbhG1NdN (ORCPT
+        with ESMTP id S236567AbhG1NdM (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:33:13 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD6C1C061757
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:11 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id oz16so4625823ejc.7
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:11 -0700 (PDT)
+        Wed, 28 Jul 2021 09:33:12 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889C1C0613CF
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:10 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id v21so4685504ejg.1
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 06:33:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IS4eVyl17/7riV3Ye/VRLCqzkuyENMYHuiXjcl4aEw0=;
-        b=qI4g6oPlyem1rH3OjqIWfwOV5ZBBpnjBqU/A3m+NPH9qw8pge6RiRoPTA/xQpWZkxN
-         EgJCaKOrbOtcU1P4z2FlQXpETC3KSUj5XMwFhbN4E3kf9np/pkABxmLHYPGiwfZ2XsEj
-         w8i7qaZ1Qk7/Pok+HuwdTHhsWJSfcVNdfTJ4OQDm5gkgZt667vhjo+FpehDNzMxvfN0w
-         sNWPGke349p2cE0F2yZdWBPBDgVjO9rwthxCpJZC+2FPrKgT90i+DQIVqZ8OeHU02Nyd
-         FKUwELK5x5qqSHvG9zrE99CvhduDVSzi5sRRUNFLbaV3f/rI56dDZ6JCoMl+av/l7hei
-         I1rw==
+        bh=m22+wkkbAq5SigJvmJ/9a6c2tSZv21Q/Q29kb7moj4g=;
+        b=n08r7ej3DUZgPtZHshNLlmNGYB92D+2M8LIbQRnF6VJOVT/xYoNdQPScWen8isXWsK
+         ILECE2NQlAU9qDrIpt2+PQyDpgvoH4Tnh4SQicCKAosxnbGNSYwTP0yV/MUb7GrqR5Rk
+         8SgbfYaEaU9klUXFuF4ZJiKox2fU4J9LQI1lBhgxzylJTL6IUNavhy7P+t2/yaEWMi0T
+         /CbDyGnbF+584w6dm/fF5PYJvO5RIH0t8O73vdGSIkJrrLhHRX/40LnpJ+kFQf8ztsYF
+         n/b6Zj3lSH/ngwt0wJZ3QmvkxtgE5ZxLsfq3y2hSzQylgFuv9A9UpX5E4ohJPprtWsAj
+         zUnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IS4eVyl17/7riV3Ye/VRLCqzkuyENMYHuiXjcl4aEw0=;
-        b=oOBt282WngAGCq8V8QQIz6E0hnvhKA5COyfn85xQ0flwDy3eTGcK2IDsA3Ji1JXJAW
-         yX52o1ptwdNi5UGraOR6T7jRU8ikRMBTnKV1syVTFwVU0E8gAwc5PY+jJfagMTHgRSu8
-         zrtNE49YSvsJjuzvYCEV+ppdxykJhuvjTQWrNbRUYDJJ1UyCCkYRGZav/01YOewUCEEG
-         mRUmBDb3p8d9XVHDRnBav7+kQF56sNRM1qQu+RMVyqJ5Dctg3WlVfkcAMamrpubTWQrl
-         tQk8AneOCtYlbbuV60lOqQ7kPSIam66G8rYzAfW6Ix8NFukRS+EaYln/tf+JU4A1Nnb8
-         SQQA==
-X-Gm-Message-State: AOAM532GAIzBzD93RTNiXQbM6af5tSalecCcQYrSiknqz29cvKMEg9bf
-        FtCwC5NOBDCjAWNHRP+D2f0EjTR8tVIcFg==
-X-Google-Smtp-Source: ABdhPJx+U2RY8IX4Wq+Y7+Fe0PQuN4whamEVkA6kc5b+lGPeKR0t0xEg2Lann0t8tRQtDa5T9/uUJg==
-X-Received: by 2002:a17:906:4310:: with SMTP id j16mr27941263ejm.182.1627479190324;
-        Wed, 28 Jul 2021 06:33:10 -0700 (PDT)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.33.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        bh=m22+wkkbAq5SigJvmJ/9a6c2tSZv21Q/Q29kb7moj4g=;
+        b=BFFAmoL2byu3HYiVqGhi8+quqr4dBjUprrQyVMsC7qZGgFRNA/1lZ+GdK2P2/3wKLn
+         fgsZH1PEBdBeOfuWb1sdoKmZebXHYaN8drr00fEjQvorYSsVwHRGOybtRGCFjwOr4Ikz
+         9Y38ROfbwqAqeUsM+Pt3toudYMqPnHTKN4enBCWLMO5T+rfqXCn1oXPLGYfChqqTH2LU
+         HLUoBBBo2eiGS0B1EJlD+R5zqA98qb04bQEPpoBN3T/thxFtleKnhuoM05wxvt0QwfBH
+         NJ1fqNWRQ/RiuhVJj0CDb6KjaABgwvfm7PvPzUISqxtU1GWwvMrQT6cUhc8cAr5kiUmD
+         JZMA==
+X-Gm-Message-State: AOAM531xO7EV4jEw86QnN0OTPeY9iLyu2PSL8NF7cXpEODF9lupgmLos
+        hjTnmmCapw9/61vJ8B+7P6BIAdMcWwq0cQ==
+X-Google-Smtp-Source: ABdhPJzlPF2RyLFW9hlYrk+aj9m/QulNtEJp9Oqi7PA0JTAqO9aX5L/+qmsCdghjlZ38wEvnw2K/vg==
+X-Received: by 2002:a17:906:6046:: with SMTP id p6mr23760275ejj.344.1627479189163;
         Wed, 28 Jul 2021 06:33:09 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id b25sm2700705edv.9.2021.07.28.06.33.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 06:33:08 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 18/87] trace-cmd record: Add compression to the trace context
-Date:   Wed, 28 Jul 2021 16:31:41 +0300
-Message-Id: <20210728133250.234140-19-tz.stoyanov@gmail.com>
+Subject: [PATCH 17/87] trace-cmd library: New API to configure compression on an output handler
+Date:   Wed, 28 Jul 2021 16:31:40 +0300
+Message-Id: <20210728133250.234140-18-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210728133250.234140-1-tz.stoyanov@gmail.com>
 References: <20210728133250.234140-1-tz.stoyanov@gmail.com>
@@ -73,67 +73,90 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-As the trace-cmd libray supports trace file compression, trace-cmd
-record command should have a way to configure this functionality. Trace
-context is extended to hold the compression algorithm, used to
-compress the file.
+New API can be used to configure compression algorithm on a output
+handler to a trace file.
+ tracecmd_output_set_compression()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-record.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ .../include/private/trace-cmd-private.h       |  1 +
+ lib/trace-cmd/trace-output.c                  | 44 +++++++++++++++++++
+ 2 files changed, 45 insertions(+)
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 8080d612..295fe633 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -199,6 +199,7 @@ struct common_record_context {
- 	char *date2ts;
- 	char *user;
- 	const char *clock;
-+	const char *compression;
- 	struct tsc_nsec tsc2nsec;
- 	int data_flags;
- 	int tsync_loop_interval;
-@@ -3702,6 +3703,12 @@ static struct tracecmd_output *create_net_output(struct common_record_context *c
- 		goto error;
- 	if (tracecmd_output_set_msg(out, msg_handle))
- 		goto error;
-+	if (ctx->compression) {
-+		if (tracecmd_output_set_compression(out, ctx->compression))
-+			goto error;
-+	} else if (ctx->file_version >= 7) {
-+		tracecmd_output_set_compression(out, "any");
-+	}
- 	if (tracecmd_output_write_headers(out, listed_events))
- 		goto error;
+diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
+index 455ff680..ee224903 100644
+--- a/lib/trace-cmd/include/private/trace-cmd-private.h
++++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+@@ -281,6 +281,7 @@ int tracecmd_output_set_trace_dir(struct tracecmd_output *handler, const char *t
+ int tracecmd_output_set_kallsyms(struct tracecmd_output *handler, const char *kallsyms);
+ int tracecmd_output_set_from_input(struct tracecmd_output *handler, struct tracecmd_input *ihandle);
+ int tracecmd_output_set_version(struct tracecmd_output *handler, int file_version);
++int tracecmd_output_set_compression(struct tracecmd_output *handler, const char *compression);
+ int tracecmd_output_write_init(struct tracecmd_output *handler);
+ int tracecmd_output_write_headers(struct tracecmd_output *handler,
+ 				  struct tracecmd_event_list *list);
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index b0ec0c51..4a3ca2d0 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -219,6 +219,7 @@ void tracecmd_output_free(struct tracecmd_output *handle)
+ 		free(option);
+ 	}
+ 	free(handle->trace_clock);
++	tracecmd_compress_destroy(handle->compress);
+ 	free(handle);
+ }
  
-@@ -3745,6 +3752,12 @@ setup_connection(struct buffer_instance *instance, struct common_record_context
- 			goto error;
- 		if (tracecmd_output_set_version(network_handle, ctx->file_version))
- 			goto error;
-+		if (ctx->compression) {
-+			if (tracecmd_output_set_compression(network_handle, ctx->compression))
-+				goto error;
-+		} else if (ctx->file_version >= 7) {
-+			tracecmd_output_set_compression(network_handle, "any");
+@@ -1127,6 +1128,49 @@ int tracecmd_output_set_version(struct tracecmd_output *handler, int file_versio
+ 	return 0;
+ }
+ 
++/**
++ * tracecmd_output_set_compression - Set file compression algorithm of the output handler
++ * @handle: output handler to a trace file.
++ * @compression: name of the desired compression algorithm. Can be one of:
++ *		 - "none" - do not use compression
++ *		 - "all" - use the best available compression algorithm
++ *		 - or specific name of the desired compression algorithm
++ *
++ * This API must be called before tracecmd_output_write_init().
++ *
++ * Returns 0 on success, or -1 in case of an error:
++ *   - the output file handler is not allocated or not in expected state.
++ *   - the specified compression algorithm is not available
++ */
++int tracecmd_output_set_compression(struct tracecmd_output *handler, const char *compression)
++{
++	if (!handler || handler->file_state != TRACECMD_FILE_ALLOCATED)
++		return -1;
++
++	handler->compress = NULL;
++	if (compression && strcmp(compression, "none")) {
++		if (!strcmp(compression, "any")) {
++			handler->compress = tracecmd_compress_alloc(NULL, NULL, handler->fd,
++								    handler->pevent,
++								    handler->msg_handle);
++			if (!handler->compress)
++				tracecmd_warning("No compression algorithms are supported");
++		} else {
++			handler->compress = tracecmd_compress_alloc(compression, NULL, handler->fd,
++								    handler->pevent,
++								    handler->msg_handle);
++			if (!handler->compress) {
++				tracecmd_warning("Compression algorithm %s is not supported",
++						  compression);
++				return -1;
++			}
 +		}
- 		if (tracecmd_output_write_headers(network_handle, listed_events))
- 			goto error;
- 		tracecmd_set_quiet(network_handle, quiet);
-@@ -4475,6 +4488,12 @@ static struct tracecmd_output *create_output(struct common_record_context *ctx)
- 		goto error;
- 	if (ctx->file_version && tracecmd_output_set_version(out, ctx->file_version))
- 		goto error;
-+	if (ctx->compression) {
-+		if (tracecmd_output_set_compression(out, ctx->compression))
-+			goto error;
-+	} else if (ctx->file_version >= 7) {
-+		tracecmd_output_set_compression(out, "any");
 +	}
- 	if (tracecmd_output_write_headers(out, listed_events))
- 		goto error;
- 	return out;
++	if (handler->compress && handler->file_version < 7)
++		handler->file_version = 7;
++
++	return 0;
++}
+ 
+ /**
+  * tracecmd_output_write_init - Write the initial magics in the trace file
 -- 
 2.31.1
 
