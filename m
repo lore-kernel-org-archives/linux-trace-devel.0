@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA331C432BE
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C9CBC4320A
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9240261053
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3272B61053
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234010AbhG2FKq (ORCPT
+        id S234012AbhG2FKr (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 29 Jul 2021 01:10:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41456 "EHLO
+        Thu, 29 Jul 2021 01:10:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
         with ESMTP id S233782AbhG2FKq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 29 Jul 2021 01:10:46 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C337C061765
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:43 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id da26so6430781edb.1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:43 -0700 (PDT)
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1423BC061757
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:44 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id h8so6415330ede.4
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=lYegybilv5zGZHqg9ZytbAQzubrYWhUWz1c5hZSVIVY=;
-        b=OgYDPEOpN18ZGgZNabV+eo4FyiNTaCxncVrXJZxtZe4QTBo9hGPfj0mml0nnSTgH21
-         gWhyFrggyqUKW6jd+yyF68iNOPf1EDt5HDk9bdgZNkSdQ+zYHwq2VHAo224DoK5Zzlei
-         Wza6CBDlRBp7trj7QPRk8VfKVvdnYgzlCRVBauy/qgH7SnGFqn7RyybYH7rGN32UJd8M
-         LYZhGxwGDY1hXVtRXMcbtNnYGnfSAVg8eA6/9SRv2/4U+tRce2XedTfY4N0CBTyjCTXI
-         iolBeoqZ1XSwob9JpNm2UeEhe3JuozvFySKtDHj0/H+Pct6F4J6KBfjSvz19xuYT//lj
-         l3qw==
+        bh=c3OjbWftgycABFbfOFENpRXx6bmt4MF8AsP7gDBMwBU=;
+        b=bqreP39q7pjSt1Ighothur/1O8nffMhQu6u/dlEe9aniUFOJIJ7tgiMATGV/AD7tU8
+         6RdQ6bTebalk0JoVQ0sRJbxa/8RQisy9Pw0qYZh5Jq9gCiUi80IZKogMVCNGF/8DAhCP
+         Va8bx59TjD1QykUyz1+y1MIeXUPmc9X56b8OTt1jzQW87cn50CXq6eH7vCRabVlIyyhZ
+         kFlpKSdfgnJ9jDP51rbZZNeM+byisaSB6Katamp7XEuQ+nHbb/OjXMIF2gFoRRslvIkF
+         IGbHJ0VOyYjEBTk0uW7TKjDhxRDWeX6mMOLnCGlXG+N6oRzlrMsxzQcKTHH0xJR6vyy8
+         9o/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lYegybilv5zGZHqg9ZytbAQzubrYWhUWz1c5hZSVIVY=;
-        b=B7s4XMNzBSE3dYQAzghwMULjCW5406fWGA/OIuqW9Gk2Ar3zCHtY0q3aF24jDNLoxt
-         9UqGPx180YVA3bYkKtQBtTJAYJiyfQdUXVmIxmwQ0+vGF7ySkY7Iud1v3cIYj/jh9Qn/
-         SU+ClbW0WiN9/iVM30ZREHWHOW9QhHzWtV/TMfNf4HG6v4BIg1xe85aDzbLrYuzh47Fv
-         kAVcH8d17RbJyTpwyF3chF7hrbNlhYzslqDcBWcj6SUnPGs6xsSHYSD2omNfyUuURYcK
-         jTKuz9nDeRGPMMk+mP13nUK/GsUulJlAi3YKBF8RDcj7HEbuEVR6yGDdX6jjsnN0ekom
-         aX/Q==
-X-Gm-Message-State: AOAM531gMX3lnpjgT8wQHhCIYZvwMilctaH/jauFtzFPCwikNSq0qN2F
-        32mitotdsZkNXJ6tcD5odh8=
-X-Google-Smtp-Source: ABdhPJwljkE8Z5hIVhK3xWMEWx4IDuwqGRifK3pBnWlkyVAR+X/4QqKf1YYynuWYkLvujM+YM5V3BQ==
-X-Received: by 2002:a50:f1c7:: with SMTP id y7mr3960555edl.386.1627535441807;
-        Wed, 28 Jul 2021 22:10:41 -0700 (PDT)
+        bh=c3OjbWftgycABFbfOFENpRXx6bmt4MF8AsP7gDBMwBU=;
+        b=ujxv0z3Radl6zj6pCmnE4K4x44FN1H4dD5ouTrbrieA3WlfrrehNd/Dwwq0zjlPboz
+         PoMEUVmALbR5qxq9RZehx5xqfXrSNLZfY1QGyc5B0TLSTMNaJBoFi2jVUk+r/7wvZJR0
+         WaPZTeN0CUDS8A1dM04Hu1vrxocZZq0aRrYFgvr95kqGyfe+vaQh3bW90Tv+Dak5GSzC
+         fvn/bZ+gTfR1auKtS1P2HmNQ89YMe+G0MlL0zfCaVYIjWm1EUJrlEG5X+krRW0sfXFTR
+         C7ubj5p2DpB3u3oT9DUs8Lm/yY9oxWsvwZomHPP1l6gstkhKTB97X6V+Mg8fAnF9zkSf
+         /xJw==
+X-Gm-Message-State: AOAM5301Vuf2urf7gsJulYhiw4OucBKRH6nCzkPt/+qyOw4bPtvGZPfU
+        jfJAGsBeLsAgIxzjOHIfH18=
+X-Google-Smtp-Source: ABdhPJxUgSDiWgpqqf0lj2vqwDbtJu47PXNTp/dYtdvGtNgqbaMQnNQ90Y6tpVpP8m9kTNrK6KWC+w==
+X-Received: by 2002:a05:6402:10d7:: with SMTP id p23mr3975818edu.74.1627535442752;
+        Wed, 28 Jul 2021 22:10:42 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id s20sm530615eji.116.2021.07.28.22.10.40
+        by smtp.gmail.com with ESMTPSA id s20sm530615eji.116.2021.07.28.22.10.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 22:10:41 -0700 (PDT)
+        Wed, 28 Jul 2021 22:10:42 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 41/87] trace-cmd library: Fix possible memory leak in read_ftrace_printk()
-Date:   Thu, 29 Jul 2021 08:09:13 +0300
-Message-Id: <20210729050959.12263-42-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 42/87] trace-cmd library: Fix possible memory leak in read_and_parse_cmdlines()
+Date:   Thu, 29 Jul 2021 08:09:14 +0300
+Message-Id: <20210729050959.12263-43-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210729050959.12263-1-tz.stoyanov@gmail.com>
 References: <20210729050959.12263-1-tz.stoyanov@gmail.com>
@@ -73,75 +73,55 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Some error paths in read_ftrace_printk() may lead to a memory leak.
+Some error paths in read_and_parse_cmdlines() may lead to a memory leak.
 Improved the error handling of this internal function to avoid it.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 33 +++++++++++++++++++--------------
- 1 file changed, 19 insertions(+), 14 deletions(-)
+ lib/trace-cmd/trace-input.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 99aa33ae..5557e772 100644
+index 5557e772..4324259a 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -887,7 +887,8 @@ out:
- static int read_ftrace_printk(struct tracecmd_input *handle)
+@@ -3122,7 +3122,8 @@ static int read_and_parse_cmdlines(struct tracecmd_input *handle)
  {
- 	unsigned int size;
--	char *buf;
-+	char *buf = NULL;
+ 	struct tep_handle *pevent = handle->pevent;
+ 	unsigned long long size;
+-	char *cmdlines;
++	char *cmdlines = NULL;
 +	int ret;
  
- 	if (CHECK_READ_STATE(handle, TRACECMD_FILE_PRINTK))
+ 	if (CHECK_READ_STATE(handle, TRACECMD_FILE_CMD_LINES))
  		return 0;
-@@ -896,29 +897,33 @@ static int read_ftrace_printk(struct tracecmd_input *handle)
- 		add_section(handle, TRACECMD_OPTION_PRINTK, 0, 0,
+@@ -3131,15 +3132,20 @@ static int read_and_parse_cmdlines(struct tracecmd_input *handle)
+ 		add_section(handle, TRACECMD_OPTION_CMDLINES, 0, 0,
  			    lseek64(handle->fd, 0, SEEK_CUR));
  
--
--	if (read4(handle, &size) < 0)
+-	if (read_data_and_size(handle, &cmdlines, &size) < 0)
 -		return -1;
--	if (!size)
--		return 0; /* OK? */
-+	ret = read4(handle, &size);
++	ret = read_data_and_size(handle, &cmdlines, &size);
 +	if (ret < 0)
 +		goto out;
 +	if (!size) {
-+		handle->file_state = TRACECMD_FILE_PRINTK;
-+		goto out; /* OK? */
++		handle->file_state = TRACECMD_FILE_CMD_LINES;
++		goto out;
 +	}
- 
- 	buf = malloc(size + 1);
--	if (!buf)
--		return -1;
--	if (do_read_check(handle, buf, size)) {
--		free(buf);
--		return -1;
-+	if (!buf) {
-+		ret = -1;
-+		goto out;
- 	}
-+	ret = do_read_check(handle, buf, size);
-+	if (ret < 0)
-+		goto out;
- 
- 	buf[size] = 0;
- 
- 	tep_parse_printk_formats(handle->pevent, buf);
- 
--	free(buf);
+ 	cmdlines[size] = 0;
+ 	tep_parse_saved_cmdlines(pevent, cmdlines);
+-	free(cmdlines);
 -
- 	handle->file_state = TRACECMD_FILE_PRINTK;
-+	ret = 0;
- 
+ 	handle->file_state = TRACECMD_FILE_CMD_LINES;
+-
 -	return 0;
++	ret = 0;
 +out:
-+	free(buf);
++	free(cmdlines);
 +	return ret;
  }
  
- static int read_and_parse_cmdlines(struct tracecmd_input *handle);
+ static void extract_trace_clock(struct tracecmd_input *handle, char *line)
 -- 
 2.31.1
 
