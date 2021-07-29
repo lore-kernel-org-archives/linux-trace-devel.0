@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 308F6C432BE
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:11:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06E58C4320A
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:11:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1AC5B60FED
+	by mail.kernel.org (Postfix) with ESMTP id E40D060041
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:11:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234099AbhG2FLK (ORCPT
+        id S234089AbhG2FLK (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Thu, 29 Jul 2021 01:11:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41586 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234089AbhG2FLJ (ORCPT
+        with ESMTP id S234108AbhG2FLK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 29 Jul 2021 01:11:09 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDB1C061765
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:11:06 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id j2so6364030edp.11
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:11:06 -0700 (PDT)
+        Thu, 29 Jul 2021 01:11:10 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7866BC061757
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:11:07 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id j2so6364089edp.11
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:11:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=D2407/DndqS7KvrDlWm40krvCPS/afqFfjBRnfcuyBw=;
-        b=rs0QNMjxdEAmjLiQtVTSAxJzh71XwZpw0+g4rtmvIQpojX6M2T57CGWqxzGnAb+zCD
-         PYbzTdREquMe/iUJ8htCjwIOni9BcCJUsLMaY2oJ7hkAfdCEb2AJESAG3Xh0D5CfYguQ
-         0Xq4o5BT//DxY17EwGkP0xHu21M+RzBBkaGrsADDp4BkscVhgae60gqbQmAplJBmzQyX
-         fecF6aLYvTygUn4WqvkX99qhtZiAOEgF9u4BkdOOqfjAgBznpP9YideA9UnzAtEmS+TP
-         L8Wwd5nC92KYy+2dUjuFq6qPO9lrp28Fkx8rZRCmsZTYduY0lHvEJDrr/cjyLKE6K36c
-         0x1A==
+        bh=zvljAPEL24RuPR31f9JTK/flseOCHo3TBjbEyZ3P9rc=;
+        b=VL4bHeoUFz+o5SYpHdBbWKBEVyHQLZ6blK7olGjXqjmyliD08eadkIjovik/dS8RYr
+         m0RxpKzV7XYbLVwvZBCZjf8xhxAFN//23gM0Ox6CUn2W7blhJO4yilYbStxoQgQAhXFY
+         VR/bjcO1vDzfkzGWOAs6QnUgftLjRI0OqqEeGSylFgmVMOF+KSA56sqzEX8ENWpbc3Zp
+         yCudqYgw3VQHRENp0zdvtk6kJu4T5pXe8Q8UqFy2OeJ/d4qZXAEXqJ004LMoS1WjjQrf
+         Pk2eOFE9PgSAxDVE0Z75HsSNzybO5IArHiq1YP/LnuFZ2BjBiCEsdKGG+Tpeq6i5q0Nz
+         AOnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=D2407/DndqS7KvrDlWm40krvCPS/afqFfjBRnfcuyBw=;
-        b=o8hAtVmXjagdDkLGVfUDf3Dai9BfOrOHo0tw1YEewTfTxvBlWhZ8lXcchTX/CUALW0
-         Od8CNyu4zFDKvfBklQhyilXaaf/9aB0wjM9MDL9BZ9zOb0u0MJi8LCwjBFYbwDk3tK5j
-         PrQLhKz40x6f3ydbq0gLqUzXwOtSwT3XOu0aPcMboeUU9QpxI6VVJhlpxd/BrWwsPBi9
-         kAXhcaQ8K/5JXeZcx/LHARxWHMR3X8aWa47TYM1dK2Yc/tRpbiSnGbrlgVA651zjdLti
-         Dfq+bAnjI3KOqImb94Rk2TMAApmnT5xKdNDvnjwd54ZIKxZlHaJcsel+anIg2AG1Zxiu
-         F+8A==
-X-Gm-Message-State: AOAM530R9X0KA63ppBto7FBe+zFbOwFavviu2bJpEfQpuc9t1y5R/152
-        gaedFgIGc70QHnTJBLpBqq3Nd6meN8mCsg==
-X-Google-Smtp-Source: ABdhPJwrDXkBiV9pukkM0dH5rNpqOAQXdD++PJxb+56W6b/9KVA++7bamkLVCL4thxbskXNyzwiIeA==
-X-Received: by 2002:a05:6402:702:: with SMTP id w2mr3904150edx.149.1627535465158;
-        Wed, 28 Jul 2021 22:11:05 -0700 (PDT)
+        bh=zvljAPEL24RuPR31f9JTK/flseOCHo3TBjbEyZ3P9rc=;
+        b=sw0cpQjfA9RVqIwkAz5v/gQzgDy3Bmk1fShXx8wUj3aMi+MKxbCnWxkJzOUmuvM4iN
+         7HlFJDUYvhUuGznjK1sCJPjdOLzQalVl0e8Y7tQVIa2yN3EgvEgd1Z3Izr49eJOm3xN0
+         H8SOWWOTkqsGTI6QmWcngDNc+rm+cxXA6iE4zQhbu/Elj24R0Kt3k3tqg08DpfDdeii/
+         bLCMPTeCh0bEeDwGAJINKl25OhvSrnhJD+B3p6kRJ8/Z1J329ThBEHq0u50tllilERPx
+         VaUdGtd2+8c9PC+iVEEZECo+uavFhaqpTc+spzrjqgGypI1KLpg3utVs7+dC0U/aKMSp
+         EQzg==
+X-Gm-Message-State: AOAM533ybmb3MYrlxG8DUux212VgJRCHIqMORpqJErZpFycd7GM7+DJg
+        r1b3r0rIPtIwhE1iNNGAtaA=
+X-Google-Smtp-Source: ABdhPJyToayfr3/oWMjQStkH00PPzPSMFubjlUOZ8hhUpav6B+KroZb3k6f3xhe0ZEWJ5YihAjKVsw==
+X-Received: by 2002:aa7:c603:: with SMTP id h3mr3854676edq.165.1627535466117;
+        Wed, 28 Jul 2021 22:11:06 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id s20sm530615eji.116.2021.07.28.22.11.04
+        by smtp.gmail.com with ESMTPSA id s20sm530615eji.116.2021.07.28.22.11.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 22:11:04 -0700 (PDT)
+        Wed, 28 Jul 2021 22:11:05 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 66/87] trace-cmd dump: Read extended BUFFER option
-Date:   Thu, 29 Jul 2021 08:09:38 +0300
-Message-Id: <20210729050959.12263-67-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 67/87] trace-cmd dump: Dump sections
+Date:   Thu, 29 Jul 2021 08:09:39 +0300
+Message-Id: <20210729050959.12263-68-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210729050959.12263-1-tz.stoyanov@gmail.com>
 References: <20210729050959.12263-1-tz.stoyanov@gmail.com>
@@ -73,107 +73,76 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In trace file version 7 the BUFFER option is extended to hold a trace
-metadata, related to the recorded instance. Also, a new BUFFER_LAT
-option is added for latency trace data. Implemended logic for reading
-and printing these extended options.
+In trace file version 7, headers are stored as sections. This allows
+their position in the file not to be fixed. Poters to these sections are
+stored as trace options. Add logic to handle these new options:
+ HEADER_INFO
+ FTRACE_EVENTS
+ EVENT_FORMATS
+ KALLSYM
+ PRINTK
+ CMDLINES
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-dump.c | 64 +++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 59 insertions(+), 5 deletions(-)
+ tracecmd/trace-dump.c | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
 diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
-index f801e0b6..63d8bb81 100644
+index 63d8bb81..571b6ac2 100644
 --- a/tracecmd/trace-dump.c
 +++ b/tracecmd/trace-dump.c
-@@ -446,19 +446,72 @@ static void dump_section_header(int fd, enum dump_items v, unsigned short *flags
- 		*flags = fl;
+@@ -668,6 +668,24 @@ void dump_option_tsc2nsec(int fd, int size)
+ 	do_print(OPTIONS, "%d %d %llu [multiplier, shift, offset]\n", mult, shift, offset);
  }
  
--static void dump_option_buffer(int fd, int size)
-+static void dump_option_buffer(int fd, unsigned short option, int size)
- {
-+	unsigned long long total_size = 0;
-+	unsigned long long data_size;
-+	unsigned long long current;
- 	unsigned long long offset;
-+	unsigned short flags;
-+	char clock[DUMP_SIZE];
-+	char name[DUMP_SIZE];
-+	int cpus = 0;
-+	int id;
-+	int i;
++static void dump_option_section(int fd, unsigned int size,
++				unsigned short id, char *desc, enum dump_items v)
++{
++	struct file_section *sec;
++
++	sec = calloc(1, sizeof(struct file_section));
++	if (!sec)
++		die("cannot allocate new section");
++	sec->next = sections;
++	sections = sec;
++	sec->id = id;
++	sec->verbosity = v;
++	if (read_file_number(fd, &sec->offset, 8))
++		die("cannot read the option %d offset", id);
++	do_print(OPTIONS, "\t\t[Option %s, %d bytes]\n", desc, size);
++	do_print(OPTIONS, "%lld\n", sec->offset);
++}
++
+ static int dump_options_read(int fd);
  
- 	if (size < 8)
- 		die("broken buffer option with size %d", size);
- 
- 	if (read_file_number(fd, &offset, 8))
- 		die("cannot read the offset of the buffer option");
-+	if (read_file_string(fd, name, DUMP_SIZE))
-+		die("cannot read the name of the buffer option");
-+	if (file_version < 7) {
-+		do_print(OPTIONS|FLYRECORD, "\t\t[Option BUFFER, %d bytes]\n", size);
-+		do_print(OPTIONS|FLYRECORD, "%lld [offset]\n", offset);
-+		do_print(OPTIONS|FLYRECORD, "\"%s\" [name]\n", name);
-+		return;
-+	}
-+
-+	current = lseek64(fd, 0, SEEK_CUR);
-+	if (lseek64(fd, offset, SEEK_SET) == (off_t)-1)
-+		die("cannot goto buffer offset %lld", offset);
-+
-+	dump_section_header(fd, FLYRECORD, &flags);
-+
-+	if (lseek64(fd, current, SEEK_SET) == (off_t)-1)
-+		die("cannot go back to buffer option");
-+
-+	do_print(OPTIONS|FLYRECORD, "\t\t[Option BUFFER, %d bytes]\n", size);
-+	do_print(OPTIONS|FLYRECORD, "%lld [offset]\n", offset);
-+	do_print(OPTIONS|FLYRECORD, "\"%s\" [name]\n", name);
-+
-+	if (read_file_string(fd, clock, DUMP_SIZE))
-+		die("cannot read clock of the buffer option");
-+	do_print(OPTIONS|FLYRECORD, "\"%s\" [clock]\n", clock);
-+	if (option == TRACECMD_OPTION_BUFFER) {
-+		if (read_file_number(fd, &cpus, 4))
-+			die("cannot read the cpu count of the buffer option");
-+
-+		do_print(OPTIONS|FLYRECORD, "%d [CPUs]:\n", cpus);
-+		for (i = 0; i < cpus; i++) {
-+			if (read_file_number(fd, &id, 4))
-+				die("cannot read the id of cpu %d from the buffer option", i);
-+			if (read_file_number(fd, &offset, 8))
-+				die("cannot read the offset of cpu %d from the buffer option", i);
-+			if (read_file_number(fd, &data_size, 8))
-+				die("cannot read the data size of cpu %d from the buffer option", i);
-+			total_size += data_size;
-+			do_print(OPTIONS|FLYRECORD, "   %d %lld\t%lld\t[id, data offset and size]\n",
-+				 id, offset, data_size);
-+		}
-+		do_print(SUMMARY, "\t\[buffer \"%s\", \"%s\" clock, "
-+			 "%d cpus, %lld bytes flyrecord data]\n",
-+			 name, clock, cpus, total_size);
-+	} else {
-+		do_print(SUMMARY, "\t\[buffer \"%s\", \"%s\" clock, latency data]\n", name, clock);
-+	}
- 
--	do_print(OPTIONS, "\t\t[Option BUFFER, %d bytes]\n", size);
--	do_print(OPTIONS, "%lld [offset]\n", offset);
--	read_dump_string(fd, size - 8, OPTIONS);
- }
- 
- static void dump_option_int(int fd, int size, char *desc)
-@@ -665,7 +718,8 @@ static int dump_options_read(int fd)
- 			dump_option_string(fd, size, "CPUSTAT");
+ static int dump_option_done(int fd, int size)
+@@ -756,6 +774,25 @@ static int dump_options_read(int fd)
+ 		case TRACECMD_OPTION_TSC2NSEC:
+ 			dump_option_tsc2nsec(fd, size);
  			break;
- 		case TRACECMD_OPTION_BUFFER:
--			dump_option_buffer(fd, size);
-+		case TRACECMD_OPTION_BUFFER_LAT:
-+			dump_option_buffer(fd, option, size);
- 			break;
- 		case TRACECMD_OPTION_TRACECLOCK:
- 			do_print(OPTIONS, "\t\t[Option TRACECLOCK, %d bytes]\n", size);
++		case TRACECMD_OPTION_HEADER_INFO:
++			dump_option_section(fd, size, option, "HEADERS", HEAD_PAGE | HEAD_EVENT);
++			break;
++		case TRACECMD_OPTION_FTRACE_EVENTS:
++			dump_option_section(fd, size, option, "FTRACE EVENTS", FTRACE_FORMAT);
++			break;
++		case TRACECMD_OPTION_EVENT_FORMATS:
++			dump_option_section(fd, size, option,
++					    "EVENT FORMATS", EVENT_SYSTEMS | EVENT_FORMAT);
++			break;
++		case TRACECMD_OPTION_KALLSYMS:
++			dump_option_section(fd, size, option, "KALLSYMS", KALLSYMS);
++			break;
++		case TRACECMD_OPTION_PRINTK:
++			dump_option_section(fd, size, option, "PRINTK", TRACE_PRINTK);
++			break;
++		case TRACECMD_OPTION_CMDLINES:
++			dump_option_section(fd, size, option, "CMDLINES", CMDLINES);
++			break;
+ 		case TRACECMD_OPTION_DONE:
+ 			uncompress_reset();
+ 			count += dump_option_done(fd, size);
 -- 
 2.31.1
 
