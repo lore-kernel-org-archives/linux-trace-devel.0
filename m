@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC2A9C4338F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2CD1C4320E
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9336261019
+	by mail.kernel.org (Postfix) with ESMTP id D012861052
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234024AbhG2FKv (ORCPT
+        id S234016AbhG2FKv (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Thu, 29 Jul 2021 01:10:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41482 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234016AbhG2FKv (ORCPT
+        with ESMTP id S234023AbhG2FKv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 29 Jul 2021 01:10:51 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E01C061757
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:47 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id p21so6365748edi.9
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:47 -0700 (PDT)
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D37C061765
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:48 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id n2so6357423eda.10
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gGjxlL/QYZSQ9mqXy+WWO0qfdySoTW4BFaiNTXbOwKM=;
-        b=gXvnSgJbm5E8zBV57fbLo85cExu+ZZkLRVhikmMIY6h22wTm48oJIkDtYhgw6jlLB/
-         EukvU0pwyTn01Wae02mrtCsz4wskmTrqv6pBHk3iA+5CI0MXuCNOWkcfEYq/WqPPr3MP
-         JiTgZR1mg/yef4vP5U3pWS9adE/aRSjC2m3X54rjf2XIJ3FFwlPJRDeavIIDcESiOaSt
-         I3AqeAhXyL0HouxIoBLga8DkqsO5nmysGR4h9b/3rBH+Murp/Cf1fhj0NJTkBZi1OUi4
-         M6/rETKbC2CJtYtS7ndUaHMdeOnTvzcdzL6ZSepMgF+EJ6zcFfs1u3jHtXiuRYpFvnci
-         5/DQ==
+        bh=CPlQbi1EQ/fkB8hu9TuApFd/+kavhl61vaYmxME6n1Q=;
+        b=AWjlneMDy4aQ3wrAw9VmqVikkys+KpelFh8I4YQyQO3xDvtZs90hDrPqZvSZvxPWlQ
+         ivH3RoYv7h1eBjrXSQUtad0Yx32SIdL39v7B+38mfkOoKfpJF+a7cCWxq9KJs91JA+U6
+         k7pi+Nevj9IvD61+N6Mp0hsqzJ76p5BaO4i5F4zJlvGM2bO72sbraBbsIQ21AJACt4Hf
+         WdHu1FU6lCM6nU6eCqgU0I9ozyGiXaVDXgx02WwejyQ+27QJUcYJds7nF8KXCicEJLh7
+         CdRpCjA0FcN+HuRh+JQsik+BiKDDi8FwrY+quZev7ZUps7t2cEAzuWcyBVmisxvmLayn
+         leUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gGjxlL/QYZSQ9mqXy+WWO0qfdySoTW4BFaiNTXbOwKM=;
-        b=rXnwg6sG3pBWeoeAZsansWZYRptNlvHYO1S7RsjfiB0Yfny7a4qbCe55Dfz3Q3DsW/
-         Ox3y84cmBz2apobHThhOdDzlQYNV1dCQwf8jVfXA/cUUY+DA48i8tijbqaHfSfgE9gDn
-         0l3B3D1EhYNi1OjN47qPlBgBx3p6RVZJU3GNbtG2e8H5spuuKE96qWs+GPcZms71lIC+
-         MJfdGmBqXD2m6oq/WfFlPoaL3gnpQWV65BcBQ3X/jRLRoCVuyW9EUilW3sjfbRwnteXK
-         9kXIoBRuMmVzTUXMWtzbUso7lbknYpYZ3tUKPfncmhQBF16AXCp8Qjq8dbVTA8QHQzFn
-         Y6rg==
-X-Gm-Message-State: AOAM5314mdgEDuZitIp04/aL82ohVS/8xVjDS/n2CfiQM+ic3fcigZwy
-        27CrE8KVge06VHDvz6saBHw=
-X-Google-Smtp-Source: ABdhPJxoGKTVxSAqm6/hUYXflWZZclSsCal22g3k5x/UT82Rog1a++QO04T17EwNjWR1a1bQf/KohA==
-X-Received: by 2002:a05:6402:1601:: with SMTP id f1mr3889210edv.388.1627535446489;
-        Wed, 28 Jul 2021 22:10:46 -0700 (PDT)
+        bh=CPlQbi1EQ/fkB8hu9TuApFd/+kavhl61vaYmxME6n1Q=;
+        b=cF4FYI9axKv5l9nDYti/mU9QdJgUhiCB3IJVezRqQOAb84YhcRt01HbcJpyl24UpCg
+         gU+gS9ct0bsdeoqzt9oSRDtSjw6xym3M5tV76o0kNfDvlwupGAEAU9YwHVS8vcOIqpi8
+         SoT6YiHkJoqYfgLTJLGn10WNaSAu1bKME4qFPuSth5ZIACs+K7SQDUzWV+686sOG6rA5
+         enGvR7sP4sMx4owbdNvOANH3WmyDdKZj2RdC/w3J2KbYDPZ+wk5dUmKeyF1oSnQIfUzy
+         GVBjAM7j+GjZGvwS5PdUp3sqCyh94Oace2g6f0dLpeJXBb62rWkmkxIDLhObvjq/dcWN
+         i9aw==
+X-Gm-Message-State: AOAM530jBu5k5P2lzNcM8e4x+qDldX2exPHRC1lPhNMY4e2XGbT7nNjx
+        /GSQW8psTqKjcRZUuf2WCN4=
+X-Google-Smtp-Source: ABdhPJxfiHIL2AeHM4OcuogSJn4cZcB9DNbLFEVnI1Q5AxupSHaYofqdfIQCFYZEAKjbmjEfGR1j/w==
+X-Received: by 2002:a05:6402:7da:: with SMTP id u26mr2410812edy.270.1627535447400;
+        Wed, 28 Jul 2021 22:10:47 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id s20sm530615eji.116.2021.07.28.22.10.45
+        by smtp.gmail.com with ESMTPSA id s20sm530615eji.116.2021.07.28.22.10.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 22:10:45 -0700 (PDT)
+        Wed, 28 Jul 2021 22:10:47 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 46/87] tarce-cmd library: Do not use local variables when reading CPU stat option
-Date:   Thu, 29 Jul 2021 08:09:18 +0300
-Message-Id: <20210729050959.12263-47-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 47/87] trace-cmd library: Read handle header and compression of the option section
+Date:   Thu, 29 Jul 2021 08:09:19 +0300
+Message-Id: <20210729050959.12263-48-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210729050959.12263-1-tz.stoyanov@gmail.com>
 References: <20210729050959.12263-1-tz.stoyanov@gmail.com>
@@ -73,59 +73,111 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Trace file version 7 can have more than one options section. Assuming
-that all CPUSTAT options are in a single options section could be wrong,
-that's why using local variable to track the CPUSTAT size is not
-correct. Use input handler context instead.
+In trace file version 7, options section has a section header and
+possible compression of the data. Extend the options handling logic with
+this new format.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ lib/trace-cmd/trace-input.c | 50 ++++++++++++++++++++++++++-----------
+ 1 file changed, 35 insertions(+), 15 deletions(-)
 
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index f447c8d7..d8c8b9b0 100644
+index d8c8b9b0..e7f97561 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -150,6 +150,7 @@ struct tracecmd_input {
- 
- 	struct host_trace_info	host;
- 	double			ts2secs;
-+	unsigned int		cpustats_size;
- 	char *			cpustats;
- 	char *			uname;
- 	char *			version;
-@@ -2909,7 +2910,6 @@ static int handle_options(struct tracecmd_input *handle)
+@@ -2909,30 +2909,47 @@ static int handle_options(struct tracecmd_input *handle)
+ 	long long offset;
  	unsigned short option;
  	unsigned int size;
++	unsigned short id, flags;
  	char *cpustats = NULL;
--	unsigned int cpustats_size = 0;
  	struct input_buffer_instance *buffer;
  	struct hook_list *hook;
++	bool comperss = false;
  	char *buf;
-@@ -2987,12 +2987,16 @@ static int handle_options(struct tracecmd_input *handle)
+ 	int cpus;
+ 	int ret;
+ 
+-	handle->options_start = lseek64(handle->fd, 0, SEEK_CUR);
+-
+-	for (;;) {
+-		if (read2(handle, &option))
++	if (handle->file_version < 7) {
++		handle->options_start = lseek64(handle->fd, 0, SEEK_CUR);
++	} else {
++		if (read_section_header(handle, &id, &flags, NULL, NULL))
+ 			return -1;
++		if (id != TRACECMD_OPTION_DONE)
++			return -1;
++		if (flags & TRACECMD_SEC_FL_COMPRESS)
++			comperss = true;
++	}
+ 
+-		if (option == TRACECMD_OPTION_DONE)
++	if (comperss && in_uncompress_block(handle))
++		return -1;
++	for (;;) {
++		ret = read2(handle, &option);
++		if (ret)
++			goto out;
++		if (handle->file_version < 7 && option == TRACECMD_OPTION_DONE)
+ 			break;
+ 
+ 		/* next 4 bytes is the size of the option */
+-		if (read4(handle, &size))
+-			return -1;
++		ret = read4(handle, &size);
++		if (ret)
++			goto out;
+ 		buf = malloc(size);
+-		if (!buf)
+-			return -ENOMEM;
+-		if (do_read_check(handle, buf, size))
+-			return -1;
++		if (!buf) {
++			ret = -ENOMEM;
++			goto out;
++		}
++		ret = do_read_check(handle, buf, size);
++		if (ret)
++			goto out;
+ 
+ 		switch (option) {
+ 		case TRACECMD_OPTION_DATE:
+@@ -2982,7 +2999,7 @@ static int handle_options(struct tracecmd_input *handle)
+ 							     buf + 8, 4);
+ 			ret = tsync_cpu_offsets_load(handle, buf + 12, size - 12);
+ 			if (ret < 0)
+-				return ret;
++				goto out;
+ 			tracecmd_enable_tsync(handle, true);
  			break;
  		case TRACECMD_OPTION_CPUSTAT:
- 			buf[size-1] = '\n';
--			cpustats = realloc(cpustats, cpustats_size + size + 1);
--			if (!cpustats)
--				return -ENOMEM;
--			memcpy(cpustats + cpustats_size, buf, size);
--			cpustats_size += size;
--			cpustats[cpustats_size] = 0;
-+			cpustats = realloc(handle->cpustats,
-+					   handle->cpustats_size + size + 1);
-+			if (!cpustats) {
-+				ret = -ENOMEM;
-+				return ret;
-+			}
-+			memcpy(cpustats + handle->cpustats_size, buf, size);
-+			handle->cpustats_size += size;
-+			cpustats[handle->cpustats_size] = 0;
-+			handle->cpustats = cpustats;
- 			break;
- 		case TRACECMD_OPTION_BUFFER:
- 			/* A buffer instance is saved at the end of the file */
+@@ -2991,7 +3008,7 @@ static int handle_options(struct tracecmd_input *handle)
+ 					   handle->cpustats_size + size + 1);
+ 			if (!cpustats) {
+ 				ret = -ENOMEM;
+-				return ret;
++				goto out;
+ 			}
+ 			memcpy(cpustats + handle->cpustats_size, buf, size);
+ 			handle->cpustats_size += size;
+@@ -3078,9 +3095,12 @@ static int handle_options(struct tracecmd_input *handle)
+ 
+ 	}
+ 
+-	handle->cpustats = cpustats;
++	ret = 0;
+ 
+-	return 0;
++out:
++	if (comperss)
++		in_uncompress_reset(handle);
++	return ret;
+ }
+ 
+ static int read_options_type(struct tracecmd_input *handle)
 -- 
 2.31.1
 
