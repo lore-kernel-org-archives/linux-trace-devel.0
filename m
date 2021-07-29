@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E93A4C432BE
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 011D0C4338F
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C9CC461053
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DBFFE61019
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233925AbhG2FKY (ORCPT
+        id S233927AbhG2FKZ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 29 Jul 2021 01:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
+        Thu, 29 Jul 2021 01:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233700AbhG2FKY (ORCPT
+        with ESMTP id S233700AbhG2FKZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 29 Jul 2021 01:10:24 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61A5C061765
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:20 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id go31so8445153ejc.6
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:20 -0700 (PDT)
+        Thu, 29 Jul 2021 01:10:25 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E995C061757
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:21 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id b7so6429577edu.3
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IS4eVyl17/7riV3Ye/VRLCqzkuyENMYHuiXjcl4aEw0=;
-        b=CnGCi/r3btTDa5/DyMXHHepWZMAC4KVPLmJPwTpukzTlA5s1UVsfk/oX5D6FaRxVWk
-         gtMkZ4+NQ61fYck08lO8M0n3vO99oDcm5gEIsQJLlRVGQlPkWJ7sUhTR27XjFvTBPXW0
-         VyLOdv3odu/rY9bbQhBBkwc/F+ZPcuWnK01ARMF/N875o64aVEayxOanUwfDw3UprCE5
-         NE1SUFyeINTawaX0XesUN7Td5Y4BxjZ3B4jpJIiztXVN02X/6C3bDD/cIgRCUCZ2+9bn
-         4zumSyNSvUgkGaQnOzMMrtOrFp7Smv605w8RNJdD5pmZS3Lpq/cgdNw0syu+TCZ0o1k5
-         z+Nw==
+        bh=oBYEZ1+W0TvAvSuSkDN98dM8L6x2JWzfmxB8PYHD8YI=;
+        b=TLtRye/98JYUIeLwmRy9xx2fl9oYT6O3LGRojJS7AgmJU2/z2ZZ4ckFJ0yECRMFRgg
+         68pMIjFiJGGWFDZqNBk8DYYtrX5r6eHIAtodgeL6Kq4HM9sVfdRdaKfaIRcfKfYOFfgH
+         xJ654rbm7tPB9r6fFO95rQOiF0CH2flbuUZsXoNr4vv6WuT/Rj0pCbXlzURuG5/+FUZX
+         a1ziIY8bSSdbfLx9Zk6YPFxoiv2wuCSPeuZQTMIV9uJjIR7pwFkT3y50SWXY7YCl+ony
+         QF4X4gJQ+IBufl/e4JChGA+pUpWy85but3MjAcW0nLJ61BTHWUsZ0z6sYtjoz5HsGRdD
+         SwVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IS4eVyl17/7riV3Ye/VRLCqzkuyENMYHuiXjcl4aEw0=;
-        b=G1+xv2KBufaZNwcqiHi+eAtLYyyo9xYdywk+j2swNGiulyYU/48JqsY0aqqvouJQCW
-         qxNojUl62tTVPYeklLTsGxkgA0jmlubEAyNjTg13xou5by9vE9Vdw+s4iSp6hgq0s60R
-         idljxHwGGZyUwuVSK9bWfCLkriGL0efVXwGJVTNqPMH03kJdHjVplS8dajVor51rmS3s
-         VjWV1km3kiHuLHi7bbS2ydDcgJrp/4A2/yS5ctGHNRAyxa62h9xu5Yq1fiCGMCnfd9Zm
-         hYIpbDBTRWMQSi95ul3h0iQjGjf7QMViC0JAx6T2Ughdc+18wSNHWgLVFJi3kl7Qbyhg
-         BI8A==
-X-Gm-Message-State: AOAM53382xFsR6fwN/7PHghHxk4UdG3CeCV61Ai+iaJ9WStw6G73a5cL
-        bVhmSB6V6jpzN2WIyV/UjzY=
-X-Google-Smtp-Source: ABdhPJyoZim5QM4uQfqVzBQlDodsIjj4gbF6M8YJWBNdc046Ldi2iiacBKjt+ibEDu907X4wi6IA5w==
-X-Received: by 2002:a17:906:c252:: with SMTP id bl18mr2880458ejb.519.1627535419341;
-        Wed, 28 Jul 2021 22:10:19 -0700 (PDT)
+        bh=oBYEZ1+W0TvAvSuSkDN98dM8L6x2JWzfmxB8PYHD8YI=;
+        b=MfH+HYnr7dAZgvggSYbdkkzTvN6N+fYw3u/MJijEhnmIKxa0ytHyIjLT8XazM2EK38
+         E1s43q7mmKiei+GcJbc64kFgdV5rzynhYvIg/t41sNxYT0X8Uo99P1fCTIGlR5mbBXra
+         QeapSKcDVJXOpVLj8uDUcVvHuP8Kbq0DJzW67Oyx/kUwfwyNJhxemhgos/at3ZSQps9O
+         AAvrjMdv5jJJg4TANLPLpbGUEUtaai00QuSSFr+0F3fw3jlC0suKEQy5KTIfWaCXADhE
+         quuF+vSSxX6bZ3HQgO+Uj66EaXJ0rxU1rSg8c7viC92zxSi3QyvMaxSj9zmcy31UHe6v
+         0zjw==
+X-Gm-Message-State: AOAM531COaE/DGDpJ6r0MVemXa/p1/DwUCZ9g6eVmFudSFRWE3MYdfPD
+        +QyknNx4cN/cI7zcHrBYJFIyfb7cnllWUw==
+X-Google-Smtp-Source: ABdhPJyiKJOhejQc56thZneZaOdYw+/99utU4o1FAJzBhydvbGZMoeZi7LvNIvBbsrRdtNg34TbaBA==
+X-Received: by 2002:a05:6402:2714:: with SMTP id y20mr3952907edd.190.1627535420256;
+        Wed, 28 Jul 2021 22:10:20 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id s20sm530615eji.116.2021.07.28.22.10.18
+        by smtp.gmail.com with ESMTPSA id s20sm530615eji.116.2021.07.28.22.10.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 22:10:18 -0700 (PDT)
+        Wed, 28 Jul 2021 22:10:19 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 18/87] trace-cmd record: Add compression to the trace context
-Date:   Thu, 29 Jul 2021 08:08:50 +0300
-Message-Id: <20210729050959.12263-19-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 19/87] trace-cmd library: Write compression header in the trace file
+Date:   Thu, 29 Jul 2021 08:08:51 +0300
+Message-Id: <20210729050959.12263-20-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210729050959.12263-1-tz.stoyanov@gmail.com>
 References: <20210729050959.12263-1-tz.stoyanov@gmail.com>
@@ -73,67 +73,61 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-As the trace-cmd libray supports trace file compression, trace-cmd
-record command should have a way to configure this functionality. Trace
-context is extended to hold the compression algorithm, used to
-compress the file.
+If there is a compression configured on the output file handler and if
+the file version is at least 7, write compression header in the file.
+The compression header is two null terminated strings - name and version
+of the compression algorithm, used to compress some parts of the file.
+The header is located after the page size in the file. The new header is
+mandatory for trace files version 7. If no compression is used, the
+string "none" is saved as name of the compression algorithm and empty
+string as compression algorithm version.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-record.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ lib/trace-cmd/trace-output.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 8080d612..295fe633 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -199,6 +199,7 @@ struct common_record_context {
- 	char *date2ts;
- 	char *user;
- 	const char *clock;
-+	const char *compression;
- 	struct tsc_nsec tsc2nsec;
- 	int data_flags;
- 	int tsync_loop_interval;
-@@ -3702,6 +3703,12 @@ static struct tracecmd_output *create_net_output(struct common_record_context *c
- 		goto error;
- 	if (tracecmd_output_set_msg(out, msg_handle))
- 		goto error;
-+	if (ctx->compression) {
-+		if (tracecmd_output_set_compression(out, ctx->compression))
-+			goto error;
-+	} else if (ctx->file_version >= 7) {
-+		tracecmd_output_set_compression(out, "any");
-+	}
- 	if (tracecmd_output_write_headers(out, listed_events))
- 		goto error;
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index 23a10edc..d348d6a5 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -941,6 +941,24 @@ out_free:
+ 	return ret;
+ }
  
-@@ -3745,6 +3752,12 @@ setup_connection(struct buffer_instance *instance, struct common_record_context
- 			goto error;
- 		if (tracecmd_output_set_version(network_handle, ctx->file_version))
- 			goto error;
-+		if (ctx->compression) {
-+			if (tracecmd_output_set_compression(network_handle, ctx->compression))
-+				goto error;
-+		} else if (ctx->file_version >= 7) {
-+			tracecmd_output_set_compression(network_handle, "any");
-+		}
- 		if (tracecmd_output_write_headers(network_handle, listed_events))
- 			goto error;
- 		tracecmd_set_quiet(network_handle, quiet);
-@@ -4475,6 +4488,12 @@ static struct tracecmd_output *create_output(struct common_record_context *ctx)
- 		goto error;
- 	if (ctx->file_version && tracecmd_output_set_version(out, ctx->file_version))
- 		goto error;
-+	if (ctx->compression) {
-+		if (tracecmd_output_set_compression(out, ctx->compression))
-+			goto error;
-+	} else if (ctx->file_version >= 7) {
-+		tracecmd_output_set_compression(out, "any");
++static int write_compression_header(struct tracecmd_output *handle)
++{
++	const char *name = NULL;
++	const char *ver = NULL;
++	int ret;
++
++	ret = tracecmd_compress_proto_get_name(handle->compress, &name, &ver);
++	if (ret < 0 || !name || !ver) {
++		name = "none";
++		ver = "";
 +	}
- 	if (tracecmd_output_write_headers(out, listed_events))
- 		goto error;
- 	return out;
++	if (do_write_check(handle, name, strlen(name) + 1))
++		return -1;
++	if (do_write_check(handle, ver, strlen(ver) + 1))
++		return -1;
++	return 0;
++}
++
+ /**
+  * tracecmd_output_allocate - allocate new output handler to a trace file
+  * @handle: file descriptor to an empty file, it can be -1 if the handler
+@@ -1225,6 +1243,11 @@ int tracecmd_output_write_init(struct tracecmd_output *handler)
+ 	endian4 = convert_endian_4(handler, handler->page_size);
+ 	if (do_write_check(handler, &endian4, 4))
+ 		return -1;
++	if (handler->file_version >= 7) {
++		if (write_compression_header(handler))
++			return -1;
++	}
++
+ 	handler->file_state = TRACECMD_FILE_INIT;
+ 	return 0;
+ }
 -- 
 2.31.1
 
