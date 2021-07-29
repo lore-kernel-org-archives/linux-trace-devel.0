@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60DF6C4320A
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB628C432BE
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4B4E761054
+	by mail.kernel.org (Postfix) with ESMTP id C78B561053
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233782AbhG2FKt (ORCPT
+        id S234020AbhG2FKt (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Thu, 29 Jul 2021 01:10:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41472 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234016AbhG2FKs (ORCPT
+        with ESMTP id S234016AbhG2FKt (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 29 Jul 2021 01:10:48 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C84FAC061765
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:45 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id n2so6357309eda.10
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:45 -0700 (PDT)
+        Thu, 29 Jul 2021 01:10:49 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D9EC061757
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:46 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id ec13so5881936edb.0
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=W9+QRCCf8HDtczTrLkNWVkYGcyxFDhPU60GJbVA7mRA=;
-        b=XkgRW1QTPuF0bnzLZ2vkwMYZzxGg755PFmuS40QI396mYQ+Qo4Tn31PfStvXMGhIj6
-         vYcqsAn3OqiWtUemiNZewyDHF46mYYnmQwBcKnyeuggtGTk1OkO3+8IoU8wp1MjY7C4a
-         No1cmoh982zrZpo6es2pgEM5ZaiGmxjjqtxI/iaa+3txrCXNAHVxls3yDh5rmcmvIJG2
-         nqwYprqSjTzHWRh6G/vx/TtyqYwuQy9IveoF5bKEma7KMZKJt2hu2vIxhLJkXlCpzpm3
-         Y7XToSXuoIRjbjUPv9G74ysQnXvTMdSV6WSuws1LWKnZ3l05orslR/8jiUq+ONp5281O
-         FoeQ==
+        bh=lUO7znpaLChFa2JfkPEHuA13AggMSi78OC3cEBdVLzY=;
+        b=QM1IXU3e46hL0Hw4L4Ay8qouKSJ9rR2y5VbGy1ub96BoGHRfC6qlzNFOK/Z6iC3RJz
+         vp7V46DQKlFhgBC8qbbDBu6ZBAtC094zRKyaguTdVNy/Ji/3Q/t47K26nXA3c5DrZTas
+         uFMsBnYiTE9lhdkos3SCWWb18qTzimOJC2qWcb2Id3QbqUsecrYUDn1shSevSg5Icr6N
+         D0qC3M5B1Uh/83jHofa36h5ebqX4dypX2NKak/oLbFEuc8VTNg0Ma+tfp1wv8Yqwr4ub
+         61HAou6Pcwq3mku+iH+NXvyeQG1vdEM4a+j7t1flvtCEJQc0U2chhW0jGu+Se8lC3pUV
+         xmoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=W9+QRCCf8HDtczTrLkNWVkYGcyxFDhPU60GJbVA7mRA=;
-        b=YdslvQ8Ye5inzOPgxkKuTToxr1mWdMYF/eh3Z+n+z5s8pvcb25SeJ+m31ydc0a8mCv
-         YaKtqZPQKWsghp2XCXuncYX9pWXri2VUkyL4/u3Hp/xlwwItH1voOCsdHXEqmrQvssl4
-         kbpNjohwweZGpcIiKIN+LZlxJgWI3iY2a3/RwigXeC87YCYkIBuL8K9MTGBy0KyBozhP
-         LY3xciEJP3BN3rGi1YSqRu0QphVJfSK3jbmv82Wr/r7SwOgODKqp1Tn1lehtMJxhfNVR
-         mPbRvkEiZXQcaGR76iD0u3WSKqgqXZpFrbBB6ym/qRKXzWR6JYE9OR7x3J/loKgGONd9
-         XO4A==
-X-Gm-Message-State: AOAM530EvE57FwPv9Th4OV0nBBg/Zqrzr46yqkpaCG2h1b9cQ0gtRWt0
-        BfruoD1wdwK4fkv+QlMhW2Eff0alqkGiOA==
-X-Google-Smtp-Source: ABdhPJyY5rIpnSzAaDG5oRs4gTsMqwzEkhSFN7XOmrVw9mMXGgllShrTVI0GLr/BqF9Sej9dSglicA==
-X-Received: by 2002:a50:fe10:: with SMTP id f16mr3860531edt.85.1627535444497;
-        Wed, 28 Jul 2021 22:10:44 -0700 (PDT)
+        bh=lUO7znpaLChFa2JfkPEHuA13AggMSi78OC3cEBdVLzY=;
+        b=VxHvOeg+2WmgzH5fdE0RM/6rZFgdHF78X7lyuEEeDjSa6QhhwtdVN1Qk2SEEK7o1Od
+         TV8hSgo+fLdg/eR8sKFX8tW6DpAO3tZrfxFLpOeUho58CO8mfUUqZ4BJYEwjfsU9FMIq
+         kvIjDdL5ga+vSzsed1Dmmuc1IlxozIzXZr3ayVPnR1RajwbD1brsvoPfJx0ljKQEjRne
+         fTX05Q/nvHwt3ehLXUiETDfsqWhNhvEAlrTSWA6nyl1f1XDucTLjTm1kSZqlpdtB9jTZ
+         O2ns+krfuCVcSgIs4VVmJCcvEcU3GKuDyt9vhOhMddz12x6sOXA05JasHG/EVAN90W3N
+         Cw+g==
+X-Gm-Message-State: AOAM532oVDEGxB4cODuLjgFQebx7AWLGfubtH4yGZK9T2TYzHVmotpR2
+        gO9W+uZdQK7QDufGWoEQuWQ=
+X-Google-Smtp-Source: ABdhPJw5b3rgPciDLXnHpEMiz+Zy2KBFe4FuhXJ2NfFpyqAYhi6D+xqYa1y1X2fAD8Cip1fyJKihPw==
+X-Received: by 2002:aa7:de92:: with SMTP id j18mr3898293edv.141.1627535445386;
+        Wed, 28 Jul 2021 22:10:45 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id s20sm530615eji.116.2021.07.28.22.10.43
+        by smtp.gmail.com with ESMTPSA id s20sm530615eji.116.2021.07.28.22.10.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 28 Jul 2021 22:10:44 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 44/87] trace-cmd library: Set input handler default values in allocation function
-Date:   Thu, 29 Jul 2021 08:09:16 +0300
-Message-Id: <20210729050959.12263-45-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 45/87] trace-cmd library: Read headers from trace file version 7
+Date:   Thu, 29 Jul 2021 08:09:17 +0300
+Message-Id: <20210729050959.12263-46-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210729050959.12263-1-tz.stoyanov@gmail.com>
 References: <20210729050959.12263-1-tz.stoyanov@gmail.com>
@@ -73,39 +73,190 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Set usecs flag by default when the input handler is allocated, it makes
-more sense than setting it when options are handeled. This clean up is
-needed for parsing version 7 trace files, where multiple options
-sections may exist.
+Trace file version 7 has more flexible structure than version 6, headers
+are not located at fixed position in the file. A new logic is
+implemented to read and parse the headers from this new format.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ lib/trace-cmd/trace-input.c | 150 ++++++++++++++++++++++++++++++++----
+ 1 file changed, 136 insertions(+), 14 deletions(-)
 
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 41f95874..23eea0d1 100644
+index 23eea0d1..f447c8d7 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -2794,8 +2794,6 @@ static int handle_options(struct tracecmd_input *handle)
- 	int cpus;
+@@ -164,7 +164,8 @@ struct tracecmd_input {
+ 	struct pid_addr_maps	*pid_maps;
+ 	/* file information */
+ 	struct file_section	*sections;
+-	size_t			options_start;
++	bool			options_init;
++	unsigned long long	options_start;
+ 	size_t			total_file_size;
+ 
+ 	/* For custom profilers. */
+@@ -960,19 +961,7 @@ static int read_cpus(struct tracecmd_input *handle)
+ 	return 0;
+ }
+ 
+-/**
+- * tracecmd_read_headers - read the header information from trace.dat
+- * @handle: input handle for the trace.dat file
+- * @state: The state to read up to or zero to read up to options.
+- *
+- * This reads the trace.dat file for various information. Like the
+- * format of the ring buffer, event formats, ftrace formats, kallsyms
+- * and printk. This may be called multiple times with different @state
+- * values, to read partial data at a time. It will always continue
+- * where it left off.
+- */
+-int tracecmd_read_headers(struct tracecmd_input *handle,
+-			  enum tracecmd_file_states state)
++static int read_headers_v6(struct tracecmd_input *handle, enum tracecmd_file_states state)
+ {
  	int ret;
  
--	/* By default, use usecs, unless told otherwise */
--	handle->flags |= TRACECMD_FL_IN_USECS;
- 	handle->options_start = lseek64(handle->fd, 0, SEEK_CUR);
+@@ -1038,6 +1027,139 @@ int tracecmd_read_headers(struct tracecmd_input *handle,
+ 	return 0;
+ }
  
- 	for (;;) {
-@@ -3448,6 +3446,9 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
- 	handle->fd = fd;
- 	handle->ref = 1;
- 
-+	/* By default, use usecs, unless told otherwise */
-+	handle->flags |= TRACECMD_FL_IN_USECS;
++static int handle_options(struct tracecmd_input *handle);
 +
- 	if (do_read_check(handle, buf, 3))
- 		goto failed_read;
- 
++static int read_section_header(struct tracecmd_input *handle, unsigned short *id,
++			       unsigned short *flags, unsigned int *size, char **description)
++{
++	unsigned short fl;
++	char *desc = NULL;
++	unsigned short sec_id;
++	unsigned int sz;
++
++	if (read2(handle, &sec_id))
++		return -1;
++	desc = read_string(handle);
++	if (!desc)
++		return -1;
++	if (read2(handle, &fl))
++		goto error;
++	if (read4(handle, &sz))
++		goto error;
++
++	if (id)
++		*id = sec_id;
++	if (flags)
++		*flags = fl;
++	if (size)
++		*size = sz;
++	if (description)
++		*description = desc;
++	else
++		free(desc);
++	return 0;
++
++error:
++	free(desc);
++	return -1;
++}
++
++static int handle_section(struct tracecmd_input *handle, struct file_section *section)
++{
++	unsigned short id, flags;
++	unsigned int size;
++	int ret;
++
++	if (lseek64(handle->fd, section->section_offset, SEEK_SET) == (off_t)-1)
++		return -1;
++	if (read_section_header(handle, &id, &flags, &size, NULL))
++		return -1;
++	section->flags = flags;
++	if (id != section->id)
++		return -1;
++
++	section->data_offset = lseek64(handle->fd, 0, SEEK_CUR);
++	if ((section->flags & TRACECMD_SEC_FL_COMPRESS) && in_uncompress_block(handle))
++		return -1;
++
++	switch (section->id) {
++	case TRACECMD_OPTION_HEADER_INFO:
++		ret = read_header_files(handle);
++		break;
++	case TRACECMD_OPTION_FTRACE_EVENTS:
++		ret = read_ftrace_files(handle, NULL);
++		break;
++	case TRACECMD_OPTION_EVENT_FORMATS:
++		ret = read_event_files(handle, NULL);
++		break;
++	case TRACECMD_OPTION_KALLSYMS:
++		ret = read_proc_kallsyms(handle);
++		break;
++	case TRACECMD_OPTION_PRINTK:
++		ret = read_ftrace_printk(handle);
++		break;
++	case TRACECMD_OPTION_CMDLINES:
++		ret = read_and_parse_cmdlines(handle);
++		break;
++	default:
++		ret = 0;
++		break;
++	}
++
++	if (section->flags & TRACECMD_SEC_FL_COMPRESS)
++		in_uncompress_reset(handle);
++
++	return ret;
++}
++
++static int read_headers_v7(struct tracecmd_input *handle)
++{
++	struct file_section *section;
++
++	if (handle->options_init)
++		return 0;
++
++	if (!handle->options_start)
++		return -1;
++
++	if (lseek64(handle->fd, handle->options_start, SEEK_SET) == (off64_t)-1) {
++		tracecmd_warning("Filed to goto options offset %lld", handle->options_start);
++		return -1;
++	}
++
++	if (handle_options(handle))
++		return -1;
++
++	section = handle->sections;
++	while (section) {
++		if (handle_section(handle, section))
++			return -1;
++		section = section->next;
++	}
++
++	handle->options_init = true;
++	return 0;
++}
++
++/**
++ * tracecmd_read_headers - read the header information from trace.dat
++ * @handle: input handle for the trace.dat file
++ * @state: The state to read up to or zero to read up to options.
++ *
++ * This reads the trace.dat file for various information. Like the
++ * format of the ring buffer, event formats, ftrace formats, kallsyms
++ * and printk. This may be called multiple times with different @state
++ * values, to read partial data at a time. It will always continue
++ * where it left off.
++ */
++int tracecmd_read_headers(struct tracecmd_input *handle,
++			  enum tracecmd_file_states state)
++{
++	if (handle->file_version < 7)
++		return read_headers_v6(handle, state);
++	return read_headers_v7(handle);
++}
++
+ static unsigned long long calc_page_offset(struct tracecmd_input *handle,
+ 					   unsigned long long offset)
+ {
 -- 
 2.31.1
 
