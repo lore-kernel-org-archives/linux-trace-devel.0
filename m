@@ -2,91 +2,60 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FEC6C4320A
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 15:39:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76F2BC4338F
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 19:19:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E60A360F46
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 15:39:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5CB9C6054E
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 19:19:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237846AbhG2Pjh (ORCPT
+        id S230034AbhG2TTD (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 29 Jul 2021 11:39:37 -0400
-Received: from gateway22.websitewelcome.com ([192.185.46.156]:24819 "EHLO
-        gateway22.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237851AbhG2Pjg (ORCPT
+        Thu, 29 Jul 2021 15:19:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229713AbhG2TTD (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 29 Jul 2021 11:39:36 -0400
-X-Greylist: delayed 1500 seconds by postgrey-1.27 at vger.kernel.org; Thu, 29 Jul 2021 11:39:36 EDT
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway22.websitewelcome.com (Postfix) with ESMTP id 1695953E95
-        for <linux-trace-devel@vger.kernel.org>; Thu, 29 Jul 2021 09:52:27 -0500 (CDT)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id 97MfmzCI1MGeE97MfmGmYd; Thu, 29 Jul 2021 09:50:25 -0500
-X-Authority-Reason: nr=8
-Received: from host-95-239-202-226.retail.telecomitalia.it ([95.239.202.226]:48616 helo=f34.bristot.me)
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1m97Me-002CQn-GS; Thu, 29 Jul 2021 09:50:24 -0500
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     linux-trace-devel@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Subject: [PATCH 2/3] libtracefs: Fix example in libtracefs-events
-Date:   Thu, 29 Jul 2021 16:50:09 +0200
-Message-Id: <262403b667d40185c71497e947fd59f4ed48e226.1627568431.git.bristot@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        Thu, 29 Jul 2021 15:19:03 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4129B60462;
+        Thu, 29 Jul 2021 19:18:59 +0000 (UTC)
+Date:   Thu, 29 Jul 2021 15:18:52 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 0/3] libtracefs documentation fixes
+Message-ID: <20210729151852.4b59afb9@oasis.local.home>
 In-Reply-To: <cover.1627568431.git.bristot@kernel.org>
 References: <cover.1627568431.git.bristot@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 95.239.202.226
-X-Source-L: No
-X-Exim-ID: 1m97Me-002CQn-GS
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-95-239-202-226.retail.telecomitalia.it (f34.bristot.me) [95.239.202.226]:48616
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 26
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-tracefs_local_events() returns struct tep_handle *, instead of
-struct tep_event *. Fix the example.
+On Thu, 29 Jul 2021 16:50:07 +0200
+Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- Documentation/libtracefs-events.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> I started using libtracefs last week, and I am really impressed!
+> 
+> While learning about it, I ended up finding three small issues
+> in the documentation, here they are.
+> 
+> Daniel Bristot de Oliveira (3):
+>   libtracefs: Fix example in libtracefs-events-tep
+>   libtracefs: Fix example in libtracefs-events
+>   libtracefs: Fix a typo in libtracefs-files
+> 
+>
 
-diff --git a/Documentation/libtracefs-events.txt b/Documentation/libtracefs-events.txt
-index 3fe9199..102728d 100644
---- a/Documentation/libtracefs-events.txt
-+++ b/Documentation/libtracefs-events.txt
-@@ -122,7 +122,7 @@ static int records_walk(struct tep_event *tep, struct tep_record *record, int cp
- 	return 0;
- }
- ...
--struct tep_event *tep = tracefs_local_events(NULL);
-+struct tep_handle *tep = tracefs_local_events(NULL);
- 
- 	if (!tep) {
- 		/* Failed to initialise tep handler with local events */
--- 
-2.31.1
+Thanks Daniel, I'll queue these up for my next push.
 
+-- Steve
