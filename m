@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9912C432BE
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3A22C4338F
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A978061052
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9D15A61019
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbhG2FKI (ORCPT
+        id S233700AbhG2FKJ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 29 Jul 2021 01:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41246 "EHLO
+        Thu, 29 Jul 2021 01:10:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231329AbhG2FKH (ORCPT
+        with ESMTP id S231329AbhG2FKI (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 29 Jul 2021 01:10:07 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D29EC061757
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:04 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id ec13so5879932edb.0
+        Thu, 29 Jul 2021 01:10:08 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E64C061765
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:05 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id qk33so8384967ejc.12
         for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=q/XpTU2XhoHbHAqoA8x/vtqptp62mgjiQRNtFM2Rvqo=;
-        b=KLFswPE55De8xDRScz1m3G054zJpf9P4qxDQQkqwkL573VLgd2WMwoJ+VsOdqLK/nE
-         w/4+rQmJTMgb774cxN/s5Rvv39V9lzAxykgQHiKJ4c4KqZjpd4T5eO3xS0I9Qgni9fdO
-         BHqxnrPzPPOifZjs715C18muUEoTb5oQ1cr8kIUNAKblir64ZDURUfKUY5JWPSoZVeIY
-         623EeLhGzgL3KNMpxH54hxjDLEOqsAjBnHO2z5CW27zKXouaqJlzoQCbEXGof+To824D
-         KVKfr/8G4kSYCjv4R5oe+c9/7QpSs84T3M0eH+XT0KJAhC65eBLlfINMzeninV9oyLcc
-         brdw==
+        bh=rHEDizwZjviRdumQYx/LHW1ieeaoKb8L1up3BfvtlPc=;
+        b=GlRHrB86tPTtt04xkGdqGyNcpHDEE8IM3snaWVu3pbpzM2XoK+ql8n1DqSfnUiruSZ
+         YZnczuhWu7d52NbVAQQlK+hwlk+TuWL7wxDswUoOPlZJTljp5snd1KrDQmVSD3UhboVP
+         XEjMjh3jjk9uq6vgHLjJpCTwUaW7/cQZGGWq81Zj4zV4ItVL5i7s4e3xeiy0aCl72QlY
+         Tc2eXiyjuoGlquz6z0PRkq6nDNF/+T7PNub+jp+KMXGwuw7aQHNP9zQ7SDTO4GM1o8m0
+         IqXDUDofmzJjSm40KBWdkvu3EYEGbA2DhJHs1iKBpWPLt6ajkdesif+gKNQE3han64DQ
+         j8HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=q/XpTU2XhoHbHAqoA8x/vtqptp62mgjiQRNtFM2Rvqo=;
-        b=a9l308VWMJLp8b2phLE2n4udz3lHi6Zs2MPbLAlYM2DZV2FcGCU+ZjTjJEKGyTUZn2
-         1+zkhuilNlzsDhg3JvXVg+NSVy5ZLgJA8FbukSZ0YC2f3TGOtnSHAuqT9wJWdLMJt9sy
-         N2/FHmYXD161kVl7WgE8c+HS/BxSjrln7LhDtJY1iBB9MVbb5Jk7MyDl6YAU/v6qdDw6
-         lwWYto4A47cqGVTXfKK1KmDzRtL5GIOfPBCohScDtcYag67aV9J/qb1jvx6PkPI9S5h8
-         gggkBtugo8ImE9Z31FqMpkmk7f1WM5Dlez8l6FzJzQGWAbcXTmvy3DWcEzYJWNKTacsg
-         2J1Q==
-X-Gm-Message-State: AOAM532JTMRFgwveZqLVqLrj9vhWQ0LWbH6qz9imeb30caScGp7+38fC
-        UxPWjEF3AcrcaonC36tdeyQ=
-X-Google-Smtp-Source: ABdhPJyr29cMWg+zeJ0UTjrKoWVNFRJZPGXxd8yrumCbOgksYxHi9axTgNAoVIxKj980FIw0OkUnnQ==
-X-Received: by 2002:a05:6402:896:: with SMTP id e22mr3997087edy.246.1627535402735;
-        Wed, 28 Jul 2021 22:10:02 -0700 (PDT)
+        bh=rHEDizwZjviRdumQYx/LHW1ieeaoKb8L1up3BfvtlPc=;
+        b=XiR678I47KHhHnlwm+UKo3tjL1Z/ct4Nz1+xcY7EOBNLtBlraNfWI24TNzWp8PhOvz
+         5hn1m3ag5GFGFpzI1pa+520xNQA+tzKEk2/7BjWdO5D4VwVaXAxJk8ajDiruGB6eoyrH
+         JZdnxPwHUCAqsbH00rz4uhUuljqeRXrOSsdU77v9pxGJGpdxTfjdka6g/fwtkpbRl7vP
+         JY9nXuX2fKhidBqF/ix/iwJrkPnocE3ouk0okH33RzfHMunuo/wJ8PMCA5pGDHHP5ixb
+         b6SnzEZPGV0S5vJrTV05jZLXfK3hDu2IBOZ0O/6r+eJHBaZvu2lYAai7fwjQaY8WncJu
+         9M7Q==
+X-Gm-Message-State: AOAM530/QKdf3VxTTPu3QvSXUb7b1cNdNAhShpQ0Ix87pzMbQpyIzwCv
+        iBWmSWOaU5UPUbYDFTkyzpA=
+X-Google-Smtp-Source: ABdhPJzpRo5rG+bfYcLhmJ/lCAWKgtZLBEdW34iYKD2Ad+90jnBHrJnAX12UedvsibI8PDNn3on0rw==
+X-Received: by 2002:a17:907:c08:: with SMTP id ga8mr2923027ejc.318.1627535403726;
+        Wed, 28 Jul 2021 22:10:03 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id s20sm530615eji.116.2021.07.28.22.10.01
+        by smtp.gmail.com with ESMTPSA id s20sm530615eji.116.2021.07.28.22.10.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 22:10:02 -0700 (PDT)
+        Wed, 28 Jul 2021 22:10:03 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 01/87] trace-cmd library: Read option id with correct endian
-Date:   Thu, 29 Jul 2021 08:08:33 +0300
-Message-Id: <20210729050959.12263-2-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 02/87] trace-cmd report: Fix typos in error messages
+Date:   Thu, 29 Jul 2021 08:08:34 +0300
+Message-Id: <20210729050959.12263-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210729050959.12263-1-tz.stoyanov@gmail.com>
 References: <20210729050959.12263-1-tz.stoyanov@gmail.com>
@@ -73,58 +73,36 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The id of a trace option is 2 bytes short integer. When reading it from
-the trace file, use the tep handler associated with the file, if
-available, to convert the option with the correct endian order.
-A new helper function is introduced to read and convert 2 byte integer.
+Fixed typos in "trace-cmd report" messages that report reading and
+parsing errors.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ tracecmd/trace-read.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index ac57bc4f..0dbcdbdc 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -336,6 +336,18 @@ static char *read_string(struct tracecmd_input *handle)
- 	return NULL;
- }
- 
-+static int read2(struct tracecmd_input *handle, unsigned short *size)
-+{
-+	struct tep_handle *pevent = handle->pevent;
-+	unsigned short data;
-+
-+	if (do_read_check(handle, &data, 2))
-+		return -1;
-+
-+	*size = tep_read_number(pevent, &data, 2);
-+	return 0;
-+}
-+
- static int read4(struct tracecmd_input *handle, unsigned int *size)
- {
- 	struct tep_handle *pevent = handle->pevent;
-@@ -2660,16 +2672,15 @@ static int handle_options(struct tracecmd_input *handle)
- 	handle->options_start = lseek64(handle->fd, 0, SEEK_CUR);
- 
- 	for (;;) {
--		if (do_read_check(handle, &option, 2))
-+		if (read2(handle, &option))
- 			return -1;
- 
- 		if (option == TRACECMD_OPTION_DONE)
- 			break;
- 
- 		/* next 4 bytes is the size of the option */
--		if (do_read_check(handle, &size, 4))
-+		if (read4(handle, &size))
- 			return -1;
--		size = tep_read_number(handle->pevent, &size, 4);
- 		buf = malloc(size);
- 		if (!buf)
- 			return -ENOMEM;
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index 6f43c1d2..31724b09 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -1290,7 +1290,7 @@ static void read_data_info(struct list_head *handle_list, enum output_type otype
+ 					die("error in reading buffer instance");
+ 				new_handle = tracecmd_buffer_instance_handle(handles->handle, i);
+ 				if (!new_handle) {
+-					warning("could not retreive handle %s", name);
++					warning("could not retrieve handle %s", name);
+ 					continue;
+ 				}
+ 				add_handle(new_handle, name);
+@@ -1324,7 +1324,7 @@ static void read_data_info(struct list_head *handle_list, enum output_type otype
+ 		if (last_record) {
+ 			int cpu = last_record->cpu;
+ 			if (cpu >= last_handle->cpus)
+-				die("cpu %d creater than %d\n", cpu, last_handle->cpus);
++				die("cpu %d greater than %d\n", cpu, last_handle->cpus);
+ 			if (tscheck &&
+ 			    last_handle->last_timestamp[cpu] > last_record->ts) {
+ 				errno = 0;
 -- 
 2.31.1
 
