@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54583C4338F
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:11:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91FEAC4338F
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:11:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 32EA560C3F
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:11:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7C44A60EB2
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:11:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234161AbhG2FLZ (ORCPT
+        id S234163AbhG2FL2 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 29 Jul 2021 01:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41680 "EHLO
+        Thu, 29 Jul 2021 01:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234153AbhG2FLZ (ORCPT
+        with ESMTP id S234153AbhG2FL1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 29 Jul 2021 01:11:25 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6670C061757
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:11:22 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id f13so6343908edq.13
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:11:22 -0700 (PDT)
+        Thu, 29 Jul 2021 01:11:27 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 995D9C061757
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:11:23 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id gn26so8489994ejc.3
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:11:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=mbrlD10Y1hBDYOmV/4CQJbgk1L4szY/IgjNe1kinDHA=;
-        b=LHHvfVkLWptQ1EQ+z45WlJ8jr1fQ0b0LRTCphFffQzuTL9BVgb+7XHtckdZEquVhnU
-         htOKNg382fKdShlCyEaOt/VxuAo2eqkXeQLvAxHZ8FDOr6hDx7wvTBJKqBJXbp0ViwMj
-         DM5bMQcvHyfGvfkOTf6d1kDjyeac5ecybnmicIf9OhzEs0gPcC+Qrfa2JMI7SqHXRNDx
-         fH2yOmanONYJrKvY4DRAQdVU/O1EcZstlIxiUNYHZvPIL+FaTWSi9dfGkle6NAWcX5gI
-         ZfbtV9OcUtpJyPlm8WXSOdgOZ61m5KsqrDoXhmAo0t4vedw3tUfryjq4TL81IkDB+wHw
-         vvOg==
+        bh=bDE5H6ouGRCAEZ9YfNrgle8dTCkLnHF61NMoDExWoeY=;
+        b=ES5MtIL5vwNF5TaBt3d4wKZpa/mdKfW1ElpmRXJ4vwZXznbucNY1gyAWqWnrWG+NQo
+         DTbkCOWaqOePJMSlPKDXWsLunttQ9nwoB0GX9B+BFwW8wz2fv2RTvissCaFryQHwmdlu
+         NBbOPg77slDiu05nHqy8wzlS9iyW/GLVMaGDCQnGYQ97Xq99Z20Ej955kI0n4qrvScUC
+         zgcZbW7mgeCu5jxu0M8Wh8Cv+sjb86dztXOak26DY3Q19Lbh7GQqjp7+c+J+eCeuXzng
+         fvOKHwqExbflbSrEzWMJrHEFQ+4AQVub5SHPCUWQTSleb1wdTjS3unVsiWd2qESwLihM
+         acNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mbrlD10Y1hBDYOmV/4CQJbgk1L4szY/IgjNe1kinDHA=;
-        b=e1BJk9nHi1tQTZA+tj5u7kNsrCOZ7U4c90XdGqOTCB1NDl/KDfOdmAo04jqrc065hx
-         coyUCUvqmX+aH3ogG/g0DgvI6rt9h8G5dFTAbwNErXgPs/ZrOVYaBZUFHQO9sHEkYXpm
-         yzOEJNVeeTSn1FO40o+/i95FdlqxMeXoUz2izIrqIZp+m+J20oLuZKeQ5hjNPC/dZTWJ
-         vKw8bPeOGsLfXKC9iwSVnKzMofw6aYAp7H26rMhIPS02IiKR5LM+ZjdH3JutxNuwcjW+
-         tpZ4rwOqUq0WXDH5X45f27im/InB3p9M5vYZB3RP7ARMb0eDu7VJBrn4K37CyNloPwnh
-         zoJw==
-X-Gm-Message-State: AOAM530vW1mQtyxGPSp/eZx01htGfwk0asSlMQhTPztTY5C/eUEmQix4
-        NeUN3uWKxDpdO86oJ/tIA60=
-X-Google-Smtp-Source: ABdhPJwYedaWLpuAFgwE88DSK29FuMNIlbmLOYtUgn1p8Bvi0mjGf2/VNnbhkXTu9DZE/k4y/99WMA==
-X-Received: by 2002:a50:fe10:: with SMTP id f16mr3862817edt.85.1627535481343;
-        Wed, 28 Jul 2021 22:11:21 -0700 (PDT)
+        bh=bDE5H6ouGRCAEZ9YfNrgle8dTCkLnHF61NMoDExWoeY=;
+        b=WDShIEFWDPd9KAXJ+jcgqPPR+HRDC+cvVl2lY42WWnx+h7tfZ2cDfOxgQaHrv3fYby
+         SoEAeidBzxmD363/06OHJmBvV9OF6dcbrMF0PSZiioKsVzYNTnlqPgFnCjryFYCxKyv7
+         9kZyKNx339r/nke1q3jJjwWUiTp4AVM/HJMtm12jlKBUyGQCU3MMiMyEofDkSkNiU+qn
+         VXAsg2Cfv99Mml9MYF0yxsuKljxI3wpfIwgXhqmukCNIfxOm9xTQ22wNfzQOpHtvZnQb
+         1iOV8FZFnFh66yjeB3wX1Z924Gw+bdYVnnFEubRztCvMunKxgrlPr0h5QyOmRcOoU51l
+         68pw==
+X-Gm-Message-State: AOAM5338pXM2m1GM6Jc4aEixF4U0CTIOOMbHqcGi6YdFUk773YBH0NwF
+        k7l4dY2YyV17YlsGcQ/ezl4UAfkfAWGouQ==
+X-Google-Smtp-Source: ABdhPJx9qoMQ0GelWilN5gcI4Vl+0/s5H9WB9/csADOht0s7CJXhmLvm0Tz2Bg/+v/awPqKEn917ow==
+X-Received: by 2002:a17:906:9246:: with SMTP id c6mr2786307ejx.78.1627535482296;
+        Wed, 28 Jul 2021 22:11:22 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id s20sm530615eji.116.2021.07.28.22.11.20
+        by smtp.gmail.com with ESMTPSA id s20sm530615eji.116.2021.07.28.22.11.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 22:11:20 -0700 (PDT)
+        Wed, 28 Jul 2021 22:11:21 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 83/87] trace-cmd report: Add new parameters for version 7 trace files
-Date:   Thu, 29 Jul 2021 08:09:55 +0300
-Message-Id: <20210729050959.12263-84-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 84/87] trace-cmd: Update bash completion
+Date:   Thu, 29 Jul 2021 08:09:56 +0300
+Message-Id: <20210729050959.12263-85-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210729050959.12263-1-tz.stoyanov@gmail.com>
 References: <20210729050959.12263-1-tz.stoyanov@gmail.com>
@@ -73,88 +73,82 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-By default, "trace-cmd report" writes in trace file version 7 and no
-trace file compression. A new parameters are added, which can be used to
-set desired verrsion and compression of the output trace file.
- "trace-cmd report --file-version <version> --compression <compression>"
+Added convert subcommand and its arguments to bash completion logic.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-record.c | 28 ++++++++++++++++++++++++++++
- tracecmd/trace-usage.c  |  7 ++++++-
- 2 files changed, 34 insertions(+), 1 deletion(-)
+ tracecmd/trace-cmd.bash | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index ddab7798..7013aee3 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -5810,6 +5810,8 @@ void init_top_instance(void)
+diff --git a/tracecmd/trace-cmd.bash b/tracecmd/trace-cmd.bash
+index b01c7a07..6639c143 100644
+--- a/tracecmd/trace-cmd.bash
++++ b/tracecmd/trace-cmd.bash
+@@ -64,6 +64,13 @@ plugin_options()
+     COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
  }
  
- enum {
-+	OPT_file_ver		= 237,
-+	OPT_comporession	= 238,
- 	OPT_verbose		= 239,
- 	OPT_tsc2nsec		= 240,
- 	OPT_fork		= 241,
-@@ -6249,6 +6251,8 @@ static void parse_record_options(int argc,
- 			{"tsc2nsec", no_argument, NULL, OPT_tsc2nsec},
- 			{"poll", no_argument, NULL, OPT_poll},
- 			{"verbose", optional_argument, NULL, OPT_verbose},
-+			{"compression", required_argument, NULL, OPT_comporession},
-+			{"file-version", required_argument, NULL, OPT_file_ver},
- 			{NULL, 0, NULL, 0}
- 		};
++compression_param()
++{
++    local opts=$(trace-cmd list -c | grep -v 'Supported' | cut -d "," -f1)
++    opts+=" any none "
++    COMPREPLY=( $(compgen -W "${opts}") )
++}
++
+ __trace_cmd_list_complete()
+ {
+     local prev=$1
+@@ -181,6 +188,9 @@ __trace_cmd_record_complete()
+ 		cmd_options record "$cur"
+ 	    fi
+ 	    ;;
++	--compression)
++	    compression_param
++	    ;;
+         *)
+ 	    # stream start and profile do not show all options
+ 	    cmd_options record "$cur"
+@@ -222,6 +232,29 @@ __trace_cmd_dump_complete()
+     esac
+ }
  
-@@ -6674,6 +6678,30 @@ static void parse_record_options(int argc,
- 			cmd_check_die(ctx, CMD_set, *(argv+1), "--poll");
- 			recorder_flags |= TRACECMD_RECORD_POLL;
- 			break;
-+		case OPT_comporession:
-+			cmd_check_die(ctx, CMD_start, *(argv+1), "--compression");
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "--compression");
-+			cmd_check_die(ctx, CMD_extract, *(argv+1), "--compression");
-+			cmd_check_die(ctx, CMD_stream, *(argv+1), "--compression");
-+			cmd_check_die(ctx, CMD_profile, *(argv+1), "--compression");
-+			if (strcmp(optarg, "any") && strcmp(optarg, "none") &&
-+			    !tracecmd_compress_is_supported(optarg, NULL))
-+				die("Compression algorithm  %s is not supported", optarg);
-+			ctx->compression = strdup(optarg);
-+			break;
-+		case OPT_file_ver:
-+			cmd_check_die(ctx, CMD_start, *(argv+1), "--file_version");
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "--file_version");
-+			cmd_check_die(ctx, CMD_extract, *(argv+1), "--file_version");
-+			cmd_check_die(ctx, CMD_stream, *(argv+1), "--file_version");
-+			cmd_check_die(ctx, CMD_profile, *(argv+1), "--file_version");
-+			ctx->file_version = atoi(optarg);
-+			if (ctx->file_version < FILE_VERSION_MIN ||
-+			    ctx->file_version > FILE_VERSION_MAX)
-+				die("Unsupported file version %d, "
-+				    "supported versions are from %d to %d",
-+				    ctx->file_version, FILE_VERSION_MIN, FILE_VERSION_MAX);
-+			break;
- 		case OPT_quiet:
- 		case 'q':
- 			quiet = true;
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index 9eb13ecb..ec0af46f 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -69,7 +69,12 @@ static struct usage_help usage_help[] = {
- 		"               If 0 is specified, no loop is performed - timestamps offset is calculated only twice,"
- 		"                                                         at the beginnig and at the end of the trace\n"
- 		"          --poll don't block while reading from the trace buffer\n"
--		"          --verbose 'level' Set the desired log level\n"
-+		"          --file-version set the desired trace file version\n"
-+		"          --compression compress the trace output file, one of these strings can be passed:\n"
-+		"                            any  - auto select the best available compression algorithm\n"
-+		"                            none - do not compress the trace file\n"
-+		"                            name - the name of the desired compression algorithms\n"
-+		"                        available algorithms can be listed with trace-cmd list -c\n"
- 	},
- 	{
- 		"set",
++__trace_cmd_convert_complete()
++{
++    local prev=$1
++    local cur=$2
++    shift 2
++    local words=("$@")
++
++    case "$prev" in
++	-i)
++	    __show_files
++	    ;;
++	-o)
++	    __show_files
++	    ;;
++	--compression)
++	    compression_param
++	    ;;
++	*)
++	    cmd_options convert "$cur"
++	    ;;
++    esac
++}
++
+ __show_command_options()
+ {
+     local command="$1"
+@@ -298,6 +331,10 @@ _trace_cmd_complete()
+ 	    __trace_cmd_dump_complete "${prev}" "${cur}" ${words[@]}
+ 	    return 0
+ 	    ;;
++	convert)
++	    __trace_cmd_convert_complete "${prev}" "${cur}" ${words[@]}
++	    return 0
++	    ;;
+         *)
+ 	    __show_command_options "$w" "${prev}" "${cur}"
+             ;;
 -- 
 2.31.1
 
