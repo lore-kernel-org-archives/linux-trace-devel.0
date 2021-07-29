@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF672C4338F
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BA34C432BE
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A91AF61052
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 34F4C60FED
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jul 2021 05:10:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233942AbhG2FKc (ORCPT
+        id S231329AbhG2FKe (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 29 Jul 2021 01:10:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41384 "EHLO
+        Thu, 29 Jul 2021 01:10:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231329AbhG2FKc (ORCPT
+        with ESMTP id S233945AbhG2FKc (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 29 Jul 2021 01:10:32 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71560C061757
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:28 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id yk17so753064ejb.11
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:28 -0700 (PDT)
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61EFBC061765
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:29 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id ec13so5881187edb.0
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Jul 2021 22:10:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=RmoTo/DrBrKEPsjiYGWWfejteUIwXa2uLWnxdU4WRIg=;
-        b=ddeV+4sinrWgohHEkdy6JmtcOp6QjNreREYfuKY83C4en3aqAUa+F82i5H4xg9lV2j
-         +50U9X8lJb4HOpv+VVMvoPJNPwE33vV+LdnX4VeOU/WhLJ0MMBDVLikNZge3tBFaPajs
-         BSO9i3PKYxtJd/eYYjGyGWO3qYY3hnwcIIM2yS/LuB7WqEVfpLuGgr3xKDYPc0l35XVk
-         XC0u74FrSAL0B0tWJNQ34rPuwvyDzMwL/O7Dq5CUJ91UIpdN+ao2otc8FJdrlqyECJX/
-         5mPSA1wajk/iuW1jL4CNWZY+HoOWN8U90hMZVsSD8d4g0DqMR2WNOIP3ghUK+Ns8KDWL
-         b2uw==
+        bh=EIoDKwsrSyrvOhUkkTIHs070KY99lBO+xAo3kDzM5CM=;
+        b=P+mD9sXrIJZqllB7Q0BgWPIYSPsF0N4dcuvrCMzTJvRAmBoE4sA2uV3DtrKj2o7HlL
+         oK2N/+ijlfP/De8k2WOfzOPaEq2QYCf9kl1+QPDVINtLwRvbuBDiC0HlRcNnVXYloIM3
+         UAeVg/8aX7um37R9GSBh9MpsHvAWWQZHHEqWiVsii+Hmjp9j6y8SxU43JXCMihWZHItl
+         bXbv0fDLXdmtMuPOR3fkvxz++HS79v43dyo8QmHOti+RuJCpktrsJVnEo5xOLJhMQiPf
+         fTvIQhV7tZITCronuOGTbbn/56IalDOQpBMZcLT9vG25k6Vqht+/qa2NcmAAh98PfdQx
+         xyPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RmoTo/DrBrKEPsjiYGWWfejteUIwXa2uLWnxdU4WRIg=;
-        b=D8qXJjsHrFhdvmF9wjqjomUlwIc44ygQ6uQWTV1zZPuV9bJidq59EWEdZUJktYwbGw
-         0wqk5Q7KCpv00mazIXNjuWCgAgbZWZMWkJaHaC3Ic/ThetCtmDbUTR6SY3wSIuuOEuI8
-         hrSm568x498oenIK4LdPwkh1pgJ/PnzFm5y9PHrdgPL8Pqn5gOC0wRgKiXFozB7yTm/H
-         V156JOxace6YFVCnAuz8fABjtKcJt7pFzMhAaRa1+c7A4non9WrJLRjnHoGl+RadC/Si
-         ywDZNFoW7rcodaTkrbKY3kevvRmiTRswE9kMWO8+48w63hIRSXeaf1FMKUrrGyVIR1He
-         QMOA==
-X-Gm-Message-State: AOAM531hKwNcmhm5k+ytOEAJXFgcyvXzWMQDR+z2nZ6ZmYlMJpUwDfJn
-        pnqjR8B97yHbJFhnFR2bUSJaJhf6DVOthQ==
-X-Google-Smtp-Source: ABdhPJzWuSy4iGCi9lHdGuQ7NtwQ8pZY3GlqEZEg2oNoUEFIzYfEYMMVrz3KphgTnFObY+M2AxNl2w==
-X-Received: by 2002:a17:906:ed1:: with SMTP id u17mr2840877eji.304.1627535427101;
-        Wed, 28 Jul 2021 22:10:27 -0700 (PDT)
+        bh=EIoDKwsrSyrvOhUkkTIHs070KY99lBO+xAo3kDzM5CM=;
+        b=kd/5FwC+zppGHsSftOp4yXwoHExeucXWrLhd0eZV+7/lNT/7+AVydJvZLLYhv8brhJ
+         wmlbhRf7Uqw39aBcGRH5lVjg6CaO9ftwjFeeggPClYpb9vu1FHczMEQn8NcxRXE2ZHct
+         eG0kw4BDmdEtt54zON6pzmLOsUaSaF4qH1NqXU32kp/dN1WAk6ODxN0aXZMGABKe2ZwM
+         j5sDqxgoVl8J0sdc1bTCx1CoUIpgwx05THAUSMX/4gmit+Mg4FcXFdxV5GrLziAr7gZw
+         lTLjh4G0t4iTYdg0MYD9aPZbeaVFkaEUpswZoYzqSgI+2QW7Qmmb0yDvpZ7LyLzxa6Ci
+         A52g==
+X-Gm-Message-State: AOAM5318YdbCjS9WJ2cObv/mgvo/velP4ZJBKOEdGRB2t5mwxX9Oq0rM
+        x7qVSuD4jByOUrABrceYQ/k=
+X-Google-Smtp-Source: ABdhPJwZ5OGy7i1DTmKlneSbpbrjf6f99sV8XAPJg05A1C7Xas4aukL+xJpIj20Z3N8yte5uYlqQ4Q==
+X-Received: by 2002:a05:6402:10d9:: with SMTP id p25mr3894635edu.51.1627535428072;
+        Wed, 28 Jul 2021 22:10:28 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id s20sm530615eji.116.2021.07.28.22.10.26
+        by smtp.gmail.com with ESMTPSA id s20sm530615eji.116.2021.07.28.22.10.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 22:10:26 -0700 (PDT)
+        Wed, 28 Jul 2021 22:10:27 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 26/87] tarce-cmd library: Add multiple options sections in trace file version 7
-Date:   Thu, 29 Jul 2021 08:08:58 +0300
-Message-Id: <20210729050959.12263-27-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 27/87] trace-cmd library: Do not write CPU count section in trace files version 7
+Date:   Thu, 29 Jul 2021 08:08:59 +0300
+Message-Id: <20210729050959.12263-28-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210729050959.12263-1-tz.stoyanov@gmail.com>
 References: <20210729050959.12263-1-tz.stoyanov@gmail.com>
@@ -73,227 +73,40 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Introduced chain of options sections in trace file version 7. Extended
-the "DONE" option to hold the offset into the file to the next options
-section.
-Format of trace file version 7 is extended with a new mandatory field
-after the compression algorithm header:
- <8 bytes>, unsigned long long integer - offset into the trace file
-where the first options section is located. This allows to place this
-section anywhere in the file. As all other sections have corresponding
-options, describing their offsets into the trace file, this change makes
-the structure of trace file version 7 flexible.
+Writing CPU count as a separate section in the trace file is redundant,
+as there is already an option for that. Use that option in trace files
+version 7.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-output.c | 110 ++++++++++++++++++++++++++++++-----
- 1 file changed, 96 insertions(+), 14 deletions(-)
+ lib/trace-cmd/trace-output.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
 diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index e232a678..6bb7f4de 100644
+index 6bb7f4de..d60bd456 100644
 --- a/lib/trace-cmd/trace-output.c
 +++ b/lib/trace-cmd/trace-output.c
-@@ -63,7 +63,7 @@ struct tracecmd_output {
- 	bool			quiet;
- 	unsigned long		file_state;
- 	unsigned long		file_version;
--	size_t			options_start;
-+	tsize_t			options_start;
- 	bool			big_endian;
- 	bool			do_compress;
- 	struct tracecmd_compression *compress;
-@@ -1453,6 +1453,7 @@ int tracecmd_output_set_compression(struct tracecmd_output *handler, const char
-  */
- int tracecmd_output_write_init(struct tracecmd_output *handler)
- {
-+	unsigned long long offset;
- 	char buf[BUFSIZ];
- 	int endian4;
- 
-@@ -1489,6 +1490,11 @@ int tracecmd_output_write_init(struct tracecmd_output *handler)
- 	if (handler->file_version >= 7) {
- 		if (write_compression_header(handler))
- 			return -1;
-+		/* Write 0 as options offset and save its location */
-+		offset = 0;
-+		handler->options_start = do_lseek(handler, 0, SEEK_CUR);
-+		if (do_write_check(handler, &offset, 8))
-+			return -1;
+@@ -1637,10 +1637,16 @@ int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus)
+ 				 handle->file_state);
+ 		return -1;
  	}
- 
- 	handler->file_state = TRACECMD_FILE_INIT;
-@@ -1563,7 +1569,7 @@ tracecmd_add_option_v(struct tracecmd_output *handle,
- 	 * We can only add options before tracing data were written.
- 	 * This may change in the future.
- 	 */
--	if (handle->file_state > TRACECMD_FILE_OPTIONS)
-+	if (handle->file_version < 7 && handle->file_state > TRACECMD_FILE_OPTIONS)
- 		return NULL;
- 
- 	for (i = 0; i < count; i++)
-@@ -1576,8 +1582,7 @@ tracecmd_add_option_v(struct tracecmd_output *handle,
- 			return NULL;
- 		}
- 	}
--
--	option = malloc(sizeof(*option));
-+	option = calloc(1, sizeof(*option));
- 	if (!option) {
- 		tracecmd_warning("Could not allocate space for option");
- 		free(data);
-@@ -1640,7 +1645,7 @@ int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus)
- 	return 0;
- }
- 
--int tracecmd_write_options(struct tracecmd_output *handle)
-+static int write_options_v6(struct tracecmd_output *handle)
- {
- 	struct tracecmd_option *options;
- 	unsigned short option;
-@@ -1658,7 +1663,7 @@ int tracecmd_write_options(struct tracecmd_output *handle)
- 
- 	if (do_write_check(handle, "options  ", 10))
- 		return -1;
--
-+	handle->options_start = do_lseek(handle, 0, SEEK_CUR);
- 	list_for_each_entry(options, &handle->options, list) {
- 		endian2 = convert_endian_2(handle, options->id);
- 		if (do_write_check(handle, &endian2, 2))
-@@ -1669,7 +1674,7 @@ int tracecmd_write_options(struct tracecmd_output *handle)
- 			return -1;
- 
- 		/* Save the data location in case it needs to be updated */
--		options->offset = lseek64(handle->fd, 0, SEEK_CUR);
-+		options->offset = do_lseek(handle, 0, SEEK_CUR);
- 
- 		if (do_write_check(handle, options->data,
- 				   options->size))
-@@ -1682,11 +1687,83 @@ int tracecmd_write_options(struct tracecmd_output *handle)
- 		return -1;
- 
- 	handle->file_state = TRACECMD_FILE_OPTIONS;
-+	return 0;
-+}
+-	cpus = convert_endian_4(handle, cpus);
+-	ret = do_write_check(handle, &cpus, 4);
+-	if (ret < 0)
+-		return ret;
 +
-+static int write_options_v7(struct tracecmd_output *handle)
-+{
-+	struct tracecmd_option *options;
-+	unsigned long long endian8;
-+	unsigned short endian2;
-+	unsigned int endian4;
-+	bool new = false;
-+	tsize_t offset;
-+
-+	/* Check if there are unsaved options */
-+	list_for_each_entry(options, &handle->options, list) {
-+		if (!options->offset) {
-+			new = true;
-+			break;
-+		}
++	if (handle->file_version < 7) {
++		cpus = convert_endian_4(handle, cpus);
++		ret = do_write_check(handle, &cpus, 4);
++		if (ret < 0)
++			return ret;
++	} else {
++		tracecmd_add_option(handle, TRACECMD_OPTION_CPUCOUNT, sizeof(int), &cpus);
 +	}
 +
-+	if (!new)
-+		return 0;
-+	offset = do_lseek(handle, 0, SEEK_CUR);
-+	/* Append to the previous options section, if any */
-+	if (handle->options_start) {
-+		if (do_lseek(handle, handle->options_start, SEEK_SET) == (off64_t)-1)
-+			return -1;
-+		endian8 = convert_endian_8(handle, offset);
-+		if (do_write_check(handle, &endian8, 8))
-+			return -1;
-+		if (do_lseek(handle, offset, SEEK_SET) == (off_t)-1)
-+			return -1;
-+	}
-+	offset = out_write_section_header(handle, TRACECMD_OPTION_DONE, "options", 0, false);
-+	if (offset == (off_t)-1)
-+		return -1;
-+	list_for_each_entry(options, &handle->options, list) {
-+		/* Option is already saved, skip it */
-+		if (options->offset)
-+			continue;
-+		endian2 = convert_endian_2(handle, options->id);
-+		if (do_write_check(handle, &endian2, 2))
-+			return -1;
-+		endian4 = convert_endian_4(handle, options->size);
-+		if (do_write_check(handle, &endian4, 4))
-+			return -1;
-+		/* Save the data location */
-+		options->offset = do_lseek(handle, 0, SEEK_CUR);
-+		if (do_write_check(handle, options->data, options->size))
-+			return -1;
-+	}
-+
-+	endian2 = convert_endian_2(handle, TRACECMD_OPTION_DONE);
-+	if (do_write_check(handle, &endian2, 2))
-+		return -1;
-+	endian4 = convert_endian_4(handle, 8);
-+	if (do_write_check(handle, &endian4, 4))
-+		return -1;
-+	endian8 = 0;
-+	handle->options_start = do_lseek(handle, 0, SEEK_CUR);
-+	if (do_write_check(handle, &endian8, 8))
-+		return -1;
-+	if (out_update_section_header(handle, offset))
-+		return -1;
- 
+ 	handle->file_state = TRACECMD_FILE_CPU_COUNT;
  	return 0;
  }
- 
--int tracecmd_append_options(struct tracecmd_output *handle)
-+int tracecmd_write_options(struct tracecmd_output *handle)
-+{
-+	if (handle->file_version < 7)
-+		return write_options_v6(handle);
-+	return write_options_v7(handle);
-+}
-+
-+
-+static int append_options_v6(struct tracecmd_output *handle)
- {
- 	struct tracecmd_option *options;
- 	unsigned short option;
-@@ -1701,14 +1778,12 @@ int tracecmd_append_options(struct tracecmd_output *handle)
- 	 */
- 	if (handle->file_state != TRACECMD_FILE_OPTIONS)
- 		return -1;
--
--	if (lseek64(handle->fd, 0, SEEK_END) == (off_t)-1)
-+	if (do_lseek(handle, 0, SEEK_END) == -1)
- 		return -1;
--	offset = lseek64(handle->fd, -2, SEEK_CUR);
-+	offset = do_lseek(handle, -2, SEEK_CUR);
- 	if (offset == (off_t)-1)
- 		return -1;
--
--	r = pread(handle->fd, &option, 2, offset);
-+	r = do_preed(handle, &option, 2, offset);
- 	if (r != 2 || option != TRACECMD_OPTION_DONE)
- 		return -1;
- 
-@@ -1722,7 +1797,7 @@ int tracecmd_append_options(struct tracecmd_output *handle)
- 			return -1;
- 
- 		/* Save the data location in case it needs to be updated */
--		options->offset = lseek64(handle->fd, 0, SEEK_CUR);
-+		options->offset = do_lseek(handle, 0, SEEK_CUR);
- 
- 		if (do_write_check(handle, options->data,
- 				   options->size))
-@@ -1737,6 +1812,13 @@ int tracecmd_append_options(struct tracecmd_output *handle)
- 	return 0;
- }
- 
-+int tracecmd_append_options(struct tracecmd_output *handle)
-+{
-+	if (handle->file_version < 7)
-+		return append_options_v6(handle);
-+	return write_options_v7(handle);
-+}
-+
- static struct tracecmd_option *
- add_buffer_option(struct tracecmd_output *handle, const char *name, int cpus)
- {
 -- 
 2.31.1
 
