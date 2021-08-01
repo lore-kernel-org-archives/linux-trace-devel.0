@@ -2,46 +2,32 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B295EC4338F
-	for <linux-trace-devel@archiver.kernel.org>; Sun,  1 Aug 2021 13:39:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 676E8C4338F
+	for <linux-trace-devel@archiver.kernel.org>; Sun,  1 Aug 2021 22:10:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8E70360F55
-	for <linux-trace-devel@archiver.kernel.org>; Sun,  1 Aug 2021 13:39:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 39BCB60FC1
+	for <linux-trace-devel@archiver.kernel.org>; Sun,  1 Aug 2021 22:10:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231791AbhHANjg (ORCPT
+        id S229955AbhHAWKP (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 1 Aug 2021 09:39:36 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41986 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231577AbhHANjg (ORCPT
+        Sun, 1 Aug 2021 18:10:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229759AbhHAWKP (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 1 Aug 2021 09:39:36 -0400
-Date:   Sun, 1 Aug 2021 15:39:25 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1627825167;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=V2DGzvEDDOHL4wNGqLh/L3qbGiCz/WEtxEh6PwuMsKs=;
-        b=mr5lb4vnCsZeTua2ZYsa3NKBjB8PegqmeO3YML93vfUO/8iRHIRMWSB81tAILTXQjftSZZ
-        QYBVe3gkaZk45qJW0RkryHlJ/T3xps5ioB/fTVhN6ZlnRUu/mnnEMx1Yx6JOF76J2xKCBe
-        nRE22EQkvaQQVxHI6p80hBZpFeaiaR7s+L+pW+enzumSv1ZiF9xisZCAt+RtpNom2l/e/c
-        oO4yUccLGEDFXX95PriJhteAK0CrZtaQk/mfOtP15cqeyzDxkQciXJ0qY7FTeZfUkB9mx1
-        csZG3uL2H7hcJoXUlqom9wEVghREZqnmYFg4ksIksxqWCFt6xQNBVaEmUMkPEQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1627825167;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=V2DGzvEDDOHL4wNGqLh/L3qbGiCz/WEtxEh6PwuMsKs=;
-        b=swcnDVMxb+6GHbeFF3VI4TNMHLEgYli8nMjfujvVn5E0hWw8QWQ5CLYcuaQNLazvt2WYWD
-        gSQXj6+9IdJsKDDA==
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     Steven Rostedt <rostedt@goodmis.org>
+        Sun, 1 Aug 2021 18:10:15 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E4A360EB5;
+        Sun,  1 Aug 2021 22:10:05 +0000 (UTC)
+Date:   Sun, 1 Aug 2021 18:10:04 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         Tom Zanussi <zanussi@kernel.org>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
@@ -49,42 +35,36 @@ Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         Namhyung Kim <namhyung@kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
         Clark Williams <williams@redhat.com>
-Subject: Re: [PATCH 17/17] libtracefs: Add man page for tracefs_sql()
-Message-ID: <YQakDYRnId+bK+ue@lx-t490>
+Subject: Re: [PATCH 01/17] libtracefs: Added new API tracefs_sql()
+Message-ID: <20210801181004.0a0bb843@rorschach.local.home>
+In-Reply-To: <YQY/72DgV7nBRQqw@lx-t490>
 References: <20210730221824.595597-1-rostedt@goodmis.org>
- <20210730221824.595597-18-rostedt@goodmis.org>
+        <20210730221824.595597-2-rostedt@goodmis.org>
+        <YQY/72DgV7nBRQqw@lx-t490>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210730221824.595597-18-rostedt@goodmis.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Jul 30, 2021, Steven Rostedt wrote:
-> +
-> +The SQL format is as follows:
-> +
-> +*SELECT* <fields> FROM <start-event> JOIN <end-event> ON <matching-fields> WHERE <filter>
-> +
-> +Note, although the examples show the SQL commands in uppercase, they are not required to
-> +be so. That is, you can use "SELECT" or "select" or "sElEct".
-> +
+On Sun, 1 Aug 2021 08:32:15 +0200
+"Ahmed S. Darwish" <a.darwish@linutronix.de> wrote:
 
-Maybe it would be helpful to mention that, unlike normal SELECT queries,
-the JOIN and ON parts above are _not_ optional?
+> On Fri, Jul 30, 2021, Steven Rostedt wrote:
+> >
+> > Currently it only supports simple SQL of the type:
+> >
+> >   SELECT start.common_pid AS pid, end.common_timestamp.usecs AS usecs
+> >     FROM sched_waking AS start on sched_switch AS end  
+>                                  ^
+>                                  JOIN
+> >     ON start.pid = end.next_pid
+> >  
 
-That is, generic "one event source" queries:
+Oops, thanks!
 
-  SELECT common_pid,msr,val FROM write_msr WHERE msr=72
+-- Steve
 
-are not supported. (I wish they were though ;-))
 
-BTW, thanks a lot for this work. It will finally make synthetic events
-usable!
-
-Kind regards,
-
---
-Ahmed S. Darwish
-Linutronix GmbH
