@@ -7,34 +7,34 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D6CEC4338F
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 16:48:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41FF8C43214
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 16:48:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4CED661029
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 16:48:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2B5DD6109F
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 16:48:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237240AbhHCQsZ (ORCPT
+        id S237224AbhHCQs0 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 3 Aug 2021 12:48:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60578 "EHLO mail.kernel.org"
+        Tue, 3 Aug 2021 12:48:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231637AbhHCQsZ (ORCPT
+        id S237234AbhHCQsZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 3 Aug 2021 12:48:25 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 263A060F9C;
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C26861037;
         Tue,  3 Aug 2021 16:48:14 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mAxaP-002uUg-1W; Tue, 03 Aug 2021 12:48:13 -0400
+        id 1mAxaP-002uUs-4H; Tue, 03 Aug 2021 12:48:13 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v2 4/7] libtracefs: Add API tracefs_hist_show()
-Date:   Tue,  3 Aug 2021 12:48:08 -0400
-Message-Id: <20210803164811.693731-5-rostedt@goodmis.org>
+Subject: [PATCH v2 7/7] libtracefs: Add API tracefs_synth_complete()
+Date:   Tue,  3 Aug 2021 12:48:11 -0400
+Message-Id: <20210803164811.693731-8-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210803164811.693731-1-rostedt@goodmis.org>
 References: <20210803164811.693731-1-rostedt@goodmis.org>
@@ -46,176 +46,75 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add tracefs_hist_show() that will display the commands that would be
-executed in order to create the given histogram.
+Add tracefs_synth_complete() to tell if the synthetic event is a full
+synthetic event (can create a synthetic event) or not, where it has only
+enough information to create the starting histogram.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Documentation/libtracefs-hist.txt |   8 +++
- include/tracefs.h                 |   2 +
- src/tracefs-hist.c                | 102 ++++++++++++++++++++++--------
- 3 files changed, 85 insertions(+), 27 deletions(-)
+ Documentation/libtracefs-synth2.txt |  4 ++++
+ include/tracefs.h                   |  1 +
+ src/tracefs-hist.c                  | 13 +++++++++++++
+ 3 files changed, 18 insertions(+)
 
-diff --git a/Documentation/libtracefs-hist.txt b/Documentation/libtracefs-hist.txt
-index 9bf13ac03af7..03ac07743d1c 100644
---- a/Documentation/libtracefs-hist.txt
-+++ b/Documentation/libtracefs-hist.txt
-@@ -30,6 +30,9 @@ int tracefs_hist_append_filter(struct tracefs_hist pass:[*]hist,
- 			       const char pass:[*]field,
- 			       enum tracefs_compare compare,
- 			       const char pass:[*]val);
-+int tracefs_hist_show(struct trace_seq pass:[*]s, struct tracefs_instance pass:[*]instance,
-+			 struct tracefs_hist pass:[*]hist,
-+			 enum tracefs_hist_command command);
- int tracefs_hist_command(struct tracefs_instance pass:[*]instance,
- 			 struct tracefs_hist pass:[*]hist,
- 			 enum tracefs_hist_command command);
-@@ -121,6 +124,11 @@ _field_, _compare_, and _val_ are ignored unless _type_ is equal to
+diff --git a/Documentation/libtracefs-synth2.txt b/Documentation/libtracefs-synth2.txt
+index 5d34c4f60469..44693b394f29 100644
+--- a/Documentation/libtracefs-synth2.txt
++++ b/Documentation/libtracefs-synth2.txt
+@@ -17,6 +17,7 @@ int tracefs_synth_destroy(struct tracefs_instance pass:[*]instance,
+ 			  struct tracefs_synth pass:[*]synth);
+ int tracefs_synth_show(struct trace_seq pass:[*]seq, struct tracefs_instance pass:[*]instance,
+ 		       struct tracefs_synth pass:[*]synth);
++bool tracefs_synth_complete(struct tracefs_synth pass:[*]synth);
+ struct tracefs_hist pass:[*]tracefs_synth_get_start_hist(struct tracefs_synth pass:[*]synth);
  
- *TRACEFS_COMPARE_AND* - _field_ & _val_ : where _field_ is a flags field.
+ --
+@@ -53,6 +54,9 @@ this may fail as busy.
+ the synthetic event in the given _instance_, it will write the echo commands to
+ manually create it in the _seq_ given.
  
-+*trace_hist_show*() prints the commands needed to create the given histogram
-+in the given _instance_, or NULL for the top level, into the _seq_.
-+The command that is printed is described by _command_ and shows the functionality
-+that would be done by *tracefs_hist_command*(3).
++*tracefs_synth_complete*() returns true if the synthetic event _synth_ has both
++a starting and ending event.
 +
- *tracefs_hist_command*() is called to process a command on the histogram
- _hist_ for its event in the given _instance_, or NULL for the top level.
- The _cmd_ can be one of:
+ *tracefs_synth_get_start_hist*() returns a struct tracefs_hist descriptor describing
+ the histogram used to create the synthetic event.
+ 
 diff --git a/include/tracefs.h b/include/tracefs.h
-index 0be6e907d29b..ab781764b0ed 100644
+index 8148bd57224b..55f82392b004 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
-@@ -327,6 +327,8 @@ int tracefs_hist_append_filter(struct tracefs_hist *hist,
- 			       const char *field,
- 			       enum tracefs_compare compare,
- 			       const char *val);
-+int tracefs_hist_show(struct trace_seq *seq,  struct tracefs_instance *instance,
-+		      struct tracefs_hist *hist, enum tracefs_hist_command command);
- int tracefs_hist_command(struct tracefs_instance *instance,
- 			 struct tracefs_hist *hist, enum tracefs_hist_command cmd);
- 
+@@ -467,6 +467,7 @@ int tracefs_synth_append_end_filter(struct tracefs_synth *synth,
+ 				    const char *field,
+ 				    enum tracefs_compare compare,
+ 				    const char *val);
++bool tracefs_synth_complete(struct tracefs_synth *synth);
+ struct tracefs_hist *tracefs_synth_get_start_hist(struct tracefs_synth *synth);
+ int tracefs_synth_create(struct tracefs_instance *instance,
+ 			 struct tracefs_synth *synth);
 diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index 1be14362f407..7c84e942d58b 100644
+index 379f75c7de24..305e3e720341 100644
 --- a/src/tracefs-hist.c
 +++ b/src/tracefs-hist.c
-@@ -50,6 +50,79 @@ static void add_list(struct trace_seq *seq, const char *start,
- 	}
+@@ -1354,6 +1354,19 @@ static int verify_state(struct tracefs_synth *synth)
+ 	return 0;
  }
  
-+static void add_hist_commands(struct trace_seq *seq, struct tracefs_hist *hist,
-+			     enum tracefs_hist_command command)
-+{
-+	if (command == TRACEFS_HIST_CMD_DESTROY)
-+		trace_seq_putc(seq, '!');
-+
-+	add_list(seq, "hist:keys=", hist->keys);
-+
-+	if (hist->values)
-+		add_list(seq, ":vals=", hist->values);
-+
-+	if (hist->sort)
-+		add_list(seq, ":sort=", hist->sort);
-+
-+	if (hist->size)
-+		trace_seq_printf(seq, ":size=%d", hist->size);
-+
-+	switch(command) {
-+	case TRACEFS_HIST_CMD_START: break;
-+	case TRACEFS_HIST_CMD_PAUSE: trace_seq_puts(seq, ":pause"); break;
-+	case TRACEFS_HIST_CMD_CONT: trace_seq_puts(seq, ":cont"); break;
-+	case TRACEFS_HIST_CMD_CLEAR: trace_seq_puts(seq, ":clear"); break;
-+	default: break;
-+	}
-+
-+	if (hist->name)
-+		trace_seq_printf(seq, ":name=%s", hist->name);
-+
-+	if (hist->filter)
-+		trace_seq_printf(seq, " if %s", hist->filter);
-+
-+}
-+
-+/*
-+ * trace_hist_show - show how to start the histogram
-+ * @seq: A trace_seq to store the commands to create
-+ * @hist: The histogram to write into the trigger file
-+ * @command: If not zero, can pause, continue or clear the histogram
++/**
++ * tracefs_synth_complete - tell if the tracefs_synth is complete or not
++ * @synth: The synthetic event to get the start hist from.
 + *
-+ * This shows the commands to create the histogram for an event
-+ * with the given fields.
-+ *
-+ * Returns 0 on succes -1 on error.
++ * Retruns true if the synthetic event @synth has both a start and
++ * end event (ie. a synthetic event, or just a histogram), and
++ * false otherwise.
 + */
-+int
-+tracefs_hist_show(struct trace_seq *seq, struct tracefs_instance *instance,
-+		  struct tracefs_hist *hist,
-+		  enum tracefs_hist_command command)
++bool tracefs_synth_complete(struct tracefs_synth *synth)
 +{
-+	const char *system = hist->system;
-+	const char *event = hist->event_name;
-+	char *path;
-+
-+	if (!hist->keys) {
-+		errno = -EINVAL;
-+		return -1;
-+	}
-+
-+	path = tracefs_event_get_file(instance, system, event, "trigger");
-+	if (!path)
-+		return -1;
-+
-+	trace_seq_puts(seq, "echo '");
-+
-+	add_hist_commands(seq, hist, command);
-+
-+	trace_seq_printf(seq, "' > %s\n", path);
-+
-+	tracefs_put_tracing_file(path);
-+
-+	return 0;
++	return synth && synth->start_event && synth->end_event;
 +}
 +
- /*
-  * tracefs_hist_command - Create, start, pause, destroy a histogram for an event
-  * @instance: The instance the histogram will be in (NULL for toplevel)
-@@ -78,34 +151,9 @@ int tracefs_hist_command(struct tracefs_instance *instance,
- 
- 	trace_seq_init(&seq);
- 
--	if (command == TRACEFS_HIST_CMD_DESTROY)
--		trace_seq_putc(&seq, '!');
--
--	add_list(&seq, "hist:keys=", hist->keys);
--
--	if (hist->values)
--		add_list(&seq, ":vals=", hist->values);
--
--	if (hist->sort)
--		add_list(&seq, ":sort=", hist->sort);
--
--	if (hist->size)
--		trace_seq_printf(&seq, ":size=%d", hist->size);
--
--	switch(command) {
--	case TRACEFS_HIST_CMD_START: break;
--	case TRACEFS_HIST_CMD_PAUSE: trace_seq_puts(&seq, ":pause"); break;
--	case TRACEFS_HIST_CMD_CONT: trace_seq_puts(&seq, ":cont"); break;
--	case TRACEFS_HIST_CMD_CLEAR: trace_seq_puts(&seq, ":clear"); break;
--	default: break;
--	}
--
--	if (hist->name)
--		trace_seq_printf(&seq, ":name=%s", hist->name);
--
--	if (hist->filter)
--		trace_seq_printf(&seq, " if %s\n", hist->filter);
-+	add_hist_commands(&seq, hist, command);
- 
-+	trace_seq_putc(&seq, '\n');
- 	trace_seq_terminate(&seq);
- 
- 	ret = -1;
+ /**
+  * tracefs_synth_get_start_hist - Return the histogram of the start event
+  * @synth: The synthetic event to get the start hist from.
 -- 
 2.30.2
 
