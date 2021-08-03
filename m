@@ -7,28 +7,28 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05D73C43216
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 04:24:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92B5EC432BE
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 04:24:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E1D9A610CC
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 04:24:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6E9F161159
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 04:24:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233749AbhHCEYJ (ORCPT
+        id S233763AbhHCEYJ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Tue, 3 Aug 2021 00:24:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57138 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:57148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232478AbhHCEYH (ORCPT
+        id S232667AbhHCEYH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 3 Aug 2021 00:24:07 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED711610A2;
+        by mail.kernel.org (Postfix) with ESMTPSA id ED468610A0;
         Tue,  3 Aug 2021 04:23:56 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mAly7-002qnC-Oz; Tue, 03 Aug 2021 00:23:55 -0400
+        id 1mAly7-002qnO-Sq; Tue, 03 Aug 2021 00:23:55 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
@@ -38,9 +38,9 @@ Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v2 04/21] libtracefs: Add unit test to test tracefs_sql() compare
-Date:   Tue,  3 Aug 2021 00:23:30 -0400
-Message-Id: <20210803042347.679499-5-rostedt@goodmis.org>
+Subject: [PATCH v2 08/21] libtracefs: Make parser unique to libtracefs
+Date:   Tue,  3 Aug 2021 00:23:34 -0400
+Message-Id: <20210803042347.679499-9-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210803042347.679499-1-rostedt@goodmis.org>
 References: <20210803042347.679499-1-rostedt@goodmis.org>
@@ -52,42 +52,51 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add a test to test passing time from sched_waking to sched_switch to
-show wake up latency.
+Add %define api.prefix and defines to have the parser global variables use
+tracefs_* instead of yy*, as without this, if a tool that links to this
+library, and tries to use the synth sql parsing, it may end up using its
+own yyparse() and friends functions.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- utest/tracefs-utest.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ src/sqlhist.y         | 10 ++++++++++
+ src/tracefs-sqlhist.c |  2 +-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index 89bb1cce61f7..f4e1a6b90a46 100644
---- a/utest/tracefs-utest.c
-+++ b/utest/tracefs-utest.c
-@@ -50,6 +50,9 @@
- #define SQL_2_EVENT	"wakeup_2"
- #define SQL_2_SQL	"select woke.next_pid as woke_pid, wake.common_pid as waking_pid from sched_waking as wake join sched_switch as woke on woke.next_pid = wake.pid"
+diff --git a/src/sqlhist.y b/src/sqlhist.y
+index ce9cb58fb3a9..9d03a457ae84 100644
+--- a/src/sqlhist.y
++++ b/src/sqlhist.y
+@@ -30,6 +30,16 @@ extern void yyerror(struct sqlhist_bison *, char *fmt, ...);
+ %}
  
-+#define SQL_3_EVENT	"wakeup_lat"
-+#define SQL_3_SQL	"select start.pid, end.next_prio as prio, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sched_waking as start join sched_switch as end on start.pid = end.next_pid"
+ %define api.pure
 +
- static struct tracefs_instance *test_instance;
- static struct tep_handle *test_tep;
- struct test_sample {
-@@ -354,6 +357,13 @@ static void test_instance_trace_sql(struct tracefs_instance *instance)
- 	tracefs_synth_free(synth);
- 	trace_seq_reset(&seq);
++/* Change the globals to use tracefs_ prefix */
++%define api.prefix{tracefs_}
++%code provides
++{
++  #define YYSTYPE TRACEFS_STYPE
++  #define yylex tracefs_lex
++  #define yyerror tracefs_error
++}
++
+ %lex-param {void *scanner}
+ %parse-param {struct sqlhist_bison *sb}
  
-+	synth = tracefs_sql(tep, SQL_3_EVENT, SQL_3_SQL, NULL);
-+	CU_TEST(synth != NULL);
-+	ret = tracefs_synth_show(&seq, instance, synth);
-+	CU_TEST(ret == 0);
-+	tracefs_synth_free(synth);
-+	trace_seq_reset(&seq);
-+
- 	tep_free(tep);
- 	trace_seq_destroy(&seq);
- }
+diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
+index e8f77d60659f..933b3609733b 100644
+--- a/src/tracefs-sqlhist.c
++++ b/src/tracefs-sqlhist.c
+@@ -1021,7 +1021,7 @@ struct tracefs_synth *tracefs_sql(struct tep_handle *tep, const char *name,
+ 		return NULL;
+ 	}
+ 
+-	ret = yyparse(&sb);
++	ret = tracefs_parse(&sb);
+ 	yylex_destroy(sb.scanner);
+ 
+ 	if (ret)
 -- 
 2.30.2
 
