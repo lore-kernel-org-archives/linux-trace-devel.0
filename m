@@ -2,32 +2,33 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F973C432BE
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 04:24:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A7E9C4338F
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 04:24:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5B7DF61158
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 04:24:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E41BB61159
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 04:24:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234015AbhHCEYl (ORCPT
+        id S234055AbhHCEYr (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 3 Aug 2021 00:24:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57198 "EHLO mail.kernel.org"
+        Tue, 3 Aug 2021 00:24:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233631AbhHCEYH (ORCPT
+        id S233157AbhHCEYH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 3 Aug 2021 00:24:07 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5F8561029;
+        by mail.kernel.org (Postfix) with ESMTPSA id EAA556109F;
         Tue,  3 Aug 2021 04:23:56 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mAly7-002qn1-KE; Tue, 03 Aug 2021 00:23:55 -0400
+        id 1mAly7-002qnF-Py; Tue, 03 Aug 2021 00:23:55 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
@@ -37,12 +38,13 @@ Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v2 00/21] libtracefs: Introducing tracefs_sql() to create synthetice events with an SQL line
-Date:   Tue,  3 Aug 2021 00:23:26 -0400
-Message-Id: <20210803042347.679499-1-rostedt@goodmis.org>
+Subject: [PATCH v2 05/21] libtracefs: Add filtering for start and end events in tracefs_sql()
+Date:   Tue,  3 Aug 2021 00:23:31 -0400
+Message-Id: <20210803042347.679499-6-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210803042347.679499-1-rostedt@goodmis.org>
+References: <20210803042347.679499-1-rostedt@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
@@ -50,376 +52,485 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-I forgot to mention my special thanks:
-
-  Lukas Bulwahn for first introducing the idea at RT Summit on the Summit
-    Spring of 2019.
-    
-  Daniel Black for sorting out the syntax of mapping the synthetic
-    event creations into SQL statements at Linux Plumbers, Fall of 2019.
-
-This patch set depends on:
-
-   https://patchwork.kernel.org/project/linux-trace-devel/list/?series=525353
-
-Below is from the man page, which has a fully functional parser as its
-example (in man page, not here. But the usage of that parser is described in
-the FUNCTIONAL EXAMPLE section below).
-
-struct tracefs_synth *tracefs_sql(struct tep_handle *tep, const char *name,
-				  const char *sql_buffer, char **err);
-
-Major update since v1:
-
-   It was brought to my attention that the man page did not state that the
-   SQL syntax required JOIN .. ON in the statement. That is, they were not
-   optional. I decided to fix that. But not by updating the man page, but by
-   actually making JOIN .. ON optional. If you leave that out, the synthetic
-   event will not be completely created, but it will have enough to create
-   a histogram. See the bottom (HISTOGRAMS) for more info!
-
-
-struct tracefs_synth *tracefs_sql(struct tep_handle *tep, const char *name,
-                                  const char *sql_buffer, char **err);
-
-Synthetic events are dynamically created events that attach two existing
-events together via one or more matching fields between the two events. It
-can be used to find the latency between the events, or to simply pass fields
-of the first event on to the second event to display as one event.
-
-The Linux kernel interface to create synthetic events is complex, and there
-needs to be a better way to create synthetic events that is easy and can be
-understood via existing technology.
-
-If you think of each event as a table, where the fields are the column of
-the table and each instance of the event as a row, you can understand how
-SQL can be used to attach two events together and for another event (table).
-Utilizing the SQL SELECT FROM JOIN ON [ WHERE ] syntax, a synthetic event
-can easily be created from two different events.
-
-For simple SQL queries to make a histogram instead of a synthetic event, see
-HISTOGRAMS below.
-
-tracefs_sql() takes in a tep handler (See tep_local_events(3)) that is used
-to verify the events within the sql_buffer expression. The name is the name
-of the synthetic event to create. If err points to an address of a string,
-it will be filled with a detailed message on any type of parsing error,
-including fields that do not belong to an event, or if the events or fields
-are not properly compared.
-
-The example program below is a fully functional parser where it will create
-a synthetic event from a SQL syntax passed in via the command line or a
-file.
-
-The SQL format is as follows:
-
-    SELECT <fields> FROM <start-event> JOIN <end-event> ON <matching-fields> WHERE <filter>
-
-Note, although the examples show the SQL commands in uppercase, they are not
-required to be so. That is, you can use "SELECT" or "select" or "sElEct".
+Allow the start and end events to have filters with the "WHERE" clause.
 
 For example:
 
-    SELECT syscalls.sys_enter_read.fd, syscalls.sys_exit_read.ret FROM syscalls.sys_enter_read
-       JOIN syscalls.sys_exit_read
-       ON syscalls.sys_enter_read.common_pid = syscalls.sys_exit_write.common_pid
-
-Will create a synthetic event that with the fields:
-
-    u64 fd; s64 ret;
-
-Because the function takes a tep handle, and usually all event names are
-unique, you can leave off the system (group) name of the event, and
-tracefs_sql() will discover the system for you.
-
-That is, the above statement would work with:
-
-    SELECT sys_enter_read.fd, sys_exit_read.ret FROM sys_enter_read JOIN sys_exit_read
-       ON sys_enter_read.common_pid = sys_exit_write.common_pid
-
-The AS keyword can be used to name the fields as well as to give an alias to
-the events, such that the above can be simplified even more as;
-
-    SELECT start.fd, end.ret FROM sys_enter_read AS start JOIN sys_exit_read AS end ON start.common_pid = end.common_pid
-
-The above aliases sys_enter_read as start and sys_exit_read as end and uses
-those aliases to reference the event throughout the statement.
-
-Using the AS keyword in the selection portion of the SQL statement will
-define what those fields will be called in the synthetic event.
-
-    SELECT start.fd AS filed, end.ret AS return FROM sys_enter_read AS start JOIN sys_exit_read AS end
-       ON start.common_pid = end.common_pid
-
-The above labels the fd of start as filed and the ret of end as return where
-the synthetic event that is created will now have the fields:
-
-    u64 filed; s64 return;
-
-The fields can also be calculated with results passed to the synthetic event:
-
-    select start.truesize, end.len, (start.truesize - end.len) as diff from napi_gro_receive_entry as start
-       JOIN netif_receive_skb as end ON start.skbaddr = end.skbaddr
-
-Which would show the truesize" of the napi_gro_receive_entry event, the
-actual len of the content, shown by the netif_receive_skb, and alse the
-delta between the two and expressed by the field *diff.
-
-The code also supports recording the timestamps at either event, and
-performing calculations on them. For wakeup latency, you have:
-
-    select start.pid, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sched_waking as start
-       JOIN sched_switch as end ON start.pid = end.next_pid
-
-The above will create a synthetic event that records the pid of the task
-being woken up, and the time difference between the sched_waking event and
-the sched_switch event. The TIMESTAMP_USECS will truncate the time down to
-microseconds as the timestamp usually recorded in the tracing buffer has
-nanosecond resolution. If you do not want that truncation, use TIMESTAMP
-instead of TIMESTAMP_USECS.
-
-Finally, the WHERE clause can be added, that will let you add filters on
-either or both events.
-
-    select start.pid, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sched_waking as start
-       JOIN sched_switch as end ON start.pid = end.next_pid
-       WHERE start.prio < 100 && (!(end.prev_pid < 1 || end.prev_prio > 100) || end.prev_pid == 0)
-
-NOTE
-
-Although both events can be used together in the WHERE clause, they must not
-be mixed outside the top most "&&" statements. You can not OR (||) the
-events together, where a filter of one event is OR’d to a filter of the
-other event. This does not make sense, as the synthetic event requires both
-events to take place to be recorded. If one is filtered out, then the
-synthetic event does not execute.
-
-    select start.pid, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sched_waking as start
-       JOIN sched_switch as end ON start.pid = end.next_pid
-       WHERE start.prio < 100 && end.prev_prio < 100
-
-The above is valid.
-
-Where as the below is not.
-
-    select start.pid, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sched_waking as start
-       JOIN sched_switch as end ON start.pid = end.next_pid
-       WHERE start.prio < 100 || end.prev_prio < 100
-
-KEYWORDS AS EVENT FIELDS
-
-In some cases, an event may have a keyword. For example,
-regcache_drop_region has "from" as a field and the following will not work
-
-      select from from regcache_drop_region
-
-In such cases, add a backslash to the conflicting field, and this will tell
-the parser that the "from" is a field and not a keyword:
-
-      select \from from regcache_drop_region
-
-HISTOGRAMS
-
-Simple SQL statements without the JOIN ON may also be used, which will
-create a histogram instead. When doing this, the struct tracefs_hist
-descriptor can be retrieved from the returned synthetic event descriptor via
-the tracefs_synth_get_start_hist(3).
-
-In order to utilize the histogram types (see xxx) the CAST command of SQL
-can be used.
-
-That is:
-
-      select CAST(common_pid AS comm), CAST(id AS syscall) FROM sys_enter
-
-Which produces:
-
-     # echo 'hist:keys=common_pid.execname,id.syscall' > events/raw_syscalls/sys_enter/trigger
-
-     # cat events/raw_syscalls/sys_enter/hist
-
-    { common_pid: bash            [     18248], id: sys_setpgid                   [109] } hitcount:          1
-    { common_pid: sendmail        [      1812], id: sys_read                      [  0] } hitcount:          1
-    { common_pid: bash            [     18247], id: sys_getpid                    [ 39] } hitcount:          1
-    { common_pid: bash            [     18247], id: sys_dup2                      [ 33] } hitcount:          1
-    { common_pid: gmain           [     13684], id: sys_inotify_add_watch         [254] } hitcount:          1
-    { common_pid: cat             [     18247], id: sys_access                    [ 21] } hitcount:          1
-    { common_pid: bash            [     18248], id: sys_getpid                    [ 39] } hitcount:          1
-    { common_pid: cat             [     18247], id: sys_fadvise64                 [221] } hitcount:          1
-    { common_pid: sendmail        [      1812], id: sys_openat                    [257] } hitcount:          1
-    { common_pid: less            [     18248], id: sys_munmap                    [ 11] } hitcount:          1
-    { common_pid: sendmail        [      1812], id: sys_close                     [  3] } hitcount:          1
-    { common_pid: gmain           [      1534], id: sys_poll                      [  7] } hitcount:          1
-    { common_pid: bash            [     18247], id: sys_execve                    [ 59] } hitcount:          1
-
-Note, string fields may not be cast.
-
-The possible types to cast to are:
-
-HEX - convert the value to use hex and not decimal
-
-SYM - convert a pointer to symbolic (kallsyms values)
-
-SYM-OFFSET - convert a pointer to symbolic and include the offset.
-
-SYSCALL - convert the number to the mapped system call name
-
-EXECNAME or COMM - can only be used with the common_pid field. Will show the
-task name of the process.
-
-LOG or LOG2 - bucket the key values in a log 2 values (1, 2, 3-4, 5-8, 9-16, 17-32, ...)
-
-The above fields are not case sensitive, and "LOG2" works as good as "log".
-
-A special CAST to COUNTER or COUNTER will make the field a value and not a
-key. For example:
-
-      SELECT common_pid, CAST(bytes_req AS _COUNTER_) FROM kmalloc
-
-Which will create
-
-      echo 'hist:keys=common_pid:vals=bytes_req' > events/kmem/kmalloc/trigger
-
-      cat events/kmem/kmalloc/hist
-
-    { common_pid:       1812 } hitcount:          1  bytes_req:         32
-    { common_pid:       9111 } hitcount:          2  bytes_req:        272
-    { common_pid:       1768 } hitcount:          3  bytes_req:       1112
-    { common_pid:          0 } hitcount:          4  bytes_req:        512
-    { common_pid:      18297 } hitcount:         11  bytes_req:       2004
-
-RETURN VALUE
-
-Returns 0 on success and -1 on failure. On failure, if err is defined, it
-will be allocated to hold a detailed description of what went wrong if it
-the error was caused by a parsing error, or that an event, field does not
-exist or is not compatible with what it was combined with.
-
-FUNCTIONAL EXAMPLE:
--------------------
-
-After applying this patch, and installing it. If you compile the example from the man
-page (calling it sqlhist.c):
-
- >$ gcc -o sqlhist sqlhist.c `pkg-config --cflags --libs libtracefs`
- >$ su
- ># ./sqlhist -n syscall_wait -e 'select start.id, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat  
-    from sys_enter as start join sys_exit as end on start.common_pid = end.common_pid
-    where start.id != 23 && start.id != 7 && start.id != 61 && start.id != 230 &&
-          start.id != 232 && start.id != 270 && start.id != 271 && start.id != 202'
-
-
-(All the start.id filtering is hiding the syscalls that block for a long time)
-
- ># echo 'hist:keys=id.syscall,lat.buckets=10:sort=lat' > /sys/kernel/tracing/events/synthetic/syscall_wait/trigger  
-
-<wait a while>
-
- ># cat /sys/kernel/tracing/events/synthetic/syscall_wait/hist  
- # event histogram
- #
- # trigger info: hist:keys=id.syscall,lat.buckets=10:vals=hitcount:sort=lat.buckets=10:size=2048 [active]
- #
-
-{ id: sys_fadvise64                 [221], lat: ~ 0-9 } hitcount:          1
-{ id: sys_fcntl                     [ 72], lat: ~ 0-9 } hitcount:          5
-{ id: sys_read                      [  0], lat: ~ 0-9 } hitcount:         51
-{ id: sys_dup2                      [ 33], lat: ~ 0-9 } hitcount:          1
-{ id: sys_newfstat                  [  5], lat: ~ 0-9 } hitcount:          7
-{ id: sys_getpid                    [ 39], lat: ~ 0-9 } hitcount:         18
-{ id: sys_openat                    [257], lat: ~ 0-9 } hitcount:          3
-{ id: sys_newstat                   [  4], lat: ~ 0-9 } hitcount:         22
-{ id: sys_newlstat                  [  6], lat: ~ 0-9 } hitcount:         44
-{ id: sys_write                     [  1], lat: ~ 0-9 } hitcount:         23
-{ id: sys_brk                       [ 12], lat: ~ 0-9 } hitcount:          4
-{ id: sys_readlink                  [ 89], lat: ~ 0-9 } hitcount:         11
-{ id: sys_close                     [  3], lat: ~ 0-9 } hitcount:         21
-{ id: sys_mprotect                  [ 10], lat: ~ 0-9 } hitcount:          4
-{ id: sys_arch_prctl                [158], lat: ~ 0-9 } hitcount:          2
-{ id: sys_getuid                    [102], lat: ~ 0-9 } hitcount:         12
-{ id: sys_rt_sigaction              [ 13], lat: ~ 0-9 } hitcount:        105
-{ id: sys_statfs                    [137], lat: ~ 0-9 } hitcount:          8
-{ id: sys_rt_sigprocmask            [ 14], lat: ~ 0-9 } hitcount:        121
-{ id: sys_inotify_add_watch         [254], lat: ~ 0-9 } hitcount:          7
-{ id: sys_mmap                      [  9], lat: ~ 0-9 } hitcount:         10
-{ id: sys_ioctl                     [ 16], lat: ~ 0-9 } hitcount:         32
-{ id: sys_pread64                   [ 17], lat: ~ 0-9 } hitcount:          4
-{ id: sys_setpgid                   [109], lat: ~ 0-9 } hitcount:          2
-{ id: sys_lseek                     [  8], lat: ~ 0-9 } hitcount:         11
-{ id: sys_access                    [ 21], lat: ~ 0-9 } hitcount:          1
-{ id: sys_rt_sigprocmask            [ 14], lat: ~ 10-19 } hitcount:          9
-{ id: sys_munmap                    [ 11], lat: ~ 10-19 } hitcount:          1
-{ id: sys_newstat                   [  4], lat: ~ 10-19 } hitcount:          1
-{ id: sys_rt_sigaction              [ 13], lat: ~ 10-19 } hitcount:          1
-{ id: sys_read                      [  0], lat: ~ 10-19 } hitcount:         11
-{ id: sys_openat                    [257], lat: ~ 10-19 } hitcount:         13
-{ id: sys_getpid                    [ 39], lat: ~ 10-19 } hitcount:          1
-{ id: sys_inotify_add_watch         [254], lat: ~ 10-19 } hitcount:          2
-{ id: sys_write                     [  1], lat: ~ 10-19 } hitcount:         10
-{ id: sys_read                      [  0], lat: ~ 20-29 } hitcount:          4
-{ id: sys_pipe                      [ 22], lat: ~ 20-29 } hitcount:          1
-{ id: sys_write                     [  1], lat: ~ 20-29 } hitcount:         11
-{ id: sys_write                     [  1], lat: ~ 30-39 } hitcount:          2
-{ id: sys_inotify_add_watch         [254], lat: ~ 30-39 } hitcount:          1
-{ id: sys_write                     [  1], lat: ~ 40-49 } hitcount:          1
-{ id: sys_inotify_add_watch         [254], lat: ~ 40-49 } hitcount:          1
-{ id: sys_openat                    [257], lat: ~ 40-49 } hitcount:          1
-{ id: sys_read                      [  0], lat: ~ 70-79 } hitcount:          8
-{ id: sys_read                      [  0], lat: ~ 80-89 } hitcount:          1
-{ id: sys_read                      [  0], lat: ~ 110-119 } hitcount:          2
-{ id: sys_clone                     [ 56], lat: ~ 240-249 } hitcount:          1
-{ id: sys_execve                    [ 59], lat: ~ 350-359 } hitcount:          1
-{ id: sys_write                     [  1], lat: ~ 1960-1969 } hitcount:          1
-
-Totals:
-    Hits: 615
-    Entries: 49
-    Dropped: 0
-
-
-Steven Rostedt (VMware) (21):
-  libtracefs: Added new API tracefs_sql()
-  tracefs: Add unit tests for tracefs_sql()
-  libtracefs: Add comparing start and end fields in tracefs_sql()
-  libtracefs: Add unit test to test tracefs_sql() compare
-  libtracefs: Add filtering for start and end events in tracefs_sql()
-  libtracefs: Add unit test to test tracefs_sql() where clause
-  libtracefs: Make sqlhist parser reentrant
-  libtracefs: Make parser unique to libtracefs
-  libtracefs: Add line number and index to expr structure
-  libtracefs: Add error message when match fields are not FROM and JOIN
-    events
-  libtracefs: Add error message when match or init fails from bad events
-  libtracefs; Add error message for bad selections to SQL sequence
-  libtracefs: Add error message when compare fields fail
-  libtracefs: Add error message for grouping events in SQL filter
-  libtracefs: Add error message for bad filters in SQL statement
-  libtracefs: Add error message when calculation has no label
-  libtracefs: Add man page for tracefs_sql()
-  libtracefs: Allow for simple SQL statements to create a histogram
-  libtracefs: Allow trace_sql() to take keywords for fields with
-    backslash
-  libtracefs: Add CAST() syntax to SQL parsing for histogram types
-  libtracefs: Add CAST(x AS _COUNTER_) syntax to create values in
-    histograms
-
- Documentation/libtracefs-sql.txt |  504 ++++++++++
- include/tracefs-local.h          |    9 +
- include/tracefs.h                |    6 +
- src/Makefile                     |   13 +
- src/sqlhist-parse.h              |   76 ++
- src/sqlhist.l                    |   98 ++
- src/sqlhist.y                    |  250 +++++
- src/tracefs-hist.c               |  166 +++-
- src/tracefs-sqlhist.c            | 1569 ++++++++++++++++++++++++++++++
- utest/tracefs-utest.c            |   78 ++
- 10 files changed, 2729 insertions(+), 40 deletions(-)
- create mode 100644 Documentation/libtracefs-sql.txt
- create mode 100644 src/sqlhist-parse.h
- create mode 100644 src/sqlhist.l
- create mode 100644 src/sqlhist.y
- create mode 100644 src/tracefs-sqlhist.c
-
+  SELECT (end.common_timestamp.usecs - start.common_timestamp.usecs) AS
+    lat FROM sched_waking AS start JOIN sched_switch AS end ON
+    start.pid = stop.next_pid WHERE start.prio < 100 &&
+    end.prev_prio < 100
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ src/sqlhist-parse.h   |   6 +
+ src/sqlhist.l         |   1 +
+ src/sqlhist.y         |  70 +++++++++++-
+ src/tracefs-sqlhist.c | 260 ++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 335 insertions(+), 2 deletions(-)
+
+diff --git a/src/sqlhist-parse.h b/src/sqlhist-parse.h
+index aeb1738d693f..0933bfe9a574 100644
+--- a/src/sqlhist-parse.h
++++ b/src/sqlhist-parse.h
+@@ -57,13 +57,19 @@ int table_start(struct sqlhist_bison *sb);
+ 
+ void *add_field(struct sqlhist_bison *sb, const char *field, const char *label);
+ 
++void *add_filter(struct sqlhist_bison *sb, void *A, void *B, enum filter_type op);
++
+ int add_match(struct sqlhist_bison *sb, void *A, void *B);
+ void *add_compare(struct sqlhist_bison *sb, void *A, void *B, enum compare_type type);
++int add_where(struct sqlhist_bison *sb, void *expr);
+ 
+ int add_selection(struct sqlhist_bison *sb, void *item, const char *label);
+ int add_from(struct sqlhist_bison *sb, void *item);
+ int add_to(struct sqlhist_bison *sb, void *item);
+ 
++void *add_string(struct sqlhist_bison *sb, const char *str);
++void *add_number(struct sqlhist_bison *sb, long val);
++
+ extern void sql_parse_error(struct sqlhist_bison *sb, const char *text,
+ 			    const char *fmt, va_list ap);
+ 
+diff --git a/src/sqlhist.l b/src/sqlhist.l
+index 5dfd17517c6e..5baba0992afc 100644
+--- a/src/sqlhist.l
++++ b/src/sqlhist.l
+@@ -32,6 +32,7 @@ as { HANDLE_COLUMN; return AS; }
+ from { HANDLE_COLUMN; return FROM; }
+ join { HANDLE_COLUMN; return JOIN; }
+ on { HANDLE_COLUMN; return ON; }
++where { HANDLE_COLUMN; return WHERE; }
+ 
+ {qstring} {
+ 	HANDLE_COLUMN;
+diff --git a/src/sqlhist.y b/src/sqlhist.y
+index 1ba3bf62ee43..8dcc824bb9f1 100644
+--- a/src/sqlhist.y
++++ b/src/sqlhist.y
+@@ -34,7 +34,7 @@ extern void yyerror(char *fmt, ...);
+ 	void	*expr;
+ }
+ 
+-%token AS SELECT FROM JOIN ON PARSE_ERROR
++%token AS SELECT FROM JOIN ON WHERE PARSE_ERROR
+ %token <number> NUMBER
+ %token <string> STRING
+ %token <string> FIELD
+@@ -49,6 +49,9 @@ extern void yyerror(char *fmt, ...);
+ 
+ %type <expr>  selection_expr field item named_field join_clause
+ %type <expr>  selection_addition
++%type <expr>  compare compare_list compare_cmds compare_items
++%type <expr>  compare_and_or
++%type <expr>  str_val val
+ 
+ %%
+ 
+@@ -120,8 +123,71 @@ name :
+    FIELD
+  ;
+ 
++str_val :
++   STRING	{ $$ = add_string(sb, $1); CHECK_RETURN_PTR($$); }
++ ;
++
++val :
++   str_val
++ | NUMBER	{ $$ = add_number(sb, $1); CHECK_RETURN_PTR($$); }
++ ;
++
++
++compare :
++   field '<' val	{ $$ = add_filter(sb, $1, $3, FILTER_LT); CHECK_RETURN_PTR($$); }
++ | field '>' val	{ $$ = add_filter(sb, $1, $3, FILTER_GT); CHECK_RETURN_PTR($$); }
++ | field LE val	{ $$ = add_filter(sb, $1, $3, FILTER_LE); CHECK_RETURN_PTR($$); }
++ | field GE val	{ $$ = add_filter(sb, $1, $3, FILTER_GE); CHECK_RETURN_PTR($$); }
++ | field '=' val	{ $$ = add_filter(sb, $1, $3, FILTER_EQ); CHECK_RETURN_PTR($$); }
++ | field EQ val	{ $$ = add_filter(sb, $1, $3, FILTER_EQ); CHECK_RETURN_PTR($$); }
++ | field NEQ val	{ $$ = add_filter(sb, $1, $3, FILTER_NE); CHECK_RETURN_PTR($$); }
++ | field "!=" val	{ $$ = add_filter(sb, $1, $3, FILTER_NE); CHECK_RETURN_PTR($$); }
++ | field '&' val	{ $$ = add_filter(sb, $1, $3, FILTER_BIN_AND); CHECK_RETURN_PTR($$); }
++ | field '~' str_val	{ $$ = add_filter(sb, $1, $3, FILTER_STR_CMP); CHECK_RETURN_PTR($$); }
++;
++
++compare_and_or :
++   compare_and_or OR compare_and_or	{ $$ = add_filter(sb, $1, $3, FILTER_OR); CHECK_RETURN_PTR($$); }
++ | compare_and_or AND compare_and_or	{ $$ = add_filter(sb, $1, $3, FILTER_AND); CHECK_RETURN_PTR($$); }
++ | '!' '(' compare_and_or ')'		{ $$ = add_filter(sb, $3, NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR($$); }
++ | '!' compare				{ $$ = add_filter(sb, $2, NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR($$); }
++ | compare
++ ;
++
++compare_items :
++   compare_items OR compare_items	{ $$ = add_filter(sb, $1, $3, FILTER_OR); CHECK_RETURN_PTR($$); }
++ | '(' compare_and_or ')'		{ $$ = add_filter(sb, $2, NULL, FILTER_GROUP); CHECK_RETURN_PTR($$); }
++ | '!' '(' compare_and_or ')'		{ $$ = add_filter(sb, $3, NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR($$); }
++ | '!' compare				{ $$ = add_filter(sb, $2, NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR($$); }
++ | compare
++ ;
++
++compare_cmds :
++   compare_items		{ CHECK_RETURN_VAL(add_where(sb, $1)); }
++ ;
++
++/*
++ * Top level AND is equal to ',' but the compare_cmds in them must
++ * all be of for the same event (start or end exclusive).
++ * That is, OR is not to be used between start and end events.
++ */
++compare_list :
++   compare_cmds
++ | compare_cmds ',' compare_list
++ | compare_cmds AND compare_list
++ ;
++
++where_clause :
++   WHERE compare_list
++ ;
++
++opt_where_clause :
++   /* empty */
++ | where_clause
++;
++
+ table_exp :
+-   from_clause join_clause
++   from_clause join_clause opt_where_clause
+  ;
+ 
+ from_clause :
+diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
+index cf2661773679..e47bc57c5add 100644
+--- a/src/tracefs-sqlhist.c
++++ b/src/tracefs-sqlhist.c
+@@ -90,6 +90,8 @@ struct sql_table {
+ 	struct expr		*fields;
+ 	struct expr		*from;
+ 	struct expr		*to;
++	struct expr		*where;
++	struct expr		**next_where;
+ 	struct match		*matches;
+ 	struct match		**next_match;
+ 	struct expr		*selections;
+@@ -317,9 +319,18 @@ static void *create_expr(enum expr_type type, struct expr **expr_p)
+ #define create_field(var, expr)				\
+ 	__create_expr(var, struct field, FIELD, expr)
+ 
++#define create_filter(var, expr)			\
++	__create_expr(var, struct filter, FILTER, expr)
++
+ #define create_compare(var, expr)				\
+ 	__create_expr(var, struct compare, COMPARE, expr)
+ 
++#define create_string(var, expr)			\
++	__create_expr(var, const char *, STRING, expr)
++
++#define create_number(var, expr)			\
++	__create_expr(var, long, NUMBER, expr)
++
+ __hidden void *add_field(struct sqlhist_bison *sb,
+ 			 const char *field_name, const char *label)
+ {
+@@ -342,6 +353,22 @@ __hidden void *add_field(struct sqlhist_bison *sb,
+ 	return expr;
+ }
+ 
++__hidden void *add_filter(struct sqlhist_bison *sb,
++			  void *A, void *B, enum filter_type op)
++{
++	struct filter *filter;
++	struct expr *expr;
++
++	create_filter(filter, &expr);
++
++	filter->lval = A;
++	filter->rval = B;
++
++	filter->type = op;
++
++	return expr;
++}
++
+ __hidden int add_match(struct sqlhist_bison *sb, void *A, void *B)
+ {
+ 	struct sql_table *table = sb->table;
+@@ -375,6 +402,23 @@ __hidden void *add_compare(struct sqlhist_bison *sb,
+ 	return expr;
+ }
+ 
++__hidden int add_where(struct sqlhist_bison *sb, void *item)
++{
++	struct expr *expr = item;
++	struct sql_table *table = sb->table;
++
++	if (expr->type != EXPR_FILTER)
++		return -1;
++
++	*table->next_where = expr;
++	table->next_where = &expr->next;
++
++	if (expr->next)
++		return -1;
++
++	return 0;
++}
++
+ __hidden int add_from(struct sqlhist_bison *sb, void *item)
+ {
+ 	struct expr *expr = item;
+@@ -399,6 +443,34 @@ __hidden int add_to(struct sqlhist_bison *sb, void *item)
+ 	return 0;
+ }
+ 
++__hidden void *add_string(struct sqlhist_bison *sb, const char *str)
++{
++	struct expr *expr;
++	const char **str_p;
++
++	create_string(str_p, &expr);
++	*str_p = str;
++	return expr;
++}
++
++__hidden void *add_number(struct sqlhist_bison *sb, long val)
++{
++	struct expr *expr;
++	long *num;
++
++	create_number(num, &expr);
++	*num = val;
++	return expr;
++
++	expr = calloc(1, sizeof(expr));
++	if (!expr)
++		return NULL;
++
++	expr->type = EXPR_NUMBER;
++	expr->number = val;
++	return expr;
++}
++
+ __hidden int table_start(struct sqlhist_bison *sb)
+ {
+ 	struct sql_table *table;
+@@ -410,6 +482,7 @@ __hidden int table_start(struct sqlhist_bison *sb)
+ 	table->sb = sb;
+ 	sb->table = table;
+ 
++	table->next_where = &table->where;
+ 	table->next_match = &table->matches;
+ 	table->next_selection = &table->selections;
+ 
+@@ -598,6 +671,167 @@ static int build_compare(struct tracefs_synth *synth,
+ 	return ret;
+ }
+ 
++static int do_verify_filter(struct filter *filter,
++			    const char **system, const char **event)
++{
++	int ret;
++
++	if (filter->type == FILTER_OR ||
++	    filter->type == FILTER_AND) {
++		ret = do_verify_filter(&filter->lval->filter, system, event);
++		if (ret)
++			return ret;
++		return do_verify_filter(&filter->rval->filter, system, event);
++	}
++	if (filter->type == FILTER_GROUP ||
++	    filter->type == FILTER_NOT_GROUP) {
++		return do_verify_filter(&filter->lval->filter, system, event);
++	}
++
++	/*
++	 * system and event will be NULL until we find the left most
++	 * node. Then assign it, and compare on the way back up.
++	 */
++	if (!*system && !*event) {
++		*system = filter->lval->field.system;
++		*event = filter->lval->field.event;
++		return 0;
++	}
++
++	if (filter->lval->field.system != *system ||
++	    filter->lval->field.event != *event)
++		return -1;
++
++	return 0;
++}
++
++static int verify_filter(struct filter *filter,
++			 const char **system, const char **event)
++{
++	int ret;
++
++	switch (filter->type) {
++	case FILTER_OR:
++	case FILTER_AND:
++	case FILTER_GROUP:
++	case FILTER_NOT_GROUP:
++		break;
++	default:
++		return do_verify_filter(filter, system, event);
++	}
++
++	ret = do_verify_filter(&filter->lval->filter, system, event);
++	if (ret)
++		return ret;
++
++	switch (filter->type) {
++	case FILTER_OR:
++	case FILTER_AND:
++		return do_verify_filter(&filter->rval->filter, system, event);
++	default:
++		return 0;
++	}
++}
++
++static int build_filter(struct tracefs_synth *synth,
++			bool start, struct filter *filter, bool *started)
++{
++	int (*append_filter)(struct tracefs_synth *synth,
++			     enum tracefs_filter type,
++			     const char *field,
++			     enum tracefs_compare compare,
++			     const char *val);
++	enum tracefs_compare cmp;
++	const char *val;
++	int and_or = TRACEFS_FILTER_AND;
++	char num[64];
++	int ret;
++
++	if (start)
++		append_filter = tracefs_synth_append_start_filter;
++	else
++		append_filter = tracefs_synth_append_end_filter;
++
++	if (started && *started) {
++		ret = append_filter(synth, and_or, NULL, 0, NULL);
++		ret = append_filter(synth, TRACEFS_FILTER_OPEN_PAREN,
++				    NULL, 0, NULL);
++	}
++
++	switch (filter->type) {
++	case FILTER_NOT_GROUP:
++		ret = append_filter(synth, TRACEFS_FILTER_NOT,
++				    NULL, 0, NULL);
++		if (ret < 0)
++			goto out;
++		/* Fall through */
++	case FILTER_GROUP:
++		ret = append_filter(synth, TRACEFS_FILTER_OPEN_PAREN,
++				    NULL, 0, NULL);
++		if (ret < 0)
++			goto out;
++		ret = build_filter(synth, start, &filter->lval->filter, NULL);
++		if (ret < 0)
++			goto out;
++		ret = append_filter(synth, TRACEFS_FILTER_CLOSE_PAREN,
++				    NULL, 0, NULL);
++		goto out;
++
++	case FILTER_OR:
++		and_or = TRACEFS_FILTER_OR;
++		/* Fall through */
++	case FILTER_AND:
++		ret = build_filter(synth, start, &filter->lval->filter, NULL);
++		if (ret < 0)
++			goto out;
++		ret = append_filter(synth, and_or, NULL, 0, NULL);
++
++		if (ret)
++			goto out;
++		ret = build_filter(synth, start, &filter->rval->filter, NULL);
++		goto out;
++	default:
++		break;
++	}
++
++	switch (filter->rval->type) {
++	case EXPR_NUMBER:
++		sprintf(num, "%ld", filter->rval->number);
++		val = num;
++		break;
++	case EXPR_STRING:
++		val = filter->rval->string;
++		break;
++	default:
++		break;
++	}
++
++	switch (filter->type) {
++	case FILTER_EQ:		cmp = TRACEFS_COMPARE_EQ; break;
++	case FILTER_NE:		cmp = TRACEFS_COMPARE_NE; break;
++	case FILTER_LE:		cmp = TRACEFS_COMPARE_LE; break;
++	case FILTER_LT:		cmp = TRACEFS_COMPARE_LT; break;
++	case FILTER_GE:		cmp = TRACEFS_COMPARE_GE; break;
++	case FILTER_GT:		cmp = TRACEFS_COMPARE_GT; break;
++	case FILTER_BIN_AND:	cmp = TRACEFS_COMPARE_AND; break;
++	case FILTER_STR_CMP:	cmp = TRACEFS_COMPARE_RE; break;
++	default:
++		break;
++	}
++
++	ret = append_filter(synth, TRACEFS_FILTER_COMPARE,
++			    filter->lval->field.field, cmp, val);
++
++ out:
++	if (!ret && started) {
++		if (*started)
++			ret = append_filter(synth, TRACEFS_FILTER_CLOSE_PAREN,
++					    NULL, 0, NULL);
++		*started = true;
++	}
++	return ret;
++}
++
+ static struct tracefs_synth *build_synth(struct tep_handle *tep,
+ 					 const char *name,
+ 					 struct sql_table *table)
+@@ -612,6 +846,8 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
+ 	const char *end_event;
+ 	const char *start_match;
+ 	const char *end_match;
++	bool started_start = false;
++	bool started_end = false;
+ 	int ret;
+ 
+ 	if (!table->to || !table->from)
+@@ -688,6 +924,30 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
+ 			goto free;
+ 	}
+ 
++	for (expr = table->where; expr; expr = expr->next) {
++		const char *filter_system = NULL;
++		const char *filter_event = NULL;
++		bool *started;
++		bool start;
++
++		ret = verify_filter(&expr->filter, &filter_system,
++				    &filter_event);
++		if (ret < 0)
++			goto free;
++
++		start = filter_system == start_system &&
++			filter_event == start_event;
++
++		if (start)
++			started = &started_start;
++		else
++			started = &started_end;
++
++		ret = build_filter(synth, start, &expr->filter, started);
++		if (ret < 0)
++			goto free;
++	}
++
+ 	return synth;
+  free:
+ 	tracefs_synth_free(synth);
 -- 
 2.30.2
 
