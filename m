@@ -2,33 +2,33 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9541FC43214
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A58A3C4320E
 	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 04:24:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CEF1A61158
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 04:24:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8B23061164
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 04:24:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbhHCEYZ (ORCPT
+        id S233909AbhHCEYd (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 3 Aug 2021 00:24:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57184 "EHLO mail.kernel.org"
+        Tue, 3 Aug 2021 00:24:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233720AbhHCEYI (ORCPT
+        id S233709AbhHCEYI (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 3 Aug 2021 00:24:08 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52202611CC;
+        by mail.kernel.org (Postfix) with ESMTPSA id 298C16113C;
         Tue,  3 Aug 2021 04:23:57 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mAly8-002qo1-8x; Tue, 03 Aug 2021 00:23:56 -0400
+        id 1mAly8-002qnp-4Y; Tue, 03 Aug 2021 00:23:56 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
@@ -38,9 +38,9 @@ Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v2 21/21] libtracefs: Add CAST(x AS _COUNTER_) syntax to create values in histograms
-Date:   Tue,  3 Aug 2021 00:23:47 -0400
-Message-Id: <20210803042347.679499-22-rostedt@goodmis.org>
+Subject: [PATCH v2 17/21] libtracefs: Add man page for tracefs_sql()
+Date:   Tue,  3 Aug 2021 00:23:43 -0400
+Message-Id: <20210803042347.679499-18-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210803042347.679499-1-rostedt@goodmis.org>
 References: <20210803042347.679499-1-rostedt@goodmis.org>
@@ -52,218 +52,411 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Use the CAST() command of SQL to define which items in the select should
-be cast as values and not keys. By casting the field as the special value
-_COUNTER_, it will turn the selection item into a value.
-
-For example:
-
-   SELECT common_pid, CAST(bytes_req AS _COUNTER_) FROM kmalloc
-
-Will create:
-
-  echo 'hist:keys=common_pid:vals=bytes_req' > events/kmem/kmalloc/trigger
+Add a man page for tracefs_sql(). Included in that man page is a full
+working sql parser example program that can allow you to create synthetic
+events from writing SQL on the command line.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Documentation/libtracefs-sql.txt | 24 ++++++++++++++++++++++++
- include/tracefs-local.h          |  2 ++
- include/tracefs.h                |  3 +++
- src/tracefs-hist.c               | 28 ++++++++++++++++++++++++++--
- src/tracefs-sqlhist.c            | 23 +++++++++++++++++++++++
- 5 files changed, 78 insertions(+), 2 deletions(-)
+ Documentation/libtracefs-sql.txt | 389 +++++++++++++++++++++++++++++++
+ 1 file changed, 389 insertions(+)
+ create mode 100644 Documentation/libtracefs-sql.txt
 
 diff --git a/Documentation/libtracefs-sql.txt b/Documentation/libtracefs-sql.txt
-index 314f607fa84e..7b616fa27d23 100644
---- a/Documentation/libtracefs-sql.txt
+new file mode 100644
+index 000000000000..242e348a5bbf
+--- /dev/null
 +++ b/Documentation/libtracefs-sql.txt
-@@ -238,6 +238,30 @@ name of the process.
- 
- *LOG* or *LOG2* - bucket the key values in a log 2 values (1, 2, 3-4, 5-8, 9-16, 17-32, ...)
- 
-+The above fields are not case sensitive, and "LOG2" works as good as "log".
+@@ -0,0 +1,389 @@
++libtracefs(3)
++=============
 +
-+A special CAST to _COUNTER_ or __COUNTER__ will make the field a value and not
-+a key. For example:
++NAME
++----
++tracefs_sql - Create a synthetitc event via an SQL statement
++
++SYNOPSIS
++--------
++[verse]
++--
++*#include <tracefs.h>*
++
++struct tracefs_synth *tracefs_sql(struct tep_handle pass:[*]tep, const char pass:[*]name,
++				  const char pass:[*]sql_buffer, char pass:[**]err);
++--
++
++DESCRIPTION
++-----------
++Synthetic events are dynamically created events that attach two existing events
++together via one or more matching fields between the two events. It can be used
++to find the latency between the events, or to simply pass fields of the first event
++on to the second event to display as one event.
++
++The Linux kernel interface to create synthetic events is complex, and there needs
++to be a better way to create synthetic events that is easy and can be understood
++via existing technology.
++
++If you think of each event as a table, where the fields are the column of the table
++and each instance of the event as a row, you can understand how SQL can be used
++to attach two events together and form another event (table). Utilizing the
++SQL *SELECT* *FROM* *JOIN* *ON* [ *WHERE* ] syntax, a synthetic event can easily
++be created from two different events.
++
++
++*tracefs_sql*() takes in a *tep* handler (See _tep_local_events_(3)) that is used to
++verify the events within the _sql_buffer_ expression. The _name_ is the name of the
++synthetic event to create. If _err_ points to an address of a string, it will be filled
++with a detailed message on any type of parsing error, including fields that do not belong
++to an event, or if the events or fields are not properly compared.
++
++The example program below is a fully functional parser where it will create a synthetic
++event from a SQL syntax passed in via the command line or a file. 
++
++The SQL format is as follows:
++
++*SELECT* <fields> *FROM* <start-event> *JOIN* <end-event> *ON* <matching-fields> *WHERE* <filter>
++
++Note, although the examples show the SQL commands in uppercase, they are not required to
++be so. That is, you can use "SELECT" or "select" or "sElEct".
++
++For example:
++[source,c]
++--
++SELECT syscalls.sys_enter_read.fd, syscalls.sys_exit_read.ret FROM syscalls.sys_enter_read
++   JOIN syscalls.sys_exit_read
++   ON syscalls.sys_enter_read.common_pid = syscalls.sys_exit_write.common_pid
++--
++
++Will create a synthetic event that with the fields:
++
++  u64 fd; s64 ret;
++
++Because the function takes a _tep_ handle, and usually all event names are unique, you can
++leave off the system (group) name of the event, and *tracefs_sql*() will discover the
++system for you.
++
++That is, the above statement would work with:
 +
 +[source,c]
 +--
-+  SELECT common_pid, CAST(bytes_req AS _COUNTER_) FROM kmalloc
++SELECT sys_enter_read.fd, sys_exit_read.ret FROM sys_enter_read JOIN sys_exit_read
++   ON sys_enter_read.common_pid = sys_exit_write.common_pid
 +--
 +
-+Which will create
++The *AS* keyword can be used to name the fields as well as to give an alias to the
++events, such that the above can be simplified even more as:
 +
 +[source,c]
 +--
-+  echo 'hist:keys=common_pid:vals=bytes_req' > events/kmem/kmalloc/trigger
-+
-+  cat events/kmem/kmalloc/hist
-+
-+{ common_pid:       1812 } hitcount:          1  bytes_req:         32
-+{ common_pid:       9111 } hitcount:          2  bytes_req:        272
-+{ common_pid:       1768 } hitcount:          3  bytes_req:       1112
-+{ common_pid:          0 } hitcount:          4  bytes_req:        512
-+{ common_pid:      18297 } hitcount:         11  bytes_req:       2004
++SELECT start.fd, end.ret FROM sys_enter_read AS start JOIN sys_exit_read AS end ON start.common_pid = end.common_pid
 +--
- 
- RETURN VALUE
- ------------
-diff --git a/include/tracefs-local.h b/include/tracefs-local.h
-index 07d40b2fae4f..684eccffafee 100644
---- a/include/tracefs-local.h
-+++ b/include/tracefs-local.h
-@@ -88,6 +88,8 @@ int trace_append_filter(char **filter, unsigned int *state,
- struct tracefs_synth *synth_init_from(struct tep_handle *tep,
- 				      const char *start_system,
- 				      const char *start_event);
 +
-+#define HIST_COUNTER_TYPE	(TRACEFS_HIST_KEY_MAX + 100)
- int synth_add_start_field(struct tracefs_synth *synth,
- 			  const char *start_field,
- 			  const char *name,
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 219adba4b0ce..17020de0108a 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -264,6 +264,7 @@ enum tracefs_hist_key_type {
- 	TRACEFS_HIST_KEY_EXECNAME,
- 	TRACEFS_HIST_KEY_LOG,
- 	TRACEFS_HIST_KEY_USECS,
-+	TRACEFS_HIST_KEY_MAX
- };
- 
- enum tracefs_hist_sort_direction {
-@@ -275,6 +276,8 @@ enum tracefs_hist_sort_direction {
- #define TRACEFS_HIST_TIMESTAMP_USECS	"common_timestamp.usecs"
- #define TRACEFS_HIST_CPU		"cpu"
- 
-+#define TRACEFS_HIST_COUNTER		"__COUNTER__"
++The above aliases _sys_enter_read_ as *start* and _sys_exit_read_ as *end* and uses
++those aliases to reference the event throughout the statement.
 +
- #define TRACEFS_HIST_HITCOUNT		"hitcount"
- 
- struct tracefs_hist;
-diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index d62422399552..c3aecf9a8fef 100644
---- a/src/tracefs-hist.c
-+++ b/src/tracefs-hist.c
-@@ -256,7 +256,7 @@ int tracefs_hist_add_key(struct tracefs_hist *hist, const char *key,
- 	bool use_key = false;
- 	char *key_type = NULL;
- 	char **new_list;
--	int ret;
-+	int ret = -1;
- 
- 	switch (type) {
- 	case TRACEFS_HIST_KEY_NORMAL:
-@@ -284,6 +284,9 @@ int tracefs_hist_add_key(struct tracefs_hist *hist, const char *key,
- 	case TRACEFS_HIST_KEY_USECS:
- 		ret = asprintf(&key_type, "%s.usecs", key);
- 		break;
-+	case TRACEFS_HIST_KEY_MAX:
-+		/* error */
-+		break;
- 	}
- 
- 	if (ret < 0)
-@@ -1450,6 +1453,9 @@ tracefs_synth_get_start_hist(struct tracefs_synth *synth)
- 	for (i = 0; keys[i]; i++) {
- 		int type = types ? types[i] : 0;
- 
-+		if (type == HIST_COUNTER_TYPE)
-+			continue;
++Using the *AS* keyword in the selection portion of the SQL statement will define what
++those fields will be called in the synthetic event.
 +
- 		key = keys[i];
- 
- 		if (i) {
-@@ -1466,7 +1472,25 @@ tracefs_synth_get_start_hist(struct tracefs_synth *synth)
- 		}
- 	}
- 
--	if (hist && synth->start_filter) {
-+	if (!hist)
-+		return NULL;
++[source,c]
++--
++SELECT start.fd AS filed, end.ret AS return FROM sys_enter_read AS start JOIN sys_exit_read AS end
++   ON start.common_pid = end.common_pid
++--
 +
-+	for (i = 0; keys[i]; i++) {
-+		int type = types ? types[i] : 0;
++The above labels the _fd_ of _start_ as *filed* and the _ret_ of _end_ as *return* where
++the synthetic event that is created will now have the fields:
 +
-+		if (type != HIST_COUNTER_TYPE)
-+			continue;
++  u64 filed; s64 return;
 +
-+		key = keys[i];
++The fields can also be calculated with results passed to the synthetic event:
 +
-+		ret = tracefs_hist_add_value(hist, key);
-+		if (ret < 0) {
-+			tracefs_hist_free(hist);
-+			return NULL;
++[source,c]
++--
++select start.truesize, end.len, (start.truesize - end.len) as diff from napi_gro_receive_entry as start
++   JOIN netif_receive_skb as end ON start.skbaddr = end.skbaddr
++--
++
++Which would show the *truesize* of the _napi_gro_receive_entry_ event, the actual
++_len_ of the content, shown by the _netif_receive_skb_, and the delta between
++the two and expressed by the field *diff*.
++
++The code also supports recording the timestamps at either event, and performing calculations
++on them. For wakeup latency, you have:
++
++[source,c]
++--
++select start.pid, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sched_waking as start
++   JOIN sched_switch as end ON start.pid = end.next_pid
++--
++
++The above will create a synthetic event that records the _pid_ of the task being woken up,
++and the time difference between the _sched_waking_ event and the _sched_switch_ event.
++The *TIMESTAMP_USECS* will truncate the time down to microseconds as the timestamp usually
++recorded in the tracing buffer has nanosecond resolution. If you do not want that
++truncation, use *TIMESTAMP* instead of *TIMESTAMP_USECS*.
++
++Finally, the *WHERE* clause can be added, that will let you add filters on either or both events.
++
++[source,c]
++--
++select start.pid, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sched_waking as start
++   JOIN sched_switch as end ON start.pid = end.next_pid
++   WHERE start.prio < 100 && (!(end.prev_pid < 1 || end.prev_prio > 100) || end.prev_pid == 0)
++--
++
++*NOTE*
++
++Although both events can be used together in the *WHERE* clause, they must not be mixed outside
++the top most "&&" statements. You can not OR (||) the events together, where a filter of one
++event is OR'd to a filter of the other event. This does not make sense, as the synthetic event
++requires both events to take place to be recorded. If one is filtered out, then the synthetic
++event does not execute.
++
++[source,c]
++--
++select start.pid, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sched_waking as start
++   JOIN sched_switch as end ON start.pid = end.next_pid
++   WHERE start.prio < 100 && end.prev_prio < 100
++--
++
++The above is valid.
++
++Where as the below is not.
++
++[source,c]
++--
++select start.pid, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sched_waking as start
++   JOIN sched_switch as end ON start.pid = end.next_pid
++   WHERE start.prio < 100 || end.prev_prio < 100
++--
++
++
++RETURN VALUE
++------------
++Returns 0 on success and -1 on failure. On failure, if _err_ is defined, it will be
++allocated to hold a detailed description of what went wrong if it the error was caused
++by a parsing error, or that an event, field does not exist or is not compatible with
++what it was combined with.
++
++CREATE A TOOL
++-------------
++
++The below example is a functional program that can be used to parse SQL commands into
++synthetic events.
++
++[source, c]
++--
++   man tracefs_sql | sed -ne '/^EXAMPLE/,/FILES/ { /EXAMPLE/d ; /FILES/d ; p}' > sqlhist.c
++   gcc -o sqlhist sqlhist.c `pkg-config --cflags --libs libtracefs`
++--
++
++Then you can run the above examples:
++
++[source, c]
++--
++  sudo ./sqlhist 'select start.pid, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sched_waking as start
++                  JOIN sched_switch as end ON start.pid = end.next_pid
++                  WHERE start.prio < 100 || end.prev_prio < 100'
++--
++
++EXAMPLE
++-------
++[source,c]
++--
++#include <stdio.h>
++#include <stdlib.h>
++#include <stdarg.h>
++#include <string.h>
++#include <errno.h>
++#include <unistd.h>
++#include <tracefs.h>
++
++static void usage(char **argv)
++{
++	fprintf(stderr, "usage: %s [-ed][-n name][-t dir][-f file | sql-command-line]\n"
++		"  -n name - name of synthetic event 'Anonymous' if left off\n"
++		"  -t dir - use dir instead of /sys/kernel/tracing\n"
++		"  -e - execute the commands to create the synthetic event\n"
++		"  -d - delete the synthetic event that would be created\n"
++		"  -f file - read sql lines from file otherwise from the command line\n"
++		"            if file is '-' then read from standard input.\n",
++		argv[0]);
++	exit(-1);
++}
++
++static int do_sql(const char *buffer, const char *name,
++		  const char *trace_dir, bool execute)
++{
++	struct tracefs_synth *synth;
++	struct tep_handle *tep;
++	struct trace_seq seq;
++	char *err;
++
++	if (!name)
++		name = "Anonymous";
++
++	trace_seq_init(&seq);
++	tep = tracefs_local_events(trace_dir);
++	if (!tep) {
++		if (!trace_dir)
++			trace_dir = "tracefs directory";
++		perror(trace_dir);
++		exit(-1);
++	}
++
++	synth = tracefs_sql(tep, name, buffer, &err);
++	if (!synth) {
++		perror("Failed creating synthetic event!");
++		if (err)
++			fprintf(stderr, "%s", err);
++		free(err);
++		exit(-1);
++	}
++
++	tracefs_synth_show(&seq, NULL, synth);
++	if (execute)
++		tracefs_synth_create(NULL, synth);
++	tracefs_synth_free(synth);
++
++	trace_seq_do_printf(&seq);
++	trace_seq_destroy(&seq);
++	return 0;
++}
++
++int main (int argc, char **argv)
++{
++	char *trace_dir = NULL;
++	char *buffer = NULL;
++	char buf[BUFSIZ];
++	int buffer_size = 0;
++	const char *file = NULL;
++	bool execute = false;
++	const char *name;
++	FILE *fp;
++	size_t r;
++	int c;
++	int i;
++
++	for (;;) {
++		c = getopt(argc, argv, "ht:f:edn:");
++		if (c == -1)
++			break;
++
++		switch(c) {
++		case 'h':
++			usage(argv);
++		case 't':
++			trace_dir = optarg;
++			break;
++		case 'f':
++			file = optarg;
++			break;
++		case 'e':
++			execute = true;
++			break;
++		case 'n':
++			name = optarg;
++			break;
 +		}
 +	}
 +
-+	if (synth->start_filter) {
- 		hist->filter = strdup(synth->start_filter);
- 		if (!hist->filter) {
- 			tracefs_hist_free(hist);
-diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
-index 88563e98f298..1a3cf37c84ba 100644
---- a/src/tracefs-sqlhist.c
-+++ b/src/tracefs-sqlhist.c
-@@ -1253,6 +1253,17 @@ static int verify_field_type(struct tep_handle *tep,
- 	if (!type)
- 		return -1;
- 
-+	if (!strcmp(type, TRACEFS_HIST_COUNTER) ||
-+	    !strcmp(type, "_COUNTER_")) {
-+		ret = HIST_COUNTER_TYPE;
-+		if (tfield->flags & (TEP_FIELD_IS_STRING | TEP_FIELD_IS_ARRAY)) {
-+			parse_error(sb, field->raw,
-+				    "'%s' is a string, and counters may only be used with numbers\n");
-+			ret = -1;
++	if (file) {
++		if (!strcmp(file, "-"))
++			fp = stdin;
++		else
++			fp = fopen(file, "r");
++		if (!fp) {
++			perror(file);
++			exit(-1);
 +		}
-+		goto out;
++		while ((r = fread(buf, 1, BUFSIZ, fp)) > 0) {
++			buffer = realloc(buffer, buffer_size + r + 1);
++			strncpy(buffer + buffer_size, buf, r);
++			buffer_size += r;
++		}
++		fclose(fp);
++		if (buffer_size)
++			buffer[buffer_size] = '\0';
++	} else if (argc == optind) {
++		usage(argv);
++	} else {
++		for (i = optind; i < argc; i++) {
++			r = strlen(argv[i]);
++			buffer = realloc(buffer, buffer_size + r + 2);
++			if (i != optind)
++				buffer[buffer_size++] = ' ';
++			strcpy(buffer + buffer_size, argv[i]);
++			buffer_size += r;
++		}
 +	}
 +
- 	for (i = 0; type[i]; i++)
- 		type[i] = tolower(type[i]);
- 
-@@ -1292,6 +1303,7 @@ static int verify_field_type(struct tep_handle *tep,
- 			    field->raw, type);
- 		ret = -1;
- 	}
-+ out:
- 	free(type);
- 	return ret;
-  fail_type:
-@@ -1319,6 +1331,7 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
- 	const char *end_match;
- 	bool started_start = false;
- 	bool started_end = false;
-+	bool non_val = false;
- 	int ret;
- 
- 	if (!table->from)
-@@ -1396,6 +1409,8 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
- 				type = verify_field_type(tep, table->sb, expr);
- 				if (type < 0)
- 					goto free;
-+				if (type != HIST_COUNTER_TYPE)
-+					non_val = true;
- 				ret = synth_add_start_field(synth,
- 						field->field, field->label,
- 						type);
-@@ -1426,6 +1441,14 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
- 		}
- 	}
- 
-+	if (!non_val && !table->to) {
-+		table->sb->line_no = 0;
-+		table->sb->line_idx = 10;
-+		parse_error(table->sb, "CAST",
-+			    "Not all SELECT items can be of type _COUNTER_\n");
-+		goto free;
-+	}
++	do_sql(buffer, name, trace_dir, execute);
++	free(buffer);
 +
- 	for (expr = table->where; expr; expr = expr->next) {
- 		const char *filter_system = NULL;
- 		const char *filter_event = NULL;
++	return 0;
++}
++--
++
++FILES
++-----
++[verse]
++--
++*tracefs.h*
++	Header file to include in order to have access to the library APIs.
++*-ltracefs*
++	Linker switch to add when building a program that uses the library.
++--
++
++SEE ALSO
++--------
++_libtracefs(3)_,
++_libtraceevent(3)_,
++_trace-cmd(1)_,
++_tracefs_synth_init(3)_,
++_tracefs_synth_add_match_field(3)_,
++_tracefs_synth_add_compare_field(3)_,
++_tracefs_synth_add_start_field(3)_,
++_tracefs_synth_add_end_field(3)_,
++_tracefs_synth_append_start_filter(3)_,
++_tracefs_synth_append_end_filter(3)_,
++_tracefs_synth_create(3)_,
++_tracefs_synth_destroy(3)_,
++_tracefs_synth_free(3)_,
++_tracefs_synth_show(3)_,
++_tracefs_hist_alloc(3)_,
++_tracefs_hist_free(3)_,
++_tracefs_hist_add_key(3)_,
++_tracefs_hist_add_value(3)_,
++_tracefs_hist_add_name(3)_,
++_tracefs_hist_start(3)_,
++_tracefs_hist_destory(3)_,
++_tracefs_hist_add_sort_key(3)_,
++_tracefs_hist_sort_key_direction(3)_
++
++AUTHOR
++------
++[verse]
++--
++*Steven Rostedt* <rostedt@goodmis.org>
++*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>
++*sameeruddin shaik* <sameeruddin.shaik8@gmail.com>
++--
++REPORTING BUGS
++--------------
++Report bugs to  <linux-trace-devel@vger.kernel.org>
++
++LICENSE
++-------
++libtracefs is Free Software licensed under the GNU LGPL 2.1
++
++RESOURCES
++---------
++https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
++
++COPYING
++-------
++Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
++the terms of the GNU Public License (GPL).
 -- 
 2.30.2
 
