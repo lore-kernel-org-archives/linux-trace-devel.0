@@ -7,28 +7,28 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58CF0C4320E
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 17:06:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E6FEC4338F
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 17:06:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3A359610A0
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 17:06:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6E8376104F
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 17:06:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237593AbhHCRGX (ORCPT
+        id S237605AbhHCRGY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 3 Aug 2021 13:06:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38730 "EHLO mail.kernel.org"
+        Tue, 3 Aug 2021 13:06:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237479AbhHCRGU (ORCPT
+        id S237521AbhHCRGU (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 3 Aug 2021 13:06:20 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1B806109F;
+        by mail.kernel.org (Postfix) with ESMTPSA id DC41261107;
         Tue,  3 Aug 2021 17:06:08 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mAxrj-002ubk-Ol; Tue, 03 Aug 2021 13:06:07 -0400
+        id 1mAxrj-002ubq-QO; Tue, 03 Aug 2021 13:06:07 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
@@ -38,9 +38,9 @@ Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v3 08/22] libtracefs: Make parser unique to libtracefs
-Date:   Tue,  3 Aug 2021 13:05:52 -0400
-Message-Id: <20210803170606.694085-9-rostedt@goodmis.org>
+Subject: [PATCH v3 10/22] libtracefs: Add error message when match fields are not FROM and JOIN events
+Date:   Tue,  3 Aug 2021 13:05:54 -0400
+Message-Id: <20210803170606.694085-11-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210803170606.694085-1-rostedt@goodmis.org>
 References: <20210803170606.694085-1-rostedt@goodmis.org>
@@ -52,51 +52,101 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add %define api.prefix and defines to have the parser global variables use
-tracefs_* instead of yy*, as without this, if a tool that links to this
-library, and tries to use the synth sql parsing, it may end up using its
-own yyparse() and friends functions.
+It is required that the "match" content (the ON portion of the SQL
+sequence) has a field from the FROM event and a field from the JOIN event.
+
+If they do not, then give a better message about what went wrong.
+
+To simplify addition of future errors, also add a parse_error() that calls into
+sql_parse_error() with the appropriate "ap" argument. That is, parse_error()
+takes a normal printf() form and then translates it to the vprintf from of
+sql_parse_error.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- src/sqlhist.y         | 10 ++++++++++
- src/tracefs-sqlhist.c |  2 +-
- 2 files changed, 11 insertions(+), 1 deletion(-)
+ src/tracefs-sqlhist.c | 43 +++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 41 insertions(+), 2 deletions(-)
 
-diff --git a/src/sqlhist.y b/src/sqlhist.y
-index ce9cb58fb3a9..9d03a457ae84 100644
---- a/src/sqlhist.y
-+++ b/src/sqlhist.y
-@@ -30,6 +30,16 @@ extern void yyerror(struct sqlhist_bison *, char *fmt, ...);
- %}
- 
- %define api.pure
-+
-+/* Change the globals to use tracefs_ prefix */
-+%define api.prefix{tracefs_}
-+%code provides
-+{
-+  #define YYSTYPE TRACEFS_STYPE
-+  #define yylex tracefs_lex
-+  #define yyerror tracefs_error
-+}
-+
- %lex-param {void *scanner}
- %parse-param {struct sqlhist_bison *sb}
- 
 diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
-index 65577c9b7de3..70bcab14cb27 100644
+index 2e301e024d13..da4668f53ea1 100644
 --- a/src/tracefs-sqlhist.c
 +++ b/src/tracefs-sqlhist.c
-@@ -1086,7 +1086,7 @@ struct tracefs_synth *tracefs_sql(struct tep_handle *tep, const char *name,
- 		return NULL;
+@@ -8,6 +8,7 @@
+  */
+ #include <trace-seq.h>
+ #include <stdlib.h>
++#include <stdarg.h>
+ #include <errno.h>
+ 
+ #include "tracefs.h"
+@@ -154,6 +155,16 @@ __hidden void sql_parse_error(struct sqlhist_bison *sb, const char *text,
+ 	trace_seq_destroy(&s);
+ }
+ 
++static void parse_error(struct sqlhist_bison *sb, const char *text,
++			const char *fmt, ...)
++{
++	va_list ap;
++
++	va_start(ap, fmt);
++	sql_parse_error(sb, text, fmt, ap);
++	va_end(ap);
++}
++
+ static inline unsigned int quick_hash(const char *str)
+ {
+ 	unsigned int val = 0;
+@@ -647,6 +658,34 @@ static int update_vars(struct tep_handle *tep,
+ 	return 0;
+ }
+ 
++static int match_error(struct sqlhist_bison *sb, struct match *match,
++		       struct field *lmatch, struct field *rmatch)
++{
++	struct field *lval = &match->lval->field;
++	struct field *rval = &match->rval->field;
++	struct field *field;
++	struct expr *expr;
++
++	if (lval->system != lmatch->system ||
++	    lval->event != lmatch->event) {
++		expr = match->lval;
++		field = lval;
++	} else {
++		expr = match->rval;
++		field = rval;
++	}
++
++	sb->line_no = expr->line;
++	sb->line_idx = expr->idx;
++
++	parse_error(sb, field->raw,
++		    "'%s' and '%s' must be a field for each event: '%s' and '%s'\n",
++		    lval->raw, rval->raw, sb->table->to->field.raw,
++		    sb->table->from->field.raw);
++
++	return -1;
++}
++
+ static int test_match(struct sql_table *table, struct match *match)
+ {
+ 	struct field *lval, *rval;
+@@ -678,13 +717,13 @@ static int test_match(struct sql_table *table, struct match *match)
+ 		    (rval->event != to->event) ||
+ 		    (lval->system != from->system) ||
+ 		    (lval->event != from->event))
+-			return -1;
++			return match_error(table->sb, match, from, to);
+ 	} else {
+ 		if ((rval->system != from->system) ||
+ 		    (rval->event != from->event) ||
+ 		    (lval->system != to->system) ||
+ 		    (lval->event != to->event))
+-			return -1;
++			return match_error(table->sb, match, to, from);
  	}
- 
--	ret = yyparse(&sb);
-+	ret = tracefs_parse(&sb);
- 	yylex_destroy(sb.scanner);
- 
- 	if (ret)
+ 	return 0;
+ }
 -- 
 2.30.2
 
