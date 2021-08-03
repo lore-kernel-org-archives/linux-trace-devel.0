@@ -7,28 +7,28 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 150DAC43216
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D13B2C19F31
 	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 17:06:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 040BD60F70
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 17:06:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BE34861029
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 17:06:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237855AbhHCRGs (ORCPT
+        id S237553AbhHCRGs (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Tue, 3 Aug 2021 13:06:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38730 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:38756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237542AbhHCRGU (ORCPT
+        id S237537AbhHCRGU (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 3 Aug 2021 13:06:20 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 08BB761179;
-        Tue,  3 Aug 2021 17:06:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0630461176;
+        Tue,  3 Aug 2021 17:06:08 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mAxrj-002uc2-Tr; Tue, 03 Aug 2021 13:06:07 -0400
+        id 1mAxrj-002uc5-Uj; Tue, 03 Aug 2021 13:06:07 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
@@ -38,9 +38,9 @@ Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v3 14/22] libtracefs: Add error message for grouping events in SQL filter
-Date:   Tue,  3 Aug 2021 13:05:58 -0400
-Message-Id: <20210803170606.694085-15-rostedt@goodmis.org>
+Subject: [PATCH v3 15/22] libtracefs: Add error message for bad filters in SQL statement
+Date:   Tue,  3 Aug 2021 13:05:59 -0400
+Message-Id: <20210803170606.694085-16-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210803170606.694085-1-rostedt@goodmis.org>
 References: <20210803170606.694085-1-rostedt@goodmis.org>
@@ -52,113 +52,145 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-One requirement for the SQL filter in tracefs_sql() is that the WHERE
-clause (filter) can only filter the FROM and JOIN events with "&&".
-
-That is, you can not have:
-
-  sched_switch.next_pid == 0 || sched_waking.pid == 0
-
-As the filtering one event stops the synthetic event, having an ||
-conjunction makes no sense.
-
-Add an error message that explains this when it is found.
+If a filter has a bad event, or incompatibility with the value assigned to
+it, have the error message display it.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- src/tracefs-sqlhist.c | 35 +++++++++++++++++++++++++----------
- 1 file changed, 25 insertions(+), 10 deletions(-)
+ src/tracefs-sqlhist.c | 80 +++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 74 insertions(+), 6 deletions(-)
 
 diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
-index acd3e0242d65..a0d934b4cd68 100644
+index a0d934b4cd68..d7829d4804b1 100644
 --- a/src/tracefs-sqlhist.c
 +++ b/src/tracefs-sqlhist.c
-@@ -802,21 +802,36 @@ static int build_compare(struct tracefs_synth *synth,
- 	return ret;
+@@ -879,14 +879,80 @@ static int verify_filter(struct sqlhist_bison *sb, struct filter *filter,
+ 	}
  }
  
--static int do_verify_filter(struct filter *filter,
-+static int verify_filter_error(struct sqlhist_bison *sb, struct expr *expr,
-+			       const char *event)
+-static int build_filter(struct tracefs_synth *synth,
+-			bool start, struct filter *filter, bool *started)
++static int test_field_exists(struct tep_handle *tep, struct sqlhist_bison *sb,
++			     struct expr *expr);
++
++static void filter_compare_error(struct tep_handle *tep,
++				 struct sqlhist_bison *sb,
++				 struct expr *expr)
 +{
 +	struct field *field = &expr->field;
 +
++	switch (errno) {
++	case ENODEV:
++	case EBADE:
++		break;
++	case EINVAL:
++		parse_error(sb, field->raw, "Invalid compare\n");
++		break;
++	default:
++		parse_error(sb, field->raw, "System error?\n");
++		return;
++	}
++
++	/* ENODEV means that an event or field does not exist */
++	if (errno == ENODEV) {
++		if (test_field_exists(tep, sb, expr))
++			return;
++		if (test_field_exists(tep, sb, expr))
++			return;
++		return;
++	}
++
++	/* fields exist, but values are not compatible */
 +	sb->line_no = expr->line;
 +	sb->line_idx = expr->idx;
 +
 +	parse_error(sb, field->raw,
-+		    "event '%s' can not be grouped or '||' together with '%s'\n"
-+		    "All filters between '&&' must be for the same event\n",
-+		    field->event, event);
-+	return -1;
++		    "Field '%s' is not compatible to be compared with the given value\n",
++		    field->field);
 +}
 +
-+static int do_verify_filter(struct sqlhist_bison *sb, struct filter *filter,
- 			    const char **system, const char **event)
++static void filter_error(struct tep_handle *tep,
++			 struct sqlhist_bison *sb, struct expr *expr)
++{
++	struct filter *filter = &expr->filter;
++
++	sb->line_no = expr->line;
++	sb->line_idx = expr->idx;
++
++	switch (filter->type) {
++	case FILTER_NOT_GROUP:
++	case FILTER_GROUP:
++	case FILTER_OR:
++	case FILTER_AND:
++		break;
++	default:
++		filter_compare_error(tep, sb, filter->lval);
++		return;
++	}
++
++	sb->line_no = expr->line;
++	sb->line_idx = expr->idx;
++
++	parse_error(sb, "", "Problem with filter entry?\n");
++}
++
++static int build_filter(struct tep_handle *tep, struct sqlhist_bison *sb,
++			struct tracefs_synth *synth,
++			bool start, struct expr *expr, bool *started)
  {
- 	int ret;
- 
- 	if (filter->type == FILTER_OR ||
- 	    filter->type == FILTER_AND) {
--		ret = do_verify_filter(&filter->lval->filter, system, event);
-+		ret = do_verify_filter(sb, &filter->lval->filter, system, event);
- 		if (ret)
- 			return ret;
--		return do_verify_filter(&filter->rval->filter, system, event);
-+		return do_verify_filter(sb, &filter->rval->filter, system, event);
- 	}
- 	if (filter->type == FILTER_GROUP ||
- 	    filter->type == FILTER_NOT_GROUP) {
--		return do_verify_filter(&filter->lval->filter, system, event);
-+		return do_verify_filter(sb, &filter->lval->filter, system, event);
- 	}
- 
- 	/*
-@@ -831,12 +846,12 @@ static int do_verify_filter(struct filter *filter,
- 
- 	if (filter->lval->field.system != *system ||
- 	    filter->lval->field.event_name != *event)
--		return -1;
-+		return verify_filter_error(sb, filter->lval, *event);
- 
- 	return 0;
- }
- 
--static int verify_filter(struct filter *filter,
-+static int verify_filter(struct sqlhist_bison *sb, struct filter *filter,
- 			 const char **system, const char **event)
- {
- 	int ret;
-@@ -848,17 +863,17 @@ static int verify_filter(struct filter *filter,
- 	case FILTER_NOT_GROUP:
- 		break;
- 	default:
--		return do_verify_filter(filter, system, event);
-+		return do_verify_filter(sb, filter, system, event);
- 	}
- 
--	ret = do_verify_filter(&filter->lval->filter, system, event);
-+	ret = do_verify_filter(sb, &filter->lval->filter, system, event);
- 	if (ret)
- 		return ret;
- 
- 	switch (filter->type) {
- 	case FILTER_OR:
+ 	int (*append_filter)(struct tracefs_synth *synth,
+ 			     enum tracefs_filter type,
+ 			     const char *field,
+ 			     enum tracefs_compare compare,
+ 			     const char *val);
++	struct filter *filter = &expr->filter;
+ 	enum tracefs_compare cmp;
+ 	const char *val;
+ 	int and_or = TRACEFS_FILTER_AND;
+@@ -916,7 +982,7 @@ static int build_filter(struct tracefs_synth *synth,
+ 				    NULL, 0, NULL);
+ 		if (ret < 0)
+ 			goto out;
+-		ret = build_filter(synth, start, &filter->lval->filter, NULL);
++		ret = build_filter(tep, sb, synth, start, filter->lval, NULL);
+ 		if (ret < 0)
+ 			goto out;
+ 		ret = append_filter(synth, TRACEFS_FILTER_CLOSE_PAREN,
+@@ -927,14 +993,14 @@ static int build_filter(struct tracefs_synth *synth,
+ 		and_or = TRACEFS_FILTER_OR;
+ 		/* Fall through */
  	case FILTER_AND:
--		return do_verify_filter(&filter->rval->filter, system, event);
-+		return do_verify_filter(sb, &filter->rval->filter, system, event);
- 	default:
- 		return 0;
- 	}
-@@ -1165,7 +1180,7 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
- 		bool *started;
- 		bool start;
+-		ret = build_filter(synth, start, &filter->lval->filter, NULL);
++		ret = build_filter(tep, sb, synth, start, filter->lval, NULL);
+ 		if (ret < 0)
+ 			goto out;
+ 		ret = append_filter(synth, and_or, NULL, 0, NULL);
  
--		ret = verify_filter(&expr->filter, &filter_system,
-+		ret = verify_filter(table->sb, &expr->filter, &filter_system,
- 				    &filter_event);
+ 		if (ret)
+ 			goto out;
+-		ret = build_filter(synth, start, &filter->rval->filter, NULL);
++		ret = build_filter(tep, sb, synth, start, filter->rval, NULL);
+ 		goto out;
+ 	default:
+ 		break;
+@@ -968,6 +1034,8 @@ static int build_filter(struct tracefs_synth *synth,
+ 	ret = append_filter(synth, TRACEFS_FILTER_COMPARE,
+ 			    filter->lval->field.field, cmp, val);
+ 
++	if (ret)
++		filter_error(tep, sb, expr);
+  out:
+ 	if (!ret && started) {
+ 		if (*started)
+@@ -1193,7 +1261,7 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
+ 		else
+ 			started = &started_end;
+ 
+-		ret = build_filter(synth, start, &expr->filter, started);
++		ret = build_filter(tep, table->sb, synth, start, expr, started);
  		if (ret < 0)
  			goto free;
+ 	}
 -- 
 2.30.2
 
