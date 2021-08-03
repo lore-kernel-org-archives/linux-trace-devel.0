@@ -7,28 +7,28 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD904C432BE
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 17:06:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9798BC4338F
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 17:06:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B717C6113E
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 17:06:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8513060F70
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 17:06:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237794AbhHCRGn (ORCPT
+        id S237847AbhHCRGo (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 3 Aug 2021 13:06:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38770 "EHLO mail.kernel.org"
+        Tue, 3 Aug 2021 13:06:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237551AbhHCRGU (ORCPT
+        id S237546AbhHCRGU (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 3 Aug 2021 13:06:20 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1DFF8611C5;
+        by mail.kernel.org (Postfix) with ESMTPSA id 0EFAB61183;
         Tue,  3 Aug 2021 17:06:09 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mAxrk-002ucK-3P; Tue, 03 Aug 2021 13:06:08 -0400
+        id 1mAxrj-002uc8-Vg; Tue, 03 Aug 2021 13:06:07 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
@@ -38,9 +38,9 @@ Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v3 20/22] libtracefs: Allow trace_sql() to take keywords for fields with backslash
-Date:   Tue,  3 Aug 2021 13:06:04 -0400
-Message-Id: <20210803170606.694085-21-rostedt@goodmis.org>
+Subject: [PATCH v3 16/22] libtracefs: Add error message when calculation has no label
+Date:   Tue,  3 Aug 2021 13:06:00 -0400
+Message-Id: <20210803170606.694085-17-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210803170606.694085-1-rostedt@goodmis.org>
 References: <20210803170606.694085-1-rostedt@goodmis.org>
@@ -52,82 +52,62 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Some events have fields with keywords, and the parsing will not let it
-work. For example, you can have:
+If a calculation between event fields is performed and there's no label
+(name) for it, it errors out, causing the bison parser to give a strange
+error:
 
-  select from from regcache_drop_region
+  FAILED MEMORY: add_selection(sb, (yyvsp[0].expr), NULL)
+  Failed creating synthetic event!: No such file or directory
 
-And that will produce a syntax error, as the from will confuse the parser.
-Allow fields to start with a backslash, which will allow the parser to see
-"from" as a field and not as a keyword. That is:
+Instead, just set the compare->name field to NULL, and report a better
+error later on in the processing.
 
-  select \from from regcache_drop_region
-
-will work as expected. Note, any field can start with a backslash, and the
-starting backslash will be ignored.
+  ERROR: 'no name'
+  Field calculations must be labeled 'AS name'
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Documentation/libtracefs-sql.txt | 20 ++++++++++++++++++++
- src/sqlhist.l                    |  6 ++++--
- 2 files changed, 24 insertions(+), 2 deletions(-)
+ src/tracefs-sqlhist.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/libtracefs-sql.txt b/Documentation/libtracefs-sql.txt
-index ee8d5c1d63c7..bc2811cfe08b 100644
---- a/Documentation/libtracefs-sql.txt
-+++ b/Documentation/libtracefs-sql.txt
-@@ -162,6 +162,26 @@ select start.pid, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sche
-    WHERE start.prio < 100 || end.prev_prio < 100
- --
+diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
+index d7829d4804b1..81a0cd1a908b 100644
+--- a/src/tracefs-sqlhist.c
++++ b/src/tracefs-sqlhist.c
+@@ -243,8 +243,6 @@ __hidden int add_selection(struct sqlhist_bison *sb, void *select,
+ 	case EXPR_FIELD:
+ 		break;
+ 	case EXPR_COMPARE:
+-		if (!name)
+-			return -1;
+ 		expr->compare.name = name;
+ 		break;
+ 	case EXPR_NUMBER:
+@@ -779,6 +777,9 @@ static int build_compare(struct tracefs_synth *synth,
+ 	enum tracefs_synth_calc calc;
+ 	int ret;
  
++	if (!compare->name)
++		return -1;
 +
-+KEYWORDS AS EVENT FIELDS
-+------------------------
-+
-+In some cases, an event may have a keyword. For example, regcache_drop_region has "from"
-+as a field and the following will not work
-+
-+[source,c]
-+--
-+  select from from regcache_drop_region
-+--
-+
-+In such cases, add a backslash to the conflicting field, and this will tell the parser
-+that the "from" is a field and not a keyword:
-+
-+[source,c]
-+--
-+  select \from from regcache_drop_region
-+--
-+
- HISTOGRAMS
- ----------
+ 	lval = &compare->lval->field;
+ 	rval = &compare->rval->field;
  
-diff --git a/src/sqlhist.l b/src/sqlhist.l
-index f9e0fcc17e63..897daac7d2a8 100644
---- a/src/sqlhist.l
-+++ b/src/sqlhist.l
-@@ -25,7 +25,7 @@ extern int my_yyinput(void *extra, char *buf, int max);
- %option reentrant
- %option bison-bridge
+@@ -1117,6 +1118,14 @@ static void compare_error(struct tep_handle *tep,
+ {
+ 	struct compare *compare = &expr->compare;
  
--field		[a-z_][a-z0-9_\.]*
-+field		\\?[a-z_][a-z0-9_\.]*
- qstring		\"[^\"]*\"
- hexnum		0x[0-9a-f]+
- number		[0-9a-f]+
-@@ -46,8 +46,10 @@ where { HANDLE_COLUMN; return WHERE; }
- }
- 
- {field} {
-+	const char *str = yyg->yytext_r;
- 	HANDLE_COLUMN;
--	yylval->string = store_str(TRACE_SB, yyg->yytext_r);
-+	if (str[0] == '\\') { str++; };
-+	yylval->string = store_str(TRACE_SB, str);
- 	return FIELD;
- }
- 
++	if (!compare->name) {
++		sb->line_no = expr->line;
++		sb->line_idx = expr->idx + strlen("no name");
++
++		parse_error(sb, "no name",
++		    "Field calculations must be labeled 'AS name'\n");
++	}
++
+ 	switch (errno) {
+ 	case ENODEV:
+ 	case EBADE:
 -- 
 2.30.2
 
