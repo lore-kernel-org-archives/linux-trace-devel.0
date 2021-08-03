@@ -7,34 +7,34 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18775C432BE
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 02:59:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A523C00143
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 02:59:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F03A761038
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 02:59:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 021AE61050
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 Aug 2021 02:59:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233537AbhHCC7e (ORCPT
+        id S233737AbhHCC7f (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 2 Aug 2021 22:59:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38976 "EHLO mail.kernel.org"
+        Mon, 2 Aug 2021 22:59:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233719AbhHCC7e (ORCPT
+        id S233741AbhHCC7e (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 2 Aug 2021 22:59:34 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF0A660EB2;
+        by mail.kernel.org (Postfix) with ESMTPSA id CB70560E09;
         Tue,  3 Aug 2021 02:59:23 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mAkeI-002qGE-P6; Mon, 02 Aug 2021 22:59:22 -0400
+        id 1mAkeI-002qG1-LQ; Mon, 02 Aug 2021 22:59:22 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 6/7] libtracefs: Add API tracefs_synth_get_start_hist()
-Date:   Mon,  2 Aug 2021 22:59:20 -0400
-Message-Id: <20210803025921.677469-7-rostedt@goodmis.org>
+Subject: [PATCH 2/7] libtracefs: Expose tracefs_hist_command() as an API
+Date:   Mon,  2 Aug 2021 22:59:16 -0400
+Message-Id: <20210803025921.677469-3-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210803025921.677469-1-rostedt@goodmis.org>
 References: <20210803025921.677469-1-rostedt@goodmis.org>
@@ -46,155 +46,321 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add the API tracefs_synth_get_start_hist() that returns a tracefs_hist
-descriptor describing the start event of a tracefs_synth.
+Expose trace_hist_start() as tracefs_hist_command() and make the following
+functions wrappers that call this function:
+
+ tracefs_hist_start()
+ tracefs_hist_pause()
+ tracefs_hist_reset()
+ tracefs_hist_destroy()
+
+Exposing the enum for the above commands can make it easier for
+applications to run them depending on the input from the user.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Documentation/libtracefs-synth2.txt |  4 ++
- include/tracefs.h                   |  1 +
- src/tracefs-hist.c                  | 72 +++++++++++++++++++++++++++++
- 3 files changed, 77 insertions(+)
+ Documentation/libtracefs-hist.txt |  20 ++++++
+ include/tracefs.h                 |  93 ++++++++++++++++++++++++--
+ src/tracefs-hist.c                | 104 ++++--------------------------
+ 3 files changed, 120 insertions(+), 97 deletions(-)
 
-diff --git a/Documentation/libtracefs-synth2.txt b/Documentation/libtracefs-synth2.txt
-index 41680d5b9cba..5d34c4f60469 100644
---- a/Documentation/libtracefs-synth2.txt
-+++ b/Documentation/libtracefs-synth2.txt
-@@ -17,6 +17,7 @@ int tracefs_synth_destroy(struct tracefs_instance pass:[*]instance,
- 			  struct tracefs_synth pass:[*]synth);
- int tracefs_synth_show(struct trace_seq pass:[*]seq, struct tracefs_instance pass:[*]instance,
- 		       struct tracefs_synth pass:[*]synth);
-+struct tracefs_hist pass:[*]tracefs_synth_get_start_hist(struct tracefs_synth pass:[*]synth);
- 
+diff --git a/Documentation/libtracefs-hist.txt b/Documentation/libtracefs-hist.txt
+index 28b4c3d65cde..e5861f2f0842 100644
+--- a/Documentation/libtracefs-hist.txt
++++ b/Documentation/libtracefs-hist.txt
+@@ -25,6 +25,9 @@ int tracefs_hist_sort_key_direction(struct tracefs_hist pass:[*]hist,
+ 				    const char pass:[*]sort_key,
+ 				    enum tracefs_hist_sort_direction dir);
+ int tracefs_hist_add_name(struct tracefs_hist pass:[*]hist, const char pass:[*]name);
++int tracefs_hist_command(struct tracefs_instance pass:[*]instance,
++			 struct tracefs_hist pass:[*]hist,
++			 enum tracefs_hist_command command);
+ int tracefs_hist_start(struct tracefs_instance pass:[*]instance, struct tracefs_hist pass:[*]hist);
+ int tracefs_hist_destory(struct tracefs_instance pass:[*]instance, struct tracefs_hist pass:[*]hist);
  --
+@@ -81,6 +84,23 @@ compatible keys, the multiple histograms with the same name will be merged
+ into a single histogram (shown by either event's hist file). The _hist_
+ is the histogram to name, and the _name_ is the name to give it.
  
-@@ -52,6 +53,9 @@ this may fail as busy.
- the synthetic event in the given _instance_, it will write the echo commands to
- manually create it in the _seq_ given.
- 
-+*tracefs_synth_get_start_hist*() returns a struct tracefs_hist descriptor describing
-+the histogram used to create the synthetic event.
++*tracefs_hist_command*() is called to process a command on the histogram
++_hist_ for its event in the given _instance_, or NULL for the top level.
++The _cmd_ can be one of:
 +
- RETURN VALUE
- ------------
- Returns zero on success or -1 on error.
++*TRACEFS_HIST_CMD_START* or zero to start execution of the histogram.
++
++*TRACEFS_HIST_CMD_PAUSE* to pause the given histogram.
++
++*TRACEFS_HIST_CMD_CONT* to continue a paused histogram.
++
++*TRACEFS_HIST_CMD_CLEAR* to reset the values of a histogram.
++
++*TRACEFS_HIST_CMD_DESTROY* to destroy the histogram (undo a START).
++
++The below functions are wrappers to tracefs_hist_command() to make the
++calling conventions a bit easier to understand what is happening.
++
+ *tracefs_hist_start* is called to actually start the histogram _hist_.
+ The _instance_ is the instance to start the histogram in, NULL if it
+ should start at the top level.
 diff --git a/include/tracefs.h b/include/tracefs.h
-index ab781764b0ed..8148bd57224b 100644
+index ff115d6ce01d..302833722a99 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
-@@ -467,6 +467,7 @@ int tracefs_synth_append_end_filter(struct tracefs_synth *synth,
- 				    const char *field,
- 				    enum tracefs_compare compare,
- 				    const char *val);
-+struct tracefs_hist *tracefs_synth_get_start_hist(struct tracefs_synth *synth);
- int tracefs_synth_create(struct tracefs_instance *instance,
- 			 struct tracefs_synth *synth);
- int tracefs_synth_destroy(struct tracefs_instance *instance,
-diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index 7c84e942d58b..3721b18e27af 100644
---- a/src/tracefs-hist.c
-+++ b/src/tracefs-hist.c
-@@ -543,6 +543,7 @@ struct tracefs_synth {
- 	char			*name;
- 	char			**synthetic_fields;
- 	char			**synthetic_args;
-+	char			**start_selection;
- 	char			**start_keys;
- 	char			**end_keys;
- 	char			**start_vars;
-@@ -1061,6 +1062,7 @@ int tracefs_synth_add_start_field(struct tracefs_synth *synth,
- {
- 	const struct tep_format_field *field;
- 	char *start_arg;
-+	char **tmp;
- 	int ret;
+@@ -279,6 +279,14 @@ enum tracefs_hist_sort_direction {
  
- 	if (!synth || !start_field) {
-@@ -1087,7 +1089,14 @@ int tracefs_synth_add_start_field(struct tracefs_synth *synth,
- 		goto out_free;
+ struct tracefs_hist;
  
- 	ret = add_synth_fields(synth, field, name);
-+	if (ret)
-+		goto out_free;
- 
-+	tmp = tracefs_list_add(synth->start_selection, start_field);
-+	if (tmp)
-+		synth->start_selection = tmp;
-+	else
-+		ret = -1;
-  out_free:
- 	free(start_arg);
- 	return ret;
-@@ -1345,6 +1354,69 @@ static int verify_state(struct tracefs_synth *synth)
- 	return 0;
- }
- 
++enum tracefs_hist_command {
++	TRACEFS_HIST_CMD_START = 0,
++	TRACEFS_HIST_CMD_PAUSE,
++	TRACEFS_HIST_CMD_CONT,
++	TRACEFS_HIST_CMD_CLEAR,
++	TRACEFS_HIST_CMD_DESTROY,
++};
++
+ void tracefs_hist_free
+ (struct tracefs_hist *hist);
+ struct tracefs_hist *
+@@ -294,11 +302,86 @@ int tracefs_hist_sort_key_direction(struct tracefs_hist *hist,
+ 				    const char *sort_key,
+ 				    enum tracefs_hist_sort_direction dir);
+ int tracefs_hist_add_name(struct tracefs_hist *hist, const char *name);
+-int tracefs_hist_start(struct tracefs_instance *instance, struct tracefs_hist *hist);
+-int tracefs_hist_pause(struct tracefs_instance *instance,struct tracefs_hist *hist);
+-int tracefs_hist_continue(struct tracefs_instance *instance,struct tracefs_hist *hist);
+-int tracefs_hist_reset(struct tracefs_instance *instance,struct tracefs_hist *hist);
+-int tracefs_hist_destroy(struct tracefs_instance *instance,struct tracefs_hist *hist);
++int tracefs_hist_command(struct tracefs_instance *instance,
++			 struct tracefs_hist *hist, enum tracefs_hist_command cmd);
++
 +/**
-+ * tracefs_synth_get_start_hist - Return the histogram of the start event
-+ * @synth: The synthetic event to get the start hist from.
++ * tracefs_hist_start - enable a histogram
++ * @instance: The instance the histogram will be in (NULL for toplevel)
++ * @hist: The histogram to start
 + *
-+ * On success, returns a tracefs_hist descriptor that holds the
-+ * histogram information of the start_event of the synthetic event
-+ * structure. Returns NULL on failure.
++ * Starts executing a histogram.
++ *
++ * Returns 0 on success, -1 on error.
 + */
-+struct tracefs_hist *
-+tracefs_synth_get_start_hist(struct tracefs_synth *synth)
++static inline int tracefs_hist_start(struct tracefs_instance *instance,
++				     struct tracefs_hist *hist)
 +{
-+	struct tracefs_hist *hist = NULL;
-+	struct tep_handle *tep;
-+	const char *system;
-+	const char *event;
-+	const char *key;
-+	char **keys;
-+	int ret;
-+	int i;
-+
-+	if (!synth) {
-+		errno = EINVAL;
-+		return NULL;
-+	}
-+
-+	system = synth->start_event->system;
-+	event = synth->start_event->name;
-+	keys = synth->start_keys;
-+	tep = synth->tep;
-+
-+	if (!keys)
-+		keys = synth->start_selection;
-+
-+	if (!keys)
-+		return NULL;
-+
-+	for (i = 0; keys[i]; i++) {
-+		key = keys[i];
-+
-+		if (i) {
-+			ret = tracefs_hist_add_key(hist, key, 0);
-+			if (ret < 0) {
-+				tracefs_hist_free(hist);
-+				return NULL;
-+			}
-+		} else {
-+			hist = tracefs_hist_alloc(tep, system, event,
-+						  key, 0);
-+			break;
-+		}
-+	}
-+
-+	if (synth->start_filter) {
-+		hist->filter = strdup(synth->start_filter);
-+		if (!hist->filter) {
-+			tracefs_hist_free(hist);
-+			return NULL;
-+		}
-+	}
-+
-+	return hist;
++	return tracefs_hist_command(instance, hist, 0);
 +}
 +
- /**
-  * tracefs_synth_create - creates the synthetic event on the system
-  * @instance: The instance to modify the start and end events
++/**
++ * tracefs_hist_pause - pause a histogram
++ * @instance: The instance the histogram is in (NULL for toplevel)
++ * @hist: The histogram to pause
++ *
++ * Pause a histogram.
++ *
++ * Returns 0 on success, -1 on error.
++ */
++static inline int tracefs_hist_pause(struct tracefs_instance *instance,
++				     struct tracefs_hist *hist)
++{
++	return tracefs_hist_command(instance, hist, TRACEFS_HIST_CMD_PAUSE);
++}
++
++/**
++ * tracefs_hist_continue - continue a paused histogram
++ * @instance: The instance the histogram is in (NULL for toplevel)
++ * @hist: The histogram to continue
++ *
++ * Continue a histogram.
++ *
++ * Returns 0 on success, -1 on error.
++ */
++static inline int tracefs_hist_continue(struct tracefs_instance *instance,
++					struct tracefs_hist *hist)
++{
++	return tracefs_hist_command(instance, hist, TRACEFS_HIST_CMD_CONT);
++}
++
++/**
++ * tracefs_hist_reset - clear a histogram
++ * @instance: The instance the histogram is in (NULL for toplevel)
++ * @hist: The histogram to reset
++ *
++ * Resets a histogram.
++ *
++ * Returns 0 on success, -1 on error.
++ */
++static inline int tracefs_hist_reset(struct tracefs_instance *instance,
++				     struct tracefs_hist *hist)
++{
++	return tracefs_hist_command(instance, hist, TRACEFS_HIST_CMD_CLEAR);
++}
++
++/**
++ * tracefs_hist_destroy - deletes a histogram (needs to be enabled again)
++ * @instance: The instance the histogram is in (NULL for toplevel)
++ * @hist: The histogram to delete
++ *
++ * Deletes (removes) a running histogram. This is different than
++ * clear, as clear only clears the data but the histogram still exists.
++ * This deletes the histogram and should be called before
++ * tracefs_hist_free() to clean up properly.
++ *
++ * Returns 0 on success, -1 on error.
++ */
++static inline int tracefs_hist_destroy(struct tracefs_instance *instance,
++				       struct tracefs_hist *hist)
++{
++	return tracefs_hist_command(instance, hist, TRACEFS_HIST_CMD_DESTROY);
++}
+ 
+ struct tracefs_synth;
+ 
+diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
+index b72171af9577..ccd331c1f52d 100644
+--- a/src/tracefs-hist.c
++++ b/src/tracefs-hist.c
+@@ -35,14 +35,6 @@ struct tracefs_hist {
+ 	int			size;
+ };
+ 
+-enum tracefs_hist_command {
+-	HIST_CMD_NONE = 0,
+-	HIST_CMD_PAUSE,
+-	HIST_CMD_CONT,
+-	HIST_CMD_CLEAR,
+-	HIST_CMD_DESTROY,
+-};
+-
+ static void add_list(struct trace_seq *seq, const char *start,
+ 		     char **list)
+ {
+@@ -57,17 +49,18 @@ static void add_list(struct trace_seq *seq, const char *start,
+ }
+ 
+ /*
+- * trace_hist_start - Create and start a histogram for an event
++ * tracefs_hist_command - Create, start, pause, destroy a histogram for an event
++ * @instance: The instance the histogram will be in (NULL for toplevel)
+  * @hist: The histogram to write into the trigger file
+- * @command: If not zero, can pause, continue or clear the histogram
++ * @command: Command to perform on a histogram.
+  *
+- * This creates a histogram for an event with the given fields.
++ * Creates, pause, continue, clears, or destroys a histogram.
+  *
+  * Returns 0 on succes -1 on error.
+  */
+-static int
+-trace_hist_start(struct tracefs_instance *instance, struct tracefs_hist *hist,
+-		 enum tracefs_hist_command command)
++int tracefs_hist_command(struct tracefs_instance *instance,
++			 struct tracefs_hist *hist,
++			 enum tracefs_hist_command command)
+ {
+ 	const char *system = hist->system;
+ 	const char *event = hist->event_name;
+@@ -83,7 +76,7 @@ trace_hist_start(struct tracefs_instance *instance, struct tracefs_hist *hist,
+ 
+ 	trace_seq_init(&seq);
+ 
+-	if (command == HIST_CMD_DESTROY)
++	if (command == TRACEFS_HIST_CMD_DESTROY)
+ 		trace_seq_putc(&seq, '!');
+ 
+ 	add_list(&seq, "hist:keys=", hist->keys);
+@@ -98,10 +91,10 @@ trace_hist_start(struct tracefs_instance *instance, struct tracefs_hist *hist,
+ 		trace_seq_printf(&seq, ":size=%d", hist->size);
+ 
+ 	switch(command) {
+-	case HIST_CMD_NONE: break;
+-	case HIST_CMD_PAUSE: trace_seq_puts(&seq, ":pause"); break;
+-	case HIST_CMD_CONT: trace_seq_puts(&seq, ":cont"); break;
+-	case HIST_CMD_CLEAR: trace_seq_puts(&seq, ":clear"); break;
++	case TRACEFS_HIST_CMD_START: break;
++	case TRACEFS_HIST_CMD_PAUSE: trace_seq_puts(&seq, ":pause"); break;
++	case TRACEFS_HIST_CMD_CONT: trace_seq_puts(&seq, ":cont"); break;
++	case TRACEFS_HIST_CMD_CLEAR: trace_seq_puts(&seq, ":clear"); break;
+ 	default: break;
+ 	}
+ 
+@@ -301,79 +294,6 @@ int tracefs_hist_add_name(struct tracefs_hist *hist, const char *name)
+ 	return hist->name ? 0 : -1;
+ }
+ 
+-/**
+- * tracefs_hist_start - enable a histogram
+- * @instance: The instance the histogram will be in (NULL for toplevel)
+- * @hist: The histogram to start
+- *
+- * Starts executing a histogram.
+- *
+- * Returns 0 on success, -1 on error.
+- */
+-int tracefs_hist_start(struct tracefs_instance *instance, struct tracefs_hist *hist)
+-{
+-	return trace_hist_start(instance, hist, 0);
+-}
+-
+-/**
+- * tracefs_hist_pause - pause a histogram
+- * @instance: The instance the histogram is in (NULL for toplevel)
+- * @hist: The histogram to pause
+- *
+- * Pause a histogram.
+- *
+- * Returns 0 on success, -1 on error.
+- */
+-int tracefs_hist_pause(struct tracefs_instance *instance, struct tracefs_hist *hist)
+-{
+-	return trace_hist_start(instance, hist, HIST_CMD_PAUSE);
+-}
+-
+-/**
+- * tracefs_hist_continue - continue a paused histogram
+- * @instance: The instance the histogram is in (NULL for toplevel)
+- * @hist: The histogram to continue
+- *
+- * Continue a histogram.
+- *
+- * Returns 0 on success, -1 on error.
+- */
+-int tracefs_hist_continue(struct tracefs_instance *instance, struct tracefs_hist *hist)
+-{
+-	return trace_hist_start(instance, hist, HIST_CMD_CONT);
+-}
+-
+-/**
+- * tracefs_hist_reset - clear a histogram
+- * @instance: The instance the histogram is in (NULL for toplevel)
+- * @hist: The histogram to reset
+- *
+- * Resets a histogram.
+- *
+- * Returns 0 on success, -1 on error.
+- */
+-int tracefs_hist_reset(struct tracefs_instance *instance, struct tracefs_hist *hist)
+-{
+-	return trace_hist_start(instance, hist, HIST_CMD_CLEAR);
+-}
+-
+-/**
+- * tracefs_hist_destroy - deletes a histogram (needs to be enabled again)
+- * @instance: The instance the histogram is in (NULL for toplevel)
+- * @hist: The histogram to delete
+- *
+- * Deletes (removes) a running histogram. This is different than
+- * clear, as clear only clears the data but the histogram still exists.
+- * This deletes the histogram and should be called before
+- * tracefs_hist_free() to clean up properly.
+- *
+- * Returns 0 on success, -1 on error.
+- */
+-int tracefs_hist_destroy(struct tracefs_instance *instance, struct tracefs_hist *hist)
+-{
+-	return trace_hist_start(instance, hist, HIST_CMD_DESTROY);
+-}
+-
+ static char **
+ add_sort_key(struct tracefs_hist *hist, const char *sort_key, char **list)
+ {
 -- 
 2.30.2
 
