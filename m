@@ -2,239 +2,249 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCFD1C4320A
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Aug 2021 12:55:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DBE21C432BE
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Aug 2021 13:23:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A599960F41
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Aug 2021 12:55:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9912C60F43
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Aug 2021 13:23:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236492AbhHDM4A (ORCPT
+        id S238053AbhHDNYA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 4 Aug 2021 08:56:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236732AbhHDMz7 (ORCPT
+        Wed, 4 Aug 2021 09:24:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41758 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238061AbhHDNX7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 4 Aug 2021 08:55:59 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098CDC061798
-        for <linux-trace-devel@vger.kernel.org>; Wed,  4 Aug 2021 05:55:47 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id b11so2136296wrx.6
-        for <linux-trace-devel@vger.kernel.org>; Wed, 04 Aug 2021 05:55:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vqNfWsbkxSHdSuSMBnWNRmUdplBTkyS0Te7pBSPTcvY=;
-        b=UNPhJVkyOZRm4AHAQYrolDWqQA6AC/rfomyGOZLhqAFPE873AFA2/pt4s/pug7l00I
-         SlB+A7fsHZMKDtibHDzii7pDLsDa/PRj4mTaeq509mFM+A/lsCWfxYONexmT6G/9Bo+V
-         QWqDqLBNHMsp4Zc3aqQit0cQBTf9Rysr+QaGoBgK9BDwJI15uHo6bFAaDZEh6WG6WJZT
-         82yNZYNIaRGFLjVhRmnVCt14byXN2TSgqdSdRFtuNF1hc4u9Sw/meXCuF0RDiTIG8NIn
-         YkPoRT6ftraP3eTX8C++TAMMn5XFd7uCe/nNjW/ltG4oKxjG/VMiGDItA6Vqw6oChNK2
-         Jsmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vqNfWsbkxSHdSuSMBnWNRmUdplBTkyS0Te7pBSPTcvY=;
-        b=dZYZ4qhQNqwsrKT3owociJ/G2VMDW6K+onXwcQuaV9E5AySow4+H6ZWi8r/8VH9DnS
-         8eSf+Pj6HqbVtL2hPpYPCZhewESiZaDH0CSsl7ErAOnrAbPqG2AG/DIZQ5w3LdaOU699
-         DVE0qryxv6JkoBQPArz6UxtLSvWYDKWylMvTkILYNjIWbo3+el+ozUtQyqyS1BUESZJH
-         z7/ZXHylS4AUMGQEZilfSqnOQYS1ONszGs2OH2qVf7M0nFvYFB5Q7YZtZNG1ALb9mSsU
-         EaJvjf/qsrW+Cp/SbARKqPTu14bdXclscMpXPR5acZ0F9OmiFRHYut0jsMxEXUna1xfO
-         6dOQ==
-X-Gm-Message-State: AOAM530GA1daMKIvjxnCHgEgGbsJCKwpVHLKbLR1LlIyPnq9kv5LfVN+
-        TwtMUA4Gzww05RZ9zF2aQk4=
-X-Google-Smtp-Source: ABdhPJyyRmezcru7sGwRZMhS6S50l1cnc95vc6/uu9newUYf4Rq6IzZqMq2Bem25kUsi2Uh5F4OKiQ==
-X-Received: by 2002:a5d:65c1:: with SMTP id e1mr28507518wrw.320.1628081745642;
-        Wed, 04 Aug 2021 05:55:45 -0700 (PDT)
-Received: from crow.eng.vmware.com ([146.247.46.133])
-        by smtp.gmail.com with ESMTPSA id q20sm2214982wmj.27.2021.08.04.05.55.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 05:55:45 -0700 (PDT)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 2/2] libtraceevent: Keep the pointer to the field in args (WiP)
-Date:   Wed,  4 Aug 2021 15:55:26 +0300
-Message-Id: <20210804125526.19774-2-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210804125526.19774-1-y.karadz@gmail.com>
-References: <20210804125526.19774-1-y.karadz@gmail.com>
+        Wed, 4 Aug 2021 09:23:59 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D760260F43;
+        Wed,  4 Aug 2021 13:23:40 +0000 (UTC)
+Date:   Wed, 4 Aug 2021 09:23:39 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Zanussi <zanussi@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Clark Williams <williams@redhat.com>
+Subject: Re: [PATCH v2 00/21] libtracefs: Introducing tracefs_sql() to
+ create synthetice events with an SQL line
+Message-ID: <20210804092339.786315cd@oasis.local.home>
+In-Reply-To: <YQqAjBCtd8MnhV1v@lx-t490>
+References: <20210803042347.679499-1-rostedt@goodmis.org>
+        <YQqAjBCtd8MnhV1v@lx-t490>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Steven Rostedt <rostedt@goodmis.org>
-
-In order to have tep_print_field() print the field closer to the way it
-is printed via the "pretty_print" method, all field args, must keep a
-pointer to the field it represents.
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
-
-Hi Steven,
-
-This version is still WORK IN PROGRESS! 
-
-Changes in c2:
-
- A kprobe that is defined as:
- "p:open do_sys_openat2 file=+0($arg2):string flags=+0($arg3):x64 mode=+8($arg3):x64"
-
- will have the following printing format:
- "print fmt: "(%lx) file=\"%s\" flags=0x%Lx mode=0x%Lx", REC->__probe_ip, __get_str(file), REC->flags, REC->mode"
-
- In v2 I am trying to add propper handling of the "file" fieled
- (via "__get_str") of this particular probe. A solution for the general
- case still needs to be developed.
-
- Any ideas?
- 
-Thanks!
-Yordan
+On Wed, 4 Aug 2021 13:57:00 +0200
+"Ahmed S. Darwish" <a.darwish@linutronix.de> wrote:
 
 
- src/event-parse.c | 60 +++++++++++++++++++++++++++--------------------
- 1 file changed, 34 insertions(+), 26 deletions(-)
+> Thanks a lot! Actually, I meant going even one step further ;)
+> 
+> I was imagining something like the following:
+> 
+> $ trace-cmd sql-shell		# OR
+> 
+> $ perf tracefs-sql-shell
+> 
+>   Welcome to tracefs SQL shell...
+> 
+>   > SELECT PNAME(common_pid),msr,val  
+>     FROM write_msr
+>     WHERE msr=72 OR msr=2096
+> 
+>   .-------------------------------------------.
+>   | PNAME(common_pid)   |  msr  |    val      |
+>   |---------------------|------ |-------------|
+>   | qemu-system-x86     | 0x48  | 0           |
+>   | qemu-system-x86     | 0x48  | 0           |
+>   | qemu-system-x86     | 0x48  | 0           |
+>   | kworker/u16:2       | 0x830 | 0x1000008fb |
+>   | ....                | ....  | .....       |
+>   +-------------------------------------------+
 
-diff --git a/src/event-parse.c b/src/event-parse.c
-index b0790d7..64ebed3 100644
---- a/src/event-parse.c
-+++ b/src/event-parse.c
-@@ -2334,12 +2334,12 @@ process_entry(struct tep_event *event __maybe_unused, struct tep_print_arg *arg,
- 	arg->type = TEP_PRINT_FIELD;
- 	arg->field.name = field;
- 
-+	arg->field.field = tep_find_any_field(event, arg->field.name);
-+
- 	if (is_flag_field) {
--		arg->field.field = tep_find_any_field(event, arg->field.name);
- 		arg->field.field->flags |= TEP_FIELD_IS_FLAG;
- 		is_flag_field = 0;
- 	} else if (is_symbolic_field) {
--		arg->field.field = tep_find_any_field(event, arg->field.name);
- 		arg->field.field->flags |= TEP_FIELD_IS_SYMBOLIC;
- 		is_symbolic_field = 0;
- 	}
-@@ -3103,7 +3103,7 @@ process_paren(struct tep_event *event, struct tep_print_arg *arg, char **tok)
- 
- static enum tep_event_type
- process_str(struct tep_event *event __maybe_unused, struct tep_print_arg *arg,
--	    char **tok)
-+	    char **field, char **tok)
- {
- 	enum tep_event_type type;
- 	char *token;
-@@ -3111,6 +3111,7 @@ process_str(struct tep_event *event __maybe_unused, struct tep_print_arg *arg,
- 	if (read_expect_type(TEP_EVENT_ITEM, &token) < 0)
- 		goto out_free;
- 
-+	*field = token;
- 	arg->type = TEP_PRINT_STRING;
- 	arg->string.string = token;
- 	arg->string.offset = -1;
-@@ -3285,59 +3286,66 @@ process_function(struct tep_event *event, struct tep_print_arg *arg,
- 		 char *token, char **tok)
- {
- 	struct tep_function_handler *func;
-+	int ret = TEP_EVENT_ERROR;
-+	char *field = NULL;
- 
- 	if (strcmp(token, "__print_flags") == 0) {
--		free_token(token);
- 		is_flag_field = 1;
--		return process_flags(event, arg, tok);
-+		ret = process_flags(event, arg, tok);
-+		goto done;
- 	}
- 	if (strcmp(token, "__print_symbolic") == 0) {
--		free_token(token);
- 		is_symbolic_field = 1;
--		return process_symbols(event, arg, tok);
-+		ret = process_symbols(event, arg, tok);
-+		goto done;
- 	}
- 	if (strcmp(token, "__print_hex") == 0) {
--		free_token(token);
--		return process_hex(event, arg, tok);
-+		ret = process_hex(event, arg, tok);
-+		goto done;
- 	}
- 	if (strcmp(token, "__print_hex_str") == 0) {
--		free_token(token);
--		return process_hex_str(event, arg, tok);
-+		ret = process_hex_str(event, arg, tok);
-+		goto done;
- 	}
- 	if (strcmp(token, "__print_array") == 0) {
--		free_token(token);
--		return process_int_array(event, arg, tok);
-+		ret = process_int_array(event, arg, tok);
-+		goto done;
- 	}
- 	if (strcmp(token, "__get_str") == 0) {
--		free_token(token);
--		return process_str(event, arg, tok);
-+		ret = process_str(event, arg, &field, tok);
-+		goto done;
- 	}
- 	if (strcmp(token, "__get_bitmask") == 0) {
--		free_token(token);
--		return process_bitmask(event, arg, tok);
-+		ret = process_bitmask(event, arg, tok);
-+		goto done;
- 	}
- 	if (strcmp(token, "__get_dynamic_array") == 0) {
--		free_token(token);
--		return process_dynamic_array(event, arg, tok);
-+		ret = process_dynamic_array(event, arg, tok);
-+		goto done;
- 	}
- 	if (strcmp(token, "__get_dynamic_array_len") == 0) {
--		free_token(token);
--		return process_dynamic_array_len(event, arg, tok);
-+		ret = process_dynamic_array_len(event, arg, tok);
-+		goto done;
- 	}
- 	if (strcmp(token, "__builtin_expect") == 0) {
--		free_token(token);
--		return process_builtin_expect(event, arg, tok);
-+		ret = process_builtin_expect(event, arg, tok);
-+		goto done;
- 	}
- 
- 	func = find_func_handler(event->tep, token);
- 	if (func) {
--		free_token(token);
--		return process_func_handler(event, func, arg, tok);
-+		ret = process_func_handler(event, func, arg, tok);
-+		goto done;
- 	}
- 
- 	do_warning_event(event, "function %s not defined", token);
-+
-+ done:
-+	if (field)
-+		arg->field.field = tep_find_any_field(event, field);
-+
- 	free_token(token);
--	return TEP_EVENT_ERROR;
-+	return ret;
- }
- 
- static enum tep_event_type
--- 
-2.30.2
+
+Well, the above looks more like a normal trace just being processed
+differently. If you want that, I already have this:
+
+  https://lore.kernel.org/linux-trace-devel/20200116104804.5d2f71e2@gandalf.local.home/
+
+Which I created to test the idea of using SQL to create synthetic events.
+
+It simply converts the events in a trace.dat file into a sql format
+file that can be used to read into a SQL database. As the patch shows:
+
+ $ trace-cmd sqldump > dump
+ $ mysql events < dump
+
+MariaDB [events]> show tables;
++-----------------------------+
+| Tables_in_events            |
++-----------------------------+
+| sched_migrate_task          |
+| sched_move_numa             |
+| sched_process_exec          |
+| sched_process_exit          |
+| sched_stat_runtime          |
+| sched_switch                |
+| sched_wake_idle_without_ipi |
+| sched_wakeup                |
+| sched_waking                |
++-----------------------------+
+9 rows in set (0.001 sec)
+
+MariaDB [events]> select * from sched_move_numa;
++-------------------+-------------+--------------+----------------------+------------+-------+-------+-------+---------+---------+---------+---------+
+| common_timestamp  | common_type | common_flags | common_preempt_count | common_pid | pid   | tgid  | ngid  | src_cpu | src_nid | dst_cpu | dst_nid |
++-------------------+-------------+--------------+----------------------+------------+-------+-------+-------+---------+---------+---------+---------+
+| 14943901721165973 |         305 |            0 |                    0 |      27451 | 27451 | 27451 | 27451 |       5 |       1 |      22 |       0 |
+| 14943901722548756 |         305 |            0 |                    0 |       3684 |  3684 |  3684 |  3684 |      23 |       1 |      22 |       0 |
+| 14943901779987828 |         305 |            0 |                    0 |      13693 | 13693 | 13677 | 13693 |       7 |       1 |      22 |       0 |
++-------------------+-------------+--------------+----------------------+------------+-------+-------+-------+---------+---------+---------+---------+
+3 rows in set (0.001 sec)
+
+I never applied the patch, but perhaps you would be interested in this?
+
+> 
+>   > SELECT MAX(end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) AS MaxSystemLatency_us,  
+>       PNAME(common_pid)
+>     FROM sched_waking AS start JOIN sched_switch AS end
+>     ON start.pid = stop.next_pid
+
+
+Now the above would require parsing the histogram data, which is next
+on our agenda. There's two routes we can take with this:
+
+ 1) Add a "hist_raw" that shows the raw data from the kernel's
+ histogram table. It would still be in ASCII, but will be formatted for
+ machine readability and not for humans (like /proc/$$/stat vs /proc/$$/status)
+
+ 2) We write another bison parser to parse the current format of the
+ histogram output, which looks like this:
+
+  # sqlhist -n lat -e 'SELECT end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat
+         FROM sched_waking as start JOIN sched_switch as end ON start.pid = end.next_pid'
+  # trace-cmd start -e lat -R 'hist:keys=common_pid.execname,lat:sort=lat'
+  # cat /sys/kernel/tracing/events/synthetic/lat/hist
+# event histogram
+#
+# trigger info: hist:keys=common_pid.execname,lat:vals=hitcount:sort=lat:size=2048 [active]
+#
+
+{ common_pid: <idle>          [         0], lat:          2 } hitcount:          9
+{ common_pid: <idle>          [         0], lat:          3 } hitcount:          3
+{ common_pid: kworker/0:0     [     10041], lat:          3 } hitcount:          7
+{ common_pid: kworker/0:0     [     10041], lat:          4 } hitcount:          5
+{ common_pid: <idle>          [         0], lat:          4 } hitcount:          2
+{ common_pid: <idle>          [         0], lat:          5 } hitcount:          9
+{ common_pid: kworker/0:0     [     10041], lat:          5 } hitcount:         14
+{ common_pid: kworker/0:0     [     10041], lat:          6 } hitcount:          5
+{ common_pid: <idle>          [         0], lat:          6 } hitcount:         16
+{ common_pid: <idle>          [         0], lat:          7 } hitcount:         19
+[..]
+{ common_pid: JS Helper       [      1366], lat:         96 } hitcount:          1
+{ common_pid: <idle>          [         0], lat:         97 } hitcount:          1
+{ common_pid: <idle>          [         0], lat:         99 } hitcount:          1
+{ common_pid: <idle>          [         0], lat:        107 } hitcount:          1
+{ common_pid: <idle>          [         0], lat:        108 } hitcount:          3
+{ common_pid: <idle>          [         0], lat:        117 } hitcount:          1
+{ common_pid: <idle>          [         0], lat:        118 } hitcount:          1
+{ common_pid: sendmail        [      1739], lat:        130 } hitcount:          1
+
+Totals:
+    Hits: 2212
+    Entries: 130
+    Dropped: 0
+
+That file is a user space API, and we can write up another bison parser
+to parse out the data.
+
+
+Between the two approaches, #1 is probably the better way, but that
+requires a kernel change, and the feature will not be available in
+older kernels, and not available until we actually implement it.
+
+Approach #2 can be done today and will work for older kernels too. Also,
+if we do #2, it doesn't mean we can't still do #1.
+
+
+> 
+>   .-------------------------------------------.
+>   | MaxSystemLatency_us | PNAME(common_pid)   |
+>   |---------------------|---------------------|
+>   | 350                 | cyclictest          |
+>   +-------------------------------------------+
+> 
+>   > SELECT (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) AS latency,  
+>       PNAME(common_pid), PRIO(common_pid)
+>     FROM sched_waking AS start JOIN sched_switch AS end
+>     ON start.pid = stop.next_pid
+>     ORDER BY latency DESC
+>     LIMIT 5
+> 
+>   .----------------------------------------------------------.
+>   | Latency | PNAME(common_pid)           | PRIO(common_pid) |
+>   |---------|-----------------------------|------------------|
+>   | 829     | cyclictest                  | SCHED_FIFO:98    |
+>   | 400     | cyclictest                  | SCHED_FIFO:98    |
+>   | 192     | pulseaudio-rt               | SCHED_RR:48      |
+>   | 30      | firefox                     | SCHED_OTHER:0:0  |
+>   | 10      | kworker/0:0H-events_highpri | SCHED_OTHER:0:-20|
+>   +----------------------------------------------------------+
+> 
+>   > SELECT (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as MaxIRQLatency_us  
+>     FROM irq_disable as start JOIN irq_enable as end
+>     ON start.common_pid = end.common_pid,
+>        start.parent_offs == end.parent_offs
+>     ORDER BY max_irq_disable
+>     LIMIT 1
+> 
+>   .------------------.
+>   | MaxIRQLatency_us |
+>   |------------------|
+>   | 37               |
+>   +------------------+
+> 
+> And so on....
+> 
+> The idea was that since the community already picked SQL as a
+> higher-level tracing language, why hard-code the SQL language with
+> synthetic events and histograms?
+> 
+> The language can alredy offer something *way more generic*, out of the
+> box, while still covering the desired special cases.
+> 
+> We can support the standard SQL aggregate functions (e.g., MAX(), MIN(),
+> SUM(), COUNT(), DISTINCT(), AVG(), etc.) + some kernel-specific
+> functions (e.g., PROCESS_NAME(), PROCESS_PRIO(), USECS(), etc.) + the
+> standard SQL keyworkds like ORDER BY, LIMIT, DESC, ASC, etc. This would
+> offer some nice friendly competition to BPF tracing, while still being a
+> (relatively) simple *query-only* language.
+> 
+> I'm not sure if you would be OK with this, but I thought a proposal
+> won't hurt :)
+> 
+> I can also write some patches on top of this series if you are OK with
+> the principle in general.
+>
+
+I'm not against it, and was thinking of implementing some kind of
+ "trace-cmd sql" feature. But before we can get there, we need a way to
+ get that information out from the kernel.
+
+-- Steve
 
