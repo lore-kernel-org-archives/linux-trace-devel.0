@@ -2,113 +2,69 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75FC8C432BE
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Aug 2021 00:41:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6678C4338F
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Aug 2021 00:50:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5C22960E96
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Aug 2021 00:41:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8EFC060E96
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Aug 2021 00:50:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229892AbhHDAla (ORCPT
+        id S231460AbhHDAvC (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 3 Aug 2021 20:41:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhHDAl3 (ORCPT
+        Tue, 3 Aug 2021 20:51:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229878AbhHDAvC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 3 Aug 2021 20:41:29 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B40C06175F
-        for <linux-trace-devel@vger.kernel.org>; Tue,  3 Aug 2021 17:41:18 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id l24-20020ac872580000b029024e988e8277so419165qtp.23
-        for <linux-trace-devel@vger.kernel.org>; Tue, 03 Aug 2021 17:41:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=B4+dqQea/fyrifbfYRii03Q9D2jfNnwkCXVw6odoE3Q=;
-        b=tmHLRMRtncY3n+Dn5Ll+oJg0A5S5vxc2C+Fv0tqtXzDSMpcaaDtCCpH8vj36R8/ilG
-         3aa0NhV1hb6MpUBC0N2q7nCm+oMlM8TzP471VD9WE5TG8X6jTTeq0Md6VusnbUVvWqup
-         7aiL/numC0LMHo4cHjB757zQzw6RbTIVcp1psRZfnfMYUDvrpKCyhU0x8azjcM+yzzYB
-         V9VL/fGo9EX3+BttANERxGgdbnKklpblfGeTZ75RnLtcTHVfTK/z79GJ2uvYHslSdWuE
-         WnQeeJQsfSmit4epi1jGevlHvFk9oPg1nRF3o1wnJw7osJ57Sc+Qvq6XWcLN+GUfj9lh
-         +R8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=B4+dqQea/fyrifbfYRii03Q9D2jfNnwkCXVw6odoE3Q=;
-        b=OWCp4bQE62DKAEQSufG2fML1KoEzg8imBx9ugunj7RJgzqorfuNVijfpudPssjm2OU
-         219Lc/+6sOe7ql//zBxuX9L+DCTgOs1Hu1dnX9i0F5EaYyyT6rz3ZN0HTBVtR6fALdcn
-         xcyMwTe6oPM7P47LF/9Yk9wmjV8Ot31f0KI3fFKpiwf1appSDf+gSABSHKLVU7DVDqtS
-         io2aYCYKPZ6DfPpofGamQRJ+dvi9rGBklnHKNg13mQf970pT3qXg2UByIeOcC6UtcaeI
-         O+aj7yN9Rd9zNBLkGIRgOBtKmN/oo2GGTATW8ShYWRRveWCln9fSJji1t0WhlAicGDT/
-         9pdA==
-X-Gm-Message-State: AOAM533GzF9izW76HbLQ6limsi1iDWSL1ujaGbwkBfcvN0K6R/FwyZ8u
-        QdAxmk3NI0WS4nJqQ3VyfHorQDm2xBMNtTeEKFxZfS0uLMLEHCullR+O25pm/8sdE6jhwBAzkb8
-        2RZWlS66d4DXbAJEpRBz5K5vwI/zd/HQLwwdMTCyBSLDanhjivtd7Wh5jkcEdeSjCwf4zUeze7P
-        69rpg=
-X-Google-Smtp-Source: ABdhPJwa276iZLvn/W5+We25f3Hmj2AE6qDaAb00mwrJX6upa/EFUVvEx2TQ32ZuoWIyMiVH+f2hgXpOjlzX
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:bfcb:f7e3:49a1:c031])
- (user=irogers job=sendgmr) by 2002:a05:6214:1c1:: with SMTP id
- c1mr24292862qvt.37.1628037676952; Tue, 03 Aug 2021 17:41:16 -0700 (PDT)
-Date:   Tue,  3 Aug 2021 17:41:09 -0700
-In-Reply-To: <20210804004109.1476661-1-irogers@google.com>
-Message-Id: <20210804004109.1476661-2-irogers@google.com>
-Mime-Version: 1.0
-References: <20210804004109.1476661-1-irogers@google.com>
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-Subject: [PATCH 2/2] libtracefs: Silence sometimes-uninitialized warning
-From:   Ian Rogers <irogers@google.com>
-To:     linux-trace-devel@vger.kernel.org,
+        Tue, 3 Aug 2021 20:51:02 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D43E60EE8;
+        Wed,  4 Aug 2021 00:50:49 +0000 (UTC)
+Date:   Tue, 3 Aug 2021 20:50:48 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     linux-trace-devel@vger.kernel.org,
         Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
         Claire Jensen <cjense@google.com>
-Cc:     Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH 1/2] libtracefs: Silence non-literal-null-conversion
+ warning
+Message-ID: <20210803205048.2e7e44be@rorschach.local.home>
+In-Reply-To: <20210804004109.1476661-1-irogers@google.com>
+References: <20210804004109.1476661-1-irogers@google.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Warning generated by clang:
+On Tue,  3 Aug 2021 17:41:08 -0700
+Ian Rogers <irogers@google.com> wrote:
 
-src/tracefs-events.c:1046:6: error: variable 'ret' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
-        if (!systems)
-            ^~~~~~~~
-src/tracefs-events.c:1101:9: note: uninitialized use occurs here
-        return ret;
-               ^~~
-src/tracefs-events.c:1046:2: note: remove the 'if' if its condition is always false
-        if (!systems)
-        ^~~~~~~~~~~~~
-src/tracefs-events.c:1038:9: note: initialize the variable 'ret' to silence this warning
-        int ret;
-               ^
-                = 0
+> diff --git a/src/tracefs-utils.c b/src/tracefs-utils.c
+> index 63bb413..a502c2d 100644
+> --- a/src/tracefs-utils.c
+> +++ b/src/tracefs-utils.c
+> @@ -470,7 +470,7 @@ int tracefs_list_pop(char **list)
+>  	size--;
+>  	*list = (char *)size;
+>  	list++;
+> -	list[size] = '\0';
+> +	list[size] = NULL;
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- src/tracefs-events.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Regardless of a clang warning, that code was an oops.
 
-diff --git a/src/tracefs-events.c b/src/tracefs-events.c
-index 8d84838..4679926 100644
---- a/src/tracefs-events.c
-+++ b/src/tracefs-events.c
-@@ -1035,7 +1035,7 @@ static int event_enable_disable(struct tracefs_instance *instance,
- 	regex_t system_re, event_re;
- 	char **systems;
- 	char **events = NULL;
--	int ret;
-+	int ret = -1;
- 	int s, e;
- 
- 	/* Handle all events first */
--- 
-2.32.0.554.ge1b32706d8-goog
+Thanks for the fix.
 
+-- Steve
+
+
+>  	return 0;
+>  }
+>  
