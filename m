@@ -8,58 +8,62 @@ X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
 	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D28CC4338F
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Aug 2021 00:41:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75FC8C432BE
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Aug 2021 00:41:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5D48760720
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Aug 2021 00:41:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5C22960E96
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Aug 2021 00:41:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbhHDAl1 (ORCPT
+        id S229892AbhHDAla (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 3 Aug 2021 20:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37172 "EHLO
+        Tue, 3 Aug 2021 20:41:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhHDAl1 (ORCPT
+        with ESMTP id S229691AbhHDAl3 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 3 Aug 2021 20:41:27 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D720C06175F
-        for <linux-trace-devel@vger.kernel.org>; Tue,  3 Aug 2021 17:41:15 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id v15-20020a0ccd8f0000b0290335f005a486so591733qvm.22
-        for <linux-trace-devel@vger.kernel.org>; Tue, 03 Aug 2021 17:41:15 -0700 (PDT)
+        Tue, 3 Aug 2021 20:41:29 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B40C06175F
+        for <linux-trace-devel@vger.kernel.org>; Tue,  3 Aug 2021 17:41:18 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id l24-20020ac872580000b029024e988e8277so419165qtp.23
+        for <linux-trace-devel@vger.kernel.org>; Tue, 03 Aug 2021 17:41:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=7gOCWTTACRo9q0rGX/Y2OgY1c+cXT6fyfz/EaWo56SY=;
-        b=JPCtTeLZabC37x2WH6HAEQi7qyGEggIsMPCb3mUtHhYa0neDw08Vr1ArOS9VUMfI3+
-         pQlADFdbQa/utkMZ73oBIGajOn5vmEZryrIynSCsEiaYZlmRoAqNBI0WAjoh9ewss/li
-         b8pWfAhPiVOODG/Zqi7jy1Z3okcmSUS9/QH2WQ7RQgpSAOjx1FDGKdYXctCX49OKBomK
-         bF4onuXvmjFYg3iEvBMyP6I1FN31D6Pyz9JUC3OBUEv76G9Vw9Et2olIQlWgOyULMzLO
-         v8SYoyvuF/1V/LdGA1FNlobAurtTF15uTl/E9tSISkbtta4H10za4E9hTL7ih1Q2r7OA
-         Ju4w==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=B4+dqQea/fyrifbfYRii03Q9D2jfNnwkCXVw6odoE3Q=;
+        b=tmHLRMRtncY3n+Dn5Ll+oJg0A5S5vxc2C+Fv0tqtXzDSMpcaaDtCCpH8vj36R8/ilG
+         3aa0NhV1hb6MpUBC0N2q7nCm+oMlM8TzP471VD9WE5TG8X6jTTeq0Md6VusnbUVvWqup
+         7aiL/numC0LMHo4cHjB757zQzw6RbTIVcp1psRZfnfMYUDvrpKCyhU0x8azjcM+yzzYB
+         V9VL/fGo9EX3+BttANERxGgdbnKklpblfGeTZ75RnLtcTHVfTK/z79GJ2uvYHslSdWuE
+         WnQeeJQsfSmit4epi1jGevlHvFk9oPg1nRF3o1wnJw7osJ57Sc+Qvq6XWcLN+GUfj9lh
+         +R8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=7gOCWTTACRo9q0rGX/Y2OgY1c+cXT6fyfz/EaWo56SY=;
-        b=l4AE5ZrsR4//SXpYzXbjzaVidaW9fEYe1yd2Rdn969h2Z3ybDElK4OtqgvvujWQuuK
-         gHd5+05hyrkLliP9Tn76JRkaPO+RV9wAkHblyMp8tcw+Ih5A62MOf61VM+vkkR7lWLWn
-         IDVV3xK2wx/cgrXxNWCkvf2Dbx5ZmhUd1s9Tj0X5ADa4C5QuEvYP7vQP9s7YZFVEx8UU
-         +7DPiwhBJuKJ1H9YUSVlKOcwTGHpIOWPehXJ+4uckw42+6TB9Vs9A9as3cv71mme0JOd
-         zylPAvd/+XeyEOHoepgL4kHui70duuZQNFk9SL0oEGEj+VLVHB4FskAZj2NNnnM/eSis
-         UECA==
-X-Gm-Message-State: AOAM532wqyUu5js0gYnijRTwtjpCChh/Dzt53TMOlOIf9S0Z+Zvy/+MD
-        v20odY664EtFQnWoEYjPzcT5tShmIyasoFF9AZVjMKfgw0yBuF4z3Xw+deAVRPEM+jm/VQ7oKRo
-        RC+1zDir6e0evliBNmBGRLp/cNpg/nN8AUR4DlSD7aHCbaFYnHCS1KQlgUMIRhwcE65hPTbAJb0
-        9aKf0=
-X-Google-Smtp-Source: ABdhPJzv68OBi81tWrl6rNBRzb7eVk2VIlCyIkbHxXl1J9Vqxp7lanoLlv/Zoq1qt0fNiHfgOOrhN0+XATlN
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=B4+dqQea/fyrifbfYRii03Q9D2jfNnwkCXVw6odoE3Q=;
+        b=OWCp4bQE62DKAEQSufG2fML1KoEzg8imBx9ugunj7RJgzqorfuNVijfpudPssjm2OU
+         219Lc/+6sOe7ql//zBxuX9L+DCTgOs1Hu1dnX9i0F5EaYyyT6rz3ZN0HTBVtR6fALdcn
+         xcyMwTe6oPM7P47LF/9Yk9wmjV8Ot31f0KI3fFKpiwf1appSDf+gSABSHKLVU7DVDqtS
+         io2aYCYKPZ6DfPpofGamQRJ+dvi9rGBklnHKNg13mQf970pT3qXg2UByIeOcC6UtcaeI
+         O+aj7yN9Rd9zNBLkGIRgOBtKmN/oo2GGTATW8ShYWRRveWCln9fSJji1t0WhlAicGDT/
+         9pdA==
+X-Gm-Message-State: AOAM533GzF9izW76HbLQ6limsi1iDWSL1ujaGbwkBfcvN0K6R/FwyZ8u
+        QdAxmk3NI0WS4nJqQ3VyfHorQDm2xBMNtTeEKFxZfS0uLMLEHCullR+O25pm/8sdE6jhwBAzkb8
+        2RZWlS66d4DXbAJEpRBz5K5vwI/zd/HQLwwdMTCyBSLDanhjivtd7Wh5jkcEdeSjCwf4zUeze7P
+        69rpg=
+X-Google-Smtp-Source: ABdhPJwa276iZLvn/W5+We25f3Hmj2AE6qDaAb00mwrJX6upa/EFUVvEx2TQ32ZuoWIyMiVH+f2hgXpOjlzX
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:bfcb:f7e3:49a1:c031])
- (user=irogers job=sendgmr) by 2002:a0c:e6cc:: with SMTP id
- l12mr24409911qvn.48.1628037674651; Tue, 03 Aug 2021 17:41:14 -0700 (PDT)
-Date:   Tue,  3 Aug 2021 17:41:08 -0700
-Message-Id: <20210804004109.1476661-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a05:6214:1c1:: with SMTP id
+ c1mr24292862qvt.37.1628037676952; Tue, 03 Aug 2021 17:41:16 -0700 (PDT)
+Date:   Tue,  3 Aug 2021 17:41:09 -0700
+In-Reply-To: <20210804004109.1476661-1-irogers@google.com>
+Message-Id: <20210804004109.1476661-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20210804004109.1476661-1-irogers@google.com>
 X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-Subject: [PATCH 1/2] libtracefs: Silence non-literal-null-conversion warning
+Subject: [PATCH 2/2] libtracefs: Silence sometimes-uninitialized warning
 From:   Ian Rogers <irogers@google.com>
 To:     linux-trace-devel@vger.kernel.org,
         Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
@@ -71,29 +75,40 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On clang the warning looks like:
+Warning generated by clang:
 
-src/tracefs-utils.c:473:15: error: expression which evaluates to zero treated as a null pointer constant of type 'char *' [-Werror,-Wnon-literal-null-conversion]
-        list[size] = '\0';
+src/tracefs-events.c:1046:6: error: variable 'ret' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
+        if (!systems)
+            ^~~~~~~~
+src/tracefs-events.c:1101:9: note: uninitialized use occurs here
+        return ret;
+               ^~~
+src/tracefs-events.c:1046:2: note: remove the 'if' if its condition is always false
+        if (!systems)
+        ^~~~~~~~~~~~~
+src/tracefs-events.c:1038:9: note: initialize the variable 'ret' to silence this warning
+        int ret;
+               ^
+                = 0
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- src/tracefs-utils.c | 2 +-
+ src/tracefs-events.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/tracefs-utils.c b/src/tracefs-utils.c
-index 63bb413..a502c2d 100644
---- a/src/tracefs-utils.c
-+++ b/src/tracefs-utils.c
-@@ -470,7 +470,7 @@ int tracefs_list_pop(char **list)
- 	size--;
- 	*list = (char *)size;
- 	list++;
--	list[size] = '\0';
-+	list[size] = NULL;
- 	return 0;
- }
+diff --git a/src/tracefs-events.c b/src/tracefs-events.c
+index 8d84838..4679926 100644
+--- a/src/tracefs-events.c
++++ b/src/tracefs-events.c
+@@ -1035,7 +1035,7 @@ static int event_enable_disable(struct tracefs_instance *instance,
+ 	regex_t system_re, event_re;
+ 	char **systems;
+ 	char **events = NULL;
+-	int ret;
++	int ret = -1;
+ 	int s, e;
  
+ 	/* Handle all events first */
 -- 
 2.32.0.554.ge1b32706d8-goog
 
