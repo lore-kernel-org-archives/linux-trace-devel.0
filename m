@@ -7,28 +7,28 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1B63C43216
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 10 Aug 2021 20:48:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3ACB4C43214
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 10 Aug 2021 20:48:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8D8CE610FC
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 10 Aug 2021 20:48:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1A1C4610A3
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 10 Aug 2021 20:48:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230181AbhHJUst (ORCPT
+        id S233425AbhHJUsu (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 10 Aug 2021 16:48:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44258 "EHLO mail.kernel.org"
+        Tue, 10 Aug 2021 16:48:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231338AbhHJUsr (ORCPT
+        id S232739AbhHJUss (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:48:47 -0400
+        Tue, 10 Aug 2021 16:48:48 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A8D361077;
+        by mail.kernel.org (Postfix) with ESMTPSA id 51CB261073;
         Tue, 10 Aug 2021 20:48:25 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mDYfg-003hA9-4u; Tue, 10 Aug 2021 16:48:24 -0400
+        id 1mDYfg-003hA7-3t; Tue, 10 Aug 2021 16:48:24 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
@@ -38,9 +38,9 @@ Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 3/9] libtracefs: Change hist_data_key type to flags
-Date:   Tue, 10 Aug 2021 16:48:12 -0400
-Message-Id: <20210810204818.880714-4-rostedt@goodmis.org>
+Subject: [PATCH 2/9] libtracefs: Parse comment for hist data information
+Date:   Tue, 10 Aug 2021 16:48:11 -0400
+Message-Id: <20210810204818.880714-3-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210810204818.880714-1-rostedt@goodmis.org>
 References: <20210810204818.880714-1-rostedt@goodmis.org>
@@ -52,121 +52,333 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-As the tracefs_hist_bucket_key will be exposed to users of the library,
-have the type be flags, where it can be modified in the future, and not
-break backward compatibility.
+The comments at the top of a hist file for a trace event includes the
+string used to create the hist file. Parse it for the key names as well as
+for the key types.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- src/tracefs-hist-data.c | 41 +++++++++++++++++++++--------------------
- 1 file changed, 21 insertions(+), 20 deletions(-)
+ src/tracefs-hist-data.c | 211 +++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 185 insertions(+), 26 deletions(-)
 
 diff --git a/src/tracefs-hist-data.c b/src/tracefs-hist-data.c
-index 6ec262e8b180..c7e110559ee8 100644
+index 497ab9ce97b4..6ec262e8b180 100644
 --- a/src/tracefs-hist-data.c
 +++ b/src/tracefs-hist-data.c
-@@ -113,10 +113,10 @@ static char *name_token(enum yytokentype type)
- 	return NULL;
- }
- 
--enum tracefs_bucket_key_type {
--	TRACEFS_BUCKET_KEY_UNDEF,
--	TRACEFS_BUCKET_KEY_SINGLE,
--	TRACEFS_BUCKET_KEY_RANGE,
-+enum tracefs_bucket_key_flags {
-+	TRACEFS_BUCKET_KEY_FL_UNDEF	= (1 << 29),
-+	TRACEFS_BUCKET_KEY_FL_SINGLE	= (1 << 30),
-+	TRACEFS_BUCKET_KEY_FL_RANGE	= (1 << 31),
+@@ -151,21 +151,26 @@ struct tracefs_hist_bucket {
+ 	struct tracefs_hist_bucket_val		**next_val;
  };
  
- struct tracefs_hist_bucket_key_single {
-@@ -131,7 +131,7 @@ struct tracefs_hist_bucket_key_range {
- 
- struct tracefs_hist_bucket_key {
- 	struct tracefs_hist_bucket_key	*next;
--	enum tracefs_bucket_key_type	type;
-+	unsigned int			flags;
- 	union {
- 		struct tracefs_hist_bucket_key_single	single;
- 		struct tracefs_hist_bucket_key_range	range;
-@@ -210,6 +210,8 @@ static int start_new_row(struct tracefs_hist_data *hdata)
- 		return -1;
- 	}
- 
-+	key->flags = TRACEFS_BUCKET_KEY_FL_UNDEF;
++struct key_types {
++	struct key_types		*next;
++	enum tracefs_hist_key_type	type;
++};
 +
- 	bucket->keys = key;
- 	bucket->next_key = &key->next;
+ struct tracefs_hist_data {
++	char				*hist_str;
+ 	char				**key_names;
+ 	char				**value_names;
++	struct key_types		*key_types;
++	struct key_types		**next_key_type;
++	struct key_types		*current_key_type;
+ 	struct tracefs_hist_bucket	*buckets;
+ 	struct tracefs_hist_bucket	**next_bucket;
+ 	unsigned long long		hits;
+ 	unsigned long long		entries;
+ 	unsigned long long		dropped;
++	int				current_key;
+ };
  
-@@ -233,6 +235,8 @@ static int start_new_key(struct tracefs_hist_data *hdata)
- 		return -1;
- 	}
- 
-+	key->flags = TRACEFS_BUCKET_KEY_FL_UNDEF;
-+
- 	*bucket->next_key = key;
- 	bucket->next_key = &key->next;
- 
-@@ -385,12 +389,13 @@ static int __do_key_val(struct tracefs_hist_data *hdata,
- 	bucket = container_of(hdata->next_bucket, struct tracefs_hist_bucket, next);
- 
- 	key = container_of(bucket->next_key, struct tracefs_hist_bucket_key, next);
--	if (!key->type)
--		key->type = TRACEFS_BUCKET_KEY_SINGLE;
+-static int do_comment(struct tracefs_hist_data *hdata, const char *comment)
+-{
+-	return 0;
+-}
 -
--	if (key->type != TRACEFS_BUCKET_KEY_SINGLE)
-+	if (!(key->flags &
-+	      (TRACEFS_BUCKET_KEY_FL_UNDEF | TRACEFS_BUCKET_KEY_FL_SINGLE)))
- 		return -1;
+ static int do_key_type(struct tracefs_hist_data *hdata, const char *key)
+ {
+ 	char **tmp;
+@@ -234,6 +239,23 @@ static int start_new_key(struct tracefs_hist_data *hdata)
+ 	return 0;
+ }
  
-+	key->flags &= ~TRACEFS_BUCKET_KEY_FL_UNDEF;
-+	key->flags |= TRACEFS_BUCKET_KEY_FL_SINGLE;
++static int do_add_key_type(struct tracefs_hist_data *hdata,
++			   enum tracefs_hist_key_type type)
++{
++	struct key_types *key_type;
 +
- 	k = &key->single;
++	key_type = calloc(1, sizeof(*key_type));
++	if (!key_type)
++		return -1;
++
++	key_type->type = type;
++
++	*hdata->next_key_type = key_type;
++	hdata->next_key_type = &key_type->next;
++
++	return 0;
++}
++
+ static char *chomp(char *text)
+ {
+ 	char *p;
+@@ -252,6 +274,100 @@ static char *chomp(char *text)
+ 	return text;
+ }
  
- 	len = strlen(text);
-@@ -455,7 +460,7 @@ static int do_key_raw(struct tracefs_hist_data *hdata, char *text)
++static int do_comment(struct tracefs_hist_data *hdata, char *comment)
++{
++	enum tracefs_hist_key_type key_type;
++	const char trigger_info[] = "trigger info: ";
++	const char hist[] = "hist:";
++	const char keys[] = "keys=";
++	char *name;
++	int ret;
++
++	comment = chomp(comment);
++	if (!comment)
++		return -1;
++
++	if (!strcmp(comment, "event histogram"))
++		return 0;
++
++	if (strncmp(comment, trigger_info, strlen(trigger_info)) != 0)
++		return 0;
++
++	comment += strlen(trigger_info);
++	comment = chomp(comment);
++
++	if (strncmp(comment, hist, strlen(hist)) != 0)
++		return -1;
++
++	hdata->hist_str = strdup(comment);
++	if (!hdata->hist_str)
++		return -1;
++
++	comment += strlen(hist);
++
++	if (strncmp(comment, keys, strlen(keys)) != 0)
++		return -1;
++	comment += strlen(keys);
++
++	name = comment;
++
++	while (*comment) {
++		bool comma = false;
++
++		if (*comment == ':')
++			break;
++		switch (*comment) {
++		case ',':
++			comma = true;
++		case '.':
++			*comment = '\0';
++			do_key_type(hdata, name);
++			comment++;
++			if (comma) {
++				name = comment;
++				ret = do_add_key_type(hdata, 0);
++				if (ret < 0)
++					return -1;
++				continue;
++			}
++			if (!strncmp(comment, "hex", 3)) {
++				key_type = TRACEFS_HIST_KEY_HEX;
++			} else if (!strncmp(comment, "sym-offset", 10)) {
++				key_type = TRACEFS_HIST_KEY_SYM_OFFSET;
++			} else if (!strncmp(comment, "sym", 3)) {
++				key_type = TRACEFS_HIST_KEY_SYM;
++			} else if (!strncmp(comment, "syscall", 3)) {
++				key_type = TRACEFS_HIST_KEY_SYSCALL;
++			} else if (!strncmp(comment, "execname", 3)) {
++				key_type = TRACEFS_HIST_KEY_EXECNAME;
++			} else if (!strncmp(comment, "log2", 3)) {
++				key_type = TRACEFS_HIST_KEY_LOG;
++			} else if (!strncmp(comment, "usecs", 3)) {
++				key_type = TRACEFS_HIST_KEY_USECS;
++			} else {
++				key_type = 0;
++			}
++
++			ret = do_add_key_type(hdata, key_type);
++			if (ret < 0)
++				return -1;
++			while (*comment) {
++				if (*comment == ',') {
++					comment++;
++					name = comment;
++					break;
++				}
++				if (*comment == ':')
++					break;
++				comment++;
++			}
++			continue;
++		}
++		comment++;
++	}
++	return 0;
++}
++
+ static int __do_key_val(struct tracefs_hist_data *hdata,
+ 			char *text, const char *delim, const char *end)
+ {
+@@ -261,6 +377,9 @@ static int __do_key_val(struct tracefs_hist_data *hdata,
+ 	char *val;
+ 	int len;
+ 
++	if (!hdata->current_key_type)
++		return -1;
++
+ 	text = chomp(text);
+ 
  	bucket = container_of(hdata->next_bucket, struct tracefs_hist_bucket, next);
+@@ -294,6 +413,16 @@ static int __do_key_val(struct tracefs_hist_data *hdata,
  
- 	key = container_of(bucket->next_key, struct tracefs_hist_bucket_key, next);
--	if (key->type != TRACEFS_BUCKET_KEY_SINGLE)
-+	if (!(key->flags & TRACEFS_BUCKET_KEY_FL_SINGLE))
- 		return -1;
+ 	k->sym = val;
  
- 	k = &key->single;
-@@ -487,12 +492,13 @@ static int do_key_range(struct tracefs_hist_data *hdata, long long start,
- 
- 	key = container_of(bucket->next_key, struct tracefs_hist_bucket_key, next);
- 
--	if (!key->type)
--		key->type = TRACEFS_BUCKET_KEY_RANGE;
--
--	if (key->type != TRACEFS_BUCKET_KEY_RANGE)
-+	if (!(key->flags &
-+	      (TRACEFS_BUCKET_KEY_FL_UNDEF | TRACEFS_BUCKET_KEY_FL_RANGE)))
- 		return -1;
- 
-+	key->flags &= ~TRACEFS_BUCKET_KEY_FL_UNDEF;
-+	key->flags |= TRACEFS_BUCKET_KEY_FL_RANGE;
++	switch (hdata->current_key_type->type) {
++	case TRACEFS_HIST_KEY_HEX:
++		k->val = strtoll(k->sym, NULL, 16);
++		break;
++	case TRACEFS_HIST_KEY_USECS:
++		k->val = strtoll(k->sym, NULL, 0);
++	default:
++		break;
++	}
 +
- 	k = &key->range;
+ 	return 0;
+ }
  
- 	k->start = start;
-@@ -698,13 +704,8 @@ void tracefs_hist_data_free(struct tracefs_hist_data *hdata)
- 		hdata->buckets = bucket->next;
- 		while ((key = bucket->keys)) {
- 			bucket->keys = key->next;
--			switch (key->type) {
--			case TRACEFS_BUCKET_KEY_SINGLE:
-+			if (key->flags & TRACEFS_BUCKET_KEY_FL_SINGLE)
- 				free(key->single.sym);
--				break;
--			default:
--				break;
--			}
- 			free(key);
- 		}
- 		while ((val = bucket->vals)) {
+@@ -318,6 +447,9 @@ static int do_key_raw(struct tracefs_hist_data *hdata, char *text)
+ 	struct tracefs_hist_bucket_key *key;
+ 	struct tracefs_hist_bucket_key_single *k;
+ 
++	if (!hdata->current_key_type)
++		return -1;
++
+ 	text = chomp(text);
+ 
+ 	bucket = container_of(hdata->next_bucket, struct tracefs_hist_bucket, next);
+@@ -331,7 +463,15 @@ static int do_key_raw(struct tracefs_hist_data *hdata, char *text)
+ 	if (k->val)
+ 		return -1;
+ 
+-	k->val = strtoll(text, NULL, 0);
++	switch (hdata->current_key_type->type) {
++	case TRACEFS_HIST_KEY_SYM:
++	case TRACEFS_HIST_KEY_SYM_OFFSET:
++		k->val = strtoll(text, NULL, 16);
++		break;
++	default:
++		k->val = strtoll(text, NULL, 0);
++		break;
++	}
+ 
+ 	return 0;
+ }
+@@ -514,6 +654,27 @@ static void update_next(const char **next_buffer, struct hist_data *data)
+ 	*next_buffer = find_buffer_line(data->buffer, data->line_no - 1);
+ }
+ 
++static int test_key(struct tracefs_hist_data *hdata, const char *key)
++{
++	if (tracefs_list_size(hdata->key_names) <= hdata->current_key)
++		return -1;
++
++	return strcmp(key, hdata->key_names[hdata->current_key]) == 0 ? 0 : -1;
++}
++
++static void reset_key_test(struct tracefs_hist_data *hdata)
++{
++	hdata->current_key = 0;
++	hdata->current_key_type = hdata->key_types;
++}
++
++static void inc_key_test(struct tracefs_hist_data *hdata)
++{
++	hdata->current_key++;
++	if (hdata->current_key_type)
++		hdata->current_key_type = hdata->current_key_type->next;
++}
++
+ /**
+  * tracefs_hist_data_free - free a created hist data descriptor
+  * @hdata: The tracefs_hist_data descriptor to free.
+@@ -529,6 +690,7 @@ void tracefs_hist_data_free(struct tracefs_hist_data *hdata)
+ 	if (!hdata)
+ 		return;
+ 
++	free(hdata->hist_str);
+ 	tracefs_list_free(hdata->key_names);
+ 	tracefs_list_free(hdata->value_names);
+ 
+@@ -605,6 +767,7 @@ tracefs_hist_data_parse(const char *buffer, const char **next_buffer, char **err
+ 		return NULL;
+ 
+ 	hdata->next_bucket = &hdata->buckets;
++	hdata->next_key_type = &hdata->key_types;
+ 
+ 	memset(&data, 0, sizeof(data));
+ 
+@@ -650,21 +813,19 @@ tracefs_hist_data_parse(const char *buffer, const char **next_buffer, char **err
+ 			switch (type) {
+ 			case KEY_TYPE:
+  key_type:
+-				if (first) {
+-					ret = do_key_type(hdata, text);
+-					if (ret < 0)
+-						goto error;
+-				}
++				reset_key_test(hdata);
++				ret = test_key(hdata, text);
++				if (ret < 0)
++					goto error;
+ 				ret = start_new_row(hdata);
+ 				state = HIST_KEY_VALS;
+ 				break;
+ 			case STACKTRACE:
+  stacktrace:
+-				if (first) {
+-					ret = do_key_type(hdata, "stacktrace");
+-					if (ret < 0)
+-						goto error;
+-				}
++				reset_key_test(hdata);
++				ret = test_key(hdata, "stacktrace");
++				if (ret < 0)
++					goto error;
+ 				ret = start_new_row(hdata);
+ 				state = HIST_STACK;
+ 				break;
+@@ -679,20 +840,18 @@ tracefs_hist_data_parse(const char *buffer, const char **next_buffer, char **err
+ 		case HIST_KEYS:
+ 			switch (type) {
+ 			case KEY_TYPE:
+-				if (first) {
+-					ret = do_key_type(hdata, text);
+-					if (ret < 0)
+-						goto error;
+-				}
++				inc_key_test(hdata);
++				ret = test_key(hdata, text);
++				if (ret < 0)
++					goto error;
+ 				ret = start_new_key(hdata);
+ 				state = HIST_KEY_VALS;
+ 				break;
+ 			case STACKTRACE:
+-				if (first) {
+-					ret = do_key_type(hdata, "stacktrace");
+-					if (ret < 0)
+-						goto error;
+-				}
++				inc_key_test(hdata);
++				ret = test_key(hdata, "stacktrace");
++				if (ret < 0)
++					goto error;
+ 				ret = start_new_key(hdata);
+ 				state = HIST_STACK;
+ 				break;
 -- 
 2.30.2
 
