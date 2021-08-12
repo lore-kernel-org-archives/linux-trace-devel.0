@@ -6,32 +6,32 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 866B7C4320A
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Aug 2021 14:19:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7692C4338F
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Aug 2021 14:20:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 57A3D6023D
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Aug 2021 14:19:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B4439610A3
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Aug 2021 14:20:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbhHLOUJ (ORCPT
+        id S237386AbhHLOUk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 12 Aug 2021 10:20:09 -0400
-Received: from gateway31.websitewelcome.com ([192.185.144.219]:43731 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237386AbhHLOUJ (ORCPT
+        Thu, 12 Aug 2021 10:20:40 -0400
+Received: from gateway30.websitewelcome.com ([192.185.144.21]:27857 "EHLO
+        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237341AbhHLOUj (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 12 Aug 2021 10:20:09 -0400
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id D04BE2693
-        for <linux-trace-devel@vger.kernel.org>; Thu, 12 Aug 2021 08:57:44 -0500 (CDT)
+        Thu, 12 Aug 2021 10:20:39 -0400
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+        by gateway30.websitewelcome.com (Postfix) with ESMTP id D292911F19
+        for <linux-trace-devel@vger.kernel.org>; Thu, 12 Aug 2021 08:57:36 -0500 (CDT)
 Received: from gator4132.hostgator.com ([192.185.4.144])
         by cmsmtp with SMTP
-        id EBDMmVDxpMGeEEBDMmVXNO; Thu, 12 Aug 2021 08:57:44 -0500
+        id EBDEmBXkmK61iEBDEm9bX7; Thu, 12 Aug 2021 08:57:36 -0500
 X-Authority-Reason: nr=8
 Received: from host-79-56-204-120.retail.telecomitalia.it ([79.56.204.120]:54910 helo=f34.bristot.me)
         by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <bristot@kernel.org>)
-        id 1mEBDM-004IPl-1O; Thu, 12 Aug 2021 08:57:44 -0500
+        id 1mEBDD-004IPl-Vw; Thu, 12 Aug 2021 08:57:36 -0500
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
 Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
@@ -39,9 +39,9 @@ Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Tom Zanussi <zanussi@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         linux-trace-devel@vger.kernel.org
-Subject: [PATCH 5/5] trace/osnoise: Allow multiple instances of the same tracer
-Date:   Thu, 12 Aug 2021 15:57:24 +0200
-Message-Id: <b2772fa3455fb4ed7ce82af3525975943439e6e7.1628775552.git.bristot@kernel.org>
+Subject: [PATCH 1/5] trace/osnoise: Do not follow tracing_cpumask
+Date:   Thu, 12 Aug 2021 15:57:20 +0200
+Message-Id: <db14a8eef9af9b9de665251b729361bee75a70a4.1628775552.git.bristot@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1628775552.git.bristot@kernel.org>
 References: <cover.1628775552.git.bristot@kernel.org>
@@ -55,25 +55,32 @@ X-AntiAbuse: Sender Address Domain - kernel.org
 X-BWhitelist: no
 X-Source-IP: 79.56.204.120
 X-Source-L: No
-X-Exim-ID: 1mEBDM-004IPl-1O
+X-Exim-ID: 1mEBDD-004IPl-Vw
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
 X-Source-Sender: host-79-56-204-120.retail.telecomitalia.it (f34.bristot.me) [79.56.204.120]:54910
 X-Source-Auth: kernel@bristot.me
-X-Email-Count: 36
+X-Email-Count: 8
 X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
 X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Allow more than one instance of the same tracer. The workload will
-start when the first trace_array (instance) is registered and will
-stop when the last instance is unregistered.
+In preparation to support multiple instances, decople the
+osnoise/timelat workload from instance specific tracing_cpumask.
 
-Osnoise and timerlat are still mutually exclusive because of the
-different behavior of the osnoise: tracepoints.
+Different instances can have conflicing cpumasks, making osnoise
+workload management needlessly complex. Osnoise already have its
+global cpu mask.
+
+I also thought about using the first instance mask, but the
+"first" instance could be removed before the others.
+
+This also fixes the problem that changing the tracing_mask was not
+re-starting the trace.
+
 
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Ingo Molnar <mingo@redhat.com>
@@ -84,212 +91,69 @@ Cc: linux-trace-devel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira (Red Hat) <bristot@kernel.org>
 ---
- kernel/trace/trace_osnoise.c | 106 ++++++++++++++++++++++++++---------
- 1 file changed, 80 insertions(+), 26 deletions(-)
+ kernel/trace/trace_osnoise.c | 25 +++++++------------------
+ 1 file changed, 7 insertions(+), 18 deletions(-)
 
 diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index 9193c256377e..5f09fb55b359 100644
+index b576e96d9741..aadb0d110155 100644
 --- a/kernel/trace/trace_osnoise.c
 +++ b/kernel/trace/trace_osnoise.c
-@@ -64,6 +64,24 @@ static bool osnoise_has_registered_instances(void)
- 					list);
- }
+@@ -1553,13 +1553,10 @@ static int start_per_cpu_kthreads(struct trace_array *tr)
  
-+/*
-+ * osnoise_instance_registered - check if a tr is already registered
-+ */
-+static int osnoise_instance_registered(struct trace_array *tr)
-+{
-+	struct osnoise_instance *inst;
-+	int found = 0;
-+
-+	rcu_read_lock();
-+	list_for_each_entry_rcu(inst, &osnoise_instances, list) {
-+		if (inst->tr == tr)
-+			found = 1;
-+	}
-+	rcu_read_unlock();
-+
-+	return found;
-+}
-+
- /*
-  * osnoise_register_instance - register a new trace instance
-  *
-@@ -106,10 +124,8 @@ static void osnoise_unregister_instance(struct trace_array *tr)
- 	}
- 	rcu_read_unlock();
+ 	get_online_cpus();
+ 	/*
+-	 * Run only on CPUs in which trace and osnoise are allowed to run.
++	 * Run only on online CPUs in which trace and osnoise are allowed to
++	 * run.
+ 	 */
+-	cpumask_and(current_mask, tr->tracing_cpumask, &osnoise_cpumask);
+-	/*
+-	 * And the CPU is online.
+-	 */
+-	cpumask_and(current_mask, cpu_online_mask, current_mask);
++	cpumask_and(current_mask, cpu_online_mask, &osnoise_cpumask);
  
--	if (!found) {
--		WARN("osnoise unregister did not find tr %s\n", tr->name);
-+	if (!found)
- 		return;
--	}
- 
- 	synchronize_rcu();
- 	kfree(inst);
-@@ -1190,6 +1206,7 @@ static __always_inline void osnoise_stop_tracing(void)
- 				"stop tracing hit on cpu %d\n", smp_processor_id());
- 
- 		tracer_tracing_off(tr);
-+
- 	}
- 	rcu_read_unlock();
- }
-@@ -2041,6 +2058,16 @@ static int osnoise_workload_start(void)
+ 	for_each_possible_cpu(cpu)
+ 		per_cpu(per_cpu_osnoise_var, cpu).kthread = NULL;
+@@ -1580,10 +1577,8 @@ static int start_per_cpu_kthreads(struct trace_array *tr)
+ #ifdef CONFIG_HOTPLUG_CPU
+ static void osnoise_hotplug_workfn(struct work_struct *dummy)
  {
- 	int retval;
+-	struct trace_array *tr = osnoise_trace;
+ 	unsigned int cpu = smp_processor_id();
  
-+	/*
-+	 * Instances need to be registered after calling workload
-+	 * start. Hence, if there is already an instance, the
-+	 * workload was already registered. Otherwise, this
-+	 * code is on the way to register the first instance,
-+	 * and the workload will start.
-+	 */
-+	if (osnoise_has_registered_instances())
-+		return 0;
-+
- 	osn_var_reset_all();
+-
+ 	mutex_lock(&trace_types_lock);
  
- 	retval = osnoise_hook_events();
-@@ -2066,6 +2093,13 @@ static int osnoise_workload_start(void)
+ 	if (!osnoise_busy)
+@@ -1595,9 +1590,6 @@ static void osnoise_hotplug_workfn(struct work_struct *dummy)
+ 	if (!cpumask_test_cpu(cpu, &osnoise_cpumask))
+ 		goto out_unlock;
+ 
+-	if (!cpumask_test_cpu(cpu, tr->tracing_cpumask))
+-		goto out_unlock;
+-
+ 	start_kthread(cpu);
+ 
+ out_unlock:
+@@ -1700,13 +1692,10 @@ static void osnoise_tracer_stop(struct trace_array *tr);
+  * interface to the osnoise trace. By default, it lists all  CPUs,
+  * in this way, allowing osnoise threads to run on any online CPU
+  * of the system. It serves to restrict the execution of osnoise to the
+- * set of CPUs writing via this interface. Note that osnoise also
+- * respects the "tracing_cpumask." Hence, osnoise threads will run only
+- * on the set of CPUs allowed here AND on "tracing_cpumask." Why not
+- * have just "tracing_cpumask?" Because the user might be interested
+- * in tracing what is running on other CPUs. For instance, one might
+- * run osnoise in one HT CPU while observing what is running on the
+- * sibling HT CPU.
++ * set of CPUs writing via this interface. Why not use "tracing_cpumask"?
++ * Because the user might be interested in tracing what is running on
++ * other CPUs. For instance, one might run osnoise in one HT CPU
++ * while observing what is running on the sibling HT CPU.
   */
- static void osnoise_workload_stop(void)
- {
-+	/*
-+	 * Instances need to be unregistered before calling
-+	 * stop. Hence, if there is a registered instance, more
-+	 * than one instance is running, and the workload will not
-+	 * yet stop. Otherwise, this code is on the way to disable
-+	 * the last instance, and the workload can stop.
-+	 */
- 	if (osnoise_has_registered_instances())
- 		return;
- 
-@@ -2083,7 +2117,11 @@ static void osnoise_tracer_start(struct trace_array *tr)
- {
- 	int retval;
- 
--	if (osnoise_has_registered_instances())
-+	/*
-+	 * If the instance is already registered, there is no need to
-+	 * register it again.
-+	 */
-+	if (osnoise_instance_registered(tr))
- 		return;
- 
- 	retval = osnoise_workload_start();
-@@ -2095,18 +2133,17 @@ static void osnoise_tracer_start(struct trace_array *tr)
- 
- static void osnoise_tracer_stop(struct trace_array *tr)
- {
--	if (!osnoise_has_registered_instances())
--		return;
--
- 	osnoise_unregister_instance(tr);
- 	osnoise_workload_stop();
- }
- 
- static int osnoise_tracer_init(struct trace_array *tr)
- {
--
--	/* Only allow one instance to enable this */
--	if (osnoise_has_registered_instances())
-+	/*
-+	 * Only allow osnoise tracer if timerlat tracer is not running
-+	 * already.
-+	 */
-+	if (osnoise_data.timerlat_tracer)
- 		return -EBUSY;
- 
- 	tr->max_latency = 0;
-@@ -2135,45 +2172,55 @@ static void timerlat_tracer_start(struct trace_array *tr)
- {
- 	int retval;
- 
--	if (osnoise_has_registered_instances())
-+	/*
-+	 * If the instance is already registered, there is no need to
-+	 * register it again.
-+	 */
-+	if (osnoise_instance_registered(tr))
- 		return;
- 
--	osnoise_data.timerlat_tracer = 1;
--
- 	retval = osnoise_workload_start();
- 	if (retval)
--		goto out_err;
-+		pr_err(BANNER "Error starting timerlat tracer\n");
- 
- 	osnoise_register_instance(tr);
- 
- 	return;
--out_err:
--	pr_err(BANNER "Error starting timerlat tracer\n");
- }
- 
- static void timerlat_tracer_stop(struct trace_array *tr)
- {
- 	int cpu;
- 
--	if (!osnoise_has_registered_instances())
--		return;
--
--	for_each_online_cpu(cpu)
--		per_cpu(per_cpu_osnoise_var, cpu).sampling = 0;
-+	osnoise_unregister_instance(tr);
- 
--	osnoise_tracer_stop(tr);
-+	/*
-+	 * Instruct the threads to stop only if this is the last instance.
-+	 */
-+	if (!osnoise_has_registered_instances()) {
-+		for_each_online_cpu(cpu)
-+			per_cpu(per_cpu_osnoise_var, cpu).sampling = 0;
-+	}
- 
--	osnoise_data.timerlat_tracer = 0;
-+	osnoise_workload_stop();
- }
- 
- static int timerlat_tracer_init(struct trace_array *tr)
- {
--	/* Only allow one instance to enable this */
--	if (osnoise_has_registered_instances())
-+	/*
-+	 * Only allow timerlat tracer if osnoise tracer is not running already.
-+	 */
-+	if (osnoise_has_registered_instances() && !osnoise_data.timerlat_tracer)
- 		return -EBUSY;
- 
--	tr->max_latency = 0;
-+	/*
-+	 * If this is the first instance, set timerlat_tracer to block
-+	 * osnoise tracer start.
-+	 */
-+	if (!osnoise_has_registered_instances())
-+		osnoise_data.timerlat_tracer = 1;
- 
-+	tr->max_latency = 0;
- 	timerlat_tracer_start(tr);
- 
- 	return 0;
-@@ -2182,6 +2229,13 @@ static int timerlat_tracer_init(struct trace_array *tr)
- static void timerlat_tracer_reset(struct trace_array *tr)
- {
- 	timerlat_tracer_stop(tr);
-+
-+	/*
-+	 * If this is the last instance, reset timerlat_tracer allowing
-+	 * osnoise to be started.
-+	 */
-+	if (!osnoise_has_registered_instances())
-+		osnoise_data.timerlat_tracer = 0;
- }
- 
- static struct tracer timerlat_tracer __read_mostly = {
+ static ssize_t
+ osnoise_cpus_write(struct file *filp, const char __user *ubuf, size_t count,
 -- 
 2.31.1
 
