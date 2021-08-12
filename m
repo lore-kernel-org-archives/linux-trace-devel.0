@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9B27C4320A
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Aug 2021 15:50:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E602EC432BE
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Aug 2021 15:50:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CB38460FBF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Aug 2021 15:50:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CB44E60FBF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Aug 2021 15:50:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238265AbhHLPu5 (ORCPT
+        id S238337AbhHLPu5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Thu, 12 Aug 2021 11:50:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47000 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:47010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237013AbhHLPu4 (ORCPT
+        id S238025AbhHLPu4 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 12 Aug 2021 11:50:56 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 652B860E93;
+        by mail.kernel.org (Postfix) with ESMTPSA id 69EBF60FC0;
         Thu, 12 Aug 2021 15:50:31 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mECyU-003ths-8r; Thu, 12 Aug 2021 11:50:30 -0400
+        id 1mECyU-003thu-9n; Thu, 12 Aug 2021 11:50:30 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v2 1/2] libtracefs: Add random number to keep synthetic variables unique
-Date:   Thu, 12 Aug 2021 11:50:28 -0400
-Message-Id: <20210812155029.929048-2-rostedt@goodmis.org>
+Subject: [PATCH v2 2/2] libtracefs: Have end event variables not be the end event field name
+Date:   Thu, 12 Aug 2021 11:50:29 -0400
+Message-Id: <20210812155029.929048-3-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210812155029.929048-1-rostedt@goodmis.org>
 References: <20210812155029.929048-1-rostedt@goodmis.org>
@@ -49,75 +49,118 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-The 'hist' triggers expect that all variables are unique. If two synthetic
-events are created, it is possible that they will use the same variable
-names, and this can break the logic for synthetic events. Add a random
-number to the argument names that will help prevent that from happening.
-There's no guarantee that there wont be collisions, but the chances of
-that happening is 1 in 32768. If this is a problem, we could possibly look
-for variables that are already in use.
+Currently we have:
 
-Link: https://lore.kernel.org/linux-trace-devel/20210812005546.910833-2-rostedt@goodmis.org/
+ # sqlhist -n wakeup 'select end.next_pid, (end.TIMESTAMP - start.TIMESTAMP) as lat
+   from sched_waking as start join sched_switch as end on start.pid = end.next_pid'
+
+produces:
+
+ echo 'wakeup s32 next_pid; u64 lat;' > /sys/kernel/tracing/synthetic_events
+ echo 'hist:keys=pid:__arg_18871_1=common_timestamp' > /sys/kernel/tracing/events/sched/sched_waking/trigger
+ echo 'hist:keys=next_pid:next_pid=next_pid,lat=common_timestamp-$__arg_18871_1:onmatch(sched.sched_waking).trace(wakeup,$next_pid,$lat)' > /sys/kernel/tracing/events/sched/sched_switch/trigger
+
+The issue is that we have "next_pid=next_pid" where if we want to change
+the above to use the "save" action:
+
+ hist:keys=next_pid:next_pid=next_pid,lat=common_timestamp-$__arg_18871_1:onmax($lat).save(next_pid)
+
+It fails with:
+
+   hist:sched:sched_switch: error: Couldn't find field
+    Command: hist:keys=next_pid:next_pid=next_pid,lat=common_timestamp-$__arg_18871_1:onmax($lat).save(next_pid)
+                                                                       ^
+
+But by having the end vars be unique, then the above "save" works.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- src/tracefs-hist.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+ src/tracefs-hist.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
 diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index 7f9cf3820611..9de70579a871 100644
+index 9de70579a871..fefe251995ba 100644
 --- a/src/tracefs-hist.c
 +++ b/src/tracefs-hist.c
-@@ -13,6 +13,8 @@
- #include <errno.h>
- #include <fcntl.h>
- #include <limits.h>
-+#include <sys/time.h>
-+#include <sys/types.h>
+@@ -851,16 +851,19 @@ struct tracefs_synth *tracefs_synth_init(struct tep_handle *tep,
  
- #include "tracefs.h"
- #include "tracefs-local.h"
-@@ -558,6 +560,7 @@ struct tracefs_synth {
- 	unsigned int		end_parens;
- 	unsigned int		end_state;
- 	int			*start_type;
-+	char			arg_name[16];
- 	int			arg_cnt;
- };
- 
-@@ -951,13 +954,31 @@ int tracefs_synth_add_match_field(struct tracefs_synth *synth,
- 	return -1;
- }
- 
-+static unsigned int make_rand(void)
-+{
-+	struct timeval tv;
-+	unsigned long seed;
-+
-+	gettimeofday(&tv, NULL);
-+	seed = (tv.tv_sec + tv.tv_usec) + gettid();
-+
-+	/* taken from the rand(3) man page */
-+	seed = seed * 1103515245 + 12345;
-+	return((unsigned)(seed/65536) % 32768);
-+}
-+
- static char *new_arg(struct tracefs_synth *synth)
+ static int add_synth_fields(struct tracefs_synth *synth,
+ 			    const struct tep_format_field *field,
+-			    const char *name)
++			    const char *name, const char *var)
  {
- 	int cnt = synth->arg_cnt + 1;
- 	char *arg;
+ 	char **list;
+ 	char *str;
  	int ret;
  
--	ret = asprintf(&arg, "__arg__%d", cnt);
-+	/* Create a unique argument name */
-+	if (!synth->arg_name[0]) {
-+		/* make_rand() returns at most 32768 (total 13 bytes in use) */
-+		sprintf(synth->arg_name, "__arg_%u_", make_rand());
-+	}
-+	ret = asprintf(&arg, "%s%d", synth->arg_name, cnt);
- 	if (ret < 0)
- 		return NULL;
+-	str = add_synth_field(field, name);
++	str = add_synth_field(field, name ? : field->name);
+ 	if (!str)
+ 		return -1;
  
++	if (!name)
++		name = var;
++
+ 	list = tracefs_list_add(synth->synthetic_fields, str);
+ 	free(str);
+ 	if (!list)
+@@ -942,7 +945,7 @@ int tracefs_synth_add_match_field(struct tracefs_synth *synth,
+ 	if (ret < 0)
+ 		goto pop_lists;
+ 
+-	ret = add_synth_fields(synth, key_field, name);
++	ret = add_synth_fields(synth, key_field, name, NULL);
+ 	if (ret < 0)
+ 		goto pop_lists;
+ 
+@@ -1071,7 +1074,7 @@ int tracefs_synth_add_compare_field(struct tracefs_synth *synth,
+ 	if (ret < 0)
+ 		goto out_free;
+ 
+-	ret = add_synth_fields(synth, start_field, name);
++	ret = add_synth_fields(synth, start_field, name, NULL);
+ 	if (ret < 0)
+ 		goto out_free;
+ 
+@@ -1116,7 +1119,7 @@ __hidden int synth_add_start_field(struct tracefs_synth *synth,
+ 	if (ret)
+ 		goto out_free;
+ 
+-	ret = add_synth_fields(synth, field, name);
++	ret = add_synth_fields(synth, field, name, NULL);
+ 	if (ret)
+ 		goto out_free;
+ 
+@@ -1188,6 +1191,7 @@ int tracefs_synth_add_end_field(struct tracefs_synth *synth,
+ 				const char *name)
+ {
+ 	const struct tep_format_field *field;
++	char *tmp_var = NULL;
+ 	int ret;
+ 
+ 	if (!synth || !end_field) {
+@@ -1196,17 +1200,17 @@ int tracefs_synth_add_end_field(struct tracefs_synth *synth,
+ 	}
+ 
+ 	if (!name)
+-		name = end_field;
++		tmp_var = new_arg(synth);
+ 
+ 	if (!trace_verify_event_field(synth->end_event, end_field, &field))
+ 		return -1;
+ 
+-	ret = add_var(&synth->end_vars, name, end_field, false);
++	ret = add_var(&synth->end_vars, name ? : tmp_var, end_field, false);
+ 	if (ret)
+ 		goto out;
+ 
+-	ret = add_synth_fields(synth, field, name);
+-
++	ret = add_synth_fields(synth, field, name, tmp_var);
++	free(tmp_var);
+  out:
+ 	return ret;
+ }
 -- 
 2.30.2
 
