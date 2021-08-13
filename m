@@ -7,28 +7,28 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FED3C4338F
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 13 Aug 2021 02:17:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0092C4320E
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 13 Aug 2021 02:17:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1F328610FE
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 13 Aug 2021 02:17:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9043C61103
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 13 Aug 2021 02:17:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237804AbhHMCRx (ORCPT
+        id S238025AbhHMCRz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 12 Aug 2021 22:17:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44544 "EHLO mail.kernel.org"
+        Thu, 12 Aug 2021 22:17:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237397AbhHMCRw (ORCPT
+        id S237331AbhHMCRw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 12 Aug 2021 22:17:52 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34704610A8;
+        by mail.kernel.org (Postfix) with ESMTPSA id 3093B60F35;
         Fri, 13 Aug 2021 02:17:26 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mEMlA-003wVu-Re; Thu, 12 Aug 2021 22:17:24 -0400
+        id 1mEMlA-003wVw-Sa; Thu, 12 Aug 2021 22:17:24 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
@@ -38,9 +38,9 @@ Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 2/7] libtracefs: Add logic to apply actions to synthetic events
-Date:   Thu, 12 Aug 2021 22:16:50 -0400
-Message-Id: <20210813021655.939819-3-rostedt@goodmis.org>
+Subject: [PATCH 3/7] libtracefs: Add API tracefs_synth_trace()
+Date:   Thu, 12 Aug 2021 22:16:51 -0400
+Message-Id: <20210813021655.939819-4-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210813021655.939819-1-rostedt@goodmis.org>
 References: <20210813021655.939819-1-rostedt@goodmis.org>
@@ -52,171 +52,174 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add an actions list to tracefs_synth, that if it is not empty then it will
-be used to apply the handlers and actions to be taken. Otherwise the
-default of "onmatch" and "trace" is used.
-
-Currently nothing adds any actions and only the default is supported, but
-this will allow for new handlers (onmax and onchange) as well as new
-actions (snapshot and save).
+Add the API tracefs_synth_trace() that adds a "trace" action that can be
+attached to the onmax or the onchange handler. Note, this still can be
+used for onmatch, but that's the default anyway.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/tracefs.h  |  7 +++++
- src/tracefs-hist.c | 76 ++++++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 81 insertions(+), 2 deletions(-)
+ Documentation/libtracefs-synth2.txt | 17 +++++-
+ include/tracefs.h                   |  2 +
+ src/tracefs-hist.c                  | 91 +++++++++++++++++++++++++++++
+ 3 files changed, 109 insertions(+), 1 deletion(-)
 
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 90994de97dda..d83c4e33c69a 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -435,6 +435,13 @@ int tracefs_event_verify_filter(struct tep_event *event, const char *filter,
- #define TRACEFS_TIMESTAMP "common_timestamp"
- #define TRACEFS_TIMESTAMP_USECS "common_timestamp.usecs"
+diff --git a/Documentation/libtracefs-synth2.txt b/Documentation/libtracefs-synth2.txt
+index 44693b394f29..a74e88ec0eda 100644
+--- a/Documentation/libtracefs-synth2.txt
++++ b/Documentation/libtracefs-synth2.txt
+@@ -3,7 +3,8 @@ libtracefs(3)
+ 
+ NAME
+ ----
+-tracefs_synth_create, tracefs_synth_destroy, tracefs_synth_show - Creation of synthetic events
++tracefs_synth_create, tracefs_synth_destroy, tracefs_synth_show,tracefs_synth_complete,
++tracefs_synth_get_start_hist,tracefs_synth_trace - Creation of synthetic events
+ 
+ SYNOPSIS
+ --------
+@@ -20,6 +21,8 @@ int tracefs_synth_show(struct trace_seq pass:[*]seq, struct tracefs_instance pas
+ bool tracefs_synth_complete(struct tracefs_synth pass:[*]synth);
+ struct tracefs_hist pass:[*]tracefs_synth_get_start_hist(struct tracefs_synth pass:[*]synth);
+ 
++int tracefs_synth_trace(struct tracefs_synth pass:[*]synth,
++			enum tracefs_synth_handler type, const char pass:[*]var);
+ --
+ 
+ DESCRIPTION
+@@ -60,6 +63,18 @@ a starting and ending event.
+ *tracefs_synth_get_start_hist*() returns a struct tracefs_hist descriptor describing
+ the histogram used to create the synthetic event.
  
 +enum tracefs_synth_handler {
-+	TRACEFS_SYNTH_HANDLE_NONE	= 0,
 +	TRACEFS_SYNTH_HANDLE_MATCH,
 +	TRACEFS_SYNTH_HANDLE_MAX,
 +	TRACEFS_SYNTH_HANDLE_CHANGE,
 +};
 +
- struct tracefs_synth *tracefs_synth_init(struct tep_handle *tep,
- 					 const char *name,
- 					 const char *start_system,
++*tracefs_synth_trace*() Instead of doing just a trace on matching of the start and
++end events, do the _type_ handler where *TRACEFS_SYNTH_HANDLE_MAX* will do a trace
++when the given variable _var_ hits a new max for the matching keys. Or
++*TRACEFS_SYNTH_HANDLE_CHANGE* for when the _var_ changes. _var_ must be one of
++the _name_ elements used in *tracefs_synth_add_end_field*(3).
++
+ RETURN VALUE
+ ------------
+ Returns zero on success or -1 on error.
+diff --git a/include/tracefs.h b/include/tracefs.h
+index d83c4e33c69a..2faa564a860f 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -476,6 +476,8 @@ int tracefs_synth_append_end_filter(struct tracefs_synth *synth,
+ 				    const char *field,
+ 				    enum tracefs_compare compare,
+ 				    const char *val);
++int tracefs_synth_trace(struct tracefs_synth *synth,
++			enum tracefs_synth_handler type, const char *field);
+ bool tracefs_synth_complete(struct tracefs_synth *synth);
+ struct tracefs_hist *tracefs_synth_get_start_hist(struct tracefs_synth *synth);
+ int tracefs_synth_create(struct tracefs_instance *instance,
 diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index 7fffa6cc653d..262db7fbb925 100644
+index 262db7fbb925..562ec65088a9 100644
 --- a/src/tracefs-hist.c
 +++ b/src/tracefs-hist.c
-@@ -521,12 +521,25 @@ int tracefs_hist_append_filter(struct tracefs_hist *hist,
+@@ -1323,6 +1323,97 @@ int tracefs_synth_append_end_filter(struct tracefs_synth *synth,
  				   type, field, compare, val);
  }
  
-+enum action_type {
-+	ACTION_NONE,
-+	ACTION_TRACE,
-+};
++static int test_max_var(struct tracefs_synth *synth, const char *var)
++{
++	char **vars = synth->end_vars;
++	char *p;
++	int len;
++	int i;
 +
-+struct action {
-+	struct action			*next;
-+	enum action_type		type;
-+	enum tracefs_synth_handler	handler;
-+	char				*handle_field;
-+};
++	len = strlen(var);
 +
- /*
-  * @name: name of the synthetic event
-  * @start_system: system of the starting event
-  * @start_event: the starting event
-  * @end_system: system of the ending event
-  * @end_event: the ending event
-+ * @actions: List of actions to take
-  * @match_names: If a match set is to be a synthetic field, it has a name
-  * @start_match: list of keys in the start event that matches end event
-  * @end_match: list of keys in the end event that matches the start event
-@@ -545,6 +558,8 @@ struct tracefs_synth {
- 	struct tep_handle	*tep;
- 	struct tep_event	*start_event;
- 	struct tep_event	*end_event;
-+	struct action		*actions;
-+	struct action		**next_action;
- 	char			*name;
- 	char			**synthetic_fields;
- 	char			**synthetic_args;
-@@ -575,6 +590,8 @@ struct tracefs_synth {
-  */
- void tracefs_synth_free(struct tracefs_synth *synth)
- {
++	/* Make sure the var is defined for the end event */
++	for (i = 0; vars[i]; i++) {
++		p = strchr(vars[i], '=');
++		if (!p)
++			continue;
++		if (p - vars[i] != len)
++			continue;
++		if (!strncmp(var, vars[i], len))
++			return 0;
++	}
++	errno = ENODEV;
++	return -1;
++}
++
++static struct action *create_action(enum tracefs_synth_handler type,
++				    struct tracefs_synth *synth,
++				    const char *var)
++{
 +	struct action *action;
++	int ret;
 +
- 	if (!synth)
- 		return;
- 
-@@ -590,6 +607,12 @@ void tracefs_synth_free(struct tracefs_synth *synth)
- 
- 	tep_unref(synth->tep);
- 
-+	while ((action = synth->actions)) {
-+		synth->actions = action->next;
-+		free(action->handle_field);
-+		free(action);
++	switch (type) {
++	case TRACEFS_SYNTH_HANDLE_MAX:
++	case TRACEFS_SYNTH_HANDLE_CHANGE:
++		ret = test_max_var(synth, var);
++		if (ret < 0)
++			return NULL;
++		break;
++	default:
++		break;
 +	}
 +
- 	free(synth);
- }
- 
-@@ -750,6 +773,7 @@ synth_init_from(struct tep_handle *tep, const char *start_system,
- 		return NULL;
- 
- 	synth->start_event = start_event;
-+	synth->next_action = &synth->actions;
- 
- 	/* Hold onto a reference to this handler */
- 	tep_ref(tep);
-@@ -1405,13 +1429,61 @@ static char *create_trace(char *hist, struct tracefs_synth *synth)
- 	return append_string(hist, NULL, ")");
- }
- 
-+static char *create_max(char *hist, struct tracefs_synth *synth, char *field)
-+{
-+	hist = append_string(hist, NULL, ":onmax(");
-+	hist = append_string(hist, NULL, field);
-+	return append_string(hist, NULL, ")");
++	action = calloc(1, sizeof(*action));
++	if (!action)
++		return NULL;
++
++	if (var) {
++		ret = asprintf(&action->handle_field, "$%s", var);
++		if (!action->handle_field) {
++			free(action);
++			return NULL;
++		}
++	}
++	return action;
 +}
 +
-+static char *create_change(char *hist, struct tracefs_synth *synth, char *field)
++static void add_action(struct tracefs_synth *synth, struct action *action)
 +{
-+	hist = append_string(hist, NULL, ":onchange(");
-+	hist = append_string(hist, NULL, field);
-+	return append_string(hist, NULL, ")");
++	*synth->next_action = action;
++	synth->next_action = &action->next;
 +}
 +
-+static char *create_actions(char *hist, struct tracefs_synth *synth)
++/**
++ * tracefs_synth_trace - Execute the trace option
++ * @synth: The tracefs_synth descriptor
++ * @type: The type of handler to attach the trace action with
++ * @field: The field for handlers onmax and onchange (ignored otherwise)
++ *
++ * Add the action 'trace' for handlers onmatch, onmax and onchange.
++ *
++ * Returns 0 on succes, -1 on error.
++ */
++int tracefs_synth_trace(struct tracefs_synth *synth,
++			enum tracefs_synth_handler type, const char *field)
 +{
 +	struct action *action;
 +
-+	if (!synth->actions) {
-+		/* Default is "onmatch" and "trace" */
-+		hist = create_onmatch(hist, synth);
-+		return create_trace(hist, synth);
++	if (!synth || (!field && (type != TRACEFS_SYNTH_HANDLE_MATCH))) {
++		errno = EINVAL;
++		return -1;
 +	}
 +
-+	for (action = synth->actions; action; action = action->next) {
-+		switch (action->handler) {
-+		case TRACEFS_SYNTH_HANDLE_MATCH:
-+			hist = create_onmatch(hist, synth);
-+			break;
-+		case TRACEFS_SYNTH_HANDLE_MAX:
-+			hist = create_max(hist, synth, action->handle_field);
-+			break;
-+		case TRACEFS_SYNTH_HANDLE_CHANGE:
-+			hist = create_change(hist, synth, action->handle_field);
-+			break;
-+		default:
-+			continue;
-+		}
-+		switch (action->type) {
-+		case ACTION_TRACE:
-+			hist = create_trace(hist, synth);
-+			break;
-+		default:
-+			continue;
-+		}
-+	}
-+	return hist;
++	action = create_action(type, synth, field);
++	if (!action)
++		return -1;
++
++	action->type = ACTION_TRACE;
++	action->handler = type;
++	add_action(synth, action);
++	return 0;
 +}
 +
- static char *create_end_hist(struct tracefs_synth *synth)
+ static char *create_synthetic_event(struct tracefs_synth *synth)
  {
- 	char *end_hist;
- 
- 	end_hist = create_hist(synth->end_keys, synth->end_vars);
--	end_hist = create_onmatch(end_hist, synth);
--	return create_trace(end_hist, synth);
-+	return create_actions(end_hist, synth);
- }
- 
- static char *append_filter(char *hist, char *filter, unsigned int parens)
+ 	char *synthetic_event;
 -- 
 2.30.2
 
