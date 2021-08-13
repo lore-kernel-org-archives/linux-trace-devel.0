@@ -2,114 +2,73 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5B85C4338F
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Aug 2021 22:34:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E79A1C4338F
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 13 Aug 2021 01:39:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B680660FC0
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Aug 2021 22:34:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C66B5610A8
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 13 Aug 2021 01:39:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234949AbhHLWea (ORCPT
+        id S238172AbhHMBj1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 12 Aug 2021 18:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234716AbhHLWea (ORCPT
+        Thu, 12 Aug 2021 21:39:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51022 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238130AbhHMBj0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 12 Aug 2021 18:34:30 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083DFC061756
-        for <linux-trace-devel@vger.kernel.org>; Thu, 12 Aug 2021 15:34:05 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id f3so9314275plg.3
-        for <linux-trace-devel@vger.kernel.org>; Thu, 12 Aug 2021 15:34:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d/sF2/F9SeRx1P3U4gC4itbT1gl2Q+lqbpBD0R73xco=;
-        b=QDlfBJCGgkDNCt6ryFZKYjaJe31SQMP+e/w94ORKDNvdMbHo5aQ2Ax6drM/UjSXd2p
-         B0p3HDc+JJWmO4v9/wZoUdS9Ux0QOjkd1C0V7sM3/QHCj2UqlKTuKpDDIyZyVZyRylj8
-         pNx45PY8M1UeRFKEKyWk1FvA+ykZc4nGf+kl09J6HldwSZtt6BvI3UhI9qIdUdWS94oj
-         1n7X+vxBFfcOGrVrOFgD26Mss5xfqRnB3X6Pro4jQYbeTLFiR4wgv0eEqYHM2XbCtERS
-         j7TMowB2ufMGwZtrQ4MqChrxqq7P4nVIWyp3OTl2TjegnexxKbO0C0T33GntPUabbaKw
-         09Wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d/sF2/F9SeRx1P3U4gC4itbT1gl2Q+lqbpBD0R73xco=;
-        b=kB6+7pLdf3hbeub7eQAnFhBT45hj9PVI+4H8upLTUXj8H6sNNfXsPS/WTXxOPGGVtv
-         LnViIYUq+NfzFw6VpriaY7OBNPiUpjOAQqaTNrZp77Qe7FpW7QT9Ll8jJHviGIbKLJVt
-         rXz6n623gPPyQUxtDmjHLVvIHxodMF8zNB6Hw9Rf0QtwpY08spbUJD3hWYhNDVMM57kb
-         CTx62ePLqnMtO3HlyVPcy+cQNH3HLL5d6hG0g8J2WQuOMIY5khPa3olPrKqDakWwC3zF
-         YyV2xBwNo0d0R+xlENyKIgkfDirMS5iajSKyF3MXmZwVZ2MKuzOWsMqSnDwL0AcomvFN
-         Sr4w==
-X-Gm-Message-State: AOAM5332+alN9CNZAuZ/ntYC2OG+q0mqQX69RjyLVzCVeABBelrrasqW
-        yzmBFkSEnDEVFQOsM3irYXpwsWxfS4etBQ==
-X-Google-Smtp-Source: ABdhPJw/+zSjuu6DftiQ/teA8sYLnr/bO2fx8fjG08iHTcmGYDLpu1iJeeXgU4SZ7nJmz+VLUk+HkA==
-X-Received: by 2002:a17:902:b601:b029:12b:d9a:894f with SMTP id b1-20020a170902b601b029012b0d9a894fmr5247337pls.63.1628807644411;
-        Thu, 12 Aug 2021 15:34:04 -0700 (PDT)
-Received: from localhost.localdomain ([185.153.176.156])
-        by smtp.gmail.com with ESMTPSA id n23sm4689151pgv.76.2021.08.12.15.34.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 15:34:04 -0700 (PDT)
-From:   victorcora98@gmail.com
-To:     linux-trace-devel@vger.kernel.org
-Cc:     Victor Cora Colombo <victorcora98@gmail.com>
-Subject: [PATCH] trace-cmd: Add dependencies to BUILDING section in README
-Date:   Thu, 12 Aug 2021 19:33:53 -0300
-Message-Id: <20210812223353.28135-1-victorcora98@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 12 Aug 2021 21:39:26 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F83060FBF
+        for <linux-trace-devel@vger.kernel.org>; Fri, 13 Aug 2021 01:39:00 +0000 (UTC)
+Date:   Thu, 12 Aug 2021 21:38:53 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] libtracefs: Fix SYM-OFFSET in tracefs_sql()
+Message-ID: <20210812213853.77183026@oasis.local.home>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Victor Cora Colombo <victorcora98@gmail.com>
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-KernelShark has instructions in its README on how to get necessary
-dependencies to build it. trace-cmd could follow this example and
-also add more information on how to build it.
+The lexical for SYM-OFFSET would break it up into SYM '-' OFFSET and that
+would not be parsed properly.
 
-This patch adds instructions to README on how to get necessary libraries
-and dependencies to build trace-cmd.
+Let the "SYM-OFFSET' be its own lexical operator, to fix it.
 
-Signed-off-by: Victor Cora Colombo <victorcora98@gmail.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- README | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ src/sqlhist.l | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/README b/README
-index 1153152..16aedac 100644
---- a/README
-+++ b/README
-@@ -24,6 +24,20 @@ Lesser General Public License 2.1 (See COPYING.LIB).
+diff --git a/src/sqlhist.l b/src/sqlhist.l
+index db0ae11..4df475a 100644
+--- a/src/sqlhist.l
++++ b/src/sqlhist.l
+@@ -40,6 +40,12 @@ on { HANDLE_COLUMN; return ON; }
+ where { HANDLE_COLUMN; return WHERE; }
+ cast { HANDLE_COLUMN; return CAST; }
  
- BUILDING:
- 
-+In order to install build dependencies on Ubuntu do the following:
-+    sudo apt-get install build-essential git pkg-config bison flex -y
++sym-offset {
++	HANDLE_COLUMN;
++	yylval->string = store_str(TRACE_SB, yyg->yytext_r);
++	return FIELD;
++}
 +
-+To install required dependencies:
-+    git clone https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/
-+    cd libtraceevent
-+    make
-+    sudo make install
-+
-+    git clone https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-+    cd libtracefs
-+    make
-+    sudo make install
-+
- To make trace-cmd
-     make
- 
+ {qstring} {
+ 	HANDLE_COLUMN;
+ 	yylval->string = store_str(TRACE_SB, yyg->yytext_r);
 -- 
-2.32.0
+2.31.1
 
