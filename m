@@ -4,34 +4,34 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D526C4338F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB51BC432BE
 	for <linux-trace-devel@archiver.kernel.org>; Tue, 17 Aug 2021 03:50:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1FC4160EB5
+	by mail.kernel.org (Postfix) with ESMTP id BD09860EB5
 	for <linux-trace-devel@archiver.kernel.org>; Tue, 17 Aug 2021 03:50:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237142AbhHQDvB (ORCPT
+        id S237230AbhHQDvC (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 16 Aug 2021 23:51:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57482 "EHLO mail.kernel.org"
+        Mon, 16 Aug 2021 23:51:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237029AbhHQDvB (ORCPT
+        id S233686AbhHQDvB (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 16 Aug 2021 23:51:01 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B3BC60F58;
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B66960F5E;
         Tue, 17 Aug 2021 03:50:28 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mFq7P-004OLJ-Hq; Mon, 16 Aug 2021 23:50:27 -0400
-Message-ID: <20210817035027.385422828@goodmis.org>
+        id 1mFq7P-004OKC-4r; Mon, 16 Aug 2021 23:50:27 -0400
+Message-ID: <20210817035026.936958254@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Mon, 16 Aug 2021 23:42:58 -0400
+Date:   Mon, 16 Aug 2021 23:42:56 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
@@ -40,7 +40,7 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
         Tom Zanussi <zanussi@kernel.org>,
         linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 3/7] tracing/probe: Have traceprobe_parse_probe_arg() take a const arg
+Subject: [PATCH v6 1/7] tracing: Add DYNAMIC flag for dynamic events
 References: <20210817034255.421910614@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,270 +50,139 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-The two places that call traceprobe_parse_probe_arg() allocate a temporary
-buffer to copy the argv[i] into, because argv[i] is constant and the
-traceprobe_parse_probe_arg() will modify it to do the parsing. These two
-places allocate this buffer and then free it right after calling this
-function, leaving the onus of this allocation to the caller.
+To differentiate between static and dynamic events, add a new flag
+DYNAMIC to the event flags that all dynamic events have set. This will
+allow to differentiate when attaching to a dynamic event from a static
+event.
 
-As there's about to be a third user of this function that will have to do
-the same thing, instead of having the caller allocate the temporary
-buffer, simply move that allocation into the traceprobe_parse_probe_arg()
-itself, which will simplify the code of the callers.
+Static events have a mod pointer that references the module they were
+created in (or NULL for core kernel). This can be incremented when the
+event has something attached to it. But there exists no such mechanism for
+dynamic events. This is dangerous as the dynamic events may now disappear
+without the "attachment" knowing that it no longer exists.
 
+To enforce the dynamic flag, change dyn_event_add() to pass the event that
+is being created such that it can set the DYNAMIC flag of the event. This
+helps make sure that no location that creates a dynamic event misses
+setting this flag.
+
+Link: https://lore.kernel.org/linux-trace-devel/20210813004448.51c7de69ce432d338f4d226b@kernel.org/
+
+Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/trace_kprobe.c |  9 +------
- kernel/trace/trace_probe.c  | 47 ++++++++++++++++++++++---------------
- kernel/trace/trace_probe.h  |  2 +-
- kernel/trace/trace_uprobe.c |  9 +------
- 4 files changed, 31 insertions(+), 36 deletions(-)
+ include/linux/trace_events.h      | 3 +++
+ kernel/trace/trace_dynevent.h     | 4 +++-
+ kernel/trace/trace_events_synth.c | 2 +-
+ kernel/trace/trace_kprobe.c       | 4 ++--
+ kernel/trace/trace_uprobe.c       | 4 ++--
+ 5 files changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 82c3b86013b2..ed1e3c2087ab 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -873,15 +873,8 @@ static int __trace_kprobe_create(int argc, const char *argv[])
- 
- 	/* parse arguments */
- 	for (i = 0; i < argc && i < MAX_TRACE_ARGS; i++) {
--		tmp = kstrdup(argv[i], GFP_KERNEL);
--		if (!tmp) {
--			ret = -ENOMEM;
--			goto error;
--		}
--
- 		trace_probe_log_set_index(i + 2);
--		ret = traceprobe_parse_probe_arg(&tk->tp, i, tmp, flags);
--		kfree(tmp);
-+		ret = traceprobe_parse_probe_arg(&tk->tp, i, argv[i], flags);
- 		if (ret)
- 			goto error;	/* This can be -ENOMEM */
- 	}
-diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-index 15413ad7cef2..ef717b373443 100644
---- a/kernel/trace/trace_probe.c
-+++ b/kernel/trace/trace_probe.c
-@@ -540,26 +540,34 @@ static int __parse_bitfield_probe_arg(const char *bf,
- }
- 
- /* String length checking wrapper */
--static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
-+static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
- 		struct probe_arg *parg, unsigned int flags, int offset)
- {
- 	struct fetch_insn *code, *scode, *tmp = NULL;
- 	char *t, *t2, *t3;
-+	char *arg;
- 	int ret, len;
- 
-+	arg = kstrdup(argv, GFP_KERNEL);
-+	if (!arg)
-+		return -ENOMEM;
-+
-+	ret = -EINVAL;
- 	len = strlen(arg);
- 	if (len > MAX_ARGSTR_LEN) {
- 		trace_probe_log_err(offset, ARG_TOO_LONG);
--		return -EINVAL;
-+		goto out;
- 	} else if (len == 0) {
- 		trace_probe_log_err(offset, NO_ARG_BODY);
--		return -EINVAL;
-+		goto out;
- 	}
- 
-+	ret = -ENOMEM;
- 	parg->comm = kstrdup(arg, GFP_KERNEL);
- 	if (!parg->comm)
--		return -ENOMEM;
-+		goto out;
- 
-+	ret = -EINVAL;
- 	t = strchr(arg, ':');
- 	if (t) {
- 		*t = '\0';
-@@ -571,22 +579,22 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 				offset += t2 + strlen(t2) - arg;
- 				trace_probe_log_err(offset,
- 						    ARRAY_NO_CLOSE);
--				return -EINVAL;
-+				goto out;
- 			} else if (t3[1] != '\0') {
- 				trace_probe_log_err(offset + t3 + 1 - arg,
- 						    BAD_ARRAY_SUFFIX);
--				return -EINVAL;
-+				goto out;
- 			}
- 			*t3 = '\0';
- 			if (kstrtouint(t2, 0, &parg->count) || !parg->count) {
- 				trace_probe_log_err(offset + t2 - arg,
- 						    BAD_ARRAY_NUM);
--				return -EINVAL;
-+				goto out;
- 			}
- 			if (parg->count > MAX_ARRAY_LEN) {
- 				trace_probe_log_err(offset + t2 - arg,
- 						    ARRAY_TOO_BIG);
--				return -EINVAL;
-+				goto out;
- 			}
- 		}
- 	}
-@@ -598,29 +606,30 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 	if (strcmp(arg, "$comm") == 0 || strncmp(arg, "\\\"", 2) == 0) {
- 		/* The type of $comm must be "string", and not an array. */
- 		if (parg->count || (t && strcmp(t, "string")))
--			return -EINVAL;
-+			goto out;
- 		parg->type = find_fetch_type("string");
- 	} else
- 		parg->type = find_fetch_type(t);
- 	if (!parg->type) {
- 		trace_probe_log_err(offset + (t ? (t - arg) : 0), BAD_TYPE);
--		return -EINVAL;
-+		goto out;
- 	}
- 	parg->offset = *size;
- 	*size += parg->type->size * (parg->count ?: 1);
- 
-+	ret = -ENOMEM;
- 	if (parg->count) {
- 		len = strlen(parg->type->fmttype) + 6;
- 		parg->fmt = kmalloc(len, GFP_KERNEL);
- 		if (!parg->fmt)
--			return -ENOMEM;
-+			goto out;
- 		snprintf(parg->fmt, len, "%s[%d]", parg->type->fmttype,
- 			 parg->count);
- 	}
- 
- 	code = tmp = kcalloc(FETCH_INSN_MAX, sizeof(*code), GFP_KERNEL);
- 	if (!code)
--		return -ENOMEM;
-+		goto out;
- 	code[FETCH_INSN_MAX - 1].op = FETCH_OP_END;
- 
- 	ret = parse_probe_arg(arg, parg->type, &code, &code[FETCH_INSN_MAX - 1],
-@@ -628,6 +637,7 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 	if (ret)
- 		goto fail;
- 
-+	ret = -EINVAL;
- 	/* Store operation */
- 	if (!strcmp(parg->type->name, "string") ||
- 	    !strcmp(parg->type->name, "ustring")) {
-@@ -636,7 +646,6 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 		    code->op != FETCH_OP_DATA) {
- 			trace_probe_log_err(offset + (t ? (t - arg) : 0),
- 					    BAD_STRING);
--			ret = -EINVAL;
- 			goto fail;
- 		}
- 		if ((code->op == FETCH_OP_IMM || code->op == FETCH_OP_COMM ||
-@@ -650,7 +659,6 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 			code++;
- 			if (code->op != FETCH_OP_NOP) {
- 				trace_probe_log_err(offset, TOO_MANY_OPS);
--				ret = -EINVAL;
- 				goto fail;
- 			}
- 		}
-@@ -672,7 +680,6 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 		code++;
- 		if (code->op != FETCH_OP_NOP) {
- 			trace_probe_log_err(offset, TOO_MANY_OPS);
--			ret = -EINVAL;
- 			goto fail;
- 		}
- 		code->op = FETCH_OP_ST_RAW;
-@@ -687,6 +694,7 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 			goto fail;
- 		}
- 	}
-+	ret = -EINVAL;
- 	/* Loop(Array) operation */
- 	if (parg->count) {
- 		if (scode->op != FETCH_OP_ST_MEM &&
-@@ -694,13 +702,11 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 		    scode->op != FETCH_OP_ST_USTRING) {
- 			trace_probe_log_err(offset + (t ? (t - arg) : 0),
- 					    BAD_STRING);
--			ret = -EINVAL;
- 			goto fail;
- 		}
- 		code++;
- 		if (code->op != FETCH_OP_NOP) {
- 			trace_probe_log_err(offset, TOO_MANY_OPS);
--			ret = -EINVAL;
- 			goto fail;
- 		}
- 		code->op = FETCH_OP_LP_ARRAY;
-@@ -709,6 +715,7 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 	code++;
- 	code->op = FETCH_OP_END;
- 
-+	ret = 0;
- 	/* Shrink down the code buffer */
- 	parg->code = kcalloc(code - tmp + 1, sizeof(*code), GFP_KERNEL);
- 	if (!parg->code)
-@@ -724,6 +731,8 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 				kfree(code->data);
- 	}
- 	kfree(tmp);
-+out:
-+	kfree(arg);
- 
- 	return ret;
- }
-@@ -745,11 +754,11 @@ static int traceprobe_conflict_field_name(const char *name,
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index ad413b382a3c..53c9dffd87fd 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -310,6 +310,7 @@ enum {
+ 	TRACE_EVENT_FL_NO_SET_FILTER_BIT,
+ 	TRACE_EVENT_FL_IGNORE_ENABLE_BIT,
+ 	TRACE_EVENT_FL_TRACEPOINT_BIT,
++	TRACE_EVENT_FL_DYNAMIC_BIT,
+ 	TRACE_EVENT_FL_KPROBE_BIT,
+ 	TRACE_EVENT_FL_UPROBE_BIT,
+ };
+@@ -321,6 +322,7 @@ enum {
+  *  NO_SET_FILTER - Set when filter has error and is to be ignored
+  *  IGNORE_ENABLE - For trace internal events, do not enable with debugfs file
+  *  TRACEPOINT    - Event is a tracepoint
++ *  DYNAMIC       - Event is a dynamic event (created at run time)
+  *  KPROBE        - Event is a kprobe
+  *  UPROBE        - Event is a uprobe
+  */
+@@ -330,6 +332,7 @@ enum {
+ 	TRACE_EVENT_FL_NO_SET_FILTER	= (1 << TRACE_EVENT_FL_NO_SET_FILTER_BIT),
+ 	TRACE_EVENT_FL_IGNORE_ENABLE	= (1 << TRACE_EVENT_FL_IGNORE_ENABLE_BIT),
+ 	TRACE_EVENT_FL_TRACEPOINT	= (1 << TRACE_EVENT_FL_TRACEPOINT_BIT),
++	TRACE_EVENT_FL_DYNAMIC		= (1 << TRACE_EVENT_FL_DYNAMIC_BIT),
+ 	TRACE_EVENT_FL_KPROBE		= (1 << TRACE_EVENT_FL_KPROBE_BIT),
+ 	TRACE_EVENT_FL_UPROBE		= (1 << TRACE_EVENT_FL_UPROBE_BIT),
+ };
+diff --git a/kernel/trace/trace_dynevent.h b/kernel/trace/trace_dynevent.h
+index 7754936b57ee..936477a111d3 100644
+--- a/kernel/trace/trace_dynevent.h
++++ b/kernel/trace/trace_dynevent.h
+@@ -76,13 +76,15 @@ int dyn_event_init(struct dyn_event *ev, struct dyn_event_operations *ops)
  	return 0;
  }
  
--int traceprobe_parse_probe_arg(struct trace_probe *tp, int i, char *arg,
-+int traceprobe_parse_probe_arg(struct trace_probe *tp, int i, const char *arg,
- 				unsigned int flags)
+-static inline int dyn_event_add(struct dyn_event *ev)
++static inline int dyn_event_add(struct dyn_event *ev,
++				struct trace_event_call *call)
  {
- 	struct probe_arg *parg = &tp->args[i];
--	char *body;
-+	const char *body;
+ 	lockdep_assert_held(&event_mutex);
  
- 	/* Increment count for freeing args in error case */
- 	tp->nr_args++;
-diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
-index 227d518e5ba5..42aa084902fa 100644
---- a/kernel/trace/trace_probe.h
-+++ b/kernel/trace/trace_probe.h
-@@ -354,7 +354,7 @@ int trace_probe_create(const char *raw_command, int (*createfn)(int, const char
- #define TPARG_FL_MASK	GENMASK(2, 0)
+ 	if (!ev || !ev->ops)
+ 		return -EINVAL;
  
- extern int traceprobe_parse_probe_arg(struct trace_probe *tp, int i,
--				char *arg, unsigned int flags);
-+				const char *argv, unsigned int flags);
++	call->flags |= TRACE_EVENT_FL_DYNAMIC;
+ 	list_add_tail(&ev->list, &dyn_event_list);
+ 	return 0;
+ }
+diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+index 9315fc03e303..f4f5489e1e28 100644
+--- a/kernel/trace/trace_events_synth.c
++++ b/kernel/trace/trace_events_synth.c
+@@ -1298,7 +1298,7 @@ static int __create_synth_event(const char *name, const char *raw_fields)
+ 	}
+ 	ret = register_synth_event(event);
+ 	if (!ret)
+-		dyn_event_add(&event->devent);
++		dyn_event_add(&event->devent, &event->call);
+ 	else
+ 		free_synth_event(event);
+  out:
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index ea6178cb5e33..bfef43bfce37 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -618,7 +618,7 @@ static int append_trace_kprobe(struct trace_kprobe *tk, struct trace_kprobe *to)
+ 	if (ret)
+ 		trace_probe_unlink(&tk->tp);
+ 	else
+-		dyn_event_add(&tk->devent);
++		dyn_event_add(&tk->devent, trace_probe_event_call(&tk->tp));
  
- extern int traceprobe_update_arg(struct probe_arg *arg);
- extern void traceprobe_free_probe_arg(struct probe_arg *arg);
+ 	return ret;
+ }
+@@ -661,7 +661,7 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
+ 	if (ret < 0)
+ 		unregister_kprobe_event(tk);
+ 	else
+-		dyn_event_add(&tk->devent);
++		dyn_event_add(&tk->devent, trace_probe_event_call(&tk->tp));
+ 
+ end:
+ 	mutex_unlock(&event_mutex);
 diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index 1e2a92e7607d..93ff96541971 100644
+index 9b50869a5ddb..50eca53b8d22 100644
 --- a/kernel/trace/trace_uprobe.c
 +++ b/kernel/trace/trace_uprobe.c
-@@ -684,16 +684,9 @@ static int __trace_uprobe_create(int argc, const char **argv)
+@@ -455,7 +455,7 @@ static int append_trace_uprobe(struct trace_uprobe *tu, struct trace_uprobe *to)
+ 	/* Append to existing event */
+ 	ret = trace_probe_append(&tu->tp, &to->tp);
+ 	if (!ret)
+-		dyn_event_add(&tu->devent);
++		dyn_event_add(&tu->devent, trace_probe_event_call(&tu->tp));
  
- 	/* parse arguments */
- 	for (i = 0; i < argc && i < MAX_TRACE_ARGS; i++) {
--		tmp = kstrdup(argv[i], GFP_KERNEL);
--		if (!tmp) {
--			ret = -ENOMEM;
--			goto error;
--		}
--
- 		trace_probe_log_set_index(i + 2);
--		ret = traceprobe_parse_probe_arg(&tu->tp, i, tmp,
-+		ret = traceprobe_parse_probe_arg(&tu->tp, i, argv[i],
- 					is_return ? TPARG_FL_RETURN : 0);
--		kfree(tmp);
- 		if (ret)
- 			goto error;
+ 	return ret;
+ }
+@@ -518,7 +518,7 @@ static int register_trace_uprobe(struct trace_uprobe *tu)
+ 		goto end;
  	}
+ 
+-	dyn_event_add(&tu->devent);
++	dyn_event_add(&tu->devent, trace_probe_event_call(&tu->tp));
+ 
+ end:
+ 	mutex_unlock(&event_mutex);
 -- 
 2.30.2
