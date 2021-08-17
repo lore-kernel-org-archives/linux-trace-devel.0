@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C94EC4320A
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49827C432BE
 	for <linux-trace-devel@archiver.kernel.org>; Tue, 17 Aug 2021 16:41:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F2D746102A
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 17 Aug 2021 16:41:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2CF0B60FD9
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 17 Aug 2021 16:41:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbhHQQmV (ORCPT
+        id S230192AbhHQQmV (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Tue, 17 Aug 2021 12:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58308 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbhHQQmS (ORCPT
+        with ESMTP id S230108AbhHQQmT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 17 Aug 2021 12:42:18 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45C6C0613C1
-        for <linux-trace-devel@vger.kernel.org>; Tue, 17 Aug 2021 09:41:44 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id u3so39920279ejz.1
-        for <linux-trace-devel@vger.kernel.org>; Tue, 17 Aug 2021 09:41:44 -0700 (PDT)
+        Tue, 17 Aug 2021 12:42:19 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958D0C0613CF
+        for <linux-trace-devel@vger.kernel.org>; Tue, 17 Aug 2021 09:41:45 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id qk33so39791153ejc.12
+        for <linux-trace-devel@vger.kernel.org>; Tue, 17 Aug 2021 09:41:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fTA18C1juGWZITUqmZQxJSRUfIcz4vFTw5d47852z3k=;
-        b=UjvyVxCOJXL47+osyQGqTC/pXWlph+uNR4kwo0RRtDy1q7ieLazXkseSr4e65TJyq9
-         t5T6OsdL1V908tBrh5nHMMg8zToPO3WW/rfCn2WdTD7jXnvX3wxem2+uf9c2p5Kajeua
-         modp0DfusfPIbJNNw7DDu/XkvzsnpYo00Ae+9jLwQoAPRpB852ZgiolgX+hK7cZ//Y3I
-         zwqAaNyi2TTN7VqtXzh1JJP4Qa6Lt9W4DJ59kMYe61r14HeaktCuQchHRrYe7H1VTzXm
-         hN5zejCBmw2EiepYNBetTe7X4j5N1UnkNMzvpZD1gxACfHpEks9g683TC/P5NYtPyivm
-         TImg==
+        bh=cUXOAd3UwL3ba5bajTmLLYoNhzK48AfPGaXJbynwjvs=;
+        b=MibvHmPw0oew2AOZyHdeix9jyH2SODQXzkBg/UKV9Ol8w/Nl9mryupiCtsYlA+tZJm
+         +nNM1/ef3ij2Gi1Oscta4JAa1z1IK2Tv9QpMY1fMG5bhmpge42cUCR2/EUoPd+HdxBSQ
+         2WwaDXiEUffAgSzmXebOvJnX7lcEBFjFKcNYYuwWsO9q7B317sEJGA/8H8tLGGcj6V0k
+         uW/RnaenP/+0iF76qrpxEgjO96S+BP5C1xqna7QwVGEtVfixxhyhyKCvtFg1H8C85kSE
+         kQ978H23hVlGLnjEOGxbpnnaOggWuo+O3FsHCOy/cjZxqLtNRD/pBfuK689T7c3DHb/k
+         p/9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fTA18C1juGWZITUqmZQxJSRUfIcz4vFTw5d47852z3k=;
-        b=fRfooxXknWBfztPPX0YvqJ+PsOsw4G4UFYC6Rxx6+ZnXCBylckdsmIwMxrxt3KElbn
-         BWV4hqyGqg+LbQ2SONMQqx6y1iT2jsIJ/GJqDyjTwoWQcNjRFC+XzwRKfmXOPtPcGPv8
-         gRlmr/hqehsm5fjttrf8F4O5Nwht30AXH4rHJerZck6iH5JkvwkpW7nuIG3q2/YKLpGU
-         OQfiWavcDmT2cnamwE2pTSrOmlMNHZl+PRrm5uDw271X+fYsFptWmga0SLJccPz8JGen
-         qDw0DugDH25f6w5GmiRNdmQ5qf4c54/H+tXnaPU05MEmQ3BcKaKwlvlxGjYZfTDudFLv
-         ED0g==
-X-Gm-Message-State: AOAM5316+R4YxIwgvcalfroQA/xSFq6s1E3S75NubJkQnSpIO3hOO9ep
-        4vZUejIYtBPiMHJfR2ki+RYDKQQfIRw=
-X-Google-Smtp-Source: ABdhPJxJZZPcYYj78gNLDzLokTcgv0QZAwScuHVuwtRQq/Ko+0+aMYLxtNyK7RGiIIpm3ZO7UaFr1A==
-X-Received: by 2002:a17:907:1199:: with SMTP id uz25mr4981442ejb.448.1629218503233;
+        bh=cUXOAd3UwL3ba5bajTmLLYoNhzK48AfPGaXJbynwjvs=;
+        b=L44txU2eq49IeXyRh24y5zioqlmLjBJ+EIlTbLs4Gs7RkJMNi9sr6pS2Mvr1+dEITg
+         wFx7ktD6o5VJCnzTv0lfE03fYh/lUiFD8i9SeOSHZiW7ykTyiDqdEHqR0sc8o0pKhTef
+         dB39hpSExk45UY7j8J3PevL5O7l7LXSuHVyA0b69G511oLUvHKjYSVegoecsimMO56M2
+         Z+TKYOJ/C6ZIOtKnWk/ho62Z3wVIXO729MHbrYNudZA9oEMxMarb0bVlQqD0JBGYvxvJ
+         oQB36naIw1VWlT2I6sA4y5w4WtF9Rx8QGglqDbhxeZ43epTdj2wUIt20ZV8aORhJH9dy
+         aBvA==
+X-Gm-Message-State: AOAM533+m54kwXuR557bxe8wXFTcD16ItfEQfCtAnFkxWEMksZua7+0I
+        x7UONj/ZzGYxexoMAT6syaXPBbdEd1g=
+X-Google-Smtp-Source: ABdhPJx0kZQYxkEwuoBBX2pqRJjcl6HKX8H6AvOvozwPTttrxELcrUrWaBWTECxZYhl08PDmUbBp5Q==
+X-Received: by 2002:a17:907:7615:: with SMTP id jx21mr4834114ejc.505.1629218503954;
         Tue, 17 Aug 2021 09:41:43 -0700 (PDT)
 Received: from crow.. ([95.87.199.109])
-        by smtp.gmail.com with ESMTPSA id i16sm968283ejx.78.2021.08.17.09.41.42
+        by smtp.gmail.com with ESMTPSA id i16sm968283ejx.78.2021.08.17.09.41.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 09:41:42 -0700 (PDT)
+        Tue, 17 Aug 2021 09:41:43 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 2/4] trace-cruncher: Add type checking for the custom Python types
-Date:   Tue, 17 Aug 2021 19:41:08 +0300
-Message-Id: <20210817164110.152016-2-y.karadz@gmail.com>
+Subject: [PATCH 3/4] trace-cruncher: Define Python type for instances
+Date:   Tue, 17 Aug 2021 19:41:09 +0300
+Message-Id: <20210817164110.152016-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210817164110.152016-1-y.karadz@gmail.com>
 References: <20210817164110.152016-1-y.karadz@gmail.com>
@@ -73,36 +73,95 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The new method checks if an object has a Python type that matches
-the type defined in the C extension module.
+We add a custom Python type that wraps the 'tracefs_instance' object,
+defined in libtracefs. This is a preparation for a general refactorung
+of the way libtracefs instances are handled by trace-cruncher.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/common.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ src/ftracepy-utils.c |  5 +++++
+ src/ftracepy-utils.h |  4 ++++
+ src/ftracepy.c       | 15 +++++++++++++++
+ 3 files changed, 24 insertions(+)
 
-diff --git a/src/common.h b/src/common.h
-index 6046c0f..fa64696 100644
---- a/src/common.h
-+++ b/src/common.h
-@@ -65,6 +65,7 @@ static inline void no_free()
- } py_type;									\
- PyObject *py_type##_New(struct c_type *c_ptr);					\
- bool py_type##TypeInit();							\
-+bool py_type##_Check(PyObject *obj);						\
+diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
+index 6739db7..6b2f879 100644
+--- a/src/ftracepy-utils.c
++++ b/src/ftracepy-utils.c
+@@ -531,6 +531,11 @@ bool get_instance_from_arg(PyObject *args, PyObject *kwargs,
+ 	return true;
+ }
  
- #define  C_OBJECT_WRAPPER(c_type, py_type, ptr_free)				\
- static PyTypeObject py_type##Type = {						\
-@@ -101,5 +102,9 @@ bool py_type##TypeInit()							\
- 	Py_INCREF(&py_type##Type);						\
- 	return true;								\
- }										\
-+bool py_type##_Check(PyObject *obj)						\
-+{										\
-+	return (obj->ob_type == &py_type##Type) ? true : false;			\
-+}										\
++PyObject *PyTfsInstance_dir(PyTfsInstance *self)
++{
++	return PyUnicode_FromString(tracefs_instance_get_dir(self->ptrObj));
++}
++
+ PyObject *PyFtrace_dir(PyObject *self)
+ {
+ 	return PyUnicode_FromString(tracefs_tracing_dir());
+diff --git a/src/ftracepy-utils.h b/src/ftracepy-utils.h
+index 5d7c19c..cf75e0b 100644
+--- a/src/ftracepy-utils.h
++++ b/src/ftracepy-utils.h
+@@ -22,6 +22,8 @@ C_OBJECT_WRAPPER_DECLARE(tep_event, PyTepEvent)
  
- #endif
+ C_OBJECT_WRAPPER_DECLARE(tep_handle, PyTep)
+ 
++C_OBJECT_WRAPPER_DECLARE(tracefs_instance, PyTfsInstance)
++
+ PyObject *PyTepRecord_time(PyTepRecord* self);
+ 
+ PyObject *PyTepRecord_cpu(PyTepRecord* self);
+@@ -44,6 +46,8 @@ PyObject *PyTep_init_local(PyTep *self, PyObject *args,
+ PyObject *PyTep_get_event(PyTep *self, PyObject *args,
+ 				       PyObject *kwargs);
+ 
++PyObject *PyTfsInstance_dir(PyTfsInstance *self);
++
+ PyObject *PyFtrace_dir(PyObject *self);
+ 
+ PyObject *PyFtrace_create_instance(PyObject *self, PyObject *args,
+diff --git a/src/ftracepy.c b/src/ftracepy.c
+index e3fec7b..628a53a 100644
+--- a/src/ftracepy.c
++++ b/src/ftracepy.c
+@@ -73,6 +73,17 @@ static PyMethodDef PyTep_methods[] = {
+ 
+ C_OBJECT_WRAPPER(tep_handle, PyTep, tep_free)
+ 
++static PyMethodDef PyTfsInstance_methods[] = {
++	{"dir",
++	 (PyCFunction) PyTfsInstance_dir,
++	 METH_NOARGS,
++	 "Get the absolute path to the instance directory."
++	},
++	{NULL, NULL, 0, NULL}
++};
++
++C_OBJECT_WRAPPER(tracefs_instance, PyTfsInstance, tracefs_instance_destroy)
++
+ static PyMethodDef ftracepy_methods[] = {
+ 	{"dir",
+ 	 (PyCFunction) PyFtrace_dir,
+@@ -321,6 +332,9 @@ PyMODINIT_FUNC PyInit_ftracepy(void)
+ 	if (!PyTepRecordTypeInit())
+ 		return NULL;
+ 
++	if (!PyTfsInstanceTypeInit())
++		return NULL;
++
+ 	TFS_ERROR = PyErr_NewException("tracecruncher.ftracepy.tfs_error",
+ 				       NULL, NULL);
+ 
+@@ -335,6 +349,7 @@ PyMODINIT_FUNC PyInit_ftracepy(void)
+ 	PyModule_AddObject(module, "tep_handle", (PyObject *) &PyTepType);
+ 	PyModule_AddObject(module, "tep_event", (PyObject *) &PyTepEventType);
+ 	PyModule_AddObject(module, "tep_record", (PyObject *) &PyTepRecordType);
++	PyModule_AddObject(module, "tracefs_instance", (PyObject *) &PyTfsInstanceType);
+ 
+ 	PyModule_AddObject(module, "tfs_error", TFS_ERROR);
+ 	PyModule_AddObject(module, "tep_error", TEP_ERROR);
 -- 
 2.30.2
 
