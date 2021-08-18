@@ -4,36 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0CD4C4338F
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 18 Aug 2021 10:57:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8D23C4338F
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 18 Aug 2021 11:09:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 909EF61029
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 18 Aug 2021 10:57:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 970A461058
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 18 Aug 2021 11:09:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234485AbhHRK5s (ORCPT
+        id S235428AbhHRLJl (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 18 Aug 2021 06:57:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50750 "EHLO mail.kernel.org"
+        Wed, 18 Aug 2021 07:09:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234748AbhHRK5r (ORCPT
+        id S234953AbhHRLJb (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 18 Aug 2021 06:57:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B6E960FBF;
-        Wed, 18 Aug 2021 10:57:11 +0000 (UTC)
+        Wed, 18 Aug 2021 07:09:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E94D961056;
+        Wed, 18 Aug 2021 11:08:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629284233;
-        bh=PNfci8wqXXfyvt5HEVXeoi84eP/5uRnbl3BCEVOedCQ=;
+        s=k20201202; t=1629284936;
+        bh=B1HlmalKG2Nd9HzfSJD1nnTG2Q2FTlnYnSy2mKI/utI=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AG+3mdgzAWdBNZk3Lh2+8lQMgsajrP5NGbpDT46Y1xgu6DLxG4s0WX68TnFcvZL8d
-         TV6LkuB6wYwUXxGxFw/bCPkYWmz7mSbOPe99zalmMpdaAFyvjyNEpJGoBy8uDIqpHZ
-         ulEN1JgP+9tCYGI6EzGR/C7TYt63IdJ8KACoP/ITuH9nZnFn+/owPs8y1CW6nrXmFU
-         zPOiFJrXzCx1ks50bG5qs9y+PDxll+qudQACgljhTMGw/O/f+tyOJ1E9XNWCVMMq7c
-         2eNnf2ieckMZV1gPK9GGVI1uftE1g6BQ03QUijUh0yuG+tVtLWDMqok6HKJIQKXkxp
-         wQMcTP8peQdsQ==
-Date:   Wed, 18 Aug 2021 19:57:09 +0900
+        b=NtUWHA2L8sACPk/s0huyECUpMgbCvbq7rLllzkeFUZRoB/8TomlU0dSDCh7pQnSx9
+         H9IzPgUlEP9vQByEOVxXZFVe3VGRyjah1hNFIaKiIhsdQaNFo0jkA8A3pV4vSbivMT
+         UjXda3mbE+a33kfmr70KbbTD/Rd9/Mfq3VOZFpe+fwC9FFJLqe8aHG3yRnmFSm+8Wk
+         aD6Tp3HLX8rQBGEkTliDj975qayJ6RQMGJw4/4Gu4Q58PKVIpZRT1gJMtnpdd20ru/
+         0ZvGjFMwkme7yINu0DTvhq+vXW+x2rVI2KXzF0uAK+J7eV86433+1mahmyAtIqlftS
+         /Q1HixPePRAsw==
+Date:   Wed, 18 Aug 2021 20:08:51 +0900
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
@@ -42,12 +42,12 @@ Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
         "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
         Tom Zanussi <zanussi@kernel.org>,
         linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v6 4/7] tracing/probes: Allow for dot delimiter as well
- as slash for system names
-Message-Id: <20210818195709.0536722822090f737664d1d6@kernel.org>
-In-Reply-To: <20210817035027.580493202@goodmis.org>
+Subject: Re: [PATCH v6 5/7] tracing/probes: Use struct_size() instead of
+ defining custom macros
+Message-Id: <20210818200851.954e5030a64eb11ee156fa78@kernel.org>
+In-Reply-To: <20210817035027.795000217@goodmis.org>
 References: <20210817034255.421910614@goodmis.org>
-        <20210817035027.580493202@goodmis.org>
+        <20210817035027.795000217@goodmis.org>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -56,67 +56,77 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 16 Aug 2021 23:42:59 -0400
+On Mon, 16 Aug 2021 23:43:00 -0400
 Steven Rostedt <rostedt@goodmis.org> wrote:
 
 > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 > 
-> Kprobe and uprobe events can add a "system" to the events that are created
-> via the kprobe_events and uprobe_events files respectively. If they do not
-> include a "system" in the name, then the default "kprobes" or "uprobes" is
-> used. The current notation to specify a system for one of these probe
-> events is to add a '/' delimiter in the name, where the content before the
-> '/' will be the system to use, and the content after will be the event
-> name.
-> 
->  echo 'p:my_system/my_event' > kprobe_events
-> 
-> But this is inconsistent with the way histogram triggers separate their
-> system / event names. The histogram triggers use a '.' delimiter, which
-> can be confusing.
-> 
-> To allow this to be more consistent, as well as keep backward
-> compatibility, allow the kprobe and uprobe events to denote a system name
-> with either a '/' or a '.'.
-> 
-> That is:
-> 
->   echo 'p:my_system/my_event' > kprobe_events
-> 
-> is equivalent to:
-> 
->   echo 'p:my_system.my_event' > kprobe_events
-> 
-> Link: https://lore.kernel.org/linux-trace-devel/20210813004448.51c7de69ce432d338f4d226b@kernel.org/
+> Remove SIZEOF_TRACE_KPROBE() and SIZEOF_TRACE_UPROBE() and use
+> struct_size() as that's what it is made for. No need to have custom
+> macros. Especially since struct_size() has some extra memory checks for
+> correctness.
 > 
 
-Yes, this is what I suggested :)
+Good catch!
 
 Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-Thanks!
+Thank you!
 
-
-> Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
 > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 > ---
->  kernel/trace/trace_probe.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  kernel/trace/trace_kprobe.c | 6 +-----
+>  kernel/trace/trace_uprobe.c | 6 +-----
+>  2 files changed, 2 insertions(+), 10 deletions(-)
 > 
-> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-> index ef717b373443..0916a9964719 100644
-> --- a/kernel/trace/trace_probe.c
-> +++ b/kernel/trace/trace_probe.c
-> @@ -233,6 +233,9 @@ int traceprobe_parse_event_name(const char **pevent, const char **pgroup,
->  	int len;
+> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> index ed1e3c2087ab..ca726c9d0859 100644
+> --- a/kernel/trace/trace_kprobe.c
+> +++ b/kernel/trace/trace_kprobe.c
+> @@ -80,10 +80,6 @@ static struct trace_kprobe *to_trace_kprobe(struct dyn_event *ev)
+>  	for_each_dyn_event(dpos)		\
+>  		if (is_trace_kprobe(dpos) && (pos = to_trace_kprobe(dpos)))
 >  
->  	slash = strchr(event, '/');
-> +	if (!slash)
-> +		slash = strchr(event, '.');
-> +
->  	if (slash) {
->  		if (slash == event) {
->  			trace_probe_log_err(offset, NO_GROUP_NAME);
+> -#define SIZEOF_TRACE_KPROBE(n)				\
+> -	(offsetof(struct trace_kprobe, tp.args) +	\
+> -	(sizeof(struct probe_arg) * (n)))
+> -
+>  static nokprobe_inline bool trace_kprobe_is_return(struct trace_kprobe *tk)
+>  {
+>  	return tk->rp.handler != NULL;
+> @@ -265,7 +261,7 @@ static struct trace_kprobe *alloc_trace_kprobe(const char *group,
+>  	struct trace_kprobe *tk;
+>  	int ret = -ENOMEM;
+>  
+> -	tk = kzalloc(SIZEOF_TRACE_KPROBE(nargs), GFP_KERNEL);
+> +	tk = kzalloc(struct_size(tk, tp.args, nargs), GFP_KERNEL);
+>  	if (!tk)
+>  		return ERR_PTR(ret);
+>  
+> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+> index 93ff96541971..590bb9a02f8d 100644
+> --- a/kernel/trace/trace_uprobe.c
+> +++ b/kernel/trace/trace_uprobe.c
+> @@ -83,10 +83,6 @@ static struct trace_uprobe *to_trace_uprobe(struct dyn_event *ev)
+>  	for_each_dyn_event(dpos)		\
+>  		if (is_trace_uprobe(dpos) && (pos = to_trace_uprobe(dpos)))
+>  
+> -#define SIZEOF_TRACE_UPROBE(n)				\
+> -	(offsetof(struct trace_uprobe, tp.args) +	\
+> -	(sizeof(struct probe_arg) * (n)))
+> -
+>  static int register_uprobe_event(struct trace_uprobe *tu);
+>  static int unregister_uprobe_event(struct trace_uprobe *tu);
+>  
+> @@ -340,7 +336,7 @@ alloc_trace_uprobe(const char *group, const char *event, int nargs, bool is_ret)
+>  	struct trace_uprobe *tu;
+>  	int ret;
+>  
+> -	tu = kzalloc(SIZEOF_TRACE_UPROBE(nargs), GFP_KERNEL);
+> +	tu = kzalloc(struct_size(tu, tp.args, nargs), GFP_KERNEL);
+>  	if (!tu)
+>  		return ERR_PTR(-ENOMEM);
+>  
 > -- 
 > 2.30.2
 
