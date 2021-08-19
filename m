@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C736AC4320A
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Aug 2021 13:08:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D729C432BE
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Aug 2021 13:08:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ADDD061152
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Aug 2021 13:08:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 55EE86108D
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Aug 2021 13:08:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239151AbhHSNJX (ORCPT
+        id S239334AbhHSNJX (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Thu, 19 Aug 2021 09:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52678 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239334AbhHSNJW (ORCPT
+        with ESMTP id S239300AbhHSNJX (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 19 Aug 2021 09:09:22 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27D7C061757
-        for <linux-trace-devel@vger.kernel.org>; Thu, 19 Aug 2021 06:08:45 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id x12so9000160wrr.11
-        for <linux-trace-devel@vger.kernel.org>; Thu, 19 Aug 2021 06:08:45 -0700 (PDT)
+        Thu, 19 Aug 2021 09:09:23 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E32C061575
+        for <linux-trace-devel@vger.kernel.org>; Thu, 19 Aug 2021 06:08:46 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id l24-20020a05600c089800b002e71a10130eso768847wmp.5
+        for <linux-trace-devel@vger.kernel.org>; Thu, 19 Aug 2021 06:08:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cciFYLyq7aMFAOob86mDspLiwDNUue0Eur+CQfHphBU=;
-        b=fJxwa8WNldtTzbUvzLa8mZIW4YaSrRLciSAsEXVEtq1qhbVYKC6A8i0XOCHpB/ZGkw
-         hVKMkIPunrKFUCB072qka8TsgPHUpkdynXz6pfjwBsF8uTmdpjFqGRydJjPK1bCAnRZ9
-         CI772Qfo4Mpib0KBK4PbHAhWRNvzXKloWAI6ddZx57K6IfpvoYhDMDCU3wcb6kWqAF05
-         OAdMVJPO5zTBx1C/KqF2AN4G+b3qZHq7Rn9IGN4+HvKwBRGMQ6rYA2GPqTYdUgKlZlxd
-         GGHbDW56VrGPmvaUoJjdro9Qlmr3/e/kn+E/53ohEmiXxF06dlo5hKab1NbrU168igUP
-         8q6Q==
+        bh=af0/veNZR2GRMAsWeYJBmwt/TJhy86GjtwveRyzlLTw=;
+        b=BAPyGkWLiny55YOG7qPd2kRKBVtrydHPEutGDf04a/ZZ6tQssdNRIBrzpn9HvQLmzH
+         1tJl2PeTvuys0c5uy8p4cjBRpRG/38l41c5cE3HiWK6NHK1kiQH/CwYp1qrUlwL2ZKsp
+         WrZ8rs61zd2oCW75qf8qVpEkOCSxtL/gESQN+IglYK2V1ItHD7tuO5XHd6opHr4qQUdS
+         AfhW9t/5TxnxvV2wuZAqFtjVcA1Ccl0R4mrLhWjtQFNnW4zDiI7INnnnosyPNXu/5wZi
+         Gag4mn+N39dMz6z/nfx2meAlU/05fv5m89sO8uFiDvBmmpE0ncd4YdQ+zgzcmf+YYlgA
+         X8pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cciFYLyq7aMFAOob86mDspLiwDNUue0Eur+CQfHphBU=;
-        b=L/QCaAc+vnEb0y5MxyK4AFoq7BFtVlVJ1zoB8Fb3S4tFCEXj7ELDaaM6NIL6rgbfoW
-         qJlHiSl/QjFpctsloQqFfP8ZQaErdDj45idglqc+rrH69r1oF/jeGKXbQM2puGV5RRID
-         H6tGIH1ycBZPt+1SG+I4sbSk7Ms7Ke0Wero5j4TgmhWOqYkgh/CJNezfSKpJ5YAp8IUJ
-         HDLwF1rwUkmt3gO5MrXzAvVk2em7ltBI6ozqUI3O+ceZChL13y+RP1r4q5Z3qj/QOdDu
-         EOYmvRC04sPtF9nvwb5RdExKdhIzz6okYS3fzRC7Thpglm3C2MEE60PKII71eBYiGtLO
-         jipw==
-X-Gm-Message-State: AOAM530vfWk+Wchun47TqyMn54NxgNxJh8NuwSsulj0bZZOTFJ9D0vot
-        +tAZJryGEmsMDjLIzkCjKpG08bIPii4=
-X-Google-Smtp-Source: ABdhPJyQUtErlV9+diRnT6cREz3Ugbw0PEqcSVhRMmPVy6fgGF0ZkjLoz9pSz2LHuxRGKqEiKfvbrg==
-X-Received: by 2002:a5d:4583:: with SMTP id p3mr3732308wrq.398.1629378523711;
-        Thu, 19 Aug 2021 06:08:43 -0700 (PDT)
+        bh=af0/veNZR2GRMAsWeYJBmwt/TJhy86GjtwveRyzlLTw=;
+        b=Ux2V8VVZUs+IaSsVNGEgbj6JW/4cWqJIozKjgcwSubGcwwf5rN2hcV3J0AORidcFNf
+         59rWUV4Z3KLIG7ZzdQeFrpCRhfyDJvsn92i6W+iPki5YK3h6E3g5urP7qd0JtKaQ9XoG
+         mv6UPgW1ETYELggR6CM5+wvDSbrm9Cpi6jP+zginCiqTfx0noZftOnWkG6xW4FzBFarY
+         Ay/PVlOAiLoYhRjhRZ0Lsz1e9VJ4pFcCf8qk4hePqpnUKSMqz8g7o5gRdLuDOQYIQKEQ
+         4QiWpQzdq8FDaospBrLTZXq231k2Tsc5kUMxPnTRn6y5dygnqtL95neYJjdben6IHyzj
+         kt9w==
+X-Gm-Message-State: AOAM532ofoekv0R5Sg9nR9HqyOZt/oaOLAkS7tfzn2UqlCaRzTAS1Q9Q
+        0wJQd6BeEjjJb3tbrpeJFZObinse5P8=
+X-Google-Smtp-Source: ABdhPJxdzJ+qizHZ7yXwxX1HT5Y7iMZGTxREwuElqP+Qgcah3DFQ2XzthxotUOdO39IkI9WWLBC7bw==
+X-Received: by 2002:a1c:9dd0:: with SMTP id g199mr13966586wme.12.1629378525075;
+        Thu, 19 Aug 2021 06:08:45 -0700 (PDT)
 Received: from crow.eng.vmware.com ([146.247.46.133])
-        by smtp.gmail.com with ESMTPSA id f17sm2889978wrt.49.2021.08.19.06.08.42
+        by smtp.gmail.com with ESMTPSA id f17sm2889978wrt.49.2021.08.19.06.08.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 06:08:43 -0700 (PDT)
+        Thu, 19 Aug 2021 06:08:44 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 5/7] trace-cruncher: Refactor the way libtracefs instances are handled
-Date:   Thu, 19 Aug 2021 16:08:25 +0300
-Message-Id: <20210819130827.12327-6-y.karadz@gmail.com>
+Subject: [PATCH v2 7/7] trace-cruncher: Refactor the way kprobes are handled
+Date:   Thu, 19 Aug 2021 16:08:27 +0300
+Message-Id: <20210819130827.12327-8-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210819130827.12327-1-y.karadz@gmail.com>
 References: <20210819130827.12327-1-y.karadz@gmail.com>
@@ -73,1517 +73,733 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Currently all libtracefs instances created by trace-cruncher are
-wrapped by a dedicated C structure and stored in a binary search
-tree. The ordering in the tree is based on a string comparison. The
-tree is used for accessing the created instances and for cleanup
-when the module exits (garbage collection). In this refactoring we
-eliminate the need of the tree by switching to using the custom
-Python type for libtracefs instances. The new type is defined in
-the C extension of the module.
+Currently all kprobes, created by trace-cruncher, are stored in a
+binary search tree. The ordering in the tree is based on a string
+comparison. The tree is used for bookkeeping and to cleanup all
+created kprobes when the module exits (garbage collection). In
+this refactoring we eliminate the need of the tree by switching to
+using the custom Python type for kprobes. The new type is defined
+in the C extension of the module.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/ftracepy-utils.c                          | 412 +++++-------------
- src/ftracepy-utils.h                          |  10 -
- src/ftracepy.c                                |  20 -
- tests/1_unit/test_01_ftracepy_unit.py         | 245 +++++------
- .../test_01_ftracepy_integration.py           |  56 +--
- 5 files changed, 242 insertions(+), 501 deletions(-)
+ src/ftracepy-utils.c                  | 260 ++++++++++----------------
+ src/ftracepy-utils.h                  |  39 ++--
+ src/ftracepy.c                        |  69 +++----
+ tests/1_unit/test_01_ftracepy_unit.py |  53 ++----
+ tracecruncher/ft_utils.py             |  14 +-
+ 5 files changed, 165 insertions(+), 270 deletions(-)
 
 diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
-index a75f19b..5d7d9af 100644
+index b8bcb4c..581432d 100644
 --- a/src/ftracepy-utils.c
 +++ b/src/ftracepy-utils.c
-@@ -19,7 +19,6 @@
- // trace-cruncher
- #include "ftracepy-utils.h"
- 
--static void *instance_root;
- PyObject *TFS_ERROR;
- PyObject *TEP_ERROR;
- PyObject *TRACECRUNCHER_ERROR;
-@@ -419,118 +418,6 @@ static PyObject *tfs_list2py_list(char **list)
- 	return py_list;
+@@ -1349,16 +1349,6 @@ PyObject *PyFtrace_supported_options(PyObject *self, PyObject *args,
+ 	return get_option_list(instance, false);
  }
  
--struct instance_wrapper {
--	struct tracefs_instance *ptr;
--	const char *name;
--};
+-static void *kprobe_root = NULL;
 -
--const char *instance_wrapper_get_name(const struct instance_wrapper *iw)
+-static int kprobe_compare(const void *a, const void *b)
 -{
--	if (!iw->ptr)
--		return iw->name;
+-	const char *ca = (const char *) a;
+-	const char *cb = (const char *) b;
 -
--	return tracefs_instance_get_name(iw->ptr);
+-	return strcmp(ca, cb);
 -}
 -
--static int instance_compare(const void *a, const void *b)
+ #define TC_SYS	"tcrunch"
+ 
+ PyObject *PyFtrace_tc_event_system(PyObject *self)
+@@ -1372,6 +1362,43 @@ struct ftracepy_kprobe {
+ 	char *probe;
+ };
+ 
++static bool register_kprobe(const char *event,
++			    const char *function,
++			    const char *probe)
++{
++	if (tracefs_kprobe_raw(TC_SYS, event, function, probe) < 0) {
++		PyErr_Format(TFS_ERROR, "Failed to register kprobe \'%s\'.",
++			     event);
++		return false;
++	}
++
++	return true;
++}
++
++static bool register_kretprobe(const char *event,
++			       const char *function,
++			       const char *probe)
++{
++	if (tracefs_kretprobe_raw(TC_SYS, event, function, probe) < 0) {
++		PyErr_Format(TFS_ERROR, "Failed to register kretprobe \'%s\'.",
++			     event);
++		return false;
++	}
++
++	return true;
++}
++
++static bool unregister_kprobe(const char *event)
++{
++	if (tracefs_kprobe_clear_probe(TC_SYS, event, true) < 0) {
++		PyErr_Format(TFS_ERROR, "Failed to unregister kprobe \'%s\'.",
++			     event);
++		return false;
++	}
++
++	return true;
++}
++
+ PyObject *PyKprobe_event(PyKprobe *self)
+ {
+ 	return PyUnicode_FromString(self->ptrObj->event);
+@@ -1392,6 +1419,11 @@ PyObject *PyKprobe_probe(PyKprobe *self)
+ 	return PyUnicode_FromString(self->ptrObj->probe);
+ }
+ 
++void ftracepy_kprobe_destroy(struct ftracepy_kprobe *kp)
++{
++	unregister_kprobe(kp->event);
++}
++
+ void ftracepy_kprobe_free(struct ftracepy_kprobe *kp)
+ {
+ 	free(kp->event);
+@@ -1400,46 +1432,41 @@ void ftracepy_kprobe_free(struct ftracepy_kprobe *kp)
+ 	free(kp);
+ }
+ 
+-static int unregister_kprobe(const char *event)
 -{
--	const struct instance_wrapper *iwa, *iwb;
--
--	iwa = (const struct instance_wrapper *) a;
--	iwb = (const struct instance_wrapper *) b;
--
--	return strcmp(instance_wrapper_get_name(iwa),
--		      instance_wrapper_get_name(iwb));
+-	return tracefs_kprobe_clear_probe(TC_SYS, event, true);
 -}
 -
--void instance_wrapper_free(void *ptr)
+-void kprobe_free(void *kp)
++static struct ftracepy_kprobe *
++kprobe_new(const char *event, const char *function, const char *probe,
++	   bool retprobe)
+ {
+-	char *event = kp;
++	struct ftracepy_kprobe *new_kprobe;
+ 
+-	if (unregister_kprobe(event) < 0)
+-		fprintf(stderr, "\ntfs_error: Failed to unregister kprobe \'%s\'.\n",
+-		        event);
+-
+-	free(kp);
+-}
++	if (retprobe) {
++		if (!register_kretprobe(event, function, probe))
++			return NULL;
++	} else {
++		if (!register_kprobe(event, function, probe))
++			return NULL;
++	}
+ 
+-static void destroy_all_kprobes(void)
 -{
--	struct instance_wrapper *iw;
--	if (!ptr)
--		return;
--
--	iw = ptr;
--	if (iw->ptr) {
--		if (tracefs_instance_destroy(iw->ptr) < 0)
--			fprintf(stderr,
--				"\ntfs_error: Failed to destroy instance '%s'.\n",
--				get_instance_name(iw->ptr));
--
--		free(iw->ptr);
+-	tdestroy(kprobe_root, kprobe_free);
+-	kprobe_root = NULL;
+-}
++	new_kprobe = calloc(1, sizeof(*new_kprobe));
++	if (!new_kprobe) {
++		MEM_ERROR;
++		unregister_kprobe(event);
+ 
+-bool store_new_kprobe(const char *event)
+-{
+-	char *ptr = strdup(event);
+-	char **val;
++		return NULL;
++	}
+ 
+-	if (!ptr) {
++	new_kprobe->event = strdup(event);
++	new_kprobe->function = strdup(function);
++	new_kprobe->probe = strdup(probe);
++	if (!new_kprobe->event ||
++	    !new_kprobe->function ||
++	    !new_kprobe->probe) {
+ 		MEM_ERROR;
+-		return false;
+-	}
++		ftracepy_kprobe_free(new_kprobe);
+ 
+-	val = tsearch(ptr, &kprobe_root, kprobe_compare);
+-	if (!val || strcmp(*val, ptr) != 0) {
+-		PyErr_Format(TFS_ERROR, "Failed to store new kprobe \'%s\'.",
+-			     event);
+-		return false;
++		return NULL;
+ 	}
+ 
+-	return true;
++	return new_kprobe;
+ }
+ 
+ PyObject *PyFtrace_register_kprobe(PyObject *self, PyObject *args,
+@@ -1447,6 +1474,7 @@ PyObject *PyFtrace_register_kprobe(PyObject *self, PyObject *args,
+ {
+ 	static char *kwlist[] = {"event", "function", "probe", NULL};
+ 	const char *event, *function, *probe;
++	struct ftracepy_kprobe *kprobe;
+ 
+ 	if (!PyArg_ParseTupleAndKeywords(args,
+ 					 kwargs,
+@@ -1458,16 +1486,11 @@ PyObject *PyFtrace_register_kprobe(PyObject *self, PyObject *args,
+ 		return NULL;
+ 	}
+ 
+-	if (tracefs_kprobe_raw(TC_SYS, event, function, probe) < 0) {
+-		PyErr_Format(TFS_ERROR, "Failed to register kprobe \'%s\'.",
+-			     event);
+-		return NULL;
 -	}
 -
--	free(ptr);
--}
+-	if (!store_new_kprobe(event))
++	kprobe = kprobe_new(event, function, probe, false);
++	if (!kprobe)
+ 		return NULL;
+ 
+-	Py_RETURN_NONE;
++	return PyKprobe_New(kprobe);
+ }
+ 
+ PyObject *PyFtrace_register_kretprobe(PyObject *self, PyObject *args,
+@@ -1475,6 +1498,7 @@ PyObject *PyFtrace_register_kretprobe(PyObject *self, PyObject *args,
+ {
+ 	static char *kwlist[] = {"event", "function", "probe", NULL};
+ 	const char *event, *function, *probe = "$retval";
++	struct ftracepy_kprobe *kprobe;
+ 
+ 	if (!PyArg_ParseTupleAndKeywords(args,
+ 					 kwargs,
+@@ -1486,102 +1510,26 @@ PyObject *PyFtrace_register_kretprobe(PyObject *self, PyObject *args,
+ 		return NULL;
+ 	}
+ 
+-	if (tracefs_kretprobe_raw(TC_SYS, event, function, probe) < 0) {
+-		PyErr_Format(TFS_ERROR, "Failed to register kretprobe \'%s\'.",
+-			     event);
++	kprobe = kprobe_new(event, function, probe, true);
++	if (!kprobe)
+ 		return NULL;
+-	}
 -
--static void destroy_all_instances(void)
--{
--	tdestroy(instance_root, instance_wrapper_free);
--	instance_root = NULL;
--}
--
--static struct tracefs_instance *find_instance(const char *name)
--{
--	struct instance_wrapper iw, **iw_ptr;
--	if (!is_set(name))
+-	if (!store_new_kprobe(event))
 -		return NULL;
 -
--	if (!tracefs_instance_exists(name)) {
--		PyErr_Format(TFS_ERROR, "Trace instance \'%s\' does not exist.",
--			     name);
+-	Py_RETURN_NONE;
+-}
+-
+-PyObject *PyFtrace_unregister_kprobe(PyObject *self, PyObject *args,
+-						     PyObject *kwargs)
+-{
+-	static char *kwlist[] = {"event", "force",  NULL};
+-	const char *event;
+-	int force = false;
+-
+-	if (!PyArg_ParseTupleAndKeywords(args,
+-					 kwargs,
+-					 "s|p",
+-					 kwlist,
+-					 &event,
+-					 &force)) {
 -		return NULL;
 -	}
 -
--	iw.ptr = NULL;
--	iw.name = name;
--	iw_ptr = tfind(&iw, &instance_root, instance_compare);
--	if (!iw_ptr || !(*iw_ptr) || !(*iw_ptr)->ptr ||
--	    strcmp(tracefs_instance_get_name((*iw_ptr)->ptr), name) != 0) {
--		PyErr_Format(TFS_ERROR, "Unable to find trace instances \'%s\'.",
--			     name);
--		return NULL;
--	}
--
--	return (*iw_ptr)->ptr;
--}
--
--bool get_optional_instance(const char *instance_name,
--			   struct tracefs_instance **instance)
--{
--	*instance = NULL;
--	if (is_set(instance_name)) {
--		*instance = find_instance(instance_name);
--		if (!instance) {
--			PyErr_Format(TFS_ERROR,
--				     "Failed to find instance \'%s\'.",
--				     instance_name);
--			return false;
+-	if (is_all(event)) {
+-		if (force) {
+-			/* Clear all register kprobes. */
+-			if (tracefs_kprobe_clear_all(force) < 0)
+-				goto fail;
+-		} else {
+-			/*
+-			 * Clear only the kprobes registered by
+-			 * trace-cruncher.
+-			 */
+-			destroy_all_kprobes();
 -		}
+-	} else {
+-		tdelete(event, &kprobe_root, kprobe_compare);
+-		if (unregister_kprobe(event) < 0)
+-			goto fail;
 -	}
 -
--	return true;
--}
--
--bool get_instance_from_arg(PyObject *args, PyObject *kwargs,
--			   struct tracefs_instance **instance)
--{
--	const char *instance_name;
--
--	static char *kwlist[] = {"instance", NULL};
--	instance_name = NO_ARG;
--	if (!PyArg_ParseTupleAndKeywords(args,
--					 kwargs,
--					 "|s",
--					 kwlist,
--					 &instance_name)) {
--		return false;
--	}
--
--	if (!get_optional_instance(instance_name, instance))
--		return false;
--
--	return true;
--}
--
- PyObject *PyTfsInstance_dir(PyTfsInstance *self)
- {
- 	return PyUnicode_FromString(tracefs_instance_get_dir(self->ptrObj));
-@@ -590,7 +477,6 @@ static bool tracing_OFF(struct tracefs_instance *instance);
- PyObject *PyFtrace_create_instance(PyObject *self, PyObject *args,
- 						   PyObject *kwargs)
- {
--	struct instance_wrapper *iw, **iw_ptr;
- 	struct tracefs_instance *instance;
- 	const char *name = NO_ARG;
- 	int tracing_on = true;
-@@ -618,115 +504,53 @@ PyObject *PyFtrace_create_instance(PyObject *self, PyObject *args,
- 		return NULL;
- 	}
- 
--	iw = calloc(1, sizeof(*iw));
--	if (!iw) {
--		MEM_ERROR
--		return NULL;
--	}
--
--	iw->ptr = instance;
--	iw_ptr = tsearch(iw, &instance_root, instance_compare);
--	if (!iw_ptr || !(*iw_ptr) || !(*iw_ptr)->ptr ||
--	    strcmp(tracefs_instance_get_name((*iw_ptr)->ptr), name) != 0) {
--		PyErr_Format(TFS_ERROR,
--			     "Failed to store new trace instance \'%s\'.",
--			     name);
--		tracefs_instance_destroy(instance);
--		tracefs_instance_free(instance);
--		free(iw);
--
--		return NULL;
--	}
--
- 	if (!tracing_on)
- 		tracing_OFF(instance);
- 
--	return PyUnicode_FromString(name);
-+	return PyTfsInstance_New(instance);
- }
- 
--PyObject *PyFtrace_destroy_instance(PyObject *self, PyObject *args,
--						    PyObject *kwargs)
-+static bool get_optional_instance(PyObject *py_obj,
-+				  struct tracefs_instance **instance)
- {
--	struct tracefs_instance *instance;
--	struct instance_wrapper iw;
--	char *name;
-+	PyTfsInstance *py_inst;
- 
--	static char *kwlist[] = {"name", NULL};
--	if (!PyArg_ParseTupleAndKeywords(args,
--					 kwargs,
--					 "s",
--					 kwlist,
--					 &name)) {
--		return NULL;
--	}
--
--	if (is_all(name)) {
--		destroy_all_instances();
--		Py_RETURN_NONE;
-+	if (!py_obj) {
-+		*instance = NULL;
-+		return true;
- 	}
- 
--	instance = find_instance(name);
--	if (!instance) {
--		PyErr_Format(TFS_ERROR,
--			     "Unable to destroy trace instances \'%s\'.",
--			     name);
--		return NULL;
-+	if (!PyTfsInstance_Check(py_obj)) {
-+		PyErr_SetString(TRACECRUNCHER_ERROR,
-+				"Passing argument \'instance\' with incompatible type.");
-+		return false;
- 	}
- 
--	iw.ptr = NULL;
--	iw.name = name;
--	tdelete(&iw, &instance_root, instance_compare);
--
--	tracefs_instance_destroy(instance);
--	tracefs_instance_free(instance);
-+	py_inst = (PyTfsInstance *)py_obj;
-+	*instance = py_inst->ptrObj;
- 
 -	Py_RETURN_NONE;
-+	return true;
+ 
+- fail:
+-	PyErr_Format(TFS_ERROR, "Failed to unregister kprobe \'%s\'.", event);
+-	return NULL;
+-}
+-
+-PyObject *PyFtrace_registered_kprobe_names(PyObject *self)
+-{
+-	char **list = tracefs_get_kprobes(TRACEFS_ALL_KPROBES);
+-	return tfs_list2py_list(list);
++	return PyKprobe_New(kprobe);
  }
  
--PyObject *instance_list;
+-PyObject *PyFtrace_registered_kprobes(PyObject *self)
+-{
+-	const char *file = "kprobe_events";
+-	PyObject *list = PyList_New(0);
+-	char *probes, *token;
+-	int size;
 -
--static void instance_action(const void *nodep, VISIT which, int depth)
-+bool get_instance_from_arg(PyObject *args, PyObject *kwargs,
-+			   struct tracefs_instance **instance)
+-	size = read_from_file(NULL, file, &probes);
+-	if (size < 0)
+-		return NULL;
+-
+-	if (size == 0 || !probes)
+-		return list;
+-
+-	token = strtok(probes, "\n");
+-	while (token != NULL) {
+-		PyList_Append(list, PyUnicode_FromString(token));
+-		token = strtok(NULL, "\n");
+-	}
+-
+-	return list;
+-}
+-
+-PyObject *PyFtrace_set_kprobe_filter(PyObject *self, PyObject *args,
+-						     PyObject *kwargs)
++PyObject *PyKprobe_set_filter(PyKprobe *self, PyObject *args,
++					      PyObject *kwargs)
  {
--	struct instance_wrapper *iw = *( struct instance_wrapper **) nodep;
--	const char *name;
--
--	switch(which) {
--	case preorder:
--	case endorder:
--		break;
+ 	struct tracefs_instance *instance;
+ 	PyObject *py_inst = NULL;
+-	const char *event, *filter;
++	const char *filter;
+ 	char path[PATH_MAX];
+ 
+-	static char *kwlist[] = {"event", "filter", "instance", NULL};
++	static char *kwlist[] = {"filter", "instance", NULL};
+ 	if (!PyArg_ParseTupleAndKeywords(args,
+ 					 kwargs,
+-					 "ss|O",
++					 "s|O",
+ 					 kwlist,
+-					 &event,
+ 					 &filter,
+ 					 &py_inst)) {
+ 		return NULL;
+@@ -1590,7 +1538,7 @@ PyObject *PyFtrace_set_kprobe_filter(PyObject *self, PyObject *args,
+ 	if (!get_optional_instance(py_inst, &instance))
+ 		return NULL;
+ 
+-	sprintf(path, "events/%s/%s/filter", TC_SYS, event);
++	sprintf(path, "events/%s/%s/filter", TC_SYS, self->ptrObj->event);
+ 	if (!write_to_file_and_check(instance, path, filter)) {
+ 		PyErr_SetString(TFS_ERROR, "Failed to set kprobe filter.");
+ 		return NULL;
+@@ -1599,20 +1547,18 @@ PyObject *PyFtrace_set_kprobe_filter(PyObject *self, PyObject *args,
+ 	Py_RETURN_NONE;
+ }
+ 
+-PyObject *PyFtrace_clear_kprobe_filter(PyObject *self, PyObject *args,
+-						       PyObject *kwargs)
++PyObject *PyKprobe_clear_filter(PyKprobe *self, PyObject *args,
++						PyObject *kwargs)
+ {
+ 	struct tracefs_instance *instance;
+ 	PyObject *py_inst = NULL;
+ 	char path[PATH_MAX];
+-	const char *event;
+ 
+-	static char *kwlist[] = {"event", "instance", NULL};
 +	static char *kwlist[] = {"instance", NULL};
-+	PyObject *py_inst = NULL;
-+	*instance = NULL;
- 
--	case postorder:
--	case leaf:
--		name = tracefs_instance_get_name(iw->ptr);
--		PyList_Append(instance_list, PyUnicode_FromString(name));
--		break;
-+	if (!PyArg_ParseTupleAndKeywords(args,
-+					 kwargs,
+ 	if (!PyArg_ParseTupleAndKeywords(args,
+ 					 kwargs,
+-					 "s|O",
 +					 "|O",
-+					 kwlist,
-+					 &py_inst)) {
-+		return false;
+ 					 kwlist,
+-					 &event,
+ 					 &py_inst)) {
+ 		return NULL;
  	}
--}
--
--PyObject *PyFtrace_get_all_instances(PyObject *self)
--{
--	instance_list = PyList_New(0);
--	twalk(instance_root, instance_action);
--
--	return instance_list;
--}
--
--PyObject *PyFtrace_destroy_all_instances(PyObject *self)
--{
--	destroy_all_instances();
--
--	Py_RETURN_NONE;
--}
--
--PyObject *PyFtrace_instance_dir(PyObject *self, PyObject *args,
--						PyObject *kwargs)
--{
--	struct tracefs_instance *instance;
- 
--	if (!get_instance_from_arg(args, kwargs, &instance))
-+	if (!get_optional_instance(py_inst, instance))
+@@ -1620,7 +1566,7 @@ PyObject *PyFtrace_clear_kprobe_filter(PyObject *self, PyObject *args,
+ 	if (!get_optional_instance(py_inst, &instance))
  		return NULL;
  
--	return PyUnicode_FromString(tracefs_instance_get_dir(instance));
-+	return true;
+-	sprintf(path, "events/%s/%s/filter", TC_SYS, event);
++	sprintf(path, "events/%s/%s/filter", TC_SYS, self->ptrObj->event);
+ 	if (!write_to_file(instance, path, OFF)) {
+ 		PyErr_SetString(TFS_ERROR, "Failed to clear kprobe filter.");
+ 		return NULL;
+@@ -1629,19 +1575,17 @@ PyObject *PyFtrace_clear_kprobe_filter(PyObject *self, PyObject *args,
+ 	Py_RETURN_NONE;
  }
  
- PyObject *PyFtrace_available_tracers(PyObject *self, PyObject *args,
-@@ -748,21 +572,22 @@ PyObject *PyFtrace_available_tracers(PyObject *self, PyObject *args,
- PyObject *PyFtrace_set_current_tracer(PyObject *self, PyObject *args,
- 						      PyObject *kwargs)
+-static bool enable_kprobe(PyObject *self, PyObject *args, PyObject *kwargs,
++static bool enable_kprobe(PyKprobe *self, PyObject *args, PyObject *kwargs,
+ 			  bool enable)
  {
--	const char *file = "current_tracer", *tracer, *instance_name;
-+	static char *kwlist[] = {"tracer", "instance", NULL};
-+	const char *file = "current_tracer", *tracer;
+-	static char *kwlist[] = {"event", "instance", NULL};
++	static char *kwlist[] = {"instance", NULL};
  	struct tracefs_instance *instance;
-+	PyObject *py_inst = NULL;
- 
--	static char *kwlist[] = {"tracer", "instance", NULL};
--	tracer = instance_name = NO_ARG;
-+	tracer = NO_ARG;
- 	if (!PyArg_ParseTupleAndKeywords(args,
- 					 kwargs,
--					 "|ss",
-+					 "|sO",
- 					 kwlist,
- 					 &tracer,
--					 &instance_name)) {
-+					 &py_inst)) {
- 		return NULL;
- 	}
- 
--	if (!get_optional_instance(instance_name, &instance))
-+	if (!get_optional_instance(py_inst, &instance))
- 		return NULL;
- 
- 	if (is_set(tracer) &&
-@@ -836,20 +661,21 @@ PyObject *PyFtrace_available_system_events(PyObject *self, PyObject *args,
- 							   PyObject *kwargs)
- {
- 	static char *kwlist[] = {"system", "instance", NULL};
--	const char *instance_name = NO_ARG, *system;
- 	struct tracefs_instance *instance;
-+	PyObject *py_inst = NULL;
-+	const char *system;
- 	char **list;
+ 	PyObject *py_inst = NULL;
+-	const char *event = NO_ARG;
  
  	if (!PyArg_ParseTupleAndKeywords(args,
  					 kwargs,
--					 "s|s",
-+					 "s|O",
+-					 "s|O",
++					 "|O",
  					 kwlist,
- 					 &system,
--					 &instance_name)) {
-+					 &py_inst)) {
- 		return NULL;
- 	}
- 
--	if (!get_optional_instance(instance_name, &instance))
-+	if (!get_optional_instance(py_inst, &instance))
- 		return NULL;
- 
- 	list = tracefs_system_events(tracefs_instance_get_dir(instance),
-@@ -947,21 +773,22 @@ static bool set_enable_event(PyObject *self,
- 			     bool enable)
- {
- 	static char *kwlist[] = {"instance", "system", "event", NULL};
--	const char *instance_name, *system, *event;
- 	struct tracefs_instance *instance;
-+	PyObject *py_inst = NULL;
-+	const char *system, *event;
- 
--	instance_name = system = event = NO_ARG;
-+	system = event = NO_ARG;
- 	if (!PyArg_ParseTupleAndKeywords(args,
- 					 kwargs,
--					 "|sss",
-+					 "|Oss",
- 					 kwlist,
--					 &instance_name,
-+					 &py_inst,
- 					 &system,
- 					 &event)) {
+-					 &event,
+ 					 &py_inst)) {
  		return false;
  	}
- 
--	if (!get_optional_instance(instance_name, &instance))
-+	if (!get_optional_instance(py_inst, &instance))
+@@ -1649,11 +1593,12 @@ static bool enable_kprobe(PyObject *self, PyObject *args, PyObject *kwargs,
+ 	if (!get_optional_instance(py_inst, &instance))
  		return false;
  
- 	return event_enable_disable(instance, system, event, enable);
-@@ -995,22 +822,21 @@ static bool set_enable_events(PyObject *self, PyObject *args, PyObject *kwargs,
- 	PyObject *system_list = NULL, *event_list = NULL, *system_event_list;
- 	const char **systems = NULL, **events = NULL;
- 	struct tracefs_instance *instance;
--	const char *instance_name;
-+	PyObject *py_inst = NULL;
- 	char *file = NULL;
- 	int ret, s, e;
+-	return event_enable_disable(instance, TC_SYS, event, enable);
++	return event_enable_disable(instance, TC_SYS, self->ptrObj->event,
++				    enable);
+ }
  
--	instance_name = NO_ARG;
- 	if (!PyArg_ParseTupleAndKeywords(args,
- 					 kwargs,
--					 "|sOO",
-+					 "|OOO",
- 					 kwlist,
--					 &instance_name,
-+					 &py_inst,
- 					 &system_list,
- 					 &event_list)) {
- 		return false;
- 	}
- 
--	if (!get_optional_instance(instance_name, &instance))
-+	if (!get_optional_instance(py_inst, &instance))
- 		return false;
- 
- 	if (!system_list && !event_list)
-@@ -1122,21 +948,22 @@ PyObject *PyFtrace_event_is_enabled(PyObject *self, PyObject *args,
- 						    PyObject *kwargs)
+-PyObject *PyFtrace_enable_kprobe(PyObject *self, PyObject *args,
+-						 PyObject *kwargs)
++PyObject *PyKprobe_enable(PyKprobe *self, PyObject *args,
++					  PyObject *kwargs)
  {
- 	static char *kwlist[] = {"instance", "system", "event", NULL};
--	const char *instance_name, *system, *event;
- 	struct tracefs_instance *instance;
-+	PyObject *py_inst = NULL;
-+	const char *system, *event;
+ 	if (!enable_kprobe(self, args, kwargs, true))
+ 		return NULL;
+@@ -1661,8 +1606,8 @@ PyObject *PyFtrace_enable_kprobe(PyObject *self, PyObject *args,
+ 	Py_RETURN_NONE;
+ }
  
--	instance_name = system = event = NO_ARG;
-+	system = event = NO_ARG;
- 	if (!PyArg_ParseTupleAndKeywords(args,
- 					 kwargs,
--					 "|sss",
-+					 "|Oss",
- 					 kwlist,
--					 &instance_name,
-+					 &py_inst,
- 					 &system,
- 					 &event)) {
- 		return false;
- 	}
- 
--	if (!get_optional_instance(instance_name, &instance))
-+	if (!get_optional_instance(py_inst, &instance))
- 		return false;
- 
- 	return event_is_enabled(instance, system, event);
-@@ -1145,23 +972,24 @@ PyObject *PyFtrace_event_is_enabled(PyObject *self, PyObject *args,
- PyObject *PyFtrace_set_event_filter(PyObject *self, PyObject *args,
- 						    PyObject *kwargs)
+-PyObject *PyFtrace_disable_kprobe(PyObject *self, PyObject *args,
+-						  PyObject *kwargs)
++PyObject *PyKprobe_disable(PyKprobe *self, PyObject *args,
++					   PyObject *kwargs)
  {
--	const char *instance_name = NO_ARG, *system, *event, *filter;
-+	const char *system, *event, *filter;
- 	struct tracefs_instance *instance;
-+	PyObject *py_inst = NULL;
- 	char path[PATH_MAX];
- 
- 	static char *kwlist[] = {"system", "event", "filter", "instance", NULL};
- 	if (!PyArg_ParseTupleAndKeywords(args,
- 					 kwargs,
--					 "sss|s",
-+					 "ssO|)",
- 					 kwlist,
- 					 &system,
- 					 &event,
- 					 &filter,
--					 &instance_name)) {
-+					 &py_inst)) {
+ 	if (!enable_kprobe(self, args, kwargs, false))
  		return NULL;
- 	}
+@@ -1670,19 +1615,17 @@ PyObject *PyFtrace_disable_kprobe(PyObject *self, PyObject *args,
+ 	Py_RETURN_NONE;
+ }
  
--	if (!get_optional_instance(instance_name, &instance))
-+	if (!get_optional_instance(py_inst, &instance))
- 		return NULL;
- 
- 	sprintf(path, "events/%s/%s/filter", system, event);
-@@ -1176,22 +1004,23 @@ PyObject *PyFtrace_set_event_filter(PyObject *self, PyObject *args,
- PyObject *PyFtrace_clear_event_filter(PyObject *self, PyObject *args,
- 						      PyObject *kwargs)
+-PyObject *PyFtrace_kprobe_is_enabled(PyObject *self, PyObject *args,
+-						     PyObject *kwargs)
++PyObject *PyKprobe_is_enabled(PyKprobe *self, PyObject *args,
++					      PyObject *kwargs)
  {
--	const char *instance_name = NO_ARG, *system, *event;
+-	static char *kwlist[] = {"event", "instance", NULL};
++	static char *kwlist[] = {"instance", NULL};
  	struct tracefs_instance *instance;
-+	PyObject *py_inst = NULL;
-+	const char *system, *event;
- 	char path[PATH_MAX];
- 
- 	static char *kwlist[] = {"system", "event", "instance", NULL};
- 	if (!PyArg_ParseTupleAndKeywords(args,
- 					 kwargs,
--					 "ss|s",
-+					 "ss|O",
- 					 kwlist,
- 					 &system,
- 					 &event,
--					 &instance_name)) {
-+					 &py_inst)) {
- 		return NULL;
- 	}
- 
--	if (!get_optional_instance(instance_name, &instance))
-+	if (!get_optional_instance(py_inst, &instance))
- 		return NULL;
- 
- 	sprintf(path, "events/%s/%s/filter", system, event);
-@@ -1350,21 +1179,21 @@ static bool set_pid(struct tracefs_instance *instance,
- PyObject *PyFtrace_set_event_pid(PyObject *self, PyObject *args,
- 						 PyObject *kwargs)
- {
--	const char *instance_name = NO_ARG;
- 	struct tracefs_instance *instance;
-+	PyObject *py_inst = NULL;
- 	PyObject *pid_val;
- 
- 	static char *kwlist[] = {"pid", "instance", NULL};
- 	if (!PyArg_ParseTupleAndKeywords(args,
- 					 kwargs,
--					 "O|s",
-+					 "O|O",
- 					 kwlist,
- 					 &pid_val,
--					 &instance_name)) {
-+					 &py_inst)) {
- 		return NULL;
- 	}
- 
--	if (!get_optional_instance(instance_name, &instance))
-+	if (!get_optional_instance(py_inst, &instance))
- 		return NULL;
- 
- 	if (!set_pid(instance, "set_event_pid", pid_val))
-@@ -1376,21 +1205,21 @@ PyObject *PyFtrace_set_event_pid(PyObject *self, PyObject *args,
- PyObject *PyFtrace_set_ftrace_pid(PyObject *self, PyObject *args,
- 						  PyObject *kwargs)
- {
--	const char *instance_name = NO_ARG;
- 	struct tracefs_instance *instance;
-+	PyObject *py_inst = NULL;
- 	PyObject *pid_val;
- 
- 	static char *kwlist[] = {"pid", "instance", NULL};
- 	if (!PyArg_ParseTupleAndKeywords(args,
- 					 kwargs,
--					 "O|s",
-+					 "O|O",
- 					 kwlist,
- 					 &pid_val,
--					 &instance_name)) {
-+					 &py_inst)) {
- 		return NULL;
- 	}
- 
--	if (!get_optional_instance(instance_name, &instance))
-+	if (!get_optional_instance(py_inst, &instance))
- 		return NULL;
- 
- 	if (!set_pid(instance, "set_ftrace_pid", pid_val))
-@@ -1416,20 +1245,21 @@ static bool set_opt(struct tracefs_instance *instance,
- static PyObject *set_option_py_args(PyObject *args, PyObject *kwargs,
- 				   const char *val)
- {
--	const char *instance_name = NO_ARG, *opt;
- 	struct tracefs_instance *instance;
-+	PyObject *py_inst = NULL;
-+	const char *opt;
- 
- 	static char *kwlist[] = {"option", "instance", NULL};
- 	if (!PyArg_ParseTupleAndKeywords(args,
- 					 kwargs,
--					 "s|s",
-+					 "s|O",
- 					 kwlist,
- 					 &opt,
--					 &instance_name)) {
-+					 &py_inst)) {
- 		return NULL;
- 	}
- 
--	if (!get_optional_instance(instance_name, &instance))
-+	if (!get_optional_instance(py_inst, &instance))
- 		return NULL;
- 
- 	if (!set_opt(instance, opt, val))
-@@ -1453,21 +1283,22 @@ PyObject *PyFtrace_disable_option(PyObject *self, PyObject *args,
- PyObject *PyFtrace_option_is_set(PyObject *self, PyObject *args,
- 						 PyObject *kwargs)
- {
--	const char *instance_name = NO_ARG, *opt;
- 	struct tracefs_instance *instance;
-+	PyObject *py_inst = NULL;
- 	enum tracefs_option_id opt_id;
-+	const char *opt;
- 
- 	static char *kwlist[] = {"option", "instance", NULL};
- 	if (!PyArg_ParseTupleAndKeywords(args,
- 					 kwargs,
--					 "s|s",
-+					 "s|O",
- 					 kwlist,
- 					 &opt,
--					 &instance_name)) {
-+					 &py_inst)) {
- 		return NULL;
- 	}
- 
--	if (!get_optional_instance(instance_name, &instance))
-+	if (!get_optional_instance(py_inst, &instance))
- 		return NULL;
- 
- 	opt_id = tracefs_option_id(opt);
-@@ -1706,22 +1537,23 @@ PyObject *PyFtrace_registered_kprobes(PyObject *self)
- PyObject *PyFtrace_set_kprobe_filter(PyObject *self, PyObject *args,
- 						     PyObject *kwargs)
- {
--	const char *instance_name = NO_ARG, *event, *filter;
- 	struct tracefs_instance *instance;
-+	PyObject *py_inst = NULL;
-+	const char *event, *filter;
- 	char path[PATH_MAX];
- 
- 	static char *kwlist[] = {"event", "filter", "instance", NULL};
- 	if (!PyArg_ParseTupleAndKeywords(args,
- 					 kwargs,
--					 "ss|s",
-+					 "ss|O",
- 					 kwlist,
- 					 &event,
- 					 &filter,
--					 &instance_name)) {
-+					 &py_inst)) {
- 		return NULL;
- 	}
- 
--	if (!get_optional_instance(instance_name, &instance))
-+	if (!get_optional_instance(py_inst, &instance))
- 		return NULL;
- 
- 	sprintf(path, "events/%s/%s/filter", TC_SYS, event);
-@@ -1736,21 +1568,22 @@ PyObject *PyFtrace_set_kprobe_filter(PyObject *self, PyObject *args,
- PyObject *PyFtrace_clear_kprobe_filter(PyObject *self, PyObject *args,
- 						       PyObject *kwargs)
- {
--	const char *instance_name = NO_ARG, *event;
- 	struct tracefs_instance *instance;
-+	PyObject *py_inst = NULL;
- 	char path[PATH_MAX];
-+	const char *event;
- 
- 	static char *kwlist[] = {"event", "instance", NULL};
- 	if (!PyArg_ParseTupleAndKeywords(args,
- 					 kwargs,
--					 "s|s",
-+					 "s|O",
- 					 kwlist,
- 					 &event,
--					 &instance_name)) {
-+					 &py_inst)) {
- 		return NULL;
- 	}
- 
--	if (!get_optional_instance(instance_name, &instance))
-+	if (!get_optional_instance(py_inst, &instance))
- 		return NULL;
- 
- 	sprintf(path, "events/%s/%s/filter", TC_SYS, event);
-@@ -1767,19 +1600,19 @@ static bool enable_kprobe(PyObject *self, PyObject *args, PyObject *kwargs,
- {
- 	static char *kwlist[] = {"event", "instance", NULL};
- 	struct tracefs_instance *instance;
--	const char *instance_name, *event;
-+	PyObject *py_inst = NULL;
-+	const char *event = NO_ARG;
- 
--	instance_name = event = NO_ARG;
- 	if (!PyArg_ParseTupleAndKeywords(args,
- 					 kwargs,
--					 "s|s",
-+					 "s|O",
- 					 kwlist,
- 					 &event,
--					 &instance_name)) {
-+					 &py_inst)) {
- 		return false;
- 	}
- 
--	if (!get_optional_instance(instance_name, &instance))
-+	if (!get_optional_instance(py_inst, &instance))
- 		return false;
- 
- 	return event_enable_disable(instance, TC_SYS, event, enable);
-@@ -1808,19 +1641,19 @@ PyObject *PyFtrace_kprobe_is_enabled(PyObject *self, PyObject *args,
- {
- 	static char *kwlist[] = {"event", "instance", NULL};
- 	struct tracefs_instance *instance;
--	const char *instance_name, *event;
-+	PyObject *py_inst = NULL;
-+	const char *event = NO_ARG;
- 
--	instance_name = event = NO_ARG;
- 	if (!PyArg_ParseTupleAndKeywords(args,
- 					 kwargs,
--					 "s|s",
-+					 "s|O",
- 					 kwlist,
- 					 &event,
--					 &instance_name)) {
-+					 &py_inst)) {
- 		return NULL;
- 	}
- 
--	if (!get_optional_instance(instance_name, &instance))
-+	if (!get_optional_instance(py_inst, &instance))
- 		return NULL;
- 
- 	return event_is_enabled(instance, TC_SYS, event);
-@@ -2023,27 +1856,27 @@ static bool init_callback_tep(struct tracefs_instance *instance,
- PyObject *PyFtrace_trace_shell_process(PyObject *self, PyObject *args,
- 						       PyObject *kwargs)
- {
--	const char *plugin = "__main__", *py_callback = "callback", *instance_name;
-+	const char *plugin = "__main__", *py_callback = "callback";
- 	static char *kwlist[] = {"process", "plugin", "callback", "instance", NULL};
- 	struct tracefs_instance *instance;
-+	PyObject *py_inst = NULL;
- 	struct tep_handle *tep;
- 	PyObject *py_func;
- 	char *process;
- 	pid_t pid;
- 
--	instance_name = NO_ARG;
- 	if (!PyArg_ParseTupleAndKeywords(args,
- 					 kwargs,
--					 "s|sss",
-+					 "s|ssO",
- 					 kwlist,
- 					 &process,
- 					 &plugin,
- 					 &py_callback,
--					 &instance_name)) {
-+					 &py_inst)) {
- 		return NULL;
- 	}
- 
--	if (!get_optional_instance(instance_name, &instance))
-+	if (!get_optional_instance(py_inst, &instance))
- 		return NULL;
- 
- 	if (!init_callback_tep(instance, plugin, py_callback, &tep, &py_func))
-@@ -2070,27 +1903,27 @@ PyObject *PyFtrace_trace_shell_process(PyObject *self, PyObject *args,
- PyObject *PyFtrace_trace_process(PyObject *self, PyObject *args,
- 						 PyObject *kwargs)
- {
--	const char *plugin = "__main__", *py_callback = "callback", *instance_name;
-+	const char *plugin = "__main__", *py_callback = "callback";
- 	static char *kwlist[] = {"argv", "plugin", "callback", "instance", NULL};
- 	struct tracefs_instance *instance;
-+	PyObject *py_inst = NULL;
- 	struct tep_handle *tep;
- 	PyObject *py_func, *py_argv, *py_arg;
- 	pid_t pid;
- 	int i, argc;
- 
--	instance_name = NO_ARG;
- 	if (!PyArg_ParseTupleAndKeywords(args,
- 					 kwargs,
--					 "O|sss",
-+					 "O|ssO",
- 					 kwlist,
- 					 &py_argv,
- 					 &plugin,
- 					 &py_callback,
--					 &instance_name)) {
-+					 &py_inst)) {
- 		return NULL;
- 	}
- 
--	if (!get_optional_instance(instance_name, &instance))
-+	if (!get_optional_instance(py_inst, &instance))
- 		return NULL;
- 
- 	if (!init_callback_tep(instance, plugin, py_callback, &tep, &py_func))
-@@ -2173,8 +2006,7 @@ PyObject *PyFtrace_iterate_trace(PyObject *self, PyObject *args,
- 	const char *plugin = "__main__", *py_callback = "callback";
- 	bool *callback_status = &callback_ctx.status;
- 	bool *keep_going = &iterate_keep_going;
--
--	const char *instance_name;
-+	PyObject *py_inst = NULL;
- 	struct tep_handle *tep;
- 	PyObject *py_func;
- 	int ret;
-@@ -2182,20 +2014,19 @@ PyObject *PyFtrace_iterate_trace(PyObject *self, PyObject *args,
- 	(*(volatile bool *)keep_going) = true;
- 	signal(SIGINT, iterate_stop);
- 
--	instance_name = NO_ARG;
- 	if (!PyArg_ParseTupleAndKeywords(args,
- 					 kwargs,
--					 "|sss",
-+					 "|ssO",
- 					 kwlist,
- 					 &plugin,
- 					 &py_callback,
--					 &instance_name)) {
-+					 &py_inst)) {
- 		return NULL;
- 	}
- 
- 	py_func = get_callback_func(plugin, py_callback);
- 	if (!py_func ||
--	    !get_optional_instance(instance_name, &itr_instance) ||
-+	    !get_optional_instance(py_inst, &itr_instance) ||
- 	    !notrace_this_pid(itr_instance))
- 		return NULL;
- 
-@@ -2219,22 +2050,22 @@ PyObject *PyFtrace_iterate_trace(PyObject *self, PyObject *args,
- PyObject *PyFtrace_hook2pid(PyObject *self, PyObject *args, PyObject *kwargs)
- {
- 	static char *kwlist[] = {"pid", "fork", "instance", NULL};
--	const char *instance_name = NO_ARG;
- 	struct tracefs_instance *instance;
-+	PyObject *py_inst = NULL;
- 	PyObject *pid_val;
- 	int fork = -1;
+ 	PyObject *py_inst = NULL;
+-	const char *event = NO_ARG;
  
  	if (!PyArg_ParseTupleAndKeywords(args,
  					 kwargs,
--					 "O|ps",
-+					 "O|pO",
+-					 "s|O",
++					 "|O",
  					 kwlist,
- 					 &pid_val,
- 					 &fork,
--					 &instance_name)) {
-+					 &py_inst)) {
+-					 &event,
+ 					 &py_inst)) {
  		return NULL;
  	}
- 
--	if (!get_optional_instance(instance_name, &instance))
-+	if (!get_optional_instance(py_inst, &instance))
+@@ -1690,7 +1633,7 @@ PyObject *PyFtrace_kprobe_is_enabled(PyObject *self, PyObject *args,
+ 	if (!get_optional_instance(py_inst, &instance))
  		return NULL;
  
- 	if (!hook2pid(instance, pid_val, fork))
-@@ -2246,5 +2077,4 @@ PyObject *PyFtrace_hook2pid(PyObject *self, PyObject *args, PyObject *kwargs)
+-	return event_is_enabled(instance, TC_SYS, event);
++	return event_is_enabled(instance, TC_SYS, self->ptrObj->event);
+ }
+ 
+ PyObject *PyFtrace_set_ftrace_loglevel(PyObject *self, PyObject *args,
+@@ -2110,5 +2053,4 @@ PyObject *PyFtrace_hook2pid(PyObject *self, PyObject *args, PyObject *kwargs)
+ 
  void PyFtrace_at_exit(void)
  {
- 	destroy_all_kprobes();
--	destroy_all_instances();
+-	destroy_all_kprobes();
  }
 diff --git a/src/ftracepy-utils.h b/src/ftracepy-utils.h
-index c674804..04de1f3 100644
+index 17e07e5..4e04fb0 100644
 --- a/src/ftracepy-utils.h
 +++ b/src/ftracepy-utils.h
-@@ -55,16 +55,6 @@ PyObject *PyFtrace_detach(PyObject *self, PyObject *args, PyObject *kwargs);
- PyObject *PyFtrace_create_instance(PyObject *self, PyObject *args,
- 						   PyObject *kwargs);
+@@ -26,6 +26,8 @@ C_OBJECT_WRAPPER_DECLARE(tracefs_instance, PyTfsInstance)
  
--PyObject *PyFtrace_destroy_instance(PyObject *self, PyObject *args,
--						    PyObject *kwargs);
+ struct ftracepy_kprobe;
+ 
++void ftracepy_kprobe_destroy(struct ftracepy_kprobe *kp);
++
+ void ftracepy_kprobe_free(struct ftracepy_kprobe *kp);
+ 
+ C_OBJECT_WRAPPER_DECLARE(ftracepy_kprobe, PyKprobe);
+@@ -62,6 +64,21 @@ PyObject *PyKprobe_function(PyKprobe *self);
+ 
+ PyObject *PyKprobe_probe(PyKprobe *self);
+ 
++PyObject *PyKprobe_set_filter(PyKprobe *self, PyObject *args,
++					      PyObject *kwargs);
++
++PyObject *PyKprobe_clear_filter(PyKprobe *self, PyObject *args,
++						PyObject *kwargs);
++
++PyObject *PyKprobe_enable(PyKprobe *self, PyObject *args,
++					  PyObject *kwargs);
++
++PyObject *PyKprobe_disable(PyKprobe *self, PyObject *args,
++					   PyObject *kwargs);
++
++PyObject *PyKprobe_is_enabled(PyKprobe *self, PyObject *args,
++					      PyObject *kwargs);
++
+ PyObject *PyFtrace_dir(PyObject *self);
+ 
+ PyObject *PyFtrace_detach(PyObject *self, PyObject *args, PyObject *kwargs);
+@@ -143,28 +160,6 @@ PyObject *PyFtrace_register_kprobe(PyObject *self, PyObject *args,
+ PyObject *PyFtrace_register_kretprobe(PyObject *self, PyObject *args,
+ 						      PyObject *kwargs);
+ 
+-PyObject *PyFtrace_unregister_kprobe(PyObject *self, PyObject *args,
+-						     PyObject *kwargs);
 -
--PyObject *PyFtrace_get_all_instances(PyObject *self);
+-PyObject *PyFtrace_registered_kprobes(PyObject *self);
 -
--PyObject *PyFtrace_destroy_all_instances(PyObject *self);
+-PyObject *PyFtrace_registered_kprobe_names(PyObject *self);
 -
--PyObject *PyFtrace_instance_dir(PyObject *self, PyObject *args,
--						PyObject *kwargs);
+-PyObject *PyFtrace_set_kprobe_filter(PyObject *self, PyObject *args,
+-						     PyObject *kwargs);
 -
- PyObject *PyFtrace_available_tracers(PyObject *self, PyObject *args,
- 						     PyObject *kwargs);
+-PyObject *PyFtrace_clear_kprobe_filter(PyObject *self, PyObject *args,
+-						       PyObject *kwargs);
+-
+-PyObject *PyFtrace_enable_kprobe(PyObject *self, PyObject *args,
+-						 PyObject *kwargs);
+-
+-PyObject *PyFtrace_disable_kprobe(PyObject *self, PyObject *args,
+-						  PyObject *kwargs);
+-
+-PyObject *PyFtrace_kprobe_is_enabled(PyObject *self, PyObject *args,
+-						     PyObject *kwargs);
+-
+ PyObject *PyFtrace_set_ftrace_loglevel(PyObject *self, PyObject *args,
+ 						       PyObject *kwargs);
  
 diff --git a/src/ftracepy.c b/src/ftracepy.c
-index 97b410f..3c55e50 100644
+index c434af9..a4fba01 100644
 --- a/src/ftracepy.c
 +++ b/src/ftracepy.c
-@@ -102,26 +102,6 @@ static PyMethodDef ftracepy_methods[] = {
- 	 METH_VARARGS | METH_KEYWORDS,
- 	 "Create new tracefs instance."
+@@ -107,11 +107,36 @@ static PyMethodDef PyKprobe_methods[] = {
+ 	 METH_NOARGS,
+ 	 "Get the kprobe event definition."
  	},
--	{"get_all_instances",
--	 (PyCFunction) PyFtrace_get_all_instances,
--	 METH_NOARGS,
--	 "Get all existing tracefs instances."
--	},
--	{"destroy_instance",
--	 (PyCFunction) PyFtrace_destroy_instance,
--	 METH_VARARGS | METH_KEYWORDS,
--	 "Destroy existing tracefs instance."
--	},
--	{"destroy_all_instances",
--	 (PyCFunction) PyFtrace_destroy_all_instances,
--	 METH_NOARGS,
--	 "Destroy all existing tracefs instances."
--	},
--	{"instance_dir",
--	 (PyCFunction) PyFtrace_instance_dir,
--	 METH_VARARGS | METH_KEYWORDS,
--	 "Get the absolute path to the instance directory."
--	},
- 	{"available_tracers",
- 	 (PyCFunction) PyFtrace_available_tracers,
++	{"set_filter",
++	 (PyCFunction) PyKprobe_set_filter,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Define a filter for a kprobe."
++	},
++	{"clear_filter",
++	 (PyCFunction) PyKprobe_clear_filter,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Clear the filter of a kprobe."
++	},
++	{"enable",
++	 (PyCFunction) PyKprobe_enable,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Enable kprobe event."
++	},
++	{"disable",
++	 (PyCFunction) PyKprobe_disable,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Disable kprobe event."
++	},
++	{"is_enabled",
++	 (PyCFunction) PyKprobe_is_enabled,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Check if kprobe event is enabled."
++	},
+ 	{NULL, NULL, 0, NULL}
+ };
+ 
+ C_OBJECT_WRAPPER(ftracepy_kprobe, PyKprobe,
+-		 NO_DESTROY,
++		 ftracepy_kprobe_destroy,
+ 		 ftracepy_kprobe_free)
+ 
+ static PyMethodDef ftracepy_methods[] = {
+@@ -255,46 +280,6 @@ static PyMethodDef ftracepy_methods[] = {
  	 METH_VARARGS | METH_KEYWORDS,
+ 	 "Define a kretprobe."
+ 	},
+-	{"unregister_kprobe",
+-	 (PyCFunction) PyFtrace_unregister_kprobe,
+-	 METH_VARARGS | METH_KEYWORDS,
+-	 "Define a kprobe."
+-	},
+-	{"registered_kprobes",
+-	 (PyCFunction) PyFtrace_registered_kprobes,
+-	 METH_NOARGS,
+-	 "Get all registered kprobes."
+-	},
+-	{"registered_kprobe_names",
+-	 (PyCFunction) PyFtrace_registered_kprobe_names,
+-	 METH_NOARGS,
+-	 "Get the names of all registered kprobes."
+-	},
+-	{"set_kprobe_filter",
+-	 (PyCFunction) PyFtrace_set_kprobe_filter,
+-	 METH_VARARGS | METH_KEYWORDS,
+-	 "Define a filter for a kprobe."
+-	},
+-	{"clear_kprobe_filter",
+-	 (PyCFunction) PyFtrace_clear_kprobe_filter,
+-	 METH_VARARGS | METH_KEYWORDS,
+-	 "Clear the filter of a kprobe."
+-	},
+-	{"enable_kprobe",
+-	 (PyCFunction) PyFtrace_enable_kprobe,
+-	 METH_VARARGS | METH_KEYWORDS,
+-	 "Enable kprobe event."
+-	},
+-	{"disable_kprobe",
+-	 (PyCFunction) PyFtrace_disable_kprobe,
+-	 METH_VARARGS | METH_KEYWORDS,
+-	 "Disable kprobe event."
+-	},
+-	{"kprobe_is_enabled",
+-	 (PyCFunction) PyFtrace_kprobe_is_enabled,
+-	 METH_VARARGS | METH_KEYWORDS,
+-	 "Check if kprobe event is enabled."
+-	},
+ 	{"set_ftrace_loglevel",
+ 	 (PyCFunction) PyFtrace_set_ftrace_loglevel,
+ 	 METH_VARARGS | METH_KEYWORDS,
+@@ -362,7 +347,7 @@ PyMODINIT_FUNC PyInit_ftracepy(void)
+ 	TRACECRUNCHER_ERROR = PyErr_NewException("tracecruncher.tc_error",
+ 						 NULL, NULL);
+ 
+-	PyObject *module =  PyModule_Create(&ftracepy_module);
++	PyObject *module = PyModule_Create(&ftracepy_module);
+ 
+ 	PyModule_AddObject(module, "tep_handle", (PyObject *) &PyTepType);
+ 	PyModule_AddObject(module, "tep_event", (PyObject *) &PyTepEventType);
 diff --git a/tests/1_unit/test_01_ftracepy_unit.py b/tests/1_unit/test_01_ftracepy_unit.py
-index 0d62da2..57db0ad 100644
+index 57db0ad..3411b3f 100644
 --- a/tests/1_unit/test_01_ftracepy_unit.py
 +++ b/tests/1_unit/test_01_ftracepy_unit.py
-@@ -22,48 +22,20 @@ class InstanceTestCase(unittest.TestCase):
-         self.assertTrue(os.path.isdir(instances_dir))
+@@ -403,34 +403,17 @@ class KprobeTestCase(unittest.TestCase):
+         evt2_func = 'do_sys_openat2'
+         evt2_prove = 'file=+u0($arg2):ustring'
  
-     def test_create_instance(self):
--        ft.create_instance(instance_name)
--        self.assertTrue(ft.is_tracing_ON(instance_name))
-+        inst = ft.create_instance(instance_name)
-+        self.assertTrue(ft.is_tracing_ON(inst))
-         instances_dir = ft.dir() + '/instances/'
-         self.assertTrue(os.path.isdir(instances_dir + instance_name))
- 
-         auto_inst = ft.create_instance(tracing_on=False)
-         self.assertFalse(ft.is_tracing_ON(auto_inst))
--        ft.destroy_instance(auto_inst)
+-        ft.register_kprobe(event=evt1, function=evt1_func,
+-                           probe=evt1_prove)
+-        all_kprobes = ft.registered_kprobes()
+-        self.assertEqual(len(all_kprobes), 1)
+-        self.assertTrue(evt1 in all_kprobes[0])
+-        self.assertTrue(evt1_func in all_kprobes[0])
+-        self.assertTrue(evt1_prove in all_kprobes[0])
 -
--    def test_destroy_instance(self):
--        ft.destroy_instance(instance_name)
--        instances_dir = ft.dir() + '/instances/'
--        self.assertFalse(os.path.isdir(instances_dir + instance_name))
+-        ft.unregister_kprobe(event=evt1)
+-        all_kprobes = ft.registered_kprobes()
+-        self.assertEqual(len(all_kprobes), 0)
 -
--        err = 'Unable to destroy trace instances'
--        with self.assertRaises(Exception) as context:
--            ft.destroy_instance(instance_name)
--        self.assertTrue(err in str(context.exception))
+-        ft.register_kprobe(event=evt1, function=evt1_func,
+-                           probe=evt1_prove)
+-        ft.register_kprobe(event=evt2, function=evt2_func,
+-                           probe=evt2_prove)
+-        all_kprobes = ft.registered_kprobes()
+-        self.assertEqual(len(all_kprobes), 2)
+-        self.assertTrue(evt1 in all_kprobes[0])
+-        self.assertTrue(evt1_func in all_kprobes[0])
+-        self.assertTrue(evt1_prove in all_kprobes[0])
+-        self.assertTrue(evt2 in all_kprobes[1])
+-        self.assertTrue(evt2_func in all_kprobes[1])
+-        self.assertTrue(evt2_prove in all_kprobes[1])
 -
--        ft.create_instance(instance_name)
--        ft.create_instance(another_instance_name)
--        ft.destroy_all_instances()
--        self.assertFalse(os.path.isdir(instances_dir + instance_name))
--
--        ft.create_instance(instance_name)
--        ft.create_instance(another_instance_name)
--        ft.destroy_instance('all')
--        self.assertFalse(os.path.isdir(instances_dir + instance_name))
--
--    def test_get_all(self):
--        ft.create_instance(instance_name)
--        ft.create_instance(another_instance_name)
--        self.assertEqual(ft.get_all_instances(),
--                         [instance_name, another_instance_name])
--        ft.destroy_all_instances()
- 
-     def test_instance_dir(self):
--        ft.create_instance(instance_name)
-+        inst = ft.create_instance(instance_name)
-         tracefs_dir = ft.dir();
-         instance_dir = tracefs_dir + '/instances/' + instance_name
--        self.assertEqual(instance_dir, ft.instance_dir(instance_name))
--        ft.destroy_all_instances()
-+        self.assertEqual(instance_dir, inst.dir())
+-        ft.unregister_kprobe(event='ALL')
+-        all_kprobes = ft.registered_kprobes()
+-        self.assertEqual(len(all_kprobes), 0)
++        kp1 = ft.register_kprobe(event=evt1, function=evt1_func,
++                                 probe=evt1_prove)
++        self.assertEqual(evt1, kp1.event())
++        self.assertEqual(evt1_func, kp1.function())
++        self.assertEqual(evt1_prove, kp1.probe())
 +
++        kp2 = ft.register_kprobe(event=evt2, function=evt2_func,
++                                 probe=evt2_prove)
++        self.assertEqual(evt2, kp2.event())
++        self.assertEqual(evt2_func, kp2.function())
++        self.assertEqual(evt2_prove, kp2.probe())
  
- class PyTepTestCase(unittest.TestCase):
-     def test_init_local(self):
-@@ -73,8 +45,8 @@ class PyTepTestCase(unittest.TestCase):
  
-         tep.init_local(dir=tracefs_dir, systems=['sched', 'irq']);
+     def test_enable_kprobe(self):
+@@ -438,19 +421,17 @@ class KprobeTestCase(unittest.TestCase):
+         evt1_func = 'do_mkdirat'
+         evt1_prove = 'path=+u0($arg2):ustring'
  
--        ft.create_instance(instance_name)
--        tracefs_dir = ft.instance_dir(instance_name)
-+        inst = ft.create_instance(instance_name)
-+        tracefs_dir = inst.dir()
-         tep.init_local(dir=tracefs_dir, systems=['sched', 'irq']);
+-        ft.register_kprobe(event=evt1, function=evt1_func,
+-                           probe=evt1_prove)
++        kp1 = ft.register_kprobe(event=evt1, function=evt1_func,
++                                 probe=evt1_prove)
+         inst = ft.create_instance(instance_name)
+-        ft.enable_kprobe(instance=inst, event=evt1)
+-        ret = ft.kprobe_is_enabled(instance=inst, event=evt1)
++        kp1.enable(instance=inst)
++        ret = kp1.is_enabled(instance=inst)
+         self.assertEqual(ret, '1')
  
-         err='function missing required argument \'dir\''
-@@ -86,7 +58,6 @@ class PyTepTestCase(unittest.TestCase):
-         with self.assertRaises(Exception) as context:
-             tep.init_local(dir='no_dir', systems=['sched', 'irq']);
-         self.assertTrue(err in str(context.exception))
--        ft.destroy_all_instances()
+-        ft.disable_kprobe(instance=inst, event=evt1)
+-        ret = ft.kprobe_is_enabled(instance=inst, event=evt1)
++        kp1.disable(instance=inst)
++        ret = kp1.is_enabled(instance=inst)
+         self.assertEqual(ret, '0')
  
-     def test_get_event(self):
-         tracefs_dir = ft.dir()
-@@ -144,302 +115,284 @@ class EventsTestCase(unittest.TestCase):
-         self.assertTrue(len(systems) > 1)
-         self.assertTrue('sched' in systems)
- 
--        ft.create_instance(instance_name)
--        systems = ft.available_event_systems(instance_name)
-+        inst = ft.create_instance(instance_name)
-+        systems = ft.available_event_systems(inst)
-         self.assertTrue(len(systems) > 1)
-         self.assertTrue('sched' in systems)
- 
--        ft.destroy_all_instances()
+-        ft.unregister_kprobe(event='ALL')
 -
-     def test_available_system_events(self):
-         events = ft.available_system_events(system='sched')
-         self.assertTrue(len(events) > 1)
-         self.assertTrue('sched_switch' in events)
- 
--        ft.create_instance(instance_name)
--        events = ft.available_system_events(instance=instance_name,
--                                              system='sched')
-+        inst = ft.create_instance(instance_name)
-+        events = ft.available_system_events(instance=inst,
-+                                            system='sched')
-         self.assertTrue(len(events) > 1)
-         self.assertTrue('sched_switch' in events)
- 
-         err = 'function missing required argument'
-         with self.assertRaises(Exception) as context:
--            ft.available_system_events(instance=instance_name)
-+            ft.available_system_events(instance=inst)
-         self.assertTrue(err in str(context.exception))
- 
--        ft.destroy_all_instances()
--
-     def test_enable_event(self):
--        ft.create_instance(instance_name)
--
--        ret = ft.event_is_enabled(instance=instance_name, system='all')
-+        inst = ft.create_instance(instance_name)
-+        ret = ft.event_is_enabled(instance=inst, system='all')
-         self.assertEqual(ret, '0')
--        ft.enable_event(instance=instance_name, system='all')
--        ret = ft.event_is_enabled(instance=instance_name, system='all')
-+        ft.enable_event(instance=inst, system='all')
-+        ret = ft.event_is_enabled(instance=inst, system='all')
-         self.assertEqual(ret, '1')
--        ft.disable_event(instance=instance_name, system='all')
--        ret = ft.event_is_enabled(instance=instance_name, system='all')
-+        ft.disable_event(instance=inst, system='all')
-+        ret = ft.event_is_enabled(instance=inst, system='all')
-         self.assertEqual(ret, '0')
- 
--        ret = ft.event_is_enabled(instance=instance_name, event='all')
-+        ret = ft.event_is_enabled(instance=inst, event='all')
-         self.assertEqual(ret, '0')
--        ft.enable_event(instance=instance_name, event='all')
--        ret = ft.event_is_enabled(instance=instance_name, event='all')
-+        ft.enable_event(instance=inst, event='all')
-+        ret = ft.event_is_enabled(instance=inst, event='all')
-         self.assertEqual(ret, '1')
--        ft.disable_event(instance=instance_name, event='all')
--        ret = ft.event_is_enabled(instance=instance_name, event='all')
-+        ft.disable_event(instance=inst, event='all')
-+        ret = ft.event_is_enabled(instance=inst, event='all')
-         self.assertEqual(ret, '0')
- 
--        ret = ft.event_is_enabled(instance=instance_name, system='sched')
-+        ret = ft.event_is_enabled(instance=inst, system='sched')
-         self.assertEqual(ret, '0')
--        ft.enable_event(instance=instance_name, system='sched')
--        ret = ft.event_is_enabled(instance=instance_name, system='sched')
-+        ft.enable_event(instance=inst, system='sched')
-+        ret = ft.event_is_enabled(instance=inst, system='sched')
-         self.assertEqual(ret, '1')
--        ft.disable_event(instance=instance_name, system='sched')
--        ret = ft.event_is_enabled(instance=instance_name, system='sched')
-+        ft.disable_event(instance=inst, system='sched')
-+        ret = ft.event_is_enabled(instance=inst, system='sched')
-         self.assertEqual(ret, '0')
- 
--        ft.enable_event(instance=instance_name,
-+        ft.enable_event(instance=inst,
-                         system='sched',
-                         event='sched_switch')
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   system='sched',
-                                   event='sched_switch')
-         self.assertEqual(ret, '1')
--        ft.disable_event(instance=instance_name,
-+        ft.disable_event(instance=inst,
-                          system='sched',
-                          event='sched_switch')
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   system='sched',
-                                   event='sched_switch')
-         self.assertEqual(ret, '0')
- 
--        ft.enable_event(instance=instance_name,
-+        ft.enable_event(instance=inst,
-                         system='sched',
-                         event='all')
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   system='sched',
-                                   event='all')
-         self.assertEqual(ret, '1')
--        ft.disable_event(instance=instance_name,
-+        ft.disable_event(instance=inst,
-                          system='sched',
-                          event='all')
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   system='sched',
-                                   event='all')
-         self.assertEqual(ret, '0')
- 
--        ft.enable_event(instance=instance_name,
-+        ft.enable_event(instance=inst,
-                         event='sched_switch')
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   system='sched',
-                                   event='sched_switch')
-         self.assertEqual(ret, '1')
--        ft.disable_event(instance=instance_name,
-+        ft.disable_event(instance=inst,
-                          event='sched_switch')
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   system='sched',
-                                   event='sched_switch')
-         self.assertEqual(ret, '0')
- 
--        ft.enable_event(instance=instance_name,
-+        ft.enable_event(instance=inst,
-                         system='all',
-                         event='sched_switch')
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   system='sched',
-                                   event='sched_switch')
-         self.assertEqual(ret, '1')
--        ft.disable_event(instance=instance_name,
-+        ft.disable_event(instance=inst,
-                          system='all',
-                          event='sched_switch')
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   system='sched',
-                                   event='sched_switch')
-         self.assertEqual(ret, '0')
- 
--        ft.destroy_all_instances()
--
-     def test_enable_event_err(self):
--        ft.create_instance(instance_name)
-+        inst = ft.create_instance(instance_name)
- 
-         err = 'Failed to enable/disable event'
-         with self.assertRaises(Exception) as context:
--            ft.enable_event(instance=instance_name,
-+            ft.enable_event(instance=inst,
-                             system='zero')
-         self.assertTrue(err in str(context.exception))
- 
-         with self.assertRaises(Exception) as context:
--            ft.enable_event(instance=instance_name,
-+            ft.enable_event(instance=inst,
-                             system='sched',
-                             event='zero')
-         self.assertTrue(err in str(context.exception))
- 
--        ft.destroy_all_instances()
--
-     def test_enable_events(self):
--        ft.create_instance(instance_name)
--        ft.enable_events(instance=instance_name,
-+        inst = ft.create_instance(instance_name)
-+        ft.enable_events(instance=inst,
-                          events='all')
- 
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   event='all')
-         self.assertEqual(ret, '1')
--        ft.disable_events(instance=instance_name,
-+        ft.disable_events(instance=inst,
-                           events='all')
- 
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   event='all')
-         self.assertEqual(ret, '0')
- 
--        ft.enable_events(instance=instance_name,
-+        ft.enable_events(instance=inst,
-                          systems=['sched', 'irq'])
- 
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   system='sched',
-                                   event='all')
-         self.assertEqual(ret, '1')
- 
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   system='irq',
-                                   event='all')
-         self.assertEqual(ret, '1')
- 
--        ft.disable_events(instance=instance_name,
-+        ft.disable_events(instance=inst,
-                           systems=['sched', 'irq'])
- 
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   system='sched',
-                                   event='all')
-         self.assertEqual(ret, '0')
- 
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   system='irq',
-                                   event='all')
-         self.assertEqual(ret, '0')
- 
--        ft.enable_events(instance=instance_name,
-+        ft.enable_events(instance=inst,
-                          systems=['sched', 'irq'],
-                          events=[['sched_switch', 'sched_waking'],
-                                  ['all']])
- 
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   system='sched',
-                                   event='sched_switch')
-         self.assertEqual(ret, '1')
- 
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   system='sched',
-                                   event='sched_waking')
-         self.assertEqual(ret, '1')
- 
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   system='sched',
-                                   event='sched_wakeup')
-         self.assertEqual(ret, '0')
- 
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   system='irq',
-                                   event='all')
-         self.assertEqual(ret, '1')
- 
--        ft.disable_events(instance=instance_name,
-+        ft.disable_events(instance=inst,
-                           systems=['sched', 'irq'],
-                           events=[['sched_switch', 'sched_waking'],
-                                   ['all']])
- 
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   system='sched',
-                                   event='sched_switch')
-         self.assertEqual(ret, '0')
- 
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   system='sched',
-                                   event='sched_waking')
-         self.assertEqual(ret, '0')
- 
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                   system='irq',
-                                   event='all')
-         self.assertEqual(ret, '0')
- 
--        ft.destroy_all_instances()
--
-     def test_enable_events_err(self):
--        ft.create_instance(instance_name)
-+        inst = ft.create_instance(instance_name)
- 
-         err = 'Inconsistent \"events\" argument'
-         with self.assertRaises(Exception) as context:
--            ft.enable_events(instance=instance_name,
-+            ft.enable_events(instance=inst,
-                              systems=['sched'],
-                              events=['all'])
-         self.assertTrue(err in str(context.exception))
- 
-         err = 'Failed to enable events for unspecified system'
-         with self.assertRaises(Exception) as context:
--            ft.enable_events(instance=instance_name,
-+            ft.enable_events(instance=inst,
-                              events=['sched_switch', 'sched_wakeup'])
-         self.assertTrue(err in str(context.exception))
- 
-         err = 'Failed to enable/disable event'
-         with self.assertRaises(Exception) as context:
--            ft.enable_events(instance=instance_name,
-+            ft.enable_events(instance=inst,
-                              systems=['sched'],
-                              events=[['no_event']])
-         self.assertTrue(err in str(context.exception))
- 
--        ft.destroy_all_instances()
--
- 
- class OptionsTestCase(unittest.TestCase):
-     def test_enable_option(self):
--        ft.create_instance(instance_name)
-+        inst = ft.create_instance(instance_name)
-         opt = 'event-fork'
--        ret = ft.option_is_set(instance=instance_name,
--                                   option=opt)
-+        ret = ft.option_is_set(instance=inst,
-+                               option=opt)
-         self.assertFalse(ret)
- 
--        ft.enable_option(instance=instance_name,
-+        ft.enable_option(instance=inst,
-                          option=opt)
--        ret = ft.option_is_set(instance=instance_name,
-+        ret = ft.option_is_set(instance=inst,
-                                option=opt)
-         self.assertTrue(ret)
- 
--        ft.disable_option(instance=instance_name,
-+        ft.disable_option(instance=inst,
-                           option=opt)
--        ret = ft.option_is_set(instance=instance_name,
-+        ret = ft.option_is_set(instance=inst,
-                                    option=opt)
-         self.assertFalse(ret)
- 
-         opt = 'no-opt'
-         err = 'Failed to set option \"no-opt\"'
-         with self.assertRaises(Exception) as context:
--            ft.enable_option(instance=instance_name,
-+            ft.enable_option(instance=inst,
-                              option=opt)
-         self.assertTrue(err in str(context.exception))
- 
--        ft.destroy_all_instances()
--
-     def test_supported_options(self):
--        ft.create_instance(instance_name)
--        opts = ft.supported_options(instance_name)
-+        inst = ft.create_instance(instance_name)
-+        opts = ft.supported_options(inst)
-         self.assertTrue(len(opts) > 20)
-         self.assertTrue('event-fork' in opts)
- 
--        ft.destroy_all_instances()
--
-     def test_enabled_options(self):
--        ft.create_instance(instance_name)
--        opts = ft.enabled_options(instance_name)
-+        inst = ft.create_instance(instance_name)
-+        opts = ft.enabled_options(inst)
-         n = len(opts)
--        ft.enable_option(instance=instance_name, option='function-fork')
--        ft.enable_option(instance=instance_name, option='event-fork')
--        opts = ft.enabled_options(instance_name)
-+        ft.enable_option(instance=inst, option='function-fork')
-+        ft.enable_option(instance=inst, option='event-fork')
-+        opts = ft.enabled_options(inst)
- 
-         self.assertEqual(len(opts), n + 2)
-         self.assertTrue('event-fork' in opts)
-         self.assertTrue('function-fork' in opts)
- 
--        ft.destroy_all_instances()
- 
- class KprobeTestCase(unittest.TestCase):
-     def test_register_kprobe(self):
-@@ -487,17 +440,17 @@ class KprobeTestCase(unittest.TestCase):
- 
-         ft.register_kprobe(event=evt1, function=evt1_func,
-                            probe=evt1_prove)
--        ft.create_instance(instance_name)
--        ft.enable_kprobe(instance=instance_name, event=evt1)
--        ret = ft.kprobe_is_enabled(instance=instance_name, event=evt1)
-+        inst = ft.create_instance(instance_name)
-+        ft.enable_kprobe(instance=inst, event=evt1)
-+        ret = ft.kprobe_is_enabled(instance=inst, event=evt1)
-         self.assertEqual(ret, '1')
- 
--        ft.disable_kprobe(instance=instance_name, event=evt1)
--        ret = ft.kprobe_is_enabled(instance=instance_name, event=evt1)
-+        ft.disable_kprobe(instance=inst, event=evt1)
-+        ret = ft.kprobe_is_enabled(instance=inst, event=evt1)
-         self.assertEqual(ret, '0')
- 
-         ft.unregister_kprobe(event='ALL')
--        ft.destroy_all_instances()
-+
  
  class TracingOnTestCase(unittest.TestCase):
      def test_ON_OF(self):
-@@ -505,16 +458,14 @@ class TracingOnTestCase(unittest.TestCase):
-         self.assertTrue(ft.is_tracing_ON())
-         ft.tracing_OFF()
+diff --git a/tracecruncher/ft_utils.py b/tracecruncher/ft_utils.py
+index 8c245b1..5caaa76 100644
+--- a/tracecruncher/ft_utils.py
++++ b/tracecruncher/ft_utils.py
+@@ -99,21 +99,13 @@ class kprobe_base(event):
+         """
+         super().__init__(system=ft.tc_event_system(), name=name, static=False)
+         self.func = func
++        self.kp = None
  
--        ft.create_instance(instance_name)
--        ft.tracing_ON(instance=instance_name)
--        self.assertTrue(ft.is_tracing_ON(instance=instance_name))
-+        inst = ft.create_instance(instance_name)
-+        ft.tracing_ON(instance=inst)
-+        self.assertTrue(ft.is_tracing_ON(instance=inst))
-         self.assertFalse(ft.is_tracing_ON())
--        ft.tracing_OFF(instance=instance_name)
+     def set_function(self, name):
+         """ Set the name of the function to be traced.
+         """
+         self.func = name
+ 
+-    def unregister(self):
+-        """ Unregister this probe from Ftrace.
+-        """
+-        inst_list = self.instance_list.copy()
+-        for instance in inst_list:
+-            self.disable(instance)
 -
--        ft.destroy_all_instances()
-+        ft.tracing_OFF(instance=inst)
- 
-     def test_err(self):
--        err = 'returned a result with an error set'
-+        err = 'incompatible type'
-         with self.assertRaises(Exception) as context:
-             ft.tracing_ON('zero')
-         self.assertTrue(err in str(context.exception))
-diff --git a/tests/2_integration/test_01_ftracepy_integration.py b/tests/2_integration/test_01_ftracepy_integration.py
-index d3b2c6b..824decd 100755
---- a/tests/2_integration/test_01_ftracepy_integration.py
-+++ b/tests/2_integration/test_01_ftracepy_integration.py
-@@ -19,18 +19,9 @@ class InstanceTestCase(unittest.TestCase):
- 
-         for i in range(25) :
-             instance_name = 'test_instance_%s' % i
--            ft.create_instance(instance_name)
-+            inst = ft.create_instance(instance_name)
-             self.assertTrue(os.path.isdir(instances_dir + instance_name))
- 
--        for i in range(15) :
--            instance_name = 'test_instance_%s' % i
--            ft.destroy_instance(instance_name)
--            self.assertFalse(os.path.isdir(instances_dir + instance_name))
+-        ft.unregister_kprobe(event=self.name);
 -
--        self.assertEqual(len(os.listdir(instances_dir)), 10)
--        ft.destroy_instance('all')
--        self.assertEqual(len(os.listdir(instances_dir)), 0)
--
-     def test_current_tracer(self):
-         current = ft.get_current_tracer()
-         self.assertEqual(current, 'nop')
-@@ -42,68 +33,67 @@ class InstanceTestCase(unittest.TestCase):
-         ft.set_current_tracer()
  
-         instance_name = 'test_instance'
--        ft.create_instance(instance_name)
--        current = ft.get_current_tracer(instance=instance_name)
-+        inst = ft.create_instance(instance_name)
-+        current = ft.get_current_tracer(instance=inst)
-         self.assertEqual(current, 'nop')
--        ft.tracing_OFF(instance=instance_name)
--        ft.set_current_tracer(instance=instance_name, tracer=name)
--        current = ft.get_current_tracer(instance=instance_name)
-+        ft.tracing_OFF(instance=inst)
-+        ft.set_current_tracer(instance=inst, tracer=name)
-+        current = ft.get_current_tracer(instance=inst)
-         self.assertEqual(current, name)
--        ft.destroy_instance('all')
+ class kprobe(kprobe_base):
+     def __init__(self, name, func=''):
+@@ -176,7 +168,7 @@ class kprobe(kprobe_base):
+         """
+         probe = ' '.join('{!s}={!s}'.format(key,val) for (key, val) in self.fields.items())
  
-     def test_enable_events(self):
-         instance_name = 'test_instance'
--        ft.create_instance(instance_name)
--        systems = ft.available_event_systems(instance=instance_name)
-+        inst = ft.create_instance(instance_name)
-+        systems = ft.available_event_systems(instance=inst)
-         systems.remove('ftrace')
-         for s in systems:
--            ret = ft.event_is_enabled(instance=instance_name,
-+            ret = ft.event_is_enabled(instance=inst,
-                                        system=s)
-             self.assertEqual(ret, '0')
--            ft.enable_event(instance=instance_name,
-+            ft.enable_event(instance=inst,
-                              system=s)
--            ret = ft.event_is_enabled(instance=instance_name,
-+            ret = ft.event_is_enabled(instance=inst,
-                                        system=s)
-             self.assertEqual(ret, '1')
+-        ft.register_kprobe(event=self.name, function=self.func, probe=probe);
++        self.kp = ft.register_kprobe(event=self.name, function=self.func, probe=probe);
+         self.evt_id = find_event_id(system=ft.tc_event_system(), event=self.name)
  
--            ft.disable_event(instance=instance_name,
-+            ft.disable_event(instance=inst,
-                              system=s)
--            events = ft.available_system_events(instance=instance_name,
-+            events = ft.available_system_events(instance=inst,
-                                                  system=s)
-             for e in events:
--                ret = ft.event_is_enabled(instance=instance_name,
-+                ret = ft.event_is_enabled(instance=inst,
-                                            system=s,
-                                            event=e)
-                 self.assertEqual(ret, '0')
--                ft.enable_event(instance=instance_name,
-+                ft.enable_event(instance=inst,
-                                  system=s,
-                                  event=e)
--                ret = ft.event_is_enabled(instance=instance_name,
-+                ret = ft.event_is_enabled(instance=inst,
-                                            system=s,
-                                            event=e)
-                 self.assertEqual(ret, '1')
--                ret = ft.event_is_enabled(instance=instance_name,
-+                ret = ft.event_is_enabled(instance=inst,
-                                            system=s)
-                 if e != events[-1]:
-                     self.assertEqual(ret, 'X')
  
--            ret = ft.event_is_enabled(instance=instance_name,
-+            ret = ft.event_is_enabled(instance=inst,
-                                        system=s)
-             self.assertEqual(ret, '1')
- 
--        ret = ft.event_is_enabled(instance=instance_name,
-+        ret = ft.event_is_enabled(instance=inst,
-                                    system=s)
-         self.assertEqual(ret, '1')
- 
--        ft.disable_event(instance=instance_name, event='all')
-+        ft.disable_event(instance=inst, event='all')
-         for s in systems:
--            ret = ft.event_is_enabled(instance=instance_name,
-+            ret = ft.event_is_enabled(instance=inst,
-                                        system=s)
-             self.assertEqual(ret, '0')
--            events = ft.available_system_events(instance=instance_name,
-+            events = ft.available_system_events(instance=inst,
-                                                  system=s)
-             for e in events:
--                ret = ft.event_is_enabled(instance=instance_name,
-+                ret = ft.event_is_enabled(instance=inst,
-                                            system=s,
-                                            event=e)
-                 self.assertEqual(ret, '0')
+@@ -206,5 +198,5 @@ class kretval_probe(kprobe_base):
+     def register(self):
+         """ Register this probe to Ftrace.
+         """
+-        ft.register_kprobe(event=self.name, function=self.func);
++        self.kp = ft.register_kprobe(event=self.name, function=self.func);
+         self.evt_id = find_event_id(system=ft.tc_event_system(), event=self.name)
 -- 
 2.30.2
 
