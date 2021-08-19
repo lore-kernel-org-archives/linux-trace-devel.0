@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E38AC4320A
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EAB8DC432BE
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Aug 2021 13:08:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 67B7D61101
+	by mail.kernel.org (Postfix) with ESMTP id CBA5061153
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Aug 2021 13:08:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238357AbhHSNJT (ORCPT
+        id S238379AbhHSNJT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Thu, 19 Aug 2021 09:09:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52654 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbhHSNJS (ORCPT
+        with ESMTP id S229670AbhHSNJT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 19 Aug 2021 09:09:18 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C2AC061575
+        Thu, 19 Aug 2021 09:09:19 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA3BC061575
         for <linux-trace-devel@vger.kernel.org>; Thu, 19 Aug 2021 06:08:42 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id k5-20020a05600c1c85b02902e699a4d20cso4008683wms.2
+Received: by mail-wr1-x432.google.com with SMTP id r7so9134955wrs.0
         for <linux-trace-devel@vger.kernel.org>; Thu, 19 Aug 2021 06:08:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dvQOYcdkaA9RAlrwEppLpq09VEggm5oXxIPlxlY+fqE=;
-        b=U5QLsVnBhRYo592EhNG1wc2Jw5fzQ9ejIN1eZmcQ9CyOlRPG+vx1/uL9glgqFEyqsb
-         OmcZvd2U9MHIqpjDjzJgd7MveLSdjWhxUb3NIe4MoM0pror2m7W43zTX76fewzvkuyOF
-         Mn1ExSyWa5FZ3IoP1V/ZsmGLqe47qqsSLOtTMpb2cHAGOtbraiQf1NU9Nw1x7lHAP8l5
-         xC/cMafoavoOzUE9yTCGgPlOXQrb25EkhCoQqfdDfUdUOfuY0nO6ii/sF0aLx25Ul2L9
-         vkVwzwmO/NTZsvdR154OzFEaPczl5NYZKIm/D00O8Nshks9/Cc0IuqfxVsBlhtne54wh
-         Fv4w==
+        bh=fTA18C1juGWZITUqmZQxJSRUfIcz4vFTw5d47852z3k=;
+        b=TgIRnYiDJ022o6IIsnJdGiinc0S7cC9bOUwwvr6vWmo3JQXcOsLIIfPwYwz0XRX7nk
+         zkSshO+LuoZ/RcJ1ofmUlfyjCVp9uvLJF2BuLs1Bhrhin2c23DAtnv1DPigJqThz/S0v
+         vLr6eotkfUIGpO97PGul3Wj+pQRkAO9M/6jCt/7vlTxv9okRlGjQPRj8CfWhUUyGa1r5
+         opNENxbqaj9nxqS0RU9QYZzvSAoTzrEjowso2puG2z0XzO9SOBG6r0RDg1twZKllw6Wp
+         D18ZINvdKzJQ92dgm4zHns2xpZ6/x4QkRrclW3vDme4j472vG/ALpyPOv+dsOliH5MDL
+         FspQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dvQOYcdkaA9RAlrwEppLpq09VEggm5oXxIPlxlY+fqE=;
-        b=L+V0Let+dJLiUbS0Omsnj1O0MphGuZ/CXYobMcW8Gey9oicxLvRqu2z88/ot+/dYnA
-         vQTPpLjIVjvuO3CNqgw4sQsGTxuUHImLY00ai7jIdENSjCQmKolXVPwH1vnbeShhzFlF
-         ++D05vmIBZuD5jccvKbMDAogMgIrFaJT3DUD3QPijxLSYmUGi5ohD4cOms17Tv7bSv9m
-         19ICxYEZmnC0BCE61OQWYM9STs6nmcZe9sUGHGA1jhltUK9TXWvJXikcjSremQpxNe+S
-         x4FVf90sUGnoR2GDn3pTrT93ZyFLKUeqFgjQpWM1Wc8g7AaP4JP2O/N6tX74NGngtjLY
-         8p2g==
-X-Gm-Message-State: AOAM530op9B0U8j0EqjHiPDY2OLMuf/1l4TAe19YdgMKgGzfXeM7dMHT
-        EaHQF7N1L6qmY2hye7wRJ8MvgcRnGW0=
-X-Google-Smtp-Source: ABdhPJx65V8vP/l3GbbMXsS2GkffI4auU46ncoJZrGYzb2f8nLCk92jJlPbZx8S3gOGXPr3jMhNatA==
-X-Received: by 2002:a1c:5404:: with SMTP id i4mr13770000wmb.80.1629378520618;
-        Thu, 19 Aug 2021 06:08:40 -0700 (PDT)
+        bh=fTA18C1juGWZITUqmZQxJSRUfIcz4vFTw5d47852z3k=;
+        b=HFyXYX+3E6a95LCt93ZXUaO2jmY3KJqlwi7GPs1yuRHbG2Hjx2aVbRdsg0nIQhaabP
+         xHHPkXS1l5/jBTYYgBOXR0/bi8ho9VrMCpDSkhXjPM+W+59f2BFVg7EwM5kXU7Rozz0v
+         EpnXBecYPLuJU1RvNvkn8yOClWtKu0KmsfRdnwF/2PYDHr7Psb6HIaTjdfZ3F7Zs9kVT
+         Sgqh+8NFVaePzWLekWgYLrGY4MdU0CBP5hG+MtVeb2P38xqT4CH0P1Y9+ydFGQCyiq8G
+         4Vf4CkpbbsgLe3vBUUDXOq0kXcj75nBEHfzBRpLEev7N4B8FbK1kzwIVB4EjfzObzpH3
+         yQug==
+X-Gm-Message-State: AOAM533EpP3KQa54yZ0YmvyhWAYvOAErjq9SfaQLy7k3GeC8MAT2h6Lu
+        rMEvc06CW8F+rH8VKuao0LVu1DuYWj4=
+X-Google-Smtp-Source: ABdhPJxsty+mS8e3UVWZOWg9i2i3bDEuotcU1AG9NaD/Ru4KkRwWonZJt5rq7hG50ppnxeJKNyk9dw==
+X-Received: by 2002:adf:eacb:: with SMTP id o11mr3804503wrn.418.1629378521388;
+        Thu, 19 Aug 2021 06:08:41 -0700 (PDT)
 Received: from crow.eng.vmware.com ([146.247.46.133])
-        by smtp.gmail.com with ESMTPSA id f17sm2889978wrt.49.2021.08.19.06.08.39
+        by smtp.gmail.com with ESMTPSA id f17sm2889978wrt.49.2021.08.19.06.08.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 06:08:40 -0700 (PDT)
+        Thu, 19 Aug 2021 06:08:41 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 1/7] trace-cruncher: Use proper naming in common.h
-Date:   Thu, 19 Aug 2021 16:08:21 +0300
-Message-Id: <20210819130827.12327-2-y.karadz@gmail.com>
+Subject: [PATCH v2 2/7] trace-cruncher: Add type checking for the custom Python types
+Date:   Thu, 19 Aug 2021 16:08:22 +0300
+Message-Id: <20210819130827.12327-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210819130827.12327-1-y.karadz@gmail.com>
 References: <20210819130827.12327-1-y.karadz@gmail.com>
@@ -73,52 +73,36 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-PyTepEvent was the first Python type defined in the C extension module.
-A legacy from this first implementation can be found in the naming of
-some variables used by the type definition macros.
+The new method checks if an object has a Python type that matches
+the type defined in the C extension module.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/common.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ src/common.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/src/common.h b/src/common.h
-index 9985328..6046c0f 100644
+index 6046c0f..fa64696 100644
 --- a/src/common.h
 +++ b/src/common.h
-@@ -54,27 +54,27 @@ static inline void no_free()
- 
- #define STR(x) #x
- 
--#define MAKE_TYPE_STR(x) STR(traceevent.x)
-+#define MAKE_TYPE_STR(x) STR(trace.x)
- 
--#define MAKE_DIC_STR(x) STR(libtraceevent x object)
-+#define MAKE_DIC_STR(x) STR(libtrace x object)
- 
- #define C_OBJECT_WRAPPER_DECLARE(c_type, py_type)				\
- 	typedef struct {							\
- 	PyObject_HEAD								\
- 	struct c_type *ptrObj;							\
+@@ -65,6 +65,7 @@ static inline void no_free()
  } py_type;									\
--PyObject *py_type##_New(struct c_type *evt_ptr);				\
-+PyObject *py_type##_New(struct c_type *c_ptr);					\
+ PyObject *py_type##_New(struct c_type *c_ptr);					\
  bool py_type##TypeInit();							\
++bool py_type##_Check(PyObject *obj);						\
  
  #define  C_OBJECT_WRAPPER(c_type, py_type, ptr_free)				\
  static PyTypeObject py_type##Type = {						\
- 	PyVarObject_HEAD_INIT(NULL, 0) MAKE_TYPE_STR(c_type)			\
- };										\
--PyObject *py_type##_New(struct c_type *evt_ptr)					\
-+PyObject *py_type##_New(struct c_type *c_ptr)					\
- {										\
- 	py_type *newObject;							\
- 	newObject = PyObject_New(py_type, &py_type##Type);			\
--	newObject->ptrObj = evt_ptr;						\
-+	newObject->ptrObj = c_ptr;						\
- 	return (PyObject *) newObject;						\
+@@ -101,5 +102,9 @@ bool py_type##TypeInit()							\
+ 	Py_INCREF(&py_type##Type);						\
+ 	return true;								\
  }										\
- static int py_type##_init(py_type *self, PyObject *args, PyObject *kwargs)	\
++bool py_type##_Check(PyObject *obj)						\
++{										\
++	return (obj->ob_type == &py_type##Type) ? true : false;			\
++}										\
+ 
+ #endif
 -- 
 2.30.2
 
