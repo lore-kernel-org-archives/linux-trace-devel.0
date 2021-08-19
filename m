@@ -2,92 +2,121 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81466C4338F
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Aug 2021 04:10:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5D48C432BE
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Aug 2021 04:18:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 66D2E610FE
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Aug 2021 04:10:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C157A6113C
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Aug 2021 04:18:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbhHSEKo (ORCPT
+        id S229560AbhHSETS (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 19 Aug 2021 00:10:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47748 "EHLO mail.kernel.org"
+        Thu, 19 Aug 2021 00:19:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229529AbhHSEKn (ORCPT
+        id S229451AbhHSETS (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 19 Aug 2021 00:10:43 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        Thu, 19 Aug 2021 00:19:18 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2EBB610FA;
-        Thu, 19 Aug 2021 04:10:06 +0000 (UTC)
-Date:   Thu, 19 Aug 2021 00:10:05 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 6214C610E6;
+        Thu, 19 Aug 2021 04:18:42 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1mGZVp-004duh-4J; Thu, 19 Aug 2021 00:18:41 -0400
+Message-ID: <20210819041321.105110033@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Thu, 19 Aug 2021 00:13:21 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
         "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v6 7/7] tracing: Add a probe that attaches to trace
- events
-Message-ID: <20210819001005.712e542a@oasis.local.home>
-In-Reply-To: <20210819000342.615e68c7@oasis.local.home>
-References: <20210817034255.421910614@goodmis.org>
-        <20210817035028.190000494@goodmis.org>
-        <20210819112920.a2fbfdc812967c2743953fd0@kernel.org>
-        <20210818233757.686cd7c8@oasis.local.home>
-        <20210819125652.bb6b980cf0ef04e0158bc564@kernel.org>
-        <20210819000342.615e68c7@oasis.local.home>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Tom Zanussi <zanussi@kernel.org>
+Subject: [PATCH v7 00/10] tracing: Creation of event probe
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 19 Aug 2021 00:03:42 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+The first 5 patches of this series has had Masami's updates as well as his
+acks, and will no longer be in future series, as I'll be pushing them into
+my linux-next queue.
 
-> Probably. I noticed that it was updated under the dyn_event_ops_mutex,
-> and thought that was enough protection. But I now see the lockdep
-> assert on the event_mutex in the other functions.
+Patch 6 received an ack from Masami, but I updated it, by pulling more out
+of the old patch 7 and into that patch, adding more of the enum logic into
+the internal processing of the set_print_fmt() code. This way, it adds the
+switch statement, such that the addition of the eprobe only needs to add a
+new case.
 
-Anyway, here's the new version:
+I pulled out the code from the old patch 7 that converts the parameter for
+process_fetch_insn() regs into a void pointer called rec. I figured that
+should be a separate patch as it's more set up for the eprobe code, then
+having to do with the eprobe code itself.
 
-static bool find_event_probe(const char *group, const char *event)
-{
-	struct trace_eprobe *ep;
-	struct dyn_event *ev;
-	bool ret = false;
+For the eprobe code, I incorporated more of Masami's comments as well as
+found some minor bugs. Those updates were:
 
-	/*
-	 * Must grab the event_mutex to prevent the list from being modified
-	 * by other probes. But the event_probe being only created via the
-	 * dynamic_events file, is only added under the dyn_event_ops_mutex,
-	 * which is currently held. There is no race between this check and
-	 * adding the new probe.
-	 */
-	mutex_lock(&event_mutex);
-	for_each_dyn_event(ev) {
-		if (ev->ops != &eprobe_dyn_event_ops)
-			continue;
-		ep = to_trace_eprobe(ev);
-		if (strcmp(ep->tp.event->class.system, group) == 0 &&
-		    strcmp(ep->tp.event->call.name, event) == 0) {
-			ret = true;
-			break;
-		}
-	}
-	mutex_lock(&event_mutex);
+Masami's suggestions:
 
-	return ret;
-}
+ - Remove "return" for void function calls in trace_event_put_ref()
+ - Used bit mask over checking separate bits of flags one at a time.
+ - Check for duplicate eprobes.
+
+Fixes:
+
+ - Check for NULL pointer for probe_cleanup as there was an error path that
+   could call it with a NULL pointer.
+ - Check on create that it's for an eprobe (check for 'e'). Was breaking
+   updates to kprobes and uprobes that were added by dynamic_events.
+ - Add paranoid check of by enum to print_fmt call.
+ - Fixed error_log ^ index handling
+
+Other updates:
+
+ - Updated the README to include eprobes
+ - Added clear_dynamic_events() to selftests, to remove them even when
+   there's a dependency between them.
+ - Added a selftest to test the eprobes.
 
 
--- Steve
+Steven Rostedt (VMware) (9):
+      tracing: Add DYNAMIC flag for dynamic events
+      tracing: Have dynamic events have a ref counter
+      tracing/probe: Have traceprobe_parse_probe_arg() take a const arg
+      tracing/probes: Allow for dot delimiter as well as slash for system names
+      tracing/probes: Use struct_size() instead of defining custom macros
+      tracing/probe: Change traceprobe_set_print_fmt() to take a type
+      tracing/probes: Have process_fetch_insn() take a void * instead of pt_regs
+      selftests/ftrace: Add clear_dynamic_events() to test cases
+      selftests/ftrace: Add selftest for testing eprobe events
+
+Tzvetomir Stoyanov (VMware) (1):
+      tracing: Add a probe that attaches to trace events
+
+----
+ include/linux/trace_events.h                       |  52 +-
+ kernel/trace/Makefile                              |   1 +
+ kernel/trace/trace.c                               |   9 +-
+ kernel/trace/trace.h                               |  18 +
+ kernel/trace/trace_dynevent.c                      |  38 +
+ kernel/trace/trace_dynevent.h                      |   4 +-
+ kernel/trace/trace_eprobe.c                        | 932 +++++++++++++++++++++
+ kernel/trace/trace_event_perf.c                    |   6 +-
+ kernel/trace/trace_events.c                        |  22 +-
+ kernel/trace/trace_events_synth.c                  |  21 +-
+ kernel/trace/trace_events_trigger.c                |  20 +-
+ kernel/trace/trace_kprobe.c                        |  43 +-
+ kernel/trace/trace_probe.c                         |  84 +-
+ kernel/trace/trace_probe.h                         |  15 +-
+ kernel/trace/trace_probe_tmpl.h                    |   6 +-
+ kernel/trace/trace_uprobe.c                        |  34 +-
+ .../ftrace/test.d/dynevent/add_remove_eprobe.tc    |  53 ++
+ tools/testing/selftests/ftrace/test.d/functions    |  22 +
+ 18 files changed, 1275 insertions(+), 105 deletions(-)
+ create mode 100644 kernel/trace/trace_eprobe.c
+ create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_eprobe.tc
