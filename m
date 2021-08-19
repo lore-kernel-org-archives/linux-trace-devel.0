@@ -7,31 +7,31 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 245F5C4320A
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Aug 2021 04:18:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B50F6C4320E
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Aug 2021 04:18:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0A7A8610FE
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Aug 2021 04:18:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 99139610E6
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Aug 2021 04:18:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbhHSETT (ORCPT
+        id S229736AbhHSETT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Thu, 19 Aug 2021 00:19:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48956 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:48930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229548AbhHSETS (ORCPT
+        id S229520AbhHSETS (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 19 Aug 2021 00:19:18 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A8A336113E;
+        by mail.kernel.org (Postfix) with ESMTPSA id 70F476112F;
         Thu, 19 Aug 2021 04:18:42 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mGZVp-004dwb-Mq; Thu, 19 Aug 2021 00:18:41 -0400
-Message-ID: <20210819041841.538680042@goodmis.org>
+        id 1mGZVp-004dw3-GW; Thu, 19 Aug 2021 00:18:41 -0400
+Message-ID: <20210819041841.354589553@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Thu, 19 Aug 2021 00:13:24 -0400
+Date:   Thu, 19 Aug 2021 00:13:23 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
@@ -39,7 +39,7 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
         Tom Zanussi <zanussi@kernel.org>
-Subject: [PATCH v7 03/10] tracing/probe: Have traceprobe_parse_probe_arg() take a const arg
+Subject: [PATCH v7 02/10] tracing: Have dynamic events have a ref counter
 References: <20210819041321.105110033@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,273 +49,373 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-The two places that call traceprobe_parse_probe_arg() allocate a temporary
-buffer to copy the argv[i] into, because argv[i] is constant and the
-traceprobe_parse_probe_arg() will modify it to do the parsing. These two
-places allocate this buffer and then free it right after calling this
-function, leaving the onus of this allocation to the caller.
+As dynamic events are not created by modules, if something is attached to
+one, calling "try_module_get()" on its "mod" field, is not going to keep
+the dynamic event from going away.
 
-As there's about to be a third user of this function that will have to do
-the same thing, instead of having the caller allocate the temporary
-buffer, simply move that allocation into the traceprobe_parse_probe_arg()
-itself, which will simplify the code of the callers.
+Since dynamic events do not need the "mod" pointer of the event structure,
+make a union out of it in order to save memory (there's one structure for
+each of the thousand+ events in the kernel), and have any event with the
+DYNAMIC flag set to use a ref counter instead.
 
-Link: https://lkml.kernel.org/r/20210817035027.385422828@goodmis.org
+Link: https://lore.kernel.org/linux-trace-devel/20210813004448.51c7de69ce432d338f4d226b@kernel.org/
+Link: https://lkml.kernel.org/r/20210817035027.174869074@goodmis.org
 
+Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
 Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/trace_kprobe.c |  9 +------
- kernel/trace/trace_probe.c  | 47 ++++++++++++++++++++++---------------
- kernel/trace/trace_probe.h  |  2 +-
- kernel/trace/trace_uprobe.c |  9 +------
- 4 files changed, 31 insertions(+), 36 deletions(-)
+ include/linux/trace_events.h        | 45 ++++++++++++++++++++++++++++-
+ kernel/trace/trace.c                |  4 +--
+ kernel/trace/trace_dynevent.c       | 38 ++++++++++++++++++++++++
+ kernel/trace/trace_event_perf.c     |  6 ++--
+ kernel/trace/trace_events.c         | 22 +++++++++-----
+ kernel/trace/trace_events_synth.c   | 19 +++++++-----
+ kernel/trace/trace_events_trigger.c |  6 ++--
+ kernel/trace/trace_kprobe.c         |  4 +++
+ kernel/trace/trace_uprobe.c         |  4 +++
+ 9 files changed, 124 insertions(+), 24 deletions(-)
 
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 82c3b86013b2..ed1e3c2087ab 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -873,15 +873,8 @@ static int __trace_kprobe_create(int argc, const char *argv[])
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 53c9dffd87fd..9564c4d9a3b6 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -350,7 +350,14 @@ struct trace_event_call {
+ 	struct trace_event	event;
+ 	char			*print_fmt;
+ 	struct event_filter	*filter;
+-	void			*mod;
++	/*
++	 * Static events can disappear with modules,
++	 * where as dynamic ones need their own ref count.
++	 */
++	union {
++		void				*module;
++		atomic_t			refcnt;
++	};
+ 	void			*data;
  
- 	/* parse arguments */
- 	for (i = 0; i < argc && i < MAX_TRACE_ARGS; i++) {
--		tmp = kstrdup(argv[i], GFP_KERNEL);
--		if (!tmp) {
--			ret = -ENOMEM;
--			goto error;
--		}
--
- 		trace_probe_log_set_index(i + 2);
--		ret = traceprobe_parse_probe_arg(&tk->tp, i, tmp, flags);
--		kfree(tmp);
-+		ret = traceprobe_parse_probe_arg(&tk->tp, i, argv[i], flags);
- 		if (ret)
- 			goto error;	/* This can be -ENOMEM */
- 	}
-diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-index 15413ad7cef2..ef717b373443 100644
---- a/kernel/trace/trace_probe.c
-+++ b/kernel/trace/trace_probe.c
-@@ -540,26 +540,34 @@ static int __parse_bitfield_probe_arg(const char *bf,
- }
+ 	/* See the TRACE_EVENT_FL_* flags above */
+@@ -366,6 +373,42 @@ struct trace_event_call {
+ #endif
+ };
  
- /* String length checking wrapper */
--static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
-+static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
- 		struct probe_arg *parg, unsigned int flags, int offset)
- {
- 	struct fetch_insn *code, *scode, *tmp = NULL;
- 	char *t, *t2, *t3;
-+	char *arg;
- 	int ret, len;
- 
-+	arg = kstrdup(argv, GFP_KERNEL);
-+	if (!arg)
-+		return -ENOMEM;
++#ifdef CONFIG_DYNAMIC_EVENTS
++bool trace_event_dyn_try_get_ref(struct trace_event_call *call);
++void trace_event_dyn_put_ref(struct trace_event_call *call);
++bool trace_event_dyn_busy(struct trace_event_call *call);
++#else
++static inline bool trace_event_dyn_try_get_ref(struct trace_event_call *call)
++{
++	/* Without DYNAMIC_EVENTS configured, nothing should be calling this */
++	return false;
++}
++static inline void trace_event_dyn_put_ref(struct trace_event_call *call)
++{
++}
++static inline bool trace_event_dyn_busy(struct trace_event_call *call)
++{
++	/* Nothing should call this without DYNAIMIC_EVENTS configured. */
++	return true;
++}
++#endif
 +
-+	ret = -EINVAL;
- 	len = strlen(arg);
- 	if (len > MAX_ARGSTR_LEN) {
- 		trace_probe_log_err(offset, ARG_TOO_LONG);
--		return -EINVAL;
-+		goto out;
- 	} else if (len == 0) {
- 		trace_probe_log_err(offset, NO_ARG_BODY);
--		return -EINVAL;
-+		goto out;
- 	}
++static inline bool trace_event_try_get_ref(struct trace_event_call *call)
++{
++	if (call->flags & TRACE_EVENT_FL_DYNAMIC)
++		return trace_event_dyn_try_get_ref(call);
++	else
++		return try_module_get(call->module);
++}
++
++static inline void trace_event_put_ref(struct trace_event_call *call)
++{
++	if (call->flags & TRACE_EVENT_FL_DYNAMIC)
++		trace_event_dyn_put_ref(call);
++	else
++		module_put(call->module);
++}
++
+ #ifdef CONFIG_PERF_EVENTS
+ static inline bool bpf_prog_array_valid(struct trace_event_call *call)
+ {
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index be0169594de5..8425c3d70895 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -3697,11 +3697,11 @@ static bool trace_safe_str(struct trace_iterator *iter, const char *str)
+ 		return false;
  
-+	ret = -ENOMEM;
- 	parg->comm = kstrdup(arg, GFP_KERNEL);
- 	if (!parg->comm)
--		return -ENOMEM;
-+		goto out;
+ 	event = container_of(trace_event, struct trace_event_call, event);
+-	if (!event->mod)
++	if ((event->flags & TRACE_EVENT_FL_DYNAMIC) || !event->module)
+ 		return false;
  
-+	ret = -EINVAL;
- 	t = strchr(arg, ':');
- 	if (t) {
- 		*t = '\0';
-@@ -571,22 +579,22 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 				offset += t2 + strlen(t2) - arg;
- 				trace_probe_log_err(offset,
- 						    ARRAY_NO_CLOSE);
--				return -EINVAL;
-+				goto out;
- 			} else if (t3[1] != '\0') {
- 				trace_probe_log_err(offset + t3 + 1 - arg,
- 						    BAD_ARRAY_SUFFIX);
--				return -EINVAL;
-+				goto out;
- 			}
- 			*t3 = '\0';
- 			if (kstrtouint(t2, 0, &parg->count) || !parg->count) {
- 				trace_probe_log_err(offset + t2 - arg,
- 						    BAD_ARRAY_NUM);
--				return -EINVAL;
-+				goto out;
- 			}
- 			if (parg->count > MAX_ARRAY_LEN) {
- 				trace_probe_log_err(offset + t2 - arg,
- 						    ARRAY_TOO_BIG);
--				return -EINVAL;
-+				goto out;
- 			}
+ 	/* Would rather have rodata, but this will suffice */
+-	if (within_module_core(addr, event->mod))
++	if (within_module_core(addr, event->module))
+ 		return true;
+ 
+ 	return false;
+diff --git a/kernel/trace/trace_dynevent.c b/kernel/trace/trace_dynevent.c
+index e57cc0870892..1110112e55bd 100644
+--- a/kernel/trace/trace_dynevent.c
++++ b/kernel/trace/trace_dynevent.c
+@@ -13,11 +13,49 @@
+ #include <linux/tracefs.h>
+ 
+ #include "trace.h"
++#include "trace_output.h"	/* for trace_event_sem */
+ #include "trace_dynevent.h"
+ 
+ static DEFINE_MUTEX(dyn_event_ops_mutex);
+ static LIST_HEAD(dyn_event_ops_list);
+ 
++bool trace_event_dyn_try_get_ref(struct trace_event_call *dyn_call)
++{
++	struct trace_event_call *call;
++	bool ret = false;
++
++	if (WARN_ON_ONCE(!(dyn_call->flags & TRACE_EVENT_FL_DYNAMIC)))
++		return false;
++
++	down_read(&trace_event_sem);
++	list_for_each_entry(call, &ftrace_events, list) {
++		if (call == dyn_call) {
++			atomic_inc(&dyn_call->refcnt);
++			ret = true;
++		}
++	}
++	up_read(&trace_event_sem);
++	return ret;
++}
++
++void trace_event_dyn_put_ref(struct trace_event_call *call)
++{
++	if (WARN_ON_ONCE(!(call->flags & TRACE_EVENT_FL_DYNAMIC)))
++		return;
++
++	if (WARN_ON_ONCE(atomic_read(&call->refcnt) <= 0)) {
++		atomic_set(&call->refcnt, 0);
++		return;
++	}
++
++	atomic_dec(&call->refcnt);
++}
++
++bool trace_event_dyn_busy(struct trace_event_call *call)
++{
++	return atomic_read(&call->refcnt) != 0;
++}
++
+ int dyn_event_register(struct dyn_event_operations *ops)
+ {
+ 	if (!ops || !ops->create || !ops->show || !ops->is_busy ||
+diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
+index 03be4435d103..6aed10e2f7ce 100644
+--- a/kernel/trace/trace_event_perf.c
++++ b/kernel/trace/trace_event_perf.c
+@@ -177,7 +177,7 @@ static void perf_trace_event_unreg(struct perf_event *p_event)
  		}
  	}
-@@ -598,29 +606,30 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 	if (strcmp(arg, "$comm") == 0 || strncmp(arg, "\\\"", 2) == 0) {
- 		/* The type of $comm must be "string", and not an array. */
- 		if (parg->count || (t && strcmp(t, "string")))
--			return -EINVAL;
-+			goto out;
- 		parg->type = find_fetch_type("string");
- 	} else
- 		parg->type = find_fetch_type(t);
- 	if (!parg->type) {
- 		trace_probe_log_err(offset + (t ? (t - arg) : 0), BAD_TYPE);
--		return -EINVAL;
-+		goto out;
- 	}
- 	parg->offset = *size;
- 	*size += parg->type->size * (parg->count ?: 1);
- 
-+	ret = -ENOMEM;
- 	if (parg->count) {
- 		len = strlen(parg->type->fmttype) + 6;
- 		parg->fmt = kmalloc(len, GFP_KERNEL);
- 		if (!parg->fmt)
--			return -ENOMEM;
-+			goto out;
- 		snprintf(parg->fmt, len, "%s[%d]", parg->type->fmttype,
- 			 parg->count);
- 	}
- 
- 	code = tmp = kcalloc(FETCH_INSN_MAX, sizeof(*code), GFP_KERNEL);
- 	if (!code)
--		return -ENOMEM;
-+		goto out;
- 	code[FETCH_INSN_MAX - 1].op = FETCH_OP_END;
- 
- 	ret = parse_probe_arg(arg, parg->type, &code, &code[FETCH_INSN_MAX - 1],
-@@ -628,6 +637,7 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 	if (ret)
- 		goto fail;
- 
-+	ret = -EINVAL;
- 	/* Store operation */
- 	if (!strcmp(parg->type->name, "string") ||
- 	    !strcmp(parg->type->name, "ustring")) {
-@@ -636,7 +646,6 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 		    code->op != FETCH_OP_DATA) {
- 			trace_probe_log_err(offset + (t ? (t - arg) : 0),
- 					    BAD_STRING);
--			ret = -EINVAL;
- 			goto fail;
- 		}
- 		if ((code->op == FETCH_OP_IMM || code->op == FETCH_OP_COMM ||
-@@ -650,7 +659,6 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 			code++;
- 			if (code->op != FETCH_OP_NOP) {
- 				trace_probe_log_err(offset, TOO_MANY_OPS);
--				ret = -EINVAL;
- 				goto fail;
- 			}
- 		}
-@@ -672,7 +680,6 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 		code++;
- 		if (code->op != FETCH_OP_NOP) {
- 			trace_probe_log_err(offset, TOO_MANY_OPS);
--			ret = -EINVAL;
- 			goto fail;
- 		}
- 		code->op = FETCH_OP_ST_RAW;
-@@ -687,6 +694,7 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 			goto fail;
- 		}
- 	}
-+	ret = -EINVAL;
- 	/* Loop(Array) operation */
- 	if (parg->count) {
- 		if (scode->op != FETCH_OP_ST_MEM &&
-@@ -694,13 +702,11 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 		    scode->op != FETCH_OP_ST_USTRING) {
- 			trace_probe_log_err(offset + (t ? (t - arg) : 0),
- 					    BAD_STRING);
--			ret = -EINVAL;
- 			goto fail;
- 		}
- 		code++;
- 		if (code->op != FETCH_OP_NOP) {
- 			trace_probe_log_err(offset, TOO_MANY_OPS);
--			ret = -EINVAL;
- 			goto fail;
- 		}
- 		code->op = FETCH_OP_LP_ARRAY;
-@@ -709,6 +715,7 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 	code++;
- 	code->op = FETCH_OP_END;
- 
-+	ret = 0;
- 	/* Shrink down the code buffer */
- 	parg->code = kcalloc(code - tmp + 1, sizeof(*code), GFP_KERNEL);
- 	if (!parg->code)
-@@ -724,6 +731,8 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
- 				kfree(code->data);
- 	}
- 	kfree(tmp);
-+out:
-+	kfree(arg);
- 
- 	return ret;
+ out:
+-	module_put(tp_event->mod);
++	trace_event_put_ref(tp_event);
  }
-@@ -745,11 +754,11 @@ static int traceprobe_conflict_field_name(const char *name,
+ 
+ static int perf_trace_event_open(struct perf_event *p_event)
+@@ -224,10 +224,10 @@ int perf_trace_init(struct perf_event *p_event)
+ 	list_for_each_entry(tp_event, &ftrace_events, list) {
+ 		if (tp_event->event.type == event_id &&
+ 		    tp_event->class && tp_event->class->reg &&
+-		    try_module_get(tp_event->mod)) {
++		    trace_event_try_get_ref(tp_event)) {
+ 			ret = perf_trace_event_init(tp_event, p_event);
+ 			if (ret)
+-				module_put(tp_event->mod);
++				trace_event_put_ref(tp_event);
+ 			break;
+ 		}
+ 	}
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index 80e96989770e..1349b6de5eeb 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -2525,7 +2525,10 @@ __register_event(struct trace_event_call *call, struct module *mod)
+ 		return ret;
+ 
+ 	list_add(&call->list, &ftrace_events);
+-	call->mod = mod;
++	if (call->flags & TRACE_EVENT_FL_DYNAMIC)
++		atomic_set(&call->refcnt, 0);
++	else
++		call->module = mod;
+ 
  	return 0;
  }
+@@ -2839,7 +2842,9 @@ static void trace_module_remove_events(struct module *mod)
  
--int traceprobe_parse_probe_arg(struct trace_probe *tp, int i, char *arg,
-+int traceprobe_parse_probe_arg(struct trace_probe *tp, int i, const char *arg,
- 				unsigned int flags)
+ 	down_write(&trace_event_sem);
+ 	list_for_each_entry_safe(call, p, &ftrace_events, list) {
+-		if (call->mod == mod)
++		if ((call->flags & TRACE_EVENT_FL_DYNAMIC) || !call->module)
++			continue;
++		if (call->module == mod)
+ 			__trace_remove_event_call(call);
+ 	}
+ 	up_write(&trace_event_sem);
+@@ -2982,7 +2987,7 @@ struct trace_event_file *trace_get_event_file(const char *instance,
+ 	}
+ 
+ 	/* Don't let event modules unload while in use */
+-	ret = try_module_get(file->event_call->mod);
++	ret = trace_event_try_get_ref(file->event_call);
+ 	if (!ret) {
+ 		trace_array_put(tr);
+ 		ret = -EBUSY;
+@@ -3012,7 +3017,7 @@ EXPORT_SYMBOL_GPL(trace_get_event_file);
+ void trace_put_event_file(struct trace_event_file *file)
  {
- 	struct probe_arg *parg = &tp->args[i];
--	char *body;
-+	const char *body;
+ 	mutex_lock(&event_mutex);
+-	module_put(file->event_call->mod);
++	trace_event_put_ref(file->event_call);
+ 	mutex_unlock(&event_mutex);
  
- 	/* Increment count for freeing args in error case */
- 	tp->nr_args++;
-diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
-index 227d518e5ba5..42aa084902fa 100644
---- a/kernel/trace/trace_probe.h
-+++ b/kernel/trace/trace_probe.h
-@@ -354,7 +354,7 @@ int trace_probe_create(const char *raw_command, int (*createfn)(int, const char
- #define TPARG_FL_MASK	GENMASK(2, 0)
+ 	trace_array_put(file->tr);
+@@ -3147,7 +3152,7 @@ static int free_probe_data(void *data)
+ 	if (!edata->ref) {
+ 		/* Remove the SOFT_MODE flag */
+ 		__ftrace_event_enable_disable(edata->file, 0, 1);
+-		module_put(edata->file->event_call->mod);
++		trace_event_put_ref(edata->file->event_call);
+ 		kfree(edata);
+ 	}
+ 	return 0;
+@@ -3280,7 +3285,7 @@ event_enable_func(struct trace_array *tr, struct ftrace_hash *hash,
  
- extern int traceprobe_parse_probe_arg(struct trace_probe *tp, int i,
--				char *arg, unsigned int flags);
-+				const char *argv, unsigned int flags);
+  out_reg:
+ 	/* Don't let event modules unload while probe registered */
+-	ret = try_module_get(file->event_call->mod);
++	ret = trace_event_try_get_ref(file->event_call);
+ 	if (!ret) {
+ 		ret = -EBUSY;
+ 		goto out_free;
+@@ -3310,7 +3315,7 @@ event_enable_func(struct trace_array *tr, struct ftrace_hash *hash,
+  out_disable:
+ 	__ftrace_event_enable_disable(file, 0, 1);
+  out_put:
+-	module_put(file->event_call->mod);
++	trace_event_put_ref(file->event_call);
+  out_free:
+ 	kfree(data);
+ 	goto out;
+@@ -3376,7 +3381,8 @@ void __trace_early_add_events(struct trace_array *tr)
  
- extern int traceprobe_update_arg(struct probe_arg *arg);
- extern void traceprobe_free_probe_arg(struct probe_arg *arg);
+ 	list_for_each_entry(call, &ftrace_events, list) {
+ 		/* Early boot up should not have any modules loaded */
+-		if (WARN_ON_ONCE(call->mod))
++		if (!(call->flags & TRACE_EVENT_FL_DYNAMIC) &&
++		    WARN_ON_ONCE(call->module))
+ 			continue;
+ 
+ 		ret = __trace_early_add_new_event(call, tr);
+diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+index f4f5489e1e28..d54094b7a9d7 100644
+--- a/kernel/trace/trace_events_synth.c
++++ b/kernel/trace/trace_events_synth.c
+@@ -1369,13 +1369,15 @@ static int destroy_synth_event(struct synth_event *se)
+ 	int ret;
+ 
+ 	if (se->ref)
+-		ret = -EBUSY;
+-	else {
+-		ret = unregister_synth_event(se);
+-		if (!ret) {
+-			dyn_event_remove(&se->devent);
+-			free_synth_event(se);
+-		}
++		return -EBUSY;
++
++	if (trace_event_dyn_busy(&se->call))
++		return -EBUSY;
++
++	ret = unregister_synth_event(se);
++	if (!ret) {
++		dyn_event_remove(&se->devent);
++		free_synth_event(se);
+ 	}
+ 
+ 	return ret;
+@@ -2102,6 +2104,9 @@ static int synth_event_release(struct dyn_event *ev)
+ 	if (event->ref)
+ 		return -EBUSY;
+ 
++	if (trace_event_dyn_busy(&event->call))
++		return -EBUSY;
++
+ 	ret = unregister_synth_event(event);
+ 	if (ret)
+ 		return ret;
+diff --git a/kernel/trace/trace_events_trigger.c b/kernel/trace/trace_events_trigger.c
+index cf84d0f6583a..6b11e335a62e 100644
+--- a/kernel/trace/trace_events_trigger.c
++++ b/kernel/trace/trace_events_trigger.c
+@@ -1334,7 +1334,7 @@ void event_enable_trigger_free(struct event_trigger_ops *ops,
+ 	if (!data->ref) {
+ 		/* Remove the SOFT_MODE flag */
+ 		trace_event_enable_disable(enable_data->file, 0, 1);
+-		module_put(enable_data->file->event_call->mod);
++		trace_event_put_ref(enable_data->file->event_call);
+ 		trigger_data_free(data);
+ 		kfree(enable_data);
+ 	}
+@@ -1481,7 +1481,7 @@ int event_enable_trigger_func(struct event_command *cmd_ops,
+ 
+  out_reg:
+ 	/* Don't let event modules unload while probe registered */
+-	ret = try_module_get(event_enable_file->event_call->mod);
++	ret = trace_event_try_get_ref(event_enable_file->event_call);
+ 	if (!ret) {
+ 		ret = -EBUSY;
+ 		goto out_free;
+@@ -1510,7 +1510,7 @@ int event_enable_trigger_func(struct event_command *cmd_ops,
+  out_disable:
+ 	trace_event_enable_disable(event_enable_file, 0, 1);
+  out_put:
+-	module_put(event_enable_file->event_call->mod);
++	trace_event_put_ref(event_enable_file->event_call);
+  out_free:
+ 	if (cmd_ops->set_filter)
+ 		cmd_ops->set_filter(NULL, trigger_data, NULL);
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index bfef43bfce37..82c3b86013b2 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -543,6 +543,10 @@ static int unregister_trace_kprobe(struct trace_kprobe *tk)
+ 	if (trace_probe_is_enabled(&tk->tp))
+ 		return -EBUSY;
+ 
++	/* If there's a reference to the dynamic event */
++	if (trace_event_dyn_busy(trace_probe_event_call(&tk->tp)))
++		return -EBUSY;
++
+ 	/* Will fail if probe is being used by ftrace or perf */
+ 	if (unregister_kprobe_event(tk))
+ 		return -EBUSY;
 diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index 1e2a92e7607d..93ff96541971 100644
+index 50eca53b8d22..1e2a92e7607d 100644
 --- a/kernel/trace/trace_uprobe.c
 +++ b/kernel/trace/trace_uprobe.c
-@@ -684,16 +684,9 @@ static int __trace_uprobe_create(int argc, const char **argv)
+@@ -393,6 +393,10 @@ static int unregister_trace_uprobe(struct trace_uprobe *tu)
+ 	if (trace_probe_has_sibling(&tu->tp))
+ 		goto unreg;
  
- 	/* parse arguments */
- 	for (i = 0; i < argc && i < MAX_TRACE_ARGS; i++) {
--		tmp = kstrdup(argv[i], GFP_KERNEL);
--		if (!tmp) {
--			ret = -ENOMEM;
--			goto error;
--		}
--
- 		trace_probe_log_set_index(i + 2);
--		ret = traceprobe_parse_probe_arg(&tu->tp, i, tmp,
-+		ret = traceprobe_parse_probe_arg(&tu->tp, i, argv[i],
- 					is_return ? TPARG_FL_RETURN : 0);
--		kfree(tmp);
- 		if (ret)
- 			goto error;
- 	}
++	/* If there's a reference to the dynamic event */
++	if (trace_event_dyn_busy(trace_probe_event_call(&tu->tp)))
++		return -EBUSY;
++
+ 	ret = unregister_uprobe_event(tu);
+ 	if (ret)
+ 		return ret;
 -- 
 2.30.2
