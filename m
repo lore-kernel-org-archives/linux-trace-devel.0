@@ -2,58 +2,153 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9927C432BE
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Aug 2021 23:50:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DADAEC432BE
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 21 Aug 2021 01:38:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CC895611AD
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Aug 2021 23:50:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B9701611C3
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 21 Aug 2021 01:38:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237700AbhHTXv3 (ORCPT
+        id S232022AbhHUBjG (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 20 Aug 2021 19:51:29 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:51052 "EHLO
-        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233785AbhHTXv3 (ORCPT
+        Fri, 20 Aug 2021 21:39:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230172AbhHUBjG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 20 Aug 2021 19:51:29 -0400
-Received: from usagi.middle.earth (ethbase.usagi.not.afront.org [IPv6:2620:137:e001:0:1897:4108:901b:c660])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id AA5754D0F1497;
-        Fri, 20 Aug 2021 16:50:49 -0700 (PDT)
-Received: from usagi.middle.earth (localhost [IPv6:::1])
-        by usagi.middle.earth (Postfix) with ESMTP id 4AB7229B3021;
-        Fri, 20 Aug 2021 16:50:49 -0700 (PDT)
-From:   "John 'Warthog9' Hawley (VMware)" <warthog9@eaglescrag.net>
-To:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org
-Subject: [Patch v2] Fixing build issues found while working on packaging
-Date:   Fri, 20 Aug 2021 16:50:41 -0700
-Message-Id: <20210820235043.1450620-1-warthog9@eaglescrag.net>
-X-Mailer: git-send-email 2.26.3
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Fri, 20 Aug 2021 16:50:49 -0700 (PDT)
+        Fri, 20 Aug 2021 21:39:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CA0F6115A;
+        Sat, 21 Aug 2021 01:38:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629509907;
+        bh=Ho9JVlJs97ztPR9AJtuL3+94U2yv6sPg84bnD6MpLZo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JYvvqLcWtv/C8HQczf9GpGViuQTrSo6ky4irszjp/rg0J25NnOw+N6bLyW14MwiuF
+         /GN6z6GV5fHb0smSoIlFkGNvvqBc0nmuqTpGpknME06aBkGkuYqrVRoVXUTCZrKdmQ
+         2jH9QMxP75L4B5N+TpvXQGRmxy25xyvgcshzqqr5q4KNt8DaUot2Cn49vi5lk7TOLY
+         v2KesOxAsiIq0MQHYhFR6v8LEU/yST9VGoSQf7KVDh/gTTwheXoPRPHwKKcepGkqLp
+         P9IKtFCu6ThZkO7iuYBHIL9L9VgtxELzDsKybRFSocBbUNnu0FiAWYBMMoGhEMwHIB
+         uRoEfKIv269gA==
+Date:   Sat, 21 Aug 2021 10:38:23 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v9 5/6] selftests/ftrace: Add selftest for testing
+ eprobe events on synthetic events
+Message-Id: <20210821103823.3991d3b48ade660c8e33e637@kernel.org>
+In-Reply-To: <20210820204742.463259900@goodmis.org>
+References: <20210820204644.546662591@goodmis.org>
+        <20210820204742.463259900@goodmis.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Two issues that came up during packaging of HEAD:
-1) sqlhist needs a more explicit dependency on the bison parts
-   pre-existing.  This will likely be less of an issue later when
-   those don't need to be generated on every build.  For now, a 
-   more explicit dependency (in the right place in the make file now in
-   v2) resolves this SMP build issue
+On Fri, 20 Aug 2021 16:46:49 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-2) libtracefs.a generation does and `rm -f` and then genrates the
-   archive.  Something about that will sporadically cause ar to get
-   confused and throw an error about reading files.  Making the rm more
-   atomic (mv an then rm) either adds enough of a delay to mask the
-   problem, or clears this up correctly.
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> 
+> Add a test to test event probes, by creating a synthetic event across
+> sys_enter_openat and sys_exit_openat that passes the filename pointer from
+> the enter of the system call to the exit, and then add an event probe to
+> the synthetic event to make sure that the file name is seen.
+> 
+> Link: https://lore.kernel.org/linux-kselftest/20210819152825.526931866@goodmis.org/
+> 
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Shuah Khan <skhan@linuxfoundation.org>
+> Cc: linux-kselftest@vger.kernel.org
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-This clears up the major SMP build issues I'm seeing at least.
+This looks good to me.
 
-- John 'Warthog9' Hawley (VMware)
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you!
+
+> ---
+>  .../inter-event/trigger-synthetic-eprobe.tc   | 53 +++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+>  create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-eprobe.tc
+> 
+> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-eprobe.tc b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-eprobe.tc
+> new file mode 100644
+> index 000000000000..914fe2e5d030
+> --- /dev/null
+> +++ b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-eprobe.tc
+> @@ -0,0 +1,53 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +# description: event trigger - test inter-event histogram trigger eprobe on synthetic event
+> +# requires: dynamic_events synthetic_events events/syscalls/sys_enter_openat/hist "e[:[<group>/]<event>] <attached-group>.<attached-event> [<args>]":README
+> +
+> +echo 0 > events/enable
+> +
+> +clear_dynamic_events
+> +
+> +SYSTEM="syscalls"
+> +START="sys_enter_openat"
+> +END="sys_exit_openat"
+> +FIELD="filename"
+> +SYNTH="synth_open"
+> +EPROBE="eprobe_open"
+> +
+> +echo "$SYNTH u64 filename; s64 ret;" > synthetic_events
+> +echo "hist:keys=common_pid:__arg__1=$FIELD" > events/$SYSTEM/$START/trigger
+> +echo "hist:keys=common_pid:filename=\$__arg__1,ret=ret:onmatch($SYSTEM.$START).trace($SYNTH,\$filename,\$ret)" > events/$SYSTEM/$END/trigger
+> +
+> +echo "e:$EPROBE synthetic/$SYNTH file=+0(\$filename):ustring ret=\$ret:s64" >> dynamic_events
+> +
+> +grep -q "$SYNTH" dynamic_events
+> +grep -q "$EPROBE" dynamic_events
+> +test -d events/synthetic/$SYNTH
+> +test -d events/eprobes/$EPROBE
+> +
+> +echo 1 > events/eprobes/$EPROBE/enable
+> +ls
+> +echo 0 > events/eprobes/$EPROBE/enable
+> +
+> +content=`grep '^ *ls-' trace | grep 'file='`
+> +nocontent=`grep '^ *ls-' trace | grep 'file=' | grep -v -e '"/' -e '"."'` || true
+> +
+> +if [ -z "$content" ]; then
+> +	exit_fail
+> +fi
+> +
+> +if [ ! -z "$nocontent" ]; then
+> +	exit_fail
+> +fi
+> +
+> +echo "-:$EPROBE" >> dynamic_events
+> +echo '!'"hist:keys=common_pid:filename=\$__arg__1,ret=ret:onmatch($SYSTEM.$START).trace($SYNTH,\$filename,\$ret)" > events/$SYSTEM/$END/trigger
+> +echo '!'"hist:keys=common_pid:__arg__1=$FIELD" > events/$SYSTEM/$START/trigger
+> +echo '!'"$SYNTH u64 filename; s64 ret;" >> synthetic_events
+> +
+> +! grep -q "$SYNTH" dynamic_events
+> +! grep -q "$EPROBE" dynamic_events
+> +! test -d events/synthetic/$SYNTH
+> +! test -d events/eprobes/$EPROBE
+> +
+> +clear_trace
+> -- 
+> 2.30.2
 
 
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
