@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90CBBC4320A
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 23 Aug 2021 09:56:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5C3AC43214
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 23 Aug 2021 09:56:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7959E6137B
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 23 Aug 2021 09:56:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C041B61078
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 23 Aug 2021 09:56:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232850AbhHWJ5Q (ORCPT
+        id S235897AbhHWJ5R (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 23 Aug 2021 05:57:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50978 "EHLO
+        Mon, 23 Aug 2021 05:57:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235808AbhHWJ5P (ORCPT
+        with ESMTP id S235841AbhHWJ5Q (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:57:15 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3482C061757
-        for <linux-trace-devel@vger.kernel.org>; Mon, 23 Aug 2021 02:56:32 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id d11so35691221eja.8
-        for <linux-trace-devel@vger.kernel.org>; Mon, 23 Aug 2021 02:56:32 -0700 (PDT)
+        Mon, 23 Aug 2021 05:57:16 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA10C061575
+        for <linux-trace-devel@vger.kernel.org>; Mon, 23 Aug 2021 02:56:34 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id d11so35691367eja.8
+        for <linux-trace-devel@vger.kernel.org>; Mon, 23 Aug 2021 02:56:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=eDFIT2pmq3gGUvLlGfimEKq5mRLiux/wJen4AyI8UUg=;
-        b=dmvxSEPCMvSiwIU8dyeIeRR1FtzHnDxjt40zijMg5a3nQ1EHqWVo5woJ4hdaU1lilQ
-         M3LDEW/YRJnqTmrkGNnS8mICUN1iQnJ1LxpUNy5/H+O/7si4gU1p0ylNVhdKMzlZWlKa
-         1mL4MlTQ79dQ2i1ReJFW7NK2Ym++WXr+uoDGX2tkedKrfe6w+l+RNFg0b4qfB8+UZg5Q
-         ZaDIS5ClzW6QAEDiOrKR7bXKCCjODbF05oiE4uxjpJWdERxxSwlg35xkZesPc9xXgKAX
-         y3auCiEj0gAzApIe5EWR0TbBMBVn85znC0Fzx56o2gK7/EMVyfdskSV0Y2xD8i5Df9Ch
-         unBw==
+        bh=dK10IrGqEdfcd4P06/H9hsX5lRFxqCCdsXrn6ekP5Ew=;
+        b=YH5TOy5FzuZkXbux9T4jz8OES2WwpGfJN8WhVKg9XBEU/ZZ2ENAQiX1JkbhNtOfnle
+         PUMGFv2iFnwSoKKa7B/uH6wwYsyQ1Z1+HcsDqxjxfFkkVvJ/1cfqvl0MfpjhGLUDj6fK
+         SQXDZBwXQuGI9uVXWk3/FYXy0uJnXBtc01rYbg7TSckjrkZB8dgp6DT5DTckzPK/IIjf
+         TAMK9wSb4sqDFV6YeLFgqWsRTZXr9NQRk96yB/xQnr124QZ9YCtmAalkAmgQTtH8ld1g
+         a+EnmvC/MnsEbaAPGAZIqFcgEwgNRVP2emXXkP3N5+1RKw1qJ0tyQoTNtMNbteZ6XPrd
+         EPyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=eDFIT2pmq3gGUvLlGfimEKq5mRLiux/wJen4AyI8UUg=;
-        b=YLPYpS0aSwjVAlX04YzNmhtrlR0Rgr9BXj+nASxRGPai8yRJ0QGMX2ZZmpeUlXP1R1
-         /rKfruEsROeUNdqbujLG4jyqTSeGlDGwDmAHMXSImkQOChH1Jc0VZsk+Fv8a1eJP9Dlj
-         NsSdZCkqfqgRAba+YaB8Gfw6LndgYwaT67lJVUDUnLnfWOgL18qbO9wIFLUP2t+V4HjW
-         IuZoOiuXBoaCa6QubFAT/aKEm31U2MekU4oarca4G8nHTE0z5lAPWbHIFBJtUCms9v2x
-         +NHwyGff9Xsi5YPL16bwVwPcI+AJdwRzzR8UxnRzQ0Oo3q80GhciLJOT9GAVX8h2wbDa
-         0ItA==
-X-Gm-Message-State: AOAM532k3KazkoQcQR91r5JgPy+ivSQEZpvSRUg0kd/nTcrZkGP2Hq2U
-        fSoU6DTOiFFWMAJqqgaP+vI=
-X-Google-Smtp-Source: ABdhPJyZ+HhjrNMusPcdP7hlFX4cnZ5ZqaDpbW38NZZHhwm6ssVcXDohZu0+2YdWR6Ko0ke6XOrBfA==
-X-Received: by 2002:a17:907:d09:: with SMTP id gn9mr35259689ejc.447.1629712591362;
-        Mon, 23 Aug 2021 02:56:31 -0700 (PDT)
+        bh=dK10IrGqEdfcd4P06/H9hsX5lRFxqCCdsXrn6ekP5Ew=;
+        b=AIdqHMjA5ooEsWEvOtGLM/6z4ged3f82b5oQIgkhdMDbDwXtKerOIwiAeA22eR4P07
+         D1gPG+fvSQFYvxj741hCEfyhXfDNLTyQnBAy8sDAHZb8JyxxffWDWCsfbNBVOBPtOsph
+         Fe01rFfKIBh5zK/zSDFu7a1tRpwdABZIrkkm7b6G3343ijdzeRxZR0564AYri4OiWmFR
+         p1NcQSjz0d3N72qP5FubQYOhJ/rtq0JFfW3a3j2pQiYq9SUqY5l6aqVm3Dp0LekJIJBt
+         aOYr5XekrqsUUR12k36oyC6PVH0IRrJkTPHSh+lRQA3SKwMXNGCbPUB2i3yF7j7q32G+
+         JoZw==
+X-Gm-Message-State: AOAM530BHpZIkBzlctDGH/WfImyshqoUmSE1Bw0lvMGoatPVv9vJhwXD
+        J6yWTIJOyzj+PjzZvLDfSUPk27av8j8=
+X-Google-Smtp-Source: ABdhPJwuTMDR3nPVJjPBDBFeWz+pobWjNGrj1ytUZVvl4gzxoYLFliBzNjqnSxOseuIyQiyF6u1jiw==
+X-Received: by 2002:a17:906:6b8b:: with SMTP id l11mr12329923ejr.508.1629712592810;
+        Mon, 23 Aug 2021 02:56:32 -0700 (PDT)
 Received: from crow.. ([95.87.199.109])
-        by smtp.gmail.com with ESMTPSA id y23sm7047831ejp.115.2021.08.23.02.56.30
+        by smtp.gmail.com with ESMTPSA id y23sm7047831ejp.115.2021.08.23.02.56.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 02:56:30 -0700 (PDT)
+        Mon, 23 Aug 2021 02:56:32 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v7 1/4] libtraceevent: Improve tep_print_field()
-Date:   Mon, 23 Aug 2021 12:56:15 +0300
-Message-Id: <20210823095618.138887-2-y.karadz@gmail.com>
+Subject: [PATCH v7 3/4] libtraceevent: Add APIs for printing the fields of a record
+Date:   Mon, 23 Aug 2021 12:56:17 +0300
+Message-Id: <20210823095618.138887-4-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210823095618.138887-1-y.karadz@gmail.com>
 References: <20210823095618.138887-1-y.karadz@gmail.com>
@@ -74,166 +74,104 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The existing method tep_print_fields() gets upgraded to use the
-printing formats provided by the tokens.
+The new methods can print all unique data fielsd, or only a subset of
+the fields of the trace event. The print format is derived from the
+parsing tokens (tep_print_parse objects) of the event.
 
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/event-parse.c | 115 +++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 87 insertions(+), 28 deletions(-)
+ src/event-parse.c | 49 +++++++++++++++++++++++++++++++++++++++++++----
+ src/event-parse.h |  7 +++++++
+ 2 files changed, 52 insertions(+), 4 deletions(-)
 
 diff --git a/src/event-parse.c b/src/event-parse.c
-index 02ec677..6129a0c 100644
+index 51cb30b..71a3ccd 100644
 --- a/src/event-parse.c
 +++ b/src/event-parse.c
-@@ -3913,7 +3913,6 @@ eval_num_arg(void *data, int size, struct tep_event *event, struct tep_print_arg
- 			arg->field.field = tep_find_any_field(event, arg->field.name);
- 			if (!arg->field.field)
- 				goto out_warning_field;
--			
- 		}
- 		/* must be a number */
- 		val = tep_read_number(tep, data + arg->field.field->offset,
-@@ -5326,8 +5325,8 @@ static int is_printable_array(char *p, unsigned int len)
- 	return 1;
+@@ -5455,20 +5455,61 @@ void tep_print_field(struct trace_seq *s, void *data,
+ 	print_field(s, data, field, NULL);
  }
  
--void tep_print_field(struct trace_seq *s, void *data,
--		     struct tep_format_field *field)
-+static void print_field_raw(struct trace_seq *s, void *data,
-+			     struct tep_format_field *field)
+-void tep_print_fields(struct trace_seq *s, void *data,
+-		      int size __maybe_unused, struct tep_event *event)
++static inline void
++print_selected_fields(struct trace_seq *s, void *data,
++		      struct tep_event *event,
++		      unsigned long long ignore_mask)
  {
- 	struct tep_handle *tep = field->event->tep;
- 	unsigned int offset, len, i;
-@@ -5389,6 +5388,56 @@ void tep_print_field(struct trace_seq *s, void *data,
+ 	struct tep_print_parse *parse = event->print_fmt.print_cache;
+ 	struct tep_format_field *field;
++	unsigned long long field_mask = 1;
+ 
+ 	field = event->format.fields;
+-	while (field) {
++	for(; field; field = field->next, field_mask <<= 1) {
++		if (field_mask & ignore_mask)
++			continue;
++
+ 		trace_seq_printf(s, " %s=", field->name);
+ 		print_field(s, data, field, &parse);
+-		field = field->next;
  	}
  }
  
-+static int print_parse_data(struct tep_print_parse *parse, struct trace_seq *s,
-+			    void *data, int size, struct tep_event *event);
-+
-+void tep_print_field(struct trace_seq *s, void *data,
-+		     struct tep_format_field *field)
++void tep_print_fields(struct trace_seq *s, void *data,
++		      int size __maybe_unused, struct tep_event *event)
 +{
-+	struct tep_event *event = field->event;
-+	struct tep_print_parse *parse;
-+	bool has_0x;
-+
-+	parse = event->print_fmt.print_cache;
-+
-+	if (event->flags & TEP_EVENT_FL_FAILED)
-+		goto out;
-+
-+	if (field->flags & (TEP_FIELD_IS_ARRAY || TEP_FIELD_IS_STRING))
-+		goto out;
-+
-+	for (;parse; parse = parse->next) {
-+		if (parse->type == PRINT_FMT_STRING) {
-+			int len = strlen(parse->format);
-+
-+			if (len > 1 &&
-+			    strcmp(parse->format + (len -2), "0x") == 0)
-+				has_0x = true;
-+			else
-+				has_0x = false;
-+
-+			continue;
-+		}
-+
-+		if (!parse->arg ||
-+		    parse->arg->type != TEP_PRINT_FIELD ||
-+		    parse->arg->field.field != field) {
-+			has_0x = false;
-+			continue;
-+		}
-+
-+		if (has_0x)
-+			trace_seq_puts(s, "0x");
-+
-+		print_parse_data(parse, s, data, field->size, event);
-+		return;
-+	}
-+
-+ out:
-+	/* Not found. */
-+	print_field_raw(s, data, field);
++	print_selected_fields(s, data, event, 0);
 +}
 +
++/**
++ * tep_record_print_selected_fields - print the field name followed by the
++ * record's field value for a selected subset of record fields.
++ * @s: The seq to print to
++ * @record: The record to get the event from
++ * @event: The event that the field is for
++ */
++void tep_record_print_fields(struct trace_seq *s,
++			     struct tep_record *record,
++			     struct tep_event *event)
++{
++	print_selected_fields(s, record->data, event, 0);
++}
++
++/**
++ * tep_record_print_selected_fields - print the field name followed by the
++ * record's field value for a selected subset of record fields.
++ * @s: The seq to print to
++ * @record: The record to get the event from
++ * @event: The event that the field is for
++ * @ignore_mask: Bit mask defining the fields to be ignored
++ */
++void tep_record_print_selected_fields(struct trace_seq *s,
++				      struct tep_record *record,
++				      struct tep_event *event,
++				      unsigned long long ignore_mask)
++{
++	print_selected_fields(s, record->data, event, ignore_mask);
++}
++
+ static int print_function(struct trace_seq *s, const char *format,
+ 			  void *data, int size, struct tep_event *event,
+ 			  struct tep_print_arg *arg)
+diff --git a/src/event-parse.h b/src/event-parse.h
+index d4a876f..08dcbd8 100644
+--- a/src/event-parse.h
++++ b/src/event-parse.h
+@@ -545,6 +545,13 @@ int tep_cmdline_pid(struct tep_handle *tep, struct tep_cmdline *cmdline);
+ 
+ void tep_print_field(struct trace_seq *s, void *data,
+ 		     struct tep_format_field *field);
++void tep_record_print_fields(struct trace_seq *s,
++			     struct tep_record *record,
++			     struct tep_event *event);
++void tep_record_print_selected_fields(struct trace_seq *s,
++				      struct tep_record *record,
++				      struct tep_event *event,
++				      unsigned long long ignore_mask);
  void tep_print_fields(struct trace_seq *s, void *data,
- 		      int size __maybe_unused, struct tep_event *event)
- {
-@@ -5908,35 +5957,45 @@ parse_args(struct tep_event *event, const char *format, struct tep_print_arg *ar
- 	return parse_ret;
- }
- 
--static void print_event_cache(struct tep_print_parse *parse, struct trace_seq *s,
--			      void *data, int size, struct tep_event *event)
-+static int print_parse_data(struct tep_print_parse *parse, struct trace_seq *s,
-+			    void *data, int size, struct tep_event *event)
- {
- 	int len_arg;
- 
-+	if (parse->len_as_arg)
-+		len_arg = eval_num_arg(data, size, event, parse->len_as_arg);
-+
-+	switch (parse->type) {
-+	case PRINT_FMT_ARG_DIGIT:
-+		print_arg_number(s, parse->format,
-+				 parse->len_as_arg ? len_arg : -1, data,
-+				 size, parse->ls, event, parse->arg);
-+		break;
-+	case PRINT_FMT_ARG_POINTER:
-+		print_arg_pointer(s, parse->format,
-+				  parse->len_as_arg ? len_arg : 1,
-+				  data, size, event, parse->arg);
-+		break;
-+	case PRINT_FMT_ARG_STRING:
-+		print_arg_string(s, parse->format,
-+				 parse->len_as_arg ? len_arg : -1,
-+				 data, size, event, parse->arg);
-+		break;
-+	case PRINT_FMT_STRING:
-+	default:
-+		trace_seq_printf(s, "%s", parse->format);
-+		/* Return 1 on non field. */
-+		return 1;
-+	}
-+	/* Return 0 on field being processed. */
-+	return 0;
-+}
-+
-+static void print_event_cache(struct tep_print_parse *parse, struct trace_seq *s,
-+			      void *data, int size, struct tep_event *event)
-+{
- 	while (parse) {
--		if (parse->len_as_arg)
--			len_arg = eval_num_arg(data, size, event, parse->len_as_arg);
--		switch (parse->type) {
--		case PRINT_FMT_ARG_DIGIT:
--			print_arg_number(s, parse->format,
--					parse->len_as_arg ? len_arg : -1, data,
--					 size, parse->ls, event, parse->arg);
--			break;
--		case PRINT_FMT_ARG_POINTER:
--			print_arg_pointer(s, parse->format,
--					  parse->len_as_arg ? len_arg : 1,
--					  data, size, event, parse->arg);
--			break;
--		case PRINT_FMT_ARG_STRING:
--			print_arg_string(s, parse->format,
--					 parse->len_as_arg ? len_arg : -1,
--					 data, size, event, parse->arg);
--			break;
--		case PRINT_FMT_STRING:
--		default:
--			trace_seq_printf(s, "%s", parse->format);
--			break;
--		}
-+		print_parse_data(parse, s, data, size, event);
- 		parse = parse->next;
- 	}
- }
+ 		      int size __maybe_unused, struct tep_event *event);
+ int tep_strerror(struct tep_handle *tep, enum tep_errno errnum,
 -- 
 2.30.2
 
