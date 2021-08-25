@@ -8,169 +8,153 @@ X-Spam-Status: No, score=-20.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF725C4338F
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 25 Aug 2021 09:44:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CFD2EC4320A
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 25 Aug 2021 09:44:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 93F0B6115A
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 25 Aug 2021 09:44:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B937A61163
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 25 Aug 2021 09:44:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239637AbhHYJpi (ORCPT
+        id S237019AbhHYJpj (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 25 Aug 2021 05:45:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59080 "EHLO
+        Wed, 25 Aug 2021 05:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236914AbhHYJph (ORCPT
+        with ESMTP id S236914AbhHYJpj (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 25 Aug 2021 05:45:37 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 363C8C061757
-        for <linux-trace-devel@vger.kernel.org>; Wed, 25 Aug 2021 02:44:52 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id n5so23083521wro.12
-        for <linux-trace-devel@vger.kernel.org>; Wed, 25 Aug 2021 02:44:52 -0700 (PDT)
+        Wed, 25 Aug 2021 05:45:39 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F27C061757
+        for <linux-trace-devel@vger.kernel.org>; Wed, 25 Aug 2021 02:44:53 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id g138so14553678wmg.4
+        for <linux-trace-devel@vger.kernel.org>; Wed, 25 Aug 2021 02:44:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S8qZl4LPNgf/JfYNO7U7SNMH3XMoCfcR8lRycUeE2ek=;
-        b=DqrCxBuxNoCMxwrH/OweI4VBxf3/xBFxD8HuyNWKhNTAgoXsb62uAU5jRe7GnUc4Rk
-         hcWuZS+CQVPdzu7bY2SGvua7YZkdHh9Jvdv6xrRmRTT+PYMfgVhr6ybZtM165MpCHIcH
-         RcDBLjuAqDuFHRJ7rhJL5TDvgc6EVxBBfwhO4gmbVc4+shsCsdJP8htDn7NyKmZpn0dV
-         gOVKscuGIl6tIo762qDpyN+QfxOcJUsBq8J0/Erz/bBOoZJPfafIFFEl29iZhOuNE3CD
-         sd/CpYWeBuJeBeEUZuC2Cpurod6NhPlmJ2L1BCUC+xfeJr2BMbJqPfrxp1lmT4NMrOlX
-         mprA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=e4mBRpLe1cpkPbzbC1xtWPAsaukseip+CxycfkdzxO4=;
+        b=epJ7UBh0zSBtKdh56uO0UJMOTvVXM0gQeMU0hCkoDkLvADOthm/bsDophMhS3HfcDa
+         c7Zaq2jXyfDv9lwis1otX8OhGM2+RTjhCRoA9a9ikE32jqdDWElyRE/rlislAu/z80ES
+         si0Zvz6vv7lki+Zg2DX7coETXXam/SH/mGTdqxYMciL8sGg3gcM2id+wi0ztcsEdAirN
+         kAooNw7d8tlVrNYPUn4JkUHy6EPL1+12PWa3xy0RocAtXW7Ay9Zp0DgefNXP+m2bu79z
+         7U0NHL9gKX8I3qZHwblIJesjnIof52PzDb9+WcpcE7PsLLjNYG2DPBIqr4GL+9pb5jy8
+         5gJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S8qZl4LPNgf/JfYNO7U7SNMH3XMoCfcR8lRycUeE2ek=;
-        b=Jzlw0VYzDmBvVjb4YilrIiwTK5UL7NMP8/90POpx0hON+sMcdNJjGa/5vaKPLIo0t7
-         tnP+GwJlt/c3V1SBiOPHNCcRkUnENf35Nkq2tT35hfBKFMiTJ9/cFFPitJVtyjCHoZsi
-         zAB3d2ipCIX+QTJ4PO2dfbMXckPmUYSrtmQQH3+DzBxg+oLQwxcuTCedXLOyHzr+rcdv
-         F+Ofy2ZESETqZEApJ/y2FsxV8u+JjMBDdwyySTXLFC2C4L0rKPV4QwZHYWfbzG3IyDa2
-         GkhoLzOu1uSMavp9AOdpWladKHdChv0tcdUQk8y1e2gyePZ6tEYJmDBdWmtmsr7g7hOs
-         eEKg==
-X-Gm-Message-State: AOAM533umUrPJEzIiZ2ViPwSzEsc7Y3CNhKoCk8u+I08IRVqLT7aBVMG
-        N2JeYYHeiUkQiTOEeS1s62k3ZkXMpIA=
-X-Google-Smtp-Source: ABdhPJz3linJhm/HbDpczC4DFD15iPyrSt0Z6EpxTdZmsOyxjtYDy1At/Y+Fp8jhIbkxl/6cLgzEtw==
-X-Received: by 2002:adf:dd4f:: with SMTP id u15mr2908511wrm.237.1629884690584;
-        Wed, 25 Aug 2021 02:44:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=e4mBRpLe1cpkPbzbC1xtWPAsaukseip+CxycfkdzxO4=;
+        b=WmtpCXLUCK01oWuMSeQuY/FT8UASEVW/x/nvYSe+2f4dOnZ5oksgcIhXldM6AwwB5b
+         RR9/h1pyM08+xiOsuFeYkDyopoFiWjwQjRb/T/EH0+LQefSwFbR0H7A1oFK5jhN9grH4
+         z3IzGHwrJXNq8DDVpIgc9nHO7I3CNW7+MD06OW/7ZfiId9qej4oDxvK1PBZZj/tje+gB
+         Kyaqgem/CUZTgxDRvj7Od8HxfE5cZDEhuSX3RCuUZPZb+U8kPRMXIm7Km2f+uwNCdyNb
+         K7eV71LKxO6AWG9X6NkAl/oiXb6j2fu7/kFqQFu4G3IcTMGA1wZUj7WlnGAOrS17WUkU
+         smFw==
+X-Gm-Message-State: AOAM531IfEOO6N2Ep4VQQ2Wb1S0AjRlV+kFjMeEG8z+Ti9dzxoVB1DAB
+        YTbdtR/+52XOwe20fOJRYRL60b7YNqw=
+X-Google-Smtp-Source: ABdhPJwj3dzzwEtyoEHk+W+SHXzTxzW+HmMkGWU2u5ZBrmab062rNkpxlemr+NA44m5CfGekec2yLQ==
+X-Received: by 2002:a1c:2086:: with SMTP id g128mr8364817wmg.46.1629884691924;
+        Wed, 25 Aug 2021 02:44:51 -0700 (PDT)
 Received: from crow.. ([95.87.199.109])
-        by smtp.gmail.com with ESMTPSA id u23sm4608794wmc.24.2021.08.25.02.44.49
+        by smtp.gmail.com with ESMTPSA id u23sm4608794wmc.24.2021.08.25.02.44.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 02:44:50 -0700 (PDT)
+        Wed, 25 Aug 2021 02:44:51 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 1/3] trace-cruncher: Update CONTRIBUTING.md
-Date:   Wed, 25 Aug 2021 12:44:34 +0300
-Message-Id: <20210825094436.46958-1-y.karadz@gmail.com>
+Subject: [PATCH 2/3] trace-cruncher: Update README.md
+Date:   Wed, 25 Aug 2021 12:44:35 +0300
+Message-Id: <20210825094436.46958-2-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210825094436.46958-1-y.karadz@gmail.com>
+References: <20210825094436.46958-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Remove the legacy content that came from the template file and make
-it provide adequate instruction for contributors.
+Improve the the description of the project and make the provided
+information consistent with content of CONTRIBUTING.md.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- CONTRIBUTING.md | 72 +++++++------------------------------------------
- 1 file changed, 10 insertions(+), 62 deletions(-)
+ README.md | 31 +++++++++++++------------------
+ 1 file changed, 13 insertions(+), 18 deletions(-)
 
-diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
-index 2f92264..27c7ccb 100644
---- a/CONTRIBUTING.md
-+++ b/CONTRIBUTING.md
-@@ -2,77 +2,25 @@
+diff --git a/README.md b/README.md
+index 9a3696c..93f12c8 100644
+--- a/README.md
++++ b/README.md
+@@ -4,9 +4,9 @@
  
- # Contributing to trace-cruncher
+ ## Overview
  
--The trace-cruncher project team welcomes contributions from the community. Before you start working with trace-cruncher, please
--read our [Developer Certificate of Origin](https://cla.vmware.com/dco). All contributions to this repository must be
--signed as described on that page. Your signature certifies that you wrote the patch or have the right to pass it on
--as an open-source patch. For more detailed information, refer to [CONTRIBUTING.md](CONTRIBUTING.md).
-+The trace-cruncher project team welcomes contributions from the community. All contributions to this repository must be
-+signed. Your signature certifies that you wrote the patch or have the right to pass it on as an open-source patch. 
+-The Trace-Cruncher project aims to provide an interface between the existing instrumentation for collection and visualization of tracing data from the Linux kernel and the broad and very well developed ecosystem of instruments for data analysis available in Python. The interface is based on NumPy.
++The Trace-Cruncher project aims to provide an interface between the existing instrumentation for collection and visualization of tracing data from the Linux kernel and the broad and very well developed ecosystem of instruments for data analysis available in Python.
  
--## Contribution Flow
-+The development process of trace-cruncher is strongly coupled to the development of the Linux kernel tracing libraries [libtraceevent](https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git), [libtracefs](https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/) and [KernelShark](https://git.kernel.org/pub/scm/utils/trace-cmd/kernel-shark.git/). Because of this reason we adopt and follow the development workflow established by those projects.
+-NumPy implements an efficient multi-dimensional container of generic data and uses strong typing in order to provide fast data processing in Python. The  Trace-Cruncher allows for sophisticated analysis of kernel tracing data via scripts, but it also opens the door for exposing the kernel tracing data to the instruments provided by the scientific toolkit of Python like MatPlotLib, Stats, Scikit-Learn and even to the nowadays most popular frameworks for Machine Learning like TensorFlow and PyTorch. The Trace-Cruncher is strongly coupled to the KernelShark project and is build on top of the C API of libkshark.
++The Trace-Cruncher allows for sophisticated analysis of kernel tracing data via scripts, but it also opens the door for exposing the kernel tracing data to the instruments provided by the scientific toolkit of Python like MatPlotLib, Stats, Scikit-Learn and even to the nowadays most popular frameworks for Machine Learning like TensorFlow and PyTorch. The Trace-Cruncher is strongly coupled to the [libtraceevent](https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git), [libtracefs](https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/) and [KernelShark](https://git.kernel.org/pub/scm/utils/trace-cmd/kernel-shark.git/) projects and is build on top of the C API of this librearies.
  
--This is a rough outline of what a contributor's workflow looks like:
-+For contributions to development, please send patches to: linux-trace-devel@vger.kernel.org
+ ## Try it out
  
--- Create a topic branch from where you want to base your work
--- Make commits of logical units
--- Make sure your commit messages are in the proper format (see below)
--- Push your changes to a topic branch in your fork of the repository
--- Submit a pull request
--
--Example:
--
--``` shell
--git remote add upstream https://github.com/vmware/trace-cruncher.git
--git checkout -b my-new-feature master
--git commit -a
--git push origin my-new-feature
--```
--
--### Staying In Sync With Upstream
--
--When your branch gets out of sync with the vmware/master branch, use the following to update:
--
--``` shell
--git checkout my-new-feature
--git fetch -a
--git pull --rebase upstream master
--git push --force-with-lease origin my-new-feature
--```
--
--### Updating pull requests
--
--If your PR fails to pass CI or needs changes based on code review, you'll most likely want to squash these changes into
--existing commits.
--
--If your pull request contains a single commit or your changes are related to the most recent commit, you can simply
--amend the commit.
--
--``` shell
--git add .
--git commit --amend
--git push --force-with-lease origin my-new-feature
--```
--
--If you need to squash changes into an earlier commit, you can use:
--
--``` shell
--git add .
--git commit --fixup <commit>
--git rebase -i --autosquash master
--git push --force-with-lease origin my-new-feature
--```
--
--Be sure to add a comment to the PR indicating your new changes are ready to review, as GitHub does not generate a
--notification when you git push.
-+[Subscribe](http://vger.kernel.org/vger-lists.html#linux-trace-devel) / [Archives](https://lore.kernel.org/linux-trace-devel/)
+@@ -23,13 +23,17 @@ Trace-Cruncher has the following external dependencies:
  
- ### Code Style
+     > sudo apt-get install libpython3-dev cython3 python3-numpy python3-pip -y
  
--### Formatting Commit Messages
-+The preferred coding style for the project is the [Linux kernel coding style](https://www.kernel.org/doc/html/v4.10/process/coding-style.html#linux-kernel-coding-style)
++    > sudo apt-get install flex valgrind -y
++
+     > sudo pip3 install --system pkgconfig GitPython
  
--We follow the conventions on [How to Write a Git Commit Message](http://chris.beams.io/posts/git-commit/).
-+### Formatting Commit Messages
+ 1.2 In order to install all packages on Fedora, as root do the following:
  
--Be sure to include any related GitHub issue references in the commit message.  See
--[GFM syntax](https://guides.github.com/features/mastering-markdown/#GitHub-flavored-markdown) for referencing issues
--and commits.
-+The project follows the conventions for [submitting patches](https://www.kernel.org/doc/html/v5.4/process/submitting-patches.html)
-+as described by the Linux kernel.
+-    > dnf install gcc gcc-c++ git cmake json-c-devel -y
++    > sudo dnf install gcc gcc-c++ git cmake json-c-devel -y
++
++    > sudo dnf install python3-devel python3-Cython python3-numpy python3-pip -y
  
- ## Reporting Bugs and Creating Issues
-+For bug reports and issues, please file it [bugzilla](https://bugzilla.kernel.org/buglist.cgi?component=Trace-cmd%2FKernelshark&product=Tools&resolution=---)
+-    > dnf install python3-devel python3-Cython python3-numpy python3-pip -y
++    > sudo dnf install flex valgrind -y
  
- When opening a new issue, try to roughly follow the commit message format conventions above.
+     > sudo pip3 install --system pkgconfig GitPython
+ 
+@@ -58,17 +62,6 @@ Trace-Cruncher has the following external dependencies:
+     > cd ..
+ 
+ 
+-    > git clone https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git
+-
+-    > cd trace-cmd
+-
+-    > make
+-
+-    > sudo make install_libs
+-
+-    > cd ..
+-
+-
+     > git clone https://github.com/yordan-karadzhov/kernel-shark-v2.beta.git kernel-shark
+ 
+     > cd kernel-shark/build
+@@ -92,14 +85,16 @@ Installing trace-cruncher is very simple. After downloading the source code, you
+      > sudo make install
+ 
+ ## Documentation
++For questions about the use of Trace-Cruncher, please send email to: linux-trace-users@vger.kernel.org
+ 
+-For bug reports and issues, please file it here:
++[Subscribe](http://vger.kernel.org/vger-lists.html#linux-trace-users) / [Archives](https://lore.kernel.org/linux-trace-users/)
+ 
+-https://bugzilla.kernel.org/buglist.cgi?component=Trace-cmd%2FKernelshark&product=Tools&resolution=---
++For bug reports and issues, please file it
++[bugzilla](https://bugzilla.kernel.org/buglist.cgi?component=Trace-cmd%2FKernelshark&product=Tools&resolution=---)
+ 
+ ## Contributing
+ 
+-The trace-cruncher project team welcomes contributions from the community. If you wish to contribute code and you have not signed our contributor license agreement (CLA), our bot will update the issue when you open a Pull Request. For any questions about the CLA process, please refer to our [FAQ](https://cla.vmware.com/faq).
++The trace-cruncher project team welcomes contributions from the community. For more detailed information, refer to [CONTRIBUTING.md](CONTRIBUTING.md).
+ 
+ ## License
+ 
 -- 
 2.30.2
 
