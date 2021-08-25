@@ -8,124 +8,204 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 381F0C432BE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 381B8C4338F
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 25 Aug 2021 09:23:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 208246112D
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 25 Aug 2021 09:23:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AEC17610FD
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 25 Aug 2021 09:23:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239467AbhHYJYc (ORCPT
+        id S239585AbhHYJYb (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 25 Aug 2021 05:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53982 "EHLO
+        Wed, 25 Aug 2021 05:24:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239647AbhHYJY1 (ORCPT
+        with ESMTP id S239627AbhHYJYZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 25 Aug 2021 05:24:27 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79D8C0617A8
-        for <linux-trace-devel@vger.kernel.org>; Wed, 25 Aug 2021 02:23:40 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id q14so1207190wrp.3
-        for <linux-trace-devel@vger.kernel.org>; Wed, 25 Aug 2021 02:23:40 -0700 (PDT)
+        Wed, 25 Aug 2021 05:24:25 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3CBDC0613D9
+        for <linux-trace-devel@vger.kernel.org>; Wed, 25 Aug 2021 02:23:39 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id n5so22988416wro.12
+        for <linux-trace-devel@vger.kernel.org>; Wed, 25 Aug 2021 02:23:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=b8jSTj05xMs44fgv9I3UUy63KAb4PWH8V34+5f0uljE=;
-        b=cj4iMHY49ujuij8aFG5id79GfOH9Ad4C6d91+2ifaEpisp9Yq8nM21ys3IptUHllVW
-         4OJBT+tPI/QW7GNkoviJNFljDhKCVa8n7+2byVcbw0OCEYxASEe8LjU4jbC4dlYDOx74
-         5O//H8Q00ktJCUzpr6y7Iq329uyjprZCUjGKxOLQAdzo7l6+a5P3DCnex0hom1zqc7/h
-         dLsfJHL9f2KljK+mGhIfmBn/dj5kA88aJakUlnuDHD5i3HLvpMzWgolBpG5bibf3i4P9
-         plwinPgUBhbe52Ok060t0Zb1IA2IBGwF+RTLosAMccYcAeUPrbg2NgLyLSPiSjcVOXlH
-         kZrw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hXYGtWFsOPyj6lWnlnCeDPx39hKFrLVz2l3kXIc7BaU=;
+        b=q8mjjWjR1yOOlQpMJ2ccs5VLrByvDAo8G7Llgm5BRK3oe9N5poiDZeubn+11FwQ5nr
+         GRQwM8m3zh6UFc7Rv2sMDjd0R6FhswH0NrREz0CI8Vr2yWrh0OWnhqKL2sS4+9Fz+BVI
+         nngvEJw5nOIrjXZdNThyNBcVGiiS2IrDvvZ7w8h1DfzHM6LcHVTUTpG8pgrr1r2Jxalg
+         diEJLqztPpI3elc8u1i+2HN9b1MOVV9CTP+OZRXZaS4Rl6FrNs8VDk6H5OtXLIEjsKI8
+         35lEqbylATUIKIVYBfd5y5JuuGVLEP3sbCc333gJnKSWSABYAdT43PKkTPbLLn0/pexq
+         mqtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=b8jSTj05xMs44fgv9I3UUy63KAb4PWH8V34+5f0uljE=;
-        b=aDBwwRLYZM4Iu+W2HCC3jj13FYZ8956aB+I1kFk9LfRwXCIokKNAOn26iKeziUKgvg
-         2FqvwcuCZYzGWuVifmraH5fczcg0KszIuZXnOuVX6a7KhtY4rNJw+OwxmgfzyZRhq6L0
-         avWzh/5ki2aEb6buY+IE32ydLXYVMQiD0tuJ4e4YUfGCZxuWY67yVjHdyr/Xr69VsT8C
-         u+p/F53eYYbeEuud5QrYdkb0KClu152NhYfrkn5caMEclGlvCZB8OOIm9dgJgN42dKac
-         W09IT6TdFqdGsES6Ed0hHe8eSgpHEO62hY/RoVq35hkDIGjnL1ftxBWZpCFdT6fFqIYW
-         KAeA==
-X-Gm-Message-State: AOAM530QUcFg7YU41UJkEhRKNXfAchBpPr+IFxC0NPMkpNsuVVnNGZbN
-        3igEtNOFxDuRGfXGC/MKB5v53wfB7o8=
-X-Google-Smtp-Source: ABdhPJzKpbDTThLZCtXA/67KckZx4pAo5WqDjTAvgLH/al2OfsTsYwh73Gjt/3uvK3Jgxj3neAfgbw==
-X-Received: by 2002:a5d:58ce:: with SMTP id o14mr23418237wrf.319.1629883419293;
-        Wed, 25 Aug 2021 02:23:39 -0700 (PDT)
-Received: from crow.. ([95.87.199.109])
-        by smtp.gmail.com with ESMTPSA id w9sm4599323wmc.19.2021.08.25.02.23.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hXYGtWFsOPyj6lWnlnCeDPx39hKFrLVz2l3kXIc7BaU=;
+        b=Da6i8B3oEiOJtLUz32Gb+LPmtyaEpeJHxFxZo0hI6nAG/N2/Eu4ZiPEJ7iNodyp9uZ
+         xjqy1X8JGW3nMgtrpqLL4FujQho/XvCk7cCF2pBsQOh+jrNMYjw5rgU6moeeKdN9YdWx
+         KLCYPb9afB8pn+v6RUt7L7hHhxAhqnFy1LDxZFgj7DpcrGF9h3DnLsGBsVuxzwY4Lx1J
+         MxpWlv5Tu0MgIcVY5zMCybYVhgqfH6K5SKXREeC3PgPkXL37gWyH4HyVWSRLXbruHdBG
+         artg0wTWc+N9OHay6+Bjn6Jq4GasHhNmT/cEyZHGImwIGLD768L8c2g2LUhcyqxFk7w5
+         AnOQ==
+X-Gm-Message-State: AOAM531ggzzyEnv01hZ424zv083EUFKf1rHuqHekxhuXxLwixH+MZMQb
+        x2CpAGwTu8jrbYkJ9qnFsiIk3MVtP08=
+X-Google-Smtp-Source: ABdhPJxKUmt23I5jIwlSd6wyz2fw0EOaUssiCC/57nDcepEUwQSxK/a+0QsSalBqUvBsAkj353Ej0w==
+X-Received: by 2002:adf:e606:: with SMTP id p6mr17902984wrm.231.1629883418097;
         Wed, 25 Aug 2021 02:23:38 -0700 (PDT)
+Received: from crow.. ([95.87.199.109])
+        by smtp.gmail.com with ESMTPSA id w9sm4599323wmc.19.2021.08.25.02.23.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 02:23:37 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 2/3] trace-cruncher: Have standard 'not existing' message
-Date:   Wed, 25 Aug 2021 12:23:25 +0300
-Message-Id: <20210825092326.45804-2-y.karadz@gmail.com>
+Subject: [PATCH v2 1/3] trace-cruncher: Add methods for accessing tracefs errorlog
+Date:   Wed, 25 Aug 2021 12:23:24 +0300
+Message-Id: <20210825092326.45804-1-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210825092326.45804-1-y.karadz@gmail.com>
-References: <20210825092326.45804-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The string "(nil)" is used to state that an object
-do not exists / is empty.
+Just wrapping the corresponding APIs of libtracefs.
+The functionalities are also available as static methods and will be
+used by the module itself when printing the error messages.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/common.h         | 2 ++
- src/ftracepy-utils.c | 6 +++---
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ src/ftracepy-utils.c | 68 ++++++++++++++++++++++++++++++++++++++++++++
+ src/ftracepy-utils.h |  6 ++++
+ src/ftracepy.c       | 10 +++++++
+ 3 files changed, 84 insertions(+)
 
-diff --git a/src/common.h b/src/common.h
-index b7f6a87..476e4f1 100644
---- a/src/common.h
-+++ b/src/common.h
-@@ -24,6 +24,8 @@
- 
- static const char *NO_ARG = "/NONE/";
- 
-+#define TC_NIL_MSG	"(nil)"
-+
- static inline bool is_all(const char *arg)
- {
- 	const char all[] = "all";
 diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
-index da58855..88b069c 100644
+index 581432d..da58855 100644
 --- a/src/ftracepy-utils.c
 +++ b/src/ftracepy-utils.c
-@@ -69,7 +69,7 @@ PyObject *PyTepRecord_cpu(PyTepRecord* self)
+@@ -23,6 +23,38 @@ PyObject *TFS_ERROR;
+ PyObject *TEP_ERROR;
+ PyObject *TRACECRUNCHER_ERROR;
  
- PyObject *PyTepEvent_name(PyTepEvent* self)
++static const char *get_instance_name(struct tracefs_instance *instance);
++
++static char *tfs_error_log(struct tracefs_instance *instance, bool *ok)
++{;
++	char *err_log;
++
++	errno = 0;
++	err_log = tracefs_error_all(instance);
++	if (errno && !err_log) {
++		PyErr_Format(TFS_ERROR,
++			     "Unable to get error log for instance \'%s\'.",
++		             get_instance_name(instance));
++	}
++
++	if (ok)
++		*ok = errno ? false : true;
++
++	return err_log;
++}
++
++static bool tfs_clear_error_log(struct tracefs_instance *instance)
++{
++	if (tracefs_error_clear(instance) < 0) {
++		PyErr_Format(TFS_ERROR,
++			     "Unable to clear error log for instance \'%s\'.",
++			     get_instance_name(instance));
++		return false;
++	}
++
++	return true;
++}
++
+ PyObject *PyTepRecord_time(PyTepRecord* self)
  {
--	const char * name = self->ptrObj ? self->ptrObj->name : "nil";
-+	const char *name = self->ptrObj ? self->ptrObj->name : TC_NIL_MSG;
- 	return PyUnicode_FromString(name);
+ 	unsigned long ts = self->ptrObj ? self->ptrObj->ts : 0;
+@@ -2051,6 +2083,42 @@ PyObject *PyFtrace_hook2pid(PyObject *self, PyObject *args, PyObject *kwargs)
+ 	Py_RETURN_NONE;
  }
  
-@@ -170,7 +170,7 @@ PyObject *PyTepEvent_parse_record_field(PyTepEvent* self, PyObject *args,
- 	}
++PyObject *PyFtrace_error_log(PyObject *self, PyObject *args,
++					     PyObject *kwargs)
++{
++	struct tracefs_instance *instance;
++	PyObject *ret = NULL;
++	char *err_log;
++	bool ok;
++
++	if (!get_instance_from_arg(args, kwargs, &instance))
++		return NULL;
++
++	err_log = tfs_error_log(instance, &ok);
++	if (err_log) {
++		ret = PyUnicode_FromString(err_log);
++		free(err_log);
++	} else if (ok) {
++		ret = PyUnicode_FromString("(nil)");
++	}
++
++	return ret;
++}
++
++PyObject *PyFtrace_clear_error_log(PyObject *self, PyObject *args,
++						   PyObject *kwargs)
++{
++	struct tracefs_instance *instance;
++
++	if (!get_instance_from_arg(args, kwargs, &instance))
++		return NULL;
++
++	if (!tfs_clear_error_log(instance))
++		return NULL;
++
++	Py_RETURN_NONE;
++}
++
+ void PyFtrace_at_exit(void)
+ {
+ }
+diff --git a/src/ftracepy-utils.h b/src/ftracepy-utils.h
+index 4e04fb0..26a2f14 100644
+--- a/src/ftracepy-utils.h
++++ b/src/ftracepy-utils.h
+@@ -177,6 +177,12 @@ PyObject *PyFtrace_iterate_trace(PyObject *self, PyObject *args,
  
- 	if (!field_size)
--		return PyUnicode_FromString("(nil)");
-+		return PyUnicode_FromString(TC_NIL_MSG);
+ PyObject *PyFtrace_hook2pid(PyObject *self, PyObject *args, PyObject *kwargs);
  
- 	if (field->flags & TEP_FIELD_IS_STRING) {
- 		char *val_str = record->ptrObj->data + field_offset;
-@@ -2099,7 +2099,7 @@ PyObject *PyFtrace_error_log(PyObject *self, PyObject *args,
- 		ret = PyUnicode_FromString(err_log);
- 		free(err_log);
- 	} else if (ok) {
--		ret = PyUnicode_FromString("(nil)");
-+		ret = PyUnicode_FromString(TC_NIL_MSG);
- 	}
++PyObject *PyFtrace_error_log(PyObject *self, PyObject *args,
++					     PyObject *kwargs);
++
++PyObject *PyFtrace_clear_error_log(PyObject *self, PyObject *args,
++						   PyObject *kwargs);
++
+ void PyFtrace_at_exit(void);
  
- 	return ret;
+ #endif
+diff --git a/src/ftracepy.c b/src/ftracepy.c
+index a4fba01..e5a91fc 100644
+--- a/src/ftracepy.c
++++ b/src/ftracepy.c
+@@ -310,6 +310,16 @@ static PyMethodDef ftracepy_methods[] = {
+ 	 METH_VARARGS | METH_KEYWORDS,
+ 	 "Trace only particular process."
+ 	},
++	{"error_log",
++	 (PyCFunction) PyFtrace_error_log,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Get the content of the error log."
++	},
++	{"clear_error_log",
++	 (PyCFunction) PyFtrace_clear_error_log,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Clear the content of the error log."
++	},
+ 	{NULL, NULL, 0, NULL}
+ };
+ 
 -- 
 2.30.2
 
