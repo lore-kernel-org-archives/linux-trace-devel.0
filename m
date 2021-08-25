@@ -2,119 +2,130 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C172DC4338F
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 23 Aug 2021 20:47:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 381F0C432BE
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 25 Aug 2021 09:23:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8F9E7613A8
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 23 Aug 2021 20:47:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 208246112D
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 25 Aug 2021 09:23:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232245AbhHWUsC (ORCPT
+        id S239467AbhHYJYc (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 23 Aug 2021 16:48:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33082 "EHLO
+        Wed, 25 Aug 2021 05:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232237AbhHWUsA (ORCPT
+        with ESMTP id S239647AbhHYJY1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 23 Aug 2021 16:48:00 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84CF2C061575
-        for <linux-trace-devel@vger.kernel.org>; Mon, 23 Aug 2021 13:47:17 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id v6so5192238qto.3
-        for <linux-trace-devel@vger.kernel.org>; Mon, 23 Aug 2021 13:47:17 -0700 (PDT)
+        Wed, 25 Aug 2021 05:24:27 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79D8C0617A8
+        for <linux-trace-devel@vger.kernel.org>; Wed, 25 Aug 2021 02:23:40 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id q14so1207190wrp.3
+        for <linux-trace-devel@vger.kernel.org>; Wed, 25 Aug 2021 02:23:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MBpOnz8UcXYVoFmPtMypT/cBX8WKZCZ1xL8UFieBWOQ=;
-        b=efYLF5g+Jg+4nJXo67XsRlZDKwa0zGyd8axsKtN6hhRom1rZ7w8OmoFyqOPUlC6qcJ
-         jUExsvosFr6WErzSkLnyaxSK1Dy/5z54Vn26FnpgQXWzoWP1pGimFT3uS/Gv6HY81eVr
-         MIYJABaebE0Z5F+OZrqQaB7Pk9OeUpcWalrr5BfBXOhhJLiuv4GJnTEXMOY7rDBAulIC
-         XsYDgHtG3eZJaH3RKCYspweRFoq5KZguIg7efSVzHd9/PMs1P8UQEfDLYgAOXHSvHfdk
-         BXvDedyOVKlYq6iNNB5XerjHzAlEyeDVtyh8WmTzOeanJjTLnEqAhPXrwJzDZcAy0waH
-         wdLA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=b8jSTj05xMs44fgv9I3UUy63KAb4PWH8V34+5f0uljE=;
+        b=cj4iMHY49ujuij8aFG5id79GfOH9Ad4C6d91+2ifaEpisp9Yq8nM21ys3IptUHllVW
+         4OJBT+tPI/QW7GNkoviJNFljDhKCVa8n7+2byVcbw0OCEYxASEe8LjU4jbC4dlYDOx74
+         5O//H8Q00ktJCUzpr6y7Iq329uyjprZCUjGKxOLQAdzo7l6+a5P3DCnex0hom1zqc7/h
+         dLsfJHL9f2KljK+mGhIfmBn/dj5kA88aJakUlnuDHD5i3HLvpMzWgolBpG5bibf3i4P9
+         plwinPgUBhbe52Ok060t0Zb1IA2IBGwF+RTLosAMccYcAeUPrbg2NgLyLSPiSjcVOXlH
+         kZrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MBpOnz8UcXYVoFmPtMypT/cBX8WKZCZ1xL8UFieBWOQ=;
-        b=tPGf7TE1daakdNkKuWLtgDpqkKDF3h65L7mY0nU2ZlJw7whOWC98kVD1yhMJVWYTBK
-         +OQXYWiCYkRI+20yQxEOtmOK7I1HcflZLKpOjIJRTTPt5F1TWfeoH6y0R8pben4a3JD8
-         MrQh0PqJqaqpgdZjz0gTi6LoaReTBSkQH5Czi0CYYDBSwUEvLaVAGvaAr5e9kJn733cs
-         unBeBF1RxfPvUVY5d6ooo/6vVNNOMsBrFLPShrmdEJHH+Dogb24miMcNTsFgB8Ka5JIr
-         qIAYQ1KrgrDWQlEhWSIjE1uSVy9r6W2ZAJPAoFwv+Bpk7/i5/0S9+jiAmJ6D6CsPpalJ
-         NGtg==
-X-Gm-Message-State: AOAM531yh9wEfZxUZwAIWvwoW5fPGTDELO1YHr1JUFKfX0hojjb778+W
-        2Eq4OBpd2B5lmZyf+yH0Vez/WKjyncgJFw==
-X-Google-Smtp-Source: ABdhPJx4yeQMHWpIiwqkq37JM2G2r2BrbU+IdF55x/Yh3qZ0T+8TJa0qPzgKKbG9D9A8MCVu90W3yQ==
-X-Received: by 2002:ac8:5805:: with SMTP id g5mr12865733qtg.360.1629751636355;
-        Mon, 23 Aug 2021 13:47:16 -0700 (PDT)
-Received: from localhost.localdomain ([185.153.176.246])
-        by smtp.gmail.com with ESMTPSA id g20sm9109505qki.73.2021.08.23.13.47.14
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=b8jSTj05xMs44fgv9I3UUy63KAb4PWH8V34+5f0uljE=;
+        b=aDBwwRLYZM4Iu+W2HCC3jj13FYZ8956aB+I1kFk9LfRwXCIokKNAOn26iKeziUKgvg
+         2FqvwcuCZYzGWuVifmraH5fczcg0KszIuZXnOuVX6a7KhtY4rNJw+OwxmgfzyZRhq6L0
+         avWzh/5ki2aEb6buY+IE32ydLXYVMQiD0tuJ4e4YUfGCZxuWY67yVjHdyr/Xr69VsT8C
+         u+p/F53eYYbeEuud5QrYdkb0KClu152NhYfrkn5caMEclGlvCZB8OOIm9dgJgN42dKac
+         W09IT6TdFqdGsES6Ed0hHe8eSgpHEO62hY/RoVq35hkDIGjnL1ftxBWZpCFdT6fFqIYW
+         KAeA==
+X-Gm-Message-State: AOAM530QUcFg7YU41UJkEhRKNXfAchBpPr+IFxC0NPMkpNsuVVnNGZbN
+        3igEtNOFxDuRGfXGC/MKB5v53wfB7o8=
+X-Google-Smtp-Source: ABdhPJzKpbDTThLZCtXA/67KckZx4pAo5WqDjTAvgLH/al2OfsTsYwh73Gjt/3uvK3Jgxj3neAfgbw==
+X-Received: by 2002:a5d:58ce:: with SMTP id o14mr23418237wrf.319.1629883419293;
+        Wed, 25 Aug 2021 02:23:39 -0700 (PDT)
+Received: from crow.. ([95.87.199.109])
+        by smtp.gmail.com with ESMTPSA id w9sm4599323wmc.19.2021.08.25.02.23.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 13:47:15 -0700 (PDT)
-From:   Victor Cora Colombo <victorcora98@gmail.com>
+        Wed, 25 Aug 2021 02:23:38 -0700 (PDT)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
-Cc:     Victor Cora Colombo <victorcora98@gmail.com>
-Subject: [PATCH v3] trace-cmd: Add dependencies to BUILDING section in README
-Date:   Mon, 23 Aug 2021 17:45:43 -0300
-Message-Id: <20210823204543.1327-1-victorcora98@gmail.com>
-X-Mailer: git-send-email 2.33.0
+Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH v2 2/3] trace-cruncher: Have standard 'not existing' message
+Date:   Wed, 25 Aug 2021 12:23:25 +0300
+Message-Id: <20210825092326.45804-2-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210825092326.45804-1-y.karadz@gmail.com>
+References: <20210825092326.45804-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-KernelShark has instructions in its README on how to get necessary
-dependencies to build it. trace-cmd could follow this example and
-also add more information on how to build it.
+The string "(nil)" is used to state that an object
+do not exists / is empty.
 
-This patch adds instructions to README on how to get necessary libraries
-and dependencies to build trace-cmd.
-
-Signed-off-by: Victor Cora Colombo <victorcora98@gmail.com>
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- README | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ src/common.h         | 2 ++
+ src/ftracepy-utils.c | 6 +++---
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/README b/README
-index 1153152..9a3533d 100644
---- a/README
-+++ b/README
-@@ -24,6 +24,27 @@ Lesser General Public License 2.1 (See COPYING.LIB).
+diff --git a/src/common.h b/src/common.h
+index b7f6a87..476e4f1 100644
+--- a/src/common.h
++++ b/src/common.h
+@@ -24,6 +24,8 @@
  
- BUILDING:
+ static const char *NO_ARG = "/NONE/";
  
-+In order to install build dependencies on Debian / Ubuntu do the following:
-+    sudo apt-get install build-essential git pkg-config -y
-+    sudo apt-get install libtracefs-dev libtraceevent-dev -y
++#define TC_NIL_MSG	"(nil)"
 +
-+In order to install build dependencies on Fedora, as root do the following:
-+    dnf install gcc make git pkg-config -y
-+    dnf install libtracefs-devel libtraceevent-devel -y
-+
-+In case your distribution does not have the required libtracefs and
-+libtraceevent libraries, build and install them manually:
-+
-+    git clone https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/
-+    cd libtraceevent
-+    make
-+    sudo make install
-+
-+    git clone https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-+    cd libtracefs
-+    make
-+    sudo make install
-+
- To make trace-cmd
-     make
+ static inline bool is_all(const char *arg)
+ {
+ 	const char all[] = "all";
+diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
+index da58855..88b069c 100644
+--- a/src/ftracepy-utils.c
++++ b/src/ftracepy-utils.c
+@@ -69,7 +69,7 @@ PyObject *PyTepRecord_cpu(PyTepRecord* self)
  
+ PyObject *PyTepEvent_name(PyTepEvent* self)
+ {
+-	const char * name = self->ptrObj ? self->ptrObj->name : "nil";
++	const char *name = self->ptrObj ? self->ptrObj->name : TC_NIL_MSG;
+ 	return PyUnicode_FromString(name);
+ }
+ 
+@@ -170,7 +170,7 @@ PyObject *PyTepEvent_parse_record_field(PyTepEvent* self, PyObject *args,
+ 	}
+ 
+ 	if (!field_size)
+-		return PyUnicode_FromString("(nil)");
++		return PyUnicode_FromString(TC_NIL_MSG);
+ 
+ 	if (field->flags & TEP_FIELD_IS_STRING) {
+ 		char *val_str = record->ptrObj->data + field_offset;
+@@ -2099,7 +2099,7 @@ PyObject *PyFtrace_error_log(PyObject *self, PyObject *args,
+ 		ret = PyUnicode_FromString(err_log);
+ 		free(err_log);
+ 	} else if (ok) {
+-		ret = PyUnicode_FromString("(nil)");
++		ret = PyUnicode_FromString(TC_NIL_MSG);
+ 	}
+ 
+ 	return ret;
 -- 
-2.33.0
+2.30.2
 
