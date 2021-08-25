@@ -2,293 +2,69 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83911C4320E
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 25 Aug 2021 09:44:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97A5EC432BE
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 25 Aug 2021 23:45:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 68CDA61100
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 25 Aug 2021 09:44:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 795C260FBF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 25 Aug 2021 23:45:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237163AbhHYJpk (ORCPT
+        id S233361AbhHYXqd (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 25 Aug 2021 05:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236314AbhHYJpj (ORCPT
+        Wed, 25 Aug 2021 19:46:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231535AbhHYXqc (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 25 Aug 2021 05:45:39 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 555F7C061757
-        for <linux-trace-devel@vger.kernel.org>; Wed, 25 Aug 2021 02:44:54 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id x12so35412240wrr.11
-        for <linux-trace-devel@vger.kernel.org>; Wed, 25 Aug 2021 02:44:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bGCCE9POihE+l64FfzpnmbLqPKpFejEaNbONhtlxWEo=;
-        b=HJZBACyNL2JOA8DDv2DucsV0oOKiE3RMADGux7MMF6wZk7wdVTgN7RZzpKRTKoS/2+
-         IwdOaJVTSl7pDfM8gDAy1Ut+wGw0cC9rptkg4odo9gtmqqI1DZfLKAictPOcF5wrqK3e
-         Gy8c1GuKzaMHlXJdM+3p96ObFEV3LzIyq1KbyASK51FrnfU5GL3gFcCkdsbgAJXIQQA7
-         K3oNKmiJYD4bNrH5ANgm4Jkw2gfYXbO/HMnK1CJgzR8L/GhYXuGif8RROqR8FK5scOsi
-         jvB3qzJy6qkHBVKi/hrtrMtK0vBeIjNe/JwknUP/vss9ExHXDXMvy5cW8NCe1w93GSoR
-         7vaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bGCCE9POihE+l64FfzpnmbLqPKpFejEaNbONhtlxWEo=;
-        b=GmtFkWXh/U3QUA/XDKymtkoS67/iaDGhfNrKRVINjT+1GXRD2gRNdfHgyg3stdWDWB
-         6Td3G8Z4ZLRhj+FrraqxEgxt+zagJwISSbcJLJwKUPMkirPQYRVLfX5CKmkmbjYgO+Pu
-         K/1kn1wNCVGuwy63sE2hf2w3+GKezRgc0jmuV8CP4UXRC3Ul44jxPEi79WAMYl+6YfWw
-         EFYyB6kuQIlV2dLPI+MtBfH1phIZBtpmBAN3ZDppGg+RTovsMfckuXPnNkbyXoxK1OaP
-         qlnHLSI1Y44ANCzwdFVXPkFO40Hgl/5eTN0R6ag5du9SZ5mQJTyMc2LE8FqqFN6iVksx
-         oadw==
-X-Gm-Message-State: AOAM533qZov5hSCcO+4t+S7Rur39hDeRbTGAtjVZDPZ+iA5Me3vIVXZX
-        FxtBX/7LvLLeE8xz/ZXSXMcC07OoUz8=
-X-Google-Smtp-Source: ABdhPJzNaJACHAh2so8g98h1Y17D83oRqe1S1QB6wiC2cdZAoUwR+aoOTvtrAexF9JdLva/JVDxPpw==
-X-Received: by 2002:adf:c508:: with SMTP id q8mr2037997wrf.74.1629884692777;
-        Wed, 25 Aug 2021 02:44:52 -0700 (PDT)
-Received: from crow.. ([95.87.199.109])
-        by smtp.gmail.com with ESMTPSA id u23sm4608794wmc.24.2021.08.25.02.44.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 02:44:52 -0700 (PDT)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 3/3] trace-cruncher: Fix the copyright notices
-Date:   Wed, 25 Aug 2021 12:44:36 +0300
-Message-Id: <20210825094436.46958-3-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210825094436.46958-1-y.karadz@gmail.com>
-References: <20210825094436.46958-1-y.karadz@gmail.com>
+        Wed, 25 Aug 2021 19:46:32 -0400
+Received: from rorschach.local.home (unknown [24.94.146.150])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F21AB61042
+        for <linux-trace-devel@vger.kernel.org>; Wed, 25 Aug 2021 23:45:45 +0000 (UTC)
+Date:   Wed, 25 Aug 2021 19:45:43 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] libtracefs: Define gettid() when not defined
+Message-ID: <20210825194543.34de6c3f@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Using '(C)' in the text of the copyright notice is no longer required.
+From: Steven Rostedt <rostedt@rorschach.local.home>
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+tracefs-hist.c uses the gettid() system call, but older glibcs do not
+define it. Define the system call when it is not already defined.
+
+Signed-off-by: Steven Rostedt <rostedt@rorschach.local.home>
 ---
- examples/kprobe_open.py                             | 2 +-
- examples/start_tracing.py                           | 2 +-
- src/common.h                                        | 2 +-
- src/ftracepy-utils.c                                | 2 +-
- src/ftracepy-utils.h                                | 2 +-
- src/ftracepy.c                                      | 2 +-
- src/ksharkpy-utils.c                                | 2 +-
- src/ksharkpy-utils.h                                | 2 +-
- src/ksharkpy.c                                      | 2 +-
- tests/0_get_data/test_get_data.py                   | 2 +-
- tests/1_unit/test_01_ftracepy_unit.py               | 2 +-
- tests/1_unit/test_02_datawrapper_unit.py            | 2 +-
- tests/1_unit/test_03_ksharkpy_unit.py               | 2 +-
- tests/2_integration/test_01_ftracepy_integration.py | 2 +-
- tests/2_integration/test_03_ksharkpy_integration.py | 2 +-
- 15 files changed, 15 insertions(+), 15 deletions(-)
+ src/tracefs-hist.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/examples/kprobe_open.py b/examples/kprobe_open.py
-index f8d4d8b..43b4212 100755
---- a/examples/kprobe_open.py
-+++ b/examples/kprobe_open.py
-@@ -3,7 +3,7 @@
- """
- SPDX-License-Identifier: CC-BY-4.0
+diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
+index 003715f..c0d3049 100644
+--- a/src/tracefs-hist.c
++++ b/src/tracefs-hist.c
+@@ -24,6 +24,11 @@
+ #define ASCENDING ".ascending"
+ #define DESCENDING ".descending"
  
--Copyright (C) 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+Copyright 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
- """
- 
- import sys
-diff --git a/examples/start_tracing.py b/examples/start_tracing.py
-index da36164..c9960e3 100755
---- a/examples/start_tracing.py
-+++ b/examples/start_tracing.py
-@@ -3,7 +3,7 @@
- """
- SPDX-License-Identifier: CC-BY-4.0
- 
--Copyright (C) 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+Copyright 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
- """
- 
- import tracecruncher.ftracepy as ft
-diff --git a/src/common.h b/src/common.h
-index 476e4f1..abfda1f 100644
---- a/src/common.h
-+++ b/src/common.h
-@@ -1,7 +1,7 @@
- /* SPDX-License-Identifier: LGPL-2.1 */
- 
- /*
-- * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
-+ * Copyright 2017 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
-  */
- 
- #ifndef _TC_COMMON_H
-diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
-index 8e0ca42..53fc95f 100644
---- a/src/ftracepy-utils.c
-+++ b/src/ftracepy-utils.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: LGPL-2.1
- 
- /*
-- * Copyright (C) 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+ * Copyright 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-  */
- 
- #ifndef _GNU_SOURCE
-diff --git a/src/ftracepy-utils.h b/src/ftracepy-utils.h
-index 26a2f14..218dcb3 100644
---- a/src/ftracepy-utils.h
-+++ b/src/ftracepy-utils.h
-@@ -1,7 +1,7 @@
- /* SPDX-License-Identifier: LGPL-2.1 */
- 
- /*
-- * Copyright (C) 2021 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
-+ * Copyright 2021 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
-  */
- 
- #ifndef _TC_FTRACE_PY_UTILS
-diff --git a/src/ftracepy.c b/src/ftracepy.c
-index e5a91fc..f03c488 100644
---- a/src/ftracepy.c
-+++ b/src/ftracepy.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: LGPL-2.1
- 
- /*
-- * Copyright (C) 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+ * Copyright 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-  */
- 
- // trace-cruncher
-diff --git a/src/ksharkpy-utils.c b/src/ksharkpy-utils.c
-index 12972fb..5744a44 100644
---- a/src/ksharkpy-utils.c
-+++ b/src/ksharkpy-utils.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: LGPL-2.1
- 
- /*
-- * Copyright (C) 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+ * Copyright 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-  */
- 
- #ifndef _GNU_SOURCE
-diff --git a/src/ksharkpy-utils.h b/src/ksharkpy-utils.h
-index 6d17d2e..0f11c80 100644
---- a/src/ksharkpy-utils.h
-+++ b/src/ksharkpy-utils.h
-@@ -1,7 +1,7 @@
- /* SPDX-License-Identifier: LGPL-2.1 */
- 
- /*
-- * Copyright (C) 2021 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
-+ * Copyright 2021 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
-  */
- 
- #ifndef _TC_KSHARK_PY_UTILS
-diff --git a/src/ksharkpy.c b/src/ksharkpy.c
-index 7cfb94b..af49c86 100644
---- a/src/ksharkpy.c
-+++ b/src/ksharkpy.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: LGPL-2.1
- 
- /*
-- * Copyright (C) 2019 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+ * Copyright 2019 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-  */
- 
- /** Use GNU C Library. */
-diff --git a/tests/0_get_data/test_get_data.py b/tests/0_get_data/test_get_data.py
-index 53decd0..008641e 100755
---- a/tests/0_get_data/test_get_data.py
-+++ b/tests/0_get_data/test_get_data.py
-@@ -3,7 +3,7 @@
- """
- SPDX-License-Identifier: LGPL-2.1
- 
--Copyright (C) 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+Copyright 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
- """
- 
- import os
-diff --git a/tests/1_unit/test_01_ftracepy_unit.py b/tests/1_unit/test_01_ftracepy_unit.py
-index 3411b3f..971fd5f 100644
---- a/tests/1_unit/test_01_ftracepy_unit.py
-+++ b/tests/1_unit/test_01_ftracepy_unit.py
-@@ -3,7 +3,7 @@
- """
- SPDX-License-Identifier: LGPL-2.1
- 
--Copyright (C) 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+Copyright 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
- """
- 
- import os
-diff --git a/tests/1_unit/test_02_datawrapper_unit.py b/tests/1_unit/test_02_datawrapper_unit.py
-index 58c8706..0272d3c 100755
---- a/tests/1_unit/test_02_datawrapper_unit.py
-+++ b/tests/1_unit/test_02_datawrapper_unit.py
-@@ -3,7 +3,7 @@
- """
- SPDX-License-Identifier: LGPL-2.1
- 
--Copyright (C) 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+Copyright 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
- """
- 
- import os
-diff --git a/tests/1_unit/test_03_ksharkpy_unit.py b/tests/1_unit/test_03_ksharkpy_unit.py
-index c7da2a1..20e3cf5 100755
---- a/tests/1_unit/test_03_ksharkpy_unit.py
-+++ b/tests/1_unit/test_03_ksharkpy_unit.py
-@@ -3,7 +3,7 @@
- """
- SPDX-License-Identifier: LGPL-2.1
- 
--Copyright (C) 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+Copyright 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
- """
- 
- import os
-diff --git a/tests/2_integration/test_01_ftracepy_integration.py b/tests/2_integration/test_01_ftracepy_integration.py
-index 824decd..1db5f0b 100755
---- a/tests/2_integration/test_01_ftracepy_integration.py
-+++ b/tests/2_integration/test_01_ftracepy_integration.py
-@@ -3,7 +3,7 @@
- """
- SPDX-License-Identifier: LGPL-2.1
- 
--Copyright (C) 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+Copyright 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
- """
- 
- import os
-diff --git a/tests/2_integration/test_03_ksharkpy_integration.py b/tests/2_integration/test_03_ksharkpy_integration.py
-index dd8e0b5..7515342 100755
---- a/tests/2_integration/test_03_ksharkpy_integration.py
-+++ b/tests/2_integration/test_03_ksharkpy_integration.py
-@@ -3,7 +3,7 @@
- """
- SPDX-License-Identifier: LGPL-2.1
- 
--Copyright (C) 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+Copyright 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
- """
- 
- import os
++#ifndef gettid
++# include <sys/syscall.h>
++# define gettid() syscall(__NR_gettid)
++#endif
++
+ struct tracefs_hist {
+ 	struct tep_handle	*tep;
+ 	struct tep_event	*event;
 -- 
 2.30.2
 
