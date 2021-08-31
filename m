@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAE6EC4320A
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 31 Aug 2021 12:54:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 510D4C432BE
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 31 Aug 2021 12:54:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A886360FC0
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 31 Aug 2021 12:54:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 34C7161051
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 31 Aug 2021 12:54:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhHaMzH (ORCPT
+        id S232238AbhHaMzI (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 31 Aug 2021 08:55:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42966 "EHLO
+        Tue, 31 Aug 2021 08:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbhHaMzH (ORCPT
+        with ESMTP id S229625AbhHaMzI (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 31 Aug 2021 08:55:07 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A0C7C061575
-        for <linux-trace-devel@vger.kernel.org>; Tue, 31 Aug 2021 05:54:12 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id x11so38589861ejv.0
-        for <linux-trace-devel@vger.kernel.org>; Tue, 31 Aug 2021 05:54:12 -0700 (PDT)
+        Tue, 31 Aug 2021 08:55:08 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E695C061575
+        for <linux-trace-devel@vger.kernel.org>; Tue, 31 Aug 2021 05:54:13 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id u3so38346302ejz.1
+        for <linux-trace-devel@vger.kernel.org>; Tue, 31 Aug 2021 05:54:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0wkIf+NaX+AdnH7XiJUXOr4HCirVQw2nQxwwFX+IM7c=;
-        b=rtkTEC7bGm5D4iYU3zqiGptIb2G8Uvd7/TJXc2QJtCDUcJCLLZNG+tMhU6LmPT1sWu
-         MYY+pEtASBJs0u5KC7GeAE4y9W+G8eEBFhFLSmKIrSQOJq6x/ltTqELgh5y4eujwkHAR
-         DGZSJHBapODgrxFyh/q/ksw7SuJn5c5Cj7thanD6Nu1DDP5Pm+ilP78DyhQEidU+Vbb9
-         wTlsMTzdyjdYs64Ue9Lr3o9Lx3fS2Uf8NDgcI+qhT8MoHVxCxFI2Z43wnjoY+S1Tl7BF
-         aTYRrMF/U3IEiEn7oE3ELa85bdyCs63A2t5gPul+6bV49vdGD1jvzL4yY6tloln34BAf
-         l9hw==
+        bh=c9pp2YjBs7uw+inFCfj8LpaWJy3nC58Un7gERWT88QY=;
+        b=A2gMvLv20mqcToFJNaJ7aLXdUoVV/uApC4TBky7AgVfg6Hzf2kwEFUA51Z/gVEPYN7
+         dg0vQZBKU0yvubAQxCXViMJEn+pnjrixf7fI/cRI+G0wEkJkRyqo16sI8h9jC0MOFKSP
+         rSo+UerjrsF6TsukTnj2LqLak5JEm5c2oW9/PZJOPCg4ouY0Q8SA9qVtjv6oc3EQc0ao
+         KWixBuas00OIScXKfKO6okOFaPJnqHQ6l0YKd2DCwiza3jZxBrCiDGQ2PiLo0DzpCWAL
+         GDJshl3A/BAuPud3QLCYseAxvXR5Gn9yhJKRXHSuO244Mq8HLnT1sgAn5+xTHUZDu33j
+         C7hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0wkIf+NaX+AdnH7XiJUXOr4HCirVQw2nQxwwFX+IM7c=;
-        b=XKbIPtSkz4hkptyEVyBnUXbAo/2xyFTPJgSb8DsuQKa8OtIGPLSl3HRJfmHzBzGUgZ
-         K3UsEZ14bDhgYKS9LgXFfqfzvgowECIIHE6wibmHFzo7xqVOKe14EOiqMtoffggYvLz5
-         0q+qVMbIL6GZJavFMAPNWB1mmwzXhxzTki07gpfyR+zd5nutmie+XAU2UXX9HoETEtUe
-         rpbi4HexfdkaNPG5iD5eywdKRd5Pp6MClBCzcDq4E6NEBip1y+6tEpWKX9jA8qFnbiNY
-         n++9wwho3+dyIYm1e9rLBrddUqC+tMeMbklNwCgax52LUlLfx/NezaRWzBVE1tBTghGf
-         eRlw==
-X-Gm-Message-State: AOAM531l2dbINXmRZV+BmOr1kfKjd6FKvMPGTuupD/6DAuweoHJq1RHT
-        12Y8sPlniPboJlvlb7E4C4/A4ebJXmo=
-X-Google-Smtp-Source: ABdhPJxJQTGC0w1kVatibhuieRLMYYNCaSBvfOfuxWwSi+FZLi8yVX0HTQXGrY33h7aXB8zkRDKPMQ==
-X-Received: by 2002:a17:907:7844:: with SMTP id lb4mr19275799ejc.381.1630414450534;
-        Tue, 31 Aug 2021 05:54:10 -0700 (PDT)
+        bh=c9pp2YjBs7uw+inFCfj8LpaWJy3nC58Un7gERWT88QY=;
+        b=bJ4Rz9EbzqY15zRW5BG+OSg+pywp9QqZjofkr1sNUmKdG+RPi2MVLJfW79WGCKLmLN
+         WgH1dIN5BB5TOWPdyXpDbvN57ap6OyOzuNw1P9eS3o7CqKoAJy5xoPA8JNqBDIxf35wo
+         x2TnCSxAGlltpyq8rCFfv27gCjcZAY1uGOaSdRyUEtW5xysYkQpvfsY314MtUuf8oT+W
+         9JyeawgUpquyZp4KzL7hSpD5VGSdCSrAU4og5SyBHSn6wJAD4MIVhKtiU3uBbloHetfs
+         PzsFQTsxXsESc0rscFM+H12E3ERjFDPvzYKvwTYTs92TwRpt7Fz36FaNcC4ouV5vuB0Q
+         m37Q==
+X-Gm-Message-State: AOAM532AtQBX8wxJwgs4PMYuwU/r1sl9/BKYSTiQdC/jFIQM5kQ6vA/1
+        z79SO4L3wAgeBaVLvsc/rkqCBUia/5s=
+X-Google-Smtp-Source: ABdhPJxgzGuyox6sNYg/J0DMtaFNfzr6cBWfn26zU3+wbLoGe2puvE8l1m1GFmXe0hRTsVu49NwZag==
+X-Received: by 2002:a17:906:ae4f:: with SMTP id lf15mr29792057ejb.124.1630414451556;
+        Tue, 31 Aug 2021 05:54:11 -0700 (PDT)
 Received: from crow.. ([95.87.199.93])
-        by smtp.gmail.com with ESMTPSA id be5sm9346976edb.57.2021.08.31.05.54.09
+        by smtp.gmail.com with ESMTPSA id be5sm9346976edb.57.2021.08.31.05.54.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 05:54:10 -0700 (PDT)
+        Tue, 31 Aug 2021 05:54:11 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 2/4] trace-cruncher: Add optional sort to available_system_events()
-Date:   Tue, 31 Aug 2021 15:53:55 +0300
-Message-Id: <20210831125357.56862-2-y.karadz@gmail.com>
+Subject: [PATCH 3/4] trace-cruncher: Add optional sort to available_event_systems()
+Date:   Tue, 31 Aug 2021 15:53:56 +0300
+Message-Id: <20210831125357.56862-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210831125357.56862-1-y.karadz@gmail.com>
 References: <20210831125357.56862-1-y.karadz@gmail.com>
@@ -74,43 +74,42 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 An optional parameter 'sort' is added. If set to True, the returned
-list of event names is sorted in alphabetical order. The default
+list of system names is sorted in alphabetical order. The default
 value of 'sort' is False.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/ftracepy-utils.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ src/ftracepy-utils.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
 diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
-index 0fcadd8..f884106 100644
+index f884106..b94745d 100644
 --- a/src/ftracepy-utils.c
 +++ b/src/ftracepy-utils.c
-@@ -733,18 +733,20 @@ PyObject *PyFtrace_available_event_systems(PyObject *self, PyObject *args,
- PyObject *PyFtrace_available_system_events(PyObject *self, PyObject *args,
+@@ -717,17 +717,29 @@ PyObject *PyFtrace_get_current_tracer(PyObject *self, PyObject *args,
+ PyObject *PyFtrace_available_event_systems(PyObject *self, PyObject *args,
  							   PyObject *kwargs)
  {
--	static char *kwlist[] = {"system", "instance", NULL};
-+	static char *kwlist[] = {"system", "instance", "sort", NULL};
++	static char *kwlist[] = {"instance", "sort", NULL};
  	struct tracefs_instance *instance;
- 	PyObject *py_inst = NULL;
- 	const char *system;
++	PyObject *py_inst = NULL;
 +	int sort = false;
  	char **list;
  
- 	if (!PyArg_ParseTupleAndKeywords(args,
- 					 kwargs,
--					 "s|O",
-+					 "s|Op",
- 					 kwlist,
- 					 &system,
--					 &py_inst)) {
+-	if (!get_instance_from_arg(args, kwargs, &instance))
++	if (!PyArg_ParseTupleAndKeywords(args,
++					 kwargs,
++					 "|Op",
++					 kwlist,
 +					 &py_inst,
 +					 &sort)) {
++		return false;
++	}
++
++	if (!get_optional_instance(py_inst, &instance))
  		return NULL;
- 	}
  
-@@ -757,7 +759,7 @@ PyObject *PyFtrace_available_system_events(PyObject *self, PyObject *args,
+ 	list = tracefs_event_systems(tracefs_instance_get_dir(instance));
  	if (!list)
  		return NULL;
  
@@ -118,7 +117,7 @@ index 0fcadd8..f884106 100644
 +	return tfs_list2py_list(list, sort);
  }
  
- bool get_event_enable_file(struct tracefs_instance *instance,
+ PyObject *PyFtrace_available_system_events(PyObject *self, PyObject *args,
 -- 
 2.30.2
 
