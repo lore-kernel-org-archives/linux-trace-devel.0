@@ -7,60 +7,62 @@ X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66FBEC4320A
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Sep 2021 13:07:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64F59C432BE
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Sep 2021 13:20:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 53522610A0
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Sep 2021 13:07:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3E3456109E
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Sep 2021 13:20:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344895AbhIBNIu (ORCPT
+        id S234510AbhIBNVh (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 Sep 2021 09:08:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57868 "EHLO
+        Thu, 2 Sep 2021 09:21:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234054AbhIBNIt (ORCPT
+        with ESMTP id S234181AbhIBNVh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 2 Sep 2021 09:08:49 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD3FFC061575
-        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Sep 2021 06:07:50 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id k17so1157391pls.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Sep 2021 06:07:50 -0700 (PDT)
+        Thu, 2 Sep 2021 09:21:37 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40289C061575
+        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Sep 2021 06:20:39 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id s29so1632489pfw.5
+        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Sep 2021 06:20:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FIq8VLtBSbrt6atEFDgol/WG4rATYjwR9g0IGaoiInk=;
-        b=F2ADpUJhIjwXS8XLM+87yuMZezFkioL0S304H1olSUU6t8PUq85/lYXyew+pL/CKAL
-         HIEm2rDPE2S+V1qeTzlF+KMNJA89ENvjxg8fL7Y8FRF5PULxm8fk9PxREXmuE/WUz5KU
-         BbGCHfy6pieETsWSv9VhSVUsEL6n66BbGzKJnx+hopfMttMtnHRUmdVdcsbN0ehunwmg
-         wycPNH2qDitzRknhn7NKzPQg4hcybSxWIDExE9k7DnvbZyqH2KMyMDM1l4Iv6Z2jJtj7
-         8Cu5HjgechBRhtrkspL+cVIdB94A51ko7CvApi31kgDV8BXlK043iktPQTadgF7sg+Yk
-         9Llg==
+        bh=REGew4hKA4qbNPWVXn9xqk81UVUOBdUt9MfbTb2QrU0=;
+        b=IQ/z59NjGdQsatynyQvz4UYql3XYxycjk9WQMzcvbwl7jF870yF6cJ8gIsy3j9X7w6
+         InXis6DUw+YnRzFdGsBh1t1X+05hlvLfQdsOMaeck/6F6fKcng1bt5TeziJX82JSuLsq
+         2VajgokeAgkKSJMLQHCIjXsHdF+0UV4MFEwf/3RQGFixNXwu64TPSFxOcCAUtQ2f7u81
+         4ILnjzSHB6lr/pVDWWtI7dHbYLa9ecu5SrtJ48ZylMgRVA5vMZ9NML1/NrrzhwkYrTQd
+         qAz/OUIxgdDFrtZwvVzs6Nuj25egILcpNrM91FSWChyA66UT9dYCY33TP0gSpiZRb8nt
+         HgNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FIq8VLtBSbrt6atEFDgol/WG4rATYjwR9g0IGaoiInk=;
-        b=HuZqTUuAHeGV8R6T5A0vGrg6pK0dEORgY66cZdtEC9lAKfxtHa+EGARRcWUzkVzwPI
-         UB6a3P0zwcBe6zkaw0PGZbNgw6S6EezxjOOj9RhvckeSV4gvVILbdBgwn8jg5dEw8hEh
-         BbrYE7gDdfEYUKa7lgYPSlNDk+nHxrgpZjVq6LBRDU+hIb/IAFRUeJCuVr3fp22tL6Ys
-         Zwgc4JqbqvPBu/zArjFeLtU6fvnF+vHKZYg5/dodhIM1d2iaD/immn2TsEGm+sU1pIHm
-         zFtDl8LY5A8ilrtBLg5D5DQWEK4XZ2ig/rYPz5Ollj2B1SBAFRNvihGP2FtegPvvmzTt
-         7SXg==
-X-Gm-Message-State: AOAM531hnlGhWU+6AnqdEiasBWVE6E9cgMhnTA6g3I0+eMX9MEYcSSMq
-        K9esAiirldAksyX4tCkM2m1AiCj0/ctHNxAAxlk3d0I/YCc=
-X-Google-Smtp-Source: ABdhPJzo8KT8iqv0gJaL9QZ5S1jBrfTyLuM5duIkZOY2M2sqE6oebVwEGceV4MqsJug9H/U3ZTFdJNGKhSjyxulw2Vw=
-X-Received: by 2002:a17:90b:3b81:: with SMTP id pc1mr3921069pjb.69.1630588070374;
- Thu, 02 Sep 2021 06:07:50 -0700 (PDT)
+        bh=REGew4hKA4qbNPWVXn9xqk81UVUOBdUt9MfbTb2QrU0=;
+        b=ZKcyWs/GHOIV9JHQ5KgC02+D+ftdHleIiklmjY/QHy5JTe2AtMcVB3M0CEk2hfFkb2
+         FxVHF5omHHjO2+/JRaZEL4q4GFQC1dcOHy4uGqoWYqC47D1hIpg50OuCyq26OdIGoJIa
+         VayDq/tVLa18K6V3kkFvfKbfm2zo3jr8L88me77LoYX7RhoqO5OUSO0JXvhDfZkHpH9j
+         axxDIqIOkVbVH10O2hSEC0g6SI6Rsz0gP3MEEGwBbgKx0hcLcDJIqG+eQ1giKOItzmrT
+         D7hn3uUzErw8lCyLe9BoPTu+AdwlestoZh9Rw3/pVTDzIIur9+B6l5ErKZsCLmpS2S+e
+         CT0A==
+X-Gm-Message-State: AOAM530bDYKmbrDhgkfHwDjF5XCqlmFeaVSKhtcwwOPOOIpapB0n16nG
+        BozYmVyM+GfowHYnccJagdeITQw1AjKJ23DzuWKAbm0euRC9vA==
+X-Google-Smtp-Source: ABdhPJxgjLBUjmrYrzaApa0z96NcBT6D6gEgfx3r3/nCdfN0Ar+AmUlmlumlY6EZCsz44HYLVv6iu3kVqSxEpp2DLyo=
+X-Received: by 2002:aa7:8151:0:b029:3e0:bba6:9754 with SMTP id
+ d17-20020aa781510000b02903e0bba69754mr3494709pfn.19.1630588838756; Thu, 02
+ Sep 2021 06:20:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210729050959.12263-1-tz.stoyanov@gmail.com> <20210729050959.12263-88-tz.stoyanov@gmail.com>
- <20210819153358.172ad728@oasis.local.home>
-In-Reply-To: <20210819153358.172ad728@oasis.local.home>
+References: <20210729050959.12263-1-tz.stoyanov@gmail.com> <20210729050959.12263-29-tz.stoyanov@gmail.com>
+ <20210817114038.2a163dc2@oasis.local.home>
+In-Reply-To: <20210817114038.2a163dc2@oasis.local.home>
 From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Thu, 2 Sep 2021 16:07:34 +0300
-Message-ID: <CAPpZLN43FmNb=wSVyT1zKmLEf_XshDhC61vW_f+j5+bxp2Vx0g@mail.gmail.com>
-Subject: Re: [PATCH v2 87/87] trace-cmd: Document trace file version 7
+Date:   Thu, 2 Sep 2021 16:20:22 +0300
+Message-ID: <CAPpZLN7+ccxA9C9O841CwXN40yVN=0aL8ZRjBw1wZ=LaUZwSzA@mail.gmail.com>
+Subject: Re: [PATCH v2 28/87] trace-cmd library: Move CPU flyrecord trace
+ metadata into the buffer option, for trace file version 7
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -68,55 +70,31 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 10:34 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Tue, Aug 17, 2021 at 6:40 PM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> OK, so I quickly went through the rest of the series, and this really
-> should have been at least 4 different patch sets. This series was
-> really hard to review, because it bounced around between clean ups,
-> sections, compressions, and conversions.
->
-> Thus, I'm going to set this entire series to "Changes Requested".
->
-> Please break this into at least 4 patch sets (here's 6 I would recommend).
->
-> Patch set 1: Clean ups.
->
-> Any change that was to make v6 work better with v7, or fix to v6 or
-> whatever. Should be first. It should be non-controversial, and we can
-> get that in right away.
+[...]
+> > +
+> > +__hidden struct tracecmd_option *
+> > +out_add_buffer_option_v7(struct tracecmd_output *handle, const char *name,
+> > +                      unsigned short id, unsigned long long data_offset,
+> > +                      int cpus, struct data_file_write *cpu_data)
 >
 >
-> Patch set 2: Sections:
+> Why is this hidden, and not static?
 >
-> This adds the notion of v7, but also adds all the work that has to do
-> with sections. Anything that has to do with compression, should be the
-> "non-compressed" case. The focus of this series would be to simply
-> break up the file for v7 where it is grouped by sections.
->
-> Patch set 3: Compression
->
-> This is where you can add all the changes that deal with compression.
->
->
-> Patch set 4: Conversion
->
-> This will add all the changes that are used to convert between v6 <-> v7.
->
-> Patch set 5: Dump
->
-> The changes here would be for dumping the output.
->
-> Patch set 6: Documentation.
->
-> And finally, add all the documentation at the end.
->
-> This will make it much easier to understand, and manage. Let's not have
-> a 87 patch series again. It's just too big to manage.
->
-> -- Steve
+> I noticed that you are using "out_" as a normal prefix. Is that really
+> needed?
 
-Thanks for reviewing this huge patch set, Steven! I'll break it into 6
-patch sets, as you proposed.
+I use "out_" and "in_" prefixes for internal library functions,
+related to tracecmd_output and tracecmd_input handlers. For example,
+there are:
+  int out_uncompress_block(struct tracecmd_output *handle);
+  int in_uncompress_block(struct tracecmd_input *handle);
+
+>
+>
+[...]
+
 
 
 -- 
