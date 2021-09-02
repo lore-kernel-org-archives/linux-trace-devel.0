@@ -2,101 +2,103 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64F59C432BE
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Sep 2021 13:20:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3824C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Sep 2021 22:48:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3E3456109E
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Sep 2021 13:20:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C202B60F42
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Sep 2021 22:48:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234510AbhIBNVh (ORCPT
+        id S1347756AbhIBWtp (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 Sep 2021 09:21:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60806 "EHLO
+        Thu, 2 Sep 2021 18:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234181AbhIBNVh (ORCPT
+        with ESMTP id S1347699AbhIBWto (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 2 Sep 2021 09:21:37 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40289C061575
-        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Sep 2021 06:20:39 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id s29so1632489pfw.5
-        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Sep 2021 06:20:39 -0700 (PDT)
+        Thu, 2 Sep 2021 18:49:44 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB52C061575
+        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Sep 2021 15:48:45 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id x28-20020ac8701c000000b0029f4b940566so3786043qtm.19
+        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Sep 2021 15:48:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=REGew4hKA4qbNPWVXn9xqk81UVUOBdUt9MfbTb2QrU0=;
-        b=IQ/z59NjGdQsatynyQvz4UYql3XYxycjk9WQMzcvbwl7jF870yF6cJ8gIsy3j9X7w6
-         InXis6DUw+YnRzFdGsBh1t1X+05hlvLfQdsOMaeck/6F6fKcng1bt5TeziJX82JSuLsq
-         2VajgokeAgkKSJMLQHCIjXsHdF+0UV4MFEwf/3RQGFixNXwu64TPSFxOcCAUtQ2f7u81
-         4ILnjzSHB6lr/pVDWWtI7dHbYLa9ecu5SrtJ48ZylMgRVA5vMZ9NML1/NrrzhwkYrTQd
-         qAz/OUIxgdDFrtZwvVzs6Nuj25egILcpNrM91FSWChyA66UT9dYCY33TP0gSpiZRb8nt
-         HgNA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=l9W3GJ7FMRLQMuNOcnCSPe0mEFcvOTFnD1pO8PHVY+0=;
+        b=OjE5g2ZfLYx4kdMSLppXnaTg40d0+ZLc6ZNEeKlgFZ5WiUwFx/XIoUJswElSGMGlw1
+         8c8JDEPB3qCeVLMnsaEKlRp6AYggvLLmIZVEi0leWpzTeCSNGq2CfgmSF8bPmiWw39l4
+         NyIZsG9zAwVhNTzoI2F1YUSeb1IPw/T3dEEEeHjKcdDuIUDjCmMIQniLmkZ1GTAQRjqE
+         G5UDnaCvCO7/DITprXAMtMISndyR9d0sOoaCDMkVNOgI8V40trE+Dxei+FkS28hlXznL
+         Be7X1RR95erPdBREs/ntpIV7+adLxVun9Ne7P0574S4vOom2VHLf72oDJWwQ+sc8QvRX
+         xlcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=REGew4hKA4qbNPWVXn9xqk81UVUOBdUt9MfbTb2QrU0=;
-        b=ZKcyWs/GHOIV9JHQ5KgC02+D+ftdHleIiklmjY/QHy5JTe2AtMcVB3M0CEk2hfFkb2
-         FxVHF5omHHjO2+/JRaZEL4q4GFQC1dcOHy4uGqoWYqC47D1hIpg50OuCyq26OdIGoJIa
-         VayDq/tVLa18K6V3kkFvfKbfm2zo3jr8L88me77LoYX7RhoqO5OUSO0JXvhDfZkHpH9j
-         axxDIqIOkVbVH10O2hSEC0g6SI6Rsz0gP3MEEGwBbgKx0hcLcDJIqG+eQ1giKOItzmrT
-         D7hn3uUzErw8lCyLe9BoPTu+AdwlestoZh9Rw3/pVTDzIIur9+B6l5ErKZsCLmpS2S+e
-         CT0A==
-X-Gm-Message-State: AOAM530bDYKmbrDhgkfHwDjF5XCqlmFeaVSKhtcwwOPOOIpapB0n16nG
-        BozYmVyM+GfowHYnccJagdeITQw1AjKJ23DzuWKAbm0euRC9vA==
-X-Google-Smtp-Source: ABdhPJxgjLBUjmrYrzaApa0z96NcBT6D6gEgfx3r3/nCdfN0Ar+AmUlmlumlY6EZCsz44HYLVv6iu3kVqSxEpp2DLyo=
-X-Received: by 2002:aa7:8151:0:b029:3e0:bba6:9754 with SMTP id
- d17-20020aa781510000b02903e0bba69754mr3494709pfn.19.1630588838756; Thu, 02
- Sep 2021 06:20:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210729050959.12263-1-tz.stoyanov@gmail.com> <20210729050959.12263-29-tz.stoyanov@gmail.com>
- <20210817114038.2a163dc2@oasis.local.home>
-In-Reply-To: <20210817114038.2a163dc2@oasis.local.home>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Thu, 2 Sep 2021 16:20:22 +0300
-Message-ID: <CAPpZLN7+ccxA9C9O841CwXN40yVN=0aL8ZRjBw1wZ=LaUZwSzA@mail.gmail.com>
-Subject: Re: [PATCH v2 28/87] trace-cmd library: Move CPU flyrecord trace
- metadata into the buffer option, for trace file version 7
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=l9W3GJ7FMRLQMuNOcnCSPe0mEFcvOTFnD1pO8PHVY+0=;
+        b=Y0DHK1akytLK3Ugy5jjVNuYkp9HoNuBtGAMJ3NYxiuBMWQkHyJfTgyFCIfmRH8gBqI
+         NXT8bd40gkKc8R/zDgQ6Mx006LpF3YSyNPa6Luc0kEYZJMwYbpZCL2PWjezTS+xClhEq
+         Xiu1xilG+FvEwI4li3QkqkIuDJYwfMaa28yAxGmhvAX4D0FeBJ8GrrNgrO3bwPBv68LJ
+         W5QOC4TOwjr026rPKDe40exQGzUN3o8EvEu5nEG+y8ohBADYN/TrcM2FrYqNdPzdN79R
+         SIW3j9N7o4F8CvnMmJrxBYcrLNa4ZQAJomSRiTZBtSlELgvvM8ufAOM70dLUi8fLDyt3
+         VjLg==
+X-Gm-Message-State: AOAM531nXx6UwDPtub0G4Bcvh2VXp234vcjwk7VPJGmupCQkHHSB3/tM
+        Ucatm2DWfbxtq46SxUZ22BI9JWBvE8QNhrc+AdOvBBP2wOUtS/vhmUm+WKl9xRDmZ4Z7w6WfZhG
+        yApfN4Yo0RDJJ0DVRjY50hO0aTfamy3ksFPthuXfbeDVhNtYE9wiSo5JOAp1BJqia9vQCfzpSzT
+        +DLsM=
+X-Google-Smtp-Source: ABdhPJwY2YNnz/gGKWLFw7M99seXXeiYdULcCfiX9VKl4QGvymf+ikjdzhqRwUEelIjxiV7cR46G+otT3s98
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:6cd2:c78c:69e9:f4bf])
+ (user=irogers job=sendgmr) by 2002:a0c:f3ce:: with SMTP id
+ f14mr724251qvm.33.1630622924616; Thu, 02 Sep 2021 15:48:44 -0700 (PDT)
+Date:   Thu,  2 Sep 2021 15:48:40 -0700
+Message-Id: <20210902224840.2518539-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
+Subject: [PATCH] libtracefs: Fix sometimes uninitialized warning.
+From:   Ian Rogers <irogers@google.com>
+To:     linux-trace-devel@vger.kernel.org,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 6:40 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-[...]
-> > +
-> > +__hidden struct tracecmd_option *
-> > +out_add_buffer_option_v7(struct tracecmd_output *handle, const char *name,
-> > +                      unsigned short id, unsigned long long data_offset,
-> > +                      int cpus, struct data_file_write *cpu_data)
->
->
-> Why is this hidden, and not static?
->
-> I noticed that you are using "out_" as a normal prefix. Is that really
-> needed?
+The warning with clang looks like:
 
-I use "out_" and "in_" prefixes for internal library functions,
-related to tracecmd_output and tracecmd_input handlers. For example,
-there are:
-  int out_uncompress_block(struct tracecmd_output *handle);
-  int in_uncompress_block(struct tracecmd_input *handle);
+src/tracefs-sqlhist.c:1107:2: error: variable 'cmp' is used uninitialized whenever switch default is taken [-Werror,-Wsometimes-uninitialized]
+        default:
+        ^~~~~~~
+third_party/libtracefs/src/tracefs-sqlhist.c:1112:35: note: uninitialized use occurs here
+                            filter->lval->field.field, cmp, val);
+                                                       ^~~
+third_party/libtracefs/src/tracefs-sqlhist.c:1033:2: note: variable 'cmp' is declared here
+        enum tracefs_compare cmp;
 
->
->
-[...]
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ src/tracefs-sqlhist.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-
+diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
+index 6224677..f4dc004 100644
+--- a/src/tracefs-sqlhist.c
++++ b/src/tracefs-sqlhist.c
+@@ -1105,7 +1105,7 @@ static int build_filter(struct tep_handle *tep, struct sqlhist_bison *sb,
+ 	case FILTER_BIN_AND:	cmp = TRACEFS_COMPARE_AND; break;
+ 	case FILTER_STR_CMP:	cmp = TRACEFS_COMPARE_RE; break;
+ 	default:
+-		break;
++		abort();
+ 	}
+ 
+ 	ret = append_filter(synth, TRACEFS_FILTER_COMPARE,
 -- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+2.33.0.153.gba50c8fa24-goog
+
