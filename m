@@ -8,58 +8,58 @@ X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
 	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3824C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Sep 2021 22:48:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E538C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 Sep 2021 16:44:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C202B60F42
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Sep 2021 22:48:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 54BED60F42
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 Sep 2021 16:44:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347756AbhIBWtp (ORCPT
+        id S1350083AbhICQpQ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 Sep 2021 18:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52292 "EHLO
+        Fri, 3 Sep 2021 12:45:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347699AbhIBWto (ORCPT
+        with ESMTP id S1350010AbhICQpQ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 2 Sep 2021 18:49:44 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB52C061575
-        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Sep 2021 15:48:45 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id x28-20020ac8701c000000b0029f4b940566so3786043qtm.19
-        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Sep 2021 15:48:45 -0700 (PDT)
+        Fri, 3 Sep 2021 12:45:16 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87689C061575
+        for <linux-trace-devel@vger.kernel.org>; Fri,  3 Sep 2021 09:44:16 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id b9-20020a5b07890000b0290558245b7eabso7092386ybq.10
+        for <linux-trace-devel@vger.kernel.org>; Fri, 03 Sep 2021 09:44:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=google.com; s=20210112;
         h=date:message-id:mime-version:subject:from:to:cc;
-        bh=l9W3GJ7FMRLQMuNOcnCSPe0mEFcvOTFnD1pO8PHVY+0=;
-        b=OjE5g2ZfLYx4kdMSLppXnaTg40d0+ZLc6ZNEeKlgFZ5WiUwFx/XIoUJswElSGMGlw1
-         8c8JDEPB3qCeVLMnsaEKlRp6AYggvLLmIZVEi0leWpzTeCSNGq2CfgmSF8bPmiWw39l4
-         NyIZsG9zAwVhNTzoI2F1YUSeb1IPw/T3dEEEeHjKcdDuIUDjCmMIQniLmkZ1GTAQRjqE
-         G5UDnaCvCO7/DITprXAMtMISndyR9d0sOoaCDMkVNOgI8V40trE+Dxei+FkS28hlXznL
-         Be7X1RR95erPdBREs/ntpIV7+adLxVun9Ne7P0574S4vOom2VHLf72oDJWwQ+sc8QvRX
-         xlcg==
+        bh=P63D0UJUje7WHnxm+44pQ03xmu7CtDaPwUSqs4SBgn8=;
+        b=Shi47me1viB1wZfn8gczWqbFltal6OSXUAokNe9qlPxDDDlwsCyIdbMgIbFYAxYfLp
+         gawzrtB8EF8HRL3+rsS2pozgu/XvDKBnOjr+Jm2n9hs7YxGcJguRnTGnVyPz7JjFWKKK
+         3asJi4ak2SFPinF9xGJSx4Q6iJPaobZm92cPa8I3Pa89Ljjj11YsQDs8Gl2saZP5DBuC
+         PS0gYFHKx+xEo4Ay4gsTIs3pVzodYKhCkHOKYKu/ueEr/8WKgN+KsprgAgkxgsL49ULF
+         +n/RaAib5+yTEPM84V7iz7aJ+753BwrnwAf2d5+RhZOmNEDd8G7W6IIjjbO2HhWZhXfr
+         z+uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=l9W3GJ7FMRLQMuNOcnCSPe0mEFcvOTFnD1pO8PHVY+0=;
-        b=Y0DHK1akytLK3Ugy5jjVNuYkp9HoNuBtGAMJ3NYxiuBMWQkHyJfTgyFCIfmRH8gBqI
-         NXT8bd40gkKc8R/zDgQ6Mx006LpF3YSyNPa6Luc0kEYZJMwYbpZCL2PWjezTS+xClhEq
-         Xiu1xilG+FvEwI4li3QkqkIuDJYwfMaa28yAxGmhvAX4D0FeBJ8GrrNgrO3bwPBv68LJ
-         W5QOC4TOwjr026rPKDe40exQGzUN3o8EvEu5nEG+y8ohBADYN/TrcM2FrYqNdPzdN79R
-         SIW3j9N7o4F8CvnMmJrxBYcrLNa4ZQAJomSRiTZBtSlELgvvM8ufAOM70dLUi8fLDyt3
-         VjLg==
-X-Gm-Message-State: AOAM531nXx6UwDPtub0G4Bcvh2VXp234vcjwk7VPJGmupCQkHHSB3/tM
-        Ucatm2DWfbxtq46SxUZ22BI9JWBvE8QNhrc+AdOvBBP2wOUtS/vhmUm+WKl9xRDmZ4Z7w6WfZhG
-        yApfN4Yo0RDJJ0DVRjY50hO0aTfamy3ksFPthuXfbeDVhNtYE9wiSo5JOAp1BJqia9vQCfzpSzT
-        +DLsM=
-X-Google-Smtp-Source: ABdhPJwY2YNnz/gGKWLFw7M99seXXeiYdULcCfiX9VKl4QGvymf+ikjdzhqRwUEelIjxiV7cR46G+otT3s98
+        bh=P63D0UJUje7WHnxm+44pQ03xmu7CtDaPwUSqs4SBgn8=;
+        b=puKoZACk4nITH/Toraj2oR2QFToUzIyIivZl4Vykv+g49R/shXRJ4oynWOv9YTl2GK
+         AbbdE6DGXdWLeSg4eUs4uOSFaSBibejPFJc76Qe4YhfFJPvos2DCbyubZeT3N4qnbUJd
+         hnQR3dL0tm7HvQWW+jPEAd/olPiohAtJCbtSaOQBRyu6wpBBdE3cgdS67qiBXHcxau6B
+         ekSNPu0J35jNG7b2k7fivPypC1IobhN3Y2Y1uoMGfr/oBL4uRi5gtQfF/RHaQ/0rbdco
+         I4GqdZbuEtr7IMAavEsV2YPbLFk+IIkx4KnToveGKDbnW0k9yc/vwEQMwBGIZJmrez2D
+         sP+w==
+X-Gm-Message-State: AOAM532Iwq4sppuAJiCXQH5PDZEq6oJiPS4DilQU6EKLQQ8bVEvgWcXe
+        d1DIH4gFQfTuH/q+/3y5KAbNrOqRF6NvnTMHNhW27eH25PB4oU51p7ERFEBfvNSI8cUWMLf/YKg
+        Hou9BJ2wFGC8a4H0u3D4jtyuCPhP71mS3SvW9xfTGiL+LxBjtxJUWk/zA0fUZ712+2BIZeOZ2xk
+        Mxrzs=
+X-Google-Smtp-Source: ABdhPJxMuJXAsP3jKvN3z9zKRhwO8Q0eOLAgumdtIjkm1goAHVHZ3jmVXOgEIz0ecA36fJPIKPfH3FJWH9Ng
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:6cd2:c78c:69e9:f4bf])
- (user=irogers job=sendgmr) by 2002:a0c:f3ce:: with SMTP id
- f14mr724251qvm.33.1630622924616; Thu, 02 Sep 2021 15:48:44 -0700 (PDT)
-Date:   Thu,  2 Sep 2021 15:48:40 -0700
-Message-Id: <20210902224840.2518539-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a25:21c5:: with SMTP id
+ h188mr5752168ybh.23.1630687455650; Fri, 03 Sep 2021 09:44:15 -0700 (PDT)
+Date:   Fri,  3 Sep 2021 09:44:11 -0700
+Message-Id: <20210903164411.3248659-1-irogers@google.com>
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-Subject: [PATCH] libtracefs: Fix sometimes uninitialized warning.
+Subject: [PATCH] libtracefs: Remove unreachable code.
 From:   Ian Rogers <irogers@google.com>
 To:     linux-trace-devel@vger.kernel.org,
         Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
@@ -70,35 +70,32 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The warning with clang looks like:
-
-src/tracefs-sqlhist.c:1107:2: error: variable 'cmp' is used uninitialized whenever switch default is taken [-Werror,-Wsometimes-uninitialized]
-        default:
-        ^~~~~~~
-third_party/libtracefs/src/tracefs-sqlhist.c:1112:35: note: uninitialized use occurs here
-                            filter->lval->field.field, cmp, val);
-                                                       ^~~
-third_party/libtracefs/src/tracefs-sqlhist.c:1033:2: note: variable 'cmp' is declared here
-        enum tracefs_compare cmp;
+Silences related warning.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- src/tracefs-sqlhist.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ src/tracefs-sqlhist.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
 diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
-index 6224677..f4dc004 100644
+index f4dc004..2eb65bd 100644
 --- a/src/tracefs-sqlhist.c
 +++ b/src/tracefs-sqlhist.c
-@@ -1105,7 +1105,7 @@ static int build_filter(struct tep_handle *tep, struct sqlhist_bison *sb,
- 	case FILTER_BIN_AND:	cmp = TRACEFS_COMPARE_AND; break;
- 	case FILTER_STR_CMP:	cmp = TRACEFS_COMPARE_RE; break;
- 	default:
--		break;
-+		abort();
- 	}
+@@ -488,14 +488,6 @@ __hidden void *add_number(struct sqlhist_bison *sb, long val)
+ 	create_number(num, &expr);
+ 	*num = val;
+ 	return expr;
+-
+-	expr = calloc(1, sizeof(expr));
+-	if (!expr)
+-		return NULL;
+-
+-	expr->type = EXPR_NUMBER;
+-	expr->number = val;
+-	return expr;
+ }
  
- 	ret = append_filter(synth, TRACEFS_FILTER_COMPARE,
+ __hidden int table_start(struct sqlhist_bison *sb)
 -- 
 2.33.0.153.gba50c8fa24-goog
 
