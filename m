@@ -2,104 +2,134 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C080C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Sep 2021 20:31:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36684C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  8 Sep 2021 12:08:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1904161103
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Sep 2021 20:31:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1983B60F0F
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  8 Sep 2021 12:08:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346492AbhIGUcv (ORCPT
+        id S235195AbhIHMJp (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 7 Sep 2021 16:32:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42482 "EHLO
+        Wed, 8 Sep 2021 08:09:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243733AbhIGUcu (ORCPT
+        with ESMTP id S234758AbhIHMJo (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 7 Sep 2021 16:32:50 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01157C061575
-        for <linux-trace-devel@vger.kernel.org>; Tue,  7 Sep 2021 13:31:44 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id p21-20020ac846150000b02902982d999bfbso540712qtn.7
-        for <linux-trace-devel@vger.kernel.org>; Tue, 07 Sep 2021 13:31:43 -0700 (PDT)
+        Wed, 8 Sep 2021 08:09:44 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34DFEC061575
+        for <linux-trace-devel@vger.kernel.org>; Wed,  8 Sep 2021 05:08:36 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id bt14so3718427ejb.3
+        for <linux-trace-devel@vger.kernel.org>; Wed, 08 Sep 2021 05:08:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=fVIVeh23hRb100FlM9U/lR433fpETpihutC18GrYSDc=;
-        b=m3HX+HczQDeP0y1mLUiAFdulz+aR0bVxdiEqbY9H/E6B/FvxAzDUiFyZB2YadZBCcO
-         RR/hvZC2C4b7oxamcBZwy3sgqp5ioVpWCOCPNd2KelhlQFa5icQ/TdLJk9KJYFFkCY02
-         pTQnslaI6Tsyo4vxwiKDMSSEnzruGoDoTLM04rcDZ8XxCeC4QcO9v2DzWnYbrdkvC1Jw
-         AhGEbuZ1yk14QOzQoSEcyd6c/feND5Hy6yg19LEtFCVHQjbFgI1Se3vckZwxsNyLtzke
-         BLHoWQOK5BW9nJ9pXrz8Sj+PAe1wlCaXm7V8Ipw5RseER5a7npxEIzthELrd5lsMRLYu
-         mozQ==
+        d=gmail.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=aPmnAmvXKzD8X8BF8C0+2/qvREStJgt5EHoe4fDo32g=;
+        b=EQROA4rilFvfU7ek8Rf67dVT+L35ANVIJAMdONyU3+cuy2A9XeYwhI8KdsgKzfggL2
+         4H4Ta7AWP9n2OZvZHhMKifYkbmsUHUTuWo+kP83ja1E6PzZmas1zqZin8szihmKJAHkb
+         1dYSjdbe9w1Wh0LJQlMwjMMOQjLnBDzmKHoYMIxTMjW+1iYGOrAiMaXIlClZMBA+jRKV
+         WIH5gfImLqa5H/yD/xo/83Fbzm5xuPtQ5nFPGAqUXZyJgaF/VvzfHfT+BhLIKZeROjRt
+         DfC3Xx9jg1l8DAUMZkxIv3elcr1humM12LpLTnMwmrXUEY4+brmm9q1xYkAGGhUNf/NG
+         Yinw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=fVIVeh23hRb100FlM9U/lR433fpETpihutC18GrYSDc=;
-        b=D32orONlA/G+nJmu1x6DZG1cvfhzCzEZwKBafVu6H9dywG5MCLAdrqWWBMANCRcSRj
-         4+LULSBx9r/dFpfRsaCgKEvIeQ4w14SMa7niAYUonTO6vDg9xL2PED7bBdOQSOuM3F9z
-         HuEVet6JfiDYFFQp5Yc16QrFz5MTbsxZgMeLc7x5fJIjIjnld7ZzjWMyA3dOxL3rHkeg
-         CWpKnyAzxOITXNffR5JTjOHTs7HE6cC1hZCPCMGD6MrrL22vkFG6VV+Wl7nHcajevFEb
-         VgCvPKy0BjSBMYouvTpEkiT/u3MoJ6aDmlhMpXP9tRpJPi4JAeyniyq55NahhB6f2ayY
-         I3tQ==
-X-Gm-Message-State: AOAM530Zy4EPl/EOHCcxxDGV+LcVpzT4nI9ADQhdIJomccqLGKWhnFrn
-        evB7JsfgD/kXOXutF2hnQFIB5apK7mUynkiCRD4avzM+n1jacyX65ubr1iwe3LQHTL4gH6azbPc
-        0iEpxREXK2wbDjp34I0FQnRdmvhonWcn6nN9hpr9wp2BALVHoNkeYsfs5nwZddrjOf/8yA+t1bJ
-        1hOFo=
-X-Google-Smtp-Source: ABdhPJxSCZrN10x8DKvvCaGn9H3nKtvBkXGn9Ocww5PCmUdQshTyzg+x5s7KtuldbygBoi+DWNhqS92ODh5u
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:53e9:5aba:8d75:960d])
- (user=irogers job=sendgmr) by 2002:a05:6214:1843:: with SMTP id
- d3mr143226qvy.10.1631046702361; Tue, 07 Sep 2021 13:31:42 -0700 (PDT)
-Date:   Tue,  7 Sep 2021 13:31:37 -0700
-Message-Id: <20210907203137.3954523-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-Subject: [PATCH v2] libtracefs: Fix sometimes uninitialized warning.
-From:   Ian Rogers <irogers@google.com>
-To:     linux-trace-devel@vger.kernel.org,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aPmnAmvXKzD8X8BF8C0+2/qvREStJgt5EHoe4fDo32g=;
+        b=JV9W7TKoYst+cIybdBrEBunhoqTAQRqY0OR2asGfhoD1Oi4mnUvzjKVSeM8/S2/pTg
+         wDAxT0bh5WIdipYZp8ySbXiw4R/6bh9wGCtqLmy16bzDSWlyNaKCQryHMHj3hkIZRanB
+         vi7ZtJXHFBZslmrXEVwiixR18PiHSOPmN6EkvGoV1iMCmcheZ+xRPaZhyytnlaG5ZnJa
+         gd2wK79Ne7j2eF9qSLQGC3orJk2smxKK35HjWm10Xn4JbaSYNGNXfOecPHsqQ9wp89vx
+         aM7YeeQ10i31sAlme9IpL4nk9y2zCYi+iaytZKqIAe/qumJzvzZgmjFr6N2ISQNTTpwj
+         u3yg==
+X-Gm-Message-State: AOAM532eL2UohYBKrdnyRVPqgcNJCOHNXRb8gDc9twgZw50eNoNsqctS
+        QBNoULJbVVFO01wV3xNPxDzEoeCYFkM=
+X-Google-Smtp-Source: ABdhPJxzioJxUcrkWzQQY1VTn8AVXP9RDmvPhDv3uJhZMKvnhRbd78Lhz+fCPqhD5OtmWuCiVoTIWg==
+X-Received: by 2002:a17:906:c7d0:: with SMTP id dc16mr3738980ejb.555.1631102914522;
+        Wed, 08 Sep 2021 05:08:34 -0700 (PDT)
+Received: from [192.168.0.108] ([95.87.199.93])
+        by smtp.gmail.com with ESMTPSA id h25sm941539eji.108.2021.09.08.05.08.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Sep 2021 05:08:34 -0700 (PDT)
+Subject: Re: [PATCH] kernel-shark: Handle traces with sched_switch and no
+ sched_waking
+To:     John Keeping <john@metanate.com>, linux-trace-devel@vger.kernel.org
+References: <20210906185005.3130298-1-john@metanate.com>
+From:   Yordan Karadzhov <y.karadz@gmail.com>
+Message-ID: <ebe70744-3ab9-60be-b90c-84d0ad36a03f@gmail.com>
+Date:   Wed, 8 Sep 2021 15:08:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20210906185005.3130298-1-john@metanate.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The warning with clang looks like:
 
-src/tracefs-sqlhist.c:1107:2: error: variable 'cmp' is used uninitialized whenever switch default is taken [-Werror,-Wsometimes-uninitialized]
-        default:
-        ^~~~~~~
-third_party/libtracefs/src/tracefs-sqlhist.c:1112:35: note: uninitialized use occurs here
-                            filter->lval->field.field, cmp, val);
-                                                       ^~~
-third_party/libtracefs/src/tracefs-sqlhist.c:1033:2: note: variable 'cmp' is declared here
-        enum tracefs_compare cmp;
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- src/tracefs-sqlhist.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On 6.09.21 г. 21:50, John Keeping wrote:
+> plugin_sched_init_context() is careful to make the sched_waking (or
+> sched_wakeup{,_new}) event optional but the initializer blindly
+> dereferences plugin_ctx->sched_waking_event which is null if no waking
+> event is found.
+> 
+> Add the necessary checks to avoid segfaults when (de)initializing the
+> plugin.
+> 
 
-diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
-index 88e9675..d77ce86 100644
---- a/src/tracefs-sqlhist.c
-+++ b/src/tracefs-sqlhist.c
-@@ -1097,7 +1097,8 @@ static int build_filter(struct tep_handle *tep, struct sqlhist_bison *sb,
- 	case FILTER_BIN_AND:	cmp = TRACEFS_COMPARE_AND; break;
- 	case FILTER_STR_CMP:	cmp = TRACEFS_COMPARE_RE; break;
- 	default:
--		break;
-+		fprintf(stderr, "Error invalid filter type '%d'", filter->type);
-+		return ERANGE;
- 	}
- 
- 	ret = append_filter(synth, TRACEFS_FILTER_COMPARE,
--- 
-2.33.0.153.gba50c8fa24-goog
+Very well spotted. Thanks a lot!
+Yordan
 
+
+> Signed-off-by: John Keeping <john@metanate.com>
+> ---
+>   src/plugins/sched_events.c | 16 ++++++++++------
+>   1 file changed, 10 insertions(+), 6 deletions(-)
+> 
+> diff --git a/src/plugins/sched_events.c b/src/plugins/sched_events.c
+> index 83c2520..198ed49 100644
+> --- a/src/plugins/sched_events.c
+> +++ b/src/plugins/sched_events.c
+> @@ -193,9 +193,11 @@ int KSHARK_PLOT_PLUGIN_INITIALIZER(struct kshark_data_stream *stream)
+>   				      plugin_ctx->sched_switch_event->id,
+>   				      plugin_sched_swith_action);
+>   
+> -	kshark_register_event_handler(stream,
+> -				      plugin_ctx->sched_waking_event->id,
+> -				      plugin_sched_wakeup_action);
+> +	if (plugin_ctx->sched_waking_event) {
+> +		kshark_register_event_handler(stream,
+> +					      plugin_ctx->sched_waking_event->id,
+> +					      plugin_sched_wakeup_action);
+> +	}
+>   
+>   	kshark_register_draw_handler(stream, plugin_draw);
+>   
+> @@ -213,9 +215,11 @@ int KSHARK_PLOT_PLUGIN_DEINITIALIZER(struct kshark_data_stream *stream)
+>   						plugin_ctx->sched_switch_event->id,
+>   						plugin_sched_swith_action);
+>   
+> -		kshark_unregister_event_handler(stream,
+> -						plugin_ctx->sched_waking_event->id,
+> -						plugin_sched_wakeup_action);
+> +		if (plugin_ctx->sched_waking_event) {
+> +			kshark_unregister_event_handler(stream,
+> +							plugin_ctx->sched_waking_event->id,
+> +							plugin_sched_wakeup_action);
+> +		}
+>   
+>   		kshark_unregister_draw_handler(stream, plugin_draw);
+>   
+> 
