@@ -2,148 +2,208 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-23.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DC29C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Sep 2021 13:54:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87CABC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Sep 2021 15:59:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 23397611C7
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Sep 2021 13:54:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5FFEA61101
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Sep 2021 15:59:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355418AbhIINzb (ORCPT
+        id S234143AbhIIQBD (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 9 Sep 2021 09:55:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35762 "EHLO
+        Thu, 9 Sep 2021 12:01:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356119AbhIINyY (ORCPT
+        with ESMTP id S231974AbhIIQBC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 9 Sep 2021 09:54:24 -0400
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E7AC0560D5
-        for <linux-trace-devel@vger.kernel.org>; Thu,  9 Sep 2021 04:57:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Message-Id:Date:
-        Subject:Cc:To:From:Content-Type:Reply-To:Content-ID:Content-Description:
-        In-Reply-To:References; bh=R6TIWkYcAfQALAg7PKFF5Ya+0Oy7Cs34bHultribBI0=; b=oj
-        +qcpuYN7CHDo0rlCVmmh+VleJuq/WNI6bS4W+MWEsKCeMYLvGOjfjNwn60RLxXGX5EdzXk/0v9knz
-        YkEoe21Ir8UoonbBBhmf8UCM9sGQ5goLDeUqJ6Ub6DljFnlj//Y7wwTjYaEF4vHzPCTSQPT+5GS3G
-        J/RZ+PQYztH2eIvH5fLJNq2EEtQL6ZTCPqgptre4Bygqi91HZurARnXAytgqop9zmYDnvH02GzkU0
-        SnifF5d0SkoCU5QBpquN2ZSaAWMDM1AJs4NMcShYdhVSApUgVUegcvCE47fLN0Zjdim0Xx60ZnJef
-        KUvHPhyRTd6qVUgdmPqoWoeKZnwcoa0Q==;
-Received: from [81.174.171.191] (helo=donbot.metanate.com)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1mOIgW-0004tM-8E; Thu, 09 Sep 2021 12:57:40 +0100
-From:   John Keeping <john@metanate.com>
+        Thu, 9 Sep 2021 12:01:02 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C89C061574
+        for <linux-trace-devel@vger.kernel.org>; Thu,  9 Sep 2021 08:59:53 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id i21so4627388ejd.2
+        for <linux-trace-devel@vger.kernel.org>; Thu, 09 Sep 2021 08:59:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KwePf44Dn7kYUP56mSK85ni/eUEXjHYfr9PotsQ0EGQ=;
+        b=IiDtp7czYHtLrDOcdFeIqxT+0GcNBPsmQxG95/H0FnCY5nKHi/7VTmPrrQHD2fpEZO
+         C8WJCdt6VjzEJaWY0JITfq51s6FOWMAC1E1pngbNBQuE/GxQOGcJR+e5pnxTgw2F5SbV
+         p2Ab/lYzMg4BYRBIEdt+LIfmIZZ/Uv5iRPMEUcMCNuzNB4ZT7jFmboXmZkoRITOFz7IU
+         cb9r/Fvmu1eUHmch4Yj0f1ckr5+2Y7JJGHtIT+XDB+vaOiQAjkLv1KNWjc7IyIbJRbqD
+         QTXHGmWluuPgKI4J9eVYB+dQmR6ua1slX2qMPQOXEZp3A47FOlWFzhgcybrAMjAxDYdg
+         lKUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KwePf44Dn7kYUP56mSK85ni/eUEXjHYfr9PotsQ0EGQ=;
+        b=HC2k1uPuONxc2lxQrVcRjQZDftzTRmRuGWNZvYoDFn8ViCzDER5viAeQjo46GSq5Xg
+         8aPHb/xRrr96elnyMu1Ep7xNS0arkRX/dqpKBfsLvRb9uMl+itS95u9cf7kUHVb7XOX4
+         YM68MoPbwQtS3mOpyA452Uq0Bsnr/QvWexCFouyl8mYz6rpV5VhVtmta1TNmFxba5bYh
+         XnvTMmMYj1zJGVLmovVLP/YArHw+BkoDdGC47csPHnYkq9nveajLyN9pYxpzuJu9c69d
+         lkGNpsM0748ifLFyyH7cjrdMeLxz0jXBJ4wjpwOJ+ZhXC41I4XrbaYqkxGpPqPvCueBQ
+         n7HA==
+X-Gm-Message-State: AOAM531mR3/0isPoVoEqmS0w/c03zhgL1LI3KIuK3IFuxbFhA6JeYRdT
+        bmvpON3IGW9ZP8+3O12/oldIG/FaqXE=
+X-Google-Smtp-Source: ABdhPJwG2fjF2AGUtD3EV85L2ZZqxV7l19SsmqOkzapH4nMt+06KDR1KM96PLje9QORcdbhIoAzyyg==
+X-Received: by 2002:a17:906:fcc4:: with SMTP id qx4mr4042576ejb.364.1631203191648;
+        Thu, 09 Sep 2021 08:59:51 -0700 (PDT)
+Received: from crow.. ([95.87.199.93])
+        by smtp.gmail.com with ESMTPSA id d22sm1158036ejk.5.2021.09.09.08.59.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 08:59:51 -0700 (PDT)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        John Keeping <john@metanate.com>
-Subject: [PATCH/RFC] tracing: make trace_marker{,_raw} stream-like
-Date:   Thu,  9 Sep 2021 12:57:34 +0100
-Message-Id: <20210909115734.3818711-1-john@metanate.com>
-X-Mailer: git-send-email 2.33.0
+Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH 1/2] trace-cruncher: Add find_instance()
+Date:   Thu,  9 Sep 2021 18:59:40 +0300
+Message-Id: <20210909155941.271165-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The tracing marker files are write-only streams with no meaningful
-concept of file position.  Using stream_open() to mark them as
-stream-link indicates this and has the added advantage that a single
-file descriptor can now be used from multiple threads without contention
-thanks to clearing FMODE_ATOMIC_POS.
+The method allows create a Python instance object from an already
+existing tracefs instance. The instance returned by the method is
+detached from the Python module.
 
-Note that this has the potential to break existing userspace by since
-both lseek(2) and pwrite(2) will now return ESPIPE when previously lseek
-would have updated the stored offset and pwrite would have appended to
-the trace.  A survey of libtracefs and several other projects found to
-use trace_marker(_raw) [1][2][3] suggests that everyone limits
-themselves to calling write(2) and close(2) on these file descriptors so
-there is a good chance this will go unnoticed and the benefits of
-reduced overhead and lock contention seem worth the risk.
-
-[1] https://github.com/google/perfetto
-[2] https://github.com/intel/media-driver/
-[3] https://w1.fi/cgit/hostap/
-
-Signed-off-by: John Keeping <john@metanate.com>
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
-I'm marking this as RFC because it breaks the Prime Directive of Linux
-development, as explained above.  But I'm hoping this is one of the
-cases where we get away with it because this is a huge improvement for
-multi-threaded programs when doing the simple thing of opening a single
-trace_marker FD at startup and just writing to it from any thread.
+ src/ftracepy-utils.c                          | 40 +++++++++++++++++--
+ src/ftracepy-utils.h                          |  3 ++
+ src/ftracepy.c                                |  5 +++
+ .../tests/1_unit/test_01_ftracepy_unit.py     | 12 ++++++
+ 4 files changed, 57 insertions(+), 3 deletions(-)
 
-After writing this, I realised that an alternative solution to my
-original problem would have been to use pwrite instead of write!  But I
-still think fixing this at the source would be better.
-
- kernel/trace/trace.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
-
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 2dbf797aa133..251679846a1b 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -4834,6 +4834,12 @@ int tracing_open_generic_tr(struct inode *inode, struct file *filp)
- 	return 0;
+diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
+index b94745d..bf811ae 100644
+--- a/src/ftracepy-utils.c
++++ b/src/ftracepy-utils.c
+@@ -501,10 +501,15 @@ PyObject *PyFtrace_dir(PyObject *self)
+ 	return PyUnicode_FromString(tracefs_tracing_dir());
  }
  
-+static int tracing_mark_open(struct inode *inode, struct file *filp)
++static void set_destroy_flag(PyObject *py_obj, bool val)
 +{
-+	stream_open(inode, filp);
-+	return tracing_open_generic_tr(inode, filp);
++	PyFtrace_Object_HEAD *obj_head = (PyFtrace_Object_HEAD *)py_obj;
++	obj_head->destroy = val;
 +}
 +
- static int tracing_release(struct inode *inode, struct file *file)
+ PyObject *PyFtrace_detach(PyObject *self, PyObject *args, PyObject *kwargs)
  {
- 	struct trace_array *tr = inode->i_private;
-@@ -7101,9 +7107,6 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
- 	if (tt)
- 		event_triggers_post_call(tr->trace_marker_file, tt);
+ 	static char *kwlist[] = {"object", NULL};
+-	PyFtrace_Object_HEAD *obj_head;
+ 	PyObject *py_obj = NULL;
  
--	if (written > 0)
--		*fpos += written;
--
- 	return written;
+ 	if (!PyArg_ParseTupleAndKeywords(args,
+@@ -515,8 +520,7 @@ PyObject *PyFtrace_detach(PyObject *self, PyObject *args, PyObject *kwargs)
+ 		return false;
+ 	}
+ 
+-	obj_head = (PyFtrace_Object_HEAD *)py_obj;
+-	obj_head->destroy = false;
++	set_destroy_flag(py_obj, false);
+ 
+ 	Py_RETURN_NONE;
+ }
+@@ -583,6 +587,36 @@ PyObject *PyFtrace_create_instance(PyObject *self, PyObject *args,
+ 	return PyTfsInstance_New(instance);
  }
  
-@@ -7162,9 +7165,6 @@ tracing_mark_raw_write(struct file *filp, const char __user *ubuf,
++PyObject *PyFtrace_find_instance(PyObject *self, PyObject *args,
++						 PyObject *kwargs)
++{
++	struct tracefs_instance *instance;
++	PyObject *py_inst;
++	const char *name;
++
++	static char *kwlist[] = {"name", NULL};
++	if (!PyArg_ParseTupleAndKeywords(args,
++					 kwargs,
++					 "s",
++					 kwlist,
++					 &name)) {
++		return NULL;
++	}
++
++	instance = tracefs_instance_alloc(NULL, name);
++	if (!instance) {
++		TfsError_fmt(instance,
++			     "Failed to find trace instance \'%s\'.",
++			     name);
++		return NULL;
++	}
++
++	py_inst = PyTfsInstance_New(instance);
++	set_destroy_flag(py_inst, false);
++
++	return py_inst;
++}
++
+ static bool get_optional_instance(PyObject *py_obj,
+ 				  struct tracefs_instance **instance)
+ {
+diff --git a/src/ftracepy-utils.h b/src/ftracepy-utils.h
+index 218dcb3..c1eec21 100644
+--- a/src/ftracepy-utils.h
++++ b/src/ftracepy-utils.h
+@@ -86,6 +86,9 @@ PyObject *PyFtrace_detach(PyObject *self, PyObject *args, PyObject *kwargs);
+ PyObject *PyFtrace_create_instance(PyObject *self, PyObject *args,
+ 						   PyObject *kwargs);
  
- 	__buffer_unlock_commit(buffer, event);
++PyObject *PyFtrace_find_instance(PyObject *self, PyObject *args,
++						 PyObject *kwargs);
++
+ PyObject *PyFtrace_available_tracers(PyObject *self, PyObject *args,
+ 						     PyObject *kwargs);
  
--	if (written > 0)
--		*fpos += written;
--
- 	return written;
- }
+diff --git a/src/ftracepy.c b/src/ftracepy.c
+index f03c488..e48adb6 100644
+--- a/src/ftracepy.c
++++ b/src/ftracepy.c
+@@ -155,6 +155,11 @@ static PyMethodDef ftracepy_methods[] = {
+ 	 METH_VARARGS | METH_KEYWORDS,
+ 	 "Create new tracefs instance."
+ 	},
++	{"find_instance",
++	 (PyCFunction) PyFtrace_find_instance,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Find an existing ftrace instance."
++	},
+ 	{"available_tracers",
+ 	 (PyCFunction) PyFtrace_available_tracers,
+ 	 METH_VARARGS | METH_KEYWORDS,
+diff --git a/tracecruncher/tests/1_unit/test_01_ftracepy_unit.py b/tracecruncher/tests/1_unit/test_01_ftracepy_unit.py
+index 710d3e1..a7010e2 100644
+--- a/tracecruncher/tests/1_unit/test_01_ftracepy_unit.py
++++ b/tracecruncher/tests/1_unit/test_01_ftracepy_unit.py
+@@ -36,6 +36,18 @@ class InstanceTestCase(unittest.TestCase):
+         instance_dir = tracefs_dir + '/instances/' + instance_name
+         self.assertEqual(instance_dir, inst.dir())
  
-@@ -7564,16 +7564,14 @@ static const struct file_operations tracing_free_buffer_fops = {
- };
++    def test_find(self):
++        inst = ft.create_instance(instance_name)
++        tracefs_dir = ft.dir();
++        instance_dir = tracefs_dir + '/instances/' + instance_name
++        inst_1 = ft.find_instance(instance_name)
++        self.assertEqual(instance_dir, inst_1.dir())
++
++        err='Failed to find trace instance'
++        with self.assertRaises(Exception) as context:
++            inst_2 = ft.find_instance(another_instance_name)
++        self.assertTrue(err in str(context.exception))
++
  
- static const struct file_operations tracing_mark_fops = {
--	.open		= tracing_open_generic_tr,
-+	.open		= tracing_mark_open,
- 	.write		= tracing_mark_write,
--	.llseek		= generic_file_llseek,
- 	.release	= tracing_release_generic_tr,
- };
- 
- static const struct file_operations tracing_mark_raw_fops = {
--	.open		= tracing_open_generic_tr,
-+	.open		= tracing_mark_open,
- 	.write		= tracing_mark_raw_write,
--	.llseek		= generic_file_llseek,
- 	.release	= tracing_release_generic_tr,
- };
- 
+ class PyTepTestCase(unittest.TestCase):
+     def test_init_local(self):
 -- 
-2.33.0
+2.30.2
 
