@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02AFDC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:51:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85839C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:51:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D7669611CC
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:51:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 64AC1611CC
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:51:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233554AbhIJNwS (ORCPT
+        id S233658AbhIJNwT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 10 Sep 2021 09:52:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48648 "EHLO
+        Fri, 10 Sep 2021 09:52:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231963AbhIJNwR (ORCPT
+        with ESMTP id S233588AbhIJNwT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 Sep 2021 09:52:17 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D233C061574
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:51:06 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id i6so2616077edu.1
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:51:06 -0700 (PDT)
+        Fri, 10 Sep 2021 09:52:19 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C40FC061574
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:51:08 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id u19so2609361edb.3
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:51:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=eL1K8CkAIqxgC36sTcIrtnY/TgXMctz/7ISglBBAqsY=;
-        b=KjZ8Nm61KeXwxPw/QgSZRvuNA+VNmYFwjpENK5Xu6cJXExIYaUdoXJZ5/jdatlYbq/
-         YgNLn1B9PIWXCifKohCMbOzqiJG3OFTwjKMsAylgAisxS64vQgGMzsOwep/t5o4eOahr
-         P/r6ae9x6gD4FzsNfJeiQyeQQEeIiwLRq6wIG71iuc/Gp+T4cTLCxo4AWubcHTxa2KUd
-         A85VCuLv6WvHQuP2EqrzBXJ3NSEfxeFiumLxaJ6BdWNnnMCEy0sqqq896+uspsIStVRR
-         KoL0wMChCfdwklyiADUb9ZprEi8+BMJTsCBLN1cMVakRJktYyXXCr6h5TIjp4fQ5ggW2
-         LpOg==
+        bh=80sYalF2rOTGO3eT1T104eRdXzhMQixAE+pjDXyjNxY=;
+        b=gKi3n/YV+2qSna507QDBbxUjek3hjlYxyNsMNmSMkZCVL44QxifZ88ecKy3Jg6/xCR
+         I+Lhb0ywCF1kw/TQmka0pr5yhhg/4+qeO+a8ZcZgabHlRu323qwW0cHIia8v3W81cELN
+         wT5Ooy2+YrsoARdpxbK/z465M10tnaRIwXmUHrbxL4MV5TE9oucv1MA4tiNTnVsV9x4C
+         5ZH+0LJw+YaacBiALb2tirFmu63vnjx0z35YXl1DJhzhZj5qRAeOUIFJh4SAUxry96Jp
+         g1y6iRUpUGIVcFLNI2wOSZIaIJlEKAEkeEMqoP2WyupP9ufpoLaLCTR1xg+7K4Xbi0Hf
+         27GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=eL1K8CkAIqxgC36sTcIrtnY/TgXMctz/7ISglBBAqsY=;
-        b=h1Y32SLa7YmuR4KaYyjvukwcI1U9QBFrFThda7v0rwgY61IHbuavMZdsL8p8xD61H+
-         FKZ1YsdxDNinC1liVzpi14mMAKOzzV8iGtUMOPhJF7MJHLl79o9bFSaj46Gvhdoy1d2j
-         IlXgOq94+ClP/uwg59nw2U0pMMqWGmhFX7Nv6P4nMJWttFX0VZjCvc2Ri7WRjlBla3Xy
-         WpeADhNz9BZ/gXus/EBaYf6xfPN0M/FZzepvKOUC9box2HzD9q0nAx+YJDkhiE9XE8oJ
-         nAAIo1pf09WA/E2qedoCN837mj48dxHF0+HvZUOeS0fhpkKP3dD24TNjBM3g/W4EmEVl
-         hVMw==
-X-Gm-Message-State: AOAM533WyXzzF/hEw8Bw+S6mufZduB7dkWYQPpRG4t3trfAmB1TkMz3P
-        7zKq8VSsJBWZTPgoLffYcHfgcrXtzdk=
-X-Google-Smtp-Source: ABdhPJxXmKVULKX3mClLZ18WsslCcu5RBBCs0HaTthUj6csLvMkHmCHQZWJM6lMZE7SYJO87sRdO/w==
-X-Received: by 2002:a05:6402:1352:: with SMTP id y18mr9160874edw.122.1631281864930;
-        Fri, 10 Sep 2021 06:51:04 -0700 (PDT)
+        bh=80sYalF2rOTGO3eT1T104eRdXzhMQixAE+pjDXyjNxY=;
+        b=d5Rm7aaXeH5wFWjD7zh3hCWBmu5yElCeeJBy3Q13VaoP30OHXp3wSVhlmE/cSof46Y
+         Jk637C2JCuJb16NrYQ9ZvJ3sAVVOeEWGWFtVNWgw3t3Crju/wfCpx2l874XBrAoViIm5
+         pmOQIo/YinrIOY0Ph25wwOu9X12g6SZHfY4pC9qHyFNgyjh3XV6JuVH4K7xkTDoHI93D
+         7esOIN7WIucpHGxvrLUEs8/B+3ii3x7pMpMe7IRuWvKk93SJB46IB5fLXqjCfgSF7Pj+
+         26i4zsLc4f6nGpuhzO7nkhoBJHoM/iwjewQlwT/6PAj1s6KK3hAW/0H3ZVCXIskidW2b
+         E4aw==
+X-Gm-Message-State: AOAM530b6RqkC8h/dYS0VwLNtQnG24+hgYc3o+U4SZ9lOViQbVgZYqLV
+        n3kXiMfBNlEtFMDZQUlQaqhVJUPlBBI=
+X-Google-Smtp-Source: ABdhPJy5/XzwnILeurGPi3A1Kuq/tXFXRoCT0EZUwSqbpzq1Vu606CKz4pIa+5WZlfh6V1wuwkGrMA==
+X-Received: by 2002:a50:d4dc:: with SMTP id e28mr8921884edj.106.1631281866924;
+        Fri, 10 Sep 2021 06:51:06 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id w13sm2484683ejc.100.2021.09.10.06.51.04
+        by smtp.gmail.com with ESMTPSA id w13sm2484683ejc.100.2021.09.10.06.51.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 06:51:04 -0700 (PDT)
+        Fri, 10 Sep 2021 06:51:06 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 02/25] trace-cmd library: Add cache functionality to network message handler
-Date:   Fri, 10 Sep 2021 16:50:38 +0300
-Message-Id: <20210910135101.2865226-3-tz.stoyanov@gmail.com>
+Subject: [PATCH 04/25] trace-cmd library: Add internal helper function for writing headers before file sections
+Date:   Fri, 10 Sep 2021 16:50:40 +0300
+Message-Id: <20210910135101.2865226-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210910135101.2865226-1-tz.stoyanov@gmail.com>
 References: <20210910135101.2865226-1-tz.stoyanov@gmail.com>
@@ -73,503 +73,145 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Network message handler is used to send trace metadata through a network
-socket, instead writing it into a trace file. There are use cases,
-that could require to do a lseek() on the metadata. It is hard to
-implement lseek on a network socket, that's why for such use cases a
-cache to a local file is introduced. Once the metadata is constructed,
-the local cache is send to the socket. A new library API is used to
-enable the local cache:
- tracecmd_msg_handle_cache()
-The local cache is flushed on the socket when the
- tracecmd_msg_finish_sending_data()
-is called.
+Introduce headers before each file section, in trace file version 7. The
+section header has the following format:
+ <2 bytes>, header ID
+ <string>, null terminated ASCII string, description of the header
+ <2 bytes>, section flags:
+     1: the section is compressed
+ <4 bytes>, size of the section
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- .../include/private/trace-cmd-private.h       |   5 +
- lib/trace-cmd/include/trace-cmd-local.h       |   1 +
- lib/trace-cmd/trace-msg.c                     | 127 +++++++++++++-----
- lib/trace-cmd/trace-output.c                  |  45 ++++---
- 4 files changed, 127 insertions(+), 51 deletions(-)
+ include/trace-cmd/trace-cmd.h                 |  5 ++
+ .../include/private/trace-cmd-private.h       |  1 +
+ lib/trace-cmd/include/trace-cmd-local.h       |  5 ++
+ lib/trace-cmd/trace-output.c                  | 68 +++++++++++++++++++
+ 4 files changed, 79 insertions(+)
 
+diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+index 7fea4e01..5d71e8ba 100644
+--- a/include/trace-cmd/trace-cmd.h
++++ b/include/trace-cmd/trace-cmd.h
+@@ -15,6 +15,11 @@ enum tracecmd_open_flags {
+ 	TRACECMD_FL_LOAD_NO_PLUGINS		= 1 << 0, /* Do not load plugins */
+ 	TRACECMD_FL_LOAD_NO_SYSTEM_PLUGINS	= 1 << 1, /* Do not load system plugins */
+ };
++
++enum tracecmd_section_flags {
++	TRACECMD_SEC_FL_COMPRESS	= 1 << 0, /* the section is compressed */
++};
++
+ struct tracecmd_input *tracecmd_open_head(const char *file, int flags);
+ struct tracecmd_input *tracecmd_open(const char *file, int flags);
+ struct tracecmd_input *tracecmd_open_fd(int fd, int flags);
 diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index e21bc3bf..460f8a5d 100644
+index ae930c2f..6d524c99 100644
 --- a/lib/trace-cmd/include/private/trace-cmd-private.h
 +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -344,12 +344,16 @@ enum tracecmd_msg_flags {
+@@ -138,6 +138,7 @@ enum {
+ 	TRACECMD_OPTION_TIME_SHIFT,
+ 	TRACECMD_OPTION_GUEST,
+ 	TRACECMD_OPTION_TSC2NSEC,
++	TRACECMD_OPTION_MAX,
  };
  
- /* for both client and server */
-+#define MSG_CACHE_FILE "/tmp/trace_msg_cacheXXXXXX"
- struct tracecmd_msg_handle {
- 	int			fd;
- 	short			cpu_count;
- 	short			version;	/* Current protocol version */
- 	unsigned long		flags;
- 	bool			done;
-+	bool			cache;
-+	int			cfd;
-+	char			cfile[sizeof(MSG_CACHE_FILE)];
- };
- 
- struct tracecmd_tsync_protos {
-@@ -358,6 +362,7 @@ struct tracecmd_tsync_protos {
- 
- struct tracecmd_msg_handle *
- tracecmd_msg_handle_alloc(int fd, unsigned long flags);
-+int tracecmd_msg_handle_cache(struct tracecmd_msg_handle *msg_handle);
- 
- /* Closes the socket and frees the handle */
- void tracecmd_msg_handle_close(struct tracecmd_msg_handle *msg_handle);
+ enum {
 diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
-index e11dce58..362b9fc0 100644
+index 362b9fc0..405b7dae 100644
 --- a/lib/trace-cmd/include/trace-cmd-local.h
 +++ b/lib/trace-cmd/include/trace-cmd-local.h
-@@ -43,5 +43,6 @@ struct cpu_data_source {
+@@ -35,6 +35,11 @@ struct data_file_write {
+ bool check_file_state(unsigned long file_version, int current_state, int new_state);
+ bool check_out_state(struct tracecmd_output *handle, int new_state);
  
- int out_write_cpu_data(struct tracecmd_output *handle, int cpus,
- 		       struct cpu_data_source *data, const char *buff_name);
-+off64_t msg_lseek(struct tracecmd_msg_handle *msg_handle, off_t offset, int whence);
- 
- #endif /* _TRACE_CMD_LOCAL_H */
-diff --git a/lib/trace-cmd/trace-msg.c b/lib/trace-cmd/trace-msg.c
-index 6667028e..4910ed5c 100644
---- a/lib/trace-cmd/trace-msg.c
-+++ b/lib/trace-cmd/trace-msg.c
-@@ -154,33 +154,55 @@ static inline int msg_buf_len(struct tracecmd_msg *msg)
- 	return ntohl(msg->hdr.size) - MSG_HDR_LEN - ntohl(msg->hdr.cmd_size);
- }
- 
--static int msg_write(int fd, struct tracecmd_msg *msg)
-+static int __msg_write(int fd, struct tracecmd_msg *msg, bool network)
- {
--	int cmd = ntohl(msg->hdr.cmd);
- 	int msg_size, data_size;
- 	int ret;
--
--	if (cmd < 0 || cmd >= MSG_NR_COMMANDS)
--		return -EINVAL;
--
--	dprint("msg send: %d (%s) [%d]\n",
--	       cmd, cmd_to_name(cmd), ntohl(msg->hdr.size));
--
-+	int cmd;
++unsigned long long
++out_write_section_header(struct tracecmd_output *handle, unsigned short header_id,
++			 char *description, enum tracecmd_section_flags flags, bool option);
++int out_update_section_header(struct tracecmd_output *handle, unsigned long long offset);
 +
-+	if (network) {
-+		cmd = ntohl(msg->hdr.cmd);
-+		if (cmd < 0 || cmd >= MSG_NR_COMMANDS)
-+			return -EINVAL;
-+		dprint("msg send: %d (%s) [%d]\n",
-+		       cmd, cmd_to_name(cmd), ntohl(msg->hdr.size));
-+	}
- 	msg_size = MSG_HDR_LEN + ntohl(msg->hdr.cmd_size);
- 	data_size = ntohl(msg->hdr.size) - msg_size;
- 	if (data_size < 0)
- 		return -EINVAL;
- 
--	ret = __do_write_check(fd, msg, msg_size);
--	if (ret < 0)
--		return ret;
--
-+	if (network) {
-+		ret = __do_write_check(fd, msg, msg_size);
-+		if (ret < 0)
-+			return ret;
-+	}
- 	if (!data_size)
- 		return 0;
- 
- 	return __do_write_check(fd, msg->buf, data_size);
- }
- 
-+__hidden off64_t msg_lseek(struct tracecmd_msg_handle *msg_handle, off64_t offset, int whence)
-+{
-+	/*
-+	 * lseek works only if the handle is in cache mode,
-+	 * cannot seek on a network socket
-+	 */
-+	if (!msg_handle->cache || msg_handle->cfd < 0)
-+		return (off64_t)-1;
-+	return lseek64(msg_handle->cfd, offset, whence);
-+}
-+
-+static int msg_write(struct tracecmd_msg_handle *msg_handle, struct tracecmd_msg *msg)
-+{
-+	if (msg_handle->cache && msg_handle->cfd >= 0)
-+		return __msg_write(msg_handle->cfd, msg, false);
-+
-+
-+	return __msg_write(msg_handle->fd, msg, true);
-+}
-+
- enum msg_trace_flags {
- 	MSG_TRACE_USE_FIFOS = 1 << 0,
- };
-@@ -274,11 +296,11 @@ static void msg_free(struct tracecmd_msg *msg)
- 	memset(msg, 0, sizeof(*msg));
- }
- 
--static int tracecmd_msg_send(int fd, struct tracecmd_msg *msg)
-+static int tracecmd_msg_send(struct tracecmd_msg_handle *msg_handle, struct tracecmd_msg *msg)
- {
- 	int ret = 0;
- 
--	ret = msg_write(fd, msg);
-+	ret = msg_write(msg_handle, msg);
- 	if (ret < 0)
- 		ret = -ECOMM;
- 
-@@ -287,11 +309,11 @@ static int tracecmd_msg_send(int fd, struct tracecmd_msg *msg)
+ struct cpu_data_source {
+ 	int fd;
+ 	int size;
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index 08bf7614..3e987466 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -332,6 +332,74 @@ int tracecmd_ftrace_enable(int set)
  	return ret;
  }
  
--static int msg_send_nofree(int fd, struct tracecmd_msg *msg)
-+static int msg_send_nofree(struct tracecmd_msg_handle *msg_handle, struct tracecmd_msg *msg)
- {
- 	int ret = 0;
- 
--	ret = msg_write(fd, msg);
-+	ret = msg_write(msg_handle, msg);
- 	if (ret < 0)
- 		ret = -ECOMM;
- 
-@@ -454,7 +476,7 @@ static int tracecmd_msg_send_notsupp(struct tracecmd_msg_handle *msg_handle)
- 	struct tracecmd_msg msg;
- 
- 	tracecmd_msg_init(MSG_NOT_SUPP, &msg);
--	return tracecmd_msg_send(msg_handle->fd, &msg);
-+	return tracecmd_msg_send(msg_handle, &msg);
- }
- 
- static int handle_unexpected_msg(struct tracecmd_msg_handle *msg_handle,
-@@ -472,7 +494,6 @@ int tracecmd_msg_send_init_data(struct tracecmd_msg_handle *msg_handle,
- 				unsigned int **client_ports)
- {
- 	struct tracecmd_msg msg;
--	int fd = msg_handle->fd;
- 	unsigned int *ports;
- 	int i, cpus, ret;
- 	char *p, *buf_end;
-@@ -485,13 +506,13 @@ int tracecmd_msg_send_init_data(struct tracecmd_msg_handle *msg_handle,
- 	if (ret < 0)
- 		goto out;
- 
--	ret = tracecmd_msg_send(fd, &msg);
-+	ret = tracecmd_msg_send(msg_handle, &msg);
- 	if (ret < 0)
- 		goto out;
- 
- 	msg_free(&msg);
- 
--	ret = tracecmd_msg_wait_for_msg(fd, &msg);
-+	ret = tracecmd_msg_wait_for_msg(msg_handle->fd, &msg);
- 	if (ret < 0)
- 		goto out;
- 
-@@ -564,12 +585,53 @@ tracecmd_msg_handle_alloc(int fd, unsigned long flags)
- 
- 	handle->fd = fd;
- 	handle->flags = flags;
-+	handle->cfd = -1;
-+	handle->cache = false;
- 	return handle;
- }
- 
-+int tracecmd_msg_handle_cache(struct tracecmd_msg_handle *msg_handle)
++__hidden unsigned long long
++out_write_section_header(struct tracecmd_output *handle, unsigned short header_id,
++			 char *description, enum tracecmd_section_flags flags, bool option)
 +{
-+	if (msg_handle->cfd < 0) {
-+		strcpy(msg_handle->cfile, MSG_CACHE_FILE);
-+		msg_handle->cfd = mkstemp(msg_handle->cfile);
-+		if (msg_handle->cfd < 0)
++	tsize_t endian8;
++	tsize_t offset;
++	short endian2;
++	int size;
++
++	if (header_id >= TRACECMD_OPTION_MAX)
++		return -1;
++	if (!HAS_SECTIONS(handle))
++		return 0;
++	offset = do_lseek(handle, 0, SEEK_CUR);
++	if (option) {
++		endian8 = convert_endian_8(handle, offset);
++		if (!tracecmd_add_option(handle, header_id, 8, &endian8))
 +			return -1;
-+		unlink(msg_handle->cfile);
 +	}
-+	msg_handle->cache = true;
++	/* Section ID */
++	endian2 = convert_endian_2(handle, header_id);
++	if (do_write_check(handle, &endian2, 2))
++		return (off_t)-1;
++
++	/* Section description */
++	if (do_write_check(handle, description, strlen(description) + 1))
++		return (off_t)-1;
++	/* Section flags */
++	endian2 = convert_endian_2(handle, flags);
++	if (do_write_check(handle, &endian2, 2))
++		return (off_t)-1;
++
++	offset = do_lseek(handle, 0, SEEK_CUR);
++	size = 0;
++	/* Reserve for section size */
++	if (do_write_check(handle, &size, 4))
++		return (off_t)-1;
++	return offset;
++}
++
++__hidden int out_update_section_header(struct tracecmd_output *handle, unsigned long long offset)
++{
++	unsigned long long current;
++	unsigned int endian4;
++	int size;
++
++	if (!HAS_SECTIONS(handle) || offset == 0)
++		return 0;
++
++	current = do_lseek(handle, 0, SEEK_CUR);
++	/* The real size is the difference between the saved offset and
++	 * the current offset - 4 bytes, the reserved space for the section size.
++	 */
++	size = current - offset;
++	if (size < 4)
++		return -1;
++	size -= 4;
++	if (do_lseek(handle, offset, SEEK_SET) == (off_t)-1)
++		return -1;
++
++	endian4 = convert_endian_4(handle, size);
++	if (do_write_check(handle, &endian4, 4))
++		return -1;
++	if (do_lseek(handle, current, SEEK_SET) == (off_t)-1)
++		return -1;
 +	return 0;
 +}
 +
-+static int flush_cache(struct tracecmd_msg_handle *msg_handle)
-+{
-+	char buf[MSG_MAX_DATA_LEN];
-+	int ret;
-+
-+	if (!msg_handle->cache || msg_handle->cfd < 0)
-+		return 0;
-+	msg_handle->cache = false;
-+	if (lseek64(msg_handle->cfd, 0, SEEK_SET) == (off64_t)-1)
-+		return -1;
-+	do {
-+		ret = read(msg_handle->cfd, buf, MSG_MAX_DATA_LEN);
-+		if (ret <= 0)
-+			break;
-+		ret = tracecmd_msg_data_send(msg_handle, buf, ret);
-+		if (ret < 0)
-+			break;
-+	} while (ret >= 0);
-+
-+	close(msg_handle->cfd);
-+	msg_handle->cfd = -1;
-+	return ret;
-+}
-+
- void tracecmd_msg_handle_close(struct tracecmd_msg_handle *msg_handle)
+ static int read_header_files(struct tracecmd_output *handle)
  {
- 	close(msg_handle->fd);
-+	if (msg_handle->cfd >= 0)
-+		close(msg_handle->cfd);
- 	free(msg_handle);
- }
- 
-@@ -666,7 +728,7 @@ int tracecmd_msg_send_port_array(struct tracecmd_msg_handle *msg_handle,
- 	if (ret < 0)
- 		return ret;
- 
--	ret = tracecmd_msg_send(msg_handle->fd, &msg);
-+	ret = tracecmd_msg_send(msg_handle, &msg);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -678,7 +740,7 @@ int tracecmd_msg_send_close_msg(struct tracecmd_msg_handle *msg_handle)
- 	struct tracecmd_msg msg;
- 
- 	tracecmd_msg_init(MSG_CLOSE, &msg);
--	return tracecmd_msg_send(msg_handle->fd, &msg);
-+	return tracecmd_msg_send(msg_handle, &msg);
- }
- 
- int tracecmd_msg_send_close_resp_msg(struct tracecmd_msg_handle *msg_handle)
-@@ -686,14 +748,13 @@ int tracecmd_msg_send_close_resp_msg(struct tracecmd_msg_handle *msg_handle)
- 	struct tracecmd_msg msg;
- 
- 	tracecmd_msg_init(MSG_CLOSE_RESP, &msg);
--	return tracecmd_msg_send(msg_handle->fd, &msg);
-+	return tracecmd_msg_send(msg_handle, &msg);
- }
- 
- int tracecmd_msg_data_send(struct tracecmd_msg_handle *msg_handle,
- 			   const char *buf, int size)
- {
- 	struct tracecmd_msg msg;
--	int fd = msg_handle->fd;
- 	int n;
- 	int ret;
- 	int count = 0;
-@@ -721,7 +782,7 @@ int tracecmd_msg_data_send(struct tracecmd_msg_handle *msg_handle,
- 			memcpy(msg.buf, buf + count, n);
- 			n = 0;
- 		}
--		ret = msg_write(fd, &msg);
-+		ret = msg_write(msg_handle, &msg);
- 		if (ret < 0)
- 			break;
- 	}
-@@ -735,8 +796,9 @@ int tracecmd_msg_finish_sending_data(struct tracecmd_msg_handle *msg_handle)
- 	struct tracecmd_msg msg;
- 	int ret;
- 
-+	flush_cache(msg_handle);
- 	tracecmd_msg_init(MSG_FIN_DATA, &msg);
--	ret = tracecmd_msg_send(msg_handle->fd, &msg);
-+	ret = tracecmd_msg_send(msg_handle, &msg);
- 	if (ret < 0)
- 		return ret;
- 	return 0;
-@@ -752,10 +814,7 @@ int tracecmd_msg_read_data(struct tracecmd_msg_handle *msg_handle, int ofd)
- 	while (!tracecmd_msg_done(msg_handle)) {
- 		ret = tracecmd_msg_recv_wait(msg_handle->fd, &msg);
- 		if (ret < 0) {
--			if (ret == -ETIMEDOUT)
--				tracecmd_warning("Connection timed out\n");
--			else
--				tracecmd_warning("reading client");
-+			tracecmd_warning("reading client %d (%s)", ret, strerror(ret));
- 			return ret;
- 		}
- 
-@@ -959,7 +1018,7 @@ int tracecmd_msg_send_trace_req(struct tracecmd_msg_handle *msg_handle,
- 	if (ret < 0)
- 		return ret;
- 
--	return tracecmd_msg_send(msg_handle->fd, &msg);
-+	return tracecmd_msg_send(msg_handle, &msg);
- }
- 
- static int get_trace_req_protos(char *buf, int length,
-@@ -1151,7 +1210,7 @@ int tracecmd_msg_send_time_sync(struct tracecmd_msg_handle *msg_handle,
- 	msg.hdr.size = htonl(ntohl(msg.hdr.size) + payload_size);
- 
- 	msg.buf = payload;
--	return msg_send_nofree(msg_handle->fd, &msg);
-+	return msg_send_nofree(msg_handle, &msg);
- }
- 
- /**
-@@ -1283,7 +1342,7 @@ int tracecmd_msg_send_trace_resp(struct tracecmd_msg_handle *msg_handle,
- 	if (ret < 0)
- 		return ret;
- 
--	return tracecmd_msg_send(msg_handle->fd, &msg);
-+	return tracecmd_msg_send(msg_handle, &msg);
- }
- 
- int tracecmd_msg_recv_trace_resp(struct tracecmd_msg_handle *msg_handle,
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index a9a577e0..71ed55cf 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -95,6 +95,14 @@ do_write_check(struct tracecmd_output *handle, const void *data, tsize_t size)
- 	return __do_write_check(handle->fd, data, size);
- }
- 
-+static inline off64_t do_lseek(struct tracecmd_output *handle, off_t offset, int whence)
-+{
-+	if (handle->msg_handle)
-+		return msg_lseek(handle->msg_handle, offset, whence);
-+	else
-+		return lseek64(handle->fd, offset, whence);
-+}
-+
- static short convert_endian_2(struct tracecmd_output *handle, short val)
- {
- 	if (!handle->pevent)
-@@ -957,6 +965,9 @@ int tracecmd_output_set_msg(struct tracecmd_output *handler, struct tracecmd_msg
- 		return -1;
- 
- 	handler->msg_handle = msg_handle;
-+	/* Force messages to be cached in a temp file before sending through the socket */
-+	if (HAS_SECTIONS(handler))
-+		tracecmd_msg_handle_cache(handler->msg_handle);
- 
- 	return 0;
- }
-@@ -1276,7 +1287,7 @@ int tracecmd_write_options(struct tracecmd_output *handle)
- 			return -1;
- 
- 		/* Save the data location in case it needs to be updated */
--		options->offset = lseek64(handle->fd, 0, SEEK_CUR);
-+		options->offset = do_lseek(handle, 0, SEEK_CUR);
- 
- 		if (do_write_check(handle, options->data,
- 				   options->size))
-@@ -1309,9 +1320,9 @@ int tracecmd_append_options(struct tracecmd_output *handle)
- 	if (handle->file_state != TRACECMD_FILE_OPTIONS)
- 		return -1;
- 
--	if (lseek64(handle->fd, 0, SEEK_END) == (off_t)-1)
-+	if (do_lseek(handle, 0, SEEK_END) == (off_t)-1)
- 		return -1;
--	offset = lseek64(handle->fd, -2, SEEK_CUR);
-+	offset = do_lseek(handle, -2, SEEK_CUR);
- 	if (offset == (off_t)-1)
- 		return -1;
- 
-@@ -1329,7 +1340,7 @@ int tracecmd_append_options(struct tracecmd_output *handle)
- 			return -1;
- 
- 		/* Save the data location in case it needs to be updated */
--		options->offset = lseek64(handle->fd, 0, SEEK_CUR);
-+		options->offset = do_lseek(handle, 0, SEEK_CUR);
- 
- 		if (do_write_check(handle, options->data,
- 				   options->size))
-@@ -1525,10 +1536,10 @@ static int update_buffer_cpu_offset(struct tracecmd_output *handle,
- 		tracecmd_warning("Cannot find description for buffer %s\n", name);
- 		return -1;
- 	}
--	current = lseek64(handle->fd, 0, SEEK_CUR);
-+	current = do_lseek(handle, 0, SEEK_CUR);
- 
- 	/* Go to the option data, where will write the offest */
--	if (lseek64(handle->fd, b_offset, SEEK_SET) == (off64_t)-1) {
-+	if (do_lseek(handle, b_offset, SEEK_SET) == (off64_t)-1) {
- 		tracecmd_warning("could not seek to %lld\n", b_offset);
- 		return -1;
- 	}
-@@ -1537,7 +1548,7 @@ static int update_buffer_cpu_offset(struct tracecmd_output *handle,
- 		return -1;
- 
- 	/* Go back to end of file */
--	if (lseek64(handle->fd, current, SEEK_SET) == (off64_t)-1) {
-+	if (do_lseek(handle, current, SEEK_SET) == (off64_t)-1) {
- 		tracecmd_warning("could not seek to %lld\n", offset);
- 		return -1;
- 	}
-@@ -1586,7 +1597,7 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
- 		goto out_free;
- 	}
- 
--	data_offs = lseek64(handle->fd, 0, SEEK_CUR);
-+	data_offs = do_lseek(handle, 0, SEEK_CUR);
- 	if (do_write_check(handle, "flyrecord", 10))
- 		goto out_free;
- 
-@@ -1598,10 +1609,10 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
- 		data_files[i].file_size = data[i].size;
- 		/* Write 0 for trace data offset and size and store offsets of these fields */
- 		endian8 = 0;
--		data_files[i].doffset = lseek64(handle->fd, 0, SEEK_CUR);
-+		data_files[i].doffset = do_lseek(handle, 0, SEEK_CUR);
- 		if (do_write_check(handle, &endian8, 8))
- 			goto out_free;
--		data_files[i].soffset = lseek64(handle->fd, 0, SEEK_CUR);
-+		data_files[i].soffset = do_lseek(handle, 0, SEEK_CUR);
- 		if (do_write_check(handle, &endian8, 8))
- 			goto out_free;
- 	}
-@@ -1611,10 +1622,10 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
- 	if (clock && save_clock(handle, clock))
- 		goto out_free;
- 	for (i = 0; i < cpus; i++) {
--		data_files[i].data_offset = lseek64(handle->fd, 0, SEEK_CUR);
-+		data_files[i].data_offset = do_lseek(handle, 0, SEEK_CUR);
- 		/* Page align offset */
- 		data_files[i].data_offset = (data_files[i].data_offset + (handle->page_size - 1)) & ~(handle->page_size - 1);
--		data_files[i].data_offset = lseek64(handle->fd, data_files[i].data_offset, SEEK_SET);
-+		data_files[i].data_offset = do_lseek(handle, data_files[i].data_offset, SEEK_SET);
- 		if (data_files[i].data_offset == (off64_t)-1)
- 			goto out_free;
- 		if (!tracecmd_get_quiet(handle))
-@@ -1636,26 +1647,26 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
- 		}
- 
- 		/* Write the real CPU data offset in the file */
--		if (lseek64(handle->fd, data_files[i].doffset, SEEK_SET) == (off64_t)-1)
-+		if (do_lseek(handle, data_files[i].doffset, SEEK_SET) == (off64_t)-1)
- 			goto out_free;
- 		endian8 = convert_endian_8(handle, data_files[i].data_offset);
- 		if (do_write_check(handle, &endian8, 8))
- 			goto out_free;
- 		/* Write the real CPU data size in the file */
--		if (lseek64(handle->fd, data_files[i].soffset, SEEK_SET) == (off64_t)-1)
-+		if (do_lseek(handle, data_files[i].soffset, SEEK_SET) == (off64_t)-1)
- 			goto out_free;
- 		endian8 = convert_endian_8(handle, data_files[i].write_size);
- 		if (do_write_check(handle, &endian8, 8))
- 			goto out_free;
- 		offset = data_files[i].data_offset + data_files[i].write_size;
--		if (lseek64(handle->fd, offset, SEEK_SET) == (off64_t)-1)
-+		if (do_lseek(handle, offset, SEEK_SET) == (off64_t)-1)
- 			goto out_free;
- 		if (!tracecmd_get_quiet(handle))
- 			fprintf(stderr, "    %llu bytes in size\n",
- 				(unsigned long long)data_files[i].write_size);
- 	}
- 
--	if (lseek64(handle->fd, 0, SEEK_END) == (off64_t)-1)
-+	if (do_lseek(handle, 0, SEEK_END) == (off64_t)-1)
- 		goto out_free;
- 
- 	free(data_files);
-@@ -1664,7 +1675,7 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
- 	return 0;
- 
-  out_free:
--	lseek64(handle->fd, 0, SEEK_END);
-+	do_lseek(handle, 0, SEEK_END);
- 	free(data_files);
- 	return -1;
- }
+ 	tsize_t size, check_size, endian8;
 -- 
 2.31.1
 
