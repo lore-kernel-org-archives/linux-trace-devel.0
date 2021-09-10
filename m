@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DCA7C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:48:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BB50C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:48:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1EFAE611CC
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:48:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3DE06611CC
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:48:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233767AbhIJNtd (ORCPT
+        id S233782AbhIJNte (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 10 Sep 2021 09:49:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48020 "EHLO
+        Fri, 10 Sep 2021 09:49:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233582AbhIJNtd (ORCPT
+        with ESMTP id S233582AbhIJNte (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 Sep 2021 09:49:33 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCFADC061574
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:48:21 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id t19so4367503ejr.8
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:48:21 -0700 (PDT)
+        Fri, 10 Sep 2021 09:49:34 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60BDC061574
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:48:22 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 9so2566047edx.11
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:48:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8Zt0veOqDDSXpzCVbb+xlRgowJ7dD1XDzcMmVcCpCxA=;
-        b=af9FyzLPMigVwz0ngmYbV6vdYVxQw0ZblWjHUb82VCQjBnyn4zk1Oii5SDOK6ksqVH
-         XnGPBmYZS0IMsKBokP2Bsi7seK8hJkN7Hv8vcX14sagjQ+KpRmT0eLognGewTqTkh+kR
-         4T9cd6U/D/2Dx+tLnslwSTfAD8EjTNpR2wFfsDdcb8F6Zlr0CnBED0E70ogG8WG/VrPm
-         AMl0mcB5Zu+VfceL9M9TEjsWzpgoWt2J+CfbdmUDi93iwGhpJHsLadnvfDTY+t/OAaSo
-         3jVzqt6YiwFrObD6KsepL983t8oqzlqTypS5Im4zV4P6pDlUsSVFp+QKGX0qV1jWlO/d
-         9zOA==
+        bh=gXM2bLjK+vpvadwzGvKlftuaWiUMsfFXiQadv9nvFww=;
+        b=CdovOEkexvIWLeJeMBj09IYHMY3DUSQp4Rzo6PuG/fXfxxqgsCebVnB2vRiZk1l/gC
+         HYMIJ75Qgg+QnTvBRKr0cGk1KXPbsURZaltEYxFQWXXaZC1MZ1FlGoPURgTKfw5PdGEQ
+         TTLxHFIy/0GV8S+SiMtt7hqck+f2zA6hSuj9o57UoUf7vWMyVXF3SxEGzCrRQE5UGpOP
+         v2VeEqh9NUkqiysQyRnM3XDRRIjqwb00KIJ91ijF4A7jWSxXPWNuniSRfX3qqDpZk45a
+         yPEKa5m1IOvCGLxF73FauBJL9GUK7zvc5q5DvX8tExlm6eccU6qoB7UDz9K0o4mGpa7p
+         GFyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8Zt0veOqDDSXpzCVbb+xlRgowJ7dD1XDzcMmVcCpCxA=;
-        b=aXFfDDH6oM2ugtiuqLdM6xsEPKmjrkoNo2niNiDxWZWjfOGfWWPPLH3jd5lXJYa1fc
-         lX4SVu0y4ZmQO1IClI64XxeSfMWvu5co8wtKlnwKb6+D1RC0SmcaV/HZMbQTunVyyCFt
-         mSrXCgJQFEuGLg741cdJSxgfuZEgcDDireruFIo17MVoo+kbmaXtwDOFNop8Ec8SmZfA
-         Dn1Hvk9l0GlJDjaGbfWiQDjdeCeixwFv76r7Q2bQ172x3YJWNfFogKyLRqCiaduNC73F
-         O+bdy8nOUPH4V6/kPZ/FDOYa+S7f5TiSE5l7ZUASaP6S1eNnof7bo7EKE1goES7BMlhp
-         b+AQ==
-X-Gm-Message-State: AOAM531jxMNmeSe/0cUeUHG6qxgYOSSjaPl3GoFBPQwwwdfQDVGbquNm
-        KyYM93zz2vEbdB4YI6nCSoEWIYUY2A8=
-X-Google-Smtp-Source: ABdhPJyJt4/V694sCbqsyvBcrUM7Amh8r9jJVJ88H2/l6p1a50Nzen9aH/dFcIcVOJ2R8hEDyrgJBA==
-X-Received: by 2002:a17:906:a0a:: with SMTP id w10mr9814574ejf.416.1631281700237;
-        Fri, 10 Sep 2021 06:48:20 -0700 (PDT)
+        bh=gXM2bLjK+vpvadwzGvKlftuaWiUMsfFXiQadv9nvFww=;
+        b=GWJTDdH1+tW0+8mgNP9xASAJP2IwkiVYHbnFaylnSYyJf45mkncvu3ILysjVKuMEUs
+         zn7Nx3YwYjelSFmfYtoOByJKfs50atU+jDCVItCcOPokf68U5hzwy4w8IC2zNTg4ys3q
+         KxpS+RJe/93B/w6dQwCSakzjAUPQ3KjSBPTSyih+qfefNz+FDJaJ21iiPiL81mhGVmFH
+         glRIjrZz2/4wEjWbyoC6u7j2D2Y9TPFa+ZJpI6vxG3XuCb8arxIiz3BiYVnlzRsl+jAl
+         Hyn3t5tvaoReUi3j86i6r+9ehc/xGAXk4Ayik5wTc6H4j8Op0wiJrNdmIqqRV4AC5eIS
+         +EsQ==
+X-Gm-Message-State: AOAM5301K8k0iT5eEoIw6ptrkIshT99vVvEZ+MPpdwq17SIJCsm1bDLr
+        TViBZLCq+Zr3ehJymvXCUF05pnOsQpA=
+X-Google-Smtp-Source: ABdhPJzonhmtiYu74LhQQfR0A2s0R1Lag7ViQwSFFiwL1CCK1TlqSLHvCTLCM62ctKmtfUWK2l66Uw==
+X-Received: by 2002:a05:6402:524e:: with SMTP id t14mr9126780edd.66.1631281701204;
+        Fri, 10 Sep 2021 06:48:21 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id r2sm605141edo.59.2021.09.10.06.48.19
+        by smtp.gmail.com with ESMTPSA id r2sm605141edo.59.2021.09.10.06.48.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 06:48:19 -0700 (PDT)
+        Fri, 10 Sep 2021 06:48:20 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 19/21] trace-cmd library: Refactor APIs for creating output handler
-Date:   Fri, 10 Sep 2021 16:47:55 +0300
-Message-Id: <20210910134757.2863982-20-tz.stoyanov@gmail.com>
+Subject: [PATCH 20/21] trace-cmd library: Refactor the logic for writing trace data in the file
+Date:   Fri, 10 Sep 2021 16:47:56 +0300
+Message-Id: <20210910134757.2863982-21-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210910134757.2863982-1-tz.stoyanov@gmail.com>
 References: <20210910134757.2863982-1-tz.stoyanov@gmail.com>
@@ -73,769 +73,620 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In the trace-cmd library there are various APIs for allocating and
-initializing output handler to a trace file. The existing APIs are use
-case oriented, with a lot of parameters. Extending them for new use
-cases, adding more input parameters, will make the library more complex
-and not easy to use.
-Almost all use case oriented APIs for output handler creation are
-removed and replaced with new flow, which is easier to be extended with
-new creation parameters.
-
+When a trace buffer data are written in the trace file, the buffer
+option in the file metadata is updated with the file offset of the
+tracing data. Hide this logic into the trace-cmd library.
+Added new APIs:
+ tracecmd_add_buffer_info()
+ tracecmd_write_buffer_info()
+Changed APIs:
+ tracecmd_append_buffer_cpu_data()
 Removed APIs:
- tracecmd_create_init_fd_msg()
- tracecmd_create_init_file_glob()
- tracecmd_create_init_fd_glob()
- tracecmd_create_init_file_override()
+ tracecmd_add_buffer_option()
 
-New APIs:
- tracecmd_output_allocate()
- tracecmd_output_set_msg()
- tracecmd_output_set_trace_dir()
- tracecmd_output_set_kallsyms()
- tracecmd_output_set_from_input()
- tracecmd_output_write_init()
- tracecmd_output_write_headers()
-
-The new tracecmd_output_allocate() API allocates memory and performs
-minimal initialization of an output handler to a trace file. No data
-is written in the file.
-The tracecmd_output_set_...() APIs can be used to set various
-parameters to the newly allocated output handler, that affect the way
-the data is written into the file.
-When the output handler is configured for the desired use case, the
-tracecmd_output_write_init() is used to start writing to the file, it
-writes initial magic bytes.
-The tracecmd_output_write_headers() API is used to write the initial
-headers into the file.
+Refactored the internal logic of tracecmd_write_cpu_data() API to be
+suitable for upcoming trace file format changes and data compression.
+The size and the offset of the trace data is saved in the file right
+after the data is written. The old logic calculates the size and offset
+in advance, but when the trace data is compressed it is hard to use
+that approach.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- .../include/private/trace-cmd-private.h       |  25 +-
- lib/trace-cmd/trace-output.c                  | 406 ++++++++++++------
- tracecmd/trace-record.c                       |  55 ++-
- tracecmd/trace-restore.c                      |  32 +-
- 4 files changed, 356 insertions(+), 162 deletions(-)
+ .../include/private/trace-cmd-private.h       |  10 +-
+ lib/trace-cmd/include/trace-cmd-local.h       |  17 +
+ lib/trace-cmd/trace-output.c                  | 308 ++++++++++++------
+ tracecmd/trace-listen.c                       |   2 +-
+ tracecmd/trace-record.c                       |  18 +-
+ 5 files changed, 237 insertions(+), 118 deletions(-)
 
 diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index c58b09e9..167f3804 100644
+index 167f3804..97cd82f8 100644
 --- a/lib/trace-cmd/include/private/trace-cmd-private.h
 +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -102,7 +102,8 @@ static inline int tracecmd_host_bigendian(void)
- /* --- Opening and Reading the trace.dat file --- */
+@@ -290,8 +290,8 @@ struct tracecmd_option *
+ tracecmd_add_option_v(struct tracecmd_output *handle,
+ 		      unsigned short id, const struct iovec *vector, int count);
  
- enum tracecmd_file_states {
--	TRACECMD_FILE_INIT = 1,
-+	TRACECMD_FILE_ALLOCATED = 0,
-+	TRACECMD_FILE_INIT,
- 	TRACECMD_FILE_HEADERS,
- 	TRACECMD_FILE_FTRACE_EVENTS,
- 	TRACECMD_FILE_ALL_EVENTS,
-@@ -268,20 +269,20 @@ struct tracecmd_event_list {
- struct tracecmd_option;
- struct tracecmd_msg_handle;
+-struct tracecmd_option *tracecmd_add_buffer_option(struct tracecmd_output *handle,
+-						   const char *name, int cpus);
++int tracecmd_add_buffer_info(struct tracecmd_output *handle, const char *name, int cpus);
++int tracecmd_write_buffer_info(struct tracecmd_output *handle);
  
-+struct tracecmd_output *tracecmd_output_allocate(int fd);
-+int tracecmd_output_set_msg(struct tracecmd_output *handler,
-+			    struct tracecmd_msg_handle *msg_handle);
-+int tracecmd_output_set_trace_dir(struct tracecmd_output *handler, const char *tracing_dir);
-+int tracecmd_output_set_kallsyms(struct tracecmd_output *handler, const char *kallsyms);
-+int tracecmd_output_set_from_input(struct tracecmd_output *handler, struct tracecmd_input *ihandle);
-+int tracecmd_output_write_init(struct tracecmd_output *handler);
-+int tracecmd_output_write_headers(struct tracecmd_output *handler,
-+				  struct tracecmd_event_list *list);
+ int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus);
+ int tracecmd_write_cmdlines(struct tracecmd_output *handle);
+@@ -303,13 +303,11 @@ struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle,
+ 				      const char *file);
+ 
+ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
+-			    int cpus, char * const *cpu_data_files);
++			    int cpus, char * const *cpu_data_files, const char *buff_name);
+ int tracecmd_append_cpu_data(struct tracecmd_output *handle,
+ 			     int cpus, char * const *cpu_data_files);
+ int tracecmd_append_buffer_cpu_data(struct tracecmd_output *handle,
+-				    struct tracecmd_option *option,
+-				    int cpus, char * const *cpu_data_files);
+-
++				    const char *name, int cpus, char * const *cpu_data_files);
+ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd);
+ 
+ /* --- Reading the Fly Recorder Trace --- */
+diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
+index 7f3b45a8..547ee5c3 100644
+--- a/lib/trace-cmd/include/trace-cmd-local.h
++++ b/lib/trace-cmd/include/trace-cmd-local.h
+@@ -31,7 +31,24 @@ void tracecmd_info(const char *fmt, ...);
+ #endif
+ #endif
+ 
++struct data_file_write {
++	unsigned long long	file_size;
++	unsigned long long	write_size;
++	unsigned long long	soffset;
++	unsigned long long	data_offset;
++	unsigned long long	doffset;
++};
 +
- struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, int cpus);
--struct tracecmd_output *
--tracecmd_create_init_file_glob(const char *output_file,
--			       struct tracecmd_event_list *list);
- struct tracecmd_output *tracecmd_create_init_fd(int fd);
--struct tracecmd_output *
--tracecmd_create_init_fd_glob(int fd, struct tracecmd_event_list *list);
--struct tracecmd_output *
--tracecmd_create_init_fd_msg(struct tracecmd_msg_handle *msg_handle,
--			    struct tracecmd_event_list *list);
+ bool check_file_state(unsigned long file_version, int current_state, int new_state);
+ bool check_out_state(struct tracecmd_output *handle, int new_state);
+ 
++struct cpu_data_source {
++	int fd;
++	int size;
++	off64_t offset;
++};
 +
- struct tracecmd_output *tracecmd_create_init_file(const char *output_file);
--struct tracecmd_output *tracecmd_create_init_file_override(const char *output_file,
--							   const char *tracing_dir,
--							   const char *kallsyms);
- struct tracecmd_option *tracecmd_add_option(struct tracecmd_output *handle,
- 					    unsigned short id, int size,
- 					    const void *data);
++int out_write_cpu_data(struct tracecmd_output *handle, int cpus,
++		       struct cpu_data_source *data, const char *buff_name);
++
+ #endif /* _TRACE_CMD_LOCAL_H */
 diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index fe1d1aaa..20116d99 100644
+index 20116d99..ad18fa9f 100644
 --- a/lib/trace-cmd/trace-output.c
 +++ b/lib/trace-cmd/trace-output.c
-@@ -31,11 +31,6 @@
- typedef unsigned long long	tsize_t;
- typedef long long		stsize_t;
+@@ -39,6 +39,14 @@ struct tracecmd_option {
+ 	struct list_head list;
+ };
  
--static struct tracecmd_event_list all_event_list = {
--	.next = NULL,
--	.glob = "all"
--};
--
- struct tracecmd_option {
- 	unsigned short	id;
- 	int		size;
-@@ -54,11 +49,14 @@ struct tracecmd_output {
- 	int			cpus;
- 	struct tep_handle	*pevent;
- 	char			*tracing_dir;
-+	char			*kallsyms;
-+	struct tracecmd_event_list *events;
- 	int			nr_options;
- 	bool			quiet;
- 	unsigned long		file_state;
- 	unsigned long		file_version;
- 	size_t			options_start;
-+	bool			big_endian;
++struct tracecmd_buffer {
++	int				cpus;
++	void				*name;
++	tsize_t				offset;
++	struct tracecmd_option		*option;
++	struct list_head		list;
++};
++
+ enum {
+ 	OUTPUT_FL_SEND_META	= (1 << 0),
+ };
+@@ -59,6 +67,7 @@ struct tracecmd_output {
+ 	bool			big_endian;
  
  	struct list_head	options;
++	struct list_head	buffers;
  	struct tracecmd_msg_handle *msg_handle;
-@@ -682,7 +680,7 @@ static int read_event_files(struct tracecmd_output *handle,
- 			break;
- 	}
- 	/* all events are listed, use a global glob */
--	if (list)
-+	if (!event_list || list)
- 		event_list = &all_events;
+ 	char			*trace_clock;
+ };
+@@ -141,6 +150,7 @@ bool tracecmd_get_quiet(struct tracecmd_output *handle)
+ void tracecmd_output_free(struct tracecmd_output *handle)
+ {
+ 	struct tracecmd_option *option;
++	struct tracecmd_buffer *buffer;
  
- 	systems = create_event_list(handle, event_list);
-@@ -752,8 +750,7 @@ err:
- 		tracecmd_warning("can't set kptr_restrict");
+ 	if (!handle)
+ 		return;
+@@ -151,6 +161,13 @@ void tracecmd_output_free(struct tracecmd_output *handle)
+ 	if (handle->pevent)
+ 		tep_unref(handle->pevent);
+ 
++	while (!list_empty(&handle->buffers)) {
++		buffer = container_of(handle->buffers.next,
++				      struct tracecmd_buffer, list);
++		list_del(&buffer->list);
++		free(buffer->name);
++		free(buffer);
++	}
+ 	while (!list_empty(&handle->options)) {
+ 		option = container_of(handle->options.next,
+ 				      struct tracecmd_option, list);
+@@ -912,6 +929,7 @@ struct tracecmd_output *tracecmd_output_allocate(int fd)
+ 		handle->big_endian = false;
+ 
+ 	list_head_init(&handle->options);
++	list_head_init(&handle->buffers);
+ 
+ 	handle->file_state = TRACECMD_FILE_ALLOCATED;
+ 
+@@ -1324,15 +1342,14 @@ int tracecmd_append_options(struct tracecmd_output *handle)
+ 	return 0;
  }
  
--static int read_proc_kallsyms(struct tracecmd_output *handle,
--			      const char *kallsyms)
-+static int read_proc_kallsyms(struct tracecmd_output *handle)
+-struct tracecmd_option *
+-tracecmd_add_buffer_option(struct tracecmd_output *handle, const char *name,
+-			   int cpus)
++static struct tracecmd_option *
++add_buffer_option(struct tracecmd_output *handle, const char *name, int cpus)
  {
- 	unsigned int size, check_size, endian4;
- 	const char *path = "/proc/kallsyms";
-@@ -766,8 +763,8 @@ static int read_proc_kallsyms(struct tracecmd_output *handle,
- 		return -1;
- 	}
+ 	struct tracecmd_option *option;
+ 	char *buf;
+ 	int size = 8 + strlen(name) + 1;
  
--	if (kallsyms)
--		path = kallsyms;
-+	if (handle->kallsyms)
-+		path = handle->kallsyms;
+-	buf = malloc(size);
++	buf = calloc(1, size);
+ 	if (!buf) {
+ 		tracecmd_warning("Failed to malloc buffer");
+ 		return NULL;
+@@ -1354,6 +1371,55 @@ tracecmd_add_buffer_option(struct tracecmd_output *handle, const char *name,
+ 	return option;
+ }
  
- 	ret = stat(path, &st);
- 	if (ret < 0) {
-@@ -883,137 +880,247 @@ out_free:
++int tracecmd_add_buffer_info(struct tracecmd_output *handle, const char *name, int cpus)
++{
++	struct tracecmd_buffer *buf;
++
++	buf = calloc(1, sizeof(struct tracecmd_buffer));
++	if (!buf)
++		return -1;
++	buf->name = strdup(name);
++	buf->cpus = cpus;
++	if (!buf->name) {
++		free(buf);
++		return -1;
++	}
++	list_add_tail(&buf->list, &handle->buffers);
++	return 0;
++}
++
++int tracecmd_write_buffer_info(struct tracecmd_output *handle)
++{
++	struct tracecmd_option *option;
++	struct tracecmd_buffer *buf;
++
++	if (handle->file_version >= 7)
++		return 0;
++
++	list_for_each_entry(buf, &handle->buffers, list) {
++		option = add_buffer_option(handle, buf->name, buf->cpus);
++		if (!option)
++			return -1;
++		buf->option = option;
++	}
++
++	return 0;
++}
++
++static tsize_t get_buffer_file_offset(struct tracecmd_output *handle, const char *name)
++{
++	struct tracecmd_buffer *buf;
++
++	list_for_each_entry(buf, &handle->buffers, list) {
++		if (strlen(name) == strlen(buf->name) && !strcmp(name, buf->name)) {
++			if (!buf->option)
++				break;
++			return buf->option->offset;
++		}
++	}
++	return 0;
++}
++
+ int tracecmd_write_cmdlines(struct tracecmd_output *handle)
+ {
+ 	int ret;
+@@ -1446,6 +1512,37 @@ out:
  	return ret;
  }
  
--static int select_file_version(struct tracecmd_output *handle,
--				struct tracecmd_input *ihandle)
--{
--	if (ihandle)
--		handle->file_version = tracecmd_get_in_file_version(ihandle);
--	else
--		handle->file_version = FILE_VERSION;
--
--	return 0;
--}
--
--static struct tracecmd_output *
--create_file_fd(int fd, struct tracecmd_input *ihandle,
--	       const char *tracing_dir,
--	       const char *kallsyms,
--	       struct tracecmd_event_list *list,
--	       struct tracecmd_msg_handle *msg_handle)
-+/**
-+ * tracecmd_output_allocate - allocate new output handler to a trace file
-+ * @handle: file descriptor to an empty file, it can be -1 if the handler
-+ *	    will not write to a file
-+ *
-+ * This API only allocates a handler and performs minimal initialization.
-+ * No data is written in the file.
-+ *
-+ * Returns pointer to a newly allocated file descriptor, that can be used
-+ * with other library APIs. In case of an error, NULL is returned. The returned
-+ * handler must be freed with tracecmd_output_close() or tracecmd_output_free()
-+ */
-+struct tracecmd_output *tracecmd_output_allocate(int fd)
- {
- 	struct tracecmd_output *handle;
--	struct tep_handle *pevent;
--	char buf[BUFSIZ];
--	int endian4;
- 
--	handle = malloc(sizeof(*handle));
-+	handle = calloc(1, sizeof(*handle));
- 	if (!handle)
- 		return NULL;
--	memset(handle, 0, sizeof(*handle));
--
--	list_head_init(&handle->options);
- 
- 	handle->fd = fd;
--	if (tracing_dir) {
--		handle->tracing_dir = strdup(tracing_dir);
--		if (!handle->tracing_dir)
--			goto out_free;
--	}
- 
--	handle->msg_handle = msg_handle;
-+	handle->file_version = FILE_VERSION;
- 
--	if (select_file_version(handle, ihandle))
--		goto out_free;
-+	handle->page_size = getpagesize();
- 
--	buf[0] = 23;
--	buf[1] = 8;
--	buf[2] = 68;
--	memcpy(buf + 3, "tracing", 7);
-+	if (tracecmd_host_bigendian())
-+		handle->big_endian = true;
-+	else
-+		handle->big_endian = false;
- 
--	if (do_write_check(handle, buf, 10))
--		goto out_free;
-+	list_head_init(&handle->options);
- 
--	sprintf(buf, "%lu", handle->file_version);
--	if (do_write_check(handle, buf, strlen(buf) + 1))
--		goto out_free;
-+	handle->file_state = TRACECMD_FILE_ALLOCATED;
- 
--	/* get endian and page size */
--	if (ihandle) {
--		pevent = tracecmd_get_tep(ihandle);
--		/* Use the pevent of the ihandle for later writes */
--		handle->pevent = tracecmd_get_tep(ihandle);
--		tep_ref(pevent);
--		if (tep_is_file_bigendian(pevent))
--			buf[0] = 1;
--		else
--			buf[0] = 0;
--		handle->page_size = tracecmd_page_size(ihandle);
--	} else {
--		if (tracecmd_host_bigendian())
--			buf[0] = 1;
--		else
--			buf[0] = 0;
--		handle->page_size = getpagesize();
--	}
-+	return handle;
-+}
- 
--	if (do_write_check(handle, buf, 1))
--		goto out_free;
-+/**
-+ * tracecmd_output_set_msg - associated an output file handler with network message handler
-+ * @handle: output handler to a trace file.
-+ * @msg_handle: network handler, allocated by tracecmd_msg_handle_alloc()
-+ *
-+ * This API associates an output file handler with a network stream. All subsequent API calls
-+ * with this output file handler will send data over the network using the @msg_handle, instead
-+ * of writing to a file.
-+ * This API must be called after the handler file version is set and before
-+ * tracecmd_output_write_init().
-+ *
-+ * Returns 0 on success, or -1 if the output file handler is not allocated or not in expected state.
-+ */
-+int tracecmd_output_set_msg(struct tracecmd_output *handler, struct tracecmd_msg_handle *msg_handle)
++static int update_buffer_cpu_offset(struct tracecmd_output *handle,
++				    const char *name, tsize_t offset)
 +{
-+	if (!handler || handler->file_state != TRACECMD_FILE_ALLOCATED)
-+		return -1;
- 
--	/* save size of long (this may not be what the kernel is) */
--	buf[0] = sizeof(long);
--	if (do_write_check(handle, buf, 1))
--		goto out_free;
-+	handler->msg_handle = msg_handle;
- 
--	endian4 = convert_endian_4(handle, handle->page_size);
--	if (do_write_check(handle, &endian4, 4))
--		goto out_free;
--	handle->file_state = TRACECMD_FILE_INIT;
-+	return 0;
-+}
- 
--	if (ihandle)
--		return handle;
-+/**
-+ * tracecmd_output_set_trace_dir - Set a custom tracing dir, instead of system default
-+ * @handle: output handler to a trace file.
-+ * @tracing_dir: full path to a directory with tracing files
-+ *
-+ * This API associates an output file handler with a custom tracing directory, to be used when
-+ * creating the trace file instead of the system default tracing directory.
-+ * This API must be called before tracecmd_output_write_init().
-+ *
-+ * Returns 0 on success, or -1 if the output file handler is not allocated or not in expected state.
-+ */
-+int tracecmd_output_set_trace_dir(struct tracecmd_output *handler, const char *tracing_dir)
-+{
-+	if (!handler || handler->file_state != TRACECMD_FILE_ALLOCATED)
-+		return -1;
- 
--	if (read_header_files(handle))
--		goto out_free;
-+	free(handler->tracing_dir);
-+	if (tracing_dir) {
-+		handler->tracing_dir = strdup(tracing_dir);
-+		if (!handler->tracing_dir)
-+			return -1;
-+	} else
-+		handler->tracing_dir = NULL;
- 
--	if (read_ftrace_files(handle))
--		goto out_free;
-+	return 0;
-+}
- 
--	if (read_event_files(handle, list))
--		goto out_free;
-+/**
-+ * tracecmd_output_set_kallsyms - Set a custom kernel symbols file, instead of system default
-+ * @handle: output handler to a trace file.
-+ * @tracing_dir: full path to a file with kernel symbols
-+ *
-+ * This API associates an output file handler with a custom kernel symbols file, to be used when
-+ * creating the trace file instead of the system default kernel symbols file.
-+ * This API must be called before tracecmd_output_write_init().
-+ *
-+ * Returns 0 on success, or -1 if the output file handler is not allocated or not in expected state.
-+ */
-+int tracecmd_output_set_kallsyms(struct tracecmd_output *handler, const char *kallsyms)
-+{
-+	if (!handler || handler->file_state != TRACECMD_FILE_ALLOCATED)
-+		return -1;
- 
--	if (read_proc_kallsyms(handle, kallsyms))
--		goto out_free;
-+	free(handler->kallsyms);
-+	if (kallsyms) {
-+		handler->kallsyms = strdup(kallsyms);
-+		if (!handler->kallsyms)
-+			return -1;
-+	} else
-+		handler->kallsyms = NULL;
- 
--	if (read_ftrace_printk(handle))
--		goto out_free;
-+	return 0;
-+}
- 
--	return handle;
-+/**
-+ * tracecmd_output_set_from_input - Inherit parameters from an existing trace file
-+ * @handle: output handler to a trace file.
-+ * @ihandle: input handler to an existing trace file.
-+ *
-+ * This API copies parameters from input handler @ihandle, associated with an existing trace file,
-+ * to the output handler @handle, associated with file that is going to be created.
-+ * These parameters are copied:
-+ *  - tep handler
-+ *  - page size
-+ *  - file endian
-+ *  - file version
-+ *  - file compression protocol
-+ * This API must be called before tracecmd_output_write_init().
-+ *
-+ * Returns 0 on success, or -1 if the output file handler is not allocated or not in expected state.
-+ */
-+int tracecmd_output_set_from_input(struct tracecmd_output *handler, struct tracecmd_input *ihandle)
-+{
-+	if (!handler || !ihandle || handler->file_state != TRACECMD_FILE_ALLOCATED)
-+		return -1;
- 
-- out_free:
--	tracecmd_output_close(handle);
--	return NULL;
-+	/* get endian, page size, file version and compression */
-+	/* Use the pevent of the ihandle for later writes */
-+	handler->pevent = tracecmd_get_tep(ihandle);
-+	tep_ref(handler->pevent);
-+	handler->page_size = tracecmd_page_size(ihandle);
-+	handler->file_version = tracecmd_get_in_file_version(ihandle);
-+	if (tep_is_file_bigendian(handler->pevent))
-+		handler->big_endian = true;
-+	else
-+		handler->big_endian = false;
++	tsize_t b_offset;
++	tsize_t current;
 +
++	b_offset = get_buffer_file_offset(handle, name);
++	if (!b_offset) {
++		tracecmd_warning("Cannot find description for buffer %s\n", name);
++		return -1;
++	}
++	current = lseek64(handle->fd, 0, SEEK_CUR);
 +
-+	return 0;
- }
- 
--static struct tracecmd_output *create_file(const char *output_file,
--					   struct tracecmd_input *ihandle,
--					   const char *tracing_dir,
--					   const char *kallsyms,
--					   struct tracecmd_event_list *list)
-+/**
-+ * tracecmd_output_write_init - Write the initial magics in the trace file
-+ * @handle: output handler to a trace file.
-+ *
-+ * This API must be called after all tracecmd_output_set_...() APIs and before writing anything
-+ * to the trace file. This initial information is written in the file:
-+ *  - initial file magic bytes
-+ *  - file version
-+ *  - data endian
-+ *  - long size
-+ *  - page size
-+ *  - compression header
-+ *
-+ * Returns 0 on success, or -1 if the output file handler is not allocated or not in expected state.
-+ */
-+int tracecmd_output_write_init(struct tracecmd_output *handler)
- {
--	struct tracecmd_output *handle;
--	int fd;
-+	char buf[BUFSIZ];
-+	int endian4;
- 
--	fd = open(output_file, O_RDWR | O_CREAT | O_TRUNC | O_LARGEFILE, 0644);
--	if (fd < 0)
--		return NULL;
-+	if (!handler || handler->file_state != TRACECMD_FILE_ALLOCATED)
++	/* Go to the option data, where will write the offest */
++	if (lseek64(handle->fd, b_offset, SEEK_SET) == (off64_t)-1) {
++		tracecmd_warning("could not seek to %lld\n", b_offset);
 +		return -1;
- 
--	handle = create_file_fd(fd, ihandle, tracing_dir, kallsyms, list, NULL);
--	if (!handle) {
--		close(fd);
--		unlink(output_file);
--	}
-+	buf[0] = 23;
-+	buf[1] = 8;
-+	buf[2] = 68;
-+	memcpy(buf + 3, "tracing", 7);
- 
--	return handle;
-+	if (do_write_check(handler, buf, 10))
-+		return -1;
-+
-+	sprintf(buf, "%lu", handler->file_version);
-+	if (do_write_check(handler, buf, strlen(buf) + 1))
-+		return -1;
-+
-+	if (handler->big_endian)
-+		buf[0] = 1;
-+	else
-+		buf[0] = 0;
-+	if (do_write_check(handler, buf, 1))
-+		return -1;
-+
-+	/* save size of long (this may not be what the kernel is) */
-+	buf[0] = sizeof(long);
-+	if (do_write_check(handler, buf, 1))
-+		return -1;
-+
-+	endian4 = convert_endian_4(handler, handler->page_size);
-+	if (do_write_check(handler, &endian4, 4))
-+		return -1;
-+	handler->file_state = TRACECMD_FILE_INIT;
-+	return 0;
-+}
-+
-+/**
-+ * tracecmd_output_write_headers - Write the trace file headers
-+ * @handle: output handler to a trace file.
-+ * @list: desired events that will be included in the trace file.
-+ *	  It can be NULL for all available events
-+ *
-+ * These headers are written in the file:
-+ *  - header files from the tracing directory
-+ *  - ftrace events from the tracing directory
-+ *  - event file from the tracing directory - all or only the one from @list
-+ *  - kernel symbols from the tracing directory
-+ *  - kernel printk strings from the tracing directory
-+ *
-+ * Returns 0 on success, or -1 in case of an error.
-+ */
-+int tracecmd_output_write_headers(struct tracecmd_output *handler,
-+				  struct tracecmd_event_list *list)
-+{
-+	if (!handler || handler->file_state < TRACECMD_FILE_ALLOCATED)
-+		return -1;
-+
-+	/* Write init data, if not written yet */
-+	if (handler->file_state < TRACECMD_FILE_INIT && tracecmd_output_write_init(handler))
-+		return -1;
-+	if (read_header_files(handler))
-+		return -1;
-+	if (read_ftrace_files(handler))
-+		return -1;
-+	if (read_event_files(handler, list))
-+		return -1;
-+	if (read_proc_kallsyms(handler))
-+		return -1;
-+	if (read_ftrace_printk(handler))
-+		return -1;
-+	return 0;
- }
- 
- /**
-@@ -1267,11 +1374,19 @@ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, in
- {
- 	struct tracecmd_output *handle;
- 	char *path;
-+	int fd;
- 
--	handle = create_file(output_file, NULL, NULL, NULL, &all_event_list);
--	if (!handle)
-+	fd = open(output_file, O_RDWR | O_CREAT | O_TRUNC | O_LARGEFILE, 0644);
-+	if (fd < 0)
- 		return NULL;
- 
-+	handle = tracecmd_output_allocate(fd);
-+	if (!handle)
-+		goto out_free;
-+	if (tracecmd_output_write_init(handle))
-+		goto out_free;
-+	if (tracecmd_output_write_headers(handle, NULL))
-+		goto out_free;
- 	/*
- 	 * Save the command lines;
- 	 */
-@@ -1565,39 +1680,38 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
- 
- struct tracecmd_output *tracecmd_create_init_fd(int fd)
- {
--	return create_file_fd(fd, NULL, NULL, NULL, &all_event_list, NULL);
--}
--
--struct tracecmd_output *
--tracecmd_create_init_fd_msg(struct tracecmd_msg_handle *msg_handle,
--			    struct tracecmd_event_list *list)
--{
--	return create_file_fd(msg_handle->fd, NULL, NULL, NULL, list, msg_handle);
--}
-+	struct tracecmd_output *out;
- 
--struct tracecmd_output *
--tracecmd_create_init_fd_glob(int fd, struct tracecmd_event_list *list)
--{
--	return create_file_fd(fd, NULL, NULL, NULL, list, NULL);
--}
--
--struct tracecmd_output *
--tracecmd_create_init_file_glob(const char *output_file,
--			       struct tracecmd_event_list *list)
--{
--	return create_file(output_file, NULL, NULL, NULL, list);
-+	out = tracecmd_output_allocate(fd);
-+	if (!out)
-+		return NULL;
-+	if (tracecmd_output_write_init(out))
-+		goto error;
-+	if (tracecmd_output_write_headers(out, NULL))
-+		goto error;
-+
-+	return out;
-+error:
-+	tracecmd_output_close(out);
-+	return NULL;
- }
- 
- struct tracecmd_output *tracecmd_create_init_file(const char *output_file)
- {
--	return create_file(output_file, NULL, NULL, NULL, &all_event_list);
--}
-+	struct tracecmd_output *handle;
-+	int fd;
- 
--struct tracecmd_output *tracecmd_create_init_file_override(const char *output_file,
--							   const char *tracing_dir,
--							   const char *kallsyms)
--{
--	return create_file(output_file, NULL, tracing_dir, kallsyms, &all_event_list);
-+	fd = open(output_file, O_RDWR | O_CREAT | O_TRUNC | O_LARGEFILE, 0644);
-+	if (fd < 0)
-+		return NULL;
-+	handle = tracecmd_create_init_fd(fd);
-+	if (!handle) {
-+		close(fd);
-+		unlink(output_file);
-+		return NULL;
 +	}
 +
-+	return handle;
- }
- 
- /**
-@@ -1613,11 +1727,19 @@ struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle,
- 				      const char *file)
- {
- 	struct tracecmd_output *handle;
-+	int fd;
- 
--	handle = create_file(file, ihandle, NULL, NULL, &all_event_list);
--	if (!handle)
-+	fd = open(file, O_RDWR | O_CREAT | O_TRUNC | O_LARGEFILE, 0644);
-+	if (fd < 0)
- 		return NULL;
- 
-+	handle = tracecmd_output_allocate(fd);
-+	if (!handle)
-+		goto out_free;
-+	if (tracecmd_output_set_from_input(handle, ihandle))
-+		goto out_free;
-+	tracecmd_output_write_init(handle);
++	if (do_write_check(handle, &offset, 8))
++		return -1;
 +
- 	if (tracecmd_copy_headers(ihandle, handle->fd, 0, 0) < 0)
- 		goto out_free;
- 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 1767a6c6..15e07cf0 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -3689,6 +3689,25 @@ again:
- 
- static void add_options(struct tracecmd_output *handle, struct common_record_context *ctx);
- 
-+static struct tracecmd_output *create_net_output(struct common_record_context *ctx,
-+						 struct tracecmd_msg_handle *msg_handle)
-+{
-+	struct tracecmd_output *out;
-+
-+	out = tracecmd_output_allocate(-1);
-+	if (!out)
-+		return NULL;
-+	if (tracecmd_output_set_msg(out, msg_handle))
-+		goto error;
-+	if (tracecmd_output_write_headers(out, listed_events))
-+		goto error;
-+
-+	return out;
-+error:
-+	tracecmd_output_close(out);
-+	return NULL;
++	/* Go back to end of file */
++	if (lseek64(handle->fd, current, SEEK_SET) == (off64_t)-1) {
++		tracecmd_warning("could not seek to %lld\n", offset);
++		return -1;
++	}
++	return 0;
 +}
 +
- static struct tracecmd_msg_handle *
- setup_connection(struct buffer_instance *instance, struct common_record_context *ctx)
++
+ static char *get_clock(struct tracecmd_output *handle)
  {
-@@ -3700,7 +3719,7 @@ setup_connection(struct buffer_instance *instance, struct common_record_context
+ 	struct tracefs_instance *inst;
+@@ -1465,17 +1562,14 @@ static char *get_clock(struct tracecmd_output *handle)
+ 	return handle->trace_clock;
+ }
  
- 	/* Now create the handle through this socket */
- 	if (msg_handle->version == V3_PROTOCOL) {
--		network_handle = tracecmd_create_init_fd_msg(msg_handle, listed_events);
-+		network_handle = create_net_output(ctx, msg_handle);
- 		if (!network_handle)
- 			goto error;
- 		tracecmd_set_quiet(network_handle, quiet);
-@@ -3718,10 +3737,11 @@ setup_connection(struct buffer_instance *instance, struct common_record_context
- 		if (ret)
- 			goto error;
- 	} else {
--		network_handle = tracecmd_create_init_fd_glob(msg_handle->fd,
--							      listed_events);
-+		network_handle = tracecmd_output_allocate(msg_handle->fd);
- 		if (!network_handle)
- 			goto error;
-+		if (tracecmd_output_write_headers(network_handle, listed_events))
-+			goto error;
- 		tracecmd_set_quiet(network_handle, quiet);
+-int tracecmd_write_cpu_data(struct tracecmd_output *handle,
+-			    int cpus, char * const *cpu_data_files)
++__hidden int out_write_cpu_data(struct tracecmd_output *handle,
++				int cpus, struct cpu_data_source *data, const char *buff_name)
+ {
+-	off64_t *offsets = NULL;
+-	unsigned long long *sizes = NULL;
+-	off64_t offset;
++	struct data_file_write *data_files = NULL;
++	tsize_t data_offs, offset;
+ 	unsigned long long endian8;
+-	char *clock = NULL;
+-	off64_t check_size;
+-	char *file;
+-	struct stat st;
++	unsigned long long read_size;
++	char *clock;
+ 	int ret;
+ 	int i;
+ 
+@@ -1490,97 +1584,133 @@ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
+ 		goto out_free;
  	}
  
-@@ -4067,8 +4087,7 @@ static void setup_agent(struct buffer_instance *instance,
- {
- 	struct tracecmd_output *network_handle;
++	data_offs = lseek64(handle->fd, 0, SEEK_CUR);
+ 	if (do_write_check(handle, "flyrecord", 10))
+ 		goto out_free;
  
--	network_handle = tracecmd_create_init_fd_msg(instance->msg_handle,
--						     listed_events);
-+	network_handle = create_net_output(ctx, instance->msg_handle);
- 	add_options(network_handle, ctx);
- 	tracecmd_write_cmdlines(network_handle);
- 	tracecmd_write_cpus(network_handle, instance->cpu_count);
-@@ -4437,6 +4456,30 @@ static void write_guest_file(struct buffer_instance *instance)
- 	free(temp_files);
+-	offsets = malloc(sizeof(*offsets) * cpus);
+-	if (!offsets)
+-		goto out_free;
+-	sizes = malloc(sizeof(*sizes) * cpus);
+-	if (!sizes)
+-		goto out_free;
+-
+-	offset = lseek64(handle->fd, 0, SEEK_CUR);
+-
+-	/* hold any extra data for data */
+-	offset += cpus * (16);
+-
+-	/*
+-	 * Unfortunately, the trace_clock data was placed after the
+-	 * cpu data, and wasn't accounted for with the offsets.
+-	 * We need to save room for the trace_clock file. This means
+-	 * we need to find the size of it before we define the final
+-	 * offsets.
+-	 */
+-	clock = get_clock(handle);
+-	if (!clock)
++	data_files = calloc(cpus, sizeof(struct data_file_write));
++	if (!data_files)
+ 		goto out_free;
+-	/* Save room for storing the size */
+-	offset += 8;
+-	offset += strlen(clock);
+-	/* 2 bytes for [] around the clock */
+-	offset += 2;
+-
+-	/* Page align offset */
+-	offset = (offset + (handle->page_size - 1)) & ~(handle->page_size - 1);
+ 
+ 	for (i = 0; i < cpus; i++) {
+-		file = cpu_data_files[i];
+-		ret = stat(file, &st);
+-		if (ret < 0) {
+-			tracecmd_warning("can not stat '%s'", file);
+-			goto out_free;
+-		}
+-		offsets[i] = offset;
+-		sizes[i] = st.st_size;
+-		offset += st.st_size;
+-		offset = (offset + (handle->page_size - 1)) & ~(handle->page_size - 1);
+-
+-		endian8 = convert_endian_8(handle, offsets[i]);
++		data_files[i].file_size = data[i].size;
++		/* Write 0 for trace data offset and size and store offsets of these fields */
++		endian8 = 0;
++		data_files[i].doffset = lseek64(handle->fd, 0, SEEK_CUR);
+ 		if (do_write_check(handle, &endian8, 8))
+ 			goto out_free;
+-		endian8 = convert_endian_8(handle, sizes[i]);
++		data_files[i].soffset = lseek64(handle->fd, 0, SEEK_CUR);
+ 		if (do_write_check(handle, &endian8, 8))
+ 			goto out_free;
+ 	}
+ 
+-	if (save_clock(handle, clock))
++	update_buffer_cpu_offset(handle, buff_name, data_offs);
++	clock = get_clock(handle);
++	if (clock && save_clock(handle, clock))
+ 		goto out_free;
+-
+ 	for (i = 0; i < cpus; i++) {
++		data_files[i].data_offset = lseek64(handle->fd, 0, SEEK_CUR);
++		/* Page align offset */
++		data_files[i].data_offset = (data_files[i].data_offset + (handle->page_size - 1)) & ~(handle->page_size - 1);
++		data_files[i].data_offset = lseek64(handle->fd, data_files[i].data_offset, SEEK_SET);
++		if (data_files[i].data_offset == (off64_t)-1)
++			goto out_free;
+ 		if (!tracecmd_get_quiet(handle))
+ 			fprintf(stderr, "CPU%d data recorded at offset=0x%llx\n",
+-				i, (unsigned long long) offsets[i]);
+-		offset = lseek64(handle->fd, offsets[i], SEEK_SET);
+-		if (offset == (off64_t)-1) {
+-			tracecmd_warning("could not seek to %lld\n", offsets[i]);
++				i, (unsigned long long) data_files[i].data_offset);
++		if (lseek64(data[i].fd, data[i].offset, SEEK_SET) == (off64_t)-1)
+ 			goto out_free;
++		if (data[i].size) {
++			read_size = copy_file_fd(handle, data[i].fd);
++			if (read_size != data_files[i].file_size) {
++				errno = EINVAL;
++				tracecmd_warning("did not match size of %lld to %lld",
++						 read_size, data_files[i].file_size);
++				goto out_free;
++			}
++			data_files[i].write_size = read_size;
++		} else {
++			data_files[i].write_size = 0;
+ 		}
+-		check_size = copy_file(handle, cpu_data_files[i]);
+-		if (check_size != sizes[i]) {
+-			errno = EINVAL;
+-			tracecmd_warning("did not match size of %lld to %lld",
+-					 check_size, sizes[i]);
++
++		/* Write the real CPU data offset in the file */
++		if (lseek64(handle->fd, data_files[i].doffset, SEEK_SET) == (off64_t)-1)
++			goto out_free;
++		endian8 = convert_endian_8(handle, data_files[i].data_offset);
++		if (do_write_check(handle, &endian8, 8))
++			goto out_free;
++		/* Write the real CPU data size in the file */
++		if (lseek64(handle->fd, data_files[i].soffset, SEEK_SET) == (off64_t)-1)
++			goto out_free;
++		endian8 = convert_endian_8(handle, data_files[i].write_size);
++		if (do_write_check(handle, &endian8, 8))
++			goto out_free;
++		offset = data_files[i].data_offset + data_files[i].write_size;
++		if (lseek64(handle->fd, offset, SEEK_SET) == (off64_t)-1)
+ 			goto out_free;
+-		}
+ 		if (!tracecmd_get_quiet(handle))
+ 			fprintf(stderr, "    %llu bytes in size\n",
+-				(unsigned long long)check_size);
++				(unsigned long long)data_files[i].write_size);
+ 	}
+ 
+-	free(offsets);
+-	free(sizes);
++	if (lseek64(handle->fd, 0, SEEK_END) == (off64_t)-1)
++		goto out_free;
+ 
++	free(data_files);
+ 	handle->file_state = TRACECMD_FILE_CPU_FLYRECORD;
+ 
+ 	return 0;
+ 
+  out_free:
+-	free(offsets);
+-	free(sizes);
++	lseek64(handle->fd, 0, SEEK_END);
++	free(data_files);
+ 	return -1;
  }
  
-+static struct tracecmd_output *create_output(struct common_record_context *ctx)
++int tracecmd_write_cpu_data(struct tracecmd_output *handle,
++			    int cpus, char * const *cpu_data_files, const char *buff_name)
 +{
-+	struct tracecmd_output *out;
-+	int fd;
++	struct cpu_data_source *data;
++	struct stat st;
++	int size = 0;
++	int ret;
++	int i;
 +
-+	fd = open(ctx->output, O_RDWR | O_CREAT | O_TRUNC | O_LARGEFILE, 0644);
-+	if (fd < 0)
-+		return NULL;
++	data = calloc(cpus, sizeof(struct cpu_data_source));
++	if (!data)
++		return -1;
++	for (i = 0; i < cpus; i++)
++		data[i].fd = -1;
++	for (i = 0; i < cpus; i++) {
++		ret = stat(cpu_data_files[i], &st);
++		if (ret < 0) {
++			tracecmd_warning("can not stat '%s'", cpu_data_files[i]);
++			break;
++		}
++		data[i].fd = open(cpu_data_files[i], O_RDONLY);
++		if (data[i].fd < 0) {
++			tracecmd_warning("Can't read '%s'", data[i].fd);
++			break;
++		}
 +
-+	out = tracecmd_output_allocate(fd);
-+	if (!out)
-+		goto error;
-+	if (tracecmd_output_write_headers(out, listed_events))
-+		goto error;
-+	return out;
-+error:
-+	if (out)
-+		tracecmd_output_close(out);
++		data[i].size = st.st_size;
++		data[i].offset = 0;
++		size += st.st_size;
++	}
++
++	if (i < cpus)
++		ret = -1;
 +	else
-+		close(fd);
-+	unlink(ctx->output);
-+	return NULL;
++		ret = out_write_cpu_data(handle, cpus, data, buff_name);
++
++	for (i = 0; i < cpus; i++) {
++		if (data[i].fd >= 0)
++			close(data[i].fd);
++	}
++	free(data);
++	return ret;
 +}
 +
+ int tracecmd_append_cpu_data(struct tracecmd_output *handle,
+ 			     int cpus, char * const *cpu_data_files)
+ {
+@@ -1589,41 +1719,20 @@ int tracecmd_append_cpu_data(struct tracecmd_output *handle,
+ 	ret = tracecmd_write_cpus(handle, cpus);
+ 	if (ret)
+ 		return ret;
+-
++	ret = tracecmd_write_buffer_info(handle);
++	if (ret)
++		return ret;
+ 	ret = tracecmd_write_options(handle);
+ 	if (ret)
+ 		return ret;
+ 
+-	return tracecmd_write_cpu_data(handle, cpus, cpu_data_files);
++	return tracecmd_write_cpu_data(handle, cpus, cpu_data_files, "");
+ }
+ 
+ int tracecmd_append_buffer_cpu_data(struct tracecmd_output *handle,
+-				    struct tracecmd_option *option,
+-				    int cpus, char * const *cpu_data_files)
++				    const char *name, int cpus, char * const *cpu_data_files)
+ {
+-	tsize_t offset;
+-	stsize_t ret;
+-
+-	offset = lseek64(handle->fd, 0, SEEK_CUR);
+-
+-	/* Go to the option data, where will write the offest */
+-	ret = lseek64(handle->fd, option->offset, SEEK_SET);
+-	if (ret == (off64_t)-1) {
+-		tracecmd_warning("could not seek to %lld\n", option->offset);
+-		return -1;
+-	}
+-
+-	if (do_write_check(handle, &offset, 8))
+-		return -1;
+-
+-	/* Go back to end of file */
+-	ret = lseek64(handle->fd, offset, SEEK_SET);
+-	if (ret == (off64_t)-1) {
+-		tracecmd_warning("could not seek to %lld\n", offset);
+-		return -1;
+-	}
+-
+-	return tracecmd_write_cpu_data(handle, cpus, cpu_data_files);
++	return tracecmd_write_cpu_data(handle, cpus, cpu_data_files, name);
+ }
+ 
+ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
+@@ -1667,6 +1776,7 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
+ 	handle->file_version = tracecmd_get_in_file_version(ihandle);
+ 	handle->options_start = tracecmd_get_options_offset(ihandle);
+ 	list_head_init(&handle->options);
++	list_head_init(&handle->buffers);
+ 
+ 	tracecmd_close(ihandle);
+ 
+diff --git a/tracecmd/trace-listen.c b/tracecmd/trace-listen.c
+index 0cb70b7d..d812145b 100644
+--- a/tracecmd/trace-listen.c
++++ b/tracecmd/trace-listen.c
+@@ -610,7 +610,7 @@ static int put_together_file(int cpus, int ofd, const char *node,
+ 		if (ret)
+ 			goto out;
+ 	}
+-	ret = tracecmd_write_cpu_data(handle, cpus, temp_files);
++	ret = tracecmd_write_cpu_data(handle, cpus, temp_files, "");
+ 
+ out:
+ 	tracecmd_output_close(handle);
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 15e07cf0..78b0f5ec 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -4169,7 +4169,6 @@ static void touch_file(const char *file)
+ }
+ 
+ static void append_buffer(struct tracecmd_output *handle,
+-			  struct tracecmd_option *buffer_option,
+ 			  struct buffer_instance *instance,
+ 			  char **temp_files)
+ {
+@@ -4197,7 +4196,7 @@ static void append_buffer(struct tracecmd_output *handle,
+ 			touch_file(temp_files[i]);
+ 	}
+ 
+-	tracecmd_append_buffer_cpu_data(handle, buffer_option,
++	tracecmd_append_buffer_cpu_data(handle, tracefs_instance_get_name(instance->tracefs),
+ 					cpu_count, temp_files);
+ 
+ 	for (i = 0; i < instance->cpu_count; i++) {
+@@ -4447,7 +4446,7 @@ static void write_guest_file(struct buffer_instance *instance)
+ 			die("failed to allocate memory");
+ 	}
+ 
+-	if (tracecmd_write_cpu_data(handle, cpu_count, temp_files) < 0)
++	if (tracecmd_write_cpu_data(handle, cpu_count, temp_files, "") < 0)
+ 		die("failed to write CPU data");
+ 	tracecmd_output_close(handle);
+ 
+@@ -4482,7 +4481,6 @@ error:
+ 
  static void record_data(struct common_record_context *ctx)
  {
- 	struct tracecmd_option **buffer_options;
-@@ -4491,7 +4534,7 @@ static void record_data(struct common_record_context *ctx)
- 				touch_file(temp_files[i]);
- 		}
- 
--		handle = tracecmd_create_init_file_glob(ctx->output, listed_events);
-+		handle = create_output(ctx);
- 		if (!handle)
- 			die("Error creating output file");
- 		tracecmd_set_quiet(handle, quiet);
-diff --git a/tracecmd/trace-restore.c b/tracecmd/trace-restore.c
-index 280a37f0..8d2fcae8 100644
---- a/tracecmd/trace-restore.c
-+++ b/tracecmd/trace-restore.c
-@@ -22,6 +22,35 @@
- 
- #include "trace-local.h"
- 
-+static struct tracecmd_output *create_output(const char *file,
-+					     const char *tracing_dir, const char *kallsyms)
-+{
-+	struct tracecmd_output *out;
-+	int fd;
-+
-+	fd = open(file, O_RDWR | O_CREAT | O_TRUNC | O_LARGEFILE, 0644);
-+	if (fd < 0)
-+		return NULL;
-+
-+	out = tracecmd_output_allocate(fd);
-+	if (!out)
-+		goto error;
-+	if (tracing_dir && tracecmd_output_set_trace_dir(out, tracing_dir))
-+		goto error;
-+	if (kallsyms && tracecmd_output_set_kallsyms(out, kallsyms))
-+		goto error;
-+	if (tracecmd_output_write_headers(out, NULL))
-+		goto error;
-+	return out;
-+error:
-+	if (out)
-+		tracecmd_output_close(out);
-+	else
-+		close(fd);
-+	unlink(file);
-+	return NULL;
-+}
-+
- void trace_restore (int argc, char **argv)
- {
+-	struct tracecmd_option **buffer_options;
  	struct tracecmd_output *handle;
-@@ -90,8 +119,7 @@ void trace_restore (int argc, char **argv)
- 			usage(argv);
+ 	struct buffer_instance *instance;
+ 	bool local = false;
+@@ -4551,9 +4549,6 @@ static void record_data(struct common_record_context *ctx)
  		}
  
--		handle = tracecmd_create_init_file_override(output, tracing_dir,
--							    kallsyms);
-+		handle = create_output(output, tracing_dir, kallsyms);
- 		if (!handle)
- 			die("Unabled to create output file %s", output);
- 		if (tracecmd_write_cmdlines(handle) < 0)
+ 		if (buffers) {
+-			buffer_options = malloc(sizeof(*buffer_options) * buffers);
+-			if (!buffer_options)
+-				die("Failed to allocate buffer options");
+ 			i = 0;
+ 			for_each_instance(instance) {
+ 				int cpus = instance->cpu_count != local_cpu_count ?
+@@ -4561,10 +4556,9 @@ static void record_data(struct common_record_context *ctx)
+ 
+ 				if (instance->msg_handle)
+ 					continue;
+-
+-				buffer_options[i++] = tracecmd_add_buffer_option(handle,
+-										 tracefs_instance_get_name(instance->tracefs),
+-										 cpus);
++				tracecmd_add_buffer_info(handle,
++							tracefs_instance_get_name(instance->tracefs),
++							cpus);
+ 				add_buffer_stat(handle, instance);
+ 			}
+ 		}
+@@ -4599,7 +4593,7 @@ static void record_data(struct common_record_context *ctx)
+ 				if (instance->msg_handle)
+ 					continue;
+ 				print_stat(instance);
+-				append_buffer(handle, buffer_options[i++], instance, temp_files);
++				append_buffer(handle, instance, temp_files);
+ 			}
+ 		}
+ 
 -- 
 2.31.1
 
