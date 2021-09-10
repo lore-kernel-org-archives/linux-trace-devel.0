@@ -8,162 +8,128 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F57BC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:51:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 840A6C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 16:30:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EB070611EE
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:51:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6BB62611F0
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 16:30:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233785AbhIJNwk (ORCPT
+        id S229466AbhIJQbc (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 10 Sep 2021 09:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48774 "EHLO
+        Fri, 10 Sep 2021 12:31:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233767AbhIJNwj (ORCPT
+        with ESMTP id S229544AbhIJQbc (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 Sep 2021 09:52:39 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A1EDC061574
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:51:28 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id e21so4354021ejz.12
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:51:28 -0700 (PDT)
+        Fri, 10 Sep 2021 12:31:32 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB29C061574
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 09:30:21 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id s25so3334079edw.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 09:30:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=toMN7Gy7qiKlHDx5qzo4dMJk80onCA4nB44Bg+SUiec=;
-        b=C2DP8y33fsc0gUbyelxMOW1q84NstuixbIgf8zHioFSqkcVWurcuaeWBxIXvWg77rJ
-         gxJUkOl2jR80cRu+b/1xy4tWfegrP3ydHKFcfL1o1ghg06CycFuLEd9Y8t8XCOtUF3MR
-         KDPIMzf5v7X0U4Tx5SMZxaQr+2EuoJPNgO+Tgf7B+AeZrc8CXVpRApjL8yKpyRA6vJAW
-         1Z1Xb1V8IRNlYl4QShj3UA40V2G+vndWhRvbVoM8HARDYzTHouxr0ittMzyAYnANL3ea
-         +BsHv8wF1atN3OiAYt/+6Nu+/01ID29CD+MbYA2gUh6flkwSDa8zbvzzOD6BmYtJEvpU
-         wnfQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VWXMnj/4bycUbYJdqDLb08aYTY1j7UbIKEMdtzV/w4E=;
+        b=W07qfVtoDQVyHBmc/nS0Y3w3UpzMqEym4unySpmc7M92iqHDEfbnyMT0fbWAYMKNKy
+         H663zAng2keEqZM1A8uGOTyB0+x/SlE6RyDi86MFbOnV7XtQV5fbzRkEbt4uST7n5hHr
+         pycISaJe5N2k6b+nXdGMOIyPl67mz9Itq3tnK/ScHH9BVeDhEMXcnRaDgAcGRPV+WMdE
+         OVcHfdW0PhCkNvfL2u+oCBpYnIhz0b+WaOJJla2P1S9jX0qac/uaILi96eHY7WM7xIQF
+         PNB0drRLnU4noO6W/pawGoiC+v0kRfo9JoLrZA+XFtjtecpimNNenOQFrgFYIlf6AkIU
+         DkuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=toMN7Gy7qiKlHDx5qzo4dMJk80onCA4nB44Bg+SUiec=;
-        b=WEr7ge7eJh+XT7mdtSxgCjHliV9pa1lqoNBvmx5T/nP0NnuqNSc+5b8BE8UMxBmMhy
-         bqpmB4GVhULvZxsIWk5+eYLDChLFK2Lvu13Om4QbpOiUn6bZKW9i9ULXOt/Fu9+9EqAS
-         oA2agl4SCEAIiy4qdUKOJDjJY7l9G5EOxBnu98VLH5p0qyWR/4VBUfymz0dnAVkX6GoK
-         cs7uaC3amsEKM8AP3UkwKiHNoMjogDUPX5/TSSpPrfjiLv27H1xU1U+0+RBg5zTNVFeU
-         tqNbtizRlqYm2a6n1TLcb3hamq7G/sQANGrBUcq9zKYdfs/ZFNDhbLRhhC5VpF33TDBw
-         Mr+w==
-X-Gm-Message-State: AOAM530BMljDHtbVEDoNJGIn8mlphfplD985nMdvgdYueUE1XTuWspVU
-        JOpAbYjZvszFfW/a+xU+KdRpwLTeqTY=
-X-Google-Smtp-Source: ABdhPJy4//XaP/kfo0+gDWTCclqxjTGZ7zJ7gvIoxX2ivMIWmMacu68pDvlM8G5T49KD997yJ0TbrA==
-X-Received: by 2002:a17:906:ecb8:: with SMTP id qh24mr9706616ejb.88.1631281887228;
-        Fri, 10 Sep 2021 06:51:27 -0700 (PDT)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id w13sm2484683ejc.100.2021.09.10.06.51.26
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VWXMnj/4bycUbYJdqDLb08aYTY1j7UbIKEMdtzV/w4E=;
+        b=50jT+ajhwPQRTWCDwKVF2RuhExpLoyW4leyIzW7IP59QCx23bUf0oIHK+4s7q14r0Y
+         evl/e1QDhuq6ElHbqhEw4ZJjp5f4cS/y5CTbvbf95H7+N00AG92Onx53DbMWq0Liph9U
+         WwbwxxWXsFpjmEtgHuUox7a3ygMqG+PVmCgaeRd1BMuZZv6/EKBROP6E5eqjKD8ljxeg
+         IHvXismhLyKeuwq1BIK6FNGdM1TVmTNw2kjmAni7lGpjCXCEkUFBPRXOHpqxrmNm34iB
+         4I5yYNkZUznAZWmi6XvVigYozTbCqTbiw8GWoFhDfFXghl51Djl0yU4Hn8yLqcY/3CtG
+         J8OA==
+X-Gm-Message-State: AOAM5334zIg5fUEpb6pJd+Ow/W1TdCfYnEVg8xJIFXTvS8kf8macz00+
+        kP6+ZJ9/TfHDuhH2aVhNzUTJwJlF0vI=
+X-Google-Smtp-Source: ABdhPJyNgbRTyxr3+8CDapJeDKduPuiIwlfINtY91hN4wuE2T5qA9ELS1FdF3i3O54hLW4WUoY61Sg==
+X-Received: by 2002:aa7:dd57:: with SMTP id o23mr9952462edw.385.1631291419760;
+        Fri, 10 Sep 2021 09:30:19 -0700 (PDT)
+Received: from crow.. ([95.87.199.93])
+        by smtp.gmail.com with ESMTPSA id c25sm2654484ejm.9.2021.09.10.09.30.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 06:51:26 -0700 (PDT)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+        Fri, 10 Sep 2021 09:30:19 -0700 (PDT)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 25/25] trace-cmd report: Add new parameter for trace file version
-Date:   Fri, 10 Sep 2021 16:51:01 +0300
-Message-Id: <20210910135101.2865226-26-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210910135101.2865226-1-tz.stoyanov@gmail.com>
-References: <20210910135101.2865226-1-tz.stoyanov@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH] libtracefs: Fix code indentation
+Date:   Fri, 10 Sep 2021 19:30:07 +0300
+Message-Id: <20210910163007.324033-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-By default, "trace-cmd report" writes in trace file version 6.
-A new parameter is added, which can be used to set desired version
-the output trace file.
- "trace-cmd report --file-version <version>"
+This is a code style fix. No functional changes are introduced.
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- tracecmd/trace-record.c | 21 +++++++++++++++++++++
- tracecmd/trace-usage.c  |  2 +-
- 2 files changed, 22 insertions(+), 1 deletion(-)
+ include/tracefs.h  |  7 +++----
+ src/tracefs-hist.c | 12 ++++++------
+ 2 files changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index f94eee6f..421bb7d4 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -3698,6 +3698,8 @@ static struct tracecmd_output *create_net_output(struct common_record_context *c
- 	out = tracecmd_output_allocate(-1);
- 	if (!out)
- 		return NULL;
-+	if (ctx->file_version && tracecmd_output_set_version(out, ctx->file_version))
-+		goto error;
- 	if (tracecmd_output_set_msg(out, msg_handle))
- 		goto error;
- 	if (tracecmd_output_write_headers(out, listed_events))
-@@ -3744,6 +3746,8 @@ setup_connection(struct buffer_instance *instance, struct common_record_context
- 		network_handle = tracecmd_output_allocate(msg_handle->fd);
- 		if (!network_handle)
- 			goto error;
-+		if (tracecmd_output_set_version(network_handle, ctx->file_version))
-+			goto error;
- 		if (tracecmd_output_write_headers(network_handle, listed_events))
- 			goto error;
- 		tracecmd_set_quiet(network_handle, quiet);
-@@ -4475,6 +4479,8 @@ static struct tracecmd_output *create_output(struct common_record_context *ctx)
- 	out = tracecmd_output_allocate(fd);
- 	if (!out)
- 		goto error;
-+	if (ctx->file_version && tracecmd_output_set_version(out, ctx->file_version))
-+		goto error;
- 	if (tracecmd_output_write_headers(out, listed_events))
- 		goto error;
- 	return out;
-@@ -5785,6 +5791,7 @@ void init_top_instance(void)
- }
+diff --git a/include/tracefs.h b/include/tracefs.h
+index 9cfd257..b4aa75d 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -279,12 +279,11 @@ enum tracefs_hist_sort_direction {
  
- enum {
-+	OPT_file_ver		= 238,
- 	OPT_verbose		= 239,
- 	OPT_tsc2nsec		= 240,
- 	OPT_fork		= 241,
-@@ -6224,6 +6231,7 @@ static void parse_record_options(int argc,
- 			{"tsc2nsec", no_argument, NULL, OPT_tsc2nsec},
- 			{"poll", no_argument, NULL, OPT_poll},
- 			{"verbose", optional_argument, NULL, OPT_verbose},
-+			{"file-version", required_argument, NULL, OPT_file_ver},
- 			{NULL, 0, NULL, 0}
- 		};
+ struct tracefs_hist;
  
-@@ -6649,6 +6657,19 @@ static void parse_record_options(int argc,
- 			cmd_check_die(ctx, CMD_set, *(argv+1), "--poll");
- 			recorder_flags |= TRACECMD_RECORD_POLL;
- 			break;
-+		case OPT_file_ver:
-+			cmd_check_die(ctx, CMD_start, *(argv+1), "--file_version");
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "--file_version");
-+			cmd_check_die(ctx, CMD_extract, *(argv+1), "--file_version");
-+			cmd_check_die(ctx, CMD_stream, *(argv+1), "--file_version");
-+			cmd_check_die(ctx, CMD_profile, *(argv+1), "--file_version");
-+			ctx->file_version = atoi(optarg);
-+			if (ctx->file_version < FILE_VERSION_MIN ||
-+			    ctx->file_version > FILE_VERSION_MAX)
-+				die("Unsupported file version %d, "
-+				    "supported versions are from %d to %d",
-+				    ctx->file_version, FILE_VERSION_MIN, FILE_VERSION_MAX);
-+			break;
- 		case OPT_quiet:
- 		case 'q':
- 			quiet = true;
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index 32b38bfd..ac12b066 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -69,7 +69,7 @@ static struct usage_help usage_help[] = {
- 		"               If 0 is specified, no loop is performed - timestamps offset is calculated only twice,"
- 		"                                                         at the beginnig and at the end of the trace\n"
- 		"          --poll don't block while reading from the trace buffer\n"
--		"          --verbose 'level' Set the desired log level\n"
-+		"          --file-version set the desired trace file version\n"
- 	},
- 	{
- 		"set",
+-void tracefs_hist_free
+-(struct tracefs_hist *hist);
++void tracefs_hist_free(struct tracefs_hist *hist);
+ struct tracefs_hist *
+ tracefs_hist_alloc(struct tracefs_instance * instance,
+-		       const char *system, const char *event,
+-		       const char *key, enum tracefs_hist_key_type type);
++		   const char *system, const char *event,
++		   const char *key, enum tracefs_hist_key_type type);
+ int tracefs_hist_add_key(struct tracefs_hist *hist, const char *key,
+ 			 enum tracefs_hist_key_type type);
+ int tracefs_hist_add_value(struct tracefs_hist *hist, const char *value);
+diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
+index 8b90787..6519f7e 100644
+--- a/src/tracefs-hist.c
++++ b/src/tracefs-hist.c
+@@ -158,8 +158,8 @@ void tracefs_hist_free(struct tracefs_hist *hist)
+  */
+ struct tracefs_hist *
+ tracefs_hist_alloc(struct tracefs_instance * instance,
+-			const char *system, const char *event,
+-			const char *key, enum tracefs_hist_key_type type)
++		   const char *system, const char *event,
++		   const char *key, enum tracefs_hist_key_type type)
+ {
+ 	struct tracefs_hist *hist;
+ 	int ret;
+@@ -385,10 +385,10 @@ add_sort_key(struct tracefs_hist *hist, const char *sort_key, char **list)
+ 
+ 	if (!key_list[i]) {
+ 		for (i = 0; val_list[i]; i++) {
+-		if (strcmp(val_list[i], sort_key) == 0)
+-			break;
+-		if (!val_list[i])
+-			return NULL;
++			if (strcmp(val_list[i], sort_key) == 0)
++				break;
++			if (!val_list[i])
++				return NULL;
+ 		}
+ 	}
+ 
 -- 
-2.31.1
+2.30.2
 
