@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5280FC4332F
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 16:39:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EED6C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 16:39:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3237161208
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 16:39:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3848C611CC
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 16:39:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhIJQkX (ORCPT
+        id S230154AbhIJQkY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 10 Sep 2021 12:40:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58394 "EHLO
+        Fri, 10 Sep 2021 12:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230258AbhIJQkV (ORCPT
+        with ESMTP id S230272AbhIJQkW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 Sep 2021 12:40:21 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471B3C061574
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 09:39:10 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a25so5442812ejv.6
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 09:39:10 -0700 (PDT)
+        Fri, 10 Sep 2021 12:40:22 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD9AC061766
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 09:39:11 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a25so5442892ejv.6
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 09:39:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6Ztix/mSisIcNTomnFYxEhhxtgmrLBPkGI5Fz5tlIKo=;
-        b=HTBzJ6RTnI3fx1wL3lG2ldhPcTsrAHWfoVucIxwV7aDw2rfvlqY+2NjgmoKpOfY3xJ
-         jzRsEtVKaITy6itMN6ouzA2MDYkBrHiGDvqDVppBLr1wvzXURJhLsFnxl3oQeLjDkeaH
-         FIzxYJx26Ft78Q15l9WRNKsMf1RFIi33iUajk+F6hZxX7zS6n9sUEOykF/cDGlA0agBj
-         MzCPwK4OgtCh0s/dezgOJug+tkK/BSmNuaSCpU82umOFRGUOUqDxLLaIxbOUcJFaO39g
-         ah+PFobL1w5px3cIPBuk29zC0qOnrNxq+Ae4onAzO+QSlDe091rTwizRySjXFnidWAK1
-         m/6g==
+        bh=iFxkFKimb4SYn9oH9t3gLTUmDTFC+h81zIObZUcChf4=;
+        b=U+uHDJP8dKe+8rm1gSxYu8Xf+Qf813L2EGy8Tzkan+KDL5MqkrNO36z9AUCcz0pLrd
+         x75nC9S0uneo37ytEchonDlAe/bxMm2rJU5IGPcw5Pur7vvfVe+ahFmXBF6Tw02izUNp
+         STbJPDl/Xl2UFHQnpsZBQ2/rrerem37GtYjQdUgLi4iqGJhjffTL51AFE2ChDx4h2J6o
+         eYcitIGgp4aiwYeClEpNrZJdNZCQtPRiAFgD2v3pBVceHuL5rXXVNdtklQV5w3DttQjE
+         HyMaro82nsI345mNeeMn6mTQhI/P18KfG/pLbdB3GWiZqHJeAaKfWSqUtdsQVjuuM1G1
+         Oyyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6Ztix/mSisIcNTomnFYxEhhxtgmrLBPkGI5Fz5tlIKo=;
-        b=TZTYHNHUER9v6cq6C5GjVZWPzfVxdxQ/dTjlqTgLNEU87vIfljfnXDvCnETB9kxrtt
-         ETDE6L9KP51nSA4I+h4aPbo12DAD7u8tV+O20Kew9CtpB3+CL10fPcLjdKWB8HDQBO3Q
-         zj4JCXjpx9xkx4uOLuEloxC9vsxnZljf7nzK5vwn6P8aFTKFhZKSkc7TRKUTKeeHrY7J
-         W7jyJwZFgBc88HZGk0DX/4HYFEx68X2URpEaggyDKjs8CJg2DJ3++5foFNfKR7QjJZxj
-         +xcgztAZKiwNkGAHgbqyYrSJ9Kd6OrfJ/loEX5P/hflt/8G6XA/DtbdlGHi7+PE2zvzm
-         vBVA==
-X-Gm-Message-State: AOAM531r3gzGWfIQiy7bzu6KjtyzCk5nNDX6AaUItt0j/hUk+FzcrRTc
-        5o3p0bx/aQ7SDJ+iMpFit6s=
-X-Google-Smtp-Source: ABdhPJyYAor1u1mZqGpplZawmp1BO8pbWtMC4u0HXEQ0YAdkb1O76o8dfO5gKxyhxIJCCVD5HnvCwg==
-X-Received: by 2002:a17:906:9241:: with SMTP id c1mr10375347ejx.125.1631291948838;
-        Fri, 10 Sep 2021 09:39:08 -0700 (PDT)
+        bh=iFxkFKimb4SYn9oH9t3gLTUmDTFC+h81zIObZUcChf4=;
+        b=ik/cZpoknBzOPMp2uhT+36SjxJFKU5cbEuyHP7Y7Sq9MBP6lWUv+kJY9dN+zALB1Wq
+         LynZhJ6QA0kRZaUdpMBn3SJUIWl1i/7NCROy3UZN1lsPcEDpMvN07bdV5FwHiClPxrjr
+         j6YBifd26gm/VpZMx3TeH81lJ4xPF4w8KDrDAl5dJm1Ev7ys4VjPHY1RUfGJh7LGJ68Q
+         LrsXDDDhdvrNFt9soiOeXDEJQoOUM7NGFFqQEXfY5s+Q9dsnoRFFGpPdn1MgDmUA1qoq
+         V9/gvhOjhnbTmy3ewBeSW90/MqFOo3vG5dGle74b9+WLKRT04zlqn0wUQTY5SG5eJWTf
+         zRqw==
+X-Gm-Message-State: AOAM533D3qzrFusxtr8pCs5+qad/q30Yt9HTrilOyBccHPuxRSt7ufFZ
+        WMWXUmXuWu1CxPKiq8W8qsw=
+X-Google-Smtp-Source: ABdhPJw/q0Wtv6OHoc6C+egXPa7VMW0NBXot/doSPAned3Y4jzcCxQZJC1iv/dcCzcJDnunNN0G7Hg==
+X-Received: by 2002:a17:906:9747:: with SMTP id o7mr10267400ejy.486.1631291949663;
+        Fri, 10 Sep 2021 09:39:09 -0700 (PDT)
 Received: from crow.. ([95.87.199.93])
-        by smtp.gmail.com with ESMTPSA id g9sm3095290edk.54.2021.09.10.09.39.08
+        by smtp.gmail.com with ESMTPSA id g9sm3095290edk.54.2021.09.10.09.39.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 09:39:08 -0700 (PDT)
+        Fri, 10 Sep 2021 09:39:09 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [RFC PATCH 3/4] libtracefs: Add new 'hist' APIs
-Date:   Fri, 10 Sep 2021 19:38:56 +0300
-Message-Id: <20210910163857.324696-4-y.karadz@gmail.com>
+Subject: [RFC PATCH 4/4] libtracefs: Remove tracefs_hist_add_key()
+Date:   Fri, 10 Sep 2021 19:38:57 +0300
+Message-Id: <20210910163857.324696-5-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210910163857.324696-1-y.karadz@gmail.com>
 References: <20210910163857.324696-1-y.karadz@gmail.com>
@@ -74,65 +74,213 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The new APIs will be valuable in a number of different scenarios.
-For example if the user wants to implement a function that does
-the readout of a histogram, the only argument that will have to
-be passed to this function is the histogram descriptor. The same
-applies for the case when the user wants to print an adequate
-error message in a case of a failure.
+Since we have appropriate constructor for N-dimensional histograms,
+this method is no longer needed.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- include/tracefs.h  |  4 ++++
- src/tracefs-hist.c | 20 ++++++++++++++++++++
- 2 files changed, 24 insertions(+)
+ Documentation/libtracefs-hist-cont.txt |   8 +-
+ Documentation/libtracefs-hist.txt      |   8 +-
+ include/tracefs.h                      |   2 -
+ src/tracefs-hist.c                     | 110 +++++++++++--------------
+ 4 files changed, 58 insertions(+), 70 deletions(-)
 
+diff --git a/Documentation/libtracefs-hist-cont.txt b/Documentation/libtracefs-hist-cont.txt
+index 1b0153c..d584b46 100644
+--- a/Documentation/libtracefs-hist-cont.txt
++++ b/Documentation/libtracefs-hist-cont.txt
+@@ -82,15 +82,15 @@ int main (int argc, char **argv, char **env)
+ 		exit(-1);
+ 	}
+ 
+-	hist = tracefs_hist_alloc(instance, "kmem", "kmalloc",
+-				  "call_site", TRACEFS_HIST_KEY_SYM);
++	hist = tracefs_hist2d_alloc(instance, "kmem", "kmalloc",
++				    "call_site", TRACEFS_HIST_KEY_SYM,
++				    "bytes_req", 0);
+ 	if (!hist) {
+ 		fprintf(stderr, "Failed hist create\n");
+ 		exit(-1);
+ 	}
+ 
+-	ret = tracefs_hist_add_key(hist, "bytes_req", 0);
+-	ret |= tracefs_hist_add_value(hist, "bytes_alloc");
++	ret = tracefs_hist_add_value(hist, "bytes_alloc");
+ 	ret |= tracefs_hist_add_sort_key(hist, "bytes_req", "bytes_alloc", NULL);
+ 
+ 	ret |= tracefs_hist_sort_key_direction(hist, "bytes_alloc",
+diff --git a/Documentation/libtracefs-hist.txt b/Documentation/libtracefs-hist.txt
+index 0254c5f..692f488 100644
+--- a/Documentation/libtracefs-hist.txt
++++ b/Documentation/libtracefs-hist.txt
+@@ -186,15 +186,15 @@ int main (int argc, char **argv, char **env)
+ 		exit(-1);
+ 	}
+ 
+-	hist = tracefs_hist_alloc(instance, "kmem", "kmalloc",
+-				  "call_site", TRACEFS_HIST_KEY_SYM);
++	hist = tracefs_hist2d_alloc(instance, "kmem", "kmalloc",
++				    "call_site", TRACEFS_HIST_KEY_SYM,
++				    "bytes_req", 0);
+ 	if (!hist) {
+ 		fprintf(stderr, "Failed hist create\n");
+ 		exit(-1);
+ 	}
+ 
+-	ret = tracefs_hist_add_key(hist, "bytes_req", 0);
+-	ret |= tracefs_hist_add_value(hist, "bytes_alloc");
++	ret = tracefs_hist_add_value(hist, "bytes_alloc");
+ 	ret |= tracefs_hist_add_sort_key(hist, "bytes_req", "bytes_alloc", NULL);
+ 
+ 	ret |= tracefs_hist_sort_key_direction(hist, "bytes_alloc",
 diff --git a/include/tracefs.h b/include/tracefs.h
-index c3fa1d6..255be9b 100644
+index 255be9b..5c193a2 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
-@@ -299,6 +299,10 @@ struct tracefs_hist *
- tracefs_hist_alloc(struct tracefs_instance * instance,
- 		   const char *system, const char *event,
- 		   struct tracefs_hist_axis *axes);
-+const char *tracefs_get_hist_name(struct tracefs_hist *hist);
-+const char *tracefs_get_hist_event(struct tracefs_hist *hist);
-+const char *tracefs_get_hist_system(struct tracefs_hist *hist);
-+struct tracefs_instance *tracefs_get_hist_instance(struct tracefs_hist *hist);
- int tracefs_hist_add_key(struct tracefs_hist *hist, const char *key,
- 			 enum tracefs_hist_key_type type);
+@@ -303,8 +303,6 @@ const char *tracefs_get_hist_name(struct tracefs_hist *hist);
+ const char *tracefs_get_hist_event(struct tracefs_hist *hist);
+ const char *tracefs_get_hist_system(struct tracefs_hist *hist);
+ struct tracefs_instance *tracefs_get_hist_instance(struct tracefs_hist *hist);
+-int tracefs_hist_add_key(struct tracefs_hist *hist, const char *key,
+-			 enum tracefs_hist_key_type type);
  int tracefs_hist_add_value(struct tracefs_hist *hist, const char *value);
+ int tracefs_hist_add_sort_key(struct tracefs_hist *hist,
+ 			      char *sort_key);
 diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index 2ea90d9..175b627 100644
+index 175b627..b71b0e3 100644
 --- a/src/tracefs-hist.c
 +++ b/src/tracefs-hist.c
-@@ -34,6 +34,26 @@ struct tracefs_hist {
- 	int			size;
- };
+@@ -217,6 +217,55 @@ tracefs_hist2d_alloc(struct tracefs_instance * instance,
+ 	return tracefs_hist_alloc(instance, system, event, axis);
+ }
  
-+const char *tracefs_get_hist_name(struct tracefs_hist *hist)
++static int add_hist_key(struct tracefs_hist *hist, const char *key,
++			 enum tracefs_hist_key_type type)
 +{
-+	return hist ? hist->name : NULL;
++	bool use_key = false;
++	char *key_type = NULL;
++	char **new_list;
++	int ret;
++
++	switch (type) {
++	case TRACEFS_HIST_KEY_NORMAL:
++		use_key = true;
++		ret = 0;
++		break;
++	case TRACEFS_HIST_KEY_HEX:
++		ret = asprintf(&key_type, "%s.hex", key);
++		break;
++	case TRACEFS_HIST_KEY_SYM:
++		ret = asprintf(&key_type, "%s.sym", key);
++		break;
++	case TRACEFS_HIST_KEY_SYM_OFFSET:
++		ret = asprintf(&key_type, "%s.sym-offset", key);
++		break;
++	case TRACEFS_HIST_KEY_SYSCALL:
++		ret = asprintf(&key_type, "%s.syscall", key);
++		break;
++	case TRACEFS_HIST_KEY_EXECNAME:
++		ret = asprintf(&key_type, "%s.execname", key);
++		break;
++	case TRACEFS_HIST_KEY_LOG:
++		ret = asprintf(&key_type, "%s.log2", key);
++		break;
++	case TRACEFS_HIST_KEY_USECS:
++		ret = asprintf(&key_type, "%s.usecs", key);
++		break;
++	}
++
++	if (ret < 0)
++		return -1;
++
++	new_list = tracefs_list_add(hist->keys, use_key ? key : key_type);
++	free(key_type);
++	if (!new_list)
++		return -1;
++
++	hist->keys = new_list;
++
++	return 0;
 +}
 +
-+struct tracefs_instance *tracefs_get_hist_instance(struct tracefs_hist *hist)
-+{
-+	return hist ? hist->instance : NULL;
-+}
-+
-+const char *tracefs_get_hist_event(struct tracefs_hist *hist)
-+{
-+	return hist ? hist->event : NULL;
-+}
-+
-+const char *tracefs_get_hist_system(struct tracefs_hist *hist)
-+{
-+	return hist ? hist->system : NULL;
-+}
-+
- enum tracefs_hist_command {
- 	HIST_CMD_NONE = 0,
- 	HIST_CMD_PAUSE,
+ /**
+  * tracefs_hist_alloc - Initialize N-dimensional histogram
+  * @instance: The instance the histogram will be in (NULL for toplevel)
+@@ -262,7 +311,7 @@ tracefs_hist_alloc(struct tracefs_instance * instance,
+ 		goto fail;
+ 
+ 	for (; axes && axes->key; axes++)
+-		if (tracefs_hist_add_key(hist, axes->key, axes->type) < 0)
++		if (add_hist_key(hist, axes->key, axes->type) < 0)
+ 			goto fail;
+ 
+ 	return hist;
+@@ -272,65 +321,6 @@ tracefs_hist_alloc(struct tracefs_instance * instance,
+ 	return NULL;
+ }
+ 
+-/**
+- * tracefs_hist_add_key - add to a key to a histogram
+- * @hist: The histogram to add the key to.
+- * @key: The name of the key field.
+- * @type: The type of the key format.
+- *
+- * This adds a secondary or tertiary key to the histogram.
+- *
+- * Returns 0 on success, -1 on error.
+- */
+-int tracefs_hist_add_key(struct tracefs_hist *hist, const char *key,
+-			 enum tracefs_hist_key_type type)
+-{
+-	bool use_key = false;
+-	char *key_type = NULL;
+-	char **new_list;
+-	int ret;
+-
+-	switch (type) {
+-	case TRACEFS_HIST_KEY_NORMAL:
+-		use_key = true;
+-		ret = 0;
+-		break;
+-	case TRACEFS_HIST_KEY_HEX:
+-		ret = asprintf(&key_type, "%s.hex", key);
+-		break;
+-	case TRACEFS_HIST_KEY_SYM:
+-		ret = asprintf(&key_type, "%s.sym", key);
+-		break;
+-	case TRACEFS_HIST_KEY_SYM_OFFSET:
+-		ret = asprintf(&key_type, "%s.sym-offset", key);
+-		break;
+-	case TRACEFS_HIST_KEY_SYSCALL:
+-		ret = asprintf(&key_type, "%s.syscall", key);
+-		break;
+-	case TRACEFS_HIST_KEY_EXECNAME:
+-		ret = asprintf(&key_type, "%s.execname", key);
+-		break;
+-	case TRACEFS_HIST_KEY_LOG:
+-		ret = asprintf(&key_type, "%s.log2", key);
+-		break;
+-	case TRACEFS_HIST_KEY_USECS:
+-		ret = asprintf(&key_type, "%s.usecs", key);
+-		break;
+-	}
+-
+-	if (ret < 0)
+-		return -1;
+-
+-	new_list = tracefs_list_add(hist->keys, use_key ? key : key_type);
+-	free(key_type);
+-	if (!new_list)
+-		return -1;
+-
+-	hist->keys = new_list;
+-
+-	return 0;
+-}
+-
+ /**
+  * tracefs_hist_add_value - add to a value to a histogram
+  * @hist: The histogram to add the value to.
 -- 
 2.30.2
 
