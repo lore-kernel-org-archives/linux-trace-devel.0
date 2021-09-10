@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 673EBC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:48:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7868EC433FE
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:48:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4DFDE611C9
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:48:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 63C83611CC
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:48:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233725AbhIJNt2 (ORCPT
+        id S233739AbhIJNt3 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 10 Sep 2021 09:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47994 "EHLO
+        Fri, 10 Sep 2021 09:49:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233704AbhIJNt2 (ORCPT
+        with ESMTP id S233704AbhIJNt3 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 Sep 2021 09:49:28 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11143C061574
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:48:17 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id q3so2591634edt.5
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:48:16 -0700 (PDT)
+        Fri, 10 Sep 2021 09:49:29 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A489C061574
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:48:18 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id r7so2590678edd.6
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:48:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DhQmJDJGkcQ7eXfaCIDlchysjzm62x+Y5uYIVAkMUV4=;
-        b=OfmE81OOUuN7cOMXc/F0qzerkM0eVyo2diA3UvY7RtsIugHS/GzgyA4qLkQJ9Nw70D
-         tVTXxB7k1lc0EGAnsT7KfKRwzeqb0ojJ6XtOvyc3ct+Ku+L3md5JJqbtqFO9hGwj1BEb
-         iVNcffIs2YLmKTleI26e28vxNDjcp6AnIhrclUt+78WnLr2uCcBaxILLLvJekUS8gppz
-         FVfFUjxjBd8NH7VptaEDN9YJ6N469F5H/OZ2PTvcWcjN8f9Uk1LwUFryTRR+Q6d/6dix
-         ZY4yHp1sbbOCrbGlw/8PM10UvvYofckoSpkbIck7hvt3/f1ubVzRtAfdtT3Y4HqWY9dj
-         FqbA==
+        bh=RL9NU2QU3eQCBHNiwR5XAbT/oZdzMq72Opi9smJDKmw=;
+        b=QtPFo6s6nJZfonX14ru+YUX2cO1DFPe6QZiIwH9IRqVFgaXamZANgTi87wyH6WzdgW
+         4jTxqnystGzozBo0luuuLmfwO2YikfwT5HLjMhRbSyFIoYHtzMakX2W202Tes6IPdyIs
+         i+a9cJpDQJqqe5QXmagOQZCF6UgnS2g7Qyx/lecRUFqDpMj6QSjvkUcJnpuw5cSKC1Fe
+         D9IeSKWvez2hf4c2MRASTE9QJZDivB0H4eCaigN+ISYBXKTvaI6CpRX0SJtasxETP1Oy
+         m2x8yweCZD9wKPy3/dU/WdEhL4ZGrj4nApK9fKmMx+XrpqOmMXEj2Xx1uZiEmM3FcCeC
+         jR7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DhQmJDJGkcQ7eXfaCIDlchysjzm62x+Y5uYIVAkMUV4=;
-        b=jxEx9tkmhRlRFo6PvYReFsU+oTgAFHjm3RhTsJuttEKc1whYFw4HtykTLDBEjc+LAy
-         u8dGgsUqjhz2ZEVwO68YadQXMHfG0IxnwjKLJCJy7Akewj26Gm0z8rhpQJW9XGFLc4Mp
-         /tsLTKfsL84jLwfe5VY5VjAAnyMvl+ASw6xWF2np99eaTG/v1rymD8OO0bXQMNEHPhty
-         lBLHRM1qcFWznr47hDozm3704g43LYYfu8bgO9mCAxAhNBv4SWSGQsgxE0KdN159ijIG
-         IKh7+Vf+pBysiauOA7mcOfGG/NLxQ563C/pZwoW+jYEKXqSw97v26TV5UfTpMtwV/2Yv
-         2cCQ==
-X-Gm-Message-State: AOAM5332dCa/ilbKcAnYMvtRpl/Dtli9qv15xcOYlhvy93ZdvdjfY2Wr
-        6dzXSqb5tcgNJuq0dKDrxlmCmhX0Vek=
-X-Google-Smtp-Source: ABdhPJz7K77h5eSDg9ASeyJqR3HeHnPHMrn7+OZnG/F5DCtsojokzxDk99zYhlrKfcfD37/jDwPaLw==
-X-Received: by 2002:aa7:d710:: with SMTP id t16mr8941885edq.42.1631281695682;
-        Fri, 10 Sep 2021 06:48:15 -0700 (PDT)
+        bh=RL9NU2QU3eQCBHNiwR5XAbT/oZdzMq72Opi9smJDKmw=;
+        b=DP5TSTy3g/lo8j01zPcNTB/NGB23vzEVKgkABO0Bdela1qrHySBM/M7YjLrcdcZf7n
+         r87uY6lNQyCoPzsAmUtxrNKXfTE9uJM5LDSLoopfsu2QCuHQPO2g9H7nzjAtdN6a1UEm
+         x8ys5MlI6By7qt7a2vge3mPkoQaJfvtmhRuCxotkN4HMlAY7ytZNYPphIEHrB/3mvp0w
+         cR4jIId8E3uw/0t9jjYjHes8+OIk0BmTG+DLn9g2l/HFwjJiiuSYOQ5nPul1wkjf7Hrq
+         4hAl5/9pPk6jz9tgUidlDtoLuy9o+w7tDnDxt02GWuP/Zz+6er46NbCHYNpZUruvcpnY
+         dYmw==
+X-Gm-Message-State: AOAM531LC8RKtSnPR9/dOh4jat3iCqgSLhZhrVU2JstQPn0Z4fRcZwP3
+        rARSSYVCDokDuwMnL5ceNg2Wleivyn4=
+X-Google-Smtp-Source: ABdhPJzi0gJHq6mc6cJTtAB/OvtWDtWxBGpYqetlNjvjgpZHYWfZ+PysSh/dVp1/3uBf8BbFXxKUpw==
+X-Received: by 2002:aa7:cb8a:: with SMTP id r10mr9003655edt.237.1631281696878;
+        Fri, 10 Sep 2021 06:48:16 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id r2sm605141edo.59.2021.09.10.06.48.14
+        by smtp.gmail.com with ESMTPSA id r2sm605141edo.59.2021.09.10.06.48.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 06:48:15 -0700 (PDT)
+        Fri, 10 Sep 2021 06:48:16 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 15/21] trace-cmd library: Track maximum CPUs count in input handler
-Date:   Fri, 10 Sep 2021 16:47:51 +0300
-Message-Id: <20210910134757.2863982-16-tz.stoyanov@gmail.com>
+Subject: [PATCH 16/21] trace-cmd report: Close input file handlers on exit
+Date:   Fri, 10 Sep 2021 16:47:52 +0300
+Message-Id: <20210910134757.2863982-17-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210910134757.2863982-1-tz.stoyanov@gmail.com>
 References: <20210910134757.2863982-1-tz.stoyanov@gmail.com>
@@ -73,58 +73,35 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This clean up is needed for the design of the next trace file version,
-where only CPUs with trace data could be stored in the file. Each trace
-instance may have its own CPU count, depending on collected traces.
-As the main input handler is used by the top trace instance, the
-CPU count there is for the top trace instance and may differ with cpu
-counts of the other instances. Added a new "max_cpu" member of the input
-handler, that tracks the maximum CPU count of all instances, recorded in
-the file.
+When "trace-cmd report" is interrupted with "ctrl-c", close the input
+handlers to opened trace files, to delete any temporary files used when
+reading the trace data. This clean up is needed for the design of the
+next version of the trace file.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ tracecmd/trace-read.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index fbfc0d1c..48f6bbd8 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -125,6 +125,7 @@ struct tracecmd_input {
- 	int			long_size;
- 	int			page_size;
- 	int			page_map_size;
-+	int			max_cpu;
- 	int			cpus;
- 	int			ref;
- 	int			nr_buffers;	/* buffer instances */
-@@ -838,6 +839,7 @@ static int read_cpus(struct tracecmd_input *handle)
- 		return -1;
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index 31724b09..4261088d 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -1363,7 +1363,14 @@ struct tracecmd_input *read_trace_header(const char *file, int flags)
  
- 	handle->cpus = cpus;
-+	handle->max_cpu = cpus;
- 	tep_set_cpus(handle->pevent, handle->cpus);
- 	handle->file_state = TRACECMD_FILE_CPU_COUNT;
- 
-@@ -2794,6 +2796,8 @@ static int handle_options(struct tracecmd_input *handle)
- 		case TRACECMD_OPTION_CPUCOUNT:
- 			cpus = *(int *)buf;
- 			handle->cpus = tep_read_number(handle->pevent, &cpus, 4);
-+			handle->max_cpu = handle->cpus;
-+			tep_set_cpus(handle->pevent, handle->cpus);
- 			break;
- 		case TRACECMD_OPTION_PROCMAPS:
- 			if (buf[size-1] == '\0')
-@@ -4076,7 +4080,7 @@ int tracecmd_page_size(struct tracecmd_input *handle)
-  */
- int tracecmd_cpus(struct tracecmd_input *handle)
+ static void sig_end(int sig)
  {
--	return handle->cpus;
-+	return handle->max_cpu;
++	struct handle_list *handles;
++
+ 	fprintf(stderr, "trace-cmd: Received SIGINT\n");
++
++	list_for_each_entry(handles, &handle_list, list) {
++		tracecmd_close(handles->handle);
++	}
++
+ 	exit(0);
  }
  
- /**
 -- 
 2.31.1
 
