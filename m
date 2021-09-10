@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20CDCC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:51:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF0E4C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:51:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 074F6611CC
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:51:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A3E1A611CC
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:51:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233588AbhIJNwY (ORCPT
+        id S233689AbhIJNwa (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 10 Sep 2021 09:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48686 "EHLO
+        Fri, 10 Sep 2021 09:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233735AbhIJNwY (ORCPT
+        with ESMTP id S233735AbhIJNwZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 Sep 2021 09:52:24 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07DAC061574
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:51:12 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id g8so2600046edt.7
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:51:12 -0700 (PDT)
+        Fri, 10 Sep 2021 09:52:25 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD2E0C061574
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:51:13 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id j13so2570583edv.13
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:51:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DyXosnBNVez1kJvwW8Z59R0UfU/8CDxTC6gV2dbJ+wA=;
-        b=gOU6l2gQMT3zLeRnN1QtlMcsWhadcu+ZGtuF1TQZMWSG7ittbK8e1XVC4mGqOLbGGG
-         F4hI6aF1AMRTQgVeX4zE5lrhEzGolyfhTC3jtUaRknawAGR3o+ql2lC629fDGld6Q7mk
-         xGTBAyCcBsYLpl0EP3pG/M31fhU1IDoqnzBhRxU7Y4uVl1w1PBrUTcA+pp2F1hI+DCRK
-         gh0RwYVhE+p3mRpV7HcvlOqfYuba62A6q5D+mhRyTIdCkezRinBaiZ1E2ncfj/HwuVzC
-         J0AJr3b3pd5ytal/CDdN862OUTXYLNhlRlBa2WAt4p7GAuIRkVq554Zdn/8Ta+fH2X+4
-         9PBg==
+        bh=agVLSiu/Q12j7g/SM+Jl2e/4wzuJwI9G/dagXdB5dDk=;
+        b=BFjzyGTl2nIU5c47uvFDUTkRKxPeEKYsJB4XHUNUpACLqAnj50vulL2GqC1cn0YpDi
+         VoIVoXUQFgf9IX22x1eEMZJYCX29WG5oSws+63glOBLKVPSmpHiOl0ud+q6IG4N78Wk8
+         Ot03qXz1ES5EsP3A/hTD+sWVmgKJsyeWcojKB6RsAQMfuKSkjTlUB2bO4qsrvbnL2QXi
+         IvjosSs3cGbjcAvW64OehksiDQMxTr36ssqIZbj+ve/078OGKLy+TSVMF4M8NhBTeDNu
+         GeUIwnLXa8hI/zMyxG9KUOJSXFujXKnjYHzHpH4wRcj9SjFWUJ6/G8mrMZO3NKJ0QSh4
+         Ad1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DyXosnBNVez1kJvwW8Z59R0UfU/8CDxTC6gV2dbJ+wA=;
-        b=aRC8MjbjTrE7UPwaeoGmS/RWuept3BTIBeMVlyfRY9+z6E6TG0YMd6ixM/JDiurQPm
-         SWlFTD5DKwrO3+QSopbkvcKNDv3qcFULucxpgy7uIYHj7AFuPhi2bVfQ4d5Ly+lDfzLc
-         Dh+35eSDwfSUbcg7rcwJZxKfP7Va2PQUKrI1PHpOA4L9HKg48ixwv31mSjhBKB/6Sw1T
-         Q9NfUgf0cSH/TyA3WY/1KHqzmC/iJ1JWtx5IAD+Xpvohv7rAy6XGT3NbXaLG11D0jTch
-         OAHblARPXBiy4IXOTo5mbJ7sBVGMIydxSDI/fN6FNMepw6nv14Z6xS83FxeeoLZA3BUp
-         r+Sg==
-X-Gm-Message-State: AOAM530hZZlFlcesllsxcqkpWmqi3KQnSt11CgvZoHROGp6qJRNwG2Cl
-        h1dFhlk41Z22iKUSsu0HmdOu4Nj9lfE=
-X-Google-Smtp-Source: ABdhPJxl9t1kHvYsTfe+4acRyJtyqcnC0jzDQTyIQTgIeEI3P6fU+cAuqKHr0TFQy9P1w3N5doi91g==
-X-Received: by 2002:aa7:c0c7:: with SMTP id j7mr7497773edp.58.1631281871495;
-        Fri, 10 Sep 2021 06:51:11 -0700 (PDT)
+        bh=agVLSiu/Q12j7g/SM+Jl2e/4wzuJwI9G/dagXdB5dDk=;
+        b=Mx9sGNezofwfcwAzzC2Q5EAHuUmM/B5QyOLu780Sb5Vuv5UWpnIH6RmSUy+8GYkNm/
+         /nWmKVUNahH7NxjzlQ8gXVWqK3nWz9d93/BTC7kVDJ7JWTwhcfA3AjXkYxdc01j+gpYg
+         hqRm16kTp2VGwAJyVQ2KogHAwyrK7QUYV4/JsY38Tdj+fAlYJY67V0oo9+gy14J27V+s
+         /p+v/tpRyj/ff+sKEYX/LgB91E1Je5xAQoKRAqeGHLRkTm4e5tKEmLlB4ATucDU27Jaf
+         o7stXfuWo35Ivt3YTNe/nsLWJXp4ZqlScy182R3rIyOLPIj0IEhUHx7H3mbQq2LQ2t7j
+         23DA==
+X-Gm-Message-State: AOAM5326fOllq/xu5zN4QcSn0asD9WTwu0m3E+Sawmo16l4qgCcKt7l/
+        xK/ZAFuj09OQwTLhGpZDGPZCeW5XlV8=
+X-Google-Smtp-Source: ABdhPJz+tMBt/IBAxLlJpKIRsU7hZJ0nZaq5FS3I7pOyo0nfQnCBGNBpWx5RxZokXgHdmmCVBnF/Jw==
+X-Received: by 2002:a05:6402:455:: with SMTP id p21mr9103142edw.309.1631281872553;
+        Fri, 10 Sep 2021 06:51:12 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id w13sm2484683ejc.100.2021.09.10.06.51.10
+        by smtp.gmail.com with ESMTPSA id w13sm2484683ejc.100.2021.09.10.06.51.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 06:51:11 -0700 (PDT)
+        Fri, 10 Sep 2021 06:51:12 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 09/25] trace-cmd record: Append trace options after the trace data are written
-Date:   Fri, 10 Sep 2021 16:50:45 +0300
-Message-Id: <20210910135101.2865226-10-tz.stoyanov@gmail.com>
+Subject: [PATCH 10/25] trace-cmd library: Add section header before flyrecord trace data
+Date:   Fri, 10 Sep 2021 16:50:46 +0300
+Message-Id: <20210910135101.2865226-11-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210910135101.2865226-1-tz.stoyanov@gmail.com>
 References: <20210910135101.2865226-1-tz.stoyanov@gmail.com>
@@ -73,39 +73,55 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In trace file version 7, the CPU trace metadata is saved in a trace
-option. As this metadata has file offsets, which depend on the CPU trace
-data, the option must be written in the file after the CPU trace data.
+In trace file version 7, write a section header at the beginning of each
+section with flyrecord trace data.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-record.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ lib/trace-cmd/trace-output.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 35d9ee5f..879acb7c 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -4449,6 +4449,9 @@ static void write_guest_file(struct buffer_instance *instance)
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index 2ba35918..4602a1d4 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -1896,10 +1896,12 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
+ 				int cpus, struct cpu_data_source *data, const char *buff_name)
+ {
+ 	struct data_file_write *data_files = NULL;
++	enum tracecmd_section_flags flags = 0;
+ 	tsize_t data_offs, offset;
+ 	unsigned long long endian8;
+ 	unsigned long long read_size;
+ 	char *clock;
++	char *str;
+ 	int ret;
+ 	int i;
  
- 	if (tracecmd_write_cpu_data(handle, cpu_count, temp_files, "") < 0)
- 		die("failed to write CPU data");
-+	if (tracecmd_get_out_file_version(handle) >= FILE_VERSION_SECTIONS)
-+		tracecmd_write_options(handle);
+@@ -1918,6 +1920,13 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
+ 	if (!HAS_SECTIONS(handle) && do_write_check(handle, "flyrecord", 10))
+ 		goto out_free;
+ 
++	if (asprintf(&str, "buffer flyrecord %s", buff_name) < 1)
++		goto out_free;
++	offset = out_write_section_header(handle, TRACECMD_OPTION_BUFFER, str, flags, false);
++	free(str);
++	if (offset == (off_t)-1)
++		goto out_free;
 +
- 	tracecmd_output_close(handle);
+ 	data_files = calloc(cpus, sizeof(struct data_file_write));
+ 	if (!data_files)
+ 		goto out_free;
+@@ -1998,6 +2007,9 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
+ 	if (do_lseek(handle, 0, SEEK_END) == (off64_t)-1)
+ 		goto out_free;
  
- 	for (i = 0; i < cpu_count; i++)
-@@ -4597,7 +4600,8 @@ static void record_data(struct common_record_context *ctx)
- 				append_buffer(handle, instance, temp_files);
- 			}
- 		}
--
-+		if (tracecmd_get_out_file_version(handle) >= FILE_VERSION_SECTIONS)
-+			tracecmd_write_options(handle);
- 		free(temp_files);
- 	}
- 	if (!handle)
++	if (out_update_section_header(handle, offset))
++		goto out_free;
++
+ 	free(data_files);
+ 	handle->file_state = TRACECMD_FILE_CPU_FLYRECORD;
+ 
 -- 
 2.31.1
 
