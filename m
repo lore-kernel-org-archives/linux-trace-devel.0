@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7868EC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:48:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6883C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:48:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 63C83611CC
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:48:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BBE4C611CC
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Sep 2021 13:48:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233739AbhIJNt3 (ORCPT
+        id S233777AbhIJNtc (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 10 Sep 2021 09:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48000 "EHLO
+        Fri, 10 Sep 2021 09:49:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233704AbhIJNt3 (ORCPT
+        with ESMTP id S233730AbhIJNta (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 Sep 2021 09:49:29 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A489C061574
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:48:18 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id r7so2590678edd.6
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:48:18 -0700 (PDT)
+        Fri, 10 Sep 2021 09:49:30 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E09DC061574
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:48:19 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id ho42so4352476ejc.9
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Sep 2021 06:48:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=RL9NU2QU3eQCBHNiwR5XAbT/oZdzMq72Opi9smJDKmw=;
-        b=QtPFo6s6nJZfonX14ru+YUX2cO1DFPe6QZiIwH9IRqVFgaXamZANgTi87wyH6WzdgW
-         4jTxqnystGzozBo0luuuLmfwO2YikfwT5HLjMhRbSyFIoYHtzMakX2W202Tes6IPdyIs
-         i+a9cJpDQJqqe5QXmagOQZCF6UgnS2g7Qyx/lecRUFqDpMj6QSjvkUcJnpuw5cSKC1Fe
-         D9IeSKWvez2hf4c2MRASTE9QJZDivB0H4eCaigN+ISYBXKTvaI6CpRX0SJtasxETP1Oy
-         m2x8yweCZD9wKPy3/dU/WdEhL4ZGrj4nApK9fKmMx+XrpqOmMXEj2Xx1uZiEmM3FcCeC
-         jR7Q==
+        bh=vFXaQI/G0HHdHdRSAHOmVE4YjkrR1Z9WT14pKr2Ncd0=;
+        b=KpOPyNn3Z4QB7SZ6kMdu/8vcgrgVHX8ywYiSN4Nj7QFRc3wu9n0MunVAtd85aUzqpr
+         qHDnQy5L0JMM9mTXaxL4OgozRjC4SG6NLPwEnT4ZQAHY53hT+Gu5ZcJpTLWKTsbKS8N/
+         H5nBVhrIdSpQahLmKKZPHX4rrcHzdPp1IEoTFHDAsM3mHTQADUyIETS/VxZCMcY/HeTa
+         FfFpLJ19q9oRx9dn3TIa2f661z29r1dp8vUO2YNIL1zNVUsReBJYMvGm4gTQEnYjGcC+
+         8JdS2fKpu7HEK5emH7ciQ5htXggrxNruT82OCXMNtd6RpmDLo8f0xel5NAFN/5WxHrRq
+         e3zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RL9NU2QU3eQCBHNiwR5XAbT/oZdzMq72Opi9smJDKmw=;
-        b=DP5TSTy3g/lo8j01zPcNTB/NGB23vzEVKgkABO0Bdela1qrHySBM/M7YjLrcdcZf7n
-         r87uY6lNQyCoPzsAmUtxrNKXfTE9uJM5LDSLoopfsu2QCuHQPO2g9H7nzjAtdN6a1UEm
-         x8ys5MlI6By7qt7a2vge3mPkoQaJfvtmhRuCxotkN4HMlAY7ytZNYPphIEHrB/3mvp0w
-         cR4jIId8E3uw/0t9jjYjHes8+OIk0BmTG+DLn9g2l/HFwjJiiuSYOQ5nPul1wkjf7Hrq
-         4hAl5/9pPk6jz9tgUidlDtoLuy9o+w7tDnDxt02GWuP/Zz+6er46NbCHYNpZUruvcpnY
-         dYmw==
-X-Gm-Message-State: AOAM531LC8RKtSnPR9/dOh4jat3iCqgSLhZhrVU2JstQPn0Z4fRcZwP3
-        rARSSYVCDokDuwMnL5ceNg2Wleivyn4=
-X-Google-Smtp-Source: ABdhPJzi0gJHq6mc6cJTtAB/OvtWDtWxBGpYqetlNjvjgpZHYWfZ+PysSh/dVp1/3uBf8BbFXxKUpw==
-X-Received: by 2002:aa7:cb8a:: with SMTP id r10mr9003655edt.237.1631281696878;
-        Fri, 10 Sep 2021 06:48:16 -0700 (PDT)
+        bh=vFXaQI/G0HHdHdRSAHOmVE4YjkrR1Z9WT14pKr2Ncd0=;
+        b=Ga3Tuc/DKkZulfXDxP/AUEdcJAehfGxlx61sqWGlD4r7/6NLrfMy1IY7Wz/U1ohjNN
+         oJ7S43CF3+bGE7po88/i0k13pU1w04bGjUuJ8byMU+A4zvPvTN4AJ6E5fdk+vn2G1HdH
+         XQyvwCgUCvtq++V/kl+rhlEUidbUi6MUWwo+u1HAZpBBlBi7m8QKyue0LuFH7zkF3yAV
+         wOyGbshhhOIG5Nn9q0bJO1H/SJgD0pGwppaGshIbLKW6MURuD5q8PibrCW6S/CEzG9su
+         1kpr7Up6+L3JXHyVTgk8wG/80615eO//LXwDVtKI2GHiQ6qz2A3AVNJ5S6VgpNOsi2x8
+         l2jg==
+X-Gm-Message-State: AOAM530xwyeHi7H5hEtsmLqW289oqnqklfxF8CwY70lqNKNXMsmpLk3B
+        DANms8zCN2Txqj9CygKrddRUjFOJ6zU=
+X-Google-Smtp-Source: ABdhPJyXVN2mpcYma3d2gITGH8J2xhTyD4Ico/RmiZptLhoaXKt93szNi3TKmxuL1eD3UyxRLQq1rA==
+X-Received: by 2002:a17:906:3854:: with SMTP id w20mr9184860ejc.537.1631281697843;
+        Fri, 10 Sep 2021 06:48:17 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id r2sm605141edo.59.2021.09.10.06.48.15
+        by smtp.gmail.com with ESMTPSA id r2sm605141edo.59.2021.09.10.06.48.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 06:48:16 -0700 (PDT)
+        Fri, 10 Sep 2021 06:48:17 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 16/21] trace-cmd report: Close input file handlers on exit
-Date:   Fri, 10 Sep 2021 16:47:52 +0300
-Message-Id: <20210910134757.2863982-17-tz.stoyanov@gmail.com>
+Subject: [PATCH 17/21] trace-cmd report: Do not print empty buffer name
+Date:   Fri, 10 Sep 2021 16:47:53 +0300
+Message-Id: <20210910134757.2863982-18-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210910134757.2863982-1-tz.stoyanov@gmail.com>
 References: <20210910134757.2863982-1-tz.stoyanov@gmail.com>
@@ -73,35 +73,27 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When "trace-cmd report" is interrupted with "ctrl-c", close the input
-handlers to opened trace files, to delete any temporary files used when
-reading the trace data. This clean up is needed for the design of the
-next version of the trace file.
+This clean up is needed for the design of the next version of the trace
+file, where the top buffer is saved with its empty file name, string "".
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-read.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ tracecmd/trace-read.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
-index 31724b09..4261088d 100644
+index 4261088d..02f75cb9 100644
 --- a/tracecmd/trace-read.c
 +++ b/tracecmd/trace-read.c
-@@ -1363,7 +1363,14 @@ struct tracecmd_input *read_trace_header(const char *file, int flags)
- 
- static void sig_end(int sig)
- {
-+	struct handle_list *handles;
-+
- 	fprintf(stderr, "trace-cmd: Received SIGINT\n");
-+
-+	list_for_each_entry(handles, &handle_list, list) {
-+		tracecmd_close(handles->handle);
-+	}
-+
- 	exit(0);
- }
- 
+@@ -1173,7 +1173,7 @@ static void print_handle_file(struct handle_list *handles)
+ 	/* Only print file names if more than one file is read */
+ 	if (!multi_inputs && !instances)
+ 		return;
+-	if (handles->file)
++	if (handles->file && *handles->file != '\0')
+ 		printf("%*s: ", max_file_size, handles->file);
+ 	else
+ 		printf("%*s  ", max_file_size, "");
 -- 
 2.31.1
 
