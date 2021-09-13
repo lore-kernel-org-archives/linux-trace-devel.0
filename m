@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86A16C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 585DAC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6C77C60555
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3F17460F0F
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240002AbhIMM3g (ORCPT
+        id S239963AbhIMM3h (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 13 Sep 2021 08:29:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46618 "EHLO
+        Mon, 13 Sep 2021 08:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240004AbhIMM3e (ORCPT
+        with ESMTP id S236796AbhIMM3g (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 13 Sep 2021 08:29:34 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B11CFC061762
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:28:18 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id w29so13642456wra.8
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:28:18 -0700 (PDT)
+        Mon, 13 Sep 2021 08:29:36 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92829C061574
+        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:28:20 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id v20-20020a1cf714000000b002e71f4d2026so5137051wmh.1
+        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:28:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=RL9NU2QU3eQCBHNiwR5XAbT/oZdzMq72Opi9smJDKmw=;
-        b=HZcYUjWjC1oF1IweZeAFzFbHBP+6UMX9Qk+L7N2buzTdazO+Sf0/QIuVWAEL8MUQJ8
-         9ykz5LOtrOoprOUUmikobi1rAAdN92WIfQ0GgPPsYQvsccNIs0LLMxHZSoMbBMr3aO3A
-         d64m3d0GuO0xr9XhuegEpzbLCy9ZrsrGr9KK5YievDrqt0ba+DMqEYK+3lu7TPAZa21d
-         hmUro3ipl4qhMDZwGeV1rGgAazuta0V5icdvNrbUThgyMFKnfRCA38S8ehhXatOevRQE
-         XMtKJ3Ii2VZiAEuDuJlixDJURM5F22BKdKFwBpDbjMMUyE/VKCs0ODf3yg0X/pvwaUCG
-         ssSQ==
+        bh=AA+PGUMl91DR7kV9NuJ9YoaOinBRBGDhoRdn94IqH5o=;
+        b=aCJE9HYHxqab9cjnWVGsCnQJE1Qe4YUgtnwPo++62fEvWanzvlutORwOc53mO2M25k
+         mMnkO26zyu9cR/R2Ginty0tO4EJm3AmCH1J6qBz2yNVGSIWjQ+xuZ5owPU2OW6D80eEN
+         0qsDjFmZmvBzY9GxEhBmut8er/2BjuCGPtJdMv67CnFDEv3w/GWpZiQNvhW4bZho2ooq
+         diJG9Z5BEx7xcTdMTsiKWIDmrrkNm624hO8xRuBCv/4l00n4ipqFr9X4K4zHyzBn1jps
+         TrbhMcSYWjr5bsRyBaX1nSMAXqH9wLpiVlDqztCXJ5rbhKMCvBmKYaHmc2IwxAzwuU4W
+         pKlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RL9NU2QU3eQCBHNiwR5XAbT/oZdzMq72Opi9smJDKmw=;
-        b=HCAWhANGnN10KOIW7kdD9jKcxjcsb6x1ecxrVmtvDTC1f2C/F0WCvPdnEwIhOkBThC
-         6f1o5WZX7vDfVDJPbx8jumwMy+/kd6Up73U+uZj7FVqY8MXiCRM8nUF+E5IHUWkOBL9o
-         p0rhhuOPfZGvFiClp19O1AK9mz9mG9Ke8vTmbKF5PXkmgrpBmCaxKfvS5MXXSkNQSMdw
-         zLnSFPEIU7x8K4bz1spNOC1A7E+TTyuSHwFI+DxkvnkDJ5CQhSi+YXw8JDbqXQC/lKvW
-         +2wHyvb1N6wUl0RsYOaTIsuIKI8RAqkpgqtjE6/GlL2kjhG9Ij61Df1DZ2D7miDjgvGa
-         yrkA==
-X-Gm-Message-State: AOAM532tsd80XSLnigfdfodlsnKISiZN7WJW1H2oKlKW+D6/Ly9L3h2u
-        NsbO5OW0pWXW2D2R5W/fIUgQSOTdu1c=
-X-Google-Smtp-Source: ABdhPJyt01J0M6dgheowZchimRyq3d7bwO8PPoCa8pXezhysrcZJ14Br5gZ9YvE3pfBSoJHN3OfiGw==
-X-Received: by 2002:adf:cc82:: with SMTP id p2mr12562438wrj.5.1631536097311;
-        Mon, 13 Sep 2021 05:28:17 -0700 (PDT)
+        bh=AA+PGUMl91DR7kV9NuJ9YoaOinBRBGDhoRdn94IqH5o=;
+        b=lIf3xiyXPpyM6uxJXbDOPw5gMoT1zGzAxnEJvltWCWwXR1X/jz80tjsEZIc8acLzam
+         oUp8T3u0f3zTyRDvM+uAbg+lBLX2MFHZlrkgnlU48j5H+k4zRfycg36V9Oy8xG9zDRJM
+         p6sVOeK9IomYSiPI3rH7quugbdSuWTedVzKDVg9mVWLqaQKcZfOyVXn5U85x29GwloLt
+         J5lFhzEXrQJwS6x0iju/A6VJ23Ct8klk+TFVOiUUTHNr8+0pvXVgA6jSozhnSwF5li+g
+         ycHlsWaQlim+RNgWFnTYreo/slKRljznjlR5mH9/yC39A1vrK2MLi7vnsz8tkNn8lzuZ
+         qbWA==
+X-Gm-Message-State: AOAM531juru9+IJNiEi7ab8jGGtSWbwQXYGcQAw0WMX0fd3mvumgwtle
+        kNQ9Cde1WyeQl+48CplQoaGSvKmZn8A=
+X-Google-Smtp-Source: ABdhPJwbkbXms5bs9xuSPGqg8kaNcpbcWwxUNhAykqNKx/Hb1tM5G1WTRds6fev/DId8XvA0pIqBLw==
+X-Received: by 2002:a05:600c:3585:: with SMTP id p5mr1159748wmq.110.1631536099221;
+        Mon, 13 Sep 2021 05:28:19 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id z6sm6839689wmp.1.2021.09.13.05.28.16
+        by smtp.gmail.com with ESMTPSA id z6sm6839689wmp.1.2021.09.13.05.28.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 05:28:16 -0700 (PDT)
+        Mon, 13 Sep 2021 05:28:18 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 16/21] trace-cmd report: Close input file handlers on exit
-Date:   Mon, 13 Sep 2021 15:27:54 +0300
-Message-Id: <20210913122759.3672494-17-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 18/21] trace-cmd library: Set correct CPU to the record, retrieved with tracecmd_peek_data
+Date:   Mon, 13 Sep 2021 15:27:56 +0300
+Message-Id: <20210913122759.3672494-19-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210913122759.3672494-1-tz.stoyanov@gmail.com>
 References: <20210913122759.3672494-1-tz.stoyanov@gmail.com>
@@ -73,35 +73,29 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When "trace-cmd report" is interrupted with "ctrl-c", close the input
-handlers to opened trace files, to delete any temporary files used when
-reading the trace data. This clean up is needed for the design of the
-next version of the trace file.
+This clean up is needed for the design of the next version of the trace
+file, where only CPUs with trace data are stored in the file - empty CPUs
+are omitted. Changed tracecmd_peek_data() to use the CPU id, instead of
+the CPU index.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-read.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ lib/trace-cmd/trace-input.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
-index 31724b09..4261088d 100644
---- a/tracecmd/trace-read.c
-+++ b/tracecmd/trace-read.c
-@@ -1363,7 +1363,14 @@ struct tracecmd_input *read_trace_header(const char *file, int flags)
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index dc82d3ea..de8e0d72 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -2019,7 +2019,7 @@ read_again:
  
- static void sig_end(int sig)
- {
-+	struct handle_list *handles;
-+
- 	fprintf(stderr, "trace-cmd: Received SIGINT\n");
-+
-+	list_for_each_entry(handles, &handle_list, list) {
-+		tracecmd_close(handles->handle);
-+	}
-+
- 	exit(0);
- }
- 
+ 	record->ts = handle->cpu_data[cpu].timestamp;
+ 	record->size = kbuffer_event_size(kbuf);
+-	record->cpu = cpu;
++	record->cpu = handle->cpu_data[cpu].cpu;
+ 	record->data = data;
+ 	record->offset = handle->cpu_data[cpu].offset + index;
+ 	record->missed_events = kbuffer_missed_events(kbuf);
 -- 
 2.31.1
 
