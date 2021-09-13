@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68F30C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ADC9C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4C57060F6D
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3A1D860555
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239963AbhIMM3W (ORCPT
+        id S239986AbhIMM3X (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 13 Sep 2021 08:29:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46546 "EHLO
+        Mon, 13 Sep 2021 08:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235143AbhIMM3V (ORCPT
+        with ESMTP id S235143AbhIMM3W (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 13 Sep 2021 08:29:21 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255CDC061574
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:28:06 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id b6so14387237wrh.10
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:28:06 -0700 (PDT)
+        Mon, 13 Sep 2021 08:29:22 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13413C061574
+        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:28:07 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id g16so14443419wrb.3
+        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:28:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=t6f35bOqeR513Bi7TdiB4HXAWp6UmqxXje43WtBoeKo=;
-        b=HQdR91nKg/cQGO+kCRG9gOXIpsM3UrdutBuPBrY4/HxfhwwwFoj9PJE6PboLt1lVML
-         fZyjxv4MGGGCJ1wxMUbkzb3Im7+mBvc+DZ2zs48t5QmDLw5HdO7G4idSfTuaR4K3vKRz
-         YZ3J07hMHcdyxnhy4LExv/HHYCYC/SdiRoHzDzJQxxi9M4tBDY2G1XTDOBSC47WnndLa
-         Yqe8QCmyJFu3JbElmKdeBeP5Ua1frqjDzK5P/nGKjl7rE02VWIdv+52z6OV7mbB69NAL
-         Ra1JiAaxyzutQeQUdi/LF+zE45xG0hcDK4O/wOAm5FutvD4kDqzMu3OMTssMyjD9scup
-         nTuQ==
+        bh=6uflLdcxtwKc9UdYaXGxzpx3D+nzjM4vg/8RpU5kByg=;
+        b=MTHmD4C2FchSecpCLQ4LJQiM+ZXNxh69iycoy9eEMfGAAP8b4MRYZuyAauc1YJNAtn
+         g0T5LUj2ycwAIxg1LF5d5vV5LF11mxZtfQkarqSR2SPz81YEP76/CPQwcBfVGjxSCRD3
+         V3DHQFT1FFzIkWwZc6gdhDk7ZT+g3WzK2sLOd+uvCKpPnI2pFX5t7KinTpswRfupua+T
+         JuKIWs4edTr0TY2WdfxnSeMULhh303+UP5FuoOZM20pLV7CsnhcK1nK80UZpi1GqLyqM
+         ar9jJrCZZFWTzIbOZdYTzy1Um9p0V1JLqhkSbSM0R6Ftt5NIm+HH94ltjfnm8JNJT4F8
+         RMNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=t6f35bOqeR513Bi7TdiB4HXAWp6UmqxXje43WtBoeKo=;
-        b=Bt5eLGNnn9msRpeBD0jYOJNKEA17kn+50eUdz1bcWpuYjYQDy8oB9L8IPbO2/aKgG9
-         d4cQP2+KXv95Wt3KL8BxNg491Lg7Ywiuwzv/qWTYYOcHh6cmXJdd/nL70lgjmmtzkiOg
-         ze52Gm9Ud7ngzvaOo3FJmdYwtuXLNVj7YuUw3X5hAQjY9HtZx1Ac1v6TEjYqCeU9bxoD
-         pZIw0JOBUm92u72WhjOZxhX9YDooZ+QJKhIA8d12xakP5O+DKGr6sl9NuvTKsF8pWrea
-         2ilbk1F2X8WCvnfbTjekqlttSNII9J2S28HBO00sZFQqZd3EYBtV3kgMqbTO4wC5ScoC
-         41qA==
-X-Gm-Message-State: AOAM530aKoBOcu8tCNa7KKSuoWa4sPpaoKz5B2S3cGK9kp5FqDgAVyz5
-        BPXQA0SWVzv5H2VwHbCljITLJkXn2e8=
-X-Google-Smtp-Source: ABdhPJxaRoHMprEexklbs1A9qMMGtORt3dk/x17HUXwI3Sna4v5xw5rJwdt6MGVfV3OCGuPV0O8a2A==
-X-Received: by 2002:a05:6000:124b:: with SMTP id j11mr12483136wrx.147.1631536084820;
-        Mon, 13 Sep 2021 05:28:04 -0700 (PDT)
+        bh=6uflLdcxtwKc9UdYaXGxzpx3D+nzjM4vg/8RpU5kByg=;
+        b=BAbm8m+W9AvEJWeh3bH6pErHuzWowRDxsFItFLCZ74tzG29RDfE3Ln/H/E6BWJOWjN
+         PRQ/mA14IEH8dDHvdFzF444nqqEXQb1D8wCf4RU+hOfOKyl1AMlLOWBAmdochfosmi3Z
+         aOQBglwI92sf3RIAtoiTonP4nRMe8Oolb+KdUNiX+nyurlV3hg7TB8feFpudA9eURzfh
+         LvJk8eHvI3PHpk/Mr2du+DMaQDfZUu+cApKMd/xrNSGTbMqAvTb2tUiVyih53S7dG4v9
+         yJMreWLart0DD3//STgTIVTdnHV96eIFx5UYUefgurCSKbFiiBAA37/kJaHSWaZ+2om5
+         XP5w==
+X-Gm-Message-State: AOAM532XmfHYuDu05xg0FwWOE9NOGAvDGtGR7Q8A7r0RqyKg51urBZSH
+        0X0J8mGMokqZtxJXghM80DCBS5t7q8g=
+X-Google-Smtp-Source: ABdhPJxtiOUFqup0iR2DWj7Z1/VtTZ+bTArsINyeYHgHOMO+2egFzPHz3OKy8taQyD9arUWCrAXgOA==
+X-Received: by 2002:adf:e10c:: with SMTP id t12mr12214685wrz.36.1631536085729;
+        Mon, 13 Sep 2021 05:28:05 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id z6sm6839689wmp.1.2021.09.13.05.28.03
+        by smtp.gmail.com with ESMTPSA id z6sm6839689wmp.1.2021.09.13.05.28.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 05:28:04 -0700 (PDT)
+        Mon, 13 Sep 2021 05:28:05 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 03/21] trace-cmd library: Fix version string memory leak
-Date:   Mon, 13 Sep 2021 15:27:41 +0300
-Message-Id: <20210913122759.3672494-4-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 04/21] trace-cmd library: Fixed a memory leak on input handler close
+Date:   Mon, 13 Sep 2021 15:27:42 +0300
+Message-Id: <20210913122759.3672494-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210913122759.3672494-1-tz.stoyanov@gmail.com>
 References: <20210913122759.3672494-1-tz.stoyanov@gmail.com>
@@ -73,34 +73,38 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The version string is allocated when a VERSION option is processed, but
-is never freed. Free it on input handler close.
+When an input handler to a trace file is closed with tracecmd_close(),
+the list with buffers is not freed. This leads to a memory leak. Added
+logic to free that list.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 2 ++
- 1 file changed, 2 insertions(+)
+ lib/trace-cmd/trace-input.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 0dbcdbdc..9253bc37 100644
+index 9253bc37..ffe87e8a 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -3518,6 +3518,7 @@ void tracecmd_close(struct tracecmd_input *handle)
- 	free(handle->cpu_data);
- 	free(handle->uname);
- 	free(handle->trace_clock);
-+	free(handle->version);
+@@ -3484,6 +3484,7 @@ void tracecmd_ref(struct tracecmd_input *handle)
+ void tracecmd_close(struct tracecmd_input *handle)
+ {
+ 	int cpu;
++	int i;
+ 
+ 	if (!handle)
+ 		return;
+@@ -3521,6 +3522,10 @@ void tracecmd_close(struct tracecmd_input *handle)
+ 	free(handle->version);
  	close(handle->fd);
  
++	for (i = 0; i < handle->nr_buffers; i++)
++		free(handle->buffers[i].name);
++	free(handle->buffers);
++
  	tracecmd_free_hooks(handle->hooks);
-@@ -3959,6 +3960,7 @@ tracecmd_buffer_instance_handle(struct tracecmd_input *handle, int indx)
- 	new_handle->cpu_data = NULL;
- 	new_handle->nr_buffers = 0;
- 	new_handle->buffers = NULL;
-+	new_handle->version = NULL;
- 	new_handle->ref = 1;
- 	if (handle->trace_clock) {
- 		new_handle->trace_clock = strdup(handle->trace_clock);
+ 	handle->hooks = NULL;
+ 
 -- 
 2.31.1
 
