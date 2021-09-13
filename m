@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3DDFC43217
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EED8FC433EF
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:42:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8EAFD60FC0
+	by mail.kernel.org (Postfix) with ESMTP id DCF7660FC0
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:42:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239946AbhIMMnb (ORCPT
+        id S239085AbhIMMnb (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Mon, 13 Sep 2021 08:43:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49802 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239085AbhIMMna (ORCPT
+        with ESMTP id S239116AbhIMMnb (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 13 Sep 2021 08:43:30 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62092C061574
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:42:14 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id w29so13708748wra.8
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:42:14 -0700 (PDT)
+        Mon, 13 Sep 2021 08:43:31 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544DEC061574
+        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:42:15 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id j17-20020a05600c1c1100b002e754875260so6503099wms.4
+        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:42:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+cl/O5tgZWtqAOva1SZj6PlCWSuAGY002QXYdogqg0g=;
-        b=beRZdmOXaKLnNxjeM9QBnyxytQFU1Ju6+d1SQvTSFiEVY6ZslYfkN0az1sZ/RozB/6
-         8RilO/+lMO3f8e8pgJgM+fGo/XKPPUUT/4Ch8xq4I0TgUTWQFgZxC8SFr5Dd+jSZSnjw
-         tOx+9kY8zGesyHWoDNlT28F6EamxcwqxSXIn90wHRBd00pABaAYBquZQlgM+jmcNUecm
-         L/O9h178t+uoEEi6mk5xxlhbP3LWWbRXv4YSocsoqWW/t1nEdrP4h/SgCLVAqKvNZS5V
-         PoUWw6dAeEuTA5FlR5Uziw5TyG7nln4UahMLj07T/WM66xwoT0bDvuT+MguiliD43S6t
-         jh4Q==
+        bh=e697NvpF9tuRuBTrXAkHfX8ZI1uKeZM8RJGq29d0nbI=;
+        b=YPdqO5ffR7RKOM2P9+5Zr/w5iwszy9+84EmYZwdQqfemD51VjpCRHBHEdGF1gy3E/V
+         vhgwZ3I30PBtwgpUXz3OBikPgs5uIrcvRNwwzunrJEMDwZel31C6TF1yUWgN3fjw+EKg
+         Yk/jWl+NdrhKURuklUfp8cjqvF1FgceRShHaMFEIrJgbKEu9IBREZZ/to+sqTD3hEku6
+         Z12C5e0B+alqBMpcxzouGWIiyOLpVjL6mg6iJKvR7sdg553Z9Qh4TwwO4DZBsDJgpYJ1
+         Qrr+qYXFg/tXkA/sqCMKYCgW0I1dSHVT4b+Lu7qMwtLg1eYHh8NwoT0/IQ3l9bFcgken
+         O+EA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+cl/O5tgZWtqAOva1SZj6PlCWSuAGY002QXYdogqg0g=;
-        b=a0Dgb4Q7oFjWfgSaoSZqulFObg+LlvJGi2BzzSlUHiuKzZbBY7x0CRrRfcIpj7kZcd
-         nSb1z3kwMjVdhr+GxbVBL4hAqvYdGBmgIluNyZ1E3DHg9svxP2blwHZnJP/dzroZXNGg
-         ON28n1aA2p34wUxnB+qL1ImSLE3+jepUOZs6jq6LNCMb40bY+G8o7egwk0D6bvGWhp6j
-         BXPxlFp5mu4pwzTZbTloZ3Xz49hBJGjWHVf95WskjqYCqvgZSai0h8HpGcNWvPGiYIpB
-         ifCKQUZHzdo8Y/mj+ygJh/WxIggiCfWqo0miviOCCWN8fKKks08vC56Is8JwcGUQNXDP
-         w0jA==
-X-Gm-Message-State: AOAM532XiIsBxV3GRl7od+BZcBFYps1DZQCpJMka+S7Zyn6STUc96nX8
-        OCBe4n6pQ8uWRoGIdM0CgAU=
-X-Google-Smtp-Source: ABdhPJx25mQtluW4SWcIlSui7QYc5NJY8p4eCgaGZEdnDtU+uKXJd7bUnuVkL/8Vs/1kVloZxDDkXQ==
-X-Received: by 2002:adf:e408:: with SMTP id g8mr12383698wrm.138.1631536933018;
+        bh=e697NvpF9tuRuBTrXAkHfX8ZI1uKeZM8RJGq29d0nbI=;
+        b=wM64OploBEyI1elYFoKz+P+5mkZUrY0oQTvZwjRB1GKTc/pNAofhstL3Z8tUDtzbQd
+         Ah6XHEDDBdWIj8SQgAksT2Uy4V10SycZTPyMx5K9ubErMlJoS4Yx+VzetiiHq8sBZiMV
+         E2Vb+rDPE/TI1+1hdn2vtjk5FLwspQKWzk/HW/SAPJjYI5f9fHWASu6FsoVsLpAEC4sZ
+         aabrAPw/SVoYd5UxrrOkqpsNORqPPeMs5OPa5oMsncByw68NTPY1KDImVSHqt7Va/jIN
+         IJnMFdnRrYF47e65JzO51yFb0JoGdWJXi9TimUw5O6+23P/rUnGrcP2GnNoYnUXNBguC
+         k3xg==
+X-Gm-Message-State: AOAM533nPOuHgCvb7etF5+B4FgfU0ACf+8JdSQ7+Tm90lAjgSLQqlKWx
+        s4JCtRH6G4IztSdKEJgvesVB1XZqfX8=
+X-Google-Smtp-Source: ABdhPJwxSI/zgwBC9Qpj5s9HSUtDpXzINDfCyb8PTZX66iBIJXKouoTvxo4Jit2wQg/29PTRiE+1tQ==
+X-Received: by 2002:a05:600c:4e86:: with SMTP id f6mr3993938wmq.52.1631536933973;
         Mon, 13 Sep 2021 05:42:13 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id u13sm7244290wrt.41.2021.09.13.05.42.12
+        by smtp.gmail.com with ESMTPSA id u13sm7244290wrt.41.2021.09.13.05.42.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 05:42:12 -0700 (PDT)
+        Mon, 13 Sep 2021 05:42:13 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 09/20] trace-cmd library: Compress the trace data
-Date:   Mon, 13 Sep 2021 15:41:52 +0300
-Message-Id: <20210913124203.3677760-10-tz.stoyanov@gmail.com>
+Subject: [PATCH 10/20] trace-cmd library: Decompress the options section, if it is compressed
+Date:   Mon, 13 Sep 2021 15:41:53 +0300
+Message-Id: <20210913124203.3677760-11-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210913124203.3677760-1-tz.stoyanov@gmail.com>
 References: <20210913124203.3677760-1-tz.stoyanov@gmail.com>
@@ -73,59 +73,117 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-If the output file handler supports compression, use it to compress the
-flyrecord and latency trace data.
+In trace file version 7, options section can be compressed. Extended
+the options handling decompression if needed .
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-output.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ lib/trace-cmd/trace-input.c | 41 ++++++++++++++++++++++++++-----------
+ 1 file changed, 29 insertions(+), 12 deletions(-)
 
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index c69d6d4f..89b502b4 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -2086,11 +2086,13 @@ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, in
- 	if (HAS_SECTIONS(handle) &&
- 	    !out_add_buffer_option_v7(handle, "", TRACECMD_OPTION_BUFFER_TEXT, offset, 0, NULL))
- 		goto out_free;
-+	if (handle->compress)
-+		flags |= TRACECMD_SEC_FL_COMPRESS;
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 2ea8f5a5..320561d0 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -3036,6 +3036,7 @@ static int handle_options(struct tracecmd_input *handle)
+ 	unsigned short id, flags;
+ 	char *cpustats = NULL;
+ 	struct hook_list *hook;
++	bool compress = false;
+ 	char *buf;
+ 	int cpus;
+ 	int ret;
+@@ -3047,23 +3048,32 @@ static int handle_options(struct tracecmd_input *handle)
+ 			return -1;
+ 		if (id != TRACECMD_OPTION_DONE)
+ 			return -1;
++		if (flags & TRACECMD_SEC_FL_COMPRESS)
++			compress = true;
+ 	}
  
- 	offset = out_write_section_header(handle, TRACECMD_OPTION_BUFFER_TEXT,
- 					  "buffer latency", flags, false);
++	if (compress && in_uncompress_block(handle))
++		return -1;
+ 	for (;;) {
+-		if (read2(handle, &option))
+-			return -1;
++		ret = read2(handle, &option);
++		if (ret)
++			goto out;
  
--	copy_file(handle, path);
-+	copy_file_compress(handle, path, NULL);
- 	if (out_update_section_header(handle, offset))
- 		goto out_free;
+ 		if (!HAS_SECTIONS(handle) && option == TRACECMD_OPTION_DONE)
+ 			break;
  
-@@ -2191,6 +2193,8 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
- 	if (!HAS_SECTIONS(handle) && do_write_check(handle, "flyrecord", 10))
- 		goto out_free;
+ 		/* next 4 bytes is the size of the option */
+-		if (read4(handle, &size))
+-			return -1;
++		ret = read4(handle, &size);
++		if (ret)
++			goto out;
+ 		buf = malloc(size);
+-		if (!buf)
+-			return -ENOMEM;
+-		if (do_read_check(handle, buf, size))
+-			return -1;
++		if (!buf) {
++			ret = -ENOMEM;
++			goto out;
++		}
++		ret = do_read_check(handle, buf, size);
++		if (ret)
++			goto out;
  
-+	if (handle->compress)
-+		flags |= TRACECMD_SEC_FL_COMPRESS;
- 	if (asprintf(&str, "buffer flyrecord %s", buff_name) < 1)
- 		goto out_free;
- 	offset = out_write_section_header(handle, TRACECMD_OPTION_BUFFER, str, flags, false);
-@@ -2236,14 +2240,14 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
- 		if (lseek64(data[i].fd, data[i].offset, SEEK_SET) == (off64_t)-1)
- 			goto out_free;
- 		if (data[i].size) {
--			read_size = copy_file_fd(handle, data[i].fd, data[i].size);
-+			read_size = out_copy_fd_compress(handle, data[i].fd,
-+							 data[i].size, &data_files[i].write_size);
- 			if (read_size != data_files[i].file_size) {
- 				errno = EINVAL;
- 				tracecmd_warning("did not match size of %lld to %lld",
- 						 read_size, data_files[i].file_size);
- 				goto out_free;
+ 		switch (option) {
+ 		case TRACECMD_OPTION_DATE:
+@@ -3113,7 +3123,7 @@ static int handle_options(struct tracecmd_input *handle)
+ 							     buf + 8, 4);
+ 			ret = tsync_cpu_offsets_load(handle, buf + 12, size - 12);
+ 			if (ret < 0)
+-				return ret;
++				goto out;
+ 			tracecmd_enable_tsync(handle, true);
+ 			break;
+ 		case TRACECMD_OPTION_CPUSTAT:
+@@ -3122,7 +3132,7 @@ static int handle_options(struct tracecmd_input *handle)
+ 					   handle->cpustats_size + size + 1);
+ 			if (!cpustats) {
+ 				ret = -ENOMEM;
+-				return ret;
++				goto out;
  			}
--			data_files[i].write_size = read_size;
- 		} else {
- 			data_files[i].write_size = 0;
- 		}
+ 			memcpy(cpustats + handle->cpustats_size, buf, size);
+ 			handle->cpustats_size += size;
+@@ -3133,7 +3143,7 @@ static int handle_options(struct tracecmd_input *handle)
+ 		case TRACECMD_OPTION_BUFFER_TEXT:
+ 			ret = handle_buffer_option(handle, option, buf, size);
+ 			if (ret < 0)
+-				return ret;
++				goto out;
+ 			break;
+ 		case TRACECMD_OPTION_TRACECLOCK:
+ 			if (!handle->ts2secs)
+@@ -3191,6 +3201,8 @@ static int handle_options(struct tracecmd_input *handle)
+ 					      tep_read_number(handle->pevent, buf, 8), 0);
+ 			break;
+ 		case TRACECMD_OPTION_DONE:
++			if (compress)
++				in_uncompress_reset(handle);
+ 			ret = handle_option_done(handle, buf, size);
+ 			free(buf);
+ 			return ret;
+@@ -3203,7 +3215,12 @@ static int handle_options(struct tracecmd_input *handle)
+ 
+ 	}
+ 
+-	return 0;
++	ret = 0;
++
++out:
++	if (compress)
++		in_uncompress_reset(handle);
++	return ret;
+ }
+ 
+ static int read_options_type(struct tracecmd_input *handle)
 -- 
 2.31.1
 
