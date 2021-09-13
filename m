@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6647C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:30:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D7C6C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:30:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D13AB60FDA
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:30:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2829260FC0
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:30:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240009AbhIMMb2 (ORCPT
+        id S239963AbhIMMbb (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 13 Sep 2021 08:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47084 "EHLO
+        Mon, 13 Sep 2021 08:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240000AbhIMMb2 (ORCPT
+        with ESMTP id S240000AbhIMMba (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 13 Sep 2021 08:31:28 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972CEC061574
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:30:12 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id j17-20020a05600c1c1100b002e754875260so6474397wms.4
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:30:12 -0700 (PDT)
+        Mon, 13 Sep 2021 08:31:30 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E1AAC061574
+        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:30:14 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id m9so14446080wrb.1
+        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:30:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1E5wKgsEJ4be0W+zzNbr3DwRHrau1BT5rA0OWAEmn9Q=;
-        b=i/TtXMzwTC0ZZ9qpGtZnfPKkMR7NJlumXwBGPhY6KbguNf1yC8VHNqTbirOD/HB1/x
-         KAANuLo+1XUVtSn7XNpru0apJs1Ufl+uw56VpjJYYw2AnAufMI3rDGGsNuP2mTX4Th/a
-         U1LMRKpuCtPccdUTtsmYWu16qNi1gdKMnaZ+WMSAcHKx1kPi6Ct302zQiEKELfshfifV
-         1XI7Dogx0vehKJ+3ZpLBLUz5PYnNJEdZTzfrdpaVTju0ZJO37ooYObWYF8V4YD5V0XSU
-         Kx8984lSuDavzyz/mGYaCrqjFgU0vCEnuino8XcaN24dWcDapKT3Pm0aMUHQBkOMuAdC
-         x5Bw==
+        bh=03pkaD3PStP0fZOQqnALHuGm44wpLKhfVZ0L3E+wbpo=;
+        b=dQ5q2pVM806q1OiqahEPNRqY6UHMtbuskAHO+H5ssr+N3ocVrn+pb4bFrosz5fxzTy
+         mcpqFLp/93wm33nWIgr6Q566Ibh2C8mq69PRjHD9Ov36s9i2KplyVrDK6Wil5pV4cy1V
+         GTyCEv1Rb7nGJmsM6vD9DesbtWmNbut3H7NBKSXM5/ftozmihFf45XHcDyPcZZ4smP0u
+         HsfQEgO2+zAk2avaSMAVtHE7NVkdQbKkREOHzyNmDdj6GfZxoNcmXyaH4k5/B7HRKxa9
+         k58cQ/KLl7sywyt/lq+H4/tRCZcervN5ysYZl86ktUGCgUJioZ8P7WsDVhA9tWQGrfyb
+         vFHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1E5wKgsEJ4be0W+zzNbr3DwRHrau1BT5rA0OWAEmn9Q=;
-        b=O5IID2LMQbTAd5qlyuN95yuQJMl3pRw0RUoNGl8mn72j4BNCNhYpVOSl21wbfvdvRP
-         7J0UZNgUXBM77pS4uqsWDtyztsb7g9PXLZw6NPeSMtLhJA+/tmG9Be1UPLfz6akF1vYf
-         yqVn3aX7wT41UJAJjK6uX2csHuU4uF8asezvBAqY0ugDCrNHSH7V0qbLe8DFEZEuPoLA
-         gwoJfN6sOCH+4PNBmtLEEeO/VNciHTPf5U3OwY3gkoJn2FWwL80rE2TxpqNT+JvPfCGf
-         aKem705WL+BC3Y4TksGqW04QYDyGzI5sNb5smSQXmydr117KKnU8fHcocdy4RRXlw2jn
-         3o4Q==
-X-Gm-Message-State: AOAM531TqbpzirhOkL75emUK8tqoaNxwCwMp1FrIKC8PRpte6eNqoLr4
-        FN5vkQ/f/Mbvx4hzuFKWS6JKFFMnm84=
-X-Google-Smtp-Source: ABdhPJzENpGZyXJ7d2Gu/naJlvz9k1BmjM+Tq3pTa6ptLTBsfNBZyBDEedTBn5uU/wC+34J71A7xLw==
-X-Received: by 2002:a7b:cf09:: with SMTP id l9mr10849075wmg.115.1631536211201;
-        Mon, 13 Sep 2021 05:30:11 -0700 (PDT)
+        bh=03pkaD3PStP0fZOQqnALHuGm44wpLKhfVZ0L3E+wbpo=;
+        b=dnf0OfiyEXVfXjCreowhUxvoYLxxXehs33huoADiJSkt2xiWmE79pI0J8RC0r3WDAB
+         ofyeZd5E+UbBFTSSF3zjTEM4/IQUGKgb6QOii/fxIuEgHtEQNs6JXaGAkg0EiNVqlxqv
+         E2VcQ7OjhHTlYOKEH22Ez8PQbiTRbo4WRWC78gHCI/PTWGNwEBnJ7OZT+9E+m7cDlky3
+         0jYuKeWcCLbIDMoi7Lv1LCZ5Gr+HPMnLRs00Czi7YHz/4/YiBC58uQxXG5SFkwcIW+jr
+         UcbT2VKXbW4wxwrxPMINQujRdh65zYHuW40fuPMWVUsAkDJSURNUb7pY7zBXGSXHw9j9
+         CzUw==
+X-Gm-Message-State: AOAM5326v0n6hnUtk/Av8EPIeDa62UKN5pyD6gvAvGdTcoo14u9JNtpL
+        Z2PQYB6xJRVhpVJAmXAh8mYZ4qzUPW0=
+X-Google-Smtp-Source: ABdhPJwdLhlCTTj2251Baohp3FYfgZEFSBGVbFfOVqYdElKwT65MsAKjrksGTuk6xJ+fkfaDAmrzyQ==
+X-Received: by 2002:a05:6000:1809:: with SMTP id m9mr10979170wrh.396.1631536212940;
+        Mon, 13 Sep 2021 05:30:12 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id z5sm6842030wmf.33.2021.09.13.05.30.10
+        by smtp.gmail.com with ESMTPSA id z5sm6842030wmf.33.2021.09.13.05.30.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 05:30:10 -0700 (PDT)
+        Mon, 13 Sep 2021 05:30:12 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 22/25] trace-cmd library: Handle buffer trace data init for version 7 files
-Date:   Mon, 13 Sep 2021 15:29:44 +0300
-Message-Id: <20210913122947.3673239-23-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 24/25] trace-cmd: Call additional APIs when creating trace file
+Date:   Mon, 13 Sep 2021 15:29:46 +0300
+Message-Id: <20210913122947.3673239-25-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210913122947.3673239-1-tz.stoyanov@gmail.com>
 References: <20210913122947.3673239-1-tz.stoyanov@gmail.com>
@@ -73,83 +73,95 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-CPU data initialization is different for trace files version 6 and 7.
-When a new input handler to trace buffer is created, initialize the CPU
-data according to the file version.
+When creating a trace file, two more APIs should be called, compared to
+the old flow:
+ - tracecmd_write_buffer_info(), to write version 6 buffers metadata in
+   the file.
+ - tracecmd_write_options() after the trace data is written, for version
+   7 trace files, as the buffer metadata is appended to the options at
+   the end.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 55 +++++++++++++++++++------------------
- 1 file changed, 29 insertions(+), 26 deletions(-)
+ tracecmd/trace-listen.c  | 6 ++++++
+ tracecmd/trace-record.c  | 4 ++++
+ tracecmd/trace-restore.c | 3 ++-
+ tracecmd/trace-split.c   | 3 +++
+ 4 files changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 77e2a53e..b7d78a3a 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -4479,34 +4479,37 @@ tracecmd_buffer_instance_handle(struct tracecmd_input *handle, int indx)
- 	new_handle->flags |= TRACECMD_FL_BUFFER_INSTANCE;
+diff --git a/tracecmd/trace-listen.c b/tracecmd/trace-listen.c
+index d812145b..fa04c6da 100644
+--- a/tracecmd/trace-listen.c
++++ b/tracecmd/trace-listen.c
+@@ -604,6 +604,9 @@ static int put_together_file(int cpus, int ofd, const char *node,
  
- 	new_handle->pid_maps = NULL;
-+	if (!HAS_SECTIONS(handle)) {
-+		/* Save where we currently are */
-+		offset = lseek64(handle->fd, 0, SEEK_CUR);
- 
--	/* Save where we currently are */
--	offset = lseek64(handle->fd, 0, SEEK_CUR);
--
--	ret = lseek64(handle->fd, buffer->offset, SEEK_SET);
--	if (ret < 0) {
--		tracecmd_warning("could not seek to buffer %s offset %ld\n",
--				  buffer->name, buffer->offset);
--		goto error;
--	}
--
--	/*
--	 * read_options_type() is called right after the CPU count so update
--	 * file state accordingly.
--	 */
--	new_handle->file_state = TRACECMD_FILE_CPU_COUNT;
--	ret = read_options_type(new_handle);
--	if (!ret)
--		ret = read_cpu_data(new_handle);
--	if (ret < 0) {
--		tracecmd_warning("failed to read sub buffer %s\n", buffer->name);
--		goto error;
--	}
-+		ret = lseek64(handle->fd, buffer->offset, SEEK_SET);
-+		if (ret == (off64_t)-1) {
-+			tracecmd_warning("could not seek to buffer %s offset %ld\n",
-+					  buffer->name, buffer->offset);
-+			goto error;
-+		}
-+		/*
-+		 * read_options_type() is called right after the CPU count so update
-+		 * file state accordingly.
-+		 */
-+		new_handle->file_state = TRACECMD_FILE_CPU_COUNT;
-+		ret = read_options_type(new_handle);
-+		if (!ret)
-+			ret = read_cpu_data(new_handle);
- 
--	ret = lseek64(handle->fd, offset, SEEK_SET);
--	if (ret < 0) {
--		tracecmd_warning("could not seek to back to offset %ld\n", offset);
--		goto error;
-+		if (ret < 0) {
-+			tracecmd_warning("failed to read sub buffer %s\n", buffer->name);
-+			goto error;
-+		}
-+		ret = lseek64(handle->fd, offset, SEEK_SET);
-+		if (ret < 0) {
-+			tracecmd_warning("could not seek to back to offset %ld\n", offset);
-+			goto error;
-+		}
-+	} else {
-+		if (init_buffer_cpu_data(new_handle, buffer) < 0)
-+			goto error;
+ 	if (write_options) {
+ 		ret = tracecmd_write_cpus(handle, cpus);
++		if (ret)
++			goto out;
++		ret = tracecmd_write_buffer_info(handle);
+ 		if (ret)
+ 			goto out;
+ 		ret = tracecmd_write_options(handle);
+@@ -612,6 +615,9 @@ static int put_together_file(int cpus, int ofd, const char *node,
  	}
+ 	ret = tracecmd_write_cpu_data(handle, cpus, temp_files, "");
  
- 	return new_handle;
++	if (!ret && tracecmd_get_out_file_version(handle) >= FILE_VERSION_SECTIONS)
++		tracecmd_write_options(handle);
++
+ out:
+ 	tracecmd_output_close(handle);
+ 	for (cpu--; cpu >= 0; cpu--) {
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index af7f332c..f94eee6f 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -3729,6 +3729,9 @@ setup_connection(struct buffer_instance *instance, struct common_record_context
+ 		if (ret)
+ 			goto error;
+ 		ret = tracecmd_write_cpus(network_handle, instance->cpu_count);
++		if (ret)
++			goto error;
++		ret = tracecmd_write_buffer_info(network_handle);
+ 		if (ret)
+ 			goto error;
+ 		ret = tracecmd_write_options(network_handle);
+@@ -4092,6 +4095,7 @@ static void setup_agent(struct buffer_instance *instance,
+ 	add_options(network_handle, ctx);
+ 	tracecmd_write_cmdlines(network_handle);
+ 	tracecmd_write_cpus(network_handle, instance->cpu_count);
++	tracecmd_write_buffer_info(network_handle);
+ 	tracecmd_write_options(network_handle);
+ 	tracecmd_msg_finish_sending_data(instance->msg_handle);
+ 	instance->network_handle = network_handle;
+diff --git a/tracecmd/trace-restore.c b/tracecmd/trace-restore.c
+index 8d2fcae8..a903c21a 100644
+--- a/tracecmd/trace-restore.c
++++ b/tracecmd/trace-restore.c
+@@ -163,6 +163,7 @@ void trace_restore (int argc, char **argv)
+ 
+ 	if (tracecmd_append_cpu_data(handle, args, &argv[first_arg]) < 0)
+ 		die("failed to append data");
+-
++	if (tracecmd_get_out_file_version(handle) >= FILE_VERSION_SECTIONS)
++		tracecmd_write_options(handle);
+ 	return;
+ }
+diff --git a/tracecmd/trace-split.c b/tracecmd/trace-split.c
+index e4a0c3b3..671d6e9f 100644
+--- a/tracecmd/trace-split.c
++++ b/tracecmd/trace-split.c
+@@ -391,6 +391,9 @@ static double parse_file(struct tracecmd_input *handle,
+ 	if (tracecmd_append_cpu_data(ohandle, cpus, cpu_list) < 0)
+ 		die("Failed to append tracing data\n");
+ 
++	if (tracecmd_get_out_file_version(ohandle) >= FILE_VERSION_SECTIONS)
++		tracecmd_write_options(ohandle);
++
+ 	current = end;
+ 	for (cpu = 0; cpu < cpus; cpu++) {
+ 		/* Set the tracecmd cursor to the next set of records */
 -- 
 2.31.1
 
