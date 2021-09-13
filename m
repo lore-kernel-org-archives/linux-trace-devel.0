@@ -2,202 +2,69 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 214EDC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 15:11:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C068C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 17:56:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 070FC61004
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 15:11:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EFA4E610CC
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 17:56:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346480AbhIMPMP (ORCPT
+        id S237247AbhIMR55 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 13 Sep 2021 11:12:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343899AbhIMPMI (ORCPT
+        Mon, 13 Sep 2021 13:57:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48542 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239619AbhIMR54 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 13 Sep 2021 11:12:08 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6342C0ABEF5
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 06:56:55 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id j13so14502922edv.13
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 06:56:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YRzysAb4w4mi8tI0EC4PFcNsiKhgEROsrrUxg9MPBDw=;
-        b=etzU1zppHDGDVSzsW5FlrkTC6oEiYc4kKHIKzW2kzgKvkjjtZlqCg3fQfgpjAhpv8A
-         Ecm72ue72/hZfs1aMZIOzaA6gzZo7cbVZxiJbWoqvq7B7qZcBaJCToCpxtR7HweZI16f
-         IvxMgqYFdLJTPb5lx7E01/2BFDNf5XEGpJ3Rz4sSIypg46RDW8Y3jSyJlp+0EA64M5yl
-         vBA3iuN+vxLc06n4ZxiZXkBDHdbbBqGSjM9ClvjQY/1Bpph2Dsd+PPD2VjPUKXgwO6Kd
-         kevNVEutm5Kpm9uROh7H7JH4pjMEJVUvNlpY7RXHAsiDPPNaO73kw6xzfiig15UOPjnT
-         V5eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YRzysAb4w4mi8tI0EC4PFcNsiKhgEROsrrUxg9MPBDw=;
-        b=tt5aIbUxu+DX+bsMOLEFWFvziRL9j8Js/II59pt1w5FAHb5ttb7RwF0GwwsFtTk31v
-         7Zp8PXdk+JsCohC0ceIGbB4Ikrd0vyyayAYoe+PTzmy57w1bzrKX9nJrNKPHUM1U1Xjp
-         BGHBaESL0qu34efeJO4RBBudf4+DERiI3lpAx+sXwMqmjgTt/LInXFNYKbv1EpR7V/km
-         j0yu1PFKEeHDiMVROlrK5z6s9oxPduTgk2EMyXZquyprv6CbjRqc8ZwKlvDP1orJaGvb
-         zVSpAlHfUsoFrGuy8QibDURYvSNH/o8qiHrv4VjSjv6+0foMuV8MkvXJ+UlON7wh7PQ2
-         3HaQ==
-X-Gm-Message-State: AOAM532d9GYmQQYunwzQBXUHoTm3otLFGupEiDjV3B7NdLdYDtOFEHQb
-        kK0N+wH8UkifI5KYd/6dAXbYCr9TdDw=
-X-Google-Smtp-Source: ABdhPJwVIw0VDEekBsM7/t/3KYVMWWzbcu4Hce0AmhMxWL1TVJjjbE+DzSzzoZuUGlq6Tj17kCiVkQ==
-X-Received: by 2002:a05:6402:3c2:: with SMTP id t2mr4686421edw.261.1631541414155;
-        Mon, 13 Sep 2021 06:56:54 -0700 (PDT)
-Received: from crow.. ([95.87.199.108])
-        by smtp.gmail.com with ESMTPSA id e28sm3934160edc.93.2021.09.13.06.56.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 06:56:53 -0700 (PDT)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 2/2] trace-cruncher: Provide short kprobe info print
-Date:   Mon, 13 Sep 2021 16:56:38 +0300
-Message-Id: <20210913135638.395855-2-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210913135638.395855-1-y.karadz@gmail.com>
-References: <20210913135638.395855-1-y.karadz@gmail.com>
+        Mon, 13 Sep 2021 13:57:56 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7FA4B60EE3;
+        Mon, 13 Sep 2021 17:56:40 +0000 (UTC)
+Date:   Mon, 13 Sep 2021 13:56:33 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Yordan Karadzhov <y.karadz@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/4] libtracefs: Transform
+ tracefs_hist_add_sort_key()
+Message-ID: <20210913135633.075dfe75@oasis.local.home>
+In-Reply-To: <7ae3ea27-082c-c5d8-c13b-e1da96d348aa@gmail.com>
+References: <20210910163857.324696-1-y.karadz@gmail.com>
+        <20210910163857.324696-3-y.karadz@gmail.com>
+        <20210910160101.2ef82513@gandalf.local.home>
+        <7ae3ea27-082c-c5d8-c13b-e1da96d348aa@gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The default event handler for parsing ("info print") includes
-the address of the probe. This address can be valuable for kernel
-developers, but is meaningless if you only care for userspace.
-Here we add a method that allows the user to register an alternative
-event handler that doesn't show the address.
+On Mon, 13 Sep 2021 15:26:51 +0300
+Yordan Karadzhov <y.karadz@gmail.com> wrote:
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- examples/kprobe_open.py   |  1 +
- src/ftracepy-utils.c      | 38 ++++++++++++++++++++++++++++++++++++++
- src/ftracepy-utils.h      |  3 +++
- src/ftracepy.c            |  5 +++++
- tracecruncher/ft_utils.py |  8 ++++++++
- 5 files changed, 55 insertions(+)
+> > How about if we call this:
+> > 
+> > 	tracefs_hist_replace_sort_keys()
+> > 
+> > I think that would be a more intuitive name.  
+> 
+> The user may call this function with a histogram that has no sort keys added.
+> So there will be nothing to replace.
+> What about naming it 'tracefs_hist_set_sort_keys()'?
 
-diff --git a/examples/kprobe_open.py b/examples/kprobe_open.py
-index 99f6c8c..dff4861 100755
---- a/examples/kprobe_open.py
-+++ b/examples/kprobe_open.py
-@@ -27,6 +27,7 @@ open_probe.add_ptr_arg(name='mode',
- open_probe.register()
- 
- tep = tc.local_tep()
-+tc.short_kprobe_print(tep, [open_probe])
- 
- def callback(event, record):
-     print(tep.info(event, record))
-diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
-index c076d3b..bddc4fc 100644
---- a/src/ftracepy-utils.c
-+++ b/src/ftracepy-utils.c
-@@ -533,6 +533,44 @@ PyObject *PyTep_process(PyTep *self, PyObject *args,
- 	return PyUnicode_FromString(seq.buffer);
- }
- 
-+static int kprobe_info_short(struct trace_seq *s,
-+			     struct tep_record *record,
-+			     struct tep_event *event,
-+			     void *context)
-+{
-+	/* Do not print the address of the probe (first field). */
-+	unsigned long long select_mask = ~0x1;
-+
-+	tep_record_print_selected_fields(s, record, event, select_mask);
-+
-+	return 0;
-+}
-+
-+PyObject *PyTep_short_kprobe_print(PyTep *self, PyObject *args,
-+						PyObject *kwargs)
-+{
-+	static char *kwlist[] = {"system", "event", "id", NULL};
-+	const char *system, *event;
-+	int ret, id = -1;
-+
-+	system = event = NO_ARG;
-+
-+	if(!PyArg_ParseTupleAndKeywords(args,
-+					kwargs,
-+					"ss|i",
-+					kwlist,
-+					&system,
-+					&event,
-+					&id)) {
-+		return false;
-+	}
-+
-+	ret = tep_register_event_handler(self->ptrObj, id, system, event,
-+					 kprobe_info_short, NULL);
-+
-+	return PyLong_FromLong(ret);
-+}
-+
- static bool check_file(struct tracefs_instance *instance, const char *file)
- {
- 	if (!tracefs_file_exists(instance, file)) {
-diff --git a/src/ftracepy-utils.h b/src/ftracepy-utils.h
-index 6c4a109..9f4c4ba 100644
---- a/src/ftracepy-utils.h
-+++ b/src/ftracepy-utils.h
-@@ -63,6 +63,9 @@ PyObject *PyTep_info(PyTep *self, PyObject *args,
- PyObject *PyTep_process(PyTep *self, PyObject *args,
- 				     PyObject *kwargs);
- 
-+PyObject *PyTep_short_kprobe_print(PyTep *self, PyObject *args,
-+						PyObject *kwargs);
-+
- PyObject *PyTfsInstance_dir(PyTfsInstance *self);
- 
- PyObject *PyKprobe_event(PyKprobe *self);
-diff --git a/src/ftracepy.c b/src/ftracepy.c
-index c4458f0..cbf0ce0 100644
---- a/src/ftracepy.c
-+++ b/src/ftracepy.c
-@@ -83,6 +83,11 @@ static PyMethodDef PyTep_methods[] = {
- 	 METH_VARARGS | METH_KEYWORDS,
- 	 "Generic print of a trace event info."
- 	},
-+	{"short_kprobe_print",
-+	 (PyCFunction) PyTep_short_kprobe_print,
-+	 METH_VARARGS | METH_KEYWORDS,
-+	 "Do not print the address of the probe."
-+	},
- 	{NULL}
- };
- 
-diff --git a/tracecruncher/ft_utils.py b/tracecruncher/ft_utils.py
-index 5caaa76..1fc0648 100644
---- a/tracecruncher/ft_utils.py
-+++ b/tracecruncher/ft_utils.py
-@@ -29,6 +29,14 @@ def find_event_id(system, event):
-     return tep.get_event(system=system, name=event).id()
- 
- 
-+def short_kprobe_print(tep, events):
-+    """ Register short (no probe address) print for these kprobe events.
-+    """
-+    for e in events:
-+        if len(e.fields):
-+            tep.short_kprobe_print(id=e.evt_id, system=e.system, event=e.name)
-+
-+
- class event:
-     def __init__(self, system, name, static=True):
-         """ Constructor.
--- 
-2.30.2
+Nothing is something to replace?
 
+Or we remove this completely, and have a:
+
+ tracefs_hist_reset_sort_keys()
+
+Which removes all sort keys, and let you to start with a clean plate.
+Thus, the above would really just be "reset" followed by "add".
+
+-- Steve
