@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A78FDC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2788FC4332F
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8ED6860F6C
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0F65760F6D
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240001AbhIMM3a (ORCPT
+        id S239998AbhIMM3b (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 13 Sep 2021 08:29:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46590 "EHLO
+        Mon, 13 Sep 2021 08:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239998AbhIMM33 (ORCPT
+        with ESMTP id S240002AbhIMM3a (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 13 Sep 2021 08:29:29 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14BAC061574
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:28:13 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id g16so14443924wrb.3
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:28:13 -0700 (PDT)
+        Mon, 13 Sep 2021 08:29:30 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6627C061574
+        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:28:14 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id u19-20020a7bc053000000b002f8d045b2caso6474895wmc.1
+        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:28:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hIaSg/ThuS+rjVyXJEp0CTM6VFI1pB32pj1o7a+D8Jo=;
-        b=CkMNXvOSbnvdxkwvcDpv+nBGOMoIclm2BUAkuWaNmTkgRIjl55YydJ/q5eF+WIJffC
-         CBQ8qU7KoxV9IDzqL5oqAAlzTfyvQMAchWRpQLaKNLdEPq3rzh4NeSUVCYKYrs8byUMi
-         5FTV5baNsXLIipXRM/BUfdMyqfhYp7a0F+fVJPti7HvnXY44uZVqbzOCjbvRPdbtKihx
-         8rBKTMcMRp+80ZkyWh1sw4ZophfkUmqt077SmylLOeIzFkH7Vv/xxy8ac49vhJWNAck0
-         oQ/slZpzIWexoqETKFztEo7UyotpySVrJXdhImphvk/NpHvuVNffCThEb+glczuL7s62
-         Xp4w==
+        bh=WIhyREvMq7bERJU6rUAI/8YHOuVEpU7iUhUrHTuHcqg=;
+        b=beCExSmvZqiUyFdodSTeB1Hqy5cVSJAzQV/lAoxGcdq3GK8n9scu3cz77M+9NMpYGg
+         qBssfrMHQE8VYiMZLrjvAWSZNcd57jloGNcuOJV5QOnEorSHn4aC7xoQSuXGhzSRGo3Z
+         2bbAXrgduGJ5m7DCnoxP7ZBRY5dxzFVArueRZEFZrzx7qM6cesqxh3rYBsKf4Ohv6j8u
+         gmhjxy5Ib3egaPzctS87kLg3Gv0hM19a6FpI+vf6JrD4vrtTflk6l8GaFcy165qQAtAU
+         3ht0EwzpjmB4je9+IG3URqBx3jCtl01pJ2z0KtzO+mch/PPdfM4RvviOtGluK0XrOd1E
+         tZQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hIaSg/ThuS+rjVyXJEp0CTM6VFI1pB32pj1o7a+D8Jo=;
-        b=p2AxHu7tMm43BP8g3QuNHErSzMT8k2iN2bL1CLq4QGeFHWBgzSoUpcNxz1Pq2dpHdq
-         MleUi7+dFYeZmBvJZ6+WLJXPxTqpfHx/c/OHHReH4SA3B8GNJIpa0gE2k/VC+c6XiSMt
-         FlJJf0QWR6yaaMD5FeeICS/OkMiIlrfIgezi/Ye6253v3AZ9ovilPO65HHFPFVbvCzJL
-         IBw9T4f6VTGJjJRv3l3EtM/W1i5bIdr+CuKVE7awsdVRt4mb7ugd4C1T+0ray1bQ9Q2l
-         ORYo+FDpdYenf5HrRm1lV9/RsDgHB0RR8RwIE6O6pbZUk1mZmaO0HP/FP04HScXYDkkG
-         Rc9g==
-X-Gm-Message-State: AOAM532mJVHQQyFJvNYEb83XDLTUuyVFM43QxLfuIux93Wc37lJ/A9R0
-        bn36iyYjcM2LPRqc+9oS270JaNeIXQw=
-X-Google-Smtp-Source: ABdhPJyYNSCg47Da6MUvrvWGm9un0FRVioyX90S4jIYBGhUNsqj2Te5kY9f03W9t832doRatEwT2ug==
-X-Received: by 2002:a5d:608e:: with SMTP id w14mr12330396wrt.18.1631536092517;
-        Mon, 13 Sep 2021 05:28:12 -0700 (PDT)
+        bh=WIhyREvMq7bERJU6rUAI/8YHOuVEpU7iUhUrHTuHcqg=;
+        b=euytKNUFxNti/05eRw5ZqV1AKKOpSiONK8hd/vZFC4+B89qyGEsLR+SdHvWFwJ6iCS
+         VJeUlfxty681C0lh0ZzOCo/OqB6jaECWIEShOGdgWv0HhGz8dAXeTompTbu/lNHovZGV
+         wKUu9LIyp64WE/Rnpo8sK9f91yxwksm9IsbBn1DA9yBk4WD8lQ1qqR+idcKTV3Jq0uiL
+         bLPrV6BHBS30Q8vED+jF8NlSJ7D8D17bq/uOCfvVEyO8FjO8XQnwPX6lf0ozbWh1HmrZ
+         4+PnkjHdJHNeJF2FAoD/nfOT/NxnPJvOYWQDBQgH05UbUQyc/FpkEOb5CWuqTv9dbx+X
+         +Mkg==
+X-Gm-Message-State: AOAM531nwF/825/XDF6CjhpCN7CBDRLtZIyhPU9DOK/mkfTl0Dg6X32/
+        lwlwTp0xV/KEvMZqka9nGO6vhWTMUGQ=
+X-Google-Smtp-Source: ABdhPJwpbdU6XsHWRoaH1FFeu4HqCPLvjEHWof9q6IH5UDGAyYYZXHKm4BRCUWX8csJuM0yG3FPRbw==
+X-Received: by 2002:a7b:c0d1:: with SMTP id s17mr11192065wmh.139.1631536093459;
+        Mon, 13 Sep 2021 05:28:13 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id z6sm6839689wmp.1.2021.09.13.05.28.11
+        by smtp.gmail.com with ESMTPSA id z6sm6839689wmp.1.2021.09.13.05.28.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 05:28:12 -0700 (PDT)
+        Mon, 13 Sep 2021 05:28:13 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 11/21] trace-cmd library: Fix possible memory leak in read_proc_kallsyms()
-Date:   Mon, 13 Sep 2021 15:27:49 +0300
-Message-Id: <20210913122759.3672494-12-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 12/21] trace-cmd library: Fix possible memory leak in read_ftrace_printk()
+Date:   Mon, 13 Sep 2021 15:27:50 +0300
+Message-Id: <20210913122759.3672494-13-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210913122759.3672494-1-tz.stoyanov@gmail.com>
 References: <20210913122759.3672494-1-tz.stoyanov@gmail.com>
@@ -73,30 +73,27 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Some error paths in read_proc_kallsyms() may lead to a memory leak.
+Some error paths in read_ftrace_printk() may lead to a memory leak.
 Improved the error handling of this internal function to avoid it.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 39 +++++++++++++++++++++----------------
- 1 file changed, 22 insertions(+), 17 deletions(-)
+ lib/trace-cmd/trace-input.c | 32 +++++++++++++++++++-------------
+ 1 file changed, 19 insertions(+), 13 deletions(-)
 
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 32358ce9..9b23063e 100644
+index 9b23063e..60d75d47 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -739,34 +739,39 @@ static int read_event_files(struct tracecmd_input *handle, const char *regex)
- 
- static int read_proc_kallsyms(struct tracecmd_input *handle)
+@@ -777,33 +777,39 @@ out:
+ static int read_ftrace_printk(struct tracecmd_input *handle)
  {
--	struct tep_handle *pevent = handle->pevent;
-+	struct tep_handle *tep = handle->pevent;
  	unsigned int size;
 -	char *buf;
 +	char *buf = NULL;
 +	int ret;
  
- 	if (handle->file_state >= TRACECMD_FILE_KALLSYMS)
+ 	if (handle->file_state >= TRACECMD_FILE_PRINTK)
  		return 0;
  
 -	if (read4(handle, &size) < 0)
@@ -107,41 +104,40 @@ index 32358ce9..9b23063e 100644
 +	if (ret < 0)
 +		goto out;
 +	if (!size) {
-+		handle->file_state = TRACECMD_FILE_KALLSYMS;
++		handle->file_state = TRACECMD_FILE_PRINTK;
 +		goto out; /* OK? */
 +	}
  
- 	buf = malloc(size+1);
+ 	buf = malloc(size + 1);
 -	if (!buf)
 -		return -1;
--	if (do_read_check(handle, buf, size)){
+-	if (do_read_check(handle, buf, size)) {
 -		free(buf);
 -		return -1;
 +	if (!buf) {
 +		ret = -1;
 +		goto out;
  	}
--	buf[size] = 0;
--
--	tep_parse_kallsyms(pevent, buf);
 +	ret = do_read_check(handle, buf, size);
 +	if (ret < 0)
 +		goto out;
  
--	free(buf);
-+	buf[size] = 0;
-+	tep_parse_kallsyms(tep, buf);
+ 	buf[size] = 0;
  
- 	handle->file_state = TRACECMD_FILE_KALLSYMS;
+ 	tep_parse_printk_formats(handle->pevent, buf);
+ 
+-	free(buf);
 -
--	return 0;
+ 	handle->file_state = TRACECMD_FILE_PRINTK;
 +	ret = 0;
+ 
+-	return 0;
 +out:
 +	free(buf);
 +	return ret;
  }
  
- static int read_ftrace_printk(struct tracecmd_input *handle)
+ static int read_and_parse_cmdlines(struct tracecmd_input *handle);
 -- 
 2.31.1
 
