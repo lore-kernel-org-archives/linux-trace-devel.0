@@ -2,103 +2,137 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CDF38C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EBBCC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:29:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B8BD460F6C
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 09A1060F0F
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:29:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235143AbhIMMaI (ORCPT
+        id S239963AbhIMMbH (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 13 Sep 2021 08:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46752 "EHLO
+        Mon, 13 Sep 2021 08:31:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239987AbhIMMaF (ORCPT
+        with ESMTP id S239946AbhIMMbG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 13 Sep 2021 08:30:05 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA51C061574
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:28:49 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id t6so12684593edi.9
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:28:49 -0700 (PDT)
+        Mon, 13 Sep 2021 08:31:06 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B94A2C061574
+        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:29:50 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 196-20020a1c04cd000000b002fa489ffe1fso6820369wme.4
+        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:29:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qHOJaoSBm0TbPBQGnch9X3UgUEnwrrs0AQUZ1AaLOy0=;
-        b=mniz3qn6KtArOtCnYAZ+sbeul6biZ8BGXmYuMSNDwDd36x08zMk9Z9pGcujOLNt1xb
-         7c/EV3Kj+0xUEyT3Pz10NS2SCWHogktSj+aKlkPUA9Y5qt0ph/AO/vHJCczId/VxMFC2
-         djghZzTgmwLrofVyRp3dqlLeYOipaC8NZJd/53xemB4CRiqaA/GSL0zimaN4q8yLUxEy
-         nSg0JS9vp7o3Lp7BtkTJtCW0he2fLQlBbWH1zmi38q56I2thfFi/KF4fJKULEGfWFTRM
-         xml00ZP60KeDrq4Nfb1PJrXKX4lQ/CGZzq7wVm09YbE2vrETsb1TUQijGpeQIyiEN75r
-         xJLA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gdFyVlYNoTqcaOWrDp/d17dftYmxdnI4H9BPUkOVYVs=;
+        b=qPYszzR5elL14jA72fMJyOgAzvLySoJSuuPegKW5mmVpOfsjntZGg1P285+SgWo9mx
+         RicG3JTwQUSrxvOKuC8D+f5CS+mV7p1gj6nFMUrm+csm9mvehYyhl95gGE5IIKg0TNKr
+         Gqn6ySvJr7dPZyAyFkk2ZiAnYtYqxd1uCjqjf+j68CCcgWzWY7sOnTE2+kUs3Pmn/1uw
+         VaCRrPFbLNf7AnwWXB28pddvmmxcsrNthc94EjkJz6VcsVQzQuggTh7eaF9QgOzn/JN8
+         H7KWFdFAWSxsBwBqstVAb0MXtFOhbBvogsApIpr5cZykeRdPh+ZyWHA2XRg6Uf2eOTbx
+         s59g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=qHOJaoSBm0TbPBQGnch9X3UgUEnwrrs0AQUZ1AaLOy0=;
-        b=WbGtMmqbs9IZtnCVoCTg2SdQTSvkXrSCE3BV3ntEwpqV/VGtXzd0O+BN0wtmEil1/e
-         2yi0lMO7yrvpF/cEs3hMVAUvsJ2wkU7O6YKzP5NQCjonZ346MFsocK1crVhS5iM6kTxQ
-         KtbIZ56DTrh/VcKSAhwtguroG/e3iwHpPLmSAjPY8pSpVEj2iw1fxlAOZDXEiYICibNp
-         yv8+sNO9i9H+0s/cj4nrRIOPnRf0slXwb55mHMmUBKzx6mJsuSY6F1vg8HCRXM6Y2v+k
-         UmN/q4ujoE0+Noeezw2aJvjtWUnotz4EyvGr5Q9JsJoPaGhjklc9DcOf6tINUJBghFSV
-         uRjg==
-X-Gm-Message-State: AOAM532ciqi9FEH+qMk+QvuaVUM801pOpySZAoRtv0/SRv5yLRvl1IR8
-        xANJnb3xiO6tdfIPNGbav51kt3z0mgg=
-X-Google-Smtp-Source: ABdhPJwfq92DCNIlUx9ry5i0pUB4WpsEAv7C5im3y1d692xRsVd2FwX0M5roC2zKCFopNWPvjd0vsg==
-X-Received: by 2002:a05:6402:1a53:: with SMTP id bf19mr6720678edb.235.1631536128225;
-        Mon, 13 Sep 2021 05:28:48 -0700 (PDT)
-Received: from [192.168.0.108] ([95.87.199.108])
-        by smtp.gmail.com with ESMTPSA id f30sm3363294ejl.78.2021.09.13.05.28.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 05:28:47 -0700 (PDT)
-Subject: Re: [RFC PATCH 2/4] libtracefs: Transform tracefs_hist_add_sort_key()
-To:     Steven Rostedt <rostedt@goodmis.org>
+        bh=gdFyVlYNoTqcaOWrDp/d17dftYmxdnI4H9BPUkOVYVs=;
+        b=TaJB15fXG74sP0jbI+ka8DKhH3572A9cdBaVGoM+N8aBGfpxGX5QFH3K1/VqCjBLx3
+         Eb2N1Oyd77Ggponv4f4tOVi410qKvJ4E+N+gj4B5+rnqNdiv8d5TZ6UZpG/cri2FRyYX
+         5GROtgC8uO3u0xO5C+tmLrrtlbBsC/uAUox3Y3lHtByVMUQFLXq6rL14ZPk6rWoekgJb
+         jaWQo2zyeZASb0o838dJ0m/CwhAEfcp2tyeDGSAT+L8lFhFpNws/hByyZrI3YCJUUMD+
+         5SN1oRdnTqI1W5wG63R7gXOryDzLXKG6SDj7lhkBE0HEGNfjkKJBe/BC1G1kEgVHf+gk
+         TRzA==
+X-Gm-Message-State: AOAM533ZDmWsyL8zIK8uatD71z0zyAd9VMeFgIoTuC57sb0DirJ3Pkzp
+        Nk+BDWdJ5oHNB5SZHbRBUDCxHiH5zg4=
+X-Google-Smtp-Source: ABdhPJxxm7QgIV/dIJzroWAWsKtDCWuop8ZOsb98XOQucPWGM28h3YbX3tTn5R5u1INygAqd8fjjKA==
+X-Received: by 2002:a1c:9888:: with SMTP id a130mr11030196wme.102.1631536189381;
+        Mon, 13 Sep 2021 05:29:49 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id z5sm6842030wmf.33.2021.09.13.05.29.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 05:29:48 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-References: <20210910163857.324696-1-y.karadz@gmail.com>
- <20210910163857.324696-3-y.karadz@gmail.com>
- <20210910160458.19eb7e0c@gandalf.local.home>
-From:   Yordan Karadzhov <y.karadz@gmail.com>
-Message-ID: <5e1278ea-592d-f7d8-c4dd-e13e40a9d3bc@gmail.com>
-Date:   Mon, 13 Sep 2021 15:28:47 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+Subject: [PATCH v2 00/25] Trace file version 7 - sections 
+Date:   Mon, 13 Sep 2021 15:29:22 +0300
+Message-Id: <20210913122947.3673239-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210910160458.19eb7e0c@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+Introduce the next version of the trace-cmd trace file - 7. Major changes
+since version 6 is more flexible extendable structure of the file, based on
+independent sections.
+Known issues:
+ - Only trace-cmd record and report subcommands work with trace file v7.
 
+This patch-set depends on "[PATCH v2 00/21] trace-cmd fixes and clean-ups",
+should be applied on top of it:
+  https://lore.kernel.org/linux-trace-devel/20210913122759.3672494-1-tz.stoyanov@gmail.com/
 
-On 10.09.21 г. 23:04, Steven Rostedt wrote:
-> On Fri, 10 Sep 2021 19:38:55 +0300
-> "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
-> 
->> The current version of the API makes it hard to add multiple sort keys
->> to a histogram. The only way to do this is to use the variadic arguments,
->> however in order to do this the caller have to know the number of sort
->> keys at compile time, because the method overwrite all previously added
->> keys. The problem is addressed by splitting tracefs_hist_add_sort_key()
->> into two methods - one that overwrite and one that does not.
-> 
-> If I'm building a histogram via some interactive method, and have created a
-> histogram instance. How do I add a new key before executing it?
+v2 changes:
+ - code cleanups
 
-Is this comment about adding 'key' or about adding 'sort key'?
+Tzvetomir Stoyanov (VMware) (25):
+  trace-cmd library: Define trace file version 7
+  trace-cmd library: Add cache functionality to network message handler
+  trace-cmd library: New APIs to get and set version of output handler
+  trace-cmd library: Add internal helper function for writing headers
+    before file sections
+  trace-cmd library: Write header before file sections
+  trace-cmd library: Add multiple options sections in trace file version
+    7
+  trace-cmd library: Do not write CPU count section in trace files
+    version 7
+  trace-cmd library: Move CPU flyrecord trace metadata into the buffer
+    option, for trace file version 7
+  trace-cmd record: Append trace options after the trace data are
+    written
+  trace-cmd library: Add section header before flyrecord trace data
+  trace-cmd library: Fit CPU latency trace data in the new trace file
+    version 7 format
+  trace-cmd library: Do not write CPUs with empty trace data
+  trace-cmd library: Add macro to check file state on reading
+  trace-cmd library: Introduce sections in trace file reading logic
+  trace-cmd library: Initialize internal sections database on file read
+  trace-cmd library: Use sections database when reading parts of the
+    trace file
+  trace-cmd library: Read headers from trace file version 7
+  trace-cmd library: Read extended BUFFER option
+  trace-cmd library: Handle the extended DONE option
+  trace-cmd library: Initialize CPU data for reading from version 7
+    trace files
+  trace-cmd library: Handle latency trace in version 7 files
+  trace-cmd library: Handle buffer trace data init for version 7 files
+  trace-cmd report: Use the new latency API to read data
+  trace-cmd: Call additional APIs when creating trace file
+  trace-cmd report: Add new parameter for trace file version
 
-Thanks!
-Yordan
+ include/trace-cmd/trace-cmd.h                 |   5 +
+ .../include/private/trace-cmd-private.h       |  27 +-
+ lib/trace-cmd/include/trace-cmd-local.h       |  14 +-
+ lib/trace-cmd/trace-input.c                   | 766 ++++++++++++++----
+ lib/trace-cmd/trace-msg.c                     | 127 ++-
+ lib/trace-cmd/trace-output.c                  | 597 +++++++++++---
+ lib/trace-cmd/trace-util.c                    |   2 +-
+ tracecmd/trace-listen.c                       |   6 +
+ tracecmd/trace-read.c                         |  18 +-
+ tracecmd/trace-record.c                       |  36 +-
+ tracecmd/trace-restore.c                      |   3 +-
+ tracecmd/trace-split.c                        |   3 +
+ tracecmd/trace-usage.c                        |   2 +-
+ 13 files changed, 1300 insertions(+), 306 deletions(-)
 
-> 
-> -- Steve
-> 
+-- 
+2.31.1
+
