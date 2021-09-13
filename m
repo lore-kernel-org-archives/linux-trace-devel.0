@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46F74C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80A4EC433FE
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2E6DC60555
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6BA6760F6D
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239992AbhIMM3Y (ORCPT
+        id S239993AbhIMM3Z (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 13 Sep 2021 08:29:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46556 "EHLO
+        Mon, 13 Sep 2021 08:29:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235143AbhIMM3X (ORCPT
+        with ESMTP id S235143AbhIMM3Y (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 13 Sep 2021 08:29:23 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11526C061574
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:28:08 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id u16so14415454wrn.5
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:28:07 -0700 (PDT)
+        Mon, 13 Sep 2021 08:29:24 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24364C061574
+        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:28:09 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id m9so14435783wrb.1
+        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Sep 2021 05:28:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ZeyT15SqFOCewNiJ5wWZIoGsE6RejnJ66ku3xcCgS5c=;
-        b=Edi6MP/+qAiUu0CfD5hyWUzQlRZf0w677ECBuXP4lBDrf/8ZN2DhaeOFZbk9SrDz0n
-         VqUoSecC4pBLYs6Egmy/6rzgtfaj92Za8QmYujZKRQRla7+TtgbvmK6Ptni5IuBBCeWj
-         WTWng2/eERViB89wakwKxzLTLO/2WUBTpnMTca+jPNLfuEUzaaThaGWgq0JCaYXJmn3t
-         Xvy+NGCza6gf3hVLqZuDMB4O3XrKLunkb2iLD3tf9kz0/sctdp1gBDie78z2cliwVxI3
-         H/JVtAg5XKwp1xSHhoUTEfbBfoThRKNo5vTyPAF6q1v73IFjlv+RsIMNShPkDfknHF3U
-         SP3A==
+        bh=4eNSf3fXIhuexSWrZzu9VRBujGIACDgGvnuES2rhjo4=;
+        b=hiJewWSQQXKW0uIlYcqh6RmLjU+dhMr1QjgUIJuIeP1Ya9O+1r0sM0MY9QLP2nNEbn
+         paYLqmj9RK2DELUzohg8dcoSJWjByuifzGMVXwW+GoqZSLDr3RosokXIfin32RZ8DLAK
+         p2QgLxMcW/DqWYJLp3P3sbeMs/ZSOXXm7lj89WnQGJ8Z+HK3vTEuN1T2SgSqh41cd8aN
+         sOEWweFdQZvLsYtEg4viuCk40JOSgwGyA5W3Z0yY+shCnYqYxTVzs+1ylNkM3yniWnI0
+         ll0Fu5pXoKsDXVGm9prD8QPs6bl2io0ytuxMfFn3oJNlk87Q0jb1Bi1NWMWmt5KzxMo0
+         0qwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZeyT15SqFOCewNiJ5wWZIoGsE6RejnJ66ku3xcCgS5c=;
-        b=AYoEDd9gKo6ojFjBQyVTyHEu6oqh5Iy5mjM1SPHj9fJ98dgLfc4QwYGcCyNmrettzl
-         KCFYmTn7cNjGO39PrzxPsi6Eo4q0QqPdP3mgpqUXHdqdJJK5k6/qs+ZaJUJoabtmeInl
-         SRrMXaZN3royIyb0lgKqG90rUYdJfhFSoaBcfLAk9Eyx2w7uEHW7Ige+OmU8b4YieeXt
-         vA76XxttE4GPTxN35V/hhDDOc7Xcyea3BDpTaT6f7xUQdRe1332o3DYd39MS/4DmPPp+
-         GL9mjGk0LjexeXBA62WOXkFSEJjkCFn2outwmHEbGql7EsbRwVo/2Ld0/48zXZidWZJV
-         sGAw==
-X-Gm-Message-State: AOAM533T+gvAK4o3AlZQuJRi+Sd1S4NmLDqAhIywsFiDop0iRLNHm8kK
-        pItxB9imIyLIzhe47WWw9Atm6NxXuSA=
-X-Google-Smtp-Source: ABdhPJxyjL0wRPPkSax9wMwdXfAubggfzUneLWwYnXJccekhKDMH+SKlstcewJm6EuuNhy1+IK/SyQ==
-X-Received: by 2002:adf:cc82:: with SMTP id p2mr12561553wrj.5.1631536086740;
-        Mon, 13 Sep 2021 05:28:06 -0700 (PDT)
+        bh=4eNSf3fXIhuexSWrZzu9VRBujGIACDgGvnuES2rhjo4=;
+        b=D804CpcfkWiBptBtLlenRoz8brRkV2yx70tvkTAazr5TLJ+LE2pczwS85GBo91RPhk
+         ewfupvkfdc2bp7Xdpj93N9aOvdTjoL7nc32M9VdkR0sDcwzMTEemZSFJtDSgYbNe/iLR
+         +yp8PBU3JmU7gj+DcQ0n7l47QEiPs8iir+ti+4qIy4tFlZGvVbvQCwMr/LtpUtazBn6t
+         uSJH7ODvHvx/jcT9jnLZEN51LJrpmwQAsavh7eVccfY+81vAlMySfwP8tcInfGpccgDU
+         MpkRbYs+iqzgy93LnSpjKF+cR2bYE5AP80Hs3gQxCJ59DsjXw7ZCPEU6YlqLt5ssZdBE
+         eK4w==
+X-Gm-Message-State: AOAM531wGBz15kgch1D3egU66d76VUjPxKFOW4tg6KswtsncT9pD+k0T
+        MTKhHNvHW896ADfIqJZNTDMBcD078OQ=
+X-Google-Smtp-Source: ABdhPJyO990rGYTxB4ZVqbSIG9EihtRmdzrXmyfi9EoN1PeNuNHKApVeuXYBnVQ8zJhZ+0nUjCZ4wQ==
+X-Received: by 2002:a5d:58c9:: with SMTP id o9mr12466066wrf.279.1631536087809;
+        Mon, 13 Sep 2021 05:28:07 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id z6sm6839689wmp.1.2021.09.13.05.28.05
+        by smtp.gmail.com with ESMTPSA id z6sm6839689wmp.1.2021.09.13.05.28.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 05:28:06 -0700 (PDT)
+        Mon, 13 Sep 2021 05:28:07 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 05/21] trace-cmd library: Do not pass guests list to a buffer instance
-Date:   Mon, 13 Sep 2021 15:27:43 +0300
-Message-Id: <20210913122759.3672494-6-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 06/21] trace-cmd library: Set long size to the input tep handler when it is read from the file
+Date:   Mon, 13 Sep 2021 15:27:44 +0300
+Message-Id: <20210913122759.3672494-7-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210913122759.3672494-1-tz.stoyanov@gmail.com>
 References: <20210913122759.3672494-1-tz.stoyanov@gmail.com>
@@ -73,28 +73,38 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When a new trace buffer is read from the trace file, a new input handler
-is duplicated from the top one. The pointer to the guests list should
-not be duplicated, as it could lead to a memory corruption on
-handler close.
+Setting the long size to the input tep handler in tracecmd_read_headers()
+API may be too late, as this tep handler is used to read and parse data
+from the file before that. The most suitable place for that is
+tracecmd_alloc_fd() API, right after reading the long size from the
+file.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 1 +
- 1 file changed, 1 insertion(+)
+ lib/trace-cmd/trace-input.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index ffe87e8a..e5c8c332 100644
+index e5c8c332..3d7f1c48 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -3966,6 +3966,7 @@ tracecmd_buffer_instance_handle(struct tracecmd_input *handle, int indx)
- 	new_handle->nr_buffers = 0;
- 	new_handle->buffers = NULL;
- 	new_handle->version = NULL;
-+	new_handle->guest = NULL;
- 	new_handle->ref = 1;
- 	if (handle->trace_clock) {
- 		new_handle->trace_clock = strdup(handle->trace_clock);
+@@ -860,8 +860,6 @@ int tracecmd_read_headers(struct tracecmd_input *handle,
+ 	if (ret < 0)
+ 		return -1;
+ 
+-	tep_set_long_size(handle->pevent, handle->long_size);
+-
+ 	if (state <= handle->file_state)
+ 		return 0;
+ 
+@@ -3337,6 +3335,7 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
+ 
+ 	do_read_check(handle, buf, 1);
+ 	handle->long_size = buf[0];
++	tep_set_long_size(handle->pevent, handle->long_size);
+ 
+ 	read4(handle, &page_size);
+ 	handle->page_size = page_size;
 -- 
 2.31.1
 
