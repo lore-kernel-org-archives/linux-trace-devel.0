@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0281DC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:15:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 978FCC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:15:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E10DF610E6
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:15:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 83C11610CE
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:15:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233235AbhINNQX (ORCPT
+        id S233135AbhINNQZ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 14 Sep 2021 09:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48956 "EHLO
+        Tue, 14 Sep 2021 09:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233258AbhINNQW (ORCPT
+        with ESMTP id S233249AbhINNQY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 14 Sep 2021 09:16:22 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2426CC061574
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:15:05 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id c8-20020a7bc008000000b002e6e462e95fso2064282wmb.2
+        Tue, 14 Sep 2021 09:16:24 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4CDC061574
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:15:06 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id c8-20020a7bc008000000b002e6e462e95fso2064318wmb.2
         for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:15:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=pk5yii1uor0m9PDb3jjwY3FBwvwX0jb9UI4BGT2BEJE=;
-        b=ERk74uyiqACwexjdOJ9vb3GyW9ceNSl2bF5zMXEzxGly+0zZeMzrx+lriJWCWrCoFf
-         Ilzoy0gLnGyz12cXosWh4aUZ8pwZk202Cj3YOKUgW52YtB9Scy9jxAVOZUCCmOsotEWQ
-         o4cDvryKtiH3lvrLr+h3ThSPvtr+gdZ4kiAiokUKEFxUh5JHLZwUJusYX8Q4LNZlZBiI
-         1UZUPVothsLlEKN1RkW9Mbkm6jPlNIUh2Bt1o5/kIN+GKehdJmjvVlDkMW2oA1TeH+o7
-         jr/mBym+NznkzBXuqVkL4jmwkHnDFciLgMB06M9qzbjPDSOCnqOYQfWEJihus5rhQoWY
-         gkZQ==
+        bh=t5fYfiiAyArLxhJrdJsGVtZUrB+kCPqXH3IdaP3ulWQ=;
+        b=FPR0HcmVomQr+0GhtmK1DeUwqQdbFRA/HDOJyGrXSHrS1FLXFZfiVB9JFa6faXU+xi
+         JdIn/DsYGJz/xYxtqVaoQ30VC2zu1PmGK9fJ/Dtkf48ogOsSMJPjjSzqJ0MHNoSe83vT
+         XJQHG2DODUZ/AEuQQSiQKaBRhavOu9pm75vz212Ax2dn7w7FEfzxUTErPMc0t6dN6aMC
+         0WP+j26jVv25dtHgKd1whnKVkZkNvy3ptcAXo8zzaUG+2IMfijWKQ6l497iSBxXyoncI
+         SY6s/l7GWagWVZbuAPaujrUQYqrxpXcCp3SPYzyc3q/KDV+apMSkXYihIDHiUTJwLWLj
+         +Gqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=pk5yii1uor0m9PDb3jjwY3FBwvwX0jb9UI4BGT2BEJE=;
-        b=E5K1Ni4FTo99YgdVFDsbq6VRhuQnc0HLJfHrP3ci8lZfi2IXkRt7zG3HEEnAIor8km
-         C3NEsKYUNMMoz2SPhOq4MlPa43uLFKpVHyBla6at77RYtQZy6uy7dy50gGbT6uu+Evs6
-         ve8A6vAUvDb5Y8x1SfkgFP8idSsfo6vZQvMX2/y90ZPqV4eXQSjCMSfAr/9qFt91726/
-         BfD9cQT1IU5aCekPLLt/K6/V+jxltJG3hgR6XwHtp0vZe2yIFhJeInAvRgIYe8mDtp7P
-         jxbMStBt1Wl6Q41AQXxSWYZIUTdyS4FoUQuCOSK5qQC7DT3Fg6KHA7+GspHi3TVqK/dE
-         vpGQ==
-X-Gm-Message-State: AOAM5328Tpp916K9XDJxJykCQWDm+UZY99tlgO+qrAnyzWXpfbNux8Ad
-        rDbiyoWsBXDjOR2g5t0NZjykWsKwsmc=
-X-Google-Smtp-Source: ABdhPJyaLHWEyq14zjYPd1YqrGzRZLU7DOGhI1SrIeQmaFlBbbItFUR3SjeekYbbtko7zUIKHdGSHw==
-X-Received: by 2002:a1c:1fd3:: with SMTP id f202mr2162694wmf.44.1631625303636;
-        Tue, 14 Sep 2021 06:15:03 -0700 (PDT)
+        bh=t5fYfiiAyArLxhJrdJsGVtZUrB+kCPqXH3IdaP3ulWQ=;
+        b=sGfABhP2n8Ankr8h7Nsod8UYfK1Hgap6J3rGwnMeW8GbaSe7iY5dGpzOgNbJOyIxnE
+         gfgHOI6bDfFk/eJDhwA2/1hOU091qV2cp0FAJXIUEhVhNPiBZlq05Y/5nS7cvJPCEI+W
+         uTy5q8r6f5sLA2ADsOuHtTZv0pgdpeY/K/T4+OrPuWVUcjDfPPSYsbngVOY3hAVHO2qq
+         PmQ+LnIA4iElNMm23b/puWqVoDLMFft3LNEYwkXeSPvhclfsa4jvHFWPIxWJwjXtL03P
+         T4X2qhQ3hDlLjLsCgS/407YLV6knKEa41nk1o30BNtPphQr1l0zCRdT7pz/9IGDfg099
+         f7Sg==
+X-Gm-Message-State: AOAM5309DdnoukKqHrNz5rAmiDENu3zdkNSQeSHGqG7q40EyoosJxmts
+        m0P3hzPuSO/d78r/BzuuaqppWSYM0DM=
+X-Google-Smtp-Source: ABdhPJxAi2DV0hwfiNmkT1w4qAKTo59Y2zwI3fVwWPLJdizSmREPWiSd72J9CeemdrOqJdVlI5B2YA==
+X-Received: by 2002:a1c:80c7:: with SMTP id b190mr2147988wmd.87.1631625304613;
+        Tue, 14 Sep 2021 06:15:04 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id y9sm1274760wmj.36.2021.09.14.06.15.02
+        by smtp.gmail.com with ESMTPSA id y9sm1274760wmj.36.2021.09.14.06.15.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 06:15:03 -0700 (PDT)
+        Tue, 14 Sep 2021 06:15:04 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 18/25] trace-cmd library: Read extended BUFFER option
-Date:   Tue, 14 Sep 2021 16:14:31 +0300
-Message-Id: <20210914131438.3965484-19-tz.stoyanov@gmail.com>
+Subject: [PATCH v3 19/25] trace-cmd library: Handle the extended DONE option
+Date:   Tue, 14 Sep 2021 16:14:32 +0300
+Message-Id: <20210914131438.3965484-20-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210914131438.3965484-1-tz.stoyanov@gmail.com>
 References: <20210914131438.3965484-1-tz.stoyanov@gmail.com>
@@ -73,224 +73,127 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The BUFFER option is extended in trace file version 7. It holds CPU
-metadata related to the recorded CPU traces. Also, there is a new
-BUFFER_TEXT option for describing the latency trace data. A new logic
-is implemented for these new options.
-In trace file version 7, the top buffer is saved as other buffers in the
-file, no special treatment. But saving the top buffer in the list of
-buffers in the input handler causes problems. It breaks the legacy logic
-of trace-cmd library users, which have special logic for trace buffers
-processing. That's why "top_buffer" member is added in the input handler
-structure, to hold the top buffer.
+In trace file version 7 the DONE option is extended to store the offset
+in the file to the next options section. This way a list of options
+sections can be stored in the file. Added logic to recursively read all
+option sections from the file.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 139 +++++++++++++++++++++++++++++++-----
- 1 file changed, 122 insertions(+), 17 deletions(-)
+ lib/trace-cmd/include/trace-cmd-local.h |  1 +
+ lib/trace-cmd/trace-input.c             | 42 +++++++++++++++++++++++--
+ lib/trace-cmd/trace-output.c            |  2 +-
+ 3 files changed, 41 insertions(+), 4 deletions(-)
 
+diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
+index 405b7dae..b29236dc 100644
+--- a/lib/trace-cmd/include/trace-cmd-local.h
++++ b/lib/trace-cmd/include/trace-cmd-local.h
+@@ -49,5 +49,6 @@ struct cpu_data_source {
+ int out_write_cpu_data(struct tracecmd_output *handle, int cpus,
+ 		       struct cpu_data_source *data, const char *buff_name);
+ off64_t msg_lseek(struct tracecmd_msg_handle *msg_handle, off_t offset, int whence);
++unsigned long long get_last_option_offset(struct tracecmd_input *handle);
+ 
+ #endif /* _TRACE_CMD_LOCAL_H */
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 686655bd..914ec82d 100644
+index 914ec82d..d9ec9c73 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -74,9 +74,19 @@ struct cpu_data {
- 	int			pipe_fd;
- };
+@@ -175,6 +175,7 @@ struct tracecmd_input {
+ 	struct file_section	*sections;
+ 	bool			options_init;
+ 	unsigned long long	options_start;
++	unsigned long long	options_last_offset;
+ 	size_t			total_file_size;
  
-+struct cpu_file_data {
-+	int			cpu;
-+	unsigned long long	offset;
-+	unsigned long long	size;
-+};
-+
- struct input_buffer_instance {
- 	char			*name;
- 	size_t			offset;
-+	char			*clock;
-+	bool			latency;
-+	int			cpus;
-+	struct cpu_file_data	*cpu_data;
- };
- 
- struct ts_offset_sample {
-@@ -152,6 +162,7 @@ struct tracecmd_input {
- 	char *			uname;
- 	char *			version;
- 	char *			trace_clock;
-+	struct input_buffer_instance	top_buffer;
- 	struct input_buffer_instance	*buffers;
- 	int			parsing_failures;
- 	struct guest_trace_info	*guest;
-@@ -2860,13 +2871,109 @@ tracecmd_search_task_map(struct tracecmd_input *handle,
+ 	/* For custom profilers. */
+@@ -2871,6 +2872,30 @@ tracecmd_search_task_map(struct tracecmd_input *handle,
  	return lib;
  }
  
-+static inline int save_read_number(struct tep_handle *tep, char *data, int *data_size,
-+				   int *read_pos, int bytes, unsigned long long *num)
++__hidden unsigned long long get_last_option_offset(struct tracecmd_input *handle)
 +{
-+	if (bytes > *data_size)
-+		return -1;
-+	*num = tep_read_number(tep, (data + *read_pos), bytes);
-+	*read_pos += bytes;
-+	*data_size -= bytes;
-+	return 0;
++	return handle->options_last_offset;
 +}
 +
-+static inline char *save_read_string(char *data, int *data_size, int *read_pos)
++static int handle_option_done(struct tracecmd_input *handle, char *buf, int size)
 +{
-+	char *str;
++	unsigned long long offset;
 +
-+	if (*data_size < 1)
-+		return NULL;
-+	str = strdup(data + *read_pos);
-+	if (!str)
-+		return NULL;
-+	*data_size -= (strlen(str) + 1);
-+	if (*data_size < 0) {
-+		free(str);
-+		return NULL;
-+	}
-+	*read_pos += (strlen(str) + 1);
-+
-+	return str;
-+}
-+
-+static int handle_buffer_option(struct tracecmd_input *handle,
-+				unsigned short id, char *data, int size)
-+{
-+	struct input_buffer_instance *buff;
-+	unsigned long long tmp;
-+	int rsize = 0;
-+	char *name;
-+	int i;
-+
-+	if (save_read_number(handle->pevent, data, &size, &rsize, 8, &tmp))
++	if (size < 8)
 +		return -1;
-+	name = save_read_string(data, &size, &rsize);
-+	if (!name)
-+		return -1;
-+
-+	if (*name == '\0') {
-+		/* top buffer */
-+		buff = &handle->top_buffer;
-+	} else {
-+		buff = realloc(handle->buffers, sizeof(*handle->buffers) * (handle->nr_buffers + 1));
-+		if (!buff) {
-+			free(name);
-+			return -1;
-+		}
-+		handle->buffers = buff;
-+		handle->nr_buffers++;
-+
-+		buff = &handle->buffers[handle->nr_buffers - 1];
-+	}
-+	memset(buff, 0, sizeof(struct input_buffer_instance));
-+	buff->name = name;
-+	buff->offset = tmp;
-+	if (!HAS_SECTIONS(handle))
++	offset = lseek64(handle->fd, 0, SEEK_CUR);
++	if (offset >= size)
++		handle->options_last_offset = offset - size;
++	offset = tep_read_number(handle->pevent, buf, 8);
++	if (!offset)
 +		return 0;
 +
-+	/* file sections specific data */
-+	buff->clock = save_read_string(data, &size, &rsize);
-+	if (!buff->clock)
++	if (lseek64(handle->fd, offset, SEEK_SET) == (off_t)-1)
 +		return -1;
-+	if (*name == '\0' && !handle->trace_clock)
-+		handle->trace_clock = strdup(buff->clock);
-+	if (id == TRACECMD_OPTION_BUFFER) {
-+		if (save_read_number(handle->pevent, data, &size, &rsize, 4, &tmp))
-+			return -1;
-+		buff->cpus = tmp;
-+		if (!buff->cpus)
-+			return 0;
-+		buff->cpu_data = calloc(buff->cpus, sizeof(struct cpu_file_data));
-+		if (!buff->cpu_data)
-+			return -1;
-+		for (i = 0; i < buff->cpus; i++) {
-+			if (save_read_number(handle->pevent, data, &size, &rsize, 4, &tmp))
-+				return -1;
-+			buff->cpu_data[i].cpu = tmp;
-+			if (save_read_number(handle->pevent, data,
-+					     &size, &rsize, 8, &buff->cpu_data[i].offset))
-+				return -1;
-+			if (save_read_number(handle->pevent, data,
-+					     &size, &rsize, 8, &buff->cpu_data[i].size))
-+				return -1;
-+		}
-+	} else {
-+		buff->latency = true;
-+	}
-+	return 0;
++
++	return handle_options(handle);
 +}
 +
- static int handle_options(struct tracecmd_input *handle)
+ static inline int save_read_number(struct tep_handle *tep, char *data, int *data_size,
+ 				   int *read_pos, int bytes, unsigned long long *num)
  {
+@@ -2973,19 +2998,27 @@ static int handle_options(struct tracecmd_input *handle)
  	long long offset;
  	unsigned short option;
  	unsigned int size;
++	unsigned short id, flags;
  	char *cpustats = NULL;
--	struct input_buffer_instance *buffer;
  	struct hook_list *hook;
  	char *buf;
  	int cpus;
-@@ -2955,21 +3062,10 @@ static int handle_options(struct tracecmd_input *handle)
- 			handle->cpustats = cpustats;
+ 	int ret;
+ 
+-	handle->options_start = lseek64(handle->fd, 0, SEEK_CUR);
++	if (!HAS_SECTIONS(handle)) {
++		handle->options_start = lseek64(handle->fd, 0, SEEK_CUR);
++	} else {
++		if (read_section_header(handle, &id, &flags, NULL, NULL))
++			return -1;
++		if (id != TRACECMD_OPTION_DONE)
++			return -1;
++	}
+ 
+ 	for (;;) {
+ 		if (read2(handle, &option))
+ 			return -1;
+ 
+-		if (option == TRACECMD_OPTION_DONE)
++		if (!HAS_SECTIONS(handle) && option == TRACECMD_OPTION_DONE)
  			break;
- 		case TRACECMD_OPTION_BUFFER:
--			/* A buffer instance is saved at the end of the file */
--			handle->nr_buffers++;
--			handle->buffers = realloc(handle->buffers,
--						  sizeof(*handle->buffers) * handle->nr_buffers);
--			if (!handle->buffers)
--				return -ENOMEM;
--			buffer = &handle->buffers[handle->nr_buffers - 1];
--			buffer->name = strdup(buf + 8);
--			if (!buffer->name) {
--				free(handle->buffers);
--				handle->buffers = NULL;
--				return -ENOMEM;
--			}
--			offset = *(unsigned long long *)buf;
--			buffer->offset = tep_read_number(handle->pevent, &offset, 8);
-+		case TRACECMD_OPTION_BUFFER_TEXT:
-+			ret = handle_buffer_option(handle, option, buf, size);
-+			if (ret < 0)
-+				return ret;
+ 
+ 		/* next 4 bytes is the size of the option */
+@@ -3122,7 +3155,10 @@ static int handle_options(struct tracecmd_input *handle)
+ 			section_add_or_update(handle, option, -1,
+ 					      tep_read_number(handle->pevent, buf, 8), 0);
  			break;
- 		case TRACECMD_OPTION_TRACECLOCK:
- 			if (!handle->ts2secs)
-@@ -3717,6 +3813,13 @@ void tracecmd_ref(struct tracecmd_input *handle)
- 	handle->ref++;
- }
+-
++		case TRACECMD_OPTION_DONE:
++			ret = handle_option_done(handle, buf, size);
++			free(buf);
++			return ret;
+ 		default:
+ 			tracecmd_warning("unknown option %d", option);
+ 			break;
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index 87b85e0f..b3904204 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -2150,7 +2150,7 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
+ 	tep_ref(handle->pevent);
+ 	handle->page_size = tracecmd_page_size(ihandle);
+ 	handle->file_version = tracecmd_get_in_file_version(ihandle);
+-	handle->options_start = tracecmd_get_options_offset(ihandle);
++	handle->options_start = get_last_option_offset(ihandle);
+ 	list_head_init(&handle->options);
+ 	list_head_init(&handle->buffers);
  
-+static inline void free_buffer(struct input_buffer_instance *buf)
-+{
-+	free(buf->name);
-+	free(buf->clock);
-+	free(buf->cpu_data);
-+}
-+
- /**
-  * tracecmd_close - close and free the trace.dat handle
-  * @handle: input handle for the trace.dat file
-@@ -3772,8 +3875,9 @@ void tracecmd_close(struct tracecmd_input *handle)
- 		free(del_sec);
- 	}
- 
-+	free_buffer(&handle->top_buffer);
- 	for (i = 0; i < handle->nr_buffers; i++)
--		free(handle->buffers[i].name);
-+		free_buffer(&handle->buffers[i]);
- 	free(handle->buffers);
- 
- 	tracecmd_free_hooks(handle->hooks);
-@@ -4217,6 +4321,7 @@ tracecmd_buffer_instance_handle(struct tracecmd_input *handle, int indx)
- 		return NULL;
- 
- 	*new_handle = *handle;
-+	memset(&new_handle->top_buffer, 0, sizeof(new_handle->top_buffer));
- 	new_handle->cpu_data = NULL;
- 	new_handle->nr_buffers = 0;
- 	new_handle->buffers = NULL;
 -- 
 2.31.1
 
