@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06948C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:21:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE9ADC433FE
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:21:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E0130606A5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:21:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A272A60F11
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:21:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232682AbhINNXK (ORCPT
+        id S233145AbhINNXM (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 14 Sep 2021 09:23:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50504 "EHLO
+        Tue, 14 Sep 2021 09:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233079AbhINNXK (ORCPT
+        with ESMTP id S233079AbhINNXL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 14 Sep 2021 09:23:10 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA8AC061762
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:21:52 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id v24so13665445eda.3
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:21:52 -0700 (PDT)
+        Tue, 14 Sep 2021 09:23:11 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9646AC061574
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:21:54 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id t6so18463045edi.9
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:21:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KS8r8oY8x2kfdcoMywa4LhAV1/KUW+EnGnL0wzDkhKI=;
-        b=czMmUvSTHBxKhv25GYY7KRqj7HNayhUzxERh9AKs79FhvBmBInBAWkUYGpK1bkSsoF
-         R6k7iOLIjFhyXmfZfimvrMd/jU+7wO+PeFfdLtuo6Ms4wPvqYbM7nRLGryCQy75tX2Bz
-         uVfj2yjPpdPwtSd74ENNFGrvqiMSkfqA+UMjj4YQ6Su8BuHoFxEqdbUg/ufg5U14MQBK
-         tuxEVH+MIReTz/2Vq5JI8k4g1oVb7yunSMPePPddC6x6JfZYQshKBnm2IyzptwuberpJ
-         /WDG9qdcj/IpIt2eZX7EFlB4lJIhPkXNAPh9MOMvp9gmqIAFFi54Uia4KG1QSRzfCj0O
-         Ygkw==
+        bh=Yh40ZYgMwbP81n6hFixo15LEQgbd5DixHArPEoYRm6A=;
+        b=VN23/9iZgUlqiCK2Rj9Wi5+FHwarr/BZJJo1t36dWyebjjwQH9slUMz6IeESriLfuG
+         l0J/NtWiIecsRQ2TZKfACiFgYVf4DRqMCaRS6jxEvGA+Mlb9WO8+WI5J3LO+1EmTWypJ
+         QNnntkOnxybh30ETrUm4+6IPvtvOOLGagLf+eCvoiCsedQ0Dv+dr/2uahSb80UhvtMUk
+         50lccoxt7vDopZl/uXvoWvvOy+KBgu2Bc7q1qjrTIBeAa/O1lmDJ7kUZCb806rvK7SZw
+         CWGc9LYLsJ8QIZOOW/LQ6RfozvCPGKgvmXf3EY7dtDFQJaOqGqlSshI2HWR8i43Z49ua
+         hNVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KS8r8oY8x2kfdcoMywa4LhAV1/KUW+EnGnL0wzDkhKI=;
-        b=I20Ldngi4Vru650PC2xOJlmQJs++voCEdfozYJgoJjUAJYqlKtszR4Ud1cxDeHNpCX
-         JFZM443ou24e87wOvyBkWfh/X36usQCsbtvjVDF85Q6DECIQ9fhgX1/+powKHGYBJIA3
-         Y2s9vDqwrLHgGzabL9xYE1GrLiBO4sfIMT7p/WX8TBDrVBW8iYIDN6/NRY3CSMzHSuuD
-         yBHtjgjEPRRZyy62svhOWqdpMTf2UsOafrTPKutiClPcBotkiRHqmVxrKBbr3AtYyck6
-         yO3PLw6Fj1Ud88gFZjasrXzNqEC8XgHWLweh1oqZvQqgikR/a9hNXtt1JsQqzF/uy1pz
-         2nSQ==
-X-Gm-Message-State: AOAM530AuJl8OiIKeDWfAn8y14adCC69lz6vlZ1oMRR0JrUKcFgdH3qT
-        gZ2w3zd46OXaco8Y7y+DCBSKacp7Bm0=
-X-Google-Smtp-Source: ABdhPJyOIJnqzB6OSN5zP4tYKlPu2Jj5FALFGwdUUWEmxmK0Ap4v9pVkDT/o1ihNxRW/aBL+zShUFA==
-X-Received: by 2002:a50:bae1:: with SMTP id x88mr19322267ede.345.1631625711348;
-        Tue, 14 Sep 2021 06:21:51 -0700 (PDT)
+        bh=Yh40ZYgMwbP81n6hFixo15LEQgbd5DixHArPEoYRm6A=;
+        b=vO7IcKpG2V8m85//90SSh1JGqfwYE6s8KV5OxZxhH1bIt2HocTv8bfp63FhrXaKZyx
+         EJsEouS3QNzxxG6tMssCuA80iZ1+1KjFO1Jo4MJkvOOPv1LOdj/XtLLMFz8lSv7YpohJ
+         PDukJ41JEYjt/dFpEzGzsVnhiYKjM9JfvYMI2MWdhMjrRFWlVhMNLOuOQcHjeTHEDVVz
+         VjCNRD8TdEuKwFdkYI8c8HTekneigfQbnIFUoDTY6Vdl+0/+ZXmKBxjWl28jYgHyJkIp
+         NKMXP9lt64RZbB4sjtxd2kleKEvD/vIRlJnSOxXJjWNM9az3ph7qrXbw9Xz+JTnUteO4
+         MgKQ==
+X-Gm-Message-State: AOAM531jTe2juzKqd9ZkCBMllbhJK4AiU6GIxFaLOyHDDntOZ56IJjL1
+        zjAPszmUYi6feIBaNE6yBkzRigZ3S80=
+X-Google-Smtp-Source: ABdhPJzmzYX1rVpyA2I/x/zYwF9T5NOlTA+pL6dc+5pfZuNsGtxR9sCPAkQzVnfEzjAKabkNWrqIcw==
+X-Received: by 2002:aa7:cdc8:: with SMTP id h8mr10545594edw.272.1631625713164;
+        Tue, 14 Sep 2021 06:21:53 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id l7sm5708431edb.26.2021.09.14.06.21.50
+        by smtp.gmail.com with ESMTPSA id l7sm5708431edb.26.2021.09.14.06.21.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 06:21:50 -0700 (PDT)
+        Tue, 14 Sep 2021 06:21:52 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 01/10] trace-cmd dump: Add helpers for processing trace file version 7
-Date:   Tue, 14 Sep 2021 16:21:39 +0300
-Message-Id: <20210914132148.3968401-2-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 03/10] trace-cmd dump: Add helpers for processing trace file sections
+Date:   Tue, 14 Sep 2021 16:21:41 +0300
+Message-Id: <20210914132148.3968401-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210914132148.3968401-1-tz.stoyanov@gmail.com>
 References: <20210914132148.3968401-1-tz.stoyanov@gmail.com>
@@ -73,176 +73,64 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-New global variables are added, that hold trace file context:
- - trace file version
- - compression context
-Also a few helper functions for reading compressed data.
+Added a new local database for storing sections, found in trace file
+version 7.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-dump.c | 88 ++++++++++++++++++++++++++++++++-----------
- 1 file changed, 67 insertions(+), 21 deletions(-)
+ tracecmd/trace-dump.c | 23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
 
 diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
-index 2334b57e..d0278f7e 100644
+index 3cce231f..f7284436 100644
 --- a/tracecmd/trace-dump.c
 +++ b/tracecmd/trace-dump.c
-@@ -26,6 +26,9 @@
- static struct tep_handle *tep;
- static unsigned int trace_cpus;
- static int has_clock;
-+static unsigned long file_version;
-+static bool	read_compress;
-+static struct tracecmd_compression *compress;
+@@ -43,8 +43,18 @@ enum dump_items {
+ 	OPTIONS		= (1 << 9),
+ 	FLYRECORD	= (1 << 10),
+ 	CLOCK		= (1 << 11),
++	SECTIONS	= (1 << 12),
+ };
  
- enum dump_items {
- 	SUMMARY		= (1 << 0),
-@@ -52,46 +55,69 @@ enum dump_items verbosity;
- 			tracecmd_plog(fmt, ##__VA_ARGS__);	\
- 	} while (0)
- 
--static int read_file_string(int fd, char *dst, int len)
-+static int read_fd(int fd, char *dst, int len)
- {
- 	size_t size = 0;
- 	int r;
- 
- 	do {
--		r = read(fd, dst+size, 1);
-+		r = read(fd, dst+size, len);
- 		if (r > 0) {
--			size++;
--			len--;
-+			size += r;
-+			len -= r;
- 		} else
- 			break;
--		if (!dst[size - 1])
--			break;
--	} while (r > 0 && len);
-+	} while (r > 0);
- 
--	if (!size || dst[size - 1])
-+	if (len)
- 		return -1;
--	return 0;
-+	return size;
- }
- 
--static int read_file_bytes(int fd, char *dst, int len)
-+static int read_compressed(int fd, char *dst, int len)
-+{
++struct file_section {
++	int id;
++	unsigned long long offset;
++	struct file_section *next;
++	enum dump_items verbosity;
++};
 +
-+	if (read_compress)
-+		return tracecmd_compress_read(compress, dst, len);
-+	return read_fd(fd, dst, len);
-+}
++static struct file_section *sections;
 +
-+static int do_lseek(int fd, int offset, int whence)
-+{
-+	if (read_compress)
-+		return tracecmd_compress_lseek(compress, offset, whence);
-+	return lseek64(fd, offset, whence);
-+}
-+
-+static int read_file_string(int fd, char *dst, int len)
- {
- 	size_t size = 0;
- 	int r;
+ enum dump_items verbosity;
  
- 	do {
--		r = read(fd, dst+size, len);
-+		r = read_compressed(fd, dst+size, 1);
- 		if (r > 0) {
--			size += r;
--			len -= r;
-+			size++;
-+			len--;
- 		} else
- 			break;
--	} while (r > 0);
-+		if (!dst[size - 1])
-+			break;
-+	} while (r > 0 && len);
- 
--	if (len)
-+	if (!size || dst[size - 1])
- 		return -1;
- 	return 0;
- }
- 
-+static int read_file_bytes(int fd, char *dst, int len)
-+{
-+	int ret;
-+
-+	ret = read_compressed(fd, dst, len);
-+	return ret < 0 ? ret : 0;
-+}
-+
- static void read_dump_string(int fd, int size, enum dump_items id)
- {
- 	char buf[DUMP_SIZE];
-@@ -146,7 +172,6 @@ static void dump_initial_format(int fd)
- 	char magic[] = TRACECMD_MAGIC;
- 	char buf[DUMP_SIZE];
- 	int val4;
--	unsigned long ver;
- 
- 	do_print(SUMMARY, "\t[Initial format]\n");
- 
-@@ -168,11 +193,11 @@ static void dump_initial_format(int fd)
- 		die("no version string");
- 
- 	do_print(SUMMARY, "\t\t%s\t[Version]\n", buf);
--	ver = strtol(buf, NULL, 10);
--	if (!ver && errno)
-+	file_version = strtol(buf, NULL, 10);
-+	if (!file_version && errno)
- 		die("Invalid file version string %s", buf);
--	if (!tracecmd_is_version_supported(ver))
--		die("Unsupported file version %lu", ver);
-+	if (!tracecmd_is_version_supported(file_version))
-+		die("Unsupported file version %lu", file_version);
- 
- 	/* get file endianness*/
- 	if (read_file_bytes(fd, buf, 1))
-@@ -234,6 +259,27 @@ static void dump_header_event(int fd)
- 	read_dump_string(fd, size, HEAD_EVENT);
- }
- 
-+static void uncompress_reset(void)
-+{
-+	if (compress && file_version >= FILE_VERSION_COMPRESSION) {
-+		read_compress = false;
-+		tracecmd_compress_reset(compress);
-+	}
-+}
-+
-+static int uncompress_block(void)
-+{
-+	int ret = 0;
-+
-+	if (compress && file_version >= FILE_VERSION_COMPRESSION) {
-+		ret = tracecmd_uncompress_block(compress);
-+		if (!ret)
-+			read_compress = true;
-+
-+	}
-+	return ret;
-+}
-+
- static void dump_ftrace_events_format(int fd)
- {
- 	unsigned long long size;
-@@ -578,7 +624,7 @@ static void dump_options(int fd)
- 		default:
- 			do_print(OPTIONS, " %d %d\t[Unknown option, size - skipping]\n",
- 				 option, size);
--			lseek64(fd, size, SEEK_CUR);
-+			do_lseek(fd, size, SEEK_CUR);
- 			break;
- 		}
+ #define DUMP_CHECK(X) ((X) & verbosity)
+@@ -723,6 +733,17 @@ static void dump_therest(int fd)
  	}
+ }
+ 
++static void free_sections(void)
++{
++	struct file_section *del;
++
++	while (sections) {
++		del = sections;
++		sections = sections->next;
++		free(del);
++	}
++}
++
+ static void dump_file(const char *file)
+ {
+ 	int fd;
+@@ -748,7 +769,7 @@ static void dump_file(const char *file)
+ 	dump_cmdlines(fd);
+ 	dump_cpus_count(fd);
+ 	dump_therest(fd);
+-
++	free_sections();
+ 	tep_free(tep);
+ 	tep = NULL;
+ 	close(fd);
 -- 
 2.31.1
 
