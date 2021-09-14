@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE097C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:12:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5071C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:12:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8A53A610E6
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:12:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A18E5610D1
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:12:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbhINNOB (ORCPT
+        id S233129AbhINNOC (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 14 Sep 2021 09:14:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48334 "EHLO
+        Tue, 14 Sep 2021 09:14:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232996AbhINNOA (ORCPT
+        with ESMTP id S232996AbhINNOB (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 14 Sep 2021 09:14:00 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38DAAC061574
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:12:43 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id e26so9242747wmk.2
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:12:43 -0700 (PDT)
+        Tue, 14 Sep 2021 09:14:01 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F5A3C061574
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:12:44 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id k5-20020a05600c1c8500b002f76c42214bso2045285wms.3
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:12:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4eNSf3fXIhuexSWrZzu9VRBujGIACDgGvnuES2rhjo4=;
-        b=aVKHGZamVeiLsY5FthUF4QQkjHOOkrjuEnZ2UTrfkBSSSiqjCVMhQV98y81ktEmW96
-         qBClURnDa9dByNg9U2Lil2a8caTTE6dIql5LHLi6/39b2zBQBXx9uadvXZYBSDC93yJN
-         HYxN/Ip+22wQVuVH1XRqFfeRUKnd6kmrqjSuXeXGTlB5Cx3bLxTyPcTx5FUPxQTaXYpx
-         kCwp0xVt7ne/9MsZa2/6ngHQEoAkE8x3W5wo/TvDhEZZ4AV7JPBvLfS02Am9HcBayJd0
-         T3o1r/sOvRLz2h5NwB5POci3lyuGSK6PhgeSqA+1amD9q3aIcje2ZXJmuCs81GaZg6Av
-         6Jpw==
+        bh=iHbl/58swxEP+2R4EUL7BmGjrykf7sAqFNSgdDuIakQ=;
+        b=doqr6TRSwiVHgH658Wfr4RomKxpOLz3txqSsYxTMmSGGzxpvPyqFNVd3wb4eT/PDym
+         p1A9L+P9vgFZHRDCwYBSwge9rPtaFBd5ewCFSsXvDCIzXiJZNnZecOWCQ2UTPMQHomGu
+         77d1rkwBkGyAgq1w8wmMkuNosUN1bqUOGIBMG74Dola8HYSn/ty9gYQV5FHUXIU3lruS
+         T2r36stBzC+MXw0cixYFTeXlthz/yUHwSEIxnB3pGxUip5Q3gkZKO1Ah9z6iSeOxTbrL
+         iJVsqn4fX5B/hppdrvpliHon9CFmNKycFyAfKHMOYylgJ1JNdoP7OSSIZ+3stwOQUJKC
+         I+9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4eNSf3fXIhuexSWrZzu9VRBujGIACDgGvnuES2rhjo4=;
-        b=gnjEP6l/Hm3TUac+F+L6LG1IZLLREt1EgwU/UUTqd2KFx9dU8KbJRSYlEDwIC9xRxn
-         aVJAPuuLaTTKkNGIH1WSMbT8azuPii4pFYjkY8+QUCkyt9NTbhOYAvOSRt5NLh7/eYNS
-         BBga7CBJBBJYyT/8QXBRNY8spqq5Yee2fEnT8FnEkvJNwgV7pqE4vf/aTKl9ev3uY8/P
-         xC3GGOPHaEjOlmrO+SPQ+n1Vn0UJt0HY7yOiQMgq3ylh4hbvl+HdW24hlnqgLlPRYfsc
-         tq6P+6iNATgSY6RCVrfB87arkYv4IoSYPfIGEBG3e5HLLetJClNuElsrSp7rEy69r9KX
-         NnYw==
-X-Gm-Message-State: AOAM531Izb3Jxjbxn9UBlTXwhzZqGmAZRj8HPSk6EsR84ObtrHGH229X
-        qLbwz4hdVDMp4XiazTrCoMlAoMtTRUU=
-X-Google-Smtp-Source: ABdhPJxCbk0ai5qpuspZriVjCWEOTw4IFUdChhX3hmIPg/uYfJ4DQFZEBPExA9fY2ku1kKjQtyBs6w==
-X-Received: by 2002:a05:600c:2193:: with SMTP id e19mr1772269wme.38.1631625161772;
-        Tue, 14 Sep 2021 06:12:41 -0700 (PDT)
+        bh=iHbl/58swxEP+2R4EUL7BmGjrykf7sAqFNSgdDuIakQ=;
+        b=GLViIEgv3/CUIvTxIjV6HvR7NPU8/3KrqVcr38bORHSro5B1FfGF9iN3Evg6MQloJ0
+         kr47Nrw7qvaxYgg4WPbwd7tPgY8kQQjgXf5zf7azi9Uv4/lAQy2qxPs02EwdvCJ0cv6S
+         EXsmEMvcyPwMmg49zLoQx98KhQZFOGI/prs2JZMNCTYYsqluhFj5ZWfYZRhHJhv1fKin
+         EFmCRtXRpTVXp3EINf7rdAsd0AinHGpDO31ENBMLubAyKrkAfvHOXgOFgluo9z6mntS4
+         RVNBu+3bNUALvy1streG/OkEyOm1AEEKILfMpm4O3UtLmaoMil4bW37vYC16AFAekpd7
+         bvyw==
+X-Gm-Message-State: AOAM532t+gBjPWJBz87PtKlAxRgDFIFuna6yQnr97NA1TlRkjxOWTZiV
+        HCH9mVKz9O60yHlMSJEfm87d23rhpz8=
+X-Google-Smtp-Source: ABdhPJzya+kmjW98fi3HWPT04KfeoUfG9Hg0hhgAmOf9amIEPLzIiAD9WvEVScu4ui0yxyjBm7psXQ==
+X-Received: by 2002:a7b:c767:: with SMTP id x7mr2207554wmk.62.1631625162919;
+        Tue, 14 Sep 2021 06:12:42 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id k17sm1910221wmj.0.2021.09.14.06.12.40
+        by smtp.gmail.com with ESMTPSA id k17sm1910221wmj.0.2021.09.14.06.12.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 06:12:41 -0700 (PDT)
+        Tue, 14 Sep 2021 06:12:42 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 06/21] trace-cmd library: Set long size to the input tep handler when it is read from the file
-Date:   Tue, 14 Sep 2021 16:12:17 +0300
-Message-Id: <20210914131232.3964615-7-tz.stoyanov@gmail.com>
+Subject: [PATCH v3 07/21] trace-cmd library: Do not use local variables when reading CPU stat option
+Date:   Tue, 14 Sep 2021 16:12:18 +0300
+Message-Id: <20210914131232.3964615-8-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210914131232.3964615-1-tz.stoyanov@gmail.com>
 References: <20210914131232.3964615-1-tz.stoyanov@gmail.com>
@@ -73,38 +73,69 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Setting the long size to the input tep handler in tracecmd_read_headers()
-API may be too late, as this tep handler is used to read and parse data
-from the file before that. The most suitable place for that is
-tracecmd_alloc_fd() API, right after reading the long size from the
-file.
+Using a local variable to read all CPUSTAT options assumes that all of
+them are in a single option section. While this is true for the current
+trace file version format, this assumption limits the design of a more
+flexible format with multiple options sections. Use input handler context
+instead of the local variable.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ lib/trace-cmd/trace-input.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index e5c8c332..3d7f1c48 100644
+index 3d7f1c48..d020cfae 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -860,8 +860,6 @@ int tracecmd_read_headers(struct tracecmd_input *handle,
- 	if (ret < 0)
- 		return -1;
+@@ -138,6 +138,7 @@ struct tracecmd_input {
  
--	tep_set_long_size(handle->pevent, handle->long_size);
+ 	struct host_trace_info	host;
+ 	double			ts2secs;
++	unsigned int		cpustats_size;
+ 	char *			cpustats;
+ 	char *			uname;
+ 	char *			version;
+@@ -2658,7 +2659,6 @@ static int handle_options(struct tracecmd_input *handle)
+ 	unsigned short option;
+ 	unsigned int size;
+ 	char *cpustats = NULL;
+-	unsigned int cpustats_size = 0;
+ 	struct input_buffer_instance *buffer;
+ 	struct hook_list *hook;
+ 	char *buf;
+@@ -2738,12 +2738,16 @@ static int handle_options(struct tracecmd_input *handle)
+ 			break;
+ 		case TRACECMD_OPTION_CPUSTAT:
+ 			buf[size-1] = '\n';
+-			cpustats = realloc(cpustats, cpustats_size + size + 1);
+-			if (!cpustats)
+-				return -ENOMEM;
+-			memcpy(cpustats + cpustats_size, buf, size);
+-			cpustats_size += size;
+-			cpustats[cpustats_size] = 0;
++			cpustats = realloc(handle->cpustats,
++					   handle->cpustats_size + size + 1);
++			if (!cpustats) {
++				ret = -ENOMEM;
++				return ret;
++			}
++			memcpy(cpustats + handle->cpustats_size, buf, size);
++			handle->cpustats_size += size;
++			cpustats[handle->cpustats_size] = 0;
++			handle->cpustats = cpustats;
+ 			break;
+ 		case TRACECMD_OPTION_BUFFER:
+ 			/* A buffer instance is saved at the end of the file */
+@@ -2813,8 +2817,6 @@ static int handle_options(struct tracecmd_input *handle)
+ 
+ 	}
+ 
+-	handle->cpustats = cpustats;
 -
- 	if (state <= handle->file_state)
- 		return 0;
+ 	return 0;
+ }
  
-@@ -3337,6 +3335,7 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
- 
- 	do_read_check(handle, buf, 1);
- 	handle->long_size = buf[0];
-+	tep_set_long_size(handle->pevent, handle->long_size);
- 
- 	read4(handle, &page_size);
- 	handle->page_size = page_size;
 -- 
 2.31.1
 
