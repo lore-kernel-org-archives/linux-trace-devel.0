@@ -2,69 +2,126 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C068C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 17:56:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C95BEC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:12:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EFA4E610CC
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Sep 2021 17:56:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A4C10610D1
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:12:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237247AbhIMR55 (ORCPT
+        id S233025AbhINNNy (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 13 Sep 2021 13:57:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48542 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239619AbhIMR54 (ORCPT
+        Tue, 14 Sep 2021 09:13:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232996AbhINNNy (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 13 Sep 2021 13:57:56 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7FA4B60EE3;
-        Mon, 13 Sep 2021 17:56:40 +0000 (UTC)
-Date:   Mon, 13 Sep 2021 13:56:33 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yordan Karadzhov <y.karadz@gmail.com>
+        Tue, 14 Sep 2021 09:13:54 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95741C061574
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:12:36 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id u16so20141463wrn.5
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:12:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MCVrx5EWsYhXQ+aR+CAn7EHcZ21c6kWy5O20ZD23As4=;
+        b=Y+mQojSQ4Oi1dKqr3Qhg3DHWLN/HpbzqqQ7kSb8RLSCdBtYqpfFyvRLl94WZQM1J8e
+         IszJ7OzsnMFsX30mTH3JBK3LL3l2WVpuSqZ9HAn2Ozo3t+eo1v4HuUsIGKoIAxoA1+Tq
+         ThsZe5em6lGiaUjIalDfXehMpyh6pwLLQTbCb5YDagzEwMGylbg5FdyosW2reIXHi2ed
+         6+oQb1Vz/qvV14nPEVtoCfX6ufb9k97vZ/dFN1HKcdkATQOM6jIU4Z+ip3oC3Ycebr9m
+         GNiKY1COBWlkBTM7hkhCvXVS6pE/XwswZkOSAR9AY8q0szD5jTq/1gT7pYl+LO1qagbo
+         qOug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MCVrx5EWsYhXQ+aR+CAn7EHcZ21c6kWy5O20ZD23As4=;
+        b=SG++1d0WuIaIN6Ex2RFFN4qQ+Yf5ktZ7XZ7nS1H0fGUgDAl2hF5E0qhaPeplLX2zRe
+         ye1wiI8aLLrTORmOSP7fE0ScgB9jz3WD8d3p/1YpsZkxzxg9S/TO4zla7t4wm6c4mwJQ
+         Uw3zHMsOzLCrjU1fHMmc6byudY55ZX7tSaWrmEr32aBQmBrm+jiKfUZKSQdslJHN9v9R
+         6z1O3vGUQuld7j7bBcjOLBTdmqVKzv8yNE6C11bRvRPRxD9j8QfBQtrqVNhz63QTZwYB
+         z/ZkopHHleU9apMSRPmVXm/qcdLosS7hv3rrfgUBEcZpnrL8DjtzDT3h9KbhsUEcGm5H
+         wwew==
+X-Gm-Message-State: AOAM53327aoDF6XjfHj4sCUauwiKqa+otY1TJ+fmCqPW0HwjKJTuyHaH
+        mML7IZey9EePiL2lKZ6KNfRNoiWizvk=
+X-Google-Smtp-Source: ABdhPJysF+H6pORrUr+KTwXWBWZ5epuh+Ltyn/SP2LeQOClGT4iI4ygQrL46RMKgKOemQPCFr0HtBg==
+X-Received: by 2002:adf:f545:: with SMTP id j5mr8985240wrp.9.1631625155085;
+        Tue, 14 Sep 2021 06:12:35 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id k17sm1910221wmj.0.2021.09.14.06.12.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 06:12:34 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/4] libtracefs: Transform
- tracefs_hist_add_sort_key()
-Message-ID: <20210913135633.075dfe75@oasis.local.home>
-In-Reply-To: <7ae3ea27-082c-c5d8-c13b-e1da96d348aa@gmail.com>
-References: <20210910163857.324696-1-y.karadz@gmail.com>
-        <20210910163857.324696-3-y.karadz@gmail.com>
-        <20210910160101.2ef82513@gandalf.local.home>
-        <7ae3ea27-082c-c5d8-c13b-e1da96d348aa@gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Subject: [PATCH v3 00/21] trace-cmd fixes and clean-ups
+Date:   Tue, 14 Sep 2021 16:12:11 +0300
+Message-Id: <20210914131232.3964615-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 13 Sep 2021 15:26:51 +0300
-Yordan Karadzhov <y.karadz@gmail.com> wrote:
+Various trace-cmd application and library fixes, clean-ups and internal
+refactoring, needed for trace file version 7 and compression changes.
 
-> > How about if we call this:
-> > 
-> > 	tracefs_hist_replace_sort_keys()
-> > 
-> > I think that would be a more intuitive name.  
-> 
-> The user may call this function with a histogram that has no sort keys added.
-> So there will be nothing to replace.
-> What about naming it 'tracefs_hist_set_sort_keys()'?
+This patch-set supersedes "[v2,00/87] Trace file version 7":
+   https://lore.kernel.org/linux-trace-devel/20210729050959.12263-1-tz.stoyanov@gmail.com/
 
-Nothing is something to replace?
+v3 changes:
+ - fixed issues of split and convert commands with some corner cases
+v2 changes:
+ - more cleanups, forgotten in the first version
 
-Or we remove this completely, and have a:
+Tzvetomir Stoyanov (VMware) (21):
+  trace-cmd library: Read option id with correct endian
+  trace-cmd report: Fix typos in error messages
+  trace-cmd library: Fix version string memory leak
+  trace-cmd library: Fixed a memory leak on input handler close
+  trace-cmd library: Do not pass guests list to a buffer instance
+  trace-cmd library: Set long size to the input tep handler when it is
+    read from the file
+  trace-cmd library: Do not use local variables when reading CPU stat
+    option
+  trace-cmd library: Reuse within the library the function that checks
+    file state.
+  trace-cmd library: Fix possible memory leak in read_ftrace_files()
+  trace-cmd library: Fix possible memory leak in read_event_files()
+  trace-cmd library: Fix possible memory leak in read_proc_kallsyms()
+  trace-cmd library: Fix possible memory leak in read_ftrace_printk()
+  trace-cmd library: Fix possible memory leak in
+    read_and_parse_cmdlines()
+  trace-cmd library: Set input handler default values in allocation
+    function
+  trace-cmd library: Track maximum CPUs count in input handler
+  trace-cmd report: Close input file handlers on exit
+  trace-cmd report: Do not print empty buffer name
+  trace-cmd library: Set correct CPU to the record, retrieved with
+    tracecmd_peek_data
+  trace-cmd library: Refactor APIs for creating output handler
+  trace-cmd library: Refactor the logic for writing trace data in the
+    file
+  trace-cmd report: Init the top trace instance earlier
 
- tracefs_hist_reset_sort_keys()
+ .../include/private/trace-cmd-private.h       |  35 +-
+ lib/trace-cmd/include/trace-cmd-local.h       |  19 +
+ lib/trace-cmd/trace-input.c                   | 211 +++--
+ lib/trace-cmd/trace-output.c                  | 779 +++++++++++-------
+ lib/trace-cmd/trace-util.c                    |  28 +
+ tracecmd/trace-listen.c                       |   2 +-
+ tracecmd/trace-read.c                         |  21 +-
+ tracecmd/trace-record.c                       |  73 +-
+ tracecmd/trace-restore.c                      |  32 +-
+ 9 files changed, 783 insertions(+), 417 deletions(-)
 
-Which removes all sort keys, and let you to start with a clean plate.
-Thus, the above would really just be "reset" followed by "add".
+-- 
+2.31.1
 
--- Steve
