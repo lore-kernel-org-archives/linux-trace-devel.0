@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FAD2C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:12:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BA49C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:12:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B96DF610A6
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:12:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7E884610CE
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:12:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233077AbhINNNz (ORCPT
+        id S233105AbhINNN7 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 14 Sep 2021 09:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48308 "EHLO
+        Tue, 14 Sep 2021 09:13:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232996AbhINNNz (ORCPT
+        with ESMTP id S232996AbhINNN6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 14 Sep 2021 09:13:55 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F7AC061574
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:12:37 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id q11so20115617wrr.9
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:12:37 -0700 (PDT)
+        Tue, 14 Sep 2021 09:13:58 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 019EBC061574
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:12:41 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id u19-20020a7bc053000000b002f8d045b2caso2513939wmc.1
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:12:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=q/XpTU2XhoHbHAqoA8x/vtqptp62mgjiQRNtFM2Rvqo=;
-        b=Ie0NkJ81tx5CrTz2YhnVLDpJ2QWzD4L0QZXwvBeTKZjPRzfy1ux4FWWIJNU9Tx3b0l
-         K6ACSXsANI1fPpBfRUluZo6ky800JS2wMVvTNVYj/5+62J5fwQ7uD5ZcGTwGyrG3r1UA
-         FRWwAoxrR0ORtp7Xf0K9wYyC4XYOSBQVe79xx9tmROo+fYvz1W6t6yG/XwI5PivTBjQx
-         S/Y+BbwHh+6Dbb5TFu8L3wG4amKNF9fJnAmwEOLpcdNnPZ5buYKtXjUGlwWYOHdwkAyo
-         3dxXiKfV/vgdHPVFtnPBSUhpcfkx1uMoR4rY4B+FhsUwNuuFYWOXBTcwCaUBgiRX9dje
-         wIfw==
+        bh=6uflLdcxtwKc9UdYaXGxzpx3D+nzjM4vg/8RpU5kByg=;
+        b=k2b8JOCYsE5SJgylRZePDaErpp+VjrXFe8jwbuCkrFcDXGl5pUhH7eFeSJxfKA5bM1
+         IPxU4PNKdRUOqCT5hl/mF0oMLmo6db/+i3s42GRVJqdtnLMzl9+F5M70xoidmVkXZKu6
+         LiPkTic2IwKPah2QFcIyQH98D2vH+3HT17TXMUC3lEuwPMqHnr7c8AQPIDPOvKz3zn2O
+         CQsMvxuBWWWM8Y167FXZYDs5LpTG35O9MPDb7aGbT08zqZ9F+dqelkp16PbpC5AZ8ZDz
+         3pK5jxU+JsssviW4dNWM/siGwqmiPm9Fi/MSBbM2mJKXCED1HXJxFYYxiu0jj+FMXSEO
+         tWuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=q/XpTU2XhoHbHAqoA8x/vtqptp62mgjiQRNtFM2Rvqo=;
-        b=o5Ly4G0bzNgRml8WgF0+vGEg2rl1Gi7F0w9UKMOyUPywf3khsLeClFtV4WE+vitx19
-         gmSOiADF198GaU+fR+D7i4EddheDeNFhaBkfbO7Q8jvwkQtwMyP0WfIwyKExDE+LvRqy
-         mEqujFWf/ivTE0UBuwCLAWsMmBkx68XBAbQA4S8FUqWb58CABiATZhnhQ6lZqba/P88N
-         BIp5UvRle1EqbBuLtp6DLCq9kcWk6dL1f1Eyq8E/D5su5q+lqnXXwY3K24VM+RgBVD+a
-         wR0+oSIrIfn0u/B4/AscfqrGG2TNF2uA6nKRcIJKd1OC+H1HeQrqtM6iiufgdfvLB0aM
-         6wmQ==
-X-Gm-Message-State: AOAM532EouF0dee7DPEMpFJufev58kLY2nRgrXoRqTIkOgdNeP8RTlYX
-        9hCg6xF2oS44lDUiNauMDG07Kwq+Bl8=
-X-Google-Smtp-Source: ABdhPJwR9hJSSEQXlJd5tT7Q8tcmHpy6uKMRuLCyxbqEDL8/ZplX4ITquXS3BIlIaC0oTvjheWYqgQ==
-X-Received: by 2002:a5d:54cf:: with SMTP id x15mr19334850wrv.27.1631625156264;
-        Tue, 14 Sep 2021 06:12:36 -0700 (PDT)
+        bh=6uflLdcxtwKc9UdYaXGxzpx3D+nzjM4vg/8RpU5kByg=;
+        b=YWO2snB4z2XGg2Pql9Eg9HcfoxX7I11WMAJO1Rkq3pp8nYzpNLmCxfM4ikF5E/SJy7
+         sR0iYUoin0+jMBRKu7BKvI8Iy7HzwysfR1OhrBzAhzm0EOm6aCfsfJ8LVO2Pyl/4sQjl
+         Qyb/RzyDHvLfhUAeHwJ03s4y3Hhxd1r5oKt1OEVLfKbrRoMpCLnw2+8yJpneFQspBtcF
+         u1JG4mHsOmPB3CamF3E+vmm/CVM4knvH3uqHiDwsRP5qTfbPFfao0SzI0YmYQjxjmowd
+         zDSn7IJr1VfR98/3Po1/K4AklcdeAOSP1O4iXH1plXMw7LKNsFTYsHL9S4jSjELuRMJZ
+         2DTw==
+X-Gm-Message-State: AOAM531SJd/1OZFH01fXX24GWEZt3fTZNUuhrvHd123Q5hpLUYYyzr2z
+        F7ytz1nZ6htZhyJ0xy5sze8ZN/rOYz4=
+X-Google-Smtp-Source: ABdhPJyhvD7GgxjzPmsvQ8W4XQYqST94/TtZZoqEyxKPf7ssd/tanYHO0pZX0ri1NRLHyfLMTm6v8Q==
+X-Received: by 2002:a1c:4d01:: with SMTP id o1mr2138872wmh.61.1631625159558;
+        Tue, 14 Sep 2021 06:12:39 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id k17sm1910221wmj.0.2021.09.14.06.12.35
+        by smtp.gmail.com with ESMTPSA id k17sm1910221wmj.0.2021.09.14.06.12.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 06:12:35 -0700 (PDT)
+        Tue, 14 Sep 2021 06:12:39 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 01/21] trace-cmd library: Read option id with correct endian
-Date:   Tue, 14 Sep 2021 16:12:12 +0300
-Message-Id: <20210914131232.3964615-2-tz.stoyanov@gmail.com>
+Subject: [PATCH v3 04/21] trace-cmd library: Fixed a memory leak on input handler close
+Date:   Tue, 14 Sep 2021 16:12:15 +0300
+Message-Id: <20210914131232.3964615-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210914131232.3964615-1-tz.stoyanov@gmail.com>
 References: <20210914131232.3964615-1-tz.stoyanov@gmail.com>
@@ -73,58 +73,38 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The id of a trace option is 2 bytes short integer. When reading it from
-the trace file, use the tep handler associated with the file, if
-available, to convert the option with the correct endian order.
-A new helper function is introduced to read and convert 2 byte integer.
+When an input handler to a trace file is closed with tracecmd_close(),
+the list with buffers is not freed. This leads to a memory leak. Added
+logic to free that list.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ lib/trace-cmd/trace-input.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index ac57bc4f..0dbcdbdc 100644
+index 9253bc37..ffe87e8a 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -336,6 +336,18 @@ static char *read_string(struct tracecmd_input *handle)
- 	return NULL;
- }
- 
-+static int read2(struct tracecmd_input *handle, unsigned short *size)
-+{
-+	struct tep_handle *pevent = handle->pevent;
-+	unsigned short data;
-+
-+	if (do_read_check(handle, &data, 2))
-+		return -1;
-+
-+	*size = tep_read_number(pevent, &data, 2);
-+	return 0;
-+}
-+
- static int read4(struct tracecmd_input *handle, unsigned int *size)
+@@ -3484,6 +3484,7 @@ void tracecmd_ref(struct tracecmd_input *handle)
+ void tracecmd_close(struct tracecmd_input *handle)
  {
- 	struct tep_handle *pevent = handle->pevent;
-@@ -2660,16 +2672,15 @@ static int handle_options(struct tracecmd_input *handle)
- 	handle->options_start = lseek64(handle->fd, 0, SEEK_CUR);
+ 	int cpu;
++	int i;
  
- 	for (;;) {
--		if (do_read_check(handle, &option, 2))
-+		if (read2(handle, &option))
- 			return -1;
+ 	if (!handle)
+ 		return;
+@@ -3521,6 +3522,10 @@ void tracecmd_close(struct tracecmd_input *handle)
+ 	free(handle->version);
+ 	close(handle->fd);
  
- 		if (option == TRACECMD_OPTION_DONE)
- 			break;
++	for (i = 0; i < handle->nr_buffers; i++)
++		free(handle->buffers[i].name);
++	free(handle->buffers);
++
+ 	tracecmd_free_hooks(handle->hooks);
+ 	handle->hooks = NULL;
  
- 		/* next 4 bytes is the size of the option */
--		if (do_read_check(handle, &size, 4))
-+		if (read4(handle, &size))
- 			return -1;
--		size = tep_read_number(handle->pevent, &size, 4);
- 		buf = malloc(size);
- 		if (!buf)
- 			return -ENOMEM;
 -- 
 2.31.1
 
