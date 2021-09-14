@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE1CEC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:13:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79137C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:13:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 98E1A610F9
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:13:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 55A29610CE
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:13:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233077AbhINNOS (ORCPT
+        id S233093AbhINNOT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 14 Sep 2021 09:14:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48416 "EHLO
+        Tue, 14 Sep 2021 09:14:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232989AbhINNOR (ORCPT
+        with ESMTP id S232989AbhINNOS (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 14 Sep 2021 09:14:17 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71656C061574
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:13:00 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id b21-20020a1c8015000000b003049690d882so2033900wmd.5
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:13:00 -0700 (PDT)
+        Tue, 14 Sep 2021 09:14:18 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37B84C061574
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:13:01 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id q26so20129998wrc.7
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:13:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=RL9NU2QU3eQCBHNiwR5XAbT/oZdzMq72Opi9smJDKmw=;
-        b=aoAyHoHnzV9YPnQcsKKyNJVwv/Z3UxVNmYzA1f/dnX7+c4nSVV9TCyGPaMcV8lLjso
-         WCGxkM0KM5/ahuqde/4UGm3CmH6eeWu0wzH7Wp76uKWtlIncWd2F0O4sCsG9DnnQAfmC
-         s/2+hMN5gfFAZMeZb6K/9vClNHq0DoB9I1OmhlibzAIzxz8XbbC/r7tm4RG7ZOYgLDIh
-         w1bjMax/z5sohBZrohPnPwa2Qa3ys7NjQZsQRZNCo6nbK3lqpmCkoTon8vO2bNdl4noU
-         qNufCiI3pmP2u8W7YpvM2GV0exaHjZRTM8KbHjo9JbN2DPn7vlN/3IxVEv4a2gQ+DBwv
-         FQBQ==
+        bh=vFXaQI/G0HHdHdRSAHOmVE4YjkrR1Z9WT14pKr2Ncd0=;
+        b=aR8mUJfokL7FJkQhxMJDlY1F5pSd+3AdZ3mBGqq9CsgOIiIIdO0Pzfr501RXz+x8dc
+         5Bl+zqGYgOVuIU8OhRKGliQkibP57MpdL3D3RqI2zu8jJhgEvvqz+9MI2ITgdgvvUPj0
+         ucB4ltz8ihyvUWgW/2vhj93P9Bxpc7NHblTIb3FVYpDv9CJ4/95oWHAlIWkmHsAKA8JT
+         bABxgvEE/mqtG7BLGf9ZcT3VYsPy8tJ71oqNSn+TF0qLS2Tv2vRDNRScC+6w/zkCnZZT
+         syxA9zxH58C8RKuRssVUhlIwwLgpWveW6sJPMEQKIfKhrcU7Jaqjmbg/NkQ1rN8/Z8FX
+         ExGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RL9NU2QU3eQCBHNiwR5XAbT/oZdzMq72Opi9smJDKmw=;
-        b=qXCo1V+igM0suHy3IPNyZy+VtJIrPwft79kJjokgIq2kR1S95hHzLpPH9PFyS3HP1D
-         /B1am0Nm9mO4RwlxUPSuxq4WQedpQB7mX5KypBCdbHZ6Q36ZQnucoLLfUd6uZn1/QqgV
-         Gxq0cMAQpMgicM3YKw6fTXSipD1bW8dtr6OHzIt18wmAuTu0KCQBSwa/A2QysplBY5UZ
-         50FHVbdXpmFqhutJzLsEawtlDeOYK9AgWXNZZgaF+XLDZYoDS1HOrQt1erEKeIhYhoHl
-         EQoREePj+PG4eNlQgZs85NO8Yn8CC/42sF+KpEZcoo3jjkNU6SC+wEq4kFJ7/AJmDomR
-         3Mcg==
-X-Gm-Message-State: AOAM531CXfvd576xLOLYUgfPs3BDC9NTdbjAxz5ezAfIyvCZMdhuAtl5
-        PHMF16Z/uMJzLwxccOzN7rwyb4Sk5io=
-X-Google-Smtp-Source: ABdhPJzewjnWIxTay/PdQRjdK/yy1ydVcHzYCGLTiobhwd7Ren3ulxCGa4UyuNBAYfi53bBSZMfX0w==
-X-Received: by 2002:a1c:2c3:: with SMTP id 186mr2144644wmc.43.1631625172905;
-        Tue, 14 Sep 2021 06:12:52 -0700 (PDT)
+        bh=vFXaQI/G0HHdHdRSAHOmVE4YjkrR1Z9WT14pKr2Ncd0=;
+        b=g+yZ/EAGD43k0iEDOA9PmCRvVC3cRap/aDOVmXNgQf878aGX1MqL8BTVHbV97hhtLg
+         ew/RdPP+CtGQs8aCkAQbrRvs2VsNNQ7yKrbDpCT8aG7rLtQqjpVBdjw4XJ8enp3DmIHY
+         3C4EGHdg8MThaS4aiHl8UKjeD2F8G5JsRxNMNbQzo4RMMwcg3Hk5vyfXiiRWydMMcBjR
+         ODN2b6x1/DCmEjDcHvLlLLSAPblNd3SFTRlSjflyhKlFQ2vA7NbvCBFhDsL92HsuIEbM
+         70L0floWDzUipL4jidegaMGCRJ7BcXRWhK1KohR/yfNV+1scq3SH//ERevXz6RhUd8hD
+         2B9g==
+X-Gm-Message-State: AOAM5315PWYULwR5DPQM3G2Rf1q2pbyafaqMuwHJXS2f2DRQ1N3rZsBO
+        oon2S5+Ppjjz16BuXQV3Gv/eTHZylEc=
+X-Google-Smtp-Source: ABdhPJx+7WbfY/cDAplmLeOLcB2O90lT5jn6xp6fAMGblirsiAbt0RI9xIwf/PdoSNSFIQLHuly0SQ==
+X-Received: by 2002:adf:d4cb:: with SMTP id w11mr19015214wrk.125.1631625179874;
+        Tue, 14 Sep 2021 06:12:59 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id k17sm1910221wmj.0.2021.09.14.06.12.51
+        by smtp.gmail.com with ESMTPSA id k17sm1910221wmj.0.2021.09.14.06.12.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 06:12:52 -0700 (PDT)
+        Tue, 14 Sep 2021 06:12:59 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 16/21] trace-cmd report: Close input file handlers on exit
-Date:   Tue, 14 Sep 2021 16:12:27 +0300
-Message-Id: <20210914131232.3964615-17-tz.stoyanov@gmail.com>
+Subject: [PATCH v3 17/21] trace-cmd report: Do not print empty buffer name
+Date:   Tue, 14 Sep 2021 16:12:28 +0300
+Message-Id: <20210914131232.3964615-18-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210914131232.3964615-1-tz.stoyanov@gmail.com>
 References: <20210914131232.3964615-1-tz.stoyanov@gmail.com>
@@ -73,35 +73,27 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When "trace-cmd report" is interrupted with "ctrl-c", close the input
-handlers to opened trace files, to delete any temporary files used when
-reading the trace data. This clean up is needed for the design of the
-next version of the trace file.
+This clean up is needed for the design of the next version of the trace
+file, where the top buffer is saved with its empty file name, string "".
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-read.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ tracecmd/trace-read.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
-index 31724b09..4261088d 100644
+index 4261088d..02f75cb9 100644
 --- a/tracecmd/trace-read.c
 +++ b/tracecmd/trace-read.c
-@@ -1363,7 +1363,14 @@ struct tracecmd_input *read_trace_header(const char *file, int flags)
- 
- static void sig_end(int sig)
- {
-+	struct handle_list *handles;
-+
- 	fprintf(stderr, "trace-cmd: Received SIGINT\n");
-+
-+	list_for_each_entry(handles, &handle_list, list) {
-+		tracecmd_close(handles->handle);
-+	}
-+
- 	exit(0);
- }
- 
+@@ -1173,7 +1173,7 @@ static void print_handle_file(struct handle_list *handles)
+ 	/* Only print file names if more than one file is read */
+ 	if (!multi_inputs && !instances)
+ 		return;
+-	if (handles->file)
++	if (handles->file && *handles->file != '\0')
+ 		printf("%*s: ", max_file_size, handles->file);
+ 	else
+ 		printf("%*s  ", max_file_size, "");
 -- 
 2.31.1
 
