@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF8BDC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:19:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2437C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:19:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A6167610F9
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:19:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AB096610F9
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:19:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233077AbhINNUo (ORCPT
+        id S233079AbhINNUp (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 14 Sep 2021 09:20:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49936 "EHLO
+        Tue, 14 Sep 2021 09:20:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232762AbhINNUo (ORCPT
+        with ESMTP id S232762AbhINNUp (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 14 Sep 2021 09:20:44 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D14CC061574
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:19:26 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id d207-20020a1c1dd8000000b00307e2d1ec1aso2523175wmd.5
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:19:26 -0700 (PDT)
+        Tue, 14 Sep 2021 09:20:45 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B01E4C061574
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:19:27 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id d6so20163671wrc.11
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:19:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=VqSfJRmOqWsa4ye2roxXbaeyz75OHL+2EPtD0al00c4=;
-        b=abiB83p49LdcB8UXk/LnSCx8ZgmutD3YqChjyGvFBPb2TJctyXhsdKQHpm6kQDkOtU
-         ogzkwPu0e1CER3e3spHkBY5ZPTkoM32SdpTrBlz7H8p6LHwvHXRAD02x6S3SKnhNmMUn
-         DIFRd6WhC5U44wOntm5DaCiQnDRAyKmIBlkjXaUDu667ReAVA5Isi+dxLyf3EnXjnGn+
-         a6adH9lCWfln2uyhmwNbsT4Eb5jzcSPAf7wpm9zSZlus6K3VW/nC6s4uTaddOillfqIi
-         t0lIpEnMeZAswCifycCjC6jh0DBS81q+yeSFdTaTqLzmg8twbe12+VTLG74OsNKp/NhJ
-         1rwQ==
+        bh=7Z+hJ43+HktIMXGAr2/HiD71a+OJ0wAqyjO0rQHrMxE=;
+        b=Lk1MYW1zA4lvmHbwt/Ko37f1lFHRYjnh9E6shJ94pRTQk2nnN7ziPJjSYhGVgrF6Yn
+         HaJXOzA0+Dff7YuWQ3aLrYwnAAxFvHSAsqjp16J07SJTze936uAhRtDt08x+zVOD8y5p
+         XJtaDMiyLqCOCHD1PSDZu8O6in6CNtnz2XEZdJvzczLv7f7r8Rqzvp5XtdYvZBIzw4U6
+         RitqXRJrm7KctCnv1uGEvbDaR+00aBkFNYbg8W/i4MDdM0mfUJ9hX0tvULdsgKSTX++V
+         LB8O36vyUR10P+BfOFcl1Uhaafh1SmTXaXqOGL44DZwZO7I+/yG7nahtUXHTzwkTfQ1c
+         DW1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=VqSfJRmOqWsa4ye2roxXbaeyz75OHL+2EPtD0al00c4=;
-        b=m4iOB6Q8h1PZPTEk3HZl6Jt1LXJSJmTKfaHXRTfre32qN0gXSha+oeOs7JLY4B6HiT
-         7t8JMv2/olx6dvf/wxcE8CWM+kQkspgYje2VlS/1eijPVIlZJw0hEw70Tt74EshoQd3Q
-         mI7R1zaKGQw/PqN9L0UvUPk+3linGjR0StCmhTedKLNpzBkIJmXnjWezGOK5rr6SXAcw
-         tElFsBw13zwRyVimMvrdjZV+vxL3GjOVctfkM8jR7REqaoLw2Hg/RJs8dGvaI7L4kODf
-         aAgwhbPdMqCrEJHFkIko9MrAWVVLIEtF8uERmHDAYShYoyNpPJU4alEG6UPBj9JsrXsi
-         YeGw==
-X-Gm-Message-State: AOAM533qL6pXLtL4XW2/hoV1dzUnwrFxMBFpCO1jUNUtKFBx/0dST4J+
-        I30ZXbUIW7tB2075A1TrE9rVHJACc88=
-X-Google-Smtp-Source: ABdhPJyMeE5xTtoj8jOg7qb2aGb2f1iZQHwPccf6S2u/nYnmPgzGlVnBgr7zUY3V+ymv8EBmrG/IHA==
-X-Received: by 2002:a7b:cd93:: with SMTP id y19mr2202941wmj.110.1631625565217;
-        Tue, 14 Sep 2021 06:19:25 -0700 (PDT)
+        bh=7Z+hJ43+HktIMXGAr2/HiD71a+OJ0wAqyjO0rQHrMxE=;
+        b=o/O/gI4BzkzmjFM49q+MHSHRmGKF/nnGzKfP+Z7okuylVe7b5KwSgpH/odbMqnzYDr
+         Lo1tT8H/yWXjRXeiYYG7zeahEn5MzPVh+jD+q1wq1iXi6wG33mkre3FVghV924CN/FZc
+         hI0xCEd46cWuh38jwBmORsy1X3dFA5a3kZTgaSHaNHu4CpvduMuQ0qEy/scMBcnMlu2V
+         J18p1HsUGMZcpYZglF4W6uvB+Ly3jMCAuKEVc/8SHiGlR0L4TzAEx7pf1Q1GCP+ulzVo
+         P2X76lz5yLipCE+/4/g11X2OimxoHeVMEZY2bAojK01TryBn12HUD5lb5CU3il1qIpDi
+         eojg==
+X-Gm-Message-State: AOAM532ZFt52PCWYKgfHhmjW0b5Pk9YwYiC/Oo65b0nstTaDosBXOaMV
+        jtLZ2KQJq7rxfPRFWtqEbL30n+25XfY=
+X-Google-Smtp-Source: ABdhPJxnlEESM+VHvBfzUHJY2XgZH2wegCmmMxUsmZcpM/gOh9qfyn9862uA5oif/LWCogSAJQe6Zw==
+X-Received: by 2002:a5d:4d02:: with SMTP id z2mr13910940wrt.8.1631625566225;
+        Tue, 14 Sep 2021 06:19:26 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id f18sm4545302wrw.63.2021.09.14.06.19.24
+        by smtp.gmail.com with ESMTPSA id f18sm4545302wrw.63.2021.09.14.06.19.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 06:19:24 -0700 (PDT)
+        Tue, 14 Sep 2021 06:19:25 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 2/8] trace-cmd library: Handle version 7 files when copying headers between files
-Date:   Tue, 14 Sep 2021 16:19:15 +0300
-Message-Id: <20210914131921.3967421-3-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 3/8] trace-cmd library: Copy CPU count between trace files
+Date:   Tue, 14 Sep 2021 16:19:16 +0300
+Message-Id: <20210914131921.3967421-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210914131921.3967421-1-tz.stoyanov@gmail.com>
 References: <20210914131921.3967421-1-tz.stoyanov@gmail.com>
@@ -73,438 +73,74 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When copying header data between trace files, handle the file versions.
-Internal library functions for copying these headers are fixed to work
-with trace file version 7:
- copy_header_files
- copy_ftrace_files
- copy_event_files
- copy_proc_kallsyms
- copy_command_lines
+The tracecmd_copy_headers() API should be able to copy CPU count also,
+as it is part of the headers.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/include/trace-cmd-local.h |   3 +
- lib/trace-cmd/trace-input.c             | 211 ++++++++++++++++++++----
- lib/trace-cmd/trace-output.c            |  10 ++
- lib/trace-cmd/trace-util.c              |   8 +-
- 4 files changed, 200 insertions(+), 32 deletions(-)
+ lib/trace-cmd/trace-input.c | 42 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
-index 18d2d05b..92bc288a 100644
---- a/lib/trace-cmd/include/trace-cmd-local.h
-+++ b/lib/trace-cmd/include/trace-cmd-local.h
-@@ -46,6 +46,9 @@ int out_uncompress_block(struct tracecmd_output *handle);
- int out_compression_start(struct tracecmd_output *handle, bool compress);
- int out_compression_end(struct tracecmd_output *handle, bool compress);
- void out_compression_reset(struct tracecmd_output *handle, bool compress);
-+bool out_check_compression(struct tracecmd_output *handle);
-+
-+void out_set_file_state(struct tracecmd_output *handle, int new_state);
- unsigned long long out_copy_fd_compress(struct tracecmd_output *handle,
- 					int fd, unsigned long long max,
- 					unsigned long long *write_size);
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index ab82fdff..b241934d 100644
+index b241934d..9e3f4bc0 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -4445,164 +4445,313 @@ static int read_copy_data(struct tracecmd_input *in_handle,
+@@ -4754,6 +4754,35 @@ error:
  	return -1;
  }
  
-+
-+static bool check_in_state(struct tracecmd_input *handle, int new_state)
++static int copy_cpu_count(struct tracecmd_input *in_handle, struct tracecmd_output *out_handle)
 +{
-+	return check_file_state(handle->file_version, handle->file_state, new_state);
-+}
++	unsigned int cpus;
 +
- static int copy_header_files(struct tracecmd_input *in_handle,
- 			     struct tracecmd_output *out_handle)
- {
-+	bool compress = out_check_compression(out_handle);
-+	struct file_section *sec;
-+	unsigned long long offset;
- 	unsigned long long size;
- 
--	if (in_handle->file_state != TRACECMD_FILE_HEADERS - 1)
-+	if (!check_in_state(in_handle, TRACECMD_FILE_HEADERS) ||
-+	    !check_out_state(out_handle, TRACECMD_FILE_HEADERS))
- 		return -1;
- 
-+	sec = section_open(in_handle, TRACECMD_OPTION_HEADER_INFO);
-+	if (!sec)
++	if (!check_in_state(in_handle, TRACECMD_FILE_CPU_COUNT) ||
++	    !check_out_state(out_handle, TRACECMD_FILE_CPU_COUNT))
 +		return -1;
-+	offset = out_write_section_header(out_handle, TRACECMD_OPTION_HEADER_INFO,
-+					  "headers", TRACECMD_SEC_FL_COMPRESS, true);
-+	out_compression_start(out_handle, compress);
 +
- 	/* "header_page"  */
- 	if (read_copy_data(in_handle, 12, out_handle) < 0)
--		return -1;
-+		goto error;
- 
- 	if (read_copy_size8(in_handle, out_handle, &size) < 0)
--		return -1;
-+		goto error;
- 
- 	if (read_copy_data(in_handle, size, out_handle) < 0)
--		return -1;
-+		goto error;
- 
- 	/* "header_event"  */
- 	if (read_copy_data(in_handle, 13, out_handle) < 0)
--		return -1;
-+		goto error;
- 
- 	if (read_copy_size8(in_handle, out_handle, &size) < 0)
--		return -1;
-+		goto error;
- 
- 	if (read_copy_data(in_handle, size, out_handle) < 0)
--		return -1;
-+		goto error;
- 
- 	in_handle->file_state = TRACECMD_FILE_HEADERS;
-+	if (out_compression_end(out_handle, compress))
-+		goto error;
-+	out_set_file_state(out_handle, in_handle->file_state);
-+	section_close(in_handle, sec);
-+
-+	if (out_update_section_header(out_handle, offset))
-+		goto error;
- 
- 	return 0;
-+error:
-+	out_compression_reset(out_handle, compress);
-+	section_close(in_handle, sec);
-+	return -1;
- }
- 
- static int copy_ftrace_files(struct tracecmd_input *in_handle, struct tracecmd_output *out_handle)
- {
-+	bool compress = out_check_compression(out_handle);
-+	struct file_section *sec;
-+	unsigned long long offset;
- 	unsigned long long size;
- 	unsigned int count;
- 	unsigned int i;
- 
--	if (in_handle->file_state != TRACECMD_FILE_FTRACE_EVENTS - 1)
-+	if (!check_in_state(in_handle, TRACECMD_FILE_FTRACE_EVENTS) ||
-+	    !check_out_state(out_handle, TRACECMD_FILE_FTRACE_EVENTS))
- 		return -1;
- 
--	if (read_copy_size4(in_handle, out_handle, &count) < 0)
-+	sec = section_open(in_handle, TRACECMD_OPTION_FTRACE_EVENTS);
-+	if (!sec)
- 		return -1;
-+	offset = out_write_section_header(out_handle, TRACECMD_OPTION_FTRACE_EVENTS,
-+					  "ftrace events", TRACECMD_SEC_FL_COMPRESS, true);
-+
-+	out_compression_start(out_handle, compress);
-+
-+	if (read_copy_size4(in_handle, out_handle, &count) < 0)
-+		goto error;
- 
- 	for (i = 0; i < count; i++) {
- 
- 		if (read_copy_size8(in_handle, out_handle, &size) < 0)
--			return -1;
-+			goto error;
- 
- 		if (read_copy_data(in_handle, size, out_handle) < 0)
--			return -1;
-+			goto error;
- 	}
- 
- 	in_handle->file_state = TRACECMD_FILE_FTRACE_EVENTS;
-+	if (out_compression_end(out_handle, compress))
-+		goto error;
-+	out_set_file_state(out_handle, in_handle->file_state);
-+
-+	section_close(in_handle, sec);
-+
-+	if (out_update_section_header(out_handle, offset))
-+		goto error;
- 
- 	return 0;
-+error:
-+	out_compression_reset(out_handle, compress);
-+	section_close(in_handle, sec);
-+	return -1;
- }
- 
- static int copy_event_files(struct tracecmd_input *in_handle, struct tracecmd_output *out_handle)
- {
-+	bool compress = out_check_compression(out_handle);
-+	struct file_section *sec;
-+	unsigned long long offset;
- 	unsigned long long size;
- 	char *system;
- 	unsigned int systems;
- 	unsigned int count;
- 	unsigned int i,x;
- 
--	if (in_handle->file_state != TRACECMD_FILE_ALL_EVENTS - 1)
-+	if (!check_in_state(in_handle, TRACECMD_FILE_ALL_EVENTS) ||
-+	    !check_out_state(out_handle, TRACECMD_FILE_ALL_EVENTS))
- 		return -1;
- 
--	if (read_copy_size4(in_handle, out_handle, &systems) < 0)
-+	sec = section_open(in_handle, TRACECMD_OPTION_EVENT_FORMATS);
-+	if (!sec)
- 		return -1;
-+	offset = out_write_section_header(out_handle, TRACECMD_OPTION_EVENT_FORMATS,
-+					  "events format", TRACECMD_SEC_FL_COMPRESS, true);
-+
-+	out_compression_start(out_handle, compress);
-+
-+	if (read_copy_size4(in_handle, out_handle, &systems) < 0)
-+		goto error;
- 
- 	for (i = 0; i < systems; i++) {
- 		system = read_string(in_handle);
- 		if (!system)
--			return -1;
-+			goto error;
- 		if (do_write_check(out_handle, system, strlen(system) + 1)) {
- 			free(system);
--			return -1;
-+			goto error;
- 		}
- 		free(system);
- 
- 		if (read_copy_size4(in_handle, out_handle, &count) < 0)
--			return -1;
-+			goto error;
- 
- 		for (x=0; x < count; x++) {
- 			if (read_copy_size8(in_handle, out_handle, &size) < 0)
--				return -1;
-+				goto error;
- 
- 			if (read_copy_data(in_handle, size, out_handle) < 0)
--				return -1;
-+				goto error;
- 		}
- 	}
- 
- 	in_handle->file_state = TRACECMD_FILE_ALL_EVENTS;
-+	if (out_compression_end(out_handle, compress))
-+		goto error;
-+	out_set_file_state(out_handle, in_handle->file_state);
-+
-+	section_close(in_handle, sec);
-+
-+	if (out_update_section_header(out_handle, offset))
-+		goto error;
- 
- 	return 0;
-+error:
-+	out_compression_reset(out_handle, compress);
-+	section_close(in_handle, sec);
-+	return -1;
- }
- 
- static int copy_proc_kallsyms(struct tracecmd_input *in_handle, struct tracecmd_output *out_handle)
- {
-+	bool compress = out_check_compression(out_handle);
-+	struct file_section *sec;
-+	unsigned long long offset;
- 	unsigned int size;
- 
--	if (in_handle->file_state != TRACECMD_FILE_KALLSYMS - 1)
-+	if (!check_in_state(in_handle, TRACECMD_FILE_KALLSYMS) ||
-+	    !check_out_state(out_handle, TRACECMD_FILE_KALLSYMS))
- 		return -1;
- 
--	if (read_copy_size4(in_handle, out_handle, &size) < 0)
-+	sec = section_open(in_handle, TRACECMD_OPTION_KALLSYMS);
-+	if (!sec)
- 		return -1;
-+	offset = out_write_section_header(out_handle, TRACECMD_OPTION_KALLSYMS,
-+					  "kallsyms", TRACECMD_SEC_FL_COMPRESS, true);
-+
-+	out_compression_start(out_handle, compress);
-+	if (read_copy_size4(in_handle, out_handle, &size) < 0)
-+		goto error;
- 	if (!size)
--		return 0; /* OK? */
-+		goto out; /* OK? */
- 
- 	if (read_copy_data(in_handle, size, out_handle) < 0)
--		return -1;
--
-+		goto error;
-+out:
- 	in_handle->file_state = TRACECMD_FILE_KALLSYMS;
-+	if (out_compression_end(out_handle, compress))
-+		goto error;
-+	out_set_file_state(out_handle, in_handle->file_state);
-+
-+	section_close(in_handle, sec);
-+
-+	if (out_update_section_header(out_handle, offset))
-+		goto error;
- 
- 	return 0;
-+error:
-+	out_compression_reset(out_handle, compress);
-+	section_close(in_handle, sec);
-+	return -1;
- }
- 
- static int copy_ftrace_printk(struct tracecmd_input *in_handle, struct tracecmd_output *out_handle)
- {
-+	bool compress = out_check_compression(out_handle);
-+	struct file_section *sec;
-+	unsigned long long offset;
- 	unsigned int size;
- 
--	if (in_handle->file_state != TRACECMD_FILE_PRINTK - 1)
-+	if (!check_in_state(in_handle, TRACECMD_FILE_PRINTK) ||
-+	    !check_out_state(out_handle, TRACECMD_FILE_PRINTK))
- 		return -1;
- 
--	if (read_copy_size4(in_handle, out_handle, &size) < 0)
-+	sec = section_open(in_handle, TRACECMD_OPTION_PRINTK);
-+	if (!sec)
- 		return -1;
-+	offset = out_write_section_header(out_handle, TRACECMD_OPTION_PRINTK,
-+					  "printk", TRACECMD_SEC_FL_COMPRESS, true);
-+
-+	out_compression_start(out_handle, compress);
-+
-+	if (read_copy_size4(in_handle, out_handle, &size) < 0)
-+		goto error;
- 	if (!size)
--		return 0; /* OK? */
-+		goto out; /* OK? */
- 
- 	if (read_copy_data(in_handle, size, out_handle) < 0)
--		return -1;
-+		goto error;
- 
-+out:
- 	in_handle->file_state = TRACECMD_FILE_PRINTK;
-+	if (out_compression_end(out_handle, compress))
-+		goto error;
-+	out_set_file_state(out_handle, in_handle->file_state);
-+
-+	section_close(in_handle, sec);
-+
-+	if (out_update_section_header(out_handle, offset))
-+		goto error;
- 
- 	return 0;
-+error:
-+	out_compression_reset(out_handle, compress);
-+	section_close(in_handle, sec);
-+	return -1;
- }
- 
- static int copy_command_lines(struct tracecmd_input *in_handle, struct tracecmd_output *out_handle)
- {
-+	bool compress = out_check_compression(out_handle);
-+	struct file_section *sec;
-+	unsigned long long offset;
- 	unsigned long long size;
- 
--	if (in_handle->file_state != TRACECMD_FILE_CMD_LINES - 1)
-+	if (!check_in_state(in_handle, TRACECMD_FILE_CMD_LINES) ||
-+	    !check_out_state(out_handle, TRACECMD_FILE_CMD_LINES))
- 		return -1;
- 
--	if (read_copy_size8(in_handle, out_handle, &size) < 0)
-+	sec = section_open(in_handle, TRACECMD_OPTION_CMDLINES);
-+	if (!sec)
- 		return -1;
-+	offset = out_write_section_header(out_handle, TRACECMD_OPTION_CMDLINES,
-+					  "command lines", TRACECMD_SEC_FL_COMPRESS, true);
-+
-+	out_compression_start(out_handle, compress);
-+
-+	if (read_copy_size8(in_handle, out_handle, &size) < 0)
-+		goto error;
- 	if (!size)
--		return 0; /* OK? */
-+		goto out; /* OK? */
- 
- 	if (read_copy_data(in_handle, size, out_handle) < 0)
--		return -1;
-+		goto error;
- 
-+out:
- 	in_handle->file_state = TRACECMD_FILE_CMD_LINES;
-+	if (out_compression_end(out_handle, compress))
-+		goto error;
-+	out_set_file_state(out_handle, in_handle->file_state);
-+
-+	section_close(in_handle, sec);
-+
-+	if (out_update_section_header(out_handle, offset))
-+		goto error;
- 
- 	return 0;
-+error:
-+	out_compression_reset(out_handle, compress);
-+	section_close(in_handle, sec);
-+	return -1;
- }
- 
- /**
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index dc396cba..0d9936b6 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -2503,11 +2503,21 @@ out_free:
- 	return NULL;
- }
- 
-+__hidden void out_set_file_state(struct tracecmd_output *handle, int new_state)
-+{
-+	handle->file_state = new_state;
-+}
-+
- __hidden bool check_out_state(struct tracecmd_output *handle, int new_state)
- {
- 	return check_file_state(handle->file_version, handle->file_state, new_state);
- }
- 
-+__hidden bool out_check_compression(struct tracecmd_output *handle)
-+{
-+	return (handle->compress != NULL);
-+}
-+
- /**
-  * tracecmd_get_out_file_version - return the trace.dat file version
-  * @handle: output handle for the trace.dat file
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index 97db6ed9..e9e444cd 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -637,6 +637,12 @@ static void __attribute__((destructor)) tracecmd_lib_free(void)
- 
- __hidden bool check_file_state(unsigned long file_version, int current_state, int new_state)
- {
-+	if (file_version >= FILE_VERSION_SECTIONS) {
-+		if (current_state < TRACECMD_FILE_INIT)
-+			return false;
-+		return true;
++	if (!HAS_SECTIONS(in_handle)) {
++		if (read4(in_handle, &cpus))
++			return -1;
++	} else {
++		cpus = in_handle->max_cpu;
 +	}
 +
- 	switch (new_state) {
- 	case TRACECMD_FILE_HEADERS:
- 	case TRACECMD_FILE_FTRACE_EVENTS:
-@@ -649,7 +655,7 @@ __hidden bool check_file_state(unsigned long file_version, int current_state, in
- 			return true;
++	if (tracecmd_get_out_file_version(out_handle) < FILE_VERSION_SECTIONS) {
++		cpus = tep_read_number(in_handle->pevent, &cpus, 4);
++		if (do_write_check(out_handle, &cpus, 4))
++			return -1;
++	} else {
++		tracecmd_add_option(out_handle, TRACECMD_OPTION_CPUCOUNT, sizeof(int), &cpus);
++	}
++
++	in_handle->file_state = TRACECMD_FILE_CPU_COUNT;
++	out_set_file_state(out_handle, in_handle->file_state);
++
++	return 0;
++}
++
+ /**
+  * tracecmd_copy_headers - Copy headers from a tracecmd_input handle to a file descriptor
+  * @in_handle: input handle for the trace.dat file to copy from.
+@@ -4852,6 +4881,19 @@ int tracecmd_copy_headers(struct tracecmd_input *in_handle,
+ 			return 0;
+ 
+ 		ret = copy_command_lines(in_handle, out_handle);
++		if (ret < 0)
++			goto out;
++
++		/* fallthrough */
++	case TRACECMD_FILE_CPU_COUNT:
++		if (end_state <= in_handle->file_state)
++			return 0;
++
++		ret = copy_cpu_count(in_handle, out_handle);
++		if (ret < 0)
++			goto out;
++
++		/* fallthrough */
+ 	default:
  		break;
- 	case TRACECMD_FILE_OPTIONS:
--		if (current_state == (new_state - 1))
-+		if (file_version < FILE_VERSION_SECTIONS && current_state == TRACECMD_FILE_CPU_COUNT)
- 			return true;
- 		break;
- 	case TRACECMD_FILE_CPU_LATENCY:
+ 	}
 -- 
 2.31.1
 
