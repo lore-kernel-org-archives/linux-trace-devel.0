@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C709C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:14:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52DAAC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:15:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 75F7A610A6
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:14:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3AF01610CE
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:15:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233241AbhINNQQ (ORCPT
+        id S233143AbhINNQR (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 14 Sep 2021 09:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48916 "EHLO
+        Tue, 14 Sep 2021 09:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233235AbhINNQO (ORCPT
+        with ESMTP id S233235AbhINNQQ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 14 Sep 2021 09:16:14 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 232E8C061574
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:14:57 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id w29so19379557wra.8
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:14:57 -0700 (PDT)
+        Tue, 14 Sep 2021 09:16:16 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5943C061760
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:14:58 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id w29so19379678wra.8
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:14:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=M8YlL1SlQNYrxnekGaIBaXbmG7rEz6Zt19sqQpUN2hk=;
-        b=fpr+rgjZyjpiSSWWrxgrw88PV7oGoefAYnGovNDleuOH0AgB61ssa3eugkexSvQfL8
-         Skk8mfNV6jIZBBQLeTJdDgdAscTnTd8VPxaThsKvuRALP4NPaO+Bk/sc4Prb1tdBdNiS
-         j8INd6UBHQa9Lmo+aR0GIbfA62ukRTO9rnldnCKHlKzAqsqaNZZVjG0tfUiPR+At6Guz
-         SkL09y5gMXNLmJZSw9TGzsbhvx2GpzeauFQSKU6FfKUJ/Y+hEF/dF35NovP5rci0r6oF
-         mCCHYzBl+dfj4esDHuH4VaK8+PooVNVO1HkYDNpW5XvdNSRhcivwuvCQFFFW1zxOmxkO
-         2JiA==
+        bh=gF9UzrkCpbQGU+P5Zr9zOkb81SGV9PwzYYl4jv5f5Kc=;
+        b=lt6rn01r1294P13wboWE60OLzygdedhdwwlZ/brVnLhbSWy5bvSwexGu3F7Lg2qRLN
+         aRgvdbTW6z//lW4QAiDAlpCymzKDiW6rynZufEN4/Q7aurnQUiGFk0OJHKOU15dtR8am
+         L+3kgSWRtb+MTKUO+l7TpY8BcS49w9dC11nV8Nffg4CMuCLjUn/kkeGEqSCsAGXT2iS7
+         ASLHwRC5Zh38tX13AXfu2sTEucs9lwPZpwiL0lFaEFwFyqtLZ4zlV3k7lf+ZsETvYOUZ
+         dWGMQId2EzrpUFjvSZc0Yp9mihPe5ktrTXMHvkCYH2r6CbfZqcb8jaaz8isjpz+lHTW0
+         Gw7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=M8YlL1SlQNYrxnekGaIBaXbmG7rEz6Zt19sqQpUN2hk=;
-        b=tsd/dMgwb4iW3WjyS2rkVKZMVP+aZKEugTkmm5cyPsUJ7z5oIbdwFsok/NMpbOsYu3
-         0pRfdG77T5DV9X8b6NlXKn6sLrTd/nykKMKW3PcrUCwAZ97CrrQYfiySYm/4zeVhtsZd
-         VbrrF0YKWjhjNyrM8SeE5OLV88TTkIYu/n/PH5cdLt1tzU9A2WXBsrRViRdVATT5Mt9P
-         pisPWbCTZwTCMjV6JnaEm3kXnpEOM8nERZtk6Na6fizIMZqWa+i/jjkXwJCuk11IGd+Q
-         cWCFipApU0oOqtl5I2QR1fgqrr1xi61wm431FokxPcQus7oI63lwMn8D250GQC+2Z4ud
-         6tMw==
-X-Gm-Message-State: AOAM5311a2FEK1TaxYjRcYxCrh40pI7KJ6K5liXfK23RyzN3DOVhuc0K
-        mSDrKQt9hVqLeanNNhpjNDJtFKZLeI8=
-X-Google-Smtp-Source: ABdhPJwcSKZ5y7RjI5rdE3JP+prVIv8BcjafEri57qF8/I9S9/i9j/j7JcTy2dRH+P47cHgAzQAWEw==
-X-Received: by 2002:a05:6000:1287:: with SMTP id f7mr19092348wrx.221.1631625295716;
-        Tue, 14 Sep 2021 06:14:55 -0700 (PDT)
+        bh=gF9UzrkCpbQGU+P5Zr9zOkb81SGV9PwzYYl4jv5f5Kc=;
+        b=ODpP78AzvqD8KZFSbKRIo/j841IH8bAiExIbM/NJIj9GOUB29hsQ48lhfAX9QWVyyG
+         IRV0U9UnLx05jlIJ3rcv+UxXexkvNjIpG4kqULsFcvi2cNMI5UQh+2dE6EdiW+n8VGHX
+         BhVoCrqq9Qdm9bkJLwYWUpftLji3WQ3dHJtyzOqQbeSVIC0P1SZzJXGrZOMpukrWrady
+         sm2H8V4ltud33tAaxMwgtYroZ1JHgWclJEddG0u2PULpTo0nK6NCkEqjJ+ruuMNBDg7o
+         fddF1TLv5rea1NDm/tXvLSDwtMWCsWh2xrDOqKxz9WevOFBUEiTHX77gD/uKB0NSkQ5U
+         gkNw==
+X-Gm-Message-State: AOAM532nWCFtffWEJWw8+CuUjUHKUPmheAke3flmNg4Wp+iKZ1w9sW0O
+        8129J/phOMXItBhNpv+Yj+N3+UxNm+Q=
+X-Google-Smtp-Source: ABdhPJzs5bKVgfR83meNqO1PbQCE/u6jzqLmMsjLg3USbpBkg58jCO6Hcdi07HCqCI4OscU0rIeDyw==
+X-Received: by 2002:adf:e108:: with SMTP id t8mr18501430wrz.84.1631625297422;
+        Tue, 14 Sep 2021 06:14:57 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id y9sm1274760wmj.36.2021.09.14.06.14.53
+        by smtp.gmail.com with ESMTPSA id y9sm1274760wmj.36.2021.09.14.06.14.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 06:14:54 -0700 (PDT)
+        Tue, 14 Sep 2021 06:14:56 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 13/25] trace-cmd library: Add macro to check file state on reading
-Date:   Tue, 14 Sep 2021 16:14:26 +0300
-Message-Id: <20210914131438.3965484-14-tz.stoyanov@gmail.com>
+Subject: [PATCH v3 14/25] trace-cmd library: Introduce sections in trace file reading logic
+Date:   Tue, 14 Sep 2021 16:14:27 +0300
+Message-Id: <20210914131438.3965484-15-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210914131438.3965484-1-tz.stoyanov@gmail.com>
 References: <20210914131438.3965484-1-tz.stoyanov@gmail.com>
@@ -73,101 +73,130 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Trace file version 7 has flexible structure. It allows reading almost
-any part of the file at any time, unlike the version 6 file when reading
-state must be validated at each step. Added a macro to handle these
-checks.
+Trace file version 7 is based on sections. Added an internal sections
+database and new helper functions to add, read, open and close file
+sections.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ lib/trace-cmd/trace-input.c | 69 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 69 insertions(+)
 
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index de8e0d72..85100aa4 100644
+index 85100aa4..978758c0 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -165,6 +165,8 @@ struct tracecmd_input {
+@@ -114,6 +114,14 @@ struct tsc2nsec {
+ 	unsigned long long offset;
+ };
  
- __thread struct tracecmd_input *tracecmd_curr_thread_handle;
- 
-+#define CHECK_READ_STATE(H, S) ((H)->file_version < FILE_VERSION_SECTIONS && (H)->file_state >= (S))
++struct file_section {
++	int				id;
++	unsigned long long		section_offset;
++	unsigned long long		data_offset;
++	enum tracecmd_section_flags	flags;
++	struct file_section		*next;
++};
 +
- static int read_options_type(struct tracecmd_input *handle);
+ struct tracecmd_input {
+ 	struct tep_handle	*pevent;
+ 	unsigned long		file_state;
+@@ -153,6 +161,7 @@ struct tracecmd_input {
+ 	struct hook_list	*hooks;
+ 	struct pid_addr_maps	*pid_maps;
+ 	/* file information */
++	struct file_section	*sections;
+ 	size_t			header_files_start;
+ 	size_t			ftrace_files_start;
+ 	size_t			event_files_start;
+@@ -376,6 +385,58 @@ static int read8(struct tracecmd_input *handle, unsigned long long *size)
+ 	return 0;
+ }
  
- void tracecmd_set_flag(struct tracecmd_input *handle, int flag)
-@@ -381,7 +383,7 @@ static int read_header_files(struct tracecmd_input *handle)
- 	char *header;
- 	char buf[BUFSIZ];
- 
--	if (handle->file_state >= TRACECMD_FILE_HEADERS)
-+	if (CHECK_READ_STATE(handle, TRACECMD_FILE_HEADERS))
- 		return 0;
- 
- 	if (do_read_check(handle, buf, 12))
-@@ -587,7 +589,7 @@ static int read_ftrace_files(struct tracecmd_input *handle, const char *regex)
- 	int unique;
- 	int ret;
- 
--	if (handle->file_state >= TRACECMD_FILE_FTRACE_EVENTS)
-+	if (CHECK_READ_STATE(handle, TRACECMD_FILE_FTRACE_EVENTS))
- 		return 0;
- 
- 	if (regex) {
-@@ -660,7 +662,7 @@ static int read_event_files(struct tracecmd_input *handle, const char *regex)
- 	int unique;
- 	int ret;
- 
--	if (handle->file_state >= TRACECMD_FILE_ALL_EVENTS)
-+	if (CHECK_READ_STATE(handle, TRACECMD_FILE_ALL_EVENTS))
- 		return 0;
- 
- 	if (regex) {
-@@ -745,7 +747,7 @@ static int read_proc_kallsyms(struct tracecmd_input *handle)
- 	char *buf = NULL;
- 	int ret;
- 
--	if (handle->file_state >= TRACECMD_FILE_KALLSYMS)
-+	if (CHECK_READ_STATE(handle, TRACECMD_FILE_KALLSYMS))
- 		return 0;
- 
- 	ret = read4(handle, &size);
-@@ -781,7 +783,7 @@ static int read_ftrace_printk(struct tracecmd_input *handle)
- 	char *buf = NULL;
- 	int ret;
- 
--	if (handle->file_state >= TRACECMD_FILE_PRINTK)
-+	if (CHECK_READ_STATE(handle, TRACECMD_FILE_PRINTK))
- 		return 0;
- 
- 	ret = read4(handle, &size);
-@@ -832,7 +834,7 @@ static int read_cpus(struct tracecmd_input *handle)
++static struct file_section *section_get(struct tracecmd_input *handle, int id)
++{
++	struct file_section *sec;
++
++	for (sec = handle->sections; sec; sec = sec->next) {
++		if (sec->id == id)
++			return sec;
++	}
++
++	return NULL;
++}
++
++static struct file_section *section_open(struct tracecmd_input *handle, int id)
++{
++	struct file_section *sec = section_get(handle, id);
++
++	if (!sec)
++		return NULL;
++
++	if (lseek64(handle->fd, sec->data_offset, SEEK_SET) == (off64_t)-1)
++		return NULL;
++	return sec;
++}
++
++static void section_close(struct tracecmd_input *handle, struct file_section *sec)
++{
++	/* To Do */
++}
++
++static int section_add_or_update(struct tracecmd_input *handle, int id, int flags,
++				 unsigned long long section_offset,
++				 unsigned long long data_offset)
++{
++	struct file_section *sec = section_get(handle, id);
++
++	if (!sec) {
++		sec = calloc(1, sizeof(struct file_section));
++		if (!sec)
++			return -1;
++		sec->next = handle->sections;
++		handle->sections = sec;
++	}
++	sec->id = id;
++	if (section_offset)
++		sec->section_offset = section_offset;
++	if (data_offset)
++		sec->data_offset = data_offset;
++	if (flags > 0)
++		sec->flags = flags;
++	return 0;
++}
++
+ static int read_header_files(struct tracecmd_input *handle)
  {
- 	unsigned int cpus;
- 
--	if (handle->file_state >= TRACECMD_FILE_CPU_COUNT)
-+	if (CHECK_READ_STATE(handle, TRACECMD_FILE_CPU_COUNT))
- 		return 0;
- 
- 	if (read4(handle, &cpus) < 0)
-@@ -2838,7 +2840,7 @@ static int read_options_type(struct tracecmd_input *handle)
+ 	struct tep_handle *pevent = handle->pevent;
+@@ -3508,6 +3569,7 @@ void tracecmd_ref(struct tracecmd_input *handle)
+  */
+ void tracecmd_close(struct tracecmd_input *handle)
  {
- 	char buf[10];
++	struct file_section *del_sec;
+ 	int cpu;
+ 	int i;
  
--	if (handle->file_state >= TRACECMD_FILE_CPU_LATENCY)
-+	if (CHECK_READ_STATE(handle, TRACECMD_FILE_CPU_LATENCY))
- 		return 0;
+@@ -3547,6 +3609,12 @@ void tracecmd_close(struct tracecmd_input *handle)
+ 	free(handle->version);
+ 	close(handle->fd);
  
- 	if (do_read_check(handle, buf, 10))
-@@ -3004,7 +3006,7 @@ static int read_and_parse_cmdlines(struct tracecmd_input *handle)
- 	char *cmdlines = NULL;
- 	int ret;
- 
--	if (handle->file_state >= TRACECMD_FILE_CMD_LINES)
-+	if (CHECK_READ_STATE(handle, TRACECMD_FILE_CMD_LINES))
- 		return 0;
- 
- 	ret = read_data_and_size(handle, &cmdlines, &size);
++	while (handle->sections) {
++		del_sec = handle->sections;
++		handle->sections = handle->sections->next;
++		free(del_sec);
++	}
++
+ 	for (i = 0; i < handle->nr_buffers; i++)
+ 		free(handle->buffers[i].name);
+ 	free(handle->buffers);
+@@ -3991,6 +4059,7 @@ tracecmd_buffer_instance_handle(struct tracecmd_input *handle, int indx)
+ 	new_handle->nr_buffers = 0;
+ 	new_handle->buffers = NULL;
+ 	new_handle->version = NULL;
++	new_handle->sections = NULL;
+ 	new_handle->guest = NULL;
+ 	new_handle->ref = 1;
+ 	if (handle->trace_clock) {
 -- 
 2.31.1
 
