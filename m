@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C533BC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:21:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F709C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:21:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A88DA60ED8
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:21:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 87460606A5
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Sep 2021 13:21:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233105AbhINNXN (ORCPT
+        id S233146AbhINNXO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 14 Sep 2021 09:23:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50518 "EHLO
+        Tue, 14 Sep 2021 09:23:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233079AbhINNXM (ORCPT
+        with ESMTP id S233079AbhINNXN (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 14 Sep 2021 09:23:12 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC55C061574
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:21:55 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id x22so334385ejj.8
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:21:55 -0700 (PDT)
+        Tue, 14 Sep 2021 09:23:13 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88363C061574
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:21:56 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id q3so19870766edt.5
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Sep 2021 06:21:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wg0a57cr/r26Fm3sybPaTjbWfq8hx070vW8oQ3zhuAQ=;
-        b=bZ+wDUmhDWtZNgSqHzKVG7shM0gFDAtVl/x0sZzWnQguvtwHhBQgR/EGD8DNEt35pa
-         QL9XXapCVJaoe58G7J63Z+uplk31K81Y4lgU/6GOmbmD/oDCSzHFYonTGFGZHzsnzf3X
-         m0vWf0xUfXIhNUtBGa2uq26q5BpGpi37Xda7ahMu0t77hJHbkXlyBvY7Jn405BmZrvtl
-         odT4aoNI5KPqx+O/C5lWwh1ZT4NlS/R0k+VXY/8jWWnY5BZlm0RmTxR+bdhvmy01845h
-         VUgWBywBKSFlm8rI1oXS7Jr3L7e8FDF98r22Jpjfi/pozulVVaMLy2Hn3juxlde97TSj
-         CReQ==
+        bh=EQImAUfB8hEyGOBENCgXjmTM8Q/S6OcGuARs0lMu7IE=;
+        b=l+BNfwv5/siFrPZpUqUSWSkdkIqMmdmSq/hYpVOzWCJvkJNGo6GFovA0B3POnvGGj/
+         h2h0YOWXCfkzuN0kLYdQ7m3Aq0xPIvryktEO5mYVxIvWn+829+wGDngiCwMTYhwiEAfN
+         TCHAgcHOl7pvrh5bKlOk8mavYST0XFTuyUWVd9/4b4PlB9hYy2s5xZXaUwl/9ZOmZb+e
+         lqXF1NnWrNO78JMeNRFVUGgpkLElM6XXjdAP9t5L58zUrC61ML6LPO3HKEjBOW2tNQxF
+         tJO6UNwvVWIUz/VSHYKNQzXx5L4P1t0tC4tMScJm7Y2gdUh5P69+iz0uTFIcOPPwLgaW
+         dEcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wg0a57cr/r26Fm3sybPaTjbWfq8hx070vW8oQ3zhuAQ=;
-        b=QrecU2GQVQ5rqCyRUW/KZxtg2oLc4ehSWdJX4O3gla7KjrRLaESbnXmkcQS/UI0YsP
-         wjldNGk/CPWlblRbdY01Vf7FVJCoEgZUtzxJo/Wl6jb3zkCjFRlJPm2WutQBrNvSdNqx
-         YthRIyQ7kk2TwQvDEOUSLpKF2eb5zemGGA6U95dYoViHnJO3u72WdoBIHUg7jHReARc4
-         /r9Pou5l0EANZRi74VVoy/msyimnoqo2iZjuAsqpYVmcVWsLq7s4JJARXoI6hmjTIRkH
-         lcxRfAub30XRvVLPdk+dLfFFAJOcTrNsf/jU8sfEnFwf+kXNc7b0dxWu6ERXXgTh4qbg
-         Bf5g==
-X-Gm-Message-State: AOAM531RQIsTD8eDigW76h/CMaCZWfEZ5EjNOCBZMgJ/mg9R7+XAVbZE
-        gIy9eYjRzfG6uIDNp9RQapBpaPR6V64=
-X-Google-Smtp-Source: ABdhPJzWeKH9wOmkgirtZgPu3uUlqk5GO1ryN7Wilvia1D9DAQ0K4b1J70kCE6DrrRFJLtbKk2Ugbw==
-X-Received: by 2002:a17:906:31d7:: with SMTP id f23mr18467844ejf.190.1631625714004;
-        Tue, 14 Sep 2021 06:21:54 -0700 (PDT)
+        bh=EQImAUfB8hEyGOBENCgXjmTM8Q/S6OcGuARs0lMu7IE=;
+        b=EViLvteoc6p0undt2bTj5yk5WuggZ6Rg7kAEYw0S1L1ysN1zJjEx1qXzc1R6PvyRAo
+         HeqrXy5zGuJu1EpRiNN33Zcu5Ta23xHDw68nNJMa69xa6YDZpnGhbaz/9RTFGj70urNr
+         teGhaSRk89nzsykQqOrmLgaop9+jpHFLOePXLWeeTbPd1Nab1JRU7Mv60LaurXjhu6VS
+         6h7pX2fg4CB8Ga1WnqbHTWT02trJCb3l1ihIm3RmsatJ1/xIrBkJMYUVho3nP0xYvqCh
+         vBCv3pNKILAbgBOf2lrq06orZOueQXuaY+zoCY+j7c0/sxMIjqb9WPXvutzj+d4R5f69
+         ClOw==
+X-Gm-Message-State: AOAM532eL4SREvWpzITNC63BAaTcwQ1NPLL8GUp0FeMPpf3bh42B069J
+        OJkCzXVnpZLmwlGUO6PklTI9txDzKRs=
+X-Google-Smtp-Source: ABdhPJxA7dlkGttynuHUmSbnZ+jd1OLjGDanhZVRtRQbyypZfHEs8cbJGlVMgSTVPPfbSaYucqubWw==
+X-Received: by 2002:a05:6402:510f:: with SMTP id m15mr19186883edd.257.1631625715123;
+        Tue, 14 Sep 2021 06:21:55 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id l7sm5708431edb.26.2021.09.14.06.21.53
+        by smtp.gmail.com with ESMTPSA id l7sm5708431edb.26.2021.09.14.06.21.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 06:21:53 -0700 (PDT)
+        Tue, 14 Sep 2021 06:21:54 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 04/10] trace-cmd dump: Read recursively all options sections
-Date:   Tue, 14 Sep 2021 16:21:42 +0300
-Message-Id: <20210914132148.3968401-5-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 05/10] trace-cmd dump: Read extended BUFFER option
+Date:   Tue, 14 Sep 2021 16:21:43 +0300
+Message-Id: <20210914132148.3968401-6-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210914132148.3968401-1-tz.stoyanov@gmail.com>
 References: <20210914132148.3968401-1-tz.stoyanov@gmail.com>
@@ -73,145 +73,107 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Trace file version 7 supports multiple options sections in the file. The
-DONE option is extended to hold the offset to the next options section.
-A new logic for handling the extended DONE option and to read recursively
-all options sections is added.
+In trace file version 7 the BUFFER option is extended to hold a trace
+metadata, related to the recorded instance. Also, a new BUFFER_TEXT
+option is added for latency trace data. Implemented logic for reading
+and printing these extended options.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-dump.c | 76 ++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 68 insertions(+), 8 deletions(-)
+ tracecmd/trace-dump.c | 64 +++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 59 insertions(+), 5 deletions(-)
 
 diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
-index f7284436..dcc41030 100644
+index dcc41030..c44870c4 100644
 --- a/tracecmd/trace-dump.c
 +++ b/tracecmd/trace-dump.c
-@@ -422,6 +422,30 @@ static void dump_option_string(int fd, int size, char *desc)
- 		read_dump_string(fd, size, OPTIONS);
+@@ -446,19 +446,72 @@ static void dump_section_header(int fd, enum dump_items v, unsigned short *flags
+ 		*flags = fl;
  }
  
-+static void dump_section_header(int fd, enum dump_items v, unsigned short *flags)
-+{
-+	unsigned long long offset;
-+	unsigned short fl;
-+	char buf[DUMP_SIZE];
-+	unsigned short id;
-+	int size;
-+
-+	offset = lseek64(fd, 0, SEEK_CUR);
-+	if (read_file_number(fd, &id, 2))
-+		die("cannot read the section id");
-+	if (read_file_string(fd, buf, DUMP_SIZE))
-+		die("no section description");
-+	if (read_file_number(fd, &fl, 2))
-+		die("cannot read the section flags");
-+	if (read_file_number(fd, &size, 4))
-+		die("cannot read section size");
-+	do_print(v, "\t[Section %d @ %lld: \"%s\", flags 0x%X, %d bytes]\n",
-+		 id, offset, buf, fl, size);
-+
-+	if (flags)
-+		*flags = fl;
-+}
-+
- static void dump_option_buffer(int fd, int size)
+-static void dump_option_buffer(int fd, int size)
++static void dump_option_buffer(int fd, unsigned short option, int size)
  {
++	unsigned long long total_size = 0;
++	unsigned long long data_size;
++	unsigned long long current;
  	unsigned long long offset;
-@@ -591,25 +615,48 @@ void dump_option_tsc2nsec(int fd, int size)
- 	do_print(OPTIONS, "%d %d %llu [multiplier, shift, offset]\n", mult, shift, offset);
++	unsigned short flags;
++	char clock[DUMP_SIZE];
++	char name[DUMP_SIZE];
++	int cpus = 0;
++	int id;
++	int i;
+ 
+ 	if (size < 8)
+ 		die("broken buffer option with size %d", size);
+ 
+ 	if (read_file_number(fd, &offset, 8))
+ 		die("cannot read the offset of the buffer option");
++	if (read_file_string(fd, name, DUMP_SIZE))
++		die("cannot read the name of the buffer option");
++	if (file_version < FILE_VERSION_SECTIONS) {
++		do_print(OPTIONS|FLYRECORD, "\t\t[Option BUFFER, %d bytes]\n", size);
++		do_print(OPTIONS|FLYRECORD, "%lld [offset]\n", offset);
++		do_print(OPTIONS|FLYRECORD, "\"%s\" [name]\n", name);
++		return;
++	}
++
++	current = lseek64(fd, 0, SEEK_CUR);
++	if (lseek64(fd, offset, SEEK_SET) == (off_t)-1)
++		die("cannot goto buffer offset %lld", offset);
++
++	dump_section_header(fd, FLYRECORD, &flags);
++
++	if (lseek64(fd, current, SEEK_SET) == (off_t)-1)
++		die("cannot go back to buffer option");
++
++	do_print(OPTIONS|FLYRECORD, "\t\t[Option BUFFER, %d bytes]\n", size);
++	do_print(OPTIONS|FLYRECORD, "%lld [offset]\n", offset);
++	do_print(OPTIONS|FLYRECORD, "\"%s\" [name]\n", name);
++
++	if (read_file_string(fd, clock, DUMP_SIZE))
++		die("cannot read clock of the buffer option");
++	do_print(OPTIONS|FLYRECORD, "\"%s\" [clock]\n", clock);
++	if (option == TRACECMD_OPTION_BUFFER) {
++		if (read_file_number(fd, &cpus, 4))
++			die("cannot read the cpu count of the buffer option");
++
++		do_print(OPTIONS|FLYRECORD, "%d [CPUs]:\n", cpus);
++		for (i = 0; i < cpus; i++) {
++			if (read_file_number(fd, &id, 4))
++				die("cannot read the id of cpu %d from the buffer option", i);
++			if (read_file_number(fd, &offset, 8))
++				die("cannot read the offset of cpu %d from the buffer option", i);
++			if (read_file_number(fd, &data_size, 8))
++				die("cannot read the data size of cpu %d from the buffer option", i);
++			total_size += data_size;
++			do_print(OPTIONS|FLYRECORD, "   %d %lld\t%lld\t[id, data offset and size]\n",
++				 id, offset, data_size);
++		}
++		do_print(SUMMARY, "\t\[buffer \"%s\", \"%s\" clock, "
++			 "%d cpus, %lld bytes flyrecord data]\n",
++			 name, clock, cpus, total_size);
++	} else {
++		do_print(SUMMARY, "\t\[buffer \"%s\", \"%s\" clock, latency data]\n", name, clock);
++	}
+ 
+-	do_print(OPTIONS, "\t\t[Option BUFFER, %d bytes]\n", size);
+-	do_print(OPTIONS, "%lld [offset]\n", offset);
+-	read_dump_string(fd, size - 8, OPTIONS);
  }
  
--static void dump_options(int fd)
-+static int dump_options_read(int fd);
-+
-+static int dump_option_done(int fd, int size)
- {
-+	unsigned long long offset;
-+
-+	do_print(OPTIONS, "\t\t[Option DONE, %d bytes]\n", size);
-+
-+	if (file_version < FILE_VERSION_SECTIONS || size < 8)
-+		return 0;
-+	if (read_file_number(fd, &offset, 8))
-+		die("cannot read the next options offset");
-+	do_print(OPTIONS, "%lld\n", offset);
-+	if (!offset)
-+		return 0;
-+
-+	if (lseek64(fd, offset, SEEK_SET) == (off_t)-1)
-+		die("cannot goto next options offset %lld", offset);
-+	return dump_options_read(fd);
-+}
-+
-+static int dump_options_read(int fd)
-+{
-+	unsigned short flags = 0;
- 	unsigned short option;
- 	unsigned int size;
- 	int count = 0;
- 
-+	if (file_version >= FILE_VERSION_SECTIONS)
-+		dump_section_header(fd, OPTIONS, &flags);
-+	if ((flags & TRACECMD_SEC_FL_COMPRESS) && uncompress_block())
-+		die("cannot uncompress file block");
-+
- 	for (;;) {
- 		if (read_file_number(fd, &option, 2))
- 			die("cannot read the option id");
--		if (!option)
-+		if (option == TRACECMD_OPTION_DONE && file_version < FILE_VERSION_SECTIONS)
+ static void dump_option_int(int fd, int size, char *desc)
+@@ -665,7 +718,8 @@ static int dump_options_read(int fd)
+ 			dump_option_string(fd, size, "CPUSTAT");
  			break;
- 		if (read_file_number(fd, &size, 4))
- 			die("cannot read the option size");
- 
- 		count++;
--		if (!DUMP_CHECK(OPTIONS) && !DUMP_CHECK(CLOCK) && !DUMP_CHECK(SUMMARY)) {
--			lseek64(fd, size, SEEK_CUR);
--			continue;
--		}
- 		switch (option) {
- 		case TRACECMD_OPTION_DATE:
- 			dump_option_string(fd, size, "DATE");
-@@ -621,7 +668,8 @@ static void dump_options(int fd)
- 			dump_option_buffer(fd, size);
+ 		case TRACECMD_OPTION_BUFFER:
+-			dump_option_buffer(fd, size);
++		case TRACECMD_OPTION_BUFFER_TEXT:
++			dump_option_buffer(fd, option, size);
  			break;
  		case TRACECMD_OPTION_TRACECLOCK:
--			dump_option_string(fd, size, "TRACECLOCK");
-+			do_print(OPTIONS, "\t\t[Option TRACECLOCK, %d bytes]\n", size);
-+			read_dump_string(fd, size, OPTIONS | CLOCK);
- 			has_clock = 1;
- 			break;
- 		case TRACECMD_OPTION_UNAME:
-@@ -654,6 +702,10 @@ static void dump_options(int fd)
- 		case TRACECMD_OPTION_TSC2NSEC:
- 			dump_option_tsc2nsec(fd, size);
- 			break;
-+		case TRACECMD_OPTION_DONE:
-+			uncompress_reset();
-+			count += dump_option_done(fd, size);
-+			return count;
- 		default:
- 			do_print(OPTIONS, " %d %d\t[Unknown option, size - skipping]\n",
- 				 option, size);
-@@ -661,8 +713,16 @@ static void dump_options(int fd)
- 			break;
- 		}
- 	}
--	do_print(SUMMARY, "\t[%d options]\n", count);
-+	uncompress_reset();
-+	return count;
-+}
-+
-+static void dump_options(int fd)
-+{
-+	int count;
- 
-+	count = dump_options_read(fd);
-+	do_print(SUMMARY|OPTIONS, "\t[%d options]\n", count);
- }
- 
- static void dump_latency(int fd)
+ 			do_print(OPTIONS, "\t\t[Option TRACECLOCK, %d bytes]\n", size);
 -- 
 2.31.1
 
