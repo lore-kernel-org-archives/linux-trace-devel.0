@@ -2,68 +2,67 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 754C6C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 Sep 2021 08:58:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8F88C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 Sep 2021 15:21:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 432EB61130
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 Sep 2021 08:58:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C252C61248
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 Sep 2021 15:21:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbhIQJAJ (ORCPT
+        id S239438AbhIQPWc (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 17 Sep 2021 05:00:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45042 "EHLO
+        Fri, 17 Sep 2021 11:22:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbhIQJAJ (ORCPT
+        with ESMTP id S241411AbhIQPWI (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 17 Sep 2021 05:00:09 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F28EC061574
-        for <linux-trace-devel@vger.kernel.org>; Fri, 17 Sep 2021 01:58:47 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id v22so23089133edd.11
-        for <linux-trace-devel@vger.kernel.org>; Fri, 17 Sep 2021 01:58:47 -0700 (PDT)
+        Fri, 17 Sep 2021 11:22:08 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC83DC0613E2
+        for <linux-trace-devel@vger.kernel.org>; Fri, 17 Sep 2021 08:16:41 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id c21so31030796edj.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 17 Sep 2021 08:16:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=/ix4O4K4IM0jzifucnV2zm1pIpWvpwumkEC189y4IAI=;
-        b=hpfwbo7w4i6GrsRUfV8DREomxo5VLSKg7CombRb2lhZ4GwhlDqzU63D5YBLN5gDCxf
-         BJDBIawx0lf5BLVBn389NUWHsQa7Vogy9erCDJ4WvdJTn18xjihoreNWMXct7DW6Fqzz
-         vqV5bQHXqIWHZrfvmOoHrEO8omYLMCDBKYRuXS1eo53sPLmqUPwuCBnBT4/yZenmlrf7
-         tMxU3aXjudVs2NJ8b88PI5EDHUydJSBwsZjU1zvTS7SGzgIc2a8FiCl0jpZlhZEwR8JP
-         oAmYSj/Vvv2FRYaHTIj8UtkrckqAe7G5i0eKNC8cG3a2PiF49QHRxD6Fr33YK12GUR+u
-         +2Qg==
+        bh=qdRP+S5joetPVUch9/SeJ+zgj23hWt4gtcuRnFZANnY=;
+        b=c8vodFdic8a9q8sAUXMmSdoFy2Z/HP4d0GIV11WQ9/w7Ylyl6AKQ6Ra0ew/+uCsNUE
+         HFvT0UK5A7GKVcJ55GJOpKQdFc+pZ/ZRGQqXXDmnc8IWk6jq7ryYQ/K08zSyuWqe9VH7
+         qPSwqx68YH0JtVtzNKCcXnPgk0JKBbhDz03ENA4WOREk7Vh00FKlor6y89zK4Z7ucV3c
+         ITwG2hEzWpsdX8/0scpt5a1I9hR9CcUTxDJ9z5WbN9ySmltfCM+BNV6rnsl29IDOlEAe
+         /pXSfd7LSJSCZnH9qKOs0AIIhL/YFtnRaVzc7be/cN9iKkmGJ2eioOrlUFL6nZZMH0qn
+         5k/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=/ix4O4K4IM0jzifucnV2zm1pIpWvpwumkEC189y4IAI=;
-        b=P1I9mdB7f5nW3voGloWH1XzhHG41siJOqZLct5+s5A3nfcyCZgY65QdpsXFG9A82MZ
-         jvF81YaL7BrlhoKaCbshY5J+aeS3ltr225tTRA5niXNX4aTDqnz5mmf/P1NjPUWw3Oao
-         e7ciRXOvj0Nu7+KkKxLxYkSyCO7EZJNIrYF4TE55IoOab2+J8/6Ngi7zZCrwNqHnM4R/
-         R8zI1EJsmjhtucQZ0VT9nqXTPvaCQ2P4Yh1xGqb4YFtOHZp83psmV9d63smvY/U568s5
-         942RXQvoPYq+1jx3XbZi+n0+sfONjGLUx8ffmq7AHljMcbc8bn5uq66nwetW4TcWwnZ7
-         ExhA==
-X-Gm-Message-State: AOAM532CqLM9hdUr9nwNsZ6oiFRW9Uu7Y+MbxTzSJN/DQ9xMcRdmACTu
-        Vm07Og0VDE54Y93cPFC0q7ElnJgqiMk=
-X-Google-Smtp-Source: ABdhPJyMT+fS8jv7xffJW8xBBHgpbh6Rd+rLVfe+Wp48dwIs3c6+XsiBCquMJCH76NBByJ5JHmM8YQ==
-X-Received: by 2002:a05:6402:1a2f:: with SMTP id be15mr11371778edb.246.1631869125481;
-        Fri, 17 Sep 2021 01:58:45 -0700 (PDT)
+        bh=qdRP+S5joetPVUch9/SeJ+zgj23hWt4gtcuRnFZANnY=;
+        b=aukVNlzB3YNrnlS5IVuuHWZJK+yJ1uVI5p18NjHSI5jXO6V93nMgcXmCPWLH5kaZgN
+         FauvEcyKugGReK6tRc27T5Oki+W4L9r6ZnPJ4UEXYY3pCgLqW4lJG3YZMJmZMr4QH624
+         8hiI0a7AhJEazp2F+5ex7kRuqo+mTSK7FrFe/PUmLmM6mivWl5bBL10kwYL0VIabc26d
+         P96Au6CGTvKebZ/PhwBX5qm1Xm072haivfDMIRoxXvN2XRZjyeKjWvFRlfg3yfIDAAr1
+         76CZBAzcTKZQ9ohK4JsZT19vut43cd9yau4jQQ+DfeWoM6LARbF9eIYwqC6I6QEbpGCr
+         scwQ==
+X-Gm-Message-State: AOAM533mhGRrs/12PDDrwW5le52hoVJley/VeyisRBgTQWuGBKpBa7cp
+        8Xy5T5VvgZsM6lCz354K3vHe3S6C3Co=
+X-Google-Smtp-Source: ABdhPJwwttLiZeh3agn7hoXJGg0fflpQS+y1pouZquCxTI67VB+ue4qYlD068GZ7mEgRDKUMMEw6JQ==
+X-Received: by 2002:aa7:c459:: with SMTP id n25mr12717229edr.29.1631891800332;
+        Fri, 17 Sep 2021 08:16:40 -0700 (PDT)
 Received: from crow.. ([95.87.199.246])
-        by smtp.gmail.com with ESMTPSA id fx4sm2026639ejb.113.2021.09.17.01.58.44
+        by smtp.gmail.com with ESMTPSA id i6sm2382550ejr.68.2021.09.17.08.16.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 01:58:45 -0700 (PDT)
+        Fri, 17 Sep 2021 08:16:39 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2] trace-cruncher: Fix PyFtrace_set_event_filter()
-Date:   Fri, 17 Sep 2021 11:58:33 +0300
-Message-Id: <20210917085833.554521-1-y.karadz@gmail.com>
+Subject: [PATCH] trace-cruncher: Fix get_comm_from_pid()
+Date:   Fri, 17 Sep 2021 18:16:24 +0300
+Message-Id: <20210917151624.574040-1-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -71,29 +70,57 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The current arguments format descriptor is a mess. The Python method
-requires 4 arguments, however the format descriptor of the arguments
-describes only 3 and includes ')', which is meaningless.
+Make sure that the buffer string is properly initialized and that
+the new line at the end is removed.
 
-Fixes: 38bdaec (trace-cruncher: Refactor the way libtracefs instances are handled)
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+Fixes: defe053 (trace-cruncher: Add generic methods for printing)
+SignedFixes: -off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/ftracepy-utils.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ src/ftracepy-utils.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
-index bddc4fc..58f543a 100644
+index 58f543a..7b1ff1b 100644
 --- a/src/ftracepy-utils.c
 +++ b/src/ftracepy-utils.c
-@@ -1316,7 +1316,7 @@ PyObject *PyFtrace_set_event_filter(PyObject *self, PyObject *args,
- 	static char *kwlist[] = {"system", "event", "filter", "instance", NULL};
- 	if (!PyArg_ParseTupleAndKeywords(args,
- 					 kwargs,
--					 "ssO|)",
-+					 "sss|O",
- 					 kwlist,
- 					 &system,
- 					 &event,
+@@ -384,10 +384,16 @@ static bool init_print_seq(void)
+ 	return true;
+ }
+ 
++static inline void trim_new_line(char *val)
++{
++	if (val[strlen(val) - 1] == '\n')
++		val[strlen(val) - 1] = '\0';
++}
++
+ static char *get_comm_from_pid(int pid)
+ {
+ 	char *comm_file, *comm = NULL;
+-	char buff[PATH_MAX];
++	char buff[PATH_MAX] = {0};
+ 	int fd, r;
+ 
+ 	if (asprintf(&comm_file, "/proc/%i/comm", pid) <= 0) {
+@@ -409,6 +415,7 @@ static char *get_comm_from_pid(int pid)
+ 	if (r <= 0)
+ 		return NULL;
+ 
++	trim_new_line(buff);
+ 	comm = strdup(buff);
+ 	if (!comm)
+ 		MEM_ERROR;
+@@ -654,11 +661,6 @@ static int read_from_file(struct tracefs_instance *instance,
+ 	return size;
+ }
+ 
+-static inline void trim_new_line(char *val)
+-{
+-	val[strlen(val) - 1] = '\0';
+-}
+-
+ static bool write_to_file_and_check(struct tracefs_instance *instance,
+ 				    const char *file,
+ 				    const char *val)
 -- 
 2.30.2
 
