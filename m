@@ -2,37 +2,36 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FD6AC43217
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD78FC4167E
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 Sep 2021 15:46:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 10156611C4
+	by mail.kernel.org (Postfix) with ESMTP id A86D4611C4
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 Sep 2021 15:46:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343810AbhIQPr7 convert rfc822-to-8bit (ORCPT
+        id S241728AbhIQPr7 convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 17 Sep 2021 11:47:59 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:20935 "EHLO
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:56514 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245723AbhIQPrz (ORCPT
+        by vger.kernel.org with ESMTP id S241196AbhIQPr4 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 17 Sep 2021 11:47:55 -0400
+        Fri, 17 Sep 2021 11:47:56 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-238-JCVEOYASPSWIevxPYRgE-A-1; Fri, 17 Sep 2021 11:46:30 -0400
-X-MC-Unique: JCVEOYASPSWIevxPYRgE-A-1
+ us-mta-380-Moyt8JmRP6uP6dfX3tX9XA-1; Fri, 17 Sep 2021 11:46:32 -0400
+X-MC-Unique: Moyt8JmRP6uP6dfX3tX9XA-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92AEF802C91;
-        Fri, 17 Sep 2021 15:46:27 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C092E835DE3;
+        Fri, 17 Sep 2021 15:46:30 +0000 (UTC)
 Received: from x1.bristot.me.homenet.telecomitalia.it (unknown [10.22.17.200])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B114C5D9C6;
-        Fri, 17 Sep 2021 15:46:24 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E22495D9C6;
+        Fri, 17 Sep 2021 15:46:27 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Jonathan Corbet <corbet@lwn.net>, Kate Carcia <kcarcia@redhat.com>,
@@ -47,9 +46,9 @@ Cc:     Jonathan Corbet <corbet@lwn.net>, Kate Carcia <kcarcia@redhat.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [RFC 12/19] rtla/timerlat: Add timerlat hist mode
-Date:   Fri, 17 Sep 2021 17:43:55 +0200
-Message-Id: <9f39e49470ee58a2f7301670e72082f8e07862aa.1631889858.git.bristot@kernel.org>
+Subject: [RFC 13/19] rtla: Add Documentation
+Date:   Fri, 17 Sep 2021 17:43:56 +0200
+Message-Id: <397ebb9ec8440b9bb1b16184e975e46f95138f3a.1631889858.git.bristot@kernel.org>
 In-Reply-To: <cover.1631889858.git.bristot@kernel.org>
 References: <cover.1631889858.git.bristot@kernel.org>
 MIME-Version: 1.0
@@ -64,36 +63,9 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The rtla hist hist mode displays a histogram of each tracer event
-occurrence, both for IRQ and timer latencies. The tool also allows
-many configurations of the timerlat tracer and the collection of
-the tracer output.
-
-Here is one example of the rtla timerlat hist mode output:
-  ---------- %< ----------
- [root@alien ~]# rtla timerlat hist --skip-zeros -c 0-3 -d 1M
- # RTLA timerlat histogram
- # Time unit is microseconds (us)
- # Duration:   0 00:01:00
- Index   IRQ-000   Thr-000   IRQ-001   Thr-001   IRQ-002   Thr-002   IRQ-003   Thr-003
- 0         58572         0     59373         0     58691         0     58895         0
- 1          1422     57021       628     57241      1310     56160      1102     56805
- 2             6      2931         0      2695         0      3567         4      3031
- 3             1        40         0        53         0       260         0       142
- 4             0         7         0         5         0         6         0        17
- 5             0         2         0         5         0         7         0         4
- 6             0         0         0         2         0         1         0         1
- 8             0         0         0         0         0         0         0         1
- over:         0         0         0         0         0         0         0         0
- count:    60001     60001     60001     60001     60001     60001     60001     60001
- min:          0         1         0         1         0         1         0         1
- avg:          0         1         0         1         0         1         0         1
- max:          3         5         1         6         1         6         2         8
-  ---------- >% ----------
-
-Running
- - rtla timerlat hist --help
-provides information about the available options.
+Adds the basis for rtla documentation. It is based on libtracefs
+Documentation as suggested by Steven Rostedt. This patch also
+includes the rtla(1) man page.
 
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Ingo Molnar <mingo@redhat.com>
@@ -108,830 +80,712 @@ Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc: linux-rt-users@vger.kernel.org
 Cc: linux-trace-devel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- tools/tracing/rtla/src/timerlat.c      |   6 +-
- tools/tracing/rtla/src/timerlat.h      |   1 +
- tools/tracing/rtla/src/timerlat_hist.c | 778 +++++++++++++++++++++++++
- 3 files changed, 784 insertions(+), 1 deletion(-)
- create mode 100644 tools/tracing/rtla/src/timerlat_hist.c
+ tools/tracing/rtla/Documentation/Makefile     | 223 ++++++++++++++++++
+ .../tracing/rtla/Documentation/asciidoc.conf  | 118 +++++++++
+ .../rtla/Documentation/manpage-base.xsl       |  35 +++
+ .../rtla/Documentation/manpage-normal.xsl     |  13 +
+ tools/tracing/rtla/Documentation/rtla.txt     |  56 +++++
+ tools/tracing/rtla/Documentation/utils.mk     | 144 +++++++++++
+ tools/tracing/rtla/Makefile                   |  20 +-
+ 7 files changed, 604 insertions(+), 5 deletions(-)
+ create mode 100644 tools/tracing/rtla/Documentation/Makefile
+ create mode 100644 tools/tracing/rtla/Documentation/asciidoc.conf
+ create mode 100644 tools/tracing/rtla/Documentation/manpage-base.xsl
+ create mode 100644 tools/tracing/rtla/Documentation/manpage-normal.xsl
+ create mode 100644 tools/tracing/rtla/Documentation/rtla.txt
+ create mode 100644 tools/tracing/rtla/Documentation/utils.mk
 
-diff --git a/tools/tracing/rtla/src/timerlat.c b/tools/tracing/rtla/src/timerlat.c
-index bdd7ab55bf91..06ad66902b3d 100644
---- a/tools/tracing/rtla/src/timerlat.c
-+++ b/tools/tracing/rtla/src/timerlat.c
-@@ -25,7 +25,8 @@ static void timerlat_usage(void)
- 		"  usage: [rtla] timerlat [MODE] ...",
- 		"",
- 		"  modes:",
--		"     top  - prints the summary from timerlat tracer",
-+		"     top   - prints the summary from timerlat tracer",
-+		"     hist  - prints a histogram of timer latencies",
- 		"",
- 		"if no MODE is given, the top mode is called, passing the arguments",
- 		NULL,
-@@ -60,6 +61,9 @@ int timerlat_main(int argc, char *argv[])
- 	} else if (strcmp(argv[1], "top") == 0) {
- 		timerlat_top_main(argc-1, &argv[1]);
- 		exit(0);
-+	} else if (strcmp(argv[1], "hist") == 0) {
-+		timerlat_hist_main(argc-1, &argv[1]);
-+		exit(0);
- 	}
- 
- usage:
-diff --git a/tools/tracing/rtla/src/timerlat.h b/tools/tracing/rtla/src/timerlat.h
-index 4f0f912b3b81..3ae3c1d94903 100644
---- a/tools/tracing/rtla/src/timerlat.h
-+++ b/tools/tracing/rtla/src/timerlat.h
-@@ -1,2 +1,3 @@
-+int timerlat_hist_main(int argc, char *argv[]);
- int timerlat_top_main(int argc, char *argv[]);
- int timerlat_main(int argc, char *argv[]);
-diff --git a/tools/tracing/rtla/src/timerlat_hist.c b/tools/tracing/rtla/src/timerlat_hist.c
+diff --git a/tools/tracing/rtla/Documentation/Makefile b/tools/tracing/rtla/Documentation/Makefile
 new file mode 100644
-index 000000000000..6a6a6a5bb629
+index 000000000000..790e5c1afaeb
 --- /dev/null
-+++ b/tools/tracing/rtla/src/timerlat_hist.c
-@@ -0,0 +1,778 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
-+ */
-+
-+#include <getopt.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <signal.h>
-+#include <unistd.h>
-+#include <stdio.h>
-+#include <time.h>
-+
-+#include "utils.h"
-+#include "osnoise.h"
-+#include "timerlat.h"
-+
-+struct timerlat_hist_params {
-+	char 			*cpus;
-+	char 			*monitored_cpus;
-+	char			*trace_output;
-+	unsigned long long	runtime;
-+	long long		stop_us;
-+	long long		stop_total_us;
-+	long long		timerlat_period_us;
-+	long long		print_stack;
-+	int			sleep_time;
-+	int			output_divisor;
-+	int			duration;
-+	int			set_sched;
-+	struct sched_attr	sched_param;
-+
-+	char			no_irq;
-+	char			no_thread;
-+	char			no_header;
-+	char			no_summary;
-+	char			no_index;
-+	char			skip_zeroes;
-+	int			bucket_size;
-+	int			entries;
-+};
-+
-+struct timerlat_hist_cpu {
-+	int 			*irq;
-+	int 			*thread;
-+
-+	int			irq_count;
-+	int			thread_count;
-+
-+	unsigned long long	min_irq;
-+	unsigned long long	sum_irq;
-+	unsigned long long	max_irq;
-+
-+	unsigned long long	min_thread;
-+	unsigned long long	sum_thread;
-+	unsigned long long	max_thread;
-+};
-+
-+struct timerlat_hist_data {
-+	struct timerlat_hist_cpu	*hist;
-+	int 				entries;
-+	int 				bucket_size;
-+	int 				nr_cpus;
-+};
-+
-+/*
-+ * timerlat_free_histogram - free runtime data
-+ */
-+static void
-+timerlat_free_histogram(struct timerlat_hist_data *data)
-+{
-+	int cpu;
-+
-+	/* one histogram for IRQ and one for thread, per CPU */
-+	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
-+		if (data->hist[cpu].irq)
-+			free(data->hist[cpu].irq);
-+
-+		if (data->hist[cpu].thread)
-+			free(data->hist[cpu].thread);
-+	}
-+
-+	/* one set of histograms per CPU */
-+	if (data->hist)
-+		free(data->hist);
-+
-+	free(data);
-+}
-+
-+/*
-+ * timerlat_alloc_histogram - alloc runtime data
-+ */
-+static struct timerlat_hist_data
-+*timerlat_alloc_histogram(int nr_cpus, int entries, int bucket_size)
-+{
-+	struct timerlat_hist_data *data;
-+	int cpu;
-+
-+	data = calloc(1, sizeof(*data));
-+	if (!data)
-+		return NULL;
-+
-+	data->entries = entries;
-+	data->bucket_size = bucket_size;
-+	data->nr_cpus = nr_cpus;
-+
-+	/* one set of histograms per CPU */
-+	data->hist = calloc(1, sizeof(*data->hist) * nr_cpus);
-+	if (!data->hist)
-+		goto cleanup;
-+
-+	/* one histogram for IRQ and one for thread, per cpu */
-+	for (cpu = 0; cpu < nr_cpus; cpu++) {
-+		data->hist[cpu].irq = calloc(1, sizeof(*data->hist) * (entries + 1));
-+		if (!data->hist[cpu].irq)
-+			goto cleanup;
-+		data->hist[cpu].thread = calloc(1, sizeof(*data->hist) * (entries + 1));
-+		if (!data->hist[cpu].thread)
-+			goto cleanup;
-+	}
-+
-+	/* set the min to max */
-+	for (cpu = 0; cpu < nr_cpus; cpu++) {
-+		data->hist[cpu].min_irq = ~0;
-+		data->hist[cpu].min_thread = ~0;
-+	}
-+
-+	return data;
-+
-+cleanup:
-+	timerlat_free_histogram(data);
-+	return NULL;
-+}
-+
-+/*
-+ * timerlat_hist_update - record a new timerlat occurent on cpu, updating data
-+ */
-+static void
-+timerlat_hist_update(struct osnoise_tool *tool, int cpu,
-+		     unsigned long long thread,
-+		     unsigned long long latency)
-+{
-+	struct timerlat_hist_params *params = tool->params;
-+	struct timerlat_hist_data *data = tool->data;
-+	int entries = data->entries;
-+	int bucket;
-+	int *hist;
-+
-+	if (params->output_divisor)
-+		latency = latency / params->output_divisor;
-+
-+	if (data->bucket_size)
-+		bucket = latency / data->bucket_size;
-+
-+	if (!thread) {
-+		hist = data->hist[cpu].irq;
-+		data->hist[cpu].irq_count++;
-+		update_min(&data->hist[cpu].min_irq, &latency);
-+		update_sum(&data->hist[cpu].sum_irq, &latency);
-+		update_max(&data->hist[cpu].max_irq, &latency);
-+	} else {
-+		hist = data->hist[cpu].thread;
-+		data->hist[cpu].thread_count++;
-+		update_min(&data->hist[cpu].min_thread, &latency);
-+		update_sum(&data->hist[cpu].sum_thread, &latency);
-+		update_max(&data->hist[cpu].max_thread, &latency);
-+	}
-+
-+	if (bucket < entries)
-+		hist[bucket]++;
-+	else
-+		hist[entries]++;
-+}
-+
-+/*
-+ * timerlat_hist_handler - this is the handler for timerlat tracer events
-+ */
-+static int
-+timerlat_hist_handler(struct trace_seq *s, struct tep_record *record,
-+		     struct tep_event *event, void *data)
-+{
-+	struct trace_instance *trace = data;
-+	unsigned long long thread, latency;
-+	struct osnoise_tool *tool;
-+	int cpu = record->cpu;
-+
-+	tool = container_of(trace, struct osnoise_tool, trace);
-+
-+	tep_get_field_val(s, event, "context", record, &thread, 1);
-+	tep_get_field_val(s, event, "timer_latency", record, &latency, 1);
-+
-+	timerlat_hist_update(tool, cpu, thread, latency);
-+
-+	return 0;
-+}
-+
-+/*
-+ * timerlat_hist_header - print the header of the tracer to the output
-+ */
-+static void timerlat_hist_header(struct osnoise_tool *tool)
-+{
-+	struct timerlat_hist_params *params = tool->params;
-+	struct timerlat_hist_data *data = tool->data;
-+	struct trace_seq *s = tool->trace.seq;
-+	char duration[26];
-+	int cpu;
-+
-+	if (params->no_header)
-+		return;
-+
-+	get_duration(tool->start_time, duration, sizeof(duration));
-+	trace_seq_printf(s, "# RTLA timerlat histogram\n");
-+	trace_seq_printf(s, "# Time unit is %s (%s) \n",
-+			params->output_divisor == 1 ? "nanoseconds" : "microseconds",
-+			params->output_divisor == 1 ? "ns" : "us");
-+
-+	trace_seq_printf(s, "# Duration: %s\n", duration);
-+
-+	if (!params->no_index)
-+		trace_seq_printf(s, "Index");
-+
-+	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
-+		if (params->cpus && !params->monitored_cpus[cpu])
-+			continue;
-+
-+		if (!params->no_irq)
-+			trace_seq_printf(s, "   IRQ-%03d", cpu);
-+
-+		if (!params->no_thread)
-+			trace_seq_printf(s, "   Thr-%03d", cpu);
-+	}
-+	trace_seq_printf(s, "\n");
-+
-+
-+	trace_seq_do_printf(s);
-+	trace_seq_reset(s);
-+}
-+
-+/*
-+ * timerlat_print_summary - print the summary of the hist data to the output
-+ */
-+static void
-+timerlat_print_summary(struct timerlat_hist_params *params,
-+		       struct trace_instance *trace,
-+		       struct timerlat_hist_data *data)
-+{
-+	int cpu;
-+
-+	if (params->no_summary)
-+		return;
-+
-+	if (!params->no_index)
-+		trace_seq_printf(trace->seq, "count:" );
-+
-+	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
-+		if (params->cpus && !params->monitored_cpus[cpu])
-+			continue;
-+
-+		if (!params->no_irq)
-+			trace_seq_printf(trace->seq, "%9d ",
-+					data->hist[cpu].irq_count);
-+
-+		if (!params->no_thread)
-+			trace_seq_printf(trace->seq, "%9d ",
-+					data->hist[cpu].thread_count);
-+	}
-+	trace_seq_printf(trace->seq, "\n");
-+
-+	if (!params->no_index)
-+		trace_seq_printf(trace->seq, "min:  ");
-+
-+	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
-+		if (params->cpus && !params->monitored_cpus[cpu])
-+			continue;
-+
-+		if (!params->no_irq)
-+			trace_seq_printf(trace->seq, "%9llu ",
-+					data->hist[cpu].min_irq);
-+
-+		if (!params->no_thread)
-+			trace_seq_printf(trace->seq, "%9llu ",
-+					data->hist[cpu].min_thread);
-+	}
-+	trace_seq_printf(trace->seq, "\n");
-+
-+	if (!params->no_index)
-+		trace_seq_printf(trace->seq, "avg:  ");
-+
-+	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
-+		if (params->cpus && !params->monitored_cpus[cpu])
-+			continue;
-+
-+		if (!params->no_irq) {
-+			if (data->hist[cpu].irq_count)
-+				trace_seq_printf(trace->seq, "%9llu ",
-+						data->hist[cpu].sum_irq / data->hist[cpu].irq_count);
-+			else
-+				trace_seq_printf(trace->seq, "        - ");
-+		}
-+
-+		if (!params->no_thread) {
-+			if (data->hist[cpu].thread_count)
-+				trace_seq_printf(trace->seq, "%9llu ",
-+						data->hist[cpu].sum_thread / data->hist[cpu].thread_count);
-+			else
-+				trace_seq_printf(trace->seq, "        - ");
-+		}
-+	}
-+	trace_seq_printf(trace->seq, "\n");
-+
-+	if (!params->no_index)
-+		trace_seq_printf(trace->seq, "max:  ");
-+
-+	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
-+		if (params->cpus && !params->monitored_cpus[cpu])
-+			continue;
-+
-+		if (!params->no_irq)
-+			trace_seq_printf(trace->seq, "%9llu ",
-+					data->hist[cpu].max_irq);
-+
-+		if (!params->no_thread)
-+			trace_seq_printf(trace->seq, "%9llu ",
-+					data->hist[cpu].max_thread);
-+	}
-+	trace_seq_printf(trace->seq, "\n");
-+	trace_seq_do_printf(trace->seq);
-+	trace_seq_reset(trace->seq);
-+}
-+
-+/*
-+ * timerlat_print_stats - print data for all CPUs
-+ */
-+static void
-+timerlat_print_stats(struct timerlat_hist_params *params, struct osnoise_tool *tool)
-+{
-+	struct timerlat_hist_data *data = tool->data;
-+	struct trace_instance *trace = &tool->trace;
-+	int bucket, cpu;
-+	int total;
-+
-+	timerlat_hist_header(tool);
-+
-+	for (bucket = 0; bucket < data->entries; bucket++) {
-+		total = 0;
-+
-+		if (!params->no_index)
-+			trace_seq_printf(trace->seq, "%-6d",
-+					 bucket * data->bucket_size);
-+
-+		for (cpu = 0; cpu < data->nr_cpus; cpu++) {
-+			if (params->cpus && !params->monitored_cpus[cpu])
-+				continue;
-+
-+
-+			if (!params->no_irq) {
-+				total += data->hist[cpu].irq[bucket];
-+				trace_seq_printf(trace->seq, "%9d ",
-+						data->hist[cpu].irq[bucket]);
-+			}
-+
-+			if (!params->no_thread) {
-+				total += data->hist[cpu].thread[bucket];
-+				trace_seq_printf(trace->seq, "%9d ",
-+						data->hist[cpu].thread[bucket]);
-+			}
-+
-+		}
-+
-+		if (params->skip_zeroes && total == 0) {
-+			trace_seq_reset(trace->seq);
-+			continue;
-+		}
-+
-+		trace_seq_printf(trace->seq, "\n");
-+		trace_seq_do_printf(trace->seq);
-+		trace_seq_reset(trace->seq);
-+	}
-+
-+	if (!params->no_index)
-+		trace_seq_printf(trace->seq, "over: ");
-+
-+	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
-+		if (params->cpus && !params->monitored_cpus[cpu])
-+			continue;
-+
-+		if (!params->no_irq)
-+			trace_seq_printf(trace->seq, "%9d ",
-+					 data->hist[cpu].irq[data->entries]);
-+
-+		if (!params->no_thread)
-+			trace_seq_printf(trace->seq, "%9d ",
-+					 data->hist[cpu].thread[data->entries]);
-+	}
-+	trace_seq_printf(trace->seq, "\n");
-+	trace_seq_do_printf(trace->seq);
-+	trace_seq_reset(trace->seq);
-+
-+	timerlat_print_summary(params, trace, data);
-+}
-+
-+/*
-+ * timerlat_hist_usage - prints timerlat top usage message
-+ */
-+static void timerlat_hist_usage(char *usage)
-+{
-+	int i;
-+
-+	char *msg[] = {
-+		"",
-+		"  usage: [rtla] timerlat hist [-h] [-q] [-p us] [-i us] [-t us] [-s us] [-T[=file]] \\",
-+		"         [-c cpu-list] [-P priority] [--no-irq] [--no-thread] [--no-header] [--no-summary] \\",
-+		"         [--no-index] [--skip-zeros]",
-+		"",
-+		"	  -h/--help: print this menu",
-+		"	  -p/--period us: timerlat period in us",
-+		"	  -i/--irq us: stop trace if the irq latency is higher than the argument in us",
-+		"	  -T/--thread us: stop trace if the thread latency is higher than the argument in us",
-+		"	  -s/--stack us: save the stack trace at the IRQ if a thread latency is higher than the argument in us",
-+		"	  -c/--cpus cpus: run the tracer only on the given cpus",
-+		"	  -d/--duration time[m|h|d]: duration of the session in seconds",
-+		"	  -T/--trace[=file]: save the stopped trace to [file|timerlat_trace.txt]",
-+		"	  -n/--nano: display data in nanoseconds",
-+		"	  -b/--bucket-size N: set the histogram bucket size (default 1)",
-+		"	  -e/--entries N: set the number of entries of the histogram (default 256)",
-+		"	     --no-irq: ignore IRQ latencies",
-+		"	     --no-thread: ignore thread latencies",
-+		"	     --no-header: do not print header",
-+		"	     --no-summary: do not print summary",
-+		"	     --no-index: do not print index",
-+		"	     --skip-zeros: skip zero only entries",
-+		"	  -P/--priority o:prio|r:prio|f:prio|d:runtime:period : set scheduling parameters",
-+		"		o:prio - use SCHED_OTHER with prio",
-+		"		r:prio - use SCHED_RR with prio",
-+		"		f:prio - use SCHED_FIFO with prio",
-+		"		d:runtime[us|ms|s]:period[us|ms|s] - use SCHED_DEADLINE with runtime and period",
-+		"						       in nanoseconds",
-+		NULL,
-+	};
-+
-+	if (usage)
-+		fprintf(stderr, "%s\n", usage);
-+
-+	fprintf(stderr, "rtla timerlat hist: display a per-cpu histogram of the timer latency (version %s)\n", VERSION);
-+	for(i = 0; msg[i]; i++)
-+		fprintf(stderr, "%s\n", msg[i]);
-+	exit(1);
-+}
-+
-+/*
-+ * timerlat_hist_parse_args - allocs, parse and fill the cmd line parameters
-+ */
-+static struct timerlat_hist_params
-+*timerlat_hist_parse_args(int argc, char *argv[])
-+{
-+	struct timerlat_hist_params *params;
-+	int retval;
-+	int c;
-+
-+	params = calloc(1, sizeof(*params));
-+	if (!params)
-+		exit(1);
-+
-+	/* display data in microseconds */
-+	params->output_divisor = 1000;
-+	params->bucket_size = 1;
-+	params->entries = 256;
-+
-+	while (1) {
-+		static struct option long_options[] = {
-+			{"cpus",		required_argument,	0, 'c'},
-+			{"bucket-size",		required_argument,	0, 'b'},
-+			{"debug",		no_argument,		0, 'D'},
-+			{"entries",		required_argument, 	0, 'e'},
-+			{"duration",		required_argument,	0, 'd'},
-+			{"help",		no_argument,		0, 'h'},
-+			{"irq",			required_argument,	0, 'i'},
-+			{"nano",		no_argument,		0, 'n'},
-+			{"period",		required_argument,	0, 'p'},
-+			{"priority",		required_argument,	0, 'P'},
-+			{"stack",		required_argument,	0, 's'},
-+			{"thread",		required_argument,	0, 'T'},
-+			{"trace",		optional_argument,	0, 't'},
-+			{"no-irq",		no_argument,		0, '0'},
-+			{"no-thread",		no_argument,		0, '1'},
-+			{"no-header",		no_argument,		0, '2'},
-+			{"no-summary",		no_argument,		0, '3'},
-+			{"no-index",		no_argument,		0, '4'},
-+			{"skip-zeros",		no_argument,		0, '5'},
-+			{0, 0, 0, 0}
-+		};
-+
-+		/* getopt_long stores the option index here. */
-+		int option_index = 0;
-+
-+		c = getopt_long(argc, argv, "c:b:d:e:Dhi:np:P:s:t::T:012345",
-+				 long_options, &option_index);
-+
-+		/* detect the end of the options. */
-+		if (c == -1)
-+			break;
-+
-+		switch (c) {
-+		case 'c':
-+			retval = parse_cpu_list(optarg, &params->monitored_cpus);
-+			if (retval)
-+				timerlat_hist_usage("\nInvalid -c cpu list\n");
-+			params->cpus = optarg;
-+			debug_msg("-c for %s\n", params->cpus);
-+			break;
-+		case 'b':
-+			params->bucket_size = get_long_from_str(optarg);
-+			if ((params->bucket_size == 0) || (params->bucket_size >= 1000000))
-+				timerlat_hist_usage("Bucket size needs to be > 0 and <= 1000000\n");
-+			break;
-+		case 'D':
-+			config_debug = 1;
-+			break;
-+		case 'd':
-+			params->duration = parse_seconds_duration(optarg);
-+			if (!params->duration)
-+				timerlat_hist_usage("Invalid -D duration\n");
-+			break;
-+		case 'e':
-+			params->entries = get_long_from_str(optarg);
-+			if ((params->entries < 10) || (params->entries > 9999999))
-+					timerlat_hist_usage("Entries must be > 10 and < 9999999\n");
-+			break;
-+		case 'h':
-+		case '?':
-+			timerlat_hist_usage(NULL);
-+			break;
-+		case 'i':
-+			params->stop_us = get_long_from_str(optarg);
-+			break;
-+		case 'n':
-+			params->output_divisor = 1;
-+			break;
-+		case 'p':
-+			params->timerlat_period_us = get_long_from_str(optarg);
-+			if (params->timerlat_period_us > 1000000)
-+				timerlat_hist_usage("Period longer than 1 s\n");
-+			break;
-+		case 'P':
-+			retval = parse_prio(optarg, &params->sched_param);
-+			if (retval == -1)
-+				timerlat_hist_usage("Invalid -P priority");
-+			params->set_sched = 1;
-+			break;
-+		case 's':
-+			params->print_stack = get_long_from_str(optarg);
-+			break;
-+		case 'T':
-+			params->stop_total_us = get_long_from_str(optarg);
-+			break;
-+		case 't':
-+			if (optarg)
-+				/* skip = */
-+				params->trace_output = &optarg[1];
-+			else
-+				params->trace_output = "timerlat_trace.txt";
-+			break;
-+		case '0': /* no irq */
-+			params->no_irq = 1;
-+			break;
-+		case '1': /* no thread */
-+			params->no_thread = 1;
-+			break;
-+		case '2': /* no header */
-+			params->no_header = 1;
-+			break;
-+		case '3': /* no summary */
-+			params->no_summary = 1;
-+			break;
-+		case '4': /* no index */
-+			params->no_index = 1;
-+			break;
-+		case '5': /* skip zeroes */
-+			params->skip_zeroes = 1;
-+			break;
-+		default:
-+			timerlat_hist_usage("Invalid option");
-+		}
-+	}
-+
-+	if (geteuid()) {
-+		err_msg("rtla needs root permission\n");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	if (params->no_irq && params->no_thread)
-+		timerlat_hist_usage("no-irq and no-thread set, there is nothing to do here");
-+
-+	if (params->no_index && params->skip_zeroes)
-+		timerlat_hist_usage("no-index and skip-zeros set - it does not make sense");
-+
-+	return params;
-+}
-+
-+/*
-+ * timerlat_hist_apply_config - apply the hist configs to the initialized tool
-+ */
-+static int
-+timerlat_hist_apply_config(struct osnoise_tool *tool, struct timerlat_hist_params *params)
-+{
-+	int retval;
-+
-+	if (!params->sleep_time)
-+		params->sleep_time = 1;
-+
-+	if (params->cpus) {
-+		retval = osnoise_set_cpus(tool->context, params->cpus);
-+		if (retval) {
-+			err_msg("Failed to apply CPUs config\n");
-+			goto out_err;
-+		}
-+	}
-+
-+	if (params->stop_us)
-+		osnoise_set_stop_us(tool->context, params->stop_us);
-+
-+	if (params->stop_total_us)
-+		osnoise_set_stop_total_us(tool->context, params->stop_total_us);
-+
-+	if (params->timerlat_period_us)
-+		osnoise_set_timerlat_period_us(tool->context, params->timerlat_period_us);
-+
-+	if (params->print_stack)
-+		osnoise_set_print_stack(tool->context, params->print_stack);
-+
-+	return 0;
-+
-+out_err:
-+	return -1;
-+}
-+
-+/*
-+ * timerlat_init_hist - initialize a timerlat hist tool with parameters
-+ */
-+static struct osnoise_tool
-+*timerlat_init_hist(struct timerlat_hist_params *params)
-+{
-+	struct osnoise_tool *tool;
-+	int nr_cpus;
-+
-+	nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
-+
-+	tool = osnoise_init_tool("timerlat_hist");
-+	if (!tool)
-+		return NULL;
-+
-+	tool->data = timerlat_alloc_histogram(nr_cpus, params->entries, params->bucket_size);
-+	if (!tool->data)
-+		goto out_err;
-+
-+	tool->params = params;
-+
-+	tep_register_event_handler(tool->trace.tep, -1, "ftrace", "timerlat",
-+				   timerlat_hist_handler, tool);
-+
-+	return tool;
-+
-+out_err:
-+	osnoise_destroy_tool(tool);
-+	return NULL;
-+}
-+
-+static int stop_tracing = 0;
-+static void stop_hist(int sig)
-+{
-+	stop_tracing = 1;
-+}
-+
-+/*
-+ * timerlat_hist_set_signals - handles the signal to stop the tool
-+ */
-+static void
-+timerlat_hist_set_signals(struct timerlat_hist_params *params)
-+{
-+	signal(SIGINT, stop_hist);
-+	if (params->duration) {
-+		signal(SIGALRM, stop_hist);
-+		alarm(params->duration);
-+	}
-+}
-+
-+int timerlat_hist_main(int argc, char *argv[])
-+{
-+	struct timerlat_hist_params *params;
-+	struct trace_instance *trace;
-+	struct osnoise_tool *record;
-+	struct osnoise_tool *tool;
-+	int return_value = 1;
-+	int retval;
-+
-+	params = timerlat_hist_parse_args(argc, argv);
-+	if (!params)
-+		exit(1);
-+
-+	tool = timerlat_init_hist(params);
-+	if (!tool) {
-+		err_msg("Could not init osnoise hist\n");
-+		goto out_exit;
-+	}
-+
-+	retval = timerlat_hist_apply_config(tool, params);
-+	if (retval) {
-+		err_msg("Could not apply config\n");
-+		goto out_exit;
-+	}
-+
-+	trace = &tool->trace;
-+
-+	retval = enable_timerlat(trace);
-+	if (retval) {
-+		err_msg("Failed to enable timerlat tracer\n");
-+		goto out_hist;
-+	}
-+
-+	if (params->set_sched) {
-+		retval = set_comm_sched_attr("timerlat/", &params->sched_param);
-+		if (retval)
-+			timerlat_hist_usage("Failed to set sched parameters\n");
-+	}
-+
-+	trace_instance_start(trace);
-+
-+	if (params->trace_output) {
-+		record = osnoise_init_trace_tool("timerlat");
-+		if (!record) {
-+			err_msg("Failed to enable the trace instance\n");
-+			goto out_hist;
-+		}
-+		trace_instance_start(&record->trace);
-+	}
-+
-+	tool->start_time = time(NULL);
-+	timerlat_hist_set_signals(params);
-+
-+	while (!stop_tracing) {
-+		sleep(params->sleep_time);
-+
-+		retval = tracefs_iterate_raw_events(trace->tep,
-+						    trace->inst,
-+						    NULL,
-+						    0,
-+						    collect_registered_events,
-+						    trace);
-+		if (retval < 0) {
-+			err_msg("Error iterating on events\n");
-+			goto out_hist;
-+		}
-+
-+		if (!tracefs_trace_is_on(trace->inst))
-+			break;
-+	};
-+
-+	timerlat_print_stats(params, tool);
-+
-+	return_value = 0;
-+
-+	if (!tracefs_trace_is_on(trace->inst)) {
-+		printf("rtla timelat hit stop tracing\n");
-+		if (params->trace_output) {
-+			printf("  Saving trace to %s\n", params->trace_output);
-+			save_trace_to_file(record->trace.inst, params->trace_output);
-+		}
-+	}
-+
-+out_hist:
-+	timerlat_free_histogram(tool->data);
-+	osnoise_destroy_tool(tool);
-+	if (params->trace_output)
-+		osnoise_destroy_tool(record);
-+	free(params);
-+out_exit:
-+	exit(return_value);
-+}
++++ b/tools/tracing/rtla/Documentation/Makefile
+@@ -0,0 +1,223 @@
++# SPDX-License-Identifier: LGPL-2.1
++
++include utils.mk
++
++# This Makefile and manpage XSL files were taken from libtracefs
++# and modified
++
++
++MAN1_TXT= \
++	$(wildcard rtla-*.txt) \
++	rtla.txt
++
++MAN_TXT = $(MAN1_TXT)
++_MAN_XML=$(patsubst %.txt,%.xml,$(MAN_TXT))
++_MAN_HTML=$(patsubst %.txt,%.html,$(MAN_TXT))
++_DOC_MAN1=$(patsubst %.txt,%.m,$(MAN1_TXT))
++
++MAN_XML=$(addprefix $(OUTPUT),$(_MAN_XML))
++MAN_HTML=$(addprefix $(OUTPUT),$(_MAN_HTML))
++DOC_MAN1=$(addprefix $(OUTPUT),$(_DOC_MAN1))
++
++# Make the path relative to DESTDIR, not prefix
++ifndef DESTDIR
++prefix?=$(HOME)
++endif
++bindir?=$(prefix)/bin
++htmldir?=$(prefix)/share/doc/rtla-doc
++pdfdir?=$(prefix)/share/doc/rtla-doc
++mandir?=$(prefix)/share/man
++man1dir=$(mandir)/man1
++
++ASCIIDOC=asciidoc
++ASCIIDOC_EXTRA = --unsafe -f asciidoc.conf
++ASCIIDOC_HTML = xhtml11
++MANPAGE_XSL = manpage-normal.xsl
++XMLTO_EXTRA = --skip-validation
++INSTALL?=install
++RM ?= rm -f
++
++ifdef USE_ASCIIDOCTOR
++ASCIIDOC = asciidoctor
++ASCIIDOC_EXTRA = -a compat-mode
++ASCIIDOC_EXTRA += -I. -rasciidoctor-extensions
++ASCIIDOC_EXTRA += -a mansource="rtla" -a manmanual="rtla Manual"
++ASCIIDOC_HTML = xhtml5
++endif
++
++ASCIIDOC_INSTALLED := $(shell command -v $(ASCIIDOC) 2> /dev/null)
++ifndef ASCIIDOC_INSTALLED
++	missing_tools += $(ASCIIDOC)
++endif
++
++XMLTO=xmlto
++XMLTO_INSTALLED := $(shell command -v $(XMLTO) 2> /dev/null)
++ifndef XMLTO_INSTALLED
++	missing_tools += $(XMLTO)
++endif
++
++#
++# For asciidoc ...
++#	-7.1.2,	no extra settings are needed.
++#	8.0-,	set ASCIIDOC8.
++#
++
++#
++# For docbook-xsl ...
++#	-1.68.1,	set ASCIIDOC_NO_ROFF? (based on changelog from 1.73.0)
++#	1.69.0,		no extra settings are needed?
++#	1.69.1-1.71.0,	set DOCBOOK_SUPPRESS_SP?
++#	1.71.1,		no extra settings are needed?
++#	1.72.0,		set DOCBOOK_XSL_172.
++#	1.73.0-,	set ASCIIDOC_NO_ROFF
++#
++
++#
++# If you had been using DOCBOOK_XSL_172 in an attempt to get rid
++# of 'the ".ft C" problem' in your generated manpages, and you
++# instead ended up with weird characters around callouts, try
++# using ASCIIDOC_NO_ROFF instead (it works fine with ASCIIDOC8).
++#
++
++ifdef ASCIIDOC8
++ASCIIDOC_EXTRA += -a asciidoc7compatible
++endif
++ifdef DOCBOOK_XSL_172
++ASCIIDOC_EXTRA += -a rtla-asciidoc-no-roff
++MANPAGE_XSL = manpage-1.72.xsl
++else
++	ifdef ASCIIDOC_NO_ROFF
++	# docbook-xsl after 1.72 needs the regular XSL, but will not
++	# pass-thru raw roff codes from asciidoc.conf, so turn them off.
++	ASCIIDOC_EXTRA += -a rtla-asciidoc-no-roff
++	endif
++endif
++ifdef MAN_BOLD_LITERAL
++XMLTO_EXTRA += -m manpage-bold-literal.xsl
++endif
++ifdef DOCBOOK_SUPPRESS_SP
++XMLTO_EXTRA += -m manpage-suppress-sp.xsl
++endif
++
++SHELL_PATH ?= $(SHELL)
++# Shell quote;
++SHELL_PATH_SQ = $(subst ','\'',$(SHELL_PATH))
++
++DESTDIR ?=
++DESTDIR_SQ = '$(subst ','\'',$(DESTDIR))'
++
++export DESTDIR DESTDIR_SQ
++
++QUIET_SUBDIR0  = +$(MAKE) -C # space to separate -C and subdir
++QUIET_SUBDIR1  =
++
++ifneq ($(findstring $(MAKEFLAGS),w),w)
++PRINT_DIR = --no-print-directory
++else # "make -w"
++NO_SUBDIR = :
++endif
++
++ifneq ($(findstring $(MAKEFLAGS),s),s)
++ifneq ($(V),1)
++	QUIET_ASCIIDOC	= @echo '  ASCIIDOC '$@;
++	QUIET_XMLTO	= @echo '  XMLTO    '$@;
++	QUIET_SUBDIR0	= +@subdir=
++	QUIET_SUBDIR1	= ;$(NO_SUBDIR) \
++			   echo '  SUBDIR   ' $$subdir; \
++			  $(MAKE) $(PRINT_DIR) -C $$subdir
++	export V
++endif
++endif
++
++all: check-man-tools html man1
++
++man: man1
++man1: $(DOC_MAN1)
++
++html: $(MAN_HTML) $(MAN1_HTML)
++
++$(MAN_HTML) $(MAN1_HTML) $(DOC_MAN1): asciidoc.conf
++
++install: check-man-tools install-man install-html
++
++check-man-tools:
++ifdef missing_tools
++	$(error "You need to install $(missing_tools) for man pages")
++endif
++
++install-%.1: $(OUTPUT)%.1
++	$(Q)$(call do_install,$<,$(man1dir),644);
++
++do-install-man: man $(addprefix install-,$(wildcard $(OUTPUT)*.1))
++
++install-man: man
++	$(Q)$(MAKE) -C . do-install-man
++
++install-%.txt: $(OUTPUT)%.html
++	$(Q)$(call do_install,$<,$(htmldir),644);
++
++install-%.txt.1: $(OUTPUT)%.html
++	$(Q)$(call do_install,$<,$(htmldir),644);
++
++do-install-html: html $(addprefix install-,$(wildcard *.txt)) $(addprefix install-,$(wildcard *.txt.1))
++
++install-html: html do-install-html
++
++uninstall: uninstall-man uninstall-html
++
++uninstall-man:
++	$(Q)$(RM) $(addprefix $(DESTDIR)$(man1dir)/,$(DOC_MAN1))
++
++uninstall-html:
++	$(Q)$(RM) $(addprefix $(DESTDIR)$(htmldir)/,$(MAN_HTML)) $(addprefix $(DESTDIR)$(htmldir)/,$(MAN1_HTML))
++
++ifdef missing_tools
++  DO_INSTALL_MAN = $(warning Please install $(missing_tools) to have the man pages installed)
++else
++  DO_INSTALL_MAN = do-install-man
++endif
++
++CLEAN_FILES =					\
++	$(MAN_XML) $(addsuffix +,$(MAN_XML))	\
++	$(MAN_HTML) $(addsuffix +,$(MAN_HTML))	\
++	$(DOC_MAN1) *.1 *.m
++
++clean:
++	$(Q) $(RM) $(CLEAN_FILES)
++
++ifdef USE_ASCIIDOCTOR
++$(OUTPUT)%.1 : $(OUTPUT)%.txt.1
++	$(QUIET_ASCIIDOC)$(RM) $@+ $@ && \
++	$(ASCIIDOC) -b manpage -d manpage \
++		$(ASCIIDOC_EXTRA) -artla_version=$(TRACEFS_VERSION) -o $@+ $< && \
++	mv $@+ $@
++endif
++
++$(OUTPUT)%.m : $(OUTPUT)%.xml
++	$(QUIET_XMLTO)$(RM) $@ && \
++	$(XMLTO) -o $(OUTPUT). -m $(MANPAGE_XSL) $(XMLTO_EXTRA) man $<; \
++	touch $@
++
++$(OUTPUT)%.xml : %.txt
++	$(QUIET_ASCIIDOC)$(RM) $@+ $@ && \
++	$(ASCIIDOC) -b docbook -d manpage \
++		$(ASCIIDOC_EXTRA) -artla_version=$(TRACEFS_VERSION) -o $@+ $< && \
++	mv $@+ $@
++
++$(OUTPUT)%.xml : %.txt.1
++	$(QUIET_ASCIIDOC)$(RM) $@+ $@ && \
++	$(ASCIIDOC) -b docbook -d manpage \
++		$(ASCIIDOC_EXTRA) -artla_version=$(TRACEFS_VERSION) -o $@+ $< && \
++	mv $@+ $@
++
++$(MAN_HTML): $(OUTPUT)%.html : %.txt
++	$(QUIET_ASCIIDOC)$(RM) $@+ $@ && \
++	$(ASCIIDOC) -b $(ASCIIDOC_HTML) -d manpage \
++		$(ASCIIDOC_EXTRA) -artla_version=$(TRACEFS_VERSION) -o $@+ $< && \
++	mv $@+ $@
++
++$(MAN1_HTML): $(OUTPUT)%.html : %.txt.1
++	$(QUIET_ASCIIDOC)$(RM) $@+ $@ && \
++	$(ASCIIDOC) -b $(ASCIIDOC_HTML) -d manpage \
++		$(ASCIIDOC_EXTRA) -artla_version=$(TRACEFS_VERSION) -o $@+ $< && \
++	mv $@+ $@
+diff --git a/tools/tracing/rtla/Documentation/asciidoc.conf b/tools/tracing/rtla/Documentation/asciidoc.conf
+new file mode 100644
+index 000000000000..40678f1ab901
+--- /dev/null
++++ b/tools/tracing/rtla/Documentation/asciidoc.conf
+@@ -0,0 +1,118 @@
++## linktep: macro
++#
++# Usage: linktep:command[manpage-section]
++#
++# Note, {0} is the manpage section, while {target} is the command.
++#
++# Show TEP link as: <command>(<section>); if section is defined, else just show
++# the command.
++
++[macros]
++(?su)[\\]?(?P<name>linktep):(?P<target>\S*?)\[(?P<attrlist>.*?)\]=
++
++[attributes]
++asterisk=&#42;
++plus=&#43;
++caret=&#94;
++startsb=&#91;
++endsb=&#93;
++tilde=&#126;
++
++ifdef::backend-docbook[]
++[linktep-inlinemacro]
++{0%{target}}
++{0#<citerefentry>}
++{0#<refentrytitle>{target}</refentrytitle><manvolnum>{0}</manvolnum>}
++{0#</citerefentry>}
++endif::backend-docbook[]
++
++ifdef::backend-docbook[]
++ifndef::tep-asciidoc-no-roff[]
++# "unbreak" docbook-xsl v1.68 for manpages. v1.69 works with or without this.
++# v1.72 breaks with this because it replaces dots not in roff requests.
++[listingblock]
++<example><title>{title}</title>
++<literallayout>
++ifdef::doctype-manpage[]
++endif::doctype-manpage[]
++|
++ifdef::doctype-manpage[]
++endif::doctype-manpage[]
++</literallayout>
++{title#}</example>
++endif::tep-asciidoc-no-roff[]
++
++ifdef::tep-asciidoc-no-roff[]
++ifdef::doctype-manpage[]
++# The following two small workarounds insert a simple paragraph after screen
++[listingblock]
++<example><title>{title}</title>
++<literallayout>
++|
++</literallayout><simpara></simpara>
++{title#}</example>
++
++[verseblock]
++<formalpara{id? id="{id}"}><title>{title}</title><para>
++{title%}<literallayout{id? id="{id}"}>
++{title#}<literallayout>
++|
++</literallayout>
++{title#}</para></formalpara>
++{title%}<simpara></simpara>
++endif::doctype-manpage[]
++endif::tep-asciidoc-no-roff[]
++endif::backend-docbook[]
++
++ifdef::doctype-manpage[]
++ifdef::backend-docbook[]
++[header]
++template::[header-declarations]
++<refentry>
++<refmeta>
++<refentrytitle>{mantitle}</refentrytitle>
++<manvolnum>{manvolnum}</manvolnum>
++<refmiscinfo class="source">rtla</refmiscinfo>
++<refmiscinfo class="version">{rtla_version}</refmiscinfo>
++<refmiscinfo class="manual">RTLA Manual</refmiscinfo>
++</refmeta>
++<refnamediv>
++  <refname>{manname1}</refname>
++  <refname>{manname2}</refname>
++  <refname>{manname3}</refname>
++  <refname>{manname4}</refname>
++  <refname>{manname5}</refname>
++  <refname>{manname6}</refname>
++  <refname>{manname7}</refname>
++  <refname>{manname8}</refname>
++  <refname>{manname9}</refname>
++  <refname>{manname10}</refname>
++  <refname>{manname11}</refname>
++  <refname>{manname12}</refname>
++  <refname>{manname13}</refname>
++  <refname>{manname14}</refname>
++  <refname>{manname15}</refname>
++  <refname>{manname16}</refname>
++  <refname>{manname17}</refname>
++  <refname>{manname18}</refname>
++  <refname>{manname19}</refname>
++  <refname>{manname20}</refname>
++  <refname>{manname21}</refname>
++  <refname>{manname22}</refname>
++  <refname>{manname23}</refname>
++  <refname>{manname24}</refname>
++  <refname>{manname25}</refname>
++  <refname>{manname26}</refname>
++  <refname>{manname27}</refname>
++  <refname>{manname28}</refname>
++  <refname>{manname29}</refname>
++  <refname>{manname30}</refname>
++  <refpurpose>{manpurpose}</refpurpose>
++</refnamediv>
++endif::backend-docbook[]
++endif::doctype-manpage[]
++
++ifdef::backend-xhtml11[]
++[linktep-inlinemacro]
++<a href="{target}.html">{target}{0?({0})}</a>
++endif::backend-xhtml11[]
+diff --git a/tools/tracing/rtla/Documentation/manpage-base.xsl b/tools/tracing/rtla/Documentation/manpage-base.xsl
+new file mode 100644
+index 000000000000..a264fa616093
+--- /dev/null
++++ b/tools/tracing/rtla/Documentation/manpage-base.xsl
+@@ -0,0 +1,35 @@
++<!-- manpage-base.xsl:
++     special formatting for manpages rendered from asciidoc+docbook -->
++<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
++		version="1.0">
++
++<!-- these params silence some output from xmlto -->
++<xsl:param name="man.output.quietly" select="1"/>
++<xsl:param name="refentry.meta.get.quietly" select="1"/>
++
++<!-- convert asciidoc callouts to man page format;
++     git.docbook.backslash and git.docbook.dot params
++     must be supplied by another XSL file or other means -->
++<xsl:template match="co">
++	<xsl:value-of select="concat(
++			      $git.docbook.backslash,'fB(',
++			      substring-after(@id,'-'),')',
++			      $git.docbook.backslash,'fR')"/>
++</xsl:template>
++<xsl:template match="calloutlist">
++	<xsl:value-of select="$git.docbook.dot"/>
++	<xsl:text>sp&#10;</xsl:text>
++	<xsl:apply-templates/>
++	<xsl:text>&#10;</xsl:text>
++</xsl:template>
++<xsl:template match="callout">
++	<xsl:value-of select="concat(
++			      $git.docbook.backslash,'fB',
++			      substring-after(@arearefs,'-'),
++			      '. ',$git.docbook.backslash,'fR')"/>
++	<xsl:apply-templates/>
++	<xsl:value-of select="$git.docbook.dot"/>
++	<xsl:text>br&#10;</xsl:text>
++</xsl:template>
++
++</xsl:stylesheet>
+diff --git a/tools/tracing/rtla/Documentation/manpage-normal.xsl b/tools/tracing/rtla/Documentation/manpage-normal.xsl
+new file mode 100644
+index 000000000000..a48f5b11f3dc
+--- /dev/null
++++ b/tools/tracing/rtla/Documentation/manpage-normal.xsl
+@@ -0,0 +1,13 @@
++<!-- manpage-normal.xsl:
++     special settings for manpages rendered from asciidoc+docbook
++     handles anything we want to keep away from docbook-xsl 1.72.0 -->
++<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
++		version="1.0">
++
++<xsl:import href="manpage-base.xsl"/>
++
++<!-- these are the normal values for the roff control characters -->
++<xsl:param name="git.docbook.backslash">\</xsl:param>
++<xsl:param name="git.docbook.dot"	>.</xsl:param>
++
++</xsl:stylesheet>
+diff --git a/tools/tracing/rtla/Documentation/rtla.txt b/tools/tracing/rtla/Documentation/rtla.txt
+new file mode 100644
+index 000000000000..bc02aeb35d04
+--- /dev/null
++++ b/tools/tracing/rtla/Documentation/rtla.txt
+@@ -0,0 +1,56 @@
++rtla(1)
++=======
++
++NAME
++----
++rtla - Real-time Linux Analysis tool
++
++SYNOPSIS
++--------
++*rtla* COMMAND [OPTIONS]
++
++DESCRIPTION
++-----------
++The rtla(1) is a meta-tool that includes a set of commands that aims to
++analyze the real-time properties of Linux. But instead of testing Linux
++as a black box, rtla leverages kernel tracing capabilities to provide
++precise information about the properties and root causes of unexpected
++results.
++
++COMMANDS
++--------
++*osnoise*::
++Gives information about the operating system noise (osnoise).
++*timerlat*::
++Measures the irq and thread timerlat latency.
++
++OPTIONS
++-------
++*-h*, --help
++	Display the help text.
++
++For other options, see the man page for the corresponding command.
++
++SEE ALSO
++--------
++_rtla-osnoise(1)_, _rtla-timerlat(1)_.
++
++AUTHOR
++------
++Daniel Bristot de Oliveira <bristot@kernel.org>.
++
++REPORTING BUGS
++--------------
++Report bugs to <lkml@vger.kernel.org>.
++
++LICENSE
++-------
++rtla is Free Software licensed under the GNU GPLv2.
++
++RESOURCES
++---------
++
++COPYING
++-------
++Copyright \(C) 2021 Red Hat, Inc. Free use of this software is granted under
++the terms of the GNU Public License (GPL).
+diff --git a/tools/tracing/rtla/Documentation/utils.mk b/tools/tracing/rtla/Documentation/utils.mk
+new file mode 100644
+index 000000000000..32a9b3c5b0e2
+--- /dev/null
++++ b/tools/tracing/rtla/Documentation/utils.mk
+@@ -0,0 +1,144 @@
++# SPDX-License-Identifier: LGPL-2.1
++
++# Utils
++
++ GOBJ		= $(notdir $(strip $@))
++
++
++ifeq ($(VERBOSE),1)
++  Q =
++  S =
++else
++  Q = @
++  S = -s
++endif
++
++# Use empty print_* macros if either SILENT or VERBOSE.
++ifeq ($(findstring 1,$(SILENT)$(VERBOSE)),1)
++  print_compile =
++  print_app_build =
++  print_fpic_compile =
++  print_shared_lib_compile =
++  print_plugin_obj_compile =
++  print_plugin_build =
++  print_install =
++  print_uninstall =
++  print_update =
++else
++  print_compile =		echo '  COMPILE            '$(GOBJ);
++  print_app_build =		echo '  BUILD              '$(GOBJ);
++  print_fpic_compile =		echo '  COMPILE FPIC       '$(GOBJ);
++  print_shared_lib_compile =	echo '  COMPILE SHARED LIB '$(GOBJ);
++  print_plugin_obj_compile =	echo '  COMPILE PLUGIN OBJ '$(GOBJ);
++  print_plugin_build =		echo '  BUILD PLUGIN       '$(GOBJ);
++  print_static_lib_build =	echo '  BUILD STATIC LIB   '$(GOBJ);
++  print_install =		echo '  INSTALL     '$1'	to	$(DESTDIR_SQ)$2';
++  print_uninstall =		echo '  UNINSTALL     $(DESTDIR_SQ)$1';
++  print_update =		echo '  UPDATE             '$(GOBJ);
++endif
++
++do_fpic_compile =					\
++	($(print_fpic_compile)				\
++	$(CC) -c $(CPPFLAGS) $(CFLAGS) $(EXT) -fPIC $< -o $@)
++
++do_compile =							\
++	($(if $(GENERATE_PIC), $(do_fpic_compile),		\
++	 $(print_compile)					\
++	 $(CC) -c $(CPPFLAGS) $(CFLAGS) $(EXT) $< -o $@))
++
++do_app_build =						\
++	($(print_app_build)				\
++	$(CC) $^ -rdynamic -o $@ $(LDFLAGS) $(CONFIG_LIBS) $(LIBS))
++
++do_build_static_lib =				\
++	($(print_static_lib_build)		\
++	$(RM) $@;  $(AR) rcs $@ $^)
++
++do_compile_shared_library =			\
++	($(print_shared_lib_compile)		\
++	$(CC) --shared $^ '-Wl,-soname,$(1),-rpath=$$ORIGIN' -o $@ $(LIBS))
++
++do_compile_plugin_obj =				\
++	($(print_plugin_obj_compile)		\
++	$(CC) -c $(CPPFLAGS) $(CFLAGS) -fPIC -o $@ $<)
++
++do_plugin_build =				\
++	($(print_plugin_build)			\
++	$(CC) $(CFLAGS) $(LDFLAGS) -shared -nostartfiles -o $@ $<)
++
++do_compile_python_plugin_obj =			\
++	($(print_plugin_obj_compile)		\
++	$(CC) -c $(CPPFLAGS) $(CFLAGS) $(PYTHON_DIR_SQ) $(PYTHON_INCLUDES) -fPIC -o $@ $<)
++
++do_python_plugin_build =			\
++	($(print_plugin_build)			\
++	$(CC) $< -shared $(LDFLAGS) $(PYTHON_LDFLAGS) -o $@)
++
++define make_version.h
++	(echo '/* This file is automatically generated. Do not modify. */';		\
++	echo \#define VERSION_CODE $(shell						\
++	expr $(VERSION) \* 256 + $(PATCHLEVEL));					\
++	echo '#define EXTRAVERSION ' $(EXTRAVERSION);					\
++	echo '#define VERSION_STRING "'$(VERSION).$(PATCHLEVEL).$(EXTRAVERSION)'"';	\
++	echo '#define FILE_VERSION '$(FILE_VERSION);					\
++	if [ -d $(src)/.git ]; then							\
++	  d=`git diff`;									\
++	  x="";										\
++	  if [ ! -z "$$d" ]; then x="+"; fi;						\
++	  echo '#define VERSION_GIT "'$(shell 						\
++		git log -1 --pretty=format:"%H" 2>/dev/null)$$x'"';			\
++	else										\
++	  echo '#define VERSION_GIT "not-a-git-repo"';					\
++	fi										\
++	) > $1
++endef
++
++define update_version.h
++	($(call make_version.h, $@.tmp);				\
++	if [ -r $@ ] && cmp -s $@ $@.tmp; then				\
++		rm -f $@.tmp;						\
++	else								\
++		$(print_update)						\
++		mv -f $@.tmp $@;					\
++	fi);
++endef
++
++define update_dir
++	(echo $1 > $@.tmp;	\
++	if [ -r $@ ] && cmp -s $@ $@.tmp; then				\
++		rm -f $@.tmp;						\
++	else								\
++		$(print_update)						\
++		mv -f $@.tmp $@;					\
++	fi);
++endef
++
++define build_prefix
++	(echo $1 > $@.tmp;	\
++	if [ -r $@ ] && cmp -s $@ $@.tmp; then				\
++		rm -f $@.tmp;						\
++	else								\
++		$(print_update)						\
++		mv -f $@.tmp $@;					\
++	fi);
++endef
++
++define do_install_mkdir
++	if [ ! -d '$(DESTDIR_SQ)$1' ]; then		\
++		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$1';	\
++	fi
++endef
++
++define do_install
++	$(print_install)				\
++	$(call do_install_mkdir,$2);			\
++	$(INSTALL) $(if $3,-m $3,) $1 '$(DESTDIR_SQ)$2'
++endef
++
++define do_install_pkgconfig_file
++	if [ -n "${pkgconfig_dir}" ]; then 					\
++		$(call do_install,$(PKG_CONFIG_FILE),$(pkgconfig_dir),644); 	\
++	else 									\
++		(echo Failed to locate pkg-config directory) 1>&2;		\
++	fi
++endef
+diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
+index 580a33db6645..9a914391e507 100644
+--- a/tools/tracing/rtla/Makefile
++++ b/tools/tracing/rtla/Makefile
+@@ -17,7 +17,7 @@ LIBS	:=	-ltracefs -ltraceevent -lpthread -lprocps
+ SRC	:=	$(wildcard src/*.c)
+ HDR	:=	$(wildcard src/*.h)
+ OBJ	:=	$(SRC:.c=.o)
+-DIRS	:=	src
++DIRS	:=	src Documentation
+ FILES	:=	Makefile
+ CEXT	:=	bz2
+ TARBALL	:=	$(NAME)-$(VERSION).tar.$(CEXT)
+@@ -27,19 +27,20 @@ DATADIR	:=	/usr/share
+ DOCDIR	:=	$(DATADIR)/doc
+ MANDIR	:=	$(DATADIR)/man
+ LICDIR	:=	$(DATADIR)/licenses
++SRCTREE	:=	$(if $(BUILD_SRC),$(BUILD_SRC),$(CURDIR))
+ 
+ .PHONY:	all tests
+ 
+ all:	rtla
+ 
+-rtla: $(OBJ)
++rtla: $(OBJ) doc
+ 	$(CC) -o rtla $(LDFLAGS) $(OBJ) $(LIBS)
+ 
+ static: $(OBJ)
+ 	$(CC) -o rtla-static $(LDFLAGS) --static $(OBJ) $(LIBS) -lpthread -ldl
+ 
+ .PHONY: install
+-install:
++install: doc_install
+ 	$(INSTALL) rtla -m 755 $(DESTDIR)$(BINDIR)
+ 	@test ! -f $(DESTDIR)$(BINDIR)/osnoise || rm $(DESTDIR)$(BINDIR)/osnoise
+ 	ln -s $(DESTDIR)$(BINDIR)/rtla $(DESTDIR)$(BINDIR)/osnoise
+@@ -47,15 +48,24 @@ install:
+ 	ln -s $(DESTDIR)$(BINDIR)/rtla $(DESTDIR)$(BINDIR)/timerlat
+ 
+ .PHONY: clean tarball push
+-clean:
++clean: doc_clean
+ 	@test ! -f rtla || rm rtla
+ 	@test ! -f rtla-static || rm rtla-static
+ 	@test ! -f src/rtla.o || rm src/rtla.o
+ 	@test ! -f $(TARBALL) || rm -f $(TARBALL)
+ 	@rm -rf *~ $(OBJ) *.tar.$(CEXT)
+ 
+-tarball:  clean
++tarball: clean
+ 	rm -rf $(NAME)-$(VERSION) && mkdir $(NAME)-$(VERSION)
+ 	cp -r $(DIRS) $(FILES) $(NAME)-$(VERSION)
+ 	tar $(TAROPTS) --exclude='*~' $(NAME)-$(VERSION)
+ 	rm -rf $(NAME)-$(VERSION)
++
++doc:
++	$(MAKE) -C $(SRCTREE)/Documentation all
++
++doc_clean:
++	$(MAKE) -C $(SRCTREE)/Documentation clean
++
++doc_install:
++	$(MAKE) -C $(SRCTREE)/Documentation install
 -- 
 2.31.1
 
