@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A0B8C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 24 Sep 2021 09:57:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D5A9C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 24 Sep 2021 09:57:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4A9CA610D1
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 24 Sep 2021 09:57:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 57F6760E54
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 24 Sep 2021 09:57:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245408AbhIXJ6t (ORCPT
+        id S245422AbhIXJ6u (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 24 Sep 2021 05:58:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60382 "EHLO
+        Fri, 24 Sep 2021 05:58:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
         with ESMTP id S245366AbhIXJ6t (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 24 Sep 2021 05:58:49 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25015C061574
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB0C1C061574
         for <linux-trace-devel@vger.kernel.org>; Fri, 24 Sep 2021 02:57:16 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id v22so33185911edd.11
+Received: by mail-ed1-x52e.google.com with SMTP id c21so33546837edj.0
         for <linux-trace-devel@vger.kernel.org>; Fri, 24 Sep 2021 02:57:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Cs9pri9txCRkuN4l34KuLQVenfVooL4RZhs9R67bSBo=;
-        b=MS3f5d6MHjPqFYuNMc6+UZ4ItONH7xdMureLS1dM52SB8SNx/BarmYBkHnDYq5rhzc
-         I9mkuKRFAEGeBd+o97FGx0IVSgIvqKapiyaBSg6ZGaS/sbR+CdQevX2Njzz4F+4EQRud
-         9FBcVWcQ+7IjK2NDLIAChLyOu9Adjh2iUau1eVMI9zd2n0aWYt05m55mCGaHxH04shZJ
-         jwMwbqIfPpods5o2vLTS1UYJ1fVnrwtn/Lg8adr/KE69OkWQotOE+QQrnGGoIciH05J6
-         W+eQGFZNq5UNsURl5g28YwtL24M2gZoAg7WrA57nMAvlNmK98oWADs8x4U3HO8HJ6S5R
-         gBxQ==
+        bh=WrqulUvtP74+nU2f2uM9SgxrL0TZt6t58MMlLBelMmM=;
+        b=gBGH3tjssGoG4SetsguM56aBB195zgHfml9UPctX/Zodr9brL3v/uULXHOCILQAeNB
+         gY0ukgZvH1fsVd4GZ9WVgGcylhX2tUneoTL3zoWMgOzj/i1x20/YXOi3/0K0R9UqKLvL
+         JI5jHHKQApRRFKS1oCCqMhqfGkIQVhrLGx8fDpjJCEOdrIqCFuDkuQ+uPMnuqSYdvOsH
+         gI7AERqFZ/K0ZETzd8RD62AWJuEBcPQhATOZF9XqhgL8TGp6zBwveUvF5Lj6zwGODx8W
+         MRiP40DidbhV6Ze7fCrbgdbcvFguBcYKMMHgEbKj6TeJKeNK5Dzg23P3rsD01qmXIvz2
+         1blA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Cs9pri9txCRkuN4l34KuLQVenfVooL4RZhs9R67bSBo=;
-        b=0siufhkYBV9K5fGT0tU6BkhbwamgCVjNSAMCWmKL4H5jMVxxnrDhxJm7OEGFQRRojS
-         pNDgiRPrN71moihHQOxV6jKqPR6kxiTU6YdoVzPgndP82ZFKEztzSf7Q9uE/buXOMFJp
-         ihb/aSHknQ6RaZ9Vhe3tIhCui48B7iA6qOUGF7N1zvhBby/NlPaeOV+xTno4eTiMeW3u
-         SxEMaZdKr1smEqxRznf1D93p+ym0p2u9QzvwqaOf4CJYykARwlLYafh5/NmaPOS8nuJ4
-         cYnLVH05lmFdcuhaqzovVA9AdQI9ipN9XrQxFdtBUxI7vbc2u1dhXLAfebFNIBKcug3f
-         xGmA==
-X-Gm-Message-State: AOAM530v/Hl1ujqH+OyZjsZnGyDpUlNCAKCDIcSbWa16d8lMFMKgishB
-        fZfJS3Alia5smopIV/XZ12bST6EvuG0=
-X-Google-Smtp-Source: ABdhPJzKDeRhodBYcfCogZfQUcdh5z9j/jUEwQx62qZ8fKpW9SUanJ0jEtWMOTClvoTDsQwTqMLa4A==
-X-Received: by 2002:a17:907:98e6:: with SMTP id ke6mr10693130ejc.63.1632477434608;
-        Fri, 24 Sep 2021 02:57:14 -0700 (PDT)
+        bh=WrqulUvtP74+nU2f2uM9SgxrL0TZt6t58MMlLBelMmM=;
+        b=DF+RMI06BUWS2Opmegg6KwTgNu/iXikCgPDZ18c+LjiouXP8u7sYOk+i/OL6QG/gUf
+         Yb6v0WCVC2mw/J0ZNHrNzSvjwViisNgeskDh5e9RS/YKlzFJIWjpNHe36pzFvt7brgT9
+         PyqdCiFryhiMDBs7SqptmD6p3371HQTgJ8IpRTH6oJzGRG1y40RTGtx5v7U7DF9D7lgI
+         dKFyHI1JucCJqPf9uy2FvwqujGneaUDMKtaAI2P5oyKW07oY7tz4FRG2Xbt79+RNzhkw
+         ineBN9cRZvpOFfk53PrigNqv4HYpMoFfVy7sWyywRRQMWuBpjK/8TkM9NNwHitjqfQFf
+         9gJA==
+X-Gm-Message-State: AOAM531mp/KMYbO699dlgWz+cG6P6H4lf39PLgOn2gQjoasrlzR8DtN1
+        zLLotMwUPGu2BgXh7CCJvuzsggSCIpQ=
+X-Google-Smtp-Source: ABdhPJy+ULjfyM6lRNkcxx/lj7LngUEsTVdjVb7TI+GvMDR2nTEzpzICCv2EbRKtYKSRm69afuJDTw==
+X-Received: by 2002:a17:906:1707:: with SMTP id c7mr9702417eje.377.1632477435492;
+        Fri, 24 Sep 2021 02:57:15 -0700 (PDT)
 Received: from crow.. ([84.40.93.30])
-        by smtp.gmail.com with ESMTPSA id n13sm4635907ejk.97.2021.09.24.02.57.13
+        by smtp.gmail.com with ESMTPSA id n13sm4635907ejk.97.2021.09.24.02.57.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 02:57:14 -0700 (PDT)
+        Fri, 24 Sep 2021 02:57:15 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 1/4] libtracefs: Add new constructors for histograms
-Date:   Fri, 24 Sep 2021 12:56:59 +0300
-Message-Id: <20210924095702.151826-2-y.karadz@gmail.com>
+Subject: [PATCH v2 2/4] libtracefs: Transform tracefs_hist_add_sort_key()
+Date:   Fri, 24 Sep 2021 12:57:00 +0300
+Message-Id: <20210924095702.151826-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210924095702.151826-1-y.karadz@gmail.com>
 References: <20210924095702.151826-1-y.karadz@gmail.com>
@@ -74,181 +74,90 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The current way to create an N-dimensional histogram is bit
-counterintuitive. We first have to call tracefs_hist_alloc()
-which is essentially a constructor of 1d histogram. Then we
-have to call tracefs_hist_add_key() N-1 times in order to
-increase the dimentions of the histogram. Here we transform
-tracefs_hist_alloc() into a constructor of N-dimensional
-histogram and we also add 2 helper constructors for 1d and
-2d histograms.
+The current version of the API makes it hard to add multiple sort keys
+to a histogram. The only way to do this is to use the variadic arguments,
+however in order to do this the caller has to know the number of sort
+keys at compile time, because the method overwrite all previously added
+keys. The problem is addressed by creating a tracefs_hist_add_sort_key()
+into two methods - one that overwrite and one that does not.
+The current version of 'tracefs_hist_add_sort_key()' gets renamed to
+'tracefs_hist_set_sort_key()' without introducing any functional changes.
+In the same time a new 'tracefs_hist_add_sort_key()' function is
+defined. The new function can add one new sort key to the list of
+previously added sort keys.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- include/tracefs.h  | 19 +++++++++--
- src/tracefs-hist.c | 84 ++++++++++++++++++++++++++++++++++++++--------
- 2 files changed, 87 insertions(+), 16 deletions(-)
+ include/tracefs.h  |  4 +++-
+ src/tracefs-hist.c | 33 ++++++++++++++++++++++++++++++---
+ 2 files changed, 33 insertions(+), 4 deletions(-)
 
 diff --git a/include/tracefs.h b/include/tracefs.h
-index 9d84777..5c4141e 100644
+index 5c4141e..230bc41 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
-@@ -310,10 +310,25 @@ enum tracefs_compare {
- };
- 
- void tracefs_hist_free(struct tracefs_hist *hist);
-+struct tracefs_hist *
-+tracefs_hist1d_alloc(struct tep_handle *tep,
-+		     const char *system, const char *event_name,
-+		     const char *key, enum tracefs_hist_key_type type);
-+struct tracefs_hist *
-+tracefs_hist2d_alloc(struct tep_handle *tep,
-+		     const char *system, const char *event_name,
-+		     const char *key1, enum tracefs_hist_key_type type1,
-+		     const char *key2, enum tracefs_hist_key_type type2);
-+
-+struct tracefs_hist_axis {
-+	const char *key;
-+	enum tracefs_hist_key_type type;
-+};
-+
- struct tracefs_hist *
- tracefs_hist_alloc(struct tep_handle *tep,
--		   const char *system, const char *event,
--		   const char *key, enum tracefs_hist_key_type type);
-+		   const char *system, const char *event_name,
-+		   struct tracefs_hist_axis *axes);
- int tracefs_hist_add_key(struct tracefs_hist *hist, const char *key,
+@@ -333,7 +333,9 @@ int tracefs_hist_add_key(struct tracefs_hist *hist, const char *key,
  			 enum tracefs_hist_key_type type);
  int tracefs_hist_add_value(struct tracefs_hist *hist, const char *value);
+ int tracefs_hist_add_sort_key(struct tracefs_hist *hist,
+-			      const char *sort_key, ...);
++			      const char *sort_key);
++int tracefs_hist_reset_sort_key(struct tracefs_hist *hist,
++				const char *sort_key, ...);
+ int tracefs_hist_sort_key_direction(struct tracefs_hist *hist,
+ 				    const char *sort_key,
+ 				    enum tracefs_hist_sort_direction dir);
 diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index c112b68..ea12204 100644
+index ea12204..a7c20de 100644
 --- a/src/tracefs-hist.c
 +++ b/src/tracefs-hist.c
-@@ -189,7 +189,7 @@ void tracefs_hist_free(struct tracefs_hist *hist)
- }
- 
+@@ -437,16 +437,43 @@ add_sort_key(struct tracefs_hist *hist, const char *sort_key, char **list)
  /**
-- * tracefs_hist_alloc - Initialize a histogram
-+ * tracefs_hist1d_alloc - Initialize one-dimensional histogram
-  * @tep: The tep handle that has the @system and @event.
-  * @system: The system the histogram event is in.
-  * @event_name: The name of the event that the histogram will be attached to.
-@@ -205,15 +205,70 @@ void tracefs_hist_free(struct tracefs_hist *hist)
-  * NULL on failure.
+  * tracefs_hist_add_sort_key - add a key for sorting the histogram
+  * @hist: The histogram to add the sort key to
++ * @sort_key: The key to sort
++ *
++ * Call the function to add to the list of sort keys of the histohram in
++ * the order of priority that the keys would be sorted on output.
++ *
++ * Returns 0 on success, -1 on error.
++ */
++int tracefs_hist_add_sort_key(struct tracefs_hist *hist,
++			      const char *sort_key)
++{
++	char **list = hist->sort;
++
++	if (!hist || !sort_key)
++		return -1;
++
++	list = add_sort_key(hist, sort_key, hist->sort);
++	if (!list)
++		return -1;
++
++	hist->sort = list;
++
++	return 0;
++}
++
++/**
++ * tracefs_hist_reset_sort_key - set a key for sorting the histogram
++ * @hist: The histogram to set the sort key to
+  * @sort_key: The key to sort (and the strings after it)
+  *  Last one must be NULL.
+  *
+- * Add a list of sort keys in the order of priority that the
++ * Set a list of sort keys in the order of priority that the
+  * keys would be sorted on output. Keys must be added first.
+  *
+  * Returns 0 on success, -1 on error.
   */
- struct tracefs_hist *
-+tracefs_hist1d_alloc(struct tep_handle *tep,
-+		     const char *system, const char *event_name,
-+		     const char *key, enum tracefs_hist_key_type type)
-+{
-+	struct tracefs_hist_axis axis[] = {{key, type}, {NULL, 0}};
-+
-+	return tracefs_hist_alloc(tep, system, event_name, axis);
-+}
-+
-+/**
-+ * tracefs_hist2d_alloc - Initialize two-dimensional histogram
-+ * @tep: The tep handle that has the @system and @event.
-+ * @system: The system the histogram event is in.
-+ * @event: The event that the histogram will be attached to.
-+ * @key1: The first primary key the histogram will use
-+ * @type1: The format type of the first key.
-+ * @key2: The second primary key the histogram will use
-+ * @type2: The format type of the second key.
-+ *
-+ * Will initialize a histogram descriptor that will be attached to
-+ * the @system/@event with the given @key1 and @key2 as the primaries.
-+ * This only initializes the descriptor, it does not start the histogram
-+ * in the kernel.
-+ *
-+ * Returns an initialized histogram on success.
-+ * NULL on failure.
-+ */
-+struct tracefs_hist *
-+tracefs_hist2d_alloc(struct tep_handle *tep,
-+		     const char *system, const char *event_name,
-+		     const char *key1, enum tracefs_hist_key_type type1,
-+		     const char *key2, enum tracefs_hist_key_type type2)
-+{
-+	struct tracefs_hist_axis axis[] = {{key1, type1},
-+					   {key2, type2},
-+					   {NULL, 0}};
-+
-+	return tracefs_hist_alloc(tep, system, event_name, axis);
-+}
-+
-+/**
-+ * tracefs_hist_alloc - Initialize N-dimensional histogram
-+ * @tep: The tep handle that has the @system and @event.
-+ * @system: The system the histogram event is in
-+ * @event: The event that the histogram will be attached to
-+ * @axes: An array of histogram axes, terminated by a {NULL, 0} entry
-+ *
-+ * Will initialize a histogram descriptor that will be attached to
-+ * the @system/@event. This only initializes the descriptor with the given
-+ * @axes keys as primaries. This only initializes the descriptor, it does
-+ * not start the histogram in the kernel.
-+ *
-+ * Returns an initialized histogram on success.
-+ * NULL on failure.
-+ */
-+struct tracefs_hist *
- tracefs_hist_alloc(struct tep_handle *tep,
- 		   const char *system, const char *event_name,
--		   const char *key, enum tracefs_hist_key_type type)
-+		   struct tracefs_hist_axis *axes)
+-int tracefs_hist_add_sort_key(struct tracefs_hist *hist,
+-			      const char *sort_key, ...)
++int tracefs_hist_reset_sort_key(struct tracefs_hist *hist,
++				const char *sort_key, ...)
  {
- 	struct tep_event *event;
- 	struct tracefs_hist *hist;
--	int ret;
- 
--	if (!system || !event_name || !key)
-+	if (!system || !event_name)
- 		return NULL;
- 
- 	event = tep_find_event_by_name(tep, system, event_name);
-@@ -226,20 +281,21 @@ tracefs_hist_alloc(struct tep_handle *tep,
- 
- 	tep_ref(tep);
- 	hist->tep = tep;
--
- 	hist->event = event;
- 	hist->system = strdup(system);
- 	hist->event_name = strdup(event_name);
-+	if (!hist->system || !hist->event_name)
-+		goto fail;
- 
--	ret = tracefs_hist_add_key(hist, key, type);
--
--	if (!hist->system || !hist->event || ret < 0) {
--		tracefs_hist_free(hist);
--		return NULL;
--	}
--
-+	for (; axes && axes->key; axes++)
-+		if (tracefs_hist_add_key(hist, axes->key, axes->type) < 0)
-+			goto fail;
- 
- 	return hist;
-+
-+ fail:
-+	tracefs_hist_free(hist);
-+	return NULL;
- }
- 
- /**
-@@ -1768,8 +1824,8 @@ tracefs_synth_get_start_hist(struct tracefs_synth *synth)
- 				return NULL;
- 			}
- 		} else {
--			hist = tracefs_hist_alloc(tep, system, event,
--						  key, type);
-+			hist = tracefs_hist1d_alloc(tep, system, event,
-+						    key, type);
- 			if (!hist)
- 				return NULL;
- 		}
+ 	char **list = NULL;
+ 	char **tmp;
 -- 
 2.30.2
 
