@@ -2,62 +2,62 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA08CC433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E96D0C433FE
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Oct 2021 13:33:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AA72E619F7
+	by mail.kernel.org (Postfix) with ESMTP id CF3C361A6F
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Oct 2021 13:33:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231646AbhJANfn (ORCPT
+        id S1353423AbhJANfn (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 1 Oct 2021 09:35:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40994 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353546AbhJANfm (ORCPT
+        with ESMTP id S1353560AbhJANfm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 1 Oct 2021 09:35:42 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C42C061775
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F6DC06177C
         for <linux-trace-devel@vger.kernel.org>; Fri,  1 Oct 2021 06:33:58 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id g7so34118155edv.1
+Received: by mail-ed1-x52a.google.com with SMTP id bd28so34784733edb.9
         for <linux-trace-devel@vger.kernel.org>; Fri, 01 Oct 2021 06:33:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=B+AmNzEkMuB/aoxmkAsnfhR/Yi68SmIljR8x7H61Kwc=;
-        b=gF9an5DNQB/cO+WnWsHo5XErT1bsf51p7ahf7AXSvGGeEglD9QbmX42BX995UaOqXI
-         SEazlQ8aHf/Tzgrfj7OBxmlDe4tIPSEmwQVg6Dj5Wn9ekuTDIO78dZsgkeMXFuhkT4gy
-         ViR2HBjMC3iQRm3zoTTa3k3BMuB+8R7qLOXLL994zYeKYuhOrF4xnHFCRjF9euilSm74
-         Y5GUzUuPRN1MXcrF/Dqguy8Lv8ObdhnowDQ466aSALy4T9/TEwIYXsTnqg527rMiCMWk
-         UWIdsldxDtXgJMsnoaujV84OR7r3dCp9sW5VbsH0Jadh8v/XPN3M3lGd0UPu9rK1uQi0
-         vWZg==
+        bh=4EjK5wzb7SYrY+vgWTVbp0U5AJvVCk4AwWIopyVM5II=;
+        b=QyMl0QpNIWgL3hKhoiQ+7q+SNzftiqB68WMKBsgAboSB9hknYYSAbqq5mjSrlT4q9i
+         g6+gcZyjwiZd8omXgt1bF2dBNbjmFgnRSAfEMjSreQTRpaWiFDKMqhZ89ElhPt/dblAg
+         QCUO4RE6gX3vhatbTMspR/95QCiEGb6X1UO7mbP/BNNI1BDRJDQTrhhv7y71DB7Qn/pm
+         hJEUvjzzC4TInTUPvQDrr9hIn5hKuFukie9/sX4BgS/AeNVOPNfpmJv7l3AlPcHV9Xta
+         1kYYHLOb63Lkqj5Ru2rdVFLX3p5c01F+rl700CC/QmrhyYw/0qq7KuUtXbCTQn8TFqxj
+         tHVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=B+AmNzEkMuB/aoxmkAsnfhR/Yi68SmIljR8x7H61Kwc=;
-        b=3kHgsEo+YPINgyFkQ86XsQRKBPRukB7mPHKaYuCvmF+nFFyOlWku+BPYX81Tk9fv/B
-         fp7N1v2V7JDV3Q+Hf0ru55sur4p18PXbPAqMJVX9dhUO75o5ouFK5/xckP3b/iezjIkI
-         BsOo/tOTFeI5Gq2OSsw4m8XL18qhgX+d0LF4pJyGnYd05Ep/IxP5E98oWn7CnUf9go3H
-         HgGawM0vrbZxPsqqqqBpR4IO3jwnTpOPwsZX+I/abf/hqmFgGdfGJoiZmIo1jjpTflJG
-         WZ+aHKVYoz/dH/MvkadUGJcum8OzYu/gOQnraHGo8RQjgjPBHy86+uR+Q1W6FUTikIPR
-         CZDA==
-X-Gm-Message-State: AOAM530mqAZWDL8La2JQ5xq47fF/BdXUuYc3euqppjIhMLrGF6OzDiFh
-        5butzcMwhiiFpMAtg2nVRpUow276BZ8=
-X-Google-Smtp-Source: ABdhPJz4u1Nqe/Bymfb4SvbnXrOdCvPeYSNrFmNIXQdyrWrnuN1OP3Ydz3SEOCrF3EXFVtqiLDL5ag==
-X-Received: by 2002:a17:906:3542:: with SMTP id s2mr6542898eja.379.1633095236736;
+        bh=4EjK5wzb7SYrY+vgWTVbp0U5AJvVCk4AwWIopyVM5II=;
+        b=izZbBgLSzH/rU+sqFjZqDQodxgJ0T9mmBHw04UldooOFe47TV/tnFWLsZjxkmJ3yMq
+         d83TbehpIIh01dTu/iZWPm5UtMH2SkiMIAR+1qrP4x+MtvUtpn3kiBpQXXjtJRPaZBF1
+         SbYpLI9gqziZWUB0YPJ6Ad7udQDw2Y0/HAKqKTBWlQ2PFyKYlLGkaEew8k2I9EAPPaJg
+         0E/37MNZyFGU9U+KNueRnMqLXCNhEwZiCRVVyixQHACE8edCEy6P5ywxSIbIcpfT63Cb
+         6F/fi+qHW5JRt7n6a3VphBepEoVTOiznoyv/+5sozU8y6nNn8+GLn9zEtbwuVG5S6tNb
+         XvCQ==
+X-Gm-Message-State: AOAM530cq3GHaUPMuVCYvyd8WjtNVr0q5lDukml84cKMxGgyW4bnm/UH
+        hQTHV7VHeTGp/jiWMbcEwBz+8p33cL8=
+X-Google-Smtp-Source: ABdhPJxWLmo06iCtXUjGZe0innDwg+gcRfESJvMqo1cFLZfyOvJoTxXLxQ3PfXZNeKPErdzkIRayVg==
+X-Received: by 2002:a05:6402:4d1:: with SMTP id n17mr14846965edw.337.1633095236021;
         Fri, 01 Oct 2021 06:33:56 -0700 (PDT)
 Received: from crow.. ([84.40.93.30])
-        by smtp.gmail.com with ESMTPSA id ne24sm2993250ejc.46.2021.10.01.06.33.56
+        by smtp.gmail.com with ESMTPSA id ne24sm2993250ejc.46.2021.10.01.06.33.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 06:33:56 -0700 (PDT)
+        Fri, 01 Oct 2021 06:33:55 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 2/5] trace-cruncher: Proper type name for the python objects
-Date:   Fri,  1 Oct 2021 16:33:43 +0300
-Message-Id: <20211001133346.8217-3-y.karadz@gmail.com>
+Subject: [PATCH 1/5] trace-cruncher: Error on fail to destroy
+Date:   Fri,  1 Oct 2021 16:33:42 +0300
+Message-Id: <20211001133346.8217-2-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211001133346.8217-1-y.karadz@gmail.com>
 References: <20211001133346.8217-1-y.karadz@gmail.com>
@@ -67,38 +67,71 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This name gets printed as part of the error messages. It makes
-no sense to have it include the 'C' type since the developer
-that will see the error message will have no idea about the 'C'
-internals of the Python module.
+Always print an error message in the case when the C object,
+being wrapped by the Python type failed to destroy.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/common.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ src/common.h         | 7 +++++--
+ src/ftracepy-utils.c | 4 ++--
+ src/ftracepy-utils.h | 2 +-
+ 3 files changed, 8 insertions(+), 5 deletions(-)
 
 diff --git a/src/common.h b/src/common.h
-index 697b327..b4c66b7 100644
+index abfda1f..697b327 100644
 --- a/src/common.h
 +++ b/src/common.h
-@@ -63,7 +63,7 @@ static inline int no_destroy(void *ptr)
+@@ -54,8 +54,9 @@ static inline void no_free(void *ptr)
  
- #define STR(x) #x
+ #define NO_FREE		no_free
  
--#define MAKE_TYPE_STR(x) STR(trace.x)
-+#define MAKE_TYPE_STR(x) STR(ftracepy.x)
+-static inline void no_destroy(void *ptr)
++static inline int no_destroy(void *ptr)
+ {
++	return 0;
+ }
  
- #define MAKE_DIC_STR(x) STR(libtrace x object)
- 
-@@ -84,7 +84,7 @@ bool py_type##_Check(PyObject *obj);						\
- 
- #define  C_OBJECT_WRAPPER(c_type, py_type, obj_destroy, ptr_free)		\
- static PyTypeObject py_type##Type = {						\
--	PyVarObject_HEAD_INIT(NULL, 0) MAKE_TYPE_STR(c_type)			\
-+	PyVarObject_HEAD_INIT(NULL, 0) MAKE_TYPE_STR(py_type)			\
- };										\
- PyObject *py_type##_New(struct c_type *c_ptr)					\
+ #define NO_DESTROY	no_destroy
+@@ -101,7 +102,9 @@ static int py_type##_init(py_type *self, PyObject *args, PyObject *kwargs)	\
+ static void py_type##_dealloc(py_type *self)					\
  {										\
+ 	if (self->destroy)							\
+-		obj_destroy(self->ptrObj);					\
++		if (obj_destroy(self->ptrObj) < 0)				\
++			printf("fracepy_error: object '%s' failed to destroy\n",\
++			       c_type);						\
+ 	ptr_free(self->ptrObj);							\
+ 	Py_TYPE(self)->tp_free(self);						\
+ }										\
+diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
+index ca7f914..e49132d 100644
+--- a/src/ftracepy-utils.c
++++ b/src/ftracepy-utils.c
+@@ -1757,9 +1757,9 @@ PyObject *PyKprobe_probe(PyKprobe *self)
+ 	return PyUnicode_FromString(self->ptrObj->probe);
+ }
+ 
+-void ftracepy_kprobe_destroy(struct ftracepy_kprobe *kp)
++int ftracepy_kprobe_destroy(struct ftracepy_kprobe *kp)
+ {
+-	unregister_kprobe(kp->event);
++	return tracefs_kprobe_clear_probe(TC_SYS, kp-> event, true);
+ }
+ 
+ void ftracepy_kprobe_free(struct ftracepy_kprobe *kp)
+diff --git a/src/ftracepy-utils.h b/src/ftracepy-utils.h
+index 9f4c4ba..a6133cf 100644
+--- a/src/ftracepy-utils.h
++++ b/src/ftracepy-utils.h
+@@ -26,7 +26,7 @@ C_OBJECT_WRAPPER_DECLARE(tracefs_instance, PyTfsInstance)
+ 
+ struct ftracepy_kprobe;
+ 
+-void ftracepy_kprobe_destroy(struct ftracepy_kprobe *kp);
++int ftracepy_kprobe_destroy(struct ftracepy_kprobe *kp);
+ 
+ void ftracepy_kprobe_free(struct ftracepy_kprobe *kp);
+ 
 -- 
 2.30.2
 
