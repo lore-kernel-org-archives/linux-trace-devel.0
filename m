@@ -2,35 +2,35 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F39D3C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Oct 2021 15:55:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D68B0C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Oct 2021 18:43:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D5415613DB
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Oct 2021 15:55:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B8B286140D
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Oct 2021 18:43:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235691AbhJDP5s (ORCPT
+        id S238821AbhJDSoz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 4 Oct 2021 11:57:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35642 "EHLO mail.kernel.org"
+        Mon, 4 Oct 2021 14:44:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234735AbhJDP5r (ORCPT
+        id S235696AbhJDSoz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 4 Oct 2021 11:57:47 -0400
+        Mon, 4 Oct 2021 14:44:55 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 675BF611AE;
-        Mon,  4 Oct 2021 15:55:58 +0000 (UTC)
-Date:   Mon, 4 Oct 2021 11:55:57 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id A89E861409;
+        Mon,  4 Oct 2021 18:43:05 +0000 (UTC)
+Date:   Mon, 4 Oct 2021 14:43:03 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v3 11/21] trace-cmd library: Fix possible memory leak in
- read_proc_kallsyms()
-Message-ID: <20211004115557.30994c9e@gandalf.local.home>
-In-Reply-To: <20210914131232.3964615-12-tz.stoyanov@gmail.com>
+Subject: Re: [PATCH v3 12/21] trace-cmd library: Fix possible memory leak in
+ read_ftrace_printk()
+Message-ID: <20211004144303.191807b4@gandalf.local.home>
+In-Reply-To: <20210914131232.3964615-13-tz.stoyanov@gmail.com>
 References: <20210914131232.3964615-1-tz.stoyanov@gmail.com>
-        <20210914131232.3964615-12-tz.stoyanov@gmail.com>
+        <20210914131232.3964615-13-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -39,36 +39,35 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 14 Sep 2021 16:12:22 +0300
+On Tue, 14 Sep 2021 16:12:23 +0300
 "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-> Some error paths in read_proc_kallsyms() may lead to a memory leak.
+> Some error paths in read_ftrace_printk() may lead to a memory leak.
 > Improved the error handling of this internal function to avoid it.
 
-How so?
+Again, I don't see a possible memory leak.
+
+-- Steve
 
 > 
 > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 > ---
->  lib/trace-cmd/trace-input.c | 39 +++++++++++++++++++++----------------
->  1 file changed, 22 insertions(+), 17 deletions(-)
+>  lib/trace-cmd/trace-input.c | 32 +++++++++++++++++++-------------
+>  1 file changed, 19 insertions(+), 13 deletions(-)
 > 
 > diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-> index 32358ce9..9b23063e 100644
+> index 9b23063e..60d75d47 100644
 > --- a/lib/trace-cmd/trace-input.c
 > +++ b/lib/trace-cmd/trace-input.c
-> @@ -739,34 +739,39 @@ static int read_event_files(struct tracecmd_input *handle, const char *regex)
->  
->  static int read_proc_kallsyms(struct tracecmd_input *handle)
+> @@ -777,33 +777,39 @@ out:
+>  static int read_ftrace_printk(struct tracecmd_input *handle)
 >  {
-> -	struct tep_handle *pevent = handle->pevent;
-> +	struct tep_handle *tep = handle->pevent;
 >  	unsigned int size;
 > -	char *buf;
 > +	char *buf = NULL;
 > +	int ret;
 >  
->  	if (handle->file_state >= TRACECMD_FILE_KALLSYMS)
+>  	if (handle->file_state >= TRACECMD_FILE_PRINTK)
 >  		return 0;
 >  
 > -	if (read4(handle, &size) < 0)
@@ -79,59 +78,38 @@ How so?
 > +	if (ret < 0)
 > +		goto out;
 > +	if (!size) {
-> +		handle->file_state = TRACECMD_FILE_KALLSYMS;
+> +		handle->file_state = TRACECMD_FILE_PRINTK;
 > +		goto out; /* OK? */
 > +	}
 >  
-
-Allocation of buf happens below. There's no reason to jump to out. It
-should just return here. Then you don't need to initialize buf.
-
->  	buf = malloc(size+1);
+>  	buf = malloc(size + 1);
 > -	if (!buf)
 > -		return -1;
-> -	if (do_read_check(handle, buf, size)){
+> -	if (do_read_check(handle, buf, size)) {
 > -		free(buf);
-
-buf is freed here on the error path in the original code.
-
 > -		return -1;
 > +	if (!buf) {
 > +		ret = -1;
 > +		goto out;
-
-The above doesn't even make sense. The only thing jumping to out does here
-is to free buf, in which case, there is no buf to free.
-
 >  	}
-> -	buf[size] = 0;
-> -
-> -	tep_parse_kallsyms(pevent, buf);
 > +	ret = do_read_check(handle, buf, size);
 > +	if (ret < 0)
 > +		goto out;
 >  
-> -	free(buf);
-> +	buf[size] = 0;
-> +	tep_parse_kallsyms(tep, buf);
-
-If you want to make another patch to do the slight updates to state that
-this patch does (but does not express in the change log), that's fine. But
-as this patch stands, it does not do what the change log states, so I'm
-removing this patch from the series.
-
--- Steve
-
-
+>  	buf[size] = 0;
 >  
->  	handle->file_state = TRACECMD_FILE_KALLSYMS;
+>  	tep_parse_printk_formats(handle->pevent, buf);
+>  
+> -	free(buf);
 > -
-> -	return 0;
+>  	handle->file_state = TRACECMD_FILE_PRINTK;
 > +	ret = 0;
+>  
+> -	return 0;
 > +out:
 > +	free(buf);
 > +	return ret;
 >  }
 >  
->  static int read_ftrace_printk(struct tracecmd_input *handle)
+>  static int read_and_parse_cmdlines(struct tracecmd_input *handle);
 
