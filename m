@@ -2,81 +2,166 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A419FC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Oct 2021 15:57:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C060C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Oct 2021 15:35:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8831A61ACF
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Oct 2021 15:57:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7CEB561401
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Oct 2021 15:35:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231794AbhJAP7g (ORCPT
+        id S235630AbhJDPhb (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 1 Oct 2021 11:59:36 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:37122 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231434AbhJAP7f (ORCPT
-        <rfc822;linux-trace-devel@VGER.KERNEL.ORG>);
-        Fri, 1 Oct 2021 11:59:35 -0400
-Received: from kbox (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 04A8B20B8008;
-        Fri,  1 Oct 2021 08:57:51 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 04A8B20B8008
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1633103871;
-        bh=L+hTirf2j5Nmu4ftJs5tmkbZpphyA9Gv2h6o4DaLNCw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YOOIg2G2JUKz8vunSF/eCpzCgpiMQwZBTcgaCBNm7+3Q2MF+6XH2kFr2mj/Bb0R4e
-         CgOCFHQngtMbE9LEvoUMQt+k6+tpJGYDMBg4R+/dyaU66Mib6pn4rpTq/BaBuhHXKI
-         quDH+rLcQ2NPT5ywcijiYomn8gVEY85IyUFWV2Qk=
-Date:   Fri, 1 Oct 2021 08:57:46 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-trace-devel@VGER.KERNEL.ORG, rostedt@goodmis.org,
-        zanussi@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] synth_events: Do not block other dyn_event systems
- during create
-Message-ID: <20211001155746.GA16348@kbox>
-References: <20210930223821.11025-1-beaub@linux.microsoft.com>
- <20211001125513.cf40fa1a3188416582666f66@kernel.org>
+        Mon, 4 Oct 2021 11:37:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234984AbhJDPhb (ORCPT
+        <rfc822;linux-trace-devel@vger.kernel.org>);
+        Mon, 4 Oct 2021 11:37:31 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 51575613D5;
+        Mon,  4 Oct 2021 15:35:42 +0000 (UTC)
+Date:   Mon, 4 Oct 2021 11:35:40 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v3 07/21] trace-cmd library: Do not use local variables
+ when reading CPU stat option
+Message-ID: <20211004113540.7d5c470e@gandalf.local.home>
+In-Reply-To: <20210914131232.3964615-8-tz.stoyanov@gmail.com>
+References: <20210914131232.3964615-1-tz.stoyanov@gmail.com>
+        <20210914131232.3964615-8-tz.stoyanov@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211001125513.cf40fa1a3188416582666f66@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-> Thanks for clean up the synthetic event!
-> This looks good to me.
+On Tue, 14 Sep 2021 16:12:18 +0300
+"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+
+> Using a local variable to read all CPUSTAT options assumes that all of
+> them are in a single option section. While this is true for the current
+> trace file version format, this assumption limits the design of a more
+> flexible format with multiple options sections. Use input handler context
+> instead of the local variable.
 > 
-> Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-No problem, thanks for the review!
+> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> ---
+>  lib/trace-cmd/trace-input.c | 20 +++++++++++---------
+>  1 file changed, 11 insertions(+), 9 deletions(-)
+> 
+> diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+> index 3d7f1c48..d020cfae 100644
+> --- a/lib/trace-cmd/trace-input.c
+> +++ b/lib/trace-cmd/trace-input.c
+> @@ -138,6 +138,7 @@ struct tracecmd_input {
+>  
+>  	struct host_trace_info	host;
+>  	double			ts2secs;
+> +	unsigned int		cpustats_size;
+>  	char *			cpustats;
 
-> So now are you trying to reuse synth event for user event?
-> Then I think you need to register a new dyn_event ops so
-> that histogram will not submit the event.
-A user events patch will get sent out soon, I'm finalizing some testing.
-User events will register it's own dyn_event ops and allow users the
-option to create, delete and view status of user events via the
-dynamic_events tracefs file (in addition to the user mode IOCTL/ABI).
+The above places cpustats_size (4 bytes) between ts2secs (8 bytes) and
+cpustats (8 bytes) on 64 bit machines. Thus, it creates a hole of 4 bytes
+of padding.
 
-As probes attach to the user events the status of this is reflected in
-dynamic_events, which makes it easy for admins to see why one is busy,
-etc. It also makes it easy to verifying the system is working as
-expected with just a terminal.
+Best to try to place 4 bytes integers in pairs, where they always take up 8
+bytes.
 
-> BTW, how do you filter an event written by a user process?
-> Will you add an array of event id for the file data structure?
-The filtering would happen at the trace_event level, the only filtering
-at the user event level is if a probe has been enabled on the underlying
-trace_event or not. That is done via the shared page bits being cleared
-or set. Bits are updated as probe un/registrations occur.
+Above this, there's:
 
-Users can advertise field values, offsets, etc as well as the print_fmt
-in the newer ABI/patch based on the feedback from LPC2021. These land in
-the trace_event fields and are viewable via tracefs like any other
-evnet. I hope that is enough to light up the history feature of trace_event.
-I am not familiar with it as much as you all.
+	// 8 bytes
+	unsigned long long	trace_id;
 
-Thanks,
--Beau
+	// pair 1
+	int			fd;
+	int			long_size;
+
+	// pair 2
+	int			page_size;
+	int			page_map_size;
+
+	// pair 3
+	int			cpus;
+	int			ref;
+
+	// pair 4
+	int			nr_buffers;	/* buffer instances */
+	bool			use_trace_clock;
+
+	// pair 5
+	bool			read_page;
+	bool			use_pipe;
+
+	// uneven set of 4 bytes
+	int			file_version;
+
+	// 8 bytes
+	struct cpu_data 	*cpu_data;
+
+You can move the 4 byte field after file_version to fill in that hole.
+
+>  	char *			uname;
+>  	char *			version;
+> @@ -2658,7 +2659,6 @@ static int handle_options(struct tracecmd_input *handle)
+>  	unsigned short option;
+>  	unsigned int size;
+>  	char *cpustats = NULL;
+> -	unsigned int cpustats_size = 0;
+>  	struct input_buffer_instance *buffer;
+>  	struct hook_list *hook;
+>  	char *buf;
+> @@ -2738,12 +2738,16 @@ static int handle_options(struct tracecmd_input *handle)
+>  			break;
+>  		case TRACECMD_OPTION_CPUSTAT:
+>  			buf[size-1] = '\n';
+> -			cpustats = realloc(cpustats, cpustats_size + size + 1);
+> -			if (!cpustats)
+> -				return -ENOMEM;
+> -			memcpy(cpustats + cpustats_size, buf, size);
+> -			cpustats_size += size;
+> -			cpustats[cpustats_size] = 0;
+> +			cpustats = realloc(handle->cpustats,
+> +					   handle->cpustats_size + size + 1);
+> +			if (!cpustats) {
+> +				ret = -ENOMEM;
+> +				return ret;
+> +			}
+
+Changing:
+
+			if (!cpustats)
+				return -ENOMEM;
+
+to
+			if (!cpustats) {
+				ret = -ENOMEM;
+				return ret;
+			}
+
+Doesn't make sense, as you are just adding a useless use of a local
+variable.
+
+-- Steve
+
+
+> +			memcpy(cpustats + handle->cpustats_size, buf, size);
+> +			handle->cpustats_size += size;
+> +			cpustats[handle->cpustats_size] = 0;
+> +			handle->cpustats = cpustats;
+>  			break;
+>  		case TRACECMD_OPTION_BUFFER:
+>  			/* A buffer instance is saved at the end of the file */
+> @@ -2813,8 +2817,6 @@ static int handle_options(struct tracecmd_input *handle)
+>  
+>  	}
+>  
+> -	handle->cpustats = cpustats;
+> -
+>  	return 0;
+>  }
+>  
+
