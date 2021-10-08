@@ -2,62 +2,62 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FAD2C4332F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FAD7C433F5
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Oct 2021 04:22:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3946C61090
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Oct 2021 04:22:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DB3EE610CE
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Oct 2021 04:22:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbhJHEYS (ORCPT
+        id S237331AbhJHEYR (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 8 Oct 2021 00:24:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237272AbhJHEYR (ORCPT
-        <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 8 Oct 2021 00:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229932AbhJHEYP (ORCPT
+        <rfc822;linux-trace-devel@vger.kernel.org>);
+        Fri, 8 Oct 2021 00:24:15 -0400
 Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A622C061570
-        for <linux-trace-devel@vger.kernel.org>; Thu,  7 Oct 2021 21:22:22 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id z20so30929098edc.13
-        for <linux-trace-devel@vger.kernel.org>; Thu, 07 Oct 2021 21:22:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 369EBC061570
+        for <linux-trace-devel@vger.kernel.org>; Thu,  7 Oct 2021 21:22:21 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id a25so15479719edx.8
+        for <linux-trace-devel@vger.kernel.org>; Thu, 07 Oct 2021 21:22:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BzHSBWiqmJVBlrsu8Hh3kihiaFTfORc2i4irlq5+T+Q=;
-        b=f55510kGjKsrM96FOSVIfZhKFvQMu90Z1ZqeV1NtmiQPDBbKw6IEuaQptTPWhDhemP
-         u68Onqq4U1Gn/iCZP9jbku0Rvyqd+EGUGLvw7PMJWslSoyRd6bbdZbO8EkMiz3GQeBRP
-         gEFaW3uCdGrZzNk8j09xcQAlL7+UYY9o0DsjOtcJQe9T4xO+b5H8ood0/ppfHTgG8Lyy
-         cYZaDQejPBVx2aVt6zzf/Fj9P3r3TNTwEIIIP0ZVHiXsKashTCC2Iki1oLYwsM8V6Sp4
-         u3HlUM9BR5l4h+IyQTFmw0aVEqrTrILuN5Gbs5Zu4VgfJMwPrwzJ6K1VQcFcGKQprg60
-         BCGg==
+        bh=jZlOUq11WfGf2SYeJWLjV9onGqB7pK+xi6WjnShSs2Q=;
+        b=MLAKU9PDB0PYq4uJ8JR1//Jxt/ByvsF9btFvdIXNx+L095HjefmajBXwIoFLzk+aug
+         zToYTCvyWBSTZv8HQIaxosO+LagyJRB+vydnnzbP1hwmn7zypNpooi4+i7Wfyg5Ji3T5
+         Z29wX1AmHami5wFxSeGwB5u8zoxOOf8FlitSD7ObEEW8c3r+CvB/kXzPdceAEXbdgKoX
+         8ftkPKQe9LpfArt/nD+ZfHbNWWGMVpOcjWcBRmb8rkxYzeVJWcGCdNBAbcZ/R7PPlDvx
+         CGpAvBO8rXlhQuBp5mnBmoIdWZiBd6crSTZ0SUxpQO4ShEkdl0J4jvxBfAqQXkA8GCfY
+         vkOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BzHSBWiqmJVBlrsu8Hh3kihiaFTfORc2i4irlq5+T+Q=;
-        b=FiZuGydroIsm3JfCsJx3KEhd2jLqXeEIan0KGz3pcZyD964B+fdXSyDZvnv2X6+kjl
-         JSdHC9ScGTPUyTkIXCUAyiPPiOh1/CpNT/7z0QPagN53rtt9JklbJhBhsv4IW/4iCzt7
-         UQhpbqt6/AKhT7QVnQ6tnryuDeUSgsstCf2hdntZoYalGLXhGFHB3ljaUO6KfWPyZ8Uw
-         Sh6PGogZF1TGOvUzFz169q/dFey9Pd7V7dd+8wSUhUMXnVF3Nt92ZIgLmHAyFbXZlAVd
-         u1bVN5sDK9y+w4MLE3YASKWLmdAkskzOt5BvQ5zH8z8MGJZnvcTmbTe/KrWpmRTzfho7
-         mHIA==
-X-Gm-Message-State: AOAM531f2P14KPidcKldtf7J5cHU9uuOTQDfLMRBzbXzVJdCbxZ7YVhF
-        h/9Cn697iJxnvCKSCvu5fkLKOJre+Kjimg==
-X-Google-Smtp-Source: ABdhPJxH3VNYW2YcUuLATNpH9UU3uU6U4SmcyhsoQCtnYEUYhwum+VZgPLHl8nwihLQktyNq01+9Jg==
-X-Received: by 2002:a50:9dc4:: with SMTP id l4mr11575218edk.208.1633666940939;
-        Thu, 07 Oct 2021 21:22:20 -0700 (PDT)
+        bh=jZlOUq11WfGf2SYeJWLjV9onGqB7pK+xi6WjnShSs2Q=;
+        b=oDj/OOvw2g2zzd0PHJmvC1IuZmxsxNGI3xQX2dvpT4QqY1alcftauXxk92kLTbRKIO
+         tfjMTcUdGZ/3pAZNTZqkxxSbGPhrvm+6u3rkrODI5jwLmEiC3gwid81kQBvhneSz8uUS
+         h0BCGPSRkQVhR5K+ufvJG0YT2T9zz+W8FouOmU2fc85/aP5wlNj6MAvP9csQd3gp5NJx
+         HzGPC1iSiogw0pZKh7JN8EQ+nq/6WonrKB8EzMUPzP8K0wOl2hg24is2TDxDSDPra7P8
+         Cbt5e0gcQbeG1dxRvp5r1gQhzvARTwo6U3dYsDUj62ZtSoMWotoVT63cNTMtmfREZ8Pd
+         Wplw==
+X-Gm-Message-State: AOAM5306HILkAgoMKJ+I9zm1yrBpiHEZlMraHDpct+6UE0pclT+ttYXQ
+        zn0e6SH584bHJurMKL4TQ/vgQPAAPI7ncQ==
+X-Google-Smtp-Source: ABdhPJzLA1vrA34m9vcAXlECvweiN7qwNdqkmbYw7TKUS7baGP3YQgjR0FC9n51Qt/0uCbKKhoR7/w==
+X-Received: by 2002:a05:6402:1778:: with SMTP id da24mr11927844edb.398.1633666939828;
+        Thu, 07 Oct 2021 21:22:19 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id g23sm517429edt.1.2021.10.07.21.22.19
+        by smtp.gmail.com with ESMTPSA id g23sm517429edt.1.2021.10.07.21.22.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 21:22:20 -0700 (PDT)
+        Thu, 07 Oct 2021 21:22:19 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 04/20] trace-cmd library: Inherit compression algorithm from input file
-Date:   Fri,  8 Oct 2021 07:21:58 +0300
-Message-Id: <20211008042214.977193-5-tz.stoyanov@gmail.com>
+Subject: [PATCH v3 03/20] trace-cmd library: Internal helpers for uncompressing data
+Date:   Fri,  8 Oct 2021 07:21:57 +0300
+Message-Id: <20211008042214.977193-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211008042214.977193-1-tz.stoyanov@gmail.com>
 References: <20211008042214.977193-1-tz.stoyanov@gmail.com>
@@ -67,108 +67,129 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When a new trace file output handler is allocated, based on given trace
-file input handler - use the same compression algorithm.
+New library internal helper functions are introduced, to add compression
+functionality to the input trace handler.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- .../include/private/trace-cmd-private.h       |  2 ++
- lib/trace-cmd/trace-input.c                   | 16 +++++++++++++++
- lib/trace-cmd/trace-output.c                  | 20 +++++++++++++++++++
- 3 files changed, 38 insertions(+)
+ lib/trace-cmd/include/trace-cmd-local.h |  3 ++
+ lib/trace-cmd/trace-input.c             | 49 ++++++++++++++++++++++---
+ 2 files changed, 46 insertions(+), 6 deletions(-)
 
-diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 04b3cb41..30315c00 100644
---- a/lib/trace-cmd/include/private/trace-cmd-private.h
-+++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -255,6 +255,8 @@ tracecmd_get_cursor(struct tracecmd_input *handle, int cpu);
- 
- unsigned long tracecmd_get_in_file_version(struct tracecmd_input *handle);
- size_t tracecmd_get_options_offset(struct tracecmd_input *handle);
-+int tracecmd_get_file_compress_proto(struct tracecmd_input *handle,
-+				     const char **name, const char **version);
- 
- int tracecmd_ftrace_overrides(struct tracecmd_input *handle, struct tracecmd_ftrace *finfo);
- bool tracecmd_get_use_trace_clock(struct tracecmd_input *handle);
+diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
+index 393d05e8..fd61150d 100644
+--- a/lib/trace-cmd/include/trace-cmd-local.h
++++ b/lib/trace-cmd/include/trace-cmd-local.h
+@@ -47,6 +47,9 @@ void out_compression_reset(struct tracecmd_output *handle, bool compress);
+ unsigned long long out_copy_fd_compress(struct tracecmd_output *handle,
+ 					int fd, unsigned long long max,
+ 					unsigned long long *write_size);
++void in_uncompress_reset(struct tracecmd_input *handle);
++int in_uncompress_block(struct tracecmd_input *handle);
++
+ unsigned long long
+ out_write_section_header(struct tracecmd_output *handle, unsigned short header_id,
+ 			 char *description, enum tracecmd_section_flags flags, bool option);
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 71d5ea38..35b49ac6 100644
+index bc1f4a87..71d5ea38 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -4594,6 +4594,22 @@ unsigned long tracecmd_get_in_file_version(struct tracecmd_input *handle)
- 	return handle->file_version;
+@@ -156,6 +156,9 @@ struct tracecmd_input {
+ 	long long		ts_offset;
+ 	struct tsc2nsec		tsc_calc;
+ 
++	bool			read_compress;
++	struct tracecmd_compression *compress;
++
+ 	struct host_trace_info	host;
+ 	double			ts2secs;
+ 	char *			cpustats;
+@@ -262,13 +265,13 @@ static const char *show_records(struct page **pages, int nr_pages)
+ 
+ static int init_cpu(struct tracecmd_input *handle, int cpu);
+ 
+-static ssize_t do_read(struct tracecmd_input *handle, void *data, size_t size)
++static ssize_t do_read_fd(int fd, void *data, size_t size)
+ {
+ 	ssize_t tot = 0;
+ 	ssize_t r;
+ 
+ 	do {
+-		r = read(handle->fd, data + tot, size - tot);
++		r = read(fd, data + tot, size - tot);
+ 		tot += r;
+ 
+ 		if (!r)
+@@ -280,6 +283,22 @@ static ssize_t do_read(struct tracecmd_input *handle, void *data, size_t size)
+ 	return tot;
  }
  
-+/**
-+ * tracecmd_get_file_compress_proto - get name and version of compression algorithm,
-+ *				      used to compress the trace file
-+ * @handle: input handle for the trace.dat file
-+ * @name: return, name of the compression algorithm.
-+ * @version: return, version of the compression algorithm.
-+ *
-+ * Returns 0 on success, or -1 in case of an error. If 0 is returned, the name and version of the
-+ * algorithm are stored in @name and @version. The returned strings must *not* be freed.
-+ */
-+int tracecmd_get_file_compress_proto(struct tracecmd_input *handle,
-+				     const char **name, const char **version)
++static inline int do_lseek(struct tracecmd_input *handle, int offset, int whence)
 +{
-+	return tracecmd_compress_proto_get_name(handle->compress, name, version);
++	if (handle->read_compress)
++		return tracecmd_compress_lseek(handle->compress, offset, whence);
++	else
++		return lseek(handle->fd, offset, whence);
 +}
 +
- /**
-  * tracecmd_get_use_trace_clock - return use_trace_clock
-  * @handle: input handle for the trace.dat file
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index 54eec93c..816db13d 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -1209,6 +1209,9 @@ int tracecmd_output_set_kallsyms(struct tracecmd_output *handler, const char *ka
-  */
- int tracecmd_output_set_from_input(struct tracecmd_output *handler, struct tracecmd_input *ihandle)
++static inline ssize_t do_read(struct tracecmd_input *handle, void *data, size_t size)
++{
++	if (handle->read_compress)
++		return tracecmd_compress_read(handle->compress, data, size);
++	else
++		return do_read_fd(handle->fd, data, size);
++}
++
+ static ssize_t
+ do_read_check(struct tracecmd_input *handle, void *data, size_t size)
  {
-+	const char *cname = NULL;
-+	const char *cver = NULL;
-+
- 	if (!handler || !ihandle || handler->file_state != TRACECMD_FILE_ALLOCATED)
- 		return -1;
+@@ -304,9 +323,7 @@ static char *read_string(struct tracecmd_input *handle)
  
-@@ -1220,6 +1223,15 @@ int tracecmd_output_set_from_input(struct tracecmd_output *handler, struct trace
- 	handler->file_version = tracecmd_get_in_file_version(ihandle);
- 	handler->big_endian = tep_is_file_bigendian(handler->pevent);
+ 	for (;;) {
+ 		r = do_read(handle, buf, BUFSIZ);
+-		if (r < 0)
+-			goto fail;
+-		if (!r)
++		if (r <= 0)
+ 			goto fail;
  
-+	if (!tracecmd_get_file_compress_proto(ihandle, &cname, &cver)) {
-+		handler->compress = tracecmd_compress_alloc(cname, cver, handler->fd,
-+							    handler->pevent, handler->msg_handle);
-+		if (!handler->compress)
-+			return -1;
-+		if (handler->file_version < FILE_VERSION_COMPRESSION)
-+			handler->file_version = FILE_VERSION_COMPRESSION;
-+	}
-+
+ 		for (i = 0; i < r; i++) {
+@@ -332,7 +349,7 @@ static char *read_string(struct tracecmd_input *handle)
+ 	}
+ 
+ 	/* move the file descriptor to the end of the string */
+-	r = lseek(handle->fd, -(r - (i+1)), SEEK_CUR);
++	r = do_lseek(handle, -(r - (i+1)), SEEK_CUR);
+ 	if (r < 0)
+ 		goto fail;
+ 
+@@ -396,6 +413,26 @@ static int read8(struct tracecmd_input *handle, unsigned long long *size)
  	return 0;
  }
  
-@@ -2167,6 +2179,8 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
- {
- 	struct tracecmd_output *handle = NULL;
- 	struct tracecmd_input *ihandle;
-+	const char *cname = NULL;
-+	const char *cver = NULL;
- 	int fd2;
- 
- 	/* Move the file descriptor to the beginning */
-@@ -2206,6 +2220,12 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
- 	list_head_init(&handle->options);
- 	list_head_init(&handle->buffers);
- 
-+	if (!tracecmd_get_file_compress_proto(ihandle, &cname, &cver)) {
-+		handle->compress = tracecmd_compress_alloc(cname, cver, handle->fd,
-+							   handle->pevent, handle->msg_handle);
-+		if (!handle->compress)
-+			goto out_free;
++__hidden void in_uncompress_reset(struct tracecmd_input *handle)
++{
++	if (handle->compress) {
++		handle->read_compress = false;
++		tracecmd_compress_reset(handle->compress);
 +	}
- 	tracecmd_close(ihandle);
- 
- 	return handle;
++}
++
++__hidden int in_uncompress_block(struct tracecmd_input *handle)
++{
++	int ret = 0;
++
++	if (handle->compress) {
++		ret = tracecmd_uncompress_block(handle->compress);
++		if (!ret)
++			handle->read_compress = true;
++	}
++	return ret;
++}
++
+ static struct file_section *section_get(struct tracecmd_input *handle, int id)
+ {
+ 	struct file_section *sec;
 -- 
 2.31.1
 
