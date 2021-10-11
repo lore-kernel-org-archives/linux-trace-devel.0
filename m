@@ -2,32 +2,32 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B790FC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Oct 2021 14:37:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 068ACC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Oct 2021 14:37:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A406661078
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Oct 2021 14:37:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E723A603E9
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Oct 2021 14:37:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238922AbhJKOjC convert rfc822-to-8bit (ORCPT
+        id S239029AbhJKOjJ convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 11 Oct 2021 10:39:02 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:59446 "EHLO
+        Mon, 11 Oct 2021 10:39:09 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:45803 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238864AbhJKOjB (ORCPT
+        by vger.kernel.org with ESMTP id S238606AbhJKOjH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:39:01 -0400
+        Mon, 11 Oct 2021 10:39:07 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-269-7B8wISHsPaC8UiLWm0lnYA-1; Mon, 11 Oct 2021 10:36:59 -0400
-X-MC-Unique: 7B8wISHsPaC8UiLWm0lnYA-1
+ us-mta-360-S5KDYCjiNCO33Sest1YstA-1; Mon, 11 Oct 2021 10:37:03 -0400
+X-MC-Unique: S5KDYCjiNCO33Sest1YstA-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B70611922962;
-        Mon, 11 Oct 2021 14:36:57 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 16C2EBD525;
+        Mon, 11 Oct 2021 14:37:02 +0000 (UTC)
 Received: from x1.bristot.me.homenet.telecomitalia.it (unknown [10.22.17.206])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E855019C59;
-        Mon, 11 Oct 2021 14:36:53 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0D56419C59;
+        Mon, 11 Oct 2021 14:36:57 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Jonathan Corbet <corbet@lwn.net>, Kate Carcia <kcarcia@redhat.com>,
@@ -43,9 +43,9 @@ Cc:     Jonathan Corbet <corbet@lwn.net>, Kate Carcia <kcarcia@redhat.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V2 05/19] trace/osnoise: Allow multiple instances of the same tracer
-Date:   Mon, 11 Oct 2021 16:35:53 +0200
-Message-Id: <ee3a6ce53f82637e4e16e6489ee427fd23c5881b.1633958325.git.bristot@kernel.org>
+Subject: [PATCH V2 06/19] rtla: Real-Time Linux Analysis tool
+Date:   Mon, 11 Oct 2021 16:35:54 +0200
+Message-Id: <d1f98510775866d33a44ce919171d53534d66f9b.1633958325.git.bristot@kernel.org>
 In-Reply-To: <cover.1633958325.git.bristot@kernel.org>
 References: <cover.1633958325.git.bristot@kernel.org>
 MIME-Version: 1.0
@@ -60,12 +60,15 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Allow more than one instance of the same tracer. The workload will
-start when the first trace_array (instance) is registered and will
-stop when the last instance is unregistered.
+The rtla is a meta-tool that includes a set of commands that aims
+to analyze the real-time properties of Linux. But instead of testing
+Linux as a black box, rtla leverages kernel tracing capabilities to
+provide precise information about the properties and root causes of
+unexpected results.
 
-Osnoise and timerlat are still mutually exclusive because of the
-different behavior of the osnoise: tracepoints.
+rtla --help works and provide information about the available options.
+
+This is just the "main" and the Makefile, no function yet.
 
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Ingo Molnar <mingo@redhat.com>
@@ -82,212 +85,155 @@ Cc: linux-trace-devel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- kernel/trace/trace_osnoise.c | 106 ++++++++++++++++++++++++++---------
- 1 file changed, 80 insertions(+), 26 deletions(-)
+ tools/tracing/rtla/Makefile   | 59 ++++++++++++++++++++++++++++
+ tools/tracing/rtla/src/rtla.c | 72 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 131 insertions(+)
+ create mode 100644 tools/tracing/rtla/Makefile
+ create mode 100644 tools/tracing/rtla/src/rtla.c
 
-diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index a6d8f514bd7c..f913964f6861 100644
---- a/kernel/trace/trace_osnoise.c
-+++ b/kernel/trace/trace_osnoise.c
-@@ -64,6 +64,24 @@ static bool osnoise_has_registered_instances(void)
- 					list);
- }
- 
+diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
+new file mode 100644
+index 000000000000..b3ddd5138829
+--- /dev/null
++++ b/tools/tracing/rtla/Makefile
+@@ -0,0 +1,59 @@
++NAME	:=	rtla
++VERSION	:=	0.1
++
++INSTALL	=	install
++CC	:=	gcc
++FOPTS	:=	-flto=auto -ffat-lto-objects -fexceptions -fstack-protector-strong \
++		-fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection
++MOPTS	:=	-m64 -mtune=generic
++WOPTS	:= 	-Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -Wno-maybe-uninitialized
++
++TRACEFS_HEADERS		:= $$(pkg-config --cflags libtracefs)
++
++CFLAGS	:=	-O -g -DVERSION=\"$(VERSION)\" $(FOPTS) $(MOPTS) $(WOPTS) $(TRACEFS_HEADERS)
++LDFLAGS	:=	-ggdb
++LIBS	:=	-ltracefs -ltraceevent -lpthread -lprocps
++
++SRC	:=	$(wildcard src/*.c)
++HDR	:=	$(wildcard src/*.h)
++OBJ	:=	$(SRC:.c=.o)
++DIRS	:=	src
++FILES	:=	Makefile
++CEXT	:=	bz2
++TARBALL	:=	$(NAME)-$(VERSION).tar.$(CEXT)
++TAROPTS	:=	-cvjf $(TARBALL)
++BINDIR	:=	/usr/bin
++DATADIR	:=	/usr/share
++DOCDIR	:=	$(DATADIR)/doc
++MANDIR	:=	$(DATADIR)/man
++LICDIR	:=	$(DATADIR)/licenses
++
++.PHONY:	all tests
++
++all:	rtla
++
++rtla: $(OBJ)
++	$(CC) -o rtla $(LDFLAGS) $(OBJ) $(LIBS)
++
++static: $(OBJ)
++	$(CC) -o rtla-static $(LDFLAGS) --static $(OBJ) $(LIBS) -lpthread -ldl
++
++.PHONY: install
++install:
++	$(INSTALL) rtla -m 755 $(DESTDIR)$(BINDIR)
++	@test ! -f $(DESTDIR)$(BINDIR)/osnoise || rm $(DESTDIR)$(BINDIR)/osnoise
++	ln -s $(DESTDIR)$(BINDIR)/rtla $(DESTDIR)$(BINDIR)/osnoise
++
++.PHONY: clean tarball push
++clean:
++	@test ! -f rtla || rm rtla
++	@test ! -f rtla-static || rm rtla-static
++	@test ! -f src/rtla.o || rm src/rtla.o
++	@test ! -f $(TARBALL) || rm -f $(TARBALL)
++	@rm -rf *~ $(OBJ) *.tar.$(CEXT)
++
++tarball:  clean
++	rm -rf $(NAME)-$(VERSION) && mkdir $(NAME)-$(VERSION)
++	cp -r $(DIRS) $(FILES) $(NAME)-$(VERSION)
++	tar $(TAROPTS) --exclude='*~' $(NAME)-$(VERSION)
++	rm -rf $(NAME)-$(VERSION)
+diff --git a/tools/tracing/rtla/src/rtla.c b/tools/tracing/rtla/src/rtla.c
+new file mode 100644
+index 000000000000..5f326dcebc6d
+--- /dev/null
++++ b/tools/tracing/rtla/src/rtla.c
+@@ -0,0 +1,72 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * osnoise_instance_registered - check if a tr is already registered
++ * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
 + */
-+static int osnoise_instance_registered(struct trace_array *tr)
++
++#include <getopt.h>
++#include <stdlib.h>
++#include <string.h>
++#include <stdio.h>
++
++/*
++ * rtla_usage - print rtla usage
++ */
++static void rtla_usage(void)
 +{
-+	struct osnoise_instance *inst;
-+	int found = 0;
++	int i;
 +
-+	rcu_read_lock();
-+	list_for_each_entry_rcu(inst, &osnoise_instances, list) {
-+		if (inst->tr == tr)
-+			found = 1;
-+	}
-+	rcu_read_unlock();
++	char *msg[] = {
++		"",
++		"rtla version " VERSION,
++		"",
++		"  usage: rtla COMMAND ...",
++		"",
++		"  commands:",
++		"",
++		NULL,
++	};
 +
-+	return found;
++	for(i = 0; msg[i]; i++)
++		fprintf(stderr, "%s\n", msg[i]);
++	exit(1);
 +}
 +
- /*
-  * osnoise_register_instance - register a new trace instance
-  *
-@@ -106,10 +124,8 @@ static void osnoise_unregister_instance(struct trace_array *tr)
- 	}
- 	rcu_read_unlock();
- 
--	if (!found) {
--		WARN("osnoise unregister did not find tr %s\n", tr->name);
-+	if (!found)
- 		return;
--	}
- 
- 	synchronize_rcu();
- 	kfree(inst);
-@@ -1190,6 +1206,7 @@ static __always_inline void osnoise_stop_tracing(void)
- 				"stop tracing hit on cpu %d\n", smp_processor_id());
- 
- 		tracer_tracing_off(tr);
++/*
++ * run_command - try to run a rtla tool command
++ *
++ * It returns 0 if it fails. The tool's main will generally not
++ * return as they should call exit().
++ */
++int run_command(int argc, char **argv, int start_position)
++{
++	return 0;
++}
 +
- 	}
- 	rcu_read_unlock();
- }
-@@ -2041,6 +2058,16 @@ static int osnoise_workload_start(void)
- {
- 	int retval;
- 
-+	/*
-+	 * Instances need to be registered after calling workload
-+	 * start. Hence, if there is already an instance, the
-+	 * workload was already registered. Otherwise, this
-+	 * code is on the way to register the first instance,
-+	 * and the workload will start.
-+	 */
-+	if (osnoise_has_registered_instances())
-+		return 0;
++int main(int argc, char *argv[])
++{
++	int retval;
 +
- 	osn_var_reset_all();
- 
- 	retval = osnoise_hook_events();
-@@ -2066,6 +2093,13 @@ static int osnoise_workload_start(void)
-  */
- static void osnoise_workload_stop(void)
- {
-+	/*
-+	 * Instances need to be unregistered before calling
-+	 * stop. Hence, if there is a registered instance, more
-+	 * than one instance is running, and the workload will not
-+	 * yet stop. Otherwise, this code is on the way to disable
-+	 * the last instance, and the workload can stop.
-+	 */
- 	if (osnoise_has_registered_instances())
- 		return;
- 
-@@ -2083,7 +2117,11 @@ static void osnoise_tracer_start(struct trace_array *tr)
- {
- 	int retval;
- 
--	if (osnoise_has_registered_instances())
-+	/*
-+	 * If the instance is already registered, there is no need to
-+	 * register it again.
-+	 */
-+	if (osnoise_instance_registered(tr))
- 		return;
- 
- 	retval = osnoise_workload_start();
-@@ -2095,18 +2133,17 @@ static void osnoise_tracer_start(struct trace_array *tr)
- 
- static void osnoise_tracer_stop(struct trace_array *tr)
- {
--	if (!osnoise_has_registered_instances())
--		return;
--
- 	osnoise_unregister_instance(tr);
- 	osnoise_workload_stop();
- }
- 
- static int osnoise_tracer_init(struct trace_array *tr)
- {
--
--	/* Only allow one instance to enable this */
--	if (osnoise_has_registered_instances())
-+	/*
-+	 * Only allow osnoise tracer if timerlat tracer is not running
-+	 * already.
-+	 */
-+	if (osnoise_data.timerlat_tracer)
- 		return -EBUSY;
- 
- 	tr->max_latency = 0;
-@@ -2135,45 +2172,55 @@ static void timerlat_tracer_start(struct trace_array *tr)
- {
- 	int retval;
- 
--	if (osnoise_has_registered_instances())
-+	/*
-+	 * If the instance is already registered, there is no need to
-+	 * register it again.
-+	 */
-+	if (osnoise_instance_registered(tr))
- 		return;
- 
--	osnoise_data.timerlat_tracer = 1;
--
- 	retval = osnoise_workload_start();
- 	if (retval)
--		goto out_err;
-+		pr_err(BANNER "Error starting timerlat tracer\n");
- 
- 	osnoise_register_instance(tr);
- 
- 	return;
--out_err:
--	pr_err(BANNER "Error starting timerlat tracer\n");
- }
- 
- static void timerlat_tracer_stop(struct trace_array *tr)
- {
- 	int cpu;
- 
--	if (!osnoise_has_registered_instances())
--		return;
--
--	for_each_online_cpu(cpu)
--		per_cpu(per_cpu_osnoise_var, cpu).sampling = 0;
-+	osnoise_unregister_instance(tr);
- 
--	osnoise_tracer_stop(tr);
-+	/*
-+	 * Instruct the threads to stop only if this is the last instance.
-+	 */
-+	if (!osnoise_has_registered_instances()) {
-+		for_each_online_cpu(cpu)
-+			per_cpu(per_cpu_osnoise_var, cpu).sampling = 0;
++	/* is it an alias? */
++	retval = run_command(argc, argv, 0);
++	if (retval)
++		exit(0);
++
++	if (argc < 2)
++		goto usage;
++
++	if (strcmp(argv[1], "-h") == 0) {
++		rtla_usage();
++		exit(0);
++	} else if (strcmp(argv[1], "--help") == 0) {
++		rtla_usage();
++		exit(0);
 +	}
- 
--	osnoise_data.timerlat_tracer = 0;
-+	osnoise_workload_stop();
- }
- 
- static int timerlat_tracer_init(struct trace_array *tr)
- {
--	/* Only allow one instance to enable this */
--	if (osnoise_has_registered_instances())
-+	/*
-+	 * Only allow timerlat tracer if osnoise tracer is not running already.
-+	 */
-+	if (osnoise_has_registered_instances() && !osnoise_data.timerlat_tracer)
- 		return -EBUSY;
- 
--	tr->max_latency = 0;
-+	/*
-+	 * If this is the first instance, set timerlat_tracer to block
-+	 * osnoise tracer start.
-+	 */
-+	if (!osnoise_has_registered_instances())
-+		osnoise_data.timerlat_tracer = 1;
- 
-+	tr->max_latency = 0;
- 	timerlat_tracer_start(tr);
- 
- 	return 0;
-@@ -2182,6 +2229,13 @@ static int timerlat_tracer_init(struct trace_array *tr)
- static void timerlat_tracer_reset(struct trace_array *tr)
- {
- 	timerlat_tracer_stop(tr);
 +
-+	/*
-+	 * If this is the last instance, reset timerlat_tracer allowing
-+	 * osnoise to be started.
-+	 */
-+	if (!osnoise_has_registered_instances())
-+		osnoise_data.timerlat_tracer = 0;
- }
- 
- static struct tracer timerlat_tracer __read_mostly = {
++	retval = run_command(argc, argv, 1);
++	if (retval)
++		exit(0);
++
++usage:
++	rtla_usage();
++	exit(1);
++}
 -- 
 2.31.1
 
