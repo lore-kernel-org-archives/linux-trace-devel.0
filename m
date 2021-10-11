@@ -2,173 +2,183 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82A08C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Oct 2021 14:23:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E7DCC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Oct 2021 14:36:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6245D60E74
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Oct 2021 14:23:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2D2BF6023F
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Oct 2021 14:36:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243278AbhJKOZH (ORCPT
+        id S238334AbhJKOio convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 11 Oct 2021 10:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241005AbhJKOY6 (ORCPT
+        Mon, 11 Oct 2021 10:38:44 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:26421 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237679AbhJKOin (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:24:58 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990EDC02B857
-        for <linux-trace-devel@vger.kernel.org>; Mon, 11 Oct 2021 06:55:32 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id t16so46302326eds.9
-        for <linux-trace-devel@vger.kernel.org>; Mon, 11 Oct 2021 06:55:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=a0fnLBnz62ViGC6TOsy1yL8WTqhmNBgUAvXejUmaCJk=;
-        b=onmVad9WWU//HHLg6YKf/yW0XA6VE3cryZNlq3GUiTV5ShExlPs9tjg+LBSntDPICO
-         kiAUHs/QxeUYxY8uEpgEahhwJiwt+I2sMJc045YdczdEugSsJYCHCWzh+E1lfv0Bs/VP
-         lUWW9AigUYcIY1vXccKrfmjZBFh55NcnjUMTUQfpO1XcJ8GLnmNRZpwi98HCw2kpCJXD
-         nuaWUv6ztl3WfofOX6/0S26ND5kP/0GOR2j15YNlo26jG2SaN3qCoh+cF9e9+xzjG7Fi
-         uSiczDQ/mwcZr1OcmDDen3LbR3qZ7bvwmbeD5d+O6RxOa6H4ALgHmaLaPSlCZcuexGsA
-         EdjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=a0fnLBnz62ViGC6TOsy1yL8WTqhmNBgUAvXejUmaCJk=;
-        b=YVnzAn9sFEZxTtTylH8wdNHceGU1XJFCfLnCnOsthVQwzLMAfwvePDqXHJ/sx5YYdE
-         2gbBctjpIKyq/+LTXGPye9xy2/sdmsI6oGF35g9E/1+EVBzXWv2UZi15dxr67r0spoLu
-         g8lmKH98v3MgRCaZacaG+h/sqsVGJ3YeKCRA4h1O8F+3SS8OSj/J4wOkAZByZF3gwEFx
-         LVrGnirAt+UMoZNxYqlLkHvaV90vyn8RvPgMwh4lThQ62UMzVjWR367v01QAt7GCj3V5
-         9ErWVIRJR7LWB6hCnHw06o6agmhI3y5hzDWmFacBr0sIydXoLzKeHxj+bFdGBf5LgMA2
-         re6Q==
-X-Gm-Message-State: AOAM533B+MQSLtsBxn3g/jLzcIHaEKzqDx1tOdchd7B57U41XTwsgQWB
-        S4QgGiAI56HiVe5Nwj86kXaqFqXfHOh5Mw==
-X-Google-Smtp-Source: ABdhPJzlenTMapHrvCmz76Xbo+QAzXGduuP26sOjIUzEqr1Uvq+1/NDsOeeBTSInYpN/HmGUO/O0eQ==
-X-Received: by 2002:a05:6402:4410:: with SMTP id y16mr31006845eda.366.1633960530848;
-        Mon, 11 Oct 2021 06:55:30 -0700 (PDT)
-Received: from [192.168.1.4] ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id b3sm3518251ejb.7.2021.10.11.06.55.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Oct 2021 06:55:30 -0700 (PDT)
-Subject: [RFC] Modifications of some 'hist' APIs
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-References: <20210924095702.151826-1-y.karadz@gmail.com>
-From:   Yordan Karadzhov <y.karadz@gmail.com>
-Message-ID: <5439fe13-8d78-2fe6-3749-5e60cf10151c@gmail.com>
-Date:   Mon, 11 Oct 2021 16:55:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 11 Oct 2021 10:38:43 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-173-pguFWQECPmaCIue-eAt8vw-1; Mon, 11 Oct 2021 10:36:39 -0400
+X-MC-Unique: pguFWQECPmaCIue-eAt8vw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF664112B8C7;
+        Mon, 11 Oct 2021 14:36:36 +0000 (UTC)
+Received: from x1.bristot.me.homenet.telecomitalia.it (unknown [10.22.17.206])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2B76B19C59;
+        Mon, 11 Oct 2021 14:36:32 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Kate Carcia <kcarcia@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2 00/19] RTLA: An interface for osnoise/timerlat tracers
+Date:   Mon, 11 Oct 2021 16:35:48 +0200
+Message-Id: <cover.1633958325.git.bristot@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210924095702.151826-1-y.karadz@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Steven et al.
+The rtla(1) is a meta-tool that includes a set of commands that
+aims to analyze the real-time properties of Linux. But instead of
+testing Linux as a black box, rtla leverages kernel tracing
+capabilities to provide precise information about the properties
+and root causes of unexpected results.
 
-I would like to suggest some further modifications of the current APIs of libtracefs. The problem that I am trying to 
-solve with this modifications is the unnecessary and potentially confusing variety of patterns used when implementing 
-the APIs for dealing with 'instances', 'kprobes', 'histigrams' and 'synthetic events'. I believe that 
-unifying/templating the structure of those APIs will be beneficial and will make the usage fare more intuitive. I am 
-posting below a pseudo code for one possible implementation of such template APIs that can be used as a starting point 
-for a discussion.
+To start, it presents an interface to the osnoise and timerlat tracers.
+In the future, it will also serve as home to the rtsl [1] and other
+latency/noise tracers.
 
-/**
-  * tracefs_XXX_alloc - allocate a new tracefs_XXX descriptor. This only
-  * initializes the descriptor, it does not introduce any changes on the
-  * system.
-  *
-  * @arguments: Some arguments specific for the type of the object ...
-  *
-  * Returns a newly allocated tracefs_XXX descriptor objext, or NULL in case
-  * of an error. The returned instance must be freed by tracefs_XXX_free().
-  */
-struct tracefs_XXX *tracefs_XXX_alloc(arguments);
+The first five patches are a re-send of [2] that enable multiple
+instances for osnoise/timerlat tracers. They are required to run the -T
+option - to save a trace with osnoise: events for debugging.
 
-/**
-  * tracefs_XXX_create - creates new tracefs_XXX object on the system.
-  * This method calls tracefs_XXX_alloc() internally.
-  *
-  * @arguments: Some arguments specific for the type of the object ...
-  * This function should not take an instance as argument. Otherwise the
-  * same instance will have to be passed to tracefs_XXX_destroy(), which
-  * can be a problem in some more sophisticated use-cases.
-  *
-  * Returns 0 on succes and -1 on error. On error, errno is set to:
-  * EBUSY - the object already exists on the system.
-  * ENOMEM - memory allocation failure.
-  * ENIVAL - a parameter is passed as NULL or value that should not be or
-  * a problem writing into the system.
-  */
-struct tracefs_XXX *tracefs_XXX_create(arguments);
+The next seven patches are rtla, rtla osnoise, and rtla timerlat.
 
-/**
-  * tracefs_XXX_find - find a tracefs_XXX object that already exists on the
-  * system. This method calls tracefs_XXX_alloc() internally.
-  *
-  * @arguments: Some arguments specific for the type of the object ...
-  * This function should not take an instance as argument. Otherwise the same
-  * instance will have to be passed to tracefs_XXX_destroy(), which can be a
-  * problem in some more sophisticated use-cases.
-  *
-  * Returns tracefs_XXX descriptor on succes and NULL if the object do not
-  * exist on the system or in the case of an error. On error, errno is set to:
-  * ENOMEM - memory allocation failure.
-  * ENIVAL - a parameter is passed as NULL or value that should not be or
-  * a problem writing into the system.
-  */
-struct tracefs_XXX *tracefs_XXX_find(arguments);
+The following patches are the man pages for the tools.
 
-/**
-  * tracefs_instance_destroy - Remove/clears a tracefs_XXX objext from the
-  * system. tracefs_XXX_free() must be called in order to free the memory used
-  * by the descriptor itself.
-  *
-  * @obj: Pointer to the tracefs_XXX descriptor of the objext to be destroyed.
-  * @force: If false the object is not guaranteed to be destroyed. If @force
-  * is true, all tangled objects that prevent the destruction of the object
-  * will be destroyed as well.
-  *
-  * This function should not take any other arguments.
-  *
-  * Returns -1 in case of an error or if the object failed to destroy.
-  * 0 otherwise.
-  */
-int tracefs_XXX_destroy(struct tracefs_XXX *obj, bool force);
+To compile rtla on fedora you need:
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git
+  $ cd libtraceevent/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git
+  $ cd libtracefs/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ sudo dnf install asciidoc xmlto procps-devel
+  $ cd $linux/tools/tracing/rtla/
+  $ make
+  $ sudo make install
 
-/**
-  * tracefs_XXX_free - Free a tracefs_XXX descriptor, previously allocated
-  * by tracefs_XXX_alloc, tracefs_XXX_create() or tracefs_XXX_find().
-  *
-  * @obj: Pointer to the tracefs_XXX descriptor objext to be freed.
-  *
-  * This function should not take any other arguments.
-  */
-void tracefs_XXX_free(struct tracefs_XXX *obj);
+This tool was be discussed at the RT-MC during LPC2021 [3].
 
-/**
-  * tracefs_XXX_YYY - Method implementing the user action 'YYY' (can be
-  * enable/disable, start/stop/clear, ... etc.)
-  *
-  * @obj: Pointer to the tracefs_XXX objext for witch the user action will
-  * apply.
-  * @instance: Ftrace instance, can be NULL for top tracing instance.
-  * @more_arguments: Some additional arguments specific for the type XXX and
-  * the action YYY.
-  */
-void/int tracefs_XXX_YYY(struct tracefs_XXX *obj,
-			 struct tracefs_instance *inst,
-			 more_arguments);
+[1] rtsl: https://github.com/bristot/rtsl/
+[2] https://lore.kernel.org/lkml/cover.1628775552.git.bristot@kernel.org/
+[3] https://youtu.be/cZUzc0U1jJ4
 
+Changes from v1:
+  - Fixes -t options on osnoise tracers (-t means --trace for all tools now)
+  - Fixes --bucket-size references (not --bucket_size)
 
-Thanks a lot!
-Yordan
+Daniel Bristot de Oliveira (19):
+  trace/osnoise: Do not follow tracing_cpumask
+  trace/osnoise: Split workload start from the tracer start
+  trace/osnoise: Use start/stop_per_cpu_kthreads() on
+    osnoise_cpus_write()
+  trace/osnoise: Support a list of trace_array *tr
+  trace/osnoise: Allow multiple instances of the same tracer
+  rtla: Real-Time Linux Analysis tool
+  rtla: Helper functions for rtla
+  rtla: Add osnoise tool
+  rtla/osnoise: Add osnoise top mode
+  rtla/osnoise: Add the hist mode
+  rtla: Add timerlat tool and timelart top mode
+  rtla/timerlat: Add timerlat hist mode
+  rtla: Add Documentation
+  rtla: Add rtla osnoise man page
+  rtla: Add rtla osnoise top documentation
+  rtla: Add rtla osnoise hist documentation
+  rtla: Add rtla timerlat documentation
+  rtla: Add rtla timerlat top documentation
+  rtla: Add rtla timerlat hist documentation
 
+ kernel/trace/trace_osnoise.c                  | 410 ++++++---
+ tools/tracing/rtla/Documentation/Makefile     | 223 +++++
+ .../tracing/rtla/Documentation/asciidoc.conf  | 118 +++
+ .../rtla/Documentation/manpage-base.xsl       |  35 +
+ .../rtla/Documentation/manpage-normal.xsl     |  13 +
+ .../rtla/Documentation/rtla-osnoise-hist.txt  | 117 +++
+ .../rtla/Documentation/rtla-osnoise-top.txt   |  98 ++
+ .../rtla/Documentation/rtla-osnoise.txt       |  68 ++
+ .../rtla/Documentation/rtla-timerlat-hist.txt | 162 ++++
+ .../rtla/Documentation/rtla-timerlat-top.txt  | 181 ++++
+ .../rtla/Documentation/rtla-timerlat.txt      |  65 ++
+ tools/tracing/rtla/Documentation/rtla.txt     |  56 ++
+ tools/tracing/rtla/Documentation/utils.mk     | 144 +++
+ tools/tracing/rtla/Makefile                   |  71 ++
+ tools/tracing/rtla/src/osnoise.c              | 846 +++++++++++++++++
+ tools/tracing/rtla/src/osnoise.h              |  86 ++
+ tools/tracing/rtla/src/osnoise_hist.c         | 860 ++++++++++++++++++
+ tools/tracing/rtla/src/osnoise_top.c          | 566 ++++++++++++
+ tools/tracing/rtla/src/rtla.c                 |  87 ++
+ tools/tracing/rtla/src/timerlat.c             |  72 ++
+ tools/tracing/rtla/src/timerlat.h             |   3 +
+ tools/tracing/rtla/src/timerlat_hist.c        | 778 ++++++++++++++++
+ tools/tracing/rtla/src/timerlat_top.c         | 578 ++++++++++++
+ tools/tracing/rtla/src/trace.c                | 220 +++++
+ tools/tracing/rtla/src/trace.h                |  26 +
+ tools/tracing/rtla/src/utils.c                | 433 +++++++++
+ tools/tracing/rtla/src/utils.h                |  55 ++
+ 27 files changed, 6250 insertions(+), 121 deletions(-)
+ create mode 100644 tools/tracing/rtla/Documentation/Makefile
+ create mode 100644 tools/tracing/rtla/Documentation/asciidoc.conf
+ create mode 100644 tools/tracing/rtla/Documentation/manpage-base.xsl
+ create mode 100644 tools/tracing/rtla/Documentation/manpage-normal.xsl
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-osnoise-hist.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-osnoise-top.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-osnoise.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat-hist.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat-top.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla.txt
+ create mode 100644 tools/tracing/rtla/Documentation/utils.mk
+ create mode 100644 tools/tracing/rtla/Makefile
+ create mode 100644 tools/tracing/rtla/src/osnoise.c
+ create mode 100644 tools/tracing/rtla/src/osnoise.h
+ create mode 100644 tools/tracing/rtla/src/osnoise_hist.c
+ create mode 100644 tools/tracing/rtla/src/osnoise_top.c
+ create mode 100644 tools/tracing/rtla/src/rtla.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.h
+ create mode 100644 tools/tracing/rtla/src/timerlat_hist.c
+ create mode 100644 tools/tracing/rtla/src/timerlat_top.c
+ create mode 100644 tools/tracing/rtla/src/trace.c
+ create mode 100644 tools/tracing/rtla/src/trace.h
+ create mode 100644 tools/tracing/rtla/src/utils.c
+ create mode 100644 tools/tracing/rtla/src/utils.h
+
+-- 
+2.31.1
 
