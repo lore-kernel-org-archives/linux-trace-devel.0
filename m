@@ -2,102 +2,186 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F2E5C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Oct 2021 15:13:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3343C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Oct 2021 16:49:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0EF74610CB
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Oct 2021 15:13:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8C14860FC2
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Oct 2021 16:49:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232738AbhJNPPH (ORCPT
+        id S233751AbhJRQvH convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 14 Oct 2021 11:15:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233225AbhJNPNK (ORCPT
+        Mon, 18 Oct 2021 12:51:07 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:26098 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231811AbhJRQvH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:13:10 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C027C06177D
-        for <linux-trace-devel@vger.kernel.org>; Thu, 14 Oct 2021 08:02:08 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id t2so20456785wrb.8
-        for <linux-trace-devel@vger.kernel.org>; Thu, 14 Oct 2021 08:02:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=33L1GCg6kjVAqov2Lo7FLFNaQJiDTxgNYWAFwhl78A8=;
-        b=cNoKJJzC0fc/Rp94csaK4fY2HlVj6pOHZjhdNaakwQc13BOwu/+EiKteRmTUem6jOz
-         dvM6eGQClCS407hZof4qATxnIk3YfzS3J6KxSi2jSjA/pq/kVQhbG0L9qk8cpGJUckcl
-         yzpCifZ6P5AGV5wu9S4nBANLENnfJ5C5N1LSGwisPd01D9oNylCkdAw1617qosv6PZBJ
-         ICPoJFwlH6aPQegXrOUAappG4XOBXcpMQYY9oaPzss5AB0LtEnoT45hDfBpK5LukCgHM
-         v58482ebqPTHvY/GylMb4Wao+WO8GEzHl5YoJVenFH+7THsn/+WesjZrBhBCvFketkxn
-         SnvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=33L1GCg6kjVAqov2Lo7FLFNaQJiDTxgNYWAFwhl78A8=;
-        b=aimih0oA0Hk4ps3hsBHLJzSKETMgte0OKDyF4MEZ2wg1zJ9Q4bKrHEVFOPd1tA6yw4
-         R8uvSinq3qwo2xGsSE82sCqDgwWiaPKVRCBx6JwvwMdJd/3Lxfvm0P643qJO38pZIevI
-         oUVbsa2U5vMXzsg6KPJA2YNbPnJuKcA51c/jQFfc65ZUH8g7YoI4xIdegWSznUMsUock
-         uazzuw58fjAyc34c1Mqk+lo0q1B3BgelwUCAASi8Oy1MTeLuM6dHHMX/N3PUuKzbGWWn
-         AG5O2bObc59Hqs6LWykQGImbuDHcyLBW5BZzxw4ld4VQKUgIvdtB7S45eTtj/C8rCgtn
-         fw0A==
-X-Gm-Message-State: AOAM531oHFO+mjPXMtBGM42bLEHJEASJqbph6FZzLK5UyzG9vXjqn/Im
-        5vEATv70aub5fYe/g9Mhhm0=
-X-Google-Smtp-Source: ABdhPJztpMnKiv4bBhhWOYLtA3WDNf8eIN548lT8sM5FfpAtQ/ZSHDLY/wTkPR3uV0xBLykUlOGZ/g==
-X-Received: by 2002:a05:6000:c:: with SMTP id h12mr7103291wrx.378.1634223726992;
-        Thu, 14 Oct 2021 08:02:06 -0700 (PDT)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id z6sm2738065wro.25.2021.10.14.08.02.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 08:02:06 -0700 (PDT)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 0/4] trace-cmd: Align guest TSC calculation with the kernel
-Date:   Thu, 14 Oct 2021 18:02:00 +0300
-Message-Id: <20211014150204.2485499-1-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 18 Oct 2021 12:51:07 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-165-2Um2OBN8MWuvEyqwS2EjlQ-1; Mon, 18 Oct 2021 12:48:48 -0400
+X-MC-Unique: 2Um2OBN8MWuvEyqwS2EjlQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0AD2410A8E0F;
+        Mon, 18 Oct 2021 16:48:47 +0000 (UTC)
+Received: from x1.com (unknown [10.22.18.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E366A10016F4;
+        Mon, 18 Oct 2021 16:48:35 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V3 00/19] RTLA: An interface for osnoise/timerlat tracers
+Date:   Mon, 18 Oct 2021 18:48:13 +0200
+Message-Id: <cover.1634574261.git.bristot@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The formula for calculating guest TSC clock, used in the kernel is:
- guest_tsc = tsc-offset + (host_tsc * tsc-scaling-ratio) >> tsc-scaling-ratio-frac-bits
-Current trace-cmd implementation does not take into account fraction
-bits, when calculating guest clock offset in case of a clock scaling.
-Additional logic is added, to use the same formula in trace-cmd. The changes
-are backward compatible with trace-cmd 2.9.
+The rtla(1) is a meta-tool that includes a set of commands that
+aims to analyze the real-time properties of Linux. But instead of
+testing Linux as a black box, rtla leverages kernel tracing
+capabilities to provide precise information about the properties
+and root causes of unexpected results.
 
-The changes are not tested with a kernel that has guest clock scaling enabled.
-The goal of the patch set is to extend the time sync option, saved in the
-guest trace.dat file, with all needed data used in the kernel for guest TSC
-calculations.
+To start, it presents an interface to the osnoise and timerlat tracers.
+In the future, it will also serve as home to the rtsl [1] and other
+latency/noise tracers.
 
-v2 changes:
- - Use strcmp() instead of strncmp() when searching for KVM debug files.
- - Added more comments.
- - Code clean ups.
+The first five patches are a re-send of [2] that enable multiple
+instances for osnoise/timerlat tracers. They are required to run the -T
+option - to save a trace with osnoise: events for debugging.
 
-Tzvetomir Stoyanov (VMware) (4):
-  trace-cmd library: Do not use strncmp() when searching for KVM debug
-    files
-  trace-cmd library: Extend host-guest time sync with fraction bits
-  trace-cmd library: Read and use fraction bits from
-    TRACECMD_OPTION_TIME_SHIFT
-  trace-cmd: Dump fraction bits from TRACECMD_OPTION_TIME_SHIFT
+The next seven patches are rtla, rtla osnoise, and rtla timerlat.
 
- .../include/private/trace-cmd-private.h       |   4 +-
- lib/trace-cmd/include/trace-tsync-local.h     |   7 +-
- lib/trace-cmd/trace-input.c                   |  79 +++++++-------
- lib/trace-cmd/trace-timesync-kvm.c            |  62 +++++++----
- lib/trace-cmd/trace-timesync-ptp.c            |   4 +-
- lib/trace-cmd/trace-timesync.c                |  55 ++++++++--
- tracecmd/trace-dump.c                         | 102 +++++++++++++-----
- 7 files changed, 210 insertions(+), 103 deletions(-)
+The following patches are the man pages for the tools.
+
+To compile rtla on fedora you need:
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git
+  $ cd libtraceevent/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git
+  $ cd libtracefs/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ sudo dnf install asciidoc xmlto procps-devel
+  $ cd $linux/tools/tracing/rtla/
+  $ make
+  $ sudo make install
+
+This tool was be discussed at the RT-MC during LPC2021.
+
+[1] rtsl: https://github.com/bristot/rtsl/
+[2] https://lore.kernel.org/lkml/cover.1628775552.git.bristot@kernel.org/
+[3] https://youtu.be/cZUzc0U1jJ4
+
+Changes from v2:
+  - Fix the miss conception of the "size" for kernel histograms (Steven/Tom)
+  - Change the --skip-zeros to --with-zeros option as the former is better
+    for humans (and the latter for computers to plot charts).
+  - A lot of checkpatch fixes for the user-space part.
+Changes from v1:
+  - Fixes -t options on osnoise tracers (-t means --trace for all tools now)
+  - Fixes --bucket-size references (not --bucket_size)
+
+Daniel Bristot de Oliveira (19):
+  trace/osnoise: Do not follow tracing_cpumask
+  trace/osnoise: Split workload start from the tracer start
+  trace/osnoise: Use start/stop_per_cpu_kthreads() on
+    osnoise_cpus_write()
+  trace/osnoise: Support a list of trace_array *tr
+  trace/osnoise: Allow multiple instances of the same tracer
+  rtla: Real-Time Linux Analysis tool
+  rtla: Helper functions for rtla
+  rtla: Add osnoise tool
+  rtla/osnoise: Add osnoise top mode
+  rtla/osnoise: Add the hist mode
+  rtla: Add timerlat tool and timelart top mode
+  rtla/timerlat: Add timerlat hist mode
+  rtla: Add Documentation
+  rtla: Add rtla osnoise man page
+  rtla: Add rtla osnoise top documentation
+  rtla: Add rtla osnoise hist documentation
+  rtla: Add rtla timerlat documentation
+  rtla: Add rtla timerlat top documentation
+  rtla: Add rtla timerlat hist documentation
+
+ kernel/trace/trace_osnoise.c                  | 410 ++++++---
+ tools/tracing/rtla/Documentation/Makefile     | 223 +++++
+ .../tracing/rtla/Documentation/asciidoc.conf  | 118 +++
+ .../rtla/Documentation/manpage-base.xsl       |  35 +
+ .../rtla/Documentation/manpage-normal.xsl     |  13 +
+ .../rtla/Documentation/rtla-osnoise-hist.txt  | 117 +++
+ .../rtla/Documentation/rtla-osnoise-top.txt   |  98 ++
+ .../rtla/Documentation/rtla-osnoise.txt       |  68 ++
+ .../rtla/Documentation/rtla-timerlat-hist.txt | 162 ++++
+ .../rtla/Documentation/rtla-timerlat-top.txt  | 181 ++++
+ .../rtla/Documentation/rtla-timerlat.txt      |  65 ++
+ tools/tracing/rtla/Documentation/rtla.txt     |  56 ++
+ tools/tracing/rtla/Documentation/utils.mk     | 144 +++
+ tools/tracing/rtla/Makefile                   |  71 ++
+ tools/tracing/rtla/src/osnoise.c              | 837 ++++++++++++++++++
+ tools/tracing/rtla/src/osnoise.h              |  87 ++
+ tools/tracing/rtla/src/osnoise_hist.c         | 783 ++++++++++++++++
+ tools/tracing/rtla/src/osnoise_top.c          | 567 ++++++++++++
+ tools/tracing/rtla/src/rtla.c                 |  87 ++
+ tools/tracing/rtla/src/timerlat.c             |  72 ++
+ tools/tracing/rtla/src/timerlat.h             |   4 +
+ tools/tracing/rtla/src/timerlat_hist.c        | 780 ++++++++++++++++
+ tools/tracing/rtla/src/timerlat_top.c         | 581 ++++++++++++
+ tools/tracing/rtla/src/trace.c                | 219 +++++
+ tools/tracing/rtla/src/trace.h                |  27 +
+ tools/tracing/rtla/src/utils.c                | 433 +++++++++
+ tools/tracing/rtla/src/utils.h                |  56 ++
+ 27 files changed, 6173 insertions(+), 121 deletions(-)
+ create mode 100644 tools/tracing/rtla/Documentation/Makefile
+ create mode 100644 tools/tracing/rtla/Documentation/asciidoc.conf
+ create mode 100644 tools/tracing/rtla/Documentation/manpage-base.xsl
+ create mode 100644 tools/tracing/rtla/Documentation/manpage-normal.xsl
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-osnoise-hist.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-osnoise-top.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-osnoise.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat-hist.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat-top.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla.txt
+ create mode 100644 tools/tracing/rtla/Documentation/utils.mk
+ create mode 100644 tools/tracing/rtla/Makefile
+ create mode 100644 tools/tracing/rtla/src/osnoise.c
+ create mode 100644 tools/tracing/rtla/src/osnoise.h
+ create mode 100644 tools/tracing/rtla/src/osnoise_hist.c
+ create mode 100644 tools/tracing/rtla/src/osnoise_top.c
+ create mode 100644 tools/tracing/rtla/src/rtla.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.h
+ create mode 100644 tools/tracing/rtla/src/timerlat_hist.c
+ create mode 100644 tools/tracing/rtla/src/timerlat_top.c
+ create mode 100644 tools/tracing/rtla/src/trace.c
+ create mode 100644 tools/tracing/rtla/src/trace.h
+ create mode 100644 tools/tracing/rtla/src/utils.c
+ create mode 100644 tools/tracing/rtla/src/utils.h
 
 -- 
 2.31.1
