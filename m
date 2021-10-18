@@ -2,32 +2,32 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3343C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Oct 2021 16:49:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B0CCC43217
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Oct 2021 16:49:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8C14860FC2
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Oct 2021 16:49:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3AEB861263
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Oct 2021 16:49:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233751AbhJRQvH convert rfc822-to-8bit (ORCPT
+        id S233771AbhJRQvM convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 18 Oct 2021 12:51:07 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:26098 "EHLO
+        Mon, 18 Oct 2021 12:51:12 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:39420 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231811AbhJRQvH (ORCPT
+        by vger.kernel.org with ESMTP id S233759AbhJRQvK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 18 Oct 2021 12:51:07 -0400
+        Mon, 18 Oct 2021 12:51:10 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-165-2Um2OBN8MWuvEyqwS2EjlQ-1; Mon, 18 Oct 2021 12:48:48 -0400
-X-MC-Unique: 2Um2OBN8MWuvEyqwS2EjlQ-1
+ us-mta-588-HVN8UyrANaqGhNGF94w29Q-1; Mon, 18 Oct 2021 12:48:55 -0400
+X-MC-Unique: HVN8UyrANaqGhNGF94w29Q-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0AD2410A8E0F;
-        Mon, 18 Oct 2021 16:48:47 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E182C80A5C0;
+        Mon, 18 Oct 2021 16:48:53 +0000 (UTC)
 Received: from x1.com (unknown [10.22.18.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E366A10016F4;
-        Mon, 18 Oct 2021 16:48:35 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9D35010016F4;
+        Mon, 18 Oct 2021 16:48:50 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
@@ -42,13 +42,13 @@ Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V3 00/19] RTLA: An interface for osnoise/timerlat tracers
-Date:   Mon, 18 Oct 2021 18:48:13 +0200
-Message-Id: <cover.1634574261.git.bristot@kernel.org>
+Subject: [PATCH V3 02/19] trace/osnoise: Split workload start from the tracer start
+Date:   Mon, 18 Oct 2021 18:48:15 +0200
+Message-Id: <a3d512864b5d72a81e71b18e493ec871d45a59b4.1634574261.git.bristot@kernel.org>
+In-Reply-To: <cover.1634574261.git.bristot@kernel.org>
+References: <cover.1634574261.git.bristot@kernel.org>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: kernel.org
 Content-Transfer-Encoding: 8BIT
@@ -57,132 +57,164 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The rtla(1) is a meta-tool that includes a set of commands that
-aims to analyze the real-time properties of Linux. But instead of
-testing Linux as a black box, rtla leverages kernel tracing
-capabilities to provide precise information about the properties
-and root causes of unexpected results.
+In preparation from supporting multiple trace instances, create
+workload start/stop specific functions.
 
-To start, it presents an interface to the osnoise and timerlat tracers.
-In the future, it will also serve as home to the rtsl [1] and other
-latency/noise tracers.
+No functional change.
 
-The first five patches are a re-send of [2] that enable multiple
-instances for osnoise/timerlat tracers. They are required to run the -T
-option - to save a trace with osnoise: events for debugging.
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Tom Zanussi <zanussi@kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Clark Williams <williams@redhat.com>
+Cc: John Kacur <jkacur@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc: linux-rt-users@vger.kernel.org
+Cc: linux-trace-devel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+---
+ kernel/trace/trace_osnoise.c | 53 ++++++++++++++++++++++--------------
+ 1 file changed, 33 insertions(+), 20 deletions(-)
 
-The next seven patches are rtla, rtla osnoise, and rtla timerlat.
-
-The following patches are the man pages for the tools.
-
-To compile rtla on fedora you need:
-  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git
-  $ cd libtraceevent/
-  $ make
-  $ sudo make install
-  $ cd ..
-  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git
-  $ cd libtracefs/
-  $ make
-  $ sudo make install
-  $ cd ..
-  $ sudo dnf install asciidoc xmlto procps-devel
-  $ cd $linux/tools/tracing/rtla/
-  $ make
-  $ sudo make install
-
-This tool was be discussed at the RT-MC during LPC2021.
-
-[1] rtsl: https://github.com/bristot/rtsl/
-[2] https://lore.kernel.org/lkml/cover.1628775552.git.bristot@kernel.org/
-[3] https://youtu.be/cZUzc0U1jJ4
-
-Changes from v2:
-  - Fix the miss conception of the "size" for kernel histograms (Steven/Tom)
-  - Change the --skip-zeros to --with-zeros option as the former is better
-    for humans (and the latter for computers to plot charts).
-  - A lot of checkpatch fixes for the user-space part.
-Changes from v1:
-  - Fixes -t options on osnoise tracers (-t means --trace for all tools now)
-  - Fixes --bucket-size references (not --bucket_size)
-
-Daniel Bristot de Oliveira (19):
-  trace/osnoise: Do not follow tracing_cpumask
-  trace/osnoise: Split workload start from the tracer start
-  trace/osnoise: Use start/stop_per_cpu_kthreads() on
-    osnoise_cpus_write()
-  trace/osnoise: Support a list of trace_array *tr
-  trace/osnoise: Allow multiple instances of the same tracer
-  rtla: Real-Time Linux Analysis tool
-  rtla: Helper functions for rtla
-  rtla: Add osnoise tool
-  rtla/osnoise: Add osnoise top mode
-  rtla/osnoise: Add the hist mode
-  rtla: Add timerlat tool and timelart top mode
-  rtla/timerlat: Add timerlat hist mode
-  rtla: Add Documentation
-  rtla: Add rtla osnoise man page
-  rtla: Add rtla osnoise top documentation
-  rtla: Add rtla osnoise hist documentation
-  rtla: Add rtla timerlat documentation
-  rtla: Add rtla timerlat top documentation
-  rtla: Add rtla timerlat hist documentation
-
- kernel/trace/trace_osnoise.c                  | 410 ++++++---
- tools/tracing/rtla/Documentation/Makefile     | 223 +++++
- .../tracing/rtla/Documentation/asciidoc.conf  | 118 +++
- .../rtla/Documentation/manpage-base.xsl       |  35 +
- .../rtla/Documentation/manpage-normal.xsl     |  13 +
- .../rtla/Documentation/rtla-osnoise-hist.txt  | 117 +++
- .../rtla/Documentation/rtla-osnoise-top.txt   |  98 ++
- .../rtla/Documentation/rtla-osnoise.txt       |  68 ++
- .../rtla/Documentation/rtla-timerlat-hist.txt | 162 ++++
- .../rtla/Documentation/rtla-timerlat-top.txt  | 181 ++++
- .../rtla/Documentation/rtla-timerlat.txt      |  65 ++
- tools/tracing/rtla/Documentation/rtla.txt     |  56 ++
- tools/tracing/rtla/Documentation/utils.mk     | 144 +++
- tools/tracing/rtla/Makefile                   |  71 ++
- tools/tracing/rtla/src/osnoise.c              | 837 ++++++++++++++++++
- tools/tracing/rtla/src/osnoise.h              |  87 ++
- tools/tracing/rtla/src/osnoise_hist.c         | 783 ++++++++++++++++
- tools/tracing/rtla/src/osnoise_top.c          | 567 ++++++++++++
- tools/tracing/rtla/src/rtla.c                 |  87 ++
- tools/tracing/rtla/src/timerlat.c             |  72 ++
- tools/tracing/rtla/src/timerlat.h             |   4 +
- tools/tracing/rtla/src/timerlat_hist.c        | 780 ++++++++++++++++
- tools/tracing/rtla/src/timerlat_top.c         | 581 ++++++++++++
- tools/tracing/rtla/src/trace.c                | 219 +++++
- tools/tracing/rtla/src/trace.h                |  27 +
- tools/tracing/rtla/src/utils.c                | 433 +++++++++
- tools/tracing/rtla/src/utils.h                |  56 ++
- 27 files changed, 6173 insertions(+), 121 deletions(-)
- create mode 100644 tools/tracing/rtla/Documentation/Makefile
- create mode 100644 tools/tracing/rtla/Documentation/asciidoc.conf
- create mode 100644 tools/tracing/rtla/Documentation/manpage-base.xsl
- create mode 100644 tools/tracing/rtla/Documentation/manpage-normal.xsl
- create mode 100644 tools/tracing/rtla/Documentation/rtla-osnoise-hist.txt
- create mode 100644 tools/tracing/rtla/Documentation/rtla-osnoise-top.txt
- create mode 100644 tools/tracing/rtla/Documentation/rtla-osnoise.txt
- create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat-hist.txt
- create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat-top.txt
- create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat.txt
- create mode 100644 tools/tracing/rtla/Documentation/rtla.txt
- create mode 100644 tools/tracing/rtla/Documentation/utils.mk
- create mode 100644 tools/tracing/rtla/Makefile
- create mode 100644 tools/tracing/rtla/src/osnoise.c
- create mode 100644 tools/tracing/rtla/src/osnoise.h
- create mode 100644 tools/tracing/rtla/src/osnoise_hist.c
- create mode 100644 tools/tracing/rtla/src/osnoise_top.c
- create mode 100644 tools/tracing/rtla/src/rtla.c
- create mode 100644 tools/tracing/rtla/src/timerlat.c
- create mode 100644 tools/tracing/rtla/src/timerlat.h
- create mode 100644 tools/tracing/rtla/src/timerlat_hist.c
- create mode 100644 tools/tracing/rtla/src/timerlat_top.c
- create mode 100644 tools/tracing/rtla/src/trace.c
- create mode 100644 tools/tracing/rtla/src/trace.h
- create mode 100644 tools/tracing/rtla/src/utils.c
- create mode 100644 tools/tracing/rtla/src/utils.h
-
+diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+index 7b1f8187764c..0a04a9a4c85a 100644
+--- a/kernel/trace/trace_osnoise.c
++++ b/kernel/trace/trace_osnoise.c
+@@ -1545,7 +1545,7 @@ static int start_kthread(unsigned int cpu)
+  * This starts the kernel thread that will look for osnoise on many
+  * cpus.
+  */
+-static int start_per_cpu_kthreads(struct trace_array *tr)
++static int start_per_cpu_kthreads(void)
+ {
+ 	struct cpumask *current_mask = &save_cpumask;
+ 	int retval = 0;
+@@ -1678,8 +1678,8 @@ osnoise_cpus_read(struct file *filp, char __user *ubuf, size_t count,
+ 	return count;
+ }
+ 
+-static void osnoise_tracer_start(struct trace_array *tr);
+-static void osnoise_tracer_stop(struct trace_array *tr);
++static int osnoise_workload_start(void);
++static void osnoise_workload_stop(void);
+ 
+ /*
+  * osnoise_cpus_write - Write function for "cpus" entry
+@@ -1701,7 +1701,6 @@ static ssize_t
+ osnoise_cpus_write(struct file *filp, const char __user *ubuf, size_t count,
+ 		   loff_t *ppos)
+ {
+-	struct trace_array *tr = osnoise_trace;
+ 	cpumask_var_t osnoise_cpumask_new;
+ 	int running, err;
+ 	char buf[256];
+@@ -1726,7 +1725,7 @@ osnoise_cpus_write(struct file *filp, const char __user *ubuf, size_t count,
+ 	mutex_lock(&trace_types_lock);
+ 	running = osnoise_busy;
+ 	if (running)
+-		osnoise_tracer_stop(tr);
++		osnoise_workload_stop();
+ 
+ 	mutex_lock(&interface_lock);
+ 	/*
+@@ -1740,7 +1739,7 @@ osnoise_cpus_write(struct file *filp, const char __user *ubuf, size_t count,
+ 	mutex_unlock(&interface_lock);
+ 
+ 	if (running)
+-		osnoise_tracer_start(tr);
++		osnoise_workload_start();
+ 	mutex_unlock(&trace_types_lock);
+ 
+ 	free_cpumask_var(osnoise_cpumask_new);
+@@ -1921,7 +1920,10 @@ static int osnoise_hook_events(void)
+ 	return -EINVAL;
+ }
+ 
+-static int __osnoise_tracer_start(struct trace_array *tr)
++/*
++ * osnoise_workload_start - start the workload and hook to events
++ */
++static int osnoise_workload_start(void)
+ {
+ 	int retval;
+ 
+@@ -1936,7 +1938,7 @@ static int __osnoise_tracer_start(struct trace_array *tr)
+ 	barrier();
+ 	trace_osnoise_callback_enabled = true;
+ 
+-	retval = start_per_cpu_kthreads(tr);
++	retval = start_per_cpu_kthreads();
+ 	if (retval) {
+ 		unhook_irq_events();
+ 		return retval;
+@@ -1947,6 +1949,26 @@ static int __osnoise_tracer_start(struct trace_array *tr)
+ 	return 0;
+ }
+ 
++/*
++ * osnoise_workload_stop - stop the workload and unhook the events
++ */
++static void osnoise_workload_stop(void)
++{
++	if (!osnoise_busy)
++		return;
++
++	trace_osnoise_callback_enabled = false;
++	barrier();
++
++	stop_per_cpu_kthreads();
++
++	unhook_irq_events();
++	unhook_softirq_events();
++	unhook_thread_events();
++
++	osnoise_busy = false;
++}
++
+ static void osnoise_tracer_start(struct trace_array *tr)
+ {
+ 	int retval;
+@@ -1954,7 +1976,7 @@ static void osnoise_tracer_start(struct trace_array *tr)
+ 	if (osnoise_busy)
+ 		return;
+ 
+-	retval = __osnoise_tracer_start(tr);
++	retval = osnoise_workload_start();
+ 	if (retval)
+ 		pr_err(BANNER "Error starting osnoise tracer\n");
+ 
+@@ -1965,16 +1987,7 @@ static void osnoise_tracer_stop(struct trace_array *tr)
+ 	if (!osnoise_busy)
+ 		return;
+ 
+-	trace_osnoise_callback_enabled = false;
+-	barrier();
+-
+-	stop_per_cpu_kthreads();
+-
+-	unhook_irq_events();
+-	unhook_softirq_events();
+-	unhook_thread_events();
+-
+-	osnoise_busy = false;
++	osnoise_workload_stop();
+ }
+ 
+ static int osnoise_tracer_init(struct trace_array *tr)
+@@ -2017,7 +2030,7 @@ static void timerlat_tracer_start(struct trace_array *tr)
+ 
+ 	osnoise_data.timerlat_tracer = 1;
+ 
+-	retval = __osnoise_tracer_start(tr);
++	retval = osnoise_workload_start();
+ 	if (retval)
+ 		goto out_err;
+ 
 -- 
 2.31.1
 
