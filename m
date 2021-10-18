@@ -2,32 +2,32 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 134F5C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Oct 2021 16:51:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 282B4C43217
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Oct 2021 16:51:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EA76060FC2
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Oct 2021 16:51:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 14C6461074
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Oct 2021 16:51:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234062AbhJRQxg convert rfc822-to-8bit (ORCPT
+        id S234108AbhJRQxh convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 18 Oct 2021 12:53:36 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:55554 "EHLO
+        Mon, 18 Oct 2021 12:53:37 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:53975 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234159AbhJRQxJ (ORCPT
+        by vger.kernel.org with ESMTP id S234155AbhJRQxH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 18 Oct 2021 12:53:09 -0400
+        Mon, 18 Oct 2021 12:53:07 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-23-aJ1T7MqGNcmWQolwtWDlTg-1; Mon, 18 Oct 2021 12:50:54 -0400
-X-MC-Unique: aJ1T7MqGNcmWQolwtWDlTg-1
+ us-mta-575-W2aO6ZofNbaSp8pch6bOdg-1; Mon, 18 Oct 2021 12:50:51 -0400
+X-MC-Unique: W2aO6ZofNbaSp8pch6bOdg-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8CF961006AA6;
-        Mon, 18 Oct 2021 16:50:52 +0000 (UTC)
-Received: from x1.com (unknown [10.22.18.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9106F10016F4;
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 403E393C;
         Mon, 18 Oct 2021 16:50:49 +0000 (UTC)
+Received: from x1.com (unknown [10.22.18.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7C50E10016F4;
+        Mon, 18 Oct 2021 16:50:46 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
@@ -42,15 +42,13 @@ Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V3 19/19] rtla: Add rtla timerlat hist documentation
-Date:   Mon, 18 Oct 2021 18:48:32 +0200
-Message-Id: <79f9f1d1e6979f296edad78b59470310bbebba3b.1634574261.git.bristot@kernel.org>
+Subject: [PATCH V3 18/19] rtla: Add rtla timerlat top documentation
+Date:   Mon, 18 Oct 2021 18:48:31 +0200
+Message-Id: <81c6fdc36088fccbcd3bfd19b95539704fe4e9a4.1634574261.git.bristot@kernel.org>
 In-Reply-To: <cover.1634574261.git.bristot@kernel.org>
 References: <cover.1634574261.git.bristot@kernel.org>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: kernel.org
 Content-Transfer-Encoding: 8BIT
@@ -59,7 +57,7 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Man page for rtla timerlat hist mode.
+Man page for rtla timerlat top mode.
 
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Ingo Molnar <mingo@redhat.com>
@@ -77,42 +75,40 @@ Cc: linux-trace-devel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- .../rtla/Documentation/rtla-timerlat-hist.txt | 162 ++++++++++++++++++
- 1 file changed, 162 insertions(+)
- create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat-hist.txt
+ .../rtla/Documentation/rtla-timerlat-top.txt  | 181 ++++++++++++++++++
+ 1 file changed, 181 insertions(+)
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat-top.txt
 
-diff --git a/tools/tracing/rtla/Documentation/rtla-timerlat-hist.txt b/tools/tracing/rtla/Documentation/rtla-timerlat-hist.txt
+diff --git a/tools/tracing/rtla/Documentation/rtla-timerlat-top.txt b/tools/tracing/rtla/Documentation/rtla-timerlat-top.txt
 new file mode 100644
-index 000000000000..6cc1e8d9abd4
+index 000000000000..59bc8f2ea6cd
 --- /dev/null
-+++ b/tools/tracing/rtla/Documentation/rtla-timerlat-hist.txt
-@@ -0,0 +1,162 @@
-+rtla-timerlat-hist(1)
-+=====================
++++ b/tools/tracing/rtla/Documentation/rtla-timerlat-top.txt
+@@ -0,0 +1,181 @@
++rtla-timerlat-top(1)
++====================
 +
 +NAME
 +----
-+rtla-timerlat-hist - Histograms of the operating system timer latency
++rtla-timerlat-top - Measures the operating system timer latency
 +
 +SYNOPSIS
 +--------
-+*rtla timerlat hist* ['OPTIONS'] ...
++*rtla timerlat top* ['OPTIONS'] ...
 +
 +DESCRIPTION
-+-----------
-+The rtla-hist-hist(1) mode displays a histogram of each tracer event occurrence.
++The rtla-timerlat-top(1) mode displays a summary of the periodic output
++from the timerlat tracer.
 +
-+The rtla-timerlat(1) tool is an interface for the timerlat tracer. The
-+timerlat tracer dispatches a kernel thread per-cpu. These threads set a
-+periodic timer to wake themselves up and go back to sleep. After the wakeup,
-+they collect and generate useful information for the debugging of operating
-+system timer latency.
++The timerlat tracer dispatches a kernel thread per-cpu. These threads
++set a periodic timer to wake themselves up and go back to sleep. After
++the wakeup, they collect and generate useful information for the
++debugging of operating system timer latency.
 +
-+The timerlat tracer outputs information in two ways. It periodically prints
-+the timer latency at the timer 'IRQ' handler and the 'Thread' handler. It
-+also provides information for each noise via the osnoise tracepoints. This
-+tool uses the periodic information, and the osnoise tracepoints are enabled
-+when using the -T option.
++The timerlat tracer outputs information in two ways. It periodically
++prints the timer latency at the timer 'IRQ' handler and the 'Thread' handler.
++It also provides information for each noise via the osnoise tracepoints
++that can be seem with the option -T.
 +
 +OPTIONS
 +-------
@@ -133,103 +129,124 @@ index 000000000000..6cc1e8d9abd4
 +Set the duration of the session.
 +*-T*, *--trace*['=file']::
 +Save the stopped trace to ['file|timerlat_trace.txt'].
++*-q*, *--quiet*::
++Print only a summary at the end of the session.
 +*-P*, *--priority* 'o:prio|r:prio|f:prio|d:runtime:period'::
-+Set scheduling parameters to the timerlat tracer threads, the format to
-+set the priority are:
++Set scheduling parameters to the timerlat tracer threads, the format to set
++the priority are:
 +  - 'o:prio' - use SCHED_OTHER with 'prio';
 +  - 'r:prio' - use SCHED_RR with 'prio';
 +  - 'f:prio' - use SCHED_FIFO with 'prio';
-+  - 'd:runtime[us|ms|s]:period[us|ms|s]' - use SCHED_DEADLINE with 'runtime' and
-+'period' in nanoseconds.
-+
-+*-b*, *--bucket-size* 'N'::
-+Set the histogram bucket size (default 1).
-+*-e*, *--entries* 'N'::
-+Set the number of entries of the histogram (default 256).
-+*--no-irq*::
-+Ignore IRQ latencies.
-+*--no-thread*::
-+Ignore thread latencies.
-+*--no-header*::
-+So not print header.
-+*--no-summary*::
-+Do not print summary.
-+*--no-index*::
-+So not print index.
-+*--with-zeros*::
-+Print zero only entries.
++  - 'd:runtime[us|ms|s]:period[us|ms|s]' - use SCHED_DEADLINE with 'runtime'
++and 'period' in nanoseconds.
 +
 +EXAMPLE
 +-------
-+In the example below, *rtla timerlat hist* is set to run for '10' minutes,
-+in the cpus '0-4', 'skipping zero' only lines. Moreover, *rtla timerlat
-+hist* will change the priority of the timelat threads to run under
-+'SCHED_DEADLINE' priority, with a '10 us' runtime every '1 ms' period. The
-+'1ms' period is also passed to the timerlat tracer.
 +
-+------------------------------------------
-+[root@alien ~]# timerlat hist -d 10m -c 0-4 -P d:100us:1ms -p 1ms
-+# RTLA timerlat histogram
-+# Time unit is microseconds (us)
-+# Duration:   0 00:10:00
-+Index   IRQ-000   Thr-000   IRQ-001   Thr-001   IRQ-002   Thr-002   IRQ-003   Thr-003   IRQ-004   Thr-004
-+0        276489         0    206089         0    466018         0    481102         0    205546         0
-+1        318327     35487    388149     30024     94531     48382     83082     71078    388026     55730
-+2          3282    122584      4019    126527     28231    109012     23311     89309      4568     98739
-+3           940     11815       837      9863      6209     16227      6895     17196       910      9780
-+4           444     17287       424     11574      2097     38443      2169     36736       462     13476
-+5           206     43291       255     25581      1223    101908      1304    101137       236     28913
-+6           132    101501        96     64584       635    213774       757    215471        99     73453
-+7            74    169347        65    124758       350     57466       441     53639        69    148573
-+8            53     85183        31    156751       229      9052       306      9026        39    139907
-+9            22     10387        12     42762       161      2554       225      2689        19     26192
-+10           13      1898         8      5770       114      1247       128      1405        13      3772
-+11            9       560         9       924        71       686        76       765         8       713
-+12            4       256         2       360        50       411        64       474         3       278
-+13            2       167         2       172        43       256        53       350         4       180
-+14            1        88         1       116        15       198        42       223         0       115
-+15            2        63         3        94        11       139        20       150         0        58
-+16            2        37         0        56         5        78        10       102         0        39
-+17            0        18         0        28         4        57         8        80         0        15
-+18            0         8         0        17         2        50         6        56         0        12
-+19            0         9         0         5         0        19         0        48         0        18
-+20            0         4         0         8         0        11         2        27         0         4
-+21            0         2         0         3         1         9         1        18         0         6
-+22            0         1         0         3         1         7         0         3         0         5
-+23            0         2         0         4         0         2         0         7         0         2
-+24            0         2         0         2         1         3         0         3         0         5
-+25            0         0         0         1         0         1         0         1         0         3
-+26            0         1         0         0         0         2         0         2         0         0
-+27            0         0         0         3         0         1         0         0         0         1
-+28            0         0         0         3         0         0         0         1         0         0
-+29            0         0         0         2         0         2         0         1         0         3
-+30            0         1         0         0         0         0         0         0         0         0
-+31            0         1         0         0         0         0         0         2         0         2
-+32            0         0         0         1         0         2         0         0         0         0
-+33            0         0         0         2         0         0         0         0         0         1
-+34            0         0         0         0         0         0         0         0         0         2
-+35            0         1         0         1         0         0         0         0         0         1
-+36            0         1         0         0         0         1         0         1         0         0
-+37            0         0         0         1         0         0         0         0         0         0
-+40            0         0         0         0         0         1         0         1         0         0
-+41            0         0         0         0         0         0         0         0         0         1
-+42            0         0         0         0         0         0         0         0         0         1
-+44            0         0         0         0         0         1         0         0         0         0
-+46            0         0         0         0         0         0         0         1         0         0
-+47            0         0         0         0         0         0         0         0         0         1
-+50            0         0         0         0         0         0         0         0         0         1
-+54            0         0         0         1         0         0         0         0         0         0
-+58            0         0         0         1         0         0         0         0         0         0
-+over:         0         0         0         0         0         0         0         0         0         0
-+count:   600002    600002    600002    600002    600002    600002    600002    600002    600002    600002
-+min:          0         1         0         1         0         1         0         1         0         1
-+avg:          0         5         0         5         0         4         0         4         0         5
-+max:         16        36        15        58        24        44        21        46        13        50
-+------------------------------------------
++In the example below, the timerlat tracer is set to capture the stack trace at
++the IRQ handler, printing it to the buffer if the *Thread Timer Latency* is
++higher than _30 us_. It is also set to stop the session if a *Thread Timer
++Latency* higher than _30 us_ is hit. Finally, it is set to save the trace
++buffer if the stop condition is hit.
++
++-------------------------------------------------------
++[root@alien ~]# rtla timerlat top -s 30 -t 30 -T
++                 Timer Latency
++  0 00:00:59   |          IRQ Timer Latency (us)        |         Thread Timer Latency (us)
++CPU COUNT      |      cur       min       avg       max |      cur       min       avg       max
++  0 #58634     |        1         0         1        10 |       11         2        10        23
++  1 #58634     |        1         0         1         9 |       12         2         9        23
++  2 #58634     |        0         0         1        11 |       10         2         9        23
++  3 #58634     |        1         0         1        11 |       11         2         9        24
++  4 #58634     |        1         0         1        10 |       11         2         9        26
++  5 #58634     |        1         0         1         8 |       10         2         9        25
++  6 #58634     |       12         0         1        12 |       30         2        10        30 <--- CPU with spike
++  7 #58634     |        1         0         1         9 |       11         2         9        23
++  8 #58633     |        1         0         1         9 |       11         2         9        26
++  9 #58633     |        1         0         1         9 |       10         2         9        26
++ 10 #58633     |        1         0         1        13 |       11         2         9        28
++ 11 #58633     |        1         0         1        13 |       12         2         9        24
++ 12 #58633     |        1         0         1         8 |       10         2         9        23
++ 13 #58633     |        1         0         1        10 |       10         2         9        22
++ 14 #58633     |        1         0         1        18 |       12         2         9        27
++ 15 #58633     |        1         0         1        10 |       11         2         9        28
++ 16 #58633     |        0         0         1        11 |        7         2         9        26
++ 17 #58633     |        1         0         1        13 |       10         2         9        24
++ 18 #58633     |        1         0         1         9 |       13         2         9        22
++ 19 #58633     |        1         0         1        10 |       11         2         9        23
++ 20 #58633     |        1         0         1        12 |       11         2         9        28
++ 21 #58633     |        1         0         1        14 |       11         2         9        24
++ 22 #58633     |        1         0         1         8 |       11         2         9        22
++ 23 #58633     |        1         0         1        10 |       11         2         9        27
++timerlat hit stop tracing
++saving trace to timerlat_trace.txt
++[root@alien bristot]# tail -60 timerlat_trace.txt
++[...]
++      timerlat/5-79755   [005] .......   426.271226: #58634 context thread timer_latency     10823 ns
++              sh-109404  [006] dnLh213   426.271247: #58634 context    irq timer_latency     12505 ns
++              sh-109404  [006] dNLh313   426.271258: irq_noise: local_timer:236 start 426.271245463 duration 12553 ns
++              sh-109404  [006] d...313   426.271263: thread_noise:       sh:109404 start 426.271245853 duration 4769 ns
++      timerlat/6-79756   [006] .......   426.271264: #58634 context thread timer_latency     30328 ns
++      timerlat/6-79756   [006] ....1..   426.271265: <stack trace>
++ => timerlat_irq
++ => __hrtimer_run_queues
++ => hrtimer_interrupt
++ => __sysvec_apic_timer_interrupt
++ => sysvec_apic_timer_interrupt
++ => asm_sysvec_apic_timer_interrupt
++ => _raw_spin_unlock_irqrestore			<---- spinlock that disabled interrupt.
++ => try_to_wake_up
++ => autoremove_wake_function
++ => __wake_up_common
++ => __wake_up_common_lock
++ => ep_poll_callback
++ => __wake_up_common
++ => __wake_up_common_lock
++ => fsnotify_add_event
++ => inotify_handle_inode_event
++ => fsnotify
++ => __fsnotify_parent
++ => __fput
++ => task_work_run
++ => exit_to_user_mode_prepare
++ => syscall_exit_to_user_mode
++ => do_syscall_64
++ => entry_SYSCALL_64_after_hwframe
++ => 0x7265000001378c
++ => 0x10000cea7
++ => 0x25a00000204a
++ => 0x12e302d00000000
++ => 0x19b51010901b6
++ => 0x283ce00726500
++ => 0x61ea308872
++ => 0x00000fe3
++            bash-109109  [007] d..h...   426.271265: #58634 context    irq timer_latency      1211 ns
++      timerlat/6-79756   [006] .......   426.271267: timerlat_main: stop tracing hit on cpu 6
++----------------------------------------
++
++In the trace, it is possible the notice that the *IRQ Timer Latency* was
++already high, accounting *12505 ns*. The IRQ delay was caused by the
++'bash-109109' process that disabled IRQs in the wake-up path
++('_try_to_wake_up()' function). The duration of the IRQ handler that woke
++up the timerlat thread, informed with the *irq_noise* event, was also high
++and added more *12553 ns* to the Thread latency. Finally, the *thread_noise*
++added by the currently running thread (including the scheduling overhead)
++added more *4769 ns*. Summing up these values, the *Thread Timer Latency*
++accounted for *30328 ns*.
++
++The primary reason for this high value is the wake-up path that was hit
++twice during this case: when the 'bash-109109' was waking up a thread
++and then when the 'timerlat' thread was awakened. This information can
++then be used as the starting point of a more fine-grained analysis.
++
++Note that timerlat was dispatched without changing timerlat threads' priority.
++That is generally not needed because the thread has priority FIFO:95 by
++default, which is a common priority used by real-time kernel developers to
++analyze scheduling delays.
 +
 +SEE ALSO
 +--------
-+_rtla-timerlat(1)_, _rtla-timerlat-top(1)_
++_rtla-timerlat(1)_, _rtla-timerlat-hist(1)_
 +
 +Timerlat tracer documentation: <https://www.kernel.org/doc/html/latest/trace/timerlat-tracer.html>
 +
