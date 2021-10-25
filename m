@@ -2,353 +2,210 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4E00C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Oct 2021 17:27:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03842C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Oct 2021 17:41:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 974B761078
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Oct 2021 17:27:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D337B60F6F
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Oct 2021 17:41:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233665AbhJYR3W (ORCPT
+        id S233231AbhJYRnZ convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 25 Oct 2021 13:29:22 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:33240 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233367AbhJYR3W (ORCPT
+        Mon, 25 Oct 2021 13:43:25 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:23395 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230505AbhJYRnZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 25 Oct 2021 13:29:22 -0400
-Received: from kbox (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id EBB34209A619;
-        Mon, 25 Oct 2021 10:26:59 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EBB34209A619
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1635182820;
-        bh=e/iUbf3g4ySwChyrfjK3RPUCyoPyRuIH/o7ZfBeJetA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eSlKM2r4YZK+4HL7Tzh8u7rehCXxVVXlSLrOG6ciMYHZbDKaZTfHIfTVp68YPMXf5
-         7nINJFunIO62p7cfvAOVZO0mxHCIfFlv3ZHVJ8XcYD395CsM24XspU59ZCWaoS2Pez
-         B88R4EgGzwjes8syxHcgTW9Re+7D0wVZa1iuazlA=
-Date:   Mon, 25 Oct 2021 10:26:55 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>
-Subject: Re: [PATCH v3] user_events: Enable user processes to create and
- write to trace events
-Message-ID: <20211025172655.GA27927@kbox>
-References: <20211018230957.3032-1-beaub@linux.microsoft.com>
- <20211022223811.d0b5f03a7eee147c619d0202@kernel.org>
- <20211022224202.GA27683@kbox>
- <20211025104006.a322e4a5b4a56cdf3552ebac@kernel.org>
+        Mon, 25 Oct 2021 13:43:25 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-243-9ipN5yRZPh-2EIf0JdLKRA-1; Mon, 25 Oct 2021 13:40:58 -0400
+X-MC-Unique: 9ipN5yRZPh-2EIf0JdLKRA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7A23D79EF7;
+        Mon, 25 Oct 2021 17:40:52 +0000 (UTC)
+Received: from x1.com (unknown [10.22.9.145])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CF62D5C1A1;
+        Mon, 25 Oct 2021 17:40:48 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V5 00/20] RTLA: An interface for osnoise/timerlat tracers
+Date:   Mon, 25 Oct 2021 19:40:25 +0200
+Message-Id: <cover.1635181938.git.bristot@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025104006.a322e4a5b4a56cdf3552ebac@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 10:40:06AM +0900, Masami Hiramatsu wrote:
-> On Fri, 22 Oct 2021 15:42:02 -0700
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> 
-> > On Fri, Oct 22, 2021 at 10:38:11PM +0900, Masami Hiramatsu wrote:
-> > The idea is to allow user mode processes to describe their own data
-> > types if required. For that we need offset or size to be passed. If we
-> > require all user mode to only describe in types the kernel understands
-> > then I can remove the size field.
-> 
-> Hmm, I got it. I think it should be optional, and only for the types
-> which has "struct" prefix. Basic types like char, int, long etc should
-> keep the size as it is.
-> 
-Ok, sounds good.
+The rtla(1) is a meta-tool that includes a set of commands that
+aims to analyze the real-time properties of Linux. But instead of
+testing Linux as a black box, rtla leverages kernel tracing
+capabilities to provide precise information about the properties
+and root causes of unexpected results.
 
-> > Sorry, are you asking for several isolated patches? Or a single patch
-> > with multiple commits to the same file?
-> 
-> I mean the several isolated patches which commit to the same file.
-> (like upgrading it step by step.) You can make it a series.
-> 
-> > Typically after addition I am running a set of tests and benchmarks
-> > against the code, so having full functioning code is required to ensure
-> > I haven't broken anything.
-> 
-> Yes, you can put the test in the end of the series :)
-> 
-> > We are actively using these patches for various projects, which require
-> > ftrace, perf and eBPF to be functional.
-> 
-> The series usually merged at once :) I just asked you to break it
-> down to the several patches, so that I can review and discuss on
-> each feature in different threads.
-> 
-Got it, that's what I thought, but wanted to make sure.
+To start, it presents an interface to the osnoise and timerlat tracers.
+In the future, it will also serve as home to the rtsl [1] and other
+latency/noise tracers.
 
-> > If we don't care about either, then I can remove this. For custom types
-> > we are fine with using __rel_loc instead.
-> 
-> Or, as I said, you can pass the size when it has "struct" prefix. :)
-> The __rel_loc and __data_loc is usually used for storing arrays, especially
-> dynamic size array like null terminated string. But of course you can use
-> it for storing a big data structure.
-> Let's check how the libtraceevent(tools/lib/traceevent) parses the recorded
-> data.
-> 
-Ok, I'll go for struct prefix.
+The first five patches are a re-send of [2] that enable multiple
+instances for osnoise/timerlat tracers. They are required to run the -T
+option - to save a trace with osnoise: events for debugging.
 
-> > We have several events that describe the print format to use instead of
-> > using the default, like we allow in the kernel. This is currently how it
-> > is passed, it could be described in the new struct to the reg ioctl
-> > instead.
-> 
-> OK, the 'print_fmt' in 'format' file will show how the trace entry will be
-> printed in the trace buffer (in human readable style). But that is not
-> done automatically. You have to write the corresponding printout function
-> for the event. This means that user-specific format needs to be verified
-> and you need a programmable printout function. This is why it is hard to
-> support the custom data structure in ftrace.
-> Anyway, I think you'd better to start without this option. (and please
-> start with describing how the user-event arguments are shown in trace
-> buffer.)
-> 
-Got it, by that I assume you mean auto-generating a print_fmt statement
-for the user like the other probes. I will do that.
+The next seven patches are rtla, rtla osnoise, and rtla timerlat.
 
-> > 
-> > > > +	} else if (strstr(field, "flag ") == field) {
-> > > > +		field += sizeof("flag");
-> > > > +
-> > > > +		if (!strcmp(field, "bpf_iter"))
-> > > > +			user->flags |= FLAG_BPF_ITER;
-> > > > +
-> > > 
-> > > What is this flag?
-> > > 
-> > We want to enable certain sensitive events the ability to mark that
-> > there should never be a buffer copy. When FLAG_BPF_ITER is used the raw
-> > iovecs are exposed out to eBPF instead of any sort of copy to reduce
-> > latency. We run user_events in some highly performant code and want to
-> > monitor things with the least amount of overhead possible.
-> 
-> Would you mean the event with this flag is only available from eBPF?
-> 
-It means that if eBPF attaches we will honor the users request to make
-the data as cheap as possible to them. If a user with proper access
-enables ftrace or perf on these high performant events they will still
-come through (we don't want to hide them).
+The following patches are the man pages for the tools.
 
-We will not be able to do that at all if we copy to heap or stack. At
-that point we've lost the ability to delay copy/probing up until the
-eBPF states it is actually required.
+To compile rtla on fedora you need:
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git
+  $ cd libtraceevent/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git
+  $ cd libtracefs/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ sudo dnf install python3-docutils procps-devel
+  $ cd $linux/tools/tracing/rtla/
+  $ make
+  $ sudo make install
 
-> > > > +	return strcmp(EVENT_NAME(user), event) == 0 &&
-> > > > +		(!system || strcmp(system, USER_EVENTS_SYSTEM) == 0);
-> > > 
-> > > For the minimal implementation, this is OK.
-> > > 
-> > > Note that it is better to check the rest of arguments with the event
-> > > parameters. E.g. if you have "myuevent int var", user cant try to remove
-> > > "-:myuevent char var".
-> > > 
-> > Ok, the reason we do this is because the events are going to be
-> > versioned. They might change their arguments and having a way to clear
-> > without knowing the exact arguments is not a bad thing in our cases.
-> 
-> Actually, as other dynamic events do, user can remove only by name, or
-> specifically with the arguments. So argument check is optional but
-> if user specified it, we should verify it.
-> 
-Ok, I will look into that.
+This tool was be discussed at the RT-MC during LPC2021.
 
-> > 
-> > No one can remove an event while it's being used and the name cannot
-> > conflict since all user events go to the user_events sub-system and
-> > cannot be overriden.
-> > 
-> > > > +/*
-> > > > + * Validates the user payload and writes via iterator.
-> > > > + */
-> > > > +static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
-> > > > +{
-> > > > +	struct user_event_refs *refs;
-> > > > +	struct user_event *user = NULL;
-> > > > +	struct tracepoint *tp;
-> > > > +	ssize_t ret = i->count;
-> > > > +	int idx;
-> > > > +
-> > > > +	preempt_disable();
-> > > 
-> > > Why do you disable preemption here?
-> > > 
-> > My understanding was that preemption is to be disabled when using rcu
-> > protected by sched, which tracepoints and the refs are. We also want the
-> > correct processor to log the event (as near as we can).
-> > 
-> > Did I misunderstand rcu_dereference_sched_check()? I may be off in the
-> > weeds.
-> 
-> I see that you want to fix the processor id, but preempt_disable()
-> section should be minimum as possible and should not involve the
-> function which can access to user memeory.
-> 
-I guess I could use disable migration or just live with the rare event
-of a processor swap.
+[1] rtsl: https://github.com/bristot/rtsl/
+[2] https://lore.kernel.org/lkml/cover.1628775552.git.bristot@kernel.org/
+[3] https://youtu.be/cZUzc0U1jJ4
 
-> > 
-> > I also ran with CONFIG_PROVE_RCU and didn't see anything show up in
-> > dmesg.
-> 
-> Hmm, that's strange, because copy_from_iter(user) may cause a fault
-> and yielded. Isn't it an iovec?
-> 
-Yeah, likely I just haven't hit a page fault case. I'll try to force one
-in our testing to ensure this case is properly covered and doesn't cause
-issues.
+Changes from v4:
+  - Fix comment on start_per_cpu_kthreads() (Steven)
+  - Fix msg log on patch 1
+  - Add comments about the barrier need for trace_nmi_enter/exit
+  - Fix RCU usage in osnoise_unregister_instance() (Steven/Paul)
+  - Add lockdep checks in osnoise_unregister/unregister_instance()
+    (Steven/Paul)
+  - Improve the explanation about the multi instances support (Steven)
+Changes from v3:
+  - Add cross-compile support (Ahmed S. Darwish)
+  - Move documentation to Documentation/tools/rtla (Jonathan Corbet)
+  - Use .rst format for documentation (Jonathan Corbet)
+  - Use include option from .rst to group common parts of the documentation
+  - Makefile (main and doc) cleanups
+Changes from v2:
+  - Fix the miss conception of the "size" for kernel histograms (Steven/Tom)
+  - Change the --skip-zeros to --with-zeros option as the former is better
+    for humans (and the latter for computers to plot charts).
+  - A lot of checkpatch fixes for the user-space part.
+Changes from v1:
+  - Fixes -t options on osnoise tracers (-t means --trace for all tools now)
+  - Fixes --bucket-size references (not --bucket_size)
 
-> > > > +
-> > > > +	if (unlikely(copy_from_iter(&idx, sizeof(idx), i) != sizeof(idx))) {
-> > > > +		ret = -EFAULT;
-> > > > +		goto out;
-> > > > +	}
-> > > 
-> > > Isn't this copy_from_iter() sleepable function?
-> > > 
-> > Yes, if we need to fault in data we want the data to come in. This is in
-> > the user process context of write() and writev() which I believe is the
-> > expected target for copy_from_iter().
-> > 
-> > During the probe copies we are not holding a lock or have interrupts
-> > disabled, under what circumstances would a page fault cause an issue in
-> > these paths? What is recommended here if we want to have page faults be
-> > allowed (Hoping they are rare)?
-> 
-> They are rare, but possibly the process is yielded if it is under heavy
-> memory pressure. I recommend you to copy the user write data in the stack
-> or thread-local buffer at once and pass it to probe functions. That is
-> safe way.
-> 
-> So, can you make it something like below?;
-> 
-> /* Copy event from user space */
-> copy_from_iter(&idx, sizeof(idx), i);
-> buf_len = copy_from_iter(local_buf, i->count, &i);
-> 
-> /* loop on recording functions */
-> preempt_disable();
-> user_event = get_user_event(file, idx);
-> if (user_event && user_event_is_enabled(user_event)) {
-> 	user_event_for_each_probe_func(user_event, probe_func, tpdata) {
-> 		probe_func(user_event, thread_buf, buf_len, tpdata);
-> 	}
-> }
-> preempt_enable();
-> 
-Yeah, I will start with the simple version above.
+Daniel Bristot de Oliveira (20):
+  trace/osnoise: Do not follow tracing_cpumask
+  trace/osnoise: Improve comments about barrier need for NMI callbacks
+  trace/osnoise: Split workload start from the tracer start
+  trace/osnoise: Use start/stop_per_cpu_kthreads() on
+    osnoise_cpus_write()
+  trace/osnoise: Support a list of trace_array *tr
+  trace/osnoise: Allow multiple instances of the same tracer
+  rtla: Real-Time Linux Analysis tool
+  rtla: Helper functions for rtla
+  rtla: Add osnoise tool
+  rtla/osnoise: Add osnoise top mode
+  rtla/osnoise: Add the hist mode
+  rtla: Add timerlat tool and timelart top mode
+  rtla/timerlat: Add timerlat hist mode
+  rtla: Add Documentation
+  rtla: Add rtla osnoise man page
+  rtla: Add rtla osnoise top documentation
+  rtla: Add rtla osnoise hist documentation
+  rtla: Add rtla timerlat documentation
+  rtla: Add rtla timerlat top documentation
+  rtla: Add rtla timerlat hist documentation
 
-Ultimately I would like to do more of the following in the series:
-iov_iter_fault_in_readable(&i, i->count);
+ Documentation/tools/rtla/Makefile             |  41 +
+ Documentation/tools/rtla/common_appendix.rst  |  12 +
+ .../tools/rtla/common_hist_options.rst        |  23 +
+ Documentation/tools/rtla/common_options.rst   |  24 +
+ .../tools/rtla/common_osnoise_description.rst |   8 +
+ .../tools/rtla/common_osnoise_options.rst     |  17 +
+ .../rtla/common_timerlat_description.rst      |  10 +
+ .../tools/rtla/common_timerlat_options.rst    |  16 +
+ .../tools/rtla/common_top_options.rst         |   3 +
+ .../tools/rtla/rtla-osnoise-hist.rst          |  66 ++
+ Documentation/tools/rtla/rtla-osnoise-top.rst |  61 ++
+ Documentation/tools/rtla/rtla-osnoise.rst     |  59 ++
+ .../tools/rtla/rtla-timerlat-hist.rst         | 106 +++
+ .../tools/rtla/rtla-timerlat-top.rst          | 145 +++
+ Documentation/tools/rtla/rtla-timerlat.rst    |  57 ++
+ Documentation/tools/rtla/rtla.rst             |  48 +
+ kernel/trace/trace_osnoise.c                  | 426 ++++++---
+ tools/tracing/rtla/Makefile                   | 102 +++
+ tools/tracing/rtla/src/osnoise.c              | 837 ++++++++++++++++++
+ tools/tracing/rtla/src/osnoise.h              |  87 ++
+ tools/tracing/rtla/src/osnoise_hist.c         | 783 ++++++++++++++++
+ tools/tracing/rtla/src/osnoise_top.c          | 567 ++++++++++++
+ tools/tracing/rtla/src/rtla.c                 |  87 ++
+ tools/tracing/rtla/src/timerlat.c             |  72 ++
+ tools/tracing/rtla/src/timerlat.h             |   4 +
+ tools/tracing/rtla/src/timerlat_hist.c        | 780 ++++++++++++++++
+ tools/tracing/rtla/src/timerlat_top.c         | 581 ++++++++++++
+ tools/tracing/rtla/src/trace.c                | 219 +++++
+ tools/tracing/rtla/src/trace.h                |  27 +
+ tools/tracing/rtla/src/utils.c                | 433 +++++++++
+ tools/tracing/rtla/src/utils.h                |  56 ++
+ 31 files changed, 5635 insertions(+), 122 deletions(-)
+ create mode 100644 Documentation/tools/rtla/Makefile
+ create mode 100644 Documentation/tools/rtla/common_appendix.rst
+ create mode 100644 Documentation/tools/rtla/common_hist_options.rst
+ create mode 100644 Documentation/tools/rtla/common_options.rst
+ create mode 100644 Documentation/tools/rtla/common_osnoise_description.rst
+ create mode 100644 Documentation/tools/rtla/common_osnoise_options.rst
+ create mode 100644 Documentation/tools/rtla/common_timerlat_description.rst
+ create mode 100644 Documentation/tools/rtla/common_timerlat_options.rst
+ create mode 100644 Documentation/tools/rtla/common_top_options.rst
+ create mode 100644 Documentation/tools/rtla/rtla-osnoise-hist.rst
+ create mode 100644 Documentation/tools/rtla/rtla-osnoise-top.rst
+ create mode 100644 Documentation/tools/rtla/rtla-osnoise.rst
+ create mode 100644 Documentation/tools/rtla/rtla-timerlat-hist.rst
+ create mode 100644 Documentation/tools/rtla/rtla-timerlat-top.rst
+ create mode 100644 Documentation/tools/rtla/rtla-timerlat.rst
+ create mode 100644 Documentation/tools/rtla/rtla.rst
+ create mode 100644 tools/tracing/rtla/Makefile
+ create mode 100644 tools/tracing/rtla/src/osnoise.c
+ create mode 100644 tools/tracing/rtla/src/osnoise.h
+ create mode 100644 tools/tracing/rtla/src/osnoise_hist.c
+ create mode 100644 tools/tracing/rtla/src/osnoise_top.c
+ create mode 100644 tools/tracing/rtla/src/rtla.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.h
+ create mode 100644 tools/tracing/rtla/src/timerlat_hist.c
+ create mode 100644 tools/tracing/rtla/src/timerlat_top.c
+ create mode 100644 tools/tracing/rtla/src/trace.c
+ create mode 100644 tools/tracing/rtla/src/trace.h
+ create mode 100644 tools/tracing/rtla/src/utils.c
+ create mode 100644 tools/tracing/rtla/src/utils.h
 
-And then pass the iter to each probe and use copy_from_iter_nocache.
+-- 
+2.31.1
 
-That would pre-fault in the data and then copy_from_iter_nocache cannot
-take a fault and if for some reason it did, it would zero fill.
-
-I can disable migrations instead of preempt disable (eBPF does this).
-I could also disable page faults entirely as well to further protect
-against this.
-
-> > 
-> > > > +				/*
-> > > > +				 * Probes advance the iterator so we
-> > > > +				 * need to have a copy for each probe.
-> > > > +				 */
-> > > > +				copy = *i;
-> > > > +
-> > > > +				probe_func = probe_func_ptr->func;
-> > > > +				tpdata = probe_func_ptr->data;
-> > > > +				probe_func(user, &copy, tpdata);
-> > > 
-> > > You seems to try to copy in from user space in each probe func, but
-> > > please copy it here to the temporary buffer and pass it to the
-> > > each probe function. Such performacne optimization can postpone.
-> > > Start with simple implementation.
-> > > 
-> > Yes, this avoids double copying of the data in the normal paths. Moving
-> > to a temp buffer only really changes 1 line in the probe functions
-> > (copy_from_iter to copy_from_user).
-> > 
-> > If I were to create a temp buffer for simplicity I guess I would have to
-> > kmalloc on each call or move to a per-cpu buffer or use stack memory and
-> > limit how much data can be copied.
-> 
-> Anyway, it should be limited. You can not write more than 1 page, and
-> do you really need it? And allocating kmalloc object is relatively low
-> cost compared with a system call.
-> 
-Really, it's that low?
-
-We are tracking cycles counts to compare user_events with other
-telemetry data we have. Some people care a lot about that number, some
-don't.
-
-Anyway, I can break it up in the series so we'll have a simple version
-and a faster version.
-
-> > > > +	atomic_inc(&user->refs);
-> 
-> BTW, I recommend you to use a different name for this reference counter,
-> e.g. refcnt, since refs is used for "file-local reference user event tables".
-> 
-Sure.
-
-> > > > +	case DIAG_IOCSREG:
-> > > > +		/* Register/lookup on behalf of user process */
-> > > > +		name = strndup_user(ubuf, MAX_EVENT_DESC);
-> > > > +
-> > > > +		if (IS_ERR(name)) {
-> > > > +			ret = PTR_ERR(name);
-> > > > +			goto out;
-> > > > +		}
-> > > > +
-> > > > +		mutex_lock(&event_mutex);
-> > > > +
-> > > > +		ret = user_event_parse_cmd(name, &user);
-> > > > +
-> > > > +		if (ret < 0)
-> > > > +			goto reg_out;
-> > > > +
-> > > > +		preempt_disable();
-> > > 
-> > > Why do you need to disable preemption here? It is enough to
-> > > use a mutex.
-> > > 
-> > Because user_events_ref_add use rcu protected by sched. It appears that
-> > preemption is supposed to be disabled when using that from my read of
-> > the code. Is this not correct or not required?
-> 
-> No not required, the "event_mutex" prevents other user from invoking
-> the user_events_ref_add(), thus the "file->private_data" will not be
-> updated from others. Thus you don't need to care the scenario of
-> "file->private_data" is changed between dereference and reassign it.
-> I think what you need is "lockdep_assert_held(&event_mutex)" in the
-> user_events_ref_add().
-> 
-I assume each rcu_dereference_sched should be wrapped with preemption
-disabled for a very short period of time? It seems to imply that's
-expected. I'm not sure if that's really required or just guidance.
-
-The reason I'm unsure is that the sched held check looks for preemption
-being disabled (!preemptible();). rcu_read_lock_sched() disables
-preeemption. For our case, I'm not sure if we really need
-rcu_read_lock_sched or if we can just dereference it with preemption
-disabled.
-
-My guess is I should make these clear and have rcu_read_lock_sched() /
-unlock around each rcu_dereference_sched() call, it seems to enable
-debugging bad callers easier if things go bad.
-
-Thanks,
--Beau
