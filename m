@@ -2,32 +2,32 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05A95C43217
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Oct 2021 17:41:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 880B0C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Oct 2021 17:41:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E3C0360F9D
+	by mail.kernel.org (Postfix) with ESMTP id 74ED56108B
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Oct 2021 17:41:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233944AbhJYRns convert rfc822-to-8bit (ORCPT
+        id S234174AbhJYRns convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Mon, 25 Oct 2021 13:43:48 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:25802 "EHLO
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:35291 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233805AbhJYRnn (ORCPT
+        by vger.kernel.org with ESMTP id S233944AbhJYRnb (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 25 Oct 2021 13:43:43 -0400
+        Mon, 25 Oct 2021 13:43:31 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-594-RaSjjN-gMOuXjorm32phLg-1; Mon, 25 Oct 2021 13:41:14 -0400
-X-MC-Unique: RaSjjN-gMOuXjorm32phLg-1
+ us-mta-515-ltni_tBmPxeGkv-EqcaqrA-1; Mon, 25 Oct 2021 13:41:05 -0400
+X-MC-Unique: ltni_tBmPxeGkv-EqcaqrA-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5333A802682;
-        Mon, 25 Oct 2021 17:41:13 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C329C1B18BC7;
+        Mon, 25 Oct 2021 17:41:03 +0000 (UTC)
 Received: from x1.com (unknown [10.22.9.145])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 573F75C1A1;
-        Mon, 25 Oct 2021 17:41:04 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B25AB5C1CF;
+        Mon, 25 Oct 2021 17:41:00 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
@@ -42,9 +42,9 @@ Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V5 04/20] trace/osnoise: Use start/stop_per_cpu_kthreads() on osnoise_cpus_write()
-Date:   Mon, 25 Oct 2021 19:40:29 +0200
-Message-Id: <2b4ea45b1802844cffd98b6a208b22bc4664c795.1635181938.git.bristot@kernel.org>
+Subject: [PATCH V5 03/20] trace/osnoise: Split workload start from the tracer start
+Date:   Mon, 25 Oct 2021 19:40:28 +0200
+Message-Id: <f0d010205bad152f37d04c4fafea57a1555e4812.1635181938.git.bristot@kernel.org>
 In-Reply-To: <cover.1635181938.git.bristot@kernel.org>
 References: <cover.1635181938.git.bristot@kernel.org>
 MIME-Version: 1.0
@@ -59,14 +59,8 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When writing a new CPU mask via osnoise/cpus, if the tracer is running,
-the workload is restarted to follow the new cpumask. The restart is
-currently done using osnoise_workload_start/stop(), which disables the
-workload *and* the instrumentation. However, disabling the
-instrumentation is not necessary.
-
-Calling start/stop_per_cpu_kthreads() is enough to apply the new
-osnoise/cpus config.
+In preparation from supporting multiple trace instances, create
+workload start/stop specific functions.
 
 No functional change.
 
@@ -86,41 +80,142 @@ Cc: linux-trace-devel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- kernel/trace/trace_osnoise.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ kernel/trace/trace_osnoise.c | 59 ++++++++++++++++++++++--------------
+ 1 file changed, 36 insertions(+), 23 deletions(-)
 
 diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index 4381a06af916..7453b96c548b 100644
+index f941a322ca89..4381a06af916 100644
 --- a/kernel/trace/trace_osnoise.c
 +++ b/kernel/trace/trace_osnoise.c
-@@ -1677,9 +1677,6 @@ osnoise_cpus_read(struct file *filp, char __user *ubuf, size_t count,
+@@ -1545,7 +1545,7 @@ static int start_kthread(unsigned int cpu)
+  * This starts the kernel thread that will look for osnoise on many
+  * cpus.
+  */
+-static int start_per_cpu_kthreads(struct trace_array *tr)
++static int start_per_cpu_kthreads(void)
+ {
+ 	struct cpumask *current_mask = &save_cpumask;
+ 	int retval = 0;
+@@ -1677,8 +1677,8 @@ osnoise_cpus_read(struct file *filp, char __user *ubuf, size_t count,
  	return count;
  }
  
--static int osnoise_workload_start(void);
--static void osnoise_workload_stop(void);
--
+-static void osnoise_tracer_start(struct trace_array *tr);
+-static void osnoise_tracer_stop(struct trace_array *tr);
++static int osnoise_workload_start(void);
++static void osnoise_workload_stop(void);
+ 
  /*
   * osnoise_cpus_write - Write function for "cpus" entry
-  * @filp: The active open file structure
-@@ -1724,7 +1721,7 @@ osnoise_cpus_write(struct file *filp, const char __user *ubuf, size_t count,
+@@ -1700,7 +1700,6 @@ static ssize_t
+ osnoise_cpus_write(struct file *filp, const char __user *ubuf, size_t count,
+ 		   loff_t *ppos)
+ {
+-	struct trace_array *tr = osnoise_trace;
+ 	cpumask_var_t osnoise_cpumask_new;
+ 	int running, err;
+ 	char buf[256];
+@@ -1725,7 +1724,7 @@ osnoise_cpus_write(struct file *filp, const char __user *ubuf, size_t count,
  	mutex_lock(&trace_types_lock);
  	running = osnoise_busy;
  	if (running)
--		osnoise_workload_stop();
-+		stop_per_cpu_kthreads();
+-		osnoise_tracer_stop(tr);
++		osnoise_workload_stop();
  
  	mutex_lock(&interface_lock);
  	/*
-@@ -1738,7 +1735,7 @@ osnoise_cpus_write(struct file *filp, const char __user *ubuf, size_t count,
+@@ -1739,7 +1738,7 @@ osnoise_cpus_write(struct file *filp, const char __user *ubuf, size_t count,
  	mutex_unlock(&interface_lock);
  
  	if (running)
--		osnoise_workload_start();
-+		start_per_cpu_kthreads();
+-		osnoise_tracer_start(tr);
++		osnoise_workload_start();
  	mutex_unlock(&trace_types_lock);
  
  	free_cpumask_var(osnoise_cpumask_new);
+@@ -1920,7 +1919,10 @@ static int osnoise_hook_events(void)
+ 	return -EINVAL;
+ }
+ 
+-static int __osnoise_tracer_start(struct trace_array *tr)
++/*
++ * osnoise_workload_start - start the workload and hook to events
++ */
++static int osnoise_workload_start(void)
+ {
+ 	int retval;
+ 
+@@ -1937,7 +1939,7 @@ static int __osnoise_tracer_start(struct trace_array *tr)
+ 	barrier();
+ 	trace_osnoise_callback_enabled = true;
+ 
+-	retval = start_per_cpu_kthreads(tr);
++	retval = start_per_cpu_kthreads();
+ 	if (retval) {
+ 		unhook_irq_events();
+ 		return retval;
+@@ -1948,20 +1950,10 @@ static int __osnoise_tracer_start(struct trace_array *tr)
+ 	return 0;
+ }
+ 
+-static void osnoise_tracer_start(struct trace_array *tr)
+-{
+-	int retval;
+-
+-	if (osnoise_busy)
+-		return;
+-
+-	retval = __osnoise_tracer_start(tr);
+-	if (retval)
+-		pr_err(BANNER "Error starting osnoise tracer\n");
+-
+-}
+-
+-static void osnoise_tracer_stop(struct trace_array *tr)
++/*
++ * osnoise_workload_stop - stop the workload and unhook the events
++ */
++static void osnoise_workload_stop(void)
+ {
+ 	if (!osnoise_busy)
+ 		return;
+@@ -1982,6 +1974,27 @@ static void osnoise_tracer_stop(struct trace_array *tr)
+ 	osnoise_busy = false;
+ }
+ 
++static void osnoise_tracer_start(struct trace_array *tr)
++{
++	int retval;
++
++	if (osnoise_busy)
++		return;
++
++	retval = osnoise_workload_start();
++	if (retval)
++		pr_err(BANNER "Error starting osnoise tracer\n");
++
++}
++
++static void osnoise_tracer_stop(struct trace_array *tr)
++{
++	if (!osnoise_busy)
++		return;
++
++	osnoise_workload_stop();
++}
++
+ static int osnoise_tracer_init(struct trace_array *tr)
+ {
+ 
+@@ -2022,7 +2035,7 @@ static void timerlat_tracer_start(struct trace_array *tr)
+ 
+ 	osnoise_data.timerlat_tracer = 1;
+ 
+-	retval = __osnoise_tracer_start(tr);
++	retval = osnoise_workload_start();
+ 	if (retval)
+ 		goto out_err;
+ 
 -- 
 2.31.1
 
