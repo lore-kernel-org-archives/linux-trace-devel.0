@@ -2,32 +2,32 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E75BC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Oct 2021 17:41:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05A95C43217
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Oct 2021 17:41:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 55C1E61057
+	by mail.kernel.org (Postfix) with ESMTP id E3C0360F9D
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Oct 2021 17:41:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234170AbhJYRnr convert rfc822-to-8bit (ORCPT
+        id S233944AbhJYRns convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 25 Oct 2021 13:43:47 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:54359 "EHLO
+        Mon, 25 Oct 2021 13:43:48 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:25802 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233586AbhJYRn0 (ORCPT
+        by vger.kernel.org with ESMTP id S233805AbhJYRnn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 25 Oct 2021 13:43:26 -0400
+        Mon, 25 Oct 2021 13:43:43 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-396-DodHGtGuNdKpsIncUoItqQ-1; Mon, 25 Oct 2021 13:41:00 -0400
-X-MC-Unique: DodHGtGuNdKpsIncUoItqQ-1
+ us-mta-594-RaSjjN-gMOuXjorm32phLg-1; Mon, 25 Oct 2021 13:41:14 -0400
+X-MC-Unique: RaSjjN-gMOuXjorm32phLg-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6E24B1018F60;
-        Mon, 25 Oct 2021 17:40:56 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5333A802682;
+        Mon, 25 Oct 2021 17:41:13 +0000 (UTC)
 Received: from x1.com (unknown [10.22.9.145])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CD7055C1A1;
-        Mon, 25 Oct 2021 17:40:52 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 573F75C1A1;
+        Mon, 25 Oct 2021 17:41:04 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
@@ -42,9 +42,9 @@ Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V5 01/20] trace/osnoise: Do not follow tracing_cpumask
-Date:   Mon, 25 Oct 2021 19:40:26 +0200
-Message-Id: <c46adc4a72c1b498a392ca81263083b4c8f774b5.1635181938.git.bristot@kernel.org>
+Subject: [PATCH V5 04/20] trace/osnoise: Use start/stop_per_cpu_kthreads() on osnoise_cpus_write()
+Date:   Mon, 25 Oct 2021 19:40:29 +0200
+Message-Id: <2b4ea45b1802844cffd98b6a208b22bc4664c795.1635181938.git.bristot@kernel.org>
 In-Reply-To: <cover.1635181938.git.bristot@kernel.org>
 References: <cover.1635181938.git.bristot@kernel.org>
 MIME-Version: 1.0
@@ -59,18 +59,16 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In preparation to support multiple instances, decouple the
-osnoise/timelat workload from instance-specific tracing_cpumask.
+When writing a new CPU mask via osnoise/cpus, if the tracer is running,
+the workload is restarted to follow the new cpumask. The restart is
+currently done using osnoise_workload_start/stop(), which disables the
+workload *and* the instrumentation. However, disabling the
+instrumentation is not necessary.
 
-Different instances can have conflicting cpumasks, making osnoise
-workload management needlessly complex. Osnoise already has its
-global cpumask.
+Calling start/stop_per_cpu_kthreads() is enough to apply the new
+osnoise/cpus config.
 
-I also thought about using the first instance mask, but the
-"first" instance could be removed before the others.
-
-This also fixes the problem that changing the tracing_mask was not
-re-starting the trace.
+No functional change.
 
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Ingo Molnar <mingo@redhat.com>
@@ -88,68 +86,41 @@ Cc: linux-trace-devel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- kernel/trace/trace_osnoise.c | 24 ++++++------------------
- 1 file changed, 6 insertions(+), 18 deletions(-)
+ kernel/trace/trace_osnoise.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index ce053619f289..73f9609cba3d 100644
+index 4381a06af916..7453b96c548b 100644
 --- a/kernel/trace/trace_osnoise.c
 +++ b/kernel/trace/trace_osnoise.c
-@@ -1553,13 +1553,9 @@ static int start_per_cpu_kthreads(struct trace_array *tr)
+@@ -1677,9 +1677,6 @@ osnoise_cpus_read(struct file *filp, char __user *ubuf, size_t count,
+ 	return count;
+ }
  
- 	cpus_read_lock();
- 	/*
--	 * Run only on CPUs in which trace and osnoise are allowed to run.
-+	 * Run only on online CPUs in which osnoise is allowed to run.
- 	 */
--	cpumask_and(current_mask, tr->tracing_cpumask, &osnoise_cpumask);
--	/*
--	 * And the CPU is online.
--	 */
--	cpumask_and(current_mask, cpu_online_mask, current_mask);
-+	cpumask_and(current_mask, cpu_online_mask, &osnoise_cpumask);
- 
- 	for_each_possible_cpu(cpu)
- 		per_cpu(per_cpu_osnoise_var, cpu).kthread = NULL;
-@@ -1580,10 +1576,8 @@ static int start_per_cpu_kthreads(struct trace_array *tr)
- #ifdef CONFIG_HOTPLUG_CPU
- static void osnoise_hotplug_workfn(struct work_struct *dummy)
- {
--	struct trace_array *tr = osnoise_trace;
- 	unsigned int cpu = smp_processor_id();
- 
+-static int osnoise_workload_start(void);
+-static void osnoise_workload_stop(void);
 -
+ /*
+  * osnoise_cpus_write - Write function for "cpus" entry
+  * @filp: The active open file structure
+@@ -1724,7 +1721,7 @@ osnoise_cpus_write(struct file *filp, const char __user *ubuf, size_t count,
  	mutex_lock(&trace_types_lock);
+ 	running = osnoise_busy;
+ 	if (running)
+-		osnoise_workload_stop();
++		stop_per_cpu_kthreads();
  
- 	if (!osnoise_busy)
-@@ -1595,9 +1589,6 @@ static void osnoise_hotplug_workfn(struct work_struct *dummy)
- 	if (!cpumask_test_cpu(cpu, &osnoise_cpumask))
- 		goto out_unlock;
+ 	mutex_lock(&interface_lock);
+ 	/*
+@@ -1738,7 +1735,7 @@ osnoise_cpus_write(struct file *filp, const char __user *ubuf, size_t count,
+ 	mutex_unlock(&interface_lock);
  
--	if (!cpumask_test_cpu(cpu, tr->tracing_cpumask))
--		goto out_unlock;
--
- 	start_kthread(cpu);
+ 	if (running)
+-		osnoise_workload_start();
++		start_per_cpu_kthreads();
+ 	mutex_unlock(&trace_types_lock);
  
- out_unlock:
-@@ -1700,13 +1691,10 @@ static void osnoise_tracer_stop(struct trace_array *tr);
-  * interface to the osnoise trace. By default, it lists all  CPUs,
-  * in this way, allowing osnoise threads to run on any online CPU
-  * of the system. It serves to restrict the execution of osnoise to the
-- * set of CPUs writing via this interface. Note that osnoise also
-- * respects the "tracing_cpumask." Hence, osnoise threads will run only
-- * on the set of CPUs allowed here AND on "tracing_cpumask." Why not
-- * have just "tracing_cpumask?" Because the user might be interested
-- * in tracing what is running on other CPUs. For instance, one might
-- * run osnoise in one HT CPU while observing what is running on the
-- * sibling HT CPU.
-+ * set of CPUs writing via this interface. Why not use "tracing_cpumask"?
-+ * Because the user might be interested in tracing what is running on
-+ * other CPUs. For instance, one might run osnoise in one HT CPU
-+ * while observing what is running on the sibling HT CPU.
-  */
- static ssize_t
- osnoise_cpus_write(struct file *filp, const char __user *ubuf, size_t count,
+ 	free_cpumask_var(osnoise_cpumask_new);
 -- 
 2.31.1
 
