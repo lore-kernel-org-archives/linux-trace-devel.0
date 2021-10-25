@@ -2,552 +2,602 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AE39C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Oct 2021 01:40:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 970DCC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Oct 2021 03:26:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0858361059
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Oct 2021 01:40:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7587161040
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Oct 2021 03:26:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231867AbhJYBmd (ORCPT
+        id S232195AbhJYD2h (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 24 Oct 2021 21:42:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53268 "EHLO mail.kernel.org"
+        Sun, 24 Oct 2021 23:28:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231771AbhJYBma (ORCPT
+        id S232072AbhJYD2g (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 24 Oct 2021 21:42:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E47A060EFE;
-        Mon, 25 Oct 2021 01:40:07 +0000 (UTC)
+        Sun, 24 Oct 2021 23:28:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D648960EBB;
+        Mon, 25 Oct 2021 03:26:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635126009;
-        bh=rj6ox+aSRErec1lnL1U1EkiNZFFqmukDXKtdoIFLIsg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=sDE2ug+Dr+et8AGTB8rlPsDO1Q6cz3arYmm0dULVpGV/PESzzUXbvM/AXYV7IlnEF
-         jZuEhOH1eE9wLdvAhxxXqlrJt2O05xrFwRI6O/eB3x1W80FLN+tnLIY6kEaPP4UvGi
-         VVnmK04WFhiceyTrRvU4MM4vao1jC6rhhinH9HZmTH8PhrvZ5T9Fdrx4buTk2zplu9
-         00cCoX0Ag4SOD2NtnP8WWU79cnYxlS7XVT4Thkm83aZv9bSxzOGq7ghRFnjJtOpdgk
-         E3KL0rYC8Lnwyw3MRhn4PoS59sIk2iCY4Q8c/olClnF78uzYgPlpTp5r78l+QYHgwf
-         eU06OYyCb2S6Q==
-Date:   Mon, 25 Oct 2021 10:40:06 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>
-Subject: Re: [PATCH v3] user_events: Enable user processes to create and
- write to trace events
-Message-Id: <20211025104006.a322e4a5b4a56cdf3552ebac@kernel.org>
-In-Reply-To: <20211022224202.GA27683@kbox>
-References: <20211018230957.3032-1-beaub@linux.microsoft.com>
-        <20211022223811.d0b5f03a7eee147c619d0202@kernel.org>
-        <20211022224202.GA27683@kbox>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=k20201202; t=1635132374;
+        bh=OMhvzmQBTrTqn9WBzV77Z9crUKhnjsbyDaFFo27L26E=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=J+iFCSNI/7cwOaK6/6UKtnXs/3SVpQLCEI//zrEWSFL4U1zxkZWIVBAMGojWvUB9I
+         8OpjsdMMWQzNCydZ6u2uObuVx2SgtnCFLN1wIR9CJ4Kh1xTSZjwuoHtC4X1eFa4Bjr
+         1vWYGNnYmvLhv1vTSbqv1Xmbn73eL+c7Juwe/vR/Tz34CCJfMl3vO+LohHnbQ2sqM/
+         PbXhyvUbx4jz/W8VdGzsVjlAfy+Q4I317H5Ktc60KanVEpHEeeRQvFdiX745NA6t5v
+         jwfp5o3xSW+pFrvJVQ3AjjT8az2vFBgM9b+USA7UE+4EljlnicvZQJMeNwZOijMrky
+         rWomH15M2omYw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 21AE25C0BF4; Sun, 24 Oct 2021 20:26:14 -0700 (PDT)
+Date:   Sun, 24 Oct 2021 20:26:14 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 04/19] trace/osnoise: Support a list of trace_array *tr
+Message-ID: <20211025032614.GN880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <cover.1634820694.git.bristot@kernel.org>
+ <d54f5bfa2b2fbd11393c2a69a8b5cbdd808a506d.1634820694.git.bristot@kernel.org>
+ <20211022223839.476905ed@rorschach.local.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211022223839.476905ed@rorschach.local.home>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 22 Oct 2021 15:42:02 -0700
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
-
-> On Fri, Oct 22, 2021 at 10:38:11PM +0900, Masami Hiramatsu wrote:
-> > On Mon, 18 Oct 2021 16:09:57 -0700
-> > Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> > > of the ioctl indicates the byte in the mmap to use for status and the index
-> > > to use for writing. Both are 16-bits in size and are accessible via the
-> > > INDEX_STATUS and INDEX_WRITE macros within user_events.h.
-> > 
-> > Hmm, if we uses the ioctl(), the return value must be int because it can
-> > return -1 and kernel return value is stored into the errno if there is
-> > any error. I think you can introduce a data structure to return the
-> > id and offset. (Or make id 15-bits :))  
-> > 
-> Yeah, I think I will introduce a struct to aid with this and some others
-> things like flags / print_fmt being specified (See below for those).
+On Fri, Oct 22, 2021 at 10:38:39PM -0400, Steven Rostedt wrote:
+> On Thu, 21 Oct 2021 14:56:42 +0200
+> Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 > 
-> > > int data_fd = open("user_events_data", O_RDWR);
-> > > long result = ioctl(data_fd, DIAG_IOCSREG, "test");
-> > > int status_id = INDEX_STATUS(result);
-> > > int write_id = INDEX_WRITE(result);
-> > > 
-> > > struct iovec io[2];
-> > > io[0].iov_base = &write_id;
-> > > io[0].iov_len = sizeof(write_id);
-> > > io[1].iov_base = payload;
-> > > io[1].iov_len = sizeof(payload);
-> > > 
-> > > if (page_data[status_id])
-> > > 	writev(data_fd, io, 2);
+> > osnoise/timerlat were built to run a single instance, and for this,
+> > a single variable is enough to store the current struct trace_array
+> > *tr with information about the tracing instance. This is done via
+> > the *osnoise_trace variable. A trace_array represents a trace instance.
 > > 
-> > OK, so you switch to the 1:n model. Using writev() is a good idea.
-> > (BTW, what happen if I use write()?)
+> > In preparation to support multiple instances, replace the
+> > *osnoise_trace variable with an RCU protected list of instances.
 > > 
-> The first 4 bytes are used regardless if writev() or write() is used.
-> Both turn into an iterator to make the code simpler instead of handling
-> each case differently.
-
-Ah OK. 
-
+> > The operations that refer to an instance now propagate to all
+> > elements of the list (all instances).
+> > 
+> > Also, replace the osnoise_busy variable with a check if the list
+> > has elements (busy).
+> > 
+> > No functional change is expected with this patch, i.e., only one
+> > instance is allowed yet.
+> > 
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Tom Zanussi <zanussi@kernel.org>
+> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> > Cc: Juri Lelli <juri.lelli@redhat.com>
+> > Cc: Clark Williams <williams@redhat.com>
+> > Cc: John Kacur <jkacur@redhat.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
+> > Cc: linux-rt-users@vger.kernel.org
+> > Cc: linux-trace-devel@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+> > ---
+> >  kernel/trace/trace_osnoise.c | 253 +++++++++++++++++++++++++----------
+> >  1 file changed, 184 insertions(+), 69 deletions(-)
+> > 
+> > diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+> > index 9b9e6bc889e9..a6d8f514bd7c 100644
+> > --- a/kernel/trace/trace_osnoise.c
+> > +++ b/kernel/trace/trace_osnoise.c
+> > @@ -38,8 +38,6 @@
+> >  #define CREATE_TRACE_POINTS
+> >  #include <trace/events/osnoise.h>
+> >  
+> > -static struct trace_array	*osnoise_trace;
+> > -
+> >  /*
+> >   * Default values.
+> >   */
+> > @@ -50,6 +48,73 @@ static struct trace_array	*osnoise_trace;
+> >  #define DEFAULT_TIMERLAT_PERIOD	1000			/* 1ms */
+> >  #define DEFAULT_TIMERLAT_PRIO	95			/* FIFO 95 */
+> >  
+> > +/*
+> > + * trace_array of the enabled osnoise/timerlat instances.
+> > + */
+> > +struct osnoise_instance {
+> > +	struct list_head	list;
+> > +	struct trace_array	*tr;
+> > +};
+> > +struct list_head osnoise_instances;
+> > +
+> > +static bool osnoise_has_registered_instances(void)
+> > +{
+> > +	return !!list_first_or_null_rcu(&osnoise_instances,
+> > +					struct osnoise_instance,
+> > +					list);
+> > +}
+> > +
+> > +/*
+> > + * osnoise_register_instance - register a new trace instance
+> > + *
+> > + * Register a trace_array *tr in the list of instances running
+> > + * osnoise/timerlat tracers.
+> > + */
+> > +static int osnoise_register_instance(struct trace_array *tr)
+> > +{
+> > +	struct osnoise_instance *inst;
+> > +
+> > +	inst = kmalloc(sizeof(*inst), GFP_KERNEL);
+> > +	if (!inst)
+> > +		return -ENOMEM;
+> > +
+> > +	INIT_LIST_HEAD_RCU(&inst->list);
+> > +	inst->tr = tr;
+> > +	list_add_tail_rcu(&inst->list, &osnoise_instances);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +/*
+> > + *  osnoise_unregister_instance - unregister a registered trace instance
+> > + *
+> > + * Remove the trace_array *tr from the list of instances running
+> > + * osnoise/timerlat tracers.
+> > + */
+> > +static void osnoise_unregister_instance(struct trace_array *tr)
+> > +{
+> > +	struct osnoise_instance *inst;
+> > +	int found = 0;
+> > +
+> > +	rcu_read_lock();
+> > +	list_for_each_entry_rcu(inst, &osnoise_instances, list) {
+> > +		if (inst->tr == tr) {
+> > +			list_del_rcu(&inst->list);
 > 
-> > > 
-> > > Users can describe the trace event format via the following format:
-> > > 	name [field1;field2]
-> > 
-> > Does this mean it always need 2 fields?
-> > 
-> No, they need 0-N fields, perhaps I should leave off the second field in
-> the description.
-
-OK, in that case, 
-
- name [field1[;field2...]]
-
-will be good.
-
+> Adding to the list requires more than RCU protection, and if this has
+> that protection there's no reason for using rcu to protect here.
 > 
-> > > 
-> > > Each field has the following format:
-> > > 	type name size
-> > 
-> > Why do you need the "size"? Since "type" must have the size information,
-> > it is not needed. (or, user can define 1 byte "int" type...)
-> > 
-> The idea is to allow user mode processes to describe their own data
-> types if required. For that we need offset or size to be passed. If we
-> require all user mode to only describe in types the kernel understands
-> then I can remove the size field.
+> [ Added Paul to comment about this too ]
 
-Hmm, I got it. I think it should be optional, and only for the types
-which has "struct" prefix. Basic types like char, int, long etc should
-keep the size as it is.
+Steve has it right.  To see this, suppose that there are two concurrent
+calls to osnoise_unregister_instance() on elements that are adjacent in
+the list.  The result will of course be a corrupted list.  All RCU does
+is coordinate between readers on the one hand and updaters on the other.
+There must be some non-RCU synchronization between updaters, be this a
+lock, some lockless synchronization, there being only one task permitted
+to carry out updates, or whatever.
 
-> > > 
-> > > Example for char array with a size of 20 named msg:
-> > > 	echo 'u:detailed char[20] msg 20' >> dynamic_events
-> > > 	cat dynamic_events
-> > > 	u:detailed char[20] msg
-> > > 
-> > > Data offsets are based on the data written out via write() and will be
-> > > updated to reflect the correct offset in the trace_event fields. __data_loc
-> > > types must be aware of the size of trace_entry/common properties to ensure
-> > > proper decoding.
-> > 
-> > As I said that the you have to add __rel_loc type (yes, you can do it)
-> > so that the user don't need to consider the data location. That new type
-> > decodeer code may need to be implemented afterwards in user-space tools
-> > but anyway, that can be postponed.
-> > 
-> Got it, does that mean I should just reference it here as a new type?
-> I'm not sure what it means to add __rel_loc type since it appears anyone
-> can pass any type down to trace_event and it will accept it.
+So what prevents concurrent calls to osnoise_unregister_instance()?  I am
+not seeing anything preventing this is osnoise_tracer_stop().  Is there
+some appropriate serialization in the callers of the osnoise_tracer_stop()
+function?
 
-The __data_loc (and __rel_loc) is a bit special type attribute, which is
-required for "parsing" the trace buffer entry. Thus it is used also in the
-libtraceevent (and perf tools to pass the parsed event to python/perl script).
-Let me add the __rel_loc support.
+							Thanx, Paul
 
-> > > ---
-> > >  include/uapi/linux/user_events.h |   57 ++
-> > >  kernel/trace/Kconfig             |   15 +
-> > >  kernel/trace/Makefile            |    1 +
-> > >  kernel/trace/trace_events_user.c | 1040 ++++++++++++++++++++++++++++++
-> > >  4 files changed, 1113 insertions(+)
-> > >  create mode 100644 include/uapi/linux/user_events.h
-> > >  create mode 100644 kernel/trace/trace_events_user.c
-> > 
-> > BTW, if you can split this patch into several patches, it is easier to us
-> > to review it. E.g. basic support for ftrace, add perf support, add bpf support,
-> > documentation, optimize performance etc.
-> > 
-> Sorry, are you asking for several isolated patches? Or a single patch
-> with multiple commits to the same file?
-
-I mean the several isolated patches which commit to the same file.
-(like upgrading it step by step.) You can make it a series.
-
-> Typically after addition I am running a set of tests and benchmarks
-> against the code, so having full functioning code is required to ensure
-> I haven't broken anything.
-
-Yes, you can put the test in the end of the series :)
-
-> We are actively using these patches for various projects, which require
-> ftrace, perf and eBPF to be functional.
-
-The series usually merged at once :) I just asked you to break it
-down to the several patches, so that I can review and discuss on
-each feature in different threads.
-
-> > > +
-> > > +/*
-> > > + * Parses the values of a field within the description
-> > > + * Format: type name size [future]
-> > > + */
-> > 
-> > As I said that the size is non-sense. And this should finally unified
-> > with synthetic event field definition. 
-> > 
-> I have this for custom user types the kernel may not know the size of.
-> Another reason is 32-bit process on a 64-bit kernel. The size will always be
-> the kernel size of that type.
-
-Hmm, I see. In that case, the user process should not use such types because
-other analysis tool will run as a 64-bit process.
-(For example, for this reason kprobe event doesn't use 'int' or 'long' type,
- but only allow 'u32', 's64' etc.)
-
-> If we don't care about either, then I can remove this. For custom types
-> we are fine with using __rel_loc instead.
-
-Or, as I said, you can pass the size when it has "struct" prefix. :)
-The __rel_loc and __data_loc is usually used for storing arrays, especially
-dynamic size array like null terminated string. But of course you can use
-it for storing a big data structure.
-Let's check how the libtraceevent(tools/lib/traceevent) parses the recorded
-data.
-
-> > > +static int user_event_parse_field(char *field, struct user_event *user,
-> > > +				  u32 *offset)
-> > > +{
-> > > +	char *part, *type, *name;
-> > > +	u32 size = 0, depth = 0, saved_offset = *offset;
-> > > +
-> > > +	field = skip_spaces(field);
-> > > +
-> > > +	if (strstr(field, "unsigned ") == field) {
-> > > +		type = field;
-> > > +		field = strpbrk(field + sizeof("unsigned"), " ");
-> > > +
-> > > +		if (field == NULL)
-> > > +			return -EINVAL;
-> > > +
-> > > +		*field++ = 0;
-> > > +		depth++;
-> > > +	} else if (strstr(field, "print_fmt ") == field) {
-> > > +		user->call.print_fmt = field + sizeof("print_fmt");
-> > > +		return 0;
-> > 
-> > What is this ?
-> > 
-> We have several events that describe the print format to use instead of
-> using the default, like we allow in the kernel. This is currently how it
-> is passed, it could be described in the new struct to the reg ioctl
-> instead.
-
-OK, the 'print_fmt' in 'format' file will show how the trace entry will be
-printed in the trace buffer (in human readable style). But that is not
-done automatically. You have to write the corresponding printout function
-for the event. This means that user-specific format needs to be verified
-and you need a programmable printout function. This is why it is hard to
-support the custom data structure in ftrace.
-Anyway, I think you'd better to start without this option. (and please
-start with describing how the user-event arguments are shown in trace
-buffer.)
-
+> > +			found = 1;
+> > +			break;
+> > +		}
+> > +	}
+> > +	rcu_read_unlock();
+> > +
+> > +	if (!found) {
+> > +		WARN("osnoise unregister did not find tr %s\n", tr->name);
+> > +		return;
+> > +	}
+> > +
+> > +	synchronize_rcu();
+> > +	kfree(inst);
+> > +}
+> > +
+> >  /*
+> >   * NMI runtime info.
+> >   */
+> > @@ -248,11 +313,6 @@ static struct osnoise_data {
+> >  #endif
+> >  };
+> >  
+> > -/*
+> > - * Boolean variable used to inform that the tracer is currently sampling.
+> > - */
+> > -static bool osnoise_busy;
+> > -
+> >  #ifdef CONFIG_PREEMPT_RT
+> >  /*
+> >   * Print the osnoise header info.
+> > @@ -315,19 +375,24 @@ static void print_osnoise_headers(struct seq_file *s)
+> >   * osnoise_taint - report an osnoise error.
+> >   */
+> >  #define osnoise_taint(msg) ({							\
+> > -	struct trace_array *tr = osnoise_trace;					\
+> > +	struct osnoise_instance *inst;						\
+> > +	struct trace_buffer *buffer;						\
+> >  										\
+> > -	trace_array_printk_buf(tr->array_buffer.buffer, _THIS_IP_, msg);	\
+> > +	rcu_read_lock();							\
+> > +	list_for_each_entry_rcu(inst, &osnoise_instances, list) {		\
+> > +		buffer = inst->tr->array_buffer.buffer;				\
+> > +		trace_array_printk_buf(buffer, _THIS_IP_, msg);			\
+> > +	}									\
+> > +	rcu_read_unlock();							\
+> >  	osnoise_data.tainted = true;						\
+> >  })
+> >  
+> >  /*
+> >   * Record an osnoise_sample into the tracer buffer.
+> >   */
+> > -static void trace_osnoise_sample(struct osnoise_sample *sample)
+> > +static void
+> > +__trace_osnoise_sample(struct osnoise_sample *sample, struct trace_buffer *buffer)
+> >  {
+> > -	struct trace_array *tr = osnoise_trace;
+> > -	struct trace_buffer *buffer = tr->array_buffer.buffer;
+> >  	struct trace_event_call *call = &event_osnoise;
+> >  	struct ring_buffer_event *event;
+> >  	struct osnoise_entry *entry;
+> > @@ -350,6 +415,22 @@ static void trace_osnoise_sample(struct osnoise_sample *sample)
+> >  		trace_buffer_unlock_commit_nostack(buffer, event);
+> >  }
+> >  
+> > +/*
+> > + * Record an osnoise_sample on all osnoise instances.
+> > + */
+> > +static void trace_osnoise_sample(struct osnoise_sample *sample)
+> > +{
+> > +	struct osnoise_instance *inst;
+> > +	struct trace_buffer *buffer;
+> > +
+> > +	rcu_read_lock();
+> > +	list_for_each_entry_rcu(inst, &osnoise_instances, list) {
+> > +		buffer = inst->tr->array_buffer.buffer;
+> > +		__trace_osnoise_sample(sample, buffer);
+> > +	}
+> > +	rcu_read_unlock();
+> > +}
+> > +
+> >  #ifdef CONFIG_TIMERLAT_TRACER
+> >  /*
+> >   * Print the timerlat header info.
+> > @@ -387,14 +468,10 @@ static void print_timerlat_headers(struct seq_file *s)
+> >  }
+> >  #endif /* CONFIG_PREEMPT_RT */
+> >  
+> > -/*
+> > - * Record an timerlat_sample into the tracer buffer.
+> > - */
+> > -static void trace_timerlat_sample(struct timerlat_sample *sample)
+> > +static void
+> > +__trace_timerlat_sample(struct timerlat_sample *sample, struct trace_buffer *buffer)
+> >  {
+> > -	struct trace_array *tr = osnoise_trace;
+> >  	struct trace_event_call *call = &event_osnoise;
+> > -	struct trace_buffer *buffer = tr->array_buffer.buffer;
+> >  	struct ring_buffer_event *event;
+> >  	struct timerlat_entry *entry;
+> >  
+> > @@ -411,6 +488,22 @@ static void trace_timerlat_sample(struct timerlat_sample *sample)
+> >  		trace_buffer_unlock_commit_nostack(buffer, event);
+> >  }
+> >  
+> > +/*
+> > + * Record an timerlat_sample into the tracer buffer.
+> > + */
+> > +static void trace_timerlat_sample(struct timerlat_sample *sample)
+> > +{
+> > +	struct osnoise_instance *inst;
+> > +	struct trace_buffer *buffer;
+> > +
+> > +	rcu_read_lock();
+> > +	list_for_each_entry_rcu(inst, &osnoise_instances, list) {
+> > +		buffer = inst->tr->array_buffer.buffer;
+> > +		__trace_timerlat_sample(sample, buffer);
+> > +	}
+> > +	rcu_read_unlock();
+> > +}
+> > +
+> >  #ifdef CONFIG_STACKTRACE
+> >  
+> >  #define	MAX_CALLS	256
+> > @@ -450,29 +543,18 @@ static void timerlat_save_stack(int skip)
+> >  	return;
+> >  
+> >  }
+> > -/*
+> > - * timerlat_dump_stack - dump a stack trace previously saved
+> > - *
+> > - * Dump a saved stack trace into the trace buffer.
+> > - */
+> > -static void timerlat_dump_stack(void)
+> > +
+> > +static void
+> > +__timerlat_dump_stack(struct trace_buffer *buffer, struct trace_stack *fstack, unsigned int size)
+> >  {
+> >  	struct trace_event_call *call = &event_osnoise;
+> > -	struct trace_array *tr = osnoise_trace;
+> > -	struct trace_buffer *buffer = tr->array_buffer.buffer;
+> >  	struct ring_buffer_event *event;
+> > -	struct trace_stack *fstack;
+> >  	struct stack_entry *entry;
+> > -	unsigned int size;
+> > -
+> > -	preempt_disable_notrace();
+> > -	fstack = this_cpu_ptr(&trace_stack);
+> > -	size = fstack->stack_size;
+> >  
+> >  	event = trace_buffer_lock_reserve(buffer, TRACE_STACK, sizeof(*entry) + size,
+> >  					  tracing_gen_ctx());
+> >  	if (!event)
+> > -		goto out;
+> > +		return;
+> >  
+> >  	entry = ring_buffer_event_data(event);
+> >  
+> > @@ -481,8 +563,29 @@ static void timerlat_dump_stack(void)
+> >  
+> >  	if (!call_filter_check_discard(call, entry, buffer, event))
+> >  		trace_buffer_unlock_commit_nostack(buffer, event);
+> > +}
+> >  
+> > -out:
+> > +/*
+> > + * timerlat_dump_stack - dump a stack trace previously saved
+> > + */
+> > +static void timerlat_dump_stack(void)
+> > +{
+> > +	struct osnoise_instance *inst;
+> > +	struct trace_buffer *buffer;
+> > +	struct trace_stack *fstack;
+> > +	unsigned int size;
+> > +
+> > +	preempt_disable_notrace();
+> > +	fstack = this_cpu_ptr(&trace_stack);
+> > +	size = fstack->stack_size;
+> > +
+> > +	rcu_read_lock();
+> > +	list_for_each_entry_rcu(inst, &osnoise_instances, list) {
+> > +		buffer = inst->tr->array_buffer.buffer;
+> > +		__timerlat_dump_stack(buffer, fstack, size);
+> > +
+> > +	}
+> > +	rcu_read_unlock();
+> >  	preempt_enable_notrace();
+> >  }
+> >  #else
+> > @@ -1077,12 +1180,37 @@ diff_osn_sample_stats(struct osnoise_variables *osn_var, struct osnoise_sample *
+> >   */
+> >  static __always_inline void osnoise_stop_tracing(void)
+> >  {
+> > -	struct trace_array *tr = osnoise_trace;
+> > +	struct osnoise_instance *inst;
+> > +	struct trace_array *tr;
+> > +
+> > +	rcu_read_lock();
+> > +	list_for_each_entry_rcu(inst, &osnoise_instances, list) {
+> > +		tr = inst->tr;
+> > +		trace_array_printk_buf(tr->array_buffer.buffer, _THIS_IP_,
+> > +				"stop tracing hit on cpu %d\n", smp_processor_id());
+> > +
+> > +		tracer_tracing_off(tr);
+> > +	}
+> > +	rcu_read_unlock();
+> > +}
+> >  
+> > -	trace_array_printk_buf(tr->array_buffer.buffer, _THIS_IP_,
+> > -			"stop tracing hit on cpu %d\n", smp_processor_id());
+> > +/*
+> > + * notify_new_max_latency - Notify a new max latency via fsnotify interface.
+> > + */
+> > +void notify_new_max_latency(u64 latency)
+> > +{
+> > +	struct osnoise_instance *inst;
+> > +	struct trace_array *tr;
+> >  
+> > -	tracer_tracing_off(tr);
+> > +	rcu_read_lock();
+> > +	list_for_each_entry_rcu(inst, &osnoise_instances, list) {
+> > +		tr = inst->tr;
+> > +		if (tr->max_latency < latency) {
+> > +			tr->max_latency = latency;
+> > +			latency_fsnotify(tr);
+> > +		}
+> > +	}
+> > +	rcu_read_unlock();
+> >  }
+> >  
+> >  /*
+> > @@ -1096,7 +1224,6 @@ static __always_inline void osnoise_stop_tracing(void)
+> >  static int run_osnoise(void)
+> >  {
+> >  	struct osnoise_variables *osn_var = this_cpu_osn_var();
+> > -	struct trace_array *tr = osnoise_trace;
+> >  	u64 start, sample, last_sample;
+> >  	u64 last_int_count, int_count;
+> >  	s64 noise = 0, max_noise = 0;
+> > @@ -1231,11 +1358,7 @@ static int run_osnoise(void)
+> >  
+> >  	trace_osnoise_sample(&s);
+> >  
+> > -	/* Keep a running maximum ever recorded osnoise "latency" */
+> > -	if (max_noise > tr->max_latency) {
+> > -		tr->max_latency = max_noise;
+> > -		latency_fsnotify(tr);
+> > -	}
+> > +	notify_new_max_latency(max_noise);
+> >  
+> >  	if (osnoise_data.stop_tracing_total)
+> >  		if (s.noise > osnoise_data.stop_tracing_total)
+> > @@ -1293,7 +1416,6 @@ static int osnoise_main(void *data)
+> >  static enum hrtimer_restart timerlat_irq(struct hrtimer *timer)
+> >  {
+> >  	struct osnoise_variables *osn_var = this_cpu_osn_var();
+> > -	struct trace_array *tr = osnoise_trace;
+> >  	struct timerlat_variables *tlat;
+> >  	struct timerlat_sample s;
+> >  	u64 now;
+> > @@ -1364,11 +1486,7 @@ static enum hrtimer_restart timerlat_irq(struct hrtimer *timer)
+> >  
+> >  	trace_timerlat_sample(&s);
+> >  
+> > -	/* Keep a running maximum ever recorded os noise "latency" */
+> > -	if (diff > tr->max_latency) {
+> > -		tr->max_latency = diff;
+> > -		latency_fsnotify(tr);
+> > -	}
+> > +	notify_new_max_latency(diff);
+> >  
+> >  	if (osnoise_data.stop_tracing)
+> >  		if (time_to_us(diff) >= osnoise_data.stop_tracing)
+> > @@ -1581,7 +1699,7 @@ static void osnoise_hotplug_workfn(struct work_struct *dummy)
+> >  
+> >  	mutex_lock(&trace_types_lock);
+> >  
+> > -	if (!osnoise_busy)
+> > +	if (!osnoise_has_registered_instances())
+> >  		goto out_unlock_trace;
+> >  
+> >  	mutex_lock(&interface_lock);
+> > @@ -1716,11 +1834,10 @@ osnoise_cpus_write(struct file *filp, const char __user *ubuf, size_t count,
+> >  		goto err_free;
+> >  
+> >  	/*
+> > -	 * trace_types_lock is taken to avoid concurrency on start/stop
+> > -	 * and osnoise_busy.
+> > +	 * trace_types_lock is taken to avoid concurrency on start/stop.
+> >  	 */
+> >  	mutex_lock(&trace_types_lock);
+> > -	running = osnoise_busy;
+> > +	running = osnoise_has_registered_instances();
+> >  	if (running)
+> >  		stop_per_cpu_kthreads();
+> >  
+> > @@ -1941,8 +2058,6 @@ static int osnoise_workload_start(void)
+> >  		return retval;
+> >  	}
+> >  
+> > -	osnoise_busy = true;
+> > -
+> >  	return 0;
+> >  }
+> >  
+> > @@ -1951,7 +2066,7 @@ static int osnoise_workload_start(void)
+> >   */
+> >  static void osnoise_workload_stop(void)
+> >  {
+> > -	if (!osnoise_busy)
+> > +	if (osnoise_has_registered_instances())
+> >  		return;
+> >  
+> >  	trace_osnoise_callback_enabled = false;
+> > @@ -1962,28 +2077,28 @@ static void osnoise_workload_stop(void)
+> >  	unhook_irq_events();
+> >  	unhook_softirq_events();
+> >  	unhook_thread_events();
+> > -
+> > -	osnoise_busy = false;
+> >  }
+> >  
+> >  static void osnoise_tracer_start(struct trace_array *tr)
+> >  {
+> >  	int retval;
+> >  
+> > -	if (osnoise_busy)
+> > +	if (osnoise_has_registered_instances())
+> >  		return;
+> >  
+> >  	retval = osnoise_workload_start();
+> >  	if (retval)
+> >  		pr_err(BANNER "Error starting osnoise tracer\n");
+> >  
+> > +	osnoise_register_instance(tr);
+> >  }
+> >  
+> >  static void osnoise_tracer_stop(struct trace_array *tr)
+> >  {
+> > -	if (!osnoise_busy)
+> > +	if (!osnoise_has_registered_instances())
+> >  		return;
+> >  
+> > +	osnoise_unregister_instance(tr);
+> >  	osnoise_workload_stop();
+> >  }
+> >  
+> > @@ -1991,14 +2106,12 @@ static int osnoise_tracer_init(struct trace_array *tr)
+> >  {
+> >  
+> >  	/* Only allow one instance to enable this */
+> > -	if (osnoise_busy)
+> > +	if (osnoise_has_registered_instances())
+> >  		return -EBUSY;
+> >  
+> > -	osnoise_trace = tr;
+> >  	tr->max_latency = 0;
+> >  
+> >  	osnoise_tracer_start(tr);
+> > -
+> >  	return 0;
+> >  }
+> >  
+> > @@ -2022,7 +2135,7 @@ static void timerlat_tracer_start(struct trace_array *tr)
+> >  {
+> >  	int retval;
+> >  
+> > -	if (osnoise_busy)
+> > +	if (osnoise_has_registered_instances())
+> >  		return;
+> >  
+> >  	osnoise_data.timerlat_tracer = 1;
+> > @@ -2031,6 +2144,8 @@ static void timerlat_tracer_start(struct trace_array *tr)
+> >  	if (retval)
+> >  		goto out_err;
+> >  
+> > +	osnoise_register_instance(tr);
+> > +
+> >  	return;
+> >  out_err:
+> >  	pr_err(BANNER "Error starting timerlat tracer\n");
+> > @@ -2040,7 +2155,7 @@ static void timerlat_tracer_stop(struct trace_array *tr)
+> >  {
+> >  	int cpu;
+> >  
+> > -	if (!osnoise_busy)
+> > +	if (!osnoise_has_registered_instances())
+> >  		return;
+> >  
+> >  	for_each_online_cpu(cpu)
+> > @@ -2054,11 +2169,9 @@ static void timerlat_tracer_stop(struct trace_array *tr)
+> >  static int timerlat_tracer_init(struct trace_array *tr)
+> >  {
+> >  	/* Only allow one instance to enable this */
+> > -	if (osnoise_busy)
+> > +	if (osnoise_has_registered_instances())
+> >  		return -EBUSY;
+> >  
+> > -	osnoise_trace = tr;
+> > -
+> >  	tr->max_latency = 0;
+> >  
+> >  	timerlat_tracer_start(tr);
+> > @@ -2105,6 +2218,8 @@ __init static int init_osnoise_tracer(void)
+> >  #endif
+> >  	osnoise_init_hotplug_support();
+> >  
+> > +	INIT_LIST_HEAD_RCU(&osnoise_instances);
+> > +
+> >  	init_tracefs();
+> >  
+> >  	return 0;
 > 
-> > > +	} else if (strstr(field, "flag ") == field) {
-> > > +		field += sizeof("flag");
-> > > +
-> > > +		if (!strcmp(field, "bpf_iter"))
-> > > +			user->flags |= FLAG_BPF_ITER;
-> > > +
-> > 
-> > What is this flag?
-> > 
-> We want to enable certain sensitive events the ability to mark that
-> there should never be a buffer copy. When FLAG_BPF_ITER is used the raw
-> iovecs are exposed out to eBPF instead of any sort of copy to reduce
-> latency. We run user_events in some highly performant code and want to
-> monitor things with the least amount of overhead possible.
-
-Would you mean the event with this flag is only available from eBPF?
-
-> 
-> > > +	name = kstrdup(raw_command, GFP_KERNEL);
-> > > +
-> > > +	if (!name)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	mutex_lock(&event_mutex);
-> > > +	ret = user_event_parse_cmd(name, &user);
-> > 
-> > I recommend you to split "parse" and "register" function, and
-> > locks event_mutex only in the "register" function, since parsing
-> > doesn't need to hold other events.
-> > 
-> Sure
-> 
-> > > +static bool user_event_match(const char *system, const char *event,
-> > > +			     int argc, const char **argv, struct dyn_event *ev)
-> > > +{
-> > > +	struct user_event *user = container_of(ev, struct user_event, devent);
-> > > +
-> > > +	return strcmp(EVENT_NAME(user), event) == 0 &&
-> > > +		(!system || strcmp(system, USER_EVENTS_SYSTEM) == 0);
-> > 
-> > For the minimal implementation, this is OK.
-> > 
-> > Note that it is better to check the rest of arguments with the event
-> > parameters. E.g. if you have "myuevent int var", user cant try to remove
-> > "-:myuevent char var".
-> > 
-> Ok, the reason we do this is because the events are going to be
-> versioned. They might change their arguments and having a way to clear
-> without knowing the exact arguments is not a bad thing in our cases.
-
-Actually, as other dynamic events do, user can remove only by name, or
-specifically with the arguments. So argument check is optional but
-if user specified it, we should verify it.
-
-> 
-> No one can remove an event while it's being used and the name cannot
-> conflict since all user events go to the user_events sub-system and
-> cannot be overriden.
-> 
-> > > +/*
-> > > + * Validates the user payload and writes via iterator.
-> > > + */
-> > > +static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
-> > > +{
-> > > +	struct user_event_refs *refs;
-> > > +	struct user_event *user = NULL;
-> > > +	struct tracepoint *tp;
-> > > +	ssize_t ret = i->count;
-> > > +	int idx;
-> > > +
-> > > +	preempt_disable();
-> > 
-> > Why do you disable preemption here?
-> > 
-> My understanding was that preemption is to be disabled when using rcu
-> protected by sched, which tracepoints and the refs are. We also want the
-> correct processor to log the event (as near as we can).
-> 
-> Did I misunderstand rcu_dereference_sched_check()? I may be off in the
-> weeds.
-
-I see that you want to fix the processor id, but preempt_disable()
-section should be minimum as possible and should not involve the
-function which can access to user memeory.
-
-> 
-> I also ran with CONFIG_PROVE_RCU and didn't see anything show up in
-> dmesg.
-
-Hmm, that's strange, because copy_from_iter(user) may cause a fault
-and yielded. Isn't it an iovec?
-
-> > > +
-> > > +	if (unlikely(!(cpu_online(raw_smp_processor_id()))))
-> > > +		goto out;
-> > 
-> > This seems meaningless because this function is called in the
-> > user process context. If the cpu is going to offline, the process
-> > itself will be migrated before reaching here.
-> > 
-> Sure, everywhere else had this and wasn't sure if this was possible to
-> happen or not. I'll remove it.
-> 
-> > > +
-> > > +	if (unlikely(copy_from_iter(&idx, sizeof(idx), i) != sizeof(idx))) {
-> > > +		ret = -EFAULT;
-> > > +		goto out;
-> > > +	}
-> > 
-> > Isn't this copy_from_iter() sleepable function?
-> > 
-> Yes, if we need to fault in data we want the data to come in. This is in
-> the user process context of write() and writev() which I believe is the
-> expected target for copy_from_iter().
-> 
-> During the probe copies we are not holding a lock or have interrupts
-> disabled, under what circumstances would a page fault cause an issue in
-> these paths? What is recommended here if we want to have page faults be
-> allowed (Hoping they are rare)?
-
-They are rare, but possibly the process is yielded if it is under heavy
-memory pressure. I recommend you to copy the user write data in the stack
-or thread-local buffer at once and pass it to probe functions. That is
-safe way.
-
-So, can you make it something like below?;
-
-/* Copy event from user space */
-copy_from_iter(&idx, sizeof(idx), i);
-buf_len = copy_from_iter(local_buf, i->count, &i);
-
-/* loop on recording functions */
-preempt_disable();
-user_event = get_user_event(file, idx);
-if (user_event && user_event_is_enabled(user_event)) {
-	user_event_for_each_probe_func(user_event, probe_func, tpdata) {
-		probe_func(user_event, thread_buf, buf_len, tpdata);
-	}
-}
-preempt_enable();
-
-> 
-> > > +				/*
-> > > +				 * Probes advance the iterator so we
-> > > +				 * need to have a copy for each probe.
-> > > +				 */
-> > > +				copy = *i;
-> > > +
-> > > +				probe_func = probe_func_ptr->func;
-> > > +				tpdata = probe_func_ptr->data;
-> > > +				probe_func(user, &copy, tpdata);
-> > 
-> > You seems to try to copy in from user space in each probe func, but
-> > please copy it here to the temporary buffer and pass it to the
-> > each probe function. Such performacne optimization can postpone.
-> > Start with simple implementation.
-> > 
-> Yes, this avoids double copying of the data in the normal paths. Moving
-> to a temp buffer only really changes 1 line in the probe functions
-> (copy_from_iter to copy_from_user).
-> 
-> If I were to create a temp buffer for simplicity I guess I would have to
-> kmalloc on each call or move to a per-cpu buffer or use stack memory and
-> limit how much data can be copied.
-
-Anyway, it should be limited. You can not write more than 1 page, and
-do you really need it? And allocating kmalloc object is relatively low
-cost compared with a system call.
-
-> 
-> These would likely add more lines than they remove from the code.
-
-That's OK.
-
-> 
-> > > +	refs = rcu_dereference_sched(file->private_data);
-> > > +
-> > > +	if (refs) {
-> > > +		count = refs->count;
-> > > +
-> > > +		for (i = 0; i < count; ++i)
-> > > +			if (refs->events[i] == user)
-> > > +				return i;
-> > > +	}
-> > > +
-> > > +	size = sizeof(*refs) + (sizeof(struct user_event *) * (count + 1));
-> > > +
-> > > +	new_refs = kzalloc(size, GFP_KERNEL);
-> > > +
-> > > +	if (!new_refs)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	new_refs->count = count + 1;
-> > > +
-> > > +	for (i = 0; i < count; ++i)
-> > > +		new_refs->events[i] = refs->events[i];
-> > > +
-> > > +	new_refs->events[i] = user;
-> > > +
-> > > +	atomic_inc(&user->refs);
-
-BTW, I recommend you to use a different name for this reference counter,
-e.g. refcnt, since refs is used for "file-local reference user event tables".
-
-
-> > > +
-> > > +	rcu_assign_pointer(file->private_data, new_refs);
-> > > +
-> > > +	if (refs)
-> > > +		kfree_rcu(refs, rcu);
-> > 
-> > It seems you introduced non-needed complexity with the events lists.
-> > Why not just adding new events on the current refs?
-> > Please make this simple at the first step. Forget about performance,
-> > but just start with simple code.
-> > 
-> Callers are free to call the reg ioctl while a write is occurring on the
-> same file. This can cause the kernel to access garbage. Either RCU or
-> locking is required in these paths or the ABI needs a way to lock the
-> file into a mode where no more events can be added (IE: Change to write
-> mode).
-> 
-> We want RCU because we have places where multiple processors will be
-> emitting data out to the same file. We don't want the data/cache
-> contention across processors to slow things down, which we have seen in
-> other telemetry data.
-
-Hmm, OK. So the events are not serialized, multiple threads can write the
-events concurrently. Got it.
-
-> 
-> > > +	case DIAG_IOCSREG:
-> > > +		/* Register/lookup on behalf of user process */
-> > > +		name = strndup_user(ubuf, MAX_EVENT_DESC);
-> > > +
-> > > +		if (IS_ERR(name)) {
-> > > +			ret = PTR_ERR(name);
-> > > +			goto out;
-> > > +		}
-> > > +
-> > > +		mutex_lock(&event_mutex);
-> > > +
-> > > +		ret = user_event_parse_cmd(name, &user);
-> > > +
-> > > +		if (ret < 0)
-> > > +			goto reg_out;
-> > > +
-> > > +		preempt_disable();
-> > 
-> > Why do you need to disable preemption here? It is enough to
-> > use a mutex.
-> > 
-> Because user_events_ref_add use rcu protected by sched. It appears that
-> preemption is supposed to be disabled when using that from my read of
-> the code. Is this not correct or not required?
-
-No not required, the "event_mutex" prevents other user from invoking
-the user_events_ref_add(), thus the "file->private_data" will not be
-updated from others. Thus you don't need to care the scenario of
-"file->private_data" is changed between dereference and reassign it.
-I think what you need is "lockdep_assert_held(&event_mutex)" in the
-user_events_ref_add().
-
-> > > +/*
-> > > + * Handles the final close of the file from user mode.
-> > > + */
-> > > +static int user_events_release(struct inode *node, struct file *file)
-> > > +{
-> > > +	struct user_event_refs *refs;
-> > > +	struct user_event *user;
-> > > +	int i;
-> > > +
-> > > +	preempt_disable();
-> > 
-> > I'm not sure why do you stick on using the RCU here.
-> > Since the user-events are only used in the user-context,
-> > which is not a critical section.
-> > For example, if you use kprobes, it may be called from anywhere
-> > in the kernel including critical section, and the handler will
-> > run in the interrupt handler. Thus I should use RCU. But here,
-> > the user events are written by syscalls, no critical section
-> > at all...
-> > 
-> > Can you try to remove RCU from this code?
-> > 
-> If you are talking about this specific call site (user_events_release)
-> then yeah I believe I can remove it. If you talking in general, we use
-> RCU to protect against some scenarios where events are getting
-> registered while previous events are getting written out.
-> 
-> We chose RCU over readwrite locking due to potential for shared cache
-> contention related slowdowns.
-> 
-
-OK, I understand why you need to use RCU at least reader part. For the
-updater part, you don't need the preemption disabled but need a mutex.
-(And when closing a file, the fd is already invalidated.)
-
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
