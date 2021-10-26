@@ -2,32 +2,32 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 513D0C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Oct 2021 22:08:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 671DAC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Oct 2021 22:08:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 36AA8610A4
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Oct 2021 22:08:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4906860F02
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Oct 2021 22:08:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239907AbhJZWLE convert rfc822-to-8bit (ORCPT
+        id S239800AbhJZWLP convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 26 Oct 2021 18:11:04 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:28201 "EHLO
+        Tue, 26 Oct 2021 18:11:15 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:40618 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239844AbhJZWKs (ORCPT
+        by vger.kernel.org with ESMTP id S239902AbhJZWLA (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 26 Oct 2021 18:10:48 -0400
+        Tue, 26 Oct 2021 18:11:00 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-423-2cYykLBdNcCn8JY3oUX_aQ-1; Tue, 26 Oct 2021 18:08:21 -0400
-X-MC-Unique: 2cYykLBdNcCn8JY3oUX_aQ-1
+ us-mta-350-VBsSuHncPsGUTMrVgNQ2Gg-1; Tue, 26 Oct 2021 18:08:32 -0400
+X-MC-Unique: VBsSuHncPsGUTMrVgNQ2Gg-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DF65F802B7E;
-        Tue, 26 Oct 2021 22:08:19 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BCA9E10247A6;
+        Tue, 26 Oct 2021 22:08:30 +0000 (UTC)
 Received: from x1.com (unknown [10.22.32.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8928860BF1;
-        Tue, 26 Oct 2021 22:08:14 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D589F60BF1;
+        Tue, 26 Oct 2021 22:08:25 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Tao Zhou <tao.zhou@linux.dev>,
@@ -43,13 +43,15 @@ Cc:     Tao Zhou <tao.zhou@linux.dev>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V6 08/20] rtla: Helper functions for rtla
-Date:   Wed, 27 Oct 2021 00:06:19 +0200
-Message-Id: <183637700a31169e5d6d1c8a827c5365599ec806.1635284863.git.bristot@kernel.org>
+Subject: [PATCH V6 10/20] rtla/osnoise: Add osnoise top mode
+Date:   Wed, 27 Oct 2021 00:06:21 +0200
+Message-Id: <d383c897e0e087479732eb0b2c519d1849342834.1635284863.git.bristot@kernel.org>
 In-Reply-To: <cover.1635284863.git.bristot@kernel.org>
 References: <cover.1635284863.git.bristot@kernel.org>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: kernel.org
 Content-Transfer-Encoding: 8BIT
@@ -58,10 +60,31 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This is a set of utils and tracer helper functions. They are used by
-rtla mostly to parse config, display data and some trace operations that
-are not part of libtracefs (because they are only useful it for this
-case).
+The rtla osnoise tool is an interface for the osnoise tracer. The
+osnoise tracer dispatches a kernel thread per-cpu. These threads read
+the time in a loop while with preemption, softirqs and IRQs enabled,
+thus allowing all the sources of osnoise during its execution. The
+osnoise threads take note of the entry and exit point of any source
+of interferences, increasing a per-cpu interference counter. The
+osnoise tracer also saves an interference counter for each source
+of interference.
+
+The rtla osnoise top mode displays information about the periodic
+summary from the osnoise tracer.
+
+One example of rtla osnoise top output is:
+
+[root@alien ~]# rtla osnoise top -c 0-3 -d 1m -q -r 900000 -P F:1
+                                         Operating System Noise
+duration:   0 00:01:00 | time is in us
+CPU Period       Runtime        Noise  % CPU Aval   Max Noise   Max Single          HW          NMI          IRQ      Softirq       Thread
+  0 #58         52200000         1031    99.99802          91           60           0            0        52285            0          101
+  1 #59         53100000            5    99.99999           5            5           0            9        53122            0           18
+  2 #59         53100000            7    99.99998           7            7           0            8        53115            0           18
+  3 #59         53100000         8274    99.98441         277           23           0            9        53778            0          660
+
+"rtla osnoise top --help" works and provide information about the
+available options.
 
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Ingo Molnar <mingo@redhat.com>
@@ -79,748 +102,649 @@ Cc: linux-trace-devel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- tools/tracing/rtla/src/trace.c | 192 +++++++++++++++
- tools/tracing/rtla/src/trace.h |  27 ++
- tools/tracing/rtla/src/utils.c | 433 +++++++++++++++++++++++++++++++++
- tools/tracing/rtla/src/utils.h |  56 +++++
- 4 files changed, 708 insertions(+)
- create mode 100644 tools/tracing/rtla/src/trace.c
- create mode 100644 tools/tracing/rtla/src/trace.h
- create mode 100644 tools/tracing/rtla/src/utils.c
- create mode 100644 tools/tracing/rtla/src/utils.h
+ tools/tracing/rtla/src/osnoise.c     |  20 +-
+ tools/tracing/rtla/src/osnoise.h     |   1 +
+ tools/tracing/rtla/src/osnoise_top.c | 577 +++++++++++++++++++++++++++
+ 3 files changed, 597 insertions(+), 1 deletion(-)
+ create mode 100644 tools/tracing/rtla/src/osnoise_top.c
 
-diff --git a/tools/tracing/rtla/src/trace.c b/tools/tracing/rtla/src/trace.c
-new file mode 100644
-index 000000000000..ab11c29cdcc2
---- /dev/null
-+++ b/tools/tracing/rtla/src/trace.c
-@@ -0,0 +1,192 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+#include <sys/sendfile.h>
-+#include <tracefs.h>
-+#include <signal.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <errno.h>
-+
-+#include "trace.h"
-+#include "utils.h"
-+
-+/*
-+ * enable_tracer_by_name - enable a tracer on the given instance
-+ */
-+int enable_tracer_by_name(struct tracefs_instance *inst, const char *tracer)
-+{
-+	enum tracefs_tracers t;
-+	int retval;
-+
-+	t = TRACEFS_TRACER_CUSTOM;
-+
-+	debug_msg("enabling %s tracer\n", tracer);
-+
-+	retval = tracefs_tracer_set(inst, t, tracer);
-+	if (retval < 0) {
-+		if (errno == ENODEV)
-+			err_msg("tracer %s not found!\n", tracer);
-+
-+		err_msg("failed to enable the tracer %s\n", tracer);
-+		return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * disable_tracer - set nop tracer to the insta
-+ */
-+void disable_tracer(struct tracefs_instance *inst)
-+{
-+	enum tracefs_tracers t = TRACEFS_TRACER_NOP;
-+	int retval;
-+
-+	retval = tracefs_tracer_set(inst, t);
-+	if (retval < 0)
-+		err_msg("oops, error disabling tracer\n");
-+}
-+
-+/*
-+ * create_instance - create a trace instance with *instance_name
-+ */
-+struct tracefs_instance *create_instance(char *instance_name)
-+{
-+	return tracefs_instance_create(instance_name);
-+}
-+
-+/*
-+ * destroy_instance - remove a trace instance and free the data
-+ */
-+void destroy_instance(struct tracefs_instance *inst)
-+{
-+	tracefs_instance_destroy(inst);
-+	tracefs_instance_free(inst);
-+}
-+
-+/*
-+ * save_trace_to_file - save the trace output of the instance to the file
-+ */
-+int save_trace_to_file(struct tracefs_instance *inst, const char *filename)
-+{
-+	const char *file = "trace";
-+	mode_t mode = 0644;
-+	char *buffer[4096];
-+	int out_fd, in_fd;
-+	int retval = -1;
-+
-+	in_fd = tracefs_instance_file_open(inst, file, O_RDONLY);
-+	if (in_fd < 0) {
-+		err_msg("Failed to open trace file\n");
-+		return -1;
-+	}
-+
-+	out_fd = creat(filename, mode);
-+	if (out_fd < 0) {
-+		err_msg("Failed to create output file %s\n", filename);
-+		goto out_close_in;
-+	}
-+
-+	do {
-+		retval = read(in_fd, buffer, sizeof(buffer));
-+		if (retval <= 0)
-+			goto out_close;
-+
-+		retval = write(out_fd, buffer, retval);
-+		if (retval < 0)
-+			goto out_close;
-+	} while (retval > 0);
-+
-+	retval = 0;
-+out_close:
-+	close(out_fd);
-+out_close_in:
-+	close(in_fd);
-+	return retval;
-+}
-+
-+/*
-+ * collect_registered_events - call the existing callback function for the event
-+ *
-+ * If an event has a registered callback function, call it.
-+ * Otherwise, ignore the event.
-+ */
-+int
-+collect_registered_events(struct tep_event *event, struct tep_record *record,
-+			  int cpu, void *context)
-+{
-+	struct trace_instance *trace = context;
-+	struct trace_seq *s = trace->seq;
-+
-+	if (!event->handler)
-+		return 0;
-+
-+	event->handler(s, record, event, context);
-+
-+	return 0;
-+}
-+
-+/*
-+ * trace_instance_destroy - destroy and free a rtla trace instance
-+ */
-+void trace_instance_destroy(struct trace_instance *trace)
-+{
-+	if (trace->inst) {
-+		disable_tracer(trace->inst);
-+		destroy_instance(trace->inst);
-+	}
-+
-+	if (trace->seq)
-+		free(trace->seq);
-+
-+	if (trace->tep)
-+		tep_free(trace->tep);
-+}
-+
-+/*
-+ * trace_instance_init - create an rtla trace instance
-+ *
-+ * It is more than the tracefs instance, as it contains other
-+ * things required for the tracing, such as the local events and
-+ * a seq file.
-+ *
-+ * Note that the trace instance is returned disabled. This allows
-+ * the tool to apply some other configs, like setting priority
-+ * to the kernel threads, before starting generating trace entries.
-+ */
-+int trace_instance_init(struct trace_instance *trace, char *tool_name)
-+{
-+	trace->seq = calloc(1, sizeof(*trace->seq));
-+	if (!trace->seq)
-+		goto out_err;
-+
-+	trace_seq_init(trace->seq);
-+
-+	trace->inst = create_instance(tool_name);
-+	if (!trace->inst)
-+		goto out_err;
-+
-+	trace->tep = tracefs_local_events(NULL);
-+	if (!trace->tep)
-+		goto out_err;
-+
+diff --git a/tools/tracing/rtla/src/osnoise.c b/tools/tracing/rtla/src/osnoise.c
+index fa3786c4aedc..b9866dfdda66 100644
+--- a/tools/tracing/rtla/src/osnoise.c
++++ b/tools/tracing/rtla/src/osnoise.c
+@@ -790,7 +790,9 @@ static void osnoise_usage(void)
+ 		"  usage: [rtla] osnoise [MODE] ...",
+ 		"",
+ 		"  modes:",
++		"     top  - prints the summary from osnoise tracer",
+ 		"",
++		"if no MODE is given, the top mode is called, passing the arguments",
+ 		NULL,
+ 	};
+ 
+@@ -801,12 +803,28 @@ static void osnoise_usage(void)
+ 
+ int osnoise_main(int argc, char *argv[])
+ {
+-	if (argc <= 1)
++	if (argc == 0)
+ 		goto usage;
+ 
 +	/*
-+	 * Let the main enable the record after setting some other
-+	 * things such as the priority of the tracer's threads.
++	 * if osnoise was called without any argument, run the
++	 * default cmdline.
 +	 */
-+	tracefs_trace_off(trace->inst);
++	if (argc == 1) {
++		osnoise_top_main(argc, argv);
++		exit(0);
++	}
 +
-+	return 0;
-+
-+out_err:
-+	trace_instance_destroy(trace);
-+	return 1;
-+}
-+
-+/*
-+ * trace_instance_start - start tracing a given rtla instance
-+ */
-+int trace_instance_start(struct trace_instance *trace)
-+{
-+	return tracefs_trace_on(trace->inst);
-+}
-diff --git a/tools/tracing/rtla/src/trace.h b/tools/tracing/rtla/src/trace.h
+ 	if ((strcmp(argv[1], "-h") == 0) || (strcmp(argv[1], "--help") == 0)) {
+ 		osnoise_usage();
+ 		exit(0);
++	} else if (strncmp(argv[1], "-", 1) == 0) {
++		/* the user skipped the tool, call the default one */
++		osnoise_top_main(argc, argv);
++		exit(0);
++	} else if (strcmp(argv[1], "top") == 0) {
++		osnoise_top_main(argc-1, &argv[1]);
++		exit(0);
+ 	}
+ 
+ usage:
+diff --git a/tools/tracing/rtla/src/osnoise.h b/tools/tracing/rtla/src/osnoise.h
+index c8db59e7c337..4882ee275ea0 100644
+--- a/tools/tracing/rtla/src/osnoise.h
++++ b/tools/tracing/rtla/src/osnoise.h
+@@ -82,4 +82,5 @@ void osnoise_destroy_tool(struct osnoise_tool *top);
+ struct osnoise_tool *osnoise_init_tool(char *tool_name);
+ struct osnoise_tool *osnoise_init_trace_tool(char *tracer);
+ 
++int osnoise_top_main(int argc, char **argv);
+ int osnoise_main(int argc, char **argv);
+diff --git a/tools/tracing/rtla/src/osnoise_top.c b/tools/tracing/rtla/src/osnoise_top.c
 new file mode 100644
-index 000000000000..7c3930909b70
+index 000000000000..30f0ec087775
 --- /dev/null
-+++ b/tools/tracing/rtla/src/trace.h
-@@ -0,0 +1,27 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <tracefs.h>
-+#include <stddef.h>
-+
-+struct trace_instance {
-+	struct tracefs_instance		*inst;
-+	struct tep_handle		*tep;
-+	struct trace_seq		*seq;
-+};
-+
-+int trace_instance_init(struct trace_instance *trace, char *tool_name);
-+int trace_instance_start(struct trace_instance *trace);
-+void trace_instance_destroy(struct trace_instance *trace);
-+
-+struct trace_seq *get_trace_seq(void);
-+int enable_tracer_by_name(struct tracefs_instance *inst, const char *tracer);
-+void disable_tracer(struct tracefs_instance *inst);
-+
-+int enable_osnoise(struct trace_instance *trace);
-+int enable_timerlat(struct trace_instance *trace);
-+
-+struct tracefs_instance *create_instance(char *instance_name);
-+void destroy_instance(struct tracefs_instance *inst);
-+
-+int save_trace_to_file(struct tracefs_instance *inst, const char *filename);
-+int collect_registered_events(struct tep_event *tep, struct tep_record *record,
-+			      int cpu, void *context);
-diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
-new file mode 100644
-index 000000000000..4a35e62b1514
---- /dev/null
-+++ b/tools/tracing/rtla/src/utils.c
-@@ -0,0 +1,433 @@
++++ b/tools/tracing/rtla/src/osnoise_top.c
+@@ -0,0 +1,577 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
 + */
 +
-+#include <proc/readproc.h>
-+#include <stdarg.h>
++#include <getopt.h>
 +#include <stdlib.h>
 +#include <string.h>
++#include <signal.h>
 +#include <unistd.h>
-+#include <ctype.h>
-+#include <errno.h>
-+#include <sched.h>
 +#include <stdio.h>
++#include <time.h>
 +
++#include "osnoise.h"
 +#include "utils.h"
 +
-+#define MAX_MSG_LENGTH	1024
-+int config_debug;
++/*
++ * osnoise top parameters
++ */
++struct osnoise_top_params {
++	char			*cpus;
++	char			*monitored_cpus;
++	char			*trace_output;
++	unsigned long long	runtime;
++	unsigned long long	period;
++	long long		stop_us;
++	long long		stop_total_us;
++	int			sleep_time;
++	int			duration;
++	int			quiet;
++	int			set_sched;
++	struct sched_attr	sched_param;
++};
++
++struct osnoise_top_cpu {
++	unsigned long long	sum_runtime;
++	unsigned long long	sum_noise;
++	unsigned long long	max_noise;
++	unsigned long long	max_sample;
++
++	unsigned long long	hw_count;
++	unsigned long long	nmi_count;
++	unsigned long long	irq_count;
++	unsigned long long	softirq_count;
++	unsigned long long	thread_count;
++
++	int			sum_cycles;
++};
++
++struct osnoise_top_data {
++	struct osnoise_top_cpu	*cpu_data;
++	int			nr_cpus;
++};
 +
 +/*
-+ * err_msg - print an error message to the stderr
++ * osnoise_free_top - free runtime data
 + */
-+void err_msg(const char *fmt, ...)
++static void
++osnoise_free_top(struct osnoise_top_data *data)
 +{
-+	char message[MAX_MSG_LENGTH];
-+	va_list ap;
-+
-+	va_start(ap, fmt);
-+	vsnprintf(message, sizeof(message), fmt, ap);
-+	va_end(ap);
-+
-+	fprintf(stderr, "%s", message);
++	free(data->cpu_data);
++	free(data);
 +}
 +
 +/*
-+ * debug_msg - print a debug message to stderr if debug is set
++ * osnoise_alloc_histogram - alloc runtime data
 + */
-+void debug_msg(const char *fmt, ...)
++static struct osnoise_top_data *osnoise_alloc_top(int nr_cpus)
 +{
-+	char message[MAX_MSG_LENGTH];
-+	va_list ap;
++	struct osnoise_top_data *data;
 +
++	data = calloc(1, sizeof(*data));
++	if (!data)
++		return NULL;
++
++	data->nr_cpus = nr_cpus;
++
++	/* one set of histograms per CPU */
++	data->cpu_data = calloc(1, sizeof(*data->cpu_data) * nr_cpus);
++	if (!data->cpu_data)
++		goto cleanup;
++
++	return data;
++
++cleanup:
++	osnoise_free_top(data);
++	return NULL;
++}
++
++/*
++ * osnoise_top_handler - this is the handler for osnoise tracer events
++ */
++static int
++osnoise_top_handler(struct trace_seq *s, struct tep_record *record,
++		    struct tep_event *event, void *context)
++{
++	struct trace_instance *trace = context;
++	struct osnoise_tool *tool;
++	unsigned long long val;
++	struct osnoise_top_cpu *cpu_data;
++	struct osnoise_top_data *data;
++	int cpu = record->cpu;
++
++	tool = container_of(trace, struct osnoise_tool, trace);
++
++	data = tool->data;
++	cpu_data = &data->cpu_data[cpu];
++
++	cpu_data->sum_cycles++;
++
++	tep_get_field_val(s, event, "runtime", record, &val, 1);
++	update_sum(&cpu_data->sum_runtime, &val);
++
++	tep_get_field_val(s, event, "noise", record, &val, 1);
++	update_max(&cpu_data->max_noise, &val);
++	update_sum(&cpu_data->sum_noise, &val);
++
++	tep_get_field_val(s, event, "max_sample", record, &val, 1);
++	update_max(&cpu_data->max_sample, &val);
++
++	tep_get_field_val(s, event, "hw_count", record, &val, 1);
++	update_sum(&cpu_data->hw_count, &val);
++
++	tep_get_field_val(s, event, "nmi_count", record, &val, 1);
++	update_sum(&cpu_data->nmi_count, &val);
++
++	tep_get_field_val(s, event, "irq_count", record, &val, 1);
++	update_sum(&cpu_data->irq_count, &val);
++
++	tep_get_field_val(s, event, "softirq_count", record, &val, 1);
++	update_sum(&cpu_data->softirq_count, &val);
++
++	tep_get_field_val(s, event, "thread_count", record, &val, 1);
++	update_sum(&cpu_data->thread_count, &val);
++
++	return 0;
++}
++
++/*
++ * osnoise_top_header - print the header of the tool output
++ */
++static void osnoise_top_header(struct osnoise_tool *top)
++{
++	struct trace_seq *s = top->trace.seq;
++	char duration[26];
++
++	get_duration(top->start_time, duration, sizeof(duration));
++
++	trace_seq_printf(s, "\033[2;37;40m");
++	trace_seq_printf(s, "                                          Operating System Noise");
++	trace_seq_printf(s, "                                     ");
++	trace_seq_printf(s, "                                     ");
++	trace_seq_printf(s, "\033[0;0;0m");
++	trace_seq_printf(s, "\n");
++
++	trace_seq_printf(s, "duration: %9s | time is in us\n", duration);
++
++	trace_seq_printf(s, "\033[2;30;47m");
++	trace_seq_printf(s, "CPU Period       Runtime ");
++	trace_seq_printf(s, "       Noise ");
++	trace_seq_printf(s, " %% CPU Aval ");
++	trace_seq_printf(s, "  Max Noise   Max Single ");
++	trace_seq_printf(s, "         HW          NMI          IRQ      Softirq       Thread");
++	trace_seq_printf(s, "\033[0;0;0m");
++	trace_seq_printf(s, "\n");
++}
++
++/*
++ * clear_terminal - clears the output terminal
++ */
++static void clear_terminal(struct trace_seq *seq)
++{
 +	if (!config_debug)
++		trace_seq_printf(seq, "\033c");
++}
++
++/*
++ * osnoise_top_print - prints the output of a given CPU
++ */
++static void osnoise_top_print(struct osnoise_tool *tool, int cpu)
++{
++	struct trace_seq *s = tool->trace.seq;
++	struct osnoise_top_cpu *cpu_data;
++	struct osnoise_top_data *data;
++	int percentage;
++	int decimal;
++
++	data = tool->data;
++	cpu_data = &data->cpu_data[cpu];
++
++	if (!cpu_data->sum_runtime)
 +		return;
 +
-+	va_start(ap, fmt);
-+	vsnprintf(message, sizeof(message), fmt, ap);
-+	va_end(ap);
++	percentage = ((cpu_data->sum_runtime - cpu_data->sum_noise) * 10000000)
++			/ cpu_data->sum_runtime;
++	decimal = percentage % 100000;
++	percentage = percentage / 100000;
 +
-+	fprintf(stderr, "%s", message);
++	trace_seq_printf(s, "%3d #%-6d %12llu ", cpu, cpu_data->sum_cycles, cpu_data->sum_runtime);
++	trace_seq_printf(s, "%12llu ", cpu_data->sum_noise);
++	trace_seq_printf(s, "  %3d.%05d", percentage, decimal);
++	trace_seq_printf(s, "%12llu %12llu", cpu_data->max_noise, cpu_data->max_sample);
++
++	trace_seq_printf(s, "%12llu ", cpu_data->hw_count);
++	trace_seq_printf(s, "%12llu ", cpu_data->nmi_count);
++	trace_seq_printf(s, "%12llu ", cpu_data->irq_count);
++	trace_seq_printf(s, "%12llu ", cpu_data->softirq_count);
++	trace_seq_printf(s, "%12llu\n", cpu_data->thread_count);
 +}
 +
 +/*
-+ * get_long_from_str - get a long int from a string
++ * osnoise_print_stats - print data for all cpus
 + */
-+long get_long_from_str(char *start)
++static void
++osnoise_print_stats(struct osnoise_top_params *params, struct osnoise_tool *top)
 +{
-+	long value;
-+	char *end;
-+
-+	errno = 0;
-+	value = strtol(start, &end, 10);
-+	if (errno || start == end)
-+		return -1;
-+
-+	return value;
-+}
-+
-+/*
-+ * get_duration - fill output with a human readable duration since start_time
-+ */
-+void get_duration(time_t start_time, char *output, int output_size)
-+{
-+	time_t now = time(NULL);
-+	struct tm *tm_info;
-+	time_t duration;
-+
-+	duration = difftime(now, start_time);
-+	tm_info = localtime(&duration);
-+
-+	snprintf(output, output_size, "%3d %02d:%02d:%02d",
-+			tm_info->tm_yday,
-+			tm_info->tm_hour - 1,
-+			tm_info->tm_min,
-+			tm_info->tm_sec);
-+}
-+
-+/*
-+ * parse_cpu_list - parse a cpu_list filling a char vector with cpus set
-+ *
-+ * Receives a cpu list, like 1-3,5 (cpus 1, 2, 3, 5), and then set the char
-+ * in the monitored_cpus.
-+ *
-+ * XXX: convert to a bitmask.
-+ */
-+int parse_cpu_list(char *cpu_list, char **monitored_cpus)
-+{
-+	char *mon_cpus;
-+	const char *p;
-+	int end_cpu;
-+	int nr_cpus;
-+	int cpu;
++	struct trace_instance *trace = &top->trace;
++	static int nr_cpus = -1;
 +	int i;
 +
-+	nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
++	if (nr_cpus == -1)
++		nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
 +
-+	mon_cpus = malloc(nr_cpus * sizeof(char));
-+	memset(mon_cpus, 0, (nr_cpus * sizeof(char)));
++	if (!params->quiet)
++		clear_terminal(trace->seq);
 +
-+	for (p = cpu_list; *p; ) {
-+		cpu = atoi(p);
-+		if (cpu < 0 || (!cpu && *p != '0') || cpu >= nr_cpus)
-+			goto err;
++	osnoise_top_header(top);
 +
-+		while (isdigit(*p))
-+			p++;
-+		if (*p == '-') {
-+			p++;
-+			end_cpu = atoi(p);
-+			if (end_cpu < cpu || (!end_cpu && *p != '0') || end_cpu >= nr_cpus)
-+				goto err;
-+			while (isdigit(*p))
-+				p++;
-+		} else
-+			end_cpu = cpu;
-+
-+		if (cpu == end_cpu) {
-+			debug_msg("cpu_list: adding cpu %d\n", cpu);
-+			mon_cpus[cpu] = 1;
-+		} else {
-+			for (i = cpu; i <= end_cpu; i++) {
-+				debug_msg("cpu_list: adding cpu %d\n", i);
-+				mon_cpus[i] = 1;
-+			}
-+		}
-+
-+		if (*p == ',')
-+			p++;
++	for (i = 0; i < nr_cpus; i++) {
++		if (params->cpus && !params->monitored_cpus[i])
++			continue;
++		osnoise_top_print(top, i);
 +	}
 +
-+	*monitored_cpus = mon_cpus;
-+
-+	return 0;
-+
-+err:
-+	debug_msg("Error parsing the cpu list %s", cpu_list);
-+	return 1;
++	trace_seq_do_printf(trace->seq);
++	trace_seq_reset(trace->seq);
 +}
 +
 +/*
-+ * parse_duration - parse duration with s/m/h/d suffix converting it to seconds
++ * osnoise_top_usage - prints osnoise top usage message
 + */
-+long parse_seconds_duration(char *val)
++void osnoise_top_usage(char *usage)
 +{
-+	char *end;
-+	long t;
++	int i;
 +
-+	t = strtol(val, &end, 10);
++	static const char * const msg[] = {
++		"  usage: rtla osnoise [top] [-h] [-q] [-p us] [-r us] [-s us] [-S us] [-T[=file]] \\",
++		"	  [-c cpu-list] -P priority",
++		"",
++		"	  -h/--help: print this menu",
++		"	  -p/--period us: osnoise period in us",
++		"	  -r/--runtime us: osnoise runtime in us",
++		"	  -s/--stop us: stop trace if a single sample is higher than the argument in us",
++		"	  -S/--stop-total us: stop trace if the total sample is higher than the argument in us",
++		"	  -c/--cpus cpu-list: list of cpus to run osnoise threads",
++		"	  -d/--duration time[s|m|h|d]: duration of the session",
++		"	  -t/--trace[=file]: save the stopped trace to [file|osnoise_trace.txt]",
++		"	  -q/--quiet print only a summary at the end",
++		"	  -P/--priority o:prio|r:prio|f:prio|d:runtime:period : set scheduling parameters",
++		"		o:prio - use SCHED_OTHER with prio",
++		"		r:prio - use SCHED_RR with prio",
++		"		f:prio - use SCHED_FIFO with prio",
++		"		d:runtime[us|ms|s]:period[us|ms|s] - use SCHED_DEADLINE with runtime and period",
++		"						       in nanoseconds",
++		NULL,
++	};
 +
-+	if (end) {
-+		switch (*end) {
-+		case 's':
-+		case 'S':
++	if (usage)
++		fprintf(stderr, "%s\n", usage);
++
++	fprintf(stderr, "rtla osnoise top: a per-cpu summary of the OS noise (version %s)\n",
++			VERSION);
++
++	for (i = 0; msg[i]; i++)
++		fprintf(stderr, "%s\n", msg[i]);
++	exit(1);
++}
++
++/*
++ * osnoise_top_parse_args - allocs, parse and fill the cmd line parameters
++ */
++struct osnoise_top_params *osnoise_top_parse_args(int argc, char **argv)
++{
++	struct osnoise_top_params *params;
++	int retval;
++	int c;
++
++	params = calloc(1, sizeof(*params));
++	if (!params)
++		exit(1);
++
++	while (1) {
++		static struct option long_options[] = {
++			{"cpus",		required_argument,	0, 'c'},
++			{"debug",		no_argument,		0, 'D'},
++			{"duration",		required_argument,	0, 'd'},
++			{"help",		no_argument,		0, 'h'},
++			{"period",		required_argument,	0, 'p'},
++			{"priority",		required_argument,	0, 'P'},
++			{"quiet",		no_argument,		0, 'q'},
++			{"runtime",		required_argument,	0, 'r'},
++			{"stop",		required_argument,	0, 's'},
++			{"stop-total",		required_argument,	0, 'S'},
++			{"trace",		optional_argument,	0, 't'},
++			{0, 0, 0, 0}
++		};
++
++		/* getopt_long stores the option index here. */
++		int option_index = 0;
++
++		c = getopt_long(argc, argv, "c:d:Dhp:P:qr:s:S:t::",
++				 long_options, &option_index);
++
++		/* Detect the end of the options. */
++		if (c == -1)
 +			break;
-+		case 'm':
-+		case 'M':
-+			t *= 60;
++
++		switch (c) {
++		case 'c':
++			retval = parse_cpu_list(optarg, &params->monitored_cpus);
++			if (retval)
++				osnoise_top_usage("\nInvalid -c cpu list\n");
++			params->cpus = optarg;
++			debug_msg("-c for %s\n", params->cpus);
++			break;
++		case 'D':
++			config_debug = 1;
++			break;
++		case 'd':
++			params->duration = parse_seconds_duration(optarg);
++			if (!params->duration)
++				osnoise_top_usage("Invalid -D duration\n");
 +			break;
 +		case 'h':
-+		case 'H':
-+			t *= 60 * 60;
++		case '?':
++			osnoise_top_usage(NULL);
 +			break;
-+
-+		case 'd':
-+		case 'D':
-+			t *= 24 * 60 * 60;
++		case 'p':
++			params->period = get_long_from_str(optarg);
++			if (params->period > 10000000)
++				osnoise_top_usage("Period longer than 10 s\n");
 +			break;
++		case 'P':
++			retval = parse_prio(optarg, &params->sched_param);
++			if (retval == -1)
++				osnoise_top_usage("Invalid -P priority");
++			params->set_sched = 1;
++			break;
++		case 'q':
++			params->quiet = 1;
++			break;
++		case 'r':
++			params->runtime = get_long_from_str(optarg);
++			if (params->runtime < 100)
++				osnoise_top_usage("Runtime shorter than 100 us\n");
++			break;
++		case 's':
++			params->stop_us = get_long_from_str(optarg);
++			break;
++		case 'S':
++			params->stop_total_us = get_long_from_str(optarg);
++			break;
++		case 't':
++			if (optarg)
++				/* skip = */
++				params->trace_output = &optarg[1];
++			else
++				params->trace_output = "osnoise_trace.txt";
++			break;
++		default:
++			osnoise_top_usage("Invalid option");
 +		}
 +	}
 +
-+	return t;
-+}
-+
-+/*
-+ * parse_ns_duration - parse duration with ns/us/ms/s converting it to nanoseconds
-+ */
-+long parse_ns_duration(char *val)
-+{
-+	char *end;
-+	long t;
-+
-+	t = strtol(val, &end, 10);
-+
-+	if (end) {
-+		if (!strncmp(end, "ns", 2)) {
-+			return t;
-+		} else if (!strncmp(end, "us", 2)) {
-+			t *= 1000;
-+			return t;
-+		} else if (!strncmp(end, "ms", 2)) {
-+			t *= 1000 * 1000;
-+			return t;
-+		} else if (!strncmp(end, "s", 1)) {
-+			t *= 1000 * 1000 * 100;
-+			return t;
-+		}
-+		return -1;
++	if (geteuid()) {
++		err_msg("osnoise needs root permission\n");
++		exit(EXIT_FAILURE);
 +	}
 +
-+	return t;
++	return params;
 +}
 +
 +/*
-+ * This is a set of helper functions to use SCHED_DEADLINE.
++ * osnoise_top_apply_config - apply the top configs to the initialized tool
 + */
-+#ifdef __x86_64__
-+# define __NR_sched_setattr	314
-+# define __NR_sched_getattr	315
-+#elif __i386__
-+# define __NR_sched_setattr	351
-+# define __NR_sched_getattr	352
-+#elif __arm__
-+# define __NR_sched_setattr	380
-+# define __NR_sched_getattr	381
-+#elif __aarch64__
-+# define __NR_sched_setattr	274
-+# define __NR_sched_getattr	275
-+#elif __powerpc__
-+# define __NR_sched_setattr	355
-+# define __NR_sched_getattr	356
-+#elif __s390x__
-+# define __NR_sched_setattr	345
-+# define __NR_sched_getattr	346
-+#endif
-+
-+#define SCHED_DEADLINE		6
-+
-+static inline int sched_setattr(pid_t pid, const struct sched_attr *attr,
-+				unsigned int flags) {
-+	return syscall(__NR_sched_setattr, pid, attr, flags);
-+}
-+
-+static inline int sched_getattr(pid_t pid, struct sched_attr *attr,
-+				unsigned int size, unsigned int flags)
++static int
++osnoise_top_apply_config(struct osnoise_tool *tool, struct osnoise_top_params *params)
 +{
-+	return syscall(__NR_sched_getattr, pid, attr, size, flags);
-+}
-+
-+int __set_sched_attr(int pid, struct sched_attr *attr)
-+{
-+	int flags = 0;
 +	int retval;
 +
-+	retval = sched_setattr(pid, attr, flags);
-+	if (retval < 0) {
-+		err_msg("boost_with_deadline failed to boost pid %d: %s\n",
-+			pid, strerror(errno));
-+		return 1;
-+	}
++	if (!params->sleep_time)
++		params->sleep_time = 1;
 +
-+	return 0;
-+}
-+/*
-+ * set_comm_sched_attr - set sched params to threads starting with char *comm
-+ *
-+ * This function uses procps to list the currently running threads and then
-+ * set the sched_attr *attr to the threads that start with char *comm. It is
-+ * mainly used to set the priority to the kernel threads created by the
-+ * tracers.
-+ */
-+int set_comm_sched_attr(const char *comm, struct sched_attr *attr)
-+{
-+	int flags = PROC_FILLCOM | PROC_FILLSTAT;
-+	PROCTAB *ptp;
-+	proc_t task;
-+	int retval;
-+
-+	ptp = openproc(flags);
-+	if (!ptp) {
-+		err_msg("error openproc()\n");
-+		return -ENOENT;
-+	}
-+
-+	memset(&task, 0, sizeof(task));
-+
-+	while (readproc(ptp, &task)) {
-+		retval = strncmp(comm, task.cmd, strlen(comm));
-+		if (retval)
-+			continue;
-+		retval = __set_sched_attr(task.tid, attr);
-+		if (retval)
++	if (params->cpus) {
++		retval = osnoise_set_cpus(tool->context, params->cpus);
++		if (retval) {
++			err_msg("Failed to apply CPUs config\n");
 +			goto out_err;
++		}
 +	}
 +
-+	closeproc(ptp);
++	if (params->runtime || params->period) {
++		retval = osnoise_set_runtime_period(tool->context,
++						    params->runtime,
++						    params->period);
++		if (retval) {
++			err_msg("Failed to set runtime and/or period\n");
++			goto out_err;
++		}
++	}
++
++	if (params->stop_us) {
++		retval = osnoise_set_stop_us(tool->context, params->stop_us);
++		if (retval) {
++			err_msg("Failed to set stop us\n");
++			goto out_err;
++		}
++	}
++
++	if (params->stop_total_us) {
++		retval = osnoise_set_stop_total_us(tool->context, params->stop_total_us);
++		if (retval) {
++			err_msg("Failed to set stop total us\n");
++			goto out_err;
++		}
++	}
++
 +	return 0;
 +
 +out_err:
-+	closeproc(ptp);
-+	return 1;
-+}
-+
-+#define INVALID_VAL	(~0L)
-+static long get_long_ns_after_colon(char *start)
-+{
-+	long val = INVALID_VAL;
-+
-+	/* find the ":" */
-+	start = strstr(start, ":");
-+	if (!start)
-+		return -1;
-+
-+	/* skip ":" */
-+	start++;
-+	val = parse_ns_duration(start);
-+
-+	return val;
-+}
-+
-+static long get_long_after_colon(char *start)
-+{
-+	long val = INVALID_VAL;
-+
-+	/* find the ":" */
-+	start = strstr(start, ":");
-+	if (!start)
-+		return -1;
-+
-+	/* skip ":" */
-+	start++;
-+	val = get_long_from_str(start);
-+
-+	return val;
++	return -1;
 +}
 +
 +/*
-+ * parse priority in the format:
-+ * SCHED_OTHER:
-+ *		o:<prio>
-+ *		O:<prio>
-+ * SCHED_RR:
-+ *		r:<prio>
-+ *		R:<prio>
-+ * SCHED_FIFO:
-+ *		f:<prio>
-+ *		F:<prio>
-+ * SCHED_DEADLINE:
-+ *		d:runtime:period
-+ *		D:runtime:period
++ * osnoise_init_top - initialize a osnoise top tool with parameters
 + */
-+int parse_prio(char *arg, struct sched_attr *sched_param)
++struct osnoise_tool *osnoise_init_top(struct osnoise_top_params *params)
 +{
-+	long prio;
-+	long runtime;
-+	long period;
++	struct osnoise_tool *tool;
++	int nr_cpus;
 +
-+	memset(sched_param, 0, sizeof(*sched_param));
-+	sched_param->size = sizeof(*sched_param);
++	nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
 +
-+	switch (arg[0]) {
-+	case 'd':
-+	case 'D':
-+		/* d:runtime:period */
-+		if (strlen(arg) < 4)
-+			return -1;
++	tool = osnoise_init_tool("osnoise_top");
++	if (!tool)
++		return NULL;
 +
-+		runtime = get_long_ns_after_colon(arg);
-+		if (runtime == INVALID_VAL)
-+			return -1;
++	tool->data = osnoise_alloc_top(nr_cpus);
++	if (!tool->data)
++		goto out_err;
 +
-+		period = get_long_ns_after_colon(&arg[2]);
-+		if (period == INVALID_VAL)
-+			return -1;
++	tool->params = params;
 +
-+		if (runtime > period)
-+			return -1;
++	tep_register_event_handler(tool->trace.tep, -1, "ftrace", "osnoise",
++				   osnoise_top_handler, NULL);
 +
-+		sched_param->sched_policy   = SCHED_DEADLINE;
-+		sched_param->sched_runtime  = runtime;
-+		sched_param->sched_deadline = period;
-+		sched_param->sched_period   = period;
-+		break;
-+	case 'f':
-+	case 'F':
-+		/* f:prio */
-+		prio = get_long_after_colon(arg);
-+		if (prio == INVALID_VAL)
-+			return -1;
++	return tool;
 +
-+		if (prio < sched_get_priority_min(SCHED_FIFO))
-+			return -1;
-+		if (prio > sched_get_priority_max(SCHED_FIFO))
-+			return -1;
++out_err:
++	osnoise_free_top(tool->data);
++	osnoise_destroy_tool(tool);
++	return NULL;
++}
 +
-+		sched_param->sched_policy   = SCHED_FIFO;
-+		sched_param->sched_priority = prio;
-+		break;
-+	case 'r':
-+	case 'R':
-+		/* r:prio */
-+		prio = get_long_after_colon(arg);
-+		if (prio == INVALID_VAL)
-+			return -1;
++static int stop_tracing;
++static void stop_top(int sig)
++{
++	stop_tracing = 1;
++}
 +
-+		if (prio < sched_get_priority_min(SCHED_RR))
-+			return -1;
-+		if (prio > sched_get_priority_max(SCHED_RR))
-+			return -1;
-+
-+		sched_param->sched_policy   = SCHED_RR;
-+		sched_param->sched_priority = prio;
-+		break;
-+	case 'o':
-+	case 'O':
-+		/* o:prio */
-+		prio = get_long_after_colon(arg);
-+		if (prio == INVALID_VAL)
-+			return -1;
-+
-+		if (prio < sched_get_priority_min(SCHED_OTHER))
-+			return -1;
-+		if (prio > sched_get_priority_max(SCHED_OTHER))
-+			return -1;
-+
-+		sched_param->sched_policy   = SCHED_OTHER;
-+		sched_param->sched_priority = prio;
-+		break;
-+	default:
-+		return -1;
++/*
++ * osnoise_top_set_signals - handles the signal to stop the tool
++ */
++static void osnoise_top_set_signals(struct osnoise_top_params *params)
++{
++	signal(SIGINT, stop_top);
++	if (params->duration) {
++		signal(SIGALRM, stop_top);
++		alarm(params->duration);
 +	}
-+	return 0;
 +}
-diff --git a/tools/tracing/rtla/src/utils.h b/tools/tracing/rtla/src/utils.h
-new file mode 100644
-index 000000000000..2bce867387b4
---- /dev/null
-+++ b/tools/tracing/rtla/src/utils.h
-@@ -0,0 +1,56 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <stdint.h>
-+#include <time.h>
 +
-+/*
-+ * '18446744073709551615\0'
-+ */
-+#define BUFF_U64_STR_SIZE	24
-+
-+#define container_of(ptr, type, member)({			\
-+	const typeof(((type *)0)->member) *__mptr = (ptr);	\
-+	(type *)((char *)__mptr - offsetof(type, member)) ; })
-+
-+extern int config_debug;
-+void debug_msg(const char *fmt, ...);
-+void err_msg(const char *fmt, ...);
-+
-+long parse_seconds_duration(char *val);
-+void get_duration(time_t start_time, char *output, int output_size);
-+
-+int parse_cpu_list(char *cpu_list, char **monitored_cpus);
-+long get_long_from_str(char *start);
-+
-+static inline void
-+update_min(unsigned long long *a, unsigned long long *b)
++int osnoise_top_main(int argc, char **argv)
 +{
-+	if (*a > *b)
-+		*a = *b;
++	struct osnoise_top_params *params;
++	struct trace_instance *trace;
++	struct osnoise_tool *record;
++	struct osnoise_tool *tool;
++	int return_value = 1;
++	int retval;
++
++	params = osnoise_top_parse_args(argc, argv);
++	if (!params)
++		exit(1);
++
++	tool = osnoise_init_top(params);
++	if (!tool) {
++		err_msg("Could not init osnoise top\n");
++		goto out_exit;
++	}
++
++	retval = osnoise_top_apply_config(tool, params);
++	if (retval) {
++		err_msg("Could not apply config\n");
++		goto out_top;
++	}
++
++	trace = &tool->trace;
++
++	retval = enable_osnoise(trace);
++	if (retval) {
++		err_msg("Failed to enable osnoise tracer\n");
++		goto out_top;
++	}
++
++	if (params->set_sched) {
++		retval = set_comm_sched_attr("osnoise/", &params->sched_param);
++		if (retval)
++			osnoise_top_usage("Failed to set sched parameters\n");
++	}
++
++	trace_instance_start(trace);
++
++	if (params->trace_output) {
++		record = osnoise_init_trace_tool("osnoise");
++		if (!record) {
++			err_msg("Failed to enable the trace instance\n");
++			goto out_top;
++		}
++		trace_instance_start(&record->trace);
++	}
++
++	tool->start_time = time(NULL);
++	osnoise_top_set_signals(params);
++
++	do {
++		sleep(params->sleep_time);
++
++		retval = tracefs_iterate_raw_events(trace->tep,
++						    trace->inst,
++						    NULL,
++						    0,
++						    collect_registered_events,
++						    trace);
++		if (retval < 0) {
++			err_msg("Error iterating on events\n");
++			goto out_top;
++		}
++
++		if (!params->quiet)
++			osnoise_print_stats(params, tool);
++
++		if (!tracefs_trace_is_on(trace->inst))
++			break;
++
++	} while (!stop_tracing);
++
++	osnoise_print_stats(params, tool);
++
++	return_value = 0;
++
++	if (!tracefs_trace_is_on(trace->inst)) {
++		printf("osnoise hit stop tracing\n");
++		if (params->trace_output) {
++			printf("  Saving trace to %s\n", params->trace_output);
++			save_trace_to_file(record->trace.inst, params->trace_output);
++		}
++	}
++
++out_top:
++	osnoise_free_top(tool->data);
++	osnoise_destroy_tool(tool);
++	if (params->trace_output)
++		osnoise_destroy_tool(record);
++out_exit:
++	exit(return_value);
 +}
-+
-+static inline void
-+update_max(unsigned long long *a, unsigned long long *b)
-+{
-+	if (*a < *b)
-+		*a = *b;
-+}
-+
-+static inline void
-+update_sum(unsigned long long *a, unsigned long long *b)
-+{
-+	*a += *b;
-+}
-+
-+struct sched_attr {
-+	uint32_t size;
-+	uint32_t sched_policy;
-+	uint64_t sched_flags;
-+	int32_t sched_nice;
-+	uint32_t sched_priority;
-+	uint64_t sched_runtime;
-+	uint64_t sched_deadline;
-+	uint64_t sched_period;
-+};
-+
-+int parse_prio(char *arg, struct sched_attr *sched_param);
-+int set_comm_sched_attr(const char *comm, struct sched_attr *attr);
 -- 
 2.31.1
 
