@@ -2,32 +2,32 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DD9BC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Oct 2021 22:09:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ED85C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Oct 2021 22:09:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0525D61100
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Oct 2021 22:09:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3962260F92
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Oct 2021 22:09:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240001AbhJZWLl convert rfc822-to-8bit (ORCPT
+        id S239921AbhJZWLv convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 26 Oct 2021 18:11:41 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:31315 "EHLO
+        Tue, 26 Oct 2021 18:11:51 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:37385 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239867AbhJZWLW (ORCPT
+        by vger.kernel.org with ESMTP id S239895AbhJZWL1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 26 Oct 2021 18:11:22 -0400
+        Tue, 26 Oct 2021 18:11:27 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-572-lw9KFpy_MJqfJpnaaYepbw-1; Tue, 26 Oct 2021 18:08:54 -0400
-X-MC-Unique: lw9KFpy_MJqfJpnaaYepbw-1
+ us-mta-302-JNp1OmZHNGykqJUpDWKjrw-1; Tue, 26 Oct 2021 18:08:59 -0400
+X-MC-Unique: JNp1OmZHNGykqJUpDWKjrw-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 730A410247A6;
-        Tue, 26 Oct 2021 22:08:52 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6437E81424A;
+        Tue, 26 Oct 2021 22:08:57 +0000 (UTC)
 Received: from x1.com (unknown [10.22.32.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2573760BF1;
-        Tue, 26 Oct 2021 22:08:47 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D2ADE60BF1;
+        Tue, 26 Oct 2021 22:08:52 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Tao Zhou <tao.zhou@linux.dev>,
@@ -42,10 +42,10 @@ Cc:     Tao Zhou <tao.zhou@linux.dev>,
         Thomas Gleixner <tglx@linutronix.de>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH V6 14/20] rtla: Add Documentation
-Date:   Wed, 27 Oct 2021 00:06:25 +0200
-Message-Id: <66e35d65e1ce22a4084f5c6778a986924cdf57ab.1635284863.git.bristot@kernel.org>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V6 15/20] rtla: Add rtla osnoise man page
+Date:   Wed, 27 Oct 2021 00:06:26 +0200
+Message-Id: <e0e88506728faa9d053d8ca8f06b699790ee04ae.1635284863.git.bristot@kernel.org>
 In-Reply-To: <cover.1635284863.git.bristot@kernel.org>
 References: <cover.1635284863.git.bristot@kernel.org>
 MIME-Version: 1.0
@@ -60,14 +60,7 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Adds the basis for rtla documentation. This patch also
-includes the rtla(1) man page.
-
-As suggested by Jonathan Corbet, we are placing these man
-pages at Documentation/tools/rtla, using rst format. It
-is not linked to the official documentation, though.
-
-The Makefile is based on bpftool's Documentation one.
+Man page for rtla osnoise command.
 
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Ingo Molnar <mingo@redhat.com>
@@ -83,203 +76,93 @@ Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc: linux-rt-users@vger.kernel.org
 Cc: linux-trace-devel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-Suggested-by: Jonathan Corbet <corbet@lwn.net>
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- Documentation/tools/rtla/Makefile            | 41 +++++++++++++++++
- Documentation/tools/rtla/common_appendix.rst | 12 +++++
- Documentation/tools/rtla/rtla.rst            | 48 ++++++++++++++++++++
- tools/tracing/rtla/Makefile                  | 30 ++++++++++--
- 4 files changed, 127 insertions(+), 4 deletions(-)
- create mode 100644 Documentation/tools/rtla/Makefile
- create mode 100644 Documentation/tools/rtla/common_appendix.rst
- create mode 100644 Documentation/tools/rtla/rtla.rst
+ .../tools/rtla/common_osnoise_description.rst |  8 +++
+ Documentation/tools/rtla/rtla-osnoise.rst     | 59 +++++++++++++++++++
+ 2 files changed, 67 insertions(+)
+ create mode 100644 Documentation/tools/rtla/common_osnoise_description.rst
+ create mode 100644 Documentation/tools/rtla/rtla-osnoise.rst
 
-diff --git a/Documentation/tools/rtla/Makefile b/Documentation/tools/rtla/Makefile
+diff --git a/Documentation/tools/rtla/common_osnoise_description.rst b/Documentation/tools/rtla/common_osnoise_description.rst
 new file mode 100644
-index 000000000000..9f2b84af1a6c
+index 000000000000..8973c5df888f
 --- /dev/null
-+++ b/Documentation/tools/rtla/Makefile
-@@ -0,0 +1,41 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+# Based on bpftool's Documentation Makefile
-+
-+INSTALL		?= install
-+RM		?= rm -f
-+RMDIR		?= rmdir --ignore-fail-on-non-empty
-+
-+PREFIX		?= /usr/share
-+MANDIR		?= $(PREFIX)/man
-+MAN1DIR		= $(MANDIR)/man1
-+
-+MAN1_RST	= $(wildcard rtla*.rst)
-+
-+_DOC_MAN1	= $(patsubst %.rst,%.1,$(MAN1_RST))
-+DOC_MAN1	= $(addprefix $(OUTPUT),$(_DOC_MAN1))
-+
-+RST2MAN_DEP	:= $(shell command -v rst2man 2>/dev/null)
-+RST2MAN_OPTS	+= --verbose
-+
-+$(OUTPUT)%.1: %.rst
-+ifndef RST2MAN_DEP
-+	$(error "rst2man not found, but required to generate man pages")
-+endif
-+	rst2man $(RST2MAN_OPTS) $< > $@
-+
-+man1: $(DOC_MAN1)
-+man: man1
-+
-+clean:
-+	$(RM) $(DOC_MAN1)
-+
-+install: man
-+	$(INSTALL) -d -m 755 $(DESTDIR)$(MAN1DIR)
-+	$(INSTALL) -m 644 $(DOC_MAN1) $(DESTDIR)$(MAN1DIR)
-+
-+uninstall:
-+	$(RM) $(addprefix $(DESTDIR)$(MAN1DIR)/,$(_DOC_MAN1))
-+	$(RMDIR) $(DESTDIR)$(MAN1DIR)
-+
-+.PHONY: man man1 clean install uninstall
-+.DEFAULT_GOAL := man
-diff --git a/Documentation/tools/rtla/common_appendix.rst b/Documentation/tools/rtla/common_appendix.rst
++++ b/Documentation/tools/rtla/common_osnoise_description.rst
+@@ -0,0 +1,8 @@
++The **rtla osnoise** tool is an interface for the *osnoise* tracer. The
++*osnoise* tracer dispatches a kernel thread per-cpu. These threads read the
++time in a loop while with preemption, softirq and IRQs enabled, thus
++allowing all the sources of operating systme noise during its execution.
++The *osnoise*'s tracer threads take note of the delta between each time
++read, along with an interference counter of all sources of interference.
++At the end of each period, the *osnoise* tracer displays a summary of
++the results.
+diff --git a/Documentation/tools/rtla/rtla-osnoise.rst b/Documentation/tools/rtla/rtla-osnoise.rst
 new file mode 100644
-index 000000000000..b494084acccd
+index 000000000000..c129b206ce34
 --- /dev/null
-+++ b/Documentation/tools/rtla/common_appendix.rst
-@@ -0,0 +1,12 @@
-+REPORTING BUGS
-+==============
-+Report bugs to <lkml@vger.kernel.org>
-+
-+LICENSE
-+=======
-+**rtla** is Free Software licensed under the GNU GPLv2
-+
-+COPYING
-+=======
-+Copyright \(C) 2021 Red Hat, Inc. Free use of this software is granted under
-+the terms of the GNU Public License (GPL).
-diff --git a/Documentation/tools/rtla/rtla.rst b/Documentation/tools/rtla/rtla.rst
-new file mode 100644
-index 000000000000..fc0d233efcd5
---- /dev/null
-+++ b/Documentation/tools/rtla/rtla.rst
-@@ -0,0 +1,48 @@
-+=========
-+rtla
-+=========
-+--------------------------------
-+Real-time Linux Analysis tool
-+--------------------------------
++++ b/Documentation/tools/rtla/rtla-osnoise.rst
+@@ -0,0 +1,59 @@
++===============
++rtla-osnoise
++===============
++------------------------------------------------------------------
++Measure the operating system noise
++------------------------------------------------------------------
 +
 +:Manual section: 1
 +
 +SYNOPSIS
 +========
-+**rtla** *COMMAND* [*OPTIONS*]
++**rtla osnoise** [*MODE*] ...
 +
 +DESCRIPTION
 +===========
-+The **rtla** is a meta-tool that includes a set of commands that aims to
-+analyze the real-time properties of Linux. But instead of testing Linux
-+as a black box, **rtla** leverages kernel tracing capabilities to provide
-+precise information about the properties and root causes of unexpected
-+results.
 +
-+COMMANDS
-+========
-+**osnoise**
++.. include:: common_osnoise_description.rst
 +
-+        Gives information about the operating system noise (osnoise).
++The *osnoise* tracer outputs information in two ways. It periodically prints
++a summary of the noise of the operating system, including the counters of
++the occurrence of the source of interference. It also provides information
++for each noise via the **osnoise:** tracepoints. The **rtla osnoise top**
++mode displays information about the periodic summary from the *osnoise* tracer.
++The **rtla osnoise hist** mode displays information about the noise using
++the **osnoise:** tracepoints. For further details, please refer to the
++respective man page.
 +
-+**timerlat**
++MODES
++=====
++**top**
 +
-+        Measures the IRQ and thread timer latency.
++        Prints the summary from osnoise tracer.
++
++**hist**
++
++        Prints a histogram of osnoise samples.
++
++If no MODE is given, the top mode is called, passing the arguments.
 +
 +OPTIONS
 +=======
++
 +**-h**, **--help**
 +
 +        Display the help text.
 +
-+For other options, see the man page for the corresponding command.
++For other options, see the man page for the corresponding mode.
 +
 +SEE ALSO
 +========
-+**rtla-osnoise**\(1), **rtla-timerlat**\(1)
++**rtla-osnoise-top**\(1), **rtla-osnoise-hist**\(1)
++
++Osnoise tracer documentation: <https://www.kernel.org/doc/html/latest/trace/osnoise-tracer.html>
 +
 +AUTHOR
 +======
-+Daniel Bristot de Oliveira <bristot@kernel.org>
++Written by Daniel Bristot de Oliveira <bristot@kernel.org>
 +
 +.. include:: common_appendix.rst
-diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
-index 3f8d5421ccc1..4d1d158f006f 100644
---- a/tools/tracing/rtla/Makefile
-+++ b/tools/tracing/rtla/Makefile
-@@ -45,18 +45,28 @@ DATADIR	:=	/usr/share
- DOCDIR	:=	$(DATADIR)/doc
- MANDIR	:=	$(DATADIR)/man
- LICDIR	:=	$(DATADIR)/licenses
-+SRCTREE	:=	$(if $(BUILD_SRC),$(BUILD_SRC),$(CURDIR))
-+
-+# If running from the tarball, man pages are stored in the Documentation
-+# dir. If running from the kernel source, man pages are stored in
-+# Documentation/tools/rtla/.
-+ifneq ($(wildcard Documentation/.*),)
-+DOCSRC	=	Documentation/
-+else
-+DOCSRC	=	$(SRCTREE)/../../../Documentation/tools/rtla/
-+endif
- 
- .PHONY:	all
- all:	rtla
- 
--rtla: $(OBJ)
-+rtla: $(OBJ) doc
- 	$(CC) -o rtla $(LDFLAGS) $(OBJ) $(LIBS)
- 
- static: $(OBJ)
- 	$(CC) -o rtla-static $(LDFLAGS) --static $(OBJ) $(LIBS) -lpthread -ldl
- 
- .PHONY: install
--install:
-+install: doc_install
- 	$(INSTALL) -d -m 755 $(DESTDIR)$(BINDIR)
- 	$(INSTALL) rtla -m 755 $(DESTDIR)$(BINDIR)
- 	$(STRIP) $(DESTDIR)$(BINDIR)/rtla
-@@ -66,15 +76,27 @@ install:
- 	ln -s $(DESTDIR)$(BINDIR)/rtla $(DESTDIR)$(BINDIR)/timerlat
- 
- .PHONY: clean tarball
--clean:
-+clean: doc_clean
- 	@test ! -f rtla || rm rtla
- 	@test ! -f rtla-static || rm rtla-static
- 	@test ! -f src/rtla.o || rm src/rtla.o
- 	@test ! -f $(TARBALL) || rm -f $(TARBALL)
- 	@rm -rf *~ $(OBJ) *.tar.$(CEXT)
- 
--tarball:  clean
-+tarball: clean
- 	rm -rf $(NAME)-$(VERSION) && mkdir $(NAME)-$(VERSION)
- 	cp -r $(DIRS) $(FILES) $(NAME)-$(VERSION)
-+	mkdir $(NAME)-$(VERSION)/Documentation/
-+	cp -rp $(SRCTREE)/../../../Documentation/tools/rtla/* $(NAME)-$(VERSION)/Documentation/
- 	tar $(TAROPTS) --exclude='*~' $(NAME)-$(VERSION)
- 	rm -rf $(NAME)-$(VERSION)
-+
-+.PHONY: doc doc_clean doc_install
-+doc:
-+	$(MAKE) -C $(DOCSRC)
-+
-+doc_clean:
-+	$(MAKE) -C $(DOCSRC) clean
-+
-+doc_install:
-+	$(MAKE) -C $(DOCSRC) install
 -- 
 2.31.1
 
