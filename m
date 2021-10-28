@@ -2,62 +2,62 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8585EC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Oct 2021 12:09:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A07AC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Oct 2021 12:09:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6D93C610F8
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Oct 2021 12:09:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1140460F90
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Oct 2021 12:09:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230274AbhJ1MLn (ORCPT
+        id S230312AbhJ1MLq (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 28 Oct 2021 08:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55388 "EHLO
+        Thu, 28 Oct 2021 08:11:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbhJ1MLn (ORCPT
+        with ESMTP id S230265AbhJ1MLo (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:11:43 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620AEC061570
-        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Oct 2021 05:09:16 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id f8so2278736edy.4
-        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Oct 2021 05:09:16 -0700 (PDT)
+        Thu, 28 Oct 2021 08:11:44 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC61EC061745
+        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Oct 2021 05:09:17 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 5so23268835edw.7
+        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Oct 2021 05:09:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=y0cW1T41hmSx1fhsT025xt2zuivyWD0bEQof68DZI7g=;
-        b=TN3x9TsT7fL1HJe6twpKb8e5UD0QPdv78IqRd/nvAsXqQBSgAhdKVbvbpTV89Hpjc0
-         iTp3lHV773PF7V6hThEvgyMTRA8y1Js7C8ScY7oZrLq0MXyU66hA0j4GyrxzSsmV0LX5
-         nyoFHLPBUa/H+lRMM4lVoPxLGjqajm18YJ3J/gfssmPb6fCdaCnLQNUXqnnDjSLebLFF
-         IV+dXtsfoS8HBks0/dZdMLojS7fXH+3p8Yjz1mWzhjmAxwKXBYGCNy55BVVanZ1pKVUA
-         WFgkT8tzftTkrPLRpqkA/EJKA7aLcGEF8oovV8jV4zn8dAln/KXJxkPkydnAzWuoZvbX
-         9rfA==
+        bh=ljLr895lWmcYm6RXNoJYFeiQoE3w3w+TpM4R6A4GSTk=;
+        b=UB8YwTlUx+39pN382W6Elg/6rDGVAwmAmDvCIrLcuKIfYJlnnX+LmHpoxmjDfLEf3G
+         VGybdx4IQHKy5vsdRm35VBl5xfJzrxbtc7yjEVdIIoGjSBJGMmxb+fL4gp5zCWn7xCr6
+         iShMqrCSWXQnuXOb6CdBMcQZNOCO+JgC5tMIYTj2Z7nC9DBO4CGxEa/LPYsXtqkxWBnv
+         WxZdrhCjhOXQnLueFgxHqNSKIzddsIE91QsWImvFcxK4BGqpRRYtBC24/wx3LGfC8GKz
+         a0vM6Su+kKNwaMe2f6vFwjERGSTz+PVSm14WWqwHARGxR1Qb37eVRgXfxoyuB3kJ8k6e
+         xGHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=y0cW1T41hmSx1fhsT025xt2zuivyWD0bEQof68DZI7g=;
-        b=PIEe7cr2VjGLX0iCMcDXxEb3mVgEzbHNU72D3PtHIUwZBkS1uojIoVxznOsAvEgjEI
-         v2xGuwRxS/V8VQWLx2UXJxgOi51/CI8MeB6prH+yOpijgsYB7G/ki+7SUHc4FPk/AW+l
-         FGmr6PTkynu0ogGsEwhcPxtfVkgQUbLoke5enRKseulIeofz6MqYAjtfI4jjrLGmp3tm
-         zhH5/qaFQhzhZDBHyIkHicNUMnIMzD8jfuzeCQg4vR+bmTDpots0YTXiddDwz6o9dqad
-         gm1dVA9KMI0KwTCFJtD2MvVzgEc1+2A8VLg2e1GqFRAoNwvXCKuJm/IYRk0UnPVBOAlT
-         tb/Q==
-X-Gm-Message-State: AOAM531i/86zhLwgEimrfqVvhqbi4w8CMY0w5oh/Lq4UskLY9+PlFWcf
-        tLYR/2cZdRE//iKKF5+666Y=
-X-Google-Smtp-Source: ABdhPJxwD8XJeo9pTei7De1BAyy9rcmx808SQx0wusDcRVPKtJIa/s2CFcdEzd2sooBD73uh5PEgvg==
-X-Received: by 2002:a05:6402:17c4:: with SMTP id s4mr5604445edy.253.1635422954307;
-        Thu, 28 Oct 2021 05:09:14 -0700 (PDT)
+        bh=ljLr895lWmcYm6RXNoJYFeiQoE3w3w+TpM4R6A4GSTk=;
+        b=FZ2VzN1H+pdpyfiUz+43b/IffhzkU52nSWdJkv+PH/93uwrc6S9BZBK7gtjtz2sh8z
+         k7U+seQopfLDUUmr6NJGqa/GDKNVVhEtIte2hWyMaKsUYwQiMtOYcuyHXiQ49Bl+Fmf2
+         xS7g3CdxevfThmmCmPq/0Xl9wMyNM99vIbq26zT139ekhhiIswc+NAavQ3o6l5eQrx4W
+         vUBzSGZvS7Laso+/HdC8BnDEDpyEWYm4E41OFjRbIoHKilWgbe3/3i/d52tSko+Fjy5P
+         0ccFRVPMGlztdVoS+rTrOS0amSBCYOVhd1ZJXJq/24ZSF3CEYz8TpmpxOLn9TZxoWLxG
+         kCPg==
+X-Gm-Message-State: AOAM530TzPILFDj5lC40ieVOqaEA48ufHDNnuXGpFIcxPd/8UjR55KC+
+        WyYcqQgEaRvDAfq9BoM2mBbKsTTkncP39g==
+X-Google-Smtp-Source: ABdhPJyKdJvMZ5oOivxKVLNxnxcyksa3UJAfrXcDn84fu7Cf2SSaPpExRqW8IKRmQ4Z3j9q2ivi7jw==
+X-Received: by 2002:a50:e006:: with SMTP id e6mr5715885edl.344.1635422956146;
+        Thu, 28 Oct 2021 05:09:16 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id v6sm1803003edc.52.2021.10.28.05.09.13
+        by smtp.gmail.com with ESMTPSA id v6sm1803003edc.52.2021.10.28.05.09.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 05:09:13 -0700 (PDT)
+        Thu, 28 Oct 2021 05:09:15 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 04/12] libtracefs: Remove redundant kprobes APIs
-Date:   Thu, 28 Oct 2021 15:08:59 +0300
-Message-Id: <20211028120907.101847-5-tz.stoyanov@gmail.com>
+Subject: [PATCH 06/12] libtracefs: Change tracefs_kprobe_info API
+Date:   Thu, 28 Oct 2021 15:09:01 +0300
+Message-Id: <20211028120907.101847-7-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211028120907.101847-1-tz.stoyanov@gmail.com>
 References: <20211028120907.101847-1-tz.stoyanov@gmail.com>
@@ -67,108 +67,236 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The newly introduced API tracefs_kprobe_destroy() can be used to clear a
-specific kprobe or all kprobes from the system. These legacy APIs are
-removed as redundant:
- tracefs_kprobe_clear_all();
- tracefs_kprobe_clear_probe();
-
-There is one functionality, missing in the new API - clearing all
-kprobes from specific system only. If this is needed,
-tracefs_kprobe_destroy() can be extended with that use case.
+In order to make kprobe APIs consistent with the other libtracefs APIs,
+the tracefs_kprobe_info() API is reimplemented and changed to work with
+the library kprobe context structure.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- include/tracefs.h     |  2 --
- src/tracefs-kprobes.c | 62 -------------------------------------------
- 2 files changed, 64 deletions(-)
+ include/tracefs.h     |   5 +-
+ src/tracefs-kprobes.c | 175 ++++++++++++++++--------------------------
+ 2 files changed, 69 insertions(+), 111 deletions(-)
 
 diff --git a/include/tracefs.h b/include/tracefs.h
-index e7d545c..c7b9179 100644
+index d4ac8fb..c65f21f 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
-@@ -262,8 +262,6 @@ int tracefs_kretprobe_raw(const char *system, const char *event,
- char **tracefs_kprobes_get(enum tracefs_kprobe_type type);
- enum tracefs_kprobe_type tracefs_kprobe_info(const char *group, const char *event,
- 					     char **type, char **addr, char **format);
--int tracefs_kprobe_clear_all(bool force);
--int tracefs_kprobe_clear_probe(const char *system, const char *event, bool force);
+@@ -260,8 +260,9 @@ int tracefs_kprobe_raw(const char *system, const char *event,
+ int tracefs_kretprobe_raw(const char *system, const char *event,
+ 			  const char *addr, const char *format);
+ int tracefs_kprobes_get(enum tracefs_kprobe_type type, struct tracefs_dynevent ***kprobes);
+-enum tracefs_kprobe_type tracefs_kprobe_info(const char *group, const char *event,
+-					     char **type, char **addr, char **format);
++enum tracefs_kprobe_type tracefs_kprobe_info(struct tracefs_dynevent *kprobe,
++					     char **system, char **event,
++					     char **prefix, char **addr, char **format);
  
  enum tracefs_hist_key_type {
  	TRACEFS_HIST_KEY_NORMAL = 0,
 diff --git a/src/tracefs-kprobes.c b/src/tracefs-kprobes.c
-index 80dc327..1e08b75 100644
+index 2e24051..083a3a9 100644
 --- a/src/tracefs-kprobes.c
 +++ b/src/tracefs-kprobes.c
-@@ -542,68 +542,6 @@ static int kprobe_clear_probes(const char *group, bool force)
- 	return ret;
+@@ -234,58 +234,6 @@ int tracefs_kretprobe_raw(const char *system, const char *event,
+ 	return insert_kprobe("r", system, event, addr, format);
  }
  
--/**
-- * tracefs_kprobe_clear_all - clear kprobe events
-- * @force: Will attempt to disable all kprobe events and clear them
-- *
-- * Will remove all defined kprobe events. If any of them are enabled,
-- * and @force is not set, then it will error with -1 and errno to be
-- * EBUSY. If @force is set, then it will attempt to disable all the kprobe
-- * events in all instances, and try again.
-- *
-- * Returns zero on success, -1 otherwise.
+-/*
+- * Helper function to parse kprobes.
+- * @content: The content of kprobe_events on the first iteration.
+- *           NULL on next iterations.
+- * @saveptr: Same as saveptr for strtok_r
+- * @type: Where to store the type (before ':')
+- * @system: Store the system of the kprobe (NULL to have event contain
+- *          both system and event, as in "kprobes/myprobe").
+- * @event: Where to store the event.
+- * @addr: Where to store the addr (may be NULL to ignore)
+- * @format: Where to store the format (may be NULL to ignore)
 - */
--int tracefs_kprobe_clear_all(bool force)
+-static int parse_kprobe(char *content, char **saveptr,
+-			char **type, char **system, char **event,
+-			char **addr, char **format)
 -{
--	if (tracefs_instance_file_clear(NULL, KPROBE_EVENTS) == 0)
--		return 0;
+-	char *p;
 -
--	if (!force)
--		return -1;
+-	p = strtok_r(content, ":", saveptr);
+-	if (!p)
+-		return 1; /* eof */
+-	*type = p;
 -
--	/* Attempt to disable all kprobe events */
--	return kprobe_clear_probes(NULL, force);
--}
--
--/**
-- * tracefs_kprobe_clear_all - clear kprobe events
-- * @system: System to clear (NULL means default)
-- * @event: Name of probe to clear in system (NULL for all probes in system)
-- * @force: Will attempt to disable all kprobe events and clear them
-- *
-- * Will remove the kprobes that match the @system and @event. If @system
-- * is NULL, then "kprobes" is used and will ignore all other system
-- * groups of kprobes. The @event is NULL then all events under the given
-- * @system are removed, otherwise only the event that matches.
-- *
-- * Returns zero on success, -1 otherwise.
-- */
--int tracefs_kprobe_clear_probe(const char *system, const char *event, bool force)
--{
--	char **instance_list;
--	int ret;
--
--	if (!system)
--		system = "kprobes";
--
--	if (!event)
--		return kprobe_clear_probes(system, force);
--
--	/*
--	 * Since we know we are disabling a specific event, try
--	 * to disable it first before clearing it.
--	 */
--	if (force) {
--		instance_list = tracefs_instances(NULL);
--		disable_events(system, event, instance_list);
--		tracefs_list_free(instance_list);
+-	if (system) {
+-		p = strtok_r(NULL, "/", saveptr);
+-		if (!p)
+-			return -1;
+-		*system = p;
 -	}
 -
--	ret = clear_kprobe(system, event);
+-	p = strtok_r(NULL, " ", saveptr);
+-	if (!p)
+-		return -1;
+-	*event = p;
 -
--	return ret < 0 ? -1 : 0;
+-	if (addr || format) {
+-		p = strtok_r(NULL, " ", saveptr);
+-		if (!p)
+-			return -1;
+-		if (addr)
+-			*addr = p;
+-	}
+-
+-	p = strtok_r(NULL, "\n", saveptr);
+-	if (!p)
+-		return -1;
+-	if (format)
+-		*format = p;
+-
+-	return 0;
 -}
 -
  /**
-  * tracefs_kprobe_destroy - Remove a kprobe or kretprobe from the system
-  * @kprobe: A kprobe context, describing the kprobe that will be deleted.
+  * tracefs_kprobes_get - return an array of pointers to kprobes
+  * @type: The type of kprobes to return.
+@@ -316,74 +264,83 @@ int tracefs_kprobes_get(enum tracefs_kprobe_type type, struct tracefs_dynevent *
+ }
+ 
+ /**
+- * tracefs_kprobe_info - return the type of kprobe specified.
+- * @group: The group the kprobe is in (NULL for the default "kprobes")
+- * @event: The name of the kprobe to find.
+- * @type: String to return kprobe type (before ':') NULL to ignore.
+- * @addr: String to return address kprobe is attached to. NULL to ignore.
+- * @format: String to return kprobe format. NULL to ignore.
++ * tracefs_kprobe_info - return details of a kprobe
++ * @kprobe: A kprobe context, describing given kprobe.
++ * @group: return, group in which the kprobe is configured
++ * @event: return, name of the kprobe event
++ * @prefix: return, prefix string of the kprobe
++ *	    for kretprobes, the maxactive count is encoded in the prefix
++ * @addr: return, the function and offset (or address) of the kprobe
++ * @format: return, the format string of the kprobe
+  *
+- * If @type, @addr, or @format is non NULL, then the returned string
+- * must be freed with free(). They will also be set to NULL, and
+- * even on error, they may contain strings to be freed. If they are
+- * not NULL, then they still need to be freed.
+- *
+- * Returns TRACEFS_ALL_KPROBES if an error occurs or the kprobe is not found,
+- *            or the probe is of an unknown type.
+- * TRACEFS_KPROBE if the type of kprobe found is a normal kprobe.
+- * TRACEFS_KRETPROBE if the type of kprobe found is a kretprobe.
++ * Returns the type of the kprobe, or TRACEFS_ALL_KPROBES in case of an error.
++ * Any of the @group, @event, @prefix, @addr and @format parameters are optional.
++ * If a valid pointer is passed, in case of success - a string is allocated and returned.
++ * These strings must be freed with free().
+  */
+-enum tracefs_kprobe_type tracefs_kprobe_info(const char *group, const char *event,
+-					     char **type, char **addr, char **format)
++enum tracefs_kprobe_type tracefs_kprobe_info(struct tracefs_dynevent *kprobe,
++					     char **system, char **event,
++					     char **prefix, char **addr, char **format)
+ {
+-	enum tracefs_kprobe_type rtype = TRACEFS_ALL_KPROBES;
+-	char *saveptr;
+-	char *content;
+-	char *system;
+-	char *probe;
+-	char *ktype;
+-	char *kaddr;
+-	char *kfmt;
+-	int ret;
+-
+-	if (!group)
+-		group = KPROBE_DEFAULT_GROUP;
+-
+-	if (type)
+-		*type = NULL;
++	if (system)
++		*system = NULL;
++	if (event)
++		*event = NULL;
++	if (prefix)
++		*prefix = NULL;
+ 	if (addr)
+ 		*addr = NULL;
+ 	if (format)
+ 		*format = NULL;
+ 
+-	content = tracefs_instance_file_read(NULL, KPROBE_EVENTS, NULL);
+-	if (!content)
+-		return rtype;
+-
+-	ret = parse_kprobe(content, &saveptr, &ktype, &system, &probe,
+-			   &kaddr, &kfmt);
+-
+-	while (!ret) {
+-
+-		if (!strcmp(system, group) && !strcmp(probe, event)) {
+-			if (type)
+-				*type = strdup(ktype);
+-			if (addr)
+-				*addr = strdup(kaddr);
+-			if (format)
+-				*format = strdup(kfmt);
++	if (!kprobe)
++		return TRACEFS_ALL_KPROBES;
+ 
+-			switch (*ktype) {
+-			case 'p': rtype = TRACEFS_KPROBE; break;
+-			case 'r': rtype = TRACEFS_KRETPROBE; break;
+-			}
+-			break;
++	if (system) {
++		if (kprobe->system) {
++			*system = strdup(kprobe->system);
++			if (!(*system))
++				goto error;
+ 		}
+-		ret = parse_kprobe(NULL, &saveptr, &ktype, &system, &probe,
+-				   &kaddr, &kfmt);
+ 	}
+-	free(content);
+-	return rtype;
++	if (event) {
++		*event = strdup(kprobe->event);
++		if (!(*event))
++			goto error;
++	}
++	if (prefix) {
++		*prefix = strdup(kprobe->prefix);
++		if (!(*prefix))
++			goto error;
++	}
++	if (addr && kprobe->address) {
++		*addr = strdup(kprobe->address);
++		if (!(*addr))
++			goto error;
++	}
++	if (format && kprobe->format) {
++		*format = strdup(kprobe->format);
++		if (!(*format))
++			goto error;
++	}
++
++	if (kprobe->type == TRACE_DYNEVENT_KPROBE)
++		return TRACEFS_KPROBE;
++	if (kprobe->type == TRACE_DYNEVENT_KRETPROBE)
++		return TRACEFS_KRETPROBE;
++
++error:
++	if (system)
++		free(*system);
++	if (event)
++		free(*event);
++	if (prefix)
++		free(*prefix);
++	if (addr)
++		free(*addr);
++	if (format)
++		free(*format);
++	return TRACEFS_ALL_KPROBES;
+ }
+ 
+ static void disable_events(const char *system, const char *event,
 -- 
 2.31.1
 
