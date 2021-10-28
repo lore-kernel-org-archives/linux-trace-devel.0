@@ -2,32 +2,32 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08BD2C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Oct 2021 21:31:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2DFFC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Oct 2021 21:31:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E6299610CA
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Oct 2021 21:31:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DC4D0610E7
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Oct 2021 21:31:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231603AbhJ1Vd7 convert rfc822-to-8bit (ORCPT
+        id S231628AbhJ1VeF convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 28 Oct 2021 17:33:59 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:44795 "EHLO
+        Thu, 28 Oct 2021 17:34:05 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:59635 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231476AbhJ1Vdn (ORCPT
+        by vger.kernel.org with ESMTP id S231536AbhJ1Vdt (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Oct 2021 17:33:43 -0400
+        Thu, 28 Oct 2021 17:33:49 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-265-oVqn8P78NXq7hJH7--7TVQ-1; Thu, 28 Oct 2021 17:31:14 -0400
-X-MC-Unique: oVqn8P78NXq7hJH7--7TVQ-1
+ us-mta-436-Yvd4xsAdNRiSQeV8OYe-nQ-1; Thu, 28 Oct 2021 17:31:18 -0400
+X-MC-Unique: Yvd4xsAdNRiSQeV8OYe-nQ-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E08B918414A3;
-        Thu, 28 Oct 2021 21:31:12 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C82C55B38D;
+        Thu, 28 Oct 2021 21:31:16 +0000 (UTC)
 Received: from x1.com (unknown [10.22.32.36])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 341C1100EBBE;
-        Thu, 28 Oct 2021 21:31:09 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4BD581017E27;
+        Thu, 28 Oct 2021 21:31:13 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
@@ -42,9 +42,9 @@ Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V7 6/9] trace/osnoise: Remove TIMERLAT ifdefs from inside functions
-Date:   Thu, 28 Oct 2021 23:29:34 +0200
-Message-Id: <4e332a1792a0b7999f410fb7910ed438997daa18.1635452903.git.bristot@kernel.org>
+Subject: [PATCH V7 7/9] trace/osnoise: Allow multiple instances of the same tracer
+Date:   Thu, 28 Oct 2021 23:29:35 +0200
+Message-Id: <3f9dfc6f81f2e27a9a816a786e0c539cde341f87.1635452903.git.bristot@kernel.org>
 In-Reply-To: <cover.1635452903.git.bristot@kernel.org>
 References: <cover.1635452903.git.bristot@kernel.org>
 MIME-Version: 1.0
@@ -59,8 +59,20 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Remove CONFIG_TIMERLAT_TRACER from inside functions, avoiding
-compilation problems in the future.
+Currently, the user can start only one instance of timerlat/osnoise
+tracers and the tracers cannot run in parallel.
+
+As starting point to add more flexibility, let's allow the same tracer to
+run on different trace instances. The workload will start when the first
+trace_array (instance) is registered and stop when the last instance
+is unregistered.
+
+So, while this patch allows the same tracer to run in multiple
+instances (e.g., two instances running osnoise), it still does not allow
+instances of timerlat and osnoise in parallel (e.g., one timerlat and
+osnoise). That is because the osnoise: events have different behavior
+depending on which tracer is enabled (osnoise or timerlat). Enabling
+the parallel usage of these two tracers is in my TODO list.
 
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Ingo Molnar <mingo@redhat.com>
@@ -76,231 +88,194 @@ Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc: linux-rt-users@vger.kernel.org
 Cc: linux-trace-devel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- kernel/trace/trace_osnoise.c | 142 +++++++++++++++++++++++------------
- 1 file changed, 96 insertions(+), 46 deletions(-)
+ kernel/trace/trace_osnoise.c | 101 +++++++++++++++++++++++++++--------
+ 1 file changed, 78 insertions(+), 23 deletions(-)
 
 diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index 3db506f49a90..4ee6ff6a483b 100644
+index 4ee6ff6a483b..0c3a93f51b08 100644
 --- a/kernel/trace/trace_osnoise.c
 +++ b/kernel/trace/trace_osnoise.c
-@@ -321,6 +321,47 @@ static struct osnoise_data {
- #endif
- };
- 
-+#ifdef CONFIG_TIMERLAT_TRACER
-+static inline bool timerlat_enabled(void)
-+{
-+	return osnoise_data.timerlat_tracer;
-+}
-+
-+static inline void timerlat_softirq_exit(struct osnoise_variables *osn_var)
-+{
-+	struct timerlat_variables *tlat_var = this_cpu_tmr_var();
-+	/*
-+	 * If the timerlat is enabled, but the irq handler did
-+	 * not run yet enabling timerlat_tracer, do not trace.
-+	 */
-+	if (!tlat_var->tracing_thread) {
-+		osn_var->softirq.arrival_time = 0;
-+		osn_var->softirq.delta_start = 0;
-+	}
-+}
-+
-+static inline void timerlat_thread_exit(struct osnoise_variables *osn_var)
-+{
-+	struct timerlat_variables *tlat_var = this_cpu_tmr_var();
-+	/*
-+	 * If the timerlat is enabled, but the irq handler did
-+	 * not run yet enabling timerlat_tracer, do not trace.
-+	 */
-+	if (!tlat_var->tracing_thread) {
-+		osn_var->thread.delta_start = 0;
-+		osn_var->thread.arrival_time = 0;
-+	}
-+}
-+#else /* CONFIG_TIMERLAT_TRACER */
-+static inline bool timerlat_enabled(void)
-+{
-+	return false;
-+}
-+
-+static inline void timerlat_softirq_exit(struct osnoise_variables *osn_var) {}
-+static inline void timerlat_thread_exit(struct osnoise_variables *osn_var) {}
-+#endif
-+
- #ifdef CONFIG_PREEMPT_RT
- /*
-  * Print the osnoise header info.
-@@ -977,21 +1018,8 @@ static void trace_softirq_exit_callback(void *data, unsigned int vec_nr)
- 	if (!osn_var->sampling)
- 		return;
- 
--#ifdef CONFIG_TIMERLAT_TRACER
--	/*
--	 * If the timerlat is enabled, but the irq handler did
--	 * not run yet enabling timerlat_tracer, do not trace.
--	 */
--	if (unlikely(osnoise_data.timerlat_tracer)) {
--		struct timerlat_variables *tlat_var;
--		tlat_var = this_cpu_tmr_var();
--		if (!tlat_var->tracing_thread) {
--			osn_var->softirq.arrival_time = 0;
--			osn_var->softirq.delta_start = 0;
--			return;
--		}
--	}
--#endif
-+	if (unlikely(timerlat_enabled()))
-+		timerlat_softirq_exit(osn_var);
- 
- 	duration = get_int_safe_duration(osn_var, &osn_var->softirq.delta_start);
- 	trace_softirq_noise(vec_nr, osn_var->softirq.arrival_time, duration);
-@@ -1085,17 +1113,8 @@ thread_exit(struct osnoise_variables *osn_var, struct task_struct *t)
- 	if (!osn_var->sampling)
- 		return;
- 
--#ifdef CONFIG_TIMERLAT_TRACER
--	if (osnoise_data.timerlat_tracer) {
--		struct timerlat_variables *tlat_var;
--		tlat_var = this_cpu_tmr_var();
--		if (!tlat_var->tracing_thread) {
--			osn_var->thread.delta_start = 0;
--			osn_var->thread.arrival_time = 0;
--			return;
--		}
--	}
--#endif
-+	if (unlikely(timerlat_enabled()))
-+		timerlat_thread_exit(osn_var);
- 
- 	duration = get_int_safe_duration(osn_var, &osn_var->thread.delta_start);
- 
-@@ -1599,6 +1618,11 @@ static int timerlat_main(void *data)
- 	hrtimer_cancel(&tlat->timer);
- 	return 0;
+@@ -64,6 +64,24 @@ static bool osnoise_has_registered_instances(void)
+ 					list);
  }
-+#else /* CONFIG_TIMERLAT_TRACER */
-+static int timerlat_main(void *data)
-+{
-+	return 0;
-+}
- #endif /* CONFIG_TIMERLAT_TRACER */
  
- /*
-@@ -1641,16 +1665,13 @@ static int start_kthread(unsigned int cpu)
- 	void *main = osnoise_main;
- 	char comm[24];
- 
--#ifdef CONFIG_TIMERLAT_TRACER
--	if (osnoise_data.timerlat_tracer) {
-+	if (timerlat_enabled()) {
- 		snprintf(comm, 24, "timerlat/%d", cpu);
- 		main = timerlat_main;
- 	} else {
- 		snprintf(comm, 24, "osnoise/%d", cpu);
- 	}
--#else
--	snprintf(comm, 24, "osnoise/%d", cpu);
--#endif
-+
- 	kthread = kthread_create_on_cpu(main, NULL, cpu, comm);
- 
- 	if (IS_ERR(kthread)) {
-@@ -1944,6 +1965,35 @@ static const struct file_operations cpus_fops = {
- 	.llseek		= generic_file_llseek,
- };
- 
-+#ifdef CONFIG_TIMERLAT_TRACER
 +/*
-+ * init_timerlat_tracefs - A function to initialize the timerlat interface files
++ * osnoise_instance_registered - check if a tr is already registered
 + */
-+static int init_timerlat_tracefs(struct dentry *top_dir)
++static int osnoise_instance_registered(struct trace_array *tr)
 +{
-+	struct dentry *tmp;
++	struct osnoise_instance *inst;
++	int found = 0;
 +
-+#ifdef CONFIG_STACKTRACE
-+	tmp = tracefs_create_file("print_stack", 0640, top_dir,
-+				  &osnoise_print_stack, &trace_min_max_fops);
-+	if (!tmp)
-+		return -ENOMEM;
-+#endif
++	rcu_read_lock();
++	list_for_each_entry_rcu(inst, &osnoise_instances, list) {
++		if (inst->tr == tr)
++			found = 1;
++	}
++	rcu_read_unlock();
 +
-+	tmp = tracefs_create_file("timerlat_period_us", 0640, top_dir,
-+				  &timerlat_period, &trace_min_max_fops);
-+	if (!tmp)
-+		return -ENOMEM;
-+
-+	return 0;
++	return found;
 +}
-+#else /* CONFIG_TIMERLAT_TRACER */
-+static int init_timerlat_tracefs(struct dentry *top_dir)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_TIMERLAT_TRACER */
 +
  /*
-  * init_tracefs - A function to initialize the tracefs interface files
+  * osnoise_register_instance - register a new trace instance
   *
-@@ -1988,19 +2038,10 @@ static int init_tracefs(void)
- 	tmp = trace_create_file("cpus", 0644, top_dir, NULL, &cpus_fops);
- 	if (!tmp)
- 		goto err;
--#ifdef CONFIG_TIMERLAT_TRACER
--#ifdef CONFIG_STACKTRACE
--	tmp = tracefs_create_file("print_stack", 0640, top_dir,
--				  &osnoise_print_stack, &trace_min_max_fops);
--	if (!tmp)
--		goto err;
--#endif
+@@ -2089,6 +2107,16 @@ static int osnoise_workload_start(void)
+ {
+ 	int retval;
  
--	tmp = tracefs_create_file("timerlat_period_us", 0640, top_dir,
--				  &timerlat_period, &trace_min_max_fops);
--	if (!tmp)
-+	ret = init_timerlat_tracefs(top_dir);
-+	if (ret)
- 		goto err;
--#endif
++	/*
++	 * Instances need to be registered after calling workload
++	 * start. Hence, if there is already an instance, the
++	 * workload was already registered. Otherwise, this
++	 * code is on the way to register the first instance,
++	 * and the workload will start.
++	 */
++	if (osnoise_has_registered_instances())
++		return 0;
++
+ 	osn_var_reset_all();
+ 
+ 	retval = osnoise_hook_events();
+@@ -2116,6 +2144,13 @@ static int osnoise_workload_start(void)
+  */
+ static void osnoise_workload_stop(void)
+ {
++	/*
++	 * Instances need to be unregistered before calling
++	 * stop. Hence, if there is a registered instance, more
++	 * than one instance is running, and the workload will not
++	 * yet stop. Otherwise, this code is on the way to disable
++	 * the last instance, and the workload can stop.
++	 */
+ 	if (osnoise_has_registered_instances())
+ 		return;
+ 
+@@ -2137,7 +2172,11 @@ static void osnoise_tracer_start(struct trace_array *tr)
+ {
+ 	int retval;
+ 
+-	if (osnoise_has_registered_instances())
++	/*
++	 * If the instance is already registered, there is no need to
++	 * register it again.
++	 */
++	if (osnoise_instance_registered(tr))
+ 		return;
+ 
+ 	retval = osnoise_workload_start();
+@@ -2149,18 +2188,17 @@ static void osnoise_tracer_start(struct trace_array *tr)
+ 
+ static void osnoise_tracer_stop(struct trace_array *tr)
+ {
+-	if (!osnoise_has_registered_instances())
+-		return;
+-
+ 	osnoise_unregister_instance(tr);
+ 	osnoise_workload_stop();
+ }
+ 
+ static int osnoise_tracer_init(struct trace_array *tr)
+ {
+-
+-	/* Only allow one instance to enable this */
+-	if (osnoise_has_registered_instances())
++	/*
++	 * Only allow osnoise tracer if timerlat tracer is not running
++	 * already.
++	 */
++	if (timerlat_enabled())
+ 		return -EBUSY;
+ 
+ 	tr->max_latency = 0;
+@@ -2189,45 +2227,55 @@ static void timerlat_tracer_start(struct trace_array *tr)
+ {
+ 	int retval;
+ 
+-	if (osnoise_has_registered_instances())
++	/*
++	 * If the instance is already registered, there is no need to
++	 * register it again.
++	 */
++	if (osnoise_instance_registered(tr))
+ 		return;
+ 
+-	osnoise_data.timerlat_tracer = 1;
+-
+ 	retval = osnoise_workload_start();
+ 	if (retval)
+-		goto out_err;
++		pr_err(BANNER "Error starting timerlat tracer\n");
+ 
+ 	osnoise_register_instance(tr);
+ 
+ 	return;
+-out_err:
+-	pr_err(BANNER "Error starting timerlat tracer\n");
+ }
+ 
+ static void timerlat_tracer_stop(struct trace_array *tr)
+ {
+ 	int cpu;
+ 
+-	if (!osnoise_has_registered_instances())
+-		return;
+-
+-	for_each_online_cpu(cpu)
+-		per_cpu(per_cpu_osnoise_var, cpu).sampling = 0;
++	osnoise_unregister_instance(tr);
+ 
+-	osnoise_tracer_stop(tr);
++	/*
++	 * Instruct the threads to stop only if this is the last instance.
++	 */
++	if (!osnoise_has_registered_instances()) {
++		for_each_online_cpu(cpu)
++			per_cpu(per_cpu_osnoise_var, cpu).sampling = 0;
++	}
+ 
+-	osnoise_data.timerlat_tracer = 0;
++	osnoise_workload_stop();
+ }
+ 
+ static int timerlat_tracer_init(struct trace_array *tr)
+ {
+-	/* Only allow one instance to enable this */
+-	if (osnoise_has_registered_instances())
++	/*
++	 * Only allow timerlat tracer if osnoise tracer is not running already.
++	 */
++	if (osnoise_has_registered_instances() && !osnoise_data.timerlat_tracer)
+ 		return -EBUSY;
+ 
+-	tr->max_latency = 0;
++	/*
++	 * If this is the first instance, set timerlat_tracer to block
++	 * osnoise tracer start.
++	 */
++	if (!osnoise_has_registered_instances())
++		osnoise_data.timerlat_tracer = 1;
+ 
++	tr->max_latency = 0;
+ 	timerlat_tracer_start(tr);
  
  	return 0;
- 
-@@ -2206,6 +2247,16 @@ static struct tracer timerlat_tracer __read_mostly = {
- 	.print_header	= print_timerlat_headers,
- 	.allow_instances = true,
- };
+@@ -2236,6 +2284,13 @@ static int timerlat_tracer_init(struct trace_array *tr)
+ static void timerlat_tracer_reset(struct trace_array *tr)
+ {
+ 	timerlat_tracer_stop(tr);
 +
-+__init static int init_timerlat_tracer(void)
-+{
-+	return register_tracer(&timerlat_tracer);
-+}
-+#else /* CONFIG_TIMERLAT_TRACER */
-+__init static int init_timerlat_tracer(void)
-+{
-+	return 0;
-+}
- #endif /* CONFIG_TIMERLAT_TRACER */
++	/*
++	 * If this is the last instance, reset timerlat_tracer allowing
++	 * osnoise to be started.
++	 */
++	if (!osnoise_has_registered_instances())
++		osnoise_data.timerlat_tracer = 0;
+ }
  
- __init static int init_osnoise_tracer(void)
-@@ -2222,13 +2273,12 @@ __init static int init_osnoise_tracer(void)
- 		return ret;
- 	}
- 
--#ifdef CONFIG_TIMERLAT_TRACER
--	ret = register_tracer(&timerlat_tracer);
-+	ret = init_timerlat_tracer();
- 	if (ret) {
--		pr_err(BANNER "Error registering timerlat\n");
-+		pr_err(BANNER "Error registering timerlat!\n");
- 		return ret;
- 	}
--#endif
-+
- 	osnoise_init_hotplug_support();
- 
- 	INIT_LIST_HEAD_RCU(&osnoise_instances);
+ static struct tracer timerlat_tracer __read_mostly = {
 -- 
 2.31.1
 
