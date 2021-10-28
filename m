@@ -2,77 +2,106 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F13B0C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Oct 2021 02:54:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57F77C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Oct 2021 12:09:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CD66B610FF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Oct 2021 02:54:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3DE8260F90
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Oct 2021 12:09:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbhJ1C5O (ORCPT
+        id S230135AbhJ1MLj (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 27 Oct 2021 22:57:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41744 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229534AbhJ1C5O (ORCPT
+        Thu, 28 Oct 2021 08:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230093AbhJ1MLi (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 27 Oct 2021 22:57:14 -0400
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E343F60527;
-        Thu, 28 Oct 2021 02:54:46 +0000 (UTC)
-Date:   Wed, 27 Oct 2021 22:54:45 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Tao Zhou <tao.zhou@linux.dev>, Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V6 07/20] rtla: Real-Time Linux Analysis tool
-Message-ID: <20211027225445.0325be0f@rorschach.local.home>
-In-Reply-To: <60dbd3e36ac9489b6aadbc1c3d095608e6c7e4bb.1635284863.git.bristot@kernel.org>
-References: <cover.1635284863.git.bristot@kernel.org>
-        <60dbd3e36ac9489b6aadbc1c3d095608e6c7e4bb.1635284863.git.bristot@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 28 Oct 2021 08:11:38 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D867FC061570
+        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Oct 2021 05:09:11 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id s1so23918603edd.3
+        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Oct 2021 05:09:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K1M2+AuSgIw+s1ScfPI9BoLT6TacZCOs4ZsM9bz37tI=;
+        b=nTC4x4FXEjzq/ljf7CJVCXavUm0UYGr29zqDQcQmNDMNzYEQ+0WDMKNSqVscbdBOIp
+         UqTkKcYhpJN3tBzC/U/EI5i/P+hZzLvWfDwvWCDaGMm6KMEOqktYZpivseyy9GqBaGlF
+         BSRy81gaUmyps2vRo8rT+883w3eedg5/4c5fNL1stB+Bcf+PrD1sfrrhndweUAXlaKvo
+         fRXyI894Gdj0ymNSX57l51jiOngX7AVcSwDrxr1IwTG9o1ZD2KfX4N2CVeTiHLV6lK4k
+         0gnc0uGCo9FlR8Blgjwt3YBIBW9mD3JqJkMdXjKdwYBDedvtDuITBbdjiMi6rTSDZCUb
+         Rrcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K1M2+AuSgIw+s1ScfPI9BoLT6TacZCOs4ZsM9bz37tI=;
+        b=Mk3ssn0uNgR8Xxv86a2p+B30LZ7Uh5/24yF6Lcu5z8jkg0h7KfwvKThxrIUJUQv3jz
+         BvfbD3NwnicLlWoAsK5h9tNApgAm6qqrrzKAjX24ga2rGX2qkQgG6fV+JWUkNGVz6aUa
+         vEsIAY1rvk00U/L2NKNhAJcQuAUzOjqLz3J/nvhRXxpvS761vskVvrJyAbpz7FfvT9pr
+         4zap3VU4HnmVDdwhzQ5Uo/Ysha81rjpyAYZQKPR1BMonDWBwmTNqsMALiHvLnTKkIZZi
+         PqIb2DcX+0eK/vPfuQyugFNVNHbX3V34MW6HAAdGL0HhVXBdmQJY7PPdwz07ma1fTEDt
+         cwcQ==
+X-Gm-Message-State: AOAM533gYsf2S9Ls6AOWxc+wYzJ3CNrpV4YtLfGezNl61FC+vDB2iz62
+        OpwHyQN6oVN+8ciQ6VdYEg8=
+X-Google-Smtp-Source: ABdhPJxkm+/acdaGMKx0sz8A81hmLHaiExFZRUkqFMjE0h7RNo/1unPWmFYM5kiPwP9EdYpcAL83yw==
+X-Received: by 2002:a17:906:64a:: with SMTP id t10mr5119221ejb.5.1635422950188;
+        Thu, 28 Oct 2021 05:09:10 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id v6sm1803003edc.52.2021.10.28.05.09.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 05:09:09 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH 00/12] libtracefs dynamic events support
+Date:   Thu, 28 Oct 2021 15:08:55 +0300
+Message-Id: <20211028120907.101847-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 27 Oct 2021 00:06:18 +0200
-Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+The libtracefs logic that works with ftrace dynamic events is unified and
+capsulated into internal APIs. This change makes the code more consistent
+and reusable. Also, adding future libtracefs support for uprobes and
+eprobes dynamic events is simplified.
+The existing library APIs for kprobes and synthetic events are reimplemented
+using the new dynamic events helpers.
 
-> The rtla is a meta-tool that includes a set of commands that aims
-> to analyze the real-time properties of Linux. But instead of testing
-> Linux as a black box, rtla leverages kernel tracing capabilities to
-> provide precise information about the properties and root causes of
-> unexpected results.
-> 
-> rtla --help works and provide information about the available options.
->
+Tzvetomir Stoyanov (VMware) (12):
+  libtracefs: Add new internal APIs for dynamic events
+  libtracefs: Rename tracefs_get_kprobes API
+  libtracefs: New kprobes APIs
+  libtracefs: Remove redundant kprobes APIs
+  libtracefs: Reimplement tracefs_kprobes_get API
+  libtracefs: Change tracefs_kprobe_info API
+  libtracefs: Reimplement kprobe raw APIs
+  libtracefs: Extend kprobes unit test
+  libtracefs: Update kprobes man pages
+  libtracefs: Rename tracefs_synth_init API
+  libtracefs: Use the internal dynamic events API when creating
+    synthetic events
+  libtracefs: Document tracefs_dynevent_list_free() API
 
-BTW,
+ Documentation/libtracefs-kprobes.txt | 135 ++++---
+ Documentation/libtracefs-synth.txt   |  20 +-
+ Documentation/libtracefs-synth2.txt  |  10 +-
+ Documentation/libtracefs-utils.txt   |   6 +-
+ include/tracefs-local.h              |  34 ++
+ include/tracefs.h                    |  38 +-
+ src/Makefile                         |   1 +
+ src/tracefs-dynevents.c              | 463 ++++++++++++++++++++++++
+ src/tracefs-hist.c                   | 110 +++---
+ src/tracefs-kprobes.c                | 523 +++++++++++++--------------
+ src/tracefs-sqlhist.c                |   6 +-
+ utest/tracefs-utest.c                | 414 ++++++++++++---------
+ 12 files changed, 1169 insertions(+), 591 deletions(-)
+ create mode 100644 src/tracefs-dynevents.c
 
-I would break this up into two separate series.
+-- 
+2.31.1
 
-One for the kernel changes [ patches 1-6 ] and then one for the tooling
-[ patches 7 - 20 ].
-
-That will make it better for versioning. And you really shouldn't have
-the two mixed together. Just state in the cover letter of the tooling 
-[ Depends on the series at: ...] 
-
-And include the lore link.
-
-BTW, you may resend a fixed version of 1-6 ;-)
-
--- Steve
