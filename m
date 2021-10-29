@@ -2,35 +2,36 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21724C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Oct 2021 19:02:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2453AC433FE
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Oct 2021 19:26:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0CEA760F9B
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Oct 2021 19:02:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0AD1C60F9B
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Oct 2021 19:26:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhJ2TEg convert rfc822-to-8bit (ORCPT
+        id S230215AbhJ2T3I convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 29 Oct 2021 15:04:36 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:58710 "EHLO
+        Fri, 29 Oct 2021 15:29:08 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:33810 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230467AbhJ2TE1 (ORCPT
+        by vger.kernel.org with ESMTP id S230126AbhJ2T3H (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 29 Oct 2021 15:04:27 -0400
+        Fri, 29 Oct 2021 15:29:07 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-571-aUBgWNA2NE6rT4Pea9eR-A-1; Fri, 29 Oct 2021 15:01:56 -0400
-X-MC-Unique: aUBgWNA2NE6rT4Pea9eR-A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+ us-mta-280-qeugGdCINmyifBramx3sEQ-1; Fri, 29 Oct 2021 15:26:35 -0400
+X-MC-Unique: qeugGdCINmyifBramx3sEQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D6E5D8066F6;
-        Fri, 29 Oct 2021 19:01:54 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75FA08030B7;
+        Fri, 29 Oct 2021 19:26:33 +0000 (UTC)
 Received: from x1.com (unknown [10.22.10.230])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F137E5D9CA;
-        Fri, 29 Oct 2021 19:01:49 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AED5719724;
+        Fri, 29 Oct 2021 19:26:24 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+Cc:     Tao Zhou <tao.zhou@linux.dev>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
         Ingo Molnar <mingo@redhat.com>,
         Tom Zanussi <zanussi@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
@@ -42,15 +43,11 @@ Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V8 9/9] tracing/osnoise: Remove PREEMPT_RT ifdefs from inside functions
-Date:   Fri, 29 Oct 2021 21:00:35 +0200
-Message-Id: <8e32bd96c85b691e606a545158815853581d0663.1635533292.git.bristot@kernel.org>
-In-Reply-To: <cover.1635533292.git.bristot@kernel.org>
-References: <cover.1635533292.git.bristot@kernel.org>
+Subject: [PATCH V7 00/14] RTLA: An interface for osnoise/timerlat tracers
+Date:   Fri, 29 Oct 2021 21:26:03 +0200
+Message-Id: <cover.1635535309.git.bristot@kernel.org>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: kernel.org
 Content-Transfer-Encoding: 8BIT
@@ -59,61 +56,149 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Remove CONFIG_PREEMPT_RT from inside functions, avoiding
-compilation problems in the future.
+The rtla(1) is a meta-tool that includes a set of commands that
+aims to analyze the real-time properties of Linux. But instead of
+testing Linux as a black box, rtla leverages kernel tracing
+capabilities to provide precise information about the properties
+and root causes of unexpected results.
 
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Tom Zanussi <zanussi@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Clark Williams <williams@redhat.com>
-Cc: John Kacur <jkacur@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: linux-rt-users@vger.kernel.org
-Cc: linux-trace-devel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- kernel/trace/trace_osnoise.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+To start, it presents an interface to the osnoise and timerlat tracers.
+In the future, it will also serve as home to the rtsl [1] and other
+latency/noise tracers.
 
-diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index 2594193aa30e..7a8d1b631d75 100644
---- a/kernel/trace/trace_osnoise.c
-+++ b/kernel/trace/trace_osnoise.c
-@@ -1517,9 +1517,11 @@ static enum hrtimer_restart timerlat_irq(struct hrtimer *timer)
- 	 * running, the thread needs to receive the softirq delta_start. The
- 	 * reason being is that the softirq will be the last to be unfolded,
- 	 * resseting the thread delay to zero.
-+	 *
-+	 * The PREEMPT_RT is a special case, though. As softirqs run as threads
-+	 * on RT, moving the thread is enough.
- 	 */
--#ifndef CONFIG_PREEMPT_RT
--	if (osn_var->softirq.delta_start) {
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && osn_var->softirq.delta_start) {
- 		copy_int_safe_time(osn_var, &osn_var->thread.delta_start,
- 				   &osn_var->softirq.delta_start);
- 
-@@ -1529,13 +1531,6 @@ static enum hrtimer_restart timerlat_irq(struct hrtimer *timer)
- 		copy_int_safe_time(osn_var, &osn_var->thread.delta_start,
- 				    &osn_var->irq.delta_start);
- 	}
--#else /* CONFIG_PREEMPT_RT */
--	/*
--	 * The sofirqs run as threads on RT, so there is not need
--	 * to keep track of it.
--	 */
--	copy_int_safe_time(osn_var, &osn_var->thread.delta_start, &osn_var->irq.delta_start);
--#endif /* CONFIG_PREEMPT_RT */
- 
- 	/*
- 	 * Compute the current time with the expected time.
+If you just want to run it, you can download the tarball here:
+  - https://bristot.me/files/rtla/tarball/rtla-0.3.tar.bz2
+
+To compile rtla on fedora you need:
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git
+  $ cd libtraceevent/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git
+  $ cd libtracefs/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ sudo dnf install python3-docutils procps-devel
+  $ cd $rtla_src
+  $ make
+  $ sudo make install
+
+The tracing option (-t) depends some kernel patches that are
+available at [2].
+
+This tool was be discussed at the RT-MC during LPC2021 [3]
+
+[1] rtsl: https://github.com/bristot/rtsl/
+[2] https://lore.kernel.org/lkml/cover.1635533292.git.bristot@kernel.org/
+[3] https://youtu.be/cZUzc0U1jJ4
+
+Changes from v6:
+  - Revisited osnoise option config functions
+  - Properly handles offline CPUs
+  - Some cleanups
+  - Fixed an histogram allocation problem (Tao Zhou)
+  - Revisited open()/read()/write() (Tao Zhou)
+Changes from v5:
+  - Fix retval check in save_trace_to_file() (Tao Zhou)
+  - Fix goto logic in save_trace_to_file() (Tao Zhou)
+  - Removed unused save_trace_pipe_to_file() function
+  - Correctly handle an error on osnoise_set_* functions during
+    "apply config" for all tools (Tao Zhou)
+Changes from v3:
+  - Add cross-compile support (Ahmed S. Darwish)
+  - Move documentation to Documentation/tools/rtla (Jonathan Corbet)
+  - Use .rst format for documentation (Jonathan Corbet)
+  - Use include option from .rst to group common parts of the documentation
+  - Makefile (main and doc) cleanups
+Changes from v2:
+  - Fix the miss conception of the "size" for kernel histograms (Steven/Tom)
+  - Change the --skip-zeros to --with-zeros option as the former is better
+    for humans (and the latter for computers to plot charts).
+  - A lot of checkpatch fixes for the user-space part.
+Changes from v1:
+  - Fixes -t options on osnoise tracers (-t means --trace for all tools now)
+  - Fixes --bucket-size references (not --bucket_size)
+
+Daniel Bristot de Oliveira (14):
+  rtla: Real-Time Linux Analysis tool
+  rtla: Helper functions for rtla
+  rtla: Add osnoise tool
+  rtla/osnoise: Add osnoise top mode
+  rtla/osnoise: Add the hist mode
+  rtla: Add timerlat tool and timelart top mode
+  rtla/timerlat: Add timerlat hist mode
+  rtla: Add Documentation
+  rtla: Add rtla osnoise man page
+  rtla: Add rtla osnoise top documentation
+  rtla: Add rtla osnoise hist documentation
+  rtla: Add rtla timerlat documentation
+  rtla: Add rtla timerlat top documentation
+  rtla: Add rtla timerlat hist documentation
+
+ Documentation/tools/rtla/Makefile             |   41 +
+ Documentation/tools/rtla/common_appendix.rst  |   12 +
+ .../tools/rtla/common_hist_options.rst        |   23 +
+ Documentation/tools/rtla/common_options.rst   |   24 +
+ .../tools/rtla/common_osnoise_description.rst |    8 +
+ .../tools/rtla/common_osnoise_options.rst     |   17 +
+ .../rtla/common_timerlat_description.rst      |   10 +
+ .../tools/rtla/common_timerlat_options.rst    |   16 +
+ .../tools/rtla/common_top_options.rst         |    3 +
+ .../tools/rtla/rtla-osnoise-hist.rst          |   66 ++
+ Documentation/tools/rtla/rtla-osnoise-top.rst |   61 +
+ Documentation/tools/rtla/rtla-osnoise.rst     |   59 +
+ .../tools/rtla/rtla-timerlat-hist.rst         |  106 ++
+ .../tools/rtla/rtla-timerlat-top.rst          |  145 +++
+ Documentation/tools/rtla/rtla-timerlat.rst    |   57 +
+ Documentation/tools/rtla/rtla.rst             |   48 +
+ tools/tracing/rtla/Makefile                   |  102 ++
+ tools/tracing/rtla/src/osnoise.c              | 1017 +++++++++++++++++
+ tools/tracing/rtla/src/osnoise.h              |   96 ++
+ tools/tracing/rtla/src/osnoise_hist.c         |  799 +++++++++++++
+ tools/tracing/rtla/src/osnoise_top.c          |  577 ++++++++++
+ tools/tracing/rtla/src/rtla.c                 |   87 ++
+ tools/tracing/rtla/src/timerlat.c             |   72 ++
+ tools/tracing/rtla/src/timerlat.h             |    4 +
+ tools/tracing/rtla/src/timerlat_hist.c        |  820 +++++++++++++
+ tools/tracing/rtla/src/timerlat_top.c         |  615 ++++++++++
+ tools/tracing/rtla/src/trace.c                |  192 ++++
+ tools/tracing/rtla/src/trace.h                |   27 +
+ tools/tracing/rtla/src/utils.c                |  433 +++++++
+ tools/tracing/rtla/src/utils.h                |   56 +
+ 30 files changed, 5593 insertions(+)
+ create mode 100644 Documentation/tools/rtla/Makefile
+ create mode 100644 Documentation/tools/rtla/common_appendix.rst
+ create mode 100644 Documentation/tools/rtla/common_hist_options.rst
+ create mode 100644 Documentation/tools/rtla/common_options.rst
+ create mode 100644 Documentation/tools/rtla/common_osnoise_description.rst
+ create mode 100644 Documentation/tools/rtla/common_osnoise_options.rst
+ create mode 100644 Documentation/tools/rtla/common_timerlat_description.rst
+ create mode 100644 Documentation/tools/rtla/common_timerlat_options.rst
+ create mode 100644 Documentation/tools/rtla/common_top_options.rst
+ create mode 100644 Documentation/tools/rtla/rtla-osnoise-hist.rst
+ create mode 100644 Documentation/tools/rtla/rtla-osnoise-top.rst
+ create mode 100644 Documentation/tools/rtla/rtla-osnoise.rst
+ create mode 100644 Documentation/tools/rtla/rtla-timerlat-hist.rst
+ create mode 100644 Documentation/tools/rtla/rtla-timerlat-top.rst
+ create mode 100644 Documentation/tools/rtla/rtla-timerlat.rst
+ create mode 100644 Documentation/tools/rtla/rtla.rst
+ create mode 100644 tools/tracing/rtla/Makefile
+ create mode 100644 tools/tracing/rtla/src/osnoise.c
+ create mode 100644 tools/tracing/rtla/src/osnoise.h
+ create mode 100644 tools/tracing/rtla/src/osnoise_hist.c
+ create mode 100644 tools/tracing/rtla/src/osnoise_top.c
+ create mode 100644 tools/tracing/rtla/src/rtla.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.h
+ create mode 100644 tools/tracing/rtla/src/timerlat_hist.c
+ create mode 100644 tools/tracing/rtla/src/timerlat_top.c
+ create mode 100644 tools/tracing/rtla/src/trace.c
+ create mode 100644 tools/tracing/rtla/src/trace.h
+ create mode 100644 tools/tracing/rtla/src/utils.c
+ create mode 100644 tools/tracing/rtla/src/utils.h
+
 -- 
 2.31.1
 
