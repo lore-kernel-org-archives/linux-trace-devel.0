@@ -2,41 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 156FCC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Oct 2021 16:28:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70DADC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Oct 2021 19:00:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E836C61177
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Oct 2021 16:28:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4E9A460FF2
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Oct 2021 19:00:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbhJ2QbD (ORCPT
+        id S229979AbhJ2TDV convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 29 Oct 2021 12:31:03 -0400
-Received: from gateway33.websitewelcome.com ([192.185.145.33]:36547 "EHLO
-        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229623AbhJ2QbC (ORCPT
+        Fri, 29 Oct 2021 15:03:21 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:35040 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230084AbhJ2TDV (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 29 Oct 2021 12:31:02 -0400
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway33.websitewelcome.com (Postfix) with ESMTP id D8A52561DC5A
-        for <linux-trace-devel@vger.kernel.org>; Fri, 29 Oct 2021 11:04:20 -0500 (CDT)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id gUMemtRAKgm2UgUMeml3wt; Fri, 29 Oct 2021 11:04:20 -0500
-X-Authority-Reason: nr=8
-Received: from host-79-27-6-113.retail.telecomitalia.it ([79.27.6.113]:40440 helo=[10.0.0.44])
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1mgUMd-001U4B-MR; Fri, 29 Oct 2021 11:04:19 -0500
-Message-ID: <7c4174c7-350d-7922-b82e-862c5fa7477b@kernel.org>
-Date:   Fri, 29 Oct 2021 18:04:15 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH V6 11/20] rtla/osnoise: Add the hist mode
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>, Tao Zhou <tao.zhou@linux.dev>
-Cc:     Ingo Molnar <mingo@redhat.com>, Tom Zanussi <zanussi@kernel.org>,
+        Fri, 29 Oct 2021 15:03:21 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-508-AW6qNnEhMgyS1eYwQiutTw-1; Fri, 29 Oct 2021 15:00:48 -0400
+X-MC-Unique: AW6qNnEhMgyS1eYwQiutTw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7FA341006AA2;
+        Fri, 29 Oct 2021 19:00:46 +0000 (UTC)
+Received: from x1.com (unknown [10.22.10.230])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A48255D9CA;
+        Fri, 29 Oct 2021 19:00:38 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Clark Williams <williams@redhat.com>,
@@ -46,48 +42,68 @@ Cc:     Ingo Molnar <mingo@redhat.com>, Tom Zanussi <zanussi@kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <cover.1635284863.git.bristot@kernel.org>
- <fede3c3805cb7a70bd7c8d60ba2c5ce290cc6e1e.1635284863.git.bristot@kernel.org>
- <YXmWTOXHYXFduayt@geo.homenetwork>
- <20211027142918.487cd143@gandalf.local.home>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <20211027142918.487cd143@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 79.27.6.113
-X-Source-L: No
-X-Exim-ID: 1mgUMd-001U4B-MR
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-79-27-6-113.retail.telecomitalia.it ([10.0.0.44]) [79.27.6.113]:40440
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 16
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
+Subject: [PATCH V8 0/9] tracing/osnoise: Support multiple instances (for RTLA)
+Date:   Fri, 29 Oct 2021 21:00:26 +0200
+Message-Id: <cover.1635533292.git.bristot@kernel.org>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 10/27/21 20:29, Steven Rostedt wrote:
-> On Thu, 28 Oct 2021 02:11:24 +0800
-> Tao Zhou <tao.zhou@linux.dev> wrote:
-> 
->>> +	/* one histogram for IRQ and one for thread, per cpu */
->>> +	for (cpu = 0; cpu < nr_cpus; cpu++) {
->>> +		data->hist[cpu].samples = calloc(1, sizeof(*data->hist) * (entries + 1));  
->> @samples is a pointer to int and used for int array. The "sizeof(*data->hist)"
->> should be "sizeof(int)" or am I totally wrong.
-> Or standard approach is: 
-> 
-> 		data->hist[cpu].samples = calloc(1, sizeof(*data->hist->samples) * (entries + 1));
+Currently, osnoise and timerlat run only on a single instance. To reduce
+this limitation, this series adds support for parallel instances of the
+same tracer. That is, it is possible to run two instances of osnoise
+tracer with different configurations. For example, one for the tracer
+output and another for a set of tracepoints.
 
-Fixed in the next version, thanks!
+This patchset is the kernel dependencies for RTLA. This patchset was
+being sent along with RTLA [1], but we split the kernel and
+user-space patch sets.
 
--- Daniel
+[1] RTLA: An interface for osnoise/timerlat tracers:
+    https://lore.kernel.org/lkml/cover.1635284863.git.bristot@kernel.org/
+
+Changes from v7:
+  - Fix check for print_stack disabled
+  - Fix thread/sofitrq filter when TIMERLAT ifdef is enabled
+    Both fixes for the patches added in the v6.
+Changes from v6:
+  - Fix compilation problems for the case in which osnoise
+    enabled, but timerlat disabled (Steven)
+  - Remove ifdefs from inside functions (Steven)
+
+Changes that happened while in the RTLA patchset:
+  - Fix comment on start_per_cpu_kthreads() (Steven)
+  - Fix msg log on patch 1
+  - Add comments about the barrier need for trace_nmi_enter/exit
+  - Fix RCU usage in osnoise_unregister_instance() (Steven/Paul)
+  - Add lockdep checks in osnoise_unregister/unregister_instance()
+    (Steven/Paul)
+  - Improve the explanation about the multi instances support (Steven)
+
+
+Daniel Bristot de Oliveira (9):
+  tracing/osnoise: Do not follow tracing_cpumask
+  tracing/osnoise: Improve comments about barrier need for NMI callbacks
+  tracing/osnoise: Split workload start from the tracer start
+  tracing/osnoise: Use start/stop_per_cpu_kthreads() on
+    osnoise_cpus_write()
+  tracing/osnoise: Support a list of trace_array *tr
+  tracing/osnoise: Remove TIMERLAT ifdefs from inside functions
+  tracing/osnoise: Allow multiple instances of the same tracer
+  tracing/osnoise: Remove STACKTRACE ifdefs from inside functions
+  tracing/osnoise: Remove PREEMPT_RT ifdefs from inside functions
+
+ kernel/trace/trace_osnoise.c | 615 ++++++++++++++++++++++++-----------
+ 1 file changed, 434 insertions(+), 181 deletions(-)
+
+-- 
+2.31.1
+
