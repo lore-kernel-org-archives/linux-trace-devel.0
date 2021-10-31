@@ -2,36 +2,35 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94754C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Oct 2021 19:28:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94B59C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 31 Oct 2021 18:05:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 771E860F02
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Oct 2021 19:28:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6336660EB8
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 31 Oct 2021 18:05:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhJ2Taq convert rfc822-to-8bit (ORCPT
+        id S229898AbhJaSIW convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 29 Oct 2021 15:30:46 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:33582 "EHLO
+        Sun, 31 Oct 2021 14:08:22 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:54080 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231932AbhJ2TaU (ORCPT
+        by vger.kernel.org with ESMTP id S229838AbhJaSIW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 29 Oct 2021 15:30:20 -0400
+        Sun, 31 Oct 2021 14:08:22 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-124-bK-tclYAMOOxvyp-N7cBRw-1; Fri, 29 Oct 2021 15:27:47 -0400
-X-MC-Unique: bK-tclYAMOOxvyp-N7cBRw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+ us-mta-464-YBd8Nh9iNNmaU2yXrp3MhQ-1; Sun, 31 Oct 2021 14:05:48 -0400
+X-MC-Unique: YBd8Nh9iNNmaU2yXrp3MhQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 008318066F4;
-        Fri, 29 Oct 2021 19:27:46 +0000 (UTC)
-Received: from x1.com (unknown [10.22.10.230])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B008B26E49;
-        Fri, 29 Oct 2021 19:27:39 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95EE018D6A2A;
+        Sun, 31 Oct 2021 18:05:46 +0000 (UTC)
+Received: from x1.com (unknown [10.22.8.92])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 846C860CC4;
+        Sun, 31 Oct 2021 18:05:08 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Tao Zhou <tao.zhou@linux.dev>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Ingo Molnar <mingo@redhat.com>,
         Tom Zanussi <zanussi@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
@@ -43,13 +42,11 @@ Cc:     Tao Zhou <tao.zhou@linux.dev>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V7 14/14] rtla: Add rtla timerlat hist documentation
-Date:   Fri, 29 Oct 2021 21:26:17 +0200
-Message-Id: <ef0520789c9afa825100e4c0e3d8fffb8bfbeae0.1635535309.git.bristot@kernel.org>
-In-Reply-To: <cover.1635535309.git.bristot@kernel.org>
-References: <cover.1635535309.git.bristot@kernel.org>
+Subject: [PATCH V9 0/9] osnoise: Support multiple instances (for RTLA)
+Date:   Sun, 31 Oct 2021 19:04:55 +0100
+Message-Id: <cover.1635702894.git.bristot@kernel.org>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Authentication-Results: relay.mimecast.com;
         auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
 X-Mimecast-Spam-Score: 0
@@ -60,140 +57,57 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Man page for rtla timerlat hist mode.
+Currently, osnoise and timerlat run only on a single instance. To reduce
+this limitation, this series adds support for parallel instances of the
+same tracer. That is, it is possible to run two instances of osnoise
+tracer with different trace configurations. For example, one for the
+tracer output only and another for the tracer and a set of tracepoints.
 
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Tom Zanussi <zanussi@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Clark Williams <williams@redhat.com>
-Cc: John Kacur <jkacur@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: linux-rt-users@vger.kernel.org
-Cc: linux-trace-devel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- .../tools/rtla/rtla-timerlat-hist.rst         | 106 ++++++++++++++++++
- 1 file changed, 106 insertions(+)
- create mode 100644 Documentation/tools/rtla/rtla-timerlat-hist.rst
+This patchset is the kernel dependencies for RTLA. This patchset was
+being sent along with RTLA [1], but we split the kernel and
+user-space patch sets.
 
-diff --git a/Documentation/tools/rtla/rtla-timerlat-hist.rst b/Documentation/tools/rtla/rtla-timerlat-hist.rst
-new file mode 100644
-index 000000000000..e12eae1f3301
---- /dev/null
-+++ b/Documentation/tools/rtla/rtla-timerlat-hist.rst
-@@ -0,0 +1,106 @@
-+=====================
-+rtla-timerlat-hist
-+=====================
-+------------------------------------------------
-+Histograms of the operating system timer latency
-+------------------------------------------------
-+
-+:Manual section: 1
-+
-+SYNOPSIS
-+========
-+**rtla timerlat hist** [*OPTIONS*] ...
-+
-+DESCRIPTION
-+===========
-+
-+.. include:: common_timerlat_description.rst
-+
-+The **rtla timerlat hist** displays a histogram of each tracer event
-+occurrence. This tool uses the periodic information, and the
-+**osnoise:** tracepoints are enabled when using the **-T** option.
-+
-+OPTIONS
-+=======
-+
-+.. include:: common_timerlat_options.rst
-+
-+.. include:: common_hist_options.rst
-+
-+.. include:: common_options.rst
-+
-+EXAMPLE
-+=======
-+In the example below, **rtla timerlat hist** is set to run for *10* minutes,
-+in the cpus *0-4*, *skipping zero* only lines. Moreover, **rtla timerlat
-+hist** will change the priority of the *timelat* threads to run under
-+*SCHED_DEADLINE* priority, with a *10us* runtime every *1ms* period. The
-+*1ms* period is also passed to the *timerlat* tracer::
-+
-+  [root@alien ~]# timerlat hist -d 10m -c 0-4 -P d:100us:1ms -p 1ms
-+  # RTLA timerlat histogram
-+  # Time unit is microseconds (us)
-+  # Duration:   0 00:10:00
-+  Index   IRQ-000   Thr-000   IRQ-001   Thr-001   IRQ-002   Thr-002   IRQ-003   Thr-003   IRQ-004   Thr-004
-+  0        276489         0    206089         0    466018         0    481102         0    205546         0
-+  1        318327     35487    388149     30024     94531     48382     83082     71078    388026     55730
-+  2          3282    122584      4019    126527     28231    109012     23311     89309      4568     98739
-+  3           940     11815       837      9863      6209     16227      6895     17196       910      9780
-+  4           444     17287       424     11574      2097     38443      2169     36736       462     13476
-+  5           206     43291       255     25581      1223    101908      1304    101137       236     28913
-+  6           132    101501        96     64584       635    213774       757    215471        99     73453
-+  7            74    169347        65    124758       350     57466       441     53639        69    148573
-+  8            53     85183        31    156751       229      9052       306      9026        39    139907
-+  9            22     10387        12     42762       161      2554       225      2689        19     26192
-+  10           13      1898         8      5770       114      1247       128      1405        13      3772
-+  11            9       560         9       924        71       686        76       765         8       713
-+  12            4       256         2       360        50       411        64       474         3       278
-+  13            2       167         2       172        43       256        53       350         4       180
-+  14            1        88         1       116        15       198        42       223         0       115
-+  15            2        63         3        94        11       139        20       150         0        58
-+  16            2        37         0        56         5        78        10       102         0        39
-+  17            0        18         0        28         4        57         8        80         0        15
-+  18            0         8         0        17         2        50         6        56         0        12
-+  19            0         9         0         5         0        19         0        48         0        18
-+  20            0         4         0         8         0        11         2        27         0         4
-+  21            0         2         0         3         1         9         1        18         0         6
-+  22            0         1         0         3         1         7         0         3         0         5
-+  23            0         2         0         4         0         2         0         7         0         2
-+  24            0         2         0         2         1         3         0         3         0         5
-+  25            0         0         0         1         0         1         0         1         0         3
-+  26            0         1         0         0         0         2         0         2         0         0
-+  27            0         0         0         3         0         1         0         0         0         1
-+  28            0         0         0         3         0         0         0         1         0         0
-+  29            0         0         0         2         0         2         0         1         0         3
-+  30            0         1         0         0         0         0         0         0         0         0
-+  31            0         1         0         0         0         0         0         2         0         2
-+  32            0         0         0         1         0         2         0         0         0         0
-+  33            0         0         0         2         0         0         0         0         0         1
-+  34            0         0         0         0         0         0         0         0         0         2
-+  35            0         1         0         1         0         0         0         0         0         1
-+  36            0         1         0         0         0         1         0         1         0         0
-+  37            0         0         0         1         0         0         0         0         0         0
-+  40            0         0         0         0         0         1         0         1         0         0
-+  41            0         0         0         0         0         0         0         0         0         1
-+  42            0         0         0         0         0         0         0         0         0         1
-+  44            0         0         0         0         0         1         0         0         0         0
-+  46            0         0         0         0         0         0         0         1         0         0
-+  47            0         0         0         0         0         0         0         0         0         1
-+  50            0         0         0         0         0         0         0         0         0         1
-+  54            0         0         0         1         0         0         0         0         0         0
-+  58            0         0         0         1         0         0         0         0         0         0
-+  over:         0         0         0         0         0         0         0         0         0         0
-+  count:   600002    600002    600002    600002    600002    600002    600002    600002    600002    600002
-+  min:          0         1         0         1         0         1         0         1         0         1
-+  avg:          0         5         0         5         0         4         0         4         0         5
-+  max:         16        36        15        58        24        44        21        46        13        50
-+
-+SEE ALSO
-+========
-+**rtla-timerlat**\(1), **rtla-timerlat-top**\(1)
-+
-+*timerlat* tracer documentation: <https://www.kernel.org/doc/html/latest/trace/timerlat-tracer.html>
-+
-+AUTHOR
-+======
-+Written by Daniel Bristot de Oliveira <bristot@kernel.org>
+Steve, feel free to drop the last two if they break anything.
+
+[1] RTLA: An interface for osnoise/timerlat tracers:
+    https://lore.kernel.org/lkml/cover.1635284863.git.bristot@kernel.org/
+
+Changes from v8:
+  - rebase on top of linux-next
+  - Make notify_new_max_latency static (kernel test robot <lkp@intel.com>)
+Changes from v7:
+  - Fix check for print_stack disabled
+  - Fix thread/sofitrq filter when TIMERLAT ifdef is enabled
+    Both fixes for the patches added in the v6.
+Changes from v6:
+  - Fix compilation problems for the case in which osnoise
+    enabled, but timerlat disabled (Steven)
+  - Remove ifdefs from inside functions (Steven)
+
+Changes that happened while in the RTLA patchset:
+  - Fix comment on start_per_cpu_kthreads() (Steven)
+  - Fix msg log on patch 1
+  - Add comments about the barrier need for trace_nmi_enter/exit
+  - Fix RCU usage in osnoise_unregister_instance() (Steven/Paul)
+  - Add lockdep checks in osnoise_unregister/unregister_instance()
+    (Steven/Paul)
+  - Improve the explanation about the multi instances support (Steven)
+
+Daniel Bristot de Oliveira (9):
+  tracing/osnoise: Do not follow tracing_cpumask
+  tracing/osnoise: Improve comments about barrier need for NMI callbacks
+  tracing/osnoise: Split workload start from the tracer start
+  tracing/osnoise: Use start/stop_per_cpu_kthreads() on
+    osnoise_cpus_write()
+  tracing/osnoise: Support a list of trace_array *tr
+  tracing/osnoise: Remove TIMERLAT ifdefs from inside functions
+  tracing/osnoise: Allow multiple instances of the same tracer
+  tracing/osnoise: Remove STACKTRACE ifdefs from inside functions
+  tracing/osnoise: Remove PREEMPT_RT ifdefs from inside functions
+
+ kernel/trace/trace_osnoise.c | 615 ++++++++++++++++++++++++-----------
+ 1 file changed, 434 insertions(+), 181 deletions(-)
+
 -- 
 2.31.1
 
