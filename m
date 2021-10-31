@@ -2,32 +2,32 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94B59C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 31 Oct 2021 18:05:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9200EC433FE
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 31 Oct 2021 18:06:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6336660EB8
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 31 Oct 2021 18:05:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7B3456108F
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 31 Oct 2021 18:06:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhJaSIW convert rfc822-to-8bit (ORCPT
+        id S230316AbhJaSJA convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 31 Oct 2021 14:08:22 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:54080 "EHLO
+        Sun, 31 Oct 2021 14:09:00 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:53850 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229838AbhJaSIW (ORCPT
+        by vger.kernel.org with ESMTP id S230223AbhJaSI7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 31 Oct 2021 14:08:22 -0400
+        Sun, 31 Oct 2021 14:08:59 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-464-YBd8Nh9iNNmaU2yXrp3MhQ-1; Sun, 31 Oct 2021 14:05:48 -0400
-X-MC-Unique: YBd8Nh9iNNmaU2yXrp3MhQ-1
+ us-mta-157-XkKDKKzUMzK8iXgNSOjneA-1; Sun, 31 Oct 2021 14:06:17 -0400
+X-MC-Unique: XkKDKKzUMzK8iXgNSOjneA-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95EE018D6A2A;
-        Sun, 31 Oct 2021 18:05:46 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 33D7C362F8;
+        Sun, 31 Oct 2021 18:06:16 +0000 (UTC)
 Received: from x1.com (unknown [10.22.8.92])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 846C860CC4;
-        Sun, 31 Oct 2021 18:05:08 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E878560FB8;
+        Sun, 31 Oct 2021 18:05:46 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
@@ -42,13 +42,13 @@ Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V9 0/9] osnoise: Support multiple instances (for RTLA)
-Date:   Sun, 31 Oct 2021 19:04:55 +0100
-Message-Id: <cover.1635702894.git.bristot@kernel.org>
+Subject: [PATCH V9 1/9] tracing/osnoise: Do not follow tracing_cpumask
+Date:   Sun, 31 Oct 2021 19:04:56 +0100
+Message-Id: <169a71bcc919ce3ab53ae6f9ca5cde57fffaf9c6.1635702894.git.bristot@kernel.org>
+In-Reply-To: <cover.1635702894.git.bristot@kernel.org>
+References: <cover.1635702894.git.bristot@kernel.org>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: kernel.org
 Content-Transfer-Encoding: 8BIT
@@ -57,57 +57,97 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Currently, osnoise and timerlat run only on a single instance. To reduce
-this limitation, this series adds support for parallel instances of the
-same tracer. That is, it is possible to run two instances of osnoise
-tracer with different trace configurations. For example, one for the
-tracer output only and another for the tracer and a set of tracepoints.
+In preparation to support multiple instances, decouple the
+osnoise/timelat workload from instance-specific tracing_cpumask.
 
-This patchset is the kernel dependencies for RTLA. This patchset was
-being sent along with RTLA [1], but we split the kernel and
-user-space patch sets.
+Different instances can have conflicting cpumasks, making osnoise
+workload management needlessly complex. Osnoise already has its
+global cpumask.
 
-Steve, feel free to drop the last two if they break anything.
+I also thought about using the first instance mask, but the
+"first" instance could be removed before the others.
 
-[1] RTLA: An interface for osnoise/timerlat tracers:
-    https://lore.kernel.org/lkml/cover.1635284863.git.bristot@kernel.org/
+This also fixes the problem that changing the tracing_mask was not
+re-starting the trace.
 
-Changes from v8:
-  - rebase on top of linux-next
-  - Make notify_new_max_latency static (kernel test robot <lkp@intel.com>)
-Changes from v7:
-  - Fix check for print_stack disabled
-  - Fix thread/sofitrq filter when TIMERLAT ifdef is enabled
-    Both fixes for the patches added in the v6.
-Changes from v6:
-  - Fix compilation problems for the case in which osnoise
-    enabled, but timerlat disabled (Steven)
-  - Remove ifdefs from inside functions (Steven)
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Tom Zanussi <zanussi@kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Clark Williams <williams@redhat.com>
+Cc: John Kacur <jkacur@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc: linux-rt-users@vger.kernel.org
+Cc: linux-trace-devel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+---
+ kernel/trace/trace_osnoise.c | 24 ++++++------------------
+ 1 file changed, 6 insertions(+), 18 deletions(-)
 
-Changes that happened while in the RTLA patchset:
-  - Fix comment on start_per_cpu_kthreads() (Steven)
-  - Fix msg log on patch 1
-  - Add comments about the barrier need for trace_nmi_enter/exit
-  - Fix RCU usage in osnoise_unregister_instance() (Steven/Paul)
-  - Add lockdep checks in osnoise_unregister/unregister_instance()
-    (Steven/Paul)
-  - Improve the explanation about the multi instances support (Steven)
-
-Daniel Bristot de Oliveira (9):
-  tracing/osnoise: Do not follow tracing_cpumask
-  tracing/osnoise: Improve comments about barrier need for NMI callbacks
-  tracing/osnoise: Split workload start from the tracer start
-  tracing/osnoise: Use start/stop_per_cpu_kthreads() on
-    osnoise_cpus_write()
-  tracing/osnoise: Support a list of trace_array *tr
-  tracing/osnoise: Remove TIMERLAT ifdefs from inside functions
-  tracing/osnoise: Allow multiple instances of the same tracer
-  tracing/osnoise: Remove STACKTRACE ifdefs from inside functions
-  tracing/osnoise: Remove PREEMPT_RT ifdefs from inside functions
-
- kernel/trace/trace_osnoise.c | 615 ++++++++++++++++++++++++-----------
- 1 file changed, 434 insertions(+), 181 deletions(-)
-
+diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+index d11b41784fac..ceff407655a5 100644
+--- a/kernel/trace/trace_osnoise.c
++++ b/kernel/trace/trace_osnoise.c
+@@ -1554,13 +1554,9 @@ static int start_per_cpu_kthreads(struct trace_array *tr)
+ 
+ 	cpus_read_lock();
+ 	/*
+-	 * Run only on CPUs in which trace and osnoise are allowed to run.
++	 * Run only on online CPUs in which osnoise is allowed to run.
+ 	 */
+-	cpumask_and(current_mask, tr->tracing_cpumask, &osnoise_cpumask);
+-	/*
+-	 * And the CPU is online.
+-	 */
+-	cpumask_and(current_mask, cpu_online_mask, current_mask);
++	cpumask_and(current_mask, cpu_online_mask, &osnoise_cpumask);
+ 
+ 	for_each_possible_cpu(cpu)
+ 		per_cpu(per_cpu_osnoise_var, cpu).kthread = NULL;
+@@ -1581,10 +1577,8 @@ static int start_per_cpu_kthreads(struct trace_array *tr)
+ #ifdef CONFIG_HOTPLUG_CPU
+ static void osnoise_hotplug_workfn(struct work_struct *dummy)
+ {
+-	struct trace_array *tr = osnoise_trace;
+ 	unsigned int cpu = smp_processor_id();
+ 
+-
+ 	mutex_lock(&trace_types_lock);
+ 
+ 	if (!osnoise_busy)
+@@ -1596,9 +1590,6 @@ static void osnoise_hotplug_workfn(struct work_struct *dummy)
+ 	if (!cpumask_test_cpu(cpu, &osnoise_cpumask))
+ 		goto out_unlock;
+ 
+-	if (!cpumask_test_cpu(cpu, tr->tracing_cpumask))
+-		goto out_unlock;
+-
+ 	start_kthread(cpu);
+ 
+ out_unlock:
+@@ -1701,13 +1692,10 @@ static void osnoise_tracer_stop(struct trace_array *tr);
+  * interface to the osnoise trace. By default, it lists all  CPUs,
+  * in this way, allowing osnoise threads to run on any online CPU
+  * of the system. It serves to restrict the execution of osnoise to the
+- * set of CPUs writing via this interface. Note that osnoise also
+- * respects the "tracing_cpumask." Hence, osnoise threads will run only
+- * on the set of CPUs allowed here AND on "tracing_cpumask." Why not
+- * have just "tracing_cpumask?" Because the user might be interested
+- * in tracing what is running on other CPUs. For instance, one might
+- * run osnoise in one HT CPU while observing what is running on the
+- * sibling HT CPU.
++ * set of CPUs writing via this interface. Why not use "tracing_cpumask"?
++ * Because the user might be interested in tracing what is running on
++ * other CPUs. For instance, one might run osnoise in one HT CPU
++ * while observing what is running on the sibling HT CPU.
+  */
+ static ssize_t
+ osnoise_cpus_write(struct file *filp, const char __user *ubuf, size_t count,
 -- 
 2.31.1
 
