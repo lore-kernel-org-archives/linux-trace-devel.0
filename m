@@ -2,62 +2,62 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 178EBC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Nov 2021 09:09:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 915FEC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Nov 2021 09:09:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 048EF610A8
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Nov 2021 09:09:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7C31A610A8
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Nov 2021 09:09:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbhKAJLw (ORCPT
+        id S231707AbhKAJLy (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 1 Nov 2021 05:11:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
+        Mon, 1 Nov 2021 05:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbhKAJLv (ORCPT
+        with ESMTP id S231749AbhKAJLx (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:11:51 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 120D8C061746
-        for <linux-trace-devel@vger.kernel.org>; Mon,  1 Nov 2021 02:09:18 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id j21so39221288edt.11
-        for <linux-trace-devel@vger.kernel.org>; Mon, 01 Nov 2021 02:09:17 -0700 (PDT)
+        Mon, 1 Nov 2021 05:11:53 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A5FC061714
+        for <linux-trace-devel@vger.kernel.org>; Mon,  1 Nov 2021 02:09:19 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id w15so62254100edc.9
+        for <linux-trace-devel@vger.kernel.org>; Mon, 01 Nov 2021 02:09:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cF//Psj4OV518AMFyCGRyVf+SDTivOwncI3k7XmsBO8=;
-        b=P/P1zskqjqmD9MCP07nMgoxeyzhJ706bKWsojbLP6N0+ecCTrsaz0gGp9gxG24hBkk
-         xK8UnjP/zl5iMPkxDMaW31iTAlv7BEku4vT9sMPPUzHcjVffkU3n7bcDXNtaKK/+7J0R
-         T8EvwsikY52v6xstXYw7RMSsCgRId9Oqn7/ufR/VUuWnKkVLC82JdpPSC1SthcGG7r9v
-         lVyaPRNKdUEMsX35dI+wuf3ZptEYG/UC/kaNGyaiIraVpQ2nJ0g26KqlL7LUFJUwDTa3
-         gKzQCeSBzuxy5qNasLmVJHt6gGcQzwFzEnopybKiwan+4i+HIKyI9tPrHX8i4TIapSn8
-         QDCQ==
+        bh=PuD6jSrPmqYggXjSyruuq5W1e3gv/9KJaGmkfv5dVdc=;
+        b=C2kujXwTMVjhc0QXBbALvrfC6zYhM9aBEVm06a6RiIUdK+H5xpl4U0qLmSK2loJQaN
+         iDDWaTzAdMv3NXrcnDSDvooU6tLpDWZB4GZk+il5uySZx1g0dxyshObN1zBA+mnco6Nr
+         wnDW5qfhgvozJ26KOB6DEQu16koNYmDgm0OpXHUZ3RstFP7SHi0/XdWUjFp1I/ZtRrsA
+         jCBK9vg33OVF2ERXaCn42EdByPWUlnaVQMR0xaogUnfaXTH99JRgjfPhkb3I9a5+SCW/
+         ruVf/XHTGrQw7RjNde1T4mxNRYnTCAM3Igjxumo3Qj+elCnVFWqJ7eiDGhTa5xwFfdow
+         pj4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cF//Psj4OV518AMFyCGRyVf+SDTivOwncI3k7XmsBO8=;
-        b=erXf8B/cmExTVrrsgm/xjqqKzZgetuLScqvv9ItGDn3uvcK1pIG4ktLF0Oh6PaUjww
-         Rfbg+oR4Bj9Duu0QjaNZNTJQYFHr35M+1MV+dSYPg9ZDeiUoyd7Q/T+BdGNYj/QqrDxN
-         k8ITafept3MRvkQJ0oVMyvbdG2nUfDIsS9JJNWfXhS0gcuEycQqe9Sy/bs+cMkObwpx5
-         pIRXLTsOaQpfQFNKzWJowgu733PGdMyQIEC36X93PGwbvrvCxm/fGt6DgeM9Xuh5uBFi
-         biRKFCJk+DzpP4+v5aUfkP0na1/6i3yScIqYb/LcL7s40u5zC1Vw+1JT8GM7u23EDLsv
-         YNjw==
-X-Gm-Message-State: AOAM53250CYg2gOIFWWlnNfWwQzNh5F/oo+J93GCQQpBAlthH2kHbuxR
-        ac/yER3HvuZlnKnTjiNq7NU=
-X-Google-Smtp-Source: ABdhPJyMcJ/7sbYVLMGV41ClmvowAXKkY5UyUahyGcIEIU2HMiQ5eeBtGh6Y9BvHmzzRGQSsJiBH3A==
-X-Received: by 2002:a05:6402:c18:: with SMTP id co24mr31101736edb.278.1635757756691;
-        Mon, 01 Nov 2021 02:09:16 -0700 (PDT)
+        bh=PuD6jSrPmqYggXjSyruuq5W1e3gv/9KJaGmkfv5dVdc=;
+        b=aXMQ9lSRdWMhWBlXfDLaRba7pVACgro1mMzZWkpw63nM0Qq92yLN+qMnPWCXpw1qx6
+         lpqqPQdoVe2t4tV0uxVdXW8TO1J4I/r3RYpdhLDJR08ZXXSSaAf+RqcbRlroRoiJLLrr
+         G71257p2QwkdF9zV3lTqPepp5sUOlbYEYQdHmI1bFqQaFAeyZZ2pNd/KYqzYUDz8BhDj
+         Hi8SdLH/qHOk+ZA9yvTB3OmVo1b/v02G2+jtOh/trjz++x6MhYD81JDRxwwirKqscsQW
+         NAYKIgOSVqGHZ1YWprjdpYTZjqCgQeuFzpxngl8/DACUiz87XZGp6ApWYdflU5LWGlrL
+         JY1g==
+X-Gm-Message-State: AOAM530nA0RqoEK/a+lhGFK4h5XUpRj/q0Afnet4WbybmYyS3C2CT9IT
+        rSw3BX999bgosz1xqXZAw1U=
+X-Google-Smtp-Source: ABdhPJwEqZKbTAdVl1bJGgkD1ApHFsZ/qrKKpfFkri2+OkkEvVH9XmurPa930BfLeXMr72rM0d78aw==
+X-Received: by 2002:a05:6402:5216:: with SMTP id s22mr3416258edd.291.1635757757605;
+        Mon, 01 Nov 2021 02:09:17 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id i8sm9873222edc.10.2021.11.01.02.09.15
+        by smtp.gmail.com with ESMTPSA id i8sm9873222edc.10.2021.11.01.02.09.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 02:09:16 -0700 (PDT)
+        Mon, 01 Nov 2021 02:09:17 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org, y.karadz@gmail.com
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 10/12] libtracefs: Rename tracefs_synth_init API
-Date:   Mon,  1 Nov 2021 11:09:02 +0200
-Message-Id: <20211101090904.81454-11-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 11/12] libtracefs: Use the internal dynamic events API when creating synthetic events
+Date:   Mon,  1 Nov 2021 11:09:03 +0200
+Message-Id: <20211101090904.81454-12-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211101090904.81454-1-tz.stoyanov@gmail.com>
 References: <20211101090904.81454-1-tz.stoyanov@gmail.com>
@@ -67,194 +67,199 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In order to be consistent with the others library APIs, the
-tracefs_synth_init() is renamed to tracefs_synth_alloc().
+Synthetic events are type of ftrace dynamic events. The tracefs library
+has an internal helper APIs to manage dynamic events of all types. In
+order the code to be consistent, the creation of synthetic events inside
+the library is reimplemented with these new dynamic events APIs.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- Documentation/libtracefs-synth.txt  | 20 ++++++++++----------
- Documentation/libtracefs-synth2.txt | 10 +++++-----
- include/tracefs.h                   | 18 +++++++++---------
- src/tracefs-hist.c                  | 22 +++++++++++-----------
- src/tracefs-sqlhist.c               |  6 +++---
- 5 files changed, 38 insertions(+), 38 deletions(-)
+ src/tracefs-hist.c | 88 +++++++++++++++++-----------------------------
+ 1 file changed, 33 insertions(+), 55 deletions(-)
 
-diff --git a/Documentation/libtracefs-synth.txt b/Documentation/libtracefs-synth.txt
-index 77076e1..2fd9019 100644
---- a/Documentation/libtracefs-synth.txt
-+++ b/Documentation/libtracefs-synth.txt
-@@ -3,7 +3,7 @@ libtracefs(3)
- 
- NAME
- ----
--tracefs_synth_init, tracefs_synth_add_match_field, tracefs_synth_add_compare_field, tracefs_synth_add_start_field,
-+tracefs_synth_alloc, tracefs_synth_add_match_field, tracefs_synth_add_compare_field, tracefs_synth_add_start_field,
- tracefs_synth_add_end_field, tracefs_synth_append_start_filter, tracefs_synth_append_end_filter, tracefs_synth_free,
- - Creation of a synthetic event descriptor
- 
-@@ -13,7 +13,7 @@ SYNOPSIS
- --
- *#include <tracefs.h>*
- 
--struct tracefs_synth pass:[*]tracefs_synth_init(struct tep_handle pass:[*]tep,
-+struct tracefs_synth pass:[*]tracefs_synth_alloc(struct tep_handle pass:[*]tep,
- 					 const char pass:[*]name,
- 					 const char pass:[*]start_system,
- 					 const char pass:[*]start_event,
-@@ -69,7 +69,7 @@ as a field for both events to calculate the delta in nanoseconds, or use
- *TRACEFS_TIMESTAMP_USECS" as the compare fields for both events to calculate the
- delta in microseconds. This is used as the example below.
- 
--*tracefs_synth_init*() allocates and initializes a synthetic event.
-+*tracefs_synth_alloc*() allocates and initializes a synthetic event.
- It does not create the synthetic event, but supplies the minimal information
- to do so. See *tracefs_synth_create*(3) for how to create the synthetic
- event in the system. It requires a _tep_ handler that can be created by
-@@ -156,11 +156,11 @@ _field_, _compare_, and _val_ are ignored unless _type_ is equal to
- filters on the ending event.
- 
- *tracefs_synth_free*() frees the allocated descriptor returned by
--*tracefs_synth_init*().
-+*tracefs_synth_alloc*().
- 
- RETURN VALUE
- ------------
--*tracefs_synth_init*() returns an allocated struct tracefs_synth descriptor
-+*tracefs_synth_alloc*() returns an allocated struct tracefs_synth descriptor
- on sucess or NULL on error.
- 
- All other functions that return an integer returns zero on success or -1
-@@ -209,11 +209,11 @@ static void make_event(void)
- 	tep = tracefs_local_events(NULL);
- 
- 	/* Initialize the synthetic event */
--	synth = tracefs_synth_init(tep, "wakeup_lat",
--				   NULL, start_event,
--				   NULL, end_event,
--				   start_field, end_field,
--				   match_name);
-+	synth = tracefs_synth_alloc(tep, "wakeup_lat",
-+				    NULL, start_event,
-+				    NULL, end_event,
-+				    start_field, end_field,
-+				    match_name);
- 
- 	/* The tep is no longer needed */
- 	tep_free(tep);
-diff --git a/Documentation/libtracefs-synth2.txt b/Documentation/libtracefs-synth2.txt
-index 4c44253..f734b44 100644
---- a/Documentation/libtracefs-synth2.txt
-+++ b/Documentation/libtracefs-synth2.txt
-@@ -142,11 +142,11 @@ static void make_event(void)
- 	tep = tracefs_local_events(NULL);
- 
- 	/* Initialize the synthetic event */
--	synth = tracefs_synth_init(tep, "wakeup_lat",
--				   NULL, start_event,
--				   NULL, end_event,
--				   start_field, end_field,
--				   match_name);
-+	synth = tracefs_synth_alloc(tep, "wakeup_lat",
-+				    NULL, start_event,
-+				    NULL, end_event,
-+				    start_field, end_field,
-+				    match_name);
- 
- 	/* The tep is no longer needed */
- 	tep_free(tep);
-diff --git a/include/tracefs.h b/include/tracefs.h
-index f75fd92..b203a40 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -472,15 +472,15 @@ enum tracefs_synth_handler {
- 	TRACEFS_SYNTH_HANDLE_CHANGE,
- };
- 
--struct tracefs_synth *tracefs_synth_init(struct tep_handle *tep,
--					 const char *name,
--					 const char *start_system,
--					 const char *start_event,
--					 const char *end_system,
--					 const char *end_event,
--					 const char *start_match_field,
--					 const char *end_match_field,
--					 const char *match_name);
-+struct tracefs_synth *tracefs_synth_alloc(struct tep_handle *tep,
-+					  const char *name,
-+					  const char *start_system,
-+					  const char *start_event,
-+					  const char *end_system,
-+					  const char *end_event,
-+					  const char *start_match_field,
-+					  const char *end_match_field,
-+					  const char *match_name);
- int tracefs_synth_add_match_field(struct tracefs_synth *synth,
- 				  const char *start_match_field,
- 				  const char *end_match_field,
 diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index 27bab00..9009dba 100644
+index 9009dba..7ac0023 100644
 --- a/src/tracefs-hist.c
 +++ b/src/tracefs-hist.c
-@@ -692,7 +692,7 @@ static void action_free(struct action *action)
-  * @synth: The tracefs_synth descriptor
-  *
-  * Frees the resources allocated for a @synth created with
-- * tracefs_synth_init(). It does not touch the system. That is,
-+ * tracefs_synth_alloc(). It does not touch the system. That is,
-  * any synthetic event created, will not be destroyed by this
-  * function.
-  */
-@@ -890,7 +890,7 @@ synth_init_from(struct tep_handle *tep, const char *start_system,
+@@ -661,6 +661,7 @@ struct tracefs_synth {
+ 	struct tep_event	*end_event;
+ 	struct action		*actions;
+ 	struct action		**next_action;
++	struct tracefs_dynevent	*dyn_event;
+ 	char			*name;
+ 	char			**synthetic_fields;
+ 	char			**synthetic_args;
+@@ -719,6 +720,7 @@ void tracefs_synth_free(struct tracefs_synth *synth)
+ 		synth->actions = action->next;
+ 		action_free(action);
+ 	}
++	dynevent_free(synth->dyn_event);
+ 
+ 	free(synth);
+ }
+@@ -889,6 +891,28 @@ synth_init_from(struct tep_handle *tep, const char *start_system,
+ 	return synth;
  }
  
++static int alloc_synthetic_event(struct tracefs_synth *synth)
++{
++	char *synthetic_format;
++	const char *field;
++	int i;
++
++	synthetic_format = strdup("");
++	if (!synthetic_format)
++		return -1;
++
++	for (i = 0; synth->synthetic_fields && synth->synthetic_fields[i]; i++) {
++		field = synth->synthetic_fields[i];
++		synthetic_format = append_string(synthetic_format, " ", field);
++	}
++
++	synth->dyn_event = dynevent_alloc(TRACE_DYNEVENT_SYNTH, NULL,
++					  synth->name, NULL, synthetic_format);
++	free(synthetic_format);
++
++	return synth->dyn_event ? 0 : -1;
++}
++
  /**
-- * tracefs_synth_init - create a new tracefs_synth instance
-+ * tracefs_synth_alloc - create a new tracefs_synth instance
+  * tracefs_synth_alloc - create a new tracefs_synth instance
   * @tep: The tep handle that holds the events to work on
-  * @name: The name of the synthetic event being created
-  * @start_system: The name of the system of the start event (can be NULL)
-@@ -933,15 +933,15 @@ synth_init_from(struct tep_handle *tep, const char *start_system,
-  * event on the system is not created. That needs to be done with
-  * tracefs_synth_create().
-  */
--struct tracefs_synth *tracefs_synth_init(struct tep_handle *tep,
--					 const char *name,
--					 const char *start_system,
--					 const char *start_event_name,
--					 const char *end_system,
--					 const char *end_event_name,
--					 const char *start_match_field,
--					 const char *end_match_field,
--					 const char *match_name)
-+struct tracefs_synth *tracefs_synth_alloc(struct tep_handle *tep,
-+					  const char *name,
-+					  const char *start_system,
-+					  const char *start_event_name,
-+					  const char *end_system,
-+					  const char *end_event_name,
-+					  const char *start_match_field,
-+					  const char *end_match_field,
-+					  const char *match_name)
+@@ -1609,38 +1633,6 @@ int tracefs_synth_save(struct tracefs_synth *synth,
+ 	return 0;
+ }
+ 
+-static char *create_synthetic_event(struct tracefs_synth *synth)
+-{
+-	char *synthetic_event;
+-	const char *field;
+-	int i;
+-
+-	synthetic_event = strdup(synth->name);
+-	if (!synthetic_event)
+-		return NULL;
+-
+-	for (i = 0; synth->synthetic_fields && synth->synthetic_fields[i]; i++) {
+-		field = synth->synthetic_fields[i];
+-		synthetic_event = append_string(synthetic_event, " ", field);
+-	}
+-
+-	return synthetic_event;
+-}
+-
+-static int remove_synthetic(const char *synthetic)
+-{
+-	char *str;
+-	int ret;
+-
+-	ret = asprintf(&str, "!%s", synthetic);
+-	if (ret < 0)
+-		return -1;
+-
+-	ret = tracefs_instance_file_append(NULL, "synthetic_events", str);
+-	free(str);
+-	return ret < 0 ? -1 : 0;
+-}
+-
+ static int remove_hist(struct tracefs_instance *instance,
+ 		       struct tep_event *event, const char *hist)
  {
- 	struct tep_event *end_event;
- 	struct tracefs_synth *synth;
-diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
-index d77ce86..016f3eb 100644
---- a/src/tracefs-sqlhist.c
-+++ b/src/tracefs-sqlhist.c
-@@ -1419,9 +1419,9 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
- 	assign_match(start_system, start_event, match,
- 		     &start_match, &end_match);
+@@ -1919,7 +1911,6 @@ tracefs_synth_get_start_hist(struct tracefs_synth *synth)
+ int tracefs_synth_create(struct tracefs_instance *instance,
+ 			 struct tracefs_synth *synth)
+ {
+-	char *synthetic_event;
+ 	char *start_hist = NULL;
+ 	char *end_hist = NULL;
+ 	int ret;
+@@ -1937,14 +1928,10 @@ int tracefs_synth_create(struct tracefs_instance *instance,
+ 	if (verify_state(synth) < 0)
+ 		return -1;
  
--	synth = tracefs_synth_init(tep, name, start_system,
--				   start_event, end_system, end_event,
--				   start_match, end_match, NULL);
-+	synth = tracefs_synth_alloc(tep, name, start_system,
-+				    start_event, end_system, end_event,
-+				    start_match, end_match, NULL);
- 	if (!synth)
- 		return synth_init_error(tep, table);
+-	synthetic_event = create_synthetic_event(synth);
+-	if (!synthetic_event)
++	if (!synth->dyn_event && alloc_synthetic_event(synth))
++		return -1;
++	if (!dynevent_create(synth->dyn_event))
+ 		return -1;
+-
+-	ret = tracefs_instance_file_append(NULL, "synthetic_events",
+-					   synthetic_event);
+-	if (ret < 0)
+-		goto free_synthetic;
  
+ 	start_hist = create_hist(synth->start_keys, synth->start_vars);
+ 	start_hist = append_filter(start_hist, synth->start_filter,
+@@ -1980,9 +1967,7 @@ int tracefs_synth_create(struct tracefs_instance *instance,
+  remove_synthetic:
+ 	free(end_hist);
+ 	free(start_hist);
+-	remove_synthetic(synthetic_event);
+- free_synthetic:
+-	free(synthetic_event);
++	dynevent_destroy(synth->dyn_event);
+ 	return -1;
+ }
+ 
+@@ -2007,7 +1992,6 @@ int tracefs_synth_create(struct tracefs_instance *instance,
+ int tracefs_synth_destroy(struct tracefs_instance *instance,
+ 			  struct tracefs_synth *synth)
+ {
+-	char *synthetic_event;
+ 	char *hist;
+ 	int ret;
+ 
+@@ -2041,11 +2025,7 @@ int tracefs_synth_destroy(struct tracefs_instance *instance,
+ 	ret = remove_hist(instance, synth->start_event, hist);
+ 	free(hist);
+ 
+-	synthetic_event = create_synthetic_event(synth);
+-	if (!synthetic_event)
+-		return -1;
+-
+-	ret = remove_synthetic(synthetic_event);
++	ret = dynevent_destroy(synth->dyn_event);
+ 
+ 	return ret ? -1 : 0;
+ }
+@@ -2067,7 +2047,6 @@ int tracefs_synth_show(struct trace_seq *seq,
+ 		       struct tracefs_instance *instance,
+ 		       struct tracefs_synth *synth)
+ {
+-	char *synthetic_event = NULL;
+ 	char *hist = NULL;
+ 	char *path;
+ 	int ret = -1;
+@@ -2082,16 +2061,16 @@ int tracefs_synth_show(struct trace_seq *seq,
+ 		return -1;
+ 	}
+ 
+-	synthetic_event = create_synthetic_event(synth);
+-	if (!synthetic_event)
++	if (!synth->dyn_event && alloc_synthetic_event(synth))
+ 		return -1;
+ 
+ 	path = trace_find_tracing_dir();
+ 	if (!path)
+ 		goto out_free;
+ 
+-	trace_seq_printf(seq, "echo '%s' > %s/synthetic_events\n",
+-			 synthetic_event, path);
++	trace_seq_printf(seq, "echo '%s%s %s' > %s/%s\n",
++			 synth->dyn_event->prefix, synth->dyn_event->event,
++			 synth->dyn_event->format, path, synth->dyn_event->trace_file);
+ 
+ 	tracefs_put_tracing_file(path);
+ 	path = tracefs_instance_get_dir(instance);
+@@ -2118,7 +2097,6 @@ int tracefs_synth_show(struct trace_seq *seq,
+ 
+ 	ret = 0;
+  out_free:
+-	free(synthetic_event);
+ 	free(hist);
+ 	tracefs_put_tracing_file(path);
+ 	return ret;
 -- 
 2.31.1
 
