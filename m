@@ -2,118 +2,114 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 474F7C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 31 Oct 2021 18:07:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01769C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Nov 2021 09:09:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2E06060E8F
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 31 Oct 2021 18:07:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D8E54610A2
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Nov 2021 09:09:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbhJaSKM convert rfc822-to-8bit (ORCPT
+        id S231693AbhKAJLl (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 31 Oct 2021 14:10:12 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:37972 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231234AbhJaSKI (ORCPT
+        Mon, 1 Nov 2021 05:11:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231223AbhKAJLl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 31 Oct 2021 14:10:08 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-230-riTQHDukP_29K4BE0KBbZw-1; Sun, 31 Oct 2021 14:07:31 -0400
-X-MC-Unique: riTQHDukP_29K4BE0KBbZw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 750E9806710;
-        Sun, 31 Oct 2021 18:07:29 +0000 (UTC)
-Received: from x1.com (unknown [10.22.8.92])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 844A360C17;
-        Sun, 31 Oct 2021 18:07:26 +0000 (UTC)
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V9 9/9] tracing/osnoise: Remove PREEMPT_RT ifdefs from inside functions
-Date:   Sun, 31 Oct 2021 19:05:04 +0100
-Message-Id: <37ee0881b033cdc513efc84ebea26cf77880c8c2.1635702894.git.bristot@kernel.org>
-In-Reply-To: <cover.1635702894.git.bristot@kernel.org>
-References: <cover.1635702894.git.bristot@kernel.org>
+        Mon, 1 Nov 2021 05:11:41 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A23CC061714
+        for <linux-trace-devel@vger.kernel.org>; Mon,  1 Nov 2021 02:09:08 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id m14so9146246edd.0
+        for <linux-trace-devel@vger.kernel.org>; Mon, 01 Nov 2021 02:09:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AN95UIW2u2BZzCqohHyNtX4qvS4WiIcBLpJcdR0A7SI=;
+        b=YnSn9GDFrIs8INL/7wSIMOox+azycy+w1mdF1wOsKMPmh+doiDjnFyIon+BZA9k59M
+         Ntffc66JFqOgFqCfz45z30ef693+yb+j+EC1r2kyu3chR17sLZWI0sKXcRW7K95+CwhA
+         WKGnpCJr5VQ90FB7njM6XeG6c9GOCd4W5lkOb9M7pAnq8bCBqgFIsPf+kHncMP5YIMNM
+         3+LlRNu5UEoRmyBU5Hv0Kl0Y1tRxmygwmzuofry25M/5H65ziEN8LMIM2LypWh+nYlz6
+         7Chv4NPUu776UKg4ZwDyZt/N1SklO76riFNAoX9GNfSCWTPRkdM/p5PMWFK788iLXQzj
+         Iv8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AN95UIW2u2BZzCqohHyNtX4qvS4WiIcBLpJcdR0A7SI=;
+        b=V8L84unWR0swAUcwgUqpy2ugrjXg1JPeFVPoRIla5Lv0Uci1xIpJ3H72MWoS76tn7W
+         mFvKrIsPQZ8tbzvYbx6OgG1vOLSrCRLCSFTtVbY6Rr8BG/FswCARXEbc6jb7kxt90Opt
+         KmHyUglJOuaTEfgqfjgJqp7pStMxL54cPp9oCEyHFuGEjqbYidwRQgI883Zi2IM4/pyl
+         nis6xbWeBnPAp+BvQRrvIBYOmUP4v/WVvhfTBhyz/j8GT4+OEptapx8pguGKP3qVL0v1
+         PK42kjaE0IS+uQbDBtSqNyMdDrPDxsLrQn8yYZyVr5KqH7PpTlHC0RfSu6/bBXnUGRy3
+         bu6A==
+X-Gm-Message-State: AOAM530nwzEysrRp7/hE+EaxNdU/vuo3Dt4dwc6W0JbZ3d13R9mjlInk
+        fwNCN30xJss+h+Hk7eoGWQA=
+X-Google-Smtp-Source: ABdhPJzza1CITqGqDe3cEG1BLH0RVDh16HTPS4RAw1oRREtEgx9DXCrFG2PwiaiAcmE0ZEG9fR+2PA==
+X-Received: by 2002:a17:907:76d3:: with SMTP id kf19mr12835215ejc.481.1635757746864;
+        Mon, 01 Nov 2021 02:09:06 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id i8sm9873222edc.10.2021.11.01.02.09.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 02:09:06 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org, y.karadz@gmail.com
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v2 00/12] libtracefs dynamic events support
+Date:   Mon,  1 Nov 2021 11:08:52 +0200
+Message-Id: <20211101090904.81454-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Remove CONFIG_PREEMPT_RT from inside functions, avoiding
-compilation problems in the future.
+The libtracefs logic that works with ftrace dynamic events is unified and
+capsulated into internal APIs. This change makes the code more consistent
+and reusable. Also, adding future libtracefs support for uprobes and
+eprobes dynamic events is simplified.
+The existing library APIs for kprobes and synthetic events are reimplemented
+using the new dynamic events helpers.
 
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Tom Zanussi <zanussi@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Clark Williams <williams@redhat.com>
-Cc: John Kacur <jkacur@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: linux-rt-users@vger.kernel.org
-Cc: linux-trace-devel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- kernel/trace/trace_osnoise.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+Suggested-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 
-diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index a7dadf4bfc5f..3e4a1651e329 100644
---- a/kernel/trace/trace_osnoise.c
-+++ b/kernel/trace/trace_osnoise.c
-@@ -1518,9 +1518,11 @@ static enum hrtimer_restart timerlat_irq(struct hrtimer *timer)
- 	 * running, the thread needs to receive the softirq delta_start. The
- 	 * reason being is that the softirq will be the last to be unfolded,
- 	 * resseting the thread delay to zero.
-+	 *
-+	 * The PREEMPT_RT is a special case, though. As softirqs run as threads
-+	 * on RT, moving the thread is enough.
- 	 */
--#ifndef CONFIG_PREEMPT_RT
--	if (osn_var->softirq.delta_start) {
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && osn_var->softirq.delta_start) {
- 		copy_int_safe_time(osn_var, &osn_var->thread.delta_start,
- 				   &osn_var->softirq.delta_start);
- 
-@@ -1530,13 +1532,6 @@ static enum hrtimer_restart timerlat_irq(struct hrtimer *timer)
- 		copy_int_safe_time(osn_var, &osn_var->thread.delta_start,
- 				    &osn_var->irq.delta_start);
- 	}
--#else /* CONFIG_PREEMPT_RT */
--	/*
--	 * The sofirqs run as threads on RT, so there is not need
--	 * to keep track of it.
--	 */
--	copy_int_safe_time(osn_var, &osn_var->thread.delta_start, &osn_var->irq.delta_start);
--#endif /* CONFIG_PREEMPT_RT */
- 
- 	/*
- 	 * Compute the current time with the expected time.
+v2 changes:
+ - Removed triple pointer from the APIs.
+ - Reimplement dynamic events parsing using strtok_r instead of strchr.
+ - Coding style fixes.
+
+Tzvetomir Stoyanov (VMware) (12):
+  libtracefs: Add new internal APIs for dynamic events
+  libtracefs: Rename tracefs_get_kprobes API
+  libtracefs: New kprobes APIs
+  libtracefs: Remove redundant kprobes APIs
+  libtracefs: Reimplement tracefs_kprobes_get API
+  libtracefs: Change tracefs_kprobe_info API
+  libtracefs: Reimplement kprobe raw APIs
+  libtracefs: Extend kprobes unit test
+  libtracefs: Update kprobes man pages
+  libtracefs: Rename tracefs_synth_init API
+  libtracefs: Use the internal dynamic events API when creating
+    synthetic events
+  libtracefs: Document tracefs_dynevent_list_free() API
+
+ Documentation/libtracefs-kprobes.txt | 131 ++++---
+ Documentation/libtracefs-synth.txt   |  20 +-
+ Documentation/libtracefs-synth2.txt  |  10 +-
+ Documentation/libtracefs-utils.txt   |   6 +-
+ Documentation/libtracefs.txt         |  12 +
+ include/tracefs-local.h              |  35 ++
+ include/tracefs.h                    |  38 +-
+ src/Makefile                         |   1 +
+ src/tracefs-dynevents.c              | 492 ++++++++++++++++++++++++++
+ src/tracefs-hist.c                   | 110 +++---
+ src/tracefs-kprobes.c                | 508 +++++++++++++--------------
+ src/tracefs-sqlhist.c                |   6 +-
+ utest/tracefs-utest.c                | 408 ++++++++++++---------
+ 13 files changed, 1187 insertions(+), 590 deletions(-)
+ create mode 100644 src/tracefs-dynevents.c
+
 -- 
 2.31.1
 
