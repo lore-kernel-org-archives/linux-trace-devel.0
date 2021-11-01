@@ -2,62 +2,62 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D6A7C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Nov 2021 09:09:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 178EBC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Nov 2021 09:09:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EC230610A8
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Nov 2021 09:09:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 048EF610A8
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Nov 2021 09:09:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231743AbhKAJLu (ORCPT
+        id S231745AbhKAJLw (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 1 Nov 2021 05:11:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40540 "EHLO
+        Mon, 1 Nov 2021 05:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbhKAJLu (ORCPT
+        with ESMTP id S231707AbhKAJLv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:11:50 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE51C061714
-        for <linux-trace-devel@vger.kernel.org>; Mon,  1 Nov 2021 02:09:17 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id z20so62429645edc.13
+        Mon, 1 Nov 2021 05:11:51 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 120D8C061746
+        for <linux-trace-devel@vger.kernel.org>; Mon,  1 Nov 2021 02:09:18 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id j21so39221288edt.11
         for <linux-trace-devel@vger.kernel.org>; Mon, 01 Nov 2021 02:09:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wyFGG8j/G3UkyomEGA13QwUho5fIZPtNqmmfhjmEaWM=;
-        b=aC3u03TM5AAvlRFhk4MYOZrcKgjZzjsTSpp4vt+30e9U6NVdLuKoCo8XA8t7c245+2
-         wSA4SeGe5rvy4aVT/wfE5Tv1daM72+JDTZ3fjP7xefHT9/XvxytrDUAgXs3oPzls9c6j
-         1TmaC8twKjAzi2kOKQh88R3MaEpDZiQh94F+PaAB8jy9GXWBengNNJLbEYiuIuADg1Wf
-         GgoIsUnskh1K6buMtW2sMBQEdfGoO3xXq0Gbd5GJ/yFSg43V7Gy6Oo83DTqCdzpX3jSW
-         lHPXbtr93MAvJcF90C3c12G4wb9y8jpSwgNVHhD5pvDb/CaHeAOfaorsgbUcpRVgZvYS
-         s2fw==
+        bh=cF//Psj4OV518AMFyCGRyVf+SDTivOwncI3k7XmsBO8=;
+        b=P/P1zskqjqmD9MCP07nMgoxeyzhJ706bKWsojbLP6N0+ecCTrsaz0gGp9gxG24hBkk
+         xK8UnjP/zl5iMPkxDMaW31iTAlv7BEku4vT9sMPPUzHcjVffkU3n7bcDXNtaKK/+7J0R
+         T8EvwsikY52v6xstXYw7RMSsCgRId9Oqn7/ufR/VUuWnKkVLC82JdpPSC1SthcGG7r9v
+         lVyaPRNKdUEMsX35dI+wuf3ZptEYG/UC/kaNGyaiIraVpQ2nJ0g26KqlL7LUFJUwDTa3
+         gKzQCeSBzuxy5qNasLmVJHt6gGcQzwFzEnopybKiwan+4i+HIKyI9tPrHX8i4TIapSn8
+         QDCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wyFGG8j/G3UkyomEGA13QwUho5fIZPtNqmmfhjmEaWM=;
-        b=R+LTT6evIxcn/lM3+KWtynDfxxTiYs2ew81OOxkkQS6srnJTAnjlJV9ubcK0WIounK
-         24o/PMN+lZxYFQUIzuVc9W7la6YNkDrmwPKD6VaI2IvOC2bSGNHp7fYmDnX1a9C1mHwR
-         lCkjQ3ICOYNLV64uUtF0LFksRydSj/8Yol8CwErJWQHBeB90PzYiuc8FoBQUhDZPfev/
-         z69RWX2ZdNu9B94hPxCXsWW/pEb/HNCUzQEh0jCllRFVJxtAJ/zd9YcqIF/8UXF3L2IV
-         RiL4SzlxJOc5cKvgKvIeN0b3mY2JG4smjG+Zz+HBmYH6EQH8967/suT9rhe34raBANM5
-         0GYg==
-X-Gm-Message-State: AOAM531sfYsmBWtKBarL1iKv+EtnS9HnBvoi5yRdOgBbrtwF89sWxAAv
-        LnpSzP+ZZNlC5mPNLzL30FM=
-X-Google-Smtp-Source: ABdhPJyXNBpZKEBjb0EQI/dupZl9D1tzO28bAUg1+2YFeeF42z8EfHg2Bex3ze5Fr2EcokpOdBnUIg==
-X-Received: by 2002:a05:6402:1ac2:: with SMTP id ba2mr27084899edb.21.1635757755822;
-        Mon, 01 Nov 2021 02:09:15 -0700 (PDT)
+        bh=cF//Psj4OV518AMFyCGRyVf+SDTivOwncI3k7XmsBO8=;
+        b=erXf8B/cmExTVrrsgm/xjqqKzZgetuLScqvv9ItGDn3uvcK1pIG4ktLF0Oh6PaUjww
+         Rfbg+oR4Bj9Duu0QjaNZNTJQYFHr35M+1MV+dSYPg9ZDeiUoyd7Q/T+BdGNYj/QqrDxN
+         k8ITafept3MRvkQJ0oVMyvbdG2nUfDIsS9JJNWfXhS0gcuEycQqe9Sy/bs+cMkObwpx5
+         pIRXLTsOaQpfQFNKzWJowgu733PGdMyQIEC36X93PGwbvrvCxm/fGt6DgeM9Xuh5uBFi
+         biRKFCJk+DzpP4+v5aUfkP0na1/6i3yScIqYb/LcL7s40u5zC1Vw+1JT8GM7u23EDLsv
+         YNjw==
+X-Gm-Message-State: AOAM53250CYg2gOIFWWlnNfWwQzNh5F/oo+J93GCQQpBAlthH2kHbuxR
+        ac/yER3HvuZlnKnTjiNq7NU=
+X-Google-Smtp-Source: ABdhPJyMcJ/7sbYVLMGV41ClmvowAXKkY5UyUahyGcIEIU2HMiQ5eeBtGh6Y9BvHmzzRGQSsJiBH3A==
+X-Received: by 2002:a05:6402:c18:: with SMTP id co24mr31101736edb.278.1635757756691;
+        Mon, 01 Nov 2021 02:09:16 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
         by smtp.gmail.com with ESMTPSA id i8sm9873222edc.10.2021.11.01.02.09.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 02:09:15 -0700 (PDT)
+        Mon, 01 Nov 2021 02:09:16 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org, y.karadz@gmail.com
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 09/12] libtracefs: Update kprobes man pages
-Date:   Mon,  1 Nov 2021 11:09:01 +0200
-Message-Id: <20211101090904.81454-10-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 10/12] libtracefs: Rename tracefs_synth_init API
+Date:   Mon,  1 Nov 2021 11:09:02 +0200
+Message-Id: <20211101090904.81454-11-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211101090904.81454-1-tz.stoyanov@gmail.com>
 References: <20211101090904.81454-1-tz.stoyanov@gmail.com>
@@ -67,229 +67,194 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-As there are a lot of changes in the libtracefs kprobes APIs, the
-documentation of the library should be updated.
+In order to be consistent with the others library APIs, the
+tracefs_synth_init() is renamed to tracefs_synth_alloc().
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- Documentation/libtracefs-kprobes.txt | 131 +++++++++++++++------------
- Documentation/libtracefs.txt         |  11 +++
- 2 files changed, 86 insertions(+), 56 deletions(-)
+ Documentation/libtracefs-synth.txt  | 20 ++++++++++----------
+ Documentation/libtracefs-synth2.txt | 10 +++++-----
+ include/tracefs.h                   | 18 +++++++++---------
+ src/tracefs-hist.c                  | 22 +++++++++++-----------
+ src/tracefs-sqlhist.c               |  6 +++---
+ 5 files changed, 38 insertions(+), 38 deletions(-)
 
-diff --git a/Documentation/libtracefs-kprobes.txt b/Documentation/libtracefs-kprobes.txt
-index ca48fa9..df9f2fa 100644
---- a/Documentation/libtracefs-kprobes.txt
-+++ b/Documentation/libtracefs-kprobes.txt
-@@ -3,7 +3,10 @@ libtracefs(3)
+diff --git a/Documentation/libtracefs-synth.txt b/Documentation/libtracefs-synth.txt
+index 77076e1..2fd9019 100644
+--- a/Documentation/libtracefs-synth.txt
++++ b/Documentation/libtracefs-synth.txt
+@@ -3,7 +3,7 @@ libtracefs(3)
  
  NAME
  ----
--tracefs_kprobe_raw, tracefs_kretprobe_raw, tracefs_kprobes_get, tracefs_kprobe_info, tracefs_kprobe_clear_all, tracefs_kprobe_clear_probe - Create, list, and destroy kprobes
-+tracefs_kprobe_alloc, tracefs_kretprobe_alloc, tracefs_kprobe_create,
-+tracefs_kprobe_destroy, tracefs_kprobe_free, tracefs_kprobes_get,
-+tracefs_kprobe_info, tracefs_kprobe_raw, tracefs_kretprobe_raw - Create, get, and destroy kprobes
-+
+-tracefs_synth_init, tracefs_synth_add_match_field, tracefs_synth_add_compare_field, tracefs_synth_add_start_field,
++tracefs_synth_alloc, tracefs_synth_add_match_field, tracefs_synth_add_compare_field, tracefs_synth_add_start_field,
+ tracefs_synth_add_end_field, tracefs_synth_append_start_filter, tracefs_synth_append_end_filter, tracefs_synth_free,
+ - Creation of a synthetic event descriptor
  
- SYNOPSIS
- --------
-@@ -11,18 +14,64 @@ SYNOPSIS
+@@ -13,7 +13,7 @@ SYNOPSIS
  --
  *#include <tracefs.h>*
  
--int tracefs_kprobe_raw(const char pass:[*]system, const char pass:[*]event, const char pass:[*]addr, const char pass:[*]format);
--int tracefs_kretprobe_raw(const char pass:[*]system, const char pass:[*]event, const char pass:[*]addr, const char pass:[*]format);
--char pass:[*]pass:[*]tracefs_kprobes_get(enum tracefs_kprobe_type type);
--enum tracefs_kprobe_type tracefs_kprobe_info(const char pass:[*]group, const char pass:[*]event,
--					     char pass:[*]pass:[*]type, char pass:[*]pass:[*]addr, char pass:[*]pass:[*]format);
--enum tracefs_kprobe_type tracefs_kprobe_type(const char pass:[*]group, const char pass:[*]event)
--int tracefs_kprobe_clear_all(bool force);
--int tracefs_kprobe_clear_probe(const char pass:[*]system, const char pass:[*]event, bool force);
-+struct tracefs_dynevent pass:[*]
-+*tracefs_kprobe_alloc*(const char pass:[*]_system_, const char pass:[*]_event_,
-+		       const char pass:[*]_addr_, const char pass:[*]_format_);
-+struct tracefs_dynevent pass:[*]
-+*tracefs_kretprobe_alloc*(const char pass:[*]_system_, const char pass:[*]_event_,
-+			  const char pass:[*]_addr_, const char pass:[*]_format_, int _max_);
-+void *tracefs_kprobe_free*(struct tracefs_dynevent pass:[*]_kprobe_);
-+int *tracefs_kprobe_create*(struct tracefs_dynevent pass:[*]_kprobe_);
-+int *tracefs_kprobe_destroy*(struct tracefs_dynevent pass:[*]_kprobe_, bool _force_);
-+struct tracefs_dynevent pass:[*]pass:[*]*tracefs_kprobes_get*(enum tracefs_kprobe_type _type_);
-+enum tracefs_kprobe_type *tracefs_kprobe_info*(struct tracefs_dynevent pass:[*]_kprobe_,
-+					       char pass:[*]pass:[*]_system_, char pass:[*]pass:[*]_event_,
-+					       char pass:[*]pass:[*]_prefix_, char pass:[*]pass:[*]_addr_,
-+					       char pass:[*]pass:[*]_format_);
-+int *tracefs_kprobe_raw*(const char pass:[*]_system_, const char pass:[*]_event_,
-+			 const char pass:[*]_addr_, const char pass:[*]_format_);
-+int *tracefs_kretprobe_raw*(const char pass:[*]_system_, const char pass:[*]_event_,
-+			    const char pass:[*]_addr_, const char pass:[*]_format_);
- --
+-struct tracefs_synth pass:[*]tracefs_synth_init(struct tep_handle pass:[*]tep,
++struct tracefs_synth pass:[*]tracefs_synth_alloc(struct tep_handle pass:[*]tep,
+ 					 const char pass:[*]name,
+ 					 const char pass:[*]start_system,
+ 					 const char pass:[*]start_event,
+@@ -69,7 +69,7 @@ as a field for both events to calculate the delta in nanoseconds, or use
+ *TRACEFS_TIMESTAMP_USECS" as the compare fields for both events to calculate the
+ delta in microseconds. This is used as the example below.
  
- DESCRIPTION
- -----------
-+*tracefs_kprobe_alloc*() allocates a new kprobe context. The kbrobe is not configured in the system.
-+The new kprobe will be in the _system_ group (or kprobes if _system_ is NULL). Have the name of
-+_event_ (or _addr_ if _event_ is NULL). Will be inserted to _addr_ (function name, with or without
-+offset, or a address). And the _format_ will define the format of the kprobe. See the Linux
-+documentation file under: Documentation/trace/kprobetrace.rst
-+
-+*tracefs_kretprobe_alloc*() is the same as *tracefs_kprobe_alloc*, but allocates context for
-+kretprobe. It has one additional parameter, which is optional, _max_ - maxactive count.
-+See description of kretprobes in the Documentation/trace/kprobetrace.rst file.
-+
-+*tracefs_kprobe_free*() frees a kprobe context, allocated with *tracefs_kprobe_alloc*() or
-+*tracefs_kretprobe_alloc*(). The kprobe is not removed from the system.
-+
-+*tracefs_kprobe_create*() creates a kprobe or kretprobe in the system. The probe is described by the
-+given _kprobe_ context.
-+
-+*tracefs_kprobe_destroy*() will try to remove the specified _kprobe_ from the system. If _kprobe_
-+is NULL, all kprobes and kretprobes in the system will be removed. If the _force_ flag is set, then
-+it will disable the given kprobe events before removing them.
-+
-+*tracefs_kprobes_get*() return an array of pointers to kprobes and kretprobes in the system,
-+depending on the given _type_. If _type_ is TRACEFS_ALL_KPROBES, then all kprobes found are
-+returned. If _type_ is TRACEFS_KPROBE, then only normal kprobes are returned. If _type_ is
-+TRACEFS_KRETPROBE, then only kretprobes are returned. The last element of the returned array is
-+a NULL pointer. The array must be freed with *tracefs_dynevent_list_free*(3).
-+
-+*tracefs_kprobe_info*() returns the type and information of a given _kprobe_. If any of the
-+_system_, _event_, _prefix_, _addr_ or _format_ arguments are not NULL, then strings are allocated
-+and returned back via these arguments. The _system_ and _event_ holds the system and the name of the
-+kprobe. If _prefix_ is non NULL, then it will hold an allocated string that holds the prefix portion
-+of the kprobe in the kprobe_events file (the content up to the ":", including it). Note that for
-+kretprobes, the max active count is encoded in the prefix srting. If _addr_ is non NULL, it will
-+hold the address or function that the kprobe is attached to. If _format_ is non NULL, it will hold
-+the format string of the kprobe. Note, that the content in _group_, _event_, _prefix_, _addr_, and
-+_format_ must be freed with free(3) if they are set.
-+
- *tracefs_kprobe_raw*() will create a kprobe event. If _system_ is NULL, then
- the default "kprobes" is used for the group (event system). Otherwise if _system_
- is specified then the kprobe will be created under the group by that name. The
-@@ -36,55 +85,24 @@ document.
- creates a kretprobe instead of a kprobe. The difference is also described
- in the Linux kernel source in the Documentation/trace/kprobetrace.rst file.
+-*tracefs_synth_init*() allocates and initializes a synthetic event.
++*tracefs_synth_alloc*() allocates and initializes a synthetic event.
+ It does not create the synthetic event, but supplies the minimal information
+ to do so. See *tracefs_synth_create*(3) for how to create the synthetic
+ event in the system. It requires a _tep_ handler that can be created by
+@@ -156,11 +156,11 @@ _field_, _compare_, and _val_ are ignored unless _type_ is equal to
+ filters on the ending event.
  
--*tracefs_kprobes_get*() returns an array of strings (char pass:[*]) that contain
--the registered kprobes and kretprobes depending on the given _type_. If _type_ is
--TRACEFS_ALL_KPROBES, then all kprobes found are returned. If _type_ is
--TRACEFS_KPROBE, then only normal kprobes are returned. If _type_ is
--TRACEFS_KRETPROBE, then only kretprobes are returned.
--The names are in the "system/event" format.
--That is, one string holds both the kprobe's name as well as the group it is
--defined under. These strings are allocated and may be modified with the
--*strtok*(3) and *strtok_r*(3) functions. The string returned must be freed with
--*tracefs_list_free*(3).
--
--*tracefs_kprobe_info*() returns the type of the given kprobe. If _group_ is
--NULL, then the default "kprobes" is used. If _type_ is non NULL, then it will
--hold an allocated string that holds the type portion of the kprobe in the
--kprobe_events file (the content before the ":"). If _addr_ is non NULL, it will
--hold the address or function that the kprobe is attached to. If _format_ is non
--NULL, it will hold the format string of the kprobe. Note, that the content in
--_type_, _addr_, and _format_ must be freed with free(3) if they are set. Even
--in the case of an error, as they may hold information of what caused the error.
--
--*tracefs_kprobe_clear_all*() will try to remove all kprobes that have been
--registered. If the @force flag is set, it will then disable those kprobe events
--if they are enabled and then try to clear the kprobes.
--
--*tracefs_kprobe_clear_probe*() will try to clear specified kprobes. If _system_
--is NULL, then it will only clear the default kprobes under the "kprobes" group.
--If _event_ is NULL, it will clear all kprobes under the given _system_. If the
--_force_ flag is set, then it will disable the given kprobe events before clearing
--them.
--
+ *tracefs_synth_free*() frees the allocated descriptor returned by
+-*tracefs_synth_init*().
++*tracefs_synth_alloc*().
+ 
  RETURN VALUE
  ------------
+-*tracefs_synth_init*() returns an allocated struct tracefs_synth descriptor
++*tracefs_synth_alloc*() returns an allocated struct tracefs_synth descriptor
+ on sucess or NULL on error.
  
--*tracefs_kprobe_raw*(), *tracefs_kretprobe_raw*(), *tracefs_kprobe_clear_all*(),
--and *tracefs_kprobe_clear_probe*() return 0 on success, or -1 on error.
-+*tracefs_kprobe_raw*(), *tracefs_kretprobe_raw*(), *tracefs_kprobe_create*(),
-+and *tracefs_kprobe_destroy*() return 0 on success, or -1 on error.
+ All other functions that return an integer returns zero on success or -1
+@@ -209,11 +209,11 @@ static void make_event(void)
+ 	tep = tracefs_local_events(NULL);
  
--If a parsing error occurs on *tracefs_kprobe_raw*() or *tracefs_kretprobe_raw*()
--then *tracefs_error_last*(3) may be used to retrieve the error message explaining
--the parsing issue.
-+If a parsing error occurs on *tracefs_kprobe_raw*(), *tracefs_kretprobe_raw*() or
-+*tracefs_kprobe_create*() then *tracefs_error_last*(3) may be used to retrieve the error message
-+explaining the parsing issue.
+ 	/* Initialize the synthetic event */
+-	synth = tracefs_synth_init(tep, "wakeup_lat",
+-				   NULL, start_event,
+-				   NULL, end_event,
+-				   start_field, end_field,
+-				   match_name);
++	synth = tracefs_synth_alloc(tep, "wakeup_lat",
++				    NULL, start_event,
++				    NULL, end_event,
++				    start_field, end_field,
++				    match_name);
  
--*tracefs_kprobes_get*() returns an allocate string list of allocated strings
--on success that must be freed with *tracefs_list_free*(3) and returns
--NULL on error.
-+*tracefs_kprobes_get*() return an array of pointers to kprobes of the requested types, or NULL in
-+case of an error. The last element is a NULL pointer. The array must be freed with
-+*tracefs_dynevent_list_free*(3).
- 
--*tracefs_kprobe_info*() returns the type of the given kprobe. It returns
--TRACEFS_KPROBE for normal kprobes, TRACEFS_KRETPROBE for kretprobes, and
--on error, or if the kprobe is not found TRACEFS_ALL_KPROBES is returned.
--If _type_, _addr_, or _format_ are non NULL, they will contain allocated
--strings that must be freed by free(3) even in the case of error.
-+*tracefs_kprobe_info*() returns the type of the given kprobe. It returns TRACEFS_KPROBE for normal
-+kprobes, TRACEFS_KRETPROBE for kretprobes or TRACEFS_ALL_KPROBES on error. If _system_, _event_,
-+_prefix_, _addr_, or _format_ are non NULL, they will contain allocated strings that must be freed
-+by free(3).
- 
- ERRORS
- ------
-@@ -96,7 +114,8 @@ The following errors are for all the above calls:
- 
- *ENOMEM* Memory allocation error.
- 
--*tracefs_kprobe_raw*(), *tracefs_kretprobe_raw*() can fail with the following errors:
-+*tracefs_kprobe_raw*(), *tracefs_kretprobe_raw*(), *tracefs_kprobe_alloc*(),
-+*tracefs_kretprobe_alloc*() and *tracefs_kprobe_create*() can fail with the following errors:
- 
- *EBADMSG* Either _addr_ or _format_ are NULL.
- 
-@@ -217,7 +236,7 @@ int main (int argc, char **argv, char **env)
- 		exit(-1);
- 	}
- 
--	tracefs_kprobe_clear_probe(mykprobe, NULL, true);
-+	tracefs_kprobe_destroy(NULL, true);
- 
- 	kprobe_create("open", "do_sys_openat2",
- 		      "file=+0($arg2):ustring flags=+0($arg3):x64 mode=+8($arg3):x64\n");
-@@ -247,7 +266,7 @@ int main (int argc, char **argv, char **env)
- 	} while (waitpid(pid, NULL, WNOHANG) != pid);
- 
- 	/* Will disable the events */
--	tracefs_kprobe_clear_probe(mykprobe, NULL, true);
-+	tracefs_kprobe_destroy(NULL, true);
- 	tracefs_instance_destroy(instance);
+ 	/* The tep is no longer needed */
  	tep_free(tep);
+diff --git a/Documentation/libtracefs-synth2.txt b/Documentation/libtracefs-synth2.txt
+index 4c44253..f734b44 100644
+--- a/Documentation/libtracefs-synth2.txt
++++ b/Documentation/libtracefs-synth2.txt
+@@ -142,11 +142,11 @@ static void make_event(void)
+ 	tep = tracefs_local_events(NULL);
  
-@@ -293,5 +312,5 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
+ 	/* Initialize the synthetic event */
+-	synth = tracefs_synth_init(tep, "wakeup_lat",
+-				   NULL, start_event,
+-				   NULL, end_event,
+-				   start_field, end_field,
+-				   match_name);
++	synth = tracefs_synth_alloc(tep, "wakeup_lat",
++				    NULL, start_event,
++				    NULL, end_event,
++				    start_field, end_field,
++				    match_name);
  
- COPYING
- -------
--Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
-+Copyright \(C) 2021 VMware, Inc. Free use of this software is granted under
- the terms of the GNU Public License (GPL).
-diff --git a/Documentation/libtracefs.txt b/Documentation/libtracefs.txt
-index 2c9eabd..4a356c8 100644
---- a/Documentation/libtracefs.txt
-+++ b/Documentation/libtracefs.txt
-@@ -63,6 +63,17 @@ Writing data in the trace buffer:
+ 	/* The tep is no longer needed */
+ 	tep_free(tep);
+diff --git a/include/tracefs.h b/include/tracefs.h
+index f75fd92..b203a40 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -472,15 +472,15 @@ enum tracefs_synth_handler {
+ 	TRACEFS_SYNTH_HANDLE_CHANGE,
+ };
  
- Control library logs:
- 	int *tracefs_set_loglevel*(enum tep_loglevel _level_);
-+
-+Kprobes and Kretprobes:
-+	struct tracefs_dynevent pass:[*] *tracefs_kprobe_alloc*(const char pass:[*]_system_, const char pass:[*]_event_, const char pass:[*]_addr_, const char pass:[*]_format_);
-+	struct tracefs_dynevent pass:[*] *tracefs_kretprobe_alloc*(const char pass:[*]_system_, const char pass:[*]_event_, const char pass:[*]_addr_, const char pass:[*]_format_, int _max_);
-+	void *tracefs_kprobe_free*(struct tracefs_dynevent pass:[*]_kprobe_);
-+	int *tracefs_kprobe_create*(struct tracefs_dynevent pass:[*]_kprobe_);
-+	int *tracefs_kprobe_destroy*(struct tracefs_dynevent pass:[*]_kprobe_, bool _force_);
-+	struct tracefs_dynevent pass:[*]pass:[*]*tracefs_kprobes_get*(enum tracefs_kprobe_type _type_);
-+	enum tracefs_kprobe_type *tracefs_kprobe_info*(struct tracefs_dynevent pass:[*]_kprobe_, char pass:[*]pass:[*]_system_, char pass:[*]pass:[*]_event_, char pass:[*]pass:[*]_prefix_, char pass:[*]pass:[*]_addr_, char pass:[*]pass:[*]_format_);
-+	int *tracefs_kprobe_raw*(const char pass:[*]_system_, const char pass:[*]_event_, const char pass:[*]_addr_, const char pass:[*]_format_);
-+	int *tracefs_kretprobe_raw*(const char pass:[*]_system_, const char pass:[*]_event_, const char pass:[*]_addr_, const char pass:[*]_format_);
- --
+-struct tracefs_synth *tracefs_synth_init(struct tep_handle *tep,
+-					 const char *name,
+-					 const char *start_system,
+-					 const char *start_event,
+-					 const char *end_system,
+-					 const char *end_event,
+-					 const char *start_match_field,
+-					 const char *end_match_field,
+-					 const char *match_name);
++struct tracefs_synth *tracefs_synth_alloc(struct tep_handle *tep,
++					  const char *name,
++					  const char *start_system,
++					  const char *start_event,
++					  const char *end_system,
++					  const char *end_event,
++					  const char *start_match_field,
++					  const char *end_match_field,
++					  const char *match_name);
+ int tracefs_synth_add_match_field(struct tracefs_synth *synth,
+ 				  const char *start_match_field,
+ 				  const char *end_match_field,
+diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
+index 27bab00..9009dba 100644
+--- a/src/tracefs-hist.c
++++ b/src/tracefs-hist.c
+@@ -692,7 +692,7 @@ static void action_free(struct action *action)
+  * @synth: The tracefs_synth descriptor
+  *
+  * Frees the resources allocated for a @synth created with
+- * tracefs_synth_init(). It does not touch the system. That is,
++ * tracefs_synth_alloc(). It does not touch the system. That is,
+  * any synthetic event created, will not be destroyed by this
+  * function.
+  */
+@@ -890,7 +890,7 @@ synth_init_from(struct tep_handle *tep, const char *start_system,
+ }
  
- DESCRIPTION
+ /**
+- * tracefs_synth_init - create a new tracefs_synth instance
++ * tracefs_synth_alloc - create a new tracefs_synth instance
+  * @tep: The tep handle that holds the events to work on
+  * @name: The name of the synthetic event being created
+  * @start_system: The name of the system of the start event (can be NULL)
+@@ -933,15 +933,15 @@ synth_init_from(struct tep_handle *tep, const char *start_system,
+  * event on the system is not created. That needs to be done with
+  * tracefs_synth_create().
+  */
+-struct tracefs_synth *tracefs_synth_init(struct tep_handle *tep,
+-					 const char *name,
+-					 const char *start_system,
+-					 const char *start_event_name,
+-					 const char *end_system,
+-					 const char *end_event_name,
+-					 const char *start_match_field,
+-					 const char *end_match_field,
+-					 const char *match_name)
++struct tracefs_synth *tracefs_synth_alloc(struct tep_handle *tep,
++					  const char *name,
++					  const char *start_system,
++					  const char *start_event_name,
++					  const char *end_system,
++					  const char *end_event_name,
++					  const char *start_match_field,
++					  const char *end_match_field,
++					  const char *match_name)
+ {
+ 	struct tep_event *end_event;
+ 	struct tracefs_synth *synth;
+diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
+index d77ce86..016f3eb 100644
+--- a/src/tracefs-sqlhist.c
++++ b/src/tracefs-sqlhist.c
+@@ -1419,9 +1419,9 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
+ 	assign_match(start_system, start_event, match,
+ 		     &start_match, &end_match);
+ 
+-	synth = tracefs_synth_init(tep, name, start_system,
+-				   start_event, end_system, end_event,
+-				   start_match, end_match, NULL);
++	synth = tracefs_synth_alloc(tep, name, start_system,
++				    start_event, end_system, end_event,
++				    start_match, end_match, NULL);
+ 	if (!synth)
+ 		return synth_init_error(tep, table);
+ 
 -- 
 2.31.1
 
