@@ -2,123 +2,125 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D3E2C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Nov 2021 09:09:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3BA7C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Nov 2021 14:21:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EB8B1610A8
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Nov 2021 09:09:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A3C2F60ED5
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Nov 2021 14:21:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231715AbhKAJLy (ORCPT
+        id S231857AbhKAOYG (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 1 Nov 2021 05:11:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40558 "EHLO
+        Mon, 1 Nov 2021 10:24:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231750AbhKAJLx (ORCPT
+        with ESMTP id S231366AbhKAOYF (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 1 Nov 2021 05:11:53 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 008C8C061764
-        for <linux-trace-devel@vger.kernel.org>; Mon,  1 Nov 2021 02:09:19 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id s1so62150708edd.3
-        for <linux-trace-devel@vger.kernel.org>; Mon, 01 Nov 2021 02:09:19 -0700 (PDT)
+        Mon, 1 Nov 2021 10:24:05 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966C7C061714
+        for <linux-trace-devel@vger.kernel.org>; Mon,  1 Nov 2021 07:21:32 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id gn3so12250950pjb.0
+        for <linux-trace-devel@vger.kernel.org>; Mon, 01 Nov 2021 07:21:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5a3j78YMDZZe/qBYTVWWD4KXVFDReawqnya+THsiKWE=;
-        b=Zy3YiWuOsaa5jdjDfml5BiX709aSS4nzG0GEk/nLPGtDLjj3fEYq8/KiNxMOkPi5vO
-         cCOR9QmYjwRLhApFtssZNE3JL6aJ0DaOjZgr7S2z1nDGXUbBGEwuZ6pdQvPnTqfU2JFV
-         O6+POc49qSY8WnzEd4pIJZpbLdZ4Ia5r1RLrseH1uAOmm61VERrpP471b095eu/K3Yty
-         2t7haM1jpLsObFiudf/vF0z8DrbE5ZHdGGJe3s28265oquH6J9GoSIs0kRiSm1FWd1ni
-         pFW4G2Y0cqT+JqbjuVSQo4gdtAFL/ZOu0oxHoEvOoU0Pzzr8cqQDUcwXzaLILntGHSEw
-         /tJQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vNxCcmH9maFs/g/YmA8nOmgt16pvDSlJRBuhjpXiGao=;
+        b=fzNrLsiFU150RzC4hFGtSn8xmrjrsMdF3jOwHcZDwaZhTMURfTCw+EWpJxGv4j0F78
+         Dm2gANPQerPFjuKF1cKcixavjU7KG/Jy+RZ90wtH41/aDH17XPAwjq7tJd2hJpe/j+YA
+         fsMqYxg3bzp/iICyjh9vSa/bBnlz9wuKk8wEu+JIIDOJVB9VH+rsi9mNQ1SHBT53k+si
+         NsHpvzzJS9bHhr+oFL7VWl+7Htj21dhQGcFfU2dXaIZU51ez37ZxBKqOuXqVcmhwt9kf
+         HQKgGoDtCoIqZ0ouKmW/ISwB97fgRlI99hjyFESs2MbxFmP21rCE2V+16K4Jl1VbO9ZS
+         dAeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5a3j78YMDZZe/qBYTVWWD4KXVFDReawqnya+THsiKWE=;
-        b=rPBfjWXntcdqj7lk9/e6flVVMhAPyo5HSEMzjrSXL/YfM5RThl5T8z+E7xw/an1X23
-         7zw0hHHh7lbRjatDKPqi/JEoYV9IJU8EVp5zbRog9aKD5xasDHxHgOxuAgMhtCuNmCS5
-         UymBUk+S8FJ5AilI1rAufd3hlnOJyGIfzQmyM07VCRRf8PCN6ZgFADc7kCoQIhnSgSgx
-         ZY1ALmRPuAKdA8p9AjiGtCqigREZmRi0DkUUoFS7YvJAcU4ZxIePcJXbc2XrOWNdHIvi
-         JzFzlyVSZZ7XArhd9n+EhJHYwgpJpHl3RW1ZkzCpUtkf50ppexIrsHS4YeXrewdch4+Q
-         pLbA==
-X-Gm-Message-State: AOAM5319XnlYAzBnbOq+uKjLDQHBUWiK73i5jtFbeV4bCvcOLr+6OUSq
-        L1o+3zoWdq9Ixy+jbK17sqeY7uUzMTVrYQ==
-X-Google-Smtp-Source: ABdhPJygOkE/PhtTvez5rEl6wWcKrdG3D7GhdXasQfdcxmL+rfLn/b9UvJDTIXEYU03YU/IIeM5U4A==
-X-Received: by 2002:a17:906:1db2:: with SMTP id u18mr34762940ejh.227.1635757758570;
-        Mon, 01 Nov 2021 02:09:18 -0700 (PDT)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id i8sm9873222edc.10.2021.11.01.02.09.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 02:09:18 -0700 (PDT)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org, y.karadz@gmail.com
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 12/12] libtracefs: Document tracefs_dynevent_list_free() API
-Date:   Mon,  1 Nov 2021 11:09:04 +0200
-Message-Id: <20211101090904.81454-13-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211101090904.81454-1-tz.stoyanov@gmail.com>
-References: <20211101090904.81454-1-tz.stoyanov@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vNxCcmH9maFs/g/YmA8nOmgt16pvDSlJRBuhjpXiGao=;
+        b=tKWrwIcwhoTh72LKmdpJufUzjCXC3EQEBCGgYMG4BB/cQFZraJhPXui/BZiyZue2sT
+         wNzLUAXsguLBW01F58VBDSMqtgycr1GgZ0txJsZI8NZuAiUsfx5IorIJ0ZZJuGMRAqrK
+         Ww18hyrHSFbzhEqGHC66/HWmqxfMCE+sV2Fk3EHAbbGdPAz6WL+DtPxJ0NWcbdl5Nlid
+         XHJxBbzunw1dn8MepZP2qrS7Rgx/+N+wYuF6/Je47ZRrvXSoCjkdt4CCXKeDaoXyILQK
+         opHHKemu40AyUSaqzs8rPzbb3JTrc4kr3rFv9bMZhGcxZM8TRysdmob9bG44zHeLrrc0
+         xR8g==
+X-Gm-Message-State: AOAM532+/HfY1TPCU+PZBkJdsv/YDXsk97wp/SsplVFkaux8eJpkMmsg
+        2egRvpq4ufgGZHlPDzV6AQa7PFT3bAolW6tgmvo=
+X-Google-Smtp-Source: ABdhPJwrnAB9MvnsltvoSr+aEVIdWpxvIfEoVCd/ntfXWZl3kgRu7sJbvV+s5psZe5HuWqPVdLnFBf1GyWCN0PkFAjA=
+X-Received: by 2002:a17:90a:5917:: with SMTP id k23mr38772312pji.111.1635776492123;
+ Mon, 01 Nov 2021 07:21:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211101090904.81454-1-tz.stoyanov@gmail.com>
+In-Reply-To: <20211101090904.81454-1-tz.stoyanov@gmail.com>
+From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Date:   Mon, 1 Nov 2021 16:21:16 +0200
+Message-ID: <CAPpZLN4BwrgGQ4VDmgPHWOGpawc32P5RKVxOjhpXgrHCb69qmA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] libtracefs dynamic events support
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Yordan Karadzhov <y.karadz@gmail.com>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The newly added tracefs_dynevent_list_free() should be documented in the
-library man pages.
+On Mon, Nov 1, 2021 at 11:09 AM Tzvetomir Stoyanov (VMware)
+<tz.stoyanov@gmail.com> wrote:
+>
+> The libtracefs logic that works with ftrace dynamic events is unified and
+> capsulated into internal APIs. This change makes the code more consistent
+> and reusable. Also, adding future libtracefs support for uprobes and
+> eprobes dynamic events is simplified.
+> The existing library APIs for kprobes and synthetic events are reimplemented
+> using the new dynamic events helpers.
+>
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- Documentation/libtracefs-utils.txt | 6 +++++-
- Documentation/libtracefs.txt       | 1 +
- 2 files changed, 6 insertions(+), 1 deletion(-)
+Forgot to add that this patch set depends on "[PATCH v2 0/4]
+Modifications of some 'hist' APIs":
+ https://lore.kernel.org/linux-trace-devel/20210924095702.151826-1-y.karadz@gmail.com/
 
-diff --git a/Documentation/libtracefs-utils.txt b/Documentation/libtracefs-utils.txt
-index 41544ab..3424673 100644
---- a/Documentation/libtracefs-utils.txt
-+++ b/Documentation/libtracefs-utils.txt
-@@ -3,7 +3,7 @@ libtracefs(3)
- 
- NAME
- ----
--tracefs_tracers, tracefs_get_clock, tracefs_list_free -
-+tracefs_tracers, tracefs_get_clock, tracefs_list_free, tracefs_dynevent_list_free -
- Helper functions for working with trace file system.
- 
- SYNOPSIS
-@@ -15,6 +15,7 @@ SYNOPSIS
- char pass:[*]pass:[*]*tracefs_tracers*(const char pass:[*]_tracing_dir_);
- char pass:[*]*tracefs_get_clock*(struct tracefs_instance pass:[*]_instance_);
- void *tracefs_list_free*(char pass:[*]pass:[*]_list_);
-+void *tracefs_dynevent_list_free*(struct tracefs_dynevent pass:[*]pass:[*]_events_);
- --
- 
- DESCRIPTION
-@@ -36,6 +37,9 @@ The _tracefs_list_free()_ function frees an array of strings, returned by
- _tracefs_event_systems()_, _tracefs_system_events()_ and _tracefs_tracers()_
- APIs.
- 
-+The _tracefs_dynevent_list_free()_ functions frees an array of pointers to dynamic event contexts,
-+returned by_tracefs_kprobes_get()_ API.
-+
- RETURN VALUE
- ------------
- The _tracefs_tracers()_ returns array of strings. The last element in that
-diff --git a/Documentation/libtracefs.txt b/Documentation/libtracefs.txt
-index 4a356c8..7889048 100644
---- a/Documentation/libtracefs.txt
-+++ b/Documentation/libtracefs.txt
-@@ -45,6 +45,7 @@ Trace helper functions:
- 	void *tracefs_list_free*(char pass:[*]pass:[*]_list_);
- 	char pass:[*]pass:[*]*tracefs_tracers*(const char pass:[*]_tracing_dir_);
- 	char pass:[*]*tracefs_get_clock*(struct tracefs_instance pass:[*]_instance_);
-+	void *tracefs_dynevent_list_free*(struct tracefs_dynevent pass:[*]pass:[*]_events_);
- 	int *tracefs_trace_is_on*(struct tracefs_instance pass:[*]_instance_);
- 	int *tracefs_trace_on*(struct tracefs_instance pass:[*]_instance_);
- 	int *tracefs_trace_off*(struct tracefs_instance pass:[*]_instance_);
+> Suggested-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+>
+> v2 changes:
+>  - Removed triple pointer from the APIs.
+>  - Reimplement dynamic events parsing using strtok_r instead of strchr.
+>  - Coding style fixes.
+>
+> Tzvetomir Stoyanov (VMware) (12):
+>   libtracefs: Add new internal APIs for dynamic events
+>   libtracefs: Rename tracefs_get_kprobes API
+>   libtracefs: New kprobes APIs
+>   libtracefs: Remove redundant kprobes APIs
+>   libtracefs: Reimplement tracefs_kprobes_get API
+>   libtracefs: Change tracefs_kprobe_info API
+>   libtracefs: Reimplement kprobe raw APIs
+>   libtracefs: Extend kprobes unit test
+>   libtracefs: Update kprobes man pages
+>   libtracefs: Rename tracefs_synth_init API
+>   libtracefs: Use the internal dynamic events API when creating
+>     synthetic events
+>   libtracefs: Document tracefs_dynevent_list_free() API
+>
+>  Documentation/libtracefs-kprobes.txt | 131 ++++---
+>  Documentation/libtracefs-synth.txt   |  20 +-
+>  Documentation/libtracefs-synth2.txt  |  10 +-
+>  Documentation/libtracefs-utils.txt   |   6 +-
+>  Documentation/libtracefs.txt         |  12 +
+>  include/tracefs-local.h              |  35 ++
+>  include/tracefs.h                    |  38 +-
+>  src/Makefile                         |   1 +
+>  src/tracefs-dynevents.c              | 492 ++++++++++++++++++++++++++
+>  src/tracefs-hist.c                   | 110 +++---
+>  src/tracefs-kprobes.c                | 508 +++++++++++++--------------
+>  src/tracefs-sqlhist.c                |   6 +-
+>  utest/tracefs-utest.c                | 408 ++++++++++++---------
+>  13 files changed, 1187 insertions(+), 590 deletions(-)
+>  create mode 100644 src/tracefs-dynevents.c
+>
+> --
+> 2.31.1
+>
+
+
 -- 
-2.31.1
-
+Tzvetomir (Ceco) Stoyanov
+VMware Open Source Technology Center
