@@ -2,98 +2,148 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9866DC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Nov 2021 13:49:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 384F4C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Nov 2021 20:11:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 84DE7610E5
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Nov 2021 13:49:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 13319611AE
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Nov 2021 20:11:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbhKBNv7 (ORCPT
+        id S231267AbhKBUOd (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 2 Nov 2021 09:51:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39844 "EHLO mail.kernel.org"
+        Tue, 2 Nov 2021 16:14:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231278AbhKBNv5 (ORCPT
+        id S231304AbhKBUOc (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 2 Nov 2021 09:51:57 -0400
+        Tue, 2 Nov 2021 16:14:32 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34077610E5;
-        Tue,  2 Nov 2021 13:49:16 +0000 (UTC)
-Date:   Tue, 2 Nov 2021 09:49:14 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id B676B610FD;
+        Tue,  2 Nov 2021 20:11:57 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.95)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1mi08S-001jIt-RR;
+        Tue, 02 Nov 2021 16:11:56 -0400
+Message-ID: <20211102201156.678148671@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Tue, 02 Nov 2021 16:11:27 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yordan Karadzhov <y.karadz@gmail.com>
-Cc:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH v2 03/12] libtracefs: New kprobes APIs
-Message-ID: <20211102094914.0b9c0a45@gandalf.local.home>
-In-Reply-To: <98a9177a-a255-8d35-a647-943c31c316cd@gmail.com>
-References: <20211101090904.81454-1-tz.stoyanov@gmail.com>
-        <20211101090904.81454-4-tz.stoyanov@gmail.com>
-        <78703fa1-f811-a50c-6b5d-db68f6dbf21c@gmail.com>
-        <CAPpZLN4iJvmz-_EZV0TY6cGTSDDf=6V7DVPEEUAOaMjsGyaoUA@mail.gmail.com>
-        <98a9177a-a255-8d35-a647-943c31c316cd@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Subject: [for-next][PATCH 01/14] tracing/osnoise: Do not follow tracing_cpumask
+References: <20211102201126.559641540@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 2 Nov 2021 09:43:16 +0200
-Yordan Karadzhov <y.karadz@gmail.com> wrote:
+From: Daniel Bristot de Oliveira <bristot@kernel.org>
 
-> > 2. Expose the dynevent_... APIs directly:
-> >      struct tracefs_dynevent *synth =
-> > tracefs_dynevent_alloc(TRACE_DYNEVENT_SYNTH, ...);  
-> 
-> I would prefer taking this approach. It is OK to also have several helper constructors like tracefs_kprobe_alloc(), 
-> tracefs_synth_alloc(), etc. that will call internally dynevent_alloc().
-> 
-> In principle having multiple constructors is OK.
+In preparation to support multiple instances, decouple the
+osnoise/timelat workload from instance-specific tracing_cpumask.
 
-I agree with having multiple constructors, as that makes it easier to think
-about what is being created and how to manipulate it. The dynamic event
-structure has a type field and it should be used to make sure that
-modifications that only should happen to kprobes only happens on dynamic
-events created as a kprobe, and errors on everything else.
+Different instances can have conflicting cpumasks, making osnoise
+workload management needlessly complex. Osnoise already has its
+global cpumask.
 
-> 
-> 
-> >      struct tracefs_dynevent *kprobe =
-> > tracefs_dynevent_alloc(TRACE_DYNEVENT_KPROBE, ...);
-> > 
-> >      ret = tracefs_dynevent_create(synth);
-> >      ret = tracefs_dynevent_create(kprobe);
-> >   
-> 
-> Yes, this is OK as well.
+I also thought about using the first instance mask, but the
+"first" instance could be removed before the others.
 
-Agreed.
+This also fixes the problem that changing the tracing_mask was not
+re-starting the trace.
 
-> 
-> We only have a single type (struct tracefs_dynevent) so there must be a single create. And what is even more important: 
-> there must be ONLY ONE destructor.
+Link: https://lkml.kernel.org/r/169a71bcc919ce3ab53ae6f9ca5cde57fffaf9c6.1635702894.git.bristot@kernel.org
 
-I wouldn't be so strong as to use "must" but I do agree that it will
-simplify the usage of the API. It would be more analogous to free() where
-you have several different constructors that state in the man page (must be
-freed with free). Same here. Each constructor's man page must state: "must
-be freed with tracefs_dynevent_free()"
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Tom Zanussi <zanussi@kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Clark Williams <williams@redhat.com>
+Cc: John Kacur <jkacur@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc: linux-rt-users@vger.kernel.org
+Cc: linux-trace-devel@vger.kernel.org
+Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ kernel/trace/trace_osnoise.c | 24 ++++++------------------
+ 1 file changed, 6 insertions(+), 18 deletions(-)
 
-Removing from the system any dynamic event should also just use
-tracefs_dynevent_destroy(). Having the type of event in the structure means
-that knowing how to destroy it can be multiplexed inside the library, and
-not burden the user in such cases. This way, the user could create a bunch
-of dynamic event types in an array or linked list, and destroy them at the
-end without having to keep track of which one is which.
-
--- Steve
-
-> 
-> Think about the usecase of the APIs. You create an object using one of the constructors. Later at some point you want to 
-> use the objects and after this finally you want to destroy it. If we have multiple/specialized "create" and "destroy" 
-> versions for the same object type, the user must somehow keep its own record of which constructor had been used trough 
-> the entire live of the object in order to know which is the proper destructor to call at the end.
+diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+index d11b41784fac..ceff407655a5 100644
+--- a/kernel/trace/trace_osnoise.c
++++ b/kernel/trace/trace_osnoise.c
+@@ -1554,13 +1554,9 @@ static int start_per_cpu_kthreads(struct trace_array *tr)
+ 
+ 	cpus_read_lock();
+ 	/*
+-	 * Run only on CPUs in which trace and osnoise are allowed to run.
++	 * Run only on online CPUs in which osnoise is allowed to run.
+ 	 */
+-	cpumask_and(current_mask, tr->tracing_cpumask, &osnoise_cpumask);
+-	/*
+-	 * And the CPU is online.
+-	 */
+-	cpumask_and(current_mask, cpu_online_mask, current_mask);
++	cpumask_and(current_mask, cpu_online_mask, &osnoise_cpumask);
+ 
+ 	for_each_possible_cpu(cpu)
+ 		per_cpu(per_cpu_osnoise_var, cpu).kthread = NULL;
+@@ -1581,10 +1577,8 @@ static int start_per_cpu_kthreads(struct trace_array *tr)
+ #ifdef CONFIG_HOTPLUG_CPU
+ static void osnoise_hotplug_workfn(struct work_struct *dummy)
+ {
+-	struct trace_array *tr = osnoise_trace;
+ 	unsigned int cpu = smp_processor_id();
+ 
+-
+ 	mutex_lock(&trace_types_lock);
+ 
+ 	if (!osnoise_busy)
+@@ -1596,9 +1590,6 @@ static void osnoise_hotplug_workfn(struct work_struct *dummy)
+ 	if (!cpumask_test_cpu(cpu, &osnoise_cpumask))
+ 		goto out_unlock;
+ 
+-	if (!cpumask_test_cpu(cpu, tr->tracing_cpumask))
+-		goto out_unlock;
+-
+ 	start_kthread(cpu);
+ 
+ out_unlock:
+@@ -1701,13 +1692,10 @@ static void osnoise_tracer_stop(struct trace_array *tr);
+  * interface to the osnoise trace. By default, it lists all  CPUs,
+  * in this way, allowing osnoise threads to run on any online CPU
+  * of the system. It serves to restrict the execution of osnoise to the
+- * set of CPUs writing via this interface. Note that osnoise also
+- * respects the "tracing_cpumask." Hence, osnoise threads will run only
+- * on the set of CPUs allowed here AND on "tracing_cpumask." Why not
+- * have just "tracing_cpumask?" Because the user might be interested
+- * in tracing what is running on other CPUs. For instance, one might
+- * run osnoise in one HT CPU while observing what is running on the
+- * sibling HT CPU.
++ * set of CPUs writing via this interface. Why not use "tracing_cpumask"?
++ * Because the user might be interested in tracing what is running on
++ * other CPUs. For instance, one might run osnoise in one HT CPU
++ * while observing what is running on the sibling HT CPU.
+  */
+ static ssize_t
+ osnoise_cpus_write(struct file *filp, const char __user *ubuf, size_t count,
+-- 
+2.33.0
