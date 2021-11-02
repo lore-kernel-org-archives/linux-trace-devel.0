@@ -2,32 +2,32 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 384F4C433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BA95C433F5
 	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Nov 2021 20:11:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 13319611AE
+	by mail.kernel.org (Postfix) with ESMTP id 65269611AD
 	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Nov 2021 20:11:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbhKBUOd (ORCPT
+        id S231433AbhKBUOd (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Tue, 2 Nov 2021 16:14:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49356 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:49384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231304AbhKBUOc (ORCPT
+        id S230060AbhKBUOd (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 2 Nov 2021 16:14:32 -0400
+        Tue, 2 Nov 2021 16:14:33 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B676B610FD;
+        by mail.kernel.org (Postfix) with ESMTPSA id E5EB86109F;
         Tue,  2 Nov 2021 20:11:57 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mi08S-001jIt-RR;
-        Tue, 02 Nov 2021 16:11:56 -0400
-Message-ID: <20211102201156.678148671@goodmis.org>
+        id 1mi08T-001jJR-1F;
+        Tue, 02 Nov 2021 16:11:57 -0400
+Message-ID: <20211102201156.869672801@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 02 Nov 2021 16:11:27 -0400
+Date:   Tue, 02 Nov 2021 16:11:28 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
@@ -43,7 +43,8 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Daniel Bristot de Oliveira <bristot@kernel.org>,
         linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: [for-next][PATCH 01/14] tracing/osnoise: Do not follow tracing_cpumask
+Subject: [for-next][PATCH 02/14] tracing/osnoise: Improve comments about barrier need for NMI
+ callbacks
 References: <20211102201126.559641540@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,20 +54,12 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Daniel Bristot de Oliveira <bristot@kernel.org>
 
-In preparation to support multiple instances, decouple the
-osnoise/timelat workload from instance-specific tracing_cpumask.
+trace_osnoise_callback_enabled is used by ftrace_nmi_enter/exit()
+to know when to call the NMI callback. The barrier is used to
+avoid having callbacks enabled before the resetting date during
+the start or to touch the values after stopping the tracer.
 
-Different instances can have conflicting cpumasks, making osnoise
-workload management needlessly complex. Osnoise already has its
-global cpumask.
-
-I also thought about using the first instance mask, but the
-"first" instance could be removed before the others.
-
-This also fixes the problem that changing the tracing_mask was not
-re-starting the trace.
-
-Link: https://lkml.kernel.org/r/169a71bcc919ce3ab53ae6f9ca5cde57fffaf9c6.1635702894.git.bristot@kernel.org
+Link: https://lkml.kernel.org/r/a413b8f14aa9312fbd1ba99f96225a8aed831053.1635702894.git.bristot@kernel.org
 
 Cc: Ingo Molnar <mingo@redhat.com>
 Cc: Tom Zanussi <zanussi@kernel.org>
@@ -80,70 +73,40 @@ Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc: linux-rt-users@vger.kernel.org
 Cc: linux-trace-devel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/trace_osnoise.c | 24 ++++++------------------
- 1 file changed, 6 insertions(+), 18 deletions(-)
+ kernel/trace/trace_osnoise.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index d11b41784fac..ceff407655a5 100644
+index ceff407655a5..7d6be609d3dd 100644
 --- a/kernel/trace/trace_osnoise.c
 +++ b/kernel/trace/trace_osnoise.c
-@@ -1554,13 +1554,9 @@ static int start_per_cpu_kthreads(struct trace_array *tr)
- 
- 	cpus_read_lock();
+@@ -1930,8 +1930,10 @@ static int __osnoise_tracer_start(struct trace_array *tr)
+ 	retval = osnoise_hook_events();
+ 	if (retval)
+ 		return retval;
++
  	/*
--	 * Run only on CPUs in which trace and osnoise are allowed to run.
-+	 * Run only on online CPUs in which osnoise is allowed to run.
+-	 * Make sure NMIs see reseted values.
++	 * Make sure that ftrace_nmi_enter/exit() see reset values
++	 * before enabling trace_osnoise_callback_enabled.
  	 */
--	cpumask_and(current_mask, tr->tracing_cpumask, &osnoise_cpumask);
--	/*
--	 * And the CPU is online.
--	 */
--	cpumask_and(current_mask, cpu_online_mask, current_mask);
-+	cpumask_and(current_mask, cpu_online_mask, &osnoise_cpumask);
+ 	barrier();
+ 	trace_osnoise_callback_enabled = true;
+@@ -1966,6 +1968,10 @@ static void osnoise_tracer_stop(struct trace_array *tr)
+ 		return;
  
- 	for_each_possible_cpu(cpu)
- 		per_cpu(per_cpu_osnoise_var, cpu).kthread = NULL;
-@@ -1581,10 +1577,8 @@ static int start_per_cpu_kthreads(struct trace_array *tr)
- #ifdef CONFIG_HOTPLUG_CPU
- static void osnoise_hotplug_workfn(struct work_struct *dummy)
- {
--	struct trace_array *tr = osnoise_trace;
- 	unsigned int cpu = smp_processor_id();
+ 	trace_osnoise_callback_enabled = false;
++	/*
++	 * Make sure that ftrace_nmi_enter/exit() see
++	 * trace_osnoise_callback_enabled as false before continuing.
++	 */
+ 	barrier();
  
--
- 	mutex_lock(&trace_types_lock);
- 
- 	if (!osnoise_busy)
-@@ -1596,9 +1590,6 @@ static void osnoise_hotplug_workfn(struct work_struct *dummy)
- 	if (!cpumask_test_cpu(cpu, &osnoise_cpumask))
- 		goto out_unlock;
- 
--	if (!cpumask_test_cpu(cpu, tr->tracing_cpumask))
--		goto out_unlock;
--
- 	start_kthread(cpu);
- 
- out_unlock:
-@@ -1701,13 +1692,10 @@ static void osnoise_tracer_stop(struct trace_array *tr);
-  * interface to the osnoise trace. By default, it lists all  CPUs,
-  * in this way, allowing osnoise threads to run on any online CPU
-  * of the system. It serves to restrict the execution of osnoise to the
-- * set of CPUs writing via this interface. Note that osnoise also
-- * respects the "tracing_cpumask." Hence, osnoise threads will run only
-- * on the set of CPUs allowed here AND on "tracing_cpumask." Why not
-- * have just "tracing_cpumask?" Because the user might be interested
-- * in tracing what is running on other CPUs. For instance, one might
-- * run osnoise in one HT CPU while observing what is running on the
-- * sibling HT CPU.
-+ * set of CPUs writing via this interface. Why not use "tracing_cpumask"?
-+ * Because the user might be interested in tracing what is running on
-+ * other CPUs. For instance, one might run osnoise in one HT CPU
-+ * while observing what is running on the sibling HT CPU.
-  */
- static ssize_t
- osnoise_cpus_write(struct file *filp, const char __user *ubuf, size_t count,
+ 	stop_per_cpu_kthreads();
 -- 
 2.33.0
