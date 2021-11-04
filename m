@@ -2,358 +2,316 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AAD3C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Nov 2021 17:04:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E119C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Nov 2021 17:13:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F31096121E
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Nov 2021 17:04:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EC6C660720
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Nov 2021 17:13:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232068AbhKDRHU (ORCPT
+        id S233126AbhKDRQc (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 4 Nov 2021 13:07:20 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:54228 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231944AbhKDRHR (ORCPT
+        Thu, 4 Nov 2021 13:16:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233116AbhKDRQb (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:07:17 -0400
-Received: from localhost.localdomain (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 6946620B40A1;
-        Thu,  4 Nov 2021 10:04:39 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6946620B40A1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1636045479;
-        bh=RyMBu6rQR6PFle0jqpyRlebbgs5fEnxTFYriv8Uf4iY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YnK5EJt5Al4G/188AorBngAjoWnSYzoxggjA2wx5KBRHrDyMSLCiuKRnK/frOn0R8
-         XQgAdheQe3Wn2ADcEHMxUtN7qZhXRY7uUcWpCKrBfa+xNfJQNmhTjohhBw61USCWzs
-         RVzE6OYKy23oy3owopbaceztBoAa10dwDXUFWT3s=
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     rostedt@goodmis.org, mhiramat@kernel.org
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        beaub@linux.microsoft.com
-Subject: [PATCH v4 10/10] user_events: Add documentation file
-Date:   Thu,  4 Nov 2021 10:04:33 -0700
-Message-Id: <20211104170433.2206-11-beaub@linux.microsoft.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211104170433.2206-1-beaub@linux.microsoft.com>
-References: <20211104170433.2206-1-beaub@linux.microsoft.com>
+        Thu, 4 Nov 2021 13:16:31 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C104760720;
+        Thu,  4 Nov 2021 17:13:52 +0000 (UTC)
+Date:   Thu, 4 Nov 2021 13:13:51 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Cc:     y.karadz@gmail.com, linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v4 08/10] libtracefs: Use the internal dynamic events
+ API when creating synthetic events
+Message-ID: <20211104131351.1110c122@gandalf.local.home>
+In-Reply-To: <20211104111047.302660-9-tz.stoyanov@gmail.com>
+References: <20211104111047.302660-1-tz.stoyanov@gmail.com>
+        <20211104111047.302660-9-tz.stoyanov@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add a documentation file about user_events with example code, etc.
-explaining how it may be used.
+On Thu,  4 Nov 2021 13:10:45 +0200
+"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
----
- Documentation/trace/user_events.rst | 298 ++++++++++++++++++++++++++++
- 1 file changed, 298 insertions(+)
- create mode 100644 Documentation/trace/user_events.rst
+> Synthetic events are type of ftrace dynamic events. The tracefs library
+> has dedicated APIs to manage dynamic events of all types. In order the
+> code to be consistent, the creation of synthetic events inside the
+> library is reimplemented with these new dynamic events APIs.
+> 
+> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> ---
+>  src/tracefs-hist.c | 103 +++++++++++++++++++++------------------------
+>  1 file changed, 47 insertions(+), 56 deletions(-)
+> 
+> diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
+> index 9009dba..08bb2da 100644
+> --- a/src/tracefs-hist.c
+> +++ b/src/tracefs-hist.c
+> @@ -661,6 +661,7 @@ struct tracefs_synth {
+>  	struct tep_event	*end_event;
+>  	struct action		*actions;
+>  	struct action		**next_action;
+> +	struct tracefs_dynevent	*dyn_event;
+>  	char			*name;
+>  	char			**synthetic_fields;
+>  	char			**synthetic_args;
+> @@ -719,6 +720,7 @@ void tracefs_synth_free(struct tracefs_synth *synth)
+>  		synth->actions = action->next;
+>  		action_free(action);
+>  	}
+> +	tracefs_dynevent_free(synth->dyn_event);
+>  
+>  	free(synth);
+>  }
+> @@ -889,6 +891,28 @@ synth_init_from(struct tep_handle *tep, const char *start_system,
+>  	return synth;
+>  }
+>  
+> +static int alloc_synthetic_event(struct tracefs_synth *synth)
+> +{
+> +	char *synthetic_format;
 
-diff --git a/Documentation/trace/user_events.rst b/Documentation/trace/user_events.rst
-new file mode 100644
-index 000000000000..d79c9f07d012
---- /dev/null
-+++ b/Documentation/trace/user_events.rst
-@@ -0,0 +1,298 @@
-+=========================================
-+user_events: User-based Event Tracing
-+=========================================
-+
-+:Author: Beau Belgrave
-+
-+Overview
-+--------
-+User based trace events allow user processes to create events and trace data
-+that can be viewed via existing tools, such as ftrace, perf and eBPF.
-+To enable this feature, build your kernel with CONFIG_USER_EVENTS=y.
-+
-+Programs can view status of the events via 
-+/sys/kernel/debug/tracing/user_events_status and can both register and write
-+data out via /sys/kernel/debug/tracing/user_events_data.
-+
-+Programs can also use /sys/kernel/debug/tracing/dynamic_events to register and
-+delete user based events via the u: prefix. The format of the command to
-+dynamic_events is the same as the ioctl with the u: prefix applied.
-+
-+Typically programs will register a set of events that they wish to expose to
-+tools that can read trace_events (such as ftrace and perf). The registration
-+process gives back two ints to the program for each event. The first int is the
-+status index. This index describes which byte in the 
-+/sys/kernel/debug/tracing/user_events_status file represents this event. The
-+second int is the write index. This index describes the data when a write() or
-+writev() is called on the /sys/kernel/debug/tracing/user_events_data file.
-+
-+The structures referenced in this document are contained with the
-+/include/uap/linux/user_events.h file in the source tree.
-+
-+**NOTE:** *Both user_events_status and user_events_data are under the tracefs filesystem
-+and may be mounted at different paths than above.*
-+
-+Registering
-+-----------
-+Registering within a user process is done via ioctl() out to the
-+/sys/kernel/debug/tracing/user_events_data file. The command to issue is
-+DIAG_IOCSREG. This command takes a struct user_reg as an argument.
-+
-+The struct user_reg requires two values, the first is the size of the structure
-+to ensure forward and backward compatibility. The second is the command string
-+to issue for registering.
-+
-+User based events show up under tracefs like any other event under the subsystem
-+named "user_events". This means tools that wish to attach to the events need to
-+use /sys/kernel/debug/tracing/events/user_events/[name]/enable or perf record
-+-e user_events:[name] when attaching/recording.
-+
-+**NOTE:** *The write_index returned is only valid for the FD that was used*
-+
-+Command Format
-+^^^^^^^^^^^^^^
-+The command string format is as follows:
-+
-+::
-+
-+  name[:FLAG1[,FLAG2...]] [Field1[;Field2...]]
-+
-+Supported Flags
-+^^^^^^^^^^^^^^^
-+**BPF_ITER** - EBPF programs attached to this event will get the raw iovec
-+struct instead of any data copies for max performance.
-+
-+Field Format
-+^^^^^^^^^^^^
-+
-+::
-+
-+  type name [size]
-+
-+Basic types are supported (__data_loc, u32, u64, int, char, char[20]).
-+User programs are encouraged to use clearly sized types like u32.
-+
-+**NOTE:** *Long is not supported since size can vary between user and kernel.*
-+
-+The size is only valid for types that start with a struct prefix.
-+This allows user programs to describe custom structs out to tools, if required.
-+
-+For example, a struct in C that looks like this:
-+
-+::
-+
-+  struct mytype {
-+    char data[20];
-+  };
-+
-+Would be represented by the following field:
-+
-+::
-+
-+  struct mytype myname 20
-+
-+Status
-+------
-+When tools attach/record user based events the status of the event is updated
-+in realtime. This allows user programs to only incur the cost of the write() or
-+writev() calls when something is actively attached to the event.
-+
-+User programs call mmap() on /sys/kernel/debug/tracing/user_events_status to
-+check the status for each event that is registered. The byte to check in the
-+file is given back after the register ioctl() via user_reg.status_index.
-+Currently the size of user_events_status is a single page, however, custom
-+kernel configurations can change this size to allow more user based events. In
-+all cases the size of the file is a multiple of a page size.
-+
-+For example, if the register ioctl() gives back a status_index of 3 you would
-+check byte 3 of the returned mmap data to see if anything is attached to that
-+event.
-+
-+Administrators can easily check the status of all registered events by reading
-+the user_events_status file directly via a terminal. The output is as follows:
-+
-+::
-+
-+  Byte:Name [# Comments]
-+  ...
-+
-+  Active: ActiveCount
-+  Buisy: BusyCount
-+  Max: MaxCount
-+
-+For example, on a system that has a single event the output looks like this:
-+
-+::
-+
-+  1:test
-+
-+  Active: 1
-+  Busy: 0
-+  Max: 4096
-+
-+If a user enables the user event via ftrace, the output would change to this:
-+
-+:: 
-+
-+  1:test # Used by ftrace
-+
-+  Active: 1
-+  Busy: 1
-+  Max: 4096
-+
-+**NOTE:** *A status index of 0 will never be returned. This allows user 
-+programs to have an index that can be used on error cases.*
-+
-+Status Bits
-+^^^^^^^^^^^
-+The byte being checked will be non-zero if anything is attached. Programs can
-+check specific bits in the byte to see what mechanism has been attached.
-+
-+The following values are defined to aid in checking what has been attached:
-+**EVENT_STATUS_FTRACE** - Bit set if ftrace has been attached (Bit 0).
-+
-+**EVENT_STATUS_PERF** - Bit set if perf/eBPF has been attached (Bit 1).
-+
-+Writing Data
-+------------
-+After registering an event the same fd that was used to register can be used
-+to write an entry for that event. The write_index returned must be at the start
-+of the data, then the remaining data is treated as the payload of the event.
-+
-+For example, if write_index returned was 1 and I wanted to write out an int
-+payload of the event. Then the data would have to be 8 bytes (2 ints) long,
-+with the first 4 bytes being equal to 1 and the last 4 bytes being equal to the
-+value I want as the payload.
-+
-+In memory this would look like this:
-+
-+::
-+
-+  int index;
-+  int payload;
-+
-+User programs might have well known structs that they wish to use to emit out
-+as payloads. In those cases writev() can be used, with the first vector being
-+the index and the following vector(s) being the actual event payload.
-+
-+For example, if I have a struct like this:
-+
-+::
-+
-+  struct payload {
-+        int src;
-+        int dst;
-+        int flags;
-+  };
-+
-+It's advised for user programs to do the following:
-+
-+:: 
-+
-+  struct iovec io[2];
-+  struct payload e;
-+
-+  io[0].iov_base = &write_index;
-+  io[0].iov_len = sizeof(write_index);
-+  io[1].iov_base = &e;
-+  io[1].iov_len = sizeof(e);
-+
-+  writev(fd, (const struct iovec*)io, 2);
-+
-+**NOTE:** *The write_index is not emitted out into the trace being recorded.*
-+
-+EBPF
-+----
-+EBPF programs that attach to a user-based event tracepoint are given a pointer
-+to a struct user_bpf_context. The bpf context contains the data type (which can
-+be a user or kernel buffer, or can be a pointer to the iovec) and the data
-+length that was emitted (minus the write_index).
-+
-+Example Code
-+------------
-+
-+::
-+
-+  #include <errno.h>
-+  #include <sys/ioctl.h>
-+  #include <sys/mman.h>
-+  #include <fcntl.h>
-+  #include <stdio.h>
-+  #include <unistd.h>
-+  #include <linux/user_events.h>
-+  
-+  /* Assumes debugfs is mounted */
-+  const char *data_file = "/sys/kernel/debug/tracing/user_events_data";
-+  const char *status_file = "/sys/kernel/debug/tracing/user_events_status";
-+  
-+  static int event_status(char **status)
-+  {
-+  	int fd = open(status_file, O_RDONLY);
-+  
-+  	*status = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ,
-+  		       MAP_SHARED, fd, 0);
-+  
-+  	close(fd);
-+  
-+  	if (*status == MAP_FAILED)
-+  	      return -1;
-+  
-+  	return 0;
-+  }
-+  
-+  static int event_reg(int fd, const char *command, int *status, int *write)
-+  {
-+  	struct user_reg reg = {0};
-+  
-+  	reg.size = sizeof(reg);
-+  	reg.name_args = (__u64)command;
-+  
-+  	if (ioctl(fd, DIAG_IOCSREG, &reg) == -1)
-+  		return -1;
-+  
-+  	*status = reg.status_index;
-+  	*write = reg.write_index;
-+  
-+  	return 0;
-+  }
-+  
-+  int main(int argc, char **argv)
-+  {
-+  	int data_fd, status, write;
-+  	char *status_page;
-+  	struct iovec io[2];
-+  	__u32 count = 0;
-+  
-+  	if (event_status(&status_page) == -1)
-+  		return errno;
-+  
-+  	data_fd = open(data_file, O_RDWR);
-+  
-+  	if (event_reg(data_fd, "test u32 count", &status, &write) == -1)
-+  		return errno;
-+  
-+  	/* Setup iovec */
-+  	io[0].iov_base = &status;
-+  	io[0].iov_len = sizeof(status);
-+  	io[1].iov_base = &count;
-+  	io[1].iov_len = sizeof(count);
-+  
-+  ask:
-+  	printf("Press enter to check status...\n");
-+  	getchar();
-+  
-+  	/* Check if anyone is listening */
-+  	if (status_page[status]) {
-+  		/* Yep, trace out our data */
-+  		writev(data_fd, (const struct iovec*)io, 2);
-+  
-+  		/* Increase the count */
-+  		count++;
-+  
-+  		printf("Something was attached, wrote data\n");
-+  	}
-+  
-+  	goto ask;
-+  
-+  	return 0;
-+  }
--- 
-2.17.1
+Should we just call it "format". It's obviously for the synthetic event.
+
+> +	const char *field;
+> +	int i;
+> +
+> +	synthetic_format = strdup("");
+> +	if (!synthetic_format)
+> +		return -1;
+> +
+> +	for (i = 0; synth->synthetic_fields && synth->synthetic_fields[i]; i++) {
+> +		field = synth->synthetic_fields[i];
+> +		synthetic_format = append_string(synthetic_format, " ", field);
+
+My OCD is bothering me that the first field has a space appended to it.
+
+		format = append_string(format, i ? " " : NULL, field);
+
+
+> +	}
+> +
+> +	synth->dyn_event = dynevent_alloc(TRACEFS_DYNEVENT_SYNTH, NULL,
+> +					  synth->name, NULL, synthetic_format);
+> +	free(synthetic_format);
+> +
+> +	return synth->dyn_event ? 0 : -1;
+> +}
+> +
+>  /**
+>   * tracefs_synth_alloc - create a new tracefs_synth instance
+>   * @tep: The tep handle that holds the events to work on
+> @@ -1609,38 +1633,6 @@ int tracefs_synth_save(struct tracefs_synth *synth,
+>  	return 0;
+>  }
+>  
+> -static char *create_synthetic_event(struct tracefs_synth *synth)
+> -{
+> -	char *synthetic_event;
+> -	const char *field;
+> -	int i;
+> -
+> -	synthetic_event = strdup(synth->name);
+> -	if (!synthetic_event)
+> -		return NULL;
+> -
+> -	for (i = 0; synth->synthetic_fields && synth->synthetic_fields[i]; i++) {
+> -		field = synth->synthetic_fields[i];
+> -		synthetic_event = append_string(synthetic_event, " ", field);
+> -	}
+> -
+> -	return synthetic_event;
+> -}
+> -
+> -static int remove_synthetic(const char *synthetic)
+> -{
+> -	char *str;
+> -	int ret;
+> -
+> -	ret = asprintf(&str, "!%s", synthetic);
+> -	if (ret < 0)
+> -		return -1;
+> -
+> -	ret = tracefs_instance_file_append(NULL, "synthetic_events", str);
+> -	free(str);
+> -	return ret < 0 ? -1 : 0;
+> -}
+> -
+>  static int remove_hist(struct tracefs_instance *instance,
+>  		       struct tep_event *event, const char *hist)
+>  {
+> @@ -1919,7 +1911,6 @@ tracefs_synth_get_start_hist(struct tracefs_synth *synth)
+>  int tracefs_synth_create(struct tracefs_instance *instance,
+>  			 struct tracefs_synth *synth)
+
+I think we should call this:
+
+	tracefs_synth_create_raw()
+
+that passes in the "instance".
+
+Then we could have tracefs_synth_create() just use the top instance (no
+instance passed to it), and we could decide later if we want to create an
+internal instance or not to do the work to keep from modifying the top
+instance.
+
+That is, we would have:
+
+int tracefs_synth_create(struct tracefs_synth *synth)
+{
+	return tracefs_synth_create_raw(synth->create_instance, synth);
+}
+
+Have synth->create_instance be defaulted to NULL on allocation, and would
+get updated by another interface perhaps?
+
+We could also add to the _raw() function:
+
+	if (synth->create_instance && instance &&
+	    synth->create_instance != instance) {
+		errno = EINVAL;
+		return -1
+	}
+
+	if (!synth->create_instance && instance) {
+		syth->create_instance = instance;
+		trace_get_instance(instance);
+	}
+
+Would need to have in the destructor:
+
+	if (synth->create_instance)
+		trace_put_instance(synth->create_instance);
+
+
+Or something like that.
+
+
+>  {
+> -	char *synthetic_event;
+>  	char *start_hist = NULL;
+>  	char *end_hist = NULL;
+>  	int ret;
+> @@ -1937,14 +1928,10 @@ int tracefs_synth_create(struct tracefs_instance *instance,
+>  	if (verify_state(synth) < 0)
+>  		return -1;
+>  
+> -	synthetic_event = create_synthetic_event(synth);
+> -	if (!synthetic_event)
+> +	if (!synth->dyn_event && alloc_synthetic_event(synth))
+> +		return -1;
+> +	if (!tracefs_dynevent_create(synth->dyn_event))
+>  		return -1;
+> -
+> -	ret = tracefs_instance_file_append(NULL, "synthetic_events",
+> -					   synthetic_event);
+> -	if (ret < 0)
+> -		goto free_synthetic;
+>  
+>  	start_hist = create_hist(synth->start_keys, synth->start_vars);
+>  	start_hist = append_filter(start_hist, synth->start_filter,
+> @@ -1980,9 +1967,7 @@ int tracefs_synth_create(struct tracefs_instance *instance,
+>   remove_synthetic:
+>  	free(end_hist);
+>  	free(start_hist);
+> -	remove_synthetic(synthetic_event);
+> - free_synthetic:
+> -	free(synthetic_event);
+> +	tracefs_dynevent_destroy(synth->dyn_event, false);
+>  	return -1;
+>  }
+>  
+> @@ -2007,7 +1992,6 @@ int tracefs_synth_create(struct tracefs_instance *instance,
+>  int tracefs_synth_destroy(struct tracefs_instance *instance,
+>  			  struct tracefs_synth *synth)
+>  {
+> -	char *synthetic_event;
+>  	char *hist;
+>  	int ret;
+>  
+> @@ -2041,11 +2025,7 @@ int tracefs_synth_destroy(struct tracefs_instance *instance,
+>  	ret = remove_hist(instance, synth->start_event, hist);
+>  	free(hist);
+>  
+> -	synthetic_event = create_synthetic_event(synth);
+> -	if (!synthetic_event)
+> -		return -1;
+> -
+> -	ret = remove_synthetic(synthetic_event);
+> +	ret = tracefs_dynevent_destroy(synth->dyn_event, false);
+>  
+>  	return ret ? -1 : 0;
+>  }
+> @@ -2067,7 +2047,7 @@ int tracefs_synth_show(struct trace_seq *seq,
+>  		       struct tracefs_instance *instance,
+>  		       struct tracefs_synth *synth)
+>  {
+> -	char *synthetic_event = NULL;
+> +	bool new_event = false;
+>  	char *hist = NULL;
+>  	char *path;
+>  	int ret = -1;
+> @@ -2082,16 +2062,19 @@ int tracefs_synth_show(struct trace_seq *seq,
+>  		return -1;
+>  	}
+>  
+> -	synthetic_event = create_synthetic_event(synth);
+> -	if (!synthetic_event)
+> -		return -1;
+> +	if (!synth->dyn_event) {
+> +		if (alloc_synthetic_event(synth))
+> +			return -1;
+> +		new_event = true;
+> +	}
+
+We should start looking at making this thread safe. Probably need to add
+comments with /* TODO - make thread safe */ so we know where to look.
+
+Don't need to do it for this patch set, but we need to remember. The
+comment might help for now (that is, add the comment to the next series).
+
+-- Steve
+
+>  
+>  	path = trace_find_tracing_dir();
+>  	if (!path)
+>  		goto out_free;
+>  
+> -	trace_seq_printf(seq, "echo '%s' > %s/synthetic_events\n",
+> -			 synthetic_event, path);
+> +	trace_seq_printf(seq, "echo '%s%s %s' > %s/%s\n",
+> +			 synth->dyn_event->prefix, synth->dyn_event->event,
+> +			 synth->dyn_event->format, path, synth->dyn_event->trace_file);
+>  
+>  	tracefs_put_tracing_file(path);
+>  	path = tracefs_instance_get_dir(instance);
+> @@ -2116,10 +2099,18 @@ int tracefs_synth_show(struct trace_seq *seq,
+>  			 hist, path, synth->end_event->system,
+>  			 synth->end_event->name);
+>  
+> +	if (new_event) {
+> +		tracefs_dynevent_free(synth->dyn_event);
+> +		synth->dyn_event = NULL;
+> +	}
+> +
+>  	ret = 0;
+>   out_free:
+> -	free(synthetic_event);
+>  	free(hist);
+>  	tracefs_put_tracing_file(path);
+> +	if (new_event) {
+> +		tracefs_dynevent_free(synth->dyn_event);
+> +		synth->dyn_event = NULL;
+> +	}
+>  	return ret;
+>  }
 
