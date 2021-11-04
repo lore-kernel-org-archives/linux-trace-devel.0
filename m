@@ -2,38 +2,38 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B86B4C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Nov 2021 17:04:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7689C4321E
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Nov 2021 17:04:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9D94161186
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Nov 2021 17:04:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A92DB610D0
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Nov 2021 17:04:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231892AbhKDRHR (ORCPT
+        id S231956AbhKDRHR (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Thu, 4 Nov 2021 13:07:17 -0400
 Received: from linux.microsoft.com ([13.77.154.182]:54218 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231791AbhKDRHQ (ORCPT
+        with ESMTP id S231855AbhKDRHQ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 4 Nov 2021 13:07:16 -0400
 Received: from localhost.localdomain (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E847220B9CE9;
-        Thu,  4 Nov 2021 10:04:37 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E847220B9CE9
+        by linux.microsoft.com (Postfix) with ESMTPSA id 58A0420B9D56;
+        Thu,  4 Nov 2021 10:04:38 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 58A0420B9D56
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
         s=default; t=1636045478;
-        bh=lpKms0L28V5z6FgtCAKOhhWjyL3XpYRK7tPVNMRi2A4=;
+        bh=NTGnw12ZWarE2jLGXYX05L387yaE4HHNvnnd9F3t9/c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fBuxE5qTPF32wagPw7B2qB1vAFHwWQuIZpLHMTg7kMOjOAhyDSVjAZHzg1NyWDbtS
-         mCecC8REqWa/UIp+8i6J8e9Ui+UCgfE1gnRp7SedYJ5Cj9E6O5IpFNXySaJrwE7kye
-         eZ63o9Eq5U1xjsdVHmmy359Dgd09lFgOxITmmYPc=
+        b=PLNOHz48eIX6tC8uMhjv5zKjExf/sHaG8QBx1feIQFVrQoiwFkZ3jQwBvFKTAPNog
+         E0oSx+07dJgHKVz5Hq74AzoH2Ck+Zxa9xj47gyh5fyifz+EYg/kw1a1yuqMyXgTeMZ
+         PyUzH9KzHPBR98lAMxWYxcd9/1Av7alGNIZ2qsfo=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         beaub@linux.microsoft.com
-Subject: [PATCH v4 03/10] user_events: Add print_fmt generation support for basic types
-Date:   Thu,  4 Nov 2021 10:04:26 -0700
-Message-Id: <20211104170433.2206-4-beaub@linux.microsoft.com>
+Subject: [PATCH v4 05/10] user_events: Add basic perf and eBPF support
+Date:   Thu,  4 Nov 2021 10:04:28 -0700
+Message-Id: <20211104170433.2206-6-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211104170433.2206-1-beaub@linux.microsoft.com>
 References: <20211104170433.2206-1-beaub@linux.microsoft.com>
@@ -41,147 +41,110 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Addes print_fmt format generation for basic types that are supported for
-user processes. Only supports sizes that are the same on 32 and 64 bit.
+Adds support to write out user_event data to perf_probe/perf files as
+well as to any attached eBPF program.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- kernel/trace/trace_events_user.c | 108 ++++++++++++++++++++++++++++++-
- 1 file changed, 106 insertions(+), 2 deletions(-)
+ kernel/trace/trace_events_user.c | 63 ++++++++++++++++++++++++++++++++
+ 1 file changed, 63 insertions(+)
 
 diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index a68017ad7fdd..479a9ced3281 100644
+index cd78cc481557..b5fe0550b489 100644
 --- a/kernel/trace/trace_events_user.c
 +++ b/kernel/trace/trace_events_user.c
-@@ -329,6 +329,107 @@ static int user_event_parse_fields(struct user_event *user, char *args)
- 	return ret;
+@@ -516,6 +516,50 @@ static void user_event_ftrace(struct user_event *user, void *data, u32 datalen,
+ 	trace_event_buffer_commit(&event_buffer);
  }
  
-+static char *user_field_format(const char *type)
++#ifdef CONFIG_PERF_EVENTS
++/*
++ * Writes the user supplied payload out to perf ring buffer or eBPF program.
++ */
++static void user_event_perf(struct user_event *user, void *data, u32 datalen,
++			    void *tpdata)
 +{
-+	if (strcmp(type, "s64") == 0)
-+		return "%lld";
-+	if (strcmp(type, "u64") == 0)
-+		return "%llu";
-+	if (strcmp(type, "s32") == 0)
-+		return "%d";
-+	if (strcmp(type, "u32") == 0)
-+		return "%u";
-+	if (strcmp(type, "int") == 0)
-+		return "%d";
-+	if (strcmp(type, "unsigned int") == 0)
-+		return "%u";
-+	if (strcmp(type, "s16") == 0)
-+		return "%d";
-+	if (strcmp(type, "u16") == 0)
-+		return "%u";
-+	if (strcmp(type, "short") == 0)
-+		return "%d";
-+	if (strcmp(type, "unsigned short") == 0)
-+		return "%u";
-+	if (strcmp(type, "s8") == 0)
-+		return "%d";
-+	if (strcmp(type, "u8") == 0)
-+		return "%u";
-+	if (strcmp(type, "char") == 0)
-+		return "%d";
-+	if (strcmp(type, "unsigned char") == 0)
-+		return "%u";
-+	if (strstr(type, "char[") != 0)
-+		return "%s";
++	struct hlist_head *perf_head;
 +
-+	/* Unknown, likely struct, allowed treat as 64-bit */
-+	return "%llu";
-+}
++	if (bpf_prog_array_valid(&user->call)) {
++		struct user_bpf_context context = {0};
 +
-+static bool user_field_is_dyn_string(const char *type)
-+{
-+	if (strstr(type, "__data_loc ") == type ||
-+	    strstr(type, "__rel_loc ") == type) {
-+		if (strstr(type, "char[") != 0)
-+			return true;
++		context.data_len = datalen;
++		context.data_type = USER_BPF_DATA_KERNEL;
++		context.kdata = data;
++
++		trace_call_bpf(&user->call, &context);
 +	}
 +
-+	return false;
-+}
++	perf_head = this_cpu_ptr(user->call.perf_events);
 +
-+#define LEN_OR_ZERO (len ? len - pos : 0)
-+static int user_event_set_print_fmt(struct user_event *user, char *buf, int len)
-+{
-+	struct ftrace_event_field *field, *next;
-+	struct list_head *head = &user->fields;
-+	int pos = 0, depth = 0;
++	if (perf_head && !hlist_empty(perf_head)) {
++		struct trace_entry *perf_entry;
++		struct pt_regs *regs;
++		size_t size = sizeof(*perf_entry) + datalen;
++		int context;
 +
-+	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
++		perf_entry = perf_trace_buf_alloc(ALIGN(size, 8),
++						  &regs, &context);
 +
-+	list_for_each_entry_safe_reverse(field, next, head, link) {
-+		if (depth != 0)
-+			pos += snprintf(buf + pos, LEN_OR_ZERO, " ");
++		if (unlikely(!perf_entry))
++			return;
 +
-+		pos += snprintf(buf + pos, LEN_OR_ZERO, "%s=%s",
-+				field->name, user_field_format(field->type));
++		perf_fetch_caller_regs(regs);
 +
-+		depth++;
++		memcpy(perf_entry + 1, data, datalen);
++
++		perf_trace_buf_submit(perf_entry, size, context,
++				      user->call.event.type, 1, regs,
++				      perf_head, NULL);
 +	}
-+
-+	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
-+
-+	list_for_each_entry_safe_reverse(field, next, head, link) {
-+		if (user_field_is_dyn_string(field->type))
-+			pos += snprintf(buf + pos, LEN_OR_ZERO,
-+					", __get_str(%s)", field->name);
-+		else
-+			pos += snprintf(buf + pos, LEN_OR_ZERO,
-+					", REC->%s", field->name);
-+	}
-+
-+	return pos + 1;
 +}
-+#undef LEN_OR_ZERO
++#endif
 +
-+static int user_event_create_print_fmt(struct user_event *user)
-+{
-+	char *print_fmt;
-+	int len;
-+
-+	len = user_event_set_print_fmt(user, NULL, 0);
-+
-+	print_fmt = kmalloc(len, GFP_KERNEL);
-+
-+	if (!print_fmt)
-+		return -ENOMEM;
-+
-+	user_event_set_print_fmt(user, print_fmt, len);
-+
-+	user->call.print_fmt = print_fmt;
-+
-+	return 0;
-+}
-+
- static struct trace_event_fields user_event_fields_array[] = {
- 	{}
- };
-@@ -366,6 +467,7 @@ static int destroy_user_event(struct user_event *user)
- 	clear_bit(user->index, page_bitmap);
- 	hash_del(&user->node);
+ /*
+  * Update the register page that is shared between user processes.
+  */
+@@ -538,6 +582,10 @@ static void update_reg_page_for(struct user_event *user)
  
-+	kfree(user->call.print_fmt);
- 	kfree(EVENT_NAME(user));
- 	kfree(user);
+ 				if (probe_func == user_event_ftrace)
+ 					status |= EVENT_STATUS_FTRACE;
++#ifdef CONFIG_PERF_EVENTS
++				else if (probe_func == user_event_perf)
++					status |= EVENT_STATUS_PERF;
++#endif
+ 				else
+ 					status |= EVENT_STATUS_OTHER;
+ 			} while ((++probe_func_ptr)->func);
+@@ -579,7 +627,19 @@ static int user_event_reg(struct trace_event_call *call,
  
-@@ -637,8 +739,10 @@ static int user_event_parse(char *name, char *args, char *flags,
- 	if (ret)
- 		goto put_user;
- 
--	/* Minimal print format */
--	user->call.print_fmt = "\"\"";
-+	ret = user_event_create_print_fmt(user);
+ #ifdef CONFIG_PERF_EVENTS
+ 	case TRACE_REG_PERF_REGISTER:
++		ret = tracepoint_probe_register(call->tp,
++						call->class->perf_probe,
++						data);
++		if (!ret)
++			goto inc;
++		break;
 +
-+	if (ret)
-+		goto put_user;
+ 	case TRACE_REG_PERF_UNREGISTER:
++		tracepoint_probe_unregister(call->tp,
++					    call->class->perf_probe,
++					    data);
++		goto dec;
++
+ 	case TRACE_REG_PERF_OPEN:
+ 	case TRACE_REG_PERF_CLOSE:
+ 	case TRACE_REG_PERF_ADD:
+@@ -821,6 +881,9 @@ static int user_event_parse(char *name, char *args, char *flags,
+ 	user->class.get_fields = user_event_get_fields;
+ 	user->class.reg = user_event_reg;
+ 	user->class.probe = user_event_ftrace;
++#ifdef CONFIG_PERF_EVENTS
++	user->class.perf_probe = user_event_perf;
++#endif
  
- 	user->call.data = user;
- 	user->call.class = &user->class;
+ 	mutex_lock(&event_mutex);
+ 	ret = user_event_trace_register(user);
 -- 
 2.17.1
 
