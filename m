@@ -2,115 +2,391 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C31EC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Nov 2021 17:57:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3719C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Nov 2021 19:06:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7E41760E52
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Nov 2021 17:57:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AA30861157
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Nov 2021 19:06:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbhKDR7y (ORCPT
+        id S234106AbhKDTIj (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 4 Nov 2021 13:59:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233913AbhKDR7v (ORCPT
+        Thu, 4 Nov 2021 15:08:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234271AbhKDTIg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:59:51 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        Thu, 4 Nov 2021 15:08:36 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C967C061203
+        for <linux-trace-devel@vger.kernel.org>; Thu,  4 Nov 2021 12:05:58 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::e2d])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B8E160E52;
-        Thu,  4 Nov 2021 17:57:12 +0000 (UTC)
-Date:   Thu, 4 Nov 2021 13:57:11 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Cc:     Yordan Karadzhov <y.karadz@gmail.com>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH v4 04/10] libtracefs: Change tracefs_kprobe_info API
-Message-ID: <20211104135711.6ab8826c@gandalf.local.home>
-In-Reply-To: <CAPpZLN48XgUnpAc+m7bTevqzYHZC=LjResC026_Hfr9veKegWQ@mail.gmail.com>
-References: <20211104111047.302660-1-tz.stoyanov@gmail.com>
-        <20211104111047.302660-5-tz.stoyanov@gmail.com>
-        <20211104123316.45632bf2@gandalf.local.home>
-        <CAPpZLN48XgUnpAc+m7bTevqzYHZC=LjResC026_Hfr9veKegWQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by ms.lwn.net (Postfix) with ESMTPSA id EEAFA6696;
+        Thu,  4 Nov 2021 19:05:52 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net EEAFA6696
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1636052753; bh=o3GEWIv2f2lVZGce34tW9xNOROrD5lFoDT9Jcdu7Pbs=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=cWD2qpmPrbHlbnclKCDkNzp1o71oGX8kK0BXQGQOeeYKcjUN3p1lXbqUmt1mCFTj9
+         JU/c6b/x/zj9wAFM4r4X1sARiENDd8M9PHzmP0A5zQnPSvSnPQE6cd/Bvhc49oGRlI
+         YaLYXbeVw5BcLTUaWvokMYvpi+ffOS06TqSd+L/yRETgEjc49BAqw3Hx3rl8DzJiQZ
+         XvG6ghz8bO4LESGs0QJVBA2XfV9sowWQM2PEIpUahZ31cwEpoJmG9bTlOSTX4zVrQb
+         /NHgM0CX/9zECSoLV3W8GoQ5pRrRWes9KWY7eeDtN5dXNGlL75GT2iTb3T05rHXoVm
+         clNOdYeSgYmHA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Beau Belgrave <beaub@linux.microsoft.com>, rostedt@goodmis.org,
+        mhiramat@kernel.org
+Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        beaub@linux.microsoft.com
+Subject: Re: [PATCH v4 10/10] user_events: Add documentation file
+In-Reply-To: <20211104170433.2206-11-beaub@linux.microsoft.com>
+References: <20211104170433.2206-1-beaub@linux.microsoft.com>
+ <20211104170433.2206-11-beaub@linux.microsoft.com>
+Date:   Thu, 04 Nov 2021 13:05:51 -0600
+Message-ID: <8735obrbao.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 4 Nov 2021 19:28:49 +0200
-Tzvetomir Stoyanov <tz.stoyanov@gmail.com> wrote:
+Beau Belgrave <beaub@linux.microsoft.com> writes:
 
-> On Thu, Nov 4, 2021 at 6:33 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > On Thu,  4 Nov 2021 13:10:41 +0200
-> > "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
-> >  
-> > > +enum tracefs_dynevent_type tracefs_kprobe_info(struct tracefs_dynevent *kprobe,
-> > > +                                            char **system, char **event,
-> > > +                                            char **prefix, char **addr, char **format)
-> > > +{
-> > > +     char **lv[] = { system, event, prefix, addr, format };
-> > > +     char **rv[] = { &kprobe->system, &kprobe->event, &kprobe->prefix,
-> > > +                     &kprobe->address, &kprobe->format };
-> > > +     int i;
-> > > +
-> > > +     if (!kprobe)
-> > > +             return TRACEFS_DYNEVENT_MAX;
-> > > +
-> > > +     for (i = 0; i < ARRAY_SIZE(lv); i++)
-> > > +             *lv[i] = NULL;  
-> >
-> > Do we really need to initialize them to NULL here?
-> >
-> > Not to mention, if one of the parameters is NULL itself, this will SEGFAULT.
-> >  
-> 
-> I'll add a check for that. They should be set to NULL to ensure that
-> free() in the error path will not segfault, if the caller passes not
-> initialised pointers.
+> Add a documentation file about user_events with example code, etc.
+> explaining how it may be used.
 
-It wont, due to the fact that it starts at i and works backward down to
-zero. The only items it will look at are the ones that were already
-initialized. Which is why I did it that way.
+Yay documentation!  Some nits for a slow moment...
 
-> 
-> > > +
-> > > +     for (i = 0; i < ARRAY_SIZE(lv); i++) {  
-> >
-> > Nice use of ARRAY_SIZE() ;-)
-> >  
-> > > +             if (lv[i]) {
-> > > +                     if (*rv[i]) {
-> > > +                             *lv[i] = strdup(*rv[i]);
-> > > +                             if (!*lv[i])
-> > > +                                     goto error;
-> > > +                     } else {
-> > > +                             *lv[i] = NULL;
-> > >                       }  
+> Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+> ---
+>  Documentation/trace/user_events.rst | 298 ++++++++++++++++++++++++++++
+>  1 file changed, 298 insertions(+)
+>  create mode 100644 Documentation/trace/user_events.rst
 
-> > > +
-> > > +     return kprobe->type;
-> > > +
-> > > +error:
-> > > +     for (i--; i >= 0; i--) {
+Actually, this isn't really a nit.  When you add a new RST file, you
+need to add it to the index.rst file too so that it gets pulled into the
+docs build.  Otherwise you'll get the warning you doubtless saw when you
+tried building the docs after adding this file...:)
 
-The above means that we do not need to initialize anything that wasn't
-touched.
+> diff --git a/Documentation/trace/user_events.rst b/Documentation/trace/user_events.rst
+> new file mode 100644
+> index 000000000000..d79c9f07d012
+> --- /dev/null
+> +++ b/Documentation/trace/user_events.rst
+> @@ -0,0 +1,298 @@
+> +=========================================
+> +user_events: User-based Event Tracing
+> +=========================================
+> +
+> +:Author: Beau Belgrave
+> +
+> +Overview
+> +--------
+> +User based trace events allow user processes to create events and trace data
+> +that can be viewed via existing tools, such as ftrace, perf and eBPF.
+> +To enable this feature, build your kernel with CONFIG_USER_EVENTS=y.
+> +
+> +Programs can view status of the events via 
+> +/sys/kernel/debug/tracing/user_events_status and can both register and write
+> +data out via /sys/kernel/debug/tracing/user_events_data.
+> +
+> +Programs can also use /sys/kernel/debug/tracing/dynamic_events to register and
+> +delete user based events via the u: prefix. The format of the command to
+> +dynamic_events is the same as the ioctl with the u: prefix applied.
+> +
+> +Typically programs will register a set of events that they wish to expose to
+> +tools that can read trace_events (such as ftrace and perf). The registration
+> +process gives back two ints to the program for each event. The first int is the
+> +status index. This index describes which byte in the 
+> +/sys/kernel/debug/tracing/user_events_status file represents this event. The
+> +second int is the write index. This index describes the data when a write() or
+> +writev() is called on the /sys/kernel/debug/tracing/user_events_data file.
+> +
+> +The structures referenced in this document are contained with the
+> +/include/uap/linux/user_events.h file in the source tree.
+> +
+> +**NOTE:** *Both user_events_status and user_events_data are under the tracefs filesystem
+> +and may be mounted at different paths than above.*
 
--- Steve
+Best to stick with the 80-column guideline for docs, please.
 
+This also won't render the way you expect and may add a warning.
 
-> > > +             if (lv[i])
-> > > +                     free(*lv[i]);
-> > > +     }
-> > > +
-> > > +     return TRACEFS_DYNEVENT_MAX;
-> > >  }  
-> >  
-> 
-> 
+> +Registering
+> +-----------
+> +Registering within a user process is done via ioctl() out to the
+> +/sys/kernel/debug/tracing/user_events_data file. The command to issue is
+> +DIAG_IOCSREG. This command takes a struct user_reg as an argument.
+> +
+> +The struct user_reg requires two values, the first is the size of the structure
+> +to ensure forward and backward compatibility. The second is the command string
+> +to issue for registering.
+> +
+> +User based events show up under tracefs like any other event under the subsystem
+> +named "user_events". This means tools that wish to attach to the events need to
+> +use /sys/kernel/debug/tracing/events/user_events/[name]/enable or perf record
+> +-e user_events:[name] when attaching/recording.
+> +
+> +**NOTE:** *The write_index returned is only valid for the FD that was used*
+> +
+> +Command Format
+> +^^^^^^^^^^^^^^
+> +The command string format is as follows:
+> +
+> +::
 
+You can express this more concisely (and readably) as
+
+  The command string format is as follows::
+
+(there's a bunch of these in this file)
+
+> +  name[:FLAG1[,FLAG2...]] [Field1[;Field2...]]
+> +
+> +Supported Flags
+> +^^^^^^^^^^^^^^^
+> +**BPF_ITER** - EBPF programs attached to this event will get the raw iovec
+> +struct instead of any data copies for max performance.
+> +
+> +Field Format
+> +^^^^^^^^^^^^
+> +
+> +::
+> +
+> +  type name [size]
+> +
+> +Basic types are supported (__data_loc, u32, u64, int, char, char[20]).
+> +User programs are encouraged to use clearly sized types like u32.
+> +
+> +**NOTE:** *Long is not supported since size can vary between user and kernel.*
+> +
+> +The size is only valid for types that start with a struct prefix.
+> +This allows user programs to describe custom structs out to tools, if required.
+> +
+> +For example, a struct in C that looks like this:
+> +
+> +::
+> +
+> +  struct mytype {
+> +    char data[20];
+> +  };
+> +
+> +Would be represented by the following field:
+> +
+> +::
+> +
+> +  struct mytype myname 20
+> +
+> +Status
+> +------
+> +When tools attach/record user based events the status of the event is updated
+> +in realtime. This allows user programs to only incur the cost of the write() or
+> +writev() calls when something is actively attached to the event.
+> +
+> +User programs call mmap() on /sys/kernel/debug/tracing/user_events_status to
+> +check the status for each event that is registered. The byte to check in the
+> +file is given back after the register ioctl() via user_reg.status_index.
+> +Currently the size of user_events_status is a single page, however, custom
+> +kernel configurations can change this size to allow more user based events. In
+> +all cases the size of the file is a multiple of a page size.
+> +
+> +For example, if the register ioctl() gives back a status_index of 3 you would
+> +check byte 3 of the returned mmap data to see if anything is attached to that
+> +event.
+> +
+> +Administrators can easily check the status of all registered events by reading
+> +the user_events_status file directly via a terminal. The output is as follows:
+> +
+> +::
+> +
+> +  Byte:Name [# Comments]
+> +  ...
+> +
+> +  Active: ActiveCount
+> +  Buisy: BusyCount
+> +  Max: MaxCount
+> +
+> +For example, on a system that has a single event the output looks like this:
+> +
+> +::
+> +
+> +  1:test
+> +
+> +  Active: 1
+> +  Busy: 0
+> +  Max: 4096
+> +
+> +If a user enables the user event via ftrace, the output would change to this:
+> +
+> +:: 
+> +
+> +  1:test # Used by ftrace
+> +
+> +  Active: 1
+> +  Busy: 1
+> +  Max: 4096
+> +
+> +**NOTE:** *A status index of 0 will never be returned. This allows user 
+> +programs to have an index that can be used on error cases.*
+> +
+> +Status Bits
+> +^^^^^^^^^^^
+> +The byte being checked will be non-zero if anything is attached. Programs can
+> +check specific bits in the byte to see what mechanism has been attached.
+> +
+> +The following values are defined to aid in checking what has been attached:
+> +**EVENT_STATUS_FTRACE** - Bit set if ftrace has been attached (Bit 0).
+> +
+> +**EVENT_STATUS_PERF** - Bit set if perf/eBPF has been attached (Bit 1).
+> +
+> +Writing Data
+> +------------
+> +After registering an event the same fd that was used to register can be used
+> +to write an entry for that event. The write_index returned must be at the start
+> +of the data, then the remaining data is treated as the payload of the event.
+> +
+> +For example, if write_index returned was 1 and I wanted to write out an int
+> +payload of the event. Then the data would have to be 8 bytes (2 ints) long,
+> +with the first 4 bytes being equal to 1 and the last 4 bytes being equal to the
+> +value I want as the payload.
+> +
+> +In memory this would look like this:
+> +
+> +::
+> +
+> +  int index;
+> +  int payload;
+> +
+> +User programs might have well known structs that they wish to use to emit out
+> +as payloads. In those cases writev() can be used, with the first vector being
+> +the index and the following vector(s) being the actual event payload.
+> +
+> +For example, if I have a struct like this:
+> +
+> +::
+> +
+> +  struct payload {
+> +        int src;
+> +        int dst;
+> +        int flags;
+> +  };
+> +
+> +It's advised for user programs to do the following:
+> +
+> +:: 
+> +
+> +  struct iovec io[2];
+> +  struct payload e;
+> +
+> +  io[0].iov_base = &write_index;
+> +  io[0].iov_len = sizeof(write_index);
+> +  io[1].iov_base = &e;
+> +  io[1].iov_len = sizeof(e);
+> +
+> +  writev(fd, (const struct iovec*)io, 2);
+> +
+> +**NOTE:** *The write_index is not emitted out into the trace being recorded.*
+> +
+> +EBPF
+> +----
+> +EBPF programs that attach to a user-based event tracepoint are given a pointer
+> +to a struct user_bpf_context. The bpf context contains the data type (which can
+> +be a user or kernel buffer, or can be a pointer to the iovec) and the data
+> +length that was emitted (minus the write_index).
+> +
+> +Example Code
+> +------------
+
+Examples are great, but they are best placed under samples/ (or tools/
+if they do something useful) where readers can build and run them.
+
+> +::
+> +
+> +  #include <errno.h>
+> +  #include <sys/ioctl.h>
+> +  #include <sys/mman.h>
+> +  #include <fcntl.h>
+> +  #include <stdio.h>
+> +  #include <unistd.h>
+> +  #include <linux/user_events.h>
+> +  
+> +  /* Assumes debugfs is mounted */
+> +  const char *data_file = "/sys/kernel/debug/tracing/user_events_data";
+> +  const char *status_file = "/sys/kernel/debug/tracing/user_events_status";
+> +  
+> +  static int event_status(char **status)
+> +  {
+> +  	int fd = open(status_file, O_RDONLY);
+> +  
+> +  	*status = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ,
+> +  		       MAP_SHARED, fd, 0);
+> +  
+> +  	close(fd);
+> +  
+> +  	if (*status == MAP_FAILED)
+> +  	      return -1;
+> +  
+> +  	return 0;
+> +  }
+> +  
+> +  static int event_reg(int fd, const char *command, int *status, int *write)
+> +  {
+> +  	struct user_reg reg = {0};
+> +  
+> +  	reg.size = sizeof(reg);
+> +  	reg.name_args = (__u64)command;
+> +  
+> +  	if (ioctl(fd, DIAG_IOCSREG, &reg) == -1)
+> +  		return -1;
+> +  
+> +  	*status = reg.status_index;
+> +  	*write = reg.write_index;
+> +  
+> +  	return 0;
+> +  }
+> +  
+> +  int main(int argc, char **argv)
+> +  {
+> +  	int data_fd, status, write;
+> +  	char *status_page;
+> +  	struct iovec io[2];
+> +  	__u32 count = 0;
+> +  
+> +  	if (event_status(&status_page) == -1)
+> +  		return errno;
+> +  
+> +  	data_fd = open(data_file, O_RDWR);
+> +  
+> +  	if (event_reg(data_fd, "test u32 count", &status, &write) == -1)
+> +  		return errno;
+> +  
+> +  	/* Setup iovec */
+> +  	io[0].iov_base = &status;
+> +  	io[0].iov_len = sizeof(status);
+> +  	io[1].iov_base = &count;
+> +  	io[1].iov_len = sizeof(count);
+> +  
+> +  ask:
+> +  	printf("Press enter to check status...\n");
+> +  	getchar();
+> +  
+> +  	/* Check if anyone is listening */
+> +  	if (status_page[status]) {
+> +  		/* Yep, trace out our data */
+> +  		writev(data_fd, (const struct iovec*)io, 2);
+> +  
+> +  		/* Increase the count */
+> +  		count++;
+> +  
+> +  		printf("Something was attached, wrote data\n");
+> +  	}
+> +  
+> +  	goto ask;
+> +  
+> +  	return 0;
+> +  }
+
+Thanks,
+
+jon
