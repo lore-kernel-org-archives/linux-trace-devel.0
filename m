@@ -2,38 +2,38 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41689C43217
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Nov 2021 17:04:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B86B4C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Nov 2021 17:04:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1B14B61216
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Nov 2021 17:04:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9D94161186
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Nov 2021 17:04:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231684AbhKDRHR (ORCPT
+        id S231892AbhKDRHR (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Thu, 4 Nov 2021 13:07:17 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:54228 "EHLO
+Received: from linux.microsoft.com ([13.77.154.182]:54218 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231844AbhKDRHQ (ORCPT
+        with ESMTP id S231791AbhKDRHQ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 4 Nov 2021 13:07:16 -0400
 Received: from localhost.localdomain (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 26E4020B9D55;
-        Thu,  4 Nov 2021 10:04:38 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 26E4020B9D55
+        by linux.microsoft.com (Postfix) with ESMTPSA id E847220B9CE9;
+        Thu,  4 Nov 2021 10:04:37 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E847220B9CE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
         s=default; t=1636045478;
-        bh=u0Kk1SK7VFx8h82jgK7DUE3vAjNt9dA4ghfQF6nvzo4=;
+        bh=lpKms0L28V5z6FgtCAKOhhWjyL3XpYRK7tPVNMRi2A4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oOV6e2c14hkCAOBPian+JWrOtcRebVjDSTjvBn/JrqVhjxSeK9ywpaSs7c0O1DJrI
-         9VapVU6c/u/LSPhlDOyMJi3kwBCe9bFnvyc3Zb330Nk09u7B3qbdFCWM56lfPuDMVt
-         sTmZBTdJH3zADnjWhw6MRbJyBXDsDRXCVBY+kLmA=
+        b=fBuxE5qTPF32wagPw7B2qB1vAFHwWQuIZpLHMTg7kMOjOAhyDSVjAZHzg1NyWDbtS
+         mCecC8REqWa/UIp+8i6J8e9Ui+UCgfE1gnRp7SedYJ5Cj9E6O5IpFNXySaJrwE7kye
+         eZ63o9Eq5U1xjsdVHmmy359Dgd09lFgOxITmmYPc=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         beaub@linux.microsoft.com
-Subject: [PATCH v4 04/10] user_events: Handle matching arguments from dyn_events
-Date:   Thu,  4 Nov 2021 10:04:27 -0700
-Message-Id: <20211104170433.2206-5-beaub@linux.microsoft.com>
+Subject: [PATCH v4 03/10] user_events: Add print_fmt generation support for basic types
+Date:   Thu,  4 Nov 2021 10:04:26 -0700
+Message-Id: <20211104170433.2206-4-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211104170433.2206-1-beaub@linux.microsoft.com>
 References: <20211104170433.2206-1-beaub@linux.microsoft.com>
@@ -41,98 +41,147 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Ensures that when dynamic events requests a match with arguments that
-they match what is in the user_event.
+Addes print_fmt format generation for basic types that are supported for
+user processes. Only supports sizes that are the same on 32 and 64 bit.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- kernel/trace/trace_events_user.c | 67 +++++++++++++++++++++++++++++++-
- 1 file changed, 66 insertions(+), 1 deletion(-)
+ kernel/trace/trace_events_user.c | 108 ++++++++++++++++++++++++++++++-
+ 1 file changed, 106 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 479a9ced3281..cd78cc481557 100644
+index a68017ad7fdd..479a9ced3281 100644
 --- a/kernel/trace/trace_events_user.c
 +++ b/kernel/trace/trace_events_user.c
-@@ -662,13 +662,78 @@ static int user_event_free(struct dyn_event *ev)
- 	return destroy_user_event(user);
+@@ -329,6 +329,107 @@ static int user_event_parse_fields(struct user_event *user, char *args)
+ 	return ret;
  }
  
-+static int user_field_match(struct ftrace_event_field *field, int argc,
-+			    const char **argv, int *iout)
++static char *user_field_format(const char *type)
 +{
-+	char field_name[256];
-+	char arg_name[256];
-+	int len, pos, i = *iout;
-+	bool colon = false;
++	if (strcmp(type, "s64") == 0)
++		return "%lld";
++	if (strcmp(type, "u64") == 0)
++		return "%llu";
++	if (strcmp(type, "s32") == 0)
++		return "%d";
++	if (strcmp(type, "u32") == 0)
++		return "%u";
++	if (strcmp(type, "int") == 0)
++		return "%d";
++	if (strcmp(type, "unsigned int") == 0)
++		return "%u";
++	if (strcmp(type, "s16") == 0)
++		return "%d";
++	if (strcmp(type, "u16") == 0)
++		return "%u";
++	if (strcmp(type, "short") == 0)
++		return "%d";
++	if (strcmp(type, "unsigned short") == 0)
++		return "%u";
++	if (strcmp(type, "s8") == 0)
++		return "%d";
++	if (strcmp(type, "u8") == 0)
++		return "%u";
++	if (strcmp(type, "char") == 0)
++		return "%d";
++	if (strcmp(type, "unsigned char") == 0)
++		return "%u";
++	if (strstr(type, "char[") != 0)
++		return "%s";
 +
-+	if (i >= argc)
-+		return false;
-+
-+	len = sizeof(arg_name);
-+	pos = 0;
-+
-+	for (; i < argc; ++i) {
-+		if (i != *iout)
-+			pos += snprintf(arg_name + pos, len - pos, " ");
-+
-+		pos += snprintf(arg_name + pos, len - pos, argv[i]);
-+
-+		if (strchr(argv[i], ';')) {
-+			++i;
-+			colon = true;
-+			break;
-+		}
-+	}
-+
-+	len = sizeof(field_name);
-+	pos = 0;
-+
-+	pos += snprintf(field_name + pos, len - pos, field->type);
-+	pos += snprintf(field_name + pos, len - pos, " ");
-+	pos += snprintf(field_name + pos, len - pos, field->name);
-+
-+	if (colon)
-+		pos += snprintf(field_name + pos, len - pos, ";");
-+
-+	*iout = i;
-+
-+	return strcmp(arg_name, field_name) == 0;
++	/* Unknown, likely struct, allowed treat as 64-bit */
++	return "%llu";
 +}
 +
-+static bool user_fields_match(struct user_event *user, int argc,
-+			      const char **argv)
++static bool user_field_is_dyn_string(const char *type)
++{
++	if (strstr(type, "__data_loc ") == type ||
++	    strstr(type, "__rel_loc ") == type) {
++		if (strstr(type, "char[") != 0)
++			return true;
++	}
++
++	return false;
++}
++
++#define LEN_OR_ZERO (len ? len - pos : 0)
++static int user_event_set_print_fmt(struct user_event *user, char *buf, int len)
 +{
 +	struct ftrace_event_field *field, *next;
 +	struct list_head *head = &user->fields;
-+	int i = 0;
++	int pos = 0, depth = 0;
 +
-+	list_for_each_entry_safe_reverse(field, next, head, link)
-+		if (!user_field_match(field, argc, argv, &i))
-+			return false;
++	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
 +
-+	if (i != argc)
-+		return false;
++	list_for_each_entry_safe_reverse(field, next, head, link) {
++		if (depth != 0)
++			pos += snprintf(buf + pos, LEN_OR_ZERO, " ");
 +
-+	return true;
++		pos += snprintf(buf + pos, LEN_OR_ZERO, "%s=%s",
++				field->name, user_field_format(field->type));
++
++		depth++;
++	}
++
++	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
++
++	list_for_each_entry_safe_reverse(field, next, head, link) {
++		if (user_field_is_dyn_string(field->type))
++			pos += snprintf(buf + pos, LEN_OR_ZERO,
++					", __get_str(%s)", field->name);
++		else
++			pos += snprintf(buf + pos, LEN_OR_ZERO,
++					", REC->%s", field->name);
++	}
++
++	return pos + 1;
++}
++#undef LEN_OR_ZERO
++
++static int user_event_create_print_fmt(struct user_event *user)
++{
++	char *print_fmt;
++	int len;
++
++	len = user_event_set_print_fmt(user, NULL, 0);
++
++	print_fmt = kmalloc(len, GFP_KERNEL);
++
++	if (!print_fmt)
++		return -ENOMEM;
++
++	user_event_set_print_fmt(user, print_fmt, len);
++
++	user->call.print_fmt = print_fmt;
++
++	return 0;
 +}
 +
- static bool user_event_match(const char *system, const char *event,
- 			     int argc, const char **argv, struct dyn_event *ev)
- {
- 	struct user_event *user = container_of(ev, struct user_event, devent);
-+	bool match;
+ static struct trace_event_fields user_event_fields_array[] = {
+ 	{}
+ };
+@@ -366,6 +467,7 @@ static int destroy_user_event(struct user_event *user)
+ 	clear_bit(user->index, page_bitmap);
+ 	hash_del(&user->node);
  
--	return strcmp(EVENT_NAME(user), event) == 0 &&
-+	match = strcmp(EVENT_NAME(user), event) == 0 &&
- 		(!system || strcmp(system, USER_EVENTS_SYSTEM) == 0);
-+
-+	if (match && argc > 0)
-+		match = user_fields_match(user, argc, argv);
-+
-+	return match;
- }
++	kfree(user->call.print_fmt);
+ 	kfree(EVENT_NAME(user));
+ 	kfree(user);
  
- static struct dyn_event_operations user_event_dops = {
+@@ -637,8 +739,10 @@ static int user_event_parse(char *name, char *args, char *flags,
+ 	if (ret)
+ 		goto put_user;
+ 
+-	/* Minimal print format */
+-	user->call.print_fmt = "\"\"";
++	ret = user_event_create_print_fmt(user);
++
++	if (ret)
++		goto put_user;
+ 
+ 	user->call.data = user;
+ 	user->call.class = &user->class;
 -- 
 2.17.1
 
