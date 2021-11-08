@@ -2,92 +2,128 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C3A1C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Nov 2021 22:59:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F17BC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Nov 2021 23:00:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3B364619A6
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Nov 2021 22:59:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 07810619A6
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Nov 2021 23:00:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236518AbhKHXCk (ORCPT
+        id S235081AbhKHXDV (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 8 Nov 2021 18:02:40 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:43748 "EHLO
+        Mon, 8 Nov 2021 18:03:21 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:43838 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235081AbhKHXCk (ORCPT
+        with ESMTP id S230364AbhKHXDU (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 8 Nov 2021 18:02:40 -0500
+        Mon, 8 Nov 2021 18:03:20 -0500
 Received: from kbox (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 0A0C020B417F;
-        Mon,  8 Nov 2021 14:59:55 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0A0C020B417F
+        by linux.microsoft.com (Postfix) with ESMTPSA id AACA720B409D;
+        Mon,  8 Nov 2021 15:00:35 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AACA720B409D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1636412395;
-        bh=494STVyeEYKT0S/qOYZldNfAd26r3f1GKySptb4suqA=;
+        s=default; t=1636412435;
+        bh=IYoekjc8BXBw1L4x6xX7X7r2zzBU7yy61cvPMt+EHUU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lvvon6SEEKBa3jjTw3XiyXLo75IDxUAbGlSSvRjXSVXENEb6x0oculrOtRLSzZgxV
-         /3SXq/vuoDgB/4i3mKPOyzb3t4MO5+atFd+mjO8KPodHCV9B/62sySp25/BQV79Ezu
-         /WG2glflakDjIM5XYqigTbczJMvTbTZfQdkuVA+A=
-Date:   Mon, 8 Nov 2021 14:59:50 -0800
+        b=JVLsB5gs/vLtjGojKAsPAz+nUbvHGKK7h7duI0yLF9k85mVF4x8irXN05/Gu8cLOs
+         roc2L3hPpprHjLkjEQFCZcd9MzzwqrTilTl1ygfcnpjOrO2mTfN0ecW8f2m1S1F0N2
+         mPrW7jh27vvwn2/FcG6d69R38msc/Y7pyrJIUeIY=
+Date:   Mon, 8 Nov 2021 15:00:34 -0800
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
- trace_event into ftrace
-Message-ID: <20211108225950.GA1452@kbox>
+Cc:     mhiramat@kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 09/10] user_events: Optimize writing events by only
+ copying data once
+Message-ID: <20211108230034.GB1452@kbox>
 References: <20211104170433.2206-1-beaub@linux.microsoft.com>
- <20211104170433.2206-3-beaub@linux.microsoft.com>
- <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
- <20211108171336.GA1690@kbox>
- <20211108131639.33a4f186@gandalf.local.home>
- <20211108202527.GA1862@kbox>
- <20211108160027.3b16c23d@gandalf.local.home>
- <20211108220945.GA2148@kbox>
- <20211108173053.4b37a1b8@gandalf.local.home>
+ <20211104170433.2206-10-beaub@linux.microsoft.com>
+ <20211108174542.39c255e1@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211108173053.4b37a1b8@gandalf.local.home>
+In-Reply-To: <20211108174542.39c255e1@gandalf.local.home>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 05:30:53PM -0500, Steven Rostedt wrote:
-> On Mon, 8 Nov 2021 14:09:45 -0800
+On Mon, Nov 08, 2021 at 05:45:42PM -0500, Steven Rostedt wrote:
+> On Thu,  4 Nov 2021 10:04:32 -0700
 > Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> > 
-> > It seems like both histograms and filter both reference field flags to
-> > determine how to get the data.
-> > 
-> > How would you feel about another FILTER_* flag on fields, like:
-> > FILTER_DYN_STRING_SAFE
-> > FILTER_PTR_STRING_SAFE
 > 
-> You mean "UNSAFE" ?
+> > Pass iterator through to probes to allow copying data directly to the
+> > probe buffers instead of taking multiple copies. Enables eBPF user and
+> > raw iterator types out to programs for no-copy scenarios.
+> > 
+> > Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+> > ---
+> >  kernel/trace/trace_events_user.c | 97 +++++++++++++++++++++++---------
+> >  1 file changed, 69 insertions(+), 28 deletions(-)
+> > 
+> > diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+> > index b5fe0550b489..d50118b9630a 100644
+> > --- a/kernel/trace/trace_events_user.c
+> > +++ b/kernel/trace/trace_events_user.c
+> > @@ -39,6 +39,10 @@
+> >  #define MAX_EVENT_DESC 512
+> >  #define EVENT_NAME(user_event) ((user_event)->tracepoint.name)
+> >  
+> > +#define MAX_BPF_COPY_SIZE PAGE_SIZE
+> > +#define MAX_STACK_BPF_DATA 512
+> > +#define copy_nofault copy_from_iter_nocache
+> > +
+> >  static char *register_page_data;
+> >  
+> >  static DEFINE_MUTEX(reg_mutex);
+> > @@ -63,8 +67,7 @@ struct user_event_refs {
+> >  	struct user_event *events[];
+> >  };
+> >  
+> > -typedef void (*user_event_func_t) (struct user_event *user,
+> > -				   void *data, u32 datalen,
+> > +typedef void (*user_event_func_t) (struct user_event *user, struct iov_iter *i,
+> >  				   void *tpdata);
+> >  
+> >  static int user_event_parse(char *name, char *args, char *flags,
+> > @@ -491,7 +494,7 @@ static struct user_event *find_user_event(char *name, u32 *outkey)
+> >  /*
+> >   * Writes the user supplied payload out to a trace file.
+> >   */
+> > -static void user_event_ftrace(struct user_event *user, void *data, u32 datalen,
+> > +static void user_event_ftrace(struct user_event *user, struct iov_iter *i,
+> >  			      void *tpdata)
+> >  {
+> >  	struct trace_event_file *file;
+> > @@ -506,41 +509,82 @@ static void user_event_ftrace(struct user_event *user, void *data, u32 datalen,
+> >  		return;
+> >  
+> >  	entry = trace_event_buffer_reserve(&event_buffer, file,
+> > -					   sizeof(*entry) + datalen);
+> > +					   sizeof(*entry) + i->count);
+> >  
+> >  	if (unlikely(!entry))
+> >  		return;
+> >  
+> > -	memcpy(entry + 1, data, datalen);
+> > +	if (unlikely(!copy_nofault(entry + 1, i->count, i)))
 > 
-
-Yes :) Unsafe data, safe filter method.
-
-> > 
-> > user_events when parsing would instead of leaving FILTER_OTHER for
-> > __data_loc / __rel_loc switch to the above.
-> > 
-> > The predicate filter method would then switch based on those types to
-> > safer versions.
-> > 
-> > That way other parts could take advantage of this if needed beyond
-> > user_events.
-> > 
-> > If this is addressed at the filter/histogram level, would then the write
-> > callsites still check bounds per-write? Or maybe only care about the
-> > undersized data cases?
+> Need:
+> 		__trace_event_discard_commit(event_buffer.buffer, event_buffer.event);
 > 
-> I'd have to look at the implementation of this. There's too many variables
-> running around in my head right now.
+> Because the trace_event_buffer_reserve() will not only allocate space on
+> the ring buffer, but may also disable preemption.
 > 
 > -- Steve
+> 
 
-Understood, thanks for thinking about this.
+Ah, thank you!
 
 -Beau
+
+> 
+> > +		return;
+> >  
+> >  	trace_event_buffer_commit(&event_buffer);
+> >  }
+> >  
+> >  #ifdef CONFIG_PERF_EVENTS
