@@ -2,107 +2,122 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64D54C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 13:56:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E43B2C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 14:12:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 40E3E61104
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 13:56:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C061C610A8
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 14:12:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbhKJN7V (ORCPT
+        id S231731AbhKJOPD (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 10 Nov 2021 08:59:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231460AbhKJN7U (ORCPT
+        Wed, 10 Nov 2021 09:15:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231593AbhKJOPD (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 10 Nov 2021 08:59:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77F36610FC;
-        Wed, 10 Nov 2021 13:56:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636552593;
-        bh=EuP/VlAeIDY5tLCRfz2qT/DBs8AmsePg/eemPlSyrPI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=M/p7su7S8FuKiIxan6QlfSK8GuYJZTK3hFeF9sAKIpVJJ7/ybxVBlIWInry0WiDr/
-         5l5ohbG7llY5/2ZoauaxqtV3SnNGrugpiwUkzasihhPAhCXKVSPLQI/en12Xux73/k
-         ccHZQwkhv8eBdjBoWgbQnHHiTPUEmB0hQTQ9dj48AWKKQbhhwMSm9H70n0tTGY7ZzB
-         fdOFaxpYmH+7xFeGV5r9ogxzj4jls6S7mSet39TJMwh6p2omSoercINtxigCeezKfa
-         jL2a6xFcSl/6HoagSDqDwfF4UKHlZZ+53T+eloXjwRAu4FiNZ1eJIdoHlOyb4hnXx9
-         pKzzueGJOy8jA==
-Date:   Wed, 10 Nov 2021 22:56:30 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
- trace_event into ftrace
-Message-Id: <20211110225630.babcd70ec85f97e369b0e446@kernel.org>
-In-Reply-To: <20211109190844.GA1529@kbox>
-References: <20211104170433.2206-1-beaub@linux.microsoft.com>
-        <20211104170433.2206-3-beaub@linux.microsoft.com>
-        <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
-        <20211108171336.GA1690@kbox>
-        <20211108131639.33a4f186@gandalf.local.home>
-        <20211108202527.GA1862@kbox>
-        <20211109115634.5fb6d984d7b4e701c740d5f3@kernel.org>
-        <20211109190844.GA1529@kbox>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Wed, 10 Nov 2021 09:15:03 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DB3C061764
+        for <linux-trace-devel@vger.kernel.org>; Wed, 10 Nov 2021 06:12:15 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id v11so11030048edc.9
+        for <linux-trace-devel@vger.kernel.org>; Wed, 10 Nov 2021 06:12:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=7lVzV1s7lUKXd8+8dZw2G9kCxfMk5vbIMTiRAD0D8tk=;
+        b=L4bfZU6Ay1PZOfRV9OgsP4is/0Mxn35nAI4TocZ+Bafv9Y59Vz8Y69rAqLgbUhFwAj
+         YkgFsJzLdAKpzK3PB1GdRrPu+j1kzqPrRi73d4iCk4+7XhzNrxP+gNZPJ7PaETR7V/q2
+         NNcvg9DLNG+Be8TRmY+1aaNhOurmYqFozRDkN1+BdVS7xnfYjDovg36dNzwMYO9HteVf
+         OpY5v6MqvktdlxqRpttmuMW/bhBA/+rtvWL07gTaxhTJ9jNwQ2nkkxKQHly/L/z0bi+e
+         lGuqN1HihQ0jMweq8hc7IOOCuB1o22Ap9wh2uA28uK89FCbpDc9C2l98nM9XTIjlyqMx
+         mvDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=7lVzV1s7lUKXd8+8dZw2G9kCxfMk5vbIMTiRAD0D8tk=;
+        b=18yq+Pf0hqfGBE0ifl3BfetWjC+4XHzVsQeXAWN0Pue/vMi/qOT+v8fpTmQC4f0NVk
+         T3axijBx7S7F057zb/5QP3WdJDYuMTnPt6DBvc15I6V5KpYwxYVKAgu3aeMK5oYDPPFp
+         UA+oajo1cDTYvmLlR+sKHnkzaDHOv7fRb9+OWIeGrZ580THeMsHXPmcaWWMIpT8HDo5F
+         jmqUAy12b7kAbpt1+i4IRqwiHX368OS2iGTu+6nYhdcto/Y2srg/ypAmbc+trs38o9n7
+         g4gG3PEG7jDRVZHDM9NjaKDmcS32Qv3F34vb3MgsG2XRBUPPzpYtAYmGrKYSTb7t+8Lx
+         /+Fg==
+X-Gm-Message-State: AOAM532IZV0rXw9mOqLTVpUgRGWt9AcD7ZyAH6zwCI0UNONJ1GspmilH
+        1fvmyv5Ft13G6mTITQygMgamYgvkDKE=
+X-Google-Smtp-Source: ABdhPJyVwos6hGY5eq0obAY7f7SI+k+ph8weSZgGTScRDKmdfBwqOJRNufnD4NxD9DKvafEJ9ddjFw==
+X-Received: by 2002:a05:6402:2710:: with SMTP id y16mr21574102edd.258.1636553533756;
+        Wed, 10 Nov 2021 06:12:13 -0800 (PST)
+Received: from [192.168.1.6] ([95.87.219.163])
+        by smtp.gmail.com with ESMTPSA id go17sm11463775ejc.76.2021.11.10.06.12.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Nov 2021 06:12:13 -0800 (PST)
+Message-ID: <db8be415-bb25-a2fe-1d30-8e4a446154f7@gmail.com>
+Date:   Wed, 10 Nov 2021 16:12:12 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH] trace-cmd: Add Requires: libtracefs to libtracecmd.pc
+ file
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+References: <20211109111426.7639b2a6@gandalf.local.home>
+From:   Yordan Karadzhov <y.karadz@gmail.com>
+In-Reply-To: <20211109111426.7639b2a6@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 9 Nov 2021 11:08:44 -0800
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
 
-> > > I'd like to know if I do fix them that the features like filtering will still
-> > > be available to user_events or if it's better to just add flags to disable
-> > > kernel filtering?
-> > 
-> > I would rather like that the filters will be available on the user_events.
-> > 
-> > My question is that you need to log the dynamic data or strings via user-
-> > events or not. Since the other user-events, like SDT doesn't support the
-> > string variables to trace, I guess that is not a high priority.
-> > 
-> > Moreover, since now we can use eprobes, if user event records the address of
-> > user-string, the eprobes can fetch it.
-> > 
-> > So, my suggestion is implmenting with fixed-size parameters as the first step
-> > and keep filter/histograms/eprobes available on the user-events.
-> > If you find any performance issue, you can expand the user-events to support
-> > dynamic (array) data and strings.
-> > 
+
+On 9.11.21 г. 18:14 ч., Steven Rostedt wrote:
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 > 
-> We need strings to be able to be emitted and recorded in eBPF, perf and
-> ftrace. So I would rather go after a solution that lets us keep these in
-> the ring buffers, even if it means a perf hit.
-
-OK, my concern is based on the current implementation, so in that case
-you can add some additional verification. That is good.
-
-> Guess what's left is to where the best place to check is, checking in
-> the filter with unsafe flags would let us keep most of the perf (we just
-> check the undersize case, 1 branch). When these unsafe types are
-> filtered then a perf tax is imposed to keep things safe.
-
-I would like to keep verifying in writer side then we can ensure the
-data on ring buffer (of perf and of ftrace) is sane. If you add the unsafe
-flag, you have to change all the code which access the ring buffer, not only
-the filter but also eprobes, histograms, perf-tools, and other user-space
-tracing tools which reads the tracing buffer directly.
-
-> It sounded like Steven wanted to think about this a bit, so I'll wait a
-> bit before poking again for consensus :)
+> In order to not have users of libtracecmd having to also include the
+> includes and libraries for libtracefs and libraceevent, add a requires
+> field for libtracefs to the libtracecmd.pc file. As libtracefs requires
+> libtraceevent, it will pull that one in as well.
 > 
-> Do you have any strong feelings about where it goes?
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+>   libtracecmd.pc.template | 1 +
+>   scripts/utils.mk        | 1 +
+>   2 files changed, 2 insertions(+)
+> 
+> diff --git a/libtracecmd.pc.template b/libtracecmd.pc.template
+> index dc41076e..bcf4e39d 100644
+> --- a/libtracecmd.pc.template
+> +++ b/libtracecmd.pc.template
+> @@ -6,5 +6,6 @@ Name: libtracecmd
+>   URL: https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
+>   Description: Library for creating and reading trace-cmd data files
+>   Version: LIB_VERSION
+> +Requires: libtracefs >= LIBTRACEFS_MIN_VERSION
 
-I recommend you to start verifying the writer side, it should make the
-change as small as possible. Unsafe flag idea may involve many other
-tools. And it is not fundamentary required for user-events.
+BTW this works also without the 'lib' prefix:
 
-Thank you,
+Requires: tracefs >= LIBTRACEFS_MIN_VERSION
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+cheers,
+Yordan
+
+
+>   Cflags: -I${includedir}
+>   Libs: -L${libdir} -ltracecmd
+> diff --git a/scripts/utils.mk b/scripts/utils.mk
+> index 237b2fc9..6865a746 100644
+> --- a/scripts/utils.mk
+> +++ b/scripts/utils.mk
+> @@ -169,6 +169,7 @@ define do_make_pkgconfig_file
+>   	sed -i "s|INSTALL_PREFIX|${1}|g" ${PKG_CONFIG_FILE}; 		\
+>   	sed -i "s|LIB_VERSION|${LIBTRACECMD_VERSION}|g" ${PKG_CONFIG_FILE}; \
+>   	sed -i "s|LIB_DIR|$(libdir)|g" ${PKG_CONFIG_FILE}; \
+> +	sed -i "s|LIBTRACEFS_MIN_VERSION|$(LIBTRACEFS_MIN_VERSION)|g" ${PKG_CONFIG_FILE}; \
+>   	sed -i "s|HEADER_DIR|$(includedir)/trace-cmd|g" ${PKG_CONFIG_FILE};
+>   endef
+>   
+> 
