@@ -2,80 +2,70 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9766C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 16:17:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12009C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 16:29:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9B5B560FC1
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 16:17:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DB63D61058
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 16:29:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229473AbhKJQUW convert rfc822-to-8bit (ORCPT
+        id S229740AbhKJQci (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 10 Nov 2021 11:20:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38336 "EHLO mail.kernel.org"
+        Wed, 10 Nov 2021 11:32:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229582AbhKJQUT (ORCPT
+        id S229602AbhKJQch (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 10 Nov 2021 11:20:19 -0500
+        Wed, 10 Nov 2021 11:32:37 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A5BA660F70;
-        Wed, 10 Nov 2021 16:17:30 +0000 (UTC)
-Date:   Wed, 10 Nov 2021 11:17:29 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id A526A61058;
+        Wed, 10 Nov 2021 16:29:49 +0000 (UTC)
+Date:   Wed, 10 Nov 2021 11:29:47 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yordan Karadzhov <y.karadz@gmail.com>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH] trace-cmd: Add Requires: libtracefs to libtracecmd.pc
- file
-Message-ID: <20211110111729.41a7eb6b@gandalf.local.home>
-In-Reply-To: <db8be415-bb25-a2fe-1d30-8e4a446154f7@gmail.com>
-References: <20211109111426.7639b2a6@gandalf.local.home>
-        <db8be415-bb25-a2fe-1d30-8e4a446154f7@gmail.com>
+To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 4/5] kernel-shark: Add 'Requires' to libkshark.pc
+Message-ID: <20211110112947.321c7b55@gandalf.local.home>
+In-Reply-To: <20211110143747.32833-4-y.karadz@gmail.com>
+References: <20211110143747.32833-1-y.karadz@gmail.com>
+        <20211110143747.32833-4-y.karadz@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 10 Nov 2021 16:12:12 +0200
-Yordan Karadzhov <y.karadz@gmail.com> wrote:
+On Wed, 10 Nov 2021 16:37:46 +0200
+"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-> On 9.11.21 г. 18:14 ч., Steven Rostedt wrote:
-> > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> > 
-> > In order to not have users of libtracecmd having to also include the
-> > includes and libraries for libtracefs and libraceevent, add a requires
-> > field for libtracefs to the libtracecmd.pc file. As libtracefs requires
-> > libtraceevent, it will pull that one in as well.
-> > 
-> > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > ---
-> >   libtracecmd.pc.template | 1 +
-> >   scripts/utils.mk        | 1 +
-> >   2 files changed, 2 insertions(+)
-> > 
-> > diff --git a/libtracecmd.pc.template b/libtracecmd.pc.template
-> > index dc41076e..bcf4e39d 100644
-> > --- a/libtracecmd.pc.template
-> > +++ b/libtracecmd.pc.template
-> > @@ -6,5 +6,6 @@ Name: libtracecmd
-> >   URL: https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
-> >   Description: Library for creating and reading trace-cmd data files
-> >   Version: LIB_VERSION
-> > +Requires: libtracefs >= LIBTRACEFS_MIN_VERSION  
-> 
-> BTW this works also without the 'lib' prefix:
-> 
-> Requires: tracefs >= LIBTRACEFS_MIN_VERSION
+> --- a/build/libkshark.pc.cmake
+> +++ b/build/libkshark.pc.cmake
+> @@ -6,5 +6,7 @@ Name: libkshark
+>  URL: https://git.kernel.org/pub/scm/utils/trace-cmd/kernel-shark.git/
+>  Description: Library for accessing ftrace file system
+>  Version: @KS_VERSION_STRING@
+> +Requires: tracecmd >= @LIBTRACECMD_MIN_VERSION@
 
-I just tried that on Fedora, and get this:
+Note, when I added this, I get:
 
-# pkg-config --libs libtracecmd
-Package tracefs was not found in the pkg-config search path.
-Perhaps you should add the directory containing `tracefs.pc'
-to the PKG_CONFIG_PATH environment variable
-Package 'tracefs', required by 'libtracecmd', not found
+  # pkg-config --libs libkshark
+  Package tracecmd was not found in the pkg-config search path.
+  Perhaps you should add the directory containing `tracecmd.pc'
+  to the PKG_CONFIG_PATH environment variable
+  Package 'tracecmd', required by 'libkshark', not found
+
+But if I switch it to libtracecmd, I get:
+
+  # pkg-config --libs libkshark
+  -lkshark -ltracecmd -ltracefs -ltraceevent 
 
 -- Steve
+
+> +Requires: json-c
+>  Cflags: -I${includedir}
+>  Libs: -L${libdir} -lkshark
+> -- 
+
