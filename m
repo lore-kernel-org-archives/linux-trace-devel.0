@@ -2,62 +2,62 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7F1FC4332F
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 14:38:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54065C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 14:38:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A69466121F
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 14:38:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 340796124D
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 14:38:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232182AbhKJOlA (ORCPT
+        id S232193AbhKJOlD (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 10 Nov 2021 09:41:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44270 "EHLO
+        Wed, 10 Nov 2021 09:41:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232186AbhKJOlA (ORCPT
+        with ESMTP id S232186AbhKJOlC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 10 Nov 2021 09:41:00 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A861C061764
-        for <linux-trace-devel@vger.kernel.org>; Wed, 10 Nov 2021 06:38:12 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id b15so11290779edd.7
-        for <linux-trace-devel@vger.kernel.org>; Wed, 10 Nov 2021 06:38:12 -0800 (PST)
+        Wed, 10 Nov 2021 09:41:02 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF83EC061764
+        for <linux-trace-devel@vger.kernel.org>; Wed, 10 Nov 2021 06:38:14 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id w1so11364038edd.10
+        for <linux-trace-devel@vger.kernel.org>; Wed, 10 Nov 2021 06:38:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Tbed0ZzCbfH/NFZk+qckJsMKE+1UI6IMMi6vOu2wbcw=;
-        b=AUyFTAw2CMSd20nMAhwtSslhdffGsck6kodMDdsiIErVEEZlb2ehkHwYjGAXZU1oJu
-         HlyowT0bfaiHyZrwvGU4tmyP3hdFX+3HnPbT4txR8WpVDBRUERXcDZfa8D3JbEQ7YsHy
-         WSE6IuzPwWVZcBaaoGBWkj52N6GUhOb6EYS4Vc26o9/ZKbRLYDYPToIxjh78BFgzFOsL
-         GNNh4zJGsDm5DvzRe5ySMzaKu2AgMW3lxBGPrTEPdc96EDurBW4ehAKfDMmf97H7m7fD
-         z9vjhAG5+vm95PCYqnnrQsTAdRLD3mS8LwNlMgm+1TeOLmk/hfNrg5tYC2Q1ASUFOVPY
-         b/1Q==
+        bh=s9gSWyGuItWBGshXoLLpqDKJdEMACqx8O1xsTMATnqY=;
+        b=C9/ysoDAiaknluqgT5rllR3UAJOuijsbzXgH7aONJZEIyWk7Ip2kLHu8eVyMFxis1N
+         wjfYMFDb6zdFoH8izcQBNz6ofcrNw4VhKpY6+JKsHOE3E7wDKjv1ACf35NAmt6Imuftt
+         1ezWGGJF/UCaE8A5UDffvJXRBos7bGRpYW7Zu7Xw+Jab3LlFof78LpTvAP199UZMXj+U
+         Bc4v425wnsEKnd22gBKagy7RwzN9analm0pfWVBdF99CKPStU/jMkEB5QTtHKRnAw/Lu
+         Bkdo8EeQ2rybXmCFMUTw6K3WeZig0zAun9e78UMbrPTAE97Nn6F2Ud3rtZwz/cGEM8TR
+         EaFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Tbed0ZzCbfH/NFZk+qckJsMKE+1UI6IMMi6vOu2wbcw=;
-        b=WO3pn9no5C3rmS5nqUU9+8sZkIokChOhL3hPCQ4dTio28CiFsO2sEgK+3IXWpLi8Io
-         NpCnPNfEJNFaMtOK1qB4B+Yh8IYCVLJHFKV+4FrMr4Yz0qswLc7sbTZ3JTEx1rHhT+PH
-         28Z88Wc/yrNc14EdY0d9QU54IDTxVnu6PNQisp84nG0sfS1uVe7i3xV02MsBdZsK6V3g
-         ZbhPwSJS/noVqa3rd0yIrU4a6MtICSRW10EVeEJYzWbdsPc+0DwL65HIkZHWk9SDNZaM
-         VcSVkeec2jeUygG3hojs/rP+CKz+snppXF8WJA5tXJyZPSq9MwKA4fhlMG9EWAWqh+T6
-         1faw==
-X-Gm-Message-State: AOAM532BlIxtqMYRw1F7UnkomGB47kwY234+9PtMDMyXXkeNT54uSffo
-        oVPuF7JD7tOtFg9Y2k/JAt3TvTM3LHc=
-X-Google-Smtp-Source: ABdhPJwae0MWFHYLLcanE5mreNJ41MRfG5BD0AGDnhPkO5GYjaAZoYl5+quwgQpG2hqigfA68kZrlg==
-X-Received: by 2002:a05:6402:1908:: with SMTP id e8mr57349edz.83.1636555090877;
-        Wed, 10 Nov 2021 06:38:10 -0800 (PST)
+        bh=s9gSWyGuItWBGshXoLLpqDKJdEMACqx8O1xsTMATnqY=;
+        b=I2vYGD/3z6yOfqiJnc/aY6UPTQtWNuQXhsNYmvNkFt/vQpPp6wX4QOMlQNyPy3rHPL
+         ImEdKWASTig81b2w5VuF62VMK4c0aDVFpfC2Wly1R3eAf5MgmRHjP2aoitSxyXeneUTX
+         /vnNj6wqOy3EehE3Y+K20AItoKbjeSYnfg19uSXIfrnUCq1zKlP0oGg4tMeccSAr7Sl+
+         Q4P8Rz3U6DXoDwZJe2gMlNwv3d9F6Lu+U+15EXMyP0CM/zGjiCKA/8MZA8RrK4ttPSB9
+         SDgHK/CZFYgvcNvmJX2VHChEmkVZ4zZSIuuWo69qEo/EX9IymEu/D1JgV6kYAqpvoiEf
+         ywqw==
+X-Gm-Message-State: AOAM530HdIsw6DRXXA3A350NvjQD7IlrbV1FaNC6ysUih21ks+vxYVm3
+        I9FOF/IjOXBUaMg+PNx3gWwwGAqZKwQ=
+X-Google-Smtp-Source: ABdhPJw2xkNruos5W//w/QcvbNG9gon+pakKpZJEi2buE+09VP/9Dl64dWFk8t658xH+OLbJOmA57w==
+X-Received: by 2002:a50:e0c9:: with SMTP id j9mr86074edl.336.1636555092353;
+        Wed, 10 Nov 2021 06:38:12 -0800 (PST)
 Received: from crow.. ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id hc10sm11477039ejc.99.2021.11.10.06.38.10
+        by smtp.gmail.com with ESMTPSA id hc10sm11477039ejc.99.2021.11.10.06.38.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 06:38:10 -0800 (PST)
+        Wed, 10 Nov 2021 06:38:12 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 3/5] kernel-shark: Update the README file
-Date:   Wed, 10 Nov 2021 16:37:45 +0200
-Message-Id: <20211110143747.32833-3-y.karadz@gmail.com>
+Subject: [PATCH 5/5] kernel-shark: Always run 'ldconfig' after installing libkshark
+Date:   Wed, 10 Nov 2021 16:37:47 +0200
+Message-Id: <20211110143747.32833-5-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211110143747.32833-1-y.karadz@gmail.com>
 References: <20211110143747.32833-1-y.karadz@gmail.com>
@@ -67,56 +67,30 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Making sure that the install instructions are adequate for building
-with the latest versions of the third-party libraries.
+This way we make sure that the run-time bindings of the linker are
+properly configured and have the necessary cache to find the library.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- README | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ src/CMakeLists.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/README b/README
-index 652891c..24d6001 100644
---- a/README
-+++ b/README
-@@ -13,7 +13,8 @@ KernelShark has the following external dependencies:
- 1. In order to install the packages on Ubuntu do the following:
-     sudo apt-get install build-essential git cmake libjson-c-dev -y
-     sudo apt-get install freeglut3-dev libxmu-dev libxi-dev -y
--    sudo apt-get install fonts-freefont-ttf
-+    sudo apt-get install flex bison -y
-+    sudo apt-get install fonts-freefont-ttf -y
-     sudo apt-get install qtbase5-dev -y
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index f3c4e0a..babb9c1 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -46,6 +46,11 @@ install(FILES "${KS_DIR}/libkshark.pc"
+         DESTINATION ${PKG_CONGIG_DIR}
+             COMPONENT                 libkshark-devel)
  
- 1.1 If you want to be able to generate Doxygen documentation:
-@@ -21,12 +22,14 @@ KernelShark has the following external dependencies:
++install(CODE "message(\"-- Executing: ldconfig ${_LIBDIR}\")
++              execute_process(COMMAND bash \"-c\" \"ldconfig ${_INSTALL_PREFIX}\"
++                              ECHO_ERROR_VARIABLE)"
++        COMPONENT libkshark-devel)
++
+ if (OPENGL_FOUND)
  
- 
- 2. In order to install the packages on Fedora, as root do the following:
--    dnf install gcc gcc-c++ git cmake json-c-devel -y
--    dnf install freeglut-devel redhat-rpm-config -y
--    dnf install qt5-qtbase-devel -y
-+    sudo dnf install gcc gcc-c++ git cmake json-c-devel -y
-+    sudo dnf install freeglut-devel redhat-rpm-config -y
-+    sudo dnf install flex bison -y
-+    sudo dnf install gnu-free-sans-fonts -y
-+    sudo dnf install qt5-qtbase-devel -y
- 
- 2.1 If you want to be able to generate Doxygen documentation:
--    dnf install graphviz doxygen -y
-+    sudo dnf install graphviz doxygen -y
- 
- 
- 3. In order to install the final dependencies do the following:
-@@ -43,6 +46,8 @@ KernelShark has the following external dependencies:
-     git clone https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
-     cd trace-cmd
-     make
-+    make libs
-+    sudo make install
-     sudo make install_libs
- 
- Building:
+     message(STATUS "libkshark-plot")
 -- 
 2.33.1
 
