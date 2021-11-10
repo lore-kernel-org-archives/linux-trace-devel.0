@@ -2,34 +2,38 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12009C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 16:29:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C38EC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 22:43:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DB63D61058
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 16:29:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3FD9C610F8
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 22:43:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229740AbhKJQci (ORCPT
+        id S233606AbhKJWqW (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 10 Nov 2021 11:32:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39452 "EHLO mail.kernel.org"
+        Wed, 10 Nov 2021 17:46:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229602AbhKJQch (ORCPT
+        id S233583AbhKJWqW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 10 Nov 2021 11:32:37 -0500
+        Wed, 10 Nov 2021 17:46:22 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A526A61058;
-        Wed, 10 Nov 2021 16:29:49 +0000 (UTC)
-Date:   Wed, 10 Nov 2021 11:29:47 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id C803E611F2;
+        Wed, 10 Nov 2021 22:43:33 +0000 (UTC)
+Date:   Wed, 10 Nov 2021 17:43:32 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 4/5] kernel-shark: Add 'Requires' to libkshark.pc
-Message-ID: <20211110112947.321c7b55@gandalf.local.home>
-In-Reply-To: <20211110143747.32833-4-y.karadz@gmail.com>
-References: <20211110143747.32833-1-y.karadz@gmail.com>
-        <20211110143747.32833-4-y.karadz@gmail.com>
+To:     Yordan Karadzhov <y.karadz@gmail.com>
+Cc:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/4] libtracefs: Transform
+ tracefs_hist_add_sort_key()
+Message-ID: <20211110174332.2b96f77e@gandalf.local.home>
+In-Reply-To: <43ff18b5-8b79-970d-8670-375cd458f7be@gmail.com>
+References: <20210924095702.151826-1-y.karadz@gmail.com>
+        <20210924095702.151826-3-y.karadz@gmail.com>
+        <CAPpZLN4yOiHBX2WRTWJHg+XUMULPUcx6KVE0_dNfP9hNaF-wgA@mail.gmail.com>
+        <43ff18b5-8b79-970d-8670-375cd458f7be@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -38,34 +42,21 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 10 Nov 2021 16:37:46 +0200
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+On Fri, 24 Sep 2021 19:56:41 +0300
+Yordan Karadzhov <y.karadz@gmail.com> wrote:
 
-> --- a/build/libkshark.pc.cmake
-> +++ b/build/libkshark.pc.cmake
-> @@ -6,5 +6,7 @@ Name: libkshark
->  URL: https://git.kernel.org/pub/scm/utils/trace-cmd/kernel-shark.git/
->  Description: Library for accessing ftrace file system
->  Version: @KS_VERSION_STRING@
-> +Requires: tracecmd >= @LIBTRACECMD_MIN_VERSION@
+> > The new name of the function, mentioned in the patch description, is
+> >      tracefs_hist_set_sort_key()
+> > I like the name with "set" instead of "reset". The behaviour of the
+> > function should be described in the function comments - to stress that
+> > the old keys are overwritten.
+> >   
+> 
+> Steven suggested to name it 'reset' in the review of the first version.
+> Both 'set' and 'reset' are OK for me.
 
-Note, when I added this, I get:
+Looking at this now, I think "set" is a better name.
 
-  # pkg-config --libs libkshark
-  Package tracecmd was not found in the pkg-config search path.
-  Perhaps you should add the directory containing `tracecmd.pc'
-  to the PKG_CONFIG_PATH environment variable
-  Package 'tracecmd', required by 'libkshark', not found
-
-But if I switch it to libtracecmd, I get:
-
-  # pkg-config --libs libkshark
-  -lkshark -ltracecmd -ltracefs -ltraceevent 
+I'll modify it.
 
 -- Steve
-
-> +Requires: json-c
->  Cflags: -I${includedir}
->  Libs: -L${libdir} -lkshark
-> -- 
-
