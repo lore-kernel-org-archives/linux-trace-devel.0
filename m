@@ -2,95 +2,80 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54065C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 14:38:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9766C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 16:17:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 340796124D
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 14:38:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9B5B560FC1
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Nov 2021 16:17:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232193AbhKJOlD (ORCPT
+        id S229473AbhKJQUW convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 10 Nov 2021 09:41:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232186AbhKJOlC (ORCPT
+        Wed, 10 Nov 2021 11:20:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229582AbhKJQUT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 10 Nov 2021 09:41:02 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF83EC061764
-        for <linux-trace-devel@vger.kernel.org>; Wed, 10 Nov 2021 06:38:14 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id w1so11364038edd.10
-        for <linux-trace-devel@vger.kernel.org>; Wed, 10 Nov 2021 06:38:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=s9gSWyGuItWBGshXoLLpqDKJdEMACqx8O1xsTMATnqY=;
-        b=C9/ysoDAiaknluqgT5rllR3UAJOuijsbzXgH7aONJZEIyWk7Ip2kLHu8eVyMFxis1N
-         wjfYMFDb6zdFoH8izcQBNz6ofcrNw4VhKpY6+JKsHOE3E7wDKjv1ACf35NAmt6Imuftt
-         1ezWGGJF/UCaE8A5UDffvJXRBos7bGRpYW7Zu7Xw+Jab3LlFof78LpTvAP199UZMXj+U
-         Bc4v425wnsEKnd22gBKagy7RwzN9analm0pfWVBdF99CKPStU/jMkEB5QTtHKRnAw/Lu
-         Bkdo8EeQ2rybXmCFMUTw6K3WeZig0zAun9e78UMbrPTAE97Nn6F2Ud3rtZwz/cGEM8TR
-         EaFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=s9gSWyGuItWBGshXoLLpqDKJdEMACqx8O1xsTMATnqY=;
-        b=I2vYGD/3z6yOfqiJnc/aY6UPTQtWNuQXhsNYmvNkFt/vQpPp6wX4QOMlQNyPy3rHPL
-         ImEdKWASTig81b2w5VuF62VMK4c0aDVFpfC2Wly1R3eAf5MgmRHjP2aoitSxyXeneUTX
-         /vnNj6wqOy3EehE3Y+K20AItoKbjeSYnfg19uSXIfrnUCq1zKlP0oGg4tMeccSAr7Sl+
-         Q4P8Rz3U6DXoDwZJe2gMlNwv3d9F6Lu+U+15EXMyP0CM/zGjiCKA/8MZA8RrK4ttPSB9
-         SDgHK/CZFYgvcNvmJX2VHChEmkVZ4zZSIuuWo69qEo/EX9IymEu/D1JgV6kYAqpvoiEf
-         ywqw==
-X-Gm-Message-State: AOAM530HdIsw6DRXXA3A350NvjQD7IlrbV1FaNC6ysUih21ks+vxYVm3
-        I9FOF/IjOXBUaMg+PNx3gWwwGAqZKwQ=
-X-Google-Smtp-Source: ABdhPJw2xkNruos5W//w/QcvbNG9gon+pakKpZJEi2buE+09VP/9Dl64dWFk8t658xH+OLbJOmA57w==
-X-Received: by 2002:a50:e0c9:: with SMTP id j9mr86074edl.336.1636555092353;
-        Wed, 10 Nov 2021 06:38:12 -0800 (PST)
-Received: from crow.. ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id hc10sm11477039ejc.99.2021.11.10.06.38.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 06:38:12 -0800 (PST)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 5/5] kernel-shark: Always run 'ldconfig' after installing libkshark
-Date:   Wed, 10 Nov 2021 16:37:47 +0200
-Message-Id: <20211110143747.32833-5-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211110143747.32833-1-y.karadz@gmail.com>
-References: <20211110143747.32833-1-y.karadz@gmail.com>
+        Wed, 10 Nov 2021 11:20:19 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5BA660F70;
+        Wed, 10 Nov 2021 16:17:30 +0000 (UTC)
+Date:   Wed, 10 Nov 2021 11:17:29 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Yordan Karadzhov <y.karadz@gmail.com>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH] trace-cmd: Add Requires: libtracefs to libtracecmd.pc
+ file
+Message-ID: <20211110111729.41a7eb6b@gandalf.local.home>
+In-Reply-To: <db8be415-bb25-a2fe-1d30-8e4a446154f7@gmail.com>
+References: <20211109111426.7639b2a6@gandalf.local.home>
+        <db8be415-bb25-a2fe-1d30-8e4a446154f7@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This way we make sure that the run-time bindings of the linker are
-properly configured and have the necessary cache to find the library.
+On Wed, 10 Nov 2021 16:12:12 +0200
+Yordan Karadzhov <y.karadz@gmail.com> wrote:
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- src/CMakeLists.txt | 5 +++++
- 1 file changed, 5 insertions(+)
+> On 9.11.21 г. 18:14 ч., Steven Rostedt wrote:
+> > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> > 
+> > In order to not have users of libtracecmd having to also include the
+> > includes and libraries for libtracefs and libraceevent, add a requires
+> > field for libtracefs to the libtracecmd.pc file. As libtracefs requires
+> > libtraceevent, it will pull that one in as well.
+> > 
+> > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > ---
+> >   libtracecmd.pc.template | 1 +
+> >   scripts/utils.mk        | 1 +
+> >   2 files changed, 2 insertions(+)
+> > 
+> > diff --git a/libtracecmd.pc.template b/libtracecmd.pc.template
+> > index dc41076e..bcf4e39d 100644
+> > --- a/libtracecmd.pc.template
+> > +++ b/libtracecmd.pc.template
+> > @@ -6,5 +6,6 @@ Name: libtracecmd
+> >   URL: https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
+> >   Description: Library for creating and reading trace-cmd data files
+> >   Version: LIB_VERSION
+> > +Requires: libtracefs >= LIBTRACEFS_MIN_VERSION  
+> 
+> BTW this works also without the 'lib' prefix:
+> 
+> Requires: tracefs >= LIBTRACEFS_MIN_VERSION
 
-diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index f3c4e0a..babb9c1 100644
---- a/src/CMakeLists.txt
-+++ b/src/CMakeLists.txt
-@@ -46,6 +46,11 @@ install(FILES "${KS_DIR}/libkshark.pc"
-         DESTINATION ${PKG_CONGIG_DIR}
-             COMPONENT                 libkshark-devel)
- 
-+install(CODE "message(\"-- Executing: ldconfig ${_LIBDIR}\")
-+              execute_process(COMMAND bash \"-c\" \"ldconfig ${_INSTALL_PREFIX}\"
-+                              ECHO_ERROR_VARIABLE)"
-+        COMPONENT libkshark-devel)
-+
- if (OPENGL_FOUND)
- 
-     message(STATUS "libkshark-plot")
--- 
-2.33.1
+I just tried that on Fedora, and get this:
 
+# pkg-config --libs libtracecmd
+Package tracefs was not found in the pkg-config search path.
+Perhaps you should add the directory containing `tracefs.pc'
+to the PKG_CONFIG_PATH environment variable
+Package 'tracefs', required by 'libtracecmd', not found
+
+-- Steve
