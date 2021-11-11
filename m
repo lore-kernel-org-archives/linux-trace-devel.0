@@ -2,145 +2,90 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6774EC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:45:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCEEFC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 17:33:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 495CC61179
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:45:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A5D086135E
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 17:33:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233982AbhKKPrw (ORCPT
+        id S234321AbhKKRg3 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 11 Nov 2021 10:47:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59298 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233986AbhKKPrt (ORCPT
+        Thu, 11 Nov 2021 12:36:29 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:53086 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234311AbhKKRg2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:47:49 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E0BB361252;
-        Thu, 11 Nov 2021 15:44:59 +0000 (UTC)
-Date:   Thu, 11 Nov 2021 10:44:58 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 1/2] trace-cmd library: Use the real trace buffer page
- size
-Message-ID: <20211111104458.5ee5449d@gandalf.local.home>
-In-Reply-To: <20211111151326.87227-2-tz.stoyanov@gmail.com>
-References: <20211111151326.87227-1-tz.stoyanov@gmail.com>
-        <20211111151326.87227-2-tz.stoyanov@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 11 Nov 2021 12:36:28 -0500
+Received: from kbox (unknown [24.17.193.74])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 01EE720C359F;
+        Thu, 11 Nov 2021 09:33:38 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 01EE720C359F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1636652019;
+        bh=7U99bjDYm24pDBGfnRysUQ1K18qet1ytsQFDtTd8BeY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nF3GMnpb+5a/Dqcg0yrBiAhB6vNWYbbGkUCVo1OYXBi8nn8ZrW4wWytycxp7Vx2Pb
+         dmU2HjJHsmubbKjPseShSroDjZTjU0WrAVEeuF/9X5tZwQQMOshXYHyjYCDgLt9ICp
+         Rpux1aE8DGA7y92LKceN9Xc08rU8WcgArp8rQEvk=
+Date:   Thu, 11 Nov 2021 09:33:34 -0800
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
+ trace_event into ftrace
+Message-ID: <20211111173334.GA1433@kbox>
+References: <20211104170433.2206-1-beaub@linux.microsoft.com>
+ <20211104170433.2206-3-beaub@linux.microsoft.com>
+ <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
+ <20211108171336.GA1690@kbox>
+ <20211108131639.33a4f186@gandalf.local.home>
+ <20211108202527.GA1862@kbox>
+ <20211109115634.5fb6d984d7b4e701c740d5f3@kernel.org>
+ <20211109190844.GA1529@kbox>
+ <20211110225630.babcd70ec85f97e369b0e446@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211110225630.babcd70ec85f97e369b0e446@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 11 Nov 2021 17:13:25 +0200
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+On Wed, Nov 10, 2021 at 10:56:30PM +0900, Masami Hiramatsu wrote:
+> On Tue, 9 Nov 2021 11:08:44 -0800
+> Beau Belgrave <beaub@linux.microsoft.com> wrote:
 
-> When new output handler is created, it assumes that the trace buffer page
-> size is equal to the system memory page size. This assumption is valid
-> for the current ftrace implementation, but it may change in the future.
-> The newly introduced traceevent library API should be used to get the
-> real trace buffer page size, bases on the information from the
-> "events/header_page" ftrace file.
+> I would like to keep verifying in writer side then we can ensure the
+> data on ring buffer (of perf and of ftrace) is sane. If you add the unsafe
+> flag, you have to change all the code which access the ring buffer, not only
+> the filter but also eprobes, histograms, perf-tools, and other user-space
+> tracing tools which reads the tracing buffer directly.
 > 
-> This commit depends on:
->  [PATCH] libtraceevent: A new API for trace page size
->  https://lore.kernel.org/linux-trace-devel/20211001062338.2389024-1-tz.stoyanov@gmail.com/
+> > It sounded like Steven wanted to think about this a bit, so I'll wait a
+> > bit before poking again for consensus :)
+> > 
+> > Do you have any strong feelings about where it goes?
 > 
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> ---
->  lib/trace-cmd/trace-output.c | 52 +++++++++++++++++++++++++++++++++++-
->  1 file changed, 51 insertions(+), 1 deletion(-)
+> I recommend you to start verifying the writer side, it should make the
+> change as small as possible. Unsafe flag idea may involve many other
+> tools. And it is not fundamentary required for user-events.
 > 
-> diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-> index a029678b..08fa485d 100644
-> --- a/lib/trace-cmd/trace-output.c
-> +++ b/lib/trace-cmd/trace-output.c
-> @@ -1189,6 +1189,56 @@ static int write_compression_header(struct tracecmd_output *handle)
->  	return 0;
->  }
->  
-> +static int get_trace_page_size(struct tracecmd_output *handle)
-> +{
-> +	struct tep_handle *tep = NULL;
-> +	tsize_t psize, size;
-> +	char *path = NULL;
-> +	char *buff = NULL;
-> +	int fd = -1;
-> +	int r, s;
-> +
-> +	/* In case of an error, return user space page size */
-> +	psize = getpagesize();
-> +
-> +	path = get_tracing_file(handle, "events/header_page");
-> +	if (!path)
-> +		goto out;
-> +	fd = open(path, O_RDONLY);
-> +	if (fd < 0) /* old style did not show this info */
+> Thank you,
+> 
+> -- 
+> Masami Hiramatsu <mhiramat@kernel.org>
 
-Note, as I stated in the other patch, calling tep_parse_trace_page_size()
-with size zero should get the updates needed for the old format as well.
+Ok, I will start there.
 
-> +		goto out;
-> +
-> +	tep = tep_alloc();
-> +	if (!tep)
-> +		goto out;
-> +	size = get_size_fd(fd);
-> +	if (!size)
-> +		goto out;
-> +	buff = malloc(size);
-> +	if (!buff)
-> +		goto out;
-> +
-> +	s = size;
-> +	do {
-> +		r = read(fd, buff, s);
-> +		if (r > 0)
-> +			s -= r;
-> +	} while (r > 0 && s);
-> +	if (s)
-> +		goto out;
+Are static string buffers required as well for the null check?
 
-I know that a lot of his is copied from other parts of this file, but this
-was written before libtracefs existed. We should start using libtracefs
-APIs for new code, and start also moving the old code to it. The above
-could be replaced with:
+Or is this only for dyn strings that require the check?
 
-	buf = tracefs_instance_file_read(NULL, "events/header_page", &size);
+Also, I am assuming that __rel_loc offset is based after the __rel_loc
+payload, IE: Offset 0 of __rel_loc is immediately after the 4 byte
+__rel_loc description?
 
--- Steve
-
-
-> +	if (tep_parse_header_page(tep, buff, size, sizeof(long long)))
-> +		goto out;
-> +	psize = tep_get_trace_page_size(tep);
-> +out:
-> +	tep_free(tep);
-> +	free(buff);
-> +	if (path)
-> +		put_tracing_file(path);
-> +	if (fd >= 0)
-> +		close(fd);
-> +	return psize;
-> +}
-> +
->  /**
->   * tracecmd_output_allocate - allocate new output handler to a trace file
->   * @handle: file descriptor to an empty file, it can be -1 if the handler
-> @@ -1213,7 +1263,7 @@ struct tracecmd_output *tracecmd_output_allocate(int fd)
->  
->  	handle->file_version = FILE_VERSION_DEFAULT;
->  
-> -	handle->page_size = getpagesize();
-> +	handle->page_size = get_trace_page_size(handle);
->  	handle->big_endian = tracecmd_host_bigendian();
->  
->  	list_head_init(&handle->options);
-
+Thanks,
+-Beau
