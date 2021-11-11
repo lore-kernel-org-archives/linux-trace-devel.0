@@ -2,132 +2,94 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8F00C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:03:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C3C8C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:06:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A260761284
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:03:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 109B761038
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:06:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233075AbhKKPGS (ORCPT
+        id S232823AbhKKPI7 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 11 Nov 2021 10:06:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36020 "EHLO
+        Thu, 11 Nov 2021 10:08:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233833AbhKKPGR (ORCPT
+        with ESMTP id S231614AbhKKPI6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:06:17 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E110C061766
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:03:28 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id m14so25638058edd.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:03:28 -0800 (PST)
+        Thu, 11 Nov 2021 10:08:58 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC93C061766
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:06:09 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id g14so25408054edz.2
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:06:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6bW3IZBFCvSsUaHSwJ6OSA7Q0lEX3Nls6B+DugLLbvQ=;
-        b=fjn3LYI8Nc/eC0yZavEH3+2VyZONIwJNbLzXhB1oJiHi4Ssk1SwIewTDYvSzNvTfsr
-         3jKj/bSYBeKzsJmSck2YKvmEi/pFDUX1YBQo1cUNPgU55lgh1QwFs8KD+zyNK8Oh/SKB
-         fP35hqfazdgaKjJXdQDhqkKOByeGMthk4RDQyQn/AHj5We1iJAEY8F8Uj9jdiOGkXvrO
-         7MDvyOpJrFQTv7+BW5BPhgN6UHfrweNXc+0CTpYcXJ4ZoMTX367TI+2wYoRU0clImHut
-         mq29/hB/RE+izOk7DHTPDTamPpmK2yjO3alLEIUeZO0ZDm+Q/cBlUFxOK4P5VbKoReEc
-         8jOA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GFaftIMYHkExjqepWhbxWTn85mHgpiA3J55AMBFPiMw=;
+        b=dHqzqYI/KCkWZLpKy+osAMlkuAqJvhyfwQjuYCWSrN/itpdlqbbGtgffDXxUcyDqzp
+         jt27lBSwsBdbtHFBLes0kIy/OWR9xSJATb2eWbRgb/D8JIHuK5jXDhCQbJx8mdzhT7Wa
+         3YpFMBf7D74hhRRltZj3PZPSWv/1fEKc5gKhSUQbOh3Kr83nfhu6s84JSKIBmBGw2m5Q
+         dyu31dW49UsJV++EMvtEgwC69lpi2yOvbQ9plPcsoFFNTL5k88Y7W/hL6+96vr7fUSlM
+         mygAiqqJaq8FdpJFKapTfHE0hbdlt47eqtxpIDQzCD+30KveI3/hJl7YrCS9bPDAd2cT
+         9F6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6bW3IZBFCvSsUaHSwJ6OSA7Q0lEX3Nls6B+DugLLbvQ=;
-        b=kMbD0nJoY62UyKnfT3Jt747W0ug8Lisi+wifFhqS58f3JYihH2dcqLCsmpnC71glrj
-         L2fqfMO+giaBRpMYTDk3zqMz5V1mkFCRcbXOA5vzguaqabhLKNLX/eBAu1FD4mGSry12
-         5Q/+C3BYpbcZ7Wf1PUK0/WF5CmUQnjXFbRb+cPR+Z6LCwvLh7hLj9GGVuZrRm9LgCGCj
-         if+copQEPytMJ+qZwbUFv26oTRVJKHnqW2UR0XxecsX2GVuzVRVNCopLxXviRnM19let
-         tZEiTg0UZ/8XRPFgl5bmcY3+qsYFiSSfiAvoCe8WJljUIdifKOhdri0fIx8iIMqQ9UuS
-         JFEA==
-X-Gm-Message-State: AOAM531ZwmMwOoCiAFK43o+ZSnHUVxEyi2tdlPQrCRlqYYm7xhIqsdyt
-        yq0/sIUi90cZW1Crd3H46kY=
-X-Google-Smtp-Source: ABdhPJxIqfQKkzz/zM83GfwHBVOC9VXnRawowR5XEkteptXuD6LPu4qIVUwXDde+nu2Wszi5BDtDWw==
-X-Received: by 2002:a17:907:3e11:: with SMTP id hp17mr10146241ejc.243.1636643005978;
-        Thu, 11 Nov 2021 07:03:25 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GFaftIMYHkExjqepWhbxWTn85mHgpiA3J55AMBFPiMw=;
+        b=Nrf+U4z1RdRBbcqUlYNJPegC25TicvB4Q0DUirXHe2+gxuGc0eu60tIIbfP1yusKpj
+         9K0T2lYP7f1q+oA1ooOr96UVrW3q1hRgkxQTWs3omilaqN5fyNIsWGFJhk6iniQ7rGwA
+         OMyML6eD/gSD3ni88bI6Yo1k5LfWCIKos+KQ+PRZEUgl0lsImN2sExFl3Ht01rI3k/C8
+         uE7xkzW8C3Ua2L9HjDkw2Jna6DFdqmKqu2YxngZxpOTdltfz7OawjvUWLReK4DSBN3F9
+         H2b75JIlB6C7EAlDEP1XtU5C/kclkLhCeb///AD/KCjVDFSDEE4wlb5JBH4aUQg3tWBA
+         4e3w==
+X-Gm-Message-State: AOAM533siHz5K48RS5AGwfXTojUqYs+oQ6w37yxcyrEm0Etxy4PipIqp
+        NscQCNAu63DMzuVq6SXrJMq2gdGN9X33/A==
+X-Google-Smtp-Source: ABdhPJzvlgnsc0ZhBblGWFVXCPzyQAsDz7MZESzd3vXQrEhjF1TXGTpk+4NBr/V9vxOUx5BFzxlh/w==
+X-Received: by 2002:a05:6402:2815:: with SMTP id h21mr10825160ede.288.1636643167763;
+        Thu, 11 Nov 2021 07:06:07 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id d13sm1656128edv.29.2021.11.11.07.03.25
+        by smtp.gmail.com with ESMTPSA id g1sm1465136eje.105.2021.11.11.07.06.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 07:03:25 -0800 (PST)
+        Thu, 11 Nov 2021 07:06:07 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 03/10] trace-cmd library: New API for setting a custom trace directory to an output handler
-Date:   Thu, 11 Nov 2021 17:03:14 +0200
-Message-Id: <20211111150321.85979-4-tz.stoyanov@gmail.com>
+Subject: [PATCH v5 6/6] trace-cmd library: Set the correct file state when reading file with no ftrace printk data
+Date:   Thu, 11 Nov 2021 17:06:06 +0200
+Message-Id: <20211111150606.86143-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211111150321.85979-1-tz.stoyanov@gmail.com>
-References: <20211111150321.85979-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The new API associates a custom tracing directory with an output file
-handler. It is used when creating the trace file instead of the system
-default tracing directory.
- tracecmd_output_set_trace_dir()
+The ftrace printk section of the trace file can contain no data, this is
+valid use case. When such file is read and parsed by read_ftrace_printk,
+the file state should be set to TRACECMD_FILE_PRINTK in that case.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- .../include/private/trace-cmd-private.h       |  1 +
- lib/trace-cmd/trace-output.c                  | 27 +++++++++++++++++++
- 2 files changed, 28 insertions(+)
+ lib/trace-cmd/trace-input.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 49c8c138..eb173a39 100644
---- a/lib/trace-cmd/include/private/trace-cmd-private.h
-+++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -272,6 +272,7 @@ struct tracecmd_msg_handle;
- struct tracecmd_output *tracecmd_output_allocate(int fd);
- int tracecmd_output_set_msg(struct tracecmd_output *handler,
- 			    struct tracecmd_msg_handle *msg_handle);
-+int tracecmd_output_set_trace_dir(struct tracecmd_output *handler, const char *tracing_dir);
- struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, int cpus);
- struct tracecmd_output *
- tracecmd_create_init_file_glob(const char *output_file,
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index d73c4f99..a5d7ed5f 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -941,6 +941,33 @@ int tracecmd_output_set_msg(struct tracecmd_output *handler, struct tracecmd_msg
- 	return 0;
- }
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index f02d7e31..31e5e674 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -783,8 +783,10 @@ static int read_ftrace_printk(struct tracecmd_input *handle)
  
-+/**
-+ * tracecmd_output_set_trace_dir - Set a custom tracing dir, instead of system default
-+ * @handle: output handler to a trace file.
-+ * @tracing_dir: full path to a directory with tracing files
-+ *
-+ * This API associates an output file handler with a custom tracing directory, to be used when
-+ * creating the trace file instead of the system default tracing directory.
-+ * This API must be called before tracecmd_output_write_init().
-+ *
-+ * Returns 0 on success, or -1 if the output file handler is not allocated or not in expected state.
-+ */
-+int tracecmd_output_set_trace_dir(struct tracecmd_output *handler, const char *tracing_dir)
-+{
-+	if (!handler || handler->file_state != TRACECMD_FILE_ALLOCATED)
-+		return -1;
-+
-+	free(handler->tracing_dir);
-+	if (tracing_dir) {
-+		handler->tracing_dir = strdup(tracing_dir);
-+		if (!handler->tracing_dir)
-+			return -1;
-+	} else
-+		handler->tracing_dir = NULL;
-+
-+	return 0;
-+}
-+
- static int select_file_version(struct tracecmd_output *handle,
- 				struct tracecmd_input *ihandle)
- {
+ 	if (read4(handle, &size) < 0)
+ 		return -1;
+-	if (!size)
++	if (!size) {
++		handle->file_state = TRACECMD_FILE_PRINTK;
+ 		return 0; /* OK? */
++	}
+ 
+ 	buf = malloc(size + 1);
+ 	if (!buf)
 -- 
 2.33.1
 
