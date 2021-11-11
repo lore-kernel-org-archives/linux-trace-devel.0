@@ -2,62 +2,62 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D1E7C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:03:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F21EC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:03:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0954161354
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:03:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4B72261284
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:03:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233818AbhKKPGC (ORCPT
+        id S233819AbhKKPGD (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 11 Nov 2021 10:06:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35954 "EHLO
+        Thu, 11 Nov 2021 10:06:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232823AbhKKPGC (ORCPT
+        with ESMTP id S232823AbhKKPGD (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:06:02 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE4B2C061766
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:03:12 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id b15so25116718edd.7
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:03:12 -0800 (PST)
+        Thu, 11 Nov 2021 10:06:03 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D69B8C061766
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:03:13 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id b15so25116871edd.7
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:03:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ElJcGpfmhsho78B9+WLz1UILTdptIZq/XBsK8PQj/3I=;
-        b=G8ckgeN9S7SoSeWCUvKzZ6MJznBC56RXc+mqJSxpnia3Y7hQJLxLiO8kroARExWeJz
-         9wDFS72AxZ93C8go1FYyRKNDCxw7jAx9gTA8MIVABBgPaj3et/3n1lTprWImSj3IvCq8
-         BT8/d+jNF0FmUbZaTNImQplFYrlvbnWZNW4eHCzT2fZM4KDACdEhspabQt3U+PcLZKuZ
-         Dzunc1kYfWOmyJsI1UkcHybIL47Y6y7vAQxtd1A+Nu4CckUjquKHquU/BlNUzwa9Fs0y
-         9zT8GwrZjdx8IrsF3uK8BCvHIgE+WsuvlGwIlbt9XTjJxnkBvmAs3Nu1jURQRrrhoh5O
-         zlyQ==
+        bh=zoc7u92FnWKNwICURilcwlABFxlO+S2Ta7dqrANVtGo=;
+        b=JXdByqakhYfi/toxdv5PptOIQicU7x3+7ymw83zVJrteNYpxd1v2KZ/4hoEeXqrFJU
+         DHtIK6VndZLhzNH5G3+ib32c6ESbwBBUV3RS7nY3I9gl6mAWQsIBI/Cz+AM0pKaE14YR
+         24jQqDLbqrXv9hZG4uqpGPGfF9xs3kXCGJN3czldCO+FjY89qz6AnxEixuhTB5zVEUos
+         2RI3kJFrfxgcGp7O2LjAOkFxwWMgQjGGBqrE0pO7cJQfTHD4I2Lr2Sxey0m+FV1sMIKY
+         5d09nP+GOSNGSLNAJiHhc1tV6bLGquKjzDejN8a1JIwK9G2g1O2hlcDWI6IkO4lrY6dX
+         SVxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ElJcGpfmhsho78B9+WLz1UILTdptIZq/XBsK8PQj/3I=;
-        b=YfKSkMbXzHL/eDjberVkS1/TYWhxA02EbKkYtXDZI/6RQ5BYz05uNagw2FKmxcBSMu
-         LM7HkVyH7Es4a77LEI1mWfOFJ3PnjsyN/yhPtNT6s7Y2IQdZAlOjw9CDZuMY0OU+H3KS
-         fkZ7z/BwK/sAXa5fvVrvM4uAKm8lS0b/0gDynZ9/DWXzLaOCvHmkw9cz3Oj6rqOgk28c
-         J2qfRli02u6baQk9nO/E0gwnlaNWK2NCeY4V0JPqa/qClNDgDpkHs+5EKaxu/3ydVaXr
-         lVZ3AXrUp8DF/PT9feoVOpSdbGTOWuwLttWO3SOBErLREd9F8wQQWZi8jg9V7IWXhRmj
-         qkAQ==
-X-Gm-Message-State: AOAM530ommAFBCO5qxHCyL6Z5wlyuqtnfD4RK3Snf0eWphml7REg437y
-        sizw4jFZVBm/2joYs1rWTB4=
-X-Google-Smtp-Source: ABdhPJzbC7pgKMVtcKb2SsdWt847dtjRLl+fUvWGNz1nZrZBpE++wreA4sWz+58vkG9OuS4BhEaxEA==
-X-Received: by 2002:a05:6402:557:: with SMTP id i23mr10802189edx.176.1636642991372;
-        Thu, 11 Nov 2021 07:03:11 -0800 (PST)
+        bh=zoc7u92FnWKNwICURilcwlABFxlO+S2Ta7dqrANVtGo=;
+        b=mbboTAli07UvUxcY49xF2aMnUH80sJ7XDdzp5HqZH5jOvauOCflcWoE/WtOQpF3RMY
+         ZL5gBwWfmz42b0DbqAi2N/8UgnJAVxKkJWOeEOE27j1yhdhbobE7gua6E0CvUiiOJa2i
+         /MBB+uAEd1H53riPgMM2CPA/bIA1/d8peSqz9KvnHeqVRLQ+BagvyD33bwCm2aNPHFIf
+         VRQPJWS6FfFLlt0tx9mhCT8OJN1OTQZ8Kq+XpH+9OyZK3Xpji2yobDIGv+SFtUYYvLai
+         N4pCm9COdWD+hdY3UYTz97BA6BAIZGYgd4Uk1NUzCCdkV/jMjEQPOfdVImI8qic83yUl
+         PGqA==
+X-Gm-Message-State: AOAM533qw73CXtdmbJMQqtVQ0aft1Z95s4gUQqXQsHrPsKvLRV0zSlFS
+        Br91FCAiuEtw3la+e+lfQYE=
+X-Google-Smtp-Source: ABdhPJzU0DmOn4qCBxrYsMmEF6MHt8Ifd02dDpXlbwD6sgTznOku1xxgxveGBhU45u4xYZcOobnmnw==
+X-Received: by 2002:aa7:c956:: with SMTP id h22mr10707120edt.24.1636642992187;
+        Thu, 11 Nov 2021 07:03:12 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id w3sm1737826edj.63.2021.11.11.07.03.10
+        by smtp.gmail.com with ESMTPSA id w3sm1737826edj.63.2021.11.11.07.03.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 07:03:10 -0800 (PST)
+        Thu, 11 Nov 2021 07:03:11 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v5 3/6] trace-cmd library: Fix possible memory leak in read_event_files()
-Date:   Thu, 11 Nov 2021 17:03:02 +0200
-Message-Id: <20211111150305.85943-4-tz.stoyanov@gmail.com>
+Subject: [PATCH v5 4/6] trace-cmd library: Fix possible memory leak in read_ftrace_files()
+Date:   Thu, 11 Nov 2021 17:03:03 +0200
+Message-Id: <20211111150305.85943-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211111150305.85943-1-tz.stoyanov@gmail.com>
 References: <20211111150305.85943-1-tz.stoyanov@gmail.com>
@@ -67,99 +67,58 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Some error paths in read_event_files() may lead to a memory leak.
+Some error paths in read_ftrace_files() may lead to a memory leak.
 Improved the error handling of this internal function to avoid it.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 39 ++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 20 deletions(-)
+ lib/trace-cmd/trace-input.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 2b936ddc..f9dd0784 100644
+index f9dd0784..edf84993 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -645,7 +645,7 @@ static int read_ftrace_files(struct tracecmd_input *handle, const char *regex)
- static int read_event_files(struct tracecmd_input *handle, const char *regex)
- {
- 	unsigned long long size;
--	char *system;
-+	char *system = NULL;
- 	regex_t spreg;
- 	regex_t epreg;
- 	regex_t *sreg = NULL;
-@@ -670,13 +670,16 @@ static int read_event_files(struct tracecmd_input *handle, const char *regex)
- 			return -1;
+@@ -618,28 +618,30 @@ static int read_ftrace_files(struct tracecmd_input *handle, const char *regex)
+ 		}
  	}
  
--	if (read4(handle, &systems) < 0)
+-	if (read4(handle, &count) < 0)
 -		return -1;
-+	ret = read4(handle, &systems);
++	ret = read4(handle, &count);
 +	if (ret < 0)
 +		goto out;
  
- 	for (i = 0; i < systems; i++) {
- 		system = read_string(handle);
--		if (!system)
+ 	for (i = 0; i < count; i++) {
+-		if (read8(handle, &size) < 0)
 -			return -1;
-+		if (!system) {
-+			ret = -1;
-+			goto out;
-+		}
- 
- 		sys_printed = 0;
- 		print_all = 0;
-@@ -703,39 +706,35 @@ static int read_event_files(struct tracecmd_input *handle, const char *regex)
- 			}
- 		}
- 
--		if (read4(handle, &count) < 0)
--			goto failed;
-+		ret = read4(handle, &count);
++		ret = read8(handle, &size);
 +		if (ret < 0)
 +			goto out;
- 
- 		for (x=0; x < count; x++) {
--			if (read8(handle, &size) < 0)
--				goto failed;
-+			ret = read8(handle, &size);
-+			if (ret < 0)
-+				goto out;
- 
- 			ret = read_event_file(handle, system, size,
- 					      print_all, &sys_printed,
- 					      reg);
- 			if (ret < 0)
--				goto failed;
-+				goto out;
- 		}
- 		free(system);
+ 		ret = read_ftrace_file(handle, size, print_all, ereg);
+ 		if (ret < 0)
+-			return -1;
++			goto out;
  	}
--
--	if (sreg) {
--		regfree(sreg);
--		regfree(ereg);
--	}
-+	system = NULL;
  
- 	handle->file_state = TRACECMD_FILE_ALL_EVENTS;
+ 	handle->event_files_start =
+ 		lseek64(handle->fd, 0, SEEK_CUR);
 -
--	return 0;
--
-- failed:
++	handle->file_state = TRACECMD_FILE_FTRACE_EVENTS;
 +	ret = 0;
-+ out:
++out:
  	if (sreg) {
  		regfree(sreg);
  		regfree(ereg);
  	}
  
- 	free(system);
--	return -1;
+-	handle->file_state = TRACECMD_FILE_FTRACE_EVENTS;
+-
+-	return 0;
 +	return ret;
  }
  
- static int read_proc_kallsyms(struct tracecmd_input *handle)
+ static int read_event_files(struct tracecmd_input *handle, const char *regex)
 -- 
 2.33.1
 
