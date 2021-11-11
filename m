@@ -2,62 +2,62 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C6ABC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:07:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAEE3C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:07:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 332F261058
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:07:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B3176610A0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:07:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233801AbhKKPKR (ORCPT
+        id S232126AbhKKPKX (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 11 Nov 2021 10:10:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36914 "EHLO
+        Thu, 11 Nov 2021 10:10:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233799AbhKKPKQ (ORCPT
+        with ESMTP id S233820AbhKKPKX (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:10:16 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F122C061766
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:07:27 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id g14so25425968edz.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:07:27 -0800 (PST)
+        Thu, 11 Nov 2021 10:10:23 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC538C061766
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:07:33 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id b15so25172592edd.7
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:07:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=TU1BhuiDlEROr6TrgpWz7vlQmFpSa5IVdhHp5EhPeXQ=;
-        b=hJPKImFXEZN3JJnt6XQAEqfE/HCyX7qOdbS3Wl9jh2eP+7yfo3/tiG3VdR2Ri8/pln
-         0D3x9gGMODm2otDJvCxf3RNbSfPnBhxI7td4qHuVGxLFz0biy6YL4q4lcbcmIkAEBNqt
-         KaANEhDFq8grtc4E82AMXPydQDVCwpS0qclG5fAWQyZovpzrjm5LvN8VznSONKIdQrZA
-         IYNnuc9DOdklLH0nhXJGxcGW3ZDGzbBJJWgzosOpIoLVDg4l71W5S5navWnvMatjhT6v
-         TiYLWOzD/OLwJdJcjlvi9qSdYDC5Y5Dmivxz6Df8CzNVwGTG31X7OJvYTu1SmfR8YQbV
-         bwIQ==
+        bh=Tba+Yb5RYVhhCDCM3O4kwPlU8dN/zlm3I15f52ZJxvI=;
+        b=CLo84iQIvMBSAv5LtX5Q+sg9iTk2NGkCudtoNoMnnAbdUSaHCyi0Q69LJWKSwAwl7h
+         lZvPZu/FM70KzWC+4R93frXiR/BoFsnrLAPq1qgEJt5wXOLn+eBxcI3+qQbB8UB2AZ+X
+         hlwDPbNS2MifX2jMcNbgy9P8Fe6pb0cVTIbGhTvNQ6TpuMOg4hSJkoE/pnP1HqXVwsmb
+         xLrVBl481QJ+yX15hQktmLI8ZHoJN1ji2smT7/IjhSXOBb9e7sf9v4GxdsmcSeYj0icP
+         ABNGhNCdAX6OExjy5P4qd/b71BaVhSJEEPBejRe+IwJwCUlblQdDmHrzN9rFSdQkvZxt
+         i0Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=TU1BhuiDlEROr6TrgpWz7vlQmFpSa5IVdhHp5EhPeXQ=;
-        b=jT6AJvBzeISl7gWeiNWRHCV2NQWwdbrLlqUolF0/D462iZZ+Ayz1zcW5u5pcx4SwIT
-         Rt2QEh43IrDJDNKAVJqPXeRJZtOfZERdT5oNhb3e/PeKJd4S7WYzqseIt2vQ78jw1lu7
-         oTjFmB5F+//wJjKbDjzfD3xMUEaULsKa5l60hDV+iO+s/FmSDGXF77gdNsJB6YiTAa/2
-         9+FIe064/8UXoZwNCxDKfUrPzsRHFMs9C3O2bazXfcXewAGB1gQ7NzUAl14r6fbRl4Cw
-         AIW/gMEimiwiU4iuFaIrv9SMlz8iGEQlj34FWDW3EQ4M4peqJ2KNG0Za7bDTCLwZjtmM
-         VgRA==
-X-Gm-Message-State: AOAM531kR5BJ8Zh9vFURIq6s9Zvp2lsvOnQB0LxrV3P4L61tQXkjMRbs
-        vbA2B+kONEvmnyaYcLx68Hwei6U+0ciA0Q==
-X-Google-Smtp-Source: ABdhPJykmuBZ1ETvD21/QnhYayzRSvRd8HGyzYEBoG/4zRNHG2k81xvW2C2HdoqpVqQ4bgwx/vmpjQ==
-X-Received: by 2002:a17:906:390:: with SMTP id b16mr10180568eja.522.1636643245870;
-        Thu, 11 Nov 2021 07:07:25 -0800 (PST)
+        bh=Tba+Yb5RYVhhCDCM3O4kwPlU8dN/zlm3I15f52ZJxvI=;
+        b=kiKBjsPRy7lWlgv3dWnbwm/cs5H1qh60M8N5X2ktqb/GLfyQsjuKRm1y/+BtUfKVUo
+         12E0scxNWg5nuyhz8AMVTe4LlZbMRuQ+i5DAdmXzM93g2gz1LV5llzQKOfK0mL72KasG
+         OgPGEHYebNPvprfX4k6y6fArApgDDZALIA0rL4JbimDmVb/G2kSSxEayySlWtmw76OCn
+         hXUBIWB5eO06twPebBbF86NWba87lSfdOAovjnJoXJY727tjnNUmO2scre2gMm/D8Bl3
+         jOW4D+y5K0tEoQTAPp/HAf7IUEtawpnXIGSjSPp8nDf1hFL9DKWqnoMLmU6PG1BcRwW9
+         cWkw==
+X-Gm-Message-State: AOAM533e49YzVYTup/tS04RMm/aYWpuw3/5QqB4dIYyNv4aOoeHebv5A
+        CHsD8K4GUqIE431o1lB/nabNH1uv/2c+2A==
+X-Google-Smtp-Source: ABdhPJxIZO/PGgyXck8j13YW74X0IQja1548ltezhFxFsl5qTXxVzvR03tRF2/DAwgQqabcyAg+0JQ==
+X-Received: by 2002:a17:907:c0e:: with SMTP id ga14mr10252946ejc.26.1636643252095;
+        Thu, 11 Nov 2021 07:07:32 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id k16sm497422edq.77.2021.11.11.07.07.25
+        by smtp.gmail.com with ESMTPSA id gv34sm1492792ejc.104.2021.11.11.07.07.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 07:07:25 -0800 (PST)
+        Thu, 11 Nov 2021 07:07:31 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 08/10] trace-cmd library: Use the new flow when creating output handler
-Date:   Thu, 11 Nov 2021 17:07:24 +0200
-Message-Id: <20211111150724.86304-1-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 09/10] trace-cmd: Use the new flow when creating output handler
+Date:   Thu, 11 Nov 2021 17:07:30 +0200
+Message-Id: <20211111150730.86323-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -65,110 +65,168 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The trace-cmd library APIs, that create a new output handler to a trace
-file, are converted to use the newly introduced APIs. Affected are:
- tracecmd_create_file_latency()
- tracecmd_create_init_fd()
- tracecmd_create_init_file()
- tracecmd_copy()
+The trace-cmd commands, that create a new output handler to a trace
+file, are converted to use the newly introduced trace-cmd APIs.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-output.c | 54 ++++++++++++++++++++++++++++++++----
- 1 file changed, 48 insertions(+), 6 deletions(-)
+ tracecmd/trace-record.c  | 55 +++++++++++++++++++++++++++++++++++-----
+ tracecmd/trace-restore.c | 32 +++++++++++++++++++++--
+ 2 files changed, 79 insertions(+), 8 deletions(-)
 
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index f8a16d82..9ea85b1c 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -1503,11 +1503,19 @@ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, in
- {
- 	struct tracecmd_output *handle;
- 	char *path;
-+	int fd;
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 1767a6c6..15e07cf0 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -3689,6 +3689,25 @@ again:
  
--	handle = create_file(output_file, NULL, NULL, NULL, &all_event_list);
--	if (!handle)
-+	fd = open(output_file, O_RDWR | O_CREAT | O_TRUNC | O_LARGEFILE, 0644);
-+	if (fd < 0)
- 		return NULL;
+ static void add_options(struct tracecmd_output *handle, struct common_record_context *ctx);
  
-+	handle = tracecmd_output_allocate(fd);
-+	if (!handle)
-+		goto out_free;
-+	if (tracecmd_output_write_init(handle))
-+		goto out_free;
-+	if (tracecmd_output_write_headers(handle, NULL))
-+		goto out_free;
- 	/*
- 	 * Save the command lines;
- 	 */
-@@ -1801,7 +1809,20 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
- 
- struct tracecmd_output *tracecmd_create_init_fd(int fd)
- {
--	return create_file_fd(fd, NULL, NULL, NULL, &all_event_list, NULL);
++static struct tracecmd_output *create_net_output(struct common_record_context *ctx,
++						 struct tracecmd_msg_handle *msg_handle)
++{
 +	struct tracecmd_output *out;
 +
-+	out = tracecmd_output_allocate(fd);
++	out = tracecmd_output_allocate(-1);
 +	if (!out)
 +		return NULL;
-+	if (tracecmd_output_write_init(out))
++	if (tracecmd_output_set_msg(out, msg_handle))
 +		goto error;
-+	if (tracecmd_output_write_headers(out, NULL))
++	if (tracecmd_output_write_headers(out, listed_events))
 +		goto error;
 +
 +	return out;
 +error:
 +	tracecmd_output_close(out);
 +	return NULL;
++}
++
+ static struct tracecmd_msg_handle *
+ setup_connection(struct buffer_instance *instance, struct common_record_context *ctx)
+ {
+@@ -3700,7 +3719,7 @@ setup_connection(struct buffer_instance *instance, struct common_record_context
+ 
+ 	/* Now create the handle through this socket */
+ 	if (msg_handle->version == V3_PROTOCOL) {
+-		network_handle = tracecmd_create_init_fd_msg(msg_handle, listed_events);
++		network_handle = create_net_output(ctx, msg_handle);
+ 		if (!network_handle)
+ 			goto error;
+ 		tracecmd_set_quiet(network_handle, quiet);
+@@ -3718,10 +3737,11 @@ setup_connection(struct buffer_instance *instance, struct common_record_context
+ 		if (ret)
+ 			goto error;
+ 	} else {
+-		network_handle = tracecmd_create_init_fd_glob(msg_handle->fd,
+-							      listed_events);
++		network_handle = tracecmd_output_allocate(msg_handle->fd);
+ 		if (!network_handle)
+ 			goto error;
++		if (tracecmd_output_write_headers(network_handle, listed_events))
++			goto error;
+ 		tracecmd_set_quiet(network_handle, quiet);
+ 	}
+ 
+@@ -4067,8 +4087,7 @@ static void setup_agent(struct buffer_instance *instance,
+ {
+ 	struct tracecmd_output *network_handle;
+ 
+-	network_handle = tracecmd_create_init_fd_msg(instance->msg_handle,
+-						     listed_events);
++	network_handle = create_net_output(ctx, instance->msg_handle);
+ 	add_options(network_handle, ctx);
+ 	tracecmd_write_cmdlines(network_handle);
+ 	tracecmd_write_cpus(network_handle, instance->cpu_count);
+@@ -4437,6 +4456,30 @@ static void write_guest_file(struct buffer_instance *instance)
+ 	free(temp_files);
  }
  
- struct tracecmd_output *
-@@ -1826,7 +1847,20 @@ tracecmd_create_init_file_glob(const char *output_file,
- 
- struct tracecmd_output *tracecmd_create_init_file(const char *output_file)
- {
--	return create_file(output_file, NULL, NULL, NULL, &all_event_list);
-+	struct tracecmd_output *handle;
++static struct tracecmd_output *create_output(struct common_record_context *ctx)
++{
++	struct tracecmd_output *out;
 +	int fd;
 +
-+	fd = open(output_file, O_RDWR | O_CREAT | O_TRUNC | O_LARGEFILE, 0644);
++	fd = open(ctx->output, O_RDWR | O_CREAT | O_TRUNC | O_LARGEFILE, 0644);
 +	if (fd < 0)
 +		return NULL;
-+	handle = tracecmd_create_init_fd(fd);
-+	if (!handle) {
-+		close(fd);
-+		unlink(output_file);
-+		return NULL;
-+	}
 +
-+	return handle;
- }
- 
- struct tracecmd_output *tracecmd_create_init_file_override(const char *output_file,
-@@ -1849,11 +1883,19 @@ struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle,
- 				      const char *file)
++	out = tracecmd_output_allocate(fd);
++	if (!out)
++		goto error;
++	if (tracecmd_output_write_headers(out, listed_events))
++		goto error;
++	return out;
++error:
++	if (out)
++		tracecmd_output_close(out);
++	else
++		close(fd);
++	unlink(ctx->output);
++	return NULL;
++}
++
+ static void record_data(struct common_record_context *ctx)
  {
- 	struct tracecmd_output *handle;
-+	int fd;
+ 	struct tracecmd_option **buffer_options;
+@@ -4491,7 +4534,7 @@ static void record_data(struct common_record_context *ctx)
+ 				touch_file(temp_files[i]);
+ 		}
  
--	handle = create_file(file, ihandle, NULL, NULL, &all_event_list);
--	if (!handle)
+-		handle = tracecmd_create_init_file_glob(ctx->output, listed_events);
++		handle = create_output(ctx);
+ 		if (!handle)
+ 			die("Error creating output file");
+ 		tracecmd_set_quiet(handle, quiet);
+diff --git a/tracecmd/trace-restore.c b/tracecmd/trace-restore.c
+index 280a37f0..8d2fcae8 100644
+--- a/tracecmd/trace-restore.c
++++ b/tracecmd/trace-restore.c
+@@ -22,6 +22,35 @@
+ 
+ #include "trace-local.h"
+ 
++static struct tracecmd_output *create_output(const char *file,
++					     const char *tracing_dir, const char *kallsyms)
++{
++	struct tracecmd_output *out;
++	int fd;
++
 +	fd = open(file, O_RDWR | O_CREAT | O_TRUNC | O_LARGEFILE, 0644);
 +	if (fd < 0)
- 		return NULL;
- 
-+	handle = tracecmd_output_allocate(fd);
-+	if (!handle)
-+		goto out_free;
-+	if (tracecmd_output_set_from_input(handle, ihandle))
-+		goto out_free;
-+	tracecmd_output_write_init(handle);
++		return NULL;
 +
- 	if (tracecmd_copy_headers(ihandle, handle->fd, 0, 0) < 0)
- 		goto out_free;
++	out = tracecmd_output_allocate(fd);
++	if (!out)
++		goto error;
++	if (tracing_dir && tracecmd_output_set_trace_dir(out, tracing_dir))
++		goto error;
++	if (kallsyms && tracecmd_output_set_kallsyms(out, kallsyms))
++		goto error;
++	if (tracecmd_output_write_headers(out, NULL))
++		goto error;
++	return out;
++error:
++	if (out)
++		tracecmd_output_close(out);
++	else
++		close(fd);
++	unlink(file);
++	return NULL;
++}
++
+ void trace_restore (int argc, char **argv)
+ {
+ 	struct tracecmd_output *handle;
+@@ -90,8 +119,7 @@ void trace_restore (int argc, char **argv)
+ 			usage(argv);
+ 		}
  
+-		handle = tracecmd_create_init_file_override(output, tracing_dir,
+-							    kallsyms);
++		handle = create_output(output, tracing_dir, kallsyms);
+ 		if (!handle)
+ 			die("Unabled to create output file %s", output);
+ 		if (tracecmd_write_cmdlines(handle) < 0)
 -- 
 2.33.1
 
