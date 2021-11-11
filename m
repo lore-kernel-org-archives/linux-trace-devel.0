@@ -2,62 +2,62 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCC06C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:12:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55D6CC433FE
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:12:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9E59C610D0
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:12:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3974361252
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:12:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234019AbhKKPPb (ORCPT
+        id S234020AbhKKPPb (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Thu, 11 Nov 2021 10:15:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38224 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234020AbhKKPPa (ORCPT
+        with ESMTP id S234024AbhKKPPb (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:15:30 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EF5EC061767
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:12:40 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id r12so25436325edt.6
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:12:40 -0800 (PST)
+        Thu, 11 Nov 2021 10:15:31 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A68C061766
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:12:41 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id f8so25652838edy.4
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:12:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IbwENx7h+tKIlXaoptJRrHsazZB2n2l6E/GplWbtIek=;
-        b=pEzRF2piUrefUo2uBN/W9L4igs2mdwML71YJ1KcvqDNE+I9mW0MapZavV9tNzQePRf
-         2fZScvdwPAy5WfnN0QuT+2F48Cml6IVH3tBI60WXCBOMT7c8EDl0KTf8tpAK+SE6Nfxa
-         BkuzGaeXGW6Nkyp84YoMYFwjtG5r5pxGloPDRm5k/6N7QvzViia3pnRgxe1JIeqT3z8u
-         JgVLcYM2ADtYjdZTIlryl6JZfJPfTkcdmFwjVPoryv7M4cXV3a+pVVSeQZRtvRF72oQ3
-         wbr85u55cPgUb+PY+E4oBArpFGXBVQ0wGnjLnYdLddKlij18aUR2M8VxW8ALndTkxrMZ
-         wqDQ==
+        bh=/gFs9SxO0GeDWLm9V5aYUuAT+Zx8XMTWnCEZzrdEh0c=;
+        b=e/pfLhOxpnoHH6QcwGpYoKo+8sPv1un4NVnUcBoqcSFkRiWzr1IKMBxbu0Id5AgXpZ
+         sPIkDqEgPZ0d5qGlFxBO0JJSxF8ZfC68qtJQmmDfuvuo/ByARYuerQyV/qjKdM6nXaVD
+         L3/rPm9oVfU3HuZ+xG0Q+Fctv19QfMdDPuG9dEzx6B1Cuuegj4c3lCAp2u1VHmAcvJm4
+         Hr4MNaRFcwj9zCU5L3CP7BRPm9fBL8QoAOV0PJO0kt6+9kRdphQgCklBihQA1+zHxEWT
+         /QkwOMAKVs0+JpAYWJdiMqD3D4stuTQihsjpJw2Ri7XZ4NtHJU6wbh4f1PTH9aAYJ6x9
+         F/Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IbwENx7h+tKIlXaoptJRrHsazZB2n2l6E/GplWbtIek=;
-        b=H0ND/S/xpaQhx/i9/LwQHaeS5807F+IoSMZZ4cgB04t7gFYR/6IOdlgqoevik4GFrR
-         OWFIpYBZeQyIehMR10ooJoCKgpLo+Io0oevOD9jok1eJLSUuMKb3MHpPVeGTsgJyLIyV
-         +qluKEylnldngPQcRoDIBOk766BMVbkwFew7f1Vibb7W1xJvjhqqsxOfJ8zmAsDEzx56
-         yhoKKh0qdk/3XrucbYziSTPQFsyVT/IWwXm6Rnnn0BFuqimbCjc4wnbkuEkrxHu9AOHe
-         P1f5QOQXYjZd/RaAh4CZZK+z1UxKvvbXwpnNw5qxpniwzSgnZzXrgYoHaPY622kGYuYP
-         14jQ==
-X-Gm-Message-State: AOAM532Jjos0kJ+eYq1JWPs5c5++KcePDU8+Jtv6LfhfJ3vO2yNreWHy
-        A9aB+vlP1Q5i7iIRaT1in+jqiyeaYKlxoQ==
-X-Google-Smtp-Source: ABdhPJye/x4RQRxE2ir9+BmOFZ5IWuFk/S6woZS+9n+qZAFMeH8hyTWUV0iiQZtZUH2Tgyz8KJiiRA==
-X-Received: by 2002:a17:907:3ea7:: with SMTP id hs39mr10820741ejc.164.1636643559150;
-        Thu, 11 Nov 2021 07:12:39 -0800 (PST)
+        bh=/gFs9SxO0GeDWLm9V5aYUuAT+Zx8XMTWnCEZzrdEh0c=;
+        b=bh25GAUukEyAOfHnZMLdjPNo8ibvrd3YghOZorbaJFUsS17zVSYFtf+GAqGAtQZpd+
+         e85Hg4v9TXvw8foCP18rF83oBEwn4oixqxJcIjTvP1GebTgYhzbSdeEu6C4RSuXgb/62
+         /rMax05oie/0IpXPBrs2VaXgjXaLJo2pgcHPAhYIEByJvMxtNhTmsojV+3g0zATx9vSG
+         255jTFnoJyD3r+Gr9pSNBNY/jT5dopsb+z3LB3ySGW4E4vJPQWKJQYyLsrjoMy9ZaBcZ
+         urxao4C2SQiSjLkLeK7rLISIfUh2LQ0s7aoi/ZD36WZCQ23lMcK6l6CosvXc3G1I0aQ6
+         nmyg==
+X-Gm-Message-State: AOAM533iq265/HuItF+dUegbDTusUmuly78ULvNuSXS2jhTjDnA9WKzJ
+        3O3pMgfsujZcNV8m6TSD883iFs+ByMPg1g==
+X-Google-Smtp-Source: ABdhPJxGOqhCXHeiuQ+KOkVeVoKEbfa+l+x7H/oAmwfmCVqPkiHawmP3lXPIUmw4PsY0i8sHMQVjJA==
+X-Received: by 2002:a05:6402:d09:: with SMTP id eb9mr10841702edb.69.1636643560265;
+        Thu, 11 Nov 2021 07:12:40 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id dk5sm1686835edb.20.2021.11.11.07.12.38
+        by smtp.gmail.com with ESMTPSA id dk5sm1686835edb.20.2021.11.11.07.12.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 07:12:38 -0800 (PST)
+        Thu, 11 Nov 2021 07:12:39 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 5/8] trace-cmd library: New API to copy options between trace files
-Date:   Thu, 11 Nov 2021 17:12:25 +0200
-Message-Id: <20211111151228.86922-6-tz.stoyanov@gmail.com>
+Subject: [PATCH v4 6/8] trace-cmd library: New API to copy trace data between trace files
+Date:   Thu, 11 Nov 2021 17:12:26 +0200
+Message-Id: <20211111151228.86922-7-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211111151228.86922-1-tz.stoyanov@gmail.com>
 References: <20211111151228.86922-1-tz.stoyanov@gmail.com>
@@ -67,247 +67,287 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-A new library API is introduced, to copy options between trace files:
-  tracecmd_copy_options()
+A new library API is introduced, to copy trace data between trace files:
+	tracecmd_copy_trace_data()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- .../include/private/trace-cmd-private.h       |   3 +
- lib/trace-cmd/include/trace-cmd-local.h       |   2 +
- lib/trace-cmd/trace-input.c                   | 140 ++++++++++++++++++
- lib/trace-cmd/trace-output.c                  |  30 ++++
- 4 files changed, 175 insertions(+)
+ .../include/private/trace-cmd-private.h       |   2 +
+ lib/trace-cmd/include/trace-cmd-local.h       |   6 +
+ lib/trace-cmd/trace-input.c                   | 173 ++++++++++++++++++
+ lib/trace-cmd/trace-output.c                  |  38 ++++
+ 4 files changed, 219 insertions(+)
 
 diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 177a6ff8..417d50f3 100644
+index 417d50f3..0c4fa06f 100644
 --- a/lib/trace-cmd/include/private/trace-cmd-private.h
 +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -191,6 +191,8 @@ int tracecmd_copy_headers(struct tracecmd_input *in_handle,
- 			  enum tracecmd_file_states end_state);
- int tracecmd_copy_buffer_descr(struct tracecmd_input *in_handle,
+@@ -193,6 +193,8 @@ int tracecmd_copy_buffer_descr(struct tracecmd_input *in_handle,
  			       struct tracecmd_output *out_handle);
-+int tracecmd_copy_options(struct tracecmd_input *in_handle,
-+			  struct tracecmd_output *out_handle);
+ int tracecmd_copy_options(struct tracecmd_input *in_handle,
+ 			  struct tracecmd_output *out_handle);
++int tracecmd_copy_trace_data(struct tracecmd_input *in_handle,
++			     struct tracecmd_output *out_handle);
  void tracecmd_set_flag(struct tracecmd_input *handle, int flag);
  void tracecmd_clear_flag(struct tracecmd_input *handle, int flag);
  unsigned long tracecmd_get_flags(struct tracecmd_input *handle);
-@@ -337,6 +339,7 @@ int tracecmd_append_buffer_cpu_data(struct tracecmd_output *handle,
- 				    const char *name, int cpus, char * const *cpu_data_files);
- struct tracecmd_output *tracecmd_get_output_handle_fd(int fd);
- unsigned long tracecmd_get_out_file_version(struct tracecmd_output *handle);
-+unsigned long long tracecmd_get_out_file_offset(struct tracecmd_output *handle);
- 
- /* --- Reading the Fly Recorder Trace --- */
- 
 diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
-index f53a8381..0dba4b58 100644
+index 0dba4b58..638b993c 100644
 --- a/lib/trace-cmd/include/trace-cmd-local.h
 +++ b/lib/trace-cmd/include/trace-cmd-local.h
-@@ -51,6 +51,8 @@ void out_compression_reset(struct tracecmd_output *handle, bool compress);
- bool out_check_compression(struct tracecmd_output *handle);
+@@ -66,6 +66,11 @@ int out_update_section_header(struct tracecmd_output *handle, unsigned long long
  
- void out_set_file_state(struct tracecmd_output *handle, int new_state);
-+int out_save_options_offset(struct tracecmd_output *handle,
-+			    unsigned long long start);
- unsigned long long out_copy_fd_compress(struct tracecmd_output *handle,
- 					int fd, unsigned long long max,
- 					unsigned long long *write_size);
+ long long do_write_check(struct tracecmd_output *handle, const void *data, long long size);
+ 
++struct tracecmd_option *
++out_add_buffer_option_v7(struct tracecmd_output *handle, const char *name,
++			 unsigned short id, unsigned long long data_offset,
++			 int cpus, struct data_file_write *cpu_data);
++
+ struct cpu_data_source {
+ 	int fd;
+ 	int size;
+@@ -74,6 +79,7 @@ struct cpu_data_source {
+ 
+ int out_write_cpu_data(struct tracecmd_output *handle, int cpus,
+ 		       struct cpu_data_source *data, const char *buff_name);
++int out_write_emty_cpu_data(struct tracecmd_output *handle, int cpus);
+ off64_t msg_lseek(struct tracecmd_msg_handle *msg_handle, off_t offset, int whence);
+ unsigned long long get_last_option_offset(struct tracecmd_input *handle);
+ 
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index d93e6eb3..15a15eae 100644
+index 15a15eae..10f85031 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -4902,6 +4902,146 @@ int tracecmd_copy_buffer_descr(struct tracecmd_input *in_handle,
- 	return tracecmd_write_buffer_info(out_handle);
+@@ -5042,6 +5042,179 @@ int tracecmd_copy_options(struct tracecmd_input *in_handle,
+ 	return 0;
  }
  
-+static int copy_options_recursive(struct tracecmd_input *in_handle,
-+				  struct tracecmd_output *out_handle)
++static int copy_trace_latency(struct tracecmd_input *in_handle,
++			      struct tracecmd_output *out_handle, const char *buf_name)
 +{
-+	unsigned short id, flags = 0;
-+	unsigned short option, en2;
-+	unsigned long long next;
-+	unsigned int size, en4;
-+	bool skip;
++	unsigned long long wsize;
++	unsigned long long offset;
++	int fd;
 +
-+	for (;;) {
-+		if (do_read_check(in_handle, &option, 2))
-+			return -1;
-+		en2 = tep_read_number(in_handle->pevent, &option, 2);
++	if (tracecmd_get_out_file_version(out_handle) < FILE_VERSION_SECTIONS &&
++	    do_write_check(out_handle, "latency  ", 10))
++		return -1;
 +
-+		if (en2 == TRACECMD_OPTION_DONE && !HAS_SECTIONS(in_handle))
-+			return 0;
++	offset = tracecmd_get_out_file_offset(out_handle);
 +
-+		/* next 4 bytes is the size of the option */
-+		if (do_read_check(in_handle, &size, 4))
-+			return -1;
-+		en4 = tep_read_number(in_handle->pevent, &size, 4);
-+		if (en2 == TRACECMD_OPTION_DONE) {
-+			/* option done v7 */
-+			if (en4 < 8)
-+				return -1;
-+			if (read8(in_handle, &next))
-+				return -1;
-+			if (!next)
-+				break;
-+			if (do_lseek(in_handle, next, SEEK_SET) == (off64_t)-1)
-+				return -1;
-+			if (read_section_header(in_handle, &id, &flags, NULL, NULL))
-+				return -1;
-+			if (id != TRACECMD_OPTION_DONE)
-+				return -1;
-+			if (flags & TRACECMD_SEC_FL_COMPRESS && in_uncompress_block(in_handle))
-+				return -1;
-+			return copy_options_recursive(in_handle, out_handle);
++	if (tracecmd_get_out_file_version(out_handle) >= FILE_VERSION_SECTIONS &&
++	    !out_add_buffer_option_v7(out_handle, buf_name, TRACECMD_OPTION_BUFFER_TEXT, offset, 0, NULL))
++		return -1;
++
++	offset = out_write_section_header(out_handle, TRACECMD_OPTION_BUFFER_TEXT,
++					  "buffer latency", TRACECMD_SEC_FL_COMPRESS, false);
++
++	if (in_handle->latz.fd >= 0)
++		fd = in_handle->latz.fd;
++	else
++		fd = in_handle->fd;
++
++	if (!out_copy_fd_compress(out_handle, fd, 0, &wsize))
++		return -1;
++	if (out_update_section_header(out_handle, offset))
++		return -1;
++
++	out_set_file_state(out_handle, TRACECMD_FILE_CPU_LATENCY);
++	return 0;
++}
++
++static int copy_trace_flyrecord_data(struct tracecmd_input *in_handle,
++				     struct tracecmd_output *out_handle, const char *buff_name)
++{
++	struct cpu_data_source *data;
++	int total_size = 0;
++	int cpus;
++	int ret;
++	int i, j;
++
++	if (tracecmd_get_out_file_version(out_handle) < FILE_VERSION_SECTIONS)
++		cpus = in_handle->max_cpu;
++	else
++		cpus = in_handle->cpus;
++
++	data = calloc(cpus, sizeof(struct cpu_data_source));
++	if (!data)
++		return -1;
++	for (i = 0; i < in_handle->cpus; i++) {
++		j = in_handle->cpu_data[i].cpu;
++		data[j].size = in_handle->cpu_data[i].file_size;
++		total_size += data[j].size;
++		if (in_handle->cpu_data[i].compress.fd >= 0) {
++			data[j].fd = in_handle->cpu_data[i].compress.fd;
++			data[j].offset = 0;
++		} else {
++			data[j].fd = in_handle->fd;
++			data[j].offset = in_handle->cpu_data[i].file_offset;
 +		}
-+		/* Do not copy these, as they have file specific offsets */
-+		switch (en2) {
-+		case TRACECMD_OPTION_BUFFER:
-+		case TRACECMD_OPTION_BUFFER_TEXT:
-+		case TRACECMD_OPTION_HEADER_INFO:
-+		case TRACECMD_OPTION_FTRACE_EVENTS:
-+		case TRACECMD_OPTION_EVENT_FORMATS:
-+		case TRACECMD_OPTION_KALLSYMS:
-+		case TRACECMD_OPTION_PRINTK:
-+		case TRACECMD_OPTION_CMDLINES:
-+			skip = true;
-+			break;
-+		default:
-+			skip = false;
-+			break;
-+		}
-+		if (skip) {
-+			do_lseek(in_handle, en4, SEEK_CUR);
-+			continue;
-+		}
-+		if (do_write_check(out_handle, &option, 2))
-+			return -1;
-+		if (do_write_check(out_handle, &size, 4))
-+			return -1;
-+		if (read_copy_data(in_handle, en4, out_handle))
-+			return -1;
 +	}
++	if (total_size || tracecmd_get_out_file_version(out_handle) < FILE_VERSION_SECTIONS)
++		ret = out_write_cpu_data(out_handle, cpus, data, buff_name);
++	else
++		ret = 0;
++	free(data);
++
++	return ret;
++}
++
++static int copy_flyrecord_buffer(struct tracecmd_input *in_handle,
++				 struct tracecmd_output *out_handle, int index)
++{
++	struct tracecmd_input *instance;
++	const char *name;
++	int ret;
++
++	name = tracecmd_buffer_instance_name(in_handle, index);
++	if (!name)
++		return -1;
++
++	instance = tracecmd_buffer_instance_handle(in_handle, index);
++	if (!instance)
++		return -1;
++	if (!tracecmd_get_quiet(out_handle) && *name)
++		fprintf(stderr, "\nBuffer: %s\n\n", name);
++
++	if (in_handle->buffers[index].latency)
++		ret = copy_trace_latency(in_handle, out_handle, name);
++	else
++		ret = copy_trace_flyrecord_data(instance, out_handle, name);
++	tracecmd_close(instance);
++
++	return ret;
++}
++
++static int copy_trace_data_from_v6(struct tracecmd_input *in_handle,
++				   struct tracecmd_output *out_handle)
++{
++	char buf[10];
++	int ret;
++	int i;
++
++	if (do_read_check(in_handle, buf, 10))
++		return -1;
++
++	if (strncmp(buf, "latency", 7) == 0)
++		in_handle->file_state = TRACECMD_FILE_CPU_LATENCY;
++	else if (strncmp(buf, "flyrecord", 9) == 0)
++		in_handle->file_state = TRACECMD_FILE_CPU_FLYRECORD;
++
++	tracecmd_init_data(in_handle);
++
++	if (in_handle->file_state == TRACECMD_FILE_CPU_LATENCY)
++		return copy_trace_latency(in_handle, out_handle, "");
++
++	/* top instance */
++	ret = copy_trace_flyrecord_data(in_handle, out_handle, "");
++	if (ret)
++		return ret;
++
++	for (i = 0; i < in_handle->nr_buffers; i++)
++		copy_flyrecord_buffer(in_handle, out_handle, i);
++	return 0;
++}
++
++static int copy_trace_data_from_v7(struct tracecmd_input *in_handle,
++				   struct tracecmd_output *out_handle)
++{
++	int ret;
++	int i;
++
++	/* Force using temporary files for trace data decompression */
++	in_handle->read_zpage = false;
++	tracecmd_init_data(in_handle);
++
++	if (tracecmd_get_out_file_version(out_handle) < FILE_VERSION_SECTIONS) {
++		/* copy top buffer in v6 files */
++		if (in_handle->top_buffer.latency)
++			ret = copy_trace_latency(in_handle, out_handle, in_handle->top_buffer.name);
++		else if (in_handle->top_buffer.cpus)
++			ret = copy_trace_flyrecord_data(in_handle, out_handle,
++							in_handle->top_buffer.name);
++		else
++			ret = out_write_emty_cpu_data(out_handle, in_handle->max_cpu);
++		if (ret)
++			return ret;
++	}
++
++	for (i = 0; i < in_handle->nr_buffers; i++)
++		copy_flyrecord_buffer(in_handle, out_handle, i);
 +
 +	return 0;
 +}
 +
-+static int copy_options(struct tracecmd_input *in_handle, struct tracecmd_output *out_handle)
++__hidden int tracecmd_copy_trace_data(struct tracecmd_input *in_handle,
++				      struct tracecmd_output *out_handle)
 +{
-+	unsigned long long offset, start;
-+	unsigned short id, en2, flags = 0;
-+	int tmp;
++	int ret;
 +
-+	if (HAS_SECTIONS(in_handle)) {
-+		if (read_section_header(in_handle, &id, &flags, NULL, NULL))
-+			return -1;
-+		if (id != TRACECMD_OPTION_DONE)
-+			return -1;
-+		if (flags & TRACECMD_SEC_FL_COMPRESS && in_uncompress_block(in_handle))
-+			return -1;
-+	}
-+	start = tracecmd_get_out_file_offset(out_handle);
-+	if (tracecmd_get_out_file_version(out_handle) < FILE_VERSION_SECTIONS) {
-+		if (do_write_check(out_handle, "options  ", 10))
-+			return -1;
-+	}
-+
-+	offset = out_write_section_header(out_handle, TRACECMD_OPTION_DONE, "options", 0, false);
-+
-+	if (copy_options_recursive(in_handle, out_handle))
-+		goto error;
-+
-+	id = TRACECMD_OPTION_DONE;
-+	en2 = tep_read_number(in_handle->pevent, &id, 2);
-+	if (do_write_check(out_handle, &en2, 2))
-+		goto error;
-+	if (tracecmd_get_out_file_version(out_handle) < FILE_VERSION_SECTIONS) {
-+		out_save_options_offset(out_handle, start);
-+	} else {
-+		tmp = 8;
-+		if (do_write_check(out_handle, &tmp, 4))
-+			goto error;
-+		out_save_options_offset(out_handle, start);
-+		start = 0;
-+		if (do_write_check(out_handle, &start, 8))
-+			goto error;
-+	}
-+	out_update_section_header(out_handle, offset);
-+	if (flags & TRACECMD_SEC_FL_COMPRESS)
-+		in_uncompress_reset(in_handle);
-+	in_handle->file_state = TRACECMD_FILE_OPTIONS;
-+	out_set_file_state(out_handle, in_handle->file_state);
-+	/* Append local options */
-+	return tracecmd_append_options(out_handle);
-+
-+error:
-+	if (flags & TRACECMD_SEC_FL_COMPRESS)
-+		in_uncompress_reset(in_handle);
-+	return 0;
-+}
-+
-+int tracecmd_copy_options(struct tracecmd_input *in_handle,
-+			  struct tracecmd_output *out_handle)
-+{
-+	if (!check_in_state(in_handle, TRACECMD_FILE_OPTIONS) ||
-+	    !check_out_state(out_handle, TRACECMD_FILE_OPTIONS))
++	if (!check_in_state(in_handle, TRACECMD_FILE_CPU_FLYRECORD) ||
++	    !check_out_state(out_handle, TRACECMD_FILE_CPU_FLYRECORD))
 +		return -1;
-+
-+	if (!in_handle->options_start)
-+		return 0;
-+	if (lseek64(in_handle->fd, in_handle->options_start, SEEK_SET) == (off64_t)-1)
-+		return -1;
-+	if (copy_options(in_handle, out_handle) < 0)
-+		return -1;
-+	return 0;
++	tracecmd_set_out_clock(out_handle, in_handle->trace_clock);
++	if (in_handle->file_version < FILE_VERSION_SECTIONS)
++		ret = copy_trace_data_from_v6(in_handle, out_handle);
++	else
++		ret = copy_trace_data_from_v7(in_handle, out_handle);
++	return ret;
 +}
 +
  /**
   * tracecmd_record_at_buffer_start - return true if record is first on subbuffer
   * @handle: input handle for the trace.dat file
 diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index 3ec02e72..3a3eeff6 100644
+index 3a3eeff6..8a8219a4 100644
 --- a/lib/trace-cmd/trace-output.c
 +++ b/lib/trace-cmd/trace-output.c
-@@ -2523,6 +2523,31 @@ __hidden bool out_check_compression(struct tracecmd_output *handle)
- 	return (handle->compress != NULL);
+@@ -2162,6 +2162,44 @@ static int update_buffer_cpu_offset_v6(struct tracecmd_output *handle,
+ 	return 0;
  }
  
-+__hidden int out_save_options_offset(struct tracecmd_output *handle, unsigned long long start)
++__hidden int out_write_emty_cpu_data(struct tracecmd_output *handle, int cpus)
 +{
-+	unsigned long long new, en8;
++	unsigned long long zero = 0;
++	char *clock;
++	int ret;
++	int i;
 +
-+	if (HAS_SECTIONS(handle)) {
-+		/* Append to the previous options section, if any */
-+		if (!handle->options_start)
-+			return -1;
-+		new = do_lseek(handle, 0, SEEK_CUR);
-+		if (do_lseek(handle, handle->options_start, SEEK_SET) == (off64_t)-1)
-+			return -1;
++	if (HAS_SECTIONS(handle))
++		return 0;
 +
-+		en8 = convert_endian_8(handle, start);
-+		if (do_write_check(handle, &en8, 8))
-+			return -1;
-+		handle->options_start = new;
-+		if (do_lseek(handle, new, SEEK_SET) == (off64_t)-1)
-+			return -1;
-+	} else {
-+		handle->options_start = start;
++	ret = handle->file_state == TRACECMD_FILE_CPU_FLYRECORD ? 0 :
++				    check_file_state(handle->file_version,
++						     handle->file_state,
++						     TRACECMD_FILE_CPU_FLYRECORD);
++	if (ret < 0) {
++		tracecmd_warning("Cannot write trace data into the file, unexpected state 0x%X",
++				 handle->file_state);
++		return ret;
 +	}
 +
++	if (do_write_check(handle, "flyrecord", 10))
++		return -1;
++
++	for (i = 0; i < cpus; i++) {
++		/* Write 0 for trace data offset and size */
++		if (do_write_check(handle, &zero, 8))
++			return -1;
++		if (do_write_check(handle, &zero, 8))
++			return -1;
++	}
++	clock = get_clock(handle);
++	if (clock && save_clock(handle, clock))
++		return -1;
++	handle->file_state = TRACECMD_FILE_CPU_FLYRECORD;
 +	return 0;
 +}
 +
- /**
-  * tracecmd_get_out_file_version - return the trace.dat file version
-  * @handle: output handle for the trace.dat file
-@@ -2531,3 +2556,8 @@ unsigned long tracecmd_get_out_file_version(struct tracecmd_output *handle)
- {
- 	return handle->file_version;
- }
 +
-+unsigned long long tracecmd_get_out_file_offset(struct tracecmd_output *handle)
-+{
-+	return do_lseek(handle, 0, SEEK_CUR);
-+}
+ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
+ 				int cpus, struct cpu_data_source *data, const char *buff_name)
+ {
 -- 
 2.33.1
 
