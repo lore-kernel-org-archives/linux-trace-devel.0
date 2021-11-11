@@ -2,446 +2,139 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9F4BC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:08:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC7EFC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:08:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9CAE861252
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:08:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AA77161108
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:08:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233828AbhKKPLD (ORCPT
+        id S233824AbhKKPLO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 11 Nov 2021 10:11:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37096 "EHLO
+        Thu, 11 Nov 2021 10:11:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233824AbhKKPLC (ORCPT
+        with ESMTP id S233810AbhKKPLN (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:11:02 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48179C061766
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:08:13 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id r12so25385126edt.6
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:08:13 -0800 (PST)
+        Thu, 11 Nov 2021 10:11:13 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EAA5C061766
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:08:24 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id f8so25603634edy.4
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:08:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4vXoNlfOg9utFABowyChlHAzm6DTD/Nao3nQ3VUYBWI=;
-        b=S0DTIdr9XVf9WrHjnEjTm7zhhlHlJi2WEK84tISz+GeQHbFc3mbmw8MM/IbRHxcyqd
-         cj4HgNqzi/jBqjexNtMoWxqnsKDtZkEtT7dsMHkV0re3gHdK/x6d+mec/0UZ1ItDmmiv
-         DQ6nUQq2dktkh1JSInZk3PhKhnWS8aSV9S6zO3PmTcGX00VSC02Vhi/ejKz7tGSReARl
-         EKLQKwtQazNenP9vb15dHuTyD64NZh1TyibjXB1QGbyXuG5DeiHemxBN3y1EgitiXC9E
-         MBMQvxy6VFEtBRCoHDi0Z4g0ueE1UsZ5OggzQD2Hdjq4n3iESnESczq0zWyh0Kp2/yqf
-         bAKg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XBiRF73IUsvkOtw576gI5xJbi8qjyM/cAJKBDvD1+aY=;
+        b=I30mQGxdRqUKGxz+NwA92sSByyI+jbkc3a7rE7bJDMvXvIQOUxad9YKMmUCuxs0cfl
+         y4diAv4qvibYC/31sz6K9BLVyYSWTxVsLw376y+Cb1htEAbtvz0R4l3nQpMJn1yhIulO
+         0isffaUmS1KF8dD6s3S5iwegL7DiEUMN+P6cfg++4dPFAK7mSzWbFJB6iuNLdeP16EzF
+         Wh15wgDbJrl44yrR5jyFPf6+P6WCDsSeglghjSUV5MlnwyINhbhObaLeSKdOPWHCX9vX
+         YKbWewrnJN7WOAD97vLQbsuQP1QCsQRk2XMJJX1je870AoL+RIGHBVPBclb8eix5aOWe
+         riaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4vXoNlfOg9utFABowyChlHAzm6DTD/Nao3nQ3VUYBWI=;
-        b=Rn49kt0Y/CGLRvzfu6ZjK1/eSabFkiQaQLSf4HAoulqd55bxSJVM6CJODts8zFMGOw
-         bOEZUsfeMa66vxmy7WmG2Yt+llkXakkljO/ZZ8xaYK+4LVpB4Le4Di0DLl+uCiomZk1i
-         ii0z3DqgIlfRzD5d6zoum5O+muNS4CYa37mXRNdsKNU459YzEV6XNAeaxXT/4WQV9LRq
-         +SD0IXRkrM1Hi02SzYzP73un7wZ4+eW39Y8kOPAUtnxQR+PdSrbrdFsEx1gBuflz+S+T
-         N1FyLDje+tpC+Ul0okRs08dbOHcbxEOfZgH0B/0HtaWXdkelEH2/a0OyPDF18Zx2Zjci
-         bFEg==
-X-Gm-Message-State: AOAM531wqsLH+i+SLG2C4YqNKLqDvHNrFXlmDADkY5RHL6nwscLAjTqa
-        kuukusydBBhCNz5FQC8YrQA/oUI8DhlGOQ==
-X-Google-Smtp-Source: ABdhPJzZqJ4zhNfocxIfPbXitsuQE1gzjplqZ3Bx7Gll0WtWtkIeq7Y2xp9q/cfAgz8DsfMSkcdVug==
-X-Received: by 2002:a05:6402:4246:: with SMTP id g6mr10936000edb.112.1636643291634;
-        Thu, 11 Nov 2021 07:08:11 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XBiRF73IUsvkOtw576gI5xJbi8qjyM/cAJKBDvD1+aY=;
+        b=jX6vLe81tfX8OrEQW9gBs3+DVyMtwOKFCWtUOKD2EnvQ0wQ2L40Pv1Y7wHtw1kt9Xa
+         j58fHr2KCg0yVEt6+ezby+ZUqgca0OesuoAFbyY6qELbfUB6aSzHBddczRUPy470s36n
+         EYUlRbk0t2E7ZxkuQwnlzxHpslLVRuh7meQF9YpLi6ry3yTIAqRplYFdPFTzvBrFAD4E
+         4km9kLTqXYTWMtEUlMJs0WrU87mVrOlyd3VWU/nKl+EkbdV7DMxipaJJSW0IbRoi/rRe
+         9qwHYWpxuf90Q722KHZXSgwVBCM7WWZLV+tBkTHj40gO7z56pTlRYtXl2Ec9C4EFjfFA
+         oFNQ==
+X-Gm-Message-State: AOAM533Eg4hEL5vfbF3hC0y/ZEa+V6zdU1EKffBtdhajQD9NLyPXu4+p
+        npd4W/X1mWQyJbfdWBcGswvtDs7wAKmenw==
+X-Google-Smtp-Source: ABdhPJxtF8V/G+SiwvTQRVJyuYejbRXrg4PckjXwh73oEi26A50PPOJs+N3LdGiRf8sBY3172uD0KQ==
+X-Received: by 2002:a17:907:6e26:: with SMTP id sd38mr10410060ejc.90.1636643302871;
+        Thu, 11 Nov 2021 07:08:22 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id y15sm1869027eda.35.2021.11.11.07.08.10
+        by smtp.gmail.com with ESMTPSA id he14sm1477686ejc.55.2021.11.11.07.08.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 07:08:11 -0800 (PST)
+        Thu, 11 Nov 2021 07:08:22 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 4/4] trace-cmd library: Refactor the logic for writing trace data in the file
-Date:   Thu, 11 Nov 2021 17:08:05 +0200
-Message-Id: <20211111150805.86419-5-tz.stoyanov@gmail.com>
+Subject: [PATCH v5 00/25] Trace file version 7 - sections
+Date:   Thu, 11 Nov 2021 17:07:56 +0200
+Message-Id: <20211111150821.86508-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211111150805.86419-1-tz.stoyanov@gmail.com>
-References: <20211111150805.86419-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Refactored the internal logic of tracecmd_write_cpu_data() API to be
-suitable for upcoming trace file format changes and data compression.
-The size and the offset of the trace data is saved in the file right
-after the data is written. The old logic calculates the size and offset
-in advance, but when the trace data is compressed it is hard to use
-that approach.
+Introduce the next version of the trace-cmd trace file - 7. Major changes
+since version 6 is more flexible extendable structure of the file, based on
+independent sections.
+Known issues:
+ - Only trace-cmd record and report subcommands work with trace file v7.
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- .../include/private/trace-cmd-private.h       |   6 +-
- lib/trace-cmd/include/trace-cmd-local.h       |  19 ++
- lib/trace-cmd/trace-output.c                  | 210 ++++++++++--------
- tracecmd/trace-listen.c                       |   2 +-
- tracecmd/trace-record.c                       |   4 +-
- 5 files changed, 140 insertions(+), 101 deletions(-)
+This patch-set depends on:
+ "trace-cmd fixes and clean-ups" patch set.
+ "Refactor APIs for creating output handler" patch set.
+ "Refactor the logic for writing trace data in the file" patch set.
 
-diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 47358c4b..767a63ab 100644
---- a/lib/trace-cmd/include/private/trace-cmd-private.h
-+++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -303,13 +303,11 @@ struct tracecmd_output *tracecmd_copy(struct tracecmd_input *ihandle,
- 				      const char *file);
- 
- int tracecmd_write_cpu_data(struct tracecmd_output *handle,
--			    int cpus, char * const *cpu_data_files);
-+			    int cpus, char * const *cpu_data_files, const char *buff_name);
- int tracecmd_append_cpu_data(struct tracecmd_output *handle,
- 			     int cpus, char * const *cpu_data_files);
- int tracecmd_append_buffer_cpu_data(struct tracecmd_output *handle,
--				    struct tracecmd_option *option,
--				    int cpus, char * const *cpu_data_files);
--
-+				    const char *name, int cpus, char * const *cpu_data_files);
- struct tracecmd_output *tracecmd_get_output_handle_fd(int fd);
- 
- /* --- Reading the Fly Recorder Trace --- */
-diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
-index 7f3b45a8..a0d6f0a6 100644
---- a/lib/trace-cmd/include/trace-cmd-local.h
-+++ b/lib/trace-cmd/include/trace-cmd-local.h
-@@ -31,7 +31,26 @@ void tracecmd_info(const char *fmt, ...);
- #endif
- #endif
- 
-+struct data_file_write {
-+	unsigned long long	file_size;
-+	unsigned long long	write_size;
-+	/* offset in the trace file, where write_size is stored */
-+	unsigned long long	file_write_size;
-+	unsigned long long	data_offset;
-+	/* offset in the trace file, where data_offset is stored */
-+	unsigned long long	file_data_offset;
-+};
-+
- bool check_file_state(unsigned long file_version, int current_state, int new_state);
- bool check_out_state(struct tracecmd_output *handle, int new_state);
- 
-+struct cpu_data_source {
-+	int fd;
-+	int size;
-+	off64_t offset;
-+};
-+
-+int out_write_cpu_data(struct tracecmd_output *handle, int cpus,
-+		       struct cpu_data_source *data, const char *buff_name);
-+
- #endif /* _TRACE_CMD_LOCAL_H */
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index 17607b93..6272c0f8 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -1555,17 +1555,14 @@ static char *get_clock(struct tracecmd_output *handle)
- 	return handle->trace_clock;
- }
- 
--int tracecmd_write_cpu_data(struct tracecmd_output *handle,
--			    int cpus, char * const *cpu_data_files)
-+__hidden int out_write_cpu_data(struct tracecmd_output *handle,
-+				int cpus, struct cpu_data_source *data, const char *buff_name)
- {
--	off64_t *offsets = NULL;
--	unsigned long long *sizes = NULL;
--	off64_t offset;
-+	struct data_file_write *data_files = NULL;
-+	tsize_t data_offs, offset;
- 	unsigned long long endian8;
--	char *clock = NULL;
--	off64_t check_size;
--	char *file;
--	struct stat st;
-+	unsigned long long read_size;
-+	char *clock;
- 	int ret;
- 	int i;
- 
-@@ -1580,97 +1577,145 @@ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
- 		goto out_free;
- 	}
- 
-+	data_offs = lseek64(handle->fd, 0, SEEK_CUR);
- 	if (do_write_check(handle, "flyrecord", 10))
- 		goto out_free;
- 
--	offsets = malloc(sizeof(*offsets) * cpus);
--	if (!offsets)
--		goto out_free;
--	sizes = malloc(sizeof(*sizes) * cpus);
--	if (!sizes)
-+	data_files = calloc(cpus, sizeof(*data_files));
-+	if (!data_files)
- 		goto out_free;
- 
--	offset = lseek64(handle->fd, 0, SEEK_CUR);
--
--	/* hold any extra data for data */
--	offset += cpus * (16);
--
--	/*
--	 * Unfortunately, the trace_clock data was placed after the
--	 * cpu data, and wasn't accounted for with the offsets.
--	 * We need to save room for the trace_clock file. This means
--	 * we need to find the size of it before we define the final
--	 * offsets.
--	 */
--	clock = get_clock(handle);
--	if (!clock)
--		goto out_free;
--	/* Save room for storing the size */
--	offset += 8;
--	offset += strlen(clock);
--	/* 2 bytes for [] around the clock */
--	offset += 2;
--
--	/* Page align offset */
--	offset = (offset + (handle->page_size - 1)) & ~(handle->page_size - 1);
--
- 	for (i = 0; i < cpus; i++) {
--		file = cpu_data_files[i];
--		ret = stat(file, &st);
--		if (ret < 0) {
--			tracecmd_warning("can not stat '%s'", file);
--			goto out_free;
--		}
--		offsets[i] = offset;
--		sizes[i] = st.st_size;
--		offset += st.st_size;
--		offset = (offset + (handle->page_size - 1)) & ~(handle->page_size - 1);
--
--		endian8 = convert_endian_8(handle, offsets[i]);
-+		data_files[i].file_size = data[i].size;
-+		/*
-+		 * Place 0 for the data offset and size, and save the offsets to
-+		 * updated them with the correct data later.
-+		 */
-+		endian8 = 0;
-+		data_files[i].file_data_offset = lseek64(handle->fd, 0, SEEK_CUR);
- 		if (do_write_check(handle, &endian8, 8))
- 			goto out_free;
--		endian8 = convert_endian_8(handle, sizes[i]);
-+		data_files[i].file_write_size = lseek64(handle->fd, 0, SEEK_CUR);
- 		if (do_write_check(handle, &endian8, 8))
- 			goto out_free;
- 	}
- 
--	if (save_clock(handle, clock))
-+	update_buffer_cpu_offset(handle, buff_name, data_offs);
-+	clock = get_clock(handle);
-+	if (clock && save_clock(handle, clock))
- 		goto out_free;
- 
- 	for (i = 0; i < cpus; i++) {
-+		data_files[i].data_offset = lseek64(handle->fd, 0, SEEK_CUR);
-+		/* Page align offset */
-+		data_files[i].data_offset += handle->page_size - 1;
-+		data_files[i].data_offset &= ~(handle->page_size - 1);
-+
-+		ret = lseek64(handle->fd, data_files[i].data_offset, SEEK_SET);
-+		if (ret == (off64_t)-1)
-+			goto out_free;
-+
- 		if (!tracecmd_get_quiet(handle))
- 			fprintf(stderr, "CPU%d data recorded at offset=0x%llx\n",
--				i, (unsigned long long) offsets[i]);
--		offset = lseek64(handle->fd, offsets[i], SEEK_SET);
--		if (offset == (off64_t)-1) {
--			tracecmd_warning("could not seek to %lld\n", offsets[i]);
--			goto out_free;
-+				i, (unsigned long long)data_files[i].data_offset);
-+
-+		if (data[i].size) {
-+			if (lseek64(data[i].fd, data[i].offset, SEEK_SET) == (off64_t)-1)
-+				goto out_free;
-+			read_size = copy_file_fd(handle, data[i].fd);
-+			if (read_size != data_files[i].file_size) {
-+				errno = EINVAL;
-+				tracecmd_warning("did not match size of %lld to %lld",
-+						 read_size, data_files[i].file_size);
-+				goto out_free;
-+			}
-+			data_files[i].write_size = read_size;
-+		} else {
-+			data_files[i].write_size = 0;
- 		}
--		check_size = copy_file(handle, cpu_data_files[i]);
--		if (check_size != sizes[i]) {
--			errno = EINVAL;
--			tracecmd_warning("did not match size of %lld to %lld",
--					 check_size, sizes[i]);
-+
-+		/* Write the real CPU data offset in the file */
-+		if (lseek64(handle->fd, data_files[i].file_data_offset, SEEK_SET) == (off64_t)-1)
- 			goto out_free;
--		}
-+		endian8 = convert_endian_8(handle, data_files[i].data_offset);
-+		if (do_write_check(handle, &endian8, 8))
-+			goto out_free;
-+
-+		/* Write the real CPU data size in the file */
-+		if (lseek64(handle->fd, data_files[i].file_write_size, SEEK_SET) == (off64_t)-1)
-+			goto out_free;
-+		endian8 = convert_endian_8(handle, data_files[i].write_size);
-+		if (do_write_check(handle, &endian8, 8))
-+			goto out_free;
-+
-+		offset = data_files[i].data_offset + data_files[i].write_size;
-+		if (lseek64(handle->fd, offset, SEEK_SET) == (off64_t)-1)
-+			goto out_free;
-+
- 		if (!tracecmd_get_quiet(handle))
- 			fprintf(stderr, "    %llu bytes in size\n",
--				(unsigned long long)check_size);
-+				(unsigned long long)data_files[i].write_size);
- 	}
- 
--	free(offsets);
--	free(sizes);
-+	free(data_files);
-+	if (lseek64(handle->fd, 0, SEEK_END) == (off64_t)-1)
-+		return -1;
- 
- 	handle->file_state = TRACECMD_FILE_CPU_FLYRECORD;
- 
- 	return 0;
- 
-  out_free:
--	free(offsets);
--	free(sizes);
-+	lseek64(handle->fd, 0, SEEK_END);
-+	free(data_files);
- 	return -1;
- }
- 
-+int tracecmd_write_cpu_data(struct tracecmd_output *handle,
-+			    int cpus, char * const *cpu_data_files, const char *buff_name)
-+{
-+	struct cpu_data_source *data;
-+	struct stat st;
-+	int size = 0;
-+	int ret;
-+	int i;
-+
-+	if (!buff_name)
-+		buff_name = "";
-+
-+	data = calloc(cpus, sizeof(struct cpu_data_source));
-+	if (!data)
-+		return -1;
-+
-+	for (i = 0; i < cpus; i++) {
-+		ret = stat(cpu_data_files[i], &st);
-+		if (ret < 0) {
-+			tracecmd_warning("can not stat '%s'", cpu_data_files[i]);
-+			break;
-+		}
-+		data[i].fd = open(cpu_data_files[i], O_RDONLY);
-+		if (data[i].fd < 0) {
-+			tracecmd_warning("Can't read '%s'", data[i].fd);
-+			break;
-+		}
-+
-+		data[i].size = st.st_size;
-+		data[i].offset = 0;
-+		size += st.st_size;
-+	}
-+
-+	if (i < cpus)
-+		ret = -1;
-+	else
-+		ret = out_write_cpu_data(handle, cpus, data, buff_name);
-+
-+	for (i--; i >= 0; i--)
-+		close(data[i].fd);
-+
-+	free(data);
-+	return ret;
-+}
-+
- int tracecmd_append_cpu_data(struct tracecmd_output *handle,
- 			     int cpus, char * const *cpu_data_files)
- {
-@@ -1686,36 +1731,13 @@ int tracecmd_append_cpu_data(struct tracecmd_output *handle,
- 	if (ret)
- 		return ret;
- 
--	return tracecmd_write_cpu_data(handle, cpus, cpu_data_files);
-+	return tracecmd_write_cpu_data(handle, cpus, cpu_data_files, NULL);
- }
- 
- int tracecmd_append_buffer_cpu_data(struct tracecmd_output *handle,
--				    struct tracecmd_option *option,
--				    int cpus, char * const *cpu_data_files)
-+				    const char *name, int cpus, char * const *cpu_data_files)
- {
--	tsize_t offset;
--	stsize_t ret;
--
--	offset = lseek64(handle->fd, 0, SEEK_CUR);
--
--	/* Go to the option data, where will write the offest */
--	ret = lseek64(handle->fd, option->offset, SEEK_SET);
--	if (ret == (off64_t)-1) {
--		tracecmd_warning("could not seek to %lld\n", option->offset);
--		return -1;
--	}
--
--	if (do_write_check(handle, &offset, 8))
--		return -1;
--
--	/* Go back to end of file */
--	ret = lseek64(handle->fd, offset, SEEK_SET);
--	if (ret == (off64_t)-1) {
--		tracecmd_warning("could not seek to %lld\n", offset);
--		return -1;
--	}
--
--	return tracecmd_write_cpu_data(handle, cpus, cpu_data_files);
-+	return tracecmd_write_cpu_data(handle, cpus, cpu_data_files, name);
- }
- 
- struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
-diff --git a/tracecmd/trace-listen.c b/tracecmd/trace-listen.c
-index 0cb70b7d..45ba1211 100644
---- a/tracecmd/trace-listen.c
-+++ b/tracecmd/trace-listen.c
-@@ -610,7 +610,7 @@ static int put_together_file(int cpus, int ofd, const char *node,
- 		if (ret)
- 			goto out;
- 	}
--	ret = tracecmd_write_cpu_data(handle, cpus, temp_files);
-+	ret = tracecmd_write_cpu_data(handle, cpus, temp_files, NULL);
- 
- out:
- 	tracecmd_output_close(handle);
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index c96dcda0..3a84e116 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -4196,7 +4196,7 @@ static void append_buffer(struct tracecmd_output *handle,
- 			touch_file(temp_files[i]);
- 	}
- 
--	tracecmd_append_buffer_cpu_data(handle, NULL,
-+	tracecmd_append_buffer_cpu_data(handle, tracefs_instance_get_name(instance->tracefs),
- 					cpu_count, temp_files);
- 
- 	for (i = 0; i < instance->cpu_count; i++) {
-@@ -4446,7 +4446,7 @@ static void write_guest_file(struct buffer_instance *instance)
- 			die("failed to allocate memory");
- 	}
- 
--	if (tracecmd_write_cpu_data(handle, cpu_count, temp_files) < 0)
-+	if (tracecmd_write_cpu_data(handle, cpu_count, temp_files, NULL) < 0)
- 		die("failed to write CPU data");
- 	tracecmd_output_close(handle);
- 
+v5 changes:
+ - Rebased on top of the latest master.
+v4 changes:
+ - Rebased on top of the latest master.
+v3 changes:
+ - Fixed issues of split and convert commands with some corner cases.
+v2 changes:
+ - Code cleanups.
+
+Tzvetomir Stoyanov (VMware) (25):
+  trace-cmd library: Define trace file version 7
+  trace-cmd library: Add cache functionality to network message handler
+  trace-cmd library: New APIs to get and set version of output handler
+  trace-cmd library: Add internal helper function for writing headers
+    before file sections
+  trace-cmd library: Write header before file sections
+  trace-cmd library: Add multiple options sections in trace file version
+    7
+  trace-cmd library: Do not write CPU count section in trace files
+    version 7
+  trace-cmd library: Move CPU flyrecord trace metadata into the buffer
+    option, for trace file version 7
+  trace-cmd record: Append trace options after the trace data are
+    written
+  trace-cmd library: Add section header before flyrecord trace data
+  trace-cmd library: Fit CPU latency trace data in the new trace file
+    version 7 format
+  trace-cmd library: Do not write CPUs with empty trace data
+  trace-cmd library: Add macro to check file state on reading
+  trace-cmd library: Introduce sections in trace file reading logic
+  trace-cmd library: Initialize internal sections database on file read
+  trace-cmd library: Use sections database when reading parts of the
+    trace file
+  trace-cmd library: Read headers from trace file version 7
+  trace-cmd library: Read extended BUFFER option
+  trace-cmd library: Handle the extended DONE option
+  trace-cmd library: Initialize CPU data for reading from version 7
+    trace files
+  trace-cmd library: Handle latency trace in version 7 files
+  trace-cmd library: Handle buffer trace data init for version 7 files
+  trace-cmd report: Use the new latency API to read data
+  trace-cmd: Call additional APIs when creating trace file
+  trace-cmd report: Add new parameter for trace file version
+
+ include/trace-cmd/trace-cmd.h                 |   5 +
+ .../include/private/trace-cmd-private.h       |  27 +-
+ lib/trace-cmd/include/trace-cmd-local.h       |  14 +-
+ lib/trace-cmd/trace-input.c                   | 768 ++++++++++++++----
+ lib/trace-cmd/trace-msg.c                     | 127 ++-
+ lib/trace-cmd/trace-output.c                  | 601 +++++++++++---
+ lib/trace-cmd/trace-util.c                    |   2 +-
+ tracecmd/trace-listen.c                       |   6 +
+ tracecmd/trace-read.c                         |  18 +-
+ tracecmd/trace-record.c                       |  36 +-
+ tracecmd/trace-restore.c                      |   3 +-
+ tracecmd/trace-split.c                        |   3 +
+ tracecmd/trace-usage.c                        |   2 +-
+ 13 files changed, 1302 insertions(+), 310 deletions(-)
+
 -- 
 2.33.1
 
