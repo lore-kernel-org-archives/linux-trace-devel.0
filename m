@@ -2,62 +2,62 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ACAAC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:06:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC6BCC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:07:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2CCE861284
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:06:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9652A61284
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 15:07:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233075AbhKKPJL (ORCPT
+        id S233798AbhKKPJv (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 11 Nov 2021 10:09:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36630 "EHLO
+        Thu, 11 Nov 2021 10:09:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231614AbhKKPJG (ORCPT
+        with ESMTP id S233817AbhKKPJu (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:09:06 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A09EC061766
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:06:17 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id r12so25358567edt.6
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:06:17 -0800 (PST)
+        Thu, 11 Nov 2021 10:09:50 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60D6C061766
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:07:00 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id f8so25584951edy.4
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 07:07:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=E9MjIrTo6m2QewfstLR4i2s1tGW2exN3IoUKp+UkBP8=;
-        b=YjALq6BbMyVgQzs1OS2gULyPjXIlm25+nR4x8Q+HZ8I/ffpCzCmpGC/GReh0EFxipt
-         kR9E94FWSDxmA+l+/mOe/iSoagHoJlNWvwJGjSqO/7GGCUr40pR/v9kkHmjhIwRlK3Fc
-         /rtMuD1B0ZGITU2jQbXEWf1bg/DXkmt9h08NkxJrIpfVIrt4TRgO7BiCxVOoFWDs1yTp
-         UJvOrXYAXfV+wbwQKo4bCLl0NPdgn13l6UDAcfEr6JM23sNQs8E4wfS+h8aRa/RtgF6K
-         5tfttUyJZLHumoscGlKjsGaUeZDhjzmJ8XfwbWzjby//vIsM2QBKyFPWBlNGHw7NVM8Z
-         rp9Q==
+        bh=t2RTbigUu8hgnrUlUjYIspTrn/p5f4JzJAqGjWL0i9M=;
+        b=atTBCozxyaHN6zaF0vaPI5WIewjaCBWyOAL9yp/YVbh4hGcn+bneWCIHlmisTgDoI/
+         8GRFqJxfqL2iVdrEF0zU+hIYheyzn/Wmr1OSKU+BMWtM5sXqh5C+c7P2bPo0RoApGj54
+         F3Txc45EmpmA99qN7DlDP0MY/UboOKtxOwfBW/UUUTpRV0leXfmpTZGQXjPkQkBGOyGo
+         ZpwlKth4EWg9MpcSMfDqgYPrHUOmUJK4yKTd51SFI1nsSTAhIZtiQ3JlxgiDJHcN8dpz
+         spkurYHnnQ9mAxMpWN51K+R4wPRtSkyimAMDcPk8M5AYj4ipM2MMEygyhWNaA+DdulAw
+         0aRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=E9MjIrTo6m2QewfstLR4i2s1tGW2exN3IoUKp+UkBP8=;
-        b=6QNU+dc13vu+zb+ocpLjWnDyJLrYBFJRqEZRllUI2beUj5meORgfJ703EKH6raklFR
-         +TlwE8Pg/GEA5WFF7QWTIGsLad35bvRRoZTKSUYR8e7Sc3YxVkAP14Ue/DTxu/y7+6eS
-         oq8XfS1BS+plGw6EBe8s5jRQT9220+StBqBLXpJEFj1hkfj/ntzIp3r+BGg1gQOLbNwh
-         T6f8Ya0OA6fdu3aOzaQl8i7PNz4Q/c2d6D0BfFpviTmGmJgdoxuTAD0E6v1R92Ew7D5o
-         qfsh17ptg/wgXrSj1LXlcwNZOQbeDTDFl8GC5DV4fY0J9EvRztVKVXW1uSzmJpZp+VxB
-         Lakw==
-X-Gm-Message-State: AOAM533LdUJdDa0WxQOHvWPrUN3CLLhEI41XqGqhfgc6Y3wXYbs5YPlb
-        DBdCsTUbMvWpWzLQQV6qg0lbPYNxgm7ZTQ==
-X-Google-Smtp-Source: ABdhPJz7a+dAPtqnO5RQVO5WPsc+lqeYUoQ87dwVcI4vbcnhZYwqsHTvvO9ueLxXwuP54q4ZN5kVUQ==
-X-Received: by 2002:a17:906:6547:: with SMTP id u7mr10211825ejn.544.1636643175674;
-        Thu, 11 Nov 2021 07:06:15 -0800 (PST)
+        bh=t2RTbigUu8hgnrUlUjYIspTrn/p5f4JzJAqGjWL0i9M=;
+        b=mQsH4LoWJuxSJVzAukU0ttBMNLKIpNU60ThVfiGDEpb3nphb92ido3nNq2mfXD9aBD
+         JXGS5nt/C/EdJB3Jct/w1kKkSS9ld52zPWT14JDrHLHFjwKLGB1RSYtOEh83nv1VftxV
+         Eogfr9I+/8KlNBeZUCmM9SGVukCSfGLWbwlI7CwV3+yN7VUNRyOfkOUyZ3vpExr4Qn4v
+         ed+Pk5Ij+grM+t9nDmTuEWpwkQhKB73hOpI2Wmaabq1ZjXik18nL5vukvV1jnXer1Lll
+         Be9nCJcNUuonQy5Mux0JmlMyfBfRwkVGpz3G9aTTE4fZtj70L6d4Vn9LIdm22rErV5Ve
+         b0vg==
+X-Gm-Message-State: AOAM532TC0tisxxxKyAJA4ScpTkY1x5rgTxrkzbEyEWPVXHq9a6FWy8i
+        OaexVjZCdEkBunZbpJGG1lTzg4aURE/5wA==
+X-Google-Smtp-Source: ABdhPJzIfXsPrt7UtoajnICxRZHCDjPFD3l4pxN0pyu2xnZcqn7/MrccT3iwAT44naUyAyn31pv8Sw==
+X-Received: by 2002:a05:6402:26ce:: with SMTP id x14mr10726091edd.326.1636643219498;
+        Thu, 11 Nov 2021 07:06:59 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id i10sm1595339ejw.48.2021.11.11.07.06.14
+        by smtp.gmail.com with ESMTPSA id h7sm1665678edt.37.2021.11.11.07.06.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 07:06:15 -0800 (PST)
+        Thu, 11 Nov 2021 07:06:59 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v5 5/6] trace-cmd library: Set the correct file state when reading file with no kallsyms
-Date:   Thu, 11 Nov 2021 17:06:14 +0200
-Message-Id: <20211111150614.86172-1-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 04/10] trace-cmd library: New API for setting a custom kallsyms to an output handler
+Date:   Thu, 11 Nov 2021 17:06:58 +0200
+Message-Id: <20211111150658.86228-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -65,52 +65,86 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The kallsyms section of the trace file can contain no data, this is
-valid use case. When such file is read and parsed by read_proc_kallsyms(),
-the file state should be set to TRACECMD_FILE_KALLSYMS in that case.
-
-Renamed a local variable from pevent to tep, to be consistent with the
-libtraceevent prefix.
+The new API associates an output file handler with a custom kernel symbols
+file. It is used when creating the trace file instead of the system default
+kernel symbols file.
+ tracecmd_output_set_kallsyms()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ .../include/private/trace-cmd-private.h       |  1 +
+ lib/trace-cmd/trace-output.c                  | 32 +++++++++++++++++--
+ 2 files changed, 31 insertions(+), 2 deletions(-)
 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index edf84993..f02d7e31 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -741,7 +741,7 @@ static int read_event_files(struct tracecmd_input *handle, const char *regex)
- 
- static int read_proc_kallsyms(struct tracecmd_input *handle)
- {
--	struct tep_handle *pevent = handle->pevent;
-+	struct tep_handle *tep = handle->pevent;
- 	unsigned int size;
- 	char *buf;
- 
-@@ -750,8 +750,10 @@ static int read_proc_kallsyms(struct tracecmd_input *handle)
- 
- 	if (read4(handle, &size) < 0)
+diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
+index eb173a39..23e86107 100644
+--- a/lib/trace-cmd/include/private/trace-cmd-private.h
++++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+@@ -273,6 +273,7 @@ struct tracecmd_output *tracecmd_output_allocate(int fd);
+ int tracecmd_output_set_msg(struct tracecmd_output *handler,
+ 			    struct tracecmd_msg_handle *msg_handle);
+ int tracecmd_output_set_trace_dir(struct tracecmd_output *handler, const char *tracing_dir);
++int tracecmd_output_set_kallsyms(struct tracecmd_output *handler, const char *kallsyms);
+ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, int cpus);
+ struct tracecmd_output *
+ tracecmd_create_init_file_glob(const char *output_file,
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index a5d7ed5f..c654561a 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -54,6 +54,7 @@ struct tracecmd_output {
+ 	int			cpus;
+ 	struct tep_handle	*pevent;
+ 	char			*tracing_dir;
++	char			*kallsyms;
+ 	int			nr_options;
+ 	bool			quiet;
+ 	unsigned long		file_state;
+@@ -767,8 +768,8 @@ static int read_proc_kallsyms(struct tracecmd_output *handle,
  		return -1;
--	if (!size)
-+	if (!size) {
-+		handle->file_state = TRACECMD_FILE_KALLSYMS;
- 		return 0; /* OK? */
-+	}
- 
- 	buf = malloc(size+1);
- 	if (!buf)
-@@ -762,7 +764,7 @@ static int read_proc_kallsyms(struct tracecmd_input *handle)
  	}
- 	buf[size] = 0;
  
--	tep_parse_kallsyms(pevent, buf);
-+	tep_parse_kallsyms(tep, buf);
+-	if (kallsyms)
+-		path = kallsyms;
++	if (handle->kallsyms)
++		path = handle->kallsyms;
  
- 	free(buf);
+ 	ret = stat(path, &st);
+ 	if (ret < 0) {
+@@ -968,6 +969,33 @@ int tracecmd_output_set_trace_dir(struct tracecmd_output *handler, const char *t
+ 	return 0;
+ }
  
++/**
++ * tracecmd_output_set_kallsyms - Set a custom kernel symbols file, instead of system default
++ * @handle: output handler to a trace file.
++ * @tracing_dir: full path to a file with kernel symbols
++ *
++ * This API associates an output file handler with a custom kernel symbols file, to be used when
++ * creating the trace file instead of the system default kernel symbols file.
++ * This API must be called before tracecmd_output_write_init().
++ *
++ * Returns 0 on success, or -1 if the output file handler is not allocated or not in expected state.
++ */
++int tracecmd_output_set_kallsyms(struct tracecmd_output *handler, const char *kallsyms)
++{
++	if (!handler || handler->file_state != TRACECMD_FILE_ALLOCATED)
++		return -1;
++
++	free(handler->kallsyms);
++	if (kallsyms) {
++		handler->kallsyms = strdup(kallsyms);
++		if (!handler->kallsyms)
++			return -1;
++	} else
++		handler->kallsyms = NULL;
++
++	return 0;
++}
++
+ static int select_file_version(struct tracecmd_output *handle,
+ 				struct tracecmd_input *ihandle)
+ {
 -- 
 2.33.1
 
