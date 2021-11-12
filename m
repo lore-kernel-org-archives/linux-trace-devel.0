@@ -2,163 +2,164 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 507D9C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 22:33:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15EA6C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Nov 2021 04:12:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2A5496124C
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Nov 2021 22:33:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EA8CA60F45
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Nov 2021 04:12:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbhKKWgZ (ORCPT
+        id S229770AbhKLEPG (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 11 Nov 2021 17:36:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32892 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229652AbhKKWgY (ORCPT
+        Thu, 11 Nov 2021 23:15:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229698AbhKLEPF (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 11 Nov 2021 17:36:24 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 994A5610F8;
-        Thu, 11 Nov 2021 22:33:34 +0000 (UTC)
-Date:   Thu, 11 Nov 2021 17:33:32 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc:     y.karadz@gmail.com, linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v6 01/12] libtracefs: New APIs for dynamic events
-Message-ID: <20211111173332.1aab03c5@gandalf.local.home>
-In-Reply-To: <20211108080404.55814-2-tz.stoyanov@gmail.com>
-References: <20211108080404.55814-1-tz.stoyanov@gmail.com>
-        <20211108080404.55814-2-tz.stoyanov@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 11 Nov 2021 23:15:05 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82579C061766
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 20:12:15 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id w1so32541003edd.10
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Nov 2021 20:12:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=b89qfSwccVgQjEv7H9BT2Aesr+JLh5G6is6aiD7EER0=;
+        b=UTSrFr46tNv73MmIXvUyRKnS3JnToakvXTCIKpeeIW1ytn4HCaleZumVjIGP/QenXo
+         jXvRrZXYSRUtvggKdGmeXqhNQtHLCsF4NXU7+rGrlwDeqtw3BhU/utUROiUY5Z1BGVuc
+         gdh6IJVSqCdKvtC3mPRY5v0QVQK2wseMzmAexOOdcbxb9hAD8vBNivi3IpXV2sC4tRTO
+         rpL2Tz+AD1LAGsVUVxxC71v6+kvq9uXMI/PKIHBKViiBRX7fLF+I7t+qR0XQaPLGKXzm
+         VykNfuDj9V8za1k+ID3EKA917r7/pvgEuiJbVQwTzrcYAgZHJVZkDvTglInceg/zlS1b
+         PPcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=b89qfSwccVgQjEv7H9BT2Aesr+JLh5G6is6aiD7EER0=;
+        b=lkkKlPV20h1WMODqqbeMhgh89PFiipdWVkbaUKImnISHLMNDeR6iENcRwrZV1LFmlq
+         jVyq+mabIsckCAZ35Q2IOiB1/PVP4EykuceZi45Rd3gduotfBxSQ6IgcMe95LaziU3KV
+         pdzxjsi6HSxbD0Xfp03ZRT/oJRUw62564UL78WATQawaDqx8SApYmws/G1Q/0eCvf6zq
+         Ma6Bi1w1nQtinjsQZUeqNN/Z+d7fSaLVVII+WT5S6OOEduijIeXAI2/YzhjlLC/+CFvH
+         AfB1wYoDForcFZTitfZLbU5JKagWDUpArJ5tPPGTsr40riyjR7yXhrzfJaXw2s2KlWF0
+         BkEg==
+X-Gm-Message-State: AOAM531FvSVB2Hg/DK5119vznZcAryav5M6AHu2mlRMBYb8OxuG5FLdD
+        fdGs5YwQEGtFp+lUkh8kuClrqwvaCYnAMg==
+X-Google-Smtp-Source: ABdhPJwRsnv72Oml1CpYplGzZDGQuHXVA/rwSsNHT/zX9B3hE2N69qAr+1se5Zms807JZHYqVaNPdg==
+X-Received: by 2002:a17:906:2a06:: with SMTP id j6mr15842753eje.401.1636690333983;
+        Thu, 11 Nov 2021 20:12:13 -0800 (PST)
+Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id nd22sm2193903ejc.98.2021.11.11.20.12.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Nov 2021 20:12:13 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v2] libtraceevent: A new API for trace page size
+Date:   Fri, 12 Nov 2021 06:12:11 +0200
+Message-Id: <20211112041211.23458-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-After applying these patches, I tested sqlhist and it's broken.
+Currently, the size of a trace buffer page is equal to the size of the
+system memory page. This may change in the future, so this assumption
+may not be valid. The proper way to determine the trace buffer page size
+is by using the information from "events/header_page" ftrace file:
+ ...
+ field: char data;	offset:16;	size:4080;	signed:1;
+ ...
+The trace buffer page size is the size of the "data" filed + its offset.
 
-What I do is:
+A new libtraceevent API is introduced, for getting the trace buffer page
+size using that formula:
+ tep_get_sub_buffer_size()
 
-(as root)
- # mkdir /tmp/tracing
- # cp -a /sys/kernel/tracing/events /tmp/tracing
+Note, that some old kernels may not have "events/header_page" file. For
+those, the system memory page size is returned.
 
-(as my user)
- $ ./sqlhist -t /tmp/tracing/ -n waking 'select start.pid,
-    (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as delta from sched_waking as start join sched_switch as end on start.pid = end.next_pid'
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
 
-Which prints nothing, but before applying the patches, I would have this:
+v2 changes:
+ - Renamed tep_get_trace_page_size() to tep_get_sub_buffer_size().
+ - Handle the old kernels in tep_parse_header_page() instead of in
+   tep_get_sub_buffer_size().
 
-echo 'waking s32 pid; u64 delta;' > /sys/kernel/tracing/synthetic_events
-echo 'hist:keys=pid:__arg_15772_1=pid,__arg_15772_2=common_timestamp.usecs' > /sys/kernel/tracing/events/sched/sched_waking/trigger
-echo 'hist:keys=next_pid:pid=$__arg_15772_1,delta=common_timestamp.usecs-$__arg_15772_2:onmatch(sched.sched_waking).trace(waking,$pid,$delta)' > /sys/kernel/tracing/events/sched/sched_switch/trigger
+ src/event-parse-api.c | 16 ++++++++++++++++
+ src/event-parse.c     |  2 ++
+ src/event-parse.h     |  1 +
+ 3 files changed, 19 insertions(+)
 
-Debugging it, I found that it's due to this change.
+diff --git a/src/event-parse-api.c b/src/event-parse-api.c
+index f8361e4..f8433e5 100644
+--- a/src/event-parse-api.c
++++ b/src/event-parse-api.c
+@@ -4,6 +4,7 @@
+  *
+  */
+ 
++#include <unistd.h>
+ #include "event-parse.h"
+ #include "event-parse-local.h"
+ #include "event-utils.h"
+@@ -248,6 +249,21 @@ void tep_set_page_size(struct tep_handle *tep, int _page_size)
+ 		tep->page_size = _page_size;
+ }
+ 
++/**
++ * tep_get_sub_buffer_size - get the size of a trace buffer page
++ * @tep: a handle to the tep_handle
++ *
++ * This returns the size of a trace buffer page on the traced machine.
++ * If @tep is NULL then -1 is returned.
++ */
++int tep_get_sub_buffer_size(struct tep_handle *tep)
++{
++	if (!tep)
++		return -1;
++
++	return tep->header_page_data_size + tep->header_page_data_offset;
++}
++
+ /**
+  * tep_is_file_bigendian - return the endian of the file
+  * @tep: a handle to the tep_handle
+diff --git a/src/event-parse.c b/src/event-parse.c
+index f42ae38..4b67289 100644
+--- a/src/event-parse.c
++++ b/src/event-parse.c
+@@ -17,6 +17,7 @@
+ #include <ctype.h>
+ #include <errno.h>
+ #include <stdint.h>
++#include <unistd.h>
+ #include <limits.h>
+ #include <linux/time64.h>
+ 
+@@ -6905,6 +6906,7 @@ int tep_parse_header_page(struct tep_handle *tep, char *buf, unsigned long size,
+ 		tep->header_page_ts_size = sizeof(long long);
+ 		tep->header_page_size_size = long_size;
+ 		tep->header_page_data_offset = sizeof(long long) + long_size;
++		tep->header_page_data_size = getpagesize() - tep->header_page_data_offset;
+ 		tep->old_format = 1;
+ 		return -1;
+ 	}
+diff --git a/src/event-parse.h b/src/event-parse.h
+index d4a876f..e4ecde5 100644
+--- a/src/event-parse.h
++++ b/src/event-parse.h
+@@ -565,6 +565,7 @@ void tep_set_cpus(struct tep_handle *tep, int cpus);
+ int tep_get_long_size(struct tep_handle *tep);
+ void tep_set_long_size(struct tep_handle *tep, int long_size);
+ int tep_get_page_size(struct tep_handle *tep);
++int tep_get_sub_buffer_size(struct tep_handle *tep);
+ void tep_set_page_size(struct tep_handle *tep, int _page_size);
+ bool tep_is_file_bigendian(struct tep_handle *tep);
+ void tep_set_file_bigendian(struct tep_handle *tep, enum tep_endian endian);
+-- 
+2.33.1
 
-
-On Mon,  8 Nov 2021 10:03:53 +0200
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
-
-> +static void init_devent_desc(void)
-> +{
-> +	int i;
-> +
-> +	BUILD_BUG_ON(ARRAY_SIZE(dynevents) != EVENT_INDEX(TRACEFS_DYNEVENT_MAX));
-> +
-> +	/* Use  ftrace dynamic_events, if available */
-> +	if (tracefs_file_exists(NULL, DYNEVENTS_EVENTS)) {
-
-// fails due to permission denied.
-
-> +		for (i = 0; i < EVENT_INDEX(TRACEFS_DYNEVENT_MAX); i++)
-> +			dynevents[i].file = DYNEVENTS_EVENTS;
-> +		return;
-> +	}
-> +
-> +	if (tracefs_file_exists(NULL, KPROBE_EVENTS)) {
-
-// fails due to permission denied.
-
-> +		dynevents[EVENT_INDEX(TRACEFS_DYNEVENT_KPROBE)].file = KPROBE_EVENTS;
-> +		dynevents[EVENT_INDEX(TRACEFS_DYNEVENT_KRETPROBE)].file = KPROBE_EVENTS;
-> +	}
-> +	if (tracefs_file_exists(NULL, UPROBE_EVENTS)) {
-
-// fails due to permission denied.
-
-> +		dynevents[EVENT_INDEX(TRACEFS_DYNEVENT_UPROBE)].file = UPROBE_EVENTS;
-> +		dynevents[EVENT_INDEX(TRACEFS_DYNEVENT_URETPROBE)].file = UPROBE_EVENTS;
-> +	}
-> +	if (tracefs_file_exists(NULL, SYNTH_EVENTS)) {
-
-// fails due to permission denied.
-
-> +		dynevents[EVENT_INDEX(TRACEFS_DYNEVENT_SYNTH)].file = SYNTH_EVENTS;
-> +		dynevents[EVENT_INDEX(TRACEFS_DYNEVENT_SYNTH)].prefix = "";
-> +	}
-> +}
-> +
-> +static struct dyn_events_desc *get_devent_desc(enum tracefs_dynevent_type type)
-> +{
-> +
-> +	static bool init;
-> +
-> +	if (type >= TRACEFS_DYNEVENT_MAX)
-> +		return NULL;
-> +
-> +	if (!init) {
-> +		init_devent_desc();
-> +		init = true;
-> +	}
-> +
-> +	return &dynevents[EVENT_INDEX(type)];
-> +}
-> +
-> +/**
-> + * dynevent_alloc - Allocate new dynamic event
-> + * @type: Type of the dynamic event
-> + * @system: The system name (NULL for the default dynamic)
-> + * @event: Name of the event
-> + * @addr: The function and offset (or address) to insert the probe
-> + * @format: The format string to define the probe.
-> + *
-> + * Allocate a dynamic event context that will be in the @system group
-> + * (or dynamic if @system is NULL). Have the name of @event and
-> + * will be associated to @addr, if applicable for that event type
-> + * (function name, with or without offset, or a address). And the @format will
-> + * define the format of the kprobe.
-> + * The dynamic event is not created in the system.
-> + *
-> + * Return a pointer to a dynamic event context on success, or NULL on error.
-> + * The returned pointer must be freed with tracefs_dynevent_free()
-> + *
-> + * errno will be set to EINVAL if event is NULL.
-> + */
-> +__hidden struct tracefs_dynevent *
-> +dynevent_alloc(enum tracefs_dynevent_type type, const char *system,
-> +	       const char *event, const char *address, const char *format)
-> +{
-> +	struct tracefs_dynevent *devent;
-> +	struct dyn_events_desc *desc;
-> +
-> +	if (!event) {
-> +		errno = EINVAL;
-> +		return NULL;
-> +	}
-> +
-> +	desc = get_devent_desc(type);
-
-desc->file is NULL.
-
-> +	if (!desc || !desc->file) {
-> +		errno = ENOTSUP;
-
-Returns an error, when it use to work.
-
-> +		return NULL;
-> +	}
-
--- Steve
