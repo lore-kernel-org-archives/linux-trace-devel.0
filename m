@@ -2,109 +2,104 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20A56C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Nov 2021 13:40:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6E65C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Nov 2021 08:57:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 04BB261054
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Nov 2021 13:40:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 81FC861040
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Nov 2021 08:57:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234199AbhKLNn0 (ORCPT
+        id S237186AbhKOI7T (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 12 Nov 2021 08:43:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42324 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231436AbhKLNn0 (ORCPT
+        Mon, 15 Nov 2021 03:59:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236527AbhKOI6e (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 12 Nov 2021 08:43:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B24ED60F5B;
-        Fri, 12 Nov 2021 13:40:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636724435;
-        bh=ztcUkw48Ye/+FvbdMM0UM+MUCAZ6dfJ3uXhKIbYP1eY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ech7FxGHVm4omq2oazqo6LDdjMWV+EAKov69QuUY7Dza8qkr8jDq14gYg8sFwscJc
-         VvrqLqDn4xDvizgQ4tOzvvZ1wiWG4Vmozsi/txKgwJTBrN8Z7+LqGarBukHTaxgNcg
-         XlauOfbgQo9kwKxLfdmxrtmObnMWSCIEoOAWI4TdvfG1dBHyC61uVazf020wgH3G7H
-         HSa2XWW7XQfFRfNPNLhSGzekGLUO6lr0Qr4VGNtma2RU8Dkbt1rhhKxMv7Wts+J82v
-         mO987zj79x+iqj6YUZP7ihcM2quOYYzzt2s2j9zVzRq0Yv1neQg6Ym2nfzAV1IITen
-         L5XQQGwWhg1HA==
-Date:   Fri, 12 Nov 2021 22:40:32 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
- trace_event into ftrace
-Message-Id: <20211112224032.f3b3f43002c28d3c8613b4fa@kernel.org>
-In-Reply-To: <20211111173334.GA1433@kbox>
-References: <20211104170433.2206-1-beaub@linux.microsoft.com>
-        <20211104170433.2206-3-beaub@linux.microsoft.com>
-        <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
-        <20211108171336.GA1690@kbox>
-        <20211108131639.33a4f186@gandalf.local.home>
-        <20211108202527.GA1862@kbox>
-        <20211109115634.5fb6d984d7b4e701c740d5f3@kernel.org>
-        <20211109190844.GA1529@kbox>
-        <20211110225630.babcd70ec85f97e369b0e446@kernel.org>
-        <20211111173334.GA1433@kbox>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Mon, 15 Nov 2021 03:58:34 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8E8C061200
+        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Nov 2021 00:55:33 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id m14so68810597edd.0
+        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Nov 2021 00:55:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=vOenIcBTuG6w/IOqlxTqTWs2eQtXHOkSNsHPEL0nqTc=;
+        b=XpzdFohAGojckSpO+hITmOvJjd8vPIZmSiMmMjs3wUYbMhxgp29Q9o2Vau1N/wvmbv
+         QGMIHVbCtiAfszSPv49so3EDbILsltPlZ1zI39DhS7FfZVZNefiNPqxgs7G37fqAWX2d
+         2k1pEaC0st/c6nGUL0yjnmTmmbCBDgGctuWnKMp+uBd53eGMPkOhWelHCncFLvQz+MpK
+         Rx7RVszV3lpBZ5k+fYcQS8IT/Gl0ON9hUI4TVy8tPGEA2rykZFriKyGNUliAtw9/86/B
+         iTMOWmkMXayEw1PLZ9121LsJbnrWCbifxAVZQ1EaCV24w0YvZCKEF+vXSJrK7qu3pEHW
+         R0Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=vOenIcBTuG6w/IOqlxTqTWs2eQtXHOkSNsHPEL0nqTc=;
+        b=jS3AoDffgYgc1gchiKWVDbUxoSIoIyMaMzdx4RcITNWjee85hWOPFVdssNLndz2fd8
+         XMTtPSpIkbUSKDImN+bYhGt60U7r7qRVwd7y5X+BRTrhW78B/uHLB7rrOyeINkcaZBF0
+         fZv2u9AL0SIyWUMbFaEcbYNHNLUWmQ6EBowCiWbxGjmc1BUv11Qw5xlcO/DvZiDxVa4q
+         QwuiDlPBxzk1yoq9rrC2aoZv6vJots71LzybwN5OneZxycW2zSB8QiHtsP5t4kZ04DEm
+         qyZcEb/zUCjSl5Yjw7v5wyxanYx2wsk2PvR5IQ3ONhY/fa/w+LSsIAdH6HHJThYMqEXB
+         Xnvg==
+X-Gm-Message-State: AOAM532K43slCiQnjYGfTld/6iF3e6VYygnmdCTsrDXdHIPMHED3GJL5
+        ya1mr/QMpQx3kDiMmhd6bKB2e5YY04A=
+X-Google-Smtp-Source: ABdhPJyHx9pNWKwK+XPHD5j6Bmad6Fzdvfa+Mq49T0R5Jxq9RyI6KzOW0nbthSY56PQHYLJqr03f3Q==
+X-Received: by 2002:a17:906:2749:: with SMTP id a9mr46351381ejd.471.1636966532317;
+        Mon, 15 Nov 2021 00:55:32 -0800 (PST)
+Received: from crow.. ([95.87.219.163])
+        by smtp.gmail.com with ESMTPSA id f7sm7056709edl.33.2021.11.15.00.55.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 00:55:32 -0800 (PST)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH 2/2] trace-cruncher: Make the tracing of a process stoppable
+Date:   Mon, 15 Nov 2021 10:55:18 +0200
+Message-Id: <20211115085518.204852-2-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211115085518.204852-1-y.karadz@gmail.com>
+References: <20211115085518.204852-1-y.karadz@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 11 Nov 2021 09:33:34 -0800
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
+Both 'trace_process()' and 'trace_shell_process()' can be stopped
+from the callback function by calling 'sys.exit()' or by returning
+non zero integer value.
 
-> On Wed, Nov 10, 2021 at 10:56:30PM +0900, Masami Hiramatsu wrote:
-> > On Tue, 9 Nov 2021 11:08:44 -0800
-> > Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> 
-> > I would like to keep verifying in writer side then we can ensure the
-> > data on ring buffer (of perf and of ftrace) is sane. If you add the unsafe
-> > flag, you have to change all the code which access the ring buffer, not only
-> > the filter but also eprobes, histograms, perf-tools, and other user-space
-> > tracing tools which reads the tracing buffer directly.
-> > 
-> > > It sounded like Steven wanted to think about this a bit, so I'll wait a
-> > > bit before poking again for consensus :)
-> > > 
-> > > Do you have any strong feelings about where it goes?
-> > 
-> > I recommend you to start verifying the writer side, it should make the
-> > change as small as possible. Unsafe flag idea may involve many other
-> > tools. And it is not fundamentary required for user-events.
-> > 
-> > Thank you,
-> > 
-> > -- 
-> > Masami Hiramatsu <mhiramat@kernel.org>
-> 
-> Ok, I will start there.
-> 
-> Are static string buffers required as well for the null check?
-> 
-> Or is this only for dyn strings that require the check?
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+---
+ src/ftracepy-utils.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-Good question! The dynamic strings is ensured to be null-terminated,
-but the static string is not because the size is fixed (at least
-event filter checked that.)
-
-BTW, I found that the hist_triger_elt_update() doesn't check the
-field size for fixed-size string (only use STR_VAR_LEN_MAX to limit.)
-It seems buggy if the fixed-size char [] field is not null terminated.
-(e.g. it is used for storing array-data)
-Let me fix that.
-
-> Also, I am assuming that __rel_loc offset is based after the __rel_loc
-> payload, IE: Offset 0 of __rel_loc is immediately after the 4 byte
-> __rel_loc description?
-
-Yes, so if the field is the last one, the offset can be 0.
-
-Thank you,
-
+diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
+index 8e803ee..b5cdcee 100644
+--- a/src/ftracepy-utils.c
++++ b/src/ftracepy-utils.c
+@@ -2097,10 +2097,17 @@ static void iterate_raw_events_waitpid(struct tracefs_instance *instance,
+ 				       PyObject *py_func,
+ 				       pid_t pid)
+ {
++	bool *callback_status = &callback_ctx.status;
++	int ret;
++
+ 	callback_ctx.py_callback = py_func;
++	(*(volatile bool *)callback_status) = true;
+ 	do {
+-		tracefs_iterate_raw_events(tep, instance, NULL, 0,
+-					   callback, &callback_ctx);
++		ret = tracefs_iterate_raw_events(tep, instance, NULL, 0,
++						 callback, &callback_ctx);
++
++		if (*(volatile bool *)callback_status == false || ret < 0)
++			break;
+ 	} while (waitpid(pid, NULL, WNOHANG) != pid);
+ }
+ 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.32.0
+
