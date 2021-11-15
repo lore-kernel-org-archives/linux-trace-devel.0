@@ -2,128 +2,163 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EC76C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Nov 2021 08:57:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA35DC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Nov 2021 10:46:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5612860E0C
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Nov 2021 08:57:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ABE62630EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Nov 2021 10:46:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhKOJAN (ORCPT
+        id S237654AbhKOKtH (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 15 Nov 2021 04:00:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35262 "EHLO
+        Mon, 15 Nov 2021 05:49:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236509AbhKOI6e (ORCPT
+        with ESMTP id S237490AbhKOKs5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 15 Nov 2021 03:58:34 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D35EC0613B9
-        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Nov 2021 00:55:33 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id m14so68810486edd.0
-        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Nov 2021 00:55:33 -0800 (PST)
+        Mon, 15 Nov 2021 05:48:57 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E12BC061766
+        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Nov 2021 02:46:00 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id e3so33398652edu.4
+        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Nov 2021 02:45:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=EoUcuq8cO5IATbgbbbhGVOV+55jxqLTe7rLcCWeFTB8=;
-        b=bG9VrXIbZif7sFSKrifmASvIcSCe4eml4HjwXN8z7VC+WqafkhHqzXpu2srXa3PRDJ
-         1KBeip9VFNqS+1haQKNQBNm0u1/0SV2gWK0+sHG5FPs5MKmHuhoiizZ0zRWLYT5WGsk9
-         TnRy5a3cMCo0IiIZx5HVJkYzyOd2KocMaKpJfW+k/Jg1SqX7AG0nXokvvC0bg8jYLwIv
-         I4+lU1VmdEYecqJ7gWgOMllv4eWcgMkrm1y4NJhfDtAWMNbx07bSoMTiOyB/T/OQp3EE
-         wBMGoOhVIlQGsgQmT9BLfjUQUffpaQkOoVbyKp3pfjoZi4k+4B87tdLcudhCtxLFO73o
-         azpg==
+        bh=YxeEDFQv9z5J2zhE/uz+MfixrGPvEPbWGU/oLOa/RVw=;
+        b=B9Y+FUOKeqZ//Upfw4xqP8OloNzXEuYxrjBcvCWr5DkB8N6DyKkt6frpnRj62oLTBZ
+         5LTTDpe7H9o5PY5rSWKOWH2wqA2JQ3IWoqqYw8roXUqJDqcVIpGyj7wtGYvw/u5BDc7X
+         JGZGhnnOU6lfVAPQjP5cIVOXbBqmmdt4PcJ0DPHecWqS4S1RbCHETsWe8Y87tWm7pYiy
+         wFZFOy+MimCRS3koIRITk/0aTTMaMF9aQkwUr8rsCafeqlG4SkESoRzGQiW/2Jq/NqL5
+         qbPpIerDeRasm9XBS9Z/fCwknuQ49iCrr0ghgTwTbcvB+lgIgYeTbiTsmI1oOD053HBc
+         Yg1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=EoUcuq8cO5IATbgbbbhGVOV+55jxqLTe7rLcCWeFTB8=;
-        b=2tQ/awApDlJgIRiboeBQlGOIw3gIiLqoR3avqcvhVRksyFpJ4oZmPm9u7hqP4SzyDy
-         iBiBMSXVdo+JLBzUf7j35ZoNcWTV5CQZ6kSXsLgQ6UepFj+pgnTVH2mZzQaJ8NWMdzOw
-         xnjRGPLJm4VbwSxi8U3hJzRTRBWwifB/R3tGqLxJIxUSX8YWoEv6+HwTbqHZStGZhv+H
-         bBZsDD/q3P0tXlq7GRkuxeUSpP0EYxiDemrm7cDICQJZbzCn78vcLC3Dzi72PN6qJFO+
-         hfYtmQ7qs524ZvIY/yDUcOmryIZCU+3r7AYVnhLnMF/YNy6e6SpXxXGTJ40Jh7BCs+LD
-         PV/A==
-X-Gm-Message-State: AOAM533iwmJzUOxH4q7GAr8BbXnvwpP/0HF4tB4X5lu84zpjkgqOgz5n
-        klWlAhaNnGky94HOWTXkb+ZlgG3P5wo=
-X-Google-Smtp-Source: ABdhPJwS47iqsRGt5HZzIouOrtiz9XcLqOajeJdGOuyJo6mRW7xr0vUuBzTOzFiL0eJtrqLdAew19A==
-X-Received: by 2002:a17:906:4fc8:: with SMTP id i8mr46626937ejw.342.1636966531526;
-        Mon, 15 Nov 2021 00:55:31 -0800 (PST)
-Received: from crow.. ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id f7sm7056709edl.33.2021.11.15.00.55.30
+        bh=YxeEDFQv9z5J2zhE/uz+MfixrGPvEPbWGU/oLOa/RVw=;
+        b=kZ4/j53/fQRbDYMmT6fJ77f1vwJ4DGVFflFuEtjeiL7+ROPoovoxYsPSKXTpDCin5C
+         1g6gCyE9IvXG3OUaQDw3CBwlHX1WE3buXNKlo/7Hm1P/b8r3gBOPTkctdFxCR4uDShtW
+         dFOH5Rh0phyvC0OU+U4mApqHhPp/wbUhM65qW6r38mjOwnb6T2UMGLAG1U2ZuEb0vF47
+         K6R4unolhZmgp+LwFgTH34d6wg7uxAydOWiUZPLHQbUxOv5ykYkCQkneMxyfVhKK1/Jk
+         vq5UT4ktYrDf9+JBW1kv4VTNBDbobv0lhNx0zv40zIqfwMA0aM8Z2/cPWEldmDwcR2Ki
+         atmQ==
+X-Gm-Message-State: AOAM533diaov5XactNqP9TWrrEfxHrCnG01d20jzBdotMh9xfSuWDVcg
+        C6Fiz+nEecrFftNnfkTe/bYebJ+GbuPF2A==
+X-Google-Smtp-Source: ABdhPJxtgX564pix25H9kwH3mcx/vJ0zAtefC5+MmoBiaMug6M11t3PST+HXIrcYconFIykj/dAvuA==
+X-Received: by 2002:a17:906:314e:: with SMTP id e14mr48178775eje.165.1636973158618;
+        Mon, 15 Nov 2021 02:45:58 -0800 (PST)
+Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id e12sm6315509ejs.86.2021.11.15.02.45.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 00:55:31 -0800 (PST)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 1/2] trace-cruncher: More options for stopping data iteration
-Date:   Mon, 15 Nov 2021 10:55:17 +0200
-Message-Id: <20211115085518.204852-1-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Mon, 15 Nov 2021 02:45:58 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org, y.karadz@gmail.com
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v7 00/15] libtracefs dynamic events support
+Date:   Mon, 15 Nov 2021 12:45:41 +0200
+Message-Id: <20211115104556.121359-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-So far the only option to stop the iteration over the tracing data
-from the callback function was to call 'sys.exit()'. However, this
-only stops the iteration without actually exiting. With this change
-calling 'sys.exit()' will terminate (exit the module), while in
-order to just stop the iteration, the callback should return nonzero
-integer value.
+The libtracefs logic that works with ftrace dynamic events is unified
+and capsulated into a new set of dynamic events APIs. This change makes
+the code more consistent and reusable. Also, adding future libtracefs
+support for uprobes and eprobes dynamic events is simplified.
+The existing library APIs for kprobes and synthetic events are
+reimplemented using the new dynamic events helpers.
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- src/ftracepy-utils.c | 27 +++++++++++++++++++++------
- 1 file changed, 21 insertions(+), 6 deletions(-)
+This patch sets depends on "[PATCH v2 0/4] Modifications of some 'hist' APIs":
+ https://lore.kernel.org/linux-trace-devel/20210924095702.151826-1-y.karadz@gmail.com/
 
-diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
-index d25d873..8e803ee 100644
---- a/src/ftracepy-utils.c
-+++ b/src/ftracepy-utils.c
-@@ -2046,21 +2046,36 @@ static int callback(struct tep_event *event, struct tep_record *record,
- 	ret = PyObject_CallObject((PyObject *)ctx->py_callback, arglist);
- 	Py_DECREF(arglist);
- 
--	if (ret) {
--		Py_DECREF(ret);
--	} else {
-+	if (!ret) {
- 		if (PyErr_Occurred()) {
--			if (PyErr_ExceptionMatches(PyExc_SystemExit)) {
--				PyErr_Clear();
-+			PyObject *err_type, *err_value, *err_traceback;
-+
-+			PyErr_Fetch(&err_type, &err_value, &err_traceback);
-+			if (err_type == PyExc_SystemExit) {
-+				if (PyLong_CheckExact(err_value))
-+					Py_Exit(PyLong_AsLong(err_value));
-+				else
-+					Py_Exit(0);
- 			} else {
-+				PyErr_Restore(err_type, err_value, err_traceback);
- 				PyErr_Print();
- 			}
- 		}
- 
--		ctx->status = false;
-+		goto stop;
-+	}
-+
-+	if (PyLong_CheckExact(ret) && PyLong_AsLong(ret) != 0) {
-+		Py_DECREF(ret);
-+		goto stop;
- 	}
- 
-+	Py_DECREF(ret);
- 	return 0;
-+
-+ stop:
-+	ctx->status = false;
-+	return 1;
- }
- 
- static bool notrace_this_pid(struct tracefs_instance *instance)
+Suggested-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+
+v7 changes:
+ - Introduced new eprobe API.
+ - Changed allocation of a new dynamic event, to use old ftrace interface
+   files by default without a check if they exist. That change allows to
+   allocate a dynamic event even if the caller have no ftrace permissions.
+
+v6 changes:
+ - Removed "instance" parameter from synthetic event APIs, default instance
+   is used.
+ - Fixed "make doc_clean" to not remove the sources of sqlhist man page.
+ - Coding style fixes.
+
+v5 changes:
+ - Improved parsing of dynamic events files - added ' \t' as delimiter.
+ - Added TRACEFS_DYNEVENT_UNKNOWN in dynamic events enum, which is used as
+   error return by the APIsi.
+ - Renamed and moved tracefs_kprobe_info() to tracefs_dynevent_info(), as
+   the API is more generic and not kprobe specific.
+ - Added unit tests for synthetic events APIs.
+ - Fixed bugs in synthetic events APIs, related to dynamic events.
+ - Coding style fixes.
+ - Man pages clean ups.
+
+v4 changes:
+ - Redefined the dynamic events enum, so the items can be used in a bitmask.
+ - Reimplement the logic for parsing dynamic event strings from ftrace files.
+ - Coding style fixes.
+ - Added more comments.
+
+v3 changes:
+ - Exposed dynamic events API as official tracefs APIs.
+ - Removed kprobe specific APIs, that duplicate corresponding dynamic events
+   APIs.
+ - Updated unit tests and man pages with the new dynamic events APIs.
+ - Fixed typos, found by Yordan. 
+
+v2 changes:
+ - Removed triple pointer from the APIs.
+ - Reimplement dynamic events parsing using strtok_r instead of strchr.
+ - Coding style fixes.
+
+Tzvetomir Stoyanov (VMware) (15):
+  libtracefs: New APIs for dynamic events
+  libtracefs: New APIs for kprobe allocation
+  libtracefs: Remove redundant kprobes APIs
+  libtracefs: Reimplement kprobe raw APIs
+  libtracefs: Extend kprobes unit test
+  libtracefs: Rename tracefs_synth_init API
+  libtracefs: Use the internal dynamic events API when creating
+    synthetic events
+  libtracefs: Remove instance parameter from synthetic events APIs
+  libtracefs: Add unit test for synthetic events
+  libtracefs: Update kprobes man pages
+  libtracefs: Document dynamic events APIs
+  libtracefs: Do not clean sqlhist man page source
+  libtracefs: Introduce eprobe API
+  libtracefs: Add utest for event probes
+  libtracefs: Document eprobe API
+
+ Documentation/Makefile                 |   3 +-
+ Documentation/libtracefs-dynevents.txt | 264 +++++++++
+ Documentation/libtracefs-eprobes.txt   | 189 +++++++
+ Documentation/libtracefs-kprobes.txt   |  94 ++--
+ Documentation/libtracefs-sql.txt       |   4 +-
+ Documentation/libtracefs-synth.txt     |  26 +-
+ Documentation/libtracefs-synth2.txt    |  40 +-
+ Documentation/libtracefs.txt           |  20 +
+ include/tracefs-local.h                |  18 +
+ include/tracefs.h                      |  68 ++-
+ src/Makefile                           |   2 +
+ src/tracefs-dynevents.c                | 709 +++++++++++++++++++++++++
+ src/tracefs-eprobes.c                  |  56 ++
+ src/tracefs-hist.c                     | 163 +++---
+ src/tracefs-kprobes.c                  | 508 ++++--------------
+ src/tracefs-sqlhist.c                  |   6 +-
+ utest/tracefs-utest.c                  | 592 +++++++++++++++------
+ 17 files changed, 1980 insertions(+), 782 deletions(-)
+ create mode 100644 Documentation/libtracefs-dynevents.txt
+ create mode 100644 Documentation/libtracefs-eprobes.txt
+ create mode 100644 src/tracefs-dynevents.c
+ create mode 100644 src/tracefs-eprobes.c
+
 -- 
-2.32.0
+2.33.1
 
