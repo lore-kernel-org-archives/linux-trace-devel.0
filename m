@@ -2,62 +2,62 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B271C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Nov 2021 10:46:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0472BC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Nov 2021 10:46:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1F18E6320D
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Nov 2021 10:46:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E0CB26320D
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Nov 2021 10:46:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230507AbhKOKtN (ORCPT
+        id S231140AbhKOKtP (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 15 Nov 2021 05:49:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60754 "EHLO
+        Mon, 15 Nov 2021 05:49:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237639AbhKOKtD (ORCPT
+        with ESMTP id S237604AbhKOKtA (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 15 Nov 2021 05:49:03 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4230EC061767
-        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Nov 2021 02:46:07 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id y12so13274654eda.12
-        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Nov 2021 02:46:07 -0800 (PST)
+        Mon, 15 Nov 2021 05:49:00 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21282C061746
+        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Nov 2021 02:46:04 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id b15so69553017edd.7
+        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Nov 2021 02:46:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DDADqVqis1ytUbii4KTR8QPw2lYzPpTz2PMbQRzcpcM=;
-        b=bmgfYIu7gukpmcRBsVA2Z+Zgvw4ZEMIkxNeCu92TWsXZlx5HTo/mWF0E+lrJf36U5s
-         SOd7HEgTo96T2q8n//aIC/MAmtF9bT0KSBaCjrNVPnAJmjpbjZ9OXshw341fh62sray9
-         JllaaA/IPHzxXrYfdtaYFig0pyesqpzP3b302XpQ416T+yzn0ehDRPJkzjBM0hKs77gs
-         V/2JJ5U+o3DiSGX4+e5t8rscLxzSmP16QwVNcI1Ti4Dto52YxzCvyE3nyTBlWJgRB1GQ
-         NcgashNO0fmKW9vZgYd/Qh1jOJHO3lGmP9SArqLOPjvOK2nJiwgtw97+R3cNBNQCtPVq
-         oiUw==
+        bh=J9iEgdzNzMxl43ZEx3AmCPex4l5vYz7WmIKnc62EFzA=;
+        b=kTXmLZHy+TMmVI43axKEyXxJq8nJkaAbC1esyBwBXVC2v8o+wvJNsROqSUe3wRIGiD
+         pSXJniyGSxtUvbYN5vyevypwfj/QEOoaBPAcEGu5yyzdT/hX7Jsd9j685u/gnMjgPBnQ
+         Hr2P/vZ/+ibMemyYU+wXSvy3r4hje4Iyjre5cstgunkacBi0Zun4sdVlP0SLlUABkHry
+         JlwarNqZMRzzWRQp9wy8VjqbAH04bJjI4CqPImhsj5gpUFjM/AghTezkvCWIEEmlskG7
+         9e+5+aLj9dgCIiwVjY6zTCUbWK0YLbFxgU8nEB/nrSz7HhkedwHgIlhboB/lT8JvKHCc
+         3egA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DDADqVqis1ytUbii4KTR8QPw2lYzPpTz2PMbQRzcpcM=;
-        b=BZsPaUtnfh4ZkAqX/JVmIkntGYZyqPAFbpoqCQO23kaKRGtmAnevv+OCbpgIRDlxZG
-         MMAW2BPohg34eh+6eVPiyONNEh0XKUb2l5nF1qoErnOKSZcaZPAWnBBgg/BrHdySLGqu
-         8LMXrlEfsatgMKn6Zp1ZtGyZdJnJlfBDDEUAKslDjsZ6cTsjWUcE7+UYfJ2Ki9CIPmID
-         PsR/FtazjrK9fEGu42ZKFmi7REErwnAbXNtZTHVbFweOmmfOixohZUkdHFbT1Aa91Jfz
-         /9KU7nlvvlI+uBYoeYorGTcfqE92vGgP7mKm1OBGA+RYxrHbQuAIEn3wZctyyb1WUkyt
-         6Hcw==
-X-Gm-Message-State: AOAM53349jvsBSfRb8zAnUhgHZUssUemxQTcq2lMCw4HmRNz8KLYGwyM
-        WsbYIV8hi4r8ULOuDZI6xM56jo06eXebTg==
-X-Google-Smtp-Source: ABdhPJyryMYZ4zSCtdMX0vyX+Xynwn+eqbZXBYF8R+mUYx/CNqqfO0ys29QBfBOLoqyRfBgWYSRQWg==
-X-Received: by 2002:a17:907:d94:: with SMTP id go20mr48319502ejc.78.1636973165839;
-        Mon, 15 Nov 2021 02:46:05 -0800 (PST)
+        bh=J9iEgdzNzMxl43ZEx3AmCPex4l5vYz7WmIKnc62EFzA=;
+        b=rpvMx0hFTHRzXbnbqg8dpkD8fb45v7pmaS+ycAMbYtvGPZzEZle7FGJEOGcGq1WLzO
+         kaQEj9lGurzFzWAxw986+kxEvwocVJBo8z0HAgJl62WBqMLbrIb2u1HI9Y7AkSJzCkLm
+         RoXB62X7D7BCYtcM+bWVy5lVRAmnStB7rXfTEVJxtKb6GzD+Gvdeb/aG1wzWkK7c7KD4
+         RDf/GYGZa4imLHjpaD2d0G6M3+dkdgW3ZcElQ3IWb1pnI+s1Q4k+bP8ZRHW4/OAD1w5A
+         zwDANRA/8qD46XY/z/u6++3TVNKnNb7TahQiTQh7RWnbrTdJSnC1NhAbNBshrwpy3V90
+         1a6A==
+X-Gm-Message-State: AOAM5313/RiBFBWmocdbrNFe8Rt6C94QOr5D277lfPecfhtJIutnS9GQ
+        ybO7W30Hwd8+ur33TYEo4gLGVEK8NeOUvw==
+X-Google-Smtp-Source: ABdhPJyLqcdkYdQispOW+1WntzG0Iml/P7cZpU3+zn0LITJFuw577xfZKhChkSevh3UcAoA8gPDraA==
+X-Received: by 2002:a05:6402:51c6:: with SMTP id r6mr924267edd.365.1636973162617;
+        Mon, 15 Nov 2021 02:46:02 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id e12sm6315509ejs.86.2021.11.15.02.46.04
+        by smtp.gmail.com with ESMTPSA id e12sm6315509ejs.86.2021.11.15.02.46.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 02:46:04 -0800 (PST)
+        Mon, 15 Nov 2021 02:46:01 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org, y.karadz@gmail.com
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v7 05/15] libtracefs: Extend kprobes unit test
-Date:   Mon, 15 Nov 2021 12:45:46 +0200
-Message-Id: <20211115104556.121359-6-tz.stoyanov@gmail.com>
+Subject: [PATCH v7 03/15] libtracefs: Remove redundant kprobes APIs
+Date:   Mon, 15 Nov 2021 12:45:44 +0200
+Message-Id: <20211115104556.121359-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115104556.121359-1-tz.stoyanov@gmail.com>
 References: <20211115104556.121359-1-tz.stoyanov@gmail.com>
@@ -67,486 +67,430 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-As there are a lot of changes in the libtracefs kprobes APIs, the unit
-test of that functionality should be updated. A new test section is
-added, for testing the all kprobes APIs.
+The newly introduced set of APIs tracefs_dynevent_...() can be used to
+manage kprobes. These legacy APIs are removed as redundant:
+ tracefs_kprobe_clear_all();
+ tracefs_kprobe_clear_probe();
+ tracefs_get_kprobes()
+ tracefs_kprobe_info()
+
+There is one functionality, missing in the new clear API - clearing all
+dynamic events from specific system only. If this is needed,
+tracefs_dynevent_destroy() can be extended with that use case.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- utest/tracefs-utest.c | 419 +++++++++++++++++++++++++-----------------
- 1 file changed, 249 insertions(+), 170 deletions(-)
+ include/tracefs.h     |  11 --
+ src/tracefs-kprobes.c | 370 ------------------------------------------
+ 2 files changed, 381 deletions(-)
 
-diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index 09bb8f2..18cd37f 100644
---- a/utest/tracefs-utest.c
-+++ b/utest/tracefs-utest.c
-@@ -28,22 +28,6 @@
- #define TRACE_ON	"tracing_on"
- #define TRACE_CLOCK	"trace_clock"
+diff --git a/include/tracefs.h b/include/tracefs.h
+index dfd9b51..25d9e9a 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -261,12 +261,6 @@ enum tracefs_dynevent_type
+ tracefs_dynevent_info(struct tracefs_dynevent *dynevent, char **system,
+ 		      char **event, char **prefix, char **addr, char **format);
  
--#define KPROBE_EVENTS	"kprobe_events"
+-enum tracefs_kprobe_type {
+-	TRACEFS_ALL_KPROBES,
+-	TRACEFS_KPROBE,
+-	TRACEFS_KRETPROBE,
+-};
 -
--#define KPROBE_1_NAME	"mkdir"
--#define KPROBE_1_GROUP	"kprobes"
--#define KPROBE_1_ADDR	"do_mkdirat"
--#define KPROBE_1_FMT	"path=+u0($arg2):ustring"
--
--#define KPROBE_2_NAME	"open"
--#define KPROBE_2_GROUP	"myprobe"
--#define KPROBE_2_ADDR	"do_sys_openat2"
--#define KPROBE_2_FMT	"file=+u0($arg2):ustring flags=+0($arg3):x64"
--
--#define KRETPROBE_NAME	"retopen"
--#define KRETPROBE_ADDR	"do_sys_openat2"
--#define KRETPROBE_FMT	"ret=$retval"
--
- #define SQL_1_EVENT	"wakeup_1"
- #define SQL_1_SQL	"select sched_switch.next_pid as woke_pid, sched_waking.common_pid as waking_pid from sched_waking join sched_switch on sched_switch.next_pid = sched_waking.pid"
+ struct tracefs_dynevent *
+ tracefs_kprobe_alloc(const char *system, const char *event, const char *addr, const char *format);
+ struct tracefs_dynevent *
+@@ -276,11 +270,6 @@ int tracefs_kprobe_raw(const char *system, const char *event,
+ 		       const char *addr, const char *format);
+ int tracefs_kretprobe_raw(const char *system, const char *event,
+ 			  const char *addr, const char *format);
+-char **tracefs_get_kprobes(enum tracefs_kprobe_type type);
+-enum tracefs_kprobe_type tracefs_kprobe_info(const char *group, const char *event,
+-					     char **type, char **addr, char **format);
+-int tracefs_kprobe_clear_all(bool force);
+-int tracefs_kprobe_clear_probe(const char *system, const char *event, bool force);
  
-@@ -398,6 +382,27 @@ static void test_trace_sql(void)
- 	test_instance_trace_sql(test_instance);
- }
- 
-+static struct tracefs_dynevent **get_dynevents_check(enum tracefs_dynevent_type types, int count)
-+{
-+	struct tracefs_dynevent **devents;
-+	int i;
-+
-+	devents = tracefs_dynevent_get_all(types, NULL);
-+	if (count) {
-+		CU_TEST(devents != NULL);
-+		if (!devents)
-+			return NULL;
-+		i = 0;
-+		while (devents[i])
-+			i++;
-+		CU_TEST(i == count);
-+	} else {
-+		CU_TEST(devents == NULL);
-+	}
-+
-+	return devents;
-+}
-+
- static void test_trace_file(void)
+ enum tracefs_hist_key_type {
+ 	TRACEFS_HIST_KEY_NORMAL = 0,
+diff --git a/src/tracefs-kprobes.c b/src/tracefs-kprobes.c
+index b9aeb9d..3f46b8d 100644
+--- a/src/tracefs-kprobes.c
++++ b/src/tracefs-kprobes.c
+@@ -213,373 +213,3 @@ int tracefs_kretprobe_raw(const char *system, const char *event,
  {
- 	const char *tmp = get_rand_str();
-@@ -457,28 +462,248 @@ static void test_instance_file_read(struct tracefs_instance *inst, const char *f
- 	free(file);
+ 	return insert_kprobe("r", system, event, addr, format);
  }
- 
-+struct probe_test {
-+	enum tracefs_dynevent_type type;
-+	char *prefix;
-+	char *system;
-+	char *event;
-+	char *address;
-+	char *format;
-+};
-+
-+static bool check_probes(struct probe_test *probes, int count,
-+			 struct tracefs_dynevent **devents, bool in_system,
-+			 struct tracefs_instance *instance)
-+{
-+	enum tracefs_dynevent_type type;
-+	char *ename;
-+	char *address;
-+	char *event;
-+	char *system;
-+	char *format;
-+	char *prefix;
-+	int found = 0;
-+	int ret;
-+	int i, j;
-+
-+	for (i = 0; devents && devents[i]; i++) {
-+		type = tracefs_dynevent_info(devents[i], &system,
-+					     &event, &prefix, &address, &format);
-+		for (j = 0; j < count; j++) {
-+			if (type != probes[j].type)
-+				continue;
-+			if (probes[j].event)
-+				ename = probes[j].event;
-+			else
-+				ename = probes[j].address;
-+			if (strcmp(ename, event))
-+				continue;
-+			if (probes[j].system) {
-+				CU_TEST(strcmp(probes[j].system, system) == 0);
-+			}
-+			CU_TEST(strcmp(probes[j].address, address) == 0);
-+			if (probes[j].format) {
-+				CU_TEST(strcmp(probes[j].format, format) == 0);
-+			}
-+			if (probes[j].prefix) {
-+				CU_TEST(strcmp(probes[j].prefix, prefix) == 0);
-+			}
-+			ret = tracefs_event_enable(instance, system, event);
-+			if (in_system) {
-+				CU_TEST(ret == 0);
-+			} else {
-+				CU_TEST(ret != 0);
-+			}
-+			ret = tracefs_event_disable(instance, system, event);
-+			if (in_system) {
-+				CU_TEST(ret == 0);
-+			} else {
-+				CU_TEST(ret != 0);
-+			}
-+
-+			found++;
-+			break;
-+		}
-+		free(system);
-+		free(event);
-+		free(prefix);
-+		free(address);
-+		free(format);
-+	}
-+
-+	CU_TEST(found == count);
-+	if (found != count)
-+		return false;
-+
-+	return true;
-+}
-+
-+static void test_kprobes_instance(struct tracefs_instance *instance)
-+{
-+	struct probe_test ktests[] = {
-+		{ TRACEFS_DYNEVENT_KPROBE, "p", NULL, "mkdir", "do_mkdirat", "path=+u0($arg2):ustring" },
-+		{ TRACEFS_DYNEVENT_KPROBE, "p", NULL, "close", "close_fd", NULL },
-+		{ TRACEFS_DYNEVENT_KPROBE, "p", "ptest", "open2", "do_sys_openat2",
-+				  "file=+u0($arg2):ustring flags=+0($arg3):x64" },
-+	};
-+	struct probe_test kretests[] = {
-+		{ TRACEFS_DYNEVENT_KRETPROBE, NULL, NULL, "retopen", "do_sys_openat2", "ret=$retval" },
-+		{ TRACEFS_DYNEVENT_KRETPROBE, NULL, NULL, NULL, "do_sys_open", "ret=$retval" },
-+	};
-+	int kretprobe_count = sizeof(kretests) / sizeof((kretests)[0]);
-+	int kprobe_count = sizeof(ktests) / sizeof((ktests)[0]);
-+	struct tracefs_dynevent **dkretprobe;
-+	struct tracefs_dynevent **dkprobe;
-+	struct tracefs_dynevent **devents;
-+	char *tmp;
-+	int ret;
-+	int i;
-+
-+	dkprobe = calloc(kprobe_count + 1, sizeof(*dkprobe));
-+	dkretprobe = calloc(kretprobe_count + 1, sizeof(*dkretprobe));
-+
-+	/* Invalid parameters */
-+	CU_TEST(tracefs_kprobe_alloc("test", NULL, NULL, "test") == NULL);
-+	CU_TEST(tracefs_kretprobe_alloc("test", NULL, NULL, "test", 0) == NULL);
-+	CU_TEST(tracefs_dynevent_create(NULL) != 0);
-+	CU_TEST(tracefs_dynevent_info(NULL, &tmp, &tmp, &tmp, &tmp, &tmp) == TRACEFS_DYNEVENT_UNKNOWN);
-+	CU_TEST(tracefs_kprobe_raw("test", "test", NULL, "test") != 0);
-+	CU_TEST(tracefs_kretprobe_raw("test", "test", NULL, "test") != 0);
-+
-+	/* kprobes APIs */
-+	ret = tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, true);
-+	CU_TEST(ret == 0);
-+	get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, 0);
-+
-+	for (i = 0; i < kprobe_count; i++) {
-+		dkprobe[i] = tracefs_kprobe_alloc(ktests[i].system, ktests[i].event,
-+						  ktests[i].address, ktests[i].format);
-+		CU_TEST(dkprobe[i] != NULL);
-+	}
-+	dkprobe[i] = NULL;
-+	get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, 0);
-+	CU_TEST(check_probes(ktests, kprobe_count, dkprobe, false, instance));
-+
-+	for (i = 0; i < kretprobe_count; i++) {
-+		dkretprobe[i] = tracefs_kretprobe_alloc(kretests[i].system, kretests[i].event,
-+							kretests[i].address, kretests[i].format, 0);
-+		CU_TEST(dkretprobe[i] != NULL);
-+	}
-+	dkretprobe[i] = NULL;
-+	get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, 0);
-+	CU_TEST(check_probes(kretests, kretprobe_count, dkretprobe, false, instance));
-+
-+	for (i = 0; i < kprobe_count; i++) {
-+		CU_TEST(tracefs_dynevent_create(dkprobe[i]) == 0);
-+	}
-+	devents = get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE,
-+				    kprobe_count);
-+	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance));
-+	CU_TEST(check_probes(kretests, kretprobe_count, dkretprobe, false, instance));
-+	tracefs_dynevent_list_free(devents);
-+	devents = NULL;
-+
-+	for (i = 0; i < kretprobe_count; i++) {
-+		CU_TEST(tracefs_dynevent_create(dkretprobe[i]) == 0);
-+	}
-+	devents = get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE,
-+				    kprobe_count + kretprobe_count);
-+	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance));
-+	CU_TEST(check_probes(kretests, kretprobe_count, devents, true, instance));
-+	tracefs_dynevent_list_free(devents);
-+	devents = NULL;
-+
-+	for (i = 0; i < kretprobe_count; i++) {
-+		CU_TEST(tracefs_dynevent_destroy(dkretprobe[i], false) == 0);
-+	}
-+	devents = get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE,
-+				    kprobe_count);
-+	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance));
-+	CU_TEST(check_probes(kretests, kretprobe_count, dkretprobe, false, instance));
-+	tracefs_dynevent_list_free(devents);
-+	devents = NULL;
-+
-+	for (i = 0; i < kprobe_count; i++) {
-+		CU_TEST(tracefs_dynevent_destroy(dkprobe[i], false) == 0);
-+	}
-+	get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, 0);
-+	CU_TEST(check_probes(ktests, kprobe_count, dkprobe, false, instance));
-+	CU_TEST(check_probes(kretests, kretprobe_count, dkretprobe, false, instance));
-+	tracefs_dynevent_list_free(devents);
-+	devents = NULL;
-+
-+	for (i = 0; i < kprobe_count; i++)
-+		tracefs_dynevent_free(dkprobe[i]);
-+	for (i = 0; i < kretprobe_count; i++)
-+		tracefs_dynevent_free(dkretprobe[i]);
-+
-+	/* kprobes raw APIs */
-+	ret = tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, true);
-+	CU_TEST(ret == 0);
-+	get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, 0);
-+
-+	for (i = 0; i < kprobe_count; i++) {
-+		ret = tracefs_kprobe_raw(ktests[i].system, ktests[i].event,
-+					 ktests[i].address, ktests[i].format);
-+		CU_TEST(ret == 0);
-+	}
-+
-+	devents = get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, kprobe_count);
-+	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance));
-+	tracefs_dynevent_list_free(devents);
-+	devents = NULL;
-+
-+	for (i = 0; i < kretprobe_count; i++) {
-+		ret = tracefs_kretprobe_raw(kretests[i].system, kretests[i].event,
-+					    kretests[i].address, kretests[i].format);
-+		CU_TEST(ret == 0);
-+	}
-+
-+	devents = get_dynevents_check(TRACEFS_DYNEVENT_KPROBE, kprobe_count);
-+	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance));
-+	tracefs_dynevent_list_free(devents);
-+	devents = NULL;
-+
-+	devents = get_dynevents_check(TRACEFS_DYNEVENT_KRETPROBE, kretprobe_count);
-+	CU_TEST(check_probes(kretests, kretprobe_count, devents, true, instance));
-+	tracefs_dynevent_list_free(devents);
-+	devents = NULL;
-+
-+	devents = get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE,
-+				    kprobe_count + kretprobe_count);
-+	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance));
-+	CU_TEST(check_probes(kretests, kretprobe_count, devents, true, instance));
-+	tracefs_dynevent_list_free(devents);
-+	devents = NULL;
-+
-+	ret = tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, true);
-+	CU_TEST(ret == 0);
-+	get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, 0);
-+	free(dkretprobe);
-+	free(dkprobe);
-+}
-+
-+static void test_kprobes(void)
-+{
-+	test_kprobes_instance(test_instance);
-+}
-+
- static void test_instance_file(void)
- {
- 	struct tracefs_instance *instance = NULL;
- 	struct tracefs_instance *second = NULL;
--	enum tracefs_kprobe_type type;
- 	const char *name = get_rand_str();
- 	const char *inst_name = NULL;
- 	const char *tdir;
- 	char *inst_file;
- 	char *inst_dir;
- 	struct stat st;
--	char **kprobes;
--	char *kformat;
+-
+-/*
+- * Helper function to parse kprobes.
+- * @content: The content of kprobe_events on the first iteration.
+- *           NULL on next iterations.
+- * @saveptr: Same as saveptr for strtok_r
+- * @type: Where to store the type (before ':')
+- * @system: Store the system of the kprobe (NULL to have event contain
+- *          both system and event, as in "kprobes/myprobe").
+- * @event: Where to store the event.
+- * @addr: Where to store the addr (may be NULL to ignore)
+- * @format: Where to store the format (may be NULL to ignore)
+- */
+-static int parse_kprobe(char *content, char **saveptr,
+-			char **type, char **system, char **event,
+-			char **addr, char **format)
+-{
+-	char *p;
+-
+-	p = strtok_r(content, ":", saveptr);
+-	if (!p)
+-		return 1; /* eof */
+-	*type = p;
+-
+-	if (system) {
+-		p = strtok_r(NULL, "/", saveptr);
+-		if (!p)
+-			return -1;
+-		*system = p;
+-	}
+-
+-	p = strtok_r(NULL, " ", saveptr);
+-	if (!p)
+-		return -1;
+-	*event = p;
+-
+-	if (addr || format) {
+-		p = strtok_r(NULL, " ", saveptr);
+-		if (!p)
+-			return -1;
+-		if (addr)
+-			*addr = p;
+-	}
+-
+-	p = strtok_r(NULL, "\n", saveptr);
+-	if (!p)
+-		return -1;
+-	if (format)
+-		*format = p;
+-
+-	return 0;
+-}
+-
+-/**
+- * tracefs_get_kprobes - return a list kprobes (by group/event name)
+- * @type: The type of kprobes to return.
+- *
+- * If @type is TRACEFS_ALL_KPROBES all kprobes in the kprobe_events
+- * are returned. Otherwise if it is TRACEFS_KPROBE, then only
+- * normal kprobes (p:) are returned, or if type is TRACEFS_KRETPROBE
+- * then only kretprobes (r:) are returned.
+- *
+- * Returns a list of strings that contain the kprobes that exist
+- * in the kprobe_events files. The strings returned are in the
+- * "group/event" format.
+- * The list must be freed with tracefs_list_free().
+- * If there are no kprobes, a list is still returned, but it contains
+- * only a NULL pointer.
+- * On error, NULL is returned.
+- */
+-char **tracefs_get_kprobes(enum tracefs_kprobe_type type)
+-{
+-	char **list = NULL;
+-	char *content;
+-	char *saveptr;
+-	char *event;
 -	char *ktype;
--	char *kaddr;
--	char *fname;
- 	char *file1;
- 	char *file2;
- 	char *tracer;
-+	char *fname;
- 	int size;
- 	int ret;
--	int i;
- 
- 	tdir  = tracefs_tracing_dir();
- 	CU_TEST(tdir != NULL);
-@@ -541,153 +766,6 @@ static void test_instance_file(void)
- 	free(file1);
- 	free(file2);
- 
--	ret = tracefs_kprobe_clear_all(true);
--	CU_TEST(ret == 0);
--	ret = tracefs_kprobe_raw(NULL, KPROBE_1_NAME, KPROBE_1_ADDR, KPROBE_1_FMT);
--	CU_TEST(ret == 0);
--	ret = tracefs_kprobe_raw(KPROBE_2_GROUP, KPROBE_2_NAME, KPROBE_2_ADDR,
--				 KPROBE_2_FMT);
--	CU_TEST(ret == 0);
+-	int ret;
 -
--	ret = tracefs_kretprobe_raw(KPROBE_2_GROUP, KRETPROBE_NAME, KRETPROBE_ADDR,
--				 KRETPROBE_FMT);
--	CU_TEST(ret == 0);
+-	errno = 0;
+-	content = tracefs_instance_file_read(NULL, KPROBE_EVENTS, NULL);
+-	if (!content) {
+-		if (errno)
+-			return NULL;
+-		/* content is NULL on empty file, return an empty list */
+-		return trace_list_create_empty();
+-	}
 -
--	type = tracefs_kprobe_info(KPROBE_1_GROUP, KPROBE_1_NAME, &ktype,
--				   &kaddr, &kformat);
--	CU_TEST(type == TRACEFS_KPROBE);
--	CU_TEST(ktype && *ktype == 'p');
--	CU_TEST(kaddr && !strcmp(kaddr, KPROBE_1_ADDR));
--	CU_TEST(kformat && !strcmp(kformat, KPROBE_1_FMT));
--	free(ktype);
--	free(kaddr);
--	free(kformat);
+-	ret = parse_kprobe(content, &saveptr, &ktype, NULL, &event, NULL, NULL);
 -
--	type = tracefs_kprobe_info(KPROBE_2_GROUP, KPROBE_2_NAME, &ktype,
--				   &kaddr, &kformat);
--	CU_TEST(type == TRACEFS_KPROBE);
--	CU_TEST(ktype && *ktype == 'p');
--	CU_TEST(kaddr && !strcmp(kaddr, KPROBE_2_ADDR));
--	CU_TEST(kformat && !strcmp(kformat, KPROBE_2_FMT));
--	free(ktype);
--	free(kaddr);
--	free(kformat);
+-	while (!ret) {
+-		char **tmp;
 -
--	type = tracefs_kprobe_info(KPROBE_2_GROUP, KRETPROBE_NAME, &ktype,
--				   &kaddr, &kformat);
--	CU_TEST(type == TRACEFS_KRETPROBE);
--	CU_TEST(ktype && *ktype == 'r');
--	CU_TEST(kaddr && !strcmp(kaddr, KRETPROBE_ADDR));
--	CU_TEST(kformat && !strcmp(kformat, KRETPROBE_FMT));
--	free(ktype);
--	free(kaddr);
--	free(kformat);
--
--	kprobes = tracefs_get_kprobes(TRACEFS_ALL_KPROBES);
--	CU_TEST(kprobes != NULL);
--
--	for (i = 0; kprobes[i]; i++) {
--		char *system = strtok(kprobes[i], "/");
--		char *event = strtok(NULL, "");
--		bool found = false;
--		if (!strcmp(system, KPROBE_1_GROUP)) {
--			CU_TEST(!strcmp(event, KPROBE_1_NAME));
--			found = true;
--		} else if (!strcmp(system, KPROBE_2_GROUP)) {
--			switch (tracefs_kprobe_info(system, event, NULL, NULL, NULL)) {
--			case TRACEFS_KPROBE:
--				CU_TEST(!strcmp(event, KPROBE_2_NAME));
--				found = true;
+-		if (type != TRACEFS_ALL_KPROBES) {
+-			switch (*ktype) {
+-			case 'p':
+-				if (type != TRACEFS_KPROBE)
+-					goto next;
 -				break;
--			case TRACEFS_KRETPROBE:
--				CU_TEST(!strcmp(event, KRETPROBE_NAME));
--				found = true;
+-			case 'r':
+-				if (type != TRACEFS_KRETPROBE)
+-					goto next;
 -				break;
 -			default:
--				break;
+-				goto next;
 -			}
 -		}
--		CU_TEST(found);
+-
+-		tmp = tracefs_list_add(list, event);
+-		if (!tmp)
+-			goto fail;
+-		list = tmp;
+- next:
+-		ret = parse_kprobe(NULL, &saveptr, &ktype, NULL, &event, NULL, NULL);
 -	}
--	tracefs_list_free(kprobes);
--	CU_TEST(i == 3);
 -
--	kprobes = tracefs_get_kprobes(TRACEFS_KPROBE);
--	CU_TEST(kprobes != NULL);
+-	if (!list)
+-		list = trace_list_create_empty();
+- out:
+-	free(content);
+-	return list;
+- fail:
+-	tracefs_list_free(list);
+-	list = NULL;
+-	goto out;
+-}
 -
--	for (i = 0; kprobes[i]; i++) {
--		char *system = strtok(kprobes[i], "/");
--		char *event = strtok(NULL, "");
--		bool found = false;
--		if (!strcmp(system, KPROBE_1_GROUP)) {
--			CU_TEST(!strcmp(event, KPROBE_1_NAME));
--			found = true;
--		} else if (!strcmp(system, KPROBE_2_GROUP)) {
--			CU_TEST(!strcmp(event, KPROBE_2_NAME));
--			found = true;
+-/**
+- * tracefs_kprobe_info - return the type of kprobe specified.
+- * @group: The group the kprobe is in (NULL for the default "kprobes")
+- * @event: The name of the kprobe to find.
+- * @type: String to return kprobe type (before ':') NULL to ignore.
+- * @addr: String to return address kprobe is attached to. NULL to ignore.
+- * @format: String to return kprobe format. NULL to ignore.
+- *
+- * If @type, @addr, or @format is non NULL, then the returned string
+- * must be freed with free(). They will also be set to NULL, and
+- * even on error, they may contain strings to be freed. If they are
+- * not NULL, then they still need to be freed.
+- *
+- * Returns TRACEFS_ALL_KPROBES if an error occurs or the kprobe is not found,
+- *            or the probe is of an unknown type.
+- * TRACEFS_KPROBE if the type of kprobe found is a normal kprobe.
+- * TRACEFS_KRETPROBE if the type of kprobe found is a kretprobe.
+- */
+-enum tracefs_kprobe_type tracefs_kprobe_info(const char *group, const char *event,
+-					     char **type, char **addr, char **format)
+-{
+-	enum tracefs_kprobe_type rtype = TRACEFS_ALL_KPROBES;
+-	char *saveptr;
+-	char *content;
+-	char *system;
+-	char *probe;
+-	char *ktype;
+-	char *kaddr;
+-	char *kfmt;
+-	int ret;
+-
+-	if (!group)
+-		group = KPROBE_DEFAULT_GROUP;
+-
+-	if (type)
+-		*type = NULL;
+-	if (addr)
+-		*addr = NULL;
+-	if (format)
+-		*format = NULL;
+-
+-	content = tracefs_instance_file_read(NULL, KPROBE_EVENTS, NULL);
+-	if (!content)
+-		return rtype;
+-
+-	ret = parse_kprobe(content, &saveptr, &ktype, &system, &probe,
+-			   &kaddr, &kfmt);
+-
+-	while (!ret) {
+-
+-		if (!strcmp(system, group) && !strcmp(probe, event)) {
+-			if (type)
+-				*type = strdup(ktype);
+-			if (addr)
+-				*addr = strdup(kaddr);
+-			if (format)
+-				*format = strdup(kfmt);
+-
+-			switch (*ktype) {
+-			case 'p': rtype = TRACEFS_KPROBE; break;
+-			case 'r': rtype = TRACEFS_KRETPROBE; break;
+-			}
+-			break;
 -		}
--		CU_TEST(found);
+-		ret = parse_kprobe(NULL, &saveptr, &ktype, &system, &probe,
+-				   &kaddr, &kfmt);
 -	}
--	tracefs_list_free(kprobes);
--	CU_TEST(i == 2);
+-	free(content);
+-	return rtype;
+-}
 -
--	kprobes = tracefs_get_kprobes(TRACEFS_KRETPROBE);
--	CU_TEST(kprobes != NULL);
+-static void disable_events(const char *system, const char *event,
+-			   char **list)
+-{
+-	struct tracefs_instance *instance;
+-	int i;
 -
--	for (i = 0; kprobes[i]; i++) {
--		char *system = strtok(kprobes[i], "/");
--		char *event = strtok(NULL, "");
--		bool found = false;
--		if (!strcmp(system, KPROBE_2_GROUP)) {
--			CU_TEST(!strcmp(event, KRETPROBE_NAME));
--			found = true;
+-	/*
+-	 * Note, this will not fail even on error.
+-	 * That is because even if something fails, it may still
+-	 * work enough to clear the kprobes. If that's the case
+-	 * the clearing after the loop will succeed and the function
+-	 * is a success, even though other parts had failed. If
+-	 * one of the kprobe events is enabled in one of the
+-	 * instances that fail, then the clearing will fail too
+-	 * and the function will return an error.
+-	 */
+-
+-	tracefs_event_disable(NULL, system, event);
+-	/* No need to test results */
+-
+-	if (!list)
+-		return;
+-
+-	for (i = 0; list[i]; i++) {
+-		instance = tracefs_instance_alloc(NULL, list[i]);
+-		/* If this fails, try the next one */
+-		if (!instance)
+-			continue;
+-		tracefs_event_disable(instance, system, event);
+-		tracefs_instance_free(instance);
+-	}
+-	return;
+-}
+-
+-static int clear_kprobe(const char *system, const char *event)
+-{
+-	/* '-' + ':' + '/' + '\n' + '\0' = 5 bytes */
+-	int len = strlen(system) + strlen(event) + 5;
+-	char content[len];
+-
+-	sprintf(content, "-:%s/%s", system, event);
+-	return tracefs_instance_file_append(NULL, KPROBE_EVENTS, content);
+-}
+-
+-static int kprobe_clear_probes(const char *group, bool force)
+-{
+-	char **instance_list;
+-	char **kprobe_list;
+-	char *saveptr;
+-	char *system;
+-	char *kprobe;
+-	char *event;
+-	int ret;
+-	int i;
+-
+-	kprobe_list = tracefs_get_kprobes(TRACEFS_ALL_KPROBES);
+-	if (!kprobe_list)
+-		return -1;
+-
+-	instance_list = tracefs_instances(NULL);
+-	/*
+-	 * Even if the above failed and instance_list is NULL,
+-	 * keep going, as the enabled event may simply be in the
+-	 * top level.
+-	 */
+-
+-	/*
+-	 * If a system is defined, the default is to pass unless
+-	 * an event fails to be removed. If a system is not defined,
+-	 * the default is to fail, unless all are removed.
+-	 */
+-	ret = group ? 0 : -1;
+-
+-	for (i = 0; kprobe_list[i]; i++) {
+-		kprobe = kprobe_list[i];
+-
+-		system = strtok_r(kprobe, "/", &saveptr);
+-		if (!system)
+-			goto out;
+-
+-		event = strtok_r(NULL," ", &saveptr);
+-		if (!event)
+-			goto out;
+-
+-		/* Skip if this does not match a given system */
+-		if (group && strcmp(system, group) != 0)
+-			continue;
+-
+-		if (force)
+-			disable_events(system, event, instance_list);
+-
+-		if (group) {
+-			ret = clear_kprobe(system, event);
+-			if (ret < 0)
+-				goto out;
+-		} else {
+-			ret = tracefs_instance_file_clear(NULL, KPROBE_EVENTS);
+-			/* On success stop the loop */
+-			if (!ret)
+-				goto out;
 -		}
--		CU_TEST(found);
+-
+-		/* Set the default for whether a system is defined or not */
+-		ret = group ? 0 : -1;
 -	}
--	tracefs_list_free(kprobes);
--	CU_TEST(i == 1);
+- out:
+-	tracefs_list_free(instance_list);
+-	tracefs_list_free(kprobe_list);
+-	return ret;
+-}
 -
--	ret = tracefs_event_enable(instance, KPROBE_1_GROUP, KPROBE_1_NAME);
--	CU_TEST(ret == 0);
--	ret = tracefs_event_enable(instance, KPROBE_2_GROUP, KPROBE_2_NAME);
--	CU_TEST(ret == 0);
--	ret = tracefs_event_enable(instance, KPROBE_2_GROUP, KRETPROBE_NAME);
--	CU_TEST(ret == 0);
+-/**
+- * tracefs_kprobe_clear_all - clear kprobe events
+- * @force: Will attempt to disable all kprobe events and clear them
+- *
+- * Will remove all defined kprobe events. If any of them are enabled,
+- * and @force is not set, then it will error with -1 and errno to be
+- * EBUSY. If @force is set, then it will attempt to disable all the kprobe
+- * events in all instances, and try again.
+- *
+- * Returns zero on success, -1 otherwise.
+- */
+-int tracefs_kprobe_clear_all(bool force)
+-{
+-	if (tracefs_instance_file_clear(NULL, KPROBE_EVENTS) == 0)
+-		return 0;
 -
--	ret = tracefs_kprobe_clear_all(false);
--	CU_TEST(ret < 0);
+-	if (!force)
+-		return -1;
 -
--	ret = tracefs_kprobe_clear_probe(KPROBE_2_GROUP, NULL, false);
--	CU_TEST(ret < 0);
+-	/* Attempt to disable all kprobe events */
+-	return kprobe_clear_probes(NULL, force);
+-}
 -
--	ret = tracefs_kprobe_clear_probe(KPROBE_2_GROUP, NULL, true);
--	CU_TEST(ret == 0);
+-/**
+- * tracefs_kprobe_clear_all - clear kprobe events
+- * @system: System to clear (NULL means default)
+- * @event: Name of probe to clear in system (NULL for all probes in system)
+- * @force: Will attempt to disable all kprobe events and clear them
+- *
+- * Will remove the kprobes that match the @system and @event. If @system
+- * is NULL, then "kprobes" is used and will ignore all other system
+- * groups of kprobes. The @event is NULL then all events under the given
+- * @system are removed, otherwise only the event that matches.
+- *
+- * Returns zero on success, -1 otherwise.
+- */
+-int tracefs_kprobe_clear_probe(const char *system, const char *event, bool force)
+-{
+-	char **instance_list;
+-	int ret;
 -
--	kprobes = tracefs_get_kprobes(TRACEFS_ALL_KPROBES);
--	CU_TEST(kprobes != NULL);
+-	if (!system)
+-		system = "kprobes";
 -
--	for (i = 0; kprobes[i]; i++) {
--		char *system = strtok(kprobes[i], "/");
--		char *event = strtok(NULL, "");
--		bool found = false;
--		if (!strcmp(system, KPROBE_1_GROUP)) {
--			CU_TEST(!strcmp(event, KPROBE_1_NAME));
--			found = true;
--		}
--		CU_TEST(found);
+-	if (!event)
+-		return kprobe_clear_probes(system, force);
+-
+-	/*
+-	 * Since we know we are disabling a specific event, try
+-	 * to disable it first before clearing it.
+-	 */
+-	if (force) {
+-		instance_list = tracefs_instances(NULL);
+-		disable_events(system, event, instance_list);
+-		tracefs_list_free(instance_list);
 -	}
--	tracefs_list_free(kprobes);
--	CU_TEST(i == 1);
 -
--	ret = tracefs_kprobe_clear_all(true);
--	CU_TEST(ret == 0);
+-	ret = clear_kprobe(system, event);
 -
--	kprobes = tracefs_get_kprobes(TRACEFS_ALL_KPROBES);
--	CU_TEST(kprobes != NULL);
--
--	CU_TEST(kprobes[0] == NULL);
--	tracefs_list_free(kprobes);
--
- 	tracefs_put_tracing_file(inst_file);
- 	free(fname);
- 
-@@ -1442,4 +1520,5 @@ void test_tracefs_lib(void)
- 		    test_custom_trace_dir);
- 	CU_add_test(suite, "ftrace marker",
- 		    test_ftrace_marker);
-+	CU_add_test(suite, "kprobes", test_kprobes);
- }
+-	return ret < 0 ? -1 : 0;
+-}
 -- 
 2.33.1
 
