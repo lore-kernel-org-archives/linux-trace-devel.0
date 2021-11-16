@@ -2,265 +2,117 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F98EC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 16 Nov 2021 00:59:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADF31C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 16 Nov 2021 05:49:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8528E61AAA
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 16 Nov 2021 00:59:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 879C76321A
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 16 Nov 2021 05:49:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346547AbhKPBCA (ORCPT
+        id S237638AbhKPFws (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 15 Nov 2021 20:02:00 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:50144 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359168AbhKPAys (ORCPT
+        Tue, 16 Nov 2021 00:52:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237563AbhKPFwf (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 15 Nov 2021 19:54:48 -0500
-Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id AFD9020C6362;
-        Mon, 15 Nov 2021 16:50:53 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AFD9020C6362
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1637023853;
-        bh=2MNNnQX+HlxxaMEY4gU+2b0Gkt/9hrxk5VsW0GdjNOE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YliL7YRSJHXimSw7lQA5eab8XKyMDgz5mrqE9TunNHaZa8SBasT+N8HqXj9XGqPTy
-         hXMhxIYqGy8Yu10fMgwjBgBbzvf4aAnNSFYAcJ0sn7Ds2ZbH1OOGp6BYnJg1zE5tCC
-         Pv8k7A/WzeLQ6/EyjDoWPhhCNEBExg7yZCjDcmhs=
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     rostedt@goodmis.org, mhiramat@kernel.org
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        beaub@linux.microsoft.com
-Subject: [PATCH v5 10/12] user_events: Add documentation file
-Date:   Mon, 15 Nov 2021 16:50:45 -0800
-Message-Id: <20211116005047.1808-11-beaub@linux.microsoft.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211116005047.1808-1-beaub@linux.microsoft.com>
-References: <20211116005047.1808-1-beaub@linux.microsoft.com>
+        Tue, 16 Nov 2021 00:52:35 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19483C0431BE
+        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Nov 2021 20:46:55 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id u1so34949930wru.13
+        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Nov 2021 20:46:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iHD5wB4ewszXsgFSD8UeU1gyAjy4tYh7qRQM0ThN4DQ=;
+        b=oGyJwHqqfVnGddM5B35YJzUKsJzfmyQ0DaN4QJg2KP/pgCuYSxIsf/Z8On4y7QIW+/
+         EP+PTqzefF5Elnit2uvbMgnULuJkxz13o3kC/8QGp/CrGxoCuNWFioWT90nYQSOoPeNr
+         8aDuEbyxWz/LSND09rIHPoWfgJAKNprg4UBSccBNWWq2XF80w0BFqoalmhbFhDDMq0/J
+         TtTOrl/69X68vrEGtq+E/R79SLIlFvN8+7yQeJ0YxMjDPevBhtUsUDaePkt7p1Hbqadv
+         miWgm0/1wjkivpC24yMYLUx9r5RSbC0lZvn22cpNBZtQx+xXVOpJ4maby2evPI+Fahil
+         WtYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iHD5wB4ewszXsgFSD8UeU1gyAjy4tYh7qRQM0ThN4DQ=;
+        b=TV+uMdodSAQ2EifMXNsQfXBBQfoVjwnmKe6qvZrycHPGRjScio++Tukfpo0XWG6jlG
+         UOWghmjFThbVfYav/HYLCaYcb5cypKggufcea0J48Lvj2m0/AOGDlCvtFn1+9W+sINmE
+         ht3sQbgD7wWmbBHgdyH9bDAndeJ8QP8YW3jQnl2HQEmslKUB18MfMsC+klUvTBN07fjr
+         gtKMsNh42ImtE0KFGyGR5muvdkcCSV4z7eCp0TfrMMSJT0tTej8UiHSqKLJp4dlTNEyW
+         IndhYIh7mxBeSzLoxOXOq0Ll8IWmceBLUnxVWehzSxiHYnrorFLe4LWrYwXlFKqtn7sL
+         VNrA==
+X-Gm-Message-State: AOAM532QhZtc5dxFjL962kRvaNjeKtSUCUHnqj5HFqXhRHfIrnuHxsCq
+        dA/LYs4LZaIklBdF7Apup277ZSChUAakBA==
+X-Google-Smtp-Source: ABdhPJyEs5nekOxh1EaRku/uKRQDgRIPbbNfaXbNgMUDNOqJ86l1lx8erQEHBBrDXqXQstJ1M9GdXA==
+X-Received: by 2002:a5d:4fcc:: with SMTP id h12mr5764445wrw.434.1637038013741;
+        Mon, 15 Nov 2021 20:46:53 -0800 (PST)
+Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id m21sm16355509wrb.2.2021.11.15.20.46.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 20:46:53 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org, amikhak@wirelessfabric.com
+Subject: [PATCH] trace-cmd: Fix sizeof print warnings
+Date:   Tue, 16 Nov 2021 06:46:51 +0200
+Message-Id: <20211116044651.142224-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.33.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add a documentation file about user_events with example code, etc.
-explaining how it may be used.
+The return type of sizeof() operator and strlen() function is size_t,
+which is machine specific. When printing these values with printf, a
+dedicated 'z' specifier should be used, to avoid compile warnings.
 
-Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+Reported-by: Alan Mikhak <amikhak@wirelessfabric.com>
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- Documentation/trace/index.rst       |   1 +
- Documentation/trace/user_events.rst | 195 ++++++++++++++++++++++++++++
- 2 files changed, 196 insertions(+)
- create mode 100644 Documentation/trace/user_events.rst
+ tracecmd/trace-dump.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/trace/index.rst b/Documentation/trace/index.rst
-index 3769b9b7aed8..3a47aa8341c6 100644
---- a/Documentation/trace/index.rst
-+++ b/Documentation/trace/index.rst
-@@ -30,3 +30,4 @@ Linux Tracing Technologies
-    stm
-    sys-t
-    coresight/index
-+   user_events
-diff --git a/Documentation/trace/user_events.rst b/Documentation/trace/user_events.rst
-new file mode 100644
-index 000000000000..e77e71b2fe9b
---- /dev/null
-+++ b/Documentation/trace/user_events.rst
-@@ -0,0 +1,195 @@
-+=========================================
-+user_events: User-based Event Tracing
-+=========================================
-+
-+:Author: Beau Belgrave
-+
-+Overview
-+--------
-+User based trace events allow user processes to create events and trace data
-+that can be viewed via existing tools, such as ftrace, perf and eBPF.
-+To enable this feature, build your kernel with CONFIG_USER_EVENTS=y.
-+
-+Programs can view status of the events via
-+/sys/kernel/debug/tracing/user_events_status and can both register and write
-+data out via /sys/kernel/debug/tracing/user_events_data.
-+
-+Programs can also use /sys/kernel/debug/tracing/dynamic_events to register and
-+delete user based events via the u: prefix. The format of the command to
-+dynamic_events is the same as the ioctl with the u: prefix applied.
-+
-+Typically programs will register a set of events that they wish to expose to
-+tools that can read trace_events (such as ftrace and perf). The registration
-+process gives back two ints to the program for each event. The first int is the
-+status index. This index describes which byte in the
-+/sys/kernel/debug/tracing/user_events_status file represents this event. The
-+second int is the write index. This index describes the data when a write() or
-+writev() is called on the /sys/kernel/debug/tracing/user_events_data file.
-+
-+The structures referenced in this document are contained with the
-+/include/uap/linux/user_events.h file in the source tree.
-+
-+**NOTE:** *Both user_events_status and user_events_data are under the tracefs
-+filesystem and may be mounted at different paths than above.*
-+
-+Registering
-+-----------
-+Registering within a user process is done via ioctl() out to the
-+/sys/kernel/debug/tracing/user_events_data file. The command to issue is
-+DIAG_IOCSREG. This command takes a struct user_reg as an argument.
-+
-+The struct user_reg requires two values, the first is the size of the structure
-+to ensure forward and backward compatibility. The second is the command string
-+to issue for registering.
-+
-+User based events show up under tracefs like any other event under the
-+subsystem named "user_events". This means tools that wish to attach to the
-+events need to use /sys/kernel/debug/tracing/events/user_events/[name]/enable
-+or perf record -e user_events:[name] when attaching/recording.
-+
-+**NOTE:** *The write_index returned is only valid for the FD that was used*
-+
-+Command Format
-+^^^^^^^^^^^^^^
-+The command string format is as follows::
-+
-+  name[:FLAG1[,FLAG2...]] [Field1[;Field2...]]
-+
-+Supported Flags
-+^^^^^^^^^^^^^^^
-+**BPF_ITER** - EBPF programs attached to this event will get the raw iovec
-+struct instead of any data copies for max performance.
-+
-+Field Format
-+^^^^^^^^^^^^
-+::
-+
-+  type name [size]
-+
-+Basic types are supported (__data_loc, u32, u64, int, char, char[20], etc).
-+User programs are encouraged to use clearly sized types like u32.
-+
-+**NOTE:** *Long is not supported since size can vary between user and kernel.*
-+
-+The size is only valid for types that start with a struct prefix.
-+This allows user programs to describe custom structs out to tools, if required.
-+
-+For example, a struct in C that looks like this::
-+
-+  struct mytype {
-+    char data[20];
-+  };
-+
-+Would be represented by the following field::
-+
-+  struct mytype myname 20
-+
-+Status
-+------
-+When tools attach/record user based events the status of the event is updated
-+in realtime. This allows user programs to only incur the cost of the write() or
-+writev() calls when something is actively attached to the event.
-+
-+User programs call mmap() on /sys/kernel/debug/tracing/user_events_status to
-+check the status for each event that is registered. The byte to check in the
-+file is given back after the register ioctl() via user_reg.status_index.
-+Currently the size of user_events_status is a single page, however, custom
-+kernel configurations can change this size to allow more user based events. In
-+all cases the size of the file is a multiple of a page size.
-+
-+For example, if the register ioctl() gives back a status_index of 3 you would
-+check byte 3 of the returned mmap data to see if anything is attached to that
-+event.
-+
-+Administrators can easily check the status of all registered events by reading
-+the user_events_status file directly via a terminal. The output is as follows::
-+
-+  Byte:Name [# Comments]
-+  ...
-+
-+  Active: ActiveCount
-+  Buisy: BusyCount
-+  Max: MaxCount
-+
-+For example, on a system that has a single event the output looks like this::
-+
-+  1:test
-+
-+  Active: 1
-+  Busy: 0
-+  Max: 4096
-+
-+If a user enables the user event via ftrace, the output would change to this::
-+
-+  1:test # Used by ftrace
-+
-+  Active: 1
-+  Busy: 1
-+  Max: 4096
-+
-+**NOTE:** *A status index of 0 will never be returned. This allows user
-+programs to have an index that can be used on error cases.*
-+
-+Status Bits
-+^^^^^^^^^^^
-+The byte being checked will be non-zero if anything is attached. Programs can
-+check specific bits in the byte to see what mechanism has been attached.
-+
-+The following values are defined to aid in checking what has been attached:
-+
-+**EVENT_STATUS_FTRACE** - Bit set if ftrace has been attached (Bit 0).
-+
-+**EVENT_STATUS_PERF** - Bit set if perf/eBPF has been attached (Bit 1).
-+
-+Writing Data
-+------------
-+After registering an event the same fd that was used to register can be used
-+to write an entry for that event. The write_index returned must be at the start
-+of the data, then the remaining data is treated as the payload of the event.
-+
-+For example, if write_index returned was 1 and I wanted to write out an int
-+payload of the event. Then the data would have to be 8 bytes (2 ints) in size,
-+with the first 4 bytes being equal to 1 and the last 4 bytes being equal to the
-+value I want as the payload.
-+
-+In memory this would look like this::
-+
-+  int index;
-+  int payload;
-+
-+User programs might have well known structs that they wish to use to emit out
-+as payloads. In those cases writev() can be used, with the first vector being
-+the index and the following vector(s) being the actual event payload.
-+
-+For example, if I have a struct like this::
-+
-+  struct payload {
-+        int src;
-+        int dst;
-+        int flags;
-+  };
-+
-+It's advised for user programs to do the following::
-+
-+  struct iovec io[2];
-+  struct payload e;
-+
-+  io[0].iov_base = &write_index;
-+  io[0].iov_len = sizeof(write_index);
-+  io[1].iov_base = &e;
-+  io[1].iov_len = sizeof(e);
-+
-+  writev(fd, (const struct iovec*)io, 2);
-+
-+**NOTE:** *The write_index is not emitted out into the trace being recorded.*
-+
-+EBPF
-+----
-+EBPF programs that attach to a user-based event tracepoint are given a pointer
-+to a struct user_bpf_context. The bpf context contains the data type (which can
-+be a user or kernel buffer, or can be a pointer to the iovec) and the data
-+length that was emitted (minus the write_index).
-+
-+Example Code
-+------------
-+See sample code in samples/user_events.
+diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
+index b19ce89a..2408a4ab 100644
+--- a/tracecmd/trace-dump.c
++++ b/tracecmd/trace-dump.c
+@@ -152,13 +152,13 @@ static void dump_initial_format(int fd)
+ 
+ 	/* check initial bytes */
+ 	if (read_file_bytes(fd, buf, sizeof(magic)))
+-		die("cannot read %ld bytes magic", sizeof(magic));
++		die("cannot read %zu bytes magic", sizeof(magic));
+ 	if (memcmp(buf, magic, sizeof(magic)) != 0)
+ 		die("wrong file magic");
+ 
+ 	/* check initial tracing string */
+ 	if (read_file_bytes(fd, buf, strlen(TRACING_STR)))
+-		die("cannot read %ld bytes tracing string", strlen(TRACING_STR));
++		die("cannot read %zu bytes tracing string", strlen(TRACING_STR));
+ 	buf[strlen(TRACING_STR)] = 0;
+ 	if (strncmp(buf, TRACING_STR, strlen(TRACING_STR)) != 0)
+ 		die("wrong tracing string: %s", buf);
+@@ -201,7 +201,7 @@ static void dump_header_page(int fd)
+ 
+ 	/* check header string */
+ 	if (read_file_bytes(fd, buf, strlen(HEAD_PAGE_STR) + 1))
+-		die("cannot read %ld bytes header string", strlen(HEAD_PAGE_STR));
++		die("cannot read %zu bytes header string", strlen(HEAD_PAGE_STR));
+ 	if (strncmp(buf, HEAD_PAGE_STR, strlen(HEAD_PAGE_STR)) != 0)
+ 		die("wrong header string: %s", buf);
+ 
+@@ -222,7 +222,7 @@ static void dump_header_event(int fd)
+ 
+ 	/* check header string */
+ 	if (read_file_bytes(fd, buf, strlen(HEAD_PAGE_EVENT) + 1))
+-		die("cannot read %ld bytes header string", strlen(HEAD_PAGE_EVENT));
++		die("cannot read %zu bytes header string", strlen(HEAD_PAGE_EVENT));
+ 	if (strncmp(buf, HEAD_PAGE_EVENT, strlen(HEAD_PAGE_EVENT)) != 0)
+ 		die("wrong header string: %s", buf);
+ 
 -- 
-2.17.1
+2.33.1
 
