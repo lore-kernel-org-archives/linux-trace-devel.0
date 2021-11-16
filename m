@@ -2,38 +2,38 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86D08C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 16 Nov 2021 00:59:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4A7CC4332F
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 16 Nov 2021 00:59:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7402C61AFF
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 16 Nov 2021 00:59:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 91FEE61B27
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 16 Nov 2021 00:59:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349076AbhKPBB6 (ORCPT
+        id S1346688AbhKPBCD (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 15 Nov 2021 20:01:58 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:50136 "EHLO
+        Mon, 15 Nov 2021 20:02:03 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:50142 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359162AbhKPAys (ORCPT
+        with ESMTP id S1359165AbhKPAys (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 15 Nov 2021 19:54:48 -0500
 Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A891C20C635A;
-        Mon, 15 Nov 2021 16:50:52 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A891C20C635A
+        by linux.microsoft.com (Postfix) with ESMTPSA id 4F26E20C635F;
+        Mon, 15 Nov 2021 16:50:53 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4F26E20C635F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1637023852;
-        bh=rM8MHl4ykgEOSqBXbNpd3T1p3N1pd0+DYAkgx2CZx80=;
+        s=default; t=1637023853;
+        bh=qQeZEyXlr6ZK07nGwq0BUMOhF74ViprZftDqYTszTz4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UgFO57oJLuH3+KWqOsmhbBu59tENG+gj9ijOKjZlMj+A7axfX4mSMvDdt2kmGSx8F
-         lymSC67yonmaUMduvWTJFMh+PrnTNtB8CoqjOVCe6AqEvpBfxBMEQs9R91uum7KywZ
-         3KMF+SrGNE+/XNVhhk21m27YwjcbQL6LGKej3Q8Y=
+        b=d3qXbFzIn9hJ98qz4VqHrNYMVNr4ZMfGyxQ0mge9OCHyQfQedhugNtx6kbta5OTeB
+         pu65Xvec3vuuHd/UozE+VG24YKHwvanom9X1TLRqT51C3XCUcsvoBAVbmxYdHHifFw
+         QwVUvln77jAQxfoTLFYtRFE4kr3OjvKDd1wW0PIY=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         beaub@linux.microsoft.com
-Subject: [PATCH v5 05/12] user_events: Add basic perf and eBPF support
-Date:   Mon, 15 Nov 2021 16:50:40 -0800
-Message-Id: <20211116005047.1808-6-beaub@linux.microsoft.com>
+Subject: [PATCH v5 08/12] user_events: Add self-test for perf_event integration
+Date:   Mon, 15 Nov 2021 16:50:43 -0800
+Message-Id: <20211116005047.1808-9-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211116005047.1808-1-beaub@linux.microsoft.com>
 References: <20211116005047.1808-1-beaub@linux.microsoft.com>
@@ -41,110 +41,203 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Adds support to write out user_event data to perf_probe/perf files as
-well as to any attached eBPF program.
+Tests perf can be attached to and written out correctly. Ensures attach
+updates status bits in user programs.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- kernel/trace/trace_events_user.c | 63 ++++++++++++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
+ tools/testing/selftests/user_events/Makefile  |   2 +-
+ .../testing/selftests/user_events/perf_test.c | 168 ++++++++++++++++++
+ 2 files changed, 169 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/user_events/perf_test.c
 
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 8415aaf8e3b1..badf505568dd 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -528,6 +528,50 @@ static void user_event_ftrace(struct user_event *user, void *data, u32 datalen,
- 	trace_event_buffer_commit(&event_buffer);
- }
+diff --git a/tools/testing/selftests/user_events/Makefile b/tools/testing/selftests/user_events/Makefile
+index e824b9c2cae7..c765d8635d9a 100644
+--- a/tools/testing/selftests/user_events/Makefile
++++ b/tools/testing/selftests/user_events/Makefile
+@@ -2,7 +2,7 @@
+ CFLAGS += -Wl,-no-as-needed -Wall -I../../../../usr/include
+ LDLIBS += -lrt -lpthread -lm
  
-+#ifdef CONFIG_PERF_EVENTS
+-TEST_GEN_PROGS = ftrace_test dyn_test
++TEST_GEN_PROGS = ftrace_test dyn_test perf_test
+ 
+ TEST_FILES := settings
+ 
+diff --git a/tools/testing/selftests/user_events/perf_test.c b/tools/testing/selftests/user_events/perf_test.c
+new file mode 100644
+index 000000000000..26851d51d6bb
+--- /dev/null
++++ b/tools/testing/selftests/user_events/perf_test.c
+@@ -0,0 +1,168 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Writes the user supplied payload out to perf ring buffer or eBPF program.
++ * User Events Perf Events Test Program
++ *
++ * Copyright (c) 2021 Beau Belgrave <beaub@linux.microsoft.com>
 + */
-+static void user_event_perf(struct user_event *user, void *data, u32 datalen,
-+			    void *tpdata)
++
++#include <errno.h>
++#include <linux/user_events.h>
++#include <linux/perf_event.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <fcntl.h>
++#include <sys/ioctl.h>
++#include <sys/stat.h>
++#include <unistd.h>
++#include <asm/unistd.h>
++
++#include "../kselftest_harness.h"
++
++const char *data_file = "/sys/kernel/debug/tracing/user_events_data";
++const char *status_file = "/sys/kernel/debug/tracing/user_events_status";
++const char *id_file = "/sys/kernel/debug/tracing/events/user_events/__test_event/id";
++const char *fmt_file = "/sys/kernel/debug/tracing/events/user_events/__test_event/format";
++
++struct event {
++	__u32 index;
++	__u32 field1;
++	__u32 field2;
++};
++
++static long perf_event_open(struct perf_event_attr *pe, pid_t pid,
++			    int cpu, int group_fd, unsigned long flags)
 +{
-+	struct hlist_head *perf_head;
-+
-+	if (bpf_prog_array_valid(&user->call)) {
-+		struct user_bpf_context context = {0};
-+
-+		context.data_len = datalen;
-+		context.data_type = USER_BPF_DATA_KERNEL;
-+		context.kdata = data;
-+
-+		trace_call_bpf(&user->call, &context);
-+	}
-+
-+	perf_head = this_cpu_ptr(user->call.perf_events);
-+
-+	if (perf_head && !hlist_empty(perf_head)) {
-+		struct trace_entry *perf_entry;
-+		struct pt_regs *regs;
-+		size_t size = sizeof(*perf_entry) + datalen;
-+		int context;
-+
-+		perf_entry = perf_trace_buf_alloc(ALIGN(size, 8),
-+						  &regs, &context);
-+
-+		if (unlikely(!perf_entry))
-+			return;
-+
-+		perf_fetch_caller_regs(regs);
-+
-+		memcpy(perf_entry + 1, data, datalen);
-+
-+		perf_trace_buf_submit(perf_entry, size, context,
-+				      user->call.event.type, 1, regs,
-+				      perf_head, NULL);
-+	}
++	return syscall(__NR_perf_event_open, pe, pid, cpu, group_fd, flags);
 +}
-+#endif
 +
- /*
-  * Update the register page that is shared between user processes.
-  */
-@@ -550,6 +594,10 @@ static void update_reg_page_for(struct user_event *user)
- 
- 				if (probe_func == user_event_ftrace)
- 					status |= EVENT_STATUS_FTRACE;
-+#ifdef CONFIG_PERF_EVENTS
-+				else if (probe_func == user_event_perf)
-+					status |= EVENT_STATUS_PERF;
-+#endif
- 				else
- 					status |= EVENT_STATUS_OTHER;
- 			} while ((++probe_func_ptr)->func);
-@@ -591,7 +639,19 @@ static int user_event_reg(struct trace_event_call *call,
- 
- #ifdef CONFIG_PERF_EVENTS
- 	case TRACE_REG_PERF_REGISTER:
-+		ret = tracepoint_probe_register(call->tp,
-+						call->class->perf_probe,
-+						data);
-+		if (!ret)
-+			goto inc;
-+		break;
++static int get_id(void)
++{
++	FILE *fp = fopen(id_file, "r");
++	int ret, id = 0;
 +
- 	case TRACE_REG_PERF_UNREGISTER:
-+		tracepoint_probe_unregister(call->tp,
-+					    call->class->perf_probe,
-+					    data);
-+		goto dec;
++	if (!fp)
++		return -1;
 +
- 	case TRACE_REG_PERF_OPEN:
- 	case TRACE_REG_PERF_CLOSE:
- 	case TRACE_REG_PERF_ADD:
-@@ -849,6 +909,9 @@ static int user_event_parse(char *name, char *args, char *flags,
- 	user->class.get_fields = user_event_get_fields;
- 	user->class.reg = user_event_reg;
- 	user->class.probe = user_event_ftrace;
-+#ifdef CONFIG_PERF_EVENTS
-+	user->class.perf_probe = user_event_perf;
-+#endif
- 
- 	mutex_lock(&event_mutex);
- 	ret = user_event_trace_register(user);
++	ret = fscanf(fp, "%d", &id);
++	fclose(fp);
++
++	if (ret != 1)
++		return -1;
++
++	return id;
++}
++
++static int get_offset(void)
++{
++	FILE *fp = fopen(fmt_file, "r");
++	int ret, c, last = 0, offset = 0;
++
++	if (!fp)
++		return -1;
++
++	/* Read until empty line */
++	while (true) {
++		c = getc(fp);
++
++		if (c == EOF)
++			break;
++
++		if (last == '\n' && c == '\n')
++			break;
++
++		last = c;
++	}
++
++	ret = fscanf(fp, "\tfield:u32 field1;\toffset:%d;", &offset);
++	fclose(fp);
++
++	if (ret != 1)
++		return -1;
++
++	return offset;
++}
++
++FIXTURE(user) {
++	int status_fd;
++	int data_fd;
++};
++
++FIXTURE_SETUP(user) {
++	self->status_fd = open(status_file, O_RDONLY);
++	ASSERT_NE(-1, self->status_fd);
++
++	self->data_fd = open(data_file, O_RDWR);
++	ASSERT_NE(-1, self->data_fd);
++}
++
++FIXTURE_TEARDOWN(user) {
++	close(self->status_fd);
++	close(self->data_fd);
++}
++
++TEST_F(user, perf_write) {
++	struct perf_event_attr pe = {0};
++	struct user_reg reg = {0};
++	int page_size = sysconf(_SC_PAGESIZE);
++	char *status_page;
++	struct event event;
++	struct perf_event_mmap_page *perf_page;
++	int id, fd, offset;
++	__u32 *val;
++
++	reg.size = sizeof(reg);
++	reg.name_args = (__u64)"__test_event u32 field1; u32 field2";
++
++	status_page = mmap(NULL, page_size, PROT_READ, MAP_SHARED,
++			   self->status_fd, 0);
++	ASSERT_NE(MAP_FAILED, status_page);
++
++	/* Register should work */
++	ASSERT_EQ(0, ioctl(self->data_fd, DIAG_IOCSREG, &reg));
++	ASSERT_EQ(0, reg.write_index);
++	ASSERT_NE(0, reg.status_index);
++	ASSERT_EQ(0, status_page[reg.status_index]);
++
++	/* Id should be there */
++	id = get_id();
++	ASSERT_NE(-1, id);
++	offset = get_offset();
++	ASSERT_NE(-1, offset);
++
++	pe.type = PERF_TYPE_TRACEPOINT;
++	pe.size = sizeof(pe);
++	pe.config = id;
++	pe.sample_type = PERF_SAMPLE_RAW;
++	pe.sample_period = 1;
++	pe.wakeup_events = 1;
++
++	/* Tracepoint attach should work */
++	fd = perf_event_open(&pe, 0, -1, -1, 0);
++	ASSERT_NE(-1, fd);
++
++	perf_page = mmap(NULL, page_size * 2, PROT_READ, MAP_SHARED, fd, 0);
++	ASSERT_NE(MAP_FAILED, perf_page);
++
++	/* Status should be updated */
++	ASSERT_EQ(EVENT_STATUS_PERF, status_page[reg.status_index]);
++
++	event.index = reg.write_index;
++	event.field1 = 0xc001;
++	event.field2 = 0xc01a;
++
++	/* Ensure write shows up at correct offset */
++	ASSERT_NE(-1, write(self->data_fd, &event, sizeof(event)));
++	val = (void *)(((char *)perf_page) + perf_page->data_offset);
++	ASSERT_EQ(PERF_RECORD_SAMPLE, *val);
++	/* Skip over header and size, move to offset */
++	val += 3;
++	val = (void *)((char *)val) + offset;
++	/* Ensure correct */
++	ASSERT_EQ(event.field1, *val++);
++	ASSERT_EQ(event.field2, *val++);
++}
++
++int main(int argc, char **argv)
++{
++	return test_harness_run(argc, argv);
++}
 -- 
 2.17.1
 
