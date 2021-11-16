@@ -2,38 +2,38 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B36E8C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 16 Nov 2021 00:53:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 038E3C4321E
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 16 Nov 2021 00:53:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9EEE161B3B
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 16 Nov 2021 00:53:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E402D61ABF
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 16 Nov 2021 00:53:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343623AbhKPA4N (ORCPT
+        id S1343569AbhKPA4O (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 15 Nov 2021 19:56:13 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:49984 "EHLO
+        Mon, 15 Nov 2021 19:56:14 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:50004 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358579AbhKPAxt (ORCPT
+        with ESMTP id S1358580AbhKPAxw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 15 Nov 2021 19:53:49 -0500
+        Mon, 15 Nov 2021 19:53:52 -0500
 Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C128820C6353;
-        Mon, 15 Nov 2021 16:50:51 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C128820C6353
+        by linux.microsoft.com (Postfix) with ESMTPSA id 4927320C6356;
+        Mon, 15 Nov 2021 16:50:52 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4927320C6356
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1637023851;
-        bh=lad/j+ot53rXPTIMEBiBmAPcSVSE3JYr+2WF4ax63Do=;
+        s=default; t=1637023852;
+        bh=UoNZT/SnG5ZPGampd+JhgQpnHWLytpPN3voR+fRVITk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IlIOIVsKFFfloEglT1t2deWx++qNkHGak8tdIXo+V/xxKq5iGxRNgXUcBJa6WxC1B
-         /97gUhbDUvcC1XsqWYB9ceNwZ57JQNu9S1Us6loZYiughqqmIJQGH8OtDy8O2JuuzO
-         rqPq6/zbYzk9sHEWGNIxF2ZLvJTxBzri+MAEnpR0=
+        b=Qm16H8skubjDWD/atRXcBlDO1D6YdYOoe2oYGS5rXupm5PKMD5/RLGti3lMGtAp1p
+         y5RCpox1HohJxAwyOsehSIOj3JlCjGVFltb2PSKNc5KfTFI5m08cQiVPB2mBXmiicd
+         JpqNYXoURDyvsQwxgsBsH1eYFspX1gURHmk98zEw=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         beaub@linux.microsoft.com
-Subject: [PATCH v5 01/12] user_events: Add UABI header for user access to user_events
-Date:   Mon, 15 Nov 2021 16:50:36 -0800
-Message-Id: <20211116005047.1808-2-beaub@linux.microsoft.com>
+Subject: [PATCH v5 03/12] user_events: Add print_fmt generation support for basic types
+Date:   Mon, 15 Nov 2021 16:50:38 -0800
+Message-Id: <20211116005047.1808-4-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211116005047.1808-1-beaub@linux.microsoft.com>
 References: <20211116005047.1808-1-beaub@linux.microsoft.com>
@@ -41,89 +41,146 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Define the basic structs and ioctl commands that allow user processes to
-interact with user_events.
+Addes print_fmt format generation for basic types that are supported for
+user processes. Only supports sizes that are the same on 32 and 64 bit.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- include/uapi/linux/user_events.h | 68 ++++++++++++++++++++++++++++++++
- 1 file changed, 68 insertions(+)
- create mode 100644 include/uapi/linux/user_events.h
+ kernel/trace/trace_events_user.c | 107 ++++++++++++++++++++++++++++++-
+ 1 file changed, 105 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/linux/user_events.h b/include/uapi/linux/user_events.h
-new file mode 100644
-index 000000000000..5bff99418deb
---- /dev/null
-+++ b/include/uapi/linux/user_events.h
-@@ -0,0 +1,68 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+/*
-+ * Copyright (c) 2021, Microsoft Corporation.
-+ *
-+ * Authors:
-+ *   Beau Belgrave <beaub@linux.microsoft.com>
-+ */
-+#ifndef _UAPI_LINUX_USER_EVENTS_H
-+#define _UAPI_LINUX_USER_EVENTS_H
+diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+index 80d1ce21d713..6f4be9dd197e 100644
+--- a/kernel/trace/trace_events_user.c
++++ b/kernel/trace/trace_events_user.c
+@@ -344,6 +344,106 @@ static int user_event_parse_fields(struct user_event *user, char *args)
+ 
+ static struct trace_event_fields user_event_fields_array[1];
+ 
++static const char *user_field_format(const char *type)
++{
++	if (strcmp(type, "s64") == 0)
++		return "%lld";
++	if (strcmp(type, "u64") == 0)
++		return "%llu";
++	if (strcmp(type, "s32") == 0)
++		return "%d";
++	if (strcmp(type, "u32") == 0)
++		return "%u";
++	if (strcmp(type, "int") == 0)
++		return "%d";
++	if (strcmp(type, "unsigned int") == 0)
++		return "%u";
++	if (strcmp(type, "s16") == 0)
++		return "%d";
++	if (strcmp(type, "u16") == 0)
++		return "%u";
++	if (strcmp(type, "short") == 0)
++		return "%d";
++	if (strcmp(type, "unsigned short") == 0)
++		return "%u";
++	if (strcmp(type, "s8") == 0)
++		return "%d";
++	if (strcmp(type, "u8") == 0)
++		return "%u";
++	if (strcmp(type, "char") == 0)
++		return "%d";
++	if (strcmp(type, "unsigned char") == 0)
++		return "%u";
++	if (strstr(type, "char[") != 0)
++		return "%s";
 +
-+#include <linux/types.h>
-+#include <linux/ioctl.h>
++	/* Unknown, likely struct, allowed treat as 64-bit */
++	return "%llu";
++}
 +
-+#ifdef __KERNEL__
-+#include <linux/uio.h>
-+#else
-+#include <sys/uio.h>
-+#endif
++static bool user_field_is_dyn_string(const char *type)
++{
++	if (str_has_prefix(type, "__data_loc ") ||
++	    str_has_prefix(type, "__rel_loc "))
++		if (strstr(type, "char[") != 0)
++			return true;
 +
-+#define USER_EVENTS_SYSTEM "user_events"
-+#define USER_EVENTS_PREFIX "u:"
++	return false;
++}
 +
-+/* Bits 0-6 are for known probe types, Bit 7 is for unknown probes */
-+#define EVENT_BIT_FTRACE 0
-+#define EVENT_BIT_PERF 1
-+#define EVENT_BIT_OTHER 7
++#define LEN_OR_ZERO (len ? len - pos : 0)
++static int user_event_set_print_fmt(struct user_event *user, char *buf, int len)
++{
++	struct ftrace_event_field *field, *next;
++	struct list_head *head = &user->fields;
++	int pos = 0, depth = 0;
 +
-+#define EVENT_STATUS_FTRACE (1 << EVENT_BIT_FTRACE)
-+#define EVENT_STATUS_PERF (1 << EVENT_BIT_PERF)
-+#define EVENT_STATUS_OTHER (1 << EVENT_BIT_OTHER)
++	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
 +
-+/* Use raw iterator for attached BPF program(s), no affect on ftrace/perf */
-+#define FLAG_BPF_ITER (1 << 0)
++	list_for_each_entry_safe_reverse(field, next, head, link) {
++		if (depth != 0)
++			pos += snprintf(buf + pos, LEN_OR_ZERO, " ");
 +
-+struct user_reg {
-+	__u32 size;
-+	__u64 name_args;
-+	__u32 status_index;
-+	__u32 write_index;
-+};
++		pos += snprintf(buf + pos, LEN_OR_ZERO, "%s=%s",
++				field->name, user_field_format(field->type));
 +
-+#define DIAG_IOC_MAGIC '*'
-+#define DIAG_IOCSREG _IOWR(DIAG_IOC_MAGIC, 0, struct user_reg*)
-+#define DIAG_IOCSDEL _IOW(DIAG_IOC_MAGIC, 1, char*)
++		depth++;
++	}
 +
-+enum {
-+	USER_BPF_DATA_KERNEL,
-+	USER_BPF_DATA_USER,
-+	USER_BPF_DATA_ITER,
-+};
++	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
 +
-+struct user_bpf_iter {
-+	__u32 iov_offset;
-+	__u32 nr_segs;
-+	const struct iovec *iov;
-+};
++	list_for_each_entry_safe_reverse(field, next, head, link) {
++		if (user_field_is_dyn_string(field->type))
++			pos += snprintf(buf + pos, LEN_OR_ZERO,
++					", __get_str(%s)", field->name);
++		else
++			pos += snprintf(buf + pos, LEN_OR_ZERO,
++					", REC->%s", field->name);
++	}
 +
-+struct user_bpf_context {
-+	__u32 data_type;
-+	__u32 data_len;
-+	union {
-+		void *kdata;
-+		void *udata;
-+		struct user_bpf_iter *iter;
-+	};
-+};
++	return pos + 1;
++}
++#undef LEN_OR_ZERO
 +
-+#endif /* _UAPI_LINUX_USER_EVENTS_H */
++static int user_event_create_print_fmt(struct user_event *user)
++{
++	char *print_fmt;
++	int len;
++
++	len = user_event_set_print_fmt(user, NULL, 0);
++
++	print_fmt = kmalloc(len, GFP_KERNEL);
++
++	if (!print_fmt)
++		return -ENOMEM;
++
++	user_event_set_print_fmt(user, print_fmt, len);
++
++	user->call.print_fmt = print_fmt;
++
++	return 0;
++}
++
+ static enum print_line_t user_event_print_trace(struct trace_iterator *iter,
+ 						int flags,
+ 						struct trace_event *event)
+@@ -377,6 +477,7 @@ static int destroy_user_event(struct user_event *user)
+ 	clear_bit(user->index, page_bitmap);
+ 	hash_del(&user->node);
+ 
++	kfree(user->call.print_fmt);
+ 	kfree(EVENT_NAME(user));
+ 	kfree(user);
+ 
+@@ -656,8 +757,10 @@ static int user_event_parse(char *name, char *args, char *flags,
+ 	if (ret)
+ 		goto put_user;
+ 
+-	/* Minimal print format */
+-	user->call.print_fmt = "\"\"";
++	ret = user_event_create_print_fmt(user);
++
++	if (ret)
++		goto put_user;
+ 
+ 	user->call.data = user;
+ 	user->call.class = &user->class;
 -- 
 2.17.1
 
