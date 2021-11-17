@@ -2,62 +2,62 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3338FC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Nov 2021 15:41:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54CCBC433FE
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Nov 2021 15:41:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 18C2C6140A
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Nov 2021 15:41:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 38CFF613A9
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Nov 2021 15:41:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238532AbhKQPoO (ORCPT
+        id S238596AbhKQPoQ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 17 Nov 2021 10:44:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45434 "EHLO
+        Wed, 17 Nov 2021 10:44:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238596AbhKQPoF (ORCPT
+        with ESMTP id S238605AbhKQPoG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 17 Nov 2021 10:44:05 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88FC9C061766
-        for <linux-trace-devel@vger.kernel.org>; Wed, 17 Nov 2021 07:41:06 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id f7-20020a1c1f07000000b0032ee11917ceso2495268wmf.0
-        for <linux-trace-devel@vger.kernel.org>; Wed, 17 Nov 2021 07:41:06 -0800 (PST)
+        Wed, 17 Nov 2021 10:44:06 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1ED3C061767
+        for <linux-trace-devel@vger.kernel.org>; Wed, 17 Nov 2021 07:41:07 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id 133so2672312wme.0
+        for <linux-trace-devel@vger.kernel.org>; Wed, 17 Nov 2021 07:41:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5l1zCIP4ini0lNwinBa107HvzxDn5sNWZYaRQzHbRr4=;
-        b=GfveRmm42rwz37xWMFcKFVDrlDvF6Vak0kufISWSHpot+RJo3vys3eIh/RdC6hvPoh
-         0Rtn4EROrRkc6js0c3YAlPDblrU9aBLIGd5eRKDJYbA9FztKcyp9T7cxjfp35UxYXN4x
-         ICBDqDtw0giNRHf/gqdW47d0ywYJAZvyrgbBmLu0Hj8hM86c3mm/jJjbdLuI6Y+Fbq6Z
-         e71I5sBn7Eo4cJBn65cregukBvtc+mlzqPeAG1UynGeb8C1joySxmITyYHfQa7oft+cU
-         u2xbEJtq7fGkm6ED3cN6gp9i0V4sjdon9PTaYSslKnizL97DZeVRq14G+iK4KmZx9V55
-         gamw==
+        bh=Z9jq70DY785RJKiVkynFlhsbyYAZqSl/4WPVwHec/NU=;
+        b=UniPcuIM+t9Din2codUD+HfxzpAA850t/jNYvSAxEDKqmZ2fUHN+CxmCrXJcc+Ehga
+         gtJcQAxOAtBew+NDxHOz3bWUXYis90B9CXi+wOIHy5Hx5pebSfF5290MRRf/D0Ied+V0
+         bdcyJk+pw9e5sIyo5dEGePDbNR7FLI+HOgkVkEdI3g03N8OUzguW/x89yHOTTB7BXv7i
+         3vuVaS3FHs1e3S17zGhf0rfeddGfdFtGYWmDF25H3mnyrrISkwN3TtLRUdRxwZT6gOKE
+         /WTFa3a5HjmwVbHtwBHzSw4kliEgnb+gFmXog494PFWkkIQAicx3miN0LhCxzmb+Yla/
+         afmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5l1zCIP4ini0lNwinBa107HvzxDn5sNWZYaRQzHbRr4=;
-        b=IAZ1J0Z44Uv8CuPqzIFj/LzFHUIKQj/C5p6B6iRa67N3NuYRKwOGhnJg9SdAfujkBz
-         5jYMyBmZIZ0qF3/JWIsbLSII17vloknMWbUHwKgExq/cxe3BtQUaM4ZDswt9d9Cghkaf
-         VGuEgoH3iuWP0Wx01/ae8CzVB0bYirYma8qHQAn+JvoOC4HyZ5j3eVNyjGYQLyQ8s6UU
-         DlwEyVyqXA9SQE53oEu6J0eyWTyhWB5wplnaBEpNVVzDqN6j+716X9hLMMlvRnre9gBh
-         w+MbOTN/fdEJZap82AZYFPUnsafLDDdB2g3x47Tw4xHLi+JDfkFZlUKhze1dVfNwec4W
-         V1+w==
-X-Gm-Message-State: AOAM530WQb69KgNNXOGxXVNpMtU56nJN0jEZXum4Tqz4gv7HoBAhEnYB
-        9d7MmN60tUg5jK46QCx46JfwDvpcWHN69g==
-X-Google-Smtp-Source: ABdhPJwzP3Y6H8NPrOhppOHs28EjSCljJEaRXv6R/SYPimBNO/74M7J+eRIEkdQ76iZVY7AD47pbPQ==
-X-Received: by 2002:a7b:c207:: with SMTP id x7mr731692wmi.108.1637163665055;
-        Wed, 17 Nov 2021 07:41:05 -0800 (PST)
+        bh=Z9jq70DY785RJKiVkynFlhsbyYAZqSl/4WPVwHec/NU=;
+        b=P08OFXftxPqI7uq4SJ8D9Ez1So91HhPMlOyTUCi2SEh8C/M6MpfD8o3AgyRkJCntYH
+         FvA8Sd8l1P9cZm2F19VLUCsJJUPsqwyA2bTR1RymW/O/JpHEO12SOPp+NVp6sslxt4Me
+         Denwqp7jHc3DbCA0XL8oGXajs4KhQfLDW3n4Kq/6FBL40V7HOCT00DjEkIv3ybHOujqL
+         yJroZFaenqM+74nUNCV3gwGeAJda62dXB+KmYVgwZu/h4bBOIMrTF9IjSXjdnRgTsm6s
+         4OAF/pMnaklV4cBdEjWFj76DCD7Jfno8N02gnp2ioxjvkukHz2daU2lfOJeDmCBkAGEt
+         LRRA==
+X-Gm-Message-State: AOAM531OshPS+tmj5MAWaYMhQ8k7qnNxq/UcJXLjcqm5zB1PBtd+b9eh
+        04/gXA3I+1HXwtRdwZBs9usvj1QtkSSxRQ==
+X-Google-Smtp-Source: ABdhPJxd9Wi5yDl949YpLziOTo33S20clVe0hJoXIbYZfXOU20aRipLqhgG8yzsJqp7iOGwd7wU7kw==
+X-Received: by 2002:a05:600c:a08:: with SMTP id z8mr642300wmp.165.1637163666288;
+        Wed, 17 Nov 2021 07:41:06 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id d7sm185759wrw.87.2021.11.17.07.41.04
+        by smtp.gmail.com with ESMTPSA id d7sm185759wrw.87.2021.11.17.07.41.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 07:41:04 -0800 (PST)
+        Wed, 17 Nov 2021 07:41:05 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 1/3] [RFC] trace: Page size per ring buffer
-Date:   Wed, 17 Nov 2021 17:40:59 +0200
-Message-Id: <20211117154101.38659-2-tz.stoyanov@gmail.com>
+Subject: [PATCH 2/3] [RFC] trace: Add interface for configuring trace ring buffer size
+Date:   Wed, 17 Nov 2021 17:41:00 +0200
+Message-Id: <20211117154101.38659-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211117154101.38659-1-tz.stoyanov@gmail.com>
 References: <20211117154101.38659-1-tz.stoyanov@gmail.com>
@@ -67,425 +67,162 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Currently the size of one buffer page is global for all buffers and it
-is hard coded to one system page. In order to introduce configurable
-ring buffer page size, the internal logic should be refactored to work
-with page size per ring buffer.
+The trace ring buffer page size can be configured, per trace instance. A
+new ftrace file "buffer_page_size" is added to get and set the size of
+the ring buffer page for current trace instance. The size must be
+multiple of system page size, that's why the new interface works with
+system page count, instead of absolute page size: 1 means the ring
+buffer page is equal to one system page and so forth. The ring buffer
+page is limited between 1 and 100 system pages.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- include/linux/ring_buffer.h |   2 +-
- kernel/trace/ring_buffer.c  | 117 +++++++++++++++++++-----------------
- kernel/trace/trace_events.c |  71 +++++++++++++++++++---
- 3 files changed, 123 insertions(+), 67 deletions(-)
+ include/linux/ring_buffer.h |  3 +++
+ kernel/trace/ring_buffer.c  | 51 +++++++++++++++++++++++++++++++++++++
+ kernel/trace/trace.c        | 47 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 101 insertions(+)
 
 diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-index dac53fd3afea..d9a2e6e8fb79 100644
+index d9a2e6e8fb79..53cd7a38b717 100644
 --- a/include/linux/ring_buffer.h
 +++ b/include/linux/ring_buffer.h
-@@ -200,7 +200,7 @@ int ring_buffer_read_page(struct trace_buffer *buffer, void **data_page,
- struct trace_seq;
- 
+@@ -202,6 +202,9 @@ struct trace_seq;
  int ring_buffer_print_entry_header(struct trace_seq *s);
--int ring_buffer_print_page_header(struct trace_seq *s);
-+int ring_buffer_print_page_header(struct trace_buffer *buffer, struct trace_seq *s);
+ int ring_buffer_print_page_header(struct trace_buffer *buffer, struct trace_seq *s);
  
++int ring_buffer_page_size_get(struct trace_buffer *buffer);
++int ring_buffer_page_size_set(struct trace_buffer *buffer, int psize);
++
  enum ring_buffer_flags {
  	RB_FL_OVERWRITE		= 1 << 0,
+ };
 diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 2699e9e562b1..6bca2977ca1a 100644
+index 6bca2977ca1a..9aa245795c3d 100644
 --- a/kernel/trace/ring_buffer.c
 +++ b/kernel/trace/ring_buffer.c
-@@ -366,40 +366,8 @@ static inline int test_time_stamp(u64 delta)
- 	return 0;
+@@ -5677,6 +5677,57 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
  }
+ EXPORT_SYMBOL_GPL(ring_buffer_read_page);
  
--#define BUF_PAGE_SIZE (PAGE_SIZE - BUF_PAGE_HDR_SIZE)
--
--/* Max payload is BUF_PAGE_SIZE - header (8bytes) */
--#define BUF_MAX_DATA_SIZE (BUF_PAGE_SIZE - (sizeof(u32) * 2))
--
--int ring_buffer_print_page_header(struct trace_seq *s)
--{
--	struct buffer_data_page field;
--
--	trace_seq_printf(s, "\tfield: u64 timestamp;\t"
--			 "offset:0;\tsize:%u;\tsigned:%u;\n",
--			 (unsigned int)sizeof(field.time_stamp),
--			 (unsigned int)is_signed_type(u64));
--
--	trace_seq_printf(s, "\tfield: local_t commit;\t"
--			 "offset:%u;\tsize:%u;\tsigned:%u;\n",
--			 (unsigned int)offsetof(typeof(field), commit),
--			 (unsigned int)sizeof(field.commit),
--			 (unsigned int)is_signed_type(long));
--
--	trace_seq_printf(s, "\tfield: int overwrite;\t"
--			 "offset:%u;\tsize:%u;\tsigned:%u;\n",
--			 (unsigned int)offsetof(typeof(field), commit),
--			 1,
--			 (unsigned int)is_signed_type(long));
--
--	trace_seq_printf(s, "\tfield: char data;\t"
--			 "offset:%u;\tsize:%u;\tsigned:%u;\n",
--			 (unsigned int)offsetof(typeof(field), data),
--			 (unsigned int)BUF_PAGE_SIZE,
--			 (unsigned int)is_signed_type(char));
--
--	return !trace_seq_has_overflowed(s);
--}
-+/* Max payload is buffer page size - header (8bytes) */
-+#define BUF_MAX_DATA_SIZE(B) ((B)->page_size - (sizeof(u32) * 2))
- 
- struct rb_irq_work {
- 	struct irq_work			work;
-@@ -544,6 +512,8 @@ struct trace_buffer {
- 
- 	struct rb_irq_work		irq_work;
- 	bool				time_stamp_abs;
-+
-+	unsigned int			page_size;
- };
- 
- struct ring_buffer_iter {
-@@ -559,6 +529,36 @@ struct ring_buffer_iter {
- 	int				missed_events;
- };
- 
-+int ring_buffer_print_page_header(struct trace_buffer *buffer, struct trace_seq *s)
++/**
++ * ring_buffer_page_size_get - get count of system pages in one buffer page.
++ * @buffer: The ring_buffer to get the system page count from
++ *
++ * By default, one ring buffer pages equals to one system page. This parameter
++ * is configurable, per ring buffer. The size of the ring buffer page can be
++ * extended, but must be multiple of system page size.
++ *
++ * Returns the size of buffer page, in system pages: 1 means the buffer size is
++ * one system page and so forth. In case of an error < 0 is returned.
++ */
++int ring_buffer_page_size_get(struct trace_buffer *buffer)
 +{
-+	struct buffer_data_page field;
++	if (!buffer)
++		return -EINVAL;
 +
-+	trace_seq_printf(s, "\tfield: u64 timestamp;\t"
-+			 "offset:0;\tsize:%u;\tsigned:%u;\n",
-+			 (unsigned int)sizeof(field.time_stamp),
-+			 (unsigned int)is_signed_type(u64));
-+
-+	trace_seq_printf(s, "\tfield: local_t commit;\t"
-+			 "offset:%u;\tsize:%u;\tsigned:%u;\n",
-+			 (unsigned int)offsetof(typeof(field), commit),
-+			 (unsigned int)sizeof(field.commit),
-+			 (unsigned int)is_signed_type(long));
-+
-+	trace_seq_printf(s, "\tfield: int overwrite;\t"
-+			 "offset:%u;\tsize:%u;\tsigned:%u;\n",
-+			 (unsigned int)offsetof(typeof(field), commit),
-+			 1,
-+			 (unsigned int)is_signed_type(long));
-+
-+	trace_seq_printf(s, "\tfield: char data;\t"
-+			 "offset:%u;\tsize:%u;\tsigned:%u;\n",
-+			 (unsigned int)offsetof(typeof(field), data),
-+			 (unsigned int)buffer->page_size,
-+			 (unsigned int)is_signed_type(char));
-+
-+	return !trace_seq_has_overflowed(s);
++	return (buffer->page_size + BUF_PAGE_HDR_SIZE) / PAGE_SIZE;
 +}
++EXPORT_SYMBOL_GPL(ring_buffer_page_size_get);
 +
- #ifdef RB_TIME_32
- 
++/**
++ * ring_buffer_page_size_set - set the size of ring buffer page.
++ * @buffer: The ring_buffer to set the new page size.
++ * @pcount: Number of system pages.
++ *
++ * By default, one ring buffer pages equals to one system page. This API can be
++ * used to set new size of the ring buffer page. The size must be multiple of
++ * system page size, that's why the input parameter @pcount is the count of
++ * system pages that are allocated for one ring buffer page.
++ *
++ * Returns 0 on success or < 0 in case of an error.
++ */
++int ring_buffer_page_size_set(struct trace_buffer *buffer, int pcount)
++{
++	int psize;
++
++	if (!buffer)
++		return -EINVAL;
++
++	psize = pcount * PAGE_SIZE;
++	if (psize <= BUF_PAGE_HDR_SIZE)
++		return -EINVAL;
++
++	buffer->page_size = psize - BUF_PAGE_HDR_SIZE;
++
++	/* Todo: reset the buffer with the new page size */
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(ring_buffer_page_size_set);
++
  /*
-@@ -1725,7 +1725,9 @@ struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
- 	if (!zalloc_cpumask_var(&buffer->cpumask, GFP_KERNEL))
- 		goto fail_free_buffer;
+  * We only allocate new buffers, never free them if the CPU goes down.
+  * If we were to free the buffer, then the user would lose any trace that was in
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index f9139dc1262c..05fc2712fdbd 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -9005,6 +9005,50 @@ static const struct file_operations buffer_percent_fops = {
+ 	.llseek		= default_llseek,
+ };
  
--	nr_pages = DIV_ROUND_UP(size, BUF_PAGE_SIZE);
-+	/* Default buffer page size - one system page */
-+	buffer->page_size = PAGE_SIZE - BUF_PAGE_HDR_SIZE;
-+	nr_pages = DIV_ROUND_UP(size, buffer->page_size);
- 	buffer->flags = flags;
- 	buffer->clock = trace_clock_local;
- 	buffer->reader_lock_key = key;
-@@ -1919,7 +1921,8 @@ rb_remove_pages(struct ring_buffer_per_cpu *cpu_buffer, unsigned long nr_pages)
- 			 * Increment overrun to account for the lost events.
- 			 */
- 			local_add(page_entries, &cpu_buffer->overrun);
--			local_sub(BUF_PAGE_SIZE, &cpu_buffer->entries_bytes);
-+			local_sub(cpu_buffer->buffer->page_size,
-+				  &cpu_buffer->entries_bytes);
- 		}
- 
- 		/*
-@@ -2041,7 +2044,7 @@ static void update_pages_handler(struct work_struct *work)
-  * @size: the new size.
-  * @cpu_id: the cpu buffer to resize
-  *
-- * Minimum size is 2 * BUF_PAGE_SIZE.
-+ * Minimum size is 2 * buffer->page_size.
-  *
-  * Returns 0 on success and < 0 on failure.
-  */
-@@ -2063,7 +2066,7 @@ int ring_buffer_resize(struct trace_buffer *buffer, unsigned long size,
- 	    !cpumask_test_cpu(cpu_id, buffer->cpumask))
- 		return 0;
- 
--	nr_pages = DIV_ROUND_UP(size, BUF_PAGE_SIZE);
-+	nr_pages = DIV_ROUND_UP(size, buffer->page_size);
- 
- 	/* we need a minimum of two pages */
- 	if (nr_pages < 2)
-@@ -2290,7 +2293,7 @@ rb_iter_head_event(struct ring_buffer_iter *iter)
- 	 */
- 	barrier();
- 
--	if ((iter->head + length) > commit || length > BUF_MAX_DATA_SIZE)
-+	if ((iter->head + length) > commit || length > BUF_MAX_DATA_SIZE(iter->cpu_buffer->buffer))
- 		/* Writer corrupted the read? */
- 		goto reset;
- 
-@@ -2403,7 +2406,8 @@ rb_handle_head_page(struct ring_buffer_per_cpu *cpu_buffer,
- 		 * the counters.
- 		 */
- 		local_add(entries, &cpu_buffer->overrun);
--		local_sub(BUF_PAGE_SIZE, &cpu_buffer->entries_bytes);
-+		local_sub(cpu_buffer->buffer->page_size,
-+			  &cpu_buffer->entries_bytes);
- 
- 		/*
- 		 * The entries will be zeroed out when we move the
-@@ -2530,13 +2534,13 @@ rb_reset_tail(struct ring_buffer_per_cpu *cpu_buffer,
- 	 * Only the event that crossed the page boundary
- 	 * must fill the old tail_page with padding.
- 	 */
--	if (tail >= BUF_PAGE_SIZE) {
-+	if (tail >= cpu_buffer->buffer->page_size) {
- 		/*
- 		 * If the page was filled, then we still need
- 		 * to update the real_end. Reset it to zero
- 		 * and the reader will ignore it.
- 		 */
--		if (tail == BUF_PAGE_SIZE)
-+		if (tail == cpu_buffer->buffer->page_size)
- 			tail_page->real_end = 0;
- 
- 		local_sub(length, &tail_page->write);
-@@ -2546,7 +2550,8 @@ rb_reset_tail(struct ring_buffer_per_cpu *cpu_buffer,
- 	event = __rb_page_index(tail_page, tail);
- 
- 	/* account for padding bytes */
--	local_add(BUF_PAGE_SIZE - tail, &cpu_buffer->entries_bytes);
-+	local_add(cpu_buffer->buffer->page_size - tail,
-+		  &cpu_buffer->entries_bytes);
- 
- 	/*
- 	 * Save the original length to the meta data.
-@@ -2566,7 +2571,7 @@ rb_reset_tail(struct ring_buffer_per_cpu *cpu_buffer,
- 	 * If we are less than the minimum size, we don't need to
- 	 * worry about it.
- 	 */
--	if (tail > (BUF_PAGE_SIZE - RB_EVNT_MIN_SIZE)) {
-+	if (tail > (cpu_buffer->buffer->page_size - RB_EVNT_MIN_SIZE)) {
- 		/* No room for any events */
- 
- 		/* Mark the rest of the page with padding */
-@@ -2578,13 +2583,13 @@ rb_reset_tail(struct ring_buffer_per_cpu *cpu_buffer,
- 	}
- 
- 	/* Put in a discarded event */
--	event->array[0] = (BUF_PAGE_SIZE - tail) - RB_EVNT_HDR_SIZE;
-+	event->array[0] = (cpu_buffer->buffer->page_size - tail) - RB_EVNT_HDR_SIZE;
- 	event->type_len = RINGBUF_TYPE_PADDING;
- 	/* time delta must be non zero */
- 	event->time_delta = 1;
- 
- 	/* Set write to end of buffer */
--	length = (tail + length) - BUF_PAGE_SIZE;
-+	length = (tail + length) - cpu_buffer->buffer->page_size;
- 	local_sub(length, &tail_page->write);
- }
- 
-@@ -3476,7 +3481,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 	tail = write - info->length;
- 
- 	/* See if we shot pass the end of this buffer page */
--	if (unlikely(write > BUF_PAGE_SIZE)) {
-+	if (unlikely(write > cpu_buffer->buffer->page_size)) {
- 		/* before and after may now different, fix it up*/
- 		b_ok = rb_time_read(&cpu_buffer->before_stamp, &info->before);
- 		a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
-@@ -3685,7 +3690,7 @@ ring_buffer_lock_reserve(struct trace_buffer *buffer, unsigned long length)
- 	if (unlikely(atomic_read(&cpu_buffer->record_disabled)))
- 		goto out;
- 
--	if (unlikely(length > BUF_MAX_DATA_SIZE))
-+	if (unlikely(length > BUF_MAX_DATA_SIZE(buffer)))
- 		goto out;
- 
- 	if (unlikely(trace_recursive_lock(cpu_buffer)))
-@@ -3835,7 +3840,7 @@ int ring_buffer_write(struct trace_buffer *buffer,
- 	if (atomic_read(&cpu_buffer->record_disabled))
- 		goto out;
- 
--	if (length > BUF_MAX_DATA_SIZE)
-+	if (length > BUF_MAX_DATA_SIZE(buffer))
- 		goto out;
- 
- 	if (unlikely(trace_recursive_lock(cpu_buffer)))
-@@ -4957,7 +4962,7 @@ ring_buffer_read_prepare(struct trace_buffer *buffer, int cpu, gfp_t flags)
- 	if (!iter)
- 		return NULL;
- 
--	iter->event = kmalloc(BUF_MAX_DATA_SIZE, flags);
-+	iter->event = kmalloc(BUF_MAX_DATA_SIZE(buffer), flags);
- 	if (!iter->event) {
- 		kfree(iter);
- 		return NULL;
-@@ -5075,14 +5080,14 @@ unsigned long ring_buffer_size(struct trace_buffer *buffer, int cpu)
- {
- 	/*
- 	 * Earlier, this method returned
--	 *	BUF_PAGE_SIZE * buffer->nr_pages
-+	 *	buffer->page_size * buffer->nr_pages
- 	 * Since the nr_pages field is now removed, we have converted this to
- 	 * return the per cpu buffer value.
- 	 */
- 	if (!cpumask_test_cpu(cpu, buffer->cpumask))
- 		return 0;
- 
--	return BUF_PAGE_SIZE * buffer->buffers[cpu]->nr_pages;
-+	return buffer->page_size * buffer->buffers[cpu]->nr_pages;
- }
- EXPORT_SYMBOL_GPL(ring_buffer_size);
- 
-@@ -5618,7 +5623,7 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
- 	} else {
- 		/* update the entry counter */
- 		cpu_buffer->read += rb_page_entries(reader);
--		cpu_buffer->read_bytes += BUF_PAGE_SIZE;
-+		cpu_buffer->read_bytes += buffer->page_size;
- 
- 		/* swap the pages */
- 		rb_init_page(bpage);
-@@ -5649,7 +5654,7 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
- 		/* If there is room at the end of the page to save the
- 		 * missed events, then record it there.
- 		 */
--		if (BUF_PAGE_SIZE - commit >= sizeof(missed_events)) {
-+		if (buffer->page_size - commit >= sizeof(missed_events)) {
- 			memcpy(&bpage->data[commit], &missed_events,
- 			       sizeof(missed_events));
- 			local_add(RB_MISSED_STORED, &bpage->commit);
-@@ -5661,8 +5666,8 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
- 	/*
- 	 * This page may be off to user land. Zero it out here.
- 	 */
--	if (commit < BUF_PAGE_SIZE)
--		memset(&bpage->data[commit], 0, BUF_PAGE_SIZE - commit);
-+	if (commit < buffer->page_size)
-+		memset(&bpage->data[commit], 0, buffer->page_size - commit);
- 
-  out_unlock:
- 	raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 4021b9a79f93..a2bac76e73d3 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -1846,10 +1846,31 @@ subsystem_filter_write(struct file *filp, const char __user *ubuf, size_t cnt,
- 	return cnt;
- }
- 
-+static int open_header_file(struct inode *inode, struct file *filp)
++static ssize_t
++buffer_psize_read(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
 +{
-+	struct trace_array *tr = inode->i_private;
-+	int ret;
++	struct trace_array *tr = filp->private_data;
++	char buf[64];
++	int r;
 +
-+	ret = tracing_check_open_get_tr(tr);
-+	if (ret)
-+		return ret;
++	r = sprintf(buf, "%d\n", ring_buffer_page_size_get(tr->array_buffer.buffer));
 +
-+	return 0;
-+}
-+
-+static int release_header_file(struct inode *inode, struct file *file)
-+{
-+	struct trace_array *tr = inode->i_private;
-+
-+	trace_array_put(tr);
-+
-+	return 0;
-+}
-+
- static ssize_t
--show_header(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
-+show_header_page_file(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
- {
--	int (*func)(struct trace_seq *s) = filp->private_data;
-+	struct trace_array *tr = file_inode(filp)->i_private;
- 	struct trace_seq *s;
- 	int r;
- 
-@@ -1862,7 +1883,31 @@ show_header(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
- 
- 	trace_seq_init(s);
- 
--	func(s);
-+	ring_buffer_print_page_header(tr->array_buffer.buffer, s);
-+	r = simple_read_from_buffer(ubuf, cnt, ppos,
-+				    s->buffer, trace_seq_used(s));
-+
-+	kfree(s);
-+
-+	return r;
++	return simple_read_from_buffer(ubuf, cnt, ppos, buf, r);
 +}
 +
 +static ssize_t
-+show_header_event_file(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
++buffer_psize_write(struct file *filp, const char __user *ubuf,
++		   size_t cnt, loff_t *ppos)
 +{
-+	struct trace_seq *s;
-+	int r;
++	struct trace_array *tr = filp->private_data;
++	unsigned long val;
++	int ret;
 +
-+	if (*ppos)
-+		return 0;
++	ret = kstrtoul_from_user(ubuf, cnt, 10, &val);
++	if (ret)
++		return ret;
 +
-+	s = kmalloc(sizeof(*s), GFP_KERNEL);
-+	if (!s)
-+		return -ENOMEM;
++	if (val < 1 || val > 100)
++		return -EINVAL;
 +
-+	trace_seq_init(s);
++	ret = ring_buffer_page_size_set(tr->array_buffer.buffer, val);
++	if (ret)
++		return ret;
 +
-+	ring_buffer_print_entry_header(s);
- 	r = simple_read_from_buffer(ubuf, cnt, ppos,
- 				    s->buffer, trace_seq_used(s));
- 
-@@ -2117,10 +2162,18 @@ static const struct file_operations ftrace_tr_enable_fops = {
- 	.release = subsystem_release,
- };
- 
--static const struct file_operations ftrace_show_header_fops = {
--	.open = tracing_open_generic,
--	.read = show_header,
-+static const struct file_operations ftrace_show_header_page_fops = {
-+	.open = open_header_file,
-+	.read = show_header_page_file,
-+	.llseek = default_llseek,
-+	.release = release_header_file,
++	(*ppos)++;
++
++	return cnt;
++}
++
++static const struct file_operations buffer_psize_fops = {
++	.open		= tracing_open_generic_tr,
++	.read		= buffer_psize_read,
++	.write		= buffer_psize_write,
++	.release	= tracing_release_generic_tr,
++	.llseek		= default_llseek,
 +};
 +
-+static const struct file_operations ftrace_show_header_event_fops = {
-+	.open = open_header_file,
-+	.read = show_header_event_file,
- 	.llseek = default_llseek,
-+	.release = release_header_file,
- };
+ static struct dentry *trace_instance_dir;
  
- static int
-@@ -3469,14 +3522,12 @@ create_event_toplevel_files(struct dentry *parent, struct trace_array *tr)
+ static void
+@@ -9458,6 +9502,9 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
+ 	trace_create_file("buffer_percent", TRACE_MODE_READ, d_tracer,
+ 			tr, &buffer_percent_fops);
  
- 	/* ring buffer internal formats */
- 	entry = trace_create_file("header_page", TRACE_MODE_READ, d_events,
--				  ring_buffer_print_page_header,
--				  &ftrace_show_header_fops);
-+				  tr, &ftrace_show_header_page_fops);
- 	if (!entry)
- 		pr_warn("Could not create tracefs 'header_page' entry\n");
++	trace_create_file("buffer_page_size", TRACE_MODE_WRITE, d_tracer,
++			tr, &buffer_psize_fops);
++
+ 	create_trace_options_dir(tr);
  
- 	entry = trace_create_file("header_event", TRACE_MODE_READ, d_events,
--				  ring_buffer_print_entry_header,
--				  &ftrace_show_header_fops);
-+				  tr, &ftrace_show_header_event_fops);
- 	if (!entry)
- 		pr_warn("Could not create tracefs 'header_event' entry\n");
- 
+ 	trace_create_maxlat_file(tr, d_tracer);
 -- 
 2.31.1
 
