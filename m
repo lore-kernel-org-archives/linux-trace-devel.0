@@ -2,62 +2,62 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54CCBC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Nov 2021 15:41:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81B40C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Nov 2021 15:41:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 38CFF613A9
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Nov 2021 15:41:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 61E92613A9
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Nov 2021 15:41:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238596AbhKQPoQ (ORCPT
+        id S238550AbhKQPob (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 17 Nov 2021 10:44:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45440 "EHLO
+        Wed, 17 Nov 2021 10:44:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238605AbhKQPoG (ORCPT
+        with ESMTP id S238566AbhKQPoM (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 17 Nov 2021 10:44:06 -0500
+        Wed, 17 Nov 2021 10:44:12 -0500
 Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1ED3C061767
-        for <linux-trace-devel@vger.kernel.org>; Wed, 17 Nov 2021 07:41:07 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 133so2672312wme.0
-        for <linux-trace-devel@vger.kernel.org>; Wed, 17 Nov 2021 07:41:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C68E8C061204
+        for <linux-trace-devel@vger.kernel.org>; Wed, 17 Nov 2021 07:41:08 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id g191-20020a1c9dc8000000b0032fbf912885so2446509wme.4
+        for <linux-trace-devel@vger.kernel.org>; Wed, 17 Nov 2021 07:41:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Z9jq70DY785RJKiVkynFlhsbyYAZqSl/4WPVwHec/NU=;
-        b=UniPcuIM+t9Din2codUD+HfxzpAA850t/jNYvSAxEDKqmZ2fUHN+CxmCrXJcc+Ehga
-         gtJcQAxOAtBew+NDxHOz3bWUXYis90B9CXi+wOIHy5Hx5pebSfF5290MRRf/D0Ied+V0
-         bdcyJk+pw9e5sIyo5dEGePDbNR7FLI+HOgkVkEdI3g03N8OUzguW/x89yHOTTB7BXv7i
-         3vuVaS3FHs1e3S17zGhf0rfeddGfdFtGYWmDF25H3mnyrrISkwN3TtLRUdRxwZT6gOKE
-         /WTFa3a5HjmwVbHtwBHzSw4kliEgnb+gFmXog494PFWkkIQAicx3miN0LhCxzmb+Yla/
-         afmw==
+        bh=Hi5GraPioADh9C0xG19uKeCask0+NebXYmDaDM8zCqw=;
+        b=XDqsycb1fdW4UWTHtyJuKIe4BgNgCsqhQOzK02/zwmFeeUUmtXX/l5egPbKC2Mrn9d
+         ddByFGoizamCzis7H9bibkA/nO7Kt0sZjIRYqDhUkhBPTYDb02tSg7/BSxkPcf9Mgbga
+         sAvzlA+pXkPsmmkKPauKs0uVdS9BJ8KZMcpj7Qoai3zo/jmjB6lIqtqQBQQshFUXeNc8
+         STyIVUU/xnflx/UcnviOuyjABq6TErujn3mgIOngk+xr/NZxwHSVgcOivQfsXj3lZBZ5
+         jKR89VA4ArYax1bzT0CgBhOnXu4AMaiwqI/23VEfsWuYRG3JoohjEmdzDQ5ujKW4YYB7
+         efug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Z9jq70DY785RJKiVkynFlhsbyYAZqSl/4WPVwHec/NU=;
-        b=P08OFXftxPqI7uq4SJ8D9Ez1So91HhPMlOyTUCi2SEh8C/M6MpfD8o3AgyRkJCntYH
-         FvA8Sd8l1P9cZm2F19VLUCsJJUPsqwyA2bTR1RymW/O/JpHEO12SOPp+NVp6sslxt4Me
-         Denwqp7jHc3DbCA0XL8oGXajs4KhQfLDW3n4Kq/6FBL40V7HOCT00DjEkIv3ybHOujqL
-         yJroZFaenqM+74nUNCV3gwGeAJda62dXB+KmYVgwZu/h4bBOIMrTF9IjSXjdnRgTsm6s
-         4OAF/pMnaklV4cBdEjWFj76DCD7Jfno8N02gnp2ioxjvkukHz2daU2lfOJeDmCBkAGEt
-         LRRA==
-X-Gm-Message-State: AOAM531OshPS+tmj5MAWaYMhQ8k7qnNxq/UcJXLjcqm5zB1PBtd+b9eh
-        04/gXA3I+1HXwtRdwZBs9usvj1QtkSSxRQ==
-X-Google-Smtp-Source: ABdhPJxd9Wi5yDl949YpLziOTo33S20clVe0hJoXIbYZfXOU20aRipLqhgG8yzsJqp7iOGwd7wU7kw==
-X-Received: by 2002:a05:600c:a08:: with SMTP id z8mr642300wmp.165.1637163666288;
-        Wed, 17 Nov 2021 07:41:06 -0800 (PST)
+        bh=Hi5GraPioADh9C0xG19uKeCask0+NebXYmDaDM8zCqw=;
+        b=uXIB5QsXyC338ZMUA5tdVqm1Nk6RskZghJNEz4ptQ0gpR+tMMNhnuM8N3CENVGD2KX
+         cjDOylm7lJtAIJw6rAArCle26lBN8UV66r1pUGC3TYLKd11sIYbihR35Fe55IBc+cck8
+         77/lK1aSa4vhdhgtYq9LWZFNgwL55hUKiPnhZ1riWKgENa2QDvTwvtvofSXwE1BDsxsQ
+         t04GjvoWghVHPt7CvJeU3lk9GBMZu4Sn/GnTb8Da3giaw9ZOdebMNJd3pdatr4XPhR+n
+         2YFxbOYwRItekrpdet87aAsKPbDssQtp9UFGI4y7zIsx/meFNumQupF0sKvUBomoDr7d
+         oHzA==
+X-Gm-Message-State: AOAM530VSS80nQObfRKqJrRTFF/Z9KrU07n5XAJxFu+2Etik0vZQoA/c
+        GGxSsIRlK9PoXEGMYn7L6ZU9AZNeq6Fnqw==
+X-Google-Smtp-Source: ABdhPJxg+27O7JbEphoaz8PLUbpTtJ5Tn+qR9smVi3F2y84vaWhrD+nmZyukIxC1soKC/WU18wBteg==
+X-Received: by 2002:a1c:2047:: with SMTP id g68mr657010wmg.181.1637163667395;
+        Wed, 17 Nov 2021 07:41:07 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id d7sm185759wrw.87.2021.11.17.07.41.05
+        by smtp.gmail.com with ESMTPSA id d7sm185759wrw.87.2021.11.17.07.41.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 07:41:05 -0800 (PST)
+        Wed, 17 Nov 2021 07:41:06 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 2/3] [RFC] trace: Add interface for configuring trace ring buffer size
-Date:   Wed, 17 Nov 2021 17:41:00 +0200
-Message-Id: <20211117154101.38659-3-tz.stoyanov@gmail.com>
+Subject: [PATCH 3/3] [WiP] trace: Set new size of the ring buffer page
+Date:   Wed, 17 Nov 2021 17:41:01 +0200
+Message-Id: <20211117154101.38659-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211117154101.38659-1-tz.stoyanov@gmail.com>
 References: <20211117154101.38659-1-tz.stoyanov@gmail.com>
@@ -67,162 +67,193 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The trace ring buffer page size can be configured, per trace instance. A
-new ftrace file "buffer_page_size" is added to get and set the size of
-the ring buffer page for current trace instance. The size must be
-multiple of system page size, that's why the new interface works with
-system page count, instead of absolute page size: 1 means the ring
-buffer page is equal to one system page and so forth. The ring buffer
-page is limited between 1 and 100 system pages.
+There are two approaches when changing the size of the ring buffer page:
+ 1. Destroying all pages and allocating new pages with the new size.
+ 2. Allocating new pages, copying the content of the old pages before
+    destroying them.
+The first approach is easier, it is selected in the proposed
+implementation. Changing the ring buffer page size is supposed to
+not happen frequently. Usually, that size should be set only once,
+when the buffer is not in use yet and is supposed to be empty.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- include/linux/ring_buffer.h |  3 +++
- kernel/trace/ring_buffer.c  | 51 +++++++++++++++++++++++++++++++++++++
- kernel/trace/trace.c        | 47 ++++++++++++++++++++++++++++++++++
- 3 files changed, 101 insertions(+)
+ kernel/trace/ring_buffer.c | 95 ++++++++++++++++++++++++++++++++++----
+ 1 file changed, 86 insertions(+), 9 deletions(-)
 
-diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-index d9a2e6e8fb79..53cd7a38b717 100644
---- a/include/linux/ring_buffer.h
-+++ b/include/linux/ring_buffer.h
-@@ -202,6 +202,9 @@ struct trace_seq;
- int ring_buffer_print_entry_header(struct trace_seq *s);
- int ring_buffer_print_page_header(struct trace_buffer *buffer, struct trace_seq *s);
- 
-+int ring_buffer_page_size_get(struct trace_buffer *buffer);
-+int ring_buffer_page_size_set(struct trace_buffer *buffer, int psize);
-+
- enum ring_buffer_flags {
- 	RB_FL_OVERWRITE		= 1 << 0,
- };
 diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 6bca2977ca1a..9aa245795c3d 100644
+index 9aa245795c3d..39be9b1cf6e0 100644
 --- a/kernel/trace/ring_buffer.c
 +++ b/kernel/trace/ring_buffer.c
-@@ -5677,6 +5677,57 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
- }
- EXPORT_SYMBOL_GPL(ring_buffer_read_page);
+@@ -368,6 +368,7 @@ static inline int test_time_stamp(u64 delta)
  
-+/**
-+ * ring_buffer_page_size_get - get count of system pages in one buffer page.
-+ * @buffer: The ring_buffer to get the system page count from
-+ *
-+ * By default, one ring buffer pages equals to one system page. This parameter
-+ * is configurable, per ring buffer. The size of the ring buffer page can be
-+ * extended, but must be multiple of system page size.
-+ *
-+ * Returns the size of buffer page, in system pages: 1 means the buffer size is
-+ * one system page and so forth. In case of an error < 0 is returned.
-+ */
-+int ring_buffer_page_size_get(struct trace_buffer *buffer)
-+{
-+	if (!buffer)
-+		return -EINVAL;
-+
-+	return (buffer->page_size + BUF_PAGE_HDR_SIZE) / PAGE_SIZE;
-+}
-+EXPORT_SYMBOL_GPL(ring_buffer_page_size_get);
-+
-+/**
-+ * ring_buffer_page_size_set - set the size of ring buffer page.
-+ * @buffer: The ring_buffer to set the new page size.
-+ * @pcount: Number of system pages.
-+ *
-+ * By default, one ring buffer pages equals to one system page. This API can be
-+ * used to set new size of the ring buffer page. The size must be multiple of
-+ * system page size, that's why the input parameter @pcount is the count of
-+ * system pages that are allocated for one ring buffer page.
-+ *
-+ * Returns 0 on success or < 0 in case of an error.
-+ */
-+int ring_buffer_page_size_set(struct trace_buffer *buffer, int pcount)
-+{
+ /* Max payload is buffer page size - header (8bytes) */
+ #define BUF_MAX_DATA_SIZE(B) ((B)->page_size - (sizeof(u32) * 2))
++#define BUF_SYS_PAGE_COUNT(B) (((B)->page_size + BUF_PAGE_HDR_SIZE) / PAGE_SIZE)
+ 
+ struct rb_irq_work {
+ 	struct irq_work			work;
+@@ -1521,6 +1522,7 @@ static int __rb_allocate_pages(struct ring_buffer_per_cpu *cpu_buffer,
+ 	struct buffer_page *bpage, *tmp;
+ 	bool user_thread = current->mm != NULL;
+ 	gfp_t mflags;
 +	int psize;
+ 	long i;
+ 
+ 	/*
+@@ -1552,6 +1554,12 @@ static int __rb_allocate_pages(struct ring_buffer_per_cpu *cpu_buffer,
+ 	 */
+ 	if (user_thread)
+ 		set_current_oom_origin();
 +
-+	if (!buffer)
-+		return -EINVAL;
++	/* Buffer page size must be at least one system page */
++	psize = BUF_SYS_PAGE_COUNT(cpu_buffer->buffer) - 1;
++	if (psize < 0)
++		psize = 0;
 +
-+	psize = pcount * PAGE_SIZE;
-+	if (psize <= BUF_PAGE_HDR_SIZE)
-+		return -EINVAL;
+ 	for (i = 0; i < nr_pages; i++) {
+ 		struct page *page;
+ 
+@@ -1564,7 +1572,7 @@ static int __rb_allocate_pages(struct ring_buffer_per_cpu *cpu_buffer,
+ 
+ 		list_add(&bpage->list, pages);
+ 
+-		page = alloc_pages_node(cpu_to_node(cpu_buffer->cpu), mflags, 0);
++		page = alloc_pages_node(cpu_to_node(cpu_buffer->cpu), mflags, psize);
+ 		if (!page)
+ 			goto free_pages;
+ 		bpage->page = page_address(page);
+@@ -1620,6 +1628,7 @@ rb_allocate_cpu_buffer(struct trace_buffer *buffer, long nr_pages, int cpu)
+ 	struct ring_buffer_per_cpu *cpu_buffer;
+ 	struct buffer_page *bpage;
+ 	struct page *page;
++	int psize;
+ 	int ret;
+ 
+ 	cpu_buffer = kzalloc_node(ALIGN(sizeof(*cpu_buffer), cache_line_size()),
+@@ -1646,7 +1655,13 @@ rb_allocate_cpu_buffer(struct trace_buffer *buffer, long nr_pages, int cpu)
+ 	rb_check_bpage(cpu_buffer, bpage);
+ 
+ 	cpu_buffer->reader_page = bpage;
+-	page = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL, 0);
 +
-+	buffer->page_size = psize - BUF_PAGE_HDR_SIZE;
++	/* Buffer page size must be at least one system page */
++	psize = BUF_SYS_PAGE_COUNT(cpu_buffer->buffer) - 1;
++	if (psize < 0)
++		psize = 0;
 +
-+	/* Todo: reset the buffer with the new page size */
++	page = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL, psize);
+ 	if (!page)
+ 		goto fail_free_reader;
+ 	bpage->page = page_address(page);
+@@ -5412,6 +5427,7 @@ void *ring_buffer_alloc_read_page(struct trace_buffer *buffer, int cpu)
+ 	struct buffer_data_page *bpage = NULL;
+ 	unsigned long flags;
+ 	struct page *page;
++	int psize;
+ 
+ 	if (!cpumask_test_cpu(cpu, buffer->cpumask))
+ 		return ERR_PTR(-ENODEV);
+@@ -5431,8 +5447,13 @@ void *ring_buffer_alloc_read_page(struct trace_buffer *buffer, int cpu)
+ 	if (bpage)
+ 		goto out;
+ 
++	/* Buffer page size must be at least one system page */
++	psize = BUF_SYS_PAGE_COUNT(cpu_buffer->buffer) - 1;
++	if (psize < 0)
++		psize = 0;
++
+ 	page = alloc_pages_node(cpu_to_node(cpu),
+-				GFP_KERNEL | __GFP_NORETRY, 0);
++				GFP_KERNEL | __GFP_NORETRY, psize);
+ 	if (!page)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -5693,10 +5714,70 @@ int ring_buffer_page_size_get(struct trace_buffer *buffer)
+ 	if (!buffer)
+ 		return -EINVAL;
+ 
+-	return (buffer->page_size + BUF_PAGE_HDR_SIZE) / PAGE_SIZE;
++	return BUF_SYS_PAGE_COUNT(buffer);
+ }
+ EXPORT_SYMBOL_GPL(ring_buffer_page_size_get);
+ 
++static int page_size_set(struct trace_buffer *buffer, int size)
++{
++	struct ring_buffer_per_cpu *cpu_buffer;
++	int old_size = buffer->page_size;
++	int nr_pages;
++	int ret = 0;
++	int err;
++	int cpu;
++
++	if (buffer->page_size == size)
++		return 0;
++
++	/* prevent another thread from changing buffer sizes */
++	mutex_lock(&buffer->mutex);
++	atomic_inc(&buffer->record_disabled);
++
++	/* Make sure all commits have finished */
++	synchronize_rcu();
++
++	buffer->page_size = size;
++
++	for_each_buffer_cpu(buffer, cpu) {
++
++		if (!cpumask_test_cpu(cpu, buffer->cpumask))
++			continue;
++
++		nr_pages = buffer->buffers[cpu]->nr_pages;
++		rb_free_cpu_buffer(buffer->buffers[cpu]);
++		buffer->buffers[cpu] = rb_allocate_cpu_buffer(buffer, nr_pages, cpu);
++	}
++
++	atomic_dec(&buffer->record_disabled);
++	mutex_unlock(&buffer->mutex);
 +
 +	return 0;
-+}
-+EXPORT_SYMBOL_GPL(ring_buffer_page_size_set);
 +
- /*
-  * We only allocate new buffers, never free them if the CPU goes down.
-  * If we were to free the buffer, then the user would lose any trace that was in
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index f9139dc1262c..05fc2712fdbd 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -9005,6 +9005,50 @@ static const struct file_operations buffer_percent_fops = {
- 	.llseek		= default_llseek,
- };
- 
-+static ssize_t
-+buffer_psize_read(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
-+{
-+	struct trace_array *tr = filp->private_data;
-+	char buf[64];
-+	int r;
++out_err:
++	buffer->page_size = old_size;
 +
-+	r = sprintf(buf, "%d\n", ring_buffer_page_size_get(tr->array_buffer.buffer));
++	for_each_buffer_cpu(buffer, cpu) {
++		struct buffer_page *bpage, *tmp;
 +
-+	return simple_read_from_buffer(ubuf, cnt, ppos, buf, r);
-+}
++		cpu_buffer = buffer->buffers[cpu];
 +
-+static ssize_t
-+buffer_psize_write(struct file *filp, const char __user *ubuf,
-+		   size_t cnt, loff_t *ppos)
-+{
-+	struct trace_array *tr = filp->private_data;
-+	unsigned long val;
-+	int ret;
++		if (list_empty(&cpu_buffer->new_pages))
++			continue;
 +
-+	ret = kstrtoul_from_user(ubuf, cnt, 10, &val);
-+	if (ret)
-+		return ret;
++		list_for_each_entry_safe(bpage, tmp, &cpu_buffer->new_pages, list) {
++			list_del_init(&bpage->list);
++			free_buffer_page(bpage);
++		}
++		atomic_dec(&cpu_buffer->record_disabled);
++		atomic_dec(&cpu_buffer->resize_disabled);
++	}
 +
-+	if (val < 1 || val > 100)
-+		return -EINVAL;
++	mutex_unlock(&buffer->mutex);
 +
-+	ret = ring_buffer_page_size_set(tr->array_buffer.buffer, val);
-+	if (ret)
-+		return ret;
-+
-+	(*ppos)++;
-+
-+	return cnt;
++	return err;
 +}
 +
-+static const struct file_operations buffer_psize_fops = {
-+	.open		= tracing_open_generic_tr,
-+	.read		= buffer_psize_read,
-+	.write		= buffer_psize_write,
-+	.release	= tracing_release_generic_tr,
-+	.llseek		= default_llseek,
-+};
-+
- static struct dentry *trace_instance_dir;
+ /**
+  * ring_buffer_page_size_set - set the size of ring buffer page.
+  * @buffer: The ring_buffer to set the new page size.
+@@ -5720,11 +5801,7 @@ int ring_buffer_page_size_set(struct trace_buffer *buffer, int pcount)
+ 	if (psize <= BUF_PAGE_HDR_SIZE)
+ 		return -EINVAL;
  
- static void
-@@ -9458,6 +9502,9 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
- 	trace_create_file("buffer_percent", TRACE_MODE_READ, d_tracer,
- 			tr, &buffer_percent_fops);
+-	buffer->page_size = psize - BUF_PAGE_HDR_SIZE;
+-
+-	/* Todo: reset the buffer with the new page size */
+-
+-	return 0;
++	return page_size_set(buffer, psize - BUF_PAGE_HDR_SIZE);
+ }
+ EXPORT_SYMBOL_GPL(ring_buffer_page_size_set);
  
-+	trace_create_file("buffer_page_size", TRACE_MODE_WRITE, d_tracer,
-+			tr, &buffer_psize_fops);
-+
- 	create_trace_options_dir(tr);
- 
- 	trace_create_maxlat_file(tr, d_tracer);
 -- 
 2.31.1
 
