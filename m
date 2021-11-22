@@ -2,75 +2,128 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D2D7C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Nov 2021 14:57:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 077DCC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Nov 2021 23:50:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235040AbhKVPAq (ORCPT
+        id S231974AbhKVXxM (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 22 Nov 2021 10:00:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239113AbhKVPAp (ORCPT
+        Mon, 22 Nov 2021 18:53:12 -0500
+Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:7560 "EHLO
+        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231956AbhKVXxL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:00:45 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 873866054E;
-        Mon, 22 Nov 2021 14:57:37 +0000 (UTC)
-Date:   Mon, 22 Nov 2021 09:57:35 -0500
+        Mon, 22 Nov 2021 18:53:11 -0500
+Received: from sc9-mailhost1.vmware.com (10.113.161.71) by
+ EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
+ 15.0.1156.6; Mon, 22 Nov 2021 15:50:02 -0800
+Received: from vypre.local.home (unknown [10.21.245.36])
+        by sc9-mailhost1.vmware.com (Postfix) with ESMTP id 0C3902037D;
+        Mon, 22 Nov 2021 15:50:03 -0800 (PST)
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Cc:     linux-arm-kernel@lists.infradead.org, maz@kernel.org,
-        james.morse@arm.com, alexandru.elisei@arm.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        mingo@redhat.com, mtosatti@redhat.com, nilal@redhat.com,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [RFC PATCH 1/2] arm64/tracing: add cntvct based trace clock
-Message-ID: <20211122095735.2340f38f@gandalf.local.home>
-In-Reply-To: <20211119102117.22304-2-nsaenzju@redhat.com>
-References: <20211119102117.22304-1-nsaenzju@redhat.com>
-        <20211119102117.22304-2-nsaenzju@redhat.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To:     <linux-trace-devel@vger.kernel.org>
+CC:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 01/11] libtracefs: Move creation of sqlhist into new samples directory
+Date:   Mon, 22 Nov 2021 18:49:46 -0500
+Message-ID: <20211122234956.788401-2-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211122234956.788401-1-rostedt@goodmis.org>
+References: <20211122234956.788401-1-rostedt@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+Received-SPF: None (EX13-EDG-OU-002.vmware.com: rostedt@goodmis.org does not
+ designate permitted sender hosts)
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 19 Nov 2021 11:21:17 +0100
-Nicolas Saenz Julienne <nsaenzju@redhat.com> wrote:
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_ARM64_TRACE_CLOCK_H
-> +#define _ASM_ARM64_TRACE_CLOCK_H
-> +
-> +#include <linux/types.h>
-> +
-> +extern u64 notrace trace_clock_arm64_cntvct(void);
-> +
-> +# define ARCH_TRACE_CLOCKS \
-> +	{ trace_clock_arm64_cntvct, "cntvct", .in_ns = 0 },
-> +
-> +#endif  /* _ASM_ARM64_TRACE_CLOCK_H */
+Move the creation of the sqlhist utility into the samples directory. This
+will be where other examples in the man pages will be extracted to create
+the samples.
 
-So this will appear as a usable clock in trace-cmd.
+The executables will be added to a new bin/ directory as well as the
+intermediate files used to create the binaries.
 
-And since this will be used to synchronize between host and guest like the
-x86_tsc is used, that means that trace-cmd needs to know that this is the
-an arch "CPU" clock. I wonder if we should rename x86_clock (or at least
-make it an alias) to "kvm_clock". Then we can have trace-cmd use
-"kvm_clock" as the clock for synchronization between host and guests for
-all architectures?
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ Makefile         | 13 +++++--------
+ samples/Makefile | 27 +++++++++++++++++++++++++++
+ 2 files changed, 32 insertions(+), 8 deletions(-)
+ create mode 100644 samples/Makefile
 
-Thinking about this, instead of renaming it, I'll add code to create an
-alias to these clocks. Then every arch can pick what clock is used that is
-the same between hosts and guests such that user space tooling doesn't have
-to keep a database of what clocks are used for synchronization between
-hosts and guests for each arch.
+diff --git a/Makefile b/Makefile
+index 7f382c3..7c96674 100644
+--- a/Makefile
++++ b/Makefile
+@@ -142,6 +142,7 @@ LIBS = $(LIBTRACEEVENT_LIBS) -lpthread
+ 
+ export LIBS
+ export LIBTRACEFS_STATIC LIBTRACEFS_SHARED
++export LIBTRACEEVENT_LIBS LIBTRACEEVENT_INCLUDES
+ 
+ export Q SILENT VERBOSE EXT
+ 
+@@ -364,21 +365,17 @@ $(bdir)/libtracefs.so.$(TRACEFS_VERSION): force
+ 	$(Q)mkdir -p $(bdir)
+ 	$(Q)$(MAKE) -C $(src)/src libtracefs.so
+ 
+-$(bdir)/sqlhist.c: Documentation/libtracefs-sql.txt
+-	cat $< | sed -ne '/^EXAMPLE/,/FILES/ { /EXAMPLE/,+2d ; /^FILES/d ;  /^--/d ; p}' > $@
++samples/sqlhist: $(LIBTRACEFS_STATIC)
++	$(Q)$(MAKE) -C $(src)/samples sqlhist
+ 
+-$(bdir)/sqlhist.o: $(bdir)/sqlhist.c
+-	$(CC) -g -Wall -c -o $@ $^ -Iinclude/ $(LIBTRACEEVENT_INCLUDES)
+-
+-sqlhist: $(bdir)/sqlhist.o $(LIBTRACEFS_STATIC)
+-	$(CC) -o $@ $^ $(LIBTRACEEVENT_LIBS)
++sqlhist: samples/sqlhist
+ 
+ clean:
+ 	$(MAKE) -C $(src)/utest clean
+ 	$(MAKE) -C $(src)/src clean
++	$(MAKE) -C $(src)/samples clean
+ 	$(RM) $(TARGETS) $(bdir)/*.a $(bdir)/*.so $(bdir)/*.so.* $(bdir)/*.o $(bdir)/.*.d
+ 	$(RM) $(PKG_CONFIG_FILE)
+ 	$(RM) $(VERSION_FILE)
+-	$(RM) $(bdir)/sqlhist.o $(bdir)/sqlhist.c sqlhist
+ 
+ .PHONY: clean
+diff --git a/samples/Makefile b/samples/Makefile
+new file mode 100644
+index 0000000..aae3e27
+--- /dev/null
++++ b/samples/Makefile
+@@ -0,0 +1,27 @@
++# SPDX-License-Identifier: LGPL-2.1
++
++#
++# The samples are pulled out of the examples used in the man pages
++# that are located in the Documentation directory.
++#
++
++include $(src)/scripts/utils.mk
++
++bdir := $(obj)/bin
++
++$(bdir):
++	@mkdir -p $(bdir)
++
++sqlhist: $(bdir) $(bdir) $(bdir)/sqlhist
++
++$(bdir)/sqlhist: $(bdir)/sqlhist.o $(LIBTRACEFS_STATIC)
++	$(CC) -o $@ $^ $(LIBTRACEEVENT_LIBS)
++
++$(bdir)/sqlhist.c: ../Documentation/libtracefs-sql.txt
++	cat $< | sed -ne '/^EXAMPLE/,/FILES/ { /EXAMPLE/,+2d ; /^FILES/d ;  /^--/d ; p}' > $@
++
++$(bdir)/sqlhist.o: $(bdir)/sqlhist.c
++	$(CC) -g -Wall -c -o $@ $^ -I../include/ $(LIBTRACEEVENT_INCLUDES)
++
++clean:
++	$(RM) $(bdir)/*
+-- 
+2.31.1
 
-I'll go add some code ;-)
-
--- Steve
