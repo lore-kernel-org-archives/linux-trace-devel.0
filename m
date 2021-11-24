@@ -2,28 +2,30 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4B1AC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Nov 2021 22:10:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AE0AC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Nov 2021 03:33:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbhKWWNN (ORCPT
+        id S240556AbhKXDgk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 23 Nov 2021 17:13:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37204 "EHLO mail.kernel.org"
+        Tue, 23 Nov 2021 22:36:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhKWWNN (ORCPT
+        id S240521AbhKXDgk (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 23 Nov 2021 17:13:13 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        Tue, 23 Nov 2021 22:36:40 -0500
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94C6A60F5B;
-        Tue, 23 Nov 2021 22:10:04 +0000 (UTC)
-Date:   Tue, 23 Nov 2021 17:10:03 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id BAC3B60E8E;
+        Wed, 24 Nov 2021 03:33:30 +0000 (UTC)
+Date:   Tue, 23 Nov 2021 22:33:29 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc:     Cliff Wickman <cliff.wickman@hpe.com>
-Subject: [PATCH] libtraceevent: Do not read non printable characters
-Message-ID: <20211123171003.7e24cd37@gandalf.local.home>
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v2 00/10] Refactor APIs for creating output handler
+Message-ID: <20211123223329.132ec037@rorschach.local.home>
+In-Reply-To: <20211111150321.85979-1-tz.stoyanov@gmail.com>
+References: <20211111150321.85979-1-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -32,32 +34,16 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Cliff Wickman <cliff.wickman@hpe.com>
+On Thu, 11 Nov 2021 17:03:11 +0200
+"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-libtraceevent is getting into a loop if the trace.dat file contains
-corrupted strings ending in non-printable characters instead of quotes.
+> This patch-set depends on:
+>   "trace-cmd fixes and clean-ups" patch set.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=215121
-Signed-off-by: Cliff Wickman <cliff.wickman@hpe.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- src/event-parse.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+FYI, please have a link to the patches that are dependent. Ideally a
+mailing list archive link, or at a minimum, a link to patchwork.
 
-diff --git a/src/event-parse.c b/src/event-parse.c
-index 7063758..c3ea98e 100644
---- a/src/event-parse.c
-+++ b/src/event-parse.c
-@@ -1246,7 +1246,8 @@ static enum tep_event_type __read_token(char **tok)
- 			/* the '\' '\' will cancel itself */
- 			if (ch == '\\' && last_ch == '\\')
- 				last_ch = 0;
--		} while (ch != quote_ch || last_ch == '\\');
-+			/* Break out if the file is corrupted and giving non print chars */
-+		} while ((ch != quote_ch && isprint(ch)) || last_ch == '\\');
- 		/* remove the last quote */
- 		i--;
- 
--- 
-2.31.1
+But just a subject line is not easy to find, especially if it's been
+archived.
 
+-- Steve
