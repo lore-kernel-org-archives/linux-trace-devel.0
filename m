@@ -2,29 +2,34 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A70DC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Nov 2021 22:34:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 227CBC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Nov 2021 23:07:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343964AbhKXWhd (ORCPT
+        id S245647AbhKXXKU (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 24 Nov 2021 17:37:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42810 "EHLO mail.kernel.org"
+        Wed, 24 Nov 2021 18:10:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243451AbhKXWhd (ORCPT
+        id S245432AbhKXXKU (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:37:33 -0500
+        Wed, 24 Nov 2021 18:10:20 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E62F06108B;
-        Wed, 24 Nov 2021 22:34:22 +0000 (UTC)
-Date:   Wed, 24 Nov 2021 17:34:21 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id B7A1260F36;
+        Wed, 24 Nov 2021 23:07:09 +0000 (UTC)
+Date:   Wed, 24 Nov 2021 18:07:08 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc:     "Jerome Marchand" <jmarchan@redhat.com>
-Subject: [PATCH] libtracefs: Don't ignore LDFLAGS when linking the shared
- libs
-Message-ID: <20211124173421.22d231b2@gandalf.local.home>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Beau Belgrave <beaub@linux.microsoft.com>,
+        linux-trace-devel@vger.kernel.org,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Subject: Re: [PATCH v2] libtraceevent: Add __rel_loc relative location
+ attribute support
+Message-ID: <20211124180708.599aa110@gandalf.local.home>
+In-Reply-To: <163767457857.543504.6091850281066240970.stgit@devnote2>
+References: <20211122223909.15f6fb50@rorschach.local.home>
+        <163767457857.543504.6091850281066240970.stgit@devnote2>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -33,34 +38,42 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Jerome Marchand" <jmarchan@redhat.com>
+On Tue, 23 Nov 2021 22:36:18 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-do_compile_shared_library shouldn't ignore LDFLAGS. That makes it
-difficult for packager to follow their distribution packaging
-guidelines.
+> +++ b/src/event-parse.h
+> @@ -125,6 +125,7 @@ enum tep_format_flags {
+>  	TEP_FIELD_IS_LONG	= 32,
+>  	TEP_FIELD_IS_FLAG	= 64,
+>  	TEP_FIELD_IS_SYMBOLIC	= 128,
+> +	TEP_FIELD_IS_RELATIVE	= 256,
+>  };
+>  
+>  struct tep_format_field {
+> @@ -153,12 +154,12 @@ struct tep_print_arg_atom {
+>  
+>  struct tep_print_arg_string {
+>  	char			*string;
+> -	int			offset;
+> +	struct tep_format_field	*field;
+>  };
+>  
+>  struct tep_print_arg_bitmask {
+>  	char			*bitmask;
+> -	int			offset;
+> +	struct tep_format_field	*field;
+>  };
+>  
 
-[ Taken from trace-cmd ]
-Link: https://lore.kernel.org/all/20211111180318.499099-1-jmarchan@redhat.com/
+We need to be careful about modifying content in event-parse.h. Because
+this is exposed outside he library.
 
-Signed-off-by: "Jerome Marchand" <jmarchan@redhat.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- scripts/utils.mk | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Although, I don't think this should be an issue.
 
-diff --git a/scripts/utils.mk b/scripts/utils.mk
-index 7a88b10..0b3c067 100644
---- a/scripts/utils.mk
-+++ b/scripts/utils.mk
-@@ -56,7 +56,7 @@ do_build_static_lib =				\
- 
- do_compile_shared_library =			\
- 	($(print_shared_lib_compile)		\
--	$(CC) --shared $^ '-Wl,-soname,$(1),-rpath=$$ORIGIN' -o $@ $(LIBS))
-+	$(CC) --shared $^ '-Wl,-soname,$(1),-rpath=$$ORIGIN' -o $@ $(LDFLAGS) $(LIBS))
- 
- do_compile_plugin_obj =				\
- 	($(print_plugin_obj_compile)		\
--- 
-2.31.1
+We probably need to move some content out of that file if it isn't used in
+any of the exposed APIs :-/
 
+And since both libtracefs and trace-cmd do not reference any of the
+tep_print_arg* fields, we probably should remove them before somebody does.
+
+-- Steve
