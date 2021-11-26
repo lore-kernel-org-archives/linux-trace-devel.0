@@ -2,367 +2,155 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFEE0C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Nov 2021 15:00:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9F9FC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Nov 2021 04:22:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349511AbhKYPDX (ORCPT
+        id S243304AbhKZEZk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Nov 2021 10:03:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354002AbhKYPBW (ORCPT
+        Thu, 25 Nov 2021 23:25:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1358593AbhKZEXj (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:01:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 424F261106;
-        Thu, 25 Nov 2021 14:58:11 +0000 (UTC)
-Date:   Thu, 25 Nov 2021 09:58:09 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Subject: [PATCH] libtracefs: Rename tracefs_hist*alloc*() functions once
- again
-Message-ID: <20211125095809.305fb243@oasis.local.home>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 25 Nov 2021 23:23:39 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5AAC06175B
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Nov 2021 19:46:10 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id o20so32885849eds.10
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Nov 2021 19:46:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bVi87EES+MUmywceTs5rlcbWOAwG716NpeAX0w5rzDk=;
+        b=ZBmeJyto/mWURl4osb/XSARGPSrjDH2rFNIivpCMHNGg6zS/9ih/QXTubLEa6wExab
+         dkF17G4MeCfTpTACMuvd1JGUEpViG6stz5p89Ejy0W2d+gfXFLeqWzoWqoi0qgDgIF5k
+         Sb9XbOFlhELJSdwGIqoIyI9zoiH9d7aAOhZZniYxXdkDY0aJo9IRSdiKKCLWO+dLY6WQ
+         dTBzacnMmP522B7JRirUTtU6h1HexnG3tRth/yijINzN9HQqlLQVcswhGfDzrdfbBZwq
+         7iwV/wD4wvSSGDhTYK0dLWuUFGncEBn9clQiUhn1FU/L8aiWZIvIlTHn1PQzPG0ly+oA
+         nr1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bVi87EES+MUmywceTs5rlcbWOAwG716NpeAX0w5rzDk=;
+        b=X64KoKp2A/vi+yn7pkwxuhA6DTArAcw/PxNBMG2l7v/BJm/kVFRzqV8wg91HjO8fsf
+         q/mwcJoGlL16V7jcqn6vnwyMIwHLfmYE0ckiCMJsf/47Bpm9YJG/QjuyNJzgtuvmXbXK
+         8Za1zc2QpcVczojJPcmuTRq9ujNz/dnq8RLNRZ3tciJ3DvKT9gxQZr3+qH/qz35NMCLh
+         JgnP6SINsF/5THIjRBchHuKSA6OQ9WljGKeD8Hvt4VoBtyFA4PdeJKvlfIryd82n1kV5
+         gG9TxNsiwhn4quesM5PByjLAE69ed1s03ZNFRoSqIEO2Wpm0bwiUWjbRofapCIOdF/lC
+         8o3w==
+X-Gm-Message-State: AOAM5319fACar8HvHk4mKwgtlRkY1LhmJ4rvfRJiC6OKGe6uKnibC/tu
+        6S5o/hMsgKVOYgHDrMHyNFK0JU0r8+BceQ==
+X-Google-Smtp-Source: ABdhPJwNBT41au20r/7swFbng1ciloeFyZzwUaT+NMcCxmSVt1pGEg6iPDroCNr/JdGgvzKBVYMsog==
+X-Received: by 2002:a05:6402:170a:: with SMTP id y10mr45157981edu.324.1637898368852;
+        Thu, 25 Nov 2021 19:46:08 -0800 (PST)
+Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id u16sm2981158edr.43.2021.11.25.19.46.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 19:46:08 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v3] libtraceevent: A new API for trace page size
+Date:   Fri, 26 Nov 2021 05:46:06 +0200
+Message-Id: <20211126034606.190816-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Currently, the size of a trace buffer page is equal to the size of the
+system memory page. This may change in the future, so this assumption
+may not be valid. The proper way to determine the trace buffer page size
+is by using the information from "events/header_page" ftrace file:
+ ...
+ field: char data;	offset:16;	size:4080;	signed:1;
+ ...
+The trace buffer page size is the size of the "data" filed + its offset.
 
-After reviewing an early user of libtracefs hist APIs, it seems more
-logical to have the most common case (1 dimensional histograms) be the
-default name. Rename the functions:
+A new libtraceevent API is introduced, for getting the trace buffer page
+size using that formula:
+ tep_get_sub_buffer_size()
 
-  tracefs_hist1d_alloc()  -->   tracefs_hist_alloc()
-  tracefs_hist2d_alloc()  -->   tracefs_hist_alloc_2d()
-  tracefs_hist_alloc()    -->   tracefs_hist_alloc_nd()
+Note, that some old kernels may not have "events/header_page" file. For
+those, the system memory page size is returned.
 
-Also, by having all start with "tracefs_hist_alloc" it makes them easier
-to grep for.
-
-Link: https://lore.kernel.org/all/1d9826696a1e8c3584158c0dd570b8b22db708db.1635535309.git.bristot@kernel.org/
-
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- Documentation/libtracefs-filter.txt    |  2 ++
- Documentation/libtracefs-hist-cont.txt |  8 +++---
- Documentation/libtracefs-hist.txt      | 30 +++++++++++------------
- Documentation/libtracefs-sql.txt       |  2 ++
- Documentation/libtracefs-synth.txt     |  2 ++
- Documentation/libtracefs-synth2.txt    |  2 ++
- include/tracefs.h                      | 20 +++++++--------
- src/tracefs-hist.c                     | 34 +++++++++++++-------------
- 8 files changed, 55 insertions(+), 45 deletions(-)
 
-diff --git a/Documentation/libtracefs-filter.txt b/Documentation/libtracefs-filter.txt
-index 7e167bc..14fb292 100644
---- a/Documentation/libtracefs-filter.txt
-+++ b/Documentation/libtracefs-filter.txt
-@@ -294,6 +294,8 @@ _libtracefs(3)_,
- _libtraceevent(3)_,
- _trace-cmd(1)_,
- _tracefs_hist_alloc(3)_,
-+_tracefs_hist_alloc_2d(3)_,
-+_tracefs_hist_alloc_nd(3)_,
- _tracefs_hist_free(3)_,
- _tracefs_hist_add_key(3)_,
- _tracefs_hist_add_value(3)_,
-diff --git a/Documentation/libtracefs-hist-cont.txt b/Documentation/libtracefs-hist-cont.txt
-index 5cdcc0a..b5cc726 100644
---- a/Documentation/libtracefs-hist-cont.txt
-+++ b/Documentation/libtracefs-hist-cont.txt
-@@ -107,9 +107,9 @@ int main (int argc, char **argv, char **env)
- 		exit(-1);
+v3 changes:
+ - Removed unneeded unistd.h include.
+v2 changes:
+ - Renamed tep_get_trace_page_size() to tep_get_sub_buffer_size().
+ - Handle the old kernels in tep_parse_header_page() instead of in
+   tep_get_sub_buffer_size().
+
+ src/event-parse-api.c | 15 +++++++++++++++
+ src/event-parse.c     |  2 ++
+ src/event-parse.h     |  1 +
+ 3 files changed, 18 insertions(+)
+
+diff --git a/src/event-parse-api.c b/src/event-parse-api.c
+index f8361e4..a765a68 100644
+--- a/src/event-parse-api.c
++++ b/src/event-parse-api.c
+@@ -248,6 +248,21 @@ void tep_set_page_size(struct tep_handle *tep, int _page_size)
+ 		tep->page_size = _page_size;
+ }
+ 
++/**
++ * tep_get_sub_buffer_size - get the size of a trace buffer page
++ * @tep: a handle to the tep_handle
++ *
++ * This returns the size of a trace buffer page on the traced machine.
++ * If @tep is NULL then -1 is returned.
++ */
++int tep_get_sub_buffer_size(struct tep_handle *tep)
++{
++	if (!tep)
++		return -1;
++
++	return tep->header_page_data_size + tep->header_page_data_offset;
++}
++
+ /**
+  * tep_is_file_bigendian - return the endian of the file
+  * @tep: a handle to the tep_handle
+diff --git a/src/event-parse.c b/src/event-parse.c
+index e3bf87b..34d6c96 100644
+--- a/src/event-parse.c
++++ b/src/event-parse.c
+@@ -17,6 +17,7 @@
+ #include <ctype.h>
+ #include <errno.h>
+ #include <stdint.h>
++#include <unistd.h>
+ #include <limits.h>
+ #include <linux/time64.h>
+ 
+@@ -7029,6 +7030,7 @@ int tep_parse_header_page(struct tep_handle *tep, char *buf, unsigned long size,
+ 		tep->header_page_ts_size = sizeof(long long);
+ 		tep->header_page_size_size = long_size;
+ 		tep->header_page_data_offset = sizeof(long long) + long_size;
++		tep->header_page_data_size = getpagesize() - tep->header_page_data_offset;
+ 		tep->old_format = 1;
+ 		return -1;
  	}
- 
--	hist = tracefs_hist2d_alloc(tep, "kmem", "kmalloc",
--				    "call_site",TRACEFS_HIST_KEY_SYM,
--				    "bytes_req", 0);
-+	hist = tracefs_hist_alloc_2d(tep, "kmem", "kmalloc",
-+				     "call_site",TRACEFS_HIST_KEY_SYM,
-+				     "bytes_req", 0);
- 	if (!hist) {
- 		fprintf(stderr, "Failed hist create\n");
- 		exit(-1);
-@@ -184,6 +184,8 @@ _libtracefs(3)_,
- _libtraceevent(3)_,
- _trace-cmd(1)_,
- _tracefs_hist_alloc(3)_,
-+_tracefs_hist_alloc_2d(3)_,
-+_tracefs_hist_alloc_nd(3)_,
- _tracefs_hist_free(3)_,
- _tracefs_hist_add_key(3)_,
- _tracefs_hist_add_value(3)_,
-diff --git a/Documentation/libtracefs-hist.txt b/Documentation/libtracefs-hist.txt
-index c501d5a..2eef718 100644
---- a/Documentation/libtracefs-hist.txt
-+++ b/Documentation/libtracefs-hist.txt
-@@ -29,14 +29,14 @@ struct tracefs_hist_axis {
- 	enum tracefs_hist_key_type type;
- };
- 
--struct tracefs_hist pass:[*]tracefs_hist1d_alloc(struct tracefs_tep pass:[*] tep,
-+struct tracefs_hist pass:[*]tracefs_hist_alloc(struct tracefs_tep pass:[*] tep,
- 			const char pass:[*]system, const char pass:[*]event,
- 			const char pass:[*]key, enum tracefs_hist_key_type type);
--struct tracefs_hist pass:[*]tracefs_hist2d_alloc(struct tracefs_tep pass:[*] tep,
-+struct tracefs_hist pass:[*]tracefs_hist_alloc_2d(struct tracefs_tep pass:[*] tep,
- 			const char pass:[*]system, const char pass:[*]event,
- 			const char pass:[*]key1, enum tracefs_hist_key_type type1,
- 			const char pass:[*]key2, enum tracefs_hist_key_type type2));
--struct tracefs_hist pass:[*]tracefs_hist_alloc(struct tracefs_tep pass:[*] tep,
-+struct tracefs_hist pass:[*]tracefs_hist_alloc_nd(struct tracefs_tep pass:[*] tep,
- 			const char pass:[*]system, const char pass:[*]event,
- 			struct tracefs_hist_axis pass:[*]axes);
- void tracefs_hist_free(struct tracefs_hist pass:[*]hist);
-@@ -78,7 +78,7 @@ The syntax can be complex and difficult to get correct. This API handles the
- syntax, and facilitates the creation and interaction with the event histograms.
- See https://www.kernel.org/doc/html/latest/trace/histogram.html for more information.
- 
--*tracefs_hist1d_alloc*() allocates a "struct tracefs_hist" descriptor of a one-dimensional
-+*tracefs_hist_alloc*() allocates a "struct tracefs_hist" descriptor of a one-dimensional
- histogram and returns the address of it. This descriptor must be freed by *tracefs_hist_free*().
- The _tep_ is a trace event handle (see *tracefs_local_events*(3)), that holds the
- _system_ and _event_ that the histogram will be attached to. The _system_ is the
-@@ -86,7 +86,7 @@ system or group of the event. The _event_ is the event to attach the histogram t
- The _key_ is a field of the event that will be used as the key(dimension) of the histogram.
- The _type_ is the type of the _key_. See KEY TYPES below.
- 
--*tracefs_hist2d_alloc*() allocates a "struct tracefs_hist" descriptor of a two-dimensional
-+*tracefs_hist_alloc_2d*() allocates a "struct tracefs_hist" descriptor of a two-dimensional
- histogram and returns the address of it. This descriptor must be freed by *tracefs_hist_free*().
- The _tep_ is a trace event handle (see *tracefs_local_events*(3)), that holds the
- _system_ and _event_ that the histogram will be attached to. The _system_ is the
-@@ -96,7 +96,7 @@ of the histogram. The _type1_ is the type of the _key1_. See KEY TYPES below.
- The _key2_ is the second field of the event that will be used as the key(dimension)
- of the histogram. The _type2_ is the type of the _key2_. See KEY TYPES below.
- 
--*tracefs_hist_alloc*() allocates a "struct tracefs_hist" descriptor of an N-dimensional
-+*tracefs_hist_alloc_nd*() allocates a "struct tracefs_hist" descriptor of an N-dimensional
- histogram and returns the address of it. This descriptor must be freed by *tracefs_hist_free*().
- The _tep_ is a trace event handle (see *tracefs_local_events*(3)), that holds the
- _system_ and _event_ that the histogram will be attached to. The _system_ is the
-@@ -108,7 +108,7 @@ or disable the running histogram if it was started. *tracefs_hist_destroy*() nee
- to be called to do so.
- 
- *tracefs_hist_add_key*() Adds a secondary or tertiary key to the histogram.
--The key passed to *tracefs_hist_alloc*() is the primary key of the histogram.
-+The key passed to *tracefs_hist_alloc_nd*() is the primary key of the histogram.
- The first time this function is called, it will add a secondary key (or two dimensional
- histogram). If this function is called again on the same histogram, it will add
- a _tertiary_ key (or three dimensional histogram). The _hist_ parameter is the
-@@ -203,7 +203,7 @@ calling conventions a bit easier to understand what is happening.
- KEY TYPES
- ---------
- 
--*tracefs_hist_alloc*() and *tracefs_hist_add_key*() both add a key and requires
-+*tracefs_hist_alloc_nd*() and *tracefs_hist_add_key*() both add a key and requires
- that key to have a type. The types may be:
- 
-  *TRACEFS_HIST_KEY_NORMAL* or zero (0) which is to not modify the type.
-@@ -232,7 +232,7 @@ in which case it will show the timestamp in microseconds instead of nanoseconds.
- 
- RETURN VALUE
- ------------
--*tracefs_hist_alloc*() returns an allocated histogram descriptor which must
-+*tracefs_hist_alloc_nd*() returns an allocated histogram descriptor which must
- be freed by *tracefs_hist_free*() or NULL on error.
- 
- All the other functions return zero on success or -1 on error.
-@@ -376,17 +376,17 @@ static void process_hist(enum commands cmd, const char *instance_name,
- 	/* Show examples of hist1d and hist2d */
- 	switch (cnt) {
- 	case 1:
--		hist = tracefs_hist1d_alloc(tep, system, event,
--					    axes[0].key, axes[0].type);
-+		hist = tracefs_hist_alloc(tep, system, event,
-+					  axes[0].key, axes[0].type);
- 		break;
- 	case 2:
--		hist = tracefs_hist2d_alloc(tep, system, event,
--					    axes[0].key, axes[0].type,
--					    axes[1].key, axes[1].type);
-+		hist = tracefs_hist_alloc_2d(tep, system, event,
-+					     axes[0].key, axes[0].type,
-+					     axes[1].key, axes[1].type);
- 		break;
- 	default:
- 		/* Really, 1 and 2 could use this too */
--		hist = tracefs_hist_alloc(tep, system, event, axes);
-+		hist = tracefs_hist_alloc_nd(tep, system, event, axes);
- 	}
- 	if (!hist) {
- 		fprintf(stderr, "Failed hist create\n");
-diff --git a/Documentation/libtracefs-sql.txt b/Documentation/libtracefs-sql.txt
-index 6297e9a..8c765eb 100644
---- a/Documentation/libtracefs-sql.txt
-+++ b/Documentation/libtracefs-sql.txt
-@@ -581,6 +581,8 @@ _tracefs_synth_destroy(3)_,
- _tracefs_synth_free(3)_,
- _tracefs_synth_echo_cmd(3)_,
- _tracefs_hist_alloc(3)_,
-+_tracefs_hist_alloc_2d(3)_,
-+_tracefs_hist_alloc_nd(3)_,
- _tracefs_hist_free(3)_,
- _tracefs_hist_add_key(3)_,
- _tracefs_hist_add_value(3)_,
-diff --git a/Documentation/libtracefs-synth.txt b/Documentation/libtracefs-synth.txt
-index 87d2dfc..370a63b 100644
---- a/Documentation/libtracefs-synth.txt
-+++ b/Documentation/libtracefs-synth.txt
-@@ -317,6 +317,8 @@ _libtracefs(3)_,
- _libtraceevent(3)_,
- _trace-cmd(1)_,
- _tracefs_hist_alloc(3)_,
-+_tracefs_hist_alloc_2d(3)_,
-+_tracefs_hist_alloc_nd(3)_,
- _tracefs_hist_free(3)_,
- _tracefs_hist_add_key(3)_,
- _tracefs_hist_add_value(3)_,
-diff --git a/Documentation/libtracefs-synth2.txt b/Documentation/libtracefs-synth2.txt
-index c7be963..1cb07c8 100644
---- a/Documentation/libtracefs-synth2.txt
-+++ b/Documentation/libtracefs-synth2.txt
-@@ -241,6 +241,8 @@ _libtracefs(3)_,
- _libtraceevent(3)_,
- _trace-cmd(1)_,
- _tracefs_hist_alloc(3)_,
-+_tracefs_hist_alloc_2d(3)_,
-+_tracefs_hist_alloc_nd(3)_,
- _tracefs_hist_free(3)_,
- _tracefs_hist_add_key(3)_,
- _tracefs_hist_add_value(3)_,
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 9662603..8b8b554 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -334,14 +334,14 @@ enum tracefs_compare {
- 
- void tracefs_hist_free(struct tracefs_hist *hist);
- struct tracefs_hist *
--tracefs_hist1d_alloc(struct tep_handle *tep,
--		     const char *system, const char *event_name,
--		     const char *key, enum tracefs_hist_key_type type);
-+tracefs_hist_alloc(struct tep_handle *tep,
-+		   const char *system, const char *event_name,
-+		   const char *key, enum tracefs_hist_key_type type);
- struct tracefs_hist *
--tracefs_hist2d_alloc(struct tep_handle *tep,
--		     const char *system, const char *event_name,
--		     const char *key1, enum tracefs_hist_key_type type1,
--		     const char *key2, enum tracefs_hist_key_type type2);
-+tracefs_hist_alloc_2d(struct tep_handle *tep,
-+		      const char *system, const char *event_name,
-+		      const char *key1, enum tracefs_hist_key_type type1,
-+		      const char *key2, enum tracefs_hist_key_type type2);
- 
- struct tracefs_hist_axis {
- 	const char *key;
-@@ -349,9 +349,9 @@ struct tracefs_hist_axis {
- };
- 
- struct tracefs_hist *
--tracefs_hist_alloc(struct tep_handle *tep,
--		   const char *system, const char *event_name,
--		   struct tracefs_hist_axis *axes);
-+tracefs_hist_alloc_nd(struct tep_handle *tep,
-+		      const char *system, const char *event_name,
-+		      struct tracefs_hist_axis *axes);
- const char *tracefs_get_hist_name(struct tracefs_hist *hist);
- const char *tracefs_get_hist_event(struct tracefs_hist *hist);
- const char *tracefs_get_hist_system(struct tracefs_hist *hist);
-diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index 694b800..ea9e127 100644
---- a/src/tracefs-hist.c
-+++ b/src/tracefs-hist.c
-@@ -206,7 +206,7 @@ void tracefs_hist_free(struct tracefs_hist *hist)
- }
- 
- /**
-- * tracefs_hist1d_alloc - Initialize one-dimensional histogram
-+ * tracefs_hist_alloc - Initialize one-dimensional histogram
-  * @tep: The tep handle that has the @system and @event.
-  * @system: The system the histogram event is in.
-  * @event_name: The name of the event that the histogram will be attached to.
-@@ -222,17 +222,17 @@ void tracefs_hist_free(struct tracefs_hist *hist)
-  * NULL on failure.
-  */
- struct tracefs_hist *
--tracefs_hist1d_alloc(struct tep_handle *tep,
--		     const char *system, const char *event_name,
--		     const char *key, enum tracefs_hist_key_type type)
-+tracefs_hist_alloc(struct tep_handle *tep,
-+		   const char *system, const char *event_name,
-+		   const char *key, enum tracefs_hist_key_type type)
- {
- 	struct tracefs_hist_axis axis[] = {{key, type}, {NULL, 0}};
- 
--	return tracefs_hist_alloc(tep, system, event_name, axis);
-+	return tracefs_hist_alloc_nd(tep, system, event_name, axis);
- }
- 
- /**
-- * tracefs_hist2d_alloc - Initialize two-dimensional histogram
-+ * tracefs_hist_alloc_2d - Initialize two-dimensional histogram
-  * @tep: The tep handle that has the @system and @event.
-  * @system: The system the histogram event is in.
-  * @event: The event that the histogram will be attached to.
-@@ -250,20 +250,20 @@ tracefs_hist1d_alloc(struct tep_handle *tep,
-  * NULL on failure.
-  */
- struct tracefs_hist *
--tracefs_hist2d_alloc(struct tep_handle *tep,
--		     const char *system, const char *event_name,
--		     const char *key1, enum tracefs_hist_key_type type1,
--		     const char *key2, enum tracefs_hist_key_type type2)
-+tracefs_hist_alloc_2d(struct tep_handle *tep,
-+		      const char *system, const char *event_name,
-+		      const char *key1, enum tracefs_hist_key_type type1,
-+		      const char *key2, enum tracefs_hist_key_type type2)
- {
- 	struct tracefs_hist_axis axis[] = {{key1, type1},
- 					   {key2, type2},
- 					   {NULL, 0}};
- 
--	return tracefs_hist_alloc(tep, system, event_name, axis);
-+	return tracefs_hist_alloc_nd(tep, system, event_name, axis);
- }
- 
- /**
-- * tracefs_hist_alloc - Initialize N-dimensional histogram
-+ * tracefs_hist_alloc_nd - Initialize N-dimensional histogram
-  * @tep: The tep handle that has the @system and @event.
-  * @system: The system the histogram event is in
-  * @event: The event that the histogram will be attached to
-@@ -278,9 +278,9 @@ tracefs_hist2d_alloc(struct tep_handle *tep,
-  * NULL on failure.
-  */
- struct tracefs_hist *
--tracefs_hist_alloc(struct tep_handle *tep,
--		   const char *system, const char *event_name,
--		   struct tracefs_hist_axis *axes)
-+tracefs_hist_alloc_nd(struct tep_handle *tep,
-+		      const char *system, const char *event_name,
-+		      struct tracefs_hist_axis *axes)
- {
- 	struct tep_event *event;
- 	struct tracefs_hist *hist;
-@@ -1861,8 +1861,8 @@ tracefs_synth_get_start_hist(struct tracefs_synth *synth)
- 				return NULL;
- 			}
- 		} else {
--			hist = tracefs_hist1d_alloc(tep, system, event,
--						    key, type);
-+			hist = tracefs_hist_alloc(tep, system, event,
-+						  key, type);
- 			if (!hist)
- 				return NULL;
- 		}
+diff --git a/src/event-parse.h b/src/event-parse.h
+index db8bc6d..9723406 100644
+--- a/src/event-parse.h
++++ b/src/event-parse.h
+@@ -573,6 +573,7 @@ void tep_set_cpus(struct tep_handle *tep, int cpus);
+ int tep_get_long_size(struct tep_handle *tep);
+ void tep_set_long_size(struct tep_handle *tep, int long_size);
+ int tep_get_page_size(struct tep_handle *tep);
++int tep_get_sub_buffer_size(struct tep_handle *tep);
+ void tep_set_page_size(struct tep_handle *tep, int _page_size);
+ bool tep_is_file_bigendian(struct tep_handle *tep);
+ void tep_set_file_bigendian(struct tep_handle *tep, enum tep_endian endian);
 -- 
-2.31.1
+2.33.1
 
