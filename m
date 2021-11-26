@@ -2,155 +2,103 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9F9FC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Nov 2021 04:22:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95E4EC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Nov 2021 12:22:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243304AbhKZEZk (ORCPT
+        id S234057AbhKZMZq (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Nov 2021 23:25:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358593AbhKZEXj (ORCPT
+        Fri, 26 Nov 2021 07:25:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60072 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234003AbhKZMXo (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Nov 2021 23:23:39 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5AAC06175B
-        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Nov 2021 19:46:10 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id o20so32885849eds.10
-        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Nov 2021 19:46:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bVi87EES+MUmywceTs5rlcbWOAwG716NpeAX0w5rzDk=;
-        b=ZBmeJyto/mWURl4osb/XSARGPSrjDH2rFNIivpCMHNGg6zS/9ih/QXTubLEa6wExab
-         dkF17G4MeCfTpTACMuvd1JGUEpViG6stz5p89Ejy0W2d+gfXFLeqWzoWqoi0qgDgIF5k
-         Sb9XbOFlhELJSdwGIqoIyI9zoiH9d7aAOhZZniYxXdkDY0aJo9IRSdiKKCLWO+dLY6WQ
-         dTBzacnMmP522B7JRirUTtU6h1HexnG3tRth/yijINzN9HQqlLQVcswhGfDzrdfbBZwq
-         7iwV/wD4wvSSGDhTYK0dLWuUFGncEBn9clQiUhn1FU/L8aiWZIvIlTHn1PQzPG0ly+oA
-         nr1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bVi87EES+MUmywceTs5rlcbWOAwG716NpeAX0w5rzDk=;
-        b=X64KoKp2A/vi+yn7pkwxuhA6DTArAcw/PxNBMG2l7v/BJm/kVFRzqV8wg91HjO8fsf
-         q/mwcJoGlL16V7jcqn6vnwyMIwHLfmYE0ckiCMJsf/47Bpm9YJG/QjuyNJzgtuvmXbXK
-         8Za1zc2QpcVczojJPcmuTRq9ujNz/dnq8RLNRZ3tciJ3DvKT9gxQZr3+qH/qz35NMCLh
-         JgnP6SINsF/5THIjRBchHuKSA6OQ9WljGKeD8Hvt4VoBtyFA4PdeJKvlfIryd82n1kV5
-         gG9TxNsiwhn4quesM5PByjLAE69ed1s03ZNFRoSqIEO2Wpm0bwiUWjbRofapCIOdF/lC
-         8o3w==
-X-Gm-Message-State: AOAM5319fACar8HvHk4mKwgtlRkY1LhmJ4rvfRJiC6OKGe6uKnibC/tu
-        6S5o/hMsgKVOYgHDrMHyNFK0JU0r8+BceQ==
-X-Google-Smtp-Source: ABdhPJwNBT41au20r/7swFbng1ciloeFyZzwUaT+NMcCxmSVt1pGEg6iPDroCNr/JdGgvzKBVYMsog==
-X-Received: by 2002:a05:6402:170a:: with SMTP id y10mr45157981edu.324.1637898368852;
-        Thu, 25 Nov 2021 19:46:08 -0800 (PST)
-Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id u16sm2981158edr.43.2021.11.25.19.46.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 19:46:08 -0800 (PST)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3] libtraceevent: A new API for trace page size
-Date:   Fri, 26 Nov 2021 05:46:06 +0200
-Message-Id: <20211126034606.190816-1-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.33.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 26 Nov 2021 07:23:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 659E461108;
+        Fri, 26 Nov 2021 12:20:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637929230;
+        bh=Qk/OKPKrhFGM2jtk+r3CcJ1Qnv/AtCRtIgdxEfJuE5g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=s/02nuOt3SbpqXmEkZXcIB8qmySFfEV2vtWFVKz9uYc3/LtMt2TyYcMLeBgjO7ooI
+         dJlXyrS+5naGdbQo+UdidthwlFB5cxF86RG0LwvKFqWc72hLdyhblxAzruiyAczDeQ
+         0sHwHe0RUjnWk1Hud1awdI+whGNlWQHtv4Lql/XQZ0PKKqnAe4P3VyUhNZr2pXlzLl
+         ga1NiAQnuKz3QoO9s+82kjOHnSyqy/8XEQQ3OVvC118gHPo7oMzP3R1+GyIf97werQ
+         45MqdBUsxMJfrMGkbeRnq4GAt1rWgy+rlmQ4o+f+IMKjUaOPXOHhIsqO/okqqfdFc3
+         kXprAMeGWzTgA==
+Date:   Fri, 26 Nov 2021 21:20:26 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Beau Belgrave <beaub@linux.microsoft.com>,
+        linux-trace-devel@vger.kernel.org,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Subject: Re: [PATCH v2] libtraceevent: Add __rel_loc relative location
+ attribute support
+Message-Id: <20211126212026.e6b035ac8ec318b06030221f@kernel.org>
+In-Reply-To: <20211124180708.599aa110@gandalf.local.home>
+References: <20211122223909.15f6fb50@rorschach.local.home>
+        <163767457857.543504.6091850281066240970.stgit@devnote2>
+        <20211124180708.599aa110@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Currently, the size of a trace buffer page is equal to the size of the
-system memory page. This may change in the future, so this assumption
-may not be valid. The proper way to determine the trace buffer page size
-is by using the information from "events/header_page" ftrace file:
- ...
- field: char data;	offset:16;	size:4080;	signed:1;
- ...
-The trace buffer page size is the size of the "data" filed + its offset.
+On Wed, 24 Nov 2021 18:07:08 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-A new libtraceevent API is introduced, for getting the trace buffer page
-size using that formula:
- tep_get_sub_buffer_size()
+> On Tue, 23 Nov 2021 22:36:18 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+> > +++ b/src/event-parse.h
+> > @@ -125,6 +125,7 @@ enum tep_format_flags {
+> >  	TEP_FIELD_IS_LONG	= 32,
+> >  	TEP_FIELD_IS_FLAG	= 64,
+> >  	TEP_FIELD_IS_SYMBOLIC	= 128,
+> > +	TEP_FIELD_IS_RELATIVE	= 256,
+> >  };
+> >  
+> >  struct tep_format_field {
+> > @@ -153,12 +154,12 @@ struct tep_print_arg_atom {
+> >  
+> >  struct tep_print_arg_string {
+> >  	char			*string;
+> > -	int			offset;
+> > +	struct tep_format_field	*field;
+> >  };
+> >  
+> >  struct tep_print_arg_bitmask {
+> >  	char			*bitmask;
+> > -	int			offset;
+> > +	struct tep_format_field	*field;
+> >  };
+> >  
+> 
+> We need to be careful about modifying content in event-parse.h. Because
+> this is exposed outside he library.
 
-Note, that some old kernels may not have "events/header_page" file. For
-those, the system memory page size is returned.
+Oh, I thought this is an internal header, because it is under src/ directory.
+However, indeed "TEP_FIELD_IS_*" referred from perf-tools, so this might be
+need to be exposed.
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
+> 
+> Although, I don't think this should be an issue.
+> 
+> We probably need to move some content out of that file if it isn't used in
+> any of the exposed APIs :-/
+> 
+> And since both libtracefs and trace-cmd do not reference any of the
+> tep_print_arg* fields, we probably should remove them before somebody does.
 
-v3 changes:
- - Removed unneeded unistd.h include.
-v2 changes:
- - Renamed tep_get_trace_page_size() to tep_get_sub_buffer_size().
- - Handle the old kernels in tep_parse_header_page() instead of in
-   tep_get_sub_buffer_size().
+Yes, tep_print_arg seems to be used only in the event-parse.c.
 
- src/event-parse-api.c | 15 +++++++++++++++
- src/event-parse.c     |  2 ++
- src/event-parse.h     |  1 +
- 3 files changed, 18 insertions(+)
+Thank you,
 
-diff --git a/src/event-parse-api.c b/src/event-parse-api.c
-index f8361e4..a765a68 100644
---- a/src/event-parse-api.c
-+++ b/src/event-parse-api.c
-@@ -248,6 +248,21 @@ void tep_set_page_size(struct tep_handle *tep, int _page_size)
- 		tep->page_size = _page_size;
- }
- 
-+/**
-+ * tep_get_sub_buffer_size - get the size of a trace buffer page
-+ * @tep: a handle to the tep_handle
-+ *
-+ * This returns the size of a trace buffer page on the traced machine.
-+ * If @tep is NULL then -1 is returned.
-+ */
-+int tep_get_sub_buffer_size(struct tep_handle *tep)
-+{
-+	if (!tep)
-+		return -1;
-+
-+	return tep->header_page_data_size + tep->header_page_data_offset;
-+}
-+
- /**
-  * tep_is_file_bigendian - return the endian of the file
-  * @tep: a handle to the tep_handle
-diff --git a/src/event-parse.c b/src/event-parse.c
-index e3bf87b..34d6c96 100644
---- a/src/event-parse.c
-+++ b/src/event-parse.c
-@@ -17,6 +17,7 @@
- #include <ctype.h>
- #include <errno.h>
- #include <stdint.h>
-+#include <unistd.h>
- #include <limits.h>
- #include <linux/time64.h>
- 
-@@ -7029,6 +7030,7 @@ int tep_parse_header_page(struct tep_handle *tep, char *buf, unsigned long size,
- 		tep->header_page_ts_size = sizeof(long long);
- 		tep->header_page_size_size = long_size;
- 		tep->header_page_data_offset = sizeof(long long) + long_size;
-+		tep->header_page_data_size = getpagesize() - tep->header_page_data_offset;
- 		tep->old_format = 1;
- 		return -1;
- 	}
-diff --git a/src/event-parse.h b/src/event-parse.h
-index db8bc6d..9723406 100644
---- a/src/event-parse.h
-+++ b/src/event-parse.h
-@@ -573,6 +573,7 @@ void tep_set_cpus(struct tep_handle *tep, int cpus);
- int tep_get_long_size(struct tep_handle *tep);
- void tep_set_long_size(struct tep_handle *tep, int long_size);
- int tep_get_page_size(struct tep_handle *tep);
-+int tep_get_sub_buffer_size(struct tep_handle *tep);
- void tep_set_page_size(struct tep_handle *tep, int _page_size);
- bool tep_is_file_bigendian(struct tep_handle *tep);
- void tep_set_file_bigendian(struct tep_handle *tep, enum tep_endian endian);
+> 
+> -- Steve
+
+
 -- 
-2.33.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
