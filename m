@@ -2,196 +2,226 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB99AC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 29 Nov 2021 11:11:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DCB02C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 29 Nov 2021 17:34:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238628AbhK2LPP convert rfc822-to-8bit (ORCPT
+        id S1349835AbhK2RhY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 29 Nov 2021 06:15:15 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:59354 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1377319AbhK2LNO (ORCPT
+        Mon, 29 Nov 2021 12:37:24 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:34562 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231959AbhK2RfT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 29 Nov 2021 06:13:14 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-342-DyWoeAsiMumoG4o6FMtrmw-1; Mon, 29 Nov 2021 06:09:53 -0500
-X-MC-Unique: DyWoeAsiMumoG4o6FMtrmw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 29 Nov 2021 12:35:19 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CADF8835B65;
-        Mon, 29 Nov 2021 11:09:51 +0000 (UTC)
-Received: from x1.com (unknown [10.22.8.188])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 847CC5D9DE;
-        Mon, 29 Nov 2021 11:09:45 +0000 (UTC)
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Tao Zhou <tao.zhou@linux.dev>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V8 14/14] rtla: Add rtla timerlat hist documentation
-Date:   Mon, 29 Nov 2021 12:07:52 +0100
-Message-Id: <0e2bd067f32d9da3244396741d37c09278a04f91.1638182284.git.bristot@kernel.org>
-In-Reply-To: <cover.1638182284.git.bristot@kernel.org>
-References: <cover.1638182284.git.bristot@kernel.org>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 84395B8120F
+        for <linux-trace-devel@vger.kernel.org>; Mon, 29 Nov 2021 17:32:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D3E3C53FC7
+        for <linux-trace-devel@vger.kernel.org>; Mon, 29 Nov 2021 17:31:59 +0000 (UTC)
+Date:   Mon, 29 Nov 2021 12:31:57 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] libtracefs: Rename tracefs_event_append/verify_filter()
+ functions
+Message-ID: <20211129123157.0ce043c3@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Man page for rtla timerlat hist mode.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Tom Zanussi <zanussi@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Clark Williams <williams@redhat.com>
-Cc: John Kacur <jkacur@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: linux-rt-users@vger.kernel.org
-Cc: linux-trace-devel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+The function names:
+
+  tracefs_event_append_filter()
+  tracefs_event_verify_filter()
+
+Are confusing, as they do not actually affect the tep_event. What they do
+is to create a filter string. Rename them to a more appropriate:
+
+  tracefs_filter_string_append()
+  tracefs_filter_string_verify()
+
+We need to keep around the old names as they have been in a tagged
+release. But move them to deprecated, and have them call the appropriate
+names. Also remove the old name from the man pages.
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- .../tools/rtla/rtla-timerlat-hist.rst         | 106 ++++++++++++++++++
- 1 file changed, 106 insertions(+)
- create mode 100644 Documentation/tools/rtla/rtla-timerlat-hist.rst
+ Documentation/libtracefs-filter.txt | 18 ++++++++---------
+ include/tracefs.h                   | 10 ++++++++++
+ src/tracefs-filter.c                | 31 +++++++++++++++++++++--------
+ 3 files changed, 42 insertions(+), 17 deletions(-)
 
-diff --git a/Documentation/tools/rtla/rtla-timerlat-hist.rst b/Documentation/tools/rtla/rtla-timerlat-hist.rst
-new file mode 100644
-index 000000000000..e12eae1f3301
---- /dev/null
-+++ b/Documentation/tools/rtla/rtla-timerlat-hist.rst
-@@ -0,0 +1,106 @@
-+=====================
-+rtla-timerlat-hist
-+=====================
-+------------------------------------------------
-+Histograms of the operating system timer latency
-+------------------------------------------------
+diff --git a/Documentation/libtracefs-filter.txt b/Documentation/libtracefs-filter.txt
+index 14fb292..23a2abf 100644
+--- a/Documentation/libtracefs-filter.txt
++++ b/Documentation/libtracefs-filter.txt
+@@ -3,7 +3,7 @@ libtracefs(3)
+ 
+ NAME
+ ----
+-tracefs_event_append_filter, tracefs_event_verify_filter - Add and verify event filters
++tracefs_filter_string_append, tracefs_filter_string_verify - Add and verify event filters
+ 
+ SYNOPSIS
+ --------
+@@ -11,16 +11,16 @@ SYNOPSIS
+ --
+ *#include <tracefs.h>*
+ 
+-int tracefs_event_append_filter(struct tep_event pass:[*]event, char pass:[**] filter,
++int tracefs_filter_string_append(struct tep_event pass:[*]event, char pass:[**] filter,
+ 				 struct tracefs_filter type, const char pass:[*]field,
+ 				 enum tracefs_synth_compare compare, const char pass:[*]val);
+-int tracefs_event_verify_filter(struct tep_event pass:[*]event, const char pass:[*]filter, char pass:[**]err);
++int tracefs_filter_string_verify(struct tep_event pass:[*]event, const char pass:[*]filter, char pass:[**]err);
+ 
+ --
+ 
+ DESCRIPTION
+ -----------
+-*tracefs_event_append_filter*() is a way to create and verify event filters for
++*tracefs_filter_string_append*() is a way to create and verify event filters for
+ a given event. It will verify that the _field_ belongs to the event and that
+ the _compare_ option that is used is valid for the type of the field, as well
+ as _val_. For the _type_ that is not of *TRACEFS_FILTER_COMPARE*, it will build
+@@ -60,7 +60,7 @@ _field_, _compare_, and _val_ are ignored unless _type_ is equal to
+ 
+ *TRACEFS_COMPARE_AND* - _field_ & _val_ : where _field_ is a flags field.
+ 
+-*tracefs_event_verify_filter*() will parse _filter_ to make sure that the
++*tracefs_filter_string_verify*() will parse _filter_ to make sure that the
+ fields are for the _event_, and that the syntax is correct. If there's an
+ error in the syntax, and _err_ is not NULL, then it will be allocated with an
+ error message stating what was found wrong with the filter. _err_ must be freed
+@@ -68,9 +68,9 @@ with *free*().
+ 
+ RETURN VALUE
+ ------------
+-*tracefs_event_append_filter*() returns 0 on success and -1 on error.
++*tracefs_filter_string_append*() returns 0 on success and -1 on error.
+ 
+-*tracefs_event_verify_filter*() returns 0 on success and -1 on error. if there
++*tracefs_filter_string_verify*() returns 0 on success and -1 on error. if there
+ is an error, and _errno_ is not *ENOMEM*, then _err_ is allocated and will
+ contain a string describing what was found wrong with _filter_. _err_ must be
+ freed with *free*().
+@@ -128,7 +128,7 @@ int main (int argc, char **argv)
+ 		exit(-1);
+ 	}
+ 
+-	if (tracefs_event_verify_filter(event, filter, &err) < 0) {
++	if (tracefs_filter_string_verify(event, filter, &err) < 0) {
+ 		perror("tracecfs_event_verify_filter");
+ 		if (err)
+ 			fprintf(stderr, "%s", err);
+@@ -260,7 +260,7 @@ int main (int argc, char **argv)
+ 			val[n] = '\0';
+ 			break;
+ 		}
+-		n = tracefs_event_append_filter(event, &new_filter, type,
++		n = tracefs_filter_string_append(event, &new_filter, type,
+ 						field, compare, val);
+ 		if (n < 0) {
+ 			fprintf(stderr, "Failed making new filter:\n'%s'\n",
+diff --git a/include/tracefs.h b/include/tracefs.h
+index 8b8b554..c9ebaa6 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -467,10 +467,20 @@ enum tracefs_synth_calc {
+ 	TRACEFS_SYNTH_ADD,
+ };
+ 
++int tracefs_filter_string_append(struct tep_event *event, char **filter,
++				 enum tracefs_filter type,
++				 const char *field, enum tracefs_compare compare,
++				 const char *val);
++int tracefs_filter_string_verify(struct tep_event *event, const char *filter,
++				 char **err);
 +
-+:Manual section: 1
++/** Deprecated do not use: Instead use tracefs_filter_string_append() **/
+ int tracefs_event_append_filter(struct tep_event *event, char **filter,
+ 				enum tracefs_filter type,
+ 				const char *field, enum tracefs_compare compare,
+ 				const char *val);
 +
-+SYNOPSIS
-+========
-+**rtla timerlat hist** [*OPTIONS*] ...
++/** Deprecated do not use: Instead use tracefs_filter_string_verify()  **/
+ int tracefs_event_verify_filter(struct tep_event *event, const char *filter,
+ 				char **err);
+ 
+diff --git a/src/tracefs-filter.c b/src/tracefs-filter.c
+index def8f68..e65fd94 100644
+--- a/src/tracefs-filter.c
++++ b/src/tracefs-filter.c
+@@ -338,7 +338,7 @@ __hidden int trace_append_filter(char **filter, unsigned int *state,
+ }
+ 
+ /**
+- * tracefs_event_append_filter - create or append a filter for an event
++ * tracefs_filter_string_append - create or append a filter for an event
+  * @event: tep_event to create / append a filter for
+  * @filter: Pointer to string to append to (pointer to NULL to create)
+  * @type: The type of element to add to the filter
+@@ -387,10 +387,10 @@ __hidden int trace_append_filter(char **filter, unsigned int *state,
+  *
+  * Returns 0 on success and -1 on failure.
+  */
+-int tracefs_event_append_filter(struct tep_event *event, char **filter,
+-				enum tracefs_filter type,
+-				const char *field, enum tracefs_compare compare,
+-				const char *val)
++int tracefs_filter_string_append(struct tep_event *event, char **filter,
++				 enum tracefs_filter type,
++				 const char *field, enum tracefs_compare compare,
++				 const char *val)
+ {
+ 	unsigned int open_parens;
+ 	unsigned int state = 0;
+@@ -623,7 +623,7 @@ static int get_val_end(const char *filter, int i, int *end)
+ }
+ 
+ /**
+- * tracefs_event_verify_filter - verify a given filter works for an event
++ * tracefs_filter_string_verify - verify a given filter works for an event
+  * @event: The event to test the given filter for
+  * @filter: The filter to test
+  * @err: Error message for syntax errors (NULL to ignore)
+@@ -634,8 +634,8 @@ static int get_val_end(const char *filter, int i, int *end)
+  * errors, @err will be allocated with an error message. It must
+  * be freed with free().
+  */
+-int tracefs_event_verify_filter(struct tep_event *event, const char *filter,
+-				char **err)
++int tracefs_filter_string_verify(struct tep_event *event, const char *filter,
++				 char **err)
+ {
+ 	enum tracefs_filter filter_type;
+ 	enum tracefs_compare compare;
+@@ -745,3 +745,18 @@ int tracefs_event_verify_filter(struct tep_event *event, const char *filter,
+ 	free(str);
+ 	return 0;
+ }
 +
-+DESCRIPTION
-+===========
-+
-+.. include:: common_timerlat_description.rst
-+
-+The **rtla timerlat hist** displays a histogram of each tracer event
-+occurrence. This tool uses the periodic information, and the
-+**osnoise:** tracepoints are enabled when using the **-T** option.
-+
-+OPTIONS
-+=======
-+
-+.. include:: common_timerlat_options.rst
-+
-+.. include:: common_hist_options.rst
-+
-+.. include:: common_options.rst
-+
-+EXAMPLE
-+=======
-+In the example below, **rtla timerlat hist** is set to run for *10* minutes,
-+in the cpus *0-4*, *skipping zero* only lines. Moreover, **rtla timerlat
-+hist** will change the priority of the *timelat* threads to run under
-+*SCHED_DEADLINE* priority, with a *10us* runtime every *1ms* period. The
-+*1ms* period is also passed to the *timerlat* tracer::
-+
-+  [root@alien ~]# timerlat hist -d 10m -c 0-4 -P d:100us:1ms -p 1ms
-+  # RTLA timerlat histogram
-+  # Time unit is microseconds (us)
-+  # Duration:   0 00:10:00
-+  Index   IRQ-000   Thr-000   IRQ-001   Thr-001   IRQ-002   Thr-002   IRQ-003   Thr-003   IRQ-004   Thr-004
-+  0        276489         0    206089         0    466018         0    481102         0    205546         0
-+  1        318327     35487    388149     30024     94531     48382     83082     71078    388026     55730
-+  2          3282    122584      4019    126527     28231    109012     23311     89309      4568     98739
-+  3           940     11815       837      9863      6209     16227      6895     17196       910      9780
-+  4           444     17287       424     11574      2097     38443      2169     36736       462     13476
-+  5           206     43291       255     25581      1223    101908      1304    101137       236     28913
-+  6           132    101501        96     64584       635    213774       757    215471        99     73453
-+  7            74    169347        65    124758       350     57466       441     53639        69    148573
-+  8            53     85183        31    156751       229      9052       306      9026        39    139907
-+  9            22     10387        12     42762       161      2554       225      2689        19     26192
-+  10           13      1898         8      5770       114      1247       128      1405        13      3772
-+  11            9       560         9       924        71       686        76       765         8       713
-+  12            4       256         2       360        50       411        64       474         3       278
-+  13            2       167         2       172        43       256        53       350         4       180
-+  14            1        88         1       116        15       198        42       223         0       115
-+  15            2        63         3        94        11       139        20       150         0        58
-+  16            2        37         0        56         5        78        10       102         0        39
-+  17            0        18         0        28         4        57         8        80         0        15
-+  18            0         8         0        17         2        50         6        56         0        12
-+  19            0         9         0         5         0        19         0        48         0        18
-+  20            0         4         0         8         0        11         2        27         0         4
-+  21            0         2         0         3         1         9         1        18         0         6
-+  22            0         1         0         3         1         7         0         3         0         5
-+  23            0         2         0         4         0         2         0         7         0         2
-+  24            0         2         0         2         1         3         0         3         0         5
-+  25            0         0         0         1         0         1         0         1         0         3
-+  26            0         1         0         0         0         2         0         2         0         0
-+  27            0         0         0         3         0         1         0         0         0         1
-+  28            0         0         0         3         0         0         0         1         0         0
-+  29            0         0         0         2         0         2         0         1         0         3
-+  30            0         1         0         0         0         0         0         0         0         0
-+  31            0         1         0         0         0         0         0         2         0         2
-+  32            0         0         0         1         0         2         0         0         0         0
-+  33            0         0         0         2         0         0         0         0         0         1
-+  34            0         0         0         0         0         0         0         0         0         2
-+  35            0         1         0         1         0         0         0         0         0         1
-+  36            0         1         0         0         0         1         0         1         0         0
-+  37            0         0         0         1         0         0         0         0         0         0
-+  40            0         0         0         0         0         1         0         1         0         0
-+  41            0         0         0         0         0         0         0         0         0         1
-+  42            0         0         0         0         0         0         0         0         0         1
-+  44            0         0         0         0         0         1         0         0         0         0
-+  46            0         0         0         0         0         0         0         1         0         0
-+  47            0         0         0         0         0         0         0         0         0         1
-+  50            0         0         0         0         0         0         0         0         0         1
-+  54            0         0         0         1         0         0         0         0         0         0
-+  58            0         0         0         1         0         0         0         0         0         0
-+  over:         0         0         0         0         0         0         0         0         0         0
-+  count:   600002    600002    600002    600002    600002    600002    600002    600002    600002    600002
-+  min:          0         1         0         1         0         1         0         1         0         1
-+  avg:          0         5         0         5         0         4         0         4         0         5
-+  max:         16        36        15        58        24        44        21        46        13        50
-+
-+SEE ALSO
-+========
-+**rtla-timerlat**\(1), **rtla-timerlat-top**\(1)
-+
-+*timerlat* tracer documentation: <https://www.kernel.org/doc/html/latest/trace/timerlat-tracer.html>
-+
-+AUTHOR
-+======
-+Written by Daniel Bristot de Oliveira <bristot@kernel.org>
++/** Deprecated **/
++int tracefs_event_append_filter(struct tep_event *event, char **filter,
++				enum tracefs_filter type,
++				const char *field, enum tracefs_compare compare,
++				const char *val)
++{
++	return tracefs_filter_string_append(event, filter, type, field,
++					    compare, val);
++}
++int tracefs_event_verify_filter(struct tep_event *event, const char *filter,
++				char **err)
++{
++	return tracefs_filter_string_verify(event, filter, err);
++}
 -- 
 2.31.1
 
