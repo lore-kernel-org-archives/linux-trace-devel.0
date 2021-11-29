@@ -2,146 +2,212 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3761C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 27 Nov 2021 15:12:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A257BC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 29 Nov 2021 11:10:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235528AbhK0PPQ (ORCPT
+        id S1376366AbhK2LNh convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 27 Nov 2021 10:15:16 -0500
-Received: from mga04.intel.com ([192.55.52.120]:48831 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237441AbhK0PNM (ORCPT
+        Mon, 29 Nov 2021 06:13:37 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:37443 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1377033AbhK2LLh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 27 Nov 2021 10:13:12 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="234496785"
-X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
-   d="scan'208";a="234496785"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2021 07:09:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,269,1631602800"; 
-   d="scan'208";a="457956801"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 27 Nov 2021 07:09:55 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqzKs-0009fo-0D; Sat, 27 Nov 2021 15:09:54 +0000
-Date:   Sat, 27 Nov 2021 23:09:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Beau Belgrave <beaub@linux.microsoft.com>, rostedt@goodmis.org,
-        mhiramat@kernel.org
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        beaub@linux.microsoft.com
-Subject: Re: [PATCH v5 09/12] user_events: Optimize writing events by only
- copying data once
-Message-ID: <202111272346.r2ZhQ5KM-lkp@intel.com>
-References: <20211116005047.1808-10-beaub@linux.microsoft.com>
+        Mon, 29 Nov 2021 06:11:37 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-576-4fYRxpcdNzqk5NfYYwgBxg-1; Mon, 29 Nov 2021 06:08:13 -0500
+X-MC-Unique: 4fYRxpcdNzqk5NfYYwgBxg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 83F30760C0;
+        Mon, 29 Nov 2021 11:08:11 +0000 (UTC)
+Received: from x1.com (unknown [10.22.8.188])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 906815D9DE;
+        Mon, 29 Nov 2021 11:07:55 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Tao Zhou <tao.zhou@linux.dev>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V8 00/14] RTLA: An interface for osnoise/timerlat tracers
+Date:   Mon, 29 Nov 2021 12:07:38 +0100
+Message-Id: <cover.1638182284.git.bristot@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211116005047.1808-10-beaub@linux.microsoft.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Beau,
+The rtla(1) is a meta-tool that includes a set of commands that
+aims to analyze the real-time properties of Linux. But instead of
+testing Linux as a black box, rtla leverages kernel tracing
+capabilities to provide precise information about the properties
+and root causes of unexpected results.
 
-Thank you for the patch! Perhaps something to improve:
+To start, it presents an interface to the osnoise and timerlat tracers.
+In the future, it will also serve as home to the rtsl [1] and other
+latency/noise tracers.
 
-[auto build test WARNING on 67d4f6e3bf5dddced226fbf19704cdbbb0c98847]
+If you just want to run it, you can download the tarball here:
+  - https://bristot.me/files/rtla/tarball/rtla-0.4.tar.bz2
 
-url:    https://github.com/0day-ci/linux/commits/Beau-Belgrave/user_events-Enable-user-processes-to-create-and-write-to-trace-events/20211116-090533
-base:   67d4f6e3bf5dddced226fbf19704cdbbb0c98847
-config: hexagon-randconfig-r031-20211116 (https://download.01.org/0day-ci/archive/20211127/202111272346.r2ZhQ5KM-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project fbe72e41b99dc7994daac300d208a955be3e4a0a)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/5d08d02e133130c59d164c17756a0aa0abb5418c
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Beau-Belgrave/user_events-Enable-user-processes-to-create-and-write-to-trace-events/20211116-090533
-        git checkout 5d08d02e133130c59d164c17756a0aa0abb5418c
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash drivers/gpio/ kernel/trace/
+To compile rtla on fedora you need:
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git
+  $ cd libtraceevent/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git
+  $ cd libtracefs/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ sudo dnf install python3-docutils procps-devel
+  $ cd $rtla_src
+  $ make
+  $ sudo make install
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+The tracing option (-t) depends some kernel patches that are
+available at [2].
 
-All warnings (new ones prefixed by >>):
+This tool was be discussed at the RT-MC during LPC2021 [3]
 
->> kernel/trace/trace_events_user.c:563:22: warning: comparison of distinct pointer types ('typeof (i->count) *' (aka 'unsigned int *') and 'typeof ((1UL << 16)) *' (aka 'unsigned long *')) [-Wcompare-distinct-pointer-types]
-                   size_t copy_size = min(i->count, MAX_BPF_COPY_SIZE);
-                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/minmax.h:45:19: note: expanded from macro 'min'
-   #define min(x, y)       __careful_cmp(x, y, <)
-                           ^~~~~~~~~~~~~~~~~~~~~~
-   include/linux/minmax.h:36:24: note: expanded from macro '__careful_cmp'
-           __builtin_choose_expr(__safe_cmp(x, y), \
-                                 ^~~~~~~~~~~~~~~~
-   include/linux/minmax.h:26:4: note: expanded from macro '__safe_cmp'
-                   (__typecheck(x, y) && __no_side_effects(x, y))
-                    ^~~~~~~~~~~~~~~~~
-   include/linux/minmax.h:20:28: note: expanded from macro '__typecheck'
-           (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
-                      ~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~
-   1 warning generated.
+[1] rtsl: https://github.com/bristot/rtsl/
+[2] https://lore.kernel.org/lkml/cover.1635533292.git.bristot@kernel.org/
+[3] https://youtu.be/cZUzc0U1jJ4
 
+Changes from V7:
+  - Add README.txt with information about how to compile the tool
+    (Steven)
+  - Use $$($(PKG_CONFIG) --libs libtracefs) to find libtracefs on
+    Makefile (Steven)
+  - Fix *buffer[4096] (using buffer[4096]) on save_trace_to_file()
+    (Steven)
+Changes from v6:
+  - Revisited osnoise option config functions
+  - Properly handles offline CPUs
+  - Some cleanups
+  - Fixed an histogram allocation problem (Tao Zhou)
+  - Revisited open()/read()/write() (Tao Zhou)
+Changes from v5:
+  - Fix retval check in save_trace_to_file() (Tao Zhou)
+  - Fix goto logic in save_trace_to_file() (Tao Zhou)
+  - Removed unused save_trace_pipe_to_file() function
+  - Correctly handle an error on osnoise_set_* functions during
+    "apply config" for all tools (Tao Zhou)
+Changes from v3:
+  - Add cross-compile support (Ahmed S. Darwish)
+  - Move documentation to Documentation/tools/rtla (Jonathan Corbet)
+  - Use .rst format for documentation (Jonathan Corbet)
+  - Use include option from .rst to group common parts of the documentation
+  - Makefile (main and doc) cleanups
+Changes from v2:
+  - Fix the miss conception of the "size" for kernel histograms (Steven/Tom)
+  - Change the --skip-zeros to --with-zeros option as the former is better
+    for humans (and the latter for computers to plot charts).
+  - A lot of checkpatch fixes for the user-space part.
+Changes from v1:
+  - Fixes -t options on osnoise tracers (-t means --trace for all tools now)
+  - Fixes --bucket-size references (not --bucket_size)
 
-vim +563 kernel/trace/trace_events_user.c
+Daniel Bristot de Oliveira (14):
+  rtla: Real-Time Linux Analysis tool
+  rtla: Helper functions for rtla
+  rtla: Add osnoise tool
+  rtla/osnoise: Add osnoise top mode
+  rtla/osnoise: Add the hist mode
+  rtla: Add timerlat tool and timelart top mode
+  rtla/timerlat: Add timerlat hist mode
+  rtla: Add Documentation
+  rtla: Add rtla osnoise man page
+  rtla: Add rtla osnoise top documentation
+  rtla: Add rtla osnoise hist documentation
+  rtla: Add rtla timerlat documentation
+  rtla: Add rtla timerlat top documentation
+  rtla: Add rtla timerlat hist documentation
 
-   537	
-   538	#ifdef CONFIG_PERF_EVENTS
-   539	static void user_event_bpf(struct user_event *user, struct iov_iter *i)
-   540	{
-   541		struct user_bpf_context context;
-   542		struct user_bpf_iter bpf_i;
-   543		char fast_data[MAX_STACK_BPF_DATA];
-   544		void *temp = NULL;
-   545	
-   546		if ((user->flags & FLAG_BPF_ITER) && iter_is_iovec(i)) {
-   547			/* Raw iterator */
-   548			context.data_type = USER_BPF_DATA_ITER;
-   549			context.data_len = i->count;
-   550			context.iter = &bpf_i;
-   551	
-   552			bpf_i.iov_offset = i->iov_offset;
-   553			bpf_i.iov = i->iov;
-   554			bpf_i.nr_segs = i->nr_segs;
-   555		} else if (i->nr_segs == 1 && iter_is_iovec(i)) {
-   556			/* Single buffer from user */
-   557			context.data_type = USER_BPF_DATA_USER;
-   558			context.data_len = i->count;
-   559			context.udata = i->iov->iov_base + i->iov_offset;
-   560		} else {
-   561			/* Multi buffer from user */
-   562			struct iov_iter copy = *i;
- > 563			size_t copy_size = min(i->count, MAX_BPF_COPY_SIZE);
-   564	
-   565			context.data_type = USER_BPF_DATA_KERNEL;
-   566			context.kdata = fast_data;
-   567	
-   568			if (unlikely(copy_size > sizeof(fast_data))) {
-   569				temp = kmalloc(copy_size, GFP_NOWAIT);
-   570	
-   571				if (temp)
-   572					context.kdata = temp;
-   573				else
-   574					copy_size = sizeof(fast_data);
-   575			}
-   576	
-   577			context.data_len = copy_nofault(context.kdata,
-   578							copy_size, &copy);
-   579		}
-   580	
-   581		trace_call_bpf(&user->call, &context);
-   582	
-   583		kfree(temp);
-   584	}
-   585	
+ Documentation/tools/rtla/Makefile             |   41 +
+ Documentation/tools/rtla/common_appendix.rst  |   12 +
+ .../tools/rtla/common_hist_options.rst        |   23 +
+ Documentation/tools/rtla/common_options.rst   |   24 +
+ .../tools/rtla/common_osnoise_description.rst |    8 +
+ .../tools/rtla/common_osnoise_options.rst     |   17 +
+ .../rtla/common_timerlat_description.rst      |   10 +
+ .../tools/rtla/common_timerlat_options.rst    |   16 +
+ .../tools/rtla/common_top_options.rst         |    3 +
+ .../tools/rtla/rtla-osnoise-hist.rst          |   66 ++
+ Documentation/tools/rtla/rtla-osnoise-top.rst |   61 +
+ Documentation/tools/rtla/rtla-osnoise.rst     |   59 +
+ .../tools/rtla/rtla-timerlat-hist.rst         |  106 ++
+ .../tools/rtla/rtla-timerlat-top.rst          |  145 +++
+ Documentation/tools/rtla/rtla-timerlat.rst    |   57 +
+ Documentation/tools/rtla/rtla.rst             |   48 +
+ tools/tracing/rtla/Makefile                   |  102 ++
+ tools/tracing/rtla/README.txt                 |   36 +
+ tools/tracing/rtla/src/osnoise.c              | 1017 +++++++++++++++++
+ tools/tracing/rtla/src/osnoise.h              |   96 ++
+ tools/tracing/rtla/src/osnoise_hist.c         |  799 +++++++++++++
+ tools/tracing/rtla/src/osnoise_top.c          |  577 ++++++++++
+ tools/tracing/rtla/src/rtla.c                 |   87 ++
+ tools/tracing/rtla/src/timerlat.c             |   72 ++
+ tools/tracing/rtla/src/timerlat.h             |    4 +
+ tools/tracing/rtla/src/timerlat_hist.c        |  820 +++++++++++++
+ tools/tracing/rtla/src/timerlat_top.c         |  615 ++++++++++
+ tools/tracing/rtla/src/trace.c                |  192 ++++
+ tools/tracing/rtla/src/trace.h                |   27 +
+ tools/tracing/rtla/src/utils.c                |  433 +++++++
+ tools/tracing/rtla/src/utils.h                |   56 +
+ 31 files changed, 5629 insertions(+)
+ create mode 100644 Documentation/tools/rtla/Makefile
+ create mode 100644 Documentation/tools/rtla/common_appendix.rst
+ create mode 100644 Documentation/tools/rtla/common_hist_options.rst
+ create mode 100644 Documentation/tools/rtla/common_options.rst
+ create mode 100644 Documentation/tools/rtla/common_osnoise_description.rst
+ create mode 100644 Documentation/tools/rtla/common_osnoise_options.rst
+ create mode 100644 Documentation/tools/rtla/common_timerlat_description.rst
+ create mode 100644 Documentation/tools/rtla/common_timerlat_options.rst
+ create mode 100644 Documentation/tools/rtla/common_top_options.rst
+ create mode 100644 Documentation/tools/rtla/rtla-osnoise-hist.rst
+ create mode 100644 Documentation/tools/rtla/rtla-osnoise-top.rst
+ create mode 100644 Documentation/tools/rtla/rtla-osnoise.rst
+ create mode 100644 Documentation/tools/rtla/rtla-timerlat-hist.rst
+ create mode 100644 Documentation/tools/rtla/rtla-timerlat-top.rst
+ create mode 100644 Documentation/tools/rtla/rtla-timerlat.rst
+ create mode 100644 Documentation/tools/rtla/rtla.rst
+ create mode 100644 tools/tracing/rtla/Makefile
+ create mode 100644 tools/tracing/rtla/README.txt
+ create mode 100644 tools/tracing/rtla/src/osnoise.c
+ create mode 100644 tools/tracing/rtla/src/osnoise.h
+ create mode 100644 tools/tracing/rtla/src/osnoise_hist.c
+ create mode 100644 tools/tracing/rtla/src/osnoise_top.c
+ create mode 100644 tools/tracing/rtla/src/rtla.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.h
+ create mode 100644 tools/tracing/rtla/src/timerlat_hist.c
+ create mode 100644 tools/tracing/rtla/src/timerlat_top.c
+ create mode 100644 tools/tracing/rtla/src/trace.c
+ create mode 100644 tools/tracing/rtla/src/trace.h
+ create mode 100644 tools/tracing/rtla/src/utils.c
+ create mode 100644 tools/tracing/rtla/src/utils.h
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+2.31.1
+
