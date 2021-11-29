@@ -2,30 +2,30 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EDA9C43217
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 29 Nov 2021 11:11:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E045C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 29 Nov 2021 11:11:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239003AbhK2LOZ convert rfc822-to-8bit (ORCPT
+        id S1377158AbhK2LOV convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 29 Nov 2021 06:14:25 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:53091 "EHLO
+        Mon, 29 Nov 2021 06:14:21 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:48342 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1377150AbhK2LMF (ORCPT
+        by vger.kernel.org with ESMTP id S235697AbhK2LMR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 29 Nov 2021 06:12:05 -0500
+        Mon, 29 Nov 2021 06:12:17 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-443-3cm0BxoONoSYN4XIDz90hg-1; Mon, 29 Nov 2021 06:08:44 -0500
-X-MC-Unique: 3cm0BxoONoSYN4XIDz90hg-1
+ us-mta-399-9YI-QdXfNNOWiq1XKukqTg-1; Mon, 29 Nov 2021 06:08:56 -0500
+X-MC-Unique: 9YI-QdXfNNOWiq1XKukqTg-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3DD5C81CCB5;
-        Mon, 29 Nov 2021 11:08:42 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DAC681054F90;
+        Mon, 29 Nov 2021 11:08:54 +0000 (UTC)
 Received: from x1.com (unknown [10.22.8.188])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A9EAA5D9DE;
-        Mon, 29 Nov 2021 11:08:36 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BF1AB5DF21;
+        Mon, 29 Nov 2021 11:08:51 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Tao Zhou <tao.zhou@linux.dev>,
@@ -41,9 +41,9 @@ Cc:     Tao Zhou <tao.zhou@linux.dev>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V8 04/14] rtla/osnoise: Add osnoise top mode
-Date:   Mon, 29 Nov 2021 12:07:42 +0100
-Message-Id: <edbe1a4be48b5fd9d7fd224e819918cdb943db4a.1638182284.git.bristot@kernel.org>
+Subject: [PATCH V8 06/14] rtla: Add timerlat tool and timelart top mode
+Date:   Mon, 29 Nov 2021 12:07:44 +0100
+Message-Id: <e65a6899bbde6ecb129cfaf55e402d785ad124eb.1638182284.git.bristot@kernel.org>
 In-Reply-To: <cover.1638182284.git.bristot@kernel.org>
 References: <cover.1638182284.git.bristot@kernel.org>
 MIME-Version: 1.0
@@ -58,31 +58,35 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The rtla osnoise tool is an interface for the osnoise tracer. The
-osnoise tracer dispatches a kernel thread per-cpu. These threads read
-the time in a loop while with preemption, softirqs and IRQs enabled,
-thus allowing all the sources of osnoise during its execution. The
-osnoise threads take note of the entry and exit point of any source
-of interferences, increasing a per-cpu interference counter. The
-osnoise tracer also saves an interference counter for each source
-of interference.
+The rtla timerlat tool is an interface for the timerlat tracer.
+The timerlat tracer dispatches a kernel thread per-cpu. These threads set a
+periodic timer to wake themselves up and go back to sleep. After the
+wakeup, they collect and generate useful information for the debugging of
+operating system timer latency.
 
-The rtla osnoise top mode displays information about the periodic
-summary from the osnoise tracer.
+The timerlat tracer outputs information in two ways. It periodically
+prints the timer latency at the timer IRQ handler and the Thread handler.
+It also provides information for each noise via the osnoise tracepoints.
 
-One example of rtla osnoise top output is:
+The rtla timerlat top mode displays a summary of the periodic output from
+the timerlat tracer.
 
-[root@alien ~]# rtla osnoise top -c 0-3 -d 1m -q -r 900000 -P F:1
-                                         Operating System Noise
-duration:   0 00:01:00 | time is in us
-CPU Period       Runtime        Noise  % CPU Aval   Max Noise   Max Single          HW          NMI          IRQ      Softirq       Thread
-  0 #58         52200000         1031    99.99802          91           60           0            0        52285            0          101
-  1 #59         53100000            5    99.99999           5            5           0            9        53122            0           18
-  2 #59         53100000            7    99.99998           7            7           0            8        53115            0           18
-  3 #59         53100000         8274    99.98441         277           23           0            9        53778            0          660
+Here is one example of the rtla timerlat tool output:
+ ---------- %< ----------
+[root@alien ~]# rtla timerlat top -c 0-3 -d 1m
+                                     Timer Latency
+  0 00:01:00   |          IRQ Timer Latency (us)        |         Thread Timer Latency (us)
+CPU COUNT      |      cur       min       avg       max |      cur       min       avg       max
+  0 #60001     |        0         0         0         3 |        1         1         1         6
+  1 #60001     |        0         0         0         3 |        2         1         1         5
+  2 #60001     |        0         0         1         6 |        1         1         2         7
+  3 #60001     |        0         0         0         7 |        1         1         1        11
+ ---------- >% ----------
 
-"rtla osnoise top --help" works and provide information about the
-available options.
+Running:
+  # rtla timerlat --help
+  # rtla timerlat top --help
+provides information about the available options.
 
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Ingo Molnar <mingo@redhat.com>
@@ -100,16 +104,149 @@ Cc: linux-trace-devel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- tools/tracing/rtla/src/osnoise_top.c | 577 +++++++++++++++++++++++++++
- 1 file changed, 577 insertions(+)
- create mode 100644 tools/tracing/rtla/src/osnoise_top.c
+ tools/tracing/rtla/Makefile           |   2 +
+ tools/tracing/rtla/src/rtla.c         |   5 +
+ tools/tracing/rtla/src/timerlat.c     |  68 +++
+ tools/tracing/rtla/src/timerlat.h     |   4 +
+ tools/tracing/rtla/src/timerlat_top.c | 615 ++++++++++++++++++++++++++
+ 5 files changed, 694 insertions(+)
+ create mode 100644 tools/tracing/rtla/src/timerlat.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.h
+ create mode 100644 tools/tracing/rtla/src/timerlat_top.c
 
-diff --git a/tools/tracing/rtla/src/osnoise_top.c b/tools/tracing/rtla/src/osnoise_top.c
+diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
+index ba6f327e815a..f254cfbe4fa3 100644
+--- a/tools/tracing/rtla/Makefile
++++ b/tools/tracing/rtla/Makefile
+@@ -62,6 +62,8 @@ install:
+ 	$(STRIP) $(DESTDIR)$(BINDIR)/rtla
+ 	@test ! -f $(DESTDIR)$(BINDIR)/osnoise || rm $(DESTDIR)$(BINDIR)/osnoise
+ 	ln -s $(DESTDIR)$(BINDIR)/rtla $(DESTDIR)$(BINDIR)/osnoise
++	@test ! -f $(DESTDIR)$(BINDIR)/timerlat || rm $(DESTDIR)$(BINDIR)/timerlat
++	ln -s $(DESTDIR)$(BINDIR)/rtla $(DESTDIR)$(BINDIR)/timerlat
+ 
+ .PHONY: clean tarball
+ clean:
+diff --git a/tools/tracing/rtla/src/rtla.c b/tools/tracing/rtla/src/rtla.c
+index 669b9750b3b3..09bd21b8af81 100644
+--- a/tools/tracing/rtla/src/rtla.c
++++ b/tools/tracing/rtla/src/rtla.c
+@@ -9,6 +9,7 @@
+ #include <stdio.h>
+ 
+ #include "osnoise.h"
++#include "timerlat.h"
+ 
+ /*
+  * rtla_usage - print rtla usage
+@@ -25,6 +26,7 @@ static void rtla_usage(void)
+ 		"",
+ 		"  commands:",
+ 		"     osnoise  - gives information about the operating system noise (osnoise)",
++		"     timerlat - measures the timer irq and thread latency",
+ 		"",
+ 		NULL,
+ 	};
+@@ -45,6 +47,9 @@ int run_command(int argc, char **argv, int start_position)
+ 	if (strcmp(argv[start_position], "osnoise") == 0) {
+ 		osnoise_main(argc-start_position, &argv[start_position]);
+ 		goto ran;
++	} else if (strcmp(argv[start_position], "timerlat") == 0) {
++		timerlat_main(argc-start_position, &argv[start_position]);
++		goto ran;
+ 	}
+ 
+ 	return 0;
+diff --git a/tools/tracing/rtla/src/timerlat.c b/tools/tracing/rtla/src/timerlat.c
 new file mode 100644
-index 000000000000..e23bae8d9696
+index 000000000000..29a51c01b084
 --- /dev/null
-+++ b/tools/tracing/rtla/src/osnoise_top.c
-@@ -0,0 +1,577 @@
++++ b/tools/tracing/rtla/src/timerlat.c
+@@ -0,0 +1,68 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
++ */
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <pthread.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <stdio.h>
++
++#include "timerlat.h"
++
++static void timerlat_usage(void)
++{
++	int i;
++
++	static const char * const msg[] = {
++		"",
++		"timerlat version " VERSION,
++		"",
++		"  usage: [rtla] timerlat [MODE] ...",
++		"",
++		"  modes:",
++		"     top  - prints the summary from timerlat tracer",
++		"",
++		"if no MODE is given, the top mode is called, passing the arguments",
++		NULL,
++	};
++
++	for (i = 0; msg[i]; i++)
++		fprintf(stderr, "%s\n", msg[i]);
++	exit(1);
++}
++
++int timerlat_main(int argc, char *argv[])
++{
++	if (argc == 0)
++		goto usage;
++
++	/*
++	 * if timerlat was called without any argument, run the
++	 * default cmdline.
++	 */
++	if (argc == 1) {
++		timerlat_top_main(argc, argv);
++		exit(0);
++	}
++
++	if ((strcmp(argv[1], "-h") == 0) || (strcmp(argv[1], "--help") == 0)) {
++		timerlat_usage();
++		exit(0);
++	} else if (strncmp(argv[1], "-", 1) == 0) {
++		/* the user skipped the tool, call the default one */
++		timerlat_top_main(argc, argv);
++		exit(0);
++	} else if (strcmp(argv[1], "top") == 0) {
++		timerlat_top_main(argc-1, &argv[1]);
++		exit(0);
++	}
++
++usage:
++	timerlat_usage();
++	exit(1);
++}
+diff --git a/tools/tracing/rtla/src/timerlat.h b/tools/tracing/rtla/src/timerlat.h
+new file mode 100644
+index 000000000000..6f9d3925acd0
+--- /dev/null
++++ b/tools/tracing/rtla/src/timerlat.h
+@@ -0,0 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0
++
++int timerlat_top_main(int argc, char *argv[]);
++int timerlat_main(int argc, char *argv[]);
+diff --git a/tools/tracing/rtla/src/timerlat_top.c b/tools/tracing/rtla/src/timerlat_top.c
+new file mode 100644
+index 000000000000..9764681ad8b1
+--- /dev/null
++++ b/tools/tracing/rtla/src/timerlat_top.c
+@@ -0,0 +1,615 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
@@ -123,63 +260,64 @@ index 000000000000..e23bae8d9696
 +#include <stdio.h>
 +#include <time.h>
 +
-+#include "osnoise.h"
 +#include "utils.h"
++#include "osnoise.h"
++#include "timerlat.h"
 +
-+/*
-+ * osnoise top parameters
-+ */
-+struct osnoise_top_params {
++struct timerlat_top_params {
 +	char			*cpus;
 +	char			*monitored_cpus;
 +	char			*trace_output;
 +	unsigned long long	runtime;
-+	unsigned long long	period;
 +	long long		stop_us;
 +	long long		stop_total_us;
++	long long		timerlat_period_us;
++	long long		print_stack;
 +	int			sleep_time;
++	int			output_divisor;
 +	int			duration;
 +	int			quiet;
 +	int			set_sched;
 +	struct sched_attr	sched_param;
 +};
 +
-+struct osnoise_top_cpu {
-+	unsigned long long	sum_runtime;
-+	unsigned long long	sum_noise;
-+	unsigned long long	max_noise;
-+	unsigned long long	max_sample;
++struct timerlat_top_cpu {
++	int			irq_count;
++	int			thread_count;
 +
-+	unsigned long long	hw_count;
-+	unsigned long long	nmi_count;
-+	unsigned long long	irq_count;
-+	unsigned long long	softirq_count;
-+	unsigned long long	thread_count;
++	unsigned long long	cur_irq;
++	unsigned long long	min_irq;
++	unsigned long long	sum_irq;
++	unsigned long long	max_irq;
 +
-+	int			sum_cycles;
++	unsigned long long	cur_thread;
++	unsigned long long	min_thread;
++	unsigned long long	sum_thread;
++	unsigned long long	max_thread;
 +};
 +
-+struct osnoise_top_data {
-+	struct osnoise_top_cpu	*cpu_data;
++struct timerlat_top_data {
++	struct timerlat_top_cpu	*cpu_data;
 +	int			nr_cpus;
 +};
 +
 +/*
-+ * osnoise_free_top - free runtime data
++ * timerlat_free_top - free runtime data
 + */
 +static void
-+osnoise_free_top(struct osnoise_top_data *data)
++timerlat_free_top(struct timerlat_top_data *data)
 +{
 +	free(data->cpu_data);
 +	free(data);
 +}
 +
 +/*
-+ * osnoise_alloc_histogram - alloc runtime data
++ * timerlat_alloc_histogram - alloc runtime data
 + */
-+static struct osnoise_top_data *osnoise_alloc_top(int nr_cpus)
++static struct timerlat_top_data *timerlat_alloc_top(int nr_cpus)
 +{
-+	struct osnoise_top_data *data;
++	struct timerlat_top_data *data;
++	int cpu;
 +
 +	data = calloc(1, sizeof(*data));
 +	if (!data)
@@ -192,89 +330,143 @@ index 000000000000..e23bae8d9696
 +	if (!data->cpu_data)
 +		goto cleanup;
 +
++	/* set the min to max */
++	for (cpu = 0; cpu < nr_cpus; cpu++) {
++		data->cpu_data[cpu].min_irq = ~0;
++		data->cpu_data[cpu].min_thread = ~0;
++	}
++
 +	return data;
 +
 +cleanup:
-+	osnoise_free_top(data);
++	timerlat_free_top(data);
 +	return NULL;
 +}
 +
 +/*
-+ * osnoise_top_handler - this is the handler for osnoise tracer events
++ * timerlat_hist_update - record a new timerlat occurent on cpu, updating data
++ */
++static void
++timerlat_top_update(struct osnoise_tool *tool, int cpu,
++		    unsigned long long thread,
++		    unsigned long long latency)
++{
++	struct timerlat_top_data *data = tool->data;
++	struct timerlat_top_cpu *cpu_data = &data->cpu_data[cpu];
++
++	if (!thread) {
++		cpu_data->irq_count++;
++		cpu_data->cur_irq = latency;
++		update_min(&cpu_data->min_irq, &latency);
++		update_sum(&cpu_data->sum_irq, &latency);
++		update_max(&cpu_data->max_irq, &latency);
++	} else {
++		cpu_data->thread_count++;
++		cpu_data->cur_thread = latency;
++		update_min(&cpu_data->min_thread, &latency);
++		update_sum(&cpu_data->sum_thread, &latency);
++		update_max(&cpu_data->max_thread, &latency);
++	}
++}
++
++/*
++ * timerlat_top_handler - this is the handler for timerlat tracer events
 + */
 +static int
-+osnoise_top_handler(struct trace_seq *s, struct tep_record *record,
-+		    struct tep_event *event, void *context)
++timerlat_top_handler(struct trace_seq *s, struct tep_record *record,
++		     struct tep_event *event, void *context)
 +{
 +	struct trace_instance *trace = context;
-+	struct osnoise_tool *tool;
-+	unsigned long long val;
-+	struct osnoise_top_cpu *cpu_data;
-+	struct osnoise_top_data *data;
++	unsigned long long latency, thread;
++	struct osnoise_tool *top;
 +	int cpu = record->cpu;
 +
-+	tool = container_of(trace, struct osnoise_tool, trace);
++	top = container_of(trace, struct osnoise_tool, trace);
 +
-+	data = tool->data;
-+	cpu_data = &data->cpu_data[cpu];
++	tep_get_field_val(s, event, "context", record, &thread, 1);
++	tep_get_field_val(s, event, "timer_latency", record, &latency, 1);
 +
-+	cpu_data->sum_cycles++;
-+
-+	tep_get_field_val(s, event, "runtime", record, &val, 1);
-+	update_sum(&cpu_data->sum_runtime, &val);
-+
-+	tep_get_field_val(s, event, "noise", record, &val, 1);
-+	update_max(&cpu_data->max_noise, &val);
-+	update_sum(&cpu_data->sum_noise, &val);
-+
-+	tep_get_field_val(s, event, "max_sample", record, &val, 1);
-+	update_max(&cpu_data->max_sample, &val);
-+
-+	tep_get_field_val(s, event, "hw_count", record, &val, 1);
-+	update_sum(&cpu_data->hw_count, &val);
-+
-+	tep_get_field_val(s, event, "nmi_count", record, &val, 1);
-+	update_sum(&cpu_data->nmi_count, &val);
-+
-+	tep_get_field_val(s, event, "irq_count", record, &val, 1);
-+	update_sum(&cpu_data->irq_count, &val);
-+
-+	tep_get_field_val(s, event, "softirq_count", record, &val, 1);
-+	update_sum(&cpu_data->softirq_count, &val);
-+
-+	tep_get_field_val(s, event, "thread_count", record, &val, 1);
-+	update_sum(&cpu_data->thread_count, &val);
++	timerlat_top_update(top, cpu, thread, latency);
 +
 +	return 0;
 +}
 +
 +/*
-+ * osnoise_top_header - print the header of the tool output
++ * timerlat_top_header - print the header of the tool output
 + */
-+static void osnoise_top_header(struct osnoise_tool *top)
++static void timerlat_top_header(struct osnoise_tool *top)
 +{
++	struct timerlat_top_params *params = top->params;
 +	struct trace_seq *s = top->trace.seq;
 +	char duration[26];
 +
 +	get_duration(top->start_time, duration, sizeof(duration));
 +
 +	trace_seq_printf(s, "\033[2;37;40m");
-+	trace_seq_printf(s, "                                          Operating System Noise");
-+	trace_seq_printf(s, "                                     ");
-+	trace_seq_printf(s, "                                     ");
++	trace_seq_printf(s, "                                     Timer Latency                                              ");
 +	trace_seq_printf(s, "\033[0;0;0m");
 +	trace_seq_printf(s, "\n");
 +
-+	trace_seq_printf(s, "duration: %9s | time is in us\n", duration);
++	trace_seq_printf(s, "%-6s   |          IRQ Timer Latency (%s)        |         Thread Timer Latency (%s)\n", duration,
++			params->output_divisor == 1 ? "ns" : "us",
++			params->output_divisor == 1 ? "ns" : "us");
 +
 +	trace_seq_printf(s, "\033[2;30;47m");
-+	trace_seq_printf(s, "CPU Period       Runtime ");
-+	trace_seq_printf(s, "       Noise ");
-+	trace_seq_printf(s, " %% CPU Aval ");
-+	trace_seq_printf(s, "  Max Noise   Max Single ");
-+	trace_seq_printf(s, "         HW          NMI          IRQ      Softirq       Thread");
++	trace_seq_printf(s, "CPU COUNT      |      cur       min       avg       max |      cur       min       avg       max");
 +	trace_seq_printf(s, "\033[0;0;0m");
 +	trace_seq_printf(s, "\n");
++}
++
++/*
++ * timerlat_top_print - prints the output of a given CPU
++ */
++static void timerlat_top_print(struct osnoise_tool *top, int cpu)
++{
++
++	struct timerlat_top_params *params = top->params;
++	struct timerlat_top_data *data = top->data;
++	struct timerlat_top_cpu *cpu_data = &data->cpu_data[cpu];
++	int divisor = params->output_divisor;
++	struct trace_seq *s = top->trace.seq;
++
++	if (divisor == 0)
++		return;
++
++	/*
++	 * Skip if no data is available: is this cpu offline?
++	 */
++	if (!cpu_data->irq_count && !cpu_data->thread_count)
++		return;
++
++	/*
++	 * Unless trace is being lost, IRQ counter is always the max.
++	 */
++	trace_seq_printf(s, "%3d #%-9d |", cpu, cpu_data->irq_count);
++
++	if (!cpu_data->irq_count) {
++		trace_seq_printf(s, "        - ");
++		trace_seq_printf(s, "        - ");
++		trace_seq_printf(s, "        - ");
++		trace_seq_printf(s, "        - |");
++	} else {
++		trace_seq_printf(s, "%9llu ", cpu_data->cur_irq / params->output_divisor);
++		trace_seq_printf(s, "%9llu ", cpu_data->min_irq / params->output_divisor);
++		trace_seq_printf(s, "%9llu ", (cpu_data->sum_irq / cpu_data->irq_count) / divisor);
++		trace_seq_printf(s, "%9llu |", cpu_data->max_irq / divisor);
++	}
++
++	if (!cpu_data->thread_count) {
++		trace_seq_printf(s, "        - ");
++		trace_seq_printf(s, "        - ");
++		trace_seq_printf(s, "        - ");
++		trace_seq_printf(s, "        -\n");
++	} else {
++		trace_seq_printf(s, "%9llu ", cpu_data->cur_thread / divisor);
++		trace_seq_printf(s, "%9llu ", cpu_data->min_thread / divisor);
++		trace_seq_printf(s, "%9llu ",
++				(cpu_data->sum_thread / cpu_data->thread_count) / divisor);
++		trace_seq_printf(s, "%9llu\n", cpu_data->max_thread / divisor);
++	}
 +}
 +
 +/*
@@ -287,44 +479,10 @@ index 000000000000..e23bae8d9696
 +}
 +
 +/*
-+ * osnoise_top_print - prints the output of a given CPU
-+ */
-+static void osnoise_top_print(struct osnoise_tool *tool, int cpu)
-+{
-+	struct trace_seq *s = tool->trace.seq;
-+	struct osnoise_top_cpu *cpu_data;
-+	struct osnoise_top_data *data;
-+	int percentage;
-+	int decimal;
-+
-+	data = tool->data;
-+	cpu_data = &data->cpu_data[cpu];
-+
-+	if (!cpu_data->sum_runtime)
-+		return;
-+
-+	percentage = ((cpu_data->sum_runtime - cpu_data->sum_noise) * 10000000)
-+			/ cpu_data->sum_runtime;
-+	decimal = percentage % 100000;
-+	percentage = percentage / 100000;
-+
-+	trace_seq_printf(s, "%3d #%-6d %12llu ", cpu, cpu_data->sum_cycles, cpu_data->sum_runtime);
-+	trace_seq_printf(s, "%12llu ", cpu_data->sum_noise);
-+	trace_seq_printf(s, "  %3d.%05d", percentage, decimal);
-+	trace_seq_printf(s, "%12llu %12llu", cpu_data->max_noise, cpu_data->max_sample);
-+
-+	trace_seq_printf(s, "%12llu ", cpu_data->hw_count);
-+	trace_seq_printf(s, "%12llu ", cpu_data->nmi_count);
-+	trace_seq_printf(s, "%12llu ", cpu_data->irq_count);
-+	trace_seq_printf(s, "%12llu ", cpu_data->softirq_count);
-+	trace_seq_printf(s, "%12llu\n", cpu_data->thread_count);
-+}
-+
-+/*
-+ * osnoise_print_stats - print data for all cpus
++ * timerlat_print_stats - print data for all cpus
 + */
 +static void
-+osnoise_print_stats(struct osnoise_top_params *params, struct osnoise_tool *top)
++timerlat_print_stats(struct timerlat_top_params *params, struct osnoise_tool *top)
 +{
 +	struct trace_instance *trace = &top->trace;
 +	static int nr_cpus = -1;
@@ -336,12 +494,12 @@ index 000000000000..e23bae8d9696
 +	if (!params->quiet)
 +		clear_terminal(trace->seq);
 +
-+	osnoise_top_header(top);
++	timerlat_top_header(top);
 +
 +	for (i = 0; i < nr_cpus; i++) {
 +		if (params->cpus && !params->monitored_cpus[i])
 +			continue;
-+		osnoise_top_print(top, i);
++		timerlat_top_print(top, i);
 +	}
 +
 +	trace_seq_do_printf(trace->seq);
@@ -349,24 +507,25 @@ index 000000000000..e23bae8d9696
 +}
 +
 +/*
-+ * osnoise_top_usage - prints osnoise top usage message
++ * timerlat_top_usage - prints timerlat top usage message
 + */
-+void osnoise_top_usage(char *usage)
++static void timerlat_top_usage(char *usage)
 +{
 +	int i;
 +
-+	static const char * const msg[] = {
-+		"  usage: rtla osnoise [top] [-h] [-q] [-p us] [-r us] [-s us] [-S us] [-T[=file]] \\",
-+		"	  [-c cpu-list] -P priority",
++	static const char *const msg[] = {
++		"",
++		"  usage: rtla timerlat [top] [-h] [-q] [-p us] [-i us] [-t us] [-s us] [-T[=file]] \\",
++		"	  [-c cpu-list] [-P priority]",
 +		"",
 +		"	  -h/--help: print this menu",
-+		"	  -p/--period us: osnoise period in us",
-+		"	  -r/--runtime us: osnoise runtime in us",
-+		"	  -s/--stop us: stop trace if a single sample is higher than the argument in us",
-+		"	  -S/--stop-total us: stop trace if the total sample is higher than the argument in us",
-+		"	  -c/--cpus cpu-list: list of cpus to run osnoise threads",
-+		"	  -d/--duration time[s|m|h|d]: duration of the session",
-+		"	  -t/--trace[=file]: save the stopped trace to [file|osnoise_trace.txt]",
++		"	  -p/--period us: timerlat period in us",
++		"	  -i/--irq us: stop trace if the irq latency is higher than the argument in us",
++		"	  -T/--thread us: stop trace if the thread latency is higher than the argument in us",
++		"	  -s/--stack us: save the stack trace at the IRQ if a thread latency is higher than the argument in us",
++		"	  -c/--cpus cpus: run the tracer only on the given cpus	  -d/--duration time[m|h|d]: duration of the session in seconds",
++		"	  -t/--trace[=file]: save the stopped trace to [file|timerlat_trace.txt]",
++		"	  -n/--nano: display data in nanoseconds",
 +		"	  -q/--quiet print only a summary at the end",
 +		"	  -P/--priority o:prio|r:prio|f:prio|d:runtime:period : set scheduling parameters",
 +		"		o:prio - use SCHED_OTHER with prio",
@@ -380,7 +539,7 @@ index 000000000000..e23bae8d9696
 +	if (usage)
 +		fprintf(stderr, "%s\n", usage);
 +
-+	fprintf(stderr, "rtla osnoise top: a per-cpu summary of the OS noise (version %s)\n",
++	fprintf(stderr, "rtla timerlat top: a per-cpu summary of the timer latency (version %s)\n",
 +			VERSION);
 +
 +	for (i = 0; msg[i]; i++)
@@ -389,11 +548,12 @@ index 000000000000..e23bae8d9696
 +}
 +
 +/*
-+ * osnoise_top_parse_args - allocs, parse and fill the cmd line parameters
++ * timerlat_top_parse_args - allocs, parse and fill the cmd line parameters
 + */
-+struct osnoise_top_params *osnoise_top_parse_args(int argc, char **argv)
++static struct timerlat_top_params
++*timerlat_top_parse_args(int argc, char **argv)
 +{
-+	struct osnoise_top_params *params;
++	struct timerlat_top_params *params;
 +	int retval;
 +	int c;
 +
@@ -401,18 +561,22 @@ index 000000000000..e23bae8d9696
 +	if (!params)
 +		exit(1);
 +
++	/* display data in microseconds */
++	params->output_divisor = 1000;
++
 +	while (1) {
 +		static struct option long_options[] = {
 +			{"cpus",		required_argument,	0, 'c'},
 +			{"debug",		no_argument,		0, 'D'},
 +			{"duration",		required_argument,	0, 'd'},
 +			{"help",		no_argument,		0, 'h'},
++			{"irq",			required_argument,	0, 'i'},
++			{"nano",		no_argument,		0, 'n'},
 +			{"period",		required_argument,	0, 'p'},
 +			{"priority",		required_argument,	0, 'P'},
 +			{"quiet",		no_argument,		0, 'q'},
-+			{"runtime",		required_argument,	0, 'r'},
-+			{"stop",		required_argument,	0, 's'},
-+			{"stop-total",		required_argument,	0, 'S'},
++			{"stack",		required_argument,	0, 's'},
++			{"thread",		required_argument,	0, 'T'},
 +			{"trace",		optional_argument,	0, 't'},
 +			{0, 0, 0, 0}
 +		};
@@ -420,10 +584,10 @@ index 000000000000..e23bae8d9696
 +		/* getopt_long stores the option index here. */
 +		int option_index = 0;
 +
-+		c = getopt_long(argc, argv, "c:d:Dhp:P:qr:s:S:t::",
++		c = getopt_long(argc, argv, "c:d:Dhi:np:P:qs:t::T:",
 +				 long_options, &option_index);
 +
-+		/* Detect the end of the options. */
++		/* detect the end of the options. */
 +		if (c == -1)
 +			break;
 +
@@ -431,7 +595,7 @@ index 000000000000..e23bae8d9696
 +		case 'c':
 +			retval = parse_cpu_list(optarg, &params->monitored_cpus);
 +			if (retval)
-+				osnoise_top_usage("\nInvalid -c cpu list\n");
++				timerlat_top_usage("\nInvalid -c cpu list\n");
 +			params->cpus = optarg;
 +			debug_msg("-c for %s\n", params->cpus);
 +			break;
@@ -441,35 +605,36 @@ index 000000000000..e23bae8d9696
 +		case 'd':
 +			params->duration = parse_seconds_duration(optarg);
 +			if (!params->duration)
-+				osnoise_top_usage("Invalid -D duration\n");
++				timerlat_top_usage("Invalid -D duration\n");
 +			break;
 +		case 'h':
 +		case '?':
-+			osnoise_top_usage(NULL);
++			timerlat_top_usage(NULL);
++			break;
++		case 'i':
++			params->stop_us = get_llong_from_str(optarg);
++			break;
++		case 'n':
++			params->output_divisor = 1;
 +			break;
 +		case 'p':
-+			params->period = get_llong_from_str(optarg);
-+			if (params->period > 10000000)
-+				osnoise_top_usage("Period longer than 10 s\n");
++			params->timerlat_period_us = get_llong_from_str(optarg);
++			if (params->timerlat_period_us > 1000000)
++				timerlat_top_usage("Period longer than 1 s\n");
 +			break;
 +		case 'P':
 +			retval = parse_prio(optarg, &params->sched_param);
 +			if (retval == -1)
-+				osnoise_top_usage("Invalid -P priority");
++				timerlat_top_usage("Invalid -P priority");
 +			params->set_sched = 1;
 +			break;
 +		case 'q':
 +			params->quiet = 1;
 +			break;
-+		case 'r':
-+			params->runtime = get_llong_from_str(optarg);
-+			if (params->runtime < 100)
-+				osnoise_top_usage("Runtime shorter than 100 us\n");
-+			break;
 +		case 's':
-+			params->stop_us = get_llong_from_str(optarg);
++			params->print_stack = get_llong_from_str(optarg);
 +			break;
-+		case 'S':
++		case 'T':
 +			params->stop_total_us = get_llong_from_str(optarg);
 +			break;
 +		case 't':
@@ -477,15 +642,15 @@ index 000000000000..e23bae8d9696
 +				/* skip = */
 +				params->trace_output = &optarg[1];
 +			else
-+				params->trace_output = "osnoise_trace.txt";
++				params->trace_output = "timerlat_trace.txt";
 +			break;
 +		default:
-+			osnoise_top_usage("Invalid option");
++			timerlat_top_usage("Invalid option");
 +		}
 +	}
 +
 +	if (geteuid()) {
-+		err_msg("osnoise needs root permission\n");
++		err_msg("rtla needs root permission\n");
 +		exit(EXIT_FAILURE);
 +	}
 +
@@ -493,10 +658,10 @@ index 000000000000..e23bae8d9696
 +}
 +
 +/*
-+ * osnoise_top_apply_config - apply the top configs to the initialized tool
++ * timerlat_top_apply_config - apply the top configs to the initialized tool
 + */
 +static int
-+osnoise_top_apply_config(struct osnoise_tool *tool, struct osnoise_top_params *params)
++timerlat_top_apply_config(struct osnoise_tool *top, struct timerlat_top_params *params)
 +{
 +	int retval;
 +
@@ -504,25 +669,15 @@ index 000000000000..e23bae8d9696
 +		params->sleep_time = 1;
 +
 +	if (params->cpus) {
-+		retval = osnoise_set_cpus(tool->context, params->cpus);
++		retval = osnoise_set_cpus(top->context, params->cpus);
 +		if (retval) {
 +			err_msg("Failed to apply CPUs config\n");
 +			goto out_err;
 +		}
 +	}
 +
-+	if (params->runtime || params->period) {
-+		retval = osnoise_set_runtime_period(tool->context,
-+						    params->runtime,
-+						    params->period);
-+		if (retval) {
-+			err_msg("Failed to set runtime and/or period\n");
-+			goto out_err;
-+		}
-+	}
-+
 +	if (params->stop_us) {
-+		retval = osnoise_set_stop_us(tool->context, params->stop_us);
++		retval = osnoise_set_stop_us(top->context, params->stop_us);
 +		if (retval) {
 +			err_msg("Failed to set stop us\n");
 +			goto out_err;
@@ -530,9 +685,27 @@ index 000000000000..e23bae8d9696
 +	}
 +
 +	if (params->stop_total_us) {
-+		retval = osnoise_set_stop_total_us(tool->context, params->stop_total_us);
++		retval = osnoise_set_stop_total_us(top->context, params->stop_total_us);
 +		if (retval) {
 +			err_msg("Failed to set stop total us\n");
++			goto out_err;
++		}
++	}
++
++
++	if (params->timerlat_period_us) {
++		retval = osnoise_set_timerlat_period_us(top->context, params->timerlat_period_us);
++		if (retval) {
++			err_msg("Failed to set timerlat period\n");
++			goto out_err;
++		}
++	}
++
++
++	if (params->print_stack) {
++		retval = osnoise_set_print_stack(top->context, params->print_stack);
++		if (retval) {
++			err_msg("Failed to set print stack\n");
 +			goto out_err;
 +		}
 +	}
@@ -544,33 +717,33 @@ index 000000000000..e23bae8d9696
 +}
 +
 +/*
-+ * osnoise_init_top - initialize a osnoise top tool with parameters
++ * timerlat_init_top - initialize a timerlat top tool with parameters
 + */
-+struct osnoise_tool *osnoise_init_top(struct osnoise_top_params *params)
++static struct osnoise_tool
++*timerlat_init_top(struct timerlat_top_params *params)
 +{
-+	struct osnoise_tool *tool;
++	struct osnoise_tool *top;
 +	int nr_cpus;
 +
 +	nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
 +
-+	tool = osnoise_init_tool("osnoise_top");
-+	if (!tool)
++	top = osnoise_init_tool("timerlat_top");
++	if (!top)
 +		return NULL;
 +
-+	tool->data = osnoise_alloc_top(nr_cpus);
-+	if (!tool->data)
++	top->data = timerlat_alloc_top(nr_cpus);
++	if (!top->data)
 +		goto out_err;
 +
-+	tool->params = params;
++	top->params = params;
 +
-+	tep_register_event_handler(tool->trace.tep, -1, "ftrace", "osnoise",
-+				   osnoise_top_handler, NULL);
++	tep_register_event_handler(top->trace.tep, -1, "ftrace", "timerlat",
++				   timerlat_top_handler, top);
 +
-+	return tool;
++	return top;
 +
 +out_err:
-+	osnoise_free_top(tool->data);
-+	osnoise_destroy_tool(tool);
++	osnoise_destroy_tool(top);
 +	return NULL;
 +}
 +
@@ -581,9 +754,10 @@ index 000000000000..e23bae8d9696
 +}
 +
 +/*
-+ * osnoise_top_set_signals - handles the signal to stop the tool
++ * timerlat_top_set_signals - handles the signal to stop the tool
 + */
-+static void osnoise_top_set_signals(struct osnoise_top_params *params)
++static void
++timerlat_top_set_signals(struct timerlat_top_params *params)
 +{
 +	signal(SIGINT, stop_top);
 +	if (params->duration) {
@@ -592,49 +766,49 @@ index 000000000000..e23bae8d9696
 +	}
 +}
 +
-+int osnoise_top_main(int argc, char **argv)
++int timerlat_top_main(int argc, char *argv[])
 +{
-+	struct osnoise_top_params *params;
++	struct timerlat_top_params *params;
 +	struct trace_instance *trace;
 +	struct osnoise_tool *record;
-+	struct osnoise_tool *tool;
++	struct osnoise_tool *top;
 +	int return_value = 1;
 +	int retval;
 +
-+	params = osnoise_top_parse_args(argc, argv);
++	params = timerlat_top_parse_args(argc, argv);
 +	if (!params)
 +		exit(1);
 +
-+	tool = osnoise_init_top(params);
-+	if (!tool) {
++	top = timerlat_init_top(params);
++	if (!top) {
 +		err_msg("Could not init osnoise top\n");
 +		goto out_exit;
 +	}
 +
-+	retval = osnoise_top_apply_config(tool, params);
++	retval = timerlat_top_apply_config(top, params);
 +	if (retval) {
 +		err_msg("Could not apply config\n");
 +		goto out_top;
 +	}
 +
-+	trace = &tool->trace;
++	trace = &top->trace;
 +
-+	retval = enable_osnoise(trace);
++	retval = enable_timerlat(trace);
 +	if (retval) {
-+		err_msg("Failed to enable osnoise tracer\n");
++		err_msg("Failed to enable timerlat tracer\n");
 +		goto out_top;
 +	}
 +
 +	if (params->set_sched) {
-+		retval = set_comm_sched_attr("osnoise/", &params->sched_param);
++		retval = set_comm_sched_attr("timerlat/", &params->sched_param);
 +		if (retval)
-+			osnoise_top_usage("Failed to set sched parameters\n");
++			timerlat_top_usage("Failed to set sched parameters\n");
 +	}
 +
 +	trace_instance_start(trace);
 +
 +	if (params->trace_output) {
-+		record = osnoise_init_trace_tool("osnoise");
++		record = osnoise_init_trace_tool("timerlat");
 +		if (!record) {
 +			err_msg("Failed to enable the trace instance\n");
 +			goto out_top;
@@ -642,10 +816,10 @@ index 000000000000..e23bae8d9696
 +		trace_instance_start(&record->trace);
 +	}
 +
-+	tool->start_time = time(NULL);
-+	osnoise_top_set_signals(params);
++	top->start_time = time(NULL);
++	timerlat_top_set_signals(params);
 +
-+	do {
++	while (!stop_tracing) {
 +		sleep(params->sleep_time);
 +
 +		retval = tracefs_iterate_raw_events(trace->tep,
@@ -660,19 +834,19 @@ index 000000000000..e23bae8d9696
 +		}
 +
 +		if (!params->quiet)
-+			osnoise_print_stats(params, tool);
++			timerlat_print_stats(params, top);
 +
 +		if (!tracefs_trace_is_on(trace->inst))
 +			break;
 +
-+	} while (!stop_tracing);
++	};
 +
-+	osnoise_print_stats(params, tool);
++	timerlat_print_stats(params, top);
 +
 +	return_value = 0;
 +
 +	if (!tracefs_trace_is_on(trace->inst)) {
-+		printf("osnoise hit stop tracing\n");
++		printf("rtla timelat hit stop tracing\n");
 +		if (params->trace_output) {
 +			printf("  Saving trace to %s\n", params->trace_output);
 +			save_trace_to_file(record->trace.inst, params->trace_output);
@@ -680,10 +854,11 @@ index 000000000000..e23bae8d9696
 +	}
 +
 +out_top:
-+	osnoise_free_top(tool->data);
-+	osnoise_destroy_tool(tool);
++	timerlat_free_top(top->data);
++	osnoise_destroy_tool(top);
 +	if (params->trace_output)
 +		osnoise_destroy_tool(record);
++	free(params);
 +out_exit:
 +	exit(return_value);
 +}
