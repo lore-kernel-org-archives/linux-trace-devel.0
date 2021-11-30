@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 869FCC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 30 Nov 2021 05:01:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1260C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 30 Nov 2021 05:01:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230464AbhK3FEX (ORCPT
+        id S230465AbhK3FEZ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 30 Nov 2021 00:04:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37008 "EHLO
+        Tue, 30 Nov 2021 00:04:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbhK3FEX (ORCPT
+        with ESMTP id S230259AbhK3FEY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 30 Nov 2021 00:04:23 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD9DC061574
-        for <linux-trace-devel@vger.kernel.org>; Mon, 29 Nov 2021 21:01:04 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id x6so81161588edr.5
-        for <linux-trace-devel@vger.kernel.org>; Mon, 29 Nov 2021 21:01:04 -0800 (PST)
+        Tue, 30 Nov 2021 00:04:24 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1DAC061574
+        for <linux-trace-devel@vger.kernel.org>; Mon, 29 Nov 2021 21:01:05 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id v1so81421371edx.2
+        for <linux-trace-devel@vger.kernel.org>; Mon, 29 Nov 2021 21:01:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=I5fU3KcBB31QmYdggxkrqadsi/nXpa0Ejrq+FL5Sz7U=;
-        b=WqsWKo8FFwvKrGbzyZ9yZ59asISpkngx0wBTh2HYQpPPP8NvAxfSbXf68VdR3SCRye
-         lJ4DELgGsraxJU0eMPid2uU5+Hrn7Hwal2HM2/sx/swSzPjYXzWcHHPNqNJzU1dL2WKO
-         hM1EhYBASacMl2HfIK7uCJHvYWrkW+xZ1F9pQCULvYlZVY4kmvUl3Stz+nQkTKxQICEe
-         d/JYm/WkU/ZZXuOPYJiygFLNUOiNkPrAWbV5XVHV71sUexgCnikfv4lFDGxt0GiCfoSk
-         Q6GaE6r6vq2jyEVz9hRuOXGxnYXhXunlnzGPRrVt17PyDx9qJ565Va92rW1adBWqbhkO
-         iV1Q==
+        bh=QkU2CUQvXYadtzeoRi/ympe8R5++k8f7Z+495DLdM0g=;
+        b=CY2VhAdmdV2TBsAphzBFREN4i76Brim3TfmzKJ3EnJktYW04YpwNBOpcoFl16g1cpp
+         1ic6by/ldkVXw8304jaA+9moyWfRZW50x8EQ02+l4MuAjuqLcioGAw+7bZByuW4ROBm+
+         FVciPk0YvH8B6s4SHq7IgSdiEHNKxzS69u16/dPBXnNlVXhH6Aafjsvo3Wmq5UO2t3mq
+         g/L3soDcvIcIn6HPDHtmaomCvb6lOobzyFXk6+bwlFt66cWbr/7xlvYjeCbdqUo/Uo8z
+         s+g2Led3YCdEv37Gmuu8rb6xVhHztoigwH1IQVZXbDCM8aC7WydG3N9qV0r5iDt+ncU9
+         gTTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=I5fU3KcBB31QmYdggxkrqadsi/nXpa0Ejrq+FL5Sz7U=;
-        b=tssU2hmJ8CwBeLHVrZwIopB/UMni/U7640JyyyWJ0r8EdLglXPY72/hxmt9TuLQ/HZ
-         /jmfmuIkKr3LIM7Mv61oruG9cL02A65uhVDXebPpajACSJS7tU9fBx2jYipBwrbvNvZT
-         bPZC+AM66enGPi0SoCFj9W7Rp4QEmuy1MbFCyWR8oqSzfTHQQJeTtY7zEHXsYd2buLqy
-         qhmrF8U7id0Xl3Cdhnn10jROTll6joYvXoqkT0YQgcINeBt5R51dQ8bYUVETGCAmZrzJ
-         aUo8ComGFxRY5iWBmsVvCGS3Unl/rENi+3YAMDI1CIGLqjrHlk1B8W4jUKDoH4tgvELk
-         8c6g==
-X-Gm-Message-State: AOAM533CKvRcGGPNwZ6S4IOvUwTjhT1mKXGe+Hi7Dyav9w9SPTuy47y3
-        eum8ExMB6CQVuPd8SzheNFk=
-X-Google-Smtp-Source: ABdhPJzIj2qBIoZRbbGyUDjhBNh8Td+xVPUpQu9aibrdNLrj9O5dhKxftOQSg4A4eeM8ocDiDjcwgg==
-X-Received: by 2002:a05:6402:14f:: with SMTP id s15mr36787617edu.118.1638248463099;
-        Mon, 29 Nov 2021 21:01:03 -0800 (PST)
+        bh=QkU2CUQvXYadtzeoRi/ympe8R5++k8f7Z+495DLdM0g=;
+        b=BFJkjHNGjDAobMZx1Mhe8EZMTQyB9SH7vTkCtpttxAxjIr3SI/BwGkX97PdlwZoKtF
+         C9nwcDhnWPcrDgs7QDWYHOH80DVWi2d09hkTJbe50J1RwTbQeBEMqk3LorhyCv5GlmGo
+         nic61TKsaFv6MsrSCFJJPWxCHWThydPhM0uaZmrMxK8G6qI+WaRVhOt/YiFqQHogYH3V
+         rJeukoZZc+LgQ2PO7oc8yF8TnJNnjMENtp/R7P3p8Uqtj09nCEIK/5gvR/OwwPgroKD6
+         lFEFQ1wThFDqVyRQydKyQkqyTGbrdqFURDz2w+wygtN43yHw2OEs7J1cJiJbIFb6ZanS
+         6bvw==
+X-Gm-Message-State: AOAM531GUE2bKxNuaDDus+FaZMmpvFt77DoxRdujB2tQRsGzxP4gBTJc
+        JsY4ejFpd42stynywIV/Qkm2aCovmlHMQg==
+X-Google-Smtp-Source: ABdhPJwLxRCR/wUaTWJEE7ULyiw34B+ZHoGz0swVjP5eFeneBAGU10u1CIkfnwdlV2HmSLSRh3RCCg==
+X-Received: by 2002:a17:907:2d12:: with SMTP id gs18mr63289531ejc.126.1638248464571;
+        Mon, 29 Nov 2021 21:01:04 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id w18sm10385849edx.55.2021.11.29.21.01.01
+        by smtp.gmail.com with ESMTPSA id w18sm10385849edx.55.2021.11.29.21.01.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Nov 2021 21:01:02 -0800 (PST)
+        Mon, 29 Nov 2021 21:01:03 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org, y.karadz@gmail.com
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 2/4] libtracefs: New API for getting dynamic event
-Date:   Tue, 30 Nov 2021 07:00:55 +0200
-Message-Id: <20211130050057.336228-3-tz.stoyanov@gmail.com>
+Subject: [PATCH 3/4] libtracefs: Unit test for tracefs_dynevent_get_event()
+Date:   Tue, 30 Nov 2021 07:00:56 +0200
+Message-Id: <20211130050057.336228-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211130050057.336228-1-tz.stoyanov@gmail.com>
 References: <20211130050057.336228-1-tz.stoyanov@gmail.com>
@@ -64,114 +64,228 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-A new API is proposed, to get tep event describing given dynamic event:
-	tracefs_dynevent_get_event()
-The API detects any newly created dynamic events, but does not detect
-the deletion.
+Unit tests for dynamic events are extended to test the newly introduced
+tracefs_dynevent_get_event() API.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- Documentation/libtracefs-dynevents.txt | 14 +++++++++++--
- include/tracefs.h                      |  2 ++
- src/tracefs-dynevents.c                | 29 ++++++++++++++++++++++++++
- 3 files changed, 43 insertions(+), 2 deletions(-)
+ Documentation/libtracefs-dynevents.txt |  5 ++-
+ utest/tracefs-utest.c                  | 58 +++++++++++++++++---------
+ 2 files changed, 42 insertions(+), 21 deletions(-)
 
 diff --git a/Documentation/libtracefs-dynevents.txt b/Documentation/libtracefs-dynevents.txt
-index a374651..7de06be 100644
+index 7de06be..bd18f5b 100644
 --- a/Documentation/libtracefs-dynevents.txt
 +++ b/Documentation/libtracefs-dynevents.txt
-@@ -4,8 +4,8 @@ libtracefs(3)
- NAME
- ----
- tracefs_dynevent_create, tracefs_dynevent_destroy, tracefs_dynevent_destroy_all,
--tracefs_dynevent_free, tracefs_dynevent_list_free, tracefs_dynevent_get_all, tracefs_dynevent_info -
--Create, destroy, free and get dynamic events.
-+tracefs_dynevent_free, tracefs_dynevent_list_free, tracefs_dynevent_get_all, tracefs_dynevent_info,
-+tracefs_dynevent_get_event - Create, destroy, free and get dynamic events.
+@@ -71,8 +71,9 @@ freed with free(3) if they are set.
  
- SYNOPSIS
- --------
-@@ -23,6 +23,7 @@ void *tracefs_dynevent_list_free*(struct tracefs_dynevent pass:[*]pass:[*]_event
- struct tracefs_dynevent pass:[*]*tracefs_dynevent_get*(enum tracefs_dynevent_type _type_, const char pass:[*]_system_, const char pass:[*]_event_);
- struct tracefs_dynevent pass:[*]pass:[*]*tracefs_dynevent_get_all*(unsigned int _types_, const char pass:[*]_system_);
- enum tracefs_dynevent_type *tracefs_dynevent_info*(struct tracefs_dynevent pass:[*]_dynevent_, char pass:[*]pass:[*]_system_, char pass:[*]pass:[*]_event_, char pass:[*]pass:[*]_prefix_, char pass:[*]pass:[*]_addr_, char pass:[*]pass:[*]_format_);
-+struct tep_event pass:[*]*tracefs_dynevent_get_event*(struct tep_handle pass:[*]_tep_, struct tracefs_dynevent pass:[*]_dynevent_);
- --
+ The *tracefs_dynevent_get_event*() function returns tep event, describing the given dynamic event.
+ If the dynamic event is newly created and not yet loaded in the @tep, the dynamic event system is
+-rescanned for any new events. The returned pointer to tep event is controlled by @tep and must not
+-be freed.
++rescanned for any new events. If the dynamic event is deleted from the system, any subsequent calls
++to *tracefs_dynevent_get_event*() may return a tep event, as the deletion is not detected by the API.
++The returned pointer to tep event is controlled by @tep and must not be freed.
  
- DESCRIPTION
-@@ -68,6 +69,11 @@ if relevant for this event type. If _format_ is non NULL, it will hold the forma
- dynamic event. Note, that the content in _group_, _event_, _prefix_, _addr_, and _format_ must be
- freed with free(3) if they are set.
- 
-+The *tracefs_dynevent_get_event*() function returns tep event, describing the given dynamic event.
-+If the dynamic event is newly created and not yet loaded in the @tep, the dynamic event system is
-+rescanned for any new events. The returned pointer to tep event is controlled by @tep and must not
-+be freed.
-+
  RETURN VALUE
  ------------
+diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
+index 3a01f38..c555b06 100644
+--- a/utest/tracefs-utest.c
++++ b/utest/tracefs-utest.c
+@@ -567,9 +567,10 @@ struct probe_test {
  
-@@ -88,6 +94,10 @@ in case of an error or in case there are no events in the system. That array mus
- on error. If _system_, _event_, _prefix_, _addr_, or _format_ are non NULL, they will contain
- allocated strings that must be freed by free(3).
+ static bool check_probes(struct probe_test *probes, int count,
+ 			 struct tracefs_dynevent **devents, bool in_system,
+-			 struct tracefs_instance *instance)
++			 struct tracefs_instance *instance, struct tep_handle *tep)
+ {
+ 	enum tracefs_dynevent_type type;
++	struct tep_event *tevent;
+ 	char *ename;
+ 	char *address;
+ 	char *event;
+@@ -615,6 +616,15 @@ static bool check_probes(struct probe_test *probes, int count,
+ 				CU_TEST(ret != 0);
+ 			}
  
-+The *tracefs_dynevent_get_event*() function returns pointer to tep event or NULL in case of an error
-+or if the requested dynamic event is missing. The returned pointer to tep event is controlled by
-+@tep and must not be freed.
++			if (in_system) {
++				tevent =  tracefs_dynevent_get_event(tep, devents[i]);
++				CU_TEST(tevent != NULL);
++				if (tevent) {
++					CU_TEST(strcmp(tevent->name, event) == 0);
++					CU_TEST(strcmp(tevent->system, system) == 0);
++				}
++			}
 +
- ERRORS
- ------
- The following errors are for all the above calls:
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 9662603..fbd7d31 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -262,6 +262,8 @@ tracefs_dynevent_get(enum tracefs_dynevent_type type, const char *system, const
- enum tracefs_dynevent_type
- tracefs_dynevent_info(struct tracefs_dynevent *dynevent, char **system,
- 		      char **event, char **prefix, char **addr, char **format);
-+struct tep_event *
-+tracefs_dynevent_get_event(struct tep_handle *tep, struct tracefs_dynevent *dynevent);
+ 			found++;
+ 			break;
+ 		}
+@@ -649,10 +659,14 @@ static void test_kprobes_instance(struct tracefs_instance *instance)
+ 	struct tracefs_dynevent **dkretprobe;
+ 	struct tracefs_dynevent **dkprobe;
+ 	struct tracefs_dynevent **devents;
++	struct tep_handle *tep;
+ 	char *tmp;
+ 	int ret;
+ 	int i;
  
- struct tracefs_dynevent *
- tracefs_eprobe_alloc(const char *system, const char *event,
-diff --git a/src/tracefs-dynevents.c b/src/tracefs-dynevents.c
-index ea07d13..2ff3c87 100644
---- a/src/tracefs-dynevents.c
-+++ b/src/tracefs-dynevents.c
-@@ -752,3 +752,32 @@ error:
++	tep = tep_alloc();
++	CU_TEST(tep != NULL);
++
+ 	dkprobe = calloc(kprobe_count + 1, sizeof(*dkprobe));
+ 	dkretprobe = calloc(kretprobe_count + 1, sizeof(*dkretprobe));
  
- 	return TRACEFS_DYNEVENT_UNKNOWN;
+@@ -676,7 +690,7 @@ static void test_kprobes_instance(struct tracefs_instance *instance)
+ 	}
+ 	dkprobe[i] = NULL;
+ 	get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, 0);
+-	CU_TEST(check_probes(ktests, kprobe_count, dkprobe, false, instance));
++	CU_TEST(check_probes(ktests, kprobe_count, dkprobe, false, instance, tep));
+ 
+ 	for (i = 0; i < kretprobe_count; i++) {
+ 		dkretprobe[i] = tracefs_kretprobe_alloc(kretests[i].system, kretests[i].event,
+@@ -685,15 +699,15 @@ static void test_kprobes_instance(struct tracefs_instance *instance)
+ 	}
+ 	dkretprobe[i] = NULL;
+ 	get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, 0);
+-	CU_TEST(check_probes(kretests, kretprobe_count, dkretprobe, false, instance));
++	CU_TEST(check_probes(kretests, kretprobe_count, dkretprobe, false, instance, tep));
+ 
+ 	for (i = 0; i < kprobe_count; i++) {
+ 		CU_TEST(tracefs_dynevent_create(dkprobe[i]) == 0);
+ 	}
+ 	devents = get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE,
+ 				    kprobe_count);
+-	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance));
+-	CU_TEST(check_probes(kretests, kretprobe_count, dkretprobe, false, instance));
++	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance, tep));
++	CU_TEST(check_probes(kretests, kretprobe_count, dkretprobe, false, instance, tep));
+ 	tracefs_dynevent_list_free(devents);
+ 	devents = NULL;
+ 
+@@ -702,8 +716,8 @@ static void test_kprobes_instance(struct tracefs_instance *instance)
+ 	}
+ 	devents = get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE,
+ 				    kprobe_count + kretprobe_count);
+-	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance));
+-	CU_TEST(check_probes(kretests, kretprobe_count, devents, true, instance));
++	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance, tep));
++	CU_TEST(check_probes(kretests, kretprobe_count, devents, true, instance, tep));
+ 	tracefs_dynevent_list_free(devents);
+ 	devents = NULL;
+ 
+@@ -712,8 +726,8 @@ static void test_kprobes_instance(struct tracefs_instance *instance)
+ 	}
+ 	devents = get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE,
+ 				    kprobe_count);
+-	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance));
+-	CU_TEST(check_probes(kretests, kretprobe_count, dkretprobe, false, instance));
++	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance, tep));
++	CU_TEST(check_probes(kretests, kretprobe_count, dkretprobe, false, instance, tep));
+ 	tracefs_dynevent_list_free(devents);
+ 	devents = NULL;
+ 
+@@ -721,8 +735,8 @@ static void test_kprobes_instance(struct tracefs_instance *instance)
+ 		CU_TEST(tracefs_dynevent_destroy(dkprobe[i], false) == 0);
+ 	}
+ 	get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, 0);
+-	CU_TEST(check_probes(ktests, kprobe_count, dkprobe, false, instance));
+-	CU_TEST(check_probes(kretests, kretprobe_count, dkretprobe, false, instance));
++	CU_TEST(check_probes(ktests, kprobe_count, dkprobe, false, instance, tep));
++	CU_TEST(check_probes(kretests, kretprobe_count, dkretprobe, false, instance, tep));
+ 	tracefs_dynevent_list_free(devents);
+ 	devents = NULL;
+ 
+@@ -743,7 +757,7 @@ static void test_kprobes_instance(struct tracefs_instance *instance)
+ 	}
+ 
+ 	devents = get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, kprobe_count);
+-	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance));
++	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance, tep));
+ 	tracefs_dynevent_list_free(devents);
+ 	devents = NULL;
+ 
+@@ -754,19 +768,19 @@ static void test_kprobes_instance(struct tracefs_instance *instance)
+ 	}
+ 
+ 	devents = get_dynevents_check(TRACEFS_DYNEVENT_KPROBE, kprobe_count);
+-	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance));
++	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance, tep));
+ 	tracefs_dynevent_list_free(devents);
+ 	devents = NULL;
+ 
+ 	devents = get_dynevents_check(TRACEFS_DYNEVENT_KRETPROBE, kretprobe_count);
+-	CU_TEST(check_probes(kretests, kretprobe_count, devents, true, instance));
++	CU_TEST(check_probes(kretests, kretprobe_count, devents, true, instance, tep));
+ 	tracefs_dynevent_list_free(devents);
+ 	devents = NULL;
+ 
+ 	devents = get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE,
+ 				    kprobe_count + kretprobe_count);
+-	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance));
+-	CU_TEST(check_probes(kretests, kretprobe_count, devents, true, instance));
++	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance, tep));
++	CU_TEST(check_probes(kretests, kretprobe_count, devents, true, instance, tep));
+ 	tracefs_dynevent_list_free(devents);
+ 	devents = NULL;
+ 
+@@ -775,6 +789,7 @@ static void test_kprobes_instance(struct tracefs_instance *instance)
+ 	get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, 0);
+ 	free(dkretprobe);
+ 	free(dkprobe);
++	tep_free(tep);
  }
+ 
+ static void test_kprobes(void)
+@@ -793,11 +808,15 @@ static void test_eprobes_instance(struct tracefs_instance *instance)
+ 	int count = sizeof(etests) / sizeof((etests)[0]);
+ 	struct tracefs_dynevent **deprobes;
+ 	struct tracefs_dynevent **devents;
++	struct tep_handle *tep;
+ 	char *tsys, *tevent;
+ 	char *tmp, *sav;
+ 	int ret;
+ 	int i;
+ 
++	tep = tep_alloc();
++	CU_TEST(tep != NULL);
 +
-+/**
-+ * tracefs_dynevent_get_event - return tep event, representing the given dynamic event
-+ * @tep: a handle to the trace event parser context, that holds the events
-+ * @dynevent: a dynamic event context, describing given dynamic event.
-+ *
-+ * Returns pointer to tep event, describing the given dynamic event. The pointer
-+ * is managed by @tep handle and must not be freed. In case of an error, or in case
-+ * the requested dynamic event is missing in the @tep handler - NULL is returned.
-+ */
-+struct tep_event *
-+tracefs_dynevent_get_event(struct tep_handle *tep, struct tracefs_dynevent *dynevent)
-+{
-+	struct tep_event *event;
-+
-+	if (!tep || !dynevent || !dynevent->event)
-+		return NULL;
-+
-+	/* If the dynamic event is already loaded in the tep, return it */
-+	event = tep_find_event_by_name(tep, dynevent->system, dynevent->event);
-+	if (event)
-+		return event;
-+
-+	/* Try to load any new events from the given system */
-+	if (trace_load_events(tep, NULL, dynevent->system))
-+		return NULL;
-+
-+	return tep_find_event_by_name(tep, dynevent->system, dynevent->event);
-+}
+ 	deprobes = calloc(count + 1, sizeof(*deprobes));
+ 
+ 	/* Invalid parameters */
+@@ -821,14 +840,14 @@ static void test_eprobes_instance(struct tracefs_instance *instance)
+ 	deprobes[i] = NULL;
+ 
+ 	get_dynevents_check(TRACEFS_DYNEVENT_EPROBE, 0);
+-	CU_TEST(check_probes(etests, count, deprobes, false, instance));
++	CU_TEST(check_probes(etests, count, deprobes, false, instance, tep));
+ 
+ 	for (i = 0; i < count; i++) {
+ 		CU_TEST(tracefs_dynevent_create(deprobes[i]) == 0);
+ 	}
+ 
+ 	devents = get_dynevents_check(TRACEFS_DYNEVENT_EPROBE, count);
+-	CU_TEST(check_probes(etests, count, devents, true, instance));
++	CU_TEST(check_probes(etests, count, devents, true, instance, tep));
+ 	tracefs_dynevent_list_free(devents);
+ 	devents = NULL;
+ 
+@@ -836,12 +855,13 @@ static void test_eprobes_instance(struct tracefs_instance *instance)
+ 		CU_TEST(tracefs_dynevent_destroy(deprobes[i], false) == 0);
+ 	}
+ 	get_dynevents_check(TRACEFS_DYNEVENT_EPROBE, 0);
+-	CU_TEST(check_probes(etests, count, deprobes, false, instance));
++	CU_TEST(check_probes(etests, count, deprobes, false, instance, tep));
+ 
+ 	for (i = 0; i < count; i++)
+ 		tracefs_dynevent_free(deprobes[i]);
+ 
+ 	free(deprobes);
++	tep_free(tep);
+ }
+ 
+ static void test_eprobes(void)
 -- 
 2.33.1
 
