@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F475C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 30 Nov 2021 05:01:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 869FCC433FE
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 30 Nov 2021 05:01:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhK3FEV (ORCPT
+        id S230464AbhK3FEX (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 30 Nov 2021 00:04:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37002 "EHLO
+        Tue, 30 Nov 2021 00:04:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbhK3FEV (ORCPT
+        with ESMTP id S230259AbhK3FEX (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 30 Nov 2021 00:04:21 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C278C061574
-        for <linux-trace-devel@vger.kernel.org>; Mon, 29 Nov 2021 21:01:03 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id y13so81404156edd.13
-        for <linux-trace-devel@vger.kernel.org>; Mon, 29 Nov 2021 21:01:02 -0800 (PST)
+        Tue, 30 Nov 2021 00:04:23 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD9DC061574
+        for <linux-trace-devel@vger.kernel.org>; Mon, 29 Nov 2021 21:01:04 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id x6so81161588edr.5
+        for <linux-trace-devel@vger.kernel.org>; Mon, 29 Nov 2021 21:01:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bx4tcflhExfL16WHTEn4OHU9RTeMCZlVkV76CM5i5g4=;
-        b=CSzT3FLw6zbkbzFt9kD7HiA3Lcuv8XUS3YtyZ4Ehs5hOfgSQHqbxqZVKqW0orN3Wy2
-         9SceEkGoVDuiSL4qfCD17rJFRtfjTHKsSA2MOdBPURNTZyyq0AaVJnFWsZ/aZVp/4l/B
-         Y2ikj48hfQXtszO4RpAFwGXeNNCA9gqMTASNyx7rKfSpjpJaUJQnVREY1/52rCXhpOWE
-         /AS7OX33dslZC2OWpqhiG3cUz9BlGdgzTzOr/plniwEVwAbqvOF2vCpmIeXrzFc72xpT
-         wOYbFKn4lRToz1EGYTAgRPo9mrr9AS5wMOWyFP1BB9pKXRMcXZYqOAOVC6TiKY6olusP
-         zD/Q==
+        bh=I5fU3KcBB31QmYdggxkrqadsi/nXpa0Ejrq+FL5Sz7U=;
+        b=WqsWKo8FFwvKrGbzyZ9yZ59asISpkngx0wBTh2HYQpPPP8NvAxfSbXf68VdR3SCRye
+         lJ4DELgGsraxJU0eMPid2uU5+Hrn7Hwal2HM2/sx/swSzPjYXzWcHHPNqNJzU1dL2WKO
+         hM1EhYBASacMl2HfIK7uCJHvYWrkW+xZ1F9pQCULvYlZVY4kmvUl3Stz+nQkTKxQICEe
+         d/JYm/WkU/ZZXuOPYJiygFLNUOiNkPrAWbV5XVHV71sUexgCnikfv4lFDGxt0GiCfoSk
+         Q6GaE6r6vq2jyEVz9hRuOXGxnYXhXunlnzGPRrVt17PyDx9qJ565Va92rW1adBWqbhkO
+         iV1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bx4tcflhExfL16WHTEn4OHU9RTeMCZlVkV76CM5i5g4=;
-        b=ZbBlk6zuvVfUKR5gLhROWcxX2516NF52y6YHD4TkGv7jL/hjHZTwqXN/5sm5Lhi5xp
-         utR+7qtorN5hoVvV9o/W05LziGaJHvvKnO1OdaHZhxMUCRQBoAUQ93UlSIAPC7zStyTO
-         geGzRd7wZAWM/USrNJE+OMZSzL7WRWTvy4sb7WpKkvsTQ/PqaEF7m0wLGPJVIuu/TxR2
-         pOGIwguIeDB0i/mTOU2cCrkCEqoRZMBMIp1UIKXuriE31Wo7zm9huORpdY68h12ryygo
-         iguArhci36Fxz/B6ysspQgOY+WRf6/bGNS3bCgKuoSGFeGFVBcSWpb/clg/8YGis+s3C
-         Dg8g==
-X-Gm-Message-State: AOAM530ERxmwk+60wA5eIzIT47UWmAcvzpsrHuoyiF13o05A5sH0hqHI
-        xRiO+yCAywo+19eXoACJ3FVel098gJmrsg==
-X-Google-Smtp-Source: ABdhPJxWn6F/s2lTkFvWxKxmYg1R+zZsEulK1ySGNBeVpwR6ePPnQ9iyfCD8V3dDOT9TjSjHocappQ==
-X-Received: by 2002:a17:906:229b:: with SMTP id p27mr65211778eja.264.1638248461656;
-        Mon, 29 Nov 2021 21:01:01 -0800 (PST)
+        bh=I5fU3KcBB31QmYdggxkrqadsi/nXpa0Ejrq+FL5Sz7U=;
+        b=tssU2hmJ8CwBeLHVrZwIopB/UMni/U7640JyyyWJ0r8EdLglXPY72/hxmt9TuLQ/HZ
+         /jmfmuIkKr3LIM7Mv61oruG9cL02A65uhVDXebPpajACSJS7tU9fBx2jYipBwrbvNvZT
+         bPZC+AM66enGPi0SoCFj9W7Rp4QEmuy1MbFCyWR8oqSzfTHQQJeTtY7zEHXsYd2buLqy
+         qhmrF8U7id0Xl3Cdhnn10jROTll6joYvXoqkT0YQgcINeBt5R51dQ8bYUVETGCAmZrzJ
+         aUo8ComGFxRY5iWBmsVvCGS3Unl/rENi+3YAMDI1CIGLqjrHlk1B8W4jUKDoH4tgvELk
+         8c6g==
+X-Gm-Message-State: AOAM533CKvRcGGPNwZ6S4IOvUwTjhT1mKXGe+Hi7Dyav9w9SPTuy47y3
+        eum8ExMB6CQVuPd8SzheNFk=
+X-Google-Smtp-Source: ABdhPJzIj2qBIoZRbbGyUDjhBNh8Td+xVPUpQu9aibrdNLrj9O5dhKxftOQSg4A4eeM8ocDiDjcwgg==
+X-Received: by 2002:a05:6402:14f:: with SMTP id s15mr36787617edu.118.1638248463099;
+        Mon, 29 Nov 2021 21:01:03 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id w18sm10385849edx.55.2021.11.29.21.01.00
+        by smtp.gmail.com with ESMTPSA id w18sm10385849edx.55.2021.11.29.21.01.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Nov 2021 21:01:00 -0800 (PST)
+        Mon, 29 Nov 2021 21:01:02 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org, y.karadz@gmail.com
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 1/4] libtracefs: Reuse logic for loading events inside the library
-Date:   Tue, 30 Nov 2021 07:00:54 +0200
-Message-Id: <20211130050057.336228-2-tz.stoyanov@gmail.com>
+Subject: [PATCH 2/4] libtracefs: New API for getting dynamic event
+Date:   Tue, 30 Nov 2021 07:00:55 +0200
+Message-Id: <20211130050057.336228-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211130050057.336228-1-tz.stoyanov@gmail.com>
 References: <20211130050057.336228-1-tz.stoyanov@gmail.com>
@@ -64,69 +64,114 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The logic for parsing and loading new tep events could be reused in
-tracefs library. The function load_events() is exposed as internal API.
+A new API is proposed, to get tep event describing given dynamic event:
+	tracefs_dynevent_get_event()
+The API detects any newly created dynamic events, but does not detect
+the deletion.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- include/tracefs-local.h |  3 +++
- src/tracefs-events.c    | 11 +++++++----
- 2 files changed, 10 insertions(+), 4 deletions(-)
+ Documentation/libtracefs-dynevents.txt | 14 +++++++++++--
+ include/tracefs.h                      |  2 ++
+ src/tracefs-dynevents.c                | 29 ++++++++++++++++++++++++++
+ 3 files changed, 43 insertions(+), 2 deletions(-)
 
-diff --git a/include/tracefs-local.h b/include/tracefs-local.h
-index a59e806..0540956 100644
---- a/include/tracefs-local.h
-+++ b/include/tracefs-local.h
-@@ -112,4 +112,7 @@ dynevent_alloc(enum tracefs_dynevent_type type, const char *system,
- 	       const char *event, const char *address, const char *format);
- int dynevent_get_count(unsigned int types, const char *system);
+diff --git a/Documentation/libtracefs-dynevents.txt b/Documentation/libtracefs-dynevents.txt
+index a374651..7de06be 100644
+--- a/Documentation/libtracefs-dynevents.txt
++++ b/Documentation/libtracefs-dynevents.txt
+@@ -4,8 +4,8 @@ libtracefs(3)
+ NAME
+ ----
+ tracefs_dynevent_create, tracefs_dynevent_destroy, tracefs_dynevent_destroy_all,
+-tracefs_dynevent_free, tracefs_dynevent_list_free, tracefs_dynevent_get_all, tracefs_dynevent_info -
+-Create, destroy, free and get dynamic events.
++tracefs_dynevent_free, tracefs_dynevent_list_free, tracefs_dynevent_get_all, tracefs_dynevent_info,
++tracefs_dynevent_get_event - Create, destroy, free and get dynamic events.
  
-+int trace_load_events(struct tep_handle *tep,
-+		      const char *tracing_dir, const char *system);
+ SYNOPSIS
+ --------
+@@ -23,6 +23,7 @@ void *tracefs_dynevent_list_free*(struct tracefs_dynevent pass:[*]pass:[*]_event
+ struct tracefs_dynevent pass:[*]*tracefs_dynevent_get*(enum tracefs_dynevent_type _type_, const char pass:[*]_system_, const char pass:[*]_event_);
+ struct tracefs_dynevent pass:[*]pass:[*]*tracefs_dynevent_get_all*(unsigned int _types_, const char pass:[*]_system_);
+ enum tracefs_dynevent_type *tracefs_dynevent_info*(struct tracefs_dynevent pass:[*]_dynevent_, char pass:[*]pass:[*]_system_, char pass:[*]pass:[*]_event_, char pass:[*]pass:[*]_prefix_, char pass:[*]pass:[*]_addr_, char pass:[*]pass:[*]_format_);
++struct tep_event pass:[*]*tracefs_dynevent_get_event*(struct tep_handle pass:[*]_tep_, struct tracefs_dynevent pass:[*]_dynevent_);
+ --
+ 
+ DESCRIPTION
+@@ -68,6 +69,11 @@ if relevant for this event type. If _format_ is non NULL, it will hold the forma
+ dynamic event. Note, that the content in _group_, _event_, _prefix_, _addr_, and _format_ must be
+ freed with free(3) if they are set.
+ 
++The *tracefs_dynevent_get_event*() function returns tep event, describing the given dynamic event.
++If the dynamic event is newly created and not yet loaded in the @tep, the dynamic event system is
++rescanned for any new events. The returned pointer to tep event is controlled by @tep and must not
++be freed.
 +
- #endif /* _TRACE_FS_LOCAL_H */
-diff --git a/src/tracefs-events.c b/src/tracefs-events.c
-index 4679926..e3962e5 100644
---- a/src/tracefs-events.c
-+++ b/src/tracefs-events.c
-@@ -688,8 +688,8 @@ char **tracefs_tracers(const char *tracing_dir)
- 	return plugins;
+ RETURN VALUE
+ ------------
+ 
+@@ -88,6 +94,10 @@ in case of an error or in case there are no events in the system. That array mus
+ on error. If _system_, _event_, _prefix_, _addr_, or _format_ are non NULL, they will contain
+ allocated strings that must be freed by free(3).
+ 
++The *tracefs_dynevent_get_event*() function returns pointer to tep event or NULL in case of an error
++or if the requested dynamic event is missing. The returned pointer to tep event is controlled by
++@tep and must not be freed.
++
+ ERRORS
+ ------
+ The following errors are for all the above calls:
+diff --git a/include/tracefs.h b/include/tracefs.h
+index 9662603..fbd7d31 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -262,6 +262,8 @@ tracefs_dynevent_get(enum tracefs_dynevent_type type, const char *system, const
+ enum tracefs_dynevent_type
+ tracefs_dynevent_info(struct tracefs_dynevent *dynevent, char **system,
+ 		      char **event, char **prefix, char **addr, char **format);
++struct tep_event *
++tracefs_dynevent_get_event(struct tep_handle *tep, struct tracefs_dynevent *dynevent);
+ 
+ struct tracefs_dynevent *
+ tracefs_eprobe_alloc(const char *system, const char *event,
+diff --git a/src/tracefs-dynevents.c b/src/tracefs-dynevents.c
+index ea07d13..2ff3c87 100644
+--- a/src/tracefs-dynevents.c
++++ b/src/tracefs-dynevents.c
+@@ -752,3 +752,32 @@ error:
+ 
+ 	return TRACEFS_DYNEVENT_UNKNOWN;
  }
- 
--static int load_events(struct tep_handle *tep,
--		       const char *tracing_dir, const char *system)
-+__hidden int trace_load_events(struct tep_handle *tep,
-+			       const char *tracing_dir, const char *system)
- {
- 	int ret = 0, failure = 0;
- 	char **events = NULL;
-@@ -697,6 +697,9 @@ static int load_events(struct tep_handle *tep,
- 	int len = 0;
- 	int i;
- 
-+	if (!tracing_dir)
-+		tracing_dir = tracefs_tracing_dir();
 +
- 	events = tracefs_system_events(tracing_dir, system);
- 	if (!events)
- 		return -ENOENT;
-@@ -886,14 +889,14 @@ static int fill_local_events_system(const char *tracing_dir,
- 	for (i = 0; systems[i]; i++) {
- 		if (sys_names && !contains(systems[i], sys_names))
- 			continue;
--		ret = load_events(tep, tracing_dir, systems[i]);
-+		ret = trace_load_events(tep, tracing_dir, systems[i]);
- 		if (ret && parsing_failures)
- 			(*parsing_failures)++;
- 	}
- 
- 	/* Include ftrace, as it is excluded for not having "enable" file */
- 	if (!sys_names || contains("ftrace", sys_names))
--		load_events(tep, tracing_dir, "ftrace");
-+		trace_load_events(tep, tracing_dir, "ftrace");
- 
- 	load_mappings(tracing_dir, tep);
- 
++/**
++ * tracefs_dynevent_get_event - return tep event, representing the given dynamic event
++ * @tep: a handle to the trace event parser context, that holds the events
++ * @dynevent: a dynamic event context, describing given dynamic event.
++ *
++ * Returns pointer to tep event, describing the given dynamic event. The pointer
++ * is managed by @tep handle and must not be freed. In case of an error, or in case
++ * the requested dynamic event is missing in the @tep handler - NULL is returned.
++ */
++struct tep_event *
++tracefs_dynevent_get_event(struct tep_handle *tep, struct tracefs_dynevent *dynevent)
++{
++	struct tep_event *event;
++
++	if (!tep || !dynevent || !dynevent->event)
++		return NULL;
++
++	/* If the dynamic event is already loaded in the tep, return it */
++	event = tep_find_event_by_name(tep, dynevent->system, dynevent->event);
++	if (event)
++		return event;
++
++	/* Try to load any new events from the given system */
++	if (trace_load_events(tep, NULL, dynevent->system))
++		return NULL;
++
++	return tep_find_event_by_name(tep, dynevent->system, dynevent->event);
++}
 -- 
 2.33.1
 
