@@ -2,35 +2,35 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79979C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  1 Dec 2021 18:25:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D7FAC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  1 Dec 2021 18:25:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352353AbhLAS2t (ORCPT
+        id S1352404AbhLAS2u (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 1 Dec 2021 13:28:49 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:48046 "EHLO
+        Wed, 1 Dec 2021 13:28:50 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:48042 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352394AbhLAS2m (ORCPT
+        with ESMTP id S1352390AbhLAS2m (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 1 Dec 2021 13:28:42 -0500
 Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A76BF20E61CC;
+        by linux.microsoft.com (Postfix) with ESMTPSA id 443B420E61BF;
         Wed,  1 Dec 2021 10:25:21 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A76BF20E61CC
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 443B420E61BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
         s=default; t=1638383121;
-        bh=qA/z8XkOUoZCT+HNyBQpWdWGIu+94sIk0wd6Ka4GYak=;
+        bh=2MNNnQX+HlxxaMEY4gU+2b0Gkt/9hrxk5VsW0GdjNOE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p16OjJNcV4n0UayADPQL7bxotziHXMku4C0z9TDxzPg0H9i+gxbmD4XNkLgV26cTk
-         geuqrInaVdBRVFvHOQBjNQn3WO4OO2oxjlqa1ERYCa2U6/5j8dKc1gCks2RioS52ku
-         OgQsOsfhTm/oe4pXXI4NxUjLr3PrKZA/ECCICyH8=
+        b=GOoJWONTh1341MZ9yRoZTy1VPoSFWeTGDCXaXCwUWXZb1I8AIXjG03tudCuMwSdTs
+         IWu+9d0lAORTORrg/SA53cSFH6SKwKX975PqvnqNUuKpKE/z5XPClzdDj0v16Bh1Ng
+         i1Cz8QHHyyanD5J/ML8V2gpejhQ4GRTs0BSv+27s=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         beaub@linux.microsoft.com
-Subject: [PATCH v6 12/13] user_events: Validate user payloads for size and null termination
-Date:   Wed,  1 Dec 2021 10:25:14 -0800
-Message-Id: <20211201182515.2446-13-beaub@linux.microsoft.com>
+Subject: [PATCH v6 10/13] user_events: Add documentation file
+Date:   Wed,  1 Dec 2021 10:25:12 -0800
+Message-Id: <20211201182515.2446-11-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211201182515.2446-1-beaub@linux.microsoft.com>
 References: <20211201182515.2446-1-beaub@linux.microsoft.com>
@@ -38,452 +38,226 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add validation to ensure data is at or greater than the min size for the
-fields of the event. If a dynamic array is used and is a type of char,
-ensure null termination of the array exists. Add unit test cases for the
-above scenarios.
+Add a documentation file about user_events with example code, etc.
+explaining how it may be used.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- include/uapi/linux/user_events.h              |   3 +
- kernel/trace/trace_events_user.c              | 151 ++++++++++++++++--
- .../selftests/user_events/ftrace_test.c       |  83 ++++++++++
- 3 files changed, 220 insertions(+), 17 deletions(-)
+ Documentation/trace/index.rst       |   1 +
+ Documentation/trace/user_events.rst | 195 ++++++++++++++++++++++++++++
+ 2 files changed, 196 insertions(+)
+ create mode 100644 Documentation/trace/user_events.rst
 
-diff --git a/include/uapi/linux/user_events.h b/include/uapi/linux/user_events.h
-index 5bff99418deb..f97db05e00c9 100644
---- a/include/uapi/linux/user_events.h
-+++ b/include/uapi/linux/user_events.h
-@@ -29,6 +29,9 @@
- #define EVENT_STATUS_PERF (1 << EVENT_BIT_PERF)
- #define EVENT_STATUS_OTHER (1 << EVENT_BIT_OTHER)
- 
-+/* Create dynamic location entry within a 32-bit value */
-+#define DYN_LOC(offset, size) ((size) << 16 | (offset))
+diff --git a/Documentation/trace/index.rst b/Documentation/trace/index.rst
+index 3769b9b7aed8..3a47aa8341c6 100644
+--- a/Documentation/trace/index.rst
++++ b/Documentation/trace/index.rst
+@@ -30,3 +30,4 @@ Linux Tracing Technologies
+    stm
+    sys-t
+    coresight/index
++   user_events
+diff --git a/Documentation/trace/user_events.rst b/Documentation/trace/user_events.rst
+new file mode 100644
+index 000000000000..e77e71b2fe9b
+--- /dev/null
++++ b/Documentation/trace/user_events.rst
+@@ -0,0 +1,195 @@
++=========================================
++user_events: User-based Event Tracing
++=========================================
 +
- /* Use raw iterator for attached BPF program(s), no affect on ftrace/perf */
- #define FLAG_BPF_ITER (1 << 0)
- 
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 4f80f9a99542..b487d02acedf 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -38,7 +38,7 @@
- /* Limit how long of an event name plus args within the subsystem. */
- #define MAX_EVENT_DESC 512
- #define EVENT_NAME(user_event) ((user_event)->tracepoint.name)
--#define MAX_FIELD_ARRAY_SIZE (2 * PAGE_SIZE)
-+#define MAX_FIELD_ARRAY_SIZE 1024
- #define MAX_FIELD_ARG_NAME 256
- 
- #define MAX_BPF_COPY_SIZE PAGE_SIZE
-@@ -65,9 +65,11 @@ struct user_event {
- 	struct dyn_event devent;
- 	struct hlist_node node;
- 	struct list_head fields;
-+	struct list_head validators;
- 	atomic_t refcnt;
- 	int index;
- 	int flags;
-+	int min_size;
- };
- 
- /*
-@@ -82,8 +84,17 @@ struct user_event_refs {
- 	struct user_event *events[];
- };
- 
-+#define VALIDATOR_ENSURE_NULL (1 << 0)
-+#define VALIDATOR_REL (1 << 1)
++:Author: Beau Belgrave
 +
-+struct user_event_validator {
-+	struct list_head link;
-+	int offset;
-+	int flags;
-+};
++Overview
++--------
++User based trace events allow user processes to create events and trace data
++that can be viewed via existing tools, such as ftrace, perf and eBPF.
++To enable this feature, build your kernel with CONFIG_USER_EVENTS=y.
 +
- typedef void (*user_event_func_t) (struct user_event *user, struct iov_iter *i,
--				   void *tpdata);
-+				   void *tpdata, bool *faulted);
- 
- static int user_event_parse(char *name, char *args, char *flags,
- 			    struct user_event **newuser);
-@@ -200,6 +211,17 @@ static int user_field_size(const char *type)
- 	return -EINVAL;
- }
- 
-+static void user_event_destroy_validators(struct user_event *user)
-+{
-+	struct user_event_validator *validator, *next;
-+	struct list_head *head = &user->validators;
++Programs can view status of the events via
++/sys/kernel/debug/tracing/user_events_status and can both register and write
++data out via /sys/kernel/debug/tracing/user_events_data.
 +
-+	list_for_each_entry_safe(validator, next, head, link) {
-+		list_del(&validator->link);
-+		kfree(validator);
-+	}
-+}
++Programs can also use /sys/kernel/debug/tracing/dynamic_events to register and
++delete user based events via the u: prefix. The format of the command to
++dynamic_events is the same as the ioctl with the u: prefix applied.
 +
- static void user_event_destroy_fields(struct user_event *user)
- {
- 	struct ftrace_event_field *field, *next;
-@@ -215,13 +237,43 @@ static int user_event_add_field(struct user_event *user, const char *type,
- 				const char *name, int offset, int size,
- 				int is_signed, int filter_type)
- {
-+	struct user_event_validator *validator;
- 	struct ftrace_event_field *field;
-+	int validator_flags = 0;
- 
- 	field = kmalloc(sizeof(*field), GFP_KERNEL);
- 
- 	if (!field)
- 		return -ENOMEM;
- 
-+	if (str_has_prefix(type, "__data_loc "))
-+		goto add_validator;
++Typically programs will register a set of events that they wish to expose to
++tools that can read trace_events (such as ftrace and perf). The registration
++process gives back two ints to the program for each event. The first int is the
++status index. This index describes which byte in the
++/sys/kernel/debug/tracing/user_events_status file represents this event. The
++second int is the write index. This index describes the data when a write() or
++writev() is called on the /sys/kernel/debug/tracing/user_events_data file.
 +
-+	if (str_has_prefix(type, "__rel_loc ")) {
-+		validator_flags |= VALIDATOR_REL;
-+		goto add_validator;
-+	}
++The structures referenced in this document are contained with the
++/include/uap/linux/user_events.h file in the source tree.
 +
-+	goto add_field;
++**NOTE:** *Both user_events_status and user_events_data are under the tracefs
++filesystem and may be mounted at different paths than above.*
 +
-+add_validator:
-+	if (strstr(type, "char[") != 0)
-+		validator_flags |= VALIDATOR_ENSURE_NULL;
++Registering
++-----------
++Registering within a user process is done via ioctl() out to the
++/sys/kernel/debug/tracing/user_events_data file. The command to issue is
++DIAG_IOCSREG. This command takes a struct user_reg as an argument.
 +
-+	validator = kmalloc(sizeof(*validator), GFP_KERNEL);
++The struct user_reg requires two values, the first is the size of the structure
++to ensure forward and backward compatibility. The second is the command string
++to issue for registering.
 +
-+	if (!validator) {
-+		kfree(field);
-+		return -ENOMEM;
-+	}
++User based events show up under tracefs like any other event under the
++subsystem named "user_events". This means tools that wish to attach to the
++events need to use /sys/kernel/debug/tracing/events/user_events/[name]/enable
++or perf record -e user_events:[name] when attaching/recording.
 +
-+	validator->flags = validator_flags;
-+	validator->offset = offset;
++**NOTE:** *The write_index returned is only valid for the FD that was used*
 +
-+	/* Want sequential access when validating */
-+	list_add_tail(&validator->link, &user->validators);
++Command Format
++^^^^^^^^^^^^^^
++The command string format is as follows::
 +
-+add_field:
- 	field->type = type;
- 	field->name = name;
- 	field->offset = offset;
-@@ -231,6 +283,12 @@ static int user_event_add_field(struct user_event *user, const char *type,
- 
- 	list_add(&field->link, &user->fields);
- 
-+	/*
-+	 * Min size from user writes that are required, this does not include
-+	 * the size of trace_entry (common fields).
-+	 */
-+	user->min_size = (offset + size) - sizeof(struct trace_entry);
++  name[:FLAG1[,FLAG2...]] [Field1[;Field2...]]
 +
- 	return 0;
- }
- 
-@@ -494,6 +552,7 @@ static int destroy_user_event(struct user_event *user)
- 	clear_bit(user->index, page_bitmap);
- 	hash_del(&user->node);
- 
-+	user_event_destroy_validators(user);
- 	kfree(user->call.print_fmt);
- 	kfree(EVENT_NAME(user));
- 	kfree(user);
-@@ -515,15 +574,49 @@ static struct user_event *find_user_event(char *name, u32 *outkey)
- 	return NULL;
- }
- 
-+static int user_event_validate(struct user_event *user, void *data, int len)
-+{
-+	struct list_head *head = &user->validators;
-+	struct user_event_validator *validator;
-+	void *pos, *end = data + len;
-+	u32 loc, offset, size;
++Supported Flags
++^^^^^^^^^^^^^^^
++**BPF_ITER** - EBPF programs attached to this event will get the raw iovec
++struct instead of any data copies for max performance.
 +
-+	list_for_each_entry(validator, head, link) {
-+		pos = data + validator->offset;
++Field Format
++^^^^^^^^^^^^
++::
 +
-+		/* Already done min_size check, no bounds check here */
-+		loc = *(u32 *)pos;
-+		offset = loc & 0xffff;
-+		size = loc >> 16;
++  type name [size]
 +
-+		if (likely(validator->flags & VALIDATOR_REL))
-+			pos += offset + sizeof(loc);
-+		else
-+			pos = data + offset;
++Basic types are supported (__data_loc, u32, u64, int, char, char[20], etc).
++User programs are encouraged to use clearly sized types like u32.
 +
-+		pos += size;
++**NOTE:** *Long is not supported since size can vary between user and kernel.*
 +
-+		if (unlikely(pos > end))
-+			return -EFAULT;
++The size is only valid for types that start with a struct prefix.
++This allows user programs to describe custom structs out to tools, if required.
 +
-+		if (likely(validator->flags & VALIDATOR_ENSURE_NULL))
-+			if (unlikely(*(char *)(pos - 1) != 0))
-+				return -EFAULT;
-+	}
++For example, a struct in C that looks like this::
 +
-+	return 0;
-+}
++  struct mytype {
++    char data[20];
++  };
 +
- /*
-  * Writes the user supplied payload out to a trace file.
-  */
- static void user_event_ftrace(struct user_event *user, struct iov_iter *i,
--			      void *tpdata)
-+			      void *tpdata, bool *faulted)
- {
- 	struct trace_event_file *file;
- 	struct trace_entry *entry;
- 	struct trace_event_buffer event_buffer;
-+	size_t size = sizeof(*entry) + i->count;
- 
- 	file = (struct trace_event_file *)tpdata;
- 
-@@ -533,19 +626,25 @@ static void user_event_ftrace(struct user_event *user, struct iov_iter *i,
- 		return;
- 
- 	/* Allocates and fills trace_entry, + 1 of this is data payload */
--	entry = trace_event_buffer_reserve(&event_buffer, file,
--					   sizeof(*entry) + i->count);
-+	entry = trace_event_buffer_reserve(&event_buffer, file, size);
- 
- 	if (unlikely(!entry))
- 		return;
- 
--	if (unlikely(!copy_nofault(entry + 1, i->count, i))) {
--		__trace_event_discard_commit(event_buffer.buffer,
--					     event_buffer.event);
--		return;
--	}
-+	if (unlikely(!copy_nofault(entry + 1, i->count, i)))
-+		goto discard;
++Would be represented by the following field::
 +
-+	if (!list_empty(&user->validators) &&
-+	    unlikely(user_event_validate(user, entry, size)))
-+		goto discard;
- 
- 	trace_event_buffer_commit(&event_buffer);
++  struct mytype myname 20
 +
-+	return;
-+discard:
-+	*faulted = true;
-+	__trace_event_discard_commit(event_buffer.buffer,
-+				     event_buffer.event);
- }
- 
- #ifdef CONFIG_PERF_EVENTS
-@@ -573,7 +672,7 @@ static void user_event_bpf(struct user_event *user, struct iov_iter *i)
- 	} else {
- 		/* Multi buffer from user */
- 		struct iov_iter copy = *i;
--		size_t copy_size = min(i->count, (size_t)MAX_BPF_COPY_SIZE);
-+		size_t copy_size = min_t(size_t, i->count, MAX_BPF_COPY_SIZE);
- 
- 		context.data_type = USER_BPF_DATA_KERNEL;
- 		context.kdata = fast_data;
-@@ -600,7 +699,7 @@ static void user_event_bpf(struct user_event *user, struct iov_iter *i)
-  * Writes the user supplied payload out to perf ring buffer or eBPF program.
-  */
- static void user_event_perf(struct user_event *user, struct iov_iter *i,
--			    void *tpdata)
-+			    void *tpdata, bool *faulted)
- {
- 	struct hlist_head *perf_head;
- 
-@@ -623,14 +722,21 @@ static void user_event_perf(struct user_event *user, struct iov_iter *i,
- 
- 		perf_fetch_caller_regs(regs);
- 
--		if (unlikely(!copy_nofault(perf_entry + 1, i->count, i))) {
--			perf_swevent_put_recursion_context(context);
--			return;
--		}
-+		if (unlikely(!copy_nofault(perf_entry + 1, i->count, i)))
-+			goto discard;
++Status
++------
++When tools attach/record user based events the status of the event is updated
++in realtime. This allows user programs to only incur the cost of the write() or
++writev() calls when something is actively attached to the event.
 +
-+		if (!list_empty(&user->validators) &&
-+		    unlikely(user_event_validate(user, perf_entry, size)))
-+			goto discard;
- 
- 		perf_trace_buf_submit(perf_entry, size, context,
- 				      user->call.event.type, 1, regs,
- 				      perf_head, NULL);
++User programs call mmap() on /sys/kernel/debug/tracing/user_events_status to
++check the status for each event that is registered. The byte to check in the
++file is given back after the register ioctl() via user_reg.status_index.
++Currently the size of user_events_status is a single page, however, custom
++kernel configurations can change this size to allow more user based events. In
++all cases the size of the file is a multiple of a page size.
 +
-+		return;
-+discard:
-+		*faulted = true;
-+		perf_swevent_put_recursion_context(context);
- 	}
- }
- #endif
-@@ -945,6 +1051,7 @@ static int user_event_parse(char *name, char *args, char *flags,
- 
- 	INIT_LIST_HEAD(&user->class.fields);
- 	INIT_LIST_HEAD(&user->fields);
-+	INIT_LIST_HEAD(&user->validators);
- 
- 	user->tracepoint.name = name;
- 
-@@ -993,6 +1100,7 @@ static int user_event_parse(char *name, char *args, char *flags,
- 	return 0;
- put_user:
- 	user_event_destroy_fields(user);
-+	user_event_destroy_validators(user);
- 	kfree(user);
- 	return ret;
- }
-@@ -1050,6 +1158,9 @@ static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
- 	if (unlikely(user == NULL))
- 		return -ENOENT;
- 
-+	if (unlikely(i->count < user->min_size))
-+		return -EINVAL;
++For example, if the register ioctl() gives back a status_index of 3 you would
++check byte 3 of the returned mmap data to see if anything is attached to that
++event.
 +
- 	tp = &user->tracepoint;
- 
- 	/*
-@@ -1061,10 +1172,13 @@ static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
- 		user_event_func_t probe_func;
- 		struct iov_iter copy;
- 		void *tpdata;
-+		bool faulted;
- 
- 		if (unlikely(iov_iter_fault_in_readable(i, i->count)))
- 			return -EFAULT;
- 
-+		faulted = false;
++Administrators can easily check the status of all registered events by reading
++the user_events_status file directly via a terminal. The output is as follows::
 +
- 		rcu_read_lock_sched();
- 		pagefault_disable();
- 
-@@ -1075,12 +1189,15 @@ static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
- 				copy = *i;
- 				probe_func = probe_func_ptr->func;
- 				tpdata = probe_func_ptr->data;
--				probe_func(user, &copy, tpdata);
-+				probe_func(user, &copy, tpdata, &faulted);
- 			} while ((++probe_func_ptr)->func);
- 		}
- 
- 		pagefault_enable();
- 		rcu_read_unlock_sched();
++  Byte:Name [# Comments]
++  ...
 +
-+		if (unlikely(faulted))
-+			return -EFAULT;
- 	}
- 
- 	return ret;
-diff --git a/tools/testing/selftests/user_events/ftrace_test.c b/tools/testing/selftests/user_events/ftrace_test.c
-index 9d53717139e6..16aff1fb295a 100644
---- a/tools/testing/selftests/user_events/ftrace_test.c
-+++ b/tools/testing/selftests/user_events/ftrace_test.c
-@@ -47,6 +47,22 @@ static int trace_bytes(void)
- 	return bytes;
- }
- 
-+static int clear(void)
-+{
-+	int fd = open(data_file, O_RDWR);
++  Active: ActiveCount
++  Buisy: BusyCount
++  Max: MaxCount
 +
-+	if (fd == -1)
-+		return -1;
++For example, on a system that has a single event the output looks like this::
 +
-+	if (ioctl(fd, DIAG_IOCSDEL, "__test_event") == -1)
-+		if (errno != ENOENT)
-+			return -1;
++  1:test
 +
-+	close(fd);
++  Active: 1
++  Busy: 0
++  Max: 4096
 +
-+	return 0;
-+}
++If a user enables the user event via ftrace, the output would change to this::
 +
- FIXTURE(user) {
- 	int status_fd;
- 	int data_fd;
-@@ -71,6 +87,8 @@ FIXTURE_TEARDOWN(user) {
- 		write(self->enable_fd, "0", sizeof("0"));
- 		close(self->enable_fd);
- 	}
++  1:test # Used by ftrace
 +
-+	ASSERT_EQ(0, clear());
- }
- 
- TEST_F(user, register_events) {
-@@ -199,6 +217,71 @@ TEST_F(user, write_fault) {
- 	ASSERT_EQ(0, munmap(anon, l));
- }
- 
-+TEST_F(user, write_validator) {
-+	struct user_reg reg = {0};
-+	struct iovec io[3];
-+	int loc, bytes;
-+	char data[8];
-+	int before = 0, after = 0;
++  Active: 1
++  Busy: 1
++  Max: 4096
 +
-+	reg.size = sizeof(reg);
-+	reg.name_args = (__u64)"__test_event __rel_loc char[] data";
++**NOTE:** *A status index of 0 will never be returned. This allows user
++programs to have an index that can be used on error cases.*
 +
-+	/* Register should work */
-+	ASSERT_EQ(0, ioctl(self->data_fd, DIAG_IOCSREG, &reg));
-+	ASSERT_EQ(0, reg.write_index);
-+	ASSERT_NE(0, reg.status_index);
++Status Bits
++^^^^^^^^^^^
++The byte being checked will be non-zero if anything is attached. Programs can
++check specific bits in the byte to see what mechanism has been attached.
 +
-+	io[0].iov_base = &reg.write_index;
-+	io[0].iov_len = sizeof(reg.write_index);
-+	io[1].iov_base = &loc;
-+	io[1].iov_len = sizeof(loc);
-+	io[2].iov_base = data;
-+	bytes = snprintf(data, sizeof(data), "Test") + 1;
-+	io[2].iov_len = bytes;
++The following values are defined to aid in checking what has been attached:
 +
-+	/* Undersized write should fail */
-+	ASSERT_EQ(-1, writev(self->data_fd, (const struct iovec *)io, 1));
-+	ASSERT_EQ(EINVAL, errno);
++**EVENT_STATUS_FTRACE** - Bit set if ftrace has been attached (Bit 0).
 +
-+	/* Enable event */
-+	self->enable_fd = open(enable_file, O_RDWR);
-+	ASSERT_NE(-1, write(self->enable_fd, "1", sizeof("1")))
++**EVENT_STATUS_PERF** - Bit set if perf/eBPF has been attached (Bit 1).
 +
-+	/* Full in-bounds write should work */
-+	before = trace_bytes();
-+	loc = DYN_LOC(0, bytes);
-+	ASSERT_NE(-1, writev(self->data_fd, (const struct iovec *)io, 3));
-+	after = trace_bytes();
-+	ASSERT_GT(after, before);
++Writing Data
++------------
++After registering an event the same fd that was used to register can be used
++to write an entry for that event. The write_index returned must be at the start
++of the data, then the remaining data is treated as the payload of the event.
 +
-+	/* Out of bounds write should fault (offset way out) */
-+	loc = DYN_LOC(1024, bytes);
-+	ASSERT_EQ(-1, writev(self->data_fd, (const struct iovec *)io, 3));
-+	ASSERT_EQ(EFAULT, errno);
++For example, if write_index returned was 1 and I wanted to write out an int
++payload of the event. Then the data would have to be 8 bytes (2 ints) in size,
++with the first 4 bytes being equal to 1 and the last 4 bytes being equal to the
++value I want as the payload.
 +
-+	/* Out of bounds write should fault (offset 1 byte out) */
-+	loc = DYN_LOC(1, bytes);
-+	ASSERT_EQ(-1, writev(self->data_fd, (const struct iovec *)io, 3));
-+	ASSERT_EQ(EFAULT, errno);
++In memory this would look like this::
 +
-+	/* Out of bounds write should fault (size way out) */
-+	loc = DYN_LOC(0, bytes + 1024);
-+	ASSERT_EQ(-1, writev(self->data_fd, (const struct iovec *)io, 3));
-+	ASSERT_EQ(EFAULT, errno);
++  int index;
++  int payload;
 +
-+	/* Out of bounds write should fault (size 1 byte out) */
-+	loc = DYN_LOC(0, bytes + 1);
-+	ASSERT_EQ(-1, writev(self->data_fd, (const struct iovec *)io, 3));
-+	ASSERT_EQ(EFAULT, errno);
++User programs might have well known structs that they wish to use to emit out
++as payloads. In those cases writev() can be used, with the first vector being
++the index and the following vector(s) being the actual event payload.
 +
-+	/* Non-Null should fault */
-+	memset(data, 'A', sizeof(data));
-+	loc = DYN_LOC(0, bytes);
-+	ASSERT_EQ(-1, writev(self->data_fd, (const struct iovec *)io, 3));
-+	ASSERT_EQ(EFAULT, errno);
-+}
++For example, if I have a struct like this::
 +
- int main(int argc, char **argv)
- {
- 	return test_harness_run(argc, argv);
++  struct payload {
++        int src;
++        int dst;
++        int flags;
++  };
++
++It's advised for user programs to do the following::
++
++  struct iovec io[2];
++  struct payload e;
++
++  io[0].iov_base = &write_index;
++  io[0].iov_len = sizeof(write_index);
++  io[1].iov_base = &e;
++  io[1].iov_len = sizeof(e);
++
++  writev(fd, (const struct iovec*)io, 2);
++
++**NOTE:** *The write_index is not emitted out into the trace being recorded.*
++
++EBPF
++----
++EBPF programs that attach to a user-based event tracepoint are given a pointer
++to a struct user_bpf_context. The bpf context contains the data type (which can
++be a user or kernel buffer, or can be a pointer to the iovec) and the data
++length that was emitted (minus the write_index).
++
++Example Code
++------------
++See sample code in samples/user_events.
 -- 
 2.17.1
 
