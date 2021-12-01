@@ -2,35 +2,35 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA0EBC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  1 Dec 2021 18:25:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32309C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  1 Dec 2021 18:25:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352375AbhLAS2l (ORCPT
+        id S229547AbhLAS2n (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 1 Dec 2021 13:28:41 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:47994 "EHLO
+        Wed, 1 Dec 2021 13:28:43 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:48018 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352348AbhLAS2k (ORCPT
+        with ESMTP id S1352370AbhLAS2l (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 1 Dec 2021 13:28:40 -0500
+        Wed, 1 Dec 2021 13:28:41 -0500
 Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 65E9920E57F8;
-        Wed,  1 Dec 2021 10:25:19 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 65E9920E57F8
+        by linux.microsoft.com (Postfix) with ESMTPSA id 40ECA20E5817;
+        Wed,  1 Dec 2021 10:25:20 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 40ECA20E5817
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1638383119;
-        bh=lad/j+ot53rXPTIMEBiBmAPcSVSE3JYr+2WF4ax63Do=;
+        s=default; t=1638383120;
+        bh=wzV6gNPzbresSOz0x+IMa87evygVUZ/A81N4s6+ijpA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lr6YCHcV11hMrT6zwOZ33jcKdsqnoVQFzQT4Nw6Gitpkvze3M4O1RgJfo9rQlNmW/
-         1JHMjdHQKyDaE/O50OuEPSSynPzl9IzC+RCJXPdcpCc4Er/dS17pyJD6S5yVpnkhtT
-         PBFoVNIzQ4FZht+uaHAuAITOnsdn2EZswP5nV4gc=
+        b=fa40V8EbSnw7z/LKpdN7mwLDCUHjlENJepkkKndYmuQzNSvtVM2YccvcBqeTfVqzc
+         AAi+jsfY2nypzTw0KOkjHwy7Vz/NACZWTWZqBDww4Hh+WAbghmeqS6+Sj+N5TIQVBe
+         Ae8RUit49faF1pxHwTSAQmzAcmcJBXlq86JtjhCE=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         beaub@linux.microsoft.com
-Subject: [PATCH v6 01/13] user_events: Add UABI header for user access to user_events
-Date:   Wed,  1 Dec 2021 10:25:03 -0800
-Message-Id: <20211201182515.2446-2-beaub@linux.microsoft.com>
+Subject: [PATCH v6 05/13] user_events: Add basic perf and eBPF support
+Date:   Wed,  1 Dec 2021 10:25:07 -0800
+Message-Id: <20211201182515.2446-6-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211201182515.2446-1-beaub@linux.microsoft.com>
 References: <20211201182515.2446-1-beaub@linux.microsoft.com>
@@ -38,89 +38,110 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Define the basic structs and ioctl commands that allow user processes to
-interact with user_events.
+Adds support to write out user_event data to perf_probe/perf files as
+well as to any attached eBPF program.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- include/uapi/linux/user_events.h | 68 ++++++++++++++++++++++++++++++++
- 1 file changed, 68 insertions(+)
- create mode 100644 include/uapi/linux/user_events.h
+ kernel/trace/trace_events_user.c | 63 ++++++++++++++++++++++++++++++++
+ 1 file changed, 63 insertions(+)
 
-diff --git a/include/uapi/linux/user_events.h b/include/uapi/linux/user_events.h
-new file mode 100644
-index 000000000000..5bff99418deb
---- /dev/null
-+++ b/include/uapi/linux/user_events.h
-@@ -0,0 +1,68 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+index 04d72e491d02..9978cebf2a00 100644
+--- a/kernel/trace/trace_events_user.c
++++ b/kernel/trace/trace_events_user.c
+@@ -541,6 +541,50 @@ static void user_event_ftrace(struct user_event *user, void *data, u32 datalen,
+ 	trace_event_buffer_commit(&event_buffer);
+ }
+ 
++#ifdef CONFIG_PERF_EVENTS
 +/*
-+ * Copyright (c) 2021, Microsoft Corporation.
-+ *
-+ * Authors:
-+ *   Beau Belgrave <beaub@linux.microsoft.com>
++ * Writes the user supplied payload out to perf ring buffer or eBPF program.
 + */
-+#ifndef _UAPI_LINUX_USER_EVENTS_H
-+#define _UAPI_LINUX_USER_EVENTS_H
++static void user_event_perf(struct user_event *user, void *data, u32 datalen,
++			    void *tpdata)
++{
++	struct hlist_head *perf_head;
 +
-+#include <linux/types.h>
-+#include <linux/ioctl.h>
++	if (bpf_prog_array_valid(&user->call)) {
++		struct user_bpf_context context = {0};
 +
-+#ifdef __KERNEL__
-+#include <linux/uio.h>
-+#else
-+#include <sys/uio.h>
++		context.data_len = datalen;
++		context.data_type = USER_BPF_DATA_KERNEL;
++		context.kdata = data;
++
++		trace_call_bpf(&user->call, &context);
++	}
++
++	perf_head = this_cpu_ptr(user->call.perf_events);
++
++	if (perf_head && !hlist_empty(perf_head)) {
++		struct trace_entry *perf_entry;
++		struct pt_regs *regs;
++		size_t size = sizeof(*perf_entry) + datalen;
++		int context;
++
++		perf_entry = perf_trace_buf_alloc(ALIGN(size, 8),
++						  &regs, &context);
++
++		if (unlikely(!perf_entry))
++			return;
++
++		perf_fetch_caller_regs(regs);
++
++		memcpy(perf_entry + 1, data, datalen);
++
++		perf_trace_buf_submit(perf_entry, size, context,
++				      user->call.event.type, 1, regs,
++				      perf_head, NULL);
++	}
++}
 +#endif
 +
-+#define USER_EVENTS_SYSTEM "user_events"
-+#define USER_EVENTS_PREFIX "u:"
+ /*
+  * Update the register page that is shared between user processes.
+  */
+@@ -563,6 +607,10 @@ static void update_reg_page_for(struct user_event *user)
+ 
+ 				if (probe_func == user_event_ftrace)
+ 					status |= EVENT_STATUS_FTRACE;
++#ifdef CONFIG_PERF_EVENTS
++				else if (probe_func == user_event_perf)
++					status |= EVENT_STATUS_PERF;
++#endif
+ 				else
+ 					status |= EVENT_STATUS_OTHER;
+ 			} while ((++probe_func_ptr)->func);
+@@ -604,7 +652,19 @@ static int user_event_reg(struct trace_event_call *call,
+ 
+ #ifdef CONFIG_PERF_EVENTS
+ 	case TRACE_REG_PERF_REGISTER:
++		ret = tracepoint_probe_register(call->tp,
++						call->class->perf_probe,
++						data);
++		if (!ret)
++			goto inc;
++		break;
 +
-+/* Bits 0-6 are for known probe types, Bit 7 is for unknown probes */
-+#define EVENT_BIT_FTRACE 0
-+#define EVENT_BIT_PERF 1
-+#define EVENT_BIT_OTHER 7
+ 	case TRACE_REG_PERF_UNREGISTER:
++		tracepoint_probe_unregister(call->tp,
++					    call->class->perf_probe,
++					    data);
++		goto dec;
 +
-+#define EVENT_STATUS_FTRACE (1 << EVENT_BIT_FTRACE)
-+#define EVENT_STATUS_PERF (1 << EVENT_BIT_PERF)
-+#define EVENT_STATUS_OTHER (1 << EVENT_BIT_OTHER)
-+
-+/* Use raw iterator for attached BPF program(s), no affect on ftrace/perf */
-+#define FLAG_BPF_ITER (1 << 0)
-+
-+struct user_reg {
-+	__u32 size;
-+	__u64 name_args;
-+	__u32 status_index;
-+	__u32 write_index;
-+};
-+
-+#define DIAG_IOC_MAGIC '*'
-+#define DIAG_IOCSREG _IOWR(DIAG_IOC_MAGIC, 0, struct user_reg*)
-+#define DIAG_IOCSDEL _IOW(DIAG_IOC_MAGIC, 1, char*)
-+
-+enum {
-+	USER_BPF_DATA_KERNEL,
-+	USER_BPF_DATA_USER,
-+	USER_BPF_DATA_ITER,
-+};
-+
-+struct user_bpf_iter {
-+	__u32 iov_offset;
-+	__u32 nr_segs;
-+	const struct iovec *iov;
-+};
-+
-+struct user_bpf_context {
-+	__u32 data_type;
-+	__u32 data_len;
-+	union {
-+		void *kdata;
-+		void *udata;
-+		struct user_bpf_iter *iter;
-+	};
-+};
-+
-+#endif /* _UAPI_LINUX_USER_EVENTS_H */
+ 	case TRACE_REG_PERF_OPEN:
+ 	case TRACE_REG_PERF_CLOSE:
+ 	case TRACE_REG_PERF_ADD:
+@@ -862,6 +922,9 @@ static int user_event_parse(char *name, char *args, char *flags,
+ 	user->class.get_fields = user_event_get_fields;
+ 	user->class.reg = user_event_reg;
+ 	user->class.probe = user_event_ftrace;
++#ifdef CONFIG_PERF_EVENTS
++	user->class.perf_probe = user_event_perf;
++#endif
+ 
+ 	mutex_lock(&event_mutex);
+ 	ret = user_event_trace_register(user);
 -- 
 2.17.1
 
