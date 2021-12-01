@@ -2,35 +2,35 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57D81C4321E
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  1 Dec 2021 18:25:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FFB3C4167B
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  1 Dec 2021 18:25:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352413AbhLAS2p (ORCPT
+        id S1352427AbhLAS2r (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 1 Dec 2021 13:28:45 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:48014 "EHLO
+        Wed, 1 Dec 2021 13:28:47 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:48026 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352392AbhLAS2m (ORCPT
+        with ESMTP id S1352379AbhLAS2m (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 1 Dec 2021 13:28:42 -0500
 Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 7514C20E61C7;
-        Wed,  1 Dec 2021 10:25:21 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7514C20E61C7
+        by linux.microsoft.com (Postfix) with ESMTPSA id A417220E61A9;
+        Wed,  1 Dec 2021 10:25:20 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A417220E61A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1638383121;
-        bh=kv0wHco5EwAEJeOx8KcU5U1Oq+sRrfrasJlUzpwkVMg=;
+        s=default; t=1638383120;
+        bh=Nsy28iBGd9K5KoEvpu/5fcI1CXQFpgeu6V0nNpVTY/s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lx4Xqd3uisZOEG3BQXJ8av9qMLSYzAsqQsHWZxt007K72SozWGFSl4O6Ysr96gdYw
-         AtN+74HZEDyrC/+bLw/NH3iX2E9UroHF66AAHrRIcdvWRK4fjuWG1fE1Cf4C+aKQlS
-         6VIVkak7H4RDx/S0r3v4iX2XGXTlM5Ft7p5zW7PQ=
+        b=XKQA0y5Y7DykAFgfqWBjvNz05m6gyT5FEaA5sDkbocK/KMKIm41Mvhj2FGwUNUDyk
+         Y32hCDQLHQjBEqh9QzdiwGTAq8C9Zpx/WcXj2Qgr9gbQCMUclu7K8WXB0Idws9F33M
+         iSeWj/wW/+BbuAMS6hf/uLbxrIBHoL3HlfXyNqmc=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         beaub@linux.microsoft.com
-Subject: [PATCH v6 11/13] user_events: Add sample code for typical usage
-Date:   Wed,  1 Dec 2021 10:25:13 -0800
-Message-Id: <20211201182515.2446-12-beaub@linux.microsoft.com>
+Subject: [PATCH v6 07/13] user_events: Add self-test for dynamic_events integration
+Date:   Wed,  1 Dec 2021 10:25:09 -0800
+Message-Id: <20211201182515.2446-8-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211201182515.2446-1-beaub@linux.microsoft.com>
 References: <20211201182515.2446-1-beaub@linux.microsoft.com>
@@ -38,124 +38,165 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add sample code for user_events typical usage to show how to register
-and monitor status, as well as to write out data.
+Tests matching deletes, creation of basic and complex types. Ensures
+common patterns work correctly when interacting with dynamic_events
+file.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- samples/user_events/Makefile  |  5 ++
- samples/user_events/example.c | 91 +++++++++++++++++++++++++++++++++++
- 2 files changed, 96 insertions(+)
- create mode 100644 samples/user_events/Makefile
- create mode 100644 samples/user_events/example.c
+ tools/testing/selftests/user_events/Makefile  |   2 +-
+ .../testing/selftests/user_events/dyn_test.c  | 130 ++++++++++++++++++
+ 2 files changed, 131 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/user_events/dyn_test.c
 
-diff --git a/samples/user_events/Makefile b/samples/user_events/Makefile
+diff --git a/tools/testing/selftests/user_events/Makefile b/tools/testing/selftests/user_events/Makefile
+index d66c551a6fe3..e824b9c2cae7 100644
+--- a/tools/testing/selftests/user_events/Makefile
++++ b/tools/testing/selftests/user_events/Makefile
+@@ -2,7 +2,7 @@
+ CFLAGS += -Wl,-no-as-needed -Wall -I../../../../usr/include
+ LDLIBS += -lrt -lpthread -lm
+ 
+-TEST_GEN_PROGS = ftrace_test
++TEST_GEN_PROGS = ftrace_test dyn_test
+ 
+ TEST_FILES := settings
+ 
+diff --git a/tools/testing/selftests/user_events/dyn_test.c b/tools/testing/selftests/user_events/dyn_test.c
 new file mode 100644
-index 000000000000..7252b589db57
+index 000000000000..d6265d14cd51
 --- /dev/null
-+++ b/samples/user_events/Makefile
-@@ -0,0 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0
-+CFLAGS += -Wl,-no-as-needed -Wall -I../../usr/include
-+
-+example: example.o
-+example.o: example.c
-diff --git a/samples/user_events/example.c b/samples/user_events/example.c
-new file mode 100644
-index 000000000000..4f5778e441c0
---- /dev/null
-+++ b/samples/user_events/example.c
-@@ -0,0 +1,91 @@
-+// SPDX-License-Identifier: GPL-2.0-only
++++ b/tools/testing/selftests/user_events/dyn_test.c
+@@ -0,0 +1,130 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Copyright (c) 2021, Microsoft Corporation.
++ * User Events Dyn Events Test Program
 + *
-+ * Authors:
-+ *   Beau Belgrave <beaub@linux.microsoft.com>
++ * Copyright (c) 2021 Beau Belgrave <beaub@linux.microsoft.com>
 + */
 +
 +#include <errno.h>
-+#include <sys/ioctl.h>
-+#include <sys/mman.h>
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include <unistd.h>
 +#include <linux/user_events.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <fcntl.h>
++#include <sys/ioctl.h>
++#include <sys/stat.h>
++#include <unistd.h>
 +
-+/* Assumes debugfs is mounted */
-+const char *data_file = "/sys/kernel/debug/tracing/user_events_data";
-+const char *status_file = "/sys/kernel/debug/tracing/user_events_status";
++#include "../kselftest_harness.h"
 +
-+static int event_status(char **status)
++const char *dyn_file = "/sys/kernel/debug/tracing/dynamic_events";
++const char *clear = "!u:__test_event";
++
++static int Append(const char *value)
 +{
-+	int fd = open(status_file, O_RDONLY);
-+
-+	*status = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ,
-+		       MAP_SHARED, fd, 0);
++	int fd = open(dyn_file, O_RDWR | O_APPEND);
++	int ret = write(fd, value, strlen(value));
 +
 +	close(fd);
-+
-+	if (*status == MAP_FAILED)
-+		return -1;
-+
-+	return 0;
++	return ret;
 +}
 +
-+static int event_reg(int fd, const char *command, int *status, int *write)
-+{
-+	struct user_reg reg = {0};
++#define CLEAR() \
++do { \
++	int ret = Append(clear); \
++	if (ret == -1) \
++		ASSERT_EQ(ENOENT, errno); \
++} while (0)
 +
-+	reg.size = sizeof(reg);
-+	reg.name_args = (__u64)command;
++#define TEST_PARSE(x) \
++do { \
++	ASSERT_NE(-1, Append(x)); \
++	CLEAR(); \
++} while (0)
 +
-+	if (ioctl(fd, DIAG_IOCSREG, &reg) == -1)
-+		return -1;
++#define TEST_NPARSE(x) ASSERT_EQ(-1, Append(x))
 +
-+	*status = reg.status_index;
-+	*write = reg.write_index;
++FIXTURE(user) {
++};
 +
-+	return 0;
++FIXTURE_SETUP(user) {
++	CLEAR();
++}
++
++FIXTURE_TEARDOWN(user) {
++	CLEAR();
++}
++
++TEST_F(user, basic_types) {
++	/* All should work */
++	TEST_PARSE("u:__test_event u64 a");
++	TEST_PARSE("u:__test_event u32 a");
++	TEST_PARSE("u:__test_event u16 a");
++	TEST_PARSE("u:__test_event u8 a");
++	TEST_PARSE("u:__test_event char a");
++	TEST_PARSE("u:__test_event unsigned char a");
++	TEST_PARSE("u:__test_event int a");
++	TEST_PARSE("u:__test_event unsigned int a");
++	TEST_PARSE("u:__test_event short a");
++	TEST_PARSE("u:__test_event unsigned short a");
++	TEST_PARSE("u:__test_event char[20] a");
++	TEST_PARSE("u:__test_event unsigned char[20] a");
++	TEST_PARSE("u:__test_event char[0x14] a");
++	TEST_PARSE("u:__test_event unsigned char[0x14] a");
++	/* Bad size format should fail */
++	TEST_NPARSE("u:__test_event char[aa] a");
++	/* Large size should fail */
++	TEST_NPARSE("u:__test_event char[9999] a");
++	/* Long size string should fail */
++	TEST_NPARSE("u:__test_event char[0x0000000000001] a");
++}
++
++TEST_F(user, loc_types) {
++	/* All should work */
++	TEST_PARSE("u:__test_event __data_loc char[] a");
++	TEST_PARSE("u:__test_event __data_loc unsigned char[] a");
++	TEST_PARSE("u:__test_event __rel_loc char[] a");
++	TEST_PARSE("u:__test_event __rel_loc unsigned char[] a");
++}
++
++TEST_F(user, size_types) {
++	/* Should work */
++	TEST_PARSE("u:__test_event struct custom a 20");
++	/* Size not specified on struct should fail */
++	TEST_NPARSE("u:__test_event struct custom a");
++	/* Size specified on non-struct should fail */
++	TEST_NPARSE("u:__test_event char a 20");
++}
++
++TEST_F(user, flags) {
++	/* Should work */
++	TEST_PARSE("u:__test_event:BPF_ITER u32 a");
++	/* Forward compat */
++	TEST_PARSE("u:__test_event:BPF_ITER,FLAG_FUTURE u32 a");
++}
++
++TEST_F(user, matching) {
++	/* Register */
++	ASSERT_NE(-1, Append("u:__test_event struct custom a 20"));
++	/* Should not match */
++	TEST_NPARSE("!u:__test_event struct custom b");
++	/* Should match */
++	TEST_PARSE("!u:__test_event struct custom a");
++	/* Multi field reg */
++	ASSERT_NE(-1, Append("u:__test_event u32 a; u32 b"));
++	/* Non matching cases */
++	TEST_NPARSE("!u:__test_event u32 a");
++	TEST_NPARSE("!u:__test_event u32 b");
++	TEST_NPARSE("!u:__test_event u32 a; u32 ");
++	TEST_NPARSE("!u:__test_event u32 a; u32 a");
++	/* Matching case */
++	TEST_PARSE("!u:__test_event u32 a; u32 b");
++	/* Register */
++	ASSERT_NE(-1, Append("u:__test_event u32 a; u32 b"));
++	/* Ensure trailing semi-colon case */
++	TEST_PARSE("!u:__test_event u32 a; u32 b;");
 +}
 +
 +int main(int argc, char **argv)
 +{
-+	int data_fd, status, write;
-+	char *status_page;
-+	struct iovec io[2];
-+	__u32 count = 0;
-+
-+	if (event_status(&status_page) == -1)
-+		return errno;
-+
-+	data_fd = open(data_file, O_RDWR);
-+
-+	if (event_reg(data_fd, "test u32 count", &status, &write) == -1)
-+		return errno;
-+
-+	/* Setup iovec */
-+	io[0].iov_base = &write;
-+	io[0].iov_len = sizeof(write);
-+	io[1].iov_base = &count;
-+	io[1].iov_len = sizeof(count);
-+
-+ask:
-+	printf("Press enter to check status...\n");
-+	getchar();
-+
-+	/* Check if anyone is listening */
-+	if (status_page[status]) {
-+		/* Yep, trace out our data */
-+		writev(data_fd, (const struct iovec *)io, 2);
-+
-+		/* Increase the count */
-+		count++;
-+
-+		printf("Something was attached, wrote data\n");
-+	}
-+
-+	goto ask;
-+
-+	return 0;
++	return test_harness_run(argc, argv);
 +}
 -- 
 2.17.1
