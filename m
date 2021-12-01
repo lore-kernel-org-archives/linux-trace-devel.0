@@ -2,35 +2,35 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D7FAC433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3782C433FE
 	for <linux-trace-devel@archiver.kernel.org>; Wed,  1 Dec 2021 18:25:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352404AbhLAS2u (ORCPT
+        id S1352440AbhLAS2v (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 1 Dec 2021 13:28:50 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:48042 "EHLO
+        Wed, 1 Dec 2021 13:28:51 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:48048 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352390AbhLAS2m (ORCPT
+        with ESMTP id S1352396AbhLAS2n (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 1 Dec 2021 13:28:42 -0500
+        Wed, 1 Dec 2021 13:28:43 -0500
 Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 443B420E61BF;
+        by linux.microsoft.com (Postfix) with ESMTPSA id D8D5B20E61D0;
         Wed,  1 Dec 2021 10:25:21 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 443B420E61BF
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D8D5B20E61D0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1638383121;
-        bh=2MNNnQX+HlxxaMEY4gU+2b0Gkt/9hrxk5VsW0GdjNOE=;
+        s=default; t=1638383122;
+        bh=SqyYnQcvf7MyDNXcqWgsiVSGlLtQbs0OIC1cy+Yas/U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GOoJWONTh1341MZ9yRoZTy1VPoSFWeTGDCXaXCwUWXZb1I8AIXjG03tudCuMwSdTs
-         IWu+9d0lAORTORrg/SA53cSFH6SKwKX975PqvnqNUuKpKE/z5XPClzdDj0v16Bh1Ng
-         i1Cz8QHHyyanD5J/ML8V2gpejhQ4GRTs0BSv+27s=
+        b=iDLveKwqx1vtd0bk1dyZrwHbsTNakGFaNMM39ZZhCSOTNQcPUvn2Hrc0NOETPxwGN
+         YWxVAa3nA+hto2owKG32wVJGA7jtfp6qjC/f5/lUruLaWxo1nx/NNC+tJ+u3pJMSip
+         lNY6TWu5rpESz4tI3L3RhDKFG0qtEa8pRxJ2CtuE=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         beaub@linux.microsoft.com
-Subject: [PATCH v6 10/13] user_events: Add documentation file
-Date:   Wed,  1 Dec 2021 10:25:12 -0800
-Message-Id: <20211201182515.2446-11-beaub@linux.microsoft.com>
+Subject: [PATCH v6 13/13] user_events: Use __get_rel_str for relative string fields
+Date:   Wed,  1 Dec 2021 10:25:15 -0800
+Message-Id: <20211201182515.2446-14-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211201182515.2446-1-beaub@linux.microsoft.com>
 References: <20211201182515.2446-1-beaub@linux.microsoft.com>
@@ -38,226 +38,274 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add a documentation file about user_events with example code, etc.
-explaining how it may be used.
+Switch between __get_str and __get_rel_str within the print_fmt of
+user_events. Add unit test to ensure print_fmt is correct on known
+types.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- Documentation/trace/index.rst       |   1 +
- Documentation/trace/user_events.rst | 195 ++++++++++++++++++++++++++++
- 2 files changed, 196 insertions(+)
- create mode 100644 Documentation/trace/user_events.rst
+ kernel/trace/trace_events_user.c              |  24 ++-
+ .../selftests/user_events/ftrace_test.c       | 166 ++++++++++++++++++
+ 2 files changed, 182 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/trace/index.rst b/Documentation/trace/index.rst
-index 3769b9b7aed8..3a47aa8341c6 100644
---- a/Documentation/trace/index.rst
-+++ b/Documentation/trace/index.rst
-@@ -30,3 +30,4 @@ Linux Tracing Technologies
-    stm
-    sys-t
-    coresight/index
-+   user_events
-diff --git a/Documentation/trace/user_events.rst b/Documentation/trace/user_events.rst
-new file mode 100644
-index 000000000000..e77e71b2fe9b
---- /dev/null
-+++ b/Documentation/trace/user_events.rst
-@@ -0,0 +1,195 @@
-+=========================================
-+user_events: User-based Event Tracing
-+=========================================
+diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+index b487d02acedf..2b47e7b11c3d 100644
+--- a/kernel/trace/trace_events_user.c
++++ b/kernel/trace/trace_events_user.c
+@@ -257,7 +257,7 @@ static int user_event_add_field(struct user_event *user, const char *type,
+ 	goto add_field;
+ 
+ add_validator:
+-	if (strstr(type, "char[") != 0)
++	if (strstr(type, "char") != 0)
+ 		validator_flags |= VALIDATOR_ENSURE_NULL;
+ 
+ 	validator = kmalloc(sizeof(*validator), GFP_KERNEL);
+@@ -456,14 +456,21 @@ static const char *user_field_format(const char *type)
+ 	return "%llu";
+ }
+ 
+-static bool user_field_is_dyn_string(const char *type)
++static bool user_field_is_dyn_string(const char *type, const char **str_func)
+ {
+-	if (str_has_prefix(type, "__data_loc ") ||
+-	    str_has_prefix(type, "__rel_loc "))
+-		if (strstr(type, "char[") != 0)
+-			return true;
++	if (str_has_prefix(type, "__data_loc ")) {
++		*str_func = "__get_str";
++		goto check;
++	}
 +
-+:Author: Beau Belgrave
++	if (str_has_prefix(type, "__rel_loc ")) {
++		*str_func = "__get_rel_str";
++		goto check;
++	}
+ 
+ 	return false;
++check:
++	return strstr(type, "char") != 0;
+ }
+ 
+ #define LEN_OR_ZERO (len ? len - pos : 0)
+@@ -472,6 +479,7 @@ static int user_event_set_print_fmt(struct user_event *user, char *buf, int len)
+ 	struct ftrace_event_field *field, *next;
+ 	struct list_head *head = &user->fields;
+ 	int pos = 0, depth = 0;
++	const char *str_func;
+ 
+ 	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
+ 
+@@ -488,9 +496,9 @@ static int user_event_set_print_fmt(struct user_event *user, char *buf, int len)
+ 	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
+ 
+ 	list_for_each_entry_safe_reverse(field, next, head, link) {
+-		if (user_field_is_dyn_string(field->type))
++		if (user_field_is_dyn_string(field->type, &str_func))
+ 			pos += snprintf(buf + pos, LEN_OR_ZERO,
+-					", __get_str(%s)", field->name);
++					", %s(%s)", str_func, field->name);
+ 		else
+ 			pos += snprintf(buf + pos, LEN_OR_ZERO,
+ 					", REC->%s", field->name);
+diff --git a/tools/testing/selftests/user_events/ftrace_test.c b/tools/testing/selftests/user_events/ftrace_test.c
+index 16aff1fb295a..b2e5c0765a68 100644
+--- a/tools/testing/selftests/user_events/ftrace_test.c
++++ b/tools/testing/selftests/user_events/ftrace_test.c
+@@ -20,6 +20,7 @@ const char *data_file = "/sys/kernel/debug/tracing/user_events_data";
+ const char *status_file = "/sys/kernel/debug/tracing/user_events_status";
+ const char *enable_file = "/sys/kernel/debug/tracing/events/user_events/__test_event/enable";
+ const char *trace_file = "/sys/kernel/debug/tracing/trace";
++const char *fmt_file = "/sys/kernel/debug/tracing/events/user_events/__test_event/format";
+ 
+ static int trace_bytes(void)
+ {
+@@ -47,6 +48,61 @@ static int trace_bytes(void)
+ 	return bytes;
+ }
+ 
++static int get_print_fmt(char *buffer, int len)
++{
++	FILE *fp = fopen(fmt_file, "r");
++	int c, index = 0, last = 0;
 +
-+Overview
-+--------
-+User based trace events allow user processes to create events and trace data
-+that can be viewed via existing tools, such as ftrace, perf and eBPF.
-+To enable this feature, build your kernel with CONFIG_USER_EVENTS=y.
++	if (!fp)
++		return -1;
 +
-+Programs can view status of the events via
-+/sys/kernel/debug/tracing/user_events_status and can both register and write
-+data out via /sys/kernel/debug/tracing/user_events_data.
++	/* Read until empty line (Skip Common) */
++	while (true) {
++		c = getc(fp);
 +
-+Programs can also use /sys/kernel/debug/tracing/dynamic_events to register and
-+delete user based events via the u: prefix. The format of the command to
-+dynamic_events is the same as the ioctl with the u: prefix applied.
++		if (c == EOF)
++			break;
 +
-+Typically programs will register a set of events that they wish to expose to
-+tools that can read trace_events (such as ftrace and perf). The registration
-+process gives back two ints to the program for each event. The first int is the
-+status index. This index describes which byte in the
-+/sys/kernel/debug/tracing/user_events_status file represents this event. The
-+second int is the write index. This index describes the data when a write() or
-+writev() is called on the /sys/kernel/debug/tracing/user_events_data file.
++		if (last == '\n' && c == '\n')
++			break;
 +
-+The structures referenced in this document are contained with the
-+/include/uap/linux/user_events.h file in the source tree.
++		last = c;
++	}
 +
-+**NOTE:** *Both user_events_status and user_events_data are under the tracefs
-+filesystem and may be mounted at different paths than above.*
++	last = 0;
 +
-+Registering
-+-----------
-+Registering within a user process is done via ioctl() out to the
-+/sys/kernel/debug/tracing/user_events_data file. The command to issue is
-+DIAG_IOCSREG. This command takes a struct user_reg as an argument.
++	/* Read until empty line (Skip Properties) */
++	while (true) {
++		c = getc(fp);
 +
-+The struct user_reg requires two values, the first is the size of the structure
-+to ensure forward and backward compatibility. The second is the command string
-+to issue for registering.
++		if (c == EOF)
++			break;
 +
-+User based events show up under tracefs like any other event under the
-+subsystem named "user_events". This means tools that wish to attach to the
-+events need to use /sys/kernel/debug/tracing/events/user_events/[name]/enable
-+or perf record -e user_events:[name] when attaching/recording.
++		if (last == '\n' && c == '\n')
++			break;
 +
-+**NOTE:** *The write_index returned is only valid for the FD that was used*
++		last = c;
++	}
 +
-+Command Format
-+^^^^^^^^^^^^^^
-+The command string format is as follows::
++	/* Read in print_fmt: */
++	while (len > 1) {
++		c = getc(fp);
 +
-+  name[:FLAG1[,FLAG2...]] [Field1[;Field2...]]
++		if (c == EOF || c == '\n')
++			break;
 +
-+Supported Flags
-+^^^^^^^^^^^^^^^
-+**BPF_ITER** - EBPF programs attached to this event will get the raw iovec
-+struct instead of any data copies for max performance.
++		buffer[index++] = c;
 +
-+Field Format
-+^^^^^^^^^^^^
-+::
++		len--;
++	}
 +
-+  type name [size]
++	buffer[index] = 0;
 +
-+Basic types are supported (__data_loc, u32, u64, int, char, char[20], etc).
-+User programs are encouraged to use clearly sized types like u32.
++	fclose(fp);
 +
-+**NOTE:** *Long is not supported since size can vary between user and kernel.*
++	return 0;
++}
 +
-+The size is only valid for types that start with a struct prefix.
-+This allows user programs to describe custom structs out to tools, if required.
+ static int clear(void)
+ {
+ 	int fd = open(data_file, O_RDWR);
+@@ -63,6 +119,44 @@ static int clear(void)
+ 	return 0;
+ }
+ 
++static int check_print_fmt(const char *event, const char *expected)
++{
++	struct user_reg reg = {0};
++	char print_fmt[256];
++	int ret;
++	int fd;
 +
-+For example, a struct in C that looks like this::
++	/* Ensure cleared */
++	ret = clear();
 +
-+  struct mytype {
-+    char data[20];
-+  };
++	if (ret != 0)
++		return ret;
 +
-+Would be represented by the following field::
++	fd = open(data_file, O_RDWR);
 +
-+  struct mytype myname 20
++	if (fd == -1)
++		return fd;
 +
-+Status
-+------
-+When tools attach/record user based events the status of the event is updated
-+in realtime. This allows user programs to only incur the cost of the write() or
-+writev() calls when something is actively attached to the event.
++	reg.size = sizeof(reg);
++	reg.name_args = (__u64)event;
 +
-+User programs call mmap() on /sys/kernel/debug/tracing/user_events_status to
-+check the status for each event that is registered. The byte to check in the
-+file is given back after the register ioctl() via user_reg.status_index.
-+Currently the size of user_events_status is a single page, however, custom
-+kernel configurations can change this size to allow more user based events. In
-+all cases the size of the file is a multiple of a page size.
++	/* Register should work */
++	ret = ioctl(fd, DIAG_IOCSREG, &reg);
 +
-+For example, if the register ioctl() gives back a status_index of 3 you would
-+check byte 3 of the returned mmap data to see if anything is attached to that
-+event.
++	close(fd);
 +
-+Administrators can easily check the status of all registered events by reading
-+the user_events_status file directly via a terminal. The output is as follows::
++	if (ret != 0)
++		return ret;
 +
-+  Byte:Name [# Comments]
-+  ...
++	/* Ensure correct print_fmt */
++	ret = get_print_fmt(print_fmt, sizeof(print_fmt));
 +
-+  Active: ActiveCount
-+  Buisy: BusyCount
-+  Max: MaxCount
++	if (ret != 0)
++		return ret;
 +
-+For example, on a system that has a single event the output looks like this::
++	return strcmp(print_fmt, expected);
++}
 +
-+  1:test
+ FIXTURE(user) {
+ 	int status_fd;
+ 	int data_fd;
+@@ -282,6 +376,78 @@ TEST_F(user, write_validator) {
+ 	ASSERT_EQ(EFAULT, errno);
+ }
+ 
++TEST_F(user, print_fmt) {
++	int ret;
 +
-+  Active: 1
-+  Busy: 0
-+  Max: 4096
++	ret = check_print_fmt("__test_event __rel_loc char[] data",
++			      "print fmt: \"data=%s\", __get_rel_str(data)");
++	ASSERT_EQ(0, ret);
 +
-+If a user enables the user event via ftrace, the output would change to this::
++	ret = check_print_fmt("__test_event __data_loc char[] data",
++			      "print fmt: \"data=%s\", __get_str(data)");
++	ASSERT_EQ(0, ret);
 +
-+  1:test # Used by ftrace
++	ret = check_print_fmt("__test_event s64 data",
++			      "print fmt: \"data=%lld\", REC->data");
++	ASSERT_EQ(0, ret);
 +
-+  Active: 1
-+  Busy: 1
-+  Max: 4096
++	ret = check_print_fmt("__test_event u64 data",
++			      "print fmt: \"data=%llu\", REC->data");
++	ASSERT_EQ(0, ret);
 +
-+**NOTE:** *A status index of 0 will never be returned. This allows user
-+programs to have an index that can be used on error cases.*
++	ret = check_print_fmt("__test_event s32 data",
++			      "print fmt: \"data=%d\", REC->data");
++	ASSERT_EQ(0, ret);
 +
-+Status Bits
-+^^^^^^^^^^^
-+The byte being checked will be non-zero if anything is attached. Programs can
-+check specific bits in the byte to see what mechanism has been attached.
++	ret = check_print_fmt("__test_event u32 data",
++			      "print fmt: \"data=%u\", REC->data");
++	ASSERT_EQ(0, ret);
 +
-+The following values are defined to aid in checking what has been attached:
++	ret = check_print_fmt("__test_event int data",
++			      "print fmt: \"data=%d\", REC->data");
++	ASSERT_EQ(0, ret);
 +
-+**EVENT_STATUS_FTRACE** - Bit set if ftrace has been attached (Bit 0).
++	ret = check_print_fmt("__test_event unsigned int data",
++			      "print fmt: \"data=%u\", REC->data");
++	ASSERT_EQ(0, ret);
 +
-+**EVENT_STATUS_PERF** - Bit set if perf/eBPF has been attached (Bit 1).
++	ret = check_print_fmt("__test_event s16 data",
++			      "print fmt: \"data=%d\", REC->data");
++	ASSERT_EQ(0, ret);
 +
-+Writing Data
-+------------
-+After registering an event the same fd that was used to register can be used
-+to write an entry for that event. The write_index returned must be at the start
-+of the data, then the remaining data is treated as the payload of the event.
++	ret = check_print_fmt("__test_event u16 data",
++			      "print fmt: \"data=%u\", REC->data");
++	ASSERT_EQ(0, ret);
 +
-+For example, if write_index returned was 1 and I wanted to write out an int
-+payload of the event. Then the data would have to be 8 bytes (2 ints) in size,
-+with the first 4 bytes being equal to 1 and the last 4 bytes being equal to the
-+value I want as the payload.
++	ret = check_print_fmt("__test_event short data",
++			      "print fmt: \"data=%d\", REC->data");
++	ASSERT_EQ(0, ret);
 +
-+In memory this would look like this::
++	ret = check_print_fmt("__test_event unsigned short data",
++			      "print fmt: \"data=%u\", REC->data");
++	ASSERT_EQ(0, ret);
 +
-+  int index;
-+  int payload;
++	ret = check_print_fmt("__test_event s8 data",
++			      "print fmt: \"data=%d\", REC->data");
++	ASSERT_EQ(0, ret);
 +
-+User programs might have well known structs that they wish to use to emit out
-+as payloads. In those cases writev() can be used, with the first vector being
-+the index and the following vector(s) being the actual event payload.
++	ret = check_print_fmt("__test_event u8 data",
++			      "print fmt: \"data=%u\", REC->data");
++	ASSERT_EQ(0, ret);
 +
-+For example, if I have a struct like this::
++	ret = check_print_fmt("__test_event char data",
++			      "print fmt: \"data=%d\", REC->data");
++	ASSERT_EQ(0, ret);
 +
-+  struct payload {
-+        int src;
-+        int dst;
-+        int flags;
-+  };
++	ret = check_print_fmt("__test_event unsigned char data",
++			      "print fmt: \"data=%u\", REC->data");
++	ASSERT_EQ(0, ret);
 +
-+It's advised for user programs to do the following::
++	ret = check_print_fmt("__test_event char[4] data",
++			      "print fmt: \"data=%s\", REC->data");
++	ASSERT_EQ(0, ret);
++}
 +
-+  struct iovec io[2];
-+  struct payload e;
-+
-+  io[0].iov_base = &write_index;
-+  io[0].iov_len = sizeof(write_index);
-+  io[1].iov_base = &e;
-+  io[1].iov_len = sizeof(e);
-+
-+  writev(fd, (const struct iovec*)io, 2);
-+
-+**NOTE:** *The write_index is not emitted out into the trace being recorded.*
-+
-+EBPF
-+----
-+EBPF programs that attach to a user-based event tracepoint are given a pointer
-+to a struct user_bpf_context. The bpf context contains the data type (which can
-+be a user or kernel buffer, or can be a pointer to the iovec) and the data
-+length that was emitted (minus the write_index).
-+
-+Example Code
-+------------
-+See sample code in samples/user_events.
+ int main(int argc, char **argv)
+ {
+ 	return test_harness_run(argc, argv);
 -- 
 2.17.1
 
