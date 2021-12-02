@@ -2,353 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92551C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Dec 2021 12:33:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 463CDC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Dec 2021 14:59:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346991AbhLBMg3 (ORCPT
+        id S1357341AbhLBPCx (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 Dec 2021 07:36:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346987AbhLBMg2 (ORCPT
+        Thu, 2 Dec 2021 10:02:53 -0500
+Received: from sin.source.kernel.org ([145.40.73.55]:37514 "EHLO
+        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357701AbhLBPCw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 2 Dec 2021 07:36:28 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347F7C06174A
-        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Dec 2021 04:33:06 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id r11so115306981edd.9
-        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Dec 2021 04:33:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xm54g8yFIEv/mUifpNLHvAYQMI+EMK+8nYfzNF+Ohw8=;
-        b=kHP7oR1AWy/nnvRVmn4jdJPu1iZpVn3zdybHT+b+tY8WV4bKE/lf/9ELeknRRw6Uem
-         m2ruu5r4QzLgZ4EGPz2UJPpRsPd16dhR04qR8rILt/vp49etHt12AI/Ul4qEJOIdeNj1
-         eYTIyo/CJQ6hHDmQPdwz7fRsFQAuJnW7h0GwrB+S/SaB7YYkgdaNgCzB0UsG6lbO6iZu
-         Ku7TIU2NgFgPk/A3OPpFNPcQvNS2Gddy1/owCDVZjIb30vQ3a/cshkEIe22PI4+1FBH+
-         9RUtAUA5DGkRid43rbOyeIfFR4kqMsjZm+Qecnq8Fz8nJZJGnJoQ4jEd8S93BrqT/nlr
-         aJqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xm54g8yFIEv/mUifpNLHvAYQMI+EMK+8nYfzNF+Ohw8=;
-        b=UhiL0ykM33h9OTNSkxSww42CRDWX8YCe9YuZPGeRvp6bJwKrvVRm7zXHYcCcIgWapl
-         ngtsK7SrI8FLBWrVzZNTZyjirTA9gIsHL0gL0HbmpMqOWowfOZr27yuwtDIYr3ueWCyA
-         q1qtC0PUFSEJwZC5yLiw6sOPE5lIc8fZ7h358fVeEJ8Qys1q2hGsAresLFiTxg1rDgpE
-         rxtvFUTOAS9cdfLXl+kv/Idp6eqHNDkqZPgnBoVamOL6/8xmFhPZqSMZoX5+VNTzjYuX
-         Tg+qm5FitToLPVzOgJBL+uLccjoOViM9TlbFfsc/ggSvDwVSRkGVxc5kCV1M5Whf1Kk6
-         hX3g==
-X-Gm-Message-State: AOAM533nt5E/2/boMKIAx9Sykdw3XGnsF7CtQKC/paOR899qsV/9fz2D
-        w4MVCk7Ep4U38r2Z7sqarhsQ63iLcXpIoA==
-X-Google-Smtp-Source: ABdhPJzaKjxXckuHUdoKL8/ZA0uLoVdLpO0JzO81km4hqVoRNFB2y3d1RTndJDBFWHJb4/fWO1n0oQ==
-X-Received: by 2002:a17:906:8145:: with SMTP id z5mr12245210ejw.519.1638448384147;
-        Thu, 02 Dec 2021 04:33:04 -0800 (PST)
-Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id g9sm2188420edb.52.2021.12.02.04.33.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Dec 2021 04:33:03 -0800 (PST)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
+        Thu, 2 Dec 2021 10:02:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id C3BD5CE230A
+        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Dec 2021 14:59:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A11EBC00446;
+        Thu,  2 Dec 2021 14:59:26 +0000 (UTC)
+Date:   Thu, 2 Dec 2021 09:59:25 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 2/2] trace-cmd library: Introduce buffer page size per instance
-Date:   Thu,  2 Dec 2021 14:33:00 +0200
-Message-Id: <20211202123300.44401-3-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211202123300.44401-1-tz.stoyanov@gmail.com>
-References: <20211202123300.44401-1-tz.stoyanov@gmail.com>
+Subject: Re: [PATCH 1/1] libtracefs: New API for clearing filter on event
+Message-ID: <20211202095925.74a45f52@gandalf.local.home>
+In-Reply-To: <20211130143422.127433-2-y.karadz@gmail.com>
+References: <20211130143422.127433-1-y.karadz@gmail.com>
+        <20211130143422.127433-2-y.karadz@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Currently all ftrace instances have the same page buffer size and
-trace-cmd logic is implemented according to this assumption. Future
-changes in the kernel may introduce trace buffer page size per instance.
-That change will affect the format of the trace file. Add support for
-per instance trace page buffer size in the trace file format and logic.
-Only the trace file version 7 is extended with this functionality.
+On Tue, 30 Nov 2021 16:34:22 +0200
+"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- lib/trace-cmd/include/trace-cmd-local.h |  4 +--
- lib/trace-cmd/trace-input.c             | 11 +++++--
- lib/trace-cmd/trace-output.c            | 40 ++++++++++++++++---------
- tracecmd/trace-dump.c                   |  9 ++++--
- 4 files changed, 44 insertions(+), 20 deletions(-)
+> @@ -81,6 +84,8 @@ freed with *free*().
+>  
+>  *tracefs_event_apply_filter*() returns 0 on success and -1 on error.
+>  
+> +*tracefs_event_clear_filter*() returns 0 on success and -1 on error.
+> +
 
-diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
-index 57b51a48..d42d5ccf 100644
---- a/lib/trace-cmd/include/trace-cmd-local.h
-+++ b/lib/trace-cmd/include/trace-cmd-local.h
-@@ -57,7 +57,7 @@ int out_save_options_offset(struct tracecmd_output *handle,
- 			    unsigned long long start);
- unsigned long long out_copy_fd_compress(struct tracecmd_output *handle,
- 					int fd, unsigned long long max,
--					unsigned long long *write_size);
-+					unsigned long long *write_size, int page);
- void in_uncompress_reset(struct tracecmd_input *handle);
- int in_uncompress_block(struct tracecmd_input *handle);
- 
-@@ -71,7 +71,7 @@ long long do_write_check(struct tracecmd_output *handle, const void *data, long
- struct tracecmd_option *
- out_add_buffer_option_v7(struct tracecmd_output *handle, const char *name,
- 			 unsigned short id, unsigned long long data_offset,
--			 int cpus, struct data_file_write *cpu_data);
-+			 int cpus, struct data_file_write *cpu_data, int page_size);
- 
- struct cpu_data_source {
- 	int fd;
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index dd51fd4a..47b38255 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -107,6 +107,7 @@ struct input_buffer_instance {
- 	size_t			offset;
- 	char			*clock;
- 	bool			latency;
-+	int			page_size;
- 	int			cpus;
- 	struct cpu_file_data	*cpu_data;
- };
-@@ -3194,6 +3195,9 @@ static int handle_buffer_option(struct tracecmd_input *handle,
- 	if (*name == '\0' && !handle->trace_clock)
- 		handle->trace_clock = strdup(buff->clock);
- 	if (id == TRACECMD_OPTION_BUFFER) {
-+		if (save_read_number(handle->pevent, data, &size, &rsize, 4, &tmp))
-+			return -1;
-+		buff->page_size = tmp;
- 		if (save_read_number(handle->pevent, data, &size, &rsize, 4, &tmp))
- 			return -1;
- 		buff->cpus = tmp;
-@@ -5045,6 +5049,7 @@ int tracecmd_copy_options(struct tracecmd_input *in_handle,
- static int copy_trace_latency(struct tracecmd_input *in_handle,
- 			      struct tracecmd_output *out_handle, const char *buf_name)
- {
-+	int page_size = getpagesize();
- 	unsigned long long wsize;
- 	unsigned long long offset;
- 	int fd;
-@@ -5056,7 +5061,8 @@ static int copy_trace_latency(struct tracecmd_input *in_handle,
- 	offset = tracecmd_get_out_file_offset(out_handle);
- 
- 	if (tracecmd_get_out_file_version(out_handle) >= FILE_VERSION_SECTIONS &&
--	    !out_add_buffer_option_v7(out_handle, buf_name, TRACECMD_OPTION_BUFFER_TEXT, offset, 0, NULL))
-+	    !out_add_buffer_option_v7(out_handle, buf_name, TRACECMD_OPTION_BUFFER_TEXT,
-+				      offset, 0, NULL, page_size))
- 		return -1;
- 
- 	offset = out_write_section_header(out_handle, TRACECMD_OPTION_BUFFER_TEXT,
-@@ -5067,7 +5073,7 @@ static int copy_trace_latency(struct tracecmd_input *in_handle,
- 	else
- 		fd = in_handle->fd;
- 
--	if (!out_copy_fd_compress(out_handle, fd, 0, &wsize))
-+	if (!out_copy_fd_compress(out_handle, fd, 0, &wsize, page_size))
- 		return -1;
- 	if (out_update_section_header(out_handle, offset))
- 		return -1;
-@@ -5382,6 +5388,7 @@ tracecmd_buffer_instance_handle(struct tracecmd_input *handle, int indx)
- 			goto error;
- 		}
- 	} else {
-+		new_handle->page_size = handle->buffers[indx].page_size;
- 		if (init_buffer_cpu_data(new_handle, buffer) < 0)
- 			goto error;
- 	}
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index 0edd0c52..2f9d80a1 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -336,7 +336,8 @@ static tsize_t copy_file(struct tracecmd_output *handle,
- #define PAGES_IN_CHUNK 10
- __hidden unsigned long long out_copy_fd_compress(struct tracecmd_output *handle,
- 						 int fd, unsigned long long max,
--						 unsigned long long *write_size)
-+						 unsigned long long *write_size,
-+						 int page)
- {
- 	unsigned long long rsize = 0;
- 	unsigned long long wsize = 0;
-@@ -346,7 +347,7 @@ __hidden unsigned long long out_copy_fd_compress(struct tracecmd_output *handle,
- 	if (handle->compress) {
- 		rsize = max;
- 		ret = tracecmd_compress_copy_from(handle->compress, fd,
--						  PAGES_IN_CHUNK * handle->page_size,
-+						  PAGES_IN_CHUNK * page,
- 						  &rsize, &wsize);
- 		if (ret < 0)
- 			return 0;
-@@ -375,7 +376,7 @@ static tsize_t copy_file_compress(struct tracecmd_output *handle,
- 		return 0;
- 	}
- 
--	ret = out_copy_fd_compress(handle, fd, 0, write_size);
-+	ret = out_copy_fd_compress(handle, fd, 0, write_size, getpagesize());
- 	if (!ret)
- 		tracecmd_warning("Can't compress '%s'", file);
- 
-@@ -1195,7 +1196,7 @@ static int write_compression_header(struct tracecmd_output *handle)
- 	return 0;
- }
- 
--static int get_trace_page_size(struct tracecmd_output *handle)
-+static int get_trace_page_size(struct tracecmd_output *handle, const char *name)
- {
- 	struct tracefs_instance *instance;
- 	struct tep_handle *tep = NULL;
-@@ -1205,7 +1206,7 @@ static int get_trace_page_size(struct tracecmd_output *handle)
- 	/* In case of an error, return user space page size */
- 	psize = getpagesize();
- 
--	instance = tracefs_instance_alloc(find_tracing_dir(handle), NULL);
-+	instance = tracefs_instance_alloc(find_tracing_dir(handle), name);
- 	if (!instance)
- 		goto out;
- 
-@@ -1254,7 +1255,7 @@ struct tracecmd_output *tracecmd_output_create_fd(int fd)
- 
- 	handle->file_version = FILE_VERSION_DEFAULT;
- 
--	handle->page_size = get_trace_page_size(handle);
-+	handle->page_size = get_trace_page_size(handle, NULL);
- 	handle->big_endian = tracecmd_host_bigendian();
- 
- 	list_head_init(&handle->options);
-@@ -2005,7 +2006,8 @@ static char *get_clock(struct tracecmd_output *handle)
- __hidden struct tracecmd_option *
- out_add_buffer_option_v7(struct tracecmd_output *handle, const char *name,
- 			 unsigned short id, unsigned long long data_offset,
--			 int cpus, struct data_file_write *cpu_data)
-+			 int cpus, struct data_file_write *cpu_data,
-+			 int page_size)
- {
- 	struct tracecmd_option *option;
- 	int i, j = 0, k = 0;
-@@ -2022,6 +2024,7 @@ out_add_buffer_option_v7(struct tracecmd_output *handle, const char *name,
- 	 *  - trace data offset in the file
- 	 *  - buffer name
- 	 *  - buffer clock
-+	 *  - page size
- 	 *  - CPU count
- 	 *  - for each CPU:
- 	 *    - CPU id
-@@ -2052,6 +2055,8 @@ out_add_buffer_option_v7(struct tracecmd_output *handle, const char *name,
- 	vect[j].iov_base = (void *) clock;
- 	vect[j++].iov_len = strlen(clock) + 1;
- 	if (id == TRACECMD_OPTION_BUFFER) {
-+		vect[j].iov_base = &page_size;
-+		vect[j++].iov_len = 4;
- 		vect[j].iov_base = (void *) &k;
- 		vect[j++].iov_len = 4;
- 		for (i = 0; i < cpus; i++) {
-@@ -2125,7 +2130,8 @@ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, in
- 
- 	offset = do_lseek(handle, 0, SEEK_CUR);
- 	if (HAS_SECTIONS(handle) &&
--	    !out_add_buffer_option_v7(handle, "", TRACECMD_OPTION_BUFFER_TEXT, offset, 0, NULL))
-+	    !out_add_buffer_option_v7(handle, "", TRACECMD_OPTION_BUFFER_TEXT,
-+				      offset, 0, NULL, getpagesize()))
- 		goto out_free;
- 	if (handle->compress)
- 		flags |= TRACECMD_SEC_FL_COMPRESS;
-@@ -2245,7 +2251,6 @@ __hidden int out_write_emty_cpu_data(struct tracecmd_output *handle, int cpus)
- 	return 0;
- }
- 
--
- __hidden int out_write_cpu_data(struct tracecmd_output *handle,
- 				int cpus, struct cpu_data_source *data, const char *buff_name)
- {
-@@ -2254,6 +2259,7 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
- 	tsize_t data_offs, offset;
- 	unsigned long long endian8;
- 	unsigned long long read_size;
-+	int page_size;
- 	char *clock;
- 	char *str;
- 	int ret;
-@@ -2270,6 +2276,11 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
- 		goto out_free;
- 	}
- 
-+	if (*buff_name == '\0')
-+		page_size = handle->page_size;
-+	else
-+		page_size = get_trace_page_size(handle, buff_name);
-+
- 	data_offs = do_lseek(handle, 0, SEEK_CUR);
- 	if (!HAS_SECTIONS(handle) && do_write_check(handle, "flyrecord", 10))
- 		goto out_free;
-@@ -2314,8 +2325,8 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
- 	for (i = 0; i < cpus; i++) {
- 		data_files[i].data_offset = do_lseek(handle, 0, SEEK_CUR);
- 		/* Page align offset */
--		data_files[i].data_offset += handle->page_size - 1;
--		data_files[i].data_offset &= ~(handle->page_size - 1);
-+		data_files[i].data_offset += page_size - 1;
-+		data_files[i].data_offset &= ~(page_size - 1);
- 
- 		ret = do_lseek(handle, data_files[i].data_offset, SEEK_SET);
- 		if (ret == (off64_t)-1)
-@@ -2329,7 +2340,8 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
- 			if (lseek64(data[i].fd, data[i].offset, SEEK_SET) == (off64_t)-1)
- 				goto out_free;
- 			read_size = out_copy_fd_compress(handle, data[i].fd,
--							 data[i].size, &data_files[i].write_size);
-+							 data[i].size, &data_files[i].write_size,
-+							 page_size);
- 
- 			if (read_size != data_files[i].file_size) {
- 				errno = EINVAL;
-@@ -2364,8 +2376,8 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
- 	}
- 
- 	if (HAS_SECTIONS(handle) &&
--	    !out_add_buffer_option_v7(handle, buff_name,
--				      TRACECMD_OPTION_BUFFER, data_offs, cpus, data_files))
-+	    !out_add_buffer_option_v7(handle, buff_name,  TRACECMD_OPTION_BUFFER,
-+				      data_offs, cpus, data_files, page_size))
- 		goto out_free;
- 
- 	free(data_files);
-diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
-index 9013f8b5..ebbc8ab4 100644
---- a/tracecmd/trace-dump.c
-+++ b/tracecmd/trace-dump.c
-@@ -455,6 +455,7 @@ static void dump_option_buffer(int fd, unsigned short option, int size)
- 	unsigned short flags;
- 	char clock[DUMP_SIZE];
- 	char name[DUMP_SIZE];
-+	int page_size;
- 	int cpus = 0;
- 	int id;
- 	int i;
-@@ -490,6 +491,10 @@ static void dump_option_buffer(int fd, unsigned short option, int size)
- 		die("cannot read clock of the buffer option");
- 	do_print(OPTIONS|FLYRECORD, "\"%s\" [clock]\n", clock);
- 	if (option == TRACECMD_OPTION_BUFFER) {
-+		if (read_file_number(fd, &page_size, 4))
-+			die("cannot read the page size of the buffer option");
-+		do_print(OPTIONS|FLYRECORD, "%d [Page size, bytes]\n", page_size);
-+
- 		if (read_file_number(fd, &cpus, 4))
- 			die("cannot read the cpu count of the buffer option");
- 
-@@ -505,9 +510,9 @@ static void dump_option_buffer(int fd, unsigned short option, int size)
- 			do_print(OPTIONS|FLYRECORD, "   %d %lld\t%lld\t[id, data offset and size]\n",
- 				 id, offset, data_size);
- 		}
--		do_print(SUMMARY, "\t\[buffer \"%s\", \"%s\" clock, "
-+		do_print(SUMMARY, "\t\[buffer \"%s\", \"%s\" clock, %d page size, "
- 			 "%d cpus, %lld bytes flyrecord data]\n",
--			 name, clock, cpus, total_size);
-+			 name, clock, page_size, cpus, total_size);
- 	} else {
- 		do_print(SUMMARY, "\t\[buffer \"%s\", \"%s\" clock, latency data]\n", name, clock);
- 	}
--- 
-2.33.1
+I just applied Tzvetomir's patches, and he renamed the function to:
 
+  tracefs_event_filter_apply()
+
+Can you resubmit a rebased version of this patch and rename he function to:
+
+  tracefs_event_filter_clear()
+
+Thanks,
+
+-- Steve
