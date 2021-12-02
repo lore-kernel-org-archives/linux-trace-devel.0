@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3692BC433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FF52C433FE
 	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Dec 2021 12:27:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240414AbhLBMa4 (ORCPT
+        id S233967AbhLBMa5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 Dec 2021 07:30:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37106 "EHLO
+        Thu, 2 Dec 2021 07:30:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233967AbhLBMaz (ORCPT
+        with ESMTP id S240265AbhLBMaz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 2 Dec 2021 07:30:55 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7808EC06174A
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA6DC061757
         for <linux-trace-devel@vger.kernel.org>; Thu,  2 Dec 2021 04:27:33 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id y12so115227684eda.12
+Received: by mail-ed1-x52e.google.com with SMTP id r25so49185402edq.7
         for <linux-trace-devel@vger.kernel.org>; Thu, 02 Dec 2021 04:27:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cilZ0IFiLox+aidlI21vhwNnKufJ982VhRU5hNioMJ8=;
-        b=ddyiNW3ahqYVmG6W/kw8/8TvUMJnYk/dEGqQihKES7SfOl59GnUq2X85NXAIAIqcxn
-         NSj4wBmqBU/xEUABqJ+Lmp7quXCGa5LgesipNy2WMAbmBrtgiLyVHZkiQgk3sAXVRaYa
-         ZcNodUaHWdPu63eg0pVeQ1NROziS0hwDi/r0tqeLtV7imnSFZ91ZcEazSTrLYLGSne/2
-         QKEpv2B40oURr5pz1EfM6i+BPWYrWnMfiYDhBB3eNIkvBs2Gm08cFWSC9Y/zLr6MuRVf
-         BK2r3T3cjNfySjnMdbmF3KSnLKzeuFdwWu3XWNdlheuhQlJgo7ytw66nzHFBJ/dkyPx0
-         SSqg==
+        bh=lbuXHNZqAeL/Zo3Awo3tYVuoLh3AWEQpHm7l237xiXQ=;
+        b=jlEXGpeUoPUEqlSZh1gJ/qmyDkmNOri9BKb3GPL1X6WSaokJuX2VFb9QLr4aeI5Qjs
+         iBzma2BIy8Lx5aANjMaP8PZRwXf6VX2Bk1DxjXwdaVWNaeG2N+aeZLv6DVwpF0MKw2Er
+         ARrvhsu3n+b01MsP7ulNlyr0yjLsN8zkT2KCxrU5uwxc/VEnAE6qrYEV5eI1t6J1qIit
+         59QWJMDDb5UF+fOjzMwuKP1SIUH3e8251KrFgrgOmfkAegI+8HUFnb6JeqmpvS+pN/75
+         inanWNVhwBKgW6Ea4+IkZFD+WZCY3RtP96Sjm+o9SJx9j2tqwB62h1/nSe/RNubGB2Iw
+         cCMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cilZ0IFiLox+aidlI21vhwNnKufJ982VhRU5hNioMJ8=;
-        b=pNn7OzA1v43HzN48oSqRMITsUIW/lJ5wE0XSWq4M+TC6G85b+LYRErzA736bXLTWFN
-         0DFgXf6N2bkOCFgQohXCreyssqwant5WHOEwwpapvGJfgfJolJUcJNAtzgjrukU0yk8z
-         M4GgVps/jqscy8KdZSis+jQtMc2PXbgRA6EZ1f0pkPgoMVA7vUdnbc2uWfwPhtdpH+jB
-         o2ST8jgRjbXu+tceApnmy8t4Cc8R8Wb8pbi99SHZ5GAFd+BbhKG9FvoReXZi3Bgo/TId
-         QVVUKjsFtB3oFB5LqpgOQevxk7Ih8ca2qScNzRx3qykcGj517d5VXtOX93J8HQugdAtF
-         lbpw==
-X-Gm-Message-State: AOAM533er+QD0EqQCAnSB1bnLx9HI5vJbK1HsKKOs97hUE8ZDNwx4YZE
-        +tISet6v+T5Iqu3dG2IDYA3Vwb5/SSKVzQ==
-X-Google-Smtp-Source: ABdhPJz0lJhQDewOEYAXQyUjkmn3Q8uZ0ueZhv0zo1x0NHFyFDaoAGxV4LMzXDTMMhqTV5pRn4WDdw==
-X-Received: by 2002:a05:6402:1450:: with SMTP id d16mr17565625edx.144.1638448051698;
-        Thu, 02 Dec 2021 04:27:31 -0800 (PST)
+        bh=lbuXHNZqAeL/Zo3Awo3tYVuoLh3AWEQpHm7l237xiXQ=;
+        b=CWju+DWQkQ4p6jdOGpxbj8qlJUaNVFptd+JUeAP7jbjhj5qVgAGPLDHNGE7Q5h59Js
+         twGumfONLf97F1+00EUey35gtTSvDy3znOuhmrUBVBfNgkSLEM5rzQCXAqnWu8LdKGz6
+         W7QVz3tqQanmpol0f9quBpjrTQrKStdqTO436bvVki5UzuQUxEFC3kAT/zGa5GTvT/W7
+         cYwOE9jzZwk0ovX1wqjgtu/Yiy+zr+U3zrrvNAXeoA/zc7u1mCRLHu/JY85wXt6hsYYd
+         YU8PlUiwO46Nttt67aGEgMP4VRzGkceiqu1fUW1fT+Hhx48RL6un2JeZVv8BcEr6EwPI
+         w0mg==
+X-Gm-Message-State: AOAM533c26ukGqgVy1XLVTPGphJhnBVXqAgl+8htI+jvnXIQwfTXfWnb
+        Auq5MCvH2pCmD5WGSlK/YWGuRyiq2+YP+g==
+X-Google-Smtp-Source: ABdhPJwMwlZHWUNVDrF2YrUHtvTzT2XbBIN3CkSGnFq9dIoQ/BrOoh5JtXuAqjOcFgWXkPsvqaFehA==
+X-Received: by 2002:a17:906:6a0a:: with SMTP id qw10mr14747084ejc.547.1638448050684;
+        Thu, 02 Dec 2021 04:27:30 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id u16sm2073403edr.43.2021.12.02.04.27.30
+        by smtp.gmail.com with ESMTPSA id u16sm2073403edr.43.2021.12.02.04.27.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Dec 2021 04:27:31 -0800 (PST)
+        Thu, 02 Dec 2021 04:27:30 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v5 4/8] trace-cmd library: New API to copy buffer description between trace files
-Date:   Thu,  2 Dec 2021 14:27:22 +0200
-Message-Id: <20211202122726.43775-5-tz.stoyanov@gmail.com>
+Subject: [PATCH v5 3/8] trace-cmd library: Copy CPU count between trace files
+Date:   Thu,  2 Dec 2021 14:27:21 +0200
+Message-Id: <20211202122726.43775-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211202122726.43775-1-tz.stoyanov@gmail.com>
 References: <20211202122726.43775-1-tz.stoyanov@gmail.com>
@@ -64,53 +64,74 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-A new library API is introduced, to copy buffers description between
-trace files:
-	tracecmd_copy_buffer_descr()
+The tracecmd_copy_headers() API should be able to copy CPU count also,
+as it is part of the headers.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/include/private/trace-cmd-private.h |  2 ++
- lib/trace-cmd/trace-input.c                       | 13 +++++++++++++
- 2 files changed, 15 insertions(+)
+ lib/trace-cmd/trace-input.c | 42 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 9e2cfcdb..58afb455 100644
---- a/lib/trace-cmd/include/private/trace-cmd-private.h
-+++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -189,6 +189,8 @@ int tracecmd_copy_headers(struct tracecmd_input *in_handle,
- 			  struct tracecmd_output *out_handle,
- 			  enum tracecmd_file_states start_state,
- 			  enum tracecmd_file_states end_state);
-+int tracecmd_copy_buffer_descr(struct tracecmd_input *in_handle,
-+			       struct tracecmd_output *out_handle);
- void tracecmd_set_flag(struct tracecmd_input *handle, int flag);
- void tracecmd_clear_flag(struct tracecmd_input *handle, int flag);
- unsigned long tracecmd_get_flags(struct tracecmd_input *handle);
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 4cfe26bc..98c809c6 100644
+index 8cd03de0..4cfe26bc 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -4889,6 +4889,19 @@ int tracecmd_copy_headers(struct tracecmd_input *in_handle,
- 	return ret < 0 ? -1 : 0;
+@@ -4741,6 +4741,35 @@ error:
+ 	return -1;
  }
  
-+int tracecmd_copy_buffer_descr(struct tracecmd_input *in_handle,
-+			       struct tracecmd_output *out_handle)
++static int copy_cpu_count(struct tracecmd_input *in_handle, struct tracecmd_output *out_handle)
 +{
-+	int i;
++	unsigned int cpus;
 +
-+	if (tracecmd_get_out_file_version(out_handle) >= FILE_VERSION_SECTIONS)
-+		return 0;
++	if (!check_in_state(in_handle, TRACECMD_FILE_CPU_COUNT) ||
++	    !check_out_state(out_handle, TRACECMD_FILE_CPU_COUNT))
++		return -1;
 +
-+	for (i = 0; i < in_handle->nr_buffers; i++)
-+		tracecmd_add_buffer_info(out_handle, in_handle->buffers[i].name, 0);
-+	return tracecmd_write_buffer_info(out_handle);
++	if (!HAS_SECTIONS(in_handle)) {
++		if (read4(in_handle, &cpus))
++			return -1;
++	} else {
++		cpus = in_handle->max_cpu;
++	}
++
++	if (tracecmd_get_out_file_version(out_handle) < FILE_VERSION_SECTIONS) {
++		cpus = tep_read_number(in_handle->pevent, &cpus, 4);
++		if (do_write_check(out_handle, &cpus, 4))
++			return -1;
++	} else {
++		tracecmd_add_option(out_handle, TRACECMD_OPTION_CPUCOUNT, sizeof(int), &cpus);
++	}
++
++	in_handle->file_state = TRACECMD_FILE_CPU_COUNT;
++	out_set_file_state(out_handle, in_handle->file_state);
++
++	return 0;
 +}
 +
  /**
-  * tracecmd_record_at_buffer_start - return true if record is first on subbuffer
-  * @handle: input handle for the trace.dat file
+  * tracecmd_copy_headers - Copy headers from a tracecmd_input handle to a file descriptor
+  * @in_handle: input handle for the trace.dat file to copy from.
+@@ -4839,6 +4868,19 @@ int tracecmd_copy_headers(struct tracecmd_input *in_handle,
+ 			return 0;
+ 
+ 		ret = copy_command_lines(in_handle, out_handle);
++		if (ret < 0)
++			goto out;
++
++		/* fallthrough */
++	case TRACECMD_FILE_CPU_COUNT:
++		if (end_state <= in_handle->file_state)
++			return 0;
++
++		ret = copy_cpu_count(in_handle, out_handle);
++		if (ret < 0)
++			goto out;
++
++		/* fallthrough */
+ 	default:
+ 		break;
+ 	}
 -- 
 2.33.1
 
