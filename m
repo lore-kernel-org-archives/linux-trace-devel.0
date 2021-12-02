@@ -2,192 +2,139 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73B80C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  1 Dec 2021 21:04:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81F2BC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Dec 2021 02:37:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234979AbhLAVIA (ORCPT
+        id S229551AbhLBCk3 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 1 Dec 2021 16:08:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343846AbhLAVH7 (ORCPT
+        Wed, 1 Dec 2021 21:40:29 -0500
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:51165 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1351587AbhLBCkV (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 1 Dec 2021 16:07:59 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88779C06174A
-        for <linux-trace-devel@vger.kernel.org>; Wed,  1 Dec 2021 13:04:31 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id D465ECE2083
-        for <linux-trace-devel@vger.kernel.org>; Wed,  1 Dec 2021 21:04:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E7A8C53FCC;
-        Wed,  1 Dec 2021 21:04:27 +0000 (UTC)
-Date:   Wed, 1 Dec 2021 16:04:26 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc:     y.karadz@gmail.com, linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 2/4] libtracefs: New API for getting dynamic event
-Message-ID: <20211201160426.08d0c7d2@gandalf.local.home>
-In-Reply-To: <20211130050057.336228-3-tz.stoyanov@gmail.com>
-References: <20211130050057.336228-1-tz.stoyanov@gmail.com>
- <20211130050057.336228-3-tz.stoyanov@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 1 Dec 2021 21:40:21 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 664845C0109;
+        Wed,  1 Dec 2021 21:36:57 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Wed, 01 Dec 2021 21:36:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=kg+bBSJXrAJG0Jnlmio2Ypjpo6Q
+        j0sf1AcVvaZG+FAA=; b=IaaEAeEiHFLHS6RftAvYgSmdceHsW+zXBHuoe9IPBms
+        MGBPWxdc5JR4wS8/adEav2QPQLNFinfbmtUA+TvO/x8nKQwmurBzdd4niz75LN69
+        FJriZSkYSgdmvluKuOJ4VhzdIoy4Du9m4b7REUyR3GzluJujUaDVx+285dc85oOn
+        LRYA+4C/UhKGX/TZ1JgJ3edJcU6ieFieSNqsW1CaQNQQwp1DbN3DdkU8IiLPC1AJ
+        4FI5d1K4KfMiHCefMjeTxNZRYj+dBelsQdT4I3l/GVqwAjUW/HdqzNd8W8JJzJk8
+        v328tnaztNwvk9wGwvIkaNjho9ONzSpH0hqQDTliKlA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=kg+bBS
+        JXrAJG0Jnlmio2Ypjpo6Qj0sf1AcVvaZG+FAA=; b=X97xKBoF6eQ/mtCUdwVI28
+        hOkF8+Pbq8ZruRH3vgq7f+DU3tAQ2hqQK8BCXu43iS0b6Zul2xcHQ/fIBQ+5YquX
+        6pifiEmMLVbAcdRnf3GaA/KIfEGtZQZaG2pavwJ3iNwuvjsjzQZKIQEj0s2EAdJv
+        adcEwuNjN/Y8PJJSMAep1M9XIYIRk3GO9lUJ8bZyuBFP7OKGwCArfif7VR9HOLV3
+        ZktjTrUK9oJQPx594tLE7CMUUQeNemoE+1SuECUV1neguhlsp5Gbol76tJzAO/uB
+        ni7NZWA1EAxNrsOZCJKGaS2+d+l04x3FWyyMPvCLI3hXzIoAXvcDwPvN50WqHarg
+        ==
+X-ME-Sender: <xms:STGoYeFJMsMRqjuzt1g4oUIQTtERSzZUwITrQLnqdyzsXESaJuNJ5w>
+    <xme:STGoYfW2K8yA_k4XT6178or095spvzJGS0uF5v630bzHGaIoGZJNPHXrbUkH36vLN
+    JrkUL7Z8fv9lEoc5w>
+X-ME-Received: <xmr:STGoYYJcOUwkSzpy1m3rVgYCOVua7wMJzipUP8qi_9KIevINVheXUzpXCDMD5TQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrieeggdeglecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepofhitghhrggv
+    lhcuufgrrhhtrghinhcuoehmihhkvghsrghrthesfhgrshhtmhgrihhlrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpeffkedvjeduudfhvdevgeevfefghfejveeghfevgefhffekgeeg
+    keduvdekfeefgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpehmihhkvghsrghrthesfhgrshhtmhgrihhlrdgtohhm
+X-ME-Proxy: <xmx:STGoYYGbREYBBZP8nyaLD1_hDrO-uba5JOuPGA_Vicb2mrqD-_6aVA>
+    <xmx:STGoYUXgGwRVtJjLDw0JS-c5kk0DSU0ThcYjmMgbUfJrfKe58qDVGQ>
+    <xmx:STGoYbMX3-FT17gWmc9P5CXKNAb8A31iY3V-TpK-FY4DjBuKwZvPQA>
+    <xmx:STGoYdfH8Lg4umuFfFM9w8Ha1XLUrORWqh_UOvcVJR57_ScyDIDknQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 1 Dec 2021 21:36:56 -0500 (EST)
+Date:   Wed, 1 Dec 2021 19:36:55 -0700
+From:   Michael Sartain <mikesart@fastmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH] trace-cmd library: Add API to get information from trace
+ file
+Message-ID: <20211202023655.4nva3roddesa5lfh@mikesart-tr3>
+References: <20211201022431.64763-1-mikesart@fastmail.com>
+ <20211201103322.24146cd5@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211201103322.24146cd5@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 30 Nov 2021 07:00:55 +0200
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+On Wed, Dec 01, 2021 at 10:33:22AM -0500, Steven Rostedt wrote:
+> On Tue, 30 Nov 2021 19:24:31 -0700
+> Michael Sartain <mikesart@fastmail.com> wrote:
+>
+> > New APIs added to get trace cpustats, uname, version strings, and
+> > cpu file sizes and offsets.
 
-> A new API is proposed, to get tep event describing given dynamic event:
-[blank line]
-> 	tracefs_dynevent_get_event()
-[blank line]
-> The API detects any newly created dynamic events, but does not detect
-> the deletion.
-> 
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> ---
->  Documentation/libtracefs-dynevents.txt | 14 +++++++++++--
->  include/tracefs.h                      |  2 ++
->  src/tracefs-dynevents.c                | 29 ++++++++++++++++++++++++++
->  3 files changed, 43 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/libtracefs-dynevents.txt b/Documentation/libtracefs-dynevents.txt
-> index a374651..7de06be 100644
-> --- a/Documentation/libtracefs-dynevents.txt
-> +++ b/Documentation/libtracefs-dynevents.txt
-> @@ -4,8 +4,8 @@ libtracefs(3)
->  NAME
->  ----
->  tracefs_dynevent_create, tracefs_dynevent_destroy, tracefs_dynevent_destroy_all,
-> -tracefs_dynevent_free, tracefs_dynevent_list_free, tracefs_dynevent_get_all, tracefs_dynevent_info -
-> -Create, destroy, free and get dynamic events.
-> +tracefs_dynevent_free, tracefs_dynevent_list_free, tracefs_dynevent_get_all, tracefs_dynevent_info,
-> +tracefs_dynevent_get_event - Create, destroy, free and get dynamic events.
->  
->  SYNOPSIS
->  --------
-> @@ -23,6 +23,7 @@ void *tracefs_dynevent_list_free*(struct tracefs_dynevent pass:[*]pass:[*]_event
->  struct tracefs_dynevent pass:[*]*tracefs_dynevent_get*(enum tracefs_dynevent_type _type_, const char pass:[*]_system_, const char pass:[*]_event_);
->  struct tracefs_dynevent pass:[*]pass:[*]*tracefs_dynevent_get_all*(unsigned int _types_, const char pass:[*]_system_);
->  enum tracefs_dynevent_type *tracefs_dynevent_info*(struct tracefs_dynevent pass:[*]_dynevent_, char pass:[*]pass:[*]_system_, char pass:[*]pass:[*]_event_, char pass:[*]pass:[*]_prefix_, char pass:[*]pass:[*]_addr_, char pass:[*]pass:[*]_format_);
-> +struct tep_event pass:[*]*tracefs_dynevent_get_event*(struct tep_handle pass:[*]_tep_, struct tracefs_dynevent pass:[*]_dynevent_);
->  --
->  
->  DESCRIPTION
-> @@ -68,6 +69,11 @@ if relevant for this event type. If _format_ is non NULL, it will hold the forma
->  dynamic event. Note, that the content in _group_, _event_, _prefix_, _addr_, and _format_ must be
->  freed with free(3) if they are set.
->  
-> +The *tracefs_dynevent_get_event*() function returns tep event, describing the given dynamic event.
+...
 
-					  "returns a tep event"
+> > +const char *tracecmd_get_cpustats(struct tracecmd_input *handle);
+> > +const char *tracecmd_get_uname(struct tracecmd_input *handle);
+> > +const char *tracecmd_get_version(struct tracecmd_input *handle);
+> > +unsigned long long tracecmd_get_cpu_file_offset(struct tracecmd_input *handle, int cpu);
+> > +unsigned long long tracecmd_get_cpu_file_size(struct tracecmd_input *handle, int cpu);
+>
+> I wonder if we should follow normal standards here and return off64_t type
+> instead of unsigned long long? As that is what is returned by lseek64().
 
-> +If the dynamic event is newly created and not yet loaded in the @tep, the dynamic event system is
+Happy to make this change. Just to be clear, several ts and cursor
+functions already in trace-cmd-private.h take "long long" parameters for
+trace_ids, timestamps, offsets, time, etc. Do you have longer term plans
+of migrating other things to off64_t?
 
-            "loaded in @tep"
+> For all APIs, we require a "kernel doc" style comment. That is:
+> And the rest of the functions also need a kernel doc.
 
-> +rescanned for any new events. The returned pointer to tep event is controlled by @tep and must not
-> +be freed.
+Sounds good, I'm on it.
 
+> Not to mention, we would need to add a man page to describe these too. See
+> the Documentation/libtracecmd directory for examples.
 
-> +
->  RETURN VALUE
->  ------------
->  
-> @@ -88,6 +94,10 @@ in case of an error or in case there are no events in the system. That array mus
->  on error. If _system_, _event_, _prefix_, _addr_, or _format_ are non NULL, they will contain
->  allocated strings that must be freed by free(3).
->  
-> +The *tracefs_dynevent_get_event*() function returns pointer to tep event or NULL in case of an error
+This code is all in include/private/trace-cmd-private.h and it doesn't
+look like any of the existing functions (like tracecmd_get_trace_clock)
+have man pages.
 
-  "returns a pointer to a tep event'
+Seems like the trace-cmd man pages all describe the trace-cmd
+executable?
 
-> +or if the requested dynamic event is missing. The returned pointer to tep event is controlled by
-> +@tep and must not be freed.
-> +
->  ERRORS
->  ------
->  The following errors are for all the above calls:
-> diff --git a/include/tracefs.h b/include/tracefs.h
-> index 9662603..fbd7d31 100644
-> --- a/include/tracefs.h
-> +++ b/include/tracefs.h
-> @@ -262,6 +262,8 @@ tracefs_dynevent_get(enum tracefs_dynevent_type type, const char *system, const
->  enum tracefs_dynevent_type
->  tracefs_dynevent_info(struct tracefs_dynevent *dynevent, char **system,
->  		      char **event, char **prefix, char **addr, char **format);
-> +struct tep_event *
-> +tracefs_dynevent_get_event(struct tep_handle *tep, struct tracefs_dynevent *dynevent);
->  
->  struct tracefs_dynevent *
->  tracefs_eprobe_alloc(const char *system, const char *event,
-> diff --git a/src/tracefs-dynevents.c b/src/tracefs-dynevents.c
-> index ea07d13..2ff3c87 100644
-> --- a/src/tracefs-dynevents.c
-> +++ b/src/tracefs-dynevents.c
-> @@ -752,3 +752,32 @@ error:
->  
->  	return TRACEFS_DYNEVENT_UNKNOWN;
->  }
-> +
-> +/**
-> + * tracefs_dynevent_get_event - return tep event, representing the given dynamic event
+For background, we're wanting to add these functions to this private
+header file since we're pulling trace-input.c, trace-hooks.c, and
+trace-util.c into our binary (along with libtracevent) to read events
+from trace.dat files. Right now tracecmd_input struct members (like
+uname) are local to trace-input.c and only externally visible via
+tracecmd_print_uname(). Which isn't useful to a gui app, natch.
 
-  remove the comma.
+But yeah, please let me know how you'd like to proceed. Happy to start a
+man page for trace-cmd-private.h but pretty sure I'm not the best person
+to document *all* the current functions in this file. :)
 
-> + * @tep: a handle to the trace event parser context, that holds the events
+> > +unsigned long long tracecmd_get_cpu_file_offset(struct tracecmd_input *handle, int cpu)
+>
+>    Should be "unsigned int cpu"
 
-  remove the comma.
+There are a several existing functions that take an "int cpu" parameter.
 
-> + * @dynevent: a dynamic event context, describing given dynamic event.
+Is this something where this new functions should use an unsigned int and
+then update the others later, or perhaps add a check in the code for
+negative cpu values and keep the "int cpu" parameter to stay consistent
+with the others?
 
-  remove the comma ;-)
+> Anyway, welcome to our community Michael!
 
-> + *
-> + * Returns pointer to tep event, describing the given dynamic event. The pointer
-
- "Returns a pointer to a tep event describing the given dynamic event".
-
-> + * is managed by @tep handle and must not be freed. In case of an error, or in case
-
-  "by the @tep handle"
-
-> + * the requested dynamic event is missing in the @tep handler - NULL is returned.
-> + */
-> +struct tep_event *
-> +tracefs_dynevent_get_event(struct tep_handle *tep, struct tracefs_dynevent *dynevent)
-> +{
-> +	struct tep_event *event;
-> +
-> +	if (!tep || !dynevent || !dynevent->event)
-> +		return NULL;
-> +
-> +	/* If the dynamic event is already loaded in the tep, return it */
-> +	event = tep_find_event_by_name(tep, dynevent->system, dynevent->event);
-> +	if (event)
-> +		return event;
-> +
-> +	/* Try to load any new events from the given system */
-> +	if (trace_load_events(tep, NULL, dynevent->system))
-
-Does this refresh, or does just append?
-
-That is, if there are already dynamic events, wouldn't this re-add the
-existing events that are already there?
-
-Perhaps we need an interface in libtraceevent that rescans, and checks for
-duplicates.
-
--- Steve
-
-> +		return NULL;
-> +
-> +	return tep_find_event_by_name(tep, dynevent->system, dynevent->event);
-> +}
-
+Thanks for the feedback and warm welcome Steven - much appreciated!
+Regards,
+ -Mike
