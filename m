@@ -2,160 +2,127 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C075EC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Dec 2021 12:23:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBE69C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Dec 2021 12:25:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358014AbhLBM0Z (ORCPT
+        id S230510AbhLBM2d (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 Dec 2021 07:26:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35664 "EHLO
+        Thu, 2 Dec 2021 07:28:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358111AbhLBMZm (ORCPT
+        with ESMTP id S231482AbhLBM2c (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 2 Dec 2021 07:25:42 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBB4C0613F1
-        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Dec 2021 04:22:18 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id x15so115105567edv.1
-        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Dec 2021 04:22:18 -0800 (PST)
+        Thu, 2 Dec 2021 07:28:32 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDE5C06174A
+        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Dec 2021 04:25:10 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id e3so115370516edu.4
+        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Dec 2021 04:25:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KH2Sen9boB8o6K2Juh/7bubbw9PC9Vc8MbUMk3gEf3k=;
-        b=Rs/51ZSLPopMtZywWuXq9mDkjiUVVr/GXelQBNnVU9tCkCa2/n5ytjTbxtT5corSim
-         ccOiBwKdWBFj93htDLK0n0RmAIRl+RLFedHDQwEfcbnHmHmVfKDI32U5SRM4Z2swxqCy
-         K/HG9i8b0fDCGcP1pkLpPUn95OCkgvGBj7HcyAgH1KSt5aMznFiaf6l6eqZBTVAFW/m4
-         qJwn+Qjwtt7BpxqLHrborDfKzDWmjxRpWoWwzIGH1x160AQuWtxZ8vHQ/G54+FAXqpzL
-         vXI2k9GSR9eGfgK19pMH1GLTqTNglCsvD4ERFlZ2wRplL3yW814Voa0BzFXtEPTIuTG4
-         E9Bw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ubj0S/00994a4tM8RQrO6W4xFAou7+gN59bm2xZZHIk=;
+        b=GAPzi2lJGJkYYvJw9MCFbPKOCf8wNccGRA9eg6M+TaXtQ6/HGSYxX3u6LfTXuP4pde
+         uBuHk/fnFdG+n9Jt+01QhgTD6NM/wRCLpd8UTmBHrhoKKm0ct3zrq4OTLVM5PUCX2A2R
+         6h3UQgw0okaOT1EWMB6fxhtwdiR7hLQ75ZgcDr3dnRHVfQu6sOVYY7CFh2I/ujrAVqwC
+         RgCtXngMhBhOP3dyQf0ClAX65CLJSZMqNW8oqUfBYwdUf7srl3P/kVzN3TkQYsjkIY9M
+         m9EtymoAylS3bvOLewpZTIezFh2Y0w+uCsZIdMEvRS5H4p485D1oDEFhkxEo2ZVkXxla
+         P9XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KH2Sen9boB8o6K2Juh/7bubbw9PC9Vc8MbUMk3gEf3k=;
-        b=bjQ0kvqKchT1z/vc0CL7pa41o7ONP+6CcUybHur4V7OFT2xdZHqboJnjsZqqlrlqcR
-         rUCw/IeDc9jcGmXjKEz11PBFvQCTmNXlhtzpktlqt3QwnwtItGt5qJWGXBLKYtjqtrIK
-         ngDapremZDergUpcXvjhIy5MoHl/7xbhlwt6TD+jjUtZgge09cvl0Ui62Spj8fRRM0vG
-         MxYCyeq1KJf/wj/KlOaKHtWMhggpLGxsxFmdV9eYjN43H0lgHedreSo43j6FtI4KQcvA
-         KuUcdPNlIc2hlrosC6ZdO+XkXf3j73NWlOaqpe2ITUvP5rBZjgELFdGz5qOP/yuDnRHq
-         LPcg==
-X-Gm-Message-State: AOAM530Se/xdo4aPx7GVAsGq1AEbuZRnRnXyakal7joz2bYqLjjc6F/X
-        uP90vxnEW/xoLfafH3JfaIYlnWHg1L2vLg==
-X-Google-Smtp-Source: ABdhPJzd6rXoGa33uoKRFoN57BwKfpfb9P5WqE70gN85we+3aZfzQ8KJWR1T5a0uPKecE6lEeSpxjA==
-X-Received: by 2002:a17:907:3c7:: with SMTP id su7mr15011035ejb.87.1638447737139;
-        Thu, 02 Dec 2021 04:22:17 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ubj0S/00994a4tM8RQrO6W4xFAou7+gN59bm2xZZHIk=;
+        b=tndJ2xmogkq/Xg4rX3WkMC3NSB4VlUcVBmGlDaVh1TQ95gKwzBW51O5sUNoUCznqkK
+         sURZV2iWWtH3oqCxp03CbJ97bhzBU+vpxRd++Ij20azRhuCG2rW/u3y0QlCYwqBs4T81
+         rzBgv3Z+aPogTgs/jMN5/3Ww9d7Rw4Kp+skgZRwo7Ha5uE0QXS2fJS/m47KzJ/noXuNs
+         Xki9ljC2WbPZrTrZia3fdDJqmerSKblDSqlm7xXpM/1IBVkxJ+7uIEKGQcm9Z7vAqtvI
+         XoDYHOLDMXYBp/zMeY/M53GCH6x1ZotNoi0kMCv48vgSFwK00C4MV2ZoDOeUUrorRorH
+         /sGQ==
+X-Gm-Message-State: AOAM531oAWbMRRMPBEWBElEx/CJEDBFcwyYky9BQkXlFINjHFBnotFO/
+        Wprl94umkajFLgltNjDIxpCJDL93qFbfbA==
+X-Google-Smtp-Source: ABdhPJwcyY2ICa6gvfpuOEfzL2oMz+nHLsW65PJDRCast+YxmAhuLmmgBoyB8IEdMS/2aX9qF+KfLg==
+X-Received: by 2002:a05:6402:22a5:: with SMTP id cx5mr16846304edb.334.1638447908712;
+        Thu, 02 Dec 2021 04:25:08 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id gb42sm1892772ejc.49.2021.12.02.04.22.16
+        by smtp.gmail.com with ESMTPSA id eg8sm1998507edb.75.2021.12.02.04.25.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Dec 2021 04:22:16 -0800 (PST)
+        Thu, 02 Dec 2021 04:25:08 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 23/23] trace-cmd report: Add new parameter for trace file version
-Date:   Thu,  2 Dec 2021 14:21:52 +0200
-Message-Id: <20211202122152.43275-24-tz.stoyanov@gmail.com>
+Subject: [PATCH v5 00/20] Trace file version 7 - compression
+Date:   Thu,  2 Dec 2021 14:24:47 +0200
+Message-Id: <20211202122507.43572-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211202122152.43275-1-tz.stoyanov@gmail.com>
-References: <20211202122152.43275-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-By default, "trace-cmd report" writes in trace file version 6.
-A new parameter is added, which can be used to set desired version
-the output trace file.
- "trace-cmd report --file-version <version>"
+Introduced compression of the metadata and trace data in trace files version
+7. The compression is optional and disabled by default. A new parameter of
+"trace-cmd record" is introduced, which can be used to configure the trace
+file compression:
+ --compression < none / any / name of the desired algorithm >
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- tracecmd/trace-record.c | 22 +++++++++++++++++++++-
- tracecmd/trace-usage.c  |  2 +-
- 2 files changed, 22 insertions(+), 2 deletions(-)
+This patch-set depends on:
+ "[PATCH v6 00/23] Trace file version 7 - sections" patch set.
+  https://lore.kernel.org/linux-trace-devel/20211202122152.43275-1-tz.stoyanov@gmail.com/
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 442e55bd..ead2c107 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -3698,6 +3698,8 @@ static struct tracecmd_output *create_net_output(struct common_record_context *c
- 	out = tracecmd_output_create(NULL);
- 	if (!out)
- 		return NULL;
-+	if (ctx->file_version && tracecmd_output_set_version(out, ctx->file_version))
-+		goto error;
- 	if (tracecmd_output_set_msg(out, msg_handle))
- 		goto error;
- 	if (tracecmd_output_write_headers(out, listed_events))
-@@ -3744,6 +3746,8 @@ setup_connection(struct buffer_instance *instance, struct common_record_context
- 		network_handle = tracecmd_output_create_fd(msg_handle->fd);
- 		if (!network_handle)
- 			goto error;
-+		if (tracecmd_output_set_version(network_handle, ctx->file_version))
-+			goto error;
- 		if (tracecmd_output_write_headers(network_handle, listed_events))
- 			goto error;
- 		tracecmd_set_quiet(network_handle, quiet);
-@@ -4470,7 +4474,8 @@ static struct tracecmd_output *create_output(struct common_record_context *ctx)
- 	out = tracecmd_output_create(ctx->output);
- 	if (!out)
- 		goto error;
--
-+	if (ctx->file_version && tracecmd_output_set_version(out, ctx->file_version))
-+		goto error;
- 	if (tracecmd_output_write_headers(out, listed_events))
- 		goto error;
- 
-@@ -5779,6 +5784,7 @@ void init_top_instance(void)
- }
- 
- enum {
-+	OPT_file_ver		= 238,
- 	OPT_verbose		= 239,
- 	OPT_tsc2nsec		= 240,
- 	OPT_fork		= 241,
-@@ -6218,6 +6224,7 @@ static void parse_record_options(int argc,
- 			{"tsc2nsec", no_argument, NULL, OPT_tsc2nsec},
- 			{"poll", no_argument, NULL, OPT_poll},
- 			{"verbose", optional_argument, NULL, OPT_verbose},
-+			{"file-version", required_argument, NULL, OPT_file_ver},
- 			{NULL, 0, NULL, 0}
- 		};
- 
-@@ -6643,6 +6650,19 @@ static void parse_record_options(int argc,
- 			cmd_check_die(ctx, CMD_set, *(argv+1), "--poll");
- 			recorder_flags |= TRACECMD_RECORD_POLL;
- 			break;
-+		case OPT_file_ver:
-+			cmd_check_die(ctx, CMD_start, *(argv+1), "--file_version");
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "--file_version");
-+			cmd_check_die(ctx, CMD_extract, *(argv+1), "--file_version");
-+			cmd_check_die(ctx, CMD_stream, *(argv+1), "--file_version");
-+			cmd_check_die(ctx, CMD_profile, *(argv+1), "--file_version");
-+			ctx->file_version = atoi(optarg);
-+			if (ctx->file_version < FILE_VERSION_MIN ||
-+			    ctx->file_version > FILE_VERSION_MAX)
-+				die("Unsupported file version %d, "
-+				    "supported versions are from %d to %d",
-+				    ctx->file_version, FILE_VERSION_MIN, FILE_VERSION_MAX);
-+			break;
- 		case OPT_quiet:
- 		case 'q':
- 			quiet = true;
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index 32b38bfd..ac12b066 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -69,7 +69,7 @@ static struct usage_help usage_help[] = {
- 		"               If 0 is specified, no loop is performed - timestamps offset is calculated only twice,"
- 		"                                                         at the beginnig and at the end of the trace\n"
- 		"          --poll don't block while reading from the trace buffer\n"
--		"          --verbose 'level' Set the desired log level\n"
-+		"          --file-version set the desired trace file version\n"
- 	},
- 	{
- 		"set",
+v5 changes:
+ - Rebased on top of the latest master.
+v4 changes:
+ - Rebased on top of the latest master.
+v3 changes:
+ - Rebased on top of the latest master.
+v2 changes:
+ - fixed issues of split and convert commands with some corner cases
+
+Tzvetomir Stoyanov (VMware) (20):
+  trace-cmd library: Add support for compression algorithms
+  trace-cmd library: Internal helpers for compressing data
+  trace-cmd library: Internal helpers for uncompressing data
+  trace-cmd library: Inherit compression algorithm from input file
+  trace-cmd library: New API to configure compression on an output
+    handler
+  trace-cmd library: Write compression header in the trace file
+  trace-cmd library: Compress part of the trace file
+  trace-cmd library: Add local helper function for data compression
+  trace-cmd library: Compress the trace data
+  trace-cmd library: Decompress the options section, if it is compressed
+  trace-cmd library: Read compression header
+  trace-cmd library: Extend the input handler with trace data
+    decompression context
+  trace-cmd library: Initialize CPU data decompression logic
+  trace-cmd library: Add logic for in-memory decompression
+  trace-cmd library: Read compressed latency data
+  trace-cmd library: Decompress file sections on reading
+  trace-cmd library: Add zlib compression algorithm
+  trace-cmd list: Show supported compression algorithms
+  trace-cmd record: Add compression to the trace context
+  trace-cmd report: Add new parameter for trace file compression
+
+ Documentation/trace-cmd/trace-cmd-list.1.txt  |   3 +
+ Makefile                                      |   7 +
+ lib/trace-cmd/Makefile                        |   8 +
+ .../include/private/trace-cmd-private.h       |  46 +-
+ lib/trace-cmd/include/trace-cmd-local.h       |  17 +
+ lib/trace-cmd/trace-compress-zlib.c           | 109 +++
+ lib/trace-cmd/trace-compress.c                | 910 ++++++++++++++++++
+ lib/trace-cmd/trace-input.c                   | 469 ++++++++-
+ lib/trace-cmd/trace-output.c                  | 317 +++++-
+ lib/trace-cmd/trace-util.c                    |  10 +
+ tracecmd/Makefile                             |   4 +
+ tracecmd/trace-list.c                         |  26 +
+ tracecmd/trace-record.c                       |  34 +-
+ tracecmd/trace-usage.c                        |   6 +
+ 14 files changed, 1893 insertions(+), 73 deletions(-)
+ create mode 100644 lib/trace-cmd/trace-compress-zlib.c
+ create mode 100644 lib/trace-cmd/trace-compress.c
+
 -- 
 2.33.1
 
