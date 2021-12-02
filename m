@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D1FBC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Dec 2021 12:25:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04E4CC433FE
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Dec 2021 12:25:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234654AbhLBM2o (ORCPT
+        id S234072AbhLBM2p (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 Dec 2021 07:28:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36592 "EHLO
+        Thu, 2 Dec 2021 07:28:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234072AbhLBM2o (ORCPT
+        with ESMTP id S234914AbhLBM2o (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 2 Dec 2021 07:28:44 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB3BC06174A
-        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Dec 2021 04:25:21 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id v1so115095360edx.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Dec 2021 04:25:21 -0800 (PST)
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A613C06174A
+        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Dec 2021 04:25:22 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id r25so49163706edq.7
+        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Dec 2021 04:25:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=H5r0DvR30Am7AFkraurPbx/cosS3KErdUZfOYM7PGzo=;
-        b=MkRthLYFZOfaU6pyS4s6n8933RWLgLRvxBOlC5Er3k8+MLb01IUK9dMCOAFE0IU47j
-         xC5E8JNg7nJypJZeKvIeQN4ErAqVpm+Jzs3EXoZimHWMKnaoaw6XcQFUs4zQjg1KjdBs
-         +ly+FCZc2eHHU+1tbYiVfJ9fH+HkcHnCfOvB68F/wyQ1HObuj4TWcOXadF32qM7SYW19
-         OpZ+pVUl3MTihuvTdSxLD14XB2Y+7rCLXFOzItOVdb55cqjFxGoqR1CF54bDR7ieTDfq
-         ZVAWLCuZWsNPWPLisv261TPOH/ib/s7KddhkCbH/GK542ULBsp7RWg4ZbJL+qpHp30/e
-         iN8g==
+        bh=N3oqLot0YlcbRcNAc07Y6XrPI/fvmTo4H4nilHDSxes=;
+        b=SCqdnSNMTkFe0oBjZKCxM3e6Bxh8QP16PSH2ePVD7wYBGwrUWrqbpjSLNCpKcDBuO8
+         SFXAUnX966zn00nVyFcbVEwKTszItMFxqz4i4dcmfwWfrZjtwb8E51QKnWit08ldH6Vt
+         gBbH1OwtGvFYGTwOT4GnOHc7drk/WtaWIjhOQ1UUpO6tRk1FtOKl/pyS17YzTQ+1P7ZD
+         JLqFhz/2D8v/RP1haIhBgS4mByfLNxhEYCY+3VlMhLRbNOydEynJ+JaaOyyYBL+jXpIl
+         0eKLdIC5tQE4xDTLAkmAJ/uFBSWetxm7Ea24RYcsX5cfwz1zmVd/gRCmz6TsRxoxJ74E
+         yPJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=H5r0DvR30Am7AFkraurPbx/cosS3KErdUZfOYM7PGzo=;
-        b=N+NAnnK900Y5tMDSxZ9zrmXTM/fMPs6UfDpqbcBKRDrUHYPWSKooMaiYFX5X8Zqzmn
-         jGLnJEektggVtrrw8UJ/UMiz/2OyIsSK+Y6uV0MkxI7kqGUr/Df6H3MuXfUO4FlEZd0+
-         fDwBs5r/AQwgyVp8l4duW5St0HCu9Yci1mGh57Q7OnLhfgai8qisnZ3DUn5hShcZiVGs
-         kicyZfMmtNRnHnW9Re23TPAdRbiTuLpi2uKAhEWmpqBTmnU/nVnbCD4yYprj3DLOnrnp
-         G5ekcrMOuTSAkxC83NDnzdNWhgdlFFCKI3j+WQRfVNO7TgMF5gxqI/Uat483/6GHYrgi
-         wcGw==
-X-Gm-Message-State: AOAM532vQK1K+ACLRMhL9w2zSmQ6yJGzJzHsbujwC3gaBdJCX/IwfpiU
-        iV4HRrC+VDeKxu2fcY2dbsddBGzRhtbyIg==
-X-Google-Smtp-Source: ABdhPJxPOGG14xb5W5Ns/V3doozJ/c6PIU+xorB4Sgw3VdORgaE1ZFgUIaKeLRiPU0XxA/ZhuCu7NQ==
-X-Received: by 2002:a17:906:388c:: with SMTP id q12mr14715076ejd.281.1638447920059;
-        Thu, 02 Dec 2021 04:25:20 -0800 (PST)
-Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id eg8sm1998507edb.75.2021.12.02.04.25.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        bh=N3oqLot0YlcbRcNAc07Y6XrPI/fvmTo4H4nilHDSxes=;
+        b=PPRJkEyaLmCO9zyFWjXPunm/fCcGIMjOZXLeinR7fMbARl/LvAeHXMNIxIlEPrJ3j9
+         Ra+HRpmtt/Ea534LcVxKT+dX3MH6WaXqzoEjD+t16Q/KId5kdn+JR807u8uUwouf3Uob
+         oe81SetOi/xO9dv1HmSXHlkW1FeO+uZswKQHJfytCopZHKJ4kYcaoZjlR6L/NAWkM12s
+         GiITHNPPsOyGzBtlH04mnFZuvtda6x4sr4aA/Z8XqT1sUjDoTyN3mxDveWvL238jbpdZ
+         irdTw1JXcisnjmQ/1S9AP8ygg7k7L6Ho54sOzUzO+/5hfpfwurFMSwFUv3orYz5LKuXX
+         0VeA==
+X-Gm-Message-State: AOAM533q3mU6lPIZyLoAnX9qeBioS+8QIeqCMQ4ZOGQdRBnqJ5JVuIga
+        XZoqfKm8xDxYbGx9u4+Uv+iWfN8Gx86VgQ==
+X-Google-Smtp-Source: ABdhPJw5nIq0U7WDMKDAyrhtujXgC0srPn/xSw7MC8YtsfPOV7GoYnUpJGX0RoOQOtMhzIwKK+aaOg==
+X-Received: by 2002:a17:907:7664:: with SMTP id kk4mr14550477ejc.319.1638447919059;
         Thu, 02 Dec 2021 04:25:19 -0800 (PST)
+Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id eg8sm1998507edb.75.2021.12.02.04.25.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Dec 2021 04:25:18 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v5 12/20] trace-cmd library: Extend the input handler with trace data decompression context
-Date:   Thu,  2 Dec 2021 14:24:59 +0200
-Message-Id: <20211202122507.43572-13-tz.stoyanov@gmail.com>
+Subject: [PATCH v5 11/20] trace-cmd library: Read compression header
+Date:   Thu,  2 Dec 2021 14:24:58 +0200
+Message-Id: <20211202122507.43572-12-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211202122507.43572-1-tz.stoyanov@gmail.com>
 References: <20211202122507.43572-1-tz.stoyanov@gmail.com>
@@ -64,124 +64,99 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The CPU trace data is compressed in chunks, as chunk's size is multiple
-trace pages. The input handler is extended with the necessary
-structures, to control the data decompression. There are two approaches
-for data decompression, both are supported and can be used in different
-use cases:
- - in-memory decompression, page by page.
- - using a temporary file
+Trace file version 7 introduced new mandatory compression header,
+storing information about the compression algorithm used to compress the
+trace file. Added code to read that header and to initialize compression
+context according to it.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 59 ++++++++++++++++++++++++++++++-------
- 1 file changed, 48 insertions(+), 11 deletions(-)
+ lib/trace-cmd/trace-input.c | 34 ++++++++++++++++++++++++++++++++--
+ 1 file changed, 32 insertions(+), 2 deletions(-)
 
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 3d67fb97..bfe9d333 100644
+index bd655d0c..3d67fb97 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -54,6 +54,24 @@ struct page {
- #endif
- };
+@@ -190,6 +190,7 @@ __thread struct tracecmd_input *tracecmd_curr_thread_handle;
  
-+struct zchunk_cache {
-+	struct list_head		list;
-+	struct tracecmd_compress_chunk *chunk;
-+	void				*map;
-+	int				ref;
-+};
-+
-+struct cpu_zdata {
-+	/* uncompressed cpu data */
-+	int			fd;
-+	char			file[26]; /* strlen(COMPR_TEMP_FILE) */
-+	unsigned int		count;
-+	unsigned int		last_chunk;
-+	struct list_head	cache;
-+	struct tracecmd_compress_chunk	*chunks;
-+};
-+
-+#define COMPR_TEMP_FILE "/tmp/trace_cpu_dataXXXXXX"
- struct cpu_data {
- 	/* the first two never change */
- 	unsigned long long	file_offset;
-@@ -72,6 +90,7 @@ struct cpu_data {
- 	int			page_cnt;
- 	int			cpu;
- 	int			pipe_fd;
-+	struct cpu_zdata	compress;
- };
+ #define CHECK_READ_STATE(H, S) ((H)->file_version < FILE_VERSION_SECTIONS && (H)->file_state >= (S))
+ #define HAS_SECTIONS(H) ((H)->flags & TRACECMD_FL_SECTIONED)
++#define HAS_COMPRESSION(H) ((H)->flags & TRACECMD_FL_COMPRESSION)
  
- struct cpu_file_data {
-@@ -151,6 +170,8 @@ struct tracecmd_input {
- 	bool			use_trace_clock;
- 	bool			read_page;
- 	bool			use_pipe;
-+	bool			read_zpage; /* uncompress pages in memory, do not use tmp files */
-+	bool			cpu_compressed;
- 	int			file_version;
- 	unsigned int		cpustats_size;
- 	struct cpu_data 	*cpu_data;
-@@ -3294,6 +3315,7 @@ static int init_cpu_data(struct tracecmd_input *handle)
- 		endian = KBUFFER_ENDIAN_LITTLE;
+ static int read_options_type(struct tracecmd_input *handle);
  
- 	for (cpu = 0; cpu < handle->cpus; cpu++) {
-+		handle->cpu_data[cpu].compress.fd = -1;
- 		handle->cpu_data[cpu].kbuf = kbuffer_alloc(long_size, endian);
- 		if (!handle->cpu_data[cpu].kbuf)
- 			goto out_free;
-@@ -4030,6 +4052,7 @@ static inline void free_buffer(struct input_buffer_instance *buf)
-  */
- void tracecmd_close(struct tracecmd_input *handle)
- {
-+	struct zchunk_cache *cache;
- 	struct file_section *del_sec;
- 	int cpu;
- 	int i;
-@@ -4049,17 +4072,31 @@ void tracecmd_close(struct tracecmd_input *handle)
- 		/* The tracecmd_peek_data may have cached a record */
- 		free_next(handle, cpu);
- 		free_page(handle, cpu);
--		if (handle->cpu_data && handle->cpu_data[cpu].kbuf) {
--			kbuffer_free(handle->cpu_data[cpu].kbuf);
--			if (handle->cpu_data[cpu].page_map)
--				free_page_map(handle->cpu_data[cpu].page_map);
--
--			if (handle->cpu_data[cpu].page_cnt)
--				tracecmd_warning("%d pages still allocated on cpu %d%s",
--						 handle->cpu_data[cpu].page_cnt, cpu,
--						 show_records(handle->cpu_data[cpu].pages,
--							      handle->cpu_data[cpu].nr_pages));
--			free(handle->cpu_data[cpu].pages);
-+		if (handle->cpu_data) {
-+			if (handle->cpu_data[cpu].kbuf) {
-+				kbuffer_free(handle->cpu_data[cpu].kbuf);
-+				if (handle->cpu_data[cpu].page_map)
-+					free_page_map(handle->cpu_data[cpu].page_map);
-+
-+				if (handle->cpu_data[cpu].page_cnt)
-+					tracecmd_warning("%d pages still allocated on cpu %d%s",
-+							 handle->cpu_data[cpu].page_cnt, cpu,
-+							 show_records(handle->cpu_data[cpu].pages,
-+								      handle->cpu_data[cpu].nr_pages));
-+				free(handle->cpu_data[cpu].pages);
-+			}
-+			if (handle->cpu_data[cpu].compress.fd >= 0) {
-+				close(handle->cpu_data[cpu].compress.fd);
-+				unlink(handle->cpu_data[cpu].compress.file);
-+			}
-+			while (!list_empty(&handle->cpu_data[cpu].compress.cache)) {
-+				cache = container_of(handle->cpu_data[cpu].compress.cache.next,
-+						     struct zchunk_cache, list);
-+				list_del(&cache->list);
-+				free(cache->map);
-+				free(cache);
-+			}
-+			free(handle->cpu_data[cpu].compress.chunks);
- 		}
+@@ -3784,7 +3785,9 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
+ 	char test[] = TRACECMD_MAGIC;
+ 	unsigned int page_size;
+ 	size_t offset;
+-	char *version;
++	char *version = NULL;
++	char *zver = NULL;
++	char *zname = NULL;
+ 	char buf[BUFSIZ];
+ 	unsigned long ver;
+ 
+@@ -3822,9 +3825,12 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
  	}
+ 	handle->file_version = ver;
+ 	free(version);
++	version = NULL;
  
+ 	if (handle->file_version >= FILE_VERSION_SECTIONS)
+ 		handle->flags |= TRACECMD_FL_SECTIONED;
++	if (handle->file_version >= FILE_VERSION_COMPRESSION)
++		handle->flags |= TRACECMD_FL_COMPRESSION;
+ 
+ 	if (do_read_check(handle, buf, 1))
+ 		goto failed_read;
+@@ -3854,6 +3860,26 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
+ 	handle->total_file_size = lseek64(handle->fd, 0, SEEK_END);
+ 	lseek64(handle->fd, offset, SEEK_SET);
+ 
++	if (HAS_COMPRESSION(handle)) {
++		zname = read_string(handle);
++		if (!zname)
++			goto failed_read;
++		zver = read_string(handle);
++		if (!zver)
++			goto failed_read;
++		if (strcmp(zname, "none")) {
++			handle->compress = tracecmd_compress_alloc(zname, zver,
++								   handle->fd,
++								   handle->pevent, NULL);
++			if (!handle->compress) {
++				tracecmd_warning("Unsupported file compression %s %s", zname, zver);
++				goto failed_read;
++			}
++		}
++		free(zname);
++		free(zver);
++	}
++
+ 	if (HAS_SECTIONS(handle)) {
+ 		if (read8(handle, &(handle->options_start))) {
+ 			tracecmd_warning("Filed to read the offset of the first option section");
+@@ -3866,6 +3892,9 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
+ 	return handle;
+ 
+  failed_read:
++	free(version);
++	free(zname);
++	free(zver);
+ 	free(handle);
+ 
+ 	return NULL;
+@@ -4064,7 +4093,8 @@ void tracecmd_close(struct tracecmd_input *handle)
+ 	if (handle->flags & TRACECMD_FL_BUFFER_INSTANCE)
+ 		tracecmd_close(handle->parent);
+ 	else {
+-		/* Only main handle frees plugins and pevent */
++		/* Only main handle frees plugins, pevent and compression context */
++		tracecmd_compress_destroy(handle->compress);
+ 		tep_unload_plugins(handle->plugin_list, handle->pevent);
+ 		tep_free(handle->pevent);
+ 	}
 -- 
 2.33.1
 
