@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 727F3C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Dec 2021 12:19:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36210C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Dec 2021 12:19:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357775AbhLBMXT (ORCPT
+        id S1357784AbhLBMXU (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 Dec 2021 07:23:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35200 "EHLO
+        Thu, 2 Dec 2021 07:23:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357784AbhLBMXS (ORCPT
+        with ESMTP id S1357749AbhLBMXT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 2 Dec 2021 07:23:18 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA58EC06174A
-        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Dec 2021 04:19:55 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id z5so50215420edd.3
-        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Dec 2021 04:19:55 -0800 (PST)
+        Thu, 2 Dec 2021 07:23:19 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2FE7C061757
+        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Dec 2021 04:19:56 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id o20so114524267eds.10
+        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Dec 2021 04:19:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/tn2tYsFpEqDRifAEmJSAMR66AAJ1kM4Zd2AiiEOzf4=;
-        b=omrGOnszSN/DCipPJI1maaop9jH7KBDwicWx4ZcuY3RYkI/jxFeViwmluFz3uBwrfW
-         JRAfe0nR9VPa4ju1shNBJs6v79yvdXoULp/RSou4tIodxY0L1VzTIJ0qG99juDZ35fm2
-         vQw4xB8D5uMmmEojIUGfIdafk20C6lKQ0muqvwr+5sevVoaTQQ7ZpmbOpdpkNfHVcVuJ
-         HW2s6PGgocI3bMUSYXY8iN+v4zZTKm3xodU+xKwOpWfbJUzP4cMDosQdZYeNURLzBVNn
-         GbvpXdLLt3w0Q0AXHSnIBLZ2BOYk3lzV+dPRYizAzIPSLrCeCSEQfJQWqE9lr+qFst+k
-         BPNQ==
+        bh=qkFWA9m/wPNbT3BwMwBPVrSzD47LALII3aAmqKi2ek8=;
+        b=axE/gtvGic8WYiPfE9Sl9zGPsqY8TaHq/NmoWUJnqkDs5n5vFqHq2kvKujYMZcx3jv
+         KPSrNSEVJDFHOLO2mD//d+TO9vuRSuX/jTTN9IOZXhYaDAgMjqnXzn8Az2R+iRHRaxSB
+         VWOn7D6o6gG2DUTGpqccL3YjyaWfT+x/IAj5Ilk3WGYDMHv60CQVdSa2gbrc7Th7xsMM
+         Y2Ykn6y4F3cQs99oyBesLKhF/KrHTPew/gJKENNoW7Lk94x9wFATiOHAios6rv7dCq1Y
+         pg/Zurqdidi31bVkc78r6Ll1dVXcTt0ZtES3hg8baaxKUTAOgkiLxiL4ia9hF3P3xVV/
+         8noQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/tn2tYsFpEqDRifAEmJSAMR66AAJ1kM4Zd2AiiEOzf4=;
-        b=AmfdiB1uZu1Lpjg7KGZDlJqST636Mz4e/eVGz27Oq8efSC3KaBDqV5v68SLhz3pNww
-         N6a+RIQdpSUpuoLoeAQJ2QC17lefhXfahAjIbQ/OzOGd1hwsOYC6mk8+VCtSpQA/PHwp
-         BFF7UDvDr3AAyYQB6c7Jcv27A+90j5H+Z1AzL/FRhBgwgC4FDKilVoZwi/nB5R8OlVBV
-         ZtbLPwnx3o0QAhDoevC727FTf6m97xT7LZDo1wAmUBQQ6cs8TZObuCXoHRW7b00WZUGm
-         gh5WvObpUkQgCyLAvEh3L2LTiezfEBAPYg3vvP0UVdfI1DKKQKIV7ZP4qEkg2VJGPk0J
-         6Njw==
-X-Gm-Message-State: AOAM5322R9odAdByWeu9uAHWbHlxE46hoJL6nlYHiGTTPVR5AHPNWibV
-        vQMI/QRHa5YVziHqLGf+FkhYdDG3KYEVfg==
-X-Google-Smtp-Source: ABdhPJwoYJV6YKvkrbWzk4Kb+tpZaLwnvQbgsHkmUZw0tZh28Yys1KpMgQTyDIehezxs/8Jg36SRqg==
-X-Received: by 2002:a50:f189:: with SMTP id x9mr17443087edl.95.1638447594427;
-        Thu, 02 Dec 2021 04:19:54 -0800 (PST)
+        bh=qkFWA9m/wPNbT3BwMwBPVrSzD47LALII3aAmqKi2ek8=;
+        b=Y609A+o2vdK1CzzzD2IbL1abVKhU9BjPtl9k8eUrFUkHei0HMQhWkdUpqQA2+BM2m8
+         DUKnjSZzgY0X6jT9LmF2eKPx28NJqdddfGNJ/tPSS/rPLnu0XaKSk+PTRnSw6EjFOD/M
+         R/Nk8fqPOZGvcdmtsmZJdw/Z0bHdiIFuvaE+rpyIAEh5ntyuwm6B6WA8Q68cAmBj71//
+         w5qYFe0ro0XygOppUgea97rl0+/MYg/5x0qaa4XbWRxAQged1dAJdVcpHFhC4EpJFC25
+         Z0wTclmkjVHMCHfUr1iPYmeZ6CgTb+wFoXNdydFvviD7BzcvQhbmaQFrBuQC4xnMp/hk
+         Ahnw==
+X-Gm-Message-State: AOAM530Z7pM9T1IYHWVdIS9Ntwr2zmVrtCaNrD81nu+idpLejh/7fcZu
+        lqizmwRaCzzv74+MMrHlB8mNtz3/QiFwfA==
+X-Google-Smtp-Source: ABdhPJy2/yXDi65R+ZtIdbyaRk//dtRHPn4kRiWKYvujzqK9u2/BXXcUOR3MpAMcGolkqGpdyS6HAg==
+X-Received: by 2002:a17:907:3f9d:: with SMTP id hr29mr15376242ejc.369.1638447595359;
+        Thu, 02 Dec 2021 04:19:55 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id y15sm2229019eda.13.2021.12.02.04.19.53
+        by smtp.gmail.com with ESMTPSA id y15sm2229019eda.13.2021.12.02.04.19.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Dec 2021 04:19:53 -0800 (PST)
+        Thu, 02 Dec 2021 04:19:54 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 3/5] trace-cmd library: Rename tracecmd_output_allocate()
-Date:   Thu,  2 Dec 2021 14:19:47 +0200
-Message-Id: <20211202121949.43084-4-tz.stoyanov@gmail.com>
+Subject: [PATCH 4/5] trace-cmd library: Remove APIs for create and init output handle
+Date:   Thu,  2 Dec 2021 14:19:48 +0200
+Message-Id: <20211202121949.43084-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211202121949.43084-1-tz.stoyanov@gmail.com>
 References: <20211202121949.43084-1-tz.stoyanov@gmail.com>
@@ -64,90 +64,97 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The existing tracecmd_output_allocate() API is renamed to
-tracecmd_output_create_fd(), to be consistent with
-tracecmd_output_create() API.
+These APIs are redundant, their functionality can be replaced by
+existing library APIs. Removed them, to simplify the API set:
+  tracecmd_create_init_fd()
+  tracecmd_create_init_file()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/include/private/trace-cmd-private.h | 2 +-
- lib/trace-cmd/trace-output.c                      | 8 ++++----
- tracecmd/trace-record.c                           | 2 +-
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ .../include/private/trace-cmd-private.h       |  2 --
+ lib/trace-cmd/trace-output.c                  | 36 -------------------
+ tracecmd/trace-stream.c                       |  3 +-
+ 3 files changed, 2 insertions(+), 39 deletions(-)
 
 diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 80027c9e..79196147 100644
+index 79196147..069283c7 100644
 --- a/lib/trace-cmd/include/private/trace-cmd-private.h
 +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -269,7 +269,6 @@ struct tracecmd_event_list {
- struct tracecmd_option;
- struct tracecmd_msg_handle;
- 
--struct tracecmd_output *tracecmd_output_allocate(int fd);
- int tracecmd_output_set_msg(struct tracecmd_output *handle,
- 			    struct tracecmd_msg_handle *msg_handle);
- int tracecmd_output_set_trace_dir(struct tracecmd_output *handle, const char *tracing_dir);
-@@ -280,6 +279,7 @@ int tracecmd_output_write_headers(struct tracecmd_output *handle,
- 				  struct tracecmd_event_list *list);
- 
+@@ -281,9 +281,7 @@ int tracecmd_output_write_headers(struct tracecmd_output *handle,
  struct tracecmd_output *tracecmd_output_create(const char *output_file);
-+struct tracecmd_output *tracecmd_output_create_fd(int fd);
+ struct tracecmd_output *tracecmd_output_create_fd(int fd);
  struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, int cpus);
- struct tracecmd_output *tracecmd_create_init_fd(int fd);
+-struct tracecmd_output *tracecmd_create_init_fd(int fd);
  
+-struct tracecmd_output *tracecmd_create_init_file(const char *output_file);
+ struct tracecmd_option *tracecmd_add_option(struct tracecmd_output *handle,
+ 					    unsigned short id, int size,
+ 					    const void *data);
 diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index 2f8ebf25..067deae8 100644
+index 067deae8..a20e42df 100644
 --- a/lib/trace-cmd/trace-output.c
 +++ b/lib/trace-cmd/trace-output.c
-@@ -898,7 +898,7 @@ out_free:
+@@ -1828,42 +1828,6 @@ struct tracecmd_output *tracecmd_output_create(const char *output_file)
+ 	return out;
  }
  
+-struct tracecmd_output *tracecmd_create_init_fd(int fd)
+-{
+-	struct tracecmd_output *out;
+-
+-	out = tracecmd_output_create_fd(fd);
+-	if (!out)
+-		return NULL;
+-	if (tracecmd_output_write_init(out))
+-		goto error;
+-	if (tracecmd_output_write_headers(out, NULL))
+-		goto error;
+-
+-	return out;
+-error:
+-	tracecmd_output_close(out);
+-	return NULL;
+-}
+-
+-struct tracecmd_output *tracecmd_create_init_file(const char *output_file)
+-{
+-	struct tracecmd_output *handle;
+-	int fd;
+-
+-	fd = open(output_file, O_RDWR | O_CREAT | O_TRUNC | O_LARGEFILE, 0644);
+-	if (fd < 0)
+-		return NULL;
+-	handle = tracecmd_create_init_fd(fd);
+-	if (!handle) {
+-		close(fd);
+-		unlink(output_file);
+-		return NULL;
+-	}
+-
+-	return handle;
+-}
+-
  /**
-- * tracecmd_output_allocate - allocate new output handle to a trace file
-+ * tracecmd_output_create_fd - allocate new output handle to a trace file
-  * @fd: File descriptor for the handle to write to.
-  *
-  * Allocate a tracecmd_output descriptor and perform minimal initialization.
-@@ -909,7 +909,7 @@ out_free:
-  * a tracecmd data file. In case of an error, NULL is returned. The returned
-  * handle must be freed with tracecmd_output_close() or tracecmd_output_free()
-  */
--struct tracecmd_output *tracecmd_output_allocate(int fd)
-+struct tracecmd_output *tracecmd_output_create_fd(int fd)
- {
- 	struct tracecmd_output *handle;
+  * tracecmd_copy - copy the headers of one trace.dat file for another
+  * @ihandle: input handle of the trace.dat file to copy
+diff --git a/tracecmd/trace-stream.c b/tracecmd/trace-stream.c
+index b47b208c..ee310f3d 100644
+--- a/tracecmd/trace-stream.c
++++ b/tracecmd/trace-stream.c
+@@ -43,11 +43,12 @@ trace_stream_init(struct buffer_instance *instance, int cpu, int fd, int cpus,
+ 		tfd = fileno(fp);
  
-@@ -1819,7 +1819,7 @@ struct tracecmd_output *tracecmd_output_create(const char *output_file)
- 		if (fd < 0)
+ 		ofd = dup(tfd);
+-		trace_output = tracecmd_create_init_fd(ofd);
++		trace_output = tracecmd_output_create_fd(ofd);
+ 		if (!trace_output) {
+ 			fclose(fp);
  			return NULL;
+ 		}
++		tracecmd_output_write_headers(trace_output, NULL);
+ 		tracecmd_output_free(trace_output);
  	}
--	out = tracecmd_output_allocate(fd);
-+	out = tracecmd_output_create_fd(fd);
- 	if (!out && fd >= 0) {
- 		close(fd);
- 		unlink(output_file);
-@@ -1832,7 +1832,7 @@ struct tracecmd_output *tracecmd_create_init_fd(int fd)
- {
- 	struct tracecmd_output *out;
  
--	out = tracecmd_output_allocate(fd);
-+	out = tracecmd_output_create_fd(fd);
- 	if (!out)
- 		return NULL;
- 	if (tracecmd_output_write_init(out))
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 677a4bd9..b4200db1 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -3737,7 +3737,7 @@ setup_connection(struct buffer_instance *instance, struct common_record_context
- 		if (ret)
- 			goto error;
- 	} else {
--		network_handle = tracecmd_output_allocate(msg_handle->fd);
-+		network_handle = tracecmd_output_create_fd(msg_handle->fd);
- 		if (!network_handle)
- 			goto error;
- 		if (tracecmd_output_write_headers(network_handle, listed_events))
 -- 
 2.33.1
 
