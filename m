@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E593C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Dec 2021 12:29:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1088C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Dec 2021 12:29:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbhLBMch (ORCPT
+        id S1346826AbhLBMch (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Thu, 2 Dec 2021 07:32:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37506 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346825AbhLBMcf (ORCPT
+        with ESMTP id S1346814AbhLBMcf (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 2 Dec 2021 07:32:35 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4599FC06175B
-        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Dec 2021 04:29:13 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id z5so50321468edd.3
-        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Dec 2021 04:29:13 -0800 (PST)
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 311FEC061759
+        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Dec 2021 04:29:12 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id o20so114625972eds.10
+        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Dec 2021 04:29:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/LcOcTAQq/E0EFpf44euFOpIpRgzGloaNazoVxOO5cs=;
-        b=MwAPTxv9ToiollQ4thYvKi2cnOaM9oXqne8T3cbKlYc72HR2ssPAVOw5QCbTitOE0A
-         Ay4Z+ZhQvhrDxPZ7KyQFsGpj9mFwxriG28W+BjqvA16HBA+ipwpRDN20vNxrqafLJlW+
-         gfpi3NnwD0rJl+JYa8fTP/QGkqGi1toV9l4kfpV1wq/IslSnWCfCYszAHnX3fmNtMXpj
-         PPkJ280BqgCEZvSExugMgHjr4xRGXb93Sz69O9AAXUQrQ9DnWN14F/CElt2xr1wAHmQj
-         PhGb1FbAIiWa2jjkKU56DkuxA94LH5gwGlEIvpCwY6D6FqtyI18R/GL0K5Qvv9Me80J1
-         j7pg==
+        bh=2pB8ZvqNIlqoaTXy8qeSvxTG+PBih+zcah2HllOhwAE=;
+        b=Pnh3sMYCwG5q99AVaU+lui6MYmYvZ9Z4iLOWMqKPYV6T6mr4LDD1hIodYzZmKqsCOI
+         QbqcYB/V0ZbEfqXm9OPkeR+J8IDgR6Uf5DM7FVZtXPDWZoI/e1DrCSTKdp+wgPifcOEx
+         BQdOa0hj3vdBnF5MboeLBM9WcD7yKLpk/E86BvNs8JWbtZde8cPDBaeOlsowGqbcJ3Ve
+         AKuOnZBge7ih3y4f8ARk4dPh24ONjdwXxCS7XW5liJ/LlZ1e7f5SO0jqTkJyUt6d4OEY
+         aV0pcPmlCtIG05jfmbXbIa5Ms3dNooePtXeRWY+FCKhz9XE6DnKl5zqzPPnn6nSSXHSu
+         xhZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/LcOcTAQq/E0EFpf44euFOpIpRgzGloaNazoVxOO5cs=;
-        b=5F8nIF5L7R2EOIGsgnkV40NvXB8HDORTN7LLLvuARNgagU9N78ITYkmXrCyzNP2Nkd
-         rtu21UvO9YJtxX7M8elmJBMPRBOJDPn5lEM2bKJRnAtSnKAPzVsHBlAmxc3FN8H8Bs5r
-         BYCJ2ivIwrAYdWgfHG9ojseSwagTcau/6fwPFIsjvjD0C+vhMu9YC9oMxE/DV3ltXQfG
-         ckmZDva3RyCGOxHbfhFePJSf0Px9z5w0l2/g/5DZvdxWBmWzs5XHhGv4lS32NnVFNwur
-         ETjquDLO4JPIy1zPbRqLMg3Wt13TXfLg3nCdsRGVM06wPazhdywuTqEZstMIYrTAgLX4
-         lLlA==
-X-Gm-Message-State: AOAM533ZnZ40GCUDr8pgukziGpVZb15Db5alc/7wj4F1gmi6cJQXtDs5
-        RvrBbpITvbd7bJ0S5TSt0gbmBvdu7b1Xfw==
-X-Google-Smtp-Source: ABdhPJzBP+oWImuv+kMnvCJg7TA3msOXlcSj+lBncmfPYRF6FVPQ7LcO66HzayQ79omnLONgrVWgcA==
-X-Received: by 2002:a17:906:794e:: with SMTP id l14mr15490463ejo.64.1638448151831;
-        Thu, 02 Dec 2021 04:29:11 -0800 (PST)
+        bh=2pB8ZvqNIlqoaTXy8qeSvxTG+PBih+zcah2HllOhwAE=;
+        b=t+g/zxQcsUHqQcNNJR0I7Zj3B7yV8sMfZ+RkhtRnck/1bFPK2MNhog2fCiZNh2J/FQ
+         xFTpqTJpovQ9WlbwWXGZL4pjLVEh8uot4hcHHo0XlxUUzjLBv4SRCl+/SL2RckV3RurV
+         1oSv012QsU3PSfWNr0yU7hagtA32qsPsCmLMod5CoRr7V1VXd3GtG39WbBr87CygKHOw
+         sz3ao5Qe/ryRGhoXAu9/y5ztaxeEmWJfq/NnrrUoMNskdmv1SJpwAcO4YkQFdEoD5ZOU
+         zJjtW8aU2xTaShDunRj1dAGUUnbH3b35Z3VW/t7bs3zF7XINKga5OMgT+FmeOBMM6vvx
+         3KEQ==
+X-Gm-Message-State: AOAM530R1nteg25B6hSG0vd0P/1jAgLg4iEC0TX2Z/CaQdBulF8qvRNO
+        4VZ1gtnIap1TEiJ9w1r/h4vigo5izGG4+Q==
+X-Google-Smtp-Source: ABdhPJyeEUXFU98CB//5UMjs+bsaGKVNGx4iNFJEURvJWkyEBSEzCnh8cyuSiXCxtP2hxXqizBAkGg==
+X-Received: by 2002:a50:fb16:: with SMTP id d22mr17608481edq.367.1638448150814;
+        Thu, 02 Dec 2021 04:29:10 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id m16sm2182692edd.61.2021.12.02.04.29.10
+        by smtp.gmail.com with ESMTPSA id m16sm2182692edd.61.2021.12.02.04.29.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Dec 2021 04:29:11 -0800 (PST)
+        Thu, 02 Dec 2021 04:29:10 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v5 03/10] trace-cmd dump: Add helpers for processing trace file sections
-Date:   Thu,  2 Dec 2021 14:29:00 +0200
-Message-Id: <20211202122907.44008-4-tz.stoyanov@gmail.com>
+Subject: [PATCH v5 02/10] trace-cmd dump: Print compression header
+Date:   Thu,  2 Dec 2021 14:28:59 +0200
+Message-Id: <20211202122907.44008-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211202122907.44008-1-tz.stoyanov@gmail.com>
 References: <20211202122907.44008-1-tz.stoyanov@gmail.com>
@@ -64,64 +64,55 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Added a new local database for storing sections, found in trace file
-version 7.
+Dump the compression header of trace file version 7
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-dump.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+ tracecmd/trace-dump.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
 diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
-index a1fc6d7b..e3c40a0d 100644
+index 75e40911..a1fc6d7b 100644
 --- a/tracecmd/trace-dump.c
 +++ b/tracecmd/trace-dump.c
-@@ -43,8 +43,18 @@ enum dump_items {
- 	OPTIONS		= (1 << 9),
- 	FLYRECORD	= (1 << 10),
- 	CLOCK		= (1 << 11),
-+	SECTIONS	= (1 << 12),
- };
- 
-+struct file_section {
-+	int id;
-+	unsigned long long offset;
-+	struct file_section *next;
-+	enum dump_items verbosity;
-+};
-+
-+static struct file_section *sections;
-+
- enum dump_items verbosity;
- 
- #define DUMP_CHECK(X) ((X) & verbosity)
-@@ -768,6 +778,17 @@ static void dump_therest(int fd)
- 	}
+@@ -217,6 +217,29 @@ static void dump_initial_format(int fd)
+ 	do_print(SUMMARY, "\t\t%d\t[Page size, bytes]\n", val4);
  }
  
-+static void free_sections(void)
++static void dump_compress(int fd)
 +{
-+	struct file_section *del;
++	char zname[DUMP_SIZE];
++	char zver[DUMP_SIZE];
 +
-+	while (sections) {
-+		del = sections;
-+		sections = sections->next;
-+		free(del);
++	if (file_version < FILE_VERSION_COMPRESSION)
++		return;
++
++	/* get compression header */
++	if (read_file_string(fd, zname, DUMP_SIZE))
++		die("no compression header");
++	if (read_file_string(fd, zver, DUMP_SIZE))
++		die("no compression version");
++	do_print((SUMMARY), "\t\t%s\t[Compression algorithm]\n", zname);
++	do_print((SUMMARY), "\t\t%s\t[Compression version]\n", zver);
++
++	if (strcmp(zname, "none")) {
++		compress = tracecmd_compress_alloc(zname, zver, fd, tep, NULL);
++		if (!compress)
++			die("cannot uncompress the file");
 +	}
 +}
 +
- static void dump_file(const char *file)
+ static void dump_header_page(int fd)
  {
- 	int fd;
-@@ -793,7 +814,7 @@ static void dump_file(const char *file)
- 	dump_cmdlines(fd);
- 	dump_cpus_count(fd);
- 	dump_therest(fd);
--
-+	free_sections();
- 	tep_free(tep);
- 	tep = NULL;
- 	close(fd);
+ 	unsigned long long size;
+@@ -760,6 +783,7 @@ static void dump_file(const char *file)
+ 	do_print(SUMMARY, "\n Tracing meta data in file %s:\n", file);
+ 
+ 	dump_initial_format(fd);
++	dump_compress(fd);
+ 	dump_header_page(fd);
+ 	dump_header_event(fd);
+ 	dump_ftrace_events_format(fd);
 -- 
 2.33.1
 
