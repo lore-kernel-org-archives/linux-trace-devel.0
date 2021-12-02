@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E7FAC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Dec 2021 12:22:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF408C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Dec 2021 12:22:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbhLBMZz (ORCPT
+        id S1346842AbhLBM0C (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 Dec 2021 07:25:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35676 "EHLO
+        Thu, 2 Dec 2021 07:26:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346791AbhLBMZX (ORCPT
+        with ESMTP id S1358228AbhLBMZW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 2 Dec 2021 07:25:23 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D813AC06175D
-        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Dec 2021 04:22:00 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id y13so115179746edd.13
-        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Dec 2021 04:22:00 -0800 (PST)
+        Thu, 2 Dec 2021 07:25:22 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D59A1C06175B
+        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Dec 2021 04:21:59 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id v1so115057065edx.2
+        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Dec 2021 04:21:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gsRbpbvVRL+ROJnR4Eo4jt7Frihvrr9wYfe5iEV4K9c=;
-        b=G1Wdyh+sVw2lCKmutp9vBnRHf3HKv2MLyIzoraZiw/w7p2TlKzcRmZDADMMqVXYNXm
-         D6mcoAHnSnTyZ+tRO7j9ivE6QNMhfdJ0uanvstGNVJurM8B9kojVKNHK0qpjcVXrJuB8
-         e5wjJMzOtU8oTxSnVRsYvijPxZJ/Vo7XfAY/04lazxX0H7L3IkKtUdyW0O51YMsEaQHA
-         JPSNclrg8NsDHBkWB40KlDrscsG8qOFye3C/hkr5tdBV8BAaHucpC9d71DXJ5bU6lERD
-         6fCIDftSlxa6lCWrS+SlpsUlvWWLhsJnhLf/3xBbPwMLUVaXWMTvKkJytGUDPl0Hxpc7
-         i/Eg==
+        bh=QehmBWhPFbnCI3aPwLEUMwj3cuTfD4pUXZbIxzH99K4=;
+        b=AekmHj+dfO9eF1ioFTYmvFJ2AzudXGYeJ/LJSeqIfE7g2y6ZalOCNzpRyAFhCbyyJv
+         EeVQqT1+foEpxLciJN+YzA15R3O5ECMN5M6ekcgjjTky5SKDoIyQcOyXcudKK1hJzSkS
+         WY5uGr8djT5810xAXXxOjeCn/1xUUpeYOJgFYrnb/NzqdllwlsRhJdZks900+QxT0mEw
+         LQiEKFaNRCM2Oe2SY+nHy4TFsB9JXy+7HUefEm5oZvgVGK15urVYVTCS5tLy2PllA8Jm
+         lWw5C1pVLn3UXTC8miZuqjmRPakqbQYmo0l9rzArMut39arVu1wN7KPgi51Xui0JlL4S
+         KUGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gsRbpbvVRL+ROJnR4Eo4jt7Frihvrr9wYfe5iEV4K9c=;
-        b=KHtxYFeO30MRXZFGG/u4KbnNnIBmowWnOherrdBb+l1vd4uwbpmGvJM/32kySzqtvf
-         cwxB2lj8tP+XhKJIQafQXhwl8quRSSzpgABpOScjFLyMgRo4CCl9mdD7qYEbC3zR+5jK
-         3aP4v1Kuv7FJ9UkXi78XViiO6K+AmEicO92UT/fW85qdDKo1wcde2tzkP2uHYVwtWOR/
-         XIDGEM2wNTru2rFVXCcmLgcZ1ZlusqT1HB3xAWfncUzRjHV7/GeUhtNXm9Ile/w3aXBT
-         2z+eXhy1zr/qDVLFo5VC8vDDJcRmy9ov3o/Qj1v8ltC/ABNcoBtvJ5iGrj6HPy+znHl8
-         gEXg==
-X-Gm-Message-State: AOAM530cCEWsYeOB49+EKdjhiGQMUy0K6xWJ1wc9XaNGNaUe9bbwJrgC
-        n0R91AN0asIGwpeYlzOj3G9InvyCKuoW9g==
-X-Google-Smtp-Source: ABdhPJxIpFyimXRIqYuTG418JtXcu66wsH6xAiBoCsw+7QVpkJyDUjLM6bUfcYNXJmU/ak1Y+sniZA==
-X-Received: by 2002:a17:906:12db:: with SMTP id l27mr15112300ejb.244.1638447719442;
-        Thu, 02 Dec 2021 04:21:59 -0800 (PST)
+        bh=QehmBWhPFbnCI3aPwLEUMwj3cuTfD4pUXZbIxzH99K4=;
+        b=t0+9X8ZYByh/IbIzARCUGKeMtDERADcc7pPPlXboMLytaTDDqbeWkmmsQNAJPaS4UM
+         1nBFW27RBFcl94nhr8kwIN/ZTQGBYscan/umpMw3M+JHgIO1bKt6GfJIXN1aMhOFNZf8
+         F0fK9dPfj3n5ccaN0DmaD8hnnlay4GTB75bJYpl3ITfTDHzLX1D1fRz1mETWrjgv48Ov
+         2S2nFKK13B62+Ps7BfG6TqfKk12E2ZqMD+pXe04TDiVhRG7uxf3plOxuxEvy9fMeOhNO
+         6N7njufsInMpIRieTGvH5O603sLrkWS2KqsjeJAESpf+YUuSCx10ouox8oANLfcmXolL
+         niBQ==
+X-Gm-Message-State: AOAM530p5rAD9wWKc39rbzMCNBFGJAcfVs57bzwHJdZKVeKfYPecqbxX
+        x7NJXNSQyp9ZOQ8g1lPnaN++SoC3v9sVzg==
+X-Google-Smtp-Source: ABdhPJyNpRfUBu0MNyNIdF43rUUDaq0VZxed+uF0ZcWXDiI7ylRpS7nMuSPHllbbwvVl0LhVz9P22Q==
+X-Received: by 2002:a17:906:9753:: with SMTP id o19mr15220159ejy.243.1638447718436;
+        Thu, 02 Dec 2021 04:21:58 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id gb42sm1892772ejc.49.2021.12.02.04.21.58
+        by smtp.gmail.com with ESMTPSA id gb42sm1892772ejc.49.2021.12.02.04.21.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Dec 2021 04:21:59 -0800 (PST)
+        Thu, 02 Dec 2021 04:21:57 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 05/23] trace-cmd library: Write header before file sections
-Date:   Thu,  2 Dec 2021 14:21:34 +0200
-Message-Id: <20211202122152.43275-6-tz.stoyanov@gmail.com>
+Subject: [PATCH v6 04/23] trace-cmd library: Add internal helper function for writing headers before file sections
+Date:   Thu,  2 Dec 2021 14:21:33 +0200
+Message-Id: <20211202122152.43275-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211202122152.43275-1-tz.stoyanov@gmail.com>
 References: <20211202122152.43275-1-tz.stoyanov@gmail.com>
@@ -64,336 +64,145 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Headers are added before these file sections, in trace
-file version 7:
- - ftrace events format
- - format of recorded events
- - information of the mapping of function addresses to the function names
- - trace_printk() format strings
- - information of the mapping a PID to a process name
-
-New options are defined for each of these sections, holding
-the section's offset into the trace file.
+Introduce headers before each file section, in trace file version 7. The
+section header has the following format:
+ <2 bytes>, header ID
+ <string>, null terminated ASCII string, description of the header
+ <2 bytes>, section flags:
+     1: the section is compressed
+ <4 bytes>, size of the section
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- .../include/private/trace-cmd-private.h       |   6 +
- lib/trace-cmd/trace-output.c                  | 110 ++++++++++++++----
- 2 files changed, 93 insertions(+), 23 deletions(-)
+ include/trace-cmd/trace-cmd.h                 |  5 ++
+ .../include/private/trace-cmd-private.h       |  1 +
+ lib/trace-cmd/include/trace-cmd-local.h       |  5 ++
+ lib/trace-cmd/trace-output.c                  | 68 +++++++++++++++++++
+ 4 files changed, 79 insertions(+)
 
+diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+index 7fea4e01..5d71e8ba 100644
+--- a/include/trace-cmd/trace-cmd.h
++++ b/include/trace-cmd/trace-cmd.h
+@@ -15,6 +15,11 @@ enum tracecmd_open_flags {
+ 	TRACECMD_FL_LOAD_NO_PLUGINS		= 1 << 0, /* Do not load plugins */
+ 	TRACECMD_FL_LOAD_NO_SYSTEM_PLUGINS	= 1 << 1, /* Do not load system plugins */
+ };
++
++enum tracecmd_section_flags {
++	TRACECMD_SEC_FL_COMPRESS	= 1 << 0, /* the section is compressed */
++};
++
+ struct tracecmd_input *tracecmd_open_head(const char *file, int flags);
+ struct tracecmd_input *tracecmd_open(const char *file, int flags);
+ struct tracecmd_input *tracecmd_open_fd(int fd, int flags);
 diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 15e53740..aff838ca 100644
+index ed25d879..15e53740 100644
 --- a/lib/trace-cmd/include/private/trace-cmd-private.h
 +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -138,6 +138,12 @@ enum {
+@@ -138,6 +138,7 @@ enum {
  	TRACECMD_OPTION_TIME_SHIFT,
  	TRACECMD_OPTION_GUEST,
  	TRACECMD_OPTION_TSC2NSEC,
-+	TRACECMD_OPTION_HEADER_INFO,
-+	TRACECMD_OPTION_FTRACE_EVENTS,
-+	TRACECMD_OPTION_EVENT_FORMATS,
-+	TRACECMD_OPTION_KALLSYMS,
-+	TRACECMD_OPTION_PRINTK,
-+	TRACECMD_OPTION_CMDLINES,
- 	TRACECMD_OPTION_MAX,
++	TRACECMD_OPTION_MAX,
  };
  
+ enum {
+diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
+index 7f280533..4a0a691c 100644
+--- a/lib/trace-cmd/include/trace-cmd-local.h
++++ b/lib/trace-cmd/include/trace-cmd-local.h
+@@ -39,6 +39,11 @@ struct data_file_write {
+ bool check_file_state(unsigned long file_version, int current_state, int new_state);
+ bool check_out_state(struct tracecmd_output *handle, int new_state);
+ 
++unsigned long long
++out_write_section_header(struct tracecmd_output *handle, unsigned short header_id,
++			 char *description, int flags, bool option);
++int out_update_section_header(struct tracecmd_output *handle, unsigned long long offset);
++
+ struct cpu_data_source {
+ 	int fd;
+ 	int size;
 diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index f502b354..582d8480 100644
+index 4d165ac2..f502b354 100644
 --- a/lib/trace-cmd/trace-output.c
 +++ b/lib/trace-cmd/trace-output.c
-@@ -402,10 +402,12 @@ __hidden int out_update_section_header(struct tracecmd_output *handle, unsigned
+@@ -332,6 +332,74 @@ int tracecmd_ftrace_enable(int set)
+ 	return ret;
+ }
  
++__hidden unsigned long long
++out_write_section_header(struct tracecmd_output *handle, unsigned short header_id,
++			 char *description, int flags, bool option)
++{
++	tsize_t endian8;
++	tsize_t offset;
++	short endian2;
++	int size;
++
++	if (header_id >= TRACECMD_OPTION_MAX)
++		return -1;
++	if (!HAS_SECTIONS(handle))
++		return 0;
++	offset = do_lseek(handle, 0, SEEK_CUR);
++	if (option) {
++		endian8 = convert_endian_8(handle, offset);
++		if (!tracecmd_add_option(handle, header_id, 8, &endian8))
++			return -1;
++	}
++	/* Section ID */
++	endian2 = convert_endian_2(handle, header_id);
++	if (do_write_check(handle, &endian2, 2))
++		return (off_t)-1;
++
++	/* Section description */
++	if (do_write_check(handle, description, strlen(description) + 1))
++		return (off_t)-1;
++	/* Section flags */
++	endian2 = convert_endian_2(handle, flags);
++	if (do_write_check(handle, &endian2, 2))
++		return (off_t)-1;
++
++	offset = do_lseek(handle, 0, SEEK_CUR);
++	size = 0;
++	/* Reserve for section size */
++	if (do_write_check(handle, &size, 4))
++		return (off_t)-1;
++	return offset;
++}
++
++__hidden int out_update_section_header(struct tracecmd_output *handle, unsigned long long offset)
++{
++	unsigned long long current;
++	unsigned int endian4;
++	int size;
++
++	if (!HAS_SECTIONS(handle) || offset == 0)
++		return 0;
++
++	current = do_lseek(handle, 0, SEEK_CUR);
++	/* The real size is the difference between the saved offset and
++	 * the current offset - 4 bytes, the reserved space for the section size.
++	 */
++	size = current - offset;
++	if (size < 4)
++		return -1;
++	size -= 4;
++	if (do_lseek(handle, offset, SEEK_SET) == (off_t)-1)
++		return -1;
++
++	endian4 = convert_endian_4(handle, size);
++	if (do_write_check(handle, &endian4, 4))
++		return -1;
++	if (do_lseek(handle, current, SEEK_SET) == (off_t)-1)
++		return -1;
++	return 0;
++}
++
  static int read_header_files(struct tracecmd_output *handle)
  {
-+	enum tracecmd_section_flags flags = 0;
  	tsize_t size, check_size, endian8;
- 	struct stat st;
-+	tsize_t offset;
- 	char *path;
--	int fd;
-+	int fd = -1;
- 	int ret;
- 
- 	if (!check_out_state(handle, TRACECMD_FILE_HEADERS)) {
-@@ -418,26 +420,33 @@ static int read_header_files(struct tracecmd_output *handle)
- 	if (!path)
- 		return -1;
- 
-+	offset = out_write_section_header(handle, TRACECMD_OPTION_HEADER_INFO,
-+					  "headers", flags, true);
-+	if (offset == (off64_t)-1)
-+		return -1;
-+
- 	ret = stat(path, &st);
- 	if (ret < 0) {
- 		/* old style did not show this info, just add zero */
- 		put_tracing_file(path);
- 		if (do_write_check(handle, "header_page", 12))
--			return -1;
-+			goto out_close;
- 		size = 0;
- 		if (do_write_check(handle, &size, 8))
--			return -1;
-+			goto out_close;
- 		if (do_write_check(handle, "header_event", 13))
--			return -1;
-+			goto out_close;
- 		if (do_write_check(handle, &size, 8))
--			return -1;
-+			goto out_close;
-+		if (out_update_section_header(handle, offset))
-+			goto out_close;
- 		return 0;
- 	}
- 
- 	fd = open(path, O_RDONLY);
- 	if (fd < 0) {
- 		tracecmd_warning("can't read '%s'", path);
--		return -1;
-+		goto out_close;
- 	}
- 
- 	/* unfortunately, you can not stat debugfs files for size */
-@@ -453,18 +462,18 @@ static int read_header_files(struct tracecmd_output *handle)
- 	if (size != check_size) {
- 		tracecmd_warning("wrong size for '%s' size=%lld read=%lld", path, size, check_size);
- 		errno = EINVAL;
--		return -1;
-+		goto out_close;
- 	}
- 	put_tracing_file(path);
- 
- 	path = get_tracing_file(handle, "events/header_event");
- 	if (!path)
--		return -1;
-+		goto out_close;
- 
- 	fd = open(path, O_RDONLY);
- 	if (fd < 0) {
- 		tracecmd_warning("can't read '%s'", path);
--		return -1;
-+		goto out_close;
- 	}
- 
- 	size = get_size_fd(fd);
-@@ -478,16 +487,18 @@ static int read_header_files(struct tracecmd_output *handle)
- 	close(fd);
- 	if (size != check_size) {
- 		tracecmd_warning("wrong size for '%s'", path);
--		return -1;
-+		goto out_close;
- 	}
- 	put_tracing_file(path);
--
-+	if (out_update_section_header(handle, offset))
-+		goto out_close;
- 	handle->file_state = TRACECMD_FILE_HEADERS;
- 
- 	return 0;
- 
-  out_close:
--	close(fd);
-+	if (fd >= 0)
-+		close(fd);
- 	return -1;
- }
- 
-@@ -716,8 +727,10 @@ create_event_list_item(struct tracecmd_output *handle,
- 
- static int read_ftrace_files(struct tracecmd_output *handle)
- {
-+	enum tracecmd_section_flags flags = 0;
- 	struct list_event_system *systems = NULL;
- 	struct tracecmd_event_list list = { .glob = "ftrace/*" };
-+	tsize_t offset;
- 	int ret;
- 
- 	if (!check_out_state(handle, TRACECMD_FILE_FTRACE_EVENTS)) {
-@@ -726,11 +739,20 @@ static int read_ftrace_files(struct tracecmd_output *handle)
- 		return -1;
- 	}
- 
-+	offset = out_write_section_header(handle, TRACECMD_OPTION_FTRACE_EVENTS,
-+					  "ftrace events", flags, true);
-+	if (offset == (off64_t)-1)
-+		return -1;
-+
- 	create_event_list_item(handle, &systems, &list);
- 
- 	ret = copy_event_system(handle, systems);
- 
- 	free_list_events(systems);
-+	if (ret)
-+		return ret;
-+	if (out_update_section_header(handle, offset))
-+		return -1;
- 
- 	handle->file_state = TRACECMD_FILE_FTRACE_EVENTS;
- 
-@@ -753,11 +775,13 @@ create_event_list(struct tracecmd_output *handle,
- static int read_event_files(struct tracecmd_output *handle,
- 			    struct tracecmd_event_list *event_list)
- {
-+	enum tracecmd_section_flags flags = 0;
- 	struct list_event_system *systems;
- 	struct list_event_system *slist;
- 	struct tracecmd_event_list *list;
- 	struct tracecmd_event_list all_events = { .glob = "*/*" };
- 	int count = 0;
-+	tsize_t offset;
- 	int endian4;
- 	int ret;
- 
-@@ -766,6 +790,11 @@ static int read_event_files(struct tracecmd_output *handle,
- 				 handle->file_state);
- 		return -1;
- 	}
-+
-+	offset = out_write_section_header(handle, TRACECMD_OPTION_EVENT_FORMATS,
-+					  "events format", flags, true);
-+	if (offset == (off64_t)-1)
-+		return -1;
- 	/*
- 	 * If any of the list is the special keyword "all" then
- 	 * just do all files.
-@@ -797,9 +826,14 @@ static int read_event_files(struct tracecmd_output *handle,
- 		}
- 		ret = copy_event_system(handle, slist);
- 	}
-+	if (ret)
-+		goto out_free;
-+	ret = out_update_section_header(handle, offset);
- 
--	handle->file_state = TRACECMD_FILE_ALL_EVENTS;
-  out_free:
-+	if (!ret)
-+		handle->file_state = TRACECMD_FILE_ALL_EVENTS;
-+
- 	free_list_events(systems);
- 
- 	return ret;
-@@ -847,8 +881,10 @@ err:
- 
- static int read_proc_kallsyms(struct tracecmd_output *handle)
- {
-+	enum tracecmd_section_flags flags = 0;
- 	unsigned int size, check_size, endian4;
- 	const char *path = "/proc/kallsyms";
-+	tsize_t offset;
- 	struct stat st;
- 	int ret;
- 
-@@ -861,19 +897,24 @@ static int read_proc_kallsyms(struct tracecmd_output *handle)
- 	if (handle->kallsyms)
- 		path = handle->kallsyms;
- 
-+	offset = out_write_section_header(handle, TRACECMD_OPTION_KALLSYMS,
-+					  "kallsyms", flags, true);
-+	if (offset == (off64_t)-1)
-+		return -1;
-+
- 	ret = stat(path, &st);
- 	if (ret < 0) {
- 		/* not found */
- 		size = 0;
- 		endian4 = convert_endian_4(handle, size);
--		if (do_write_check(handle, &endian4, 4))
--			return -1;
--		return 0;
-+		ret = do_write_check(handle, &endian4, 4);
-+		goto out;
- 	}
- 	size = get_size(path);
- 	endian4 = convert_endian_4(handle, size);
--	if (do_write_check(handle, &endian4, 4))
--		return -1;
-+	ret = do_write_check(handle, &endian4, 4);
-+	if (ret)
-+		goto out;
- 
- 	set_proc_kptr_restrict(0);
- 	check_size = copy_file(handle, path);
-@@ -881,18 +922,23 @@ static int read_proc_kallsyms(struct tracecmd_output *handle)
- 		errno = EINVAL;
- 		tracecmd_warning("error in size of file '%s'", path);
- 		set_proc_kptr_restrict(1);
--		return -1;
-+		ret = -1;
-+		goto out;
- 	}
- 	set_proc_kptr_restrict(1);
- 
--	handle->file_state = TRACECMD_FILE_KALLSYMS;
--
--	return 0;
-+	ret = out_update_section_header(handle, offset);
-+out:
-+	if (!ret)
-+		handle->file_state = TRACECMD_FILE_KALLSYMS;
-+	return ret;
- }
- 
- static int read_ftrace_printk(struct tracecmd_output *handle)
- {
-+	enum tracecmd_section_flags flags = 0;
- 	unsigned int size, check_size, endian4;
-+	tsize_t offset;
- 	struct stat st;
- 	char *path;
- 	int ret;
-@@ -907,6 +953,10 @@ static int read_ftrace_printk(struct tracecmd_output *handle)
- 	if (!path)
- 		return -1;
- 
-+	offset = out_write_section_header(handle, TRACECMD_OPTION_PRINTK, "printk", flags, true);
-+	if (offset == (off64_t)-1)
-+		return -1;
-+
- 	ret = stat(path, &st);
- 	if (ret < 0) {
- 		/* not found */
-@@ -928,8 +978,10 @@ static int read_ftrace_printk(struct tracecmd_output *handle)
- 	}
- 
-  out:
--	handle->file_state = TRACECMD_FILE_PRINTK;
- 	put_tracing_file(path);
-+	if (out_update_section_header(handle, offset))
-+		return -1;
-+	handle->file_state = TRACECMD_FILE_PRINTK;
- 	return 0;
-  fail:
- 	put_tracing_file(path);
-@@ -1524,6 +1576,8 @@ static tsize_t get_buffer_file_offset(struct tracecmd_output *handle, const char
- 
- int tracecmd_write_cmdlines(struct tracecmd_output *handle)
- {
-+	enum tracecmd_section_flags flags = 0;
-+	tsize_t offset;
- 	int ret;
- 
- 	if (!check_out_state(handle, TRACECMD_FILE_CMD_LINES)) {
-@@ -1531,9 +1585,19 @@ int tracecmd_write_cmdlines(struct tracecmd_output *handle)
- 				 handle->file_state);
- 		return -1;
- 	}
-+
-+	offset = out_write_section_header(handle, TRACECMD_OPTION_CMDLINES,
-+					  "command lines", flags, true);
-+	if (offset == (off64_t)-1)
-+		return -1;
-+
- 	ret = save_tracing_file_data(handle, "saved_cmdlines");
- 	if (ret < 0)
- 		return ret;
-+
-+	if (out_update_section_header(handle, offset))
-+		return -1;
-+
- 	handle->file_state = TRACECMD_FILE_CMD_LINES;
- 	return 0;
- }
 -- 
 2.33.1
 
