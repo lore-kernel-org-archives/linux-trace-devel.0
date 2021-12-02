@@ -2,370 +2,162 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A739BC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Dec 2021 16:07:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C8FFC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Dec 2021 17:44:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347259AbhLBQKi (ORCPT
+        id S1355674AbhLBRrX (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 Dec 2021 11:10:38 -0500
-Received: from gateway31.websitewelcome.com ([192.185.144.219]:30656 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241791AbhLBQKi (ORCPT
+        Thu, 2 Dec 2021 12:47:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352111AbhLBRrV (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 2 Dec 2021 11:10:38 -0500
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id 78BD37139B
-        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Dec 2021 09:55:58 -0600 (CST)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id snrOm64lelPCqsnrRmBtWG; Thu, 02 Dec 2021 09:19:04 -0600
-X-Authority-Reason: nr=8
-Received: from host-79-34-250-122.business.telecomitalia.it ([79.34.250.122]:57870 helo=[10.0.0.161])
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1msnrN-004BKV-Ad; Thu, 02 Dec 2021 09:18:57 -0600
-Message-ID: <9944378d-456f-79a5-2dbf-30dbbbc94522@kernel.org>
-Date:   Thu, 2 Dec 2021 16:18:53 +0100
+        Thu, 2 Dec 2021 12:47:21 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C157C06174A
+        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Dec 2021 09:43:58 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id v1so1261119edx.2
+        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Dec 2021 09:43:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dtQag/aXMYyvpWDoageg8fmE5ScxcmYRZnxCgGdyOiM=;
+        b=m52gwqBEo1RvRzRTeCvD7XH9bS/24xbn0Ij2gfJs9BDgfYcKer2joWSKUasxHwWHQv
+         PukOgarvrFW+iJz3JGGofD2XtNv8iFOC8aNC86KttnLkVIM78EUXRWjB+BVjiocN5vRo
+         pgTxs29he2KXzaJy56dl5/RKZkpWlZeppWWGx7wVQmZzaORWaenvGrnKPcO09gKZBbI9
+         krb8DDGg9pywxsQ+nSFwvXGo8WnXsRJ/YcGIO3IH4+n02701YiQ5xflZ+C+OWNyYJmMB
+         AGa21j1nNdP3lu8c77bjFZdmouKhyMan5LEe26XjG1bAo48UzpCmLvKLihXYmy+8PKnf
+         kj6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dtQag/aXMYyvpWDoageg8fmE5ScxcmYRZnxCgGdyOiM=;
+        b=gH26Ni8fou9VrHZ31Vi/WIGuODKqsh1O0z4BqxFhfDUS7JaqntwGmR8idYMTG0CZcN
+         lITBzTSX7cY3zzsB9AVIeb2bmnI0XfYULxhyUN17UXBdrfVTHd36/j6swAc24FexW9sa
+         5lRkc5Y3FV/K/+IpvQkJ7mBkbKA72OgtlGEEm4jV/oyYd8uai9w2Y8pInRsBdO7Lrk0/
+         RxB/tFU873wr5HUz6tc0WR5S52CWecCellwGPNFGllmAM2xbs30FnauUzM6rbzDggVtC
+         /zDKwPw7T4ES3QDekSJ7WYW3EWcInjxVqi0joVZ0mAvDvyj5y65UEtLb1u0SOygmZ04c
+         8fyA==
+X-Gm-Message-State: AOAM53170G6VmKooLEvTRRFM4B7UwI4IN1pnQgduy7AUKpZiWiBWAR2+
+        XwjxWnOdXiRNkfxeaCEIkQlDvNlI7KQ=
+X-Google-Smtp-Source: ABdhPJzjWzG4B02zfDJJgEzr0gusr+DwcY0iWLQomz4sfDySuH2DRy8PD1YG7Z6LJmX3DqZYt3GxRA==
+X-Received: by 2002:a17:907:7f28:: with SMTP id qf40mr16960704ejc.196.1638467036946;
+        Thu, 02 Dec 2021 09:43:56 -0800 (PST)
+Received: from crow.. ([95.87.219.163])
+        by smtp.gmail.com with ESMTPSA id a13sm280065edk.29.2021.12.02.09.43.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Dec 2021 09:43:56 -0800 (PST)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     linux-trace-devel@vger.kernel.org, rostedt@goodmis.org
+Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH v2] libtracefs: New API for clearing filter on event
+Date:   Thu,  2 Dec 2021 19:43:45 +0200
+Message-Id: <20211202174345.229200-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH V8 03/14] rtla: Add osnoise tool
-Content-Language: en-US
-To:     Tao Zhou <tao.zhou@linux.dev>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1638182284.git.bristot@kernel.org>
- <ffb7f1b1e8cc42fc8ec52f1a89fdd2ca0d70c36e.1638182284.git.bristot@kernel.org>
- <YaZEzvzp5jkRyLEJ@geo.homenetwork>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <YaZEzvzp5jkRyLEJ@geo.homenetwork>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 79.34.250.122
-X-Source-L: No
-X-Exim-ID: 1msnrN-004BKV-Ad
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-79-34-250-122.business.telecomitalia.it ([10.0.0.161]) [79.34.250.122]:57870
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 2
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Tao
+There is no API for clearing filter from event. After adding an API that
+applys a filter we must provide an identical API for clearing the filter.
 
-On 11/30/21 16:35, Tao Zhou wrote:
-> Hi Daniel,
-> 
-> On Mon, Nov 29, 2021 at 12:07:41PM +0100, Daniel Bristot de Oliveira wrote:
->> +/*
->> + * osnoise_restore_cpus - restore the original "osnoise/cpus"
->> + *
->> + * osnoise_set_cpus() saves the original data for the "osnoise/cpus"
-> 
-> osnoise_set_cpus() --> osnoise_restore_cpus()
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+---
+ Documentation/libtracefs-filter.txt |  8 +++++++-
+ include/tracefs.h                   |  3 ++-
+ src/tracefs-filter.c                | 14 ++++++++++++++
+ 3 files changed, 23 insertions(+), 2 deletions(-)
 
-This comment is correct... osnoise_set_cpus saves the data (in the tool),
-osnoise_restore_cpus() restores it.
-
->> + * file. This function restore the original config it was previously
->> + * modified.
->> + */
->> +void osnoise_restore_cpus(struct osnoise_context *context)
->> +{
->> +	int retval;
->> +
->> +	if (!context->orig_cpus)
->> +		return;
->> +
->> +	if (!context->curr_cpus)
->> +		return;
->> +
->> +	/* nothing to do? */
->> +	if (!strcmp(context->orig_cpus, context->curr_cpus))
->> +		goto out_done;
->> +
->> +	retval = write(context->cpus_fd, context->orig_cpus, strlen(context->orig_cpus));
-> 
-> 'strlen(context->orig_cpus) + 1' for write size;
-> 
->> +	if (retval < strlen(context->orig_cpus))
-> 
-> Same here. Check 'strlen(context->orig_cpus) + 1'
-
-Fixed in v9.
-
->> +		err_msg("could not restore original osnoise cpus\n");
->> +
->> +out_done:
->> +	free(context->curr_cpus);
->> +	context->curr_cpus = NULL;
->> +}
->> +
->> +/*
->> + * osnoise_get_runtime - return the original "osnoise/runtime_us" value
->> + *
->> + * It also saves the value to be restored.
->> + */
->> +unsigned long long osnoise_get_runtime(struct osnoise_context *context)
->> +{
->> +	char buffer[BUFF_U64_STR_SIZE];
->> +	long long runtime_us;
->> +	char *runtime_path;
->> +	int retval;
->> +
->> +	if (context->runtime_us != OSNOISE_TIME_INIT_VAL)
->> +		return context->runtime_us;
->> +
->> +	if (context->orig_runtime_us != OSNOISE_TIME_INIT_VAL)
->> +		return context->orig_runtime_us;
->> +
->> +	runtime_path = tracefs_get_tracing_file("osnoise/runtime_us");
->> +
->> +	context->runtime_fd = open(runtime_path, O_RDWR);
->> +	if (context->runtime_fd < 0)
->> +		goto out_err;
->> +
->> +	retval = read(context->runtime_fd, &buffer, sizeof(buffer));
->> +	if (retval <= 0)
->> +		goto out_close;
->> +
->> +	runtime_us = get_llong_from_str(buffer);
->> +	if (runtime_us < 0)
->> +		goto out_close;
->> +
->> +	tracefs_put_tracing_file(runtime_path);
->> +
->> +	context->orig_runtime_us = runtime_us;
->> +	return runtime_us;
->> +
->> +out_close:
->> +	close(context->runtime_fd);
->> +	context->runtime_fd = CLOSED_FD;
->> +out_err:
->> +	tracefs_put_tracing_file(runtime_path);
->> +	return 0;
->> +}
->> +/*
->> + * osnoise_get_period - return the original "osnoise/period_us" value
->> + *
->> + * It also saves the value to be restored.
->> + */
->> +unsigned long long osnoise_get_period(struct osnoise_context *context)
->> +{
->> +	char buffer[BUFF_U64_STR_SIZE];
->> +	char *period_path;
->> +	long long period_us;
->> +	int retval;
->> +
->> +	if (context->period_us != OSNOISE_TIME_INIT_VAL)
->> +		return context->period_us;
->> +
->> +	if (context->orig_period_us != OSNOISE_TIME_INIT_VAL)
->> +		return context->orig_period_us;
->> +
->> +	period_path = tracefs_get_tracing_file("osnoise/period_us");
->> +
->> +	context->period_fd = open(period_path, O_RDWR);
->> +	if (context->period_fd < 0)
->> +		goto out_err;
->> +
->> +	retval = read(context->period_fd, &buffer, sizeof(buffer));
->> +	if (retval <= 0)
->> +		goto out_close;
->> +
->> +	period_us = get_llong_from_str(buffer);
->> +	if (period_us < 0)
->> +		goto out_close;
->> +
->> +	tracefs_put_tracing_file(period_path);
->> +
->> +	context->orig_period_us = period_us;
->> +	return period_us;
->> +
->> +out_close:
->> +	close(context->period_fd);
->> +	context->period_fd = CLOSED_FD;
->> +out_err:
->> +	tracefs_put_tracing_file(period_path);
->> +	return 0;
->> +}
-> 
-> osnoise_get_period() and osnoise_get_runtime() almost the same.
-> Use macro to generate code. Some thing also not sure now. Shame
-> 
-> 
-> #define osnoise_get_period osnoise_get(period)
-> #define osnoise_get_runtime osnoise_get(runtime)
-> 
-> #define osnoise_get(x)	\
-> unsigned long long osnoise_get_##x(struct osnoise_context *context) \ 
-> {              \
-> 	char buffer[BUFF_U64_STR_SIZE];             \
-> 	char * x##_path;             \ 
-> 	long long x##_us;            \
-> 	if (context->x##_us != OSNOISE_TIME_INIT_VAL)                   \
-> 		return context->x##_us;           \
-> 	if (context->orig_##x##_us != OSNOISE_TIME_INIT_VAL)            \
-> 		return context->orig_##x##_us;          \
-> 	x##_path = tracefs_get_tracing_file("osnoise/x##_us");        \
-> 	context->x##_fd = open(x##_path, O_RDWR);               \
-> 	if (context->x##_fd < 0)                        \
-> 		goto out_err;                 \
-> 	retval = read(context->x##_fd, &buffer, sizeof(buffer));        \
-> 	if (retval <= 0)                  \
-> 		goto out_close;               \
-> 	x##_us = get_llong_from_str(buffer);            \
-> 	if (x##_us < 0)                   \
-> 		goto out_close;               \
-> 	tracefs_put_tracing_file(x##_path);             \
-> 	context->orig_##x##_us = x##_us;                \
-> 	return x##_us;                    \
-> out_close:                            \
-> 	close(context->x##_fd);           \
-> 	context->x##_fd = CLOSED_FD;                    \
-> out_err:                              \
-> 	tracefs_put_tracing_file(x##_path);             \
-> 	return 0;                         \
-> }
-
-
-I am not sure if it is worth to trade the readability for just two functions. I
-will keep this as is foe now, and think about it in a second moment.
-
-[...]
->> +
->> +/*
->> + * osnoise_set_runtime_period - set osnoise runtime and period
->> + *
->> + * Osnoise's runtime and period are related as runtime <= period.
->> + * Thus, this function saves the original values, and then tries
->> + * to set the runtime and period if they are != 0.
->> + */
->> +int osnoise_set_runtime_period(struct osnoise_context *context,
->> +			       unsigned long long runtime,
->> +			       unsigned long long period)
->> +{
->> +	unsigned long long curr_runtime_us;
->> +	unsigned long long curr_period_us;
->> +	int retval;
->> +
->> +	if (!period && !runtime)
->> +		return 0;
->> +
->> +	curr_runtime_us = osnoise_get_runtime(context);
->> +	curr_period_us = osnoise_get_period(context);
->> +
->> +	/* error getting any value? */
->> +	if (curr_period_us == -1 || curr_runtime_us == -1)
->> +		return -1;
-> 
-> 'curr_period_us' and 'curr_runtime_us' error value should be
-> 0(OSNOISE_TIME_INIT_VAL).
-> 
-
-
-Right, I am now (in v9) returning the *_INIT_VAL on all errors, and using the
-macro to check for errors.
-
-[...]
-
->> +static long long
->> +osnoise_get_timerlat_period_us(struct osnoise_context *context)
->> +{
->> +	char buffer[BUFF_U64_STR_SIZE];
->> +	long long timerlat_period_us;
->> +	char *stop_path;
->> +	int retval;
->> +
->> +	if (context->timerlat_period_us != OSNOISE_TIME_INIT_VAL)
->> +		return context->timerlat_period_us;
->> +
->> +	if (context->orig_timerlat_period_us != OSNOISE_TIME_INIT_VAL)
->> +		return context->orig_timerlat_period_us;
->> +
->> +	stop_path = tracefs_get_tracing_file("osnoise/timerlat_period_us");
-> 
-> Using timerlat_period_path seems to be straightforward.
-> 
-
-I am using config_path for all variables like this.
-
-
-[...]
-
->> +/*
->> + * osnoise_context_alloc - alloc an osnoise_context
->> + *
->> + * The osnoise context contains the information of the "osnoise/" configs.
->> + * It is used to set and restore the config.
->> + */
->> +struct osnoise_context *osnoise_context_alloc(void)
->> +{
->> +	struct osnoise_context *context;
->> +
->> +	context = calloc(1, sizeof(*context));
->> +	if (!context)
->> +		goto out_err;
->> +
->> +	context->cpus_fd 		= CLOSED_FD;
->> +	context->runtime_fd		= CLOSED_FD;
->> +	context->period_fd		= CLOSED_FD;
->> +	context->stop_us_fd		= CLOSED_FD;
->> +	context->stop_total_us_fd	= CLOSED_FD;
->> +	context->timerlat_period_us_fd	= CLOSED_FD;
->> +	context->print_stack_fd		= CLOSED_FD;
->> +
->> +	context->orig_stop_us		= OSNOISE_OPTION_INIT_VAL;
->> +	context->stop_us		= OSNOISE_OPTION_INIT_VAL;
->> +
->> +	context->orig_stop_total_us	= OSNOISE_OPTION_INIT_VAL;
->> +	context->stop_total_us		= OSNOISE_OPTION_INIT_VAL;
->> +
->> +	context->orig_print_stack	= OSNOISE_OPTION_INIT_VAL;
->> +	context->print_stack		= OSNOISE_OPTION_INIT_VAL;
->> +
->> +	osnoise_get_context(context);
->> +
->> +	return context;
->> +out_err:
->> +	if (context)
->> +		free(context);
-> 
-> context is NULL here, so no need the check. Just directly return NULL
-> when 'if(!context)' is enough.
-> 
->> +	return NULL;
->> +}
-
-In v9, I am removing the goto, returning NULL if (!context).
-
-> Sorry for my slow and not complete reply.. and leave not sure here.
-> 
-> Thanks,
-> Tao
-
-Thanks Tao
--- Daniel
+diff --git a/Documentation/libtracefs-filter.txt b/Documentation/libtracefs-filter.txt
+index 7db3d60..f7bbb17 100644
+--- a/Documentation/libtracefs-filter.txt
++++ b/Documentation/libtracefs-filter.txt
+@@ -3,7 +3,7 @@ libtracefs(3)
+ 
+ NAME
+ ----
+-tracefs_filter_string_append, tracefs_filter_string_verify, tracefs_event_apply_filter -
++tracefs_filter_string_append, tracefs_filter_string_verify, tracefs_event_filter_apply tracefs_event_filter_clear -
+ Add, verify and apply event filters
+ 
+ SYNOPSIS
+@@ -17,6 +17,8 @@ int tracefs_filter_string_append(struct tep_event pass:[*]event, char pass:[**]
+ 				 enum tracefs_synth_compare compare, const char pass:[*]val);
+ int tracefs_filter_string_verify(struct tep_event pass:[*]event, const char pass:[*]filter, char pass:[**]err);
+ int tracefs_event_filter_apply(struct tracefs_instance pass:[*]instance, struct tep_event pass:[*]event, const char pass:[*]filter);
++int tracefs_event_filter_clear(struct tracefs_instance pass:[*]instance, struct tep_event pass:[*]event);
++
+ --
+ 
+ DESCRIPTION
+@@ -69,6 +71,8 @@ with *free*().
+ 
+ *tracefs_event_filter_apply*() applies given _filter_ string on _event_ in given _instance_.
+ 
++*tracefs_event_filter_clear*() clear all filters on _event_ in given _instance_.
++
+ RETURN VALUE
+ ------------
+ *tracefs_filter_string_append*() returns 0 on success and -1 on error.
+@@ -80,6 +84,8 @@ freed with *free*().
+ 
+ *tracefs_event_filter_apply*() returns 0 on success and -1 on error.
+ 
++*tracefs_event_filter_clear*() returns 0 on success and -1 on error.
++
+ EXAMPLE
+ -------
+ [source,c]
+diff --git a/include/tracefs.h b/include/tracefs.h
+index ac92dca..3ac3d9c 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -479,6 +479,8 @@ int tracefs_filter_string_verify(struct tep_event *event, const char *filter,
+ int tracefs_event_filter_apply(struct tracefs_instance *instance,
+ 			       struct tep_event *event, const char *filter);
+ 
++int tracefs_event_filter_clear(struct tracefs_instance *instance,
++			       struct tep_event *event);
+ 
+ /** Deprecated do not use: Instead use tracefs_filter_string_append() **/
+ int tracefs_event_append_filter(struct tep_event *event, char **filter,
+@@ -490,7 +492,6 @@ int tracefs_event_append_filter(struct tep_event *event, char **filter,
+ int tracefs_event_verify_filter(struct tep_event *event, const char *filter,
+ 				char **err);
+ 
+-
+ #define TRACEFS_TIMESTAMP "common_timestamp"
+ #define TRACEFS_TIMESTAMP_USECS "common_timestamp.usecs"
+ 
+diff --git a/src/tracefs-filter.c b/src/tracefs-filter.c
+index 7bc36fe..85d0be1 100644
+--- a/src/tracefs-filter.c
++++ b/src/tracefs-filter.c
+@@ -764,6 +764,20 @@ int tracefs_event_filter_apply(struct tracefs_instance *instance,
+ 					"filter", filter);
+ }
+ 
++/**
++ * tracefs_event_filter_clear - clear the filter on event in given instance
++ * @instance: The instance in which the filter will be applied (NULL for toplevel).
++ * @event: The event to apply the filter on.
++ *
++ * Returns 0 on succes and -1 on error.
++ */
++int tracefs_event_filter_clear(struct tracefs_instance *instance,
++			       struct tep_event *event)
++{
++	return tracefs_event_file_write(instance, event->system, event->name,
++					"filter", "0");
++}
++
+ /** Deprecated **/
+ int tracefs_event_append_filter(struct tep_event *event, char **filter,
+ 				enum tracefs_filter type,
+-- 
+2.32.0
 
