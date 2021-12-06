@@ -2,264 +2,104 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C007C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  6 Dec 2021 15:18:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 330D8C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  6 Dec 2021 16:09:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346697AbhLFPWE (ORCPT
+        id S1349288AbhLFQMp (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 6 Dec 2021 10:22:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55486 "EHLO
+        Mon, 6 Dec 2021 11:12:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349342AbhLFPTz (ORCPT
+        with ESMTP id S1445702AbhLFQMK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 6 Dec 2021 10:19:55 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD58C0698E1
-        for <linux-trace-devel@vger.kernel.org>; Mon,  6 Dec 2021 07:14:06 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id i5so23179833wrb.2
-        for <linux-trace-devel@vger.kernel.org>; Mon, 06 Dec 2021 07:14:06 -0800 (PST)
+        Mon, 6 Dec 2021 11:12:10 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D2CC0698CD
+        for <linux-trace-devel@vger.kernel.org>; Mon,  6 Dec 2021 07:53:10 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id n8so7342533plf.4
+        for <linux-trace-devel@vger.kernel.org>; Mon, 06 Dec 2021 07:53:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rLZLY2TyIEtkh27UH4llP5NY16EmZN7G2tK2+QJwG2M=;
-        b=cQVT4w6NCh92mxp/Yqm3jS3sruC2JugLBXIk2cgeaQX+iLx3U2VQKNmRRqaNMIGnfE
-         D6e6lRJK8zDkOZopiZvm/7s7gSJLVY7kSrD6WpU7zQJkEVtOSiNpKofBuQ3xW7a76Cxz
-         mOHVQ3PZSOCinfja5LxxeXmLZeNoLzKQ9NBtEDobgH16HoYLDenn+MrqkzQEQStyuUED
-         SXG2SgoBaG12JVd0PfldBDcX7GtiWF5wEGB+rFJzyWu7dhoxCAflsZR6jx1zLTazM04P
-         4MQbizTSeRHcyyp17i6nt0G7r5sj69CyWSghorlcDqXJJbOK+FHm2/EimTo6+y1FHAZ4
-         6hPw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6q8BtaUOsU2GWoLhd/2GJ6FxRWU2tnE1k0O4fzl+ssM=;
+        b=Tyk3UR4hTaT2I+Uf2rrCX8zMgyKQWOyMeSdJESH8umw3Kerfnk/ZQJBQ16s2Qf5E3u
+         F7ALKUaVSVO5HNm+p7INfknmcL1RSma7RtKuSpCuxFjVtLABxjImA6tck3O2YTzXkYqb
+         mDonD0BnlNPZCdAQf/hB0chHELDPRwr8BwIapy6KvNoUoM2zb4avFRHTY9h2s3OhuLhO
+         dy4wBfmAlSr8n7x6bb1VJL5b19ANnVwphvYDjckA9SKdSZU/KTmapNGuaniH2cBSSPZZ
+         7JNP67SikfGGAHyaIRQr7+ePYaq9jT9xgGQX98WGD9rFgMir8giQiPGTINsK/CFdcmCY
+         dznw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rLZLY2TyIEtkh27UH4llP5NY16EmZN7G2tK2+QJwG2M=;
-        b=eiVk0OGlsq4Big5brjHpgC8muewC1Bu7Pi1BAzasT4jnR6Rk5QYPQxgGabJgJslWzT
-         GZ9+4biPPcDw2pYfQ60/HZdhgyPz/Pir/WqVhCfhTY0jUOWlaHDp2eXPj0dmNfxMa6P7
-         5aQa3AYeUvd/QLIjL4cub8tBgwIMIGVAgrwQo1L3hcodMy3nrl9lTXbsbMngNeqkBMAx
-         yFsnznGiOE2i8T54Rns0r4iKzRgX9DrgHRQ9dOG8k2wgR4H7m6sycaj8MspISDtbgDUE
-         6AyxzIZ6U/nkqh0/kHnSKNmxdgv/ltsDJ53ZGvo/SZyMn8p1bRseDdHOwbEVcRz/GTr3
-         BwRA==
-X-Gm-Message-State: AOAM530KWVLJtdlt4cevVevmq5MeNkCXD/ml30v2rkBKAmpLtJU2EMpA
-        oxl67p+FhKn4A5DNZfLppBij20gnIrM=
-X-Google-Smtp-Source: ABdhPJxnj5/fTEQTCYhxgIjC8AWdyZJna+OLNFyow6HjO7ANyMvRfVmbnlk80UkMComqGAy14hFTvg==
-X-Received: by 2002:adf:ef84:: with SMTP id d4mr42585910wro.175.1638803644872;
-        Mon, 06 Dec 2021 07:14:04 -0800 (PST)
-Received: from crow.. ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id b6sm14749872wmq.45.2021.12.06.07.14.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Dec 2021 07:14:04 -0800 (PST)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     linux-trace-devel@vger.kernel.org, rostedt@goodmis.org
-Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [RFC PATCH] libtracefs: New APIs for getting the raw format of synth event
-Date:   Mon,  6 Dec 2021 17:13:52 +0200
-Message-Id: <20211206151352.361507-1-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6q8BtaUOsU2GWoLhd/2GJ6FxRWU2tnE1k0O4fzl+ssM=;
+        b=TA0RbV1fbOu//WiqQdV7RNLiC5dgtndHdIoIvIhp2TvJmUkN+o39YcTjxO2lIIf7e3
+         2nPx6KgBS0ayG3Zanz29oOdsXjpvlgrEz5RkJqcJXE9+4Pe85OizgDLP9wMPJoyS8EmX
+         cc+ARzPOeP1YfM6bGj0GQC4xAPZWXfKcXMN76ZZ06lKjrNrxUt1Tb8IVCir/u9Mqn5oy
+         XKBEgEbk9D1iopkOBhnNL4kS6y2egalVX8br2IEiDbXKFNgbnTQcWjEX4g0IZ45IbvG5
+         6vv5o0dXgGI7EPLJCv9UntLBEZQrPY9HD5CDsEVuPzR+3wX/TMqZfmTarYWReKfc7vCD
+         Do8A==
+X-Gm-Message-State: AOAM531mP5T3Pw0VBIxhu/qmXf7lkgJ4xerJRoCUcqnogTOa5zFsotiT
+        t1lw+/ngJ2WtHa8ZSy4pkW4V9zuU84E18borbmocfO1XQfmoGw==
+X-Google-Smtp-Source: ABdhPJxpFg7P38YTlmG0/4S+DMulPhMlUsJl0ROm6jOAOFPb48JcfWEcB202uHGZXbEzjAe2IAQQ6J9r/oJKxTbwyKk=
+X-Received: by 2002:a17:90a:4815:: with SMTP id a21mr38124636pjh.111.1638805990312;
+ Mon, 06 Dec 2021 07:53:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211111150900.86585-1-tz.stoyanov@gmail.com> <20211203203553.5bc05010@gandalf.local.home>
+ <CAPpZLN77x4P=p=DKvj4NMvv4LvVTpcfepFMbc_a-EwBzTkrWGQ@mail.gmail.com> <20211206095531.55f8b0b8@gandalf.local.home>
+In-Reply-To: <20211206095531.55f8b0b8@gandalf.local.home>
+From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Date:   Mon, 6 Dec 2021 17:52:54 +0200
+Message-ID: <CAPpZLN4MznQUGc-yn6Cebt5FdONcwsAR48ySt9S_XJ594XULqw@mail.gmail.com>
+Subject: Re: [PATCH v5 04/25] trace-cmd library: Add internal helper function
+ for writing headers before file sections
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The new APIs can be useful in the case whene the user wants to
-check what exactly gets passed to the kernel as definition of
-a synth event.
+On Mon, Dec 6, 2021 at 4:55 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Mon, 6 Dec 2021 05:25:56 +0200
+> Tzvetomir Stoyanov <tz.stoyanov@gmail.com> wrote:
+>
+> > The only reason to have a string is for "trace-cmd dump" - to be able
+> > to dump some description for unknown sections, we discussed that in
+> > the past. But now when I'm looking at that again - there is no sense
+> > to have it only for that reason, the ID is enough. I can remove the
+> > string from the header.
+>
+> I think we also discussed it for when a new section was added that wasn't
+> known to the current trace-cmd, that it could give a more useful message.
+> i.e. "This version of trace-cmd does not handle 'New feature here', please
+> upgrade your trace-cmd".
+>
+> That way, the user would at least know why that new feature is not being
+> processed.
+>
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- include/tracefs.h  |   4 ++
- src/tracefs-hist.c | 102 +++++++++++++++++++++++++++++++++++++--------
- 2 files changed, 88 insertions(+), 18 deletions(-)
+As we discussed, there are two possible approaches for these descriptions:
+ 1. To add a new section with these descriptions, that way there will
+be no strings in the section headers. I was thinking more about that
+approach, it will make the parsing much more complicated. As all
+sections are dynamically located in the file, there is no strict order
+- that "description" section can be anywhere, even at the end. That
+way during the parsing these strings will not be available for the
+sections before, and the description cannot be displayed. To solve
+that, parsing should be done in two steps -  first to find that
+"description" section to get all the strings, and second to parse the
+other sections. The description should be part of the section being
+parsed, that's why I decided to go with the second approach.
+2. Have a fixed size description string in the section header, I think
+32 bytes should be OK.
 
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 804d738..9ad036c 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -250,6 +250,7 @@ enum tracefs_dynevent_type {
- 	TRACEFS_DYNEVENT_SYNTH		= 1 << 5,
- 	TRACEFS_DYNEVENT_MAX		= 1 << 6,
- };
-+
- int tracefs_dynevent_create(struct tracefs_dynevent *devent);
- int tracefs_dynevent_destroy(struct tracefs_dynevent *devent, bool force);
- int tracefs_dynevent_destroy_all(unsigned int types, bool force);
-@@ -553,6 +554,9 @@ int tracefs_synth_create(struct tracefs_synth *synth);
- int tracefs_synth_destroy(struct tracefs_synth *synth);
- void tracefs_synth_free(struct tracefs_synth *synth);
- int tracefs_synth_echo_cmd(struct trace_seq *seq, struct tracefs_synth *synth);
-+const char *tracefs_synth_show_event_row(struct tracefs_synth *synth);
-+const char *tracefs_synth_show_start_hist_row(struct tracefs_synth *synth);
-+const char *tracefs_synth_show_end_hist_row(struct tracefs_synth *synth);
- 
- struct tracefs_synth *tracefs_sql(struct tep_handle *tep, const char *name,
- 				  const char *sql_buffer, char **err);
-diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index 41c88d1..338249d 100644
---- a/src/tracefs-hist.c
-+++ b/src/tracefs-hist.c
-@@ -717,6 +717,8 @@ struct tracefs_synth {
- 	struct action		*actions;
- 	struct action		**next_action;
- 	struct tracefs_dynevent	*dyn_event;
-+	char			*start_hist;
-+	char			*end_hist;
- 	char			*name;
- 	char			**synthetic_fields;
- 	char			**synthetic_args;
-@@ -771,6 +773,8 @@ void tracefs_synth_free(struct tracefs_synth *synth)
- 		return;
- 
- 	free(synth->name);
-+	free(synth->start_hist);
-+	free(synth->end_hist);
- 	tracefs_list_free(synth->synthetic_fields);
- 	tracefs_list_free(synth->synthetic_args);
- 	tracefs_list_free(synth->start_keys);
-@@ -1067,6 +1071,9 @@ struct tracefs_synth *tracefs_synth_alloc(struct tep_handle *tep,
- 		synth = NULL;
- 	}
- 
-+	synth->start_hist = NULL;
-+	synth->end_hist = NULL;
-+
- 	return synth;
- }
- 
-@@ -1836,6 +1843,72 @@ static char *create_end_hist(struct tracefs_synth *synth)
- 	return create_actions(end_hist, synth);
- }
- 
-+/*
-+ * tracefs_synth_echo_fmt - show the raw format of a synthetic event
-+ * @seq: A trace_seq to store the format string
-+ * @synth: The synthetic event to read format from
-+ *
-+ * This shows the raw format that describes the synthetic event, including
-+ * the format of the dynamic event and the start / end histograms.
-+ *
-+ * Returns 0 on succes -1 on error.
-+ */
-+int tracefs_synth_echo_fmt(struct trace_seq *seq,
-+			   struct tracefs_instance *instance,
-+			   struct tracefs_synth *synth)
-+{
-+	if (!synth->dyn_event)
-+		return -1;
-+
-+	trace_seq_printf(seq, "%s\n", synth->dyn_event->format);
-+	trace_seq_printf(seq, "%s\n", synth->start_hist);
-+	trace_seq_printf(seq, "%s\n", synth->end_hist);
-+
-+	return 0;
-+}
-+
-+/*
-+ * tracefs_synth_show_event_row - show the dynamic event used by a synthetic
-+ *				  event
-+ * @synth: The synthetic event to read format from
-+ *
-+ * This shows the raw format of the dynamic event used by the synthetic event.
-+ *
-+ * Returns format string on succes or NULL on error.
-+ */
-+const char *tracefs_synth_show_event_row(struct tracefs_synth *synth)
-+{
-+	return synth->dyn_event ? synth->dyn_event->format : NULL;
-+}
-+
-+/*
-+ * tracefs_synth_show_start_hist_row - show the start histogram used by a
-+ *				       synthetic event
-+ * @synth: The synthetic event to read format from
-+ *
-+ * This shows the raw format of the start histogram used by the synthetic event.
-+ *
-+ * Returns format string on succes or NULL on error.
-+ */
-+const char *tracefs_synth_show_start_hist_row(struct tracefs_synth *synth)
-+{
-+	return synth->start_hist;
-+}
-+
-+/*
-+ * tracefs_synth_show_end_hist_row - show the end histogram used by a
-+ *				       synthetic event
-+ * @synth: The synthetic event to read format from
-+ *
-+ * This shows the raw format of the end histogram used by the synthetic event.
-+ *
-+ * Returns format string on succes or NULL on error.
-+ */
-+const char *tracefs_synth_show_end_hist_row(struct tracefs_synth *synth)
-+{
-+	return synth->end_hist;
-+}
-+
- static char *append_filter(char *hist, char *filter, unsigned int parens)
- {
- 	int i;
-@@ -1974,8 +2047,6 @@ tracefs_synth_get_start_hist(struct tracefs_synth *synth)
-  */
- int tracefs_synth_create(struct tracefs_synth *synth)
- {
--	char *start_hist = NULL;
--	char *end_hist = NULL;
- 	int ret;
- 
- 	if (!synth) {
-@@ -1996,40 +2067,35 @@ int tracefs_synth_create(struct tracefs_synth *synth)
- 	if (tracefs_dynevent_create(synth->dyn_event))
- 		return -1;
- 
--	start_hist = create_hist(synth->start_keys, synth->start_vars);
--	start_hist = append_filter(start_hist, synth->start_filter,
--				   synth->start_parens);
--	if (!start_hist)
-+	synth->start_hist = create_hist(synth->start_keys, synth->start_vars);
-+	synth->start_hist = append_filter(synth->start_hist, synth->start_filter,
-+					  synth->start_parens);
-+	if (!synth->start_hist)
- 		goto remove_synthetic;
- 
--	end_hist = create_end_hist(synth);
--	end_hist = append_filter(end_hist, synth->end_filter,
--				   synth->end_parens);
--	if (!end_hist)
-+	synth->end_hist = create_end_hist(synth);
-+	synth->end_hist = append_filter(synth->end_hist, synth->end_filter,
-+					synth->end_parens);
-+	if (!synth->end_hist)
- 		goto remove_synthetic;
- 
- 	ret = tracefs_event_file_append(synth->instance, synth->start_event->system,
- 					synth->start_event->name,
--					"trigger", start_hist);
-+					"trigger", synth->start_hist);
- 	if (ret < 0)
- 		goto remove_synthetic;
- 
- 	ret = tracefs_event_file_append(synth->instance, synth->end_event->system,
- 					synth->end_event->name,
--					"trigger", end_hist);
-+					"trigger", synth->end_hist);
- 	if (ret < 0)
- 		goto remove_start_hist;
- 
--	free(start_hist);
--	free(end_hist);
--
- 	return 0;
- 
-  remove_start_hist:
--	remove_hist(synth->instance, synth->start_event, start_hist);
-+	remove_hist(synth->instance, synth->start_event, synth->start_hist);
-  remove_synthetic:
--	free(end_hist);
--	free(start_hist);
- 	tracefs_dynevent_destroy(synth->dyn_event, false);
- 	return -1;
- }
+> -- Steve
+
+
+
 -- 
-2.32.0
-
+Tzvetomir (Ceco) Stoyanov
+VMware Open Source Technology Center
