@@ -2,40 +2,34 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35F65C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  6 Dec 2021 16:27:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6CB8C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  6 Dec 2021 23:58:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359018AbhLFQbQ (ORCPT
+        id S1351410AbhLGACR (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 6 Dec 2021 11:31:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1387870AbhLFQbJ (ORCPT
+        Mon, 6 Dec 2021 19:02:17 -0500
+Received: from sin.source.kernel.org ([145.40.73.55]:33624 "EHLO
+        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238201AbhLGACR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 6 Dec 2021 11:31:09 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC1BC061354
-        for <linux-trace-devel@vger.kernel.org>; Mon,  6 Dec 2021 08:27:40 -0800 (PST)
+        Mon, 6 Dec 2021 19:02:17 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 80F61B8111E
-        for <linux-trace-devel@vger.kernel.org>; Mon,  6 Dec 2021 16:27:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8A84C341C6;
-        Mon,  6 Dec 2021 16:27:37 +0000 (UTC)
-Date:   Mon, 6 Dec 2021 11:27:36 -0500
+        by sin.source.kernel.org (Postfix) with ESMTPS id EA98BCE1869
+        for <linux-trace-devel@vger.kernel.org>; Mon,  6 Dec 2021 23:58:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0903C004DD;
+        Mon,  6 Dec 2021 23:58:44 +0000 (UTC)
+Date:   Mon, 6 Dec 2021 18:58:43 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH v5 04/25] trace-cmd library: Add internal helper
- function for writing headers before file sections
-Message-ID: <20211206112736.137c30be@gandalf.local.home>
-In-Reply-To: <CAPpZLN4MznQUGc-yn6Cebt5FdONcwsAR48ySt9S_XJ594XULqw@mail.gmail.com>
-References: <20211111150900.86585-1-tz.stoyanov@gmail.com>
-        <20211203203553.5bc05010@gandalf.local.home>
-        <CAPpZLN77x4P=p=DKvj4NMvv4LvVTpcfepFMbc_a-EwBzTkrWGQ@mail.gmail.com>
-        <20211206095531.55f8b0b8@gandalf.local.home>
-        <CAPpZLN4MznQUGc-yn6Cebt5FdONcwsAR48ySt9S_XJ594XULqw@mail.gmail.com>
+To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 1/3] libtracefs: New API for getting the raw format of a
+ histogram
+Message-ID: <20211206185843.6b721000@gandalf.local.home>
+In-Reply-To: <20211206150855.361202-2-y.karadz@gmail.com>
+References: <20211206150855.361202-1-y.karadz@gmail.com>
+        <20211206150855.361202-2-y.karadz@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -44,40 +38,67 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 6 Dec 2021 17:52:54 +0200
-Tzvetomir Stoyanov <tz.stoyanov@gmail.com> wrote:
+On Mon,  6 Dec 2021 17:08:53 +0200
+"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-> As we discussed, there are two possible approaches for these descriptions:
->  1. To add a new section with these descriptions, that way there will
-> be no strings in the section headers. I was thinking more about that
-> approach, it will make the parsing much more complicated. As all
-> sections are dynamically located in the file, there is no strict order
-> - that "description" section can be anywhere, even at the end. That
-> way during the parsing these strings will not be available for the
-> sections before, and the description cannot be displayed. To solve
-> that, parsing should be done in two steps -  first to find that
-> "description" section to get all the strings, and second to parse the
-> other sections. The description should be part of the section being
-> parsed, that's why I decided to go with the second approach.
+> +/*
+> + * tracefs_hist_echo_fmt - show the raw format of the histogram
+> + * @seq: A trace_seq to store the format string
+> + * @hist: The histogram to read format from
+> + *
+> + * This show the raw format that describes the state of the histogram.
+> + *
+> + * Returns the size of the format string on succes -1 on error.
+> + */
+> +int tracefs_hist_echo_fmt(struct trace_seq *seq,
+> +			  struct tracefs_instance *instance,
+> +			  struct tracefs_hist *hist)
+> +{
+> +	const char *event = hist->event_name;
+> +	const char *system = hist->system;
+> +	int fmt_size;
+> +	char *path;
+> +	char *fmt;
+> +
+> +	path = tracefs_event_get_file(instance, system, event, "trigger");
+> +	if (!path)
+> +		return -1;
+> +
+> +	fmt = tracefs_event_file_read(instance, system, event, path,
+> +				      &fmt_size);
 
-Again, I would look at the ELF file format for answers ;-)
+First, path should just be "trigger" as tracefs_event_file_read() is a
+short cut to get to the files for the event. I'm surprised that this even
+worked.
 
-The "string table" is a special section that is described in the main
-header. That way, the first thing it does, is to to look for this table. It
-scans all the section headers to find the one that points to the strings,
-and then loads that one first.
+> +	if (!fmt)
+> +		return -1;
+> +
+> +	trace_seq_puts(seq, fmt);
 
-For string "pointers", the pointer is not an offset into the file, but an
-offset into the section (uncompressed). So for reading the file, yes, we
-would need to first find the string section, and load all the strings into
-memory. Then go back and read the normal sections. Then we have access for
-all the strings. I would also say that the string section is optional, and
-a file could be created with no strings, as they are for description
-purposes only, and in that case, we need to just say "no strings found" for
-anything that wants to know the string.
+Second, just reading the trigger file is not useful, as the trigger file
+holds triggers, not just histograms. And you can have more than one
+histogram in the trigger file. For instance, I could do:
+
+ # cd /sys/kernel/debug/tracing/events/sched/sched_switch
+ # echo stacktrace > trigger
+ # echo 'hist:keys=prev_pid' >> trigger
+ # echo 'hist:keys=next_pid' >> trigger
+ # cat trigger
+stacktrace:unlimited
+hist:keys=prev_pid:vals=hitcount:sort=hitcount:size=2048 [active]
+hist:keys=next_pid:vals=hitcount:sort=hitcount:size=2048 [active]
+
+Is this really what you want?
 
 -- Steve
 
-> 2. Have a fixed size description string in the section header, I think
-> 32 bytes should be OK.
+> +	tracefs_put_tracing_file(path);
+> +
+> +	return fmt_size;
+> +}
+> +
+>  /*
+>   * tracefs_hist_command - Create, start, pause, destroy a histogram for an event
+>   * @instance: The instance the histogram will be in (NULL for toplevel)
 
