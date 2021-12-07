@@ -2,103 +2,110 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6CB8C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  6 Dec 2021 23:58:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40B1EC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Dec 2021 10:31:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351410AbhLGACR (ORCPT
+        id S229874AbhLGKey (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 6 Dec 2021 19:02:17 -0500
-Received: from sin.source.kernel.org ([145.40.73.55]:33624 "EHLO
-        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238201AbhLGACR (ORCPT
+        Tue, 7 Dec 2021 05:34:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229449AbhLGKey (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 6 Dec 2021 19:02:17 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id EA98BCE1869
-        for <linux-trace-devel@vger.kernel.org>; Mon,  6 Dec 2021 23:58:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0903C004DD;
-        Mon,  6 Dec 2021 23:58:44 +0000 (UTC)
-Date:   Mon, 6 Dec 2021 18:58:43 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 1/3] libtracefs: New API for getting the raw format of a
- histogram
-Message-ID: <20211206185843.6b721000@gandalf.local.home>
-In-Reply-To: <20211206150855.361202-2-y.karadz@gmail.com>
-References: <20211206150855.361202-1-y.karadz@gmail.com>
-        <20211206150855.361202-2-y.karadz@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 7 Dec 2021 05:34:54 -0500
+Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF6DC061574;
+        Tue,  7 Dec 2021 02:31:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=metanate.com; s=stronger; h=In-Reply-To:Content-Type:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description; bh=TByCTRHW55BcOFqbUdyHvNHFlb0beEGN8t+460a8BCo=; b=Ziy+y
+        uXEx3royqe17pnNUbW8M6G7QdotxI8YJ9q0sKAnhQORmNOJegx7+JIvI5DjjkdTpa9dyE5Sw9tlaX
+        CMA+XMrKFyYdsezflnORHsVJoCQZzG1T5x7HSl5PvjCmJY4C5qoBKf95tLTxRpi2sGjyqIejryfML
+        QNyjmcgMcYWvE4waNEGZYS8f0o6MbWjpoUiTKHw1XdTViWSxSVk6vcvuErVYCm1Nr2uWPABnZxNbp
+        nZQzYs+4PvMadT7G/XNVi6CzWoRSYCtT8JmE0VSvg4bmM5zCGpIKdINtBaM6HDlZEFHlL7Zr1I/E8
+        lCpMn+NaRQ2rfzhavg17J7oD0/RYw==;
+Received: from [81.174.171.191] (helo=donbot)
+        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <john@metanate.com>)
+        id 1muXkm-00041Y-4b; Tue, 07 Dec 2021 10:31:20 +0000
+Date:   Tue, 7 Dec 2021 10:31:15 +0000
+From:   John Keeping <john@metanate.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH/RFC] tracing: make trace_marker{,_raw} stream-like
+Message-ID: <Ya835b6JGrjBQCtF@donbot>
+References: <20210909115734.3818711-1-john@metanate.com>
+ <20210909083529.34ae09da@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909083529.34ae09da@gandalf.local.home>
+X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon,  6 Dec 2021 17:08:53 +0200
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+Hi Steve,
 
-> +/*
-> + * tracefs_hist_echo_fmt - show the raw format of the histogram
-> + * @seq: A trace_seq to store the format string
-> + * @hist: The histogram to read format from
-> + *
-> + * This show the raw format that describes the state of the histogram.
-> + *
-> + * Returns the size of the format string on succes -1 on error.
-> + */
-> +int tracefs_hist_echo_fmt(struct trace_seq *seq,
-> +			  struct tracefs_instance *instance,
-> +			  struct tracefs_hist *hist)
-> +{
-> +	const char *event = hist->event_name;
-> +	const char *system = hist->system;
-> +	int fmt_size;
-> +	char *path;
-> +	char *fmt;
-> +
-> +	path = tracefs_event_get_file(instance, system, event, "trigger");
-> +	if (!path)
-> +		return -1;
-> +
-> +	fmt = tracefs_event_file_read(instance, system, event, path,
-> +				      &fmt_size);
+On Thu, Sep 09, 2021 at 08:35:29AM -0400, Steven Rostedt wrote:
+> On Thu,  9 Sep 2021 12:57:34 +0100
+> John Keeping <john@metanate.com> wrote:
+> 
+> > The tracing marker files are write-only streams with no meaningful
+> > concept of file position.  Using stream_open() to mark them as
+> > stream-link indicates this and has the added advantage that a single
+> > file descriptor can now be used from multiple threads without contention
+> > thanks to clearing FMODE_ATOMIC_POS.
+> > 
+> > Note that this has the potential to break existing userspace by since
+> > both lseek(2) and pwrite(2) will now return ESPIPE when previously lseek
+> > would have updated the stored offset and pwrite would have appended to
+> > the trace.  A survey of libtracefs and several other projects found to
+> > use trace_marker(_raw) [1][2][3] suggests that everyone limits
+> > themselves to calling write(2) and close(2) on these file descriptors so
+> > there is a good chance this will go unnoticed and the benefits of
+> > reduced overhead and lock contention seem worth the risk.
+> > 
+> > [1] https://github.com/google/perfetto
+> > [2] https://github.com/intel/media-driver/
+> > [3] https://w1.fi/cgit/hostap/
+> > 
+> > Signed-off-by: John Keeping <john@metanate.com>
+> > ---
+> > I'm marking this as RFC because it breaks the Prime Directive of Linux
+> > development, as explained above.  But I'm hoping this is one of the
+> 
+> The "Prime Directive of Linux development" is the tree falling in the
+> forest approach. If you break user space API but there's no user space
+> application around to notice the break, did you really break it? The answer
+> is "No".
+> 
+> > cases where we get away with it because this is a huge improvement for
+> > multi-threaded programs when doing the simple thing of opening a single
+> > trace_marker FD at startup and just writing to it from any thread.
+> 
+> I like the idea too.
+> 
+> > 
+> > After writing this, I realised that an alternative solution to my
+> > original problem would have been to use pwrite instead of write!  But I
+> > still think fixing this at the source would be better.
+> 
+> I'm fine with adding this. But I'm going to add it after the merge window
+> for the next release (5.16).
+> 
+> If someone complains that it broke their application, we may need to revert
+> it, but I doubt that will happen.
 
-First, path should just be "trigger" as tracefs_event_file_read() is a
-short cut to get to the files for the event. I'm surprised that this even
-worked.
+Were you expecting more input from me on this?  The above sounded like
+"will be added for 5.16" but I don't see this change in v5.16-rc4 and
+the patch is still marked as "New" in patchwork [1]
 
-> +	if (!fmt)
-> +		return -1;
-> +
-> +	trace_seq_puts(seq, fmt);
+[1] https://patchwork.kernel.org/project/linux-trace-devel/patch/20210909115734.3818711-1-john@metanate.com/
 
-Second, just reading the trigger file is not useful, as the trigger file
-holds triggers, not just histograms. And you can have more than one
-histogram in the trigger file. For instance, I could do:
 
- # cd /sys/kernel/debug/tracing/events/sched/sched_switch
- # echo stacktrace > trigger
- # echo 'hist:keys=prev_pid' >> trigger
- # echo 'hist:keys=next_pid' >> trigger
- # cat trigger
-stacktrace:unlimited
-hist:keys=prev_pid:vals=hitcount:sort=hitcount:size=2048 [active]
-hist:keys=next_pid:vals=hitcount:sort=hitcount:size=2048 [active]
-
-Is this really what you want?
-
--- Steve
-
-> +	tracefs_put_tracing_file(path);
-> +
-> +	return fmt_size;
-> +}
-> +
->  /*
->   * tracefs_hist_command - Create, start, pause, destroy a histogram for an event
->   * @instance: The instance the histogram will be in (NULL for toplevel)
-
+Thanks,
+John
