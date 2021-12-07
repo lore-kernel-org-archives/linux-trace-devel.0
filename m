@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B29BC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Dec 2021 14:28:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75E3EC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Dec 2021 14:29:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237846AbhLGOcR (ORCPT
+        id S233217AbhLGOc6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 7 Dec 2021 09:32:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44202 "EHLO
+        Tue, 7 Dec 2021 09:32:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237839AbhLGOb4 (ORCPT
+        with ESMTP id S237856AbhLGOb5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 7 Dec 2021 09:31:56 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08807C061746
+        Tue, 7 Dec 2021 09:31:57 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D24C061756
         for <linux-trace-devel@vger.kernel.org>; Tue,  7 Dec 2021 06:28:26 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id o19-20020a1c7513000000b0033a93202467so2392639wmc.2
-        for <linux-trace-devel@vger.kernel.org>; Tue, 07 Dec 2021 06:28:25 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id d9so29874283wrw.4
+        for <linux-trace-devel@vger.kernel.org>; Tue, 07 Dec 2021 06:28:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8WTjFjW876c7LlU+YgLkZPoPKQFSmCbeAnNAGsO90AY=;
-        b=O/trcgVbVBKlaQh7qrBub0DIW9OJOKXzmCfpa5OIu5Ma6m13554lMmiNj8MnkamlkN
-         Jdnk0dLwzPvcA7GXiGyaCtIQ/ZcMc+zixXoNQ27axMzcaRyEXpH4NpT2ZfueCAE9jijS
-         6iVMPmuSi/04ULQEO0Vov7EknQwWkTPq/TDuBr/+Ufh8q2tXXGQZ2MNJqdXqCNmOHbFK
-         LyHUWxQ5IhkWu6pFt8P0L4BY+GO7Oiz5KRfRsQm0wYEJYoF6XuLmi5wILUD/6dxyWWR/
-         T10Wyc9MTYvhhOpiBQjEsbi+1hUU5Ikq1jRcGj12/AzWv2TSjB9G0XD29xlbrL5mzbag
-         dOQQ==
+        bh=5mntc0vhosG10WMV5xHBTZ0znfCGEgAACzGwNlutXsQ=;
+        b=XFBoMEhvg+rG5/bwSfhs1GZIzO8MFmYF/z2bXc6W3pL36Qde0reYIoI35wkoMuv/VA
+         8ILe+uuHlKUNWsBytNWefFcrt94E3GBl3vIUzSK6/CvL/HMlkZY2vwmiQp3likifrmhq
+         D43D9dZs3Oo3c0NrbWGAak1awdyShFrMAoWLonqAHCocZiIgRcwFPgfaMKg7wNcUEqj0
+         hWfHknMHJ4QNlwVBeUubUWlLUAu+slDFB8nyD3+Lvgs4GeEnnDYK3UJxaQ61K2sksFvv
+         Ez9sgJOISpweocr+CdDGeRESSeTyL1/EUc7quUXlUIGWjDRh4I8QMq3vgtmUbTabJ7iB
+         f6VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8WTjFjW876c7LlU+YgLkZPoPKQFSmCbeAnNAGsO90AY=;
-        b=1MzM2Hn5Z6HqnwXguybQoXG9acNQn12QmtQJz1rBFJd5IegCAfcIpLbZQ5FRXNvz0e
-         2S0ccVVhnxSwxemIYUIz06NS9ute6F0DakT5XU9QWhIHfHA5USYWGxnOu8ByRV/3W3Sq
-         uOayps0HC5acONHO9H3KS1PHitnhEuDbvQiL65wD+AF9GgiTVWhQm/FZc4CmGCQ+3fdP
-         F1ZloM29SgIgsF88HE5xaRfp9Zd+LoRUGzfg8JLT6lLxPJw+pDyy4r+J2EMnzKIwRX+4
-         c9szJ/VvGASBktGaG8XUiCaLIdH8SogPZ5v5LypkXX2GF+ejMdXPimgBVU3BQtXufuo+
-         GwRQ==
-X-Gm-Message-State: AOAM530zTdDH6GXrceSJll0pj2gLmB8ivWVFJS9nkfpJ3dKxKxhV/crC
-        K/T1Xh1GMSYN+W7N0CFQLrfjNRcRNHI=
-X-Google-Smtp-Source: ABdhPJwMmndqmN29CxsY1KlkAXjO+LhGk+fqTBcqb0UDwToYvjivCymQ2cuuH13v+7MPWTg6Vj56WQ==
-X-Received: by 2002:a05:600c:4f8a:: with SMTP id n10mr7233327wmq.54.1638887304341;
-        Tue, 07 Dec 2021 06:28:24 -0800 (PST)
+        bh=5mntc0vhosG10WMV5xHBTZ0znfCGEgAACzGwNlutXsQ=;
+        b=BpoNsz2rVepEUq6qH6r7uXSiL4rwvI5LSaOghdqAxXeoNOwywdfRGCZEKgd8p2UqyQ
+         3nTonObDlfvhdqm/qMoFFWD9JZsWZToTuZl2XF8SmuNUYpUW/GSNFTZ/8dNWwMYXbUeU
+         EptwrNRgGfWY98L+qZZ2agmIa3I+Zg1/G/3RNla4UY0+dydrxpDt1D2O6UY8dbMa+zaY
+         kO7tT7BgNo61RoPjxg1joPWl5PkHAqN5mDZmSOTj5HY9ZJy7mYKRcDhbx+u6XaC8hEhh
+         /3PlQOgbLy4WlNF8iHgkactPvy0Y/RBYX7pPWoHh20PFCcYDt4mejaaxYeyb0TC0ik+G
+         ZBPg==
+X-Gm-Message-State: AOAM5331aQSs+Pw6eK2TVNW4qAiOxpdfdujbFCS9SGNwYlHfIzDp2E4G
+        2lem/Otbo4/d414IT8FRkUxp9dN/UAM=
+X-Google-Smtp-Source: ABdhPJz/8ZJY5gEW3WGOxn4KvhCt0BgCGgzpybPjoDX3cVCZvCjjD60LZGEBqmJFrEK9yVMQOpGDjA==
+X-Received: by 2002:adf:e484:: with SMTP id i4mr53120167wrm.49.1638887305233;
+        Tue, 07 Dec 2021 06:28:25 -0800 (PST)
 Received: from crow.. ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id l4sm14301428wrv.94.2021.12.07.06.28.23
+        by smtp.gmail.com with ESMTPSA id l4sm14301428wrv.94.2021.12.07.06.28.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 07 Dec 2021 06:28:24 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 2/5] trace-cruncher: Define constructor for trace histograms
-Date:   Tue,  7 Dec 2021 16:28:08 +0200
-Message-Id: <20211207142811.398929-3-y.karadz@gmail.com>
+Subject: [PATCH 3/5] trace-cruncher: Add APIs to setup a histogram
+Date:   Tue,  7 Dec 2021 16:28:09 +0200
+Message-Id: <20211207142811.398929-4-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211207142811.398929-1-y.karadz@gmail.com>
 References: <20211207142811.398929-1-y.karadz@gmail.com>
@@ -64,282 +64,202 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-A method for creating histogram objects is added. The optional arguments
-of the method allows for variety of ways to create histograms.
+More methods for controlling the data acquisition of the histogram
+are added.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/common.h         |  10 ++-
- src/ftracepy-utils.c | 195 +++++++++++++++++++++++++++++++++++++++++++
- src/ftracepy-utils.h |   3 +
- src/ftracepy.c       |   5 ++
- 4 files changed, 210 insertions(+), 3 deletions(-)
+ src/ftracepy-utils.c | 129 +++++++++++++++++++++++++++++++++++++++++++
+ src/ftracepy-utils.h |   9 +++
+ src/ftracepy.c       |  15 +++++
+ 3 files changed, 153 insertions(+)
 
-diff --git a/src/common.h b/src/common.h
-index 9eee563..eacea7d 100644
---- a/src/common.h
-+++ b/src/common.h
-@@ -26,10 +26,9 @@ static const char *NO_ARG = "/NONE/";
- 
- #define TC_NIL_MSG	"(nil)"
- 
--static inline bool is_all(const char *arg)
-+static inline bool lax_cmp(const char *arg, const char *model)
- {
--	const char all[] = "all";
--	const char *p = &all[0];
-+	const char *p = &model[0];
- 
- 	for (; *arg; arg++, p++) {
- 		if (tolower(*arg) != *p)
-@@ -38,6 +37,11 @@ static inline bool is_all(const char *arg)
- 	return !(*p);
- }
- 
-+static inline bool is_all(const char *arg)
-+{
-+	return lax_cmp(arg, "all");
-+}
-+
- static inline bool is_no_arg(const char *arg)
- {
- 	return arg[0] == '\0' || arg == NO_ARG;
 diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
-index 7f3daca..65aca81 100644
+index 65aca81..d7e6d6a 100644
 --- a/src/ftracepy-utils.c
 +++ b/src/ftracepy-utils.c
-@@ -1954,6 +1954,201 @@ PyObject *PyDynevent_is_enabled(PyDynevent *self, PyObject *args,
- 	return ret;
+@@ -707,6 +707,135 @@ PyObject *PyTfsInstance_dir(PyTfsInstance *self)
+ 	return PyUnicode_FromString(tracefs_instance_get_dir(self->ptrObj));
  }
  
-+static enum tracefs_hist_key_type hist_key_type(PyObject * py_type)
++PyObject *PyTraceHist_add_value(PyTraceHist *self, PyObject *args,
++						   PyObject *kwargs)
 +{
-+	int type = -1;
++	static char *kwlist[] = {"value", NULL};
++	const char *value;
 +
-+	if (PyUnicode_Check(py_type)) {
-+		const char *type_str = PyUnicode_DATA(py_type);
-+
-+		if (lax_cmp(type_str, "normal") ||
-+		    lax_cmp(type_str, "n") )
-+			type = TRACEFS_HIST_KEY_NORMAL;
-+		else if (lax_cmp(type_str, "hex") ||
-+			 lax_cmp(type_str, "h") )
-+			type = TRACEFS_HIST_KEY_HEX;
-+		else if (lax_cmp(type_str, "sym"))
-+			 type = TRACEFS_HIST_KEY_SYM;
-+		else if (lax_cmp(type_str, "sym_offset") ||
-+			 lax_cmp(type_str, "so"))
-+			type = TRACEFS_HIST_KEY_SYM_OFFSET;
-+		else if (lax_cmp(type_str, "syscall") ||
-+			 lax_cmp(type_str, "sc"))
-+			type = TRACEFS_HIST_KEY_SYSCALL;
-+		else if (lax_cmp(type_str, "execname") ||
-+			 lax_cmp(type_str, "e"))
-+			 type = TRACEFS_HIST_KEY_EXECNAME;
-+		else if (lax_cmp(type_str, "log") ||
-+			 lax_cmp(type_str, "l"))
-+			type = TRACEFS_HIST_KEY_LOG;
-+		else if (lax_cmp(type_str, "users") ||
-+			 lax_cmp(type_str, "u"))
-+			type = TRACEFS_HIST_KEY_USECS;
-+		else if (lax_cmp(type_str, "max") ||
-+			 lax_cmp(type_str, "m"))
-+			type = TRACEFS_HIST_KEY_MAX;
-+		else {
-+			TfsError_fmt(NULL, "Unknown axis type %s\n",
-+				     type_str);
-+		}
-+	} else if (PyLong_CheckExact(py_type)) {
-+		type = PyLong_AsLong(py_type);
-+	} else {
-+		TfsError_fmt(NULL, "Unknown axis type %s\n");
-+	}
-+
-+	return type;
-+}
-+
-+static struct tracefs_hist *hist_from_key(struct tep_handle *tep,
-+					  const char *system, const char *event,
-+					  PyObject *py_key, PyObject * py_type)
-+{
-+	struct tracefs_hist *hist = NULL;
-+	int type = 0;
-+
-+	if (PyUnicode_Check(py_key)) {
-+		if (py_type) {
-+			type = hist_key_type(py_type);
-+			if (type < 0)
-+				return NULL;
-+		}
-+
-+		hist = tracefs_hist_alloc(tep, system, event,
-+					  PyUnicode_DATA(py_key), type);
-+	} else if (PyList_CheckExact(py_key)) {
-+		int i, n_keys = PyList_Size(py_key);
-+		struct tracefs_hist_axis *axes;
-+		PyObject *item_type;
-+
-+		if (py_type) {
-+			/*
-+			 * The format of the types have to match the format
-+			 * of the keys.
-+			 */
-+			if (!PyList_CheckExact(py_key) ||
-+			    PyList_Size(py_type) != n_keys)
-+				return NULL;
-+		}
-+
-+		axes = calloc(n_keys + 1, sizeof(*axes));
-+		if (!axes) {
-+			MEM_ERROR
-+			return NULL;
-+		}
-+
-+		for (i = 0; i < n_keys; ++i) {
-+			axes[i].key = str_from_list(py_key, i);
-+			if (!axes[i].key)
-+				return NULL;
-+
-+			if (py_type) {
-+				item_type = PyList_GetItem(py_type, i);
-+				if (!PyLong_CheckExact(item_type))
-+					return NULL;
-+
-+				type = hist_key_type(item_type);
-+				if (type < 0)
-+					return NULL;
-+
-+				axes[i].type = type;
-+			}
-+		}
-+
-+		hist = tracefs_hist_alloc_nd(tep, system, event, axes);
-+		free(axes);
-+	}
-+
-+	return hist;
-+}
-+
-+static struct tracefs_hist *hist_from_axis(struct tep_handle *tep,
-+					   const char *system, const char *event,
-+					   PyObject *py_axes)
-+{
-+	struct tracefs_hist *hist = NULL;
-+	struct tracefs_hist_axis *axes;
-+	PyObject *key, *value;
-+	Py_ssize_t i = 0;
-+	int n_axes;
-+
-+	n_axes = PyDict_Size(py_axes);
-+	if (PyErr_Occurred())
++	if (!PyArg_ParseTupleAndKeywords(args,
++					 kwargs,
++					 "s",
++					 kwlist,
++					 &value)) {
 +		return NULL;
++	}
 +
-+	axes = calloc(n_axes + 1, sizeof(*axes));
-+	if (!axes) {
++	if (tracefs_hist_add_value(self->ptrObj, value) < 0) {
 +		MEM_ERROR
 +		return NULL;
 +	}
 +
-+	while (PyDict_Next(py_axes, &i, &key, &value)) {
-+		axes[i - 1].key = PyUnicode_DATA(key);
-+		axes[i - 1].type = hist_key_type(value);
-+		if (PyErr_Occurred()) {
-+			PyErr_Print();
-+			free(axes);
-+			return NULL;
-+		}
-+	}
-+
-+	hist = tracefs_hist_alloc_nd(tep, system, event, axes);
-+	free(axes);
-+
-+	return hist;
++	Py_RETURN_NONE;
 +}
 +
-+PyObject *PyFtrace_hist(PyObject *self, PyObject *args,
-+					PyObject *kwargs)
++const char *hist_noname = "unnamed";
++static inline const char *get_hist_name(struct tracefs_hist *hist)
 +{
-+	static char *kwlist[] =
-+		{"system", "event", "key", "type", "axes", "name", NULL};
-+	PyObject *py_axes = NULL, *py_key = NULL, *py_type = NULL;
-+	const char *system, *event, *name = NULL;
-+	struct tracefs_hist *hist = NULL;
-+	struct tep_handle *tep;
++	const char *name = tracefs_hist_get_name(hist);
++	return name ? name : hist_noname;
++}
++
++static bool add_sort_key(struct tracefs_hist *hist,
++			 const char *sort_key)
++{
++	if (tracefs_hist_add_sort_key(hist, sort_key) < 0) {
++		TfsError_fmt(NULL,
++			     "Failed to add sort key \'%s\'to histogram \'%s\'.",
++			     sort_key, get_hist_name(hist));
++		return false;
++	}
++
++	return true;
++}
++
++PyObject *PyTraceHist_sort_keys(PyTraceHist *self, PyObject *args,
++						   PyObject *kwargs)
++{
++	static char *kwlist[] = {"keys", NULL};
++	PyObject *py_obj;
++	const char *key;
 +
 +	if (!PyArg_ParseTupleAndKeywords(args,
 +					 kwargs,
-+					 "ss|OOOs",
++					 "O",
 +					 kwlist,
-+					 &system,
-+					 &event,
-+					 &py_key,
-+					 &py_type,
-+					 &py_axes,
-+					 &name)) {
++					 &py_obj)) {
 +		return NULL;
 +	}
 +
-+	tep = tracefs_local_events(tracefs_tracing_dir());
-+	if (!tep)
-+		goto fail;
++	if (PyUnicode_Check(py_obj)) {
++		if (!add_sort_key(self->ptrObj, PyUnicode_DATA(py_obj)))
++			return NULL;
++	} else if (PyList_CheckExact(py_obj)) {
++		int i, n = PyList_Size(py_obj);
 +
-+	if (py_key && ! py_axes) {
-+		hist = hist_from_key(tep, system, event, py_key, py_type);
-+	} else if (!py_key && py_axes) {
-+		hist = hist_from_axis(tep, system, event, py_axes);
-+	} else {
-+		TfsError_setstr(NULL, "'key' or 'axis' must be provided.");
-+		return NULL;
++		for (i = 0; i < n; ++i) {
++			key = str_from_list(py_obj, i);
++			if (!key ||
++			    !add_sort_key(self->ptrObj, key)) {
++				PyErr_SetString(TRACECRUNCHER_ERROR,
++						"Inconsistent \"keys\" argument.");
++				return NULL;
++			}
++		}
 +	}
 +
-+	if (!hist)
-+		goto fail;
-+
-+	if (name && tracefs_hist_add_name(hist, name) < 0)
-+		goto fail;
-+
-+	return PyTraceHist_New(hist);
-+
-+ fail:
-+	TfsError_fmt(NULL, "Failed to create histogram for %s/%s",
-+		     system, event);
-+	tracefs_hist_free(hist);
-+	return NULL;
++	Py_RETURN_NONE;
 +}
 +
- PyObject *PyFtrace_set_ftrace_loglevel(PyObject *self, PyObject *args,
- 						       PyObject *kwargs)
++static int sort_direction(PyObject *py_dir)
++{
++	int dir = -1;
++
++	if (PyLong_CheckExact(py_dir)) {
++		dir = PyLong_AsLong(py_dir);
++	} else if (PyUnicode_Check(py_dir)) {
++		const char *dir_str =  PyUnicode_DATA(py_dir);
++
++		if (lax_cmp(dir_str, "descending") ||
++		    lax_cmp(dir_str, "desc") ||
++		    lax_cmp(dir_str, "d"))
++			dir = 1;
++		else if (lax_cmp(dir_str, "ascending") ||
++			 lax_cmp(dir_str, "asc") ||
++			 lax_cmp(dir_str, "a"))
++			dir = 0;
++	}
++
++	return dir;
++}
++
++PyObject *PyTraceHist_sort_key_direction(PyTraceHist *self, PyObject *args,
++							    PyObject *kwargs)
++{
++	static char *kwlist[] = {"sort_key", "direction", NULL};
++	const char *sort_key;
++	PyObject *py_dir;
++	int dir;
++
++	if (!PyArg_ParseTupleAndKeywords(args,
++					 kwargs,
++					 "sO",
++					 kwlist,
++					 &sort_key,
++					 &py_dir)) {
++		return NULL;
++	}
++
++	dir = sort_direction(py_dir);
++
++	if (dir < 0 ||
++	    tracefs_hist_sort_key_direction(self->ptrObj, sort_key, dir) < 0) {
++		TfsError_fmt(NULL,
++			     "Failed to add sort direction to histogram \'%s\'.",
++			     get_hist_name(self->ptrObj));
++		return NULL;
++	}
++
++	Py_RETURN_NONE;
++}
++
+ PyObject *PyFtrace_dir(PyObject *self)
  {
+ 	return PyUnicode_FromString(tracefs_tracing_dir());
 diff --git a/src/ftracepy-utils.h b/src/ftracepy-utils.h
-index da31998..f69a6d4 100644
+index f69a6d4..07d2cac 100644
 --- a/src/ftracepy-utils.h
 +++ b/src/ftracepy-utils.h
-@@ -178,6 +178,9 @@ PyObject *PyFtrace_register_kprobe(PyObject *self, PyObject *args,
- PyObject *PyFtrace_register_kretprobe(PyObject *self, PyObject *args,
- 						      PyObject *kwargs);
+@@ -92,6 +92,15 @@ PyObject *PyDynevent_disable(PyDynevent *self, PyObject *args,
+ PyObject *PyDynevent_is_enabled(PyDynevent *self, PyObject *args,
+ 					      PyObject *kwargs);
  
-+PyObject *PyFtrace_hist(PyObject *self, PyObject *args,
-+					PyObject *kwargs);
++PyObject *PyTraceHist_add_value(PyTraceHist *self, PyObject *args,
++						   PyObject *kwargs);
 +
- PyObject *PyFtrace_set_ftrace_loglevel(PyObject *self, PyObject *args,
- 						       PyObject *kwargs);
++PyObject *PyTraceHist_sort_keys(PyTraceHist *self, PyObject *args,
++						   PyObject *kwargs);
++
++PyObject *PyTraceHist_sort_key_direction(PyTraceHist *self, PyObject *args,
++							    PyObject *kwargs);
++
+ PyObject *PyFtrace_dir(PyObject *self);
  
+ PyObject *PyFtrace_detach(PyObject *self, PyObject *args, PyObject *kwargs);
 diff --git a/src/ftracepy.c b/src/ftracepy.c
-index 0f06796..7891b5e 100644
+index 7891b5e..b91cda9 100644
 --- a/src/ftracepy.c
 +++ b/src/ftracepy.c
-@@ -327,6 +327,11 @@ static PyMethodDef ftracepy_methods[] = {
- 	 METH_VARARGS | METH_KEYWORDS,
- 	 "Define a kretprobe."
- 	},
-+	{"hist",
-+	 (PyCFunction) PyFtrace_hist,
+@@ -169,6 +169,21 @@ C_OBJECT_WRAPPER(tracefs_dynevent, PyDynevent,
+ 		 tracefs_dynevent_free)
+ 
+ static PyMethodDef PyTraceHist_methods[] = {
++	{"add_value",
++	 (PyCFunction) PyTraceHist_add_value,
 +	 METH_VARARGS | METH_KEYWORDS,
-+	 "Define a histogram."
++	 "Add value field."
 +	},
- 	{"set_ftrace_loglevel",
- 	 (PyCFunction) PyFtrace_set_ftrace_loglevel,
- 	 METH_VARARGS | METH_KEYWORDS,
++	{"sort_keys",
++	 (PyCFunction) PyTraceHist_sort_keys,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Set key felds or values to sort on."
++	},
++	{"sort_key_direction",
++	 (PyCFunction) PyTraceHist_sort_key_direction,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Set the direction of a sort key field."
++	},
+ 	{NULL, NULL, 0, NULL}
+ };
+ 
 -- 
 2.32.0
 
