@@ -2,37 +2,33 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52E30C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Dec 2021 22:04:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91436C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Dec 2021 22:13:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237587AbhLGWH6 (ORCPT
+        id S232328AbhLGWR0 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 7 Dec 2021 17:07:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237203AbhLGWH5 (ORCPT
+        Tue, 7 Dec 2021 17:17:26 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:35302 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231497AbhLGWR0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 7 Dec 2021 17:07:57 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B3EC061574
-        for <linux-trace-devel@vger.kernel.org>; Tue,  7 Dec 2021 14:04:26 -0800 (PST)
+        Tue, 7 Dec 2021 17:17:26 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 508EBCE1E01
-        for <linux-trace-devel@vger.kernel.org>; Tue,  7 Dec 2021 22:04:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46237C341C1;
-        Tue,  7 Dec 2021 22:04:22 +0000 (UTC)
-Date:   Tue, 7 Dec 2021 17:04:21 -0500
+        by ams.source.kernel.org (Postfix) with ESMTPS id B43DCB81E83
+        for <linux-trace-devel@vger.kernel.org>; Tue,  7 Dec 2021 22:13:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12BC6C341C3;
+        Tue,  7 Dec 2021 22:13:52 +0000 (UTC)
+Date:   Tue, 7 Dec 2021 17:13:51 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 3/3] libtracefs: Add new API for getting synth event
- name WiP
-Message-ID: <20211207170421.6b78bb36@gandalf.local.home>
-In-Reply-To: <20211206150855.361202-4-y.karadz@gmail.com>
-References: <20211206150855.361202-1-y.karadz@gmail.com>
-        <20211206150855.361202-4-y.karadz@gmail.com>
+Subject: Re: [RFC PATCH] libtracefs: New APIs for getting the raw format of
+ synth event
+Message-ID: <20211207171351.2928503d@gandalf.local.home>
+In-Reply-To: <20211206151352.361507-1-y.karadz@gmail.com>
+References: <20211206151352.361507-1-y.karadz@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -41,97 +37,233 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon,  6 Dec 2021 17:08:55 +0200
+On Mon,  6 Dec 2021 17:13:52 +0200
 "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-I'm guessing for the lack of change log, that this is really an RFC?
+> The new APIs can be useful in the case whene the user wants to
+> check what exactly gets passed to the kernel as definition of
+> a synth event.
 
+Please list the APIs.
+
+> 
 > Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 > ---
->  Documentation/libtracefs-synth2.txt |  8 ++++++--
->  include/tracefs.h                   |  1 +
->  src/tracefs-hist.c                  | 11 +++++++++++
->  3 files changed, 18 insertions(+), 2 deletions(-)
+>  include/tracefs.h  |   4 ++
+>  src/tracefs-hist.c | 102 +++++++++++++++++++++++++++++++++++++--------
+>  2 files changed, 88 insertions(+), 18 deletions(-)
 > 
-> diff --git a/Documentation/libtracefs-synth2.txt b/Documentation/libtracefs-synth2.txt
-> index 1cb07c8..2439a54 100644
-> --- a/Documentation/libtracefs-synth2.txt
-> +++ b/Documentation/libtracefs-synth2.txt
-> @@ -3,8 +3,9 @@ libtracefs(3)
->  
->  NAME
->  ----
-> -tracefs_synth_create, tracefs_synth_destroy, tracefs_synth_echo_cmd,tracefs_synth_complete,
-> -tracefs_synth_get_start_hist,tracefs_synth_trace,tracefs_synth_snapshot - Creation of synthetic events
-> +tracefs_synth_create, tracefs_synth_destroy, tracefs_synth_echo_cmd, tracefs_synth_complete,
-> +tracefs_synth_get_start_hist, tracefs_synth_trace, tracefs_synth_snapshot,
-> +tracefs_synth_get_name - Creation of synthetic events
->  
->  SYNOPSIS
->  --------
-> @@ -25,6 +26,7 @@ int tracefs_synth_snapshot(struct tracefs_synth pass:[*]synth,
->  int tracefs_synth_save(struct tracefs_synth pass:[*]synth,
->  		       enum tracefs_synth_handler type, const char pass:[*]var,
->  		       char pass:[**]save_fields);
-> +tracefs_synth_get_name(struct tracefs_synth pass:[*]synth);
-
-Need return value.
-
->  --
->  
->  DESCRIPTION
-> @@ -87,6 +89,8 @@ then saven the given _save_fields_ list. The fields will be stored in the histog
->  "hist" file of the event that can be retrieved with *tracefs_event_file_read*(3).
->  _var_ changes. _var_ must be one of the _name_ elements used in *tracefs_synth_add_end_field*(3).
->  
-> +*tracefs_synth_get_name*() get the name of the synthetic event.
-
-And state that the string returned belongs to the synthetic event
-descriptor and lives only as long as it does. The value returned should not
-be freed.
-
-
-> +
->  RETURN VALUE
->  ------------
->  Returns zero on success or -1 on error.
 > diff --git a/include/tracefs.h b/include/tracefs.h
-> index 7c03086..804d738 100644
+> index 804d738..9ad036c 100644
 > --- a/include/tracefs.h
 > +++ b/include/tracefs.h
-> @@ -505,6 +505,7 @@ enum tracefs_synth_handler {
->  	TRACEFS_SYNTH_HANDLE_CHANGE,
+> @@ -250,6 +250,7 @@ enum tracefs_dynevent_type {
+>  	TRACEFS_DYNEVENT_SYNTH		= 1 << 5,
+>  	TRACEFS_DYNEVENT_MAX		= 1 << 6,
 >  };
+> +
+>  int tracefs_dynevent_create(struct tracefs_dynevent *devent);
+>  int tracefs_dynevent_destroy(struct tracefs_dynevent *devent, bool force);
+>  int tracefs_dynevent_destroy_all(unsigned int types, bool force);
+> @@ -553,6 +554,9 @@ int tracefs_synth_create(struct tracefs_synth *synth);
+>  int tracefs_synth_destroy(struct tracefs_synth *synth);
+>  void tracefs_synth_free(struct tracefs_synth *synth);
+>  int tracefs_synth_echo_cmd(struct trace_seq *seq, struct tracefs_synth *synth);
+> +const char *tracefs_synth_show_event_row(struct tracefs_synth *synth);
+> +const char *tracefs_synth_show_start_hist_row(struct tracefs_synth *synth);
+> +const char *tracefs_synth_show_end_hist_row(struct tracefs_synth *synth);
 >  
-> +const char *tracefs_synth_get_name(struct tracefs_synth *synth);
->  struct tracefs_synth *tracefs_synth_alloc(struct tep_handle *tep,
->  					  const char *name,
->  					  const char *start_system,
+>  struct tracefs_synth *tracefs_sql(struct tep_handle *tep, const char *name,
+>  				  const char *sql_buffer, char **err);
 > diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-> index 837d4e1..41c88d1 100644
+> index 41c88d1..338249d 100644
 > --- a/src/tracefs-hist.c
 > +++ b/src/tracefs-hist.c
-> @@ -736,6 +736,17 @@ struct tracefs_synth {
->  	int			arg_cnt;
->  };
+> @@ -717,6 +717,8 @@ struct tracefs_synth {
+>  	struct action		*actions;
+>  	struct action		**next_action;
+>  	struct tracefs_dynevent	*dyn_event;
+> +	char			*start_hist;
+> +	char			*end_hist;
+>  	char			*name;
+>  	char			**synthetic_fields;
+>  	char			**synthetic_args;
+> @@ -771,6 +773,8 @@ void tracefs_synth_free(struct tracefs_synth *synth)
+>  		return;
 >  
-> + /*
-> + * tracefs_synth_get_name - get the name of the synthetic event
-> + * @synth: The synthetic event to get the name for
+>  	free(synth->name);
+> +	free(synth->start_hist);
+> +	free(synth->end_hist);
+>  	tracefs_list_free(synth->synthetic_fields);
+>  	tracefs_list_free(synth->synthetic_args);
+>  	tracefs_list_free(synth->start_keys);
+> @@ -1067,6 +1071,9 @@ struct tracefs_synth *tracefs_synth_alloc(struct tep_handle *tep,
+>  		synth = NULL;
+>  	}
+>  
+> +	synth->start_hist = NULL;
+> +	synth->end_hist = NULL;
+> +
+>  	return synth;
+>  }
+>  
+> @@ -1836,6 +1843,72 @@ static char *create_end_hist(struct tracefs_synth *synth)
+>  	return create_actions(end_hist, synth);
+>  }
+>  
+> +/*
+> + * tracefs_synth_echo_fmt - show the raw format of a synthetic event
+> + * @seq: A trace_seq to store the format string
+> + * @synth: The synthetic event to read format from
 > + *
-> + * Returns name string on succes or NULL on error.
+> + * This shows the raw format that describes the synthetic event, including
+> + * the format of the dynamic event and the start / end histograms.
+> + *
+> + * Returns 0 on succes -1 on error.
+> + */
+> +int tracefs_synth_echo_fmt(struct trace_seq *seq,
+> +			   struct tracefs_instance *instance,
+> +			   struct tracefs_synth *synth)
+> +{
+> +	if (!synth->dyn_event)
+> +		return -1;
+> +
+> +	trace_seq_printf(seq, "%s\n", synth->dyn_event->format);
+> +	trace_seq_printf(seq, "%s\n", synth->start_hist);
+> +	trace_seq_printf(seq, "%s\n", synth->end_hist);
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * tracefs_synth_show_event_row - show the dynamic event used by a synthetic
+> + *				  event
+> + * @synth: The synthetic event to read format from
+> + *
+> + * This shows the raw format of the dynamic event used by the synthetic event.
+> + *
+> + * Returns format string on succes or NULL on error.
 
-And this needs to state its scope as well.
+Should probably state that the string returned belongs to the synth
+descriptor.
+
+
+> + */
+> +const char *tracefs_synth_show_event_row(struct tracefs_synth *synth)
+> +{
+> +	return synth->dyn_event ? synth->dyn_event->format : NULL;
+> +}
+> +
+> +/*
+> + * tracefs_synth_show_start_hist_row - show the start histogram used by a
+> + *				       synthetic event
+> + * @synth: The synthetic event to read format from
+> + *
+> + * This shows the raw format of the start histogram used by the synthetic event.
+> + *
+> + * Returns format string on succes or NULL on error.
+
+Here too. And typo in all the comments. "success"
+
+
+> + */
+> +const char *tracefs_synth_show_start_hist_row(struct tracefs_synth *synth)
+> +{
+> +	return synth->start_hist;
+> +}
+> +
+> +/*
+> + * tracefs_synth_show_end_hist_row - show the end histogram used by a
+> + *				       synthetic event
+> + * @synth: The synthetic event to read format from
+> + *
+> + * This shows the raw format of the end histogram used by the synthetic event.
+> + *
+> + * Returns format string on succes or NULL on error.
+
+Same here.
+
+> + */
+> +const char *tracefs_synth_show_end_hist_row(struct tracefs_synth *synth)
+> +{
+> +	return synth->end_hist;
+> +}
+> +
+>  static char *append_filter(char *hist, char *filter, unsigned int parens)
+>  {
+>  	int i;
+> @@ -1974,8 +2047,6 @@ tracefs_synth_get_start_hist(struct tracefs_synth *synth)
+>   */
+>  int tracefs_synth_create(struct tracefs_synth *synth)
+>  {
+> -	char *start_hist = NULL;
+> -	char *end_hist = NULL;
+>  	int ret;
+>  
+>  	if (!synth) {
+> @@ -1996,40 +2067,35 @@ int tracefs_synth_create(struct tracefs_synth *synth)
+>  	if (tracefs_dynevent_create(synth->dyn_event))
+>  		return -1;
+>  
+> -	start_hist = create_hist(synth->start_keys, synth->start_vars);
+> -	start_hist = append_filter(start_hist, synth->start_filter,
+> -				   synth->start_parens);
+> -	if (!start_hist)
+> +	synth->start_hist = create_hist(synth->start_keys, synth->start_vars);
+> +	synth->start_hist = append_filter(synth->start_hist, synth->start_filter,
+> +					  synth->start_parens);
+> +	if (!synth->start_hist)
+>  		goto remove_synthetic;
+>  
+> -	end_hist = create_end_hist(synth);
+> -	end_hist = append_filter(end_hist, synth->end_filter,
+> -				   synth->end_parens);
+> -	if (!end_hist)
+> +	synth->end_hist = create_end_hist(synth);
+> +	synth->end_hist = append_filter(synth->end_hist, synth->end_filter,
+> +					synth->end_parens);
+> +	if (!synth->end_hist)
+>  		goto remove_synthetic;
+>  
+>  	ret = tracefs_event_file_append(synth->instance, synth->start_event->system,
+>  					synth->start_event->name,
+> -					"trigger", start_hist);
+> +					"trigger", synth->start_hist);
+>  	if (ret < 0)
+>  		goto remove_synthetic;
+>  
+>  	ret = tracefs_event_file_append(synth->instance, synth->end_event->system,
+>  					synth->end_event->name,
+> -					"trigger", end_hist);
+> +					"trigger", synth->end_hist);
+>  	if (ret < 0)
+>  		goto remove_start_hist;
+>  
+> -	free(start_hist);
+> -	free(end_hist);
+> -
+>  	return 0;
+>  
+>   remove_start_hist:
+> -	remove_hist(synth->instance, synth->start_event, start_hist);
+> +	remove_hist(synth->instance, synth->start_event, synth->start_hist);
+>   remove_synthetic:
+> -	free(end_hist);
+> -	free(start_hist);
+>  	tracefs_dynevent_destroy(synth->dyn_event, false);
+
+I just realized that on error, we do not free the synthetic event
+descriptor. So there is a memory leak.
+
+Also, I'm thinking that the specific functions for destroying the synthetic
+events and such, should live here, and trace-dynevents.c should call them.
+
+Because all the management for synthetic events should live in this file
+(or go to its own file).
 
 -- Steve
 
-> + */
-> +const char *tracefs_synth_get_name(struct tracefs_synth *synth)
-> +{
-> +	return synth ? synth->name : NULL;
-> +}
-> +
->  static void action_free(struct action *action)
->  {
->  	free(action->handle_field);
+
+>  	return -1;
+>  }
 
