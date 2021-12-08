@@ -2,69 +2,68 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D8FCC4332F
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  8 Dec 2021 12:17:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 719A8C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  8 Dec 2021 13:31:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233185AbhLHMUq (ORCPT
+        id S232235AbhLHNfB (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 8 Dec 2021 07:20:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38354 "EHLO
+        Wed, 8 Dec 2021 08:35:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233202AbhLHMUl (ORCPT
+        with ESMTP id S231299AbhLHNfB (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 8 Dec 2021 07:20:41 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5A4C061746
-        for <linux-trace-devel@vger.kernel.org>; Wed,  8 Dec 2021 04:17:08 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id j3so3792319wrp.1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 08 Dec 2021 04:17:08 -0800 (PST)
+        Wed, 8 Dec 2021 08:35:01 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 370FDC061746
+        for <linux-trace-devel@vger.kernel.org>; Wed,  8 Dec 2021 05:31:29 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id z5so8462921edd.3
+        for <linux-trace-devel@vger.kernel.org>; Wed, 08 Dec 2021 05:31:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
          :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=u6b8+V9jAF42b0optbJ33fpcKJAbxLkN92sDmSGUsHk=;
-        b=BiXKmR0VoJjQy6ajh7q/tLuhOWuFFIQGOOGfL30u7oEJJVcZCugsonTMYzY2y4mnaa
-         44X2ex+EgeON6wdp7vUq2IYDIxUNuWRn5apwsajpOO8eEn9WwaNJRPxw4GDusSjTwxC+
-         xWI0dxZKt8ylD8VjuGgkhOkEGZ8sX9E0Ka/ccNWoq2b6EyqUmRniuyw1g5d2I+N/mQdr
-         GblYPYv2wXM+C344Wu5nP3KNi0oSylEwqFIki+FynTHtCPlnXKhOmrvF8Kx7D57qfds5
-         39aS0WEx3MihOiNPEOc/VgoHYd87ay/lYpQ6unT4iDrk86mtjcxXGqZ5loo4Gjeybj6v
-         Yr2g==
+        bh=CJnUdPrqHD7CPFmocJmtrpyCP7OKgMzgBBNSNRvolq0=;
+        b=WohD74pV3KGCjOJ83/2vNYCnY5DMZdg6P+WHGrL1EAszqGdHqgI0/noiVs4OSpwE2P
+         wO7os9Tz09qhrwJ1sR22jYK+N70xpriM+ruRm3tqhdFp7MBPxscfZPY30os/LrWtHOzy
+         BVpAgWk+uyuCDzblcIUN9qV8DjIB9AJj1GbKAe5esXTKZAsdXUJOgOAXtpjTliQFKRtn
+         Ge7R3J3gZiX3LYXog4YqRBXOtrX1oNyie3gJdWLAIq5cTaG/ZFPRQ8vTeJYEYmzdyg7d
+         RMpD739CzMtKxsdjnTgjZG9puf2ct5i3yaI9XBiFx/XqM15prCONmWCMltCYTDH46LiK
+         FDfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=u6b8+V9jAF42b0optbJ33fpcKJAbxLkN92sDmSGUsHk=;
-        b=ibz6QH5mxoeOQmntH0hT9TSkWGftYnzRqtKzpr0VyqRF3K0GC0UXd9GIZb0/aV8mWL
-         VF5eAydSyAICZPtlzCYsq1hscCW3hFwpGy7/oKL359qasUswWu/ooTe4OK0oehX9BMID
-         QDaN2bBLdf8V8w7yylhCUpOTqQ4CNiI841cOhOy8LhmalzpRNRTda/qpmLUPVhtCZmof
-         Xjx+2nKQ0ayYxe8femS2PO5A5eowWddATYBJeT3nlhS8UewAAfLiBs/7RFZDXq6hvNDw
-         X/PymSrY8O3BT69ljRyrUYni8ew2+u1p8d9vabDYOOW1cYU9aUeLxsuMSmDJ+rDUH6iA
-         AnbQ==
-X-Gm-Message-State: AOAM533VfiqbVmnoGOlJ/926oXwscZanRMFFPLzMPK7VrgP5JvydrxrR
-        o5bb4lRkNivV0jYn8CZVI/uQk52kRk4=
-X-Google-Smtp-Source: ABdhPJxvQdOHO0mXRLtwGbtfCeYa6RsCW0KR3fKPjySB8iNePnunXhl/8AVwRRVJHcTexiLNWaJg6g==
-X-Received: by 2002:adf:8bda:: with SMTP id w26mr58717568wra.440.1638965827494;
-        Wed, 08 Dec 2021 04:17:07 -0800 (PST)
+        bh=CJnUdPrqHD7CPFmocJmtrpyCP7OKgMzgBBNSNRvolq0=;
+        b=rdlq+6Nmny/FLky/m2MXpXGStc7xuG5TPHi1/AJVk6TihMXYoDMVOYgLrlHTWknXEy
+         jhIWl51KJRyNyQMjBMC9OMXr0UeZB+doiMg+D8/31wosTYQzlaLfoK+QFo2oNEWnc33M
+         z2tLuhWXMTAta5qRdZwR4lGxoHlu9+5ac5Jr+slBm+CUN6nfxk6ZBUIr967hWt5PSUFL
+         mCpglNzckukg6LACSfol4lETx0wi0/YQ+XrVZGl7nIFjQeTAgCPXCodqXWRfykeT7Fkw
+         vjcpTj1i261Fw2NYjTjqw5TM70YLufur0WfWtfmpV2DlljRYMiawXXgQQKlBUX9Gq/S+
+         1MzQ==
+X-Gm-Message-State: AOAM531UG2YTLSpZolv0gB66aPgJwxCQ/cgka8pGjmIJsLpAfyLZyE79
+        0NN45AHdhnkP4VhYFLtaswP8OCNUwmI=
+X-Google-Smtp-Source: ABdhPJy7U4EsRLp2Oi3jQZ1pI7JYXjk+2Ej/t7N71BtoCxIOeBQuNkI24AUAEmMAeE2/RsjtOqvdvA==
+X-Received: by 2002:a05:6402:26c5:: with SMTP id x5mr20211696edd.198.1638970287648;
+        Wed, 08 Dec 2021 05:31:27 -0800 (PST)
 Received: from [192.168.1.6] ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id b11sm5493219wmj.35.2021.12.08.04.17.06
+        by smtp.gmail.com with ESMTPSA id h7sm2415497ede.40.2021.12.08.05.31.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Dec 2021 04:17:06 -0800 (PST)
-Message-ID: <7129377c-d2aa-f801-6e47-c36ce3a10a97@gmail.com>
-Date:   Wed, 8 Dec 2021 14:17:05 +0200
+        Wed, 08 Dec 2021 05:31:27 -0800 (PST)
+Message-ID: <85fef0bf-879d-06a9-f2fd-de2d0171fb1d@gmail.com>
+Date:   Wed, 8 Dec 2021 15:31:26 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.3.1
-Subject: Re: [PATCH 3/3] libtracefs: Add new API for getting synth event name
- WiP
+Subject: Re: [RFC PATCH] libtracefs: New APIs for getting the raw format of
+ synth event
 Content-Language: en-US
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-trace-devel@vger.kernel.org
-References: <20211206150855.361202-1-y.karadz@gmail.com>
- <20211206150855.361202-4-y.karadz@gmail.com>
- <20211207170421.6b78bb36@gandalf.local.home>
+References: <20211206151352.361507-1-y.karadz@gmail.com>
+ <20211207171351.2928503d@gandalf.local.home>
 From:   Yordan Karadzhov <y.karadz@gmail.com>
-In-Reply-To: <20211207170421.6b78bb36@gandalf.local.home>
+In-Reply-To: <20211207171351.2928503d@gandalf.local.home>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -73,17 +72,85 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 
 
-On 8.12.21 г. 0:04 ч., Steven Rostedt wrote:
-> On Mon,  6 Dec 2021 17:08:55 +0200
-> "Yordan Karadzhov (VMware)"<y.karadz@gmail.com>  wrote:
+On 8.12.21 г. 0:13 ч., Steven Rostedt wrote:
+>>   int tracefs_synth_create(struct tracefs_synth *synth)
+>>   {
+>> -	char *start_hist = NULL;
+>> -	char *end_hist = NULL;
+>>   	int ret;
+>>   
+>>   	if (!synth) {
+>> @@ -1996,40 +2067,35 @@ int tracefs_synth_create(struct tracefs_synth *synth)
+>>   	if (tracefs_dynevent_create(synth->dyn_event))
+>>   		return -1;
+>>   
+>> -	start_hist = create_hist(synth->start_keys, synth->start_vars);
+>> -	start_hist = append_filter(start_hist, synth->start_filter,
+>> -				   synth->start_parens);
+>> -	if (!start_hist)
+>> +	synth->start_hist = create_hist(synth->start_keys, synth->start_vars);
+>> +	synth->start_hist = append_filter(synth->start_hist, synth->start_filter,
+>> +					  synth->start_parens);
+>> +	if (!synth->start_hist)
+>>   		goto remove_synthetic;
+>>   
+>> -	end_hist = create_end_hist(synth);
+>> -	end_hist = append_filter(end_hist, synth->end_filter,
+>> -				   synth->end_parens);
+>> -	if (!end_hist)
+>> +	synth->end_hist = create_end_hist(synth);
+>> +	synth->end_hist = append_filter(synth->end_hist, synth->end_filter,
+>> +					synth->end_parens);
+>> +	if (!synth->end_hist)
+>>   		goto remove_synthetic;
+>>   
+>>   	ret = tracefs_event_file_append(synth->instance, synth->start_event->system,
+>>   					synth->start_event->name,
+>> -					"trigger", start_hist);
+>> +					"trigger", synth->start_hist);
+>>   	if (ret < 0)
+>>   		goto remove_synthetic;
+>>   
+>>   	ret = tracefs_event_file_append(synth->instance, synth->end_event->system,
+>>   					synth->end_event->name,
+>> -					"trigger", end_hist);
+>> +					"trigger", synth->end_hist);
+>>   	if (ret < 0)
+>>   		goto remove_start_hist;
+>>   
+>> -	free(start_hist);
+>> -	free(end_hist);
+>> -
+>>   	return 0;
+>>   
+>>    remove_start_hist:
+>> -	remove_hist(synth->instance, synth->start_event, start_hist);
+>> +	remove_hist(synth->instance, synth->start_event, synth->start_hist);
+>>    remove_synthetic:
+>> -	free(end_hist);
+>> -	free(start_hist);
+>>   	tracefs_dynevent_destroy(synth->dyn_event, false);
+> I just realized that on error, we do not free the synthetic event
+> descriptor. So there is a memory leak.
 > 
-> I'm guessing for the lack of change log, that this is really an RFC?
 
-This patch-set is a disaster :( Sorry about that!
+Do we need to free the synthetic event here?
 
-The name of this patch (WiP) makes me think that I screwed up the 'git send-mail' command and somehow sent you an old 
-version of the patches. Any way, a lot of the mistakes you pointed out are present also in the version that was supposed 
-to be sent. I will try to do better with v2.
+The event gets allocated with 'tracefs_synth_alloc()' and the user is responsible for calling 'tracefs_synth_free()' in 
+order to free the memory.
+The fact that 'tracefs_synth_create()' may fail doesn't change this.
 
-Thanks a lot!
+Thanks!
 Yordan
+
+
+
+> Also, I'm thinking that the specific functions for destroying the synthetic
+> events and such, should live here, and trace-dynevents.c should call them.
+> 
+> Because all the management for synthetic events should live in this file
+> (or go to its own file).
+> 
+> -- Steve
+> 
+> 
