@@ -2,45 +2,38 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7107AC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  8 Dec 2021 22:14:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CB1EC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  8 Dec 2021 23:19:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240582AbhLHWRo (ORCPT
+        id S237996AbhLHXWo (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 8 Dec 2021 17:17:44 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:40000 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbhLHWRn (ORCPT
+        Wed, 8 Dec 2021 18:22:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235172AbhLHXWo (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 8 Dec 2021 17:17:43 -0500
+        Wed, 8 Dec 2021 18:22:44 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56EDFC061746;
+        Wed,  8 Dec 2021 15:19:11 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5B3C9B82312;
-        Wed,  8 Dec 2021 22:14:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AC9AC00446;
-        Wed,  8 Dec 2021 22:14:07 +0000 (UTC)
-Date:   Wed, 8 Dec 2021 17:14:06 -0500
+        by sin.source.kernel.org (Postfix) with ESMTPS id 68BA8CE2416;
+        Wed,  8 Dec 2021 23:19:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15A6EC341C3;
+        Wed,  8 Dec 2021 23:19:06 +0000 (UTC)
+Date:   Wed, 8 Dec 2021 18:19:05 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Tao Zhou <tao.zhou@linux.dev>, Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     mhiramat@kernel.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V8 03/14] rtla: Add osnoise tool
-Message-ID: <20211208171406.353bc200@gandalf.local.home>
-In-Reply-To: <9944378d-456f-79a5-2dbf-30dbbbc94522@kernel.org>
-References: <cover.1638182284.git.bristot@kernel.org>
-        <ffb7f1b1e8cc42fc8ec52f1a89fdd2ca0d70c36e.1638182284.git.bristot@kernel.org>
-        <YaZEzvzp5jkRyLEJ@geo.homenetwork>
-        <9944378d-456f-79a5-2dbf-30dbbbc94522@kernel.org>
+Subject: Re: [PATCH v6 02/13] user_events: Add minimal support for
+ trace_event into ftrace
+Message-ID: <20211208181905.62f8f999@gandalf.local.home>
+In-Reply-To: <20211201182515.2446-3-beaub@linux.microsoft.com>
+References: <20211201182515.2446-1-beaub@linux.microsoft.com>
+        <20211201182515.2446-3-beaub@linux.microsoft.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -49,23 +42,313 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 2 Dec 2021 16:18:53 +0100
-Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+On Wed,  1 Dec 2021 10:25:04 -0800
+Beau Belgrave <beaub@linux.microsoft.com> wrote:
 
-> >> +	if (!strcmp(context->orig_cpus, context->curr_cpus))
-> >> +		goto out_done;
-> >> +
-> >> +	retval = write(context->cpus_fd, context->orig_cpus, strlen(context->orig_cpus));  
-> > 
-> > 'strlen(context->orig_cpus) + 1' for write size;
-> >   
-> >> +	if (retval < strlen(context->orig_cpus))  
-> > 
-> > Same here. Check 'strlen(context->orig_cpus) + 1'  
+> Minimal support for interacting with dynamic events, trace_event and
+> ftrace. Core outline of flow between user process, ioctl and trace_event
+> APIs.
 > 
-> Fixed in v9.
+> Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+> ---
+>  kernel/trace/Kconfig             |   15 +
+>  kernel/trace/Makefile            |    1 +
+>  kernel/trace/trace_events_user.c | 1192 ++++++++++++++++++++++++++++++
+>  3 files changed, 1208 insertions(+)
+>  create mode 100644 kernel/trace/trace_events_user.c
+> 
+> diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+> index 420ff4bc67fd..21d00092436b 100644
+> --- a/kernel/trace/Kconfig
+> +++ b/kernel/trace/Kconfig
+> @@ -724,6 +724,21 @@ config SYNTH_EVENTS
+>  
+>  	  If in doubt, say N.
+>  
+> +config USER_EVENTS
+> +	bool "User trace events"
+> +	select TRACING
+> +	select DYNAMIC_EVENTS
+> +	default n
 
-And if you used the tracefs_instance_file_write() function, you would not
-have had his bug ;-)
+default n is default, so you do not need to explicitly state that.
+
+In other words, the above line is a nop.
+
+> +	help
+> +	  User trace events are user-defined trace events that
+> +	  can be used like an existing kernel trace event.  User trace
+> +	  events are generated by writing to a tracefs file.  User
+> +	  processes can determine if their tracing events should be
+> +	  generated by memory mapping a tracefs file and checking for
+> +	  an associated byte being non-zero.
+> +
+> +	  If in doubt, say N.
+> +
+>  config HIST_TRIGGERS
+>  	bool "Histogram triggers"
+>  	depends on ARCH_HAVE_NMI_SAFE_CMPXCHG
+> diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
+> index bedc5caceec7..19ef3758da95 100644
+> --- a/kernel/trace/Makefile
+> +++ b/kernel/trace/Makefile
+
+
+
+
+> +/*
+> + * Handles the final close of the file from user mode.
+> + */
+> +static int user_events_release(struct inode *node, struct file *file)
+> +{
+> +	struct user_event_refs *refs;
+> +	struct user_event *user;
+> +	int i;
+> +
+> +	/*
+> +	 * refs is protected by RCU and could in theory change immediately
+> +	 * before this call on another core. To ensure we read the latest
+> +	 * version of refs we acquire the RCU read lock again.
+> +	 */
+> +	rcu_read_lock_sched();
+> +	refs = rcu_dereference_sched(file->private_data);
+> +	rcu_read_unlock_sched();
+
+This still bothers me. Can another CPU call an ioctl here?
+
+  user_events_ioctl_reg() {
+    user_events_ref_add() {
+      refs = rcu_dereference_protected(file->private_data, ..);
+      new_refs = kzalloc(size, GFP_KERNEL);
+      rcu_assign_pointer(file->private_data, new_refs);
+      if (refs)
+        kfree_rcu(refs, rcu);
+
+refs now freed.
+
+> +
+> +	if (!refs)
+> +		goto out;
+> +
+> +	/*
+> +	 * Do not need RCU while enumerating the events that were used.
+> +	 * The lifetime of refs has reached an end, it's tied to this file.
+> +	 * The underlying user_events are ref counted, and cannot be freed.
+> +	 * After this decrement, the user_events may be freed elsewhere.
+> +	 */
+> +	for (i = 0; i < refs->count; ++i) {
+
+Fault on refs->count
+
+??
+
+> +		user = refs->events[i];
+> +
+> +		if (user)
+> +			atomic_dec(&user->refcnt);
+> +	}
+> +
+> +	kfree_rcu(refs, rcu);
+> +out:
+> +	return 0;
+> +}
+> +
+> +static const struct file_operations user_data_fops = {
+> +	.write = user_events_write,
+> +	.write_iter = user_events_write_iter,
+> +	.unlocked_ioctl	= user_events_ioctl,
+> +	.release = user_events_release,
+> +};
+> +
+> +/*
+> + * Maps the shared page into the user process for checking if event is enabled.
+> + */
+> +static int user_status_mmap(struct file *file, struct vm_area_struct *vma)
+> +{
+> +	unsigned long size = vma->vm_end - vma->vm_start;
+> +
+> +	if (size != MAX_EVENTS)
+> +		return -EINVAL;
+> +
+> +	return remap_pfn_range(vma, vma->vm_start,
+> +			       virt_to_phys(register_page_data) >> PAGE_SHIFT,
+> +			       size, vm_get_page_prot(VM_READ));
+> +}
+> +
+> +static int user_status_show(struct seq_file *m, void *p)
+> +{
+> +	struct user_event *user;
+> +	char status;
+> +	int i, active = 0, busy = 0, flags;
+> +
+> +	mutex_lock(&reg_mutex);
+> +
+> +	hash_for_each(register_table, i, user, node) {
+> +		status = register_page_data[user->index];
+> +		flags = user->flags;
+> +
+> +		seq_printf(m, "%d:%s", user->index, EVENT_NAME(user));
+> +
+> +		if (flags != 0 || status != 0)
+> +			seq_puts(m, " #");
+> +
+> +		if (status != 0) {
+> +			seq_puts(m, " Used by");
+> +			if (status & EVENT_STATUS_FTRACE)
+> +				seq_puts(m, " ftrace");
+> +			if (status & EVENT_STATUS_PERF)
+> +				seq_puts(m, " perf");
+> +			if (status & EVENT_STATUS_OTHER)
+> +				seq_puts(m, " other");
+> +			busy++;
+> +		}
+> +
+> +		if (flags & FLAG_BPF_ITER)
+> +			seq_puts(m, " FLAG:BPF_ITER");
+> +
+> +		seq_puts(m, "\n");
+> +		active++;
+> +	}
+> +
+> +	mutex_unlock(&reg_mutex);
+> +
+> +	seq_puts(m, "\n");
+> +	seq_printf(m, "Active: %d\n", active);
+> +	seq_printf(m, "Busy: %d\n", busy);
+> +	seq_printf(m, "Max: %ld\n", MAX_EVENTS);
+> +
+> +	return 0;
+> +}
+> +
+> +static ssize_t user_status_read(struct file *file, char __user *ubuf,
+> +				size_t count, loff_t *ppos)
+> +{
+> +	/*
+> +	 * Delay allocation of seq data until requested, most callers
+> +	 * will never read the status file. They will only mmap.
+> +	 */
+> +	if (file->private_data == NULL) {
+> +		int ret;
+> +
+> +		if (*ppos != 0)
+> +			return -EINVAL;
+> +
+> +		ret = single_open(file, user_status_show, NULL);
+> +
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return seq_read(file, ubuf, count, ppos);
+> +}
+> +
+> +static loff_t user_status_seek(struct file *file, loff_t offset, int whence)
+> +{
+> +	if (file->private_data == NULL)
+> +		return 0;
+> +
+> +	return seq_lseek(file, offset, whence);
+> +}
+> +
+> +static int user_status_release(struct inode *node, struct file *file)
+> +{
+> +	if (file->private_data == NULL)
+> +		return 0;
+> +
+> +	return single_release(node, file);
+> +}
+> +
+> +static const struct file_operations user_status_fops = {
+> +	.mmap = user_status_mmap,
+> +	.read = user_status_read,
+> +	.llseek  = user_status_seek,
+> +	.release = user_status_release,
+> +};
+> +
+> +/*
+> + * Creates a set of tracefs files to allow user mode interactions.
+> + */
+> +static int create_user_tracefs(void)
+> +{
+> +	struct dentry *edata, *emmap;
+> +
+> +	edata = tracefs_create_file("user_events_data", 0644, NULL,
+> +				    NULL, &user_data_fops);
+
+BTW, I now define:
+
+ TRACE_MODE_WRITE for files to be written to, and TRACE_MODE_READ for files
+ that are read only.
+
+And soon tracefs will honor the gid mount option to define what group all
+the tracefs files should belong to on mount.
 
 -- Steve
+
+> +
+> +	if (!edata) {
+> +		pr_warn("Could not create tracefs 'user_events_data' entry\n");
+> +		goto err;
+> +	}
+> +
+> +	/* mmap with MAP_SHARED requires writable fd */
+> +	emmap = tracefs_create_file("user_events_status", 0644, NULL,
+> +				    NULL, &user_status_fops);
+> +
+> +	if (!emmap) {
+> +		tracefs_remove(edata);
+> +		pr_warn("Could not create tracefs 'user_events_mmap' entry\n");
+> +		goto err;
+> +	}
+> +
+> +	return 0;
+> +err:
+> +	return -ENODEV;
+> +}
+> +
+> +static void set_page_reservations(bool set)
+> +{
+> +	int page;
+> +
+> +	for (page = 0; page < MAX_PAGES; ++page) {
+> +		void *addr = register_page_data + (PAGE_SIZE * page);
+> +
+> +		if (set)
+> +			SetPageReserved(virt_to_page(addr));
+> +		else
+> +			ClearPageReserved(virt_to_page(addr));
+> +	}
+> +}
+> +
+> +static int __init trace_events_user_init(void)
+> +{
+> +	int ret;
+> +
+> +	/* Zero all bits beside 0 (which is reserved for failures) */
+> +	bitmap_zero(page_bitmap, MAX_EVENTS);
+> +	set_bit(0, page_bitmap);
+> +
+> +	register_page_data = kzalloc(MAX_EVENTS, GFP_KERNEL);
+> +
+> +	if (!register_page_data)
+> +		return -ENOMEM;
+> +
+> +	set_page_reservations(true);
+> +
+> +	ret = create_user_tracefs();
+> +
+> +	if (ret) {
+> +		pr_warn("user_events could not register with tracefs\n");
+> +		set_page_reservations(false);
+> +		kfree(register_page_data);
+> +		return ret;
+> +	}
+> +
+> +	if (dyn_event_register(&user_event_dops))
+> +		pr_warn("user_events could not register with dyn_events\n");
+> +
+> +	return 0;
+> +}
+> +
+> +fs_initcall(trace_events_user_init);
+
