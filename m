@@ -2,35 +2,35 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F31FDC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Dec 2021 22:32:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4A68C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Dec 2021 22:32:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233805AbhLIWf7 (ORCPT
+        id S233806AbhLIWgA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 9 Dec 2021 17:35:59 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:58950 "EHLO
+        Thu, 9 Dec 2021 17:36:00 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:58940 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233719AbhLIWfx (ORCPT
+        with ESMTP id S233727AbhLIWfy (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 9 Dec 2021 17:35:53 -0500
+        Thu, 9 Dec 2021 17:35:54 -0500
 Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id BEB0620B7193;
-        Thu,  9 Dec 2021 14:32:19 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BEB0620B7193
+        by linux.microsoft.com (Postfix) with ESMTPSA id 2F74C20B7195;
+        Thu,  9 Dec 2021 14:32:20 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2F74C20B7195
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1639089139;
-        bh=kv0wHco5EwAEJeOx8KcU5U1Oq+sRrfrasJlUzpwkVMg=;
+        s=default; t=1639089140;
+        bh=3cFvX/p3G8eHHqUQGJCxi707sZDpe3Co6fK6npC13mE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UJIWILDv+BgZ3V8GhTbE1tQlvSDzihTSkTZanSnOkwiHAssjZUQ54m4ltRKvug/72
-         RpktGFXTFTbDu4t5LDuICHz3hqzJgmKwTxsJWh2DeoQvt6UzH/6kYFSdRE+DJ5DVvf
-         zYHz+oDGFFqqo5zL735cOGnMPRiAeNiJxPxw5gdE=
+        b=c8YlFS6B4V98U/le6H4PXQBNdSk0jMA9cE2/7Z1nZNlMBW03YB9SfPbLaeDrA9eTB
+         F72PEwAn31/spGTPDXTgCJ9+yopN11mRiX5C76+uMkstb/fF4npyxkkuSgsiOIXLoU
+         1Gu/SNk9knwgFOdkSe8L18YuMV7WlCzMzDExoh4Q=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         beaub@linux.microsoft.com
-Subject: [PATCH v7 11/13] user_events: Add sample code for typical usage
-Date:   Thu,  9 Dec 2021 14:32:08 -0800
-Message-Id: <20211209223210.1818-12-beaub@linux.microsoft.com>
+Subject: [PATCH v7 13/13] user_events: Use __get_rel_str for relative string fields
+Date:   Thu,  9 Dec 2021 14:32:10 -0800
+Message-Id: <20211209223210.1818-14-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211209223210.1818-1-beaub@linux.microsoft.com>
 References: <20211209223210.1818-1-beaub@linux.microsoft.com>
@@ -38,125 +38,274 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add sample code for user_events typical usage to show how to register
-and monitor status, as well as to write out data.
+Switch between __get_str and __get_rel_str within the print_fmt of
+user_events. Add unit test to ensure print_fmt is correct on known
+types.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- samples/user_events/Makefile  |  5 ++
- samples/user_events/example.c | 91 +++++++++++++++++++++++++++++++++++
- 2 files changed, 96 insertions(+)
- create mode 100644 samples/user_events/Makefile
- create mode 100644 samples/user_events/example.c
+ kernel/trace/trace_events_user.c              |  24 ++-
+ .../selftests/user_events/ftrace_test.c       | 166 ++++++++++++++++++
+ 2 files changed, 182 insertions(+), 8 deletions(-)
 
-diff --git a/samples/user_events/Makefile b/samples/user_events/Makefile
-new file mode 100644
-index 000000000000..7252b589db57
---- /dev/null
-+++ b/samples/user_events/Makefile
-@@ -0,0 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0
-+CFLAGS += -Wl,-no-as-needed -Wall -I../../usr/include
+diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+index 56eb58ddb4cf..3779fa2ca14a 100644
+--- a/kernel/trace/trace_events_user.c
++++ b/kernel/trace/trace_events_user.c
+@@ -257,7 +257,7 @@ static int user_event_add_field(struct user_event *user, const char *type,
+ 	goto add_field;
+ 
+ add_validator:
+-	if (strstr(type, "char[") != 0)
++	if (strstr(type, "char") != 0)
+ 		validator_flags |= VALIDATOR_ENSURE_NULL;
+ 
+ 	validator = kmalloc(sizeof(*validator), GFP_KERNEL);
+@@ -456,14 +456,21 @@ static const char *user_field_format(const char *type)
+ 	return "%llu";
+ }
+ 
+-static bool user_field_is_dyn_string(const char *type)
++static bool user_field_is_dyn_string(const char *type, const char **str_func)
+ {
+-	if (str_has_prefix(type, "__data_loc ") ||
+-	    str_has_prefix(type, "__rel_loc "))
+-		if (strstr(type, "char[") != 0)
+-			return true;
++	if (str_has_prefix(type, "__data_loc ")) {
++		*str_func = "__get_str";
++		goto check;
++	}
 +
-+example: example.o
-+example.o: example.c
-diff --git a/samples/user_events/example.c b/samples/user_events/example.c
-new file mode 100644
-index 000000000000..4f5778e441c0
---- /dev/null
-+++ b/samples/user_events/example.c
-@@ -0,0 +1,91 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2021, Microsoft Corporation.
-+ *
-+ * Authors:
-+ *   Beau Belgrave <beaub@linux.microsoft.com>
-+ */
-+
-+#include <errno.h>
-+#include <sys/ioctl.h>
-+#include <sys/mman.h>
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <linux/user_events.h>
-+
-+/* Assumes debugfs is mounted */
-+const char *data_file = "/sys/kernel/debug/tracing/user_events_data";
-+const char *status_file = "/sys/kernel/debug/tracing/user_events_status";
-+
-+static int event_status(char **status)
++	if (str_has_prefix(type, "__rel_loc ")) {
++		*str_func = "__get_rel_str";
++		goto check;
++	}
+ 
+ 	return false;
++check:
++	return strstr(type, "char") != 0;
+ }
+ 
+ #define LEN_OR_ZERO (len ? len - pos : 0)
+@@ -472,6 +479,7 @@ static int user_event_set_print_fmt(struct user_event *user, char *buf, int len)
+ 	struct ftrace_event_field *field, *next;
+ 	struct list_head *head = &user->fields;
+ 	int pos = 0, depth = 0;
++	const char *str_func;
+ 
+ 	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
+ 
+@@ -488,9 +496,9 @@ static int user_event_set_print_fmt(struct user_event *user, char *buf, int len)
+ 	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
+ 
+ 	list_for_each_entry_safe_reverse(field, next, head, link) {
+-		if (user_field_is_dyn_string(field->type))
++		if (user_field_is_dyn_string(field->type, &str_func))
+ 			pos += snprintf(buf + pos, LEN_OR_ZERO,
+-					", __get_str(%s)", field->name);
++					", %s(%s)", str_func, field->name);
+ 		else
+ 			pos += snprintf(buf + pos, LEN_OR_ZERO,
+ 					", REC->%s", field->name);
+diff --git a/tools/testing/selftests/user_events/ftrace_test.c b/tools/testing/selftests/user_events/ftrace_test.c
+index 16aff1fb295a..b2e5c0765a68 100644
+--- a/tools/testing/selftests/user_events/ftrace_test.c
++++ b/tools/testing/selftests/user_events/ftrace_test.c
+@@ -20,6 +20,7 @@ const char *data_file = "/sys/kernel/debug/tracing/user_events_data";
+ const char *status_file = "/sys/kernel/debug/tracing/user_events_status";
+ const char *enable_file = "/sys/kernel/debug/tracing/events/user_events/__test_event/enable";
+ const char *trace_file = "/sys/kernel/debug/tracing/trace";
++const char *fmt_file = "/sys/kernel/debug/tracing/events/user_events/__test_event/format";
+ 
+ static int trace_bytes(void)
+ {
+@@ -47,6 +48,61 @@ static int trace_bytes(void)
+ 	return bytes;
+ }
+ 
++static int get_print_fmt(char *buffer, int len)
 +{
-+	int fd = open(status_file, O_RDONLY);
++	FILE *fp = fopen(fmt_file, "r");
++	int c, index = 0, last = 0;
 +
-+	*status = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ,
-+		       MAP_SHARED, fd, 0);
++	if (!fp)
++		return -1;
++
++	/* Read until empty line (Skip Common) */
++	while (true) {
++		c = getc(fp);
++
++		if (c == EOF)
++			break;
++
++		if (last == '\n' && c == '\n')
++			break;
++
++		last = c;
++	}
++
++	last = 0;
++
++	/* Read until empty line (Skip Properties) */
++	while (true) {
++		c = getc(fp);
++
++		if (c == EOF)
++			break;
++
++		if (last == '\n' && c == '\n')
++			break;
++
++		last = c;
++	}
++
++	/* Read in print_fmt: */
++	while (len > 1) {
++		c = getc(fp);
++
++		if (c == EOF || c == '\n')
++			break;
++
++		buffer[index++] = c;
++
++		len--;
++	}
++
++	buffer[index] = 0;
++
++	fclose(fp);
++
++	return 0;
++}
++
+ static int clear(void)
+ {
+ 	int fd = open(data_file, O_RDWR);
+@@ -63,6 +119,44 @@ static int clear(void)
+ 	return 0;
+ }
+ 
++static int check_print_fmt(const char *event, const char *expected)
++{
++	struct user_reg reg = {0};
++	char print_fmt[256];
++	int ret;
++	int fd;
++
++	/* Ensure cleared */
++	ret = clear();
++
++	if (ret != 0)
++		return ret;
++
++	fd = open(data_file, O_RDWR);
++
++	if (fd == -1)
++		return fd;
++
++	reg.size = sizeof(reg);
++	reg.name_args = (__u64)event;
++
++	/* Register should work */
++	ret = ioctl(fd, DIAG_IOCSREG, &reg);
 +
 +	close(fd);
 +
-+	if (*status == MAP_FAILED)
-+		return -1;
++	if (ret != 0)
++		return ret;
 +
-+	return 0;
++	/* Ensure correct print_fmt */
++	ret = get_print_fmt(print_fmt, sizeof(print_fmt));
++
++	if (ret != 0)
++		return ret;
++
++	return strcmp(print_fmt, expected);
 +}
 +
-+static int event_reg(int fd, const char *command, int *status, int *write)
-+{
-+	struct user_reg reg = {0};
+ FIXTURE(user) {
+ 	int status_fd;
+ 	int data_fd;
+@@ -282,6 +376,78 @@ TEST_F(user, write_validator) {
+ 	ASSERT_EQ(EFAULT, errno);
+ }
+ 
++TEST_F(user, print_fmt) {
++	int ret;
 +
-+	reg.size = sizeof(reg);
-+	reg.name_args = (__u64)command;
++	ret = check_print_fmt("__test_event __rel_loc char[] data",
++			      "print fmt: \"data=%s\", __get_rel_str(data)");
++	ASSERT_EQ(0, ret);
 +
-+	if (ioctl(fd, DIAG_IOCSREG, &reg) == -1)
-+		return -1;
++	ret = check_print_fmt("__test_event __data_loc char[] data",
++			      "print fmt: \"data=%s\", __get_str(data)");
++	ASSERT_EQ(0, ret);
 +
-+	*status = reg.status_index;
-+	*write = reg.write_index;
++	ret = check_print_fmt("__test_event s64 data",
++			      "print fmt: \"data=%lld\", REC->data");
++	ASSERT_EQ(0, ret);
 +
-+	return 0;
++	ret = check_print_fmt("__test_event u64 data",
++			      "print fmt: \"data=%llu\", REC->data");
++	ASSERT_EQ(0, ret);
++
++	ret = check_print_fmt("__test_event s32 data",
++			      "print fmt: \"data=%d\", REC->data");
++	ASSERT_EQ(0, ret);
++
++	ret = check_print_fmt("__test_event u32 data",
++			      "print fmt: \"data=%u\", REC->data");
++	ASSERT_EQ(0, ret);
++
++	ret = check_print_fmt("__test_event int data",
++			      "print fmt: \"data=%d\", REC->data");
++	ASSERT_EQ(0, ret);
++
++	ret = check_print_fmt("__test_event unsigned int data",
++			      "print fmt: \"data=%u\", REC->data");
++	ASSERT_EQ(0, ret);
++
++	ret = check_print_fmt("__test_event s16 data",
++			      "print fmt: \"data=%d\", REC->data");
++	ASSERT_EQ(0, ret);
++
++	ret = check_print_fmt("__test_event u16 data",
++			      "print fmt: \"data=%u\", REC->data");
++	ASSERT_EQ(0, ret);
++
++	ret = check_print_fmt("__test_event short data",
++			      "print fmt: \"data=%d\", REC->data");
++	ASSERT_EQ(0, ret);
++
++	ret = check_print_fmt("__test_event unsigned short data",
++			      "print fmt: \"data=%u\", REC->data");
++	ASSERT_EQ(0, ret);
++
++	ret = check_print_fmt("__test_event s8 data",
++			      "print fmt: \"data=%d\", REC->data");
++	ASSERT_EQ(0, ret);
++
++	ret = check_print_fmt("__test_event u8 data",
++			      "print fmt: \"data=%u\", REC->data");
++	ASSERT_EQ(0, ret);
++
++	ret = check_print_fmt("__test_event char data",
++			      "print fmt: \"data=%d\", REC->data");
++	ASSERT_EQ(0, ret);
++
++	ret = check_print_fmt("__test_event unsigned char data",
++			      "print fmt: \"data=%u\", REC->data");
++	ASSERT_EQ(0, ret);
++
++	ret = check_print_fmt("__test_event char[4] data",
++			      "print fmt: \"data=%s\", REC->data");
++	ASSERT_EQ(0, ret);
 +}
 +
-+int main(int argc, char **argv)
-+{
-+	int data_fd, status, write;
-+	char *status_page;
-+	struct iovec io[2];
-+	__u32 count = 0;
-+
-+	if (event_status(&status_page) == -1)
-+		return errno;
-+
-+	data_fd = open(data_file, O_RDWR);
-+
-+	if (event_reg(data_fd, "test u32 count", &status, &write) == -1)
-+		return errno;
-+
-+	/* Setup iovec */
-+	io[0].iov_base = &write;
-+	io[0].iov_len = sizeof(write);
-+	io[1].iov_base = &count;
-+	io[1].iov_len = sizeof(count);
-+
-+ask:
-+	printf("Press enter to check status...\n");
-+	getchar();
-+
-+	/* Check if anyone is listening */
-+	if (status_page[status]) {
-+		/* Yep, trace out our data */
-+		writev(data_fd, (const struct iovec *)io, 2);
-+
-+		/* Increase the count */
-+		count++;
-+
-+		printf("Something was attached, wrote data\n");
-+	}
-+
-+	goto ask;
-+
-+	return 0;
-+}
+ int main(int argc, char **argv)
+ {
+ 	return test_harness_run(argc, argv);
 -- 
 2.17.1
 
