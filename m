@@ -2,67 +2,125 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D82D6C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Dec 2021 20:19:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33BF7C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Dec 2021 22:32:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231791AbhLIUXM (ORCPT
+        id S233709AbhLIWfx (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 9 Dec 2021 15:23:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhLIUXJ (ORCPT
+        Thu, 9 Dec 2021 17:35:53 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:58920 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231731AbhLIWfv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 9 Dec 2021 15:23:09 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B9E2C061746;
-        Thu,  9 Dec 2021 12:19:35 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 909ECB82673;
-        Thu,  9 Dec 2021 20:19:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBD72C004DD;
-        Thu,  9 Dec 2021 20:19:31 +0000 (UTC)
-Date:   Thu, 9 Dec 2021 15:19:30 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     mhiramat@kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 02/13] user_events: Add minimal support for
- trace_event into ftrace
-Message-ID: <20211209151930.709d3d0b@gandalf.local.home>
-In-Reply-To: <20211209201112.GB21676@kbox>
-References: <20211201182515.2446-1-beaub@linux.microsoft.com>
-        <20211201182515.2446-3-beaub@linux.microsoft.com>
-        <20211208181905.62f8f999@gandalf.local.home>
-        <20211209005823.GA21399@kbox>
-        <20211208210336.40c7741b@yoga.local.home>
-        <20211209174050.GA21553@kbox>
-        <20211209124735.3d1a9707@gandalf.local.home>
-        <20211209194235.GA21676@kbox>
-        <20211209145738.4da346ba@gandalf.local.home>
-        <20211209201112.GB21676@kbox>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Thu, 9 Dec 2021 17:35:51 -0500
+Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 97BAB20B717B;
+        Thu,  9 Dec 2021 14:32:17 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 97BAB20B717B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1639089137;
+        bh=lad/j+ot53rXPTIMEBiBmAPcSVSE3JYr+2WF4ax63Do=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=cFsAC9Ut8L0Zaus+DhUNRIstL9N3qw+tpz39RtQvsvTcvEufFXhyoNNkUKhCsoZ3k
+         jysohcsTJbz155ruNgIijWJSRCBsiviLzxLGA1PS30I4I7RbTb35YnOuAvAkeYvqFM
+         2a83UG44pBALzlgUdJlGqhK2hCeu9iuAj29f5suI=
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     rostedt@goodmis.org, mhiramat@kernel.org
+Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        beaub@linux.microsoft.com
+Subject: [PATCH v7 01/13] user_events: Add UABI header for user access to user_events
+Date:   Thu,  9 Dec 2021 14:31:58 -0800
+Message-Id: <20211209223210.1818-2-beaub@linux.microsoft.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211209223210.1818-1-beaub@linux.microsoft.com>
+References: <20211209223210.1818-1-beaub@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 9 Dec 2021 12:11:12 -0800
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
+Define the basic structs and ioctl commands that allow user processes to
+interact with user_events.
 
-> I guess I am being paranoid about an architecture that does not have
-> automatic cache consistency and while the write / read don't happen at
-> the exact time, they happen close together. Close enough that one CPU
-> reads the old value from a cache line and gets it wrong.
-> 
-> I don't believe that is possible on Intel, but I don't know if it's
-> possible on other architectures (especially older ones).
+Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+---
+ include/uapi/linux/user_events.h | 68 ++++++++++++++++++++++++++++++++
+ 1 file changed, 68 insertions(+)
+ create mode 100644 include/uapi/linux/user_events.h
 
-If this was possible, then there would be a lot more bugs out there than
-this one. For one thing, the file descriptor itself would be freed while
-accessed.
+diff --git a/include/uapi/linux/user_events.h b/include/uapi/linux/user_events.h
+new file mode 100644
+index 000000000000..5bff99418deb
+--- /dev/null
++++ b/include/uapi/linux/user_events.h
+@@ -0,0 +1,68 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * Copyright (c) 2021, Microsoft Corporation.
++ *
++ * Authors:
++ *   Beau Belgrave <beaub@linux.microsoft.com>
++ */
++#ifndef _UAPI_LINUX_USER_EVENTS_H
++#define _UAPI_LINUX_USER_EVENTS_H
++
++#include <linux/types.h>
++#include <linux/ioctl.h>
++
++#ifdef __KERNEL__
++#include <linux/uio.h>
++#else
++#include <sys/uio.h>
++#endif
++
++#define USER_EVENTS_SYSTEM "user_events"
++#define USER_EVENTS_PREFIX "u:"
++
++/* Bits 0-6 are for known probe types, Bit 7 is for unknown probes */
++#define EVENT_BIT_FTRACE 0
++#define EVENT_BIT_PERF 1
++#define EVENT_BIT_OTHER 7
++
++#define EVENT_STATUS_FTRACE (1 << EVENT_BIT_FTRACE)
++#define EVENT_STATUS_PERF (1 << EVENT_BIT_PERF)
++#define EVENT_STATUS_OTHER (1 << EVENT_BIT_OTHER)
++
++/* Use raw iterator for attached BPF program(s), no affect on ftrace/perf */
++#define FLAG_BPF_ITER (1 << 0)
++
++struct user_reg {
++	__u32 size;
++	__u64 name_args;
++	__u32 status_index;
++	__u32 write_index;
++};
++
++#define DIAG_IOC_MAGIC '*'
++#define DIAG_IOCSREG _IOWR(DIAG_IOC_MAGIC, 0, struct user_reg*)
++#define DIAG_IOCSDEL _IOW(DIAG_IOC_MAGIC, 1, char*)
++
++enum {
++	USER_BPF_DATA_KERNEL,
++	USER_BPF_DATA_USER,
++	USER_BPF_DATA_ITER,
++};
++
++struct user_bpf_iter {
++	__u32 iov_offset;
++	__u32 nr_segs;
++	const struct iovec *iov;
++};
++
++struct user_bpf_context {
++	__u32 data_type;
++	__u32 data_len;
++	union {
++		void *kdata;
++		void *udata;
++		struct user_bpf_iter *iter;
++	};
++};
++
++#endif /* _UAPI_LINUX_USER_EVENTS_H */
+-- 
+2.17.1
 
--- Steve
