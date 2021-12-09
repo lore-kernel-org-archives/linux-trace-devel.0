@@ -2,278 +2,198 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35CB1C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Dec 2021 18:01:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08CE8C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Dec 2021 18:24:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242141AbhLISEp (ORCPT
+        id S237946AbhLIS2O (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 9 Dec 2021 13:04:45 -0500
-Received: from gateway30.websitewelcome.com ([192.185.180.41]:43696 "EHLO
-        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229803AbhLISEo (ORCPT
+        Thu, 9 Dec 2021 13:28:14 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:51464 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243269AbhLIS2N (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 9 Dec 2021 13:04:44 -0500
-X-Greylist: delayed 1827 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Dec 2021 13:04:44 EST
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id 51A8D31A145;
-        Thu,  9 Dec 2021 10:33:56 -0600 (CST)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id vMA6mOdU74teEvMAqmJDC9; Thu, 09 Dec 2021 10:21:39 -0600
-X-Authority-Reason: nr=8
-Received: from host-87-6-201-63.retail.telecomitalia.it ([87.6.201.63]:45012 helo=[10.0.0.193])
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1mvM4m-000oFe-Lq; Thu, 09 Dec 2021 10:15:20 -0600
-Message-ID: <c451b79f-e6c4-1dbf-8556-c497ae32b058@kernel.org>
-Date:   Thu, 9 Dec 2021 17:15:16 +0100
+        Thu, 9 Dec 2021 13:28:13 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B3EB0B825F9
+        for <linux-trace-devel@vger.kernel.org>; Thu,  9 Dec 2021 18:24:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1988FC004DD;
+        Thu,  9 Dec 2021 18:24:36 +0000 (UTC)
+Date:   Thu, 9 Dec 2021 13:24:35 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v3] libtracefs: New APIs for getting the raw format of
+ synth event
+Message-ID: <20211209132435.187422a8@gandalf.local.home>
+In-Reply-To: <20211209163815.16769-1-y.karadz@gmail.com>
+References: <20211209163815.16769-1-y.karadz@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH V8 03/14] rtla: Add osnoise tool
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Tao Zhou <tao.zhou@linux.dev>, Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1638182284.git.bristot@kernel.org>
- <ffb7f1b1e8cc42fc8ec52f1a89fdd2ca0d70c36e.1638182284.git.bristot@kernel.org>
- <20211208171311.5f1ad94f@gandalf.local.home>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <20211208171311.5f1ad94f@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 87.6.201.63
-X-Source-L: No
-X-Exim-ID: 1mvM4m-000oFe-Lq
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-87-6-201-63.retail.telecomitalia.it ([10.0.0.193]) [87.6.201.63]:45012
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 14
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 12/8/21 23:13, Steven Rostedt wrote:
-> On Mon, 29 Nov 2021 12:07:41 +0100
-> Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+On Thu,  9 Dec 2021 18:38:15 +0200
+"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+
+> The following APIs are added:
+> int tracefs_synth_echo_fmt(struct trace_seq *, struct tracefs_synth *)
+> const char *tracefs_synth_show_event(struct tracefs_synth *)
+> const char *tracefs_synth_show_start_hist(struct tracefs_synth *)
+> const char *tracefs_synth_show_end_hist(struct tracefs_synth *)
 > 
->> The osnoise tool is the interface for the osnoise tracer. The osnoise
->> tool will have multiple "modes" with different outputs. At this point,
->> no mode is included.
->>
->> The osnoise.c includes the osnoise_context abstraction. It serves to
->> read-save-change-restore the default values from tracing/osnoise/
->> directory. When the context is deleted, the default values are restored.
->>
->> It also includes some other helper functions for managing osnoise
->> tracer sessions.
->>
->> With these bits and pieces in place, we can start adding some
->> functionality to rtla.
->>
->> Cc: Steven Rostedt <rostedt@goodmis.org>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Tom Zanussi <zanussi@kernel.org>
->> Cc: Masami Hiramatsu <mhiramat@kernel.org>
->> Cc: Juri Lelli <juri.lelli@redhat.com>
->> Cc: Clark Williams <williams@redhat.com>
->> Cc: John Kacur <jkacur@redhat.com>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
->> Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
->> Cc: linux-rt-users@vger.kernel.org
->> Cc: linux-trace-devel@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
->> ---
->>  tools/tracing/rtla/Makefile      |    2 +
->>  tools/tracing/rtla/src/osnoise.c | 1013 ++++++++++++++++++++++++++++++
->>  tools/tracing/rtla/src/osnoise.h |   95 +++
->>  tools/tracing/rtla/src/rtla.c    |   10 +
->>  4 files changed, 1120 insertions(+)
->>  create mode 100644 tools/tracing/rtla/src/osnoise.c
->>  create mode 100644 tools/tracing/rtla/src/osnoise.h
->>
->> diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
->> index d99ea2d8b87e..ba6f327e815a 100644
->> --- a/tools/tracing/rtla/Makefile
->> +++ b/tools/tracing/rtla/Makefile
->> @@ -60,6 +60,8 @@ install:
->>  	$(INSTALL) -d -m 755 $(DESTDIR)$(BINDIR)
->>  	$(INSTALL) rtla -m 755 $(DESTDIR)$(BINDIR)
->>  	$(STRIP) $(DESTDIR)$(BINDIR)/rtla
->> +	@test ! -f $(DESTDIR)$(BINDIR)/osnoise || rm $(DESTDIR)$(BINDIR)/osnoise
->> +	ln -s $(DESTDIR)$(BINDIR)/rtla $(DESTDIR)$(BINDIR)/osnoise
->>  
->>  .PHONY: clean tarball
->>  clean:
->> diff --git a/tools/tracing/rtla/src/osnoise.c b/tools/tracing/rtla/src/osnoise.c
->> new file mode 100644
->> index 000000000000..7ef686dddc09
->> --- /dev/null
->> +++ b/tools/tracing/rtla/src/osnoise.c
->> @@ -0,0 +1,1013 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
->> + */
->> +
->> +#include <sys/types.h>
->> +#include <sys/stat.h>
->> +#include <pthread.h>
->> +#include <stdlib.h>
->> +#include <string.h>
->> +#include <unistd.h>
->> +#include <errno.h>
->> +#include <fcntl.h>
->> +#include <stdio.h>
->> +
->> +#include "osnoise.h"
->> +#include "utils.h"
->> +
->> +/*
->> + * osnoise_get_cpus - return the original "osnoise/cpus" content
->> + *
->> + * It also saves the value to be restored.
->> + */
->> +char *osnoise_get_cpus(struct osnoise_context *context)
->> +{
->> +	char buffer[1024];
->> +	char *cpus_path;
->> +	int retval;
->> +
->> +	if (context->curr_cpus)
->> +		return context->curr_cpus;
->> +
->> +	if (context->orig_cpus)
->> +		return context->orig_cpus;
->> +
->> +	cpus_path = tracefs_get_tracing_file("osnoise/cpus");
->> +
->> +	context->cpus_fd = open(cpus_path, O_RDWR);
->> +	if (context->cpus_fd < 0)
->> +		goto out_err;
->> +
->> +	retval = read(context->cpus_fd, &buffer, sizeof(buffer));
->> +	if (retval <= 0)
->> +		goto out_close;
->> +
->> +	context->orig_cpus = strdup(buffer);
+> The new APIs can be useful in the case whene the user wants to
+
+                                        "where"
+
+> check what exactly gets passed to the kernel as definition of
+> a synth event.
 > 
+> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+> ---
+>  Documentation/libtracefs-synth2.txt | 23 ++++++-
+>  include/tracefs.h                   |  5 ++
+>  src/tracefs-hist.c                  | 94 +++++++++++++++++++++++------
+>  3 files changed, 102 insertions(+), 20 deletions(-)
 > 
-> Or you could have done:
-> 
-> 	context->orig_cpus = tracefs_instance_read(NULL, "osnoise/cpus");
+> diff --git a/Documentation/libtracefs-synth2.txt b/Documentation/libtracefs-synth2.txt
+> index 569819a..e557bc9 100644
+> --- a/Documentation/libtracefs-synth2.txt
+> +++ b/Documentation/libtracefs-synth2.txt
+> @@ -5,7 +5,8 @@ NAME
+>  ----
+>  tracefs_synth_create, tracefs_synth_destroy, tracefs_synth_echo_cmd, tracefs_synth_complete,
+>  tracefs_synth_get_start_hist, tracefs_synth_trace, tracefs_synth_snapshot,
+> -tracefs_synth_get_name - Creation of synthetic events
+> +tracefs_synth_get_name, tracefs_synth_echo_fmt, tracefs_synth_show_event,
+> +tracefs_synth_show_start_hist, tracefs_synth_show_end_hist - Creation of synthetic events
+>  
+>  SYNOPSIS
+>  --------
+> @@ -27,6 +28,11 @@ int tracefs_synth_save(struct tracefs_synth pass:[*]synth,
+>  		       enum tracefs_synth_handler type, const char pass:[*]var,
+>  		       char pass:[**]save_fields);
+>  const char *tracefs_synth_get_name(struct tracefs_synth pass:[*]synth);
+> +int tracefs_synth_echo_fmt(struct trace_seq pass:[*]seq, struct tracefs_synth pass:[*]synth);
+> +const char *tracefs_synth_show_event(struct tracefs_synth pass:[*]synth);
+> +const char *tracefs_synth_show_start_hist(struct tracefs_synth pass:[*]synth);
+> +const char *tracefs_synth_show_end_hist(struct tracefs_synth pass:[*]synth);
+> +
+>  --
+>  
+>  DESCRIPTION
+> @@ -93,9 +99,22 @@ _var_ changes. _var_ must be one of the _name_ elements used in *tracefs_synth_a
+>  The returned string belongs to the synth event object and is freed with the event
+>  by *tracefs_synth_free*().
+>  
+> +*tracefs_synth_show_event*() returns the format of the dynamic event used by the synthetic
+> +event or NULL on error. The returned string belongs to the synth event object and is freed
+> +with the event by *tracefs_synth_free*().
+> +
+> +*tracefs_synth_show_start_hist*() returns the format of the start histogram used by the
+> +synthetic event or NULL on error. The returned string belongs to the synth event object
+> +and is freed with the event by *tracefs_synth_free*().
+> +
+> +*tracefs_synth_show_end_hist*() returns the format of the end histogram used by the
+> +synthetic event or NULL on error. The returned string belongs to the synth event object
+> +and is freed with the event by *tracefs_synth_free*().
+> +
+>  RETURN VALUE
+>  ------------
+> -*tracefs_synth_get_name*() returns a string owned by the synth event object.
+> +*tracefs_synth_get_name*(), *tracefs_synth_show_event*(), *tracefs_synth_show_start_hist*()
+> +and *tracefs_synth_show_end_hist*()  return a string owned by the synth event object.
+>  
+>  All other functions return zero on success or -1 on error.
+>  
+> diff --git a/include/tracefs.h b/include/tracefs.h
+> index 967690f..b772f5a 100644
+> --- a/include/tracefs.h
+> +++ b/include/tracefs.h
+> @@ -250,6 +250,7 @@ enum tracefs_dynevent_type {
+>  	TRACEFS_DYNEVENT_SYNTH		= 1 << 5,
+>  	TRACEFS_DYNEVENT_MAX		= 1 << 6,
+>  };
+> +
+>  int tracefs_dynevent_create(struct tracefs_dynevent *devent);
+>  int tracefs_dynevent_destroy(struct tracefs_dynevent *devent, bool force);
+>  int tracefs_dynevent_destroy_all(unsigned int types, bool force);
+> @@ -550,6 +551,10 @@ int tracefs_synth_create(struct tracefs_synth *synth);
+>  int tracefs_synth_destroy(struct tracefs_synth *synth);
+>  void tracefs_synth_free(struct tracefs_synth *synth);
+>  int tracefs_synth_echo_cmd(struct trace_seq *seq, struct tracefs_synth *synth);
+> +int tracefs_synth_echo_fmt(struct trace_seq *seq, struct tracefs_synth *synth);
+> +const char *tracefs_synth_show_event(struct tracefs_synth *synth);
+> +const char *tracefs_synth_show_start_hist(struct tracefs_synth *synth);
+> +const char *tracefs_synth_show_end_hist(struct tracefs_synth *synth);
+>  
+>  struct tracefs_synth *tracefs_sql(struct tep_handle *tep, const char *name,
+>  				  const char *sql_buffer, char **err);
+> diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
+> index 6051ecc..f5359a5 100644
+> --- a/src/tracefs-hist.c
+> +++ b/src/tracefs-hist.c
+> @@ -683,6 +683,8 @@ struct tracefs_synth {
+>  	struct action		*actions;
+>  	struct action		**next_action;
+>  	struct tracefs_dynevent	*dyn_event;
+> +	char			*start_hist;
+> +	char			*end_hist;
+>  	char			*name;
+>  	char			**synthetic_fields;
+>  	char			**synthetic_args;
+> @@ -737,6 +739,8 @@ void tracefs_synth_free(struct tracefs_synth *synth)
+>  		return;
+>  
+>  	free(synth->name);
+> +	free(synth->start_hist);
+> +	free(synth->end_hist);
+>  	tracefs_list_free(synth->synthetic_fields);
+>  	tracefs_list_free(synth->synthetic_args);
+>  	tracefs_list_free(synth->start_keys);
+> @@ -1802,6 +1806,67 @@ static char *create_end_hist(struct tracefs_synth *synth)
+>  	return create_actions(end_hist, synth);
+>  }
+>  
+> +/*
+> + * tracefs_synth_echo_fmt - show the raw format of a synthetic event
+> + * @seq: A trace_seq to store the format string
+> + * @synth: The synthetic event to read format from
+> + *
+> + * This shows the raw format that describes the synthetic event, including
+> + * the format of the dynamic event and the start / end histograms.
+> + *
+> + * Returns 0 on succes -1 on error.
+> + */
+> +int tracefs_synth_echo_fmt(struct trace_seq *seq, struct tracefs_synth *synth)
 
 
-Yep, that would be better.
+Sorry to nitpick on the naming again, but perhaps we should call this
 
-> as I doubt that reading and writing the cpus file you really care about
-> keeping around the file descriptor.
+  tracefs_synth_raw_fmt()
 
-Yep, I do not necessarly need it.... (do not ask me why I am not using, it is
-obviosly better... I might have just missed it).
+Because saying "echo_fmt" I would think it would include the "echo" command
+in the output.
 
-It's not something likely to be done
-> where you care about "disrupting" the system. But if you really do care:
-> 
-> 	context->cpus_fd = tracefs_instance_file_open(NULL, "osnoise/cpus",
-> 				O_RDWR);
 
-I will use tracefs helpers to read/write files, and remove the file descriptor
-variables.
+> +{
+> +	if (!synth->dyn_event)
+> +		return -1;
+> +
+> +	trace_seq_printf(seq, "%s", synth->dyn_event->format);
+> +	trace_seq_printf(seq, "\n%s", synth->start_hist);
+> +	trace_seq_printf(seq, "\n%s", synth->end_hist);
 
-[...]
+Hmm, shouldn't this end with a \n? Or is it to allow quoting?
 
->> +	snprintf(buffer, sizeof(buffer), "%llu\n", runtime);
->> +
->> +	retval = write(context->runtime_fd, buffer, strlen(buffer) + 1);
-> 
-> Again, how important is it to have the fd?
-> 
+-- Steve
 
-it is not...
 
-[...]
-
->> +/*
->> + * osnoise_set_stop_total_us - set "stop_tracing_total_us"
->> + */
->> +int osnoise_set_stop_total_us(struct osnoise_context *context, long long stop_total_us)
->> +{
->> +	long long curr_stop_total_us = osnoise_get_stop_total_us(context);
->> +	char buffer[BUFF_U64_STR_SIZE];
->> +	int retval;
->> +
->> +	if (curr_stop_total_us == OSNOISE_OPTION_INIT_VAL)
->> +		return -1;
->> +
->> +	snprintf(buffer, BUFF_U64_STR_SIZE, "%lld\n", stop_total_us);
->> +
->> +	retval = write(context->stop_total_us_fd, buffer, strlen(buffer) + 1);
-> 
-> And here.
-> 
-> Hmm, we should add a helper:
-> 
-> 	tracefs_instance_file_printf(instance, fmt, ...)
-> 
-> Where the above could be:
-> 
-> 	tracefs_instance_file_printf(NULL, "%lld\n", stop_total_us);
-> 
-> Of course, for now, you could just add a helper function that does that.
-
-sounds good to me.
-
-[...]
->> +/*
->> + * osnoise_context_alloc - alloc an osnoise_context
->> + *
->> + * The osnoise context contains the information of the "osnoise/" configs.
->> + * It is used to set and restore the config.
->> + */
->> +struct osnoise_context *osnoise_context_alloc(void)
->> +{
->> +	struct osnoise_context *context;
->> +
->> +	context = calloc(1, sizeof(*context));
->> +	if (!context)
->> +		goto out_err;
->> +
->> +	context->cpus_fd 		= CLOSED_FD;
->> +	context->runtime_fd		= CLOSED_FD;
->> +	context->period_fd		= CLOSED_FD;
->> +	context->stop_us_fd		= CLOSED_FD;
->> +	context->stop_total_us_fd	= CLOSED_FD;
->> +	context->timerlat_period_us_fd	= CLOSED_FD;
->> +	context->print_stack_fd		= CLOSED_FD;
-> 
-> You could save a lot of code by using the tracefs_instance_file_*()
-> helpers. And do you really need to keep around the file descriptors?
-
-I will use the helpers in v9, I am convincede... :-)
-
-Thanks Steve
--- Daniel
+> +
+> +	return 0;
+> +}
+> +
