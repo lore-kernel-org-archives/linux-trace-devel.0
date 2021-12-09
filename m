@@ -2,35 +2,35 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1D2BC4321E
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Dec 2021 22:32:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B619CC43219
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Dec 2021 22:32:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233734AbhLIWfz (ORCPT
+        id S233735AbhLIWfz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Thu, 9 Dec 2021 17:35:55 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:58932 "EHLO
+Received: from linux.microsoft.com ([13.77.154.182]:58944 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232800AbhLIWfw (ORCPT
+        with ESMTP id S233693AbhLIWfw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 9 Dec 2021 17:35:52 -0500
 Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 0E2B720B7185;
+        by linux.microsoft.com (Postfix) with ESMTPSA id A36E620B7189;
         Thu,  9 Dec 2021 14:32:18 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0E2B720B7185
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A36E620B7189
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
         s=default; t=1639089138;
-        bh=2mPyMP39s0IEbHAOXJ4dLTMRoN4QzqPhWMMQ445OHoQ=;
+        bh=+mXlG14gdSajYN3+Eq9v1QgIph4+8rvSCzU2C5qR0zQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PbnX9AaK8un3sbY4k06xLjYOHQG968S/Gw4S2bTPuOfI+Dyo+zbHloDu8eCjnkbhn
-         3EnUugkpdDQ5pAe4Rvsv+CMzjszGSnSjpCTbDWhol1FIKtOLLOFILIyvnNhFTEY4R8
-         QC1Vg9MEOW4XeHkTih8mosaU/j/lH6KvglWo7Ym0=
+        b=lr338LMii6S31B0LPZ0SxVe37u1cxbCmFKgaR2zOReQigxs0FWO2Icwyx0nkFMeNS
+         Rn1AUuPEt13++lto2xm1D3B9c4isNrUFjAf1fRjM7P6FNjWtRWtRU8ydMHoMwhKXzO
+         bcwh4lw0wcnp6flsw5VkhDB0N9rRZpHR2hZQz6QI=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         beaub@linux.microsoft.com
-Subject: [PATCH v7 03/13] user_events: Add print_fmt generation support for basic types
-Date:   Thu,  9 Dec 2021 14:32:00 -0800
-Message-Id: <20211209223210.1818-4-beaub@linux.microsoft.com>
+Subject: [PATCH v7 06/13] user_events: Add self-test for ftrace integration
+Date:   Thu,  9 Dec 2021 14:32:03 -0800
+Message-Id: <20211209223210.1818-7-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211209223210.1818-1-beaub@linux.microsoft.com>
 References: <20211209223210.1818-1-beaub@linux.microsoft.com>
@@ -38,146 +38,252 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Addes print_fmt format generation for basic types that are supported for
-user processes. Only supports sizes that are the same on 32 and 64 bit.
+Tests basic functionality of registering/deregistering, status and
+writing data out via ftrace mechanisms within user_events.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- kernel/trace/trace_events_user.c | 107 ++++++++++++++++++++++++++++++-
- 1 file changed, 105 insertions(+), 2 deletions(-)
+ tools/testing/selftests/user_events/Makefile  |   9 +
+ .../selftests/user_events/ftrace_test.c       | 205 ++++++++++++++++++
+ tools/testing/selftests/user_events/settings  |   1 +
+ 3 files changed, 215 insertions(+)
+ create mode 100644 tools/testing/selftests/user_events/Makefile
+ create mode 100644 tools/testing/selftests/user_events/ftrace_test.c
+ create mode 100644 tools/testing/selftests/user_events/settings
 
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 1d96d1c85147..bd8ac46fddb1 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -357,6 +357,106 @@ static int user_event_parse_fields(struct user_event *user, char *args)
- 
- static struct trace_event_fields user_event_fields_array[1];
- 
-+static const char *user_field_format(const char *type)
+diff --git a/tools/testing/selftests/user_events/Makefile b/tools/testing/selftests/user_events/Makefile
+new file mode 100644
+index 000000000000..d66c551a6fe3
+--- /dev/null
++++ b/tools/testing/selftests/user_events/Makefile
+@@ -0,0 +1,9 @@
++# SPDX-License-Identifier: GPL-2.0
++CFLAGS += -Wl,-no-as-needed -Wall -I../../../../usr/include
++LDLIBS += -lrt -lpthread -lm
++
++TEST_GEN_PROGS = ftrace_test
++
++TEST_FILES := settings
++
++include ../lib.mk
+diff --git a/tools/testing/selftests/user_events/ftrace_test.c b/tools/testing/selftests/user_events/ftrace_test.c
+new file mode 100644
+index 000000000000..9d53717139e6
+--- /dev/null
++++ b/tools/testing/selftests/user_events/ftrace_test.c
+@@ -0,0 +1,205 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * User Events FTrace Test Program
++ *
++ * Copyright (c) 2021 Beau Belgrave <beaub@linux.microsoft.com>
++ */
++
++#include <errno.h>
++#include <linux/user_events.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <fcntl.h>
++#include <sys/ioctl.h>
++#include <sys/stat.h>
++#include <unistd.h>
++
++#include "../kselftest_harness.h"
++
++const char *data_file = "/sys/kernel/debug/tracing/user_events_data";
++const char *status_file = "/sys/kernel/debug/tracing/user_events_status";
++const char *enable_file = "/sys/kernel/debug/tracing/events/user_events/__test_event/enable";
++const char *trace_file = "/sys/kernel/debug/tracing/trace";
++
++static int trace_bytes(void)
 +{
-+	if (strcmp(type, "s64") == 0)
-+		return "%lld";
-+	if (strcmp(type, "u64") == 0)
-+		return "%llu";
-+	if (strcmp(type, "s32") == 0)
-+		return "%d";
-+	if (strcmp(type, "u32") == 0)
-+		return "%u";
-+	if (strcmp(type, "int") == 0)
-+		return "%d";
-+	if (strcmp(type, "unsigned int") == 0)
-+		return "%u";
-+	if (strcmp(type, "s16") == 0)
-+		return "%d";
-+	if (strcmp(type, "u16") == 0)
-+		return "%u";
-+	if (strcmp(type, "short") == 0)
-+		return "%d";
-+	if (strcmp(type, "unsigned short") == 0)
-+		return "%u";
-+	if (strcmp(type, "s8") == 0)
-+		return "%d";
-+	if (strcmp(type, "u8") == 0)
-+		return "%u";
-+	if (strcmp(type, "char") == 0)
-+		return "%d";
-+	if (strcmp(type, "unsigned char") == 0)
-+		return "%u";
-+	if (strstr(type, "char[") != 0)
-+		return "%s";
++	int fd = open(trace_file, O_RDONLY);
++	char buf[256];
++	int bytes = 0, got;
 +
-+	/* Unknown, likely struct, allowed treat as 64-bit */
-+	return "%llu";
-+}
++	if (fd == -1)
++		return -1;
 +
-+static bool user_field_is_dyn_string(const char *type)
-+{
-+	if (str_has_prefix(type, "__data_loc ") ||
-+	    str_has_prefix(type, "__rel_loc "))
-+		if (strstr(type, "char[") != 0)
-+			return true;
++	while (true) {
++		got = read(fd, buf, sizeof(buf));
 +
-+	return false;
-+}
++		if (got == -1)
++			return -1;
 +
-+#define LEN_OR_ZERO (len ? len - pos : 0)
-+static int user_event_set_print_fmt(struct user_event *user, char *buf, int len)
-+{
-+	struct ftrace_event_field *field, *next;
-+	struct list_head *head = &user->fields;
-+	int pos = 0, depth = 0;
++		if (got == 0)
++			break;
 +
-+	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
-+
-+	list_for_each_entry_safe_reverse(field, next, head, link) {
-+		if (depth != 0)
-+			pos += snprintf(buf + pos, LEN_OR_ZERO, " ");
-+
-+		pos += snprintf(buf + pos, LEN_OR_ZERO, "%s=%s",
-+				field->name, user_field_format(field->type));
-+
-+		depth++;
++		bytes += got;
 +	}
 +
-+	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
++	close(fd);
 +
-+	list_for_each_entry_safe_reverse(field, next, head, link) {
-+		if (user_field_is_dyn_string(field->type))
-+			pos += snprintf(buf + pos, LEN_OR_ZERO,
-+					", __get_str(%s)", field->name);
-+		else
-+			pos += snprintf(buf + pos, LEN_OR_ZERO,
-+					", REC->%s", field->name);
++	return bytes;
++}
++
++FIXTURE(user) {
++	int status_fd;
++	int data_fd;
++	int enable_fd;
++};
++
++FIXTURE_SETUP(user) {
++	self->status_fd = open(status_file, O_RDONLY);
++	ASSERT_NE(-1, self->status_fd);
++
++	self->data_fd = open(data_file, O_RDWR);
++	ASSERT_NE(-1, self->data_fd);
++
++	self->enable_fd = -1;
++}
++
++FIXTURE_TEARDOWN(user) {
++	close(self->status_fd);
++	close(self->data_fd);
++
++	if (self->enable_fd != -1) {
++		write(self->enable_fd, "0", sizeof("0"));
++		close(self->enable_fd);
 +	}
-+
-+	return pos + 1;
 +}
-+#undef LEN_OR_ZERO
 +
-+static int user_event_create_print_fmt(struct user_event *user)
++TEST_F(user, register_events) {
++	struct user_reg reg = {0};
++	int page_size = sysconf(_SC_PAGESIZE);
++	char *status_page;
++
++	reg.size = sizeof(reg);
++	reg.name_args = (__u64)"__test_event u32 field1; u32 field2";
++
++	status_page = mmap(NULL, page_size, PROT_READ, MAP_SHARED,
++			   self->status_fd, 0);
++
++	/* Register should work */
++	ASSERT_EQ(0, ioctl(self->data_fd, DIAG_IOCSREG, &reg));
++	ASSERT_EQ(0, reg.write_index);
++	ASSERT_NE(0, reg.status_index);
++
++	/* Multiple registers should result in same index */
++	ASSERT_EQ(0, ioctl(self->data_fd, DIAG_IOCSREG, &reg));
++	ASSERT_EQ(0, reg.write_index);
++	ASSERT_NE(0, reg.status_index);
++
++	/* Ensure disabled */
++	self->enable_fd = open(enable_file, O_RDWR);
++	ASSERT_NE(-1, self->enable_fd);
++	ASSERT_NE(-1, write(self->enable_fd, "0", sizeof("0")))
++
++	/* MMAP should work and be zero'd */
++	ASSERT_NE(MAP_FAILED, status_page);
++	ASSERT_NE(NULL, status_page);
++	ASSERT_EQ(0, status_page[reg.status_index]);
++
++	/* Enable event and ensure bits updated in status */
++	ASSERT_NE(-1, write(self->enable_fd, "1", sizeof("1")))
++	ASSERT_EQ(EVENT_STATUS_FTRACE, status_page[reg.status_index]);
++
++	/* Disable event and ensure bits updated in status */
++	ASSERT_NE(-1, write(self->enable_fd, "0", sizeof("0")))
++	ASSERT_EQ(0, status_page[reg.status_index]);
++
++	/* File still open should return -EBUSY for delete */
++	ASSERT_EQ(-1, ioctl(self->data_fd, DIAG_IOCSDEL, "__test_event"));
++	ASSERT_EQ(EBUSY, errno);
++
++	/* Delete should work only after close */
++	close(self->data_fd);
++	self->data_fd = open(data_file, O_RDWR);
++	ASSERT_EQ(0, ioctl(self->data_fd, DIAG_IOCSDEL, "__test_event"));
++
++	/* Unmap should work */
++	ASSERT_EQ(0, munmap(status_page, page_size));
++}
++
++TEST_F(user, write_events) {
++	struct user_reg reg = {0};
++	struct iovec io[3];
++	__u32 field1, field2;
++	int before = 0, after = 0;
++
++	reg.size = sizeof(reg);
++	reg.name_args = (__u64)"__test_event u32 field1; u32 field2";
++
++	field1 = 1;
++	field2 = 2;
++
++	io[0].iov_base = &reg.write_index;
++	io[0].iov_len = sizeof(reg.write_index);
++	io[1].iov_base = &field1;
++	io[1].iov_len = sizeof(field1);
++	io[2].iov_base = &field2;
++	io[2].iov_len = sizeof(field2);
++
++	/* Register should work */
++	ASSERT_EQ(0, ioctl(self->data_fd, DIAG_IOCSREG, &reg));
++	ASSERT_EQ(0, reg.write_index);
++	ASSERT_NE(0, reg.status_index);
++
++	/* Write should fail on invalid slot with ENOENT */
++	io[0].iov_base = &field2;
++	io[0].iov_len = sizeof(field2);
++	ASSERT_EQ(-1, writev(self->data_fd, (const struct iovec *)io, 3));
++	ASSERT_EQ(ENOENT, errno);
++	io[0].iov_base = &reg.write_index;
++	io[0].iov_len = sizeof(reg.write_index);
++
++	/* Enable event */
++	self->enable_fd = open(enable_file, O_RDWR);
++	ASSERT_NE(-1, write(self->enable_fd, "1", sizeof("1")))
++
++	/* Write should make it out to ftrace buffers */
++	before = trace_bytes();
++	ASSERT_NE(-1, writev(self->data_fd, (const struct iovec *)io, 3));
++	after = trace_bytes();
++	ASSERT_GT(after, before);
++}
++
++TEST_F(user, write_fault) {
++	struct user_reg reg = {0};
++	struct iovec io[2];
++	int l = sizeof(__u64);
++	void *anon;
++
++	reg.size = sizeof(reg);
++	reg.name_args = (__u64)"__test_event u64 anon";
++
++	anon = mmap(NULL, l, PROT_READ, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++	ASSERT_NE(MAP_FAILED, anon);
++
++	io[0].iov_base = &reg.write_index;
++	io[0].iov_len = sizeof(reg.write_index);
++	io[1].iov_base = anon;
++	io[1].iov_len = l;
++
++	/* Register should work */
++	ASSERT_EQ(0, ioctl(self->data_fd, DIAG_IOCSREG, &reg));
++	ASSERT_EQ(0, reg.write_index);
++	ASSERT_NE(0, reg.status_index);
++
++	/* Write should work normally */
++	ASSERT_NE(-1, writev(self->data_fd, (const struct iovec *)io, 2));
++
++	/* Faulted data should zero fill and work */
++	ASSERT_EQ(0, madvise(anon, l, MADV_DONTNEED));
++	ASSERT_NE(-1, writev(self->data_fd, (const struct iovec *)io, 2));
++	ASSERT_EQ(0, munmap(anon, l));
++}
++
++int main(int argc, char **argv)
 +{
-+	char *print_fmt;
-+	int len;
-+
-+	len = user_event_set_print_fmt(user, NULL, 0);
-+
-+	print_fmt = kmalloc(len, GFP_KERNEL);
-+
-+	if (!print_fmt)
-+		return -ENOMEM;
-+
-+	user_event_set_print_fmt(user, print_fmt, len);
-+
-+	user->call.print_fmt = print_fmt;
-+
-+	return 0;
++	return test_harness_run(argc, argv);
 +}
-+
- static enum print_line_t user_event_print_trace(struct trace_iterator *iter,
- 						int flags,
- 						struct trace_event *event)
-@@ -390,6 +490,7 @@ static int destroy_user_event(struct user_event *user)
- 	clear_bit(user->index, page_bitmap);
- 	hash_del(&user->node);
- 
-+	kfree(user->call.print_fmt);
- 	kfree(EVENT_NAME(user));
- 	kfree(user);
- 
-@@ -669,8 +770,10 @@ static int user_event_parse(char *name, char *args, char *flags,
- 	if (ret)
- 		goto put_user;
- 
--	/* Minimal print format */
--	user->call.print_fmt = "\"\"";
-+	ret = user_event_create_print_fmt(user);
-+
-+	if (ret)
-+		goto put_user;
- 
- 	user->call.data = user;
- 	user->call.class = &user->class;
+diff --git a/tools/testing/selftests/user_events/settings b/tools/testing/selftests/user_events/settings
+new file mode 100644
+index 000000000000..ba4d85f74cd6
+--- /dev/null
++++ b/tools/testing/selftests/user_events/settings
+@@ -0,0 +1 @@
++timeout=90
 -- 
 2.17.1
 
