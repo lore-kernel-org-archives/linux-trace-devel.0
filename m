@@ -2,64 +2,248 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91E61C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  8 Dec 2021 23:24:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23EEAC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Dec 2021 00:58:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235168AbhLHX2V (ORCPT
+        id S241794AbhLIBCD (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 8 Dec 2021 18:28:21 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:48334 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235127AbhLHX2V (ORCPT
+        Wed, 8 Dec 2021 20:02:03 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:37728 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241801AbhLIBCB (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 8 Dec 2021 18:28:21 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id ED1D8B822BD
-        for <linux-trace-devel@vger.kernel.org>; Wed,  8 Dec 2021 23:24:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72722C00446;
-        Wed,  8 Dec 2021 23:24:46 +0000 (UTC)
-Date:   Wed, 8 Dec 2021 18:24:45 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yordan Karadzhov <y.karadz@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [RFC PATCH] libtracefs: New APIs for getting the raw format of
- synth event
-Message-ID: <20211208182445.26419168@gandalf.local.home>
-In-Reply-To: <85fef0bf-879d-06a9-f2fd-de2d0171fb1d@gmail.com>
-References: <20211206151352.361507-1-y.karadz@gmail.com>
-        <20211207171351.2928503d@gandalf.local.home>
-        <85fef0bf-879d-06a9-f2fd-de2d0171fb1d@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 8 Dec 2021 20:02:01 -0500
+Received: from kbox (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 3BE4220B7179;
+        Wed,  8 Dec 2021 16:58:28 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3BE4220B7179
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1639011508;
+        bh=fbpYg6NynM2UPTKU7eao6GSHdvxjImqs1TQpymIEs9g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dSvpTXLvCMg3PWsEGKiBHG+ekMCixfHJh6iKpuP4LCLPZqCDJiDT5Yljd5N1e4t9h
+         LL6klqR850HP/1FSakcuu2lZELDxZWvo2HDshRmsvuhXgVND2GoSPnUUX5Jd7LETaG
+         ik8yd99HJgPFTqJO0GmC45XUyzZhpyzJZQQYmsB4=
+Date:   Wed, 8 Dec 2021 16:58:23 -0800
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     mhiramat@kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 02/13] user_events: Add minimal support for
+ trace_event into ftrace
+Message-ID: <20211209005823.GA21399@kbox>
+References: <20211201182515.2446-1-beaub@linux.microsoft.com>
+ <20211201182515.2446-3-beaub@linux.microsoft.com>
+ <20211208181905.62f8f999@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211208181905.62f8f999@gandalf.local.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 8 Dec 2021 15:31:26 +0200
-Yordan Karadzhov <y.karadz@gmail.com> wrote:
-
-> >>    remove_start_hist:
-> >> -	remove_hist(synth->instance, synth->start_event, start_hist);
-> >> +	remove_hist(synth->instance, synth->start_event, synth->start_hist);
-> >>    remove_synthetic:
-> >> -	free(end_hist);
-> >> -	free(start_hist);
-> >>   	tracefs_dynevent_destroy(synth->dyn_event, false);  
-> > I just realized that on error, we do not free the synthetic event
-> > descriptor. So there is a memory leak.
-> >   
+On Wed, Dec 08, 2021 at 06:19:05PM -0500, Steven Rostedt wrote:
+> On Wed,  1 Dec 2021 10:25:04 -0800
+> Beau Belgrave <beaub@linux.microsoft.com> wrote:
 > 
-> Do we need to free the synthetic event here?
+> > Minimal support for interacting with dynamic events, trace_event and
+> > ftrace. Core outline of flow between user process, ioctl and trace_event
+> > APIs.
+> > 
+> > Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+> > ---
+> >  kernel/trace/Kconfig             |   15 +
+> >  kernel/trace/Makefile            |    1 +
+> >  kernel/trace/trace_events_user.c | 1192 ++++++++++++++++++++++++++++++
+> >  3 files changed, 1208 insertions(+)
+> >  create mode 100644 kernel/trace/trace_events_user.c
+> > 
+> > diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+> > index 420ff4bc67fd..21d00092436b 100644
+> > --- a/kernel/trace/Kconfig
+> > +++ b/kernel/trace/Kconfig
+> > @@ -724,6 +724,21 @@ config SYNTH_EVENTS
+> >  
+> >  	  If in doubt, say N.
+> >  
+> > +config USER_EVENTS
+> > +	bool "User trace events"
+> > +	select TRACING
+> > +	select DYNAMIC_EVENTS
+> > +	default n
 > 
-> The event gets allocated with 'tracefs_synth_alloc()' and the user is responsible for calling 'tracefs_synth_free()' in 
-> order to free the memory.
-> The fact that 'tracefs_synth_create()' may fail doesn't change this.
+> default n is default, so you do not need to explicitly state that.
+> 
+> In other words, the above line is a nop.
+> 
 
-Ah, you're correct. I was thinking that we allocated it here, but forgot we
-separated create and alloc.
+Got it.
 
--- Steve
+> > +	help
+> > +	  User trace events are user-defined trace events that
+> > +	  can be used like an existing kernel trace event.  User trace
+> > +	  events are generated by writing to a tracefs file.  User
+> > +	  processes can determine if their tracing events should be
+> > +	  generated by memory mapping a tracefs file and checking for
+> > +	  an associated byte being non-zero.
+> > +
+> > +	  If in doubt, say N.
+> > +
+> >  config HIST_TRIGGERS
+> >  	bool "Histogram triggers"
+> >  	depends on ARCH_HAVE_NMI_SAFE_CMPXCHG
+> > diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
+> > index bedc5caceec7..19ef3758da95 100644
+> > --- a/kernel/trace/Makefile
+> > +++ b/kernel/trace/Makefile
+> 
+> 
+> 
+> 
+> > +/*
+> > + * Handles the final close of the file from user mode.
+> > + */
+> > +static int user_events_release(struct inode *node, struct file *file)
+> > +{
+> > +	struct user_event_refs *refs;
+> > +	struct user_event *user;
+> > +	int i;
+> > +
+> > +	/*
+> > +	 * refs is protected by RCU and could in theory change immediately
+> > +	 * before this call on another core. To ensure we read the latest
+> > +	 * version of refs we acquire the RCU read lock again.
+> > +	 */
+> > +	rcu_read_lock_sched();
+> > +	refs = rcu_dereference_sched(file->private_data);
+> > +	rcu_read_unlock_sched();
+> 
+> This still bothers me. Can another CPU call an ioctl here?
+
+Sorry :)
+
+No, another CPU cannot call the ioctl on the file, since if another CPU
+had a reference to this file release couldn't be called.
+
+user_events_release is only called when the final reference to the file
+has been closed, so there cannot be another ioctl pending, starting or
+finishing for this file at the time it is called.
+
+The last user mode program to call close() on the file will end up
+invoking user_events_release.
+
+The user_event_refs is only accessible via the file's private_data, which
+now has zero references when release is executing. This means the
+private_data can no longer change and the rcu deref ensures we have the
+latest version.
+
+refs is per-file, so while there can be other ioctl's occurring for
+other files, they are completely different ref objects than the one
+being cleaned up in the release of the file, it's not shared outside of
+this file lifetime, which has now ended.
+
+> 
+>   user_events_ioctl_reg() {
+>     user_events_ref_add() {
+>       refs = rcu_dereference_protected(file->private_data, ..);
+>       new_refs = kzalloc(size, GFP_KERNEL);
+>       rcu_assign_pointer(file->private_data, new_refs);
+>       if (refs)
+>         kfree_rcu(refs, rcu);
+> 
+> refs now freed.
+> 
+
+If user_events_ioctl is executing for that same file, user_events_release
+could not have been called due to the file being in use to issue the
+ioctl.
+
+> > +
+> > +	if (!refs)
+> > +		goto out;
+> > +
+> > +	/*
+> > +	 * Do not need RCU while enumerating the events that were used.
+> > +	 * The lifetime of refs has reached an end, it's tied to this file.
+> > +	 * The underlying user_events are ref counted, and cannot be freed.
+> > +	 * After this decrement, the user_events may be freed elsewhere.
+> > +	 */
+> > +	for (i = 0; i < refs->count; ++i) {
+> 
+> Fault on refs->count
+> 
+> ??
+
+refs after rcu_dereference is checked for null before accessing.
+
+refs cannot be changed when release is being executed, since that would
+mean the ioctl ran without a file reference (not sure how that could happen).
+
+This is why it's important that release get the latest version of refs,
+an ioctl could have JUST happened before the final close() in user mode, and
+if it jumped CPUs we could (in theory) get an old value. If we got an
+old value, then yes, the fault could occur.
+
+This code uses the file ops release method as a final sync point to
+clean up everything for that file only after there are no more
+references to it at all, so nobody can do this kind of thing.
+
+Is there some case I am missing where an ioctl on a file can be
+performed without a reference to that file?
+
+Are you worried about a malicious user calling close on the file and
+then immediately issuing an ioctl on the now closed file?
+
+If so, wouldn't ioctl just reject that file reference being used as not
+in the processes file table / invalid and not let the ioctl go through?
+
+> 
+> > +		user = refs->events[i];
+> > +
+> > +		if (user)
+> > +			atomic_dec(&user->refcnt);
+> > +	}
+> > +
+> > +	kfree_rcu(refs, rcu);
+> > +out:
+> > +	return 0;
+> > +}
+> > +
+
+[..]
+
+> > +static const struct file_operations user_status_fops = {
+> > +	.mmap = user_status_mmap,
+> > +	.read = user_status_read,
+> > +	.llseek  = user_status_seek,
+> > +	.release = user_status_release,
+> > +};
+> > +
+> > +/*
+> > + * Creates a set of tracefs files to allow user mode interactions.
+> > + */
+> > +static int create_user_tracefs(void)
+> > +{
+> > +	struct dentry *edata, *emmap;
+> > +
+> > +	edata = tracefs_create_file("user_events_data", 0644, NULL,
+> > +				    NULL, &user_data_fops);
+> 
+> BTW, I now define:
+> 
+>  TRACE_MODE_WRITE for files to be written to, and TRACE_MODE_READ for files
+>  that are read only.
+> 
+> And soon tracefs will honor the gid mount option to define what group all
+> the tracefs files should belong to on mount.
+
+Perfect, thank you.
+
+> 
+> -- Steve
+> 
+
+Thanks,
+-Beau
