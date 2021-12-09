@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81D1DC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Dec 2021 10:45:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE219C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Dec 2021 10:45:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235286AbhLIKtM (ORCPT
+        id S235460AbhLIKtN (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 9 Dec 2021 05:49:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38154 "EHLO
+        Thu, 9 Dec 2021 05:49:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235093AbhLIKtL (ORCPT
+        with ESMTP id S235093AbhLIKtM (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 9 Dec 2021 05:49:11 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 342EAC0617A2
+        Thu, 9 Dec 2021 05:49:12 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BC5C061746
         for <linux-trace-devel@vger.kernel.org>; Thu,  9 Dec 2021 02:45:38 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id o20so18065315eds.10
+Received: by mail-ed1-x533.google.com with SMTP id x15so18266575edv.1
         for <linux-trace-devel@vger.kernel.org>; Thu, 09 Dec 2021 02:45:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ioiXdU2heiWv0iNx67hiNBxvivPA+Wg4RUNhZG2Bb6c=;
-        b=YhrGUMoJ3xE/VqDQ4zZa/rzrLj7y4C0ovlnKxg7XmQi+rstuMOp3zKe4gKT7+ipUmO
-         AhLkvZ9xOvWqoJH0iMA+QI6+PEJzyGV3YqEEkPpLuF4TO90lW780Tearc8dLGT0eDNpR
-         HRtAmKlyhsQ4hB/ysIPX13jMT4aao1PPRKkx86eRE2c/qa1ITEX3yfL4pmfkHonaAFbI
-         EB0M3SSyvnzUTIidQGlAoMuOWh810/rnQVC3dQH7bSETRwrYiHm3KF61z4wUeWI0b6Ia
-         3cFSdO4yNtG2hNaL/HutS4FYiSpmkzn9pUQnV27U4QtSOsTx2CU9UCEajPAgnpNh/LD0
-         YCQA==
+        bh=QzS8vOyXWJzFWBS4PCLUgQGIyY8AbUe+m5SwEq1hAKw=;
+        b=OKttwZd9KhZz0/KqxPIj9JodFjfdX7cb5YpC4bQDx1OYaZ92oUqLD36xzVgymd5DhJ
+         AeBkvsd0uIuzTNlA6qq6Io2CyIuEsi8fJZlsg1hYG8ZrU4g7RZKsjVBqBtJyKX1jJui3
+         or80ZKTBY6XTlAuYh6iX8uBHbT+c8qIF8Iy8cReGUOCK5kTfyNAIAnR+WHf1lmZ4oI4o
+         EIWvimZGR8SGLHiOBQZMMmPvRqQR1HVTcr6ADgcUKt5jtAVlzbQxvt6ICQb/ZE2ccW2V
+         l7zY3C3XHR/U0oubp6oS61hDOl+Qwx9JdHdOhgvzYzTrsohckE+ISvqdVskbTVg5/Y1J
+         ZhUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ioiXdU2heiWv0iNx67hiNBxvivPA+Wg4RUNhZG2Bb6c=;
-        b=YRo1Eqed5R3LE+mpcbPnXkoB76wrPYAf5u7/3uhyaWiXQuzYsnK7TqkAdo3Z0grH3U
-         gawSoYRupf0DQ5gWbnQ5VV3Uban1nxckn3qpyoicQTaDQJBVIrAYCwX8rXGKLdEAg1Dv
-         XtewyWpNYqTOsTdAZDmtLDP+TcGdea8j7RtvVfZqPmC+wLNZ2sLgYKSIYmb7kFcl6vfv
-         vYYVc4vSMYfwLvggYBNrBx6LSApC+6Igl9psMSbhAYHY5FR7UYiExxuApea6Br9IHIPj
-         Qv2KHt7e2fp3hlGbn9gxOx0P2sHEGqKR2VDX9xjQlhzos+EAI7QDAUngBjGcrKr7f5jX
-         TsnQ==
-X-Gm-Message-State: AOAM531S5FHTOX49JgnQs/0jeTy2N/TREm6gQZIzS9HOUOBpLtldppN3
-        URPN10JAuYA2X2CbOYYzKnE=
-X-Google-Smtp-Source: ABdhPJx/5ZZmPal5GZXOflRTTVmuVT7MnmYQjDKwapKV8V0xA6J9rmqF6XgppGtlStSjbukA9AcBbA==
-X-Received: by 2002:a17:906:7ccf:: with SMTP id h15mr14759901ejp.386.1639046736779;
-        Thu, 09 Dec 2021 02:45:36 -0800 (PST)
+        bh=QzS8vOyXWJzFWBS4PCLUgQGIyY8AbUe+m5SwEq1hAKw=;
+        b=w6dKj99ApfjYSvgMGCFDf9TEpmS2YPT08VYyEFq+RzbBWDYub4gXXxhJDgclB5yVsg
+         2yZxtjrfqbOrHoatMp0krsbfd34LrsOPDFjT1p7gURJE6cdS0LZzgDgDP+M5zj2jDTcB
+         Ypiz7Y3dQgA/XWIAx3OhwljUalHJo8pa7M6ArIvr4hVA8jBdh+0Ne8wvMnD76isFlm06
+         bUqT9gSdEsNfOuSkxnjOnXQT/LJFxDen8ZzGGhyCO24hmmEOEyBw7zKpeJs2znhQpNLT
+         4ix9VZq/mF7v+5CfMlrkZ0Fm43U3dnZjwE+B1aq4VfWovjfOsWxf1pUIkPueanIzjp5r
+         gvHw==
+X-Gm-Message-State: AOAM531b6N5zh0FxYZbEUHZkoBr1sGvp+fNan01xGgBWth0q6qxa+ENX
+        LJCFvrplkJL+UVDAlYmeKddbQYEjYrg=
+X-Google-Smtp-Source: ABdhPJwgcPW1jBMoONkn00xusCNCeScedKAklQ0ZHN0BI3P6dKIYY6QdvJ6tP1xkoPPAEbDKvZl7Pw==
+X-Received: by 2002:a05:6402:1a4f:: with SMTP id bf15mr28151261edb.260.1639046737566;
+        Thu, 09 Dec 2021 02:45:37 -0800 (PST)
 Received: from crow.. ([95.87.219.163])
         by smtp.gmail.com with ESMTPSA id b7sm3778545edd.26.2021.12.09.02.45.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Dec 2021 02:45:36 -0800 (PST)
+        Thu, 09 Dec 2021 02:45:37 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 1/3] libtracefs: Rename the 'tracefs_get_hist_*()' APIs
-Date:   Thu,  9 Dec 2021 12:45:22 +0200
-Message-Id: <20211209104524.5354-2-y.karadz@gmail.com>
+Subject: [PATCH v2 2/3] libtracefs: Add new API for getting synth event name
+Date:   Thu,  9 Dec 2021 12:45:23 +0200
+Message-Id: <20211209104524.5354-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211209104524.5354-1-y.karadz@gmail.com>
 References: <20211209104524.5354-1-y.karadz@gmail.com>
@@ -64,136 +64,95 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The following APIs are renamed:
-tracefs_get_hist_name()   -> tracefs_hist_get_name()
-tracefs_get_hist_event()  -> tracefs_hist_get_event()
-tracefs_get_hist_system() -> tracefs_hist_get_system()
+We add:
+const char *tracefs_synth_get_name(struct tracefs_synth *)
 
-This is done in order to match the naming convention used in
-the library. The patch adds documentation as well.
+The new API can be valuable in a number of different scenarios.
+For example, when the user works with multiple synth events and
+wants to print an adequate error message in a case of a failure.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- Documentation/libtracefs-hist.txt | 24 +++++++++++++++++++++++-
- include/tracefs.h                 |  6 +++---
- src/tracefs-hist.c                | 24 +++++++++++++++++++++---
- 3 files changed, 47 insertions(+), 7 deletions(-)
+ Documentation/libtracefs-synth2.txt | 14 +++++++++++---
+ include/tracefs.h                   |  1 +
+ src/tracefs-hist.c                  | 11 +++++++++++
+ 3 files changed, 23 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/libtracefs-hist.txt b/Documentation/libtracefs-hist.txt
-index 2eef718..3a167e8 100644
---- a/Documentation/libtracefs-hist.txt
-+++ b/Documentation/libtracefs-hist.txt
-@@ -4,7 +4,8 @@ libtracefs(3)
+diff --git a/Documentation/libtracefs-synth2.txt b/Documentation/libtracefs-synth2.txt
+index 1cb07c8..569819a 100644
+--- a/Documentation/libtracefs-synth2.txt
++++ b/Documentation/libtracefs-synth2.txt
+@@ -3,8 +3,9 @@ libtracefs(3)
+ 
  NAME
  ----
- tracefs_hist_alloc, tracefs_hist_free, tracefs_hist_add_key, tracefs_hist_add_value, tracefs_hist_add_name, tracefs_hist_start,
--tracefs_hist_destory, tracefs_hist_add_sort_key, tracefs_hist_set_sort_key,tracefs_hist_sort_key_direction - Create and update event histograms
-+tracefs_hist_destory, tracefs_hist_add_sort_key, tracefs_hist_set_sort_key, tracefs_hist_sort_key_direction
-+tracefs_hist_echo_cmd, tracefs_hist_get_name, tracefs_hist_get_event, tracefs_hist_get_system - Create, update and describe event histograms
+-tracefs_synth_create, tracefs_synth_destroy, tracefs_synth_echo_cmd,tracefs_synth_complete,
+-tracefs_synth_get_start_hist,tracefs_synth_trace,tracefs_synth_snapshot - Creation of synthetic events
++tracefs_synth_create, tracefs_synth_destroy, tracefs_synth_echo_cmd, tracefs_synth_complete,
++tracefs_synth_get_start_hist, tracefs_synth_trace, tracefs_synth_snapshot,
++tracefs_synth_get_name - Creation of synthetic events
  
  SYNOPSIS
  --------
-@@ -69,6 +70,12 @@ int tracefs_hist_command(struct tracefs_instance pass:[*]instance,
- 			 struct tracefs_hist pass:[*]hist,
- 			 enum tracefs_hist_command command);
- 
-+const char *tracefs_hist_get_name(struct tracefs_hist pass:[*]hist);
-+
-+const char *tracefs_hist_get_event(struct tracefs_hist pass:[*]hist);
-+
-+const char *tracefs_hist_get_system(struct tracefs_hist pass:[*]hist);
-+
+@@ -25,6 +26,7 @@ int tracefs_synth_snapshot(struct tracefs_synth pass:[*]synth,
+ int tracefs_synth_save(struct tracefs_synth pass:[*]synth,
+ 		       enum tracefs_synth_handler type, const char pass:[*]var,
+ 		       char pass:[**]save_fields);
++const char *tracefs_synth_get_name(struct tracefs_synth pass:[*]synth);
  --
  
  DESCRIPTION
-@@ -229,12 +236,27 @@ instead of showing the number, show the name of the running task.
- *TRACEFS_HIST_KEY_USECS* for use with "common_timestamp" or TRACEFS_HIST_TIMESTAMP,
- in which case it will show the timestamp in microseconds instead of nanoseconds.
+@@ -87,9 +89,15 @@ then saven the given _save_fields_ list. The fields will be stored in the histog
+ "hist" file of the event that can be retrieved with *tracefs_event_file_read*(3).
+ _var_ changes. _var_ must be one of the _name_ elements used in *tracefs_synth_add_end_field*(3).
  
-+*tracefs_hist_get_name*() returns the name of the histogram or NULL on error.
-+The returned string belongs to the histogram object and is freed with the histogram
-+by *tracefs_hist_free*().
++*tracefs_synth_get_name*() returns the name of the synthetic event or NULL on error.
++The returned string belongs to the synth event object and is freed with the event
++by *tracefs_synth_free*().
 +
-+*tracefs_hist_get_event*() returns the event name of the histogram or NULL on error.
-+The returned string belongs to the histogram object and is freed with the histogram
-+by *tracefs_hist_free*().
-+
-+*tracefs_hist_get_system*() returns the system name of the histogram or NULL on error.
-+The returned string belongs to the histogram object and is freed with the histogram
-+by *tracefs_hist_free*().
-+
- 
  RETURN VALUE
  ------------
- *tracefs_hist_alloc_nd*() returns an allocated histogram descriptor which must
- be freed by *tracefs_hist_free*() or NULL on error.
- 
-+*tracefs_hist_get_name*(), *tracefs_hist_get_event*() and *tracefs_hist_get_system*()
-+return strings owned by the histogram object.
+-Returns zero on success or -1 on error.
++*tracefs_synth_get_name*() returns a string owned by the synth event object.
 +
- All the other functions return zero on success or -1 on error.
++All other functions return zero on success or -1 on error.
  
- If *tracefs_hist_start*() returns an error, a message may be displayed
+ ERRORS
+ ------
 diff --git a/include/tracefs.h b/include/tracefs.h
-index 3ac3d9c..b874d3f 100644
+index b874d3f..967690f 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
-@@ -354,9 +354,9 @@ struct tracefs_hist *
- tracefs_hist_alloc_nd(struct tep_handle *tep,
- 		      const char *system, const char *event_name,
- 		      struct tracefs_hist_axis *axes);
--const char *tracefs_get_hist_name(struct tracefs_hist *hist);
--const char *tracefs_get_hist_event(struct tracefs_hist *hist);
--const char *tracefs_get_hist_system(struct tracefs_hist *hist);
-+const char *tracefs_hist_get_name(struct tracefs_hist *hist);
-+const char *tracefs_hist_get_event(struct tracefs_hist *hist);
-+const char *tracefs_hist_get_system(struct tracefs_hist *hist);
- int tracefs_hist_add_key(struct tracefs_hist *hist, const char *key,
- 			 enum tracefs_hist_key_type type);
- int tracefs_hist_add_value(struct tracefs_hist *hist, const char *value);
-diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index ea9e127..59ac5e4 100644
---- a/src/tracefs-hist.c
-+++ b/src/tracefs-hist.c
-@@ -41,17 +41,35 @@ struct tracefs_hist {
- 	unsigned int		filter_state;
+@@ -502,6 +502,7 @@ enum tracefs_synth_handler {
+ 	TRACEFS_SYNTH_HANDLE_CHANGE,
  };
  
--const char *tracefs_get_hist_name(struct tracefs_hist *hist)
-+/*
-+ * tracefs_hist_get_name - get the name of the histogram
-+ * @hist: The histogram to get the name for
-+ *
-+ * Returns name string owned by @hist on success, or NULL on error.
-+ */
-+const char *tracefs_hist_get_name(struct tracefs_hist *hist)
- {
- 	return hist ? hist->name : NULL;
- }
++const char *tracefs_synth_get_name(struct tracefs_synth *synth);
+ struct tracefs_synth *tracefs_synth_alloc(struct tep_handle *tep,
+ 					  const char *name,
+ 					  const char *start_system,
+diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
+index 59ac5e4..6051ecc 100644
+--- a/src/tracefs-hist.c
++++ b/src/tracefs-hist.c
+@@ -702,6 +702,17 @@ struct tracefs_synth {
+ 	int			arg_cnt;
+ };
  
--const char *tracefs_get_hist_event(struct tracefs_hist *hist)
-+/*
-+ * tracefs_hist_get_event - get the event name of the histogram
-+ * @hist: The histogram to get the event name for
++ /*
++ * tracefs_synth_get_name - get the name of the synthetic event
++ * @synth: The synthetic event to get the name for
 + *
-+ * Returns event name string owned by @hist on success, or NULL on error.
++ * Returns name string owned by @synth on success, or NULL on error.
 + */
-+const char *tracefs_hist_get_event(struct tracefs_hist *hist)
++const char *tracefs_synth_get_name(struct tracefs_synth *synth)
++{
++	return synth ? synth->name : NULL;
++}
++
+ static void action_free(struct action *action)
  {
- 	return hist ? hist->event_name : NULL;
- }
- 
--const char *tracefs_get_hist_system(struct tracefs_hist *hist)
-+/*
-+ * tracefs_hist_get_system - get the system name of the histogram
-+ * @hist: The histogram to get the system name for
-+ *
-+ * Returns system name string owned by @hist on success, or NULL on error.
-+ */
-+const char *tracefs_hist_get_system(struct tracefs_hist *hist)
- {
- 	return hist ? hist->system : NULL;
- }
+ 	free(action->handle_field);
 -- 
 2.32.0
 
