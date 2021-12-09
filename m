@@ -2,307 +2,211 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 396F4C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Dec 2021 16:40:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56EE6C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Dec 2021 17:40:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237662AbhLIQoQ (ORCPT
+        id S234578AbhLIRo2 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 9 Dec 2021 11:44:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236862AbhLIQoP (ORCPT
+        Thu, 9 Dec 2021 12:44:28 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:56712 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232038AbhLIRo2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 9 Dec 2021 11:44:15 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E17C061746
-        for <linux-trace-devel@vger.kernel.org>; Thu,  9 Dec 2021 08:40:42 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id w1so21327400edc.6
-        for <linux-trace-devel@vger.kernel.org>; Thu, 09 Dec 2021 08:40:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ErIwlhS0JS+Xpn346O/fVwtQApIwuWrQmGTDO25XP1w=;
-        b=Q0bCQRJuqwMMutmiky9fmXdsAThJtqAuu1uUICumrbP5FaJqNx6i5UBUJUhZSHBXLX
-         +txzV29ZkFVCGitaKJdq9lCIS351Az84fER/H8UyLGnZWn8eom6CFypIvTWZRK1LtJGp
-         So/xzCJuDFl0R40l04Td4emfTwaDfk9Jc6ZCe2xY5v01HBHqPOM7ekMkrFHHZSq85GQy
-         OYkA2mm9SGIGyR93r3YSTc+ArXCmOFu+3hcQGFO0bfy3MRPLcdGJ2lQtAaj+8sBOzIca
-         uEPqnvOJ8CiGkwGkf6P6ecU/Wqm7w7dVhqpDFygFwBLsbU2eq+ojAU/6w9UZ6fZWYCS2
-         bXDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ErIwlhS0JS+Xpn346O/fVwtQApIwuWrQmGTDO25XP1w=;
-        b=EtUDdWIDHof79IPYJ2rExVLLz1IMVwywSbcMaok3GDEEWvJJo8QmAf/StB6wJ3N46j
-         Qbuuw1YdxA/AjJSfaImHEZRdnF+vGQ9+DikuHSNEX4OScmKqPrKDUC1WAtxUUrXGHtWJ
-         so/fGX+1pXbSbjQr7n9YBry9BpZijWbprwonIADu5gkgVfLEikWt5jKIepgKGKi9YtnW
-         jDXpPkR54hjMDIcFILKDyvtqBRsMAGOeNwfftpNktQ3kM4RQ3K+2R0w7y/TI/Z3ZcXsi
-         pP+lE8bfxXUFcYaDfPPBmc1WeWzFzBgftI0mqLbEEO/lxAMY1jMVnjnDDWebtmRORtu9
-         xCJA==
-X-Gm-Message-State: AOAM53332w1mwV3RTsLBMTOF5f/89NyrDneMTisk+xBDRw4Qqjx6q332
-        90kpcImRnmk6PJNR2BLwovV5utMgA58=
-X-Google-Smtp-Source: ABdhPJzFTO+KzWYygi6zLmOimR1+JT/kDPXrFqSEaHqBVHFYwNeapgxfA+Dmk0KkBcukwKgHb3kLkA==
-X-Received: by 2002:a05:6402:2789:: with SMTP id b9mr29667186ede.28.1639067906690;
-        Thu, 09 Dec 2021 08:38:26 -0800 (PST)
-Received: from crow.. ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id qb21sm179060ejc.78.2021.12.09.08.38.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Dec 2021 08:38:26 -0800 (PST)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org
-Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v3] libtracefs: New APIs for getting the raw format of synth event
-Date:   Thu,  9 Dec 2021 18:38:15 +0200
-Message-Id: <20211209163815.16769-1-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 9 Dec 2021 12:44:28 -0500
+Received: from kbox (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 4B42020B7179;
+        Thu,  9 Dec 2021 09:40:54 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4B42020B7179
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1639071654;
+        bh=lG2p6R/XZTNZndeGv27NBaWgsTundpjnu/MpNLg6rZg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S3rqK/2bKDRyE/6yTZvRFfhZ6dsoNSo4MeNJ++vM0l7W+DbGy9he58+inq+tE8tKe
+         V4lEijv5RxdM7rRWYyP7zie/ModkeIxWKPqho1VhmsSk/vvgT11ja3hxvjDCAf2y9i
+         HR2b4td88SMXfR4sQZYzNQemE0nsPVOQeIf302BE=
+Date:   Thu, 9 Dec 2021 09:40:50 -0800
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     mhiramat@kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 02/13] user_events: Add minimal support for
+ trace_event into ftrace
+Message-ID: <20211209174050.GA21553@kbox>
+References: <20211201182515.2446-1-beaub@linux.microsoft.com>
+ <20211201182515.2446-3-beaub@linux.microsoft.com>
+ <20211208181905.62f8f999@gandalf.local.home>
+ <20211209005823.GA21399@kbox>
+ <20211208210336.40c7741b@yoga.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211208210336.40c7741b@yoga.local.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The following APIs are added:
-int tracefs_synth_echo_fmt(struct trace_seq *, struct tracefs_synth *)
-const char *tracefs_synth_show_event(struct tracefs_synth *)
-const char *tracefs_synth_show_start_hist(struct tracefs_synth *)
-const char *tracefs_synth_show_end_hist(struct tracefs_synth *)
+On Wed, Dec 08, 2021 at 09:03:36PM -0500, Steven Rostedt wrote:
+> On Wed, 8 Dec 2021 16:58:23 -0800
+> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> > >   
+> > > > +/*
+> > > > + * Handles the final close of the file from user mode.
+> > > > + */
+> > > > +static int user_events_release(struct inode *node, struct file
+> > > > *file) +{
+> > > > +	struct user_event_refs *refs;
+> > > > +	struct user_event *user;
+> > > > +	int i;
+> > > > +
+> > > > +	/*
+> > > > +	 * refs is protected by RCU and could in theory change
+> > > > immediately
+> > > > +	 * before this call on another core. To ensure we read
+> > > > the latest
+> > > > +	 * version of refs we acquire the RCU read lock again.
+> > > > +	 */
+> > > > +	rcu_read_lock_sched();
+> > > > +	refs = rcu_dereference_sched(file->private_data);
+> > > > +	rcu_read_unlock_sched();  
+> > > 
+> > > This still bothers me. Can another CPU call an ioctl here?  
+> > 
+> > Sorry :)
+> > 
+> > No, another CPU cannot call the ioctl on the file, since if another
+> > CPU had a reference to this file release couldn't be called.
+> 
+> OK, so it should be good, as the last fdput() will call this (and the
+> ioctl should keep that from happening until its done). But this could
+> also be done with less confusion and less paranoia if we simply take
+> the reg_mutex, as that should keep everything from changing, and we
+> wouldn't need to do any rcu_read_lock*() from the release function.
+> 
 
-The new APIs can be useful in the case whene the user wants to
-check what exactly gets passed to the kernel as definition of
-a synth event.
+Sure, could do that. This shouldn't be a fast path scenario, however
+I dislike taking global locks when not required. Happy to change this
+though.
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- Documentation/libtracefs-synth2.txt | 23 ++++++-
- include/tracefs.h                   |  5 ++
- src/tracefs-hist.c                  | 94 +++++++++++++++++++++++------
- 3 files changed, 102 insertions(+), 20 deletions(-)
+I'm guessing for less confusion and paranoia you'd want the lock held
+for the entire method call?
 
-diff --git a/Documentation/libtracefs-synth2.txt b/Documentation/libtracefs-synth2.txt
-index 569819a..e557bc9 100644
---- a/Documentation/libtracefs-synth2.txt
-+++ b/Documentation/libtracefs-synth2.txt
-@@ -5,7 +5,8 @@ NAME
- ----
- tracefs_synth_create, tracefs_synth_destroy, tracefs_synth_echo_cmd, tracefs_synth_complete,
- tracefs_synth_get_start_hist, tracefs_synth_trace, tracefs_synth_snapshot,
--tracefs_synth_get_name - Creation of synthetic events
-+tracefs_synth_get_name, tracefs_synth_echo_fmt, tracefs_synth_show_event,
-+tracefs_synth_show_start_hist, tracefs_synth_show_end_hist - Creation of synthetic events
- 
- SYNOPSIS
- --------
-@@ -27,6 +28,11 @@ int tracefs_synth_save(struct tracefs_synth pass:[*]synth,
- 		       enum tracefs_synth_handler type, const char pass:[*]var,
- 		       char pass:[**]save_fields);
- const char *tracefs_synth_get_name(struct tracefs_synth pass:[*]synth);
-+int tracefs_synth_echo_fmt(struct trace_seq pass:[*]seq, struct tracefs_synth pass:[*]synth);
-+const char *tracefs_synth_show_event(struct tracefs_synth pass:[*]synth);
-+const char *tracefs_synth_show_start_hist(struct tracefs_synth pass:[*]synth);
-+const char *tracefs_synth_show_end_hist(struct tracefs_synth pass:[*]synth);
-+
- --
- 
- DESCRIPTION
-@@ -93,9 +99,22 @@ _var_ changes. _var_ must be one of the _name_ elements used in *tracefs_synth_a
- The returned string belongs to the synth event object and is freed with the event
- by *tracefs_synth_free*().
- 
-+*tracefs_synth_show_event*() returns the format of the dynamic event used by the synthetic
-+event or NULL on error. The returned string belongs to the synth event object and is freed
-+with the event by *tracefs_synth_free*().
-+
-+*tracefs_synth_show_start_hist*() returns the format of the start histogram used by the
-+synthetic event or NULL on error. The returned string belongs to the synth event object
-+and is freed with the event by *tracefs_synth_free*().
-+
-+*tracefs_synth_show_end_hist*() returns the format of the end histogram used by the
-+synthetic event or NULL on error. The returned string belongs to the synth event object
-+and is freed with the event by *tracefs_synth_free*().
-+
- RETURN VALUE
- ------------
--*tracefs_synth_get_name*() returns a string owned by the synth event object.
-+*tracefs_synth_get_name*(), *tracefs_synth_show_event*(), *tracefs_synth_show_start_hist*()
-+and *tracefs_synth_show_end_hist*()  return a string owned by the synth event object.
- 
- All other functions return zero on success or -1 on error.
- 
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 967690f..b772f5a 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -250,6 +250,7 @@ enum tracefs_dynevent_type {
- 	TRACEFS_DYNEVENT_SYNTH		= 1 << 5,
- 	TRACEFS_DYNEVENT_MAX		= 1 << 6,
- };
-+
- int tracefs_dynevent_create(struct tracefs_dynevent *devent);
- int tracefs_dynevent_destroy(struct tracefs_dynevent *devent, bool force);
- int tracefs_dynevent_destroy_all(unsigned int types, bool force);
-@@ -550,6 +551,10 @@ int tracefs_synth_create(struct tracefs_synth *synth);
- int tracefs_synth_destroy(struct tracefs_synth *synth);
- void tracefs_synth_free(struct tracefs_synth *synth);
- int tracefs_synth_echo_cmd(struct trace_seq *seq, struct tracefs_synth *synth);
-+int tracefs_synth_echo_fmt(struct trace_seq *seq, struct tracefs_synth *synth);
-+const char *tracefs_synth_show_event(struct tracefs_synth *synth);
-+const char *tracefs_synth_show_start_hist(struct tracefs_synth *synth);
-+const char *tracefs_synth_show_end_hist(struct tracefs_synth *synth);
- 
- struct tracefs_synth *tracefs_sql(struct tep_handle *tep, const char *name,
- 				  const char *sql_buffer, char **err);
-diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index 6051ecc..f5359a5 100644
---- a/src/tracefs-hist.c
-+++ b/src/tracefs-hist.c
-@@ -683,6 +683,8 @@ struct tracefs_synth {
- 	struct action		*actions;
- 	struct action		**next_action;
- 	struct tracefs_dynevent	*dyn_event;
-+	char			*start_hist;
-+	char			*end_hist;
- 	char			*name;
- 	char			**synthetic_fields;
- 	char			**synthetic_args;
-@@ -737,6 +739,8 @@ void tracefs_synth_free(struct tracefs_synth *synth)
- 		return;
- 
- 	free(synth->name);
-+	free(synth->start_hist);
-+	free(synth->end_hist);
- 	tracefs_list_free(synth->synthetic_fields);
- 	tracefs_list_free(synth->synthetic_args);
- 	tracefs_list_free(synth->start_keys);
-@@ -1802,6 +1806,67 @@ static char *create_end_hist(struct tracefs_synth *synth)
- 	return create_actions(end_hist, synth);
- }
- 
-+/*
-+ * tracefs_synth_echo_fmt - show the raw format of a synthetic event
-+ * @seq: A trace_seq to store the format string
-+ * @synth: The synthetic event to read format from
-+ *
-+ * This shows the raw format that describes the synthetic event, including
-+ * the format of the dynamic event and the start / end histograms.
-+ *
-+ * Returns 0 on succes -1 on error.
-+ */
-+int tracefs_synth_echo_fmt(struct trace_seq *seq, struct tracefs_synth *synth)
-+{
-+	if (!synth->dyn_event)
-+		return -1;
-+
-+	trace_seq_printf(seq, "%s", synth->dyn_event->format);
-+	trace_seq_printf(seq, "\n%s", synth->start_hist);
-+	trace_seq_printf(seq, "\n%s", synth->end_hist);
-+
-+	return 0;
-+}
-+
-+/*
-+ * tracefs_synth_show_event - show the dynamic event used by a synth event
-+ * @synth: The synthetic event to read format from
-+ *
-+ * This shows the raw format of the dynamic event used by the synthetic event.
-+ *
-+ * Returns format string owned by @synth on success, or NULL on error.
-+ */
-+const char *tracefs_synth_show_event(struct tracefs_synth *synth)
-+{
-+	return synth->dyn_event ? synth->dyn_event->format : NULL;
-+}
-+
-+/*
-+ * tracefs_synth_show_start_hist - show the start histogram used by a synth event
-+ * @synth: The synthetic event to read format from
-+ *
-+ * This shows the raw format of the start histogram used by the synthetic event.
-+ *
-+ * Returns format string owned by @synth on success, or NULL on error.
-+ */
-+const char *tracefs_synth_show_start_hist(struct tracefs_synth *synth)
-+{
-+	return synth->start_hist;
-+}
-+
-+/*
-+ * tracefs_synth_show_end_hist - show the end histogram used by a synth event
-+ * @synth: The synthetic event to read format from
-+ *
-+ * This shows the raw format of the end histogram used by the synthetic event.
-+ *
-+ * Returns format string owned by @synth on success, or NULL on error.
-+ */
-+const char *tracefs_synth_show_end_hist(struct tracefs_synth *synth)
-+{
-+	return synth->end_hist;
-+}
-+
- static char *append_filter(char *hist, char *filter, unsigned int parens)
- {
- 	int i;
-@@ -1940,8 +2005,6 @@ tracefs_synth_get_start_hist(struct tracefs_synth *synth)
-  */
- int tracefs_synth_create(struct tracefs_synth *synth)
- {
--	char *start_hist = NULL;
--	char *end_hist = NULL;
- 	int ret;
- 
- 	if (!synth) {
-@@ -1962,40 +2025,35 @@ int tracefs_synth_create(struct tracefs_synth *synth)
- 	if (tracefs_dynevent_create(synth->dyn_event))
- 		return -1;
- 
--	start_hist = create_hist(synth->start_keys, synth->start_vars);
--	start_hist = append_filter(start_hist, synth->start_filter,
--				   synth->start_parens);
--	if (!start_hist)
-+	synth->start_hist = create_hist(synth->start_keys, synth->start_vars);
-+	synth->start_hist = append_filter(synth->start_hist, synth->start_filter,
-+					  synth->start_parens);
-+	if (!synth->start_hist)
- 		goto remove_synthetic;
- 
--	end_hist = create_end_hist(synth);
--	end_hist = append_filter(end_hist, synth->end_filter,
--				   synth->end_parens);
--	if (!end_hist)
-+	synth->end_hist = create_end_hist(synth);
-+	synth->end_hist = append_filter(synth->end_hist, synth->end_filter,
-+					synth->end_parens);
-+	if (!synth->end_hist)
- 		goto remove_synthetic;
- 
- 	ret = tracefs_event_file_append(synth->instance, synth->start_event->system,
- 					synth->start_event->name,
--					"trigger", start_hist);
-+					"trigger", synth->start_hist);
- 	if (ret < 0)
- 		goto remove_synthetic;
- 
- 	ret = tracefs_event_file_append(synth->instance, synth->end_event->system,
- 					synth->end_event->name,
--					"trigger", end_hist);
-+					"trigger", synth->end_hist);
- 	if (ret < 0)
- 		goto remove_start_hist;
- 
--	free(start_hist);
--	free(end_hist);
--
- 	return 0;
- 
-  remove_start_hist:
--	remove_hist(synth->instance, synth->start_event, start_hist);
-+	remove_hist(synth->instance, synth->start_event, synth->start_hist);
-  remove_synthetic:
--	free(end_hist);
--	free(start_hist);
- 	tracefs_dynevent_destroy(synth->dyn_event, false);
- 	return -1;
- }
--- 
-2.32.0
+> > 
+> > user_events_release is only called when the final reference to the
+> > file has been closed, so there cannot be another ioctl pending,
+> > starting or finishing for this file at the time it is called.
+> > 
+> > The last user mode program to call close() on the file will end up
+> > invoking user_events_release.
+> 
+> It doesn't work like that. There's only one close(). But you are
+> correct that it is protected, and that's by the fdget() and fdput()
+> that is done within the ioctl (and other) system call.
+> 
 
+Yeah, I simplified to user space. IE: fork() then close() in each
+process / task. We both understand each other now though ;)
+
+> > 
+> > The user_event_refs is only accessible via the file's private_data,
+> > which now has zero references when release is executing. This means
+> > the private_data can no longer change and the rcu deref ensures we
+> > have the latest version.
+> > 
+> > refs is per-file, so while there can be other ioctl's occurring for
+> > other files, they are completely different ref objects than the one
+> > being cleaned up in the release of the file, it's not shared outside
+> > of this file lifetime, which has now ended.
+> 
+> Right, but I'm still paranoid ;-)
+> 
+> > 
+> > > 
+> > >   user_events_ioctl_reg() {
+> > >     user_events_ref_add() {
+> > >       refs = rcu_dereference_protected(file->private_data, ..);
+> > >       new_refs = kzalloc(size, GFP_KERNEL);
+> > >       rcu_assign_pointer(file->private_data, new_refs);
+> > >       if (refs)
+> > >         kfree_rcu(refs, rcu);
+> > > 
+> > > refs now freed.
+> > >   
+> > 
+> > If user_events_ioctl is executing for that same file,
+> > user_events_release could not have been called due to the file being
+> > in use to issue the ioctl.
+> 
+> 
+> The only thing protecting against this is the fdget/put logic in the
+> system calls.
+> 
+
+Yes, however, it is protected.
+
+> > 
+> > > > +
+> > > > +	if (!refs)
+> > > > +		goto out;
+> > > > +
+> > > > +	/*
+> > > > +	 * Do not need RCU while enumerating the events that
+> > > > were used.
+> > > > +	 * The lifetime of refs has reached an end, it's tied to
+> > > > this file.
+> > > > +	 * The underlying user_events are ref counted, and
+> > > > cannot be freed.
+> > > > +	 * After this decrement, the user_events may be freed
+> > > > elsewhere.
+> > > > +	 */
+> > > > +	for (i = 0; i < refs->count; ++i) {  
+> > > 
+> > > Fault on refs->count
+> > > 
+> > > ??  
+> > 
+> > refs after rcu_dereference is checked for null before accessing.
+> > 
+> > refs cannot be changed when release is being executed, since that
+> > would mean the ioctl ran without a file reference (not sure how that
+> > could happen).
+> > 
+> > This is why it's important that release get the latest version of
+> > refs, an ioctl could have JUST happened before the final close() in
+> > user mode, and if it jumped CPUs we could (in theory) get an old
+> > value. If we got an old value, then yes, the fault could occur.
+> > 
+> > This code uses the file ops release method as a final sync point to
+> > clean up everything for that file only after there are no more
+> > references to it at all, so nobody can do this kind of thing.
+> > 
+> > Is there some case I am missing where an ioctl on a file can be
+> > performed without a reference to that file?
+> 
+> 
+> Well, the ioctl can be called as the close happens, but it's the
+> internal working of fdget/put that protects it. If the ioctl is called
+> at the same time as the close, the fdget in the ioctl will keep the
+> close from calling the release. And as soon as the ioctl is finished,
+> it will call the fdput() which then calls the release logic.
+> 
+> > 
+> > Are you worried about a malicious user calling close on the file and
+> > then immediately issuing an ioctl on the now closed file?
+> > 
+> > If so, wouldn't ioctl just reject that file reference being used as
+> > not in the processes file table / invalid and not let the ioctl go
+> > through?
+> > 
+> 
+> I think it seems less confusing and saner to just use the mutex. It's
+> not a fast path is it?
+> 
+> -- Steve
+
+No, this is not a fast path, and I don't have a problem moving to a
+mutex if you feel that is better. I've likely become too close to this
+code to know when things are confusing for others.
+
+Thanks,
+-Beau
