@@ -2,64 +2,65 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58673C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Dec 2021 17:29:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9D4FC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Dec 2021 17:43:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232216AbhLJRdE (ORCPT
+        id S242037AbhLJRqo (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 10 Dec 2021 12:33:04 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:33208 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233777AbhLJRdE (ORCPT
+        Fri, 10 Dec 2021 12:46:44 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:50000 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242020AbhLJRqo (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 Dec 2021 12:33:04 -0500
-Received: from kbox (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id F091220B7179;
-        Fri, 10 Dec 2021 09:29:28 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F091220B7179
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1639157369;
-        bh=n3zFD77fsu2iBIM9YqHc629nKk39GrFY63PHyYmw85U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UXUw2uq6CrIM+oPL4h8hzEASkQNrmoEYocHhGK+ljy7/Vw1CIE2bMPHb7sbDKQpmm
-         SC0Flcxh6cPE2jEyHn6NOPhydzbl3kD3SoIREsJyWR8Rp/Rd+7fhEmWCKzb1Rwx0lB
-         pU3TenAQJtcV9T/nww8zyPe/N0T3iU3OGietbY5o=
-Date:   Fri, 10 Dec 2021 09:29:23 -0800
-From:   Beau Belgrave <beaub@linux.microsoft.com>
+        Fri, 10 Dec 2021 12:46:44 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 273D9B8294A;
+        Fri, 10 Dec 2021 17:43:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CCACC00446;
+        Fri, 10 Dec 2021 17:43:06 +0000 (UTC)
+Date:   Fri, 10 Dec 2021 12:43:05 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 01/13] user_events: Add UABI header for user access to
- user_events
-Message-ID: <20211210172923.GA2131@kbox>
+Cc:     Beau Belgrave <beaub@linux.microsoft.com>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 02/13] user_events: Add minimal support for
+ trace_event into ftrace
+Message-ID: <20211210124305.24acd61f@gandalf.local.home>
+In-Reply-To: <20211210194358.e590d49a1620df7345f9f679@kernel.org>
 References: <20211209223210.1818-1-beaub@linux.microsoft.com>
- <20211209223210.1818-2-beaub@linux.microsoft.com>
- <20211210223017.2f9254f056e8e1b5404bc409@kernel.org>
+        <20211209223210.1818-3-beaub@linux.microsoft.com>
+        <20211210194358.e590d49a1620df7345f9f679@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211210223017.2f9254f056e8e1b5404bc409@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Dec 10, 2021 at 10:30:17PM +0900, Masami Hiramatsu wrote:
-> On Thu,  9 Dec 2021 14:31:58 -0800
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> 
-> > Define the basic structs and ioctl commands that allow user processes to
-> > interact with user_events.
-> > 
-> 
-> IMHO, a basic part of this should be integrated with the [2/13] and
-> other parts are incrementaly added with the patch which actually
-> use that data structure or definition, so that it can be bisected
-> cleanly.
-> (because there is no reason to introduce only this header.)
-> 
+On Fri, 10 Dec 2021 19:43:58 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Sure thing.
+> > +/* Limit how long of an event name plus args within the subsystem. */
+> > +#define MAX_EVENT_DESC 512
+> > +#define EVENT_NAME(user_event) ((user_event)->tracepoint.name)
+> > +#define MAX_FIELD_ARRAY_SIZE (2 * PAGE_SIZE)  
+> 
+> I don't recommend to record the event which size is more than a page size...
+> Maybe 256 entries?
+> It is also better to limit the total size of the event and the number
+> of fields (arguments).
+> 
+> Steve, can we write such a big event data on the trace buffer?
 
-Thanks,
--Beau
+In the future yes!
+
+  https://lore.kernel.org/all/20211125175253.186422-1-tz.stoyanov@gmail.com/
+
+But it will still require some configuration changes from user space. But
+that said, if the user wants to add a larger size, then they can do so (in
+the future).
+
+-- Steve
