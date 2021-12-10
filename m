@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4390BC4332F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7B5DC43217
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Dec 2021 11:07:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233367AbhLJLKz (ORCPT
+        id S234785AbhLJLKz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 10 Dec 2021 06:10:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37410 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232478AbhLJLKy (ORCPT
+        with ESMTP id S231253AbhLJLKz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 Dec 2021 06:10:54 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1324C061746
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 03:07:19 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id o20so29072101eds.10
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 03:07:19 -0800 (PST)
+        Fri, 10 Dec 2021 06:10:55 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491C4C0617A2
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 03:07:20 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id x10so11424806edd.5
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 03:07:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CyGhK1rKr7dRVG5bk87ua4bXrNSMqVKfo5ItuyT1ffc=;
-        b=q4zia7IV7r7NjtEDdVcP5pJE/I7O/i/aiuURSmGThDo7ElMA7W7PZ0U6X8SXe9Wl6K
-         zny86T+RgQ6awev7YqOTISajxAywqoQumz4h0ky5GV/+/WqvIMU/tzbMQL7Bq/iHTeF4
-         +KlY1vGQB+ZKczLBXezszy7Iw5J3VPYn8Ule3FDx5KZtn8MaYiRS5ujuNzRso+qZ++YR
-         Ak88NjYfDk3Xq5OdfCM1m8JFAQVNEBWgcCr4Uz0NWcMuLBC0Rwsb2RXikpTsdbfnC/2v
-         4Ge+iam7Y8bdQCO2LJaTCCqTIj9QL8q26KGnv/mvoY9ajBe9oUPCsPKcXbk21aq7FYAu
-         cjDg==
+        bh=rl7x5Hf7Sfp7pv6816hpBa6/ZNRh80ghX2VsBWK3Hz8=;
+        b=JnNZ5OSDyiDQOC3Hg2Q1O6MNHn/D9leIxlJiNLhF2rkiN0VNvAu0NXCcSz6xfYLJnD
+         nSxYdZhQouQwX1jvqtNmEdNDNuNIa41P6RLZjMdOSNLdn04xat9ZIWiiJwWGq4Kh/t70
+         xWevfzVhO7b2MgJjvRVTt4GqslteUnvwZpJairEqZ2cGkBOycZqg5Tetlpfxhp1Tkxsp
+         v4tRD0BgikHOaHjGgKBx7c1jz+Q8UvzUCIZy5B7zytRjplkvB1959vZgxw/0DJzAkfoc
+         PvffH19Nk+AgqGl2fcf21fFIJdke2+cfg/zmymJkEF2ODCYjzNdAGvWZNDvMMLmPHtL6
+         5i3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CyGhK1rKr7dRVG5bk87ua4bXrNSMqVKfo5ItuyT1ffc=;
-        b=3uyskNkasTXWwEdiqEruoZwuM6jL8e+ckQd2wlEbWtWdicXzi5EcdaNhAVGN22LBKS
-         gmBlyz4BnnUlSXkRY2kXkMOAwzyGo3ZbHe/UsBM5NrxnhD4n6n7WSaTKkEJ3gYgcZ1Tv
-         p09OlbLg+0WsIZoETqcIHU2pHfel6ahaFHI9kyxFC3OTwb3jpZeK9u8IliB1KnzN07Pc
-         UYtRB/kRqBbA6h9n6kBSxM/i4y4u2+pprujji9G/iGwCC1p2vKHjVTVRLy4u0eH7p+Hf
-         Oj2GGIIPaRQLNlCM7wAWWSlX7agCNdvY4/GJ/872AOGXE7ur9YyKhXCMtmGKkfuIrr7z
-         ITGw==
-X-Gm-Message-State: AOAM532aBLKSbq4wxmHO5NLUISVxVDHIPsKjZNPbxYxMRLJYNgqw1ESw
-        CTgNrHQ1N+W0r433S0clBqqvE5u6pfk=
-X-Google-Smtp-Source: ABdhPJxstCprOPeO/It4aMhuYbb2NkSxvg/c6HC/hEyfc2g2i8ddw/TwsNqWihSAOuhwPbPrMmhFLg==
-X-Received: by 2002:a05:6402:354e:: with SMTP id f14mr37158926edd.245.1639134438432;
-        Fri, 10 Dec 2021 03:07:18 -0800 (PST)
+        bh=rl7x5Hf7Sfp7pv6816hpBa6/ZNRh80ghX2VsBWK3Hz8=;
+        b=BrSwlNg45l2q7AXJJPhXQ2qsFl/I4EnRk2wjs0qlZDgugLvmczHcW6dc1GdmJe5nEv
+         z9EYKiWd3rl1UXz0qgkV0m8+KLqqeUnJNN3uTA3nhHO4vV6s2cXESutavv1gIBHJ+srZ
+         +n0y/l4fWXmTnuECJS4mE5lKuipZSM2DC/ouq1EM+iqubbIVrxiurjy/KnMYEymwUdGw
+         O/DEtceIiVc1lCD+Kg8V95CovYEx7JZDO7c/SIbY2xEV3UaHYsZ4mKfgJ2PSd0a4ra+u
+         JgFQspjSInKuV7dIZ8Ik2AViBBHd9uonbGTRKVpCF3qOOIF9x37SDnZoviONIscofYqu
+         lxNQ==
+X-Gm-Message-State: AOAM530kG2Fujh1n3/KSewXCKfXJpE7EukQM+CJ31Zr343xi3wV0E5A3
+        Oi4un7ehQYcjbjno2LK8EDxk77YRSBQ=
+X-Google-Smtp-Source: ABdhPJytg4afkBrqeWDFySEoWLkkuuxx/czmFNkJb/TyimSBxAwWNH/4gQQfF9E5QRLH3Kr5WSn1mQ==
+X-Received: by 2002:a17:907:ea5:: with SMTP id ho37mr24309596ejc.133.1639134437664;
+        Fri, 10 Dec 2021 03:07:17 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id w5sm1299236edc.58.2021.12.10.03.07.17
+        by smtp.gmail.com with ESMTPSA id w5sm1299236edc.58.2021.12.10.03.07.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Dec 2021 03:07:18 -0800 (PST)
+        Fri, 10 Dec 2021 03:07:17 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 3/4] tarce-cmd: Update record man page
-Date:   Fri, 10 Dec 2021 13:07:13 +0200
-Message-Id: <20211210110714.99067-4-tz.stoyanov@gmail.com>
+Subject: [PATCH v6 2/4] tarce-cmd: Man page for "trace-cmd convert"
+Date:   Fri, 10 Dec 2021 13:07:12 +0200
+Message-Id: <20211210110714.99067-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211210110714.99067-1-tz.stoyanov@gmail.com>
 References: <20211210110714.99067-1-tz.stoyanov@gmail.com>
@@ -64,23 +64,48 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Documented new arguments of the "trace-cmd record" subcommand:
- --compression
- --file-version
+Documented new "trace-cmd convert" subcommand.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- Documentation/trace-cmd/trace-cmd-record.1.txt | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ .../trace-cmd/trace-cmd-convert.1.txt         | 65 +++++++++++++++++++
+ Documentation/trace-cmd/trace-cmd.1.txt       |  4 +-
+ 2 files changed, 68 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/trace-cmd/trace-cmd-convert.1.txt
 
-diff --git a/Documentation/trace-cmd/trace-cmd-record.1.txt b/Documentation/trace-cmd/trace-cmd-record.1.txt
-index 96c27108..b3620474 100644
---- a/Documentation/trace-cmd/trace-cmd-record.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-record.1.txt
-@@ -377,6 +377,19 @@ OPTIONS
- 
-       trace-cmd record --verbose=warning
- 
+diff --git a/Documentation/trace-cmd/trace-cmd-convert.1.txt b/Documentation/trace-cmd/trace-cmd-convert.1.txt
+new file mode 100644
+index 00000000..7c13cf3d
+--- /dev/null
++++ b/Documentation/trace-cmd/trace-cmd-convert.1.txt
+@@ -0,0 +1,65 @@
++TRACE-CMD-CONVERT(1)
++===================
++
++NAME
++----
++trace-cmd-convert - convert trace files
++
++SYNOPSIS
++--------
++*trace-cmd convert* ['OPTIONS'] ['output-file']
++
++DESCRIPTION
++-----------
++The trace-cmd(1) convert command converts trace file. It reads the input file and copies the data
++into an output file. The output file may be in different format, depending on the command line
++arguments.
++
++OPTIONS
++-------
++*-i* 'input-file'::
++    By default, trace-cmd convert will read the file 'trace.dat'. But the *-i*
++    option open up the given 'input-file' instead.
++
++*-o* 'out-file'::
++    The name of the output file, this parameter is mandatory. Note, the output file may also be
++    specified as the last item on the command line.
++
 +*--file-version*::
 +    Desired version of the output file. Supported versions are 6 or 7.
 +
@@ -94,8 +119,52 @@ index 96c27108..b3620474 100644
 +    'name' - the name of the desired compression algorithms. Available algorithms can be listed with
 +    trace-cmd list -c
 +
- EXAMPLES
++*--help*::
++    Print usage information.
++
++EXAMPLES
++--------
++
++# trace-cmd convert --compression any trace_compress.dat
++
++SEE ALSO
++--------
++trace-cmd(1), trace-cmd.dat(1)
++
++AUTHOR
++------
++*Steven Rostedt* <rostedt@goodmis.org>, author of *trace-cmd*.
++*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>, author of this man page.
++
++RESOURCES
++---------
++https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
++
++COPYING
++-------
++Copyright \(C) 2021 VMware. Free use of this software is granted under
++the terms of the GNU Public License (GPL).
+diff --git a/Documentation/trace-cmd/trace-cmd.1.txt b/Documentation/trace-cmd/trace-cmd.1.txt
+index b330b4fe..27c6e973 100644
+--- a/Documentation/trace-cmd/trace-cmd.1.txt
++++ b/Documentation/trace-cmd/trace-cmd.1.txt
+@@ -58,6 +58,8 @@ COMMANDS
+   check-events - parse format strings for all trace events and return
+                  whether all formats are parseable
+ 
++  convert   - convert trace files
++
+ OPTIONS
+ -------
+ 
+@@ -70,7 +72,7 @@ SEE ALSO
  --------
+ trace-cmd-record(1), trace-cmd-report(1), trace-cmd-hist(1), trace-cmd-start(1),
+ trace-cmd-stop(1), trace-cmd-extract(1), trace-cmd-reset(1),
+-trace-cmd-restore(1), trace-cmd-stack(1),
++trace-cmd-restore(1), trace-cmd-stack(1), trace-cmd-convert(1),
+ trace-cmd-split(1), trace-cmd-list(1), trace-cmd-listen(1),
+ trace-cmd.dat(5), trace-cmd-check-events(1) trace-cmd-stat(1)
  
 -- 
 2.33.1
