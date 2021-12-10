@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56EA1C433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA780C433FE
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Dec 2021 10:54:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236949AbhLJK6a (ORCPT
+        id S234152AbhLJK6a (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 10 Dec 2021 05:58:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34418 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234152AbhLJK6a (ORCPT
+        with ESMTP id S237045AbhLJK6a (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 10 Dec 2021 05:58:30 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12189C061746
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFA9C0617A1
         for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 02:54:55 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id x10so11321320edd.5
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 02:54:54 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id z5so29157118edd.3
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 02:54:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fhN3EMHUINew41sFoQdsKAmLqqZJau9mu6Q+Il+IlwA=;
-        b=KSTx/UVaVuhU/mmuavJi7O5MNFhJIbuTEv6sLCHXjJVHBsB2vRUKSBuaAWZ5uV4Pvy
-         +vxc3FmRs+OSO5XbEK3d28U3X3WlTp/Fdu+lfk3jzRF4zkVBvSZMywTCAQxbM/QwbiQo
-         hqhoNwcv5L1sarFZDzQ3bJ/LbWciJzRm1Mpi9fGAwRqS8e3aQAfYYEvl4axrxrCGDFQd
-         gtX2262dN79+6piuzBUQE5xps02aER4b5rkVUHowIy6O0FBCiBMXgFlY9Cfmzm+pLi+8
-         frJsqJ5z6roDXkq2HEX9Lzecqgq6R6LCNOWsrdFxsdVRaYPqY6mCcyYTCo6tDjiNtDVm
-         xeBg==
+        bh=FTxbRE7J2CCNffKyRk83Aq/JpUiUJLQOQTu0Ub5Z5+8=;
+        b=Jo616RfOtLuitO/yBgT2E6aigbkdYGvKyjYEH1FPji2smqJSW5B9Zy3iJbnWEwKTGw
+         WrXRh/z/7HscQe/NloRbJxhphfuUyf1lLMz49gN0XevX24GmkLiki7g4cAiYnktaPdLR
+         7smf0huGJjzYBw2/632RlU5MMUppuEcaEP20jUyIF3jzOLLlf5ni4vR39OijDLEeB1YZ
+         YQpPv3QyJ21dvVwPEA/VxyvxS/OToQGtswhe6CYX2/OnoSvYnH+8HFPYLKVf4Ik81QSQ
+         u2bAsxifyiPN7MEqlAxdANbr4HYg3EsQ6zRG007vHe08xCv2Qh/YfXD4T00GCDEJjkfK
+         g09Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fhN3EMHUINew41sFoQdsKAmLqqZJau9mu6Q+Il+IlwA=;
-        b=w1o8qqolClSBc5ySJsEjg5geenb0GKValMMGylwVFD/lNen4Rd9OshtgZbbryT6/k7
-         qQzjwKHQvCT7vH4Yr2odtnNEN9f9PE2HR40zG1Vns8LTm54clglDrbMVmzg6BwZT+ebD
-         kDmvjBkNbfc9TaldsjdskIcdGdmSI7NaGZlK/7Pl0aD+jw0neF78yvp7/AY+RAtJFwqr
-         WVW/35jt7MMOJb6iaJsDhlD2LIJeVVyi0pgjMoGU128EHCf0ZzcPe1955HNHnZyciG+s
-         DkEZWNFeCenIgP/0mlC4k5CWgT+EiWtqFQF887TvkjTvBmj8QF1v+K8Bg0OvZ1vbAvrp
-         ud5g==
-X-Gm-Message-State: AOAM533zR7tJf1dPsXQoRmMRwvdK3Vzh5wm+BvWV/ruaustQ6HPfOTJa
-        t3znkB/q/4NS3xN6bl9pAAS45oFtgPE=
-X-Google-Smtp-Source: ABdhPJynI89wHNXqCtJ3ufV+71ifaCc/j2qKi6BtPtvXFWijeDx8K6AuRW/GYgZX/z1ud/8tIKc61A==
-X-Received: by 2002:a17:907:6e91:: with SMTP id sh17mr23743441ejc.86.1639133693248;
-        Fri, 10 Dec 2021 02:54:53 -0800 (PST)
+        bh=FTxbRE7J2CCNffKyRk83Aq/JpUiUJLQOQTu0Ub5Z5+8=;
+        b=uoAnKO+P9DYtFc0bcVUue7tj9VQfG4GQc4UlgJGZ3B42oTkrnJ2FcP/4zoHFE6EnBC
+         KEgxx6nckp105KjnilTRal+PXjUpFI0lt08I08t0hUE//xjqS6RTkI1uT2PLs9iDLQpl
+         h2kFEmUuJWhxqMf2zhs+pY8R5ce3UlL9Qn1ETyRLcQuZCLDwmGeiNx0szvv53ILmOm/m
+         Wwtoqlb2O+i+4L3DH8a9el2ur6Pub1GLJAzSu71I/cy3BamldWjpK+zMQM3EMevaqzyo
+         FRzosv1F8XVavapjVYt4ZZ5pCy/w/IEQZyW8qDiH/9lr0wvPDnEO284bMD2B9uWb0CQm
+         PQkw==
+X-Gm-Message-State: AOAM5314kBochx4ea5w6zo9WAnxIhnGa30ku+UQLLmL7hNJzvOOkywb+
+        xHPC9zLEtKaMvLCl3a7VthZmaOpa+/k=
+X-Google-Smtp-Source: ABdhPJzKhnwDE9C1Rk+u+1uzK3qoXnIZBpz9U2PsNGNvX9h7a9w6tn7YjoljW7iPHKUTI/iKDj7MSA==
+X-Received: by 2002:a17:906:9253:: with SMTP id c19mr23833726ejx.63.1639133694036;
+        Fri, 10 Dec 2021 02:54:54 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id x7sm1306314edd.28.2021.12.10.02.54.52
+        by smtp.gmail.com with ESMTPSA id x7sm1306314edd.28.2021.12.10.02.54.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Dec 2021 02:54:52 -0800 (PST)
+        Fri, 10 Dec 2021 02:54:53 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v7 03/25] trace-cmd library: New APIs to get and set version of output handler
-Date:   Fri, 10 Dec 2021 12:54:26 +0200
-Message-Id: <20211210105448.97850-4-tz.stoyanov@gmail.com>
+Subject: [PATCH v7 04/25] trace-cmd library: Add strings section in trace file version 7
+Date:   Fri, 10 Dec 2021 12:54:27 +0200
+Message-Id: <20211210105448.97850-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211210105448.97850-1-tz.stoyanov@gmail.com>
 References: <20211210105448.97850-1-tz.stoyanov@gmail.com>
@@ -64,80 +64,173 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-There are cases where the version of the file, associated with given
-output handle must be get or set. Added new APIs for such use cases:
-  tracecmd_get_out_file_version()
-  tracecmd_output_set_version()
+In the trace file metadata there are various dynamic strings. Collecting
+all these strings in a dedicated section in the file simplifies parsing
+of the metadata. The string section is added in trace files version 7,
+at the end of the file.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- .../include/private/trace-cmd-private.h       |  2 ++
- lib/trace-cmd/trace-output.c                  | 28 +++++++++++++++++++
- 2 files changed, 30 insertions(+)
+ .../include/private/trace-cmd-private.h       |  2 +
+ lib/trace-cmd/trace-output.c                  | 63 +++++++++++++++++++
+ tracecmd/trace-record.c                       |  1 +
+ 3 files changed, 66 insertions(+)
 
 diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 9ed29e10..ed25d879 100644
+index ed25d879..ed8fbf11 100644
 --- a/lib/trace-cmd/include/private/trace-cmd-private.h
 +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -280,6 +280,7 @@ int tracecmd_output_set_msg(struct tracecmd_output *handle,
- int tracecmd_output_set_trace_dir(struct tracecmd_output *handle, const char *tracing_dir);
- int tracecmd_output_set_kallsyms(struct tracecmd_output *handle, const char *kallsyms);
- int tracecmd_output_set_from_input(struct tracecmd_output *handle, struct tracecmd_input *ihandle);
-+int tracecmd_output_set_version(struct tracecmd_output *handle, int file_version);
- int tracecmd_output_write_headers(struct tracecmd_output *handle,
- 				  struct tracecmd_event_list *list);
+@@ -138,6 +138,7 @@ enum {
+ 	TRACECMD_OPTION_TIME_SHIFT,
+ 	TRACECMD_OPTION_GUEST,
+ 	TRACECMD_OPTION_TSC2NSEC,
++	TRACECMD_OPTION_STRINGS,
+ };
  
-@@ -313,6 +314,7 @@ int tracecmd_append_cpu_data(struct tracecmd_output *handle,
- int tracecmd_append_buffer_cpu_data(struct tracecmd_output *handle,
- 				    const char *name, int cpus, char * const *cpu_data_files);
- struct tracecmd_output *tracecmd_get_output_handle_fd(int fd);
-+unsigned long tracecmd_get_out_file_version(struct tracecmd_output *handle);
- 
- /* --- Reading the Fly Recorder Trace --- */
- 
+ enum {
+@@ -301,6 +302,7 @@ int tracecmd_write_buffer_info(struct tracecmd_output *handle);
+ int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus);
+ int tracecmd_write_cmdlines(struct tracecmd_output *handle);
+ int tracecmd_write_options(struct tracecmd_output *handle);
++int tracecmd_write_meta_strings(struct tracecmd_output *handle);
+ int tracecmd_append_options(struct tracecmd_output *handle);
+ void tracecmd_output_close(struct tracecmd_output *handle);
+ void tracecmd_output_free(struct tracecmd_output *handle);
 diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index 6ed4bbf0..4d165ac2 100644
+index 4d165ac2..ed505db6 100644
 --- a/lib/trace-cmd/trace-output.c
 +++ b/lib/trace-cmd/trace-output.c
-@@ -1065,6 +1065,25 @@ int tracecmd_output_set_from_input(struct tracecmd_output *handle, struct tracec
- 	return 0;
+@@ -62,6 +62,8 @@ struct tracecmd_output {
+ 	bool			quiet;
+ 	unsigned long		file_state;
+ 	unsigned long		file_version;
++	unsigned long		strings_p;
++	unsigned long		strings_offs;
+ 	size_t			options_start;
+ 	bool			big_endian;
+ 
+@@ -69,6 +71,8 @@ struct tracecmd_output {
+ 	struct list_head	buffers;
+ 	struct tracecmd_msg_handle *msg_handle;
+ 	char			*trace_clock;
++	char			*strings;
++
+ };
+ 
+ struct list_event {
+@@ -85,6 +89,8 @@ struct list_event_system {
+ 
+ #define HAS_SECTIONS(H) ((H)->file_version >= FILE_VERSION_SECTIONS)
+ 
++static int save_string_section(struct tracecmd_output *handle);
++
+ static stsize_t
+ do_write_check(struct tracecmd_output *handle, const void *data, tsize_t size)
+ {
+@@ -127,6 +133,22 @@ static unsigned long long convert_endian_8(struct tracecmd_output *handle,
+ 	return tep_read_number(handle->pevent, &val, 8);
  }
  
-+/**
-+ * tracecmd_output_set_version - Set file version of the output handle
-+ * @handle: output handle to a trace file.
-+ * @file_version: desired file version
-+ *
-+ * This API must be called before tracecmd_output_write_headers().
-+ *
-+ * Returns 0 on success, or -1 if the output file handle is not allocated or not in expected state.
-+ */
-+int tracecmd_output_set_version(struct tracecmd_output *handle, int file_version)
++static long add_string(struct tracecmd_output *handle, const char *string)
 +{
-+	if (!handle || handle->file_state != TRACECMD_FILE_ALLOCATED)
++	int size = strlen(string) + 1;
++	int pos = handle->strings_p;
++	char *strings;
++
++	strings = realloc(handle->strings, pos + size);
++	if (!strings)
 +		return -1;
-+	if (file_version < FILE_VERSION_MIN || file_version > FILE_VERSION_MAX)
-+		return -1;
-+	handle->file_version = file_version;
-+	return 0;
++	handle->strings = strings;
++	memcpy(handle->strings + pos, string, size);
++	handle->strings_p += size;
++
++	return handle->strings_offs + pos;
 +}
 +
  /**
-  * output_write_init - Write the initial data into the trace file
-  * @handle: output handle to a trace file.
-@@ -1880,3 +1899,12 @@ __hidden bool check_out_state(struct tracecmd_output *handle, int new_state)
- {
- 	return check_file_state(handle->file_version, handle->file_state, new_state);
+  * tracecmd_set_quiet - Set if to print output to the screen
+  * @quiet: If non zero, print no output to the screen
+@@ -185,6 +207,7 @@ void tracecmd_output_free(struct tracecmd_output *handle)
+ 		free(option);
+ 	}
+ 
++	free(handle->strings);
+ 	free(handle->trace_clock);
+ 	free(handle);
  }
+@@ -194,6 +217,11 @@ void tracecmd_output_close(struct tracecmd_output *handle)
+ 	if (!handle)
+ 		return;
+ 
++	if (handle->file_version >= FILE_VERSION_SECTIONS) {
++		/* write strings section */
++		save_string_section(handle);
++	}
 +
-+/**
-+ * tracecmd_get_out_file_version - return the trace.dat file version
-+ * @handle: output handle for the trace.dat file
-+ */
-+unsigned long tracecmd_get_out_file_version(struct tracecmd_output *handle)
+ 	if (handle->fd >= 0) {
+ 		close(handle->fd);
+ 		handle->fd = -1;
+@@ -332,6 +360,32 @@ int tracecmd_ftrace_enable(int set)
+ 	return ret;
+ }
+ 
++static int save_string_section(struct tracecmd_output *handle)
 +{
-+	return handle->file_version;
++	if (!handle->strings || !handle->strings_p)
++		return 0;
++
++	if (!check_out_state(handle, TRACECMD_OPTION_STRINGS)) {
++		tracecmd_warning("Cannot write strings, unexpected state 0x%X",
++				 handle->file_state);
++		return -1;
++	}
++
++	if (do_write_check(handle, handle->strings, handle->strings_p))
++		goto error;
++
++	handle->strings_offs += handle->strings_p;
++	free(handle->strings);
++	handle->strings = NULL;
++	handle->strings_p = 0;
++	handle->file_state = TRACECMD_OPTION_STRINGS;
++	return 0;
++
++error:
++	return -1;
 +}
++
++
+ static int read_header_files(struct tracecmd_output *handle)
+ {
+ 	tsize_t size, check_size, endian8;
+@@ -1328,6 +1382,15 @@ int tracecmd_write_options(struct tracecmd_output *handle)
+ 	return 0;
+ }
+ 
++int tracecmd_write_meta_strings(struct tracecmd_output *handle)
++{
++	if (!HAS_SECTIONS(handle))
++		return 0;
++
++	return save_string_section(handle);
++}
++
++
+ int tracecmd_append_options(struct tracecmd_output *handle)
+ {
+ 	struct tracecmd_option *options;
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 7b2b59bb..f599610e 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -4093,6 +4093,7 @@ static void setup_agent(struct buffer_instance *instance,
+ 	tracecmd_write_cmdlines(network_handle);
+ 	tracecmd_write_cpus(network_handle, instance->cpu_count);
+ 	tracecmd_write_options(network_handle);
++	tracecmd_write_meta_strings(network_handle);
+ 	tracecmd_msg_finish_sending_data(instance->msg_handle);
+ 	instance->network_handle = network_handle;
+ }
 -- 
 2.33.1
 
