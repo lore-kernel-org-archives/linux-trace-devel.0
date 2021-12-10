@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D44CDC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Dec 2021 10:59:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8331BC433FE
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Dec 2021 10:59:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240113AbhLJLD2 (ORCPT
+        id S240117AbhLJLD2 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 10 Dec 2021 06:03:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35612 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237285AbhLJLD1 (ORCPT
+        with ESMTP id S237285AbhLJLD2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 Dec 2021 06:03:27 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869B2C0617A1
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 02:59:52 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id y13so28282529edd.13
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 02:59:52 -0800 (PST)
+        Fri, 10 Dec 2021 06:03:28 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C25C061746
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 02:59:53 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id y12so28104475eda.12
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 02:59:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qAQrCfQ7XX2f+uDKVEsDU5jZpBO8BjHGndI47OL11NA=;
-        b=i1M+NZ8aE50+sm+ZXBD9RRNauH4LA/Mi8Ji2eU3w3kTbBVgJ/DUwMDJM0W5LuNBflD
-         a0GRsVIkXwVkivpHPtFPPzrgS7Yq6ZEPRcQQr+9uh6NU19g1uCL/s4UPPxqVTUG+lC2P
-         er667/s8+YeZYQsLSQFmyhJseAC6L1QQ6vN0xlv1ShjbUVJxTRftWAzjQ37eqOUoC698
-         DBn4F/wSBzVdxuj/2kBmGxLPKcTAcctNOSAeAcWAaq/+UO4KTwjO/7XlT2soLAaNwCPJ
-         I5f4y/Q2mloJ8UPNKmzGb4dELf8BmNmTfR7oLUGCfB9E060+7ZdadI5OjaLdEmO2Do9g
-         gRFg==
+        bh=jmb32HJXyhXWwu8C99kX/Txjg2qdJIps23LRbBGkBAQ=;
+        b=Wpumoi5Y+Q7G3/I7p4KDqXL5FqjimlquiaE6XH/yHatt+3X0iubApvueht2p9tTzgc
+         ByngjKKZ+XyeALTDaN0RuoEVJFdK2/nDDHPB9aNBzhGpogPt1TmeVnCSCj85SCQJ/lK1
+         cTRq0Mf0ncs3X28rbw0NXAyhLv9iNCKho409itafY807gZCM+vYKckEKtb+G2DmXZLsx
+         edCVE8QnzTNcrGMlQgyTQmUeu6f4LBRPgvLCT9+pqzL34cKLbuljskL++gnf522X2jc7
+         uCCTpNjvS0W+jx4p57wL7BqbumIC7dIbwFrIo0ZOAwa3K6J64GbRfE3+hcr3oN5KWQmU
+         F+vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qAQrCfQ7XX2f+uDKVEsDU5jZpBO8BjHGndI47OL11NA=;
-        b=xfth95Y5pmnftCzhL/1k9mMGCWclpMIbFay7ce21THZa6SH8iWbgKC3rp4Tljj+fFE
-         NjMVC2EL9eb1RCfEMwbi/jSPMK3v4vmY3i7Dy95VPGfwrXQZFfS021jzJtZlvvphrtJh
-         VtK1QT/51YuAvtFnjR1l5EKX0ooPWXeXRSna2qV2djc/iAO4tUFluVV95+5LxxP5KUOh
-         NSAQ1CAZMgkn3pwEWb12zj9Gpn362Di/RBLwbLBOXdJWOnvIGChl9xGsykJDBeY+O+8L
-         bHezzC1IvwQO8oTtdS3AzOJLZa/TI9BUHIXfMaK2uDd3XcjDq0/C8aCkkoGLao4l+QTq
-         k0ZQ==
-X-Gm-Message-State: AOAM530us8HTmAurui18ua0KeaM2S0iKIXLU7Fo6jqQetJy4UvvQo9vU
-        j+6rW0h+twsdwf055H2ZS0D8R40Qz7I=
-X-Google-Smtp-Source: ABdhPJwaSptISys4ze9oFpcFSppejJNft24jm/0ssb9nXylNCXOGkDTrBdhfdD/DxE8JfPRI+IfUQg==
-X-Received: by 2002:a17:907:16ac:: with SMTP id hc44mr22182544ejc.363.1639133991091;
+        bh=jmb32HJXyhXWwu8C99kX/Txjg2qdJIps23LRbBGkBAQ=;
+        b=Opgi4c306X1jsxpjKIyapdbScZwWhh4wYrxXQZfsHtPIpo6Ekhmyszv+IlBBR2f8vR
+         tw/F34AkU01CVLGNHU/jRZjxteSX/cuMK4RIlEKJeKGnUyl96JAkLbbfuFC+qU7EV1Ca
+         WhicpKOLKfFXYvwhRyE67VAbqfX1WKVatjiOmX8ro+Jv4vrEBHaqWrcKbhFu1eYtEUNV
+         rUiwC83AR9qRVq6+BEcI7lwnJrpaG0t4rkGuOoMmTlZ9nG7PDRDFhnSnkHgQhR5SCzT/
+         LDmCODvddpgxe76ZJ356NAiBQ6zlwfWavWc6Dwbs6daKr/0I8rZBQqasU0BMR5nXbFOJ
+         yaMA==
+X-Gm-Message-State: AOAM531ysEaTDYV9apiZL8xbj7V96i5qovNYaDpntOtFTjJp7mHWLIbe
+        10oraw/ArNy+ZwetZFEJ+QPzem6LsCU=
+X-Google-Smtp-Source: ABdhPJyL4NnY7C7St3Vs3ctiSAaExf13oleJ461MrzJYHpwWL+HFnhUADEsqCL4s9FSgvEhaQ5t8Hg==
+X-Received: by 2002:a17:906:ae83:: with SMTP id md3mr23187591ejb.31.1639133991918;
         Fri, 10 Dec 2021 02:59:51 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id j17sm1320379edj.0.2021.12.10.02.59.50
+        by smtp.gmail.com with ESMTPSA id j17sm1320379edj.0.2021.12.10.02.59.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Dec 2021 02:59:50 -0800 (PST)
+        Fri, 10 Dec 2021 02:59:51 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 13/20] trace-cmd library: Initialize CPU data decompression logic
-Date:   Fri, 10 Dec 2021 12:59:31 +0200
-Message-Id: <20211210105938.98250-14-tz.stoyanov@gmail.com>
+Subject: [PATCH v6 14/20] trace-cmd library: Add logic for in-memory decompression
+Date:   Fri, 10 Dec 2021 12:59:32 +0200
+Message-Id: <20211210105938.98250-15-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211210105938.98250-1-tz.stoyanov@gmail.com>
 References: <20211210105938.98250-1-tz.stoyanov@gmail.com>
@@ -64,131 +64,169 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On CPU data initialization stage, initialize decompression context for
-both in-memory and temporary file decompression logics.
+There are two approaches to read compressed trace data:
+ - use a temporary file to decompress entire trace data before reading
+ - use in-memory decompression of requested trace data chunk only
+In-memory decompression seems to be more efficient, but selecting which
+approach to use depends in the use case.
+A compression chunk consists of multiple trace pages, that's why a small
+cache with uncompressed chunks is implemented. The chunk stays in the
+cache until there are pages which have reference to it.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 72 +++++++++++++++++++++++++++++++++++--
- 1 file changed, 69 insertions(+), 3 deletions(-)
+ lib/trace-cmd/trace-input.c | 110 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 110 insertions(+)
 
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index dbfd881b..7ebf8b20 100644
+index 7ebf8b20..f151954a 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -1264,6 +1264,7 @@ static void *allocate_page_map(struct tracecmd_input *handle,
- 	off64_t map_offset;
- 	void *map;
- 	int ret;
-+	int fd;
+@@ -29,6 +29,9 @@
  
- 	if (handle->read_page) {
- 		map = malloc(handle->page_size);
-@@ -1303,12 +1304,15 @@ static void *allocate_page_map(struct tracecmd_input *handle,
- 		map_size -= map_offset + map_size -
- 			(cpu_data->file_offset + cpu_data->file_size);
+ #define COMMIT_MASK ((1 << 27) - 1)
  
-+	if (cpu_data->compress.fd >= 0)
-+		fd = cpu_data->compress.fd;
-+	else
-+		fd = handle->fd;
-  again:
- 	page_map->size = map_size;
- 	page_map->offset = map_offset;
++/* force uncompressing in memory */
++#define INMEMORY_DECOMPRESS
++
+ /* for debugging read instead of mmap */
+ static int force_read = 0;
  
--	page_map->map = mmap(NULL, map_size, PROT_READ, MAP_PRIVATE,
--			 handle->fd, map_offset);
-+	page_map->map = mmap(NULL, map_size, PROT_READ, MAP_PRIVATE, fd, map_offset);
- 
- 	if (page_map->map == MAP_FAILED) {
- 		/* Try a smaller map */
-@@ -2496,16 +2500,76 @@ tracecmd_read_prev(struct tracecmd_input *handle, struct tep_record *record)
- 	/* Not reached */
+@@ -1255,6 +1258,105 @@ static void free_page_map(struct page_map *page_map)
+ 	free(page_map);
  }
  
--static int init_cpu(struct tracecmd_input *handle, int cpu)
-+static int init_cpu_zfile(struct tracecmd_input *handle, int cpu)
++#define CHUNK_CHECK_OFFSET(C, O)	((O) >= (C)->offset && (O) < ((C)->offset + (C)->size))
++static struct tracecmd_compress_chunk *get_zchunk(struct cpu_data *cpu, off64_t offset)
 +{
-+	struct cpu_data *cpu_data;
-+	unsigned long long size;
-+	off64_t offset;
++	struct cpu_zdata *cpuz = &cpu->compress;
++	int min, mid, max;
 +
-+	cpu_data = &handle->cpu_data[cpu];
-+	offset = lseek64(handle->fd, 0, SEEK_CUR);
-+	if (lseek64(handle->fd, cpu_data->file_offset, SEEK_SET) == (off_t)-1)
-+		return -1;
-+	strcpy(cpu_data->compress.file, COMPR_TEMP_FILE);
-+	cpu_data->compress.fd = mkstemp(cpu_data->compress.file);
-+	if (cpu_data->compress.fd < 0)
-+		return -1;
-+	if (tracecmd_uncompress_copy_to(handle->compress, cpu_data->compress.fd, NULL, &size))
-+		return -1;
-+	if (lseek64(handle->fd, offset, SEEK_SET) == (off_t)-1)
-+		return -1;
-+	cpu_data->offset = 0;
-+	cpu_data->file_offset = 0;
-+	cpu_data->file_size = size;
-+	cpu_data->size = size;
-+	return 0;
++	if (!cpuz->chunks)
++		return NULL;
++	if (offset > (cpuz->chunks[cpuz->count - 1].offset + cpuz->chunks[cpuz->count - 1].size))
++		return NULL;
++
++	/* check if the requested offset is in the last requested chunk or in the next chunk */
++	if (CHUNK_CHECK_OFFSET(cpuz->chunks + cpuz->last_chunk, offset))
++		return cpuz->chunks + cpuz->last_chunk;
++	cpuz->last_chunk++;
++	if (cpuz->last_chunk < cpuz->count &&
++	    CHUNK_CHECK_OFFSET(cpuz->chunks + cpuz->last_chunk, offset))
++		return cpuz->chunks + cpuz->last_chunk;
++
++	/* do a binary search to find the chunk holding the given offset */
++	min = 0;
++	max = cpuz->count - 1;
++	mid = (min + max)/2;
++	while (min <= max) {
++		if (offset < cpuz->chunks[mid].offset)
++			max = mid - 1;
++		else if (offset > (cpuz->chunks[mid].offset + cpuz->chunks[mid].size))
++			min = mid + 1;
++		else
++			break;
++		mid = (min + max)/2;
++	}
++	cpuz->last_chunk = mid;
++	return cpuz->chunks + mid;
 +}
 +
-+static int init_cpu_zpage(struct tracecmd_input *handle, int cpu)
- {
- 	struct cpu_data *cpu_data = &handle->cpu_data[cpu];
-+	int count;
- 	int i;
- 
-+	if (lseek64(handle->fd, cpu_data->file_offset, SEEK_SET) == (off_t)-1)
-+		return -1;
++static void free_zpage(struct cpu_data *cpu_data, void *map)
++{
++	struct zchunk_cache *cache;
 +
-+	count = tracecmd_load_chunks_info(handle->compress, &cpu_data->compress.chunks);
-+	if (count < 0)
-+		return -1;
-+	cpu_data->compress.count = count;
-+	cpu_data->compress.last_chunk = 0;
++	list_for_each_entry(cache, &cpu_data->compress.cache, list) {
++		if (map <= cache->map && map > (cache->map + cache->chunk->size))
++			goto found;
++	}
++	return;
 +
-+	cpu_data->file_offset = 0;
-+	cpu_data->file_size = 0;
-+	for (i = 0; i < count; i++)
-+		cpu_data->file_size += cpu_data->compress.chunks[i].size;
- 	cpu_data->offset = cpu_data->file_offset;
- 	cpu_data->size = cpu_data->file_size;
-+	return 0;
++found:
++	cache->ref--;
++	if (cache->ref)
++		return;
++	list_del(&cache->list);
++	free(cache->map);
++	free(cache);
 +}
 +
-+static int init_cpu(struct tracecmd_input *handle, int cpu)
++static void *read_zpage(struct tracecmd_input *handle, int cpu, off64_t offset)
 +{
 +	struct cpu_data *cpu_data = &handle->cpu_data[cpu];
-+	int ret;
-+	int i;
++	struct tracecmd_compress_chunk *chunk;
++	struct zchunk_cache *cache;
++	void *map = NULL;
++	int pindex;
++	int size;
 +
-+	if (handle->cpu_compressed && cpu_data->file_size > 0) {
-+		if (handle->read_zpage)
-+			ret = init_cpu_zpage(handle, cpu);
-+		else
-+			ret = init_cpu_zfile(handle, cpu);
-+		if (ret)
-+			return ret;
-+	} else {
-+		cpu_data->offset = cpu_data->file_offset;
-+		cpu_data->size = cpu_data->file_size;
++	/* Look in the cache of already loaded chunks */
++	list_for_each_entry(cache, &cpu_data->compress.cache, list) {
++		if (CHUNK_CHECK_OFFSET(cache->chunk, offset)) {
++			cache->ref++;
++			goto out;
++		}
 +	}
- 	cpu_data->timestamp = 0;
++
++	chunk =  get_zchunk(cpu_data, offset);
++	if (!chunk)
++		return NULL;
++	size = handle->page_size > chunk->size ? handle->page_size : chunk->size;
++	map = malloc(size);
++	if (!map)
++		return NULL;
++	if (tracecmd_uncompress_chunk(handle->compress, chunk, map) < 0)
++		goto error;
++
++	cache = calloc(1, sizeof(struct zchunk_cache));
++	if (!cache)
++		goto error;
++	cache->ref = 1;
++	cache->chunk = chunk;
++	cache->map = map;
++	list_add(&cache->list, &cpu_data->compress.cache);
++
++	/* a chunk can hold multiple pages, get the requested one */
++out:
++	pindex = (offset - cache->chunk->offset) / handle->page_size;
++	return cache->map + (pindex * handle->page_size);
++error:
++	free(map);
++	return NULL;
++}
++
+ static void *allocate_page_map(struct tracecmd_input *handle,
+ 			       struct page *page, int cpu, off64_t offset)
+ {
+@@ -1266,6 +1368,9 @@ static void *allocate_page_map(struct tracecmd_input *handle,
+ 	int ret;
+ 	int fd;
  
- 	list_head_init(&cpu_data->page_maps);
-+	list_head_init(&cpu_data->compress.cache);
++	if (handle->cpu_compressed && handle->read_zpage)
++		return read_zpage(handle, cpu, offset);
++
+ 	if (handle->read_page) {
+ 		map = malloc(handle->page_size);
+ 		if (!map)
+@@ -1408,6 +1513,8 @@ static void __free_page(struct tracecmd_input *handle, struct page *page)
  
- 	if (!cpu_data->size) {
- 		printf("CPU %d is empty\n", cpu);
-@@ -3382,6 +3446,8 @@ static int init_buffer_cpu_data(struct tracecmd_input *handle, struct input_buff
- 		return -1;
- 	if (read_section_header(handle, &id, &flags, NULL, NULL))
- 		return -1;
-+	if (flags & TRACECMD_SEC_FL_COMPRESS)
-+		handle->cpu_compressed = true;
- 	if (buffer->latency) {
- 		handle->file_state = TRACECMD_FILE_CPU_LATENCY;
- 		return init_latency_data(handle) == 0 ? 1 : -1;
+ 	if (handle->read_page)
+ 		free(page->map);
++	else if (handle->read_zpage)
++		free_zpage(cpu_data, page->map);
+ 	else
+ 		free_page_map(page->page_map);
+ 
+@@ -3943,6 +4050,9 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
+ 	/* By default, use usecs, unless told otherwise */
+ 	handle->flags |= TRACECMD_FL_IN_USECS;
+ 
++#ifdef INMEMORY_DECOMPRESS
++	handle->read_zpage = 1;
++#endif
+ 	if (do_read_check(handle, buf, 3))
+ 		goto failed_read;
+ 
 -- 
 2.33.1
 
