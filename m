@@ -2,365 +2,215 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20AF2C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Dec 2021 18:03:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF5E1C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Dec 2021 18:11:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235392AbhLJSHb (ORCPT
+        id S241097AbhLJSPc convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 10 Dec 2021 13:07:31 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:37512 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245071AbhLJSHb (ORCPT
+        Fri, 10 Dec 2021 13:15:32 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:43201 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238186AbhLJSPb (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 Dec 2021 13:07:31 -0500
-Received: from kbox (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 0CDCE20B717A;
-        Fri, 10 Dec 2021 10:03:56 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0CDCE20B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1639159436;
-        bh=OaHMFQmPJpG/dqW0wHAtvBdJkEwYBKMkEh8ljXqiJKU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PTd2u1XVEynL3EppoYxN/7eU87QMRa2OCtElPMJL7JUevouhadRUfqqh338OtzKb3
-         1oqXg3Ulz3t4DnGjPChgu1U8lPexDGAx+fSwH4sMV3fAL7TUNwEFRCFb1SkieuSY4n
-         2Osl7ldmCn5EPzkwnUTWz//TYfayUUfwuw6nyUPQ=
-Date:   Fri, 10 Dec 2021 10:03:54 -0800
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 02/13] user_events: Add minimal support for
- trace_event into ftrace
-Message-ID: <20211210180354.GB2131@kbox>
-References: <20211209223210.1818-1-beaub@linux.microsoft.com>
- <20211209223210.1818-3-beaub@linux.microsoft.com>
- <20211210194358.e590d49a1620df7345f9f679@kernel.org>
+        Fri, 10 Dec 2021 13:15:31 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-503-g7OqnpiqNHCFDHtPMzzPrA-1; Fri, 10 Dec 2021 13:11:52 -0500
+X-MC-Unique: g7OqnpiqNHCFDHtPMzzPrA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A9C1E344E2;
+        Fri, 10 Dec 2021 18:11:50 +0000 (UTC)
+Received: from x1.com (unknown [10.22.16.188])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CAA1C60CC3;
+        Fri, 10 Dec 2021 18:11:38 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tao Zhou <tao.zhou@linux.dev>
+Subject: [PATCH V9 00/14] RTLA: An interface for osnoise/timerlat tracers
+Date:   Fri, 10 Dec 2021 19:11:19 +0100
+Message-Id: <cover.1639158831.git.bristot@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211210194358.e590d49a1620df7345f9f679@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Dec 10, 2021 at 07:43:58PM +0900, Masami Hiramatsu wrote:
-> Hi Beau,
-> 
-> Thanks for updating the patch! I have some comments below.
-> 
-> On Thu,  9 Dec 2021 14:31:59 -0800
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> 
-> [..]
-> > +#define USER_EVENTS_PREFIX_LEN (sizeof(USER_EVENTS_PREFIX)-1)
-> > +
-> > +#define FIELD_DEPTH_TYPE 0
-> > +#define FIELD_DEPTH_NAME 1
-> > +#define FIELD_DEPTH_SIZE 2
-> > +
-> > +/*
-> > + * Limits how many trace_event calls user processes can create:
-> > + * Must be multiple of PAGE_SIZE.
-> > + */
-> > +#define MAX_PAGES 1
-> > +#define MAX_EVENTS (MAX_PAGES * PAGE_SIZE)
-> > +
-> > +/* Limit how long of an event name plus args within the subsystem. */
-> > +#define MAX_EVENT_DESC 512
-> > +#define EVENT_NAME(user_event) ((user_event)->tracepoint.name)
-> > +#define MAX_FIELD_ARRAY_SIZE (2 * PAGE_SIZE)
-> 
-> I don't recommend to record the event which size is more than a page size...
-> Maybe 256 entries?
-> It is also better to limit the total size of the event and the number
-> of fields (arguments).
-> 
-> Steve, can we write such a big event data on the trace buffer?
-> 
+The rtla(1) is a meta-tool that includes a set of commands that
+aims to analyze the real-time properties of Linux. But instead of
+testing Linux as a black box, rtla leverages kernel tracing
+capabilities to provide precise information about the properties
+and root causes of unexpected results.
 
-This moved to 1024 in part 12 when validation was added.
+To start, it presents an interface to the osnoise and timerlat tracers.
+In the future, it will also serve as home to the rtsl [1] and other
+latency/noise tracers.
 
-> [..]
-> > +
-> > +static int user_field_array_size(const char *type)
-> > +{
-> > +	const char *start = strchr(type, '[');
-> > +	char val[8];
-> > +	int size = 0;
-> > +
-> > +	if (start == NULL)
-> > +		return -EINVAL;
-> > +
-> > +	start++;
-> > +
-> > +	while (*start != ']' && size < (sizeof(val) - 1))
-> > +		val[size++] = *start++;
-> > +
-> > +	if (*start != ']')
-> > +		return -EINVAL;
-> > +
-> > +	val[size] = 0;
-> 
-> It's '\0', not 0.
+If you just want to run it, you can download the tarball here:
+  - https://bristot.me/files/rtla/tarball/rtla-0.5.tar.bz2
 
-Both evaluate to 0, is this a style thing?
+To compile rtla on fedora you need:
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git
+  $ cd libtraceevent/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git
+  $ cd libtracefs/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ sudo dnf install python3-docutils procps-devel
+  $ cd $rtla_src
+  $ make
+  $ sudo make install
 
-For example, argv_split does this same thing ;)
+The tracing option (-t) depends some kernel patches that are
+available at [2].
 
-> 
-> If I were you, I just use strlcpy(val, start, sizeof(val)), and
-> strchr(val, ']'). Sometimes using standard libc function will
-> be easer to understand what it does. :)
-> 
+This tool was be discussed at the RT-MC during LPC2021 [3]
 
-Sure good idea.
+[1] rtsl: https://github.com/bristot/rtsl/
+[2] https://lore.kernel.org/lkml/cover.1635533292.git.bristot@kernel.org/
+[3] https://youtu.be/cZUzc0U1jJ4
 
-[..]
+Changes from V8:
+  - Fixed usage messages (Tao Zhou)
+  - Fixed some return value check on osnoise.c (Tao Zhou)
+  - Properly delete instances when failing to set priorities (Tao Zhou)
+  - Use tracefs helpers to read/write to files on osnoise.c (Steven)
+Changes from V7:
+  - Add README.txt with information about how to compile the tool
+    (Steven)
+  - Use $$($(PKG_CONFIG) --libs libtracefs) to find libtracefs on
+    Makefile (Steven)
+  - Fix *buffer[4096] (using buffer[4096]) on save_trace_to_file()
+    (Steven)
+Changes from v6:
+  - Revisited osnoise option config functions
+  - Properly handles offline CPUs
+  - Some cleanups
+  - Fixed an histogram allocation problem (Tao Zhou)
+  - Revisited open()/read()/write() (Tao Zhou)
+Changes from v5:
+  - Fix retval check in save_trace_to_file() (Tao Zhou)
+  - Fix goto logic in save_trace_to_file() (Tao Zhou)
+  - Removed unused save_trace_pipe_to_file() function
+  - Correctly handle an error on osnoise_set_* functions during
+    "apply config" for all tools (Tao Zhou)
+Changes from v3:
+  - Add cross-compile support (Ahmed S. Darwish)
+  - Move documentation to Documentation/tools/rtla (Jonathan Corbet)
+  - Use .rst format for documentation (Jonathan Corbet)
+  - Use include option from .rst to group common parts of the documentation
+  - Makefile (main and doc) cleanups
+Changes from v2:
+  - Fix the miss conception of the "size" for kernel histograms (Steven/Tom)
+  - Change the --skip-zeros to --with-zeros option as the former is better
+    for humans (and the latter for computers to plot charts).
+  - A lot of checkpatch fixes for the user-space part.
+Changes from v1:
+  - Fixes -t options on osnoise tracers (-t means --trace for all tools now)
+  - Fixes --bucket-size references (not --bucket_size)
+Daniel Bristot de Oliveira (14):
+  rtla: Real-Time Linux Analysis tool
+  rtla: Helper functions for rtla
+  rtla: Add osnoise tool
+  rtla/osnoise: Add osnoise top mode
+  rtla/osnoise: Add the hist mode
+  rtla: Add timerlat tool and timelart top mode
+  rtla/timerlat: Add timerlat hist mode
+  rtla: Add Documentation
+  rtla: Add rtla osnoise man page
+  rtla: Add rtla osnoise top documentation
+  rtla: Add rtla osnoise hist documentation
+  rtla: Add rtla timerlat documentation
+  rtla: Add rtla timerlat top documentation
+  rtla: Add rtla timerlat hist documentation
 
-> > +static int user_event_add_field(struct user_event *user, const char *type,
-> > +				const char *name, int offset, int size,
-> > +				int is_signed, int filter_type)
-> > +{
-> > +	struct ftrace_event_field *field;
-> > +
-> > +	field = kmalloc(sizeof(*field), GFP_KERNEL);
-> > +
-> > +	if (!field)
-> > +		return -ENOMEM;
-> > +
-> > +	field->type = type;
-> > +	field->name = name;
-> > +	field->offset = offset;
-> > +	field->size = size;
-> > +	field->is_signed = is_signed;
-> > +	field->filter_type = filter_type;
-> > +
-> > +	list_add(&field->link, &user->fields);
-> 
-> I recommend to use list_add_tail() here so that when accessing the
-> list of field without reverse order. (I found this in [4/13])
-> 
+ Documentation/tools/rtla/Makefile             |  41 +
+ Documentation/tools/rtla/common_appendix.rst  |  12 +
+ .../tools/rtla/common_hist_options.rst        |  23 +
+ Documentation/tools/rtla/common_options.rst   |  28 +
+ .../tools/rtla/common_osnoise_description.rst |   8 +
+ .../tools/rtla/common_osnoise_options.rst     |  17 +
+ .../rtla/common_timerlat_description.rst      |  10 +
+ .../tools/rtla/common_timerlat_options.rst    |  16 +
+ .../tools/rtla/common_top_options.rst         |   3 +
+ .../tools/rtla/rtla-osnoise-hist.rst          |  66 ++
+ Documentation/tools/rtla/rtla-osnoise-top.rst |  61 ++
+ Documentation/tools/rtla/rtla-osnoise.rst     |  59 ++
+ .../tools/rtla/rtla-timerlat-hist.rst         | 106 +++
+ .../tools/rtla/rtla-timerlat-top.rst          | 145 +++
+ Documentation/tools/rtla/rtla-timerlat.rst    |  57 ++
+ Documentation/tools/rtla/rtla.rst             |  48 +
+ tools/tracing/rtla/Makefile                   | 102 ++
+ tools/tracing/rtla/README.txt                 |  36 +
+ tools/tracing/rtla/src/osnoise.c              | 875 ++++++++++++++++++
+ tools/tracing/rtla/src/osnoise.h              |  91 ++
+ tools/tracing/rtla/src/osnoise_hist.c         | 801 ++++++++++++++++
+ tools/tracing/rtla/src/osnoise_top.c          | 579 ++++++++++++
+ tools/tracing/rtla/src/rtla.c                 |  87 ++
+ tools/tracing/rtla/src/timerlat.c             |  72 ++
+ tools/tracing/rtla/src/timerlat.h             |   4 +
+ tools/tracing/rtla/src/timerlat_hist.c        | 822 ++++++++++++++++
+ tools/tracing/rtla/src/timerlat_top.c         | 618 +++++++++++++
+ tools/tracing/rtla/src/trace.c                | 192 ++++
+ tools/tracing/rtla/src/trace.h                |  27 +
+ tools/tracing/rtla/src/utils.c                | 433 +++++++++
+ tools/tracing/rtla/src/utils.h                |  56 ++
+ 31 files changed, 5495 insertions(+)
+ create mode 100644 Documentation/tools/rtla/Makefile
+ create mode 100644 Documentation/tools/rtla/common_appendix.rst
+ create mode 100644 Documentation/tools/rtla/common_hist_options.rst
+ create mode 100644 Documentation/tools/rtla/common_options.rst
+ create mode 100644 Documentation/tools/rtla/common_osnoise_description.rst
+ create mode 100644 Documentation/tools/rtla/common_osnoise_options.rst
+ create mode 100644 Documentation/tools/rtla/common_timerlat_description.rst
+ create mode 100644 Documentation/tools/rtla/common_timerlat_options.rst
+ create mode 100644 Documentation/tools/rtla/common_top_options.rst
+ create mode 100644 Documentation/tools/rtla/rtla-osnoise-hist.rst
+ create mode 100644 Documentation/tools/rtla/rtla-osnoise-top.rst
+ create mode 100644 Documentation/tools/rtla/rtla-osnoise.rst
+ create mode 100644 Documentation/tools/rtla/rtla-timerlat-hist.rst
+ create mode 100644 Documentation/tools/rtla/rtla-timerlat-top.rst
+ create mode 100644 Documentation/tools/rtla/rtla-timerlat.rst
+ create mode 100644 Documentation/tools/rtla/rtla.rst
+ create mode 100644 tools/tracing/rtla/Makefile
+ create mode 100644 tools/tracing/rtla/README.txt
+ create mode 100644 tools/tracing/rtla/src/osnoise.c
+ create mode 100644 tools/tracing/rtla/src/osnoise.h
+ create mode 100644 tools/tracing/rtla/src/osnoise_hist.c
+ create mode 100644 tools/tracing/rtla/src/osnoise_top.c
+ create mode 100644 tools/tracing/rtla/src/rtla.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.h
+ create mode 100644 tools/tracing/rtla/src/timerlat_hist.c
+ create mode 100644 tools/tracing/rtla/src/timerlat_top.c
+ create mode 100644 tools/tracing/rtla/src/trace.c
+ create mode 100644 tools/tracing/rtla/src/trace.h
+ create mode 100644 tools/tracing/rtla/src/utils.c
+ create mode 100644 tools/tracing/rtla/src/utils.h
 
-If I did that, wouldn't that mean the format file in tracefs now has the
-arguments printed in reverse order they were added?
+-- 
+2.31.1
 
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/*
-> > + * Parses the values of a field within the description
-> > + * Format: type name [size]
-> 
-> Hmm, don't you accept redundant spaces and tabs?
-> If this accepts the redundant spaces/tabs, I recommend you to use
-> argv_split() instead of strpbrk() etc. e.g.
-> 
-> 	int argc, name_idx = 0, size;
-> 	int ret = -EINVAL;
-> 	char **argv;
-> 
-> 	argv = argv_split(GFP_KERNEL, field, &argc);
-> 	if (!argv)
-> 		return -ENOMEM;
-> 
-> 	if (!strcmp(argv[pos], "__data_loc") ||
-> 	    !strcmp(argv[pos], "__rel_loc")) {
-> 		if (++pos >= argc)
-> 			goto error;
-> 	}
-> 	if (!strcmp(argv[pos], "unsigned")) {
-> 		if (++pos >= argc)
-> 			goto error;
-> 	} else if (!strcmp(argv[pos], "struct")) {
-> 		is_struct = true;
-> 		if (++pos >= argc)
-> 			goto error;
-> 	}
-> 	if (++pos >= argc)
-> 		goto error;
-> 	name_idx = pos++;
-> 	if (pos < argc) {	// size
-> 		if (!is_struct)
-> 			goto error;
-> 		if (kstrtou32(argv[pos++], 10, &size))
-> 			goto error;
-> 	} else
-> 		size = user_field_size(argv[name_idx - 1]);
-> 
-> 	if (pos != argc)
-> 		goto error;
-> 	
-> 	// note that type index is always 0 and size must be converted.
-> 	user_event_add_field(user, argv, name_idx, saved_offset, size,
-> 				    type[0] != 'u', FILTER_OTHER);
-> 
-> 	ret = 0;
-> error:
-> 	argv_free(argv);
-> 	return ret;
-> 
-> (This also requires to simplify user_field_size() and remove FIELD_DEPTH_*)
-> What would you think?
-> 	
-
-The code currently does not support duplicate spaces after the first
-non-whitespace.
-
-We do copy the string before this, so how this is written would do a
-double allocation. If the argv_split was moved higher in the callchain
-then I could move to this.
-
-If you feel strongly about this, I don't have a problem moving to this
-pattern. Let me know if you feel strongly about it.
-
-> > +
-> > +/*
-> > + * Register callback for our events from tracing sub-systems.
-> > + */
-> > +static int user_event_reg(struct trace_event_call *call,
-> > +			  enum trace_reg type,
-> > +			  void *data)
-> > +{
-> > +	struct user_event *user = (struct user_event *)call->data;
-> > +	int ret = 0;
-> > +
-> > +	if (!user)
-> > +		return -ENOENT;
-> > +
-> > +	switch (type) {
-> > +	case TRACE_REG_REGISTER:
-> > +		ret = tracepoint_probe_register(call->tp,
-> > +						call->class->probe,
-> > +						data);
-> > +		if (!ret)
-> > +			goto inc;
-> > +		break;
-> > +
-> > +	case TRACE_REG_UNREGISTER:
-> > +		tracepoint_probe_unregister(call->tp,
-> > +					    call->class->probe,
-> > +					    data);
-> > +		goto dec;
-> > +
-> > +#ifdef CONFIG_PERF_EVENTS
-> > +	case TRACE_REG_PERF_REGISTER:
-> > +	case TRACE_REG_PERF_UNREGISTER:
-> > +	case TRACE_REG_PERF_OPEN:
-> > +	case TRACE_REG_PERF_CLOSE:
-> > +	case TRACE_REG_PERF_ADD:
-> > +	case TRACE_REG_PERF_DEL:
-> > +		break;
-> > +#endif
-> 
-> At this moment (in this patch), you can just add a default case,
-> or just ignore it, because it does nothing.
-> 
-
-Yeah, I was trying to avoid the warning that resulted if I just ignored
-them.
-
-> > +	}
-> > +
-> > +	return ret;
-> > +inc:
-> > +	atomic_inc(&user->refcnt);
-> > +	update_reg_page_for(user);
-> > +	return 0;
-> > +dec:
-> > +	update_reg_page_for(user);
-> > +	atomic_dec(&user->refcnt);
-> > +	return 0;
-> > +}
-> > +
-> 
-> [..]
-> > +/*
-> > + * Validates the user payload and writes via iterator.
-> > + */
-> > +static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
-> > +{
-> > +	struct user_event_refs *refs;
-> > +	struct user_event *user = NULL;
-> > +	struct tracepoint *tp;
-> > +	ssize_t ret = i->count;
-> > +	int idx;
-> > +
-> > +	if (unlikely(copy_from_iter(&idx, sizeof(idx), i) != sizeof(idx)))
-> > +		return -EFAULT;
-> > +
-> > +	rcu_read_lock_sched();
-> > +
-> > +	refs = rcu_dereference_sched(file->private_data);
-> > +
-> > +	/*
-> > +	 * The refs->events array is protected by RCU, and new items may be
-> > +	 * added. But the user retrieved from indexing into the events array
-> > +	 * shall be immutable while the file is opened.
-> > +	 */
-> > +	if (likely(refs && idx < refs->count))
-> > +		user = refs->events[idx];
-> > +
-> > +	rcu_read_unlock_sched();
-> > +
-> > +	if (unlikely(user == NULL))
-> > +		return -ENOENT;
-> > +
-> > +	tp = &user->tracepoint;
-> > +
-> > +	/*
-> > +	 * It's possible key.enabled disables after this check, however
-> > +	 * we don't mind if a few events are included in this condition.
-> > +	 */
-> > +	if (likely(atomic_read(&tp->key.enabled) > 0)) {
-> > +		struct tracepoint_func *probe_func_ptr;
-> > +		user_event_func_t probe_func;
-> > +		void *tpdata;
-> > +		void *kdata;
-> > +		u32 datalen;
-> > +
-> > +		kdata = kmalloc(i->count, GFP_KERNEL);
-> > +
-> > +		if (unlikely(!kdata))
-> > +			return -ENOMEM;
-> > +
-> > +		datalen = copy_from_iter(kdata, i->count, i);
-> 
-> Don't we need to add this datalen to ret?
-> 
-
-ret is set to the bytes that were given by the user to avoid multiple
-writes from occuring for the same data if the data was paged out (or if
-the event isn't enabled at that time for whatever reason).
-
-Since seek/partial writes are not supported, I don't believe we want to
-do that.
-
-> > +
-> > +		rcu_read_lock_sched();
-> > +
-> > +		probe_func_ptr = rcu_dereference_sched(tp->funcs);
-> > +
-> > +		if (probe_func_ptr) {
-> > +			do {
-> > +				probe_func = probe_func_ptr->func;
-> > +				tpdata = probe_func_ptr->data;
-> > +				probe_func(user, kdata, datalen, tpdata);
-> > +			} while ((++probe_func_ptr)->func);
-> > +		}
-> > +
-> > +		rcu_read_unlock_sched();
-> > +
-> > +		kfree(kdata);
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> 
-> Thank you,
-> 
-> 
-> 
-> -- 
-> Masami Hiramatsu <mhiramat@kernel.org>
