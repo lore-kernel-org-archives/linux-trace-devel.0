@@ -2,48 +2,48 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83D71C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Dec 2021 02:50:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AE62C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Dec 2021 10:44:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233992AbhLJCyY (ORCPT
+        id S232966AbhLJKrj (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 9 Dec 2021 21:54:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38164 "EHLO
+        Fri, 10 Dec 2021 05:47:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbhLJCyX (ORCPT
+        with ESMTP id S232936AbhLJKrj (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 9 Dec 2021 21:54:23 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8DDEC061746;
-        Thu,  9 Dec 2021 18:50:48 -0800 (PST)
+        Fri, 10 Dec 2021 05:47:39 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3076FC061746;
+        Fri, 10 Dec 2021 02:44:04 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id D2C25CE2990;
-        Fri, 10 Dec 2021 02:50:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDFBCC004DD;
-        Fri, 10 Dec 2021 02:50:43 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C6649B82763;
+        Fri, 10 Dec 2021 10:44:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EB4EC00446;
+        Fri, 10 Dec 2021 10:44:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639104645;
-        bh=p1MVXm5rcwcPGjiBQBmXfjmi70oSih/kX9P4dxQZmUY=;
+        s=k20201202; t=1639133041;
+        bh=gLwVsj0h7I27KQSagp/X3RmrFEo7I3V//9PuDxqpjXE=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eNZMWb6KMET0ifhBX9KsXgI5K8EQXrVL/dj5K0sUcw4ObwCwBd4LM66BeeUJFxumk
-         vP3pGSfle5UfyEG76lWsayVDqpQmtD/LXm2rgjo56Z5G+sXOdDIzKFfWhpVuDG3ZlX
-         sjheyt3kiVxPMTu5qrrWb0ceo5nO2DZskSwjb3vaKQS+O/QeebKI36zOg2fbmf+Ns4
-         pgC4Z6EkSJheI4ojbyqj9viQeeQ/JagmDELCi2gYgfxxMP37fhyM0+rICy1FlJOvrN
-         H6UzC8jjyoYXl6HfGENXsfMvRqlUUaLx4NcZH985kRbY11qiuMcJy0YQO01KJcIVaL
-         otQdsX7yXhmBg==
-Date:   Fri, 10 Dec 2021 11:50:41 +0900
+        b=rqMB1PiL2v5aU0q51LvJTX8e+ba4u+AE1tQSqPTmG0Ah9ovgvxvD9VDxegLjK2Nkr
+         xhz4TJZFRor/0nSh27NoeYi7a+zIKwIXUbeu+aIOvRKFdxEw63NXho6lspT/+XEYPe
+         blDf+1QlJuThyvhOs8NwIk9tMlTN7v9Wm/Jq2Sx83nlOHpXNsagbiARKOKyXQzYqCt
+         NbLLCQ6g+2FPjTnHbN42jlrUxKDI1ci0yh25DzuVYWTLQLqMXVCAhtZYkpGLsUATVt
+         ROf4XZPWISU8NH3xD+9CjX2YDgr5PCmamgJwUFR55niun/oGjVhaUyfourttEVzFH4
+         SqdmbvUOckelg==
+Date:   Fri, 10 Dec 2021 19:43:58 +0900
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Beau Belgrave <beaub@linux.microsoft.com>
 Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 03/13] user_events: Add print_fmt generation support
- for basic types
-Message-Id: <20211210115041.02aeb300333639cc12ffef56@kernel.org>
-In-Reply-To: <20211209223210.1818-4-beaub@linux.microsoft.com>
+Subject: Re: [PATCH v7 02/13] user_events: Add minimal support for
+ trace_event into ftrace
+Message-Id: <20211210194358.e590d49a1620df7345f9f679@kernel.org>
+In-Reply-To: <20211209223210.1818-3-beaub@linux.microsoft.com>
 References: <20211209223210.1818-1-beaub@linux.microsoft.com>
-        <20211209223210.1818-4-beaub@linux.microsoft.com>
+        <20211209223210.1818-3-beaub@linux.microsoft.com>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -52,159 +52,437 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu,  9 Dec 2021 14:32:00 -0800
+Hi Beau,
+
+Thanks for updating the patch! I have some comments below.
+
+On Thu,  9 Dec 2021 14:31:59 -0800
 Beau Belgrave <beaub@linux.microsoft.com> wrote:
 
-> Addes print_fmt format generation for basic types that are supported for
-> user processes. Only supports sizes that are the same on 32 and 64 bit.
-> 
+[..]
+> +#define USER_EVENTS_PREFIX_LEN (sizeof(USER_EVENTS_PREFIX)-1)
+> +
+> +#define FIELD_DEPTH_TYPE 0
+> +#define FIELD_DEPTH_NAME 1
+> +#define FIELD_DEPTH_SIZE 2
+> +
+> +/*
+> + * Limits how many trace_event calls user processes can create:
+> + * Must be multiple of PAGE_SIZE.
+> + */
+> +#define MAX_PAGES 1
+> +#define MAX_EVENTS (MAX_PAGES * PAGE_SIZE)
+> +
+> +/* Limit how long of an event name plus args within the subsystem. */
+> +#define MAX_EVENT_DESC 512
+> +#define EVENT_NAME(user_event) ((user_event)->tracepoint.name)
+> +#define MAX_FIELD_ARRAY_SIZE (2 * PAGE_SIZE)
 
-This looks good to me.
+I don't recommend to record the event which size is more than a page size...
+Maybe 256 entries?
+It is also better to limit the total size of the event and the number
+of fields (arguments).
 
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+Steve, can we write such a big event data on the trace buffer?
 
-Thank you,
-
-> Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
-> ---
->  kernel/trace/trace_events_user.c | 107 ++++++++++++++++++++++++++++++-
->  1 file changed, 105 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-> index 1d96d1c85147..bd8ac46fddb1 100644
-> --- a/kernel/trace/trace_events_user.c
-> +++ b/kernel/trace/trace_events_user.c
-> @@ -357,6 +357,106 @@ static int user_event_parse_fields(struct user_event *user, char *args)
->  
->  static struct trace_event_fields user_event_fields_array[1];
->  
-> +static const char *user_field_format(const char *type)
+[..]
+> +
+> +static int user_field_array_size(const char *type)
 > +{
+> +	const char *start = strchr(type, '[');
+> +	char val[8];
+> +	int size = 0;
+> +
+> +	if (start == NULL)
+> +		return -EINVAL;
+> +
+> +	start++;
+> +
+> +	while (*start != ']' && size < (sizeof(val) - 1))
+> +		val[size++] = *start++;
+> +
+> +	if (*start != ']')
+> +		return -EINVAL;
+> +
+> +	val[size] = 0;
+
+It's '\0', not 0.
+
+If I were you, I just use strlcpy(val, start, sizeof(val)), and
+strchr(val, ']'). Sometimes using standard libc function will
+be easer to understand what it does. :)
+
+> +
+> +	if (kstrtouint(val, 0, &size))
+> +		return -EINVAL;
+> +
+> +	if (size > MAX_FIELD_ARRAY_SIZE)
+> +		return -EINVAL;
+> +
+> +	return size;
+> +}
+> +
+> +static int user_field_size(const char *type)
+> +{
+> +	/* long is not allowed from a user, since it's ambigious in size */
 > +	if (strcmp(type, "s64") == 0)
-> +		return "%lld";
+> +		return sizeof(s64);
 > +	if (strcmp(type, "u64") == 0)
-> +		return "%llu";
+> +		return sizeof(u64);
 > +	if (strcmp(type, "s32") == 0)
-> +		return "%d";
+> +		return sizeof(s32);
 > +	if (strcmp(type, "u32") == 0)
-> +		return "%u";
+> +		return sizeof(u32);
 > +	if (strcmp(type, "int") == 0)
-> +		return "%d";
+> +		return sizeof(int);
 > +	if (strcmp(type, "unsigned int") == 0)
-> +		return "%u";
+> +		return sizeof(unsigned int);
 > +	if (strcmp(type, "s16") == 0)
-> +		return "%d";
+> +		return sizeof(s16);
 > +	if (strcmp(type, "u16") == 0)
-> +		return "%u";
+> +		return sizeof(u16);
 > +	if (strcmp(type, "short") == 0)
-> +		return "%d";
+> +		return sizeof(short);
 > +	if (strcmp(type, "unsigned short") == 0)
-> +		return "%u";
+> +		return sizeof(unsigned short);
 > +	if (strcmp(type, "s8") == 0)
-> +		return "%d";
+> +		return sizeof(s8);
 > +	if (strcmp(type, "u8") == 0)
-> +		return "%u";
+> +		return sizeof(u8);
 > +	if (strcmp(type, "char") == 0)
-> +		return "%d";
+> +		return sizeof(char);
 > +	if (strcmp(type, "unsigned char") == 0)
-> +		return "%u";
-> +	if (strstr(type, "char[") != 0)
-> +		return "%s";
+> +		return sizeof(unsigned char);
+> +	if (str_has_prefix(type, "char["))
+> +		return user_field_array_size(type);
+> +	if (str_has_prefix(type, "unsigned char["))
+> +		return user_field_array_size(type);
+> +	if (str_has_prefix(type, "__data_loc "))
+> +		return sizeof(u32);
+> +	if (str_has_prefix(type, "__rel_loc "))
+> +		return sizeof(u32);
 > +
-> +	/* Unknown, likely struct, allowed treat as 64-bit */
-> +	return "%llu";
+> +	/* Uknown basic type, error */
+> +	return -EINVAL;
 > +}
 > +
-> +static bool user_field_is_dyn_string(const char *type)
-> +{
-> +	if (str_has_prefix(type, "__data_loc ") ||
-> +	    str_has_prefix(type, "__rel_loc "))
-> +		if (strstr(type, "char[") != 0)
-> +			return true;
-> +
-> +	return false;
-> +}
-> +
-> +#define LEN_OR_ZERO (len ? len - pos : 0)
-> +static int user_event_set_print_fmt(struct user_event *user, char *buf, int len)
+> +static void user_event_destroy_fields(struct user_event *user)
 > +{
 > +	struct ftrace_event_field *field, *next;
 > +	struct list_head *head = &user->fields;
-> +	int pos = 0, depth = 0;
 > +
-> +	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
-> +
-> +	list_for_each_entry_safe_reverse(field, next, head, link) {
-> +		if (depth != 0)
-> +			pos += snprintf(buf + pos, LEN_OR_ZERO, " ");
-> +
-> +		pos += snprintf(buf + pos, LEN_OR_ZERO, "%s=%s",
-> +				field->name, user_field_format(field->type));
-> +
-> +		depth++;
+> +	list_for_each_entry_safe(field, next, head, link) {
+> +		list_del(&field->link);
+> +		kfree(field);
 > +	}
-> +
-> +	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
-> +
-> +	list_for_each_entry_safe_reverse(field, next, head, link) {
-> +		if (user_field_is_dyn_string(field->type))
-> +			pos += snprintf(buf + pos, LEN_OR_ZERO,
-> +					", __get_str(%s)", field->name);
-> +		else
-> +			pos += snprintf(buf + pos, LEN_OR_ZERO,
-> +					", REC->%s", field->name);
-> +	}
-> +
-> +	return pos + 1;
 > +}
-> +#undef LEN_OR_ZERO
 > +
-> +static int user_event_create_print_fmt(struct user_event *user)
+> +static int user_event_add_field(struct user_event *user, const char *type,
+> +				const char *name, int offset, int size,
+> +				int is_signed, int filter_type)
 > +{
-> +	char *print_fmt;
-> +	int len;
+> +	struct ftrace_event_field *field;
 > +
-> +	len = user_event_set_print_fmt(user, NULL, 0);
+> +	field = kmalloc(sizeof(*field), GFP_KERNEL);
 > +
-> +	print_fmt = kmalloc(len, GFP_KERNEL);
-> +
-> +	if (!print_fmt)
+> +	if (!field)
 > +		return -ENOMEM;
 > +
-> +	user_event_set_print_fmt(user, print_fmt, len);
+> +	field->type = type;
+> +	field->name = name;
+> +	field->offset = offset;
+> +	field->size = size;
+> +	field->is_signed = is_signed;
+> +	field->filter_type = filter_type;
 > +
-> +	user->call.print_fmt = print_fmt;
+> +	list_add(&field->link, &user->fields);
+
+I recommend to use list_add_tail() here so that when accessing the
+list of field without reverse order. (I found this in [4/13])
+
 > +
 > +	return 0;
 > +}
 > +
->  static enum print_line_t user_event_print_trace(struct trace_iterator *iter,
->  						int flags,
->  						struct trace_event *event)
-> @@ -390,6 +490,7 @@ static int destroy_user_event(struct user_event *user)
->  	clear_bit(user->index, page_bitmap);
->  	hash_del(&user->node);
->  
-> +	kfree(user->call.print_fmt);
->  	kfree(EVENT_NAME(user));
->  	kfree(user);
->  
-> @@ -669,8 +770,10 @@ static int user_event_parse(char *name, char *args, char *flags,
->  	if (ret)
->  		goto put_user;
->  
-> -	/* Minimal print format */
-> -	user->call.print_fmt = "\"\"";
-> +	ret = user_event_create_print_fmt(user);
+> +/*
+> + * Parses the values of a field within the description
+> + * Format: type name [size]
+
+Hmm, don't you accept redundant spaces and tabs?
+If this accepts the redundant spaces/tabs, I recommend you to use
+argv_split() instead of strpbrk() etc. e.g.
+
+	int argc, name_idx = 0, size;
+	int ret = -EINVAL;
+	char **argv;
+
+	argv = argv_split(GFP_KERNEL, field, &argc);
+	if (!argv)
+		return -ENOMEM;
+
+	if (!strcmp(argv[pos], "__data_loc") ||
+	    !strcmp(argv[pos], "__rel_loc")) {
+		if (++pos >= argc)
+			goto error;
+	}
+	if (!strcmp(argv[pos], "unsigned")) {
+		if (++pos >= argc)
+			goto error;
+	} else if (!strcmp(argv[pos], "struct")) {
+		is_struct = true;
+		if (++pos >= argc)
+			goto error;
+	}
+	if (++pos >= argc)
+		goto error;
+	name_idx = pos++;
+	if (pos < argc) {	// size
+		if (!is_struct)
+			goto error;
+		if (kstrtou32(argv[pos++], 10, &size))
+			goto error;
+	} else
+		size = user_field_size(argv[name_idx - 1]);
+
+	if (pos != argc)
+		goto error;
+	
+	// note that type index is always 0 and size must be converted.
+	user_event_add_field(user, argv, name_idx, saved_offset, size,
+				    type[0] != 'u', FILTER_OTHER);
+
+	ret = 0;
+error:
+	argv_free(argv);
+	return ret;
+
+(This also requires to simplify user_field_size() and remove FIELD_DEPTH_*)
+What would you think?
+	
+> + */
+> +static int user_event_parse_field(char *field, struct user_event *user,
+> +				  u32 *offset)
+> +{
+> +	char *part, *type, *name;
+> +	u32 depth = 0, saved_offset = *offset;
+> +	int len, size = -EINVAL;
+> +	bool is_struct = false;
 > +
-> +	if (ret)
-> +		goto put_user;
->  
->  	user->call.data = user;
->  	user->call.class = &user->class;
-> -- 
-> 2.17.1
-> 
+> +	field = skip_spaces(field);
+> +
+> +	if (*field == 0)
+> +		return 0;
+> +
+> +	/* Handle types that have a space within */
+> +	len = str_has_prefix(field, "unsigned ");
+> +	if (len)
+> +		goto skip_next;
+> +
+> +	len = str_has_prefix(field, "struct ");
+> +	if (len) {
+> +		is_struct = true;
+> +		goto skip_next;
+> +	}
+> +
+> +	len = str_has_prefix(field, "__data_loc unsigned ");
+> +	if (len)
+> +		goto skip_next;
+> +
+> +	len = str_has_prefix(field, "__data_loc ");
+> +	if (len)
+> +		goto skip_next;
+> +
+> +	len = str_has_prefix(field, "__rel_loc unsigned ");
+> +	if (len)
+> +		goto skip_next;
+> +
+> +	len = str_has_prefix(field, "__rel_loc ");
+> +	if (len)
+> +		goto skip_next;
+> +
+> +	goto parse;
+> +skip_next:
+> +	type = field;
+> +	field = strpbrk(field + len, " ");
+> +
+> +	if (field == NULL)
+> +		return -EINVAL;
+> +
+> +	*field++ = 0;
+> +	depth++;
+> +parse:
+> +	while ((part = strsep(&field, " ")) != NULL) {
+> +		switch (depth++) {
+> +		case FIELD_DEPTH_TYPE:
+> +			type = part;
+> +			break;
+> +		case FIELD_DEPTH_NAME:
+> +			name = part;
+> +			break;
+> +		case FIELD_DEPTH_SIZE:
+> +			if (!is_struct)
+> +				return -EINVAL;
+> +
+> +			if (kstrtou32(part, 10, &size))
+> +				return -EINVAL;
+> +			break;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	if (depth < FIELD_DEPTH_SIZE)
+> +		return -EINVAL;
+> +
+> +	if (depth == FIELD_DEPTH_SIZE)
+> +		size = user_field_size(type);
+> +
+> +	if (size == 0)
+> +		return -EINVAL;
+> +
+> +	if (size < 0)
+> +		return size;
+> +
+> +	*offset = saved_offset + size;
+> +
+> +	return user_event_add_field(user, type, name, saved_offset, size,
+> +				    type[0] != 'u', FILTER_OTHER);
+> +}
+
+[..]
+> +
+> +/*
+> + * Register callback for our events from tracing sub-systems.
+> + */
+> +static int user_event_reg(struct trace_event_call *call,
+> +			  enum trace_reg type,
+> +			  void *data)
+> +{
+> +	struct user_event *user = (struct user_event *)call->data;
+> +	int ret = 0;
+> +
+> +	if (!user)
+> +		return -ENOENT;
+> +
+> +	switch (type) {
+> +	case TRACE_REG_REGISTER:
+> +		ret = tracepoint_probe_register(call->tp,
+> +						call->class->probe,
+> +						data);
+> +		if (!ret)
+> +			goto inc;
+> +		break;
+> +
+> +	case TRACE_REG_UNREGISTER:
+> +		tracepoint_probe_unregister(call->tp,
+> +					    call->class->probe,
+> +					    data);
+> +		goto dec;
+> +
+> +#ifdef CONFIG_PERF_EVENTS
+> +	case TRACE_REG_PERF_REGISTER:
+> +	case TRACE_REG_PERF_UNREGISTER:
+> +	case TRACE_REG_PERF_OPEN:
+> +	case TRACE_REG_PERF_CLOSE:
+> +	case TRACE_REG_PERF_ADD:
+> +	case TRACE_REG_PERF_DEL:
+> +		break;
+> +#endif
+
+At this moment (in this patch), you can just add a default case,
+or just ignore it, because it does nothing.
+
+> +	}
+> +
+> +	return ret;
+> +inc:
+> +	atomic_inc(&user->refcnt);
+> +	update_reg_page_for(user);
+> +	return 0;
+> +dec:
+> +	update_reg_page_for(user);
+> +	atomic_dec(&user->refcnt);
+> +	return 0;
+> +}
+> +
+
+[..]
+> +/*
+> + * Validates the user payload and writes via iterator.
+> + */
+> +static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
+> +{
+> +	struct user_event_refs *refs;
+> +	struct user_event *user = NULL;
+> +	struct tracepoint *tp;
+> +	ssize_t ret = i->count;
+> +	int idx;
+> +
+> +	if (unlikely(copy_from_iter(&idx, sizeof(idx), i) != sizeof(idx)))
+> +		return -EFAULT;
+> +
+> +	rcu_read_lock_sched();
+> +
+> +	refs = rcu_dereference_sched(file->private_data);
+> +
+> +	/*
+> +	 * The refs->events array is protected by RCU, and new items may be
+> +	 * added. But the user retrieved from indexing into the events array
+> +	 * shall be immutable while the file is opened.
+> +	 */
+> +	if (likely(refs && idx < refs->count))
+> +		user = refs->events[idx];
+> +
+> +	rcu_read_unlock_sched();
+> +
+> +	if (unlikely(user == NULL))
+> +		return -ENOENT;
+> +
+> +	tp = &user->tracepoint;
+> +
+> +	/*
+> +	 * It's possible key.enabled disables after this check, however
+> +	 * we don't mind if a few events are included in this condition.
+> +	 */
+> +	if (likely(atomic_read(&tp->key.enabled) > 0)) {
+> +		struct tracepoint_func *probe_func_ptr;
+> +		user_event_func_t probe_func;
+> +		void *tpdata;
+> +		void *kdata;
+> +		u32 datalen;
+> +
+> +		kdata = kmalloc(i->count, GFP_KERNEL);
+> +
+> +		if (unlikely(!kdata))
+> +			return -ENOMEM;
+> +
+> +		datalen = copy_from_iter(kdata, i->count, i);
+
+Don't we need to add this datalen to ret?
+
+> +
+> +		rcu_read_lock_sched();
+> +
+> +		probe_func_ptr = rcu_dereference_sched(tp->funcs);
+> +
+> +		if (probe_func_ptr) {
+> +			do {
+> +				probe_func = probe_func_ptr->func;
+> +				tpdata = probe_func_ptr->data;
+> +				probe_func(user, kdata, datalen, tpdata);
+> +			} while ((++probe_func_ptr)->func);
+> +		}
+> +
+> +		rcu_read_unlock_sched();
+> +
+> +		kfree(kdata);
+> +	}
+> +
+> +	return ret;
+> +}
+
+Thank you,
+
 
 
 -- 
