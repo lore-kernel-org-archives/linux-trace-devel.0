@@ -2,91 +2,155 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 772DEC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Dec 2021 11:55:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C28DC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Dec 2021 13:30:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233287AbhLJL6r (ORCPT
+        id S241827AbhLJNd6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 10 Dec 2021 06:58:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48566 "EHLO
+        Fri, 10 Dec 2021 08:33:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232875AbhLJL6r (ORCPT
+        with ESMTP id S230262AbhLJNd6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 Dec 2021 06:58:47 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6359BC061746
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 03:55:12 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id l25so29364501eda.11
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 03:55:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ka7b/2GrrNvDwFGt3ray0Czz1MMhhxkgCxM7Z76STo8=;
-        b=E/IXA4WsEcuLCHe04Wfk+UJoBDpORjKY72xzfZox4n7J0HyWxmn1Y97WQ9+IQM/va+
-         5Ercz3Ut4PLpq1lkOZOL+IWUWUXppklCNg/2OAqKh9AecDl955/5F2MoIBamQP3vAz3/
-         ++CaF6SwpFein2aK/neFFC1tdYGBM9usQWdg+cLqB4VxegxZ4yekbJiWrZD/07uO0CaI
-         QR3ERT2xHyNMqT7bz39lqjMm+AEC5NHtdajaNWGl+8Ob4vw+XPU0cHdHB6fUIHAHMuzT
-         8Z5/Vj3tlFVVR/A4Llhgg8TBYVNEyZzUG2wMNMs3DN8oXNxT45AqbeXhtOzc5iW9l00g
-         IRqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ka7b/2GrrNvDwFGt3ray0Czz1MMhhxkgCxM7Z76STo8=;
-        b=YEnwPiCg9M2O8tonSPYMj/eYlwAUo0J0bgJqv8GT/jcYJdGvbYthCzpCjZW2G41c34
-         ZD949RwxuBv5AFn6qXGDFZjq87phlC61AprW2LlwYTjBqteCmPUdeJ4AIvJeuH8UcCAz
-         03z7QsUlxnzOd4m28Yiopgjl11yndcWkpeowsv/Y1/aDAaibkXdQZDB13xo+EZzsF4zN
-         h8HmaCk+/Zh86pez9X5OTEBu8UFiMoeu1+wZ9tYdK1oF/af+DfGKT/XzwGqkEFo5IP+x
-         3QDtgpjmQIoz00wrxnveYc6U4EgG08BJhJftYyXovvLwztp7TT3StadO7LwW7aksQPtz
-         v8fA==
-X-Gm-Message-State: AOAM532rRCpp8YNLvFQ8uO4haP9Q66piZKT5voFKB+jbwpX191K9TgS+
-        oZJ5g0QOrIKAnTOcC5UM4qY46qGeRkY=
-X-Google-Smtp-Source: ABdhPJw26yC6FuvGW3a1pyk7tpnICsjjzOBKL81x2Na2U6wmPMgoETT1yd8QbOrAFM6ailzsbZoeFg==
-X-Received: by 2002:a05:6402:51cb:: with SMTP id r11mr37641352edd.150.1639137310261;
-        Fri, 10 Dec 2021 03:55:10 -0800 (PST)
-Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id t5sm1357188edd.68.2021.12.10.03.55.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Dec 2021 03:55:09 -0800 (PST)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH] trace-cmd library: Do not record TSC frac bits if scaling is default
-Date:   Fri, 10 Dec 2021 13:55:08 +0200
-Message-Id: <20211210115508.103569-1-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.33.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 10 Dec 2021 08:33:58 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25E6CC061746;
+        Fri, 10 Dec 2021 05:30:23 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DC6BEB82800;
+        Fri, 10 Dec 2021 13:30:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AB88C341C6;
+        Fri, 10 Dec 2021 13:30:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1639143020;
+        bh=rY4GvZhp3QslJI/lvWWQnXm3amakuvqiH8kePmTJYmk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Gx0+TWOK2Q52LdIxE8K+qQ0CG7KDnHAJwdjS9+JcUgO9fy/A0v3mEQHtl8QHLVO5U
+         fFKGmoYluIMoonXGhASDWwufAoj+WNlhjxbaO6g5oy9eqWFWRllGllxbCeK3E+x2Tk
+         OCTl0mRpfM9oSgZJe82W+6g1swCZgUfa3g86kOoDmMp+yg+XrYvTHfOh0QuGSstiC5
+         S+7s83tThUO+NNyvfKKGVW6Q9KtAWp2pIOB9e3zGB3YI74nUgbT5Rj0+Wasum7AD7x
+         VahlDWd0xOu9kSxL+iFoOGH9L3IfKeDoPIUfy5r4zREw0bz7wy1K4Z7WzyOsW51HY2
+         4nb2N6/MdAIfg==
+Date:   Fri, 10 Dec 2021 22:30:17 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 01/13] user_events: Add UABI header for user access
+ to user_events
+Message-Id: <20211210223017.2f9254f056e8e1b5404bc409@kernel.org>
+In-Reply-To: <20211209223210.1818-2-beaub@linux.microsoft.com>
+References: <20211209223210.1818-1-beaub@linux.microsoft.com>
+        <20211209223210.1818-2-beaub@linux.microsoft.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Guest's TSC fraction bits have sens only if there is TSC scaling. In
-case of default value for TSC scaling, fraction bits should not be used
-in TSC guest clock calculation.
+On Thu,  9 Dec 2021 14:31:58 -0800
+Beau Belgrave <beaub@linux.microsoft.com> wrote:
 
-Fixes: https://lore.kernel.org/linux-trace-devel/20211014150204.2485499-3-tz.stoyanov@gmail.com/
-	(trace-cmd library: Extend host-guest time sync with fraction bits)
+> Define the basic structs and ioctl commands that allow user processes to
+> interact with user_events.
+> 
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- lib/trace-cmd/trace-timesync-kvm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+IMHO, a basic part of this should be integrated with the [2/13] and
+other parts are incrementaly added with the patch which actually
+use that data structure or definition, so that it can be bisected
+cleanly.
+(because there is no reason to introduce only this header.)
 
-diff --git a/lib/trace-cmd/trace-timesync-kvm.c b/lib/trace-cmd/trace-timesync-kvm.c
-index 8d531922..12a22d4c 100644
---- a/lib/trace-cmd/trace-timesync-kvm.c
-+++ b/lib/trace-cmd/trace-timesync-kvm.c
-@@ -415,7 +415,7 @@ static int kvm_clock_host(struct tracecmd_time_sync *tsync,
- 			kvm_scaling = 1;
- 	}
- 
--	if (kvm->vcpu_frac && kvm->vcpu_frac[cpu])
-+	if (kvm->vcpu_frac && kvm->vcpu_frac[cpu] && kvm_scaling != 1)
- 		ret = read_ll_from_file(kvm->vcpu_frac[cpu], &kvm_frac);
- 	msg = (char *)&packet;
- 	size = sizeof(packet);
+Thank you,
+
+> Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+> ---
+>  include/uapi/linux/user_events.h | 68 ++++++++++++++++++++++++++++++++
+>  1 file changed, 68 insertions(+)
+>  create mode 100644 include/uapi/linux/user_events.h
+> 
+> diff --git a/include/uapi/linux/user_events.h b/include/uapi/linux/user_events.h
+> new file mode 100644
+> index 000000000000..5bff99418deb
+> --- /dev/null
+> +++ b/include/uapi/linux/user_events.h
+> @@ -0,0 +1,68 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +/*
+> + * Copyright (c) 2021, Microsoft Corporation.
+> + *
+> + * Authors:
+> + *   Beau Belgrave <beaub@linux.microsoft.com>
+> + */
+> +#ifndef _UAPI_LINUX_USER_EVENTS_H
+> +#define _UAPI_LINUX_USER_EVENTS_H
+> +
+> +#include <linux/types.h>
+> +#include <linux/ioctl.h>
+> +
+> +#ifdef __KERNEL__
+> +#include <linux/uio.h>
+> +#else
+> +#include <sys/uio.h>
+> +#endif
+> +
+> +#define USER_EVENTS_SYSTEM "user_events"
+> +#define USER_EVENTS_PREFIX "u:"
+> +
+> +/* Bits 0-6 are for known probe types, Bit 7 is for unknown probes */
+> +#define EVENT_BIT_FTRACE 0
+> +#define EVENT_BIT_PERF 1
+> +#define EVENT_BIT_OTHER 7
+> +
+> +#define EVENT_STATUS_FTRACE (1 << EVENT_BIT_FTRACE)
+> +#define EVENT_STATUS_PERF (1 << EVENT_BIT_PERF)
+> +#define EVENT_STATUS_OTHER (1 << EVENT_BIT_OTHER)
+> +
+> +/* Use raw iterator for attached BPF program(s), no affect on ftrace/perf */
+> +#define FLAG_BPF_ITER (1 << 0)
+> +
+> +struct user_reg {
+> +	__u32 size;
+> +	__u64 name_args;
+> +	__u32 status_index;
+> +	__u32 write_index;
+> +};
+> +
+> +#define DIAG_IOC_MAGIC '*'
+> +#define DIAG_IOCSREG _IOWR(DIAG_IOC_MAGIC, 0, struct user_reg*)
+> +#define DIAG_IOCSDEL _IOW(DIAG_IOC_MAGIC, 1, char*)
+> +
+> +enum {
+> +	USER_BPF_DATA_KERNEL,
+> +	USER_BPF_DATA_USER,
+> +	USER_BPF_DATA_ITER,
+> +};
+> +
+> +struct user_bpf_iter {
+> +	__u32 iov_offset;
+> +	__u32 nr_segs;
+> +	const struct iovec *iov;
+> +};
+> +
+> +struct user_bpf_context {
+> +	__u32 data_type;
+> +	__u32 data_len;
+> +	union {
+> +		void *kdata;
+> +		void *udata;
+> +		struct user_bpf_iter *iter;
+> +	};
+> +};
+> +
+> +#endif /* _UAPI_LINUX_USER_EVENTS_H */
+> -- 
+> 2.17.1
+> 
+
+
 -- 
-2.33.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
