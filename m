@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1442C433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F11B4C433F5
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Dec 2021 11:00:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237285AbhLJLDe (ORCPT
+        id S240134AbhLJLDf (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 10 Dec 2021 06:03:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35644 "EHLO
+        Fri, 10 Dec 2021 06:03:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240134AbhLJLDc (ORCPT
+        with ESMTP id S240141AbhLJLDd (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 Dec 2021 06:03:32 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4E7C0617A1
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 02:59:57 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id e3so29074705edu.4
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 02:59:57 -0800 (PST)
+        Fri, 10 Dec 2021 06:03:33 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3938DC0617A2
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 02:59:58 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id r25so28192152edq.7
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 02:59:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nhok2iNIEn15a1HvxTL91Q46+hpNPYfftkRan6XLC8o=;
-        b=Np5GnbzF859fkf1ceQicTO7DSP/AnfsXLrEt6R9eSX3HSqNhUwRp8IcuuJCO4ZAvLP
-         t4tzHJHdHSD7AVv3D67ejMUQVJZY7msouqYUsho40Ok18tOWxhH9gbfW+bJ6Gxwlul2E
-         Jx5q8a6MqGacQvWRX1cvGraPY4IeTX+1Y8ja677Bvu0gvXvkf2lKN72AbIK4A8KPQe6d
-         EoaxwPJJ5D84Br7JqnxTmR9L13pROr5Rn/rDCmcKtGliHdskpsayqCmc/gbcFhrqnabo
-         HMiBlTNCfnpOQ8inrVyQzCsMIDUwd2CpAN8bRnW99cgkMu1og5RyYVYBpfK0XTTCx9J7
-         dpTQ==
+        bh=+wDebInUk6oMh6gDZ8LDaSc9uhgNRDbCGsd6OpAfeNE=;
+        b=BQ4V445wBiXmmHeVAv60HD73ymkNUF6AJEU6p0bbE51yyAP+wDlzl4kFwBFJRCbLrQ
+         /eMZcMV+FEuLxubaGcZ0pgJBKsL1oohXHc0ZWxCGMoDME5oHxq4j5mpJMcuvLjFoElFD
+         C5rx3kLZa8V2E/TrGuWuCW5vISAHD1+WAH33rTU4qvogCWEnur+kc0TkKbIHuphPsSyU
+         kJAXrLnDo/kToejeqS+J60q1ZJHHA0e4flBqxT2JoE8nIZz5ZTaveT3ll6MdKNPwkBdq
+         96t6309EF6VTG1yryUbsCU4caxHfnpq6dQK0SC7RsEK3IA3BgS38eKAW8sJsE7zOhLUV
+         qZxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nhok2iNIEn15a1HvxTL91Q46+hpNPYfftkRan6XLC8o=;
-        b=fxTWFlC/x/TRsUoMwtDX6CyKWc/e4jl1HOZ7b6ewbi4G6zH1MSw/EnOdhJz1cvXG5w
-         hxralMK+xDFaM5qrcHAVV6teZDQ5jNtJDGlUsQoxgGNnW6RqZKM+gZAt9vZ0OT82jmkm
-         owapxogi/qz91Uc5KIulx4HOmqSSoGedAp9fa9M85pBABlDFIszpZIc/76czM+ba3+wg
-         Zxi4/sqlAHCrauL3TWxGvwHds8epUVYc8a8V8Tu9PajI8vYqTut7UA5V38KGVO8+B6bu
-         uFhcShF3I3fSYqxP4acK98AXW9X9JU6rwLOAhUL2rT15pMLAra9P+/J/mhGNYivY8xdL
-         KGXw==
-X-Gm-Message-State: AOAM533DgvAgFTLsykEJvVaVxEaQK1pXOVwELkW2iFYp+PtoGMcxQnkT
-        fSQBLHCy99gwhZd3RYqy4Bl2OcCYg7M=
-X-Google-Smtp-Source: ABdhPJwwL5CcTyWL2wgcpS3OjzgvEQqdyRDDhApJEq3rhurAg/OeAct8e05Dxe9Pk/yaQClm+kdwOQ==
-X-Received: by 2002:a05:6402:8:: with SMTP id d8mr37900392edu.61.1639133996043;
+        bh=+wDebInUk6oMh6gDZ8LDaSc9uhgNRDbCGsd6OpAfeNE=;
+        b=THMe7W5dyKYNhrs5y0uPT7Tn7mO4lYZkOMmddu/6b8MKRDUGLqHP+W6P1Ufo2m9PKE
+         eJoumYZZ7tynGMqAQ+fGGJxnY5fB/oZRmsmboVqi97WyPmgRUBrr8njcnFuDrINHij/s
+         3XtsI3lYU9gpVexZuxHfFaQ/AVMwqeHhu1Td7vv5EO2SHkPAj62Kk0ZLdN9EHGz7/IaL
+         3kFukoUmP9xIR7b6Ghkjx4+6B733d8nXF4F7ll3oWkAMwS18RD8DAHRnAy9eFSo+ZrOr
+         sruoVFnHET4bRzFwzapiSbIg6oMIAoHB9Q5JYApSYxwod/Nb23WJlVlooNrxk2Rni+K1
+         jtfA==
+X-Gm-Message-State: AOAM533mWxs2vrTd0/TPxj95XgY/erqAsETzmBNsA+gSdwRTTX1SqQyq
+        VaKRSMq3w2F4DLD0zonlh3dYgcrk8F4=
+X-Google-Smtp-Source: ABdhPJz7/ucCxcKzfFbPmqqp2Lo1OGVCSTR4zaAmFVOJyBu8zB32vrgesrn7sDKVe8SvMkDfY8KYkg==
+X-Received: by 2002:a05:6402:b26:: with SMTP id bo6mr39100197edb.207.1639133996831;
         Fri, 10 Dec 2021 02:59:56 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id j17sm1320379edj.0.2021.12.10.02.59.55
+        by smtp.gmail.com with ESMTPSA id j17sm1320379edj.0.2021.12.10.02.59.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Dec 2021 02:59:55 -0800 (PST)
+        Fri, 10 Dec 2021 02:59:56 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 19/20] trace-cmd record: Add compression to the trace context
-Date:   Fri, 10 Dec 2021 12:59:37 +0200
-Message-Id: <20211210105938.98250-20-tz.stoyanov@gmail.com>
+Subject: [PATCH v6 20/20] trace-cmd report: Add new parameter for trace file compression
+Date:   Fri, 10 Dec 2021 12:59:38 +0200
+Message-Id: <20211210105938.98250-21-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211210105938.98250-1-tz.stoyanov@gmail.com>
 References: <20211210105938.98250-1-tz.stoyanov@gmail.com>
@@ -64,76 +64,72 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-As the trace-cmd library supports trace file compression, trace-cmd
-record command should have a way to configure this functionality. Trace
-context is extended to hold the compression algorithm, used to
-compress the file.
+A new parameter is added, which can be used to set desired compression
+the output trace file.
+ "trace-cmd report --compression <compression>"
+Where the <compression> string can be compression algorithm name, "any"
+for the best available algorithm or "none" for no compression.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-record.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+ tracecmd/trace-record.c | 13 +++++++++++++
+ tracecmd/trace-usage.c  |  5 +++++
+ 2 files changed, 18 insertions(+)
 
 diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 21937562..20a36a62 100644
+index 20a36a62..7ab8fec1 100644
 --- a/tracecmd/trace-record.c
 +++ b/tracecmd/trace-record.c
-@@ -199,6 +199,7 @@ struct common_record_context {
- 	char *date2ts;
- 	char *user;
- 	const char *clock;
-+	const char *compression;
- 	struct tsc_nsec tsc2nsec;
- 	int data_flags;
- 	int tsync_loop_interval;
-@@ -3702,6 +3703,12 @@ static struct tracecmd_output *create_net_output(struct common_record_context *c
- 		goto error;
- 	if (tracecmd_output_set_msg(out, msg_handle))
- 		goto error;
-+	if (ctx->compression) {
-+		if (tracecmd_output_set_compression(out, ctx->compression))
-+			goto error;
-+	} else if (ctx->file_version >= FILE_VERSION_COMPRESSION) {
-+		tracecmd_output_set_compression(out, "any");
-+	}
- 	if (tracecmd_output_write_headers(out, listed_events))
- 		goto error;
+@@ -5804,6 +5804,7 @@ void init_top_instance(void)
+ }
  
-@@ -3748,6 +3755,12 @@ setup_connection(struct buffer_instance *instance, struct common_record_context
- 			goto error;
- 		if (tracecmd_output_set_version(network_handle, ctx->file_version))
- 			goto error;
-+		if (ctx->compression) {
-+			if (tracecmd_output_set_compression(network_handle, ctx->compression))
-+				goto error;
-+		} else if (ctx->file_version >= FILE_VERSION_COMPRESSION) {
-+			tracecmd_output_set_compression(network_handle, "any");
-+		}
- 		if (tracecmd_output_write_headers(network_handle, listed_events))
- 			goto error;
- 		tracecmd_set_quiet(network_handle, quiet);
-@@ -4477,6 +4490,12 @@ static struct tracecmd_output *create_output(struct common_record_context *ctx)
- 		goto error;
- 	if (ctx->file_version && tracecmd_output_set_version(out, ctx->file_version))
- 		goto error;
-+	if (ctx->compression) {
-+		if (tracecmd_output_set_compression(out, ctx->compression))
-+			goto error;
-+	} else if (ctx->file_version >= FILE_VERSION_COMPRESSION) {
-+		tracecmd_output_set_compression(out, "any");
-+	}
- 	if (tracecmd_output_write_headers(out, listed_events))
- 		goto error;
- 
-@@ -4511,7 +4530,7 @@ static void record_data(struct common_record_context *ctx)
- 
- 	if (latency) {
- 		handle = tracecmd_create_file_latency(ctx->output, local_cpu_count,
--						      ctx->file_version, NULL);
-+						      ctx->file_version, ctx->compression);
- 		tracecmd_set_quiet(handle, quiet);
- 	} else {
- 		if (!local_cpu_count)
+ enum {
++	OPT_compression		= 237,
+ 	OPT_file_ver		= 238,
+ 	OPT_verbose		= 239,
+ 	OPT_tsc2nsec		= 240,
+@@ -6244,6 +6245,7 @@ static void parse_record_options(int argc,
+ 			{"tsc2nsec", no_argument, NULL, OPT_tsc2nsec},
+ 			{"poll", no_argument, NULL, OPT_poll},
+ 			{"verbose", optional_argument, NULL, OPT_verbose},
++			{"compression", required_argument, NULL, OPT_compression},
+ 			{"file-version", required_argument, NULL, OPT_file_ver},
+ 			{NULL, 0, NULL, 0}
+ 		};
+@@ -6670,6 +6672,17 @@ static void parse_record_options(int argc,
+ 			cmd_check_die(ctx, CMD_set, *(argv+1), "--poll");
+ 			recorder_flags |= TRACECMD_RECORD_POLL;
+ 			break;
++		case OPT_compression:
++			cmd_check_die(ctx, CMD_start, *(argv+1), "--compression");
++			cmd_check_die(ctx, CMD_set, *(argv+1), "--compression");
++			cmd_check_die(ctx, CMD_extract, *(argv+1), "--compression");
++			cmd_check_die(ctx, CMD_stream, *(argv+1), "--compression");
++			cmd_check_die(ctx, CMD_profile, *(argv+1), "--compression");
++			if (strcmp(optarg, "any") && strcmp(optarg, "none") &&
++			    !tracecmd_compress_is_supported(optarg, NULL))
++				die("Compression algorithm  %s is not supported", optarg);
++			ctx->compression = strdup(optarg);
++			break;
+ 		case OPT_file_ver:
+ 			cmd_check_die(ctx, CMD_start, *(argv+1), "--file_version");
+ 			cmd_check_die(ctx, CMD_set, *(argv+1), "--file_version");
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index 34c6cc35..77898c1c 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -70,6 +70,11 @@ static struct usage_help usage_help[] = {
+ 		"                                                         at the beginnig and at the end of the trace\n"
+ 		"          --poll don't block while reading from the trace buffer\n"
+ 		"          --file-version set the desired trace file version\n"
++		"          --compression compress the trace output file, one of these strings can be passed:\n"
++		"                            any  - auto select the best available compression algorithm\n"
++		"                            none - do not compress the trace file\n"
++		"                            name - the name of the desired compression algorithms\n"
++		"                        available algorithms can be listed with trace-cmd list -c\n"
+ 	},
+ 	{
+ 		"set",
 -- 
 2.33.1
 
