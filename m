@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA780C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Dec 2021 10:54:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C9A3C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Dec 2021 10:54:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234152AbhLJK6a (ORCPT
+        id S237045AbhLJK6b (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 10 Dec 2021 05:58:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
+        Fri, 10 Dec 2021 05:58:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237045AbhLJK6a (ORCPT
+        with ESMTP id S236956AbhLJK6b (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 Dec 2021 05:58:30 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFA9C0617A1
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 02:54:55 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id z5so29157118edd.3
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 02:54:55 -0800 (PST)
+        Fri, 10 Dec 2021 05:58:31 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6F5C061746
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 02:54:56 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id e3so29033274edu.4
+        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Dec 2021 02:54:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=FTxbRE7J2CCNffKyRk83Aq/JpUiUJLQOQTu0Ub5Z5+8=;
-        b=Jo616RfOtLuitO/yBgT2E6aigbkdYGvKyjYEH1FPji2smqJSW5B9Zy3iJbnWEwKTGw
-         WrXRh/z/7HscQe/NloRbJxhphfuUyf1lLMz49gN0XevX24GmkLiki7g4cAiYnktaPdLR
-         7smf0huGJjzYBw2/632RlU5MMUppuEcaEP20jUyIF3jzOLLlf5ni4vR39OijDLEeB1YZ
-         YQpPv3QyJ21dvVwPEA/VxyvxS/OToQGtswhe6CYX2/OnoSvYnH+8HFPYLKVf4Ik81QSQ
-         u2bAsxifyiPN7MEqlAxdANbr4HYg3EsQ6zRG007vHe08xCv2Qh/YfXD4T00GCDEJjkfK
-         g09Q==
+        bh=duEsFbpA//myTvDWkZPu8BlTIWcXguTmFScWEaOmN7I=;
+        b=avIKOKzqJMJA0wkeGvViRSE3b8xkf0EnkCUcWEE+11ID/VPZEN59RPTeDNYF5nyZA3
+         iR8YxpwSlCUu/3dbJ/U8n0Ts3o/xy9HsDuLSNPJFTUwGDbmohLy2mLS7plFMbePgcheC
+         QHbTaqHPMG/rBW1+BEkzsJBgsVHQ3Ii6slNb0YW3FipNm3evPZpP87dmMDj0cOKQUJ+Y
+         AfFAxnz/BueH2kAVRv9v2/z8ZVX+q3g1tsUMKJhTSp00GZIIDi7RI4aMgunC3MGHFNuM
+         dcTt75mODedzwKIVrpIbNd34Dmtp5jUixcXIOebcAJT9Utv82So2yn5olOnvMkkoFu10
+         tmww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FTxbRE7J2CCNffKyRk83Aq/JpUiUJLQOQTu0Ub5Z5+8=;
-        b=uoAnKO+P9DYtFc0bcVUue7tj9VQfG4GQc4UlgJGZ3B42oTkrnJ2FcP/4zoHFE6EnBC
-         KEgxx6nckp105KjnilTRal+PXjUpFI0lt08I08t0hUE//xjqS6RTkI1uT2PLs9iDLQpl
-         h2kFEmUuJWhxqMf2zhs+pY8R5ce3UlL9Qn1ETyRLcQuZCLDwmGeiNx0szvv53ILmOm/m
-         Wwtoqlb2O+i+4L3DH8a9el2ur6Pub1GLJAzSu71I/cy3BamldWjpK+zMQM3EMevaqzyo
-         FRzosv1F8XVavapjVYt4ZZ5pCy/w/IEQZyW8qDiH/9lr0wvPDnEO284bMD2B9uWb0CQm
-         PQkw==
-X-Gm-Message-State: AOAM5314kBochx4ea5w6zo9WAnxIhnGa30ku+UQLLmL7hNJzvOOkywb+
-        xHPC9zLEtKaMvLCl3a7VthZmaOpa+/k=
-X-Google-Smtp-Source: ABdhPJzKhnwDE9C1Rk+u+1uzK3qoXnIZBpz9U2PsNGNvX9h7a9w6tn7YjoljW7iPHKUTI/iKDj7MSA==
-X-Received: by 2002:a17:906:9253:: with SMTP id c19mr23833726ejx.63.1639133694036;
+        bh=duEsFbpA//myTvDWkZPu8BlTIWcXguTmFScWEaOmN7I=;
+        b=edH6+54xtod2X4JGAYi75eZpKnNeeDNGJO4Y+JSuNpqHR+UAj6cRmHfIPbawcJHVaF
+         Z+UZEeVPXtrGAXOF+0Cp3n54rje8Ogzh0FfPM+BOvwGAYuNmrPeLUiALnmTyHsaOoR/D
+         NdQBtIN8saLSS2U/b6fBhrA4NksDSoZzmAh9U0gmRp2nWSY/WEf9mpgWZnQqFJlEUmrS
+         4jFnRN8/lqH7R8UQe/lH95GN8i2PZw50LN14WFQMGw6Hm6llnCvAJuBCRBp9eklADPNt
+         gz8aJliuntwxhP8kj6+fEnjiCLnlJNUs/8JgUHk47S/cFrTGpblaMY/6IssviblRl9YP
+         ICkg==
+X-Gm-Message-State: AOAM533eJ9AUgxcC2veMUbqEUMDesTo1vajs1+fEMu84moEft8f5+nVU
+        M/7iZVtWOT4zF8Ibdh4BdNFNaKqV5aw=
+X-Google-Smtp-Source: ABdhPJxSRejc8Xrnosn+FsCLI0fz/rGvQEYffyI5n5++PTOCV91waOqlFQFJUbF4eQ/NrUP7VX3Cbw==
+X-Received: by 2002:a17:907:6ea1:: with SMTP id sh33mr23599917ejc.150.1639133694956;
         Fri, 10 Dec 2021 02:54:54 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id x7sm1306314edd.28.2021.12.10.02.54.53
+        by smtp.gmail.com with ESMTPSA id x7sm1306314edd.28.2021.12.10.02.54.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Dec 2021 02:54:53 -0800 (PST)
+        Fri, 10 Dec 2021 02:54:54 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v7 04/25] trace-cmd library: Add strings section in trace file version 7
-Date:   Fri, 10 Dec 2021 12:54:27 +0200
-Message-Id: <20211210105448.97850-5-tz.stoyanov@gmail.com>
+Subject: [PATCH v7 05/25] trace-cmd library: Add internal helper function for writing headers before file sections
+Date:   Fri, 10 Dec 2021 12:54:28 +0200
+Message-Id: <20211210105448.97850-6-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211210105448.97850-1-tz.stoyanov@gmail.com>
 References: <20211210105448.97850-1-tz.stoyanov@gmail.com>
@@ -64,173 +64,162 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In the trace file metadata there are various dynamic strings. Collecting
-all these strings in a dedicated section in the file simplifies parsing
-of the metadata. The string section is added in trace files version 7,
-at the end of the file.
+Introduce headers before each file section, in trace file version 7. The
+section header has the following format:
+ <2 bytes>, header ID
+ <4 bytes>, offset within the strings section, where the section
+            description string is located.
+ <2 bytes>, section flags:
+     1: the section is compressed
+ <8 bytes>, size of the section
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- .../include/private/trace-cmd-private.h       |  2 +
- lib/trace-cmd/trace-output.c                  | 63 +++++++++++++++++++
- tracecmd/trace-record.c                       |  1 +
- 3 files changed, 66 insertions(+)
+ include/trace-cmd/trace-cmd.h                 |  5 ++
+ .../include/private/trace-cmd-private.h       |  1 +
+ lib/trace-cmd/include/trace-cmd-local.h       |  5 ++
+ lib/trace-cmd/trace-output.c                  | 77 ++++++++++++++++++-
+ 4 files changed, 87 insertions(+), 1 deletion(-)
 
+diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+index 7fea4e01..5d71e8ba 100644
+--- a/include/trace-cmd/trace-cmd.h
++++ b/include/trace-cmd/trace-cmd.h
+@@ -15,6 +15,11 @@ enum tracecmd_open_flags {
+ 	TRACECMD_FL_LOAD_NO_PLUGINS		= 1 << 0, /* Do not load plugins */
+ 	TRACECMD_FL_LOAD_NO_SYSTEM_PLUGINS	= 1 << 1, /* Do not load system plugins */
+ };
++
++enum tracecmd_section_flags {
++	TRACECMD_SEC_FL_COMPRESS	= 1 << 0, /* the section is compressed */
++};
++
+ struct tracecmd_input *tracecmd_open_head(const char *file, int flags);
+ struct tracecmd_input *tracecmd_open(const char *file, int flags);
+ struct tracecmd_input *tracecmd_open_fd(int fd, int flags);
 diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index ed25d879..ed8fbf11 100644
+index ed8fbf11..1584d65a 100644
 --- a/lib/trace-cmd/include/private/trace-cmd-private.h
 +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -138,6 +138,7 @@ enum {
- 	TRACECMD_OPTION_TIME_SHIFT,
+@@ -139,6 +139,7 @@ enum {
  	TRACECMD_OPTION_GUEST,
  	TRACECMD_OPTION_TSC2NSEC,
-+	TRACECMD_OPTION_STRINGS,
+ 	TRACECMD_OPTION_STRINGS,
++	TRACECMD_OPTION_MAX,
  };
  
  enum {
-@@ -301,6 +302,7 @@ int tracecmd_write_buffer_info(struct tracecmd_output *handle);
- int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus);
- int tracecmd_write_cmdlines(struct tracecmd_output *handle);
- int tracecmd_write_options(struct tracecmd_output *handle);
-+int tracecmd_write_meta_strings(struct tracecmd_output *handle);
- int tracecmd_append_options(struct tracecmd_output *handle);
- void tracecmd_output_close(struct tracecmd_output *handle);
- void tracecmd_output_free(struct tracecmd_output *handle);
+diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
+index 7f280533..4a0a691c 100644
+--- a/lib/trace-cmd/include/trace-cmd-local.h
++++ b/lib/trace-cmd/include/trace-cmd-local.h
+@@ -39,6 +39,11 @@ struct data_file_write {
+ bool check_file_state(unsigned long file_version, int current_state, int new_state);
+ bool check_out_state(struct tracecmd_output *handle, int new_state);
+ 
++unsigned long long
++out_write_section_header(struct tracecmd_output *handle, unsigned short header_id,
++			 char *description, int flags, bool option);
++int out_update_section_header(struct tracecmd_output *handle, unsigned long long offset);
++
+ struct cpu_data_source {
+ 	int fd;
+ 	int size;
 diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index 4d165ac2..ed505db6 100644
+index ed505db6..457da305 100644
 --- a/lib/trace-cmd/trace-output.c
 +++ b/lib/trace-cmd/trace-output.c
-@@ -62,6 +62,8 @@ struct tracecmd_output {
- 	bool			quiet;
- 	unsigned long		file_state;
- 	unsigned long		file_version;
-+	unsigned long		strings_p;
-+	unsigned long		strings_offs;
- 	size_t			options_start;
- 	bool			big_endian;
- 
-@@ -69,6 +71,8 @@ struct tracecmd_output {
- 	struct list_head	buffers;
- 	struct tracecmd_msg_handle *msg_handle;
- 	char			*trace_clock;
-+	char			*strings;
-+
- };
- 
- struct list_event {
-@@ -85,6 +89,8 @@ struct list_event_system {
- 
- #define HAS_SECTIONS(H) ((H)->file_version >= FILE_VERSION_SECTIONS)
- 
-+static int save_string_section(struct tracecmd_output *handle);
-+
- static stsize_t
- do_write_check(struct tracecmd_output *handle, const void *data, tsize_t size)
- {
-@@ -127,6 +133,22 @@ static unsigned long long convert_endian_8(struct tracecmd_output *handle,
- 	return tep_read_number(handle->pevent, &val, 8);
- }
- 
-+static long add_string(struct tracecmd_output *handle, const char *string)
-+{
-+	int size = strlen(string) + 1;
-+	int pos = handle->strings_p;
-+	char *strings;
-+
-+	strings = realloc(handle->strings, pos + size);
-+	if (!strings)
-+		return -1;
-+	handle->strings = strings;
-+	memcpy(handle->strings + pos, string, size);
-+	handle->strings_p += size;
-+
-+	return handle->strings_offs + pos;
-+}
-+
- /**
-  * tracecmd_set_quiet - Set if to print output to the screen
-  * @quiet: If non zero, print no output to the screen
-@@ -185,6 +207,7 @@ void tracecmd_output_free(struct tracecmd_output *handle)
- 		free(option);
- 	}
- 
-+	free(handle->strings);
- 	free(handle->trace_clock);
- 	free(handle);
- }
-@@ -194,6 +217,11 @@ void tracecmd_output_close(struct tracecmd_output *handle)
- 	if (!handle)
- 		return;
- 
-+	if (handle->file_version >= FILE_VERSION_SECTIONS) {
-+		/* write strings section */
-+		save_string_section(handle);
-+	}
-+
- 	if (handle->fd >= 0) {
- 		close(handle->fd);
- 		handle->fd = -1;
-@@ -332,6 +360,32 @@ int tracecmd_ftrace_enable(int set)
+@@ -360,6 +360,82 @@ int tracecmd_ftrace_enable(int set)
  	return ret;
  }
  
-+static int save_string_section(struct tracecmd_output *handle)
++__hidden unsigned long long
++out_write_section_header(struct tracecmd_output *handle, unsigned short header_id,
++			 char *description, int flags, bool option)
 +{
-+	if (!handle->strings || !handle->strings_p)
-+		return 0;
++	tsize_t endian8;
++	tsize_t offset;
++	long long size;
++	short endian2;
++	int endian4;
++	int desc;
 +
-+	if (!check_out_state(handle, TRACECMD_OPTION_STRINGS)) {
-+		tracecmd_warning("Cannot write strings, unexpected state 0x%X",
-+				 handle->file_state);
++	if (header_id >= TRACECMD_OPTION_MAX)
 +		return -1;
++	if (!HAS_SECTIONS(handle))
++		return 0;
++	offset = do_lseek(handle, 0, SEEK_CUR);
++	if (option) {
++		endian8 = convert_endian_8(handle, offset);
++		if (!tracecmd_add_option(handle, header_id, 8, &endian8))
++			return -1;
 +	}
++	/* Section ID */
++	endian2 = convert_endian_2(handle, header_id);
++	if (do_write_check(handle, &endian2, 2))
++		return (off64_t)-1;
 +
-+	if (do_write_check(handle, handle->strings, handle->strings_p))
-+		goto error;
++	/* Section description */
++	if (description)
++		desc = add_string(handle, description);
++	else
++		desc = -1;
++	endian4 = convert_endian_4(handle, desc);
++	if (do_write_check(handle, &endian4, 4))
++		return (off64_t)-1;
 +
-+	handle->strings_offs += handle->strings_p;
-+	free(handle->strings);
-+	handle->strings = NULL;
-+	handle->strings_p = 0;
-+	handle->file_state = TRACECMD_OPTION_STRINGS;
-+	return 0;
++	/* Section flags */
++	endian2 = convert_endian_2(handle, flags);
++	if (do_write_check(handle, &endian2, 2))
++		return (off64_t)-1;
 +
-+error:
-+	return -1;
++	offset = do_lseek(handle, 0, SEEK_CUR);
++	size = 0;
++	/* Reserve for section size */
++	if (do_write_check(handle, &size, 8))
++		return (off64_t)-1;
++	return offset;
 +}
 +
++__hidden int out_update_section_header(struct tracecmd_output *handle, tsize_t offset)
++{
++	tsize_t current;
++	tsize_t endian8;
++	tsize_t size;
 +
++	if (!HAS_SECTIONS(handle) || offset == 0)
++		return 0;
++
++	current = do_lseek(handle, 0, SEEK_CUR);
++	/* The real size is the difference between the saved offset and
++	 * the current offset - 8 bytes, the reserved space for the section size.
++	 */
++	size = current - offset;
++	if (size < 8)
++		return -1;
++	size -= 8;
++	if (do_lseek(handle, offset, SEEK_SET) == (off64_t)-1)
++		return -1;
++
++	endian8 = convert_endian_8(handle, size);
++	if (do_write_check(handle, &endian8, 8))
++		return -1;
++	if (do_lseek(handle, current, SEEK_SET) == (off64_t)-1)
++		return -1;
++	return 0;
++}
++
+ static int save_string_section(struct tracecmd_output *handle)
+ {
+ 	if (!handle->strings || !handle->strings_p)
+@@ -385,7 +461,6 @@ error:
+ 	return -1;
+ }
+ 
+-
  static int read_header_files(struct tracecmd_output *handle)
  {
  	tsize_t size, check_size, endian8;
-@@ -1328,6 +1382,15 @@ int tracecmd_write_options(struct tracecmd_output *handle)
- 	return 0;
- }
- 
-+int tracecmd_write_meta_strings(struct tracecmd_output *handle)
-+{
-+	if (!HAS_SECTIONS(handle))
-+		return 0;
-+
-+	return save_string_section(handle);
-+}
-+
-+
- int tracecmd_append_options(struct tracecmd_output *handle)
- {
- 	struct tracecmd_option *options;
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 7b2b59bb..f599610e 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -4093,6 +4093,7 @@ static void setup_agent(struct buffer_instance *instance,
- 	tracecmd_write_cmdlines(network_handle);
- 	tracecmd_write_cpus(network_handle, instance->cpu_count);
- 	tracecmd_write_options(network_handle);
-+	tracecmd_write_meta_strings(network_handle);
- 	tracecmd_msg_finish_sending_data(instance->msg_handle);
- 	instance->network_handle = network_handle;
- }
 -- 
 2.33.1
 
