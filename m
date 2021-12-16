@@ -2,35 +2,35 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BE7CC433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CA29C41535
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Dec 2021 17:35:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240310AbhLPRfS (ORCPT
+        id S235931AbhLPRfT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 16 Dec 2021 12:35:18 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:54480 "EHLO
+        Thu, 16 Dec 2021 12:35:19 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:54484 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240291AbhLPRfQ (ORCPT
+        with ESMTP id S240296AbhLPRfR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 16 Dec 2021 12:35:16 -0500
+        Thu, 16 Dec 2021 12:35:17 -0500
 Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 517C720B718A;
+        by linux.microsoft.com (Postfix) with ESMTPSA id B923420B718C;
         Thu, 16 Dec 2021 09:35:16 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 517C720B718A
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B923420B718C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
         s=default; t=1639676116;
-        bh=qQeZEyXlr6ZK07nGwq0BUMOhF74ViprZftDqYTszTz4=;
+        bh=QKPQGa+eFq628DLx62JwzghSxVlty9vjx2fhMmXJvrA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XDm1K7OOQIioRO29MN2VcAmnu5htrDs+Ed4ZiyPlqfVqKAUP954drt5y2IqaHIMwQ
-         uKMJpu7OPOLYN6LSnElNlbBiT9Nf6f5VgHZCTt5qjoZFrlN+jvGQHyv+meVwl7c9kM
-         tREul1XJbT3KcScW4cK2RmEzgDJDn3lnk/gu/Yrs=
+        b=e5Q+XQd+24qRxmP24A6jsBwYZPwyhFjCl2e2uPW1V3pjP+whigr9hd9aqnUQtNOGM
+         9CiIP35a25u/oV2u8o8JITw3/IZYtaMoRy2CE6TuVWujHVAlKoStIXrABP5GjHa4kn
+         gDe/tEQPJ18c3/AMz9e3uWIB4z656nV/jYI0Yk7c=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         beaub@linux.microsoft.com
-Subject: [PATCH v8 07/12] user_events: Add self-test for perf_event integration
-Date:   Thu, 16 Dec 2021 09:35:06 -0800
-Message-Id: <20211216173511.10390-8-beaub@linux.microsoft.com>
+Subject: [PATCH v8 09/12] user_events: Add documentation file
+Date:   Thu, 16 Dec 2021 09:35:08 -0800
+Message-Id: <20211216173511.10390-10-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211216173511.10390-1-beaub@linux.microsoft.com>
 References: <20211216173511.10390-1-beaub@linux.microsoft.com>
@@ -38,203 +38,226 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Tests perf can be attached to and written out correctly. Ensures attach
-updates status bits in user programs.
+Add a documentation file about user_events with example code, etc.
+explaining how it may be used.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- tools/testing/selftests/user_events/Makefile  |   2 +-
- .../testing/selftests/user_events/perf_test.c | 168 ++++++++++++++++++
- 2 files changed, 169 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/user_events/perf_test.c
+ Documentation/trace/index.rst       |   1 +
+ Documentation/trace/user_events.rst | 195 ++++++++++++++++++++++++++++
+ 2 files changed, 196 insertions(+)
+ create mode 100644 Documentation/trace/user_events.rst
 
-diff --git a/tools/testing/selftests/user_events/Makefile b/tools/testing/selftests/user_events/Makefile
-index e824b9c2cae7..c765d8635d9a 100644
---- a/tools/testing/selftests/user_events/Makefile
-+++ b/tools/testing/selftests/user_events/Makefile
-@@ -2,7 +2,7 @@
- CFLAGS += -Wl,-no-as-needed -Wall -I../../../../usr/include
- LDLIBS += -lrt -lpthread -lm
- 
--TEST_GEN_PROGS = ftrace_test dyn_test
-+TEST_GEN_PROGS = ftrace_test dyn_test perf_test
- 
- TEST_FILES := settings
- 
-diff --git a/tools/testing/selftests/user_events/perf_test.c b/tools/testing/selftests/user_events/perf_test.c
+diff --git a/Documentation/trace/index.rst b/Documentation/trace/index.rst
+index 3769b9b7aed8..3a47aa8341c6 100644
+--- a/Documentation/trace/index.rst
++++ b/Documentation/trace/index.rst
+@@ -30,3 +30,4 @@ Linux Tracing Technologies
+    stm
+    sys-t
+    coresight/index
++   user_events
+diff --git a/Documentation/trace/user_events.rst b/Documentation/trace/user_events.rst
 new file mode 100644
-index 000000000000..26851d51d6bb
+index 000000000000..36104b537476
 --- /dev/null
-+++ b/tools/testing/selftests/user_events/perf_test.c
-@@ -0,0 +1,168 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * User Events Perf Events Test Program
-+ *
-+ * Copyright (c) 2021 Beau Belgrave <beaub@linux.microsoft.com>
-+ */
++++ b/Documentation/trace/user_events.rst
+@@ -0,0 +1,195 @@
++=========================================
++user_events: User-based Event Tracing
++=========================================
 +
-+#include <errno.h>
-+#include <linux/user_events.h>
-+#include <linux/perf_event.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <fcntl.h>
-+#include <sys/ioctl.h>
-+#include <sys/stat.h>
-+#include <unistd.h>
-+#include <asm/unistd.h>
++:Author: Beau Belgrave
 +
-+#include "../kselftest_harness.h"
++Overview
++--------
++User based trace events allow user processes to create events and trace data
++that can be viewed via existing tools, such as ftrace, perf and eBPF.
++To enable this feature, build your kernel with CONFIG_USER_EVENTS=y.
 +
-+const char *data_file = "/sys/kernel/debug/tracing/user_events_data";
-+const char *status_file = "/sys/kernel/debug/tracing/user_events_status";
-+const char *id_file = "/sys/kernel/debug/tracing/events/user_events/__test_event/id";
-+const char *fmt_file = "/sys/kernel/debug/tracing/events/user_events/__test_event/format";
++Programs can view status of the events via
++/sys/kernel/debug/tracing/user_events_status and can both register and write
++data out via /sys/kernel/debug/tracing/user_events_data.
 +
-+struct event {
-+	__u32 index;
-+	__u32 field1;
-+	__u32 field2;
-+};
++Programs can also use /sys/kernel/debug/tracing/dynamic_events to register and
++delete user based events via the u: prefix. The format of the command to
++dynamic_events is the same as the ioctl with the u: prefix applied.
 +
-+static long perf_event_open(struct perf_event_attr *pe, pid_t pid,
-+			    int cpu, int group_fd, unsigned long flags)
-+{
-+	return syscall(__NR_perf_event_open, pe, pid, cpu, group_fd, flags);
-+}
++Typically programs will register a set of events that they wish to expose to
++tools that can read trace_events (such as ftrace and perf). The registration
++process gives back two ints to the program for each event. The first int is the
++status index. This index describes which byte in the
++/sys/kernel/debug/tracing/user_events_status file represents this event. The
++second int is the write index. This index describes the data when a write() or
++writev() is called on the /sys/kernel/debug/tracing/user_events_data file.
 +
-+static int get_id(void)
-+{
-+	FILE *fp = fopen(id_file, "r");
-+	int ret, id = 0;
++The structures referenced in this document are contained with the
++/include/uap/linux/user_events.h file in the source tree.
 +
-+	if (!fp)
-+		return -1;
++**NOTE:** *Both user_events_status and user_events_data are under the tracefs
++filesystem and may be mounted at different paths than above.*
 +
-+	ret = fscanf(fp, "%d", &id);
-+	fclose(fp);
++Registering
++-----------
++Registering within a user process is done via ioctl() out to the
++/sys/kernel/debug/tracing/user_events_data file. The command to issue is
++DIAG_IOCSREG. This command takes a struct user_reg as an argument.
 +
-+	if (ret != 1)
-+		return -1;
++The struct user_reg requires two values, the first is the size of the structure
++to ensure forward and backward compatibility. The second is the command string
++to issue for registering.
 +
-+	return id;
-+}
++User based events show up under tracefs like any other event under the
++subsystem named "user_events". This means tools that wish to attach to the
++events need to use /sys/kernel/debug/tracing/events/user_events/[name]/enable
++or perf record -e user_events:[name] when attaching/recording.
 +
-+static int get_offset(void)
-+{
-+	FILE *fp = fopen(fmt_file, "r");
-+	int ret, c, last = 0, offset = 0;
++**NOTE:** *The write_index returned is only valid for the FD that was used*
 +
-+	if (!fp)
-+		return -1;
++Command Format
++^^^^^^^^^^^^^^
++The command string format is as follows::
 +
-+	/* Read until empty line */
-+	while (true) {
-+		c = getc(fp);
++  name[:FLAG1[,FLAG2...]] [Field1[;Field2...]]
 +
-+		if (c == EOF)
-+			break;
++Supported Flags
++^^^^^^^^^^^^^^^
++**BPF_ITER** - EBPF programs attached to this event will get the raw iovec
++struct instead of any data copies for max performance.
 +
-+		if (last == '\n' && c == '\n')
-+			break;
++Field Format
++^^^^^^^^^^^^
++::
 +
-+		last = c;
-+	}
++  type name [size]
 +
-+	ret = fscanf(fp, "\tfield:u32 field1;\toffset:%d;", &offset);
-+	fclose(fp);
++Basic types are supported (__data_loc, u32, u64, int, char, char[20], etc).
++User programs are encouraged to use clearly sized types like u32.
 +
-+	if (ret != 1)
-+		return -1;
++**NOTE:** *Long is not supported since size can vary between user and kernel.*
 +
-+	return offset;
-+}
++The size is only valid for types that start with a struct prefix.
++This allows user programs to describe custom structs out to tools, if required.
 +
-+FIXTURE(user) {
-+	int status_fd;
-+	int data_fd;
-+};
++For example, a struct in C that looks like this::
 +
-+FIXTURE_SETUP(user) {
-+	self->status_fd = open(status_file, O_RDONLY);
-+	ASSERT_NE(-1, self->status_fd);
++  struct mytype {
++    char data[20];
++  };
 +
-+	self->data_fd = open(data_file, O_RDWR);
-+	ASSERT_NE(-1, self->data_fd);
-+}
++Would be represented by the following field::
 +
-+FIXTURE_TEARDOWN(user) {
-+	close(self->status_fd);
-+	close(self->data_fd);
-+}
++  struct mytype myname 20
 +
-+TEST_F(user, perf_write) {
-+	struct perf_event_attr pe = {0};
-+	struct user_reg reg = {0};
-+	int page_size = sysconf(_SC_PAGESIZE);
-+	char *status_page;
-+	struct event event;
-+	struct perf_event_mmap_page *perf_page;
-+	int id, fd, offset;
-+	__u32 *val;
++Status
++------
++When tools attach/record user based events the status of the event is updated
++in realtime. This allows user programs to only incur the cost of the write() or
++writev() calls when something is actively attached to the event.
 +
-+	reg.size = sizeof(reg);
-+	reg.name_args = (__u64)"__test_event u32 field1; u32 field2";
++User programs call mmap() on /sys/kernel/debug/tracing/user_events_status to
++check the status for each event that is registered. The byte to check in the
++file is given back after the register ioctl() via user_reg.status_index.
++Currently the size of user_events_status is a single page, however, custom
++kernel configurations can change this size to allow more user based events. In
++all cases the size of the file is a multiple of a page size.
 +
-+	status_page = mmap(NULL, page_size, PROT_READ, MAP_SHARED,
-+			   self->status_fd, 0);
-+	ASSERT_NE(MAP_FAILED, status_page);
++For example, if the register ioctl() gives back a status_index of 3 you would
++check byte 3 of the returned mmap data to see if anything is attached to that
++event.
 +
-+	/* Register should work */
-+	ASSERT_EQ(0, ioctl(self->data_fd, DIAG_IOCSREG, &reg));
-+	ASSERT_EQ(0, reg.write_index);
-+	ASSERT_NE(0, reg.status_index);
-+	ASSERT_EQ(0, status_page[reg.status_index]);
++Administrators can easily check the status of all registered events by reading
++the user_events_status file directly via a terminal. The output is as follows::
 +
-+	/* Id should be there */
-+	id = get_id();
-+	ASSERT_NE(-1, id);
-+	offset = get_offset();
-+	ASSERT_NE(-1, offset);
++  Byte:Name [# Comments]
++  ...
 +
-+	pe.type = PERF_TYPE_TRACEPOINT;
-+	pe.size = sizeof(pe);
-+	pe.config = id;
-+	pe.sample_type = PERF_SAMPLE_RAW;
-+	pe.sample_period = 1;
-+	pe.wakeup_events = 1;
++  Active: ActiveCount
++  Busy: BusyCount
++  Max: MaxCount
 +
-+	/* Tracepoint attach should work */
-+	fd = perf_event_open(&pe, 0, -1, -1, 0);
-+	ASSERT_NE(-1, fd);
++For example, on a system that has a single event the output looks like this::
 +
-+	perf_page = mmap(NULL, page_size * 2, PROT_READ, MAP_SHARED, fd, 0);
-+	ASSERT_NE(MAP_FAILED, perf_page);
++  1:test
 +
-+	/* Status should be updated */
-+	ASSERT_EQ(EVENT_STATUS_PERF, status_page[reg.status_index]);
++  Active: 1
++  Busy: 0
++  Max: 4096
 +
-+	event.index = reg.write_index;
-+	event.field1 = 0xc001;
-+	event.field2 = 0xc01a;
++If a user enables the user event via ftrace, the output would change to this::
 +
-+	/* Ensure write shows up at correct offset */
-+	ASSERT_NE(-1, write(self->data_fd, &event, sizeof(event)));
-+	val = (void *)(((char *)perf_page) + perf_page->data_offset);
-+	ASSERT_EQ(PERF_RECORD_SAMPLE, *val);
-+	/* Skip over header and size, move to offset */
-+	val += 3;
-+	val = (void *)((char *)val) + offset;
-+	/* Ensure correct */
-+	ASSERT_EQ(event.field1, *val++);
-+	ASSERT_EQ(event.field2, *val++);
-+}
++  1:test # Used by ftrace
 +
-+int main(int argc, char **argv)
-+{
-+	return test_harness_run(argc, argv);
-+}
++  Active: 1
++  Busy: 1
++  Max: 4096
++
++**NOTE:** *A status index of 0 will never be returned. This allows user
++programs to have an index that can be used on error cases.*
++
++Status Bits
++^^^^^^^^^^^
++The byte being checked will be non-zero if anything is attached. Programs can
++check specific bits in the byte to see what mechanism has been attached.
++
++The following values are defined to aid in checking what has been attached:
++
++**EVENT_STATUS_FTRACE** - Bit set if ftrace has been attached (Bit 0).
++
++**EVENT_STATUS_PERF** - Bit set if perf/eBPF has been attached (Bit 1).
++
++Writing Data
++------------
++After registering an event the same fd that was used to register can be used
++to write an entry for that event. The write_index returned must be at the start
++of the data, then the remaining data is treated as the payload of the event.
++
++For example, if write_index returned was 1 and I wanted to write out an int
++payload of the event. Then the data would have to be 8 bytes (2 ints) in size,
++with the first 4 bytes being equal to 1 and the last 4 bytes being equal to the
++value I want as the payload.
++
++In memory this would look like this::
++
++  int index;
++  int payload;
++
++User programs might have well known structs that they wish to use to emit out
++as payloads. In those cases writev() can be used, with the first vector being
++the index and the following vector(s) being the actual event payload.
++
++For example, if I have a struct like this::
++
++  struct payload {
++        int src;
++        int dst;
++        int flags;
++  };
++
++It's advised for user programs to do the following::
++
++  struct iovec io[2];
++  struct payload e;
++
++  io[0].iov_base = &write_index;
++  io[0].iov_len = sizeof(write_index);
++  io[1].iov_base = &e;
++  io[1].iov_len = sizeof(e);
++
++  writev(fd, (const struct iovec*)io, 2);
++
++**NOTE:** *The write_index is not emitted out into the trace being recorded.*
++
++EBPF
++----
++EBPF programs that attach to a user-based event tracepoint are given a pointer
++to a struct user_bpf_context. The bpf context contains the data type (which can
++be a user or kernel buffer, or can be a pointer to the iovec) and the data
++length that was emitted (minus the write_index).
++
++Example Code
++------------
++See sample code in samples/user_events.
 -- 
 2.17.1
 
