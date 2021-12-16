@@ -2,34 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EF10C4321E
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Dec 2021 21:40:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EF89C4167E
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Dec 2021 21:40:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241639AbhLPVkC (ORCPT
+        id S241636AbhLPVkD (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 16 Dec 2021 16:40:02 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:39060 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241577AbhLPVkB (ORCPT
+        Thu, 16 Dec 2021 16:40:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241646AbhLPVkC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 16 Dec 2021 16:40:01 -0500
+        Thu, 16 Dec 2021 16:40:02 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6C5C061574
+        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Dec 2021 13:40:02 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 95E2DB82655
+        by ams.source.kernel.org (Postfix) with ESMTPS id A2EC5B82650
         for <linux-trace-devel@vger.kernel.org>; Thu, 16 Dec 2021 21:40:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAF04C36AEE;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1654C36AF1;
         Thu, 16 Dec 2021 21:39:58 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mxyTl-0003dQ-RE;
+        id 1mxyTl-0003dr-V6;
         Thu, 16 Dec 2021 16:39:57 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 04/10] libtraceevent: Move installed headers into their own directory
-Date:   Thu, 16 Dec 2021 16:39:50 -0500
-Message-Id: <20211216213956.13934-5-rostedt@goodmis.org>
+Subject: [PATCH 10/10] libtraceevent: Have print_field_raw() handle old data layout
+Date:   Thu, 16 Dec 2021 16:39:56 -0500
+Message-Id: <20211216213956.13934-11-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211216213956.13934-1-rostedt@goodmis.org>
 References: <20211216213956.13934-1-rostedt@goodmis.org>
@@ -41,87 +44,37 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-It was noted that it is confusing that the headers that get installed and
-are API are in the same directory as the source code. Create a
-include/traceevent directory and move the headers that get installed onto
-the system into that directory.
+Old kernels would produce dynamic strings with only a two byte offset. The
+length of the array was determined by the string length. When parsing, if
+the field is dynamic with a size of 2, then it is the old dynamic string
+layout. Set the field to both a string and an array.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Makefile                                  | 14 ++++++++------
- {src => include/traceevent}/event-parse.h |  0
- {src => include/traceevent}/event-utils.h |  0
- {src => include/traceevent}/kbuffer.h     |  0
- {src => include/traceevent}/trace-seq.h   |  0
- plugins/Makefile                          |  2 +-
- 6 files changed, 9 insertions(+), 7 deletions(-)
- rename {src => include/traceevent}/event-parse.h (100%)
- rename {src => include/traceevent}/event-utils.h (100%)
- rename {src => include/traceevent}/kbuffer.h (100%)
- rename {src => include/traceevent}/trace-seq.h (100%)
+ src/event-parse.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/Makefile b/Makefile
-index 8b3b5cc1ea35..965eb56a8ea0 100644
---- a/Makefile
-+++ b/Makefile
-@@ -117,9 +117,11 @@ N		=
- LIBTRACEEVENT_STATIC = $(bdir)/libtraceevent.a
- LIBTRACEEVENT_SHARED = $(bdir)/libtraceevent.so.$(EVENT_PARSE_VERSION)
+diff --git a/src/event-parse.c b/src/event-parse.c
+index 40af92f4295f..9bd605d74b1f 100644
+--- a/src/event-parse.c
++++ b/src/event-parse.c
+@@ -1828,6 +1828,16 @@ static int event_read_fields(struct tep_event *event, struct tep_format_field **
+ 		field->size = strtoul(token, NULL, 0);
+ 		free_token(token);
  
--INCLUDES = -I. -I $(srctree)/include $(CONFIG_INCLUDES)
-+EP_HEADERS_DIR = $(src)/include/traceevent
- 
--export LIBTRACEEVENT_STATIC LIBTRACEEVENT_SHARED
-+INCLUDES = -I. -I $(srctree)/include -I $(EP_HEADERS_DIR) $(CONFIG_INCLUDES)
++		/*
++		 * The old data format before dynamic arrays had dynamic
++		 * strings defined with just a 2 byte offset (the length
++		 * is defined by the strlen() of the string. To process them
++		 * correctly, check if the field is dynamic and has a size of
++		 * 2 bytes. All current dynamic events have a size of 4.
++		 */
++		if ((field->flags & TEP_FIELD_IS_DYNAMIC) && field->size == 2)
++			field->flags |= TEP_FIELD_IS_STRING | TEP_FIELD_IS_ARRAY;
 +
-+export LIBTRACEEVENT_STATIC LIBTRACEEVENT_SHARED EP_HEADERS_DIR
+ 		if (read_expected(TEP_EVENT_OP, ";") < 0)
+ 			goto fail_expect;
  
- # Set compile option CFLAGS
- ifdef EXTRA_CFLAGS
-@@ -334,10 +336,10 @@ install_pkgconfig: $(PKG_CONFIG_FILE)
- 	$(Q)$(call do_install_pkgconfig_file,$(prefix))
- 
- install_headers:
--	$(Q)$(call do_install,src/event-parse.h,$(includedir_SQ),644);
--	$(Q)$(call do_install,src/event-utils.h,$(includedir_SQ),644);
--	$(Q)$(call do_install,src/trace-seq.h,$(includedir_SQ),644);
--	$(Q)$(call do_install,src/kbuffer.h,$(includedir_SQ),644)
-+	$(Q)$(call do_install,$(EP_HEADERS_DIR)/event-parse.h,$(includedir_SQ),644);
-+	$(Q)$(call do_install,$(EP_HEADERS_DIR)/event-utils.h,$(includedir_SQ),644);
-+	$(Q)$(call do_install,$(EP_HEADERS_DIR)/trace-seq.h,$(includedir_SQ),644);
-+	$(Q)$(call do_install,$(EP_HEADERS_DIR)/kbuffer.h,$(includedir_SQ),644)
- 
- install: install_libs
- 
-diff --git a/src/event-parse.h b/include/traceevent/event-parse.h
-similarity index 100%
-rename from src/event-parse.h
-rename to include/traceevent/event-parse.h
-diff --git a/src/event-utils.h b/include/traceevent/event-utils.h
-similarity index 100%
-rename from src/event-utils.h
-rename to include/traceevent/event-utils.h
-diff --git a/src/kbuffer.h b/include/traceevent/kbuffer.h
-similarity index 100%
-rename from src/kbuffer.h
-rename to include/traceevent/kbuffer.h
-diff --git a/src/trace-seq.h b/include/traceevent/trace-seq.h
-similarity index 100%
-rename from src/trace-seq.h
-rename to include/traceevent/trace-seq.h
-diff --git a/plugins/Makefile b/plugins/Makefile
-index 8b1dbf68757c..4c8cb177b668 100644
---- a/plugins/Makefile
-+++ b/plugins/Makefile
-@@ -62,7 +62,7 @@ CONFIG_FLAGS   =
- OBJ            = $@
- N              =
- 
--INCLUDES = -I. -I.. -I../src -I $(srctree)/include $(CONFIG_INCLUDES)
-+INCLUDES = -I. -I.. -I../src -I $(srctree)/include -I $(EP_HEADERS_DIR) $(CONFIG_INCLUDES)
- 
- # Set compile option CFLAGS
- ifdef EXTRA_CFLAGS
 -- 
 2.33.0
 
