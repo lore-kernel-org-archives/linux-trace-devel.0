@@ -2,128 +2,80 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3001BC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Dec 2021 17:35:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95406C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Dec 2021 21:40:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240361AbhLPRfY (ORCPT
+        id S241241AbhLPVkA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 16 Dec 2021 12:35:24 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:54484 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240303AbhLPRfR (ORCPT
+        Thu, 16 Dec 2021 16:40:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241042AbhLPVj7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 16 Dec 2021 12:35:17 -0500
-Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 5B5E120B7194;
-        Thu, 16 Dec 2021 09:35:17 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5B5E120B7194
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1639676117;
-        bh=4rS/OSFoB8cwnQ1Ju8K30aEaSCCMQ6qX3sGGO0R79Mc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DNve0mZI8o8t0NrI4IrG2a2OHC4zzcAQ9iqjV09Vo2S1BSwKmYaUJzJVrzL0+gmyE
-         rl6p3FSYnLGYEsM7xxYZcJ/pmZnazthdWt8MMzrgQcFaTPw0+P5WNK198pHLhN3RKY
-         uM2B9EP0GNbbaW8yrVVuDTvHWRPpsFSU9y+1GtPM=
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     rostedt@goodmis.org, mhiramat@kernel.org
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        beaub@linux.microsoft.com
-Subject: [PATCH v8 12/12] user_events: Add self-test for validator boundaries
-Date:   Thu, 16 Dec 2021 09:35:11 -0800
-Message-Id: <20211216173511.10390-13-beaub@linux.microsoft.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211216173511.10390-1-beaub@linux.microsoft.com>
-References: <20211216173511.10390-1-beaub@linux.microsoft.com>
+        Thu, 16 Dec 2021 16:39:59 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A24C06173E
+        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Dec 2021 13:39:59 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6575461F9B
+        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Dec 2021 21:39:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCA23C36AEA;
+        Thu, 16 Dec 2021 21:39:58 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.95)
+        (envelope-from <rostedt@rostedt.homelinux.com>)
+        id 1mxyTl-0003dH-PA;
+        Thu, 16 Dec 2021 16:39:57 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 01/10] libtraceevent: Fix installing of man pages in remote directory
+Date:   Thu, 16 Dec 2021 16:39:47 -0500
+Message-Id: <20211216213956.13934-2-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211216213956.13934-1-rostedt@goodmis.org>
+References: <20211216213956.13934-1-rostedt@goodmis.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Tests to ensure validator boundary cases are working correctly within
-close and far bounds. Ensures __data_loc and __rel_loc strings are
-null terminated and within range. Ensures min size checks work as
-expected.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+When the building of the man pages is done in a directory other than the
+repo directory (with the O= option), the intermediate build file name
+incorrectly appends a "install-" prefix to the path and not to the file,
+causing the installation to fail.
+
+Fix it by using patsubst instead of addprefix to append the "install-"
+name to the intermediate files for the installation.
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- .../selftests/user_events/ftrace_test.c       | 65 +++++++++++++++++++
- 1 file changed, 65 insertions(+)
+ Documentation/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/user_events/ftrace_test.c b/tools/testing/selftests/user_events/ftrace_test.c
-index 68010fd7b719..a80fb5ef61d5 100644
---- a/tools/testing/selftests/user_events/ftrace_test.c
-+++ b/tools/testing/selftests/user_events/ftrace_test.c
-@@ -309,6 +309,71 @@ TEST_F(user, write_fault) {
- 	ASSERT_EQ(0, munmap(anon, l));
- }
+diff --git a/Documentation/Makefile b/Documentation/Makefile
+index 73dbe2ae4d43..af124572c863 100644
+--- a/Documentation/Makefile
++++ b/Documentation/Makefile
+@@ -154,12 +154,12 @@ ifdef missing_tools
+ 	$(error "You need to install $(missing_tools) for man pages")
+ endif
  
-+TEST_F(user, write_validator) {
-+	struct user_reg reg = {0};
-+	struct iovec io[3];
-+	int loc, bytes;
-+	char data[8];
-+	int before = 0, after = 0;
-+
-+	reg.size = sizeof(reg);
-+	reg.name_args = (__u64)"__test_event __rel_loc char[] data";
-+
-+	/* Register should work */
-+	ASSERT_EQ(0, ioctl(self->data_fd, DIAG_IOCSREG, &reg));
-+	ASSERT_EQ(0, reg.write_index);
-+	ASSERT_NE(0, reg.status_index);
-+
-+	io[0].iov_base = &reg.write_index;
-+	io[0].iov_len = sizeof(reg.write_index);
-+	io[1].iov_base = &loc;
-+	io[1].iov_len = sizeof(loc);
-+	io[2].iov_base = data;
-+	bytes = snprintf(data, sizeof(data), "Test") + 1;
-+	io[2].iov_len = bytes;
-+
-+	/* Undersized write should fail */
-+	ASSERT_EQ(-1, writev(self->data_fd, (const struct iovec *)io, 1));
-+	ASSERT_EQ(EINVAL, errno);
-+
-+	/* Enable event */
-+	self->enable_fd = open(enable_file, O_RDWR);
-+	ASSERT_NE(-1, write(self->enable_fd, "1", sizeof("1")))
-+
-+	/* Full in-bounds write should work */
-+	before = trace_bytes();
-+	loc = DYN_LOC(0, bytes);
-+	ASSERT_NE(-1, writev(self->data_fd, (const struct iovec *)io, 3));
-+	after = trace_bytes();
-+	ASSERT_GT(after, before);
-+
-+	/* Out of bounds write should fault (offset way out) */
-+	loc = DYN_LOC(1024, bytes);
-+	ASSERT_EQ(-1, writev(self->data_fd, (const struct iovec *)io, 3));
-+	ASSERT_EQ(EFAULT, errno);
-+
-+	/* Out of bounds write should fault (offset 1 byte out) */
-+	loc = DYN_LOC(1, bytes);
-+	ASSERT_EQ(-1, writev(self->data_fd, (const struct iovec *)io, 3));
-+	ASSERT_EQ(EFAULT, errno);
-+
-+	/* Out of bounds write should fault (size way out) */
-+	loc = DYN_LOC(0, bytes + 1024);
-+	ASSERT_EQ(-1, writev(self->data_fd, (const struct iovec *)io, 3));
-+	ASSERT_EQ(EFAULT, errno);
-+
-+	/* Out of bounds write should fault (size 1 byte out) */
-+	loc = DYN_LOC(0, bytes + 1);
-+	ASSERT_EQ(-1, writev(self->data_fd, (const struct iovec *)io, 3));
-+	ASSERT_EQ(EFAULT, errno);
-+
-+	/* Non-Null should fault */
-+	memset(data, 'A', sizeof(data));
-+	loc = DYN_LOC(0, bytes);
-+	ASSERT_EQ(-1, writev(self->data_fd, (const struct iovec *)io, 3));
-+	ASSERT_EQ(EFAULT, errno);
-+}
-+
- TEST_F(user, print_fmt) {
- 	int ret;
+-install-%.3: $(OUTPUT)%.3
++$(OUTPUT)install-%.3: $(OUTPUT)%.3
+ 	$(call QUIET_INSTALL, $<) \
+ 		$(INSTALL) -d -m 755 $(DESTDIR)$(man3dir); \
+ 		$(INSTALL) -m 644 $< $(DESTDIR)$(man3dir);
  
+-do-install-man: man $(addprefix install-,$(wildcard $(OUTPUT)*.3))
++do-install-man: man $(patsubst $(OUTPUT)%,$(OUTPUT)install-%,$(wildcard $(OUTPUT)*.3))
+ 
+ install-man: check-man-tools man
+ 	$(Q)$(MAKE) -C . do-install-man
 -- 
-2.17.1
+2.33.0
 
