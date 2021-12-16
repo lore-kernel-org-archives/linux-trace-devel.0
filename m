@@ -2,131 +2,155 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00D3AC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Dec 2021 07:11:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFDA9C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Dec 2021 08:07:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbhLPHLz (ORCPT
+        id S232280AbhLPIHx (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 16 Dec 2021 02:11:55 -0500
-Received: from mail-eopbgr150078.outbound.protection.outlook.com ([40.107.15.78]:55264
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234370AbhLPHLz (ORCPT
+        Thu, 16 Dec 2021 03:07:53 -0500
+Received: from mail-ed1-f44.google.com ([209.85.208.44]:39471 "EHLO
+        mail-ed1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230324AbhLPIHx (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 16 Dec 2021 02:11:55 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IlQ2Qf0PERswEJaPL7kyi9HJCxAsoltljCUcUN41MZsO7JuRKlWJW0ba4l7QZ+4dbBYQm0ekk3Bhdo82B27iRIh6VDl4eW5bkLrERWIlZSp3egq/ftbq1iA7DwXCoR+Ch02X7b2D31x7avbn0UHkPe+Fjqi28ph2YUbmRG78WTAXfvTmab4h028QgcZCIHn+GajpwdzcUPIdT0EREUr+8wjF2yfLYqqGE3KVENhqumcuIoOrT7jm8LD3VrqHUDxLESbdtK6DW4bjTYBJhqw69YTmyzTZq2npdp/U8kGRSBNwPYj7JSA3jHSggqB44ZEuVV5FyaPKntSNb/oR7FHUnw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ax8wRpsG89nncdqncOwVS4N/nkpWenuX2+9h15FZXM0=;
- b=TBTrYqHp/qxZE91TOennHxc5ZUA/FgGWaKKdJahwqsNpM5MEdRcct4rJQyFzgoG7ctlLGwapSWA1ledbD2B2IJC6Jx7dsJ1HVdbAluVEjJZauizcEixLB8FIEVMO1n3e5cpJVe1JOhOuDTD61cdSFHdXKlhcvEw8e+Xp0eV4NsMlcWGWiICgM968cmHxXx9EVeMlwqG/cIrXl+TrGALzR/Ov+dE3f/l4fTmPCSKxJx96K7BD+2pDjlOSSOlXe8GO0bTAv2SkBCKXjw2xgTFa6vHHZ0ZmQ+EyzHnwRlFexA+LlqonXTVepbbg/U6jKITSzIg9hc0qmTJkgpO6d77QkQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 194.138.21.71) smtp.rcpttodomain=gmail.com smtp.mailfrom=siemens.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=siemens.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ax8wRpsG89nncdqncOwVS4N/nkpWenuX2+9h15FZXM0=;
- b=DIs1ydzZ9t5FzqRpCRK+n/ytvzR90yb50IEW678Oya1bMjOxlvC/0WULR3p1YOqsga5QpDXYtEuP0y5hJEx11ZQ3+dXPnQqI1A0tRpls5w0LHoIeofkcGrK9M4LfWPqwqXnHQKjRsbUh18IO4Hp9PBFcLVIXSUwscRjPc3QFjAgouLaYri/hqsHj0k0vJE4JhDKey/KXdp5B+gygx9c3gY9xTaRQxI94SwN/4Qrjfrw4h28w1CLTMHV411/NZm7towfCjQLhJy+4tzz54LiuyVr53PAxDaesyj31H93dTU1FpcZulJ48db/wDKykDFes3Mh7zsG8a5LgjjwHFj7fCA==
-Received: from DU2PR04CA0314.eurprd04.prod.outlook.com (2603:10a6:10:2b5::19)
- by AM0PR10MB3379.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:156::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4778.17; Thu, 16 Dec
- 2021 07:11:52 +0000
-Received: from DB5EUR01FT042.eop-EUR01.prod.protection.outlook.com
- (2603:10a6:10:2b5:cafe::9) by DU2PR04CA0314.outlook.office365.com
- (2603:10a6:10:2b5::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4778.16 via Frontend
- Transport; Thu, 16 Dec 2021 07:11:52 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 194.138.21.71)
- smtp.mailfrom=siemens.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=siemens.com;
-Received-SPF: Pass (protection.outlook.com: domain of siemens.com designates
- 194.138.21.71 as permitted sender) receiver=protection.outlook.com;
- client-ip=194.138.21.71; helo=hybrid.siemens.com;
-Received: from hybrid.siemens.com (194.138.21.71) by
- DB5EUR01FT042.mail.protection.outlook.com (10.152.5.100) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4778.12 via Frontend Transport; Thu, 16 Dec 2021 07:11:52 +0000
-Received: from DEMCHDC8A0A.ad011.siemens.net (139.25.226.106) by
- DEMCHDC9SKA.ad011.siemens.net (194.138.21.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Thu, 16 Dec 2021 08:11:51 +0100
-Received: from [139.22.140.88] (139.22.140.88) by
- DEMCHDC8A0A.ad011.siemens.net (139.25.226.106) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Thu, 16 Dec 2021 08:11:51 +0100
-Subject: Re: [RFC PATCH 0/1] kernel-shark: Add plugin for handling Xenomai
- cobalt_context_switch.
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Hongzhan Chen <hongzhan.chen@intel.com>
-CC:     <linux-trace-devel@vger.kernel.org>,
-        Yordan Karadzhov <y.karadz@gmail.com>
-References: <20211216021649.7273-1-hongzhan.chen@intel.com>
- <20211215220327.0daae29e@gandalf.local.home>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Message-ID: <b4599ebc-7e53-9d95-32ac-448c1cac8a8a@siemens.com>
-Date:   Thu, 16 Dec 2021 08:11:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 16 Dec 2021 03:07:53 -0500
+Received: by mail-ed1-f44.google.com with SMTP id b7so24572337edd.6;
+        Thu, 16 Dec 2021 00:07:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=B1dCGNE6Asc15QtzoN3T9KZucJE0Zy9VdUaTThMxTwM=;
+        b=o/+RL0EYFzBxC+Yth/B/bKRLABwixamMp99z/+Imjvcj3Bqom9f9BqdwD2IF/amNs4
+         28n/g8PM5ikKnNeBxvlrQAtncCyiaGfWy/YRshbRiuuggVzJEKihEAejLwCE6laxaFNy
+         LjJ1D5L94+ZShWR7T66+z79K5AdEmnPxRer8jLyi4qhELwZ3ZOBQhzeeBjxob1r3uD1A
+         ZSULTnp0dMm4cXTrzDel8GjI+NMnAU6clrrElp5MRlJx4HajjTzKe+LK8Cx06Jm0738A
+         623C9oVcOAsT98X1mk9Yl5LgfABDOVmGz2ufOmJQFMuy7IEwBIjETzFpe2qoLheEVTe1
+         Ln3g==
+X-Gm-Message-State: AOAM531sTM8bKlZFFkwwaJqRyPwt2VlByD2sHoyabrbsnmAQqJGYuI2t
+        KDlyQqY4YbQ4XqoxV1vFGqw=
+X-Google-Smtp-Source: ABdhPJwDtn7isN+9tUuLN7MDegOWlqxV9xYLaCuE2KjMB7ND875Fz3Tzav+ULBI4zNECCjyxko0cwQ==
+X-Received: by 2002:a17:906:b003:: with SMTP id v3mr14837935ejy.770.1639642071889;
+        Thu, 16 Dec 2021 00:07:51 -0800 (PST)
+Received: from ?IPV6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id p7sm2020784edu.84.2021.12.16.00.07.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Dec 2021 00:07:51 -0800 (PST)
+Message-ID: <bc2b0786-8965-1bcd-2316-9d9bb37b9c31@kernel.org>
+Date:   Thu, 16 Dec 2021 09:07:50 +0100
 MIME-Version: 1.0
-In-Reply-To: <20211215220327.0daae29e@gandalf.local.home>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Subject: Re: [PATCH v3 4/4] libtraceevent: Increase libtraceevent logging when
+ verbose
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [139.22.140.88]
-X-ClientProxiedBy: DEMCHDC8A0A.ad011.siemens.net (139.25.226.106) To
- DEMCHDC8A0A.ad011.siemens.net (139.25.226.106)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f3120f88-9568-44a9-5c96-08d9c06355d9
-X-MS-TrafficTypeDiagnostic: AM0PR10MB3379:EE_
-X-Microsoft-Antispam-PRVS: <AM0PR10MB3379147ECC2F0A45FFEE704795779@AM0PR10MB3379.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mTuBUS09/F4R0I32EkMPZRL//ZcdzWWttce6hjmkyrMXU58rshMtEadkuHb504wHqxDTOjgXFnsfKrPUgX71w4OKgy4hKWmzLoso6TVu4+RF/E/gRBUxqzqdJfj0rF29RhkdmhzkhXroUkZoExpsDtaaE/bRqm8avvsBb1ALYnnh/ZjwytS2mjaGRX/aqCqW0I3Syk3NcW0QjEFg3PrcW1wSU7O7G3O547fM0aFPCV5ASRCBZcAQcCz1O3AzCBlxxCZWAK+eYuFM0hbLhlUqzEwZvQ7Gvoey0FMVpwi9M6rJSaUdHEKeiPnOFnMRf26VkC9d0XBMt9GcW/VtFU83aCky2o41YyPe4rQFGx3muDPWR3ZZXMC3zLLk/Lzgce+cVdzO/dq8Xf7vsGAGvU93DimvR7HBdxpt+E23rztDLn5yPn3Y7IZBpdmZPKcNCqpS38pGSRapRSQxGLfs4urWxxf+op3HlKq4/5+rLAro7DhY4sSUcvtiHiH1yTy6gpQv0TnOaHk2P+M4DOjQ6BD/AhnvSBRh7RKNUi+qFcBLlZhDAb96KA7/QZx5jiuj2Ry5XnpgOwbKI30v15tTvuuqSpp3nwoPQWkBlTbD+DsgIvHorkWI95GTsAqDWmslyS+kJjJtXUbrVtlrS27rlO3VThkJwEyEJxJ6V9GiF6NxU6hNL9CQZm3S7L1nqZp83akreJ3lx5SmomnyVvAVgoQ42bg28WgpIUw+MSh85opELpkENhyhOm1o9k3px0jdkPYGUabsHpkayIZXBzzE0qxunx8nW250m+b6uTYKLNmj9smzAcalkTYIGeJl8hWtDxyLGeLl7Db2MYpCGDSG4jJJtRGYH0Pat+PwN4sk+6jTimI=
-X-Forefront-Antispam-Report: CIP:194.138.21.71;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:hybrid.siemens.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(40470700001)(70206006)(36756003)(8936002)(70586007)(54906003)(82960400001)(356005)(40460700001)(82310400004)(83380400001)(6706004)(47076005)(5660300002)(31686004)(2906002)(44832011)(53546011)(26005)(186003)(36860700001)(4326008)(4744005)(8676002)(81166007)(16526019)(31696002)(110136005)(336012)(956004)(2616005)(16576012)(508600001)(86362001)(316002)(3940600001)(43740500002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Dec 2021 07:11:52.3458
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3120f88-9568-44a9-5c96-08d9c06355d9
-X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=38ae3bcd-9579-4fd4-adda-b42e1495d55a;Ip=[194.138.21.71];Helo=[hybrid.siemens.com]
-X-MS-Exchange-CrossTenant-AuthSource: DB5EUR01FT042.eop-EUR01.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB3379
+To:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     eranian@google.com
+References: <20210923001024.550263-1-irogers@google.com>
+ <20210923001024.550263-4-irogers@google.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <20210923001024.550263-4-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 16.12.21 04:03, Steven Rostedt wrote:
-> On Wed, 15 Dec 2021 21:16:48 -0500
-> Hongzhan Chen <hongzhan.chen@intel.com> wrote:
-> 
->> I do not know if this patch can be accepted in upstream from function's
->> view because it is xenomai related which still be different from
->> pure kernel-shark for pure linux. But it is still independent plugin
->> which would not influence other kernel-shark's functions and the plugin
->> would not take effect if there is no cobalt_switch_context event found
->> in trace data.
-> 
-> We are perfectly happy to accept plugins for various OSs, not just pure
-> Linux :-)
-> 
+Hi,
 
-We were just wondering how to handle potential (we have no concrete case
-so far) variations of trace points along releases of those "various OSs"
-best and were therefore also considering maintaining the plugin in
-lock-step with the Xenomai releases. How does KernelShark manage such cases?
+On 23. 09. 21, 2:10, Ian Rogers wrote:
+> libtraceevent has added more levels of debug printout and with changes
+> like:
+> https://lore.kernel.org/linux-trace-devel/20210507095022.1079364-3-tz.stoyanov@gmail.com
+> previously generated output like "registering plugin" is no longer
+> displayed. This change makes it so that if perf's verbose debug output
+> is enabled then the debug and info libtraceevent messages can be
+> displayed.
+> The code is conditionally enabled based on the libtraceevent version as
+> discussed in the RFC:
+> https://lore.kernel.org/lkml/20210610060643.595673-1-irogers@google.com/
+> 
+> v2. Is a rebase and handles the case of building without
+>      LIBTRACEEVENT_DYNAMIC.
 
-Thanks,
-Jan
+It breaks build with LIBTRACEEVENT_DYNAMIC and version 1.3.0:
+ > util/debug.c: In function ‘perf_debug_option’:
+ > util/debug.c:243:17: error: implicit declaration of function 
+‘tep_set_loglevel’ [-Werror=implicit-function-declaration]
+ >   243 |                 tep_set_loglevel(TEP_LOG_INFO);
+ >       |                 ^~~~~~~~~~~~~~~~
+ > util/debug.c:243:34: error: ‘TEP_LOG_INFO’ undeclared (first use in 
+this function); did you mean ‘TEP_PRINT_INFO’?
+ >   243 |                 tep_set_loglevel(TEP_LOG_INFO);
+ >       |                                  ^~~~~~~~~~~~
+ >       |                                  TEP_PRINT_INFO
+ > util/debug.c:243:34: note: each undeclared identifier is reported 
+only once for each function it appears in
+ > util/debug.c:245:34: error: ‘TEP_LOG_DEBUG’ undeclared (first use in 
+this function)
+ >   245 |                 tep_set_loglevel(TEP_LOG_DEBUG);
+ >       |                                  ^~~~~~~~~~~~~
+ > util/debug.c:247:34: error: ‘TEP_LOG_ALL’ undeclared (first use in 
+this function)
+ >   247 |                 tep_set_loglevel(TEP_LOG_ALL);
+ >       |                                  ^~~~~~~~~~~
 
+It is because the gcc's command line looks like:
+gcc
+...
+-I/home/abuild/rpmbuild/BUILD/tools/lib/
+...
+-DLIBTRACEEVENT_VERSION=65790
+...
+
+So:
+
+
+> --- a/tools/perf/util/debug.c
+> +++ b/tools/perf/util/debug.c
+> @@ -24,6 +24,16 @@
+>   #include "util/parse-sublevel-options.h"
+>   
+>   #include <linux/ctype.h>
+> +#include <traceevent/event-parse.h>
+
+/home/abuild/rpmbuild/BUILD/tools/lib/traceevent/event-parse.h is taken 
+here.
+
+> @@ -228,6 +238,15 @@ int perf_debug_option(const char *str)
+>   	/* Allow only verbose value in range (0, 10), otherwise set 0. */
+>   	verbose = (verbose < 0) || (verbose > 10) ? 0 : verbose;
+>   
+> +#if MAKE_LIBTRACEEVENT_VERSION(1, 3, 0) <= LIBTRACEEVENT_VERSION
+
+But
+-DLIBTRACEEVENT_VERSION=65790
+is taken here (which is 1.3.0).
+
+> +	if (verbose == 1)
+> +		tep_set_loglevel(TEP_LOG_INFO);
+> +	else if (verbose == 2)
+> +		tep_set_loglevel(TEP_LOG_DEBUG);
+> +	else if (verbose >= 3)
+> +		tep_set_loglevel(TEP_LOG_ALL);
+> +#endif
+> +
+>   	return 0;
+>   }
+>   
+
+regards,
 -- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+js
+suse labs
