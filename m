@@ -2,110 +2,88 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6D8EC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Dec 2021 12:43:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5311C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Dec 2021 13:29:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236878AbhLPMnz (ORCPT
+        id S237518AbhLPN3z (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 16 Dec 2021 07:43:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46340 "EHLO
+        Thu, 16 Dec 2021 08:29:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234189AbhLPMny (ORCPT
+        with ESMTP id S231685AbhLPN3z (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 16 Dec 2021 07:43:54 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70007C06173E
-        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Dec 2021 04:43:54 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id k37-20020a05600c1ca500b00330cb84834fso1655452wms.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Dec 2021 04:43:54 -0800 (PST)
+        Thu, 16 Dec 2021 08:29:55 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C24BAC06173E
+        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Dec 2021 05:29:54 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id a18so44247671wrn.6
+        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Dec 2021 05:29:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=n3a8vApecCFJpiz3t6RAPQ5VVqr5dUZENjDURZfl2gI=;
-        b=Sva22keoOEGZQYznx5UV/8pgJOJo9uRgvZw0swTMsXhOSy8D3TXAdeTHPP9VmfWbBJ
-         KJh0bG9ssjPLUMJShQUjZWph9DRcnHt9QtpVXQSMuriFOseTMhzlRhgmwkXHzm3pB0Zq
-         tZSSAKtSaoMMy9IKPmchcWLajiHCaSu/67ek8QBDRqSWKQWt1DAhsTNmVDN+gekfvI9X
-         OM0TdVjc0tCxeIj8u1xDeBbitQUNda/cWofCZxqMy1v1olO2ONyC6BqvGEP2Wmeot4F3
-         Nlszb7vSjxF13HSz1bSdJYZMUzQx/OTGeucoRtZM4nJmObp+PzOL1Uqs5Tj61ey2vBZA
-         o50g==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Hde3NihipFRCRqBjpMSzAR7jR2grbVl4uek6zfQHXvA=;
+        b=cgugtJ5E/22t+Y4NEjDHaswj8hUqnTBBkXUyx7jat1+V8SH6p2Ud802GmN4Qv+SpZw
+         Bvi4vnqpoDKjxsCj6yMNl0Ky2tWgXbcTrsIhky7VP0pfHKEFEGDsxQ9suluKfGmY1H0T
+         tAtR6a38iKEjYRgukgfgkWP7R/oCuFRzUCq7ryGYOkmyPMEZ2z3ZIlf5FFz4BTWPG7xe
+         ETEyxfRRmSqt3VBPsGXrtKAHHPD4NxFeDkgUNNkBpJrXHZrsKiQFiESUvGTrAsPL5+Yz
+         1avtrGlMJzmJ/BoKi+buSnFXoPMTIg7fDHGa3WQAyS3ZUQCnTDLYnowNpbtb1LuOo6kb
+         hJSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=n3a8vApecCFJpiz3t6RAPQ5VVqr5dUZENjDURZfl2gI=;
-        b=hTf8fkH4OHI1mQNLo/EOCyglgzfdz3+pYbFZeyApKZQ3VEKk6oBqVpP+0UubGx7bHE
-         d0TsnEorlyuY+OJxYzSVZr13Ic/mGpv8o71zEnxnEtNHrdYmc28s1ERzOACR0a6yzdJw
-         nJU7Qlq+ziMvhZ+mPPdRkPce8VpZaU7R0nziVR1Ifbg4Ov00JbwHgXnylH4vBm6f9NWq
-         FjmmD/pGQa7GUBjYBrlBUbS/eISaTUtcGDJCkZ5oF/gaBmSev2m8L9BKOoxbrCptwTPZ
-         3O+Qrv5yQxNI6Qr01vXmQXzEydcFf+F9aQvzaByO2+atS+BZk1aMyJI73vccU8jgs6VJ
-         adsQ==
-X-Gm-Message-State: AOAM532X8BFdjZOkVZsAdpRRZwF9AL8aqPdaQNu+rCpJ9+KbNdZB9L2s
-        E5PnzTuevRXLEdpS3FJo7W0=
-X-Google-Smtp-Source: ABdhPJwtNZI9ylok5eZO6Zo2NlPjDp7ouF5MpErxZsMfS34sPvsaIG+Er1AaEk/71iozQwczEtapLQ==
-X-Received: by 2002:a1c:1b08:: with SMTP id b8mr4634394wmb.28.1639658633129;
-        Thu, 16 Dec 2021 04:43:53 -0800 (PST)
-Received: from [192.168.1.6] ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id 9sm6916633wry.0.2021.12.16.04.43.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Dec 2021 04:43:52 -0800 (PST)
-Message-ID: <cb81f51d-14d8-c5db-5181-767574fa9cb1@gmail.com>
-Date:   Thu, 16 Dec 2021 14:43:51 +0200
+        bh=Hde3NihipFRCRqBjpMSzAR7jR2grbVl4uek6zfQHXvA=;
+        b=W/JjzITfIj/Ifr0vxWnKswSbY+8u4Qp2dQBzoBn7kG2PrdnXhYs+3RKDtCSAnJpQKY
+         pJ9yWylA6++CONX6MJYXO4C1nWfNOoAwaqdRROZz42QpC5/rQAf11wpVVWffy2Bfbs32
+         UhHBYbgHkYOHOl3eHuXLl9hUGpQjEYA51iRxF42xpx4bw+9e1ucy2rGBnt8pYMJDQoQZ
+         FWLKVafuZH+OJlP43W2hkt3fxA7XmIeybZ2nSCFsAxBWZYkCU7hD+lpfN3fy3uYYiqMT
+         Bs7FtX4fe8gXB6rVLQ4dde6XA8fUCHMsJ+OOPzZfwIgUS3r9W/Ebd6KkRxxyjLASurE+
+         um1g==
+X-Gm-Message-State: AOAM533cKEbJB7XQLBEuQlYnCvbLQxaRzXOU/EI5YJ5R8X8RglB3eGQw
+        SOEXTCSDFPpmBRJpKKhZJM0gc7uDmv4=
+X-Google-Smtp-Source: ABdhPJwTtU+n+HaVWFkDDWcsI4Qi3L4jBSbh0oKERbs4QEzyeU/Daok/0kGFZRCxG7siV+yqa1oa9Q==
+X-Received: by 2002:a5d:4d4f:: with SMTP id a15mr3600566wru.268.1639661393231;
+        Thu, 16 Dec 2021 05:29:53 -0800 (PST)
+Received: from crow.. ([95.87.219.163])
+        by smtp.gmail.com with ESMTPSA id l5sm5608931wrs.59.2021.12.16.05.29.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Dec 2021 05:29:52 -0800 (PST)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH 1/2] trace-cruncher: Fix segfault in PyTraceHist_read()
+Date:   Thu, 16 Dec 2021 15:29:20 +0200
+Message-Id: <20211216132921.239628-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [RFC PATCH 0/1] kernel-shark: Add plugin for handling Xenomai
- cobalt_context_switch.
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Hongzhan Chen <hongzhan.chen@intel.com>,
-        linux-trace-devel@vger.kernel.org,
-        Dario Faggioli <dfaggioli@suse.com>,
-        giuseppe.eletto@edu.unito.it
-References: <20211216021649.7273-1-hongzhan.chen@intel.com>
- <20211215220327.0daae29e@gandalf.local.home>
- <b4599ebc-7e53-9d95-32ac-448c1cac8a8a@siemens.com>
- <9ac9a1af-6829-425a-7943-755decf7c273@gmail.com>
- <20211216073626.41d6791e@gandalf.local.home>
-From:   Yordan Karadzhov <y.karadz@gmail.com>
-In-Reply-To: <20211216073626.41d6791e@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+A NULL pointer can be returned when reading from the 'hist' file
+of the event. This may happen if the histogram is not initialized.
 
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+---
+ src/ftracepy-utils.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-On 16.12.21 г. 14:36 ч., Steven Rostedt wrote:
-> On Thu, 16 Dec 2021 14:29:00 +0200
-> Yordan Karadzhov <y.karadz@gmail.com> wrote:
-> 
->>> We were just wondering how to handle potential (we have no concrete case
->>> so far) variations of trace points along releases of those "various OSs"
->>> best and were therefore also considering maintaining the plugin in
->>> lock-step with the Xenomai releases. How does KernelShark manage such cases?
->>>    
->>
->> I am adding Dario and Giuseppe to the loop, because they may de interested in this work.
->>
->> We can take the plugin upstream as long as it does not add any xenomai specific dependencies (headers or libraries).
->> In such case you have to guarantee a persistent commitment for co-maintaining it.
->> Alternatively, you can maintain the plugin in a stand alone repository. Dario and Giuseppe are doing this.
-> 
-> I believe Jan is asking about this stand alone like scenario. Where the
-> plugin is actually maintained in the Xenomai repository.
-> 
-> Is there a way to have the KernelShark user config file automatically load a
-> plugin? That way a user could have the plugins they are interested in (that
-> are not part of the main repository) automatically loaded every time they
-> start KernelShark?
+diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
+index a735d88..1b1f350 100644
+--- a/src/ftracepy-utils.c
++++ b/src/ftracepy-utils.c
+@@ -978,6 +978,9 @@ PyObject *PyTraceHist_read(PyTraceHist *self, PyObject *args,
+ 					      PyObject *kwargs)
+ {
+ 	char *data = hist_read(self, args, kwargs);
++	if (!data)
++		return NULL;
++
+ 	PyObject *ret = PyUnicode_FromString(data);
+ 
+ 	free(data);
+-- 
+2.32.0
 
-Currently not, but this can be implemented.
-Y.
-
-> 
-> -- Steve
-> 
