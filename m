@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A53A4C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 Dec 2021 00:42:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 204F8C43217
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 Dec 2021 00:42:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhLQAmU (ORCPT
+        id S230324AbhLQAmV (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 16 Dec 2021 19:42:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46114 "EHLO
+        Thu, 16 Dec 2021 19:42:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229997AbhLQAmS (ORCPT
+        with ESMTP id S229797AbhLQAmS (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 16 Dec 2021 19:42:18 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F89C061574
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423E0C06173E
         for <linux-trace-devel@vger.kernel.org>; Thu, 16 Dec 2021 16:42:18 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C505861FE2
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D2F5D61F67
         for <linux-trace-devel@vger.kernel.org>; Fri, 17 Dec 2021 00:42:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5005C36AEB;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6B91C36AEE;
         Fri, 17 Dec 2021 00:42:16 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1my1KB-0004D6-R8;
+        id 1my1KB-0004DQ-Te;
         Thu, 16 Dec 2021 19:42:15 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5/9] libtracefs: Have make clean output cleaner
-Date:   Thu, 16 Dec 2021 19:42:10 -0500
-Message-Id: <20211217004214.16074-6-rostedt@goodmis.org>
+Subject: [PATCH 9/9] libtracefs: Have make tags and TAGS honor O= build directory
+Date:   Thu, 16 Dec 2021 19:42:14 -0500
+Message-Id: <20211217004214.16074-10-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211217004214.16074-1-rostedt@goodmis.org>
 References: <20211217004214.16074-1-rostedt@goodmis.org>
@@ -44,117 +44,63 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Instead of showing the files being removed by make clean, just output a
-command stating what directory the clean is happening in.
+Currently if one does a "make O=/tmp/build tags" the tags are still built
+in the source directory. Although this is uncommon to do, the tags (and
+TAGS) target should still honor the build directory.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Makefile         | 13 +++++++------
- samples/Makefile |  2 +-
- scripts/utils.mk |  8 ++++++++
- src/Makefile     |  2 +-
- utest/Makefile   |  2 +-
- 5 files changed, 18 insertions(+), 9 deletions(-)
+ Makefile | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 7ef85288abf1..58b4219e7b62 100644
+index 58b4219e7b62..bf085bfdb800 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -365,11 +365,12 @@ samples: $(LIBTRACEFS_STATIC) force
- 	$(Q)$(call descend,$(src)/samples,all)
+@@ -198,7 +198,7 @@ endif
+ 		$(src)/$(UTEST_DIR)/$(UTEST_BINARY)
  
- clean:
--	$(MAKE) -C $(src)/utest clean
--	$(MAKE) -C $(src)/src clean
--	$(MAKE) -C $(src)/samples clean
--	$(RM) $(TARGETS) $(bdir)/*.a $(bdir)/*.so $(bdir)/*.so.* $(bdir)/*.o $(bdir)/.*.d
--	$(RM) $(PKG_CONFIG_FILE)
--	$(RM) $(VERSION_FILE)
-+	$(Q)$(MAKE) -C $(src)/utest clean
-+	$(Q)$(MAKE) -C $(src)/src clean
-+	$(Q)$(MAKE) -C $(src)/samples clean
-+	$(Q)$(call do_clean, \
-+	  $(TARGETS) $(bdir)/*.a $(bdir)/*.so $(bdir)/*.so.* $(bdir)/*.o $(bdir)/.*.d \
-+	  $(PKG_CONFIG_FILE) \
-+	  $(VERSION_FILE))
+ define find_tag_files
+-	find . -name '\.pc' -prune -o -name '*\.[ch]' -print -o -name '*\.[ch]pp' \
++	find $(src) -name '\.pc' -prune -o -name '*\.[ch]' -print -o -name '*\.[ch]pp' \
+ 		! -name '\.#' -print
+ endef
  
- .PHONY: clean
-diff --git a/samples/Makefile b/samples/Makefile
-index 2d0d2397c5b4..8e2b53bbdfae 100644
---- a/samples/Makefile
-+++ b/samples/Makefile
-@@ -66,4 +66,4 @@ $(EXAMPLES): $(patsubst %,$(bdir)/%,$(TARGETS))
- 	$(CC) -g -Wall $(CFLAGS) -c -o $@ $^ -I../include/ $(LIBTRACEEVENT_INCLUDES)
+@@ -221,18 +221,26 @@ $(BUILD_PREFIX): force
+ $(PKG_CONFIG_FILE) : ${PKG_CONFIG_SOURCE_FILE}.template $(BUILD_PREFIX) $(VERSION_FILE)
+ 	$(Q) $(call do_make_pkgconfig_file,$(prefix))
  
- clean:
--	$(RM) $(bdir)/*
-+	$(Q)$(call do_clean,$(bdir)/*)
-diff --git a/scripts/utils.mk b/scripts/utils.mk
-index 404b929a2b5f..c9b908f1c5d9 100644
---- a/scripts/utils.mk
-+++ b/scripts/utils.mk
-@@ -2,9 +2,11 @@
+-tags:	force
+-	$(RM) tags
+-	$(call find_tag_files) | xargs ctags --extra=+f --c-kinds=+px
++VIM_TAGS = $(obj)/tags
++EMACS_TAGS = $(obj)/TAGS
++CSCOPE_TAGS = $(obj)/cscope
  
- # Utils
+-TAGS:	force
+-	$(RM) TAGS
+-	$(call find_tag_files) | xargs etags
++$(VIM_TAGS): force
++	$(RM) $@
++	$(call find_tag_files) | (cd $(obj) && xargs ctags --extra=+f --c-kinds=+px)
  
-+ PWD		:= $(shell /bin/pwd)
-  GOBJ		= $(notdir $(strip $@))
-  BASE1		= $(notdir $(strip $1))
-  BASE2		= $(notdir $(strip $2))
-+ BASEPWD	= $(notdir $(strip $(PWD)))
- 
- 
- ifeq ($(VERBOSE),1)
-@@ -27,6 +29,7 @@ ifeq ($(findstring 1,$(SILENT)$(VERBOSE)),1)
-   print_uninstall =
-   print_update =
-   print_descend =
-+  print_clean =
- else
-   print_compile =		echo '  COMPILE            '$(GOBJ);
-   print_app_build =		echo '  BUILD              '$(GOBJ);
-@@ -39,6 +42,7 @@ else
-   print_uninstall =		echo '  UNINSTALL     $(DESTDIR_SQ)$1';
-   print_update =		echo '  UPDATE             '$(GOBJ);
-   print_descend =		echo '  DESCEND            '$(BASE1) $(BASE2);
-+  print_clean =			echo '  CLEAN              '$(BASEPWD);
- endif
- 
- do_fpic_compile =					\
-@@ -78,6 +82,10 @@ do_python_plugin_build =			\
- 	($(print_plugin_build)			\
- 	$(CC) $< -shared $(LDFLAGS) $(PYTHON_LDFLAGS) -o $@)
- 
-+do_clean =					\
-+	($(print_clean)				\
-+	$(RM) $1)
+-cscope: force
+-	$(RM) cscope*
++$(EMACS_TAGS): force
++	$(RM) $@
++	$(call find_tag_files) | (cd $(obj) && xargs etags)
 +
- ifneq ($(findstring $(MAKEFLAGS), w),w)
- PRINT_DIR = --no-print-directory
- else
-diff --git a/src/Makefile b/src/Makefile
-index cda0a0cda6e3..8f258a218f97 100644
---- a/src/Makefile
-+++ b/src/Makefile
-@@ -61,7 +61,7 @@ $(OBJS): | $(bdir)
- $(DEPS): | $(bdir)
++$(CSCOPE_TAGS): force
++	$(RM) $(obj)/cscope*
+ 	$(call find_tag_files) | cscope -b -q
  
- clean:
--	$(RM) $(OBJS)
-+	$(Q)$(call do_clean,$(OBJS))
- 
- dep_includes := $(wildcard $(DEPS))
- 
-diff --git a/utest/Makefile b/utest/Makefile
-index 48993650660c..d168b01a328c 100644
---- a/utest/Makefile
-+++ b/utest/Makefile
-@@ -40,4 +40,4 @@ dep_includes := $(wildcard $(DEPS))
- test: $(TARGETS)
- 
- clean:
--	$(RM) $(TARGETS) $(bdir)/*.o $(bdir)/.*.d
-+	$(Q)$(call do_clean,$(TARGETS) $(bdir)/*.o $(bdir)/.*.d)
++tags: $(VIM_TAGS)
++TAGS: $(EMACS_TAGS)
++cscope: $(CSCOPE_TAGS)
++
+ ifeq ("$(DESTDIR)", "")
+ # If DESTDIR is not defined, then test if after installing the library
+ # and running ldconfig, if the library is visible by ld.so.
 -- 
 2.33.0
 
