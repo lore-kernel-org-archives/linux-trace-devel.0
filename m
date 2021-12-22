@@ -2,176 +2,124 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08084C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Dec 2021 06:19:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DF93C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Dec 2021 06:51:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239205AbhLVGTH (ORCPT
+        id S242820AbhLVGvP (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 22 Dec 2021 01:19:07 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:58060 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239194AbhLVGTG (ORCPT
+        Wed, 22 Dec 2021 01:51:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:45896 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239297AbhLVGvP (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 22 Dec 2021 01:19:06 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5C612617ED;
-        Wed, 22 Dec 2021 06:19:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEDA7C36AE5;
-        Wed, 22 Dec 2021 06:19:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1640153945;
-        bh=65f6JNJUvwYkpc7/Bin5Gcj202L1+CT+xBwLwJGAbXc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PGlZ2GwwSJl/Dr2EeNqSqe+zGnsnKAstgz1tLTTDp0whbXSKNQ30p71BSIP7kCIex
-         7+j90Qt/wOXWdjWFuxzJfHP1/xzklikvbpIKLzhtQqFBBQ5wrLGP6nGBhxtD7nVtcU
-         NUxkTsulcIt1jK1Js19Ttmjg/wLFNbIs4Byem9OYlRVLnyAEYznAhYy5wR3yYF7KZY
-         OR40Fn5EbPTRfjhHw6lWWq6d1V2cltaN9lT9XyzgD+qUmPzJorQHzCQ3l+2KNR1/P/
-         yK5HgEWBNKJV8wKDw3PAbR6bZV968QJLjnNx1WoVtSDklxE3iGuKVqi2hyNZ7VYWEm
-         +myg1SCempc7g==
-Date:   Wed, 22 Dec 2021 15:19:02 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 03/12] user_events: Handle matching arguments from
- dyn_events
-Message-Id: <20211222151902.f932b280d09cc8bce9304b30@kernel.org>
-In-Reply-To: <20211216173511.10390-4-beaub@linux.microsoft.com>
-References: <20211216173511.10390-1-beaub@linux.microsoft.com>
-        <20211216173511.10390-4-beaub@linux.microsoft.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Wed, 22 Dec 2021 01:51:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1640155874;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ch2Xpj1pnRLF55Cf/9agxcFXuNqtmtfpr9anTXKKzF0=;
+        b=CoiMsn53WqYTqKPi1iJOBd+xoCcn+MALUrzFdOy/GeGs5UJr9whe1e2fGsKs91Myl/O+13
+        X4D4uIU5xkHjs6NCVFVZdZDSZ3kl4JjpWrvfZlqSoaxdb44m0FnKWMhTaPqGOYWzDf9sfz
+        CHLwFdJRNJJOEiiD1Y6SelFPGPvIMJo=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-651-qzO1JpoUMBuuJREYuuMX6A-1; Wed, 22 Dec 2021 01:51:13 -0500
+X-MC-Unique: qzO1JpoUMBuuJREYuuMX6A-1
+Received: by mail-wr1-f71.google.com with SMTP id p1-20020adfba81000000b001a25b07ff53so415408wrg.22
+        for <linux-trace-devel@vger.kernel.org>; Tue, 21 Dec 2021 22:51:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ch2Xpj1pnRLF55Cf/9agxcFXuNqtmtfpr9anTXKKzF0=;
+        b=oReVhgHR4/DFM5Htoy5EMHud4n3Zhv3E1Rd1z797cs/WkWxeIMDhNjCEfBiLEmDh8a
+         Wd0JXFW1T4+rBTJa+Yubz1rMSs9CX2pbLplWoXqOd9l/Kg+y/A21MoEnAgeaa3xfX6n9
+         xpLggF27ktVObGErcNQtcovBvSc2ehG1Anh/uWH3w3osSR0MgFAecknngAu0d+N1jnyd
+         +DjbtYzXuvq9Id1NN1DCf5Q1xxVF4ry6HdWAQHduKwBvk2ZXI90Fq3zquJ62XKTMmzCP
+         okeySeH0klu32wg6O/TW4cUNzFGPp45apCj2BWFFTTpG+ILs7jeO/UKjaHuBwD5KLrw2
+         YOgw==
+X-Gm-Message-State: AOAM533/i3x7Rd60DOr+NT5RlxhY3vw+k8NMktiT6tw75z4Wur7G7iEK
+        bRXBVRVPDUCdPyPS2nQNIlNSc3NfSlkKAW3OPWAj3b1zSPy883kF4z9sjCABN6rw1C49DLMYsOs
+        WrZacOaLVYGJCsykjsFS/8i4/dAQSGBg=
+X-Received: by 2002:a7b:c4d3:: with SMTP id g19mr1124856wmk.46.1640155871822;
+        Tue, 21 Dec 2021 22:51:11 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwDtNRmO6B8NSDYghPyCIuC7SMgE+EpTU/PA6KZoEqMErn7wwJ2gVK2teXs+Zth65RDz/bQuQ==
+X-Received: by 2002:a7b:c4d3:: with SMTP id g19mr1124841wmk.46.1640155871637;
+        Tue, 21 Dec 2021 22:51:11 -0800 (PST)
+Received: from localhost.localdomain ([151.29.58.184])
+        by smtp.gmail.com with ESMTPSA id g8sm685827wmh.17.2021.12.21.22.51.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Dec 2021 22:51:10 -0800 (PST)
+Date:   Wed, 22 Dec 2021 07:51:08 +0100
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tao Zhou <tao.zhou@linux.dev>
+Subject: Re: [PATCH V9 00/14] RTLA: An interface for osnoise/timerlat tracers
+Message-ID: <YcLK3MXdFTwYYC7O@localhost.localdomain>
+References: <cover.1639158831.git.bristot@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1639158831.git.bristot@kernel.org>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 16 Dec 2021 09:35:02 -0800
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
+Hi!
 
-> Ensures that when dynamic events requests a match with arguments that
-> they match what is in the user_event.
+On 10/12/21 19:11, Daniel Bristot de Oliveira wrote:
+> The rtla(1) is a meta-tool that includes a set of commands that
+> aims to analyze the real-time properties of Linux. But instead of
+> testing Linux as a black box, rtla leverages kernel tracing
+> capabilities to provide precise information about the properties
+> and root causes of unexpected results.
 > 
-
-Looks good to me.
-
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you,
-
-> Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
-> ---
->  kernel/trace/trace_events_user.c | 77 +++++++++++++++++++++++++++++++-
->  1 file changed, 76 insertions(+), 1 deletion(-)
+> To start, it presents an interface to the osnoise and timerlat tracers.
+> In the future, it will also serve as home to the rtsl [1] and other
+> latency/noise tracers.
 > 
-> diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-> index 67a92fe04ee4..9859e62b9838 100644
-> --- a/kernel/trace/trace_events_user.c
-> +++ b/kernel/trace/trace_events_user.c
-> @@ -39,6 +39,7 @@
->  #define MAX_EVENT_DESC 512
->  #define EVENT_NAME(user_event) ((user_event)->tracepoint.name)
->  #define MAX_FIELD_ARRAY_SIZE 1024
-> +#define MAX_FIELD_ARG_NAME 256
->  
->  static char *register_page_data;
->  
-> @@ -694,13 +695,87 @@ static int user_event_free(struct dyn_event *ev)
->  	return destroy_user_event(user);
->  }
->  
-> +static bool user_field_match(struct ftrace_event_field *field, int argc,
-> +			     const char **argv, int *iout)
-> +{
-> +	char *field_name, *arg_name;
-> +	int len, pos, i = *iout;
-> +	bool colon = false, match = false;
-> +
-> +	if (i >= argc)
-> +		return false;
-> +
-> +	len = MAX_FIELD_ARG_NAME;
-> +	field_name = kmalloc(len, GFP_KERNEL);
-> +	arg_name = kmalloc(len, GFP_KERNEL);
-> +
-> +	if (!arg_name || !field_name)
-> +		goto out;
-> +
-> +	pos = 0;
-> +
-> +	for (; i < argc; ++i) {
-> +		if (i != *iout)
-> +			pos += snprintf(arg_name + pos, len - pos, " ");
-> +
-> +		pos += snprintf(arg_name + pos, len - pos, argv[i]);
-> +
-> +		if (strchr(argv[i], ';')) {
-> +			++i;
-> +			colon = true;
-> +			break;
-> +		}
-> +	}
-> +
-> +	pos = 0;
-> +
-> +	pos += snprintf(field_name + pos, len - pos, field->type);
-> +	pos += snprintf(field_name + pos, len - pos, " ");
-> +	pos += snprintf(field_name + pos, len - pos, field->name);
-> +
-> +	if (colon)
-> +		pos += snprintf(field_name + pos, len - pos, ";");
-> +
-> +	*iout = i;
-> +
-> +	match = strcmp(arg_name, field_name) == 0;
-> +out:
-> +	kfree(arg_name);
-> +	kfree(field_name);
-> +
-> +	return match;
-> +}
-> +
-> +static bool user_fields_match(struct user_event *user, int argc,
-> +			      const char **argv)
-> +{
-> +	struct ftrace_event_field *field, *next;
-> +	struct list_head *head = &user->fields;
-> +	int i = 0;
-> +
-> +	list_for_each_entry_safe_reverse(field, next, head, link)
-> +		if (!user_field_match(field, argc, argv, &i))
-> +			return false;
-> +
-> +	if (i != argc)
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
->  static bool user_event_match(const char *system, const char *event,
->  			     int argc, const char **argv, struct dyn_event *ev)
->  {
->  	struct user_event *user = container_of(ev, struct user_event, devent);
-> +	bool match;
->  
-> -	return strcmp(EVENT_NAME(user), event) == 0 &&
-> +	match = strcmp(EVENT_NAME(user), event) == 0 &&
->  		(!system || strcmp(system, USER_EVENTS_SYSTEM) == 0);
-> +
-> +	if (match && argc > 0)
-> +		match = user_fields_match(user, argc, argv);
-> +
-> +	return match;
->  }
->  
->  static struct dyn_event_operations user_event_dops = {
-> -- 
-> 2.17.1
+> If you just want to run it, you can download the tarball here:
+>   - https://bristot.me/files/rtla/tarball/rtla-0.5.tar.bz2
 > 
+> To compile rtla on fedora you need:
+>   $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git
+>   $ cd libtraceevent/
+>   $ make
+>   $ sudo make install
+>   $ cd ..
+>   $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git
+>   $ cd libtracefs/
+>   $ make
+>   $ sudo make install
+>   $ cd ..
+>   $ sudo dnf install python3-docutils procps-devel
+>   $ cd $rtla_src
+>   $ make
+>   $ sudo make install
+> 
+> The tracing option (-t) depends some kernel patches that are
+> available at [2].
 
+FWIW, I took this for a spin (on RT) and had a very positive experience
+with it. Think is does what it says on the tin and makes using osnoise
+and timerlat tracers easier.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Please feel free to add
+
+Tested-by: Juri Lelli <juri.lelli@redhat.com>
+
+Best,
+Juri
+
