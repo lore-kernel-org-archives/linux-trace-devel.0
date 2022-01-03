@@ -2,317 +2,206 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FBABC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  3 Jan 2022 18:22:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58747C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  3 Jan 2022 18:53:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229670AbiACSWJ (ORCPT
+        id S235842AbiACSxO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 3 Jan 2022 13:22:09 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:37016 "EHLO
+        Mon, 3 Jan 2022 13:53:14 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:40814 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbiACSWJ (ORCPT
+        with ESMTP id S235519AbiACSxN (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 3 Jan 2022 13:22:09 -0500
+        Mon, 3 Jan 2022 13:53:13 -0500
 Received: from kbox (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 023D720B7179;
-        Mon,  3 Jan 2022 10:22:08 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 023D720B7179
+        by linux.microsoft.com (Postfix) with ESMTPSA id 4447520B7179;
+        Mon,  3 Jan 2022 10:53:13 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4447520B7179
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1641234129;
-        bh=Y+cSm587R0Ox6HqvSX7e0ba9yBSjtSdXhWvTVqKzIfA=;
+        s=default; t=1641235993;
+        bh=A3ucKs0hga8yablksT/VshqNpBCqvri5dG/Wrf7Zs0w=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jy5q7R2gV5aFnshM/qmMNgEbjOorRrrax8Bn3o4DwRcwQBTOl0QYK3UWQtl/JwUPB
-         h58sKRynSIjpaQWAD+E5yAcAJttjARzuecNdISvfNUxiE0dpeqhRu3TNDKNUby6Pmx
-         On9RCI5dj1P1sgdwWNXQl4UeBSIJJDKfufd8W0Qk=
-Date:   Mon, 3 Jan 2022 10:22:04 -0800
+        b=Y8AhJrt47BQlOeehUgdAviM+vbVYi8HDTBsI7fxt6eJO3fJYxaEh9q7cooETlTHMw
+         9Wox48TE+DuCCFykRt6OLD22tgox/BpaS5J94qopoHFsUSYjNYhbxOxgn2jIfIXhLb
+         mqOMYdygm+Amta059nbcW/hlwatdfxTjCcxR4Nes=
+Date:   Mon, 3 Jan 2022 10:53:08 -0800
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     Masami Hiramatsu <mhiramat@kernel.org>
 Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 01/12] user_events: Add minimal support for
- trace_event into ftrace
-Message-ID: <20220103182204.GA15459@kbox>
+Subject: Re: [PATCH v8 11/12] user_events: Validate user payloads for size
+ and null termination
+Message-ID: <20220103185308.GA15522@kbox>
 References: <20211216173511.10390-1-beaub@linux.microsoft.com>
- <20211216173511.10390-2-beaub@linux.microsoft.com>
- <20211222001637.4d45b40ce99737ba213ae2b4@kernel.org>
+ <20211216173511.10390-12-beaub@linux.microsoft.com>
+ <20211223090822.a14244522fef64b4b4398fe0@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211222001637.4d45b40ce99737ba213ae2b4@kernel.org>
+In-Reply-To: <20211223090822.a14244522fef64b4b4398fe0@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, Dec 22, 2021 at 12:16:37AM +0900, Masami Hiramatsu wrote:
-> Hi Beau,
-> 
-> On Thu, 16 Dec 2021 09:35:00 -0800
+On Thu, Dec 23, 2021 at 09:08:22AM +0900, Masami Hiramatsu wrote:
+> On Thu, 16 Dec 2021 09:35:10 -0800
 > Beau Belgrave <beaub@linux.microsoft.com> wrote:
 > 
-> > Minimal support for interacting with dynamic events, trace_event and
-> > ftrace.
+> > Add validation to ensure data is at or greater than the min size for the
+> > fields of the event. If a dynamic array is used and is a type of char,
+> > ensure null termination of the array exists.
 > 
-> Since the cover mail is merged, could you describe what is
-> the user_events here? :)
+> OK, looks good to me except a few nitpicks.
 > 
-
-Yeah, would this basically be what I have in the cover letter without
-the history tracking?
-
-> I have some comments below, but not so much.
+> Reveiewed-by: Masami Hiramatsu <mhiramat@kernel.org>
 > 
-> > Core outline of flow between user process, ioctl and trace_event
-> > APIs.
+> I added some comments below.
+> 
 > > 
 > > Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 > > ---
-> >  include/uapi/linux/user_events.h |   71 ++
-> >  kernel/trace/Kconfig             |   14 +
-> >  kernel/trace/Makefile            |    1 +
-> >  kernel/trace/trace_events_user.c | 1188 ++++++++++++++++++++++++++++++
-> >  4 files changed, 1274 insertions(+)
-> >  create mode 100644 include/uapi/linux/user_events.h
-> >  create mode 100644 kernel/trace/trace_events_user.c
+> >  kernel/trace/trace_events_user.c | 147 +++++++++++++++++++++++++++----
+> >  1 file changed, 132 insertions(+), 15 deletions(-)
 > > 
-> > diff --git a/include/uapi/linux/user_events.h b/include/uapi/linux/user_events.h
-> > new file mode 100644
-> > index 000000000000..f97db05e00c9
-> > --- /dev/null
-> > +++ b/include/uapi/linux/user_events.h
-> > @@ -0,0 +1,71 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > +/*
-> > + * Copyright (c) 2021, Microsoft Corporation.
-> > + *
-> > + * Authors:
-> > + *   Beau Belgrave <beaub@linux.microsoft.com>
-> > + */
-> > +#ifndef _UAPI_LINUX_USER_EVENTS_H
-> > +#define _UAPI_LINUX_USER_EVENTS_H
+> > diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+> > index fa3e26281fc3..58b8c9607c80 100644
+> > --- a/kernel/trace/trace_events_user.c
+> > +++ b/kernel/trace/trace_events_user.c
+> > @@ -64,9 +64,11 @@ struct user_event {
+> >  	struct dyn_event devent;
+> >  	struct hlist_node node;
+> >  	struct list_head fields;
+> > +	struct list_head validators;
+> >  	atomic_t refcnt;
+> >  	int index;
+> >  	int flags;
+> > +	int min_size;
+> >  };
+> >  
+> >  /*
+> > @@ -81,8 +83,17 @@ struct user_event_refs {
+> >  	struct user_event *events[];
+> >  };
+> >  
+> > +#define VALIDATOR_ENSURE_NULL (1 << 0)
+> > +#define VALIDATOR_REL (1 << 1)
 > > +
-> > +#include <linux/types.h>
-> > +#include <linux/ioctl.h>
-> > +
-> > +#ifdef __KERNEL__
-> > +#include <linux/uio.h>
-> > +#else
-> > +#include <sys/uio.h>
-> > +#endif
-> > +
-> > +#define USER_EVENTS_SYSTEM "user_events"
-> > +#define USER_EVENTS_PREFIX "u:"
-> > +
-> > +/* Bits 0-6 are for known probe types, Bit 7 is for unknown probes */
-> > +#define EVENT_BIT_FTRACE 0
-> > +#define EVENT_BIT_PERF 1
-> > +#define EVENT_BIT_OTHER 7
-> > +
-> > +#define EVENT_STATUS_FTRACE (1 << EVENT_BIT_FTRACE)
-> > +#define EVENT_STATUS_PERF (1 << EVENT_BIT_PERF)
-> > +#define EVENT_STATUS_OTHER (1 << EVENT_BIT_OTHER)
-> > +
-> > +/* Create dynamic location entry within a 32-bit value */
-> > +#define DYN_LOC(offset, size) ((size) << 16 | (offset))
-> > +
-> > +/* Use raw iterator for attached BPF program(s), no affect on ftrace/perf */
-> > +#define FLAG_BPF_ITER (1 << 0)
-> > +
-> 
-> Can you add a description of the user_reg (and each field) here?
-> 
-
-Sure thing.
-
-> > +struct user_reg {
-> > +	__u32 size;
-> > +	__u64 name_args;
-> 
-> BTW, this field name is a bit strange. It is indeed "name and arguments",
-> but actually, it is the definition of the event, isn't it?
-> 
-
-It also includes flags, which are not part of the definition. I expect
-the number of flags to increase in the future. For example, enabling
-auto-deregistering of the event upon close if it's the last ref, etc.
-
-> > +	__u32 status_index;
-> > +	__u32 write_index;
+> > +struct user_event_validator {
+> > +	struct list_head link;
+> > +	int offset;
+> > +	int flags;
 > > +};
 > > +
-> > +#define DIAG_IOC_MAGIC '*'
-> > +#define DIAG_IOCSREG _IOWR(DIAG_IOC_MAGIC, 0, struct user_reg*)
-> > +#define DIAG_IOCSDEL _IOW(DIAG_IOC_MAGIC, 1, char*)
-> > +
-> > +enum {
-> > +	USER_BPF_DATA_KERNEL,
-> > +	USER_BPF_DATA_USER,
-> > +	USER_BPF_DATA_ITER,
-> > +};
-> > +
-> > +struct user_bpf_iter {
-> > +	__u32 iov_offset;
-> > +	__u32 nr_segs;
-> > +	const struct iovec *iov;
-> > +};
-> > +
-> > +struct user_bpf_context {
-> > +	__u32 data_type;
-> > +	__u32 data_len;
-> > +	union {
-> > +		void *kdata;
-> > +		void *udata;
-> > +		struct user_bpf_iter *iter;
-> > +	};
-> > +};
+> >  typedef void (*user_event_func_t) (struct user_event *user, struct iov_iter *i,
+> > -				   void *tpdata);
+> > +				   void *tpdata, bool *faulted);
 > 
-> Are those bpf related data structures passed from/to user?
+> Why don't you just return "int" value? ;-)
 > 
 
-They are passed to the BPF program, which requires to know their
-definitions when compiling in places such as libbpf. The owner of the
-structure in memory is always the kernel. The data the context points to
-can either be from the kernel or user. The data_type tells you which is
-the case so your BPF program can probe correctly.
+There can be more than one callback attached per-probe, and in all cases
+where a return value is needed is for a faulted (or would have faulted)
+case. This allows less branches when data is being traced/logged as the
+return value does not need to be checked (nor should it short circuit
+other probes that are attached).
 
-> [...]
-> > +/*
-> > + * Parses a register command for user_events
-> > + * Format: event_name[:FLAG1[,FLAG2...]] [field1[;field2...]]
-> > + *
-> > + * Example event named test with a 20 char msg field with a unsigned int after:
-> 
-> Please quote the words in the example, like 
-> 
-> Example event named 'test' with a 20 char 'msg' field with an 'unsigned int id' after:
-> 
-> (is that correct?)
-> 
+> >  
+> >  static int user_event_parse(char *name, char *args, char *flags,
+> >  			    struct user_event **newuser);
+> > @@ -214,6 +225,17 @@ static int user_field_size(const char *type)
+> >  	return -EINVAL;
+> >  }
+> >  
 
-Think so, seems like unsigned int 'id' would be more appropriate here,
-the rest look accurate. I'll change it.
+[..]
 
-> > + * test char[20] msg;unsigned int id
-> > + *
-> > + * NOTE: Offsets are from the user data perspective, they are not from the
-> > + * trace_entry/buffer perspective. We automatically add the common properties
-> > + * sizes to the offset for the user.
-> > + */
-> > +static int user_event_parse_cmd(char *raw_command, struct user_event **newuser)
+> > +static int user_event_validate(struct user_event *user, void *data, int len)
 > > +{
-> > +	char *name = raw_command;
-> > +	char *args = strpbrk(name, " ");
-> > +	char *flags;
+> > +	struct list_head *head = &user->validators;
+> > +	struct user_event_validator *validator;
+> > +	void *pos, *end = data + len;
+> > +	u32 loc, offset, size;
 > > +
-> > +	if (args)
-> > +		*args++ = 0;
+> > +	list_for_each_entry(validator, head, link) {
+> > +		pos = data + validator->offset;
 > > +
-> > +	flags = strpbrk(name, ":");
+> > +		/* Already done min_size check, no bounds check here */
+> > +		loc = *(u32 *)pos;
+> > +		offset = loc & 0xffff;
+> > +		size = loc >> 16;
 > > +
-> > +	if (flags)
-> > +		*flags++ = 0;
+> > +		if (likely(validator->flags & VALIDATOR_REL))
+> > +			pos += offset + sizeof(loc);
+> > +		else
+> > +			pos = data + offset;
 > > +
-> 
-> Just a nitpick. What about using strsep()?
-> 
-
-strsep() has a side effect of setting the first parameter to NULL if the
-delimiter is not found. This can lead to unintentional errors.
-
-> args = raw_command;
-> flags = strsep(&args, " ");
-> name = strsep(&flags, ":");
-> 
-
-For example, if there wasn't a space then args would now be null. Where
-as before only args would be null and name would be valid.
-
-> > +	return user_event_parse(name, args, flags, newuser);
-> > +}
+> > +		pos += size;
 > > +
-> 
-> [...]
-> 
+> > +		if (unlikely(pos > end))
+> > +			return -EFAULT;
 > > +
-> > +static ssize_t user_status_read(struct file *file, char __user *ubuf,
-> > +				size_t count, loff_t *ppos)
-> > +{
-> > +	/*
-> > +	 * Delay allocation of seq data until requested, most callers
-> > +	 * will never read the status file. They will only mmap.
-> > +	 */
+> > +		if (likely(validator->flags & VALIDATOR_ENSURE_NULL))
+> > +			if (unlikely(*(char *)(pos - 1) != 0))
 > 
-> I think you don't need to do this optimization since this is not
-> a hot path. And it causes strange behaviors. See below;
+> As we discussed in the previous version, isn't it '\0' ?
+> (just a style comment)
 > 
 
-In all of our usage we won't read the file, we simply mmap in. It felt
-wasteful for the 99% case to allocate a seq_buf to just never be used.
-If the file is closed after mmap from the user side then the seq_buf is
-allocated but then freed, so not as big of a deal.
+Sure, there are a few dangling around that I missed. I'll fix them.
 
-I'll try to see if the normal mmap pattern we use leaves allocations
-around. If not, then I'm fine having this optimization removed.
-
-> > +	if (file->private_data == NULL) {
-> > +		int ret;
-> > +
-> > +		if (*ppos != 0)
-> > +			return -EINVAL;
-> > +
-> > +		ret = single_open(file, user_status_show, NULL);
-> > +
-> > +		if (ret)
-> > +			return ret;
-> 
-> This seems strange returning failure of open(2) from read(2).
-> 
-
-Yeah, too bad there wasn't a better place for it if we don't want extra
-memory per-status file.
-
+> > +				return -EFAULT;
 > > +	}
 > > +
-> > +	return seq_read(file, ubuf, count, ppos);
+> > +	return 0;
 > > +}
 > > +
-> > +static loff_t user_status_seek(struct file *file, loff_t offset, int whence)
-> > +{
-> > +	if (file->private_data == NULL)
+> >  /*
+> >   * Writes the user supplied payload out to a trace file.
+> >   */
+> >  static void user_event_ftrace(struct user_event *user, struct iov_iter *i,
+> > -			      void *tpdata)
+> > +			      void *tpdata, bool *faulted)
+> >  {
+> >  	struct trace_event_file *file;
+> >  	struct trace_entry *entry;
+> >  	struct trace_event_buffer event_buffer;
+> > +	size_t size = sizeof(*entry) + i->count;
+> >  
+> >  	file = (struct trace_event_file *)tpdata;
+> >  
+> > @@ -555,19 +648,25 @@ static void user_event_ftrace(struct user_event *user, struct iov_iter *i,
+> >  		return;
+> >  
+> >  	/* Allocates and fills trace_entry, + 1 of this is data payload */
+> > -	entry = trace_event_buffer_reserve(&event_buffer, file,
+> > -					   sizeof(*entry) + i->count);
+> > +	entry = trace_event_buffer_reserve(&event_buffer, file, size);
+> >  
+> >  	if (unlikely(!entry))
+> >  		return;
+> >  
+> > -	if (unlikely(!copy_nofault(entry + 1, i->count, i))) {
+> > -		__trace_event_discard_commit(event_buffer.buffer,
+> > -					     event_buffer.event);
+> > -		return;
+> > -	}
+> > +	if (unlikely(!copy_nofault(entry + 1, i->count, i)))
+> > +		goto discard;
 > 
-> For example, this means unless start reading we can not do seek.
-> So, please make the code as usually that is, unless any special reason.
+> OK, this is a fault error.
+> 
+> > +
+> > +	if (!list_empty(&user->validators) &&
+> > +	    unlikely(user_event_validate(user, entry, size)))
+> > +		goto discard;
+> 
+> But this maybe an invalid parameter error.
 > 
 
-Sure, see above, I'll see if I can get this cleaned up.
-
-> 
-> > +		return 0;
-> > +
-> > +	return seq_lseek(file, offset, whence);
-> > +}
-> > +
-> > +static int user_status_release(struct inode *node, struct file *file)
-> > +{
-> > +	if (file->private_data == NULL)
-> > +		return 0;
-> > +
-> > +	return single_release(node, file);
-> > +}
-> > +
-> > +static const struct file_operations user_status_fops = {
-> > +	.mmap = user_status_mmap,
-> > +	.read = user_status_read,
-> > +	.llseek  = user_status_seek,
-> > +	.release = user_status_release,
-> > +};
-> 
-> Thank you,
-> 
-> 
-> 
-> -- 
-> Masami Hiramatsu <mhiramat@kernel.org>
+Yes, but it has to be an invalid parameter that would have caused a
+possible fault in a worse place. In my mind, I still treat it as a fault
+case whether the user did it intentionally or not :)
 
 Thanks,
 -Beau
