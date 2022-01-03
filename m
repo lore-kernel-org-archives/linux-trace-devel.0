@@ -2,387 +2,159 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F7D3C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 23 Dec 2021 00:08:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FA94C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  3 Jan 2022 08:25:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237380AbhLWAI2 (ORCPT
+        id S232141AbiACIZa (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 22 Dec 2021 19:08:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231232AbhLWAI2 (ORCPT
+        Mon, 3 Jan 2022 03:25:30 -0500
+Received: from mail-ed1-f41.google.com ([209.85.208.41]:40855 "EHLO
+        mail-ed1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230488AbiACIZa (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 22 Dec 2021 19:08:28 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D901C061574;
-        Wed, 22 Dec 2021 16:08:28 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C26A1B81EB1;
-        Thu, 23 Dec 2021 00:08:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F003C36AE5;
-        Thu, 23 Dec 2021 00:08:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1640218105;
-        bh=rN88q3v0SstBDK8FyIjQuucfgYlpwOzIvoiYq0mUrKc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=poNm1kmztJ4it7GRAfUB0BWiQ1inSqGVU/KwbLXa7iTpeoa7Bedc/+VJ9xlUUo6Be
-         M9DUgoQyczvSj3ZFPIObkhkrrBo76vurj4xF7zMRNauSQIguOLE6a0lRBiySylIX1X
-         R28jdy/glSevy5AEoKasdmSyBVoI5aFZJWSn/qdwEggTbyY6LlSPjDjTJRTvNJAu6D
-         5YWtDyHYsPmngNjUe1Vobj75Svd+bIBwQ5+IZ3QyrXsfIk3B6Mwjo1XtA/aDmt2C9T
-         FNpjw5wAPXpSk/LVbH/a/PCYsm5v1+nw6y03S770WBBW0jSB3fDOZ1mhLBjteqQGz1
-         HgS2LqdoRM0Bw==
-Date:   Thu, 23 Dec 2021 09:08:22 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 11/12] user_events: Validate user payloads for size
- and null termination
-Message-Id: <20211223090822.a14244522fef64b4b4398fe0@kernel.org>
-In-Reply-To: <20211216173511.10390-12-beaub@linux.microsoft.com>
-References: <20211216173511.10390-1-beaub@linux.microsoft.com>
-        <20211216173511.10390-12-beaub@linux.microsoft.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Mon, 3 Jan 2022 03:25:30 -0500
+Received: by mail-ed1-f41.google.com with SMTP id z29so133016946edl.7;
+        Mon, 03 Jan 2022 00:25:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:cc:references:in-reply-to
+         :content-transfer-encoding;
+        bh=CBJZYM5dIvVh1LZ/08BPIecuK+5dT2rJ2KIj8gS4ELY=;
+        b=wteyXYMKFAFOZg9wtdRH5KwKiC/8pral/iuWCbyRg9xoScrIyChlgeL9zu9hwflk/R
+         GFqjRJPUHazIsp6/39ldPJSdsrB8qndFZ1nvn8/IKVc+G1Y3QK+MJMFp0lVEcBXRjGwt
+         gh+NAFbJ2mI41ACntLyrwTzH0yC0/Or7HBcrFOHNrGB+XliI/jgLZKgrrywkO32yRJVL
+         SMXFKgrsz/8On0lSzbgX7o/hkqVKWifCKa7NNBm5t78Su9JaecFn/MVD70DmybkREL6i
+         uP4/YDKO6qWdPtITU3gHvh+s0lmKg32K9WIQ4xRmyzCnM5hNN1Sg/b9RQB2An8T9ma9g
+         mezw==
+X-Gm-Message-State: AOAM531ksZ0i2QNZX18Ypmow3e4TTa0G3z8bc+eLm2mWxhfpLZq6kIlr
+        NoOPOrjiLlyEfe8IJFDGCF0=
+X-Google-Smtp-Source: ABdhPJx8SD4yKYxAykbEYkU9aFOM3fHYKCVBK4UUlYflSOXrmG9OPNz2TErcT23Ext45k60kraTKWg==
+X-Received: by 2002:a17:906:3456:: with SMTP id d22mr35296673ejb.655.1641198328652;
+        Mon, 03 Jan 2022 00:25:28 -0800 (PST)
+Received: from ?IPV6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id dm6sm10459703ejc.89.2022.01.03.00.25.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 Jan 2022 00:25:28 -0800 (PST)
+Message-ID: <c19ca2a2-54c9-88b1-b705-5a2cd4dd9580@kernel.org>
+Date:   Mon, 3 Jan 2022 09:25:26 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Subject: [was: libtraceevent: Increase libtraceevent logging when verbose]
+Content-Language: en-US
+From:   Jiri Slaby <jirislaby@kernel.org>
+To:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>
+Cc:     eranian@google.com
+References: <20210923001024.550263-1-irogers@google.com>
+ <20210923001024.550263-4-irogers@google.com>
+ <bc2b0786-8965-1bcd-2316-9d9bb37b9c31@kernel.org>
+In-Reply-To: <bc2b0786-8965-1bcd-2316-9d9bb37b9c31@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 16 Dec 2021 09:35:10 -0800
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
+Ping -- perf build is still broken in 5.16-rc8 due to this.
 
-> Add validation to ensure data is at or greater than the min size for the
-> fields of the event. If a dynamic array is used and is a type of char,
-> ensure null termination of the array exists.
-
-OK, looks good to me except a few nitpicks.
-
-Reveiewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-I added some comments below.
-
+On 16. 12. 21, 9:07, Jiri Slaby wrote:
+> Hi,
 > 
-> Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
-> ---
->  kernel/trace/trace_events_user.c | 147 +++++++++++++++++++++++++++----
->  1 file changed, 132 insertions(+), 15 deletions(-)
+> On 23. 09. 21, 2:10, Ian Rogers wrote:
+>> libtraceevent has added more levels of debug printout and with changes
+>> like:
+>> https://lore.kernel.org/linux-trace-devel/20210507095022.1079364-3-tz.stoyanov@gmail.com 
+>>
+>> previously generated output like "registering plugin" is no longer
+>> displayed. This change makes it so that if perf's verbose debug output
+>> is enabled then the debug and info libtraceevent messages can be
+>> displayed.
+>> The code is conditionally enabled based on the libtraceevent version as
+>> discussed in the RFC:
+>> https://lore.kernel.org/lkml/20210610060643.595673-1-irogers@google.com/
+>>
+>> v2. Is a rebase and handles the case of building without
+>>      LIBTRACEEVENT_DYNAMIC.
 > 
-> diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-> index fa3e26281fc3..58b8c9607c80 100644
-> --- a/kernel/trace/trace_events_user.c
-> +++ b/kernel/trace/trace_events_user.c
-> @@ -64,9 +64,11 @@ struct user_event {
->  	struct dyn_event devent;
->  	struct hlist_node node;
->  	struct list_head fields;
-> +	struct list_head validators;
->  	atomic_t refcnt;
->  	int index;
->  	int flags;
-> +	int min_size;
->  };
->  
->  /*
-> @@ -81,8 +83,17 @@ struct user_event_refs {
->  	struct user_event *events[];
->  };
->  
-> +#define VALIDATOR_ENSURE_NULL (1 << 0)
-> +#define VALIDATOR_REL (1 << 1)
-> +
-> +struct user_event_validator {
-> +	struct list_head link;
-> +	int offset;
-> +	int flags;
-> +};
-> +
->  typedef void (*user_event_func_t) (struct user_event *user, struct iov_iter *i,
-> -				   void *tpdata);
-> +				   void *tpdata, bool *faulted);
-
-Why don't you just return "int" value? ;-)
-
->  
->  static int user_event_parse(char *name, char *args, char *flags,
->  			    struct user_event **newuser);
-> @@ -214,6 +225,17 @@ static int user_field_size(const char *type)
->  	return -EINVAL;
->  }
->  
-> +static void user_event_destroy_validators(struct user_event *user)
-> +{
-> +	struct user_event_validator *validator, *next;
-> +	struct list_head *head = &user->validators;
-> +
-> +	list_for_each_entry_safe(validator, next, head, link) {
-> +		list_del(&validator->link);
-> +		kfree(validator);
-> +	}
-> +}
-> +
->  static void user_event_destroy_fields(struct user_event *user)
->  {
->  	struct ftrace_event_field *field, *next;
-> @@ -229,13 +251,43 @@ static int user_event_add_field(struct user_event *user, const char *type,
->  				const char *name, int offset, int size,
->  				int is_signed, int filter_type)
->  {
-> +	struct user_event_validator *validator;
->  	struct ftrace_event_field *field;
-> +	int validator_flags = 0;
->  
->  	field = kmalloc(sizeof(*field), GFP_KERNEL);
->  
->  	if (!field)
->  		return -ENOMEM;
->  
-> +	if (str_has_prefix(type, "__data_loc "))
-> +		goto add_validator;
-> +
-> +	if (str_has_prefix(type, "__rel_loc ")) {
-> +		validator_flags |= VALIDATOR_REL;
-> +		goto add_validator;
-> +	}
-> +
-> +	goto add_field;
-> +
-> +add_validator:
-> +	if (strstr(type, "char") != 0)
-> +		validator_flags |= VALIDATOR_ENSURE_NULL;
-> +
-> +	validator = kmalloc(sizeof(*validator), GFP_KERNEL);
-> +
-> +	if (!validator) {
-> +		kfree(field);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	validator->flags = validator_flags;
-> +	validator->offset = offset;
-> +
-> +	/* Want sequential access when validating */
-> +	list_add_tail(&validator->link, &user->validators);
-> +
-> +add_field:
->  	field->type = type;
->  	field->name = name;
->  	field->offset = offset;
-> @@ -245,6 +297,12 @@ static int user_event_add_field(struct user_event *user, const char *type,
->  
->  	list_add(&field->link, &user->fields);
->  
-> +	/*
-> +	 * Min size from user writes that are required, this does not include
-> +	 * the size of trace_entry (common fields).
-> +	 */
-> +	user->min_size = (offset + size) - sizeof(struct trace_entry);
-> +
->  	return 0;
->  }
->  
-> @@ -516,6 +574,7 @@ static int destroy_user_event(struct user_event *user)
->  	clear_bit(user->index, page_bitmap);
->  	hash_del(&user->node);
->  
-> +	user_event_destroy_validators(user);
->  	kfree(user->call.print_fmt);
->  	kfree(EVENT_NAME(user));
->  	kfree(user);
-> @@ -537,15 +596,49 @@ static struct user_event *find_user_event(char *name, u32 *outkey)
->  	return NULL;
->  }
->  
-> +static int user_event_validate(struct user_event *user, void *data, int len)
-> +{
-> +	struct list_head *head = &user->validators;
-> +	struct user_event_validator *validator;
-> +	void *pos, *end = data + len;
-> +	u32 loc, offset, size;
-> +
-> +	list_for_each_entry(validator, head, link) {
-> +		pos = data + validator->offset;
-> +
-> +		/* Already done min_size check, no bounds check here */
-> +		loc = *(u32 *)pos;
-> +		offset = loc & 0xffff;
-> +		size = loc >> 16;
-> +
-> +		if (likely(validator->flags & VALIDATOR_REL))
-> +			pos += offset + sizeof(loc);
-> +		else
-> +			pos = data + offset;
-> +
-> +		pos += size;
-> +
-> +		if (unlikely(pos > end))
-> +			return -EFAULT;
-> +
-> +		if (likely(validator->flags & VALIDATOR_ENSURE_NULL))
-> +			if (unlikely(*(char *)(pos - 1) != 0))
-
-As we discussed in the previous version, isn't it '\0' ?
-(just a style comment)
-
-> +				return -EFAULT;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  /*
->   * Writes the user supplied payload out to a trace file.
->   */
->  static void user_event_ftrace(struct user_event *user, struct iov_iter *i,
-> -			      void *tpdata)
-> +			      void *tpdata, bool *faulted)
->  {
->  	struct trace_event_file *file;
->  	struct trace_entry *entry;
->  	struct trace_event_buffer event_buffer;
-> +	size_t size = sizeof(*entry) + i->count;
->  
->  	file = (struct trace_event_file *)tpdata;
->  
-> @@ -555,19 +648,25 @@ static void user_event_ftrace(struct user_event *user, struct iov_iter *i,
->  		return;
->  
->  	/* Allocates and fills trace_entry, + 1 of this is data payload */
-> -	entry = trace_event_buffer_reserve(&event_buffer, file,
-> -					   sizeof(*entry) + i->count);
-> +	entry = trace_event_buffer_reserve(&event_buffer, file, size);
->  
->  	if (unlikely(!entry))
->  		return;
->  
-> -	if (unlikely(!copy_nofault(entry + 1, i->count, i))) {
-> -		__trace_event_discard_commit(event_buffer.buffer,
-> -					     event_buffer.event);
-> -		return;
-> -	}
-> +	if (unlikely(!copy_nofault(entry + 1, i->count, i)))
-> +		goto discard;
-
-OK, this is a fault error.
-
-> +
-> +	if (!list_empty(&user->validators) &&
-> +	    unlikely(user_event_validate(user, entry, size)))
-> +		goto discard;
-
-But this maybe an invalid parameter error.
-
-Thank you,
-
->  
->  	trace_event_buffer_commit(&event_buffer);
-> +
-> +	return;
-> +discard:
-> +	*faulted = true;
-> +	__trace_event_discard_commit(event_buffer.buffer,
-> +				     event_buffer.event);
->  }
->  
->  #ifdef CONFIG_PERF_EVENTS
-> @@ -622,7 +721,7 @@ static void user_event_bpf(struct user_event *user, struct iov_iter *i)
->   * Writes the user supplied payload out to perf ring buffer or eBPF program.
->   */
->  static void user_event_perf(struct user_event *user, struct iov_iter *i,
-> -			    void *tpdata)
-> +			    void *tpdata, bool *faulted)
->  {
->  	struct hlist_head *perf_head;
->  
-> @@ -645,14 +744,21 @@ static void user_event_perf(struct user_event *user, struct iov_iter *i,
->  
->  		perf_fetch_caller_regs(regs);
->  
-> -		if (unlikely(!copy_nofault(perf_entry + 1, i->count, i))) {
-> -			perf_swevent_put_recursion_context(context);
-> -			return;
-> -		}
-> +		if (unlikely(!copy_nofault(perf_entry + 1, i->count, i)))
-> +			goto discard;
-> +
-> +		if (!list_empty(&user->validators) &&
-> +		    unlikely(user_event_validate(user, perf_entry, size)))
-> +			goto discard;
->  
->  		perf_trace_buf_submit(perf_entry, size, context,
->  				      user->call.event.type, 1, regs,
->  				      perf_head, NULL);
-> +
-> +		return;
-> +discard:
-> +		*faulted = true;
-> +		perf_swevent_put_recursion_context(context);
->  	}
->  }
->  #endif
-> @@ -967,6 +1073,7 @@ static int user_event_parse(char *name, char *args, char *flags,
->  
->  	INIT_LIST_HEAD(&user->class.fields);
->  	INIT_LIST_HEAD(&user->fields);
-> +	INIT_LIST_HEAD(&user->validators);
->  
->  	user->tracepoint.name = name;
->  
-> @@ -1015,6 +1122,7 @@ static int user_event_parse(char *name, char *args, char *flags,
->  	return 0;
->  put_user:
->  	user_event_destroy_fields(user);
-> +	user_event_destroy_validators(user);
->  	kfree(user);
->  	return ret;
->  }
-> @@ -1072,6 +1180,9 @@ static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
->  	if (unlikely(user == NULL))
->  		return -ENOENT;
->  
-> +	if (unlikely(i->count < user->min_size))
-> +		return -EINVAL;
-> +
->  	tp = &user->tracepoint;
->  
->  	/*
-> @@ -1083,10 +1194,13 @@ static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
->  		user_event_func_t probe_func;
->  		struct iov_iter copy;
->  		void *tpdata;
-> +		bool faulted;
->  
->  		if (unlikely(iov_iter_fault_in_readable(i, i->count)))
->  			return -EFAULT;
->  
-> +		faulted = false;
-> +
->  		rcu_read_lock_sched();
->  
->  		probe_func_ptr = rcu_dereference_sched(tp->funcs);
-> @@ -1096,11 +1210,14 @@ static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
->  				copy = *i;
->  				probe_func = probe_func_ptr->func;
->  				tpdata = probe_func_ptr->data;
-> -				probe_func(user, &copy, tpdata);
-> +				probe_func(user, &copy, tpdata, &faulted);
->  			} while ((++probe_func_ptr)->func);
->  		}
->  
->  		rcu_read_unlock_sched();
-> +
-> +		if (unlikely(faulted))
-> +			return -EFAULT;
->  	}
->  
->  	return ret;
-> -- 
-> 2.17.1
+> It breaks build with LIBTRACEEVENT_DYNAMIC and version 1.3.0:
+>  > util/debug.c: In function ‘perf_debug_option’:
+>  > util/debug.c:243:17: error: implicit declaration of function 
+> ‘tep_set_loglevel’ [-Werror=implicit-function-declaration]
+>  >   243 |                 tep_set_loglevel(TEP_LOG_INFO);
+>  >       |                 ^~~~~~~~~~~~~~~~
+>  > util/debug.c:243:34: error: ‘TEP_LOG_INFO’ undeclared (first use in 
+> this function); did you mean ‘TEP_PRINT_INFO’?
+>  >   243 |                 tep_set_loglevel(TEP_LOG_INFO);
+>  >       |                                  ^~~~~~~~~~~~
+>  >       |                                  TEP_PRINT_INFO
+>  > util/debug.c:243:34: note: each undeclared identifier is reported 
+> only once for each function it appears in
+>  > util/debug.c:245:34: error: ‘TEP_LOG_DEBUG’ undeclared (first use in 
+> this function)
+>  >   245 |                 tep_set_loglevel(TEP_LOG_DEBUG);
+>  >       |                                  ^~~~~~~~~~~~~
+>  > util/debug.c:247:34: error: ‘TEP_LOG_ALL’ undeclared (first use in 
+> this function)
+>  >   247 |                 tep_set_loglevel(TEP_LOG_ALL);
+>  >       |                                  ^~~~~~~~~~~
 > 
+> It is because the gcc's command line looks like:
+> gcc
+> ...
+> -I/home/abuild/rpmbuild/BUILD/tools/lib/
+> ...
+> -DLIBTRACEEVENT_VERSION=65790
+> ...
+> 
+> So:
+> 
+> 
+>> --- a/tools/perf/util/debug.c
+>> +++ b/tools/perf/util/debug.c
+>> @@ -24,6 +24,16 @@
+>>   #include "util/parse-sublevel-options.h"
+>>   #include <linux/ctype.h>
+>> +#include <traceevent/event-parse.h>
+> 
+> /home/abuild/rpmbuild/BUILD/tools/lib/traceevent/event-parse.h is taken 
+> here.
+> 
+>> @@ -228,6 +238,15 @@ int perf_debug_option(const char *str)
+>>       /* Allow only verbose value in range (0, 10), otherwise set 0. */
+>>       verbose = (verbose < 0) || (verbose > 10) ? 0 : verbose;
+>> +#if MAKE_LIBTRACEEVENT_VERSION(1, 3, 0) <= LIBTRACEEVENT_VERSION
+> 
+> But
+> -DLIBTRACEEVENT_VERSION=65790
+> is taken here (which is 1.3.0).
+> 
+>> +    if (verbose == 1)
+>> +        tep_set_loglevel(TEP_LOG_INFO);
+>> +    else if (verbose == 2)
+>> +        tep_set_loglevel(TEP_LOG_DEBUG);
+>> +    else if (verbose >= 3)
+>> +        tep_set_loglevel(TEP_LOG_ALL);
+>> +#endif
+>> +
+>>       return 0;
+>>   }
+> 
+> regards,
 
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+js
+suse labs
