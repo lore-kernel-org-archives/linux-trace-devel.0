@@ -2,82 +2,118 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6564C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  4 Jan 2022 06:17:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52A5CC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  5 Jan 2022 11:32:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232922AbiADGRq (ORCPT
+        id S239713AbiAELcM (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 4 Jan 2022 01:17:46 -0500
-Received: from mail-ed1-f43.google.com ([209.85.208.43]:34360 "EHLO
-        mail-ed1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231533AbiADGRq (ORCPT
+        Wed, 5 Jan 2022 06:32:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239712AbiAELcL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 4 Jan 2022 01:17:46 -0500
-Received: by mail-ed1-f43.google.com with SMTP id u25so22959951edf.1;
-        Mon, 03 Jan 2022 22:17:45 -0800 (PST)
+        Wed, 5 Jan 2022 06:32:11 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F21DC061761
+        for <linux-trace-devel@vger.kernel.org>; Wed,  5 Jan 2022 03:32:11 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id f134-20020a1c1f8c000000b00345c05bc12dso3132344wmf.3
+        for <linux-trace-devel@vger.kernel.org>; Wed, 05 Jan 2022 03:32:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=V4r04YxH9icIenbLDdpXp9rsygxS3DTAAUIk6Yy5SqE=;
+        b=Ob3zf33J48dyPKv6fU6HPi5qnVSTQthRDejiPLk+CukhmKCCzMe4PN3njRChsIAXis
+         XT8p4hLpdOVuzZjXzOdYgKkjE6BUmopFyLaRB8D8wDKMX8gitD8Kqei332vAk1TU3W51
+         5K8lJe4TmmTC4F9OwopE51zxfMbfTzju0iojT0WHIEbq8ZY8pgR5XWFdOQxWR8u/YMqV
+         MntAFmyW+ecqV3JEeLvBvxRz2yIeUR2ILMTgPznenNHDEo634/gp1+4oE/9jaej7cCzu
+         /JpsQ55s0f8gsb2BTH4GKhVEdgvSGPztVqREBmKrBiGeTngiUuEc8/GUs9BzbNfdsHlD
+         cqJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+         :content-language:to:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=pHkaFCQ7pu2TR8eztQX9gVwPPOBVlFAaACaZ0iSfECg=;
-        b=IRZ8c3oLhc/wSFGxAb5y7K+hBK68R3umxspE/XjqNywzsKw6PYFqJfexRXvwxYfhwA
-         /nuR1eiSt3GRqjFDGWHy4Irf+9lGgLZqiY/5ChE6Ap0PjhLB0J9VFjkbCpRgwrLW9pIf
-         zCKHW9rRD8Nw6MWuiermX80bi7UqfjzPJRomE462TudoUUBScCaY/oq1F2PrIDbN6PkO
-         VVvI9cwnKHDKN+G+w3eI7PV4Bw/aNL2l1nfDwlwajESmMU98OAqszQaj4R/G6xRPeBii
-         UfEiX25dqvNYaDmzUGGbo02Tli2qPL6ZLlnDKJwN2f2DbZOwKtIZY4/THqieCak2d5f8
-         ucaA==
-X-Gm-Message-State: AOAM530NxyjFW4OlHCOJOHNxqrm0tMin+L+zd6Jgi+gHUv76kj8lF0xO
-        Ok27hEsiM6sInyTykewSUUo=
-X-Google-Smtp-Source: ABdhPJwLdBXMrng9HGpEUbQe43EeRAgi7WoS98rK5bcmSkZR5943V2fvIkVKOdDmAmvXm7SLu7RjIQ==
-X-Received: by 2002:a17:906:dc94:: with SMTP id cs20mr37131508ejc.316.1641277065191;
-        Mon, 03 Jan 2022 22:17:45 -0800 (PST)
-Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id i20sm14319867edv.44.2022.01.03.22.17.43
+        bh=V4r04YxH9icIenbLDdpXp9rsygxS3DTAAUIk6Yy5SqE=;
+        b=jCouIlUoN3iQeIclkiWihtpkcQ5buwK/GNuQ9bbHVpXKFEA3rR595YKH2a2TSsat6r
+         s/smqWGxBkZNZ6lXkzHnb4JEeQPzrrDOTmfcFN/8A+jzDPaIjIzTUj5Z1y7WJM7EZdcp
+         3dncoSvcf4TPUihosPEwNWfpGJdGceTQ6Z647YMS3jDiNp+57C4klmwADW6YkVuq4h0H
+         lp4qJCDHsq5B31TpASyMz0HE2ceBI65yo2MmN/hI5IqbOGjT/S+pT8j3TqzMTVrH836D
+         SitHFEeAeHIDVOFHPECaMHaptbrWRrbkmXHugPrgIyv+qaxfzeE4typWIyT5YmetmFRH
+         G7ng==
+X-Gm-Message-State: AOAM532g6oH4u/RVhmtgF/DWeV7CV+Fi31EdCsHLYEPsuZvt0Qhg3QRG
+        mshDlAn6O07rAFnM4HeTHldoxoNi1vE=
+X-Google-Smtp-Source: ABdhPJw7J62Q9W6K2Z3eZ1akP7cmc6OK6A70K8lOowr6kyH9X86IRQKfdf1KRny8WntNny8nveNSSg==
+X-Received: by 2002:a7b:c202:: with SMTP id x2mr2446045wmi.57.1641382329886;
+        Wed, 05 Jan 2022 03:32:09 -0800 (PST)
+Received: from [192.168.1.9] ([95.87.219.163])
+        by smtp.gmail.com with ESMTPSA id l8sm42197423wrv.25.2022.01.05.03.32.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Jan 2022 22:17:44 -0800 (PST)
-Message-ID: <44a258b0-048d-9e32-1583-ae52aaee0a1a@kernel.org>
-Date:   Tue, 4 Jan 2022 07:17:43 +0100
+        Wed, 05 Jan 2022 03:32:09 -0800 (PST)
+Message-ID: <9587a26b-e9fb-a9b4-c94d-29354abc3b84@gmail.com>
+Date:   Wed, 5 Jan 2022 13:32:08 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: [was: libtraceevent: Increase libtraceevent logging when verbose]
+ Thunderbird/91.3.1
+Subject: Re: [PATCH v2 0/2]kernel-shark:add new plugin for xenomai
+ cobalt_switch_context events
 Content-Language: en-US
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        eranian@google.com
-References: <20210923001024.550263-1-irogers@google.com>
- <20210923001024.550263-4-irogers@google.com>
- <bc2b0786-8965-1bcd-2316-9d9bb37b9c31@kernel.org>
- <c19ca2a2-54c9-88b1-b705-5a2cd4dd9580@kernel.org>
- <YdMTIl7jn25XrUn8@kernel.org>
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <YdMTIl7jn25XrUn8@kernel.org>
+To:     Hongzhan Chen <hongzhan.chen@intel.com>,
+        linux-trace-devel@vger.kernel.org
+References: <20211222064014.4471-1-hongzhan.chen@intel.com>
+From:   Yordan Karadzhov <y.karadz@gmail.com>
+In-Reply-To: <20211222064014.4471-1-hongzhan.chen@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 03. 01. 22, 16:15, Arnaldo Carvalho de Melo wrote:
-> Tried reproducing here on fedora 34 but it is at 1.1.1:
 
-FWIW, it's openSUSE Tumbleweed:
-$ rpm -q libtraceevent1
-libtraceevent1-1.3.0-1.3.x86_64
+
+On 22.12.21 г. 8:40 ч., Hongzhan Chen wrote:
+> 1. To avoid code duplication, move some common APIs and definitions
+>     out to create new files and share with other plugins.
+> 2. add new plugin for handling xenomai cobalt_switch_context events
+>     to visualize OOB state of RT tasks.
+> 
+> I tried to move common APIs and definitions to KsPlugins.cpp/hpp but
+> found these definitions finally depend on KsMainWindow object used
+> by _doubleClick of LatencyBox assigned by plugin_set_gui_ptr via
+> KSHARK_MENU_PLUGIN_INITIALIZER.
+> I do not know how to remove this dependency so I create new files to
+> avoid code duplication. Please suggest if there is better way.
+
+Hi Hongzhan,
+
+Indeed, this turns to be a bit trickier than I expected, but it is possible.
+I will comment in the patch.
 
 thanks,
--- 
-js
-suse labs
+Yordan
+
+> 
+> Hongzhan Chen (2):
+>    kernel-shark: Move common APIs and definitions out to avoid
+>      duplication
+>    kernel-shark: Add plugin for handling Xenomai cobalt_context_switch
+> 
+>   src/libkshark-tepdata.c                    |   1 +
+>   src/plugins/CMakeLists.txt                 |   6 +-
+>   src/plugins/CobaltSwitchEvents.cpp         | 125 +++++++++++++++
+>   src/plugins/CommonSched.hpp                |  99 ++++++++++++
+>   src/plugins/SchedEvents.cpp                |  87 +----------
+>   src/plugins/common_sched.c                 |  37 +++++
+>   src/plugins/common_sched.h                 |  50 ++++++
+>   src/plugins/sched_events.c                 |  37 +----
+>   src/plugins/sched_events.h                 |  12 +-
+>   src/plugins/xenomai_cobalt_switch_events.c | 169 +++++++++++++++++++++
+>   src/plugins/xenomai_cobalt_switch_events.h |  54 +++++++
+>   11 files changed, 545 insertions(+), 132 deletions(-)
+>   create mode 100644 src/plugins/CobaltSwitchEvents.cpp
+>   create mode 100644 src/plugins/CommonSched.hpp
+>   create mode 100644 src/plugins/common_sched.c
+>   create mode 100644 src/plugins/common_sched.h
+>   create mode 100644 src/plugins/xenomai_cobalt_switch_events.c
+>   create mode 100644 src/plugins/xenomai_cobalt_switch_events.h
+> 
