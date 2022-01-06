@@ -2,71 +2,129 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24C0AC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  6 Jan 2022 23:07:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84808C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  6 Jan 2022 23:32:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245363AbiAFXHR (ORCPT
+        id S245566AbiAFXc6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 6 Jan 2022 18:07:17 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:35508 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245283AbiAFXHO (ORCPT
+        Thu, 6 Jan 2022 18:32:58 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:57442 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245495AbiAFXc5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 6 Jan 2022 18:07:14 -0500
-Received: from kbox (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 71D1920B7179;
-        Thu,  6 Jan 2022 15:07:14 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 71D1920B7179
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1641510434;
-        bh=f2wACj9WZK2QCImdwnOicF3lUDyuoYCy7ROFz5G0vTE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=innuqWilhcyDHc/NPxWgLlv6GqSvcpNWzrFrLvF+UbAdnID+Zdnrr/e4LYDjpuO5E
-         +jdCehd5r71GTvYmm7Ntu8Ioxs34X5pGJMt6/82ongvq7vjyfcrSwJFyDv1IATF5LH
-         ww+Bfqm6K3PfvqzJ+bou9lIc+XBa3HrzUP0eMDx4=
-Date:   Thu, 6 Jan 2022 15:06:31 -0800
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 10/12] user_events: Add sample code for typical usage
-Message-ID: <20220106230631.GB2447@kbox>
+        Thu, 6 Jan 2022 18:32:57 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A58B361E85;
+        Thu,  6 Jan 2022 23:32:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3FB8C36AE0;
+        Thu,  6 Jan 2022 23:32:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641511976;
+        bh=rL3mJhFcwsAPvSpaRtRP4ONHUtXAnLRH1GqGfnhGt3E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UZnsn9jgrTafa4VvQpKHdcRBJqDAJTC2BUIlscUTBL+tdGGQy3YEkzPDmxZhvPbrP
+         muwEMoxmqFxYBfI4GzZb4aGIPMVmVZ64GqU9McThr4INONhGp6HvEC0aJZ44LvCcYL
+         9GkeWX7TqGbRVTuwfKlZkq9mQGp81XwpnONGeINjqY4tcgPAAKID+RIAhKpUcdpqD3
+         IOuBtogkWtXbitIkvGQmOYo1U19BRPyhp7xuamrYKir5K/JdBkx3JaAHuEZJkxESuQ
+         6ePZ0pkaSnJEcqCWVGrm34vbDDX/5+fj8cFJbtPUu4x5lxzt2ZPH0MloIBiIP4dTUW
+         XJTFoJAyOx2Sw==
+Date:   Fri, 7 Jan 2022 08:32:52 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 11/12] user_events: Validate user payloads for size
+ and null termination
+Message-Id: <20220107083252.0da5237af9c5d041a3850dc6@kernel.org>
+In-Reply-To: <20220103185308.GA15522@kbox>
 References: <20211216173511.10390-1-beaub@linux.microsoft.com>
- <20211216173511.10390-11-beaub@linux.microsoft.com>
- <20211223081814.1ca544cdf18e29a93f60c597@kernel.org>
- <20220106170907.2e7f2bd8@gandalf.local.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220106170907.2e7f2bd8@gandalf.local.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        <20211216173511.10390-12-beaub@linux.microsoft.com>
+        <20211223090822.a14244522fef64b4b4398fe0@kernel.org>
+        <20220103185308.GA15522@kbox>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Jan 06, 2022 at 05:09:07PM -0500, Steven Rostedt wrote:
-> On Thu, 23 Dec 2021 08:18:14 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > On Thu, 16 Dec 2021 09:35:09 -0800
-> > Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> > 
-> > > Add sample code for user_events typical usage to show how to register
-> > > and monitor status, as well as to write out data.  
-> > 
-> > Ah, here is the sample code. OK.
-> > 
-> > Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-> 
-> Ah, probably should swap the patches around (makes it easier on the
-> reviewers ;-)
-> 
-> That is, 10 should come before 9, so that the reference to samples exists
-> when the document is added.
-> 
-> -- Steve
+Hi Beau,
 
-Sure thing.
+On Mon, 3 Jan 2022 10:53:08 -0800
+Beau Belgrave <beaub@linux.microsoft.com> wrote:
 
-Thanks,
--Beau
+[...]
+> > >  typedef void (*user_event_func_t) (struct user_event *user, struct iov_iter *i,
+> > > -				   void *tpdata);
+> > > +				   void *tpdata, bool *faulted);
+> > 
+> > Why don't you just return "int" value? ;-)
+> > 
+> 
+> There can be more than one callback attached per-probe, and in all cases
+> where a return value is needed is for a faulted (or would have faulted)
+> case. This allows less branches when data is being traced/logged as the
+> return value does not need to be checked (nor should it short circuit
+> other probes that are attached).
+
+Would you mean overwriting the 'faulted' ? If so, you can do something like
+
+faulted = 0;
+for_each_user_event_func(user_event_func) {
+	faulted |= user_event_func();
+}
+if (faulted)
+  ...
+
+But I think if one user_event_func() fails to access the user data,
+other funcs also fail. In this case, it is faster to skip others than
+repeating faults.
+
+[...]
+> > > @@ -555,19 +648,25 @@ static void user_event_ftrace(struct user_event *user, struct iov_iter *i,
+> > >  		return;
+> > >  
+> > >  	/* Allocates and fills trace_entry, + 1 of this is data payload */
+> > > -	entry = trace_event_buffer_reserve(&event_buffer, file,
+> > > -					   sizeof(*entry) + i->count);
+> > > +	entry = trace_event_buffer_reserve(&event_buffer, file, size);
+> > >  
+> > >  	if (unlikely(!entry))
+> > >  		return;
+> > >  
+> > > -	if (unlikely(!copy_nofault(entry + 1, i->count, i))) {
+> > > -		__trace_event_discard_commit(event_buffer.buffer,
+> > > -					     event_buffer.event);
+> > > -		return;
+> > > -	}
+> > > +	if (unlikely(!copy_nofault(entry + 1, i->count, i)))
+> > > +		goto discard;
+> > 
+> > OK, this is a fault error.
+> > 
+> > > +
+> > > +	if (!list_empty(&user->validators) &&
+> > > +	    unlikely(user_event_validate(user, entry, size)))
+> > > +		goto discard;
+> > 
+> > But this maybe an invalid parameter error.
+> > 
+> 
+> Yes, but it has to be an invalid parameter that would have caused a
+> possible fault in a worse place. In my mind, I still treat it as a fault
+> case whether the user did it intentionally or not :)
+
+OK, I got it.
+
+Thank you,
+
+> 
+> Thanks,
+> -Beau
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
