@@ -2,68 +2,100 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81873C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  6 Jan 2022 18:32:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21951C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  6 Jan 2022 19:29:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242812AbiAFScH (ORCPT
+        id S243309AbiAFT3C (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 6 Jan 2022 13:32:07 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:37600 "EHLO
+        Thu, 6 Jan 2022 14:29:02 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:57696 "EHLO
         dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242799AbiAFScG (ORCPT
+        with ESMTP id S243311AbiAFT3C (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 6 Jan 2022 13:32:06 -0500
+        Thu, 6 Jan 2022 14:29:02 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8F7DE61CF4
-        for <linux-trace-devel@vger.kernel.org>; Thu,  6 Jan 2022 18:32:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B1B7C36AEB;
-        Thu,  6 Jan 2022 18:32:05 +0000 (UTC)
-Date:   Thu, 6 Jan 2022 13:32:04 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yordan Karadzhov <y.karadz@gmail.com>
-Cc:     Hongzhan Chen <hongzhan.chen@intel.com>,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2]kernel-shark:add new plugin for xenomai
- cobalt_switch_context events
-Message-ID: <20220106133204.35d71b6b@gandalf.local.home>
-In-Reply-To: <5de4819d-2f49-86c0-900d-a4aa585b67ec@gmail.com>
-References: <20211222064014.4471-1-hongzhan.chen@intel.com>
-        <20220106121854.106d5b27@gandalf.local.home>
-        <5de4819d-2f49-86c0-900d-a4aa585b67ec@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CA23D61D04;
+        Thu,  6 Jan 2022 19:29:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15BFCC36AE3;
+        Thu,  6 Jan 2022 19:29:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641497341;
+        bh=4dACT1YiyrLoTMnDe9Pfe4GUDI9p9TWgn8eh3hZZYt8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pPz0uTv0mj4fW/scrxYWxmBCiD52nudsZ9w31/nNUcexDZ8LBghe0if4NZFFDNm6t
+         hCFKLRHwnkiVmje3RL/PsgxhY7zPLoUGL7EavmjwXWXdKtZ7kj3DEDO93o6pP9uRIk
+         dlSkzP/kTqoywKBb1+InBbo6EdZBmvCuFg7YmZddu5l9d2yUhrPELFmW+9EGB8ffyf
+         1zZ2b6rvmSG+kFenMVTOZvRXSdQkxFilCNjzfb5iXMegafyjjdiCO0pp+YCPTQDhEI
+         VvTxlIWq5RcG1icSxdFVGqlyt5hFP5WqUTqqwctqvxARA50modgJnNO0eyRIydZ6cX
+         NAF/WtD5uMdng==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2131040B92; Thu,  6 Jan 2022 16:28:58 -0300 (-03)
+Date:   Thu, 6 Jan 2022 16:28:58 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        linux-trace-devel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        torvalds@linux-foundation.org, eranian@google.com
+Subject: Re: [PATCH] perf build: Lower the priority of tools/lib includes
+Message-ID: <YddC+lzAO1Urj0TF@kernel.org>
+References: <20220106072627.476524-1-irogers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220106072627.476524-1-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 6 Jan 2022 19:32:56 +0200
-Yordan Karadzhov <y.karadz@gmail.com> wrote:
-
-> Hi Steven,
-> Happy New Year!
-
-Happy New Year to you too Yordan!
-
+Em Wed, Jan 05, 2022 at 11:26:27PM -0800, Ian Rogers escreveu:
+> tools/lib has a 1.1.0 copy of libtraceevent. If a newer system
+> version is installed then its headers will go in /usr/include. As -I has
+> priority over system headers the 1.1.0 version gets used in preference
+> to the system one, which isn't what is wanted. To make the behavior
+> match expectations use -idirafter so that any system headers have priority
+> over the tools/lib version.
 > 
-> I already replayed, asking for some minor corrections.
-> https://lore.kernel.org/all/bb1741d5-600a-82a9-d8bc-91222400e129@gmail.com/
-> I think the plugin is almost ready.
+> Fixes: 08efcb4a638d ("libtraceevent: Increase libtraceevent logging when verbose")
 
-Strange, I didn't receive it. I wonder if I got booted from the email lists
-because I had my mail server offline for too long (/me goes check).
+Hi,
 
+	You forgot to add your Signed-off-by:, I'm adding it as you
+usually provide it, ok?
+
+- Arnaldo
+
+> ---
+>  tools/perf/Makefile.config | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> BTW have you finished the renovation of your office? If yes, I will send you a review for your trace-cruncher patch.
->
+> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+> index 96ad944ca6a8..0627286380fa 100644
+> --- a/tools/perf/Makefile.config
+> +++ b/tools/perf/Makefile.config
+> @@ -346,7 +346,7 @@ endif
+>  
+>  INC_FLAGS += -I$(src-perf)/util
+>  INC_FLAGS += -I$(src-perf)
+> -INC_FLAGS += -I$(srctree)/tools/lib/
+> +INC_FLAGS += -idirafter$(srctree)/tools/lib/
+>  
+>  CORE_CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE
+>  
+> -- 
+> 2.34.1.448.ga2b2bfdf31-goog
 
-Yes, I just finished. Now I'm trying to catch up on everything and also
-work on some things that I may not be able to work on when I start working
-again.
+-- 
 
-Cheers,
-
--- Steve
+- Arnaldo
