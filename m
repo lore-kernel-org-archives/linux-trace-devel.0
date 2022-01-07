@@ -2,541 +2,145 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4250DC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  7 Jan 2022 11:11:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49A21C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  7 Jan 2022 11:57:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237577AbiAGLK7 (ORCPT
+        id S231355AbiAGL5Y (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 7 Jan 2022 06:10:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232906AbiAGLK7 (ORCPT
+        Fri, 7 Jan 2022 06:57:24 -0500
+Received: from mail-db8eur05on2070.outbound.protection.outlook.com ([40.107.20.70]:4992
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229624AbiAGL5Y (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 7 Jan 2022 06:10:59 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07393C061245
-        for <linux-trace-devel@vger.kernel.org>; Fri,  7 Jan 2022 03:10:59 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id j6so20666124edw.12
-        for <linux-trace-devel@vger.kernel.org>; Fri, 07 Jan 2022 03:10:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=bV8vzDRZfAe7+KJFXsCBEfeRC19dGOnwpdAncXQSyvo=;
-        b=F1Sau9VxrijvgA/9/MO1xgdCFx0yNjSD7uiKG7Ldk93hKxjp8HvTYv1RYDLaYvaalw
-         GeSjaXRQuNh4AkgZ7IzwHn72062v7njtsqNk2MWafiQzVVfrX/NSE1cH5ON54jSQ0htt
-         9zHue7AAgNJkOLIb5uyCQjrMx3KT88ExriJKkEIcVXECHzPA6XZm/Q/O9dDZa8ScsqrY
-         +LBl5zKJe9iHOBcLfozAHQDlsIp2qK3tRniFlgARd4i1lfXbnCPsEKvFJMppXu7VzPDy
-         zmIFDli9sB7hqqWcLHMxFpBOkKzyPC1TuX95pEPQ15OhVoSUWH1cxNqm6zVRA+B8Y6Mf
-         +Z4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=bV8vzDRZfAe7+KJFXsCBEfeRC19dGOnwpdAncXQSyvo=;
-        b=hLx0G4uJsc9E2leUE3kt98CwQiXUe3Hdn/lm+N8sttAHuqDOEqR8Pe+Zz5zW/MwPtQ
-         1pbapDCsjkE2EfB5UPw5zV2kJNlaxRnHsLlER1SAaM3yiebWp5CqQC/mOmbOQczAESxV
-         Ys+sgK+9Ym4YlbBnjS1ShZpi77c+VPxpJiF4IXsY22FdPBi8qj/KovL8a1Ni4RX18rtR
-         1agqXzdrsS4Pqq65sbTjuPDMXUjOuTSiB2/Vcp5bbRFjYju9vV4cJXRNrtJiWt6+s84h
-         hPhz1Kc1QJFXPjmgkqkoWpPyEmN0Ey2XuVBGRv3rb7RdT/5vn6Bbcl2+FBtg0a4LrGXQ
-         9I/A==
-X-Gm-Message-State: AOAM530REoUCKcmmIpKHq9UehwFlr8Qqd120tp1qlGQ53fHLw8c9qDQq
-        ifz3FrrVS4eYUxWWatL3r1S7DdnQDdA=
-X-Google-Smtp-Source: ABdhPJz/h9sYCnw6P4oFoeR829ZieQIUcH4NlmLYlMGZf9C1JhcceOLcSIndH3kPPg5/Xh4KCTyVRA==
-X-Received: by 2002:a50:ef0a:: with SMTP id m10mr22157816eds.236.1641553857479;
-        Fri, 07 Jan 2022 03:10:57 -0800 (PST)
-Received: from [192.168.1.9] ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id s4sm1332631ejm.146.2022.01.07.03.10.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 07 Jan 2022 03:10:57 -0800 (PST)
-Message-ID: <9e84f570-f9f0-fcdb-e6e8-7b08fcb2932c@gmail.com>
-Date:   Fri, 7 Jan 2022 13:10:56 +0200
+        Fri, 7 Jan 2022 06:57:24 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c6OzSeILFJJuSNou42Otia+ITk+JhIwWKFG+wcV387EkcZQZhatSDywBWGaCOU9tF37v1zA5OSADXhGLIPNsLCbfsV5bSSPNsWA9AcTdW4F2Kq4uWnjQ2pXtfC2VAYOfyuYeNJrSXo4E4eE1D5urCisuavRriLiCwM6jaKrGbZtGyoQaNMGAFjVBwhqWiQpXfw4+YwfBComqa9c/gQJJvT6Qg384LrEaQX3TruFzLLyOn2gG6EsySiomZvM4Ok3tYvrBfpvEd/BM6la3EFQaF9k+9XtjBKoqREIoKBWg6BzPQuJuDc48gHNIlOCFXiDiNrWXSbw+Oz6f1s+ll6ZpTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OXOfVmZ6cL3SBTUf6lx3WlPO5b70uDDLT8E5lRLlXqs=;
+ b=PUYXl0pIzLq3oHgdlNAQRufL7Udz56KEZD1dCVv1PUPqfre6gRfekfFydVIUi5lfUtKtKwRkb1wUw1UK+B4aWtbaA7GJZYkySlXcUntENdU3uRHUB7J29bq4BFWiGvFkj41uxZt5P/t4UPsyfpRCjb2ZGPuDlo7b0JBXsRCjSGIlcB2ZQPrJbJF+9F29udBBm250oC1Gl8LNzI03PZMqnK9LWHmCR+VjIrldkBeVdGmERRUwV6aF/AmUhqcr7nyPM3qGwvAa5HlJLGgFbxWWOdNC33rETs0Ui4tLQiMKuJtmoUJ9HEYE0MqU3dr/ykO5zF9DB1c2pGhMtUnXvLEv2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 194.138.21.71) smtp.rcpttodomain=gmail.com smtp.mailfrom=siemens.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=siemens.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OXOfVmZ6cL3SBTUf6lx3WlPO5b70uDDLT8E5lRLlXqs=;
+ b=qiest3nUDM1OgZz9aaBBqFfWC+Sndl8ytqZ9EaLkb1bX+KoLZl5z+A9oJcnl9mFkhsguqVk26sVRIsope4So9ahRcBz2a+owh/KtEjea1Y65Ji034hIH6wLQzdpVsjXCSPiwf9gVP3790laErsRdA3OIUhggj8uPhnS5/6ATxQCqDIbByHhysNWMRBdTgOTcFz79BsPexJRh5N7DSwYYsWE/4hkArVNVRdTnRktYJT3Bku+GsUubADYA+P35f5Hhq6BSweYjxfG/D4b+pBlxgbPr7G99p5aE4cYaGB+LCkcnCLKhT8Vf6iGwMy7emjBDt+G1g+prhEwdsfbNk2AOXg==
+Received: from DB7PR02CA0027.eurprd02.prod.outlook.com (2603:10a6:10:52::40)
+ by VI1PR1001MB1214.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:800:64::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.9; Fri, 7 Jan
+ 2022 11:57:22 +0000
+Received: from DB5EUR01FT052.eop-EUR01.prod.protection.outlook.com
+ (2603:10a6:10:52:cafe::99) by DB7PR02CA0027.outlook.office365.com
+ (2603:10a6:10:52::40) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.7 via Frontend
+ Transport; Fri, 7 Jan 2022 11:57:22 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 194.138.21.71)
+ smtp.mailfrom=siemens.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=siemens.com;
+Received-SPF: Pass (protection.outlook.com: domain of siemens.com designates
+ 194.138.21.71 as permitted sender) receiver=protection.outlook.com;
+ client-ip=194.138.21.71; helo=hybrid.siemens.com;
+Received: from hybrid.siemens.com (194.138.21.71) by
+ DB5EUR01FT052.mail.protection.outlook.com (10.152.5.248) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4867.9 via Frontend Transport; Fri, 7 Jan 2022 11:57:22 +0000
+Received: from DEMCHDC8A0A.ad011.siemens.net (139.25.226.106) by
+ DEMCHDC9SKA.ad011.siemens.net (194.138.21.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17; Fri, 7 Jan 2022 12:57:21 +0100
+Received: from [167.87.0.113] (167.87.0.113) by DEMCHDC8A0A.ad011.siemens.net
+ (139.25.226.106) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Fri, 7 Jan
+ 2022 12:57:21 +0100
+Message-ID: <059411fb-b691-7bb1-9acb-7d4b005f1bc0@siemens.com>
+Date:   Fri, 7 Jan 2022 12:57:21 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
+ Thunderbird/91.4.0
 Subject: Re: [PATCH 2/2] kernel-shark: Add plugin for handling Xenomai
  cobalt_context_switch
 Content-Language: en-US
-To:     Hongzhan Chen <hongzhan.chen@intel.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        linux-trace-devel@vger.kernel.org
+To:     Yordan Karadzhov <y.karadz@gmail.com>,
+        Hongzhan Chen <hongzhan.chen@intel.com>,
+        <linux-trace-devel@vger.kernel.org>
 References: <20220107021846.893-1-hongzhan.chen@intel.com>
  <20220107021846.893-2-hongzhan.chen@intel.com>
-From:   Yordan Karadzhov <y.karadz@gmail.com>
-In-Reply-To: <20220107021846.893-2-hongzhan.chen@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ <9e84f570-f9f0-fcdb-e6e8-7b08fcb2932c@gmail.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+In-Reply-To: <9e84f570-f9f0-fcdb-e6e8-7b08fcb2932c@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [167.87.0.113]
+X-ClientProxiedBy: DEMCHDC8A1A.ad011.siemens.net (139.25.226.107) To
+ DEMCHDC8A0A.ad011.siemens.net (139.25.226.106)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 75381888-08bb-4dec-10fc-08d9d1d4dd2a
+X-MS-TrafficTypeDiagnostic: VI1PR1001MB1214:EE_
+X-Microsoft-Antispam-PRVS: <VI1PR1001MB1214463DD2882F7146877E69954D9@VI1PR1001MB1214.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CtphVrYVB9DH5E3bskxZziGuwM1G8BeXZ3nzSGEjE4YPQmKFdyae2MaAyGRnu8GJB/ROcKYtpaP4M7Rdismy6/kXkcHROz6HnVdiHVtADmR7MyDabK5AC3R1iVHcjQRDM32hrsd0Rcj2usScZDm/iXrGut9bKahmpRgBFRHUQWnpn/ljtwYgdBX1dg8LaFU+wcfXYSxfITYffCgrt65fNWOW6sfaROhACe7RZuREkl7J5JPw5oQK+mvbmx9VS8bcJnBGqgg14kzRojojC6irfbNuK8+SRkGPlfXAujx3hiGmaECR0sNu1WYB/SYTGTfstOJbLgwgzVlKqzmn/XKAzhIrC+NDdceUt1rZmRzm1DiZueh0G6f1dDY0xjHzRr1woZbRiorjyOXvJzoQSLvopttGRS6hdwe7QwDdzkhc6U4irXLjHzutePqMlWhBeYvG65XVsemmz4txj7Gfb8lOLD95+m0rTekKWcbImwMJrMDuv+O3LsLowfPHBNH9NWZsjXpaK+zzdmgnBaxUyeEu5hbRSZYcNgfVe0fEbs1HmcKApf7uTdFb0nAIj/BsKNXbAGuPsl57PXjLTHNvHNI/wzepqIedfQ20bE+CJCMawgDW05SknlFcIv+09xXKj/tXJ5RMoUQ4ntsd78/epVBi8Y12KYjvwCeJcSKtzNxAcZV5wy+0wmQiL1NobvHKUMwaiBzqNTkqBiJszNfxxd5t4AtDahqDEjrdh5iEyd7IPawA2qyqvPFnfhN7dz4NzS3sAW651k8XG4G6lGl+cGbVJq7Y+SaFIMb/ueh7LfV9YWtDwBK+I7wBU/PB1n0hPVkH4mji24j12LzaXDClxrFFeIZNzKggDzIx4/WQf7SleXbXxp8RCiOwVR/aP9Xp0tLfcvSNMAF2VxrlPKVlnbmFQMHstsBmykUhUQF4vqCw5q8g28zQthEtcCWEPv3kHNMT
+X-Forefront-Antispam-Report: CIP:194.138.21.71;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:hybrid.siemens.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(40470700002)(36840700001)(86362001)(2616005)(16526019)(47076005)(26005)(70586007)(83380400001)(8676002)(44832011)(356005)(36756003)(186003)(2906002)(316002)(956004)(36860700001)(70206006)(5660300002)(966005)(336012)(53546011)(8936002)(40460700001)(16576012)(82960400001)(31686004)(31696002)(82310400004)(6706004)(110136005)(508600001)(81166007)(3940600001)(36900700001)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: siemens.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jan 2022 11:57:22.2804
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 75381888-08bb-4dec-10fc-08d9d1d4dd2a
+X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=38ae3bcd-9579-4fd4-adda-b42e1495d55a;Ip=[194.138.21.71];Helo=[hybrid.siemens.com]
+X-MS-Exchange-CrossTenant-AuthSource: DB5EUR01FT052.eop-EUR01.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR1001MB1214
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Hongzhan and Jan,
-
-Have you decided something about the way this plugin will be maintained?
-
-
-On 7.01.22 г. 4:18 ч., Hongzhan Chen wrote:
-> For Xenomai-cobalt enabled system, cobalt_switch_context means
-> that there is schedule and context switch in companion core(realtime
-> core), which we may need to do special treatment and take correct
-> action as main kernel sched_switch to visualize out-of-band state
-> of realtime tasks running in cobalt core. To achive our target,
-> we implement following:
+On 07.01.22 12:10, Yordan Karadzhov wrote:
+> Hi Hongzhan and Jan,
 > 
->    1. store corresponding cobalt_switch_context events into
->       container data.
->    2. modify pid stored in entry to be equal to next_pid to
->       show correct color in cpu bar when cobalt_switch_context
->       event happen.
->    3. show blue hollow box to mark out-of-band state according to
->       cobalt_switch_context events.
->    4. clickable cobalt_switch_context plugin shapes.
+> Have you decided something about the way this plugin will be maintained?
 > 
-> Signed-off-by: Hongzhan Chen <hongzhan.chen@intel.com>
+
+No decision yet. I'm still waiting for an answer on
+https://lore.kernel.org/linux-trace-devel/9ac9a1af-6829-425a-7943-755decf7c273@gmail.com/
+regarding maintenance of different tracepoint revisions. That would be
+implicit when keeping the plugin in lock-step with the tracepoints in
+the same repo.
+
+But then the question would be how mature the interface lifecycle
+management of kernelshark and libs is /wrt external plugins. Those may
+need to account for potential changes in those APIs over the time, right?
+
+We will likely pick the path that is least inconvenient.
+
+[...]
+
+>> +    eventFieldIntervalPlot(argvCpp,
+>> +                   plugin_ctx->cs_data, checkFieldCS,
+>> +                   plugin_ctx->cs_data, checkEntryPid,
+>> +                   makeLatencyBox<XenomaiSwitchBox>,
+>> +                   {0, 0, 255}, // Blue
 > 
-> diff --git a/src/libkshark-tepdata.c b/src/libkshark-tepdata.c
-> index 9740ed9..e933b39 100644
-> --- a/src/libkshark-tepdata.c
-> +++ b/src/libkshark-tepdata.c
-> @@ -1208,6 +1208,7 @@ static void kshark_tep_init_methods(struct kshark_generic_stream_interface *inte
->   /** A list of built in default plugins for FTRACE (trace-cmd) data. */
->   const char *tep_plugin_names[] = {
->   	"sched_events",
-> +	"xenomai_cobalt_switch_events",
-
-I am not sure we want to make this plugin load by default. Even if we do so, this change must go with a separate patch.
-
->   	"missed_events",
->   	"kvm_combo",
->   };
-> diff --git a/src/plugins/CMakeLists.txt b/src/plugins/CMakeLists.txt
-> index 3e170fa..16f080b 100644
-> --- a/src/plugins/CMakeLists.txt
-> +++ b/src/plugins/CMakeLists.txt
-> @@ -44,6 +44,10 @@ if (Qt5Widgets_FOUND AND TT_FONT_FILE)
->                        SOURCE sched_events.c SchedEvents.cpp)
->       list(APPEND PLUGIN_LIST "sched_events")
->   
-> +    BUILD_GUI_PLUGIN(NAME xenomai_cobalt_switch_events
-> +                     SOURCE xenomai_cobalt_switch_events.c CobaltSwitchEvents.cpp)
-> +    list(APPEND PLUGIN_LIST "xenomai_cobalt_switch_events")
-> +
-
-You do not need this if the plugin will live in its own repository.
-
->       BUILD_GUI_PLUGIN(NAME event_field_plot
->                        MOC EventFieldDialog.hpp
->                        SOURCE event_field_plot.c EventFieldDialog.cpp EventFieldPlot.cpp)
-> diff --git a/src/plugins/CobaltSwitchEvents.cpp b/src/plugins/CobaltSwitchEvents.cpp
-> new file mode 100644
-> index 0000000..0f90842
-> --- /dev/null
-> +++ b/src/plugins/CobaltSwitchEvents.cpp
-> @@ -0,0 +1,156 @@
-> +// SPDX-License-Identifier: LGPL-2.1
-> +
-> +/*
-> + * Copyright (C) 2021 Intel Inc, Hongzhan Chen <hongzhan.chen@intel.com>
-> + */
-> +
-> +/**
-> + *  @file    CobaltSwitchEvents.cpp
-> + *  @brief   Defines a callback function for Xenomai Cobalt context switch
-> + *           events used to plot in blue the out-of-band state of the task
-> + */
-> +
-> +// KernelShark
-> +#include "libkshark.h"
-> +#include "libkshark-plugin.h"
-> +#include "plugins/xenomai_cobalt_switch_events.h"
-> +#include "KsPlotTools.hpp"
-> +#include "KsPlugins.hpp"
-> +#include "KsMainWindow.hpp"
-> +
-> +static KsMainWindow *ks_xenomai_ptr;
-> +
-> +/**
-> + * @brief Provide the plugin with a pointer to the KsMainWindow object (the GUI
-> + * itself) such that the plugin can manipulate the GUI.
-> + */
-> +__hidden void *plugin_set_gui_ptr(void *gui_ptr)
-> +{
-> +	ks_xenomai_ptr = static_cast<KsMainWindow *>(gui_ptr);
-> +	return nullptr;
-> +}
-> +
-> +/**
-> + * This class represents the graphical element visualizing OOB state between
-> + *  two cobalt_switch_context events.
-> + */
-> +class XenomaiSwitchBox : public LatencyBox
-> +{
-> +	/** On double click do. */
-> +	void _doubleClick() const override
-> +	{
-> +		ks_xenomai_ptr->markEntry(_data[1]->entry, DualMarkerState::B);
-> +		ks_xenomai_ptr->markEntry(_data[0]->entry, DualMarkerState::A);
-> +	}
-> +
-> +};
-> +
-> +/*
-> + * Ideally, the cobalt_switch_context has to be the last trace event recorded before
-> + * the task is preempted. Because of this, when the data is loaded (the first pass),
-> + * the "pid" field of the cobalt_switch_context entries gets edited by this plugin
-> + * to be equal to the "next pid" of the cobalt_switch_context event. However, in
-> + * reality the cobalt_switch_context event may be followed by some trailing events
-> + * from the same task (printk events for example). This has the effect of extending
-> + * the graph of the task outside of the actual duration of the task. The "second
-> + * pass" over the data is used to fix this problem. It takes advantage of the
-> + * "next" field of the entry (this field is set during the first pass) to search
-> + * for trailing events after the "cobalt_switch_context". In addition, when
-> + * we find that it try to switch in-band because next-pid is zero, we prefer to
-> + * skip this event because it try to leave oob not enterring.
-> + */
-> +static void secondPass(plugin_cobalt_context *plugin_ctx)
-> +{
-> +	kshark_data_container *cSS;
-> +	kshark_entry *e;
-> +	int pid_rec, switch_inband;
-> +
-> +	cSS = plugin_ctx->cs_data;
-> +	for (ssize_t i = 0; i < cSS->size; ++i) {
-> +		switch_inband = plugin_cobalt_check_switch_inband(
-> +				cSS->data[i]->field);
-> +
-> +		/* we skip cobalt_switch_context that try to
-> +		 * switch into in-band state because we just handle
-> +		 * out-of-band
-> +		 */
-> +		if (switch_inband)
-> +			continue;
-> +		pid_rec = plugin_sched_get_pid(cSS->data[i]->field);
-> +		e = cSS->data[i]->entry;
-> +		if (!e->next || e->pid == 0 ||
-> +		    e->event_id == e->next->event_id ||
-> +		    pid_rec != e->next->pid)
-> +			continue;
-> +
-> +		e = e->next;
-> +		/* Find all trailing events. */
-> +		for (; e->next; e = e->next) {
-> +			if (e->pid == plugin_sched_get_pid(
-> +						cSS->data[i]->field)) {
-> +				/*
-> +				 * Change the "pid" to be equal to the "next
-> +				 * pid" of the cobalt_switch_context event
-> +				 * and leave a sign that you edited this
-> +				 * entry.
-> +				 */
-> +				e->pid = cSS->data[i]->entry->pid;
-> +				e->visible &= ~KS_PLUGIN_UNTOUCHED_MASK;
-> +
-> +				/*  This is the last trailing event, we finish
-> +				 *  this round.
-> +				 */
-> +				if (e->next->pid != plugin_sched_get_pid(
-> +						cSS->data[i]->field))
-> +					break;
-> +			}
-> +		}
-> +	}
-> +}
-> +
-> +/**
-> + * @brief Plugin's draw function.
-> + *
-> + * @param argv_c: A C pointer to be converted to KsCppArgV (C++ struct).
-> + * @param sd: Data stream identifier.
-> + * @param pid: Process Id.
-> + * @param draw_action: Draw action identifier.
-> + */
-> +__hidden void plugin_cobalt_draw(kshark_cpp_argv *argv_c,
-> +			  int sd, int pid, int draw_action)
-> +{
-> +	plugin_cobalt_context *plugin_ctx;
-> +
-> +	if (!(draw_action & KSHARK_TASK_DRAW) || pid == 0)
-> +		return;
-> +
-> +	plugin_ctx = __get_context(sd);
-> +	if (!plugin_ctx)
-> +		return;
-> +
-> +	KsCppArgV *argvCpp = KS_ARGV_TO_CPP(argv_c);
-> +
-> +	if (!plugin_ctx->second_pass_done) {
-> +		/* The second pass is not done yet. */
-> +		secondPass(plugin_ctx);
-> +		plugin_ctx->second_pass_done = true;
-> +	}
-> +
-> +	IsApplicableFunc checkFieldCS = [=] (kshark_data_container *d,
-> +					     ssize_t i) {
-> +		return !(plugin_cobalt_check_switch_inband(d->data[i]->field)) &&
-> +			d->data[i]->entry->pid == pid;
-> +	};
-> +
-> +	IsApplicableFunc checkEntryPid = [=] (kshark_data_container *d,
-> +					      ssize_t i) {
-> +		return plugin_sched_get_pid(d->data[i]->field) == pid;
-> +	};
-> +
-> +	eventFieldIntervalPlot(argvCpp,
-> +			       plugin_ctx->cs_data, checkFieldCS,
-> +			       plugin_ctx->cs_data, checkEntryPid,
-> +			       makeLatencyBox<XenomaiSwitchBox>,
-> +			       {0, 0, 255}, // Blue
-
-Perhaps you can use 'cobalt blue' instead of just blue ;-)
-
-cheers,
-Yordan
-
-> +			       -1);         // Default size
-> +}
-> diff --git a/src/plugins/xenomai_cobalt_switch_events.c b/src/plugins/xenomai_cobalt_switch_events.c
-> new file mode 100644
-> index 0000000..f285552
-> --- /dev/null
-> +++ b/src/plugins/xenomai_cobalt_switch_events.c
-> @@ -0,0 +1,174 @@
-> +// SPDX-License-Identifier: LGPL-2.1
-> +
-> +/*
-> + * Copyright (C) 2021 Intel Inc, Hongzhan Chen <hongzhan.chen@intel.com>
-> + */
-> +
-> +/**
-> + *  @file    xenomai_cobalt_switch_events.c
-> + *  @brief   handle xenomai cobalt switch context event
-> + */
-> +
-> +// C
-> +#include <stdlib.h>
-> +#include <stdio.h>
-> +
-> +// trace-cmd
-> +#include <trace-cmd.h>
-> +
-> +// KernelShark
-> +#include "plugins/xenomai_cobalt_switch_events.h"
-> +#include "libkshark-tepdata.h"
-> +
-> +/** Plugin context instance. */
-> +
-> +//! @cond Doxygen_Suppress
-> +
-> +#define SWITCH_INBAND_SHIFT	PREV_STATE_SHIFT
-> +
-> +#define SWITCH_INBAND_MASK	PREV_STATE_MASK
-> +
-> +//! @endcond
-> +
-> +static void cobalt_free_context(struct plugin_cobalt_context *plugin_ctx)
-> +{
-> +	if (!plugin_ctx)
-> +		return;
-> +
-> +	kshark_free_data_container(plugin_ctx->cs_data);
-> +}
-> +
-> +/* Use the most significant byte to store state marking switch in-band. */
-> +static void plugin_cobalt_set_switch_inband_state(ks_num_field_t *field,
-> +					ks_num_field_t inband_state)
-> +{
-> +	unsigned long long mask = SWITCH_INBAND_MASK << SWITCH_INBAND_SHIFT;
-> +	*field &= ~mask;
-> +	*field |= (inband_state & SWITCH_INBAND_MASK) << SWITCH_INBAND_SHIFT;
-> +}
-> +
-> +/**
-> + * @brief Retrieve the state of switch-in-band from the data field stored in
-> + *        the kshark_data_container object.
-> + *
-> + * @param field: Input location for the data field.
-> + */
-> +__hidden int plugin_cobalt_check_switch_inband(ks_num_field_t field)
-> +{
-> +	unsigned long long mask = SWITCH_INBAND_MASK << SWITCH_INBAND_SHIFT;
-> +
-> +	return (field & mask) >> SWITCH_INBAND_SHIFT;
-> +}
-> +
-> +/** A general purpose macro is used to define plugin context. */
-> +KS_DEFINE_PLUGIN_CONTEXT(struct plugin_cobalt_context, cobalt_free_context);
-> +
-> +static bool plugin_cobalt_init_context(struct kshark_data_stream *stream,
-> +				      struct plugin_cobalt_context *plugin_ctx)
-> +{
-> +	struct tep_event *event;
-> +
-> +	if (!kshark_is_tep(stream))
-> +		return false;
-> +
-> +	plugin_ctx->tep = kshark_get_tep(stream);
-> +
-> +	event = tep_find_event_by_name(plugin_ctx->tep,
-> +					"cobalt_core", "cobalt_switch_context");
-> +	if (!event)
-> +		return false;
-> +
-> +	plugin_ctx->cobalt_switch_event = event;
-> +	plugin_ctx->cobalt_switch_next_field =
-> +		tep_find_any_field(event, "next_pid");
-> +
-> +	plugin_ctx->second_pass_done = false;
-> +
-> +	plugin_ctx->cs_data = kshark_init_data_container();
-> +	if (!plugin_ctx->cs_data)
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
-> +static void plugin_cobalt_switch_action(struct kshark_data_stream *stream,
-> +				      void *rec, struct kshark_entry *entry)
-> +{
-> +	struct tep_record *record = (struct tep_record *) rec;
-> +	struct plugin_cobalt_context *plugin_ctx;
-> +	unsigned long long next_pid;
-> +	ks_num_field_t ks_field;
-> +	int ret;
-> +
-> +	plugin_ctx = __get_context(stream->stream_id);
-> +	if (!plugin_ctx)
-> +		return;
-> +
-> +	ret = tep_read_number_field(plugin_ctx->cobalt_switch_next_field,
-> +				    record->data, &next_pid);
-> +
-> +	if (ret == 0 && next_pid >= 0) {
-> +		plugin_sched_set_pid(&ks_field, entry->pid);
-> +		if (next_pid == 0) {
-> +			plugin_cobalt_set_switch_inband_state(&ks_field,
-> +					SWITCH_INBAND_STATE);
-> +		}
-> +
-> +		kshark_data_container_append(plugin_ctx->cs_data,
-> +				entry, ks_field);
-> +
-> +		if (next_pid > 0)
-> +			entry->pid = next_pid;
-> +	}
-> +}
-> +
-> +/** Load this plugin. */
-> +int KSHARK_PLOT_PLUGIN_INITIALIZER(struct kshark_data_stream *stream)
-> +{
-> +	struct plugin_cobalt_context *plugin_ctx;
-> +
-> +	plugin_ctx = __init(stream->stream_id);
-> +	if (!plugin_ctx || !plugin_cobalt_init_context(stream, plugin_ctx)) {
-> +		__close(stream->stream_id);
-> +		return 0;
-> +	}
-> +
-> +	if (plugin_ctx->cobalt_switch_event) {
-> +		kshark_register_event_handler(stream,
-> +						plugin_ctx->cobalt_switch_event->id,
-> +						plugin_cobalt_switch_action);
-> +	}
-> +
-> +	kshark_register_draw_handler(stream, plugin_cobalt_draw);
-> +
-> +	return 1;
-> +}
-> +
-> +/** Unload this plugin. */
-> +int KSHARK_PLOT_PLUGIN_DEINITIALIZER(struct kshark_data_stream *stream)
-> +{
-> +	struct plugin_cobalt_context *plugin_ctx = __get_context(stream->stream_id);
-> +	int ret = 0;
-> +
-> +	if (plugin_ctx) {
-> +		if (plugin_ctx->cobalt_switch_event) {
-> +			kshark_unregister_event_handler(stream,
-> +							plugin_ctx->cobalt_switch_event->id,
-> +							plugin_cobalt_switch_action);
-> +		}
-> +
-> +		kshark_unregister_draw_handler(stream, plugin_cobalt_draw);
-> +
-> +		ret = 1;
-> +	}
-> +
-> +	__close(stream->stream_id);
-> +
-> +	return ret;
-> +}
-> +
-> +/** Initialize the control interface of the plugin. */
-> +void *KSHARK_MENU_PLUGIN_INITIALIZER(void *gui_ptr)
-> +{
-> +	return plugin_set_gui_ptr(gui_ptr);
-> +}
-> diff --git a/src/plugins/xenomai_cobalt_switch_events.h b/src/plugins/xenomai_cobalt_switch_events.h
-> new file mode 100644
-> index 0000000..4258401
-> --- /dev/null
-> +++ b/src/plugins/xenomai_cobalt_switch_events.h
-> @@ -0,0 +1,57 @@
-> +/* SPDX-License-Identifier: LGPL-2.1 */
-> +
-> +/*
-> + * Copyright (C) 2021 Intel Inc, Hongzhan Chen<hongzhan.chen@intel.com>
-> + */
-> +
-> +/**
-> + *  @file    xenomai_cobalt_switch_events.h
-> + *  @brief   Plugin for xenomai cobalt switch context event
-> + */
-> +
-> +#ifndef _KS_PLUGIN_SHED_H
-> +#define _KS_PLUGIN_SHED_H
-> +
-> +// KernelShark
-> +#include "libkshark.h"
-> +#include "plugins/common_sched.h"
-> +
-> +#ifdef __cplusplus
-> +extern "C" {
-> +#endif
-> +
-> +#define SWITCH_INBAND_STATE	1
-> +
-> +/** Structure representing a plugin-specific context. */
-> +struct plugin_cobalt_context {
-> +	/** Page event used to parse the page. */
-> +	struct tep_handle	*tep;
-> +
-> +	/** Pointer to the cobalt_switch_event object. */
-> +	struct tep_event	*cobalt_switch_event;
-> +
-> +	 /** Pointer to the cobalt_switch_next_field format descriptor. */
-> +	struct tep_format_field *cobalt_switch_next_field;
-> +
-> +	/** True if the second pass is already done. */
-> +	bool	second_pass_done;
-> +
-> +	/** Data container for cobalt_switch_context data. */
-> +	struct kshark_data_container	*cs_data;
-> +
-> +};
-> +
-> +KS_DECLARE_PLUGIN_CONTEXT_METHODS(struct plugin_cobalt_context)
-> +
-> +int plugin_cobalt_check_switch_inband(ks_num_field_t field);
-> +
-> +void plugin_cobalt_draw(struct kshark_cpp_argv *argv, int sd, int pid,
-> +		 int draw_action);
-> +
-> +void *plugin_set_gui_ptr(void *gui_ptr);
-> +
-> +#ifdef __cplusplus
-> +}
-> +#endif
-> +
-> +#endif
+> Perhaps you can use 'cobalt blue' instead of just blue ;-)
 > 
+
+Makes sense ;)
+
+Seriously: Is there some caption somewhere that explains the meaning of
+colors? If so, how to hook into that?
+
+Thanks,
+Jan
+
+-- 
+Siemens AG, Technology
+Competence Center Embedded Linux
