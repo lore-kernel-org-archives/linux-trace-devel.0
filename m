@@ -2,220 +2,91 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0003C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 10 Jan 2022 15:20:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9525C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 10 Jan 2022 15:56:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236022AbiAJPUP convert rfc822-to-8bit (ORCPT
+        id S236805AbiAJP4w (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 10 Jan 2022 10:20:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45874 "EHLO
+        Mon, 10 Jan 2022 10:56:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236105AbiAJPUP (ORCPT
+        with ESMTP id S236654AbiAJP4w (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 10 Jan 2022 10:20:15 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A1C2C06173F
-        for <linux-trace-devel@vger.kernel.org>; Mon, 10 Jan 2022 07:20:14 -0800 (PST)
+        Mon, 10 Jan 2022 10:56:52 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B6EAC06173F;
+        Mon, 10 Jan 2022 07:56:52 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 073C8B81649
-        for <linux-trace-devel@vger.kernel.org>; Mon, 10 Jan 2022 15:20:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B101C36AE3;
-        Mon, 10 Jan 2022 15:20:11 +0000 (UTC)
-Date:   Mon, 10 Jan 2022 10:20:10 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yordan Karadzhov <y.karadz@gmail.com>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Subject: Re: [PATCH] trace-cruncher: Add API to set tracing CPU affinity
-Message-ID: <20220110102010.5c41b336@gandalf.local.home>
-In-Reply-To: <87b5f204-8132-a8dc-321a-f0928eef3710@gmail.com>
-References: <20211217182619.13db88f0@gandalf.local.home>
-        <87b5f204-8132-a8dc-321a-f0928eef3710@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F31860F4D;
+        Mon, 10 Jan 2022 15:56:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D30C8C36AE5;
+        Mon, 10 Jan 2022 15:56:50 +0000 (UTC)
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     linux-nfs@vger.kernel.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v2 0/2] Fix sockaddr handling in NFSD trace points
+Date:   Mon, 10 Jan 2022 10:56:49 -0500
+Message-Id:  <164182978641.8391.8277203495236105391.stgit@bazille.1015granger.net>
+X-Mailer: git-send-email 2.34.0
+User-Agent: StGit/1.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1592; h=from:subject:message-id; bh=l4mdA8AJreUadXPEp3nbQK3sxiIGWISMwjctXd9Zdzo=; b=owEBbQKS/ZANAwAIATNqszNvZn+XAcsmYgBh3Fc6cKwmgerSRbnXJ5YRf1tpurE2QO8qmSwcJoBh tQ0UwteJAjMEAAEIAB0WIQQosuWwEobfJDzyPv4zarMzb2Z/lwUCYdxXOgAKCRAzarMzb2Z/ly2RD/ 9+zcKJAi5NQyASbCFFOjGZnCDeN0HzXBAj+TGn413QVz47dJQB+nszwz9nxL8NLJNzPcnjgAlHOhBo 3iHirnMvVJr4mmkhLO9uh7vD4GfqLo16XGPAX/Hq/WKu6njsjo4yC4lwlFrIbU1rOJEm5A0g0GMHyx DH1SmZkwogxhXs/aua7HRsslhLnwPSJw9icDonMf5bu5I3s3Y2JtR32Fv4Yul7oo7MjnOJD3Z+a1WD jGUQdVdJbnau0iHdIuSsc41QMFOQPHo3IHTZaiRe9d82Q3tjGgoYsRj2E/6meemI8pikggSB/JOiz+ OVpjufnaMHvxqV8XZ/ep5PHyHgH/W6ManLZi451R0ZwCIUFrnvorI0xc6o/iwuJGbFuX3bN5zHYukc pRunI2DB1/6F4E7WXtOuGkUD3m/6FqfbFRBLVXJCnTxZBGSUdHepssptzsVbrkcZBpSgKG+WjTfvDe DXnEKPPy+03pEW1kxIYQZqkPOmf+APoFz/JLAewgYz89uQ/TpdqY7lqBcvXhtyJ0Ns6ag2SMEq+fVy +YIk6zJGU9bCChLtB8qdrapk4R7GxHxIzv4kQb5vcauRV7OMABP6gfVo12CNPhfpIBSRgffbpTeh4i xFMgMetwfi2tbqR+fzFWa47MK5U1ay3FYIRA3fpr5352ILmV6JUf1t4Z8y5g==
+X-Developer-Key: i=chuck.lever@oracle.com; a=openpgp; fpr=28B2E5B01286DF243CF23EFE336AB3336F667F97
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 10 Jan 2022 15:32:16 +0200
-Yordan Karadzhov <y.karadz@gmail.com> wrote:
+The patches in this series address a simple buffer over-read bug in
+the Linux NFS server.
 
-> Hi Steven
-> 
-> On 18.12.21 г. 1:26 ч., Steven Rostedt wrote:
-> > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> > 
-> > Add a set_affinity API that can let the user set what CPUs to enable
-> > tracing on.  
-> 
-> For the sake of completeness we will need APIs to 'clear' and 'get' the CPU affinity as well.
-
-For "clear" you mean to avoid a CPU(s), not clear the mask, right?
-
-> 
-> > 
-> > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > ---
-> > This depends on the new libtracefs API found here:
-> > 
-> >    https://patchwork.kernel.org/project/linux-trace-devel/patch/20211217180450.12d3524b@gandalf.local.home/
-> > 
-> > This can be worked out later if you have comments. And I'll keep
-> > the VMWare tag, as I did write while still working at VMware. I figured
-> > that my last patch as a VMware employee would be my first patch
-> > to trace-cruncher ;-)  
-> 
-> This is really symbolic and means a lot for me!
-
-I thought you may appreciate it ;-)
-
-> 
-> > 
-> >   examples/test-affinity.py |  5 ++++
-> >   src/ftracepy-utils.c      | 58 +++++++++++++++++++++++++++++++++++++++
-> >   src/ftracepy-utils.h      |  3 ++
-> >   src/ftracepy.c            |  5 ++++
-> >   4 files changed, 71 insertions(+)
-> >   create mode 100755 examples/test-affinity.py
-> > 
-> > diff --git a/examples/test-affinity.py b/examples/test-affinity.py
-> > new file mode 100755
-> > index 0000000..1619931
-> > --- /dev/null
-> > +++ b/examples/test-affinity.py
-> > @@ -0,0 +1,5 @@
-> > +#!/usr/bin/env python3
-> > +
-> > +import tracecruncher.ftracepy as ft
-> > +
-> > +ft.set_affinity(cpus=["0-1","3"]);
-> > diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
-> > index a735d88..ab39cf1 100644
-> > --- a/src/ftracepy-utils.c
-> > +++ b/src/ftracepy-utils.c
-> > @@ -2394,6 +2394,64 @@ PyObject *PyFtrace_hist(PyObject *self, PyObject *args,
-> >   	return NULL;
-> >   }
-> >   
-> > +PyObject *PyFtrace_set_affinity(PyObject *self, PyObject *args,
-> > +						PyObject *kwargs)
-> > +{
-> > +	struct tracefs_instance *instance;
-> > +	static char *kwlist[] = {"cpus", "instance", NULL};
-> > +	PyObject *py_cpus;
-> > +	PyObject *py_inst = NULL;
-> > +	const char *cpu_str;
-> > +	struct trace_seq seq;
-> > +	int ret;
-> > +
-> > +	if (!PyArg_ParseTupleAndKeywords(args,
-> > +					 kwargs,
-> > +					 "O|O",
-> > +					 kwlist,
-> > +					 &py_cpus,
-> > +					 &py_inst)) {
-> > +		return NULL;
-> > +	}
-> > +
-> > +	trace_seq_init(&seq);  
-> 
-> There is a global trace_seq object that can be used here. Also you have to check for error.
-> Perhaps having:
+However I was thinking it would be nice to have trace helpers to
+deal safely with generic socket addresses. I'd like to be able to
+treat them the same way we currently treat strings. So for example:
 
 
-Don't we need mutex protection if we use a global object?
+#define field_sockaddr(field, len)  __dynamic_array(u8, field, len)
+#define assign_sockaddr(dest, src, len)  memcpy(__get_dynamic_array(dest), src, len)
+#define __get_sockaddr(field)  ((struct sockaddr *)__get_dynamic_array(field))
+
+TRACE_EVENT(sockaddr_example,
+        TP_PROTO(
+                const struct sockaddr *sap,
+                size_t salen
+        ),  
+        TP_ARGS(sap, salen),
+        TP_STRUCT__entry(
+                __field_sockaddr(addr, salen)
+        ),  
+        TP_fast_assign(
+                __assign_sockaddr(addr, sap, salen);
+        ),  
+        TP_printk("addr=%pIS", __get_sockaddr(addr))
+);
 
 
+should be able to store any address family in a dynamically-sized
+array field (addr).
 
-> 
-> 	if (!init_print_seq())
-> 		return NULL;
+I haven't quite been able to figure out how to handle the 
+TP_printk() part of this equation. `trace-cmd report` displays
+something like "addr=ARG TYPE NOT FIELD BUT 7". 
 
-Sure. I left it out as trace_seq has an internal state that won't (at least
-it should not) allow anything to be added if it didn't allocate or
-something else failed. Thus, you could do all the work and just test at the
-end.
+Thoughts or advice appreciated.
 
-> 
-> > +
-> > +	if (PyUnicode_Check(py_cpus)) {
-> > +		cpu_str = (const char *)PyUnicode_DATA(py_cpus);
-> > +		if (trace_seq_puts(&seq, cpu_str) < 0)
-> > +			goto err_seq;
-> > +	} else if (PyList_CheckExact(py_cpus)) {
-> > +		int i, n = PyList_Size(py_cpus);
-> > +
-> > +		for (i = 0; i < n; ++i) {
-> > +			cpu_str = str_from_list(py_cpus, i);
-> > +			if (i)
-> > +				trace_seq_putc(&seq, ',');
-> > +			if (trace_seq_puts(&seq, cpu_str) < 0)
-> > +				goto err_seq;
-> > +		}
-> > +	}  
-> If py_cpus is neither PyUnicode nor PyList, we have to print error and return NULL.
+---
 
-Yeah, I wasn't sure how much python would detect this. That can be added.
+Chuck Lever (2):
+      SUNRPC: Fix sockaddr handling in the svc_xprt_create_error trace point
+      SUNRPC: Fix sockaddr handling in svcsock_accept_class trace points
 
-> 
-> > +
-> > +	if (!get_optional_instance(py_inst, &instance))
-> > +		goto err;
-> > +
-> > +	trace_seq_terminate(&seq);
-> > +	ret = tracefs_instance_set_affinity(instance, seq.buffer);
-> > +	if (ret < 0) {
-> > +		PyErr_SetString(TRACECRUNCHER_ERROR,
-> > +				"Invalid \"cpus\" argument.");
-> > +		goto err;
-> > +	}
-> > +
-> > +	Py_RETURN_NONE;
-> > +err_seq:
-> > +	PyErr_SetString(TRACECRUNCHER_ERROR,
-> > +			"Internal processing string error.");
-> > +err:
-> > +	trace_seq_destroy(&seq);
-> > +	return NULL;
-> > +}
-> > +
-> >   PyObject *PyFtrace_set_ftrace_loglevel(PyObject *self, PyObject *args,
-> >   						       PyObject *kwargs)
-> >   {
-> > diff --git a/src/ftracepy-utils.h b/src/ftracepy-utils.h
-> > index d09c8bf..67f67ab 100644
-> > --- a/src/ftracepy-utils.h
-> > +++ b/src/ftracepy-utils.h
-> > @@ -208,6 +208,9 @@ PyObject *PyFtrace_register_kretprobe(PyObject *self, PyObject *args,
-> >   PyObject *PyFtrace_hist(PyObject *self, PyObject *args,
-> >   					PyObject *kwargs);
-> >   
-> > +PyObject *PyFtrace_set_affinity(PyObject *self, PyObject *args,
-> > +						PyObject *kwargs);
-> > +
-> >   PyObject *PyFtrace_set_ftrace_loglevel(PyObject *self, PyObject *args,
-> >   						       PyObject *kwargs);
-> >   
-> > diff --git a/src/ftracepy.c b/src/ftracepy.c
-> > index b270b71..634f357 100644
-> > --- a/src/ftracepy.c
-> > +++ b/src/ftracepy.c
-> > @@ -377,6 +377,11 @@ static PyMethodDef ftracepy_methods[] = {
-> >   	 METH_VARARGS | METH_KEYWORDS,
-> >   	 "Define a histogram."
-> >   	},
-> > +	{"set_affinity",
-> > +	 (PyCFunction) PyFtrace_set_affinity,
-> > +	 METH_VARARGS | METH_KEYWORDS,
-> > +	 "Find an existing ftrace instance."  
-> A short description of the method has to be provided here.
 
-OK, will do in v2.
+ include/trace/events/sunrpc.h | 13 +++++++------
+ net/sunrpc/svc_xprt.c         |  2 +-
+ 2 files changed, 8 insertions(+), 7 deletions(-)
 
-Cheers,
-
--- Steve
+--
+Chuck Lever
