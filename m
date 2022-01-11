@@ -2,254 +2,294 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E5FBC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 11 Jan 2022 17:26:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65666C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 11 Jan 2022 17:31:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344201AbiAKR0o (ORCPT
+        id S1344471AbiAKRbY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 11 Jan 2022 12:26:44 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:33936 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344189AbiAKR0f (ORCPT
+        Tue, 11 Jan 2022 12:31:24 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:45352 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344328AbiAKRbT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 11 Jan 2022 12:26:35 -0500
-Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id BC82820B7187;
-        Tue, 11 Jan 2022 09:26:32 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BC82820B7187
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1641921992;
-        bh=Os5S5371BbotyCNO6tkuc3u978dmxAt5ZLUCv5azWLM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jhctxNtIyQ1TMqClIjMRgvAO+zK0tiOnp8CbqGdQSoX+32b2LX8yjPWPjMUvjt5CJ
-         n4NIVKZsQ5lHjutVAdXZhhwVmH+5NhkPJ93Tt7Qqt53Tr4R3QM2YrhnW42m/YxOdQr
-         4trfD9/Ol399L6vTnlJ8PYApbcxYom8VZMKXkeDU=
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     rostedt@goodmis.org, mhiramat@kernel.org
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        beaub@linux.microsoft.com
-Subject: [PATCH v9 05/12] user_events: Optimize writing events by only copying data once
-Date:   Tue, 11 Jan 2022 09:25:55 -0800
-Message-Id: <20220111172602.2513-6-beaub@linux.microsoft.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20220111172602.2513-1-beaub@linux.microsoft.com>
-References: <20220111172602.2513-1-beaub@linux.microsoft.com>
+        Tue, 11 Jan 2022 12:31:19 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 878EEB81C4D;
+        Tue, 11 Jan 2022 17:31:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FFC5C36AE3;
+        Tue, 11 Jan 2022 17:31:17 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.95)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1n7KzM-0032DJ-Bh;
+        Tue, 11 Jan 2022 12:31:16 -0500
+Message-ID: <20220111173116.190327559@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Tue, 11 Jan 2022 12:30:47 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tao Zhou <tao.zhou@linux.dev>, Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Subject: [for-next][PATCH 16/31] rtla: Real-Time Linux Analysis tool
+References: <20220111173030.999527342@goodmis.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Pass iterator through to probes to allow copying data directly to the
-probe buffers instead of taking multiple copies. Enables eBPF user and
-raw iterator types out to programs for no-copy scenarios.
+From: Daniel Bristot de Oliveira <bristot@kernel.org>
 
-Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+The rtla is a meta-tool that includes a set of commands that aims
+to analyze the real-time properties of Linux. But instead of testing
+Linux as a black box, rtla leverages kernel tracing capabilities to
+provide precise information about the properties and root causes of
+unexpected results.
+
+rtla --help works and provide information about the available options.
+
+This is just the "main" and the Makefile, no function yet.
+
+Link: https://lkml.kernel.org/r/f59acda8bc513c4a6c279a9bc3ad112a20690e68.1638182284.git.bristot@kernel.org
+
+Cc: Tao Zhou <tao.zhou@linux.dev>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Tom Zanussi <zanussi@kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Clark Williams <williams@redhat.com>
+Cc: John Kacur <jkacur@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc: linux-rt-users@vger.kernel.org
+Cc: linux-trace-devel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 ---
- kernel/trace/trace_events_user.c | 115 +++++++++++++++++++++++--------
- 1 file changed, 85 insertions(+), 30 deletions(-)
+ tools/tracing/rtla/Makefile   | 76 +++++++++++++++++++++++++++++++++++
+ tools/tracing/rtla/README.txt | 36 +++++++++++++++++
+ tools/tracing/rtla/src/rtla.c | 72 +++++++++++++++++++++++++++++++++
+ 3 files changed, 184 insertions(+)
+ create mode 100644 tools/tracing/rtla/Makefile
+ create mode 100644 tools/tracing/rtla/README.txt
+ create mode 100644 tools/tracing/rtla/src/rtla.c
 
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 966dfb4fdc8d..e4b166cba1bb 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -41,6 +41,9 @@
- #define MAX_FIELD_ARRAY_SIZE 1024
- #define MAX_FIELD_ARG_NAME 256
- 
-+#define MAX_BPF_COPY_SIZE PAGE_SIZE
-+#define MAX_STACK_BPF_DATA 512
+diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
+new file mode 100644
+index 000000000000..fbb755100c7e
+--- /dev/null
++++ b/tools/tracing/rtla/Makefile
+@@ -0,0 +1,76 @@
++NAME	:=	rtla
++VERSION	:=	0.4
 +
- static char *register_page_data;
- 
- static DEFINE_MUTEX(reg_mutex);
-@@ -78,8 +81,7 @@ struct user_event_refs {
- 	struct user_event *events[];
- };
- 
--typedef void (*user_event_func_t) (struct user_event *user,
--				   void *data, u32 datalen,
-+typedef void (*user_event_func_t) (struct user_event *user, struct iov_iter *i,
- 				   void *tpdata);
- 
- static int user_event_parse(char *name, char *args, char *flags,
-@@ -90,6 +92,20 @@ static u32 user_event_key(char *name)
- 	return jhash(name, strlen(name), 0);
- }
- 
-+static __always_inline __must_check
-+size_t copy_nofault(void *addr, size_t bytes, struct iov_iter *i)
++# From libtracefs:
++# Makefiles suck: This macro sets a default value of $(2) for the
++# variable named by $(1), unless the variable has been set by
++# environment or command line. This is necessary for CC and AR
++# because make sets default values, so the simpler ?= approach
++# won't work as expected.
++define allow-override
++  $(if $(or $(findstring environment,$(origin $(1))),\
++            $(findstring command line,$(origin $(1)))),,\
++    $(eval $(1) = $(2)))
++endef
++
++# Allow setting CC and AR, or setting CROSS_COMPILE as a prefix.
++$(call allow-override,CC,$(CROSS_COMPILE)gcc)
++$(call allow-override,AR,$(CROSS_COMPILE)ar)
++$(call allow-override,STRIP,$(CROSS_COMPILE)strip)
++$(call allow-override,PKG_CONFIG,pkg-config)
++$(call allow-override,LD_SO_CONF_PATH,/etc/ld.so.conf.d/)
++$(call allow-override,LDCONFIG,ldconfig)
++
++INSTALL	=	install
++FOPTS	:=	-flto=auto -ffat-lto-objects -fexceptions -fstack-protector-strong \
++		-fasynchronous-unwind-tables -fstack-clash-protection
++WOPTS	:= 	-Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -Wno-maybe-uninitialized
++
++TRACEFS_HEADERS	:= $$($(PKG_CONFIG) --cflags libtracefs)
++
++CFLAGS	:=	-O -g -DVERSION=\"$(VERSION)\" $(FOPTS) $(MOPTS) $(WOPTS) $(TRACEFS_HEADERS)
++LDFLAGS	:=	-ggdb
++LIBS	:=	$$($(PKG_CONFIG) --libs libtracefs) -lprocps
++
++SRC	:=	$(wildcard src/*.c)
++HDR	:=	$(wildcard src/*.h)
++OBJ	:=	$(SRC:.c=.o)
++DIRS	:=	src
++FILES	:=	Makefile README.txt
++CEXT	:=	bz2
++TARBALL	:=	$(NAME)-$(VERSION).tar.$(CEXT)
++TAROPTS	:=	-cvjf $(TARBALL)
++BINDIR	:=	/usr/bin
++DATADIR	:=	/usr/share
++DOCDIR	:=	$(DATADIR)/doc
++MANDIR	:=	$(DATADIR)/man
++LICDIR	:=	$(DATADIR)/licenses
++
++.PHONY:	all
++all:	rtla
++
++rtla: $(OBJ)
++	$(CC) -o rtla $(LDFLAGS) $(OBJ) $(LIBS)
++
++static: $(OBJ)
++	$(CC) -o rtla-static $(LDFLAGS) --static $(OBJ) $(LIBS) -lpthread -ldl
++
++.PHONY: install
++install:
++	$(INSTALL) -d -m 755 $(DESTDIR)$(BINDIR)
++	$(INSTALL) rtla -m 755 $(DESTDIR)$(BINDIR)
++	$(STRIP) $(DESTDIR)$(BINDIR)/rtla
++
++.PHONY: clean tarball
++clean:
++	@test ! -f rtla || rm rtla
++	@test ! -f rtla-static || rm rtla-static
++	@test ! -f src/rtla.o || rm src/rtla.o
++	@test ! -f $(TARBALL) || rm -f $(TARBALL)
++	@rm -rf *~ $(OBJ) *.tar.$(CEXT)
++
++tarball:  clean
++	rm -rf $(NAME)-$(VERSION) && mkdir $(NAME)-$(VERSION)
++	cp -r $(DIRS) $(FILES) $(NAME)-$(VERSION)
++	tar $(TAROPTS) --exclude='*~' $(NAME)-$(VERSION)
++	rm -rf $(NAME)-$(VERSION)
+diff --git a/tools/tracing/rtla/README.txt b/tools/tracing/rtla/README.txt
+new file mode 100644
+index 000000000000..6c88446f7e74
+--- /dev/null
++++ b/tools/tracing/rtla/README.txt
+@@ -0,0 +1,36 @@
++RTLA: Real-Time Linux Analysis tools
++
++The rtla is a meta-tool that includes a set of commands that
++aims to analyze the real-time properties of Linux. But, instead of
++testing Linux as a black box, rtla leverages kernel tracing
++capabilities to provide precise information about the properties
++and root causes of unexpected results.
++
++Installing RTLA
++
++RTLA depends on some libraries and tools. More precisely, it depends on the
++following libraries:
++
++ - libtracefs
++ - libtraceevent
++ - procps
++
++It also depends on python3-docutils to compile man pages.
++
++For development, we suggest the following steps for compiling rtla:
++
++  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git
++  $ cd libtraceevent/
++  $ make
++  $ sudo make install
++  $ cd ..
++  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git
++  $ cd libtracefs/
++  $ make
++  $ sudo make install
++  $ cd ..
++  $ cd $rtla_src
++  $ make
++  $ sudo make install
++
++For further information, please refer to the rtla man page.
+diff --git a/tools/tracing/rtla/src/rtla.c b/tools/tracing/rtla/src/rtla.c
+new file mode 100644
+index 000000000000..5ae2664ed47d
+--- /dev/null
++++ b/tools/tracing/rtla/src/rtla.c
+@@ -0,0 +1,72 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
++ */
++
++#include <getopt.h>
++#include <stdlib.h>
++#include <string.h>
++#include <stdio.h>
++
++/*
++ * rtla_usage - print rtla usage
++ */
++static void rtla_usage(void)
 +{
-+	size_t ret;
++	int i;
 +
-+	pagefault_disable();
++	static const char *msg[] = {
++		"",
++		"rtla version " VERSION,
++		"",
++		"  usage: rtla COMMAND ...",
++		"",
++		"  commands:",
++		"",
++		NULL,
++	};
 +
-+	ret = copy_from_iter_nocache(addr, bytes, i);
-+
-+	pagefault_enable();
-+
-+	return ret;
++	for (i = 0; msg[i]; i++)
++		fprintf(stderr, "%s\n", msg[i]);
++	exit(1);
 +}
 +
- static struct list_head *user_event_get_fields(struct trace_event_call *call)
- {
- 	struct user_event *user = (struct user_event *)call->data;
-@@ -525,7 +541,7 @@ static struct user_event *find_user_event(char *name, u32 *outkey)
- /*
-  * Writes the user supplied payload out to a trace file.
-  */
--static void user_event_ftrace(struct user_event *user, void *data, u32 datalen,
-+static void user_event_ftrace(struct user_event *user, struct iov_iter *i,
- 			      void *tpdata)
- {
- 	struct trace_event_file *file;
-@@ -541,41 +557,83 @@ static void user_event_ftrace(struct user_event *user, void *data, u32 datalen,
- 
- 	/* Allocates and fills trace_entry, + 1 of this is data payload */
- 	entry = trace_event_buffer_reserve(&event_buffer, file,
--					   sizeof(*entry) + datalen);
-+					   sizeof(*entry) + i->count);
- 
- 	if (unlikely(!entry))
- 		return;
- 
--	memcpy(entry + 1, data, datalen);
--
--	trace_event_buffer_commit(&event_buffer);
-+	if (unlikely(!copy_nofault(entry + 1, i->count, i)))
-+		__trace_event_discard_commit(event_buffer.buffer,
-+					     event_buffer.event);
-+	else
-+		trace_event_buffer_commit(&event_buffer);
- }
- 
- #ifdef CONFIG_PERF_EVENTS
-+static void user_event_bpf(struct user_event *user, struct iov_iter *i)
++/*
++ * run_command - try to run a rtla tool command
++ *
++ * It returns 0 if it fails. The tool's main will generally not
++ * return as they should call exit().
++ */
++int run_command(int argc, char **argv, int start_position)
 +{
-+	struct user_bpf_context context;
-+	struct user_bpf_iter bpf_i;
-+	char fast_data[MAX_STACK_BPF_DATA];
-+	void *temp = NULL;
++	return 0;
++}
 +
-+	if ((user->flags & FLAG_BPF_ITER) && iter_is_iovec(i)) {
-+		/* Raw iterator */
-+		context.data_type = USER_BPF_DATA_ITER;
-+		context.data_len = i->count;
-+		context.iter = &bpf_i;
++int main(int argc, char *argv[])
++{
++	int retval;
 +
-+		bpf_i.iov_offset = i->iov_offset;
-+		bpf_i.iov = i->iov;
-+		bpf_i.nr_segs = i->nr_segs;
-+	} else if (i->nr_segs == 1 && iter_is_iovec(i)) {
-+		/* Single buffer from user */
-+		context.data_type = USER_BPF_DATA_USER;
-+		context.data_len = i->count;
-+		context.udata = i->iov->iov_base + i->iov_offset;
-+	} else {
-+		/* Multi buffer from user */
-+		struct iov_iter copy = *i;
-+		size_t copy_size = min_t(size_t, i->count, MAX_BPF_COPY_SIZE);
++	/* is it an alias? */
++	retval = run_command(argc, argv, 0);
++	if (retval)
++		exit(0);
 +
-+		context.data_type = USER_BPF_DATA_KERNEL;
-+		context.kdata = fast_data;
++	if (argc < 2)
++		goto usage;
 +
-+		if (unlikely(copy_size > sizeof(fast_data))) {
-+			temp = kmalloc(copy_size, GFP_NOWAIT);
-+
-+			if (temp)
-+				context.kdata = temp;
-+			else
-+				copy_size = sizeof(fast_data);
-+		}
-+
-+		context.data_len = copy_nofault(context.kdata,
-+						copy_size, &copy);
++	if (strcmp(argv[1], "-h") == 0) {
++		rtla_usage();
++		exit(0);
++	} else if (strcmp(argv[1], "--help") == 0) {
++		rtla_usage();
++		exit(0);
 +	}
 +
-+	trace_call_bpf(&user->call, &context);
++	retval = run_command(argc, argv, 1);
++	if (retval)
++		exit(0);
 +
-+	kfree(temp);
++usage:
++	rtla_usage();
++	exit(1);
 +}
-+
- /*
-  * Writes the user supplied payload out to perf ring buffer or eBPF program.
-  */
--static void user_event_perf(struct user_event *user, void *data, u32 datalen,
-+static void user_event_perf(struct user_event *user, struct iov_iter *i,
- 			    void *tpdata)
- {
- 	struct hlist_head *perf_head;
- 
--	if (bpf_prog_array_valid(&user->call)) {
--		struct user_bpf_context context = {0};
--
--		context.data_len = datalen;
--		context.data_type = USER_BPF_DATA_KERNEL;
--		context.kdata = data;
--
--		trace_call_bpf(&user->call, &context);
--	}
-+	if (bpf_prog_array_valid(&user->call))
-+		user_event_bpf(user, i);
- 
- 	perf_head = this_cpu_ptr(user->call.perf_events);
- 
- 	if (perf_head && !hlist_empty(perf_head)) {
- 		struct trace_entry *perf_entry;
- 		struct pt_regs *regs;
--		size_t size = sizeof(*perf_entry) + datalen;
-+		size_t size = sizeof(*perf_entry) + i->count;
- 		int context;
- 
- 		perf_entry = perf_trace_buf_alloc(ALIGN(size, 8),
-@@ -586,7 +644,10 @@ static void user_event_perf(struct user_event *user, void *data, u32 datalen,
- 
- 		perf_fetch_caller_regs(regs);
- 
--		memcpy(perf_entry + 1, data, datalen);
-+		if (unlikely(!copy_nofault(perf_entry + 1, i->count, i))) {
-+			perf_swevent_put_recursion_context(context);
-+			return;
-+		}
- 
- 		perf_trace_buf_submit(perf_entry, size, context,
- 				      user->call.event.type, 1, regs,
-@@ -1019,16 +1080,11 @@ static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
- 	if (likely(atomic_read(&tp->key.enabled) > 0)) {
- 		struct tracepoint_func *probe_func_ptr;
- 		user_event_func_t probe_func;
-+		struct iov_iter copy;
- 		void *tpdata;
--		void *kdata;
--		u32 datalen;
- 
--		kdata = kmalloc(i->count, GFP_KERNEL);
--
--		if (unlikely(!kdata))
--			return -ENOMEM;
--
--		datalen = copy_from_iter(kdata, i->count, i);
-+		if (unlikely(fault_in_iov_iter_readable(i, i->count)))
-+			return -EFAULT;
- 
- 		rcu_read_lock_sched();
- 
-@@ -1036,15 +1092,14 @@ static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
- 
- 		if (probe_func_ptr) {
- 			do {
-+				copy = *i;
- 				probe_func = probe_func_ptr->func;
- 				tpdata = probe_func_ptr->data;
--				probe_func(user, kdata, datalen, tpdata);
-+				probe_func(user, &copy, tpdata);
- 			} while ((++probe_func_ptr)->func);
- 		}
- 
- 		rcu_read_unlock_sched();
--
--		kfree(kdata);
- 	}
- 
- 	return ret;
 -- 
-2.17.1
-
+2.33.0
