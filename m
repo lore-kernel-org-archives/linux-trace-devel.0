@@ -2,35 +2,35 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EAF5C43217
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 11 Jan 2022 17:26:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A3A9C4167B
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 11 Jan 2022 17:26:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344110AbiAKR0h (ORCPT
+        id S1344152AbiAKR0i (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 11 Jan 2022 12:26:37 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:33902 "EHLO
+        Tue, 11 Jan 2022 12:26:38 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:33942 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344172AbiAKR0c (ORCPT
+        with ESMTP id S1344192AbiAKR0f (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 11 Jan 2022 12:26:32 -0500
+        Tue, 11 Jan 2022 12:26:35 -0500
 Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 87BDD20B7186;
-        Tue, 11 Jan 2022 09:26:32 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 87BDD20B7186
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5C8A520B718B;
+        Tue, 11 Jan 2022 09:26:33 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5C8A520B718B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1641921992;
-        bh=RcR+xQbVPDiU7noqi+dqilCOcZVvvB+GiBebBBsT7Gs=;
+        s=default; t=1641921993;
+        bh=Nsy28iBGd9K5KoEvpu/5fcI1CXQFpgeu6V0nNpVTY/s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Al8vnG8u9jIQNPaVFGoJ/BnUqSYylPx1KqKon8tmdxhILAK8/uIVCS6MdE5ayN1B9
-         IyvEiqrKlYuMgEi/XF1WMX7ZmE9Sp8b8Wy8oj6g8V5cfJ8+WHbJZM658WcMYwC/f6u
-         2jUp4UNcuTHD+RozYgrIAtOjDHlw73ngqwfD/H1c=
+        b=Bw9McvDh7f/OI5ykOGqjMhBAU3HwF8Ap29WE8K8yJoMfYscBYd9Ls8RaOy395y5wo
+         74QcveNbSyVjvx/Gbk7TgZKJvVe57K1NRQ/hCcl2snOiJoRzOPsUOT1LKwtL9gUHUX
+         s1MDWztoM8SnHiEl1i0slSLxYvESg57uWWlQYkJw=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         beaub@linux.microsoft.com
-Subject: [PATCH v9 04/12] user_events: Add basic perf and eBPF support
-Date:   Tue, 11 Jan 2022 09:25:54 -0800
-Message-Id: <20220111172602.2513-5-beaub@linux.microsoft.com>
+Subject: [PATCH v9 08/12] user_events: Add self-test for dynamic_events integration
+Date:   Tue, 11 Jan 2022 09:25:58 -0800
+Message-Id: <20220111172602.2513-9-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20220111172602.2513-1-beaub@linux.microsoft.com>
 References: <20220111172602.2513-1-beaub@linux.microsoft.com>
@@ -38,119 +38,166 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Adds support to write out user_event data to perf_probe/perf files as
-well as to any attached eBPF program.
+Tests matching deletes, creation of basic and complex types. Ensures
+common patterns work correctly when interacting with dynamic_events
+file.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- kernel/trace/trace_events_user.c | 72 +++++++++++++++++++++++++++++++-
- 1 file changed, 71 insertions(+), 1 deletion(-)
+ tools/testing/selftests/user_events/Makefile  |   2 +-
+ .../testing/selftests/user_events/dyn_test.c  | 130 ++++++++++++++++++
+ 2 files changed, 131 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/user_events/dyn_test.c
 
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 05d0d7e0e6c9..966dfb4fdc8d 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -551,6 +551,50 @@ static void user_event_ftrace(struct user_event *user, void *data, u32 datalen,
- 	trace_event_buffer_commit(&event_buffer);
- }
+diff --git a/tools/testing/selftests/user_events/Makefile b/tools/testing/selftests/user_events/Makefile
+index d66c551a6fe3..e824b9c2cae7 100644
+--- a/tools/testing/selftests/user_events/Makefile
++++ b/tools/testing/selftests/user_events/Makefile
+@@ -2,7 +2,7 @@
+ CFLAGS += -Wl,-no-as-needed -Wall -I../../../../usr/include
+ LDLIBS += -lrt -lpthread -lm
  
-+#ifdef CONFIG_PERF_EVENTS
+-TEST_GEN_PROGS = ftrace_test
++TEST_GEN_PROGS = ftrace_test dyn_test
+ 
+ TEST_FILES := settings
+ 
+diff --git a/tools/testing/selftests/user_events/dyn_test.c b/tools/testing/selftests/user_events/dyn_test.c
+new file mode 100644
+index 000000000000..d6265d14cd51
+--- /dev/null
++++ b/tools/testing/selftests/user_events/dyn_test.c
+@@ -0,0 +1,130 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Writes the user supplied payload out to perf ring buffer or eBPF program.
++ * User Events Dyn Events Test Program
++ *
++ * Copyright (c) 2021 Beau Belgrave <beaub@linux.microsoft.com>
 + */
-+static void user_event_perf(struct user_event *user, void *data, u32 datalen,
-+			    void *tpdata)
++
++#include <errno.h>
++#include <linux/user_events.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <fcntl.h>
++#include <sys/ioctl.h>
++#include <sys/stat.h>
++#include <unistd.h>
++
++#include "../kselftest_harness.h"
++
++const char *dyn_file = "/sys/kernel/debug/tracing/dynamic_events";
++const char *clear = "!u:__test_event";
++
++static int Append(const char *value)
 +{
-+	struct hlist_head *perf_head;
++	int fd = open(dyn_file, O_RDWR | O_APPEND);
++	int ret = write(fd, value, strlen(value));
 +
-+	if (bpf_prog_array_valid(&user->call)) {
-+		struct user_bpf_context context = {0};
-+
-+		context.data_len = datalen;
-+		context.data_type = USER_BPF_DATA_KERNEL;
-+		context.kdata = data;
-+
-+		trace_call_bpf(&user->call, &context);
-+	}
-+
-+	perf_head = this_cpu_ptr(user->call.perf_events);
-+
-+	if (perf_head && !hlist_empty(perf_head)) {
-+		struct trace_entry *perf_entry;
-+		struct pt_regs *regs;
-+		size_t size = sizeof(*perf_entry) + datalen;
-+		int context;
-+
-+		perf_entry = perf_trace_buf_alloc(ALIGN(size, 8),
-+						  &regs, &context);
-+
-+		if (unlikely(!perf_entry))
-+			return;
-+
-+		perf_fetch_caller_regs(regs);
-+
-+		memcpy(perf_entry + 1, data, datalen);
-+
-+		perf_trace_buf_submit(perf_entry, size, context,
-+				      user->call.event.type, 1, regs,
-+				      perf_head, NULL);
-+	}
++	close(fd);
++	return ret;
 +}
-+#endif
 +
- /*
-  * Update the register page that is shared between user processes.
-  */
-@@ -573,6 +617,10 @@ static void update_reg_page_for(struct user_event *user)
- 
- 				if (probe_func == user_event_ftrace)
- 					status |= EVENT_STATUS_FTRACE;
-+#ifdef CONFIG_PERF_EVENTS
-+				else if (probe_func == user_event_perf)
-+					status |= EVENT_STATUS_PERF;
-+#endif
- 				else
- 					status |= EVENT_STATUS_OTHER;
- 			} while ((++probe_func_ptr)->func);
-@@ -612,8 +660,27 @@ static int user_event_reg(struct trace_event_call *call,
- 					    data);
- 		goto dec;
- 
--	default:
-+#ifdef CONFIG_PERF_EVENTS
-+	case TRACE_REG_PERF_REGISTER:
-+		ret = tracepoint_probe_register(call->tp,
-+						call->class->perf_probe,
-+						data);
-+		if (!ret)
-+			goto inc;
-+		break;
++#define CLEAR() \
++do { \
++	int ret = Append(clear); \
++	if (ret == -1) \
++		ASSERT_EQ(ENOENT, errno); \
++} while (0)
 +
-+	case TRACE_REG_PERF_UNREGISTER:
-+		tracepoint_probe_unregister(call->tp,
-+					    call->class->perf_probe,
-+					    data);
-+		goto dec;
++#define TEST_PARSE(x) \
++do { \
++	ASSERT_NE(-1, Append(x)); \
++	CLEAR(); \
++} while (0)
 +
-+	case TRACE_REG_PERF_OPEN:
-+	case TRACE_REG_PERF_CLOSE:
-+	case TRACE_REG_PERF_ADD:
-+	case TRACE_REG_PERF_DEL:
- 		break;
-+#endif
- 	}
- 
- 	return ret;
-@@ -865,6 +932,9 @@ static int user_event_parse(char *name, char *args, char *flags,
- 	user->class.get_fields = user_event_get_fields;
- 	user->class.reg = user_event_reg;
- 	user->class.probe = user_event_ftrace;
-+#ifdef CONFIG_PERF_EVENTS
-+	user->class.perf_probe = user_event_perf;
-+#endif
- 
- 	mutex_lock(&event_mutex);
- 	ret = user_event_trace_register(user);
++#define TEST_NPARSE(x) ASSERT_EQ(-1, Append(x))
++
++FIXTURE(user) {
++};
++
++FIXTURE_SETUP(user) {
++	CLEAR();
++}
++
++FIXTURE_TEARDOWN(user) {
++	CLEAR();
++}
++
++TEST_F(user, basic_types) {
++	/* All should work */
++	TEST_PARSE("u:__test_event u64 a");
++	TEST_PARSE("u:__test_event u32 a");
++	TEST_PARSE("u:__test_event u16 a");
++	TEST_PARSE("u:__test_event u8 a");
++	TEST_PARSE("u:__test_event char a");
++	TEST_PARSE("u:__test_event unsigned char a");
++	TEST_PARSE("u:__test_event int a");
++	TEST_PARSE("u:__test_event unsigned int a");
++	TEST_PARSE("u:__test_event short a");
++	TEST_PARSE("u:__test_event unsigned short a");
++	TEST_PARSE("u:__test_event char[20] a");
++	TEST_PARSE("u:__test_event unsigned char[20] a");
++	TEST_PARSE("u:__test_event char[0x14] a");
++	TEST_PARSE("u:__test_event unsigned char[0x14] a");
++	/* Bad size format should fail */
++	TEST_NPARSE("u:__test_event char[aa] a");
++	/* Large size should fail */
++	TEST_NPARSE("u:__test_event char[9999] a");
++	/* Long size string should fail */
++	TEST_NPARSE("u:__test_event char[0x0000000000001] a");
++}
++
++TEST_F(user, loc_types) {
++	/* All should work */
++	TEST_PARSE("u:__test_event __data_loc char[] a");
++	TEST_PARSE("u:__test_event __data_loc unsigned char[] a");
++	TEST_PARSE("u:__test_event __rel_loc char[] a");
++	TEST_PARSE("u:__test_event __rel_loc unsigned char[] a");
++}
++
++TEST_F(user, size_types) {
++	/* Should work */
++	TEST_PARSE("u:__test_event struct custom a 20");
++	/* Size not specified on struct should fail */
++	TEST_NPARSE("u:__test_event struct custom a");
++	/* Size specified on non-struct should fail */
++	TEST_NPARSE("u:__test_event char a 20");
++}
++
++TEST_F(user, flags) {
++	/* Should work */
++	TEST_PARSE("u:__test_event:BPF_ITER u32 a");
++	/* Forward compat */
++	TEST_PARSE("u:__test_event:BPF_ITER,FLAG_FUTURE u32 a");
++}
++
++TEST_F(user, matching) {
++	/* Register */
++	ASSERT_NE(-1, Append("u:__test_event struct custom a 20"));
++	/* Should not match */
++	TEST_NPARSE("!u:__test_event struct custom b");
++	/* Should match */
++	TEST_PARSE("!u:__test_event struct custom a");
++	/* Multi field reg */
++	ASSERT_NE(-1, Append("u:__test_event u32 a; u32 b"));
++	/* Non matching cases */
++	TEST_NPARSE("!u:__test_event u32 a");
++	TEST_NPARSE("!u:__test_event u32 b");
++	TEST_NPARSE("!u:__test_event u32 a; u32 ");
++	TEST_NPARSE("!u:__test_event u32 a; u32 a");
++	/* Matching case */
++	TEST_PARSE("!u:__test_event u32 a; u32 b");
++	/* Register */
++	ASSERT_NE(-1, Append("u:__test_event u32 a; u32 b"));
++	/* Ensure trailing semi-colon case */
++	TEST_PARSE("!u:__test_event u32 a; u32 b;");
++}
++
++int main(int argc, char **argv)
++{
++	return test_harness_run(argc, argv);
++}
 -- 
 2.17.1
 
