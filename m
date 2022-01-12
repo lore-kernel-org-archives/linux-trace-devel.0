@@ -2,31 +2,31 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D9E2C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 12 Jan 2022 20:01:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55643C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 12 Jan 2022 20:01:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357413AbiALUB2 (ORCPT
+        id S1357508AbiALUB3 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 12 Jan 2022 15:01:28 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:44034 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357195AbiALUAh (ORCPT
+        Wed, 12 Jan 2022 15:01:29 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:33384 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350446AbiALUAh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 12 Jan 2022 15:00:37 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 07C4EB820E5;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 56E73612D2;
+        Wed, 12 Jan 2022 20:00:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4243C36AFB;
         Wed, 12 Jan 2022 20:00:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B223FC36AE5;
-        Wed, 12 Jan 2022 20:00:34 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@goodmis.org>)
-        id 1n7jnN-003EN2-G0;
-        Wed, 12 Jan 2022 15:00:33 -0500
-Message-ID: <20220112200033.323596162@goodmis.org>
+        id 1n7jnP-003EUL-Tg;
+        Wed, 12 Jan 2022 15:00:35 -0500
+Message-ID: <20220112200035.751345636@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 12 Jan 2022 14:58:44 -0500
+Date:   Wed, 12 Jan 2022 14:58:57 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
@@ -42,7 +42,7 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Daniel Bristot de Oliveira <bristot@kernel.org>,
         linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: [for-next][PATCH 01/14] rtla: Real-Time Linux Analysis tool
+Subject: [for-next][PATCH 14/14] rtla: Add rtla timerlat hist documentation
 References: <20220112195843.098894945@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,17 +52,9 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Daniel Bristot de Oliveira <bristot@kernel.org>
 
-The rtla is a meta-tool that includes a set of commands that aims
-to analyze the real-time properties of Linux. But instead of testing
-Linux as a black box, rtla leverages kernel tracing capabilities to
-provide precise information about the properties and root causes of
-unexpected results.
+Man page for rtla timerlat hist mode.
 
-rtla --help works and provide information about the available options.
-
-This is just the "main" and the Makefile, no function yet.
-
-Link: https://lkml.kernel.org/r/bf9118ed43a09e6c054c9a491cbe7411ad1acd89.1639158831.git.bristot@kernel.org
+Link: https://lkml.kernel.org/r/4a184003fdb81e23be3fe5ec882b1c89d5a95458.1639158831.git.bristot@kernel.org
 
 Cc: Tao Zhou <tao.zhou@linux.dev>
 Cc: Ingo Molnar <mingo@redhat.com>
@@ -81,215 +73,121 @@ Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 ---
- tools/tracing/rtla/Makefile   | 76 +++++++++++++++++++++++++++++++++++
- tools/tracing/rtla/README.txt | 36 +++++++++++++++++
- tools/tracing/rtla/src/rtla.c | 72 +++++++++++++++++++++++++++++++++
- 3 files changed, 184 insertions(+)
- create mode 100644 tools/tracing/rtla/Makefile
- create mode 100644 tools/tracing/rtla/README.txt
- create mode 100644 tools/tracing/rtla/src/rtla.c
+ .../tools/rtla/rtla-timerlat-hist.rst         | 106 ++++++++++++++++++
+ 1 file changed, 106 insertions(+)
+ create mode 100644 Documentation/tools/rtla/rtla-timerlat-hist.rst
 
-diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
+diff --git a/Documentation/tools/rtla/rtla-timerlat-hist.rst b/Documentation/tools/rtla/rtla-timerlat-hist.rst
 new file mode 100644
-index 000000000000..56b1bdd60c96
+index 000000000000..e12eae1f3301
 --- /dev/null
-+++ b/tools/tracing/rtla/Makefile
-@@ -0,0 +1,76 @@
-+NAME	:=	rtla
-+VERSION	:=	0.5
++++ b/Documentation/tools/rtla/rtla-timerlat-hist.rst
+@@ -0,0 +1,106 @@
++=====================
++rtla-timerlat-hist
++=====================
++------------------------------------------------
++Histograms of the operating system timer latency
++------------------------------------------------
 +
-+# From libtracefs:
-+# Makefiles suck: This macro sets a default value of $(2) for the
-+# variable named by $(1), unless the variable has been set by
-+# environment or command line. This is necessary for CC and AR
-+# because make sets default values, so the simpler ?= approach
-+# won't work as expected.
-+define allow-override
-+  $(if $(or $(findstring environment,$(origin $(1))),\
-+            $(findstring command line,$(origin $(1)))),,\
-+    $(eval $(1) = $(2)))
-+endef
++:Manual section: 1
 +
-+# Allow setting CC and AR, or setting CROSS_COMPILE as a prefix.
-+$(call allow-override,CC,$(CROSS_COMPILE)gcc)
-+$(call allow-override,AR,$(CROSS_COMPILE)ar)
-+$(call allow-override,STRIP,$(CROSS_COMPILE)strip)
-+$(call allow-override,PKG_CONFIG,pkg-config)
-+$(call allow-override,LD_SO_CONF_PATH,/etc/ld.so.conf.d/)
-+$(call allow-override,LDCONFIG,ldconfig)
++SYNOPSIS
++========
++**rtla timerlat hist** [*OPTIONS*] ...
 +
-+INSTALL	=	install
-+FOPTS	:=	-flto=auto -ffat-lto-objects -fexceptions -fstack-protector-strong \
-+		-fasynchronous-unwind-tables -fstack-clash-protection
-+WOPTS	:= 	-Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -Wno-maybe-uninitialized
++DESCRIPTION
++===========
 +
-+TRACEFS_HEADERS	:= $$($(PKG_CONFIG) --cflags libtracefs)
++.. include:: common_timerlat_description.rst
 +
-+CFLAGS	:=	-O -g -DVERSION=\"$(VERSION)\" $(FOPTS) $(MOPTS) $(WOPTS) $(TRACEFS_HEADERS)
-+LDFLAGS	:=	-ggdb
-+LIBS	:=	$$($(PKG_CONFIG) --libs libtracefs) -lprocps
++The **rtla timerlat hist** displays a histogram of each tracer event
++occurrence. This tool uses the periodic information, and the
++**osnoise:** tracepoints are enabled when using the **-T** option.
 +
-+SRC	:=	$(wildcard src/*.c)
-+HDR	:=	$(wildcard src/*.h)
-+OBJ	:=	$(SRC:.c=.o)
-+DIRS	:=	src
-+FILES	:=	Makefile README.txt
-+CEXT	:=	bz2
-+TARBALL	:=	$(NAME)-$(VERSION).tar.$(CEXT)
-+TAROPTS	:=	-cvjf $(TARBALL)
-+BINDIR	:=	/usr/bin
-+DATADIR	:=	/usr/share
-+DOCDIR	:=	$(DATADIR)/doc
-+MANDIR	:=	$(DATADIR)/man
-+LICDIR	:=	$(DATADIR)/licenses
++OPTIONS
++=======
 +
-+.PHONY:	all
-+all:	rtla
++.. include:: common_timerlat_options.rst
 +
-+rtla: $(OBJ)
-+	$(CC) -o rtla $(LDFLAGS) $(OBJ) $(LIBS)
++.. include:: common_hist_options.rst
 +
-+static: $(OBJ)
-+	$(CC) -o rtla-static $(LDFLAGS) --static $(OBJ) $(LIBS) -lpthread -ldl
++.. include:: common_options.rst
 +
-+.PHONY: install
-+install:
-+	$(INSTALL) -d -m 755 $(DESTDIR)$(BINDIR)
-+	$(INSTALL) rtla -m 755 $(DESTDIR)$(BINDIR)
-+	$(STRIP) $(DESTDIR)$(BINDIR)/rtla
++EXAMPLE
++=======
++In the example below, **rtla timerlat hist** is set to run for *10* minutes,
++in the cpus *0-4*, *skipping zero* only lines. Moreover, **rtla timerlat
++hist** will change the priority of the *timelat* threads to run under
++*SCHED_DEADLINE* priority, with a *10us* runtime every *1ms* period. The
++*1ms* period is also passed to the *timerlat* tracer::
 +
-+.PHONY: clean tarball
-+clean:
-+	@test ! -f rtla || rm rtla
-+	@test ! -f rtla-static || rm rtla-static
-+	@test ! -f src/rtla.o || rm src/rtla.o
-+	@test ! -f $(TARBALL) || rm -f $(TARBALL)
-+	@rm -rf *~ $(OBJ) *.tar.$(CEXT)
++  [root@alien ~]# timerlat hist -d 10m -c 0-4 -P d:100us:1ms -p 1ms
++  # RTLA timerlat histogram
++  # Time unit is microseconds (us)
++  # Duration:   0 00:10:00
++  Index   IRQ-000   Thr-000   IRQ-001   Thr-001   IRQ-002   Thr-002   IRQ-003   Thr-003   IRQ-004   Thr-004
++  0        276489         0    206089         0    466018         0    481102         0    205546         0
++  1        318327     35487    388149     30024     94531     48382     83082     71078    388026     55730
++  2          3282    122584      4019    126527     28231    109012     23311     89309      4568     98739
++  3           940     11815       837      9863      6209     16227      6895     17196       910      9780
++  4           444     17287       424     11574      2097     38443      2169     36736       462     13476
++  5           206     43291       255     25581      1223    101908      1304    101137       236     28913
++  6           132    101501        96     64584       635    213774       757    215471        99     73453
++  7            74    169347        65    124758       350     57466       441     53639        69    148573
++  8            53     85183        31    156751       229      9052       306      9026        39    139907
++  9            22     10387        12     42762       161      2554       225      2689        19     26192
++  10           13      1898         8      5770       114      1247       128      1405        13      3772
++  11            9       560         9       924        71       686        76       765         8       713
++  12            4       256         2       360        50       411        64       474         3       278
++  13            2       167         2       172        43       256        53       350         4       180
++  14            1        88         1       116        15       198        42       223         0       115
++  15            2        63         3        94        11       139        20       150         0        58
++  16            2        37         0        56         5        78        10       102         0        39
++  17            0        18         0        28         4        57         8        80         0        15
++  18            0         8         0        17         2        50         6        56         0        12
++  19            0         9         0         5         0        19         0        48         0        18
++  20            0         4         0         8         0        11         2        27         0         4
++  21            0         2         0         3         1         9         1        18         0         6
++  22            0         1         0         3         1         7         0         3         0         5
++  23            0         2         0         4         0         2         0         7         0         2
++  24            0         2         0         2         1         3         0         3         0         5
++  25            0         0         0         1         0         1         0         1         0         3
++  26            0         1         0         0         0         2         0         2         0         0
++  27            0         0         0         3         0         1         0         0         0         1
++  28            0         0         0         3         0         0         0         1         0         0
++  29            0         0         0         2         0         2         0         1         0         3
++  30            0         1         0         0         0         0         0         0         0         0
++  31            0         1         0         0         0         0         0         2         0         2
++  32            0         0         0         1         0         2         0         0         0         0
++  33            0         0         0         2         0         0         0         0         0         1
++  34            0         0         0         0         0         0         0         0         0         2
++  35            0         1         0         1         0         0         0         0         0         1
++  36            0         1         0         0         0         1         0         1         0         0
++  37            0         0         0         1         0         0         0         0         0         0
++  40            0         0         0         0         0         1         0         1         0         0
++  41            0         0         0         0         0         0         0         0         0         1
++  42            0         0         0         0         0         0         0         0         0         1
++  44            0         0         0         0         0         1         0         0         0         0
++  46            0         0         0         0         0         0         0         1         0         0
++  47            0         0         0         0         0         0         0         0         0         1
++  50            0         0         0         0         0         0         0         0         0         1
++  54            0         0         0         1         0         0         0         0         0         0
++  58            0         0         0         1         0         0         0         0         0         0
++  over:         0         0         0         0         0         0         0         0         0         0
++  count:   600002    600002    600002    600002    600002    600002    600002    600002    600002    600002
++  min:          0         1         0         1         0         1         0         1         0         1
++  avg:          0         5         0         5         0         4         0         4         0         5
++  max:         16        36        15        58        24        44        21        46        13        50
 +
-+tarball:  clean
-+	rm -rf $(NAME)-$(VERSION) && mkdir $(NAME)-$(VERSION)
-+	cp -r $(DIRS) $(FILES) $(NAME)-$(VERSION)
-+	tar $(TAROPTS) --exclude='*~' $(NAME)-$(VERSION)
-+	rm -rf $(NAME)-$(VERSION)
-diff --git a/tools/tracing/rtla/README.txt b/tools/tracing/rtla/README.txt
-new file mode 100644
-index 000000000000..6c88446f7e74
---- /dev/null
-+++ b/tools/tracing/rtla/README.txt
-@@ -0,0 +1,36 @@
-+RTLA: Real-Time Linux Analysis tools
++SEE ALSO
++========
++**rtla-timerlat**\(1), **rtla-timerlat-top**\(1)
 +
-+The rtla is a meta-tool that includes a set of commands that
-+aims to analyze the real-time properties of Linux. But, instead of
-+testing Linux as a black box, rtla leverages kernel tracing
-+capabilities to provide precise information about the properties
-+and root causes of unexpected results.
++*timerlat* tracer documentation: <https://www.kernel.org/doc/html/latest/trace/timerlat-tracer.html>
 +
-+Installing RTLA
-+
-+RTLA depends on some libraries and tools. More precisely, it depends on the
-+following libraries:
-+
-+ - libtracefs
-+ - libtraceevent
-+ - procps
-+
-+It also depends on python3-docutils to compile man pages.
-+
-+For development, we suggest the following steps for compiling rtla:
-+
-+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git
-+  $ cd libtraceevent/
-+  $ make
-+  $ sudo make install
-+  $ cd ..
-+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git
-+  $ cd libtracefs/
-+  $ make
-+  $ sudo make install
-+  $ cd ..
-+  $ cd $rtla_src
-+  $ make
-+  $ sudo make install
-+
-+For further information, please refer to the rtla man page.
-diff --git a/tools/tracing/rtla/src/rtla.c b/tools/tracing/rtla/src/rtla.c
-new file mode 100644
-index 000000000000..5ae2664ed47d
---- /dev/null
-+++ b/tools/tracing/rtla/src/rtla.c
-@@ -0,0 +1,72 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
-+ */
-+
-+#include <getopt.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <stdio.h>
-+
-+/*
-+ * rtla_usage - print rtla usage
-+ */
-+static void rtla_usage(void)
-+{
-+	int i;
-+
-+	static const char *msg[] = {
-+		"",
-+		"rtla version " VERSION,
-+		"",
-+		"  usage: rtla COMMAND ...",
-+		"",
-+		"  commands:",
-+		"",
-+		NULL,
-+	};
-+
-+	for (i = 0; msg[i]; i++)
-+		fprintf(stderr, "%s\n", msg[i]);
-+	exit(1);
-+}
-+
-+/*
-+ * run_command - try to run a rtla tool command
-+ *
-+ * It returns 0 if it fails. The tool's main will generally not
-+ * return as they should call exit().
-+ */
-+int run_command(int argc, char **argv, int start_position)
-+{
-+	return 0;
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int retval;
-+
-+	/* is it an alias? */
-+	retval = run_command(argc, argv, 0);
-+	if (retval)
-+		exit(0);
-+
-+	if (argc < 2)
-+		goto usage;
-+
-+	if (strcmp(argv[1], "-h") == 0) {
-+		rtla_usage();
-+		exit(0);
-+	} else if (strcmp(argv[1], "--help") == 0) {
-+		rtla_usage();
-+		exit(0);
-+	}
-+
-+	retval = run_command(argc, argv, 1);
-+	if (retval)
-+		exit(0);
-+
-+usage:
-+	rtla_usage();
-+	exit(1);
-+}
++AUTHOR
++======
++Written by Daniel Bristot de Oliveira <bristot@kernel.org>
 -- 
 2.33.0
