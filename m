@@ -2,31 +2,31 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB679C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 12 Jan 2022 20:01:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D9E2C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 12 Jan 2022 20:01:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357384AbiALUB1 (ORCPT
+        id S1357413AbiALUB2 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 12 Jan 2022 15:01:27 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:33366 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350421AbiALUAh (ORCPT
+        Wed, 12 Jan 2022 15:01:28 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:44034 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357195AbiALUAh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 12 Jan 2022 15:00:37 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E3FD66121A;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 07C4EB820E5;
         Wed, 12 Jan 2022 20:00:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A53EC36AF2;
-        Wed, 12 Jan 2022 20:00:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B223FC36AE5;
+        Wed, 12 Jan 2022 20:00:34 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@goodmis.org>)
-        id 1n7jnP-003ETB-Hm;
-        Wed, 12 Jan 2022 15:00:35 -0500
-Message-ID: <20220112200035.375970129@goodmis.org>
+        id 1n7jnN-003EN2-G0;
+        Wed, 12 Jan 2022 15:00:33 -0500
+Message-ID: <20220112200033.323596162@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 12 Jan 2022 14:58:55 -0500
+Date:   Wed, 12 Jan 2022 14:58:44 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
@@ -42,7 +42,7 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Daniel Bristot de Oliveira <bristot@kernel.org>,
         linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: [for-next][PATCH 12/14] rtla: Add rtla timerlat documentation
+Subject: [for-next][PATCH 01/14] rtla: Real-Time Linux Analysis tool
 References: <20220112195843.098894945@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,9 +52,17 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Daniel Bristot de Oliveira <bristot@kernel.org>
 
-Man page for rtla timerlat tool.
+The rtla is a meta-tool that includes a set of commands that aims
+to analyze the real-time properties of Linux. But instead of testing
+Linux as a black box, rtla leverages kernel tracing capabilities to
+provide precise information about the properties and root causes of
+unexpected results.
 
-Link: https://lkml.kernel.org/r/78678b8d024bf5a3a79f831ac9441b96e8d2f56e.1639158831.git.bristot@kernel.org
+rtla --help works and provide information about the available options.
+
+This is just the "main" and the Makefile, no function yet.
+
+Link: https://lkml.kernel.org/r/bf9118ed43a09e6c054c9a491cbe7411ad1acd89.1639158831.git.bristot@kernel.org
 
 Cc: Tao Zhou <tao.zhou@linux.dev>
 Cc: Ingo Molnar <mingo@redhat.com>
@@ -73,90 +81,215 @@ Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 ---
- .../rtla/common_timerlat_description.rst      | 10 ++++
- Documentation/tools/rtla/rtla-timerlat.rst    | 57 +++++++++++++++++++
- 2 files changed, 67 insertions(+)
- create mode 100644 Documentation/tools/rtla/common_timerlat_description.rst
- create mode 100644 Documentation/tools/rtla/rtla-timerlat.rst
+ tools/tracing/rtla/Makefile   | 76 +++++++++++++++++++++++++++++++++++
+ tools/tracing/rtla/README.txt | 36 +++++++++++++++++
+ tools/tracing/rtla/src/rtla.c | 72 +++++++++++++++++++++++++++++++++
+ 3 files changed, 184 insertions(+)
+ create mode 100644 tools/tracing/rtla/Makefile
+ create mode 100644 tools/tracing/rtla/README.txt
+ create mode 100644 tools/tracing/rtla/src/rtla.c
 
-diff --git a/Documentation/tools/rtla/common_timerlat_description.rst b/Documentation/tools/rtla/common_timerlat_description.rst
+diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
 new file mode 100644
-index 000000000000..321201cb8597
+index 000000000000..56b1bdd60c96
 --- /dev/null
-+++ b/Documentation/tools/rtla/common_timerlat_description.rst
-@@ -0,0 +1,10 @@
-+The **rtla timerlat** tool is an interface for the *timerlat* tracer. The
-+*timerlat* tracer dispatches a kernel thread per-cpu. These threads
-+set a periodic timer to wake themselves up and go back to sleep. After
-+the wakeup, they collect and generate useful information for the
-+debugging of operating system timer latency.
++++ b/tools/tracing/rtla/Makefile
+@@ -0,0 +1,76 @@
++NAME	:=	rtla
++VERSION	:=	0.5
 +
-+The *timerlat* tracer outputs information in two ways. It periodically
-+prints the timer latency at the timer *IRQ* handler and the *Thread*
-+handler. It also enable the trace of the most relevant information via
-+**osnoise:** tracepoints.
-diff --git a/Documentation/tools/rtla/rtla-timerlat.rst b/Documentation/tools/rtla/rtla-timerlat.rst
++# From libtracefs:
++# Makefiles suck: This macro sets a default value of $(2) for the
++# variable named by $(1), unless the variable has been set by
++# environment or command line. This is necessary for CC and AR
++# because make sets default values, so the simpler ?= approach
++# won't work as expected.
++define allow-override
++  $(if $(or $(findstring environment,$(origin $(1))),\
++            $(findstring command line,$(origin $(1)))),,\
++    $(eval $(1) = $(2)))
++endef
++
++# Allow setting CC and AR, or setting CROSS_COMPILE as a prefix.
++$(call allow-override,CC,$(CROSS_COMPILE)gcc)
++$(call allow-override,AR,$(CROSS_COMPILE)ar)
++$(call allow-override,STRIP,$(CROSS_COMPILE)strip)
++$(call allow-override,PKG_CONFIG,pkg-config)
++$(call allow-override,LD_SO_CONF_PATH,/etc/ld.so.conf.d/)
++$(call allow-override,LDCONFIG,ldconfig)
++
++INSTALL	=	install
++FOPTS	:=	-flto=auto -ffat-lto-objects -fexceptions -fstack-protector-strong \
++		-fasynchronous-unwind-tables -fstack-clash-protection
++WOPTS	:= 	-Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -Wno-maybe-uninitialized
++
++TRACEFS_HEADERS	:= $$($(PKG_CONFIG) --cflags libtracefs)
++
++CFLAGS	:=	-O -g -DVERSION=\"$(VERSION)\" $(FOPTS) $(MOPTS) $(WOPTS) $(TRACEFS_HEADERS)
++LDFLAGS	:=	-ggdb
++LIBS	:=	$$($(PKG_CONFIG) --libs libtracefs) -lprocps
++
++SRC	:=	$(wildcard src/*.c)
++HDR	:=	$(wildcard src/*.h)
++OBJ	:=	$(SRC:.c=.o)
++DIRS	:=	src
++FILES	:=	Makefile README.txt
++CEXT	:=	bz2
++TARBALL	:=	$(NAME)-$(VERSION).tar.$(CEXT)
++TAROPTS	:=	-cvjf $(TARBALL)
++BINDIR	:=	/usr/bin
++DATADIR	:=	/usr/share
++DOCDIR	:=	$(DATADIR)/doc
++MANDIR	:=	$(DATADIR)/man
++LICDIR	:=	$(DATADIR)/licenses
++
++.PHONY:	all
++all:	rtla
++
++rtla: $(OBJ)
++	$(CC) -o rtla $(LDFLAGS) $(OBJ) $(LIBS)
++
++static: $(OBJ)
++	$(CC) -o rtla-static $(LDFLAGS) --static $(OBJ) $(LIBS) -lpthread -ldl
++
++.PHONY: install
++install:
++	$(INSTALL) -d -m 755 $(DESTDIR)$(BINDIR)
++	$(INSTALL) rtla -m 755 $(DESTDIR)$(BINDIR)
++	$(STRIP) $(DESTDIR)$(BINDIR)/rtla
++
++.PHONY: clean tarball
++clean:
++	@test ! -f rtla || rm rtla
++	@test ! -f rtla-static || rm rtla-static
++	@test ! -f src/rtla.o || rm src/rtla.o
++	@test ! -f $(TARBALL) || rm -f $(TARBALL)
++	@rm -rf *~ $(OBJ) *.tar.$(CEXT)
++
++tarball:  clean
++	rm -rf $(NAME)-$(VERSION) && mkdir $(NAME)-$(VERSION)
++	cp -r $(DIRS) $(FILES) $(NAME)-$(VERSION)
++	tar $(TAROPTS) --exclude='*~' $(NAME)-$(VERSION)
++	rm -rf $(NAME)-$(VERSION)
+diff --git a/tools/tracing/rtla/README.txt b/tools/tracing/rtla/README.txt
 new file mode 100644
-index 000000000000..44a49e6f302b
+index 000000000000..6c88446f7e74
 --- /dev/null
-+++ b/Documentation/tools/rtla/rtla-timerlat.rst
-@@ -0,0 +1,57 @@
-+================
-+rtla-timerlat
-+================
-+-------------------------------------------
-+Measures the operating system timer latency
-+-------------------------------------------
++++ b/tools/tracing/rtla/README.txt
+@@ -0,0 +1,36 @@
++RTLA: Real-Time Linux Analysis tools
 +
-+:Manual section: 1
++The rtla is a meta-tool that includes a set of commands that
++aims to analyze the real-time properties of Linux. But, instead of
++testing Linux as a black box, rtla leverages kernel tracing
++capabilities to provide precise information about the properties
++and root causes of unexpected results.
 +
-+SYNOPSIS
-+========
-+**rtla timerlat** [*MODE*] ...
++Installing RTLA
 +
-+DESCRIPTION
-+===========
++RTLA depends on some libraries and tools. More precisely, it depends on the
++following libraries:
 +
-+.. include:: common_timerlat_description.rst
++ - libtracefs
++ - libtraceevent
++ - procps
 +
-+The *timerlat* tracer outputs information in two ways. It periodically
-+prints the timer latency at the timer *IRQ* handler and the *Thread* handler.
-+It also provides information for each noise via the **osnoise:** tracepoints.
-+The **rtla timerlat top** mode displays a summary of the periodic output
-+from the *timerlat* tracer. The **rtla hist hist** mode displays a histogram
-+of each tracer event occurrence. For further details, please refer to the
-+respective man page.
++It also depends on python3-docutils to compile man pages.
 +
-+MODES
-+=====
-+**top**
++For development, we suggest the following steps for compiling rtla:
 +
-+        Prints the summary from *timerlat* tracer.
++  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git
++  $ cd libtraceevent/
++  $ make
++  $ sudo make install
++  $ cd ..
++  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git
++  $ cd libtracefs/
++  $ make
++  $ sudo make install
++  $ cd ..
++  $ cd $rtla_src
++  $ make
++  $ sudo make install
 +
-+**hist**
++For further information, please refer to the rtla man page.
+diff --git a/tools/tracing/rtla/src/rtla.c b/tools/tracing/rtla/src/rtla.c
+new file mode 100644
+index 000000000000..5ae2664ed47d
+--- /dev/null
++++ b/tools/tracing/rtla/src/rtla.c
+@@ -0,0 +1,72 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
++ */
 +
-+        Prints a histogram of timerlat samples.
++#include <getopt.h>
++#include <stdlib.h>
++#include <string.h>
++#include <stdio.h>
 +
-+If no *MODE* is given, the top mode is called, passing the arguments.
++/*
++ * rtla_usage - print rtla usage
++ */
++static void rtla_usage(void)
++{
++	int i;
 +
-+OPTIONS
-+=======
-+**-h**, **--help**
++	static const char *msg[] = {
++		"",
++		"rtla version " VERSION,
++		"",
++		"  usage: rtla COMMAND ...",
++		"",
++		"  commands:",
++		"",
++		NULL,
++	};
 +
-+        Display the help text.
++	for (i = 0; msg[i]; i++)
++		fprintf(stderr, "%s\n", msg[i]);
++	exit(1);
++}
 +
-+For other options, see the man page for the corresponding mode.
++/*
++ * run_command - try to run a rtla tool command
++ *
++ * It returns 0 if it fails. The tool's main will generally not
++ * return as they should call exit().
++ */
++int run_command(int argc, char **argv, int start_position)
++{
++	return 0;
++}
 +
-+SEE ALSO
-+========
-+**rtla-timerlat-top**\(1), **rtla-timerlat-hist**\(1)
++int main(int argc, char *argv[])
++{
++	int retval;
 +
-+*timerlat* tracer documentation: <https://www.kernel.org/doc/html/latest/trace/timerlat-tracer.html>
++	/* is it an alias? */
++	retval = run_command(argc, argv, 0);
++	if (retval)
++		exit(0);
 +
-+AUTHOR
-+======
-+Written by Daniel Bristot de Oliveira <bristot@kernel.org>
++	if (argc < 2)
++		goto usage;
 +
-+.. include:: common_appendix.rst
++	if (strcmp(argv[1], "-h") == 0) {
++		rtla_usage();
++		exit(0);
++	} else if (strcmp(argv[1], "--help") == 0) {
++		rtla_usage();
++		exit(0);
++	}
++
++	retval = run_command(argc, argv, 1);
++	if (retval)
++		exit(0);
++
++usage:
++	rtla_usage();
++	exit(1);
++}
 -- 
 2.33.0
