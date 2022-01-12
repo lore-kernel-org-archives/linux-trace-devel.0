@@ -2,98 +2,89 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1E85C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 12 Jan 2022 11:38:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1B19C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 12 Jan 2022 15:38:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352915AbiALLiQ (ORCPT
+        id S1354674AbiALPiR (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 12 Jan 2022 06:38:16 -0500
-Received: from gateway34.websitewelcome.com ([192.185.148.196]:25271 "EHLO
-        gateway34.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1352923AbiALLiP (ORCPT
+        Wed, 12 Jan 2022 10:38:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244280AbiALPiK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 12 Jan 2022 06:38:15 -0500
-X-Greylist: delayed 1254 seconds by postgrey-1.27 at vger.kernel.org; Wed, 12 Jan 2022 06:38:15 EST
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway34.websitewelcome.com (Postfix) with ESMTP id 026FBE89DA1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 12 Jan 2022 05:17:21 -0600 (CST)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id 7bb6ns73Wb6UB7bb6nBg7g; Wed, 12 Jan 2022 05:15:20 -0600
-X-Authority-Reason: nr=8
-Received: from host-79-47-126-144.retail.telecomitalia.it ([79.47.126.144]:48568 helo=[10.0.0.88])
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1n7bb4-001QEl-Su; Wed, 12 Jan 2022 05:15:19 -0600
-Message-ID: <5f04540c-273a-c4f2-692d-9de2f1495ba9@kernel.org>
-Date:   Wed, 12 Jan 2022 12:15:13 +0100
+        Wed, 12 Jan 2022 10:38:10 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FECAC06173F
+        for <linux-trace-devel@vger.kernel.org>; Wed, 12 Jan 2022 07:38:09 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id a18so11535584edj.7
+        for <linux-trace-devel@vger.kernel.org>; Wed, 12 Jan 2022 07:38:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dKRf6YPVCJICfLRq+D+RKfYFqnv4tu/j1X6zx9ZQWIU=;
+        b=h29RS2OTZOEKkjhVGN+lHOJJsLuvdtgYoGtZLPoFRnJedohw3GzMTNtLj0lTRowu56
+         /O+Jn92fnQjGMiEg/IyjnkGFaDPk8DpIe3RZLVoKP2pgCsLX1h9p7V7Smtkv2yRJIdxI
+         pcRZHzqxE66xiNRi5bDU/gF81v0MvME2jO5ErpvyJuWRd8a70DFvJwIGGM7X14+9B5io
+         EGODldiVetjTkSqtUEcPrRJw+DxpFwvDIfs4OQZ1bPH69kvwCvDPf4GY2UaMUGhkwa1+
+         T6E7X7JIoR6vUyE0YeNK9i5b5eEDsr2zscaOZJ+deynAIfVblvnaWWT1CXgEax0C/lhz
+         j/tA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dKRf6YPVCJICfLRq+D+RKfYFqnv4tu/j1X6zx9ZQWIU=;
+        b=yHuX+5cnp3i2VKg6LhaxiE0SQSx3TfBB81G5pMu9Nb0ENjoFxqecWiaq5NkiPPIzYU
+         AZCcdMYwxtO8LyHSjJz22oVYFpWgKGRF9wcv+mNWmSn138xfjMqTLCs0C3kYA26nzoOa
+         iK5XDnQjZ1ptI/7TPG+jBcKHvaDDXlMmHiNsQgSji2BBEGjm4259MLwBrE3IJbZvOO97
+         4xTEDbyyDOMIWxZebBFpUCgoxPmb/pyY7vCxp5by6C9aNbziCrD7iHPGA1EKJ1jazFtf
+         hTDZMzRRlSFqs31oRCd5ltE6XIuaqns5/2pRsPpjUUhEIzPgfpK4x9jZnUbAVg1gCqKu
+         rjSw==
+X-Gm-Message-State: AOAM532OUf+7i0SFz2DC/zkjZ7aHe4z9x6QXfiY6KazQDJUjBEkJcEv0
+        CeJevPHKLshC//jFuFiFPzy4fd3Br/c=
+X-Google-Smtp-Source: ABdhPJysC1FKDZFQ9mn7yp/Bsb7WqC+ncu2bvnjhGB+1GZZKVLvistk1ivmGYIPxfougsh25K1ybWw==
+X-Received: by 2002:a17:906:5502:: with SMTP id r2mr211140ejp.627.1642001887731;
+        Wed, 12 Jan 2022 07:38:07 -0800 (PST)
+Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id x1sm26815eju.18.2022.01.12.07.38.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jan 2022 07:38:07 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     y.karadz@gmail.com
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH] kernel-shark: Use cmake imported targets instead of variables
+Date:   Wed, 12 Jan 2022 17:38:05 +0200
+Message-Id: <20220112153805.222437-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [for-next][PATCH 16/31] rtla: Real-Time Linux Analysis tool
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tao Zhou <tao.zhou@linux.dev>, Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20220111173030.999527342@goodmis.org>
- <20220111173116.190327559@goodmis.org>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <20220111173116.190327559@goodmis.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 79.47.126.144
-X-Source-L: No
-X-Exim-ID: 1n7bb4-001QEl-Su
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-79-47-126-144.retail.telecomitalia.it ([10.0.0.88]) [79.47.126.144]:48568
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 2
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Steven!
+Using cmake imported targets instead of package variables is
+recommended way to define package dependencies.
 
-On 1/11/22 18:30, Steven Rostedt wrote:
-> From: Daniel Bristot de Oliveira <bristot@kernel.org>
-> 
-> The rtla is a meta-tool that includes a set of commands that aims
-> to analyze the real-time properties of Linux. But instead of testing
-> Linux as a black box, rtla leverages kernel tracing capabilities to
-> provide precise information about the properties and root causes of
-> unexpected results.
-> 
-> rtla --help works and provide information about the available options.
-> 
-> This is just the "main" and the Makefile, no function yet.
-> 
-> Link: https://lkml.kernel.org/r/f59acda8bc513c4a6c279a9bc3ad112a20690e68.1638182284.git.bristot@kernel.org
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
+ src/CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks for picking RTLA!
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index babb9c1..9e0b4ae 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -59,8 +59,8 @@ if (OPENGL_FOUND)
+                                      KsPlugins.cpp)
+ 
+     target_link_libraries(kshark-plot  kshark
+-                                       ${GLUT_LIBRARY}
+-                                       ${OPENGL_LIBRARIES})
++                                       GLUT::GLUT
++                                       OpenGL::GLU)
+ 
+     set_target_properties(kshark-plot PROPERTIES  SUFFIX ".so.${KS_VERSION_STRING}")
+     install(TARGETS kshark-plot
+-- 
+2.33.1
 
-Just one problem, you are picking the V8, but we actually had a V9:
-  https://lore.kernel.org/lkml/cover.1639158831.git.bristot@kernel.org/
-
--- Daniel
