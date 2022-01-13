@@ -2,263 +2,210 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25568C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 13 Jan 2022 05:02:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA3C8C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 13 Jan 2022 08:20:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229451AbiAMFCP (ORCPT
+        id S232927AbiAMIUW (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 13 Jan 2022 00:02:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbiAMFCO (ORCPT
+        Thu, 13 Jan 2022 03:20:22 -0500
+Received: from mga06.intel.com ([134.134.136.31]:39963 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231249AbiAMIUV (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 13 Jan 2022 00:02:14 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BDF7C06173F
-        for <linux-trace-devel@vger.kernel.org>; Wed, 12 Jan 2022 21:02:13 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id l10-20020a17090a384a00b001b22190e075so16940843pjf.3
-        for <linux-trace-devel@vger.kernel.org>; Wed, 12 Jan 2022 21:02:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rJTNa4XFUOOjAYY3tULVTW2G4bm92LprHIZT6ywrBLY=;
-        b=Nl1+wYbxwDuu3UzZ/XRyfmclI310utoPLWJfT8pCwaQMpj54chDCgBc2HVo+rowlC4
-         kSgR3D3Pw1rVtiS2OJXprmQUjtJTi152yWLQAZoOujv6YgHDwFWD8tQllqJhxQ9PlkTD
-         uN8mcdvNRvMe2fwTfVWEwI2TpFnArAYNNxvNByBtsIEMKYMIiJD0gFzh68xeR0lxko9z
-         EM1UE7Nx6OQgcMWyYjjFxfQxTwJIEx8kfe9Lh/MZ3fEzJmy3AGzEJcqcKfjJ2u97km+Y
-         B9GiRHwRiYfQM+BvCW+eAMY/zBBL/I61YsMYdQ0hucVzKUgGBKIdiJwzy2inQaFZMvP2
-         69aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rJTNa4XFUOOjAYY3tULVTW2G4bm92LprHIZT6ywrBLY=;
-        b=DFuyXyyLnhBeXPVL5bphtKk46xvtQgPSIFKLqbRfBJI1NL8JC1MuX4tqYtbOUtQbTk
-         h396vGQWkdPr894RN3L+fJeSInBWk/w5YsSXLdtZOtf0mHzmnO+tOtOTCDeB5jSRnTgN
-         dBuwNVPMkdHptaVnTtSvFpsj1RaLkkBAL5O+TbgQZJEARyEJ+mqm9bzQFpwrhKfWhB32
-         fPDV3MmE4lZ1f+uHYMxcms5/Rbw+eqRawuaYfQ2sDahCJzRE6Uzxgfj7wrP0872vb6dZ
-         cecfYcR0u847u2Q8G+ttnZy8jXji4KeSzti9f9jFdxhMt65o/zu3i1PlMwSiIHOj4Coj
-         cvig==
-X-Gm-Message-State: AOAM530+NGAC1OwUU+ZVnLSqdQCrb2lc6qyRd49NBGUFp+FsdFO0iL6c
-        /9EfLZ97hMoSJ16SJyBY0NOpELAbrq16Xw1xoVs=
-X-Google-Smtp-Source: ABdhPJwHkarns8hrGPjdTtehO1EVZkNOjkAjYlrhgt1QlcmA5TV1Y5SChUgD8XZMK9QOpyugJi/CRTt7fhnSsnth6BY=
-X-Received: by 2002:a17:902:b78b:b0:14a:1f78:2739 with SMTP id
- e11-20020a170902b78b00b0014a1f782739mr2723483pls.45.1642050132506; Wed, 12
- Jan 2022 21:02:12 -0800 (PST)
+        Thu, 13 Jan 2022 03:20:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1642062021; x=1673598021;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=mE9NMgrIBSmXjLkQxbmn1Habb+oHMZiFFgv4V+MBuaY=;
+  b=JWSMZJcaREli7h0rGHo1g9zjGHaLjsljoQxqmyXfGeFDv1A+6/cn44ne
+   0Jvo1SnSOF+QHP4Ma2bnsg+B+4LGKmdBBvFhjY25bbzNUPz0/tLk96rM9
+   kFIzTgEr3FGrpP3yktJ38dW1k7j/K/9GLMdZiNZWv1QzN87Aei12JHOAk
+   eftoUQQSqRgCyDK4sGn+E+4PRnyGwusrU0HZ7xTaHnYM03RmUspVMsrMD
+   rSTEk1u2W0st0X1YOB5eukYXdYOsDpwviozaqgOOZRl6lQwrL2sl0jOXu
+   9yT+iPeEDn/Ah3SeF0OVU5tpD6tNYfFjcZnltflQR9ao6QqH0lGmaCz5T
+   Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10225"; a="304694850"
+X-IronPort-AV: E=Sophos;i="5.88,284,1635231600"; 
+   d="scan'208";a="304694850"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2022 00:20:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,284,1635231600"; 
+   d="scan'208";a="529571349"
+Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
+  by orsmga008.jf.intel.com with ESMTP; 13 Jan 2022 00:20:20 -0800
+Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
+ ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 13 Jan 2022 00:20:20 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20 via Frontend Transport; Thu, 13 Jan 2022 00:20:20 -0800
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.45) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2308.20; Thu, 13 Jan 2022 00:20:18 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e3W+JUQ4bUzFh/rVI8gHQBv0mJ4BHAG9rHfsbtBQohAIWYdZBLdmYaEcYxXwjpPoHDSPTI1//1Oub/TzpmMCqSXVupH9wV/O9tGhjhiWkCJV+6JTI8FVA3/htVd7LMgLur43T+4PR2Olnso0zBRZE2dqcgIoFs3N7PX/Ksu2k27LqCYGNZIbpI9F7UeEZn1VOO9uM8ukk4Yfmml16D2IKAu8S/jddbPs6yg6X4/nW4eu7RrWdPN633/8E2UpuY7O10ORAvthp8Gyo9YzBQRG9//coe6QpaQkK+P8jGXfe+icwwebycg0pMnVDu93ErhrWb3EKBOf7/tAM5Xj2rdxtA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rEFImDYnfPJ3P2dnAGF8Odhn1MdybwpBbuThXHFoHD0=;
+ b=adbmjeDr6vr7QCCqMX7M+RRCu/7X/0woXp2wnu+Cj/Asb4yG0rrymaZx+4EDYUvjHZdFdrzI2sxLwjt8q8iJrrd7VYC+5wHPs9BK4Ggtdm5t9udoxG4eg34FHPIvERXd0j+0pHLHBvX9h1+1BmcMwNWvqWhS4dkexRH2plZ1Vsxq+yNs6tPLBpY5bhOy/k7MGXJ9FGc6KO90RzYWT3UqXPFPfjCH9WTrxxumcUQLH7Av837YPlSWBB7eX07cMjhFZxFmVRbn7Xx7e6KzS5EmVETn5I8GdWEUfTLNYU9ouivbImHb/fSRIcXPq7tsGUSfeoU3S/JhNmwoxHIaOa6sTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MN2PR11MB4285.namprd11.prod.outlook.com (2603:10b6:208:191::32)
+ by BL0PR11MB2964.namprd11.prod.outlook.com (2603:10b6:208:7c::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.7; Thu, 13 Jan
+ 2022 08:20:17 +0000
+Received: from MN2PR11MB4285.namprd11.prod.outlook.com
+ ([fe80::38b5:756e:417:6409]) by MN2PR11MB4285.namprd11.prod.outlook.com
+ ([fe80::38b5:756e:417:6409%5]) with mapi id 15.20.4867.011; Thu, 13 Jan 2022
+ 08:20:17 +0000
+From:   "Chen, Hongzhan" <hongzhan.chen@intel.com>
+To:     "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>
+CC:     "Kiszka, Jan" <jan.kiszka@siemens.com>
+Subject: [Questions][trace-cmd/libtraceevent] how to correctly  parse info out
+ from specifial format of event?
+Thread-Topic: [Questions][trace-cmd/libtraceevent] how to correctly  parse
+ info out from specifial format of event?
+Thread-Index: AdgIVSD6mVFfD1+OR1i6bZGO+fUq5w==
+Date:   Thu, 13 Jan 2022 08:20:16 +0000
+Message-ID: <MN2PR11MB428586156443A851B879867BF2539@MN2PR11MB4285.namprd11.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.6.200.16
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3ec40453-11ae-4232-438b-08d9d66d87f1
+x-ms-traffictypediagnostic: BL0PR11MB2964:EE_
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-microsoft-antispam-prvs: <BL0PR11MB29640DCE8F2ECB049A420144F2539@BL0PR11MB2964.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4303;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: z4yXQFuoNLJrfiAHcsb7mRaJ1xmp2YLs4te72+9ng6YBqKhCvjw94/Sv/1tGa5291UNkbHfjoKtBAWMB1kb54pRd/4MIW1IzUtB/yIDXdMSc5KdYZekTgU4XIdyqMrx0vprowqouob/xh0TjTgd7skkaf/HsNAN/pa0ZDpz5b7i3Z4eI4XkpWVdr/P1YP6UpCrc+iJ96bx9ihFEvjpjLajTPxNKp0TBORKL2pI0AbO+tAUCcz6WxKIeLijifCxTSKNYB8vaidwIJJ9zlNKM9yA+xinQQ2rNznt+0lEEsD4VuF9fxJd4OIRULGanVUbk68oimPkFNP5KptOhAT3mnlUAJLwtLBCLbbPMsxuQDHTYjAmg0Yz+vmrdwF7WtbMOYDdHaAF0g0pZ9XdSTEqQY29pohzp8r9JMSPTtg8MLy1Daqk+/ZFCmEmqUp+FmN/1bojIgud0ZaA4qTBTIr6XyG1yI1s5sVj1422jPDUsU/qtwoyffoJVVSu1U1eVweAm2ofdGIQknjJC90eR8BRxjksybuGQ7DmN2HlVbjGeJk9X+nthPCBpnLi6IeQvn8oEUM3OvtRbkOdUYBtM3zTZmHtGGEMatCHAMO1hzIOFj8IvTbx2qNuu3YiRKmkkOwP3sZWkdR/ieRzNHa7kdLCh4GVErI+LsSPLfDleghprhpOGB+WSV94bp0sgJvaOGUARLyFI1OCdVsL5n1ZZWaLl5Xw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR11MB4285.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(86362001)(8676002)(82960400001)(316002)(122000001)(38100700002)(26005)(6916009)(7696005)(38070700005)(9686003)(186003)(5660300002)(40140700001)(55016003)(71200400001)(33656002)(83380400001)(508600001)(6506007)(64756008)(66556008)(52536014)(66946007)(4326008)(2906002)(66476007)(76116006)(8936002)(66446008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?HaRR7SM9mF+Xk8avgZ6MFzrvT01OjfTOEGg79wE+M/QNcuWU45L+okjt9ihK?=
+ =?us-ascii?Q?GwcafjrUMxgN8mKGkmRkLE3voUAsmK1S+aL7VO5CACjO2XaTzJAtu9ZUj5J7?=
+ =?us-ascii?Q?WQi/DMmWgmqTpgCfDbPLSxXjuExUldm7uekGa11s1orUV0n5CtJW+awQR6QK?=
+ =?us-ascii?Q?ykOnXD/AckxWPDvWhuiqmhZ7iGDfXqnO3Wpido4tVFxlLyiwkCXDaCPpA9Sc?=
+ =?us-ascii?Q?57zfNdHYpaJlzKT7w/YF5+hmS9AXkPqx6qII/HYl8Ig/EY9292ZQ6g4RCjR+?=
+ =?us-ascii?Q?MvMTOUSISvkCitSOmu5zgumy33i9Kn891ewd4FPPPcICnC4R+zU/MzNmYxED?=
+ =?us-ascii?Q?RqSVDyv2kq43oHxyPdXjs2ATKTIYyWPVvfz5Y4cqA+c1p7gVJmtegjlM9lUB?=
+ =?us-ascii?Q?M5zI+PU0A62NSaUr9GgVRhMTpH/TuGsVpqBzJdqOJ+2IT9rnbbgmXlB+D7J3?=
+ =?us-ascii?Q?oKHuA4VyZoatwPoNZi4nh8OAaZYBsmHCnTx10a7EEpJw/dfqUBrKU3WH5eaz?=
+ =?us-ascii?Q?E9b+pOpk5C/TLRP/iaRR/LvKoMnTFBklc0vn2GNaHm2ONSKSkL0pSezGbzCS?=
+ =?us-ascii?Q?JCsPLQkk4ZLgv6uHtCt1Uog5DnZI11/Dv/f33I68GlhHiJbchSy8Zy7B5Nxv?=
+ =?us-ascii?Q?XhFcX36affUausFEDGSdX2XqWZO/hLzbFHtcudtNAwSepN0fQBqflJghX9Vl?=
+ =?us-ascii?Q?QQqme6+8CSMd5p6gr20Nuk/cKjqmSMK6/pJwUHgEXmJ6f8TikZYx9jqtqQYK?=
+ =?us-ascii?Q?KSIcJvFrugv63SogdwBrT3mTZLV9jd1XiU5C+IQi1cOajxdslrA7vH5LT2Dx?=
+ =?us-ascii?Q?6VitsxsBXvwTHuuVy2l+u98jp9/5ZV4l3VU5nFc6+95vPX1kLPSsth7cfXel?=
+ =?us-ascii?Q?JlmmT7XrHM83YNQiHEqd6CN+m2N8aqcnbwt8/m/LVYoIkaNw+KI82Zsdx2fJ?=
+ =?us-ascii?Q?oOsIejOCkr5Dwj27wQxXtay0G6WEwvaHKOxD1i5y31HxOusgEdXwO9sgQzox?=
+ =?us-ascii?Q?OcajiRfTkEWye4/ZbPEF7xWpuLtW7Ri7DbFrbTdaWvjTH8gTuq1o64uTDpbG?=
+ =?us-ascii?Q?izKUtsF7esa8iGl7QiYqFr1DKaLwO74NQ3BYfmiBQh7JuvOgvkijtJgYLb48?=
+ =?us-ascii?Q?QlQuCNm3gqFqjfOQDvGSDw+UMwtE4ZhntidWt3/xNBG2AL4Q85XS8kByCKXr?=
+ =?us-ascii?Q?RTDgmF1tXt2rtMz68GnJJRQ4QEHMeJumZUSMg4s9UUNoMLtlWqRr+nHDeKr9?=
+ =?us-ascii?Q?DWEG5ZlyiIeqlLOiWPC8BS6+arB1M4+zVJAkXth/ScAqOG1TZBIC0cJarDH2?=
+ =?us-ascii?Q?CbUHFmjv1kOfncz7Gz5qmwiuz2oDq+KyvpY55MLdNS/3EWzG79LVa27W7evc?=
+ =?us-ascii?Q?BVQbqT2GHhgH0trAfr1+w01mk1VVCltDi0xrGSeVL0tyn7N28SDrBeVNYykR?=
+ =?us-ascii?Q?A3/QgKfGVCGOM+z8ztXbcCTQgSTFDufp0EFpXDrPgioBBrD4iBI3NTZXKp8+?=
+ =?us-ascii?Q?pSqkh2kgKo3JgHDn2t+1yf1N4n8fjVzS5NcQ13J0sjXhT+yLQNnAXaC3/TLb?=
+ =?us-ascii?Q?rv13bnVYzqOKbqqdvGi42wY685uZqzK6queEe+E47lbG4nQNpGWsNFdaNa6L?=
+ =?us-ascii?Q?vJRcxCEWwgwSwswMf+n1m6U=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20220112163619.21762-1-y.karadz@gmail.com>
-In-Reply-To: <20220112163619.21762-1-y.karadz@gmail.com>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Thu, 13 Jan 2022 07:01:56 +0200
-Message-ID: <CAPpZLN7=q-DiOQWDmv5SdV7xyu9TCHHZNP_Cfq4Gdo2c2GMMPg@mail.gmail.com>
-Subject: Re: [PATCH] libtracefs: New API for getting synthetic event
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR11MB4285.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3ec40453-11ae-4232-438b-08d9d66d87f1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jan 2022 08:20:16.8744
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CgRZa31r5MQag9nXvNWoFG4O4Nn4gH9PFrKFbrGvdVwijiG1Rvvupp1ZroZECNg3isQapRypetf51pWimxqUSQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR11MB2964
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Jan 13, 2022 at 1:33 AM Yordan Karadzhov (VMware)
-<y.karadz@gmail.com> wrote:
->
-> A new API is proposed, to get tep event descriptor for given synthetic
-> event:
->
-> tracefs_synth_get_event ()
->
-> The API implementation gets derived from the implementation of the
-> existing API  tracefs_dynevent_get_event(). It can detect any newly
-> created or removed synthetic events.
->
-> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-> ---
->  Documentation/libtracefs-synth2.txt | 14 ++++++++++++--
->  include/tracefs-local.h             |  2 ++
->  include/tracefs.h                   |  2 ++
->  src/tracefs-dynevents.c             | 17 +----------------
->  src/tracefs-events.c                | 21 +++++++++++++++++++++
->  src/tracefs-hist.c                  | 18 ++++++++++++++++++
->  6 files changed, 56 insertions(+), 18 deletions(-)
->
-> diff --git a/Documentation/libtracefs-synth2.txt b/Documentation/libtracefs-synth2.txt
-> index 8056ab8..fac155b 100644
-> --- a/Documentation/libtracefs-synth2.txt
-> +++ b/Documentation/libtracefs-synth2.txt
-> @@ -6,7 +6,8 @@ NAME
->  tracefs_synth_create, tracefs_synth_destroy, tracefs_synth_echo_cmd, tracefs_synth_complete,
->  tracefs_synth_get_start_hist, tracefs_synth_trace, tracefs_synth_snapshot,
->  tracefs_synth_get_name, tracefs_synth_raw_fmt, tracefs_synth_show_event,
-> -tracefs_synth_show_start_hist, tracefs_synth_show_end_hist - Creation of synthetic events
-> +tracefs_synth_show_start_hist, tracefs_synth_show_end_hist, tracefs_synth_get_event
-> +- Creation of synthetic events
->
->  SYNOPSIS
->  --------
-> @@ -32,7 +33,8 @@ int tracefs_synth_raw_fmt(struct trace_seq pass:[*]seq, struct tracefs_synth pas
->  const char *tracefs_synth_show_event(struct tracefs_synth pass:[*]synth);
->  const char *tracefs_synth_show_start_hist(struct tracefs_synth pass:[*]synth);
->  const char *tracefs_synth_show_end_hist(struct tracefs_synth pass:[*]synth);
-> -
-> +tracefs_synth_get_event
 
-Looks like something forgotten.
+When I tried to analysis trace log that captured from xenomai system with k=
+ernelshark, I found
+that it report "FAILED TO PARSE" for some events. These events have format =
+like [1].
+In trace, these events would be printed like [2].=20
+At first, I was trying to develop new libtraceevent plugin to parse this ev=
+ent correctly.=20
+When I refer to code plugins/plugin_mac80211.c of libtraceevent to parse fi=
+eld param_ex=20
+out for this __data_loc type of data, I always get value 0x380018 and It is=
+ supposed to trace_seq_printf=20
+0x38 size of string got from offset 0x18 of tep_record->data but it fail. A=
+fter debug,  I found
+that the data start from offset 0x18 is not what we expect and first few by=
+tes of data is like [3].
 
-> +struct tep_event pass:[*]*tracefs_synth_get_event*(struct tep_handle pass:[*]_tep_, struct tracefs_synth pass:[*]_synth_);
+ It seems  that data stored for field param_ex is quite different from what=
+ we expect.
+How could I look into trace-cmd related code to fix such issue? Any suggest=
+ions?=20
 
-The arguments of the other functions in this man page are not
-underlined, all should follow the same style. As in the other man
-pages of the library all arguments are underlined, this should be the
-default style.
-This could be addressed in a follow up patch - applying the same style
-of all tracefs man pages.
+Thanks for your help in advance.
 
->  --
->
->  DESCRIPTION
-> @@ -114,11 +116,19 @@ and is freed with the event by *tracefs_synth_free*().
->  synthetic event or NULL on error. The returned string belongs to the synth event object
->  and is freed with the event by *tracefs_synth_free*().
->
-> +The *tracefs_synth_get_event*() function returns a tep event, describing the given synthetic
-> +event. The API detects any newly created or removed dynamic events. The returned pointer to
-> +tep event is controlled by @tep and must not be freed.
-> +
->  RETURN VALUE
->  ------------
->  *tracefs_synth_get_name*(), *tracefs_synth_show_event*(), *tracefs_synth_show_start_hist*()
->  and *tracefs_synth_show_end_hist*()  return a string owned by the synth event object.
->
-> +The *tracefs_synth_get_event*() function returns a pointer to a tep event or NULL in case of an
-> +error or if the requested synthetic event is missing. The returned pointer to tep event is
-> +controlled by @tep and must not be freed.
-> +
->  All other functions return zero on success or -1 on error.
->
->  ERRORS
-> diff --git a/include/tracefs-local.h b/include/tracefs-local.h
-> index daea5da..fc0a2c5 100644
-> --- a/include/tracefs-local.h
-> +++ b/include/tracefs-local.h
-> @@ -116,5 +116,7 @@ int trace_load_events(struct tep_handle *tep,
->                       const char *tracing_dir, const char *system);
->  int trace_rescan_events(struct tep_handle *tep,
->                         const char *tracing_dir, const char *system);
-> +__hidden struct tep_event *get_tep_event(struct tep_handle *tep,
-> +                                        const char *system, const char *name);
+[1]:
+root@ecs-xenomai-isar:~# cat /sys/kernel/debug/tracing/events/cobalt_posix/=
+cobalt_pthread_create/format
+name: cobalt_pthread_create
+ID: 628
+format:
+        field:unsigned short common_type;       offset:0;       size:2; sig=
+ned:0;
+        field:unsigned char common_flags;       offset:2;       size:1; sig=
+ned:0;
+        field:unsigned char common_preempt_count;       offset:3;       siz=
+e:1; signed:0;
+        field:int common_pid;   offset:4;       size:4; signed:1;
 
-"__hidden" is not needed here, in the header file. All functions in
-tracefs-local.h are hidden and this is specified in their
-implementation.
+        field:unsigned long pth;        offset:8;       size:8; signed:0;
+        field:int policy;       offset:16;      size:4; signed:1;
+        field:__data_loc char[] param_ex;       offset:20;      size:4; sig=
+ned:1;
 
->
->  #endif /* _TRACE_FS_LOCAL_H */
-> diff --git a/include/tracefs.h b/include/tracefs.h
-> index bd758dc..9c53b84 100644
-> --- a/include/tracefs.h
-> +++ b/include/tracefs.h
-> @@ -564,5 +564,7 @@ const char *tracefs_synth_show_end_hist(struct tracefs_synth *synth);
->
->  struct tracefs_synth *tracefs_sql(struct tep_handle *tep, const char *name,
->                                   const char *sql_buffer, char **err);
-> +struct tep_event *
-> +tracefs_synth_get_event(struct tep_handle *tep, struct tracefs_synth *synth);
->
->  #endif /* _TRACE_FS_H */
-> diff --git a/src/tracefs-dynevents.c b/src/tracefs-dynevents.c
-> index d089d02..ddebb6b 100644
-> --- a/src/tracefs-dynevents.c
-> +++ b/src/tracefs-dynevents.c
-> @@ -765,23 +765,8 @@ error:
->  struct tep_event *
->  tracefs_dynevent_get_event(struct tep_handle *tep, struct tracefs_dynevent *dynevent)
->  {
-> -       struct tep_event *event;
-> -
->         if (!tep || !dynevent || !dynevent->event)
->                 return NULL;
->
-> -       /* Check if event exists in the system */
-> -       if (!tracefs_event_file_exists(NULL, dynevent->system, dynevent->event, "format"))
-> -               return NULL;
-> -
-> -       /* If the dynamic event is already loaded in the tep, return it */
-> -       event = tep_find_event_by_name(tep, dynevent->system, dynevent->event);
-> -       if (event)
-> -               return event;
-> -
-> -       /* Try to load any new events from the given system */
-> -       if (trace_rescan_events(tep, NULL, dynevent->system))
-> -               return NULL;
-> -
-> -       return tep_find_event_by_name(tep, dynevent->system, dynevent->event);
-> +       return get_tep_event(tep, dynevent->system, dynevent->event);
->  }
-> diff --git a/src/tracefs-events.c b/src/tracefs-events.c
-> index 067f6e0..30e80ce 100644
-> --- a/src/tracefs-events.c
-> +++ b/src/tracefs-events.c
-> @@ -752,6 +752,27 @@ __hidden int trace_load_events(struct tep_handle *tep,
->         return load_events(tep, tracing_dir, system, false);
->  }
->
-> +__hidden struct tep_event *get_tep_event(struct tep_handle *tep,
-> +                                        const char *system, const char *name)
-> +{
-> +       struct tep_event *event;
-> +
-> +       /* Check if event exists in the system */
-> +       if (!tracefs_event_file_exists(NULL, system, name, "format"))
-> +               return NULL;
-> +
-> +       /* If the dynamic event is already loaded in the tep, return it */
-> +       event = tep_find_event_by_name(tep, system, name);
-> +       if (event)
-> +               return event;
-> +
-> +       /* Try to load any new events from the given system */
-> +       if (trace_rescan_events(tep, NULL, system))
-> +               return NULL;
-> +
-> +       return tep_find_event_by_name(tep, system, name);
-> +}
-> +
->  static int read_header(struct tep_handle *tep, const char *tracing_dir)
->  {
->         struct stat st;
-> diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-> index 7146fc1..8d99492 100644
-> --- a/src/tracefs-hist.c
-> +++ b/src/tracefs-hist.c
-> @@ -2197,3 +2197,21 @@ int tracefs_synth_echo_cmd(struct trace_seq *seq,
->         }
->         return ret;
->  }
-> +
-> +/**
-> + * tracefs_synth_get_event - return tep event representing the given synthetic event
-> + * @tep: a handle to the trace event parser context that holds the events
-> + * @synth: a synthetic event context, describing given synthetic event.
-> + *
-> + * Returns a pointer to a tep event describing the given synthetic event. The pointer
-> + * is managed by the @tep handle and must not be freed. In case of an error, or in case
-> + * the requested synthetic event is missing in the @tep handler - NULL is returned.
-> + */
-> +struct tep_event *
-> +tracefs_synth_get_event(struct tep_handle *tep, struct tracefs_synth *synth)
-> +{
-> +       if (!tep || !synth || !synth->name)
-> +               return NULL;
-> +
-> +       return get_tep_event(tep, SYNTHETIC_GROUP, synth->name);
-> +}
-> --
-> 2.32.0
->
+print fmt: "pth=3D%p policy=3D%s param=3D' %s '", (void *)REC->pth, __print=
+_symbolic(REC->policy,=20
+{0, "normal"}, {1, "fifo"}, {2, "rr"}, {11, "tp"}, {12, "quota"}, {10, "spo=
+radic"}, {42, "cobalt"},=20
+{43, "weak"}), cobalt_trace_parse_sched_params(p, REC->policy, (struct sche=
+d_param_ex *)(__get_dynamic_array(param_ex)))
+
+[2]:
+ smokey-752     [000] d.~2  7970.727466: cobalt_pthread_getschedparam: pth=
+=3D000000009bbc7fe0 policy=3Dfifo param=3D{ priority=3D50 }
+ smokey-762     [000] ....  7970.727492: cobalt_pthread_create: pth=3D00000=
+000983468a5 policy=3Dquota param=3D{ priority=3D1, group=3D0 }
+
+[3]:
+0x1 0x0 0x0 0x0 0x0 0x0 0x0 0x0
 
 
--- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+Regards
+
+Hongzhan Chen
+
