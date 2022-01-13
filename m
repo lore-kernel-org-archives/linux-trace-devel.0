@@ -2,209 +2,184 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BAA8C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 13 Jan 2022 17:50:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA533C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 13 Jan 2022 18:13:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237244AbiAMRuu (ORCPT
+        id S237505AbiAMSNm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 13 Jan 2022 12:50:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbiAMRuu (ORCPT
+        Thu, 13 Jan 2022 13:13:42 -0500
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:56148 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230329AbiAMSNl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 13 Jan 2022 12:50:50 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 351CFC061574
-        for <linux-trace-devel@vger.kernel.org>; Thu, 13 Jan 2022 09:50:50 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id b13so26205421edn.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 13 Jan 2022 09:50:50 -0800 (PST)
+        Thu, 13 Jan 2022 13:13:41 -0500
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 20DHoFI7012589;
+        Thu, 13 Jan 2022 18:13:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=E/fAhjB2l2gDXuFJAUFhSUj9zr296BOt+LlhtDyK8uI=;
+ b=NU8l//zAnqNwdnCSjGGElrU3rLsGQXn/ALnqBjtTSzG+3aKm01d2Ply+E0VYk/aF8Iey
+ +0YFpHrLeLkDD7uqlpbZVjQPnuxGKjTEPBc2TGQh5DzpqFuWhicOtUl26INn3x8PsybT
+ hK5k57yAPCANGikFFcJdA+7uWcKTZgI4a4hE/H5pOGpldPxOuhxbFcatwZIvXk9l0RzU
+ Do0eOME6KHfqW/GHpbX2uLjbWIkDIh2p0jlYqKzrRGrwddCDR94HrBc18tMz7FSfti/X
+ SpzGWTgcsBEVreVYKJEGaC6HfJdjHqhsywYqsQ57mZ68p/bB4JMVuBZ/Uk9qYZh7RkxT 0w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3djmhw11vs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 13 Jan 2022 18:13:24 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 20DIAaKF058042;
+        Thu, 13 Jan 2022 18:13:23 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2173.outbound.protection.outlook.com [104.47.58.173])
+        by aserp3030.oracle.com with ESMTP id 3df0nhe3jt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 13 Jan 2022 18:13:23 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WzyRAYhDT8jMhz0igbbTn2U/+ODkIQ358y0Dn+hSBeFXcHiN2RpTvIh+WYpHoVWjptz7tK5TQtMZZv3B7kL3XDAB9A2J0UOL5/oQoQG3DxEdnWt1pf1MP9Ru782y9Yf1n5OMtwUJbXH718c5aE/hRPBSXey/7eQQ8f/0KaH/6Jy5DSHBYiUMIwtVFWUvYLI4AQVLe3hAuJak8lfx/9xmCJO1fOU/5OGPKzzL2gPCgAOrSkdXPkTj2rkgvfLdBlR5mzU7McAdmoMIpdIJjogeNXCD+Bzr0uYH4YUv84Lj9gYJcPmwvS1gi/PWr/h9C1eMLbfyqpvHTlSRdhI9SOP4wQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=E/fAhjB2l2gDXuFJAUFhSUj9zr296BOt+LlhtDyK8uI=;
+ b=ITSEQOKkUuWtgqJOYv6Y1x+ke5slhjYx+X0rJVdJc0MiLCXYCh30imtRNo8pyk0IiEqaS4Zlkd8G9QXl1IN1gd1j21Bh3b95ugUZMD6+i0GmC9ZQ30abFIKOnAYKsUnqZPXleEusA1RPzDZ/zP4sOHA8IJ8ddLQHUEzFG3dnxdGykg1ycU7o8GMrKGrmQZu2Qcr/h1IsxKNxAs8CLHyQFKq0SKDRpV/C+vrJstanrUnjNHALeHRIrCwUVwk3HJiMihRFEjwE6vE+3t0n8AKGrVf0nKKzDGTdrv5ba1Z+S0ueZx42eccXPUZb5lMJ4KT94YhORvKZexNW6ixhmKml/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hOA4WSItgpJZ7g2qbqfYcCfA/0OqeNo5/a7wOw/o3ns=;
-        b=dhdLOR8U/7Dpu1+vv/JkOKZxkE3+YcwtiDrRrQoiYMMz7I8gtPvLVyx6PSSjsjp0Hv
-         4MfLFkuJlyu1hsN0OUqF50JzSZQmFdEMxUQAT06ke6TjgATVLP2IFQomcmHQIBrCFKOA
-         c5KhOiclQPnU/z0EWdYcp3rZR2RQx66vKvIzKIdzbmYu6KKcwvSPUW+fFnH26DsgYlJs
-         9j/1pMAcDtUt5f+kqAZ3nJjcbzsyT3U+9VgcFcceAFZ9Rsn61mLOy7ACa4Goci0LX4dk
-         3/gW9FfCApiAmBM/xbmdOLl0PY32lmaVvJaVLuSkTU9FvaZOHGR+oUbLpsnkeK0cmI56
-         DUrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hOA4WSItgpJZ7g2qbqfYcCfA/0OqeNo5/a7wOw/o3ns=;
-        b=PplyLGL3YNWtxEhMtB2/01EdyR3B+njl2gNa72EK7PucBQ/m9KtxLqRaZEXYXbXOg5
-         9X4s+3iDoAJ6Jx6p4LHni5W8j3Z2fsldML6vGVFD46oMIh9YIaiSa5Iiqu64GPv7Xjrz
-         wpCwfEkn5EgF/V/WyL/oo4iOtiidA3rUAy+L4M+pJsA/wHxo/45ia+JnwE1qASZH7JP/
-         MSryUDVCWM2l9oyW5f+uipZ69Nzz+S654wAHPED2UX6a3oUXpmHONj9GarqA0H102dN9
-         1iK+Kz9vlt/3w/lYDgx7tMmpDc9Ppo2VJD15J/smhepblN35J8fGS5d/uyycHqLQA4cW
-         pxnQ==
-X-Gm-Message-State: AOAM530tnJAMe+eXqbL4MRKBQKa0ShoT4Mj89GBKofs202m8SXR5zdJb
-        yNLK10asaga/d0pX5v1VwpuvvwPfllY=
-X-Google-Smtp-Source: ABdhPJxnygbUaCgJ1Gbf2fW6tbtK4O2F+xuRz9NKFwjpPfq2RzYoZWdTfMGjFfMRUe/QKtuapxVHvA==
-X-Received: by 2002:a05:6402:c89:: with SMTP id cm9mr5140858edb.304.1642096248560;
-        Thu, 13 Jan 2022 09:50:48 -0800 (PST)
-Received: from crow.. ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id hq29sm1132531ejc.141.2022.01.13.09.50.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jan 2022 09:50:48 -0800 (PST)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH] trace-cruncher: Add static method for getting tep_handle object
-Date:   Thu, 13 Jan 2022 19:50:36 +0200
-Message-Id: <20220113175036.85340-1-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.32.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E/fAhjB2l2gDXuFJAUFhSUj9zr296BOt+LlhtDyK8uI=;
+ b=kMSw4GmBRQq7MXa95bdnRZGu124yhg5M39X3NP7GMLlHnJdTGlXwsz5Iev5c+d3Qix2BMLNSYBSaTU14Ygco0jHPhMhnYXf1Y8AEtFc/TN+2EcwyaugzL+BQXixbpkMqX5ABsqEw3AgIINbgwASGoE7TlD86FmS1qFfv3SydTj4=
+Received: from DS7PR10MB4864.namprd10.prod.outlook.com (2603:10b6:5:3a2::5) by
+ MN2PR10MB3471.namprd10.prod.outlook.com (2603:10b6:208:117::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4888.10; Thu, 13 Jan
+ 2022 18:13:21 +0000
+Received: from DS7PR10MB4864.namprd10.prod.outlook.com
+ ([fe80::16d:ecf0:1ab6:7401]) by DS7PR10MB4864.namprd10.prod.outlook.com
+ ([fe80::16d:ecf0:1ab6:7401%2]) with mapi id 15.20.4888.010; Thu, 13 Jan 2022
+ 18:13:21 +0000
+From:   Chuck Lever III <chuck.lever@oracle.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH RFC 1/2] trace: Introduce helpers to safely handle
+ dynamic-sized sockaddrs
+Thread-Topic: [PATCH RFC 1/2] trace: Introduce helpers to safely handle
+ dynamic-sized sockaddrs
+Thread-Index: AQHYBx1g7+LR+5J9j0a+/twlIKZeRaxhNnwAgAANx4A=
+Date:   Thu, 13 Jan 2022 18:13:21 +0000
+Message-ID: <81019357-9BCA-4EB9-9B8B-F637C98AAEB9@oracle.com>
+References: <164192738510.1149.7614903005271825552.stgit@klimt.1015granger.net>
+ <164192756765.1149.13872546013201834510.stgit@klimt.1015granger.net>
+ <20220113122402.74f73553@gandalf.local.home>
+In-Reply-To: <20220113122402.74f73553@gandalf.local.home>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.120.0.1.13)
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ad2939d9-7292-42d1-4801-08d9d6c061f4
+x-ms-traffictypediagnostic: MN2PR10MB3471:EE_
+x-microsoft-antispam-prvs: <MN2PR10MB347144E15F4655770569B87F93539@MN2PR10MB3471.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jHGIiA5d8bKbfqvB3JPXfGXubsI+gz002OhiF2e9yt9mpGJ8jvcPNIP6ISbstzSWgcyXDSuLpyejY4MLwaEOR0c/+gk3BGTcjYJ1nGSqwQCiY9bS7Re5YVha4dXZySbEAMktbqsY0KQqG2GVNw3gMtJ4+qRBITEHPs8kEN2/pFt3CFQSaFRTag9wIWE8A+7JWdyuO9ddmeodx4WTf25zo9vIUCorSBJ7QqwW4IFxk0p1YnsFQYSTTbsSvvb4dM24tNWTcNY9ifvr8KivjoGqB77wD/lrV1axzokXz30XRDoXV4jxS1Q/8vRVQxv/VCi024lByctrCNxYIt7n2Fn0uP96xMDgWO96M+jOFOd9j8929o39pPr00aYZi3mW5kJd6nfQ1BXatCDtlxHOQP8k5AIdCfIdxpg2sunWNQszjoQ1CMxkgpGOp1wjIcqR5L3UwmF6tnbZesL40sqaAnUYbqfWnd8QLPRo79m+pcf26zDnHLyokFPoAhuIV16/7pc0iYijxN6KBhfWgslORJ6mPzdqbd0GBHlSzY+K1CQFGjGzh3WjCcQz5sRh/m448CCHkTtVquQ1H3br6JOFCp6sn7YfEDaORbkdrl7Z4JN8dCaDfjp4xOxbX+3H7G2UBbpd9rH3A/jQsTW/NbfS0F6mxQVTZtWdiJe1XWREw5jG+Jfr4in1HT5yppSB5tZBTaQk75iPgfTp/i6GSOEuK298uS5ET0ECdS/i3KS+NfiV5KYgl4mNMIr1kHHmEe7M0JTDke86/m2D7gNMbkio2FOZbCiaK6QHher657jxKERJ5egh3xpEAkjrkDEDBrpOPyOcA+CIthiqJot/OPilb7Bljw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR10MB4864.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(38100700002)(6506007)(33656002)(36756003)(54906003)(4744005)(66446008)(53546011)(66556008)(71200400001)(6512007)(122000001)(316002)(66476007)(26005)(66946007)(508600001)(6916009)(64756008)(2906002)(186003)(76116006)(966005)(91956017)(8676002)(8936002)(6486002)(5660300002)(86362001)(4326008)(38070700005)(2616005)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?GVaNVBwWuWaxeNj/RpY/o/NZzAM4ZUN2+dT3nrWSBhvGYzQeBM+Fmh7smBOX?=
+ =?us-ascii?Q?kv6AOLDXEJ35EyrJ00oFtU9pAqXtzJ1NlOdjuBZAmC6jGtgVvqNCTovazitm?=
+ =?us-ascii?Q?n9x6vUqw/pOknqrOBV2JOCuoKMmR1yB/qMdKf3dasmf5AKcWrgdqvsnFerdG?=
+ =?us-ascii?Q?/DlFs21DDNJ9BR2tPfinkkEVGUidjR+rnvivWhnQyskhl1DLvsIaR+4Zyi35?=
+ =?us-ascii?Q?4EMA/or/HZ3hKgyEDVhdKQKZ52cRZp2/U5GUQ0xunuzn0FNOw9Lbvzm05hVE?=
+ =?us-ascii?Q?Z64raBZCxO9Z8XGoZx0skdzbrNfBoJ0VEwCrcRo4lCRB2NwUZPLg7PkRu2l0?=
+ =?us-ascii?Q?dq5bbSwTzeGHs8CjwXhXcvl8f0K0EdZSZh96svPFjY6ekBiox8uG6YBxOZU+?=
+ =?us-ascii?Q?ijKmhY+QReMPnxXpoD+H8uzfhzvXCxzftB+86i5km+LY2pUO8hPk0s8pQPs+?=
+ =?us-ascii?Q?eBlbFf3Ir0MmutfZ827Vzk9yEYQs2JgkHwTtcUHTCJcCDEWJHJr8gj+zK766?=
+ =?us-ascii?Q?TveJKgxn+nVLZKUnHyexy8LH3AmEFMNE4LIDjqYoSFjVlG1urFJt+hxdkkFg?=
+ =?us-ascii?Q?c5mvFIV+sx8UkSCZ17bTE+z3PDQyn6wi1Q7+6zvDi1mq/K08zNPZjdOIb3/o?=
+ =?us-ascii?Q?hLVEYV2iTx6uaJEHGAfsWt3KlXj7cYbMijzGmcRSYD3wzma3zYXpuQPOomD5?=
+ =?us-ascii?Q?yPzsjb16NRmMnZZgp3+D9cmemOz1vhdV+8NUvIEao1PL6nufd8JpFkxvwV1j?=
+ =?us-ascii?Q?u7XmbcTKsRTHpTbW6occEEWfiF8JWyvCarjGHvZ1Uv6SRUQHIQSA24gNN5uN?=
+ =?us-ascii?Q?hmU3tl378zU/rtPnm0J70hT+lbPVNdQgMard0KYMstbZnMaMBqLdmfz1xXgp?=
+ =?us-ascii?Q?Vg/KJTfiA124rLoZjRs4eEYYzmo4czhC76VBrnqkjseuh4EC9KaoQiMWENJG?=
+ =?us-ascii?Q?xyrEqbrLKTCY09fDGb8zsO/AiAimS+3Gx7GS+QlAu0zTOEdqt+G9aId5I7Rh?=
+ =?us-ascii?Q?40qqh48Gz25Agmy84fU4L6HUQB3Dyy/vrufPtZFCDR87tSwetqIL42wS0T/w?=
+ =?us-ascii?Q?VK+Wje0zvFA1hdHIl6jjybVfjVfxW4LxQuD4uDdukalSBGMzB+VmV0Wwb0Vf?=
+ =?us-ascii?Q?ybqEWzN47vzE96LN4ls6WYGbYSXypHTUG0/wgvRtJEbmrmfnWqAFwIRaJsEz?=
+ =?us-ascii?Q?TYQLpQlqV0kRoWFqOlBAPeYJJIH6i3NyY2hg5oZdSrsmkHd8u68yy6Yc9g4L?=
+ =?us-ascii?Q?/yvvrmgAOmUqR+/LAUMwhzKHZk+EpI5BdNUBPKFd2HtLOyIcNSCwm1ECSpXr?=
+ =?us-ascii?Q?H2ax0Z0/dwtWV/of2qBiu6wI4s8QzUe+go9VbHKhP5fnjQ+7r/98MUCKGt+r?=
+ =?us-ascii?Q?2sPVaJn73R1Y8AezFHcYgzlTMNwr3CAzUIKAXFkbgh2NTLLlUGRWhFGQ3kk/?=
+ =?us-ascii?Q?U9b/bcK1lkXEo6smXqTeE2mNtZN4nd3kXGIjPpjVg+6cybHjJVcdMXZEIoe6?=
+ =?us-ascii?Q?UjrX58dcH7ZL2STzHuCXVqsvJmP5QPu2Z8175CPPzDUVSm49rDK3DwEaW0uY?=
+ =?us-ascii?Q?HOBo7KflsEaqaf1aUL8Q2erbWP2W1pZwFq+Sk8KJ2k3MJqr27vKYMVoVTN1W?=
+ =?us-ascii?Q?eqiEHdxvAJrtMHt2CANPDHk=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <69B22C596402DA448C6030016D18838D@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR10MB4864.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad2939d9-7292-42d1-4801-08d9d6c061f4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jan 2022 18:13:21.4163
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: lKXsEUrllC5FDmL6OI5PS2imaWgLgKAIELrhe0/BSLPDN0oqLKVE+XnCLihDqZ+CWRRwYuPapEAjjYsQ2wNWaQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB3471
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10226 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 spamscore=0
+ phishscore=0 adultscore=0 suspectscore=0 mlxscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2201130113
+X-Proofpoint-ORIG-GUID: zkaEAnR5blq2yGSsU9aEVR76zvYKQlN-
+X-Proofpoint-GUID: zkaEAnR5blq2yGSsU9aEVR76zvYKQlN-
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The libtracefs APIs for getting the local (for the system) version of the
-tep_handle object are being called in number of places in trace-cruncher.
-In each of these places a hendling of the error case gets reimplemented,
-resulting in a lot of duplicated code. Here we add a static method that
-returns the object or prinst a standart error message end returns NULL
-in a case of an error.
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- src/ftracepy-utils.c                          | 52 +++++++++++--------
- .../tests/1_unit/test_01_ftracepy_unit.py     |  4 +-
- 2 files changed, 31 insertions(+), 25 deletions(-)
+> On Jan 13, 2022, at 12:24 PM, Steven Rostedt <rostedt@goodmis.org> wrote:
+>=20
+> On Tue, 11 Jan 2022 13:59:27 -0500
+> Chuck Lever <chuck.lever@oracle.com> wrote:
+>=20
+>> Enable a struct sockaddr to be stored in a trace record as a
+>> dynamically-sized field. The common cases are AF_INET and AF_INET6
+>> which are different sizes, and are vastly smaller than a struct
+>> sockaddr_storage.
+>>=20
+>> These are safer because, when used properly, the size of the
+>> sockaddr destination field in each trace record is now guaranteed
+>> to be the same as the source address that is being copied into it.
+>>=20
+>> Link: https://lore.kernel.org/all/164182978641.8391.8277203495236105391.=
+stgit@bazille.1015granger.net/
+>> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+>> ---
+>=20
+> This looks fine to me. The only comment I have is that the subject should
+> be "tracing: ..." not "trace: ..." as "tracing" is what we use for the
+> tracing subsystem.
 
-diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
-index aac31a4..cecb180 100644
---- a/src/ftracepy-utils.c
-+++ b/src/ftracepy-utils.c
-@@ -307,6 +307,20 @@ static const char **get_arg_list(PyObject *py_list)
- 	return NULL;
- }
- 
-+static struct tep_handle *get_tep(const char *dir, const char **sys_names)
-+{
-+	struct tep_handle *tep;
-+
-+	tep = tracefs_local_events_system(dir, sys_names);
-+	if (!tep) {
-+		TfsError_fmt(NULL,
-+			     "Failed to get local 'tep' event from %s", dir);
-+		return NULL;
-+	}
-+
-+	return tep;
-+}
-+
- PyObject *PyTep_init_local(PyTep *self, PyObject *args,
- 					PyObject *kwargs)
- {
-@@ -333,17 +347,14 @@ PyObject *PyTep_init_local(PyTep *self, PyObject *args,
- 			return NULL;
- 		}
- 
--		tep = tracefs_local_events_system(dir_str, sys_names);
-+		tep = get_tep(dir_str, sys_names);
- 		free(sys_names);
- 	} else {
--		tep = tracefs_local_events(dir_str);
-+		tep = get_tep(dir_str, NULL);
- 	}
- 
--	if (!tep) {
--		TfsError_fmt(NULL, "Failed to get local events from \'%s\'.",
--			     dir_str);
-+	if (!tep)
- 		return NULL;
--	}
- 
- 	tep_free(self->ptrObj);
- 	self->ptrObj = tep;
-@@ -2075,11 +2086,9 @@ PyObject *PyDynevent_set_filter(PyDynevent *self, PyObject *args,
- 	if (!get_optional_instance(py_inst, &instance))
- 		return NULL;
- 
--	tep = tracefs_local_events(NULL);
--	if (!tep) {
--		TfsError_setstr(NULL, "Failed to get local events.");
-+	tep = get_tep(NULL, NULL);
-+	if (!tep)
- 		return NULL;
--	}
- 
- 	event = tracefs_dynevent_get_event(tep, self->ptrObj);
- 	if (!event) {
-@@ -2139,11 +2148,9 @@ PyObject *PyDynevent_clear_filter(PyDynevent *self, PyObject *args,
- 	if (!get_instance_from_arg(args, kwargs, &instance))
- 		return NULL;
- 
--	tep = tracefs_local_events(NULL);
--	if (!tep) {
--		TfsError_setstr(NULL, "Failed to get local events.");
-+	tep = get_tep(NULL, NULL);
-+	if (!tep)
- 		return NULL;
--	}
- 
- 	event = tracefs_dynevent_get_event(tep, self->ptrObj);
- 	if (!event) {
-@@ -2391,9 +2398,9 @@ PyObject *PyFtrace_hist(PyObject *self, PyObject *args,
- 		return NULL;
- 	}
- 
--	tep = tracefs_local_events(tracefs_tracing_dir());
-+	tep = get_tep(NULL, NULL);
- 	if (!tep)
--		goto fail;
-+		return NULL;
- 
- 	if (py_key && ! py_axes) {
- 		hist = hist_from_key(tep, system, event, py_key, py_type);
-@@ -2622,13 +2629,9 @@ static bool init_callback_tep(struct tracefs_instance *instance,
- 	if (!*py_func)
- 		return false;
- 
--	*tep = tracefs_local_events(tracefs_instance_get_dir(instance));
--	if (!*tep) {
--		TfsError_fmt(instance,
--			     "Unable to get 'tep' event from instance \'%s\'.",
--			     get_instance_name(instance));
-+	*tep = get_tep(tracefs_instance_get_dir(instance), NULL);
-+	if (!*tep)
- 		return false;
--	}
- 
- 	if (!notrace_this_pid(instance))
- 		return false;
-@@ -2814,7 +2817,10 @@ PyObject *PyFtrace_iterate_trace(PyObject *self, PyObject *args,
- 	    !notrace_this_pid(itr_instance))
- 		return NULL;
- 
--	tep = tracefs_local_events(tracefs_instance_get_dir(itr_instance));
-+	tep = get_tep(tracefs_instance_get_dir(itr_instance), NULL);
-+	if (!tep)
-+		return NULL;
-+
- 	(*(volatile bool *)callback_status) = true;
- 	callback_ctx.py_callback = py_func;
- 	tracing_ON(itr_instance);
-diff --git a/tracecruncher/tests/1_unit/test_01_ftracepy_unit.py b/tracecruncher/tests/1_unit/test_01_ftracepy_unit.py
-index 87b2be8..51970d3 100644
---- a/tracecruncher/tests/1_unit/test_01_ftracepy_unit.py
-+++ b/tracecruncher/tests/1_unit/test_01_ftracepy_unit.py
-@@ -80,9 +80,9 @@ class PyTepTestCase(unittest.TestCase):
-             tep.init_local(systems=['sched', 'irq']);
-         self.assertTrue(err in str(context.exception))
- 
--        err='Failed to get local events from \'no_dir\''
-+        err='Failed to get local \'tep\' event from /no/dir'
-         with self.assertRaises(Exception) as context:
--            tep.init_local(dir='no_dir', systems=['sched', 'irq']);
-+            tep.init_local(dir='/no/dir', systems=['sched', 'irq'])
-         self.assertTrue(err in str(context.exception))
- 
-     def test_get_event(self):
--- 
-2.32.0
+Will fix.
+
+
+> I'll test this out if I get time.
+
+No hurry on my part.
+
+
+--
+Chuck Lever
+
+
 
