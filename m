@@ -2,106 +2,93 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3BB1C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 13 Jan 2022 12:41:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29DF2C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 13 Jan 2022 12:43:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232977AbiAMMlU (ORCPT
+        id S234660AbiAMMn1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 13 Jan 2022 07:41:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39420 "EHLO
+        Thu, 13 Jan 2022 07:43:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232361AbiAMMlR (ORCPT
+        with ESMTP id S231472AbiAMMn0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 13 Jan 2022 07:41:17 -0500
+        Thu, 13 Jan 2022 07:43:26 -0500
 Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21556C06173F
-        for <linux-trace-devel@vger.kernel.org>; Thu, 13 Jan 2022 04:41:17 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id 30so22614855edv.3
-        for <linux-trace-devel@vger.kernel.org>; Thu, 13 Jan 2022 04:41:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD90C06173F
+        for <linux-trace-devel@vger.kernel.org>; Thu, 13 Jan 2022 04:43:26 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id w16so22498363edc.11
+        for <linux-trace-devel@vger.kernel.org>; Thu, 13 Jan 2022 04:43:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=Z/L23QrtvTCL5cfiBFgked6t+mmLhewKy9Bni1VP8vI=;
-        b=i65AqlbCKDXAur2fdf/n90A6rleumgtpg1x1LWLuJ76xEq1TIBvKmLFy/cZHoe8k/5
-         oBQ67+cWVAgaZRJaUF9pIV/SFn0oikGfQT7Yq777f4cYqHs0VFWkGWKWDv2tYf2XX4Cf
-         MGed3ON0o5qRXQCDOEawbV1l282bQbnoizeFluTeIeKQPpH6+sDgnC3ziFWUke38WvNz
-         XpGn9S49vqb0URXgvgvyXMMUFETt2ZOyUJLZJdot8RvIgPRs/SmqFdjabgi5wj8gB5uo
-         QFKPuo9Eszs6BqhHDqhOYJGJgobHWLRhT5IGhS11TS4v/Sg3enwyEDUqSUU8OzFJ765c
-         hrsw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jm6PG3/MDkpeOoCz3IBp1ASyRW/y5J6OqoHRN9CtMJM=;
+        b=QJ5/yYAmGnl3hqXidPna0DJPU+qH0vypmUIuAcdOz8va6T13/YjeeSKKIW0F0qE3Jk
+         OPUrQT0q2VXJ85FK+GtVOxff1x0+ItI8aUMTnmhz3JAjBLwybaMq2d6dpTvXNQU0e1NT
+         ickf3rB4ZTeocPy/ys3HivjBo3FQNsynhUwwiOg9nOWxZs1UbVS9nFxqFGLOoGlyyXMO
+         QpSUphWPxbjDla5Hn83Hz67PdoZGbg/DV1k7i5dfGGu8dQ1rJ9/FS8h0rr9efQ/sKOSA
+         8qHrxdOHMofDpRUJd3ukKwrPeqVhNTVxqaXkWteheJjjChiYVXrDCnxrqePOwuFoucD5
+         ZaFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Z/L23QrtvTCL5cfiBFgked6t+mmLhewKy9Bni1VP8vI=;
-        b=aayzqfIr/O+5sSVnVdL+nMMd6uk/LUpi/5eylGLH5vWcbusptcdQEpkIyiKP7qCp2s
-         fnhZQQ3olK8Es88QfGFyVTTjth8EoVxfGFcwTAjubGIeyWMyk9YWNhvR3g3Y5AvO1T3H
-         fFozNdPRQvZJ6SCsRAerDer/R3bgWyG00K2Im7tJGB0Tk/f4FGq1/pYPQFW3jWsY39Mc
-         KCx4zxNNv7Jm5A35/VTd3FFWcEWl5jtT3QfmvzyV6nzvOcrGsBfVVhL/4/gjoSmgEFhx
-         w9hC+R6sEiHMB/UXLTJkhWqJvR/3vE4pai0kbhHv9E8zPI4rjsXZ+ribUcl40wQBUOsh
-         GeJg==
-X-Gm-Message-State: AOAM531IHmUZDxsAEl8IEKBhzDBs1QaaF6AOLjSKUxeOtYRNO3p8b65g
-        KJCjCZpzQihTUkQWeUlpiMk=
-X-Google-Smtp-Source: ABdhPJwKhzdbM1qBfnjY++sYn/2kXJlItdQ8Zd+KhulhB5vfnvuIXN+PjNm4yww3yRhjb6zot02d8A==
-X-Received: by 2002:a17:907:a41f:: with SMTP id sg31mr3351493ejc.640.1642077675691;
-        Thu, 13 Jan 2022 04:41:15 -0800 (PST)
-Received: from [192.168.1.9] ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id j5sm842134ejo.171.2022.01.13.04.41.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jan 2022 04:41:15 -0800 (PST)
-Message-ID: <5891ee9c-ef5d-9f9e-c90a-2cdfe4f21cce@gmail.com>
-Date:   Thu, 13 Jan 2022 14:41:14 +0200
+        bh=jm6PG3/MDkpeOoCz3IBp1ASyRW/y5J6OqoHRN9CtMJM=;
+        b=qf0PE5bJoRJLKGnFt/q2kdUVZ+SDcV5tLjcEyIVGDgYfFDsZcJGEezLnn2d9iktmyO
+         RBODHuLuflNU6Mg9kU3QZqohbll0RN/K3+iQ3LA+8x26MADdHy+HtoHXdJGlSN8g737X
+         p1DQ8LWL9Wo/0/RjfH9BZVUdQwfjSP8O3xc/Dfh6ZOA9A4P/MDeFjXaXXO5L5fBh/Jv7
+         Bh6dzZHEweYoulIwrgSUjyiMC1kYolqz89NJECeDdQqQISO4d0NBQN+meY8juWb+dCr+
+         DhjrhrVpkC2tbdidTWSwd1Rgt5o++i3L7AxczB303UhbVbb9aBmAlsGp6KhfQshKR+q8
+         nHLA==
+X-Gm-Message-State: AOAM530cBVaCa4j5qBYzRTyKh5vPETRB7pDvAieWoKJqD33WplpD1ddq
+        LlWlHphbJ/2uQ9jU/HMdlSw=
+X-Google-Smtp-Source: ABdhPJwdG3KwRRqMcD2XgFOsKNI/7/C/AExSSLFdJ6EWEtw6zwpdfTjqDoHmvr3AbeyihXO5BKWCKA==
+X-Received: by 2002:aa7:cb09:: with SMTP id s9mr4090747edt.379.1642077805138;
+        Thu, 13 Jan 2022 04:43:25 -0800 (PST)
+Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id b1sm842775ejb.51.2022.01.13.04.43.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jan 2022 04:43:24 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     y.karadz@gmail.com
+Cc:     michal.sojka@cvut.cz, linux-trace-devel@vger.kernel.org
+Subject: [PATCH v2] kernel-shark: Use cmake imported targets instead of variables
+Date:   Thu, 13 Jan 2022 14:43:22 +0200
+Message-Id: <20220113124322.292222-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH] libtracefs: New API for getting synthetic event
-Content-Language: en-US
-To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-References: <20220112163619.21762-1-y.karadz@gmail.com>
- <CAPpZLN7=q-DiOQWDmv5SdV7xyu9TCHHZNP_Cfq4Gdo2c2GMMPg@mail.gmail.com>
- <38d4a2a8-5110-2c19-be01-53a820726383@gmail.com>
- <CAPpZLN7C7dBzzBuvtofz8zYh33utTzDC2x85MGPN2oGPvoksKA@mail.gmail.com>
-From:   Yordan Karadzhov <y.karadz@gmail.com>
-In-Reply-To: <CAPpZLN7C7dBzzBuvtofz8zYh33utTzDC2x85MGPN2oGPvoksKA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+Using cmake imported targets instead of package variables is
+recommended way to define package dependencies.
 
+The GLUT_LIBRARY cmake variable was renamed in cmake 3.22.1, which
+breaks the Kernel Shark build with the latest cmake.
 
-On 13.01.22 г. 14:37 ч., Tzvetomir Stoyanov wrote:
-> On Thu, Jan 13, 2022 at 12:26 PM Yordan Karadzhov <y.karadz@gmail.com> wrote:
->>
->>
->>
->> On 13.01.22 г. 7:01 ч., Tzvetomir Stoyanov wrote:
->>>> +struct tep_event pass:[*]*tracefs_synth_get_event*(struct tep_handle pass:[*]_tep_, struct tracefs_synth pass:[*]_synth_);
->>> The arguments of the other functions in this man page are not
->>> underlined, all should follow the same style. As in the other man
->>> pages of the library all arguments are underlined, this should be the
->>> default style.
->>> This could be addressed in a follow up patch - applying the same style
->>> of all tracefs man pages.
->>>
->>
->> So, do I have to change something on this particular line?
-> 
-> This line is OK, I'll submit a patch to unify the other man pages. The
-> arguments should be underlined.
-> 
+Reported-by: Michal Sojka <michal.sojka@cvut.cz>
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
+ src/CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-OK, I will send v2, fixing the other problems you found in your review.
-thanks,
-Y.
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index babb9c1..9e0b4ae 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -59,8 +59,8 @@ if (OPENGL_FOUND)
+                                      KsPlugins.cpp)
+ 
+     target_link_libraries(kshark-plot  kshark
+-                                       ${GLUT_LIBRARY}
+-                                       ${OPENGL_LIBRARIES})
++                                       GLUT::GLUT
++                                       OpenGL::GLU)
+ 
+     set_target_properties(kshark-plot PROPERTIES  SUFFIX ".so.${KS_VERSION_STRING}")
+     install(TARGETS kshark-plot
+-- 
+2.34.1
 
->>
->> Thanks!
->> Yordan
-> 
-> 
-> 
