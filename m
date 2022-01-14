@@ -2,104 +2,140 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4B85C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 14 Jan 2022 10:13:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 152AFC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 14 Jan 2022 10:57:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239541AbiANKNA (ORCPT
+        id S232135AbiANK5w (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 14 Jan 2022 05:13:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48222 "EHLO
+        Fri, 14 Jan 2022 05:57:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236780AbiANKM7 (ORCPT
+        with ESMTP id S231768AbiANK5v (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 14 Jan 2022 05:12:59 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71015C061574
-        for <linux-trace-devel@vger.kernel.org>; Fri, 14 Jan 2022 02:12:59 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id a7so10140139plh.1
-        for <linux-trace-devel@vger.kernel.org>; Fri, 14 Jan 2022 02:12:59 -0800 (PST)
+        Fri, 14 Jan 2022 05:57:51 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 842FAC061574
+        for <linux-trace-devel@vger.kernel.org>; Fri, 14 Jan 2022 02:57:51 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id 15so322879edx.9
+        for <linux-trace-devel@vger.kernel.org>; Fri, 14 Jan 2022 02:57:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HbzTT1a3pd2oMdeAfmb8T67MZ//zS/GzEitaQCKV1P8=;
-        b=Me6QeqGBwJNcTbyRAmBuBYbJF0aGYL5PP67DyJBh+2+j535TJYdgkMsAffme7PaQrC
-         AmgWAAoDkEV02X9Ftng3Zq4HkXdqVJkpERs5MXy2ALNDFntXbKGqJZ3acqJGmexzAQdN
-         Ol+HuNYqPmzX3WJ3k24iiAzmDJ9BkJDDw0rVmDRVNixLr0NaYYbvuq0oLsI5snUiiMOA
-         D68h7Q7HUHRo9AywfrcvfaEMBkduKSGDUCvbITciWk8hTfxB9vT6zJlDrwh4wpxgz/Mx
-         +raVnwOzOyT9Wo6tEwhPhCuln2HkB/+ajKnP7X1qFX9vMFKzyip2zAasf8se1smzp6HR
-         48JA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rdQFMFrBJwvb3I1nsJD/uD42M8OI24825Pzfk9uRT10=;
+        b=iov2vVGaLC+TFFY5lnDDbszBHl0ovxhtdwbvh3beTXZ7ylhocSRYbY7tuU6nchVlCU
+         CaJXosGGV6HhO3NSjDY6KMF4u5J07avVajX1gMo1QGeDoMbUl2phXozowDxKdULB3Sn0
+         yPPfGWY9iHZ4ZSiru5UQ+ZvpKWo5s1sDDdT8N6AI+qYSwmqMHBMI078htchxf7zVMuWx
+         rYXP/PJfNHkyiCX1gaI7Rac/QXaAA/01ei4M6xIQRKYjvjcXoY/+o4NrVAALEAxTRYsC
+         ec5x6Ry1hdQGiDoUBp3srk3J+OXEjmA9IEIfz/RXw6sVh1kjp9t68Z5ACjrMJMx6LfXx
+         0qlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HbzTT1a3pd2oMdeAfmb8T67MZ//zS/GzEitaQCKV1P8=;
-        b=knXWa6TOTKq6RKtVgZNosXmRiSQSlh7og8rQmWSQP2BQtG7RxK0s4XAs28oBswsvvQ
-         Bj0KixgaBvu42wFEh2EfWB+C7PKJhrdjr2zrZcihE2Ii/OQAB1b8YeHAVgfalMfsiWBy
-         G5FLcDZ02Op9skZ4MGgHBszXvLdlDq3kfO5SIzNiKM/O/ob7lyguYcPcX9tzYXhPjcum
-         CYc9cs9vfue3hIgpm6s2XtugDO1ON3JJvlM9CXRb/hlQZFru984qH58qOgVgSC2NEW0W
-         g8mBeyEZfsjC+9WhcVX6VEKsXlBPbdUPCt0wD489DNThA9daMz89/R3dnsPSvB0oHupG
-         HUWg==
-X-Gm-Message-State: AOAM533LxBQbED7sclAbydDwZRLSjjYF0p8HdLxciGG/kIvx+ize1CNP
-        5HhURUeYTCQoSQbolH4J62hb37b9BXZebiy9PlsTmecG1rU=
-X-Google-Smtp-Source: ABdhPJyDYAZ3Al4jGc3+jtBtGe7Yo02AV2UWvt9qj6/AQE1+AlbVeOSAxI+VZcTD3HcfUKSs/g7mnuAIOtEZDUKYOcg=
-X-Received: by 2002:a17:90a:8c0e:: with SMTP id a14mr19131253pjo.111.1642155178946;
- Fri, 14 Jan 2022 02:12:58 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rdQFMFrBJwvb3I1nsJD/uD42M8OI24825Pzfk9uRT10=;
+        b=YMOwcv4DKMyB6boiFILRvTOLb8axd5t982tvVPjRHNBhHbSlVVYMi987URT/VTZK4P
+         EtkBBBJp3g8dtFJWDzBvlay3f0R2mCfPOzX0PpHzo2nbqDA1E+cr8LueZNXylKjkiHN2
+         QkOBcLFGE21oUOPpYRq+Hd4+FdQUvunQ3hAmHQg9EBAOhFcwjxKDPdqSlVUKxdy+nOfq
+         MHIwBlJ5zOJ1AaOdgdoAiIVeeb9zoHaJeVKJkUIiziTQNisw/wkSjX9XrTaH3JAjCdhb
+         fLSfG6gX7n1eYI9f3GycIvjzFCozzOs1Z/OqD6vGats6WcMoVus8ROpw3vuo8NWgM7Ou
+         vrQg==
+X-Gm-Message-State: AOAM533fag2/p/vp6wrpen3Z9l3BYlmgtka/x7kUNlJ5cMCnK4ZU56Xw
+        bMt+GXZeshQxJ/dSiSh7ZIefy4RaWx0=
+X-Google-Smtp-Source: ABdhPJzFsQzkvcMCoFwMNxj9ndIqr9nHR9V0lAf04S5HKyOHRq3dcj7WCM0rv5O54ba1tFlFx3Xd5A==
+X-Received: by 2002:a17:907:7212:: with SMTP id dr18mr7048687ejc.646.1642157870102;
+        Fri, 14 Jan 2022 02:57:50 -0800 (PST)
+Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id l2sm1242646ejk.187.2022.01.14.02.57.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jan 2022 02:57:49 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH] trace-cmd reset: Clear all dynamic events
+Date:   Fri, 14 Jan 2022 12:57:48 +0200
+Message-Id: <20220114105748.46761-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20220113170059.82747-1-y.karadz@gmail.com>
-In-Reply-To: <20220113170059.82747-1-y.karadz@gmail.com>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Fri, 14 Jan 2022 12:12:42 +0200
-Message-ID: <CAPpZLN4ik3=Wp6W7auSUEE0t83SneWG+1njw5tHq_tp=xmOhEw@mail.gmail.com>
-Subject: Re: [PATCH v2] libtracefs: New API for getting synthetic event
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Jan 14, 2022 at 10:17 AM Yordan Karadzhov (VMware)
-<y.karadz@gmail.com> wrote:
->
-> A new API is proposed, to get tep event descriptor for given synthetic
-> event:
->
-> tracefs_synth_get_event ()
->
-> The API implementation gets derived from the implementation of the
-> existing API  tracefs_dynevent_get_event(). It can detect any newly
-> created or removed synthetic events.
->
-> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-> ---
->  Documentation/libtracefs-synth2.txt | 13 +++++++++++--
->  include/tracefs-local.h             |  2 ++
->  include/tracefs.h                   |  2 ++
->  src/tracefs-dynevents.c             | 17 +----------------
->  src/tracefs-events.c                | 21 +++++++++++++++++++++
->  src/tracefs-hist.c                  | 18 ++++++++++++++++++
->  6 files changed, 55 insertions(+), 18 deletions(-)
->
-> diff --git a/Documentation/libtracefs-synth2.txt b/Documentation/libtracefs-synth2.txt
-> index 8056ab8..444318c 100644
-> --- a/Documentation/libtracefs-synth2.txt
-> +++ b/Documentation/libtracefs-synth2.txt
-> @@ -6,7 +6,8 @@ NAME
->  tracefs_synth_create, tracefs_synth_destroy, tracefs_synth_echo_cmd, tracefs_synth_complete,
->  tracefs_synth_get_start_hist, tracefs_synth_trace, tracefs_synth_snapshot,
->  tracefs_synth_get_name, tracefs_synth_raw_fmt, tracefs_synth_show_event,
-> -tracefs_synth_show_start_hist, tracefs_synth_show_end_hist - Creation of synthetic events
-> +tracefs_synth_show_start_hist, tracefs_synth_show_end_hist, tracefs_synth_get_event
+The "trace-cmd reset" command should set ftrace state to default,
+including all dynamically created events. Currently only synthetic events
+are deleted. The command is enhanced to delete all dynamic events, using
+the new tracefs library API for dynamic events.
 
-The new API should be added also in Documentation/libtracefs.txt, the
-main man page with all APIs. Forgot to mention that in the previous
-review.
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
+ tracecmd/trace-record.c | 43 ++++++++++-------------------------------
+ 1 file changed, 10 insertions(+), 33 deletions(-)
 
-[ ...  ]
-
-
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index b4200db1..aee3b01a 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -5221,41 +5221,18 @@ static void clear_error_log(void)
+ 		clear_instance_error_log(instance);
+ }
+ 
+-static void clear_all_synth_events(void)
++static void clear_all_dynamic_events(void)
+ {
+-	char sevent[BUFSIZ];
+-	char *save = NULL;
+-	char *line;
+-	char *file;
+-	char *buf;
+-	int len;
+-
+-	file = tracefs_instance_get_file(NULL, "synthetic_events");
+-	if (!file)
+-		return;
+-
+-	buf = read_file(file);
+-	if (!buf)
+-		goto out;
+-
+-	sevent[0] = '!';
+-
+-	for (line = strtok_r(buf, "\n", &save); line; line = strtok_r(NULL, "\n", &save)) {
+-		len = strlen(line);
+-		if (len > BUFSIZ - 2)
+-			len = BUFSIZ - 2;
+-		strncpy(sevent + 1, line, len);
+-		sevent[len + 1] = '\0';
+-		write_file(file, sevent);
+-	}
+-out:
+-	free(buf);
+-	tracefs_put_tracing_file(file);
+-
++	/* Clear event probes first, as they may be attached to other dynamic event */
++	tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_EPROBE, true);
++	tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_KPROBE |
++				     TRACEFS_DYNEVENT_KRETPROBE |
++				     TRACEFS_DYNEVENT_UPROBE |
++				     TRACEFS_DYNEVENT_URETPROBE |
++				     TRACEFS_DYNEVENT_SYNTH,
++				     true);
+ }
+ 
+-
+-
+ static void clear_func_filters(void)
+ {
+ 	struct buffer_instance *instance;
+@@ -5951,7 +5928,7 @@ void trace_reset(int argc, char **argv)
+ 	set_buffer_size();
+ 	clear_filters();
+ 	clear_triggers();
+-	clear_all_synth_events();
++	clear_all_dynamic_events();
+ 	clear_error_log();
+ 	/* set clock to "local" */
+ 	reset_clock();
 -- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+2.34.1
+
