@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 900ECC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 15 Jan 2022 15:20:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F07FC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 15 Jan 2022 15:28:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231273AbiAOPUz (ORCPT
+        id S231641AbiAOP17 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 15 Jan 2022 10:20:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41432 "EHLO
+        Sat, 15 Jan 2022 10:27:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231894AbiAOPUy (ORCPT
+        with ESMTP id S229761AbiAOP17 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 15 Jan 2022 10:20:54 -0500
+        Sat, 15 Jan 2022 10:27:59 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726DCC061574
-        for <linux-trace-devel@vger.kernel.org>; Sat, 15 Jan 2022 07:20:54 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41FD9C061574
+        for <linux-trace-devel@vger.kernel.org>; Sat, 15 Jan 2022 07:27:59 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 332F9B8006F
-        for <linux-trace-devel@vger.kernel.org>; Sat, 15 Jan 2022 15:20:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79792C36AE7;
-        Sat, 15 Jan 2022 15:20:51 +0000 (UTC)
-Date:   Sat, 15 Jan 2022 10:20:50 -0500
+        by ams.source.kernel.org (Postfix) with ESMTPS id D9ABFB80928
+        for <linux-trace-devel@vger.kernel.org>; Sat, 15 Jan 2022 15:27:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F239C36AE7;
+        Sat, 15 Jan 2022 15:27:56 +0000 (UTC)
+Date:   Sat, 15 Jan 2022 10:27:54 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v7 11/25] trace-cmd library: Fit CPU latency trace data
- in the new trace file version 7 format
-Message-ID: <20220115102050.627f5e89@rorschach.local.home>
-In-Reply-To: <20211210105448.97850-12-tz.stoyanov@gmail.com>
+Subject: Re: [PATCH v7 13/25] trace-cmd library: Introduce sections in trace
+ file reading logic
+Message-ID: <20220115102754.581486d9@rorschach.local.home>
+In-Reply-To: <20211210105448.97850-14-tz.stoyanov@gmail.com>
 References: <20211210105448.97850-1-tz.stoyanov@gmail.com>
-        <20211210105448.97850-12-tz.stoyanov@gmail.com>
+        <20211210105448.97850-14-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -41,118 +41,143 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 10 Dec 2021 12:54:34 +0200
+On Fri, 10 Dec 2021 12:54:36 +0200
 "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-More nitpicking about spacing ;-)
-
-> Trace file version 7 format is based on sections. To fit the latency
-> trace data in this structure, a new section and option for it is
-> defined:
->   BUFFER_TEXT
-
-space
-
-> It is similar to the BUFFER section which holds the flyrecord binary
-> data, but has a latency specific design for text data. The BUFFER_TEXT
-> section has:
->  - section header, as all other sections
->  - compression of the trace data, optional
->  - corresponding trace option, pointing to the section
+> Trace file version 7 is based on sections. Added an internal sections
+> database and new helper functions to add, read, open and close file
+> sections.
 > 
 > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 > ---
->  .../include/private/trace-cmd-private.h       |  1 +
->  lib/trace-cmd/trace-output.c                  | 24 ++++++++++++++++---
->  2 files changed, 22 insertions(+), 3 deletions(-)
+>  lib/trace-cmd/trace-input.c | 69 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 69 insertions(+)
 > 
-> diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-> index 047fc26f..d8ee9b74 100644
-> --- a/lib/trace-cmd/include/private/trace-cmd-private.h
-> +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-> @@ -145,6 +145,7 @@ enum {
->  	TRACECMD_OPTION_KALLSYMS,
->  	TRACECMD_OPTION_PRINTK,
->  	TRACECMD_OPTION_CMDLINES,
-> +	TRACECMD_OPTION_BUFFER_TEXT,
->  	TRACECMD_OPTION_MAX,
+> diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+> index 0375afba..78f9effd 100644
+> --- a/lib/trace-cmd/trace-input.c
+> +++ b/lib/trace-cmd/trace-input.c
+> @@ -115,6 +115,14 @@ struct tsc2nsec {
+>  	unsigned long long offset;
 >  };
 >  
-> diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-> index 44050dc8..47227728 100644
-> --- a/lib/trace-cmd/trace-output.c
-> +++ b/lib/trace-cmd/trace-output.c
-> @@ -1874,7 +1874,9 @@ out_add_buffer_option_v7(struct tracecmd_output *handle, const char *name,
->  
->  struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, int cpus)
->  {
-> +	enum tracecmd_section_flags flags = 0;
->  	struct tracecmd_output *handle;
-> +	tsize_t offset;
->  	char *path;
->  
->  	handle = tracecmd_output_create(output_file);
-> @@ -1891,7 +1893,8 @@ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, in
->  
->  	if (tracecmd_write_cpus(handle, cpus) < 0)
->  		goto out_free;
-> -
-> +	if (tracecmd_write_buffer_info(handle) < 0)
-> +		goto out_free;
->  	if (tracecmd_write_options(handle) < 0)
->  		goto out_free;
->  
-> @@ -1901,23 +1904,38 @@ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, in
->  		goto out_free;
->  	}
->  
-> -	if (do_write_check(handle, "latency  ", 10))
-> +	if (!HAS_SECTIONS(handle) && do_write_check(handle, "latency  ", 10))
->  		goto out_free;
->  
->  	path = get_tracing_file(handle, "trace");
->  	if (!path)
->  		goto out_free;
->  
-> +	offset = do_lseek(handle, 0, SEEK_CUR);
-> +	if (HAS_SECTIONS(handle) &&
-> +	    !out_add_buffer_option_v7(handle, "", TRACECMD_OPTION_BUFFER_TEXT, offset, 0, NULL))
-> +		goto out_free;
+> +struct file_section {
+> +	unsigned long long		section_offset;
+> +	unsigned long long		data_offset;
+> +	int				id;
+> +	int				flags;
+> +	struct file_section		*next;
+> +};
 > +
-> +	offset = out_write_section_header(handle, TRACECMD_OPTION_BUFFER_TEXT,
-> +					  "buffer latency", flags, false);
+>  struct tracecmd_input {
+>  	struct tep_handle	*pevent;
+>  	unsigned long		file_state;
+> @@ -154,6 +162,7 @@ struct tracecmd_input {
+>  	struct hook_list	*hooks;
+>  	struct pid_addr_maps	*pid_maps;
+>  	/* file information */
+> +	struct file_section	*sections;
+>  	size_t			header_files_start;
+>  	size_t			ftrace_files_start;
+>  	size_t			event_files_start;
+> @@ -377,6 +386,58 @@ static int read8(struct tracecmd_input *handle, unsigned long long *size)
+>  	return 0;
+>  }
+>  
+> +static struct file_section *section_get(struct tracecmd_input *handle, int id)
+> +{
+> +	struct file_section *sec;
 > +
->  	copy_file(handle, path);
-> +	if (out_update_section_header(handle, offset))
-> +		goto out_free;
->  
->  	put_tracing_file(path);
->  
->  	handle->file_state = TRACECMD_FILE_CPU_LATENCY;
->  
-> +	if (HAS_SECTIONS(handle))
-> +		tracecmd_write_options(handle);
+> +	for (sec = handle->sections; sec; sec = sec->next) {
+> +		if (sec->id == id)
+> +			return sec;
+> +	}
 > +
->  	return handle;
+> +	return NULL;
+> +}
+> +
+> +static struct file_section *section_open(struct tracecmd_input *handle, int id)
+> +{
+> +	struct file_section *sec = section_get(handle, id);
+> +
+> +	if (!sec)
+> +		return NULL;
+> +
+> +	if (lseek64(handle->fd, sec->data_offset, SEEK_SET) == (off64_t)-1)
+> +		return NULL;
+> +	return sec;
+> +}
+> +
+> +static void section_close(struct tracecmd_input *handle, struct file_section *sec)
+> +{
+> +	/* To Do */
+> +}
+> +
+> +static int section_add_or_update(struct tracecmd_input *handle, int id, int flags,
+> +				 unsigned long long section_offset,
+> +				 unsigned long long data_offset)
+> +{
+> +	struct file_section *sec = section_get(handle, id);
+> +
+> +	if (!sec) {
+> +		sec = calloc(1, sizeof(struct file_section));
+> +		if (!sec)
+> +			return -1;
+> +		sec->next = handle->sections;
+> +		handle->sections = sec;
+> +	}
+> +	sec->id = id;
 
+Could move the above into the previous if block. As it's only to be
+updated if it wasn't already found (with the id).
 
->  
->  out_free:
-> -	tracecmd_output_close(handle);
-> +	if (handle)
-> +		tracecmd_output_close(handle);
-> +	unlink(output_file);
+> +	if (section_offset)
+> +		sec->section_offset = section_offset;
+> +	if (data_offset)
+> +		sec->data_offset = data_offset;
+> +	if (flags > 0)
 
-Hmm, how does the above play a role in this patch?
+Why the greater than zero check?
 
-That is, what about this new BUFFER_TEXT required this change?
-I mean, output_file is being removed now, but I don't see anything in
-the rest of the patch to warrant that?
+Is there a way to clear flags?
+
+> +		sec->flags = flags;
+> +	return 0;
+> +}
 
 -- Steve
 
-
->  	return NULL;
->  }
+> +
+>  static int read_header_files(struct tracecmd_input *handle)
+>  {
+>  	struct tep_handle *pevent = handle->pevent;
+> @@ -3493,6 +3554,7 @@ void tracecmd_ref(struct tracecmd_input *handle)
+>   */
+>  void tracecmd_close(struct tracecmd_input *handle)
+>  {
+> +	struct file_section *del_sec;
+>  	int cpu;
+>  	int i;
 >  
+> @@ -3532,6 +3594,12 @@ void tracecmd_close(struct tracecmd_input *handle)
+>  	free(handle->version);
+>  	close(handle->fd);
+>  
+> +	while (handle->sections) {
+> +		del_sec = handle->sections;
+> +		handle->sections = handle->sections->next;
+> +		free(del_sec);
+> +	}
+> +
+>  	for (i = 0; i < handle->nr_buffers; i++)
+>  		free(handle->buffers[i].name);
+>  	free(handle->buffers);
+> @@ -3976,6 +4044,7 @@ tracecmd_buffer_instance_handle(struct tracecmd_input *handle, int indx)
+>  	new_handle->nr_buffers = 0;
+>  	new_handle->buffers = NULL;
+>  	new_handle->version = NULL;
+> +	new_handle->sections = NULL;
+>  	new_handle->guest = NULL;
+>  	new_handle->ref = 1;
+>  	if (handle->trace_clock) {
 
