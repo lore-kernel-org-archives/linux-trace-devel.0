@@ -2,113 +2,94 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73BEFC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 17 Jan 2022 18:09:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04E7FC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 17 Jan 2022 23:22:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242119AbiAQSJU (ORCPT
+        id S238488AbiAQXWP (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 17 Jan 2022 13:09:20 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:55428 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbiAQSJT (ORCPT
+        Mon, 17 Jan 2022 18:22:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234551AbiAQXWO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 17 Jan 2022 13:09:19 -0500
-Received: from kbox (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 56F4E20B9137;
-        Mon, 17 Jan 2022 10:09:19 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 56F4E20B9137
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1642442959;
-        bh=B2GA201M0cTSfGmIbIiF4zl6ZppQgnfBiD+YcFkewWo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hpkxX8QqPHnDxN5lEuXzKNbq5NCY+Gp4dzBoc5PI/W4W9+7dm+SLhlfOKXeFLXQW2
-         G85KbAm3R6wqtxD6jprj2sr1g3xkaCmVwx+4SK8o8rWsrGMoEXyQwWeTmIEegoE8TK
-         s1M8sc7qGL7ffi2TVhTYo8gBN7DOHSYg7gGb2GfM=
-Date:   Mon, 17 Jan 2022 10:09:14 -0800
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 01/12] user_events: Add minimal support for
- trace_event into ftrace
-Message-ID: <20220117180914.GA1789@kbox>
-References: <20220111172602.2513-1-beaub@linux.microsoft.com>
- <20220111172602.2513-2-beaub@linux.microsoft.com>
- <20220118004517.b9dda3d98d6c5d6233ac8886@kernel.org>
+        Mon, 17 Jan 2022 18:22:14 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6571C061574
+        for <linux-trace-devel@vger.kernel.org>; Mon, 17 Jan 2022 15:22:14 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DE7C46120A
+        for <linux-trace-devel@vger.kernel.org>; Mon, 17 Jan 2022 23:22:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 504FFC36AE7;
+        Mon, 17 Jan 2022 23:22:13 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.95)
+        (envelope-from <rostedt@rostedt.homelinux.com>)
+        id 1n9bKG-006fYr-8G;
+        Mon, 17 Jan 2022 18:22:12 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH 0/3] libtracefs/Documentation: Fix up man pages
+Date:   Mon, 17 Jan 2022 18:22:07 -0500
+Message-Id: <20220117232210.1589656-1-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220118004517.b9dda3d98d6c5d6233ac8886@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Jan 18, 2022 at 12:45:17AM +0900, Masami Hiramatsu wrote:
-> Hi Beau,
-> 
-> On Tue, 11 Jan 2022 09:25:51 -0800
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> 
-> > +static int user_event_show(struct seq_file *m, struct dyn_event *ev)
-> > +{
-> > +	struct user_event *user = container_of(ev, struct user_event, devent);
-> > +	struct ftrace_event_field *field, *next;
-> > +	struct list_head *head;
-> > +	int depth = 0;
-> > +
-> > +	seq_printf(m, "%s%s", USER_EVENTS_PREFIX, EVENT_NAME(user));
-> > +
-> > +	head = trace_get_fields(&user->call);
-> > +
-> > +	list_for_each_entry_safe_reverse(field, next, head, link) {
-> > +		if (depth == 0)
-> > +			seq_puts(m, " ");
-> > +		else
-> > +			seq_puts(m, "; ");
-> > +		seq_printf(m, "%s %s", field->type, field->name);
-> > +		depth++;
-> > +	}
-> > +
-> > +	seq_puts(m, "\n");
-> > +
-> > +	return 0;
-> > +}
-> 
-> Let me confirm just one point. Your syntax supports
-> 
-> [__data_loc|__rel_loc] [unsigned] TYPE[\[LEN\]] NAME
-> 
-> or
-> 
-> struct TYPE NAME SIZE
-> 
-> for the fields, right? In that case, above seq_printf() seems not enough.
+The libtracefs-hist.txt and libtracefs-synth2.txt had more than 9 functions
+defined in them. When that happens, the man page build process starts spitting
+out errors. Split out some of the functions into their own man pages to keep
+all man pages under the limit of 9.
 
-Yep, I see.
+Also, the SEE ALSO section underlined the commands when they should have been
+bold. Fix them and a couple of other command references.
 
-The non-struct cases work as expected from my testing:
-echo 'u:test unsigned char msg[20]' > dynamic_events
-cat dynamic_events
-u:test unsigned char msg[20]
+Steven Rostedt (3):
+  libtracefs: Split up libtracefs-hist.txt man page
+  libtracefs: Split up libtracefs-synth2.txt man page
+  libtracefs/Documentation: Referencing commands should be bold not
+    underlined
 
-In the struct case you are right, it's missing the size. Good catch!
-I'll fix this up!
+ Documentation/libtracefs-dynevents.txt        |   6 +-
+ Documentation/libtracefs-eprobes.txt          |   6 +-
+ Documentation/libtracefs-error.txt            |   6 +-
+ Documentation/libtracefs-events-tep.txt       |   8 +-
+ Documentation/libtracefs-events.txt           |   6 +-
+ Documentation/libtracefs-files.txt            |   6 +-
+ Documentation/libtracefs-filter.txt           |  28 +-
+ Documentation/libtracefs-function-filter.txt  |   6 +-
+ Documentation/libtracefs-hist-cont.txt        |  28 +-
+ Documentation/libtracefs-hist-mod.txt         | 540 ++++++++++++++++++
+ Documentation/libtracefs-hist.txt             | 142 +----
+ .../libtracefs-instances-affinity.txt         |   8 +-
+ .../libtracefs-instances-file-manip.txt       |   6 +-
+ Documentation/libtracefs-instances-files.txt  |   6 +-
+ Documentation/libtracefs-instances-manage.txt |   6 +-
+ Documentation/libtracefs-instances-utils.txt  |   6 +-
+ Documentation/libtracefs-kprobes.txt          |   6 +-
+ Documentation/libtracefs-log.txt              |   6 +-
+ Documentation/libtracefs-marker.txt           |   6 +-
+ Documentation/libtracefs-marker_raw.txt       |   6 +-
+ Documentation/libtracefs-option-get.txt       |   6 +-
+ Documentation/libtracefs-option-misc.txt      |   6 +-
+ Documentation/libtracefs-options.txt          |   6 +-
+ Documentation/libtracefs-sql.txt              |  52 +-
+ Documentation/libtracefs-stream.txt           |   6 +-
+ Documentation/libtracefs-synth-info.txt       | 298 ++++++++++
+ Documentation/libtracefs-synth.txt            |  48 +-
+ Documentation/libtracefs-synth2.txt           | 110 ++--
+ Documentation/libtracefs-traceon.txt          |   6 +-
+ Documentation/libtracefs-tracer.txt           |   6 +-
+ Documentation/libtracefs-utils.txt            |   6 +-
+ Documentation/libtracefs.txt                  |   4 +-
+ 32 files changed, 1039 insertions(+), 353 deletions(-)
+ create mode 100644 Documentation/libtracefs-hist-mod.txt
+ create mode 100644 Documentation/libtracefs-synth-info.txt
 
-Was there another case you had in mind that I might have missed beyond
-the struct case?
+-- 
+2.33.0
 
-I also would like, since I'm re-spinning, to fix a warning the intel bot
-found related to the same code pulled from single_open, etc.
-
-See https://lore.kernel.org/llvm/YeGk0nIH9x91k01I@archlinux-ax161/
-
-> 
-> Thank you,
-> 
-> 
-> -- 
-> Masami Hiramatsu <mhiramat@kernel.org>
-
-Thanks,
--Beau
