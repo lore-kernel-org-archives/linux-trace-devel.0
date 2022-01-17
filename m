@@ -2,74 +2,419 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CCDEC433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DDEEC433FE
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 17 Jan 2022 03:32:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236945AbiAQDcc (ORCPT
+        id S236934AbiAQDcd (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 16 Jan 2022 22:32:32 -0500
+        Sun, 16 Jan 2022 22:32:33 -0500
 Received: from mga05.intel.com ([192.55.52.43]:29222 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236934AbiAQDcc (ORCPT
+        id S236944AbiAQDcc (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Sun, 16 Jan 2022 22:32:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1642390352; x=1673926352;
-  h=from:to:subject:date:message-id;
-  bh=F5UgwftZsFbap88Wm6Q/rmQHV7qs67uj5cj9zV/3YgQ=;
-  b=mh9fy87gLQlZjDd1414Vt7+2uFqXJFRKyS9lhZe+W8SM12DZI0C7y2f6
-   zMK2ZCPpo/mrhpDghm2jlW2jSXHLmOiMQLXf+khtbY1HxMCEhb1i2GtUb
-   9e9riHnLWxgQEuhyIYPcKE+uEOAuVM0zh6ZTCO/BQrhh8iHwUjtRepOhU
-   vkxjeKrVIRegv0StJ3TT87Wwn+362SFsOGL0933eK2SyTeOLTJ/ATC91K
-   WIxrxM6aSQqBDVb4Cp9OTrUxT8EYMRanTJyWHoRdM1IXy1C0dG6qbip9f
-   wkgIVZ38X8Fpn848lkA5q5NQqRvexJf0iNxM4d9o7TL2EbhcCCU6npmUO
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10229"; a="330894978"
+  h=from:to:subject:date:message-id:in-reply-to:references;
+  bh=+cdDcEjhttJS0ipoqdiiScSY2HVgYGo1H31R5oyERaA=;
+  b=lHQjWdpkfg5awiFz3KKkHfnkIRlY/sMaVN+/fVRNVMbLZ80db0aQ1tpl
+   032MS88vmFJH8stStrNHrlk8ixy4aujxwJquLllbDDfbt7Bz6UMlmHAug
+   gCFGLDS1D4ZJxsDI4eTgFMO5/LisKqPzorJamLy+rz28LhWLyvmg8Vn51
+   QFSebX+YMD0pbkoimkDwc6rTQ714qQqq4gNeQQts7/E1GWFma0ksw4vpd
+   Cw4TBbtsmgtyvZ3jAAKi0i7WNusacdnqnG+jJPzOhzG06ySWgU0gbaNRA
+   5O4wvmBLwfNH1qb48qeZbS0cZtqk1G0CKlFKsh1mMUGKZabEFmK71SRGu
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10229"; a="330894982"
 X-IronPort-AV: E=Sophos;i="5.88,294,1635231600"; 
-   d="scan'208";a="330894978"
+   d="scan'208";a="330894982"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2022 19:32:23 -0800
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2022 19:32:25 -0800
 X-IronPort-AV: E=Sophos;i="5.88,294,1635231600"; 
-   d="scan'208";a="531165629"
+   d="scan'208";a="531165657"
 Received: from intel-z97x-ud5h.sh.intel.com ([10.67.103.201])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2022 19:32:22 -0800
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2022 19:32:24 -0800
 From:   Hongzhan Chen <hongzhan.chen@intel.com>
 To:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com
-Subject: [PATCH 0/1] kernel-shark: Move common APIs and definitions out to avoid duplication
-Date:   Sun, 16 Jan 2022 22:13:41 -0500
-Message-Id: <20220117031342.31474-1-hongzhan.chen@intel.com>
+Subject: [PATCH] kernel-shark: Move common APIs and definitions out to avoid duplication
+Date:   Sun, 16 Jan 2022 22:13:42 -0500
+Message-Id: <20220117031342.31474-2-hongzhan.chen@intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20220117031342.31474-1-hongzhan.chen@intel.com>
+References: <20220117031342.31474-1-hongzhan.chen@intel.com>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Yordan,
+To avoid code duplication, move some common APIs and definitions
+out from plugin SchedEvent to share with other plugins.
 
-We decided to maintain new xenomai plugin in our xenomai tree at first because of
-concerns as we discussed so I do not send modified xenomai plugin patch to
-review anymore. But this patch is still meaningful to avoid code duplication.
+Signed-off-by: Hongzhan Chen <hongzhan.chen@intel.com>
 
-Thanks for your patience and time to reveiw my patch. I have learned
-lots from your comments.
-
-Regards
-
-Hongzhan Chen 
-
-Hongzhan Chen (1):
-  kernel-shark: Move common APIs and definitions out to avoid
-    duplication
-
- src/KsPlugins.cpp           | 22 ++++++++++++
- src/KsPlugins.hpp           | 49 +++++++++++++++++++++++++
- src/plugins/SchedEvents.cpp | 71 ++++++-------------------------------
- src/plugins/common_sched.h  | 64 +++++++++++++++++++++++++++++++++
- src/plugins/sched_events.c  | 32 +----------------
- src/plugins/sched_events.h  |  5 +--
- 6 files changed, 147 insertions(+), 96 deletions(-)
- create mode 100644 src/plugins/common_sched.h
-
+diff --git a/src/KsPlugins.cpp b/src/KsPlugins.cpp
+index ad9f478..f4fc35e 100644
+--- a/src/KsPlugins.cpp
++++ b/src/KsPlugins.cpp
+@@ -11,6 +11,7 @@
+ 
+ // C++
+ #include<iostream>
++#include <limits>
+ 
+ // KernelShark
+ #include "KsPlugins.hpp"
+@@ -414,3 +415,24 @@ void eventFieldIntervalPlot(KsCppArgV *argvCpp,
+ 			  << exc.what() << std::endl;
+ 	}
+ }
++
++/**
++ * @brief Distance between the click and the shape. Used to decide if
++ *	  the double click action must be executed.
++ *
++ * @param x: X coordinate of the click.
++ * @param y: Y coordinate of the click.
++ *
++ * @returns If the click is inside the box, the distance is zero.
++ *	    Otherwise infinity.
++ */
++double LatencyBox::distance(int x, int y) const
++{
++	if (x < pointX(0) || x > pointX(2))
++		return std::numeric_limits<double>::max();
++
++	if (y < pointY(0) || y > pointY(1))
++		return std::numeric_limits<double>::max();
++
++	return 0;
++}
+diff --git a/src/KsPlugins.hpp b/src/KsPlugins.hpp
+index d41d094..bc5fbab 100644
+--- a/src/KsPlugins.hpp
++++ b/src/KsPlugins.hpp
+@@ -13,6 +13,7 @@
+ #define _KS_PLUGINS_H
+ 
+ // C++
++#include <vector>
+ #include <functional>
+ 
+ // KernelShark
+@@ -101,4 +102,51 @@ void eventFieldIntervalPlot(KsCppArgV *argvCpp,
+ 			    KsPlot::Color col,
+ 			    float size);
+ 
++/**
++ * This class represents the graphical element visualizing the latency between
++ * two events.
++ */
++class LatencyBox : public KsPlot::Rectangle
++{
++	/** On double click do. */
++	void _doubleClick() const override {}
++
++public:
++	/** The trace record data that corresponds to this LatencyBox. */
++	std::vector<kshark_data_field_int64 *>	_data;
++
++	double distance(int x, int y) const override;
++};
++
++/**
++ * This template function make shape of hollow box for two events and
++ * return the shape to be plotted by KernelShark on top of the existing
++ * Graph generated by the model.
++ */
++template<class T> KsPlot::PlotObject *
++makeLatencyBox(std::vector<const KsPlot::Graph *> graph,
++	       std::vector<int> bins,
++	       std::vector<kshark_data_field_int64 *> data,
++	       KsPlot::Color col, float size)
++{
++	LatencyBox *rec = new T;
++	rec->_data = data;
++
++	KsPlot::Point p0 = graph[0]->bin(bins[0])._base;
++	KsPlot::Point p1 = graph[0]->bin(bins[1])._base;
++	int height = graph[0]->height() * .3;
++
++	rec->setFill(false);
++	rec->setPoint(0, p0.x() - 1, p0.y() - height);
++	rec->setPoint(1, p0.x() - 1, p0.y() - 1);
++
++	rec->setPoint(3, p1.x() - 1, p1.y() - height);
++	rec->setPoint(2, p1.x() - 1, p1.y() - 1);
++
++	rec->_size = size;
++	rec->_color = col;
++
++	return rec;
++}
++
+ #endif
+diff --git a/src/plugins/SchedEvents.cpp b/src/plugins/SchedEvents.cpp
+index b73e45f..9119998 100644
+--- a/src/plugins/SchedEvents.cpp
++++ b/src/plugins/SchedEvents.cpp
+@@ -11,9 +11,6 @@
+  *	     preempted by another task.
+  */
+ 
+-// C++
+-#include <vector>
+-
+ // KernelShark
+ #include "libkshark.h"
+ #include "libkshark-plugin.h"
+@@ -24,7 +21,7 @@
+ 
+ using namespace KsPlot;
+ 
+-static KsMainWindow *ks_ptr;
++static KsMainWindow *ks4sched_ptr;
+ 
+ /**
+  * @brief Provide the plugin with a pointer to the KsMainWindow object (the GUI
+@@ -32,72 +29,24 @@ static KsMainWindow *ks_ptr;
+  */
+ __hidden void *plugin_set_gui_ptr(void *gui_ptr)
+ {
+-	ks_ptr = static_cast<KsMainWindow *>(gui_ptr);
++	ks4sched_ptr = static_cast<KsMainWindow *>(gui_ptr);
+ 	return nullptr;
+ }
+ 
+ /**
+- * This class represents the graphical element visualizing the latency between
+- *  sched_waking and sched_switch events.
++ * This child class represents the graphical element visualizing the latency
++ * between sched_waking and sched_switch events. It is defined to re-implement
++ * the handler for double-click.
+  */
+-class LatencyBox : public Rectangle
++class SchedLatencyBox : public LatencyBox
+ {
+ 	/** On double click do. */
+ 	void _doubleClick() const override
+ 	{
+-		ks_ptr->markEntry(_data[1]->entry, DualMarkerState::B);
+-		ks_ptr->markEntry(_data[0]->entry, DualMarkerState::A);
++		ks4sched_ptr->markEntry(_data[1]->entry, DualMarkerState::B);
++		ks4sched_ptr->markEntry(_data[0]->entry, DualMarkerState::A);
+ 	}
+ 
+-public:
+-	/** The trace record data that corresponds to this LatencyBox. */
+-	std::vector<kshark_data_field_int64 *>	_data;
+-
+-	/**
+-	 * @brief Distance between the click and the shape. Used to decide if
+-	 *	  the double click action must be executed.
+-	 *
+-	 * @param x: X coordinate of the click.
+-	 * @param y: Y coordinate of the click.
+-	 *
+-	 * @returns If the click is inside the box, the distance is zero.
+-	 *	    Otherwise infinity.
+-	 */
+-	double distance(int x, int y) const override
+-	{
+-		if (x < pointX(0) || x > pointX(2))
+-			return std::numeric_limits<double>::max();
+-
+-		if (y < pointY(0) || y > pointY(1))
+-			return std::numeric_limits<double>::max();
+-
+-		return 0;
+-	}
+-};
+-
+-static PlotObject *makeShape(std::vector<const Graph *> graph,
+-			     std::vector<int> bins,
+-			     std::vector<kshark_data_field_int64 *> data,
+-			     Color col, float size)
+-{
+-	LatencyBox *rec = new LatencyBox;
+-	rec->_data = data;
+-
+-	Point p0 = graph[0]->bin(bins[0])._base;
+-	Point p1 = graph[0]->bin(bins[1])._base;
+-	int height = graph[0]->height() * .3;
+-
+-	rec->setFill(false);
+-	rec->setPoint(0, p0.x() - 1, p0.y() - height);
+-	rec->setPoint(1, p0.x() - 1, p0.y() - 1);
+-
+-	rec->setPoint(3, p1.x() - 1, p1.y() - height);
+-	rec->setPoint(2, p1.x() - 1, p1.y() - 1);
+-
+-	rec->_size = size;
+-	rec->_color = col;
+-
+-	return rec;
+ };
+ 
+ /*
+@@ -191,14 +140,14 @@ __hidden void plugin_draw(kshark_cpp_argv *argv_c,
+ 	eventFieldIntervalPlot(argvCpp,
+ 			       plugin_ctx->sw_data, checkFieldSW,
+ 			       plugin_ctx->ss_data, checkEntryPid,
+-			       makeShape,
++			       makeLatencyBox<SchedLatencyBox>,
+ 			       {0, 255, 0}, // Green
+ 			       -1);         // Default size
+ 
+ 	eventFieldIntervalPlot(argvCpp,
+ 			       plugin_ctx->ss_data, checkFieldSS,
+ 			       plugin_ctx->ss_data, checkEntryPid,
+-			       makeShape,
++			       makeLatencyBox<SchedLatencyBox>,
+ 			       {255, 0, 0}, // Red
+ 			       -1);         // Default size
+ }
+diff --git a/src/plugins/common_sched.h b/src/plugins/common_sched.h
+new file mode 100644
+index 0000000..027e788
+--- /dev/null
++++ b/src/plugins/common_sched.h
+@@ -0,0 +1,64 @@
++/* SPDX-License-Identifier: LGPL-2.1 */
++
++/*
++ * Copyright (C) 2018 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
++ *               2021 Intel Inc, Hongzhan Chen <hongzhan.chen@intel.com>
++ */
++
++/**
++ *  @file    common_sched.h
++ *  @brief   Common definitions for sched plugins.
++ */
++
++#ifndef _KS_PLUGIN_COMMON_SCHED_H
++#define _KS_PLUGIN_COMMON_SCHED_H
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++/** The type of the numerical data field used by the 'tep' APIs. */
++typedef unsigned long long tep_num_field_t;
++
++/** The type of the data field stored in the kshark_data_container object. */
++typedef int64_t ks_num_field_t;
++
++/** prev_state offset in data field */
++#define PREV_STATE_SHIFT	((int) ((sizeof(ks_num_field_t) - 1) * 8))
++
++/** Bit mask used when converting data to prev_state */
++#define PREV_STATE_MASK		(((ks_num_field_t) 1 << 8) - 1)
++
++/** Bit mask used when converting data to PID */
++#define PID_MASK		(((ks_num_field_t) 1 << PREV_STATE_SHIFT) - 1)
++
++/**
++ * @brief Set the PID value for the data field stored in the
++ *	  kshark_data_container object.
++ *
++ * @param field: Input pointer to data field.
++ * @param pid:   Input pid to set in data field.
++ */
++static inline void plugin_sched_set_pid(ks_num_field_t *field,
++				 tep_num_field_t pid)
++{
++	*field &= ~PID_MASK;
++	*field |= pid & PID_MASK;
++}
++
++/**
++ * @brief Retrieve the PID value from the data field stored in the
++ *	  kshark_data_container object.
++ *
++ * @param field: Input location for the data field.
++ */
++static inline int plugin_sched_get_pid(ks_num_field_t field)
++{
++	return field & PID_MASK;
++}
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif
+diff --git a/src/plugins/sched_events.c b/src/plugins/sched_events.c
+index 198ed49..c3a4f47 100644
+--- a/src/plugins/sched_events.c
++++ b/src/plugins/sched_events.c
+@@ -22,36 +22,6 @@
+ 
+ /** Plugin context instance. */
+ 
+-//! @cond Doxygen_Suppress
+-
+-typedef unsigned long long tep_num_field_t;
+-
+-#define PREV_STATE_SHIFT	((int) ((sizeof(ks_num_field_t) - 1) * 8))
+-
+-#define PREV_STATE_MASK		(((ks_num_field_t) 1 << 8) - 1)
+-
+-#define PID_MASK		(((ks_num_field_t) 1 << PREV_STATE_SHIFT) - 1)
+-
+-//! @endcond
+-
+-static void plugin_sched_set_pid(ks_num_field_t *field,
+-				 tep_num_field_t pid)
+-{
+-	*field &= ~PID_MASK;
+-	*field = pid & PID_MASK;
+-}
+-
+-/**
+- * @brief Retrieve the PID value from the data field stored in the
+- *	  kshark_data_container object.
+- *
+- * @param field: Input location for the data field.
+- */
+-__hidden int plugin_sched_get_pid(ks_num_field_t field)
+-{
+-	return field & PID_MASK;
+-}
+-
+ /* Use the most significant byte to store the value of "prev_state". */
+ static void plugin_sched_set_prev_state(ks_num_field_t *field,
+ 					tep_num_field_t prev_state)
+@@ -135,7 +105,7 @@ static void plugin_sched_swith_action(struct kshark_data_stream *stream,
+ 	struct tep_record *record = (struct tep_record *) rec;
+ 	struct plugin_sched_context *plugin_ctx;
+ 	unsigned long long next_pid, prev_state;
+-	ks_num_field_t ks_field;
++	ks_num_field_t ks_field = 0;
+ 	int ret;
+ 
+ 	plugin_ctx = __get_context(stream->stream_id);
+diff --git a/src/plugins/sched_events.h b/src/plugins/sched_events.h
+index a2ba4b4..1032075 100644
+--- a/src/plugins/sched_events.h
++++ b/src/plugins/sched_events.h
+@@ -15,6 +15,7 @@
+ // KernelShark
+ #include "libkshark.h"
+ #include "libkshark-plugin.h"
++#include "plugins/common_sched.h"
+ 
+ #ifdef __cplusplus
+ extern "C" {
+@@ -55,10 +56,6 @@ struct plugin_sched_context {
+ 
+ KS_DECLARE_PLUGIN_CONTEXT_METHODS(struct plugin_sched_context)
+ 
+-/** The type of the data field stored in the kshark_data_container object. */
+-typedef int64_t ks_num_field_t;
+-
+-int plugin_sched_get_pid(ks_num_field_t field);
+ 
+ int plugin_sched_get_prev_state(ks_num_field_t field);
+ 
 -- 
 2.17.1
 
