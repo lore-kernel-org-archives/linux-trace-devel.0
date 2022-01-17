@@ -2,58 +2,58 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83AE5C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 17 Jan 2022 09:32:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8760DC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 17 Jan 2022 10:08:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233543AbiAQJc1 (ORCPT
+        id S236026AbiAQKIV (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 17 Jan 2022 04:32:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54906 "EHLO
+        Mon, 17 Jan 2022 05:08:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231282AbiAQJc0 (ORCPT
+        with ESMTP id S236048AbiAQKIU (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 17 Jan 2022 04:32:26 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6B99C061574
-        for <linux-trace-devel@vger.kernel.org>; Mon, 17 Jan 2022 01:32:26 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id p37so9713404pfh.4
-        for <linux-trace-devel@vger.kernel.org>; Mon, 17 Jan 2022 01:32:26 -0800 (PST)
+        Mon, 17 Jan 2022 05:08:20 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EA9C061574
+        for <linux-trace-devel@vger.kernel.org>; Mon, 17 Jan 2022 02:08:19 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id v2so5818583ply.11
+        for <linux-trace-devel@vger.kernel.org>; Mon, 17 Jan 2022 02:08:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QRdqE9yjHlvH8SK4Z08tDHluroTzBN710zN21aYjGzY=;
-        b=KcUHDMnr846hY0yetG/66NB11pyTrAawv43BvJLGRAw1O+e3cXYEMvSV+95b0UM7mI
-         MvRpnm32ZQm/JCWZWhp0WdjvlMcZwPgBFHXOhUzxwXyED6LJGNcpU4D/vzF6oClDhmhz
-         /k4ZsifvMPEvXRiE6ZsizGYDLNdbTFUCdLIn6owm5XBH0XMdWwu4rKaNLUaGdwkhY9ue
-         EpTXAMGI3dBaOaH1qbX7v9v2W3MqG69GFdCdaOFzlicY+1JpnkO59V7ijnAl3VjRlW87
-         IJL1cLvNqH0/apHSfIitwmc5Az0ky0K4PvXW0RktmCKfSXpu1gozNdWdI6jiHYxH5BFj
-         Vw6w==
+        bh=Xf7bstkmq0yllPyL+RYAq29fbT3mSSmgsoueFAi3e3U=;
+        b=p/n0NpVK92zHSPlAPaPmd32nR/l+uLKn5FzigTSnEu6jAH6fRDSxatZIiCwPMO8Bsa
+         DQYk6fidktGZShUCBL2KnerzhhU8b7nnn294VvN5pLvL47Mtv1OPoUxaQRfJaiZn3jad
+         TGZKWmutOAlwMASzsoBVBvSBkLsIHlx5ijZOR8cXmQNs0Bo6lZcja7gnTpcz1XsPqnCd
+         3Ns8WPAaBqjr3MZWlMYE2V5biwVa9wfANlOqSYxWXLbzQkq621RsCedqPn5vBlzC+1l8
+         kV7Vzbhk7bJ9gLSSHzthYzB7tgkqdDehFiy62MydvAKAnf8Ee8ZDWdvQDdEV9xuMbyeX
+         u/0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QRdqE9yjHlvH8SK4Z08tDHluroTzBN710zN21aYjGzY=;
-        b=pIMU7TtnOQNiWqoM8iuPQFsrQAht0SD1iDSsnKgn1l5xn14qmLSGab37T7uUr1Kupl
-         1ZU3aguFY7xXiOT0/cPqAyfuOwdqjLdHcNX0lJ/V42WJC1/aNjSU+uap91gG2pXAqmRl
-         37JFW4TLEQAf8K0NBagd3An3CAgLrmlI7x9fhuGw1/BraUZg+RkCkknAyq5XiXe4JFhu
-         w3bSZdD6atLWSZKTx/EaM08fwWGAl5FReh+wdS77nN5Ujpp2FFvzB+6d+fHa6VuSP9GQ
-         lGcS+N8imr/NZseHLfI5AXrT+HLv93YnN9ZrnyD13baHoSKlXjvJlM9PqI8bgiTPfrhO
-         9sJg==
-X-Gm-Message-State: AOAM5314HPyQs8K0PMfoHgr7Tote9VlQjtWVr1CRNVO9R44/bXcGFm0z
-        YVY5se1i56UaLiXOMMdeVm0tNE1cLHhS9sZkpuhat/4wW1Y=
-X-Google-Smtp-Source: ABdhPJydClnCyT3fGwQ7KC9TnFmEhWB/bqHbbSPctOz7etpyAIwX0d2udnmoj0O8fzbdNrurUSU/BioC9S2Y+mDXj1c=
-X-Received: by 2002:a63:1910:: with SMTP id z16mr13911467pgl.323.1642411946154;
- Mon, 17 Jan 2022 01:32:26 -0800 (PST)
+        bh=Xf7bstkmq0yllPyL+RYAq29fbT3mSSmgsoueFAi3e3U=;
+        b=zxFPiWVZ2yMChsDClhWZzB5pdBLMYUHdymrFcP/PXFOlCNqfm5FlI1T5My52rchVF9
+         OzdItswMK91YS/K6BlZjCyTHADb3Zk5VESNCYi91U7TufxKxPl83/V13CkBG+4H9MmyO
+         VnW41cgId6HpEffDCuivvxIsS2RVOBB4qy000uEh2IoLo3fZOPSJYaA42FjUWP+fDJLW
+         gppem5lYa1Xilf8gNx5ol80AfrTwd21VWXJdAaF3ovWGI3av4Ai33+GRtO2+Rgd6kfI3
+         koV/Q/RDPARcnwN44bQw5YegmpDO5fe8US/EN3x2+XsuiT0U6TLknFuuoKsECgOb5MNi
+         TaNw==
+X-Gm-Message-State: AOAM531n/il949Xx3jWmXyX9tG9AAH34NnYGNeZ3KbuNedacznmnz9DG
+        GXKuoeLWNwfF359xOoPDccYXQAH9pBueesqx0P1bBwlAAe8=
+X-Google-Smtp-Source: ABdhPJy6MmZdnZIFKFAE6ffwRa6FoxHn3AUuEMBHsvyKmTbqSAHk1zS6UAOlHcGnqx7rBEsx6nlFoh7sGRbzYKACcJk=
+X-Received: by 2002:a17:90b:4c09:: with SMTP id na9mr23990885pjb.96.1642414099154;
+ Mon, 17 Jan 2022 02:08:19 -0800 (PST)
 MIME-Version: 1.0
-References: <20211210105448.97850-1-tz.stoyanov@gmail.com> <20211210105448.97850-5-tz.stoyanov@gmail.com>
- <20220115075347.66d46b7f@rorschach.local.home>
-In-Reply-To: <20220115075347.66d46b7f@rorschach.local.home>
+References: <20211210105448.97850-1-tz.stoyanov@gmail.com> <20211210105448.97850-6-tz.stoyanov@gmail.com>
+ <20220115075856.7c5f325d@rorschach.local.home>
+In-Reply-To: <20220115075856.7c5f325d@rorschach.local.home>
 From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Mon, 17 Jan 2022 11:32:10 +0200
-Message-ID: <CAPpZLN61aKN+TdgB6Ac9JhyoNujQu_P5X3VH1QzvhCkL+xJUkg@mail.gmail.com>
-Subject: Re: [PATCH v7 04/25] trace-cmd library: Add strings section in trace
- file version 7
+Date:   Mon, 17 Jan 2022 12:08:03 +0200
+Message-ID: <CAPpZLN60snWoE=qa=vpeoVhdxWSLD2v9oTWJWKTTuF8zgwmBKA@mail.gmail.com>
+Subject: Re: [PATCH v7 05/25] trace-cmd library: Add internal helper function
+ for writing headers before file sections
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -61,219 +61,45 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Sat, Jan 15, 2022 at 2:53 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Sat, Jan 15, 2022 at 2:59 PM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> On Fri, 10 Dec 2021 12:54:27 +0200
+> On Fri, 10 Dec 2021 12:54:28 +0200
 > "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 >
-> > In the trace file metadata there are various dynamic strings. Collecting
-> > all these strings in a dedicated section in the file simplifies parsing
-> > of the metadata. The string section is added in trace files version 7,
-> > at the end of the file.
+> > Introduce headers before each file section, in trace file version 7. The
+> > section header has the following format:
+> >  <2 bytes>, header ID
+> >  <4 bytes>, offset within the strings section, where the section
+> >             description string is located.
+> >  <2 bytes>, section flags:
+> >      1: the section is compressed
 >
-> Does it have to be at the end of the file?
+> Would in make more sense to have the ID and flags together, followed by
+> the string? That way you could use a normal structure to represent it.
+>
+It would make sense in the previous version of this implementation,
+where a dynamic string was stored between the ID and the flags. Now as
+all these are in fixed positions, the order should not be a problem.
+But anyway, I'll change it in the next version.
 
-The v7 file can have multiple string sections. The last string section
-must be at the end of the file, as it contains meta-data strings from
-the other sections.
-
+> struct {
+>         unsigned short                  id;
+>         unsigned short                  flags;
+>         unsigned int                    string_offset;
+>         unsigned long long              size;
+> };
 >
-> >
-> > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> > ---
-> >  .../include/private/trace-cmd-private.h       |  2 +
-> >  lib/trace-cmd/trace-output.c                  | 63 +++++++++++++++++++
-> >  tracecmd/trace-record.c                       |  1 +
-> >  3 files changed, 66 insertions(+)
-> >
-> > diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-> > index ed25d879..ed8fbf11 100644
-> > --- a/lib/trace-cmd/include/private/trace-cmd-private.h
-> > +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-> > @@ -138,6 +138,7 @@ enum {
-> >       TRACECMD_OPTION_TIME_SHIFT,
-> >       TRACECMD_OPTION_GUEST,
-> >       TRACECMD_OPTION_TSC2NSEC,
-> > +     TRACECMD_OPTION_STRINGS,
-> >  };
-> >
-> >  enum {
-> > @@ -301,6 +302,7 @@ int tracecmd_write_buffer_info(struct tracecmd_output *handle);
-> >  int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus);
-> >  int tracecmd_write_cmdlines(struct tracecmd_output *handle);
-> >  int tracecmd_write_options(struct tracecmd_output *handle);
-> > +int tracecmd_write_meta_strings(struct tracecmd_output *handle);
-> >  int tracecmd_append_options(struct tracecmd_output *handle);
-> >  void tracecmd_output_close(struct tracecmd_output *handle);
-> >  void tracecmd_output_free(struct tracecmd_output *handle);
-> > diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-> > index 4d165ac2..ed505db6 100644
-> > --- a/lib/trace-cmd/trace-output.c
-> > +++ b/lib/trace-cmd/trace-output.c
-> > @@ -62,6 +62,8 @@ struct tracecmd_output {
-> >       bool                    quiet;
-> >       unsigned long           file_state;
-> >       unsigned long           file_version;
-> > +     unsigned long           strings_p;
-> > +     unsigned long           strings_offs;
->
-> Can you add a comment to what the above are to represent?
->
-> Especially out of context, it's hard to know how this is suppose to
-> work.
->
-> >       size_t                  options_start;
-> >       bool                    big_endian;
-> >
-> > @@ -69,6 +71,8 @@ struct tracecmd_output {
-> >       struct list_head        buffers;
-> >       struct tracecmd_msg_handle *msg_handle;
-> >       char                    *trace_clock;
-> > +     char                    *strings;
-> > +
->
-> Remove the extra space.
->
-> >  };
-> >
-> >  struct list_event {
-> > @@ -85,6 +89,8 @@ struct list_event_system {
-> >
-> >  #define HAS_SECTIONS(H) ((H)->file_version >= FILE_VERSION_SECTIONS)
-> >
-> > +static int save_string_section(struct tracecmd_output *handle);
-> > +
->
-> I won't ask you to fix it, but it's best not to introduce a static
-> function that is not used, and if need be, just combine the patches.
->
-> Again, without use cases, it's hard to know if this is doing what you
-> say it is doing.
->
-> >  static stsize_t
-> >  do_write_check(struct tracecmd_output *handle, const void *data, tsize_t size)
-> >  {
-> > @@ -127,6 +133,22 @@ static unsigned long long convert_endian_8(struct tracecmd_output *handle,
-> >       return tep_read_number(handle->pevent, &val, 8);
-> >  }
-> >
-> > +static long add_string(struct tracecmd_output *handle, const char *string)
-> > +{
-> > +     int size = strlen(string) + 1;
-> > +     int pos = handle->strings_p;
-> > +     char *strings;
-> > +
-> > +     strings = realloc(handle->strings, pos + size);
-> > +     if (!strings)
-> > +             return -1;
-> > +     handle->strings = strings;
-> > +     memcpy(handle->strings + pos, string, size);
-> > +     handle->strings_p += size;
-> > +
-> > +     return handle->strings_offs + pos;
->
-> What is the above suppose to be returning? What is strings_off?
->
-
-I'll add comments on strings_off and strings_p in the next version,
-but the main idea is:
- This function returns the virtual offset of the added string into the
-string section. There can be multiple string sections in the file, but
-the string offset is continuous and does not depend on the number of
-string sections and their position in the file.
-
-> > +}
-> > +
-> >  /**
-> >   * tracecmd_set_quiet - Set if to print output to the screen
-> >   * @quiet: If non zero, print no output to the screen
-> > @@ -185,6 +207,7 @@ void tracecmd_output_free(struct tracecmd_output *handle)
-> >               free(option);
-> >       }
-> >
-> > +     free(handle->strings);
-> >       free(handle->trace_clock);
-> >       free(handle);
-> >  }
-> > @@ -194,6 +217,11 @@ void tracecmd_output_close(struct tracecmd_output *handle)
-> >       if (!handle)
-> >               return;
-> >
-> > +     if (handle->file_version >= FILE_VERSION_SECTIONS) {
->
-> Shouldn't the above be if (HAS_SECTIONS(handle)) ?
+> Otherwise, all tools to read it will be forced to read each part
+> individually. I can imaging that being annoying in the future.
 >
 > -- Steve
 >
-> > +             /* write strings section */
-> > +             save_string_section(handle);
-> > +     }
-> > +
-> >       if (handle->fd >= 0) {
-> >               close(handle->fd);
-> >               handle->fd = -1;
-> > @@ -332,6 +360,32 @@ int tracecmd_ftrace_enable(int set)
-> >       return ret;
-> >  }
-> >
-> > +static int save_string_section(struct tracecmd_output *handle)
-> > +{
-> > +     if (!handle->strings || !handle->strings_p)
-> > +             return 0;
-> > +
-> > +     if (!check_out_state(handle, TRACECMD_OPTION_STRINGS)) {
-> > +             tracecmd_warning("Cannot write strings, unexpected state 0x%X",
-> > +                              handle->file_state);
-> > +             return -1;
-> > +     }
-> > +
-> > +     if (do_write_check(handle, handle->strings, handle->strings_p))
-> > +             goto error;
-> > +
-> > +     handle->strings_offs += handle->strings_p;
-> > +     free(handle->strings);
-> > +     handle->strings = NULL;
-> > +     handle->strings_p = 0;
-> > +     handle->file_state = TRACECMD_OPTION_STRINGS;
-> > +     return 0;
-> > +
-> > +error:
-> > +     return -1;
-> > +}
-> > +
-> > +
-> >  static int read_header_files(struct tracecmd_output *handle)
-> >  {
-> >       tsize_t size, check_size, endian8;
-> > @@ -1328,6 +1382,15 @@ int tracecmd_write_options(struct tracecmd_output *handle)
-> >       return 0;
-> >  }
-> >
-> > +int tracecmd_write_meta_strings(struct tracecmd_output *handle)
-> > +{
-> > +     if (!HAS_SECTIONS(handle))
-> > +             return 0;
-> > +
-> > +     return save_string_section(handle);
-> > +}
-> > +
-> > +
-> >  int tracecmd_append_options(struct tracecmd_output *handle)
-> >  {
-> >       struct tracecmd_option *options;
-> > diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-> > index 7b2b59bb..f599610e 100644
-> > --- a/tracecmd/trace-record.c
-> > +++ b/tracecmd/trace-record.c
-> > @@ -4093,6 +4093,7 @@ static void setup_agent(struct buffer_instance *instance,
-> >       tracecmd_write_cmdlines(network_handle);
-> >       tracecmd_write_cpus(network_handle, instance->cpu_count);
-> >       tracecmd_write_options(network_handle);
-> > +     tracecmd_write_meta_strings(network_handle);
-> >       tracecmd_msg_finish_sending_data(instance->msg_handle);
-> >       instance->network_handle = network_handle;
-> >  }
 >
+> >  <8 bytes>, size of the section
+> >
+> > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> > ---
+
 
 
 -- 
