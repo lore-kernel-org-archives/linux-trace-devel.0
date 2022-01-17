@@ -2,34 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEA37C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 17 Jan 2022 23:22:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36763C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 17 Jan 2022 23:22:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238499AbiAQXWQ (ORCPT
+        id S235380AbiAQXWQ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Mon, 17 Jan 2022 18:22:16 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:59198 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235380AbiAQXWQ (ORCPT
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235370AbiAQXWQ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 17 Jan 2022 18:22:16 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2085BC061574
+        for <linux-trace-devel@vger.kernel.org>; Mon, 17 Jan 2022 15:22:16 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A5B20B81141
+        by ams.source.kernel.org (Postfix) with ESMTPS id A6EF6B811D6
         for <linux-trace-devel@vger.kernel.org>; Mon, 17 Jan 2022 23:22:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5361EC36AF3;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A6E5C36AEF;
         Mon, 17 Jan 2022 23:22:13 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1n9bKG-006fZ0-Ao;
+        id 1n9bKG-006fYu-9L;
         Mon, 17 Jan 2022 18:22:12 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH 3/3] libtracefs/Documentation: Referencing commands should be bold not underlined
-Date:   Mon, 17 Jan 2022 18:22:10 -0500
-Message-Id: <20220117232210.1589656-4-rostedt@goodmis.org>
+Subject: [PATCH 1/3] libtracefs: Split up libtracefs-hist.txt man page
+Date:   Mon, 17 Jan 2022 18:22:08 -0500
+Message-Id: <20220117232210.1589656-2-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20220117232210.1589656-1-rostedt@goodmis.org>
 References: <20220117232210.1589656-1-rostedt@goodmis.org>
@@ -39,870 +42,743 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When referencing other commands "trace-cmd(3)", the command name should be
-bold and not underlined, and the "(3)" should be normal text.
+Man page generation appears to not allow more than 9 functions to be
+described before it starts spitting out errors. As libtracefs-hist.txt has
+14 functions (and it did not even include tracefs_hist_append_filter() to
+make it 15), split out the functions:
 
-Update all the man pages to use this format. This mostly affects the "SEE
-ALSO" section.
+  tracefs_hist_add_sort_key()
+  tracefs_hist_set_sort_key()
+  tracefs_hist_sort_key_direction()
+  tracefs_hist_append_filter()
+  tracefs_hist_echo_cmd()
+  tracefs_hist_command()
+  tracefs_hist_get_name()
+  tracefs_hist_get_event()
+  tracefs_hist_get_system()
+
+into their own man page: libtracefs-hist-mod.txt
+
+and this removes the errors for libtracefs-hist.txt.
 
 Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 ---
- Documentation/libtracefs-dynevents.txt        |  6 +-
- Documentation/libtracefs-eprobes.txt          |  6 +-
- Documentation/libtracefs-error.txt            |  6 +-
- Documentation/libtracefs-events-tep.txt       |  8 +--
- Documentation/libtracefs-events.txt           |  6 +-
- Documentation/libtracefs-files.txt            |  6 +-
- Documentation/libtracefs-filter.txt           | 28 ++++-----
- Documentation/libtracefs-function-filter.txt  |  6 +-
- Documentation/libtracefs-hist-cont.txt        | 28 ++++-----
- Documentation/libtracefs-hist-mod.txt         | 12 ++--
- Documentation/libtracefs-hist.txt             | 12 ++--
- .../libtracefs-instances-affinity.txt         |  8 +--
- .../libtracefs-instances-file-manip.txt       |  6 +-
- Documentation/libtracefs-instances-files.txt  |  6 +-
- Documentation/libtracefs-instances-manage.txt |  6 +-
- Documentation/libtracefs-instances-utils.txt  |  6 +-
- Documentation/libtracefs-kprobes.txt          |  6 +-
- Documentation/libtracefs-log.txt              |  6 +-
- Documentation/libtracefs-marker.txt           |  6 +-
- Documentation/libtracefs-marker_raw.txt       |  6 +-
- Documentation/libtracefs-option-get.txt       |  6 +-
- Documentation/libtracefs-option-misc.txt      |  6 +-
- Documentation/libtracefs-options.txt          |  6 +-
- Documentation/libtracefs-sql.txt              | 52 ++++++++--------
- Documentation/libtracefs-stream.txt           |  6 +-
- Documentation/libtracefs-synth-info.txt       | 56 ++++++++---------
- Documentation/libtracefs-synth.txt            | 62 +++++++++----------
- Documentation/libtracefs-synth2.txt           | 60 +++++++++---------
- Documentation/libtracefs-traceon.txt          |  6 +-
- Documentation/libtracefs-tracer.txt           |  6 +-
- Documentation/libtracefs-utils.txt            |  6 +-
- Documentation/libtracefs.txt                  |  4 +-
- 32 files changed, 228 insertions(+), 228 deletions(-)
+ Documentation/libtracefs-hist-mod.txt | 540 ++++++++++++++++++++++++++
+ Documentation/libtracefs-hist.txt     | 130 +------
+ 2 files changed, 542 insertions(+), 128 deletions(-)
+ create mode 100644 Documentation/libtracefs-hist-mod.txt
 
-diff --git a/Documentation/libtracefs-dynevents.txt b/Documentation/libtracefs-dynevents.txt
-index bec31f10c904..b8cb8d40bf7a 100644
---- a/Documentation/libtracefs-dynevents.txt
-+++ b/Documentation/libtracefs-dynevents.txt
-@@ -253,9 +253,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-eprobes.txt b/Documentation/libtracefs-eprobes.txt
-index 4155544c174a..a96ad1b81783 100644
---- a/Documentation/libtracefs-eprobes.txt
-+++ b/Documentation/libtracefs-eprobes.txt
-@@ -157,9 +157,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-error.txt b/Documentation/libtracefs-error.txt
-index 60e755421eaa..a45332dc742e 100644
---- a/Documentation/libtracefs-error.txt
-+++ b/Documentation/libtracefs-error.txt
-@@ -108,9 +108,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-events-tep.txt b/Documentation/libtracefs-events-tep.txt
-index af5f1d63db6f..22d3dd5fdfd0 100644
---- a/Documentation/libtracefs-events-tep.txt
-+++ b/Documentation/libtracefs-events-tep.txt
-@@ -59,7 +59,7 @@ RETURN VALUE
- ------------
- The *tracefs_local_events()* and *tracefs_local_events_system()* functions
- return pointer to allocated and initialized _tep_ handler, or NULL in
--case of an error. The returned _tep_ handler must be freed with *tep_free(3)*.
-+case of an error. The returned _tep_ handler must be freed with *tep_free*(3).
- 
- The *tracefs_fill_local_events()* function returns -1 in case of an error or
- 0 otherwise.
-@@ -119,9 +119,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-events.txt b/Documentation/libtracefs-events.txt
-index eabce96404d3..a3d7a11acf4b 100644
---- a/Documentation/libtracefs-events.txt
-+++ b/Documentation/libtracefs-events.txt
-@@ -160,9 +160,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-files.txt b/Documentation/libtracefs-files.txt
-index 00f12c37611e..13e251ddd465 100644
---- a/Documentation/libtracefs-files.txt
-+++ b/Documentation/libtracefs-files.txt
-@@ -73,9 +73,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-filter.txt b/Documentation/libtracefs-filter.txt
-index 0bb88e2a6df4..501f093134df 100644
---- a/Documentation/libtracefs-filter.txt
-+++ b/Documentation/libtracefs-filter.txt
-@@ -304,20 +304,20 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_,
--_tracefs_hist_alloc(3)_,
--_tracefs_hist_alloc_2d(3)_,
--_tracefs_hist_alloc_nd(3)_,
--_tracefs_hist_free(3)_,
--_tracefs_hist_add_key(3)_,
--_tracefs_hist_add_value(3)_,
--_tracefs_hist_add_name(3)_,
--_tracefs_hist_start(3)_,
--_tracefs_hist_destory(3)_,
--_tracefs_hist_add_sort_key(3)_,
--_tracefs_hist_sort_key_direction(3)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1),
-+*tracefs_hist_alloc*(3),
-+*tracefs_hist_alloc_2d*(3),
-+*tracefs_hist_alloc_nd*(3),
-+*tracefs_hist_free*(3),
-+*tracefs_hist_add_key*(3),
-+*tracefs_hist_add_value*(3),
-+*tracefs_hist_add_name*(3),
-+*tracefs_hist_start*(3),
-+*tracefs_hist_destory*(3),
-+*tracefs_hist_add_sort_key*(3),
-+*tracefs_hist_sort_key_direction*(3)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-function-filter.txt b/Documentation/libtracefs-function-filter.txt
-index 1a77d778bfab..d12f61406448 100644
---- a/Documentation/libtracefs-function-filter.txt
-+++ b/Documentation/libtracefs-function-filter.txt
-@@ -208,9 +208,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-hist-cont.txt b/Documentation/libtracefs-hist-cont.txt
-index b32a2cc9165e..651aa0efe1f7 100644
---- a/Documentation/libtracefs-hist-cont.txt
-+++ b/Documentation/libtracefs-hist-cont.txt
-@@ -180,20 +180,20 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_,
--_tracefs_hist_alloc(3)_,
--_tracefs_hist_alloc_2d(3)_,
--_tracefs_hist_alloc_nd(3)_,
--_tracefs_hist_free(3)_,
--_tracefs_hist_add_key(3)_,
--_tracefs_hist_add_value(3)_,
--_tracefs_hist_add_name(3)_,
--_tracefs_hist_start(3)_,
--_tracefs_hist_destory(3)_,
--_tracefs_hist_add_sort_key(3)_,
--_tracefs_hist_sort_key_direction(3)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1),
-+*tracefs_hist_alloc*(3),
-+*tracefs_hist_alloc_2d*(3),
-+*tracefs_hist_alloc_nd*(3),
-+*tracefs_hist_free*(3),
-+*tracefs_hist_add_key*(3),
-+*tracefs_hist_add_value*(3),
-+*tracefs_hist_add_name*(3),
-+*tracefs_hist_start*(3),
-+*tracefs_hist_destory*(3),
-+*tracefs_hist_add_sort_key*(3),
-+*tracefs_hist_sort_key_direction*(3)
- 
- AUTHOR
- ------
 diff --git a/Documentation/libtracefs-hist-mod.txt b/Documentation/libtracefs-hist-mod.txt
-index 732ae2b62e88..1f4587b50903 100644
---- a/Documentation/libtracefs-hist-mod.txt
+new file mode 100644
+index 000000000000..732ae2b62e88
+--- /dev/null
 +++ b/Documentation/libtracefs-hist-mod.txt
-@@ -507,12 +507,12 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_,
--_tracefs_hist_pause(3)_,
--_tracefs_hist_continue(3)_,
--_tracefs_hist_reset(3)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1),
-+*tracefs_hist_pause*(3),
-+*tracefs_hist_continue*(3),
-+*tracefs_hist_reset*(3)
- 
- AUTHOR
- ------
+@@ -0,0 +1,540 @@
++libtracefs(3)
++=============
++
++NAME
++----
++tracefs_hist_add_sort_key, tracefs_hist_set_sort_key, tracefs_hist_sort_key_direction,
++tracefs_hist_append_filter, tracefs_hist_echo_cmd, tracefs_hist_command,
++tracefs_hist_get_name, tracefs_hist_get_event, tracefs_hist_get_system - Update and describe an event histogram
++
++SYNOPSIS
++--------
++[verse]
++--
++*#include <tracefs.h>*
++
++int *tracefs_hist_add_sort_key*(struct tracefs_hist pass:[*]_hist_,
++			      const char pass:[*]_sort_key_);
++
++int *tracefs_hist_set_sort_key*(struct tracefs_hist pass:[*]_hist_,
++			      const char pass:[*]_sort_key_, _..._);
++int *tracefs_hist_sort_key_direction*(struct tracefs_hist pass:[*]_hist_,
++				    const char pass:[*]_sort_key_,
++				    enum tracefs_hist_sort_direction _dir_);
++
++int *tracefs_hist_add_name*(struct tracefs_hist pass:[*]_hist_, const char pass:[*]_name_);
++
++int *tracefs_hist_append_filter*(struct tracefs_hist pass:[*]_hist_,
++			       enum tracefs_filter _type_,
++			       const char pass:[*]_field_,
++			       enum tracefs_compare _compare_,
++			       const char pass:[*]_val_);
++
++int *tracefs_hist_echo_cmd*(struct trace_seq pass:[*]_s_, struct tracefs_instance pass:[*]_instance_,
++			  struct tracefs_hist pass:[*]_hist_,
++			  enum tracefs_hist_command _command_);
++
++int *tracefs_hist_command*(struct tracefs_instance pass:[*]_instance_,
++			 struct tracefs_hist pass:[*]_hist_,
++			 enum tracefs_hist_command _command_);
++
++const char pass:[*]*tracefs_hist_get_name*(struct tracefs_hist pass:[*]_hist_);
++
++const char pass:[*]*tracefs_hist_get_event*(struct tracefs_hist pass:[*]_hist_);
++
++const char pass:[*]*tracefs_hist_get_system*(struct tracefs_hist pass:[*]_hist_);
++
++--
++
++DESCRIPTION
++-----------
++Event histograms are created by the trigger file in the event directory.
++The syntax can be complex and difficult to get correct. This API handles the
++syntax, and facilitates the creation and interaction with the event histograms.
++See https://www.kernel.org/doc/html/latest/trace/histogram.html for more information.
++
++*tracefs_hist_add_sort_key*() will add a key to sort on. The _hist_ is the
++histogram descriptor to add the sort key to. The _sort_key_ is a string
++that must match either an already defined key of the histogram, or an already
++defined value. If _hist_  already has sorting keys (previously added) the new
++_sort_key_ will have lower priority(be secondary or so on) when sorting.
++
++*tracefs_hist_set_sort_key*() will reset the list of key to sort on. The _hist_ is
++the histogram descriptor to reset the sort key to. The _sort_key_ is a string
++that must match either an already defined key of the histogram, or an already
++defined value. Multiple sort keys may be added to denote a secondary, sort order
++and so on, but all sort keys must match an existing key or value, or be
++TRACEFS_HIST_HITCOUNT. The last parameter of *tracefs_hist_add_sort_key*() must
++be NULL.
++
++*tracefs_hist_sort_key_direction*() allows to change the direction of an
++existing sort key of _hist_. The _sort_key_ is the sort key to change, and
++_dir_ can be either TRACEFS_HIST_SORT_ASCENDING or TRACEFS_HIST_SORT_DESCENDING,
++to make the direction of the sort key either ascending or descending respectively.
++
++*tracefs_hist_add_name*() adds a name to a histogram. A histogram may be
++named and if the name matches between more than one event, and they have
++compatible keys, the multiple histograms with the same name will be merged
++into a single histogram (shown by either event's hist file). The _hist_
++is the histogram to name, and the _name_ is the name to give it.
++
++*tracefs_hist_append_filter*() creates a filter or appends to it for the
++histogram  event. Depending on _type_, it will build a string of tokens for
++parenthesis or logic statements, or it may add a comparison of _field_
++to _val_ based on _compare_.
++
++If _type_ is:
++*TRACEFS_FILTER_COMPARE*     -  See below
++*TRACEFS_FILTER_AND*         -  Append "&&" to the filter
++*TRACEFS_FILTER_OR*          -  Append "||" to the filter
++*TRACEFS_FILTER_NOT*         -  Append "!" to the filter
++*TRACEFS_FILTER_OPEN_PAREN*  -  Append "(" to the filter
++*TRACEFS_FILTER_CLOSE_PAREN* -  Append ")" to the filter
++
++_field_, _compare_, and _val_ are ignored unless _type_ is equal to
++*TRACEFS_FILTER_COMPARE*, then _compare_ will be used for the following:
++
++*TRACEFS_COMPARE_EQ* - _field_ == _val_
++
++*TRACEFS_COMPARE_NE* - _field_ != _val_
++
++*TRACEFS_COMPARE_GT* - _field_ > _val_
++
++*TRACEFS_COMPARE_GE* - _field_ >= _val_
++
++*TRACEFS_COMPARE_LT* - _field_ < _val_
++
++*TRACEFS_COMPARE_LE* - _field_ <pass:[=] _val_
++
++*TRACEFS_COMPARE_RE* - _field_ ~ "_val_" : where _field_ is a string.
++
++*TRACEFS_COMPARE_AND* - _field_ & _val_ : where _field_ is a flags field.
++
++*trace_hist_echo_cmd*() prints the commands needed to create the given histogram
++in the given _instance_, or NULL for the top level, into the _seq_.
++The command that is printed is described by _command_ and shows the functionality
++that would be done by *tracefs_hist_command*(3).
++
++*tracefs_hist_command*() is called to process a command on the histogram
++_hist_ for its event in the given _instance_, or NULL for the top level.
++The _cmd_ can be one of:
++
++*TRACEFS_HIST_CMD_START* or zero to start execution of the histogram.
++
++*TRACEFS_HIST_CMD_PAUSE* to pause the given histogram.
++
++*TRACEFS_HIST_CMD_CONT* to continue a paused histogram.
++
++*TRACEFS_HIST_CMD_CLEAR* to reset the values of a histogram.
++
++*TRACEFS_HIST_CMD_DESTROY* to destroy the histogram (undo a START).
++
++The below functions are wrappers to tracefs_hist_command() to make the
++calling conventions a bit easier to understand what is happening.
++
++KEY TYPES
++---------
++
++*tracefs_hist_alloc_nd*() and *tracefs_hist_add_key*() both add a key and requires
++that key to have a type. The types may be:
++
++*TRACEFS_HIST_KEY_NORMAL* or zero (0) which is to not modify the type.
++
++*TRACEFS_HIST_KEY_HEX* to display the key in hex.
++
++*TRACEFS_HIST_KEY_SYM* to display the key as a kernel symbol (if found). If
++the key is an address, this is useful as it will display the function names instead
++of just a number.
++
++*TRACEFS_HIST_KEY_SYM_OFFSET* similar to *TRACEFS_HIST_KEY_SYM* but will also include
++the offset of the function to match the exact address.
++
++*TRACEFS_HIST_KEY_SYSCALL* If the key is a system call "id" (the number passed from user
++space to the kernel to tell it what system call it is calling), then the name of
++the system call is displayed.
++
++*TRACEFS_HIST_KEY_EXECNAME* If "common_pid" is the key (the pid of the executing task),
++instead of showing the number, show the name of the running task.
++
++*TRACEFS_HIST_KEY_LOG* will display the key in a binary logarithmic scale.
++
++*TRACEFS_HIST_KEY_USECS* for use with "common_timestamp" or TRACEFS_HIST_TIMESTAMP,
++in which case it will show the timestamp in microseconds instead of nanoseconds.
++
++RETURN VALUE
++------------
++*tracefs_hist_get_name*() returns the name of the histogram or NULL on error.
++The returned string belongs to the histogram object and is freed with the histogram
++by *tracefs_hist_free*().
++
++*tracefs_hist_get_event*() returns the event name of the histogram or NULL on error.
++The returned string belongs to the histogram object and is freed with the histogram
++by *tracefs_hist_free*().
++
++*tracefs_hist_get_system*() returns the system name of the histogram or NULL on error.
++The returned string belongs to the histogram object and is freed with the histogram
++by *tracefs_hist_free*().
++
++*tracefs_hist_alloc_nd*() returns an allocated histogram descriptor which must
++be freed by *tracefs_hist_free*() or NULL on error.
++
++*tracefs_hist_get_name*(), *tracefs_hist_get_event*() and *tracefs_hist_get_system*()
++return strings owned by the histogram object.
++
++All the other functions return zero on success or -1 on error.
++
++EXAMPLE
++-------
++[source,c]
++--
++#include <stdlib.h>
++#include <unistd.h>
++#include <tracefs.h>
++
++enum commands {
++	START,
++	PAUSE,
++	CONT,
++	RESET,
++	DELETE,
++	SHOW,
++};
++
++static void parse_system_event(char *group, char **system, char **event)
++{
++	*system = strtok(group, "/");
++	*event = strtok(NULL, "/");
++	if (!*event) {
++		*event = *system;
++		*system = NULL;
++	}
++}
++
++static int parse_keys(char *keys, struct tracefs_hist_axis **axes)
++{
++	char *sav = NULL;
++	char *key;
++	int cnt = 0;
++
++	for (key = strtok_r(keys, ",", &sav); key; key = strtok_r(NULL, ",", &sav)) {
++		struct tracefs_hist_axis *ax;
++		char *att;
++
++		ax = realloc(*axes, sizeof(*ax) * (cnt + 2));
++		if (!ax) {
++			perror("Failed to allocate axes");
++			exit(-1);
++		}
++		ax[cnt].key = key;
++		ax[cnt].type = 0;
++		ax[cnt + 1].key = NULL;
++		ax[cnt + 1].type = 0;
++
++		*axes = ax;
++
++		att = strchr(key, '.');
++		if (att) {
++			*att++ = '\0';
++			if (strcmp(att, "hex") == 0)
++				ax[cnt].type = TRACEFS_HIST_KEY_HEX;
++			else if (strcmp(att, "sym") == 0)
++				ax[cnt].type = TRACEFS_HIST_KEY_SYM;
++			else if (strcmp(att, "sym_offset") == 0)
++				ax[cnt].type = TRACEFS_HIST_KEY_SYM_OFFSET;
++			else if (strcmp(att, "syscall") == 0)
++				ax[cnt].type = TRACEFS_HIST_KEY_SYSCALL;
++			else if (strcmp(att, "exec") == 0)
++				ax[cnt].type = TRACEFS_HIST_KEY_EXECNAME;
++			else if (strcmp(att, "log") == 0)
++				ax[cnt].type = TRACEFS_HIST_KEY_LOG;
++			else if (strcmp(att, "usecs") == 0)
++				ax[cnt].type = TRACEFS_HIST_KEY_USECS;
++			else {
++				fprintf(stderr, "Undefined attribute '%s'\n", att);
++				fprintf(stderr,"  Acceptable attributes:\n");
++				fprintf(stderr,"    hex, sym, sym_offset, syscall, exe, log, usecs\n");
++				exit(-1);
++			}
++		}
++		cnt++;
++	}
++	return cnt;
++}
++
++static void process_hist(enum commands cmd, const char *instance_name,
++			 char *group, char *keys, char *vals, char *sort,
++			 char *ascend, char *desc)
++{
++	struct tracefs_instance *instance = NULL;
++	struct tracefs_hist *hist;
++	struct tep_handle *tep;
++	struct tracefs_hist_axis *axes = NULL;
++	char *system;
++	char *event;
++	char *sav;
++	char *val;
++	int ret;
++	int cnt;
++
++	if (instance_name) {
++		instance = tracefs_instance_create(instance_name);
++		if (!instance) {
++			fprintf(stderr, "Failed instance create\n");
++			exit(-1);
++		}
++	}
++
++	tep = tracefs_local_events(NULL);
++	if (!tep) {
++		perror("Could not read events");
++		exit(-1);
++	}
++
++	parse_system_event(group, &system, &event);
++
++	if (cmd == SHOW) {
++		char *content;
++		content = tracefs_event_file_read(instance, system, event,
++						  "hist", NULL);
++		if (!content) {
++			perror("Reading hist file");
++			exit(-1);
++		}
++		printf("%s\n", content);
++		free(content);
++		return;
++	}
++
++	if (!keys) {
++		fprintf(stderr, "Command needs -k option\n");
++		exit(-1);
++	}
++
++	cnt = parse_keys(keys, &axes);
++	if (!cnt) {
++		fprintf(stderr, "No keys??\n");
++		exit(-1);
++	}
++
++	/* Show examples of hist1d and hist2d */
++	switch (cnt) {
++	case 1:
++		hist = tracefs_hist_alloc(tep, system, event,
++					  axes[0].key, axes[0].type);
++		break;
++	case 2:
++		hist = tracefs_hist_alloc_2d(tep, system, event,
++					     axes[0].key, axes[0].type,
++					     axes[1].key, axes[1].type);
++		break;
++	default:
++		/* Really, 1 and 2 could use this too */
++		hist = tracefs_hist_alloc_nd(tep, system, event, axes);
++	}
++	if (!hist) {
++		fprintf(stderr, "Failed hist create\n");
++		exit(-1);
++	}
++
++	if (vals) {
++		sav = NULL;
++		for (val = strtok_r(vals, ",", &sav); val; val = strtok_r(NULL, ",", &sav)) {
++			ret = tracefs_hist_add_value(hist, val);
++			if (ret) {
++				fprintf(stderr, "Failed to add value %s\n", val);
++				exit(-1);
++			}
++		}
++	}
++
++	if (sort) {
++		sav = NULL;
++		for (val = strtok_r(sort, ",", &sav); val; val = strtok_r(NULL, ",", &sav)) {
++			ret = tracefs_hist_add_sort_key(hist, val);
++			if (ret) {
++				fprintf(stderr, "Failed to add sort key/val %s\n", val);
++				exit(-1);
++			}
++		}
++	}
++
++	if (ascend) {
++		sav = NULL;
++		for (val = strtok_r(ascend, ",", &sav); val; val = strtok_r(NULL, ",", &sav)) {
++			ret = tracefs_hist_sort_key_direction(hist, val, TRACEFS_HIST_SORT_ASCENDING);
++			if (ret) {
++				fprintf(stderr, "Failed to add ascending key/val %s\n", val);
++				exit(-1);
++			}
++		}
++	}
++
++	if (desc) {
++		sav = NULL;
++		for (val = strtok_r(desc, ",", &sav); val; val = strtok_r(NULL, ",", &sav)) {
++			ret = tracefs_hist_sort_key_direction(hist, val, TRACEFS_HIST_SORT_DESCENDING);
++			if (ret) {
++				fprintf(stderr, "Failed to add descending key/val %s\n", val);
++				exit(-1);
++			}
++		}
++	}
++
++	tracefs_error_clear(instance);
++
++	switch (cmd) {
++	case START:
++		ret = tracefs_hist_start(instance, hist);
++		if (ret) {
++			char *err = tracefs_error_last(instance);
++			if (err)
++				fprintf(stderr, "\n%s\n", err);
++		}
++		break;
++	case PAUSE:
++		ret = tracefs_hist_pause(instance, hist);
++		break;
++	case CONT:
++		ret = tracefs_hist_continue(instance, hist);
++		break;
++	case RESET:
++		ret = tracefs_hist_reset(instance, hist);
++		break;
++	case DELETE:
++		ret = tracefs_hist_destroy(instance, hist);
++		break;
++	case SHOW:
++		/* Show was already done */
++		break;
++	}
++	if (ret)
++		fprintf(stderr, "Failed: command\n");
++	exit(ret);
++}
++
++int main (int argc, char **argv, char **env)
++{
++	enum commands cmd;
++	char *instance = NULL;
++	char *cmd_str;
++	char *event = NULL;
++	char *keys = NULL;
++	char *vals = NULL;
++	char *sort = NULL;
++	char *desc = NULL;
++	char *ascend = NULL;
++
++	if (argc < 2) {
++		fprintf(stderr, "usage: %s command [-B instance][-e [system/]event][-k keys][-v vals][-s sort]\n", argv[0]);
++		fprintf(stderr, "      [-a ascending][-d descending]\n");
++		exit(-1);
++	}
++
++	cmd_str = argv[1];
++
++	if (!strcmp(cmd_str, "start"))
++		cmd = START;
++	else if (!strcmp(cmd_str, "pause"))
++		cmd = PAUSE;
++	else if (!strcmp(cmd_str, "cont"))
++		cmd = CONT;
++	else if (!strcmp(cmd_str, "reset"))
++		cmd = RESET;
++	else if (!strcmp(cmd_str, "delete"))
++		cmd = DELETE;
++	else if (!strcmp(cmd_str, "show"))
++		cmd = SHOW;
++	else {
++		fprintf(stderr, "Unknown command %s\n", cmd_str);
++		exit(-1);
++	}
++
++	for (;;) {
++		int c;
++
++		c = getopt(argc - 1, argv + 1, "e:k:v:B:s:d:a:");
++		if (c == -1)
++			break;
++
++		switch (c) {
++		case 'e':
++			event = optarg;
++			break;
++		case 'k':
++			keys = optarg;
++			break;
++		case 'v':
++			vals = optarg;
++			break;
++		case 'B':
++			instance = optarg;
++			break;
++		case 's':
++			sort = optarg;
++			break;
++		case 'd':
++			desc = optarg;
++			break;
++		case 'a':
++			ascend = optarg;
++			break;
++		}
++	}
++	if (!event) {
++		event = "kmem/kmalloc";
++		if (!keys)
++			keys = "call_site.sym,bytes_req";
++		if (!vals)
++			vals = "bytes_alloc";
++		if (!sort)
++			sort = "bytes_req,bytes_alloc";
++		if (!desc)
++			desc = "bytes_alloc";
++	}
++	process_hist(cmd, instance, event, keys, vals, sort, ascend, desc);
++}
++--
++
++FILES
++-----
++[verse]
++--
++*tracefs.h*
++	Header file to include in order to have access to the library APIs.
++*-ltracefs*
++	Linker switch to add when building a program that uses the library.
++--
++
++SEE ALSO
++--------
++_libtracefs(3)_,
++_libtraceevent(3)_,
++_trace-cmd(1)_,
++_tracefs_hist_pause(3)_,
++_tracefs_hist_continue(3)_,
++_tracefs_hist_reset(3)_
++
++AUTHOR
++------
++[verse]
++--
++*Steven Rostedt* <rostedt@goodmis.org>
++*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>
++*sameeruddin shaik* <sameeruddin.shaik8@gmail.com>
++--
++REPORTING BUGS
++--------------
++Report bugs to  <linux-trace-devel@vger.kernel.org>
++
++LICENSE
++-------
++libtracefs is Free Software licensed under the GNU LGPL 2.1
++
++RESOURCES
++---------
++https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
++
++COPYING
++-------
++Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
++the terms of the GNU Public License (GPL).
 diff --git a/Documentation/libtracefs-hist.txt b/Documentation/libtracefs-hist.txt
-index 9a86df52923a..858782b70dc2 100644
+index d7ab709b6e94..9a86df52923a 100644
 --- a/Documentation/libtracefs-hist.txt
 +++ b/Documentation/libtracefs-hist.txt
-@@ -459,12 +459,12 @@ FILES
+@@ -3,9 +3,8 @@ libtracefs(3)
  
- SEE ALSO
+ NAME
+ ----
+-tracefs_hist_alloc, tracefs_hist_free, tracefs_hist_add_key, tracefs_hist_add_value, tracefs_hist_add_name, tracefs_hist_start,
+-tracefs_hist_destroy, tracefs_hist_add_sort_key, tracefs_hist_set_sort_key, tracefs_hist_sort_key_direction
+-tracefs_hist_echo_cmd, tracefs_hist_get_name, tracefs_hist_get_event, tracefs_hist_get_system - Create, update and describe event histograms
++tracefs_hist_alloc, tracefs_hist_free, tracefs_hist_add_key, tracefs_hist_add_value,
++tracefs_hist_add_name, tracefs_hist_start, tracefs_hist_destroy - Create and destroy event histograms
+ 
+ SYNOPSIS
  --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_,
--_tracefs_hist_pause(3)_,
--_tracefs_hist_continue(3)_,
--_tracefs_hist_reset(3)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1),
-+*tracefs_hist_pause*(3),
-+*tracefs_hist_continue*(3),
-+*tracefs_hist_reset*(3)
+@@ -45,37 +44,6 @@ void *tracefs_hist_free*(struct tracefs_hist pass:[*]_hist_);
+ int *tracefs_hist_add_key*(struct tracefs_hist pass:[*]_hist_, const char pass:[*]_key_,
+ 			 enum tracefs_hist_key_type _type_);
+ int *tracefs_hist_add_value*(struct tracefs_hist pass:[*]_hist_, const char pass:[*]_value_);
+-int *tracefs_hist_add_sort_key*(struct tracefs_hist pass:[*]_hist_,
+-			      const char pass:[*]_sort_key_);
+-
+-int *tracefs_hist_set_sort_key*(struct tracefs_hist pass:[*]_hist_,
+-			      const char pass:[*]_sort_key_, _..._);
+-int *tracefs_hist_sort_key_direction*(struct tracefs_hist pass:[*]_hist_,
+-				    const char pass:[*]_sort_key_,
+-				    enum tracefs_hist_sort_direction _dir_);
+-
+-int *tracefs_hist_add_name*(struct tracefs_hist pass:[*]_hist_, const char pass:[*]_name_);
+-
+-int *tracefs_hist_append_filter*(struct tracefs_hist pass:[*]_hist_,
+-			       enum tracefs_filter _type_,
+-			       const char pass:[*]_field_,
+-			       enum tracefs_compare _compare_,
+-			       const char pass:[*]_val_);
+-
+-int *tracefs_hist_echo_cmd*(struct trace_seq pass:[*]_s_, struct tracefs_instance pass:[*]_instance_,
+-			  struct tracefs_hist pass:[*]_hist_,
+-			  enum tracefs_hist_command _command_);
+-
+-int *tracefs_hist_command*(struct tracefs_instance pass:[*]_instance_,
+-			 struct tracefs_hist pass:[*]_hist_,
+-			 enum tracefs_hist_command _command_);
+-
+-const char pass:[*]*tracefs_hist_get_name*(struct tracefs_hist pass:[*]_hist_);
+-
+-const char pass:[*]*tracefs_hist_get_event*(struct tracefs_hist pass:[*]_hist_);
+-
+-const char pass:[*]*tracefs_hist_get_system*(struct tracefs_hist pass:[*]_hist_);
+-
+ --
  
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-instances-affinity.txt b/Documentation/libtracefs-instances-affinity.txt
-index f3e16d972812..c5fa2d8b820c 100644
---- a/Documentation/libtracefs-instances-affinity.txt
-+++ b/Documentation/libtracefs-instances-affinity.txt
-@@ -35,7 +35,7 @@ The numbers do not need to be in order except for ranges, where the second numbe
- must be equal to or greater than the first.
+ DESCRIPTION
+@@ -128,85 +96,6 @@ key was hit. The _hist_ is the histogram descriptor to add the value to.
+ The _value_ is a field in the histogram to add to when an instance of the
+ key is hit.
  
- The *tracefs_instance_set_affinity_set()* function takes a CPU set defined by
--*CPU_SET(3)*. The size of the set defined by _set_size_ is the size in bytes of
-+*CPU_SET*(3). The size of the set defined by _set_size_ is the size in bytes of
- _set_. If _set_ is NULL then all the CPUs on the system will be set, and _set_size_
- is ignored.
+-*tracefs_hist_add_sort_key*() will add a key to sort on. The _hist_ is the
+-histogram descriptor to add the sort key to. The _sort_key_ is a string
+-that must match either an already defined key of the histogram, or an already
+-defined value. If _hist_  already has sorting keys (previously added) the new
+-_sort_key_ will have lower priority(be secondary or so on) when sorting.
+-
+-*tracefs_hist_set_sort_key*() will reset the list of key to sort on. The _hist_ is
+-the histogram descriptor to reset the sort key to. The _sort_key_ is a string
+-that must match either an already defined key of the histogram, or an already
+-defined value. Multiple sort keys may be added to denote a secondary, sort order
+-and so on, but all sort keys must match an existing key or value, or be
+-TRACEFS_HIST_HITCOUNT. The last parameter of *tracefs_hist_add_sort_key*() must
+-be NULL.
+-
+-*tracefs_hist_sort_key_direction*() allows to change the direction of an
+-existing sort key of _hist_. The _sort_key_ is the sort key to change, and
+-_dir_ can be either TRACEFS_HIST_SORT_ASCENDING or TRACEFS_HIST_SORT_DESCENDING,
+-to make the direction of the sort key either ascending or descending respectively.
+-
+-*tracefs_hist_add_name*() adds a name to a histogram. A histogram may be
+-named and if the name matches between more than one event, and they have
+-compatible keys, the multiple histograms with the same name will be merged
+-into a single histogram (shown by either event's hist file). The _hist_
+-is the histogram to name, and the _name_ is the name to give it.
+-
+-*tracefs_hist_append_filter*() creates a filter or appends to it for the
+-histogram  event. Depending on _type_, it will build a string of tokens for
+-parenthesis or logic statements, or it may add a comparison of _field_
+-to _val_ based on _compare_.
+-
+-If _type_ is:
+-*TRACEFS_FILTER_COMPARE*     -  See below
+-*TRACEFS_FILTER_AND*         -  Append "&&" to the filter
+-*TRACEFS_FILTER_OR*          -  Append "||" to the filter
+-*TRACEFS_FILTER_NOT*         -  Append "!" to the filter
+-*TRACEFS_FILTER_OPEN_PAREN*  -  Append "(" to the filter
+-*TRACEFS_FILTER_CLOSE_PAREN* -  Append ")" to the filter
+-
+-_field_, _compare_, and _val_ are ignored unless _type_ is equal to
+-*TRACEFS_FILTER_COMPARE*, then _compare_ will be used for the following:
+-
+-*TRACEFS_COMPARE_EQ* - _field_ == _val_
+-
+-*TRACEFS_COMPARE_NE* - _field_ != _val_
+-
+-*TRACEFS_COMPARE_GT* - _field_ > _val_
+-
+-*TRACEFS_COMPARE_GE* - _field_ >= _val_
+-
+-*TRACEFS_COMPARE_LT* - _field_ < _val_
+-
+-*TRACEFS_COMPARE_LE* - _field_ <pass:[=] _val_
+-
+-*TRACEFS_COMPARE_RE* - _field_ ~ "_val_" : where _field_ is a string.
+-
+-*TRACEFS_COMPARE_AND* - _field_ & _val_ : where _field_ is a flags field.
+-
+-*trace_hist_echo_cmd*() prints the commands needed to create the given histogram
+-in the given _instance_, or NULL for the top level, into the _seq_.
+-The command that is printed is described by _command_ and shows the functionality
+-that would be done by *tracefs_hist_command*(3).
+-
+-*tracefs_hist_command*() is called to process a command on the histogram
+-_hist_ for its event in the given _instance_, or NULL for the top level.
+-The _cmd_ can be one of:
+-
+-*TRACEFS_HIST_CMD_START* or zero to start execution of the histogram.
+-
+-*TRACEFS_HIST_CMD_PAUSE* to pause the given histogram.
+-
+-*TRACEFS_HIST_CMD_CONT* to continue a paused histogram.
+-
+-*TRACEFS_HIST_CMD_CLEAR* to reset the values of a histogram.
+-
+-*TRACEFS_HIST_CMD_DESTROY* to destroy the histogram (undo a START).
+-
+-The below functions are wrappers to tracefs_hist_command() to make the
+-calling conventions a bit easier to understand what is happening.
+-
+ KEY TYPES
+ ---------
  
-@@ -140,9 +140,9 @@ FILES
+@@ -238,24 +127,9 @@ in which case it will show the timestamp in microseconds instead of nanoseconds.
  
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
+ RETURN VALUE
+ ------------
+-*tracefs_hist_get_name*() returns the name of the histogram or NULL on error.
+-The returned string belongs to the histogram object and is freed with the histogram
+-by *tracefs_hist_free*().
+-
+-*tracefs_hist_get_event*() returns the event name of the histogram or NULL on error.
+-The returned string belongs to the histogram object and is freed with the histogram
+-by *tracefs_hist_free*().
+-
+-*tracefs_hist_get_system*() returns the system name of the histogram or NULL on error.
+-The returned string belongs to the histogram object and is freed with the histogram
+-by *tracefs_hist_free*().
+-
+ *tracefs_hist_alloc_nd*() returns an allocated histogram descriptor which must
+ be freed by *tracefs_hist_free*() or NULL on error.
  
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-instances-file-manip.txt b/Documentation/libtracefs-instances-file-manip.txt
-index 369059482a56..8c04240523d3 100644
---- a/Documentation/libtracefs-instances-file-manip.txt
-+++ b/Documentation/libtracefs-instances-file-manip.txt
-@@ -170,9 +170,9 @@ FILES
+-*tracefs_hist_get_name*(), *tracefs_hist_get_event*() and *tracefs_hist_get_system*()
+-return strings owned by the histogram object.
+-
+ All the other functions return zero on success or -1 on error.
  
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-instances-files.txt b/Documentation/libtracefs-instances-files.txt
-index c289c82bc4e8..e2985578a5a5 100644
---- a/Documentation/libtracefs-instances-files.txt
-+++ b/Documentation/libtracefs-instances-files.txt
-@@ -144,9 +144,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-instances-manage.txt b/Documentation/libtracefs-instances-manage.txt
-index 2b0b662f7730..31e77a39c594 100644
---- a/Documentation/libtracefs-instances-manage.txt
-+++ b/Documentation/libtracefs-instances-manage.txt
-@@ -109,9 +109,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-instances-utils.txt b/Documentation/libtracefs-instances-utils.txt
-index 8a2b6149073f..a79cc3447d80 100644
---- a/Documentation/libtracefs-instances-utils.txt
-+++ b/Documentation/libtracefs-instances-utils.txt
-@@ -98,9 +98,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-kprobes.txt b/Documentation/libtracefs-kprobes.txt
-index e488f9a151b8..593ef9ee11fb 100644
---- a/Documentation/libtracefs-kprobes.txt
-+++ b/Documentation/libtracefs-kprobes.txt
-@@ -243,9 +243,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-log.txt b/Documentation/libtracefs-log.txt
-index 7b562c77d11d..4b72df115e50 100644
---- a/Documentation/libtracefs-log.txt
-+++ b/Documentation/libtracefs-log.txt
-@@ -47,9 +47,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-marker.txt b/Documentation/libtracefs-marker.txt
-index fdab4a46030f..adc5419c44dc 100644
---- a/Documentation/libtracefs-marker.txt
-+++ b/Documentation/libtracefs-marker.txt
-@@ -86,9 +86,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_,
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1),
- Documentation/trace/ftrace.rst from the Linux kernel tree
- 
- AUTHOR
-diff --git a/Documentation/libtracefs-marker_raw.txt b/Documentation/libtracefs-marker_raw.txt
-index e4ebadc2b655..9682f2088592 100644
---- a/Documentation/libtracefs-marker_raw.txt
-+++ b/Documentation/libtracefs-marker_raw.txt
-@@ -72,9 +72,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_,
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1),
- Documentation/trace/ftrace.rst from the Linux kernel tree
- 
- AUTHOR
-diff --git a/Documentation/libtracefs-option-get.txt b/Documentation/libtracefs-option-get.txt
-index 815e77f84505..dce5afab4894 100644
---- a/Documentation/libtracefs-option-get.txt
-+++ b/Documentation/libtracefs-option-get.txt
-@@ -105,9 +105,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-option-misc.txt b/Documentation/libtracefs-option-misc.txt
-index 552aaed56ce3..c690bfdf503b 100644
---- a/Documentation/libtracefs-option-misc.txt
-+++ b/Documentation/libtracefs-option-misc.txt
-@@ -71,9 +71,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-options.txt b/Documentation/libtracefs-options.txt
-index b8f0edff52b4..2c720f2fc220 100644
---- a/Documentation/libtracefs-options.txt
-+++ b/Documentation/libtracefs-options.txt
-@@ -129,9 +129,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_,
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1),
- _Documentation/trace/ftrace.rst_ from the Linux kernel tree.
- 
- AUTHOR
-diff --git a/Documentation/libtracefs-sql.txt b/Documentation/libtracefs-sql.txt
-index b7ddbb206b2a..ba4271ee99bb 100644
---- a/Documentation/libtracefs-sql.txt
-+++ b/Documentation/libtracefs-sql.txt
-@@ -565,32 +565,32 @@ FILES
- 
- SEE ALSO
- --------
--_sqlhist(1)_,
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_,
--_tracefs_synth_init(3)_,
--_tracefs_synth_add_match_field(3)_,
--_tracefs_synth_add_compare_field(3)_,
--_tracefs_synth_add_start_field(3)_,
--_tracefs_synth_add_end_field(3)_,
--_tracefs_synth_append_start_filter(3)_,
--_tracefs_synth_append_end_filter(3)_,
--_tracefs_synth_create(3)_,
--_tracefs_synth_destroy(3)_,
--_tracefs_synth_free(3)_,
--_tracefs_synth_echo_cmd(3)_,
--_tracefs_hist_alloc(3)_,
--_tracefs_hist_alloc_2d(3)_,
--_tracefs_hist_alloc_nd(3)_,
--_tracefs_hist_free(3)_,
--_tracefs_hist_add_key(3)_,
--_tracefs_hist_add_value(3)_,
--_tracefs_hist_add_name(3)_,
--_tracefs_hist_start(3)_,
--_tracefs_hist_destory(3)_,
--_tracefs_hist_add_sort_key(3)_,
--_tracefs_hist_sort_key_direction(3)_
-+*sqlhist*(1),
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1),
-+*tracefs_synth_init*(3),
-+*tracefs_synth_add_match_field*(3),
-+*tracefs_synth_add_compare_field*(3),
-+*tracefs_synth_add_start_field*(3),
-+*tracefs_synth_add_end_field*(3),
-+*tracefs_synth_append_start_filter*(3),
-+*tracefs_synth_append_end_filter*(3),
-+*tracefs_synth_create*(3),
-+*tracefs_synth_destroy*(3),
-+*tracefs_synth_free*(3),
-+*tracefs_synth_echo_cmd*(3),
-+*tracefs_hist_alloc*(3),
-+*tracefs_hist_alloc_2d*(3),
-+*tracefs_hist_alloc_nd*(3),
-+*tracefs_hist_free*(3),
-+*tracefs_hist_add_key*(3),
-+*tracefs_hist_add_value*(3),
-+*tracefs_hist_add_name*(3),
-+*tracefs_hist_start*(3),
-+*tracefs_hist_destory*(3),
-+*tracefs_hist_add_sort_key*(3),
-+*tracefs_hist_sort_key_direction*(3)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-stream.txt b/Documentation/libtracefs-stream.txt
-index d8c61c6b2993..8008be810a33 100644
---- a/Documentation/libtracefs-stream.txt
-+++ b/Documentation/libtracefs-stream.txt
-@@ -96,9 +96,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_,
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1),
- Documentation/trace/ftrace.rst from the Linux kernel tree
- 
- AUTHOR
-diff --git a/Documentation/libtracefs-synth-info.txt b/Documentation/libtracefs-synth-info.txt
-index 1bfee20608d3..6ee0320b61a5 100644
---- a/Documentation/libtracefs-synth-info.txt
-+++ b/Documentation/libtracefs-synth-info.txt
-@@ -243,34 +243,34 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_,
--_tracefs_hist_alloc(3)_,
--_tracefs_hist_alloc_2d(3)_,
--_tracefs_hist_alloc_nd(3)_,
--_tracefs_hist_free(3)_,
--_tracefs_hist_add_key(3)_,
--_tracefs_hist_add_value(3)_,
--_tracefs_hist_add_name(3)_,
--_tracefs_hist_start(3)_,
--_tracefs_hist_destory(3)_,
--_tracefs_hist_add_sort_key(3)_,
--_tracefs_hist_sort_key_direction(3)_
--_tracefs_synth_alloc(3)_
--_tracefs_synth_add_match_field(3)_
--_tracefs_synth_add_compare_field(3)_
--_tracefs_synth_add_start_field(3)_
--_tracefs_synth_add_end_field(3)_
--_tracefs_synth_append_start_filter(3)_
--_tracefs_synth_append_end_filter(3)_
--_tracefs_synth_free(3)_
--_tracefs_synth_create(3)_
--_tracefs_synth_destroy(3)_
--_tracefs_synth_complete(3)_
--_tracefs_synth_trace(3)_
--_tracefs_synth_snapshot(3)_
--_tracefs_synth_save(3)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1),
-+*tracefs_hist_alloc*(3),
-+*tracefs_hist_alloc_2d*(3),
-+*tracefs_hist_alloc_nd*(3),
-+*tracefs_hist_free*(3),
-+*tracefs_hist_add_key*(3),
-+*tracefs_hist_add_value*(3),
-+*tracefs_hist_add_name*(3),
-+*tracefs_hist_start*(3),
-+*tracefs_hist_destory*(3),
-+*tracefs_hist_add_sort_key*(3),
-+*tracefs_hist_sort_key_direction*(3),
-+*tracefs_synth_alloc*(3),
-+*tracefs_synth_add_match_field*(3),
-+*tracefs_synth_add_compare_field*(3),
-+*tracefs_synth_add_start_field*(3),
-+*tracefs_synth_add_end_field*(3),
-+*tracefs_synth_append_start_filter*(3),
-+*tracefs_synth_append_end_filter*(3),
-+*tracefs_synth_free*(3),
-+*tracefs_synth_create*(3),
-+*tracefs_synth_destroy*(3),
-+*tracefs_synth_complete*(3),
-+*tracefs_synth_trace*(3),
-+*tracefs_synth_snapshot*(3),
-+*tracefs_synth_save*(3),
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-synth.txt b/Documentation/libtracefs-synth.txt
-index e847d6d3e9d7..c57725d5ebaf 100644
---- a/Documentation/libtracefs-synth.txt
-+++ b/Documentation/libtracefs-synth.txt
-@@ -310,37 +310,37 @@ FILES
- 
- SEE ALSO
- --------
--_tracefs_synth_create_(3),
--_tracefs_synth_destroy_(3),
--_tracfes_synth_echo_cmd(3),
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_,
--_tracefs_hist_alloc(3)_,
--_tracefs_hist_alloc_2d(3)_,
--_tracefs_hist_alloc_nd(3)_,
--_tracefs_hist_free(3)_,
--_tracefs_hist_add_key(3)_,
--_tracefs_hist_add_value(3)_,
--_tracefs_hist_add_name(3)_,
--_tracefs_hist_start(3)_,
--_tracefs_hist_destory(3)_,
--_tracefs_hist_add_sort_key(3)_,
--_tracefs_hist_sort_key_direction(3)_
--_tracefs_synth_create(3)_
--_tracefs_synth_destroy(3)_
--_tracefs_synth_complete(3)_
--_tracefs_synth_trace(3)_
--_tracefs_synth_snapshot(3)_
--_tracefs_synth_save(3)_
--_tracefs_synth_echo_cmd(3)_
--_tracefs_synth_get_start_hist(3)_
--_tracefs_synth_get_name(3)_
--_tracefs_synth_raw_fmt(3)_
--_tracefs_synth_show_event(3)_
--_tracefs_synth_show_start_hist(3)_
--_tracefs_synth_show_end_hist(3)_
--_tracefs_synth_get_event(3)_
-+*tracefs_synth_create*(3),
-+*tracefs_synth_destroy*(3),
-+*tracfes_synth_echo_cmd*(3),
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1),
-+*tracefs_hist_alloc*(3),
-+*tracefs_hist_alloc_2d*(3),
-+*tracefs_hist_alloc_nd*(3),
-+*tracefs_hist_free*(3),
-+*tracefs_hist_add_key*(3),
-+*tracefs_hist_add_value*(3),
-+*tracefs_hist_add_name*(3),
-+*tracefs_hist_start*(3),
-+*tracefs_hist_destory*(3),
-+*tracefs_hist_add_sort_key*(3),
-+*tracefs_hist_sort_key_direction*(3),
-+*tracefs_synth_create*(3),
-+*tracefs_synth_destroy*(3),
-+*tracefs_synth_complete*(3),
-+*tracefs_synth_trace*(3),
-+*tracefs_synth_snapshot*(3),
-+*tracefs_synth_save*(3),
-+*tracefs_synth_echo_cmd*(3),
-+*tracefs_synth_get_start_hist*(3),
-+*tracefs_synth_get_name*(3),
-+*tracefs_synth_raw_fmt*(3),
-+*tracefs_synth_show_event*(3),
-+*tracefs_synth_show_start_hist*(3),
-+*tracefs_synth_show_end_hist*(3),
-+*tracefs_synth_get_event*(3),
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-synth2.txt b/Documentation/libtracefs-synth2.txt
-index c7da04872668..7e8e6cc84882 100644
---- a/Documentation/libtracefs-synth2.txt
-+++ b/Documentation/libtracefs-synth2.txt
-@@ -224,36 +224,36 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_,
--_tracefs_hist_alloc(3)_,
--_tracefs_hist_alloc_2d(3)_,
--_tracefs_hist_alloc_nd(3)_,
--_tracefs_hist_free(3)_,
--_tracefs_hist_add_key(3)_,
--_tracefs_hist_add_value(3)_,
--_tracefs_hist_add_name(3)_,
--_tracefs_hist_start(3)_,
--_tracefs_hist_destory(3)_,
--_tracefs_hist_add_sort_key(3)_,
--_tracefs_hist_sort_key_direction(3)_
--_tracefs_synth_alloc(3)_
--_tracefs_synth_add_match_field(3)_
--_tracefs_synth_add_compare_field(3)_
--_tracefs_synth_add_start_field(3)_
--_tracefs_synth_add_end_field(3)_
--_tracefs_synth_append_start_filter(3)_
--_tracefs_synth_append_end_filter(3)_
--_tracefs_synth_free(3)_
--_tracefs_synth_echo_cmd(3)_
--_tracefs_synth_get_start_hist(3)_
--_tracefs_synth_get_name(3)_
--_tracefs_synth_raw_fmt(3)_
--_tracefs_synth_show_event(3)_
--_tracefs_synth_show_start_hist(3)_
--_tracefs_synth_show_end_hist(3)_
--_tracefs_synth_get_event(3)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1),
-+*tracefs_hist_alloc*(3),
-+*tracefs_hist_alloc_2d*(3),
-+*tracefs_hist_alloc_nd*(3),
-+*tracefs_hist_free*(3),
-+*tracefs_hist_add_key*(3),
-+*tracefs_hist_add_value*(3),
-+*tracefs_hist_add_name*(3),
-+*tracefs_hist_start*(3),
-+*tracefs_hist_destory*(3),
-+*tracefs_hist_add_sort_key*(3),
-+*tracefs_hist_sort_key_direction*(3),
-+*tracefs_synth_alloc*(3),
-+*tracefs_synth_add_match_field*(3),
-+*tracefs_synth_add_compare_field*(3),
-+*tracefs_synth_add_start_field*(3),
-+*tracefs_synth_add_end_field*(3),
-+*tracefs_synth_append_start_filter*(3),
-+*tracefs_synth_append_end_filter*(3),
-+*tracefs_synth_free*(3),
-+*tracefs_synth_echo_cmd*(3),
-+*tracefs_synth_get_start_hist*(3),
-+*tracefs_synth_get_name*(3),
-+*tracefs_synth_raw_fmt*(3),
-+*tracefs_synth_show_event*(3),
-+*tracefs_synth_show_start_hist*(3),
-+*tracefs_synth_show_end_hist*(3),
-+*tracefs_synth_get_event*(3),
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-traceon.txt b/Documentation/libtracefs-traceon.txt
-index 2b720c2ce368..8f64928e3b60 100644
---- a/Documentation/libtracefs-traceon.txt
-+++ b/Documentation/libtracefs-traceon.txt
-@@ -122,9 +122,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-tracer.txt b/Documentation/libtracefs-tracer.txt
-index cca0e33af6ca..ea57962d9163 100644
---- a/Documentation/libtracefs-tracer.txt
-+++ b/Documentation/libtracefs-tracer.txt
-@@ -191,9 +191,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs-utils.txt b/Documentation/libtracefs-utils.txt
-index aa8284a1ab1e..9478911afbae 100644
---- a/Documentation/libtracefs-utils.txt
-+++ b/Documentation/libtracefs-utils.txt
-@@ -79,9 +79,9 @@ FILES
- 
- SEE ALSO
- --------
--_libtracefs(3)_,
--_libtraceevent(3)_,
--_trace-cmd(1)_
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
- 
- AUTHOR
- ------
-diff --git a/Documentation/libtracefs.txt b/Documentation/libtracefs.txt
-index 0123c0bbf47f..e7eb090b8268 100644
---- a/Documentation/libtracefs.txt
-+++ b/Documentation/libtracefs.txt
-@@ -237,8 +237,8 @@ FILES
- 
- SEE ALSO
- --------
--_libtraceevent(3)_
--_trace-cmd(1)_
-+*libtraceevent*(3),
-+*trace-cmd*(1)
- 
- AUTHOR
- ------
+ If *tracefs_hist_start*() returns an error, a message may be displayed
 -- 
 2.33.0
 
