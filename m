@@ -2,35 +2,35 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2C6FC4167D
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 18 Jan 2022 20:43:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72C12C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 18 Jan 2022 20:43:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343795AbiARUne (ORCPT
+        id S1349324AbiARUnf (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 18 Jan 2022 15:43:34 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:43836 "EHLO
+        Tue, 18 Jan 2022 15:43:35 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:43832 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345731AbiARUnc (ORCPT
+        with ESMTP id S1345711AbiARUnc (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 18 Jan 2022 15:43:32 -0500
 Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id DF61220B927E;
+        by linux.microsoft.com (Postfix) with ESMTPSA id AAF8420B927D;
         Tue, 18 Jan 2022 12:43:31 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DF61220B927E
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AAF8420B927D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1642538612;
-        bh=EnTL8pn1hfKn0GymHIrDuB9J5ln38/jzogVDgfGvPy0=;
+        s=default; t=1642538611;
+        bh=Xllnhc2NZewvYwvrWoFMtROtoHHNqU9MMDssi+lUA2Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bw1+jqE5pIL45F+4KAXFBnWFTt+o3Go7AGY0vRBVDXl54Vkw3nVq4SnshNTSqH/1Q
-         iu74QkRYvrhYEUiJP00+ZVHOqEhutfJDZ/BkHuuds1CpMQzH1Frn+gQfpDbRTgMfaL
-         LDDFrzQTc59jkX7dp/C0YOUSqEnH5BaO3xm8bFMA=
+        b=TpIEurxmK9Ll6Wy+igZ3atzsgL2oLF3sz0t5s05iKfIN00TxThDWbcpFOdJJ/gT80
+         hwVbMCjUMQ2Dr7anVTWLQf6zh89Xc5dUhwu+cPuTFtJ02A/v1C2qp1bWnMwzROCjR2
+         w/bE2ZcrNwK7o1A/0r33PFjT/XxRfVlesP+HTp3s=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         beaub@linux.microsoft.com
-Subject: [PATCH v10 06/12] user_events: Validate user payloads for size and null termination
-Date:   Tue, 18 Jan 2022 12:43:20 -0800
-Message-Id: <20220118204326.2169-7-beaub@linux.microsoft.com>
+Subject: [PATCH v10 05/12] user_events: Optimize writing events by only copying data once
+Date:   Tue, 18 Jan 2022 12:43:19 -0800
+Message-Id: <20220118204326.2169-6-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20220118204326.2169-1-beaub@linux.microsoft.com>
 References: <20220118204326.2169-1-beaub@linux.microsoft.com>
@@ -38,304 +38,215 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add validation to ensure data is at or greater than the min size for the
-fields of the event. If a dynamic array is used and is a type of char,
-ensure null termination of the array exists.
+Pass iterator through to probes to allow copying data directly to the
+probe buffers instead of taking multiple copies. Enables eBPF user and
+raw iterator types out to programs for no-copy scenarios.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- kernel/trace/trace_events_user.c | 147 ++++++++++++++++++++++++++++---
- 1 file changed, 133 insertions(+), 14 deletions(-)
+ kernel/trace/trace_events_user.c | 115 +++++++++++++++++++++++--------
+ 1 file changed, 85 insertions(+), 30 deletions(-)
 
 diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 78b6b96c4cfa..2b5e9fdb63a0 100644
+index 371f31472156..78b6b96c4cfa 100644
 --- a/kernel/trace/trace_events_user.c
 +++ b/kernel/trace/trace_events_user.c
-@@ -64,9 +64,11 @@ struct user_event {
- 	struct dyn_event devent;
- 	struct hlist_node node;
- 	struct list_head fields;
-+	struct list_head validators;
- 	atomic_t refcnt;
- 	int index;
- 	int flags;
-+	int min_size;
- };
+@@ -41,6 +41,9 @@
+ #define MAX_FIELD_ARRAY_SIZE 1024
+ #define MAX_FIELD_ARG_NAME 256
  
- /*
-@@ -81,8 +83,17 @@ struct user_event_refs {
++#define MAX_BPF_COPY_SIZE PAGE_SIZE
++#define MAX_STACK_BPF_DATA 512
++
+ static char *register_page_data;
+ 
+ static DEFINE_MUTEX(reg_mutex);
+@@ -78,8 +81,7 @@ struct user_event_refs {
  	struct user_event *events[];
  };
  
-+#define VALIDATOR_ENSURE_NULL (1 << 0)
-+#define VALIDATOR_REL (1 << 1)
-+
-+struct user_event_validator {
-+	struct list_head link;
-+	int offset;
-+	int flags;
-+};
-+
- typedef void (*user_event_func_t) (struct user_event *user, struct iov_iter *i,
--				   void *tpdata);
-+				   void *tpdata, bool *faulted);
+-typedef void (*user_event_func_t) (struct user_event *user,
+-				   void *data, u32 datalen,
++typedef void (*user_event_func_t) (struct user_event *user, struct iov_iter *i,
+ 				   void *tpdata);
  
  static int user_event_parse(char *name, char *args, char *flags,
- 			    struct user_event **newuser);
-@@ -215,6 +226,17 @@ static int user_field_size(const char *type)
- 	return -EINVAL;
+@@ -90,6 +92,20 @@ static u32 user_event_key(char *name)
+ 	return jhash(name, strlen(name), 0);
  }
  
-+static void user_event_destroy_validators(struct user_event *user)
++static __always_inline __must_check
++size_t copy_nofault(void *addr, size_t bytes, struct iov_iter *i)
 +{
-+	struct user_event_validator *validator, *next;
-+	struct list_head *head = &user->validators;
++	size_t ret;
 +
-+	list_for_each_entry_safe(validator, next, head, link) {
-+		list_del(&validator->link);
-+		kfree(validator);
-+	}
++	pagefault_disable();
++
++	ret = copy_from_iter_nocache(addr, bytes, i);
++
++	pagefault_enable();
++
++	return ret;
 +}
 +
- static void user_event_destroy_fields(struct user_event *user)
+ static struct list_head *user_event_get_fields(struct trace_event_call *call)
  {
- 	struct ftrace_event_field *field, *next;
-@@ -230,13 +252,43 @@ static int user_event_add_field(struct user_event *user, const char *type,
- 				const char *name, int offset, int size,
- 				int is_signed, int filter_type)
- {
-+	struct user_event_validator *validator;
- 	struct ftrace_event_field *field;
-+	int validator_flags = 0;
- 
- 	field = kmalloc(sizeof(*field), GFP_KERNEL);
- 
- 	if (!field)
- 		return -ENOMEM;
- 
-+	if (str_has_prefix(type, "__data_loc "))
-+		goto add_validator;
-+
-+	if (str_has_prefix(type, "__rel_loc ")) {
-+		validator_flags |= VALIDATOR_REL;
-+		goto add_validator;
-+	}
-+
-+	goto add_field;
-+
-+add_validator:
-+	if (strstr(type, "char") != 0)
-+		validator_flags |= VALIDATOR_ENSURE_NULL;
-+
-+	validator = kmalloc(sizeof(*validator), GFP_KERNEL);
-+
-+	if (!validator) {
-+		kfree(field);
-+		return -ENOMEM;
-+	}
-+
-+	validator->flags = validator_flags;
-+	validator->offset = offset;
-+
-+	/* Want sequential access when validating */
-+	list_add_tail(&validator->link, &user->validators);
-+
-+add_field:
- 	field->type = type;
- 	field->name = name;
- 	field->offset = offset;
-@@ -246,6 +298,12 @@ static int user_event_add_field(struct user_event *user, const char *type,
- 
- 	list_add(&field->link, &user->fields);
- 
-+	/*
-+	 * Min size from user writes that are required, this does not include
-+	 * the size of trace_entry (common fields).
-+	 */
-+	user->min_size = (offset + size) - sizeof(struct trace_entry);
-+
- 	return 0;
- }
- 
-@@ -517,6 +575,7 @@ static int destroy_user_event(struct user_event *user)
- 	clear_bit(user->index, page_bitmap);
- 	hash_del(&user->node);
- 
-+	user_event_destroy_validators(user);
- 	kfree(user->call.print_fmt);
- 	kfree(EVENT_NAME(user));
- 	kfree(user);
-@@ -538,15 +597,49 @@ static struct user_event *find_user_event(char *name, u32 *outkey)
- 	return NULL;
- }
- 
-+static int user_event_validate(struct user_event *user, void *data, int len)
-+{
-+	struct list_head *head = &user->validators;
-+	struct user_event_validator *validator;
-+	void *pos, *end = data + len;
-+	u32 loc, offset, size;
-+
-+	list_for_each_entry(validator, head, link) {
-+		pos = data + validator->offset;
-+
-+		/* Already done min_size check, no bounds check here */
-+		loc = *(u32 *)pos;
-+		offset = loc & 0xffff;
-+		size = loc >> 16;
-+
-+		if (likely(validator->flags & VALIDATOR_REL))
-+			pos += offset + sizeof(loc);
-+		else
-+			pos = data + offset;
-+
-+		pos += size;
-+
-+		if (unlikely(pos > end))
-+			return -EFAULT;
-+
-+		if (likely(validator->flags & VALIDATOR_ENSURE_NULL))
-+			if (unlikely(*(char *)(pos - 1) != '\0'))
-+				return -EFAULT;
-+	}
-+
-+	return 0;
-+}
-+
+ 	struct user_event *user = (struct user_event *)call->data;
+@@ -525,7 +541,7 @@ static struct user_event *find_user_event(char *name, u32 *outkey)
  /*
   * Writes the user supplied payload out to a trace file.
   */
- static void user_event_ftrace(struct user_event *user, struct iov_iter *i,
--			      void *tpdata)
-+			      void *tpdata, bool *faulted)
+-static void user_event_ftrace(struct user_event *user, void *data, u32 datalen,
++static void user_event_ftrace(struct user_event *user, struct iov_iter *i,
+ 			      void *tpdata)
  {
  	struct trace_event_file *file;
- 	struct trace_entry *entry;
- 	struct trace_event_buffer event_buffer;
-+	size_t size = sizeof(*entry) + i->count;
- 
- 	file = (struct trace_event_file *)tpdata;
- 
-@@ -556,17 +649,25 @@ static void user_event_ftrace(struct user_event *user, struct iov_iter *i,
- 		return;
+@@ -541,41 +557,83 @@ static void user_event_ftrace(struct user_event *user, void *data, u32 datalen,
  
  	/* Allocates and fills trace_entry, + 1 of this is data payload */
--	entry = trace_event_buffer_reserve(&event_buffer, file,
--					   sizeof(*entry) + i->count);
-+	entry = trace_event_buffer_reserve(&event_buffer, file, size);
+ 	entry = trace_event_buffer_reserve(&event_buffer, file,
+-					   sizeof(*entry) + datalen);
++					   sizeof(*entry) + i->count);
  
  	if (unlikely(!entry))
  		return;
  
- 	if (unlikely(!copy_nofault(entry + 1, i->count, i)))
--		__trace_event_discard_commit(event_buffer.buffer,
--					     event_buffer.event);
--	else
--		trace_event_buffer_commit(&event_buffer);
-+		goto discard;
-+
-+	if (!list_empty(&user->validators) &&
-+	    unlikely(user_event_validate(user, entry, size)))
-+		goto discard;
-+
-+	trace_event_buffer_commit(&event_buffer);
-+
-+	return;
-+discard:
-+	*faulted = true;
-+	__trace_event_discard_commit(event_buffer.buffer,
-+				     event_buffer.event);
+-	memcpy(entry + 1, data, datalen);
+-
+-	trace_event_buffer_commit(&event_buffer);
++	if (unlikely(!copy_nofault(entry + 1, i->count, i)))
++		__trace_event_discard_commit(event_buffer.buffer,
++					     event_buffer.event);
++	else
++		trace_event_buffer_commit(&event_buffer);
  }
  
  #ifdef CONFIG_PERF_EVENTS
-@@ -621,7 +722,7 @@ static void user_event_bpf(struct user_event *user, struct iov_iter *i)
++static void user_event_bpf(struct user_event *user, struct iov_iter *i)
++{
++	struct user_bpf_context context;
++	struct user_bpf_iter bpf_i;
++	char fast_data[MAX_STACK_BPF_DATA];
++	void *temp = NULL;
++
++	if ((user->flags & FLAG_BPF_ITER) && iter_is_iovec(i)) {
++		/* Raw iterator */
++		context.data_type = USER_BPF_DATA_ITER;
++		context.data_len = i->count;
++		context.iter = &bpf_i;
++
++		bpf_i.iov_offset = i->iov_offset;
++		bpf_i.iov = i->iov;
++		bpf_i.nr_segs = i->nr_segs;
++	} else if (i->nr_segs == 1 && iter_is_iovec(i)) {
++		/* Single buffer from user */
++		context.data_type = USER_BPF_DATA_USER;
++		context.data_len = i->count;
++		context.udata = i->iov->iov_base + i->iov_offset;
++	} else {
++		/* Multi buffer from user */
++		struct iov_iter copy = *i;
++		size_t copy_size = min_t(size_t, i->count, MAX_BPF_COPY_SIZE);
++
++		context.data_type = USER_BPF_DATA_KERNEL;
++		context.kdata = fast_data;
++
++		if (unlikely(copy_size > sizeof(fast_data))) {
++			temp = kmalloc(copy_size, GFP_NOWAIT);
++
++			if (temp)
++				context.kdata = temp;
++			else
++				copy_size = sizeof(fast_data);
++		}
++
++		context.data_len = copy_nofault(context.kdata,
++						copy_size, &copy);
++	}
++
++	trace_call_bpf(&user->call, &context);
++
++	kfree(temp);
++}
++
+ /*
   * Writes the user supplied payload out to perf ring buffer or eBPF program.
   */
- static void user_event_perf(struct user_event *user, struct iov_iter *i,
--			    void *tpdata)
-+			    void *tpdata, bool *faulted)
+-static void user_event_perf(struct user_event *user, void *data, u32 datalen,
++static void user_event_perf(struct user_event *user, struct iov_iter *i,
+ 			    void *tpdata)
  {
  	struct hlist_head *perf_head;
  
-@@ -644,14 +745,21 @@ static void user_event_perf(struct user_event *user, struct iov_iter *i,
+-	if (bpf_prog_array_valid(&user->call)) {
+-		struct user_bpf_context context = {0};
+-
+-		context.data_len = datalen;
+-		context.data_type = USER_BPF_DATA_KERNEL;
+-		context.kdata = data;
+-
+-		trace_call_bpf(&user->call, &context);
+-	}
++	if (bpf_prog_array_valid(&user->call))
++		user_event_bpf(user, i);
+ 
+ 	perf_head = this_cpu_ptr(user->call.perf_events);
+ 
+ 	if (perf_head && !hlist_empty(perf_head)) {
+ 		struct trace_entry *perf_entry;
+ 		struct pt_regs *regs;
+-		size_t size = sizeof(*perf_entry) + datalen;
++		size_t size = sizeof(*perf_entry) + i->count;
+ 		int context;
+ 
+ 		perf_entry = perf_trace_buf_alloc(ALIGN(size, 8),
+@@ -586,7 +644,10 @@ static void user_event_perf(struct user_event *user, void *data, u32 datalen,
  
  		perf_fetch_caller_regs(regs);
  
--		if (unlikely(!copy_nofault(perf_entry + 1, i->count, i))) {
--			perf_swevent_put_recursion_context(context);
--			return;
--		}
-+		if (unlikely(!copy_nofault(perf_entry + 1, i->count, i)))
-+			goto discard;
-+
-+		if (!list_empty(&user->validators) &&
-+		    unlikely(user_event_validate(user, perf_entry, size)))
-+			goto discard;
+-		memcpy(perf_entry + 1, data, datalen);
++		if (unlikely(!copy_nofault(perf_entry + 1, i->count, i))) {
++			perf_swevent_put_recursion_context(context);
++			return;
++		}
  
  		perf_trace_buf_submit(perf_entry, size, context,
  				      user->call.event.type, 1, regs,
- 				      perf_head, NULL);
-+
-+		return;
-+discard:
-+		*faulted = true;
-+		perf_swevent_put_recursion_context(context);
- 	}
- }
- #endif
-@@ -971,6 +1079,7 @@ static int user_event_parse(char *name, char *args, char *flags,
- 
- 	INIT_LIST_HEAD(&user->class.fields);
- 	INIT_LIST_HEAD(&user->fields);
-+	INIT_LIST_HEAD(&user->validators);
- 
- 	user->tracepoint.name = name;
- 
-@@ -1019,6 +1128,7 @@ static int user_event_parse(char *name, char *args, char *flags,
- 	return 0;
- put_user:
- 	user_event_destroy_fields(user);
-+	user_event_destroy_validators(user);
- 	kfree(user);
- 	return ret;
- }
-@@ -1076,6 +1186,9 @@ static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
- 	if (unlikely(user == NULL))
- 		return -ENOENT;
- 
-+	if (unlikely(i->count < user->min_size))
-+		return -EINVAL;
-+
- 	tp = &user->tracepoint;
- 
- 	/*
-@@ -1087,10 +1200,13 @@ static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
+@@ -1024,16 +1085,11 @@ static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
+ 	if (likely(atomic_read(&tp->key.enabled) > 0)) {
+ 		struct tracepoint_func *probe_func_ptr;
  		user_event_func_t probe_func;
- 		struct iov_iter copy;
++		struct iov_iter copy;
  		void *tpdata;
-+		bool faulted;
+-		void *kdata;
+-		u32 datalen;
  
- 		if (unlikely(fault_in_iov_iter_readable(i, i->count)))
- 			return -EFAULT;
+-		kdata = kmalloc(i->count, GFP_KERNEL);
+-
+-		if (unlikely(!kdata))
+-			return -ENOMEM;
+-
+-		datalen = copy_from_iter(kdata, i->count, i);
++		if (unlikely(fault_in_iov_iter_readable(i, i->count)))
++			return -EFAULT;
  
-+		faulted = false;
-+
  		rcu_read_lock_sched();
  
- 		probe_func_ptr = rcu_dereference_sched(tp->funcs);
-@@ -1100,11 +1216,14 @@ static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
- 				copy = *i;
+@@ -1041,15 +1097,14 @@ static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
+ 
+ 		if (probe_func_ptr) {
+ 			do {
++				copy = *i;
  				probe_func = probe_func_ptr->func;
  				tpdata = probe_func_ptr->data;
--				probe_func(user, &copy, tpdata);
-+				probe_func(user, &copy, tpdata, &faulted);
+-				probe_func(user, kdata, datalen, tpdata);
++				probe_func(user, &copy, tpdata);
  			} while ((++probe_func_ptr)->func);
  		}
  
  		rcu_read_unlock_sched();
-+
-+		if (unlikely(faulted))
-+			return -EFAULT;
+-
+-		kfree(kdata);
  	}
  
  	return ret;
