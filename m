@@ -2,255 +2,155 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7276CC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 18 Jan 2022 20:43:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 674A9C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 18 Jan 2022 20:43:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348354AbiARUnc (ORCPT
+        id S1349292AbiARUnd (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 18 Jan 2022 15:43:32 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:43792 "EHLO
+        Tue, 18 Jan 2022 15:43:33 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:43822 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234481AbiARUnb (ORCPT
+        with ESMTP id S1345699AbiARUnb (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 18 Jan 2022 15:43:31 -0500
 Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A1CC020B9278;
-        Tue, 18 Jan 2022 12:43:30 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A1CC020B9278
+        by linux.microsoft.com (Postfix) with ESMTPSA id 7991320B927C;
+        Tue, 18 Jan 2022 12:43:31 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7991320B927C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1642538610;
-        bh=6Eorb0NJsYuIac5U3+BcA5E3+pNTgrJBqx1uUFzIkRU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ON+8bsTLuGzAUzLHSI0KEfHF03iM+owfHcl7PwhUeuzv7HrX/fHe+t/JGvPd7TMaA
-         7V0SZwwREpTsXpP8LHiQ4uws3dulnzTl22kyOXDTKSxEvcx94GYA9RSYCZ3SISLusp
-         ssEz+G2SM5VSA/UreFRoWXi0efNgVnSIV5sJEF2k=
+        s=default; t=1642538611;
+        bh=/HgTyLUM1y/ekRW1ED5OYV5fNJHETloYSTRQcsY0MkA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=IaP0qq9pIVzaL2kwlrx0iHeGSYlqFMhGv5zIB+Xn4wgx1yVklrkD4Lt7Rv74QTMrw
+         CkW1H1Q2iJ63h6bqg6344Wlcqll9Fw5QGIReThkH8RB+Gx8AqtJ609d9XfO4bDVjBD
+         HdhrsZKUQWU+EaY80mpIKkbfkSPVsSd+bCFx6xEo=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         beaub@linux.microsoft.com
-Subject: [PATCH v10 00/12] user_events: Enable user processes to create and write to trace events
-Date:   Tue, 18 Jan 2022 12:43:14 -0800
-Message-Id: <20220118204326.2169-1-beaub@linux.microsoft.com>
+Subject: [PATCH v10 04/12] user_events: Add basic perf and eBPF support
+Date:   Tue, 18 Jan 2022 12:43:18 -0800
+Message-Id: <20220118204326.2169-5-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20220118204326.2169-1-beaub@linux.microsoft.com>
+References: <20220118204326.2169-1-beaub@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-User mode processes that wish to use trace events to get data into
-ftrace, perf, eBPF, etc are limited to uprobes today. The user events
-features enables an ABI for user mode processes to create and write to
-trace events that are isolated from kernel level trace events. This
-enables a faster path for tracing from user mode data as well as opens
-managed code to participate in trace events, where stub locations are
-dynamic.
+Adds support to write out user_event data to perf_probe/perf files as
+well as to any attached eBPF program.
 
-User processes often want to trace only when it's useful. To enable this
-a set of pages are mapped into the user process space that indicate the
-current state of the user events that have been registered. User
-processes can check if their event is hooked to a trace/probe, and if it
-is, emit the event data out via the write() syscall.
+Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+---
+ kernel/trace/trace_events_user.c | 72 +++++++++++++++++++++++++++++++-
+ 1 file changed, 71 insertions(+), 1 deletion(-)
 
-Two new files are introduced into tracefs to accomplish this:
-user_events_status - This file is mmap'd into participating user mode
-processes to indicate event status.
-
-user_events_data - This file is opened and register/delete ioctl's are
-issued to create/open/delete trace events that can be used for tracing.
-
-The typical scenario is on process start to mmap user_events_status. Processes
-then register the events they plan to use via the REG ioctl. The ioctl reads
-and updates the passed in user_reg struct. The status_index of the struct is
-used to know the byte in the status page to check for that event. The
-write_index of the struct is used to describe that event when writing out to
-the fd that was used for the ioctl call. The data must always include this
-index first when writing out data for an event. Data can be written either by
-write() or by writev().
-
-For example, in memory:
-int index;
-char data[];
-
-Psuedo code example of typical usage:
-struct user_reg reg;
-
-int page_fd = open("user_events_status", O_RDWR);
-char *page_data = mmap(NULL, PAGE_SIZE, PROT_READ, MAP_SHARED, page_fd, 0);
-close(page_fd);
-
-int data_fd = open("user_events_data", O_RDWR);
-
-reg.size = sizeof(reg);
-reg.name_args = (__u64)"test";
-
-ioctl(data_fd, DIAG_IOCSREG, &reg);
-int status_id = reg.status_index;
-int write_id = reg.write_index;
-
-struct iovec io[2];
-io[0].iov_base = &write_id;
-io[0].iov_len = sizeof(write_id);
-io[1].iov_base = payload;
-io[1].iov_len = sizeof(payload);
-
-if (page_data[status_id])
-	writev(data_fd, io, 2);
-
-User events are also exposed via the dynamic_events tracefs file for
-both create and delete. Current status is exposed via the user_events_status
-tracefs file.
-
-Simple example to register a user event via dynamic_events:
-	echo u:test >> dynamic_events
-	cat dynamic_events
-	u:test
-
-If an event is hooked to a probe, the probe hooked shows up:
-	echo 1 > events/user_events/test/enable
-	cat user_events_status
-	1:test # Used by ftrace
-
-	Active: 1
-	Busy: 1
-	Max: 4096
-
-If an event is not hooked to a probe, no probe status shows up:
-	echo 0 > events/user_events/test/enable
-	cat user_events_status
-	1:test
-
-	Active: 1
-	Busy: 0
-	Max: 4096
-
-Users can describe the trace event format via the following format:
-	name[:FLAG1[,FLAG2...] [field1[;field2...]]
-
-Each field has the following format:
-	type name
-
-Example for char array with a size of 20 named msg:
-	echo 'u:detailed char[20] msg' >> dynamic_events
-	cat dynamic_events
-	u:detailed char[20] msg
-
-Data offsets are based on the data written out via write() and will be
-updated to reflect the correct offset in the trace_event fields. For dynamic
-data it is recommended to use the new __rel_loc data type. This type will be
-the same as __data_loc, but the offset is relative to this entry. This allows
-user_events to not worry about what common fields are being inserted before
-the data.
-
-The above format is valid for both the ioctl and the dynamic_events file.
-
-V2:
-Fixed kmalloc vs kzalloc for register_page.
-Renamed user_event_mmap to user_event_status.
-Renamed user_event prefix from ue to u.
-Added seq_* operations to user_event_status to enable cat output.
-Aligned field parsing to synth_events format (+ size specifier for
-custom/user types).
-Added uapi header user_events.h to align kernel and user ABI definitions.
-
-V3:
-Updated ABI to handle single FD into many events via an int header.
-Added iovec/writev support to enable int header without payload changes.
-Updated bpf context to describe if data is coming from user, kernel or
-raw iovec.
-Added flag support for registering event, allows forcing BPF to always
-recieve the direct iovecs for sensitive code paths that do not want
-copies.
-
-V4:
-Moved to struct user_reg for registering events via ioctl.
-Added unit tests for ftrace, dyn_events and perf integration.
-Added print_fmt generation and proper dyn_events matching statements.
-Reduced time in preemption disabled paths.
-Added documentation file.
-Pre-fault in data when preemption is enabled and use no-fault copy in probes.
-Fixed MIPs missing PAGE_READONLY define.
-
-V5:
-Rebase to linux-trace for-next branch.
-Added sample code into samples/user_events.
-Switched to str_has_prefix in various locations.
-Allow hex in array sizes and ensure reasonable sizes are used.
-Moved lifetime of name buffer when parsing to the caller for failure paths.
-Fixed documentation nits and index.
-Ensure event isn't busy before freeing through dyn_events.
-Properly handle failure case for ftrace and perf in fault cases for buffers.
-Ensure write data is over min size and null terminated for dynamic arrays.
-
-V6:
-Fixed endian issue with dyn loc decoding (use u32).
-Fixed size_t conversion warning on hexagon arch (min vs min_t).
-Handle cases for __get_str vs __get_rel_str in print_fmt generation.
-Add additional comments around various event member lifetimes.
-Reduced max field array size to 1K.
-
-V7:
-Acquire reg_mutex during release, ensure refs cannot change under any situation.
-Remove default n from Kconfig.
-Move from static 0644 mode to TRACE_MODE_WRITE.
-
-V8:
-Squashed UABI header into ftrace minimal patch thread.
-Moved pagefault_disable/enable into copy_nofault.
-Moved to strscpy vs custom copy when getting array size from type.
-Made patch bisect friendly by ensuring tests are split from kernel code.
-
-V9:
-Rebase to linux-trace ftrace/core branch.
-Added comments for user_reg and other structs in user_events.h.
-Moved from delayed seq_file to pre-created seq_file for status file.
-Added deleting events to documentation and expanded registering section.
-Reordered patches to make reviewing easier.
-Fixed nitpicks.
-
-V10:
-Fix struct size case not writing size out to dynamic_events.
-Fix warning for NULL pointer arithmetic in user_seq_start.
-
-Beau Belgrave (12):
-  user_events: Add minimal support for trace_event into ftrace
-  user_events: Add print_fmt generation support for basic types
-  user_events: Handle matching arguments from dyn_events
-  user_events: Add basic perf and eBPF support
-  user_events: Optimize writing events by only copying data once
-  user_events: Validate user payloads for size and null termination
-  user_events: Add self-test for ftrace integration
-  user_events: Add self-test for dynamic_events integration
-  user_events: Add self-test for perf_event integration
-  user_events: Add self-test for validator boundaries
-  user_events: Add sample code for typical usage
-  user_events: Add documentation file
-
- Documentation/trace/index.rst                 |    1 +
- Documentation/trace/user_events.rst           |  216 +++
- include/uapi/linux/user_events.h              |  116 ++
- kernel/trace/Kconfig                          |   14 +
- kernel/trace/Makefile                         |    1 +
- kernel/trace/trace_events_user.c              | 1617 +++++++++++++++++
- samples/user_events/Makefile                  |    5 +
- samples/user_events/example.c                 |   91 +
- tools/testing/selftests/user_events/Makefile  |    9 +
- .../testing/selftests/user_events/dyn_test.c  |  130 ++
- .../selftests/user_events/ftrace_test.c       |  452 +++++
- .../testing/selftests/user_events/perf_test.c |  168 ++
- tools/testing/selftests/user_events/settings  |    1 +
- 13 files changed, 2821 insertions(+)
- create mode 100644 Documentation/trace/user_events.rst
- create mode 100644 include/uapi/linux/user_events.h
- create mode 100644 kernel/trace/trace_events_user.c
- create mode 100644 samples/user_events/Makefile
- create mode 100644 samples/user_events/example.c
- create mode 100644 tools/testing/selftests/user_events/Makefile
- create mode 100644 tools/testing/selftests/user_events/dyn_test.c
- create mode 100644 tools/testing/selftests/user_events/ftrace_test.c
- create mode 100644 tools/testing/selftests/user_events/perf_test.c
- create mode 100644 tools/testing/selftests/user_events/settings
-
-
-base-commit: 85c62c8c3749eec02ba81217bdcac26867dc262e
+diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+index a6794cb1f586..371f31472156 100644
+--- a/kernel/trace/trace_events_user.c
++++ b/kernel/trace/trace_events_user.c
+@@ -551,6 +551,50 @@ static void user_event_ftrace(struct user_event *user, void *data, u32 datalen,
+ 	trace_event_buffer_commit(&event_buffer);
+ }
+ 
++#ifdef CONFIG_PERF_EVENTS
++/*
++ * Writes the user supplied payload out to perf ring buffer or eBPF program.
++ */
++static void user_event_perf(struct user_event *user, void *data, u32 datalen,
++			    void *tpdata)
++{
++	struct hlist_head *perf_head;
++
++	if (bpf_prog_array_valid(&user->call)) {
++		struct user_bpf_context context = {0};
++
++		context.data_len = datalen;
++		context.data_type = USER_BPF_DATA_KERNEL;
++		context.kdata = data;
++
++		trace_call_bpf(&user->call, &context);
++	}
++
++	perf_head = this_cpu_ptr(user->call.perf_events);
++
++	if (perf_head && !hlist_empty(perf_head)) {
++		struct trace_entry *perf_entry;
++		struct pt_regs *regs;
++		size_t size = sizeof(*perf_entry) + datalen;
++		int context;
++
++		perf_entry = perf_trace_buf_alloc(ALIGN(size, 8),
++						  &regs, &context);
++
++		if (unlikely(!perf_entry))
++			return;
++
++		perf_fetch_caller_regs(regs);
++
++		memcpy(perf_entry + 1, data, datalen);
++
++		perf_trace_buf_submit(perf_entry, size, context,
++				      user->call.event.type, 1, regs,
++				      perf_head, NULL);
++	}
++}
++#endif
++
+ /*
+  * Update the register page that is shared between user processes.
+  */
+@@ -573,6 +617,10 @@ static void update_reg_page_for(struct user_event *user)
+ 
+ 				if (probe_func == user_event_ftrace)
+ 					status |= EVENT_STATUS_FTRACE;
++#ifdef CONFIG_PERF_EVENTS
++				else if (probe_func == user_event_perf)
++					status |= EVENT_STATUS_PERF;
++#endif
+ 				else
+ 					status |= EVENT_STATUS_OTHER;
+ 			} while ((++probe_func_ptr)->func);
+@@ -612,8 +660,27 @@ static int user_event_reg(struct trace_event_call *call,
+ 					    data);
+ 		goto dec;
+ 
+-	default:
++#ifdef CONFIG_PERF_EVENTS
++	case TRACE_REG_PERF_REGISTER:
++		ret = tracepoint_probe_register(call->tp,
++						call->class->perf_probe,
++						data);
++		if (!ret)
++			goto inc;
++		break;
++
++	case TRACE_REG_PERF_UNREGISTER:
++		tracepoint_probe_unregister(call->tp,
++					    call->class->perf_probe,
++					    data);
++		goto dec;
++
++	case TRACE_REG_PERF_OPEN:
++	case TRACE_REG_PERF_CLOSE:
++	case TRACE_REG_PERF_ADD:
++	case TRACE_REG_PERF_DEL:
+ 		break;
++#endif
+ 	}
+ 
+ 	return ret;
+@@ -870,6 +937,9 @@ static int user_event_parse(char *name, char *args, char *flags,
+ 	user->class.get_fields = user_event_get_fields;
+ 	user->class.reg = user_event_reg;
+ 	user->class.probe = user_event_ftrace;
++#ifdef CONFIG_PERF_EVENTS
++	user->class.perf_probe = user_event_perf;
++#endif
+ 
+ 	mutex_lock(&event_mutex);
+ 	ret = user_event_trace_register(user);
 -- 
 2.17.1
 
