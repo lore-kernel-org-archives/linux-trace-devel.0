@@ -2,103 +2,144 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92555C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 19 Jan 2022 08:32:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 382FAC4332F
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 19 Jan 2022 08:32:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350982AbiASIcY (ORCPT
+        id S234262AbiASIcY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 19 Jan 2022 03:32:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47448 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352498AbiASIcX (ORCPT
+        with ESMTP id S1351302AbiASIcY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 19 Jan 2022 03:32:23 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B978C06173E
-        for <linux-trace-devel@vger.kernel.org>; Wed, 19 Jan 2022 00:32:23 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id m4so7559975edb.10
+        Wed, 19 Jan 2022 03:32:24 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02492C061574
+        for <linux-trace-devel@vger.kernel.org>; Wed, 19 Jan 2022 00:32:24 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id p12so7579778edq.9
         for <linux-trace-devel@vger.kernel.org>; Wed, 19 Jan 2022 00:32:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eFRcVuRnj9PLGIrkAsT0aj5HuvOSomDUcfdPQn2vMMo=;
-        b=AHLXUpCGIKBJjf1aDSaIUBjq9feIk6jjBf1UUnC59gXO+OaxjeqZnqcFwE2QMa8pLO
-         fMdfhCkbd9AKCKIitrOeyvTM7SWJ4PCfD81Kxk96rn+J88QrjIa7c6mhDMg8b0pDyA7+
-         AX79d1E8Wp7b8j5alVZHGCXnbWsNRJFv0fTgSQ5I29PXjLUoHWwG0S522rgOgJi5a9uJ
-         w6L63A58Ee0tCsjOlStxmgFUPQ6WRyQXaRyiPUCUpHp32GeXoSmnfEH4ufPn+HkmMHCo
-         gmaXXD0zyn60E3xm4GPEZ6xhxeiBduVdXuXUP15bQLY8Clzaw70E7Md5UYc+blmg1s9O
-         LLkg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=MGXHuQX5vwaqYPPtMcMPtJdnP+a4bN96V7nhqFeCZ9w=;
+        b=XZR9ucohhWJoZiaithUPDpJdpupjlDWKeHpub8TAHek4Zab6ioIiiGo0u1dhcezRg1
+         81FAzR2w92+2CHLKSZV8y2bOWWSi0tzfvxzrxbJ8ZRybgnd+I23nvRTfyCjQfs4+cZbP
+         7dIG5V2fDhuYuOwYW6UfcgrrsSgAdqgI5nF0sUByx9I3QmQ/cWjoqWtkO3WDPSuL6eOa
+         UsSq7S8FcgJKbCwurY+do4UTBmHJE9ivk8MRWIYPzZeX2QAfcYgu0k05BttfMBwigFgP
+         dg5Xzu3ideyjcBr05WsryrFc02cyb8NXsImpI9WUSvaZNLGpEFNr9UXtuSK337GZZlJb
+         0r4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eFRcVuRnj9PLGIrkAsT0aj5HuvOSomDUcfdPQn2vMMo=;
-        b=0mawo+pefv828FMtqyqWHxSDTpNBFHjGU30dbYbvCjdDxOkxPKoNlj9+Mz6+D/kUTj
-         mq7qAwKL6egaqvpXME7Kpvo5zbX2ip8Ciz+W+d4MybEiwvZoYtsA/MzCMghKiWkPiQa+
-         4gHJpsJa1QAbAx2fslz6iPj+PZUDmdYNUY0POmomdNWIiru03ZhtTZMCXydA+oWWnE1K
-         uzgMyMhKliN6gzplbcEvT4XjX0ykpJCdusyytQDXv5Vx+GVABGQ9TxHXoNKYyFRBMoww
-         LFPS1ALIPTKJf+yyizznJJ8OrRs+MS39nFVKaIacu1fErhnSjZkFRa3X8J2QUIPzxYvK
-         V/Ew==
-X-Gm-Message-State: AOAM530t/3vDxu4DrGCep5kEVeUOxIN6ZV0PrUnqHM7lP/EPPB2+lNLz
-        KEPtdlLdUMKwsQ30LGVGX7JP8GfY/Zs=
-X-Google-Smtp-Source: ABdhPJy8kfJ6rEUptsl0TMrbPctR580/h66K+dZinJmtslLl7mr0j4ofubuJOL1pBxRB0iHrB9L1cQ==
-X-Received: by 2002:a17:907:1c91:: with SMTP id nb17mr23037478ejc.712.1642581141645;
-        Wed, 19 Jan 2022 00:32:21 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=MGXHuQX5vwaqYPPtMcMPtJdnP+a4bN96V7nhqFeCZ9w=;
+        b=Uk8uBCyS8EfCRXjAeMGVZ6UQCC5kMl2JUANozg0406NjvRNbT8bqlYVWXK64zfUye8
+         9Wjr2ZUxmACB/q3zQuxaSBjRUfj5aFBsz9Bd0c9jSycYBWG9xKOonIEvy5aJ5VlfZEdf
+         qyNHaCOqgIwfz1RGwfAJ3uJU3/A6zQ4JNr4Zs3t7R0JpCj8JV3jkgi9zB60txNsRjEVm
+         ZxQHT3h3zDjPlzcwIwIBjCAnAUZ4o+3mcvPjYOLpEoOOX1C+Hh2WoRpJ0WNQC/n6nF4S
+         kT2Il25nHt0vLEzZqYjv8yoVXaPkEglfpzk1AsqzfIpuhD8Fm4pns+3xeBe/bnC2A9Ri
+         PCdw==
+X-Gm-Message-State: AOAM5309f9HYYVf1bhNHT73uzjOYoxILNq9HvP3C/FAkcjsYBInYmZw8
+        cBHObp3s1+zEilO2JoE/YDA=
+X-Google-Smtp-Source: ABdhPJyuirMk8feBEA9lojM0n8TOJATGJdCxnEbx7sgTgfX0rRsvqhtc1CGblnYvJe7Nzy+ctdz9OA==
+X-Received: by 2002:a17:907:869e:: with SMTP id qa30mr23502410ejc.137.1642581142518;
+        Wed, 19 Jan 2022 00:32:22 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id z6sm875969edb.58.2022.01.19.00.32.20
+        by smtp.gmail.com with ESMTPSA id z6sm875969edb.58.2022.01.19.00.32.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jan 2022 00:32:21 -0800 (PST)
+        Wed, 19 Jan 2022 00:32:22 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v7 0/4] trace-cmd documentation update for v7 files
-Date:   Wed, 19 Jan 2022 10:32:15 +0200
-Message-Id: <20220119083219.246347-1-tz.stoyanov@gmail.com>
+Subject: [PATCH v7 1/4] trace-cmd: Update bash completion
+Date:   Wed, 19 Jan 2022 10:32:16 +0200
+Message-Id: <20220119083219.246347-2-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220119083219.246347-1-tz.stoyanov@gmail.com>
+References: <20220119083219.246347-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Added documentation of trace file version 7.
+Added convert subcommand and its arguments to bash completion logic.
 
-This patch-set depends on
- "[PATCH v7 00/11] trace-cmd dump - v7 update"
- https://lore.kernel.org/linux-trace-devel/20220119083019.246153-1-tz.stoyanov@gmail.com/
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
+ tracecmd/trace-cmd.bash | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-v7 changes:
- - Documentation update.
- - Rebase.
-v6 changes:
- - Rebased on top of the latest master. 
-v5 changes:
- - Rebased on top of the latest master. 
-v4 changes:
- - Rebased on top of the latest master.  
-v3 changes:
- - Rebased on top of the latest master.
-v2 changes:
- - fixed issues of split and convert commands with some corner cases
-
-Tzvetomir Stoyanov (VMware) (4):
-  trace-cmd: Update bash completion
-  tarce-cmd: Man page for "trace-cmd convert"
-  tarce-cmd: Update record man page
-  trace-cmd: Document trace file version 7
-
- .../trace-cmd/trace-cmd-convert.1.txt         |  65 +++
- .../trace-cmd/trace-cmd-record.1.txt          |  13 +
- Documentation/trace-cmd/trace-cmd.1.txt       |   4 +-
- ...e-cmd.dat.5.txt => trace-cmd.dat.v6.5.txt} |   9 +-
- .../trace-cmd/trace-cmd.dat.v7.5.txt          | 450 ++++++++++++++++++
- tracecmd/trace-cmd.bash                       |  37 ++
- 6 files changed, 572 insertions(+), 6 deletions(-)
- create mode 100644 Documentation/trace-cmd/trace-cmd-convert.1.txt
- rename Documentation/trace-cmd/{trace-cmd.dat.5.txt => trace-cmd.dat.v6.5.txt} (98%)
- create mode 100644 Documentation/trace-cmd/trace-cmd.dat.v7.5.txt
-
+diff --git a/tracecmd/trace-cmd.bash b/tracecmd/trace-cmd.bash
+index b01c7a07..6639c143 100644
+--- a/tracecmd/trace-cmd.bash
++++ b/tracecmd/trace-cmd.bash
+@@ -64,6 +64,13 @@ plugin_options()
+     COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+ }
+ 
++compression_param()
++{
++    local opts=$(trace-cmd list -c | grep -v 'Supported' | cut -d "," -f1)
++    opts+=" any none "
++    COMPREPLY=( $(compgen -W "${opts}") )
++}
++
+ __trace_cmd_list_complete()
+ {
+     local prev=$1
+@@ -181,6 +188,9 @@ __trace_cmd_record_complete()
+ 		cmd_options record "$cur"
+ 	    fi
+ 	    ;;
++	--compression)
++	    compression_param
++	    ;;
+         *)
+ 	    # stream start and profile do not show all options
+ 	    cmd_options record "$cur"
+@@ -222,6 +232,29 @@ __trace_cmd_dump_complete()
+     esac
+ }
+ 
++__trace_cmd_convert_complete()
++{
++    local prev=$1
++    local cur=$2
++    shift 2
++    local words=("$@")
++
++    case "$prev" in
++	-i)
++	    __show_files
++	    ;;
++	-o)
++	    __show_files
++	    ;;
++	--compression)
++	    compression_param
++	    ;;
++	*)
++	    cmd_options convert "$cur"
++	    ;;
++    esac
++}
++
+ __show_command_options()
+ {
+     local command="$1"
+@@ -298,6 +331,10 @@ _trace_cmd_complete()
+ 	    __trace_cmd_dump_complete "${prev}" "${cur}" ${words[@]}
+ 	    return 0
+ 	    ;;
++	convert)
++	    __trace_cmd_convert_complete "${prev}" "${cur}" ${words[@]}
++	    return 0
++	    ;;
+         *)
+ 	    __show_command_options "$w" "${prev}" "${cur}"
+             ;;
 -- 
 2.34.1
 
