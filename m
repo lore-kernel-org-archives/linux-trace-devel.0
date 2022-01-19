@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E02FC4167D
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 19 Jan 2022 08:25:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9550C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 19 Jan 2022 08:25:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352370AbiASIZc (ORCPT
+        id S1352404AbiASIZc (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 19 Jan 2022 03:25:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45838 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352404AbiASIZb (ORCPT
+        with ESMTP id S1352406AbiASIZc (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 19 Jan 2022 03:25:31 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5ECAC061574
-        for <linux-trace-devel@vger.kernel.org>; Wed, 19 Jan 2022 00:25:30 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 30so7614570edv.3
-        for <linux-trace-devel@vger.kernel.org>; Wed, 19 Jan 2022 00:25:30 -0800 (PST)
+        Wed, 19 Jan 2022 03:25:32 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5B4C061574
+        for <linux-trace-devel@vger.kernel.org>; Wed, 19 Jan 2022 00:25:31 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id a18so7549405edj.7
+        for <linux-trace-devel@vger.kernel.org>; Wed, 19 Jan 2022 00:25:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7PpO5wes0CmxlKpspqIMBO3n609WxZs0QKDjgxIZHIQ=;
-        b=TwDoH0JGp2jTcL/Cb3ykrz0BjuUPPOSNp0dWQRIY5s8RgCsRIGFdtMp3nbzfu2QIUL
-         XsqKiSSNmLLLn5hvNdg5Lr7F/sWbuDqt8dsnItV7EI0b3YfKCrSxU/7Fl/DgJ/GrnnZI
-         7XJu729PMrIG0CEBT7jmAs7lZ7pFjJscDDSivLYfg4V/R4y6eKQvhhn7eU+KdoDvwwKw
-         lWYf6OWXPiRlZgUC/leacMfpnelZi6AZyFMPEiLFOPlLFN7ADaNQpt5G58YFb49vBuO7
-         y2AAo2NDY8JNnS/xjtozNNLmnjF1UCTsSoMdDW5CXoTVDWjPhXa+Xal8Hhh+hqGS7JyO
-         IIOA==
+        bh=gcD35ez3yGA4E7930iSZGDFqcnANq8aEACWjru4ELRk=;
+        b=mPSuRCV2tBmJ/FAqiw22DLVnGwN0DNjFIZMyOC56ni9BeW4A2Vg8XJBo72jhExQat3
+         K1E2pMVAjsAlndGmoPnpIrGEGsUiHAD69YRT2pyMOvgruj9cjjmvTjZa1cFMiSp8v8R8
+         8Aa/5edlYzeZ68Oq0blLUqANl1kkGkJbcUJgdjWR5dwF7mB4Aplx0X7FPH0JQe5Io73E
+         ZEWb2edVWjbf1J7v9hC0nFTjKMOzB1x+PwxVcEL370rZTGCfrZFgdPOA2Czb3jjpVmZ2
+         2T+R0ZKopIvMgQKrnGKh/MGBjm1s6yO8e35Bz8h9pCOGdC95wxWVGXxVOlBsHF/9LIPh
+         iDXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7PpO5wes0CmxlKpspqIMBO3n609WxZs0QKDjgxIZHIQ=;
-        b=SqoWWBTnuX0x3rip+zWyPZkLaTkCDUXWNtaZ+UbhZlJU/OsbcQXNj4Tv4hCFIN+PLN
-         c4P1Q2MGbO74HUlaiBrW0P9J/5FLAgd3d10mHzt0WTCUqofL14PBuvTpKY9Un9fkoGL0
-         aUvmbeYTEXuk8PCO5NoFDCV5eTp9TDPVq/SUEflUyI2YxE0HemBnPr8iOFrM7MCp0YtJ
-         8gKKm7bug7azPCNBJ5eF1bc13i10IVSqfeeNSa5M6r+2hT9o6iNsusTDNcgz9wFa2Df1
-         ir+H44sMPNsp/Br1OiOcvKJPtjKB26Cj3aJGELlZ7UtqnVMCxDJzt2CSyLD9k6bkAJuz
-         7+sA==
-X-Gm-Message-State: AOAM530pz0ZU7NsGyW2yPpA39amaJjynQu3mHzhEXVPJe6qOCHn9qNri
-        jI6Iad+8G2rWQ2GhLHD0eDHG+4pHSo0=
-X-Google-Smtp-Source: ABdhPJx9n9u6sttvEPGEOT4z7LnCXAHllltIN0JaLeL5URyi7cHSFoMyTi7hiyw/nUrDfhk2UMukMA==
-X-Received: by 2002:a05:6402:31e9:: with SMTP id dy9mr28977294edb.65.1642580729320;
-        Wed, 19 Jan 2022 00:25:29 -0800 (PST)
+        bh=gcD35ez3yGA4E7930iSZGDFqcnANq8aEACWjru4ELRk=;
+        b=MA0oM+q43/oiKzIh4pT+9FkpIKLCEqs1GNIox516TM8tqlZ3ucoD10laWyPZUCj75D
+         /bQUZvQCBx110ygmf89oab1qw7KEwcvcs5rI5Md6AB8cqVpY7R6XIecFPZ8DwuuQUfON
+         7g+Sj+AY3NFepr9vmol/PwW3ILpgMoVmMfw/3eJNDxx9MVUKeVc5yTSPD3kVpjRlsEL1
+         lOwMI6Tc41CfTIYSMyTkyfdf3f3s1jMfnXxvvufDb8isD9aNMCBGO5HK/00j8qEm1gUZ
+         XLn8YQiSfWyJC7+fPk3wjTFLQ3yeSFdUUX7FhHMIVh5q151hJYeEdqKppEtrA5833kmu
+         Yxkg==
+X-Gm-Message-State: AOAM532uGNDlYVKjErD8g1Vv940TXdQh8A79elter3CnbX2qyYShHOTB
+        A7xvOJR3sWpW2orcnPW33Gc=
+X-Google-Smtp-Source: ABdhPJyb/xprRDHysCbU37JR7nYRwXqDoASuLmGahSRhj5+kbbOH3OiDD5GE8nYe6+6+Zkl0ejJXNA==
+X-Received: by 2002:a17:907:1b1f:: with SMTP id mp31mr22400700ejc.247.1642580730215;
+        Wed, 19 Jan 2022 00:25:30 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id l1sm5011122ejf.44.2022.01.19.00.25.28
+        by smtp.gmail.com with ESMTPSA id l1sm5011122ejf.44.2022.01.19.00.25.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jan 2022 00:25:28 -0800 (PST)
+        Wed, 19 Jan 2022 00:25:29 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v8 19/25] trace-cmd library: Handle the extended DONE option
-Date:   Wed, 19 Jan 2022 10:25:01 +0200
-Message-Id: <20220119082507.245600-20-tz.stoyanov@gmail.com>
+Subject: [PATCH v8 20/25] trace-cmd library: Initialize CPU data for reading from version 7 trace files
+Date:   Wed, 19 Jan 2022 10:25:02 +0200
+Message-Id: <20220119082507.245600-21-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220119082507.245600-1-tz.stoyanov@gmail.com>
 References: <20220119082507.245600-1-tz.stoyanov@gmail.com>
@@ -64,129 +64,260 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In trace file version 7 the DONE option is extended to store the offset
-in the file to the next options section. This way a list of options
-sections can be stored in the file. Added logic to recursively read all
-option sections from the file.
+In version 7 trace files, CPU trace data is written in slightly
+different way than in version 6 files. Added new CPU data initialization
+flow, to handle version 7 files:
+ - the top trace instance is saved in the same way as the other trace
+   instances.
+ - per CPU trace metadata is stored in the buffer option.
+ - trace data section has section header.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/include/trace-cmd-local.h |  1 +
- lib/trace-cmd/trace-input.c             | 43 +++++++++++++++++++++++--
- lib/trace-cmd/trace-output.c            |  2 +-
- 3 files changed, 43 insertions(+), 3 deletions(-)
+ lib/trace-cmd/trace-input.c | 178 +++++++++++++++++++++++++-----------
+ 1 file changed, 123 insertions(+), 55 deletions(-)
 
-diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
-index ac7e7f17..b4f3d8c8 100644
---- a/lib/trace-cmd/include/trace-cmd-local.h
-+++ b/lib/trace-cmd/include/trace-cmd-local.h
-@@ -53,6 +53,7 @@ struct cpu_data_source {
- int out_write_cpu_data(struct tracecmd_output *handle, int cpus,
- 		       struct cpu_data_source *data, const char *buff_name);
- off64_t msg_lseek(struct tracecmd_msg_handle *msg_handle, off_t offset, int whence);
-+unsigned long long get_last_option_offset(struct tracecmd_input *handle);
- unsigned int get_meta_strings_size(struct tracecmd_input *handle);
- 
- #endif /* _TRACE_CMD_LOCAL_H */
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 1eb92f2a..7f418a44 100644
+index 7f418a44..103ff7bf 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -179,6 +179,7 @@ struct tracecmd_input {
- 	struct file_section	*sections;
- 	bool			options_init;
- 	unsigned long long	options_start;
-+	unsigned long long	options_last_offset;
- 	size_t			total_file_size;
- 
- 	/* For custom profilers. */
-@@ -2870,6 +2871,32 @@ __hidden unsigned int get_meta_strings_size(struct tracecmd_input *handle)
- 	return handle->strings_size;
+@@ -3214,34 +3214,18 @@ static int read_options_type(struct tracecmd_input *handle)
+ 	return 0;
  }
  
-+__hidden unsigned long long get_last_option_offset(struct tracecmd_input *handle)
-+{
-+	return handle->options_last_offset;
+-static int read_cpu_data(struct tracecmd_input *handle)
++static int init_cpu_data(struct tracecmd_input *handle)
+ {
+-	struct tep_handle *pevent = handle->pevent;
+ 	enum kbuffer_long_size long_size;
+ 	enum kbuffer_endian endian;
+-	unsigned long long size;
+ 	unsigned long long max_size = 0;
+ 	unsigned long long pages;
+-	int cpus;
+ 	int cpu;
+ 
+-	/*
+-	 * Check if this is a latency report or not.
+-	 */
+-	if (handle->file_state == TRACECMD_FILE_CPU_LATENCY)
+-		return 1;
+-
+ 	/* We expect this to be flyrecord */
+ 	if (handle->file_state != TRACECMD_FILE_CPU_FLYRECORD)
+ 		return -1;
+ 
+-	cpus = handle->cpus;
+-
+-	handle->cpu_data = malloc(sizeof(*handle->cpu_data) * handle->cpus);
+-	if (!handle->cpu_data)
+-		return -1;
+-	memset(handle->cpu_data, 0, sizeof(*handle->cpu_data) * handle->cpus);
+-
+ 	if (force_read)
+ 		handle->read_page = true;
+ 
+@@ -3256,32 +3240,14 @@ static int read_cpu_data(struct tracecmd_input *handle)
+ 		endian = KBUFFER_ENDIAN_LITTLE;
+ 
+ 	for (cpu = 0; cpu < handle->cpus; cpu++) {
+-		unsigned long long offset;
+-
+-		handle->cpu_data[cpu].cpu = cpu;
+-
+ 		handle->cpu_data[cpu].kbuf = kbuffer_alloc(long_size, endian);
+ 		if (!handle->cpu_data[cpu].kbuf)
+ 			goto out_free;
+-		if (tep_is_old_format(pevent))
++		if (tep_is_old_format(handle->pevent))
+ 			kbuffer_set_old_format(handle->cpu_data[cpu].kbuf);
+ 
+-		read8(handle, &offset);
+-		read8(handle, &size);
+-
+-		handle->cpu_data[cpu].file_offset = offset;
+-		handle->cpu_data[cpu].file_size = size;
+-		if (size > max_size)
+-			max_size = size;
+-
+-		if (size && (offset + size > handle->total_file_size)) {
+-			/* this happens if the file got truncated */
+-			printf("File possibly truncated. "
+-				"Need at least %llu, but file size is %zu.\n",
+-				offset + size, handle->total_file_size);
+-			errno = EINVAL;
+-			goto out_free;
+-		}
++		if (handle->cpu_data[cpu].file_size > max_size)
++			max_size = handle->cpu_data[cpu].file_size;
+ 	}
+ 
+ 	/* Calculate about a meg of pages for buffering */
+@@ -3299,6 +3265,101 @@ static int read_cpu_data(struct tracecmd_input *handle)
+ 			goto out_free;
+ 	}
+ 
++	return 0;
++
++ out_free:
++	for ( ; cpu >= 0; cpu--) {
++		free_page(handle, cpu);
++		kbuffer_free(handle->cpu_data[cpu].kbuf);
++		handle->cpu_data[cpu].kbuf = NULL;
++	}
++	return -1;
 +}
 +
-+static int handle_option_done(struct tracecmd_input *handle, char *buf, int size)
++static int init_buffer_cpu_data(struct tracecmd_input *handle, struct input_buffer_instance *buffer)
 +{
 +	unsigned long long offset;
++	unsigned long long size;
++	unsigned short id, flags;
++	int cpu;
 +
-+	if (size < 8)
++	if (handle->cpu_data)
 +		return -1;
 +
-+	offset = lseek64(handle->fd, 0, SEEK_CUR);
-+	if (offset >= size)
-+		handle->options_last_offset = offset - size;
-+
-+	offset = tep_read_number(handle->pevent, buf, 8);
-+	if (!offset)
-+		return 0;
-+
-+	if (lseek64(handle->fd, offset, SEEK_SET) == (off_t)-1)
++	if (lseek64(handle->fd, buffer->offset, SEEK_SET) == (off_t)-1)
++		return -1;
++	if (read_section_header(handle, &id, &flags, NULL, NULL))
 +		return -1;
 +
-+	return handle_options(handle);
++	handle->file_state = TRACECMD_FILE_CPU_FLYRECORD;
++	handle->cpus = buffer->cpus;
++	if (handle->max_cpu < handle->cpus)
++		handle->max_cpu = handle->cpus;
++
++	handle->cpu_data = calloc(handle->cpus, sizeof(*handle->cpu_data));
++	if (!handle->cpu_data)
++		return -1;
++
++	for (cpu = 0; cpu < handle->cpus; cpu++) {
++		handle->cpu_data[cpu].cpu = buffer->cpu_data[cpu].cpu;
++		offset = buffer->cpu_data[cpu].offset;
++		size = buffer->cpu_data[cpu].size;
++		handle->cpu_data[cpu].file_offset = offset;
++		handle->cpu_data[cpu].file_size = size;
++		if (size && (offset + size > handle->total_file_size)) {
++			/* this happens if the file got truncated */
++			printf("File possibly truncated. "
++				"Need at least %llu, but file size is %zu.\n",
++				offset + size, handle->total_file_size);
++			errno = EINVAL;
++			return -1;
++		}
++	}
++
++	return init_cpu_data(handle);
 +}
 +
- static inline int save_read_number(struct tep_handle *tep, char *data, int *data_size,
- 				   int *read_pos, int bytes, unsigned long long *num)
- {
-@@ -2978,19 +3005,27 @@ static int handle_options(struct tracecmd_input *handle)
- 	long long offset;
- 	unsigned short option;
- 	unsigned int size;
-+	unsigned short id, flags;
- 	char *cpustats = NULL;
- 	struct hook_list *hook;
- 	char *buf;
- 	int cpus;
- 	int ret;
- 
--	handle->options_start = lseek64(handle->fd, 0, SEEK_CUR);
-+	if (!HAS_SECTIONS(handle)) {
-+		handle->options_start = lseek64(handle->fd, 0, SEEK_CUR);
-+	} else {
-+		if (read_section_header(handle, &id, &flags, NULL, NULL))
++static int read_cpu_data(struct tracecmd_input *handle)
++{
++	unsigned long long size;
++	int cpus;
++	int cpu;
++
++	/*
++	 * Check if this is a latency report or not.
++	 */
++	if (handle->file_state == TRACECMD_FILE_CPU_LATENCY)
++		return 1;
++
++	/* We expect this to be flyrecord */
++	if (handle->file_state != TRACECMD_FILE_CPU_FLYRECORD)
++		return -1;
++
++	cpus = handle->cpus;
++
++	handle->cpu_data = malloc(sizeof(*handle->cpu_data) * handle->cpus);
++	if (!handle->cpu_data)
++		return -1;
++	memset(handle->cpu_data, 0, sizeof(*handle->cpu_data) * handle->cpus);
++
++	for (cpu = 0; cpu < handle->cpus; cpu++) {
++		unsigned long long offset;
++
++		handle->cpu_data[cpu].cpu = cpu;
++		read8(handle, &offset);
++		read8(handle, &size);
++		handle->cpu_data[cpu].file_offset = offset;
++		handle->cpu_data[cpu].file_size = size;
++		if (size && (offset + size > handle->total_file_size)) {
++			/* this happens if the file got truncated */
++			printf("File possibly truncated. "
++				"Need at least %llu, but file size is %zu.\n",
++				offset + size, handle->total_file_size);
++			errno = EINVAL;
 +			return -1;
-+		if (id != TRACECMD_OPTION_DONE)
-+			return -1;
++		}
 +	}
++
+ 	/*
+ 	 * It is possible that an option changed the number of CPUs.
+ 	 * If that happened, then there's "empty" cpu data saved for
+@@ -3318,15 +3379,7 @@ static int read_cpu_data(struct tracecmd_input *handle)
+ 		}
+ 	}
  
- 	for (;;) {
- 		if (read2(handle, &option))
- 			return -1;
+-	return 0;
+-
+- out_free:
+-	for ( ; cpu >= 0; cpu--) {
+-		free_page(handle, cpu);
+-		kbuffer_free(handle->cpu_data[cpu].kbuf);
+-		handle->cpu_data[cpu].kbuf = NULL;
+-	}
+-	return -1;
++	return init_cpu_data(handle);
+ }
  
--		if (option == TRACECMD_OPTION_DONE)
-+		if (!HAS_SECTIONS(handle) && option == TRACECMD_OPTION_DONE)
- 			break;
+ static int read_data_and_size(struct tracecmd_input *handle,
+@@ -3424,14 +3477,7 @@ static int read_and_parse_trace_clock(struct tracecmd_input *handle,
+ 	return 0;
+ }
  
- 		/* next 4 bytes is the size of the option */
-@@ -3130,6 +3165,10 @@ static int handle_options(struct tracecmd_input *handle)
- 			section_add_or_update(handle, option, -1,
- 					      tep_read_number(handle->pevent, buf, 8), 0);
- 			break;
-+		case TRACECMD_OPTION_DONE:
-+			ret = handle_option_done(handle, buf, size);
-+			free(buf);
-+			return ret;
+-/**
+- * tracecmd_init_data - prepare reading the data from trace.dat
+- * @handle: input handle for the trace.dat file
+- *
+- * This prepares reading the data from trace.dat. This is called
+- * after tracecmd_read_headers() and before tracecmd_read_data().
+- */
+-int tracecmd_init_data(struct tracecmd_input *handle)
++static int init_data_v6(struct tracecmd_input *handle)
+ {
+ 	struct tep_handle *pevent = handle->pevent;
+ 	int ret;
+@@ -3453,7 +3499,29 @@ int tracecmd_init_data(struct tracecmd_input *handle)
+ 			tracecmd_parse_trace_clock(handle, clock, 8);
+ 		}
+ 	}
++	return ret;
++}
++
++static int init_data(struct tracecmd_input *handle)
++{
++	return init_buffer_cpu_data(handle, &handle->top_buffer);
++}
  
- 		default:
- 			tracecmd_warning("unknown option %d", option);
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index 2b5671ae..fe4fcf64 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -2254,7 +2254,7 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
- 	tep_ref(handle->pevent);
- 	handle->page_size = tracecmd_page_size(ihandle);
- 	handle->file_version = tracecmd_get_in_file_version(ihandle);
--	handle->options_start = tracecmd_get_options_offset(ihandle);
-+	handle->options_start = get_last_option_offset(ihandle);
- 	handle->strings_offs = get_meta_strings_size(ihandle);
- 	list_head_init(&handle->options);
- 	list_head_init(&handle->buffers);
++/**
++ * tracecmd_init_data - prepare reading the data from trace.dat
++ * @handle: input handle for the trace.dat file
++ *
++ * This prepares reading the data from trace.dat. This is called
++ * after tracecmd_read_headers() and before tracecmd_read_data().
++ */
++int tracecmd_init_data(struct tracecmd_input *handle)
++{
++	int ret;
++
++	if (!HAS_SECTIONS(handle))
++		ret = init_data_v6(handle);
++	else
++		ret = init_data(handle);
+ 	tracecmd_blk_hack(handle);
+ 
+ 	return ret;
 -- 
 2.34.1
 
