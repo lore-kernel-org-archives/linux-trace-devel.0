@@ -2,95 +2,92 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29D44C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 19 Jan 2022 10:30:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35475C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 19 Jan 2022 12:02:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353710AbiASKa4 (ORCPT
+        id S1344583AbiASMCm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 19 Jan 2022 05:30:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47022 "EHLO
+        Wed, 19 Jan 2022 07:02:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240412AbiASKa4 (ORCPT
+        with ESMTP id S240915AbiASMCm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 19 Jan 2022 05:30:56 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93E4C061574
-        for <linux-trace-devel@vger.kernel.org>; Wed, 19 Jan 2022 02:30:55 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id 30so9080877edv.3
-        for <linux-trace-devel@vger.kernel.org>; Wed, 19 Jan 2022 02:30:55 -0800 (PST)
+        Wed, 19 Jan 2022 07:02:42 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36171C061574
+        for <linux-trace-devel@vger.kernel.org>; Wed, 19 Jan 2022 04:02:42 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id cx27so10233656edb.1
+        for <linux-trace-devel@vger.kernel.org>; Wed, 19 Jan 2022 04:02:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=o9HikjhCDLybMhyW5Ehnj7wMN+xi+IviyUkka49PKso=;
-        b=TAJZshQBJxdbKjKtyxPfAhKWIt2oBamKqRE3JFEB4A4JyxDK9pF9YVAgunbRHZBqsk
-         tUfooCmRPwwRrvBI/S0OJ9JjTzv6f1IlAZhuQxovTSg+k6Cn4eR7Td5tht/4ACUcVAzq
-         DV1+ZRW9RjsW/YXotN7MKjb1iw7fDUrHJgFQfBlkEHYn757thaFV1fODA8GXIrHYtCH+
-         62FtcdwHrFdeaLxfJmLLOjT7yHaqFIXOLZjdXldap7mZfJwPGryZObFidaaOtM23eyZJ
-         WOiPQQKKDhOpflCUv3OP93UEJMiYApFOKay1Mbamx1NkFoNXVFnfSwPp3i+FXxmvVi/y
-         cv2A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pYkvkAfCeBO1Z1Xf6ZhBotUcYaaknuO+qIbFsKZ1qgo=;
+        b=iNaYNuu2wSf4f8MBToN2EfQquQvRnzLoBjAmr4hQ2iCy1Te/KtXTL1/pVfetR12EAK
+         3WrIrotcEV8R785DkcVxP4rPlzXuoZy1aMhsBO8Ra9J48MLfTc6K23HM3JjmwZ72R11b
+         Sguv6M/fW3klpk556uaV27zhs3tIJvu8OV2VD2AxdX4BymDVR5moQbclQHyakSm86bvj
+         TS2XqR0XKz0sBgYMUwRdL2L9fR2pYAgtXmV1UATnElWPFR5BPfY8Yuht8vi6qBYg9w73
+         AwGAy/po3Ht+C5w2UVCg8oMkur05akw1jvLuL57IlIo946KIjE4t/hMpMeZvrCMr7/rR
+         +4sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=o9HikjhCDLybMhyW5Ehnj7wMN+xi+IviyUkka49PKso=;
-        b=CmojZIbRxgC85i4PtL/vMuTIkjLk4wNFsfDshuifaHwHg4bQPgPDaegy53M3MwjygD
-         uSXJGM8ivEcGHb4OfEtIvau1dcK2qiOQxgWohoFDHelWLfMSsojkswYDu/HctE2Mvh+7
-         pbH/HT0k0QaA3GY5kJSxQDSkKhQBEoMe2tWIe2eSctoG+BD/c7G0AgP2z8QFUDv5zXgw
-         A+ufdtgioacbVvWPML0rDNCWEezT/vYdczqpPefHwZpYqyRL/+QIu5USBZQado0oJ54c
-         HeY+bIHmku/+WgdRFO4qUPlz9p5R5ASKo7S/U+dbjFvtfh6JgM6aERyZDIq5DWEjWDwe
-         8QyQ==
-X-Gm-Message-State: AOAM530ZUem2JhGKBpndizu5h+KtRl00yEFvhvp4JnoHu6g3em50rbsR
-        sLA+6engqDTfS3Jys4W5pwK+6EOpxq8=
-X-Google-Smtp-Source: ABdhPJx4ss3VvpBZEuPPP9pmH99hoeHicI/nBxkJ1zDLnr/hDWxYZ8zII6jISF5sUw2qdZVZ+u9nXw==
-X-Received: by 2002:a17:906:7310:: with SMTP id di16mr10106787ejc.582.1642588254439;
-        Wed, 19 Jan 2022 02:30:54 -0800 (PST)
-Received: from [192.168.1.9] ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id nd36sm6262589ejc.196.2022.01.19.02.30.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jan 2022 02:30:54 -0800 (PST)
-Message-ID: <d429d850-6093-0df5-4c66-f0167b434b79@gmail.com>
-Date:   Wed, 19 Jan 2022 12:30:39 +0200
+        bh=pYkvkAfCeBO1Z1Xf6ZhBotUcYaaknuO+qIbFsKZ1qgo=;
+        b=ZIQf279kPYiyJIczyQBG7e2sMYUh1Csc/88C+q7Bs81dzFrEhM0Qia/h1UkBZY8Qmf
+         vYwx2nzuzDfek0fVp85a9r97jwHO1W+KTKMnrnNuzn5YedOltfD1JG8sK5wVzUnY7sdr
+         95H/W4Aw5qP9SoXuHmU7JVf/FXxJn/txnsFg56xpOeXBj/af8e08Z/cHqMustaat2pIY
+         44mfl4OuvsJhE/bUlFGGM9wlHIZlc4ZnIo+YvLsuI4Qzyhmw0k0WpRLz/oiSlCyWlbme
+         4Vrv32T5YpkdLPvvOqf6H+iPGHMXSEVII5utZEDrakZ0ZW0PIYzFwb+TVKnSQYU2EL/J
+         E/Rg==
+X-Gm-Message-State: AOAM533t5le4QB4A5E/ptM0Lmxwz9nqNBquzRyh67kPnSRKCqY1E64xp
+        ckQCTDpxNTu+g0ZvPLNN9OKUfL8CrUk=
+X-Google-Smtp-Source: ABdhPJxpwf4U+l1/DNvF4oo+PdoxxuBoxV1LXpvYmdTtp65zwN9Sd24qBI2wdvEDGtFq+i45SQKrSg==
+X-Received: by 2002:a17:907:6ea3:: with SMTP id sh35mr10025862ejc.497.1642593760563;
+        Wed, 19 Jan 2022 04:02:40 -0800 (PST)
+Received: from crow.vmware.com ([95.87.219.163])
+        by smtp.gmail.com with ESMTPSA id d10sm569491ejt.55.2022.01.19.04.02.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jan 2022 04:02:40 -0800 (PST)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     linux-trace-devel@vger.kernel.org, hongzhan.chen@intel.com,
+        jan.kiszka@siemens.com
+Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [RFC PATCH 0/2] Allow GUI plugins to build standalone
+Date:   Wed, 19 Jan 2022 14:02:27 +0200
+Message-Id: <20220119120229.68627-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH v3] trace-cruncher: Add API to set tracing CPU affinity
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-References: <20220117201835.0991759f@gandalf.local.home>
- <3a60bdb7-6d2c-a912-3ef1-880ff9388a52@gmail.com>
- <20220118174019.005afcc2@gandalf.local.home>
- <20220118174146.01904fcd@gandalf.local.home>
-From:   Yordan Karadzhov <y.karadz@gmail.com>
-In-Reply-To: <20220118174146.01904fcd@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+Hi Hongzhan and Jan,
 
+I tried to build your plugin standalone and I realized that this is
+in fact not possible due to some missing header files. This gets fixed
+in the following patch-set. I also made some minor modifications in
+the code of your plugin and will send you this modified version of
+the plugin in a separate email. 
 
-On 19.01.22 г. 0:41 ч., Steven Rostedt wrote:
-> On Tue, 18 Jan 2022 17:40:19 -0500
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
->>> I guess you use 'goto err;' everywhere, because you want to stress that returning NULL is essentially exiting with
->>> error. However, so far we used just 'return NULL' everywhere and I would prefer to keep the code consistent.
->>> Maybe in a separate patch we can replace all ''return NULL;' lines with a macro that can have some self-explanatory name?
->>
->> Yeah, I was trying to match the existing code, as I'm new to this. ;-)
-> 
-> Oh, if you haven't noticed. I created a tracefs_instance_get_affinity() API
-> as well ;-)
-> 
->    https://patchwork.kernel.org/project/linux-trace-devel/patch/20220118030005.1603821-2-rostedt@goodmis.org/
+Please let me know if you find this modifications useful or not?
 
-Great!
-Y.
+Cheers,
+Yordan
 
-> 
-> -- Steve
-> 
+Yordan Karadzhov (VMware) (2):
+  kernel-shark: Add KsPluginsGUI.hpp/.cpp
+  kernel-shark: Install missing headers
+
+ src/CMakeLists.txt         | 12 ++++++++++++
+ src/KsPluginsGUI.cpp       | 27 +++++++++++++++++++++++++++
+ src/KsPluginsGUI.hpp       | 22 ++++++++++++++++++++++
+ src/plugins/CMakeLists.txt |  4 ++++
+ 4 files changed, 65 insertions(+)
+ create mode 100644 src/KsPluginsGUI.cpp
+ create mode 100644 src/KsPluginsGUI.hpp
+
+-- 
+2.32.0
+
