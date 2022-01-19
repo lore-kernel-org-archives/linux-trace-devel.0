@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9550C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 19 Jan 2022 08:25:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D569CC43217
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 19 Jan 2022 08:25:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352404AbiASIZc (ORCPT
+        id S1352407AbiASIZe (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 19 Jan 2022 03:25:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45842 "EHLO
+        Wed, 19 Jan 2022 03:25:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352406AbiASIZc (ORCPT
+        with ESMTP id S1352405AbiASIZd (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 19 Jan 2022 03:25:32 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5B4C061574
-        for <linux-trace-devel@vger.kernel.org>; Wed, 19 Jan 2022 00:25:31 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id a18so7549405edj.7
-        for <linux-trace-devel@vger.kernel.org>; Wed, 19 Jan 2022 00:25:31 -0800 (PST)
+        Wed, 19 Jan 2022 03:25:33 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F06C061574
+        for <linux-trace-devel@vger.kernel.org>; Wed, 19 Jan 2022 00:25:32 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id a18so7549583edj.7
+        for <linux-trace-devel@vger.kernel.org>; Wed, 19 Jan 2022 00:25:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gcD35ez3yGA4E7930iSZGDFqcnANq8aEACWjru4ELRk=;
-        b=mPSuRCV2tBmJ/FAqiw22DLVnGwN0DNjFIZMyOC56ni9BeW4A2Vg8XJBo72jhExQat3
-         K1E2pMVAjsAlndGmoPnpIrGEGsUiHAD69YRT2pyMOvgruj9cjjmvTjZa1cFMiSp8v8R8
-         8Aa/5edlYzeZ68Oq0blLUqANl1kkGkJbcUJgdjWR5dwF7mB4Aplx0X7FPH0JQe5Io73E
-         ZEWb2edVWjbf1J7v9hC0nFTjKMOzB1x+PwxVcEL370rZTGCfrZFgdPOA2Czb3jjpVmZ2
-         2T+R0ZKopIvMgQKrnGKh/MGBjm1s6yO8e35Bz8h9pCOGdC95wxWVGXxVOlBsHF/9LIPh
-         iDXA==
+        bh=8XtAVvd5pbChMCkMkMESo1+yjK+cNkhfagDnRZi2opM=;
+        b=a/OvHkAdUUmz/hNOIDayRPStJR69eTVxN0tVFRExg/VOD340/lXlPsyWc2DJyzaRcG
+         AloVaHkzS47w2YUI2gxMtlkc6+eDbD1puJfN8BnFGxbgKwujO95UYg5hHMe01JL3nkEs
+         cb7LzUYtarvE7k9neASL1htv6csvPMbFcrP92k5h6qH+G7dd93rxzmXOdViZU7wiwyuF
+         PRp9KTxjlKrn6tQv/px+OWavS/JUr0+Chtz7AqSKEkPo0YOtcRgdaJO6WA9vX+CwTFcx
+         JkiVL4X/YnHPvXC1RVgLIPyl9UVTNFj82zpiv9//1gUrTc0mVaNU1eEV6jJSRN9TYMV7
+         /eRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gcD35ez3yGA4E7930iSZGDFqcnANq8aEACWjru4ELRk=;
-        b=MA0oM+q43/oiKzIh4pT+9FkpIKLCEqs1GNIox516TM8tqlZ3ucoD10laWyPZUCj75D
-         /bQUZvQCBx110ygmf89oab1qw7KEwcvcs5rI5Md6AB8cqVpY7R6XIecFPZ8DwuuQUfON
-         7g+Sj+AY3NFepr9vmol/PwW3ILpgMoVmMfw/3eJNDxx9MVUKeVc5yTSPD3kVpjRlsEL1
-         lOwMI6Tc41CfTIYSMyTkyfdf3f3s1jMfnXxvvufDb8isD9aNMCBGO5HK/00j8qEm1gUZ
-         XLn8YQiSfWyJC7+fPk3wjTFLQ3yeSFdUUX7FhHMIVh5q151hJYeEdqKppEtrA5833kmu
-         Yxkg==
-X-Gm-Message-State: AOAM532uGNDlYVKjErD8g1Vv940TXdQh8A79elter3CnbX2qyYShHOTB
-        A7xvOJR3sWpW2orcnPW33Gc=
-X-Google-Smtp-Source: ABdhPJyb/xprRDHysCbU37JR7nYRwXqDoASuLmGahSRhj5+kbbOH3OiDD5GE8nYe6+6+Zkl0ejJXNA==
-X-Received: by 2002:a17:907:1b1f:: with SMTP id mp31mr22400700ejc.247.1642580730215;
-        Wed, 19 Jan 2022 00:25:30 -0800 (PST)
+        bh=8XtAVvd5pbChMCkMkMESo1+yjK+cNkhfagDnRZi2opM=;
+        b=MqiIO4r27jPXQumsrfnVBrOvZHPac8fnpqo6wNHTBkurEuuV/bTgRBbYqGR4et+0cR
+         0I7btLnT+4yIU5of7LqEi9npcqOVRSK4HN00GCyrY49BX2nfwX4dHD40/JitQs6+4klZ
+         cIv0t7jKTF+gdW11A21KA3He9nAMx6IMkgl6S9lB/gCP8acFcCeDqu+MQWuy2kJGswBa
+         XD0qf05Ys0fEHQ9opR3q6DeetgWOCLJ9gIoCXTxvzBCyu0Z1/SfGVZeZ8rdrUtF6uT0T
+         Dvck50tZlFa+iSExcJSBD1qvHwIc2Xkwe9PTYvbBpKE5lgPHQQDYchA9dUp52hJ1Fslm
+         O7pg==
+X-Gm-Message-State: AOAM5324DPOo8Y2L1S9V9MGnIBk8YbMtVf6PLJij692zsFCArqZb6ZWc
+        YLUQ+pffcgPVuhnvXl3FVwhfvOWBpN4=
+X-Google-Smtp-Source: ABdhPJxYzcoC/6igFrJh6x44ND1eG9w9n72bIjTddetaFIiiWOoWcbwyEdDYoCOHdgpDUNKfQO+Tnw==
+X-Received: by 2002:a50:ce4a:: with SMTP id k10mr29586648edj.31.1642580731440;
+        Wed, 19 Jan 2022 00:25:31 -0800 (PST)
 Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id l1sm5011122ejf.44.2022.01.19.00.25.29
+        by smtp.gmail.com with ESMTPSA id l1sm5011122ejf.44.2022.01.19.00.25.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jan 2022 00:25:29 -0800 (PST)
+        Wed, 19 Jan 2022 00:25:30 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v8 20/25] trace-cmd library: Initialize CPU data for reading from version 7 trace files
-Date:   Wed, 19 Jan 2022 10:25:02 +0200
-Message-Id: <20220119082507.245600-21-tz.stoyanov@gmail.com>
+Subject: [PATCH v8 21/25] trace-cmd library: Handle latency trace in version 7 files
+Date:   Wed, 19 Jan 2022 10:25:03 +0200
+Message-Id: <20220119082507.245600-22-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220119082507.245600-1-tz.stoyanov@gmail.com>
 References: <20220119082507.245600-1-tz.stoyanov@gmail.com>
@@ -64,260 +64,134 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In version 7 trace files, CPU trace data is written in slightly
-different way than in version 6 files. Added new CPU data initialization
-flow, to handle version 7 files:
- - the top trace instance is saved in the same way as the other trace
-   instances.
- - per CPU trace metadata is stored in the buffer option.
- - trace data section has section header.
+Latency trace data is saved the same was as flyrecord buffer data
+in trace files version 7. There is a BUFFER_TEXT option which holds the
+latency specific trace metadata and points to the section in the file
+with the trace data. A new API is added to read latency data:
+ tracecmd_latency_data_read()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 178 +++++++++++++++++++++++++-----------
- 1 file changed, 123 insertions(+), 55 deletions(-)
+ .../include/private/trace-cmd-private.h       |  5 +++-
+ lib/trace-cmd/trace-input.c                   | 29 ++++++++++++++++++-
+ lib/trace-cmd/trace-output.c                  |  5 +++-
+ tracecmd/trace-record.c                       |  3 +-
+ 4 files changed, 38 insertions(+), 4 deletions(-)
 
+diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
+index 94b33949..1efafba1 100644
+--- a/lib/trace-cmd/include/private/trace-cmd-private.h
++++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+@@ -227,6 +227,8 @@ tracecmd_peek_data_ref(struct tracecmd_input *handle, int cpu)
+ 	return rec;
+ }
+ 
++int tracecmd_latency_data_read(struct tracecmd_input *handle, char **buf, size_t *size);
++
+ struct tep_record *
+ tracecmd_read_prev(struct tracecmd_input *handle, struct tep_record *record);
+ 
+@@ -301,7 +303,8 @@ int tracecmd_output_write_headers(struct tracecmd_output *handle,
+ 
+ struct tracecmd_output *tracecmd_output_create(const char *output_file);
+ struct tracecmd_output *tracecmd_output_create_fd(int fd);
+-struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, int cpus);
++struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, int cpus,
++						     int file_version);
+ 
+ struct tracecmd_option *tracecmd_add_option(struct tracecmd_output *handle,
+ 					    unsigned short id, int size,
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 7f418a44..103ff7bf 100644
+index 103ff7bf..6f540c90 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -3214,34 +3214,18 @@ static int read_options_type(struct tracecmd_input *handle)
+@@ -3214,6 +3214,24 @@ static int read_options_type(struct tracecmd_input *handle)
  	return 0;
  }
  
--static int read_cpu_data(struct tracecmd_input *handle)
-+static int init_cpu_data(struct tracecmd_input *handle)
++int tracecmd_latency_data_read(struct tracecmd_input *handle, char **buf, size_t *size)
++{
++	if (!handle || !buf || !size)
++		return -1;
++	if (handle->file_state != TRACECMD_FILE_CPU_LATENCY)
++		return -1;
++
++	/* Read data from a file */
++	if (!(*buf)) {
++		*size = BUFSIZ;
++		*buf = malloc(*size);
++		if (!(*buf))
++			return -1;
++	}
++
++	return do_read(handle, *buf, *size);
++}
++
+ static int init_cpu_data(struct tracecmd_input *handle)
  {
--	struct tep_handle *pevent = handle->pevent;
  	enum kbuffer_long_size long_size;
- 	enum kbuffer_endian endian;
--	unsigned long long size;
- 	unsigned long long max_size = 0;
- 	unsigned long long pages;
--	int cpus;
- 	int cpu;
+@@ -3276,6 +3294,12 @@ static int init_cpu_data(struct tracecmd_input *handle)
+ 	return -1;
+ }
  
--	/*
--	 * Check if this is a latency report or not.
--	 */
--	if (handle->file_state == TRACECMD_FILE_CPU_LATENCY)
--		return 1;
--
- 	/* We expect this to be flyrecord */
- 	if (handle->file_state != TRACECMD_FILE_CPU_FLYRECORD)
- 		return -1;
- 
--	cpus = handle->cpus;
--
--	handle->cpu_data = malloc(sizeof(*handle->cpu_data) * handle->cpus);
--	if (!handle->cpu_data)
--		return -1;
--	memset(handle->cpu_data, 0, sizeof(*handle->cpu_data) * handle->cpus);
--
- 	if (force_read)
- 		handle->read_page = true;
- 
-@@ -3256,32 +3240,14 @@ static int read_cpu_data(struct tracecmd_input *handle)
- 		endian = KBUFFER_ENDIAN_LITTLE;
- 
- 	for (cpu = 0; cpu < handle->cpus; cpu++) {
--		unsigned long long offset;
--
--		handle->cpu_data[cpu].cpu = cpu;
--
- 		handle->cpu_data[cpu].kbuf = kbuffer_alloc(long_size, endian);
- 		if (!handle->cpu_data[cpu].kbuf)
- 			goto out_free;
--		if (tep_is_old_format(pevent))
-+		if (tep_is_old_format(handle->pevent))
- 			kbuffer_set_old_format(handle->cpu_data[cpu].kbuf);
- 
--		read8(handle, &offset);
--		read8(handle, &size);
--
--		handle->cpu_data[cpu].file_offset = offset;
--		handle->cpu_data[cpu].file_size = size;
--		if (size > max_size)
--			max_size = size;
--
--		if (size && (offset + size > handle->total_file_size)) {
--			/* this happens if the file got truncated */
--			printf("File possibly truncated. "
--				"Need at least %llu, but file size is %zu.\n",
--				offset + size, handle->total_file_size);
--			errno = EINVAL;
--			goto out_free;
--		}
-+		if (handle->cpu_data[cpu].file_size > max_size)
-+			max_size = handle->cpu_data[cpu].file_size;
- 	}
- 
- 	/* Calculate about a meg of pages for buffering */
-@@ -3299,6 +3265,101 @@ static int read_cpu_data(struct tracecmd_input *handle)
- 			goto out_free;
- 	}
- 
++int init_latency_data(struct tracecmd_input *handle)
++{
++	/* To do */
 +	return 0;
-+
-+ out_free:
-+	for ( ; cpu >= 0; cpu--) {
-+		free_page(handle, cpu);
-+		kbuffer_free(handle->cpu_data[cpu].kbuf);
-+		handle->cpu_data[cpu].kbuf = NULL;
-+	}
-+	return -1;
 +}
 +
-+static int init_buffer_cpu_data(struct tracecmd_input *handle, struct input_buffer_instance *buffer)
-+{
-+	unsigned long long offset;
-+	unsigned long long size;
-+	unsigned short id, flags;
-+	int cpu;
-+
-+	if (handle->cpu_data)
-+		return -1;
-+
-+	if (lseek64(handle->fd, buffer->offset, SEEK_SET) == (off_t)-1)
-+		return -1;
-+	if (read_section_header(handle, &id, &flags, NULL, NULL))
-+		return -1;
-+
-+	handle->file_state = TRACECMD_FILE_CPU_FLYRECORD;
-+	handle->cpus = buffer->cpus;
-+	if (handle->max_cpu < handle->cpus)
-+		handle->max_cpu = handle->cpus;
-+
-+	handle->cpu_data = calloc(handle->cpus, sizeof(*handle->cpu_data));
-+	if (!handle->cpu_data)
-+		return -1;
-+
-+	for (cpu = 0; cpu < handle->cpus; cpu++) {
-+		handle->cpu_data[cpu].cpu = buffer->cpu_data[cpu].cpu;
-+		offset = buffer->cpu_data[cpu].offset;
-+		size = buffer->cpu_data[cpu].size;
-+		handle->cpu_data[cpu].file_offset = offset;
-+		handle->cpu_data[cpu].file_size = size;
-+		if (size && (offset + size > handle->total_file_size)) {
-+			/* this happens if the file got truncated */
-+			printf("File possibly truncated. "
-+				"Need at least %llu, but file size is %zu.\n",
-+				offset + size, handle->total_file_size);
-+			errno = EINVAL;
-+			return -1;
-+		}
-+	}
-+
-+	return init_cpu_data(handle);
-+}
-+
-+static int read_cpu_data(struct tracecmd_input *handle)
-+{
-+	unsigned long long size;
-+	int cpus;
-+	int cpu;
-+
-+	/*
-+	 * Check if this is a latency report or not.
-+	 */
-+	if (handle->file_state == TRACECMD_FILE_CPU_LATENCY)
-+		return 1;
-+
-+	/* We expect this to be flyrecord */
-+	if (handle->file_state != TRACECMD_FILE_CPU_FLYRECORD)
-+		return -1;
-+
-+	cpus = handle->cpus;
-+
-+	handle->cpu_data = malloc(sizeof(*handle->cpu_data) * handle->cpus);
-+	if (!handle->cpu_data)
-+		return -1;
-+	memset(handle->cpu_data, 0, sizeof(*handle->cpu_data) * handle->cpus);
-+
-+	for (cpu = 0; cpu < handle->cpus; cpu++) {
-+		unsigned long long offset;
-+
-+		handle->cpu_data[cpu].cpu = cpu;
-+		read8(handle, &offset);
-+		read8(handle, &size);
-+		handle->cpu_data[cpu].file_offset = offset;
-+		handle->cpu_data[cpu].file_size = size;
-+		if (size && (offset + size > handle->total_file_size)) {
-+			/* this happens if the file got truncated */
-+			printf("File possibly truncated. "
-+				"Need at least %llu, but file size is %zu.\n",
-+				offset + size, handle->total_file_size);
-+			errno = EINVAL;
-+			return -1;
-+		}
-+	}
-+
- 	/*
- 	 * It is possible that an option changed the number of CPUs.
- 	 * If that happened, then there's "empty" cpu data saved for
-@@ -3318,15 +3379,7 @@ static int read_cpu_data(struct tracecmd_input *handle)
- 		}
- 	}
- 
--	return 0;
--
-- out_free:
--	for ( ; cpu >= 0; cpu--) {
--		free_page(handle, cpu);
--		kbuffer_free(handle->cpu_data[cpu].kbuf);
--		handle->cpu_data[cpu].kbuf = NULL;
--	}
--	return -1;
-+	return init_cpu_data(handle);
- }
- 
- static int read_data_and_size(struct tracecmd_input *handle,
-@@ -3424,14 +3477,7 @@ static int read_and_parse_trace_clock(struct tracecmd_input *handle,
- 	return 0;
- }
- 
--/**
-- * tracecmd_init_data - prepare reading the data from trace.dat
-- * @handle: input handle for the trace.dat file
-- *
-- * This prepares reading the data from trace.dat. This is called
-- * after tracecmd_read_headers() and before tracecmd_read_data().
-- */
--int tracecmd_init_data(struct tracecmd_input *handle)
-+static int init_data_v6(struct tracecmd_input *handle)
+ static int init_buffer_cpu_data(struct tracecmd_input *handle, struct input_buffer_instance *buffer)
  {
- 	struct tep_handle *pevent = handle->pevent;
- 	int ret;
-@@ -3453,7 +3499,29 @@ int tracecmd_init_data(struct tracecmd_input *handle)
- 			tracecmd_parse_trace_clock(handle, clock, 8);
- 		}
- 	}
-+	return ret;
-+}
-+
-+static int init_data(struct tracecmd_input *handle)
-+{
-+	return init_buffer_cpu_data(handle, &handle->top_buffer);
-+}
+ 	unsigned long long offset;
+@@ -3290,7 +3314,10 @@ static int init_buffer_cpu_data(struct tracecmd_input *handle, struct input_buff
+ 		return -1;
+ 	if (read_section_header(handle, &id, &flags, NULL, NULL))
+ 		return -1;
+-
++	if (buffer->latency) {
++		handle->file_state = TRACECMD_FILE_CPU_LATENCY;
++		return init_latency_data(handle) == 0 ? 1 : -1;
++	}
+ 	handle->file_state = TRACECMD_FILE_CPU_FLYRECORD;
+ 	handle->cpus = buffer->cpus;
+ 	if (handle->max_cpu < handle->cpus)
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index fe4fcf64..15baef8f 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -1890,7 +1890,8 @@ out_add_buffer_option(struct tracecmd_output *handle, const char *name,
+ 	return option;
+ }
  
-+/**
-+ * tracecmd_init_data - prepare reading the data from trace.dat
-+ * @handle: input handle for the trace.dat file
-+ *
-+ * This prepares reading the data from trace.dat. This is called
-+ * after tracecmd_read_headers() and before tracecmd_read_data().
-+ */
-+int tracecmd_init_data(struct tracecmd_input *handle)
-+{
-+	int ret;
-+
-+	if (!HAS_SECTIONS(handle))
-+		ret = init_data_v6(handle);
-+	else
-+		ret = init_data(handle);
- 	tracecmd_blk_hack(handle);
+-struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, int cpus)
++struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, int cpus,
++						     int file_version)
+ {
+ 	enum tracecmd_section_flags flags = 0;
+ 	struct tracecmd_output *handle;
+@@ -1901,6 +1902,8 @@ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, in
+ 	if (!handle)
+ 		return NULL;
  
- 	return ret;
++	if (file_version && tracecmd_output_set_version(handle, file_version))
++		goto out_free;
+ 	if (tracecmd_output_write_headers(handle, NULL))
+ 		goto out_free;
+ 	/*
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index f599610e..2dea79dc 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -4501,7 +4501,8 @@ static void record_data(struct common_record_context *ctx)
+ 		return;
+ 
+ 	if (latency) {
+-		handle = tracecmd_create_file_latency(ctx->output, local_cpu_count);
++		handle = tracecmd_create_file_latency(ctx->output, local_cpu_count,
++						      ctx->file_version);
+ 		tracecmd_set_quiet(handle, quiet);
+ 	} else {
+ 		if (!local_cpu_count)
 -- 
 2.34.1
 
