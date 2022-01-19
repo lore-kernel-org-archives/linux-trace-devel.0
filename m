@@ -2,547 +2,414 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A107C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 19 Jan 2022 12:24:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96B49C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 19 Jan 2022 12:59:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347444AbiASMYE (ORCPT
+        id S1354470AbiASM7Z (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 19 Jan 2022 07:24:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44546 "EHLO
+        Wed, 19 Jan 2022 07:59:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345736AbiASMYE (ORCPT
+        with ESMTP id S232897AbiASM7Y (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 19 Jan 2022 07:24:04 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECBA4C061574
-        for <linux-trace-devel@vger.kernel.org>; Wed, 19 Jan 2022 04:24:03 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id 30so10429586edv.3
-        for <linux-trace-devel@vger.kernel.org>; Wed, 19 Jan 2022 04:24:03 -0800 (PST)
+        Wed, 19 Jan 2022 07:59:24 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5712CC061574
+        for <linux-trace-devel@vger.kernel.org>; Wed, 19 Jan 2022 04:59:24 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id n8so2101300plc.3
+        for <linux-trace-devel@vger.kernel.org>; Wed, 19 Jan 2022 04:59:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=N4Jb+dXeAb1yjUtJkDClTZODRNb3Tihnkm00w/Z22pc=;
-        b=GF79p4EgJBtZcE9PwYeHv3um7jf3HpK0W65n42y6Fo506RMr6LBxZ4RhEgrG6h8pSS
-         6zzf+NlRMU7BethpWSsNKIysovvaE3nB0nvd0tfyZCW4tO8Gqhsnl/LGmcfsGpFXcRTL
-         M5TzVbhLDH3oBdIky52wRCqZc3gKWPgj5WDl6wdTR41y5ZcxdFoi3oT6WZDy3RDeAhDh
-         GXF3TLRp+bnWy9RVZ19ssDfmVLXTZ4crFi5LYfiPmAoRWzT7BZ9hjEnjrOi/4yPRD12S
-         XlgZ7CihW769p7tiFMFVw6dGOyAiDU7YzLfIcF/FLOFrfyKQmfVnPP7S+U3fxv3gnSb6
-         EsmA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C9RMVVl/8ig9wExu+EI4ZreTUIIt5kKzWdXQFxln3JI=;
+        b=FHDh3wISjEhLy4qQN1xWnIyv9hx90S1xRkMOHhHe/AdPkQkzUq+ZAClu7XNadwa96P
+         5imZSoXf7jkEXcwnX5rG4AYedoKmac1UsTSwLqX7sfyQx0TQmIBfosUxQGZAGJOmsJ1W
+         dkzBMSSxdPglx59H39Rm8gbdSIwfosUs3dZvCjuahUGfuEsZgW95Yyi6Wl1o8rBZ3afI
+         YUxXh+yWovc4R1FWQNiyYlgrEqa/5zmdgCwfd5Ux3EaVpEMCOLp2nLHYNu4XQe6L7LT+
+         I0oId/Wfpk8dErPoAF4uMMUZloR7hPqaZSbWJ4xDP2g5O3dNCHQK/Dqt7YJE6pZIWruI
+         W4rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=N4Jb+dXeAb1yjUtJkDClTZODRNb3Tihnkm00w/Z22pc=;
-        b=oZ1kibtMWYwoHtS0eP28+DWkkc66vcDezRLBLokyvK99vmY+QhEKnPuy7tR2yx8mj7
-         z+Dfu7HKrFuAco3MXlNTUfqhmibXU68VtK/q/20htUMUzogDpMYmVJgqFK4h/hfW+kSt
-         UQJyLakIKK+9ji3nFHAvk4mILtZU54RznisH5S6bSjT0BomL5nAXk8Vu7DUdtoLHh/f5
-         gjpnPGnlYNyBhVqd5p/7Y1m3KJ+8QHJrzm6UvZhuAnLI6gsUN7gDLxmEG+T9By1Yvk/7
-         r4Zt63prCaHKJpZ8XqA+S0z4XsP0VN9JHXUDVXX/qQAFQ7bkiKpJHUdJV5DX2HaHAMBD
-         aD4g==
-X-Gm-Message-State: AOAM531qWem/yuCFHtq51/HN+Pi7A/5EVDN4M5SriIbWG5NbXIY1Agsv
-        oewFBYe2i4zZDw/sHtJqPRzmi4p1JcU=
-X-Google-Smtp-Source: ABdhPJw67juhPietFLSmuCikPyny8LdBemaKhpJXOE1UKleIlzhthJITI76r7GlhijssthErAnu3qQ==
-X-Received: by 2002:a05:6402:292f:: with SMTP id ee47mr23559948edb.262.1642595042495;
-        Wed, 19 Jan 2022 04:24:02 -0800 (PST)
-Received: from [192.168.1.9] ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id c12sm1232538edx.80.2022.01.19.04.24.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jan 2022 04:24:01 -0800 (PST)
-Message-ID: <d1cbc59b-32da-85da-2533-d7f193bc4999@gmail.com>
-Date:   Wed, 19 Jan 2022 14:24:00 +0200
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C9RMVVl/8ig9wExu+EI4ZreTUIIt5kKzWdXQFxln3JI=;
+        b=nKoN+01KXeFcDpdwJBWf/1PcOXhfO917QL7YWETkFANwkQNSLrhCPk26FsRUxmSLPP
+         9gJAHhFxaEbszHkE4SCk1AFTvGY1JoviNZ0ig/ZYQRhVmGK5PGdw2fnGFtixJmKXEk4A
+         rFPoTREbU6TjLSut0cNM/JQo2ohNebHtYMDwAIk3lDn1JdBdhNrD7muFA7pmNkpapIgV
+         ixzjyL3Jk6vk/7XP+z4P4yxCaBb7kjJfptnmHQGLFSN/wJip4cakCtkZvuUy0ze2FAjn
+         zOc10lqwvnKeR8TuIOZC94bkgj/bh94lYpGaLbiZNo837Jhn0eTj8oQME9q8x6bsxkI4
+         9Gfw==
+X-Gm-Message-State: AOAM533N17VdMzu6SxcSSVhDnxrWa8bdgZ8d33A+ndYPoLn3in5mJVw1
+        HDJn/zF0kLm5fhwfQ7QXfw31RrfSsUnKHTbadx1lNdhXmCU=
+X-Google-Smtp-Source: ABdhPJxMz5XSlXag78r6Ibk0Lxf+Xwkq07eULVx4p8LmhWLIdNymOBTYDtrCciaz/RIfb+E7qPYpKbulw7eH3nUun4Y=
+X-Received: by 2002:a17:902:d50d:b0:14a:4ed2:2a18 with SMTP id
+ b13-20020a170902d50d00b0014a4ed22a18mr32766313plg.44.1642597163717; Wed, 19
+ Jan 2022 04:59:23 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH] kernel-shark: Add plugin for handling Xenomai
- cobalt_context_switch
-Content-Language: en-US
-To:     "Chen, Hongzhan" <hongzhan.chen@intel.com>,
-        "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>
-References: <20220118033342.25119-1-hongzhan.chen@intel.com>
- <MN2PR11MB4285F116FD02668420B10E8CF2589@MN2PR11MB4285.namprd11.prod.outlook.com>
-From:   Yordan Karadzhov <y.karadz@gmail.com>
-In-Reply-To: <MN2PR11MB4285F116FD02668420B10E8CF2589@MN2PR11MB4285.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20220118030005.1603821-1-rostedt@goodmis.org> <20220118030005.1603821-2-rostedt@goodmis.org>
+In-Reply-To: <20220118030005.1603821-2-rostedt@goodmis.org>
+From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Date:   Wed, 19 Jan 2022 14:59:07 +0200
+Message-ID: <CAPpZLN4n=L-ZHCXM+LDRiQu0XwR4iCnGeCKJOuOWenkz2EhESA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] libtracefs: Add tracefs_instance_get_affinity() APIs
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+On Wed, Jan 19, 2022 at 2:02 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> Add the APIs:
+>
+>   tracefs_instance_get_affinity()
+>   tracefs_instance_get_affinity_set()
+>   tracefs_instance_get_affinity_raw()
+>
+> These functions can retrieve the CPU affinity that denotes what an
+> instance (or toplevel) has for CPUs that are enabled for tracing.
+>
+> The first API returns a nice human readable list of CPUs:
+>
+>  "1,4,6-8"
+>
+> To denote CPUs 1,4,6,7,8
+>
+> The _set() version uses CPU_SETS and the _raw() version just reads
+> directly from the tracing_cpumask file.
+>
+> Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
+> ---
+>  .../libtracefs-instances-affinity.txt         |  39 +++-
+>  include/tracefs.h                             |   4 +
+>  src/tracefs-instance.c                        | 192 ++++++++++++++++++
+>  3 files changed, 231 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/libtracefs-instances-affinity.txt b/Documentation/libtracefs-instances-affinity.txt
+> index c5fa2d8b820c..22994f877e30 100644
+> --- a/Documentation/libtracefs-instances-affinity.txt
+> +++ b/Documentation/libtracefs-instances-affinity.txt
+> @@ -3,8 +3,9 @@ libtracefs(3)
+>
+>  NAME
+>  ----
+> -tracefs_instance_set_affinity, tracefs_instance_set_affinity_set, tracefs_set_affinity_raw -
+> -Sets the affinity for an instance or top level for what CPUs enable tracing.
+> +tracefs_instance_set_affinity, tracefs_instance_set_affinity_set, tracefs_set_affinity_raw,
+> +tracefs_instance_get_affinity, tracefs_instance_get_affinity_set, tracefs_get_affinity_raw,
+> +Sets or retrieves the affinity for an instance or top level for what CPUs enable tracing.
+>
+>  SYNOPSIS
+>  --------
+> @@ -16,11 +17,14 @@ int *tracefs_instance_set_affinity*(struct tracefs_instance pass:[*]_instance_,
+>  int *tracefs_instance_set_affinity_set*(struct tracefs_instance pass:[*]_instance_, cpu_set_t pass:[*]_set_, size_t _set_size_);
+>  int *tracefs_instance_set_affinity_raw*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_mask_);
+>
+> +char pass:[*]*tracefs_instance_get_affinity*(struct tracefs_instance pass:[*]_instance_);
+> +int *tracefs_instance_get_affinity_set*(struct tracefs_instance pass:[*]_instance_, cpu_set_t pass:[*]_set_, size_t _set_size_);
+> +char pass:[*]*tracefs_instance_get_affinity_raw*(struct tracefs_instance pass:[*]_instance_);
 
+These should be added also into Documentation/libtracefs.txt, under
+the relevant API section. All library APIs should be listed there.
 
+>  --
+>
+>  DESCRIPTION
+>  -----------
+> -These functions set the CPU affinity that limits what CPUs will have tracing enabled
+> +These functions set or retrieves the CPU affinity that limits what CPUs will have tracing enabled
 
-On 18.01.22 г. 5:59 ч., Chen, Hongzhan wrote:
-> Sorry, Please ignore it. Email wrong address.
-> 
-Hi Hongzhan,
+Maybe "These functions set or retrieve ..." ?
 
-I think it may be a good idea to have the mailing list CC-ed in the patches of the plugin.
-I will be happy to keep an eye on your development.
-
-And I have some comments in the patch below.
-
-
-> Regards
-> 
-> Hongzhan Chen
-> 
-> -----Original Message-----
-> From: Hongzhan Chen <hongzhan.chen@intel.com>
-> Sent: Tuesday, January 18, 2022 11:34 AM
-> To: linux-trace-devel@vger.kernel.org; y.karadz@gmail.com
-> Subject: [PATCH] kernel-shark: Add plugin for handling Xenomai cobalt_context_switch
-> 
-> For Xenomai-cobalt enabled system, cobalt_switch_context means
-> that there is schedule and context switch in companion core(realtime
-> core), which we may need to do special treatment and take correct
-> action as main kernel sched_switch to visualize out-of-band state
-> of realtime tasks running in cobalt core. To achive our target,
-> we implement following:
-> 
->    1. store corresponding cobalt_switch_context events into
->       container data.
->    2. modify pid stored in entry to be equal to next_pid to
->       show correct color in cpu bar when cobalt_switch_context
->       event happen.
->    3. show cobalt blue hollow box to mark out-of-band state according
->       to cobalt_switch_context events.
->    4. clickable cobalt_switch_context plugin shapes.
-> 
-> Signed-off-by: Hongzhan Chen <hongzhan.chen@intel.com>
-> 
-> diff --git a/src/plugins/CMakeLists.txt b/src/plugins/CMakeLists.txt
-> index 3e170fa..16f080b 100644
-> --- a/src/plugins/CMakeLists.txt
-> +++ b/src/plugins/CMakeLists.txt
-> @@ -44,6 +44,10 @@ if (Qt5Widgets_FOUND AND TT_FONT_FILE)
->                        SOURCE sched_events.c SchedEvents.cpp)
->       list(APPEND PLUGIN_LIST "sched_events")
->   
-> +    BUILD_GUI_PLUGIN(NAME xenomai_cobalt_switch_events
-> +                     SOURCE xenomai_cobalt_switch_events.c CobaltSwitchEvents.cpp)
-> +    list(APPEND PLUGIN_LIST "xenomai_cobalt_switch_events")
+>  for a given instance defined by the _instance_ parameter. If _instance_ is NULL, then
+>  the top level instance is affected.
+>
+> @@ -47,9 +51,32 @@ machine with more that 32 CPUs, to set CPUS 1-10 and CPU 40:
+>
+>  Where the above is a hex representation of bits 1-10 and bit 40 being set.
+>
+> +The *tracefs_instance_get_affinity()* will retrieve the affinity in a human readable
+> +form.
 > +
->       BUILD_GUI_PLUGIN(NAME event_field_plot
->                        MOC EventFieldDialog.hpp
->                        SOURCE event_field_plot.c EventFieldDialog.cpp EventFieldPlot.cpp)
-
-Ideally, you do not need the above.
-My original idea was that the external plugins will build standalone, so that you do not need to carry the burden of the 
-complicated build of the entire KernelShark GUI. However this was never tested so far. Please have a look in the 
-patch-set "Allow GUI plugins to build standalone" and tell me if this can be useful for you.
-
-thanks!
-Yordan
-
-
-> diff --git a/src/plugins/CobaltSwitchEvents.cpp b/src/plugins/CobaltSwitchEvents.cpp
-> new file mode 100644
-> index 0000000..269de95
-> --- /dev/null
-> +++ b/src/plugins/CobaltSwitchEvents.cpp
-> @@ -0,0 +1,157 @@
-> +// SPDX-License-Identifier: LGPL-2.1
+> +For example: "1,4,6-8"
 > +
-> +/*
-> + * Copyright (C) 2021 Intel Inc, Hongzhan Chen <hongzhan.chen@intel.com>
-> + */
+> +The string returned must be freed with *free*(3).
+> +
+> +The *tracefs_instance_get_affinity_set()* will set all the bits in the passed in
+> +cpu set (from *CPU_SET*(3)). Note it will not clear any bits that are already set
+> +in the set but the CPUs are not. If only the bits for the CPUs that are enabled
+> +should be set, a CPU_ZERO_S() should be performed on the set before calling this
+> +function.
+> +
+> +The *tracefs_instance_get_affinity_raw()* will simply read the instance tracing_cpumask
+> +and return that string. The returned string must be freed with *free*(3).
+> +
+>  RETURN VALUE
+>  ------------
+> -All of these functions return 0 on success and -1 on error.
+> +All the set functions return 0 on success and -1 on error.
+> +
+> +The functinos *tracefs_instance_get_affinity()* and *tracefs_instance_get_affinity_raw()*
+
+a typo, "functions"
+
+> +returns an allocated string that must be freed with *free*(3), or NULL on error.
+> +
+> +The function *tracefs_instance_get_affinity_set()* returns the number of CPUs that
+> +were found set, or -1 on error.
+> +
+>
+>  ERRORS
+>  ------
+> @@ -88,6 +115,10 @@ int main (int argc, char **argv)
+>         int cpu2;
+>         int i;
+>
+> +       c = tracefs_instance_get_affinity(NULL);
+> +       printf("The affinity was %s\n", c);
+> +       free(c);
+> +
+>         if (argc < 2) {
+>                 tracefs_instance_set_affinity(NULL, NULL);
+>                 exit(0);
+> diff --git a/include/tracefs.h b/include/tracefs.h
+> index 9c53b8413795..1848ad0aa668 100644
+> --- a/include/tracefs.h
+> +++ b/include/tracefs.h
+> @@ -49,6 +49,10 @@ int tracefs_instance_set_affinity_raw(struct tracefs_instance *instance,
+>                                       const char *mask);
+>  int tracefs_instance_set_affinity(struct tracefs_instance *instance,
+>                                   const char *cpu_str);
+> +char *tracefs_instance_get_affinity(struct tracefs_instance *instance);
+> +char *tracefs_instance_get_affinity_raw(struct tracefs_instance *instance);
+> +int tracefs_instance_get_affinity_set(struct tracefs_instance *instance,
+> +                                     cpu_set_t *set, size_t set_size);
+>  char **tracefs_instances(const char *regex);
+>
+>  bool tracefs_instance_exists(const char *name);
+> diff --git a/src/tracefs-instance.c b/src/tracefs-instance.c
+> index fab615eb49ca..2d825b0e3bd0 100644
+> --- a/src/tracefs-instance.c
+> +++ b/src/tracefs-instance.c
+> @@ -10,6 +10,7 @@
+>  #include <stdio.h>
+>  #include <stdlib.h>
+>  #include <unistd.h>
+> +#include <ctype.h>
+>  #include <errno.h>
+>  #include <sys/stat.h>
+>  #include <fcntl.h>
+> @@ -974,3 +975,194 @@ int tracefs_instance_set_affinity(struct tracefs_instance *instance,
+>         CPU_FREE(set);
+>         return ret;
+>  }
 > +
 > +/**
-> + *  @file    CobaltSwitchEvents.cpp
-> + *  @brief   Defines a callback function for Xenomai Cobalt context switch
-> + *           events used to plot in cobalt blue the out-of-band state of
-> + *           the task
-> + */
-> +
-> +// KernelShark
-> +#include "libkshark.h"
-> +#include "libkshark-plugin.h"
-> +#include "plugins/xenomai_cobalt_switch_events.h"
-> +#include "KsPlotTools.hpp"
-> +#include "KsPlugins.hpp"
-> +#include "KsMainWindow.hpp"
-> +
-> +static KsMainWindow *ks4xenomai_ptr;
-> +
-> +/**
-> + * @brief Provide the plugin with a pointer to the KsMainWindow object (the GUI
-> + * itself) such that the plugin can manipulate the GUI.
-> + */
-> +__hidden void *plugin_set_gui_ptr(void *gui_ptr)
-> +{
-> +	ks4xenomai_ptr = static_cast<KsMainWindow *>(gui_ptr);
-> +	return nullptr;
-> +}
-> +
-> +/**
-> + * This class represents the graphical element visualizing OOB state between
-> + *  two cobalt_switch_context events.
-> + */
-> +class XenomaiSwitchBox : public LatencyBox
-> +{
-> +	/** On double click do. */
-> +	void _doubleClick() const override
-> +	{
-> +		ks4xenomai_ptr->markEntry(_data[1]->entry, DualMarkerState::B);
-> +		ks4xenomai_ptr->markEntry(_data[0]->entry, DualMarkerState::A);
-> +	}
-> +
-> +};
-> +
-> +/*
-> + * Ideally, the cobalt_switch_context has to be the last trace event recorded before
-> + * the task is preempted. Because of this, when the data is loaded (the first pass),
-> + * the "pid" field of the cobalt_switch_context entries gets edited by this plugin
-> + * to be equal to the "next pid" of the cobalt_switch_context event. However, in
-> + * reality the cobalt_switch_context event may be followed by some trailing events
-> + * from the same task (printk events for example). This has the effect of extending
-> + * the graph of the task outside of the actual duration of the task. The "second
-> + * pass" over the data is used to fix this problem. It takes advantage of the
-> + * "next" field of the entry (this field is set during the first pass) to search
-> + * for trailing events after the "cobalt_switch_context". In addition, when
-> + * we find that it try to switch in-band because next-pid is zero, we prefer to
-> + * skip this event because it try to leave oob not enterring.
-> + */
-> +static void secondPass(plugin_cobalt_context *plugin_ctx)
-> +{
-> +	kshark_data_container *cSS;
-> +	kshark_entry *e;
-> +	int pid_rec, switch_inband;
-> +
-> +	cSS = plugin_ctx->cs_data;
-> +	for (ssize_t i = 0; i < cSS->size; ++i) {
-> +		switch_inband = plugin_cobalt_check_switch_inband(
-> +				cSS->data[i]->field);
-> +
-> +		/* we skip cobalt_switch_context that try to
-> +		 * switch into in-band state because we just handle
-> +		 * out-of-band
-> +		 */
-> +		if (switch_inband)
-> +			continue;
-> +		pid_rec = plugin_sched_get_pid(cSS->data[i]->field);
-> +		e = cSS->data[i]->entry;
-> +		if (!e->next || e->pid == 0 ||
-> +		    e->event_id == e->next->event_id ||
-> +		    pid_rec != e->next->pid)
-> +			continue;
-> +
-> +		e = e->next;
-> +		/* Find all trailing events. */
-> +		for (; e->next; e = e->next) {
-> +			if (e->pid == plugin_sched_get_pid(
-> +						cSS->data[i]->field)) {
-> +				/*
-> +				 * Change the "pid" to be equal to the "next
-> +				 * pid" of the cobalt_switch_context event
-> +				 * and leave a sign that you edited this
-> +				 * entry.
-> +				 */
-> +				e->pid = cSS->data[i]->entry->pid;
-> +				e->visible &= ~KS_PLUGIN_UNTOUCHED_MASK;
-> +
-> +				/*  This is the last trailing event, we finish
-> +				 *  this round.
-> +				 */
-> +				if (e->next->pid != plugin_sched_get_pid(
-> +						cSS->data[i]->field))
-> +					break;
-> +			}
-> +		}
-> +	}
-> +}
-> +
-> +/**
-> + * @brief Plugin's draw function.
+> + * tracefs_instance_get_affinity_raw - read the affinity instance file
+> + * @instance: The instance to get affinity of (NULL for top level)
 > + *
-> + * @param argv_c: A C pointer to be converted to KsCppArgV (C++ struct).
-> + * @param sd: Data stream identifier.
-> + * @param pid: Process Id.
-> + * @param draw_action: Draw action identifier.
-> + */
-> +__hidden void plugin_cobalt_draw(kshark_cpp_argv *argv_c,
-> +			  int sd, int pid, int draw_action)
-> +{
-> +	plugin_cobalt_context *plugin_ctx;
-> +
-> +	if (!(draw_action & KSHARK_TASK_DRAW) || pid == 0)
-> +		return;
-> +
-> +	plugin_ctx = __get_context(sd);
-> +	if (!plugin_ctx)
-> +		return;
-> +
-> +	KsCppArgV *argvCpp = KS_ARGV_TO_CPP(argv_c);
-> +
-> +	if (!plugin_ctx->second_pass_done) {
-> +		/* The second pass is not done yet. */
-> +		secondPass(plugin_ctx);
-> +		plugin_ctx->second_pass_done = true;
-> +	}
-> +
-> +	IsApplicableFunc checkFieldCS = [=] (kshark_data_container *d,
-> +					     ssize_t i) {
-> +		return !(plugin_cobalt_check_switch_inband(d->data[i]->field)) &&
-> +			d->data[i]->entry->pid == pid;
-> +	};
-> +
-> +	IsApplicableFunc checkEntryPid = [=] (kshark_data_container *d,
-> +					      ssize_t i) {
-> +		return plugin_sched_get_pid(d->data[i]->field) == pid;
-> +	};
-> +
-> +	eventFieldIntervalPlot(argvCpp,
-> +			       plugin_ctx->cs_data, checkFieldCS,
-> +			       plugin_ctx->cs_data, checkEntryPid,
-> +			       makeLatencyBox<XenomaiSwitchBox>,
-> +			       {0, 71, 171}, // Cobalt Blue
-> +			       -1);         // Default size
-> +}
-> diff --git a/src/plugins/xenomai_cobalt_switch_events.c b/src/plugins/xenomai_cobalt_switch_events.c
-> new file mode 100644
-> index 0000000..7a8317c
-> --- /dev/null
-> +++ b/src/plugins/xenomai_cobalt_switch_events.c
-> @@ -0,0 +1,174 @@
-> +// SPDX-License-Identifier: LGPL-2.1
-> +
-> +/*
-> + * Copyright (C) 2021 Intel Inc, Hongzhan Chen <hongzhan.chen@intel.com>
-> + */
-> +
-> +/**
-> + *  @file    xenomai_cobalt_switch_events.c
-> + *  @brief   handle xenomai cobalt switch context event
-> + */
-> +
-> +// C
-> +#include <stdlib.h>
-> +#include <stdio.h>
-> +
-> +// trace-cmd
-> +#include <trace-cmd.h>
-> +
-> +// KernelShark
-> +#include "plugins/xenomai_cobalt_switch_events.h"
-> +#include "libkshark-tepdata.h"
-> +
-> +/** Plugin context instance. */
-> +
-> +//! @cond Doxygen_Suppress
-> +
-> +#define SWITCH_INBAND_SHIFT	PREV_STATE_SHIFT
-> +
-> +#define SWITCH_INBAND_MASK	PREV_STATE_MASK
-> +
-> +//! @endcond
-> +
-> +static void cobalt_free_context(struct plugin_cobalt_context *plugin_ctx)
-> +{
-> +	if (!plugin_ctx)
-> +		return;
-> +
-> +	kshark_free_data_container(plugin_ctx->cs_data);
-> +}
-> +
-> +/* Use the most significant byte to store state marking switch in-band. */
-> +static void plugin_cobalt_set_switch_inband_state(ks_num_field_t *field,
-> +					ks_num_field_t inband_state)
-> +{
-> +	unsigned long long mask = SWITCH_INBAND_MASK << SWITCH_INBAND_SHIFT;
-> +	*field &= ~mask;
-> +	*field |= (inband_state & SWITCH_INBAND_MASK) << SWITCH_INBAND_SHIFT;
-> +}
-> +
-> +/**
-> + * @brief Retrieve the state of switch-in-band from the data field stored in
-> + *        the kshark_data_container object.
+> + * Reads the affinity file for @instance (or the top level if @instance
+> + * is NULL) and returns it. The returned string must be freed with free().
 > + *
-> + * @param field: Input location for the data field.
+> + * Returns the affinity mask on success, and must be freed with free()
+> + *   or NULL on error.
 > + */
-> +__hidden int plugin_cobalt_check_switch_inband(ks_num_field_t field)
+> +char *tracefs_instance_get_affinity_raw(struct tracefs_instance *instance)
 > +{
-> +	unsigned long long mask = SWITCH_INBAND_MASK << SWITCH_INBAND_SHIFT;
-> +
-> +	return (field & mask) >> SWITCH_INBAND_SHIFT;
+> +       return tracefs_instance_file_read(instance, "tracing_cpumask", NULL);
 > +}
 > +
-> +/** A general purpose macro is used to define plugin context. */
-> +KS_DEFINE_PLUGIN_CONTEXT(struct plugin_cobalt_context, cobalt_free_context);
-> +
-> +static bool plugin_cobalt_init_context(struct kshark_data_stream *stream,
-> +				      struct plugin_cobalt_context *plugin_ctx)
+> +static inline int update_cpu_set(int cpus, int cpu_set, int cpu,
+> +                                cpu_set_t *set, size_t set_size)
 > +{
-> +	struct tep_event *event;
+> +       int bit = 1 << cpu;
 > +
-> +	if (!kshark_is_tep(stream))
-> +		return false;
+> +       if (!(cpus & bit))
+> +               return 0;
 > +
-> +	plugin_ctx->tep = kshark_get_tep(stream);
-> +
-> +	event = tep_find_event_by_name(plugin_ctx->tep,
-> +					"cobalt_core", "cobalt_switch_context");
-> +	if (!event)
-> +		return false;
-> +
-> +	plugin_ctx->cobalt_switch_event = event;
-> +	plugin_ctx->cobalt_switch_next_field =
-> +		tep_find_any_field(event, "next_pid");
-> +
-> +	plugin_ctx->second_pass_done = false;
-> +
-> +	plugin_ctx->cs_data = kshark_init_data_container();
-> +	if (!plugin_ctx->cs_data)
-> +		return false;
-> +
-> +	return true;
+> +       CPU_SET_S(cpu_set + cpu, set_size, set);
+> +       return 1;
 > +}
-> +
-> +static void plugin_cobalt_switch_action(struct kshark_data_stream *stream,
-> +				      void *rec, struct kshark_entry *entry)
-> +{
-> +	struct tep_record *record = (struct tep_record *) rec;
-> +	struct plugin_cobalt_context *plugin_ctx;
-> +	unsigned long long next_pid;
-> +	ks_num_field_t ks_field = 0;
-> +	int ret;
-> +
-> +	plugin_ctx = __get_context(stream->stream_id);
-> +	if (!plugin_ctx)
-> +		return;
-> +
-> +	ret = tep_read_number_field(plugin_ctx->cobalt_switch_next_field,
-> +				    record->data, &next_pid);
-> +
-> +	if (ret == 0 && next_pid >= 0) {
-> +		plugin_sched_set_pid(&ks_field, entry->pid);
-> +		if (next_pid == 0) {
-> +			plugin_cobalt_set_switch_inband_state(&ks_field,
-> +					SWITCH_INBAND_STATE);
-> +		}
-> +
-> +		kshark_data_container_append(plugin_ctx->cs_data,
-> +				entry, ks_field);
-> +
-> +		if (next_pid > 0)
-> +			entry->pid = next_pid;
-> +	}
-> +}
-> +
-> +/** Load this plugin. */
-> +int KSHARK_PLOT_PLUGIN_INITIALIZER(struct kshark_data_stream *stream)
-> +{
-> +	struct plugin_cobalt_context *plugin_ctx;
-> +
-> +	plugin_ctx = __init(stream->stream_id);
-> +	if (!plugin_ctx || !plugin_cobalt_init_context(stream, plugin_ctx)) {
-> +		__close(stream->stream_id);
-> +		return 0;
-> +	}
-> +
-> +	if (plugin_ctx->cobalt_switch_event) {
-> +		kshark_register_event_handler(stream,
-> +						plugin_ctx->cobalt_switch_event->id,
-> +						plugin_cobalt_switch_action);
-> +	}
-> +
-> +	kshark_register_draw_handler(stream, plugin_cobalt_draw);
-> +
-> +	return 1;
-> +}
-> +
-> +/** Unload this plugin. */
-> +int KSHARK_PLOT_PLUGIN_DEINITIALIZER(struct kshark_data_stream *stream)
-> +{
-> +	struct plugin_cobalt_context *plugin_ctx = __get_context(stream->stream_id);
-> +	int ret = 0;
-> +
-> +	if (plugin_ctx) {
-> +		if (plugin_ctx->cobalt_switch_event) {
-> +			kshark_unregister_event_handler(stream,
-> +							plugin_ctx->cobalt_switch_event->id,
-> +							plugin_cobalt_switch_action);
-> +		}
-> +
-> +		kshark_unregister_draw_handler(stream, plugin_cobalt_draw);
-> +
-> +		ret = 1;
-> +	}
-> +
-> +	__close(stream->stream_id);
-> +
-> +	return ret;
-> +}
-> +
-> +/** Initialize the control interface of the plugin. */
-> +void *KSHARK_MENU_PLUGIN_INITIALIZER(void *gui_ptr)
-> +{
-> +	return plugin_set_gui_ptr(gui_ptr);
-> +}
-> diff --git a/src/plugins/xenomai_cobalt_switch_events.h b/src/plugins/xenomai_cobalt_switch_events.h
-> new file mode 100644
-> index 0000000..f7f4593
-> --- /dev/null
-> +++ b/src/plugins/xenomai_cobalt_switch_events.h
-> @@ -0,0 +1,58 @@
-> +/* SPDX-License-Identifier: LGPL-2.1 */
-> +
-> +/*
-> + * Copyright (C) 2021 Intel Inc, Hongzhan Chen<hongzhan.chen@intel.com>
-> + */
 > +
 > +/**
-> + *  @file    xenomai_cobalt_switch_events.h
-> + *  @brief   Plugin for xenomai cobalt switch context event
+> + * tracefs_instance_get_affinity_set - Retrieve the cpuset of an instance affinity
+> + * @instance: The instance to get affinity of (NULL for top level)
+> + * @set: A CPU set to put the affinity into.
+> + * @set_size: The size in bytes of @set (use CPU_ALLOC_SIZE() to get this value)
+> + *
+> + * Reads the affinity of a given instance and updates the CPU set by the
+> + * instance.
+> + *
+> + * Returns the number of CPUS that are set, or -1 on error.
 > + */
+> +int tracefs_instance_get_affinity_set(struct tracefs_instance *instance,
+> +                                     cpu_set_t *set, size_t set_size)
+> +{
+> +       char *affinity;
+> +       int cpu_set;
+> +       int cpus;
+> +       int cnt = 0;
+> +       int ch;
+> +       int i;
 > +
-> +#ifndef _KS_PLUGIN_COBALT_SWITCH_H
-> +#define _KS_PLUGIN_COBALT_SWITCH_H
+> +       if (!set || !set_size) {
+> +               errno = -EINVAL;
+> +               return -1;
+> +       }
 > +
-> +// KernelShark
-> +#include "libkshark.h"
-> +#include "plugins/common_sched.h"
+> +       affinity = tracefs_instance_get_affinity_raw(instance);
+> +       if (!affinity)
+> +               return -1;
 > +
-> +#ifdef __cplusplus
-> +extern "C" {
-> +#endif
+> +       /*
+> +        * The returned affinity should be a comma delimited
+> +        * hex string. Work backwards setting the values.
+> +        */
+> +       cpu_set = 0;
+> +       i = strlen(affinity);
+> +       for (i--; i >= 0; i--) {
+> +               ch = affinity[i];
+> +               if (isalnum(ch)) {
+> +                       ch = tolower(ch);
+> +                       if (isdigit(ch))
+> +                               cpus = ch - '0';
+> +                       else
+> +                               cpus = ch - 'a' + 10;
 > +
-> +/** cobalt_switch_context is trying to switch in-band. */
-> +#define SWITCH_INBAND_STATE	1
+> +                       cnt += update_cpu_set(cpus, cpu_set, 0, set, set_size);
+> +                       cnt += update_cpu_set(cpus, cpu_set, 1, set, set_size);
+> +                       cnt += update_cpu_set(cpus, cpu_set, 2, set, set_size);
+> +                       cnt += update_cpu_set(cpus, cpu_set, 3, set, set_size);
+> +                       /* Next nibble */
+> +                       cpu_set += 4;
+
+I think there should be a check if set_size is reached. I do not know
+how CPU_SET_S is implemented and if it can handle cpu IDs bigger than
+the set_size. That should never happen, but a check inside the loop is
+useful just to be on the safe side.
+
+> +               }
+> +       }
 > +
-> +/** Structure representing a plugin-specific context. */
-> +struct plugin_cobalt_context {
-> +	/** Page event used to parse the page. */
-> +	struct tep_handle	*tep;
+> +       free(affinity);
 > +
-> +	/** Pointer to the cobalt_switch_event object. */
-> +	struct tep_event	*cobalt_switch_event;
-> +
-> +	 /** Pointer to the cobalt_switch_next_field format descriptor. */
-> +	struct tep_format_field *cobalt_switch_next_field;
-> +
-> +	/** True if the second pass is already done. */
-> +	bool	second_pass_done;
-> +
-> +	/** Data container for cobalt_switch_context data. */
-> +	struct kshark_data_container	*cs_data;
-> +
-> +};
-> +
-> +KS_DECLARE_PLUGIN_CONTEXT_METHODS(struct plugin_cobalt_context)
-> +
-> +int plugin_cobalt_check_switch_inband(ks_num_field_t field);
-> +
-> +void plugin_cobalt_draw(struct kshark_cpp_argv *argv, int sd, int pid,
-> +		 int draw_action);
-> +
-> +void *plugin_set_gui_ptr(void *gui_ptr);
-> +
-> +#ifdef __cplusplus
+> +       return cnt;
 > +}
-> +#endif
 > +
-> +#endif
-> 
+> +static inline int update_cpu(int cpus, int cpu_set, int cpu, int s, char **set)
+> +{
+> +       char *list;
+> +       int bit = 1 << cpu;
+> +       int ret;
+> +
+> +       if (*set == (char *)-1)
+> +               return s;
+> +
+> +       if (cpus & bit) {
+> +               /* If the previous CPU is set just return s */
+> +               if (s >= 0)
+> +                       return s;
+> +               /* Otherwise, return this cpu */
+> +               return cpu_set + cpu;
+> +       }
+> +
+> +       /* If the last CPU wasn't set, just return s */
+> +       if (s < 0)
+> +               return s;
+> +
+> +       /* Update the string */
+> +       if (s == cpu_set + cpu - 1) {
+> +               ret = asprintf(&list, "%s%s%d",
+> +                              *set ? *set : "", *set ? "," : "", s);
+> +       } else {
+> +               ret = asprintf(&list, "%s%s%d-%d",
+> +                              *set ? *set : "", *set ? "," : "",
+> +                              s, cpu_set + cpu - 1);
+> +       }
+> +       free(*set);
+> +       /* Force *set to be a failure */
+> +       if (ret < 0)
+> +               *set = (char *)-1;
+> +       else
+> +               *set = list;
+> +       return -1;
+> +}
+> +
+> +/**
+> + * tracefs_instance_get_affinity - Retrieve a string of CPUs for instance affinity
+> + * @instance: The instance to get affinity of (NULL for top level)
+> + *
+> + * Reads the affinity of a given instance and returns a CPU count of the
+> + * instance. For example, if it reads "eb" it will return:
+> + *      "0-1,3,5-7"
+> + *
+> + * If no CPUs are set, an empty string is returned "\0", and it too needs
+> + * to be freed.
+> + *
+> + * Returns an allocate string containing the CPU affinity in "human readable"
+
+Maybe that should be "Returns an allocated string ..." ?
+
+> + *  format which needs to be freed with free(), or NULL on error.
+> + */
+> +char *tracefs_instance_get_affinity(struct tracefs_instance *instance)
+> +{
+> +       char *affinity;
+> +       char *set = NULL;
+> +       int cpu_set;
+> +       int cpus;
+> +       int ch;
+> +       int s = -1;
+> +       int i;
+> +
+> +       affinity = tracefs_instance_get_affinity_raw(instance);
+> +       if (!affinity)
+> +               return NULL;
+> +
+> +       /*
+> +        * The returned affinity should be a comma delimited
+> +        * hex string. Work backwards setting the values.
+> +        */
+> +       cpu_set = 0;
+> +       i = strlen(affinity);
+> +       for (i--; i >= 0; i--) {
+> +               ch = affinity[i];
+> +               if (isalnum(ch)) {
+> +                       ch = tolower(ch);
+> +                       if (isdigit(ch))
+> +                               cpus = ch - '0';
+> +                       else
+> +                               cpus = ch - 'a' + 10;
+> +                       s = update_cpu(cpus, cpu_set, 0, s, &set);
+> +                       s = update_cpu(cpus, cpu_set, 1, s, &set);
+> +                       s = update_cpu(cpus, cpu_set, 2, s, &set);
+> +                       s = update_cpu(cpus, cpu_set, 3, s, &set);
+> +
+> +                       if (set == (char *)-1) {
+> +                               set = NULL;
+> +                               goto out;
+> +                       }
+> +                       /* Next nibble */
+> +                       cpu_set += 4;
+> +               }
+> +       }
+> +       /* Clean up in case the last CPU is set */
+> +       s = update_cpu(0, cpu_set, 0, s, &set);
+> +
+> +       if (!set)
+> +               set = strdup("");
+> + out:
+> +       free(affinity);
+> +
+> +       return set;
+> +}
+> --
+> 2.33.0
+>
+
+
+-- 
+Tzvetomir (Ceco) Stoyanov
+VMware Open Source Technology Center
