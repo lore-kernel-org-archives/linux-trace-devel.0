@@ -2,50 +2,51 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D848C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 Jan 2022 11:34:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D544C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 Jan 2022 11:34:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbiATLeL (ORCPT
+        id S230476AbiATLeQ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 20 Jan 2022 06:34:11 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:40746 "EHLO
+        Thu, 20 Jan 2022 06:34:16 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:40786 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231657AbiATLeK (ORCPT
+        with ESMTP id S231657AbiATLeQ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 20 Jan 2022 06:34:10 -0500
+        Thu, 20 Jan 2022 06:34:16 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AA23D2170E;
-        Thu, 20 Jan 2022 11:34:09 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 70BA8218A9;
+        Thu, 20 Jan 2022 11:34:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1642678449; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1642678455; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=2G4Yrtvu7ms+/Jllm2TU4OZVaycXJQNAxMVXsSRjXIo=;
-        b=q2lTTSNygAhdyFzXt2QQu1S+Q/tZ9DiHruxsHi2Um7gPfoRNHYlBK6kTSEQHY4JJhBD40U
-        2RRL/2V2xl9XT/MkSxy934XvdqMy/P6NMzm7ewbTWtFkpsZ8/pBkqJ8puTr2szO0k20vF9
-        8vZfiNJnus6FQyrlSjltX1lM7Kz+j8Y=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C/TxB5tTLoXGK1CTFhuQ/n+zoSIA/Ycq/E6UMAP4+Uw=;
+        b=fwizvZ+xATTzWLtJ2c+ajWDS+SbVIZB4lztJGAmsPov32BvC+20rx2ceQPuPjvSkC95EYx
+        n4JtjX/KJuReVZ7Mlge1blMO0eEMb50mliLBnNpnGASuEyZBy3PaXA/BiQxiJ9FtJ1mWjl
+        M0xUdLzQlgbuBt/MD0wN/LK/Lgc49XM=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7AE1013E46;
-        Thu, 20 Jan 2022 11:34:09 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 41C6C13E46;
+        Thu, 20 Jan 2022 11:34:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 68l7G7FI6WF8RgAAMHmgww
-        (envelope-from <dfaggioli@suse.com>); Thu, 20 Jan 2022 11:34:09 +0000
-Subject: [PATCH 0/2] (Trivial) README fix and libtracecmd SONAME
+        id Yc2dDbdI6WGNRgAAMHmgww
+        (envelope-from <dfaggioli@suse.com>); Thu, 20 Jan 2022 11:34:15 +0000
+Subject: [PATCH 1/2] README: remove stale mention to libparsevent
 From:   Dario Faggioli <dfaggioli@suse.com>
 To:     linux-trace-devel@vger.kernel.org
-Cc:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Date:   Thu, 20 Jan 2022 12:34:08 +0100
-Message-ID: <164267787600.9929.14996075092071019143.stgit@work>
+Cc:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Date:   Thu, 20 Jan 2022 12:34:14 +0100
+Message-ID: <164267845474.9929.18346649306258248794.stgit@work>
+In-Reply-To: <164267787600.9929.14996075092071019143.stgit@work>
+References: <164267787600.9929.14996075092071019143.stgit@work>
 User-Agent: StGit/0.23
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -54,42 +55,28 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi!
-
-So, patch 1 of this small series just get rid of a stale mention to
-libparsevent in the README file.
-
-About patch 2. Some distributions have the requirement that the package
-name contains/is related to the SONAME (for packages that ship libraries,
-of course).
-
-Currently, the SONAME of libtracecmd is something like libtracecmd.so.0.0.1
-or libtracecmd.so.1.0.0. This is not a problem, but I think libtracecmd.so.0
-(libtracecmd.so.1) is a bit more convenient.
-
-It is also how things are for libtracefs and libtraceevent.
-
-So, patch 2 does exactly that for libtracecmd, if that could be
-interesting. :-)
-
-If, instead, it was intentional and there is an actual reason for the
-SONAME of libtracecmd to be the entire file name of the .so file, then I
-guess I've missed it. In which case, sorry for the noise.
-
-Regards
+Signed-off-by: Dario Faggioli <dfaggioli@suse.com>
 ---
-Dario Faggioli (2):
-      README: remove stale mention to libparsevent
-      libtracecmd: use major version as SONAME
+Cc: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+---
+ README |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
- lib/trace-cmd/Makefile | 2 +-
- scripts/utils.mk       | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
---
-Dario Faggioli, Ph.D
-http://about.me/dario.faggioli
-Virtualization Software Engineer
-SUSE Labs, SUSE https://www.suse.com/
--------------------------------------------------------------------
-<<This happens because _I_ choose it to happen!>> (Raistlin Majere)
+diff --git a/README b/README
+index 9a3533d..9d8c127 100644
+--- a/README
++++ b/README
+@@ -14,9 +14,7 @@ These files make up the code that create the trace-cmd programs.
+ This includes the GUI interface application kernelshark as well
+ as trace-graph and trace-view.
+ 
+-These files also make up the code to create the libraries
+-
+-  libtracecmd and libparsevent
++These files also make up the code to create the libtracecmd library.
+ 
+ The applications are licensed under the GNU General Public License 2.0
+ (see COPYING) and the libraries are licensed under the GNU
+
 
