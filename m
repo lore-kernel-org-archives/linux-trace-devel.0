@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81A75C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Jan 2022 14:24:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ACE9C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Jan 2022 14:24:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237788AbiAXOYd convert rfc822-to-8bit (ORCPT
+        id S237897AbiAXOYg convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 24 Jan 2022 09:24:33 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:30179 "EHLO
+        Mon, 24 Jan 2022 09:24:36 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:47594 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237785AbiAXOYc (ORCPT
+        by vger.kernel.org with ESMTP id S237785AbiAXOYe (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 24 Jan 2022 09:24:32 -0500
+        Mon, 24 Jan 2022 09:24:34 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-633-y3gvuAwuNfWy7zaWycZZJg-1; Mon, 24 Jan 2022 09:24:30 -0500
-X-MC-Unique: y3gvuAwuNfWy7zaWycZZJg-1
+ us-mta-250-IvZlxRigNqeovbHNtBILSg-1; Mon, 24 Jan 2022 09:24:28 -0500
+X-MC-Unique: IvZlxRigNqeovbHNtBILSg-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E223B86A8A0;
-        Mon, 24 Jan 2022 14:24:28 +0000 (UTC)
-Received: from x1.com (unknown [10.22.32.253])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A590D798B8;
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 46E468144E1;
         Mon, 24 Jan 2022 14:24:27 +0000 (UTC)
+Received: from x1.com (unknown [10.22.32.253])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0965C798B2;
+        Mon, 24 Jan 2022 14:24:25 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: [PATCH 3/8] rtla/osnoise_top: Fix segmentation fault when failing to enable -t
-Date:   Mon, 24 Jan 2022 15:24:06 +0100
-Message-Id: <3ef9cb911e9b51be55a874cacc847d44bca9877e.1643033113.git.bristot@kernel.org>
+Subject: [PATCH 2/8] rtla/utils: Fix session duration parsing
+Date:   Mon, 24 Jan 2022 15:24:05 +0100
+Message-Id: <5313cb92b2e0e5c1430e33922ff85dc27c642949.1643033113.git.bristot@kernel.org>
 In-Reply-To: <cover.1643033113.git.bristot@kernel.org>
 References: <cover.1643033113.git.bristot@kernel.org>
 MIME-Version: 1.0
@@ -45,59 +45,36 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-rtla osnoise top is causing a segmentation fault when running with
-the --trace option on a kernel that does not support multiple
-instances. For example:
+Use gmtime to format the duration time. This avoids problems when the
+system uses local time different of Pisa's Local Time.
 
-    [root@f34 rtla]# rtla osnoise top -t
-    failed to enable the tracer osnoise
-    Could not enable osnoiser tracer for tracing
-    Failed to enable the trace instance
-    Segmentation fault (core dumped)
-
-This error happens because the exit code of the tools is trying
-to destroy the trace instance that failed to be created.
-
-Rearrange the order in which trace instances are destroyed to avoid
-this problem.
-
-Fixes: 1eceb2fc2ca5 ("rtla/osnoise: Add osnoise top mode")
+Fixes: b1696371d865 ("rtla: Helper functions for rtla")
 Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: linux-kernel@vger.kernel.org
 Cc: linux-trace-devel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- tools/tracing/rtla/src/osnoise_top.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ tools/tracing/rtla/src/utils.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/tracing/rtla/src/osnoise_top.c b/tools/tracing/rtla/src/osnoise_top.c
-index 332b2ac205fc..546769bc7ff7 100644
---- a/tools/tracing/rtla/src/osnoise_top.c
-+++ b/tools/tracing/rtla/src/osnoise_top.c
-@@ -546,7 +546,7 @@ int osnoise_top_main(int argc, char **argv)
- 						    trace);
- 		if (retval < 0) {
- 			err_msg("Error iterating on events\n");
--			goto out_top;
-+			goto out_trace;
- 		}
+diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
+index 1c9f0eea6166..ffaf8ec84001 100644
+--- a/tools/tracing/rtla/src/utils.c
++++ b/tools/tracing/rtla/src/utils.c
+@@ -77,11 +77,11 @@ void get_duration(time_t start_time, char *output, int output_size)
+ 	time_t duration;
  
- 		if (!params->quiet)
-@@ -569,11 +569,12 @@ int osnoise_top_main(int argc, char **argv)
- 		}
- 	}
+ 	duration = difftime(now, start_time);
+-	tm_info = localtime(&duration);
++	tm_info = gmtime(&duration);
  
-+out_trace:
-+	if (params->trace_output)
-+		osnoise_destroy_tool(record);
- out_top:
- 	osnoise_free_top(tool->data);
- 	osnoise_destroy_tool(tool);
--	if (params->trace_output)
--		osnoise_destroy_tool(record);
- out_exit:
- 	exit(return_value);
+ 	snprintf(output, output_size, "%3d %02d:%02d:%02d",
+ 			tm_info->tm_yday,
+-			tm_info->tm_hour - 1,
++			tm_info->tm_hour,
+ 			tm_info->tm_min,
+ 			tm_info->tm_sec);
  }
 -- 
 2.34.1
