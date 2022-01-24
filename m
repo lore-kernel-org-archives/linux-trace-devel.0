@@ -2,34 +2,34 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E991DC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Jan 2022 17:37:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85A76C43219
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Jan 2022 19:26:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235538AbiAXRhw (ORCPT
+        id S1345487AbiAXT0h (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 24 Jan 2022 12:37:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241554AbiAXRhw (ORCPT
+        Mon, 24 Jan 2022 14:26:37 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:46656 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344966AbiAXTWi (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 24 Jan 2022 12:37:52 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5661C06173D
-        for <linux-trace-devel@vger.kernel.org>; Mon, 24 Jan 2022 09:37:51 -0800 (PST)
+        Mon, 24 Jan 2022 14:22:38 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 642756134A
-        for <linux-trace-devel@vger.kernel.org>; Mon, 24 Jan 2022 17:37:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CD42C340E5;
-        Mon, 24 Jan 2022 17:37:50 +0000 (UTC)
-Date:   Mon, 24 Jan 2022 12:37:49 -0500
+        by ams.source.kernel.org (Postfix) with ESMTPS id 89D94B81257
+        for <linux-trace-devel@vger.kernel.org>; Mon, 24 Jan 2022 19:22:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16ABCC36AF4;
+        Mon, 24 Jan 2022 19:22:35 +0000 (UTC)
+Date:   Mon, 24 Jan 2022 14:22:34 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>, vt@altlinux.org
-Subject: [PATCH] libtraceevent: Fix backward compatibility with
- tep_print_arg_string
-Message-ID: <20220124123749.40a0c18b@gandalf.local.home>
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v7 04/20] trace-cmd library: Inherit compression
+ algorithm from input file
+Message-ID: <20220124142234.1edb194d@gandalf.local.home>
+In-Reply-To: <20220119082715.245846-5-tz.stoyanov@gmail.com>
+References: <20220119082715.245846-1-tz.stoyanov@gmail.com>
+        <20220119082715.245846-5-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -38,86 +38,65 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Wed, 19 Jan 2022 10:26:59 +0200
+"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-It appears that trace-cmd 2.9.6 referenced the tep_print_arg_string to
-get to the offset, which was removed by libtraceevent commit 512d7be1
-("libtraceevent: Add __rel_loc relative location attribute support").
-Add the offset back to both tep_print_arg_string and to
-tep_print_arg_bitmask (yeah, it adds a hole in the structure), for
-backward compatibility.
+> When a new trace file output handler is allocated, based on given trace
+> file input handler - use the same compression algorithm.
+> 
+> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> ---
+>  .../include/private/trace-cmd-private.h       |  2 ++
+>  lib/trace-cmd/trace-input.c                   | 16 +++++++++++++++
+>  lib/trace-cmd/trace-output.c                  | 20 +++++++++++++++++++
+>  3 files changed, 38 insertions(+)
+> 
+> diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
+> index f8f0ba15..bcc4c9f3 100644
+> --- a/lib/trace-cmd/include/private/trace-cmd-private.h
+> +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+> @@ -261,6 +261,8 @@ tracecmd_get_cursor(struct tracecmd_input *handle, int cpu);
+>  
+>  unsigned long tracecmd_get_in_file_version(struct tracecmd_input *handle);
+>  size_t tracecmd_get_options_offset(struct tracecmd_input *handle);
+> +int tracecmd_get_file_compress_proto(struct tracecmd_input *handle,
+> +				     const char **name, const char **version);
+>  
+>  int tracecmd_ftrace_overrides(struct tracecmd_input *handle, struct tracecmd_ftrace *finfo);
+>  bool tracecmd_get_use_trace_clock(struct tracecmd_input *handle);
+> diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+> index 49ada92f..a81112f0 100644
+> --- a/lib/trace-cmd/trace-input.c
+> +++ b/lib/trace-cmd/trace-input.c
+> @@ -4661,6 +4661,22 @@ unsigned long tracecmd_get_in_file_version(struct tracecmd_input *handle)
+>  	return handle->file_version;
+>  }
+>  
+> +/**
+> + * tracecmd_get_file_compress_proto - get name and version of compression algorithm,
+> + *				      used to compress the trace file
 
-Reported-by: Vitaly Chikunov <vt@altlinux.org>
-Fixes: 512d7be1 ("libtraceevent: Add __rel_loc relative location attribute support")
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=215521
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- include/traceevent/event-parse.h |  2 ++
- src/event-parse.c                | 10 ++++++++--
- 2 files changed, 10 insertions(+), 2 deletions(-)
+The above is to be short and fit on one line:
 
-diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index 27cba06f55cb..68b2f4383b42 100644
---- a/include/traceevent/event-parse.h
-+++ b/include/traceevent/event-parse.h
-@@ -154,11 +154,13 @@ struct tep_print_arg_atom {
- 
- struct tep_print_arg_string {
- 	char			*string;
-+	int			offset;		// for backward compatibility
- 	struct tep_format_field	*field;
- };
- 
- struct tep_print_arg_bitmask {
- 	char			*bitmask;
-+	int			offset;		// for backward compatibility
- 	struct tep_format_field	*field;
- };
- 
-diff --git a/src/event-parse.c b/src/event-parse.c
-index d3e43e5c11f8..2b346a5de16e 100644
---- a/src/event-parse.c
-+++ b/src/event-parse.c
-@@ -3135,6 +3135,7 @@ process_str(struct tep_event *event __maybe_unused, struct tep_print_arg *arg,
- 
- 	arg->type = TEP_PRINT_STRING;
- 	arg->string.string = token;
-+	arg->string.offset = -1;
- 	arg->string.field = NULL;
- 
- 	if (read_expected(TEP_EVENT_DELIM, ")") < 0)
-@@ -3164,6 +3165,7 @@ process_bitmask(struct tep_event *event __maybe_unused, struct tep_print_arg *ar
- 
- 	arg->type = TEP_PRINT_BITMASK;
- 	arg->bitmask.bitmask = token;
-+	arg->bitmask.offset = -1;
- 	arg->bitmask.field = NULL;
- 
- 	if (read_expected(TEP_EVENT_DELIM, ")") < 0)
-@@ -4444,8 +4446,10 @@ static void print_str_arg(struct trace_seq *s, void *data, int size,
- 	case TEP_PRINT_TYPE:
- 		break;
- 	case TEP_PRINT_STRING: {
--		if (!arg->string.field)
-+		if (!arg->string.field) {
- 			arg->string.field = tep_find_any_field(event, arg->string.string);
-+			arg->string.offset = arg->string.field->offset;
-+		}
- 		if (!arg->string.field)
- 			break;
- 		dynamic_offset_field(tep, arg->string.field, data, size, &offset, &len);
-@@ -4459,8 +4463,10 @@ static void print_str_arg(struct trace_seq *s, void *data, int size,
- 		print_str_to_seq(s, format, len_arg, arg->string.string);
- 		break;
- 	case TEP_PRINT_BITMASK: {
--		if (!arg->bitmask.field)
-+		if (!arg->bitmask.field) {
- 			arg->bitmask.field = tep_find_any_field(event, arg->bitmask.bitmask);
-+			arg->bitmask.offset = arg->bitmask.field->offset;
-+		}
- 		if (!arg->bitmask.field)
- 			break;
- 		dynamic_offset_field(tep, arg->bitmask.field, data, size, &offset, &len);
--- 
-2.33.0
+	get name and version of compression algorithm
 
+is good enough.
+
+> + * @handle: input handle for the trace.dat file
+> + * @name: return, name of the compression algorithm.
+> + * @version: return, version of the compression algorithm.
+
+Put in a description here.
+
+> + *
+> + * Returns 0 on success, or -1 in case of an error. If 0 is returned, the name and version of the
+> + * algorithm are stored in @name and @version. The returned strings must *not* be freed.
+> + */
+> +int tracecmd_get_file_compress_proto(struct tracecmd_input *handle,
+> +				     const char **name, const char **version)
+> +{
+> +	return tracecmd_compress_proto_get_name(handle->compress, name, version);
+> +}
+>
+
+-- Steve
