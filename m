@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0987C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Jan 2022 08:56:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CBC2C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Jan 2022 08:56:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242524AbiAXI44 (ORCPT
+        id S242525AbiAXI46 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 24 Jan 2022 03:56:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43864 "EHLO
+        Mon, 24 Jan 2022 03:56:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242514AbiAXI44 (ORCPT
+        with ESMTP id S242514AbiAXI45 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 24 Jan 2022 03:56:56 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C5CC06173B
-        for <linux-trace-devel@vger.kernel.org>; Mon, 24 Jan 2022 00:56:55 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id r22so4530412wra.8
-        for <linux-trace-devel@vger.kernel.org>; Mon, 24 Jan 2022 00:56:55 -0800 (PST)
+        Mon, 24 Jan 2022 03:56:57 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E61DC061401
+        for <linux-trace-devel@vger.kernel.org>; Mon, 24 Jan 2022 00:56:57 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id r14so1592417wrc.6
+        for <linux-trace-devel@vger.kernel.org>; Mon, 24 Jan 2022 00:56:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Xu6vBoYDdtUrdXK8a9RALrAK00fUiEeSHj6CTr9Bwjc=;
-        b=ocs7/xs/GfUigL0HcLCINf3J4lN5dacSYCdXrOVI4/D0ZHgrsIEyuG8kBwSVQqdLZl
-         SX4jEs/C2mlajg+VJMELCL4Ztz+Xt4S7pCUuICP5pgQy++KlodCytfsJQNF0X8pYTbT0
-         N4on2KR6sELHKlRF5Ry1LEbOcAhseUOopL/nKwOa9jQJJKDc6fmuta0OcTLz8XthaA+j
-         8iX1QkH37KgYgAxM0AFQxKb2qNDcm0BAKhDmFI5HIXjhgnrCy81l4GySlUz3fMfoj55+
-         oPcXYapM74XpsKDvV/gVYtnijrlU+f+aUrvwNH+jCornrMKgLvHHWKz0psHbRCq9+nlC
-         CX2Q==
+        bh=IT9fnsBeCvct00PWZinRFT1MylwyyrFzOE1yTCdvq8Y=;
+        b=mXRfYyiJmpf2XCW49h0PZrTrCGqO8dsdFJ1/3sKRpMysmjKGUQhxgI6gxrmLpYYFc9
+         MXO8C7RWdBquYHDiZX3BeIpnuf2o4ic+/hUMc3Lg5WygH7FSm3zoLpE313vxHWcBWwON
+         ObNIc6R7tpoMNh8smbemVFkgz8yFuyGjFPw93PqPV35yEzZR+ua28FrpqQMrmZ0TDS4i
+         p5gIJulccNHhczkVhiLlt4hNSamQYNcu7riKD7spqUte0QXIu+KNIYAT8gscvl/4pH4E
+         quwhMy2UWNurd7YsFFYYRYm+Ip9PfNoU9vBALg0Z6UeB6Drx8uyjiaWFdPTqfkQwuuNn
+         X12Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Xu6vBoYDdtUrdXK8a9RALrAK00fUiEeSHj6CTr9Bwjc=;
-        b=puJ1oNGC+w0LhR2dKugvw8XvGt37ULVoblSBIT2/6c2JFarMjdLuiZRpBk1DpK0tJw
-         BS0DnROWBFmQAf0unMsFlKFRTTC+sMfPw9wHXib26GzQ3KiF2eQnNIbcisT2KJ37xVeO
-         uH37GD3nZONSxtBtaWdS91+JGUtddYdd/VB7kEuksQRRiWtXndkiD1zdoR0McfF5j/hx
-         kAV32wpOTu7ZjdzV7RXLxCSUAC53mgynaBB2xy/CKEn+b0ECBbAf+r14xviWGI01EvjS
-         V2hCNJvkRfFyLp2QkO6KwWRwAX5v7gnm6z8AG3HKJfsFwrL9AA8iAsQpNSlA5UMq+vU2
-         id5g==
-X-Gm-Message-State: AOAM5328VeTEyKA1fFU/TeNnMpdhWTgzY/HXq4oF1vX7ZlPfS/IPMKB/
-        0fL/Nxb7v41puRwUZy/oGVLQw3dniyA=
-X-Google-Smtp-Source: ABdhPJwA9/L2G8WHX2OmQG+aXy4uaecdNc3c3oLFfS44SdlHZcXBJcTfEKdEZlVb/qcnDO4U42Fu4g==
-X-Received: by 2002:a5d:5846:: with SMTP id i6mr5028244wrf.4.1643014614186;
-        Mon, 24 Jan 2022 00:56:54 -0800 (PST)
+        bh=IT9fnsBeCvct00PWZinRFT1MylwyyrFzOE1yTCdvq8Y=;
+        b=QCQb5/4sWjOcEkJ/dsfPRele0G2WrGU2waDIvQ69uaJSsWuP/6lhwtvlKKy8wcS6j6
+         QAnj41kRcuX7pi5eLSfL/4KUdynJyHy7KQO5LNTMKO/7sCvF7rFLEwxggqBFWBpRvPP+
+         O+hT78egvJIsxIf65LlILI6GNw5ZGM+ZS1kfeOwvlayOeT/3bEjdu13z4y3vfejyNQxh
+         7ox7Hi2QEnIJ9JasV8HHhK2aVd6i/ErVvJUgKmGe403VJ1QclYi6Vh5dsI3uLSimR2OW
+         uSKeBt3vsmNl2v/ws5QhrqRlbNhGKicZ7iW49F3VY7BfSiHeZRs02cgG3FPVO+3W5ZlO
+         MHfg==
+X-Gm-Message-State: AOAM531sV0/KTNL8CO0LyqpU6XrjkvW9JF0uliB5108GA0nJHViu+QjR
+        y6krIPpRvRN59mnFvcbo5U0WsvMl5+A=
+X-Google-Smtp-Source: ABdhPJywsW/NUV8fYQhwUbMMYyZMUcU9PA2+Drax8VfPoK9QvCvrovVO8QV1XOk5EK9O937UsV7RpQ==
+X-Received: by 2002:a05:6000:1869:: with SMTP id d9mr3619160wri.432.1643014615721;
+        Mon, 24 Jan 2022 00:56:55 -0800 (PST)
 Received: from crow.eng.vmware.com ([146.247.46.134])
-        by smtp.gmail.com with ESMTPSA id f14sm14828091wri.44.2022.01.24.00.56.53
+        by smtp.gmail.com with ESMTPSA id f14sm14828091wri.44.2022.01.24.00.56.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jan 2022 00:56:53 -0800 (PST)
+        Mon, 24 Jan 2022 00:56:55 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 07/10] trace-cruncher: APIs for filtering synth. events
-Date:   Mon, 24 Jan 2022 10:56:22 +0200
-Message-Id: <20220124085625.92297-8-y.karadz@gmail.com>
+Subject: [PATCH 09/10] trace-cruncher: Add synthetic event example
+Date:   Mon, 24 Jan 2022 10:56:24 +0200
+Message-Id: <20220124085625.92297-10-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220124085625.92297-1-y.karadz@gmail.com>
 References: <20220124085625.92297-1-y.karadz@gmail.com>
@@ -64,135 +64,64 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Here we add the following methods to the Python type for synthetic
-events:
-set_filter()
-get_filter()
-clear_filter()
-
-The new APIs allow for easy manipulation of the filters associated
-with a given synthetic event.
+This is a very basic example, demonsting the usage of the new APIs
+for kernel synth. events.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/ftracepy-utils.c | 56 ++++++++++++++++++++++++++++++++++++++++++++
- src/ftracepy-utils.h |  9 +++++++
- src/ftracepy.c       | 15 ++++++++++++
- 3 files changed, 80 insertions(+)
+ examples/synth.py | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
+ create mode 100755 examples/synth.py
 
-diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
-index af73784..43c0f07 100644
---- a/src/ftracepy-utils.c
-+++ b/src/ftracepy-utils.c
-@@ -2739,6 +2739,62 @@ PyObject *PySynthEvent_is_enabled(PySynthEvent *self, PyObject *args,
- 				tracefs_synth_get_name(self->ptrObj));
- }
- 
-+struct tep_event *synth_get_event(PySynthEvent *event, struct tep_handle **tep_ptr)
-+{
-+	struct tep_event *tep_evt;
-+	struct tep_handle *tep;
+diff --git a/examples/synth.py b/examples/synth.py
+new file mode 100755
+index 0000000..ec9427b
+--- /dev/null
++++ b/examples/synth.py
+@@ -0,0 +1,43 @@
++#!/usr/bin/env python3
 +
-+	tep = get_tep(NULL, NULL);
-+	if (!tep)
-+		return NULL;
++"""
++SPDX-License-Identifier: CC-BY-4.0
 +
-+	tep_evt = tracefs_synth_get_event(tep, event->ptrObj);
-+	if (!tep_evt) {
-+		TfsError_setstr(NULL, "Failed to get synth. event.");
-+		return NULL;
-+	}
++Copyright 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
++"""
 +
-+	if (tep_ptr)
-+		*tep_ptr = tep;
++import tracecruncher.ftracepy as ft
 +
-+	return tep_evt;
-+}
++# Define a synthetic event that combines 'sched_waking' and 'sched_switch'.
++# A synth. event will be recorded every time a 'start' event (sched_waking)
++# is followed by an 'end' event (sched_switch) and both events have the same
++# value of the fields 'pid' and 'next_pid' (belong to the same process).
++synth = ft.synth(name='synth_wakeup',
++                 start_sys='sched', start_evt='sched_waking',
++                 end_sys='sched',   end_evt='sched_switch',
++                 start_match='pid', end_match='next_pid',
++                 match_name='pid')
 +
-+PyObject *PySynthEvent_set_filter(PySynthEvent *self, PyObject *args,
-+						      PyObject *kwargs)
-+{
-+	struct tep_handle *tep;
-+	struct tep_event *evt;
++# Add to the synth. event two fields from the 'start' event. In the synth. event,
++# the field 'target_cpu' will be renamed to 'cpu'.
++synth.add_start_fields(fields=['target_cpu', 'prio'],
++                       names=['cpu', None])
 +
-+	evt = synth_get_event(self, &tep);
-+	if (!evt)
-+		return NULL;
++# Add to the synth. event one field from the 'end' event.
++synth.add_end_fields(fields=['next_prio'])
 +
-+	return set_filter(args, kwargs, tep, evt);
-+}
++# Add to the synth. event a field that measures the time-difference between
++# the 'start' and 'end' events. Use 'hd' time resolution (nanoseconds).
++synth.add_delta_T(hd=True)
 +
-+PyObject *PySynthEvent_get_filter(PySynthEvent *self, PyObject *args,
-+						      PyObject *kwargs)
-+{
-+	struct tep_event *evt = synth_get_event(self, NULL);
++# Register the synth. event on the system.
++synth.register()
 +
-+	if (!evt)
-+		return NULL;
++inst = ft.create_instance()
 +
-+	return get_filter(args, kwargs, SYNTH_SYS, evt->name);
-+}
++# Apply a filter and enable the synth. event.
++synth.set_filter(instance=inst, filter='prio<100')
++synth.enable(instance=inst)
 +
-+PyObject *PySynthEvent_clear_filter(PySynthEvent *self, PyObject *args,
-+							PyObject *kwargs)
-+{
-+	struct tep_event *evt = synth_get_event(self, NULL);
-+
-+	if (!evt)
-+		return NULL;
-+
-+	return clear_filter(args, kwargs, evt);
-+}
-+
- PyObject *PyFtrace_set_ftrace_loglevel(PyObject *self, PyObject *args,
- 						       PyObject *kwargs)
- {
-diff --git a/src/ftracepy-utils.h b/src/ftracepy-utils.h
-index daf1a19..f31b330 100644
---- a/src/ftracepy-utils.h
-+++ b/src/ftracepy-utils.h
-@@ -152,6 +152,15 @@ PyObject *PySynthEvent_disable(PySynthEvent *self, PyObject *args,
- PyObject *PySynthEvent_is_enabled(PySynthEvent *self, PyObject *args,
- 						      PyObject *kwargs);
- 
-+PyObject *PySynthEvent_set_filter(PySynthEvent *self, PyObject *args,
-+						      PyObject *kwargs);
-+
-+PyObject *PySynthEvent_get_filter(PySynthEvent *self, PyObject *args,
-+						      PyObject *kwargs);
-+
-+PyObject *PySynthEvent_clear_filter(PySynthEvent *self, PyObject *args,
-+							PyObject *kwargs);
-+
- PyObject *PyFtrace_dir(PyObject *self);
- 
- PyObject *PyFtrace_detach(PyObject *self, PyObject *args, PyObject *kwargs);
-diff --git a/src/ftracepy.c b/src/ftracepy.c
-index 62c6de0..50675c0 100644
---- a/src/ftracepy.c
-+++ b/src/ftracepy.c
-@@ -277,6 +277,21 @@ static PyMethodDef PySynthEvent_methods[] = {
- 	 METH_VARARGS | METH_KEYWORDS,
- 	 "Check if synth. event is enabled."
- 	},
-+	{"set_filter",
-+	 (PyCFunction) PySynthEvent_set_filter,
-+	 METH_VARARGS | METH_KEYWORDS,
-+	 "Define a filter for a synthetic event."
-+	},
-+	{"get_filter",
-+	 (PyCFunction) PySynthEvent_get_filter,
-+	 METH_VARARGS | METH_KEYWORDS,
-+	 "Get the filter of a synthetic event."
-+	},
-+	{"clear_filter",
-+	 (PyCFunction) PySynthEvent_clear_filter,
-+	 METH_VARARGS | METH_KEYWORDS,
-+	 "Clear the filter of a synthetic event."
-+	},
- 	{NULL, NULL, 0, NULL}
- };
- 
++# Print the stream of trace events. "Ctrl+c" to stop tracing.
++ft.read_trace(instance=inst)
 -- 
 2.32.0
 
