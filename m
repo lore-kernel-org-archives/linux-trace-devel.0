@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37F1CC433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE2FBC433EF
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Jan 2022 08:56:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242515AbiAXI4u (ORCPT
+        id S242521AbiAXI4v (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 24 Jan 2022 03:56:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43826 "EHLO
+        Mon, 24 Jan 2022 03:56:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
         with ESMTP id S242513AbiAXI4u (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 24 Jan 2022 03:56:50 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6330C06173B
-        for <linux-trace-devel@vger.kernel.org>; Mon, 24 Jan 2022 00:56:49 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id k18so12151920wrg.11
-        for <linux-trace-devel@vger.kernel.org>; Mon, 24 Jan 2022 00:56:49 -0800 (PST)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74D24C06173B
+        for <linux-trace-devel@vger.kernel.org>; Mon, 24 Jan 2022 00:56:50 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id r22so4530002wra.8
+        for <linux-trace-devel@vger.kernel.org>; Mon, 24 Jan 2022 00:56:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wbSbY5kMvK/xAJ4X+/0ppCRwgiYfl9PVGzfAMmaqSGo=;
-        b=my22ImAYUnL8nmy1BJ71o+y3PY5t0uIMkdSOqZOh8xvmt0ggkWbonsYqo6allzicoz
-         gKagR06cc3k7uZIwMOUgqi8Wj09fNsXyYNMXS/PPgtvc5vqlfMBfekIJWfWFW/sbk9Y1
-         YbMTE4d3qrThhZnz4062/N2VgD+8mBpUQ4bZEp1F0QoaYt8kQQwSSVCjbEXu9RD114Oz
-         VBx2v55GBImH50Rk+Kfu3MxVGKoEd2HhCNscRcxVaVlRLSkp4yR8rvU0Lz8f9QU6u0sO
-         CGdE4O1Q3diH3T0Ms8DHO9+o3zVj7lf6Wc77ZFmkUWGHYWL11Uy5S9zbFolLxWUUVhTL
-         5pWw==
+        bh=rajKJMk9i6OCX0+djnhFnxB55Z2bVgQHo2bOyQaRtxc=;
+        b=FlQti5Y5s4Qg8j5jccKu2EJZk1cirGzco/JpeiA/hMOuGuQQu6p2x6HZNm3+bEyQBl
+         YXrvddSA5LzLs/IJULGHMvAEUqPz5ASqZVmtHF78Phz6P3ZJ3zTiIrkhVe35L282LLJV
+         eyGX2CDBQ0AJ5CdcPjya3/aTYHbrNtgMjSuG/8SEUo1UCGvpajXs15LCzHxPhnuo778n
+         acnVUlpVc01fRXkx1B+u7UY95isubQgskg3DciUteslnpQjQjYbVaQRzh0nDUUznoKFE
+         /LFTIzGjL8thVvMqugV4oNb1Jece0e8EI8b8fu8nuigG6hldpsIVrmjwBJjNFx36o2cU
+         1ubw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wbSbY5kMvK/xAJ4X+/0ppCRwgiYfl9PVGzfAMmaqSGo=;
-        b=rf3qeuoC2o1iPkF5+K4Sva0fEIS9BmfrJPVHzbkLjqfNwpomCUDrjUhVdF0qmV4sCG
-         Aa7sUSMI09QYGFt1iDTazTPP1rLgccR5OMEUWHHLImAVHG412RGcOwSX3J9/jDlP1fmE
-         l+L+t5GtDvmsmOWhE2uY7ZNRdH7czc/+ZcGLlSDNHRVx+xc9U9mbO+LaABUYcSU6gH2L
-         olJ+4/9GTM4D16jN69H+veZfYz6YOCu94KrojrE1livQgX+eSAfVwLGNGwrqP7aTZIcB
-         oqHYhBscxvfxez91Lq2rY53vSSgaR/9FWFRqr2dX7j1ByMHHGHxrzMt9YeJYeP9vsasu
-         /BVw==
-X-Gm-Message-State: AOAM530GxySaVMaVdEOeM30oAO/tIgznS4WdLS7mmo79DJIYxxfjFpoO
-        yE8qQMagkRLnZVDg9VW/+yqklY5s8t8=
-X-Google-Smtp-Source: ABdhPJxp3k9NKAA+f5J/cTUtuHi47KJ4HC6hjFIKwfZ1KyT7SK6WDP2NAZWsztb6VYlih4FOKc/e/Q==
-X-Received: by 2002:adf:f083:: with SMTP id n3mr6865077wro.323.1643014607924;
-        Mon, 24 Jan 2022 00:56:47 -0800 (PST)
+        bh=rajKJMk9i6OCX0+djnhFnxB55Z2bVgQHo2bOyQaRtxc=;
+        b=8L7VYiCO/oPaavFx4zWteckLhL8TCTmFqjIOLYULyOefH53ibbc51tvC9kAVP22Dj2
+         ezIRVPUgyseUMlumcFkNoXPuqERUEO7tEkZabjuf4AakT9YQ68naJibkAneXAoKjx96r
+         3N9nS8RgGa7FS+HjrzQHcC5RvciOsmnI+Blo/nF42Frx9JxIA3MioN/3pffLW8c/lpfD
+         zCai+T4IwqiQTW4gvwYT0ufPCsCC3aIgatQkDipGGjldfDO1FNSOrxtMRT1HF743GECj
+         E2TmJMWKpq7Ha9ZUnhBupXgVeoETd9rFvqZ1MjaVSrm0At7QGVetelY8UkgLLUqVUB5W
+         VPCg==
+X-Gm-Message-State: AOAM532fdVFPGS5xiYxThFQIAFiuyivZjfReHGAkpdBRS3EyX14XgjDE
+        IMuJfYiEoCl9PmR5nzwTAkrJqToMpeU=
+X-Google-Smtp-Source: ABdhPJzHJQIOE4h3RF1mEocR485L13Pd87Ry3yJzm1hGqS9VTLwdH/U9QPHYyHm77KrzXJ4rNv9awA==
+X-Received: by 2002:a05:6000:1846:: with SMTP id c6mr12114426wri.244.1643014608809;
+        Mon, 24 Jan 2022 00:56:48 -0800 (PST)
 Received: from crow.eng.vmware.com ([146.247.46.134])
         by smtp.gmail.com with ESMTPSA id f14sm14828091wri.44.2022.01.24.00.56.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jan 2022 00:56:47 -0800 (PST)
+        Mon, 24 Jan 2022 00:56:48 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 01/10] trace-cruncher: Define Python type for synthetic events
-Date:   Mon, 24 Jan 2022 10:56:16 +0200
-Message-Id: <20220124085625.92297-2-y.karadz@gmail.com>
+Subject: [PATCH 02/10] trace-cruncher: APIs for adding start/end fields to synth. event
+Date:   Mon, 24 Jan 2022 10:56:17 +0200
+Message-Id: <20220124085625.92297-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220124085625.92297-1-y.karadz@gmail.com>
 References: <20220124085625.92297-1-y.karadz@gmail.com>
@@ -64,160 +64,134 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Addind new Python type and constructor for it:
-synth()
+Here we add the following methods to the Python type for synthetic
+events:
+add_start_fields()
+add_end_fields()
 
-The new type 'PySynthEvent will be used to implement APIs for working
-with synthetic events.
+The new APIs allows for adding fields from the original 'start' and
+'end' events to the new synthetic event.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/ftracepy-utils.c | 58 ++++++++++++++++++++++++++++++++++++++++++++
- src/ftracepy-utils.h |  5 ++++
- src/ftracepy.c       | 17 +++++++++++++
+ src/ftracepy-utils.c | 64 ++++++++++++++++++++++++++++++++++++++++++++
+ src/ftracepy-utils.h |  6 +++++
+ src/ftracepy.c       | 10 +++++++
  3 files changed, 80 insertions(+)
 
 diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
-index cecb180..1fcf2f8 100644
+index 1fcf2f8..42bd9d0 100644
 --- a/src/ftracepy-utils.c
 +++ b/src/ftracepy-utils.c
-@@ -2426,6 +2426,64 @@ PyObject *PyFtrace_hist(PyObject *self, PyObject *args,
- 	return NULL;
+@@ -1009,6 +1009,70 @@ PyObject *PyTraceHist_close(PyTraceHist *self, PyObject *args,
+ 	Py_RETURN_NONE;
  }
  
-+PyObject *PyFtrace_synth(PyObject *self, PyObject *args,
-+					 PyObject *kwargs)
++typedef int (*add_field_ptr)(struct tracefs_synth *,
++			     const char *,
++			     const char *);
++
++PyObject *synth_add_fields(PySynthEvent *self, PyObject *args,
++					       PyObject *kwargs,
++					       bool to_start)
 +{
-+	const char *name, *start_match, *end_match, *match_name=NULL;
-+	const char *start_sys, *start_evt, *end_sys, *end_evt;
-+	static char *kwlist[] = {"name",
-+				 "start_sys",
-+				 "start_evt",
-+				 "end_sys",
-+				 "end_evt",
-+				 "start_match",
-+				 "end_match",
-+				 "match_name",
-+				 NULL};
-+	static struct tracefs_synth *synth;
-+	struct tep_handle *tep;
-+	PyObject *py_synth;
++	static char *kwlist[] = {"fields", "names", NULL};
++	PyObject *py_fields, *py_names = NULL;
++	PyObject *item_field, *item_name;
++	add_field_ptr add_field_func;
++	const char *field, *name;
++	int ret, n, i;
 +
 +	if (!PyArg_ParseTupleAndKeywords(args,
 +					 kwargs,
-+					 "sssssss|s",
++					 "O|O",
 +					 kwlist,
-+					 &name,
-+					 &start_sys,
-+					 &start_evt,
-+					 &end_sys,
-+					 &end_evt,
-+					 &start_match,
-+					 &end_match,
-+					 &match_name)) {
++					 &py_fields,
++					 &py_names)) {
 +		return NULL;
 +	}
 +
-+	tep = get_tep(NULL, NULL);
-+	if (!tep)
-+		return NULL;
++	add_field_func = to_start ? tracefs_synth_add_start_field:
++				    tracefs_synth_add_end_field;
 +
-+	synth = tracefs_synth_alloc(tep, name,
-+				    start_sys, start_evt,
-+				    end_sys, end_evt,
-+				    start_match, end_match,
-+				    match_name);
-+	tep_free(tep);
-+	if (!synth) {
-+		MEM_ERROR;
-+		return NULL;
++	n = PyList_Size(py_fields);
++	for (i = 0; i < n; ++i) {
++		item_field = PyList_GetItem(py_fields, i);
++		field = PyUnicode_DATA(item_field);
++
++		name = NULL;
++		if (py_names) {
++			item_name = PyList_GetItem(py_names, i);
++			if (item_name && item_name != Py_None)
++				name = PyUnicode_DATA(item_name);
++		}
++
++		ret = add_field_func(self->ptrObj, field, name);
++		if (ret < 0) {
++			TfsError_fmt(NULL,
++				     "Failed to add %s field '%s' to synth. event %s",
++				     to_start ? "start" : "end", field,
++				     tracefs_synth_get_name(self->ptrObj));
++			return NULL;
++		}
 +	}
 +
-+	py_synth = PySynthEvent_New(synth);
-+	/*
-+	 * Here we only allocated and initializes a synthetic event object.
-+	 * However, no synthetic event is added to the system yet. Hence,
-+	 * there is no need to 'destroy' this event at exit.
-+	 */
-+	set_destroy_flag(py_synth, false);
-+	return py_synth;
++	Py_RETURN_NONE;
 +}
 +
- PyObject *PyFtrace_set_ftrace_loglevel(PyObject *self, PyObject *args,
- 						       PyObject *kwargs)
++PyObject *PySynthEvent_add_start_fields(PySynthEvent *self, PyObject *args,
++							    PyObject *kwargs)
++{
++	return synth_add_fields(self, args, kwargs, true);
++}
++
++PyObject *PySynthEvent_add_end_fields(PySynthEvent *self, PyObject *args,
++							  PyObject *kwargs)
++{
++	return synth_add_fields(self, args, kwargs, false);
++}
++
+ PyObject *PyFtrace_dir(PyObject *self)
  {
+ 	return PyUnicode_FromString(tracefs_tracing_dir());
 diff --git a/src/ftracepy-utils.h b/src/ftracepy-utils.h
-index fc5016c..e8db811 100644
+index e8db811..3c6c0f3 100644
 --- a/src/ftracepy-utils.h
 +++ b/src/ftracepy-utils.h
-@@ -30,6 +30,8 @@ C_OBJECT_WRAPPER_DECLARE(tracefs_dynevent, PyDynevent);
+@@ -121,6 +121,12 @@ PyObject *PyTraceHist_read(PyTraceHist *self, PyObject *args,
+ PyObject *PyTraceHist_close(PyTraceHist *self, PyObject *args,
+ 					       PyObject *kwargs);
  
- C_OBJECT_WRAPPER_DECLARE(tracefs_hist, PyTraceHist)
- 
-+C_OBJECT_WRAPPER_DECLARE(tracefs_synth, PySynthEvent)
++PyObject *PySynthEvent_add_start_fields(PySynthEvent *self, PyObject *args,
++							    PyObject *kwargs);
 +
- PyObject *PyTepRecord_time(PyTepRecord* self);
- 
- PyObject *PyTepRecord_cpu(PyTepRecord* self);
-@@ -210,6 +212,9 @@ PyObject *PyFtrace_register_kretprobe(PyObject *self, PyObject *args,
- PyObject *PyFtrace_hist(PyObject *self, PyObject *args,
- 					PyObject *kwargs);
- 
-+PyObject *PyFtrace_synth(PyObject *self, PyObject *args,
-+					 PyObject *kwargs);
++PyObject *PySynthEvent_add_end_fields(PySynthEvent *self, PyObject *args,
++							  PyObject *kwargs);
 +
- PyObject *PyFtrace_set_ftrace_loglevel(PyObject *self, PyObject *args,
- 						       PyObject *kwargs);
+ PyObject *PyFtrace_dir(PyObject *self);
  
+ PyObject *PyFtrace_detach(PyObject *self, PyObject *args, PyObject *kwargs);
 diff --git a/src/ftracepy.c b/src/ftracepy.c
-index f59bd4c..f8b8b36 100644
+index f8b8b36..44114f0 100644
 --- a/src/ftracepy.c
 +++ b/src/ftracepy.c
-@@ -221,6 +221,14 @@ C_OBJECT_WRAPPER(tracefs_hist, PyTraceHist,
- 		 NO_DESTROY,
+@@ -222,6 +222,16 @@ C_OBJECT_WRAPPER(tracefs_hist, PyTraceHist,
  		 tracefs_hist_free)
  
-+static PyMethodDef PySynthEvent_methods[] = {
-+	{NULL, NULL, 0, NULL}
-+};
-+
-+C_OBJECT_WRAPPER(tracefs_synth, PySynthEvent,
-+		 tracefs_synth_destroy,
-+		 tracefs_synth_free)
-+
- static PyMethodDef ftracepy_methods[] = {
- 	{"dir",
- 	 (PyCFunction) PyFtrace_dir,
-@@ -382,6 +390,11 @@ static PyMethodDef ftracepy_methods[] = {
- 	 METH_VARARGS | METH_KEYWORDS,
- 	 "Define a histogram."
- 	},
-+	{"synth",
-+	 (PyCFunction) PyFtrace_synth,
+ static PyMethodDef PySynthEvent_methods[] = {
++	{"add_start_fields",
++	 (PyCFunction) PySynthEvent_add_start_fields,
 +	 METH_VARARGS | METH_KEYWORDS,
-+	 "Define a synthetic event."
++	 "Add fields from the start event to save."
 +	},
- 	{"set_ftrace_loglevel",
- 	 (PyCFunction) PyFtrace_set_ftrace_loglevel,
- 	 METH_VARARGS | METH_KEYWORDS,
-@@ -453,6 +466,9 @@ PyMODINIT_FUNC PyInit_ftracepy(void)
- 	if (!PyTraceHistTypeInit())
- 		return NULL;
++	{"add_end_fields",
++	 (PyCFunction) PySynthEvent_add_end_fields,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Add fields from the end event to save."
++	},
+ 	{NULL, NULL, 0, NULL}
+ };
  
-+	if (!PySynthEventTypeInit())
-+		return NULL;
-+
- 	TFS_ERROR = PyErr_NewException("tracecruncher.ftracepy.tfs_error",
- 				       NULL, NULL);
- 
-@@ -470,6 +486,7 @@ PyMODINIT_FUNC PyInit_ftracepy(void)
- 	PyModule_AddObject(module, "tracefs_instance", (PyObject *) &PyTfsInstanceType);
- 	PyModule_AddObject(module, "tracefs_dynevent", (PyObject *) &PyDyneventType);
- 	PyModule_AddObject(module, "tracefs_hist", (PyObject *) &PyTraceHistType);
-+	PyModule_AddObject(module, "tracefs_synth", (PyObject *) &PySynthEventType);
- 
- 	PyModule_AddObject(module, "tfs_error", TFS_ERROR);
- 	PyModule_AddObject(module, "tep_error", TEP_ERROR);
 -- 
 2.32.0
 
