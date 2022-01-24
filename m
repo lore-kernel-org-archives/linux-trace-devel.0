@@ -2,109 +2,91 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49B83C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Jan 2022 09:50:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FC5DC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Jan 2022 09:50:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236852AbiAXJuM (ORCPT
+        id S236853AbiAXJue (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 24 Jan 2022 04:50:12 -0500
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:46274
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236830AbiAXJuL (ORCPT
+        Mon, 24 Jan 2022 04:50:34 -0500
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:33570
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236830AbiAXJue (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 24 Jan 2022 04:50:11 -0500
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        Mon, 24 Jan 2022 04:50:34 -0500
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 8D8503F1A3
-        for <linux-trace-devel@vger.kernel.org>; Mon, 24 Jan 2022 09:50:10 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 987593F17B
+        for <linux-trace-devel@vger.kernel.org>; Mon, 24 Jan 2022 09:50:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1643017810;
-        bh=yYGz3xoE8ANhJ7w0Kg0nDKOlP1w0h+rWCg+MJ/RahP0=;
+        s=20210705; t=1643017832;
+        bh=fZjoIlNyh5eB6GQGMsiSzLtY0ZWHeQw2g28bp9uO/pU=;
         h=Message-ID:Date:MIME-Version:Subject:To:References:From:
          In-Reply-To:Content-Type;
-        b=NcufxwCU1/7JoYgre1CKBT3mrOy8cKUzq2xIc2sMub3Rj+nU7bDCG54BhUfXZFUO6
-         MATxhj64YTgzfOKqmvievJ2vZOt6OfdqXqHNa9OkMZEyJf+kXJoFPR/nWFs2Ex2Llz
-         GkrlPajis4t1tv5nDHVRPvFIMLka30xhv4AQQuXCzUKTPmmJVF2N6rxYqPMudmiyoE
-         zUgvSfKuPtvkVhYUjXRct2n3qXLi964IrUZ+7Ce+9jd79ITuGSeEyEwykpnnjMwkpO
-         W3UsvrVL8ltHc4dqowY+v7RC6A2CgZQpeezDTLBhwEuZEfWCT3ZJ/uR5jOFELPLTYL
-         r90HqscDoN8MA==
-Received: by mail-ed1-f69.google.com with SMTP id c23-20020a056402159700b00406aa42973eso5676600edv.2
-        for <linux-trace-devel@vger.kernel.org>; Mon, 24 Jan 2022 01:50:10 -0800 (PST)
+        b=vYoS+kn0pIg5baV2OY+bC0dBvHvcPRYZrnd+bTqfyP1boxRAqO71zMllp1KBrvZtE
+         nTNdF14h7NJV9CPUlDXWwCXYjMBmmDtYmH+Hh7gUg76Kx+JSmUw71snFJ7Xbc+Kn8y
+         2FyA2CmHMcCS5nAT9dNegNSxskUiUJhHaQmBIWt4Fa3MDJ5jeoKQFEfvsEf+E9apse
+         EiGu71DGhYcbmn1NQ9KdgKbE/crmOtPP+utNvM9z3fp80u39DsPQsConDwJoBE0QUl
+         TY+7cw42JeFJ9SwhZaVuUU26ZQj1FkGmOMikYzm0s28Rxvzqmz5xA+8bu902gnCpXI
+         dHWwC3V4O7/nA==
+Received: by mail-ej1-f71.google.com with SMTP id 13-20020a170906328d00b006982d0888a4so1846700ejw.9
+        for <linux-trace-devel@vger.kernel.org>; Mon, 24 Jan 2022 01:50:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=yYGz3xoE8ANhJ7w0Kg0nDKOlP1w0h+rWCg+MJ/RahP0=;
-        b=OWHw5RltOV6pQeu8IhqKLMX30UiL/eDhOO1uhUtb3Ih6E+n2uzC+0cfB8GYL5F7tJh
-         bMzer5FeKCLcU7LqNygcNH44zePM1Xgt2h6QwvATGTJEWSTP9rdkV5r6I07vET8xz7cy
-         w0TJoh4qeDrZTQp4N3QBfBPWLhWlwxtl+4BKyW6jRJY+12o45QSVly0I8FNP/Pei210p
-         I2REGtKixHjQnzAiMFXq9CBao0HZQs/AUttjPRlQINCKuTflpfo1Eo5E556IPIYTqj9P
-         4nPz13lPynCwhVNp6bMSPAPKUZoxrMGUz6YO+Au7WDWsiN9amEP1yckmB1cQz4SaoYue
-         L1+Q==
-X-Gm-Message-State: AOAM530dAXDgn2dcL61xArlFpUVW9yewgVfnrP8NYPSEEexkhy9boeVl
-        Mq2Fx5lhyknZ1IgqJfMBznb8sIsh0LGa2NjMVHKUuND6Lg8DAMaIA3EoRFiVILcfyicdGl9mf2f
-        rr8KQogG1zKmwJOr9BHH2CKjE+3ZinsNClDe71kZLuTZeodjv
-X-Received: by 2002:a05:6402:4382:: with SMTP id o2mr15189221edc.38.1643017810120;
-        Mon, 24 Jan 2022 01:50:10 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz7c2s1xp9OBbMwa7ADgT5nAq8GIcpvKcI3R24egaoRP+aiBNN/n7FV11CN4+6/m0VIariBGw==
-X-Received: by 2002:a05:6402:4382:: with SMTP id o2mr15189212edc.38.1643017809977;
-        Mon, 24 Jan 2022 01:50:09 -0800 (PST)
+        bh=fZjoIlNyh5eB6GQGMsiSzLtY0ZWHeQw2g28bp9uO/pU=;
+        b=5GDfoujjSSyO2jgy6VPnc/GS4HBJ9DLMYVRqyoJrcG08bV1kTVfJ5miv4nPWcgfWlL
+         OAgg7P6iJvaE+yv4I+IP6q26tNR1RbbWPDtUYtfeyJKWv+n683KA2Ie3Rprg5mhdEVWO
+         xsh+zN8eiJIh7oi9h79UiYUQWtds44ms7kdpF0MRSr6u33Ze9PlK8bOQ/uw+QcAGuVuv
+         XPEpzrVKmVHBFvjJVC1oD++eiI4Zx4MC3IoFd18jGGwE5TeD+yGv4JxqFvvytkSPLtfT
+         ADYU0Qd6qPjOrQH/U5HjV8IcrmuEVoztq61i8sIoPVhUka+LCauREDZZmfPzNdfAD8mx
+         vNYw==
+X-Gm-Message-State: AOAM530LYqrgnX8FJpHlyR6atnCte+coHtcQvlI6eHM6914RqM7E/nX7
+        i7woC2rxUXl0qWGBTE4HOgPPKh1HTNy6dx4k6fFyErML50XIM1gO+WdOKhQir9sIrCQdPl3VqJX
+        WTU0jHUGHHHHpHKkcieF6YBKjJMaVcoehyGVjx3Z2DZlNX1C2
+X-Received: by 2002:a17:906:c1d8:: with SMTP id bw24mr12048435ejb.286.1643017831971;
+        Mon, 24 Jan 2022 01:50:31 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxG9Qv12+rj2KgWzO88YxpmF4rojJiW/mIH6zU1TjGmKRvYjAlER1nmMLpgOVZXaP20rJb0YA==
+X-Received: by 2002:a17:906:c1d8:: with SMTP id bw24mr12048430ejb.286.1643017831828;
+        Mon, 24 Jan 2022 01:50:31 -0800 (PST)
 Received: from [192.168.0.53] (xdsl-188-155-168-84.adslplus.ch. [188.155.168.84])
-        by smtp.gmail.com with ESMTPSA id d15sm4742826ejw.143.2022.01.24.01.50.09
+        by smtp.gmail.com with ESMTPSA id b16sm4689851eja.211.2022.01.24.01.50.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jan 2022 01:50:09 -0800 (PST)
-Message-ID: <105fa0cf-4ef2-68d2-dfe9-cc9f68bd5d8b@canonical.com>
-Date:   Mon, 24 Jan 2022 10:50:09 +0100
+        Mon, 24 Jan 2022 01:50:31 -0800 (PST)
+Message-ID: <09c4880c-fb01-4823-5312-790ebf91b73c@canonical.com>
+Date:   Mon, 24 Jan 2022 10:50:30 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.0
-Subject: Re: [PATCH] libtracefs: Fix libtracefs-instance-affinity.txt document
+Subject: Re: [PATCH] libtracefs/Documentation: correct instances-affinity
+ section body
 Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-References: <20220119111901.0a18aa2c@gandalf.local.home>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-trace-devel@vger.kernel.org
+References: <20220124093841.47558-1-krzysztof.kozlowski@canonical.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20220119111901.0a18aa2c@gandalf.local.home>
+In-Reply-To: <20220124093841.47558-1-krzysztof.kozlowski@canonical.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 19/01/2022 17:19, Steven Rostedt wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On 24/01/2022 10:38, Krzysztof Kozlowski wrote:
+> Correct the instances-affinity section body error:
 > 
-> The building of the Documentation directory errors with:
+>     asciidoc: ERROR: libtracefs-instances-affinity.txt: line 8: malformed name section body
 > 
->   DESCEND            Documentation all
->   ASCIIDOC libtracefs-instances-affinity.html
-> asciidoc: ERROR: libtracefs-instances-affinity.txt: line 8: malformed name section body
-> asciidoc: FAILED: libtracefs-instances-affinity.txt: line 8: unexpected error:
-> asciidoc: ------------------------------------------------------------
-> Traceback (most recent call last):
->   File "/usr/lib/python3/dist-packages/asciidoc/asciidoc.py", line 6081, in asciidoc
->     document.translate(has_header)  # Generate the output.
->   File "/usr/lib/python3/dist-packages/asciidoc/asciidoc.py", line 1380, in translate
->     self.attributes['manname'] = mo.group('manname').strip()
-> AttributeError: 'NoneType' object has no attribute 'group'
-> make[1]: *** [Makefile:237: libtracefs-instances-affinity.html] Error 1
-> make: *** [Makefile:286: doc] Error 2
-> 
-> This was due to a cut and paste error and the first line did not have a
-> hyphen for the description of the man page.
-> 
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 > ---
->  Documentation/libtracefs-instances-affinity.txt | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  Documentation/libtracefs-instances-affinity.txt | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
 
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
+I see now that Steven already sent a patch for this.
 
 Best regards,
 Krzysztof
