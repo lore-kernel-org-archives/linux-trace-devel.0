@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E59E6C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Jan 2022 14:24:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58D59C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Jan 2022 14:24:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238392AbiAXOYp convert rfc822-to-8bit (ORCPT
+        id S237810AbiAXOYq convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 24 Jan 2022 09:24:45 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:34637 "EHLO
+        Mon, 24 Jan 2022 09:24:46 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:40597 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237828AbiAXOYg (ORCPT
+        by vger.kernel.org with ESMTP id S238326AbiAXOYn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 24 Jan 2022 09:24:36 -0500
+        Mon, 24 Jan 2022 09:24:43 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-658-UEPD5ZuVNhCp1DB-vUdSIA-1; Mon, 24 Jan 2022 09:24:32 -0500
-X-MC-Unique: UEPD5ZuVNhCp1DB-vUdSIA-1
+ us-mta-595-Lu2NlBYqOpiVgmCEFu51BA-1; Mon, 24 Jan 2022 09:24:37 -0500
+X-MC-Unique: Lu2NlBYqOpiVgmCEFu51BA-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E2F8886A8A1;
-        Mon, 24 Jan 2022 14:24:30 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F201F1923B85;
+        Mon, 24 Jan 2022 14:24:35 +0000 (UTC)
 Received: from x1.com (unknown [10.22.32.253])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 70FC1798B2;
-        Mon, 24 Jan 2022 14:24:29 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 82BD5798B2;
+        Mon, 24 Jan 2022 14:24:34 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: [PATCH 4/8] rtla/osnoise_hist: Fix segmentation fault when failing to enable -t
-Date:   Mon, 24 Jan 2022 15:24:07 +0100
-Message-Id: <469157d4870591e6cc0dc2aeb72533a5bbd97c5e.1643033113.git.bristot@kernel.org>
+Subject: [PATCH 7/8] rtla/osnoise: Fix error message when failing to enable trace instance
+Date:   Mon, 24 Jan 2022 15:24:10 +0100
+Message-Id: <c2a20c84d63092e685af9649f9b7656c3ecd1c90.1643033113.git.bristot@kernel.org>
 In-Reply-To: <cover.1643033113.git.bristot@kernel.org>
 References: <cover.1643033113.git.bristot@kernel.org>
 MIME-Version: 1.0
@@ -47,61 +47,35 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-rtla osnoise hist is causing a segmentation fault when running with
-the --trace option on a kernel that does not support multiple
-instances. For example:
+When a trace instance creation fails, tools are printing:
 
-    [root@f34 rtla]# rtla osnoise hist -t daniel -s 10
-    failed to enable the tracer osnoise
-    Could not enable osnoiser tracer for tracing
-    Failed to enable the trace instance
-    Segmentation fault (core dumped)
+	Could not enable -> osnoiser <- tracer for tracing
 
-This error happens because the exit code of the tools is trying
-to destroy the trace instance that failed to be created.
+Print the actual (and correct) name of the tracer it fails to enable.
 
-Rearrange the order in which trace instances are destroyed to avoid
-this problem.
-
-Fixes: 829a6c0b5698 ("rtla/osnoise: Add the hist mode")
+Fixes: b1696371d865 ("rtla: Helper functions for rtla")
 Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: linux-kernel@vger.kernel.org
 Cc: linux-trace-devel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- tools/tracing/rtla/src/osnoise_hist.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ tools/tracing/rtla/src/osnoise.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/tracing/rtla/src/osnoise_hist.c b/tools/tracing/rtla/src/osnoise_hist.c
-index 180fcbe423cd..60bf3bb4c460 100644
---- a/tools/tracing/rtla/src/osnoise_hist.c
-+++ b/tools/tracing/rtla/src/osnoise_hist.c
-@@ -768,7 +768,7 @@ int osnoise_hist_main(int argc, char *argv[])
- 						    trace);
- 		if (retval < 0) {
- 			err_msg("Error iterating on events\n");
--			goto out_hist;
-+			goto out_trace;
- 		}
+diff --git a/tools/tracing/rtla/src/osnoise.c b/tools/tracing/rtla/src/osnoise.c
+index 7b73d1eccd0e..c1368315d508 100644
+--- a/tools/tracing/rtla/src/osnoise.c
++++ b/tools/tracing/rtla/src/osnoise.c
+@@ -807,7 +807,7 @@ struct osnoise_tool *osnoise_init_trace_tool(char *tracer)
  
- 		if (!tracefs_trace_is_on(trace->inst))
-@@ -789,12 +789,13 @@ int osnoise_hist_main(int argc, char *argv[])
- 		}
+ 	retval = enable_tracer_by_name(trace->trace.inst, tracer);
+ 	if (retval) {
+-		err_msg("Could not enable osnoiser tracer for tracing\n");
++		err_msg("Could not enable %s tracer for tracing\n", tracer);
+ 		goto out_err;
  	}
  
-+out_trace:
-+	if (params->trace_output)
-+		osnoise_destroy_tool(record);
- out_hist:
- 	osnoise_free_histogram(tool->data);
- out_destroy:
- 	osnoise_destroy_tool(tool);
--	if (params->trace_output)
--		osnoise_destroy_tool(record);
- 	free(params);
- out_exit:
- 	exit(return_value);
 -- 
 2.34.1
 
