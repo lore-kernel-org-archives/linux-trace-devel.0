@@ -2,1041 +2,1103 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1E8AC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 23 Jan 2022 22:48:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 592F9C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Jan 2022 04:55:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbiAWWs4 (ORCPT
+        id S241505AbiAXEzH (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 23 Jan 2022 17:48:56 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:48860 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbiAWWsz (ORCPT
+        Sun, 23 Jan 2022 23:55:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241489AbiAXEzG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 23 Jan 2022 17:48:55 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 61069611D0
-        for <linux-trace-devel@vger.kernel.org>; Sun, 23 Jan 2022 22:48:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E60CC340E3;
-        Sun, 23 Jan 2022 22:48:52 +0000 (UTC)
-Date:   Sun, 23 Jan 2022 17:48:51 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v7 01/20] trace-cmd library: Add support for compression
- algorithms
-Message-ID: <20220123174851.52f0e2bb@rorschach.local.home>
-In-Reply-To: <20220119082715.245846-2-tz.stoyanov@gmail.com>
-References: <20220119082715.245846-1-tz.stoyanov@gmail.com>
-        <20220119082715.245846-2-tz.stoyanov@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Sun, 23 Jan 2022 23:55:06 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2568FC06173B
+        for <linux-trace-devel@vger.kernel.org>; Sun, 23 Jan 2022 20:55:06 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id n8so14407038plc.3
+        for <linux-trace-devel@vger.kernel.org>; Sun, 23 Jan 2022 20:55:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tLr741+E/BUJk2AGcF1CmXekb159VlkwoTQ0PBfoxxE=;
+        b=mIBS5FJxAbil4KPo1fnW+I6cS+Ev6behyv+sTaSBUEqbR5PUvple3Uii7KaKx5mOCx
+         gYNgPnyc1X5giII23/PCupWmzLuTMlvn8QcuYwOFVtE1sSzDiyB5TUTZtxqvplF4avFv
+         YNR3EIFtPkHQlTIeHa2ZSBb2kRKjk/fzwuODVtZw/tpNDaVH6XPdhtYq11o206XrfBcv
+         e2dF/67qST4AC+1qtk+hWwhNwsuqoaqUfaAw6fBOdjMANzuKwEttrB2PQ2l6TJKDYpKC
+         CWyuBJn76sXciywcdez6b5cHRlBFWMPMacxZt00lMmyjOML2k2G0BtSkckc0tSIVVugS
+         sVHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tLr741+E/BUJk2AGcF1CmXekb159VlkwoTQ0PBfoxxE=;
+        b=u3sw5wkyjE2PkNdfxYb76i+TQFJj7mZo+18LUmh/TWk/7hiuLeIJVbGla8ywUGHIw/
+         D6KLUsjX29yWqtYqlDKVrh6CLDYZKcNeeJPl47ZVt40TxSmfrDEh2OA6YHU3RXBpkR5v
+         Ufoc37RH9rmkLLRp6JEvvMH6yHFO579c6OKkoDnxi/AkpJsA4DFAr4JaKwLcwdyvDPmJ
+         ydCqTbUtgp+dmetF9DW8MbzTULQlKBWW2Xk/6QHF2UPEM+OMU3LXt9u1GmNNeLrZyNH2
+         S7sLiqCK3LI9CIKslhYz3xd8gOzirLEMKuXPSN29XEb4WYJan5fmbVdA/BWG/KRq/hfE
+         73tA==
+X-Gm-Message-State: AOAM533ESzhhjbVxF3SWu0xDIsJ+F+2H6tf5apVf+Tshn8ool74M3tEZ
+        sXiBzWR3Un28bm3E0txNJJn4wNTfv6r8aOqPp0IyiN392XM=
+X-Google-Smtp-Source: ABdhPJx7PRBmxiy4XacoXs3iNKFb4ldnCTXc9z8P30qhTHFLQLqaMI0XSEu01BXPqE5JqeRTa5Ro3iAm1F6ZQxvelUg=
+X-Received: by 2002:a17:902:7fc8:b0:14a:e403:2f18 with SMTP id
+ t8-20020a1709027fc800b0014ae4032f18mr13047859plb.45.1643000105231; Sun, 23
+ Jan 2022 20:55:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20220119082715.245846-1-tz.stoyanov@gmail.com>
+ <20220119082715.245846-2-tz.stoyanov@gmail.com> <20220123174851.52f0e2bb@rorschach.local.home>
+In-Reply-To: <20220123174851.52f0e2bb@rorschach.local.home>
+From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Date:   Mon, 24 Jan 2022 06:54:48 +0200
+Message-ID: <CAPpZLN6BpbaThK66MJaykk7gSPDq2qQHkbmunQeT0NyMNMGnAw@mail.gmail.com>
+Subject: Re: [PATCH v7 01/20] trace-cmd library: Add support for compression algorithms
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 19 Jan 2022 10:26:56 +0200
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
-> index 1efafba1..f8f0ba15 100644
-> --- a/lib/trace-cmd/include/private/trace-cmd-private.h
-> +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-> @@ -35,6 +35,7 @@ int *tracecmd_add_id(int *list, int id, int len);
->  #define FILE_VERSION_MAX		7
->  
->  #define FILE_VERSION_SECTIONS		7
-> +#define FILE_VERSION_COMPRESSION	7
->  
->  enum {
->  	RINGBUF_TYPE_PADDING		= 29,
-> @@ -160,6 +161,7 @@ enum {
->  	TRACECMD_FL_IN_USECS		= (1 << 2),
->  	TRACECMD_FL_RAW_TS		= (1 << 3),
->  	TRACECMD_FL_SECTIONED		= (1 << 4),
-> +	TRACECMD_FL_COMPRESSION		= (1 << 5),
->  };
->  
->  struct tracecmd_ftrace {
-> @@ -492,6 +494,45 @@ void tracecmd_tsync_free(struct tracecmd_time_sync *tsync);
->  int tracecmd_write_guest_time_shift(struct tracecmd_output *handle,
->  				    struct tracecmd_time_sync *tsync);
->  
-> +/* --- Compression --- */
-> +struct tracecmd_compress_chunk {
-> +	unsigned int		size;
-
-Can this handle sections that are more than 4G in size?
-
-That is definitely something we need to be able to handle. Or if a
-trace-cmd data file has a section greater than 4G, it is broken up into
-smaller chunks for compression?
-
-We may have discussed this earlier, but I don't remember.
-
-
-> +	unsigned int		zsize;
-> +	off64_t			zoffset;
-> +	off64_t			offset;
-> +};
-
-> +
-> +static int compress_read(struct tracecmd_compression *handle, char *dst, int len)
-> +{
-> +	int s;
-> +
-> +	if (handle->pointer + len > handle->capacity)
-> +		s = handle->capacity - handle->pointer;
-> +	else
-> +		s = len;
-> +	memcpy(dst, handle->buffer + handle->pointer, s);
-> +
-> +	return s;
-> +}
-
-Nit, but you could do the above without the extra 's'.
-
-{
-	if (handle->pointer + len > handle->capacity)
-		len = handle->capacity - handle->pointer;
-
-	memcpy(dst, handle->buffer + handle->pointer, len);
-
-	return len;
-}
-
-> +
-> +/**
-> + * tracecmd_compress_pread - pread() on compression buffer
-> + * @handle: compression handle
-> + * @dst: return, store the read data
-> + * @len: length of data to be read
-> + * @offset: offset in the buffer of data to be read
-> + *
-> + * Read a @len of data from the compression buffer at given @offset,
-> + * without updating the buffer pointer.
-> + *
-> + * On success returns the number of bytes read, or -1 on failure.
-> + */
-> +int tracecmd_compress_pread(struct tracecmd_compression *handle, char *dst, int len, off_t offset)
-> +{
-> +	int ret;
-> +
-> +	if (!handle || !handle->buffer || offset > handle->capacity)
-> +		return -1;
-> +
-> +	ret = tracecmd_compress_lseek(handle, offset, SEEK_SET);
-> +	if (ret < 0)
-> +		return ret;
-> +	return compress_read(handle, dst, len);
-> +}
-> +
-> +/**
-> + * tracecmd_compress_read - read() from compression buffer
-> + * @handle: compression handle
-> + * @dst: return, store the read data
-> + * @len: length of data to be read
-> + *
-> + * Read a @len of data from the compression buffer
-> + *
-> + * On success returns the number of bytes read, or -1 on failure.
-> + */
-> +int tracecmd_compress_read(struct tracecmd_compression *handle, char *dst, int len)
-> +{
-> +	int ret;
-> +
-> +	if (!handle || !handle->buffer)
-> +		return -1;
-> +
-> +	ret = compress_read(handle, dst, len);
-> +	if (ret > 0)
-> +		handle->pointer += ret;
-> +
-> +	return ret;
-> +}
-> +
-> +/**
-> + * tracecmd_compress_reset - Reset the compression buffer
-> + * @handle: compression handle
-> + *
-> + * Reset the compression buffer, any data currently in the buffer will be destroyed.
-> + *
-> + */
-> +void tracecmd_compress_reset(struct tracecmd_compression *handle)
-> +{
-> +	if (!handle)
-> +		return;
-> +
-> +	free(handle->buffer);
-> +	handle->buffer = NULL;
-> +	handle->pointer = 0;
-> +	handle->capacity = 0;
-> +}
-> +
-> +/**
-> + * tracecmd_uncompress_block - uncompress a memory block
-> + * @handle: compression handle
-> + *
-> + * Read compressed memory block from the file and uncompress it into internal buffer.
-> + * The tracecmd_compress_read() can be used to read the uncompressed data from the buffer
-
-BTW, even though we allow 100 character width, it's best to keep
-comments under 80, when possible.
-
-Also, I found the naming of tracecmd_compress_read/write() confusing as
-it reads and writes to the buffer and not the file. It may not have
-been so bad if we didn't have these functions where we have
-compress_block and uncompress_block that reads and writes to the file.
-
-Prehaps s/tracecmd_compress_read/tracecmd_compress_retrieve/
-	s/tracecmd_compress_write/tracecmd_compress_insert/
-
-?
-
-
-> + *
-> + * Returns 0 on success, or -1 in case of an error.
-> + */
-> +int tracecmd_uncompress_block(struct tracecmd_compression *handle)
-> +{
-> +	unsigned int s_uncompressed;
-> +	unsigned int s_compressed;
-> +	char *bytes = NULL;
-> +	char buf[4];
-> +	int size;
-> +	int ret;
-> +
-> +	if (!handle || !handle->proto || !handle->proto->uncompress_block)
-> +		return -1;
-> +	tracecmd_compress_reset(handle);
-> +
-> +	if (read(handle->fd, buf, 4) != 4)
-> +		return -1;
-
-space
-	
-> +	s_compressed = tep_read_number(handle->tep, buf, 4);
-> +	if (read(handle->fd, buf, 4) != 4)
-> +		return -1;
-
-space
-
-> +	s_uncompressed = tep_read_number(handle->tep, buf, 4);
-> +
-> +	size = s_uncompressed > s_compressed ? s_uncompressed : s_compressed;
-
-space.
-
-OK, so compressed could be larger than uncompressed, so we need to pick
-a size that is the greater of the two.
-
-> +	handle->buffer = malloc(size);
-> +	if (!handle->buffer)
-> +		return -1;
-
-space
-
-> +	bytes = malloc(s_compressed);
-> +	if (!bytes)
-> +		goto error;
-> +
-> +	if (read_fd(handle->fd, bytes, s_compressed) < 0)
-> +		goto error;
-
-space.
-
-> +	s_uncompressed = size;
-> +	ret = handle->proto->uncompress_block(bytes, s_compressed,
-> +					      handle->buffer, &s_uncompressed);
-> +	if (ret)
-> +		goto error;
-
-space.
-
-> +	free(bytes);
-> +	handle->pointer = 0;
-> +	handle->capacity = s_uncompressed;
-
-If size is the greater of the two (compressed could be larger) and
-capacity is the allocated buffer, shouldn't we make it equal to size
-and not uncompressed?
-
-
-> +	return 0;
-> +error:
-> +	tracecmd_compress_reset(handle);
-> +	free(bytes);
-> +	return -1;
-> +}
-> +
-> +/**
-> + * tracecmd_compress_block - compress a memory block
-> + * @handle: compression handle
-> + *
-> + * Compress the content of the internal memory buffer and write the compressed data in the file
-> + * The tracecmd_compress_write() can be used to write data into the internal memory buffer, before
-> + * calling this API.
-> + *
-> + * Returns 0 on success, or -1 in case of an error.
-> + */
-> +int tracecmd_compress_block(struct tracecmd_compression *handle)
-> +{
-> +	unsigned int size;
-> +	char *buf;
-> +	int endian4;
-> +	int ret;
-> +
-> +	if (!handle || !handle->proto ||
-> +	    !handle->proto->compress_size || !handle->proto->compress_block)
-> +		return -1;
-> +
-> +	size = handle->proto->compress_size(handle->pointer);
-
-space
-
-> +	buf = malloc(size);
-> +	if (!buf)
-> +		return -1;
-
-space
-
-> +	ret = handle->proto->compress_block(handle->buffer, handle->pointer, buf, &size);
-> +	if (ret < 0)
-> +		goto out;
-
-Do we want to free the compress handle on error?
-
-space
-
-> +	/* Write compressed data size */
-> +	endian4 = tep_read_number(handle->tep, &size, 4);
-> +	ret = do_write(handle, &endian4, 4);
-> +	if (ret != 4)
-> +		goto out;
-
-space
-
-> +	/* Write uncompressed data size */
-> +	endian4 = tep_read_number(handle->tep, &handle->pointer, 4);
-> +	ret = do_write(handle, &endian4, 4);
-> +	if (ret != 4)
-> +		goto out;
-
-space
-
-> +	/* Write compressed data */
-> +	ret = do_write(handle, buf, size);
-> +	ret = ((ret == size) ? 0 : -1);
-> +out:
-> +	tracecmd_compress_reset(handle);
-> +	free(buf);
-> +	return ret;
-> +}
-> +
-> +/**
-> + * tracecmd_compress_write - write() to compression buffer
-> + * @handle: compression handle
-> + * @data: data to be written
-> + * @size: size of @data
-> + *
-> + * Write @data of @size in the compression buffer
-> + *
-> + * Returns 0 on success, or -1 on failure.
-> + */
-> +int tracecmd_compress_write(struct tracecmd_compression *handle,
-> +			    const void *data, unsigned long long size)
-> +{
-> +	if (!handle)
-> +		return -1;
-> +
-> +	if (buffer_extend(handle, (handle->pointer + size)))
-
-The parenthesis around pointer + size is not needed.
-
-> +		return -1;
-> +
-> +	memcpy(&handle->buffer[handle->pointer], data, size);
-> +	handle->pointer += size;
-> +	return 0;
-> +}
-> +
-> +/**
-> + * tracecmd_compress_init - initialize the library with available compression algorithms
-> + */
-> +void tracecmd_compress_init(void)
-> +{
-> +	struct timeval time;
-> +
-> +	gettimeofday(&time, NULL);
-> +	srand((time.tv_sec * 1000) + (time.tv_usec / 1000));
-> +
-> +}
-> +
-> +static struct compress_proto *compress_proto_select(void)
-> +{
-> +	struct compress_proto *proto = proto_list;
-> +	struct compress_proto *selected = NULL;
-> +
-> +	while (proto) {
-> +		if (!selected || selected->weight > proto->weight)
-> +			selected = proto;
-> +		proto = proto->next;
-> +	}
-> +
-> +	return selected;
-> +}
-> +
-> +/**
-> + * tracecmd_compress_alloc - Allocate a new compression context
-> + * @name: name of the compression algorithm, if NULL - auto select the best available algorithm
-> + * @version: version of the compression algorithm, can be NULL
-> + * @fd: file descriptor for reading / writing data
-> + * @tep: tep handle, used to encode the data
-> + * @msg_handle: message handle, use it for reading / writing data instead of @fd
-> + *
-> + * Returns NULL on failure or pointer to allocated compression context.
-> + * The returned context must be freed by tracecmd_compress_destroy()
-> + */
-> +struct tracecmd_compression *tracecmd_compress_alloc(const char *name, const char *version,
-> +						     int fd, struct tep_handle *tep,
-> +						     struct tracecmd_msg_handle *msg_handle)
-> +{
-> +	struct tracecmd_compression *new;
-> +	struct compress_proto *proto;
-> +
-> +	if (name) {
-> +		proto = proto_list;
-> +		while (proto) {
-> +			if (proto->is_supported && proto->is_supported(name, version))
-> +				break;
-> +			proto = proto->next;
-> +		}
-> +	} else {
-> +		proto = compress_proto_select();
-> +	}
-> +	if (!proto)
-> +		return NULL;
-> +
-> +	new = calloc(1, sizeof(*new));
-> +	if (!new)
-> +		return NULL;
-> +	new->fd = fd;
-> +	new->tep = tep;
-> +	new->msg_handle = msg_handle;
-> +	new->proto = proto;
-> +	return new;
-> +}
-> +
-> +/**
-> + * tracecmd_compress_destroy - Free a compression context
-> + * @handle: handle to the compression context that will be freed
-> + */
-> +void tracecmd_compress_destroy(struct tracecmd_compression *handle)
-> +{
-> +	tracecmd_compress_reset(handle);
-> +	free(handle);
-> +}
-> +
-> +/**
-> + * tracecmd_compress_is_supported - check if compression algorithm with given name and
-> + *				    version is supported
-
-Remember, the above is suppose to be on one line (make it shorter, and
-explain more in the body.
-
-> + * @name: name of the compression algorithm.
-> + * @version: version of the compression algorithm.
-> + *
-
-Can explain more here.
-
-> + * Returns true if the algorithm with given name and version is supported or false if it is not.
-
-And keep it under 80 chars.
-
-> + */
-> +bool tracecmd_compress_is_supported(const char *name, const char *version)
-> +{
-> +	struct compress_proto *proto = proto_list;
-> +
-> +	if (!name)
-> +		return NULL;
-> +
-> +	while (proto) {
-> +		if (proto->is_supported && proto->is_supported(name, version))
-> +			return true;
-> +		proto = proto->next;
-> +	}
-> +	return false;
-> +}
-> +
-> +/**
-> + * tracecmd_compress_proto_get_name - get name and version of compression algorithm
-> + * @compress: compression handle.
-> + * @name: return, name of the compression algorithm.
-> + * @version: return, version of the compression algorithm.
-> + *
-> + * Returns 0 on success, or -1 in case of an error. If 0 is returned, the name and version of the
-> + * algorithm are stored in @name and @version. The returned strings must *not* be freed.
-> + */
-> +int tracecmd_compress_proto_get_name(struct tracecmd_compression *compress,
-> +				     const char **name, const char **version)
-> +{
-> +	if (!compress || !compress->proto)
-> +		return -1;
-> +	if (name)
-> +		*name = compress->proto->proto_name;
-> +	if (version)
-> +		*version = compress->proto->proto_version;
-> +	return 0;
-> +}
-> +
-> +/**
-> + * tracecmd_compress_proto_register - register a new compression algorithm
-> + * @name: name of the compression algorithm.
-> + * @version: version of the compression algorithm.
-> + * @weight: weight of the compression algorithm, lower is better.
-> + * @compress: compression hook, called to compress a memory block.
-> + * @uncompress: uncompression hook, called to uncompress a memory block.
-> + * @compress_size: hook, called to get the required minimum size of the buffer for compression
-> + *		  given number of bytes.
-> + * @is_supported: check hook, called to check if compression with given name and version is
-> + *		  supported by this plugin.
-> + *
-> + * Returns 0 on success, or -1 in case of an error. If algorithm with given name and version is
-> + * already registered, -1 is returned.
-> + */
-> +int tracecmd_compress_proto_register(const char *name, const char *version, int weight,
-> +				     int (*compress)(const char *in, unsigned int in_bytes,
-> +						     char *out, unsigned int *out_bytes),
-> +				     int (*uncompress)(const char *in, unsigned int in_bytes,
-> +						       char *out, unsigned int *out_bytes),
-> +				     unsigned int (*compress_size)(unsigned int bytes),
-> +				     bool (*is_supported)(const char *name, const char *version))
-> +{
-> +	struct compress_proto *new;
-> +
-> +	if (!name || !compress || !uncompress)
-> +		return -1;
-
-space
-
-> +	if (tracecmd_compress_is_supported(name, version))
-> +		return -1;
-> +
-> +	new = calloc(1, sizeof(*new));
-> +	if (!new)
-> +		return -1;
-> +
-> +	new->proto_name = strdup(name);
-> +	if (!new->proto_name)
-> +		goto error;
-
-space
-
-> +	new->proto_version = strdup(version);
-> +	if (!new->proto_version)
-> +		goto error;
-
-space
-
-> +	new->compress_block = compress;
-> +	new->uncompress_block = uncompress;
-> +	new->compress_size = compress_size;
-> +	new->is_supported = is_supported;
-> +	new->weight = weight;
-> +	new->next = proto_list;
-> +	proto_list = new;
-> +	return 0;
-> +
-> +error:
-> +	free(new->proto_name);
-> +	free(new->proto_version);
-> +	free(new);
-> +	return -1;
-> +}
-> +
-> +/**
-> + * tracecmd_compress_free - free the library resources, related to available compression algorithms
-> + *
-> + */
-> +void tracecmd_compress_free(void)
-> +{
-> +	struct compress_proto *proto = proto_list;
-> +	struct compress_proto *del;
-> +
-> +	while (proto) {
-> +		del = proto;
-> +		proto = proto->next;
-> +		free(del->proto_name);
-> +		free(del->proto_version);
-> +		free(del);
-> +	}
-> +	proto_list = NULL;
-> +}
-> +
-> +/**
-> + * tracecmd_compress_protos_get - get a list of all supported compression algorithms and versions
-> + * @names: return, array with names of all supported compression algorithms
-> + * @versions: return, array with versions of all supported compression algorithms
-> + *
-> + * On success, the size of @names and @versions arrays is returned. Those arrays are allocated by
-> + * the API and must be freed with free() by the caller. Both arrays are with same size, each name
-> + * from @names corresponds to a version from @versions.
-> + * On error -1 is returned and @names and @versions arrays are not allocated.
-> + */
-> +int tracecmd_compress_protos_get(char ***names, char ***versions)
-> +{
-> +	struct compress_proto *proto = proto_list;
-> +	char **n = NULL;
-> +	char **v = NULL;
-> +	int c, i;
-> +
-> +	for (c = 0; proto; proto = proto->next)
-> +		c++;
-> +
-> +	if (c < 1)
-> +		return c;
-> +
-> +	n = calloc(c, sizeof(char *));
-
-For safety, perhaps allocate c + 1.
-
-> +	if (!n)
-> +		goto error;
-> +	v = calloc(c, sizeof(char *));
-> +	if (!v)
-> +		goto error;
-> +
-> +	proto = proto_list;
-> +	for (i = 0; i < c && proto; i++) {
-
-Is the proto check just paranoia? ;-)
-
-I'm fine with that, as I'm usually very paranoid.
-
-> +		n[i] = proto->proto_name;
-> +		v[i] = proto->proto_version;
-> +		proto = proto->next;
-> +	}
-
-Then add n[i] = NULL;
-	v[i] = NULL;
-
-> +
-> +	*names = n;
-> +	*versions = v;
-> +	return c;
-> +
-> +error:
-> +	free(n);
-> +	free(v);
-> +	return -1;
-> +}
-> +
-> +/**
-> + * tracecmd_compress_copy_from - Copy and compress data from a file
-> + * @handle: compression handle
-> + * @fd: file descriptor to uncompressed data to copy from
-> + * @chunk_size: size of one compression chunk
-> + * @read_size: in - max bytes to read from @fd, 0 to read till the EOF
-> + *	       out - size of the uncompressed data read from @fd
-
-Is this an array of two?
-
-> + * @write_size: return, size of the compressed data written into @handle
-> + *
-> + * This function reads uncompressed data from given @fd, compresses the data using the @handle
-> + * compression context and writes the compressed data into the fd associated with the @handle.
-> + * The data is compressed on chunks with given @chunk_size size.
-> + * The compressed data is written in the format:
-> + *  - 4 bytes, chunks count
-> + *  - for each chunk:
-> + *    - 4 bytes, size of compressed data in this chunk
-> + *    - 4 bytes, uncompressed size of the data in this chunk
-> + *    - data, bytes of <size of compressed data in this chunk>
-
-I guess this answers the question from the beginning about the use of
-int in the structure.
-
-> + *
-> + * On success 0 is returned, @read_size and @write_size are updated with the size of
-> + * read and written data.
-> + */
-> +int tracecmd_compress_copy_from(struct tracecmd_compression *handle, int fd, int chunk_size,
-> +				unsigned long long *read_size, unsigned long long *write_size)
-> +{
-> +	unsigned int rchunk = 0;
-> +	unsigned int chunks = 0;
-> +	unsigned int wsize = 0;
-> +	unsigned int rsize = 0;
-> +	unsigned int rmax = 0;
-> +	unsigned int csize;
-> +	unsigned int size;
-> +	unsigned int all;
-> +	unsigned int r;
-> +	off64_t offset;
-> +	char *buf_from;
-> +	char *buf_to;
-> +	int endian4;
-> +	int ret;
-> +
-> +	if (!handle || !handle->proto ||
-> +	    !handle->proto->compress_block || !handle->proto->compress_size)
-> +		return 0;
-
-space
-
-> +	if (read_size)
-> +		rmax = *read_size;
-
-space
-
-> +	csize = handle->proto->compress_size(chunk_size);
-
-space
-
-> +	buf_from = malloc(chunk_size);
-> +	if (!buf_from)
-> +		return -1;
-
-space
-
-> +	buf_to = malloc(csize);
-> +	if (!buf_to)
-> +		return -1;
-
-space
-
-> +	/* save the initial offset and write 0 chunks */
-
-Why zero? The above comment is more like " /* set x to zero */ x = 0; "
-
-> +	offset = lseek64(handle->fd, 0, SEEK_CUR);
-> +	write_fd(handle->fd, &chunks, 4);
-> +
-> +	do {
-> +		all = 0;
-> +		if (rmax > 0 && (rmax - rsize) < chunk_size)
-> +			rchunk = (rmax - rsize);
-> +		else
-> +			rchunk = chunk_size;
-> +
-> +		do {
-> +			r = read(fd, buf_from + all, rchunk - all);
-> +			all += r;
-> +
-> +			if (r <= 0)
-> +				break;
-> +		} while (all != rchunk);
-> +
-> +
-> +		if (r < 0 || (rmax > 0 && rsize >= rmax))
-> +			break;
-> +		rsize += all;
-> +		size = csize;
-> +		if (all > 0) {
-> +			ret = handle->proto->compress_block(buf_from, all, buf_to, &size);
-> +			if (ret < 0) {
-> +				if (errno == EINTR)
-> +					continue;
-> +				break;
-> +			}
-> +			/* Write compressed data size */
-> +			endian4 = tep_read_number(handle->tep, &size, 4);
-> +			ret = write_fd(handle->fd, &endian4, 4);
-> +			if (ret != 4)
-> +				break;
-
-space
-
-> +			/* Write uncompressed data size */
-> +			endian4 = tep_read_number(handle->tep, &all, 4);
-> +			ret = write_fd(handle->fd, &endian4, 4);
-> +			if (ret != 4)
-> +				break;
-
-space
-
-> +			/* Write the compressed data */
-> +			ret = write_fd(handle->fd, buf_to, size);
-> +			if (ret != size)
-> +				break;
-
-space
-
-> +			/* data + compress header */
-> +			wsize += (size + 8);
-> +			chunks++;
-> +		}
-> +	} while (all > 0);
-
-space
-
-> +	free(buf_from);
-> +	free(buf_to);
-
-space
-
-> +	if (all)
-> +		return -1;
-
-space
-
-> +	if (lseek64(handle->fd, offset, SEEK_SET) == (off_t)-1)
-> +		return -1;
-
-space
-
-> +	endian4 = tep_read_number(handle->tep, &chunks, 4);
-> +	/* write chunks count*/
-> +	write_fd(handle->fd, &chunks, 4);
-
-space
-
-> +	lseek64(handle->fd, offset, SEEK_SET);
-> +	if (lseek64(handle->fd, 0, SEEK_END) == (off_t)-1)
-> +		return -1;
-
-Why the two lseek64() back to back? The second one overrides the first
-one.
-
-space
-
-> +	if (read_size)
-> +		*read_size = rsize;
-> +	if (write_size)
-> +		*write_size = wsize;
-> +	return 0;
-> +}
-> +
-> +/**
-> + * tracecmd_load_chunks_info - Read compression chunks information from the file
-> + * @handle: compression handle
-> + * @chunks_info: return, array with compression chunks information
-> + *
-> + * This function reads information of all compression chunks in the current compression block from
-> + * the file and fills that information in a newly allocated array @chunks_info which is returned.
-> + *
-> + * On success count of compression chunks is returned. Array of that count is allocated and
-> + * returned in @chunks_info. Each entry describes one compression chunk. On error -1 is returned.
-> + * In case of success, @chunks_info must be freed by free().
-> + */
-> +int tracecmd_load_chunks_info(struct tracecmd_compression *handle,
-> +			      struct tracecmd_compress_chunk **chunks_info)
-> +{
-> +	struct tracecmd_compress_chunk *chunks = NULL;
-> +	unsigned long long size = 0;
-> +	unsigned int count = 0;
-> +	off64_t offset;
-> +	int ret = -1;
-> +	char buf[4];
-> +	int i;
-> +
-> +	if (!handle)
-> +		return -1;
-> +
-> +	offset = lseek64(handle->fd, 0, SEEK_CUR);
-> +	if (offset == (off64_t)-1)
-> +		return -1;
-> +
-> +	if (read(handle->fd, buf, 4) != 4)
-> +		return -1;
-> +	count = tep_read_number(handle->tep, buf, 4);
-> +	if (!count) {
-> +		ret = 0;
-> +		goto out;
-> +	}
-
-space
-
-> +	chunks = calloc(count, sizeof(struct tracecmd_compress_chunk));
-> +	if (!chunks)
-> +		goto out;
-
-space
-
-> +	for (i = 0; i < count; i++) {
-> +		chunks[i].zoffset = lseek64(handle->fd, 0, SEEK_CUR);
-> +		if (chunks[i].zoffset == (off_t)-1)
-> +			goto out;
-> +		if (read(handle->fd, buf, 4) != 4)
-> +			goto out;
-> +		chunks[i].zsize = tep_read_number(handle->tep, buf, 4);
-> +		chunks[i].offset = size;
-> +		if (read(handle->fd, buf, 4) != 4)
-> +			goto out;
-> +		chunks[i].size = tep_read_number(handle->tep, buf, 4);
-> +		size += chunks[i].size;
-> +		if (lseek64(handle->fd, chunks[i].zsize, SEEK_CUR) == (off64_t)-1)
-> +			goto out;
-> +	}
-> +
-> +	ret = count;
-> +out:
-> +	if (lseek64(handle->fd, offset, SEEK_SET) == (off64_t)-1)
-> +		ret = -1;
-> +
-> +	if (ret > 0 && chunks_info)
-> +		*chunks_info = chunks;
-> +	else
-> +		free(chunks);
-> +
-> +	return ret;
-> +}
-> +
-> +/**
-> + * tracecmd_uncompress_chunk - Uncompress given compression chunk.
-> + * @handle: compression handle
-> + * @chunk: chunk, that will be uncompressed in @data
-> + * @data: Preallocated memory for uncompressed data. Must have enough space to hold
-> + * the uncompressed data
-> + *
-> + * This function uncompresses the chunk described by @chunk and stores the uncompressed data in
-> + * the preallocated memory @data.
-> + *
-> + * On success 0 is returned and the uncompressed data is stored in @data. On error -1 is returned.
-> + */
-> +int tracecmd_uncompress_chunk(struct tracecmd_compression *handle,
-> +			      struct tracecmd_compress_chunk *chunk, char *data)
-> +{
-> +	char *bytes_in = NULL;
-> +	unsigned int size;
-> +	int ret = -1;
-> +
-> +	if (!handle || !handle->proto || !handle->proto->uncompress_block || !chunk || !data)
-> +		return -1;
-> +
-> +	if (lseek64(handle->fd, chunk->zoffset + 8, SEEK_SET) == (off_t)-1)
-> +		return -1;
-> +	bytes_in = malloc(chunk->zsize);
-> +	if (!bytes_in)
-> +		return -1;
-> +	if (read_fd(handle->fd, bytes_in, chunk->zsize) < 0)
-> +		goto out;
-> +	size = chunk->size;
-> +	if (handle->proto->uncompress_block(bytes_in, chunk->zsize, data, &size))
-> +		goto out;
-> +	ret = 0;
-> +out:
-> +	free(bytes_in);
-> +	return ret;
-> +}
-> +
-> +/**
-> + * tracecmd_uncompress_copy_to - Uncompress data and copy to a file
-> + * @handle: compression handle
-> + * @fd: file descriptor to uncompressed data to copy into
-> + * @read_size: return, size of the compressed data read from @handle
-> + * @write_size: return, size of the uncompressed data written into @fd
-> + *
-> + * This function reads compressed data from the fd, associated with @handle, uncompresses it
-> + * using the @handle compression context and writes the uncompressed data into the fd.
-> + * The compressed data must be in the format:
-> + *  - 4 bytes, chunks count
-> + *  - for each chunk:
-> + *    - 4 bytes, size of compressed data in this chunk
-> + *    - 4 bytes, uncompressed size of the data in this chunk
-> + *    - data, bytes of <size of compressed data in this chunk>
-> + *
-> + * On success 0 is returned, @read_size and @write_size are updated with the size of
-> + * read and written data.
-> + */
-> +int tracecmd_uncompress_copy_to(struct tracecmd_compression *handle, int fd,
-> +				unsigned long long *read_size, unsigned long long *write_size)
-> +{
-> +	unsigned int s_uncompressed;
-> +	unsigned int s_compressed;
-> +	unsigned int rsize = 0;
-> +	unsigned int wsize = 0;
-> +	char *bytes_out = NULL;
-> +	char *bytes_in = NULL;
-> +	int size_out = 0;
-> +	int size_in = 0;
-> +	int chunks;
-> +	char buf[4];
-> +	char *tmp;
-> +	int ret;
-> +
-> +	if (!handle || !handle->proto || !handle->proto->uncompress_block)
-> +		return -1;
-> +
-> +	if (read(handle->fd, buf, 4) != 4)
-> +		return -1;
-> +	chunks = tep_read_number(handle->tep, buf, 4);
-> +	rsize += 4;
-
-space
-
-> +	while (chunks) {
-> +		if (read(handle->fd, buf, 4) != 4)
-> +			break;
-> +		s_compressed = tep_read_number(handle->tep, buf, 4);
-> +		rsize += 4;
-> +		if (read(handle->fd, buf, 4) != 4)
-> +			break;
-> +		s_uncompressed = tep_read_number(handle->tep, buf, 4);
-> +		rsize += 4;
-> +		if (!bytes_in || size_in < s_compressed) {
-> +			tmp = realloc(bytes_in, s_compressed);
-> +			if (!tmp)
-> +				break;
-> +			bytes_in = tmp;
-> +			size_in = s_compressed;
-> +		}
-> +
-> +		if (!bytes_out || size_out < s_uncompressed) {
-> +			tmp = realloc(bytes_out, s_uncompressed);
-> +			if (!tmp)
-> +				break;
-> +			bytes_out = tmp;
-> +			size_out = s_uncompressed;
-> +		}
-> +
-> +		if (read_fd(handle->fd, bytes_in, s_compressed) < 0)
-> +			break;
-> +		rsize += s_compressed;
-> +		ret = handle->proto->uncompress_block(bytes_in, s_compressed,
-> +						      bytes_out, &s_uncompressed);
-> +		if (ret)
-> +			break;
-> +		write_fd(fd, bytes_out, s_uncompressed);
-> +		wsize += s_uncompressed;
-> +		chunks--;
-> +	}
-> +	free(bytes_in);
-> +	free(bytes_out);
-> +	if (chunks)
-> +		return -1;
-> +	if (read_size)
-> +		*read_size = rsize;
-> +	if (write_size)
-> +		*write_size = wsize;
-> +	return 0;
-> +}
-
--- Steve
-
-> diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-> index 21f1b065..06071f6c 100644
-> --- a/lib/trace-cmd/trace-util.c
-> +++ b/lib/trace-cmd/trace-util.c
-> @@ -635,6 +635,16 @@ bool tracecmd_is_version_supported(unsigned int version)
->  	return false;
->  }
->  
-> +static void __attribute__ ((constructor)) tracecmd_lib_init(void)
-> +{
-> +	tracecmd_compress_init();
-> +}
-> +
-> +static void __attribute__((destructor)) tracecmd_lib_free(void)
-> +{
-> +	tracecmd_compress_free();
-> +}
-> +
->  __hidden bool check_file_state(unsigned long file_version, int current_state, int new_state)
->  {
->  	switch (new_state) {
-
+On Mon, Jan 24, 2022 at 12:48 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Wed, 19 Jan 2022 10:26:56 +0200
+> "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+> > index 1efafba1..f8f0ba15 100644
+> > --- a/lib/trace-cmd/include/private/trace-cmd-private.h
+> > +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+> > @@ -35,6 +35,7 @@ int *tracecmd_add_id(int *list, int id, int len);
+> >  #define FILE_VERSION_MAX             7
+> >
+> >  #define FILE_VERSION_SECTIONS                7
+> > +#define FILE_VERSION_COMPRESSION     7
+> >
+> >  enum {
+> >       RINGBUF_TYPE_PADDING            = 29,
+> > @@ -160,6 +161,7 @@ enum {
+> >       TRACECMD_FL_IN_USECS            = (1 << 2),
+> >       TRACECMD_FL_RAW_TS              = (1 << 3),
+> >       TRACECMD_FL_SECTIONED           = (1 << 4),
+> > +     TRACECMD_FL_COMPRESSION         = (1 << 5),
+> >  };
+> >
+> >  struct tracecmd_ftrace {
+> > @@ -492,6 +494,45 @@ void tracecmd_tsync_free(struct tracecmd_time_sync *tsync);
+> >  int tracecmd_write_guest_time_shift(struct tracecmd_output *handle,
+> >                                   struct tracecmd_time_sync *tsync);
+> >
+> > +/* --- Compression --- */
+> > +struct tracecmd_compress_chunk {
+> > +     unsigned int            size;
+>
+> Can this handle sections that are more than 4G in size?
+>
+> That is definitely something we need to be able to handle. Or if a
+> trace-cmd data file has a section greater than 4G, it is broken up into
+> smaller chunks for compression?
+
+Yes, large sections are compressed and uncompressed in chunks. That
+limits the size of one chunk, not the section size. In the proposed
+implementation, one chunk of compressed trace data is 10 trace pages.
+
+>
+> We may have discussed this earlier, but I don't remember.
+>
+>
+> > +     unsigned int            zsize;
+> > +     off64_t                 zoffset;
+> > +     off64_t                 offset;
+> > +};
+>
+> > +
+> > +static int compress_read(struct tracecmd_compression *handle, char *dst, int len)
+> > +{
+> > +     int s;
+> > +
+> > +     if (handle->pointer + len > handle->capacity)
+> > +             s = handle->capacity - handle->pointer;
+> > +     else
+> > +             s = len;
+> > +     memcpy(dst, handle->buffer + handle->pointer, s);
+> > +
+> > +     return s;
+> > +}
+>
+> Nit, but you could do the above without the extra 's'.
+>
+> {
+>         if (handle->pointer + len > handle->capacity)
+>                 len = handle->capacity - handle->pointer;
+>
+>         memcpy(dst, handle->buffer + handle->pointer, len);
+>
+>         return len;
+> }
+>
+> > +
+> > +/**
+> > + * tracecmd_compress_pread - pread() on compression buffer
+> > + * @handle: compression handle
+> > + * @dst: return, store the read data
+> > + * @len: length of data to be read
+> > + * @offset: offset in the buffer of data to be read
+> > + *
+> > + * Read a @len of data from the compression buffer at given @offset,
+> > + * without updating the buffer pointer.
+> > + *
+> > + * On success returns the number of bytes read, or -1 on failure.
+> > + */
+> > +int tracecmd_compress_pread(struct tracecmd_compression *handle, char *dst, int len, off_t offset)
+> > +{
+> > +     int ret;
+> > +
+> > +     if (!handle || !handle->buffer || offset > handle->capacity)
+> > +             return -1;
+> > +
+> > +     ret = tracecmd_compress_lseek(handle, offset, SEEK_SET);
+> > +     if (ret < 0)
+> > +             return ret;
+> > +     return compress_read(handle, dst, len);
+> > +}
+> > +
+> > +/**
+> > + * tracecmd_compress_read - read() from compression buffer
+> > + * @handle: compression handle
+> > + * @dst: return, store the read data
+> > + * @len: length of data to be read
+> > + *
+> > + * Read a @len of data from the compression buffer
+> > + *
+> > + * On success returns the number of bytes read, or -1 on failure.
+> > + */
+> > +int tracecmd_compress_read(struct tracecmd_compression *handle, char *dst, int len)
+> > +{
+> > +     int ret;
+> > +
+> > +     if (!handle || !handle->buffer)
+> > +             return -1;
+> > +
+> > +     ret = compress_read(handle, dst, len);
+> > +     if (ret > 0)
+> > +             handle->pointer += ret;
+> > +
+> > +     return ret;
+> > +}
+> > +
+> > +/**
+> > + * tracecmd_compress_reset - Reset the compression buffer
+> > + * @handle: compression handle
+> > + *
+> > + * Reset the compression buffer, any data currently in the buffer will be destroyed.
+> > + *
+> > + */
+> > +void tracecmd_compress_reset(struct tracecmd_compression *handle)
+> > +{
+> > +     if (!handle)
+> > +             return;
+> > +
+> > +     free(handle->buffer);
+> > +     handle->buffer = NULL;
+> > +     handle->pointer = 0;
+> > +     handle->capacity = 0;
+> > +}
+> > +
+> > +/**
+> > + * tracecmd_uncompress_block - uncompress a memory block
+> > + * @handle: compression handle
+> > + *
+> > + * Read compressed memory block from the file and uncompress it into internal buffer.
+> > + * The tracecmd_compress_read() can be used to read the uncompressed data from the buffer
+>
+> BTW, even though we allow 100 character width, it's best to keep
+> comments under 80, when possible.
+>
+> Also, I found the naming of tracecmd_compress_read/write() confusing as
+> it reads and writes to the buffer and not the file. It may not have
+> been so bad if we didn't have these functions where we have
+> compress_block and uncompress_block that reads and writes to the file.
+>
+> Prehaps s/tracecmd_compress_read/tracecmd_compress_retrieve/
+>         s/tracecmd_compress_write/tracecmd_compress_insert/
+>
+> ?
+>
+
+I'm OK to rename them, though the current names sound logical to me.
+In the trace-cmd code, I just replaced read() with
+tracecmd_compress_read(), that's why decided to choose that name.
+
+>
+> > + *
+> > + * Returns 0 on success, or -1 in case of an error.
+> > + */
+> > +int tracecmd_uncompress_block(struct tracecmd_compression *handle)
+> > +{
+> > +     unsigned int s_uncompressed;
+> > +     unsigned int s_compressed;
+> > +     char *bytes = NULL;
+> > +     char buf[4];
+> > +     int size;
+> > +     int ret;
+> > +
+> > +     if (!handle || !handle->proto || !handle->proto->uncompress_block)
+> > +             return -1;
+> > +     tracecmd_compress_reset(handle);
+> > +
+> > +     if (read(handle->fd, buf, 4) != 4)
+> > +             return -1;
+>
+> space
+>
+> > +     s_compressed = tep_read_number(handle->tep, buf, 4);
+> > +     if (read(handle->fd, buf, 4) != 4)
+> > +             return -1;
+>
+> space
+>
+> > +     s_uncompressed = tep_read_number(handle->tep, buf, 4);
+> > +
+> > +     size = s_uncompressed > s_compressed ? s_uncompressed : s_compressed;
+>
+> space.
+>
+> OK, so compressed could be larger than uncompressed, so we need to pick
+> a size that is the greater of the two.
+>
+> > +     handle->buffer = malloc(size);
+> > +     if (!handle->buffer)
+> > +             return -1;
+>
+> space
+>
+> > +     bytes = malloc(s_compressed);
+> > +     if (!bytes)
+> > +             goto error;
+> > +
+> > +     if (read_fd(handle->fd, bytes, s_compressed) < 0)
+> > +             goto error;
+>
+> space.
+>
+> > +     s_uncompressed = size;
+> > +     ret = handle->proto->uncompress_block(bytes, s_compressed,
+> > +                                           handle->buffer, &s_uncompressed);
+> > +     if (ret)
+> > +             goto error;
+>
+> space.
+>
+> > +     free(bytes);
+> > +     handle->pointer = 0;
+> > +     handle->capacity = s_uncompressed;
+>
+> If size is the greater of the two (compressed could be larger) and
+> capacity is the allocated buffer, shouldn't we make it equal to size
+> and not uncompressed?
+
+The name "capacity" in reading logic is a bit confusing, as it
+actually is used to track the size of uncompressed data. The buffer
+may be larger, but if the uncompressed is smaller - the rest is
+garbage and must not be read.
+
+>
+>
+> > +     return 0;
+> > +error:
+> > +     tracecmd_compress_reset(handle);
+> > +     free(bytes);
+> > +     return -1;
+> > +}
+> > +
+> > +/**
+> > + * tracecmd_compress_block - compress a memory block
+> > + * @handle: compression handle
+> > + *
+> > + * Compress the content of the internal memory buffer and write the compressed data in the file
+> > + * The tracecmd_compress_write() can be used to write data into the internal memory buffer, before
+> > + * calling this API.
+> > + *
+> > + * Returns 0 on success, or -1 in case of an error.
+> > + */
+> > +int tracecmd_compress_block(struct tracecmd_compression *handle)
+> > +{
+> > +     unsigned int size;
+> > +     char *buf;
+> > +     int endian4;
+> > +     int ret;
+> > +
+> > +     if (!handle || !handle->proto ||
+> > +         !handle->proto->compress_size || !handle->proto->compress_block)
+> > +             return -1;
+> > +
+> > +     size = handle->proto->compress_size(handle->pointer);
+>
+> space
+>
+> > +     buf = malloc(size);
+> > +     if (!buf)
+> > +             return -1;
+>
+> space
+>
+> > +     ret = handle->proto->compress_block(handle->buffer, handle->pointer, buf, &size);
+> > +     if (ret < 0)
+> > +             goto out;
+>
+> Do we want to free the compress handle on error?
+
+I think returning an error is enough, the caller should decide if to
+free the compress handle in that case. The handle is not allocated
+here.
+
+>
+> space
+>
+> > +     /* Write compressed data size */
+> > +     endian4 = tep_read_number(handle->tep, &size, 4);
+> > +     ret = do_write(handle, &endian4, 4);
+> > +     if (ret != 4)
+> > +             goto out;
+>
+> space
+>
+> > +     /* Write uncompressed data size */
+> > +     endian4 = tep_read_number(handle->tep, &handle->pointer, 4);
+> > +     ret = do_write(handle, &endian4, 4);
+> > +     if (ret != 4)
+> > +             goto out;
+>
+> space
+>
+> > +     /* Write compressed data */
+> > +     ret = do_write(handle, buf, size);
+> > +     ret = ((ret == size) ? 0 : -1);
+> > +out:
+> > +     tracecmd_compress_reset(handle);
+> > +     free(buf);
+> > +     return ret;
+> > +}
+> > +
+> > +/**
+> > + * tracecmd_compress_write - write() to compression buffer
+> > + * @handle: compression handle
+> > + * @data: data to be written
+> > + * @size: size of @data
+> > + *
+> > + * Write @data of @size in the compression buffer
+> > + *
+> > + * Returns 0 on success, or -1 on failure.
+> > + */
+> > +int tracecmd_compress_write(struct tracecmd_compression *handle,
+> > +                         const void *data, unsigned long long size)
+> > +{
+> > +     if (!handle)
+> > +             return -1;
+> > +
+> > +     if (buffer_extend(handle, (handle->pointer + size)))
+>
+> The parenthesis around pointer + size is not needed.
+>
+> > +             return -1;
+> > +
+> > +     memcpy(&handle->buffer[handle->pointer], data, size);
+> > +     handle->pointer += size;
+> > +     return 0;
+> > +}
+> > +
+> > +/**
+> > + * tracecmd_compress_init - initialize the library with available compression algorithms
+> > + */
+> > +void tracecmd_compress_init(void)
+> > +{
+> > +     struct timeval time;
+> > +
+> > +     gettimeofday(&time, NULL);
+> > +     srand((time.tv_sec * 1000) + (time.tv_usec / 1000));
+> > +
+> > +}
+> > +
+> > +static struct compress_proto *compress_proto_select(void)
+> > +{
+> > +     struct compress_proto *proto = proto_list;
+> > +     struct compress_proto *selected = NULL;
+> > +
+> > +     while (proto) {
+> > +             if (!selected || selected->weight > proto->weight)
+> > +                     selected = proto;
+> > +             proto = proto->next;
+> > +     }
+> > +
+> > +     return selected;
+> > +}
+> > +
+> > +/**
+> > + * tracecmd_compress_alloc - Allocate a new compression context
+> > + * @name: name of the compression algorithm, if NULL - auto select the best available algorithm
+> > + * @version: version of the compression algorithm, can be NULL
+> > + * @fd: file descriptor for reading / writing data
+> > + * @tep: tep handle, used to encode the data
+> > + * @msg_handle: message handle, use it for reading / writing data instead of @fd
+> > + *
+> > + * Returns NULL on failure or pointer to allocated compression context.
+> > + * The returned context must be freed by tracecmd_compress_destroy()
+> > + */
+> > +struct tracecmd_compression *tracecmd_compress_alloc(const char *name, const char *version,
+> > +                                                  int fd, struct tep_handle *tep,
+> > +                                                  struct tracecmd_msg_handle *msg_handle)
+> > +{
+> > +     struct tracecmd_compression *new;
+> > +     struct compress_proto *proto;
+> > +
+> > +     if (name) {
+> > +             proto = proto_list;
+> > +             while (proto) {
+> > +                     if (proto->is_supported && proto->is_supported(name, version))
+> > +                             break;
+> > +                     proto = proto->next;
+> > +             }
+> > +     } else {
+> > +             proto = compress_proto_select();
+> > +     }
+> > +     if (!proto)
+> > +             return NULL;
+> > +
+> > +     new = calloc(1, sizeof(*new));
+> > +     if (!new)
+> > +             return NULL;
+> > +     new->fd = fd;
+> > +     new->tep = tep;
+> > +     new->msg_handle = msg_handle;
+> > +     new->proto = proto;
+> > +     return new;
+> > +}
+> > +
+> > +/**
+> > + * tracecmd_compress_destroy - Free a compression context
+> > + * @handle: handle to the compression context that will be freed
+> > + */
+> > +void tracecmd_compress_destroy(struct tracecmd_compression *handle)
+> > +{
+> > +     tracecmd_compress_reset(handle);
+> > +     free(handle);
+> > +}
+> > +
+> > +/**
+> > + * tracecmd_compress_is_supported - check if compression algorithm with given name and
+> > + *                               version is supported
+>
+> Remember, the above is suppose to be on one line (make it shorter, and
+> explain more in the body.
+>
+> > + * @name: name of the compression algorithm.
+> > + * @version: version of the compression algorithm.
+> > + *
+>
+> Can explain more here.
+>
+> > + * Returns true if the algorithm with given name and version is supported or false if it is not.
+>
+> And keep it under 80 chars.
+>
+> > + */
+> > +bool tracecmd_compress_is_supported(const char *name, const char *version)
+> > +{
+> > +     struct compress_proto *proto = proto_list;
+> > +
+> > +     if (!name)
+> > +             return NULL;
+> > +
+> > +     while (proto) {
+> > +             if (proto->is_supported && proto->is_supported(name, version))
+> > +                     return true;
+> > +             proto = proto->next;
+> > +     }
+> > +     return false;
+> > +}
+> > +
+> > +/**
+> > + * tracecmd_compress_proto_get_name - get name and version of compression algorithm
+> > + * @compress: compression handle.
+> > + * @name: return, name of the compression algorithm.
+> > + * @version: return, version of the compression algorithm.
+> > + *
+> > + * Returns 0 on success, or -1 in case of an error. If 0 is returned, the name and version of the
+> > + * algorithm are stored in @name and @version. The returned strings must *not* be freed.
+> > + */
+> > +int tracecmd_compress_proto_get_name(struct tracecmd_compression *compress,
+> > +                                  const char **name, const char **version)
+> > +{
+> > +     if (!compress || !compress->proto)
+> > +             return -1;
+> > +     if (name)
+> > +             *name = compress->proto->proto_name;
+> > +     if (version)
+> > +             *version = compress->proto->proto_version;
+> > +     return 0;
+> > +}
+> > +
+> > +/**
+> > + * tracecmd_compress_proto_register - register a new compression algorithm
+> > + * @name: name of the compression algorithm.
+> > + * @version: version of the compression algorithm.
+> > + * @weight: weight of the compression algorithm, lower is better.
+> > + * @compress: compression hook, called to compress a memory block.
+> > + * @uncompress: uncompression hook, called to uncompress a memory block.
+> > + * @compress_size: hook, called to get the required minimum size of the buffer for compression
+> > + *             given number of bytes.
+> > + * @is_supported: check hook, called to check if compression with given name and version is
+> > + *             supported by this plugin.
+> > + *
+> > + * Returns 0 on success, or -1 in case of an error. If algorithm with given name and version is
+> > + * already registered, -1 is returned.
+> > + */
+> > +int tracecmd_compress_proto_register(const char *name, const char *version, int weight,
+> > +                                  int (*compress)(const char *in, unsigned int in_bytes,
+> > +                                                  char *out, unsigned int *out_bytes),
+> > +                                  int (*uncompress)(const char *in, unsigned int in_bytes,
+> > +                                                    char *out, unsigned int *out_bytes),
+> > +                                  unsigned int (*compress_size)(unsigned int bytes),
+> > +                                  bool (*is_supported)(const char *name, const char *version))
+> > +{
+> > +     struct compress_proto *new;
+> > +
+> > +     if (!name || !compress || !uncompress)
+> > +             return -1;
+>
+> space
+>
+> > +     if (tracecmd_compress_is_supported(name, version))
+> > +             return -1;
+> > +
+> > +     new = calloc(1, sizeof(*new));
+> > +     if (!new)
+> > +             return -1;
+> > +
+> > +     new->proto_name = strdup(name);
+> > +     if (!new->proto_name)
+> > +             goto error;
+>
+> space
+>
+> > +     new->proto_version = strdup(version);
+> > +     if (!new->proto_version)
+> > +             goto error;
+>
+> space
+>
+> > +     new->compress_block = compress;
+> > +     new->uncompress_block = uncompress;
+> > +     new->compress_size = compress_size;
+> > +     new->is_supported = is_supported;
+> > +     new->weight = weight;
+> > +     new->next = proto_list;
+> > +     proto_list = new;
+> > +     return 0;
+> > +
+> > +error:
+> > +     free(new->proto_name);
+> > +     free(new->proto_version);
+> > +     free(new);
+> > +     return -1;
+> > +}
+> > +
+> > +/**
+> > + * tracecmd_compress_free - free the library resources, related to available compression algorithms
+> > + *
+> > + */
+> > +void tracecmd_compress_free(void)
+> > +{
+> > +     struct compress_proto *proto = proto_list;
+> > +     struct compress_proto *del;
+> > +
+> > +     while (proto) {
+> > +             del = proto;
+> > +             proto = proto->next;
+> > +             free(del->proto_name);
+> > +             free(del->proto_version);
+> > +             free(del);
+> > +     }
+> > +     proto_list = NULL;
+> > +}
+> > +
+> > +/**
+> > + * tracecmd_compress_protos_get - get a list of all supported compression algorithms and versions
+> > + * @names: return, array with names of all supported compression algorithms
+> > + * @versions: return, array with versions of all supported compression algorithms
+> > + *
+> > + * On success, the size of @names and @versions arrays is returned. Those arrays are allocated by
+> > + * the API and must be freed with free() by the caller. Both arrays are with same size, each name
+> > + * from @names corresponds to a version from @versions.
+> > + * On error -1 is returned and @names and @versions arrays are not allocated.
+> > + */
+> > +int tracecmd_compress_protos_get(char ***names, char ***versions)
+> > +{
+> > +     struct compress_proto *proto = proto_list;
+> > +     char **n = NULL;
+> > +     char **v = NULL;
+> > +     int c, i;
+> > +
+> > +     for (c = 0; proto; proto = proto->next)
+> > +             c++;
+> > +
+> > +     if (c < 1)
+> > +             return c;
+> > +
+> > +     n = calloc(c, sizeof(char *));
+>
+> For safety, perhaps allocate c + 1.
+>
+> > +     if (!n)
+> > +             goto error;
+> > +     v = calloc(c, sizeof(char *));
+> > +     if (!v)
+> > +             goto error;
+> > +
+> > +     proto = proto_list;
+> > +     for (i = 0; i < c && proto; i++) {
+>
+> Is the proto check just paranoia? ;-)
+>
+> I'm fine with that, as I'm usually very paranoid.
+>
+> > +             n[i] = proto->proto_name;
+> > +             v[i] = proto->proto_version;
+> > +             proto = proto->next;
+> > +     }
+>
+> Then add n[i] = NULL;
+>         v[i] = NULL;
+>
+> > +
+> > +     *names = n;
+> > +     *versions = v;
+> > +     return c;
+> > +
+> > +error:
+> > +     free(n);
+> > +     free(v);
+> > +     return -1;
+> > +}
+> > +
+> > +/**
+> > + * tracecmd_compress_copy_from - Copy and compress data from a file
+> > + * @handle: compression handle
+> > + * @fd: file descriptor to uncompressed data to copy from
+> > + * @chunk_size: size of one compression chunk
+> > + * @read_size: in - max bytes to read from @fd, 0 to read till the EOF
+> > + *          out - size of the uncompressed data read from @fd
+>
+> Is this an array of two?
+
+No, it is a pointer to single long long, used as input and output parameter.
+
+>
+> > + * @write_size: return, size of the compressed data written into @handle
+> > + *
+> > + * This function reads uncompressed data from given @fd, compresses the data using the @handle
+> > + * compression context and writes the compressed data into the fd associated with the @handle.
+> > + * The data is compressed on chunks with given @chunk_size size.
+> > + * The compressed data is written in the format:
+> > + *  - 4 bytes, chunks count
+> > + *  - for each chunk:
+> > + *    - 4 bytes, size of compressed data in this chunk
+> > + *    - 4 bytes, uncompressed size of the data in this chunk
+> > + *    - data, bytes of <size of compressed data in this chunk>
+>
+> I guess this answers the question from the beginning about the use of
+> int in the structure.
+>
+> > + *
+> > + * On success 0 is returned, @read_size and @write_size are updated with the size of
+> > + * read and written data.
+> > + */
+> > +int tracecmd_compress_copy_from(struct tracecmd_compression *handle, int fd, int chunk_size,
+> > +                             unsigned long long *read_size, unsigned long long *write_size)
+> > +{
+> > +     unsigned int rchunk = 0;
+> > +     unsigned int chunks = 0;
+> > +     unsigned int wsize = 0;
+> > +     unsigned int rsize = 0;
+> > +     unsigned int rmax = 0;
+> > +     unsigned int csize;
+> > +     unsigned int size;
+> > +     unsigned int all;
+> > +     unsigned int r;
+> > +     off64_t offset;
+> > +     char *buf_from;
+> > +     char *buf_to;
+> > +     int endian4;
+> > +     int ret;
+> > +
+> > +     if (!handle || !handle->proto ||
+> > +         !handle->proto->compress_block || !handle->proto->compress_size)
+> > +             return 0;
+>
+> space
+>
+> > +     if (read_size)
+> > +             rmax = *read_size;
+>
+> space
+>
+> > +     csize = handle->proto->compress_size(chunk_size);
+>
+> space
+>
+> > +     buf_from = malloc(chunk_size);
+> > +     if (!buf_from)
+> > +             return -1;
+>
+> space
+>
+> > +     buf_to = malloc(csize);
+> > +     if (!buf_to)
+> > +             return -1;
+>
+> space
+>
+> > +     /* save the initial offset and write 0 chunks */
+>
+> Why zero? The above comment is more like " /* set x to zero */ x = 0; "
+
+Maybe "write 0 as initial chunk count" is a better comment. The error
+cases below rely on that "0". Count of 0 should be written in the
+file, in case of some error, or in case there is no data to compress.
+
+>
+> > +     offset = lseek64(handle->fd, 0, SEEK_CUR);
+> > +     write_fd(handle->fd, &chunks, 4);
+> > +
+> > +     do {
+> > +             all = 0;
+> > +             if (rmax > 0 && (rmax - rsize) < chunk_size)
+> > +                     rchunk = (rmax - rsize);
+> > +             else
+> > +                     rchunk = chunk_size;
+> > +
+> > +             do {
+> > +                     r = read(fd, buf_from + all, rchunk - all);
+> > +                     all += r;
+> > +
+> > +                     if (r <= 0)
+> > +                             break;
+> > +             } while (all != rchunk);
+> > +
+> > +
+> > +             if (r < 0 || (rmax > 0 && rsize >= rmax))
+> > +                     break;
+> > +             rsize += all;
+> > +             size = csize;
+> > +             if (all > 0) {
+> > +                     ret = handle->proto->compress_block(buf_from, all, buf_to, &size);
+> > +                     if (ret < 0) {
+> > +                             if (errno == EINTR)
+> > +                                     continue;
+> > +                             break;
+> > +                     }
+> > +                     /* Write compressed data size */
+> > +                     endian4 = tep_read_number(handle->tep, &size, 4);
+> > +                     ret = write_fd(handle->fd, &endian4, 4);
+> > +                     if (ret != 4)
+> > +                             break;
+>
+> space
+>
+> > +                     /* Write uncompressed data size */
+> > +                     endian4 = tep_read_number(handle->tep, &all, 4);
+> > +                     ret = write_fd(handle->fd, &endian4, 4);
+> > +                     if (ret != 4)
+> > +                             break;
+>
+> space
+>
+> > +                     /* Write the compressed data */
+> > +                     ret = write_fd(handle->fd, buf_to, size);
+> > +                     if (ret != size)
+> > +                             break;
+>
+> space
+>
+> > +                     /* data + compress header */
+> > +                     wsize += (size + 8);
+> > +                     chunks++;
+> > +             }
+> > +     } while (all > 0);
+>
+> space
+>
+> > +     free(buf_from);
+> > +     free(buf_to);
+>
+> space
+>
+> > +     if (all)
+> > +             return -1;
+>
+> space
+>
+> > +     if (lseek64(handle->fd, offset, SEEK_SET) == (off_t)-1)
+> > +             return -1;
+>
+> space
+>
+> > +     endian4 = tep_read_number(handle->tep, &chunks, 4);
+> > +     /* write chunks count*/
+> > +     write_fd(handle->fd, &chunks, 4);
+>
+> space
+>
+> > +     lseek64(handle->fd, offset, SEEK_SET);
+> > +     if (lseek64(handle->fd, 0, SEEK_END) == (off_t)-1)
+> > +             return -1;
+>
+> Why the two lseek64() back to back? The second one overrides the first
+> one.
+
+looks like a leftover from a previous version of that implementation.
+
+>
+> space
+>
+> > +     if (read_size)
+> > +             *read_size = rsize;
+> > +     if (write_size)
+> > +             *write_size = wsize;
+> > +     return 0;
+> > +}
+> > +
+> > +/**
+> > + * tracecmd_load_chunks_info - Read compression chunks information from the file
+> > + * @handle: compression handle
+> > + * @chunks_info: return, array with compression chunks information
+> > + *
+> > + * This function reads information of all compression chunks in the current compression block from
+> > + * the file and fills that information in a newly allocated array @chunks_info which is returned.
+> > + *
+> > + * On success count of compression chunks is returned. Array of that count is allocated and
+> > + * returned in @chunks_info. Each entry describes one compression chunk. On error -1 is returned.
+> > + * In case of success, @chunks_info must be freed by free().
+> > + */
+> > +int tracecmd_load_chunks_info(struct tracecmd_compression *handle,
+> > +                           struct tracecmd_compress_chunk **chunks_info)
+> > +{
+> > +     struct tracecmd_compress_chunk *chunks = NULL;
+> > +     unsigned long long size = 0;
+> > +     unsigned int count = 0;
+> > +     off64_t offset;
+> > +     int ret = -1;
+> > +     char buf[4];
+> > +     int i;
+> > +
+> > +     if (!handle)
+> > +             return -1;
+> > +
+> > +     offset = lseek64(handle->fd, 0, SEEK_CUR);
+> > +     if (offset == (off64_t)-1)
+> > +             return -1;
+> > +
+> > +     if (read(handle->fd, buf, 4) != 4)
+> > +             return -1;
+> > +     count = tep_read_number(handle->tep, buf, 4);
+> > +     if (!count) {
+> > +             ret = 0;
+> > +             goto out;
+> > +     }
+>
+> space
+>
+> > +     chunks = calloc(count, sizeof(struct tracecmd_compress_chunk));
+> > +     if (!chunks)
+> > +             goto out;
+>
+> space
+>
+> > +     for (i = 0; i < count; i++) {
+> > +             chunks[i].zoffset = lseek64(handle->fd, 0, SEEK_CUR);
+> > +             if (chunks[i].zoffset == (off_t)-1)
+> > +                     goto out;
+> > +             if (read(handle->fd, buf, 4) != 4)
+> > +                     goto out;
+> > +             chunks[i].zsize = tep_read_number(handle->tep, buf, 4);
+> > +             chunks[i].offset = size;
+> > +             if (read(handle->fd, buf, 4) != 4)
+> > +                     goto out;
+> > +             chunks[i].size = tep_read_number(handle->tep, buf, 4);
+> > +             size += chunks[i].size;
+> > +             if (lseek64(handle->fd, chunks[i].zsize, SEEK_CUR) == (off64_t)-1)
+> > +                     goto out;
+> > +     }
+> > +
+> > +     ret = count;
+> > +out:
+> > +     if (lseek64(handle->fd, offset, SEEK_SET) == (off64_t)-1)
+> > +             ret = -1;
+> > +
+> > +     if (ret > 0 && chunks_info)
+> > +             *chunks_info = chunks;
+> > +     else
+> > +             free(chunks);
+> > +
+> > +     return ret;
+> > +}
+> > +
+> > +/**
+> > + * tracecmd_uncompress_chunk - Uncompress given compression chunk.
+> > + * @handle: compression handle
+> > + * @chunk: chunk, that will be uncompressed in @data
+> > + * @data: Preallocated memory for uncompressed data. Must have enough space to hold
+> > + * the uncompressed data
+> > + *
+> > + * This function uncompresses the chunk described by @chunk and stores the uncompressed data in
+> > + * the preallocated memory @data.
+> > + *
+> > + * On success 0 is returned and the uncompressed data is stored in @data. On error -1 is returned.
+> > + */
+> > +int tracecmd_uncompress_chunk(struct tracecmd_compression *handle,
+> > +                           struct tracecmd_compress_chunk *chunk, char *data)
+> > +{
+> > +     char *bytes_in = NULL;
+> > +     unsigned int size;
+> > +     int ret = -1;
+> > +
+> > +     if (!handle || !handle->proto || !handle->proto->uncompress_block || !chunk || !data)
+> > +             return -1;
+> > +
+> > +     if (lseek64(handle->fd, chunk->zoffset + 8, SEEK_SET) == (off_t)-1)
+> > +             return -1;
+> > +     bytes_in = malloc(chunk->zsize);
+> > +     if (!bytes_in)
+> > +             return -1;
+> > +     if (read_fd(handle->fd, bytes_in, chunk->zsize) < 0)
+> > +             goto out;
+> > +     size = chunk->size;
+> > +     if (handle->proto->uncompress_block(bytes_in, chunk->zsize, data, &size))
+> > +             goto out;
+> > +     ret = 0;
+> > +out:
+> > +     free(bytes_in);
+> > +     return ret;
+> > +}
+> > +
+> > +/**
+> > + * tracecmd_uncompress_copy_to - Uncompress data and copy to a file
+> > + * @handle: compression handle
+> > + * @fd: file descriptor to uncompressed data to copy into
+> > + * @read_size: return, size of the compressed data read from @handle
+> > + * @write_size: return, size of the uncompressed data written into @fd
+> > + *
+> > + * This function reads compressed data from the fd, associated with @handle, uncompresses it
+> > + * using the @handle compression context and writes the uncompressed data into the fd.
+> > + * The compressed data must be in the format:
+> > + *  - 4 bytes, chunks count
+> > + *  - for each chunk:
+> > + *    - 4 bytes, size of compressed data in this chunk
+> > + *    - 4 bytes, uncompressed size of the data in this chunk
+> > + *    - data, bytes of <size of compressed data in this chunk>
+> > + *
+> > + * On success 0 is returned, @read_size and @write_size are updated with the size of
+> > + * read and written data.
+> > + */
+> > +int tracecmd_uncompress_copy_to(struct tracecmd_compression *handle, int fd,
+> > +                             unsigned long long *read_size, unsigned long long *write_size)
+> > +{
+> > +     unsigned int s_uncompressed;
+> > +     unsigned int s_compressed;
+> > +     unsigned int rsize = 0;
+> > +     unsigned int wsize = 0;
+> > +     char *bytes_out = NULL;
+> > +     char *bytes_in = NULL;
+> > +     int size_out = 0;
+> > +     int size_in = 0;
+> > +     int chunks;
+> > +     char buf[4];
+> > +     char *tmp;
+> > +     int ret;
+> > +
+> > +     if (!handle || !handle->proto || !handle->proto->uncompress_block)
+> > +             return -1;
+> > +
+> > +     if (read(handle->fd, buf, 4) != 4)
+> > +             return -1;
+> > +     chunks = tep_read_number(handle->tep, buf, 4);
+> > +     rsize += 4;
+>
+> space
+>
+> > +     while (chunks) {
+> > +             if (read(handle->fd, buf, 4) != 4)
+> > +                     break;
+> > +             s_compressed = tep_read_number(handle->tep, buf, 4);
+> > +             rsize += 4;
+> > +             if (read(handle->fd, buf, 4) != 4)
+> > +                     break;
+> > +             s_uncompressed = tep_read_number(handle->tep, buf, 4);
+> > +             rsize += 4;
+> > +             if (!bytes_in || size_in < s_compressed) {
+> > +                     tmp = realloc(bytes_in, s_compressed);
+> > +                     if (!tmp)
+> > +                             break;
+> > +                     bytes_in = tmp;
+> > +                     size_in = s_compressed;
+> > +             }
+> > +
+> > +             if (!bytes_out || size_out < s_uncompressed) {
+> > +                     tmp = realloc(bytes_out, s_uncompressed);
+> > +                     if (!tmp)
+> > +                             break;
+> > +                     bytes_out = tmp;
+> > +                     size_out = s_uncompressed;
+> > +             }
+> > +
+> > +             if (read_fd(handle->fd, bytes_in, s_compressed) < 0)
+> > +                     break;
+> > +             rsize += s_compressed;
+> > +             ret = handle->proto->uncompress_block(bytes_in, s_compressed,
+> > +                                                   bytes_out, &s_uncompressed);
+> > +             if (ret)
+> > +                     break;
+> > +             write_fd(fd, bytes_out, s_uncompressed);
+> > +             wsize += s_uncompressed;
+> > +             chunks--;
+> > +     }
+> > +     free(bytes_in);
+> > +     free(bytes_out);
+> > +     if (chunks)
+> > +             return -1;
+> > +     if (read_size)
+> > +             *read_size = rsize;
+> > +     if (write_size)
+> > +             *write_size = wsize;
+> > +     return 0;
+> > +}
+>
+> -- Steve
+>
+> > diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
+> > index 21f1b065..06071f6c 100644
+> > --- a/lib/trace-cmd/trace-util.c
+> > +++ b/lib/trace-cmd/trace-util.c
+> > @@ -635,6 +635,16 @@ bool tracecmd_is_version_supported(unsigned int version)
+> >       return false;
+> >  }
+> >
+> > +static void __attribute__ ((constructor)) tracecmd_lib_init(void)
+> > +{
+> > +     tracecmd_compress_init();
+> > +}
+> > +
+> > +static void __attribute__((destructor)) tracecmd_lib_free(void)
+> > +{
+> > +     tracecmd_compress_free();
+> > +}
+> > +
+> >  __hidden bool check_file_state(unsigned long file_version, int current_state, int new_state)
+> >  {
+> >       switch (new_state) {
+>
+
+
+-- 
+Tzvetomir (Ceco) Stoyanov
+VMware Open Source Technology Center
