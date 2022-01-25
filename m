@@ -2,73 +2,82 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D38EC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Jan 2022 21:48:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CFEAC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 25 Jan 2022 08:37:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347194AbiAXVrw (ORCPT
+        id S1450542AbiAYIgy (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 24 Jan 2022 16:47:52 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:40962 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345332AbiAXVYk (ORCPT
+        Tue, 25 Jan 2022 03:36:54 -0500
+Received: from gateway24.websitewelcome.com ([192.185.50.84]:19496 "EHLO
+        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1450756AbiAYIdi (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 24 Jan 2022 16:24:40 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 82D91B815A3
-        for <linux-trace-devel@vger.kernel.org>; Mon, 24 Jan 2022 21:24:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3EE5C340E5;
-        Mon, 24 Jan 2022 21:24:36 +0000 (UTC)
-Date:   Mon, 24 Jan 2022 16:24:35 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH v7 01/20] trace-cmd library: Add support for compression
- algorithms
-Message-ID: <20220124162435.63e6a748@gandalf.local.home>
-In-Reply-To: <20220124150335.2516da99@gandalf.local.home>
-References: <20220119082715.245846-1-tz.stoyanov@gmail.com>
-        <20220119082715.245846-2-tz.stoyanov@gmail.com>
-        <20220123174851.52f0e2bb@rorschach.local.home>
-        <CAPpZLN6BpbaThK66MJaykk7gSPDq2qQHkbmunQeT0NyMNMGnAw@mail.gmail.com>
-        <20220124150335.2516da99@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 25 Jan 2022 03:33:38 -0500
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway24.websitewelcome.com (Postfix) with ESMTP id 770FF13F9C
+        for <linux-trace-devel@vger.kernel.org>; Tue, 25 Jan 2022 02:33:38 -0600 (CST)
+Received: from gator4132.hostgator.com ([192.185.4.144])
+        by cmsmtp with SMTP
+        id CHGkn8wp522u3CHGkniU5q; Tue, 25 Jan 2022 02:33:38 -0600
+X-Authority-Reason: nr=8
+Received: from host-79-47-126-144.retail.telecomitalia.it ([79.47.126.144]:33426 helo=[10.0.0.238])
+        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <bristot@kernel.org>)
+        id 1nCHGj-0017BZ-SE; Tue, 25 Jan 2022 02:33:38 -0600
+Message-ID: <1c2fe9ac-804e-2068-0800-2cee012b96d3@kernel.org>
+Date:   Tue, 25 Jan 2022 09:33:35 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH] docs: Hook the RTLA documents into the kernel docs build
+Content-Language: en-US
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+References: <877dau555q.fsf@meer.lwn.net>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <877dau555q.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - kernel.org
+X-BWhitelist: no
+X-Source-IP: 79.47.126.144
+X-Source-L: No
+X-Exim-ID: 1nCHGj-0017BZ-SE
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: host-79-47-126-144.retail.telecomitalia.it ([10.0.0.238]) [79.47.126.144]:33426
+X-Source-Auth: kernel@bristot.me
+X-Email-Count: 2
+X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
+X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 24 Jan 2022 15:03:35 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> > > > + * tracecmd_compress_copy_from - Copy and compress data from a file
-> > > > + * @handle: compression handle
-> > > > + * @fd: file descriptor to uncompressed data to copy from
-> > > > + * @chunk_size: size of one compression chunk
-> > > > + * @read_size: in - max bytes to read from @fd, 0 to read till the EOF
-> > > > + *          out - size of the uncompressed data read from @fd    
-> > >
-> > > Is this an array of two?    
-> > 
-> > No, it is a pointer to single long long, used as input and output parameter.  
+On 1/21/22 01:00, Jonathan Corbet wrote:
+> The RTLA documents were added to Documentation/ but never hooked into the
+> rest of the docs build, leading to a bunch of warnings like:
 > 
-> I'm confused by the comment then. What is does the above "in" and "out"
-> mean? 
+>   Documentation/tools/rtla/rtla-osnoise.rst: WARNING: document isn't included in any toctree
+> 
+> Add some basic glue to wire these documents into the build so that they are
+> available with the rest of the rendered docs.  No attempt has been made to
+> turn the RTLA docs into proper RST files rather than warmed-over man pages;
+> that is an exercise for the future.
+> 
+> Fixes: d40d48e1f1f2 ("rtla: Add Documentation")
+> Signed-off-by: Jonathan Corbet <corbet@lwn.net>
 
-OK, looking at the code I see what you meant, but it should be written more
-like:
+Acked-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 
- * @read_size: Pointer to max bytes to read from.
-              Updates the pointer with the size of compressed data read.
+Thanks, Jon!
 
-Then in the description explain it more.
-
- * @read_size should be the address of an unsigned long long value
- * containing the max size to read from, or containing zero to read till
- * EOF. On successful return, @read_size will contain the size of the
- * unpressed data that was read.
-
--- Steve
+-- Daniel
