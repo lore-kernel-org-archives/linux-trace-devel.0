@@ -2,139 +2,103 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD2D4C28CF5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DEC33C63682
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 26 Jan 2022 09:57:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239442AbiAZJ5m (ORCPT
+        id S239445AbiAZJ5l (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 26 Jan 2022 04:57:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232086AbiAZJ5l (ORCPT
-        <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 26 Jan 2022 04:57:41 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F47C06161C
-        for <linux-trace-devel@vger.kernel.org>; Wed, 26 Jan 2022 01:57:40 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id s13so37775298ejy.3
-        for <linux-trace-devel@vger.kernel.org>; Wed, 26 Jan 2022 01:57:40 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239442AbiAZJ5j (ORCPT
+        <rfc822;linux-trace-devel@vger.kernel.org>);
+        Wed, 26 Jan 2022 04:57:39 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E051C061744
+        for <linux-trace-devel@vger.kernel.org>; Wed, 26 Jan 2022 01:57:39 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id p15so37734125ejc.7
+        for <linux-trace-devel@vger.kernel.org>; Wed, 26 Jan 2022 01:57:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3snN9fCXIbqsYDCsAS2tERAWPra9RAUNVpdT4Gg8AAQ=;
-        b=BmQp2aKJPucoW1Gf3eP6Db56We/S0RBFtnGMKn/BdmWnywLO7AqOOoNX4yQNoVLnMa
-         jVRtHRV7jk7cFPJrIeD0aRFuPCmudKm26qyax+Bf1L6trH+oUbOpkCyfZdkrLUO/ZLur
-         5CgiYJUYEr5ZAtYwJkneX0Yf8A22Fz5miRRZRyY7Eu/2xcnwWxlHlb1eyoVVelpZrQT3
-         IyAHiOwPjcy3LLG8x7AuzN6ULGAGZbp5C8986CNqUHlHxARhdDCK9PuLn21+YHlxtNTA
-         lkbFf6iA4wF8XJtGisaZ02e1DK46LjECknBJZ6FeAdm/bV7Bh00Dq+zPJKdq+4eqc+DB
-         F/sQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7LWWlSjDFbeVIPnkDglgC/jora1JiasEdimgKJcS2fc=;
+        b=EEVRWBOSylRtXWuFTnzj4IycSFrWuEubFMJf2y6MlQRGIj/WT5KORXYBRTfnTEzh1G
+         kx7/3AznjDOtY+0/ZPIG5A2bmpoXfV4r/DlCdkPZ1CMnPgYKdQaXl3wVQ2gjzzDc6woR
+         AXYGCwOePKeDcUmbuJQZ2CfJ/HDbm9egGzHSoDDHfBl5B4o4zqpEi2tHLeP2T/49QWW1
+         hT4mDMHpjqXhYCaygA+AQ66N2bMnc4PCVGg+S+77wA/jrd4u6v0q5z61VnwjRTMV4lKU
+         mymVSxTQ+NDFafohpUpeoxIWGdL19vZw1JI3+7V1AtOfXXI0KNiWlFq/WZti0I04aRoF
+         p2Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3snN9fCXIbqsYDCsAS2tERAWPra9RAUNVpdT4Gg8AAQ=;
-        b=3J0KPE3fTT83iCu5Ke6HfYG8O7w9oTrxrWdCOm9tVH9Zi5VDAQ0F4NiSmITcWbSEqt
-         Yud43ylmeU6uUmnPCT/5aIgGcAhdXZomD1Lb2LRed8cbATaH8Onf+W5PGsvie1id+m7o
-         fRWaE+3mFHeixPx+8hBEsbiQLGhAljTkwbe2QdhPYrybPH7ZtNDotEtWa70rMmcL8Tv4
-         CkSmOLfLQIiBRgkOaxKEXN0aqM2qe96cz4KVcjHI2onfH3c9Q91JQHKffT5JPpr+MC5u
-         JFWrBG/EMYyTu/RwIBAfrKWkgWEar1M+MsS3pRIjbsptLi+xAUiVIkZRrTWyUSTmo2AS
-         1B7w==
-X-Gm-Message-State: AOAM530otEPeL9oy5c71xJwIt+yaGPnqWd5VszxqK61x/wmxn1qTbxoC
-        VQN/TMgoX7I+gyJwjI53gPttAn4ZOWA=
-X-Google-Smtp-Source: ABdhPJyVKz4wrIaw4OwN74Ofx1O2k4XXs0TFYRVPXo5G06eZAR2WBbjEa8YaY+dvb322qWDzrYM46w==
-X-Received: by 2002:a17:906:4945:: with SMTP id f5mr19260406ejt.429.1643191059014;
-        Wed, 26 Jan 2022 01:57:39 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7LWWlSjDFbeVIPnkDglgC/jora1JiasEdimgKJcS2fc=;
+        b=IHB0o5VdInsnWzniNputIKW4ol6G0Z8HbiFm7A8SUbkOcceRIdLGEEnqw9XsCy/mJP
+         gP77K4OEZTLoPKjzNcLNf0EuVZi43opwX4e2XuYnhCvAjbh022G4gZssTDP9M3oHNLny
+         9YnSDgPZYgYw7zIPcM+JjXWmUiQrg3AY2m5LtnrzJNwzdf0o/PNFI84fEev4MzrlPLZR
+         V8V9nb14uSRvsp5OzMYP86HzCRszaD5ytn0r7XH3eKGc7enIAs03sN8uIugBrxfLXUUB
+         KJMKHMnTrRQe65tPDw6WwoANyiW7NVaWSLXTOBzEH6xUC27U1jyLW8xePoeNZV/JiMyq
+         abRQ==
+X-Gm-Message-State: AOAM530HXcbGC0uhcEebJkR5GaEIffzTdskMcXmRXP0xl1x4Y6b/lahe
+        ckb5bEzDnMC25j99KW+L0WuY7JGQFFs=
+X-Google-Smtp-Source: ABdhPJz/ztIXq97xWt3/emmCJORCnjeEC3nMbB/CBIKd2muN3iAxYH3sawSsUdUrwaqLfORpYEOjhQ==
+X-Received: by 2002:a17:907:7289:: with SMTP id dt9mr26492ejc.56.1643191057850;
+        Wed, 26 Jan 2022 01:57:37 -0800 (PST)
 Received: from oberon.zico.biz ([151.251.254.11])
-        by smtp.gmail.com with ESMTPSA id j20sm7145299eje.81.2022.01.26.01.57.37
+        by smtp.gmail.com with ESMTPSA id j20sm7145299eje.81.2022.01.26.01.57.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jan 2022 01:57:38 -0800 (PST)
+        Wed, 26 Jan 2022 01:57:37 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 1/2] trace-cmd library: Use the real trace buffer page size
-Date:   Wed, 26 Jan 2022 11:57:34 +0200
-Message-Id: <20220126095735.571222-2-tz.stoyanov@gmail.com>
+Subject: [PATCH v6 0/2] Get trace buffer page size from kernel
+Date:   Wed, 26 Jan 2022 11:57:33 +0200
+Message-Id: <20220126095735.571222-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220126095735.571222-1-tz.stoyanov@gmail.com>
-References: <20220126095735.571222-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When new output handler is created, it assumes that the trace buffer page
-size is equal to the system memory page size. This assumption is valid
-for the current ftrace implementation, but it may change in the future.
+The trace buffer page size is equal to the system memory page size in
+the current ftrace implementation, but this may change in the future.
 The newly introduced traceevent library API should be used to get the
 real trace buffer page size, bases on the information from the
 "events/header_page" ftrace file.
 
-This commit depends on:
- [PATCH] libtraceevent: A new API for trace page size
- https://lore.kernel.org/linux-trace-devel/20211001062338.2389024-1-tz.stoyanov@gmail.com/
+This patch set depends on:
+ "[PATCH v8 0/4] trace-cmd documentation update for v7 files"
+ https://lore.kernel.org/linux-trace-devel/20220126095530.571035-1-tz.stoyanov@gmail.com/
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- lib/trace-cmd/trace-output.c | 37 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 36 insertions(+), 1 deletion(-)
+v6 changes:
+ - Code cleanups.
+ - Rebase.
+v5 changes:
+ - Bug fixes.
+ - Code cleanups.
+ - Rebase.
+v4 changes
+ - Rebased on top of the latest master.
+v3 changes
+ - Rebased on top of the latest master.
+v2 changes:
+ - libtraceevent API is renamed, use the new version.
+ - Rewrote get_trace_page_size() to use libtracefs APIs.
+ - Cleanups in "trace-cmd dump" output, related to buffer page size print.
 
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index e7915aa6..cd40d312 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -1299,6 +1299,41 @@ static int write_compression_header(struct tracecmd_output *handle)
- 	return 0;
- }
- 
-+static int get_trace_page_size(struct tracecmd_output *handle)
-+{
-+	struct tracefs_instance *instance;
-+	struct tep_handle *tep = NULL;
-+	int psize, size;
-+	char *buff = NULL;
-+
-+	/* In case of an error, return user space page size */
-+	psize = getpagesize();
-+
-+	instance = tracefs_instance_alloc(find_tracing_dir(handle), NULL);
-+	if (!instance)
-+		goto out;
-+
-+	buff = tracefs_instance_file_read(instance, "events/header_page", &size);
-+	if (!buff)
-+		goto out;
-+
-+	tep = tep_alloc();
-+	if (!tep)
-+		goto out;
-+
-+	if (tep_parse_header_page(tep, buff, size, sizeof(long long)))
-+		goto out;
-+
-+	psize = tep_get_sub_buffer_size(tep);
-+
-+out:
-+	tracefs_instance_free(instance);
-+	tep_free(tep);
-+	free(buff);
-+
-+	return psize;
-+}
-+
- /**
-  * tracecmd_output_create_fd - allocate new output handle to a trace file
-  * @fd: File descriptor for the handle to write to.
-@@ -1323,7 +1358,7 @@ struct tracecmd_output *tracecmd_output_create_fd(int fd)
- 
- 	handle->file_version = FILE_VERSION_DEFAULT;
- 
--	handle->page_size = getpagesize();
-+	handle->page_size = get_trace_page_size(handle);
- 	handle->big_endian = tracecmd_host_bigendian();
- 
- 	list_head_init(&handle->options);
+Tzvetomir Stoyanov (VMware) (2):
+  trace-cmd library: Use the real trace buffer page size
+  trace-cmd library: Introduce buffer page size per instance
+
+ .../trace-cmd/trace-cmd.dat.v7.5.txt          |  1 +
+ lib/trace-cmd/include/trace-cmd-local.h       |  4 +-
+ lib/trace-cmd/trace-input.c                   | 12 ++-
+ lib/trace-cmd/trace-output.c                  | 74 +++++++++++++++----
+ tracecmd/trace-dump.c                         |  9 ++-
+ 5 files changed, 80 insertions(+), 20 deletions(-)
+
 -- 
 2.34.1
 
