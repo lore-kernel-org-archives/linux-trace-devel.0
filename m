@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CE4AC2BA4C
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0ED4C28CF5
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 26 Jan 2022 09:49:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232823AbiAZJtf (ORCPT
+        id S232786AbiAZJtg (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 26 Jan 2022 04:49:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48870 "EHLO
+        Wed, 26 Jan 2022 04:49:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239403AbiAZJtd (ORCPT
+        with ESMTP id S239402AbiAZJtd (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 26 Jan 2022 04:49:33 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443AEC061747
-        for <linux-trace-devel@vger.kernel.org>; Wed, 26 Jan 2022 01:49:33 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id s5so37619159ejx.2
-        for <linux-trace-devel@vger.kernel.org>; Wed, 26 Jan 2022 01:49:33 -0800 (PST)
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB203C06161C
+        for <linux-trace-devel@vger.kernel.org>; Wed, 26 Jan 2022 01:49:31 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id jx6so37800171ejb.0
+        for <linux-trace-devel@vger.kernel.org>; Wed, 26 Jan 2022 01:49:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wKSIYoN7p6vThicZyffEoNmC1WW8SdBhSUp2rHwqKLw=;
-        b=iTytiVNXvqvX4iCHap1wRBnC7bCYsGqlG7WY+bIp3hrYLOSFNit5iw/Bwc/NnWJM2H
-         FiFK8kuNyfUqe4uKgVMckxbt09hgG2Nkfuk7pvS6EQrpYL97eQ1htlItV0ZsgyVICZE8
-         TjM3js/8v/F4wmtVHQn4tbA3D1fSCLp6EBDjZ7GDk+6o3r6/ntktE0spg1+v49v4vdGD
-         D1/byi66tHyATAz9hTRcKoDkk55eD/DbfMD09wMuBkmcpxwNCn9xwXSPY+pmSjRJrXaG
-         w/bYBqpPvLVjiSalh7KzCY/X3sD8zSMN9LEoCdRn1xtSulrIdTkR6DHxGEpDVA9b5AKG
-         CCXw==
+        bh=VmSDOZEmnC1Q4tZ1Rluqfwgaw/xNXvnUCl6K8fiymH0=;
+        b=i8KOi504XVzYtIsNnAxCohVLB41vNSQqpLm98sWIMjIqj1xzwVeltrLlN9J6nJ5Dkh
+         ZGmVxLNqr0qVuKykQhH1FP+2nyfh69VmDdFG9QGfnpKVtS/ghEmCKmJKQKw6B0GLSNEs
+         c4WgswzRw3lKzetRhIfHvzaA09BtG30c3F8y+GpqtE4BLGQ1GjEkIj/BI/P9pXS/c6LU
+         zxNBs13I0s/Qm+RUONpGe+pn91misJJG69nEIh+ALmEBgEiKt0t1VmwXQKhkDWZxhIp/
+         d1vjkRPrClvR0blO1H7yOp5ilhTH7UCOdc/oi1RVwPr60kES6jqtVo/Mpg+QOJ0aB+Ty
+         mEVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wKSIYoN7p6vThicZyffEoNmC1WW8SdBhSUp2rHwqKLw=;
-        b=V9O/HM2XcNWBMkigOS/Y9/nVaHrClh3Nt7FtKWiehqwre9z0JA4RzEhAeSWpfrrKxJ
-         QjmIFqu9z/mkgHgd30rJXSD8D5i01oMhRebbT+paENfiXn06gjkL6i0esZBEfBjEvR9f
-         NoW9M/OzXWDblzH0LBcgh7JIAW1uyaujvS+WwTF0VS7nFuGDeSXMGG8R4k8+pan2svd/
-         ztdYqbyUJg6NiCW1+yENCLwCDdw+ZXP8B8ZX8UNv84CDYdGMoSS+zVYLTVPGLF5nC2ln
-         18am+iRYG2CxTj1Pp9nk6ypzMv4A7ZHFMXUZE2amzSMvIcC60rsZM8ZHW3wF9zv2U2c0
-         hlNg==
-X-Gm-Message-State: AOAM532I5RWYnjyU2/mwtH2toHYj3suSw1BhQye6wv2gPIzVQnXIoEUK
-        3RlOgkb0Xj3IlrbBP+HdwT8fYfnBfsg=
-X-Google-Smtp-Source: ABdhPJwEwcD4REsMT3w8c/AyNS/alkfStT2StH7kN1QiSDnfuqq07ejKVneW0BYRxzTtN0ZN0hd0PA==
-X-Received: by 2002:a17:906:a415:: with SMTP id l21mr18908903ejz.311.1643190571817;
-        Wed, 26 Jan 2022 01:49:31 -0800 (PST)
+        bh=VmSDOZEmnC1Q4tZ1Rluqfwgaw/xNXvnUCl6K8fiymH0=;
+        b=oX+siKSr5F4TRH/uom2bt6p7ANpFrqVEfiNFWGANPJaMiQPCADHhdxt2vHo2TAPMtx
+         lCejDaAuiVikeWdgJhBu4LpiogKHrxr4jyW+nzd+vniTxSlXhKQyF+IjCNSw2k9YXR+F
+         Jcv7Bxmrf6yjyrmQGv5t44ArsguvLSKUCmxaMaFsktiyVxU9mMYLtgeFz1dnCkdltLuI
+         QyFzl4U26y3L6rLJC8sE/4gqFxns80DuWo5QUagv/h64wS24WH28rJhvhIAKQPfZz5XU
+         gw6mVo0C59/znbJ5h8pRqXjgXAzA9Y2Wy2vyyJFdaJlaKJSR+5Yh4j0OmqqUKYEHFdfY
+         /AhA==
+X-Gm-Message-State: AOAM532qNdB3mikdq7NIbeIvwFwL4BLs6GRfg4YOlYRVRiei3JmBVmrk
+        epVIshvdIPKXaxL46aspf7M3Hj7vCyI=
+X-Google-Smtp-Source: ABdhPJzpDuAaIwghTlEnB483TBAZ1ZFsw2SuYbk+P7vtCTIMNX5bybB+ro9nW/f8FSnEzJoLsfQ1nw==
+X-Received: by 2002:a17:907:1c12:: with SMTP id nc18mr11828138ejc.47.1643190570593;
+        Wed, 26 Jan 2022 01:49:30 -0800 (PST)
 Received: from oberon.zico.biz ([151.251.254.11])
-        by smtp.gmail.com with ESMTPSA id e17sm7119155eje.218.2022.01.26.01.49.30
+        by smtp.gmail.com with ESMTPSA id e17sm7119155eje.218.2022.01.26.01.49.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jan 2022 01:49:31 -0800 (PST)
+        Wed, 26 Jan 2022 01:49:30 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v8 17/20] trace-cmd library: Add zlib compression algorithm
-Date:   Wed, 26 Jan 2022 11:49:03 +0200
-Message-Id: <20220126094906.570451-18-tz.stoyanov@gmail.com>
+Subject: [PATCH v8 16/20] trace-cmd library: Decompress file sections on reading
+Date:   Wed, 26 Jan 2022 11:49:02 +0200
+Message-Id: <20220126094906.570451-17-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220126094906.570451-1-tz.stoyanov@gmail.com>
 References: <20220126094906.570451-1-tz.stoyanov@gmail.com>
@@ -64,223 +64,84 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Added implementation for zlib compression algorithm, using libz
-library, if available.
+When reading sections from trace file v7 - check section flags to find
+out if the section is compressed and decompress  it.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- Makefile                                |   7 ++
- lib/trace-cmd/Makefile                  |   7 ++
- lib/trace-cmd/include/trace-cmd-local.h |   4 +
- lib/trace-cmd/trace-compress-zlib.c     | 109 ++++++++++++++++++++++++
- lib/trace-cmd/trace-compress.c          |   4 +
- tracecmd/Makefile                       |   4 +
- 6 files changed, 135 insertions(+)
- create mode 100644 lib/trace-cmd/trace-compress-zlib.c
+ lib/trace-cmd/trace-input.c | 26 ++++++++++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 91f62859..c9faf8db 100644
---- a/Makefile
-+++ b/Makefile
-@@ -300,6 +300,13 @@ ifeq ($(PERF_DEFINED), 1)
- CFLAGS += -DPERF
- endif
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 7d8f0fe4..3f7971c4 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -484,12 +484,17 @@ static struct file_section *section_open(struct tracecmd_input *handle, int id)
  
-+ZLIB_INSTALLED := $(shell if (printf "$(pound)include <zlib.h>\n void main(){deflateInit(NULL, Z_BEST_COMPRESSION);}" | $(CC) -o /dev/null -x c - -lz >/dev/null 2>&1) ; then echo 1; else echo 0 ; fi)
-+ifeq ($(ZLIB_INSTALLED), 1)
-+export ZLIB_INSTALLED
-+CFLAGS += -DHAVE_ZLIB
-+$(info    Have zlib compression support)
-+endif
+ 	if (lseek64(handle->fd, sec->data_offset, SEEK_SET) == (off64_t)-1)
+ 		return NULL;
 +
- CUNIT_INSTALLED := $(shell if (printf "$(pound)include <CUnit/Basic.h>\n void main(){CU_initialize_registry();}" | $(CC) -o /dev/null -x c - -lcunit >/dev/null 2>&1) ; then echo 1; else echo 0 ; fi)
- export CUNIT_INSTALLED
- 
-diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
-index a7be4a42..1820c67b 100644
---- a/lib/trace-cmd/Makefile
-+++ b/lib/trace-cmd/Makefile
-@@ -26,6 +26,9 @@ OBJS += trace-timesync-ptp.o
- OBJS += trace-timesync-kvm.o
- endif
- OBJS += trace-compress.o
-+ifeq ($(ZLIB_INSTALLED), 1)
-+OBJS += trace-compress-zlib.o
-+endif
- 
- # Additional util objects
- OBJS += trace-blk-hack.o
-@@ -47,6 +50,10 @@ $(LIBTRACECMD_STATIC): $(OBJS)
- 
- LIBS = $(LIBTRACEEVENT_LDLAGS) $(LIBTRACEFS_LDLAGS) -lpthread
- 
-+ifeq ($(ZLIB_INSTALLED), 1)
-+LIBS += -lz
-+endif
++	if ((sec->flags & TRACECMD_SEC_FL_COMPRESS) && in_uncompress_block(handle))
++		return NULL;
 +
- $(LIBTRACECMD_SHARED_VERSION): $(LIBTRACECMD_SHARED)
- 	@ln -sf $(<F) $@
- 
-diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
-index ca682ed9..3d75bd63 100644
---- a/lib/trace-cmd/include/trace-cmd-local.h
-+++ b/lib/trace-cmd/include/trace-cmd-local.h
-@@ -26,6 +26,10 @@ void tracecmd_info(const char *fmt, ...);
- #endif
- #endif
- 
-+#ifdef HAVE_ZLIB
-+int tracecmd_zlib_init(void);
-+#endif
-+
- struct data_file_write {
- 	unsigned long long	file_size;
- 	unsigned long long	write_size;
-diff --git a/lib/trace-cmd/trace-compress-zlib.c b/lib/trace-cmd/trace-compress-zlib.c
-new file mode 100644
-index 00000000..a697cc61
---- /dev/null
-+++ b/lib/trace-cmd/trace-compress-zlib.c
-@@ -0,0 +1,109 @@
-+// SPDX-License-Identifier: LGPL-2.1
-+/*
-+ * Copyright (C) 2021, VMware, Tzvetomir Stoyanov tz.stoyanov@gmail.com>
-+ *
-+ */
-+#include <stdlib.h>
-+#include <dlfcn.h>
-+#include <zlib.h>
-+#include <errno.h>
-+
-+#include "trace-cmd-private.h"
-+
-+#define __ZLIB_NAME		"zlib"
-+#define __ZLIB_WEIGTH		10
-+
-+static int zlib_compress(const char *in, unsigned int in_bytes,
-+			 char *out, unsigned int *out_bytes)
-+{
-+	unsigned long out_size = *out_bytes;
-+	int ret;
-+
-+	ret = compress2((unsigned char *)out, &out_size,
-+			(unsigned char *)in, (unsigned long)in_bytes, Z_BEST_COMPRESSION);
-+	*out_bytes = out_size;
-+	errno = 0;
-+	switch (ret) {
-+	case Z_OK:
-+		return 0;
-+	case Z_BUF_ERROR:
-+		errno = -ENOBUFS;
-+		break;
-+	case Z_MEM_ERROR:
-+		errno = -ENOMEM;
-+		break;
-+	case Z_STREAM_ERROR:
-+		errno = -EINVAL;
-+		break;
-+	default:
-+		errno = -EFAULT;
-+		break;
-+	}
-+
-+	return -1;
-+}
-+
-+static int zlib_decompress(const char *in, unsigned int in_bytes,
-+			   char *out, unsigned int *out_bytes)
-+{
-+	unsigned long out_size = *out_bytes;
-+	int ret;
-+
-+	ret = uncompress((unsigned char *)out, &out_size,
-+			 (unsigned char *)in, (unsigned long)in_bytes);
-+	*out_bytes = out_size;
-+	errno = 0;
-+	switch (ret) {
-+	case Z_OK:
-+		return 0;
-+	case Z_BUF_ERROR:
-+		errno = -ENOBUFS;
-+		break;
-+	case Z_MEM_ERROR:
-+		errno = -ENOMEM;
-+		break;
-+	case Z_DATA_ERROR:
-+		errno = -EINVAL;
-+		break;
-+	default:
-+		errno = -EFAULT;
-+		break;
-+	}
-+
-+	return -1;
-+}
-+
-+static unsigned int zlib_compress_bound(unsigned int in_bytes)
-+{
-+	return compressBound(in_bytes);
-+}
-+
-+static bool zlib_is_supported(const char *name, const char *version)
-+{
-+	const char *zver;
-+
-+	if (!name)
-+		return false;
-+	if (strlen(name) != strlen(__ZLIB_NAME) || strcmp(name, __ZLIB_NAME))
-+		return false;
-+
-+	if (!version)
-+		return true;
-+
-+	zver = zlibVersion();
-+	if (!zver)
-+		return false;
-+
-+	/* Compare the major version number */
-+	if (atoi(version) <= atoi(zver))
-+		return true;
-+
-+	return false;
-+}
-+
-+int tracecmd_zlib_init(void)
-+{
-+	return tracecmd_compress_proto_register(__ZLIB_NAME, zlibVersion(), __ZLIB_WEIGTH,
-+						zlib_compress, zlib_decompress,
-+						zlib_compress_bound, zlib_is_supported);
-+}
-diff --git a/lib/trace-cmd/trace-compress.c b/lib/trace-cmd/trace-compress.c
-index 4a4341dd..210d58b6 100644
---- a/lib/trace-cmd/trace-compress.c
-+++ b/lib/trace-cmd/trace-compress.c
-@@ -386,6 +386,10 @@ void tracecmd_compress_init(void)
- 
- 	gettimeofday(&time, NULL);
- 	srand((time.tv_sec * 1000) + (time.tv_usec / 1000));
-+
-+#ifdef HAVE_ZLIB
-+	tracecmd_zlib_init();
-+#endif
+ 	return sec;
  }
  
- static struct compress_proto *compress_proto_select(void)
-diff --git a/tracecmd/Makefile b/tracecmd/Makefile
-index 80c69bbb..b7a23dc4 100644
---- a/tracecmd/Makefile
-+++ b/tracecmd/Makefile
-@@ -51,6 +51,10 @@ CONFIG_INCLUDES =
- CONFIG_LIBS	= -lrt -lpthread $(TRACE_LIBS)
- CONFIG_FLAGS	=
+ static void section_close(struct tracecmd_input *handle, struct file_section *sec)
+ {
+-	/* To Do */
++	if (sec->flags & TRACECMD_SEC_FL_COMPRESS)
++		in_uncompress_reset(handle);
+ }
  
-+ifeq ($(ZLIB_INSTALLED), 1)
-+CONFIG_LIBS += -lz
-+endif
+ static int section_add_or_update(struct tracecmd_input *handle, int id, int flags,
+@@ -1116,6 +1121,8 @@ static int handle_section(struct tracecmd_input *handle, struct file_section *se
+ 		return -1;
+ 
+ 	section->data_offset = lseek64(handle->fd, 0, SEEK_CUR);
++	if ((section->flags & TRACECMD_SEC_FL_COMPRESS) && in_uncompress_block(handle))
++		return -1;
+ 
+ 	switch (section->id) {
+ 	case TRACECMD_OPTION_HEADER_INFO:
+@@ -1141,6 +1148,9 @@ static int handle_section(struct tracecmd_input *handle, struct file_section *se
+ 		break;
+ 	}
+ 
++	if (section->flags & TRACECMD_SEC_FL_COMPRESS)
++		in_uncompress_reset(handle);
 +
- all: $(TARGETS)
+ 	return ret;
+ }
  
- $(bdir):
+@@ -4080,6 +4090,7 @@ static int read_metadata_strings(struct tracecmd_input *handle)
+ 	unsigned short flags;
+ 	int found = 0;
+ 	unsigned short id;
++	unsigned int csize, rsize;
+ 	unsigned long long size;
+ 	off64_t offset;
+ 
+@@ -4089,7 +4100,18 @@ static int read_metadata_strings(struct tracecmd_input *handle)
+ 			break;
+ 		if (id == TRACECMD_OPTION_STRINGS) {
+ 			found++;
+-			init_metadata_strings(handle, size);
++			if ((flags & TRACECMD_SEC_FL_COMPRESS)) {
++				read4(handle, &csize);
++				read4(handle, &rsize);
++				do_lseek(handle, -8, SEEK_CUR);
++				if (in_uncompress_block(handle))
++					break;
++			} else {
++				rsize = size;
++			}
++			init_metadata_strings(handle, rsize);
++			if (flags & TRACECMD_SEC_FL_COMPRESS)
++				in_uncompress_reset(handle);
+ 		} else {
+ 			if (lseek64(handle->fd, size, SEEK_CUR) == (off_t)-1)
+ 				break;
 -- 
 2.34.1
 
