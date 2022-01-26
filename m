@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5617AC28CF5
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 26 Jan 2022 09:53:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89660C2BA4C
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 26 Jan 2022 09:53:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239318AbiAZJxx (ORCPT
+        id S239320AbiAZJxz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 26 Jan 2022 04:53:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49844 "EHLO
+        Wed, 26 Jan 2022 04:53:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230405AbiAZJxx (ORCPT
+        with ESMTP id S230405AbiAZJxy (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 26 Jan 2022 04:53:53 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147D1C06161C
-        for <linux-trace-devel@vger.kernel.org>; Wed, 26 Jan 2022 01:53:53 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id s13so37750977ejy.3
-        for <linux-trace-devel@vger.kernel.org>; Wed, 26 Jan 2022 01:53:53 -0800 (PST)
+        Wed, 26 Jan 2022 04:53:54 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0D5C06161C
+        for <linux-trace-devel@vger.kernel.org>; Wed, 26 Jan 2022 01:53:54 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id h7so37753706ejf.1
+        for <linux-trace-devel@vger.kernel.org>; Wed, 26 Jan 2022 01:53:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+POxsbu5fGLbRlmKIDiFIFAxsZz/f8OKNIdU5QPpHzk=;
-        b=jH9IMRIk0QHi3yqkegLWbr6I5Bbr2/lHOogc8/S53D0Jqd/SLyI1dsZhvdwFl/5v4w
-         AcNYrV//axg0IPAdMyoiLEoydHpkfOhncizixUR0byKiKgoxy+lrPrPid3wxFm4Xeapc
-         mc9XeCqwwBL0kZmyf5lGCyNx1kN0La03egNLohZe3QfBuZkaDTDm67DMuwWXGX7JDazZ
-         2QuUtHCTkfba8JOzDNzbF9O3n3MU//zuBv/7RlaKa5/PUavyXgBKssd6bYkYxN2KvfhA
-         RZcGyYP117PMr6msd1OgnM5kclwBLCE8vmM3lMWePgp5Yn5We8VEPA5Bbv97IzyFOCGZ
-         Anww==
+        bh=3QDeFnfuoF/bRZaQA4Qex16ZXM38q819ZL/YpY7Ys1o=;
+        b=fMNFz+lH78I2pUFV91jPCqzbsp/rISmk+KmDZxI4K52xeudOtT/OKy7FIqrG0Ezkt1
+         nl5AIKXkLHSXDn+5AHEcShyt5eTulyX6r5HXwW3tP1I8324VT/mqtxuKawNNo44Xg9/S
+         +yFmE7UQnyXwgJfeP4dpgs/r7pv0PNn3mpdLjZnEXwQEN8z/8vTmtCuMcz/fKlslEWRG
+         G4/WXbqB5tnjwiLOEcyEmVKUXiyDIxZJluL0hx7uD/ZXk8rGz/F+p44/iHYsQwIvqGn2
+         rrRSMLvzFOhh1Qr7IKA2CQIpqFnd+5dMWvKbTyUaXqJWSXuRiU7JlJGfAsYwJ9h9EvmU
+         5JiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+POxsbu5fGLbRlmKIDiFIFAxsZz/f8OKNIdU5QPpHzk=;
-        b=SpJUxP1sogbiNtOArTZsMjIUVK/1pofdeF1w9DWFmpZY3JKqcM8CQvxcKYHrMAQuKZ
-         m0OS61i3K/a3TaFie99vw1PVKWqH7DwNFoP9aeoCXU95OFQ5iGiXKodoUnsaOz3LSLIe
-         dtJSuO+OdivV50vMAYrPNCnY/t08Ag2SWUdSLCTGMculGsCkISu1peckZI7ZZy1OPDXB
-         qwB97pm3T+3kRRo4helHjs8Kgs8ExbyJTLA3We55FLT7Ps00T6grIOSchYOYZrwtUx2m
-         OFRzcOqOPpqgQ3EBWydpIFV9ZLztqWnF997/svMewG5HswzTxViRJBuLvjILVwyKUM+n
-         59sA==
-X-Gm-Message-State: AOAM530a6BHg0pNcE5Zgh95bs47es/p//fOPD9BjYaKDGzWgAS//vBQ/
-        qaOh0SPlUC+yn5Fdk6urIGRfKPDOX5c=
-X-Google-Smtp-Source: ABdhPJwwbSigdi5kMvBzmOWlFS4c5QCFFIEVU90m2yDKJw4WRQRYoniZtWCCut39LOlHIR9xfvRYig==
-X-Received: by 2002:a17:907:3f89:: with SMTP id hr9mr1659802ejc.3.1643190831596;
-        Wed, 26 Jan 2022 01:53:51 -0800 (PST)
+        bh=3QDeFnfuoF/bRZaQA4Qex16ZXM38q819ZL/YpY7Ys1o=;
+        b=4cWIuOffeBQo/hTHu5XyvyIFChg0vtwQ8S6M5GWZiXQxXYoPpxmgCWKRuOfRuPkxo1
+         TR49BdNTl6Qg0qT4F2THepc+YHaIONaynUDqkVex0CLGvTjflHGdu9oz6GCUOZVdCtmU
+         KZUnFxHgAL93rd46A9LPyp7oGOhRQEB3XP9ozKAiPMlKGDZP11y5Q3i1cgwATtEVMSc/
+         0ZEKtg7Bab5SvXuBjsNRirmBDi4xaYAJrZYjPD/5pl/Kd1DOL7QFCLu8XSwQMAzfNUmT
+         6HfUvc+NzS5Ed/6JDMMzcTT+/PA9c6nqMjGyaUZcncPHteSRrcMez4FuFQbS6Fcj69tD
+         xu6w==
+X-Gm-Message-State: AOAM532NIQjHpol9kSGVvb11L+EDmVAbRkIZG07g37ebftYXpNhkmnJ3
+        f4vAw9pT6JsxjtZ4xkwW6IJZtH2kGJ8=
+X-Google-Smtp-Source: ABdhPJzF4bFuHvzyPAs7PBLL+Z9xhMyPCafmJCt486icdiqRcrCZqKsLyZhYdL4vh6TOvoKgwzaitA==
+X-Received: by 2002:a17:907:7204:: with SMTP id dr4mr7048726ejc.195.1643190832827;
+        Wed, 26 Jan 2022 01:53:52 -0800 (PST)
 Received: from oberon.zico.biz ([151.251.254.11])
-        by smtp.gmail.com with ESMTPSA id h19sm3177266edv.90.2022.01.26.01.53.50
+        by smtp.gmail.com with ESMTPSA id h19sm3177266edv.90.2022.01.26.01.53.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jan 2022 01:53:51 -0800 (PST)
+        Wed, 26 Jan 2022 01:53:52 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v8 08/11] trace-cmd dump: Read strings sections from v7 trace files
-Date:   Wed, 26 Jan 2022 11:53:34 +0200
-Message-Id: <20220126095337.570867-9-tz.stoyanov@gmail.com>
+Subject: [PATCH v8 09/11] trace-cmd dump: Dump sections content
+Date:   Wed, 26 Jan 2022 11:53:35 +0200
+Message-Id: <20220126095337.570867-10-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220126095337.570867-1-tz.stoyanov@gmail.com>
 References: <20220126095337.570867-1-tz.stoyanov@gmail.com>
@@ -64,187 +64,79 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Trace file v7 has sections with metadata strings. When such file is
-opened with "trace-cmd dump", read that section and store the strings in
-an internal database. Also, a new argument "--strings" is added to
-"trace-cmd dump", to display all strings sections from the file.
+In trace file version 7, dump the content of the headers content, that
+are stored as sections. Added logic to dump these headers:
+ HEADER_INFO
+ FTRACE_EVENTS
+ EVENT_FORMATS
+ KALLSYM
+ PRINTK
+ CMDLINES
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-dump.c | 94 ++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 92 insertions(+), 2 deletions(-)
+ tracecmd/trace-dump.c | 41 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
 
 diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
-index 31878c3a..13e79002 100644
+index 13e79002..19f77687 100644
 --- a/tracecmd/trace-dump.c
 +++ b/tracecmd/trace-dump.c
-@@ -29,6 +29,8 @@ static int has_clock;
- static unsigned long file_version;
- static bool	read_compress;
- static struct tracecmd_compression *compress;
-+static char *meta_strings;
-+static int meta_strings_size;
- 
- enum dump_items {
- 	SUMMARY		= (1 << 0),
-@@ -44,6 +46,7 @@ enum dump_items {
- 	FLYRECORD	= (1 << 10),
- 	CLOCK		= (1 << 11),
- 	SECTIONS	= (1 << 12),
-+	STRINGS		= (1 << 13),
- };
- 
- struct file_section {
-@@ -179,6 +182,14 @@ static int read_file_number(int fd, void *digit, int size)
- 	return 0;
+@@ -762,6 +762,46 @@ static void dump_option_section(int fd, unsigned int size,
+ 	do_print(OPTIONS, "\t\t[Option %s, %d bytes] @ %lld\n", desc, size, sec->offset);
  }
  
-+static const char *get_metadata_string(int offset)
++static void dump_sections(int fd)
 +{
-+	if (!meta_strings || offset < 0 || meta_strings_size <= offset)
-+		return NULL;
++	struct file_section *sec = sections;
++	unsigned short flags;
 +
-+	return meta_strings + offset;
-+}
++	while (sec) {
++		if (lseek64(fd, sec->offset, SEEK_SET) == (off_t)-1)
++			die("cannot goto option offset %lld", sec->offset);
 +
- static void dump_initial_format(int fd)
- {
- 	char magic[] = TRACECMD_MAGIC;
-@@ -432,6 +443,7 @@ static void dump_section_header(int fd, enum dump_items v, unsigned short *flags
- 	unsigned long long offset, size;
- 	unsigned short fl;
- 	unsigned short id;
-+	const char *desc;
- 	int desc_id;
- 
- 	offset = lseek64(fd, 0, SEEK_CUR);
-@@ -444,11 +456,15 @@ static void dump_section_header(int fd, enum dump_items v, unsigned short *flags
- 	if (read_file_number(fd, &desc_id, 4))
- 		die("no section description");
- 
-+	desc = get_metadata_string(desc_id);
-+	if (!desc)
-+		desc = "Unknown";
++		dump_section_header(fd, sec->verbosity, &flags);
 +
- 	if (read_file_number(fd, &size, 8))
- 		die("cannot read section size");
- 
--	do_print(v, "\t[Section %d @ %lld, flags 0x%X, %lld bytes]\n",
--		 id, offset, fl, size);
-+	do_print(v, "\t[Section %d @ %lld: \"%s\", flags 0x%X, %lld bytes]\n",
-+		 id, offset, desc, fl, size);
- 
- 	if (flags)
- 		*flags = fl;
-@@ -963,6 +979,73 @@ static void dump_v6_file(int fd)
- 	dump_therest(fd);
- }
- 
-+static int read_metadata_strings(int fd, unsigned long long size)
-+{
-+	char *str, *strings;
-+	int psize;
-+	int ret;
++		if ((flags & TRACECMD_SEC_FL_COMPRESS) && uncompress_block())
++			die("cannot uncompress section block");
 +
-+	strings = realloc(meta_strings, meta_strings_size + size);
-+	if (!strings)
-+		return -1;
-+	meta_strings = strings;
-+
-+	ret = read_file_bytes(fd, meta_strings + meta_strings_size, size);
-+	if (ret < 0)
-+		return -1;
-+
-+	do_print(STRINGS, "\t[String @ offset]\n");
-+	psize = 0;
-+	while (psize < size) {
-+		str = meta_strings + meta_strings_size + psize;
-+		do_print(STRINGS, "\t\t\"%s\" @ %d\n", str, meta_strings_size + psize);
-+		psize += strlen(str) + 1;
-+	}
-+
-+	meta_strings_size += size;
-+
-+	return 0;
-+}
-+
-+static void get_meta_strings(int fd)
-+{
-+	unsigned long long offset, size;
-+	unsigned int csize, rsize;
-+	unsigned short fl, id;
-+	int desc_id;
-+
-+	offset = lseek64(fd, 0, SEEK_CUR);
-+	do {
-+		if (read_file_number(fd, &id, 2))
++		switch (sec->id) {
++		case TRACECMD_OPTION_HEADER_INFO:
++			dump_header_page(fd);
++			dump_header_event(fd);
 +			break;
-+		if (read_file_number(fd, &fl, 2))
-+			die("cannot read section flags");
-+		if (read_file_number(fd, &desc_id, 4))
-+			die("cannot read section description");
-+		if (read_file_number(fd, &size, 8))
-+			die("cannot read section size");
-+		if (id == TRACECMD_OPTION_STRINGS) {
-+			if ((fl & TRACECMD_SEC_FL_COMPRESS)) {
-+				read_file_number(fd, &csize, 4);
-+				read_file_number(fd, &rsize, 4);
-+				lseek64(fd, -8, SEEK_CUR);
-+				if (uncompress_block())
-+					break;
-+			} else {
-+				rsize = size;
-+			}
-+			read_metadata_strings(fd, rsize);
-+			uncompress_reset();
-+		} else {
-+			if (lseek64(fd, size, SEEK_CUR) == (off_t)-1)
-+				break;
++		case TRACECMD_OPTION_FTRACE_EVENTS:
++			dump_ftrace_events_format(fd);
++			break;
++		case TRACECMD_OPTION_EVENT_FORMATS:
++			dump_events_format(fd);
++			break;
++		case TRACECMD_OPTION_KALLSYMS:
++			dump_kallsyms(fd);
++			break;
++		case TRACECMD_OPTION_PRINTK:
++			dump_printk(fd);
++			break;
++		case TRACECMD_OPTION_CMDLINES:
++			dump_cmdlines(fd);
++			break;
 +		}
-+	} while (1);
-+
-+	if (lseek64(fd, offset, SEEK_SET) == (off_t)-1)
-+		die("cannot restore the original file location");
++		uncompress_reset();
++		sec = sec->next;
++	}
 +}
 +
- static void dump_v7_file(int fd)
- {
- 	long long offset;
-@@ -970,6 +1053,8 @@ static void dump_v7_file(int fd)
- 	if (read_file_number(fd, &offset, 8))
- 		die("cannot read offset of the first option section");
+ static int dump_options_read(int fd);
  
-+	get_meta_strings(fd);
-+
- 	if (lseek64(fd, offset, SEEK_SET) == (off64_t)-1)
+ static int dump_option_done(int fd, int size)
+@@ -1059,6 +1099,7 @@ static void dump_v7_file(int fd)
  		die("cannot goto options offset %lld", offset);
  
-@@ -1014,6 +1099,7 @@ static void dump_file(const char *file)
+ 	dump_options(fd);
++	dump_sections(fd);
  }
  
- enum {
-+	OPT_strings	= 241,
- 	OPT_verbose	= 242,
- 	OPT_clock	= 243,
- 	OPT_all		= 244,
-@@ -1057,6 +1143,7 @@ void trace_dump(int argc, char **argv)
- 			{"options", no_argument, NULL, OPT_options},
- 			{"flyrecord", no_argument, NULL, OPT_flyrecord},
- 			{"clock", no_argument, NULL, OPT_clock},
-+			{"strings", no_argument, NULL, OPT_strings},
- 			{"validate", no_argument, NULL, 'v'},
- 			{"help", no_argument, NULL, '?'},
- 			{"verbose", optional_argument, NULL, OPT_verbose},
-@@ -1120,6 +1207,9 @@ void trace_dump(int argc, char **argv)
- 			if (trace_set_verbose(optarg) < 0)
- 				die("invalid verbose level %s", optarg);
- 			break;
-+		case OPT_strings:
-+			verbosity |= STRINGS;
-+			break;
- 		default:
- 			usage(argv);
- 		}
+ static void free_sections(void)
 -- 
 2.34.1
 
