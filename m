@@ -2,113 +2,94 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51708C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 27 Jan 2022 11:11:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4862FC43219
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 27 Jan 2022 15:04:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235545AbiA0LLX (ORCPT
+        id S233428AbiA0PEa (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 27 Jan 2022 06:11:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59082 "EHLO
+        Thu, 27 Jan 2022 10:04:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbiA0LLW (ORCPT
+        with ESMTP id S242770AbiA0PEa (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 27 Jan 2022 06:11:22 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A3AC061714
-        for <linux-trace-devel@vger.kernel.org>; Thu, 27 Jan 2022 03:11:22 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id s5so5074360ejx.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 27 Jan 2022 03:11:22 -0800 (PST)
+        Thu, 27 Jan 2022 10:04:30 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43223C061714
+        for <linux-trace-devel@vger.kernel.org>; Thu, 27 Jan 2022 07:04:30 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id s18so5322034wrv.7
+        for <linux-trace-devel@vger.kernel.org>; Thu, 27 Jan 2022 07:04:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=USQ37QhlVMABhMLY3x7luE999tVTLIXv6aAbPy6/kbQ=;
-        b=bqcwnuXVw8xI5iMEv2rxX1wR9WUORO6LRTbqspJbO6VN02arD4tVDAsJJL2U+zoz2B
-         Pnsbd3NCdfIRvhNxCCZsoH7NYtGsm+Op1oOHqJMBJCXTu8qUjJYzO1fH46ZZvLeBmlmz
-         EKTDLsik1HZ6CgEjbr3QgiCwoxrZxY5IoMCWYRGBjqO68ZjvfaUYYTdzTyCmH1e6NIEq
-         4S6CPkcy7VGW+xt3YZJAuLe9h5iF2YGiaelnPuuwrLP5fjTIbRABUhsvWfxKCUbbKrm5
-         AG8y5LqYmLzqBeFHsg0BEgY5NMlrZ2yvKWkjwTwZEGLEna7m69M8gEoceoAUSmJeSIZx
-         MrVA==
+        bh=woBFFNyWVDYlzlL6DYLd9KhQrZmXFVmzSS6deWwHhPs=;
+        b=PiTyUMGs2wU2UXbn/PElcmMaiykvY/3nuCrTfTFlSX0vPP7OcrHAXxwPjgohTfzU1B
+         2eWer0JkmB9EIpaDsf9WtKcgZOl3Rawduha4ZSJSruQEXP4qRSuzARkTFT+VbieT3Ebf
+         8mjPoFdyUnWp+tlyB/ZEJ9CWqiPIupg5NingGeBVdGcNVCUsODjV8A2/0wn6yU2ZBzIX
+         1p29B1lq3yWDe6jrjYeamKGdegh8WDM8+77P+cAhCFM73QtwfXy1ToV6GwXN4NOUo2FQ
+         Ju4ymanmCZfp6JQ9qD1r0yW/TymjVuQEw7GVzIn/foyR1vNcoSlhG/Mt2AWmsIxIeh3f
+         iBTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=USQ37QhlVMABhMLY3x7luE999tVTLIXv6aAbPy6/kbQ=;
-        b=7R35OByl+sfvJVc7+PfYBnpjkH50nd53SO24SZS08ID6cHICIp7Rrd/ZZo5NWp16wF
-         rn41Os2TRB7RG3KWi2554fw1HpCdva7b8uwLXEg1QrIJCeLHFl43tYCjUnNU5SqhSYIu
-         ahPkbXY4ChtZI1JqZZEhMTSfJRkLA2oEDfrFtH217ee5ZO5xZmu2pMv4JN5CXP03C1Wt
-         VBo5bg4KaReLQhgSSlvJMNP1S1vOTKWbDFc0neuh1ZvVL3q0KE//o5hld3uUOao0Nkq6
-         XmooznLx0M9MIZ3Wzbgla75Pfv5BChzFBEn6wSqB9ItwMCFQ0KLHjg9liq1sNZZlzbg0
-         ZcFw==
-X-Gm-Message-State: AOAM532Ko5w+/a5XrPQewyPZjWCi1c8QzqBgmDuENduBzD8cFadn5LhS
-        mn+Mv4nSr6WEtGCFR30BVTvs0LNZX5M=
-X-Google-Smtp-Source: ABdhPJzbI8ZfHiPGrtQTEB/uFlg3iy1tKmtBkjeL9CWecm54/wzNoqXEHJ3TJzkBUpey0MbHN4Todg==
-X-Received: by 2002:a17:906:58d4:: with SMTP id e20mr2462394ejs.769.1643281880903;
-        Thu, 27 Jan 2022 03:11:20 -0800 (PST)
-Received: from crow.. ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id bf21sm11160418edb.2.2022.01.27.03.11.20
+        bh=woBFFNyWVDYlzlL6DYLd9KhQrZmXFVmzSS6deWwHhPs=;
+        b=pFrQH4p6cqWl4vpm8wIVs1yZKc2Ggd/YQY3UbULPksAJOAUbz67gij3Su+RrDQRyFA
+         sLjIMjWiCE07lxbHvM2p14/mpoKj8PR3gxk/CKro/IUVdCNh75xg/+1r8ikFVZdQnisF
+         5bIPg//+J9xJUA2RHV8xleJX1gtKr4NGedesKkl53QXfNNXE0kRdhxh29vNaCnkTIEm5
+         Pse+Ext5psD9orgp0Y/elRqpsmHlcEI8taJl3nfG2ZABThx+wAH+1CAyVU8/I3L3wq+0
+         ULryTzUw2hyoVwBNz33XA/29of5x8kgV8m6+yQ+JMhJJObf75t/ON6OwKlD/pk6oWzHR
+         wdjg==
+X-Gm-Message-State: AOAM533P43tuXzovV77iHHVjX+zC+KYHkP5ykxa4W2NTlxizKjug72df
+        v3z1mFdP0pSnLrYuhPsXUf2k2mv7G9Y=
+X-Google-Smtp-Source: ABdhPJxUPGXqpR1GfTNaYe/xHmvItjEZgeke+AXH3djGue36SdADuB9htIBUbjcru8mJD+JdoJDlYQ==
+X-Received: by 2002:adf:e64a:: with SMTP id b10mr3453462wrn.680.1643295868723;
+        Thu, 27 Jan 2022 07:04:28 -0800 (PST)
+Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id l10sm2352613wrz.20.2022.01.27.07.04.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jan 2022 03:11:20 -0800 (PST)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2] kernel-shark: Install missing headers
-Date:   Thu, 27 Jan 2022 13:11:10 +0200
-Message-Id: <20220127111110.272289-1-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 27 Jan 2022 07:04:27 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     y.karadz@gmail.com
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v2] trace-cruncher: Update CONTRIBUTING doc with tests
+Date:   Thu, 27 Jan 2022 17:04:26 +0200
+Message-Id: <20220127150426.50756-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Building an external plugin that uses libkshark-plot and libkshark-gui
-libraries haven't been realy tested so far. It turns that headers that
-are required in order to do this are not installed. The installation of
-those headers is made part of the 'libkshark-devel' component.
+All trace-cruncher code should be covered by the unit tests. Added
+instructions how to run the tests in CONTRIBUTING document.
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
+ CONTRIBUTING.md | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Changes in v2:
- - Making this a stand-alone patch
-
- src/CMakeLists.txt         | 8 ++++++++
- src/plugins/CMakeLists.txt | 4 ++++
- 2 files changed, 12 insertions(+)
-
-diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 9e0b4ae..fbf3819 100644
---- a/src/CMakeLists.txt
-+++ b/src/CMakeLists.txt
-@@ -67,6 +67,14 @@ if (OPENGL_FOUND)
-             LIBRARY DESTINATION    ${_LIBDIR}
-                 COMPONENT              kernelshark)
+diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
+index 1f73807..0eb9f85 100644
+--- a/CONTRIBUTING.md
++++ b/CONTRIBUTING.md
+@@ -20,6 +20,15 @@ The preferred coding style for the project is the [Linux kernel coding style](ht
+ The project follows the conventions for [submitting patches](https://www.kernel.org/doc/html/v5.4/process/submitting-patches.html)
+ as described by the Linux kernel.
  
-+    install(FILES "${KS_DIR}/src/stb_truetype.h"
-+                  "${KS_DIR}/src/libkshark-plot.h"
-+                  "${KS_DIR}/src/KsPlotTools.hpp"
-+                  "${KS_DIR}/src/KsPlugins.hpp"
-+                  "${KS_DIR}/src/KsCmakeDef.hpp"
-+            DESTINATION ${KS_INCLUDS_DESTINATION}
-+                COMPONENT libkshark-devel)
++### Tests
 +
- endif (OPENGL_FOUND)
- 
- if (Qt5Widgets_FOUND AND Qt5Network_FOUND AND TT_FONT_FILE)
-diff --git a/src/plugins/CMakeLists.txt b/src/plugins/CMakeLists.txt
-index 3e170fa..e9d9068 100644
---- a/src/plugins/CMakeLists.txt
-+++ b/src/plugins/CMakeLists.txt
-@@ -69,4 +69,8 @@ install(TARGETS ${PLUGIN_LIST}
-         LIBRARY DESTINATION ${KS_PLUGIN_INSTALL_PREFIX}
-         COMPONENT kernelshark)
- 
-+install(FILES "${KS_DIR}/src/plugins/common_sched.h"
-+        DESTINATION "${KS_INCLUDS_DESTINATION}/plugins"
-+            COMPONENT libkshark-devel)
++Make sure that all your changes are covered by the tests. Before submitting your patch, check if everything works at 100% by running the tests in **tracecruncher/tests**. Compile your changes and install trace-cruncher (`sudo make install`), to make sure that your code is used in the tests. As trace-cruncher interacts with the Linux kernel tracing infrastructure, the tests must be run with root privileges:
 +
- set(PLUGINS ${PLUGIN_LIST} PARENT_SCOPE)
++``` shell
++cd tracecruncher/tests
++sudo python3 -m unittest discover .
++```
++
+ ## Reporting Bugs and Creating Issues
+ For bug reports and issues, please file it [bugzilla](https://bugzilla.kernel.org/buglist.cgi?component=Trace-cmd%2FKernelshark&product=Tools&resolution=---)
+ 
 -- 
-2.32.0
+2.34.1
 
