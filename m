@@ -2,201 +2,141 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB52AC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Feb 2022 15:36:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29B95C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Feb 2022 15:36:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233431AbiBCPgK (ORCPT
+        id S1347721AbiBCPgL (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 3 Feb 2022 10:36:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44786 "EHLO
+        Thu, 3 Feb 2022 10:36:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231831AbiBCPgK (ORCPT
+        with ESMTP id S240490AbiBCPgK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 3 Feb 2022 10:36:10 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE7DC061714
-        for <linux-trace-devel@vger.kernel.org>; Thu,  3 Feb 2022 07:36:09 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id f17so5825067wrx.1
-        for <linux-trace-devel@vger.kernel.org>; Thu, 03 Feb 2022 07:36:09 -0800 (PST)
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA86C06173B
+        for <linux-trace-devel@vger.kernel.org>; Thu,  3 Feb 2022 07:36:10 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id a13so5760827wrh.9
+        for <linux-trace-devel@vger.kernel.org>; Thu, 03 Feb 2022 07:36:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GOPe2C+yBstdFCIIOjRR0YQtS40jrgPlmkTwaNXrrgU=;
-        b=luYDfgnJn3z9rp8yAtVfIr2vm6eUzR8bq+zqqCxYE0UrL721zT5+Fgwt6qSRCkQvRy
-         x1mFtfsodtQSe0NcO44X2W2wWuEjCCO1h8c/QRLYfciJVRyd5fLQgVCcsQOG+G4n3LUf
-         D1R+oZIFwF8aNYSjjABfKN4ceUzUJS+QhnvBjgl3hbyjEFXmZFLzenFJsTG15SLWlYQy
-         XifBAroFVl2KC8LXnrQWpL9lMq0GYQ6zsJ1bnLlRKQ0cxIclhJKLS4Q+F5vfry6Av3zF
-         HPxB/5A3eLY3vLIZsSlQ6/vpU6jOsgULzeWsGH1Ul+B2KTuAlAPNG/b1CbyP8puY2T3K
-         t3jg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=nW6iUE8g4RFhHjxj+R7/3qPwS9Xtf0hMFv1tu0N119Y=;
+        b=Pl25L+z3MC6BV8/l6thZrozCvD38w81g/Pdee0DmOXz46EJX/6XPNIhNoyK6ksyDRl
+         E1YabsDK2VVWnfKTWo0LHPikDYbBw+Tft4euecARu+HUzfmUPHGJ6MCvo1iNsFlyA8Hk
+         iduymj4pr2ZiAPCu26bG+tZebSH3E5xasJrr0NkKjHe9PMk75GpDUWZoSH50Sw+PfGFz
+         0942tnSlmlAPjy45RgW/l1WAEIFASU1u2XnTiQRI4tQ8HbP3PDJ9TO9J4PNATEFqM30i
+         rfp0M9md5JzXuCihtahQFHHTs4Ex7H8JgvAtAa/vx9EReCEQapexxst8EFJqpVMAAPg4
+         Uvsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GOPe2C+yBstdFCIIOjRR0YQtS40jrgPlmkTwaNXrrgU=;
-        b=K5irTITevTifFER0PX9q9pvdG5LZOuEomtJ3SSJP9m9MZxeEdTRrjkD5GpGrUkurp3
-         dzgG3bdQAORmXI6v8DLvj5eDqyKRuMQbxOhj9gEz51XAccaxMSY0ntBLnCBD/+e9rdY4
-         FF713dgxrXYbn+ZoObaf7iZue85YpWZvsz0rG1cxj3GayDns6eRKP5VMMgCQGcc36kMa
-         +Z93R4HpAcYQP8D2ULAXu/Vg/l9+yvc1mQzOilZVUEyQ4VDg7ICaM7FhjywX4gxt/2UK
-         e2EEubCpox8CIPoliaWATh3hr2G9NHNguJzgZDSlz02mYehc18ch2IOW9Pppu3w2OjzU
-         /odg==
-X-Gm-Message-State: AOAM533yVAkNgxdohFB9VJJjMjxv5415xEpNbhapNy98pilFbvrHKX1s
-        9ehxG+DMHZBeY3XArRF2FqMzDeRHZnI=
-X-Google-Smtp-Source: ABdhPJzZSImNZde4QlZJuDeTZ+XDp/e9dMu4ue0gbbTEOV6MwwRDrqJuGaVRZqbInrVnrvbGuq6nwA==
-X-Received: by 2002:adf:de0c:: with SMTP id b12mr29039845wrm.26.1643902567958;
-        Thu, 03 Feb 2022 07:36:07 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=nW6iUE8g4RFhHjxj+R7/3qPwS9Xtf0hMFv1tu0N119Y=;
+        b=Fcx9BEDeRbXQqNyqxfVk41i8DQ7MAzsHHlxJnc3OUmnhEB9Zm2fX7URMFVOjT6KZ/D
+         Q7GGGbLQkWDSYmi6HaKcKOJpKwJFHBwnpsU9HWciA6YExW7lXXr1ik78nGynt85p3fVY
+         o+L+bFDErXaR36ri1yTmkDXwxMl7bvHTnJSpGJ8U359H3hV/PeXTV/z4cV3TiqVpBhMw
+         WX2JiSyzILf3cfsR/I83r+2hYuQ7V/C16miabAuayzIixO2rLewr+VmpEwB/MdiJ04du
+         tbC9ObZpWYddsf39fTJPLzsNnJIwKnaffHH2G17eUQog6QYK/pHu5C5B/KUsb0/leqEH
+         UkxQ==
+X-Gm-Message-State: AOAM532vSCUWZg+gXGUjufWrATp4a63cIh+AmVbrCj8raof3ImlXpgS8
+        nE58VEQGSBjT/CuHrv9NvpodN9SdDxo=
+X-Google-Smtp-Source: ABdhPJxtpwRBihjFdtnFlMjt7Z1oGRv80cryil7tMuOarvH5VWjRtZ6JrKHGx9ulpyEaXKaVqYGpww==
+X-Received: by 2002:a5d:6da8:: with SMTP id u8mr11732315wrs.603.1643902568719;
+        Thu, 03 Feb 2022 07:36:08 -0800 (PST)
 Received: from crow.eng.vmware.com ([146.247.46.134])
-        by smtp.gmail.com with ESMTPSA id z1sm7595762wmk.32.2022.02.03.07.36.06
+        by smtp.gmail.com with ESMTPSA id z1sm7595762wmk.32.2022.02.03.07.36.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Feb 2022 07:36:07 -0800 (PST)
+        Thu, 03 Feb 2022 07:36:08 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 1/3] trace-cruncher: Add ksynth class to ft_utiles
-Date:   Thu,  3 Feb 2022 17:35:54 +0200
-Message-Id: <20220203153556.26878-1-y.karadz@gmail.com>
+Subject: [PATCH 2/3] trace-cruncher: Add tests for the ksynth class
+Date:   Thu,  3 Feb 2022 17:35:55 +0200
+Message-Id: <20220203153556.26878-2-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20220203153556.26878-1-y.karadz@gmail.com>
+References: <20220203153556.26878-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Define a Python class and helper methods to be used for easy manipulation
-of kernel synthetic events.
+Testing the high-level Python APIs for kernel synthetic events.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- tracecruncher/ft_utils.py | 119 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 119 insertions(+)
+ .../tests/1_unit/test_01_ftracepy_unit.py     | 55 +++++++++++++++++++
+ 1 file changed, 55 insertions(+)
 
-diff --git a/tracecruncher/ft_utils.py b/tracecruncher/ft_utils.py
-index 26c06ec..26978f3 100644
---- a/tracecruncher/ft_utils.py
-+++ b/tracecruncher/ft_utils.py
-@@ -314,3 +314,122 @@ def find_khist(name, event, axes, instance=None,
-         raise RuntimeError(msg) from err
+diff --git a/tracecruncher/tests/1_unit/test_01_ftracepy_unit.py b/tracecruncher/tests/1_unit/test_01_ftracepy_unit.py
+index f51bcc1..70f5d29 100644
+--- a/tracecruncher/tests/1_unit/test_01_ftracepy_unit.py
++++ b/tracecruncher/tests/1_unit/test_01_ftracepy_unit.py
+@@ -825,6 +825,61 @@ class SyntTestCase(unittest.TestCase):
+         self.assertEqual('none', synth.get_filter())
+         synth.unregister()
  
-     return hist
++swaking = tc.event('sched', 'sched_waking')
++sswitch = tc.event('sched', 'sched_switch')
 +
-+class ksynth(event):
-+    def __init__(self, name, start_event, end_event,
-+                 synth_fields=None, match_name=ft.no_arg()):
-+        """ Constructor.
-+        """
-+        super().__init__(system='synthetic', name=name, static=False)
-+        self.synth = ft.synth(name,
-+                              start_sys=start_event['event'].system,
-+                              start_evt=start_event['event'].name,
-+                              end_sys=end_event['event'].system,
-+                              end_evt=end_event['event'].name,
-+                              start_match=start_event['match'],
-+                              end_match=end_event['match'],
-+                              match_name=match_name)
++class SyntTestCase(unittest.TestCase):
++    def test_synt_create(self):
++        start = tc.ksynth_event_item(event=swaking,
++                                     fields=['target_cpu', 'prio'],
++                                     match='pid')
++        self.assertEqual(start['fields'], ['target_cpu', 'prio'])
++        self.assertEqual(start['match'], 'pid')
++        self.assertEqual(start['field_names'], [None, None])
 +
-+        start_fields = end_fields = []
++        start = tc.ksynth_field_rename(start,
++                                       field='target_cpu', name='cpu')
++        self.assertEqual(start['field_names'], ['cpu', None])
 +
-+        if 'fields' in start_event:
-+            start_fields = start_event['fields']
++        end = tc.ksynth_event_item(event=sswitch,
++                                   fields=['prev_prio'],
++                                   match='next_pid')
++        self.assertEqual(end['fields'], ['prev_prio'])
++        self.assertEqual(end['match'], 'next_pid')
 +
-+        start_field_names = [None] * len(start_fields)
-+        if 'field_names' in start_event:
-+            start_field_names = start_event['field_names']
++        synth = tc.ksynth(name='synth_wakeup',
++                          start_event=start, end_event=end,
++                          synth_fields=[tc.ksynth_field_deltaT(hd=True)],
++                          match_name='pid')
 +
-+        self.synth.add_start_fields(fields=start_fields,
-+                                    names=start_field_names)
++        synth_str = synth.__repr__().split('\n')
++        event = synth_str[0]
++        hist_s = synth_str[1]
++        hist_e = synth_str[2]
 +
-+        if 'fields' in end_event:
-+            end_fields = end_event['fields']
++        self.assertTrue('keys=pid'in hist_s)
++        self.assertTrue('keys=next_pid' in hist_e)
++        self.assertTrue('pid=next_pid' in hist_e)
++        self.assertTrue('onmatch(sched.sched_waking).trace(synth_wakeup,$pid' in hist_e)
++        self.assertTrue('s32 cpu;' in event)
++        self.assertTrue('s32 prio;' in event)
++        split_1 = hist_s.split('__arg_')
++        arg1 = '__arg_' + split_1[1].split('=')[0]
++        arg2 = '__arg_' + split_1[2].split('=')[0]
++        self.assertTrue(arg1 + '=target_cpu' in hist_s)
++        self.assertTrue(arg2 + '=prio' in hist_s)
++        self.assertTrue('cpu=$' + arg1 in hist_e)
++        self.assertTrue('prio=$' + arg2 in hist_e)
++        split_2 = hist_e.split('trace(')
++        self.assertTrue('$pid' in split_2[1])
++        self.assertTrue('$prio' in split_2[1])
++        self.assertTrue('s32 prev_prio;' in event)
++        split_3 = hist_e.split('__arg_')
++        arg3 = '__arg_' + split_3[3].split('=')[0]
++        self.assertTrue(arg3 + '=prev_prio' in hist_e)
++        split_4 = hist_e.split('trace(')
++        self.assertTrue('$' + arg3 in split_4[1])
 +
-+        end_field_names = [None] * len(end_fields)
-+        if 'field_names' in end_event:
-+            end_field_names = end_event['field_names']
-+
-+        self.synth.add_end_fields(fields=end_fields,
-+                                  names=end_field_names)
-+
-+        if synth_fields is not None:
-+            for f in synth_fields:
-+                args = f.split(' ')
-+                if args[0] == 'delta_t' and len(args) < 4:
-+                    if len(args) == 1:
-+                        self.synth.add_delta_T()
-+                    elif len(args) == 3 and args[2] == 'hd':
-+                        self.synth.add_delta_T(name=args[1], hd=True)
-+                    elif args[1] == 'hd':
-+                        self.synth.add_delta_T(hd=True)
-+                    else:
-+                        self.synth.add_delta_T(name=args[1])
-+                elif args[0] == 'delta_start' and len(args) == 4:
-+                    self.synth.add_delta_start(name=args[1],
-+                                               start_field=args[2],
-+                                               end_field=args[3])
-+                elif args[0] == 'delta_end' and len(args) == 4:
-+                    self.synth.add_delta_end(name=args[1],
-+                                             start_field=args[2],
-+                                             end_field=args[3])
-+                elif args[0] == 'delta_start' and len(args) == 3:
-+                    self.synth.add_sum(start_field=args[1], end_field=args[2])
-+                else:
-+                    raise ValueError('Invalid synth. field \'{0}\''.format(f))
-+
-+        self.synth.register()
-+        self.evt_id = find_event_id(system=self.system, event=self.name)
-+
-+    def __repr__(self):
-+        """ Read the descriptor of the synthetic event.
-+        """
-+        return self.synth.repr(event=True, hist_start=True, hist_end=True)
-+
-+
-+def ksynth_event_item(event, match, fields=[]):
-+    """ Create descriptor for an event item (component) of a synthetic event.
-+        To be used as a start/end event.
-+    """
-+    sub_evt = {}
-+    sub_evt['event'] = event
-+    sub_evt['fields'] = fields
-+    sub_evt['field_names'] = [None] * len(fields)
-+    sub_evt['match'] = match
-+
-+    return sub_evt
-+
-+
-+def ksynth_field_rename(event, field, name):
-+    """ Change the name of a field in the event component of a synthetic event.
-+    """
-+    pos = event['fields'].index(field)
-+    event['field_names'][pos] = name
-+
-+    return event
-+
-+
-+def ksynth_field_deltaT(name='delta_T', hd=False):
-+    """ Create descriptor for time-diference synthetic field.
-+    """
-+    if hd:
-+        return 'delta_t {0} hd'.format(name)
-+
-+    return 'delta_t {0} hd'.format(name)
-+
-+
-+def ksynth_field_delta_start(name, start_field, end_field):
-+    """ Create descriptor for field diference (start - end) synthetic field.
-+    """
-+    return 'delta_start {0} {1} {2}'.format(name, start_field, end_field)
-+
-+
-+def ksynth_field_delta_end(name, start_field, end_field):
-+    """ Create descriptor for field diference (end - start)  synthetic field.
-+    """
-+    return 'delta_end {0} {1} {2}'.format(name, start_field, end_field)
-+
-+
-+def ksynth_field_sum(name, start_field, end_field):
-+    """ Create descriptor for field sum synthetic field.
-+    """
-+    return 'sum {0} {1} {2}'.format(name, start_field, end_field)
+ 
+ if __name__ == '__main__':
+     unittest.main()
 -- 
 2.32.0
 
