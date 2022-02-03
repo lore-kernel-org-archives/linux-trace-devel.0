@@ -2,65 +2,85 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74032C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Feb 2022 16:43:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E583C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Feb 2022 17:30:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236412AbiBCQnJ (ORCPT
+        id S1352857AbiBCRap (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 3 Feb 2022 11:43:09 -0500
-Received: from sin.source.kernel.org ([145.40.73.55]:44844 "EHLO
-        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242144AbiBCQnI (ORCPT
+        Thu, 3 Feb 2022 12:30:45 -0500
+Received: from gateway34.websitewelcome.com ([192.185.150.114]:18539 "EHLO
+        gateway34.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352892AbiBCRao (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 3 Feb 2022 11:43:08 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id C5B60CE2055;
-        Thu,  3 Feb 2022 16:43:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C795AC340E8;
-        Thu,  3 Feb 2022 16:43:04 +0000 (UTC)
-Date:   Thu, 3 Feb 2022 11:43:03 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 3/8] rtla/osnoise_top: Fix segmentation fault when
- failing to enable -t
-Message-ID: <20220203114303.575910f8@gandalf.local.home>
-In-Reply-To: <20220203114126.3ec6b37d@gandalf.local.home>
-References: <cover.1643033113.git.bristot@kernel.org>
-        <3ef9cb911e9b51be55a874cacc847d44bca9877e.1643033113.git.bristot@kernel.org>
-        <20220203114126.3ec6b37d@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 3 Feb 2022 12:30:44 -0500
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+        by gateway34.websitewelcome.com (Postfix) with ESMTP id AE9B056A6
+        for <linux-trace-devel@vger.kernel.org>; Thu,  3 Feb 2022 11:30:43 -0600 (CST)
+Received: from gator4132.hostgator.com ([192.185.4.144])
+        by cmsmtp with SMTP
+        id FfwRnpSPqXvvJFfwRnPOO5; Thu, 03 Feb 2022 11:30:43 -0600
+X-Authority-Reason: nr=8
+Received: from host-79-47-126-144.retail.telecomitalia.it ([79.47.126.144]:35786 helo=[10.0.0.45])
+        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <bristot@kernel.org>)
+        id 1nFfwR-001jMb-5w; Thu, 03 Feb 2022 11:30:43 -0600
+Message-ID: <846b245d-82c4-faa5-1ba3-733ad197d953@kernel.org>
+Date:   Thu, 3 Feb 2022 18:30:39 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH 3/8] rtla/osnoise_top: Fix segmentation fault when failing
+ to enable -t
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
+References: <cover.1643033113.git.bristot@kernel.org>
+ <3ef9cb911e9b51be55a874cacc847d44bca9877e.1643033113.git.bristot@kernel.org>
+ <20220203114126.3ec6b37d@gandalf.local.home>
+ <20220203114303.575910f8@gandalf.local.home>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <20220203114303.575910f8@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - kernel.org
+X-BWhitelist: no
+X-Source-IP: 79.47.126.144
+X-Source-L: No
+X-Exim-ID: 1nFfwR-001jMb-5w
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: host-79-47-126-144.retail.telecomitalia.it ([10.0.0.45]) [79.47.126.144]:35786
+X-Source-Auth: kernel@bristot.me
+X-Email-Count: 1
+X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
+X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 3 Feb 2022 11:41:26 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On 2/3/22 17:43, Steven Rostedt wrote:
+> On Thu, 3 Feb 2022 11:41:26 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+>> Wouldn't these four patches be more robust if you just initialized record
+>> (and tool) to NULL, and change osnoise_destroy_tool() to:
+> And if you do this, it should be one patch, not four.
 
-> Wouldn't these four patches be more robust if you just initialized record
-> (and tool) to NULL, and change osnoise_destroy_tool() to:
 
-And if you do this, it should be one patch, not four.
+Yeah, it works. The order would still be wrong, but it would be just an esthetic
+thing.
 
--- Steve
+I will send a v2 removing these four patches, and adding a patch with your
+suggestion.
 
-> 
-> void osnoise_destroy_tool(struct osnoise_tool *top)
-> {
-> 	if (!top)
-> 		return;
-> 
->         trace_instance_destroy(&top->trace);
-> 
->         if (top->context)
->                 osnoise_put_context(top->context);
-> 
->         free(top);
-> }
-> 
-> Then you don't need these extra labels and if statements in the main code.
+[ thinking aloud, is it possible to have multiple Fixes:? well, adding just one
+would also solve the issue, and... we are still in the same release ]
+
+Thanks,
+-- Daniel
