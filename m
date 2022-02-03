@@ -2,98 +2,201 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AE18C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  2 Feb 2022 21:46:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB52AC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Feb 2022 15:36:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbiBBVqx (ORCPT
+        id S233431AbiBCPgK (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 2 Feb 2022 16:46:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58544 "EHLO
+        Thu, 3 Feb 2022 10:36:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbiBBVqx (ORCPT
+        with ESMTP id S231831AbiBCPgK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 2 Feb 2022 16:46:53 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D7FFC061714
-        for <linux-trace-devel@vger.kernel.org>; Wed,  2 Feb 2022 13:46:53 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id b2-20020a252e42000000b00619593ff8ddso1926841ybn.6
-        for <linux-trace-devel@vger.kernel.org>; Wed, 02 Feb 2022 13:46:53 -0800 (PST)
+        Thu, 3 Feb 2022 10:36:10 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE7DC061714
+        for <linux-trace-devel@vger.kernel.org>; Thu,  3 Feb 2022 07:36:09 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id f17so5825067wrx.1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 03 Feb 2022 07:36:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=3c+fa41f1QjWO1FIuf+NG7yCP51GprvCfPxv3HBHEqQ=;
-        b=BZu1RYV/leLrfdlwg/kCsNJKgx+2yatd0J9R+aApI48cAldPYjUn/7jQVUVuq5x6yf
-         Fh94k5xHU1s7oIsH+WJDBQyNopGZxnmkQ3T4SJHpBXROl6lj5hrvS5ZLWHze/xnwSTeD
-         vXljYtZDhQlDLm+paj9bX9zwscvH7p4uDvY/j5ECG9yQb3RCpDFcIzDhtWFoXPtyiACR
-         OuWhvxpIWeI+FwZACjMz+HR6tgJ8hgy0rd75POFCUfS16CX4k4ZgcMPGuGGijSLzYjqp
-         6IVzB+XNhzQA74GQPIZNd/E3PLW5jp5wKAT2r7owVcnIQBG8AORE1NIUNvX5Xy4Lr2rq
-         AZPg==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GOPe2C+yBstdFCIIOjRR0YQtS40jrgPlmkTwaNXrrgU=;
+        b=luYDfgnJn3z9rp8yAtVfIr2vm6eUzR8bq+zqqCxYE0UrL721zT5+Fgwt6qSRCkQvRy
+         x1mFtfsodtQSe0NcO44X2W2wWuEjCCO1h8c/QRLYfciJVRyd5fLQgVCcsQOG+G4n3LUf
+         D1R+oZIFwF8aNYSjjABfKN4ceUzUJS+QhnvBjgl3hbyjEFXmZFLzenFJsTG15SLWlYQy
+         XifBAroFVl2KC8LXnrQWpL9lMq0GYQ6zsJ1bnLlRKQ0cxIclhJKLS4Q+F5vfry6Av3zF
+         HPxB/5A3eLY3vLIZsSlQ6/vpU6jOsgULzeWsGH1Ul+B2KTuAlAPNG/b1CbyP8puY2T3K
+         t3jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=3c+fa41f1QjWO1FIuf+NG7yCP51GprvCfPxv3HBHEqQ=;
-        b=gCl/0piGugUjNWyeaILcJyzDnak6L6chrb8JVtga3ew4A6hWLyGryNCvcHLMG1kdKI
-         X/LJoVuk8ffiVMk3dwxsI3pCswM/AZd6tkWZnDhXlqqKhWb3cgO51dJVZf2YHY4rV6uL
-         In8Zi98R11uWETKDS15dzBeghYJUCyB+2HZjdojD5LB7JA+cIy0bIyH5Mhleg/di/bBh
-         cCb8IpQA2vpbOEwHQHdb8fkpDW/VPfdBgS5Iq0Ouinsudyyfb8a2xK4iIvv/z4q+puWT
-         IGzySi0Gmc/UsjEqdlno8mU3Jv60tbPlks3nk4Ur4wFQepg73T4eKE1eJYR8Nwgflru3
-         xBoA==
-X-Gm-Message-State: AOAM531Gp02TWf117qzYdapz0RBrOK9Tjkq27iDNxZeuCvIpGVOZOioX
-        SMtXUPoZWHNjTnsJuPJZ10RgJ6icVjnCp4BoNdCXHPXAwsF/hv+cMhqXYqjvKQmO+k/TkDgsuyK
-        S3//JR1jTL9kJi8tu4yInRsZYsJSf4UflrE/U1DjLWD/gqlvrpGHS1rBcLWEbi3bnVxbNEzYCO7
-        JjVks=
-X-Google-Smtp-Source: ABdhPJwioQSiSizjUsj3IxZnIGbC8eSH+g1UvEBzBs4BAkVqeTevRsB9h3b2ajkHI7lPI0owbGFwqrejcf6F
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:adf2:a985:b1bf:dcb8])
- (user=irogers job=sendgmr) by 2002:a81:48c1:: with SMTP id
- v184mr2358877ywa.340.1643838412266; Wed, 02 Feb 2022 13:46:52 -0800 (PST)
-Date:   Wed,  2 Feb 2022 13:46:46 -0800
-Message-Id: <20220202214646.553872-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.35.0.rc2.247.g8bbb082509-goog
-Subject: [PATCH] trace-cmd: Fix use of uninitialized variable
-From:   Ian Rogers <irogers@google.com>
-To:     linux-trace-devel@vger.kernel.org,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GOPe2C+yBstdFCIIOjRR0YQtS40jrgPlmkTwaNXrrgU=;
+        b=K5irTITevTifFER0PX9q9pvdG5LZOuEomtJ3SSJP9m9MZxeEdTRrjkD5GpGrUkurp3
+         dzgG3bdQAORmXI6v8DLvj5eDqyKRuMQbxOhj9gEz51XAccaxMSY0ntBLnCBD/+e9rdY4
+         FF713dgxrXYbn+ZoObaf7iZue85YpWZvsz0rG1cxj3GayDns6eRKP5VMMgCQGcc36kMa
+         +Z93R4HpAcYQP8D2ULAXu/Vg/l9+yvc1mQzOilZVUEyQ4VDg7ICaM7FhjywX4gxt/2UK
+         e2EEubCpox8CIPoliaWATh3hr2G9NHNguJzgZDSlz02mYehc18ch2IOW9Pppu3w2OjzU
+         /odg==
+X-Gm-Message-State: AOAM533yVAkNgxdohFB9VJJjMjxv5415xEpNbhapNy98pilFbvrHKX1s
+        9ehxG+DMHZBeY3XArRF2FqMzDeRHZnI=
+X-Google-Smtp-Source: ABdhPJzZSImNZde4QlZJuDeTZ+XDp/e9dMu4ue0gbbTEOV6MwwRDrqJuGaVRZqbInrVnrvbGuq6nwA==
+X-Received: by 2002:adf:de0c:: with SMTP id b12mr29039845wrm.26.1643902567958;
+        Thu, 03 Feb 2022 07:36:07 -0800 (PST)
+Received: from crow.eng.vmware.com ([146.247.46.134])
+        by smtp.gmail.com with ESMTPSA id z1sm7595762wmk.32.2022.02.03.07.36.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Feb 2022 07:36:07 -0800 (PST)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH 1/3] trace-cruncher: Add ksynth class to ft_utiles
+Date:   Thu,  3 Feb 2022 17:35:54 +0200
+Message-Id: <20220203153556.26878-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Caught by clang's -Wsometimes-uninitialized and accepting the suggested
-fix:
+Define a Python class and helper methods to be used for easy manipulation
+of kernel synthetic events.
 
-lib/trace-cmd/trace-input.c:4325:6: error: variable 'sec' is used uninitialized whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
-        if (handle->file_state >= start_state) {
-            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-lib/trace-cmd/trace-input.c:4336:6: note: uninitialized use occurs here
-        if (sec)
-            ^~~
-lib/trace-cmd/trace-input.c:4325:2: note: remove the 'if' if its condition is always true
-        if (handle->file_state >= start_state) {
-        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-lib/trace-cmd/trace-input.c:4311:26: note: initialize the variable 'sec' to silence this warning
-        struct file_section *sec;
-                                ^
-                                 = NULL
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tracecruncher/ft_utils.py | 119 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 119 insertions(+)
 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index ecb5682..57bd4ee 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -4308,7 +4308,7 @@ int tracecmd_copy_headers(struct tracecmd_input *handle, int fd,
- 			  enum tracecmd_file_states start_state,
- 			  enum tracecmd_file_states end_state)
- {
--	struct file_section *sec;
-+	struct file_section *sec = NULL;
- 	int ret;
+diff --git a/tracecruncher/ft_utils.py b/tracecruncher/ft_utils.py
+index 26c06ec..26978f3 100644
+--- a/tracecruncher/ft_utils.py
++++ b/tracecruncher/ft_utils.py
+@@ -314,3 +314,122 @@ def find_khist(name, event, axes, instance=None,
+         raise RuntimeError(msg) from err
  
- 	if (!start_state)
+     return hist
++
++class ksynth(event):
++    def __init__(self, name, start_event, end_event,
++                 synth_fields=None, match_name=ft.no_arg()):
++        """ Constructor.
++        """
++        super().__init__(system='synthetic', name=name, static=False)
++        self.synth = ft.synth(name,
++                              start_sys=start_event['event'].system,
++                              start_evt=start_event['event'].name,
++                              end_sys=end_event['event'].system,
++                              end_evt=end_event['event'].name,
++                              start_match=start_event['match'],
++                              end_match=end_event['match'],
++                              match_name=match_name)
++
++        start_fields = end_fields = []
++
++        if 'fields' in start_event:
++            start_fields = start_event['fields']
++
++        start_field_names = [None] * len(start_fields)
++        if 'field_names' in start_event:
++            start_field_names = start_event['field_names']
++
++        self.synth.add_start_fields(fields=start_fields,
++                                    names=start_field_names)
++
++        if 'fields' in end_event:
++            end_fields = end_event['fields']
++
++        end_field_names = [None] * len(end_fields)
++        if 'field_names' in end_event:
++            end_field_names = end_event['field_names']
++
++        self.synth.add_end_fields(fields=end_fields,
++                                  names=end_field_names)
++
++        if synth_fields is not None:
++            for f in synth_fields:
++                args = f.split(' ')
++                if args[0] == 'delta_t' and len(args) < 4:
++                    if len(args) == 1:
++                        self.synth.add_delta_T()
++                    elif len(args) == 3 and args[2] == 'hd':
++                        self.synth.add_delta_T(name=args[1], hd=True)
++                    elif args[1] == 'hd':
++                        self.synth.add_delta_T(hd=True)
++                    else:
++                        self.synth.add_delta_T(name=args[1])
++                elif args[0] == 'delta_start' and len(args) == 4:
++                    self.synth.add_delta_start(name=args[1],
++                                               start_field=args[2],
++                                               end_field=args[3])
++                elif args[0] == 'delta_end' and len(args) == 4:
++                    self.synth.add_delta_end(name=args[1],
++                                             start_field=args[2],
++                                             end_field=args[3])
++                elif args[0] == 'delta_start' and len(args) == 3:
++                    self.synth.add_sum(start_field=args[1], end_field=args[2])
++                else:
++                    raise ValueError('Invalid synth. field \'{0}\''.format(f))
++
++        self.synth.register()
++        self.evt_id = find_event_id(system=self.system, event=self.name)
++
++    def __repr__(self):
++        """ Read the descriptor of the synthetic event.
++        """
++        return self.synth.repr(event=True, hist_start=True, hist_end=True)
++
++
++def ksynth_event_item(event, match, fields=[]):
++    """ Create descriptor for an event item (component) of a synthetic event.
++        To be used as a start/end event.
++    """
++    sub_evt = {}
++    sub_evt['event'] = event
++    sub_evt['fields'] = fields
++    sub_evt['field_names'] = [None] * len(fields)
++    sub_evt['match'] = match
++
++    return sub_evt
++
++
++def ksynth_field_rename(event, field, name):
++    """ Change the name of a field in the event component of a synthetic event.
++    """
++    pos = event['fields'].index(field)
++    event['field_names'][pos] = name
++
++    return event
++
++
++def ksynth_field_deltaT(name='delta_T', hd=False):
++    """ Create descriptor for time-diference synthetic field.
++    """
++    if hd:
++        return 'delta_t {0} hd'.format(name)
++
++    return 'delta_t {0} hd'.format(name)
++
++
++def ksynth_field_delta_start(name, start_field, end_field):
++    """ Create descriptor for field diference (start - end) synthetic field.
++    """
++    return 'delta_start {0} {1} {2}'.format(name, start_field, end_field)
++
++
++def ksynth_field_delta_end(name, start_field, end_field):
++    """ Create descriptor for field diference (end - start)  synthetic field.
++    """
++    return 'delta_end {0} {1} {2}'.format(name, start_field, end_field)
++
++
++def ksynth_field_sum(name, start_field, end_field):
++    """ Create descriptor for field sum synthetic field.
++    """
++    return 'sum {0} {1} {2}'.format(name, start_field, end_field)
 -- 
-2.35.0.rc2.247.g8bbb082509-goog
+2.32.0
 
