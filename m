@@ -2,128 +2,122 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3CC0C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Feb 2022 15:36:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1D67C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Feb 2022 16:41:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240490AbiBCPgM (ORCPT
+        id S1352307AbiBCQle (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 3 Feb 2022 10:36:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44792 "EHLO
+        Thu, 3 Feb 2022 11:41:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231831AbiBCPgL (ORCPT
+        with ESMTP id S1352300AbiBCQlc (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 3 Feb 2022 10:36:11 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598B1C061714
-        for <linux-trace-devel@vger.kernel.org>; Thu,  3 Feb 2022 07:36:11 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id v123so2366782wme.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 03 Feb 2022 07:36:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fyPT2rDeN3eg/cGYmcfxCvL8JkkfuGsSr7AkFnWtWoQ=;
-        b=Ek7eBHwtnsqtwF5V1Vd3O6ozUl+/HWC/Ipgi099v/Ljgrd7I+nuT2SAY+gVUT9qFkK
-         e8Nb6OwNMivTauwmE8xtdgDq3SCpTxXsEMByXQtJpImqao6d/zDg7jmAwxAW21o6l317
-         fcUkHD5hdwQJM5QYdc7YA1EAZG1vZDefNZ9bhuI920K9grpAIstMC8jBoIWY0XXi5qDN
-         pqQZd3JPV+PQS3HCrtGoV5lxxRTSKY+gKn7M9id4WMVjFRLbu5NHjM1aT0svYm/9uDqz
-         T/BU44+McOCQyZnegybv090DG+MtZpTYX/PFXfGhcud4dNUncNXrIqZxRwQFMWL0pDXu
-         INxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fyPT2rDeN3eg/cGYmcfxCvL8JkkfuGsSr7AkFnWtWoQ=;
-        b=CazP7Yzj70hWeuv5Vv/X64CWi3KhM8PqiSdu8+5pnyh6O46ppqOxdqkGTbhNJR+MYB
-         LLNz4vQLiLx1CcBZk3fQQZenCN2QdYLXEUDN/bHf7C/qeAlekfCWCj3GbrALWDgIY9sh
-         xi/9vKsLbJPR8FYjRllK2OfE/tsP/qbh1mZW/NCHyG3+4fpGu/MKRedOyrLOP8gnrSKG
-         aI+mDE0LlIc7n9sxTbToIpbXfLqe5U264q84XdVQpvOaAcSsNXQn5VtPILbmoxobiaqY
-         ZqJ1NFQt1vwRTUkUWljvaYC/5HdU6aOlLlI9b4RGff9gSqXOWMvVURDOZVJ0dLovDWSA
-         KJZA==
-X-Gm-Message-State: AOAM531OcBBVkqcLh5wJtrm2Jx68ezsMzobNl1HKdrtPmSPgjIDUqrPk
-        ST12DzO7d2IpLvXBMYVtD7QOyRB5ZQ4=
-X-Google-Smtp-Source: ABdhPJx4M1wnM/a1Xc2j7+Kvv/CJjKakZTsr2ROo9tJ2EY/tBZFl7FP8zWfYLHjfFDMrZIPeOhF9ow==
-X-Received: by 2002:a05:600c:3d8a:: with SMTP id bi10mr11101003wmb.62.1643902569621;
-        Thu, 03 Feb 2022 07:36:09 -0800 (PST)
-Received: from crow.eng.vmware.com ([146.247.46.134])
-        by smtp.gmail.com with ESMTPSA id z1sm7595762wmk.32.2022.02.03.07.36.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Feb 2022 07:36:09 -0800 (PST)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 3/3] trace-cruncher: Add example for the high-level synth. events APIs
-Date:   Thu,  3 Feb 2022 17:35:56 +0200
-Message-Id: <20220203153556.26878-3-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220203153556.26878-1-y.karadz@gmail.com>
-References: <20220203153556.26878-1-y.karadz@gmail.com>
+        Thu, 3 Feb 2022 11:41:32 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7E75C061714;
+        Thu,  3 Feb 2022 08:41:31 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 52E40CE2015;
+        Thu,  3 Feb 2022 16:41:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D565C340E8;
+        Thu,  3 Feb 2022 16:41:28 +0000 (UTC)
+Date:   Thu, 3 Feb 2022 11:41:26 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 3/8] rtla/osnoise_top: Fix segmentation fault when
+ failing to enable -t
+Message-ID: <20220203114126.3ec6b37d@gandalf.local.home>
+In-Reply-To: <3ef9cb911e9b51be55a874cacc847d44bca9877e.1643033113.git.bristot@kernel.org>
+References: <cover.1643033113.git.bristot@kernel.org>
+        <3ef9cb911e9b51be55a874cacc847d44bca9877e.1643033113.git.bristot@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This is a very basic example, demonstrating the usage of the new
-high-level Python APIs for kernel synthetic events.
+On Mon, 24 Jan 2022 15:24:06 +0100
+Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- examples/synth_oop.py | 45 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
- create mode 100644 examples/synth_oop.py
+> rtla osnoise top is causing a segmentation fault when running with
+> the --trace option on a kernel that does not support multiple
+> instances. For example:
+> 
+>     [root@f34 rtla]# rtla osnoise top -t
+>     failed to enable the tracer osnoise
+>     Could not enable osnoiser tracer for tracing
+>     Failed to enable the trace instance
+>     Segmentation fault (core dumped)
+> 
+> This error happens because the exit code of the tools is trying
+> to destroy the trace instance that failed to be created.
+> 
+> Rearrange the order in which trace instances are destroyed to avoid
+> this problem.
+> 
+> Fixes: 1eceb2fc2ca5 ("rtla/osnoise: Add osnoise top mode")
+> Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-trace-devel@vger.kernel.org
+> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+> ---
+>  tools/tracing/rtla/src/osnoise_top.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/tracing/rtla/src/osnoise_top.c b/tools/tracing/rtla/src/osnoise_top.c
+> index 332b2ac205fc..546769bc7ff7 100644
+> --- a/tools/tracing/rtla/src/osnoise_top.c
+> +++ b/tools/tracing/rtla/src/osnoise_top.c
+> @@ -546,7 +546,7 @@ int osnoise_top_main(int argc, char **argv)
+>  						    trace);
+>  		if (retval < 0) {
+>  			err_msg("Error iterating on events\n");
+> -			goto out_top;
+> +			goto out_trace;
+>  		}
+>  
+>  		if (!params->quiet)
+> @@ -569,11 +569,12 @@ int osnoise_top_main(int argc, char **argv)
+>  		}
+>  	}
+>  
+> +out_trace:
+> +	if (params->trace_output)
+> +		osnoise_destroy_tool(record);
+>  out_top:
+>  	osnoise_free_top(tool->data);
+>  	osnoise_destroy_tool(tool);
+> -	if (params->trace_output)
+> -		osnoise_destroy_tool(record);
 
-diff --git a/examples/synth_oop.py b/examples/synth_oop.py
-new file mode 100644
-index 0000000..865e784
---- /dev/null
-+++ b/examples/synth_oop.py
-@@ -0,0 +1,45 @@
-+#!/usr/bin/env python3
-+
-+"""
-+SPDX-License-Identifier: CC-BY-4.0
-+
-+Copyright 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+"""
-+
-+import tracecruncher.ftracepy as ft
-+import tracecruncher.ft_utils as tc
-+
-+# We will define a synthetic event, to be recorded every time a 'start' event is
-+# followed by an 'end' event and both events have the same value of a 'match' field. 
-+
-+# Get the static kernel event 'sched_waking' and 'sched_switch' from system
-+# 'sched'. Those two events will be used to create the synthetic event.
-+swaking = tc.event('sched', 'sched_waking')
-+sswitch = tc.event('sched', 'sched_switch')
-+
-+# Add to the synth. event two fields from the 'start' event (sched_waking). In the
-+# synth. event, the field 'target_cpu' will be renamed to 'cpu'. Use the 'pid' field
-+# for matching with the corresponding 'end' event.
-+start = tc.ksynth_event_item(event=swaking, fields=['target_cpu', 'prio'], match='pid')
-+start = tc.ksynth_field_rename(start, field='target_cpu', name='cpu')
-+
-+# Add to the synth. event one field from the 'end' event (sched_switch).
-+# Use the 'next_pid' field for matching with the corresponding 'start' event.
-+end = tc.ksynth_event_item(event=sswitch, fields=['prev_prio'], match='next_pid')
-+
-+# Define a synthetic event. The 'match' value will be recorder as a field in the
-+# synth. event using 'pid' as name. We also add to the synth. event a field that
-+# measures the time-difference between the 'start' and 'end' events. This new field
-+# will use 'hd' time resolution (nanoseconds).
-+synth = tc.ksynth(name='synth_wakeup', start_event=start, end_event=end,
-+                  synth_fields=[tc.ksynth_field_deltaT(hd=True)], match_name='pid')
-+
-+# Create new instance of Ftrace.
-+inst = ft.create_instance()
-+
-+# Apply a filter and enable the synth. event.
-+synth.set_filter(instance=inst, filter='prio<100')
-+synth.enable(instance=inst)
-+
-+# Print the stream of trace events. "Ctrl+c" to stop tracing.
-+ft.read_trace(instance=inst)
--- 
-2.32.0
+Wouldn't these four patches be more robust if you just initialized record
+(and tool) to NULL, and change osnoise_destroy_tool() to:
+
+void osnoise_destroy_tool(struct osnoise_tool *top)
+{
+	if (!top)
+		return;
+
+        trace_instance_destroy(&top->trace);
+
+        if (top->context)
+                osnoise_put_context(top->context);
+
+        free(top);
+}
+
+Then you don't need these extra labels and if statements in the main code.
+
+-- Steve
+
+
+>  out_exit:
+>  	exit(return_value);
+>  }
 
