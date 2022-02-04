@@ -2,63 +2,70 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B4F4C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Feb 2022 13:21:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5244BC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Feb 2022 16:24:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244318AbiBDNVg (ORCPT
+        id S1376531AbiBDQYS convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 4 Feb 2022 08:21:36 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:52614 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233423AbiBDNVg (ORCPT
+        Fri, 4 Feb 2022 11:24:18 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:22680 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1376527AbiBDQYS (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 4 Feb 2022 08:21:36 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 4 Feb 2022 11:24:18 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-558-ex2SSuqZOQWh513PE2FANw-1; Fri, 04 Feb 2022 11:24:14 -0500
+X-MC-Unique: ex2SSuqZOQWh513PE2FANw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0E25261BFE
-        for <linux-trace-devel@vger.kernel.org>; Fri,  4 Feb 2022 13:21:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5262C340E9;
-        Fri,  4 Feb 2022 13:21:34 +0000 (UTC)
-Date:   Fri, 4 Feb 2022 08:21:32 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 1/2] libtracefs: clean also docs by default
-Message-ID: <20220204082132.57be9bab@rorschach.local.home>
-In-Reply-To: <652ddddb-6770-ca49-d00e-3b24ebc602a4@canonical.com>
-References: <20220124105252.64897-1-krzysztof.kozlowski@canonical.com>
-        <20220203214106.458cb2c4@gandalf.local.home>
-        <652ddddb-6770-ca49-d00e-3b24ebc602a4@canonical.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4EC02100C66D;
+        Fri,  4 Feb 2022 16:24:13 +0000 (UTC)
+Received: from x1.com (unknown [10.22.33.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 546C57E91E;
+        Fri,  4 Feb 2022 16:24:11 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Subject: [PATCH 0/4] Some RTLA fixes
+Date:   Fri,  4 Feb 2022 17:24:01 +0100
+Message-Id: <cover.1643990447.git.bristot@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 4 Feb 2022 09:59:06 +0100
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote:
+The first is a change in the Makefile to make rtla use the kernel
+version.
 
+The other fixes are in the error path when rtla fails to enable
+the tracers. I got some segmentation faults when trying to use rtla
+with kernel versions that do not support multiple instances (i.e.,
+5.14 and 5.15) and fixed them. I also found some inconsistency in
+error messages and also did a cleanup there.
 
-> I don't know actually, but I find natural that clean removes all
-> objects, even ones not created by "make all".
+Daniel Bristot de Oliveira (4):
+  rtla: Follow kernel version
+  rtla/utils: Fix session duration parsing
+  rtla/trace: Error message fixup
+  rtla/osnoise: Fix segmentation fault when failing to enable -t
 
-The main reason I like to keep documentation clean and code clean
-separate, is because when I develop between different branches,
-checking out an older one then a newer one, the make dependencies can
-get screwed up. A make clean usually solves the issue when that
-happens. But I don't want to rebuild the documentation every time I do
-a make clean.
+ tools/tracing/rtla/Makefile      | 4 +++-
+ tools/tracing/rtla/src/osnoise.c | 3 +++
+ tools/tracing/rtla/src/trace.c   | 8 ++++----
+ tools/tracing/rtla/src/utils.c   | 4 ++--
+ 4 files changed, 12 insertions(+), 7 deletions(-)
 
-> 
-> I see your point, so I do not insist on this solution. I can fix the
-> incomplete cleaning on Debian package side.
-> 
+-- 
+2.34.1
 
-Great. I'll take the second patch and drop this one then.
-
-Thanks for your contributions!
-
--- Steve
