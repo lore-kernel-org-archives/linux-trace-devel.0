@@ -2,103 +2,53 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 124C6C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Feb 2022 17:49:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6C91C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Feb 2022 18:15:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377077AbiBDRtG (ORCPT
+        id S1377417AbiBDSPr (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 4 Feb 2022 12:49:06 -0500
-Received: from gateway20.websitewelcome.com ([192.185.61.9]:16666 "EHLO
-        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241900AbiBDRtG (ORCPT
+        Fri, 4 Feb 2022 13:15:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1376772AbiBDSPo (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 4 Feb 2022 12:49:06 -0500
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway20.websitewelcome.com (Postfix) with ESMTP id 00BA3400D676E
-        for <linux-trace-devel@vger.kernel.org>; Fri,  4 Feb 2022 11:49:06 -0600 (CST)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id G2fpnx2gpb6UBG2fpngksO; Fri, 04 Feb 2022 11:47:05 -0600
-X-Authority-Reason: nr=8
-Received: from host-79-47-126-144.retail.telecomitalia.it ([79.47.126.144]:51660 helo=[10.0.1.2])
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1nG2fp-0022hu-7t; Fri, 04 Feb 2022 11:47:05 -0600
-Message-ID: <23e7889f-9bb4-f607-630f-6f8f0ef90d3d@kernel.org>
-Date:   Fri, 4 Feb 2022 18:46:59 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH 4/4] rtla/osnoise: Fix segmentation fault when failing to
- enable -t
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
+        Fri, 4 Feb 2022 13:15:44 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F32C061714;
+        Fri,  4 Feb 2022 10:15:44 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0314261BA2;
+        Fri,  4 Feb 2022 18:15:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8359C004E1;
+        Fri,  4 Feb 2022 18:15:42 +0000 (UTC)
+Date:   Fri, 4 Feb 2022 13:15:41 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 4/4] rtla/osnoise: Fix segmentation fault when failing
+ to enable -t
+Message-ID: <20220204131541.2c47be3f@gandalf.local.home>
+In-Reply-To: <23e7889f-9bb4-f607-630f-6f8f0ef90d3d@kernel.org>
 References: <cover.1643990447.git.bristot@kernel.org>
- <264ff7941b7551ec0b6e5862e40cf3dd593d0ff0.1643990447.git.bristot@kernel.org>
- <20220204124426.54d82ce2@gandalf.local.home>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <20220204124426.54d82ce2@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8
+        <264ff7941b7551ec0b6e5862e40cf3dd593d0ff0.1643990447.git.bristot@kernel.org>
+        <20220204124426.54d82ce2@gandalf.local.home>
+        <23e7889f-9bb4-f607-630f-6f8f0ef90d3d@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 79.47.126.144
-X-Source-L: No
-X-Exim-ID: 1nG2fp-0022hu-7t
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-79-47-126-144.retail.telecomitalia.it ([10.0.1.2]) [79.47.126.144]:51660
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 1
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 2/4/22 18:44, Steven Rostedt wrote:
-> On Fri,  4 Feb 2022 17:24:05 +0100
-> Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+On Fri, 4 Feb 2022 18:46:59 +0100
+Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 > 
->> --- a/tools/tracing/rtla/src/osnoise.c
->> +++ b/tools/tracing/rtla/src/osnoise.c
->> @@ -750,6 +750,9 @@ void osnoise_put_context(struct osnoise_context *context)
->>   */
->>  void osnoise_destroy_tool(struct osnoise_tool *top)
->>  {
->> +	if (!top)
->> +		return;
->> +
->>  	trace_instance_destroy(&top->trace);
->>  
->>  	if (top->context)
-> Um, don't you still need to initialize everything to NULL?
-> 
-> i.e.
-> 
-> nt osnoise_top_main(int argc, char **argv)
-> {
->         struct osnoise_top_params *params;
->         struct trace_instance *trace;
->         struct osnoise_tool *record;
->         struct osnoise_tool *tool;
->         int return_value = 1;
->         int retval;
-> 
-> 
-> 
-> Does not guarantee that record and tool will be initialized to NULL.
+> As this is not related to the other patches, could you just ignore this one, so
+> I can re-send alone?
 
-Aaarrrg, you're right.
+Sure.
 
-As this is not related to the other patches, could you just ignore this one, so
-I can re-send alone?
-
--- Daniel
+-- Steve
