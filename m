@@ -2,74 +2,68 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50F8DC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Feb 2022 17:18:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A45C5C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Feb 2022 17:38:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234482AbiBDRSO convert rfc822-to-8bit (ORCPT
+        id S241090AbiBDRin (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 4 Feb 2022 12:18:14 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:45112 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241131AbiBDRSN (ORCPT
+        Fri, 4 Feb 2022 12:38:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234619AbiBDRim (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 4 Feb 2022 12:18:13 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-468-sOCQrqzDM2mlds-J4_ejXQ-1; Fri, 04 Feb 2022 12:18:09 -0500
-X-MC-Unique: sOCQrqzDM2mlds-J4_ejXQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Fri, 4 Feb 2022 12:38:42 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E602C061714
+        for <linux-trace-devel@vger.kernel.org>; Fri,  4 Feb 2022 09:38:42 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 593DE101F7A4;
-        Fri,  4 Feb 2022 17:18:08 +0000 (UTC)
-Received: from x1.com (unknown [10.22.11.137])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 41F037DE58;
-        Fri,  4 Feb 2022 17:18:06 +0000 (UTC)
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: Add RTLA entry
-Date:   Fri,  4 Feb 2022 18:18:00 +0100
-Message-Id: <50d8870522580905a1c7f3e6fb611a700f632af1.1643994005.git.bristot@kernel.org>
+        by sin.source.kernel.org (Postfix) with ESMTPS id DFAAFCE23D2
+        for <linux-trace-devel@vger.kernel.org>; Fri,  4 Feb 2022 17:38:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF446C004E1;
+        Fri,  4 Feb 2022 17:38:38 +0000 (UTC)
+Date:   Fri, 4 Feb 2022 12:38:37 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH] libtracefs: fix cleaning of sqlhist.txt.html
+Message-ID: <20220204123837.341cb591@gandalf.local.home>
+In-Reply-To: <20220124111031.84108-1-krzysztof.kozlowski@canonical.com>
+References: <20220124111031.84108-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add an RTLA entry in the MAINTAINERS file with Steven Rostedt and
-myself as maintainers.
+On Mon, 24 Jan 2022 12:10:31 +0100
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote:
 
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+> The man-1 HTML pages also has to be cleaned up.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bb83dcbcb619..fad694078b4c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19581,6 +19581,14 @@ F:	Documentation/trace/timerlat-tracer.rst
- F:	Documentation/trace/hwlat_detector.rst
- F:	arch/*/kernel/trace.c
- 
-+Real-time Linux Analysis (RTLA) tools
-+M:	Daniel Bristot de Oliveira <bristot@kernel.org>
-+M:	Steven Rostedt <rostedt@goodmis.org>
-+L:	linux-trace-devel@vger.kernel.org
-+S:	Maintained
-+F:	tools/tracing/rtla
-+F:	Documentation/tools/rtla
-+
- TRADITIONAL CHINESE DOCUMENTATION
- M:	Hu Haowen <src.res@email.cn>
- L:	linux-doc-tw-discuss@lists.sourceforge.net
--- 
-2.34.1
+Applied, thanks Krzysztof!
+
+-- Steve
+
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  Documentation/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/Makefile b/Documentation/Makefile
+> index 92a67aa1760c..afcb6a53ccd0 100644
+> --- a/Documentation/Makefile
+> +++ b/Documentation/Makefile
+> @@ -197,6 +197,7 @@ endif
+>  CLEAN_FILES =					\
+>  	$(MAN_XML) $(addsuffix +,$(MAN_XML))	\
+>  	$(MAN_HTML) $(addsuffix +,$(MAN_HTML))	\
+> +	$(MAN1_HTML) $(addsuffix +,$(MAN1_HTML))	\
+>  	$(filter-out $(MAN1_TEXT),$(wildcard *.1)) \
+>  	$(DOC_MAN3) *.3 *.m
+>  
 
