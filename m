@@ -2,33 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E820BC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Feb 2022 17:42:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 746A4C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Feb 2022 17:44:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376931AbiBDRmR (ORCPT
+        id S232852AbiBDRoc (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 4 Feb 2022 12:42:17 -0500
-Received: from sin.source.kernel.org ([145.40.73.55]:58018 "EHLO
-        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235897AbiBDRmO (ORCPT
+        Fri, 4 Feb 2022 12:44:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230087AbiBDRob (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 4 Feb 2022 12:42:14 -0500
+        Fri, 4 Feb 2022 12:44:31 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC551C061714;
+        Fri,  4 Feb 2022 09:44:30 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id F06EACE23D2;
-        Fri,  4 Feb 2022 17:42:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDE5CC004E1;
-        Fri,  4 Feb 2022 17:42:10 +0000 (UTC)
-Date:   Fri, 4 Feb 2022 12:42:09 -0500
+        by sin.source.kernel.org (Postfix) with ESMTPS id 4C08CCE23C8;
+        Fri,  4 Feb 2022 17:44:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47D48C004E1;
+        Fri,  4 Feb 2022 17:44:27 +0000 (UTC)
+Date:   Fri, 4 Feb 2022 12:44:26 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 3/4] rtla/trace: Error message fixup
-Message-ID: <20220204124209.18b08abf@gandalf.local.home>
-In-Reply-To: <361697d27431afefa64c67c323564205385c418d.1643990447.git.bristot@kernel.org>
+Subject: Re: [PATCH 4/4] rtla/osnoise: Fix segmentation fault when failing
+ to enable -t
+Message-ID: <20220204124426.54d82ce2@gandalf.local.home>
+In-Reply-To: <264ff7941b7551ec0b6e5862e40cf3dd593d0ff0.1643990447.git.bristot@kernel.org>
 References: <cover.1643990447.git.bristot@kernel.org>
-        <361697d27431afefa64c67c323564205385c418d.1643990447.git.bristot@kernel.org>
+        <264ff7941b7551ec0b6e5862e40cf3dd593d0ff0.1643990447.git.bristot@kernel.org>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -37,17 +41,37 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri,  4 Feb 2022 17:24:04 +0100
+On Fri,  4 Feb 2022 17:24:05 +0100
 Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 
-> Use capital and change "tracer %s" to "%s tracer".
-> 
-> No functional change.
+> --- a/tools/tracing/rtla/src/osnoise.c
+> +++ b/tools/tracing/rtla/src/osnoise.c
+> @@ -750,6 +750,9 @@ void osnoise_put_context(struct osnoise_context *context)
+>   */
+>  void osnoise_destroy_tool(struct osnoise_tool *top)
+>  {
+> +	if (!top)
+> +		return;
+> +
+>  	trace_instance_destroy(&top->trace);
+>  
+>  	if (top->context)
 
-Technically, there is a functional change. Yes, changing output strings is
-functional changes. What a non functional change would be, is moving code
-around, but the logic stays the same (or adding macro helpers, and such).
+Um, don't you still need to initialize everything to NULL?
 
-I'll keep this as is, but just stating it as an FYI.
+i.e.
+
+nt osnoise_top_main(int argc, char **argv)
+{
+        struct osnoise_top_params *params;
+        struct trace_instance *trace;
+        struct osnoise_tool *record;
+        struct osnoise_tool *tool;
+        int return_value = 1;
+        int retval;
+
+
+
+Does not guarantee that record and tool will be initialized to NULL.
 
 -- Steve
