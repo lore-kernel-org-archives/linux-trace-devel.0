@@ -2,41 +2,43 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A310C433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2BBEC433EF
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Feb 2022 16:24:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376563AbiBDQYW convert rfc822-to-8bit (ORCPT
+        id S234421AbiBDQYY convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 4 Feb 2022 11:24:22 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:24124 "EHLO
+        Fri, 4 Feb 2022 11:24:24 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:51471 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1376552AbiBDQYV (ORCPT
+        by vger.kernel.org with ESMTP id S1376541AbiBDQYW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 4 Feb 2022 11:24:21 -0500
+        Fri, 4 Feb 2022 11:24:22 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-621-rV3NRtUVMxaCyBGTewz_8A-1; Fri, 04 Feb 2022 11:24:19 -0500
-X-MC-Unique: rV3NRtUVMxaCyBGTewz_8A-1
+ us-mta-563-zNJQTjdLMpanzfGT6Hyhug-1; Fri, 04 Feb 2022 11:24:18 -0500
+X-MC-Unique: zNJQTjdLMpanzfGT6Hyhug-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AF53C1853026;
-        Fri,  4 Feb 2022 16:24:18 +0000 (UTC)
-Received: from x1.com (unknown [10.22.33.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B7C8B7E91E;
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6BA31100C660;
         Fri,  4 Feb 2022 16:24:17 +0000 (UTC)
+Received: from x1.com (unknown [10.22.33.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 40D8E7E91A;
+        Fri,  4 Feb 2022 16:24:16 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: [PATCH 4/4] rtla/osnoise: Fix segmentation fault when failing to enable -t
-Date:   Fri,  4 Feb 2022 17:24:05 +0100
-Message-Id: <264ff7941b7551ec0b6e5862e40cf3dd593d0ff0.1643990447.git.bristot@kernel.org>
+Subject: [PATCH 3/4] rtla/trace: Error message fixup
+Date:   Fri,  4 Feb 2022 17:24:04 +0100
+Message-Id: <361697d27431afefa64c67c323564205385c418d.1643990447.git.bristot@kernel.org>
 In-Reply-To: <cover.1643990447.git.bristot@kernel.org>
 References: <cover.1643990447.git.bristot@kernel.org>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: kernel.org
 Content-Transfer-Encoding: 8BIT
@@ -45,50 +47,51 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-rtla osnoise and timerlat are causing a segmentation fault when running
-with the --trace option on a kernel that does not support multiple
-instances. For example:
+Use capital and change "tracer %s" to "%s tracer".
 
-    [root@f34 rtla]# rtla osnoise top -t
-    failed to enable the tracer osnoise
-    Could not enable osnoiser tracer for tracing
-    Failed to enable the trace instance
-    Segmentation fault (core dumped)
+No functional change.
 
-This error happens because the exit code of the tools is trying
-to destroy the trace instance that failed to be created.
-
-Make osnoise_destroy_tool() aware of possible NULL osnoise_tool *,
-and do not attempt to destroy it.
-
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-Fixes: 1eceb2fc2ca5 ("rtla/osnoise: Add osnoise top mode")
-Fixes: 829a6c0b5698 ("rtla/osnoise: Add the hist mode")
-Fixes: a828cd18bc4a ("rtla: Add timerlat tool and timelart top mode")
-Fixes: 1eeb6328e8b3 ("rtla/timerlat: Add timerlat hist mode")
+Fixes: b1696371d865 ("rtla: Helper functions for rtla")
 Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: linux-kernel@vger.kernel.org
 Cc: linux-trace-devel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- tools/tracing/rtla/src/osnoise.c | 3 +++
- 1 file changed, 3 insertions(+)
+ tools/tracing/rtla/src/trace.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/tracing/rtla/src/osnoise.c b/tools/tracing/rtla/src/osnoise.c
-index 7b73d1eccd0e..5648f9252e58 100644
---- a/tools/tracing/rtla/src/osnoise.c
-+++ b/tools/tracing/rtla/src/osnoise.c
-@@ -750,6 +750,9 @@ void osnoise_put_context(struct osnoise_context *context)
-  */
- void osnoise_destroy_tool(struct osnoise_tool *top)
- {
-+	if (!top)
-+		return;
-+
- 	trace_instance_destroy(&top->trace);
+diff --git a/tools/tracing/rtla/src/trace.c b/tools/tracing/rtla/src/trace.c
+index 107a0c6387f7..83de259abcc1 100644
+--- a/tools/tracing/rtla/src/trace.c
++++ b/tools/tracing/rtla/src/trace.c
+@@ -20,14 +20,14 @@ int enable_tracer_by_name(struct tracefs_instance *inst, const char *tracer_name
  
- 	if (top->context)
+ 	tracer = TRACEFS_TRACER_CUSTOM;
+ 
+-	debug_msg("enabling %s tracer\n", tracer_name);
++	debug_msg("Enabling %s tracer\n", tracer_name);
+ 
+ 	retval = tracefs_tracer_set(inst, tracer, tracer_name);
+ 	if (retval < 0) {
+ 		if (errno == ENODEV)
+-			err_msg("tracer %s not found!\n", tracer_name);
++			err_msg("Tracer %s not found!\n", tracer_name);
+ 
+-		err_msg("failed to enable the tracer %s\n", tracer_name);
++		err_msg("Failed to enable the %s tracer\n", tracer_name);
+ 		return -1;
+ 	}
+ 
+@@ -44,7 +44,7 @@ void disable_tracer(struct tracefs_instance *inst)
+ 
+ 	retval = tracefs_tracer_set(inst, t);
+ 	if (retval < 0)
+-		err_msg("oops, error disabling tracer\n");
++		err_msg("Oops, error disabling tracer\n");
+ }
+ 
+ /*
 -- 
 2.34.1
 
