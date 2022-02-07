@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5519C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  7 Feb 2022 16:54:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78D66C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  7 Feb 2022 16:55:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbiBGQy0 (ORCPT
+        id S230314AbiBGQyz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 7 Feb 2022 11:54:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44198 "EHLO
+        Mon, 7 Feb 2022 11:54:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357089AbiBGQjQ (ORCPT
+        with ESMTP id S1357091AbiBGQjR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 7 Feb 2022 11:39:16 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6808EC0401D9
-        for <linux-trace-devel@vger.kernel.org>; Mon,  7 Feb 2022 08:39:15 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id s7so4690504edd.3
-        for <linux-trace-devel@vger.kernel.org>; Mon, 07 Feb 2022 08:39:15 -0800 (PST)
+        Mon, 7 Feb 2022 11:39:17 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D569C0401DB
+        for <linux-trace-devel@vger.kernel.org>; Mon,  7 Feb 2022 08:39:16 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id p24so6114797ejo.1
+        for <linux-trace-devel@vger.kernel.org>; Mon, 07 Feb 2022 08:39:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7caFXxpaFqz4EtyhSF51ykUPHja0w8urgfzVsqd0oFY=;
-        b=JHQoOaBtw4Vhuz6l97ySnIk6bScJIg+5y8E560cO10afA9Z7Gn3gQCZPqN+bXEjar0
-         PPuXGZAZBP6fxb7HqcfUMWBf67KbHBvUxb5gWC9qWkZtV1sGJEcUTIoPrDPurI6U/cDk
-         nJdc6yrufqwy6O85/ZucikLcsc9lVBozVFZY5/YDoYPW4tE17eYjxU6Y/yZVdoSHsk8H
-         Wj0ExcGD7iT8E0zAykPFK1V/lSu0f7WeifrufiKA0WmB84vbnDFYpZJ5BUaRvcP89JUw
-         QQxvzLPPQ3o+X9S3rQqxiEYLoYIEX18yt4vtMbLrd2kzCkMCMg+YqooJf3aZOf1ThAvz
-         +M/w==
+        bh=rpK1JshPl5/VxUVTUP9cBns8MPGKlzp5cv4pZGfXtOM=;
+        b=IKHStMUPNsUG1PnWQM0stsTZo1DPtZPaTrDc5SqHeXwj7RhgCkWNExc3/hfIs4NYyR
+         qMH/tza6r0/yNmRAuWAv01Kj5L7usxVFFNPldtq+XojpyfUJrIWr5E1nukSH6k1kYQDN
+         iBWyW+xI5EW7Wbztas/QnlNJHJtzeSGMVkWt1WNKP5qnSb0C+4AhUAEUC+cjkcuDvPmh
+         h75yIS1ujqVS3qRIjXa8EBaCgkVwpWoAeftrQnLgfUXWLE112850A4BX0cSViOPkK9kL
+         /TEmvcdyo9qO4fzZqXViHSaMYiJqLed3aPwvQtCTdfJn1CaIk7b9tXwlRU/yNGj29Hmm
+         uVoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7caFXxpaFqz4EtyhSF51ykUPHja0w8urgfzVsqd0oFY=;
-        b=Yq1zJIU5eO9spZiC7QAHu2+Ykoi/4APn042qdaoMMPtBer656M6/oD5gWwBV3cn13u
-         m6w8E+1MDi//NU335iN95jc8HJRaQkGTQ2IeMPje46qAwlbOHoNDITloVKQWHmPf995w
-         030VTn354FeFQ+YeiavApTqOcZkTR0JE9eZ8RMfIPcJp+VdtCMNW36yZj1215f2NF9dT
-         o4F44Ld/U/4BeUuviDdzoYSfxbYy+ybMCzYyEDxVHer2B0dEcIqPk2pwN4Nxabc/HdWi
-         K+4AbQh2y/NvM8Sii3eB2f850E94AfK/a9WrFACm5uWmlr6Td8RixT+8nQXMcmAqxO+S
-         5jgA==
-X-Gm-Message-State: AOAM530sYIydN4P6nxG2lxuBofhfL5p5QMlVd/vtyG2pav6xR5TEB6Qs
-        ZpcjF/qIIQ8wyA605mQMy/4Bc16Z5g0=
-X-Google-Smtp-Source: ABdhPJxupLWcz8RmRkCF7tjLklPidJ7JsBe7ml9VMCrgUoa7WYcHjgonf2Ayq6Zko6nh0FxhwgBqKg==
-X-Received: by 2002:aa7:d898:: with SMTP id u24mr339909edq.60.1644251953641;
-        Mon, 07 Feb 2022 08:39:13 -0800 (PST)
+        bh=rpK1JshPl5/VxUVTUP9cBns8MPGKlzp5cv4pZGfXtOM=;
+        b=pTvKx+13he1LFzPbZ/ZIKXk05SqpVEiL7ybMknNo/XRbjaP5EDOUWh8X35uoRsBjJ3
+         iLNhAHfW/gmlRgyGVSRoYDMkw9I8Rw9DVW2/Tk2V3SnPGJ3ma4ZeqlTtdXwNhvBvk3tX
+         YsDvRxD9WhcAldGeBAE0/4uWoJ5xDCgkaK49RVD7TMXkVQN4wL6J/XQe0gUJV31HH2WJ
+         lottNe69OPkDm2SB6YyGsxMiVEeMdBxOHif8Tyi+LQHwU6iJPqjaFxjv9mb+p1xaZH+c
+         d0PHY+hka1u0SQzwf1E5/wTaE36WwrKf7AanTS/SL+OrzyXtXGK7xBkmAMqNHcrBYWUJ
+         JoVA==
+X-Gm-Message-State: AOAM531WNNyqtCOCg38a6H7lulH9G8qujaAFCMI7ZCa+vo6I+o6MH2RH
+        DqO5uMgZzi2NKnC85waPLhF0vwa5r9w=
+X-Google-Smtp-Source: ABdhPJwCdynaeA3YHkwbNfUiKA0cr1I+1tKZeT/5s1bEpBdzXp2M4lR/PqXRvTgCL+xcqLgLS6DCpA==
+X-Received: by 2002:a17:906:af63:: with SMTP id os3mr458198ejb.204.1644251954397;
+        Mon, 07 Feb 2022 08:39:14 -0800 (PST)
 Received: from crow.. ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id b7sm5415814edv.58.2022.02.07.08.39.12
+        by smtp.gmail.com with ESMTPSA id b7sm5415814edv.58.2022.02.07.08.39.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Feb 2022 08:39:13 -0800 (PST)
+        Mon, 07 Feb 2022 08:39:14 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 3/4] trace-cruncher: Refactor the python classes for kprobes
-Date:   Mon,  7 Feb 2022 18:38:59 +0200
-Message-Id: <20220207163900.178524-3-y.karadz@gmail.com>
+Subject: [PATCH 4/4] trace-cruncher: Update 'kprobe_open.py' example
+Date:   Mon,  7 Feb 2022 18:39:00 +0200
+Message-Id: <20220207163900.178524-4-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220207163900.178524-1-y.karadz@gmail.com>
 References: <20220207163900.178524-1-y.karadz@gmail.com>
@@ -64,199 +64,86 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Currently the usage of the python classes for kprobes exhibits a pattern
-that is inconsistent with the usage of the classes for histograms and
-synthetic events. The constructors of the histograms and synth. event
-classes will directly register the new events on the system, so once the
-corresponding object is created it is ready to be used. However, this is not
-the case for the constructors of the classes 'kprobe' and 'kretval_probe'.
-For these two classes, the user is expected to explicitly call the 'register'
-method before using the new dynamic event. Since such inconsistency can
-be confusing, here we refactor the 'kprobe' and 'kretval_probe' classes,
-eliminating the 'register' method and moving the registration inside the
-constructor.
+The class kprobe has been refactored. Here we update the corresponding
+example accordingly. We also add more comments, explaining the usage
+of the APIs.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- tracecruncher/ft_utils.py | 136 ++++++++++++++++++--------------------
- 1 file changed, 65 insertions(+), 71 deletions(-)
+ examples/kprobe_open.py | 45 ++++++++++++++++++++++++++++++++---------
+ 1 file changed, 35 insertions(+), 10 deletions(-)
 
-diff --git a/tracecruncher/ft_utils.py b/tracecruncher/ft_utils.py
-index 26a7306..741887b 100644
---- a/tracecruncher/ft_utils.py
-+++ b/tracecruncher/ft_utils.py
-@@ -81,87 +81,86 @@ class event:
-                               event=self.name)
+diff --git a/examples/kprobe_open.py b/examples/kprobe_open.py
+index dff4861..141df66 100755
+--- a/examples/kprobe_open.py
++++ b/examples/kprobe_open.py
+@@ -11,24 +11,42 @@ import sys
+ import tracecruncher.ftracepy as ft
+ import tracecruncher.ft_utils as tc
  
+-open_probe = tc.kprobe(name='open', func='do_sys_openat2')
++# We will define a kprobe event, to be recorded every time the function
++# 'do_sys_openat2' in the kernrl is called.
  
--class kprobe_base(event):
--    def __init__(self, name, func=''):
-+class _kprobe_base(event):
-+    def __init__(self, name, func):
-         """ Constructor.
-         """
-         super().__init__(system=ft.tc_event_system(), name=name, static=False)
-         self.func = func
-         self.kp = None
-+        self.evt_id = -1
+-open_probe.add_string_arg(name='file', param_id=2)
++# Add to the kprobe event a string field 'file', that will record the second
++# argument of the function.
++fields = tc.kprobe_add_string_arg(name='file', param_id=2)
  
--    def set_function(self, name):
--        """ Set the name of the function to be traced.
-+    def register(self):
-+        """ Register this probe to Ftrace.
-         """
--        self.func = name
--
-+        self.kp.register()
-+        self.evt_id = find_event_id(system=ft.tc_event_system(), event=self.name)
+-open_probe.add_ptr_arg(name='flags',
+-                       param_id=3,
+-                       param_type='x64')
++# Add to the kprobe event a field 'flags'. This field will take the third
++# argument of the function, which is a pointer to an object and will convert
++# its starting address into hexadecimal integer. This will decode the first
++# data field of the object.
++fields = tc.kprobe_add_ptr_arg(name='flags',
++                               param_id=3,
++                               param_type='x64',
++                               fields=fields)
  
--class kprobe(kprobe_base):
--    def __init__(self, name, func=''):
-+class kprobe(_kprobe_base):
-+    def __init__(self, name, func, fields):
-         """ Constructor.
-         """
-         super().__init__(name, func)
--        self.fields = {}
--
--    def add_raw_field(self, name, probe):
--        """ Add a raw definition of a data field to this probe.
--        """
--        self.fields[str(name)] = str(probe)
--
--    def add_arg(self, name, param_id, param_type):
--        """ Add a function parameter data field to this probe.
--        """
--        probe = '$arg{0}:{1}'.format(param_id, param_type)
--        self.add_raw_field(name, probe)
-+        self.fields = fields
-+        probe = ' '.join('{!s}={!s}'.format(key,val) for (key, val) in self.fields.items())
-+        self.kp = ft.kprobe(event=self.name, function=self.func, probe=probe)
-+        self.register()
+-open_probe.add_ptr_arg(name='mode',
+-                       param_id=3,
+-                       param_type='x64',
+-                       offset=8)
++# Add to the kprobe event a field 'flags'. This field will take the third
++# argument of the function, which is a pointer to an object and will convert
++# its starting address plus offset of 8 into hexadecimal integer. This will
++# decode the second data field of the object.
++fields = tc.kprobe_add_ptr_arg(name='mode',
++                               param_id=3,
++                               param_type='x64',
++                               offset=8,
++                               fields=fields)
  
--    def add_ptr_arg(self, name, param_id, param_type, offset=0):
--        """ Add a pointer function parameter data field to this probe.
--        """
--        probe = '+{0}($arg{1}):{2}'.format(offset, param_id, param_type)
--        self.add_raw_field(name, probe)
-+def kprobe_add_raw_field(name, probe, fields={}):
-+    """ Add a raw definition of a data field to the probe descriptor.
-+    """
-+    fields[str(name)] = str(probe)
-+    return fields
+-open_probe.register()
++# Create the kprobe event.
++open_probe = tc.kprobe(name='open',
++                       func='do_sys_openat2',
++                       fields=fields)
  
--    def add_array_arg(self, name, param_id, param_type, offset=0, size=-1):
--        """ Add an array function parameter data field to this probe.
--        """
--        if size < 0:
--            size = 10
--
--        ptr_size = ctypes.sizeof(ctypes.c_voidp)
--        for i in range(size):
--            field_name = name + str(i)
--            probe = '+{0}(+{1}'.format(offset, i * ptr_size)
--            probe += '($arg{0})):{1}'.format(param_id, param_type)
--            self.add_raw_field(field_name, probe)
--
--    def add_string_arg(self, name, param_id, offset=0, usr_space=False):
--        """ Add a string function parameter data field to this probe.
--        """
--        p_type = 'ustring' if usr_space else 'string'
--        self.add_ptr_arg(name=name,
--                         param_id=param_id,
--                         param_type=p_type,
--                         offset=offset)
--
--    def add_string_array_arg(self, name, param_id, offset=0, usr_space=False, size=-1):
--        """ Add a string array function parameter data field to this probe.
--        """
--        p_type = 'ustring' if usr_space else 'string'
--        self.add_array_arg(name=name,
--                           param_id=param_id,
--                           param_type=p_type,
--                           offset=offset,
--                           size=size)
-+def kprobe_add_arg(name, param_id, param_type, fields={}):
-+    """ Add a function parameter data field to the probe descriptor.
-+    """
-+    probe = '$arg{0}:{1}'.format(param_id, param_type)
-+    return kprobe_add_raw_field(name=name, probe=probe, fields=fields)
+ tep = tc.local_tep()
+ tc.short_kprobe_print(tep, [open_probe])
  
--    def register(self):
--        """ Register this probe to Ftrace.
--        """
--        probe = ' '.join('{!s}={!s}'.format(key,val) for (key, val) in self.fields.items())
-+def kprobe_add_ptr_arg(name, param_id, param_type, offset=0, fields={}):
-+    """ Add a pointer function parameter data field to the probe descriptor.
-+    """
-+    probe = '+{0}($arg{1}):{2}'.format(offset, param_id, param_type)
-+    return kprobe_add_raw_field(name=name, probe=probe, fields=fields)
++# Define a callback function that will print
++# a short human-readable version.
+ def callback(event, record):
+     print(tep.info(event, record))
  
--        self.kp = ft.kprobe(event=self.name, function=self.func, probe=probe)
--        self.kp.register()
--        self.evt_id = find_event_id(system=ft.tc_event_system(), event=self.name)
-+def kprobe_add_array_arg(name, param_id, param_type, offset=0,
-+                         size=-1, fields={}):
-+    """ Add an array function parameter data field to the probe descriptor.
-+    """
-+    if size < 0:
-+        size = 10
+@@ -38,6 +56,13 @@ if __name__ == "__main__":
+         print('Usage: ', sys.argv[0], ' [PROCESS]')
+         sys.exit(1)
  
-+    ptr_size = ctypes.sizeof(ctypes.c_voidp)
-+    for i in range(size):
-+        field_name = name + str(i)
-+        probe = '+{0}(+{1}'.format(offset, i * ptr_size)
-+        probe += '($arg{0})):{1}'.format(param_id, param_type)
-+        return kprobe_add_raw_field(name=field_name, probe=probe, fields=fields)
- 
--def parse_record_array_field(event, record, field, size=-1):
-+def kprobe_add_string_arg(name, param_id, offset=0, usr_space=False, fields={}):
-+    """ Add a string function parameter data field to the probe descriptor.
-+    """
-+    p_type = 'ustring' if usr_space else 'string'
-+    return kprobe_add_ptr_arg(name=name,
-+                              param_id=param_id,
-+                              param_type=p_type,
-+                              offset=offset,
-+                              fields=fields)
++    # Create new Ftrace instance to work in. The tracing in this new instance
++    # is not going to be enabled yet.
+     inst = ft.create_instance(tracing_on=False)
 +
-+def kprobe_add_string_array_arg(name, param_id, offset=0, usr_space=False,
-+                                size=-1, fields={}):
-+    """ Add a string array function parameter data field to the probe descriptor.
-+    """
-+    p_type = 'ustring' if usr_space else 'string'
-+    return kprobe_add_array_arg(name=name,
-+                                param_id=param_id,
-+                                param_type=p_type,
-+                                offset=offset,
-+                                size=size,
-+                                fields=fields)
++    # Enable the probe.
+     open_probe.enable(instance=inst)
 +
-+def kprobe_parse_record_array_field(event, record, field, size=-1):
-     """ Parse the content of an array function parameter data field.
-     """
-     if size < 0:
-@@ -178,18 +177,13 @@ def parse_record_array_field(event, record, field, size=-1):
-     return arr
- 
- 
--class kretval_probe(kprobe_base):
--    def __init__(self, name, func=''):
-+class kretval_probe(_kprobe_base):
-+    def __init__(self, name, func):
-         """ Constructor.
-         """
-         super().__init__(name, func)
--
--    def register(self):
--        """ Register this probe to Ftrace.
--        """
-         self.kp = ft.kprobe(event=self.name, function=self.func)
-         self.kp.register()
--        self.evt_id = find_event_id(system=ft.tc_event_system(), event=self.name)
- 
- 
- class khist:
++    # Subscribe for the kprobe event (using the default function name 'callback')
++    # and trace the user process.
+     ft.trace_process(instance=inst, argv=sys.argv[1:])
 -- 
 2.32.0
 
