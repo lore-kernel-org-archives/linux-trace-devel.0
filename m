@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5692DC4332F
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Feb 2022 15:24:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D96D8C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Feb 2022 15:24:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243602AbiBJPYB (ORCPT
+        id S243603AbiBJPYA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 10 Feb 2022 10:24:01 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:57560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243607AbiBJPYA (ORCPT
-        <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 10 Feb 2022 10:24:00 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA52CE5
-        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Feb 2022 07:24:01 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id k41so2525320wms.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Feb 2022 07:24:01 -0800 (PST)
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:57548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243606AbiBJPX7 (ORCPT
+        <rfc822;linux-trace-devel@vger.kernel.org>);
+        Thu, 10 Feb 2022 10:23:59 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81CA118C
+        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Feb 2022 07:23:59 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id bg21-20020a05600c3c9500b0035283e7a012so4227192wmb.0
+        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Feb 2022 07:23:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HykkqswBVdir0IJZX/zR16m0Vnc1XWPwNOVGT3uu2Ow=;
-        b=C2OlM9+qTHjCxYUF7wV7wd8HjlaEJO9LP8c+anNptef5AEmYP2f7Ris5ZQn0mqlA6/
-         KItVhS0LCJ3xyi+EVaY0Esz4m5Y9/sLObXPtphCiNigVU9/IAfG5mdTf9plDHOG6fNND
-         omw6WIPE0JsieT6Mhak0M/dkeBpVvNNmOsPHm662IQqm2MuFu3XILfin4hoLTsQxoVqf
-         JhfzU63h25NHb/8+1a784oiGmlTIAygSiMkxjRWEl9yvZcSC8bAJ382M4ZvMp31ylTSZ
-         4aLIY2TNLJeBf2B6Sz/eNpjZMbTdltoZ4YYb/k552NoLol4M50vECrBmuvOU9XIiAFbl
-         qSuA==
+        bh=icHzew9CcnqGnO2KtjmNj1sBw6PPO2pmMEVU9jOkVbo=;
+        b=jr5SdN9LMwWbRwghc6doYYXUVPp86MJl/cm/zzS9+EMOIKabUKo5I6B3ciV8Mtnz5V
+         Jwxea/ukJ7zXWuCsUECPg6hdJms9saEA+pmRLGP9AbWimyi+VGyFggod0JL2ERMZBKX/
+         jiwAJarPC+mVIPXa0xnRqb1s8qsNWH+VCfwgSMlDnGv3tQ7B/SsfFpdSOXVXIjpYhAEs
+         IQpM5nplbKvNcyUm+y/1zSLeXwdV+JA5pr+pkQod50PTShst/Bvjl+U99luR0TQBDAAi
+         en+aXgUNJpMhBdhWvSYQ6Kma5n/F7EEcTH8Ade9FABc4cz8OAVtFklSp7ZWSLujGu2R+
+         2seQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HykkqswBVdir0IJZX/zR16m0Vnc1XWPwNOVGT3uu2Ow=;
-        b=7AO+SDBbz2QOHIJJxI3HbK84LArZQpKwFY+NHcC2B9umeSZDUQK0ZsTQzXMr0hJnvX
-         XEzHZRi/XCgptHAMOlkw7J7OL7LzS6IIlgWio6t4V1jA1i4BpFEDqY+hctu3KhDLocN3
-         dThEASv5UypMjpCGPxK3XJfEkqlzFQfPl5EZHNzAkrwDWwJT9Ty/nqZmeFSfoXJgeJRR
-         w3YHEqVj+S7nYq36p33ahYPipXUkOS/I8ncTQTvhwhAciH9lCSr1ikpUGSW2rFD2kCxI
-         fBzx/HS7DqDYPabrBvNPhiAFvg9kQeCYe0bJp2dxxwrN/RceuxyPC5HbXsw0sYuKuHlg
-         sjwA==
-X-Gm-Message-State: AOAM532NTNMPbdNuT275Jyv1ucMNHHMr/QqVZf1QElQ1o7REdgJijGkP
-        oBOBrmqdKJL1qsqv0Dbiyw5rqcsFirQ=
-X-Google-Smtp-Source: ABdhPJwGlMYafXxsAFdd8m3Kn6DbAXWAW5WLwDIPxJyIis9WNxK2kaCxZ8KGAfQFl1/ttIGPQ0hE4g==
-X-Received: by 2002:a7b:c085:: with SMTP id r5mr2634558wmh.97.1644506639560;
-        Thu, 10 Feb 2022 07:23:59 -0800 (PST)
+        bh=icHzew9CcnqGnO2KtjmNj1sBw6PPO2pmMEVU9jOkVbo=;
+        b=KTX4MMzG0Ehs5JLOpPnEU7nE6IEBoerkp/zBgALmtBigHyD54T+AUNjG3XVATfhtOs
+         EBPJBZFcTxcnJum/CyT2TaX+d9guwzxTOnruqoRJ7kQQ6L2lLkqdSDJZy+SQ0kICIZoM
+         kOFS5BSFl8RXz5kHIerQo6MTRtyCuuoUHaBEuPucowJLA0Umsu3PpPdJ8s3NZeUwlfEo
+         pXmrieEvJ7rUFjJxoCHyWYP5z6jzs5THjow2dZOVKJcr91HrUa3jsuGbpHqLzUAfu4Dw
+         0iRjiCxb8M+7l3H1pwAY8xwcla+b5sfowinLLcPQMjtpQ5CgPKfyVSz9Btf748jcJG8m
+         Sezw==
+X-Gm-Message-State: AOAM532Z0EujQpRINFO0CxTNNLkRv+yDtHeN7u1+gawz7FVmMdnCWf27
+        JhnbwBUPZR7/SblHWE+qXiXuztAoJaM=
+X-Google-Smtp-Source: ABdhPJyFC/qmZW1bfbwVsw7VXKJXnVqDfwDyYGTBCetQemHqprLN5RsSOW2r1po4HC3EjZVzo/w2rg==
+X-Received: by 2002:a05:600c:587:: with SMTP id o7mr2503463wmd.129.1644506637889;
+        Thu, 10 Feb 2022 07:23:57 -0800 (PST)
 Received: from crow.. ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id j15sm2245301wmq.19.2022.02.10.07.23.58
+        by smtp.gmail.com with ESMTPSA id j15sm2245301wmq.19.2022.02.10.07.23.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Feb 2022 07:23:59 -0800 (PST)
+        Thu, 10 Feb 2022 07:23:57 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 8/8] trace-cruncher: Add more comments to the examples
-Date:   Thu, 10 Feb 2022 17:23:39 +0200
-Message-Id: <20220210152339.363943-9-y.karadz@gmail.com>
+Subject: [PATCH 6/8] trace-cruncher: Add tc_eprobe class to ft_utiles
+Date:   Thu, 10 Feb 2022 17:23:37 +0200
+Message-Id: <20220210152339.363943-7-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220210152339.363943-1-y.karadz@gmail.com>
 References: <20220210152339.363943-1-y.karadz@gmail.com>
@@ -64,173 +64,162 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The changes aim to ease the understanding of the examples.
-No functional changes are introduced.
+Define a Python class and helper methods to be used for easy manipulation
+of kernel eprobes.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- examples/eprobe.py        | 10 +++++++++-
- examples/hist.py          | 32 ++++++++++++++++++++++++++++++++
- examples/hist_oop.py      | 14 +++++++++++---
- examples/syscall_trace.py |  2 +-
- 4 files changed, 53 insertions(+), 5 deletions(-)
+ examples/eprobe.py                            | 13 ++++-
+ tracecruncher/ft_utils.py                     | 56 ++++++++++++++++---
+ .../tests/1_unit/test_01_ftracepy_unit.py     | 14 +++++
+ 3 files changed, 72 insertions(+), 11 deletions(-)
 
 diff --git a/examples/eprobe.py b/examples/eprobe.py
-index a8be907..44fc7cd 100755
+index 85b0685..a8be907 100755
 --- a/examples/eprobe.py
 +++ b/examples/eprobe.py
-@@ -11,21 +11,29 @@ import sys
+@@ -11,8 +11,10 @@ import sys
  import tracecruncher.ftracepy as ft
  import tracecruncher.ft_utils as tc
  
-+# Create an 'eprobe' that will be attached to the static event 'sys_enter_openat'
-+# from system 'syscalls'. The probe will decode the string field of the event
-+# called 'filename' and will record its content using the name 'file'.
- fields = tc.eprobe_add_string_field(name='file', target_field='filename',
-                                     usr_space=True)
- event = tc.tc_event('syscalls', 'sys_enter_openat')
- eprobe = tc.tc_eprobe(name='sopen_in', target_event=event, fields=fields)
+-open_probe = ft.eprobe(event='sopen_in', target_system='syscalls',
+-                       target_event='sys_enter_openat', fetchargs='file=+0($filename):ustring')
++fields = tc.eprobe_add_string_field(name='file', target_field='filename',
++                                    usr_space=True)
++event = tc.tc_event('syscalls', 'sys_enter_openat')
++eprobe = tc.tc_eprobe(name='sopen_in', target_event=event, fields=fields)
  
--tep = tc.local_tep()
-+# Define a callback function that will print
-+# a short human-readable version of the 'eprobe'.
+ tep = tc.local_tep()
  
-+tep = tc.local_tep()
- def callback(event, record):
-     print(tep.info(event, record))
- 
-+
- if __name__ == "__main__":
-     if len(sys.argv) < 2:
-         print('Usage: ', sys.argv[0], ' [PROCESS]')
+@@ -25,5 +27,10 @@ if __name__ == "__main__":
          sys.exit(1)
  
-+    # Create new Ftrace instance to work in. The tracing in this new instance
-+    # is not going to be enabled yet.
      inst = ft.create_instance(tracing_on=False)
- 
-     # Enable the probe.
-diff --git a/examples/hist.py b/examples/hist.py
-index d668039..044be79 100755
---- a/examples/hist.py
-+++ b/examples/hist.py
-@@ -16,6 +16,20 @@ inst_name = 'khist_example'
- cmds = ['start', 'stop', 'show', 'continue', 'clear', 'close']
- 
- def get_hist():
-+    # From the event 'kmalloc' in system 'kmem', create a two-dimensional
-+    # histogram, using the event fields 'call_site' and 'bytes_req'.
-+    #
-+    # The field 'call_site' will be displayed as a kernel symbol.
-+    # The field 'bytes_req' will be displayed as normal field (wothout
-+    # modifying the type).
-+    #
-+    # Instead of just recording the "hitcount" in each bin of the histogram,
-+    # we will use the 'value' of 'bytes_alloc' as a weight of the individual
-+    # histogram entries (events).
-+    #
-+    # The results will be ordered using 'bytes_req' as a primary and
-+    # 'bytes_alloc' as a secondary sorting criteria. For 'bytes_req' we will
-+    # use descending order.
-     hist = ft.hist(name='h1',
-                    system='kmem',
-                    event='kmalloc',
-@@ -37,30 +51,48 @@ if __name__ == "__main__":
- 
-     arg1 = sys.argv[1]
-     if  arg1.isdigit() or arg1 == 'start':
-+        # Create new Ftrace instance and a tracing histogram.
-         inst = ft.create_instance(name=inst_name)
-         hist = get_hist()
+-    open_probe.enable(instance=inst)
 +
-+        # Start taking data.
-         hist.start(inst)
++    # Enable the probe.
++    eprobe.enable(instance=inst)
++
++    # Subscribe for the kprobe event (using the default function name 'callback')
++    # and trace the user process.
+     ft.trace_process(instance=inst, argv=sys.argv[1:])
+diff --git a/tracecruncher/ft_utils.py b/tracecruncher/ft_utils.py
+index 67e020f..b27f38a 100644
+--- a/tracecruncher/ft_utils.py
++++ b/tracecruncher/ft_utils.py
+@@ -81,22 +81,29 @@ class tc_event:
+                               event=self.name)
  
-         if arg1.isdigit():
-+            # Take data for a while, then stop, print the result, close
-+            # the histogram and exit.
-             time.sleep(int(arg1))
-             hist.stop(inst)
-             print(hist.read(inst))
-             hist.close(inst)
-         else:
-+            # Detach the 'hist' object from the trace-cruncher module. This
-+            # will prevent the kernel histogram from being destroyed when the
-+            # module is closed (at exit).
-             ft.detach(inst)
-     else:
-+        # Try to find existing Ftrace instance and histogram with the same
-+        # definitions. The returned instancd is detached from the
-+        # trace-cruncher module.
-         inst = ft.find_instance(name=inst_name)
-         hist = get_hist()
  
-         if arg1 == 'stop':
-+            # Stop taking data.
-             hist.stop(inst)
-         elif arg1 == 'show':
-+            # Print the collected data.
-             print(hist.read(inst))
-         elif arg1 == 'continue':
-+            # Continue taking data.
-             hist.resume(inst)
-         elif arg1 == 'clear':
-+            # Reset the histogram.
-             hist.clear(inst)
+-class _kprobe_base(tc_event):
+-    def __init__(self, name, func):
++class _dynevent(tc_event):
++    def __init__(self, name):
+         """ Constructor.
+         """
+         super().__init__(system=ft.tc_event_system(), name=name, static=False)
+-        self.func = func
+-        self.kp = None
++        self.evt = None
+         self.evt_id = -1
  
-         if arg1 == 'close':
-+            # Destroy the histogram in the kernel and attach the instance to
-+            # the trace-cruncher module. This will ensure that the instance
-+            # will be destroyed when the module is closed (at exit).
-             ft.attach(inst)
-             hist.close(inst)
-diff --git a/examples/hist_oop.py b/examples/hist_oop.py
-index 578b699..507269f 100755
---- a/examples/hist_oop.py
-+++ b/examples/hist_oop.py
-@@ -12,18 +12,26 @@ import time
- import tracecruncher.ft_utils as tc
+     def register(self):
+         """ Register this probe to Ftrace.
+         """
+-        self.kp.register()
++        self.evt.register()
+         self.evt_id = find_event_id(system=ft.tc_event_system(), event=self.name)
  
- name = 'khist_example_oop'
--
- cmds = ['start', 'stop', 'show', 'continue', 'clear', 'close']
  
-+# From the event 'kmalloc' in system 'kmem', create a two-dimensional
-+# histogram, using the event fields 'call_site' and 'bytes_req'.
-+# The field 'call_site' will be displayed as a kernel symbol.
-+# The field 'bytes_req' will be displayed as normal field (wothout
-+# modifying the type).
- evt = tc.tc_event('kmem', 'kmalloc')
--
- axes={'call_site': 'sym',
-       'bytes_req': 'n'}
++class _kprobe_base(_dynevent):
++    def __init__(self, name, func):
++        """ Constructor.
++        """
++        super().__init__(name=name)
++        self.func = func
++
++
+ class tc_kprobe(_kprobe_base):
+     def __init__(self, name, func, fields):
+         """ Constructor.
+@@ -104,7 +111,7 @@ class tc_kprobe(_kprobe_base):
+         super().__init__(name, func)
+         self.fields = fields
+         probe = ' '.join('{!s}={!s}'.format(key,val) for (key, val) in self.fields.items())
+-        self.kp = ft.kprobe(event=self.name, function=self.func, probe=probe)
++        self.evt = ft.kprobe(event=self.name, function=self.func, probe=probe)
+         self.register()
  
-+# Instead of just recording the "hitcount" in each bin of the histogram,
-+# we will use the 'value' of 'bytes_alloc' as a weight of the individual
-+# histogram entries (events).
- weights=['bytes_alloc']
  
-+# The results will be ordered using 'bytes_req' as a primary and
-+# 'bytes_alloc' as a secondary sorting criteria. For 'bytes_req' we will
-+# use descending order.
- sort_keys=['bytes_req', 'bytes_alloc']
--
- sort_dir={'bytes_req': 'desc'}
+@@ -190,8 +197,41 @@ class tc_kretval_probe(_kprobe_base):
+         """ Constructor.
+         """
+         super().__init__(name, func)
+-        self.kp = ft.kprobe(event=self.name, function=self.func)
+-        self.kp.register()
++        self.evt = ft.kprobe(event=self.name, function=self.func)
++        self.register()
++
++
++class tc_eprobe(_dynevent):
++    def __init__(self, name, target_event, fields):
++        """ Constructor.
++        """
++        super().__init__(name=name)
++        self.target_event = target_event
++        self.fields = fields
++        probe = ' '.join('{!s}={!s}'.format(key,val) for (key, val) in self.fields.items())
++        self.evt = ft.eprobe(event=self.name,
++                            target_system=target_event.system,
++                            target_event=target_event.name,
++                            fetch_fields=probe)
++        self.register()
++
++
++def eprobe_add_ptr_field(name, target_field, field_type, offset=0, fields={}):
++    """ Add a pointer data field to the eprobe descriptor.
++    """
++    probe = '+{0}(${1}):{2}'.format(offset, target_field, field_type)
++    return kprobe_add_raw_field(name=name, probe=probe, fields=fields)
++
++
++def eprobe_add_string_field(name, target_field, offset=0, usr_space=False, fields={}):
++    """ Add a string data field to the eprobe descriptor.
++    """
++    f_type = 'ustring' if usr_space else 'string'
++    return eprobe_add_ptr_field(name=name,
++                                target_field=target_field,
++                                field_type=f_type,
++                                offset=offset,
++                                fields=fields)
  
- if __name__ == "__main__":
-diff --git a/examples/syscall_trace.py b/examples/syscall_trace.py
-index bfa56ed..1117fab 100755
---- a/examples/syscall_trace.py
-+++ b/examples/syscall_trace.py
-@@ -19,7 +19,7 @@ args = 'file=+0($file):ustring delta_T=$delta_T:s64'
- # In order to trace a system call, we will create a synthetic event that
- # combines the 'sys_enter_XXX' and 'sys_exit_XXX' static events. A dynamic
- # 'eprobe' will be attached to this synthetic event in order to decode the
--# pointer argument of the system and to calculate the time spend between
-+# pointer argument of the system call and to calculate the time spent between
- # 'sys_enter_XXX' and 'sys_exit_XXX' (syscall duration).
  
- eprobe = ft.eprobe(event=eprobe_evt,
+ class tc_hist:
+diff --git a/tracecruncher/tests/1_unit/test_01_ftracepy_unit.py b/tracecruncher/tests/1_unit/test_01_ftracepy_unit.py
+index 6fdd053..debdd83 100644
+--- a/tracecruncher/tests/1_unit/test_01_ftracepy_unit.py
++++ b/tracecruncher/tests/1_unit/test_01_ftracepy_unit.py
+@@ -507,6 +507,20 @@ class EprobeTestCase(unittest.TestCase):
+         ret = ep1.is_enabled(instance=inst)
+         self.assertEqual(ret, '0')
+ 
++class EprobeOopTestCase(unittest.TestCase):
++    def test_eprobe(self):
++        fields = tc.eprobe_add_string_field(name='file',
++                                            target_field='filename',
++                                            usr_space=True)
++        self.assertEqual(fields, {'file': '+0($filename):ustring'})
++
++        if kernel_version < (5, 15):
++            return
++
++        event = tc.tc_event('syscalls', 'sys_enter_openat')
++        eprobe = tc.tc_eprobe(name='opn', target_event=event, fields=fields)
++        self.assertEqual(eprobe.evt.probe(), 'file=+0($filename):ustring')
++
+ class TracingOnTestCase(unittest.TestCase):
+     def test_ON_OF(self):
+         ft.tracing_ON()
 -- 
 2.32.0
 
