@@ -2,119 +2,66 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9349CC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 12 Feb 2022 00:15:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F20C4C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 12 Feb 2022 02:56:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242677AbiBLAP5 (ORCPT
+        id S230402AbiBLC4q (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Feb 2022 19:15:57 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54656 "EHLO
+        Fri, 11 Feb 2022 21:56:46 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:56376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234135AbiBLAP4 (ORCPT
+        with ESMTP id S229541AbiBLC4q (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Feb 2022 19:15:56 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0DEE9D41;
-        Fri, 11 Feb 2022 16:15:55 -0800 (PST)
-Received: from kbox (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 8CEA920B92C8;
-        Fri, 11 Feb 2022 16:15:54 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8CEA920B92C8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1644624954;
-        bh=UDYtHia4Ue2d91o49LLvuQwerdlbSmBiDrISgm+Ptr4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ckaFWrRj40fP0qKwMg2LQZhpqRnItjvTj2KOZMndZM48SD06TG1meKtqbDEsBhGXq
-         5EjwEqUaCIepfZmOFcUk9ugI+pJdy1d1gxINN1zYnAKNHUG3nDN3TmWGTjqJm7HG4d
-         0gHS6BYsGZd4gC6wJLtAs+4Bf/hXpVuWZsuH37O0=
-Date:   Fri, 11 Feb 2022 16:15:49 -0800
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     mhiramat@kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 00/12] user_events: Enable user processes to create
- and write to trace events
-Message-ID: <20220212001549.GA10191@kbox>
-References: <20220118204326.2169-1-beaub@linux.microsoft.com>
- <20220210230021.3baf81ce@rorschach.local.home>
+        Fri, 11 Feb 2022 21:56:46 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E4F2E09B
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Feb 2022 18:56:44 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D898FB82E37
+        for <linux-trace-devel@vger.kernel.org>; Sat, 12 Feb 2022 02:56:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49111C340EE;
+        Sat, 12 Feb 2022 02:56:41 +0000 (UTC)
+Date:   Fri, 11 Feb 2022 21:56:39 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH] trace-cmd reset: Clear all dynamic events
+Message-ID: <20220211215639.2bdffbee@rorschach.local.home>
+In-Reply-To: <20220114105748.46761-1-tz.stoyanov@gmail.com>
+References: <20220114105748.46761-1-tz.stoyanov@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220210230021.3baf81ce@rorschach.local.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Feb 10, 2022 at 11:00:21PM -0500, Steven Rostedt wrote:
-> On Tue, 18 Jan 2022 12:43:14 -0800
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> 
-> > User mode processes that wish to use trace events to get data into
-> > ftrace, perf, eBPF, etc are limited to uprobes today. The user events
-> > features enables an ABI for user mode processes to create and write to
-> > trace events that are isolated from kernel level trace events. This
-> > enables a faster path for tracing from user mode data as well as opens
-> > managed code to participate in trace events, where stub locations are
-> > dynamic.
-> 
-> So I finished my review, and I'm currently added it to my queue that
-> I'm running through my tests.
-> 
-> Before I accept it though, I would really like you to send patches to
-> linux-trace-devel@vger.kernel.org that add an API to libtracefs:
-> 
->   https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-> 
-> Something where users do not need to know about ioctls, or iovecs, etc.
-> 
-> struct tracefs_user_event *
->      tracefs_user_event_register(const char *name,
-> 		enum tracefs_uevent_type type,
-> 		char *field, ...);
-> 
-> Where tracefs_uevent_type can be:
-> 
-> enum tracefs_uevent_type {
-> 	TRACEFS_UEVENT_END,
-> 	TRACEFS_UEVENT_u8,
-> 	TRACEFS_UEVENT_s8,
-> 	TRACEFS_UEVENT_u16,
-> 	...
-> };
-> 
->   uevent = tracefs_user_event_register("test",
-> 		TRACEFS_UEVENT_u64, "count",
-> 		TRACEFS_UEVENT_string, "name",
-> 		TRACEFS_UEVENT_array, 16, "array",
-> 		TRACEFS_UEVENT_END);
-> 
-> and that will do the ioctl to register the event, with the given types
-> and fields.
-> 
->   struct tracefs_user_event_status *ustatus;
-> 
->   ustatus = tracefs_user_event_status();  // does the mmap.
-> 
-> 
-> Then we could also have:
-> 
->   if (tracefs_user_event_test(ustatus, uevent))
-> 	tracefs_user_event_write(uevent, 64, "string", { 16 byte data });
-> 
-> The ustatus will be the mmap and the uevent will have the information
-> to know where on the mmap to test for the event.
-> 
-> As for the write, the types are saved, and the write function will have
-> variable arguments defined by the tracefs_user_event_register().
-> 
-> I think having that interface in libtracefs, would make this easy to
-> use for everyone.
+On Fri, 14 Jan 2022 12:57:48 +0200
+"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-Agreed, I'll get going on this.
+> +	/* Clear event probes first, as they may be attached to other dynamic event */
+> +	tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_EPROBE, true);
+> +	tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_KPROBE |
+> +				     TRACEFS_DYNEVENT_KRETPROBE |
+> +				     TRACEFS_DYNEVENT_UPROBE |
+> +				     TRACEFS_DYNEVENT_URETPROBE |
+> +				     TRACEFS_DYNEVENT_SYNTH,
+> +				     true);
+>  }
 
-For performance I'm likely going to be play around with the shape of the
-API. But it will look similar to the above.
+I accepted this patch, but really, tracefs needs something to define:
 
-Thanks,
--Beau
+	TRACEFS_DYNEVENT_ALL
+
+as callers should not have to call out each type of dynamic event.
+Especially when we are about to add new dynamic events, causing this to
+break again.
+
+Want to add that?
+
+Thanks Tzvetomir,
+
+-- Steve
