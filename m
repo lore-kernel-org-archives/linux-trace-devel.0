@@ -2,99 +2,92 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A918C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Feb 2022 04:15:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 124F6C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Feb 2022 08:02:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240107AbiBNEP6 (ORCPT
+        id S233183AbiBNICx (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 13 Feb 2022 23:15:58 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:55108 "EHLO
+        Mon, 14 Feb 2022 03:02:53 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231513AbiBNEP6 (ORCPT
+        with ESMTP id S233043AbiBNICx (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 13 Feb 2022 23:15:58 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 819574EF6A
-        for <linux-trace-devel@vger.kernel.org>; Sun, 13 Feb 2022 20:15:51 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id m7so13389755pjk.0
-        for <linux-trace-devel@vger.kernel.org>; Sun, 13 Feb 2022 20:15:51 -0800 (PST)
+        Mon, 14 Feb 2022 03:02:53 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346EB5B3CB
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Feb 2022 00:02:46 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id fy20so35484291ejc.0
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Feb 2022 00:02:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zECZXJ/QatDW0vC5aZcaVGT21AwWcmTMDQ1O3h5LEsY=;
-        b=MpbVr607eLLB+KzoQoKZ0osibibuyq/vp3m+hK6yfy2ZTbvcnT0lm5NTY9HB1TvMUq
-         Lnh9iYk0hVbaXPgarBnSttbw/xhImJAagGGgCZbmySw4wim5mSPxZiz3Pyejtyd/bCF9
-         nfoVgFwvfWwnPXr2bWYowbNTvNkm6oqapl+8w42GwkLoy2KqAeibtw4T2I3dr6k7bggR
-         2tpsAnDJFHPONcUV5O9mvQopkPxA72Cm8ydc//QkZVT9kjwXxUJn7DTjNdK3BkvAJCY2
-         vKndEa7o/9Vg2Fsj0nrxj+HY+dFDGobqPeV7Wu9+9UTCfvZV3G6DI98wzYvMq0cD8iGz
-         d5aA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MVaROyjWO19k2VSHBixHG/qbwSKq5TqmRuRy4iG5tZA=;
+        b=o72nSsdi2/6SFo7Fw6bOP1DjzAAEMU3Qk62ZXIqch2VbciLYWc1IkKmq8XGMIsWwfF
+         qvbbVa4V5GNpg0rJgJQcA0IXrR6L5Iv4Cl2dwIoSbwfYuezCFoLLjQUpx56oAw73KRXH
+         USKt0qSr2/Yt6B4RwGaKW3gN3lM0o4p1yylWgtWJt30W6OiRQgbBGiLOzKitQnH/4QRN
+         RDiVCDcP9fH8Be6DS2Gx1nGLYRyTIKysx1vQa5p+HYWuJPbHQce/QJPH/YlFf13kjEei
+         wewoAXaqn/pKnfFNCfoqkjslrZeWtZp0Tv6/vf40gMRZHcJNP1SG86DHg7spaZfkcD/g
+         nZEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zECZXJ/QatDW0vC5aZcaVGT21AwWcmTMDQ1O3h5LEsY=;
-        b=WzfdkgFIj4NlGmh9ZJPKPGgfHRqnyO0n1k4gj1GCRcVaFIHRYYx95oc+ZMPy2G1O8U
-         3zTArh3Oj9WyUSmXymds3WedX6qEWO67PLULbRiMOHJo3uXk6pCWSF9A4JQWGCDXPk2Z
-         npPPqKhFNzJCLQDGMQhjyvo9eGT8xTTnamYTU/F2KKlEywucGtWiKou07m21pHOBFJDx
-         SzReR4We5t0SV48byfbvJQJcDvwCOplCk2Kd77D5io9A1oCnUnNolSk/DNMuAbfSuCjd
-         HjBDyF6keRn3anI8hqgb0e3ZH69yov4fLknlQWBHRwnEvfQFW5xB9msO1GbOV0/MSpxB
-         uBpA==
-X-Gm-Message-State: AOAM530KZgzXDdSSuzrNTI4GatzsvorCS7hLa4+dPSAyEZg/M8U/7gfI
-        0sJj+Zs3e2rqEFeFQhAprq6xzE1SCo3wiq8l7byBWBGR
-X-Google-Smtp-Source: ABdhPJyWnZmr7oiKoYkXbjmlh8IqxUi709RzuRkBdINwgCU+hzvCYq2lQMfMrFJQthkM9Z7HdOMAqXIBdLbpAlk1is8=
-X-Received: by 2002:a17:903:1212:: with SMTP id l18mr12330526plh.45.1644812150936;
- Sun, 13 Feb 2022 20:15:50 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MVaROyjWO19k2VSHBixHG/qbwSKq5TqmRuRy4iG5tZA=;
+        b=JNYamrAItmLKrZ/AnQ8HS3Jif+u+vKZx3SxWdftjjkuWFkllQTABScOptslVDmLCHp
+         JaRtJnBM9lu1Riu+PASkgONkJSi/Sk0u0SU1YIJS/ammjr7s8jRsUBW6xb74pf7TeOFl
+         0Y5dmf8P+JHFXTnwja0HhjE1oK0h6hcvrSJFvyuqFWMPYV4WuziGaoBn7jYqgn5awySL
+         gRWtsFo3CxiTxtrP1vC7aDf/9W5jzUG84aB2F498Y5Jvx6VdZFcVSIZEJec5Z8uTpwZo
+         i+sq90kh48V8nG0JLKUsZSn8BTvxE3JxsSItFLAeWW8Pk9bhMXfE1T8E9XUFaxh2Tnwa
+         aBZA==
+X-Gm-Message-State: AOAM531di4pKHUp4p+utHOU3Z4x/iaYHi3U7Jpe3fmPDwNOvaeewGBOP
+        rfwnxpx/MZr90gs+5qBgLNAtevpbrPs=
+X-Google-Smtp-Source: ABdhPJytQK0cLaGp9h6ZRc+pPhUaVm3/xLw1UgYmayEy30naM+sARuR9QvQVRhD/rdCLI34UtlXnuw==
+X-Received: by 2002:a17:907:7251:: with SMTP id ds17mr10554819ejc.151.1644825764569;
+        Mon, 14 Feb 2022 00:02:44 -0800 (PST)
+Received: from oberon.com ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id 9sm2012685ejk.28.2022.02.14.00.02.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Feb 2022 00:02:44 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH] libtracefs: Add define for ALL dynamic events
+Date:   Mon, 14 Feb 2022 10:02:41 +0200
+Message-Id: <20220214080241.634290-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20220114105748.46761-1-tz.stoyanov@gmail.com> <20220211215639.2bdffbee@rorschach.local.home>
-In-Reply-To: <20220211215639.2bdffbee@rorschach.local.home>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Mon, 14 Feb 2022 06:15:34 +0200
-Message-ID: <CAPpZLN68A6Nru=9P1K=z4jD-5wP5JbZwBpE5f33aP6REqeR7tQ@mail.gmail.com>
-Subject: Re: [PATCH] trace-cmd reset: Clear all dynamic events
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Sat, Feb 12, 2022 at 4:56 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Fri, 14 Jan 2022 12:57:48 +0200
-> "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
->
-> > +     /* Clear event probes first, as they may be attached to other dynamic event */
-> > +     tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_EPROBE, true);
-> > +     tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_KPROBE |
-> > +                                  TRACEFS_DYNEVENT_KRETPROBE |
-> > +                                  TRACEFS_DYNEVENT_UPROBE |
-> > +                                  TRACEFS_DYNEVENT_URETPROBE |
-> > +                                  TRACEFS_DYNEVENT_SYNTH,
-> > +                                  true);
-> >  }
->
-> I accepted this patch, but really, tracefs needs something to define:
->
->         TRACEFS_DYNEVENT_ALL
->
-> as callers should not have to call out each type of dynamic event.
-> Especially when we are about to add new dynamic events, causing this to
-> break again.
->
-> Want to add that?
->
+Some of the tracefs APIs for dynamic events accept bitmask of events. If
+a caller wants to address all types of events, it should list them in
+the bitmask. This logic is fragile. When a new type of dynamic event is
+introduced, the API callers should be modified. That's why a new define
+is added, part of the library API, to address all types of dynamic
+events.
 
-Sure, I'll send a patch with that.
-Thanks!
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
+ include/tracefs.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-
-> Thanks Tzvetomir,
->
-> -- Steve
-
-
-
+diff --git a/include/tracefs.h b/include/tracefs.h
+index 1848ad0..b3694cb 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -261,6 +261,8 @@ enum tracefs_dynevent_type {
+ 	TRACEFS_DYNEVENT_MAX		= 1 << 6,
+ };
+ 
++#define TRACEFS_DYNEVENT_ALL		0xFFFFFFFF
++
+ int tracefs_dynevent_create(struct tracefs_dynevent *devent);
+ int tracefs_dynevent_destroy(struct tracefs_dynevent *devent, bool force);
+ int tracefs_dynevent_destroy_all(unsigned int types, bool force);
 -- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+2.34.1
+
