@@ -2,33 +2,33 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60D40C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Feb 2022 11:24:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EA6CC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Feb 2022 11:28:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241641AbiBNLYb convert rfc822-to-8bit (ORCPT
+        id S1350808AbiBNL2f convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 14 Feb 2022 06:24:31 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50082 "EHLO
+        Mon, 14 Feb 2022 06:28:35 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350747AbiBNLXi (ORCPT
+        with ESMTP id S1351329AbiBNL2U (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 14 Feb 2022 06:23:38 -0500
-Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [207.211.30.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 549791409D
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Feb 2022 02:59:01 -0800 (PST)
+        Mon, 14 Feb 2022 06:28:20 -0500
+Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C18C22DCB
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Feb 2022 03:06:02 -0800 (PST)
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-347-FZQAIk2MPauVFaiMtszyBg-1; Mon, 14 Feb 2022 05:48:16 -0500
-X-MC-Unique: FZQAIk2MPauVFaiMtszyBg-1
+ us-mta-416-_7XVMO5INWiMjIMJzHYuqg-1; Mon, 14 Feb 2022 05:45:57 -0500
+X-MC-Unique: _7XVMO5INWiMjIMJzHYuqg-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E997D801B0E;
-        Mon, 14 Feb 2022 10:48:13 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E2E7E1091DA1;
+        Mon, 14 Feb 2022 10:45:54 +0000 (UTC)
 Received: from x1.com (unknown [10.22.16.130])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E30AA27BDC;
-        Mon, 14 Feb 2022 10:48:01 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5B42427BDF;
+        Mon, 14 Feb 2022 10:45:27 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
@@ -46,14 +46,10 @@ Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Clark Williams <williams@redhat.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [RFC V2 19/21] rv/monitor: Add safe watchdog nowayout monitor
-Date:   Mon, 14 Feb 2022 11:45:10 +0100
-Message-Id: <7a810f46b6136565a364001e7d1550fb9a4ccf62.1644830251.git.bristot@kernel.org>
-In-Reply-To: <cover.1644830251.git.bristot@kernel.org>
-References: <cover.1644830251.git.bristot@kernel.org>
+        linux-trace-devel@vger.kernel.org
+Subject: [RFC V2 00/21] The Runtime Verification (RV) interface
+Date:   Mon, 14 Feb 2022 11:44:51 +0100
+Message-Id: <cover.1644830251.git.bristot@kernel.org>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Authentication-Results: relay.mimecast.com;
@@ -66,535 +62,192 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This is a simplification of the safe_wtd monitor, named safe_wtd_nwo.
-The difference between these two monitors is that the latter enforces
-the nowayout watchdog device option before opening the watchdog.
+Over the last years, I've been exploring the possibility of
+verifying the Linux kernel behavior using Runtime Verification.
 
-In this way, once the watchdog is starts, the watchdog hardware will
-serve as an safety-monitor until the system shutdown.
+Runtime Verification (RV) is a lightweight (yet rigorous) method that
+complements classical exhaustive verification techniques (such as model
+checking and theorem proving) with a more practical approach for complex
+systems.
 
-For further information, please refer to:
-        Documentation/trace/rv/watchdog-monitor.rst
+Instead of relying on a fine-grained model of a system (e.g., a
+re-implementation a instruction level), RV works by analyzing the trace of the
+system's actual execution, comparing it against a formal specification of
+the system behavior.
 
-The monitor specification was developed together with Gabriele Paoloni,
-in the context of the Linux Foundation Elisa Project.
+The usage of deterministic automaton for RV is a well-established
+approach. In the specific case of the Linux kernel, you can check how
+to model complex behavior of the Linux kernel with this paper:
 
-Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Marco Elver <elver@google.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Gabriele Paoloni <gpaoloni@redhat.com>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Clark Williams <williams@redhat.com>
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-trace-devel@vger.kernel.org
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- kernel/trace/rv/Kconfig                       |  10 +
- kernel/trace/rv/Makefile                      |   1 +
- kernel/trace/rv/monitor_safe_wtd_nwo/model.h  |  61 ++++
- .../rv/monitor_safe_wtd_nwo/safe_wtd_nwo.c    | 309 ++++++++++++++++++
- .../rv/monitor_safe_wtd_nwo/safe_wtd_nwo.h    |  64 ++++
- 5 files changed, 445 insertions(+)
+  DE OLIVEIRA, Daniel Bristot; CUCINOTTA, Tommaso; DE OLIVEIRA, Romulo Silva.
+  *Efficient formal verification for the Linux kernel.* In: International
+  Conference on Software Engineering and Formal Methods. Springer, Cham, 2019.
+  p. 315-332.
+
+And how efficient is this approach here:
+
+  DE OLIVEIRA, Daniel B.; DE OLIVEIRA, Romulo S.; CUCINOTTA, Tommaso. *A thread
+  synchronization model for the PREEMPT_RT Linux kernel.* Journal of Systems
+  Architecture, 2020, 107: 101729.
+
+tlrd: it is possible to model complex behaviors in a modular way, with
+an acceptable overhead (even for production systems). See this
+presentation at 2019's ELCE: https://www.youtube.com/watch?v=BfTuEHafNgg
+
+Here I am proposing a more practical approach for the usage of deterministic
+automata for runtime verification, and it includes:
+
+	- An interface for controlling the verification;
+	- A tool and set of headers that enables the automatic code
+	  generation of the RV monitor (Monitor Synthesis);
+	- Sample monitors to evaluate the interface;
+	- A sample monitor developed in the context of the Elisa Project
+	  demonstrating how to use RV in the context of safety-critical
+	  systems.
+
+Given that RV is a tracing consumer, the code is being placed inside the
+tracing subsystem (Steven and I have been talking about it for a while).
+
+The changes since V1 includes:
+	- rebased to the latest kernel;
+	- code cleanup;
+	- the watchdog dev monitor;
+	- safety app;
+
+The TODO list still includes:
+	- Make per-task monitor use the task struct to store the
+	  per monitor state (Suggested by peterz)
+	- Add a reactor tha enables the visualization of the visited
+	  states via KCOV (Marco Elver & Dmitry Vyukov)
+	- Add a CRC method to check from user-space if the values
+	  exported by the monitor were not corrupted by any other
+	  kernel task (Gabriele Paoloni)
+
+I am sending the V2 with some TODOs because I need
+some feedback on the interface/files placement inside the kernel,
+so I can adjust all the patches accordingly. Also, to make it possible
+for people in the Elisa Project to evaluate the safety_app approach.
+
+Daniel Bristot de Oliveira (21):
+  rv: Add Runtime Verification (RV) interface
+  rv: Add runtime reactors interface
+  rv/include: Add helper functions for deterministic automata
+  rv/include: Add deterministic automata monitor definition via C macros
+  rv/include: Add tracing helper functions
+  tools/rv: Add dot2c
+  tools/rv: Add dot2k
+  rv/monitor: Add the wip monitor skeleton created by dot2k
+  rv/monitor: wip instrumentation and Makefile/Kconfig entries
+  rv/monitor: Add the wwnr monitor skeleton created by dot2k
+  rv/monitor: wwnr instrumentation and Makefile/Kconfig entries
+  rv/reactor: Add the printk reactor
+  rv/reactor: Add the panic reactor
+  Documentation/rv: Add a basic documentation
+  Documentation/rv: Add deterministic automata monitor synthesis
+    documentation
+  Documentation/rv: Add deterministic automata instrumentation
+    documentation
+  watchdog/dev: Add tracepoints
+  rv/monitor: Add safe watchdog monitor
+  rv/monitor: Add safe watchdog nowayout monitor
+  rv/safety_app: Add an safety_app sample
+  Documentation/rv: Add watchdog-monitor documentation
+
+ Documentation/trace/index.rst                 |   1 +
+ .../trace/rv/da_monitor_instrumentation.rst   | 230 ++++++
+ .../trace/rv/da_monitor_synthesis.rst         | 286 +++++++
+ Documentation/trace/rv/index.rst              |   9 +
+ .../trace/rv/runtime-verification.rst         | 233 ++++++
+ Documentation/trace/rv/watchdog-monitor.rst   | 307 ++++++++
+ drivers/watchdog/watchdog_dev.c               |  41 +-
+ include/linux/rv.h                            |  31 +
+ include/linux/watchdog.h                      |   7 +-
+ include/rv/automata.h                         |  52 ++
+ include/rv/da_monitor.h                       | 398 ++++++++++
+ include/rv/trace_helpers.h                    |  69 ++
+ include/trace/events/watchdog.h               | 103 +++
+ kernel/trace/Kconfig                          |   2 +
+ kernel/trace/Makefile                         |   2 +
+ kernel/trace/rv/Kconfig                       |  78 ++
+ kernel/trace/rv/Makefile                      |  10 +
+ kernel/trace/rv/monitor_safe_wtd/model.h      |  84 +++
+ kernel/trace/rv/monitor_safe_wtd/safe_wtd.c   | 322 ++++++++
+ kernel/trace/rv/monitor_safe_wtd/safe_wtd.h   |  64 ++
+ kernel/trace/rv/monitor_safe_wtd_nwo/model.h  |  61 ++
+ .../rv/monitor_safe_wtd_nwo/safe_wtd_nwo.c    | 309 ++++++++
+ .../rv/monitor_safe_wtd_nwo/safe_wtd_nwo.h    |  64 ++
+ kernel/trace/rv/monitor_wip/model.h           |  38 +
+ kernel/trace/rv/monitor_wip/wip.c             | 124 +++
+ kernel/trace/rv/monitor_wip/wip.h             |  64 ++
+ kernel/trace/rv/monitor_wwnr/model.h          |  38 +
+ kernel/trace/rv/monitor_wwnr/wwnr.c           | 122 +++
+ kernel/trace/rv/monitor_wwnr/wwnr.h           |  70 ++
+ kernel/trace/rv/reactor_panic.c               |  44 ++
+ kernel/trace/rv/reactor_printk.c              |  43 ++
+ kernel/trace/rv/rv.c                          | 700 +++++++++++++++++
+ kernel/trace/rv/rv.h                          |  50 ++
+ kernel/trace/rv/rv_reactors.c                 | 478 ++++++++++++
+ kernel/trace/trace.c                          |   4 +
+ kernel/trace/trace.h                          |   2 +
+ tools/tracing/rv/dot2/Makefile                |  26 +
+ tools/tracing/rv/dot2/automata.py             | 179 +++++
+ tools/tracing/rv/dot2/dot2c                   |  30 +
+ tools/tracing/rv/dot2/dot2c.py                | 240 ++++++
+ tools/tracing/rv/dot2/dot2k                   |  46 ++
+ tools/tracing/rv/dot2/dot2k.py                | 184 +++++
+ .../rv/dot2/dot2k_templates/main_global.c     |  96 +++
+ .../rv/dot2/dot2k_templates/main_global.h     |  64 ++
+ .../rv/dot2/dot2k_templates/main_per_cpu.c    |  96 +++
+ .../rv/dot2/dot2k_templates/main_per_cpu.h    |  64 ++
+ .../rv/dot2/dot2k_templates/main_per_task.c   |  96 +++
+ .../rv/dot2/dot2k_templates/main_per_task.h   |  70 ++
+ tools/tracing/rv/safety_app/Makefile          |  51 ++
+ tools/tracing/rv/safety_app/safety_app.c      | 713 ++++++++++++++++++
+ 50 files changed, 6486 insertions(+), 9 deletions(-)
+ create mode 100644 Documentation/trace/rv/da_monitor_instrumentation.rst
+ create mode 100644 Documentation/trace/rv/da_monitor_synthesis.rst
+ create mode 100644 Documentation/trace/rv/index.rst
+ create mode 100644 Documentation/trace/rv/runtime-verification.rst
+ create mode 100644 Documentation/trace/rv/watchdog-monitor.rst
+ create mode 100644 include/linux/rv.h
+ create mode 100644 include/rv/automata.h
+ create mode 100644 include/rv/da_monitor.h
+ create mode 100644 include/rv/trace_helpers.h
+ create mode 100644 include/trace/events/watchdog.h
+ create mode 100644 kernel/trace/rv/Kconfig
+ create mode 100644 kernel/trace/rv/Makefile
+ create mode 100644 kernel/trace/rv/monitor_safe_wtd/model.h
+ create mode 100644 kernel/trace/rv/monitor_safe_wtd/safe_wtd.c
+ create mode 100644 kernel/trace/rv/monitor_safe_wtd/safe_wtd.h
  create mode 100644 kernel/trace/rv/monitor_safe_wtd_nwo/model.h
  create mode 100644 kernel/trace/rv/monitor_safe_wtd_nwo/safe_wtd_nwo.c
  create mode 100644 kernel/trace/rv/monitor_safe_wtd_nwo/safe_wtd_nwo.h
+ create mode 100644 kernel/trace/rv/monitor_wip/model.h
+ create mode 100644 kernel/trace/rv/monitor_wip/wip.c
+ create mode 100644 kernel/trace/rv/monitor_wip/wip.h
+ create mode 100644 kernel/trace/rv/monitor_wwnr/model.h
+ create mode 100644 kernel/trace/rv/monitor_wwnr/wwnr.c
+ create mode 100644 kernel/trace/rv/monitor_wwnr/wwnr.h
+ create mode 100644 kernel/trace/rv/reactor_panic.c
+ create mode 100644 kernel/trace/rv/reactor_printk.c
+ create mode 100644 kernel/trace/rv/rv.c
+ create mode 100644 kernel/trace/rv/rv.h
+ create mode 100644 kernel/trace/rv/rv_reactors.c
+ create mode 100644 tools/tracing/rv/dot2/Makefile
+ create mode 100644 tools/tracing/rv/dot2/automata.py
+ create mode 100644 tools/tracing/rv/dot2/dot2c
+ create mode 100644 tools/tracing/rv/dot2/dot2c.py
+ create mode 100644 tools/tracing/rv/dot2/dot2k
+ create mode 100644 tools/tracing/rv/dot2/dot2k.py
+ create mode 100644 tools/tracing/rv/dot2/dot2k_templates/main_global.c
+ create mode 100644 tools/tracing/rv/dot2/dot2k_templates/main_global.h
+ create mode 100644 tools/tracing/rv/dot2/dot2k_templates/main_per_cpu.c
+ create mode 100644 tools/tracing/rv/dot2/dot2k_templates/main_per_cpu.h
+ create mode 100644 tools/tracing/rv/dot2/dot2k_templates/main_per_task.c
+ create mode 100644 tools/tracing/rv/dot2/dot2k_templates/main_per_task.h
+ create mode 100644 tools/tracing/rv/safety_app/Makefile
+ create mode 100644 tools/tracing/rv/safety_app/safety_app.c
 
-diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
-index 93b36f215b2b..7e797e132f60 100644
---- a/kernel/trace/rv/Kconfig
-+++ b/kernel/trace/rv/Kconfig
-@@ -39,6 +39,16 @@ config RV_MON_SAFE_WTD
- 	  For futher information see:
- 	    Documentation/trace/rv/safety-monitor.rst
- 
-+config RV_MON_SAFE_WTD_NWO
-+	tristate "Safety watchdog nowayout"
-+	help
-+	  Enable safe_wtd_nwo, this monitor observes the interaction
-+	  between a user-space safety monitor and a watchdog device. It
-+	  enforces the usage of watchdog's nowayout config.
-+
-+	  For futher information see:
-+	    Documentation/trace/rv/safety-monitor.rst
-+
- config RV_REACTORS
- 	bool "Runtime verification reactors"
- 	default y if RV
-diff --git a/kernel/trace/rv/Makefile b/kernel/trace/rv/Makefile
-index 854d0f6e453b..44277103d178 100644
---- a/kernel/trace/rv/Makefile
-+++ b/kernel/trace/rv/Makefile
-@@ -4,6 +4,7 @@ obj-$(CONFIG_RV) += rv.o
- obj-$(CONFIG_RV_MON_WIP) += monitor_wip/wip.o
- obj-$(CONFIG_RV_MON_WWNR) += monitor_wwnr/wwnr.o
- obj-$(CONFIG_RV_MON_SAFE_WTD) += monitor_safe_wtd/safe_wtd.o
-+obj-$(CONFIG_RV_MON_SAFE_WTD_NWO) += monitor_safe_wtd_nwo/safe_wtd_nwo.o
- obj-$(CONFIG_RV_REACTORS) += rv_reactors.o
- obj-$(CONFIG_RV_REACT_PRINTK) += reactor_printk.o
- obj-$(CONFIG_RV_REACT_PANIC) += reactor_panic.o
-diff --git a/kernel/trace/rv/monitor_safe_wtd_nwo/model.h b/kernel/trace/rv/monitor_safe_wtd_nwo/model.h
-new file mode 100644
-index 000000000000..504a93e35b93
---- /dev/null
-+++ b/kernel/trace/rv/monitor_safe_wtd_nwo/model.h
-@@ -0,0 +1,61 @@
-+enum states_safe_wtd_nwo {
-+	init = 0,
-+	closed_running,
-+	nwo,
-+	opened,
-+	safe,
-+	set,
-+	started,
-+	state_max
-+};
-+
-+enum events_safe_wtd_nwo {
-+	close = 0,
-+	nowayout,
-+	open,
-+	other_threads,
-+	ping,
-+	set_safe_timeout,
-+	start,
-+	event_max
-+};
-+
-+struct automaton_safe_wtd_nwo {
-+	char *state_names[state_max];
-+	char *event_names[event_max];
-+	char function[state_max][event_max];
-+	char initial_state;
-+	char final_states[state_max];
-+};
-+
-+struct automaton_safe_wtd_nwo automaton_safe_wtd_nwo = {
-+	.state_names = {
-+		"init",
-+		"closed_running",
-+		"nwo",
-+		"opened",
-+		"safe",
-+		"set",
-+		"started"
-+	},
-+	.event_names = {
-+		"close",
-+		"nowayout",
-+		"open",
-+		"other_threads",
-+		"ping",
-+		"set_safe_timeout",
-+		"start"
-+	},
-+	.function = {
-+		{             -1,            nwo,             -1,             -1,             -1,             -1,             -1 },
-+		{             -1, closed_running,        started, closed_running,             -1,             -1,             -1 },
-+		{             -1,            nwo,         opened,            nwo,             -1,             -1,             -1 },
-+		{            nwo,             -1,             -1,             -1,             -1,             -1,        started },
-+		{ closed_running,             -1,             -1,             -1,           safe,             -1,             -1 },
-+		{             -1,             -1,             -1,             -1,           safe,             -1,             -1 },
-+		{ closed_running,             -1,             -1,             -1,             -1,            set,             -1 },
-+	},
-+	.initial_state = init,
-+	.final_states = { 1, 0, 0, 0, 0, 0, 0 },
-+};
-diff --git a/kernel/trace/rv/monitor_safe_wtd_nwo/safe_wtd_nwo.c b/kernel/trace/rv/monitor_safe_wtd_nwo/safe_wtd_nwo.c
-new file mode 100644
-index 000000000000..e19e10da0dc1
---- /dev/null
-+++ b/kernel/trace/rv/monitor_safe_wtd_nwo/safe_wtd_nwo.c
-@@ -0,0 +1,309 @@
-+#include <linux/ftrace.h>
-+#include <linux/tracepoint.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/rv.h>
-+#include <rv/da_monitor.h>
-+
-+#include <linux/watchdog.h>
-+#include <linux/moduleparam.h>
-+
-+#define MODULE_NAME "safe_wtd_nwo"
-+
-+/*
-+ * This is the self-generated part of the monitor. Generally, there is no need
-+ * to touch this section.
-+ */
-+#include "model.h"
-+
-+/*
-+ * Declare the deterministic automata monitor.
-+ *
-+ * The rv monitor reference is needed for the monitor declaration.
-+ */
-+struct rv_monitor rv_safe_wtd_nwo;
-+DECLARE_DA_MON_GLOBAL(safe_wtd_nwo, char);
-+
-+#define CREATE_TRACE_POINTS
-+#include "safe_wtd_nwo.h"
-+
-+/*
-+ * custom: safe_timeout is the maximum value a watchdog monitor
-+ * can set. This value is registered here to duplicate the information.
-+ * In this way, a miss-behaving monitor can be detected.
-+ */
-+static int safe_timeout = ~0;
-+module_param(safe_timeout, int, 0444);
-+
-+/*
-+ * custom: if check_timeout is set, the monitor will check if the time left
-+ * in the watchdog is less than or equals to the last safe timeout set by
-+ * user-space. This check is done after each ping. In this way, if any
-+ * code by-passed the watchdog dev interface setting a higher (so unsafe)
-+ * timeout, this monitor will catch the side effect and react.
-+ */
-+static int last_timeout_set = 0;
-+static int check_timeout = 0;
-+module_param(check_timeout, int, 0444);
-+
-+/*
-+ * custom: if dont_stop is set the monitor will react if stopped.
-+ */
-+static int dont_stop = 0;
-+module_param(dont_stop, int, 0444);
-+
-+/*
-+ * custom: there are some states that are kept after the watchdog is closed.
-+ * For example, the nowayout state.
-+ *
-+ * Thus, the RV monitor needs to keep track of these states after a start/stop
-+ * of the RV monitor itself, and should not reset after each restart - keeping the
-+ * know state until the system shutdown.
-+ *
-+ * If for an unknown reason an RV monitor would like to reset the RV monitor at each
-+ * RV monitor start, set it to one.
-+ */
-+static int reset_on_restart = 0;
-+module_param(reset_on_restart, int, 0444);
-+
-+/*
-+ * open_pid takes note of the first thread that opened the watchdog.
-+ *
-+ * Any other thread that generates an event will cause an "other_threads"
-+ * event in the monitor.
-+ */
-+static int open_pid = 0;
-+
-+/*
-+ * watchdog_id: the watchdog to monitor
-+ */
-+static int watchdog_id = 0;
-+module_param(watchdog_id, int, 0444);
-+
-+static void handle_nowayout(void *data, struct watchdog_device *wdd)
-+{
-+	if (wdd->id != watchdog_id)
-+		return;
-+
-+	da_handle_init_run_event_safe_wtd_nwo(nowayout);
-+}
-+
-+static void handle_close(void *data, struct watchdog_device *wdd)
-+{
-+	if (wdd->id != watchdog_id)
-+		return;
-+
-+	if (open_pid && current->pid != open_pid) {
-+		da_handle_init_run_event_safe_wtd_nwo(other_threads);
-+	} else {
-+		da_handle_event_safe_wtd_nwo(close);
-+		open_pid = 0;
-+	}
-+}
-+
-+static void handle_open(void *data, struct watchdog_device *wdd)
-+{
-+	if (wdd->id != watchdog_id)
-+		return;
-+
-+	if (open_pid && current->pid != open_pid) {
-+		da_handle_init_run_event_safe_wtd_nwo(other_threads);
-+	} else {
-+		da_handle_init_run_event_safe_wtd_nwo(open);
-+		open_pid = current->pid;
-+	}
-+}
-+
-+static void blocked_events(void *data, struct watchdog_device *wdd)
-+{
-+	if (wdd->id != watchdog_id)
-+		return;
-+
-+	if (open_pid && current->pid != open_pid) {
-+		da_handle_init_run_event_safe_wtd_nwo(other_threads);
-+		return;
-+	}
-+	da_handle_event_safe_wtd_nwo(other_threads);
-+}
-+
-+static void handle_ping(void *data, struct watchdog_device *wdd)
-+{
-+	char msg[128];
-+	unsigned int timeout;
-+
-+	if (wdd->id != watchdog_id)
-+		return;
-+
-+	if (open_pid && current->pid != open_pid) {
-+		da_handle_init_run_event_safe_wtd_nwo(other_threads);
-+		return;
-+	}
-+
-+	da_handle_event_safe_wtd_nwo(ping);
-+
-+	if (!check_timeout)
-+		return;
-+
-+	if (wdd->ops->get_timeleft) {
-+		timeout = wdd->ops->get_timeleft(wdd);
-+		if (timeout > last_timeout_set) {
-+			snprintf(msg, 128,
-+				 "watchdog timout is %u > than previously set (%d)\n",
-+				 timeout, last_timeout_set);
-+			cond_react(msg);
-+		}
-+	} else {
-+		snprintf(msg, 128, "error getting timeout: option not supported\n");
-+		cond_react(msg);
-+	}
-+}
-+
-+static void handle_set_safe_timeout(void *data, struct watchdog_device *wdd, unsigned long timeout)
-+{
-+	char msg[128];
-+
-+	if (wdd->id != watchdog_id)
-+		return;
-+
-+	if (open_pid && current->pid != open_pid) {
-+		da_handle_init_run_event_safe_wtd_nwo(other_threads);
-+		return;
-+	}
-+
-+	da_handle_event_safe_wtd_nwo(set_safe_timeout);
-+
-+	if (timeout > safe_timeout) {
-+		snprintf(msg, 128, "set safety timeout is too high: %d", (int) timeout);
-+		cond_react(msg);
-+	}
-+
-+	if (check_timeout)
-+		last_timeout_set = timeout;
-+}
-+
-+static void handle_start(void *data, struct watchdog_device *wdd)
-+{
-+	if (wdd->id != watchdog_id)
-+		return;
-+
-+	if (open_pid && current->pid != open_pid) {
-+		da_handle_init_run_event_safe_wtd_nwo(other_threads);
-+		return;
-+	}
-+
-+	da_handle_event_safe_wtd_nwo(start);
-+}
-+
-+#define NR_TP	9
-+static struct tracepoint_hook_helper tracepoints_to_hook[NR_TP] = {
-+	{
-+		.probe = handle_close,
-+		.name = "watchdog_close",
-+		.registered = 0
-+	},
-+	{
-+		.probe = handle_nowayout,
-+		.name = "watchdog_nowayout",
-+		.registered = 0
-+	},
-+	{
-+		.probe = handle_open,
-+		.name = "watchdog_open",
-+		.registered = 0
-+	},
-+	{
-+		.probe = handle_ping,
-+		.name = "watchdog_ping",
-+		.registered = 0
-+	},
-+	{
-+		.probe = handle_set_safe_timeout,
-+		.name = "watchdog_set_timeout",
-+		.registered = 0
-+	},
-+	{
-+		.probe = handle_start,
-+		.name = "watchdog_start",
-+		.registered = 0
-+	},
-+	{
-+		.probe = blocked_events,
-+		.name = "watchdog_stop",
-+		.registered = 0
-+	},
-+	{
-+		.probe = blocked_events,
-+		.name = "watchdog_set_keep_alive",
-+		.registered = 0
-+	},
-+	{
-+		.probe = blocked_events,
-+		.name = "watchdog_keep_alive",
-+		.registered = 0
-+	},
-+};
-+
-+static int mon_started = 0;
-+
-+static int start_safe_wtd_nwo(void)
-+{
-+	int retval;
-+
-+	if (!mon_started || reset_on_restart) {
-+		da_monitor_init_safe_wtd_nwo();
-+		mon_started = 1;
-+	}
-+
-+	retval = thh_hook_probes(tracepoints_to_hook, NR_TP);
-+	if (retval)
-+		goto out_err;
-+
-+	return 0;
-+
-+out_err:
-+	return -EINVAL;
-+}
-+
-+static void stop_safe_wtd_nwo(void)
-+{
-+	if (dont_stop)
-+		cond_react("dont_stop safe_wtd_nwo is set.");
-+
-+	rv_safe_wtd_nwo.enabled = 0;
-+	thh_unhook_probes(tracepoints_to_hook, NR_TP);
-+	return;
-+}
-+
-+/*
-+ * This is the monitor register section.
-+ */
-+struct rv_monitor rv_safe_wtd_nwo = {
-+	.name = "safe_wtd_nwo",
-+	.description = "A watchdog monitor guarding a safety monitor actions, nowayout required.",
-+	.start = start_safe_wtd_nwo,
-+	.stop = stop_safe_wtd_nwo,
-+	.reset = da_monitor_reset_all_safe_wtd_nwo,
-+	.enabled = 0,
-+};
-+
-+int register_safe_wtd_nwo(void)
-+{
-+	rv_register_monitor(&rv_safe_wtd_nwo);
-+	return 0;
-+}
-+
-+void unregister_safe_wtd_nwo(void)
-+{
-+	if (rv_safe_wtd_nwo.enabled)
-+		stop_safe_wtd_nwo();
-+
-+	rv_unregister_monitor(&rv_safe_wtd_nwo);
-+}
-+
-+module_init(register_safe_wtd_nwo);
-+module_exit(unregister_safe_wtd_nwo);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Daniel Bristot de Oliveira <bristot@kernel.org>");
-+MODULE_DESCRIPTION("Safe watchdog RV monitor nowayout");
-diff --git a/kernel/trace/rv/monitor_safe_wtd_nwo/safe_wtd_nwo.h b/kernel/trace/rv/monitor_safe_wtd_nwo/safe_wtd_nwo.h
-new file mode 100644
-index 000000000000..0d33800b0972
---- /dev/null
-+++ b/kernel/trace/rv/monitor_safe_wtd_nwo/safe_wtd_nwo.h
-@@ -0,0 +1,64 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM rv
-+
-+#if !defined(_SAFETY_MONITOR_NWO_TRACE_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _SAFETY_MONITOR_NWO_TRACE_H
-+
-+#include <linux/tracepoint.h>
-+
-+TRACE_EVENT(event_safe_wtd_nwo,
-+
-+	TP_PROTO(char state, char event, char next_state, bool safe),
-+
-+	TP_ARGS(state, event, next_state, safe),
-+
-+	TP_STRUCT__entry(
-+		__field(	char,		state		)
-+		__field(	char,		event		)
-+		__field(	char,		next_state	)
-+		__field(	bool,		safe		)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->state = state;
-+		__entry->event = event;
-+		__entry->next_state = next_state;
-+		__entry->safe = safe;
-+	),
-+
-+	TP_printk("%s x %s -> %s %s",
-+		model_get_state_name_safe_wtd_nwo(__entry->state),
-+		model_get_event_name_safe_wtd_nwo(__entry->event),
-+		model_get_state_name_safe_wtd_nwo(__entry->next_state),
-+		__entry->safe ? "(safe)" : "")
-+);
-+
-+TRACE_EVENT(error_safe_wtd_nwo,
-+
-+	TP_PROTO(char state, char event),
-+
-+	TP_ARGS(state, event),
-+
-+	TP_STRUCT__entry(
-+		__field(	char,		state		)
-+		__field(	char,		event		)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->state = state;
-+		__entry->event = event;
-+	),
-+
-+	TP_printk("event %s not expected in the state %s",
-+		model_get_event_name_safe_wtd_nwo(__entry->event),
-+		model_get_state_name_safe_wtd_nwo(__entry->state))
-+);
-+
-+#endif /* _SAFETY_MONITOR_NWO_H */
-+
-+/* This part ust be outside protection */
-+#undef TRACE_INCLUDE_PATH
-+#define TRACE_INCLUDE_PATH ../kernel/trace/rv/monitor_safe_wtd_nwo/
-+#define TRACE_INCLUDE_FILE safe_wtd_nwo
-+#include <trace/define_trace.h>
 -- 
 2.33.1
 
