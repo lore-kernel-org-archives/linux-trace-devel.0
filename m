@@ -2,41 +2,53 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0516C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Feb 2022 16:00:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31068C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Feb 2022 17:25:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356090AbiBNQAx (ORCPT
+        id S1357074AbiBNRZj (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 14 Feb 2022 11:00:53 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48140 "EHLO
+        Mon, 14 Feb 2022 12:25:39 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356083AbiBNQAs (ORCPT
+        with ESMTP id S1357065AbiBNRZi (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 14 Feb 2022 11:00:48 -0500
-X-Greylist: delayed 1253 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 14 Feb 2022 08:00:40 PST
-Received: from gateway33.websitewelcome.com (gateway33.websitewelcome.com [192.185.145.239])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0913E49F98
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Feb 2022 08:00:39 -0800 (PST)
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway33.websitewelcome.com (Postfix) with ESMTP id 8F2E4C3C9
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Feb 2022 09:39:45 -0600 (CST)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id JdS5nyGPkRnrrJdS5nH7BA; Mon, 14 Feb 2022 09:39:45 -0600
-X-Authority-Reason: nr=8
-Received: from host-95-232-30-176.retail.telecomitalia.it ([95.232.30.176]:59426 helo=[10.0.0.45])
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1nJdS3-002kde-Pt; Mon, 14 Feb 2022 09:39:43 -0600
-Message-ID: <49ce9a81-8cd0-08d6-c6ae-011214c676ba@kernel.org>
-Date:   Mon, 14 Feb 2022 16:39:33 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [RFC V2 17/21] watchdog/dev: Add tracepoints
-Content-Language: en-US
-To:     Guenter Roeck <linux@roeck-us.net>,
+        Mon, 14 Feb 2022 12:25:38 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D298652F6
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Feb 2022 09:25:30 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id i62so20775495ioa.1
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Feb 2022 09:25:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uHo9ifNLQ09Yp1i6Bp5KrefO3r8lTgQpaEZz0iuYjms=;
+        b=LKNxKFJUqhbFk4Qe/pRRegw9Y64INugoyZedczfCDrP9t+fKS3dPmVaiVWKgRh5oKj
+         203ONOj5nFUp9ItEmeM/YxjKI5cWbnseHJC7WtE+OZwGAy4Mux24tI3jcNm6RDywmH6+
+         wRWhu5cEXokeKhAkW/nbDjSadLfJ6UJlGDhAk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uHo9ifNLQ09Yp1i6Bp5KrefO3r8lTgQpaEZz0iuYjms=;
+        b=ZrbJuKM6mzRrjxgB395qb4+o/Pu58HiA/j6REnCmV3/cZNI5HNbE5FAu1UiilFYpm4
+         WIDSlm+hg0sLBrLe6UjnS2uG9YpOs+whW451u8CsszcsElsX8WO1IPqfgPj3eJJLz79h
+         mGZbY5QQhOeKbW+l/73JlDCeSa6H1HnsLI0v7xTUMpXXLjptDXtNE/Fdt2AuSWaxu/QG
+         pWniTHpplgIBHEV4pVzeeIvSh8q8sJppvIMuxSiraz5uljW2BQrxn/1cgKe73jyM+Ho8
+         /qk0hRm9WIoQUpaaO+6G6Qy2HKKdwTrhPW9/xPz8oKAthyGkgWbXF6k3bmyGApFQ2kBJ
+         d2kw==
+X-Gm-Message-State: AOAM5322b0XaeWpGa4iIxTh075+w22JMRvaxH5jpp3kZI5zF5r1S9xAj
+        nJmL5yTEkqtV9l1HYL1fA7VrRg==
+X-Google-Smtp-Source: ABdhPJzGAtxpCzuVfwe2bYFOH31SGAUKp7VPjUtMbOWWF94SuYwjfTqzPEUgrkR1TKUAXYNHpYGEYw==
+X-Received: by 2002:a05:6638:1350:: with SMTP id u16mr455419jad.260.1644859529967;
+        Mon, 14 Feb 2022 09:25:29 -0800 (PST)
+Received: from [192.168.1.128] ([71.205.29.0])
+        by smtp.gmail.com with ESMTPSA id 193sm12353004iob.17.2022.02.14.09.25.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Feb 2022 09:25:29 -0800 (PST)
+Subject: Re: [RFC V2 12/21] rv/reactor: Add the printk reactor
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>
 Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -46,237 +58,145 @@ Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
         Marco Elver <elver@google.com>,
         Dmitry Vyukov <dvyukov@google.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
         Gabriele Paoloni <gpaoloni@redhat.com>,
         Juri Lelli <juri.lelli@redhat.com>,
         Clark Williams <williams@redhat.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
+        Shuah Khan <skhan@linuxfoundation.org>
 References: <cover.1644830251.git.bristot@kernel.org>
- <e67874c8b676ea8dfe38679efa25363889bb1e76.1644830251.git.bristot@kernel.org>
- <6ead3577-75ec-1b9a-0c27-213a3a186c57@roeck-us.net>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <6ead3577-75ec-1b9a-0c27-213a3a186c57@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 95.232.30.176
-X-Source-L: No
-X-Exim-ID: 1nJdS3-002kde-Pt
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-95-232-30-176.retail.telecomitalia.it ([10.0.0.45]) [95.232.30.176]:59426
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 2
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
+ <fad2d358d57dfffc084d482684ecc1d13b62b262.1644830251.git.bristot@kernel.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <10cf6003-6d2b-056b-11bb-3ae9c342a369@linuxfoundation.org>
+Date:   Mon, 14 Feb 2022 10:25:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <fad2d358d57dfffc084d482684ecc1d13b62b262.1644830251.git.bristot@kernel.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 2/14/22 15:57, Guenter Roeck wrote:
-> On 2/14/22 02:45, Daniel Bristot de Oliveira wrote:
->> Add a set of tracepoints, enabling the observability of the watchdog
->> device interactions with user-space.
->>
->> The events are:
->>     watchdog:watchdog_open
->>     watchdog:watchdog_close
->>     watchdog:watchdog_start
->>     watchdog:watchdog_stop
->>     watchdog:watchdog_set_timeout
->>     watchdog:watchdog_ping
->>     watchdog:watchdog_nowayout
->>     watchdog:watchdog_set_keep_alive
->>     watchdog:watchdog_keep_alive
->>
->> Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
->> Cc: Guenter Roeck <linux@roeck-us.net>
->> Cc: Jonathan Corbet <corbet@lwn.net>
->> Cc: Steven Rostedt <rostedt@goodmis.org>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Marco Elver <elver@google.com>
->> Cc: Dmitry Vyukov <dvyukov@google.com>
->> Cc: "Paul E. McKenney" <paulmck@kernel.org>
->> Cc: Shuah Khan <skhan@linuxfoundation.org>
->> Cc: Gabriele Paoloni <gpaoloni@redhat.com>
->> Cc: Juri Lelli <juri.lelli@redhat.com>
->> Cc: Clark Williams <williams@redhat.com>
->> Cc: linux-doc@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org
->> Cc: linux-trace-devel@vger.kernel.org
->> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
->> ---
->>   drivers/watchdog/watchdog_dev.c |  41 ++++++++++++-
->>   include/linux/watchdog.h        |   7 +--
->>   include/trace/events/watchdog.h | 103 ++++++++++++++++++++++++++++++++
->>   3 files changed, 142 insertions(+), 9 deletions(-)
->>   create mode 100644 include/trace/events/watchdog.h
->>
->> diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
->> index 3a3d8b5c7ad5..0beeac5d4541 100644
->> --- a/drivers/watchdog/watchdog_dev.c
->> +++ b/drivers/watchdog/watchdog_dev.c
->> @@ -44,6 +44,9 @@
->>   #include <linux/watchdog.h>    /* For watchdog specific items */
->>   #include <linux/uaccess.h>    /* For copy_to_user/put_user/... */
->>   +#define CREATE_TRACE_POINTS
->> +#include <trace/events/watchdog.h>
->> +
->>   #include "watchdog_core.h"
->>   #include "watchdog_pretimeout.h"
->>   @@ -130,9 +133,11 @@ static inline void watchdog_update_worker(struct
->> watchdog_device *wdd)
->>       if (watchdog_need_worker(wdd)) {
->>           ktime_t t = watchdog_next_keepalive(wdd);
->>   -        if (t > 0)
->> +        if (t > 0) {
->>               hrtimer_start(&wd_data->timer, t,
->>                         HRTIMER_MODE_REL_HARD);
->> +            trace_watchdog_set_keep_alive(wdd, ktime_to_ms(t));
->> +        }
->>       } else {
->>           hrtimer_cancel(&wd_data->timer);
->>       }
->> @@ -149,14 +154,16 @@ static int __watchdog_ping(struct watchdog_device *wdd)
->>       now = ktime_get();
->>         if (ktime_after(earliest_keepalive, now)) {
->> -        hrtimer_start(&wd_data->timer,
->> -                  ktime_sub(earliest_keepalive, now),
->> +        ktime_t t = ktime_sub(earliest_keepalive, now);
+On 2/14/22 3:45 AM, Daniel Bristot de Oliveira wrote:
+> Sample reactor that printks the reaction message.
 > 
-> I am quite sure this line creates a checkpatch warning.
 
-right, I will fix it.
+Who is supposed to take action on this message and how do they
+get notified?
+
+> Note: do not use this reactor with rq_lock taken, it will lock the
+> system until printk can handle that.
+
+Please give more details on "lock the system" and how locking
+would impact users and system operation
+
 > 
->> +        hrtimer_start(&wd_data->timer, t,
->>                     HRTIMER_MODE_REL_HARD);
->> +        trace_watchdog_set_keep_alive(wdd, ktime_to_ms(t));
->>           return 0;
->>       }
->>         wd_data->last_hw_keepalive = now;
->>   +    trace_watchdog_ping(wdd);
->>       if (wdd->ops->ping)
->>           err = wdd->ops->ping(wdd);  /* ping the watchdog */
->>       else
->> @@ -215,6 +222,7 @@ static void watchdog_ping_work(struct kthread_work *work)
->>       wd_data = container_of(work, struct watchdog_core_data, work);
->>         mutex_lock(&wd_data->lock);
->> +    trace_watchdog_keep_alive(wd_data->wdd);
->>       if (watchdog_worker_should_ping(wd_data))
->>           __watchdog_ping(wd_data->wdd);
->>       mutex_unlock(&wd_data->lock);
->> @@ -252,6 +260,8 @@ static int watchdog_start(struct watchdog_device *wdd)
->>         set_bit(_WDOG_KEEPALIVE, &wd_data->status);
->>   +    trace_watchdog_start(wdd);
->> +
->>       started_at = ktime_get();
->>       if (watchdog_hw_running(wdd) && wdd->ops->ping) {
->>           err = __watchdog_ping(wdd);
->> @@ -298,6 +308,7 @@ static int watchdog_stop(struct watchdog_device *wdd)
->>           return -EBUSY;
->>       }
->>   +    trace_watchdog_stop(wdd);
->>       if (wdd->ops->stop) {
->>           clear_bit(WDOG_HW_RUNNING, &wdd->status);
->>           err = wdd->ops->stop(wdd);
->> @@ -370,6 +381,7 @@ static int watchdog_set_timeout(struct watchdog_device *wdd,
->>       if (watchdog_timeout_invalid(wdd, timeout))
->>           return -EINVAL;
->>   +    trace_watchdog_set_timeout(wdd, timeout);
->>       if (wdd->ops->set_timeout) {
->>           err = wdd->ops->set_timeout(wdd, timeout);
->>       } else {
->> @@ -432,6 +444,23 @@ static int watchdog_get_timeleft(struct watchdog_device
->> *wdd,
->>       return 0;
->>   }
->>   +/*
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Marco Elver <elver@google.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Shuah Khan <skhan@linuxfoundation.org>
+> Cc: Gabriele Paoloni <gpaoloni@redhat.com>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Clark Williams <williams@redhat.com>
+> Cc: linux-doc@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-trace-devel@vger.kernel.org
+> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+> ---
+>   kernel/trace/rv/Kconfig          |  8 ++++++
+>   kernel/trace/rv/Makefile         |  3 ++-
+>   kernel/trace/rv/reactor_printk.c | 43 ++++++++++++++++++++++++++++++++
+>   3 files changed, 53 insertions(+), 1 deletion(-)
+>   create mode 100644 kernel/trace/rv/reactor_printk.c
 > 
-> /** ?
-
-yep, I will fix this too.
-
->> + * watchdog_set_nowayout - set nowaout bit
->> + * @wdd:    The watchdog device to set nowayoutbit
->> + * @nowayout    A boolean on/off switcher
->> + *
->> + * If nowayout boolean is true, the nowayout option is set. No action is
->> + * taken if nowayout is false.
->> + */
->> +void watchdog_set_nowayout(struct watchdog_device *wdd, bool nowayout)
->> +{
->> +    if (nowayout) {
->> +        set_bit(WDOG_NO_WAY_OUT, &wdd->status);
->> +        trace_watchdog_nowayout(wdd);
->> +    }
->> +}
->> +EXPORT_SYMBOL(watchdog_set_nowayout);
->> +
->>   #ifdef CONFIG_WATCHDOG_SYSFS
->>   static ssize_t nowayout_show(struct device *dev, struct device_attribute *attr,
->>                   char *buf)
->> @@ -457,6 +486,7 @@ static ssize_t nowayout_store(struct device *dev, struct
->> device_attribute *attr,
->>       /* nowayout cannot be disabled once set */
->>       if (test_bit(WDOG_NO_WAY_OUT, &wdd->status) && !value)
->>           return -EPERM;
->> +
->>       watchdog_set_nowayout(wdd, value);
->>       return len;
->>   }
->> @@ -858,6 +888,8 @@ static int watchdog_open(struct inode *inode, struct file
->> *file)
->>           goto out_clear;
->>       }
->>   +    trace_watchdog_open(wdd);
->> +
->>       err = watchdog_start(wdd);
->>       if (err < 0)
->>           goto out_mod;
->> @@ -880,6 +912,7 @@ static int watchdog_open(struct inode *inode, struct file
->> *file)
->>       return stream_open(inode, file);
->>     out_mod:
->> +    trace_watchdog_close(wdd);
->>       module_put(wd_data->wdd->ops->owner);
->>   out_clear:
->>       clear_bit(_WDOG_DEV_OPEN, &wd_data->status);
->> @@ -940,6 +973,7 @@ static int watchdog_release(struct inode *inode, struct
->> file *file)
->>       /* make sure that /dev/watchdog can be re-opened */
->>       clear_bit(_WDOG_DEV_OPEN, &wd_data->status);
->>   +    trace_watchdog_close(wdd);
->>   done:
->>       running = wdd && watchdog_hw_running(wdd);
->>       mutex_unlock(&wd_data->lock);
->> @@ -952,6 +986,7 @@ static int watchdog_release(struct inode *inode, struct
->> file *file)
->>           module_put(wd_data->cdev.owner);
->>           put_device(&wd_data->dev);
->>       }
->> +
+> diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
+> index f2d0bed05a55..490f1417def9 100644
+> --- a/kernel/trace/rv/Kconfig
+> +++ b/kernel/trace/rv/Kconfig
+> @@ -37,4 +37,12 @@ config RV_REACTORS
+>   	  tracing reactions, printing the monitor output via tracepoints,
+>   	  but other reactions can be added (on-demand) via this interface.
+>   
+> +config RV_REACT_PRINTK
+> +	tristate "Printk reactor"
+> +	depends on RV_REACTORS
+> +	default y if RV_REACTORS
+> +	help
+> +	  Enables the printk reactor. The printk reactor emmits a printk()
+> +	  message if an exception is found.
+> +
+>   endif # RV
+> diff --git a/kernel/trace/rv/Makefile b/kernel/trace/rv/Makefile
+> index edad01bb2b5d..d86ceb103ef2 100644
+> --- a/kernel/trace/rv/Makefile
+> +++ b/kernel/trace/rv/Makefile
+> @@ -1,6 +1,7 @@
+>   # SPDX-License-Identifier: GPL-2.0
+>   
+>   obj-$(CONFIG_RV) += rv.o
+> -obj-$(CONFIG_RV_REACTORS) += rv_reactors.o
+>   obj-$(CONFIG_RV_MON_WIP) += monitor_wip/wip.o
+>   obj-$(CONFIG_RV_MON_WWNR) += monitor_wwnr/wwnr.o
+> +obj-$(CONFIG_RV_REACTORS) += rv_reactors.o
+> +obj-$(CONFIG_RV_REACT_PRINTK) += reactor_printk.o
+> diff --git a/kernel/trace/rv/reactor_printk.c b/kernel/trace/rv/reactor_printk.c
+> new file mode 100644
+> index 000000000000..9f9c9bb2d304
+> --- /dev/null
+> +++ b/kernel/trace/rv/reactor_printk.c
+> @@ -0,0 +1,43 @@
+> +/*
+> + * Printk RV reactor:
+> + *   Prints the exception msg to the kernel message log.
+> + *
+> + * Copyright (C) 2019-2022 Daniel Bristot de Oliveira <bristot@kernel.org>
+> + *
+> + * SPDX-License-Identifier: GPL-2.0
+> + */
+> +#include <linux/ftrace.h>
+> +#include <linux/tracepoint.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/init.h>
+> +#include <linux/rv.h>
+> +
+> +static void rv_printk_reaction(char *msg)
+> +{
+> +	printk(msg);
+> +}
+> +
+> +struct rv_reactor rv_printk = {
+> +	.name = "printk",
+> +	.description = "prints the exception msg to the kernel message log",
+> +	.react = rv_printk_reaction
+> +};
+> +
+> +int register_react_printk(void)
+> +{
+> +	rv_register_reactor(&rv_printk);
+> +	return 0;
+> +}
+> +
+> +void unregister_react_printk(void)
+> +{
+> +	rv_unregister_reactor(&rv_printk);
+> +}
+> +
+> +module_init(register_react_printk);
+> +module_exit(unregister_react_printk);
+> +
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_AUTHOR("Daniel Bristot de Oliveira");
+> +MODULE_DESCRIPTION("printk rv reactor: printk if an exception is hit");
 > 
-> You may disagree with current empty lines or other cosmetics, but that is not an
-> acceptable reason for such changes. Please drop this change and the similar change
-> further up.
 
-It was miss attention from my side. I probably did some changes around these
-lines in an early patch version but forgot to remove those "+<empty>" changes.
-My bad. I will remove them.
-
-Thanks, Guenter!
--- Daniel
-
-> Guenter
