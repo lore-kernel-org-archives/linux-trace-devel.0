@@ -2,33 +2,33 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EA6CC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Feb 2022 11:28:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A967C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Feb 2022 11:28:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350808AbiBNL2f convert rfc822-to-8bit (ORCPT
+        id S1350876AbiBNL2u convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 14 Feb 2022 06:28:35 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59192 "EHLO
+        Mon, 14 Feb 2022 06:28:50 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:57306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351329AbiBNL2U (ORCPT
+        with ESMTP id S1351445AbiBNL2f (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 14 Feb 2022 06:28:20 -0500
-Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C18C22DCB
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Feb 2022 03:06:02 -0800 (PST)
+        Mon, 14 Feb 2022 06:28:35 -0500
+Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [207.211.30.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D86F7638C
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Feb 2022 03:07:01 -0800 (PST)
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-416-_7XVMO5INWiMjIMJzHYuqg-1; Mon, 14 Feb 2022 05:45:57 -0500
-X-MC-Unique: _7XVMO5INWiMjIMJzHYuqg-1
+ us-mta-378-rAk7EfuaM-GmxaBj1VVZFg-1; Mon, 14 Feb 2022 05:46:41 -0500
+X-MC-Unique: rAk7EfuaM-GmxaBj1VVZFg-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E2E7E1091DA1;
-        Mon, 14 Feb 2022 10:45:54 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7313C18B613D;
+        Mon, 14 Feb 2022 10:46:39 +0000 (UTC)
 Received: from x1.com (unknown [10.22.16.130])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5B42427BDF;
-        Mon, 14 Feb 2022 10:45:27 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D2B4C27BD1;
+        Mon, 14 Feb 2022 10:46:34 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
@@ -47,9 +47,11 @@ Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Clark Williams <williams@redhat.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
-Subject: [RFC V2 00/21] The Runtime Verification (RV) interface
-Date:   Mon, 14 Feb 2022 11:44:51 +0100
-Message-Id: <cover.1644830251.git.bristot@kernel.org>
+Subject: [RFC V2 06/21] tools/rv: Add dot2c
+Date:   Mon, 14 Feb 2022 11:44:57 +0100
+Message-Id: <647bdb3653b74f54b5656080b246a99d71d9b314.1644830251.git.bristot@kernel.org>
+In-Reply-To: <cover.1644830251.git.bristot@kernel.org>
+References: <cover.1644830251.git.bristot@kernel.org>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Authentication-Results: relay.mimecast.com;
@@ -62,192 +64,542 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Over the last years, I've been exploring the possibility of
-verifying the Linux kernel behavior using Runtime Verification.
+dot2c is a tool that transforms an automata in the graphiviz .dot file
+into an C representation of the automata.
 
-Runtime Verification (RV) is a lightweight (yet rigorous) method that
-complements classical exhaustive verification techniques (such as model
-checking and theorem proving) with a more practical approach for complex
-systems.
+usage: dot2c [-h] dot_file
 
-Instead of relying on a fine-grained model of a system (e.g., a
-re-implementation a instruction level), RV works by analyzing the trace of the
-system's actual execution, comparing it against a formal specification of
-the system behavior.
+dot2c: converts a .dot file into a C structure
 
-The usage of deterministic automaton for RV is a well-established
-approach. In the specific case of the Linux kernel, you can check how
-to model complex behavior of the Linux kernel with this paper:
+positional arguments:
+  dot_file    The dot file to be converted
 
-  DE OLIVEIRA, Daniel Bristot; CUCINOTTA, Tommaso; DE OLIVEIRA, Romulo Silva.
-  *Efficient formal verification for the Linux kernel.* In: International
-  Conference on Software Engineering and Formal Methods. Springer, Cham, 2019.
-  p. 315-332.
+optional arguments:
+  -h, --help  show this help message and exit
 
-And how efficient is this approach here:
-
-  DE OLIVEIRA, Daniel B.; DE OLIVEIRA, Romulo S.; CUCINOTTA, Tommaso. *A thread
-  synchronization model for the PREEMPT_RT Linux kernel.* Journal of Systems
-  Architecture, 2020, 107: 101729.
-
-tlrd: it is possible to model complex behaviors in a modular way, with
-an acceptable overhead (even for production systems). See this
-presentation at 2019's ELCE: https://www.youtube.com/watch?v=BfTuEHafNgg
-
-Here I am proposing a more practical approach for the usage of deterministic
-automata for runtime verification, and it includes:
-
-	- An interface for controlling the verification;
-	- A tool and set of headers that enables the automatic code
-	  generation of the RV monitor (Monitor Synthesis);
-	- Sample monitors to evaluate the interface;
-	- A sample monitor developed in the context of the Elisa Project
-	  demonstrating how to use RV in the context of safety-critical
-	  systems.
-
-Given that RV is a tracing consumer, the code is being placed inside the
-tracing subsystem (Steven and I have been talking about it for a while).
-
-The changes since V1 includes:
-	- rebased to the latest kernel;
-	- code cleanup;
-	- the watchdog dev monitor;
-	- safety app;
-
-The TODO list still includes:
-	- Make per-task monitor use the task struct to store the
-	  per monitor state (Suggested by peterz)
-	- Add a reactor tha enables the visualization of the visited
-	  states via KCOV (Marco Elver & Dmitry Vyukov)
-	- Add a CRC method to check from user-space if the values
-	  exported by the monitor were not corrupted by any other
-	  kernel task (Gabriele Paoloni)
-
-I am sending the V2 with some TODOs because I need
-some feedback on the interface/files placement inside the kernel,
-so I can adjust all the patches accordingly. Also, to make it possible
-for people in the Elisa Project to evaluate the safety_app approach.
-
-Daniel Bristot de Oliveira (21):
-  rv: Add Runtime Verification (RV) interface
-  rv: Add runtime reactors interface
-  rv/include: Add helper functions for deterministic automata
-  rv/include: Add deterministic automata monitor definition via C macros
-  rv/include: Add tracing helper functions
-  tools/rv: Add dot2c
-  tools/rv: Add dot2k
-  rv/monitor: Add the wip monitor skeleton created by dot2k
-  rv/monitor: wip instrumentation and Makefile/Kconfig entries
-  rv/monitor: Add the wwnr monitor skeleton created by dot2k
-  rv/monitor: wwnr instrumentation and Makefile/Kconfig entries
-  rv/reactor: Add the printk reactor
-  rv/reactor: Add the panic reactor
-  Documentation/rv: Add a basic documentation
-  Documentation/rv: Add deterministic automata monitor synthesis
-    documentation
-  Documentation/rv: Add deterministic automata instrumentation
-    documentation
-  watchdog/dev: Add tracepoints
-  rv/monitor: Add safe watchdog monitor
-  rv/monitor: Add safe watchdog nowayout monitor
-  rv/safety_app: Add an safety_app sample
-  Documentation/rv: Add watchdog-monitor documentation
-
- Documentation/trace/index.rst                 |   1 +
- .../trace/rv/da_monitor_instrumentation.rst   | 230 ++++++
- .../trace/rv/da_monitor_synthesis.rst         | 286 +++++++
- Documentation/trace/rv/index.rst              |   9 +
- .../trace/rv/runtime-verification.rst         | 233 ++++++
- Documentation/trace/rv/watchdog-monitor.rst   | 307 ++++++++
- drivers/watchdog/watchdog_dev.c               |  41 +-
- include/linux/rv.h                            |  31 +
- include/linux/watchdog.h                      |   7 +-
- include/rv/automata.h                         |  52 ++
- include/rv/da_monitor.h                       | 398 ++++++++++
- include/rv/trace_helpers.h                    |  69 ++
- include/trace/events/watchdog.h               | 103 +++
- kernel/trace/Kconfig                          |   2 +
- kernel/trace/Makefile                         |   2 +
- kernel/trace/rv/Kconfig                       |  78 ++
- kernel/trace/rv/Makefile                      |  10 +
- kernel/trace/rv/monitor_safe_wtd/model.h      |  84 +++
- kernel/trace/rv/monitor_safe_wtd/safe_wtd.c   | 322 ++++++++
- kernel/trace/rv/monitor_safe_wtd/safe_wtd.h   |  64 ++
- kernel/trace/rv/monitor_safe_wtd_nwo/model.h  |  61 ++
- .../rv/monitor_safe_wtd_nwo/safe_wtd_nwo.c    | 309 ++++++++
- .../rv/monitor_safe_wtd_nwo/safe_wtd_nwo.h    |  64 ++
- kernel/trace/rv/monitor_wip/model.h           |  38 +
- kernel/trace/rv/monitor_wip/wip.c             | 124 +++
- kernel/trace/rv/monitor_wip/wip.h             |  64 ++
- kernel/trace/rv/monitor_wwnr/model.h          |  38 +
- kernel/trace/rv/monitor_wwnr/wwnr.c           | 122 +++
- kernel/trace/rv/monitor_wwnr/wwnr.h           |  70 ++
- kernel/trace/rv/reactor_panic.c               |  44 ++
- kernel/trace/rv/reactor_printk.c              |  43 ++
- kernel/trace/rv/rv.c                          | 700 +++++++++++++++++
- kernel/trace/rv/rv.h                          |  50 ++
- kernel/trace/rv/rv_reactors.c                 | 478 ++++++++++++
- kernel/trace/trace.c                          |   4 +
- kernel/trace/trace.h                          |   2 +
- tools/tracing/rv/dot2/Makefile                |  26 +
- tools/tracing/rv/dot2/automata.py             | 179 +++++
- tools/tracing/rv/dot2/dot2c                   |  30 +
- tools/tracing/rv/dot2/dot2c.py                | 240 ++++++
- tools/tracing/rv/dot2/dot2k                   |  46 ++
- tools/tracing/rv/dot2/dot2k.py                | 184 +++++
- .../rv/dot2/dot2k_templates/main_global.c     |  96 +++
- .../rv/dot2/dot2k_templates/main_global.h     |  64 ++
- .../rv/dot2/dot2k_templates/main_per_cpu.c    |  96 +++
- .../rv/dot2/dot2k_templates/main_per_cpu.h    |  64 ++
- .../rv/dot2/dot2k_templates/main_per_task.c   |  96 +++
- .../rv/dot2/dot2k_templates/main_per_task.h   |  70 ++
- tools/tracing/rv/safety_app/Makefile          |  51 ++
- tools/tracing/rv/safety_app/safety_app.c      | 713 ++++++++++++++++++
- 50 files changed, 6486 insertions(+), 9 deletions(-)
- create mode 100644 Documentation/trace/rv/da_monitor_instrumentation.rst
- create mode 100644 Documentation/trace/rv/da_monitor_synthesis.rst
- create mode 100644 Documentation/trace/rv/index.rst
- create mode 100644 Documentation/trace/rv/runtime-verification.rst
- create mode 100644 Documentation/trace/rv/watchdog-monitor.rst
- create mode 100644 include/linux/rv.h
- create mode 100644 include/rv/automata.h
- create mode 100644 include/rv/da_monitor.h
- create mode 100644 include/rv/trace_helpers.h
- create mode 100644 include/trace/events/watchdog.h
- create mode 100644 kernel/trace/rv/Kconfig
- create mode 100644 kernel/trace/rv/Makefile
- create mode 100644 kernel/trace/rv/monitor_safe_wtd/model.h
- create mode 100644 kernel/trace/rv/monitor_safe_wtd/safe_wtd.c
- create mode 100644 kernel/trace/rv/monitor_safe_wtd/safe_wtd.h
- create mode 100644 kernel/trace/rv/monitor_safe_wtd_nwo/model.h
- create mode 100644 kernel/trace/rv/monitor_safe_wtd_nwo/safe_wtd_nwo.c
- create mode 100644 kernel/trace/rv/monitor_safe_wtd_nwo/safe_wtd_nwo.h
- create mode 100644 kernel/trace/rv/monitor_wip/model.h
- create mode 100644 kernel/trace/rv/monitor_wip/wip.c
- create mode 100644 kernel/trace/rv/monitor_wip/wip.h
- create mode 100644 kernel/trace/rv/monitor_wwnr/model.h
- create mode 100644 kernel/trace/rv/monitor_wwnr/wwnr.c
- create mode 100644 kernel/trace/rv/monitor_wwnr/wwnr.h
- create mode 100644 kernel/trace/rv/reactor_panic.c
- create mode 100644 kernel/trace/rv/reactor_printk.c
- create mode 100644 kernel/trace/rv/rv.c
- create mode 100644 kernel/trace/rv/rv.h
- create mode 100644 kernel/trace/rv/rv_reactors.c
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Gabriele Paoloni <gpaoloni@redhat.com>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Clark Williams <williams@redhat.com>
+Cc: linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-trace-devel@vger.kernel.org
+Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+---
+ tools/tracing/rv/dot2/Makefile    |  21 +++
+ tools/tracing/rv/dot2/automata.py | 179 ++++++++++++++++++++++
+ tools/tracing/rv/dot2/dot2c       |  30 ++++
+ tools/tracing/rv/dot2/dot2c.py    | 240 ++++++++++++++++++++++++++++++
+ 4 files changed, 470 insertions(+)
  create mode 100644 tools/tracing/rv/dot2/Makefile
  create mode 100644 tools/tracing/rv/dot2/automata.py
  create mode 100644 tools/tracing/rv/dot2/dot2c
  create mode 100644 tools/tracing/rv/dot2/dot2c.py
- create mode 100644 tools/tracing/rv/dot2/dot2k
- create mode 100644 tools/tracing/rv/dot2/dot2k.py
- create mode 100644 tools/tracing/rv/dot2/dot2k_templates/main_global.c
- create mode 100644 tools/tracing/rv/dot2/dot2k_templates/main_global.h
- create mode 100644 tools/tracing/rv/dot2/dot2k_templates/main_per_cpu.c
- create mode 100644 tools/tracing/rv/dot2/dot2k_templates/main_per_cpu.h
- create mode 100644 tools/tracing/rv/dot2/dot2k_templates/main_per_task.c
- create mode 100644 tools/tracing/rv/dot2/dot2k_templates/main_per_task.h
- create mode 100644 tools/tracing/rv/safety_app/Makefile
- create mode 100644 tools/tracing/rv/safety_app/safety_app.c
 
+diff --git a/tools/tracing/rv/dot2/Makefile b/tools/tracing/rv/dot2/Makefile
+new file mode 100644
+index 000000000000..9dd59ec8a733
+--- /dev/null
++++ b/tools/tracing/rv/dot2/Makefile
+@@ -0,0 +1,21 @@
++INSTALL=install
++
++prefix  ?= /usr
++bindir  ?= $(prefix)/bin
++mandir  ?= $(prefix)/share/man
++miscdir ?= $(prefix)/share/dot2
++srcdir  ?= $(prefix)/src
++
++PYLIB  ?= $(shell python3 -c 'import distutils.sysconfig;  print (distutils.sysconfig.get_python_lib())')
++
++.PHONY: all
++all:
++
++.PHONY: clean
++clean:
++
++.PHONY: install
++install:
++	$(INSTALL) automata.py -D -m 644 $(DESTDIR)$(PYLIB)/dot2/automata.py
++	$(INSTALL) dot2c.py -D -m 644 $(DESTDIR)$(PYLIB)/dot2/dot2c.py
++	$(INSTALL) dot2c -D -m 755 $(DESTDIR)$(bindir)/
+diff --git a/tools/tracing/rv/dot2/automata.py b/tools/tracing/rv/dot2/automata.py
+new file mode 100644
+index 000000000000..171ad4497983
+--- /dev/null
++++ b/tools/tracing/rv/dot2/automata.py
+@@ -0,0 +1,179 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# automata object: parse a dot file into a python object
++# For more information, see:
++#   https://bristot.me/efficient-formal-verification-for-the-linux-kernel/
++#
++# This program was written in the development of this paper:
++#  de Oliveira, D. B. and Cucinotta, T. and de Oliveira, R. S.
++#  "Efficient Formal Verification for the Linux Kernel." International
++#  Conference on Software Engineering and Formal Methods. Springer, Cham, 2019.
++#
++# Copyright 2018-2020 Red Hat, Inc.
++#
++# Author:
++#  Daniel Bristot de Oliveira <bristot@kernel.org>
++
++import ntpath
++
++class Automata:
++    """Automata class: Reads a dot file and part it as an automata.
++
++    Attributes:
++        dot_file: A dot file with an state_automaton definition.
++    """
++
++    def __init__(self, file_path):
++        self.__dot_path=file_path
++        self.name=self.__get_model_name()
++        self.__dot_lines = self.__open_dot()
++        self.states, self.initial_state, self.final_states = self.__get_state_variables()
++        self.events = self.__get_event_variables()
++        self.function = self.__create_matrix()
++
++    def __get_model_name(self):
++        basename=ntpath.basename(self.__dot_path)
++        if basename.endswith(".dot") == False:
++            print("not a dot file")
++            raise Exception("not a dot file: %s" % self.__dot_path)
++
++        model_name=basename[0:-4]
++        if model_name.__len__() == 0:
++            raise Exception("not a dot file: %s" % self.__dot_path)
++
++        return model_name
++
++    def __open_dot(self):
++        cursor = 0
++        dot_lines = []
++        try:
++            dot_file = open(self.__dot_path)
++        except:
++            raise Exception("Cannot open the file: %s" % self.__dot_path)
++
++        dot_lines = dot_file.read().splitlines()
++        dot_file.close()
++
++        # checking the first line:
++        line = dot_lines[cursor].split()
++
++        if (line[0] != "digraph") and (line[1] != "state_automaton"):
++            raise Exception("Not a valid .dot format: %s" % self.__dot_path)
++        else:
++            cursor = cursor + 1
++        return dot_lines
++
++    def __get_cursor_begin_states(self):
++        cursor = 0
++        while self.__dot_lines[cursor].split()[0] != "{node":
++            cursor += 1
++        return cursor
++
++    def __get_cursor_begin_events(self):
++        cursor = 0
++        while self.__dot_lines[cursor].split()[0] != "{node":
++           cursor += 1
++        while self.__dot_lines[cursor].split()[0] == "{node":
++            cursor += 1
++        # skip initial state transition
++        cursor += 1
++        return cursor
++
++    def __get_state_variables(self):
++        # wait for node declaration
++        states = []
++        final_states=[]
++
++        has_final_states = False
++        cursor = self.__get_cursor_begin_states()
++
++        # process nodes
++        while self.__dot_lines[cursor].split()[0] == "{node":
++            line = self.__dot_lines[cursor].split()
++            raw_state = line[-1]
++
++            #  "enabled_fired"}; -> enabled_fired
++            state = raw_state.replace('"', '').replace('};', '').replace(',','_')
++            if state[0:7] == "__init_":
++                initial_state = state[7:]
++            else:
++                states.append(state)
++                if self.__dot_lines[cursor].__contains__("doublecircle") == True:
++                    final_states.append(state)
++                    has_final_states = True
++
++                if self.__dot_lines[cursor].__contains__("ellipse") == True:
++                    final_states.append(state)
++                    has_final_states = True
++
++            cursor = cursor + 1
++
++        states = sorted(set(states))
++        states.remove(initial_state)
++
++        # Insert the initial state at the bein og the states
++        states.insert(0, initial_state)
++
++        if has_final_states == False:
++            final_states.append(initial_state)
++
++        return states, initial_state, final_states
++
++    def __get_event_variables(self):
++        # here we are at the begin of transitions, take a note, we will return later.
++        cursor = self.__get_cursor_begin_events()
++
++        events = []
++        while self.__dot_lines[cursor][1] == '"':
++            # transitions have the format:
++            # "all_fired" -> "both_fired" [ label = "disable_irq" ];
++            #  ------------ event is here ------------^^^^^
++            if self.__dot_lines[cursor].split()[1] == "->":
++                line = self.__dot_lines[cursor].split()
++                event = line[-2].replace('"','')
++
++                # when a transition has more than one lables, they are like this
++                # "local_irq_enable\nhw_local_irq_enable_n"
++                # so split them.
++
++                event = event.replace("\\n", " ")
++                for i in event.split():
++                    events.append(i)
++            cursor = cursor + 1
++
++        return sorted(set(events))
++
++    def __create_matrix(self):
++        # transform the array into a dictionary
++        events = self.events
++        states = self.states
++        events_dict = {}
++        states_dict = {}
++        nr_event = 0
++        for event in events:
++            events_dict[event] = nr_event
++            nr_event += 1
++
++        nr_state = 0
++        for state in states:
++            states_dict[state] = nr_state
++            nr_state = nr_state + 1
++
++        # declare the matrix....
++        matrix = [['-1' for x in range(nr_event)] for y in range(nr_state)]
++
++        # and we are back! Let's fill the matrix
++        cursor = self.__get_cursor_begin_events()
++
++        while self.__dot_lines[cursor][1] == '"':
++            if self.__dot_lines[cursor].split()[1] == "->":
++                line = self.__dot_lines[cursor].split()
++                origin_state = line[0].replace('"','').replace(',','_')
++                dest_state = line[2].replace('"','').replace(',','_')
++                possible_events = line[-2].replace('"','').replace("\\n", " ")
++                for event in possible_events.split():
++                    matrix[states_dict[origin_state]][events_dict[event]] = dest_state
++            cursor = cursor + 1
++
++        return matrix
+diff --git a/tools/tracing/rv/dot2/dot2c b/tools/tracing/rv/dot2/dot2c
+new file mode 100644
+index 000000000000..0165f203dedc
+--- /dev/null
++++ b/tools/tracing/rv/dot2/dot2c
+@@ -0,0 +1,30 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# dot2m: transform dot files into C structures.
++# For more information, see:
++#   https://bristot.me/efficient-formal-verification-for-the-linux-kernel/
++#
++# This program was written in the development of this paper:
++#  de Oliveira, D. B. and Cucinotta, T. and de Oliveira, R. S.
++#  "Efficient Formal Verification for the Linux Kernel." International
++#  Conference on Software Engineering and Formal Methods. Springer, Cham, 2019.
++#
++# Copyright 2018-2020 Red Hat, Inc.
++#
++# Author:
++#  Daniel Bristot de Oliveira <bristot@kernel.org>
++
++if __name__ == '__main__':
++    from dot2 import dot2c
++    import argparse
++    import ntpath
++    import sys
++
++    parser = argparse.ArgumentParser(description='dot2c: converts a .dot file into a C structure')
++    parser.add_argument('dot_file',  help='The dot file to be converted')
++
++
++    args = parser.parse_args()
++    d=dot2c.Dot2c(args.dot_file)
++    d.print_model_classic()
+diff --git a/tools/tracing/rv/dot2/dot2c.py b/tools/tracing/rv/dot2/dot2c.py
+new file mode 100644
+index 000000000000..0a68851437c8
+--- /dev/null
++++ b/tools/tracing/rv/dot2/dot2c.py
+@@ -0,0 +1,240 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# dot2c: transform dot files into C structures.
++# For more information, see:
++#   https://bristot.me/efficient-formal-verification-for-the-linux-kernel/
++#
++# This program was written in the development of this paper:
++#  de Oliveira, D. B. and Cucinotta, T. and de Oliveira, R. S.
++#  "Efficient Formal Verification for the Linux Kernel." International
++#  Conference on Software Engineering and Formal Methods. Springer, Cham, 2019.
++#
++# Copyright 2018-2020 Red Hat, Inc.
++#
++# Author:
++#  Daniel Bristot de Oliveira <bristot@kernel.org>
++
++from dot2.automata import Automata
++
++class Dot2c(Automata):
++    enum_states_def="states"
++    enum_events_def="events"
++    struct_automaton_def="automaton"
++    var_automaton_def="aut"
++
++    def __init__(self, file_path):
++        super().__init__(file_path)
++        self.line_length=80
++
++    def __buff_to_string(self, buff):
++        string=""
++
++        for line in buff:
++            string=string + line + "\n"
++
++        # cut off the last \n
++        return string[:-1]
++
++    def __get_enum_states_content(self):
++        buff=[]
++        buff.append("\t%s = 0," % self.initial_state)
++        for state in self.states:
++            if state != self.initial_state:
++                buff.append("\t%s," % state)
++        buff.append("\tstate_max")
++
++        return buff
++
++    def get_enum_states_string(self):
++        buff=self.__get_enum_states_content()
++        return self.__buff_to_string(buff)
++
++    def format_states_enum(self):
++        buff=[]
++        buff.append("enum %s {" % self.enum_states_def)
++        buff.append(self.get_enum_states_string())
++        buff.append("};\n")
++
++        return buff
++
++    def __get_enum_events_content(self):
++        buff=[]
++        first=True
++        for event in self.events:
++            if first:
++                buff.append("\t%s = 0," % event)
++                first=False
++            else:
++                buff.append("\t%s," % event)
++        buff.append("\tevent_max")
++
++        return buff
++
++    def get_enum_events_string(self):
++        buff=self.__get_enum_events_content()
++        return self.__buff_to_string(buff)
++
++    def format_events_enum(self):
++        buff=[]
++        buff.append("enum %s {" % self.enum_events_def)
++        buff.append(self.get_enum_events_string())
++        buff.append("};\n")
++
++        return buff
++
++    def get_minimun_type(self):
++        min_type="char"
++
++        if self.states.__len__() > 255:
++            min_type="short"
++
++        if self.states.__len__() > 65535:
++            min_type="int"
++
++        return min_type
++
++    def format_automaton_definition(self):
++        min_type = self.get_minimun_type()
++        buff=[]
++        buff.append("struct %s {" % self.struct_automaton_def)
++        buff.append("\tchar *state_names[state_max];")
++        buff.append("\tchar *event_names[event_max];")
++        buff.append("\t%s function[state_max][event_max];" % min_type)
++        buff.append("\t%s initial_state;" % min_type)
++        buff.append("\tchar final_states[state_max];")
++        buff.append("};\n")
++        return buff
++
++    def format_aut_init_header(self):
++        buff=[]
++        buff.append("struct %s %s = {" % (self.struct_automaton_def, self.var_automaton_def))
++        return buff
++
++    def __get_string_vector_per_line_content(self, buff):
++        first=True
++        string=""
++        for entry in buff:
++            if first:
++                string = string + "\t\t\"" + entry
++                first=False;
++            else:
++                string = string + "\",\n\t\t\"" + entry
++        string = string + "\""
++
++        return string
++
++    def get_aut_init_events_string(self):
++        return self.__get_string_vector_per_line_content(self.events)
++
++    def get_aut_init_states_string(self):
++        return self.__get_string_vector_per_line_content(self.states)
++
++    def format_aut_init_events_string(self):
++        buff=[]
++        buff.append("\t.event_names = {")
++        buff.append(self.get_aut_init_events_string())
++        buff.append("\t},")
++        return buff
++
++    def format_aut_init_states_string(self):
++        buff=[]
++        buff.append("\t.state_names = {")
++        buff.append(self.get_aut_init_states_string())
++        buff.append("\t},")
++
++        return buff
++
++    def __get_max_strlen_of_states(self):
++        return max(self.states, key=len).__len__()
++
++    def __get_state_string_length(self):
++        maxlen = self.__get_max_strlen_of_states()
++        return "%" + str(maxlen) + "s"
++
++    def get_aut_init_function(self):
++        nr_states=self.states.__len__()
++        nr_events=self.events.__len__()
++        buff=[]
++
++        strformat = self.__get_state_string_length()
++
++        for x in range(nr_states):
++            line="\t\t{ "
++            for y in range(nr_events):
++                if y != nr_events-1:
++                    line = line + strformat % self.function[x][y] + ", "
++                else:
++                    line = line + strformat % self.function[x][y] + " },"
++            buff.append(line)
++
++        return self.__buff_to_string(buff)
++
++    def format_aut_init_function(self):
++        buff=[]
++        buff.append("\t.function = {")
++        buff.append(self.get_aut_init_function())
++        buff.append("\t},")
++
++        return buff
++
++    def get_aut_init_initial_state(self):
++        return self.initial_state
++
++    def format_aut_init_initial_state(self):
++        buff=[]
++        initial_state=self.get_aut_init_initial_state()
++        buff.append("\t.initial_state = " + initial_state + ",")
++
++        return buff
++
++
++    def get_aut_init_final_states(self):
++        line=""
++        first=True
++        for state in self.states:
++            if first == False:
++                line = line + ', '
++            else:
++                first = False
++
++            if self.final_states.__contains__(state):
++                line = line + '1'
++            else:
++                line = line + '0'
++        return line
++
++    def format_aut_init_final_states(self):
++       buff=[]
++       buff.append("\t.final_states = { %s }," % self.get_aut_init_final_states())
++
++       return buff
++
++    def __get_automaton_initialization_footer_string(self):
++        footer="};"
++        return footer
++
++    def format_aut_init_footer(self):
++        buff=[]
++        buff.append(self.__get_automaton_initialization_footer_string())
++
++        return buff
++
++    def format_model(self):
++        buff=[]
++        buff += self.format_states_enum()
++        buff += self.format_events_enum()
++        buff += self.format_automaton_definition()
++        buff += self.format_aut_init_header()
++        buff += self.format_aut_init_states_string()
++        buff += self.format_aut_init_events_string()
++        buff += self.format_aut_init_function()
++        buff += self.format_aut_init_initial_state()
++        buff += self.format_aut_init_final_states()
++        buff += self.format_aut_init_footer()
++
++        return buff
++
++    def print_model_classic(self):
++        buff=self.format_model()
++        print(self.__buff_to_string(buff))
 -- 
 2.33.1
 
