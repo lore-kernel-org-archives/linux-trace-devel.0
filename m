@@ -2,104 +2,154 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7935C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Feb 2022 18:29:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D45FC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Feb 2022 23:50:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357444AbiBNS30 (ORCPT
+        id S229665AbiBNXuM (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 14 Feb 2022 13:29:26 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38102 "EHLO
+        Mon, 14 Feb 2022 18:50:12 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348672AbiBNS3Z (ORCPT
+        with ESMTP id S230314AbiBNXuL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 14 Feb 2022 13:29:25 -0500
-X-Greylist: delayed 1378 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 14 Feb 2022 10:29:17 PST
-Received: from gateway30.websitewelcome.com (gateway30.websitewelcome.com [192.185.168.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D65855480
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Feb 2022 10:29:17 -0800 (PST)
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id 4F5343967F
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Feb 2022 12:06:19 -0600 (CST)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id JfjunvKiuXvvJJfjuntGAc; Mon, 14 Feb 2022 12:06:19 -0600
-X-Authority-Reason: nr=8
-Received: from host-95-232-30-176.retail.telecomitalia.it ([95.232.30.176]:59428 helo=[10.0.0.45])
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1nJfjs-001Rrw-HC; Mon, 14 Feb 2022 12:06:16 -0600
-Message-ID: <c1657d1c-0d2b-4aa3-c1ed-2ae6fdfcda86@kernel.org>
-Date:   Mon, 14 Feb 2022 19:06:09 +0100
+        Mon, 14 Feb 2022 18:50:11 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B836814033
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Feb 2022 15:50:02 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 66E86B80E12
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Feb 2022 23:50:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6266C340E9
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Feb 2022 23:49:59 +0000 (UTC)
+Date:   Mon, 14 Feb 2022 18:49:58 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd: Fix trace-cmd report --events
+Message-ID: <20220214184958.6a1d57a1@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [RFC V2 12/21] rv/reactor: Add the printk reactor
-Content-Language: en-US
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>, john.ogness@linutronix.de
-Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Gabriele Paoloni <gpaoloni@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org
-References: <cover.1644830251.git.bristot@kernel.org>
- <fad2d358d57dfffc084d482684ecc1d13b62b262.1644830251.git.bristot@kernel.org>
- <10cf6003-6d2b-056b-11bb-3ae9c342a369@linuxfoundation.org>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <10cf6003-6d2b-056b-11bb-3ae9c342a369@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 95.232.30.176
-X-Source-L: No
-X-Exim-ID: 1nJfjs-001Rrw-HC
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-95-232-30-176.retail.telecomitalia.it ([10.0.0.45]) [95.232.30.176]:59428
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 1
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 2/14/22 18:25, Shuah Khan wrote:
-> On 2/14/22 3:45 AM, Daniel Bristot de Oliveira wrote:
->> Sample reactor that printks the reaction message.
->>
-> 
-> Who is supposed to take action on this message and how do they
-> get notified?
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The same people that use printk to debug systems (who never?), on conditions
-where other debugging methods might not available.
+The restructuring of the headers broke the tracecmd_print_events()
+function. Instead, pass in the regex to the read_headers() functions to
+perform the printing of the events as they are read.
 
-> 
->> Note: do not use this reactor with rq_lock taken, it will lock the
->> system until printk can handle that.
-> 
-> Please give more details on "lock the system" and how locking
-> would impact users and system operation
+Fixes: b2906b74b02b ("trace-cmd library: Initialize internal sections database on file read")
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ lib/trace-cmd/trace-input.c | 39 +++++++++++++------------------------
+ 1 file changed, 14 insertions(+), 25 deletions(-)
 
-It is a deadlock on the rq_lock. Hopefully the new printk implementation handles
-that better.
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 60ac839c5920..ae3a9bbd01e1 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -1001,7 +1001,8 @@ static int read_cpus(struct tracecmd_input *handle)
+ 	return 0;
+ }
+ 
+-static int read_headers_v6(struct tracecmd_input *handle, enum tracecmd_file_states state)
++static int read_headers_v6(struct tracecmd_input *handle, enum tracecmd_file_states state,
++			   const char *regex)
+ {
+ 	int ret;
+ 
+@@ -1028,7 +1029,7 @@ static int read_headers_v6(struct tracecmd_input *handle, enum tracecmd_file_sta
+ 	if (state <= handle->file_state)
+ 		return 0;
+ 
+-	ret = read_event_files(handle, NULL);
++	ret = read_event_files(handle, regex);
+ 	if (ret < 0)
+ 		return -1;
+ 
+@@ -1106,7 +1107,8 @@ static int read_section_header(struct tracecmd_input *handle, unsigned short *id
+ 	return 0;
+ }
+ 
+-static int handle_section(struct tracecmd_input *handle, struct file_section *section)
++static int handle_section(struct tracecmd_input *handle, struct file_section *section,
++			  const char *regex)
+ {
+ 	unsigned short id, flags;
+ 	unsigned long long size;
+@@ -1132,7 +1134,7 @@ static int handle_section(struct tracecmd_input *handle, struct file_section *se
+ 		ret = read_ftrace_files(handle, NULL);
+ 		break;
+ 	case TRACECMD_OPTION_EVENT_FORMATS:
+-		ret = read_event_files(handle, NULL);
++		ret = read_event_files(handle, regex);
+ 		break;
+ 	case TRACECMD_OPTION_KALLSYMS:
+ 		ret = read_proc_kallsyms(handle);
+@@ -1154,7 +1156,7 @@ static int handle_section(struct tracecmd_input *handle, struct file_section *se
+ 	return ret;
+ }
+ 
+-static int read_headers(struct tracecmd_input *handle)
++static int read_headers(struct tracecmd_input *handle, const char *regex)
+ {
+ 	struct file_section *section;
+ 
+@@ -1174,7 +1176,7 @@ static int read_headers(struct tracecmd_input *handle)
+ 
+ 	section = handle->sections;
+ 	while (section) {
+-		if (handle_section(handle, section))
++		if (handle_section(handle, section, NULL))
+ 			return -1;
+ 		section = section->next;
+ 	}
+@@ -1198,8 +1200,8 @@ int tracecmd_read_headers(struct tracecmd_input *handle,
+ 			  enum tracecmd_file_states state)
+ {
+ 	if (!HAS_SECTIONS(handle))
+-		return read_headers_v6(handle, state);
+-	return read_headers(handle);
++		return read_headers_v6(handle, state, NULL);
++	return read_headers(handle, NULL);
+ }
+ 
+ static unsigned long long calc_page_offset(struct tracecmd_input *handle,
+@@ -3971,26 +3973,13 @@ int tracecmd_make_pipe(struct tracecmd_input *handle, int cpu, int fd, int cpus)
+  */
+ void tracecmd_print_events(struct tracecmd_input *handle, const char *regex)
+ {
+-	struct file_section *sec;
+-
+ 	if (!regex)
+ 		regex = ".*";
+ 
+-	sec = section_open(handle, TRACECMD_OPTION_HEADER_INFO);
+-	if (sec) {
+-		read_header_files(handle);
+-		section_close(handle, sec);
+-	}
+-	sec = section_open(handle, TRACECMD_OPTION_FTRACE_EVENTS);
+-	if (sec) {
+-		read_ftrace_files(handle, regex);
+-		section_close(handle, sec);
+-	}
+-	sec = section_open(handle, TRACECMD_OPTION_EVENT_FORMATS);
+-	if (sec) {
+-		read_event_files(handle, regex);
+-		section_close(handle, sec);
+-	}
++	if (!HAS_SECTIONS(handle))
++		read_headers_v6(handle, TRACECMD_FILE_ALL_EVENTS, regex);
++
++	read_headers(handle, regex);
+ }
+ 
+ /* Show the cpu data stats */
+-- 
+2.34.1
 
-/me looks at John Ogness
-
--- Daniel
