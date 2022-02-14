@@ -2,33 +2,33 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F29CC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Feb 2022 11:15:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4A0BC4321E
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Feb 2022 11:15:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350497AbiBNLQB convert rfc822-to-8bit (ORCPT
+        id S1350654AbiBNLQC convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 14 Feb 2022 06:16:01 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44164 "EHLO
+        Mon, 14 Feb 2022 06:16:02 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350714AbiBNLPv (ORCPT
+        with ESMTP id S1350701AbiBNLPu (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 14 Feb 2022 06:15:51 -0500
+        Mon, 14 Feb 2022 06:15:50 -0500
 Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [207.211.30.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 71B0225EB8
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Feb 2022 02:46:25 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AD06FA184
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Feb 2022 02:46:07 -0800 (PST)
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-621-tk6CiGQROASHu-Z2aB863w-1; Mon, 14 Feb 2022 05:46:21 -0500
-X-MC-Unique: tk6CiGQROASHu-Z2aB863w-1
+ us-mta-219-lILW451tNQaADFTnl2snAQ-1; Mon, 14 Feb 2022 05:46:01 -0500
+X-MC-Unique: lILW451tNQaADFTnl2snAQ-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 737A3801B0E;
-        Mon, 14 Feb 2022 10:46:19 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8C7353E743;
+        Mon, 14 Feb 2022 10:45:59 +0000 (UTC)
 Received: from x1.com (unknown [10.22.16.130])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5187C26DFB;
-        Mon, 14 Feb 2022 10:46:15 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 75C3927BCB;
+        Mon, 14 Feb 2022 10:45:55 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
@@ -47,9 +47,9 @@ Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Clark Williams <williams@redhat.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
-Subject: [RFC V2 04/21] rv/include: Add deterministic automata monitor definition via C macros
-Date:   Mon, 14 Feb 2022 11:44:55 +0100
-Message-Id: <6b4fd3046bdb6fed832a03e1dadffe85e2a01bac.1644830251.git.bristot@kernel.org>
+Subject: [RFC V2 01/21] rv: Add Runtime Verification (RV) interface
+Date:   Mon, 14 Feb 2022 11:44:52 +0100
+Message-Id: <87606fc180e4551b19dc61609907b555214c41a1.1644830251.git.bristot@kernel.org>
 In-Reply-To: <cover.1644830251.git.bristot@kernel.org>
 References: <cover.1644830251.git.bristot@kernel.org>
 MIME-Version: 1.0
@@ -64,120 +64,88 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In Linux terms, the runtime verification monitors are encapsulated
-inside the "RV monitor" abstraction. The "RV monitor" includes a set
-of instances of the monitor (per-cpu monitor, per-task monitor, and
-so on), the helper functions that glue the monitor to the system
-reference model, and the trace output as a reaction for event parsing
-and exceptions, as depicted below:
+RV is a lightweight (yet rigorous) method that complements classical
+exhaustive verification techniques (such as model checking and
+theorem proving) with a more practical approach to complex systems.
 
-Linux  +----- RV Monitor ----------------------------------+ Formal
- Realm |                                                   |  Realm
- +-------------------+     +----------------+     +-----------------+
- |   Linux kernel    |     |     Monitor    |     |     Reference   |
- |     Tracing       |  -> |   Instance(s)  | <-  |       Model     |
- | (instrumentation) |     | (verification) |     | (specification) |
- +-------------------+     +----------------+     +-----------------+
-        |                          |                       |
-        |                          V                       |
-        |                     +----------+                 |
-        |                     | Reaction |                 |
-        |                     +--+--+--+-+                 |
-        |                        |  |  |                   |
-        |                        |  |  +-> trace output ?  |
-        +------------------------|--|----------------------+
-                                 |  +----> panic ?
-                                 +-------> <user-specified>
+RV works by analyzing the trace of the system's actual execution,
+comparing it against a formal specification of the system behavior.
+RV can give precise information on the runtime behavior of the
+monitored system while enabling the reaction for unexpected
+events, avoiding, for example, the propagation of a failure on
+safety-critical systems.
 
-The dot2c tool presented in this paper:
+The development of this interface roots in the development of the
+paper:
 
 DE OLIVEIRA, Daniel Bristot; CUCINOTTA, Tommaso; DE OLIVEIRA, Romulo
 Silva. Efficient formal verification for the Linux kernel. In:
 International Conference on Software Engineering and Formal Methods.
 Springer, Cham, 2019. p. 315-332.
 
-Translates a deterministic automaton in the DOT format into a C
-source code representation that to be used for monitoring connecting
-the Formal Reaml to Linux-like code.
+And:
 
-This header file goes beyond, extending the code generation to the
-verification stage, generating the code to the Monitor Instance(s)
-level using C macros. The trace event code inspires this approach.
+DE OLIVEIRA, Daniel Bristot, et al. Automata-based formal analysis
+and verification of the real-time Linux kernel. PhD Thesis, 2020.
 
-The benefits of the usage of macro for monitor synthesis is 3-fold:
+The RV interface resembles the tracing/ interface on purpose. The current
+path for the RV interface is /sys/kernel/tracing/rv/.
 
-	- Reduces the code duplication;
-	- Facilitates the bug fix/improvement;
-	(but mainly:)
-	- Avoids the case of developers changing the core of the monitor
-	  code to manipulate the model in a (let's say) non-standard
-	  way.
+It presents these files:
 
-This initial implementation presents two different types of monitor
-instances:
+ "available_monitors"
+   - List the available monitors, one per line.
 
-	- #define DECLARE_DA_MON_PER_CPU(name, type)
-	- #define DECLARE_DA_MON_PER_TASK(name, type)
+   For example:
+   [root@f32 rv]# cat available_monitors
+   wip
+   wwnr
 
-The first declares the functions for deterministic automata monitor
-with per-cpu instances, and the second with per-task instances.
+ "enabled_monitors"
+   - Lists the enabled monitors, one per line;
+   - Writing to it enables a given monitor;
+   - Writing a monitor name with a '-' prefix disables it;
+   - Truncating the file disables all enabled monitors.
 
-In both cases, the name is a string that identifies the monitor,
-and the type is the data type used by dot2c/k on the representation
-of the model.
+   For example:
+   [root@f32 rv]# cat enabled_monitors
+   [root@f32 rv]# echo wip > enabled_monitors
+   [root@f32 rv]# echo wwnr >> enabled_monitors
+   [root@f32 rv]# cat enabled_monitors
+   wip
+   wwnr
+   [root@f32 rv]# echo -wip >> enabled_monitors
+   [root@f32 rv]# cat enabled_monitors
+   wwnr
+   [root@f32 rv]# echo > enabled_monitors
+   [root@f32 rv]# cat enabled_monitors
+   [root@f32 rv]#
 
-For example, the model "wip" below:
+   Note that more than one monitor can be enabled concurrently.
 
-                     preempt_disable                       sched_waking
-   +############+ >------------------> +################+ >------------+
- -># preemptive #                      # non-preemptive #              |
-   +############+ <-----------------<  +################+ <------------+
-                    preempt_enable
+ "monitoring_on"
+   - It is an on/off general switcher for monitoring. Note
+   that it does not disable enabled monitors, but stop the per-entity
+   monitors of monitoring the events received from the system.
+   It resambles the "tracing_on" switcher.
 
-with two states and three events can be stored in a 'char' type.
-Considering that the preemption control is a per-cpu behavior, the
-monitor declaration will be:
+ "monitors/"
+   Each monitor will have its one directory inside "monitors/". There
+   the monitor specific files will be presented.
+   The "monitors/" directory resambles the "events" directory on
+   tracefs.
 
-  DECLARE_DA_MON_PER_CPU(wip, char);
+   For example:
+   [root@f32 rv]# cd monitors/wip/
+   [root@f32 wip]# ls
+   desc  enable
+   [root@f32 wip]# cat desc
+   auto-generated wakeup in preemptive monitor.
+   [root@f32 wip]# cat enable
+   0
 
-The monitor is executed by sending events to be processed via the
-functions presented below:
-
-  da_handle_event_$(MONITOR_NAME)($(event from event enum));
-  da_handle_init_event_$(MONITOR_NAME)($(event from event enum));
-
-The function da_handle_event_$(MONITOR_NAME) is the regular case,
-while the function da_handle_init_event_$(MONITOR_NAME)() is a
-special case used to synchronize the system with the model.
-
-When a monitor is enabled, it is placed in the initial state of the
-automata. However, the monitor does not know if the system is in
-the initial state. Hence, the monitor ignores events sent by
-sent by da_handle_event_$(MONITOR_NAME) until the function
-da_handle_init_event_$(MONITOR_NAME)() is called.
-
-The function da_handle_init_event_$(MONITOR_NAME)() should be used for
-the case in which the system generates the event is the one that returns
-the automata to the initial state.
-
-After receiving a da_handle_init_event_$(MONITOR_NAME)() event, the
-monitor will know that it is in sync with the system and hence will
-start processing the next events.
-
-Using the wip model as example, the events "preempt_disable" and
-"sched_waking" should be sent to to monitor, respectively, via:
-        da_handle_event_wip(preempt_disable);
-        da_handle_event_wip(sched_waking);
-
-While the event "preempt_enabled" will use:
-        da_handle_init_event_wip(preempt_enable);
-
-To notify the monitor that the system will be returning to the initial
-state, so the system and the monitor should be in sync.
-
-With the monitor synthesis in place, using these headers and dot2k,
-the developer's work should be limited to the instrumentation of
-the system, increasing the confidence in the overall approach.
+For further information, see the comments in the header of
+kernel/trace/rv/rv.c from this patch.
 
 Cc: Jonathan Corbet <corbet@lwn.net>
 Cc: Steven Rostedt <rostedt@goodmis.org>
@@ -198,414 +166,853 @@ Cc: linux-kernel@vger.kernel.org
 Cc: linux-trace-devel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- include/rv/da_monitor.h | 398 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 398 insertions(+)
- create mode 100644 include/rv/da_monitor.h
+ include/linux/rv.h       |  21 ++
+ kernel/trace/Kconfig     |   2 +
+ kernel/trace/Makefile    |   2 +
+ kernel/trace/rv/Kconfig  |  12 +
+ kernel/trace/rv/Makefile |   3 +
+ kernel/trace/rv/rv.c     | 687 +++++++++++++++++++++++++++++++++++++++
+ kernel/trace/rv/rv.h     |  31 ++
+ kernel/trace/trace.c     |   4 +
+ kernel/trace/trace.h     |   2 +
+ 9 files changed, 764 insertions(+)
+ create mode 100644 include/linux/rv.h
+ create mode 100644 kernel/trace/rv/Kconfig
+ create mode 100644 kernel/trace/rv/Makefile
+ create mode 100644 kernel/trace/rv/rv.c
+ create mode 100644 kernel/trace/rv/rv.h
 
-diff --git a/include/rv/da_monitor.h b/include/rv/da_monitor.h
+diff --git a/include/linux/rv.h b/include/linux/rv.h
 new file mode 100644
-index 000000000000..6feea8a63afe
+index 000000000000..6034eac8c01b
 --- /dev/null
-+++ b/include/rv/da_monitor.h
-@@ -0,0 +1,398 @@
++++ b/include/linux/rv.h
+@@ -0,0 +1,21 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * Deterministic automata (DA) monitor functions, to be used togheter
-+ * with automata models in C generated by the dot2k tool.
++ * Runtime Verification.
 + *
-+ * The dot2k tool is available at tools/tracing/rv/
++ * For futher information, see: kernel/trace/rv/rv.c.
 + *
 + * Copyright (C) 2019-2022 Daniel Bristot de Oliveira <bristot@kernel.org>
 + */
 +
-+#include <rv/automata.h>
-+#include <rv/trace_helpers.h>
-+
-+struct da_monitor {
-+	char curr_state;
-+	bool monitoring;
-+	void *model;
++struct rv_monitor {
++	const char		*name;
++	const char		*description;
++	bool			enabled;
++	int			(*start)(void);
++	void			(*stop)(void);
++	void			(*reset)(void);
 +};
 +
-+#define MAX_PID		 1024000
++extern bool monitoring_on;
++int rv_unregister_monitor(struct rv_monitor *monitor);
++int rv_register_monitor(struct rv_monitor *monitor);
+diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+index a5eb5e7fd624..a9bccb108eaa 100644
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -1062,4 +1062,6 @@ config HIST_TRIGGERS_DEBUG
+ 
+           If unsure, say N.
+ 
++source "kernel/trace/rv/Kconfig"
 +
+ endif # FTRACE
+diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
+index bedc5caceec7..1a3a12c5f334 100644
+--- a/kernel/trace/Makefile
++++ b/kernel/trace/Makefile
+@@ -101,3 +101,5 @@ obj-$(CONFIG_FTRACE_RECORD_RECURSION) += trace_recursion_record.o
+ obj-$(CONFIG_TRACEPOINT_BENCHMARK) += trace_benchmark.o
+ 
+ libftrace-y := ftrace.o
++
++obj-$(CONFIG_RV) += rv/
+diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
+new file mode 100644
+index 000000000000..6d127cdb00dd
+--- /dev/null
++++ b/kernel/trace/rv/Kconfig
+@@ -0,0 +1,12 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++menuconfig RV
++	bool "Runtime Verification"
++	depends on TRACING
++	help
++	  Enable the kernel runtime verification infrastructure. RV is a
++	  lightweight (yet rigorous) method that complements classical
++	  exhaustive verification techniques (such as model checking and
++	  theorem proving). RV works by analyzing the trace of the system's
++	  actual execution, comparing it against a formal specification of
++	  the system behavior.
+diff --git a/kernel/trace/rv/Makefile b/kernel/trace/rv/Makefile
+new file mode 100644
+index 000000000000..fd995379df67
+--- /dev/null
++++ b/kernel/trace/rv/Makefile
+@@ -0,0 +1,3 @@
++# SPDX-License-Identifier: GPL-2.0
++
++obj-$(CONFIG_RV) += rv.o
+diff --git a/kernel/trace/rv/rv.c b/kernel/trace/rv/rv.c
+new file mode 100644
+index 000000000000..7ec033f4bcda
+--- /dev/null
++++ b/kernel/trace/rv/rv.c
+@@ -0,0 +1,687 @@
++/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * Generic helpers for all types of deterministic automata monitors.
-+ */
-+#define DECLARE_DA_MON_GENERIC_HELPERS(name, type)				\
-+static char REACT_MSG[1024];							\
-+										\
-+static inline char								\
-+*format_react_msg(type curr_state, type event)					\
-+{										\
-+	snprintf(REACT_MSG, 1024,						\
-+		"rv: monitor %s does not allow event %s on state %s\n",		\
-+		MODULE_NAME,							\
-+		model_get_event_name_##name(event),				\
-+		model_get_state_name_##name(curr_state));			\
-+	return REACT_MSG;							\
-+}										\
-+										\
-+static void cond_react(char *msg)						\
-+{										\
-+	if (rv_##name.react)							\
-+		rv_##name.react(msg);						\
-+}										\
-+										\
-+static inline void da_monitor_reset_##name(struct da_monitor *da_mon)		\
-+{										\
-+	da_mon->monitoring = 0;							\
-+	da_mon->curr_state = model_get_init_state_##name();			\
-+}										\
-+										\
-+static inline type da_monitor_curr_state_##name(struct da_monitor *da_mon)	\
-+{										\
-+	return da_mon->curr_state;						\
-+}										\
-+										\
-+static inline void								\
-+da_monitor_set_state_##name(struct da_monitor *da_mon, enum states_##name state)\
-+{										\
-+	da_mon->curr_state = state;						\
-+}										\
-+static inline void da_monitor_start_##name(struct da_monitor *da_mon)		\
-+{										\
-+	da_mon->monitoring = 1;							\
-+}										\
-+										\
-+static inline bool da_monitoring_##name(struct da_monitor *da_mon)		\
-+{										\
-+	return da_mon->monitoring;						\
-+}
-+
-+
-+/*
-+ * Event handler for implict monitors. Implicity monitor is the one which the
-+ * handler does not need to specify which da_monitor to manilupulate. Examples
-+ * of implicit monitor are the per_cpu or the global ones.
-+ */
-+#define DECLARE_DA_MON_MODEL_HANDLER_IMPLICIT(name, type)			\
-+static inline void								\
-+trace_event_##name(type state, type event, type next_state, bool safe);		\
-+static inline void trace_error_##name(type state, type event);			\
-+										\
-+static inline bool								\
-+da_event_##name(struct da_monitor *da_mon, enum events_##name event)		\
-+{										\
-+	type curr_state = da_monitor_curr_state_##name(da_mon);			\
-+	type next_state = model_get_next_state_##name(curr_state, event);	\
-+										\
-+	if (next_state >= 0) {							\
-+		da_monitor_set_state_##name(da_mon, next_state);		\
-+										\
-+		trace_event_##name(curr_state, event, next_state,		\
-+				model_is_final_state_##name(next_state));	\
-+										\
-+		return true;							\
-+	}									\
-+										\
-+	if (reacting_on)							\
-+		cond_react(format_react_msg(curr_state, event));		\
-+										\
-+	trace_error_##name(curr_state, event);					\
-+										\
-+	return false;								\
-+}										\
-+
-+/*
-+ * Event handler for per_task monitors.
-+ */
-+#define DECLARE_DA_MON_MODEL_HANDLER_PER_TASK(name, type)			\
-+										\
-+static inline void								\
-+trace_event_##name(pid_t pid, type state, type event,				\
-+		   type next_state, bool safe);					\
-+static inline void trace_error_##name(pid_t pid, type state, type event);	\
-+										\
-+static inline type								\
-+da_event_##name(struct da_monitor *da_mon, pid_t pid, enum events_##name event)	\
-+{										\
-+	type curr_state = da_monitor_curr_state_##name(da_mon);			\
-+	type next_state = model_get_next_state_##name(curr_state, event);	\
-+										\
-+	if (next_state >= 0) {							\
-+		da_monitor_set_state_##name(da_mon, next_state);		\
-+										\
-+		trace_event_##name(pid, curr_state, event, next_state,		\
-+				   model_is_final_state_##name(next_state));	\
-+										\
-+		return true;							\
-+	}									\
-+										\
-+	if (reacting_on && rv_##name.react)					\
-+		rv_##name.react(format_react_msg(curr_state, event));		\
-+										\
-+	trace_error_##name(pid, curr_state, event);				\
-+										\
-+	return false;								\
-+}
-+
-+/*
-+ * Functions to define, init and get a global monitor.
-+ */
-+#define DECLARE_DA_MON_INIT_GLOBAL(name, type)					\
-+										\
-+static struct da_monitor da_mon_##name;						\
-+										\
-+struct da_monitor *da_get_monitor_##name(void)					\
-+{										\
-+	return &da_mon_##name;							\
-+}										\
-+										\
-+void da_monitor_reset_all_##name(void)						\
-+{										\
-+	da_monitor_reset_##name(da_mon_##name);					\
-+}										\
-+										\
-+static inline void da_monitor_init_##name(void)					\
-+{										\
-+	struct da_monitor *da_mon = &da_mon_##name				\
-+	da_mon->curr_state = model_get_init_state_##name();			\
-+	da_mon->monitoring = 0;							\
-+	da_mon->model = model_get_model_##name();				\
-+}										\
-+
-+/*
-+ * Functions to define, init and get a per-cpu monitor.
++ * This is the online Runtime Verification (RV) interface.
 + *
-+ * XXX: Make it dynamic.
-+ */
-+#define DECLARE_DA_MON_INIT_PER_CPU(name, type)					\
-+										\
-+DEFINE_PER_CPU(struct da_monitor, da_mon_##name);				\
-+										\
-+struct da_monitor *da_get_monitor_##name(void)					\
-+{										\
-+	return this_cpu_ptr(&da_mon_##name);					\
-+}										\
-+										\
-+void da_monitor_reset_all_##name(void)						\
-+{										\
-+	struct da_monitor *da_mon;						\
-+	int cpu;								\
-+	for_each_cpu(cpu, cpu_online_mask) {					\
-+		da_mon = per_cpu_ptr(&da_mon_##name, cpu);			\
-+		da_monitor_reset_##name(da_mon);				\
-+	}									\
-+}										\
-+										\
-+static inline void da_monitor_init_##name(void)					\
-+{										\
-+	struct da_monitor *da_mon;						\
-+	int cpu;								\
-+	for_each_cpu(cpu, cpu_online_mask) {					\
-+		da_mon = per_cpu_ptr(&da_mon_##name, cpu);			\
-+		da_mon->curr_state = model_get_init_state_##name();		\
-+		da_mon->monitoring = 0;						\
-+		da_mon->model = model_get_model_##name();			\
-+	}									\
-+}										\
-+
-+
-+/*
-+ * Functions to define, init and get a per-task monitor.
++ * RV is a lightweight (yet rigorous) method that complements classical
++ * exhaustive verification techniques (such as model checking and
++ * theorem proving) with a more practical approach to complex systems.
 + *
-+ * XXX: Make it dynamic using a list in task_struct (peterz)
++ * RV works by analyzing the trace of the system's actual execution,
++ * comparing it against a formal specification of the system behavior.
++ * RV can give precise information on the runtime behavior of the
++ * monitored system while enabling the reaction for unexpected
++ * events, avoiding, for example, the propagation of a failure on
++ * safety-critical systems.
++ *
++ * The development of this interface roots in the development of the
++ * paper:
++ *
++ * DE OLIVEIRA, Daniel Bristot; CUCINOTTA, Tommaso; DE OLIVEIRA, Romulo
++ * Silva. Efficient formal verification for the Linux kernel. In:
++ * International Conference on Software Engineering and Formal Methods.
++ * Springer, Cham, 2019. p. 315-332.
++ *
++ * And:
++ *
++ * DE OLIVEIRA, Daniel Bristot, et al. Automata-based formal analysis
++ * and verification of the real-time Linux kernel. PhD Thesis, 2020.
++ *
++ * == Runtime monitor interface ==
++ *
++ * A monitor is the central part of the runtime verification of a system.
++ *
++ * The monitor stands in between the formal specification of the desired
++ * (or undesired) behavior, and the trace of the actual system system.
++ *
++ * In Linux terms, the runtime verification monitors are encapsulated
++ * inside the "RV monitor" abstraction. A RV monitor includes a reference
++ * model of the system, a set of instances of the monitor (per-cpu monitor,
++ * per-task monitor, and so on), and the helper functions that glue the
++ * monitor to the system via trace. Generally, a monitor includes some form
++ * of trace output as a reaction for event parsing and exceptions,
++ * as depicted bellow:
++ *
++ * Linux  +----- RV Monitor ----------------------------------+ Formal
++ *  Realm |                                                   |  Realm
++ *  +-------------------+     +----------------+     +-----------------+
++ *  |   Linux kernel    |     |     Monitor    |     |     Reference   |
++ *  |     Tracing       |  -> |   Instance(s)  | <-  |       Model     |
++ *  | (instrumentation) |     | (verification) |     | (specification) |
++ *  +-------------------+     +----------------+     +-----------------+
++ *         |                          |                       |
++ *         |                          V                       |
++ *         |                     +----------+                 |
++ *         |                     | Reaction |                 |
++ *         |                     +--+--+--+-+                 |
++ *         |                        |  |  |                   |
++ *         |                        |  |  +-> trace output ?  |
++ *         +------------------------|--|----------------------+
++ *                                  |  +----> panic ?
++ *                                  +-------> <user-specified>
++ *
++ * This file implements the interface for loading RV monitors, and
++ * to control the verification session.
++ *
++ * == Registering monitors ==
++ *
++ * The struct rv_monitor defines a set of callback functions to control
++ * a verification session. For instance, when a given monitor is enabled,
++ * the "start" callback function is called to hook the instrumentation
++ * functions to the kernel trace events. The "stop" function is called
++ * when disabling the verification session.
++ *
++ * A RV monitor is registered via:
++ *   int rv_register_monitor(struct rv_monitor *monitor);
++ * And unregistered via:
++ *   int rv_unregister_monitor(struct rv_monitor *monitor);
++ *
++ * These functions are exported to modules, enabling verification monitors
++ * to be dynamically loaded.
++ *
++ * == User interface ==
++ *
++ * The user interface resembles kernel tracing interface. It presents
++ * these files:
++ *
++ *  "available_monitors"
++ *    - List the available monitors, one per line.
++ *
++ *    For example:
++ *    [root@f32 rv]# cat available_monitors
++ *    wip
++ *    wwnr
++ *
++ *  "enabled_monitors"
++ *    - Lists the enabled monitors, one per line;
++ *    - Writing to it enables a given monitor;
++ *    - Writing a monitor name with a '-' prefix disables it;
++ *    - Truncating the file disables all enabled monitors.
++ *
++ *    For example:
++ *    [root@f32 rv]# cat enabled_monitors
++ *    [root@f32 rv]# echo wip > enabled_monitors
++ *    [root@f32 rv]# echo wwnr >> enabled_monitors
++ *    [root@f32 rv]# cat enabled_monitors
++ *    wip
++ *    wwnr
++ *    [root@f32 rv]# echo -wip >> enabled_monitors
++ *    [root@f32 rv]# cat enabled_monitors
++ *    wwnr
++ *    [root@f32 rv]# echo > enabled_monitors
++ *    [root@f32 rv]# cat enabled_monitors
++ *    [root@f32 rv]#
++ *
++ *    Note that more than one monitor can be enabled concurrently.
++ *
++ *  "monitoring_on"
++ *    - It is an on/off general switcher for monitoring. Note
++ *    that it does not disable enabled monitors, but stop the per-entity
++ *    monitors of monitoring the events received from the system.
++ *    It resambles the "tracing_on" switcher.
++ *
++ *  "monitors/"
++ *    Each monitor will have its one directory inside "monitors/". There
++ *    the monitor specific files will be presented.
++ *    The "monitors/" directory resambles the "events" directory on
++ *    tracefs.
++ *
++ *    For example:
++ *    [root@f32 rv]# cd monitors/wip/
++ *    [root@f32 wip]# ls
++ *    desc  enable
++ *    [root@f32 wip]# cat desc
++ *    auto-generated wakeup in preemptive monitor.
++ *    [root@f32 wip]# cat enable
++ *    0
++ *
++ * Copyright (C) 2019-2022 Daniel Bristot de Oliveira <bristot@kernel.org>
 + */
-+#define DECLARE_DA_MON_INIT_PER_TASK(name, type)				\
-+										\
-+struct da_monitor da_mon_##name[MAX_PID];					\
-+										\
-+static inline struct da_monitor *da_get_monitor_##name(pid_t pid)		\
-+{										\
-+	return &da_mon_##name[pid];						\
-+}										\
-+										\
-+void da_monitor_reset_all_##name(void)						\
-+{										\
-+	struct da_monitor *mon = da_mon_##name;					\
-+	int i;									\
-+	for (i = 0; i < MAX_PID; i++)						\
-+		da_monitor_reset_##name(&mon[i]);				\
-+}										\
-+										\
-+static void da_monitor_init_##name(void)					\
-+{										\
-+	struct da_monitor *mon = da_mon_##name;					\
-+	int i;									\
-+										\
-+	for (i = 0; i < MAX_PID; i++) {						\
-+		mon[i].curr_state = model_get_init_state_##name();		\
-+		mon[i].monitoring = 0;						\
-+		mon[i].model = model_get_model_##name();			\
-+	}									\
-+}										\
 +
-+/*
-+ * Handle event for implicit monitor: da_get_monitor_##name() will figure out
-+ * the monitor.
-+ */
-+#define DECLARE_DA_MON_MONITOR_HANDLER_IMPLICIT(name, type)			\
-+										\
-+static inline void __da_handle_event_##name(struct da_monitor *da_mon,		\
-+				     enum events_##name event)			\
-+{										\
-+	int retval;								\
-+										\
-+	if (unlikely(!monitoring_on))						\
-+		return;								\
-+										\
-+	if (unlikely(!rv_##name.enabled))					\
-+		return;								\
-+										\
-+	if (unlikely(!da_monitoring_##name(da_mon)))				\
-+		return;								\
-+										\
-+	retval = da_event_##name(da_mon, event);				\
-+										\
-+	if (!retval)								\
-+		da_monitor_reset_##name(da_mon);				\
-+}										\
-+										\
-+static inline void da_handle_event_##name(enum events_##name event)		\
-+{										\
-+	struct da_monitor *da_mon = da_get_monitor_##name();			\
-+	__da_handle_event_##name(da_mon, event);				\
-+}										\
-+										\
-+static inline bool da_handle_init_event_##name(enum events_##name event)	\
-+{										\
-+	struct da_monitor *da_mon;						\
-+										\
-+	if (unlikely(!rv_##name.enabled))					\
-+		return false;							\
-+										\
-+	da_mon = da_get_monitor_##name();					\
-+										\
-+	if (unlikely(!da_monitoring_##name(da_mon))) {				\
-+		da_monitor_start_##name(da_mon);				\
-+		return false;							\
-+	}									\
-+										\
-+	__da_handle_event_##name(da_mon, event);				\
-+										\
-+	return true;								\
-+}										\
-+										\
-+static inline bool da_handle_init_run_event_##name(enum events_##name event)	\
-+{										\
-+	struct da_monitor *da_mon;						\
-+										\
-+	if (unlikely(!rv_##name.enabled))					\
-+		return false;							\
-+										\
-+	da_mon = da_get_monitor_##name();					\
-+										\
-+	if (unlikely(!da_monitoring_##name(da_mon)))				\
-+		da_monitor_start_##name(da_mon);				\
-+										\
-+	__da_handle_event_##name(da_mon, event);				\
-+										\
-+	return true;								\
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/slab.h>
++
++#include "rv.h"
++
++DEFINE_MUTEX(rv_interface_lock);
++struct rv_interface rv_root;
++
++struct dentry *get_monitors_root(void)
++{
++	return rv_root.monitors_dir;
 +}
 +
 +/*
-+ * Handle event for per task.
++ * Monitoring on global switcher!
 + */
-+#define DECLARE_DA_MON_MONITOR_HANDLER_PER_TASK(name, type)			\
-+										\
-+static inline void								\
-+__da_handle_event_##name(struct da_monitor *da_mon, pid_t pid,			\
-+			 enum events_##name event)				\
-+{										\
-+	int retval;								\
-+										\
-+	if (unlikely(!monitoring_on))						\
-+		return;								\
-+										\
-+	if (unlikely(!rv_##name.enabled))					\
-+		return;								\
-+										\
-+	if (unlikely(!da_monitoring_##name(da_mon)))				\
-+		return;								\
-+										\
-+	retval = da_event_##name(da_mon, pid, event);				\
-+										\
-+	if (!retval)								\
-+		da_monitor_reset_##name(da_mon);				\
-+}										\
-+										\
-+static inline void								\
-+da_handle_event_##name(pid_t pid, enum events_##name event)			\
-+{										\
-+	struct da_monitor *da_mon = da_get_monitor_##name(pid);			\
-+	__da_handle_event_##name(da_mon, pid, event);				\
-+}										\
-+										\
-+static inline bool								\
-+da_handle_init_event_##name(pid_t pid, enum events_##name event)		\
-+{										\
-+	struct da_monitor *da_mon;						\
-+										\
-+	if (unlikely(!rv_##name.enabled))					\
-+		return false;							\
-+										\
-+	da_mon = da_get_monitor_##name(pid);					\
-+										\
-+	if (unlikely(!da_monitoring_##name(da_mon))) {				\
-+		da_monitor_start_##name(da_mon);				\
-+		return false;							\
-+	}									\
-+										\
-+	__da_handle_event_##name(da_mon, pid, event);				\
-+										\
-+	return true;								\
++bool __read_mostly monitoring_on = false;
++EXPORT_SYMBOL_GPL(monitoring_on);
++
++/*
++ * Interface for the monitor register.
++ */
++LIST_HEAD(rv_monitors_list);
++
++/*
++ * This section collects the monitor/ files and folders.
++ */
++static ssize_t monitor_enable_read_data(struct file *filp,
++					char __user *user_buf,
++					size_t count, loff_t *ppos)
++{
++	struct rv_monitor_def *mdef = filp->private_data;
++	char buff[4];
++
++	memset(buff, 0, sizeof(buff));
++
++	mutex_lock(&rv_interface_lock);
++	sprintf(buff, "%x\n", mdef->monitor->enabled);
++	mutex_unlock(&rv_interface_lock);
++
++	return simple_read_from_buffer(user_buf, count, ppos,
++				       buff, strlen(buff)+1);
 +}
 +
 +/*
-+ * Entry point for the global monitor.
++ * Disable a given runtime monitor.
 + */
-+#define DECLARE_DA_MON_GLOBAL(name, type)					\
-+										\
-+DECLARE_AUTOMATA_HELPERS(name, type);						\
-+										\
-+DECLARE_DA_MON_GENERIC_HELPERS(name, type);					\
-+										\
-+DECLARE_DA_MON_MODEL_HANDLER_IMPLICIT(name, type);				\
-+										\
-+DECLARE_DA_MON_INIT_PER_CPU(name, type);					\
-+										\
-+DECLARE_DA_MON_MONITOR_HANDLER_IMPLICIT(name, type);
++void disable_monitor(struct rv_monitor_def *mdef)
++{
++	if (mdef->monitor->enabled) {
++		mdef->monitor->enabled = 0;
++		mdef->monitor->stop();
++	}
++
++	mdef->enabled = 0;
++}
 +
 +/*
-+ * Entry point for the per-cpu monitor.
++ * Enable a given monitor.
 + */
-+#define DECLARE_DA_MON_PER_CPU(name, type)					\
-+										\
-+DECLARE_AUTOMATA_HELPERS(name, type);						\
-+										\
-+DECLARE_DA_MON_GENERIC_HELPERS(name, type);					\
-+										\
-+DECLARE_DA_MON_MODEL_HANDLER_IMPLICIT(name, type);				\
-+										\
-+DECLARE_DA_MON_INIT_PER_CPU(name, type);					\
-+										\
-+DECLARE_DA_MON_MONITOR_HANDLER_IMPLICIT(name, type);
++void enable_monitor(struct rv_monitor_def *mdef)
++{
++	/*
++	 * Reset all internal monitors before starting.
++	 */
++	mdef->monitor->reset();
++	if (!mdef->monitor->enabled)
++		mdef->monitor->start();
++
++	mdef->monitor->enabled = 1;
++	mdef->enabled = 1;
++}
 +
 +/*
-+ * Entry point for the per-task monitor.
++ * interface for enabling/disabling a monitor.
 + */
-+#define DECLARE_DA_MON_PER_TASK(name, type)					\
-+										\
-+DECLARE_AUTOMATA_HELPERS(name, type);						\
-+										\
-+DECLARE_DA_MON_GENERIC_HELPERS(name, type);					\
-+										\
-+DECLARE_DA_MON_MODEL_HANDLER_PER_TASK(name, type);				\
-+										\
-+DECLARE_DA_MON_INIT_PER_TASK(name, type);					\
-+										\
-+DECLARE_DA_MON_MONITOR_HANDLER_PER_TASK(name, type);
++static ssize_t monitor_enable_write_data(struct file *filp,
++					 const char __user *user_buf,
++					 size_t count, loff_t *ppos)
++{
++	struct rv_monitor_def *mdef = filp->private_data;
++	int retval;
++	u64 val;
++
++	retval = kstrtoull_from_user(user_buf, count, 10, &val);
++	if (retval)
++		return retval;
++
++	retval = count;
++
++	mutex_lock(&rv_interface_lock);
++
++	switch (val) {
++		case 0:
++			disable_monitor(mdef);
++			break;
++		case 1:
++			enable_monitor(mdef);
++			break;
++		default:
++			retval = -EINVAL;
++	}
++
++	mutex_unlock(&rv_interface_lock);
++
++	return retval;
++}
++
++static const struct file_operations interface_enable_fops = {
++	.open   = simple_open,
++	.llseek = no_llseek,
++	.write  = monitor_enable_write_data,
++	.read   = monitor_enable_read_data,
++};
++
++/*
++ * Interface to read the enable/disable status of a monitor.
++ */
++static ssize_t
++monitor_desc_read_data(struct file *filp, char __user *user_buf,
++		       size_t count, loff_t *ppos)
++{
++	struct rv_monitor_def *mdef = filp->private_data;
++	char buf[MAX_RV_MONITOR_NAME_SIZE];
++
++	memset(buf, 0, sizeof(buf));
++
++	mutex_lock(&rv_interface_lock);
++	sprintf(buf, "%s\n", mdef->monitor->description);
++	mutex_unlock(&rv_interface_lock);
++
++	return simple_read_from_buffer(user_buf, count, ppos,
++					buf, strlen(buf)+1);
++}
++
++static const struct file_operations interface_desc_fops = {
++	.open   = simple_open,
++	.llseek	= no_llseek,
++	.read	= monitor_desc_read_data,
++};
++
++/*
++ * During the registration of a monitor, this function creates
++ * the monitor dir, where the specific options of the monitor
++ * is exposed.
++ */
++static int create_monitor_dir(struct rv_monitor_def *mdef)
++{
++	struct dentry *root = get_monitors_root();
++	struct dentry *tmp;
++	const char *name = mdef->monitor->name;
++	int retval = 0;
++
++	mdef->root_d = rv_create_dir(name, root);
++
++	if (!mdef->root_d)
++		return -ENOMEM;
++
++	tmp = rv_create_file("enable", 0600,
++			     mdef->root_d, mdef,
++			     &interface_enable_fops);
++	if (!tmp) {
++		retval = -ENOMEM;
++		goto out_remove_root;
++	}
++
++	tmp = rv_create_file("desc", 0400,
++			      mdef->root_d, mdef,
++			      &interface_desc_fops);
++	if (!tmp) {
++		retval = -ENOMEM;
++		goto out_remove_root;
++	}
++
++	return retval;
++
++out_remove_root:
++	rv_remove(mdef->root_d);
++	return retval;
++}
++
++/*
++ * Available/Enable monitor shared seq functions.
++ */
++static int monitors_show(struct seq_file *m, void *p)
++{
++	struct rv_monitor_def *mon_def = p;
++	seq_printf(m, "%s\n", mon_def->monitor->name);
++	return 0;
++}
++
++/*
++ * Used by the seq file operations at the end of a read
++ * operation.
++ */
++static void monitors_stop(struct seq_file *m, void *p)
++{
++	mutex_unlock(&rv_interface_lock);
++}
++
++/*
++ * Available monitor seq functions:
++ */
++static void *available_monitors_start(struct seq_file *m, loff_t *pos)
++{
++	mutex_lock(&rv_interface_lock);
++	return seq_list_start(&rv_monitors_list, *pos);
++}
++
++static void *available_monitors_next(struct seq_file *m, void *p, loff_t *pos)
++{
++	return seq_list_next(p, &rv_monitors_list, pos);
++}
++
++/*
++ * Enable monitor seq functions:
++ */
++
++static void *enabled_monitors_next(struct seq_file *m, void *p, loff_t *pos)
++{
++	struct rv_monitor_def *m_def = p;
++
++	(*pos)++;
++
++	list_for_each_entry_continue(m_def, &rv_monitors_list, list) {
++		if (m_def->monitor->enabled)
++			return m_def;
++	}
++
++	return NULL;
++}
++
++static void *enabled_monitors_start(struct seq_file *m, loff_t *pos)
++{
++	struct rv_monitor_def *m_def;
++	loff_t l;
++
++	mutex_lock(&rv_interface_lock);
++	m_def = list_entry(&rv_monitors_list, struct rv_monitor_def, list);
++
++	for (l = 0; l <= *pos; ) {
++		m_def = enabled_monitors_next(m, m_def, &l);
++		if (!m_def)
++			break;
++	}
++
++	return m_def;
++}
++
++/*
++ * available/enabled monitors seq definition.
++ */
++static const struct seq_operations available_monitors_seq_ops = {
++	.start	= available_monitors_start,
++	.next	= available_monitors_next,
++	.stop	= monitors_stop,
++	.show	= monitors_show
++};
++
++static const struct seq_operations enabled_monitors_seq_ops = {
++	.start  = enabled_monitors_start,
++	.next   = enabled_monitors_next,
++	.stop   = monitors_stop,
++	.show   = monitors_show
++};
++
++/*
++ * available_monitors interface.
++ */
++static int available_monitors_open(struct inode *inode, struct file *file)
++{
++	return seq_open(file, &available_monitors_seq_ops);
++};
++
++static struct file_operations available_monitors_ops = {
++	.open    = available_monitors_open,
++	.read    = seq_read,
++	.llseek  = seq_lseek,
++	.release = seq_release
++};
++
++/*
++ * enabled_monitors interface
++ */
++static void disable_all_monitors(void)
++{
++	struct rv_monitor_def *mdef;
++
++	list_for_each_entry(mdef, &rv_monitors_list, list)
++		disable_monitor(mdef);
++
++	return;
++}
++
++static int enabled_monitors_open(struct inode *inode, struct file *file)
++{
++	if ((file->f_mode & FMODE_WRITE) && (file->f_flags & O_TRUNC))
++		disable_all_monitors();
++
++	return seq_open(file, &enabled_monitors_seq_ops);
++};
++
++static ssize_t
++enabled_monitors_write(struct file *filp, const char __user *user_buf,
++		      size_t count, loff_t *ppos)
++{
++	char buff[MAX_RV_MONITOR_NAME_SIZE+1];
++	struct rv_monitor_def *mdef;
++	int retval = -EINVAL;
++	bool enable = true;
++	char *ptr = buff;
++	int len;
++
++	if (count < 1 || count > MAX_RV_MONITOR_NAME_SIZE+1)
++		return -EINVAL;
++
++	memset(buff, 0, sizeof(buff));
++
++	retval = simple_write_to_buffer(buff, sizeof(buff)-1, ppos, user_buf,
++					count);
++	if (!retval)
++		return -EFAULT;
++
++	if (buff[0] == '-') {
++		enable=false;
++		ptr++;
++	}
++
++	len = strlen(ptr);
++	if (!len)
++		return count;
++	/*
++	 * remove the \n
++	 */
++	ptr[len-1]='\0';
++
++	mutex_lock(&rv_interface_lock);
++
++	retval = -EINVAL;
++
++	list_for_each_entry(mdef, &rv_monitors_list, list) {
++		if (strcmp(ptr, mdef->monitor->name) == 0) {
++			/*
++			 * Monitor found!
++			 */
++			if (enable)
++				enable_monitor(mdef);
++			else
++				disable_monitor(mdef);
++
++			retval=count;
++			break;
++		}
++	}
++
++	mutex_unlock(&rv_interface_lock);
++
++	return retval;
++}
++
++static struct file_operations enabled_monitors_ops = {
++	.open		= enabled_monitors_open,
++	.read		= seq_read,
++	.write		= enabled_monitors_write,
++	.llseek		= seq_lseek,
++	.release	= seq_release,
++};
++
++/*
++ * monitoring_on general switcher
++ */
++static ssize_t monitoring_on_read_data(struct file *filp,
++					char __user *user_buf,
++					size_t count, loff_t *ppos)
++{
++	char buff[4];
++
++	memset(buff, 0, sizeof(buff));
++
++	mutex_lock(&rv_interface_lock);
++	sprintf(buff, "%d\n", monitoring_on);
++	mutex_unlock(&rv_interface_lock);
++
++	return simple_read_from_buffer(user_buf, count, ppos,
++				       buff, strlen(buff)+1);
++}
++
++static void turn_monitoring_off(void)
++{
++	monitoring_on=false;
++}
++
++static void turn_monitoring_on(void)
++{
++	reset_all_monitors();
++	monitoring_on=true;
++
++	return;
++}
++
++static ssize_t monitoring_on_write_data(struct file *filp,
++					 const char __user *user_buf,
++					 size_t count, loff_t *ppos)
++{
++	int retval;
++	u64 val;
++
++	retval = kstrtoull_from_user(user_buf, count, 10, &val);
++	if (retval)
++		return retval;
++
++	retval = count;
++
++	mutex_lock(&rv_interface_lock);
++
++	switch (val) {
++		case 0:
++			turn_monitoring_off();
++			break;
++		case 1:
++			turn_monitoring_on();
++			break;
++		default:
++			retval = -EINVAL;
++	}
++
++	mutex_unlock(&rv_interface_lock);
++
++	return retval;
++}
++
++static const struct file_operations monitoring_on_fops = {
++	.open   = simple_open,
++	.llseek = no_llseek,
++	.write  = monitoring_on_write_data,
++	.read   = monitoring_on_read_data,
++};
++
++/*
++ * Monitor API.
++ */
++static void destroy_monitor_dir(struct rv_monitor_def *mdef)
++{
++	rv_remove(mdef->root_d);
++}
++
++/**
++ * rv_register_monitor - register a rv monitor.
++ * @monitor:    The rv_monitor to be registered.
++ *
++ * Returns 0 if successful, error otherwise.
++ */
++int rv_register_monitor(struct rv_monitor *monitor)
++{
++	struct rv_monitor_def *r;
++	int retval = 0;
++
++	if (strlen(monitor->name) >= MAX_RV_MONITOR_NAME_SIZE) {
++		pr_info("Monitor %s has a name longer than %d\n",
++			monitor->name, MAX_RV_MONITOR_NAME_SIZE);
++		return -1;
++	}
++
++	mutex_lock(&rv_interface_lock);
++
++	list_for_each_entry(r, &rv_monitors_list, list) {
++		if (strcmp(monitor->name, r->monitor->name) == 0) {
++			pr_info("Monitor %s is already registered\n",
++				monitor->name);
++			retval = -1;
++			goto out_unlock;
++		}
++	}
++
++	r = kzalloc(sizeof(struct rv_monitor_def), GFP_KERNEL);
++	if (!r) {
++		retval = -ENOMEM;
++		goto out_unlock;
++	}
++
++	r->monitor = monitor;
++
++	create_monitor_dir(r);
++
++	list_add_tail(&r->list, &rv_monitors_list);
++
++out_unlock:
++	mutex_unlock(&rv_interface_lock);
++	return retval;
++}
++EXPORT_SYMBOL_GPL(rv_register_monitor);
++
++/**
++ * rv_unregister_monitor - unregister a rv monitor.
++ * @monitor:    The rv_monitor to be unregistered.
++ *
++ * Returns 0 if successful, error otherwise.
++ */
++int rv_unregister_monitor(struct rv_monitor *monitor)
++{
++	struct rv_monitor_def *ptr, *next;
++
++	mutex_lock(&rv_interface_lock);
++
++	list_for_each_entry_safe(ptr, next, &rv_monitors_list, list) {
++		if (strcmp(monitor->name, ptr->monitor->name) == 0) {
++			list_del(&ptr->list);
++			destroy_monitor_dir(ptr);
++		}
++	}
++
++	mutex_unlock(&rv_interface_lock);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(rv_unregister_monitor);
++
++void reset_all_monitors(void)
++{
++	struct rv_monitor_def *mdef;
++
++	/*
++	 * Reset all monitors before re-enabling monitoring.
++	 */
++	list_for_each_entry(mdef, &rv_monitors_list, list) {
++		if (mdef->monitor->enabled)
++			mdef->monitor->reset();
++	}
++
++}
++
++int __init rv_init_interface(void)
++{
++	rv_root.root_dir = rv_create_dir("rv", NULL);
++	rv_root.monitors_dir = rv_create_dir("monitors", rv_root.root_dir);
++
++	rv_create_file("available_monitors", 0400, rv_root.root_dir, NULL,
++		       &available_monitors_ops);
++	rv_create_file("enabled_monitors", 0600, rv_root.root_dir, NULL,
++		       &enabled_monitors_ops);
++	rv_create_file("monitoring_on", 0600, rv_root.root_dir, NULL,
++		       &monitoring_on_fops);
++
++	monitoring_on=true;
++
++	return 0;
++}
+diff --git a/kernel/trace/rv/rv.h b/kernel/trace/rv/rv.h
+new file mode 100644
+index 000000000000..908a5e0357d4
+--- /dev/null
++++ b/kernel/trace/rv/rv.h
+@@ -0,0 +1,31 @@
++#include <linux/mutex.h>
++
++struct rv_interface {
++	struct dentry *root_dir;
++	struct dentry *monitors_dir;
++};
++
++#include "../trace.h"
++#include <linux/tracefs.h>
++#include <linux/rv.h>
++
++#define rv_create_dir		tracefs_create_dir
++#define rv_create_file		tracefs_create_file
++#define rv_remove		tracefs_remove
++
++#define MAX_RV_MONITOR_NAME_SIZE	100
++
++extern struct mutex rv_interface_lock;
++
++struct rv_monitor_def {
++	struct list_head list;
++	struct rv_monitor *monitor;
++	struct dentry *root_d;
++	bool enabled;
++	bool reacting;
++};
++
++extern bool monitoring_on;
++struct dentry *get_monitors_root(void);
++void reset_all_monitors(void);
++int init_rv_monitors(struct dentry *root_dir);
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index c860f582b078..6a5b858cd1a4 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -9712,6 +9712,10 @@ static __init int tracer_init_tracefs(void)
+ 
+ 	update_tracer_options(&global_trace);
+ 
++#ifdef CONFIG_RV
++	rv_init_interface();
++#endif
++
+ 	return 0;
+ }
+ 
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index d038ddbf1bea..730e5d646df7 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -2010,4 +2010,6 @@ struct trace_min_max_param {
+ 
+ extern const struct file_operations trace_min_max_fops;
+ 
++extern int rv_init_interface(void);
++
+ #endif /* _LINUX_KERNEL_TRACE_H */
 -- 
 2.33.1
 
