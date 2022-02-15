@@ -2,87 +2,85 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2245C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Feb 2022 13:33:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80A0AC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Feb 2022 17:09:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236089AbiBONdX (ORCPT
+        id S242225AbiBORKC (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 15 Feb 2022 08:33:23 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58944 "EHLO
+        Tue, 15 Feb 2022 12:10:02 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbiBONdX (ORCPT
+        with ESMTP id S242240AbiBORKB (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 15 Feb 2022 08:33:23 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 385B0EF79A;
-        Tue, 15 Feb 2022 05:33:13 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1644931990;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8cywgUur44ULKnZ+xJI0fUY9a++UJX4o2ooMJkUK5y4=;
-        b=2Ilr8ugtsic77/WeY9XhAMjCKAi5wvkK+HKFM6zxywO6G8JERK/7jvrmv2vss/C/vDbeN7
-        I7KP3R0uSzlRmfE3Gm+dnj1VXPMmtZc2aloJaCsD5wR8wWu6IzgJztOI+2BiQ4KQbhrZZA
-        uHKEYDTnKzMolSBEGnhqpVQF3nXVovnaee9JgxouYgqsh+kkZMeG0jNmONgTswxNj4YOYm
-        KlQwhIBW++8FbNWHKdgsSIqrx4vuUrCxYOIGT8vqBQ+7iQ4PSjnjXKXN3V/YvLjgTVYgHr
-        hkXBhetyDD7aAfWnziL0HzrmU4Y79e52mnzCqP+kI7zI3oaqHlzfodNqOlilXA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1644931990;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8cywgUur44ULKnZ+xJI0fUY9a++UJX4o2ooMJkUK5y4=;
-        b=eL82VujvHibE/xA7u7NFvubjCi0sbq+twCVJ4q3TbnJLq+JCEykxUyhfTMTsngw4OpnXcn
-        q87UrOhOPXyTfJDw==
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Gabriele Paoloni <gpaoloni@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [RFC V2 12/21] rv/reactor: Add the printk reactor
-In-Reply-To: <45179cdb-2391-207a-2f7b-2dea828d1606@kernel.org>
-References: <cover.1644830251.git.bristot@kernel.org>
- <fad2d358d57dfffc084d482684ecc1d13b62b262.1644830251.git.bristot@kernel.org>
- <10cf6003-6d2b-056b-11bb-3ae9c342a369@linuxfoundation.org>
- <c1657d1c-0d2b-4aa3-c1ed-2ae6fdfcda86@kernel.org>
- <87v8xg30qc.fsf@jogness.linutronix.de>
- <45179cdb-2391-207a-2f7b-2dea828d1606@kernel.org>
-Date:   Tue, 15 Feb 2022 14:39:09 +0106
-Message-ID: <87r1842r1m.fsf@jogness.linutronix.de>
+        Tue, 15 Feb 2022 12:10:01 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C32711ACCF
+        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Feb 2022 09:09:51 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2AE9E61425
+        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Feb 2022 17:09:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26E97C340EB;
+        Tue, 15 Feb 2022 17:09:50 +0000 (UTC)
+Date:   Tue, 15 Feb 2022 12:09:48 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     linux-trace-devel@vger.kernel.org,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Subject: Re: [PATCH] trace-cmd: Fix use of uninitialized variable
+Message-ID: <20220215120948.4bd0802b@gandalf.local.home>
+In-Reply-To: <20220202214646.553872-1-irogers@google.com>
+References: <20220202214646.553872-1-irogers@google.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 2022-02-15, Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
->> I suggest using printk_deferred() for this reactor for now. With
->> printk_deferred() the message and timestamp are immediately and
->> locklessly stored in the buffer, and the printing is performed in a
->> separate context. printk_deferred() is safe for all contexts.
->
-> Question: Does it always postpone or only postpone when in a
-> particular contexts, like, with irqs disabled?
+On Wed,  2 Feb 2022 13:46:46 -0800
+Ian Rogers <irogers@google.com> wrote:
 
-printk_deferred() always postpones printing.
+> Caught by clang's -Wsometimes-uninitialized and accepting the suggested
+> fix:
+> 
+> lib/trace-cmd/trace-input.c:4325:6: error: variable 'sec' is used uninitialized whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
+>         if (handle->file_state >= start_state) {
+>             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> lib/trace-cmd/trace-input.c:4336:6: note: uninitialized use occurs here
+>         if (sec)
+>             ^~~
+> lib/trace-cmd/trace-input.c:4325:2: note: remove the 'if' if its condition is always true
+>         if (handle->file_state >= start_state) {
+>         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> lib/trace-cmd/trace-input.c:4311:26: note: initialize the variable 'sec' to silence this warning
+>         struct file_section *sec;
+>                                 ^
+>                                  = NULL
 
-> Note: do not use this reactor with rq_lock taken, it will lock the
-> system until printk can handle that.
+-ENOSOB
 
-Perhaps you could explain thi comment in your commit message?  printk()
-should never lock the system.
+  ;-)
 
-John
+-- Steve
+
+> ---
+>  lib/trace-cmd/trace-input.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+> index ecb5682..57bd4ee 100644
+> --- a/lib/trace-cmd/trace-input.c
+> +++ b/lib/trace-cmd/trace-input.c
+> @@ -4308,7 +4308,7 @@ int tracecmd_copy_headers(struct tracecmd_input *handle, int fd,
+>  			  enum tracecmd_file_states start_state,
+>  			  enum tracecmd_file_states end_state)
+>  {
+> -	struct file_section *sec;
+> +	struct file_section *sec = NULL;
+>  	int ret;
+>  
+>  	if (!start_state)
+
