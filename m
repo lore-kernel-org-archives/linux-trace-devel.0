@@ -2,85 +2,115 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80A0AC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Feb 2022 17:09:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35BC5C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Feb 2022 18:23:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242225AbiBORKC (ORCPT
+        id S243026AbiBOSXt (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 15 Feb 2022 12:10:02 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35934 "EHLO
+        Tue, 15 Feb 2022 13:23:49 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242240AbiBORKB (ORCPT
+        with ESMTP id S243028AbiBOSXo (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 15 Feb 2022 12:10:01 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C32711ACCF
-        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Feb 2022 09:09:51 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2AE9E61425
-        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Feb 2022 17:09:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26E97C340EB;
-        Tue, 15 Feb 2022 17:09:50 +0000 (UTC)
-Date:   Tue, 15 Feb 2022 12:09:48 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     linux-trace-devel@vger.kernel.org,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Subject: Re: [PATCH] trace-cmd: Fix use of uninitialized variable
-Message-ID: <20220215120948.4bd0802b@gandalf.local.home>
-In-Reply-To: <20220202214646.553872-1-irogers@google.com>
-References: <20220202214646.553872-1-irogers@google.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 15 Feb 2022 13:23:44 -0500
+X-Greylist: delayed 1920 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 15 Feb 2022 10:23:33 PST
+Received: from gateway31.websitewelcome.com (gateway31.websitewelcome.com [192.185.143.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CDE119F5F
+        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Feb 2022 10:23:33 -0800 (PST)
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway31.websitewelcome.com (Postfix) with ESMTP id 007D96ED01
+        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Feb 2022 11:23:14 -0600 (CST)
+Received: from gator4132.hostgator.com ([192.185.4.144])
+        by cmsmtp with SMTP
+        id K1VpnPNvJHnotK1VpnNV8P; Tue, 15 Feb 2022 11:21:13 -0600
+X-Authority-Reason: nr=8
+Received: from host-95-232-30-176.retail.telecomitalia.it ([95.232.30.176]:59436 helo=[10.0.0.45])
+        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <bristot@kernel.org>)
+        id 1nK1Vo-002nDW-7t; Tue, 15 Feb 2022 11:21:12 -0600
+Message-ID: <65172f14-bad6-37b1-d243-e91ca472d22e@kernel.org>
+Date:   Tue, 15 Feb 2022 18:21:05 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [RFC V2 12/21] rv/reactor: Add the printk reactor
+Content-Language: en-US
+To:     John Ogness <john.ogness@linutronix.de>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Gabriele Paoloni <gpaoloni@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org
+References: <cover.1644830251.git.bristot@kernel.org>
+ <fad2d358d57dfffc084d482684ecc1d13b62b262.1644830251.git.bristot@kernel.org>
+ <10cf6003-6d2b-056b-11bb-3ae9c342a369@linuxfoundation.org>
+ <c1657d1c-0d2b-4aa3-c1ed-2ae6fdfcda86@kernel.org>
+ <87v8xg30qc.fsf@jogness.linutronix.de>
+ <45179cdb-2391-207a-2f7b-2dea828d1606@kernel.org>
+ <87r1842r1m.fsf@jogness.linutronix.de>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <87r1842r1m.fsf@jogness.linutronix.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - kernel.org
+X-BWhitelist: no
+X-Source-IP: 95.232.30.176
+X-Source-L: No
+X-Exim-ID: 1nK1Vo-002nDW-7t
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: host-95-232-30-176.retail.telecomitalia.it ([10.0.0.45]) [95.232.30.176]:59436
+X-Source-Auth: kernel@bristot.me
+X-Email-Count: 1
+X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
+X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed,  2 Feb 2022 13:46:46 -0800
-Ian Rogers <irogers@google.com> wrote:
+On 2/15/22 14:33, John Ogness wrote:
+> On 2022-02-15, Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+>>> I suggest using printk_deferred() for this reactor for now. With
+>>> printk_deferred() the message and timestamp are immediately and
+>>> locklessly stored in the buffer, and the printing is performed in a
+>>> separate context. printk_deferred() is safe for all contexts.
+>> Question: Does it always postpone or only postpone when in a
+>> particular contexts, like, with irqs disabled?
+> printk_deferred() always postpones printing.
 
-> Caught by clang's -Wsometimes-uninitialized and accepting the suggested
-> fix:
-> 
-> lib/trace-cmd/trace-input.c:4325:6: error: variable 'sec' is used uninitialized whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
->         if (handle->file_state >= start_state) {
->             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> lib/trace-cmd/trace-input.c:4336:6: note: uninitialized use occurs here
->         if (sec)
->             ^~~
-> lib/trace-cmd/trace-input.c:4325:2: note: remove the 'if' if its condition is always true
->         if (handle->file_state >= start_state) {
->         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> lib/trace-cmd/trace-input.c:4311:26: note: initialize the variable 'sec' to silence this warning
->         struct file_section *sec;
->                                 ^
->                                  = NULL
+That is why printk() seems to be the better option, though I can use the
+deferred option too.
 
--ENOSOB
+Noting that, I am aware of printk_deferred(), and every once and while I am
+Cc'ed on patches suggesting changing printk() to printk_deferred(), but they are
+not, let's say, welcome [1]... that is why I am not using it.
 
-  ;-)
+>> Note: do not use this reactor with rq_lock taken, it will lock the
+>> system until printk can handle that.
+> Perhaps you could explain thi comment in your commit message?  printk()
+> should never lock the system.
 
--- Steve
+I saw deadlocks in the past, and while testing the WIP monitor some time ago, it
+seems it depends on the console type. If such restriction does not exist
+anymore, I can remove that comment, it would be even better!
 
-> ---
->  lib/trace-cmd/trace-input.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-> index ecb5682..57bd4ee 100644
-> --- a/lib/trace-cmd/trace-input.c
-> +++ b/lib/trace-cmd/trace-input.c
-> @@ -4308,7 +4308,7 @@ int tracecmd_copy_headers(struct tracecmd_input *handle, int fd,
->  			  enum tracecmd_file_states start_state,
->  			  enum tracecmd_file_states end_state)
->  {
-> -	struct file_section *sec;
-> +	struct file_section *sec = NULL;
->  	int ret;
->  
->  	if (!start_state)
+[1]
+https://lore.kernel.org/lkml/e68888438cec9a1da53aaa1647720ade638d6ad4.1600705105.git.bristot@redhat.com/
 
+-- Daniel
