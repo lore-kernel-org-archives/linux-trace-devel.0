@@ -2,41 +2,41 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35BC5C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Feb 2022 18:23:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9623C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Feb 2022 19:33:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243026AbiBOSXt (ORCPT
+        id S239926AbiBOTdX (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 15 Feb 2022 13:23:49 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38608 "EHLO
+        Tue, 15 Feb 2022 14:33:23 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243028AbiBOSXo (ORCPT
+        with ESMTP id S233812AbiBOTdW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 15 Feb 2022 13:23:44 -0500
-X-Greylist: delayed 1920 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 15 Feb 2022 10:23:33 PST
-Received: from gateway31.websitewelcome.com (gateway31.websitewelcome.com [192.185.143.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CDE119F5F
-        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Feb 2022 10:23:33 -0800 (PST)
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id 007D96ED01
-        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Feb 2022 11:23:14 -0600 (CST)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id K1VpnPNvJHnotK1VpnNV8P; Tue, 15 Feb 2022 11:21:13 -0600
-X-Authority-Reason: nr=8
-Received: from host-95-232-30-176.retail.telecomitalia.it ([95.232.30.176]:59436 helo=[10.0.0.45])
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1nK1Vo-002nDW-7t; Tue, 15 Feb 2022 11:21:12 -0600
-Message-ID: <65172f14-bad6-37b1-d243-e91ca472d22e@kernel.org>
-Date:   Tue, 15 Feb 2022 18:21:05 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [RFC V2 12/21] rv/reactor: Add the printk reactor
-Content-Language: en-US
-To:     John Ogness <john.ogness@linutronix.de>,
+        Tue, 15 Feb 2022 14:33:22 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 130DBB7C72;
+        Tue, 15 Feb 2022 11:33:11 -0800 (PST)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1644953589;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6PgsBMBaD1VL/blQ9NGFYKVy9dzfRCvZ4SmB2o7/hv0=;
+        b=C3LVhzk8ug+ZT17S1HvaW+HMsdFerPa+zBeWUuRyzN32pFYEcihEuz8evEnCqtZravA1s7
+        MMNQT+e5oWjqZpC8QGpUKW0FYaNNbQMAnsCwNDpygvIX/CCEor4ZJ/Y0LYYWipNWTvbFi+
+        0E3pVP0SRbOqJGZEZvQ7nvUB1HjEPtxiYhKLXKRHSI4oKsX5LHYZMJE3BlTt6Sih1O6uMb
+        7WoU+QR8Ucwsa5b9oN73B9yyS0zJBNtTDN7YgTcyg2htWlacWz9ffG9ZsU875Xy1g/mAV7
+        GmNZC/BmfRZsTTS0GsItNoNbr0OZXEb/X/vVNq12daUUyzq8d6IfudbyoSti2A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1644953589;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6PgsBMBaD1VL/blQ9NGFYKVy9dzfRCvZ4SmB2o7/hv0=;
+        b=r8YVCNMtnNMWlKQh6mpyzy8Lii7Hxnfat9/Yy8v7nrBFS8ZHA5jEZayKmaX1yiHQl0KEqQ
+        E9128Mys8LAY+JDw==
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Shuah Khan <skhan@linuxfoundation.org>,
         Steven Rostedt <rostedt@goodmis.org>
 Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
@@ -52,6 +52,8 @@ Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
         Clark Williams <williams@redhat.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
+Subject: Re: [RFC V2 12/21] rv/reactor: Add the printk reactor
+In-Reply-To: <65172f14-bad6-37b1-d243-e91ca472d22e@kernel.org>
 References: <cover.1644830251.git.bristot@kernel.org>
  <fad2d358d57dfffc084d482684ecc1d13b62b262.1644830251.git.bristot@kernel.org>
  <10cf6003-6d2b-056b-11bb-3ae9c342a369@linuxfoundation.org>
@@ -59,58 +61,48 @@ References: <cover.1644830251.git.bristot@kernel.org>
  <87v8xg30qc.fsf@jogness.linutronix.de>
  <45179cdb-2391-207a-2f7b-2dea828d1606@kernel.org>
  <87r1842r1m.fsf@jogness.linutronix.de>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <87r1842r1m.fsf@jogness.linutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 95.232.30.176
-X-Source-L: No
-X-Exim-ID: 1nK1Vo-002nDW-7t
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-95-232-30-176.retail.telecomitalia.it ([10.0.0.45]) [95.232.30.176]:59436
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 1
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
+ <65172f14-bad6-37b1-d243-e91ca472d22e@kernel.org>
+Date:   Tue, 15 Feb 2022 20:39:08 +0106
+Message-ID: <874k50hqmj.fsf@jogness.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 2/15/22 14:33, John Ogness wrote:
-> On 2022-02-15, Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
->>> I suggest using printk_deferred() for this reactor for now. With
->>> printk_deferred() the message and timestamp are immediately and
->>> locklessly stored in the buffer, and the printing is performed in a
->>> separate context. printk_deferred() is safe for all contexts.
->> Question: Does it always postpone or only postpone when in a
->> particular contexts, like, with irqs disabled?
-> printk_deferred() always postpones printing.
+On 2022-02-15, Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+> I am aware of printk_deferred(), and every once and while I am Cc'ed
+> on patches suggesting changing printk() to printk_deferred(), but they
+> are not, let's say, welcome [1]... that is why I am not using it.
 
-That is why printk() seems to be the better option, though I can use the
-deferred option too.
+Yes. printk_deferred() is a workaround until we can get printk
+"PROVE_RAW_LOCK_NESTING clean". But currently there is real deadlock
+potential in the kernel with printk. For the most common cases, we use
+printk_deferred() to get around it. Once printk() is clean, we can
+replace all printk_deferred() call sites with printk().
 
-Noting that, I am aware of printk_deferred(), and every once and while I am
-Cc'ed on patches suggesting changing printk() to printk_deferred(), but they are
-not, let's say, welcome [1]... that is why I am not using it.
+I haven't looked into the details of your runtime verification method,
+but I assume it digs deep into some interfaces. In that case, the
+deadlock potential of printk may be relatively high. (And indeed, you
+have seen some.) IMHO, before warning users not to use this reactor if
+locks XYZ are taken, it would be better just to use printk_deferred()
+and it will always log without causing problems to the system you are
+trying to verify.
 
->> Note: do not use this reactor with rq_lock taken, it will lock the
->> system until printk can handle that.
-> Perhaps you could explain thi comment in your commit message?  printk()
-> should never lock the system.
+> I saw deadlocks in the past, and while testing the WIP monitor some
+> time ago, it seems it depends on the console type. If such restriction
+> does not exist anymore, I can remove that comment, it would be even
+> better!
 
-I saw deadlocks in the past, and while testing the WIP monitor some time ago, it
-seems it depends on the console type. If such restriction does not exist
-anymore, I can remove that comment, it would be even better!
+If you say it depended on the console type, then it was probably the
+framebuffer console that was at fault. The fbcon is a landmine for
+deadlocks, which is why PREEMPT_RT avoids fbcon printing from
+non-preemptible context. For mainline, the series is currently in
+review.
 
-[1]
-https://lore.kernel.org/lkml/e68888438cec9a1da53aaa1647720ade638d6ad4.1600705105.git.bristot@redhat.com/
+Perhaps avoiding fbcon would be good enough for you to avoid deadlocks
+with this reactor using printk().
 
--- Daniel
+John
+
+> [1]  https://lore.kernel.org/lkml/e68888438cec9a1da53aaa1647720ade638d6ad4.1600705105.git.bristot@redhat.com/
