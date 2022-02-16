@@ -2,107 +2,74 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9623C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Feb 2022 19:33:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87686C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Feb 2022 03:13:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239926AbiBOTdX (ORCPT
+        id S1344112AbiBPDOD (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 15 Feb 2022 14:33:23 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34234 "EHLO
+        Tue, 15 Feb 2022 22:14:03 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233812AbiBOTdW (ORCPT
+        with ESMTP id S1344088AbiBPDOA (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 15 Feb 2022 14:33:22 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 130DBB7C72;
-        Tue, 15 Feb 2022 11:33:11 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1644953589;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6PgsBMBaD1VL/blQ9NGFYKVy9dzfRCvZ4SmB2o7/hv0=;
-        b=C3LVhzk8ug+ZT17S1HvaW+HMsdFerPa+zBeWUuRyzN32pFYEcihEuz8evEnCqtZravA1s7
-        MMNQT+e5oWjqZpC8QGpUKW0FYaNNbQMAnsCwNDpygvIX/CCEor4ZJ/Y0LYYWipNWTvbFi+
-        0E3pVP0SRbOqJGZEZvQ7nvUB1HjEPtxiYhKLXKRHSI4oKsX5LHYZMJE3BlTt6Sih1O6uMb
-        7WoU+QR8Ucwsa5b9oN73B9yyS0zJBNtTDN7YgTcyg2htWlacWz9ffG9ZsU875Xy1g/mAV7
-        GmNZC/BmfRZsTTS0GsItNoNbr0OZXEb/X/vVNq12daUUyzq8d6IfudbyoSti2A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1644953589;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6PgsBMBaD1VL/blQ9NGFYKVy9dzfRCvZ4SmB2o7/hv0=;
-        b=r8YVCNMtnNMWlKQh6mpyzy8Lii7Hxnfat9/Yy8v7nrBFS8ZHA5jEZayKmaX1yiHQl0KEqQ
-        E9128Mys8LAY+JDw==
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Gabriele Paoloni <gpaoloni@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [RFC V2 12/21] rv/reactor: Add the printk reactor
-In-Reply-To: <65172f14-bad6-37b1-d243-e91ca472d22e@kernel.org>
-References: <cover.1644830251.git.bristot@kernel.org>
- <fad2d358d57dfffc084d482684ecc1d13b62b262.1644830251.git.bristot@kernel.org>
- <10cf6003-6d2b-056b-11bb-3ae9c342a369@linuxfoundation.org>
- <c1657d1c-0d2b-4aa3-c1ed-2ae6fdfcda86@kernel.org>
- <87v8xg30qc.fsf@jogness.linutronix.de>
- <45179cdb-2391-207a-2f7b-2dea828d1606@kernel.org>
- <87r1842r1m.fsf@jogness.linutronix.de>
- <65172f14-bad6-37b1-d243-e91ca472d22e@kernel.org>
-Date:   Tue, 15 Feb 2022 20:39:08 +0106
-Message-ID: <874k50hqmj.fsf@jogness.linutronix.de>
+        Tue, 15 Feb 2022 22:14:00 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B16CD0489
+        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Feb 2022 19:13:48 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E9E9C618A0
+        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Feb 2022 03:13:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62EAEC340F8;
+        Wed, 16 Feb 2022 03:13:47 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.95)
+        (envelope-from <rostedt@rostedt.homelinux.com>)
+        id 1nKAlG-00481b-EU;
+        Tue, 15 Feb 2022 22:13:46 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Subject: [PATCH 1/4] libtraceevent: Only add space on log prints if perror is used
+Date:   Tue, 15 Feb 2022 22:13:42 -0500
+Message-Id: <20220216031345.984113-2-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220216031345.984113-1-rostedt@goodmis.org>
+References: <20220216031345.984113-1-rostedt@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 2022-02-15, Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
-> I am aware of printk_deferred(), and every once and while I am Cc'ed
-> on patches suggesting changing printk() to printk_deferred(), but they
-> are not, let's say, welcome [1]... that is why I am not using it.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Yes. printk_deferred() is a workaround until we can get printk
-"PROVE_RAW_LOCK_NESTING clean". But currently there is real deadlock
-potential in the kernel with printk. For the most common cases, we use
-printk_deferred() to get around it. Once printk() is clean, we can
-replace all printk_deferred() call sites with printk().
+Do not add the space is the perror is not printed, as the space was only
+to separate the perror output from the rest of the output.
 
-I haven't looked into the details of your runtime verification method,
-but I assume it digs deep into some interfaces. In that case, the
-deadlock potential of printk may be relatively high. (And indeed, you
-have seen some.) IMHO, before warning users not to use this reactor if
-locks XYZ are taken, it would be better just to use printk_deferred()
-and it will always log without causing problems to the system you are
-trying to verify.
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ src/parse-utils.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> I saw deadlocks in the past, and while testing the WIP monitor some
-> time ago, it seems it depends on the console type. If such restriction
-> does not exist anymore, I can remove that comment, it would be even
-> better!
+diff --git a/src/parse-utils.c b/src/parse-utils.c
+index 89bf1cd92273..3f4918f7468e 100644
+--- a/src/parse-utils.c
++++ b/src/parse-utils.c
+@@ -68,10 +68,10 @@ int __tep_vprint(const char *name, enum tep_loglevel level,
+ {
+ 	int ret = errno;
+ 
+-	if (errno && print_err)
++	if (errno && print_err) {
+ 		perror(name);
+-
+-	fprintf(stderr, "  ");
++		fprintf(stderr, "  ");
++	}
+ 	vfprintf(stderr, fmt, ap);
+ 	fprintf(stderr, "\n");
+ 
+-- 
+2.34.1
 
-If you say it depended on the console type, then it was probably the
-framebuffer console that was at fault. The fbcon is a landmine for
-deadlocks, which is why PREEMPT_RT avoids fbcon printing from
-non-preemptible context. For mainline, the series is currently in
-review.
-
-Perhaps avoiding fbcon would be good enough for you to avoid deadlocks
-with this reactor using printk().
-
-John
-
-> [1]  https://lore.kernel.org/lkml/e68888438cec9a1da53aaa1647720ade638d6ad4.1600705105.git.bristot@redhat.com/
