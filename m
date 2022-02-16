@@ -2,168 +2,105 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B276C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Feb 2022 08:29:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0EE1C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Feb 2022 09:23:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229468AbiBPI3o (ORCPT
+        id S232190AbiBPJXv (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 16 Feb 2022 03:29:44 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:55964 "EHLO
+        Wed, 16 Feb 2022 04:23:51 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:32878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbiBPI3n (ORCPT
+        with ESMTP id S232198AbiBPJXs (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 16 Feb 2022 03:29:43 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 096F129C13C
-        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Feb 2022 00:29:32 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id d10so2813756eje.10
-        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Feb 2022 00:29:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=A9FjkmvWrmWqF3Tm3XHSij0+m9tBC79x9xqT2+lWhy0=;
-        b=R5CDyCNyudbRGX6lK7TX/0HtOm/mr0xV2GejoIPZF3kvbAJxBF3RqCyhosi2Jh31dY
-         mDiIK4uOm4OJwAWi7lJ0VG6MP5BarnoMWina3BYQPYdapKz0qMcf+j9ghIVUfNKEDBfH
-         NgE6dpXVQ5DFvNVast3mGs1GZiE1rYgE4GM0NJZclrCHwWjsdN7s7cLbqrgkOceh+lPH
-         JK77PmqhD5C0v1tk09CZtp2LHCX1HK7Tqq2NFvQ+Uu08tpCVoxGJAkMhKoczqWGiiysk
-         dkKwJyOID8h1KpDtB4ADlNHDEI4q3CBgsMCcRCXYtgteYZ87RfFeNbPkh59YHBFfWoU0
-         ZDiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=A9FjkmvWrmWqF3Tm3XHSij0+m9tBC79x9xqT2+lWhy0=;
-        b=vE5br8cqdv5MzW9uIvgZzpq1CA65zvzJdxk0Cq+9yrnGmzFlErS8JoDQN8ZNPOXvTO
-         BCMi9w0uXEeiMgbJOpMalgpDfc/OGRJWv0y4Igk7Fv4MFAONqc1W9voquSh1npa3pJNf
-         gnnMF65XaKiqVxkEHYViibH/MDPrzCF4LbaoqBhkUeTtjhI+QspJbvvZwYCnLmpYWu2f
-         gdngIhhIN4EECSu0Mzb1yHLA6WFF5gchrWrPchyDnWeeAPN/vHGeZCDv7uP1wP03Wpx4
-         04e9Tg+pLHqdr4Rs1kq0sGTL17uMWPHuOBQZgha/i/RryYYeWc+cxRLVYqN0CjazQUKy
-         g1Hg==
-X-Gm-Message-State: AOAM531sZ+8Lq7CxUeoMyguaVd8zX89XcN/EvSb2qD2tMpSThEgLtTvY
-        0RYPoaBROow9dT2HEd7ujZjIdXD5TXo=
-X-Google-Smtp-Source: ABdhPJy7zLWN3fIXa9kEClmQdOuYyJf3NNUJZkQLHwW+aiOGrQv0eQ6oHFrVYFkR90BIIdLw3PntZw==
-X-Received: by 2002:a17:907:954f:b0:6ad:3614:73e6 with SMTP id ex15-20020a170907954f00b006ad361473e6mr1346601ejc.731.1645000170196;
-        Wed, 16 Feb 2022 00:29:30 -0800 (PST)
-Received: from crow.. ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id v18sm2592998ejk.125.2022.02.16.00.29.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Feb 2022 00:29:29 -0800 (PST)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     hongzhan.chen@intel.com, jan.kiszka@siemens.com,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 2/2] kernel-shark: Load 'ctrl' interface for user plugins
-Date:   Wed, 16 Feb 2022 10:29:09 +0200
-Message-Id: <20220216082909.614231-3-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220216082909.614231-1-y.karadz@gmail.com>
-References: <20220216082909.614231-1-y.karadz@gmail.com>
+        Wed, 16 Feb 2022 04:23:48 -0500
+X-Greylist: delayed 1467 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 16 Feb 2022 01:23:25 PST
+Received: from gateway20.websitewelcome.com (gateway20.websitewelcome.com [192.185.50.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2954E0ACD
+        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Feb 2022 01:23:25 -0800 (PST)
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway20.websitewelcome.com (Postfix) with ESMTP id E29FF400EC8C6
+        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Feb 2022 02:58:57 -0600 (CST)
+Received: from gator4132.hostgator.com ([192.185.4.144])
+        by cmsmtp with SMTP
+        id KG9JnqXBlRnrrKG9Jn5lBr; Wed, 16 Feb 2022 02:58:57 -0600
+X-Authority-Reason: nr=8
+Received: from host-95-232-30-176.retail.telecomitalia.it ([95.232.30.176]:46600 helo=[10.0.1.2])
+        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <bristot@kernel.org>)
+        id 1nKG9I-001PYL-FP; Wed, 16 Feb 2022 02:58:56 -0600
+Message-ID: <05a593c4-0134-1449-7f30-305a0ffe1b49@kernel.org>
+Date:   Wed, 16 Feb 2022 09:58:50 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [RFC V2 12/21] rv/reactor: Add the printk reactor
+Content-Language: en-US
+To:     John Ogness <john.ogness@linutronix.de>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Gabriele Paoloni <gpaoloni@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org
+References: <cover.1644830251.git.bristot@kernel.org>
+ <fad2d358d57dfffc084d482684ecc1d13b62b262.1644830251.git.bristot@kernel.org>
+ <10cf6003-6d2b-056b-11bb-3ae9c342a369@linuxfoundation.org>
+ <c1657d1c-0d2b-4aa3-c1ed-2ae6fdfcda86@kernel.org>
+ <87v8xg30qc.fsf@jogness.linutronix.de>
+ <45179cdb-2391-207a-2f7b-2dea828d1606@kernel.org>
+ <87r1842r1m.fsf@jogness.linutronix.de>
+ <65172f14-bad6-37b1-d243-e91ca472d22e@kernel.org>
+ <874k50hqmj.fsf@jogness.linutronix.de>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <874k50hqmj.fsf@jogness.linutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - kernel.org
+X-BWhitelist: no
+X-Source-IP: 95.232.30.176
+X-Source-L: No
+X-Exim-ID: 1nKG9I-001PYL-FP
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: host-95-232-30-176.retail.telecomitalia.it ([10.0.1.2]) [95.232.30.176]:46600
+X-Source-Auth: kernel@bristot.me
+X-Email-Count: 1
+X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
+X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Currently, the 'ctrl' interface of all plugins gets called in the
-constructor of the MainWindow widget. This works well for the built-in
-plugins because the list of those plugins is known in advance. However,
-the list of user plugins is populated dynamically, hence it is not known
-by the time the constructor of the widget is called. The problem is
-solved by making sure we call the 'ctrl' interface every time we load
-a user plugin from the menus of the GUI or at start as a command line
-option.
+On 2/15/22 20:33, John Ogness wrote:
+>> I saw deadlocks in the past, and while testing the WIP monitor some
+>> time ago, it seems it depends on the console type. If such restriction
+>> does not exist anymore, I can remove that comment, it would be even
+>> better!
+> If you say it depended on the console type, then it was probably the
+> framebuffer console that was at fault. The fbcon is a landmine for
+> deadlocks, which is why PREEMPT_RT avoids fbcon printing from
+> non-preemptible context. For mainline, the series is currently in
+> review.
+> 
+> Perhaps avoiding fbcon would be good enough for you to avoid deadlocks
+> with this reactor using printk().
 
-Reported-by: Hongzhan Chen <hongzhan.chen@intel.com>
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- src/KsUtils.cpp | 35 +++++++++++++++++++++++++----------
- src/KsUtils.hpp |  2 ++
- 2 files changed, 27 insertions(+), 10 deletions(-)
+So, I will keep printk(), add a depends on *!* fbcon, and remove the comment.
+What do you think?
 
-diff --git a/src/KsUtils.cpp b/src/KsUtils.cpp
-index a22c445..e3e16ae 100644
---- a/src/KsUtils.cpp
-+++ b/src/KsUtils.cpp
-@@ -1190,6 +1190,20 @@ QVector<int> KsPluginManager::getPluginsByStatus(int sd, int status) const
- 	return vec;
- }
- 
-+void KsPluginManager::_registerCtrlInterface(kshark_plugin_list *plugin)
-+{
-+	if (!plugin->handle || !plugin->ctrl_interface)
-+		return;
-+
-+	void *dialogPtr = plugin->ctrl_interface(parent());
-+	if (dialogPtr) {
-+		QWidget *dialog = static_cast<QWidget *>(dialogPtr);
-+
-+		if (dialog && _pluginDialogs.indexOf(dialog) < 0)
-+			_pluginDialogs.append(dialog);
-+	}
-+}
-+
- /**
-  * @brief Loop over the registered plugins and register all plugin-defined
-  *	  menus (if any).
-@@ -1203,14 +1217,7 @@ void KsPluginManager::registerPluginMenues()
- 		return;
- 
- 	for (plugin = kshark_ctx->plugins; plugin; plugin = plugin->next)
--		if (plugin->handle && plugin->ctrl_interface) {
--			void *dialogPtr = plugin->ctrl_interface(parent());
--			if (dialogPtr) {
--				QWidget *dialog =
--					static_cast<QWidget *>(dialogPtr);
--				_pluginDialogs.append(dialog);
--			}
--		}
-+		_registerCtrlInterface(plugin);
- }
- 
- std::string KsPluginManager::_pluginLibFromName(const QString &plugin)
-@@ -1247,11 +1254,17 @@ std::string KsPluginManager::_pluginNameFromLib(const QString &plugin)
-  * @param pluginNames: Provide here the names of the plugin (as in the
-  *		       CMake-generated header file) or the names of the
-  *		       plugin's library files (.so including path).
-- * 		       The names must be comma separated.
-+ *		       The names must be comma separated.
-  */
- void KsPluginManager::registerPlugins(const QString &pluginNames)
- {
--	_userPlugins.append(_loadPluginList(pluginNames.split(',')));
-+	QVector<kshark_plugin_list *> plugins;
-+
-+	plugins = _loadPluginList(pluginNames.split(','));
-+	for (auto const &p: plugins)
-+		_registerCtrlInterface(p);
-+
-+	_userPlugins.append(plugins);
- }
- 
- /**
-@@ -1369,6 +1382,8 @@ void KsPluginManager::addPlugins(const QStringList &fileNames,
- 		return;
- 
- 	plugins = _loadPluginList(fileNames);
-+	for (auto const &p: plugins)
-+		_registerCtrlInterface(p);
- 	_userPlugins.append(plugins);
- 
- 	if (streamIds.isEmpty())
-diff --git a/src/KsUtils.hpp b/src/KsUtils.hpp
-index 1a97d9e..e42b6da 100644
---- a/src/KsUtils.hpp
-+++ b/src/KsUtils.hpp
-@@ -330,6 +330,8 @@ private:
- 	QVector<kshark_plugin_list *>
- 	_loadPluginList(const QStringList &plugins);
- 
-+	void _registerCtrlInterface(kshark_plugin_list *plugin);
-+
- 	std::string _pluginLibFromName(const QString &plugin);
- 
- 	std::string _pluginNameFromLib(const QString &plugin);
--- 
-2.32.0
-
+-- Daniel
