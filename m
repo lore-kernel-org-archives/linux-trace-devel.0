@@ -2,103 +2,103 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF893C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Feb 2022 13:46:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC557C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Feb 2022 15:44:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233104AbiBPNrD (ORCPT
+        id S233449AbiBPPoR (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 16 Feb 2022 08:47:03 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35588 "EHLO
+        Wed, 16 Feb 2022 10:44:17 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234073AbiBPNrC (ORCPT
+        with ESMTP id S232520AbiBPPoQ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 16 Feb 2022 08:47:02 -0500
-X-Greylist: delayed 1287 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 16 Feb 2022 05:46:50 PST
-Received: from gateway30.websitewelcome.com (gateway30.websitewelcome.com [192.185.197.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 596B313F67
-        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Feb 2022 05:46:49 -0800 (PST)
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id A607120DC50E
-        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Feb 2022 07:20:00 -0600 (CST)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id KKDwnlOVYdx86KKDwnPE47; Wed, 16 Feb 2022 07:20:00 -0600
-X-Authority-Reason: nr=8
-Received: from host-95-232-30-176.retail.telecomitalia.it ([95.232.30.176]:46602 helo=[10.0.1.2])
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1nKKDv-0030ep-2d; Wed, 16 Feb 2022 07:19:59 -0600
-Message-ID: <a7589253-d73a-942d-692f-27d80ee855c5@kernel.org>
-Date:   Wed, 16 Feb 2022 14:19:53 +0100
+        Wed, 16 Feb 2022 10:44:16 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F2272944F0
+        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Feb 2022 07:44:03 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id a11-20020a17090a740b00b001b8b506c42fso6847151pjg.0
+        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Feb 2022 07:44:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/T/9nJAy+shhWqp1d+3Li85ZQ6wg8YZTQ7x9Q8o2qlw=;
+        b=ZArVqQmaHWZhzQhDhfBhFD4NVuspMPNYJFmbY3wjqqwqrVaF66pSeVan+d9aAdIyft
+         BevG8FBOaRQonPeCxcuMXSRjrxWKltYS9Wy+GZoc4Q126YdUCZ7ZsoltcyfCl+djXqIp
+         3gAkk9FI3wJKj/BdcEcArHUi+zSqC1baGrMF1rtFGl616pez20QOjBUx8W5Ur1A6Y5o7
+         meVqRI0mcxdpFN/peN1wvYEg6oAPiG3Fjy73tSmasiGJbvCQy0q1OKpt3dHO8q/a+a7Y
+         ph+KaBIS1xLxd920FkVsYir7lg4dS7b/8aLDsuiQm1jHSgRDO5t8zugwXBcjc1LTGZIq
+         ZnDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/T/9nJAy+shhWqp1d+3Li85ZQ6wg8YZTQ7x9Q8o2qlw=;
+        b=fA5PjOEHK1iLCc4J9RnmnluYEOAzg+d5huLCvbjgBAIa0jIip+t3BA4agDNiBiy7Xr
+         NZCG77Psm10BwEaUAEnuUsU6oAIU79kQW2zUl+c2rxGI3Q1fDFZqZnsn4Pd8oir1Prnf
+         Eei+urTN73j1GSJEs5JZ5VHJWU0SJm2tpxRBeOcuusZX1km5k16CQ7DSOMZf+QsdeALb
+         VypsXsPFirCxm9sdZBixvHN39EjwBFGuBJdfiVL/mhdpmWJajai6aV9b9LbeK70cLvBU
+         wB5Pa7WEEMZeXuNNXrfybEPLadgci4Lo7oKuAWL8iQSRyQ5R1cfBAuocVjcGYEM/U32z
+         qZVQ==
+X-Gm-Message-State: AOAM532/R/h8lzDkl7GqneaSMN4jxeXufPNd7sfPVAijkoc3kbJlhVYk
+        qbBMoh0JlrSeq8t3OJTaM+c8aebPyXhKNbYYkv0vrBJi
+X-Google-Smtp-Source: ABdhPJzAnnbdE5ef147hYeuCvGLwaPPCjdsXuRIxM294G4XGi8w7QRdEwU0rvl+Gml0W9BJf3+r1hHCwMFflTNyfn7k=
+X-Received: by 2002:a17:90a:b10a:b0:1bb:82a7:5d69 with SMTP id
+ z10-20020a17090ab10a00b001bb82a75d69mr2421028pjq.111.1645026243106; Wed, 16
+ Feb 2022 07:44:03 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [RFC V2 12/21] rv/reactor: Add the printk reactor
-Content-Language: en-US
-To:     John Ogness <john.ogness@linutronix.de>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Gabriele Paoloni <gpaoloni@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org
-References: <cover.1644830251.git.bristot@kernel.org>
- <fad2d358d57dfffc084d482684ecc1d13b62b262.1644830251.git.bristot@kernel.org>
- <10cf6003-6d2b-056b-11bb-3ae9c342a369@linuxfoundation.org>
- <c1657d1c-0d2b-4aa3-c1ed-2ae6fdfcda86@kernel.org>
- <87v8xg30qc.fsf@jogness.linutronix.de>
- <45179cdb-2391-207a-2f7b-2dea828d1606@kernel.org>
- <87r1842r1m.fsf@jogness.linutronix.de>
- <65172f14-bad6-37b1-d243-e91ca472d22e@kernel.org>
- <874k50hqmj.fsf@jogness.linutronix.de>
- <05a593c4-0134-1449-7f30-305a0ffe1b49@kernel.org>
- <87fsojrsnh.fsf@jogness.linutronix.de>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <87fsojrsnh.fsf@jogness.linutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 95.232.30.176
-X-Source-L: No
-X-Exim-ID: 1nKKDv-0030ep-2d
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-95-232-30-176.retail.telecomitalia.it ([10.0.1.2]) [95.232.30.176]:46602
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 1
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
+References: <20211210115508.103569-1-tz.stoyanov@gmail.com>
+In-Reply-To: <20211210115508.103569-1-tz.stoyanov@gmail.com>
+From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Date:   Wed, 16 Feb 2022 17:43:46 +0200
+Message-ID: <CAPpZLN7K+ouw+4p3eBAKObz-7Ao3+xD=vE4psWrhgYoK7jD_6Q@mail.gmail.com>
+Subject: Re: [PATCH] trace-cmd library: Do not record TSC frac bits if scaling
+ is default
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 2/16/22 11:51, John Ogness wrote:
-> On 2022-02-16, Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
->> So, I will keep printk(), add a depends on *!* fbcon, and remove the
->> comment.  What do you think?
-> printk() and depends on !VT_CONSOLE. OK for me. Hopefully soon this
-> restriction can be removed.
+ping
+Just to remind, this one is an important bugfix. It fixes host-guest
+tracing with the latest kernels, where new KVM debug info is exposed
+through the debugfs.
 
-ack.
+On Fri, Dec 10, 2021 at 1:55 PM Tzvetomir Stoyanov (VMware)
+<tz.stoyanov@gmail.com> wrote:
+>
+> Guest's TSC fraction bits have sens only if there is TSC scaling. In
+> case of default value for TSC scaling, fraction bits should not be used
+> in TSC guest clock calculation.
+>
+> Fixes: https://lore.kernel.org/linux-trace-devel/20211014150204.2485499-3-tz.stoyanov@gmail.com/
+>         (trace-cmd library: Extend host-guest time sync with fraction bits)
+>
+> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> ---
+>  lib/trace-cmd/trace-timesync-kvm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/lib/trace-cmd/trace-timesync-kvm.c b/lib/trace-cmd/trace-timesync-kvm.c
+> index 8d531922..12a22d4c 100644
+> --- a/lib/trace-cmd/trace-timesync-kvm.c
+> +++ b/lib/trace-cmd/trace-timesync-kvm.c
+> @@ -415,7 +415,7 @@ static int kvm_clock_host(struct tracecmd_time_sync *tsync,
+>                         kvm_scaling = 1;
+>         }
+>
+> -       if (kvm->vcpu_frac && kvm->vcpu_frac[cpu])
+> +       if (kvm->vcpu_frac && kvm->vcpu_frac[cpu] && kvm_scaling != 1)
+>                 ret = read_ll_from_file(kvm->vcpu_frac[cpu], &kvm_frac);
+>         msg = (char *)&packet;
+>         size = sizeof(packet);
+> --
+> 2.33.1
+>
 
-Thanks, John!
--- Daniel
 
-> John
-
+-- 
+Tzvetomir (Ceco) Stoyanov
+VMware Open Source Technology Center
