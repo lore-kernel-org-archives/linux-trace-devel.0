@@ -2,41 +2,65 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56078C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 17 Feb 2022 17:57:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F8EFC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 17 Feb 2022 18:17:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243923AbiBQR5N (ORCPT
+        id S244134AbiBQSSA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 17 Feb 2022 12:57:13 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:33750 "EHLO
+        Thu, 17 Feb 2022 13:18:00 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240904AbiBQR5N (ORCPT
+        with ESMTP id S244143AbiBQSR7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 17 Feb 2022 12:57:13 -0500
-Received: from gateway30.websitewelcome.com (gateway30.websitewelcome.com [192.185.145.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC1886E38
-        for <linux-trace-devel@vger.kernel.org>; Thu, 17 Feb 2022 09:56:53 -0800 (PST)
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id 8283FAA15
-        for <linux-trace-devel@vger.kernel.org>; Thu, 17 Feb 2022 11:56:52 -0600 (CST)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id Kl1QnWoGrRnrrKl1QnjD5I; Thu, 17 Feb 2022 11:56:52 -0600
-X-Authority-Reason: nr=8
-Received: from host-95-232-30-176.retail.telecomitalia.it ([95.232.30.176]:34154 helo=[10.0.0.45])
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1nKl1O-001Zrd-AE; Thu, 17 Feb 2022 11:56:50 -0600
-Message-ID: <ca674409-34bb-69b2-0df5-e01b6facee88@kernel.org>
-Date:   Thu, 17 Feb 2022 18:56:44 +0100
+        Thu, 17 Feb 2022 13:17:59 -0500
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30706162018;
+        Thu, 17 Feb 2022 10:17:45 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id v10so9912260qvk.7;
+        Thu, 17 Feb 2022 10:17:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=Kmo6BH5ygn5Md7FtjHkAF2H+na9yzAd1rgfQcTVl4JU=;
+        b=Yiccb94OR/WsJxaffkc/ByvR29azGUTeOl1tDs/DdXjoKSWCwX7RLXKOScOr2rY166
+         yFPl91/QlOwJt7+A/MzFE4G7sBJ11ug76nZdP9TGq6kblN8FS/JgNQ7n4migx6LgKc/u
+         ybj/i6Bkw8REPlhhZQ2zTNt7kPB7VOPBl/IYY8PE/UsTFts+XJWJFP25A+E8ouyBUDR3
+         W+qT59zNZjhFxAhmAx6x9RXCxYc63pH5fOdNK0WIgo3CUZSFfoMlLA+GpUUJoounRmmW
+         Fg6420SyCNxzUbK81avDLGH27y+f7h61rCUg0BLXTvD7pEHHUUGozcezo0DPHVdekRlE
+         VNTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
+         :subject:content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=Kmo6BH5ygn5Md7FtjHkAF2H+na9yzAd1rgfQcTVl4JU=;
+        b=7quJGXjFYOepuYenKe+wKwbwvZIdNRyotg793q29oJ9ZajbKVtYeuk/ioQHdYeCBzo
+         3ozQAe+5uNbJnDAdKUFH+SfpG1RJVG1mYpq/z9yNSDmVOZ94k7KulxFCsEKfSqioEkI9
+         j4XkHi2Ci5KH+1BkOPFtgHcMTji1el2DGpnUE5vl7keh+kzUiQ61RydhEC2gw6JMgkKP
+         xoxfWLj7Iz9X4c3mRbfsC1OpAE0d2UcyboRljOTdUwDCAXf22LoWbUfEDQHAJiRInOpA
+         HrYXk220J+pXO6DGts85DHXvrVUSPdoMA8NDJ8hJJRGEpovgkNtatRWhralpzytkhMr/
+         FhXA==
+X-Gm-Message-State: AOAM533RLg3eODZL8niJMm7YnI2VyyH5HN9XZxATdMzy8Yf0z//XBG4k
+        GOGDsRHqaECDgdPjqLwSQa1EPyMt+uzrmA==
+X-Google-Smtp-Source: ABdhPJy+Gp9fjTaJUI638GLj65jPVwz8FpBZnZf25Y2Z3PTBA4jx+t2qwKhbrCOmT7qtrGpJHtibVw==
+X-Received: by 2002:a05:622a:148d:b0:2cd:764a:f2c0 with SMTP id t13-20020a05622a148d00b002cd764af2c0mr3614805qtx.231.1645121864378;
+        Thu, 17 Feb 2022 10:17:44 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id s1sm23792811qta.0.2022.02.17.10.17.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Feb 2022 10:17:43 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <b59155c2-81c1-b2d8-c8d9-a97e3166cee3@roeck-us.net>
+Date:   Thu, 17 Feb 2022 10:17:40 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.0
 Subject: Re: [RFC V2 17/21] watchdog/dev: Add tracepoints
 Content-Language: en-US
 To:     Gabriele Paoloni <gpaoloni@redhat.com>,
-        Guenter Roeck <linux@roeck-us.net>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
         "Peter.Enderborg@sony.com" <Peter.Enderborg@sony.com>,
         Wim Van Sebroeck <wim@linux-watchdog.org>
 Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
@@ -61,32 +85,16 @@ References: <cover.1644830251.git.bristot@kernel.org>
  <ba924008-c0ab-4800-aac4-d9d9ae930c32@kernel.org>
  <ef1b1d99-6172-2b4d-9612-7ecbe8fc6c8b@roeck-us.net>
  <6c6fc4fa-6464-2dbf-40da-e3c61f322d95@redhat.com>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+From:   Guenter Roeck <linux@roeck-us.net>
 In-Reply-To: <6c6fc4fa-6464-2dbf-40da-e3c61f322d95@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 95.232.30.176
-X-Source-L: No
-X-Exim-ID: 1nKl1O-001Zrd-AE
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-95-232-30-176.retail.telecomitalia.it ([10.0.0.45]) [95.232.30.176]:34154
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 2
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 2/17/22 18:49, Gabriele Paoloni wrote:
+On 2/17/22 09:49, Gabriele Paoloni wrote:
+> 
 > 
 > On 17/02/2022 18:27, Guenter Roeck wrote:
 >> On 2/17/22 08:27, Daniel Bristot de Oliveira wrote:
@@ -98,28 +106,36 @@ On 2/17/22 18:49, Gabriele Paoloni wrote:
 >>>>> device interactions with user-space.
 >>>>>
 >>>>> The events are:
->>>>>     watchdog:watchdog_open
->>>>>     watchdog:watchdog_close
->>>>>     watchdog:watchdog_start
->>>>>     watchdog:watchdog_stop
->>>>>     watchdog:watchdog_set_timeout
->>>>>     watchdog:watchdog_ping
->>>>>     watchdog:watchdog_nowayout
->>>>>     watchdog:watchdog_set_keep_alive
->>>>>     watchdog:watchdog_keep_alive
+>>>>>      watchdog:watchdog_open
+>>>>>      watchdog:watchdog_close
+>>>>>      watchdog:watchdog_start
+>>>>>      watchdog:watchdog_stop
+>>>>>      watchdog:watchdog_set_timeout
+>>>>>      watchdog:watchdog_ping
+>>>>>      watchdog:watchdog_nowayout
+>>>>>      watchdog:watchdog_set_keep_alive
+>>>>>      watchdog:watchdog_keep_alive
+>>>>
 >>>> Some watchdogs have a bark functionality, I think it should be event
 >>>> for that too.
 >>>>
+>>>
 >>> I understand. The problems is that I do not see the bark abstraction
 >>> in the
 >>> watchdog_dev layer.
 >>>
+>>
 >> I don't even know what "bark functionality" means. A new term for
 >> pretimeout ?
 >> Something else ?
-> From my understanding the bark timeout is actually the pretimeout
+> 
+>>From my understanding the bark timeout is actually the pretimeout
 > whereas the bite timeout is the actual timeout.
+> I think in the Kernel ftwdt010_wdt and qcom-wdt are bark/bite WTDs
+> 
 
-So, what Peter wants is tracepoints for the pretimeout actions?
+If that is the case, I would prefer if we could stick to existing
+terminology to avoid issues like "I do not see the bark abstraction".
 
--- Daniel
+Thanks,
+Guenter
