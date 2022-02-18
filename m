@@ -2,138 +2,205 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB355C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 17 Feb 2022 18:55:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6081C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 18 Feb 2022 11:09:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234005AbiBQSz2 (ORCPT
+        id S233041AbiBRLJw convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 17 Feb 2022 13:55:28 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48656 "EHLO
+        Fri, 18 Feb 2022 06:09:52 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244809AbiBQSzU (ORCPT
+        with ESMTP id S233065AbiBRLJw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 17 Feb 2022 13:55:20 -0500
-X-Greylist: delayed 1335 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 17 Feb 2022 10:54:58 PST
-Received: from gateway30.websitewelcome.com (gateway30.websitewelcome.com [192.185.150.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD84B45ACC
-        for <linux-trace-devel@vger.kernel.org>; Thu, 17 Feb 2022 10:54:58 -0800 (PST)
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id 2A38FC080
-        for <linux-trace-devel@vger.kernel.org>; Thu, 17 Feb 2022 12:32:43 -0600 (CST)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id Kla7nmFil22u3Kla7n2RWY; Thu, 17 Feb 2022 12:32:43 -0600
-X-Authority-Reason: nr=8
-Received: from host-95-232-30-176.retail.telecomitalia.it ([95.232.30.176]:34156 helo=[10.0.0.45])
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1nKla5-002U7P-7e; Thu, 17 Feb 2022 12:32:41 -0600
-Message-ID: <7f227281-a5c8-ba55-ed75-6ce2c4d423e3@kernel.org>
-Date:   Thu, 17 Feb 2022 19:32:34 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [RFC V2 17/21] watchdog/dev: Add tracepoints
-Content-Language: en-US
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Gabriele Paoloni <gpaoloni@redhat.com>,
-        "Peter.Enderborg@sony.com" <Peter.Enderborg@sony.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <cover.1644830251.git.bristot@kernel.org>
- <e67874c8b676ea8dfe38679efa25363889bb1e76.1644830251.git.bristot@kernel.org>
- <96f418b4-0ba8-01fe-ead0-2028bfc42560@sony.com>
- <ba924008-c0ab-4800-aac4-d9d9ae930c32@kernel.org>
- <ef1b1d99-6172-2b4d-9612-7ecbe8fc6c8b@roeck-us.net>
- <6c6fc4fa-6464-2dbf-40da-e3c61f322d95@redhat.com>
- <b59155c2-81c1-b2d8-c8d9-a97e3166cee3@roeck-us.net>
+        Fri, 18 Feb 2022 06:09:52 -0500
+Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6FBFB2AED99
+        for <linux-trace-devel@vger.kernel.org>; Fri, 18 Feb 2022 03:09:34 -0800 (PST)
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-592-Pz5iJAAPPi-0QAazgGQkUQ-1; Fri, 18 Feb 2022 06:09:31 -0500
+X-MC-Unique: Pz5iJAAPPi-0QAazgGQkUQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 91D9918009C6;
+        Fri, 18 Feb 2022 11:09:30 +0000 (UTC)
+Received: from x1.com (unknown [10.22.32.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B2DAC2B4B9;
+        Fri, 18 Feb 2022 11:09:28 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <b59155c2-81c1-b2d8-c8d9-a97e3166cee3@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 95.232.30.176
-X-Source-L: No
-X-Exim-ID: 1nKla5-002U7P-7e
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-95-232-30-176.retail.telecomitalia.it ([10.0.0.45]) [95.232.30.176]:34156
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 2
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        linux-trace-devel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/7] rtla/osnoise: Add support to adjust the tracing_thresh
+Date:   Fri, 18 Feb 2022 12:09:13 +0100
+Message-Id: <6047c475fedd8f523fff516c313d54fb6a6b402e.1645182327.git.bristot@kernel.org>
+In-Reply-To: <cover.1645182327.git.bristot@kernel.org>
+References: <cover.1645182327.git.bristot@kernel.org>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 2/17/22 19:17, Guenter Roeck wrote:
-> On 2/17/22 09:49, Gabriele Paoloni wrote:
->>
->>
->> On 17/02/2022 18:27, Guenter Roeck wrote:
->>> On 2/17/22 08:27, Daniel Bristot de Oliveira wrote:
->>>> Hi Peter
->>>>
->>>> On 2/16/22 17:01, Peter.Enderborg@sony.com wrote:
->>>>> On 2/14/22 11:45, Daniel Bristot de Oliveira wrote:
->>>>>> Add a set of tracepoints, enabling the observability of the watchdog
->>>>>> device interactions with user-space.
->>>>>>
->>>>>> The events are:
->>>>>>      watchdog:watchdog_open
->>>>>>      watchdog:watchdog_close
->>>>>>      watchdog:watchdog_start
->>>>>>      watchdog:watchdog_stop
->>>>>>      watchdog:watchdog_set_timeout
->>>>>>      watchdog:watchdog_ping
->>>>>>      watchdog:watchdog_nowayout
->>>>>>      watchdog:watchdog_set_keep_alive
->>>>>>      watchdog:watchdog_keep_alive
->>>>>
->>>>> Some watchdogs have a bark functionality, I think it should be event
->>>>> for that too.
->>>>>
->>>>
->>>> I understand. The problems is that I do not see the bark abstraction
->>>> in the
->>>> watchdog_dev layer.
->>>>
->>>
->>> I don't even know what "bark functionality" means. A new term for
->>> pretimeout ?
->>> Something else ?
->>
->>> From my understanding the bark timeout is actually the pretimeout
->> whereas the bite timeout is the actual timeout.
->> I think in the Kernel ftwdt010_wdt and qcom-wdt are bark/bite WTDs
->>
-> 
-> If that is the case, I would prefer if we could stick to existing
-> terminology to avoid issues like "I do not see the bark abstraction".
+osnoise uses the tracing_thresh parameter to define the delta between
+two reads of the time to be considered a noise.
 
-I agree! I am using the terminology from watchdog dev. Like, I hear the term
-"pet" for the "ping", I used "ping."
+Add support to get and set the tracing_thresh from osnoise tools.
 
--- Daniel
+Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-trace-devel@vger.kernel.org
+Cc: linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+---
+ tools/tracing/rtla/src/osnoise.c | 83 ++++++++++++++++++++++++++++++++
+ tools/tracing/rtla/src/osnoise.h |  8 +++
+ 2 files changed, 91 insertions(+)
+
+diff --git a/tools/tracing/rtla/src/osnoise.c b/tools/tracing/rtla/src/osnoise.c
+index 5648f9252e58..0dfce437edf4 100644
+--- a/tools/tracing/rtla/src/osnoise.c
++++ b/tools/tracing/rtla/src/osnoise.c
+@@ -655,6 +655,85 @@ void osnoise_put_print_stack(struct osnoise_context *context)
+ 	context->orig_print_stack = OSNOISE_OPTION_INIT_VAL;
+ }
+ 
++/*
++ * osnoise_get_tracing_thresh - read and save the original "tracing_thresh"
++ */
++static long long
++osnoise_get_tracing_thresh(struct osnoise_context *context)
++{
++	long long tracing_thresh;
++
++	if (context->tracing_thresh != OSNOISE_OPTION_INIT_VAL)
++		return context->tracing_thresh;
++
++	if (context->orig_tracing_thresh != OSNOISE_OPTION_INIT_VAL)
++		return context->orig_tracing_thresh;
++
++	tracing_thresh = osnoise_read_ll_config("tracing_thresh");
++	if (tracing_thresh < 0)
++		goto out_err;
++
++	context->orig_tracing_thresh = tracing_thresh;
++	return tracing_thresh;
++
++out_err:
++	return OSNOISE_OPTION_INIT_VAL;
++}
++
++/*
++ * osnoise_set_tracing_thresh - set "tracing_thresh"
++ */
++int osnoise_set_tracing_thresh(struct osnoise_context *context, long long tracing_thresh)
++{
++	long long curr_tracing_thresh = osnoise_get_tracing_thresh(context);
++	int retval;
++
++	if (curr_tracing_thresh == OSNOISE_OPTION_INIT_VAL)
++		return -1;
++
++	retval = osnoise_write_ll_config("tracing_thresh", tracing_thresh);
++	if (retval < 0)
++		return -1;
++
++	context->tracing_thresh = tracing_thresh;
++
++	return 0;
++}
++
++/*
++ * osnoise_restore_tracing_thresh - restore the original "tracing_thresh"
++ */
++void osnoise_restore_tracing_thresh(struct osnoise_context *context)
++{
++	int retval;
++
++	if (context->orig_tracing_thresh == OSNOISE_OPTION_INIT_VAL)
++		return;
++
++	if (context->orig_tracing_thresh == context->tracing_thresh)
++		goto out_done;
++
++	retval = osnoise_write_ll_config("tracing_thresh", context->orig_tracing_thresh);
++	if (retval < 0)
++		err_msg("Could not restore original tracing_thresh\n");
++
++out_done:
++	context->tracing_thresh = OSNOISE_OPTION_INIT_VAL;
++}
++
++/*
++ * osnoise_put_tracing_thresh - restore original values and cleanup data
++ */
++void osnoise_put_tracing_thresh(struct osnoise_context *context)
++{
++	osnoise_restore_tracing_thresh(context);
++
++	if (context->orig_tracing_thresh == OSNOISE_OPTION_INIT_VAL)
++		return;
++
++	context->orig_tracing_thresh = OSNOISE_OPTION_INIT_VAL;
++}
++
+ /*
+  * enable_osnoise - enable osnoise tracer in the trace_instance
+  */
+@@ -716,6 +795,9 @@ struct osnoise_context *osnoise_context_alloc(void)
+ 	context->orig_print_stack	= OSNOISE_OPTION_INIT_VAL;
+ 	context->print_stack		= OSNOISE_OPTION_INIT_VAL;
+ 
++	context->orig_tracing_thresh	= OSNOISE_OPTION_INIT_VAL;
++	context->tracing_thresh		= OSNOISE_OPTION_INIT_VAL;
++
+ 	osnoise_get_context(context);
+ 
+ 	return context;
+@@ -741,6 +823,7 @@ void osnoise_put_context(struct osnoise_context *context)
+ 	osnoise_put_stop_total_us(context);
+ 	osnoise_put_timerlat_period_us(context);
+ 	osnoise_put_print_stack(context);
++	osnoise_put_tracing_thresh(context);
+ 
+ 	free(context);
+ }
+diff --git a/tools/tracing/rtla/src/osnoise.h b/tools/tracing/rtla/src/osnoise.h
+index 9e4b2e2a4559..04a4384cc544 100644
+--- a/tools/tracing/rtla/src/osnoise.h
++++ b/tools/tracing/rtla/src/osnoise.h
+@@ -23,6 +23,10 @@ struct osnoise_context {
+ 	long long		orig_timerlat_period_us;
+ 	long long		timerlat_period_us;
+ 
++	/* 0 as init value */
++	long long		orig_tracing_thresh;
++	long long		tracing_thresh;
++
+ 	/* -1 as init value because 0 is disabled */
+ 	long long		orig_stop_us;
+ 	long long		stop_us;
+@@ -67,6 +71,10 @@ int osnoise_set_timerlat_period_us(struct osnoise_context *context,
+ 				   long long timerlat_period_us);
+ void osnoise_restore_timerlat_period_us(struct osnoise_context *context);
+ 
++int osnoise_set_tracing_thresh(struct osnoise_context *context,
++			       long long tracing_thresh);
++void osnoise_restore_tracing_thresh(struct osnoise_context *context);
++
+ void osnoise_restore_print_stack(struct osnoise_context *context);
+ int osnoise_set_print_stack(struct osnoise_context *context,
+ 			    long long print_stack);
+-- 
+2.34.1
+
