@@ -2,86 +2,86 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36F08C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 18 Feb 2022 17:57:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2070C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 18 Feb 2022 18:45:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238852AbiBRR5s convert rfc822-to-8bit (ORCPT
+        id S235223AbiBRSqN (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 18 Feb 2022 12:57:48 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59386 "EHLO
+        Fri, 18 Feb 2022 13:46:13 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:39522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238849AbiBRR5r (ORCPT
+        with ESMTP id S234881AbiBRSqM (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 18 Feb 2022 12:57:47 -0500
-Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 93FC4110D
-        for <linux-trace-devel@vger.kernel.org>; Fri, 18 Feb 2022 09:57:29 -0800 (PST)
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-562-deJtrdHpMBS6WWtPDsmWAA-1; Fri, 18 Feb 2022 12:57:23 -0500
-X-MC-Unique: deJtrdHpMBS6WWtPDsmWAA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 10113801AC5;
-        Fri, 18 Feb 2022 17:57:22 +0000 (UTC)
-Received: from x1.com (unknown [10.22.32.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4CC5D2BCC1;
-        Fri, 18 Feb 2022 17:57:19 +0000 (UTC)
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: [PATCH 3/3] rtla/osnoise: Fix error message when failing to enable trace instance
-Date:   Fri, 18 Feb 2022 18:57:09 +0100
-Message-Id: <53ef0582605af91eca14b19dba9fc9febb95d4f9.1645206561.git.bristot@kernel.org>
-In-Reply-To: <cover.1645206561.git.bristot@kernel.org>
-References: <cover.1645206561.git.bristot@kernel.org>
+        Fri, 18 Feb 2022 13:46:12 -0500
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C84B746150
+        for <linux-trace-devel@vger.kernel.org>; Fri, 18 Feb 2022 10:45:55 -0800 (PST)
+Received: by mail-io1-xd36.google.com with SMTP id z2so8629874iow.8
+        for <linux-trace-devel@vger.kernel.org>; Fri, 18 Feb 2022 10:45:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=6WM1FcbjkKRQfarjcZ6VAm2qHADX8fdzN6A1eulDXPE=;
+        b=T8cieqQENscbjBwJdoX+6eB1+RilGObfyjfePv5WEdowXJJW3X9c0+3SSHGzLIxKQD
+         3TrOwKmWNvpjShxef8IK0hN4I7tW9m+qSeIPG6BKitgfGFIgCDpLFiRpa0G2UiCucbaL
+         dlM8HrsXW82RfpxFfkerA6h4UseeZ/CkPFVOU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=6WM1FcbjkKRQfarjcZ6VAm2qHADX8fdzN6A1eulDXPE=;
+        b=RdHcUqVI6ZTPZqssPNClooRyYJYVggOPPV6+MLjIRryaoNGVn+AqEX4FyRYInIuXKS
+         zNfhgWKPDNWhpv91llGdJvEK9SVkGa2sP4ktSjr3ILzF2bN72GK8ZJsEScdjGx1Jb0yU
+         WrnYoLU6ZyCijqURKirgdCC7/TdPPyD3I7PptYut7OO87sc9FFckY8xR1CximDDYn9A5
+         +cAAdgY1gTR4G3jSVTvBKpTn4Ff4G5Xvh+D7ANJvuFfnBNM84YMa2DwAFoK26iDlZ6Nf
+         mzZzYEcrou5UDQ47xg9k1V2jniVQbK2pEe8/tMFs34sVuUaaWmtOkIzV8feaumpzSGor
+         jEkw==
+X-Gm-Message-State: AOAM53336+V3Mx1ScPkHh32OHMuaPiYRU/5ZoLQs3d9WaSoobCZ//NTy
+        1Fg7RlMrkOp/yCh+iEp2DS0RcZ+ohb7OHyHP98k9v+u3zQUGPQ==
+X-Google-Smtp-Source: ABdhPJyQYmLOJIqg85CfKo+LucyFe2fr4+d9qQBPRcsdtx4Qr3CY6Hk9G90/VWzDBypA7diCOwDpQRUA3qOXsbB5WBI=
+X-Received: by 2002:a05:6638:d91:b0:30e:345:a0d2 with SMTP id
+ l17-20020a0566380d9100b0030e0345a0d2mr6047438jaj.257.1645209954974; Fri, 18
+ Feb 2022 10:45:54 -0800 (PST)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 18 Feb 2022 13:45:44 -0500
+Message-ID: <CAEXW_YT5sCze=m-HubMjNLKmuUMqNQ_VbnT+7mmOULC-rJO8hA@mail.gmail.com>
+Subject: Rotation of instance traces
+To:     linux-trace-devel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When a trace instance creation fails, tools are printing:
+Hello!
 
-	Could not enable -> osnoiser <- tracer for tracing
+I am seeing something weird with trace instances, that I don't see
+with regular non-instance traces.
 
-Print the actual (and correct) name of the tracer it fails to enable.
+If I enable some sched events and set the buffer size to something
+tiny, like 1KB, I am expecting the buffer to rotate quickly as it
+overflows, but I don't see that:
 
-Fixes: b1696371d865 ("rtla: Helper functions for rtla")
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-trace-devel@vger.kernel.org
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- tools/tracing/rtla/src/osnoise.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  watch "cat trace | head -n 1" and I see the following
 
-diff --git a/tools/tracing/rtla/src/osnoise.c b/tools/tracing/rtla/src/osnoise.c
-index 5648f9252e58..e60f1862bad0 100644
---- a/tools/tracing/rtla/src/osnoise.c
-+++ b/tools/tracing/rtla/src/osnoise.c
-@@ -810,7 +810,7 @@ struct osnoise_tool *osnoise_init_trace_tool(char *tracer)
- 
- 	retval = enable_tracer_by_name(trace->trace.inst, tracer);
- 	if (retval) {
--		err_msg("Could not enable osnoiser tracer for tracing\n");
-+		err_msg("Could not enable %s tracer for tracing\n", tracer);
- 		goto out_err;
- 	}
- 
--- 
-2.34.1
+https://paste.googleplex.com/6259651512369152?raw
 
+and if I do some heavy workloads, I still see that the top rows are
+not moving and are stuck showing the same thing. I am expecting the
+buffer to drop old events as it is being overwritten/rotation.
+
+ However if I do a tail on the trace, I do see updates. So tracing is
+in progress...
+
+I did the exact same experiment on non-instance global tracing and it
+works fine. I confirmed that 'overwrite' is set in the trace_options
+of the instance (and non-instance).
+
+This could be some trace formatting issue or another bug? Note I am
+reading the tracefs trace file directly and not using trace-cmd for
+this.
+
+Thoughts?
+
+Thanks,
+Joel
