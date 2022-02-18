@@ -2,44 +2,41 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AD56C43217
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 18 Feb 2022 11:09:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0AFBC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 18 Feb 2022 17:57:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234412AbiBRLKL convert rfc822-to-8bit (ORCPT
+        id S238531AbiBRR5j convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 18 Feb 2022 06:10:11 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35224 "EHLO
+        Fri, 18 Feb 2022 12:57:39 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234499AbiBRLKH (ORCPT
+        with ESMTP id S235479AbiBRR5i (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 18 Feb 2022 06:10:07 -0500
+        Fri, 18 Feb 2022 12:57:38 -0500
 Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 646A32B4D80
-        for <linux-trace-devel@vger.kernel.org>; Fri, 18 Feb 2022 03:09:47 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9AAFDBB3
+        for <linux-trace-devel@vger.kernel.org>; Fri, 18 Feb 2022 09:57:20 -0800 (PST)
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-86-b7UDO-nNOCmEL06BJVJruw-1; Fri, 18 Feb 2022 06:09:44 -0500
-X-MC-Unique: b7UDO-nNOCmEL06BJVJruw-1
+ us-mta-248-_ZKSJtigOeKV0yPjvx4iCg-1; Fri, 18 Feb 2022 12:57:16 -0500
+X-MC-Unique: _ZKSJtigOeKV0yPjvx4iCg-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B9A56814245;
-        Fri, 18 Feb 2022 11:09:43 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C4DA1801AC5;
+        Fri, 18 Feb 2022 17:57:14 +0000 (UTC)
 Received: from x1.com (unknown [10.22.32.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B14792B4B5;
-        Fri, 18 Feb 2022 11:09:41 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2342C2BCC1;
+        Fri, 18 Feb 2022 17:57:12 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        linux-trace-devel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 7/7] rtla/timerlat: Add -e/--event option
-Date:   Fri, 18 Feb 2022 12:09:19 +0100
-Message-Id: <5323a74c8121667a2a199eb3ce872a05c95a5157.1645182327.git.bristot@kernel.org>
-In-Reply-To: <cover.1645182327.git.bristot@kernel.org>
-References: <cover.1645182327.git.bristot@kernel.org>
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Subject: [PATCH 0/3] rtla: Some RTLA fixes for 5.17
+Date:   Fri, 18 Feb 2022 18:57:06 +0100
+Message-Id: <cover.1645206561.git.bristot@kernel.org>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Authentication-Results: relay.mimecast.com;
@@ -52,120 +49,22 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add the -e <sys:[event]> option. This option allows the timerlat top to
-enable additional events to the trace instance. Multiple -e are enabled,
-and it implies the -t option (if not already set).
+These is a set of fixes for RTLA on 5.17, the commit logs explain more
+details about them.
 
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-trace-devel@vger.kernel.org
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- tools/tracing/rtla/src/timerlat_top.c | 32 +++++++++++++++++++++++++--
- 1 file changed, 30 insertions(+), 2 deletions(-)
+Daniel Bristot de Oliveira (3):
+  rtla/hist: Make -E the short version of --entries
+  rtla/osnoise: Free params at the exit
+  rtla/osnoise: Fix error message when failing to enable trace instance
 
-diff --git a/tools/tracing/rtla/src/timerlat_top.c b/tools/tracing/rtla/src/timerlat_top.c
-index aef044832964..795dc0c673ad 100644
---- a/tools/tracing/rtla/src/timerlat_top.c
-+++ b/tools/tracing/rtla/src/timerlat_top.c
-@@ -30,6 +30,7 @@ struct timerlat_top_params {
- 	int			quiet;
- 	int			set_sched;
- 	struct sched_attr	sched_param;
-+	struct trace_events	*events;
- };
- 
- struct timerlat_top_cpu {
-@@ -267,7 +268,7 @@ static void timerlat_top_usage(char *usage)
- 	static const char *const msg[] = {
- 		"",
- 		"  usage: rtla timerlat [top] [-h] [-q] [-a us] [-d s] [-D] [-n] [-p us] [-i us] [-T us] [-s us] \\",
--		"	  [[-t[=file]] -c cpu-list] [-P priority]",
-+		"	  [[-t[=file]] [-e sys[:event]] [-c cpu-list] [-P priority]",
- 		"",
- 		"	  -h/--help: print this menu",
- 		"	  -a/--auto: set automatic trace mode, stopping the session if argument in us latency is hit",
-@@ -279,6 +280,7 @@ static void timerlat_top_usage(char *usage)
- 		"	  -d/--duration time[m|h|d]: duration of the session in seconds",
- 		"	  -D/--debug: print debug info",
- 		"	  -t/--trace[=file]: save the stopped trace to [file|timerlat_trace.txt]",
-+		"	  -e/--event <sys:event>: enable the <sys:event> in the trace instance, multiple -e are allowed",
- 		"	  -n/--nano: display data in nanoseconds",
- 		"	  -q/--quiet print only a summary at the end",
- 		"	  -P/--priority o:prio|r:prio|f:prio|d:runtime:period : set scheduling parameters",
-@@ -308,6 +310,7 @@ static struct timerlat_top_params
- *timerlat_top_parse_args(int argc, char **argv)
- {
- 	struct timerlat_top_params *params;
-+	struct trace_events *tevent;
- 	long long auto_thresh;
- 	int retval;
- 	int c;
-@@ -325,6 +328,7 @@ static struct timerlat_top_params
- 			{"cpus",		required_argument,	0, 'c'},
- 			{"debug",		no_argument,		0, 'D'},
- 			{"duration",		required_argument,	0, 'd'},
-+			{"event",		required_argument,	0, 'e'},
- 			{"help",		no_argument,		0, 'h'},
- 			{"irq",			required_argument,	0, 'i'},
- 			{"nano",		no_argument,		0, 'n'},
-@@ -340,7 +344,7 @@ static struct timerlat_top_params
- 		/* getopt_long stores the option index here. */
- 		int option_index = 0;
- 
--		c = getopt_long(argc, argv, "a:c:d:Dhi:np:P:qs:t::T:",
-+		c = getopt_long(argc, argv, "a:c:d:De:hi:np:P:qs:t::T:",
- 				 long_options, &option_index);
- 
- 		/* detect the end of the options. */
-@@ -375,6 +379,21 @@ static struct timerlat_top_params
- 			if (!params->duration)
- 				timerlat_top_usage("Invalid -D duration\n");
- 			break;
-+		case 'e':
-+			tevent = alloc_trace_event(optarg);
-+			if (!tevent) {
-+				err_msg("error alloc trace event");
-+				exit(EXIT_FAILURE);
-+			}
-+
-+			if (params->events)
-+				tevent->next = params->events;
-+			params->events = tevent;
-+
-+			/* if -e && !-t -> -t */
-+			if (!params->trace_output)
-+				params->trace_output = "timerlat_trace.txt";
-+			break;
- 		case 'h':
- 		case '?':
- 			timerlat_top_usage(NULL);
-@@ -583,6 +602,13 @@ int timerlat_top_main(int argc, char *argv[])
- 			err_msg("Failed to enable the trace instance\n");
- 			goto out_top;
- 		}
-+
-+		if (params->events) {
-+			retval = enable_trace_events(&record->trace, params->events);
-+			if (retval)
-+				goto out_top;
-+		}
-+
- 		trace_instance_start(&record->trace);
- 	}
- 
-@@ -624,6 +650,8 @@ int timerlat_top_main(int argc, char *argv[])
- 	}
- 
- out_top:
-+	destroy_trace_events(&record->trace, params->events);
-+	params->events = NULL;
- 	timerlat_free_top(top->data);
- 	osnoise_destroy_tool(record);
- 	osnoise_destroy_tool(top);
+ Documentation/tools/rtla/common_hist_options.rst |  2 +-
+ Documentation/tools/rtla/rtla-osnoise-hist.rst   |  2 +-
+ tools/tracing/rtla/src/osnoise.c                 |  2 +-
+ tools/tracing/rtla/src/osnoise_hist.c            | 10 +++++-----
+ tools/tracing/rtla/src/osnoise_top.c             |  1 +
+ tools/tracing/rtla/src/timerlat_hist.c           | 10 +++++-----
+ 6 files changed, 14 insertions(+), 13 deletions(-)
+
 -- 
 2.34.1
 
