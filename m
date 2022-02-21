@@ -2,318 +2,206 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C24DDC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Feb 2022 06:09:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21120C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Feb 2022 11:34:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236443AbiBUGJb (ORCPT
+        id S1356454AbiBULe1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 21 Feb 2022 01:09:31 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38922 "EHLO
+        Mon, 21 Feb 2022 06:34:27 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231645AbiBUGJb (ORCPT
+        with ESMTP id S1347794AbiBULe1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 21 Feb 2022 01:09:31 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE27B42
-        for <linux-trace-devel@vger.kernel.org>; Sun, 20 Feb 2022 22:09:08 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id l8so12049667pls.7
-        for <linux-trace-devel@vger.kernel.org>; Sun, 20 Feb 2022 22:09:08 -0800 (PST)
+        Mon, 21 Feb 2022 06:34:27 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3AFDF35
+        for <linux-trace-devel@vger.kernel.org>; Mon, 21 Feb 2022 03:34:04 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id bq11so7399301edb.2
+        for <linux-trace-devel@vger.kernel.org>; Mon, 21 Feb 2022 03:34:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BhM3u7Di+kOPAiiCmKJB/C7ngvXOqNE9KS961mNJq1s=;
-        b=mFETxH1LQhVlVn6B5vSRJslE0RQhbgMZVkZpFB9WQmmYnwFKc47OBx6ELocpU+GcIR
-         egXZm6DOfYf7Nn8Ggla/xJxIc1ticiZFlAhH0YAN5dOPYC6pje9may4eGg2PdMPrpl68
-         HhnlP4na2OJ41mnLbjx3+gI+MrvCo8JWm9nuzOtA3XTlFfOYTqmroU5P7KmdUgZkcK/M
-         al+Hw01UsGomi1R2LUgUjM/bvHP/D60efTjJEXhpaez2cGDJ+JsorRcY0kSuopVrmxHd
-         UkDp6LFfKTLHuc7J3wf0rngYxbf6sh9k55xk6GQz33ijK7Ue5L87ANCTxXaABiteYfgq
-         UtBg==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=o7GXRCuZlER8Ar+1oOiBrEkui4Ro+9Sg1FK7J8tsb94=;
+        b=AzpPh18q3GfFyYm3zWvfQBADp2F8u+rqDZUt/Ru9rWYNUucp3ZaWeJA42HaPIFwG5q
+         THvrMmCJG7W3XL10oTuIhBUs50RGD/yEysjJvZsReRVeyM2scVAeeYEifaO8Awz/Usov
+         TtGUe89BD1Z8CK409/Twrv8xbnnPnW9AD60T11sw9s4+AdvZ+u54KfSRrHRio57a1ysh
+         IXbBRNzr/p7KvW9uzmo7HjD+QIZxxqbywtVFJio7wqcXXywjjG9cjrbNU+PtkSQyVGi/
+         BsZI2JVE6q76GV9f2HFQvXK2QlccFZ1Kun7gHPUhhkBGUm0fp/mllrly7KMoe/BHN/i2
+         5iCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BhM3u7Di+kOPAiiCmKJB/C7ngvXOqNE9KS961mNJq1s=;
-        b=lO1vmNogHALSba/Gzc6fZTnIkg6VmmjyXAx9cMvL18VRrVzhB7WsnW7e81YoH2veV3
-         +DqpY3bRHB6kCTSyvDY33d89SRegsmyu41GTKmiA4310zZFVfb0hFW5gHSvskFX71PZT
-         TnPeIZhRJ7S9YnhyUfQekz5m+j7Q6IPKUweiReQFTM2A4pVxH874iQgQkETCjixTNHu0
-         atCEUWFRK3TKLlGd+n2Ax1ybqZ3HtO/bm5O4vbEe3NjXE2eX5Cx2Gdrf3ij5vFPMUp3w
-         XLg+7vRNYxWL2EBoCAgNq+RxEBsm6DPflza2l+E9G9ATwszmq1ZiFzSJFvgrJYWe0Jmn
-         hRdw==
-X-Gm-Message-State: AOAM531UBbfwqkuLtDwsuleVG4yEAzLG/F5vdnAy55z9kk5ANCWw7PJA
-        fdGDdJzgPrTMD1r4iu4SamOZeSNNPCkRKi51Rv8=
-X-Google-Smtp-Source: ABdhPJzbEwwwroBTHqEfZaDV/VYt7eKPHCbgdJe17AuOx3IzY3aOkUvdcGL979DLUhiGQ9mXth4p0SWKkVuUrGWHPyA=
-X-Received: by 2002:a17:90b:789:b0:1bc:293c:1445 with SMTP id
- l9-20020a17090b078900b001bc293c1445mr5541852pjz.111.1645423747502; Sun, 20
- Feb 2022 22:09:07 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=o7GXRCuZlER8Ar+1oOiBrEkui4Ro+9Sg1FK7J8tsb94=;
+        b=ko5DUuoYyt6kA0WY5nSzoU177TbBp1nm94McKesvtXYTEUUkyAjwoZGWY+PCQoQSWd
+         r4aHoaYmv4sHOJMBgIKTVvzCJJrTCbL+xj2Z8VESZ8izsw7FH9o9FPLw8uMrCW9K0XHN
+         ksMDiSjIdC1ShNpc6uVd+KZw0GVVI2yJ2Irzk656/D0GMtLEsSYoarl1dxDuedaLtTbc
+         vDspBMBDDbCyyHMjq1FN6EIlTHOLznnAypJnsft0w4OelEd3GFoSuxqMv1cXSRIT/qe+
+         FVB355LEKXpxSSlgkNT562xhuj62iMwo6YOh7/v8+HLX8ixkjVKAGSOw4hgVRYtRvSBh
+         bsUA==
+X-Gm-Message-State: AOAM530ga4N6REL/h9nCuKjyZ2Y8dO4/XsBNed1AeX4TBLWrGwGxZkyG
+        HnAvndcmsr/e3+K75oQa7JukVq/OX7o=
+X-Google-Smtp-Source: ABdhPJyngIZFrLA/YFasHKQE8CT2XE6UcSpfpfTauBxNbTLoL5lN++OkS4fi/HrG2ND3EgCxvoX6bQ==
+X-Received: by 2002:a05:6402:847:b0:412:f151:6ad1 with SMTP id b7-20020a056402084700b00412f1516ad1mr6815986edz.36.1645443242537;
+        Mon, 21 Feb 2022 03:34:02 -0800 (PST)
+Received: from [192.168.1.10] ([95.87.219.163])
+        by smtp.gmail.com with ESMTPSA id el9sm5194505ejc.168.2022.02.21.03.34.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Feb 2022 03:34:02 -0800 (PST)
+Message-ID: <dba49d0e-cac5-5945-e02e-b45a6d751032@gmail.com>
+Date:   Mon, 21 Feb 2022 13:34:00 +0200
 MIME-Version: 1.0
-References: <20220219230151.56282-1-sebastian@breakpoint.cc> <20220219230151.56282-2-sebastian@breakpoint.cc>
-In-Reply-To: <20220219230151.56282-2-sebastian@breakpoint.cc>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Mon, 21 Feb 2022 08:08:51 +0200
-Message-ID: <CAPpZLN7_xM7rp_C7KGjed-8W4nt+Yn0XiN8mpwVGLjgCboTmhQ@mail.gmail.com>
-Subject: Re: [PATCH] trace-cmd library: Add ZSTD support.
-To:     Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH v1 1/3] libtracefs: Add user_events to libtracefs sources
+Content-Language: en-US
+To:     Beau Belgrave <beaub@linux.microsoft.com>, rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+References: <20220218225058.12701-1-beaub@linux.microsoft.com>
+ <20220218225058.12701-2-beaub@linux.microsoft.com>
+From:   Yordan Karadzhov <y.karadz@gmail.com>
+In-Reply-To: <20220218225058.12701-2-beaub@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Sun, Feb 20, 2022 at 1:02 AM Sebastian Andrzej Siewior
-<sebastian@breakpoint.cc> wrote:
->
 
-Hi Sebastian,
-Thank you for contributing zstd support for trace-cmd! The zlib was
-chosen for the PoC implementation of the trace file compression
-support, as it is one of the widely available compression libraries.
-But as you have already seen, the design allows easily adding multiple
-compression algorithms. Support for a new compression library is less
-than 100 lines of code, that's why I suggest to keep the zlib support
-- even though the default will be zstd.
 
-> The zstd support is using the context aware function so there is no need
-> to for the library to allocate one (including the memory) for every
-> invocation. This requires to be used in a single threaded environment or
-> the API needs to be extended to pass the context parameter.
-
-Good point, the current design is according to zlib - that's why there
-is no context. But I like the idea to have a library specific context
-and this should be added now, before the first release.
-
->
-> In most cases the input buffer was 40KiB so it does not make sense to
-> use higher compression levels. Higher compression levels won't
-> significantly improve the compression ration given that the every 40KiB
-> block is independent. However higher compression levels will slow down
-> the compression process.
->
-
-By default, the buffer is 10 system pages - so it could be larger on
-some systems.
-
-> The upper level stores 4 bytes compressed and decompressed size. In
-> order to not save the decompressed size twice, the library won't store
-> the store in each compressed block. This shrinks the frame header a
-> little. In theory the ZSTD-magic (4 bytes) could be stripped away but
-> that is little complicated and the 4 bytes shouldn't hurt. We could even
-> enable check summing to be sure that the compressed block wasn't
-> accidentally tampered.
->
-> Signed-off-by: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-> ---
->  Makefile                                | 12 ++++
->  lib/trace-cmd/Makefile                  |  5 +-
->  lib/trace-cmd/include/trace-cmd-local.h |  4 ++
->  lib/trace-cmd/trace-compress-zstd.c     | 91 +++++++++++++++++++++++++
->  lib/trace-cmd/trace-compress.c          |  3 +
->  tracecmd/Makefile                       |  2 +-
->  6 files changed, 115 insertions(+), 2 deletions(-)
->  create mode 100644 lib/trace-cmd/trace-compress-zstd.c
->
-> diff --git a/Makefile b/Makefile
-> index f5c2cdb894f9a..109cbeb29002a 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -307,6 +307,18 @@ CFLAGS += -DHAVE_ZLIB
->  $(info    Have zlib compression support)
->  endif
->
-> +TEST_LIBZSTD = $(shell sh -c "$(PKG_CONFIG) --atleast-version 1.4.0 libzstd > /dev/null 2>&1 && echo y")
+On 19.02.22 г. 0:50 ч., Beau Belgrave wrote:
+> diff --git a/include/tracefs-local.h b/include/tracefs-local.h
+> index bf157e1..e768cba 100644
+> --- a/include/tracefs-local.h
+> +++ b/include/tracefs-local.h
+> @@ -119,4 +119,28 @@ int trace_rescan_events(struct tep_handle *tep,
+>   struct tep_event *get_tep_event(struct tep_handle *tep,
+>   				const char *system, const char *name);
+>   
+> +/* Internal interface for ftrace user events */
 > +
-> +ifeq ("$(TEST_LIBZSTD)", "y")
-> +LIBZSTD_CFLAGS = $(shell sh -c "$(PKG_CONFIG) --cflags libzstd")
-> +LIBZSTD_LDLAGS = $(shell sh -c "$(PKG_CONFIG) --libs libzstd")
-> +CFLAGS += -DHAVE_ZSTD
-> +ZSTD_INSTALLED=1
-> +$(info    Have ZSTD compression support)
-> +endif
+> +struct tracefs_user_event_group;
 > +
-> +export LIBZSTD_CFLAGS LIBZSTD_LDLAGS ZSTD_INSTALLED
-> +
->  CUNIT_INSTALLED := $(shell if (printf "$(pound)include <CUnit/Basic.h>\n void main(){CU_initialize_registry();}" | $(CC) -o /dev/null -x c - -lcunit >/dev/null 2>&1) ; then echo 1; else echo 0 ; fi)
->  export CUNIT_INSTALLED
->
-> diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
-> index 1820c67b48474..da0ad4deeb4f0 100644
-> --- a/lib/trace-cmd/Makefile
-> +++ b/lib/trace-cmd/Makefile
-> @@ -29,6 +29,9 @@ OBJS += trace-compress.o
->  ifeq ($(ZLIB_INSTALLED), 1)
->  OBJS += trace-compress-zlib.o
->  endif
-> +ifeq ($(ZSTD_INSTALLED), 1)
-> +OBJS += trace-compress-zstd.o
-> +endif
->
->  # Additional util objects
->  OBJS += trace-blk-hack.o
-> @@ -48,7 +51,7 @@ $(DEPS): | $(bdir)
->  $(LIBTRACECMD_STATIC): $(OBJS)
->         $(Q)$(call do_build_static_lib)
->
-> -LIBS = $(LIBTRACEEVENT_LDLAGS) $(LIBTRACEFS_LDLAGS) -lpthread
-> +LIBS = $(LIBTRACEEVENT_LDLAGS) $(LIBTRACEFS_LDLAGS) $(LIBZSTD_LDLAGS) -lpthread
->
->  ifeq ($(ZLIB_INSTALLED), 1)
->  LIBS += -lz
-> diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
-> index 48f179d6f524a..8601a15f86f22 100644
-> --- a/lib/trace-cmd/include/trace-cmd-local.h
-> +++ b/lib/trace-cmd/include/trace-cmd-local.h
-> @@ -30,6 +30,10 @@ void tracecmd_info(const char *fmt, ...);
->  int tracecmd_zlib_init(void);
->  #endif
->
-> +#ifdef HAVE_ZLIB
-
-I think you mean HAVE_ZSTD here.
-
-> +int tracecmd_zstd_init(void);
-> +#endif
-> +
->  struct data_file_write {
->         unsigned long long      file_size;
->         unsigned long long      write_size;
-> diff --git a/lib/trace-cmd/trace-compress-zstd.c b/lib/trace-cmd/trace-compress-zstd.c
-> new file mode 100644
-> index 0000000000000..fc5e350f32509
-> --- /dev/null
-> +++ b/lib/trace-cmd/trace-compress-zstd.c
-> @@ -0,0 +1,91 @@
-> +// SPDX-License-Identifier: LGPL-2.1
-> +/*
-> + * Copyright (C) 2022, Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-> + *
-> + */
-> +#include <stdlib.h>
-> +#include <zstd.h>
-> +#include <errno.h>
-> +
-> +#include "trace-cmd-private.h"
-> +
-> +#define __ZSTD_NAME            "zstd"
-> +#define __ZSTD_WEIGTH          5
-> +
-> +static ZSTD_CCtx *ctx_c;
-> +static ZSTD_DCtx *ctx_d;
-> +
-> +static int zstd_compress(const char *in, unsigned int in_bytes,
-> +                        char *out, unsigned int *out_bytes)
+> +struct tracefs_user_event
 > +{
-> +       size_t ret;
+> +	int write_index;
+> +	int status_index;
+> +	int iovecs;
+> +	int rels;
+> +	int len;
+> +	struct tracefs_user_event_group *group;
+> +	struct tracefs_user_event *next;
+> +};
 > +
-> +       ret = ZSTD_compress2(ctx_c, out, *out_bytes, in, in_bytes);
-> +       if (ZSTD_isError(ret))
-> +               return -1;
-> +       *out_bytes = ret;
-> +       return 0;
-> +}
-> +
-> +static int zstd_decompress(const char *in, unsigned int in_bytes,
-> +                          char *out, unsigned int *out_bytes)
+> +struct tracefs_user_event_group
 > +{
-> +       size_t ret;
+> +	int fd;
+> +	int mmap_len;
+> +	char *mmap;
+> +	pthread_mutex_t lock;
+> +	struct tracefs_user_event *events;
+> +};
 > +
-> +       ret = ZSTD_decompressDCtx(ctx_d, out, *out_bytes, in, in_bytes);
-> +       if (ZSTD_isError(ret)) {
-> +               errno = -EINVAL;
-> +               return -1;
-> +       }
-> +       *out_bytes = ret;
-> +       errno = 0;
-> +       return 0;
-> +}
+>   #endif /* _TRACE_FS_LOCAL_H */
+> diff --git a/include/tracefs.h b/include/tracefs.h
+> index 1848ad0..7871dfe 100644
+> --- a/include/tracefs.h
+> +++ b/include/tracefs.h
+> @@ -571,4 +571,64 @@ struct tracefs_synth *tracefs_sql(struct tep_handle *tep, const char *name,
+>   struct tep_event *
+>   tracefs_synth_get_event(struct tep_handle *tep, struct tracefs_synth *synth);
+>   
+> +/* User events */
+> +enum tracefs_uevent_type {
+> +	TRACEFS_UEVENT_END,
+> +	TRACEFS_UEVENT_u8,
+> +	TRACEFS_UEVENT_s8,
+> +	TRACEFS_UEVENT_u16,
+> +	TRACEFS_UEVENT_s16,
+> +	TRACEFS_UEVENT_u32,
+> +	TRACEFS_UEVENT_s32,
+> +	TRACEFS_UEVENT_u64,
+> +	TRACEFS_UEVENT_s64,
+> +	TRACEFS_UEVENT_string,
+> +	TRACEFS_UEVENT_struct,
+> +	TRACEFS_UEVENT_varray,
+> +	TRACEFS_UEVENT_vstring,
+> +};
 > +
-> +static unsigned int zstd_compress_bound(unsigned int in_bytes)
-> +{
-> +       return ZSTD_compressBound(in_bytes);
-> +}
+> +enum tracefs_uevent_flags {
+> +	/* None */
+> +	TRACEFS_UEVENT_FLAG_NONE = 0,
 > +
-> +static bool zstd_is_supported(const char *name, const char *version)
-> +{
-> +       if (!name)
-> +               return false;
-> +       if (strcmp(name, __ZSTD_NAME))
-> +               return false;
+> +	/* When BPF is attached, use iterator/no copy */
+> +	TRACEFS_UEVENT_FLAG_bpf_iter = 1 << 0,
+> +};
 > +
-> +       return true;
-> +}
+> +struct tracefs_uevent_item {
+> +	/* Type of item */
+> +	enum tracefs_uevent_type type;
 > +
-> +int tracecmd_zstd_init(void)
-> +{
-> +       int ret = 0;
-> +       size_t r;
+> +	/* Length of data, optional during register */
+> +	int len;
 > +
-> +       ctx_c = ZSTD_createCCtx();
-> +       ctx_d = ZSTD_createDCtx();
-> +       if (!ctx_c || !ctx_d)
-> +               goto err;
+> +	union {
+> +		/* Used during write */
+> +		const void *data;
 > +
-> +       r = ZSTD_CCtx_setParameter(ctx_c, ZSTD_c_contentSizeFlag, 0);
-> +       if (ZSTD_isError(r))
-> +               goto err;
+> +		/* Used during register */
+> +		const char *name;
+> +	};
+> +};
 > +
-> +       ret = tracecmd_compress_proto_register(__ZSTD_NAME,
-> +                                              ZSTD_versionString(),
-> +                                              __ZSTD_WEIGTH,
-> +                                              zstd_compress,
-> +                                              zstd_decompress,
-> +                                              zstd_compress_bound,
-> +                                              zstd_is_supported);
+> +struct tracefs_user_event;
+> +struct tracefs_user_event_group;
+> +
 
-I think tracecmd_compress_proto_register() should be extend  with two new hooks:
-    void *(*new_context)(void),
-    void (*free_context)(void *),
-and ctx_c,  ctx_d should be allocated and freed there. Currently, that
-logic in trace-cmd is in a single thread. That may change in the
-future, and then the current design will be a limitation.
+We've been trying to follow certain naming convention for the APIs and to provide similar usage patterns for all types 
+of trace events that are supported by the library so far (dynamic, synthetic and histograms). If 'XXX' is the type of 
+the event ('user_event' in your case), the pattern looks like this:
 
-> +       if (!ret)
-> +               return 0;
-> +err:
-> +       ZSTD_freeCCtx(ctx_c);
-> +       ZSTD_freeDCtx(ctx_d);
-> +       ctx_c = NULL;
-> +       ctx_d = NULL;
-> +       if (ret < 0)
-> +               return ret;
-> +       return -1;
-> +}
-> diff --git a/lib/trace-cmd/trace-compress.c b/lib/trace-cmd/trace-compress.c
-> index 210d58b602577..a14155a321f45 100644
-> --- a/lib/trace-cmd/trace-compress.c
-> +++ b/lib/trace-cmd/trace-compress.c
-> @@ -390,6 +390,9 @@ void tracecmd_compress_init(void)
->  #ifdef HAVE_ZLIB
->         tracecmd_zlib_init();
->  #endif
-> +#ifdef HAVE_ZSTD
-> +       tracecmd_zstd_init();
-> +#endif
->  }
->
->  static struct compress_proto *compress_proto_select(void)
-> diff --git a/tracecmd/Makefile b/tracecmd/Makefile
-> index 56742f0afa2f8..355f04723ad7c 100644
-> --- a/tracecmd/Makefile
-> +++ b/tracecmd/Makefile
-> @@ -49,7 +49,7 @@ all_objs := $(sort $(ALL_OBJS))
->  all_deps := $(all_objs:$(bdir)/%.o=$(bdir)/.%.d)
->
->  CONFIG_INCLUDES =
-> -CONFIG_LIBS    = -lrt -lpthread $(TRACE_LIBS)
-> +CONFIG_LIBS    = -lrt -lpthread $(TRACE_LIBS) $(LIBZSTD_LDLAGS)
->  CONFIG_FLAGS   =
->
->  ifeq ($(ZLIB_INSTALLED), 1)
-> --
-> 2.35.1
->
+tracefs_XXX_alloc() - this constructor just allocates memory and initializes the descriptor object without modifying 
+anything on the system. We allow for multiple constructor function, in the case when your objects has to many possible 
+configurations and it is hard to do everything in a single API. Looking into your implementation, such constructor can 
+do half of the work done in 'tracefs_user_event_group_create()'
+
+int tracefs_XXX_create(struct tracefs_XXX *evt) - This is the API that actually adds your event on the system. Note that 
+it takes just one argument that is the object itself. Again, looking into your implementation, this will combine the 
+other half of tracefs_user_event_group_create() and tracefs_user_event_register().
+
+int tracefs_XXX_destroy(struct tracefs_XXX *evt) This API removes your event from the system. The first argument is 
+again the object. If needed, here you can use a second argument that is 'bool force'.
+
+int tracefs_XXX_free(struct tracefs_XXX *evt) - just to free the memory
 
 
--- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+> +struct tracefs_user_event_group *tracefs_user_event_group_create(void);
+> +
+> +void tracefs_user_event_group_close(struct tracefs_user_event_group *group);
+> +
+> +int tracefs_user_event_delete(const char *name);
+> +
+> +struct tracefs_user_event *
+> +tracefs_user_event_register(struct tracefs_user_event_group *group,
+> +			    const char *name, enum tracefs_uevent_flags flags,
+> +			    struct tracefs_uevent_item *items);
+> +
+> +bool tracefs_user_event_test(struct tracefs_user_event *event);
+
+And maybe "test" is redundant. You can do the check in tracefs_XXX_create() and return an error if it fails.
+
+> +
+> +int tracefs_user_event_write(struct tracefs_user_event *event,
+> +			     struct tracefs_uevent_item *items);
+
+The "write" is OK.
+
+Maybe we can change 'tracefs_user_event' to 'tracefs_usrevent' since we already use 'tracefs_dynevent' for dynamic events.
+
+What do you think?
+
+Thanks!
+Yordan
+
