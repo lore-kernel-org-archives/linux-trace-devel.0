@@ -2,217 +2,265 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 304C5C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Feb 2022 13:21:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD028C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Feb 2022 13:35:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358968AbiBUNVp (ORCPT
+        id S1359135AbiBUNfl convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 21 Feb 2022 08:21:45 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:55482 "EHLO
+        Mon, 21 Feb 2022 08:35:41 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358867AbiBUNVp (ORCPT
+        with ESMTP id S233419AbiBUNfk (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 21 Feb 2022 08:21:45 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFAFB1EEDA
-        for <linux-trace-devel@vger.kernel.org>; Mon, 21 Feb 2022 05:21:21 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id i11so27668814eda.9
-        for <linux-trace-devel@vger.kernel.org>; Mon, 21 Feb 2022 05:21:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UFnv81s5520jsesZdmYu/nraB0uFtJSNt/KUkycEDjc=;
-        b=RKrXfftHHrH+iyc6W/ta/4UlYmENB2nRSldc9vT5IvY1cb41Aod47SolGwyw2QYGwR
-         g13ieVFgtKWlIA5rdtTBz/4Lq9iLcQra8zmUhHWL3Zjh/+jWcyYN2sbSMMvMxKFTQFJ2
-         e4KDjzq35Z/Xpx08NJYpKpMERst9IP86KndFeq1XOHBUnOMeNDc4vhbN3w0OvNEyRnN+
-         87yk/b9ekBDWG8nrWNox7HnQEmXnHIHI4Lb0kMJ8Ti6FSM0gVdwZaNvkH70pMsHFhGKI
-         vBm+FnOnr/uDILsceUdlvX3Cc4tkPP9sfDb79j0YSgoABFXSf3KsveEHEb3Z3Ik/5yCA
-         NhZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UFnv81s5520jsesZdmYu/nraB0uFtJSNt/KUkycEDjc=;
-        b=nT9Pl2eqiNqJntoTMXjGdJiE7fZJ9pJYIP2Bh0s7NETWS18nIA4q3yuinkXDCrrgaC
-         ihjrnk9i31aRHPGs8yS+dQ4fbPAYTghIem9HgG7aNeCj11Z5ElOPelh9ySiNJOlTreWX
-         LWVPBuHP6WYIApOhEGqkcTMWik+XtvMdT+c79W9aP9Yu0ZnowNcPpoVBFoy6UoCgEUNY
-         iv78F4X5Q3v8e2RSdNjEgyi7w+M6noMh9OvQ8/uNiFq/h0dvHAB1Pe5DeIzzuHPF2N10
-         v7enpeXVPBr9zftj/jjKAoIuysi2a76I2MuhjPNc9/rYCFAUUUcEq6bUQ5fB4A/zo6yG
-         Gcng==
-X-Gm-Message-State: AOAM533pD3V43UNyZlmBr6C/5/VYrSgAJAuTFJ4fbYSMOZVZfp0m8xYQ
-        aUFK6RsqRc62BgmHLKz+T4VBQYvw8GI=
-X-Google-Smtp-Source: ABdhPJxX61GJCQR9K1p5aF3wZ+UNj/1R/3TLwcWDFQi8S2DqV7FyYRN2SHluTjr04YJdpZ1NkSNRPQ==
-X-Received: by 2002:a50:9dc3:0:b0:3e5:4093:7b66 with SMTP id l3-20020a509dc3000000b003e540937b66mr21330265edk.174.1645449679407;
-        Mon, 21 Feb 2022 05:21:19 -0800 (PST)
-Received: from crow.. ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id j23sm5145232eja.204.2022.02.21.05.21.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Feb 2022 05:21:19 -0800 (PST)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH] trace-cruncher: Fix default function arguments in utils
-Date:   Mon, 21 Feb 2022 15:21:05 +0200
-Message-Id: <20220221132105.929989-1-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Mon, 21 Feb 2022 08:35:40 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E083DF29
+        for <linux-trace-devel@vger.kernel.org>; Mon, 21 Feb 2022 05:35:16 -0800 (PST)
+Received: from bigeasy by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <sebastian@breakpoint.cc>)
+        id 1nM8qO-0000tF-N8; Mon, 21 Feb 2022 14:35:12 +0100
+Date:   Mon, 21 Feb 2022 14:35:12 +0100
+From:   Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH v2] trace-compress: Add ZSTD support.
+Message-ID: <YhOVEG2AjVPJEw0q@breakpoint.cc>
+References: <20220219230151.56282-1-sebastian@breakpoint.cc>
+ <20220219230151.56282-2-sebastian@breakpoint.cc>
+ <CAPpZLN7_xM7rp_C7KGjed-8W4nt+Yn0XiN8mpwVGLjgCboTmhQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CAPpZLN7_xM7rp_C7KGjed-8W4nt+Yn0XiN8mpwVGLjgCboTmhQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In Python the argument defaults are set when the function is defined.
-Using mutable types as default values will set the desired value only
-the first time the function is called.
+The zstd support is using the context aware function so there is no need
+to for the library to allocate one (including the memory) for every
+invocation. This requires to be used in a single threaded environment or
+the API needs to be extended to pass the context parameter.
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+In most cases the input buffer was 40KiB so it does not make sense to
+use higher compression levels. Higher compression levels won't
+significantly improve the compression ration given that the every 40KiB
+block is independent. However higher compression levels will slow down
+the compression process.
+
+The upper level stores 4 bytes compressed and decompressed size. In
+order to not save the decompressed size twice, the library won't store
+the store in each compressed block. This shrinks the frame header a
+little. In theory the ZSTD-magic (4 bytes) could be stripped away but
+that is little complicated and the 4 bytes shouldn't hurt. We could even
+enable check summing to be sure that the compressed block wasn't
+accidentally tampered.
+
+Signed-off-by: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
 ---
- tracecruncher/ft_utils.py | 50 +++++++++++++++++++++++++++++----------
- 1 file changed, 37 insertions(+), 13 deletions(-)
+v1…v2:
+  - Use HAVE_ZSTD around tracecmd_zstd_init().
+  - Make tracecmd_zstd_init() static inline so we can avoid the ifdef on
+    the user's side.
 
-diff --git a/tracecruncher/ft_utils.py b/tracecruncher/ft_utils.py
-index b27f38a..f0bed95 100644
---- a/tracecruncher/ft_utils.py
-+++ b/tracecruncher/ft_utils.py
-@@ -115,21 +115,24 @@ class tc_kprobe(_kprobe_base):
-         self.register()
+ Makefile                                | 12 ++++
+ lib/trace-cmd/Makefile                  |  5 +-
+ lib/trace-cmd/include/trace-cmd-local.h |  9 +++
+ lib/trace-cmd/trace-compress-zstd.c     | 91 +++++++++++++++++++++++++
+ lib/trace-cmd/trace-compress.c          |  1 +
+ tracecmd/Makefile                       |  2 +-
+ 6 files changed, 118 insertions(+), 2 deletions(-)
+ create mode 100644 lib/trace-cmd/trace-compress-zstd.c
+
+diff --git a/Makefile b/Makefile
+index f5c2cdb894f9a..109cbeb29002a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -307,6 +307,18 @@ CFLAGS += -DHAVE_ZLIB
+ $(info    Have zlib compression support)
+ endif
  
- 
--def kprobe_add_raw_field(name, probe, fields={}):
-+def kprobe_add_raw_field(name, probe, fields=None):
-     """ Add a raw definition of a data field to the probe descriptor.
-     """
-+    if fields is None:
-+        fields = {}
++TEST_LIBZSTD = $(shell sh -c "$(PKG_CONFIG) --atleast-version 1.4.0 libzstd > /dev/null 2>&1 && echo y")
 +
-     fields[str(name)] = str(probe)
-     return fields
- 
- 
--def kprobe_add_arg(name, param_id, param_type, fields={}):
-+def kprobe_add_arg(name, param_id, param_type, fields=None):
-     """ Add a function parameter data field to the probe descriptor.
-     """
-     probe = '$arg{0}:{1}'.format(param_id, param_type)
-     return kprobe_add_raw_field(name=name, probe=probe, fields=fields)
- 
- 
--def kprobe_add_ptr_arg(name, param_id, param_type, offset=0, fields={}):
-+def kprobe_add_ptr_arg(name, param_id, param_type, offset=0, fields=None):
-     """ Add a pointer function parameter data field to the probe descriptor.
-     """
-     probe = '+{0}($arg{1}):{2}'.format(offset, param_id, param_type)
-@@ -137,7 +140,7 @@ def kprobe_add_ptr_arg(name, param_id, param_type, offset=0, fields={}):
- 
- 
- def kprobe_add_array_arg(name, param_id, param_type, offset=0,
--                         size=-1, fields={}):
-+                         size=-1, fields=None):
-     """ Add an array function parameter data field to the probe descriptor.
-     """
-     if size < 0:
-@@ -151,7 +154,7 @@ def kprobe_add_array_arg(name, param_id, param_type, offset=0,
-         return kprobe_add_raw_field(name=field_name, probe=probe, fields=fields)
- 
- 
--def kprobe_add_string_arg(name, param_id, offset=0, usr_space=False, fields={}):
-+def kprobe_add_string_arg(name, param_id, offset=0, usr_space=False, fields=None):
-     """ Add a string function parameter data field to the probe descriptor.
-     """
-     p_type = 'ustring' if usr_space else 'string'
-@@ -163,7 +166,7 @@ def kprobe_add_string_arg(name, param_id, offset=0, usr_space=False, fields={}):
- 
- 
- def kprobe_add_string_array_arg(name, param_id, offset=0, usr_space=False,
--                                size=-1, fields={}):
-+                                size=-1, fields=None):
-     """ Add a string array function parameter data field to the probe descriptor.
-     """
-     p_type = 'ustring' if usr_space else 'string'
-@@ -216,14 +219,14 @@ class tc_eprobe(_dynevent):
-         self.register()
- 
- 
--def eprobe_add_ptr_field(name, target_field, field_type, offset=0, fields={}):
-+def eprobe_add_ptr_field(name, target_field, field_type, offset=0, fields=None):
-     """ Add a pointer data field to the eprobe descriptor.
-     """
-     probe = '+{0}(${1}):{2}'.format(offset, target_field, field_type)
-     return kprobe_add_raw_field(name=name, probe=probe, fields=fields)
- 
- 
--def eprobe_add_string_field(name, target_field, offset=0, usr_space=False, fields={}):
-+def eprobe_add_string_field(name, target_field, offset=0, usr_space=False, fields=None):
-     """ Add a string data field to the eprobe descriptor.
-     """
-     f_type = 'ustring' if usr_space else 'string'
-@@ -235,8 +238,8 @@ def eprobe_add_string_field(name, target_field, offset=0, usr_space=False, field
- 
- 
- class tc_hist:
--    def __init__(self, name, event, axes, weights=[],
--                 sort_keys=[], sort_dir={}, find=False):
-+    def __init__(self, name, event, axes, weights,
-+                 sort_keys, sort_dir, find=False):
-         """ Constructor.
-         """
-         self.name = name
-@@ -330,9 +333,18 @@ class tc_hist:
-         return self.data()
- 
- 
--def create_hist(name, event, axes, weights=[], sort_keys=[], sort_dir={}):
-+def create_hist(name, event, axes, weights=None, sort_keys=None, sort_dir=None):
-     """ Create new kernel histogram.
-     """
-+    if weights is None:
-+        weights = []
++ifeq ("$(TEST_LIBZSTD)", "y")
++LIBZSTD_CFLAGS = $(shell sh -c "$(PKG_CONFIG) --cflags libzstd")
++LIBZSTD_LDLAGS = $(shell sh -c "$(PKG_CONFIG) --libs libzstd")
++CFLAGS += -DHAVE_ZSTD
++ZSTD_INSTALLED=1
++$(info    Have ZSTD compression support)
++endif
 +
-+    if sort_keys is None:
-+        sort_keys = []
++export LIBZSTD_CFLAGS LIBZSTD_LDLAGS ZSTD_INSTALLED
 +
-+    if sort_dir is None:
-+        sort_dir = {}
-+
-     try:
-         hist = tc_hist(name=name, event=event, axes=axes, weights=weights,
-                        sort_keys=sort_keys, sort_dir=sort_dir, find=False)
-@@ -343,9 +355,18 @@ def create_hist(name, event, axes, weights=[], sort_keys=[], sort_dir={}):
-     return hist
+ CUNIT_INSTALLED := $(shell if (printf "$(pound)include <CUnit/Basic.h>\n void main(){CU_initialize_registry();}" | $(CC) -o /dev/null -x c - -lcunit >/dev/null 2>&1) ; then echo 1; else echo 0 ; fi)
+ export CUNIT_INSTALLED
  
+diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
+index 1820c67b48474..da0ad4deeb4f0 100644
+--- a/lib/trace-cmd/Makefile
++++ b/lib/trace-cmd/Makefile
+@@ -29,6 +29,9 @@ OBJS += trace-compress.o
+ ifeq ($(ZLIB_INSTALLED), 1)
+ OBJS += trace-compress-zlib.o
+ endif
++ifeq ($(ZSTD_INSTALLED), 1)
++OBJS += trace-compress-zstd.o
++endif
  
--def find_hist(name, event, axes, weights=[], sort_keys=[], sort_dir={}):
-+def find_hist(name, event, axes, weights=None, sort_keys=None, sort_dir=None):
-     """ Find existing kernel histogram.
-     """
-+    if weights is None:
-+        weights = []
-+
-+    if sort_keys is None:
-+        sort_keys = []
-+
-+    if sort_dir is None:
-+        sort_dir = {}
-+
-     try:
-         hist = tc_hist(name=name, event=event, axes=axes, weights=weights,
-                        sort_keys=sort_keys, sort_dir=sort_dir, find=True)
-@@ -432,10 +453,13 @@ class tc_synth(tc_event):
-         return self.synth.repr(event=True, hist_start=True, hist_end=True)
+ # Additional util objects
+ OBJS += trace-blk-hack.o
+@@ -48,7 +51,7 @@ $(DEPS): | $(bdir)
+ $(LIBTRACECMD_STATIC): $(OBJS)
+ 	$(Q)$(call do_build_static_lib)
  
+-LIBS = $(LIBTRACEEVENT_LDLAGS) $(LIBTRACEFS_LDLAGS) -lpthread
++LIBS = $(LIBTRACEEVENT_LDLAGS) $(LIBTRACEFS_LDLAGS) $(LIBZSTD_LDLAGS) -lpthread
  
--def synth_event_item(event, match, fields=[]):
-+def synth_event_item(event, match, fields=None):
-     """ Create descriptor for an event item (component) of a synthetic event.
-         To be used as a start/end event.
-     """
-+    if fields is None:
-+        fields = []
+ ifeq ($(ZLIB_INSTALLED), 1)
+ LIBS += -lz
+diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
+index 48f179d6f524a..a16e488a6bed1 100644
+--- a/lib/trace-cmd/include/trace-cmd-local.h
++++ b/lib/trace-cmd/include/trace-cmd-local.h
+@@ -30,6 +30,15 @@ void tracecmd_info(const char *fmt, ...);
+ int tracecmd_zlib_init(void);
+ #endif
+ 
++#ifdef HAVE_ZSTD
++int tracecmd_zstd_init(void);
++#else
++static inline int tracecmd_zstd_init(void)
++{
++	return 0;
++}
++#endif
 +
-     sub_evt = {}
-     sub_evt['event'] = event
-     sub_evt['fields'] = fields
+ struct data_file_write {
+ 	unsigned long long	file_size;
+ 	unsigned long long	write_size;
+diff --git a/lib/trace-cmd/trace-compress-zstd.c b/lib/trace-cmd/trace-compress-zstd.c
+new file mode 100644
+index 0000000000000..fc5e350f32509
+--- /dev/null
++++ b/lib/trace-cmd/trace-compress-zstd.c
+@@ -0,0 +1,91 @@
++// SPDX-License-Identifier: LGPL-2.1
++/*
++ * Copyright (C) 2022, Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
++ *
++ */
++#include <stdlib.h>
++#include <zstd.h>
++#include <errno.h>
++
++#include "trace-cmd-private.h"
++
++#define __ZSTD_NAME		"zstd"
++#define __ZSTD_WEIGTH		5
++
++static ZSTD_CCtx *ctx_c;
++static ZSTD_DCtx *ctx_d;
++
++static int zstd_compress(const char *in, unsigned int in_bytes,
++			 char *out, unsigned int *out_bytes)
++{
++	size_t ret;
++
++	ret = ZSTD_compress2(ctx_c, out, *out_bytes, in, in_bytes);
++	if (ZSTD_isError(ret))
++		return -1;
++	*out_bytes = ret;
++	return 0;
++}
++
++static int zstd_decompress(const char *in, unsigned int in_bytes,
++			   char *out, unsigned int *out_bytes)
++{
++	size_t ret;
++
++	ret = ZSTD_decompressDCtx(ctx_d, out, *out_bytes, in, in_bytes);
++	if (ZSTD_isError(ret)) {
++		errno = -EINVAL;
++		return -1;
++	}
++	*out_bytes = ret;
++	errno = 0;
++	return 0;
++}
++
++static unsigned int zstd_compress_bound(unsigned int in_bytes)
++{
++	return ZSTD_compressBound(in_bytes);
++}
++
++static bool zstd_is_supported(const char *name, const char *version)
++{
++	if (!name)
++		return false;
++	if (strcmp(name, __ZSTD_NAME))
++		return false;
++
++	return true;
++}
++
++int tracecmd_zstd_init(void)
++{
++	int ret = 0;
++	size_t r;
++
++	ctx_c = ZSTD_createCCtx();
++	ctx_d = ZSTD_createDCtx();
++	if (!ctx_c || !ctx_d)
++		goto err;
++
++	r = ZSTD_CCtx_setParameter(ctx_c, ZSTD_c_contentSizeFlag, 0);
++	if (ZSTD_isError(r))
++		goto err;
++
++	ret = tracecmd_compress_proto_register(__ZSTD_NAME,
++					       ZSTD_versionString(),
++					       __ZSTD_WEIGTH,
++					       zstd_compress,
++					       zstd_decompress,
++					       zstd_compress_bound,
++					       zstd_is_supported);
++	if (!ret)
++		return 0;
++err:
++	ZSTD_freeCCtx(ctx_c);
++	ZSTD_freeDCtx(ctx_d);
++	ctx_c = NULL;
++	ctx_d = NULL;
++	if (ret < 0)
++		return ret;
++	return -1;
++}
+diff --git a/lib/trace-cmd/trace-compress.c b/lib/trace-cmd/trace-compress.c
+index 210d58b602577..4fca7019ee048 100644
+--- a/lib/trace-cmd/trace-compress.c
++++ b/lib/trace-cmd/trace-compress.c
+@@ -390,6 +390,7 @@ void tracecmd_compress_init(void)
+ #ifdef HAVE_ZLIB
+ 	tracecmd_zlib_init();
+ #endif
++	tracecmd_zstd_init();
+ }
+ 
+ static struct compress_proto *compress_proto_select(void)
+diff --git a/tracecmd/Makefile b/tracecmd/Makefile
+index 56742f0afa2f8..355f04723ad7c 100644
+--- a/tracecmd/Makefile
++++ b/tracecmd/Makefile
+@@ -49,7 +49,7 @@ all_objs := $(sort $(ALL_OBJS))
+ all_deps := $(all_objs:$(bdir)/%.o=$(bdir)/.%.d)
+ 
+ CONFIG_INCLUDES =
+-CONFIG_LIBS	= -lrt -lpthread $(TRACE_LIBS)
++CONFIG_LIBS	= -lrt -lpthread $(TRACE_LIBS) $(LIBZSTD_LDLAGS)
+ CONFIG_FLAGS	=
+ 
+ ifeq ($(ZLIB_INSTALLED), 1)
 -- 
-2.32.0
+2.35.1
 
