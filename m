@@ -2,67 +2,111 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0BC9C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Feb 2022 20:46:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E555C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Feb 2022 22:17:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234001AbiBUUq4 (ORCPT
+        id S235290AbiBUWRk convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 21 Feb 2022 15:46:56 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58382 "EHLO
+        Mon, 21 Feb 2022 17:17:40 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:39370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230412AbiBUUq4 (ORCPT
+        with ESMTP id S233701AbiBUWRj (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 21 Feb 2022 15:46:56 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EEF4237D2
-        for <linux-trace-devel@vger.kernel.org>; Mon, 21 Feb 2022 12:46:32 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Mon, 21 Feb 2022 17:17:39 -0500
+Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [207.211.30.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BCF1922BE8
+        for <linux-trace-devel@vger.kernel.org>; Mon, 21 Feb 2022 14:17:13 -0800 (PST)
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-375-cZWv-X8dPMKKcsDI4bGfIw-1; Mon, 21 Feb 2022 17:17:09 -0500
+X-MC-Unique: cZWv-X8dPMKKcsDI4bGfIw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0E898B81785
-        for <linux-trace-devel@vger.kernel.org>; Mon, 21 Feb 2022 20:46:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5198EC340E9
-        for <linux-trace-devel@vger.kernel.org>; Mon, 21 Feb 2022 20:46:29 +0000 (UTC)
-Date:   Mon, 21 Feb 2022 15:46:28 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] libtraceevent: Account for events with newlines in print
- fmt
-Message-ID: <20220221154628.525d7513@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 561D01091DA1;
+        Mon, 21 Feb 2022 22:17:08 +0000 (UTC)
+Received: from x1.com (unknown [10.22.16.159])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 75C7A5DB96;
+        Mon, 21 Feb 2022 22:17:03 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Clark Williams <williams@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Subject: [PATCH V2 00/11] rtla: Improved tracing support
+Date:   Mon, 21 Feb 2022 23:16:45 +0100
+Message-Id: <cover.1645481500.git.bristot@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+This set introduces some tracing facilities to rtla tools:
 
-Some events in the kernel have a newline in the print fmt. Even though
-that really is a bug in the kernel, libtraceevent should also be able
-to handle it when it does happen.
+- Add the possibility to change the tracing_thresh to osnoise,
+allowing a fine tune of OS noise detection.
 
-Link: http://lore.kernel.org/linux-trace-devel/20220221151828.2fd4d104@rorschach.local.home
+- Add the auto-tracing feature (-a threshold us), which aims
+helping the first approach to a problem by setting common
+tracing features with a single parameter.
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- src/event-parse.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+- Add -e/--event option, allowing osnoise and timerlat to
+enable additional trace events via (possible multiple)
+-e sys:event options.
 
-diff --git a/src/event-parse.c b/src/event-parse.c
-index 2b346a5..7a84789 100644
---- a/src/event-parse.c
-+++ b/src/event-parse.c
-@@ -1248,7 +1248,7 @@ static enum tep_event_type __read_token(char **tok)
- 			if (ch == '\\' && last_ch == '\\')
- 				last_ch = 0;
- 			/* Break out if the file is corrupted and giving non print chars */
--		} while ((ch != quote_ch && isprint(ch)) || last_ch == '\\');
-+		} while ((ch != quote_ch && isprint(ch)) || last_ch == '\\' || ch == '\n');
- 		/* remove the last quote */
- 		i--;
- 
+- Add the --filter option to filter the previous -e event.
+
+- Add the --trigger option to allow the usage of tracing
+trigger of the previously set -e event. If the trigger
+is hist: one, rtla automatically saves the hist file
+associated with the -e event.
+
+Depends on "rtla: Some RTLA fixes for 5.17":
+   https://lore.kernel.org/lkml/cover.1645206561.git.bristot@kernel.org/
+
+Changes from V1:
+ - Add -e to osnoise/timerlat hist
+ - Add --trigger
+ - Add --filter
+ - Add support to save hist file
+ - Function name refactoring
+
+Daniel Bristot de Oliveira (11):
+  rtla/osnoise: Add support to adjust the tracing_thresh
+  rtla/osnoise: Add an option to set the threshold
+  rtla/osnoise: Add the automatic trace option
+  rtla/timerlat: Add the automatic trace option
+  rtla/trace: Add trace events helpers
+  rtla: Add -e/--event support
+  rtla/trace: Add trace event trigger helpers
+  rtla: Add --trigger support
+  rtla/trace: Add trace event filter helpers
+  rtla: Add --filter support
+  rtla/trace: Save event histogram output to a file
+
+ Documentation/tools/rtla/common_options.rst   |  19 +
+ .../tools/rtla/common_osnoise_options.rst     |  10 +
+ .../tools/rtla/common_timerlat_options.rst    |   7 +
+ tools/tracing/rtla/src/osnoise.c              |  83 +++++
+ tools/tracing/rtla/src/osnoise.h              |   8 +
+ tools/tracing/rtla/src/osnoise_hist.c         |  87 ++++-
+ tools/tracing/rtla/src/osnoise_top.c          |  83 ++++-
+ tools/tracing/rtla/src/timerlat_hist.c        |  78 ++++-
+ tools/tracing/rtla/src/timerlat_top.c         |  73 +++-
+ tools/tracing/rtla/src/trace.c                | 326 ++++++++++++++++++
+ tools/tracing/rtla/src/trace.h                |  22 ++
+ 11 files changed, 782 insertions(+), 14 deletions(-)
+
 -- 
 2.34.1
 
