@@ -2,160 +2,68 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF9CBC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Feb 2022 22:18:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D223AC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Feb 2022 23:13:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235524AbiBUWS3 convert rfc822-to-8bit (ORCPT
+        id S234806AbiBUXNX (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 21 Feb 2022 17:18:29 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:40598 "EHLO
+        Mon, 21 Feb 2022 18:13:23 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235582AbiBUWSY (ORCPT
+        with ESMTP id S230271AbiBUXNW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 21 Feb 2022 17:18:24 -0500
-Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [207.211.30.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8F28A23BD4
-        for <linux-trace-devel@vger.kernel.org>; Mon, 21 Feb 2022 14:17:59 -0800 (PST)
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-99-m9qPKYq2OQeeZSWgQGeZTw-1; Mon, 21 Feb 2022 17:17:55 -0500
-X-MC-Unique: m9qPKYq2OQeeZSWgQGeZTw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 21 Feb 2022 18:13:22 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A57E6566
+        for <linux-trace-devel@vger.kernel.org>; Mon, 21 Feb 2022 15:12:55 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DD69B1091DA1;
-        Mon, 21 Feb 2022 22:17:53 +0000 (UTC)
-Received: from x1.com (unknown [10.22.16.159])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 57EA55DB8F;
-        Mon, 21 Feb 2022 22:17:40 +0000 (UTC)
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Clark Williams <williams@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: [PATCH V2 11/11] rtla/trace: Save event histogram output to a file
-Date:   Mon, 21 Feb 2022 23:16:56 +0100
-Message-Id: <2ec469fef0afa5b51d741d334268e2dc3ce60672.1645481500.git.bristot@kernel.org>
-In-Reply-To: <cover.1645481500.git.bristot@kernel.org>
-References: <cover.1645481500.git.bristot@kernel.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 094D261277
+        for <linux-trace-devel@vger.kernel.org>; Mon, 21 Feb 2022 23:12:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0684C340E9;
+        Mon, 21 Feb 2022 23:12:53 +0000 (UTC)
+Date:   Mon, 21 Feb 2022 18:12:52 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH] trace-cmd: Set the default file version to 7
+Message-ID: <20220221181252.668433cf@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The hist: trigger generates a histogram in the file sys/event/hist.
-If the hist: trigger is used, automatically save the histogram output of
-the event sys:event in the sys_event_hist.txt file.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+All new trace.dat files should be set to version 7 by default. This will
+allow for its use to be more common as we should not expect the user to
+set to the latest version.
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/tools/rtla/common_options.rst | 10 +++-
- tools/tracing/rtla/src/trace.c              | 53 +++++++++++++++++++++
- 2 files changed, 62 insertions(+), 1 deletion(-)
+Note, I'll add this when all the changes are in for compression
+and I'm satisfied with my testing.
 
-diff --git a/Documentation/tools/rtla/common_options.rst b/Documentation/tools/rtla/common_options.rst
-index afd45bae821f..af76df6205d4 100644
---- a/Documentation/tools/rtla/common_options.rst
-+++ b/Documentation/tools/rtla/common_options.rst
-@@ -23,7 +23,15 @@
-         Filter the previous **-e** *sys:event* event with *<filter>*. For further information about event filtering see https://www.kernel.org/doc/html/latest/trace/events.html#event-filtering.
+ lib/trace-cmd/include/trace-cmd-local.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
+index 48f179d6f524..e48898fcf937 100644
+--- a/lib/trace-cmd/include/trace-cmd-local.h
++++ b/lib/trace-cmd/include/trace-cmd-local.h
+@@ -9,7 +9,7 @@
+ #include <byteswap.h>
+ #include "trace-cmd-private.h"
  
- **--trigger** *<trigger>*
--        Enable a trace event trigger to the previous **-e** *sys:event*. For further information about event trigger see https://www.kernel.org/doc/html/latest/trace/events.html#event-triggers.
-+        Enable a trace event trigger to the previous **-e** *sys:event*.
-+        If the *hist:* trigger is activated, the output histogram will be automatically saved to a file named *system_event_hist.txt*.
-+        For example, the command:
-+
-+        rtla <command> <mode> -t -e osnoise:irq_noise --trigger="hist:key=desc,duration/1000:sort=desc,duration/1000:vals=hitcount"
-+
-+        Will automatically save the content of the histogram associated to *osnoise:irq_noise* event in *osnoise_irq_noise_hist.txt*.
-+
-+        For further information about event trigger see https://www.kernel.org/doc/html/latest/trace/events.html#event-triggers.
+-#define FILE_VERSION_DEFAULT		6
++#define FILE_VERSION_DEFAULT		7
  
- **-P**, **--priority** *o:prio|r:prio|f:prio|d:runtime:period*
- 
-diff --git a/tools/tracing/rtla/src/trace.c b/tools/tracing/rtla/src/trace.c
-index ef44bab0c404..8249ec4d77cc 100644
---- a/tools/tracing/rtla/src/trace.c
-+++ b/tools/tracing/rtla/src/trace.c
-@@ -296,6 +296,57 @@ static void trace_event_disable_filter(struct trace_instance *instance,
- 			tevent->event ? : "*", tevent->filter);
- }
- 
-+/*
-+ * trace_event_save_hist - save the content of an event hist
-+ *
-+ * If the trigger is a hist: one, save the content of the hist file.
-+ */
-+static void trace_event_save_hist(struct trace_instance *instance,
-+				  struct trace_events *tevent)
-+{
-+	int retval, index, out_fd;
-+	mode_t mode = 0644;
-+	char path[1024];
-+	char *hist;
-+
-+	if (!tevent)
-+		return;
-+
-+	/* trigger enables hist */
-+	if (!tevent->trigger)
-+		return;
-+
-+	/* is this a hist: trigger? */
-+	retval = strncmp(tevent->trigger, "hist:", strlen("hist:"));
-+	if (retval)
-+		return;
-+
-+	snprintf(path, 1024, "%s_%s_hist.txt", tevent->system, tevent->event);
-+
-+	printf("  Saving event %s:%s hist to %s\n", tevent->system, tevent->event, path);
-+
-+	out_fd = creat(path, mode);
-+	if (out_fd < 0) {
-+		err_msg("  Failed to create %s output file\n", path);
-+		return;
-+	}
-+
-+	hist = tracefs_event_file_read(instance->inst, tevent->system, tevent->event, "hist", 0);
-+	if (!hist) {
-+		err_msg("  Failed to read %s:%s hist file\n", tevent->system, tevent->event);
-+		goto out_close;
-+	}
-+
-+	index = 0;
-+	do {
-+		index += write(out_fd, &hist[index], strlen(hist) - index);
-+	} while (index < strlen(hist));
-+
-+	free(hist);
-+out_close:
-+	close(out_fd);
-+}
-+
- /*
-  * trace_event_disable_trigger - disable an event trigger
-  */
-@@ -314,6 +365,8 @@ static void trace_event_disable_trigger(struct trace_instance *instance,
- 	debug_msg("Disabling %s:%s trigger %s\n", tevent->system,
- 		  tevent->event ? : "*", tevent->trigger);
- 
-+	trace_event_save_hist(instance, tevent);
-+
- 	snprintf(trigger, 1024, "!%s\n", tevent->trigger);
- 
- 	retval = tracefs_event_file_write(instance->inst, tevent->system,
+ /* Can be overridden */
+ void tracecmd_warning(const char *fmt, ...);
 -- 
 2.34.1
 
