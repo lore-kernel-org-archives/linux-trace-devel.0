@@ -2,65 +2,130 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE378C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 22 Feb 2022 17:50:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 711E6C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 22 Feb 2022 18:18:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232875AbiBVRvQ (ORCPT
+        id S234535AbiBVSSp (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 22 Feb 2022 12:51:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42416 "EHLO
+        Tue, 22 Feb 2022 13:18:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234140AbiBVRvP (ORCPT
+        with ESMTP id S234442AbiBVSSo (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 22 Feb 2022 12:51:15 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9F374167F99
-        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Feb 2022 09:50:48 -0800 (PST)
-Received: from kbox (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 55ADC20C31B0;
-        Tue, 22 Feb 2022 09:50:48 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 55ADC20C31B0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1645552248;
-        bh=Qm/5li4KlASFlfAkUb9H7wziTo4T8Svayn9cm1AUgSw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mhK9txvE5dsolLZize/jpynrA2dxe37u/6cbRE1NTWJmWfTrK6eP7ypwhwludSSq3
-         w3tGENbjFsUJtC0fmK/2F8P4Y2GIsLailvRUG7YONxRK9cFNmRyyL0OrC/I7Km3fwN
-         YAknh38ehsC5hwgr6FX0yh5NuXsKYi33F7Iqx5Xk=
-Date:   Tue, 22 Feb 2022 09:50:45 -0800
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v1 0/3] libtracefs: Add APIs for user_events to libtracefs
-Message-ID: <20220222175045.GC1709@kbox>
-References: <20220218225058.12701-1-beaub@linux.microsoft.com>
- <20220222123447.244b8f57@gandalf.local.home>
+        Tue, 22 Feb 2022 13:18:44 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F0291359
+        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Feb 2022 10:18:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1E28A614F9
+        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Feb 2022 18:18:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AB7AC340E8
+        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Feb 2022 18:18:17 +0000 (UTC)
+Date:   Tue, 22 Feb 2022 13:18:16 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] libtracefs: Add script to find functions not listed in main
+ man page
+Message-ID: <20220222131816.0bfdb33e@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220222123447.244b8f57@gandalf.local.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Feb 22, 2022 at 12:34:47PM -0500, Steven Rostedt wrote:
-> On Fri, 18 Feb 2022 14:50:55 -0800
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> 
-> > New APIs added:
-> 
-> Beau,
-> 
-> I'm not sure what you work load is, but if you can get out a v2 today (or
-> tomorrow), that would be great. I want to release libtracefs 1.3 in the
-> next couple of days, and I'm only holding it off to include these APIs.
-> 
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Yeah, I can get a v2 today I think. We keep expanding what to change in
-the thread (which is great) so I'll do my best to capture it all out in
-the v2. I plan to start in a few hours, with what we've talked about so
-far.
+This checks all the man pages for any function that is not in the main man
+page of libtracefs.txt.
 
-Thanks,
--Beau
+The current run when this script was created produced:
+
+$ ./check-manpages.sh Documentation/
+
+Missing functions from libtracefs.txt that are in libtracefs-dynevents.txt
+   tracefs_dynevent_get
+   tracefs_dynevent_get_event
+
+Missing functions from libtracefs.txt that are in libtracefs-events-tep.txt
+   tracefs_load_cmdlines
+
+Missing functions from libtracefs.txt that are in libtracefs-events.txt
+   tracefs_event_enable
+   tracefs_event_disable
+
+Missing functions from libtracefs.txt that are in libtracefs-instances-affinity.txt
+   tracefs_set_affinity_raw
+   tracefs_get_affinity_raw
+
+Missing functions from libtracefs.txt that are in libtracefs-instances-file-manip.txt
+   tracefs_instance_file_append
+   tracefs_instance_file_clear
+
+Missing functions from libtracefs.txt that are in libtracefs-instances-manage.txt
+   tracefs_instance_alloc
+
+Missing functions from libtracefs.txt that are in libtracefs-instances-utils.txt
+   tracefs_instance_get_trace_dir
+
+Missing functions from libtracefs.txt that are in libtracefs-options.txt
+   tracefs_options
+
+Missing functions from libtracefs.txt that are in libtracefs-stream.txt
+   tracefs_trace_pipe_stream
+   tracefs_trace_pipe_print
+   tracefs_trace_pipe_stop
+
+Missing functions from libtracefs.txt that are in libtracefs-synth-info.txt
+   tracefs_synth_get_event
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ check-manpages.sh | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+ create mode 100755 check-manpages.sh
+
+diff --git a/check-manpages.sh b/check-manpages.sh
+new file mode 100755
+index 000000000000..a52281198f6e
+--- /dev/null
++++ b/check-manpages.sh
+@@ -0,0 +1,32 @@
++#!/bin/bash
++# SPDX-License-Identifier: LGPL-2.1
++# Copyright (C) 2022, Google Inc, Steven Rostedt <rostedt@goodmis.org>
++#
++# This checks if any function is listed in a man page that is not listed
++# in the main man page.
++
++if [ $# -lt 1 ]; then
++	echo "usage: check-manpages man-page-path"
++	exit 1
++fi
++
++cd $1
++
++MAIN=libtracefs
++MAIN_FILE=${MAIN}.txt
++
++for man in ${MAIN}-*.txt; do
++
++	sed -ne '/^NAME/,/^SYNOP/{/^[a-z]/{s/, *$//;s/,/\n/g;s/ //g;s/-.*$/-/;/-/{s/-//p;q};p}}' $man | while read a; do
++		if ! grep -q '\*'${a}'\*' $MAIN_FILE; then
++			if [ "$last" == "" ]; then
++				echo
++			fi
++			if [ "$last" != "$man" ]; then
++				echo "Missing functions from $MAIN_FILE that are in $man"
++				last=$man
++			fi
++			echo "   ${a}"
++		fi
++	done
++done
+-- 
+2.34.1
+
