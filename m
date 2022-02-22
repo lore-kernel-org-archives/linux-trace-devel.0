@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B88CC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 22 Feb 2022 23:23:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E7C3C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 22 Feb 2022 23:23:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234538AbiBVXXr (ORCPT
+        id S236035AbiBVXXt (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 22 Feb 2022 18:23:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46726 "EHLO
+        Tue, 22 Feb 2022 18:23:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232933AbiBVXXr (ORCPT
+        with ESMTP id S232909AbiBVXXs (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 22 Feb 2022 18:23:47 -0500
+        Tue, 22 Feb 2022 18:23:48 -0500
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E9DF595A18
-        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Feb 2022 15:23:20 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 540BE95A22
+        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Feb 2022 15:23:21 -0800 (PST)
 Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A3E9120C31BB;
-        Tue, 22 Feb 2022 15:23:20 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A3E9120C31BB
+        by linux.microsoft.com (Postfix) with ESMTPSA id 0DA6720C31BF;
+        Tue, 22 Feb 2022 15:23:21 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0DA6720C31BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1645572200;
-        bh=VylUIfdhAMJuU9a/tsdmGlIJqBBOQxlfD3XRnfI/8gs=;
+        s=default; t=1645572201;
+        bh=Ep13W27GmfCBsKfhFFQ+OZw8O1dh5rA21NaJlEf/98Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TNp+yZ2hMDVMNs5C1HUcMW/5jeIq8lH0pRUq5yPnpooiWH61f0HBRoa6PaLcJ24Rc
-         ysZoijiomqlz6s5tM9YvuPB5Q6/7xCAwl87JMn/7paiqacOAIu664cofV6WDBg0v35
-         421J7EuIba34gPIFF1cCnwc/x+TwqffCMbhycj3s=
+        b=Utx1KFa1la377D6gZAuykGioCLRm3fm2m88wYOtxfApOwYenJpnr5QR+BsSInCa7Z
+         vmU/0FLk12dqyUpgI1IkpuxZ2GN/VanFtQkR7K8mG/FG8LqsNXEzXFxPMpG1sLqob7
+         1xyu+HPAs3SoQp15w+WxyYB3Wc0Hexbqcb1GnVa8=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, beaub@linux.microsoft.com
-Subject: [PATCH v2 1/3] libtracefs: Add user_events to libtracefs sources
-Date:   Tue, 22 Feb 2022 15:23:14 -0800
-Message-Id: <20220222232316.14640-2-beaub@linux.microsoft.com>
+Subject: [PATCH v2 3/3] libtracefs: Add unit tests for user_events
+Date:   Tue, 22 Feb 2022 15:23:16 -0800
+Message-Id: <20220222232316.14640-4-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20220222232316.14640-1-beaub@linux.microsoft.com>
 References: <20220222232316.14640-1-beaub@linux.microsoft.com>
@@ -40,690 +40,270 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The user events are scheduled to be included into Linux 5.18, which
-register a special mmapped page to denote when the user event is enabled
-(from an external source). This API adds a wrapper to the kernel
-interface that makes it easy to register user events and test if they
-are enabled and to record the event when it is.
-
-Link:
-https://lore.kernel.org/linux-trace-devel/20220121192833.GA3128@kbox/T/#m2bcf53c373fbeaba2c46d1a053b3174171167e4e
+Adds unit tests for user_events when available. Ensures APIs are working
+correctly and appropriate errors are being returned.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- Makefile                 |   8 +
- include/tracefs-local.h  |  24 ++
- include/tracefs.h        |  67 +++++
- src/Makefile             |   4 +
- src/tracefs-userevents.c | 516 +++++++++++++++++++++++++++++++++++++++
- 5 files changed, 619 insertions(+)
- create mode 100644 src/tracefs-userevents.c
+ utest/tracefs-utest.c | 233 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 233 insertions(+)
 
-diff --git a/Makefile b/Makefile
-index 544684c..a4598b4 100644
---- a/Makefile
-+++ b/Makefile
-@@ -154,6 +154,14 @@ CFLAGS ?= -g -Wall
- CPPFLAGS ?=
- LDFLAGS ?=
+diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
+index e8d5c69..ed38d9c 100644
+--- a/utest/tracefs-utest.c
++++ b/utest/tracefs-utest.c
+@@ -11,6 +11,7 @@
+ #include <time.h>
+ #include <dirent.h>
+ #include <ftw.h>
++#include <linux/types.h>
  
-+USEREVENTS_INSTALLED := $(shell if (echo "$(pound)include <linux/user_events.h>" | $(CC) -E - >/dev/null 2>&1) ; then echo 1; else echo 0 ; fi)
-+export USEREVENTS_INSTALLED
-+ifeq ($(USEREVENTS_INSTALLED), 1)
-+CFLAGS += -DUSEREVENTS
-+else
-+$(warning user_events.h not installed, skipping)
-+endif
-+
- CUNIT_INSTALLED := $(shell if (printf "$(pound)include <CUnit/Basic.h>\n void main(){CU_initialize_registry();}" | $(CC) -x c - -lcunit -o /dev/null >/dev/null 2>&1) ; then echo 1; else echo 0 ; fi)
- export CUNIT_INSTALLED
+ #include <CUnit/CUnit.h>
+ #include <CUnit/Basic.h>
+@@ -871,6 +872,235 @@ static void test_eprobes(void)
+ 	test_eprobes_instance(test_instance);
+ }
  
-diff --git a/include/tracefs-local.h b/include/tracefs-local.h
-index bf157e1..9491545 100644
---- a/include/tracefs-local.h
-+++ b/include/tracefs-local.h
-@@ -119,4 +119,28 @@ int trace_rescan_events(struct tep_handle *tep,
- struct tep_event *get_tep_event(struct tep_handle *tep,
- 				const char *system, const char *name);
- 
-+/* Internal interface for ftrace user events */
-+
-+struct tracefs_user_event_group;
-+
-+struct tracefs_user_event_internal
++#ifdef USEREVENTS
++struct user_test_context {
++	int seen;
++	int failed;
++};
++static int user_callback(struct tep_event *event, struct tep_record *record,
++			  int cpu, void *context)
 +{
-+	struct tracefs_user_event		event_external;
-+	int					write_index;
-+	int					iovecs;
-+	int					rels;
-+	int					len;
-+	struct tracefs_user_event_group		*group;
-+	struct tracefs_user_event_internal	*next;
-+};
++	struct tep_format_field *field;
++	struct user_test_context *user_context;
++	__u32 *rel, size, offset;
 +
-+struct tracefs_user_event_group
-+{
-+	int					fd;
-+	int					mmap_len;
-+	char					*mmap;
-+	pthread_mutex_t				lock;
-+	struct tracefs_user_event_internal	*events;
-+};
++	user_context = (struct user_test_context *)context;
++	user_context->seen++;
 +
- #endif /* _TRACE_FS_LOCAL_H */
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 1848ad0..74241a9 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -571,4 +571,71 @@ struct tracefs_synth *tracefs_sql(struct tep_handle *tep, const char *name,
- struct tep_event *
- tracefs_synth_get_event(struct tep_handle *tep, struct tracefs_synth *synth);
- 
-+/* User events */
-+enum tracefs_uevent_type {
-+	TRACEFS_UEVENT_END,
-+	TRACEFS_UEVENT_u8,
-+	TRACEFS_UEVENT_s8,
-+	TRACEFS_UEVENT_u16,
-+	TRACEFS_UEVENT_s16,
-+	TRACEFS_UEVENT_u32,
-+	TRACEFS_UEVENT_s32,
-+	TRACEFS_UEVENT_u64,
-+	TRACEFS_UEVENT_s64,
-+	TRACEFS_UEVENT_string,
-+	TRACEFS_UEVENT_struct,
-+	TRACEFS_UEVENT_varray,
-+	TRACEFS_UEVENT_vstring,
-+};
-+
-+enum tracefs_uevent_flags {
-+	/* None */
-+	TRACEFS_UEVENT_FLAG_NONE = 0,
-+
-+	/* When BPF is attached, use iterator/no copy */
-+	TRACEFS_UEVENT_FLAG_bpf_iter = 1 << 0,
-+};
-+
-+struct tracefs_uevent_item {
-+	/* Type of item */
-+	enum tracefs_uevent_type	type;
-+
-+	/* Length of data, optional during register */
-+	int len;
-+
-+	union {
-+		/* Used during write */
-+		const void		*data;
-+
-+		/* Used during register */
-+		const char		*name;
-+	};
-+};
-+
-+struct tracefs_user_event {
-+	unsigned int	size;
-+	char		*enabled;
-+};
-+
-+struct tracefs_user_event_group;
-+
-+struct tracefs_user_event_group *tracefs_user_event_group_open(void);
-+
-+void tracefs_user_event_group_close(struct tracefs_user_event_group *group);
-+
-+int tracefs_user_event_delete(const char *name);
-+
-+struct tracefs_user_event *
-+tracefs_user_event_register(struct tracefs_user_event_group *group,
-+			    const char *name, enum tracefs_uevent_flags flags,
-+			    struct tracefs_uevent_item *items);
-+
-+static inline bool tracefs_user_event_enabled(struct tracefs_user_event *event)
-+{
-+	return event && ((volatile char *)event->enabled)[0] != 0;
-+}
-+
-+int tracefs_user_event_record(struct tracefs_user_event *event,
-+			      struct tracefs_uevent_item *items);
-+
- #endif /* _TRACE_FS_H */
-diff --git a/src/Makefile b/src/Makefile
-index e8afab5..984e8cf 100644
---- a/src/Makefile
-+++ b/src/Makefile
-@@ -14,6 +14,10 @@ OBJS += tracefs-filter.o
- OBJS += tracefs-dynevents.o
- OBJS += tracefs-eprobes.o
- 
-+ifeq ($(USEREVENTS_INSTALLED), 1)
-+OBJS += tracefs-userevents.o
-+endif
-+
- # Order matters for the the three below
- OBJS += sqlhist-lex.o
- OBJS += sqlhist.tab.o
-diff --git a/src/tracefs-userevents.c b/src/tracefs-userevents.c
-new file mode 100644
-index 0000000..ccd511b
---- /dev/null
-+++ b/src/tracefs-userevents.c
-@@ -0,0 +1,516 @@
-+// SPDX-License-Identifier: LGPL-2.1
-+/*
-+ * Copyright (C) 2022 Microsoft Corporation.
-+ *
-+ * Authors:
-+ *   Beau Belgrave <beaub@linux.microsoft.com>
-+ */
-+
-+#include <alloca.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <pthread.h>
-+#include <sys/mman.h>
-+#include <sys/ioctl.h>
-+#include <sys/uio.h>
-+#include <linux/user_events.h>
-+
-+#include "tracefs.h"
-+#include "tracefs-local.h"
-+
-+#define STAT_FILE "user_events_status"
-+#define DATA_FILE "user_events_data"
-+
-+static void free_user_events(struct tracefs_user_event_internal *event)
-+{
-+	struct tracefs_user_event_internal *next;
-+
-+	while (event) {
-+		next = event->next;
-+		free(event);
-+		event = next;
++	field = tep_find_field(event, "u8");
++	if (!field || *(__u8 *)(record->data + field->offset) != 1)
++	{
++		user_context->failed = 1;
++		return -1;
 +	}
-+}
 +
-+static int append_field(struct tracefs_uevent_item *item, struct trace_seq *seq,
-+			int index)
-+{
-+	if (index != 0)
-+		trace_seq_printf(seq, ";");
++	field = tep_find_field(event, "s8");
++	if (!field || *(__s8 *)(record->data + field->offset) != 2)
++	{
++		user_context->failed = 2;
++		return -1;
++	}
 +
-+	switch (item->type) {
-+	case TRACEFS_UEVENT_u8:
-+		trace_seq_printf(seq, " u8 %s", item->name);
-+		break;
++	field = tep_find_field(event, "u16");
++	if (!field || *(__u16 *)(record->data + field->offset) != 3)
++	{
++		user_context->failed = 3;
++		return -1;
++	}
 +
-+	case TRACEFS_UEVENT_s8:
-+		trace_seq_printf(seq, " s8 %s", item->name);
-+		break;
++	field = tep_find_field(event, "s16");
++	if (!field || *(__s16 *)(record->data + field->offset) != 4)
++	{
++		user_context->failed = 4;
++		return -1;
++	}
 +
-+	case TRACEFS_UEVENT_u16:
-+		trace_seq_printf(seq, " u16 %s", item->name);
-+		break;
++	field = tep_find_field(event, "u32");
++	if (!field || *(__u32 *)(record->data + field->offset) != 5)
++	{
++		user_context->failed = 5;
++		return -1;
++	}
 +
-+	case TRACEFS_UEVENT_s16:
-+		trace_seq_printf(seq, " s16 %s", item->name);
-+		break;
++	field = tep_find_field(event, "s32");
++	if (!field || *(__s32 *)(record->data + field->offset) != 6)
++	{
++		user_context->failed = 6;
++		return -1;
++	}
 +
-+	case TRACEFS_UEVENT_u32:
-+		trace_seq_printf(seq, " u32 %s", item->name);
-+		break;
++	field = tep_find_field(event, "u64");
++	if (!field || *(__u64 *)(record->data + field->offset) != 7)
++	{
++		user_context->failed = 7;
++		return -1;
++	}
 +
-+	case TRACEFS_UEVENT_s32:
-+		trace_seq_printf(seq, " s32 %s", item->name);
-+		break;
++	field = tep_find_field(event, "s64");
++	if (!field || *(__s64 *)(record->data + field->offset) != 8)
++	{
++		user_context->failed = 8;
++		return -1;
++	}
 +
-+	case TRACEFS_UEVENT_u64:
-+		trace_seq_printf(seq, " u64 %s", item->name);
-+		break;
++	field = tep_find_field(event, "string");
++	if (!field || memcmp(record->data + field->offset, "12345678", 8))
++	{
++		user_context->failed = 9;
++		return -1;
++	}
 +
-+	case TRACEFS_UEVENT_s64:
-+		trace_seq_printf(seq, " s64 %s", item->name);
-+		break;
++	field = tep_find_field(event, "struct");
++	if (!field || *(__u64 *)(record->data + field->offset) != 9)
++	{
++		user_context->failed = 10;
++		return -1;
++	}
 +
-+	case TRACEFS_UEVENT_string:
-+		if (item->len <= 0) {
-+			errno = EINVAL;
-+			return -1;
-+		}
++	field = tep_find_field(event, "varray");
++	if (!field) {
++		user_context->failed = 11;
++		return -1;
++	}
 +
-+		trace_seq_printf(seq, " char[%d] %s", item->len, item->name);
-+		break;
++	rel = (__u32 *)(record->data + field->offset);
++	offset = *rel & 0xffff;
++	size = *rel >> 16;
++	rel++;
 +
-+	case TRACEFS_UEVENT_struct:
-+		/*
-+		 * struct must have 2 strings, do simple check
-+		 * in user, kernel will fully validate
-+		 */
-+		if (!strchr(item->name, ' ')) {
-+			errno = EINVAL;
-+			return -1;
-+		}
++	if (memcmp((void *)(rel) + offset, "Array", size)) {
++		user_context->failed = 12;
++		return -1;
++	}
 +
-+		if (item->len <= 0) {
-+			errno = EINVAL;
-+			return -1;
-+		}
++	field = tep_find_field(event, "vstring");
++	if (!field) {
++		user_context->failed = 13;
++		return -1;
++	}
 +
-+		trace_seq_printf(seq, " struct %s %d", item->name, item->len);
-+		break;
++	rel = (__u32 *)(record->data + field->offset);
++	offset = *rel & 0xffff;
++	size = *rel >> 16;
++	rel++;
 +
-+	case TRACEFS_UEVENT_varray:
-+		/* Variable length array */
-+		trace_seq_printf(seq, " __rel_loc u8[] %s", item->name);
-+		break;
-+
-+	case TRACEFS_UEVENT_vstring:
-+		/* Variable length string */
-+		trace_seq_printf(seq, " __rel_loc char[] %s", item->name);
-+		break;
-+
-+	default:
-+		/* Unknown */
-+		errno = ENOENT;
++	if (memcmp((void *)(rel) + offset, "Variable", size)) {
++		user_context->failed = 14;
 +		return -1;
 +	}
 +
 +	return 0;
 +}
 +
-+static int create_reg_cmd(const char *name, enum tracefs_uevent_flags flags,
-+			  struct tracefs_uevent_item *item, struct trace_seq *seq)
++static void test_userevents_instance(struct tracefs_instance *instance)
 +{
-+	int ret, index = 0;
-+
-+	trace_seq_printf(seq, "%s", name);
-+
-+	if (flags & TRACEFS_UEVENT_FLAG_bpf_iter)
-+		trace_seq_printf(seq, ":BPF_ITER");
-+
-+	while (item->type != TRACEFS_UEVENT_END) {
-+		ret = append_field(item, seq, index++);
-+
-+		if (ret < 0)
-+			return ret;
-+
-+		item++;
-+	}
-+
-+	trace_seq_terminate(seq);
-+
-+	if (seq->state) {
-+		errno = ENOMEM;
-+		return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int get_write_counts(struct tracefs_user_event_internal *event,
-+			    struct tracefs_uevent_item *item)
-+{
-+	event->rels = 0;
-+	event->len = 0;
-+
-+	/* Start at 1, need iovec for write_index */
-+	event->iovecs = 1;
-+
-+	while (item->type != TRACEFS_UEVENT_END) {
-+		switch (item->type) {
-+		case TRACEFS_UEVENT_u8:
-+		case TRACEFS_UEVENT_s8:
-+			event->len += sizeof(__u8);
-+			break;
-+
-+		case TRACEFS_UEVENT_u16:
-+		case TRACEFS_UEVENT_s16:
-+			event->len += sizeof(__u16);
-+			break;
-+
-+		case TRACEFS_UEVENT_u32:
-+		case TRACEFS_UEVENT_s32:
-+			event->len += sizeof(__u32);
-+			break;
-+
-+		case TRACEFS_UEVENT_u64:
-+		case TRACEFS_UEVENT_s64:
-+			event->len += sizeof(__u64);
-+			break;
-+
-+		case TRACEFS_UEVENT_string:
-+		case TRACEFS_UEVENT_struct:
-+			event->len += item->len;
-+			break;
-+
-+		case TRACEFS_UEVENT_varray:
-+		case TRACEFS_UEVENT_vstring:
-+			/* Requires a rel loc entry */
-+			event->len += sizeof(__u32);
-+			event->rels++;
-+			break;
-+
-+		default:
-+			/* Unknown */
-+			errno = ENOENT;
-+			return -1;
-+		}
-+
-+		event->iovecs++;
-+		item++;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * tracefs_user_event_group_open - Opens a new group to use for user events
-+ *
-+ * Returns a pointer to a group to use for user events. The pointer is valid
-+ * until tracefs_user_event_group_close() is called. In case of an error NULL
-+ * is returned.
-+ */
-+struct tracefs_user_event_group *tracefs_user_event_group_open(void)
-+{
-+	int stat, write, page_size, i;
 +	struct tracefs_user_event_group *group;
++	struct tracefs_user_event *event;
++	struct tep_handle *user_tep;
++	enum tracefs_uevent_flags flags = TRACEFS_UEVENT_FLAG_NONE;
++	const char *systems[] = { "user_events", NULL };
++	const char *name = "libtracefs_utest";
++	const char *system = "user_events";
++	const char *test_string = "12345678";
++	const char *test_array = "Array";
++	const char *test_vstring = "Variable";
++	__u8 a = 1;
++	__s8 b = 2;
++	__u16 c = 3;
++	__s16 d = 4;
++	__u32 e = 5;
++	__s32 f = 6;
++	__u64 g = 7;
++	__s64 h = 8;
++	__u64 i = 9;
++	struct tracefs_uevent_item all_items[] = {
++		{ TRACEFS_UEVENT_u8, .name = "u8" },
++		{ TRACEFS_UEVENT_s8, .name = "s8" },
++		{ TRACEFS_UEVENT_u16, .name = "u16" },
++		{ TRACEFS_UEVENT_s16, .name = "s16" },
++		{ TRACEFS_UEVENT_u32, .name = "u32" },
++		{ TRACEFS_UEVENT_s32, .name = "s32" },
++		{ TRACEFS_UEVENT_u64, .name = "u64" },
++		{ TRACEFS_UEVENT_s64, .name = "s64" },
++		{ TRACEFS_UEVENT_string, .name = "string", .len = 8 },
++		{ TRACEFS_UEVENT_struct, .name = "test struct", .len = 8 },
++		{ TRACEFS_UEVENT_varray, .name = "varray" },
++		{ TRACEFS_UEVENT_vstring, .name = "vstring" },
++		{ TRACEFS_UEVENT_END },
++	};
++	struct tracefs_uevent_item write_items[] = {
++		{ TRACEFS_UEVENT_u8, .data = &a, .len = sizeof(a) },
++		{ TRACEFS_UEVENT_s8, .data = &b, .len = sizeof(b) },
++		{ TRACEFS_UEVENT_u16, .data = &c, .len = sizeof(c) },
++		{ TRACEFS_UEVENT_s16, .data = &d, .len = sizeof(d) },
++		{ TRACEFS_UEVENT_u32, .data = &e, .len = sizeof(e) },
++		{ TRACEFS_UEVENT_s32, .data = &f, .len = sizeof(f) },
++		{ TRACEFS_UEVENT_u64, .data = &g, .len = sizeof(g) },
++		{ TRACEFS_UEVENT_s64, .data = &h, .len = sizeof(h) },
++		{ TRACEFS_UEVENT_string, .data = test_string,
++					 .len = strlen(test_string) },
++		{ TRACEFS_UEVENT_struct, .data = &i, .len = sizeof(i) },
++		{ TRACEFS_UEVENT_varray, .data = test_array,
++					 .len = strlen(test_array) },
++		{ TRACEFS_UEVENT_vstring, .data = test_vstring,
++					  .len = strlen(test_vstring)+1 },
++		{ TRACEFS_UEVENT_END },
++	};
++	struct user_test_context context;
++	int ret;
 +
-+	stat = tracefs_instance_file_open(NULL, STAT_FILE, O_RDWR);
++	/* Delete if it already exists */
++	tracefs_user_event_delete(name);
 +
-+	if (stat < 0)
-+		return NULL;
++	group = tracefs_user_event_group_open();
++	CU_TEST(group != NULL);
 +
-+	write = tracefs_instance_file_open(NULL, DATA_FILE, O_RDWR);
++	event = tracefs_user_event_register(group, name, flags, all_items);
++	CU_TEST(event != NULL);
 +
-+	if (write < 0)
-+		goto put_stat;
++	/* Test enable and status */
++	CU_TEST(!tracefs_user_event_enabled(event));
++	CU_TEST(tracefs_event_enable(instance, system, name) == 0);
++	CU_TEST(tracefs_user_event_enabled(event));
 +
-+	group = malloc(sizeof(*group));
++	/* Correct record should work */
++	CU_TEST(tracefs_user_event_record(event, write_items) > 0);
 +
-+	if (!group)
-+		goto put_write;
++	/* Ensure record output was correct */
++	user_tep = tracefs_local_events_system(NULL, systems);
++	CU_TEST(user_tep != NULL);
 +
-+	if (pthread_mutex_init(&group->lock, NULL) < 0)
-+		goto put_group;
++	memset(&context, 0, sizeof(context));
++	ret = tracefs_iterate_raw_events(user_tep, instance, NULL, 0,
++					 user_callback, &context);
++	tep_free(user_tep);
 +
-+	/* Scale up to 16-bit max user events a page at a time */
-+	page_size = sysconf(_SC_PAGESIZE);
-+	group->mmap_len = page_size;
++	CU_TEST(ret == 0);
++	CU_TEST(context.seen == 1);
++	CU_TEST(context.failed == 0);
 +
-+	for (i = 0; i < 16; ++i) {
-+		group->mmap = mmap(NULL, group->mmap_len,
-+				   PROT_READ, MAP_SHARED, stat, 0);
++	/* Simulate bad length */
++	write_items[0].len = 0;
++	CU_TEST(tracefs_user_event_record(event, write_items) == -1);
 +
-+		if (group->mmap == MAP_FAILED && errno == EINVAL) {
-+			/* Increase by page size and try again */
-+			group->mmap_len += page_size;
-+			continue;
-+		}
++	/* Simulate bad pointer */
++	write_items[0].len = sizeof(a);
++	write_items[0].data = NULL;
++	CU_TEST(tracefs_user_event_record(event, write_items) == -1);
 +
-+		break;
-+	}
++	tracefs_user_event_group_close(group);
 +
-+	if (group->mmap == MAP_FAILED)
-+		goto put_group;
-+
-+	group->fd = write;
-+	group->events = NULL;
-+
-+	/* Status fd no longer needed */
-+	close(stat);
-+
-+	return group;
-+
-+put_group:
-+	free(group);
-+put_write:
-+	close(write);
-+put_stat:
-+	close(stat);
-+
-+	return NULL;
++	/* Disable and deletion must work */
++	CU_TEST(tracefs_event_disable(instance, system, name) == 0);
++	CU_TEST(tracefs_user_event_delete(name) == 0);
 +}
 +
-+/**
-+ * tracefs_user_event_delete - Deletes a user event from the system
-+ * @name: Name of the event to delete
-+ *
-+ * Deletes the event from the system if it is not used.
-+ */
-+int tracefs_user_event_delete(const char *name)
++static void test_userevents(void)
 +{
-+	int ret, write;
-+
-+	write = tracefs_instance_file_open(NULL, DATA_FILE, O_RDWR);
-+
-+	if (write < 0)
-+		return write;
-+
-+	ret = ioctl(write, DIAG_IOCSDEL, name);
-+
-+	close(write);
-+
-+	return ret;
++	test_userevents_instance(test_instance);
 +}
++#endif
 +
-+/**
-+ * tracefs_user_event_group_close - Closes a group containing user events
-+ * @group: Group to close
-+ *
-+ * Closes a group and all the user events within it. Any user event that has
-+ * been added to the group is no longer valid and cannot be used.
-+ */
-+void tracefs_user_event_group_close(struct tracefs_user_event_group *group)
-+{
-+	if (!group)
-+		return;
-+
-+	if (group->mmap != MAP_FAILED)
-+		munmap(group->mmap, group->mmap_len);
-+
-+	if (group->fd != -1)
-+		close(group->fd);
-+
-+	free_user_events(group->events);
-+	free(group);
-+}
-+
-+/**
-+ * tracefs_user_event_register - Registers a user event with the system
-+ * @group: Group to add the user event to
-+ * @name: Name of the event to register
-+ * @flags: Flags to use
-+ * @items: Array of items that the event contains
-+ *
-+ * Allocates and registers a user event with the system. The user event will be
-+ * added to the @group. The lifetime of the event is bound to the @group. When
-+ * the @group is closed via tracefs_user_event_group_close() the event will no
-+ * longer exist and should not be used.
-+ *
-+ * The @items are processed in order and the final item type must be set to
-+ * TRACEFS_UEVENT_END to mark the last item. Each item must have the type
-+ * and name defined. The string and struct type also require the len to be set
-+ * for the item.
-+ *
-+ * Return a pointer to a user event on success, or NULL or error.
-+ *
-+ * errno will be set to EINVAL if @group is null or unexpected @items.
-+ */
-+struct tracefs_user_event *
-+tracefs_user_event_register(struct tracefs_user_event_group *group,
-+			    const char *name, enum tracefs_uevent_flags flags,
-+			    struct tracefs_uevent_item *items)
-+{
-+	struct tracefs_user_event_internal *event = NULL;
-+	struct user_reg reg = {0};
-+	struct trace_seq seq;
-+
-+	if (!group || !items) {
-+		errno = EINVAL;
-+		return NULL;
-+	}
-+
-+	trace_seq_init(&seq);
-+
-+	/* Populate cmd */
-+	if (create_reg_cmd(name, flags, items, &seq))
-+		return NULL;
-+
-+	event = malloc(sizeof(*event));
-+
-+	if (!event)
-+		goto put_seq;
-+
-+	reg.size = sizeof(reg);
-+	reg.name_args = (__u64)seq.buffer;
-+
-+	/* Register event with kernel */
-+	if (ioctl(group->fd, DIAG_IOCSREG, &reg) == -1)
-+		goto put_event;
-+
-+	/* Sanity check bounds returned */
-+	if (reg.status_index >= group->mmap_len) {
-+		errno = EINVAL;
-+		goto put_event;
-+	}
-+
-+	if (get_write_counts(event, items))
-+		goto put_event;
-+
-+	/* Keep track of user view at this point in time */
-+	event->event_external.size = sizeof(event->event_external);
-+	event->event_external.enabled = &group->mmap[reg.status_index];
-+
-+	event->write_index = reg.write_index;
-+	event->group = group;
-+
-+	/* Add event into the group under lock */
-+	pthread_mutex_lock(&group->lock);
-+	event->next = group->events;
-+	group->events = event->next;
-+	pthread_mutex_unlock(&group->lock);
-+
-+	trace_seq_destroy(&seq);
-+
-+	return &event->event_external;
-+put_event:
-+	free(event);
-+put_seq:
-+	trace_seq_destroy(&seq);
-+
-+	return NULL;
-+}
-+
-+/**
-+ * tracefs_user_event_record - Records an event with data
-+ * @event: User event to record data about
-+ * @items: Items to write for the event
-+ *
-+ * Records items for the event. Callers should check if the cost of recording
-+ * should be performed by calling tracefs_user_event_enabled(). Items are
-+ * checked to ensure they fit within the described items during register. Each
-+ * item must specify the length of the item being recorded.
-+ *
-+ * Return the number of bytes recorded or -1 upon error.
-+ *
-+ * errno will be set to EINVAL if @event or @items is null or @items contains
-+ * an item with a length of less than or equal to 0.
-+ * errno will be set to E2BIG if @items contains more items than previously
-+ * registered for the event.
-+ */
-+int tracefs_user_event_record(struct tracefs_user_event *event,
-+			      struct tracefs_uevent_item *items)
-+{
-+	struct tracefs_user_event_internal *e;
-+	struct iovec *head, *io, *relio, *io_end;
-+	__u32 *rel, *rel_end;
-+	int len, rel_offset, data_offset, used;
-+
-+	if (!event || !items) {
-+		errno = EINVAL;
-+		return -1;
-+	}
-+
-+	e = (struct tracefs_user_event_internal *)event;
-+	head = io = alloca(sizeof(*io) * (e->iovecs + e->rels));
-+	rel = alloca(sizeof(*rel) * e->rels);
-+
-+	io_end = head + (e->iovecs + e->rels);
-+	rel_end = rel + e->rels;
-+
-+	/* Relative offset starts at end of static data */
-+	relio = io + e->iovecs;
-+	rel_offset = e->len;
-+	data_offset = 0;
-+
-+	/* Write index must be first */
-+	io->iov_base = &e->write_index;
-+	io->iov_len = sizeof(e->write_index);
-+	io++;
-+	used = 1;
-+
-+	while (items->type != TRACEFS_UEVENT_END) {
-+		len = items->len;
-+
-+		if (len <= 0)
-+			goto bad_length;
-+
-+		if (io >= io_end)
-+			goto bad_count;
-+
-+		switch (items->type) {
-+		case TRACEFS_UEVENT_varray:
-+		case TRACEFS_UEVENT_vstring:
-+			/* Dual vectors */
-+			used += 2;
-+
-+			if (rel >= rel_end || relio >= io_end)
-+				goto bad_count;
-+
-+			/* __rel_loc types */
-+			relio->iov_base = (void *)items->data;
-+			relio->iov_len = len;
-+			relio++;
-+
-+			io->iov_base = (void *)rel;
-+			io->iov_len = sizeof(*rel);
-+			io++;
-+			rel_offset -= sizeof(*rel);
-+
-+			/* Fill in rel loc data */
-+			*rel = DYN_LOC(rel_offset + data_offset, len);
-+			data_offset += len;
-+			rel++;
-+
-+			break;
-+
-+		default:
-+			/* Single vector */
-+			used++;
-+
-+			/* Direct types */
-+			io->iov_base = (void *)items->data;
-+			io->iov_len = len;
-+			io++;
-+			rel_offset -= len;
-+
-+			break;
-+		}
-+
-+		items++;
-+	}
-+
-+	return writev(e->group->fd, head, used);
-+
-+bad_length:
-+	fprintf(stderr, "Bad user_event item length at index %d\n",
-+		used - 1);
-+	errno = EINVAL;
-+	return -1;
-+
-+bad_count:
-+	fprintf(stderr, "Too many user_event items passed\n");
-+	errno = E2BIG;
-+	return -1;
-+}
+ static void test_instance_file(void)
+ {
+ 	struct tracefs_instance *instance = NULL;
+@@ -1706,4 +1936,7 @@ void test_tracefs_lib(void)
+ 	CU_add_test(suite, "kprobes", test_kprobes);
+ 	CU_add_test(suite, "syntetic events", test_synthetic);
+ 	CU_add_test(suite, "eprobes", test_eprobes);
++#ifdef USEREVENTS
++	CU_add_test(suite, "user events", test_userevents);
++#endif
+ }
 -- 
 2.17.1
 
