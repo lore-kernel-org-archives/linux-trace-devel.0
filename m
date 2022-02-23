@@ -2,96 +2,101 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C19CC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Feb 2022 17:25:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92543C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Feb 2022 17:25:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234387AbiBWRZ5 (ORCPT
+        id S239459AbiBWR0A (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 23 Feb 2022 12:25:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36918 "EHLO
+        Wed, 23 Feb 2022 12:26:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239033AbiBWRZ4 (ORCPT
+        with ESMTP id S242746AbiBWRZ7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 23 Feb 2022 12:25:56 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BE053E01
-        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Feb 2022 09:25:28 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B0858B8211B
-        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Feb 2022 17:25:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A62FC340E7;
-        Wed, 23 Feb 2022 17:25:24 +0000 (UTC)
-Date:   Wed, 23 Feb 2022 12:25:23 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH] libtracefs: Use tracefs_warning() for
- tracefs_user_event_record() errors
-Message-ID: <20220223122523.75d2130a@gandalf.local.home>
-In-Reply-To: <20220223172106.GA1727@kbox>
-References: <20220222231639.3ccfe44e@rorschach.local.home>
-        <20220223172106.GA1727@kbox>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 23 Feb 2022 12:25:59 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CD14D5370A
+        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Feb 2022 09:25:31 -0800 (PST)
+Received: from kbox (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 842F620C31B2;
+        Wed, 23 Feb 2022 09:25:31 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 842F620C31B2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1645637131;
+        bh=xvhRs9xQJDRmXSKcAjF+wdAXsxhlCc4PS5kelJrfJHg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KrUld6ZInZCE6158hiueA+BnNyYsD3bWeC6xqxd6gjqJaN4yNb+wagyJdpwpcNQxr
+         BTsLCa+xM+UH+bPav1aVGjyd76wYG7FAuxCOzc0WmiBtMcgyFeYm/RO4dyvVhBlZTU
+         ALKFT6CG0ojU89UNBHYYW6b7c9QK7idJE9PYek5Q=
+Date:   Wed, 23 Feb 2022 09:25:25 -0800
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] libtracefs: Add unit tests for user_events
+Message-ID: <20220223172525.GA1792@kbox>
+References: <20220222232316.14640-1-beaub@linux.microsoft.com>
+ <20220222232316.14640-4-beaub@linux.microsoft.com>
+ <20220223101715.1009bd6f@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220223101715.1009bd6f@gandalf.local.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 23 Feb 2022 09:21:19 -0800
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
-
-> On Tue, Feb 22, 2022 at 11:16:39PM -0500, Steven Rostedt wrote:
-> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Wed, Feb 23, 2022 at 10:17:15AM -0500, Steven Rostedt wrote:
+> On Tue, 22 Feb 2022 15:23:16 -0800
+> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> 
+> > Adds unit tests for user_events when available. Ensures APIs are working
+> > correctly and appropriate errors are being returned.
 > > 
-> > Instead of hard coding fprintf() into the library, allow the application
-> > to control the output, and use tracefs_warning() instead.
-> > Also switch the setting of the errno, as tracefs_warning() will
-> > add a perror() to the message.
-> > 
-> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> > Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 > > ---
-> >  src/tracefs-userevents.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >  utest/tracefs-utest.c | 233 ++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 233 insertions(+)
 > > 
-> > diff --git a/src/tracefs-userevents.c b/src/tracefs-userevents.c
-> > index ccd511b3045d..7da6aa35bf12 100644
-> > --- a/src/tracefs-userevents.c
-> > +++ b/src/tracefs-userevents.c
-> > @@ -504,13 +504,13 @@ int tracefs_user_event_record(struct tracefs_user_event *event,
-> >  	return writev(e->group->fd, head, used);
-> >  
-> >  bad_length:
-> > -	fprintf(stderr, "Bad user_event item length at index %d\n",
-> > -		used - 1);
-> >  	errno = EINVAL;
-> > +	tracefs_warning("Bad user_event item length at index %d\n",
-> > +		used - 1);
-> >  	return -1;
-> >  
-> >  bad_count:
-> > -	fprintf(stderr, "Too many user_event items passed\n");
-> >  	errno = E2BIG;
-> > +	tracefs_warning("Too many user_event items passed\n");
-> >  	return -1;
-> >  }
-> > -- 
-> > 2.34.1  
 > 
-> I think you may want to fix tracefs-sqlhist.c as well then? I modelled
-> this type of error/warning off what was being done there :)
-
-You mean like this? ;-)
-
-  https://lore.kernel.org/all/20220222232045.129e3b6c@rorschach.local.home/
-
--- Steve
-
+> OK, so I couldn't get the selftest working because I didn't have
+> user_events.h. I then worked to get that, but the selftest still failed
+> with:
 > 
-> Seems like it would do the same thing when tracefs_sql is called and has
-> a buffer error, etc. in sql_parse_error() and build_filter().
 
+The suspense is killing me, what did it fail with? :) (Guessing you saw
+the fprintf message when I simulate a failure).
 
+> After thinking about this a bit, I've decided that I'll release 1.3 without
+> this patch series.
+> 
+
+No worries.
+
+> The reason being, I want 1.3 to get into distros ASAP. As adding this patch
+> series will put a dependency on user_events.h (yes it builds without it,
+> but distros want everything that it can build applied), then that puts a
+> dependency on 1.3 to having user_events.h available, which may be a while
+> as it has to get into 5.18, and then slowly move to the distro kernels.
+> 
+
+Understood.
+
+> If distros did build it without user_events.h and then later on with
+> user_evnets.h then we have two versions of 1.3 where one supports
+> user_events and one does not. And you can not use versioning to determine
+> if your application will link to the library or not.
+> 
+> With all this in mind, I've decided to hold off this to libtracefs 1.4, and
+> when user_events is solidly in the kernel.
+> 
+> But I'm very excited to have this work in both the kernel and libtracefs. I
+> just want it properly done though.
+> 
+
+Yeah, do you want me to send out a v3 with some of the fixes? Or have
+you put this into a branch somewhere already (I saw your other patch on
+top of this one). I fixed some style nits that were bugging me, as they
+didn't align to the kernel style.
+
+Thanks,
+-Beau
