@@ -2,37 +2,34 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB0C3C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Feb 2022 03:29:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E790C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Feb 2022 04:16:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234988AbiBWD3x (ORCPT
+        id S234607AbiBWERL (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 22 Feb 2022 22:29:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55680 "EHLO
+        Tue, 22 Feb 2022 23:17:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230404AbiBWD3w (ORCPT
+        with ESMTP id S231274AbiBWERK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 22 Feb 2022 22:29:52 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F74238DB9
-        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Feb 2022 19:29:26 -0800 (PST)
+        Tue, 22 Feb 2022 23:17:10 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B6B19C1C
+        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Feb 2022 20:16:42 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9A7A8B81CA4
-        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Feb 2022 03:29:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2196C340E8;
-        Wed, 23 Feb 2022 03:29:22 +0000 (UTC)
-Date:   Tue, 22 Feb 2022 22:29:21 -0500
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5DFB960AD3
+        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Feb 2022 04:16:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74932C340E7;
+        Wed, 23 Feb 2022 04:16:41 +0000 (UTC)
+Date:   Tue, 22 Feb 2022 23:16:39 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] libtracefs: Add user_events to libtracefs
- sources
-Message-ID: <20220222222921.4d9c2d70@rorschach.local.home>
-In-Reply-To: <20220222232316.14640-2-beaub@linux.microsoft.com>
-References: <20220222232316.14640-1-beaub@linux.microsoft.com>
-        <20220222232316.14640-2-beaub@linux.microsoft.com>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc:     Beau Belgrave <beaub@linux.microsoft.com>
+Subject: [PATCH] libtracefs: Use tracefs_warning() for
+ tracefs_user_event_record() errors
+Message-ID: <20220222231639.3ccfe44e@rorschach.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -41,35 +38,39 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 22 Feb 2022 15:23:14 -0800
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> The user events are scheduled to be included into Linux 5.18, which
-> register a special mmapped page to denote when the user event is enabled
-> (from an external source). This API adds a wrapper to the kernel
-> interface that makes it easy to register user events and test if they
-> are enabled and to record the event when it is.
-> 
-> Link:
-> https://lore.kernel.org/linux-trace-devel/20220121192833.GA3128@kbox/T/#m2bcf53c373fbeaba2c46d1a053b3174171167e4e
+Instead of hard coding fprintf() into the library, allow the application
+to control the output, and use tracefs_warning() instead.
+Also switch the setting of the errno, as tracefs_warning() will
+add a perror() to the message.
 
-I was afraid you would copy me ;-)
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ src/tracefs-userevents.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-After I sent the email, I noticed that claws-mail decided to line wrap
-that line putting the link on a different line than the Link tag. It
-was suppose to be:
+diff --git a/src/tracefs-userevents.c b/src/tracefs-userevents.c
+index ccd511b3045d..7da6aa35bf12 100644
+--- a/src/tracefs-userevents.c
++++ b/src/tracefs-userevents.c
+@@ -504,13 +504,13 @@ int tracefs_user_event_record(struct tracefs_user_event *event,
+ 	return writev(e->group->fd, head, used);
+ 
+ bad_length:
+-	fprintf(stderr, "Bad user_event item length at index %d\n",
+-		used - 1);
+ 	errno = EINVAL;
++	tracefs_warning("Bad user_event item length at index %d\n",
++		used - 1);
+ 	return -1;
+ 
+ bad_count:
+-	fprintf(stderr, "Too many user_event items passed\n");
+ 	errno = E2BIG;
++	tracefs_warning("Too many user_event items passed\n");
+ 	return -1;
+ }
+-- 
+2.34.1
 
-Link: https://lore.kernel.org/linux-trace-devel/20220121192833.GA3128@kbox/T/#m2bcf53c373fbeaba2c46d1a053b3174171167e4e
-
-But claws-mail decided otherwise :-p
-
-And worse, it did it while it was not in my editor view, so I had no
-idea it did it. That's a bug in claws-mail that has been bothering me
-for some time.
-
--- Steve
-
-> 
-> Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
-> ---
->
