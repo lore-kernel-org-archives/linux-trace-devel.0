@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38C39C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Feb 2022 00:30:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0C35C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Feb 2022 00:30:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234981AbiBWAaq (ORCPT
+        id S233002AbiBWAap (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 22 Feb 2022 19:30:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35952 "EHLO
+        Tue, 22 Feb 2022 19:30:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236186AbiBWAao (ORCPT
+        with ESMTP id S235105AbiBWAam (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 22 Feb 2022 19:30:44 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA9555BEF
-        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Feb 2022 16:30:18 -0800 (PST)
+        Tue, 22 Feb 2022 19:30:42 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682C855BCF
+        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Feb 2022 16:30:16 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 9E8EACE1992
-        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Feb 2022 00:30:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85A79C340F5;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AA963612FE
+        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Feb 2022 00:30:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88160C340F7;
         Wed, 23 Feb 2022 00:30:14 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1nMfXp-005bGV-HS;
+        id 1nMfXp-005bGZ-IJ;
         Tue, 22 Feb 2022 19:30:13 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 07/11] libtracefs: Add documentation for tracefs_iterate_stop()
-Date:   Tue, 22 Feb 2022 19:30:08 -0500
-Message-Id: <20220223003012.1334741-8-rostedt@goodmis.org>
+Subject: [PATCH 08/11] libtracefs: Add documentation for tracefs_option_id()
+Date:   Tue, 22 Feb 2022 19:30:09 -0500
+Message-Id: <20220223003012.1334741-9-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220223003012.1334741-1-rostedt@goodmis.org>
 References: <20220223003012.1334741-1-rostedt@goodmis.org>
@@ -44,62 +44,71 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The function tracefs_iterate_stop() is missing from the man pages.
+The function tracefs_option_id() is missing from the man pages.
 
 Add it.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/libtracefs-events.txt | 9 +++++++--
- Documentation/libtracefs.txt        | 1 +
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ Documentation/libtracefs-option-get.txt | 11 +++++++++--
+ Documentation/libtracefs.txt            |  1 +
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/libtracefs-events.txt b/Documentation/libtracefs-events.txt
-index 3c2b95dcc762..f998c79b04ec 100644
---- a/Documentation/libtracefs-events.txt
-+++ b/Documentation/libtracefs-events.txt
+diff --git a/Documentation/libtracefs-option-get.txt b/Documentation/libtracefs-option-get.txt
+index dce5afab4894..8a688a7dd8f2 100644
+--- a/Documentation/libtracefs-option-get.txt
++++ b/Documentation/libtracefs-option-get.txt
 @@ -3,8 +3,8 @@ libtracefs(3)
  
  NAME
  ----
--tracefs_event_systems, tracefs_system_events, tracefs_event_enable,
--tracefs_event_disable,  tracefs_iterate_raw_events - Work with trace systems and events.
-+tracefs_event_systems, tracefs_system_events, tracefs_event_enable, tracefs_event_disable,
-+tracefs_iterate_raw_events, tracefs_iterate_stop - Work with trace systems and events.
+-tracefs_options_get_supported, tracefs_option_is_supported,
+-tracefs_options_get_enabled, tracefs_option_is_enabled, tracefs_option_mask_is_set
++tracefs_options_get_supported, tracefs_option_is_supported, tracefs_options_get_enabled,
++tracefs_option_is_enabled, tracefs_option_mask_is_set, tracefs_option_id
+ - Get and check ftrace options.
  
  SYNOPSIS
- --------
-@@ -22,6 +22,7 @@ int *tracefs_iterate_raw_events*(struct tep_handle pass:[*]_tep_, struct tracefs
- 				 cpu_set_t pass:[*]_cpus_, int _cpu_size_,
- 				 int (pass:[*]_callback_)(struct tep_event pass:[*], struct tep_record pass:[*], int, void pass:[*]),
- 				 void pass:[*]_callback_context_);
-+void *tracefs_iterate_stop*(struct tracefs_instance pass:[*]_instance_);
- 
+@@ -18,6 +18,7 @@ bool *tracefs_option_is_supported*(struct tracefs_instance pass:[*]_instance_, e
+ const struct tracefs_options_mask pass:[*]*tracefs_options_get_enabled*(struct tracefs_instance pass:[*]_instance_);
+ bool *tracefs_option_is_enabled*(struct tracefs_instance pass:[*]_instance_, enum tracefs_option_id _id_);
+ bool *tracefs_option_mask_is_set*(const struct tracefs_options_mask *options, enum tracefs_option_id id);
++enum tracefs_option_id *tracefs_option_id*(const char pass:[*]_name_);
  --
  
-@@ -75,6 +76,10 @@ record is; The record representing the event; The CPU that the event
- occurred on; and a pointer to user specified _callback_context_. If the _callback_
- returns non-zero, the iteration stops.
+ DESCRIPTION
+@@ -43,6 +44,9 @@ given _instance_. If _instance_ is NULL, the top trace instance is used.
+ The *tracefs_option_mask_is_set()* function checks if the bit, corresponding to the option with _id_ is
+ set in the _options_ bitmask returned from *tracefs_option_get_enabled()* and *tracefs_option_is_supported()*.
  
-+Use *tracefs_iterate_stop()* to force a executing *tracefs_iterate_raw_events()*
-+to halt. This can be called from either a callback that is called by
-+the iterator (even though a return of non-zero will stop it), or from another
-+thread.
- 
++The *tracefs_option_id()* converts an option _name_ into its corresponding id, if it is found.
++This allows to find the option _id_ to use in the other functions if only the _name_ is known.
++
  RETURN VALUE
  ------------
+ The *tracefs_options_get_supported()* and *tracefs_options_get_enabled()* functions, on success,
+@@ -56,6 +60,9 @@ option in supported / enabled, or false otherwise.
+ The *tracefs_option_mask_is_set()* returns true if the corresponding option is set in the mask
+ or false otherwise.
+ 
++The *tracefs_option_id()* returns the corresponding id defined by *tracefs_options*(3) from
++the given _name_. If the _name_ can not be found, then TRACEFS_OPTION_INVALID is returned.
++
+ EXAMPLE
+ -------
+ [source,c]
 diff --git a/Documentation/libtracefs.txt b/Documentation/libtracefs.txt
-index ad4d5849954d..0e339af60f4f 100644
+index 0e339af60f4f..44629e32d202 100644
 --- a/Documentation/libtracefs.txt
 +++ b/Documentation/libtracefs.txt
-@@ -52,6 +52,7 @@ Trace events:
- 	int *tracefs_event_disable*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_system_,
-                             const char pass:[*]_event_);
- 	int *tracefs_iterate_raw_events*(struct tep_handle pass:[*]_tep_, struct tracefs_instance pass:[*]_instance_, cpu_set_t pass:[*]_cpus_, int _cpu_size_, int (pass:[*]_callback_)(struct tep_event pass:[*], struct tep_record pass:[*], int, void pass:[*]), void pass:[*]_callback_context_);
-+	void *tracefs_iterate_stop*(struct tracefs_instance pass:[*]_instance_);
- 	struct tep_handle pass:[*]*tracefs_local_events*(const char pass:[*]_tracing_dir_);
- 	struct tep_handle pass:[*]*tracefs_local_events_system*(const char pass:[*]_tracing_dir_, const char pass:[*] const pass:[*]_sys_names_);
- 	int *tracefs_fill_local_events*(const char pass:[*]_tracing_dir_, struct tep_handle pass:[*]_tep_, int pass:[*]_parsing_failures_);
+@@ -97,6 +97,7 @@ Trace options:
+ 	int *tracefs_option_enable*(struct tracefs_instance pass:[*]_instance_, enum tracefs_option_id _id_);
+ 	int *tracefs_option_disable*(struct tracefs_instance pass:[*]_instance_, enum tracefs_option_id _id_);
+ 	const char pass:[*]*tracefs_option_name*(enum tracefs_option_id _id_);
++	enum tracefs_option_id *tracefs_option_id*(const char pass:[*]_name_);
+ 
+ Ftrace tracers:
+ 	char pass:[*]pass:[*]*tracefs_tracers*(const char pass:[*]_tracing_dir_);
 -- 
 2.34.1
 
