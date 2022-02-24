@@ -2,33 +2,33 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C87DDC43217
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Feb 2022 23:40:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87429C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 24 Feb 2022 00:10:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245000AbiBWXkb (ORCPT
+        id S245147AbiBXAK0 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 23 Feb 2022 18:40:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34538 "EHLO
+        Wed, 23 Feb 2022 19:10:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244999AbiBWXkZ (ORCPT
+        with ESMTP id S245143AbiBXAKZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 23 Feb 2022 18:40:25 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296845AEE2;
-        Wed, 23 Feb 2022 15:39:45 -0800 (PST)
+        Wed, 23 Feb 2022 19:10:25 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA4E5F24D;
+        Wed, 23 Feb 2022 16:09:57 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 19D10CE1CF0;
-        Wed, 23 Feb 2022 23:39:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5055CC340F5;
-        Wed, 23 Feb 2022 23:39:41 +0000 (UTC)
-Date:   Wed, 23 Feb 2022 18:39:39 -0500
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EE05160B49;
+        Thu, 24 Feb 2022 00:09:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 491C0C340E7;
+        Thu, 24 Feb 2022 00:09:54 +0000 (UTC)
+Date:   Wed, 23 Feb 2022 19:09:52 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     LKML <linux-kernel@vger.kernel.org>,
-        "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>,
-        Linux-trace Users <linux-trace-users@vger.kernel.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        "linux-trace-users@vger.kernel.org" 
+        <linux-trace-users@vger.kernel.org>,
         Daniel Bristot de Oliveira <bristot@redhat.com>
 Cc:     Zamir SUN <sztsian@gmail.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -40,11 +40,11 @@ Cc:     Zamir SUN <sztsian@gmail.com>,
         Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
         Tony Jones <tonyj@suse.de>, John Kacur <jkacur@redhat.com>,
         Clark Williams <williams@redhat.com>,
-        Al Stone <ahs3@debian.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Jes Sorensen <jes.sorensen@gmail.com>
-Subject: [ANNOUNCE] libtracefs 1.3
-Message-ID: <20220223183939.3650aabd@rorschach.local.home>
+Subject: Re: [ANNOUNCE] libtracefs 1.3
+Message-ID: <20220223190952.084f4685@rorschach.local.home>
+In-Reply-To: <20220223183939.3650aabd@rorschach.local.home>
+References: <20220223183939.3650aabd@rorschach.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -53,152 +53,19 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Long over due, but libtracefs 1.3 has finally been released!
+[ Resend as one of my emails was corrupted]
 
-With 90 new interfaces, it makes accessing tracefs much simpler.
+On Wed, 23 Feb 2022 18:39:39 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Official release notes:
+> Long over due, but libtracefs 1.3 has finally been released!
 
-libtracefs 1.3
+And I forgot to post the links:
 
-Critical:
- - Optimized string list handling. It was always stated that some string
-   lists must be freed with tracefs_list_free(), and now it is mandatory, as
-   metadata is used to store the size, and normal freeing of the list will
-   cause memory issues.
+git repo: https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
 
-Fixes:
- - More consistency with errno values
+tarball: https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/snapshot/libtracefs-1.3.0.tar.gz
 
-Notes:
- - sqlhist is now officially built
- - make samples creates executables in bin/ from examples in the man pages.
-
-New methods:
-
- - New methods for setting and reading affinity
-    tracefs_instance_set_affinity_set()
-    tracefs_instance_set_affinity_raw()
-    tracefs_instance_set_affinity()
-    tracefs_instance_get_affinity()
-    tracefs_instance_get_affinity_raw()
-    tracefs_instance_get_affinity_set()
-
- - New method to see the system tracers
-    tracefs_instances()
-
- - New methods to read and clear the error log
-    tracefs_error_last()
-    tracefs_error_all()
-    tracefs_error_clear()
-
- - New methods to modify the string lists
-    tracefs_list_add()
-    tracefs_list_size()
-
- - New method to stop the iterator over raw events
-    tracefs_iterate_stop()
-
- - New methods to make it easier to access event files
-    tracefs_event_get_file()
-    tracefs_event_file_read()
-    tracefs_event_file_write()
-    tracefs_event_file_append()
-    tracefs_event_file_clear()
-    tracefs_event_file_exists()
-
- - New method to get the available filter functions
-    tracefs_filter_functions()
-
- - New methods to enable or disable tracers
-    tracefs_tracer_set()
-    tracefs_tracer_clear()
-
- - New methods for streaming the trace_pipe file
-    tracefs_trace_pipe_stream()
-    tracefs_trace_pipe_print()
-    tracefs_trace_pipe_stop()
-
- - New methods for creating, modifying and destroying dynamic events
-    tracefs_dynevent_create()
-    tracefs_dynevent_destroy()
-    tracefs_dynevent_destroy_all()
-    tracefs_dynevent_free()
-    tracefs_dynevent_list_free()
-    tracefs_dynevent_get_all()
-    tracefs_dynevent_get()
-    tracefs_dynevent_info()
-    tracefs_dynevent_get_event()
-
- - New method to create an event probe (then use dynamic methods above)
-    tracefs_eprobe_alloc()
-
- - New methods to create kprobes and kretprobes
-    tracefs_kprobe_alloc()
-    tracefs_kretprobe_alloc()
-    tracefs_kprobe_raw()
-    tracefs_kretprobe_raw()
-
- - New methods for creating, modifying and destroying histograms
-    tracefs_hist_free()
-    tracefs_hist_alloc()
-    tracefs_hist_alloc_2d()
-    tracefs_hist_alloc_nd()
-    tracefs_hist_get_name()
-    tracefs_hist_get_event()
-    tracefs_hist_get_system()
-    tracefs_hist_add_key()
-    tracefs_hist_add_value()
-    tracefs_hist_add_sort_key()
-    tracefs_hist_set_sort_key()
-    tracefs_hist_sort_key_direction()
-    tracefs_hist_add_name()
-    tracefs_hist_append_filter()
-    tracefs_hist_echo_cmd()
-    tracefs_hist_command()
-    tracefs_hist_start()
-    tracefs_hist_pause()
-    tracefs_hist_continue()
-    tracefs_hist_reset()
-    tracefs_hist_destroy()
-
- - New methods for creating, modifying and destroying synthetic events
-    tracefs_synth_get_name()
-    tracefs_synth *tracefs_synth_alloc()
-    tracefs_synth_add_match_field()
-    tracefs_synth_add_compare_field()
-    tracefs_synth_add_start_field()
-    tracefs_synth_add_end_field()
-    tracefs_synth_append_start_filter()
-    tracefs_synth_append_end_filter()
-    tracefs_synth_trace()
-    tracefs_synth_snapshot()
-    tracefs_synth_save()
-    tracefs_synth_complete()
-    tracefs_synth_get_start_hist()
-    tracefs_synth_create()
-    tracefs_synth_destroy()
-    tracefs_synth_free()
-    tracefs_synth_echo_cmd()
-    tracefs_synth_raw_fmt()
-    tracefs_synth_show_event()
-    tracefs_synth_show_start_hist()
-    tracefs_synth_show_end_hist()
-    tracefs_synth_get_event()
-
- - New methods to modify event filters
-    tracefs_filter_string_append()
-    tracefs_filter_string_verify()
-    tracefs_event_filter_apply()
-    tracefs_event_filter_clear()
-    tracefs_event_append_filter()
-    tracefs_event_verify_filter()
-
- - New method to create a synthetic event via a SQL string
-    tracefs_sql()
-    The man page comes with its own program (sqlhist).
-
-Enjoy!
+man pages: https://www.trace-cmd.org/Documentation/libtracefs/libtracefs.html
 
 -- Steve
-
