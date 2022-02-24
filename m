@@ -2,35 +2,32 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 888F3C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 24 Feb 2022 01:52:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D19DAC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 24 Feb 2022 03:04:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbiBXBxB (ORCPT
+        id S230182AbiBXDFL (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 23 Feb 2022 20:53:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53600 "EHLO
+        Wed, 23 Feb 2022 22:05:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbiBXBwv (ORCPT
+        with ESMTP id S229635AbiBXDFK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 23 Feb 2022 20:52:51 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3853A3CFC8
-        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Feb 2022 17:52:22 -0800 (PST)
+        Wed, 23 Feb 2022 22:05:10 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 676612465DD
+        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Feb 2022 19:04:41 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E0596B8235A
-        for <linux-trace-devel@vger.kernel.org>; Thu, 24 Feb 2022 01:52:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F1BAC340E7;
-        Thu, 24 Feb 2022 01:52:19 +0000 (UTC)
-Date:   Wed, 23 Feb 2022 20:52:17 -0500
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0250B614F5
+        for <linux-trace-devel@vger.kernel.org>; Thu, 24 Feb 2022 03:04:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BB9AC340E7
+        for <linux-trace-devel@vger.kernel.org>; Thu, 24 Feb 2022 03:04:40 +0000 (UTC)
+Date:   Wed, 23 Feb 2022 22:04:38 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH] libtracefs: Add define for ALL dynamic events
-Message-ID: <20220223205217.2d7ea5b0@rorschach.local.home>
-In-Reply-To: <20220214080241.634290-1-tz.stoyanov@gmail.com>
-References: <20220214080241.634290-1-tz.stoyanov@gmail.com>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd report: Print version of file being read
+Message-ID: <20220223220438.0797a6f8@rorschach.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -39,22 +36,48 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 14 Feb 2022 10:02:41 +0200
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> Some of the tracefs APIs for dynamic events accept bitmask of events. If
-> a caller wants to address all types of events, it should list them in
-> the bitmask. This logic is fragile. When a new type of dynamic event is
-> introduced, the API callers should be modified. That's why a new define
-> is added, part of the library API, to address all types of dynamic
-> events.
-> 
-> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+The print of the version is no longer done by default. This should be, but
+was changed when moved to the libtracecmd, which now uses tracecmd_info()
+to output it. But since default loglevel is TEP_LOG_CRITICAL it is not
+displayed.
 
-And of course, after I release 1.3, I discovered I forgot about this patch :-p
+Set the default loglevel for tracecmd to TEP_LOG_INFO, as tracecmd is not
+as noisy as the other libraries may be.
 
-Well, it's usually a tradition to release a .1 right after a .0 due to
-something stupid I did :-/
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ lib/trace-cmd/trace-input.c | 2 +-
+ lib/trace-cmd/trace-util.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
--- Steve
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index ae3a9bbd01e1..b7f7c58fa90e 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -4168,7 +4168,7 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
+ 	version = read_string(handle);
+ 	if (!version)
+ 		goto failed_read;
+-	tracecmd_info("version = %s\n", version);
++	tracecmd_info("version = %s", version);
+ 	ver = strtol(version, NULL, 10);
+ 	if (!ver && errno)
+ 		goto failed_read;
+diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
+index 2cf8974ef4ee..91e8a30fb90b 100644
+--- a/lib/trace-cmd/trace-util.c
++++ b/lib/trace-cmd/trace-util.c
+@@ -30,7 +30,7 @@
+ #define PROC_STACK_FILE "/proc/sys/kernel/stack_tracer_enabled"
+ 
+ static bool debug;
+-static int log_level = TEP_LOG_CRITICAL;
++static int log_level = TEP_LOG_INFO;
+ static FILE *logfp;
+ 
+ const static struct {
+-- 
+2.34.1
+
