@@ -2,86 +2,75 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 095D8C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  1 Mar 2022 02:39:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E13EC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  1 Mar 2022 21:01:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230243AbiCACkf (ORCPT
+        id S236863AbiCAVCI (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 28 Feb 2022 21:40:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42900 "EHLO
+        Tue, 1 Mar 2022 16:02:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbiCACke (ORCPT
+        with ESMTP id S235428AbiCAVCH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 28 Feb 2022 21:40:34 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B268C277;
-        Mon, 28 Feb 2022 18:39:54 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id u16so12833167pfg.12;
-        Mon, 28 Feb 2022 18:39:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=kcdez1q8y9q7LrbJOwiNYeT3i0fDms8O4Aua7+c9gp0=;
-        b=iO5J6ZS8Goc3nT1f+CVQJHfvR7JpdoDWPwUnFTS7t2EL1QeMvs38g8HtkrRdrRKLAn
-         /H2bWfEXZDdld5cYX20oTsuXMzEq+mPb8Nhpo3olqxmnzDHVLCARiPZRltbMNILPza/A
-         phRIHj+cKMk1xOSJhysZHtJ6QWhKGYqsYPo7bwfUqilY7OZ3UzbDZ/0Cp+8iI+sxHI4F
-         4W4EvLhFXXTJZGo/xD3kIpHYYHbTJ/1okXa5xyqr0BtMxeOlFUGs5crHgRuQLi+tK3xg
-         VUHrfp/ECk/ADgONdcH/90FfkplUwMdYy8PKBA9efUR4SkEo9MiqUC2NA8G0AneJT4r4
-         ySSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=kcdez1q8y9q7LrbJOwiNYeT3i0fDms8O4Aua7+c9gp0=;
-        b=iU+gHy8VnIpW1gCHp6l5eyaBwjYUxCo/bXtmxfCB5rJ/3Pcx+TDSpdiaJeTPzFOdhG
-         uPlOeTThBKYrH+s8EHhSxSnlyGDqifKx7WxYvKS6RnozcHOpVZVmFLX2mKN5rczhiDwH
-         oTOr52Q22etbjwuF8zSmytKL+17qSACreAh1IMOFSMUUZGP8wexRBYVe2mRD2mEhJk/X
-         aDbu1S2dTQ8nzljVJ/X8WyNZGlRAYrB6hCDLGCTyFYdJOQO7b1s8HQEQZfAmA9vE1OXW
-         QLSafwKx1dNdQpKTm8oZFs92JncS5WdrQN10/FBxFiLh81p+QqoZff8qhyeUKki3EM1W
-         /sTQ==
-X-Gm-Message-State: AOAM530CH7S7XW6UCDtXkV8HVCnUIeRi4Usal/6NQqMKCqTGio9SOrms
-        i65VDAjDlvqb1ngAKykTW64=
-X-Google-Smtp-Source: ABdhPJwSGvmoASy2vDfJkotJkQu13QOqReCFlvagBwZgJqAFPS/ix2lUlTJA+sBvWsCZNO84qOV8lg==
-X-Received: by 2002:a63:641:0:b0:374:47f2:3cd7 with SMTP id 62-20020a630641000000b0037447f23cd7mr20174277pgg.24.1646102394284;
-        Mon, 28 Feb 2022 18:39:54 -0800 (PST)
-Received: from meizu.meizu.com ([137.59.103.163])
-        by smtp.gmail.com with ESMTPSA id y8-20020a056a00180800b004e156f7191esm14328376pfa.213.2022.02.28.18.39.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 28 Feb 2022 18:39:53 -0800 (PST)
-From:   Haowen Bai <baihaowen88@gmail.com>
-X-Google-Original-From: Haowen Bai <baihaowen@meizu.com>
-To:     bristot@kernel.org, rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Haowen Bai <baihaowen@meizu.com>,
-        Haowen Bai <baihaowen88@gmail.com>
-Subject: [PATCH] rtla/osnoise: remove unneeded semicolon
-Date:   Tue,  1 Mar 2022 10:39:49 +0800
-Message-Id: <1646102389-21268-1-git-send-email-baihaowen@meizu.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 1 Mar 2022 16:02:07 -0500
+Received: from gateway24.websitewelcome.com (gateway24.websitewelcome.com [192.185.51.36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E5FB70337
+        for <linux-trace-devel@vger.kernel.org>; Tue,  1 Mar 2022 13:01:26 -0800 (PST)
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway24.websitewelcome.com (Postfix) with ESMTP id 006E64300A
+        for <linux-trace-devel@vger.kernel.org>; Tue,  1 Mar 2022 15:01:26 -0600 (CST)
+Received: from gator4132.hostgator.com ([192.185.4.144])
+        by cmsmtp with SMTP
+        id P9afnFDZERnrrP9afn8Rad; Tue, 01 Mar 2022 14:59:25 -0600
+X-Authority-Reason: nr=8
+Received: from host-95-232-30-176.retail.telecomitalia.it ([95.232.30.176]:40064 helo=[10.0.0.45])
+        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <bristot@kernel.org>)
+        id 1nP9af-002NW7-A5; Tue, 01 Mar 2022 14:59:25 -0600
+Message-ID: <42012169-2d21-73ef-95b7-abd4d2ddf34c@kernel.org>
+Date:   Tue, 1 Mar 2022 21:59:22 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH] rtla: Set /dev/cpu_dma_latency to avoid exit from idle
+ latencies
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
+References: <c74be7f76941cd79404d4dcddd1b8ea2183de38d.1645641162.git.bristot@kernel.org>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <c74be7f76941cd79404d4dcddd1b8ea2183de38d.1645641162.git.bristot@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - kernel.org
+X-BWhitelist: no
+X-Source-IP: 95.232.30.176
+X-Source-L: No
+X-Exim-ID: 1nP9af-002NW7-A5
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: host-95-232-30-176.retail.telecomitalia.it ([10.0.0.45]) [95.232.30.176]:40064
+X-Source-Auth: kernel@bristot.me
+X-Email-Count: 2
+X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
+X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Fixes coccicheck warning:
-  tools/tracing/rtla/src/osnoise_hist.c:776:2-3: Unneeded semicolon
+On 2/23/22 19:37, Daniel Bristot de Oliveira wrote:
+> Set /dev/cpu_dma_latency to 0 to avoid having exit from idle
+> states latencies influencing in the analysis.
+> 
 
-Signed-off-by: Haowen Bai <baihaowen88@gmail.com>
----
- tools/tracing/rtla/src/osnoise_hist.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sending a v2 of this patch together with a new version of rtla features patch
+series.
 
-diff --git a/tools/tracing/rtla/src/osnoise_hist.c b/tools/tracing/rtla/src/osnoise_hist.c
-index 52c053c..f128f20 100644
---- a/tools/tracing/rtla/src/osnoise_hist.c
-+++ b/tools/tracing/rtla/src/osnoise_hist.c
-@@ -773,7 +773,7 @@ int osnoise_hist_main(int argc, char *argv[])
- 
- 		if (!tracefs_trace_is_on(trace->inst))
- 			break;
--	};
-+	}
- 
- 	osnoise_read_trace_hist(tool);
- 
--- 
-2.7.4
+-- Daniel
 
