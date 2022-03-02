@@ -2,33 +2,33 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FEF0C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  2 Mar 2022 19:03:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 599A7C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  2 Mar 2022 19:04:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244861AbiCBTES convert rfc822-to-8bit (ORCPT
+        id S237141AbiCBTEz convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 2 Mar 2022 14:04:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38614 "EHLO
+        Wed, 2 Mar 2022 14:04:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244856AbiCBTER (ORCPT
+        with ESMTP id S244881AbiCBTEv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 2 Mar 2022 14:04:17 -0500
+        Wed, 2 Mar 2022 14:04:51 -0500
 Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [207.211.30.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B272352E0E
-        for <linux-trace-devel@vger.kernel.org>; Wed,  2 Mar 2022 11:03:20 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 75D6B57B26
+        for <linux-trace-devel@vger.kernel.org>; Wed,  2 Mar 2022 11:04:00 -0800 (PST)
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-455-NZhuc65vOBaQ65zdZKFB-g-1; Wed, 02 Mar 2022 14:03:18 -0500
-X-MC-Unique: NZhuc65vOBaQ65zdZKFB-g-1
+ us-mta-487-mf4lWGBZOLebSVfZQWgNwg-1; Wed, 02 Mar 2022 14:03:56 -0500
+X-MC-Unique: mf4lWGBZOLebSVfZQWgNwg-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 334F8100C618;
-        Wed,  2 Mar 2022 19:03:17 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1C58A84A5F2;
+        Wed,  2 Mar 2022 19:03:55 +0000 (UTC)
 Received: from x1.com (unknown [10.22.32.168])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9D69519C59;
-        Wed,  2 Mar 2022 19:03:13 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B3DB319C59;
+        Wed,  2 Mar 2022 19:03:52 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
@@ -36,9 +36,9 @@ Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Clark Williams <williams@redhat.com>,
         Juri Lelli <juri.lelli@redhat.com>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: [PATCH V3 09/15] rtla/trace: Add trace event filter helpers
-Date:   Wed,  2 Mar 2022 20:01:34 +0100
-Message-Id: <12623b1684684549d53b90f4bf66fae44584fd14.1646247211.git.bristot@kernel.org>
+Subject: [PATCH V3 11/15] rtla/trace: Save event histogram output to a file
+Date:   Wed,  2 Mar 2022 20:01:36 +0100
+Message-Id: <b5c906af31d4e022ffe87fb0848fac5c089087c8.1646247211.git.bristot@kernel.org>
 In-Reply-To: <cover.1646247211.git.bristot@kernel.org>
 References: <cover.1646247211.git.bristot@kernel.org>
 MIME-Version: 1.0
@@ -53,168 +53,111 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add a set of helper functions to allow rtla tools to filter events
-in the trace instance.
+The hist: trigger generates a histogram in the file sys/event/hist.
+If the hist: trigger is used, automatically save the histogram output of
+the event sys:event in the sys_event_hist.txt file.
 
 Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Jonathan Corbet <corbet@lwn.net>
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- tools/tracing/rtla/src/trace.c | 83 ++++++++++++++++++++++++++++++++++
- tools/tracing/rtla/src/trace.h |  3 ++
- 2 files changed, 86 insertions(+)
+ Documentation/tools/rtla/common_options.rst | 10 +++-
+ tools/tracing/rtla/src/trace.c              | 53 +++++++++++++++++++++
+ 2 files changed, 62 insertions(+), 1 deletion(-)
 
+diff --git a/Documentation/tools/rtla/common_options.rst b/Documentation/tools/rtla/common_options.rst
+index afd45bae821f..af76df6205d4 100644
+--- a/Documentation/tools/rtla/common_options.rst
++++ b/Documentation/tools/rtla/common_options.rst
+@@ -23,7 +23,15 @@
+         Filter the previous **-e** *sys:event* event with *<filter>*. For further information about event filtering see https://www.kernel.org/doc/html/latest/trace/events.html#event-filtering.
+ 
+ **--trigger** *<trigger>*
+-        Enable a trace event trigger to the previous **-e** *sys:event*. For further information about event trigger see https://www.kernel.org/doc/html/latest/trace/events.html#event-triggers.
++        Enable a trace event trigger to the previous **-e** *sys:event*.
++        If the *hist:* trigger is activated, the output histogram will be automatically saved to a file named *system_event_hist.txt*.
++        For example, the command:
++
++        rtla <command> <mode> -t -e osnoise:irq_noise --trigger="hist:key=desc,duration/1000:sort=desc,duration/1000:vals=hitcount"
++
++        Will automatically save the content of the histogram associated to *osnoise:irq_noise* event in *osnoise_irq_noise_hist.txt*.
++
++        For further information about event trigger see https://www.kernel.org/doc/html/latest/trace/events.html#event-triggers.
+ 
+ **-P**, **--priority** *o:prio|r:prio|f:prio|d:runtime:period*
+ 
 diff --git a/tools/tracing/rtla/src/trace.c b/tools/tracing/rtla/src/trace.c
-index 7f8661b2724d..ef44bab0c404 100644
+index ef44bab0c404..8249ec4d77cc 100644
 --- a/tools/tracing/rtla/src/trace.c
 +++ b/tools/tracing/rtla/src/trace.c
-@@ -204,6 +204,8 @@ static void trace_events_free(struct trace_events *events)
- 
- 		tevent = tevent->next;
- 
-+		if (free_event->filter)
-+			free(free_event->filter);
- 		if (free_event->trigger)
- 			free(free_event->trigger);
- 		free(free_event->system);
-@@ -237,6 +239,21 @@ struct trace_events *trace_event_alloc(const char *event_string)
- 	return tevent;
+@@ -296,6 +296,57 @@ static void trace_event_disable_filter(struct trace_instance *instance,
+ 			tevent->event ? : "*", tevent->filter);
  }
  
 +/*
-+ * trace_event_add_filter - record an event filter
++ * trace_event_save_hist - save the content of an event hist
++ *
++ * If the trigger is a hist: one, save the content of the hist file.
 + */
-+int trace_event_add_filter(struct trace_events *event, char *filter)
++static void trace_event_save_hist(struct trace_instance *instance,
++				  struct trace_events *tevent)
 +{
-+	if (event->filter)
-+		free(event->filter);
++	int retval, index, out_fd;
++	mode_t mode = 0644;
++	char path[1024];
++	char *hist;
 +
-+	event->filter = strdup(filter);
-+	if (!event->filter)
-+		return 1;
-+
-+	return 0;
-+}
-+
- /*
-  * trace_event_add_trigger - record an event trigger action
-  */
-@@ -252,6 +269,33 @@ int trace_event_add_trigger(struct trace_events *event, char *trigger)
- 	return 0;
- }
- 
-+/*
-+ * trace_event_disable_filter - disable an event filter
-+ */
-+static void trace_event_disable_filter(struct trace_instance *instance,
-+				       struct trace_events *tevent)
-+{
-+	char filter[1024];
-+	int retval;
-+
-+	if (!tevent->filter)
++	if (!tevent)
 +		return;
 +
-+	if (!tevent->filter_enabled)
++	/* trigger enables hist */
++	if (!tevent->trigger)
 +		return;
 +
-+	debug_msg("Disabling %s:%s filter %s\n", tevent->system,
-+		  tevent->event ? : "*", tevent->filter);
++	/* is this a hist: trigger? */
++	retval = strncmp(tevent->trigger, "hist:", strlen("hist:"));
++	if (retval)
++		return;
 +
-+	snprintf(filter, 1024, "!%s\n", tevent->filter);
++	snprintf(path, 1024, "%s_%s_hist.txt", tevent->system, tevent->event);
 +
-+	retval = tracefs_event_file_write(instance->inst, tevent->system,
-+					  tevent->event, "filter", filter);
-+	if (retval < 0)
-+		err_msg("Error disabling %s:%s filter %s\n", tevent->system,
-+			tevent->event ? : "*", tevent->filter);
++	printf("  Saving event %s:%s hist to %s\n", tevent->system, tevent->event, path);
++
++	out_fd = creat(path, mode);
++	if (out_fd < 0) {
++		err_msg("  Failed to create %s output file\n", path);
++		return;
++	}
++
++	hist = tracefs_event_file_read(instance->inst, tevent->system, tevent->event, "hist", 0);
++	if (!hist) {
++		err_msg("  Failed to read %s:%s hist file\n", tevent->system, tevent->event);
++		goto out_close;
++	}
++
++	index = 0;
++	do {
++		index += write(out_fd, &hist[index], strlen(hist) - index);
++	} while (index < strlen(hist));
++
++	free(hist);
++out_close:
++	close(out_fd);
 +}
 +
  /*
   * trace_event_disable_trigger - disable an event trigger
   */
-@@ -293,6 +337,7 @@ void trace_events_disable(struct trace_instance *instance,
- 	while (tevent) {
- 		debug_msg("Disabling event %s:%s\n", tevent->system, tevent->event ? : "*");
- 		if (tevent->enabled) {
-+			trace_event_disable_filter(instance, tevent);
- 			trace_event_disable_trigger(instance, tevent);
- 			tracefs_event_disable(instance->inst, tevent->system, tevent->event);
- 		}
-@@ -302,6 +347,41 @@ void trace_events_disable(struct trace_instance *instance,
- 	}
- }
+@@ -314,6 +365,8 @@ static void trace_event_disable_trigger(struct trace_instance *instance,
+ 	debug_msg("Disabling %s:%s trigger %s\n", tevent->system,
+ 		  tevent->event ? : "*", tevent->trigger);
  
-+/*
-+ * trace_event_enable_filter - enable an event filter associated with an event
-+ */
-+static int trace_event_enable_filter(struct trace_instance *instance,
-+				     struct trace_events *tevent)
-+{
-+	char filter[1024];
-+	int retval;
++	trace_event_save_hist(instance, tevent);
 +
-+	if (!tevent->filter)
-+		return 0;
-+
-+	if (!tevent->event) {
-+		err_msg("Filter %s applies only for single events, not for all %s:* events\n",
-+			tevent->filter, tevent->system);
-+		return 1;
-+	}
-+
-+	snprintf(filter, 1024, "%s\n", tevent->filter);
-+
-+	debug_msg("Enabling %s:%s filter %s\n", tevent->system,
-+		  tevent->event ? : "*", tevent->filter);
-+
-+	retval = tracefs_event_file_write(instance->inst, tevent->system,
-+					  tevent->event, "filter", filter);
-+	if (retval < 0) {
-+		err_msg("Error enabling %s:%s filter %s\n", tevent->system,
-+			tevent->event ? : "*", tevent->filter);
-+		return 1;
-+	}
-+
-+	tevent->filter_enabled = 1;
-+	return 0;
-+}
-+
- /*
-  * trace_event_enable_trigger - enable an event trigger associated with an event
-  */
-@@ -356,6 +436,9 @@ int trace_events_enable(struct trace_instance *instance,
- 			return 1;
- 		}
+ 	snprintf(trigger, 1024, "!%s\n", tevent->trigger);
  
-+		retval = trace_event_enable_filter(instance, tevent);
-+		if (retval)
-+			return 1;
- 
- 		retval = trace_event_enable_trigger(instance, tevent);
- 		if (retval)
-diff --git a/tools/tracing/rtla/src/trace.h b/tools/tracing/rtla/src/trace.h
-index 856b26d93064..51ad344c600b 100644
---- a/tools/tracing/rtla/src/trace.h
-+++ b/tools/tracing/rtla/src/trace.h
-@@ -6,8 +6,10 @@ struct trace_events {
- 	struct trace_events *next;
- 	char *system;
- 	char *event;
-+	char *filter;
- 	char *trigger;
- 	char enabled;
-+	char filter_enabled;
- 	char trigger_enabled;
- };
- 
-@@ -43,4 +45,5 @@ void trace_events_destroy(struct trace_instance *instance,
- int trace_events_enable(struct trace_instance *instance,
- 			  struct trace_events *events);
- 
-+int trace_event_add_filter(struct trace_events *event, char *filter);
- int trace_event_add_trigger(struct trace_events *event, char *trigger);
+ 	retval = tracefs_event_file_write(instance->inst, tevent->system,
 -- 
 2.34.1
 
