@@ -2,59 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5361EC433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B90A9C433F5
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Mar 2022 05:57:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236045AbiCDF56 (ORCPT
+        id S236425AbiCDF57 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 4 Mar 2022 00:57:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48558 "EHLO
+        Fri, 4 Mar 2022 00:57:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236425AbiCDF5z (ORCPT
+        with ESMTP id S236265AbiCDF5y (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 4 Mar 2022 00:57:55 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12EE6EC5D7
-        for <linux-trace-devel@vger.kernel.org>; Thu,  3 Mar 2022 21:57:08 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id r10so11058730wrp.3
-        for <linux-trace-devel@vger.kernel.org>; Thu, 03 Mar 2022 21:57:08 -0800 (PST)
+        Fri, 4 Mar 2022 00:57:54 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8A1EC5DC
+        for <linux-trace-devel@vger.kernel.org>; Thu,  3 Mar 2022 21:57:07 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id i9-20020a1c3b09000000b00380f6f473b0so232288wma.1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 03 Mar 2022 21:57:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8FxFLGX1BEOBUVRtvIrxUM+uHMEWlXhooVRPrdsAHi4=;
-        b=KUfhPDHSwqg2zPwf/kYUbWPBjl5rCjzyp+R9OctcYtKypSbkvDgx69SQf2IHL+E8mV
-         RlFDXLXuu44JUje3BQDXQidDALUI3Z7oHKgKVfAT/L0uelnY4SrMp6wTB5wk5PCS2NRI
-         mySaqB7dUhpqWtHCbPSNDOykPhY9AlAGT4tvX32AcXa4Hv4hulMqISqRE5AFe41qfRo5
-         GuIEzwSv6AEv7kVeFl1rvoHzrgiAo57CMRWwUyatzWcfHHqt70nvQSCIFnTuNMg6or3Y
-         MaguHt8F/uWIeCJHCB9FX5nTm5JhW7hmyisqSf+l9Hw2s7s0KmF5MrjkE5d1PFQQBnhR
-         O40A==
+        bh=71i7Wft610lYhRSTxxvgqEXn/8Ru22/+yKbd1RBssnQ=;
+        b=JHetttTNycAGzds3Ov831jjUpHE5gwzCEx3oNAiLTzO4cu51cCXHQEwsj/yVtasrey
+         QYaXJfgQOMcv8I0uCR6C25iBaLsesk+XiCgRMUVlycAl7zbvkQCwGEOKZLcHMyDy8jq6
+         afdwl6B0cAb3G7MV8oM7H+HsfcvHjZGnsSwyrYtFd8RfdiA1/wXWQ90PvbjxBF9IpcMN
+         mU7BbtXw4x5yVOZFE5CUZp4C+QklOac5p2MHpet/Od8QpMUbqBmX/RjBDH2kpOz0q1jE
+         N+mIivnXd0kqbXUHLpfrT3rZ+E1lxc8B/3jG9EMelz7MlrS1/9jutjWU6nSit3BVKQ0x
+         J0mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8FxFLGX1BEOBUVRtvIrxUM+uHMEWlXhooVRPrdsAHi4=;
-        b=n96G8Cqa8p+n4/dzoUtwAJDFdaztqChA92/HqQ099agb2Akeo9QQskc74cvEFTE9+6
-         Zq193zOMV3CWCkAoJjorqSHO58+VYP3nTcUMge9XIQj+ChwX0RFbig8L4BRYVp3K7hrn
-         eptBW5FpCggzP62ifsX3AkdliTWT0kZf6sbRLOu7e7DDIyuEJFWODokMFdEGIO9MVLSG
-         VKf1vbCXiIY48klfjlJjeD7C+ypwdmTNtKzmvxgDZnxUUndR05d1I8hBo9TsAJrpurqu
-         QC5I4WioAQcuMkh3jguEpEnfAf2y5KQ3nluKjDY9WXzp0/0ZkQ6STMWhfefHXUwei7Rl
-         lu3w==
-X-Gm-Message-State: AOAM5336RMhNMeVeglrLlRhWIk+4b0nQla+oRmDYeQzBmQ4MRVdtzl3g
-        aAMJO7oA231QIsWxV7OX/y7CTA9eKuI=
-X-Google-Smtp-Source: ABdhPJxq6UDHg9oUSFk8Yr733Uaw7vRe6VWWr/NUU+1rVoAsw+iMmo4KP6CRuXNBaxZheOo+0wwc6Q==
-X-Received: by 2002:adf:e74a:0:b0:1f0:25cb:3ad5 with SMTP id c10-20020adfe74a000000b001f025cb3ad5mr8425339wrn.231.1646373426711;
-        Thu, 03 Mar 2022 21:57:06 -0800 (PST)
+        bh=71i7Wft610lYhRSTxxvgqEXn/8Ru22/+yKbd1RBssnQ=;
+        b=adoE/RGCcYuGPDAaAAEMD0XgaFcq9tUnpTts8Qwax/rWU7TjmeNv6hSS1G//HZ2jfx
+         Wowj4OIfHKyOB65rtK54H0tuoy8jCVd0ifL3WMik8e9QPd3sMWK05nM4DwZ7V8fCIkUC
+         lgwPMXMdR+FZGxfOVzVW1J+TEqxweK0hkzB25fPGzEvGFMi1OEOGLcoXCN3OLrVejbDf
+         awISp/2H7SHg/s9sFjNiiPFR2X+/1CAimgEjzfTcZRJ0ymJsJrOo78XHHH5a9kJX8I1i
+         Y5gOeJ1CJHxhI34HyOJl+dvTd9ix8TDVNI6MnOl05RTj7mlFEQOaKzDXAQ6GWhwZ8LqQ
+         ZF2w==
+X-Gm-Message-State: AOAM532kM9vLlAzeUGgrUnwai26ycT6s+hk80gKvPMeoyb4yWaFygG53
+        TpmVjqM5zvzB7FquPUwLnsy1V6LOALY=
+X-Google-Smtp-Source: ABdhPJwYRa8gcVCdl6+49VHBz09oc388BdCunnerTQ6t9kWbb8vBJsrB6N7d1GKvI/viU2uPZ3NIOQ==
+X-Received: by 2002:a1c:ed1a:0:b0:37f:a539:5d5e with SMTP id l26-20020a1ced1a000000b0037fa5395d5emr6393249wmh.37.1646373425668;
+        Thu, 03 Mar 2022 21:57:05 -0800 (PST)
 Received: from oberon.com ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id r10-20020a05600c35ca00b0038981d85ae8sm505074wmq.33.2022.03.03.21.57.05
+        by smtp.gmail.com with ESMTPSA id r10-20020a05600c35ca00b0038981d85ae8sm505074wmq.33.2022.03.03.21.57.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Mar 2022 21:57:06 -0800 (PST)
+        Thu, 03 Mar 2022 21:57:05 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     sebastian@breakpoint.cc, linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 5/5] trace-cmd: Use context hooks in zstd
-Date:   Fri,  4 Mar 2022 07:56:58 +0200
-Message-Id: <20220304055658.440904-6-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 4/5] trace-cmd: Add context to compression hooks
+Date:   Fri,  4 Mar 2022 07:56:57 +0200
+Message-Id: <20220304055658.440904-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220304055658.440904-1-tz.stoyanov@gmail.com>
 References: <20220304055658.440904-1-tz.stoyanov@gmail.com>
@@ -64,136 +64,228 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Using global compression context could be a limitation in multithreaded
-use cases. Use context hooks instead of global compression context.
+Some compression libraries require a context for compression and
+decompression. Currently the internal compression API does not have such
+context. That could cause problems in the future, if a multithread
+compression logic is implemented.
 
 Suggested-by: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-compress-zstd.c | 80 +++++++++++++++++++----------
- 1 file changed, 54 insertions(+), 26 deletions(-)
+ .../include/private/trace-cmd-private.h       |  8 ++--
+ lib/trace-cmd/trace-compress-zlib.c           |  6 +--
+ lib/trace-cmd/trace-compress-zstd.c           |  6 +--
+ lib/trace-cmd/trace-compress.c                | 38 ++++++++++++++-----
+ 4 files changed, 39 insertions(+), 19 deletions(-)
 
+diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
+index 45d89270..69343765 100644
+--- a/lib/trace-cmd/include/private/trace-cmd-private.h
++++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+@@ -518,10 +518,12 @@ struct tracecmd_compression_proto {
+ 	int weight;
+ 	const char *name;
+ 	const char *version;
+-	int (*compress)(const void *in, int in_bytes, void *out, int out_bytes);
+-	int (*uncompress)(const void *in, int in_bytes, void *out, int out_bytes);
+-	unsigned int (*compress_size)(unsigned int bytes);
++	int (*compress)(void *ctx, const void *in, int in_bytes, void *out, int out_bytes);
++	int (*uncompress)(void *ctx, const void *in, int in_bytes, void *out, int out_bytes);
++	unsigned int (*compress_size)(void *ctx, unsigned int bytes);
+ 	bool (*is_supported)(const char *name, const char *version);
++	void *(*new_context)(void);
++	void (*free_context)(void *ctx);
+ };
+ 
+ struct tracecmd_compression *tracecmd_compress_alloc(const char *name, const char *version,
+diff --git a/lib/trace-cmd/trace-compress-zlib.c b/lib/trace-cmd/trace-compress-zlib.c
+index fd43d879..413a0764 100644
+--- a/lib/trace-cmd/trace-compress-zlib.c
++++ b/lib/trace-cmd/trace-compress-zlib.c
+@@ -13,7 +13,7 @@
+ #define __ZLIB_NAME		"zlib"
+ #define __ZLIB_WEIGTH		10
+ 
+-static int zlib_compress(const void *in, int in_bytes, void *out, int out_bytes)
++static int zlib_compress(void *ctx, const void *in, int in_bytes, void *out, int out_bytes)
+ {
+ 	unsigned long obytes = out_bytes;
+ 	int ret;
+@@ -42,7 +42,7 @@ static int zlib_compress(const void *in, int in_bytes, void *out, int out_bytes)
+ 	return -1;
+ }
+ 
+-static int zlib_decompress(const void *in, int in_bytes, void *out, int out_bytes)
++static int zlib_decompress(void *ctx, const void *in, int in_bytes, void *out, int out_bytes)
+ {
+ 	unsigned long obytes = out_bytes;
+ 	int ret;
+@@ -71,7 +71,7 @@ static int zlib_decompress(const void *in, int in_bytes, void *out, int out_byte
+ 	return -1;
+ }
+ 
+-static unsigned int zlib_compress_bound(unsigned int in_bytes)
++static unsigned int zlib_compress_bound(void *ctx, unsigned int in_bytes)
+ {
+ 	return compressBound(in_bytes);
+ }
 diff --git a/lib/trace-cmd/trace-compress-zstd.c b/lib/trace-cmd/trace-compress-zstd.c
-index 98eaac00..3e42fc79 100644
+index eee4e5d6..98eaac00 100644
 --- a/lib/trace-cmd/trace-compress-zstd.c
 +++ b/lib/trace-cmd/trace-compress-zstd.c
-@@ -12,14 +12,20 @@
- #define __ZSTD_NAME		"zstd"
- #define __ZSTD_WEIGTH		5
+@@ -15,7 +15,7 @@
+ static ZSTD_CCtx *ctx_c;
+ static ZSTD_DCtx *ctx_d;
  
--static ZSTD_CCtx *ctx_c;
--static ZSTD_DCtx *ctx_d;
-+struct zstd_context {
-+	ZSTD_CCtx *ctx_c;
-+	ZSTD_DCtx *ctx_d;
-+};
- 
- static int zstd_compress(void *ctx, const void *in, int in_bytes, void *out, int out_bytes)
+-static int zstd_compress(const void *in, int in_bytes, void *out, int out_bytes)
++static int zstd_compress(void *ctx, const void *in, int in_bytes, void *out, int out_bytes)
  {
-+	struct zstd_context *context = ctx;
  	size_t ret;
  
--	ret = ZSTD_compress2(ctx_c, out, out_bytes, in, in_bytes);
-+	if (!ctx)
-+		return -1;
-+
-+	ret = ZSTD_compress2(context->ctx_c, out, out_bytes, in, in_bytes);
- 	if (ZSTD_isError(ret))
- 		return -1;
- 
-@@ -28,9 +34,13 @@ static int zstd_compress(void *ctx, const void *in, int in_bytes, void *out, int
- 
- static int zstd_decompress(void *ctx, const void *in, int in_bytes, void *out, int out_bytes)
- {
-+	struct zstd_context *context = ctx;
- 	size_t ret;
- 
--	ret = ZSTD_decompressDCtx(ctx_d, out, out_bytes, in, in_bytes);
-+	if (!ctx)
-+		return -1;
-+
-+	ret = ZSTD_decompressDCtx(context->ctx_d, out, out_bytes, in, in_bytes);
- 	if (ZSTD_isError(ret)) {
- 		errno = -EINVAL;
- 		return -1;
-@@ -55,11 +65,46 @@ static bool zstd_is_supported(const char *name, const char *version)
- 	return true;
+@@ -26,7 +26,7 @@ static int zstd_compress(const void *in, int in_bytes, void *out, int out_bytes)
+ 	return ret;
  }
  
-+static void *new_zstd_context(void)
-+{
-+	struct zstd_context *context;
-+	size_t r;
+-static int zstd_decompress(const void *in, int in_bytes, void *out, int out_bytes)
++static int zstd_decompress(void *ctx, const void *in, int in_bytes, void *out, int out_bytes)
+ {
+ 	size_t ret;
+ 
+@@ -40,7 +40,7 @@ static int zstd_decompress(const void *in, int in_bytes, void *out, int out_byte
+ 	return ret;
+ }
+ 
+-static unsigned int zstd_compress_bound(unsigned int in_bytes)
++static unsigned int zstd_compress_bound(void *ctx, unsigned int in_bytes)
+ {
+ 	return ZSTD_compressBound(in_bytes);
+ }
+diff --git a/lib/trace-cmd/trace-compress.c b/lib/trace-cmd/trace-compress.c
+index 6263439c..aa03d17c 100644
+--- a/lib/trace-cmd/trace-compress.c
++++ b/lib/trace-cmd/trace-compress.c
+@@ -18,10 +18,12 @@ struct compress_proto {
+ 	char *proto_version;
+ 	int weight;
+ 
+-	int (*compress_block)(const void *in, int in_bytes, void *out, int out_bytes);
+-	int (*uncompress_block)(const void *in,  int in_bytes, void *out, int out_bytes);
+-	unsigned int (*compress_size)(unsigned int bytes);
++	int (*compress_block)(void *ctx, const void *in, int in_bytes, void *out, int out_bytes);
++	int (*uncompress_block)(void *ctx, const void *in,  int in_bytes, void *out, int out_bytes);
++	unsigned int (*compress_size)(void *ctx, unsigned int bytes);
+ 	bool (*is_supported)(const char *name, const char *version);
++	void *(*new_context)(void);
++	void (*free_context)(void *ctx);
+ };
+ 
+ static struct compress_proto *proto_list;
+@@ -35,6 +37,7 @@ struct tracecmd_compression {
+ 	struct compress_proto		*proto;
+ 	struct tep_handle		*tep;
+ 	struct tracecmd_msg_handle	*msg_handle;
++	void				*context;
+ };
+ 
+ static int read_fd(int fd, char *dst, int len)
+@@ -271,7 +274,8 @@ int tracecmd_uncompress_block(struct tracecmd_compression *handle)
+ 	if (read_fd(handle->fd, bytes, s_compressed) < 0)
+ 		goto error;
+ 
+-	ret = handle->proto->uncompress_block(bytes, s_compressed, handle->buffer, size);
++	ret = handle->proto->uncompress_block(handle->context,
++					      bytes, s_compressed, handle->buffer, size);
+ 	if (ret < 0)
+ 		goto error;
+ 
+@@ -308,13 +312,13 @@ int tracecmd_compress_block(struct tracecmd_compression *handle)
+ 	    !handle->proto->compress_size || !handle->proto->compress_block)
+ 		return -1;
+ 
+-	size = handle->proto->compress_size(handle->pointer);
++	size = handle->proto->compress_size(handle->context, handle->pointer);
+ 
+ 	buf = malloc(size);
+ 	if (!buf)
+ 		return -1;
+ 
+-	ret = handle->proto->compress_block(handle->buffer, handle->pointer, buf, size);
++	ret = handle->proto->compress_block(handle->context, handle->buffer, handle->pointer, buf, size);
+ 	if (ret < 0)
+ 		goto out;
+ 
+@@ -443,6 +447,9 @@ struct tracecmd_compression *tracecmd_compress_alloc(const char *name, const cha
+ 	new->tep = tep;
+ 	new->msg_handle = msg_handle;
+ 	new->proto = proto;
++	if (proto->new_context)
++		new->context = proto->new_context();
 +
-+	context = calloc(1, sizeof(*context));
-+	if (!context)
-+		return NULL;
-+
-+	context->ctx_c = ZSTD_createCCtx();
-+	context->ctx_d = ZSTD_createDCtx();
-+	if (!context->ctx_c || !context->ctx_d)
-+		goto err;
-+
-+	r = ZSTD_CCtx_setParameter(context->ctx_c, ZSTD_c_contentSizeFlag, 0);
-+	if (ZSTD_isError(r))
-+		goto err;
-+
-+	return context;
-+err:
-+	ZSTD_freeCCtx(context->ctx_c);
-+	ZSTD_freeDCtx(context->ctx_d);
-+	free(context);
-+	return NULL;
-+}
-+static void free_zstd_context(void *ctx)
-+{
-+	struct zstd_context *context = ctx;
-+
-+	if (!ctx)
+ 	return new;
+ }
+ 
+@@ -452,7 +459,14 @@ struct tracecmd_compression *tracecmd_compress_alloc(const char *name, const cha
+  */
+ void tracecmd_compress_destroy(struct tracecmd_compression *handle)
+ {
++	if (!handle)
 +		return;
 +
-+	ZSTD_freeCCtx(context->ctx_c);
-+	ZSTD_freeDCtx(context->ctx_d);
-+	free(context);
-+}
+ 	tracecmd_compress_reset(handle);
 +
- int tracecmd_zstd_init(void)
- {
- 	struct tracecmd_compression_proto proto;
--	int ret = 0;
--	size_t r;
- 
- 	memset(&proto, 0, sizeof(proto));
- 	proto.name = __ZSTD_NAME;
-@@ -69,25 +114,8 @@ int tracecmd_zstd_init(void)
- 	proto.uncompress = zstd_decompress;
- 	proto.is_supported = zstd_is_supported;
- 	proto.compress_size = zstd_compress_bound;
-+	proto.new_context = new_zstd_context;
-+	proto.free_context = free_zstd_context;
- 
--	ctx_c = ZSTD_createCCtx();
--	ctx_d = ZSTD_createDCtx();
--	if (!ctx_c || !ctx_d)
--		goto err;
--
--	r = ZSTD_CCtx_setParameter(ctx_c, ZSTD_c_contentSizeFlag, 0);
--	if (ZSTD_isError(r))
--		goto err;
--
--	ret = tracecmd_compress_proto_register(&proto);
--	if (!ret)
--		return 0;
--err:
--	ZSTD_freeCCtx(ctx_c);
--	ZSTD_freeDCtx(ctx_d);
--	ctx_c = NULL;
--	ctx_d = NULL;
--	if (ret < 0)
--		return ret;
--	return -1;
-+	return tracecmd_compress_proto_register(&proto);
++	if (handle->proto && handle->proto->free_context)
++		handle->proto->free_context(handle->context);
++
+ 	free(handle);
  }
+ 
+@@ -546,6 +560,8 @@ int tracecmd_compress_proto_register(struct tracecmd_compression_proto *proto)
+ 	new->is_supported = proto->is_supported;
+ 	new->weight = proto->weight;
+ 	new->next = proto_list;
++	new->new_context = proto->new_context;
++	new->free_context = proto->free_context;
+ 	proto_list = new;
+ 	return 0;
+ 
+@@ -672,7 +688,7 @@ int tracecmd_compress_copy_from(struct tracecmd_compression *handle, int fd, int
+ 
+ 	if (read_size)
+ 		rmax = *read_size;
+-	csize = handle->proto->compress_size(chunk_size);
++	csize = handle->proto->compress_size(handle->context, chunk_size);
+ 	buf_from = malloc(chunk_size);
+ 	if (!buf_from)
+ 		return -1;
+@@ -706,7 +722,8 @@ int tracecmd_compress_copy_from(struct tracecmd_compression *handle, int fd, int
+ 		rsize += all;
+ 		size = csize;
+ 		if (all > 0) {
+-			ret = handle->proto->compress_block(buf_from, all, buf_to, size);
++			ret = handle->proto->compress_block(handle->context,
++							    buf_from, all, buf_to, size);
+ 			if (ret < 0) {
+ 				if (errno == EINTR)
+ 					continue;
+@@ -863,7 +880,8 @@ int tracecmd_uncompress_chunk(struct tracecmd_compression *handle,
+ 	if (read_fd(handle->fd, bytes_in, chunk->zsize) < 0)
+ 		goto out;
+ 
+-	if (handle->proto->uncompress_block(bytes_in, chunk->zsize, data, chunk->size) < 0)
++	if (handle->proto->uncompress_block(handle->context,
++					    bytes_in, chunk->zsize, data, chunk->size) < 0)
+ 		goto out;
+ 
+ 	ret = 0;
+@@ -948,7 +966,7 @@ int tracecmd_uncompress_copy_to(struct tracecmd_compression *handle, int fd,
+ 			break;
+ 
+ 		rsize += s_compressed;
+-		ret = handle->proto->uncompress_block(bytes_in, s_compressed,
++		ret = handle->proto->uncompress_block(handle->context, bytes_in, s_compressed,
+ 						      bytes_out, s_uncompressed);
+ 		if (ret < 0)
+ 			break;
 -- 
 2.34.1
 
