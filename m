@@ -2,103 +2,85 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9601C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Mar 2022 16:33:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94870C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Mar 2022 05:57:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbiCCQe3 (ORCPT
+        id S235925AbiCDF5v (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 3 Mar 2022 11:34:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
+        Fri, 4 Mar 2022 00:57:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbiCCQe2 (ORCPT
+        with ESMTP id S229789AbiCDF5v (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 3 Mar 2022 11:34:28 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F70AB0E9E
-        for <linux-trace-devel@vger.kernel.org>; Thu,  3 Mar 2022 08:33:43 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id c9so5046807pll.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 03 Mar 2022 08:33:43 -0800 (PST)
+        Fri, 4 Mar 2022 00:57:51 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F70EC5D7
+        for <linux-trace-devel@vger.kernel.org>; Thu,  3 Mar 2022 21:57:02 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id j26so682058wrb.1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 03 Mar 2022 21:57:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gDGutTERbhTaEy6Lu4wOMM1QNftMNKi+LtXcvWH1M/U=;
-        b=hjNZk2UjmA9RI1iUBE4rXbehd54Enk7Gjng8DsUcj79uJsnL/GG0SYo13yLjMKenrv
-         qAEfkRqD4YEaBLBWvd9Cg3yO6PqcGffzeKDU/5gby59ZSrw36WoC4pae/B8Db4Ee+QJr
-         vF+Kwchot1o4pDpHk48ebgm3oXNgK0yNR8LQ1I0jp5qBA+oI2xhqWXTKmFFqtSIo08Hf
-         jXZMz3WhAZ3kcrgNenzKDhA+xDReuOnH/8m3CICk4Gv9BmPl3nMNkHABlJFgH11nA0GI
-         k+UAX/V/pfAlGs0l1Yusk86ql1iJ4S4gaOQQoYRt95Ih1DIJPyWViNNc/QT6Go9y87k9
-         wHvA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1yixPBVLzvm0/Giv1ivhl9WWRKEhLHtKRrOJJSvASnQ=;
+        b=SJWrpBn7SqB/48xHnVvCWg1Vev0VM5ujBPh5Vr4cgG/ZkQF0XDZCw3bR7DGFxdQKFt
+         ll4eAlteE8AYuxZfGIm1I63gBXSL5zibi/Kr9ox6l6EkQSAyK1CJkBueOri+/ohoX4hH
+         Q870dNioQsAkO292XRjkyNMrgn+qy8fWILvdPmoeHq/jrzZDtdbe1D2euZwdatFPHKh7
+         ZXKHN5FczAfMyNGLrhKi5bbmy2nghMHGEmN1EMROHnTmeNQQGsG73gTUgWmBRV/Y276a
+         lplgSyZOegjKPECUkFy72Dt3Ynpw7cx9jFcwKWVLXWYG8nqdysoKoCacg5+BXLCtaYeG
+         M8Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gDGutTERbhTaEy6Lu4wOMM1QNftMNKi+LtXcvWH1M/U=;
-        b=7wveELV0EPkDmixEbpCPuk5gXW6oVFR6d5D0ap3beHPJ08QCmu3ixDgaowo0podbGf
-         yimLz9lNKfPCz/5qt4nk44RbS0kg0YaXEoHYvdn7XImAemRQO3lgHMc7orr2Ef4ILUJW
-         0zx321BczIYmHKG01RSDjcl5HtkytTOz6AO9+hPJK814e1Avl9boeIbiKvxCr+T+XsLC
-         RFuApzYF3XFna1Pct8TmWurtA7YhAKegtGudxKkaukkJCOcUb6ZMZVQkDOAO3279+dRT
-         e7SgAMx/9qhhaCtALb2noaCSAbbScwKxsZWkYqOqpDmlAXMmY5LKTCpUln08C5jsDaX2
-         vXJQ==
-X-Gm-Message-State: AOAM531lzsm1DNfiqfjJksAjbrlkZdpbavi7yvo13iL9D6J0NPExppiJ
-        AbqqGHntbqWf6dUzBFe4STlelIjbta6NwEK5RSS5tgy0
-X-Google-Smtp-Source: ABdhPJyvEqlzPxHGZnlceOW+kVoyALxbzub2UFJS8cnhE+B+7Cr415/sRXhTe+xV+FEbbYHXjCblzMosvVEPG58nqcU=
-X-Received: by 2002:a17:90a:e512:b0:1bc:22c8:cc82 with SMTP id
- t18-20020a17090ae51200b001bc22c8cc82mr6131082pjy.208.1646325222442; Thu, 03
- Mar 2022 08:33:42 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1yixPBVLzvm0/Giv1ivhl9WWRKEhLHtKRrOJJSvASnQ=;
+        b=xJ/O8Ljx961wWYrNYSFEevYBRrOy7y0Qkx0NK2P3RMzJ3E3woLAhk16hwimMMqZ4zl
+         J2w9hHUcqJZOopaRCb/MWXyp5zqk606SHgCRL1OeKajjRYfoD5DxFr1eE7q+BhnUlZim
+         2FxW3LbYwkYQsE6bu0brHQYc29AdA3gCK2ZHcZNmyMfLuZYYJrgtOujcx0yV49hvXRnD
+         mx+6V1KYkhd2TIPEubH4dgchwDzo7nJ7gvLLF6Nfzheyf5s4xeqpP7wleRjbhII7ge/m
+         OxDZjyZfUoSh9xVCGLwTcMvv2dp7VL6N7OiAM2cXm3LKoJua8Kyax6rjJt4eaDtdMbIR
+         wfMw==
+X-Gm-Message-State: AOAM5338l8dD7Tr4gh4SS/QlGOURx63oHNdWSAAlBpLo1bAesuCj7dt/
+        B1E3XTKRa920HNzb3jQ3WAI6zsdQ8rI=
+X-Google-Smtp-Source: ABdhPJyUlY479bPFj+SL0SbcH18DPYEC6mtJEt9ifsfu4AYnWam/kJ1xleJFMYNr3R9hef1cJkRPMQ==
+X-Received: by 2002:a5d:47a5:0:b0:1e8:88b3:16b7 with SMTP id 5-20020a5d47a5000000b001e888b316b7mr29684983wrb.417.1646373421158;
+        Thu, 03 Mar 2022 21:57:01 -0800 (PST)
+Received: from oberon.com ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id r10-20020a05600c35ca00b0038981d85ae8sm505074wmq.33.2022.03.03.21.57.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Mar 2022 21:57:00 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     sebastian@breakpoint.cc, linux-trace-devel@vger.kernel.org
+Subject: [PATCH v2 0/5] trace-cmd: Improvements in compression logic
+Date:   Fri,  4 Mar 2022 07:56:53 +0200
+Message-Id: <20220304055658.440904-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20220302045131.387658-1-tz.stoyanov@gmail.com>
- <20220302045131.387658-5-tz.stoyanov@gmail.com> <20220302201004.4c19f84f@gandalf.local.home>
-In-Reply-To: <20220302201004.4c19f84f@gandalf.local.home>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Thu, 3 Mar 2022 18:33:26 +0200
-Message-ID: <CAPpZLN6i-TOM-0pmztZ_fSPmYPgXTTsn3KHweBvmct9WT+t7qg@mail.gmail.com>
-Subject: Re: [PATCH 4/5] trace-cmd: Add context to compression hooks
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Sebastian Andrzej Siewior <sebastian@breakpoint.cc>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Mar 3, 2022 at 3:10 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Wed,  2 Mar 2022 06:51:30 +0200
-> "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
->
-> > @@ -453,6 +460,8 @@ struct tracecmd_compression *tracecmd_compress_alloc(const char *name, const cha
-> >  void tracecmd_compress_destroy(struct tracecmd_compression *handle)
-> >  {
-> >       tracecmd_compress_reset(handle);
-> > +     if (handle->proto->free_context)
-> > +             handle->proto->free_context(handle->context);
-> >       free(handle);
-> >  }
-> >
->
-> I segfaulted here with:
->
->         # trace-cmd restore -c -o /tmp/head
->
-> Need to test handle is NULL or not.
->
-> Perhaps even just exit normally at the start?
->
->         if (!handle)
->                 return;
->
+Improvements in internal comperssion APIs, suggested by
+Sebastian Andrzej Siewior.
 
-ops :)  I'll send v2 of the patch set with this fix.
+v2 changes:
+ - Fixed crash in tracecmd_compress_destroy(), reported by Steven.
 
-Thanks Steven!
+Tzvetomir Stoyanov (VMware) (5):
+  trace-cmd: Use a structure to describe a compression protocol
+  trace-cmd: Make internal compression hooks more generic
+  trace-cmd: Use errno from zlib, if available
+  trace-cmd: Add context to compression hooks
+  trace-cmd: Use context hooks in zstd
 
-> Which makes it not crash.
->
-> -- Steve
-
-
+ .../include/private/trace-cmd-private.h       |  20 ++--
+ lib/trace-cmd/trace-compress-zlib.c           |  43 ++++----
+ lib/trace-cmd/trace-compress-zstd.c           | 100 ++++++++++++------
+ lib/trace-cmd/trace-compress.c                |  85 ++++++++-------
+ 4 files changed, 149 insertions(+), 99 deletions(-)
 
 -- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+2.34.1
+
