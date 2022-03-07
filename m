@@ -2,37 +2,33 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B05E8C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Mar 2022 18:19:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7155CC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  7 Mar 2022 02:36:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238736AbiCDST5 (ORCPT
+        id S233095AbiCGChY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 4 Mar 2022 13:19:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47608 "EHLO
+        Sun, 6 Mar 2022 21:37:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241562AbiCDST4 (ORCPT
+        with ESMTP id S232625AbiCGChX (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 4 Mar 2022 13:19:56 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE1390FD2
-        for <linux-trace-devel@vger.kernel.org>; Fri,  4 Mar 2022 10:19:03 -0800 (PST)
+        Sun, 6 Mar 2022 21:37:23 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F495D5D5
+        for <linux-trace-devel@vger.kernel.org>; Sun,  6 Mar 2022 18:36:29 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4B858B82B5D
-        for <linux-trace-devel@vger.kernel.org>; Fri,  4 Mar 2022 18:19:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AD0CC340E9;
-        Fri,  4 Mar 2022 18:19:00 +0000 (UTC)
-Date:   Fri, 4 Mar 2022 13:18:59 -0500
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1845261178
+        for <linux-trace-devel@vger.kernel.org>; Mon,  7 Mar 2022 02:36:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22167C340EC;
+        Mon,  7 Mar 2022 02:36:28 +0000 (UTC)
+Date:   Sun, 6 Mar 2022 21:36:26 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc:     sebastian@breakpoint.cc, linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] trace-cmd: Use a structure to describe a
- compression protocol
-Message-ID: <20220304131859.308694df@gandalf.local.home>
-In-Reply-To: <20220304055658.440904-2-tz.stoyanov@gmail.com>
-References: <20220304055658.440904-1-tz.stoyanov@gmail.com>
-        <20220304055658.440904-2-tz.stoyanov@gmail.com>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH] libtracecmd: Do not set errno to zero
+Message-ID: <20220306213626.39b45180@rorschach.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -41,34 +37,66 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri,  4 Mar 2022 07:56:54 +0200
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> Changed the tracecmd_compress_proto_register() function to use a
-> structure instead of list of arguments to describe new compression
-> protocol. That approach is more flexible and allows to extend the API in
-> the future without changing the already implemented protocols.
-> 
-> Suggested-by: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> ---
->
+Libraries may set errno when an error happens, but it is in bad form to
+clear errno on success.
 
-Hi Tzvetomir,
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ lib/trace-cmd/trace-compress-zstd.c | 1 -
+ lib/trace-cmd/trace-util.c          | 8 ++++----
+ 2 files changed, 4 insertions(+), 5 deletions(-)
 
-Just an FYI. Sebastian gave an "Acked-by" to these patches previously. It
-should be added to the follow up patches if the patches haven't changed.
-And you can even keep them if the patch changed slightly (like to fix the
-crash I reported).
+diff --git a/lib/trace-cmd/trace-compress-zstd.c b/lib/trace-cmd/trace-compress-zstd.c
+index 3e42fc794502..10ae7a4c03c0 100644
+--- a/lib/trace-cmd/trace-compress-zstd.c
++++ b/lib/trace-cmd/trace-compress-zstd.c
+@@ -46,7 +46,6 @@ static int zstd_decompress(void *ctx, const void *in, int in_bytes, void *out, i
+ 		return -1;
+ 	}
+ 
+-	errno = 0;
+ 	return ret;
+ }
+ 
+diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
+index 91e8a30fb90b..b5a0a1a601d4 100644
+--- a/lib/trace-cmd/trace-util.c
++++ b/lib/trace-cmd/trace-util.c
+@@ -131,6 +131,7 @@ void tracecmd_parse_proc_kallsyms(struct tep_handle *pevent,
+ 			 char *file, unsigned int size __maybe_unused)
+ {
+ 	unsigned long long addr;
++	int sav_errno;
+ 	char *func;
+ 	char *line;
+ 	char *next = NULL;
+@@ -144,13 +145,13 @@ void tracecmd_parse_proc_kallsyms(struct tep_handle *pevent,
+ 		int n;
+ 
+ 		mod = NULL;
++		sav_errno = errno;
+ 		errno = 0;
+ 		n = sscanf(line, "%16llx %c %n%*s%n%*1[\t][%n%*s%n",
+ 			   &addr, &ch, &func_start, &func_end, &mod_start, &mod_end);
+-		if (errno) {
+-			perror("sscanf");
++		if (errno)
+ 			return;
+-		}
++		errno = sav_errno;
+ 
+ 		if (n != 2 || !func_end)
+ 			return;
+@@ -521,7 +522,6 @@ int tracecmd_stack_tracer_status(int *status)
+ 
+ 	buf[n] = 0;
+ 
+-	errno = 0;
+ 	num = strtol(buf, NULL, 10);
+ 
+ 	/* Check for various possible errors */
+-- 
+2.34.1
 
-Otherwise, the Acked-by's will likely be dropped. If I didn't notice this,
-they would have been.
-
-So, unless the patch changes in logic, all new versions should contain
-Acked/Reviewed-by tags that you have received from previous versions.
-
-  https://lore.kernel.org/all/Yh8Wq4KAGJ6WtqKc@breakpoint.cc/
-
-Just so you know for future patches.
-
--- Steve
