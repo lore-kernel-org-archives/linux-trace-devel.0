@@ -2,77 +2,125 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2565DC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Mar 2022 18:14:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C52B9C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Mar 2022 22:28:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345500AbiCHSOz (ORCPT
+        id S238439AbiCHW3J (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 8 Mar 2022 13:14:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32794 "EHLO
+        Tue, 8 Mar 2022 17:29:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240823AbiCHSOy (ORCPT
+        with ESMTP id S241588AbiCHW3J (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 8 Mar 2022 13:14:54 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC654199A
-        for <linux-trace-devel@vger.kernel.org>; Tue,  8 Mar 2022 10:13:57 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A9C36150C
-        for <linux-trace-devel@vger.kernel.org>; Tue,  8 Mar 2022 18:13:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97A1BC340F4
-        for <linux-trace-devel@vger.kernel.org>; Tue,  8 Mar 2022 18:13:56 +0000 (UTC)
-Date:   Tue, 8 Mar 2022 13:13:54 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd report: Document --nodate option
-Message-ID: <20220308131354.52452ac1@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Tue, 8 Mar 2022 17:29:09 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9FE541B78B;
+        Tue,  8 Mar 2022 14:28:11 -0800 (PST)
+Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 2EBD420B7178;
+        Tue,  8 Mar 2022 14:28:11 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2EBD420B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1646778491;
+        bh=XTaWdFtvrgMqEqAwScaJHL3xY9KS+lKMXsqnqkHeuNo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=c1uTSjXB8dn1wQ90CV62MMSyZNL04gQOLzpiCr+740IVaiEyYkP5/+012H13RJdWc
+         O2CbtvoA+EXJAkz9zuNttLxyjHY89EOiPmVqJX3wV/9l1kD+Wta01n5JILVwxvy24y
+         huDiij4LCjW6LWRmvdvt9jjDo0ITvb00OXmwKE8o=
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     rostedt@goodmis.org
+Cc:     keescook@chromium.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        beaub@linux.microsoft.com
+Subject: [PATCH] user_events: Add trace event call as root for low permission cases
+Date:   Tue,  8 Mar 2022 14:28:07 -0800
+Message-Id: <20220308222807.2040-1-beaub@linux.microsoft.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Tracefs by default is locked down heavily. System operators can open up
+some files, such as user_events to a broader set of users. These users
+do not have access within tracefs beyond just the user_event files. Due
+to this restriction the trace_add_event_call/remove calls will silently
+fail since the caller does not have permissions to create directories.
 
-The option --nodate was never documented nor was it even listed in the
-trace-cmd report -h usage. Fix that.
+To fix this trace_add_event_call/remove calls will be issued with
+override creds of the global root UID. Creds are reverted immediately
+afterward.
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- Documentation/trace-cmd/trace-cmd-report.1.txt | 3 +++
- tracecmd/trace-usage.c                         | 1 +
- 2 files changed, 4 insertions(+)
+ kernel/trace/trace_events_user.c | 39 ++++++++++++++++++++++++++++++--
+ 1 file changed, 37 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/trace-cmd/trace-cmd-report.1.txt b/Documentation/trace-cmd/trace-cmd-report.1.txt
-index 501994a456c8..18e1c5cd0700 100644
---- a/Documentation/trace-cmd/trace-cmd-report.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-report.1.txt
-@@ -309,6 +309,9 @@ OPTIONS
-      Make sure no timestamp goes backwards, and if it does, print out a warning
-      message of the fact.
+diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+index 2b5e9fdb63a0..7dfa83ff2466 100644
+--- a/kernel/trace/trace_events_user.c
++++ b/kernel/trace/trace_events_user.c
+@@ -557,6 +557,41 @@ static struct trace_event_functions user_event_funcs = {
+ 	.trace = user_event_print_trace,
+ };
  
-+*--nodate*::
-+     Ignore converting the timestamps to the date set by *trace-cmd record*(3) --date option.
++static int user_event_set_call_visible(struct user_event *user, bool visible)
++{
++	int ret;
++	const struct cred *old_cred;
++	struct cred *cred;
 +
- *--raw-ts*::
-      Display raw timestamps, without any corrections.
++	cred = prepare_creds();
++
++	if (!cred)
++		return -ENOMEM;
++
++	/*
++	 * While by default tracefs is locked down, systems can be configured
++	 * to allow user_event files to be less locked down. The extreme case
++	 * being "other" has read/write access to user_events_data/status.
++	 *
++	 * When not locked down, processes may not have have permissions to
++	 * add/remove calls themselves to tracefs. We need to temporarily
++	 * switch to root file permission to allow for this scenario.
++	 */
++	cred->fsuid = GLOBAL_ROOT_UID;
++
++	old_cred = override_creds(cred);
++
++	if (visible)
++		ret = trace_add_event_call(&user->call);
++	else
++		ret = trace_remove_event_call(&user->call);
++
++	revert_creds(old_cred);
++	put_cred(cred);
++
++	return ret;
++}
++
+ static int destroy_user_event(struct user_event *user)
+ {
+ 	int ret = 0;
+@@ -564,7 +599,7 @@ static int destroy_user_event(struct user_event *user)
+ 	/* Must destroy fields before call removal */
+ 	user_event_destroy_fields(user);
  
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index ec0af46f0dd2..5e96ca44e9b3 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -244,6 +244,7 @@ static struct usage_help usage_help[] = {
- 		"                     previous data file, in which case it becomes default\n"
- 		"          --ts-diff Show the delta timestamp between events.\n"
- 		"          --ts-check Check to make sure no time stamp on any CPU goes backwards.\n"
-+		"          --nodate Ignore the --date processing of trace-cmd record.\n"
- 		"          --raw-ts Display raw timestamps, without any corrections.\n"
- 		"          --align-ts Display timestamps aligned to the first event.\n"
- 		"          --verbose[=level] Set the desired log level\n"
+-	ret = trace_remove_event_call(&user->call);
++	ret = user_event_set_call_visible(user, false);
+ 
+ 	if (ret)
+ 		return ret;
+@@ -1037,7 +1072,7 @@ static int user_event_trace_register(struct user_event *user)
+ 	if (!ret)
+ 		return -ENODEV;
+ 
+-	ret = trace_add_event_call(&user->call);
++	ret = user_event_set_call_visible(user, true);
+ 
+ 	if (ret)
+ 		unregister_trace_event(&user->call.event);
+
+base-commit: 864ea0e10cc90416a01b46f0d47a6f26dc020820
 -- 
-2.34.1
+2.17.1
 
