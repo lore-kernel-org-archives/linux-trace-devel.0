@@ -2,122 +2,77 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56CF8C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Mar 2022 17:30:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2565DC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Mar 2022 18:14:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349165AbiCHRbb (ORCPT
+        id S1345500AbiCHSOz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 8 Mar 2022 12:31:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45376 "EHLO
+        Tue, 8 Mar 2022 13:14:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348409AbiCHRbb (ORCPT
+        with ESMTP id S240823AbiCHSOy (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 8 Mar 2022 12:31:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A2F09554A5
-        for <linux-trace-devel@vger.kernel.org>; Tue,  8 Mar 2022 09:30:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1646760633;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=l7asnA7LXZyQWZy5g2QEgoRUfjTEVlMr+Ij+QDuYX2o=;
-        b=N3N0oraJxvYdQ1/v+AFAhOxrwq7JjBaRQQysPX6zG2d9wsyfHvlh/zgcrwwhnSpmkGSByf
-        RusiCAQZGiobpik5ghGSlsLWzkaBMW7uNfwjdLwjbeByTjCSsTd+mnWmwuUS7GQJoeHYpy
-        rv1AyOoVv9Q+7ZvwDp/JLC2w/pHb+yA=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-584-Jj8mP2e3PculQqpx1uWObQ-1; Tue, 08 Mar 2022 12:30:32 -0500
-X-MC-Unique: Jj8mP2e3PculQqpx1uWObQ-1
-Received: by mail-wm1-f71.google.com with SMTP id 14-20020a05600c104e00b003897a167353so1379536wmx.8
-        for <linux-trace-devel@vger.kernel.org>; Tue, 08 Mar 2022 09:30:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=l7asnA7LXZyQWZy5g2QEgoRUfjTEVlMr+Ij+QDuYX2o=;
-        b=71NkjeKEPiPKYo+xv8yoW7e6i/x/nOWDgvwYS8GFJvT6XYntmfBiu/p5/Spnv5rNKh
-         wd1KbeSy1W5gqMTSILsNa+Xbm4cVbWMMx/OZAkHCd2aF9buErLNkXNU3ON1MeSYBLO9k
-         kWbdM7qQil+wbwVPzXXVFZWfVxPOvxHFDnbwLnDgGCf/fod0lzk8cCr7b3N/obbcR7+O
-         e2gIOyQXYPwuX6sRv8oAz9e5A+xfAO0NBvc4s5ikbjRm3UfC56LQPxdFaj2jpg/OZSZK
-         YjZ5GW3dA1yShXhYjLzLW/6XAjlKrHXZNp5rt1eVMGgeMCPClcjXkkX0QbLsSHBvL4Ne
-         BBNA==
-X-Gm-Message-State: AOAM531x/dN1aw5nAnitKK4jhQuWkwSGqi6iumJ9+tgwLOeaLSwYAAJH
-        hQZoNRety7uUCMQq0wsZ+EzBx05ZrRbKEZzNPvCu3vZhVjna0BIhhMeMmumTDc50x9k3eOafye6
-        59IkhAacladh+6gk0aGeM0MQjLGApkJc=
-X-Received: by 2002:a5d:5255:0:b0:1f0:5992:673e with SMTP id k21-20020a5d5255000000b001f05992673emr13005758wrc.423.1646760631157;
-        Tue, 08 Mar 2022 09:30:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwiu9fGlgmzu8FeVd8qv7AaiAa/14Gb+xn6++scnNFw2UwFoXBTbpf2fcr3a6+avTm0rZ+KxQ==
-X-Received: by 2002:a5d:5255:0:b0:1f0:5992:673e with SMTP id k21-20020a5d5255000000b001f05992673emr13005744wrc.423.1646760630937;
-        Tue, 08 Mar 2022 09:30:30 -0800 (PST)
-Received: from ?IPv6:2a0c:5a80:3506:3400:69b5:c807:1d52:ff67? ([2a0c:5a80:3506:3400:69b5:c807:1d52:ff67])
-        by smtp.gmail.com with ESMTPSA id r186-20020a1c2bc3000000b0037bdd94a4e5sm2757590wmr.39.2022.03.08.09.30.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Mar 2022 09:30:29 -0800 (PST)
-Message-ID: <c898d1911f7f9303b7e14726e7cc9678fbfb4a0e.camel@redhat.com>
-Subject: Warning when exiting osnoise tracer
-From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>, bristot <bristot@kernel.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-trace-devel@vger.kernel.org, mtosatti <mtosatti@redhat.com>
-Date:   Tue, 08 Mar 2022 18:30:25 +0100
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 (3.42.4-1.fc35) 
+        Tue, 8 Mar 2022 13:14:54 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC654199A
+        for <linux-trace-devel@vger.kernel.org>; Tue,  8 Mar 2022 10:13:57 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A9C36150C
+        for <linux-trace-devel@vger.kernel.org>; Tue,  8 Mar 2022 18:13:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97A1BC340F4
+        for <linux-trace-devel@vger.kernel.org>; Tue,  8 Mar 2022 18:13:56 +0000 (UTC)
+Date:   Tue, 8 Mar 2022 13:13:54 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd report: Document --nodate option
+Message-ID: <20220308131354.52452ac1@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-While running next-20220307, on a system with isolated CPUs (don't know if
-relevant but less tested code-path), I see this after killing (ctrl-C) the
-following trace command:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-	trace-cmd record -e all -M 10 -p osnoise --poll
+The option --nodate was never documented nor was it even listed in the
+trace-cmd report -h usage. Fix that.
 
-Note that this is *without* my recent osnoise patch.
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ Documentation/trace-cmd/trace-cmd-report.1.txt | 3 +++
+ tracecmd/trace-usage.c                         | 1 +
+ 2 files changed, 4 insertions(+)
 
-[  129.925474] ------------[ cut here ]------------
-[  129.926021] WARNING: CPU: 0 PID: 1217 at kernel/tracepoint.c:404 tracepoint_probe_unregister+0x280/0x370
-[  129.927077] Modules linked in: nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 rfkill ip_set nf_tables nfnetlink intel_rapl_msr intel_rapl_common irqbypass iTCO_wdt rapl snd_pcm iTCO_vendor_support snd_timer snd soundcore i2c_i801 lpc_ich i2c_smbus virtio_balloon pcspkr fuse drm xfs libcrc32c crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel ahci libahci serio_raw virtio_net libata net_failover failover virtio_blk
-[  129.932263] CPU: 0 PID: 1217 Comm: trace-cmd Not tainted 5.17.0-rc6-next-20220307-nico+ #19
-[  129.933184] Hardware name: Red Hat KVM/RHEL-AV, BIOS 1.15.0-1.el9 04/01/2014
-[  129.933947] RIP: 0010:tracepoint_probe_unregister+0x280/0x370
-[  129.934590] Code: 48 8d 04 40 48 8d 0c c3 48 8b 01 48 85 c0 74 21 49 39 c5 75 e5 4c 3b 71 08 75 df 48 c7 01 20 95 3e ae eb d6 41 bc fe ff ff ff <0f> 0b e9 22 ff ff ff 48 81 fb 00 f0 ff ff 0f 87 cb 00 00 00 45 31
-[  129.936605] RSP: 0018:ffffb978c1093db8 EFLAGS: 00010246
-[  129.937192] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-[  129.937968] RDX: ffff8ee953ab8000 RSI: ffffffffae40cb20 RDI: ffffffffafc4c940
-[  129.938752] RBP: ffffffffafd1c560 R08: 0000000000000000 R09: 0000000000000000
-[  129.939537] R10: 0000000000000010 R11: 0000000000000000 R12: 00000000fffffffe
-[  129.940323] R13: ffffffffae40cb20 R14: 0000000000000000 R15: 0000000000000003
-[  129.941104] FS:  00007ff9198d1740(0000) GS:ffff8ee97ca00000(0000) knlGS:0000000000000000
-[  129.941992] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  129.942633] CR2: 00007ff919b29497 CR3: 0000000109da4005 CR4: 0000000000170ef0
-[  129.943420] Call Trace:
-[  129.943714]  <TASK>
-[  129.943960]  osnoise_workload_stop+0x36/0x90
-[  129.944447]  tracing_set_tracer+0x108/0x260
-[  129.944917]  tracing_set_trace_write+0x94/0xd0
-[  129.945423]  ? __check_object_size.part.0+0x10a/0x150
-[  129.945986]  ? selinux_file_permission+0x104/0x150
-[  129.946531]  vfs_write+0xb5/0x290
-[  129.946908]  ksys_write+0x5f/0xe0
-[  129.947291]  do_syscall_64+0x3b/0x90
-[  129.947693]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  129.948257] RIP: 0033:0x7ff919a18127
-[  129.948660] Code: 0b 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
-[  129.950688] RSP: 002b:00007ffe388ceda8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-[  129.951530] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007ff919a18127
-[  129.952355] RDX: 0000000000000003 RSI: 000000000044a514 RDI: 0000000000000004
-[  129.953142] RBP: 00007ffe388cede0 R08: 0000000001cffd40 R09: 00007ff919a8a4e0
-[  129.953917] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffe388cf0c8
-[  129.954692] R13: 000000000040a578 R14: 00007ff919b67aa0 R15: 0000000000461d18
-[  129.955477]  </TASK>
-[  129.955728] ---[ end trace 0000000000000000 ]---
-
-Regards,
-
+diff --git a/Documentation/trace-cmd/trace-cmd-report.1.txt b/Documentation/trace-cmd/trace-cmd-report.1.txt
+index 501994a456c8..18e1c5cd0700 100644
+--- a/Documentation/trace-cmd/trace-cmd-report.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-report.1.txt
+@@ -309,6 +309,9 @@ OPTIONS
+      Make sure no timestamp goes backwards, and if it does, print out a warning
+      message of the fact.
+ 
++*--nodate*::
++     Ignore converting the timestamps to the date set by *trace-cmd record*(3) --date option.
++
+ *--raw-ts*::
+      Display raw timestamps, without any corrections.
+ 
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index ec0af46f0dd2..5e96ca44e9b3 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -244,6 +244,7 @@ static struct usage_help usage_help[] = {
+ 		"                     previous data file, in which case it becomes default\n"
+ 		"          --ts-diff Show the delta timestamp between events.\n"
+ 		"          --ts-check Check to make sure no time stamp on any CPU goes backwards.\n"
++		"          --nodate Ignore the --date processing of trace-cmd record.\n"
+ 		"          --raw-ts Display raw timestamps, without any corrections.\n"
+ 		"          --align-ts Display timestamps aligned to the first event.\n"
+ 		"          --verbose[=level] Set the desired log level\n"
 -- 
-Nicolás Sáenz
+2.34.1
 
