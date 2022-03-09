@@ -2,36 +2,36 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E32C5C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Mar 2022 16:43:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AE79C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Mar 2022 16:46:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235152AbiCIQoC (ORCPT
+        id S236296AbiCIQrU (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 9 Mar 2022 11:44:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34736 "EHLO
+        Wed, 9 Mar 2022 11:47:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239374AbiCIQmc (ORCPT
+        with ESMTP id S235896AbiCIQpq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 9 Mar 2022 11:42:32 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E035D1A6143
-        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Mar 2022 08:36:40 -0800 (PST)
+        Wed, 9 Mar 2022 11:45:46 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE1DC484C
+        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Mar 2022 08:39:37 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9CA4761A55
-        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Mar 2022 16:36:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD7ACC340F4;
-        Wed,  9 Mar 2022 16:36:38 +0000 (UTC)
-Date:   Wed, 9 Mar 2022 11:36:37 -0500
+        by ams.source.kernel.org (Postfix) with ESMTPS id 088BCB82164
+        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Mar 2022 16:39:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E3AFC340E8;
+        Wed,  9 Mar 2022 16:39:34 +0000 (UTC)
+Date:   Wed, 9 Mar 2022 11:39:32 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH] trace-cmd: Use the new libtracefs API to address all
- dynamic events
-Message-ID: <20220309113637.11f8db4d@gandalf.local.home>
-In-Reply-To: <20220309054458.636350-1-tz.stoyanov@gmail.com>
-References: <20220309054458.636350-1-tz.stoyanov@gmail.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     linux-trace-devel@vger.kernel.org,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Subject: Re: [PATCH] trace-cmd: Use builtin for offset_of
+Message-ID: <20220309113932.0ed90ffb@gandalf.local.home>
+In-Reply-To: <20220309043815.1301991-1-irogers@google.com>
+References: <20220309043815.1301991-1-irogers@google.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -40,41 +40,35 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed,  9 Mar 2022 07:44:58 +0200
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+On Tue,  8 Mar 2022 20:38:15 -0800
+Ian Rogers <irogers@google.com> wrote:
 
-> The trace-cmd reset logic clears all dynamically created ftrace events.
-> The current implementation lists all events that should be cleared.
-> That logic is fragile, as when a new type of dynamic event is
-> introduced the logic should be updated. Instead, the newly introduced
-> libtracefs define should be used: TRACEFS_DYNEVENT_ALL.
-> 
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> Arithmetic on null pointers is undefined behavior, spotted by C compiler
+> sanitizers such as with clang. The builtin offset of is available in all
+> recent compilers, so unconditionally use it as discussed for libbpf in:
+> https://lore.kernel.org/all/a0a26308-a1d7-a57c-727c-000652a5d246@fb.com/
 
-Applied, thanks Tzvetomir!
+Applied, thanks Ian!
 
 -- Steve
 
-> ---
->  tracecmd/trace-record.c | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
 > 
-> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-> index 9afc1042..8d9cbac2 100644
-> --- a/tracecmd/trace-record.c
-> +++ b/tracecmd/trace-record.c
-> @@ -5262,12 +5262,7 @@ static void clear_all_dynamic_events(void)
->  {
->  	/* Clear event probes first, as they may be attached to other dynamic event */
->  	tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_EPROBE, true);
-> -	tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_KPROBE |
-> -				     TRACEFS_DYNEVENT_KRETPROBE |
-> -				     TRACEFS_DYNEVENT_UPROBE |
-> -				     TRACEFS_DYNEVENT_URETPROBE |
-> -				     TRACEFS_DYNEVENT_SYNTH,
-> -				     true);
-> +	tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_ALL, true);
->  }
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tracecmd/include/list.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tracecmd/include/list.h b/tracecmd/include/list.h
+> index cf9dd47e..fa0de6df 100644
+> --- a/tracecmd/include/list.h
+> +++ b/tracecmd/include/list.h
+> @@ -6,7 +6,7 @@
+>  #ifndef __LIST_H
+>  #define __LIST_H
 >  
->  static void clear_func_filters(void)
+> -#define offset_of(type, field)		(long)(&((type *)0)->field)
+> +#define offset_of(type, field)		__builtin_offsetof(type, field)
+>  #define container_of(p, type, field)	(type *)((long)p - offset_of(type, field))
+>  
+>  struct list_head {
 
