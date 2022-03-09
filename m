@@ -2,131 +2,134 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ACB0C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Mar 2022 07:26:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EBA33C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Mar 2022 13:13:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbiCIH07 (ORCPT
+        id S232373AbiCINOR convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 9 Mar 2022 02:26:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50000 "EHLO
+        Wed, 9 Mar 2022 08:14:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbiCIH07 (ORCPT
+        with ESMTP id S233016AbiCINOQ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 9 Mar 2022 02:26:59 -0500
-Received: from gateway31.websitewelcome.com (gateway31.websitewelcome.com [192.185.143.36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D76315C678
-        for <linux-trace-devel@vger.kernel.org>; Tue,  8 Mar 2022 23:26:00 -0800 (PST)
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id 7E0336B12E
-        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Mar 2022 01:26:00 -0600 (CST)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id Rqhsni1HuHnotRqhsn6hFI; Wed, 09 Mar 2022 01:26:00 -0600
-X-Authority-Reason: nr=8
-Received: from host-82-63-1-3.business.telecomitalia.it ([82.63.1.3]:40294 helo=[10.0.0.45])
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1nRqhr-002Nwk-Sw; Wed, 09 Mar 2022 01:26:00 -0600
-Message-ID: <eeb95928-02cf-a38c-8079-d2bbf4edb7e7@kernel.org>
-Date:   Wed, 9 Mar 2022 08:25:56 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: Warning when exiting osnoise tracer
-Content-Language: en-US
-To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-trace-devel@vger.kernel.org, mtosatti <mtosatti@redhat.com>
-References: <c898d1911f7f9303b7e14726e7cc9678fbfb4a0e.camel@redhat.com>
+        Wed, 9 Mar 2022 08:14:16 -0500
+Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5AE6410A7DF
+        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Mar 2022 05:13:18 -0800 (PST)
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-256-ySWuyVfmPTaf810awxiH3A-1; Wed, 09 Mar 2022 08:13:14 -0500
+X-MC-Unique: ySWuyVfmPTaf810awxiH3A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB66151DC;
+        Wed,  9 Mar 2022 13:13:12 +0000 (UTC)
+Received: from x1.com (unknown [10.22.8.180])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2E77D22E11;
+        Wed,  9 Mar 2022 13:13:05 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <c898d1911f7f9303b7e14726e7cc9678fbfb4a0e.camel@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 82.63.1.3
-X-Source-L: No
-X-Exim-ID: 1nRqhr-002Nwk-Sw
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-82-63-1-3.business.telecomitalia.it ([10.0.0.45]) [82.63.1.3]:40294
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 2
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Subject: [PATCH] tracing/osnoise: Do not unregister events twice
+Date:   Wed,  9 Mar 2022 14:13:02 +0100
+Message-Id: <938765e17d5a781c2df429a98f0b2e7cc317b022.1646823913.git.bristot@kernel.org>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Nicolas
+Nicolas reported that using:
 
-On 3/8/22 18:30, Nicolas Saenz Julienne wrote:
-> While running next-20220307, on a system with isolated CPUs (don't know if
-> relevant but less tested code-path), I see this after killing (ctrl-C) the
-> following trace command:
-> 
-> 	trace-cmd record -e all -M 10 -p osnoise --poll
-> 
-> Note that this is *without* my recent osnoise patch.
+ # trace-cmd record -e all -M 10 -p osnoise --poll
 
-yeah, your patch does not hit this part of the code.
+Resulted in the following kernel warning:
 
-> [  129.925474] ------------[ cut here ]------------
-> [  129.926021] WARNING: CPU: 0 PID: 1217 at kernel/tracepoint.c:404 tracepoint_probe_unregister+0x280/0x370
-> [  129.927077] Modules linked in: nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 rfkill ip_set nf_tables nfnetlink intel_rapl_msr intel_rapl_common irqbypass iTCO_wdt rapl snd_pcm iTCO_vendor_support snd_timer snd soundcore i2c_i801 lpc_ich i2c_smbus virtio_balloon pcspkr fuse drm xfs libcrc32c crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel ahci libahci serio_raw virtio_net libata net_failover failover virtio_blk
-> [  129.932263] CPU: 0 PID: 1217 Comm: trace-cmd Not tainted 5.17.0-rc6-next-20220307-nico+ #19
-> [  129.933184] Hardware name: Red Hat KVM/RHEL-AV, BIOS 1.15.0-1.el9 04/01/2014
-> [  129.933947] RIP: 0010:tracepoint_probe_unregister+0x280/0x370
-> [  129.934590] Code: 48 8d 04 40 48 8d 0c c3 48 8b 01 48 85 c0 74 21 49 39 c5 75 e5 4c 3b 71 08 75 df 48 c7 01 20 95 3e ae eb d6 41 bc fe ff ff ff <0f> 0b e9 22 ff ff ff 48 81 fb 00 f0 ff ff 0f 87 cb 00 00 00 45 31
-> [  129.936605] RSP: 0018:ffffb978c1093db8 EFLAGS: 00010246
-> [  129.937192] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> [  129.937968] RDX: ffff8ee953ab8000 RSI: ffffffffae40cb20 RDI: ffffffffafc4c940
-> [  129.938752] RBP: ffffffffafd1c560 R08: 0000000000000000 R09: 0000000000000000
-> [  129.939537] R10: 0000000000000010 R11: 0000000000000000 R12: 00000000fffffffe
-> [  129.940323] R13: ffffffffae40cb20 R14: 0000000000000000 R15: 0000000000000003
-> [  129.941104] FS:  00007ff9198d1740(0000) GS:ffff8ee97ca00000(0000) knlGS:0000000000000000
-> [  129.941992] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  129.942633] CR2: 00007ff919b29497 CR3: 0000000109da4005 CR4: 0000000000170ef0
-> [  129.943420] Call Trace:
-> [  129.943714]  <TASK>
-> [  129.943960]  osnoise_workload_stop+0x36/0x90
+ ------------[ cut here ]------------
+ WARNING: CPU: 0 PID: 1217 at kernel/tracepoint.c:404 tracepoint_probe_unregister+0x280/0x370
+ [...]
+ CPU: 0 PID: 1217 Comm: trace-cmd Not tainted 5.17.0-rc6-next-20220307-nico+ #19
+ RIP: 0010:tracepoint_probe_unregister+0x280/0x370
+ [...]
+ CR2: 00007ff919b29497 CR3: 0000000109da4005 CR4: 0000000000170ef0
+ Call Trace:
+  <TASK>
+  osnoise_workload_stop+0x36/0x90
+  tracing_set_tracer+0x108/0x260
+  tracing_set_trace_write+0x94/0xd0
+  ? __check_object_size.part.0+0x10a/0x150
+  ? selinux_file_permission+0x104/0x150
+  vfs_write+0xb5/0x290
+  ksys_write+0x5f/0xe0
+  do_syscall_64+0x3b/0x90
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
+ RIP: 0033:0x7ff919a18127
+ [...]
+ ---[ end trace 0000000000000000 ]---
 
-osnoise_workload_stop() is being called twice by trace-cmd. trace-cmd stops the
-tracer, and then after that, it switches to nop. I did not cover this case when
-I added the support for multiple instances (it is a tracer problem, not a
-trace-cmd problem).
+The warning complains about an attempt to unregister an
+unregistered tracepoint.
 
-I am testing a fix already - fix for 5.16 on.
+This happens on trace-cmd because it first stops tracing, and
+then switches the tracer to nop. Which is equivalent to:
 
-Thanks!
--- Daniel
+  # cd /sys/kernel/tracing/
+  # echo osnoise > current_tracer
+  # echo 0 > tracing_on
+  # echo nop > current_tracer
 
-> [  129.944447]  tracing_set_tracer+0x108/0x260
-> [  129.944917]  tracing_set_trace_write+0x94/0xd0
-> [  129.945423]  ? __check_object_size.part.0+0x10a/0x150
-> [  129.945986]  ? selinux_file_permission+0x104/0x150
-> [  129.946531]  vfs_write+0xb5/0x290
-> [  129.946908]  ksys_write+0x5f/0xe0
-> [  129.947291]  do_syscall_64+0x3b/0x90
-> [  129.947693]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [  129.948257] RIP: 0033:0x7ff919a18127
-> [  129.948660] Code: 0b 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
-> [  129.950688] RSP: 002b:00007ffe388ceda8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> [  129.951530] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007ff919a18127
-> [  129.952355] RDX: 0000000000000003 RSI: 000000000044a514 RDI: 0000000000000004
-> [  129.953142] RBP: 00007ffe388cede0 R08: 0000000001cffd40 R09: 00007ff919a8a4e0
-> [  129.953917] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffe388cf0c8
-> [  129.954692] R13: 000000000040a578 R14: 00007ff919b67aa0 R15: 0000000000461d18
-> [  129.955477]  </TASK>
-> [  129.955728] ---[ end trace 0000000000000000 ]---
-> 
-> Regards,
-> 
+The osnoise tracer stops the workload when no trace instance
+is actually collecting data. This can be caused both by
+disabling tracing or disabling the tracer itself.
+
+To avoid unregistering events twice, use the existing
+trace_osnoise_callback_enabled variable to check if the events
+(and the workload) are actually active before trying to
+deactivate them.
+
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Fixes: 2fac8d6486d5 ("tracing/osnoise: Allow multiple instances of the same tracer")
+Reported-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+---
+ kernel/trace/trace_osnoise.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+index cfddb30e65ab..c9eb5001e5cb 100644
+--- a/kernel/trace/trace_osnoise.c
++++ b/kernel/trace/trace_osnoise.c
+@@ -2200,6 +2200,17 @@ static void osnoise_workload_stop(void)
+ 	if (osnoise_has_registered_instances())
+ 		return;
+ 
++	/*
++	 * If callbacks were already disabled in a previous stop
++	 * call, there is no need to disable then again.
++	 *
++	 * For instance, this happens when tracing is stopped via:
++	 * echo 0 > tracing_on
++	 * echo nop > current_tracer.
++	 */
++	if (!trace_osnoise_callback_enabled)
++		return;
++
+ 	trace_osnoise_callback_enabled = false;
+ 	/*
+ 	 * Make sure that ftrace_nmi_enter/exit() see
+-- 
+2.34.1
 
