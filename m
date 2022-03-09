@@ -2,89 +2,95 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2404C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Mar 2022 04:38:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6A47C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Mar 2022 05:45:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229445AbiCIEjV (ORCPT
+        id S229678AbiCIFqD (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 8 Mar 2022 23:39:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50730 "EHLO
+        Wed, 9 Mar 2022 00:46:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbiCIEjU (ORCPT
+        with ESMTP id S229524AbiCIFqC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 8 Mar 2022 23:39:20 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3155D5BE46
-        for <linux-trace-devel@vger.kernel.org>; Tue,  8 Mar 2022 20:38:22 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id b12-20020a056902030c00b0061d720e274aso851564ybs.20
-        for <linux-trace-devel@vger.kernel.org>; Tue, 08 Mar 2022 20:38:22 -0800 (PST)
+        Wed, 9 Mar 2022 00:46:02 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4405D15B3C1
+        for <linux-trace-devel@vger.kernel.org>; Tue,  8 Mar 2022 21:45:03 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id y12so1428307edt.9
+        for <linux-trace-devel@vger.kernel.org>; Tue, 08 Mar 2022 21:45:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=AtYLFpeYhlr6PLHdeuki8GuKCXU1QN4himAbnAJwBms=;
-        b=nbIBABAB3T/nmIUcCOqqI6ziGV6cZPoKY/kfZUOTxtzTofO7Sb4d4b7zibqwBnBlM0
-         Pdle2tcytIBooxz0lNHzBVocYntu9KuPJz90MgZxBseFur7RRAVIlVaYgAlom4ahfk1I
-         lyX1j1DvsEpCu1ukhYE4R7O24tyzZ9i/mgp0EHFNBHH/bm51OyfkUpZer3NWjsfFkB0G
-         3llY9MTr+I1XJoHtaTKi29sEim9Bd3xPDKRlmCEBSfwz5BUv0x8N0A0SqSntL+TctevH
-         puz9lyN9bbDCOVu+OEIhDLPMXOMSuwyPeeNooKlFKjPMIjwAyDIQgFNWOpJ/ZUuUehK0
-         5Cng==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2Hn2iAqmDY29jY2vmS6vO7plTCrmxpERj7MhHOHad00=;
+        b=bflv0Kt1lKmund4vAZ679Ve+z8pqBLRmjomu/G4NIUi6zobPod/c6A5vjNCroKo2UY
+         2+daw/DNO5/runNVPwgd6YDs0atq2eiXaltkSVadDpy0opd4/9hjsORn6U+fCdHGaHnL
+         U5//2t4gakUljf2eOKymBWwzaAf8tpaDzD2tqZKakY/h8sB6fuXuSxVruwMIjzVIUmZr
+         MhfYjain2eTyJbiD3utNXhhBPIrKiXLd+/EU7cpxOu9pyw+ONoYpfsA4tjNs5IfdgRNs
+         54Wv9321GF4XuKASdI868jQqXIplWqsIVI0N3WWN4LV0snTkNo+b2gNpsk9T/pHsLhq8
+         Emnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=AtYLFpeYhlr6PLHdeuki8GuKCXU1QN4himAbnAJwBms=;
-        b=TdkGbfgoVzgFgnsy50SCAUfh8zXC+xlU1GQoI6NQbybzs9CAbly4SeafGbj2mLcKsR
-         bPn8rsKd+pkN8EjAoZ30efAvbwP8ynPpB8bgTKEqFkATDskXeSaLis4a8kVxOgkdC1kL
-         xG4h71L/RkyY27TOyWvT3PuWX2vdelE7IO9T3V0/YGTmVGTqxVOzWOaveBGHmclDEkbv
-         Tv8BKPNbijEwPlOUh7sb+8BoyZ9ATOodJl3ktdKFNO0bvmn5ZtzMbEoTd2Km/JZJMY8p
-         nXUG8F1YDU0DJ7zoYFL8w/q96nPt8b95/TTb6sB1m6AinofbSMI9RYnC9ihrdkagK9Uq
-         gRXg==
-X-Gm-Message-State: AOAM5332DYFGvI0IdG0HCvN1T4cl/fHwo+Yng45hpEUElFu52OxmpwfY
-        Tav+5v/MBmGMX03NgLK7fPNU9v824p2WZ0QbZh5NOXd4tiKbTb7tV3vboqcFW+Z+wOQT9pVmYq9
-        LHkuDyeBBP1ekoB2+A5eOe+13rd1hi6ZwirlVgkOHftnF0jIk+znFrd6N2eVQ6AlVOe9K9Xju+K
-        2nuxc=
-X-Google-Smtp-Source: ABdhPJwcUdpgFjXVBZ8bPc+FQsDSHP/2QifvSg/9NtR0DxKoTKteeceztWjkDh+MMkBf6/pnYD9Qihp96t5M
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:1e8f:9091:7fd1:b274])
- (user=irogers job=sendgmr) by 2002:a0d:e88d:0:b0:2dc:108e:b184 with SMTP id
- r135-20020a0de88d000000b002dc108eb184mr15698390ywe.240.1646800701225; Tue, 08
- Mar 2022 20:38:21 -0800 (PST)
-Date:   Tue,  8 Mar 2022 20:38:15 -0800
-Message-Id: <20220309043815.1301991-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.35.1.616.g0bdcbb4464-goog
-Subject: [PATCH] trace-cmd: Use builtin for offset_of
-From:   Ian Rogers <irogers@google.com>
-To:     linux-trace-devel@vger.kernel.org,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2Hn2iAqmDY29jY2vmS6vO7plTCrmxpERj7MhHOHad00=;
+        b=1DJyoEYJwDNIIW0XqWcd3NGBp3r9+6AlZILOJRCmdIIu826uxN1QWNTOLnYb1rOzSE
+         Crhp8GS2E4aBAIzrVNSfpsHgKdamW2Z1yvR5IsewnWYJr5UMqAuXuYet/hCZyFcfnbAr
+         xcawlgfvRKz8f3sLmrF8o7IZ7xzsq5793WMvKYX78pqOiKDq7Jc16kAVVxN1/0VucF//
+         pfs1zf4M01fVKWh3X4rTZhnraFo0zfL2ZdxeT5xNE8yS/eUfPr9kQCuqZlpAXk5HWB1Z
+         nqcZc6CIXY0MUrnA4jkdwF+L8ds93ISask0Jtl0CZ5IrvDL/wJ9k2XEmZMgKec40Kz3l
+         L6RA==
+X-Gm-Message-State: AOAM531KWSp+UGr8ikKK9QYYKo1ALhCb4spDmqLmUfW/udLxBfJnOjsy
+        hLqZmFhhh1UqWFIic9UZiDWq7B1WJ18=
+X-Google-Smtp-Source: ABdhPJxBzCBv5tsKgRwHt9J8zUg4cl7CfOtit2hGjOTlr/mMOdtVMnLT2a0RutvW2tSrkNyFrsuPig==
+X-Received: by 2002:a05:6402:4406:b0:410:e24f:91fd with SMTP id y6-20020a056402440600b00410e24f91fdmr1281653eda.99.1646804701648;
+        Tue, 08 Mar 2022 21:45:01 -0800 (PST)
+Received: from oberon.com ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id v7-20020a17090651c700b006db6a03db3dsm296262ejk.121.2022.03.08.21.45.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Mar 2022 21:45:01 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH] trace-cmd: Use the new libtracefs API to address all dynamic events
+Date:   Wed,  9 Mar 2022 07:44:58 +0200
+Message-Id: <20220309054458.636350-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Arithmetic on null pointers is undefined behavior, spotted by C compiler
-sanitizers such as with clang. The builtin offset of is available in all
-recent compilers, so unconditionally use it as discussed for libbpf in:
-https://lore.kernel.org/all/a0a26308-a1d7-a57c-727c-000652a5d246@fb.com/
+The trace-cmd reset logic clears all dynamically created ftrace events.
+The current implementation lists all events that should be cleared.
+That logic is fragile, as when a new type of dynamic event is
+introduced the logic should be updated. Instead, the newly introduced
+libtracefs define should be used: TRACEFS_DYNEVENT_ALL.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/include/list.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tracecmd/trace-record.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/tracecmd/include/list.h b/tracecmd/include/list.h
-index cf9dd47e..fa0de6df 100644
---- a/tracecmd/include/list.h
-+++ b/tracecmd/include/list.h
-@@ -6,7 +6,7 @@
- #ifndef __LIST_H
- #define __LIST_H
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 9afc1042..8d9cbac2 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -5262,12 +5262,7 @@ static void clear_all_dynamic_events(void)
+ {
+ 	/* Clear event probes first, as they may be attached to other dynamic event */
+ 	tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_EPROBE, true);
+-	tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_KPROBE |
+-				     TRACEFS_DYNEVENT_KRETPROBE |
+-				     TRACEFS_DYNEVENT_UPROBE |
+-				     TRACEFS_DYNEVENT_URETPROBE |
+-				     TRACEFS_DYNEVENT_SYNTH,
+-				     true);
++	tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_ALL, true);
+ }
  
--#define offset_of(type, field)		(long)(&((type *)0)->field)
-+#define offset_of(type, field)		__builtin_offsetof(type, field)
- #define container_of(p, type, field)	(type *)((long)p - offset_of(type, field))
- 
- struct list_head {
+ static void clear_func_filters(void)
 -- 
-2.35.1.616.g0bdcbb4464-goog
+2.34.1
 
