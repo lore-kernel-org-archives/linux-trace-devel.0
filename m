@@ -2,177 +2,63 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32D88C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Mar 2022 00:11:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4DAAC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Mar 2022 15:20:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238913AbiCJAMo (ORCPT
+        id S238059AbiCJPVX (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 9 Mar 2022 19:12:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34682 "EHLO
+        Thu, 10 Mar 2022 10:21:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbiCJAMo (ORCPT
+        with ESMTP id S236036AbiCJPVR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 9 Mar 2022 19:12:44 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 80843EC5C8;
-        Wed,  9 Mar 2022 16:11:44 -0800 (PST)
-Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 1BA1520B7178;
-        Wed,  9 Mar 2022 16:11:44 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1BA1520B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1646871104;
-        bh=2Tm4jHRAvhNun2QtoHcsGtuySYa+7u6fWS5djlNGcM0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YgW+A9sFwuaX87VWP7tDUPnfuqdE5AvdWTtt+4+2LrRm0fC5LrIeM7Oj5LVOkprr3
-         ARB0O4jU1b26U14eLC81dMk+v6y5IPCtclRRr5YH24zIQ+3UUw8FUUyuXBk2x7jZ/U
-         T3Ey9O/1NhmrqJL23S9AnWNL5OPS205qC/+Ke818=
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     rostedt@goodmis.org, mhiramat@kernel.org
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        beaub@linux.microsoft.com
-Subject: [PATCH] user_events: Prevent dyn_event delete racing with ioctl add/delete
-Date:   Wed,  9 Mar 2022 16:11:41 -0800
-Message-Id: <20220310001141.1660-1-beaub@linux.microsoft.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 10 Mar 2022 10:21:17 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB0470CEB
+        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Mar 2022 07:20:14 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C09A06146C
+        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Mar 2022 15:20:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB5D2C340E8
+        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Mar 2022 15:20:12 +0000 (UTC)
+Date:   Thu, 10 Mar 2022 10:20:11 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd: Up min libtraceevent version to 1.5
+Message-ID: <20220310102011.0866b8ba@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Find user_events always while under the event_mutex and before leaving
-the lock, add a ref count to the user_event. This ensures that all paths
-under the event_mutex that check the ref counts will be synchronized.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The ioctl add/delete paths are protected by the reg_mutex. However,
-dyn_event is only protected by the event_mutex. The dyn_event delete
-path cannot acquire reg_mutex, since that could cause a deadlock between
-the ioctl delete case acquiring event_mutex after acquiring the reg_mutex.
+trace-cmd now uses tep_get_sub_buffer_size() which was added in
+libtraceevent 1.5.
 
-Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/trace_events_user.c | 46 +++++++++++++++++++++++++++-----
- 1 file changed, 40 insertions(+), 6 deletions(-)
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 2b5e9fdb63a0..1aaef2ab9f9f 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -135,6 +135,8 @@ static struct list_head *user_event_get_fields(struct trace_event_call *call)
-  * NOTE: Offsets are from the user data perspective, they are not from the
-  * trace_entry/buffer perspective. We automatically add the common properties
-  * sizes to the offset for the user.
-+ *
-+ * Upon success user_event has its ref count increased by 1.
-  */
- static int user_event_parse_cmd(char *raw_command, struct user_event **newuser)
- {
-@@ -591,8 +593,10 @@ static struct user_event *find_user_event(char *name, u32 *outkey)
- 	*outkey = key;
+diff --git a/Makefile b/Makefile
+index 3be6ac34d8e8..5d33e3583c44 100644
+--- a/Makefile
++++ b/Makefile
+@@ -22,7 +22,7 @@ export LIBTRACECMD_VERSION
  
- 	hash_for_each_possible(register_table, user, node, key)
--		if (!strcmp(EVENT_NAME(user), name))
-+		if (!strcmp(EVENT_NAME(user), name)) {
-+			atomic_inc(&user->refcnt);
- 			return user;
-+		}
+ VERSION_FILE = ltc_version.h
  
- 	return NULL;
- }
-@@ -881,7 +885,12 @@ static int user_event_create(const char *raw_command)
- 		return -ENOMEM;
+-LIBTRACEEVENT_MIN_VERSION = 1.3
++LIBTRACEEVENT_MIN_VERSION = 1.5
+ LIBTRACEFS_MIN_VERSION = 1.3
  
- 	mutex_lock(&reg_mutex);
-+
- 	ret = user_event_parse_cmd(name, &user);
-+
-+	if (!ret)
-+		atomic_dec(&user->refcnt);
-+
- 	mutex_unlock(&reg_mutex);
- 
- 	if (ret)
-@@ -1048,6 +1057,7 @@ static int user_event_trace_register(struct user_event *user)
- /*
-  * Parses the event name, arguments and flags then registers if successful.
-  * The name buffer lifetime is owned by this method for success cases only.
-+ * Upon success the returned user_event has its ref count increased by 1.
-  */
- static int user_event_parse(char *name, char *args, char *flags,
- 			    struct user_event **newuser)
-@@ -1055,7 +1065,12 @@ static int user_event_parse(char *name, char *args, char *flags,
- 	int ret;
- 	int index;
- 	u32 key;
--	struct user_event *user = find_user_event(name, &key);
-+	struct user_event *user;
-+
-+	/* Prevent dyn_event from racing */
-+	mutex_lock(&event_mutex);
-+	user = find_user_event(name, &key);
-+	mutex_unlock(&event_mutex);
- 
- 	if (user) {
- 		*newuser = user;
-@@ -1119,6 +1134,10 @@ static int user_event_parse(char *name, char *args, char *flags,
- 		goto put_user;
- 
- 	user->index = index;
-+
-+	/* Ensure we track ref */
-+	atomic_inc(&user->refcnt);
-+
- 	dyn_event_init(&user->devent, &user_event_dops);
- 	dyn_event_add(&user->devent, &user->call);
- 	set_bit(user->index, page_bitmap);
-@@ -1145,12 +1164,21 @@ static int delete_user_event(char *name)
- 	if (!user)
- 		return -ENOENT;
- 
--	if (atomic_read(&user->refcnt) != 0)
--		return -EBUSY;
-+	/* Ensure we are the last ref */
-+	if (atomic_read(&user->refcnt) != 1) {
-+		ret = -EBUSY;
-+		goto put_ref;
-+	}
- 
--	mutex_lock(&event_mutex);
- 	ret = destroy_user_event(user);
--	mutex_unlock(&event_mutex);
-+
-+	if (ret)
-+		goto put_ref;
-+
-+	return ret;
-+put_ref:
-+	/* No longer have this ref */
-+	atomic_dec(&user->refcnt);
- 
- 	return ret;
- }
-@@ -1338,6 +1366,9 @@ static long user_events_ioctl_reg(struct file *file, unsigned long uarg)
- 
- 	ret = user_events_ref_add(file, user);
- 
-+	/* No longer need parse ref, ref_add either worked or not */
-+	atomic_dec(&user->refcnt);
-+
- 	/* Positive number is index and valid */
- 	if (ret < 0)
- 		return ret;
-@@ -1362,7 +1393,10 @@ static long user_events_ioctl_del(struct file *file, unsigned long uarg)
- 	if (IS_ERR(name))
- 		return PTR_ERR(name);
- 
-+	/* event_mutex prevents dyn_event from racing */
-+	mutex_lock(&event_mutex);
- 	ret = delete_user_event(name);
-+	mutex_unlock(&event_mutex);
- 
- 	kfree(name);
- 
-
-base-commit: 864ea0e10cc90416a01b46f0d47a6f26dc020820
+ MAKEFLAGS += --no-print-directory
 -- 
-2.17.1
+2.34.1
 
