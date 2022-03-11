@@ -2,82 +2,96 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56A77C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Mar 2022 18:13:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E564C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Mar 2022 22:51:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbiCKSOk (ORCPT
+        id S229788AbiCKWwT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Mar 2022 13:14:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52410 "EHLO
+        Fri, 11 Mar 2022 17:52:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350731AbiCKSOk (ORCPT
+        with ESMTP id S229962AbiCKWwL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Mar 2022 13:14:40 -0500
+        Fri, 11 Mar 2022 17:52:11 -0500
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0245115678D;
-        Fri, 11 Mar 2022 10:13:34 -0800 (PST)
-Received: from kbox (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 48C4D20B7178;
-        Fri, 11 Mar 2022 10:13:34 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 48C4D20B7178
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C4AC8ECB1B;
+        Fri, 11 Mar 2022 14:30:32 -0800 (PST)
+Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 4260520B7178;
+        Fri, 11 Mar 2022 14:30:32 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4260520B7178
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1647022414;
-        bh=XbDHx/jSLSkMdXfZzf5CbubsDCrQ0HgtiCggr0K60b0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QsxQW9EXkzduSiEiWxdkdSzIxBOZfvClcshFRHcUQdOI9TANkJ/aZmGFz88ExbBBv
-         pIipzTRT/YdY3melIuS1SSMNDy7kjpLpefWkCde15DjPSdPsWpzpD+DMPjC0Idp6XG
-         cCXLm2CZSlGAKrTOawvz1DrjkTXNgUzdU6pj73Sg=
-Date:   Fri, 11 Mar 2022 10:13:28 -0800
+        s=default; t=1647037832;
+        bh=N1x1V2sY7mMppzWbWx3qgkpf7QBnkkPjK7jq4FHoask=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NJ+BUV1i55rgsecezhByakHPZ4Hzs5zerEkLc++lG+THztYBUCt9sJxZPHAwh3Tx9
+         BlSJVyCIivEa8CeF1nXyI4ylhSpouIuWNL1g61LVAJ4DonI3AF0YNovCTNJQ7mjSFb
+         QPSISgmiIx2mrTPp7SHZ+7/QaGyAwLbCjibUXvVM=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Anders Roxell <anders.roxell@linaro.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [next] arm64: allmodconfig: kernel BUG at
- include/linux/page-flags.h:509
-Message-ID: <20220311181328.GA1904@kbox>
-References: <CADYN=9+xY5Vku3Ws5E9S60SM5dCFfeGeRBkmDFbcxX0ZMoFing@mail.gmail.com>
- <20220311112426.7e3cf434@gandalf.local.home>
- <20220311171123.GA1675@kbox>
- <20220311130453.54a4e0b2@gandalf.local.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220311130453.54a4e0b2@gandalf.local.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+To:     rostedt@goodmis.org, mhiramat@kernel.org
+Cc:     anders.roxell@linaro.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        beaub@linux.microsoft.com
+Subject: [PATCH] user_events: Use alloc_pages instead of kzalloc for register pages
+Date:   Fri, 11 Mar 2022 14:30:28 -0800
+Message-Id: <20220311223028.1865-1-beaub@linux.microsoft.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Mar 11, 2022 at 01:04:53PM -0500, Steven Rostedt wrote:
-> On Fri, 11 Mar 2022 09:11:23 -0800
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> 
-> > Maybe I am mistaken, but I remember reading in the case of a kernel
-> > allocated page shared with user space they must be reserved. It was
-> > stated that the PTE may not know the PFN belongs to user or kernel.
-> > 
-> > If this is not the case, I don't see why we couldn't allocate zero'd
-> > pages as you describe. We just need to make sure we don't crash user
-> > processes touching the page if it does get paged out (and ideally not
-> > slow down their execution).
-> 
-> Anything allocated by the kernel via alloc_page() will never be paged out.
-> As the kernel may use it in any location (including NMIs). The ftrace ring
-> buffer allocates its pages this way.
-> 
+kzalloc virtual addresses do not work with SetPageReserved, use the
+actual page virtual addresses instead via alloc_pages.
 
-Is that true as well for the user process that has this mapped? Will the
-user process virtual memory that maps to this ever page it out? I
-believe that was the concern. My understanding is by reserving in
-kernel, even though it won't page out on that side, marks the user side
-entry to not let it page out.
+The issue is reported when booting with user_events and
+DEBUG_VM_PGFLAGS=y.
 
-The other thing is that this patch applied to 5.10.X on ARM64 does not
-appear to hit this. Is it some weird interaction with something else or
-was 5.10.X just getting lucky?
+Link: https://lore.kernel.org/linux-trace-devel/CADYN=9+xY5Vku3Ws5E9S60SM5dCFfeGeRBkmDFbcxX0ZMoFing@mail.gmail.com/#R
 
-Thanks,
--Beau
+Reported-by: Anders Roxell <anders.roxell@linaro.org>
+Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+---
+ kernel/trace/trace_events_user.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+index 2b5e9fdb63a0..59c900789757 100644
+--- a/kernel/trace/trace_events_user.c
++++ b/kernel/trace/trace_events_user.c
+@@ -1587,16 +1587,20 @@ static void set_page_reservations(bool set)
+ static int __init trace_events_user_init(void)
+ {
+ 	int ret;
++	struct page *register_pages;
+ 
+ 	/* Zero all bits beside 0 (which is reserved for failures) */
+ 	bitmap_zero(page_bitmap, MAX_EVENTS);
+ 	set_bit(0, page_bitmap);
+ 
+-	register_page_data = kzalloc(MAX_EVENTS, GFP_KERNEL);
++	register_pages = alloc_pages(GFP_KERNEL | __GFP_ZERO,
++				     get_order(MAX_EVENTS));
+ 
+-	if (!register_page_data)
++	if (!register_pages)
+ 		return -ENOMEM;
+ 
++	register_page_data = page_address(register_pages);
++
+ 	set_page_reservations(true);
+ 
+ 	ret = create_user_tracefs();
+@@ -1604,7 +1608,7 @@ static int __init trace_events_user_init(void)
+ 	if (ret) {
+ 		pr_warn("user_events could not register with tracefs\n");
+ 		set_page_reservations(false);
+-		kfree(register_page_data);
++		__free_pages(register_pages, get_order(MAX_EVENTS));
+ 		return ret;
+ 	}
+ 
+
+base-commit: 864ea0e10cc90416a01b46f0d47a6f26dc020820
+-- 
+2.17.1
+
