@@ -2,122 +2,171 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67735C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Mar 2022 16:32:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 715B9C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Mar 2022 17:11:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346764AbiCKQdr (ORCPT
+        id S1349282AbiCKRMd (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Mar 2022 11:33:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56112 "EHLO
+        Fri, 11 Mar 2022 12:12:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234508AbiCKQdq (ORCPT
+        with ESMTP id S242458AbiCKRMd (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Mar 2022 11:33:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D77E351E56
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Mar 2022 08:32:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1647016361;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wIiyo/Hz9JMpDwt94KYeCOdCYlTzYuM5+GHnQsk/7+4=;
-        b=XfBXaUe1mvTlppshHGteBc5saB2kMeAv9RlR0Iz94zBe+ChNOD0PgFr7DIbq+krAP4rOf+
-        7PZgLloUjsa0dNRyymnJQ07lsXek/90L881ZYUvWf+qdR2sDFqb2X8/qGK8ne4Z/xHHxlC
-        2eumQNcp2DruZ9LypirKR9xtTt9l3JU=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-644-mHt-TQYqPkCAKV3aazC2jw-1; Fri, 11 Mar 2022 11:32:40 -0500
-X-MC-Unique: mHt-TQYqPkCAKV3aazC2jw-1
-Received: by mail-wm1-f70.google.com with SMTP id f24-20020a1c6a18000000b00388874b17a8so3640751wmc.3
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Mar 2022 08:32:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wIiyo/Hz9JMpDwt94KYeCOdCYlTzYuM5+GHnQsk/7+4=;
-        b=7J7+aJwlSfMgswTrUPlLxIMVvcVAaWMjdUCksI58UjdmuMutuAFyzP3C9wIFpBd7Uc
-         pcpsMDodZarcTnPtiX9OaMBaRLEMoUhRCi6H5bCbzr0n9evwLBDf2mnkZ66qYMmRXI3u
-         qJz5ce2K4VsniF2aSLAhhwXwkvJftfq0x+Jdqhl5RM4j4W3U+BeFGF6j2BEdlJ+MIA9r
-         EsXonjq6eP8KW5k+o0Na2w79kEhvn8WY0coVr0ksluwtorJhTkqaXoMXjR/GsswmtjoD
-         NYzx+9GHHNo+sKaEFNUWzfbm8ufxyp+xHU9HdYNIk7mfNiFcj9lcQ3iz+j70zEkN93P7
-         Fbng==
-X-Gm-Message-State: AOAM532ZZNfnH0oMUt+vyYp111UX5GpBGi16ieNIsblTCksRk0hkjdZr
-        N0KzOteJYk3flcyZqvsby6D+DS8f81jtk6cOT+JwtP12kMWEyLTZzLyEbjJwMXZHC+5S9arvrav
-        EXjHq8KrlN4bezl0lY9ohtV1GlI6skDI=
-X-Received: by 2002:a05:6000:1104:b0:1f9:7df6:c864 with SMTP id z4-20020a056000110400b001f97df6c864mr7890479wrw.63.1647016359447;
-        Fri, 11 Mar 2022 08:32:39 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxW7xVvJKrOS4i/VOXAwIU8h5bRNK36QLS+yGu7beP2gTUOBkmEGhe0SKy7JrVLcX09APi9Jw==
-X-Received: by 2002:a05:6000:1104:b0:1f9:7df6:c864 with SMTP id z4-20020a056000110400b001f97df6c864mr7890465wrw.63.1647016359206;
-        Fri, 11 Mar 2022 08:32:39 -0800 (PST)
-Received: from localhost.localdomain ([2a00:23c6:4a1c:5a01:f0e6:1d65:f381:51c4])
-        by smtp.gmail.com with ESMTPSA id i1-20020a1c5401000000b00389f76c1325sm578681wmb.47.2022.03.11.08.32.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Mar 2022 08:32:38 -0800 (PST)
-Date:   Fri, 11 Mar 2022 16:32:36 +0000
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Clark Williams <williams@redhat.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Fri, 11 Mar 2022 12:12:33 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 71B0C149BB3;
+        Fri, 11 Mar 2022 09:11:29 -0800 (PST)
+Received: from kbox (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
+        by linux.microsoft.com (Postfix) with ESMTPSA id D7D3420B7178;
+        Fri, 11 Mar 2022 09:11:28 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D7D3420B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1647018689;
+        bh=pT3g6CrwH4SQoJr9Yxs/BZSyCrdQloWXDWTTxKQ765E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AprZZalV75mZHkDRko9bb+rY6+FSE0puTQCtfpYTZEkOTGGZBxiyDkShofOPB6Jtp
+         OZBPR2gk1LMFmfxTk69BogTF0s/oE8sZTdRMZt0nd9C9CMelRfB1/zowIb9V+Xdo1x
+         JKi/Ah8WIRAL1NPU9uV3AoRFR7G33BLeV/zaJaxI=
+Date:   Fri, 11 Mar 2022 09:11:23 -0800
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Anders Roxell <anders.roxell@linaro.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
         linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH V3 00/15] rtla: Improved tracing support
-Message-ID: <Yit5pMZVCPFAXE/e@localhost.localdomain>
-References: <cover.1646247211.git.bristot@kernel.org>
+Subject: Re: [next] arm64: allmodconfig: kernel BUG at
+ include/linux/page-flags.h:509
+Message-ID: <20220311171123.GA1675@kbox>
+References: <CADYN=9+xY5Vku3Ws5E9S60SM5dCFfeGeRBkmDFbcxX0ZMoFing@mail.gmail.com>
+ <20220311112426.7e3cf434@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1646247211.git.bristot@kernel.org>
+In-Reply-To: <20220311112426.7e3cf434@gandalf.local.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi,
+On Fri, Mar 11, 2022 at 11:24:26AM -0500, Steven Rostedt wrote:
+> On Fri, 11 Mar 2022 10:43:32 +0100
+> Anders Roxell <anders.roxell@linaro.org> wrote:
+> 
+> > Hi,
+> > 
+> > I'm building and running an arm64 allmodconfig kernel on next.
+> > Reacently I've seen this error below, for full log see [1].
+> > 
+> > [   56.000810][    T1] ------------[ cut here ]------------
+> > [   56.003178][    T1] kernel BUG at include/linux/page-flags.h:509!
+> > [   56.006291][    T1] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
+> > [   56.008921][    T1] Modules linked in:
+> > [   56.010600][    T1] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G
+> >         T 5.17.0-rc6-next-20220304 #1
+> > ff4358f1e97b9d4d3a7966961f455fb8cb5c735d
+> > [   56.015962][    T1] Hardware name: linux,dummy-virt (DT)
+> > [   56.018189][    T1] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT
+> > -SSBS BTYPE=--)
+> > [   56.021355][    T1] pc : set_page_reservations+0xf8/0x3b8
+> > [   56.023655][    T1] lr : set_page_reservations+0xec/0x3b8
+> > [   56.025976][    T1] sp : ffff80000eb37c20
+> > [   56.027699][    T1] x29: ffff80000eb37c20 x28: ffff0000079d8050
+> > x27: 0000000000000001
+> > [   56.031030][    T1] x26: ffff80000a2c6140 x25: ffff80000e240380
+> > x24: ffff80000b780f70
+> > [   56.034381][    T1] x23: fffffc0000000000 x22: 000000000028b100
+> > x21: fffffc000028b100
+> > [   56.037728][    T1] x20: ffff80000e23ffe0 x19: ffff80000e23ffe0
+> > x18: 0000000000000000
+> > [   56.041039][    T1] x17: 0000000000000000 x16: 0000000000000000
+> > x15: 0000000000000000
+> > [   56.044323][    T1] x14: 0000000000000000 x13: fffffffffffe34f0
+> > x12: fffffffffffe3498
+> > [   56.047644][    T1] x11: 0000000000000000 x10: 0000000000000000 x9
+> > : 0000000000000000
+> > [   56.050941][    T1] x8 : 0000000000000000 x7 : 0000000000000000 x6
+> > : 0000000000000000
+> > [   56.054258][    T1] x5 : 0000000000000000 x4 : 0000000000000000 x3
+> > : 0000000000000000
+> > [   56.057729][    T1] x2 : 0000000000000000 x1 : 0000000000000000 x0
+> > : 0000000000000001
+> > [   56.061075][    T1] Call trace:
+> > [   56.062436][    T1]  set_page_reservations+0xf8/0x3b8
+> > [   56.064709][    T1]  trace_events_user_init+0x1bc/0x3f8
+> 
+> 
+> Hmm,
+> 
+> static void set_page_reservations(bool set)
+> {
+> 	int page;
+> 
+> 	for (page = 0; page < MAX_PAGES; ++page) {
+> 		void *addr = register_page_data + (PAGE_SIZE * page);
+> 
+> 		if (set)
+> 			SetPageReserved(virt_to_page(addr));
+> 		else
+> 			ClearPageReserved(virt_to_page(addr));
+> 	}
+> }
+> 
+> static int __init trace_events_user_init(void)
+> {
+> 	int ret;
+> 
+> 	/* Zero all bits beside 0 (which is reserved for failures) */
+> 	bitmap_zero(page_bitmap, MAX_EVENTS);
+> 	set_bit(0, page_bitmap);
+> 
+> 	register_page_data = kzalloc(MAX_EVENTS, GFP_KERNEL);
+> 
+> 	if (!register_page_data)
+> 		return -ENOMEM;
+> 
+> 	set_page_reservations(true);
+> 
+> Beau,
+> 
+> Why are you reserving the page? Can't you just allocate a page and use that?
+> 
+> 	page = alloc_pages(GFP_KERNEL | __GFP_ZERO, 0);
+> 	register_page_data = page_address(page);
+> 
+> What was the purpose of setting it reserved?
+> 
 
-On 02/03/22 20:01, Daniel Bristot de Oliveira wrote:
-> This set introduces some tracing facilities to rtla tools:
-> 
-> - Add the possibility to change the tracing_thresh to osnoise,
-> allowing a fine tune of OS noise detection.
-> 
-> - Add the auto-tracing feature (-a threshold us), which aims
-> helping the first approach to a problem by setting common
-> tracing features with a single parameter.
-> 
-> - Add -e/--event option, allowing osnoise and timerlat to
-> enable additional trace events via (possible multiple)
-> -e sys:event options.
-> 
-> - Add the --filter option to filter the previous -e event.
-> 
-> - Add the --trigger option to allow the usage of tracing
-> trigger of the previously set -e event. If the trigger
-> is hist: one, rtla automatically saves the hist file
-> associated with the -e event.
-> 
-> And some more improvements:
-> 
-> - Add --dma-latency option to tune exit from idle latencies
-> 
-> - Some minor fixes
-> 
-> Changes from V2:
->  - Rebased to for-next
->  - Add --dma-latency
->  - Some more fixes
-> Changes from V1:
->  - Add -e to osnoise/timerlat hist
->  - Add --trigger
->  - Add --filter
->  - Add support to save hist file
->  - Function name refactoring
+Maybe I am mistaken, but I remember reading in the case of a kernel
+allocated page shared with user space they must be reserved. It was
+stated that the PTE may not know the PFN belongs to user or kernel.
 
-I took this for a spin and it looked good to me!
+If this is not the case, I don't see why we couldn't allocate zero'd
+pages as you describe. We just need to make sure we don't crash user
+processes touching the page if it does get paged out (and ideally not
+slow down their execution).
 
-Tested-by: Juri Lelli <juri.lelli@redhat.com>
+> -- Steve
+> 
+> > [   56.067110][    T1]  do_one_initcall+0x2ac/0x6c0
+> > [   56.069267][    T1]  do_initcalls+0x17c/0x244
+> > [   56.071269][    T1]  kernel_init_freeable+0x2a0/0x344
+> > [   56.073587][    T1]  kernel_init+0x34/0x180
+> > [   56.075614][    T1]  ret_from_fork+0x10/0x20
+> > [   56.077655][    T1] Code: 97937293 f9401a80 91000400 f9001a80
+> > (d4210000) [   56.080828][    T1] ---[ end trace 0000000000000000 ]---
+> > [   56.083250][    T1] Kernel panic - not syncing: Oops - BUG: Fatal
+> > exception [   56.086279][    T1] ---[ end Kernel panic - not syncing:
+> > Oops - BUG: Fatal exception ]---
+> > 
+> > Reported-by: Anders Roxell <anders.roxell@linaro.org>
+> > 
+> > Any idea what happens?
+> > 
+> > 
+> > Cheers,
+> > Anders
+> > [1] http://ix.io/3Rkj
 
 Thanks,
-Juri
-
+-Beau
