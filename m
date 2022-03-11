@@ -2,30 +2,34 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50C9CC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Mar 2022 23:15:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95607C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Mar 2022 23:28:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbiCKXQL (ORCPT
+        id S229567AbiCKX3T (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Mar 2022 18:16:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46660 "EHLO
+        Fri, 11 Mar 2022 18:29:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbiCKXQK (ORCPT
+        with ESMTP id S229458AbiCKX3S (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Mar 2022 18:16:10 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB0DD3AC7;
-        Fri, 11 Mar 2022 15:15:05 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9D31DB80E9F;
-        Fri, 11 Mar 2022 23:15:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A591CC340E9;
-        Fri, 11 Mar 2022 23:15:02 +0000 (UTC)
-Date:   Fri, 11 Mar 2022 18:15:00 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
+        Fri, 11 Mar 2022 18:29:18 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BC4053BA6A;
+        Fri, 11 Mar 2022 15:28:14 -0800 (PST)
+Received: from kbox (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 58C4320B7178;
+        Fri, 11 Mar 2022 15:28:14 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 58C4320B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1647041294;
+        bh=WfV97jFHnXJqj+8W72uvh/s0Oir5+4FauwMiti7lDyo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WklNVZ8VgCMbt6CBIj/Ou2yFgYoFSQ9clwj6uTd8IsNJq1rp+1zuix4huK4EAN6gf
+         CwX0BEhHri8MluGwQOum1Z19FFOE7SgBGcoFgvju54mv6jaYtU9y+yf1kWXdkUoraJ
+         7/Y0+4a+Ud/qau4VOrlqnWjLJgzRovBd2Uw17XS0=
+Date:   Fri, 11 Mar 2022 15:28:09 -0800
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Anders Roxell <anders.roxell@linaro.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
@@ -33,42 +37,58 @@ Cc:     Anders Roxell <anders.roxell@linaro.org>,
         linux-trace-devel@vger.kernel.org
 Subject: Re: [next] arm64: allmodconfig: kernel BUG at
  include/linux/page-flags.h:509
-Message-ID: <20220311181500.0be31225@gandalf.local.home>
-In-Reply-To: <20220311181328.GA1904@kbox>
+Message-ID: <20220311232809.GA2044@kbox>
 References: <CADYN=9+xY5Vku3Ws5E9S60SM5dCFfeGeRBkmDFbcxX0ZMoFing@mail.gmail.com>
-        <20220311112426.7e3cf434@gandalf.local.home>
-        <20220311171123.GA1675@kbox>
-        <20220311130453.54a4e0b2@gandalf.local.home>
-        <20220311181328.GA1904@kbox>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+ <20220311112426.7e3cf434@gandalf.local.home>
+ <20220311171123.GA1675@kbox>
+ <20220311130453.54a4e0b2@gandalf.local.home>
+ <20220311181328.GA1904@kbox>
+ <20220311181500.0be31225@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220311181500.0be31225@gandalf.local.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 11 Mar 2022 10:13:28 -0800
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
-
-> Is that true as well for the user process that has this mapped? Will the
-> user process virtual memory that maps to this ever page it out? I
-> believe that was the concern. My understanding is by reserving in
-> kernel, even though it won't page out on that side, marks the user side
-> entry to not let it page out.
-
-My memory of the purpose of SetPageReserve() is a bit fuzzy, and there's
-not much use of it in the kernel. Just a hand full. I'll try to investigate
-it some more.
-
+On Fri, Mar 11, 2022 at 06:15:00PM -0500, Steven Rostedt wrote:
+> On Fri, 11 Mar 2022 10:13:28 -0800
+> Beau Belgrave <beaub@linux.microsoft.com> wrote:
 > 
-> The other thing is that this patch applied to 5.10.X on ARM64 does not
-> appear to hit this. Is it some weird interaction with something else or
-> was 5.10.X just getting lucky?
+> > Is that true as well for the user process that has this mapped? Will the
+> > user process virtual memory that maps to this ever page it out? I
+> > believe that was the concern. My understanding is by reserving in
+> > kernel, even though it won't page out on that side, marks the user side
+> > entry to not let it page out.
+> 
+> My memory of the purpose of SetPageReserve() is a bit fuzzy, and there's
+> not much use of it in the kernel. Just a hand full. I'll try to investigate
+> it some more.
+> 
 
-Perhaps it's because you allocated the page with kzalloc and not just
-getting a page directly?
+OK, you know more than I, so hopefully we can land on if we really need
+it or not. For now I've left it in.
 
-Again, my knowledge in this area is lacking. I'm looking more into it.
+> > 
+> > The other thing is that this patch applied to 5.10.X on ARM64 does not
+> > appear to hit this. Is it some weird interaction with something else or
+> > was 5.10.X just getting lucky?
+> 
+> Perhaps it's because you allocated the page with kzalloc and not just
+> getting a page directly?
+> 
 
--- Steve
+Yeah, I think so too. I was able to repro locally and validate that using
+alloc_pages directly fixes this by setting DEBUG_VM_PGFLAGS=y.
+
+I've posted a patch for this:
+https://lore.kernel.org/linux-trace-devel/20220311223028.1865-1-beaub@linux.microsoft.com/
+
+> Again, my knowledge in this area is lacking. I'm looking more into it.
+> 
+> -- Steve
+
+Thanks,
+-Beau
