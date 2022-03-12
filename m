@@ -2,115 +2,112 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1C8AC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Mar 2022 23:55:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD4D0C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 12 Mar 2022 00:05:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbiCKX4i (ORCPT
+        id S229457AbiCLAGG (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Mar 2022 18:56:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50676 "EHLO
+        Fri, 11 Mar 2022 19:06:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbiCKX4h (ORCPT
+        with ESMTP id S229580AbiCLAGF (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Mar 2022 18:56:37 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 225EFD81;
-        Fri, 11 Mar 2022 15:55:33 -0800 (PST)
-Received: from kbox (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id AEEBD20B7178;
-        Fri, 11 Mar 2022 15:55:32 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AEEBD20B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1647042932;
-        bh=6ZrDSYmvOkJ2v9dCqiXvjF1J0+mtHZ+4Ek2KC4gi76A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LmGw75nB1upmYXQfSTaJS2g/obC5mRoX6+8DlI2WGujX4olHKXtaqL5YU5rcfXCb7
-         O8UTDNYG9RoZvKlIPyV9w8wVAseYw/UDgPGdKgyCDIAD4NYWGbwVNHhw7c36XkFWaw
-         iKyuvTGGv/gyxPlSg57S4R2uQtYB4EWFx+arVAuI=
-Date:   Fri, 11 Mar 2022 15:55:30 -0800
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     mhiramat@kernel.org, anders.roxell@linaro.org,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org
-Subject: Re: [PATCH] user_events: Use alloc_pages instead of kzalloc for
- register pages
-Message-ID: <20220311235530.GB2101@kbox>
-References: <20220311223028.1865-1-beaub@linux.microsoft.com>
- <20220311183343.4d8c94a5@gandalf.local.home>
- <20220311184440.537e9f83@gandalf.local.home>
+        Fri, 11 Mar 2022 19:06:05 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732AB20F60;
+        Fri, 11 Mar 2022 16:05:00 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 06F05614DB;
+        Sat, 12 Mar 2022 00:05:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBBA8C340E9;
+        Sat, 12 Mar 2022 00:04:58 +0000 (UTC)
+Date:   Fri, 11 Mar 2022 19:04:57 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Beau Belgrave <beaub@linux.microsoft.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] tracing/user_events: Use alloc_pages instead of kzalloc()
+ for register pages
+Message-ID: <20220311190457.0345eeb2@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220311184440.537e9f83@gandalf.local.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Mar 11, 2022 at 06:44:40PM -0500, Steven Rostedt wrote:
-> On Fri, 11 Mar 2022 18:33:43 -0500
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > I tried it slightly differently. Why waist bits if MAX_EVENTS is greater
-> > than the order. That is, make MAX_EVENTS depend on the order, not the other
-> > way around.
-> 
-> Here's a version that keeps the reserving part as well as some bug fixes (I
-> didn't even compile the previous version ;-)
-> 
-> -- Steve
-> 
-> diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-> index 4febc1d6ae72..e10ad057e797 100644
-> --- a/kernel/trace/trace_events_user.c
-> +++ b/kernel/trace/trace_events_user.c
-> @@ -30,9 +30,10 @@
->  
->  /*
->   * Limits how many trace_event calls user processes can create:
-> - * Must be multiple of PAGE_SIZE.
-> + * Must be a power of two of PAGE_SIZE.
->   */
-> -#define MAX_PAGES 1
-> +#define MAX_PAGE_ORDER 0
-> +#define MAX_PAGES (1 << MAX_PAGE_ORDER)
->  #define MAX_EVENTS (MAX_PAGES * PAGE_SIZE)
->  
->  /* Limit how long of an event name plus args within the subsystem. */
-> @@ -1622,16 +1623,17 @@ static void set_page_reservations(bool set)
->  
->  static int __init trace_events_user_init(void)
->  {
-> +	struct page *pages;
->  	int ret;
->  
->  	/* Zero all bits beside 0 (which is reserved for failures) */
->  	bitmap_zero(page_bitmap, MAX_EVENTS);
->  	set_bit(0, page_bitmap);
->  
-> -	register_page_data = kzalloc(MAX_EVENTS, GFP_KERNEL);
-> -
-> -	if (!register_page_data)
-> +	pages = alloc_pages(GFP_KERNEL | __GFP_ZERO, MAX_PAGE_ORDER);
-> +	if (!pages)
->  		return -ENOMEM;
-> +	register_page_data = page_address(pages);
->  
->  	set_page_reservations(true);
->  
-> @@ -1640,7 +1642,7 @@ static int __init trace_events_user_init(void)
->  	if (ret) {
->  		pr_warn("user_events could not register with tracefs\n");
->  		set_page_reservations(false);
-> -		kfree(register_page_data);
-> +		__free_pages(pages, MAX_PAGE_ORDER);
->  		return ret;
->  	}
->  
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-This looks good to me, I agree having the max events aligning to page
-order makes more sense going forward.
+kzalloc virtual addresses do not work with SetPageReserved, use the actual
+page virtual addresses instead via alloc_pages.
 
-Thanks,
--Beau
+The issue is reported when booting with user_events and
+DEBUG_VM_PGFLAGS=y.
+
+Also make the number of events based on the ORDER.
+
+Link: https://lore.kernel.org/all/CADYN=9+xY5Vku3Ws5E9S60SM5dCFfeGeRBkmDFbcxX0ZMoFing@mail.gmail.com/
+Link: https://lore.kernel.org/all/20220311223028.1865-1-beaub@linux.microsoft.com/
+
+Cc: Beau Belgrave <beaub@linux.microsoft.com>
+Reported-by: Anders Roxell <anders.roxell@linaro.org>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ kernel/trace/trace_events_user.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+index 4febc1d6ae72..e10ad057e797 100644
+--- a/kernel/trace/trace_events_user.c
++++ b/kernel/trace/trace_events_user.c
+@@ -30,9 +30,10 @@
+ 
+ /*
+  * Limits how many trace_event calls user processes can create:
+- * Must be multiple of PAGE_SIZE.
++ * Must be a power of two of PAGE_SIZE.
+  */
+-#define MAX_PAGES 1
++#define MAX_PAGE_ORDER 0
++#define MAX_PAGES (1 << MAX_PAGE_ORDER)
+ #define MAX_EVENTS (MAX_PAGES * PAGE_SIZE)
+ 
+ /* Limit how long of an event name plus args within the subsystem. */
+@@ -1622,16 +1623,17 @@ static void set_page_reservations(bool set)
+ 
+ static int __init trace_events_user_init(void)
+ {
++	struct page *pages;
+ 	int ret;
+ 
+ 	/* Zero all bits beside 0 (which is reserved for failures) */
+ 	bitmap_zero(page_bitmap, MAX_EVENTS);
+ 	set_bit(0, page_bitmap);
+ 
+-	register_page_data = kzalloc(MAX_EVENTS, GFP_KERNEL);
+-
+-	if (!register_page_data)
++	pages = alloc_pages(GFP_KERNEL | __GFP_ZERO, MAX_PAGE_ORDER);
++	if (!pages)
+ 		return -ENOMEM;
++	register_page_data = page_address(pages);
+ 
+ 	set_page_reservations(true);
+ 
+@@ -1640,7 +1642,7 @@ static int __init trace_events_user_init(void)
+ 	if (ret) {
+ 		pr_warn("user_events could not register with tracefs\n");
+ 		set_page_reservations(false);
+-		kfree(register_page_data);
++		__free_pages(pages, MAX_PAGE_ORDER);
+ 		return ret;
+ 	}
+ 
+-- 
+2.34.1
+
