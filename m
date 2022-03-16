@@ -2,177 +2,155 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2BA3C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Mar 2022 14:37:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C08AC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Mar 2022 14:37:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238790AbiCPOir (ORCPT
+        id S241769AbiCPOir (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 16 Mar 2022 10:38:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36432 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236677AbiCPOiq (ORCPT
+        with ESMTP id S238737AbiCPOiq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 16 Mar 2022 10:38:46 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF24752E2A
-        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Mar 2022 07:37:31 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id t1so2999172edc.3
-        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Mar 2022 07:37:31 -0700 (PDT)
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF0252E2C
+        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Mar 2022 07:37:32 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id yy13so4661121ejb.2
+        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Mar 2022 07:37:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=e3mro1+5CIotbzwMPPXB1AsZ5y4fDO/jdJ2AUZJV26o=;
-        b=earKWguaD6uF89IMPHMGF6wX9f+h1bQFp/PeaCy2HZKv/RomRo3hRt9Sf9/zwVaVVd
-         DcS4uyC/fCHG08T1ebfuYyhZX67ttJ2tlfgYR9sjad0lAgTmqK1Ij35QYNjY+YWQsJAk
-         Zke9iPlCGWRb52+KRxmw73u+qIDGWFDaq0LhTmUKGpNxFvNeZ73Zob70Dufv7Sx6oiXT
-         0iLeoAr9wHZXMm/Z3p7MDxlHDAR8tuHqj/3+KCnVnXNPm39hhvt3z5+mrAlTmZhG895P
-         TLo2hHMvAZbKJqwGSSUyFzOyQ6G8gKMkDyOpNuaXZYm7w4jRUmTfEdQlMHvvb2YfRyTS
-         Q6og==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=XtrHW8Gf5ru7KWcWlXYE3NPBzAVwttKoSsIEVDR5Jvc=;
+        b=RYHAgUkHElGr2XmwdxoicSgJXIIkBbNWaIfsoJuRV1u1EcrFNQwdYRLu96PGBDBYlR
+         PMMhXzAt/ayQZBu4uttfGN135r+/nPvPmtZiRtkvJd58GCSS7VSOyESHU5bx32VxrIX9
+         cDmV/VOO4RFqlNqsS9szWX+uHyw2h8NIYjMLxnenYZ+QLCAyTYPDH5QvB0D2acdA1yZI
+         +mlCKRkroJWcNV8DRz1h9FERA2JtGoNwpvCN+Q/b3Gs4jXJwU5UPPVddBs55AWrN/UR6
+         W7k3IaUWR/f4tn7X1ufvA6OL0Gsl2B/x8af4iUQzN0NGmDeeOqJxqtJ6L6tQhUM1uGOQ
+         dgBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=e3mro1+5CIotbzwMPPXB1AsZ5y4fDO/jdJ2AUZJV26o=;
-        b=rjTE8VJZU29jiJDfMrY78qkztN7HhbnZKAfcmFLuFDtAcFiOm+bY8lS5U8gaNatrtc
-         N7dRhpUJEwBX7vfK3kCYdxD+JhCjy4bAMb38CN/stDfhzk09McCaSTEWb+n0DU7fAKEg
-         pUf34p9MgQWxdpiwTDg+3AP6qcu+EhiqqX/mLLv3n0k8vHC6wumyduWL2NYV1wsW2gwu
-         jO5ea/JiBK/TWHD4oZzn60YwsVeGlKJSCA2Zd0p9x41FXAWhcev0tSChx0kW0Vpg7+yk
-         7Y0mm5Sz6e6XXZvv8rMFCd718n7r1s8H/grSHuCsvrmDFrcY41xq0JeJEMM47OzHuI4I
-         H3pA==
-X-Gm-Message-State: AOAM532MeEzVTsOsWRVZCYU0heu5aexjizyOfDmwhHWPeU6WqVkMbFoX
-        UXVHSD4CXScEnTn0EpLEWSMAXmtsX5o=
-X-Google-Smtp-Source: ABdhPJzts6LCwxsTFvPmkVIVKcqV2/1O+96CJZ11Wa3ztdDPic15ndmAPnXYx0mZOhsR1P86I3Qpxw==
-X-Received: by 2002:a05:6402:292c:b0:416:8eb:3fc4 with SMTP id ee44-20020a056402292c00b0041608eb3fc4mr29594119edb.2.1647441450201;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=XtrHW8Gf5ru7KWcWlXYE3NPBzAVwttKoSsIEVDR5Jvc=;
+        b=5ay1hAIktoNBvPiybcIhxQvUicOA8wOUQ/k1xkLRrWS5bhUsyJCEfLbU+lYaISXr4O
+         NC0bnp+BzJ4iiiI5BIhi7y4JfPt84U+Z084RKGDQLmAlhdAjiFH5xYcdjv6QRTX+LTcO
+         URyeJbPpupKwvfU/FEh52uut8qHLuv5Y/+jjCfTBFpgQ9Asi0dQKcEjl574WtPYHPJ1l
+         TWr/zlA0b4cyb0UXdryoPZ2mzSK2GcnLLiZSI1LD5cOq0cW+VrdlwRbW6Atdn/C3ctue
+         M7SQw0FTkmWakQxf95V3hVL1SWnITMdfEg9p4LV6dPmYB7GY+edks5OflImFjRB5iO4j
+         jjfw==
+X-Gm-Message-State: AOAM5312VvxDoSbvYgUHGVkEo+HjUVBMuxyG9/lRx7QTjQ177/j8iIHj
+        L3EqBa62Q7p34hK2fOTVGZvO6uymuB8=
+X-Google-Smtp-Source: ABdhPJwMnSTAQpWDrsu4jLRCideFPoK5v6gs7oh/qQOnDTkXyxRtmvins98gqQiysBw+0HpQYb5aLw==
+X-Received: by 2002:a17:906:c10f:b0:6da:88aa:9d06 with SMTP id do15-20020a170906c10f00b006da88aa9d06mr282343ejc.196.1647441450960;
         Wed, 16 Mar 2022 07:37:30 -0700 (PDT)
 Received: from crow.. ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id y13-20020a1709060a8d00b006dabeaf86c7sm959445ejf.137.2022.03.16.07.37.29
+        by smtp.gmail.com with ESMTPSA id y13-20020a1709060a8d00b006dabeaf86c7sm959445ejf.137.2022.03.16.07.37.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Mar 2022 07:37:29 -0700 (PDT)
+        Wed, 16 Mar 2022 07:37:30 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 1/2] kernel-shark: Hide CPUs with no data in them
-Date:   Wed, 16 Mar 2022 16:37:16 +0200
-Message-Id: <20220316143717.272899-1-y.karadz@gmail.com>
+Subject: [PATCH 2/2] kernel-shark: CPU plots dialog ease spotting empty CPUs
+Date:   Wed, 16 Mar 2022 16:37:17 +0200
+Message-Id: <20220316143717.272899-2-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20220316143717.272899-1-y.karadz@gmail.com>
+References: <20220316143717.272899-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-A hash table, storring all idle CPUs is added to the session context.
-If a CPU does not contain any data (is idle), its plot is not shown
-by default when KernelShark starts. Note that, if the option '--cpu'
-is used, it has priority and if idle CPUs are selected, the
-corresponding empty CPU plots will be displayed.
+The CPU plots dialog will show only the ones with content. A "hide empty"
+checkbox is added, that by default is checked. If it is unchecked, then
+all the CPUs would show up.
 
 Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=215677
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/KsGLWidget.cpp      | 11 ++++++++---
- src/libkshark-tepdata.c |  5 ++++-
- src/libkshark.c         |  6 ++++++
- src/libkshark.h         |  3 +++
- 4 files changed, 21 insertions(+), 4 deletions(-)
+ src/KsWidgetsLib.cpp | 26 +++++++++++++++++++++++++-
+ src/KsWidgetsLib.hpp |  7 +++++--
+ 2 files changed, 30 insertions(+), 3 deletions(-)
 
-diff --git a/src/KsGLWidget.cpp b/src/KsGLWidget.cpp
-index 3b2e0d4..1c71ecb 100644
---- a/src/KsGLWidget.cpp
-+++ b/src/KsGLWidget.cpp
-@@ -419,6 +419,7 @@ void KsGLWidget::keyReleaseEvent(QKeyEvent *event)
- 
- void KsGLWidget::_defaultPlots(kshark_context *kshark_ctx)
+diff --git a/src/KsWidgetsLib.cpp b/src/KsWidgetsLib.cpp
+index e30bf27..7b3192d 100644
+--- a/src/KsWidgetsLib.cpp
++++ b/src/KsWidgetsLib.cpp
+@@ -906,12 +906,35 @@ void KsCheckBoxTreeWidget::_verify()
+  * @param parent: The parent of this widget.
+  */
+ KsCPUCheckBoxWidget::KsCPUCheckBoxWidget(kshark_data_stream *stream, QWidget *parent)
+-: KsCheckBoxTreeWidget(stream->stream_id, "CPUs", parent)
++: KsCheckBoxTreeWidget(stream->stream_id, "CPUs", parent),
++  _hideEmpty("hide empty")
  {
-+	struct kshark_data_stream *stream;
- 	QVector<int> streamIds, plotVec;
- 	uint64_t tMin, tMax;
- 	int nCPUs, nBins;
-@@ -432,15 +433,19 @@ void KsGLWidget::_defaultPlots(kshark_context *kshark_ctx)
- 	 */
- 	streamIds = KsUtils::getStreamIdList(kshark_ctx);
- 	for (auto const &sd: streamIds) {
--		nCPUs = kshark_ctx->stream[sd]->n_cpus;
-+		stream = kshark_ctx->stream[sd];
-+		nCPUs = stream->n_cpus;
- 		plotVec.clear();
+ 	int height(FONT_HEIGHT * 1.5);
+ 	KsPlot::ColorTable colors;
+ 	QString style;
  
- 		/* If the number of CPUs is too big show only the first 16. */
- 		if (nCPUs > KS_MAX_START_PLOTS / kshark_ctx->n_streams)
- 			nCPUs = KS_MAX_START_PLOTS / kshark_ctx->n_streams;
- 
--		for (int i = 0; i < nCPUs; ++i)
--			plotVec.append(i);
-+		for (int cpu{0}; cpu < stream->n_cpus && plotVec.count() < nCPUs; ++cpu) {
-+			/* Do not add plots for idle CPUs. */
-+			if (!kshark_hash_id_find(stream->idle_cpus, cpu))
-+				plotVec.append(cpu);
++	_hideEmpty.setCheckState(Qt::Checked);
++	_tb.addSeparator();
++	_tb.addWidget(&_hideEmpty);
++
++	auto lamHideEmpty = [this, stream] (bool hide) {
++		QTreeWidgetItem *item;
++		bool isIdle;
++
++		for(int cpu = 0; cpu < stream->n_cpus; ++cpu) {
++			item = _tree.topLevelItem(cpu);
++			if (hide) {
++				isIdle = kshark_hash_id_find(stream->idle_cpus, cpu);
++				item->setHidden(isIdle);
++			} else {
++				item->setHidden(false);
++			}
 +		}
++	};
++
++	connect(&_hideEmpty,	&QCheckBox::clicked,
++				lamHideEmpty);
++
+ 	style = QString("QTreeView::item { height: %1 ;}").arg(height);
+ 	_tree.setStyleSheet(style);
  
- 		_streamPlots[sd]._cpuList = plotVec;
- 		_streamPlots[sd]._taskList = {};
-diff --git a/src/libkshark-tepdata.c b/src/libkshark-tepdata.c
-index 9740ed9..e9244b0 100644
---- a/src/libkshark-tepdata.c
-+++ b/src/libkshark-tepdata.c
-@@ -391,7 +391,10 @@ static ssize_t get_records(struct kshark_context *kshark_ctx,
- 			rec = tracecmd_read_data(kshark_get_tep_input(stream), cpu);
- 		}
- 
--		total += count;
-+		if (!count)
-+			kshark_hash_id_add(stream->idle_cpus, cpu);
-+		else
-+			total += count;
+@@ -934,6 +957,7 @@ KsCPUCheckBoxWidget::KsCPUCheckBoxWidget(kshark_data_stream *stream, QWidget *pa
+ 		_cb[i] = cpuItem;
  	}
  
- 	*rec_list = cpu_list;
-diff --git a/src/libkshark.c b/src/libkshark.c
-index 1222a81..44e553f 100644
---- a/src/libkshark.c
-+++ b/src/libkshark.c
-@@ -121,6 +121,8 @@ static void kshark_stream_free(struct kshark_data_stream *stream)
- 	if (!stream)
- 		return;
++	lamHideEmpty(true);
+ 	_adjustSize();
+ }
  
-+	kshark_hash_id_free(stream->idle_cpus);
+diff --git a/src/KsWidgetsLib.hpp b/src/KsWidgetsLib.hpp
+index 6ec2bd1..2cc3535 100644
+--- a/src/KsWidgetsLib.hpp
++++ b/src/KsWidgetsLib.hpp
+@@ -275,10 +275,9 @@ public:
+ 	/** The user provided an input. The widget has been modified. */
+ 	bool _userInput;
+ 
+-private:
++protected:
+ 	QToolBar _tb;
+ 
+-protected:
+ 	/** Identifier of the Data stream for which the selection applies. */
+ 	int		_sd;
+ 
+@@ -544,6 +543,10 @@ struct KsCPUCheckBoxWidget : public KsCheckBoxTreeWidget
+ 
+ 	KsCPUCheckBoxWidget(kshark_data_stream *stream,
+ 			    QWidget *parent = nullptr);
 +
- 	kshark_hash_id_free(stream->show_task_filter);
- 	kshark_hash_id_free(stream->hide_task_filter);
++private:
++	/** The "hide empty" checkbox. */
++	QCheckBox	_hideEmpty;
+ };
  
-@@ -147,6 +149,8 @@ static struct kshark_data_stream *kshark_stream_alloc()
- 	if (!stream)
- 		goto fail;
- 
-+	stream->idle_cpus = kshark_hash_id_alloc(KS_FILTER_HASH_NBITS);
-+
- 	stream->show_task_filter = kshark_hash_id_alloc(KS_FILTER_HASH_NBITS);
- 	stream->hide_task_filter = kshark_hash_id_alloc(KS_FILTER_HASH_NBITS);
- 
-@@ -433,6 +437,8 @@ static int kshark_stream_close(struct kshark_data_stream *stream)
- 	kshark_hash_id_clear(stream->show_cpu_filter);
- 	kshark_hash_id_clear(stream->hide_cpu_filter);
- 
-+	kshark_hash_id_clear(stream->idle_cpus);
-+
- 	if (kshark_is_tep(stream))
- 		return kshark_tep_close_interface(stream);
- 
-diff --git a/src/libkshark.h b/src/libkshark.h
-index 23e3b49..1514f33 100644
---- a/src/libkshark.h
-+++ b/src/libkshark.h
-@@ -286,6 +286,9 @@ struct kshark_data_stream {
- 	/** The number of CPUs presented in this data stream. */
- 	int			n_cpus;
- 
-+	/** Hash table of Idle CPUs. */
-+	struct kshark_hash_id	*idle_cpus;
-+
- 	/**
- 	 * The number of distinct event types presented in this data stream.
- 	 */
+ /**
 -- 
 2.32.0
 
