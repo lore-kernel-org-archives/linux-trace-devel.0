@@ -2,119 +2,137 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11024C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 22 Mar 2022 11:54:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91D4FC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Mar 2022 07:37:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232114AbiCVLz0 (ORCPT
+        id S242281AbiCWHig (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 22 Mar 2022 07:55:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47148 "EHLO
+        Wed, 23 Mar 2022 03:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbiCVLzZ (ORCPT
+        with ESMTP id S242283AbiCWHif (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 22 Mar 2022 07:55:25 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D470F23BE0
-        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Mar 2022 04:53:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1647950036;
-        bh=35jTwyRPrqSpoX3MJ/oTE+cyl++7Wjspq8ZUYKpR0l0=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=KCJE5WzUVQxeO8fYeDp8yNMSyLXJWzO8IkxheEmZAYJZIXpowq6HuKf3iEdwxzWEe
-         rx0gfA4HnbyiZC2oABUpyHi5Ef+shBFBctDMfZ8vB79wXx/LYnBLi7zOpTUEjW+Bem
-         dlo2fWl0/d5x6qdyPuNM2GjRoYqqMd51ProfXWBQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.56] ([37.4.228.18]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M9Wyy-1nTJh93NeW-005Vii for
- <linux-trace-devel@vger.kernel.org>; Tue, 22 Mar 2022 12:53:55 +0100
-Message-ID: <4ea9e4a6-c15f-5c5c-a36e-2ed80c1ee0da@gmx.de>
-Date:   Tue, 22 Mar 2022 12:53:55 +0100
+        Wed, 23 Mar 2022 03:38:35 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE6D74630
+        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Mar 2022 00:37:06 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id b19so784887wrh.11
+        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Mar 2022 00:37:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=IiMBdv1GMv0IvVvJKi/MrHO20EuC4pB849ltaYJDK+k=;
+        b=OAbr+tP4CR/z3A9EA4arW3Xf2i8fMGv6rKLgVc2TYusmmEbsRcNOAM4yd8o95F7VmX
+         Cvkz6TiCZca4iySYVyVcfs5bI96Op1cXmym8Drr1WcieRzreBD0rGpu9fexzqVdFrX4V
+         l8tRuIRRghO4j3hUl1+1MpcAk5ADFav1OxzZkP2BTQXCwJxh2yHxvF/EZ0naV6zRbMuA
+         JhyG8S0ysdZ42+q36cZuPlyEPl61pSi7I8m4IBlhpl/DLBrMmzwgz+j/r/XDGBjpo6L4
+         GD0zMR+WuXzuIw+JEwKBSEWZRF8C8Q1UQ/Z8Ga91FIeb08VAFNhO2zlHUSt3fRP3Tpbb
+         tQRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=IiMBdv1GMv0IvVvJKi/MrHO20EuC4pB849ltaYJDK+k=;
+        b=uRjUexLO+rD4EKKjwD/1hGEBboIwYRl1mbR2fSClg+Nz/0ltASqBNcnfh2ALwmMLLN
+         RVgdeZnP8a2McsqheTZDu4xel6t/aqTCi5oPVy9p6sXwi7xUq2zKFxLPBArBAtfvymkG
+         EkDV6Q+9GYr/vEyHKpZSrph3wuAnxKkW+MEs4hE0NNNX8cVXJXneRU2WQSwzUMSzd+AZ
+         uVjtFEplw88KbRy2P33BfGGgvAQXJe99kRcVEAiMUpU4SrJNUdAoNS8hO4IKIF0QpTUw
+         b3lxl5NCAZsskhHdRaBhhLbhDHSPKOFqaJaj/HfGaKAvhfXxZtJUjHtnqg5oNJ2UcV5l
+         5uiA==
+X-Gm-Message-State: AOAM532vqp6AaTXMn0eGqTXgT1j9b7nF0ST1nhfuFElIVSN44IiEWR3H
+        02gH+Qpk7GNb8L8/MEdCgd4Y5bClpd8=
+X-Google-Smtp-Source: ABdhPJxNebgM1TkbBqfxqxSmY7Mc/AQVTyo+ZqZMXSDaPjNDihTOU/AkDTL7YZqVNGpfrsSwt+5VaA==
+X-Received: by 2002:a5d:6d83:0:b0:204:107d:ffe2 with SMTP id l3-20020a5d6d83000000b00204107dffe2mr11740941wrs.413.1648021024917;
+        Wed, 23 Mar 2022 00:37:04 -0700 (PDT)
+Received: from [10.107.106.54] (78-154-13-168.ip.btc-net.bg. [78.154.13.168])
+        by smtp.gmail.com with ESMTPSA id c24-20020a7bc018000000b0038a18068cf5sm3294449wmb.15.2022.03.23.00.37.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Mar 2022 00:37:04 -0700 (PDT)
+Message-ID: <d18dda1e-8578-1511-144e-df8885f1d8fe@gmail.com>
+Date:   Wed, 23 Mar 2022 09:37:03 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
+ Thunderbird/91.5.0
 Subject: Re: [PATCH] kernelshark: Set QApplication::desktopFileName
 Content-Language: en-US
-To:     linux-trace-devel@vger.kernel.org
+To:     Nicolas Fella <nicolas.fella@gmx.de>,
+        linux-trace-devel@vger.kernel.org
 References: <20220321225330.825082-1-nicolas.fella@gmx.de>
  <113dd55a-1324-c3a7-7663-2e206e069a38@gmail.com>
-From:   Nicolas Fella <nicolas.fella@gmx.de>
-In-Reply-To: <113dd55a-1324-c3a7-7663-2e206e069a38@gmail.com>
+ <4ea9e4a6-c15f-5c5c-a36e-2ed80c1ee0da@gmx.de>
+From:   Yordan Karadzhov <y.karadz@gmail.com>
+In-Reply-To: <4ea9e4a6-c15f-5c5c-a36e-2ed80c1ee0da@gmx.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:eP9u67uzvXPXntUY7R1WAFhrvgRys6Q2JgP80BtjHf2FfFpb8Zt
- tjDJmjLd1GIZZnpETgFPWOnfiMhHq6+aranHtxwwZTX6U2KwEfLzlErKgJZizfsX8aWEKgI
- A/3kdHUifDCRvp0Yo8sXXtBr9zB+EdL3FuchQu9fP4/tEIIJZO8ls+FzZSshwnHDDfxIq19
- 3emiy0WAR9Im22J1ET1Iw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7PaiCIHk/xQ=:Zq8lt4XwJZCp1ZKet0OpHW
- bl5H8jIM3CMw4S/5ooqNbSGVjw3o/YXxWZYvcZexY84btb5zasHX6ELjNLDxjJ2hZutkoVaFG
- 8c6euMtpJ8Geb5qHA5WlgFbMa1vw77dX5Bn04BGfj79NbyHWHMCWy++zns10B0ZXmsGsYmwl9
- 4SVuM4grG1CIDhelMUnX58FiKost9CJ+PFgdg2BRq/hX6rUBSTOvF5DreVpYfI9Dbs0Q1mMIA
- AowCkZxWhVnUT8s6YVPfPMtcFVqcxBQosB8vUurcyVAdL05Rs6dpWRjxziH3Z8d7gSjsRE5ef
- E5R+g28iW4l+1Sa9tw8UtgsnoKBsaOrV0Zt3OgXJbrX2qUIbUkLFJoQ0f8FGzt3EqveH8BSSW
- pYRNr/NkPo0V67X5TvZUIAoQHoyWQGJGVNM8uJMXn38pnBxBfZk1dfVWQP7TZKK1ClyBkyh2a
- S5krTTB2oDD4L2TOp0XVkjH4ZV/403EB6PQgWN7/catkvUAnk5UMSFm/uccoq87KjtZZIwXLO
- c5FjuBH5kNab6FitpQYiGC76PdlFzrUezPnURIexXH+jM6lJdh8ozjH3LApW2Mf+jZWXRSf51
- dFVSuYfevjkw9ohnEh4aC3ETBYWXNRkezchJAi4Dw8aI6p+msX6W8h1iV/iv8CQUs8rBkt916
- NWFUjRgVUHgKRByCmKjHcjx71h0c9sZwj/+x0fmT3vy3qhfzLSaIjIN3Sjr0R44OMNTwrYcP3
- mj12Zc66D9b2XMGw5hpse49mdCCX5ADfpOYZjhe246Hwgp/Wp1MazV2SGM4NHAgcNdzFG6a9a
- jXbPFjOK/wsvDVsgH7m7ggvL/9jgk0yusD5fgtJPa/FAtLN4lsMIUELpSjlfYOGzvaFsvHOHN
- 2Ymm3f3fALilvyCbKUXaAHXC9VaMGgGe2OmLwHZlXhXOcSmMayghLU+AVQgrFJvALyzamVxe/
- huezxbhkvDuQ8xDNlpPf3Ztxz+8o+fR11lCfP6pZunHdbg8flmJWJe/0yOuJXD9FJiZD9N2vG
- rS3nga/yP/rYj/1yBk8mZrPCJijuLV7UgOVdMPV/0ur2bVI+xuh9Xi7V/Nr5wogYY0GnZa1eY
- tizsgL515TOpkE=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 3/22/22 12:32, Yordan Karadzhov wrote:
->
->
-> On 22.03.22 =D0=B3. 0:53 =D1=87., Nicolas Fella wrote:
->> This is needed for properly associating the window with the desktop
->> file.
->>
->> This is needed for e.g. showing the correct icon in desktop
->> environments.
->>
->> Signed-off-by: Nicolas Fella <nicolas.fella@gmx.de>
->> ---
->> =C2=A0 src/kernelshark.cpp | 1 +
->> =C2=A0 1 file changed, 1 insertion(+)
->>
->> diff --git a/src/kernelshark.cpp b/src/kernelshark.cpp
->> index 92bc1f1..c373f54 100644
->> --- a/src/kernelshark.cpp
->> +++ b/src/kernelshark.cpp
->> @@ -56,6 +56,7 @@ int main(int argc, char **argv)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int c;
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 QApplication::setAttribute(Qt::AA_Enable=
-HighDpiScaling);
->> +=C2=A0=C2=A0=C2=A0 QApplication::setDesktopFileName("kernelshark");
->
-> Hi Nicolas,
->
-> Looking into the Qt documentation, it seems to me that the argument
-> must be the desktop file name without the full path. And the name of
-> the file is 'kernelshark.desktop'.
 
-Hi,
 
-the .desktop extension is implicit/not needed here. The documentation
-says "the _base_ name of the desktop entry for this application"
-(emphasis is mine).
-
-Cheers
-
-Nicolas
-
->
-> Thanks!
-> Yordan
->
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 QApplication a(argc, argv);
+On 22.03.22 г. 13:53 ч., Nicolas Fella wrote:
+> On 3/22/22 12:32, Yordan Karadzhov wrote:
 >>
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 KsMainWindow ks;
->> --
->> 2.35.1
 >>
+>> On 22.03.22 г. 0:53 ч., Nicolas Fella wrote:
+>>> This is needed for properly associating the window with the desktop
+>>> file.
+>>>
+>>> This is needed for e.g. showing the correct icon in desktop
+>>> environments.
+>>>
+>>> Signed-off-by: Nicolas Fella <nicolas.fella@gmx.de>
+>>> ---
+>>>   src/kernelshark.cpp | 1 +
+>>>   1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/src/kernelshark.cpp b/src/kernelshark.cpp
+>>> index 92bc1f1..c373f54 100644
+>>> --- a/src/kernelshark.cpp
+>>> +++ b/src/kernelshark.cpp
+>>> @@ -56,6 +56,7 @@ int main(int argc, char **argv)
+>>>       int c;
+>>>
+>>>       QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+>>> +    QApplication::setDesktopFileName("kernelshark");
+>>
+>> Hi Nicolas,
+>>
+>> Looking into the Qt documentation, it seems to me that the argument
+>> must be the desktop file name without the full path. And the name of
+>> the file is 'kernelshark.desktop'.
+> 
+> Hi,
+> 
+> the .desktop extension is implicit/not needed here. The documentation
+> says "the _base_ name of the desktop entry for this application"
+> (emphasis is mine).
+> 
+
+Hi Nicolas,
+Thanks a lot for clarifying this!
+
+I will take the patch, but I want to ask you to do one minor improvement first. I do not like that the name of the 
+desktop file is hard-coded. It will be better if we can get it directly from the CMAKE build. You will have to add a 
+#cmakedefine for KS_APP_NAME in  build/deff.h.cmake and then used this when calling setDesktopFileName().
+
+cheers,
+Yordan
+
+
+> Cheers
+> 
+> Nicolas
+> 
+>>
+>> Thanks!
+>> Yordan
+>>
+>>>       QApplication a(argc, argv);
+>>>
+>>>       KsMainWindow ks;
+>>> -- 
+>>> 2.35.1
+>>>
