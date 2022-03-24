@@ -2,116 +2,85 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2614AC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 24 Mar 2022 00:09:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7776AC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 24 Mar 2022 02:50:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238611AbiCXAK3 (ORCPT
+        id S1346508AbiCXCvw (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 23 Mar 2022 20:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38540 "EHLO
+        Wed, 23 Mar 2022 22:51:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346690AbiCXAKD (ORCPT
+        with ESMTP id S238122AbiCXCvv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 23 Mar 2022 20:10:03 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99C01A38C
-        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Mar 2022 17:08:10 -0700 (PDT)
+        Wed, 23 Mar 2022 22:51:51 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 118FB12774
+        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Mar 2022 19:50:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 51199B821C2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 24 Mar 2022 00:08:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3F89C340F8;
-        Thu, 24 Mar 2022 00:08:07 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.95)
-        (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1nXB1K-0071ST-TT;
-        Wed, 23 Mar 2022 20:08:06 -0400
+        by ams.source.kernel.org (Postfix) with ESMTPS id AC33FB8220D
+        for <linux-trace-devel@vger.kernel.org>; Thu, 24 Mar 2022 02:50:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35FA8C340E8
+        for <linux-trace-devel@vger.kernel.org>; Thu, 24 Mar 2022 02:50:18 +0000 (UTC)
+Date:   Wed, 23 Mar 2022 22:50:16 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 1/2] trace-cmd library: Use cpu_data variable to shorten commands
-Date:   Wed, 23 Mar 2022 20:08:04 -0400
-Message-Id: <20220324000805.1666464-2-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220324000805.1666464-1-rostedt@goodmis.org>
-References: <20220324000805.1666464-1-rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd: Fix bash completions for non specified commands
+Message-ID: <20220323225016.3a3a7034@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Instead of using handle->cpu_data[cpu] for all the references in
-tracecmd_close(), just assign it to a variable cpu_data and use that. It
-makes the code much more readable.
+For trace-cmd commands that are not specifically specified by the bash
+completion script, allow to see files after the commands. There's a bug in
+the test that returns if there are options, and does not jump to the file
+listing if there is any option even if the user does not specify one, and
+wants a file instead.
 
+Also make a reference to $cur more consistent with its other references,
+which is ${cur}
+
+Fixes: 431f1a03f59cb trace-cmd: Fix bash completion on directory names
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- lib/trace-cmd/trace-input.c | 32 +++++++++++++++++---------------
- 1 file changed, 17 insertions(+), 15 deletions(-)
+ tracecmd/trace-cmd.bash | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 31fde182a55e..358b47935602 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -4446,6 +4446,7 @@ void tracecmd_close(struct tracecmd_input *handle)
- {
- 	struct zchunk_cache *cache;
- 	struct file_section *del_sec;
-+	struct cpu_data *cpu_data;
- 	int cpu;
- 	int i;
+diff --git a/tracecmd/trace-cmd.bash b/tracecmd/trace-cmd.bash
+index 6639c1433678..66bd6f4bf2dd 100644
+--- a/tracecmd/trace-cmd.bash
++++ b/tracecmd/trace-cmd.bash
+@@ -52,7 +52,7 @@ cmd_options()
+ 				 sed -e 's/ *\(-[^ ]*\).*/\1/')
+     COMPREPLY=( $(compgen -W "${cmds}" -- "${cur}") )
+     if [ ${#COMPREPLY[@]} -eq 0 ]; then
+-	__show_files "$cur"
++	__show_files "${cur}"
+     fi
+ }
  
-@@ -4465,30 +4466,31 @@ void tracecmd_close(struct tracecmd_input *handle)
- 		free_next(handle, cpu);
- 		free_page(handle, cpu);
- 		if (handle->cpu_data) {
--			if (handle->cpu_data[cpu].kbuf) {
--				kbuffer_free(handle->cpu_data[cpu].kbuf);
--				if (handle->cpu_data[cpu].page_map)
--					free_page_map(handle->cpu_data[cpu].page_map);
-+			cpu_data = &handle->cpu_data[cpu];
-+			if (cpu_data->kbuf) {
-+				kbuffer_free(cpu_data->kbuf);
-+				if (cpu_data->page_map)
-+					free_page_map(cpu_data->page_map);
+@@ -276,10 +276,12 @@ __show_command_options()
+ 		done
+ 	    fi
+ 	    COMPREPLY=( $(compgen -W "${opts}" -- "$cur"))
+-	    return 0
++	    break
+ 	fi
+     done
+-    __show_files "$cur"
++    if [ ${#COMPREPLY[@]} -eq 0 ]; then
++	__show_files "${cur}"
++    fi
+ }
  
--				if (handle->cpu_data[cpu].page_cnt)
-+				if (cpu_data->page_cnt)
- 					tracecmd_warning("%d pages still allocated on cpu %d%s",
--							 handle->cpu_data[cpu].page_cnt, cpu,
--							 show_records(handle->cpu_data[cpu].pages,
--								      handle->cpu_data[cpu].nr_pages));
--				free(handle->cpu_data[cpu].pages);
-+							 cpu_data->page_cnt, cpu,
-+							 show_records(cpu_data->pages,
-+								      cpu_data->nr_pages));
-+				free(cpu_data->pages);
- 			}
--			if (handle->cpu_data[cpu].compress.fd >= 0) {
--				close(handle->cpu_data[cpu].compress.fd);
--				unlink(handle->cpu_data[cpu].compress.file);
-+			if (cpu_data->compress.fd >= 0) {
-+				close(cpu_data->compress.fd);
-+				unlink(cpu_data->compress.file);
- 			}
--			while (!list_empty(&handle->cpu_data[cpu].compress.cache)) {
--				cache = container_of(handle->cpu_data[cpu].compress.cache.next,
-+			while (!list_empty(&cpu_data->compress.cache)) {
-+				cache = container_of(cpu_data->compress.cache.next,
- 						     struct zchunk_cache, list);
- 				list_del(&cache->list);
- 				free(cache->map);
- 				free(cache);
- 			}
--			free(handle->cpu_data[cpu].compress.chunks);
-+			free(cpu_data->compress.chunks);
- 		}
- 	}
- 
+ _trace_cmd_complete()
 -- 
 2.35.1
 
