@@ -2,39 +2,39 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E5EEC4167B
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 24 Mar 2022 02:57:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E4BAC4167E
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 24 Mar 2022 02:57:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347893AbiCXC7B (ORCPT
+        id S1347910AbiCXC7D (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 23 Mar 2022 22:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43512 "EHLO
+        Wed, 23 Mar 2022 22:59:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347892AbiCXC7A (ORCPT
+        with ESMTP id S1347899AbiCXC7B (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 23 Mar 2022 22:59:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A933A939F0;
-        Wed, 23 Mar 2022 19:57:29 -0700 (PDT)
+        Wed, 23 Mar 2022 22:59:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1375D939E7;
+        Wed, 23 Mar 2022 19:57:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 24B8E619B2;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3E12A619BA;
         Thu, 24 Mar 2022 02:57:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F646C340F7;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FFACC340FB;
         Thu, 24 Mar 2022 02:57:28 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1nXDfD-007FLK-4T;
+        id 1nXDfD-007FLa-7c;
         Wed, 23 Mar 2022 22:57:27 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     williskung@google.com, kaleshsingh@google.com,
         linux-rt-users@vger.kernel.org,
         "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 07/12] trace-cmd analyze: Add "idleness"
-Date:   Wed, 23 Mar 2022 22:57:21 -0400
-Message-Id: <20220324025726.1727204-8-rostedt@goodmis.org>
+Subject: [PATCH 11/12] trace-cmd analyze: Account for dropped events
+Date:   Wed, 23 Mar 2022 22:57:25 -0400
+Message-Id: <20220324025726.1727204-12-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220324025726.1727204-1-rostedt@goodmis.org>
 References: <20220324025726.1727204-1-rostedt@goodmis.org>
@@ -46,207 +46,188 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Report the "idleness" of a CPU. How long it was idle, the longest time it
-was idle, the average time it is idle, the number of times it was idle,
-and where the longest time it was idle.
+If the trace.dat file contains dropped events due to the reader not being
+able to keep up with the writer, account for it. Update the CPUs where
+there are dropped events and tag the tasks that are on those CPUs.
 
-Note, anytime there is an event, the CPU is considered "not idle", that
-is, it was woken up.
+Add to the output the fact that events were dropped.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- tracecmd/trace-analyze.c | 87 +++++++++++++++++++++++++++++++++++-----
- 1 file changed, 77 insertions(+), 10 deletions(-)
+ tracecmd/trace-analyze.c | 87 ++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 84 insertions(+), 3 deletions(-)
 
 diff --git a/tracecmd/trace-analyze.c b/tracecmd/trace-analyze.c
-index ee4f71a7da26..de776b76c343 100644
+index 2603c360c404..2f1b2720810e 100644
 --- a/tracecmd/trace-analyze.c
 +++ b/tracecmd/trace-analyze.c
-@@ -14,16 +14,19 @@
- static bool time_in_nsecs;
- 
- struct analysis_data;
-+struct task_item;
- 
+@@ -19,6 +19,8 @@ struct task_item;
  struct cpu_data {
  	unsigned long long	start_ts;
  	unsigned long long	last_ts;
-+	struct task_item	*idle_task;
++	unsigned long long	missed_events;
++	unsigned long long	unknown_missed_events;
+ 	struct task_item	*idle_task;
  	struct analysis_data	*data;
  	struct trace_hash	tasks;
- 	int			nr_tasks;
- 	int			cpu;
+@@ -27,6 +29,7 @@ struct cpu_data {
  	int			current_pid;
  	int			first_pid;
-+	bool			last_idle;
+ 	bool			last_idle;
++	bool			keep_start;
  };
  
  struct analysis_data {
-@@ -185,6 +188,31 @@ static void update_sched_timings (struct sched_timings *time, unsigned long long
- 	time->nr++;
- }
+@@ -45,6 +48,7 @@ struct analysis_data {
+ 	int			nr_tasks;
+ 	int			allocated_cpus;
+ 	int			cpus;
++	bool			missed_events;
+ };
  
-+static void update_idle_task(struct cpu_data *cpu_data, struct task_item *task,
-+			     unsigned long long ts)
-+{
-+	if (!cpu_data->idle_task) {
-+		if (task && task->pid <= 0) {
-+			cpu_data->idle_task = task;
-+			task->other.last = ts;
-+			cpu_data->last_idle = true;
-+		}
-+		return;
-+	}
-+	if (!task || task->pid > 0) {
-+		if (cpu_data->last_idle)
-+			update_sched_timings(&cpu_data->idle_task->other, ts);
-+
-+		cpu_data->last_idle = false;
-+		return;
-+	}
-+	if (cpu_data->last_idle)
-+		update_sched_timings(&task->other, ts);
-+
-+	cpu_data->last_idle = true;
-+	task->other.last = ts;
-+}
-+
- /* Update times for a task scheduling off the CPU */
- static void update_cpu_task_times(struct cpu_data *cpu_data,
- 				  struct task_cpu_item *cpu_task,
-@@ -203,6 +231,8 @@ static void update_cpu_task_times(struct cpu_data *cpu_data,
- 	if (ts < task->start_ts)
- 		return;
+ struct sched_timings {
+@@ -71,6 +75,7 @@ struct task_item {
+ 	int			last_cpu;
+ 	int			last_state;
+ 	bool			woken;
++	bool			dropped_events;
+ };
  
-+	update_idle_task(cpu_data, task, ts);
-+
- 	delta = ts - task->start_ts;
- 	task->runtime += delta;
- 	cpu_task->runtime += delta;
-@@ -227,6 +257,8 @@ static void update_pid(struct cpu_data *cpu_data,
- 	cpu_task = get_cpu_task(cpu_data, pid);
- 	task = cpu_task->task;
- 
-+	update_idle_task(cpu_data, task, record->ts);
-+
- 	if (record->ts < cpu_data->last_ts) {
- 		tracecmd_warning("task %d start time %llu greater than CPU time %llu",
- 				 pid, record->ts, cpu_data->last_ts);
-@@ -258,6 +290,7 @@ static void update_cpu_times(struct cpu_data *cpu_data,
- 		cpu_task = get_cpu_task(cpu_data, pid);
- 		task = cpu_task->task;
- 		task->start_ts = record->ts;
-+		update_idle_task(cpu_data, task, record->ts);
+ struct task_cpu_item {
+@@ -306,6 +311,9 @@ static void update_cpu_times(struct cpu_data *cpu_data,
+ 		update_idle_task(cpu_data, task, record->ts);
  		if (record->ts < cpu_data->data->start_ts)
  			cpu_data->data->start_ts = record->ts;
- 		return;
-@@ -268,6 +301,8 @@ static void update_cpu_times(struct cpu_data *cpu_data,
++		/* If we lost events before here, keep the current start time */
++		if (record->missed_events)
++			cpu_data->keep_start = true;
  		return;
  	}
  
-+	update_idle_task(cpu_data, !pid ? cpu_data->idle_task : NULL, record->ts);
-+
- 	cpu_data->last_ts = record->ts;
- }
+@@ -326,6 +334,10 @@ static void update_first_pid(struct cpu_data *cpu_data)
+ 	unsigned long long start_ts = cpu_data->data->start_ts;
+ 	unsigned long long delta;
  
-@@ -283,6 +318,17 @@ static void update_first_pid(struct cpu_data *cpu_data)
++	/* If the CPU started with dropped events, do not update */
++	if (cpu_data->keep_start)
++		return;
++
+ 	cpu_task = get_cpu_task(cpu_data, cpu_data->first_pid);
+ 	task = cpu_task->task;
  	delta = cpu_data->start_ts - start_ts;
- 	task->runtime += delta;
- 	cpu_task->runtime += delta;
-+
-+	/* Handle idle timings if it was the first task */
-+	if (task->pid <= 0) {
-+		task->other.total += delta;
-+		if (delta > task->other.longest) {
-+			task->other.longest = delta;
-+			task->other.longest_ts = cpu_data->start_ts;
-+		}
-+		task->other.nr++;
-+	}
-+
- 	cpu_data->start_ts = start_ts;
+@@ -464,6 +476,50 @@ static void process_page_fault(struct analysis_data *data,
+ 	task->faulted++;
  }
  
-@@ -337,6 +383,8 @@ static void process_switch(struct analysis_data *data,
- 		task->start_ts = record->ts;
- 		cpu_data->current_pid = pid;
- 
-+		update_idle_task(cpu_data, task, record->ts);
-+
- 		switch (task->last_state) {
- 		case -1:
- 			/* First time seen */
-@@ -452,6 +500,27 @@ static void print_time(unsigned long long ts, char delim)
- 	}
- }
- 
-+static void print_timings_title(const char *label)
++static void handle_missed_events(struct analysis_data *data,
++				 struct tep_record *record)
 +{
-+	const char *a = "";
-+	int len;
-+	int i;
++	struct trace_hash_item **bucket;
++	struct trace_hash_item *item;
++	struct task_cpu_item *cpu_task;
++	struct cpu_data *cpu_data;
++	struct task_item *task;
++	long long missed_events = record->missed_events;
++	int cpu;
 +
-+	if (time_in_nsecs)
-+		a = "   ";
++	/* If this is the first event for the CPU do nothing here */
++	if (record->cpu >= data->allocated_cpus ||
++	    !data->cpu_data[record->cpu].data)
++		return;
 +
-+	len = snprintf(NULL, 0, "%s", label);
++	data->missed_events = true;
 +
-+	printf("%s%*sTotal    %s(cnt)       Avg              Longest       Where\n",
-+		label, 21 - len, "", a);
++	cpu_data = &data->cpu_data[record->cpu];
++	cpu = cpu_data->cpu;
 +
-+	for (i = 0; i < len; i++)
-+		printf("-");
++	if (missed_events > 0)
++		cpu_data->missed_events += missed_events;
++	else
++		cpu_data->unknown_missed_events++;
 +
-+	printf("%*s-----    %s-----       ---              -------       -----\n",
-+		21 - len, "", a);
++	/* Need to reset all timings */
++	trace_hash_for_each_bucket(bucket, &cpu_data->tasks) {
++		trace_hash_for_each_item(item, bucket) {
++			cpu_task = task_cpu_from_hash(item);
++			task = cpu_task->task;
++			if (task->last_cpu != cpu)
++				continue;
++			task->preempt.last = record->ts;
++			task->sleep.last = record->ts;
++			task->blocked.last = record->ts;
++			task->other.last = record->ts;
++			task->woken = false;
++			task->last_state = -1;
++			task->dropped_events = true;
++		}
++	}
 +}
 +
- static void print_sched_timings(const char *label, struct sched_timings *time)
+ static bool match_type(int type, struct tep_event *event)
  {
- 	unsigned long long avg;
-@@ -460,7 +529,10 @@ static void print_sched_timings(const char *label, struct sched_timings *time)
- 	if (!time->nr)
+ 	return event && type == event->id;
+@@ -477,6 +533,9 @@ static void process_cpu(struct analysis_data *data,
+ 	int type;
+ 	int pid;
+ 
++	if (record->missed_events)
++		handle_missed_events(data, record);
++
+ 	pid = tep_data_pid(tep, record);
+ 	if (pid < 0) /* Warn? */
  		return;
+@@ -624,12 +683,29 @@ static void print_cpu_data(struct tep_handle *tep, struct cpu_data *cpu_data)
+ 	int nr_tasks;
+ 	int i = 0;
  
--	printf("%s:\t", label);
-+	if (label)
-+		printf("%s:%*s", label, 15 - (int)strlen(label), "");
-+	else
-+		printf("\t\t");
- 	print_time(time->total, 0);
- 	n = printf(" (%llu)", time->nr);
- 	if (n < 8)
-@@ -519,6 +591,8 @@ static void print_cpu_data(struct tep_handle *tep, struct cpu_data *cpu_data)
- 		printf("idle:\t");
- 		print_time(idle_task->runtime, '_');
- 		printf(" (%%%lld)\n", (idle_task->runtime * 100) / total_time);
-+		print_timings_title("Idleness");
-+		print_sched_timings(NULL, &idle_task->other);
- 	} else {
- 		printf("Never idle!\n");
- 	}
-@@ -543,19 +617,12 @@ static void print_cpu_data(struct tep_handle *tep, struct cpu_data *cpu_data)
+-	data = cpu_data->data;
+-	total_time = data->last_ts - data->start_ts;
+-
+ 	printf("\nCPU %d\n", cpu_data->cpu);
+ 	printf("-------\n");
  
- static void print_task(struct tep_handle *tep, struct task_item *task)
++	if (cpu_data->missed_events || cpu_data->unknown_missed_events) {
++		printf("Missed: %llu events", cpu_data->missed_events);
++		if (cpu_data->unknown_missed_events)
++			printf(" + %llu drops of unknown events",
++			       cpu_data->unknown_missed_events);
++		printf("\n");
++	}
++
++	data = cpu_data->data;
++
++	if (cpu_data->keep_start) {
++		total_time = data->last_ts - cpu_data->start_ts;
++		printf("[ Events dropped before start of this CPU ]\n");
++		printf("Total time: ");
++		print_time(total_time, '_');
++		printf("\n");
++	} else {
++		total_time = data->last_ts - data->start_ts;
++	}
++
+ 	cpu_tasks = malloc(sizeof(*cpu_tasks) * cpu_data->nr_tasks);
+ 
+ 	if (!cpu_tasks)
+@@ -678,6 +754,8 @@ static void print_task(struct tep_handle *tep, struct task_item *task)
  {
--	const char *a = "";
--
--	if (time_in_nsecs)
--		a = "   ";
--
  	printf("\nTask: %d : %s:\n",
  	       task->pid , task->comm ? : tep_data_comm_from_pid(tep, task->pid));
- 	printf("Runtime: ");
++	if (task->dropped_events)
++		printf("[ Events dropped for this task's CPU, may be missing data ]\n");
+ 	printf("Runtime:    ");
  	print_time(task->runtime, '_');
--	printf("\nType                 Total    %s(cnt)       Avg              Longest       Where\n",
--		a);
--	printf("----                 -----    %s-----       ---              -------       -----\n",
--		a);
-+	printf("\n");
-+	print_timings_title("Type");
- 	print_sched_timings("Preempted", &task->preempt);
- 	print_sched_timings("Blocked", &task->blocked);
- 	print_sched_timings("Sleeping", &task->sleep);
+ 	printf("\n");
+@@ -706,6 +784,9 @@ static void print_total(struct tep_handle *tep, struct analysis_data *data)
+ 	int cpu;
+ 	int i = 0;
+ 
++	if (data->missed_events)
++		printf("\n[ Missed events, some data may be missing ]\n");
++
+ 	total_time = data->last_ts - data->start_ts;
+ 	printf("\nTotal time: ");
+ 	print_time(total_time, '_');
 -- 
 2.35.1
 
