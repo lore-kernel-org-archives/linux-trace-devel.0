@@ -2,513 +2,367 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57C4CC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 28 Mar 2022 16:34:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6A3CC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 28 Mar 2022 20:24:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242356AbiC1QgU convert rfc822-to-8bit (ORCPT
+        id S1344755AbiC1U0d (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 28 Mar 2022 12:36:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45466 "EHLO
+        Mon, 28 Mar 2022 16:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233969AbiC1QgT (ORCPT
+        with ESMTP id S1344766AbiC1U0c (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 28 Mar 2022 12:36:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4BF1CFD7;
-        Mon, 28 Mar 2022 09:34:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8B1B86142C;
-        Mon, 28 Mar 2022 16:34:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7026FC004DD;
-        Mon, 28 Mar 2022 16:34:36 +0000 (UTC)
-Date:   Mon, 28 Mar 2022 12:34:34 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     linux-trace-devel@vger.kernel.org, williskung@google.com,
-        linux-rt-users@vger.kernel.org
-Subject: Re: [PATCH 01/12] trace-cmd: Add trace-cmd analyze
-Message-ID: <20220328123434.301a5ce4@gandalf.local.home>
-In-Reply-To: <CAC_TJvfrQMyhSRHh7_z_Vx_6KDELQhyYnapyTBRDMBtKvCuitw@mail.gmail.com>
-References: <20220324025726.1727204-1-rostedt@goodmis.org>
-        <20220324025726.1727204-2-rostedt@goodmis.org>
-        <CAC_TJvfrQMyhSRHh7_z_Vx_6KDELQhyYnapyTBRDMBtKvCuitw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Mon, 28 Mar 2022 16:26:32 -0400
+Received: from mail.efficios.com (mail.efficios.com [167.114.26.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8ADD4C7BF;
+        Mon, 28 Mar 2022 13:24:50 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id BF6EA3FBAEC;
+        Mon, 28 Mar 2022 16:24:49 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id bVmQYq65rfRG; Mon, 28 Mar 2022 16:24:49 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id F41653FBB70;
+        Mon, 28 Mar 2022 16:24:48 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com F41653FBB70
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1648499089;
+        bh=qFoG3MHJSaqcwKtqXG7+32spYi5VLkmmpF/B27Ny7ik=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=Ld/x4Nb90cdD+0zLqLErS9XIWl82prheiLvk9w2bWJ6u6rpSEY5ViMRwPsOUtaK3t
+         CX8Mvf6ZouBoJldnYOTUdjMvIcf/RqhGLWPkHcc2NClXzNfOTO7aqDqKx5P+rNmA+k
+         vjp1Qfm5rmK1bW48lgWMTmhdP7Ez4pGVaIpTACJNNPKgxyq/59LLdwSZLvqfITKCG5
+         ZL5cXeb+oaQ1EoIsxSJ8dH+HvinmoY8+SGLKKUZShcanoK1nNVwLyRpsrLnV8M+CeG
+         vSz2FkfMna0kpoDxBZBN2RT1DjMWv2vc7YsofHJXYOT0a3IEQxBvUfk2hOQng1/eaq
+         voFow7P4L9vWQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id I28OI4v_5YmZ; Mon, 28 Mar 2022 16:24:48 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id DBEA13FBEA7;
+        Mon, 28 Mar 2022 16:24:48 -0400 (EDT)
+Date:   Mon, 28 Mar 2022 16:24:48 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Beau Belgrave <beaub@microsoft.com>, rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Message-ID: <2059213643.196683.1648499088753.JavaMail.zimbra@efficios.com>
+Subject: Comments on new user events ABI
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4203 (ZimbraWebClient - FF98 (Linux)/8.8.15_GA_4232)
+Thread-Index: B0M+BmOcIucczO4F1K4t0lJIcDaNNQ==
+Thread-Topic: Comments on new user events ABI
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 28 Mar 2022 09:08:02 -0700
-Kalesh Singh <kaleshsingh@google.com> wrote:
+Hi Beau, Hi Steven,
 
-> > +++ b/tracecmd/trace-analyze.c
-> > @@ -0,0 +1,508 @@
-> > +// SPDX-License-Identifier: LGPL-2.1
-> > +/*
-> > + * Copyright (C) 2022 Google Inc, Steven Rostedt <srostedt@redhat.com>
-> > + */
-> > +#define _LARGEFILE64_SOURCE
-> > +#include <getopt.h>
-> > +#include <stdlib.h>
-> > +
-> > +#include "trace-cmd-local.h"
-> > +#include "trace-local.h"
-> > +#include "trace-hash.h"
-> > +#include "list.h"
-> > +
-> > +static bool time_in_nsecs;
-> > +
-> > +struct analysis_data;
-> > +
-> > +struct cpu_data {
-> > +       unsigned long long      start_ts;
-> > +       unsigned long long      last_ts;
-> > +       struct analysis_data    *data;
-> > +       struct trace_hash       tasks;
-> > +       int                     nr_tasks;
-> > +       int                     cpu;
-> > +       int                     current_pid;
-> > +       int                     first_pid;
-> > +};
-> > +
-> > +struct analysis_data {
-> > +       unsigned long long      start_ts;
-> > +       unsigned long long      last_ts;
-> > +       struct cpu_data         *cpu_data;
-> > +       struct trace_hash       tasks;
-> > +       int                     nr_tasks;
-> > +       int                     allocated_cpus;
-> > +       int                     cpus;  
-> 
-> Hi Steve,
-> 
-> I don't see analysis_data->cpus field ever used.
+I've done a review of the trace events ABI, and I have a few comments.
+Sorry for being late to the party, but I only noticed this new ABI recently.
+Hopefully we can improve this ABI before the 5.18 release.
 
-Probably not. I was debating about adding RFC to this series, but decided
-not to. Now I regret that, because it really is an RFC (as well as I rushed
-a lot of it).
+A bit of context: as you know, I maintain LTTng-UST, a user-space Linux
+tracer. It does not implement much in the kernel because its goal is to
+be purely user-space, mainly for performance reasons. However, when there
+are relevant kernel facilities it can use, or if I need to extend the
+kernel to expose a generally useful ABI to user-space, I do it. For
+instance, I've contributed the rseq() system call for the sake of speeding
+up the LTTng-UST ring buffer and sched_getcpu(). The work I am currently
+doing on virtual-cpu-ids is also with a primary goal of improving the
+LTTng-UST ring buffers (and all memory allocators as a side-effect) ;) .
+Hopefully we can work together and make sure the new ABIs are useful to
+everyone.
 
-> 
-> > +};
-> > +
-> > +struct task_item {
-> > +       unsigned long long      runtime;
-> > +       unsigned long long      start_ts;
-> > +       struct trace_hash_item  hash;
-> > +       int                     pid;
-> > +};
-> > +
-> > +struct task_cpu_item {
-> > +       struct trace_hash_item  hash;
-> > +       struct task_item        *task;
-> > +};
-> > +
-> > +#define CPU_BLOCKS     32
-> > +
-> > +#define task_from_hash(item) container_of(item, struct task_item, hash)
-> > +#define task_cpu_from_hash(item)  container_of(item, struct task_cpu_item, hash)
-> > +
-> > +static struct cpu_data *get_cpu_data(struct analysis_data *data,
-> > +                                    struct tep_record *record)
-> > +{
-> > +       struct cpu_data *cpu_data;
-> > +       int cpu = record->cpu;
-> > +       int cnt;
-> > +
-> > +       if (cpu < data->allocated_cpus) {
-> > +               cpu_data = &data->cpu_data[cpu];
-> > +               if (!cpu_data->data)
-> > +                       goto init_cpu_data;
-> > +               return cpu_data;
-> > +       }
-> > +
-> > +       /* Round up to CPU_BLOCKS multiplier */
-> > +       cnt = ((cpu + CPU_BLOCKS) / CPU_BLOCKS) * CPU_BLOCKS;
-> > +
-> > +       cpu_data = realloc(data->cpu_data, sizeof(*cpu_data) * cnt);
-> > +
-> > +       if (!cpu_data)
-> > +               die("Allocating cpu size %d for cpu %d", cnt, cpu);
-> > +
-> > +       memset(cpu_data + data->allocated_cpus, 0,
-> > +              sizeof(*cpu_data) * (cnt - data->allocated_cpus));
-> > +
-> > +       data->allocated_cpus = cnt;
-> > +
-> > +       data->cpu_data = cpu_data;
-> > +       cpu_data += cpu;
-> > +
-> > + init_cpu_data:
-> > +       cpu_data->current_pid = -1;
-> > +       cpu_data->cpu = cpu;
-> > +       cpu_data->data = data;
-> > +
-> > +       trace_hash_init(&cpu_data->tasks, 32);  
-> 
-> nit: #define CPU_TASKS_HASH_SIZE 32?
 
-Agreed.
+* user_events_status memory mapping
 
-> 
-> > +
-> > +       return cpu_data;
-> > +}
-> > +
-> > +static int check_idle(struct cpu_data *cpu_data, int pid)
-> > +{
-> > +       if (pid)
-> > +               return pid;
-> > +
-> > +       /*
-> > +        * Since pid 0 is the per cpu swapper task that
-> > +        * means several of these tasks have the same pid
-> > +        * and only differentiate between CPUs. Set the pid
-> > +        * that is stored in the hash as -2 - CPU id.
-> > +        */
-> > +
-> > +       return -2 - cpu_data->cpu;
-> > +}
-> > +
-> > +static struct task_item *get_task(struct cpu_data *cpu_data, int pid)
-> > +{
-> > +       struct trace_hash_item *hash;
-> > +       struct task_item *task;
-> > +       int find_pid;
-> > +
-> > +       find_pid = check_idle(cpu_data, pid);
-> > +
-> > +       hash = trace_hash_find(&cpu_data->data->tasks, find_pid, NULL, NULL);
-> > +       if (!hash) {
-> > +               task = calloc(sizeof(*task), 1);
-> > +               if (!task)
-> > +                       die("allocating task");
-> > +               task->pid = find_pid;
-> > +               hash = &task->hash;
-> > +               hash->key = find_pid;
-> > +               cpu_data->data->nr_tasks++;
-> > +               trace_hash_add(&cpu_data->data->tasks, hash);
-> > +       }
-> > +
-> > +       return task_from_hash(hash);
-> > +}
-> > +
-> > +static struct task_cpu_item *get_cpu_task(struct cpu_data *cpu_data, int pid)
-> > +{
-> > +       struct trace_hash_item *hash;
-> > +       struct task_cpu_item *task;
-> > +
-> > +       hash = trace_hash_find(&cpu_data->tasks, pid, NULL, NULL);
-> > +       if (!hash) {
-> > +               task = calloc(sizeof(*task), 1);
-> > +               if (!task)
-> > +                       die("allocating cpu task");
-> > +               task->task = get_task(cpu_data, pid);
-> > +               hash = &task->hash;
-> > +               hash->key = pid;
-> > +               cpu_data->nr_tasks++;
-> > +               trace_hash_add(&cpu_data->tasks, hash);
-> > +       }
-> > +
-> > +       return task_cpu_from_hash(hash);
-> > +};
-> > +
-> > +/* Update times for a task scheduling off the CPU */
-> > +static void update_cpu_task_times(struct cpu_data *cpu_data,
-> > +                                 struct task_cpu_item *cpu_task,
-> > +                                 unsigned long long ts)
-> > +{
-> > +       unsigned long long delta;
-> > +       struct task_item *task = cpu_task->task;
-> > +
-> > +       /*
-> > +        * If the last event was a sched switch where the previous task
-> > +        * ran on another CPU, and migrated back to this CPU, and sched
-> > +        * switch was not recorded (saying that this task scheduled off)
-> > +        * It could be miscronstrued to still be on this CPU, and that
-> > +        * its start_ts is later than the last_ts of this CPU.
-> > +        */
-> > +       if (ts < task->start_ts)
-> > +               return;
-> > +
-> > +       delta = ts - task->start_ts;
-> > +       task->runtime += delta;
-> > +}
-> > +
-> > +static void update_pid(struct cpu_data *cpu_data,
-> > +                      struct tep_record *record, int pid)
-> > +{
-> > +       struct task_cpu_item *cpu_task;
-> > +       struct task_item *task;
-> > +       int curr_pid = cpu_data->current_pid;
-> > +       unsigned long long delta;
-> > +
-> > +       cpu_task = get_cpu_task(cpu_data, curr_pid);
-> > +       task = cpu_task->task;
-> > +
-> > +       update_cpu_task_times(cpu_data, cpu_task, cpu_data->last_ts);
-> > +
-> > +       if (!record)
-> > +               return;
-> > +
-> > +       cpu_task = get_cpu_task(cpu_data, pid);
-> > +       task = cpu_task->task;
-> > +
-> > +       if (record->ts < cpu_data->last_ts) {
-> > +               tracecmd_warning("task %d start time %llu greater than CPU time %llu",
-> > +                                pid, record->ts, cpu_data->last_ts);  
-> 
-> Shouldn’t this say, ... start time %llu "less than" CPU time ...?
+As I understand it, one part of the user events ABI is a memory mapping
+which contains "flags" which indicates whether a given event is enabled.
+It is indexed by byte, and each byte has this bitwise meaning:
 
-Yeah, that wording is confusing.
+/* Bits 0-6 are for known probe types, Bit 7 is for unknown probes */
+#define EVENT_BIT_FTRACE 0
+#define EVENT_BIT_PERF 1
+#define EVENT_BIT_OTHER 7
 
-	"task %d CPU start time %llu is before last event %llu on CPU for a different task"
+There are a few things I find odd here. First, to improve use of CPU cache,
+I would have expected this memory mapping to expose enable flags as a
+bitmap rather than an array of bytes, indexed bit-wise rather than byte-wise.
+I also don't get what user-space is expected to do differently if FTRACE vs
+PERF is enabled, considering that it gates a writev() to a file descriptor
+associated with /sys/kernel/debug/tracing/user_events_data.
 
-?
+I would have rather thought that tracers implemented in user-space could register
+themselves, and then there could be one /sys/kernel/debug/tracing/user_events_status
+per tracer. Considering that all kernel tracers use the same ABI to write an event,
+and then dispatch this event internally within the kernel to each registered
+tracer, I would expect to have a single memory mapping for all those (e.g. a
+/sys/kernel/debug/tracing/user_events_status/kernel_tracers file).
 
-> 
-> > +       } else {
-> > +               delta = record->ts - cpu_data->last_ts;
-> > +               task->runtime += delta;
-> > +       }
-> > +
-> > +       cpu_data->last_ts = record->ts;
-> > +
-> > +       task->start_ts = cpu_data->last_ts;
-> > +       cpu_data->current_pid = pid;
-> > +}
-> > +
-> > +static void update_cpu_times(struct cpu_data *cpu_data,
-> > +                            struct tep_handle *tep, int pid,
-> > +                            struct tep_record *record)
-> > +{
-> > +       struct task_cpu_item *cpu_task;
-> > +       struct task_item *task;
-> > +
-> > +       if (cpu_data->current_pid < 0) {
-> > +               /* First time called */
-> > +               cpu_data->start_ts = record->ts;
-> > +               cpu_data->last_ts = record->ts;
-> > +               cpu_data->current_pid = pid;
-> > +               cpu_data->first_pid = pid;
-> > +               cpu_task = get_cpu_task(cpu_data, pid);
-> > +               task = cpu_task->task;
-> > +               task->start_ts = record->ts;
-> > +               if (record->ts < cpu_data->data->start_ts)
-> > +                       cpu_data->data->start_ts = record->ts;
-> > +               return;
-> > +       }
-> > +
-> > +       if (pid != cpu_data->current_pid) {
-> > +               update_pid(cpu_data, record, pid);
-> > +               return;
-> > +       }
-> > +
-> > +       cpu_data->last_ts = record->ts;
-> > +}
-> > +
-> > +static void update_first_pid(struct cpu_data *cpu_data)
-> > +{
-> > +       struct task_cpu_item *cpu_task;
-> > +       struct task_item *task;
-> > +       unsigned long long start_ts = cpu_data->data->start_ts;
-> > +       unsigned long long delta;
-> > +
-> > +       cpu_task = get_cpu_task(cpu_data, cpu_data->first_pid);
-> > +       task = cpu_task->task;
-> > +       delta = cpu_data->start_ts - start_ts;
-> > +       task->runtime += delta;
-> > +       cpu_data->start_ts = start_ts;
-> > +}
-> > +
-> > +static void process_cpu(struct analysis_data *data,
-> > +                       struct tep_handle *tep,
-> > +                       struct tep_record *record)
-> > +{
-> > +       struct cpu_data *cpu_data;
-> > +       int pid;
-> > +
-> > +       pid = tep_data_pid(tep, record);
-> > +       if (pid < 0) /* Warn? */
-> > +               return;
-> > +
-> > +       cpu_data = get_cpu_data(data, record);
-> > +       update_cpu_times(cpu_data, tep, pid, record);
-> > +}
-> > +
-> > +static void print_time(unsigned long long ts, char delim)
-> > +{
-> > +       unsigned long long secs;
-> > +       unsigned long long msecs;
-> > +       unsigned long long usecs;
-> > +       unsigned long long nsecs;
-> > +
-> > +       secs = ts / 1000000000;
-> > +       ts -= secs * 1000000000;
-> > +
-> > +       msecs = ts / 1000000;
-> > +       ts -= msecs * 1000000;
-> > +
-> > +       usecs = ts / 1000;
-> > +       ts -= usecs * 1000;
-> > +
-> > +       nsecs = ts;
-> > +
-> > +       if (delim) {
-> > +               printf("%6llu.%03llu%c%03llu",
-> > +                      secs, msecs, delim, usecs);
-> > +               if (time_in_nsecs)
-> > +                       printf("%c%03llu", delim, nsecs);
-> > +       } else {
-> > +               printf("%6llu.%03llu%03llu",
-> > +                      secs, msecs, usecs);
-> > +               if (time_in_nsecs)
-> > +                       printf("%03llu", nsecs);
-> > +       }
-> > +}
-> > +
-> > +static void print_total(struct tep_handle *tep, struct analysis_data *data)
-> > +{
-> > +       unsigned long long total_time;
-> > +       struct trace_hash_item **bucket;
-> > +       struct trace_hash_item *item;
-> > +       struct task_item **idle_tasks;
-> > +       struct task_item *task;
-> > +       bool first = true;
-> > +       int cpu;
-> > +       int i = 0;
-> > +
-> > +       total_time = data->last_ts - data->start_ts;
-> > +       printf("\nTotal time: ");
-> > +       print_time(total_time, '_');
-> > +       printf("\n");
-> > +
-> > +       idle_tasks = calloc(sizeof(*idle_tasks), data->allocated_cpus);
-> > +       if (!idle_tasks)
-> > +               die("Could not allocate idle task array");
-> > +
-> > +       trace_hash_for_each_bucket(bucket, &data->tasks) {
-> > +               trace_hash_for_each_item(item, bucket) {
-> > +                       task = task_from_hash(item);
-> > +                       if (task->pid < 0) {
-> > +                               cpu = -2 - task->pid;
-> > +                               idle_tasks[cpu] = task;
-> > +                       }
-> > +               }
-> > +       }
-> > +
-> > +       for (i = 0; i < data->allocated_cpus; i++) {
-> > +               if (!idle_tasks[i])
-> > +                       continue;
-> > +
-> > +               if (first) {
-> > +                       printf("\n Idle CPU\t     Run time\n");
-> > +                       printf(" --------\t     --------\n");
-> > +                       first = false;
-> > +               }
-> > +               printf("CPU %d idle:\t", i);
-> > +               print_time(idle_tasks[i]->runtime, '_');
-> > +               printf(" (%%%lld)\n", (idle_tasks[i]->runtime * 100) / total_time);
-> > +       }
-> > +       free(idle_tasks);
-> > +}
-> > +
-> > +static void free_tasks(struct trace_hash *hash)
-> > +{
-> > +       struct trace_hash_item **bucket;
-> > +       struct trace_hash_item *item;
-> > +       struct task_item *task;
-> > +
-> > +       trace_hash_for_each_bucket(bucket, hash) {
-> > +               trace_hash_while_item(item, bucket) {
-> > +                       task = task_from_hash(item);
-> > +                       trace_hash_del(item);
-> > +                       free(task);
-> > +               }
-> > +       }
-> > +       trace_hash_free(hash);
-> > +}
-> > +
-> > +static void free_cpu_tasks(struct trace_hash *hash)
-> > +{
-> > +       struct trace_hash_item **bucket;
-> > +       struct trace_hash_item *item;
-> > +       struct task_cpu_item *cpu_task;
-> > +
-> > +       trace_hash_for_each_bucket(bucket, hash) {
-> > +               trace_hash_while_item(item, bucket) {
-> > +                       cpu_task = task_cpu_from_hash(item);
-> > +                       trace_hash_del(item);
-> > +                       free(cpu_task);
-> > +               }
-> > +       }
-> > +       trace_hash_free(hash);
-> > +}
-> > +
-> > +static void free_cpus(struct analysis_data *data)
-> > +{
-> > +       struct cpu_data *cpu_data;
-> > +       int i;
-> > +
-> > +       for (i = 0; i < data->allocated_cpus; i++) {
-> > +               cpu_data = &data->cpu_data[i];
-> > +               if (!cpu_data->data)
-> > +                       continue;
-> > +               free_cpu_tasks(&cpu_data->tasks);
-> > +       }
-> > +       free(data->cpu_data);
-> > +}
-> > +
-> > +static void do_trace_analyze(struct tracecmd_input *handle)
-> > +{
-> > +       struct tep_handle *tep = tracecmd_get_tep(handle);
-> > +       struct tep_record *record;
-> > +       struct analysis_data data;
-> > +       struct cpu_data *cpu_data;
-> > +       int i;
-> > +
-> > +       memset(&data, 0, sizeof(data));
-> > +
-> > +       trace_hash_init(&data.tasks, 128);
-> > +
-> > +       /* Set to a very large number */
-> > +       data.start_ts = -1ULL;
-> > +
-> > +       do {
-> > +               record = tracecmd_read_next_data(handle, NULL);
-> > +               if (record)
-> > +                       process_cpu(&data, tep, record);
-> > +               tracecmd_free_record(record);
-> > +       } while (record);
-> > +
-> > +       for (i = 0; i < data.allocated_cpus; i++) {
-> > +               cpu_data = &data.cpu_data[i];
-> > +               if (!cpu_data->data || !cpu_data->nr_tasks)
-> > +                       continue;
-> > +               if (cpu_data->last_ts > data.last_ts)
-> > +                       data.last_ts = cpu_data->last_ts;
-> > +       }
-> > +
-> > +       for (i = 0; i < data.allocated_cpus; i++) {
-> > +               cpu_data = &data.cpu_data[i];
-> > +               if (!cpu_data->data || !cpu_data->nr_tasks)
-> > +                       continue;
-> > +               cpu_data->last_ts = data.last_ts;
-> > +               update_pid(cpu_data, NULL, -1);  
-> 
-> I think having update_last_pid() makes this easier to read.
+Then eventually if we have other user-space tracers such as lttng-ust with its
+their own user-space code performing tracing in a shared memory ring buffer, it
+would make sense to allow it to register its own
+/sys/kernel/debug/tracing/user_events_status/lttng_ust file, with its own indexes.
 
-You mean to add a helper function that does the last pid and have
-update_pid() start with that?
+If this facility is ever used by lttng-ust to enable user-space tracing, I would not
+want to take the overhead of calling writev for the sake of kernel tracers if
+those are disabled.
 
-I could do that.
+So perhaps in the short-term there is no need to implement the user-space tracer
+registration ABI, but I would have expected a simple bitmap for
+/sys/kernel/debug/tracing/user_events_data/kernel_tracers rather than the
+bytewise index, because as far as the kernel tracers are concerned, providing
+the bit to tell userspace instrumentation exactly which tracers are internally
+enabled within the kernel does not appear to be of any use other than increasing
+the footprint on the actively used cpu cache lines.
 
-Thanks for looking at this.
 
-Note, I'm going to rewrite this so that this is actually part of the
-library, to allow other applications to have access to this functionality.
+* user_events_data page faults
 
--- Steve
+If my understanding is correct, when the user-space program's memory containing
+the payload passed to writev() to a user_events_data file descriptor is kicked
+out from the page cache between fault_in_iov_iter_readable and its use by the
+tracers due to high memory pressure, the writev() will fail with -EFAULT and
+the data will be discarded unless user-space somehow handles this error (which
+is not handled in the samples/user_events/sample.c example program). It is good
+that the memory is faulted in immediately before calling the tracers, but
+considering that it is not mlock'd, should we make more effort to ensure the
+tracers are able to handle page faults ?
+
+Integration of the work done by Michael Jeanson and myself on faultable tracepoint
+would allow the tracepoint probes to take page faults. Then, further modifications
+in the kernel tracers would be needed to handle those page faults.
+
+
+* user_reg name_args and write_index vs purely user-space tracers
+
+That part of the user event registration (event layout and ID allocation) appears
+to be intrinsically tied to the kernel tracers and the expected event layout. This
+seems fine as long as the only users we consider are the kernel tracers, but it
+appears to be less relevant for purely user-space tracers. Actually, tying the
+mmap'd event enable mechanism with the event ID and description makes me wonder
+whether it might be better to have LTTng-UST implement its own shared-memory based
+"fast-event-enabling" mechanism rather than use this user-event ABI. The other
+advantage of doing all of this in user-space would be to allow many instances
+of this bitmap to exist on a given system, e.g. one per container in a multi-container
+system, rather than requiring this to be a global kernel-wide singleton, and to use
+it from a non-privileged user.
+
+
+Some comments about the implementation:
+
+kernel/trace/trace_events_user.c:
+static ssize_t user_events_write(struct file *file, const char __user *ubuf,
+                                 size_t count, loff_t *ppos)
+{
+        struct iovec iov;
+        struct iov_iter i;
+
+        if (unlikely(*ppos != 0))
+                return -EFAULT;
+
+        if (unlikely(import_single_range(READ, (char *)ubuf, count, &iov, &i)))
+                return -EFAULT;
+                                         ^ shouldn't this be "WRITE" ? This takes data from
+                                           user-space and copies it into the kernel, similarly
+                                           to fs/read_write.c:new_sync_write().
+
+        return user_events_write_core(file, &i);
+}
+
+include/uapi/linux/user_events.h:
+
+struct user_reg {
+
+        /* Input: Size of the user_reg structure being used */
+        __u32 size;
+
+        /* Input: Pointer to string with event name, description and flags */
+        __u64 name_args;
+
+        /* Output: Byte index of the event within the status page */
+        __u32 status_index;
+
+        /* Output: Index of the event to use when writing data */
+        __u32 write_index;
+};
+
+As this structure is expected to grow, and the user-space sample program uses "sizeof()"
+to figure out its size (which includes padding), I would be more comfortable if this was
+a packed structure rather than non-packed, because as fields are added, it's tricky to
+figure out from the kernel perspective whether the size received are fields that user-space
+is aware of, or if this is just padding.
+
+include/uapi/linux/user_events.h:
+
+struct user_bpf_iter {
+
+        /* Offset of the data within the first iovec */
+        __u32 iov_offset;
+
+        /* Number of iovec structures */
+        __u32 nr_segs;
+
+        /* Pointer to iovec structures */
+        const struct iovec *iov;
+
+                           ^ a pointer in a uapi header is usually a no-go. This should be a u64.
+};
+
+include/uapi/linux/user_events.h:
+
+struct user_bpf_context {
+
+        /* Data type being passed (see union below) */
+        __u32 data_type;
+
+        /* Length of the data */
+        __u32 data_len;
+
+        /* Pointer to data, varies by data type */
+        union {
+                /* Kernel data (data_type == USER_BPF_DATA_KERNEL) */
+                void *kdata;
+
+                /* User data (data_type == USER_BPF_DATA_USER) */
+                void *udata;
+
+                /* Direct iovec (data_type == USER_BPF_DATA_ITER) */
+                struct user_bpf_iter *iter;
+
+                               ^ likewise for the 3 pointers above. Should be u64 in uapi headers.
+        };
+};
+
+kernel/trace/trace_events_user.c:
+
+static long user_reg_get(struct user_reg __user *ureg, struct user_reg *kreg)
+{
+        u32 size;
+        long ret;
+
+        ret = get_user(size, &ureg->size);
+
+        if (ret)
+                return ret;
+
+
+        if (size > PAGE_SIZE)
+                return -E2BIG;
+
+        ^ here I would be tempted to validate that the structure size at least provides room
+          for the "v0" ABI, e.g.:
+
+             if (size < offsetofend(struct user_reg, write_index))
+                  return -EINVAL;
+
+        return copy_struct_from_user(kreg, sizeof(*kreg), ureg, size);
+
+              ^ I find it odd that the kernel copy of struct user_reg may contain a
+                size field which contents differs from the size fetched by get_user().
+                This can happen if a buggy or plainly hostile user-space attempts to
+                confuse the kernel about the size of this structure. Fortunately, the
+                size field does not seem to be used afterwards, but I would think it
+                safer to copy back the "size" fetched by get_user into the reg->size
+                after copy_struct_from_user in case future changes in the code end up
+                relying on a consistent size field.
+}
+
+kernel/trace/trace_events_user.c:
+
+static struct user_event *find_user_event(char *name, u32 *outkey)
+{
+        struct user_event *user;
+        u32 key = user_event_key(name);
+
+        *outkey = key;
+
+        hash_for_each_possible(register_table, user, node, key)
+                if (!strcmp(EVENT_NAME(user), name)) {
+                        atomic_inc(&user->refcnt);
+
+                        ^ what happens if an ill-intended user-space populates enough references
+                          to overflow refcnt (atomic_t). I suspect it can make the kernel free
+                          memory that is still in use, and trigger a use-after-free scenario.
+                          Usually reference counters should use include/linux/refcount.h which
+                          handles reference counter saturation. user_event_parse() has also a use
+                          of atomic_inc() on that same refcnt which userspace can overflow.
+
+                        return user;
+                }
+
+        return NULL;
+}
+
+kernel/trace/trace_events_user.c:
+
+static int user_events_release(struct inode *node, struct file *file)
+{
+[...]
+        /*
+         * Ensure refs cannot change under any situation by taking the
+         * register mutex during the final freeing of the references.
+         */
+        mutex_lock(&reg_mutex);
+[...]
+        mutex_unlock(&reg_mutex);
+
+        kfree(refs);
+
+        ^ AFAIU, the user_events_write() does not rely on reg_mutex to ensure mutual exclusion.
+          Doing so would be prohibitive performance-wise. But I suspect that freeing "refs" here
+          without waiting for a RCU grace period can be an issue if user_events_write_core is using
+          refs concurrently with file descriptor close.
+
+kernel/trace/trace_events_user.c:
+
+static bool user_field_match(struct ftrace_event_field *field, int argc,
+                             const char **argv, int *iout)
+[...]
+
+        for (; i < argc; ++i) {
+[...]
+                pos += snprintf(arg_name + pos, len - pos, argv[i]);
+
+        ^ what happens if strlen(argv[i]) > (len - pos) ? Based on lib/vsprintf.c:
+
+ * The return value is the number of characters which would be
+ * generated for the given input, excluding the trailing null,
+ * as per ISO C99.  If the return is greater than or equal to
+ * @size, the resulting string is truncated.
+
+        So the "pos" returned by the first call to sprintf would be greater than MAX_FIELD_ARG_NAME.
+        Then the second call to snprintf passes a @size argument of "len - pos" using the pos value
+        which is larger than len... which is a negative integer passed as argument to a size_t (unsigned).
+        So it expects a very long string. And the @buf argument is out-of-bound (field_name + pos).
+        Is this pattern for using snprintf() used elsewhere ? From a quick grep, I find this pattern in
+        a few places where AFAIU the input is not user-controlled (as it seems to be the case here), but
+        still it might be worth looking into:
+
+             kernel/cgroup/cgroup.c:show_delegatable_files()
+             kernel/time/clocksource.c:available_clocksource_show()
+
+Also, passing a copy of a userspace string (argv[i]) as format string argument to
+snprintf can be misused to leak kernel data to user-space.
+
+The same function also appear to have similar issues with its use of the field->name userspace input
+string.
+
+Unfortunately this is all the time I have for review right now, but it is at least a good starting
+point for discussion.
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
