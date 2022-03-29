@@ -2,111 +2,78 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 114AEC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 29 Mar 2022 19:18:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7423C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 29 Mar 2022 19:45:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235938AbiC2TTv (ORCPT
+        id S241020AbiC2TrU (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 29 Mar 2022 15:19:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60230 "EHLO
+        Tue, 29 Mar 2022 15:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234102AbiC2TTv (ORCPT
+        with ESMTP id S240356AbiC2TrU (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 29 Mar 2022 15:19:51 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 761F324BC6
-        for <linux-trace-devel@vger.kernel.org>; Tue, 29 Mar 2022 12:18:07 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id s11so16201522qtc.3
-        for <linux-trace-devel@vger.kernel.org>; Tue, 29 Mar 2022 12:18:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/5JT098dR5sJ8vRsuBwbrbhxc7aDb5G8/8q7du5r6j4=;
-        b=BgXyY9ykcVIsF4Sad1kyZDDWqOeVWCKXwL/W3gV6TvjWFqvrk3E3KpoHE7kGtR/cAo
-         gNXyK1KTUvo84kHvlOq4k43VRFFvGO1H6UAOUGMZjCa7UF/AwU9cTYMlVnmmslV3DjOl
-         nNWsCIBzQXY3R7GJZmo61nIf6t+aUChdRBZnA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/5JT098dR5sJ8vRsuBwbrbhxc7aDb5G8/8q7du5r6j4=;
-        b=m5yFcoj8/DqRWTsVlD50HyVfASMWnd01gevtPIMg61KG58gTNeG12Ig9hMr5Q7MYDb
-         gqHmFLKIvrclJW9jR3ixNyTijv7L6HQDg+/QESkLGSd9FRDIzBXZWYyE+8G++aYbm2n0
-         6WROeq6hzMKU6g3SNntVMlhaSpiCYSOSa/kuQ5neQD8Kx+4ILzZPcE9XfTlFD0jTs9FM
-         G7OJTWwFkPkn55LKwfkeODprG6xoqreTtN6yqTM6yXy/koWqcqx0+9RO3CTuVZoa/2pC
-         j1yF5UsWQa03jNRtR7Mlwg2A+JwhwIr35au84yQOsYR18dXGzRPac/azu4/ll6v2K+5t
-         Nduw==
-X-Gm-Message-State: AOAM531AhsP6o64kuDCWMCmaY9CSdqth8j0JuUhZUK1CJy6aJFk2p7RP
-        UnGEDACN0dn4q4pr8RIkPxJY54ZZLcubXw==
-X-Google-Smtp-Source: ABdhPJz0I5f653SyVW4rZDY7Up7SgMZeqGZShnlPjcuCUS0yNDb5gBhlMlTf1qNODwXHF/9KP1zyHA==
-X-Received: by 2002:a05:622a:11c5:b0:2e1:b9fd:ec28 with SMTP id n5-20020a05622a11c500b002e1b9fdec28mr28840647qtk.258.1648581486339;
-        Tue, 29 Mar 2022 12:18:06 -0700 (PDT)
-Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id bm1-20020a05620a198100b0047bf910892bsm10601544qkb.65.2022.03.29.12.18.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Mar 2022 12:18:05 -0700 (PDT)
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     vineethrp@google.com, rostedt@google.com,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH] trace-cmd: Try alternate path for message cache
-Date:   Tue, 29 Mar 2022 19:18:01 +0000
-Message-Id: <20220329191801.429691-1-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.35.1.1021.g381101b075-goog
+        Tue, 29 Mar 2022 15:47:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DE3B7C6A;
+        Tue, 29 Mar 2022 12:45:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6CC5361698;
+        Tue, 29 Mar 2022 19:45:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B267C340F2;
+        Tue, 29 Mar 2022 19:45:34 +0000 (UTC)
+Date:   Tue, 29 Mar 2022 15:45:32 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Beau Belgrave <beaub@linux.microsoft.com>,
+        Beau Belgrave <beaub@microsoft.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: Re: Comments on new user events ABI
+Message-ID: <20220329154532.4833d16d@gandalf.local.home>
+In-Reply-To: <CAADnVQK=GCuhTHz=iwv0r7Y37gYvt_UBzkfFJmNT+uR0z+7Myw@mail.gmail.com>
+References: <2059213643.196683.1648499088753.JavaMail.zimbra@efficios.com>
+        <20220329002935.2869-1-beaub@linux.microsoft.com>
+        <1014535694.197402.1648570634323.JavaMail.zimbra@efficios.com>
+        <CAADnVQK=GCuhTHz=iwv0r7Y37gYvt_UBzkfFJmNT+uR0z+7Myw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-For some systems like Android, /tmp/ does not exist. Use the /data/
-directory for message cache.
+On Tue, 29 Mar 2022 09:25:52 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-With this, host guest tracing works on Android VM running on ChromeOS.
+> Thanks for flagging.
+> 
+> Whoever added this user_bpf* stuff please remove it immediately.
+> It was never reviewed by bpf maintainers.
 
-Cc: Vineeth Pillai <vineethrp@google.com>
-Signed-off-by: Joel Fernandes <joel@joelfernandes.org>
----
- lib/trace-cmd/include/private/trace-cmd-private.h |  3 ++-
- lib/trace-cmd/trace-msg.c                         | 10 ++++++++--
- 2 files changed, 10 insertions(+), 3 deletions(-)
+Heh, now you know how the x86 maintainers feel ;-)
 
-diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 6934376..492ad9c 100644
---- a/lib/trace-cmd/include/private/trace-cmd-private.h
-+++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -377,7 +377,8 @@ enum tracecmd_msg_flags {
- };
- 
- /* for both client and server */
--#define MSG_CACHE_FILE "/tmp/trace_msg_cacheXXXXXX"
-+#define MSG_CACHE_FILE  "/tmp/trace_msg_cacheXXXXXX"
-+#define MSG_CACHE_FILE2 "/data/trace_msg_cacheXXXXXX"
- struct tracecmd_msg_handle {
- 	int			fd;
- 	short			cpu_count;
-diff --git a/lib/trace-cmd/trace-msg.c b/lib/trace-cmd/trace-msg.c
-index 03b853e..91dac77 100644
---- a/lib/trace-cmd/trace-msg.c
-+++ b/lib/trace-cmd/trace-msg.c
-@@ -595,8 +595,14 @@ int tracecmd_msg_handle_cache(struct tracecmd_msg_handle *msg_handle)
- 	if (msg_handle->cfd < 0) {
- 		strcpy(msg_handle->cfile, MSG_CACHE_FILE);
- 		msg_handle->cfd = mkstemp(msg_handle->cfile);
--		if (msg_handle->cfd < 0)
--			return -1;
-+		if (msg_handle->cfd < 0) {
-+			/* Try an alternate path. */
-+			strcpy(msg_handle->cfile, MSG_CACHE_FILE2);
-+			msg_handle->cfd = mkstemp(msg_handle->cfile);
-+			if (msg_handle->cfd < 0) {
-+				return -1;
-+			}
-+		}
- 		unlink(msg_handle->cfile);
- 	}
- 	msg_handle->cache = true;
--- 
-2.35.1.1021.g381101b075-goog
+> 
+> It's a hard Nack to add a bpf interface to user_events.
 
+Agreed, I'm thinking of marking the entire thing as broken such that it can
+be worked on a bit more without a total revert (but still remove the BPF
+portion on your request).
+
+Beau, I agree with Mathieu, I don't think it's a good idea to expose the
+"ftrace/perf/etc" users. The only thing that the application needs is a bit
+to say "call the write now". And let the work be done within the kernel.
+I think a single bit may be better, that way you can have many more events
+on a page, and since they do not get modified often, it will be in hot
+cache and fast.
+
+-- Steve
