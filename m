@@ -2,298 +2,111 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3E0DC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 29 Mar 2022 18:19:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 114AEC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 29 Mar 2022 19:18:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240490AbiC2SV0 (ORCPT
+        id S235938AbiC2TTv (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 29 Mar 2022 14:21:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34684 "EHLO
+        Tue, 29 Mar 2022 15:19:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237003AbiC2SV0 (ORCPT
+        with ESMTP id S234102AbiC2TTv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 29 Mar 2022 14:21:26 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AC6E71621B6;
-        Tue, 29 Mar 2022 11:19:42 -0700 (PDT)
-Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id BE43220B96D6;
-        Tue, 29 Mar 2022 11:19:41 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BE43220B96D6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1648577982;
-        bh=f9qUQoZpYwIEzqc7SGe0CJ57hdKsehX5evOGy/BoPYc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=q/ggZtAEYBzvhh9xN1WECC6t4CwtTywgUYpNB/Az2BGLpVj0a9njS8eMNi/F1hBEJ
-         WFWP4NmEBdUEw9yYnVgRlQLroJqO5P1SMFJhkT8DZJzhngiUslLX4Pde3U8kSCkWuK
-         jsWs4/QbL2A7rcSvjxigL9PPyvINMM9rP69ohDW0=
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     rostedt@goodmis.org, mhiramat@kernel.org,
-        alexei.starovoitov@gmail.com
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arch@vger.kernel.org, mathieu.desnoyers@efficios.com,
-        beaub@linux.microsoft.com
-Subject: [PATCH] tracing/user_events: Add eBPF interface for user_event created events
-Date:   Tue, 29 Mar 2022 11:19:35 -0700
-Message-Id: <20220329181935.2183-1-beaub@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 29 Mar 2022 15:19:51 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 761F324BC6
+        for <linux-trace-devel@vger.kernel.org>; Tue, 29 Mar 2022 12:18:07 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id s11so16201522qtc.3
+        for <linux-trace-devel@vger.kernel.org>; Tue, 29 Mar 2022 12:18:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/5JT098dR5sJ8vRsuBwbrbhxc7aDb5G8/8q7du5r6j4=;
+        b=BgXyY9ykcVIsF4Sad1kyZDDWqOeVWCKXwL/W3gV6TvjWFqvrk3E3KpoHE7kGtR/cAo
+         gNXyK1KTUvo84kHvlOq4k43VRFFvGO1H6UAOUGMZjCa7UF/AwU9cTYMlVnmmslV3DjOl
+         nNWsCIBzQXY3R7GJZmo61nIf6t+aUChdRBZnA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/5JT098dR5sJ8vRsuBwbrbhxc7aDb5G8/8q7du5r6j4=;
+        b=m5yFcoj8/DqRWTsVlD50HyVfASMWnd01gevtPIMg61KG58gTNeG12Ig9hMr5Q7MYDb
+         gqHmFLKIvrclJW9jR3ixNyTijv7L6HQDg+/QESkLGSd9FRDIzBXZWYyE+8G++aYbm2n0
+         6WROeq6hzMKU6g3SNntVMlhaSpiCYSOSa/kuQ5neQD8Kx+4ILzZPcE9XfTlFD0jTs9FM
+         G7OJTWwFkPkn55LKwfkeODprG6xoqreTtN6yqTM6yXy/koWqcqx0+9RO3CTuVZoa/2pC
+         j1yF5UsWQa03jNRtR7Mlwg2A+JwhwIr35au84yQOsYR18dXGzRPac/azu4/ll6v2K+5t
+         Nduw==
+X-Gm-Message-State: AOAM531AhsP6o64kuDCWMCmaY9CSdqth8j0JuUhZUK1CJy6aJFk2p7RP
+        UnGEDACN0dn4q4pr8RIkPxJY54ZZLcubXw==
+X-Google-Smtp-Source: ABdhPJz0I5f653SyVW4rZDY7Up7SgMZeqGZShnlPjcuCUS0yNDb5gBhlMlTf1qNODwXHF/9KP1zyHA==
+X-Received: by 2002:a05:622a:11c5:b0:2e1:b9fd:ec28 with SMTP id n5-20020a05622a11c500b002e1b9fdec28mr28840647qtk.258.1648581486339;
+        Tue, 29 Mar 2022 12:18:06 -0700 (PDT)
+Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
+        by smtp.gmail.com with ESMTPSA id bm1-20020a05620a198100b0047bf910892bsm10601544qkb.65.2022.03.29.12.18.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Mar 2022 12:18:05 -0700 (PDT)
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     vineethrp@google.com, rostedt@google.com,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH] trace-cmd: Try alternate path for message cache
+Date:   Tue, 29 Mar 2022 19:18:01 +0000
+Message-Id: <20220329191801.429691-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.35.1.1021.g381101b075-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Send user_event data to attached eBPF programs for user_event based perf
-events.
+For some systems like Android, /tmp/ does not exist. Use the /data/
+directory for message cache.
 
-Add BPF_ITER flag to allow user_event data to have a zero copy path into
-eBPF programs if required.
+With this, host guest tracing works on Android VM running on ChromeOS.
 
-Update documentation to describe new flags and structures for eBPF
-integration.
-
-Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+Cc: Vineeth Pillai <vineethrp@google.com>
+Signed-off-by: Joel Fernandes <joel@joelfernandes.org>
 ---
- Documentation/trace/user_events.rst | 14 ++++--
- include/uapi/linux/user_events.h    | 53 +++++++++++++++++++++
- kernel/trace/trace_events_user.c    | 73 ++++++++++++++++++++++++++++-
- 3 files changed, 136 insertions(+), 4 deletions(-)
+ lib/trace-cmd/include/private/trace-cmd-private.h |  3 ++-
+ lib/trace-cmd/trace-msg.c                         | 10 ++++++++--
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/trace/user_events.rst b/Documentation/trace/user_events.rst
-index c180936f49fc..bddedabaca80 100644
---- a/Documentation/trace/user_events.rst
-+++ b/Documentation/trace/user_events.rst
-@@ -7,7 +7,7 @@ user_events: User-based Event Tracing
- Overview
- --------
- User based trace events allow user processes to create events and trace data
--that can be viewed via existing tools, such as ftrace and perf.
-+that can be viewed via existing tools, such as ftrace, perf and eBPF.
- To enable this feature, build your kernel with CONFIG_USER_EVENTS=y.
+diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
+index 6934376..492ad9c 100644
+--- a/lib/trace-cmd/include/private/trace-cmd-private.h
++++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+@@ -377,7 +377,8 @@ enum tracecmd_msg_flags {
+ };
  
- Programs can view status of the events via
-@@ -67,7 +67,8 @@ The command string format is as follows::
- 
- Supported Flags
- ^^^^^^^^^^^^^^^
--None yet
-+**BPF_ITER** - EBPF programs attached to this event will get the raw iovec
-+struct instead of any data copies for max performance.
- 
- Field Format
- ^^^^^^^^^^^^
-@@ -159,7 +160,7 @@ The following values are defined to aid in checking what has been attached:
- 
- **EVENT_STATUS_FTRACE** - Bit set if ftrace has been attached (Bit 0).
- 
--**EVENT_STATUS_PERF** - Bit set if perf has been attached (Bit 1).
-+**EVENT_STATUS_PERF** - Bit set if perf/eBPF has been attached (Bit 1).
- 
- Writing Data
- ------------
-@@ -203,6 +204,13 @@ It's advised for user programs to do the following::
- 
- **NOTE:** *The write_index is not emitted out into the trace being recorded.*
- 
-+EBPF
-+----
-+EBPF programs that attach to a user-based event tracepoint are given a pointer
-+to a struct user_bpf_context. The bpf context contains the data type (which can
-+be a user or kernel buffer, or can be a pointer to the iovec) and the data
-+length that was emitted (minus the write_index).
-+
- Example Code
- ------------
- See sample code in samples/user_events.
-diff --git a/include/uapi/linux/user_events.h b/include/uapi/linux/user_events.h
-index 736e05603463..e570840571e1 100644
---- a/include/uapi/linux/user_events.h
-+++ b/include/uapi/linux/user_events.h
-@@ -32,6 +32,9 @@
- /* Create dynamic location entry within a 32-bit value */
- #define DYN_LOC(offset, size) ((size) << 16 | (offset))
- 
-+/* Use raw iterator for attached BPF program(s), no affect on ftrace/perf */
-+#define FLAG_BPF_ITER (1 << 0)
-+
- /*
-  * Describes an event registration and stores the results of the registration.
-  * This structure is passed to the DIAG_IOCSREG ioctl, callers at a minimum
-@@ -60,4 +63,54 @@ struct user_reg {
- /* Requests to delete a user_event */
- #define DIAG_IOCSDEL _IOW(DIAG_IOC_MAGIC, 1, char*)
- 
-+/* Data type that was passed to the BPF program */
-+enum {
-+	/* Data resides in kernel space */
-+	USER_BPF_DATA_KERNEL,
-+
-+	/* Data resides in user space */
-+	USER_BPF_DATA_USER,
-+
-+	/* Data is a pointer to a user_bpf_iter structure */
-+	USER_BPF_DATA_ITER,
-+};
-+
-+/*
-+ * Describes an iovec iterator that BPF programs can use to access data for
-+ * a given user_event write() / writev() call.
-+ */
-+struct user_bpf_iter {
-+
-+	/* Offset of the data within the first iovec */
-+	__u32 iov_offset;
-+
-+	/* Number of iovec structures */
-+	__u32 nr_segs;
-+
-+	/* Pointer to iovec structures */
-+	const struct iovec *iov;
-+};
-+
-+/* Context that BPF programs receive when attached to a user_event */
-+struct user_bpf_context {
-+
-+	/* Data type being passed (see union below) */
-+	__u32 data_type;
-+
-+	/* Length of the data */
-+	__u32 data_len;
-+
-+	/* Pointer to data, varies by data type */
-+	union {
-+		/* Kernel data (data_type == USER_BPF_DATA_KERNEL) */
-+		void *kdata;
-+
-+		/* User data (data_type == USER_BPF_DATA_USER) */
-+		void *udata;
-+
-+		/* Direct iovec (data_type == USER_BPF_DATA_ITER) */
-+		struct user_bpf_iter *iter;
-+	};
-+};
-+
- #endif /* _UAPI_LINUX_USER_EVENTS_H */
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 3bc97e44253f..8b3d241a31c2 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -42,6 +42,9 @@
- #define MAX_FIELD_ARRAY_SIZE 1024
- #define MAX_FIELD_ARG_NAME 256
- 
-+#define MAX_BPF_COPY_SIZE PAGE_SIZE
-+#define MAX_STACK_BPF_DATA 512
-+
- static char *register_page_data;
- 
- static DEFINE_MUTEX(reg_mutex);
-@@ -402,6 +405,19 @@ static int user_event_parse_field(char *field, struct user_event *user,
- 				    type[0] != 'u', FILTER_OTHER);
- }
- 
-+static void user_event_parse_flags(struct user_event *user, char *flags)
-+{
-+	char *flag;
-+
-+	if (flags == NULL)
-+		return;
-+
-+	while ((flag = strsep(&flags, ",")) != NULL) {
-+		if (strcmp(flag, "BPF_ITER") == 0)
-+			user->flags |= FLAG_BPF_ITER;
-+	}
-+}
-+
- static int user_event_parse_fields(struct user_event *user, char *args)
- {
- 	char *field;
-@@ -697,14 +713,64 @@ static void user_event_ftrace(struct user_event *user, struct iov_iter *i,
- }
- 
- #ifdef CONFIG_PERF_EVENTS
-+static void user_event_bpf(struct user_event *user, struct iov_iter *i)
-+{
-+	struct user_bpf_context context;
-+	struct user_bpf_iter bpf_i;
-+	char fast_data[MAX_STACK_BPF_DATA];
-+	void *temp = NULL;
-+
-+	if ((user->flags & FLAG_BPF_ITER) && iter_is_iovec(i)) {
-+		/* Raw iterator */
-+		context.data_type = USER_BPF_DATA_ITER;
-+		context.data_len = i->count;
-+		context.iter = &bpf_i;
-+
-+		bpf_i.iov_offset = i->iov_offset;
-+		bpf_i.iov = i->iov;
-+		bpf_i.nr_segs = i->nr_segs;
-+	} else if (i->nr_segs == 1 && iter_is_iovec(i)) {
-+		/* Single buffer from user */
-+		context.data_type = USER_BPF_DATA_USER;
-+		context.data_len = i->count;
-+		context.udata = i->iov->iov_base + i->iov_offset;
-+	} else {
-+		/* Multi buffer from user */
-+		struct iov_iter copy = *i;
-+		size_t copy_size = min_t(size_t, i->count, MAX_BPF_COPY_SIZE);
-+
-+		context.data_type = USER_BPF_DATA_KERNEL;
-+		context.kdata = fast_data;
-+
-+		if (unlikely(copy_size > sizeof(fast_data))) {
-+			temp = kmalloc(copy_size, GFP_NOWAIT);
-+
-+			if (temp)
-+				context.kdata = temp;
-+			else
-+				copy_size = sizeof(fast_data);
+ /* for both client and server */
+-#define MSG_CACHE_FILE "/tmp/trace_msg_cacheXXXXXX"
++#define MSG_CACHE_FILE  "/tmp/trace_msg_cacheXXXXXX"
++#define MSG_CACHE_FILE2 "/data/trace_msg_cacheXXXXXX"
+ struct tracecmd_msg_handle {
+ 	int			fd;
+ 	short			cpu_count;
+diff --git a/lib/trace-cmd/trace-msg.c b/lib/trace-cmd/trace-msg.c
+index 03b853e..91dac77 100644
+--- a/lib/trace-cmd/trace-msg.c
++++ b/lib/trace-cmd/trace-msg.c
+@@ -595,8 +595,14 @@ int tracecmd_msg_handle_cache(struct tracecmd_msg_handle *msg_handle)
+ 	if (msg_handle->cfd < 0) {
+ 		strcpy(msg_handle->cfile, MSG_CACHE_FILE);
+ 		msg_handle->cfd = mkstemp(msg_handle->cfile);
+-		if (msg_handle->cfd < 0)
+-			return -1;
++		if (msg_handle->cfd < 0) {
++			/* Try an alternate path. */
++			strcpy(msg_handle->cfile, MSG_CACHE_FILE2);
++			msg_handle->cfd = mkstemp(msg_handle->cfile);
++			if (msg_handle->cfd < 0) {
++				return -1;
++			}
 +		}
-+
-+		context.data_len = copy_nofault(context.kdata,
-+						copy_size, &copy);
-+	}
-+
-+	trace_call_bpf(&user->call, &context);
-+
-+	kfree(temp);
-+}
-+
- /*
-- * Writes the user supplied payload out to perf ring buffer.
-+ * Writes the user supplied payload out to perf ring buffer or eBPF program.
-  */
- static void user_event_perf(struct user_event *user, struct iov_iter *i,
- 			    void *tpdata, bool *faulted)
- {
- 	struct hlist_head *perf_head;
- 
-+	if (bpf_prog_array_valid(&user->call))
-+		user_event_bpf(user, i);
-+
- 	perf_head = this_cpu_ptr(user->call.perf_events);
- 
- 	if (perf_head && !hlist_empty(perf_head)) {
-@@ -1070,6 +1136,8 @@ static int user_event_parse(char *name, char *args, char *flags,
- 
- 	user->tracepoint.name = name;
- 
-+	user_event_parse_flags(user, flags);
-+
- 	ret = user_event_parse_fields(user, args);
- 
- 	if (ret)
-@@ -1507,6 +1575,9 @@ static int user_seq_show(struct seq_file *m, void *p)
- 			busy++;
- 		}
- 
-+		if (flags & FLAG_BPF_ITER)
-+			seq_puts(m, " FLAG:BPF_ITER");
-+
- 		seq_puts(m, "\n");
- 		active++;
+ 		unlink(msg_handle->cfile);
  	}
+ 	msg_handle->cache = true;
 -- 
-2.25.1
+2.35.1.1021.g381101b075-goog
 
