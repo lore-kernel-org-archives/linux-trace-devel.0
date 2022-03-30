@@ -2,157 +2,75 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E786AC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 29 Mar 2022 23:54:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A771C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 30 Mar 2022 02:25:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241300AbiC2X4g (ORCPT
+        id S241938AbiC3C1E (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 29 Mar 2022 19:56:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58732 "EHLO
+        Tue, 29 Mar 2022 22:27:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241293AbiC2X4e (ORCPT
+        with ESMTP id S240933AbiC3C1D (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 29 Mar 2022 19:56:34 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19790BF59;
-        Tue, 29 Mar 2022 16:54:50 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id s11so17265326pfu.13;
-        Tue, 29 Mar 2022 16:54:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LHFIzlMHcD6qDSToyvl5dbn+nrgausa4lYRWBBJH19I=;
-        b=p9di60D48ivYtNgPnBsoYU638rald7+YwO7G9bXpnCNkl5b2QhXxBuTBqdgauIvS3r
-         89gnjBFR5nK3jUvuVPKaNxcolrTNT1gDlxTNfIQU9okqUmBA3gw3swPqNHe5VL2jVdVZ
-         yLUfDE4ETCu4ROdmeBkJZcm7xtGFQbYcJAhBDtQGoSDYNFKh1I7HOskXhmtsbdSzTa/m
-         GTCAy6rLqrzOGu8Y9gCb3SgBDBNi8IO9Do4jY/Pp7Em5w+AQlRbrqGjS/Srusq5LMPhc
-         C6iFpIEEQ/Og8OZlXeE++4RyuAMfPhZItMuHjbYK1KuOAc2wrkzhRdX2KdeAwDKdu0rg
-         CW7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LHFIzlMHcD6qDSToyvl5dbn+nrgausa4lYRWBBJH19I=;
-        b=MKoJalFrkjV0TmWxwa5JfszBCIMVYKgDVc0Xy3/DtFzJ0cyCevpwUleHbw73qlCP9E
-         ssMIAdhAIDu8Rv0f+B2cXIGqLxqsRuAGUnCkRC1Lo3KPe+L5RgaS+KQLGsCYqbUFqojQ
-         um++ZpZ1vfSizTJHyGXNstgTEwYv/0x1NnTCPvV7Xm2F/2xMoIaurw/kuulu0oYUoVhr
-         xSN3OUJohuAT1WWES9PTKMFr7jTzfARAvjw3DUddYwFlgjCahLSFmNjPDzQ71OCTmg7R
-         VsV39iDqAo4NgbbVp7ZnyTfttK1Or9OUSHshj8gDYp+yNoAD0q3eC4NVZ5ebb2fLknlS
-         tn0g==
-X-Gm-Message-State: AOAM533O8gYpi4SOcuZau4WahHAGedp2oDL2jxDmGFwDn/r9SPatxpj7
-        2llH2ifaa4AQz2qNA7U7jS1dmYkiBdslOAUNAuk=
-X-Google-Smtp-Source: ABdhPJx1EjSr4a8bjD+W/X5zUF4e6t2htlaLzYE+lDOnWUbSx2ZNCz200Jnr8Z2IHVB2lx+hAbbjyXca3/XDr6FkAuE=
-X-Received: by 2002:a05:6a00:995:b0:4fb:607d:444c with SMTP id
- u21-20020a056a00099500b004fb607d444cmr11351045pfg.69.1648598089571; Tue, 29
- Mar 2022 16:54:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220329181935.2183-1-beaub@linux.microsoft.com>
- <CAADnVQ+XpoCjL-rSz2hj05L21s8NtMJuWYC14b9Mvk7XE5KT_g@mail.gmail.com>
- <20220329201057.GA2549@kbox> <CAADnVQ+gm4yU9S6y+oeR3TNj82kKX0gk4ey9gVnKXKWy1Js4-A@mail.gmail.com>
- <20220329231137.GA3357@kbox>
-In-Reply-To: <20220329231137.GA3357@kbox>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 29 Mar 2022 16:54:38 -0700
-Message-ID: <CAADnVQKCuK0GmRbOJjyce4Hwiq0ieqthVdnqdPbHT_qKqV5rzw@mail.gmail.com>
-Subject: Re: [PATCH] tracing/user_events: Add eBPF interface for user_event
- created events
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Tue, 29 Mar 2022 22:27:03 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF5C6427ED;
+        Tue, 29 Mar 2022 19:25:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A4184B819F4;
+        Wed, 30 Mar 2022 02:25:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A90BC2BBE4;
+        Wed, 30 Mar 2022 02:25:16 +0000 (UTC)
+Date:   Tue, 29 Mar 2022 22:25:14 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Beau Belgrave <beaub@linux.microsoft.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         linux-trace-devel <linux-trace-devel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
         Network Development <netdev@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH] tracing: Set user_events to BROKEN
+Message-ID: <20220329222514.51af6c07@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Mar 29, 2022 at 4:11 PM Beau Belgrave <beaub@linux.microsoft.com> wrote:
->
-> On Tue, Mar 29, 2022 at 03:31:31PM -0700, Alexei Starovoitov wrote:
-> > On Tue, Mar 29, 2022 at 1:11 PM Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> > >
-> > > On Tue, Mar 29, 2022 at 12:50:40PM -0700, Alexei Starovoitov wrote:
-> > > > On Tue, Mar 29, 2022 at 11:19 AM Beau Belgrave
-> > > > <beaub@linux.microsoft.com> wrote:
-> > > > >
-> > > > > Send user_event data to attached eBPF programs for user_event based perf
-> > > > > events.
-> > > > >
-> > > > > Add BPF_ITER flag to allow user_event data to have a zero copy path into
-> > > > > eBPF programs if required.
-> > > > >
-> > > > > Update documentation to describe new flags and structures for eBPF
-> > > > > integration.
-> > > > >
-> > > > > Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
-> > > >
-> > > > The commit describes _what_ it does, but says nothing about _why_.
-> > > > At present I see no use out of bpf and user_events connection.
-> > > > The whole user_events feature looks redundant to me.
-> > > > We have uprobes and usdt. It doesn't look to me that
-> > > > user_events provide anything new that wasn't available earlier.
-> > >
-> > > A lot of the why, in general, for user_events is covered in the first
-> > > change in the series.
-> > > Link: https://lore.kernel.org/all/20220118204326.2169-1-beaub@linux.microsoft.com/
-> > >
-> > > The why was also covered in Linux Plumbers Conference 2021 within the
-> > > tracing microconference.
-> > >
-> > > An example of why we want user_events:
-> > > Managed code running that emits data out via Open Telemetry.
-> > > Since it's managed there isn't a stub location to patch, it moves.
-> > > We watch the Open Telemetry spans in an eBPF program, when a span takes
-> > > too long we collect stack data and perform other actions.
-> > > With user_events and perf we can monitor the entire system from the root
-> > > container without having to have relay agents within each
-> > > cgroup/namespace taking up resources.
-> > > We do not need to enter each cgroup mnt space and determine the correct
-> > > patch location or the right version of each binary for processes that
-> > > use user_events.
-> > >
-> > > An example of why we want eBPF integration:
-> > > We also have scenarios where we are live decoding the data quickly.
-> > > Having user_data fed directly to eBPF lets us cast the data coming in to
-> > > a struct and decode very very quickly to determine if something is
-> > > wrong.
-> > > We can take that data quickly and put it into maps to perform further
-> > > aggregation as required.
-> > > We have scenarios that have "skid" problems, where we need to grab
-> > > further data exactly when the process that had the problem was running.
-> > > eBPF lets us do all of this that we cannot easily do otherwise.
-> > >
-> > > Another benefit from user_events is the tracing is much faster than
-> > > uprobes or others using int 3 traps. This is critical to us to enable on
-> > > production systems.
-> >
-> > None of it makes sense to me.
->
-> Sorry.
->
-> > To take advantage of user_events user space has to be modified
-> > and writev syscalls inserted.
->
-> Yes, both user_events and lttng require user space modifications to do
-> tracing correctly. The syscall overheads are real, and the cost depends
-> on the mitigations around spectre/meltdown.
->
-> > This is not cheap and I cannot see a production system using this interface.
->
-> But you are fine with uprobe costs? uprobes appear to be much more costly
-> than a syscall approach on the hardware I've run on.
->
-> > All you did is a poor man version of lttng that doesn't rely
-> > on such heavy instrumentation.
->
-> Well I am a frugal person. :)
->
-> This work has solved some critical issues we've been having, and I would
-> appreciate a review of the code if possible.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-It's a NACK to connect bpf and user_events.
-I would remove user_events from the kernel too.
+After being merged, user_events become more visible to a wider audience
+that have concerns with the current API. It is too late to fix this for
+this release, but instead of a full revert, just mark it as BROKEN (which
+prevents it from being selected in make config). Then we can work finding
+a better API. If that fails, then it will need to be completely reverted.
+
+Link: https://lore.kernel.org/all/2059213643.196683.1648499088753.JavaMail.zimbra@efficios.com/
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ kernel/trace/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+index 16a52a71732d..edc8159f63ef 100644
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -741,6 +741,7 @@ config USER_EVENTS
+ 	bool "User trace events"
+ 	select TRACING
+ 	select DYNAMIC_EVENTS
++	depends on BROKEN # API needs to be straighten out
+ 	help
+ 	  User trace events are user-defined trace events that
+ 	  can be used like an existing kernel trace event.  User trace
+-- 
+2.35.1
+
