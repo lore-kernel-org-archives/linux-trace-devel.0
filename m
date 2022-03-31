@@ -2,123 +2,92 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC11BC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 31 Mar 2022 07:39:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 200D8C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 31 Mar 2022 09:55:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231689AbiCaHkx (ORCPT
+        id S234346AbiCaJ50 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 31 Mar 2022 03:40:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
+        Thu, 31 Mar 2022 05:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbiCaHkw (ORCPT
+        with ESMTP id S233306AbiCaJ5Y (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 31 Mar 2022 03:40:52 -0400
-X-Greylist: delayed 244 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 31 Mar 2022 00:39:05 PDT
-Received: from condef-04.nifty.com (condef-04.nifty.com [202.248.20.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225371F1D33;
-        Thu, 31 Mar 2022 00:39:04 -0700 (PDT)
-Received: from conssluserg-02.nifty.com ([10.126.8.81])by condef-04.nifty.com with ESMTP id 22V7Uagg003081;
-        Thu, 31 Mar 2022 16:30:36 +0900
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 22V7UGG0029675;
-        Thu, 31 Mar 2022 16:30:16 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 22V7UGG0029675
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1648711817;
-        bh=9Htjky9XkVnyUWia+NbkPjjSVOOOk9oXjJ0/73vR0WE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=09j5XpbnARkHo1663RYGjwTfTBie0lA6g7DBnrSnRwJB/vkVDQBEJ1Tc08L22nx6Q
-         KuZksZsWTQW4Km9WjQSm4ThFKU6eCc4c8yDaNwx/mmVPH6E18M00WxIdU1pcnS7PcZ
-         VdGaWBPoM8XFvo+PvG0E5CziaPO+nHGQwz8OxS48uSULGDoN/5br05H4R2x6fMembO
-         I1iJY+SB4ICnalDIfkFFQ3fy3rKgjT4heOuIqj14Q6P2K1ao1LiEB8EWBr5+J7/ryS
-         qdGiTO56TWr9c0t4xa4c6aAEM4mVeKIoBR1e5snLBY0TRcODSmCmDORA6gvTWFDGEG
-         TrLUpGhQOSxFw==
-X-Nifty-SrcIP: [209.85.214.177]
-Received: by mail-pl1-f177.google.com with SMTP id x2so22632292plm.7;
-        Thu, 31 Mar 2022 00:30:16 -0700 (PDT)
-X-Gm-Message-State: AOAM531n4e5f9Bpi0v/t6Gz6VS4aPojPRmF+cRMFYi7z6khmIkt8WefZ
-        fKrH7EtwpW8tyJVo8KzhulhA9XlufutR/IOA0BQ=
-X-Google-Smtp-Source: ABdhPJxUYlg8xglwS7unqeL3Qg1V0KxRq8m3F9e9rDzp88ArQtlOndUIMBaAh9o1sujNi92PFsOKGmNv02Edcu1ePLA=
-X-Received: by 2002:a17:90b:4d01:b0:1c9:ec79:1b35 with SMTP id
- mw1-20020a17090b4d0100b001c9ec791b35mr4459174pjb.77.1648711815860; Thu, 31
- Mar 2022 00:30:15 -0700 (PDT)
+        Thu, 31 Mar 2022 05:57:24 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C55023DDD6
+        for <linux-trace-devel@vger.kernel.org>; Thu, 31 Mar 2022 02:55:37 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id b19so32936790wrh.11
+        for <linux-trace-devel@vger.kernel.org>; Thu, 31 Mar 2022 02:55:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ykUkoZ7bc0fHfZ6qta+t4ORJqStfOfgNtg7VDRpHHpc=;
+        b=fBNmF/lGhQTpjIob1f6IBMAh7tuHXtGqzL2x3jLg4IAYI2pE2wFEro9FaAeD4X3605
+         CSQ+adrWqpRx0VUIMFfGvQf0nVbEZUYaORfCB/EsrFm+qedJIRtsEHbkomvhm1uvoJPB
+         RQZYKCMcDFVbVL8RisN2IDe6nQ9s8e6lxdTcOX51dDbB3eLNMx3v7HMTWXYm5/Rbws/F
+         k5/Y02t15kvx5U9Uy56MVNPs1b+uyzZ21qllbvfxDvrbh37sJuWo8nbV7Tnh8mAWafZ1
+         JQbYgXJN1ab6UGJw1vBKsmyR7xg/OCzpBEzUSAKHCynvotpSH52XHUpQpi85bEGx+jjd
+         ATjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ykUkoZ7bc0fHfZ6qta+t4ORJqStfOfgNtg7VDRpHHpc=;
+        b=g+mXlMJsWNVS+Q6RizKVxOjm62Ue3BMZDcQehnF6B/ljrXrCjJ8RORA0kad9FssWMg
+         CeFqgysNjS2Egih+SZ7LOCwUfzd746Ltgp/tvqvsjHB0bzt9ghDRe6KCzNqxL3jadUsS
+         YdHs/Er1dcPXtbg3kGkZrlnbfFUj5NtzSJhMEJyyPZ5bRdiS3j7Mf4y0vqMfL6iFdu89
+         M080BmDKczhKgB+ULiAp9pzlkefGjQIFkA1FrDiNArpwfi1mJmAko0TU264ajv7ViFXi
+         aZrJHy0px7o9dzaFtLq4jcBq8MZeRDQq8IvYvwTZGhbrDPtkJ0HKuJjK4f+gj3oOaedb
+         OO2A==
+X-Gm-Message-State: AOAM5318tK7fBhGxn89joGqHlYZsJ7bR/X9ruUpg6lj4G62k8IJMemVV
+        p2YOeqTqZ0Fj2XAQ1m8W67iJID4wazw=
+X-Google-Smtp-Source: ABdhPJwedEptb3pHGAtlSDV10vJ+tqOjSr+4pYMBj8rQvPlDYl3cdhF9uKNLOppuvbIab9aGFdC5oQ==
+X-Received: by 2002:adf:eb4d:0:b0:1ed:c1f7:a951 with SMTP id u13-20020adfeb4d000000b001edc1f7a951mr3437186wrn.454.1648720536234;
+        Thu, 31 Mar 2022 02:55:36 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id j16-20020a05600c191000b0038ca3500494sm11807493wmq.27.2022.03.31.02.55.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Mar 2022 02:55:35 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     y.karadz@gmail.com
+Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org
+Subject: [RFC PATCH 0/4] trace-cruncher: ftrace uprobes support
+Date:   Thu, 31 Mar 2022 12:55:29 +0300
+Message-Id: <20220331095533.75289-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-References: <20220330201755.29319-1-mathieu.desnoyers@efficios.com> <20220330162152.17b1b660@gandalf.local.home>
-In-Reply-To: <20220330162152.17b1b660@gandalf.local.home>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 31 Mar 2022 16:29:30 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATm5FjZsXL6aKUMhXwQAqTuO9+LmAk3LGjpAib7NZBDmg@mail.gmail.com>
-Message-ID: <CAK7LNATm5FjZsXL6aKUMhXwQAqTuO9+LmAk3LGjpAib7NZBDmg@mail.gmail.com>
-Subject: Re: [PATCH] tracing: do not export user_events uapi
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Beau Belgrave <beaub@linux.microsoft.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Mar 31, 2022 at 5:21 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
->
-> Adding the build maintainers.
->
-> -- Steve
->
-> On Wed, 30 Mar 2022 16:17:55 -0400
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
->
-> > In addition to mark the USER_EVENTS feature BROKEN until all interested
-> > parties figure out the user-space API, do not install the uapi header.
-> >
-> > This prevents situations where a non-final uapi header would end up
-> > being installed into a distribution image and used to build user-space
-> > programs that would then run against newer kernels that will implement
-> > user events with a different ABI.
-> >
-> > Link: https://lore.kernel.org/all/20220330155835.5e1f6669@gandalf.local.home
-> >
-> > Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > ---
-> >  include/uapi/Kbuild | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/include/uapi/Kbuild b/include/uapi/Kbuild
-> > index 61ee6e59c930..425ea8769ddc 100644
-> > --- a/include/uapi/Kbuild
-> > +++ b/include/uapi/Kbuild
-> > @@ -12,3 +12,6 @@ ifeq ($(wildcard $(objtree)/arch/$(SRCARCH)/include/generated/uapi/asm/kvm_para.
-> >  no-export-headers += linux/kvm_para.h
-> >  endif
-> >  endif
-> > +
-> > +# API is not finalized
-> > +no-export-headers += linux/user_events.h
->
+Ftrace uprobes can be used to create dynamic events for user functions.
+Tracing user function can be very useful functionality for trace-cruncher.
 
+The patch set depends on these libftrace changes, not yet accepted:
+https://lore.kernel.org/linux-trace-devel/20220328090347.107849-1-tz.stoyanov@gmail.com/
 
-Well, the intended usage of no-export-headers is to
-cater to the UAPI supported by only some architectures.
-We have kvm(_para).h here because not all architectures
-support kvm.
+Tzvetomir Stoyanov (VMware) (4):
+  trace-cruncher: Logic for resolving address to function name
+  trace-cruncher: ftrace uprobe raw API
+  trace-cruncher: High level wrappers for ftrace uprobes
+  trace-cruncher: Example script for uprobes high level API
 
-If you do not want to export the UAPI,
-you should not put it in include/uapi/.
-
-After the API is finalized, you can move it to
-include/uapi.
-
+ examples/user_trace.py |  41 ++
+ setup.py               |   4 +-
+ src/ftracepy-utils.c   |  48 ++
+ src/ftracepy-utils.h   |  21 +
+ src/ftracepy.c         |  45 ++
+ src/trace-obj-debug.c  | 978 +++++++++++++++++++++++++++++++++++++++++
+ src/trace-obj-debug.h  |  53 +++
+ src/utrace-utils.c     | 509 +++++++++++++++++++++
+ 8 files changed, 1697 insertions(+), 2 deletions(-)
+ create mode 100755 examples/user_trace.py
+ create mode 100644 src/trace-obj-debug.c
+ create mode 100644 src/trace-obj-debug.h
+ create mode 100644 src/utrace-utils.c
 
 -- 
-Best Regards
-Masahiro Yamada
+2.35.1
+
