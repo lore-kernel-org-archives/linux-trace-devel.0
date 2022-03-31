@@ -2,95 +2,187 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89129C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 31 Mar 2022 17:17:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D457C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 31 Mar 2022 19:05:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbiCaRT1 (ORCPT
+        id S239212AbiCaTHb (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 31 Mar 2022 13:19:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57394 "EHLO
+        Thu, 31 Mar 2022 15:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbiCaRT0 (ORCPT
+        with ESMTP id S239208AbiCaTHa (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 31 Mar 2022 13:19:26 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E93DFD14;
-        Thu, 31 Mar 2022 10:17:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 51C96B8218F;
-        Thu, 31 Mar 2022 17:17:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C98DC34110;
-        Thu, 31 Mar 2022 17:17:34 +0000 (UTC)
-Date:   Thu, 31 Mar 2022 13:17:32 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Thu, 31 Mar 2022 15:07:30 -0400
+Received: from mail.efficios.com (mail.efficios.com [167.114.26.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7547421C727;
+        Thu, 31 Mar 2022 12:05:42 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 33B1D3D67A7;
+        Thu, 31 Mar 2022 15:05:41 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 6ukdw3_Ch-TX; Thu, 31 Mar 2022 15:05:40 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 88EE63D670E;
+        Thu, 31 Mar 2022 15:05:40 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 88EE63D670E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1648753540;
+        bh=aCyzExiZNAlii4hNNUqKPOAEajExCBXUHglNihKOAvI=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=Xc1elefVGLKmqhhM58407/ZT1mhhPKmDZGHLDmZT9yfmDob05N5AEnpZEwv+KbHHL
+         dC1TmOhl3DueN9/BoShgyRxEZ70pNKZzWR5EpEb/XNr9RlG71WE5Mr0i68+VSoXt9+
+         njk/1WMSV1GwOC4+ckRMHfILAfc6TTUnfXauhv2s+wetabOQ8OFIVyX78Axmm6ktXU
+         AtpeTxYgtRHY9klkGbOQKtZVAIiE36I3Pic4QYFtIRZO1zc0UUMfaU+hc9YKcj917w
+         AtwKYrhPoDxti5O4GzPY8XPJDT0eK64zPH/+fNymsQH6BMNAobegH9M43L8is2svfi
+         ObjDMayWLVPZQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 6MFkmGC2BjV5; Thu, 31 Mar 2022 15:05:40 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 774A13D67A6;
+        Thu, 31 Mar 2022 15:05:40 -0400 (EDT)
+Date:   Thu, 31 Mar 2022 15:05:40 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     Beau Belgrave <beaub@microsoft.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        Beau Belgrave <beaub@linux.microsoft.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
         linux-trace-devel <linux-trace-devel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        ndesaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Subject: Re: [PATCH] tracing: do not export user_events uapi
-Message-ID: <20220331131732.5e2305ee@gandalf.local.home>
-In-Reply-To: <602770698.200731.1648742848915.JavaMail.zimbra@efficios.com>
-References: <20220330201755.29319-1-mathieu.desnoyers@efficios.com>
-        <20220330162152.17b1b660@gandalf.local.home>
-        <CAK7LNATm5FjZsXL6aKUMhXwQAqTuO9+LmAk3LGjpAib7NZBDmg@mail.gmail.com>
-        <20220331081337.07ddf251@gandalf.local.home>
-        <602770698.200731.1648742848915.JavaMail.zimbra@efficios.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Message-ID: <1879409978.201000.1648753540376.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20220329215421.GA2997@kbox>
+References: <2059213643.196683.1648499088753.JavaMail.zimbra@efficios.com> <20220329002935.2869-1-beaub@linux.microsoft.com> <1014535694.197402.1648570634323.JavaMail.zimbra@efficios.com> <20220329215421.GA2997@kbox>
+Subject: Re: Comments on new user events ABI
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4203 (ZimbraWebClient - FF98 (Linux)/8.8.15_GA_4232)
+Thread-Topic: Comments on new user events ABI
+Thread-Index: 7vhB2TzqJsMr+Bak6Tdk339nleGFrg==
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 31 Mar 2022 12:07:28 -0400 (EDT)
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+----- On Mar 29, 2022, at 5:54 PM, Beau Belgrave beaub@linux.microsoft.com wrote:
 
-> diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-> index 8b3d241a31c2..823d7b09dcba 100644
-> --- a/kernel/trace/trace_events_user.c
-> +++ b/kernel/trace/trace_events_user.c
-> @@ -18,7 +18,7 @@
->  #include <linux/tracefs.h>
->  #include <linux/types.h>
->  #include <linux/uaccess.h>
-> -#include <uapi/linux/user_events.h>
-> +#include <linux/user_events.h>
->  #include "trace.h"
->  #include "trace_dynevent.h"
+> On Tue, Mar 29, 2022 at 12:17:14PM -0400, Mathieu Desnoyers wrote:
+>> ----- On Mar 28, 2022, at 8:29 PM, Beau Belgrave beaub@linux.microsoft.com
+>> wrote:
+>> 
+>> >> ----- On Mar 28, 2022, at 4:24 PM, Mathieu Desnoyers
+>> >> mathieu.desnoyers@efficios.com wrote:
+[...]
 > 
-> Including <linux/user_events.h> will continue to work even when the header is
-> moved to uapi in the future.
+>> > 
+>> >> I would have rather thought that tracers implemented in user-space could
+>> >> register
+>> >> themselves, and then there could be one
+>> >> /sys/kernel/debug/tracing/user_events_status
+>> >> per tracer. Considering that all kernel tracers use the same ABI to write an
+>> >> event,
+>> >> and then dispatch this event internally within the kernel to each registered
+>> >> tracer, I would expect to have a single memory mapping for all those (e.g. a
+>> >> /sys/kernel/debug/tracing/user_events_status/kernel_tracers file).
+>> >> 
+>> >> Then eventually if we have other user-space tracers such as lttng-ust with its
+>> >> their own user-space code performing tracing in a shared memory ring buffer, it
+>> >> would make sense to allow it to register its own
+>> >> /sys/kernel/debug/tracing/user_events_status/lttng_ust file, with its own
+>> >> indexes.
+>> >> 
+>> > 
+>> > I don't follow that. The intention is to get user processes to participate with
+>> > trace_events and the built-in tooling. When would a user-space tracer be used
+>> > instead of perf/ftrace?
+>> > 
+>> > It seems like a feature request?
+>> 
+>> It can very well be out of scope for the user events, and I'm fine with that.
+>> I was merely considering how the user events could be leveraged by tracers
+>> implemented purely in user-space. But if the stated goal of this feature is
+>> really to call into kernel tracers through a writev(), then I suspect that
+>> supporting purely user-space tracers is indeed out of scope.
+>> 
+> 
+> That was the goal with this ABI, are there maybe ways we can change the
+> ABI to accomodate this later without shutting that out?
 
-Actually, when I thought of this, I was thinking more of:
+I suspect that targeting this bit-enable memory mapping only as a gate for
+kernel tracers is good enough for now. Let's consider other use-cases when
+we have a clear picture of how it would be used. For the moment, I suspect
+that I would prefer to manage my own bit-enable memory mapping within lttng-ust
+rather than use a kernel-wide facility, which opens up questions about isolation
+of containers, and ability to run multiple concurrent instances on a given kernel
+without side-effects on each other.
 
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 846c27bc7aef..0f3aa855cf72 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -18,7 +18,11 @@
- #include <linux/tracefs.h>
- #include <linux/types.h>
- #include <linux/uaccess.h>
-+#ifdef CONFIG_COMPILE_TEST
-+#include <linux/user_events.h>
-+#else
- #include <uapi/linux/user_events.h>
-+#endif
- #include "trace.h"
- #include "trace_dynevent.h"
- 
-That way, when we take it out of broken state, it will fail to compile, and
-remind us to put it back into the uapi directory.
+I suspect that clarifying what this mmap'd based mechanism brings over the already
+existing SDT semaphores will be important to justify this new ABI.
 
--- Steve
+Ref. https://sourceware.org/systemtap/wiki/UserSpaceProbeImplementation
+
+[...]
+
+> 
+>> [...]
+>> 
+>> >> kernel/trace/trace_events_user.c:
+>> >> 
+>> >> static int user_events_release(struct inode *node, struct file *file)
+>> >> {
+>> >> [...]
+>> >>         /*
+>> >>          * Ensure refs cannot change under any situation by taking the
+>> >>          * register mutex during the final freeing of the references.
+>> >>          */
+>> >>         mutex_lock(&reg_mutex);
+>> >> [...]
+>> >>         mutex_unlock(&reg_mutex);
+>> >> 
+>> >>         kfree(refs);
+>> >> 
+>> >>         ^ AFAIU, the user_events_write() does not rely on reg_mutex to ensure mutual
+>> >>         exclusion.
+>> >>           Doing so would be prohibitive performance-wise. But I suspect that freeing
+>> >>           "refs" here
+>> >>           without waiting for a RCU grace period can be an issue if user_events_write_core
+>> >>           is using
+>> >>           refs concurrently with file descriptor close.
+>> >> 
+>> > 
+>> > The refs is per-file, so if user_events_write() is running release cannot be
+>> > called for that file instance, since it's being used. Did I miss something?
+>> 
+>> I'm possibly the one missing something here, but what prevents 2 threads
+>> from doing user_event_write() and close() concurrently on the same file
+>> descriptor ?
+>> 
+> 
+> While nothing prevents it, my understanding is that the actual release()
+> on the file_operations won't be invoked until the file struct has been
+> ref'd down to zero. (fs/file_table.c:fput, fs/read_write.c:do_pwritev).
+> 
+> While the write call is being run, the file should have a non-zero ref
+> count. I believe looking at do_pwritev the fdget/fdput pair are largely
+> responsible for this, do you agree?
+
+Yes, you are correct. So the "refs" lifetime for writev vs close is guaranteed
+by the reference counting of the struct file when the process file descriptor
+table has multiple users (e.g. multithreaded process).
+
+[...]
+
+Thanks,
+
+Mathieu
+
+
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
