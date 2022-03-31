@@ -2,77 +2,116 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F55CC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 31 Mar 2022 12:51:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EFCD6C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 31 Mar 2022 14:42:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232427AbiCaMxB (ORCPT
+        id S237689AbiCaOoW (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 31 Mar 2022 08:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52046 "EHLO
+        Thu, 31 Mar 2022 10:44:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232332AbiCaMxB (ORCPT
+        with ESMTP id S232975AbiCaOoW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 31 Mar 2022 08:53:01 -0400
-X-Greylist: delayed 1410 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 31 Mar 2022 05:51:14 PDT
-Received: from gateway34.websitewelcome.com (gateway34.websitewelcome.com [192.185.148.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 569FEBC5
-        for <linux-trace-devel@vger.kernel.org>; Thu, 31 Mar 2022 05:51:13 -0700 (PDT)
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway34.websitewelcome.com (Postfix) with ESMTP id 79BEEFA8E09
-        for <linux-trace-devel@vger.kernel.org>; Thu, 31 Mar 2022 07:27:42 -0500 (CDT)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id ZttunNcxq22u3Zttuna9au; Thu, 31 Mar 2022 07:27:42 -0500
-X-Authority-Reason: nr=8
-Received: from host-79-43-204-123.retail.telecomitalia.it ([79.43.204.123]:33844 helo=[10.0.0.45])
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1nZttt-003gUe-U1; Thu, 31 Mar 2022 07:27:42 -0500
-Message-ID: <f3bfc577-181f-6b5b-b6ff-30edd90bbe83@kernel.org>
-Date:   Thu, 31 Mar 2022 14:27:39 +0200
+        Thu, 31 Mar 2022 10:44:22 -0400
+X-Greylist: delayed 25921 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 31 Mar 2022 07:42:35 PDT
+Received: from conssluserg-02.nifty.com (conssluserg-02.nifty.com [210.131.2.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F049A215928;
+        Thu, 31 Mar 2022 07:42:34 -0700 (PDT)
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 22VEgKPq012732;
+        Thu, 31 Mar 2022 23:42:21 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 22VEgKPq012732
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1648737741;
+        bh=Xj3diVC51HHwyTudn/M0r5QOTayxxsIWMzaIO802Bg8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NyzpaqttJpO4J1ZzydrjZpqd7D6RtCp9gc5ZaryOukEkB2uEhrhOZEzPKBiiH2Pvm
+         ZAwp5rRZQ0v65p+oEbs8aetqGWncchcIk52/GtRWJNVLw1w2Do4znproVBs1S63MqO
+         yPsX+oBzeMWa9c16wyGQ2FV5tMZivMUpr1Xj20sy/ShX/mC0hNPApxe1k10qh9PiJc
+         erfRD+SlxyM3c1E5rxBvQ4iTP8pMDqn2rOskJbLjRRzAOoXwcXi9n7aVCIj+7z95l3
+         D4rLCYt3eKmlsDUIrYNGo2Pk6kZkFlHsuT5YPi2YPvduwmEaPpnxAzZoyNFguNhp35
+         XfOFKgOjyZrtw==
+X-Nifty-SrcIP: [209.85.216.47]
+Received: by mail-pj1-f47.google.com with SMTP id cm17so4232941pjb.2;
+        Thu, 31 Mar 2022 07:42:21 -0700 (PDT)
+X-Gm-Message-State: AOAM533trCg/nd7R+M3YlhFoafo/RiL3iywrKLFI7hIQAGqinfZ4h4k+
+        f4zbs/+Rn9Bl7g1Lms5L9OFthAxwkuyp17udE7g=
+X-Google-Smtp-Source: ABdhPJw3WCo3kJvlA+76iJNgjzue4kyy/jp0r5U7gt1FnPdlPSe1ov+p7LZDiUmtV9rQyHMr9Pj2WbAZ4WWKFJRTA3o=
+X-Received: by 2002:a17:90a:8405:b0:1bc:d521:b2c9 with SMTP id
+ j5-20020a17090a840500b001bcd521b2c9mr6488510pjn.119.1648737740242; Thu, 31
+ Mar 2022 07:42:20 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH] rtla/osnoise: avoid NULL pointer dereference on out
-Content-Language: en-US
-To:     Haowen Bai <baihaowen@meizu.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1648623748-8833-1-git-send-email-baihaowen@meizu.com>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <1648623748-8833-1-git-send-email-baihaowen@meizu.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 79.43.204.123
-X-Source-L: No
-X-Exim-ID: 1nZttt-003gUe-U1
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-79-43-204-123.retail.telecomitalia.it ([10.0.0.45]) [79.43.204.123]:33844
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 7
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
+References: <20220330201755.29319-1-mathieu.desnoyers@efficios.com>
+ <20220330162152.17b1b660@gandalf.local.home> <CAK7LNATm5FjZsXL6aKUMhXwQAqTuO9+LmAk3LGjpAib7NZBDmg@mail.gmail.com>
+ <20220331081337.07ddf251@gandalf.local.home>
+In-Reply-To: <20220331081337.07ddf251@gandalf.local.home>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 31 Mar 2022 23:41:34 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAR_2jJWJbaUfLDaDJOuJTx_RHj_Ow5coK1k4Y5HGLRQrA@mail.gmail.com>
+Message-ID: <CAK7LNAR_2jJWJbaUfLDaDJOuJTx_RHj_Ow5coK1k4Y5HGLRQrA@mail.gmail.com>
+Subject: Re: [PATCH] tracing: do not export user_events uapi
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Beau Belgrave <beaub@linux.microsoft.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 3/30/22 09:02, Haowen Bai wrote:
-> record is NULL and go out but dereference record->trace.
-> 
-> report by coccicheck:
-> tools/tracing/rtla/src/osnoise_top.c:650:31-36: ERROR:
-> record is NULL but dereferenced.
+On Thu, Mar 31, 2022 at 9:13 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Thu, 31 Mar 2022 16:29:30 +0900
+> Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> > Well, the intended usage of no-export-headers is to
+> > cater to the UAPI supported by only some architectures.
+> > We have kvm(_para).h here because not all architectures
+> > support kvm.
+> >
+> > If you do not want to export the UAPI,
+> > you should not put it in include/uapi/.
+> >
+> > After the API is finalized, you can move it to
+> > include/uapi.
+>
+> So a little bit of background. I and a few others thought it was done, and
+> pushed it to Linus. Then when it made it into his tree (and mentioned on
+> LWN) it got a wider audience that had concerns. After they brought up those
+> concerns, we agreed that this needs a bit more work. I was hoping not to do
+> a full revert and simply marked the change for broken so that it can be
+> worked on upstream with the wider audience. Linus appears to be fine with
+> this approach, as he helped me with my "mark for BROKEN" patch.
+>
+> Mathieu's concern is that this header file could be used in older distros
+> with newer kernels that have it implemented and added this to keep out of
+> those older distros.
+>
+> The options to make Mathieu sleep better at night are:
+>
+> 1) this patch
+>
+> 2) move this file out of uapi.
+>
+> 3) revert the entire thing.
+>
+> I really do not want to do #3 but I am willing to do 1 or 2.
 
-Duplicated of:
-https://lore.kernel.org/lkml/20220322113253.57390-1-wanjiabing@vivo.com/
+I see.
 
--- Daniel
+Either 1 or 2 is OK
+if  you are sure this will be fixed sooner or later.
+
+
+-- 
+Best Regards
+Masahiro Yamada
