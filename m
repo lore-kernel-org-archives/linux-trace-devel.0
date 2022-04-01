@@ -2,142 +2,327 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB88EC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Apr 2022 09:43:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FD55C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Apr 2022 12:40:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244595AbiDAJp0 (ORCPT
+        id S244347AbiDAMlz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 1 Apr 2022 05:45:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34918 "EHLO
+        Fri, 1 Apr 2022 08:41:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242229AbiDAJpX (ORCPT
+        with ESMTP id S243987AbiDAMly (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 1 Apr 2022 05:45:23 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E2211BCD7
-        for <linux-trace-devel@vger.kernel.org>; Fri,  1 Apr 2022 02:43:30 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id l7-20020a05600c1d0700b0038c99618859so3160282wms.2
-        for <linux-trace-devel@vger.kernel.org>; Fri, 01 Apr 2022 02:43:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language
-         :from:to:cc:references:in-reply-to:content-transfer-encoding;
-        bh=IkMUFsFtk4xBzaPkQUHGCesRkQpHuVtpHzApcOh5lsI=;
-        b=jP2m1tSOo8MorkBu+nDi9SRQj6k20o86W6eIHIGZWY2KkSdl1jR3LV1eZdnoLTCS6S
-         6IVuj6+Z8u7Nvu7XkwLplJ7YiyWtKEZOW2+ie7sri3YtV8wqPR5GsAs/tvPKn/0V9eL7
-         16bJyot+BlI/tp4bQ34Z6kzSspBXNj5OLSRIm19QVPKAk5+KYDJFyC9APBQ0Tg70W+yH
-         2HA8196qEC+39gDO4p5wI4NnOEHLACYwtnTkg0VAXoe5I/rjl2Q6sXVqjwtQ4mGmIL/U
-         vCSIovnNWg9I8DQpbgQGml0d/CtfbbVsF7g8ooyr6BvI49WQWVMNDiX8mE8Ab26XXoWP
-         VWvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:from:to:cc:references:in-reply-to
-         :content-transfer-encoding;
-        bh=IkMUFsFtk4xBzaPkQUHGCesRkQpHuVtpHzApcOh5lsI=;
-        b=Kulb6Ekm+D9YtKYcAmXaTsEnKX2TfjaZuRZcJ9849Sja5X7rIBk1BmxV928MX/Vm99
-         wkRm7qkFXCRfuVByBwTBNnJM/WMUcMDh7AWEZf9HWfi3hoghx6XXd5QJb6bQKw/33XY/
-         FVXuC5YzI7ukqL7P2n6JwSRzRONvmBByS0f+tHYtBNYr+D/tYH29hNpvXah6zH0rq1u6
-         BJ5xYVS8pOQKSkGD9caRHOsGod4BQKGZhEZndjuMDx2iQWo/nljoW0YrkHyqYUQ6hZs1
-         PGSrFPOURfsh345OtQcftF0ct8c4Q962tfBDpIfiArh/QWS81JE38QmT4EvHyzyVPLvX
-         ZZdQ==
-X-Gm-Message-State: AOAM530eZKfXPbvFiAcPBlr4DqMi8f36yjf0hiIYlHnGSqSwTJk44gu+
-        U5WjQrysA6ZFLNTNq9nT63c=
-X-Google-Smtp-Source: ABdhPJxOypEm0SydvMybYtFnUoylWAYmi8C/8YY6ymkBYoZO+CIQIDkNXhAXmyxgfyoWy33/Uh6itg==
-X-Received: by 2002:a05:600c:204:b0:38d:bad:7552 with SMTP id 4-20020a05600c020400b0038d0bad7552mr8087535wmi.133.1648806209537;
-        Fri, 01 Apr 2022 02:43:29 -0700 (PDT)
-Received: from [10.107.106.54] (78-154-13-168.ip.btc-net.bg. [78.154.13.168])
-        by smtp.gmail.com with ESMTPSA id 7-20020a05600c028700b0038cc9bfe6a4sm1363135wmk.37.2022.04.01.02.43.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Apr 2022 02:43:29 -0700 (PDT)
-Message-ID: <1d5ebae8-6040-7b04-7212-6a1e74d49665@gmail.com>
-Date:   Fri, 1 Apr 2022 12:43:28 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [RFC PATCH 4/4] trace-cruncher: Example script for uprobes high
- level API
-Content-Language: en-US
-From:   Yordan Karadzhov <y.karadz@gmail.com>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org
-References: <20220331095533.75289-1-tz.stoyanov@gmail.com>
- <20220331095533.75289-5-tz.stoyanov@gmail.com>
- <779a7856-5271-5ad5-4341-9ac374bd827a@gmail.com>
-In-Reply-To: <779a7856-5271-5ad5-4341-9ac374bd827a@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Fri, 1 Apr 2022 08:41:54 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2134.outbound.protection.outlook.com [40.107.215.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5DEFC6825;
+        Fri,  1 Apr 2022 05:40:03 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CK44Y7TNYRc3lJrpd+8e9vmRDZJu+kf3zTKHYrGik97WrTygxB+UHiOr65aFUK0aRf0iRjGKZ2SpimqhAU09mxHDCE2JOeDdGuZ3ne6m1noUmccin9/4sWjVRfb2bhlwh1okSD/wcEayUzRLBRl9hIbF2+ekun0x9/BMmE4IeszJI3AocnqCc9PWKo/n7FAuOBLQKe8D1Cn942XWgHXHr5DlZ8YVGxEUUef79+hk89KK/qgJiJbHP2dbDRGGdthtooLHd4DLLr3hNgScXspUHKb18sTbCuUC5yPPtmntkTjVgxK6wdzJeL3Ou0eroUSYU2o/Z/HfnxcD2Is7F0KbQQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3l+RbOckGFLtDPt0n08j7Q7hCcZWtW7l2b5eFRnUasw=;
+ b=Ovh/LQ1MraIXcN73Y71xxrD07oWTQN3PCLeqimPcrlmgbvxS5tm7Y5lKdPhPZtMs2maU3Ol1mwz76RnmIsS7s5XoCNZrnLiMyO6ez0lIBcSZxNFD6WeGFdKUNGWkUnTgBVqti5z7o6v/bwFAFTzN8l16oL9SI5V5R4UJW6ie8yQQ5Aqnso95gzxEom3GTvtmozuyDgxBOeI6h+cCl/IbBrQ+QcnrgViBTF27V+Y+26M2FJlMLrxGMXB85vGGztfAU0YWPTAtIDF8MnZ1QU43KDtN+XrIlqQZ+XnmdZJ4q9tKfUs8iHFWpyw/b7GegtQHMJBX1+3z/pN0fAbmL67giA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3l+RbOckGFLtDPt0n08j7Q7hCcZWtW7l2b5eFRnUasw=;
+ b=c9+BLXBJQIELJjbI1Ys7o4PxZG16sMdsg28X/O2t43sOqoi0ULF+J6U/u37TgwAoZyUzOC7vgo3rSI4r8rX+hHQQx+JCNz5gYSl59vMsUefdENzLhoDJpkNEp21Ai/Fg1Qc1ZgUo+Kvw95lzmUfgEoNpybQyjCLOHqRifoXVAes=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
+ TYAPR06MB2093.apcprd06.prod.outlook.com (2603:1096:404:1a::22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5123.25; Fri, 1 Apr 2022 12:39:57 +0000
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::9d3f:ff3b:1948:d732]) by SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::9d3f:ff3b:1948:d732%4]) with mapi id 15.20.5102.022; Fri, 1 Apr 2022
+ 12:39:57 +0000
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net
+Subject: [PATCH v2] rtla: add a tag to avoid dereferring a NULL pointer
+Date:   Fri,  1 Apr 2022 20:39:27 +0800
+Message-Id: <20220401123948.69312-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.35.1
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR06CA0018.apcprd06.prod.outlook.com
+ (2603:1096:202:2e::30) To SG2PR06MB3367.apcprd06.prod.outlook.com
+ (2603:1096:4:78::19)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ad4000a8-959f-431c-eadd-08da13dcba67
+X-MS-TrafficTypeDiagnostic: TYAPR06MB2093:EE_
+X-Microsoft-Antispam-PRVS: <TYAPR06MB209303715634A5EF28DA1D7CABE09@TYAPR06MB2093.apcprd06.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: siLjgW2Nl3dVTObEMsi+lFZTtVtg4ZYl4blOzT9RgUoYZv74G98MIOs7WqbTN01q5kr79gg0wDf3d1lG4s1ybLF87rMz6XjA57X1+cjNjBa2tMP1wsOjFJFFhW0R/5NKqcQlG6TQdpo5s+ff6hjUsqc1rtXvUOVVMqHjMJYH+ymR7PBclf6FEhgnNQNCucVnRosfknyjCzlwc8T3fAwS3Siwvr7PW24XpCWerEsjld4U033FWE4EqoOy7x+WWRRDhDajkR3k+KHju0IPByvACkMaZkze7ctL3TnTfvYxbiiO/nGj3KVQuNtUbiKjvVh51Q/ToVwJOcWSP3vxKHzc2Uie8cyRBiGQasl2yyDlueaK85/EvGiN6ZEboyr6b1MqM5lu2Gw+m/fA5nxPWCjLjknPOQ99t+kmHVzSa5ASuIMyPhGQUPC+OwAxXILaKtjl8CjbrK60skf/2AA60XcMR6LIrxFiFRqKrutpOZMqJ1/nzqwy4rk2n2djZx72/PzWWn1A1vguJxaRk5iZxpKf7Tu3O45FidelkeREbq/LEZH+7ExEQ1SbP2FhykvWB+A8Dopwi+aETV89ZD4mj+u+DI0xLTETudwY29emY7CEpyMdSNIlOTOf/owmZaVUvyvyGgXcdlP1TzPG3YWC+i0NKH4FkEhy3xpuemfooYxYvjqFEYyNIqwjk57lbDW+9Zzd3JL8fgVsRDRYHu7e0eYDCg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(8936002)(86362001)(6666004)(5660300002)(2906002)(38350700002)(38100700002)(83380400001)(316002)(4326008)(1076003)(110136005)(6512007)(6506007)(186003)(26005)(66946007)(52116002)(66556008)(66476007)(8676002)(2616005)(36756003)(6486002)(508600001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?GJigdhd1lM08Zl3sJpddvpjXbhoiI5IF5GNSX+1mxy0Rbj36QNs1QnIai0E+?=
+ =?us-ascii?Q?aYUhL1yD9HGQlxCdlmQ4v83KaL3lYaBD13ogcWtsp1OcBwjjyobS4rEclQ/r?=
+ =?us-ascii?Q?zEp+6eRtHIdg3xXrSM3lX66payon0YxK5KA9O5LEAoNoy1vQEOyx6jEUn7Fp?=
+ =?us-ascii?Q?/1jaIViq9DZ0nsb9OMbVTUSZwMcF7ay4m7etJlMXfH7K6KBiKsurciSuzEZI?=
+ =?us-ascii?Q?34w80vhQo9I4kGGYtp/JXlPO7BacMGy0Ivk+VUnbr/ksfo1mSsNymH2rrRZU?=
+ =?us-ascii?Q?nXFKbULqDlG19unOt7gqB0SPi/xps+UnEKroOPNDmFCzwgo+Gy1NamerFdZn?=
+ =?us-ascii?Q?fiNRZStEGYLe82Q5UudN6r+t3d+Zn++QHxc+XNdGLou/CH5Ikmt5CiAvOeha?=
+ =?us-ascii?Q?QvNXHLt6+aGozumduNVxskj4uZuBRd7Z9Der2m/bBe7JJGqY+dDXuWUs6qkv?=
+ =?us-ascii?Q?3jwooaqx+zKbwRN1ywJFObyZxnjc817u+Ezf+gCKUO8/JnrsfhE8tBH0uwg6?=
+ =?us-ascii?Q?hDyvbGkgNjJFpF5HBuis9TCXPev1uQqg3CVQ44APqeBSuV55qCATg912SvRz?=
+ =?us-ascii?Q?tjEIMGnxCJTiQxGaxrAXzLOLhw5jCMiAs03As8tefLCcyHwcpiNBfK4HyApv?=
+ =?us-ascii?Q?404wnRUEM2lyJOs0VghwvfY7En8ZyGCn99LuH03a302q7ALuuvdaFa8r1n15?=
+ =?us-ascii?Q?fb+80R9OVGItIDR85JB8HKjVP1zGdo3lhQ+eUJYctIctaoqtifkXWRt6cNdH?=
+ =?us-ascii?Q?9Lg7qYfLuyP0wIKOG7N01MxNPkk4j9RfiJjIZ4TB+qzm1uagZ3AbDRiT/0Qw?=
+ =?us-ascii?Q?rcITQVosWBugVXiCHeUVfenAXw03cjnXtJdWGL4LDXTsUIKhCPnGkjvFNl7e?=
+ =?us-ascii?Q?PfCiFglqcRjhjg+neS8/01pcWfuVqJXdhvB3UFDij60PFXeR3pMtaup0KoRi?=
+ =?us-ascii?Q?DuyOVYoe3odP/GNlsZ+Uu9Wt7l37Y4QHGCcxQ/4svJ4N016YazG+dG2kwPGC?=
+ =?us-ascii?Q?3SunAzmvxMbWbpmC7tWTuhxmrowu9ym86liN1ipq136T+JzZvv7vilLbUvBw?=
+ =?us-ascii?Q?v3Jj/M85tHUxi5P7BpKspV9dwEjkMDw7uZScOxo1tTraPnM1FkslDmy6Jbn3?=
+ =?us-ascii?Q?NTE9YcK3w0SwAymvKRsFOxI70D3lvv39vqr0jy3duDqQxHlJ0TomTEGK/0C3?=
+ =?us-ascii?Q?hajUcB0JVxvEMOF5EizGBi8gCgc2OVKQGokKBqeQP5F/3c5w4SiwfX8GCCEt?=
+ =?us-ascii?Q?x1LuzISrZdHzMG0Dzm+2MLnplkSiGB32yDSa69oXHuGe6tP521MXvkX09vFm?=
+ =?us-ascii?Q?coaS3YoNeDaOSZnUGpD3Bu3QTUmOy2e7TnC1PazRn4zjbhgAXZH+5j+ww8aw?=
+ =?us-ascii?Q?1MlzCF8Pn7h4y5899RbT8fsVSpD0AuvDYas8WvvdHzdNiFGrAcX6grO4mlxB?=
+ =?us-ascii?Q?bEo14zMFMinj1s9fpu28LuhJke1sBHXT9D2kvfhuZnn+V1VqOBidYYPenFBa?=
+ =?us-ascii?Q?DDywPGqDbRDkSTqooEp5WBkyCuAI7ONTbHol6QSfdIk94/+d5fjHo4fUm/MR?=
+ =?us-ascii?Q?Cnun84ulnvhLK4PQa/CK4IF4Wu/u1FrRgh6cs/JMTYRFQGhp5RtiLmUrZhl9?=
+ =?us-ascii?Q?qjOfWOV9jqAmIP1D6dHioe3DH7ONS69IElxJCyUarC2UHd0KaeUyVksnNr65?=
+ =?us-ascii?Q?pZAlj821uQEZafptVTbfFV+l5LPdgHna+TEU6tc6XBVNMLLMMs0FmOTpOjMn?=
+ =?us-ascii?Q?s6e1kYtNhA=3D=3D?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad4000a8-959f-431c-eadd-08da13dcba67
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2022 12:39:57.1201
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +vFIYRLVTgBJXQfCCNXko9rH+kbPTYt54usJmXWTh/qFz3m6vVle248fUWP5/6AmAROGjSxSCGcwc0e015LK0w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR06MB2093
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-I am now starting to review patch 1. This will most probably take some time.
-Y.
+Fix the following null/deref_null.cocci errors:
+./tools/tracing/rtla/src/osnoise_hist.c:870:31-36: ERROR: record is NULL but dereferenced.
+./tools/tracing/rtla/src/osnoise_top.c:650:31-36: ERROR: record is NULL but dereferenced.
+./tools/tracing/rtla/src/timerlat_hist.c:905:31-36: ERROR: record is NULL but dereferenced.
+./tools/tracing/rtla/src/timerlat_top.c:700:31-36: ERROR: record is NULL but dereferenced.
 
-On 1.04.22 г. 12:41 ч., Yordan Karadzhov wrote:
-> 
-> 
-> On 31.03.22 г. 12:55 ч., Tzvetomir Stoyanov (VMware) wrote:
->> Proposed example illustrates how to use uprobes high level API to trace
->> all functions for user program. It can be attached to already running
->> program, or run the program and trace its execution.
->>
->> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
->> ---
->>   examples/user_trace.py | 41 +++++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 41 insertions(+)
->>   create mode 100755 examples/user_trace.py
->>
->> diff --git a/examples/user_trace.py b/examples/user_trace.py
->> new file mode 100755
->> index 0000000..0d3adcd
->> --- /dev/null
->> +++ b/examples/user_trace.py
->> @@ -0,0 +1,41 @@
->> +#!/usr/bin/env python3
->> +
->> +"""
->> +SPDX-License-Identifier: CC-BY-4.0
->> +
->> +Copyright 2022 VMware Inc, Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
->> +"""
->> +
->> +import sys
->> +
->> +import tracecruncher.ftracepy as ft
->> +
->> +if __name__ == "__main__":
->> +    if len(sys.argv) < 2:
->> +        print('Usage: ', sys.argv[0], ' [PROCESS]')
->> +        sys.exit(1)
->> +
->> +    # Create new Ftrace instance to work in. The tracing in this new instance
->> +    # is not going to be enabled yet.
->> +    inst = ft.create_instance(tracing_on=False)
->> +
->> +    # Create a user tracing context for given process, exclude the libraries
->> +    if sys.argv[1].isdigit():
->> +        utrace = ft.user_trace(pid=int(sys.argv[1]), follow_libs=False)
->> +    else:
->> +        utrace = ft.user_trace(name=sys.argv[1], follow_libs=False)
->> +
->> +    # Trace execution of all available functions in the given process
->> +    utrace.add_function(fname = "*")
->> +
->> +    # Add trace points on functions return as well
->> +    utrace.add_ret_function(fname = "*")
->> +
->> +    # Start tracing in an instance
->> +    utrace.start(instance = inst)
->> +
->> +    # Read the trace buffer during the trace until ctrl-c is pressed
->> +    ft.read_trace(instance=inst)
->> +
->> +    # Disable the tracing
->> +    utrace.stop(instance = inst)
-> 
-> The "stop" must be performed by the 'destroy' method of utrace object.
-> And 'destroy' must be called automatically at exit.
-> 
-> Thanks!
-> Yordan
+"record" is NULL before calling osnoise_init_trace_tool.
+Add a tag "out_free" to avoid dereferring a NULL pointer.
+
+Fixes: 51d64c3a1819 ("rtla: Add -e/--event support")
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+Changelog:
+v2:
+- Add the fix for timerlat.
+---
+ tools/tracing/rtla/src/osnoise_hist.c  |  5 +++--
+ tools/tracing/rtla/src/osnoise_top.c   |  9 +++++----
+ tools/tracing/rtla/src/timerlat_hist.c | 11 ++++++-----
+ tools/tracing/rtla/src/timerlat_top.c  | 11 ++++++-----
+ 4 files changed, 20 insertions(+), 16 deletions(-)
+
+diff --git a/tools/tracing/rtla/src/osnoise_hist.c b/tools/tracing/rtla/src/osnoise_hist.c
+index b4380d45cacd..5d7ea479ac89 100644
+--- a/tools/tracing/rtla/src/osnoise_hist.c
++++ b/tools/tracing/rtla/src/osnoise_hist.c
+@@ -809,7 +809,7 @@ int osnoise_hist_main(int argc, char *argv[])
+ 		retval = set_comm_sched_attr("osnoise/", &params->sched_param);
+ 		if (retval) {
+ 			err_msg("Failed to set sched parameters\n");
+-			goto out_hist;
++			goto out_free;
+ 		}
+ 	}
+ 
+@@ -819,7 +819,7 @@ int osnoise_hist_main(int argc, char *argv[])
+ 		record = osnoise_init_trace_tool("osnoise");
+ 		if (!record) {
+ 			err_msg("Failed to enable the trace instance\n");
+-			goto out_hist;
++			goto out_free;
+ 		}
+ 
+ 		if (params->events) {
+@@ -869,6 +869,7 @@ int osnoise_hist_main(int argc, char *argv[])
+ out_hist:
+ 	trace_events_destroy(&record->trace, params->events);
+ 	params->events = NULL;
++out_free:
+ 	osnoise_free_histogram(tool->data);
+ out_destroy:
+ 	osnoise_destroy_tool(record);
+diff --git a/tools/tracing/rtla/src/osnoise_top.c b/tools/tracing/rtla/src/osnoise_top.c
+index 72c2fd6ce005..76479bfb2922 100644
+--- a/tools/tracing/rtla/src/osnoise_top.c
++++ b/tools/tracing/rtla/src/osnoise_top.c
+@@ -572,7 +572,7 @@ int osnoise_top_main(int argc, char **argv)
+ 	retval = osnoise_top_apply_config(tool, params);
+ 	if (retval) {
+ 		err_msg("Could not apply config\n");
+-		goto out_top;
++		goto out_free;
+ 	}
+ 
+ 	trace = &tool->trace;
+@@ -580,14 +580,14 @@ int osnoise_top_main(int argc, char **argv)
+ 	retval = enable_osnoise(trace);
+ 	if (retval) {
+ 		err_msg("Failed to enable osnoise tracer\n");
+-		goto out_top;
++		goto out_free;
+ 	}
+ 
+ 	if (params->set_sched) {
+ 		retval = set_comm_sched_attr("osnoise/", &params->sched_param);
+ 		if (retval) {
+ 			err_msg("Failed to set sched parameters\n");
+-			goto out_top;
++			goto out_free;
+ 		}
+ 	}
+ 
+@@ -597,7 +597,7 @@ int osnoise_top_main(int argc, char **argv)
+ 		record = osnoise_init_trace_tool("osnoise");
+ 		if (!record) {
+ 			err_msg("Failed to enable the trace instance\n");
+-			goto out_top;
++			goto out_free;
+ 		}
+ 
+ 		if (params->events) {
+@@ -649,6 +649,7 @@ int osnoise_top_main(int argc, char **argv)
+ out_top:
+ 	trace_events_destroy(&record->trace, params->events);
+ 	params->events = NULL;
++out_free:
+ 	osnoise_free_top(tool->data);
+ 	osnoise_destroy_tool(record);
+ 	osnoise_destroy_tool(tool);
+diff --git a/tools/tracing/rtla/src/timerlat_hist.c b/tools/tracing/rtla/src/timerlat_hist.c
+index dc908126c610..f3ec628f5e51 100644
+--- a/tools/tracing/rtla/src/timerlat_hist.c
++++ b/tools/tracing/rtla/src/timerlat_hist.c
+@@ -821,7 +821,7 @@ int timerlat_hist_main(int argc, char *argv[])
+ 	retval = timerlat_hist_apply_config(tool, params);
+ 	if (retval) {
+ 		err_msg("Could not apply config\n");
+-		goto out_hist;
++		goto out_free;
+ 	}
+ 
+ 	trace = &tool->trace;
+@@ -829,14 +829,14 @@ int timerlat_hist_main(int argc, char *argv[])
+ 	retval = enable_timerlat(trace);
+ 	if (retval) {
+ 		err_msg("Failed to enable timerlat tracer\n");
+-		goto out_hist;
++		goto out_free;
+ 	}
+ 
+ 	if (params->set_sched) {
+ 		retval = set_comm_sched_attr("timerlat/", &params->sched_param);
+ 		if (retval) {
+ 			err_msg("Failed to set sched parameters\n");
+-			goto out_hist;
++			goto out_free;
+ 		}
+ 	}
+ 
+@@ -844,7 +844,7 @@ int timerlat_hist_main(int argc, char *argv[])
+ 		dma_latency_fd = set_cpu_dma_latency(params->dma_latency);
+ 		if (dma_latency_fd < 0) {
+ 			err_msg("Could not set /dev/cpu_dma_latency.\n");
+-			goto out_hist;
++			goto out_free;
+ 		}
+ 	}
+ 
+@@ -854,7 +854,7 @@ int timerlat_hist_main(int argc, char *argv[])
+ 		record = osnoise_init_trace_tool("timerlat");
+ 		if (!record) {
+ 			err_msg("Failed to enable the trace instance\n");
+-			goto out_hist;
++			goto out_free;
+ 		}
+ 
+ 		if (params->events) {
+@@ -904,6 +904,7 @@ int timerlat_hist_main(int argc, char *argv[])
+ 		close(dma_latency_fd);
+ 	trace_events_destroy(&record->trace, params->events);
+ 	params->events = NULL;
++out_free:
+ 	timerlat_free_histogram(tool->data);
+ 	osnoise_destroy_tool(record);
+ 	osnoise_destroy_tool(tool);
+diff --git a/tools/tracing/rtla/src/timerlat_top.c b/tools/tracing/rtla/src/timerlat_top.c
+index 1f754c3df53f..35452a1d45e9 100644
+--- a/tools/tracing/rtla/src/timerlat_top.c
++++ b/tools/tracing/rtla/src/timerlat_top.c
+@@ -612,7 +612,7 @@ int timerlat_top_main(int argc, char *argv[])
+ 	retval = timerlat_top_apply_config(top, params);
+ 	if (retval) {
+ 		err_msg("Could not apply config\n");
+-		goto out_top;
++		goto out_free;
+ 	}
+ 
+ 	trace = &top->trace;
+@@ -620,14 +620,14 @@ int timerlat_top_main(int argc, char *argv[])
+ 	retval = enable_timerlat(trace);
+ 	if (retval) {
+ 		err_msg("Failed to enable timerlat tracer\n");
+-		goto out_top;
++		goto out_free;
+ 	}
+ 
+ 	if (params->set_sched) {
+ 		retval = set_comm_sched_attr("timerlat/", &params->sched_param);
+ 		if (retval) {
+ 			err_msg("Failed to set sched parameters\n");
+-			goto out_top;
++			goto out_free;
+ 		}
+ 	}
+ 
+@@ -635,7 +635,7 @@ int timerlat_top_main(int argc, char *argv[])
+ 		dma_latency_fd = set_cpu_dma_latency(params->dma_latency);
+ 		if (dma_latency_fd < 0) {
+ 			err_msg("Could not set /dev/cpu_dma_latency.\n");
+-			goto out_top;
++			goto out_free;
+ 		}
+ 	}
+ 
+@@ -645,7 +645,7 @@ int timerlat_top_main(int argc, char *argv[])
+ 		record = osnoise_init_trace_tool("timerlat");
+ 		if (!record) {
+ 			err_msg("Failed to enable the trace instance\n");
+-			goto out_top;
++			goto out_free;
+ 		}
+ 
+ 		if (params->events) {
+@@ -699,6 +699,7 @@ int timerlat_top_main(int argc, char *argv[])
+ 		close(dma_latency_fd);
+ 	trace_events_destroy(&record->trace, params->events);
+ 	params->events = NULL;
++out_free:
+ 	timerlat_free_top(top->data);
+ 	osnoise_destroy_tool(record);
+ 	osnoise_destroy_tool(top);
+-- 
+2.35.1
+
