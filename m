@@ -2,187 +2,181 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D457C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 31 Mar 2022 19:05:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4729FC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Apr 2022 02:04:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239212AbiCaTHb (ORCPT
+        id S236119AbiDACGN (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 31 Mar 2022 15:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40980 "EHLO
+        Thu, 31 Mar 2022 22:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239208AbiCaTHa (ORCPT
+        with ESMTP id S234314AbiDACGN (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 31 Mar 2022 15:07:30 -0400
-Received: from mail.efficios.com (mail.efficios.com [167.114.26.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7547421C727;
-        Thu, 31 Mar 2022 12:05:42 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 33B1D3D67A7;
-        Thu, 31 Mar 2022 15:05:41 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 6ukdw3_Ch-TX; Thu, 31 Mar 2022 15:05:40 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 88EE63D670E;
-        Thu, 31 Mar 2022 15:05:40 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 88EE63D670E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1648753540;
-        bh=aCyzExiZNAlii4hNNUqKPOAEajExCBXUHglNihKOAvI=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=Xc1elefVGLKmqhhM58407/ZT1mhhPKmDZGHLDmZT9yfmDob05N5AEnpZEwv+KbHHL
-         dC1TmOhl3DueN9/BoShgyRxEZ70pNKZzWR5EpEb/XNr9RlG71WE5Mr0i68+VSoXt9+
-         njk/1WMSV1GwOC4+ckRMHfILAfc6TTUnfXauhv2s+wetabOQ8OFIVyX78Axmm6ktXU
-         AtpeTxYgtRHY9klkGbOQKtZVAIiE36I3Pic4QYFtIRZO1zc0UUMfaU+hc9YKcj917w
-         AtwKYrhPoDxti5O4GzPY8XPJDT0eK64zPH/+fNymsQH6BMNAobegH9M43L8is2svfi
-         ObjDMayWLVPZQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 6MFkmGC2BjV5; Thu, 31 Mar 2022 15:05:40 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 774A13D67A6;
-        Thu, 31 Mar 2022 15:05:40 -0400 (EDT)
-Date:   Thu, 31 Mar 2022 15:05:40 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     Beau Belgrave <beaub@microsoft.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
-        rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Message-ID: <1879409978.201000.1648753540376.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20220329215421.GA2997@kbox>
-References: <2059213643.196683.1648499088753.JavaMail.zimbra@efficios.com> <20220329002935.2869-1-beaub@linux.microsoft.com> <1014535694.197402.1648570634323.JavaMail.zimbra@efficios.com> <20220329215421.GA2997@kbox>
-Subject: Re: Comments on new user events ABI
+        Thu, 31 Mar 2022 22:06:13 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2122.outbound.protection.outlook.com [40.107.255.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03028BB92B;
+        Thu, 31 Mar 2022 19:04:24 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=k14qdPARtkcSUj2pppS3w3YYQtn4cqijmDM+T1W2fYvit5AhpeL6iisu19ls9Av39E8bYfX/HZ9JY7oRJKzbhYhF7g6qDmSq6gB1nAlFF2nSKWutjR4MJTtoP9pEPTt8paK1Yx8TjAO/DdoLWlHsY01rx0GXC1bsR4X3y+Z6sM4hEO1N8wuTcl3DKmRdg5mDdeeKS4/N31WNeA6voumH5L8xMxpcPsr+XzPC8ILlO0OyVrb9kW3Bgse/7Ncl9snuqEqVUUzYl1rx8++I01Q01xYHaxTWqW7wpa/WyzZuAju80iQUghLiNvVcWLsbdLc0Tg/bv2o2jigJALIclosAeA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xiBnT/8JkWk03Chv2pptfhl+80j2+qFwuDtET6DmtSg=;
+ b=oC/tVvRyLDKuXxT8clAVit6sHA51jkwxWggvRbIhZPNf4G+W4uzJ9EPX+G+DRvD8EmF0c5Lw+DIX5WSxWHDOI8+1E1kZzGSwVj5ivhx29sAJG08kA8cw4U3WPSV+3hMHR3gMeBaiVmChr9ii4D4MlArC8FYMRdS/vTXKyOC9HqbTRw6InPjZKDOwlRUP+vcU3wxwcyIIJd5cr/pDBHfLIS1u0WZFu62S2uoyFbHDuOvEtuUIMzqRWC/BfuGRRYwgUzNVIybF20K0LTGaUOwozvYkAYwAHev7HYlC9QNbTWIx5sVReQePUR5qnniZzrq8/4h92RD2fuoLjzQP95MmUw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xiBnT/8JkWk03Chv2pptfhl+80j2+qFwuDtET6DmtSg=;
+ b=KApwhYvpJi8waJSXyxbBB/Fk2fgMvA3yzCi3L/ch/u8MyR1/vFPP6Se+LrOGvyDbfE/MuDRSWpdH96hUEVlVf+G5uEZCnLTpJpuPjW2qsTHTU/ffIKVNKzDAcZLoO1fh18ZBvOeOn1+08HBwzdM3KmRT3dka61fpZj1WkxKAADU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
+ KL1PR0601MB3889.apcprd06.prod.outlook.com (2603:1096:820:27::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.25; Fri, 1 Apr
+ 2022 02:04:19 +0000
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::9d3f:ff3b:1948:d732]) by SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::9d3f:ff3b:1948:d732%4]) with mapi id 15.20.5102.022; Fri, 1 Apr 2022
+ 02:04:19 +0000
+Message-ID: <35ceefc3-3f8c-f3aa-e468-1f21161f920b@vivo.com>
+Date:   Fri, 1 Apr 2022 10:04:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH] rtla/osnoise: fix NULL but dereferenced coccicheck errors
+Content-Language: en-US
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     kael_w@qq.com, Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20220322113253.57390-1-wanjiabing@vivo.com>
+ <2afd6cba-1a01-0c32-eae8-c4f9f7e76732@kernel.org>
+From:   Jiabing Wan <wanjiabing@vivo.com>
+Organization: vivo
+In-Reply-To: <2afd6cba-1a01-0c32-eae8-c4f9f7e76732@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: HK0PR01CA0052.apcprd01.prod.exchangelabs.com
+ (2603:1096:203:a6::16) To SG2PR06MB3367.apcprd06.prod.outlook.com
+ (2603:1096:4:78::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4203 (ZimbraWebClient - FF98 (Linux)/8.8.15_GA_4232)
-Thread-Topic: Comments on new user events ABI
-Thread-Index: 7vhB2TzqJsMr+Bak6Tdk339nleGFrg==
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d15f7a67-5fc4-47af-4aa7-08da1383ee66
+X-MS-TrafficTypeDiagnostic: KL1PR0601MB3889:EE_
+X-Microsoft-Antispam-PRVS: <KL1PR0601MB3889E96AF2C4ADA63CB7E38BABE09@KL1PR0601MB3889.apcprd06.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mC0P4cmS4jwP9uUobOjLOqeq50aSGFps4qRT/TsrgzyzjfBEq4WFMlpwaVy8VB9wO2Oca7TFrYqvRRtYNcauhdC+uN8FUrsu+w2Ka9xEZzYJfwLUOXy7/6Ixp4Ot9E40zYY1K5WPyxnYgZChFElDbyEnQHZUImE/XeqThXGvOSgN+hNAYazbyWteIJmcvSRQHB3dMO1eDKAyiO9cfbO/ss6W6QEADrjcqvEifDLsG+/oE0s11+jA4+I57z0jmVp/F/2At2vdq/aDuf5mpSdP0aJFW1KUSmAQsa8QIHMK/Ek1QLGZ1rwDAQk4GMvvYdnSs5AWKzQLV48zM8zo4MIQSzfbWeM2CFYtKn3Ek/4SlgDzDBVir/fRG1Ea4mC+CeNoTUf1PxSZ8ViBZnSHPi1nLptZ60QglL3lwhWN2tln4sjd28sTKskYwbpAaCHNCRE3ELOpOqgz00HEQsIOC0Y6bkYX9XHmxLttGs9nRXHh6sKBMv651rnZSHx2oUdGcKSQbeNB95i/zPxqK7f1CS2jjCdZsX24Tp0X3NRApDrcXxl8TU4I7F+3jZmll1PIJVzyMSb2V7dT6sv9gQuDtnIhJ13wliWmEET0bWZBt8F4B0XmBUZxquKR582O5YFqKMsN5Rz+h9xG2cidskgnAOWSGaeCOxhqG/aLsrvZz1yFsNxkZt0KFGdauplmuxidCuV8qcXcxjxdFqGmuKWFohy3SEmEGJClDzOQszr/+ZApIJ0fidRslJdKZsuXk8HMOKa3kiJCpfKhQzoyJdIvm3OR87y9bVynpmHMTOgtjXwxF5g=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(31696002)(86362001)(83380400001)(316002)(4326008)(36756003)(8676002)(6486002)(66556008)(31686004)(66476007)(66946007)(6916009)(26005)(186003)(5660300002)(49246003)(36916002)(8936002)(6666004)(508600001)(2616005)(38350700002)(38100700002)(6506007)(2906002)(6512007)(52116002)(53546011)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a2lNUkd1aEQycG5RRGpMTnRxbURLWWthdFBKSGtTV0lHNnF2c3BadUJYVEpY?=
+ =?utf-8?B?L2lLN3c5ZlRFYlRPUTg0QmFaU0FFRmpFRVlRclBUaEd0WlB6QUZKSmJBRVR0?=
+ =?utf-8?B?dHdmdElJdk1oaHc3M3ZJdnlEaE04UTNuek9oNHl3STJhdFBMei9LVXJrQ1hx?=
+ =?utf-8?B?K2NJSlBFcjJUdVJJZHhnLzZyQ2xDWEg3cjdDMlZGQ3V6NjhKUFBRWXo5SzhL?=
+ =?utf-8?B?cW81bVAvcjh5UEFsR2xFVXRFNkZ6dFB1S0ZyYzdraXpRdXk5TStsTStCbnNS?=
+ =?utf-8?B?TzNCQ01nOWtDbDk4VnlpWVhwVXkrTUtZWWJnN0FFZ2ExOERMZStNQTROb3NH?=
+ =?utf-8?B?TWk4UGIyYVhoN0kwZmliWERRTFFPbGNpMmIwMFBzWUZaa3pjWEYyd2Y1YlMv?=
+ =?utf-8?B?WmlYT0RtYnd6cUVXK0FBV0hkUklwckdDS2pIbmZtbU5tbkdqRnk0c3BKNXFm?=
+ =?utf-8?B?RzcvV3hJdFVBdStiTUZrZzl4UzRhZ1VJVzAzQ2ZmRGhFT2wrWjR3U1FRMk5D?=
+ =?utf-8?B?Vks3YTk5OHVGeUE0VnJRTVB6OGhWL2VkR29HV0ZEUlZTZGlFMGNxRzA5TGlF?=
+ =?utf-8?B?Q3U1MFdvTWd1RHU1Vm82bzhBZVlPTUJaU3krK0YxaWs5YVRMSy83dXF3MDNO?=
+ =?utf-8?B?WWdSTHpNTjNBMjcwVVJPc2RXdm0vS28zQ0diSkR1NlQyNEgzRDJDOTQ4YzJu?=
+ =?utf-8?B?blMrT3libGVUTUc3RmptbUgxWXFXKzB1YUl5K1pXM0Y5Wk55WHBPVGFhZEw1?=
+ =?utf-8?B?VXBoS1JjN3MyQUtRNmtsY1F2bklIMGdUVEt1dVBtc0puRXd5Yjk0RmF4SUVr?=
+ =?utf-8?B?ZFlkZXp2cU1SNXRwM1hwNW4xVzZjNUJZckNnSjI5SitxOHRWcFR2ejJwTS81?=
+ =?utf-8?B?VjBJaXZtY0VxVTlDTEhYVDlsejVuWWprc1dPWHZMRFVTSlp6NklweE12ZzMr?=
+ =?utf-8?B?cmUwUG1lT0k4c1JSTXBMaHpVMUdTTHhmeWsvM2dyWDBBcmxpSUtBWTY0VjJG?=
+ =?utf-8?B?WGVJMy9EbGFObFFBM0svdzRGMm92Tk11ektSVExSTTZ5SVZMa1VSMmJiTkNv?=
+ =?utf-8?B?QWdaWWdmY2NBejBQYjhoYnl2eVFWZUp6NFptRk55M2pTN0NlSDBOVWJZZU8w?=
+ =?utf-8?B?OENkbXNzcm1jMkZSZkx4YVY4ZFNDMlptZ1hnTUtLVzFZVEw4VGdLWmIxRkhp?=
+ =?utf-8?B?WGZmZzFYQkxPZjN3akVoRklSWlE3aHlPaVR5RWk4bDF1OFR4OW9SYmhRckJy?=
+ =?utf-8?B?aUYxaWplc3o2WWxkekhtK2daUTB5QTA3Um1ad1N3ME5ObzZKbFR1SWxCSnZX?=
+ =?utf-8?B?TU9zK1NSalhzelZEMEU3bnQweXppQkFoS2htVlp3R2t4VHZ0WVA3UHU0K1JR?=
+ =?utf-8?B?WFVaUXM2WGZGWHhQbnVZcElDL2hNOXlsek84ekFSdXVxR1V1b0MrbUJGUXhJ?=
+ =?utf-8?B?NUtrNjJUSVRGQVJYN3RZaXFNRkl1STFCV1d0YXJudFdnMnA3L1V5VWJjcXdW?=
+ =?utf-8?B?bWNjZUtGU25JcEFrMWFmTXNsR0FHOUQwUytqQUQvUmhjMVRQU0hDMklFeldv?=
+ =?utf-8?B?Sk9QbzNnMnJUSW9QR1FWMnJSaHg0TEpjZEdtT0FZSXY3WVZHT1VpZi9NQ1lF?=
+ =?utf-8?B?S1pxY0YwL2JSRTViSVFtQiszQU1nUk1iMWRodk4yWTlsNURoQmxCY1hQcGJR?=
+ =?utf-8?B?TWllRkRnWHE5MUkvTUlWTVJad0JnVCs4THoxaElJMWYxSExKSkNjMFlSSWQy?=
+ =?utf-8?B?L3ltOFpNSHBVZU8rQnNqWmZWV2NaWWJGY0hPZDFOWWxzV2Vrcy8yaGNBSjEz?=
+ =?utf-8?B?VGpCWStIVklBLzdZTWQydk5nMHlOeWlNOUp0Q0pHbm04aWpRVFBGWEl0aFNI?=
+ =?utf-8?B?eThhbmN6OTBhQ1NFOEFWMnhPZ2t4QUx5MWNlY3dkaSs5dUxOOEVlN3U5dVlM?=
+ =?utf-8?B?VjV2ejR2dGZKd042YUdEY2UyM3haTDF0UzVzMVNlTkFZTTkvUGRWRU4rcFZI?=
+ =?utf-8?B?aW55aDhJaTYzMlZlNmtzQUR3VmM0SW9tQ0llWWJRZmlvdHozR3B3YTFlMmNS?=
+ =?utf-8?B?U3hqM252ajhTdnRUY2tyV2RuOG9LZFZFeXlaY1EzYzFiOWhjU1p2anFVQUpK?=
+ =?utf-8?B?bDh3TWtwaHRuU3VyYW8yVk0zRnRMVFhPWHRpWlpnWW10RGdVRFZuWkR5bks5?=
+ =?utf-8?B?N1ozSmlVaGQzVlBaMm51SGhxTUdLRkhwTFRsVE96eUh0UzR2T2xPbC8wMG12?=
+ =?utf-8?B?Mm50ZzJwVUF3QTVXUko3RXZYYXYwMUNtc2g2S1dYcDQ1dGY4bDFLRllaamlT?=
+ =?utf-8?B?VXZ3bk1hVlU5R2FaUU1KdUJlRStqMUtJV0pINWs3YjVyaFNNdmJRZz09?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d15f7a67-5fc4-47af-4aa7-08da1383ee66
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2022 02:04:19.0171
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4ezpCEYflBcJkacABOiTqbJj7xo6c2EoaooXF0sr/jw4Asi01PbnQC+hyjsgWPNb/QoSwWDZFhH1KlhYOZPC9w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0601MB3889
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
------ On Mar 29, 2022, at 5:54 PM, Beau Belgrave beaub@linux.microsoft.com wrote:
 
-> On Tue, Mar 29, 2022 at 12:17:14PM -0400, Mathieu Desnoyers wrote:
->> ----- On Mar 28, 2022, at 8:29 PM, Beau Belgrave beaub@linux.microsoft.com
->> wrote:
->> 
->> >> ----- On Mar 28, 2022, at 4:24 PM, Mathieu Desnoyers
->> >> mathieu.desnoyers@efficios.com wrote:
-[...]
-> 
->> > 
->> >> I would have rather thought that tracers implemented in user-space could
->> >> register
->> >> themselves, and then there could be one
->> >> /sys/kernel/debug/tracing/user_events_status
->> >> per tracer. Considering that all kernel tracers use the same ABI to write an
->> >> event,
->> >> and then dispatch this event internally within the kernel to each registered
->> >> tracer, I would expect to have a single memory mapping for all those (e.g. a
->> >> /sys/kernel/debug/tracing/user_events_status/kernel_tracers file).
->> >> 
->> >> Then eventually if we have other user-space tracers such as lttng-ust with its
->> >> their own user-space code performing tracing in a shared memory ring buffer, it
->> >> would make sense to allow it to register its own
->> >> /sys/kernel/debug/tracing/user_events_status/lttng_ust file, with its own
->> >> indexes.
->> >> 
->> > 
->> > I don't follow that. The intention is to get user processes to participate with
->> > trace_events and the built-in tooling. When would a user-space tracer be used
->> > instead of perf/ftrace?
->> > 
->> > It seems like a feature request?
->> 
->> It can very well be out of scope for the user events, and I'm fine with that.
->> I was merely considering how the user events could be leveraged by tracers
->> implemented purely in user-space. But if the stated goal of this feature is
->> really to call into kernel tracers through a writev(), then I suspect that
->> supporting purely user-space tracers is indeed out of scope.
->> 
-> 
-> That was the goal with this ABI, are there maybe ways we can change the
-> ABI to accomodate this later without shutting that out?
+Hi Daniel,
 
-I suspect that targeting this bit-enable memory mapping only as a gate for
-kernel tracers is good enough for now. Let's consider other use-cases when
-we have a clear picture of how it would be used. For the moment, I suspect
-that I would prefer to manage my own bit-enable memory mapping within lttng-ust
-rather than use a kernel-wide facility, which opens up questions about isolation
-of containers, and ability to run multiple concurrent instances on a given kernel
-without side-effects on each other.
+On 2022/3/31 20:25, Daniel Bristot de Oliveira wrote:
+> Hi Wan
+>
+> On 3/22/22 12:32, Wan Jiabing wrote:
+>> Fix the following coccicheck errors:
+>> ./tools/tracing/rtla/src/osnoise_hist.c:870:31-36: ERROR: record is NULL but dereferenced.
+>> ./tools/tracing/rtla/src/osnoise_top.c:650:31-36: ERROR: record is NULL but dereferenced.
+>>
+>> "record" is NULL before calling osnoise_init_trace_tool.
+>> Add a tag "out_free" to avoid dereferring a NULL pointer.
+> Yes, I see the problem.
+>
+> Please, change the Subject to something with better information about the
+> problem, instead of the way you fund it.
+OK, I'll fix it.
 
-I suspect that clarifying what this mmap'd based mechanism brings over the already
-existing SDT semaphores will be important to justify this new ABI.
+>> Fixes: 51d64c3a1819 ("rtla: Add -e/--event support")
+>> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+>> ---
+>>   tools/tracing/rtla/src/osnoise_hist.c | 5 +++--
+>>   tools/tracing/rtla/src/osnoise_top.c  | 9 +++++----
+>>   2 files changed, 8 insertions(+), 6 deletions(-)
+> Please, also add the version of coccicheck you are using, because it seems that
+> there is a problem with it. There is a similar problem with timerlat, added by
+> the same patch, but it seems that coccicheck did not find it.
+>
+> Would you mind to check coccicheck, and also add the fix for timerlat?
 
-Ref. https://sourceware.org/systemtap/wiki/UserSpaceProbeImplementation
+Yes,  I used null/deref_null.cocci to report these warnings. But there 
+were no warnings in
+timerlat. So I check the null/deref_null.cocci and modify some rules.
 
-[...]
+Using modified null/deref_null.cocci, there are warnings as follow:
 
-> 
->> [...]
->> 
->> >> kernel/trace/trace_events_user.c:
->> >> 
->> >> static int user_events_release(struct inode *node, struct file *file)
->> >> {
->> >> [...]
->> >>         /*
->> >>          * Ensure refs cannot change under any situation by taking the
->> >>          * register mutex during the final freeing of the references.
->> >>          */
->> >>         mutex_lock(&reg_mutex);
->> >> [...]
->> >>         mutex_unlock(&reg_mutex);
->> >> 
->> >>         kfree(refs);
->> >> 
->> >>         ^ AFAIU, the user_events_write() does not rely on reg_mutex to ensure mutual
->> >>         exclusion.
->> >>           Doing so would be prohibitive performance-wise. But I suspect that freeing
->> >>           "refs" here
->> >>           without waiting for a RCU grace period can be an issue if user_events_write_core
->> >>           is using
->> >>           refs concurrently with file descriptor close.
->> >> 
->> > 
->> > The refs is per-file, so if user_events_write() is running release cannot be
->> > called for that file instance, since it's being used. Did I miss something?
->> 
->> I'm possibly the one missing something here, but what prevents 2 threads
->> from doing user_event_write() and close() concurrently on the same file
->> descriptor ?
->> 
-> 
-> While nothing prevents it, my understanding is that the actual release()
-> on the file_operations won't be invoked until the file struct has been
-> ref'd down to zero. (fs/file_table.c:fput, fs/read_write.c:do_pwritev).
-> 
-> While the write call is being run, the file should have a non-zero ref
-> count. I believe looking at do_pwritev the fdget/fdput pair are largely
-> responsible for this, do you agree?
+tools/tracing/rtla/src/timerlat_hist.c:905:31-36: ERROR: record is NULL 
+but dereferenced.
+tools/tracing/rtla/src/osnoise_top.c:650:31-36: ERROR: record is NULL 
+but dereferenced.
+tools/tracing/rtla/src/osnoise_hist.c:870:31-36: ERROR: record is NULL 
+but dereferenced.
+tools/tracing/rtla/src/timerlat_top.c:700:31-36: ERROR: record is NULL 
+but dereferenced.
 
-Yes, you are correct. So the "refs" lifetime for writev vs close is guaranteed
-by the reference counting of the struct file when the process file descriptor
-table has multiple users (e.g. multithreaded process).
-
-[...]
+I'll resend the patch and fix them all.
 
 Thanks,
+Wan Jiabing
+> Thanks.
+> -- Daniel
+>
 
-Mathieu
-
-
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
