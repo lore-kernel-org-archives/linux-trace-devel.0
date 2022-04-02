@@ -2,148 +2,73 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C792C4167B
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Apr 2022 23:43:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E06FC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Sat,  2 Apr 2022 01:15:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353480AbiDAXpX (ORCPT
+        id S235010AbiDBBQ6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 1 Apr 2022 19:45:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56504 "EHLO
+        Fri, 1 Apr 2022 21:16:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353456AbiDAXpS (ORCPT
+        with ESMTP id S234868AbiDBBQ5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 1 Apr 2022 19:45:18 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2A61F2DF7;
-        Fri,  1 Apr 2022 16:43:27 -0700 (PDT)
-Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 20B5920DF570;
-        Fri,  1 Apr 2022 16:43:25 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 20B5920DF570
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1648856605;
-        bh=dxneIxyFrTOTz7WRpQU5x5JzmKlH6pr4TBlRuoXEHsU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n5KSa9Db49+uG+J/PM8NwppUB1DtfCKpVLACIieSGy329S5K8EPhCwDPpFNnB/O0H
-         h24uG7buNojo2g6phn7T+Zx5shTFUHdFO4yUKUkLP/Q7OMEq7DrNKnI793gEqEMTiQ
-         vxN0TENfcqj5qFpXdVkMfjShUxPv8QvrHtQOQfDE=
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     rostedt@goodmis.org, mhiramat@kernel.org,
-        mathieu.desnoyers@efficios.com
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, beaub@linux.microsoft.com
-Subject: [PATCH 7/7] tracing/user_events: Update ABI documentation to align to bits vs bytes
-Date:   Fri,  1 Apr 2022 16:43:09 -0700
-Message-Id: <20220401234309.21252-8-beaub@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220401234309.21252-1-beaub@linux.microsoft.com>
-References: <20220401234309.21252-1-beaub@linux.microsoft.com>
+        Fri, 1 Apr 2022 21:16:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D0851066D9
+        for <linux-trace-devel@vger.kernel.org>; Fri,  1 Apr 2022 18:15:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 95F4061C24
+        for <linux-trace-devel@vger.kernel.org>; Sat,  2 Apr 2022 01:15:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CAC5C340EC
+        for <linux-trace-devel@vger.kernel.org>; Sat,  2 Apr 2022 01:15:05 +0000 (UTC)
+Date:   Fri, 1 Apr 2022 21:15:03 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd: Fix trace-cmd convert to handle offset update
+Message-ID: <20220401211503.73457413@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Update the documentation to reflect the new ABI requirements and how to
-use the byte index with the mask properly to check event status.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+With changing the cpu_data[]->file_offset to be unique per CPU, the
+convert code had a path that was still relying on it being zero.
+Specifically, when read_zpage is false. This would decompress the data
+into a temp file, and the offset would be from that temp file. Thus, using
+the unique file_offset would cause it to index farther than the size of
+the file and crash. Instead, subtract the cpu_data[].file_offset from the
+offset used in the temp file.
+
+Fixes: add83e0c8b51 ("trace-cmd library: Fix tracecmd_read_at()")
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/trace/user_events.rst | 46 +++++++++++++----------------
- 1 file changed, 21 insertions(+), 25 deletions(-)
+ lib/trace-cmd/trace-input.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/trace/user_events.rst b/Documentation/trace/user_events.rst
-index c180936f49fc..6aabdb126f2e 100644
---- a/Documentation/trace/user_events.rst
-+++ b/Documentation/trace/user_events.rst
-@@ -20,14 +20,15 @@ dynamic_events is the same as the ioctl with the u: prefix applied.
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index d35006294032..18bb4cf984da 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -1442,9 +1442,10 @@ static void *allocate_page_map(struct tracecmd_input *handle,
+ 		map_size -= map_offset + map_size -
+ 			(cpu_data->file_offset + cpu_data->file_size);
  
- Typically programs will register a set of events that they wish to expose to
- tools that can read trace_events (such as ftrace and perf). The registration
--process gives back two ints to the program for each event. The first int is the
--status index. This index describes which byte in the
-+process gives back three ints to the program for each event. The first int is
-+the status index. This index describes which byte in the
- /sys/kernel/debug/tracing/user_events_status file represents this event. The
--second int is the write index. This index describes the data when a write() or
--writev() is called on the /sys/kernel/debug/tracing/user_events_data file.
-+second int is the mask to use on the byte to check the event status. The third
-+int is the write index which describes the data when a write() or writev() is
-+called on the /sys/kernel/debug/tracing/user_events_data file.
- 
--The structures referenced in this document are contained with the
--/include/uap/linux/user_events.h file in the source tree.
-+The structures referenced in this document are contained within the
-+/include/uapi/linux/user_events.h file in the source tree.
- 
- **NOTE:** *Both user_events_status and user_events_data are under the tracefs
- filesystem and may be mounted at different paths than above.*
-@@ -44,6 +45,7 @@ This command takes a struct user_reg as an argument::
-         u32 size;
-         u64 name_args;
-         u32 status_index;
-+        u32 status_mask;
-         u32 write_index;
-   };
- 
-@@ -112,14 +114,19 @@ writev() calls when something is actively attached to the event.
- 
- User programs call mmap() on /sys/kernel/debug/tracing/user_events_status to
- check the status for each event that is registered. The byte to check in the
--file is given back after the register ioctl() via user_reg.status_index.
-+file is given back after the register ioctl() via user_reg.status_index. The
-+byte needs to be AND'd with the user_reg.status_mask value to check if the
-+event is enabled currently.
-+
- Currently the size of user_events_status is a single page, however, custom
- kernel configurations can change this size to allow more user based events. In
- all cases the size of the file is a multiple of a page size.
- 
--For example, if the register ioctl() gives back a status_index of 3 you would
--check byte 3 of the returned mmap data to see if anything is attached to that
--event.
-+For example, if the register ioctl() gives back a status_index of 3 and a mask
-+of 1 you would check byte 3 of the returned mmap data and then AND the result
-+with 1 (e.g. status_page[3] & 1) to see if anything is attached to that event.
-+A helper function is available called user_event_enabled() which does this for
-+you.
- 
- Administrators can easily check the status of all registered events by reading
- the user_events_status file directly via a terminal. The output is as follows::
-@@ -137,7 +144,7 @@ For example, on a system that has a single event the output looks like this::
- 
-   Active: 1
-   Busy: 0
--  Max: 4096
-+  Max: 32768
- 
- If a user enables the user event via ftrace, the output would change to this::
- 
-@@ -145,21 +152,10 @@ If a user enables the user event via ftrace, the output would change to this::
- 
-   Active: 1
-   Busy: 1
--  Max: 4096
--
--**NOTE:** *A status index of 0 will never be returned. This allows user
--programs to have an index that can be used on error cases.*
--
--Status Bits
--^^^^^^^^^^^
--The byte being checked will be non-zero if anything is attached. Programs can
--check specific bits in the byte to see what mechanism has been attached.
--
--The following values are defined to aid in checking what has been attached:
--
--**EVENT_STATUS_FTRACE** - Bit set if ftrace has been attached (Bit 0).
-+  Max: 32768
- 
--**EVENT_STATUS_PERF** - Bit set if perf has been attached (Bit 1).
-+**NOTE:** *A status index of 0 with a mask of 1 will never be returned. This
-+allows user programs to have an index and mask that can be used on error cases.*
- 
- Writing Data
- ------------
+-	if (cpu_data->compress.fd >= 0)
++	if (cpu_data->compress.fd >= 0) {
++		map_offset -= cpu_data->file_offset;
+ 		fd = cpu_data->compress.fd;
+-	else
++	} else
+ 		fd = handle->fd;
+  again:
+ 	page_map->size = map_size;
 -- 
-2.25.1
+2.35.1
 
