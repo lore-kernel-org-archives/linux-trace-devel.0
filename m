@@ -2,93 +2,82 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EF9CC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Sat,  2 Apr 2022 04:39:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50BFBC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Sun,  3 Apr 2022 14:39:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238286AbiDBElr (ORCPT
+        id S237905AbiDCOlb (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 2 Apr 2022 00:41:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34630 "EHLO
+        Sun, 3 Apr 2022 10:41:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238032AbiDBElq (ORCPT
+        with ESMTP id S229916AbiDCOla (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 2 Apr 2022 00:41:46 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF52291AF8;
-        Fri,  1 Apr 2022 21:39:55 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id bp39so3769990qtb.6;
-        Fri, 01 Apr 2022 21:39:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KxlRcHlf9WptZzIbNjAlRZkX4N9ThmOiCIHI+MjC7Pk=;
-        b=ZQNMxvgJKGPoSmeih1hR8LTaZ683pXmmvz05pztmV2Bhul0JKHkZA4oYoGongu/Wac
-         ApNjJcrJ4icRXs57gtnxRjNRHE0L/ce8+5AocNTMCfcWO4qsHMWSNTgcTmQU1hTaDb0O
-         JIMvHLCBxyO2Gimj6Mj3BMv2ZZNWPuza6J2fXuCtTO5q5GToILImhCnUz5DdCbhkcga9
-         p+nr3TKj+zxGv4Ph0NnjoH0ZlT2dMbSnU/3YJFxEKIZfsabnVsOR/8xICFhYYiphoCnG
-         uWt8dpx4Nyef1+6MPYxFtF9WJMkKWMnbhSsUYBYKLYCtRLqs5kcptLWV8BjQhCgODG7w
-         DZuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=KxlRcHlf9WptZzIbNjAlRZkX4N9ThmOiCIHI+MjC7Pk=;
-        b=i1+VPCUi9+hVyRx+aU0W/RiW2yIrNW5G9LhUBVdxmAB8zJm35FLiN7GYUm4S08AFiM
-         Uq0ssxhDFcDZi1IZjVu4S95/PavV2ZFBwJdMri2b01PJjxZOdDDU09N+0I1nNFkSIUC0
-         HyFWX5JUsQybE5Z0AgEhyOv7UGCoDaK5q3j2krzZ+dwPCjLstVy+Jr+8S3DCeSOIURZY
-         deiD+iwwKGpuZPrKN4Giv/Qayue1fSIqloV94ci0V/vMftg2l+iRmj67habHp7A57PWA
-         MptfGJRgT1OeNo4x17BPkG7SBqmzEbXLx+nMxbhOZcRvlDE0wyu+3aa+HZj/LvUpphDR
-         Fceg==
-X-Gm-Message-State: AOAM530uc5rUMxBVFAFnzZRpek200SkYVPHGR+7wGNNS7+0RH75fPAka
-        gBEd09HQ0ZQpkNbuKJsbqRc=
-X-Google-Smtp-Source: ABdhPJyfSQHJYniFpnlUOAlloqrS8f2BAaliAxDXkkxxTMBqBVWcwj7RzFUoeSAVXKkHFnkqcA9y/g==
-X-Received: by 2002:a05:622a:1996:b0:2e0:ffd3:a2d5 with SMTP id u22-20020a05622a199600b002e0ffd3a2d5mr10708131qtc.390.1648874394922;
-        Fri, 01 Apr 2022 21:39:54 -0700 (PDT)
-Received: from fionn.redhat.com (bras-base-rdwyon0600w-grc-11-174-88-121-127.dsl.bell.ca. [174.88.121.127])
-        by smtp.gmail.com with ESMTPSA id e15-20020a05622a110f00b002e1ed105652sm2996957qty.2.2022.04.01.21.39.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Apr 2022 21:39:54 -0700 (PDT)
-Sender: John Kacur <jkacur@gmail.com>
-From:   John Kacur <jkacur@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveria <bristot@redhat.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        RT <linux-rt-users@vger.kernel.org>,
-        linux-trace-devel@vger.kernel.org, John Kacur <jkacur@redhat.com>
-Subject: [PATCH 2/2] rtla: Minor fix to grammar in README.txt
-Date:   Sat,  2 Apr 2022 00:39:39 -0400
-Message-Id: <20220402043939.6962-2-jkacur@redhat.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220402043939.6962-1-jkacur@redhat.com>
-References: <20220402043939.6962-1-jkacur@redhat.com>
+        Sun, 3 Apr 2022 10:41:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19363205E1;
+        Sun,  3 Apr 2022 07:39:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A6109611C9;
+        Sun,  3 Apr 2022 14:39:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 934EBC340ED;
+        Sun,  3 Apr 2022 14:39:34 +0000 (UTC)
+Date:   Sun, 3 Apr 2022 10:39:33 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Beau Belgrave <beaub@linux.microsoft.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Subject: Re: [PATCH v2] tracing: Set user_events to BROKEN
+Message-ID: <20220403103933.787cc4de@rorschach.local.home>
+In-Reply-To: <20220330155835.5e1f6669@gandalf.local.home>
+References: <20220330155835.5e1f6669@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-"The rtla" doesn't make sense, change it to "The rtla tool"
-This is better than removing the word "The" since some packaging tools
-need the description to start with a capital letter.
+On Wed, 30 Mar 2022 15:58:35 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Signed-off-by: John Kacur <jkacur@redhat.com>
----
- tools/tracing/rtla/README.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> After being merged, user_events become more visible to a wider audience
+> that have concerns with the current API. It is too late to fix this for
+> this release, but instead of a full revert, just mark it as BROKEN (which
+> prevents it from being selected in make config). Then we can work finding
+> a better API. If that fails, then it will need to be completely reverted.
+> 
+> Link: https://lore.kernel.org/all/2059213643.196683.1648499088753.JavaMail.zimbra@efficios.com/
+> 
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-diff --git a/tools/tracing/rtla/README.txt b/tools/tracing/rtla/README.txt
-index 6c88446f7e74..3b809eeff5f9 100644
---- a/tools/tracing/rtla/README.txt
-+++ b/tools/tracing/rtla/README.txt
-@@ -1,6 +1,6 @@
- RTLA: Real-Time Linux Analysis tools
- 
--The rtla is a meta-tool that includes a set of commands that
-+The rtla tool is a meta-tool that includes a set of commands that
- aims to analyze the real-time properties of Linux. But, instead of
- testing Linux as a black box, rtla leverages kernel tracing
- capabilities to provide precise information about the properties
--- 
-2.31.1
+Linus,
 
+I noticed that you pulled in this patch (slightly updated subject). I
+had it part of my queue that was going thought my tests, which have
+just finished. I was going to send you a pull request today.
+
+Is it OK that I keep that patch? Otherwise, I need to pull it out and
+rerun my tests without it.
+
+I would have had this to you earlier but because of the merge
+conflicts of my last pull request that this queue depended on, I based
+all my new changes off of the merge commit you had made with my
+previous pull request, and that contained bugs that would prevent my
+tests from passing (as you saw with the one memory mapping issue).
+
+I'll go ahead and send you the pull request that I have that contains
+this patch as well, but feel free to reject it if you want me to redo
+my queue without it.
+
+-- Steve
