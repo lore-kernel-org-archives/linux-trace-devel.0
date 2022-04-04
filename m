@@ -2,33 +2,33 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78850C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Apr 2022 15:10:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC6D4C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Apr 2022 15:14:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238001AbiDDPMg (ORCPT
+        id S1356239AbiDDPQS (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 4 Apr 2022 11:12:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39986 "EHLO
+        Mon, 4 Apr 2022 11:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353885AbiDDPMf (ORCPT
+        with ESMTP id S1345897AbiDDPQN (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 4 Apr 2022 11:12:35 -0400
+        Mon, 4 Apr 2022 11:16:13 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBAD24F30
-        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Apr 2022 08:10:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807F31BEAE
+        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Apr 2022 08:14:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8CE96615BF
-        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Apr 2022 15:10:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BABD0C340EE
-        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Apr 2022 15:10:38 +0000 (UTC)
-Date:   Mon, 4 Apr 2022 11:10:37 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1CFE8615F2
+        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Apr 2022 15:14:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49932C340EE
+        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Apr 2022 15:14:16 +0000 (UTC)
+Date:   Mon, 4 Apr 2022 11:14:14 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd library: Process trace_clock for v7 trace.dat
- files
-Message-ID: <20220404111037.2248bb52@gandalf.local.home>
+Subject: [PATCH] trace-cmd library: Make msg_lseek() header prototype match
+ the function prototype
+Message-ID: <20220404111414.426850bf@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -39,46 +39,37 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-One of my ftrace tests records tracing data with the counter clock (just
-counts by 1 for every event, it is not a time stamp), but the test failed
-with the latest trace-cmd, as it was showing the counters as "usecs" and
-truncating them:
+msg_lseek() is defined in the header as:
 
-Instead of:
+  off64_t msg_lseek(struct tracecmd_msg_handle *msg_handle, off_t offset, int whence);
 
-          <idle>-0     [002]      818923: sched_switch:         swapper/2:0 [120] R ==> sleep:8298 [120]
-          <idle>-0     [003]      818924: sched_switch:         swapper/3:0 [120] R ==> rb_consumer:47 [139]
-          <idle>-0     [000]      818925: sched_switch:         swapper/0:0 [120] R ==> trace-cmd:8293 [120]
-           sleep-8298  [002]      818926: sched_switch:         sleep:8298 [120] Z ==> swapper/2:0 [120]
+Where as the function is defined as:
 
-It was showing the output like:
+  off64_t msg_lseek(struct tracecmd_msg_handle *msg_handle, off64_t offset, int whence)
 
-           sleep-8225  [002]     0.000809: sched_switch:         sleep:8225 [120] S ==> swapper/2:0 [120]
-          <idle>-0     [003]     0.000809: sched_switch:         swapper/3:0 [120] R ==> rcu_preempt:13 [120]
-     rcu_preempt-13    [003]     0.000809: sched_switch:         rcu_preempt:13 [120] W ==> swapper/3:0 [120]
-          <idle>-0     [003]     0.000809: sched_switch:         swapper/3:0 [120] R ==> rcu_preempt:13 [120]
+That is, the header has "off_t offset" and the C code has "off64_t offset".
 
-When the TRACECLOCK option is found, use it to set the appropriate clock
-for trace-cmd.
+Make the two match, as it causes build issues on some systems.
 
-Fixes: 02dfe3593624 ("trace-cmd library: Initialize CPU data for reading from version 7 trace files")
+Fixes: bea1bfd0b19f9 ("trace-cmd: Make msg_lseek() header prototype match the function prototype")
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- lib/trace-cmd/trace-input.c | 1 +
- 1 file changed, 1 insertion(+)
+ lib/trace-cmd/include/trace-cmd-local.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 18bb4cf984da..b8705ce364d1 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -3436,6 +3436,7 @@ static int handle_options(struct tracecmd_input *handle)
- 				goto out;
- 			break;
- 		case TRACECMD_OPTION_TRACECLOCK:
-+			tracecmd_parse_trace_clock(handle, buf, size);
- 			if (!handle->ts2secs)
- 				handle->use_trace_clock = true;
- 			break;
+diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
+index f9892fa77a8c..6ac341374941 100644
+--- a/lib/trace-cmd/include/trace-cmd-local.h
++++ b/lib/trace-cmd/include/trace-cmd-local.h
+@@ -91,7 +91,7 @@ struct cpu_data_source {
+ int out_write_cpu_data(struct tracecmd_output *handle, int cpus,
+ 		       struct cpu_data_source *data, const char *buff_name);
+ int out_write_emty_cpu_data(struct tracecmd_output *handle, int cpus);
+-off64_t msg_lseek(struct tracecmd_msg_handle *msg_handle, off_t offset, int whence);
++off64_t msg_lseek(struct tracecmd_msg_handle *msg_handle, off64_t offset, int whence);
+ unsigned long long get_last_option_offset(struct tracecmd_input *handle);
+ unsigned int get_meta_strings_size(struct tracecmd_input *handle);
+ 
 -- 
 2.35.1
 
