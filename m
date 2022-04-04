@@ -2,41 +2,45 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF6BEC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Apr 2022 14:26:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30D18C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Apr 2022 14:35:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345342AbiDDO2J (ORCPT
+        id S1358604AbiDDOh3 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 4 Apr 2022 10:28:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51096 "EHLO
+        Mon, 4 Apr 2022 10:37:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377120AbiDDO2J (ORCPT
+        with ESMTP id S1377588AbiDDOh0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 4 Apr 2022 10:28:09 -0400
+        Mon, 4 Apr 2022 10:37:26 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 256983ED37;
-        Mon,  4 Apr 2022 07:26:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1873AA44
+        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Apr 2022 07:35:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D5C86B8167E;
-        Mon,  4 Apr 2022 14:26:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DD94C34110;
-        Mon,  4 Apr 2022 14:26:08 +0000 (UTC)
-Date:   Mon, 4 Apr 2022 10:26:07 -0400
+        by ams.source.kernel.org (Postfix) with ESMTPS id 08EB1B817D3
+        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Apr 2022 14:35:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A7E7C2BBE4;
+        Mon,  4 Apr 2022 14:35:27 +0000 (UTC)
+Date:   Mon, 4 Apr 2022 10:35:25 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sebastian Fricke <sebastian.fricke@collabora.com>
-Cc:     linux-trace-devel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        Torsten Duwe <duwe@suse.de>
-Subject: Re: Corrupted function tracer in 5.17.0-rc1
-Message-ID: <20220404102607.5c9cb515@gandalf.local.home>
-In-Reply-To: <20220404125212.tuby556kara5t56c@basti-XPS-13-9310>
-References: <20220404125212.tuby556kara5t56c@basti-XPS-13-9310>
+To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        rostedt@google.com, Vineeth Pillai <vineethrp@google.com>
+Subject: Re: [PATCH] trace-cmd: Try alternate path for message cache
+Message-ID: <20220404103525.1ec0b246@gandalf.local.home>
+In-Reply-To: <CAPpZLN5MHicswQqgH6vKYOCwPczNTyz2OcMf5CG4CKV6y8Q2jw@mail.gmail.com>
+References: <20220329191801.429691-1-joel@joelfernandes.org>
+        <20220401153737.7c444426@gandalf.local.home>
+        <CAEXW_YQxPgaKOMhDy8kVdaT9esvY8ctP1Mfw3RZXwkJkTYhh0w@mail.gmail.com>
+        <20220401190629.32564bd2@gandalf.local.home>
+        <Ykm1jBpdD0+NjsTW@google.com>
+        <CAPpZLN44k=2j7AsrNz72_74JkXQZvJH2sh61o2-ZRib=b4nyKA@mail.gmail.com>
+        <CAPpZLN7LXehf7==O6bi2CDfs0HvAexAvQ1qv92MT5DYVgW7iGQ@mail.gmail.com>
+        <CAEXW_YSUTdtELA+ZVmUsybuSMuZ0OAQy4d6834soj3a-R40v1Q@mail.gmail.com>
+        <CAPpZLN5MHicswQqgH6vKYOCwPczNTyz2OcMf5CG4CKV6y8Q2jw@mail.gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -45,135 +49,61 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+On Mon, 4 Apr 2022 16:48:11 +0300
+Tzvetomir Stoyanov <tz.stoyanov@gmail.com> wrote:
 
-I added arm64 folks that maintain this code.
+> > > > Hi  Joel,
+> > > > That cache file is used for constructing the trace meta-data on the
+> > > > guest, before sending it to the host. Usually it is compressed, but it
+> > > > could be uncompressed in some cases (depending on the configuration) -
+> > > > and in that case it can grow up to a few megabytes. Using memfd is ok
+> > > > in most cases, but I'm wondering in the worst case - these few
+> > > > megabytes could be a problem, especially if the guest runs with a
+> > > > minimum amount of memory.
+> > > >  
+> > >
+> > > Can you check that file size on your Android setup with that command,
+> > > it will force to not use compression on the guest trace file:
+> > >    trace-cmd <host trace options> -A <guest> <guest trace options>
+> > > --file-version 7 --compression none  
+> >
+> > The file grows to 5.3MB with this. Is this really the common case
+> > though? If not, I would still prefer memfd tbh. Is that Ok with you?
 
-On Mon, 4 Apr 2022 14:52:12 +0200
-Sebastian Fricke <sebastian.fricke@collabora.com> wrote:
+This is meta data right? Which means everything in here is in kernel memory
+anyway. kallsyms, events, etc. I do not believe that this will be an issue
+even uncompressed.
 
-> Good day,
+
+> >  
 > 
-> Maybe you can help me out with this, I am currently unsure if I cannot
-> use the function tracer due to some regression in the Kernel version I
-> am using or because I configured the kernel incorrectly.
-> 
-> I have added the configuration as attachment.
-> 
-> Here is what I try to do:
-> ```
-> # cd /sys/kernel/tracing/
-> # ls
-> available_events            per_cpu                 stack_trace
-> available_filter_functions  printk_formats          stack_trace_filter
-> available_tracers           README                  timestamp_mode
-> buffer_percent              recursed_functions      trace
-> buffer_size_kb              saved_cmdlines          trace_clock
-> buffer_total_size_kb        saved_cmdlines_size     trace_marker
-> current_tracer              saved_tgids             trace_marker_raw
-> dyn_ftrace_total_info       set_event               trace_options
-> dynamic_events              set_event_notrace_pid   trace_pipe
-> enabled_functions           set_event_pid           trace_stat
-> error_log                   set_ftrace_filter       tracing_cpumask
-> events                      set_ftrace_notrace      tracing_on
-> free_buffer                 set_ftrace_notrace_pid  tracing_thresh
-> function_profile_enabled    set_ftrace_pid          uprobe_events
-> instances                   set_graph_function      uprobe_profile
-> max_graph_depth             set_graph_notrace       
-> options                     stack_max_size          
-> # echo function > current_tracer
+> There are two cases that could hit this:
+>  1. Using a " --compression none" flag on the guest file. We could
+> disable that flag and force trace file v7 always to use compression. I
+> cannot imagine a use case for uncompressed trace file, maybe only for
+> debug purposes ?
 
-So you enabled function tracing first before setting the filter. That means
-all functions that ftrace knows about will be modified.
+Please no. I do have some machines that do not have zlib installed. I do
+not want to make it a requirement to have zlib for this use case. If we do
+not have memory, we could fall back to mktemp.
 
-> # echo do_page_fault > set_ftrace_filter 
-> -ash: can't create set_ftrace_filter: No such device
+>  2. If, for some reason, there are no supported compression libraries
+> on the guest. Trace-cmd supports libz and libzstd, I believe both are
+> widely available. Theoretically it could be possible to have some
+> minimalistic VM image without any of these libraries.
 
-Looks like the setting of all functions faulted, and that would disable
-ftrace and give the above error messag. So the filter never took place. I
-wonder if you had set the filter first, and then tried to update if it
-would have worked. This would let us know if it is all function updates
-that's the problem or just a specific few.
+Not theoretical ;-)
 
-> ```
-> 
-> In the kernel log I can see that a ftrace bug is reported:
-> ```
-> [  173.064893] ------------[ ftrace bug ]------------
-> [  173.064918] ftrace faulted on modifying 
+> What are the advantages of using memfd instead of temp file, is it
+> only for performance ? Usually collecting trace metadata is not
+> performance critical, as it is done before starting the trace.
+> I think that the best solution is to use memfd in case the guest file
+> is compressed and switch back to a temp file in case of a
+> not-compressed file.
 
-The above shows that ftrace faulted when it tried to modify a function. 
-
-> [  173.064923] [<ffff8000096003dc>] set_reset_devices+0x4/0x20
-
-The above is what it tried to update. I'm guessing you will see
-"set_reset_devices" in the list of functions in
-"available_filter_functions".
-
-> [  173.064957] Setting ftrace call site to call ftrace function
-> [  173.064962] ftrace record flags: 80000001
-
-The above is that a trampoline is in use (as shown below) with one user.
-
-
-Mark, et.al. Any changes that would cause ftrace not to be able to update
-the code.
-
-Sebastian, can you reply with the .config you used.
-
-Thanks,
+Yeah, we could use memfd if compressed and temp if not. Luckily, this isn't
+something exposed across the API so we should be able to experiment with
+various implementations, and if people complain about one (like Joel did
+for Android), we can try something else.
 
 -- Steve
-
-
-> [  173.064968]  (1)  
->                  expected tramp: ffff80000802a96c
-> [  173.065004] ------------[ cut here ]------------
-> [  173.065009] WARNING: CPU: 1 PID: 592 at kernel/trace/ftrace.c:2068 ftrace_bug+0x218/0x250
-> [  173.065032] Modules linked in: rpcsec_gss_krb5 auth_rpcgss nfsv4 nfs lockd grace fscache netfs iptable_nat nf_nat iptable_mangle bpfilter iptable_filter ip6t_REJECT nf_reject_ipv6 ipt_REJECT nf_reject_ipv4 xt_tcpudp xt_state xt_conntrack nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nft_compat nf_tables nfnetlink hantro_vpu(C) rockchip_vdec(C) btsdio hci_uart v4l2_vp9 rockchip_rga snd_soc_simple_card snd_soc_audio_graph_card brcmfmac snd_soc_es8316 v4l2_h264 snd_soc_hdmi_codec btqca snd_soc_spdif_tx snd_soc_rockchip_i2s videobuf2_dma_contig snd_soc_simple_card_utils btrtl brcmutil v4l2_mem2mem videobuf2_dma_sg snd_soc_core btbcm videobuf2_memops cfg80211 btintel videobuf2_v4l2 snd_pcm_dmaengine snd_pcm videobuf2_common bluetooth videodev snd_timer mc snd rfkill dw_hdmi_i2s_audio dw_hdmi_cec soundcore cpufreq_dt sunrpc ip_tables x_tables autofs4 cls_cgroup panfrost drm_shmem_helper gpu_sched rockchipdrm drm_cma_helper dw_hdmi dw_mipi_dsi analogix_dp drm_kms_helper cec rc_core drm
-> [  173.065467]  drm_panel_orientation_quirks realtek(E)
-> [  173.065487] CPU: 1 PID: 592 Comm: ash Tainted: G         C  E     5.17.0-rc1-rockpidebug2 #70
-> [  173.065501] Hardware name: Radxa ROCK Pi 4B (DT)
-> [  173.065508] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [  173.065521] pc : ftrace_bug+0x218/0x250
-> [  173.065533] lr : ftrace_bug+0x218/0x250
-> [  173.065545] sp : ffff80000b433b30
-> [  173.065550] x29: ffff80000b433b30 x28: ffff000006ae0000 x27: 0000000000000000
-> [  173.065571] x26: 0000000000000000 x25: 0000000000000000 x24: ffff800009eb1f58
-> [  173.065591] x23: 00000000fffffff2 x22: ffff8000093e1ba0 x21: ffff8000093e1a70
-> [  173.065611] x20: ffff8000096003dc x19: ffff000000480030 x18: 0000000000000020
-> [  173.065631] x17: 0000000000000000 x16: 0000000000000009 x15: ffff000006ae04a0
-> [  173.065651] x14: 0000000000000000 x13: 6336396132303830 x12: 3030303866666666
-> [  173.065671] x11: ffff800009c7f1b0 x10: ffff800009c67170 x9 : ffff800008116dc8
-> [  173.065691] x8 : 0000000000017fe8 x7 : c0000000ffffefff x6 : 0000000000000001
-> [  173.065711] x5 : 0000000000000001 x4 : 0000000000000000 x3 : 0000000000000027
-> [  173.065730] x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000022
-> [  173.065749] Call trace:
-> [  173.065755]  ftrace_bug+0x218/0x250
-> [  173.065767]  ftrace_replace_code+0x94/0xa0
-> [  173.065783]  ftrace_modify_all_code+0xb8/0x150
-> [  173.065796]  arch_ftrace_update_code+0x14/0x20
-> [  173.065808]  ftrace_run_update_code+0x24/0x78
-> [  173.065820]  ftrace_startup_enable+0x44/0x58
-> [  173.065832]  ftrace_startup+0xcc/0x160
-> [  173.065846]  register_ftrace_function+0x38/0x90
-> [  173.065859]  function_trace_init+0x7c/0xd0
-> [  173.065873]  tracing_set_tracer+0xe8/0x170
-> [  173.065883]  tracing_set_trace_write+0x10c/0x178
-> [  173.065894]  vfs_write+0xc8/0x378
-> [  173.065909]  ksys_write+0x74/0x108
-> [  173.065921]  __arm64_sys_write+0x24/0x30
-> [  173.065934]  invoke_syscall+0x4c/0x110
-> [  173.065948]  el0_svc_common.constprop.0+0x4c/0xf8
-> [  173.065962]  do_el0_svc+0x2c/0x90
-> [  173.065974]  el0_svc+0x20/0x60
-> [  173.065988]  el0t_64_sync_handler+0xb0/0xb8
-> [  173.065998]  el0t_64_sync+0x1a0/0x1a4
-> [  173.066010] ---[ end trace 0000000000000000 ]---
-> ```
-> (full kernel log here: https://paste.debian.net/1236750/)
-> 
-> Thanks in advance for any help!
-> 
-> Greetings,
-> Sebastian
-
