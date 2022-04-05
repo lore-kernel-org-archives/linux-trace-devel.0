@@ -2,85 +2,68 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DDEBC433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 547F0C433FE
 	for <linux-trace-devel@archiver.kernel.org>; Wed,  6 Apr 2022 02:53:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1389218AbiDFCte (ORCPT
+        id S239038AbiDFCtm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 5 Apr 2022 22:49:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37674 "EHLO
+        Tue, 5 Apr 2022 22:49:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1452191AbiDEPyf (ORCPT
+        with ESMTP id S1457271AbiDEQDC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 5 Apr 2022 11:54:35 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06971D3077;
-        Tue,  5 Apr 2022 07:50:30 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a02:3030:0:2f5a:2277:ba57:a2c0:2])
+        Tue, 5 Apr 2022 12:03:02 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C161FA77
+        for <linux-trace-devel@vger.kernel.org>; Tue,  5 Apr 2022 08:36:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: sebastianfricke)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 626051F44FBD;
-        Tue,  5 Apr 2022 15:50:24 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1649170224;
-        bh=aUWjMFcKdA/ahzvcq6qNxNOe4FMWkYYbLu73Qvpgl0w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U+MGghngzjg05eWaLvwMsCBeWsVxk8Z5QWXjbrXvZkApCZU55ktgvN58ekEgDUBOs
-         Svvlhaa+vCXBfzpmkKdhxGBfu1h4SGk1lCodM/zrTrEc+6XB+qoXaVYhVZtdCO0TA3
-         Wl2p4r5KItJwaiT5T0BJhAw+k0dhSg8L0dApr7cZ3F0QTF9L1SwP5oPIL6a8J6CL+B
-         iH4dF0/9fvlECQ5hGngEpr0F0xx20+9UKhPnpEx1SKR6AkOCU8elAiLKFOZNicD4Ip
-         sFw5fQWkq58nAABH2RyrooFIsZDZp3TiTlfPVdFbXHAoOpZXGF+BW8lbaMuWS/4bTW
-         kkkkxz3gKn6gQ==
-Date:   Tue, 5 Apr 2022 16:50:20 +0200
-From:   Sebastian Fricke <sebastian.fricke@collabora.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        linux-trace-devel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        Torsten Duwe <duwe@suse.de>
-Subject: Re: Corrupted function tracer in 5.17.0-rc1
-Message-ID: <20220405145020.55nopur6ccjyndnr@basti-XPS-13-9310>
-References: <20220404125212.tuby556kara5t56c@basti-XPS-13-9310>
- <20220404102607.5c9cb515@gandalf.local.home>
- <YksG6LXUCwIZhK8k@FVFF77S0Q05N>
- <20220404110633.1b246d55@gandalf.local.home>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 76468B81E54
+        for <linux-trace-devel@vger.kernel.org>; Tue,  5 Apr 2022 15:36:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01427C385A1
+        for <linux-trace-devel@vger.kernel.org>; Tue,  5 Apr 2022 15:36:51 +0000 (UTC)
+Date:   Tue, 5 Apr 2022 11:36:50 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd library: When the compression algorithm is none
+ do no compression
+Message-ID: <20220405113650.188bf8bf@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20220404110633.1b246d55@gandalf.local.home>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hey Steven & Mark,
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-On 04.04.2022 11:06, Steven Rostedt wrote:
->On Mon, 4 Apr 2022 15:55:36 +0100
->Mark Rutland <mark.rutland@arm.com> wrote:
->
->> From the title, this is v5.17-rc1, which is known broken due to the mcount sort
->> issue that was subsequently fixed in commit:
->
->Ah, yes. I was thinking of 5.18-rc1 (which has just been released)
->
->>
->>   4ed308c445a1e3ab ("ftrace: Have architectures opt-in for mcount build time sorting")
->>
->> Is it possible to try with the final v5.17? Or at least try with that patch
->> cherry-picked?
->
->Right, 5.17-rc1 is known broken. Please try the latest, 5.17 and let us
->know if it is still an issue.
+If there is no compression algorithm, do not even bother trying to do
+compression. Just turn it off. This is not a bug, it is more of an
+optimization.
 
-Using 5.18-rc1 it works well, thanks for the quick help.
->
->Thanks,
->
->-- Steve
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ lib/trace-cmd/trace-input.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Greetings,
-Sebastian
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 425c6077d88e..90bfa0f32984 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -4278,7 +4278,10 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
+ 		if (!zver)
+ 			goto failed_read;
+ 
+-		if (strcmp(zname, "none")) {
++		if (strcmp(zname, "none") == 0) {
++			handle->read_zpage = false;
++			handle->flags &= ~TRACECMD_FL_COMPRESSION;
++		} else {
+ 			handle->compress = tracecmd_compress_alloc(zname, zver,
+ 								   handle->fd,
+ 								   handle->pevent, NULL);
+-- 
+2.35.1
+
