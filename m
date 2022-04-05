@@ -2,68 +2,85 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 547F0C433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79B7AC433F5
 	for <linux-trace-devel@archiver.kernel.org>; Wed,  6 Apr 2022 02:53:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239038AbiDFCtm (ORCPT
+        id S1390982AbiDFCtr (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 5 Apr 2022 22:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
+        Tue, 5 Apr 2022 22:49:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1457271AbiDEQDC (ORCPT
+        with ESMTP id S1457634AbiDEQWt (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 5 Apr 2022 12:03:02 -0400
+        Tue, 5 Apr 2022 12:22:49 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C161FA77
-        for <linux-trace-devel@vger.kernel.org>; Tue,  5 Apr 2022 08:36:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783EA68FB8;
+        Tue,  5 Apr 2022 09:20:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 76468B81E54
-        for <linux-trace-devel@vger.kernel.org>; Tue,  5 Apr 2022 15:36:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01427C385A1
-        for <linux-trace-devel@vger.kernel.org>; Tue,  5 Apr 2022 15:36:51 +0000 (UTC)
-Date:   Tue, 5 Apr 2022 11:36:50 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd library: When the compression algorithm is none
- do no compression
-Message-ID: <20220405113650.188bf8bf@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 33847B81E76;
+        Tue,  5 Apr 2022 16:20:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C1895C385A5;
+        Tue,  5 Apr 2022 16:20:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649175648;
+        bh=9P0bvPQE7TMYUDS1QHIUxX2gPSQ2fjCXf7+fuJtJhZk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=DuxV52lKFd1sgfEeUDu9tOfV6G4bvXzk2hAfEUif0dtsVbADNdPFBYFfsMNXTfLkv
+         VPz+SSuWPJiz/2Pt29cWiLakeKR0SIbLT84b2Pt3E8GKMocCT6NBf1+gMiUYSpZR1U
+         5ZrQH2eFiZTVw6Hwf/VR+BVKI8oRuthYG7GkA2B8QeH761kRvg1kukLjz/SiXVMT8k
+         ogt3jYFymRus/NVEDcAyE5tQwCYaN4j3V/CVD6nPyHAEBZ/PbhYFUHS/ZELeTrdjLp
+         4eNyIQomhhBu43ddy3oWEs94w4OA/uuD9XExE+t+c0XbjFvAE88gftmwPdqD5hhn7h
+         wLsEkzxX4J6Ow==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9972CE85D15;
+        Tue,  5 Apr 2022 16:20:48 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] tracing: Move user_events.h temporarily out of include/uapi
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164917564862.18481.12734568923836492201.git-patchwork-notify@kernel.org>
+Date:   Tue, 05 Apr 2022 16:20:48 +0000
+References: <20220401143903.188384f3@gandalf.local.home>
+In-Reply-To: <20220401143903.188384f3@gandalf.local.home>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+        beaub@linux.microsoft.com, mhiramat@kernel.org,
+        linux-trace-devel@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, alexei.starovoitov@gmail.com,
+        torvalds@linux-foundation.org, michal.lkml@markovi.net,
+        ndesaulniers@google.com, linux-kbuild@vger.kernel.org,
+        masahiroy@kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Hello:
 
-If there is no compression algorithm, do not even bother trying to do
-compression. Just turn it off. This is not a bug, it is more of an
-optimization.
+This patch was applied to netdev/net-next.git (master)
+by Steven Rostedt (Google) <rostedt@goodmis.org>:
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- lib/trace-cmd/trace-input.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+On Fri, 1 Apr 2022 14:39:03 -0400 you wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> While user_events API is under development and has been marked for broken
+> to not let the API become fixed, move the header file out of the uapi
+> directory. This is to prevent it from being installed, then later changed,
+> and then have an old distro user space update with a new kernel, where
+> applications see the user_events being available, but the old header is in
+> place, and then they get compiled incorrectly.
+> 
+> [...]
 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 425c6077d88e..90bfa0f32984 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -4278,7 +4278,10 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
- 		if (!zver)
- 			goto failed_read;
- 
--		if (strcmp(zname, "none")) {
-+		if (strcmp(zname, "none") == 0) {
-+			handle->read_zpage = false;
-+			handle->flags &= ~TRACECMD_FL_COMPRESSION;
-+		} else {
- 			handle->compress = tracecmd_compress_alloc(zname, zver,
- 								   handle->fd,
- 								   handle->pevent, NULL);
+Here is the summary with links:
+  - tracing: Move user_events.h temporarily out of include/uapi
+    https://git.kernel.org/netdev/net-next/c/5cfff569cab8
+
+You are awesome, thank you!
 -- 
-2.35.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
