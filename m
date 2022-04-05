@@ -2,121 +2,85 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87356C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  6 Apr 2022 02:47:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DDEBC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  6 Apr 2022 02:53:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237605AbiDFCmy (ORCPT
+        id S1389218AbiDFCte (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 5 Apr 2022 22:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41868 "EHLO
+        Tue, 5 Apr 2022 22:49:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573608AbiDETYN (ORCPT
+        with ESMTP id S1452191AbiDEPyf (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 5 Apr 2022 15:24:13 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CD46D85C
-        for <linux-trace-devel@vger.kernel.org>; Tue,  5 Apr 2022 12:22:14 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id p8so420558qvv.5
-        for <linux-trace-devel@vger.kernel.org>; Tue, 05 Apr 2022 12:22:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XtSps7/m+IfjWY2IhgorjG8AnRB88okvBnpSvx3lWeA=;
-        b=wbsmJPQdYTrWqLRqSoBvk2aa2b5hi+ZHvwv4vvIDRn0hkvsz6k1AcwKTte6CYygw7l
-         FlWAScZT2hyJ+jrm7TJtbCdIetyYWVz3dJMw2vQosebVrkTNjsfX93wj3N0269fNXbkp
-         fFMRGY9eD+hKJ/Zl3EAYnWVx3FjwfZOQqWsv4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XtSps7/m+IfjWY2IhgorjG8AnRB88okvBnpSvx3lWeA=;
-        b=RAIrEJexu7JRmWMGFEUpaqtzTeRRwbjg9tXsbDk/YvOPFYphQKzLuZDo3aj7QVY7MU
-         kvkHMzCA6eJH61k/FZTwvm/cKhQlF3NsWVTLzh2fXhvkB0FoH96yLjvvb8plmxRxlAgQ
-         2KWzFyudq5gG/m4tClqdsn9ZNS+84Xf+JLgMBYup2LQ14nqWo4PaqpyI7HgNQg2DnGXJ
-         geQxLztj03AsOLwX61l2l5q3CzRKvGgM117UxCoKAuSTsnGV0oseZypyVYQA7GJwPD1U
-         zg+cLI6c8KIMaQvIUfgQoaBWekOOORxrOQKTeS1pic4GSGlpGbAEJuqsES779VBbAxeK
-         ovEA==
-X-Gm-Message-State: AOAM5329aUe+QgRBCf8ESGjg0mTBC2Y3Rm/EyjC0SHw7bQO/m/FRGxgF
-        /pvxlHpl9hVv3rzoGLQE84XKr7ZjWZvfTg==
-X-Google-Smtp-Source: ABdhPJwhQcV/PPO8ANyRBTyw5DYI9yo9qKBQo3HQwVAekguHddvjBuk/ybbNv89awQZvqo6gEQZzUg==
-X-Received: by 2002:a05:6214:d45:b0:441:6b43:6e25 with SMTP id 5-20020a0562140d4500b004416b436e25mr4225502qvr.95.1649186533765;
-        Tue, 05 Apr 2022 12:22:13 -0700 (PDT)
-Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id 186-20020a370cc3000000b0067d36e3481dsm8487262qkm.17.2022.04.05.12.22.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Apr 2022 12:22:13 -0700 (PDT)
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     vineethrp@google.com, rostedt@goodmis.org, tz.stoyanov@gmail.com,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH v3] trace-cmd: Move trace_msg cache file to memfd
-Date:   Tue,  5 Apr 2022 19:22:04 +0000
-Message-Id: <20220405192204.1551283-1-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.35.1.1094.g7c7d902a7c-goog
+        Tue, 5 Apr 2022 11:54:35 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06971D3077;
+        Tue,  5 Apr 2022 07:50:30 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a02:3030:0:2f5a:2277:ba57:a2c0:2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sebastianfricke)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 626051F44FBD;
+        Tue,  5 Apr 2022 15:50:24 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1649170224;
+        bh=aUWjMFcKdA/ahzvcq6qNxNOe4FMWkYYbLu73Qvpgl0w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U+MGghngzjg05eWaLvwMsCBeWsVxk8Z5QWXjbrXvZkApCZU55ktgvN58ekEgDUBOs
+         Svvlhaa+vCXBfzpmkKdhxGBfu1h4SGk1lCodM/zrTrEc+6XB+qoXaVYhVZtdCO0TA3
+         Wl2p4r5KItJwaiT5T0BJhAw+k0dhSg8L0dApr7cZ3F0QTF9L1SwP5oPIL6a8J6CL+B
+         iH4dF0/9fvlECQ5hGngEpr0F0xx20+9UKhPnpEx1SKR6AkOCU8elAiLKFOZNicD4Ip
+         sFw5fQWkq58nAABH2RyrooFIsZDZp3TiTlfPVdFbXHAoOpZXGF+BW8lbaMuWS/4bTW
+         kkkkxz3gKn6gQ==
+Date:   Tue, 5 Apr 2022 16:50:20 +0200
+From:   Sebastian Fricke <sebastian.fricke@collabora.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        linux-trace-devel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>,
+        Torsten Duwe <duwe@suse.de>
+Subject: Re: Corrupted function tracer in 5.17.0-rc1
+Message-ID: <20220405145020.55nopur6ccjyndnr@basti-XPS-13-9310>
+References: <20220404125212.tuby556kara5t56c@basti-XPS-13-9310>
+ <20220404102607.5c9cb515@gandalf.local.home>
+ <YksG6LXUCwIZhK8k@FVFF77S0Q05N>
+ <20220404110633.1b246d55@gandalf.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20220404110633.1b246d55@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This is cleaner and also fixes issues in Android where /tmp does not
-exist.
+Hey Steven & Mark,
 
-With this, host-guest tracing works on Android VM running on ChromeOS
-Linux.
+On 04.04.2022 11:06, Steven Rostedt wrote:
+>On Mon, 4 Apr 2022 15:55:36 +0100
+>Mark Rutland <mark.rutland@arm.com> wrote:
+>
+>> From the title, this is v5.17-rc1, which is known broken due to the mcount sort
+>> issue that was subsequently fixed in commit:
+>
+>Ah, yes. I was thinking of 5.18-rc1 (which has just been released)
+>
+>>
+>>   4ed308c445a1e3ab ("ftrace: Have architectures opt-in for mcount build time sorting")
+>>
+>> Is it possible to try with the final v5.17? Or at least try with that patch
+>> cherry-picked?
+>
+>Right, 5.17-rc1 is known broken. Please try the latest, 5.17 and let us
+>know if it is still an issue.
 
-Signed-off-by: Joel Fernandes <joel@joelfernandes.org>
----
- lib/trace-cmd/include/private/trace-cmd-private.h | 2 --
- lib/trace-cmd/trace-msg.c                         | 5 ++---
- 2 files changed, 2 insertions(+), 5 deletions(-)
+Using 5.18-rc1 it works well, thanks for the quick help.
+>
+>Thanks,
+>
+>-- Steve
 
-diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 6934376..3aee139 100644
---- a/lib/trace-cmd/include/private/trace-cmd-private.h
-+++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -377,7 +377,6 @@ enum tracecmd_msg_flags {
- };
- 
- /* for both client and server */
--#define MSG_CACHE_FILE "/tmp/trace_msg_cacheXXXXXX"
- struct tracecmd_msg_handle {
- 	int			fd;
- 	short			cpu_count;
-@@ -386,7 +385,6 @@ struct tracecmd_msg_handle {
- 	bool			done;
- 	bool			cache;
- 	int			cfd;
--	char			cfile[sizeof(MSG_CACHE_FILE)];
- };
- 
- struct tracecmd_tsync_protos {
-diff --git a/lib/trace-cmd/trace-msg.c b/lib/trace-cmd/trace-msg.c
-index 03b853e..bb559c8 100644
---- a/lib/trace-cmd/trace-msg.c
-+++ b/lib/trace-cmd/trace-msg.c
-@@ -19,6 +19,7 @@
- #include <string.h>
- #include <unistd.h>
- #include <arpa/inet.h>
-+#include <sys/mman.h>
- #include <sys/types.h>
- #include <linux/types.h>
- 
-@@ -593,11 +594,9 @@ tracecmd_msg_handle_alloc(int fd, unsigned long flags)
- int tracecmd_msg_handle_cache(struct tracecmd_msg_handle *msg_handle)
- {
- 	if (msg_handle->cfd < 0) {
--		strcpy(msg_handle->cfile, MSG_CACHE_FILE);
--		msg_handle->cfd = mkstemp(msg_handle->cfile);
-+		msg_handle->cfd = memfd_create("trace_msg_cache", 0);
- 		if (msg_handle->cfd < 0)
- 			return -1;
--		unlink(msg_handle->cfile);
- 	}
- 	msg_handle->cache = true;
- 	return 0;
--- 
-2.35.1.1094.g7c7d902a7c-goog
-
+Greetings,
+Sebastian
