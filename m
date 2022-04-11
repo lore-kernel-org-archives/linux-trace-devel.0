@@ -2,79 +2,76 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A8EAC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Sat,  9 Apr 2022 17:29:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C12DC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Apr 2022 02:23:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242873AbiDIRbn (ORCPT
+        id S233115AbiDKC0B (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 9 Apr 2022 13:31:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46390 "EHLO
+        Sun, 10 Apr 2022 22:26:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231684AbiDIRbm (ORCPT
+        with ESMTP id S229622AbiDKC0A (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 9 Apr 2022 13:31:42 -0400
-Received: from gateway24.websitewelcome.com (gateway24.websitewelcome.com [192.185.51.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BEB083B26
-        for <linux-trace-devel@vger.kernel.org>; Sat,  9 Apr 2022 10:29:34 -0700 (PDT)
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway24.websitewelcome.com (Postfix) with ESMTP id 6A20C4629
-        for <linux-trace-devel@vger.kernel.org>; Sat,  9 Apr 2022 12:29:34 -0500 (CDT)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id dEtyn1WCDb6UBdEtynpYCt; Sat, 09 Apr 2022 12:29:34 -0500
-X-Authority-Reason: nr=8
-Received: from host-95-245-33-130.retail.telecomitalia.it ([95.245.33.130]:38022 helo=[192.168.0.89])
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1ndEtx-004Ng6-RW; Sat, 09 Apr 2022 12:29:34 -0500
-Message-ID: <90b3fa39-0e35-2ee1-773e-8d51006c73fa@kernel.org>
-Date:   Sat, 9 Apr 2022 19:29:31 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v2] rtla: Minor grammar fix for rtla README
-Content-Language: en-US
-To:     John Kacur <jkacur@redhat.com>
-Cc:     RT <linux-rt-users@vger.kernel.org>,
-        linux-trace-devel@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <20220408161012.10544-1-jkacur@redhat.com>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <20220408161012.10544-1-jkacur@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 95.245.33.130
-X-Source-L: No
-X-Exim-ID: 1ndEtx-004Ng6-RW
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-95-245-33-130.retail.telecomitalia.it ([192.168.0.89]) [95.245.33.130]:38022
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 3
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
+        Sun, 10 Apr 2022 22:26:00 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7092D381AD
+        for <linux-trace-devel@vger.kernel.org>; Sun, 10 Apr 2022 19:23:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1649643828; x=1681179828;
+  h=from:to:cc:subject:date:message-id;
+  bh=jgqrrRHafccuxO6arphXJ6PBkIH4CquSrWIVwxejF1I=;
+  b=T8czaCPCXqkcZjqeHim79FXyqvYFB92Cs/3rK2aV6zm3FqnqXlEVEWBs
+   J8a/a2gcUS1UW7yNMVH+U+6NSJVJyJGbxthQA0g2h8+rZS2MVo35jo07i
+   l6uIO3S51oJA826BHGQI8kg9VcugkJ4cFLFuEyzLR9GO7csVKd8t2GTLC
+   4bFcSooERwL6qyFNUpfNVtB31n5Vu7Q1g4rdyweDbAlu5KHIv9ZO7x4bo
+   Y8iDpVBoKo/XCXM0Erv9zGMhZYxlvf/qwHTOYQumk7VRXSJXRq3DcsYPw
+   M5F82i2A+4pjtMM1U7G4oF/z/8t0wvUFNDqSR90w/DCHHNxeTYgjd234W
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10313"; a="287022260"
+X-IronPort-AV: E=Sophos;i="5.90,250,1643702400"; 
+   d="scan'208";a="287022260"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2022 19:23:47 -0700
+X-IronPort-AV: E=Sophos;i="5.90,250,1643702400"; 
+   d="scan'208";a="571912223"
+Received: from intel-z97x-ud5h.sh.intel.com ([10.67.103.201])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2022 19:23:46 -0700
+From:   Hongzhan Chen <hongzhan.chen@intel.com>
+To:     y.karadz@gmail.com
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH] kernel-shark: Add instroduction of external Xenomai plugin
+Date:   Sun, 10 Apr 2022 22:03:39 -0400
+Message-Id: <20220411020339.363-1-hongzhan.chen@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 4/8/22 18:10, John Kacur wrote:
-> - Change to "The rtla meta-tool includes"
-> - Remove an unnecessary "But, "
-> - Adjust the formatting of the paragraph resulting from the changes.
-> - Simplify the wording for the libraries and tools.
-> 
-> Signed-off-by: John Kacur <jkacur@redhat.com>
+introduce external Xenomai plugin in README as a reference to
+implement and build stand-alone plugin.
 
-Acked-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+Signed-off-by: Hongzhan Chen <hongzhan.chen@intel.com>
 
-Thanks!
--- Daniel
+diff --git a/README b/README
+index 37ccd95..d3bceaa 100644
+--- a/README
++++ b/README
+@@ -114,6 +114,14 @@ CMake examples:
+ 
+     cmake -DCMAKE_BUILD_TYPE=Package -DCMAKE_C_FLAGS_PACKAGE="-O3 -pedantic"  ../
+ 
++External plugin example:
++------------------------------------------------------------
++    KernelShark also supports stand-alone plugin except for build-in. There is
++    a real example under https://source.denx.de/Xenomai/xenomai/-/tree/next/tracing/kernelshark/,
++    which is to visualize out-of-band state of realtime task with hollow cobalt
++    blue box mainly when there is cobalt context switches in Xenomai. As its
++    implemention mainly refers to build-in plugin-sched_events, it shares common
++    plugin features such as clickable shapes.
+ 
+ Contributions:
+ ------------------------------------------------------------
+-- 
+2.17.1
+
