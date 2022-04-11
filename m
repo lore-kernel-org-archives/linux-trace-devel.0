@@ -2,122 +2,102 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B7A2C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Apr 2022 04:10:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AEB00C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Apr 2022 15:18:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234291AbiDKEMz (ORCPT
+        id S1347475AbiDKPUP (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 11 Apr 2022 00:12:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39064 "EHLO
+        Mon, 11 Apr 2022 11:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233151AbiDKEMy (ORCPT
+        with ESMTP id S244798AbiDKPUO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 11 Apr 2022 00:12:54 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C282DC8
-        for <linux-trace-devel@vger.kernel.org>; Sun, 10 Apr 2022 21:10:41 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id m30so21147548wrb.1
-        for <linux-trace-devel@vger.kernel.org>; Sun, 10 Apr 2022 21:10:41 -0700 (PDT)
+        Mon, 11 Apr 2022 11:20:14 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3177326C8
+        for <linux-trace-devel@vger.kernel.org>; Mon, 11 Apr 2022 08:17:59 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id v4so5361974edl.7
+        for <linux-trace-devel@vger.kernel.org>; Mon, 11 Apr 2022 08:17:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ZDNEpWC9t/tJaB/T0fk5diJJOG8fEIPQq5HRuBB2qAs=;
-        b=K3nixAMI3S8WN8kAnL5J7KFJYgT77MuANv2vPnUmkkpDaypVOV12pXwhhXbqJyiWJi
-         bWaBKIFptr32BGIQSDdEPP528riRjvLzTMVffkdJdgidI4FFfswGIa9HRAVty1gZMCSn
-         BAfg8sUoe1w/pVSMUolkh0dwXIEnNni0itYkwYfouMTY8+uaUvm8JGbQKjPpDoLp13u5
-         b8DOWzLv8EjZyf1nJ1MO4dSfZtpyhDGOzGTKpLG5rVXC3hOr3IQknaxdzlbB//375ozo
-         2XmRfOCeiIn0NGI0vY9AXn4botaw7VD93VQnFTVim4SvKSYELaSviIGlPyf0mJVUSf5L
-         pycQ==
+        bh=Uz0Qj4HqGj8zZuxN93G4U/BHoUPzN/AMV7S8css1VRc=;
+        b=K2c58GFB1sNql49nIZe7fcbDZU9Nv2r1ZcNytKOh5ZysDJxhTV4C+TjjqoTJJ1sxZz
+         UHvF07ga2CXKA4R41ZMcNktI8+dNh+IWotbvPVe9anSeSs1HoIYzHlDzstlXwk+koc1T
+         ehp7LwHnLbBrXiadNgSldbBe/h3T4qwu+HCL0LKUsA9T9haUARxxy3Nj9i7oHw+rEQmo
+         RMJoGjYlLkYrgnEMOVj17hWblj/rutZfITnIkYrY5l0lG+pIuI1vmJj4A+6TT5gRoP1J
+         ViU3CLTKiJRXHrn7SQAN7uaA5/KxhzOv4BSk6uN1F0mBMlumMGLPmnBcZ87egexlV3QK
+         yU4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ZDNEpWC9t/tJaB/T0fk5diJJOG8fEIPQq5HRuBB2qAs=;
-        b=zXu6/jo5Na48a7AhGzPjFll0G9ljAcLMI8Kt6lehpVFBxbrdAZH+vz2efddqX4hBff
-         mmyFw0ouDCuFrpsNsBZO6d3c0ZB0gTy1P+7og4P1QoRbPJ+B5ZCp+n1T/9AYXGxymvNV
-         voKk1kruzYLbhKM6c5ZPKFVKPdp4fmE+PbNP0z40OZtzT+QRefn2CL3wSHgJuIxlbN5E
-         PnZm5ip5DGC8igQ009kTMMaNUq6jLodXLNrOvyEsSSM2bo2HuGMlu+34Csm2Fhhl/MdR
-         4r9S1wKw4/JfaGNHCHns4BCf2wMNI4MNB8C7Ghj6KWk6csFeBxhc520mIBfjztBakVs4
-         J5HA==
-X-Gm-Message-State: AOAM531OB1pfVG2DHIJr5HkEPgKyk3u3ST2HStzGrql5sPzk/oxMbJ0J
-        pHgl96jcIqE0XhzQ8EARYVhDwNGHGzQ=
-X-Google-Smtp-Source: ABdhPJzMKhat2bNshTCI7gv3KFUnMp2S8wzyXfilZV/j9HMQ4rRPlMsZXfZPpG29tWSvnkQD5gbVvQ==
-X-Received: by 2002:a5d:4d02:0:b0:207:a6e8:ef4a with SMTP id z2-20020a5d4d02000000b00207a6e8ef4amr2141154wrt.245.1649650239531;
-        Sun, 10 Apr 2022 21:10:39 -0700 (PDT)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id i7-20020a5d5587000000b00207a8cde900sm728479wrv.19.2022.04.10.21.10.38
+        bh=Uz0Qj4HqGj8zZuxN93G4U/BHoUPzN/AMV7S8css1VRc=;
+        b=gvMoOIehwWm5PKbFiV41VKYW7qD1DksR2zEtrcEr5FmAu3L/Sa9cECSeJhVdrdDfSq
+         pzrnIYImqMc0V3uOV2oMQgCGz9LLSv55UyqH2qQVh/SjwklzGE0vxam8ygJr21w+ouur
+         EsxkuB+K1lyvOZJqBwGxBLNv9tSXZKFxp58+iAW1QIbG2PQ8J3VddBbqWoO08SqMM0XC
+         PzWrDJgU8rFKIOWkoWtwHk4NgRXCWdUmQjMvpV+1imRgXTTdSjyIIxx7irN9Vy5a+X2v
+         Qtlnp+K7w1hcxr8yw7FjiHU/1HO9SFT0Mt+lDUTLlZJRNh4JxSHzG5cjIS1sWdJP+x8s
+         +Fkg==
+X-Gm-Message-State: AOAM532L2d4Ut/YLaQciFyxLHyeZC+XtGtqgmrBsltKLnZKVrX0zYbuT
+        y5br4715VDGslX2+KIiu0z38v6qZ+vc=
+X-Google-Smtp-Source: ABdhPJwtF5q/iK2jkgtF0+qJECv2gMo4eaFE00sPlQbn1NbUnAjN9ebmt2ajE2Smz7EKlO9WMU0how==
+X-Received: by 2002:a05:6402:2688:b0:419:5dde:4700 with SMTP id w8-20020a056402268800b004195dde4700mr34123419edd.124.1649690277890;
+        Mon, 11 Apr 2022 08:17:57 -0700 (PDT)
+Received: from crow.. (78-154-13-168.ip.btc-net.bg. [78.154.13.168])
+        by smtp.gmail.com with ESMTPSA id s12-20020a1709062ecc00b006e8558c9a5csm3867262eji.94.2022.04.11.08.17.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Apr 2022 21:10:39 -0700 (PDT)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH] trace-cmd: Write the actual size of compressed block in the trace file
-Date:   Mon, 11 Apr 2022 07:10:38 +0300
-Message-Id: <20220411041038.132453-1-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.35.1
+        Mon, 11 Apr 2022 08:17:57 -0700 (PDT)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH 1/2] kernel-shark: Do not hard-code app name
+Date:   Mon, 11 Apr 2022 18:17:43 +0300
+Message-Id: <20220411151744.445930-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Before a data block is compressed using the chosen compression
-algorithm, a hook function is called to calculate the size of the
-required buffer to compress the data. In most cases that size is bigger
-than the actual size of the compressed data. The current logic writes
-into the trace file that buffer with its calculated size, even though
-part of it is not used. In the trace file should be written only the
-compressed data block, with its real size.
+Instead, use 'cmakedefine' the export the corresponding Cmake
+build variable.
 
-fixes: 3f8447b1 ("trace-cmd library: Add support for compression algorithms")
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- lib/trace-cmd/trace-compress.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ build/deff.h.cmake  | 3 +++
+ src/kernelshark.cpp | 2 +-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/lib/trace-cmd/trace-compress.c b/lib/trace-cmd/trace-compress.c
-index aa03d17c..a63295e6 100644
---- a/lib/trace-cmd/trace-compress.c
-+++ b/lib/trace-cmd/trace-compress.c
-@@ -303,7 +303,7 @@ error:
-  */
- int tracecmd_compress_block(struct tracecmd_compression *handle)
- {
--	unsigned int size;
-+	unsigned int size, real_size;
- 	char *buf;
- 	int endian4;
- 	int ret;
-@@ -318,12 +318,14 @@ int tracecmd_compress_block(struct tracecmd_compression *handle)
- 	if (!buf)
- 		return -1;
+diff --git a/build/deff.h.cmake b/build/deff.h.cmake
+index 82379df..4302f00 100644
+--- a/build/deff.h.cmake
++++ b/build/deff.h.cmake
+@@ -11,6 +11,9 @@
+ /** KernelShark Version number. */
+ #cmakedefine KS_VERSION_STRING "@KS_VERSION_STRING@"
  
--	ret = handle->proto->compress_block(handle->context, handle->buffer, handle->pointer, buf, size);
--	if (ret < 0)
-+	real_size = handle->proto->compress_block(handle->context, handle->buffer, handle->pointer, buf, size);
-+	if (real_size < 0) {
-+		ret = real_size;
- 		goto out;
-+	}
++/** KernelShark Application name. */
++#cmakedefine KS_APP_NAME "@KS_APP_NAME@"
++
+ /** KernelShark installation prefix path. */
+ #cmakedefine _INSTALL_PREFIX "@_INSTALL_PREFIX@"
  
- 	/* Write compressed data size */
--	endian4 = tep_read_number(handle->tep, &ret, 4);
-+	endian4 = tep_read_number(handle->tep, &real_size, 4);
- 	ret = do_write(handle, &endian4, 4);
- 	if (ret != 4)
- 		goto out;
-@@ -337,8 +339,8 @@ int tracecmd_compress_block(struct tracecmd_compression *handle)
- 	}
+diff --git a/src/kernelshark.cpp b/src/kernelshark.cpp
+index c373f54..1ad15f4 100644
+--- a/src/kernelshark.cpp
++++ b/src/kernelshark.cpp
+@@ -56,7 +56,7 @@ int main(int argc, char **argv)
+ 	int c;
  
- 	/* Write compressed data */
--	ret = do_write(handle, buf, size);
--	if (ret != size) {
-+	ret = do_write(handle, buf, real_size);
-+	if (ret != real_size) {
- 		ret = -1;
- 		goto out;
- 	}
+ 	QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+-	QApplication::setDesktopFileName("kernelshark");
++	QApplication::setDesktopFileName(KS_APP_NAME);
+ 	QApplication a(argc, argv);
+ 
+ 	KsMainWindow ks;
 -- 
-2.35.1
+2.32.0
 
