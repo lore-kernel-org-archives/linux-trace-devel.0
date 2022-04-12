@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 868DAC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Apr 2022 04:27:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AC93C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Apr 2022 04:27:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345883AbiDLEaL (ORCPT
+        id S1345876AbiDLEaM (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 12 Apr 2022 00:30:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
+        Tue, 12 Apr 2022 00:30:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345601AbiDLEaL (ORCPT
+        with ESMTP id S1345877AbiDLEaL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 12 Apr 2022 00:30:11 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA943298F
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF3F32991
         for <linux-trace-devel@vger.kernel.org>; Mon, 11 Apr 2022 21:27:54 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1347CB80E9B
+        by sin.source.kernel.org (Postfix) with ESMTPS id 65C84CE1BE8
         for <linux-trace-devel@vger.kernel.org>; Tue, 12 Apr 2022 04:27:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FF16C385A8;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D6A1C385AA;
         Tue, 12 Apr 2022 04:27:51 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1ne886-003VeF-I2;
+        id 1ne886-003VeC-HG;
         Tue, 12 Apr 2022 00:27:50 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 2/4] trace-cmd listen: Replace bool use_tcp with enum type
-Date:   Tue, 12 Apr 2022 00:27:37 -0400
-Message-Id: <20220412042739.836516-3-rostedt@goodmis.org>
+Subject: [PATCH 1/4] trace-cmd listen: Remove UDP from function names
+Date:   Tue, 12 Apr 2022 00:27:36 -0400
+Message-Id: <20220412042739.836516-2-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220412042739.836516-1-rostedt@goodmis.org>
 References: <20220412042739.836516-1-rostedt@goodmis.org>
@@ -44,151 +44,135 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-To allow listen to use vsockets as a connection interface, using a
-boolean "use_tcp" is not flexible enough, as now there are three kinds
-of connections. In preparation for adding vsockets have trace-cmd listen
-use an enum instead of a boolean.
+Several functions have "udp" in their name when they also handle TCP. As
+we are going to also add vsocket connections, it makes even less sense
+to have these names with "udp". Make the names of the functions (and
+some variables) more generic.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- tracecmd/include/trace-local.h |  5 +++++
- tracecmd/trace-listen.c        | 27 +++++++++++++++------------
- 2 files changed, 20 insertions(+), 12 deletions(-)
+ tracecmd/trace-listen.c | 42 ++++++++++++++++++++---------------------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
 
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index bb33de06bb58..30119a33574b 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -41,6 +41,11 @@ extern int show_status;
- 
- int trace_set_verbose(char *level);
- 
-+enum port_type {
-+	USE_UDP,
-+	USE_TCP,
-+};
-+
- struct pid_record_data {
- 	int			pid;
- 	int			brass[2];
 diff --git a/tracecmd/trace-listen.c b/tracecmd/trace-listen.c
-index b2ab05bc3068..a5d4ec64f77c 100644
+index 874ecd61d98a..b2ab05bc3068 100644
 --- a/tracecmd/trace-listen.c
 +++ b/tracecmd/trace-listen.c
-@@ -138,7 +138,7 @@ static void remove_pid_file(void)
+@@ -137,8 +137,8 @@ static void remove_pid_file(void)
+ 	unlink(buf);
  }
  
- static int process_child(int sfd, const char *host, const char *port,
--			 int cpu, int page_size, int use_tcp)
-+			 int cpu, int page_size, enum port_type type)
+-static int process_udp_child(int sfd, const char *host, const char *port,
+-			     int cpu, int page_size, int use_tcp)
++static int process_child(int sfd, const char *host, const char *port,
++			 int cpu, int page_size, int use_tcp)
  {
  	struct sockaddr_storage peer_addr;
  	socklen_t peer_addr_len;
-@@ -160,7 +160,7 @@ static int process_child(int sfd, const char *host, const char *port,
- 	if (fd < 0)
- 		pdie("creating %s", tempfile);
- 
--	if (use_tcp) {
-+	if (type == USE_TCP) {
- 		if (listen(sfd, backlog) < 0)
- 			pdie("listen");
- 		peer_addr_len = sizeof(peer_addr);
-@@ -184,7 +184,7 @@ static int process_child(int sfd, const char *host, const char *port,
- 		if (!r)
- 			break;
- 		/* UDP requires that we get the full size in one go */
--		if (!use_tcp && r < page_size && !once) {
-+		if (type == USE_UDP && r < page_size && !once) {
- 			once = 1;
- 			warning("read %d bytes, expected %d", r, page_size);
- 		}
-@@ -205,7 +205,7 @@ static int process_child(int sfd, const char *host, const char *port,
+@@ -205,7 +205,7 @@ static int process_udp_child(int sfd, const char *host, const char *port,
  #define START_PORT_SEARCH 1500
  #define MAX_PORT_SEARCH 6000
  
--static int bind_a_port(int start_port, int *sfd, int use_tcp)
-+static int bind_a_port(int start_port, int *sfd, enum port_type type)
+-static int udp_bind_a_port(int start_port, int *sfd, int use_tcp)
++static int bind_a_port(int start_port, int *sfd, int use_tcp)
  {
  	struct addrinfo hints;
  	struct addrinfo *result, *rp;
-@@ -218,7 +218,7 @@ static int bind_a_port(int start_port, int *sfd, int use_tcp)
- 
- 	memset(&hints, 0, sizeof(hints));
- 	hints.ai_family = AF_UNSPEC;
--	hints.ai_socktype = use_tcp ? SOCK_STREAM : SOCK_DGRAM;
-+	hints.ai_socktype = type == USE_TCP ? SOCK_STREAM : SOCK_DGRAM;
- 	hints.ai_flags = AI_PASSIVE;
+@@ -223,7 +223,7 @@ static int udp_bind_a_port(int start_port, int *sfd, int use_tcp)
  
  	s = getaddrinfo(NULL, buf, &hints, &result);
-@@ -250,7 +250,7 @@ static int bind_a_port(int start_port, int *sfd, int use_tcp)
+ 	if (s != 0)
+-		pdie("getaddrinfo: error opening udp socket");
++		pdie("getaddrinfo: error opening socket");
+ 
+ 	for (rp = result; rp != NULL; rp = rp->ai_next) {
+ 		*sfd = socket(rp->ai_family, rp->ai_socktype,
+@@ -249,40 +249,40 @@ static int udp_bind_a_port(int start_port, int *sfd, int use_tcp)
+ 	return num_port;
  }
  
- static void fork_reader(int sfd, const char *node, const char *port,
--			int *pid, int cpu, int pagesize, int use_tcp)
-+			int *pid, int cpu, int pagesize, enum port_type type)
+-static void fork_udp_reader(int sfd, const char *node, const char *port,
+-			    int *pid, int cpu, int pagesize, int use_tcp)
++static void fork_reader(int sfd, const char *node, const char *port,
++			int *pid, int cpu, int pagesize, int use_tcp)
  {
  	int ret;
  
-@@ -260,7 +260,7 @@ static void fork_reader(int sfd, const char *node, const char *port,
- 		pdie("creating reader");
+ 	*pid = fork();
+ 
+ 	if (*pid < 0)
+-		pdie("creating udp reader");
++		pdie("creating reader");
  
  	if (!*pid) {
--		ret = process_child(sfd, node, port, cpu, pagesize, use_tcp);
-+		ret = process_child(sfd, node, port, cpu, pagesize, type);
+-		ret = process_udp_child(sfd, node, port, cpu, pagesize, use_tcp);
++		ret = process_child(sfd, node, port, cpu, pagesize, use_tcp);
  		if (ret < 0)
- 			pdie("Problem with reader %d", ret);
+-			pdie("Problem with udp reader %d", ret);
++			pdie("Problem with reader %d", ret);
  	}
-@@ -269,7 +269,7 @@ static void fork_reader(int sfd, const char *node, const char *port,
+ 
+ 	close(sfd);
  }
  
- static int open_port(const char *node, const char *port, int *pid,
--		     int cpu, int pagesize, int start_port, int use_tcp)
-+		     int cpu, int pagesize, int start_port, enum port_type type)
+-static int open_udp(const char *node, const char *port, int *pid,
+-		    int cpu, int pagesize, int start_port, int use_tcp)
++static int open_port(const char *node, const char *port, int *pid,
++		     int cpu, int pagesize, int start_port, int use_tcp)
  {
  	int sfd;
  	int num_port;
-@@ -278,11 +278,11 @@ static int open_port(const char *node, const char *port, int *pid,
- 	 * bind_a_port() currently does not return an error, but if that
+ 
+ 	/*
+-	 * udp_bind_a_port() currently does not return an error, but if that
++	 * bind_a_port() currently does not return an error, but if that
  	 * changes in the future, we have a check for it now.
  	 */
--	num_port = bind_a_port(start_port, &sfd, use_tcp);
-+	num_port = bind_a_port(start_port, &sfd, type);
+-	num_port = udp_bind_a_port(start_port, &sfd, use_tcp);
++	num_port = bind_a_port(start_port, &sfd, use_tcp);
  	if (num_port < 0)
  		return num_port;
  
--	fork_reader(sfd, node, port, pid, cpu, pagesize, use_tcp);
-+	fork_reader(sfd, node, port, pid, cpu, pagesize, type);
+-	fork_udp_reader(sfd, node, port, pid, cpu, pagesize, use_tcp);
++	fork_reader(sfd, node, port, pid, cpu, pagesize, use_tcp);
  
  	return num_port;
  }
-@@ -463,7 +463,7 @@ static void destroy_all_readers(int cpus, int *pid_array, const char *node,
- static int *create_all_readers(const char *node, const char *port,
- 			       int pagesize, struct tracecmd_msg_handle *msg_handle)
- {
--	int use_tcp = msg_handle->flags & TRACECMD_MSG_FL_USE_TCP;
-+	enum port_type port_type = USE_UDP;
- 	char buf[BUFSIZ];
+@@ -468,7 +468,7 @@ static int *create_all_readers(const char *node, const char *port,
  	unsigned int *port_array;
  	int *pid_array;
-@@ -476,6 +476,9 @@ static int *create_all_readers(const char *node, const char *port,
- 	if (!pagesize)
- 		return NULL;
+ 	unsigned int start_port;
+-	unsigned int udp_port;
++	unsigned int connect_port;
+ 	int cpus = msg_handle->cpu_count;
+ 	int cpu;
+ 	int pid;
+@@ -490,19 +490,19 @@ static int *create_all_readers(const char *node, const char *port,
  
-+	if (msg_handle->flags & TRACECMD_MSG_FL_USE_TCP)
-+		port_type = USE_TCP;
-+
- 	port_array = malloc(sizeof(*port_array) * cpus);
- 	if (!port_array)
- 		return NULL;
-@@ -493,7 +496,7 @@ static int *create_all_readers(const char *node, const char *port,
- 	/* Now create a port for each CPU */
+ 	start_port = START_PORT_SEARCH;
+ 
+-	/* Now create a UDP port for each CPU */
++	/* Now create a port for each CPU */
  	for (cpu = 0; cpu < cpus; cpu++) {
- 		connect_port = open_port(node, port, &pid, cpu,
--					 pagesize, start_port, use_tcp);
-+					 pagesize, start_port, port_type);
- 		if (connect_port < 0)
+-		udp_port = open_udp(node, port, &pid, cpu,
+-				    pagesize, start_port, use_tcp);
+-		if (udp_port < 0)
++		connect_port = open_port(node, port, &pid, cpu,
++					 pagesize, start_port, use_tcp);
++		if (connect_port < 0)
  			goto out_free;
- 		port_array[cpu] = connect_port;
+-		port_array[cpu] = udp_port;
++		port_array[cpu] = connect_port;
+ 		pid_array[cpu] = pid;
+ 		/*
+ 		 * Due to some bugging finding ports,
+ 		 * force search after last port
+ 		 */
+-		start_port = udp_port + 1;
++		start_port = connect_port + 1;
+ 	}
+ 
+ 	if (msg_handle->version == V3_PROTOCOL) {
 -- 
 2.35.1
 
