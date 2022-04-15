@@ -2,178 +2,77 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4681C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 15 Apr 2022 13:37:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 112F6C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 15 Apr 2022 13:37:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354049AbiDONkW (ORCPT
+        id S1354056AbiDONkX convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 15 Apr 2022 09:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46898 "EHLO
+        Fri, 15 Apr 2022 09:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354062AbiDONkH (ORCPT
+        with ESMTP id S1354070AbiDONkH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 15 Apr 2022 09:40:07 -0400
-Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9442E61A19
-        for <linux-trace-devel@vger.kernel.org>; Fri, 15 Apr 2022 06:36:45 -0700 (PDT)
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [207.211.30.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 03066BD2DD
+        for <linux-trace-devel@vger.kernel.org>; Fri, 15 Apr 2022 06:36:47 -0700 (PDT)
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-116-kKA0YK4qM2OS1a3N4INV3g-1; Fri, 15 Apr 2022 09:36:41 -0400
-X-MC-Unique: kKA0YK4qM2OS1a3N4INV3g-1
+ us-mta-517-cTdwVJA1NMWEawwEVmXr8A-1; Fri, 15 Apr 2022 09:36:39 -0400
+X-MC-Unique: cTdwVJA1NMWEawwEVmXr8A-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BA0FB3802129;
-        Fri, 15 Apr 2022 13:36:40 +0000 (UTC)
-Received: from f34.bristot.me (unknown [10.22.8.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A9D519E78;
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 70A27185A794;
         Fri, 15 Apr 2022 13:36:39 +0000 (UTC)
+Received: from f34.bristot.me (unknown [10.22.8.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B5F669E78;
+        Fri, 15 Apr 2022 13:36:38 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-trace-devel@vger.kernel.org, lkml@vger.kernel.org,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Wan Jiabing <wanjiabing@vivo.com>, kael_w@yeah.net
-Subject: [PATCH 1/3] rtla: Avoid record NULL pointer dereference
-Date:   Fri, 15 Apr 2022 15:36:28 +0200
-Message-Id: <b96d0f1c442a26aed09e4287eb68ec8e6d47c912.1650029027.git.bristot@kernel.org>
-In-Reply-To: <cover.1650029027.git.bristot@kernel.org>
-References: <cover.1650029027.git.bristot@kernel.org>
+        Daniel Bristot de Oliveira <bristot@kernel.org>
+Subject: [PATCH 0/3] rtla: v5.18-rc2 Fixes
+Date:   Fri, 15 Apr 2022 15:36:27 +0200
+Message-Id: <cover.1650029027.git.bristot@kernel.org>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.79 on 10.11.54.5
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: base64
-Content-Type: application/octet-stream; x-default=true
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252; x-default=true
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-RnJvbTogV2FuIEppYWJpbmcgPHdhbmppYWJpbmdAdml2by5jb20+DQoNCkZpeCB0aGUgZm9sbG93
-aW5nIG51bGwvZGVyZWZfbnVsbC5jb2NjaSBlcnJvcnM6DQouL3Rvb2xzL3RyYWNpbmcvcnRsYS9z
-cmMvb3Nub2lzZV9oaXN0LmM6ODcwOjMxLTM2OiBFUlJPUjogcmVjb3JkIGlzIE5VTEwgYnV0IGRl
-cmVmZXJlbmNlZC4NCi4vdG9vbHMvdHJhY2luZy9ydGxhL3NyYy9vc25vaXNlX3RvcC5jOjY1MDoz
-MS0zNjogRVJST1I6IHJlY29yZCBpcyBOVUxMIGJ1dCBkZXJlZmVyZW5jZWQuDQouL3Rvb2xzL3Ry
-YWNpbmcvcnRsYS9zcmMvdGltZXJsYXRfaGlzdC5jOjkwNTozMS0zNjogRVJST1I6IHJlY29yZCBp
-cyBOVUxMIGJ1dCBkZXJlZmVyZW5jZWQuDQouL3Rvb2xzL3RyYWNpbmcvcnRsYS9zcmMvdGltZXJs
-YXRfdG9wLmM6NzAwOjMxLTM2OiBFUlJPUjogcmVjb3JkIGlzIE5VTEwgYnV0IGRlcmVmZXJlbmNl
-ZC4NCg0KInJlY29yZCIgaXMgTlVMTCBiZWZvcmUgY2FsbGluZyBvc25vaXNlX2luaXRfdHJhY2Vf
-dG9vbC4NCkFkZCBhIHRhZyAib3V0X2ZyZWUiIHRvIGF2b2lkIGRlcmVmZXJyaW5nIGEgTlVMTCBw
-b2ludGVyLg0KDQpMaW5rOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjIwNDA4MTUxNDA2
-LjM0ODIzLTEtd2FuamlhYmluZ0B2aXZvLmNvbS8NCg0KQ2M6IGthZWxfd0B5ZWFoLm5ldA0KQ2M6
-IERhbmllbCBCcmlzdG90IGRlIE9saXZlaXJhIDxicmlzdG90QGtlcm5lbC5vcmc+DQpDYzogU3Rl
-dmVuIFJvc3RlZHQgPHJvc3RlZHRAZ29vZG1pcy5vcmc+DQpGaXhlczogNTFkNjRjM2ExODE5ICgi
-cnRsYTogQWRkIC1lLy0tZXZlbnQgc3VwcG9ydCIpDQpBY2tlZC1ieTogRGFuaWVsIEJyaXN0b3Qg
-ZGUgT2xpdmVpcmEgPGJyaXN0b3RAa2VybmVsLm9yZz4NClNpZ25lZC1vZmYtYnk6IFdhbiBKaWFi
-aW5nIDx3YW5qaWFiaW5nQHZpdm8uY29tPg0KU2lnbmVkLW9mZi1ieTogRGFuaWVsIEJyaXN0b3Qg
-ZGUgT2xpdmVpcmEgPGJyaXN0b3RAa2VybmVsLm9yZz4NCi0tLQ0KIHRvb2xzL3RyYWNpbmcvcnRs
-YS9zcmMvb3Nub2lzZV9oaXN0LmMgIHwgIDUgKysrLS0NCiB0b29scy90cmFjaW5nL3J0bGEvc3Jj
-L29zbm9pc2VfdG9wLmMgICB8ICA5ICsrKysrLS0tLQ0KIHRvb2xzL3RyYWNpbmcvcnRsYS9zcmMv
-dGltZXJsYXRfaGlzdC5jIHwgMTEgKysrKysrLS0tLS0NCiB0b29scy90cmFjaW5nL3J0bGEvc3Jj
-L3RpbWVybGF0X3RvcC5jICB8IDExICsrKysrKy0tLS0tDQogNCBmaWxlcyBjaGFuZ2VkLCAyMCBp
-bnNlcnRpb25zKCspLCAxNiBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdpdCBhL3Rvb2xzL3RyYWNp
-bmcvcnRsYS9zcmMvb3Nub2lzZV9oaXN0LmMgYi90b29scy90cmFjaW5nL3J0bGEvc3JjL29zbm9p
-c2VfaGlzdC5jDQppbmRleCBiNDM4MGQ0NWNhY2QuLjVkN2VhNDc5YWM4OSAxMDA2NDQNCi0tLSBh
-L3Rvb2xzL3RyYWNpbmcvcnRsYS9zcmMvb3Nub2lzZV9oaXN0LmMNCisrKyBiL3Rvb2xzL3RyYWNp
-bmcvcnRsYS9zcmMvb3Nub2lzZV9oaXN0LmMNCkBAIC04MDksNyArODA5LDcgQEAgaW50IG9zbm9p
-c2VfaGlzdF9tYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pDQogCQlyZXR2YWwgPSBzZXRfY29t
-bV9zY2hlZF9hdHRyKCJvc25vaXNlLyIsICZwYXJhbXMtPnNjaGVkX3BhcmFtKTsNCiAJCWlmIChy
-ZXR2YWwpIHsNCiAJCQllcnJfbXNnKCJGYWlsZWQgdG8gc2V0IHNjaGVkIHBhcmFtZXRlcnNcbiIp
-Ow0KLQkJCWdvdG8gb3V0X2hpc3Q7DQorCQkJZ290byBvdXRfZnJlZTsNCiAJCX0NCiAJfQ0KIA0K
-QEAgLTgxOSw3ICs4MTksNyBAQCBpbnQgb3Nub2lzZV9oaXN0X21haW4oaW50IGFyZ2MsIGNoYXIg
-KmFyZ3ZbXSkNCiAJCXJlY29yZCA9IG9zbm9pc2VfaW5pdF90cmFjZV90b29sKCJvc25vaXNlIik7
-DQogCQlpZiAoIXJlY29yZCkgew0KIAkJCWVycl9tc2coIkZhaWxlZCB0byBlbmFibGUgdGhlIHRy
-YWNlIGluc3RhbmNlXG4iKTsNCi0JCQlnb3RvIG91dF9oaXN0Ow0KKwkJCWdvdG8gb3V0X2ZyZWU7
-DQogCQl9DQogDQogCQlpZiAocGFyYW1zLT5ldmVudHMpIHsNCkBAIC04NjksNiArODY5LDcgQEAg
-aW50IG9zbm9pc2VfaGlzdF9tYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pDQogb3V0X2hpc3Q6
-DQogCXRyYWNlX2V2ZW50c19kZXN0cm95KCZyZWNvcmQtPnRyYWNlLCBwYXJhbXMtPmV2ZW50cyk7
-DQogCXBhcmFtcy0+ZXZlbnRzID0gTlVMTDsNCitvdXRfZnJlZToNCiAJb3Nub2lzZV9mcmVlX2hp
-c3RvZ3JhbSh0b29sLT5kYXRhKTsNCiBvdXRfZGVzdHJveToNCiAJb3Nub2lzZV9kZXN0cm95X3Rv
-b2wocmVjb3JkKTsNCmRpZmYgLS1naXQgYS90b29scy90cmFjaW5nL3J0bGEvc3JjL29zbm9pc2Vf
-dG9wLmMgYi90b29scy90cmFjaW5nL3J0bGEvc3JjL29zbm9pc2VfdG9wLmMNCmluZGV4IDcyYzJm
-ZDZjZTAwNS4uNzY0NzliZmIyOTIyIDEwMDY0NA0KLS0tIGEvdG9vbHMvdHJhY2luZy9ydGxhL3Ny
-Yy9vc25vaXNlX3RvcC5jDQorKysgYi90b29scy90cmFjaW5nL3J0bGEvc3JjL29zbm9pc2VfdG9w
-LmMNCkBAIC01NzIsNyArNTcyLDcgQEAgaW50IG9zbm9pc2VfdG9wX21haW4oaW50IGFyZ2MsIGNo
-YXIgKiphcmd2KQ0KIAlyZXR2YWwgPSBvc25vaXNlX3RvcF9hcHBseV9jb25maWcodG9vbCwgcGFy
-YW1zKTsNCiAJaWYgKHJldHZhbCkgew0KIAkJZXJyX21zZygiQ291bGQgbm90IGFwcGx5IGNvbmZp
-Z1xuIik7DQotCQlnb3RvIG91dF90b3A7DQorCQlnb3RvIG91dF9mcmVlOw0KIAl9DQogDQogCXRy
-YWNlID0gJnRvb2wtPnRyYWNlOw0KQEAgLTU4MCwxNCArNTgwLDE0IEBAIGludCBvc25vaXNlX3Rv
-cF9tYWluKGludCBhcmdjLCBjaGFyICoqYXJndikNCiAJcmV0dmFsID0gZW5hYmxlX29zbm9pc2Uo
-dHJhY2UpOw0KIAlpZiAocmV0dmFsKSB7DQogCQllcnJfbXNnKCJGYWlsZWQgdG8gZW5hYmxlIG9z
-bm9pc2UgdHJhY2VyXG4iKTsNCi0JCWdvdG8gb3V0X3RvcDsNCisJCWdvdG8gb3V0X2ZyZWU7DQog
-CX0NCiANCiAJaWYgKHBhcmFtcy0+c2V0X3NjaGVkKSB7DQogCQlyZXR2YWwgPSBzZXRfY29tbV9z
-Y2hlZF9hdHRyKCJvc25vaXNlLyIsICZwYXJhbXMtPnNjaGVkX3BhcmFtKTsNCiAJCWlmIChyZXR2
-YWwpIHsNCiAJCQllcnJfbXNnKCJGYWlsZWQgdG8gc2V0IHNjaGVkIHBhcmFtZXRlcnNcbiIpOw0K
-LQkJCWdvdG8gb3V0X3RvcDsNCisJCQlnb3RvIG91dF9mcmVlOw0KIAkJfQ0KIAl9DQogDQpAQCAt
-NTk3LDcgKzU5Nyw3IEBAIGludCBvc25vaXNlX3RvcF9tYWluKGludCBhcmdjLCBjaGFyICoqYXJn
-dikNCiAJCXJlY29yZCA9IG9zbm9pc2VfaW5pdF90cmFjZV90b29sKCJvc25vaXNlIik7DQogCQlp
-ZiAoIXJlY29yZCkgew0KIAkJCWVycl9tc2coIkZhaWxlZCB0byBlbmFibGUgdGhlIHRyYWNlIGlu
-c3RhbmNlXG4iKTsNCi0JCQlnb3RvIG91dF90b3A7DQorCQkJZ290byBvdXRfZnJlZTsNCiAJCX0N
-CiANCiAJCWlmIChwYXJhbXMtPmV2ZW50cykgew0KQEAgLTY0OSw2ICs2NDksNyBAQCBpbnQgb3Nu
-b2lzZV90b3BfbWFpbihpbnQgYXJnYywgY2hhciAqKmFyZ3YpDQogb3V0X3RvcDoNCiAJdHJhY2Vf
-ZXZlbnRzX2Rlc3Ryb3koJnJlY29yZC0+dHJhY2UsIHBhcmFtcy0+ZXZlbnRzKTsNCiAJcGFyYW1z
-LT5ldmVudHMgPSBOVUxMOw0KK291dF9mcmVlOg0KIAlvc25vaXNlX2ZyZWVfdG9wKHRvb2wtPmRh
-dGEpOw0KIAlvc25vaXNlX2Rlc3Ryb3lfdG9vbChyZWNvcmQpOw0KIAlvc25vaXNlX2Rlc3Ryb3lf
-dG9vbCh0b29sKTsNCmRpZmYgLS1naXQgYS90b29scy90cmFjaW5nL3J0bGEvc3JjL3RpbWVybGF0
-X2hpc3QuYyBiL3Rvb2xzL3RyYWNpbmcvcnRsYS9zcmMvdGltZXJsYXRfaGlzdC5jDQppbmRleCBk
-YzkwODEyNmM2MTAuLmYzZWM2MjhmNWU1MSAxMDA2NDQNCi0tLSBhL3Rvb2xzL3RyYWNpbmcvcnRs
-YS9zcmMvdGltZXJsYXRfaGlzdC5jDQorKysgYi90b29scy90cmFjaW5nL3J0bGEvc3JjL3RpbWVy
-bGF0X2hpc3QuYw0KQEAgLTgyMSw3ICs4MjEsNyBAQCBpbnQgdGltZXJsYXRfaGlzdF9tYWluKGlu
-dCBhcmdjLCBjaGFyICphcmd2W10pDQogCXJldHZhbCA9IHRpbWVybGF0X2hpc3RfYXBwbHlfY29u
-ZmlnKHRvb2wsIHBhcmFtcyk7DQogCWlmIChyZXR2YWwpIHsNCiAJCWVycl9tc2coIkNvdWxkIG5v
-dCBhcHBseSBjb25maWdcbiIpOw0KLQkJZ290byBvdXRfaGlzdDsNCisJCWdvdG8gb3V0X2ZyZWU7
-DQogCX0NCiANCiAJdHJhY2UgPSAmdG9vbC0+dHJhY2U7DQpAQCAtODI5LDE0ICs4MjksMTQgQEAg
-aW50IHRpbWVybGF0X2hpc3RfbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQ0KIAlyZXR2YWwg
-PSBlbmFibGVfdGltZXJsYXQodHJhY2UpOw0KIAlpZiAocmV0dmFsKSB7DQogCQllcnJfbXNnKCJG
-YWlsZWQgdG8gZW5hYmxlIHRpbWVybGF0IHRyYWNlclxuIik7DQotCQlnb3RvIG91dF9oaXN0Ow0K
-KwkJZ290byBvdXRfZnJlZTsNCiAJfQ0KIA0KIAlpZiAocGFyYW1zLT5zZXRfc2NoZWQpIHsNCiAJ
-CXJldHZhbCA9IHNldF9jb21tX3NjaGVkX2F0dHIoInRpbWVybGF0LyIsICZwYXJhbXMtPnNjaGVk
-X3BhcmFtKTsNCiAJCWlmIChyZXR2YWwpIHsNCiAJCQllcnJfbXNnKCJGYWlsZWQgdG8gc2V0IHNj
-aGVkIHBhcmFtZXRlcnNcbiIpOw0KLQkJCWdvdG8gb3V0X2hpc3Q7DQorCQkJZ290byBvdXRfZnJl
-ZTsNCiAJCX0NCiAJfQ0KIA0KQEAgLTg0NCw3ICs4NDQsNyBAQCBpbnQgdGltZXJsYXRfaGlzdF9t
-YWluKGludCBhcmdjLCBjaGFyICphcmd2W10pDQogCQlkbWFfbGF0ZW5jeV9mZCA9IHNldF9jcHVf
-ZG1hX2xhdGVuY3kocGFyYW1zLT5kbWFfbGF0ZW5jeSk7DQogCQlpZiAoZG1hX2xhdGVuY3lfZmQg
-PCAwKSB7DQogCQkJZXJyX21zZygiQ291bGQgbm90IHNldCAvZGV2L2NwdV9kbWFfbGF0ZW5jeS5c
-biIpOw0KLQkJCWdvdG8gb3V0X2hpc3Q7DQorCQkJZ290byBvdXRfZnJlZTsNCiAJCX0NCiAJfQ0K
-IA0KQEAgLTg1NCw3ICs4NTQsNyBAQCBpbnQgdGltZXJsYXRfaGlzdF9tYWluKGludCBhcmdjLCBj
-aGFyICphcmd2W10pDQogCQlyZWNvcmQgPSBvc25vaXNlX2luaXRfdHJhY2VfdG9vbCgidGltZXJs
-YXQiKTsNCiAJCWlmICghcmVjb3JkKSB7DQogCQkJZXJyX21zZygiRmFpbGVkIHRvIGVuYWJsZSB0
-aGUgdHJhY2UgaW5zdGFuY2VcbiIpOw0KLQkJCWdvdG8gb3V0X2hpc3Q7DQorCQkJZ290byBvdXRf
-ZnJlZTsNCiAJCX0NCiANCiAJCWlmIChwYXJhbXMtPmV2ZW50cykgew0KQEAgLTkwNCw2ICs5MDQs
-NyBAQCBpbnQgdGltZXJsYXRfaGlzdF9tYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pDQogCQlj
-bG9zZShkbWFfbGF0ZW5jeV9mZCk7DQogCXRyYWNlX2V2ZW50c19kZXN0cm95KCZyZWNvcmQtPnRy
-YWNlLCBwYXJhbXMtPmV2ZW50cyk7DQogCXBhcmFtcy0+ZXZlbnRzID0gTlVMTDsNCitvdXRfZnJl
-ZToNCiAJdGltZXJsYXRfZnJlZV9oaXN0b2dyYW0odG9vbC0+ZGF0YSk7DQogCW9zbm9pc2VfZGVz
-dHJveV90b29sKHJlY29yZCk7DQogCW9zbm9pc2VfZGVzdHJveV90b29sKHRvb2wpOw0KZGlmZiAt
-LWdpdCBhL3Rvb2xzL3RyYWNpbmcvcnRsYS9zcmMvdGltZXJsYXRfdG9wLmMgYi90b29scy90cmFj
-aW5nL3J0bGEvc3JjL3RpbWVybGF0X3RvcC5jDQppbmRleCAxZjc1NGMzZGY1M2YuLjM1NDUyYTFk
-NDVlOSAxMDA2NDQNCi0tLSBhL3Rvb2xzL3RyYWNpbmcvcnRsYS9zcmMvdGltZXJsYXRfdG9wLmMN
-CisrKyBiL3Rvb2xzL3RyYWNpbmcvcnRsYS9zcmMvdGltZXJsYXRfdG9wLmMNCkBAIC02MTIsNyAr
-NjEyLDcgQEAgaW50IHRpbWVybGF0X3RvcF9tYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pDQog
-CXJldHZhbCA9IHRpbWVybGF0X3RvcF9hcHBseV9jb25maWcodG9wLCBwYXJhbXMpOw0KIAlpZiAo
-cmV0dmFsKSB7DQogCQllcnJfbXNnKCJDb3VsZCBub3QgYXBwbHkgY29uZmlnXG4iKTsNCi0JCWdv
-dG8gb3V0X3RvcDsNCisJCWdvdG8gb3V0X2ZyZWU7DQogCX0NCiANCiAJdHJhY2UgPSAmdG9wLT50
-cmFjZTsNCkBAIC02MjAsMTQgKzYyMCwxNCBAQCBpbnQgdGltZXJsYXRfdG9wX21haW4oaW50IGFy
-Z2MsIGNoYXIgKmFyZ3ZbXSkNCiAJcmV0dmFsID0gZW5hYmxlX3RpbWVybGF0KHRyYWNlKTsNCiAJ
-aWYgKHJldHZhbCkgew0KIAkJZXJyX21zZygiRmFpbGVkIHRvIGVuYWJsZSB0aW1lcmxhdCB0cmFj
-ZXJcbiIpOw0KLQkJZ290byBvdXRfdG9wOw0KKwkJZ290byBvdXRfZnJlZTsNCiAJfQ0KIA0KIAlp
-ZiAocGFyYW1zLT5zZXRfc2NoZWQpIHsNCiAJCXJldHZhbCA9IHNldF9jb21tX3NjaGVkX2F0dHIo
-InRpbWVybGF0LyIsICZwYXJhbXMtPnNjaGVkX3BhcmFtKTsNCiAJCWlmIChyZXR2YWwpIHsNCiAJ
-CQllcnJfbXNnKCJGYWlsZWQgdG8gc2V0IHNjaGVkIHBhcmFtZXRlcnNcbiIpOw0KLQkJCWdvdG8g
-b3V0X3RvcDsNCisJCQlnb3RvIG91dF9mcmVlOw0KIAkJfQ0KIAl9DQogDQpAQCAtNjM1LDcgKzYz
-NSw3IEBAIGludCB0aW1lcmxhdF90b3BfbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQ0KIAkJ
-ZG1hX2xhdGVuY3lfZmQgPSBzZXRfY3B1X2RtYV9sYXRlbmN5KHBhcmFtcy0+ZG1hX2xhdGVuY3kp
-Ow0KIAkJaWYgKGRtYV9sYXRlbmN5X2ZkIDwgMCkgew0KIAkJCWVycl9tc2coIkNvdWxkIG5vdCBz
-ZXQgL2Rldi9jcHVfZG1hX2xhdGVuY3kuXG4iKTsNCi0JCQlnb3RvIG91dF90b3A7DQorCQkJZ290
-byBvdXRfZnJlZTsNCiAJCX0NCiAJfQ0KIA0KQEAgLTY0NSw3ICs2NDUsNyBAQCBpbnQgdGltZXJs
-YXRfdG9wX21haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkNCiAJCXJlY29yZCA9IG9zbm9pc2Vf
-aW5pdF90cmFjZV90b29sKCJ0aW1lcmxhdCIpOw0KIAkJaWYgKCFyZWNvcmQpIHsNCiAJCQllcnJf
-bXNnKCJGYWlsZWQgdG8gZW5hYmxlIHRoZSB0cmFjZSBpbnN0YW5jZVxuIik7DQotCQkJZ290byBv
-dXRfdG9wOw0KKwkJCWdvdG8gb3V0X2ZyZWU7DQogCQl9DQogDQogCQlpZiAocGFyYW1zLT5ldmVu
-dHMpIHsNCkBAIC02OTksNiArNjk5LDcgQEAgaW50IHRpbWVybGF0X3RvcF9tYWluKGludCBhcmdj
-LCBjaGFyICphcmd2W10pDQogCQljbG9zZShkbWFfbGF0ZW5jeV9mZCk7DQogCXRyYWNlX2V2ZW50
-c19kZXN0cm95KCZyZWNvcmQtPnRyYWNlLCBwYXJhbXMtPmV2ZW50cyk7DQogCXBhcmFtcy0+ZXZl
-bnRzID0gTlVMTDsNCitvdXRfZnJlZToNCiAJdGltZXJsYXRfZnJlZV90b3AodG9wLT5kYXRhKTsN
-CiAJb3Nub2lzZV9kZXN0cm95X3Rvb2wocmVjb3JkKTsNCiAJb3Nub2lzZV9kZXN0cm95X3Rvb2wo
-dG9wKTsNCi0tIA0KMi4zNS4xDQo=
+Steven,
+
+Here are some fixes for rtla.
+
+I do not include "rtla/Makefile: Properly handle dependencies"
+because I will make two changes to it:
+        -  I need to check rst2man only in the make install phase
+        -  I will remove procps-devel dependency on another patch
+
+I will send a v2 of the "Properly handle dependencies" and the removal
+of procps-devel dependencies next week. But these ones are already ready.
+
+John Kacur (2):
+  rtla: Don't overwrite existing directory mode
+  rtla: Minor grammar fix for rtla README
+
+Wan Jiabing (1):
+  rtla: Avoid record NULL pointer dereference
+
+ tools/tracing/rtla/Makefile            |  3 ++-
+ tools/tracing/rtla/README.txt          | 12 +++++-------
+ tools/tracing/rtla/src/osnoise_hist.c  |  5 +++--
+ tools/tracing/rtla/src/osnoise_top.c   |  9 +++++----
+ tools/tracing/rtla/src/timerlat_hist.c | 11 ++++++-----
+ tools/tracing/rtla/src/timerlat_top.c  | 11 ++++++-----
+ 6 files changed, 27 insertions(+), 24 deletions(-)
+
+-- 
+2.35.1
 
