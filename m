@@ -2,1224 +2,178 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE487C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 15 Apr 2022 11:41:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4681C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 15 Apr 2022 13:37:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352704AbiDOLoS (ORCPT
+        id S1354049AbiDONkW (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 15 Apr 2022 07:44:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32848 "EHLO
+        Fri, 15 Apr 2022 09:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352703AbiDOLoR (ORCPT
+        with ESMTP id S1354062AbiDONkH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 15 Apr 2022 07:44:17 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C99644D0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 15 Apr 2022 04:41:47 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id bv19so14972972ejb.6
-        for <linux-trace-devel@vger.kernel.org>; Fri, 15 Apr 2022 04:41:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VIfwn53gdhJJtdm8OPCbkoTPFOn0SRCVn/vb93Nmzss=;
-        b=Ywx8RS/yORPJFWmDp7f4OIVKg7lco3KEPUymGQllf3sq6tseev9Mnflmv+1SFjg8aQ
-         xo+S7F2sIZCVj9q/iTfMO1FxNBpxXEtY7G/24vHK1rz73qnylBzKExGxRtDOoWfnBXg+
-         DQPLGQuNaRrhWlhkrmYEyNvt/jb3xbE1InisrXM8BvbUgcw0CSch+xbSi8IDvY83xleD
-         mRuIB6q4HU+tN65/sZ4tfN6nDMkeVgxge/vFr5khHZYtsV3bjXWpgPr1ENOI2IhSthAM
-         F2LROCFR2BMtgYXwx45ofIRhG/lIZU0F704IpionxvxHxjnekoYEDoyy440hp4tiYGPN
-         r6fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VIfwn53gdhJJtdm8OPCbkoTPFOn0SRCVn/vb93Nmzss=;
-        b=Mu5EEZTPQXVvYi1M5EGjGmywKTnvZNd7iaeuXmVC+2qmAxVQRtqA6B8WIVMRWXsMj0
-         ckp4vfAUczsTpLaKwg1ocK9cxhWJXBeaC9XWXGaeoFT28SQxFzLQxEAXvDbTSbr1mLC0
-         grpwG7JGtw8/NnSXnSqsR/Nk7rnQx7rDsiXb9wno9ykHH9oClxeirSYTaXtudnhKcMzL
-         Nb8d6cfhzXWeKIX61j+O4xZ7l80uw14PYsxzri5VN5rNl/HylehIGtBjMBL2Bhx+dZWb
-         94hadXxIwUtxEtaSJ5qSAPQrVJlAq8uBN7IHdFvEMkGPVzkl/5fKd3sI6LLmYUXPEzU5
-         Ls0w==
-X-Gm-Message-State: AOAM532apQj0Z5XKIvRMpzH8FwIVM2i8DuMXOfqoIMISngk4MFWvwwOn
-        0s5pDobs53Zcrn8cTSwHfs4=
-X-Google-Smtp-Source: ABdhPJyfJo1yfySjPOf1IjiiT9kY1uvm0y7jnyxgs457BC0SvGtzFpdjVN3wRqZEmonYCAELQnqIyA==
-X-Received: by 2002:a17:907:6d2a:b0:6df:e513:5410 with SMTP id sa42-20020a1709076d2a00b006dfe5135410mr5735282ejc.544.1650022905779;
-        Fri, 15 Apr 2022 04:41:45 -0700 (PDT)
-Received: from oberon.zico.biz.com ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id x7-20020aa7cd87000000b004207282701fsm2462878edv.63.2022.04.15.04.41.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Apr 2022 04:41:45 -0700 (PDT)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     y.karadz@gmail.com
-Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org
-Subject: [RFC PATCH v3 2/3] trace-cruncher: Support for perf
-Date:   Fri, 15 Apr 2022 14:41:39 +0300
-Message-Id: <20220415114140.64468-3-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220415114140.64468-1-tz.stoyanov@gmail.com>
-References: <20220415114140.64468-1-tz.stoyanov@gmail.com>
+        Fri, 15 Apr 2022 09:40:07 -0400
+Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9442E61A19
+        for <linux-trace-devel@vger.kernel.org>; Fri, 15 Apr 2022 06:36:45 -0700 (PDT)
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-116-kKA0YK4qM2OS1a3N4INV3g-1; Fri, 15 Apr 2022 09:36:41 -0400
+X-MC-Unique: kKA0YK4qM2OS1a3N4INV3g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BA0FB3802129;
+        Fri, 15 Apr 2022 13:36:40 +0000 (UTC)
+Received: from f34.bristot.me (unknown [10.22.8.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A9D519E78;
+        Fri, 15 Apr 2022 13:36:39 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org, lkml@vger.kernel.org,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Wan Jiabing <wanjiabing@vivo.com>, kael_w@yeah.net
+Subject: [PATCH 1/3] rtla: Avoid record NULL pointer dereference
+Date:   Fri, 15 Apr 2022 15:36:28 +0200
+Message-Id: <b96d0f1c442a26aed09e4287eb68ec8e6d47c912.1650029027.git.bristot@kernel.org>
+In-Reply-To: <cover.1650029027.git.bristot@kernel.org>
+References: <cover.1650029027.git.bristot@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.11.54.5
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: base64
+Content-Type: application/octet-stream; x-default=true
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Initial perf support for trace-cruncher, using libperf. As a first
-stage, collecting of stack trace samples of given process is supported.
-
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- setup.py           |   9 +-
- src/perfpy-utils.c | 906 +++++++++++++++++++++++++++++++++++++++++++++
- src/perfpy-utils.h |  43 +++
- src/perfpy.c       | 141 +++++++
- 4 files changed, 1097 insertions(+), 2 deletions(-)
- create mode 100644 src/perfpy-utils.c
- create mode 100644 src/perfpy-utils.h
- create mode 100644 src/perfpy.c
-
-diff --git a/setup.py b/setup.py
-index 58561cf..8a49cb8 100644
---- a/setup.py
-+++ b/setup.py
-@@ -41,7 +41,8 @@ def third_party_paths():
-     include_dirs = [np.get_include()]
-     libs_required = [('libtraceevent', '1.5.0'),
-                      ('libtracefs',    '1.3.0'),
--                     ('libkshark',     '2.0.1')]
-+                     ('libkshark',     '2.0.1'),
-+                     ('libperf',     '0.0.1')]
-     libs_found = []
- 
-     for lib in libs_required:
-@@ -83,6 +84,10 @@ def main():
-                           sources=['src/ksharkpy.c', 'src/ksharkpy-utils.c'],
-                           libraries=['kshark'])
- 
-+    module_perf = extension(name='tracecruncher.perfpy',
-+                            sources=['src/perfpy.c', 'src/perfpy-utils.c', 'src/trace-obj-debug.c'],
-+                            libraries=['traceevent', 'perf', 'bfd'])
-+
-     setup(name='tracecruncher',
-           version='0.2.0',
-           description='Interface for accessing Linux tracing data in Python.',
-@@ -91,7 +96,7 @@ def main():
-           url='https://github.com/vmware/trace-cruncher',
-           license='LGPL-2.1',
-           packages=find_packages(),
--          ext_modules=[module_ft, module_data, module_ks],
-+          ext_modules=[module_ft, module_data, module_ks, module_perf],
-           classifiers=[
-               'Development Status :: 4 - Beta',
-               'Programming Language :: Python :: 3',
-diff --git a/src/perfpy-utils.c b/src/perfpy-utils.c
-new file mode 100644
-index 0000000..0e2daa5
---- /dev/null
-+++ b/src/perfpy-utils.c
-@@ -0,0 +1,906 @@
-+// SPDX-License-Identifier: LGPL-2.1
-+
-+/*
-+ * Copyright 2022 VMware Inc, Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-+ */
-+
-+#ifndef _GNU_SOURCE
-+/** Use GNU C Library. */
-+#define _GNU_SOURCE
-+#endif // _GNU_SOURCE
-+
-+// C
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <pthread.h>
-+#include <sys/stat.h>
-+#include <sys/wait.h>
-+#include <fcntl.h>
-+#include <dirent.h>
-+#include <sys/resource.h>
-+#include <semaphore.h>
-+#include <signal.h>
-+
-+// libperf
-+#include <linux/perf_event.h>
-+#include <perf/evlist.h>
-+#include <perf/evsel.h>
-+#include <perf/cpumap.h>
-+#include <perf/threadmap.h>
-+#include <perf/mmap.h>
-+#include <perf/core.h>
-+#include <perf/event.h>
-+
-+// trace-cruncher
-+#include "perfpy-utils.h"
-+#include "trace-obj-debug.h"
-+
-+PyObject * PERF_ERROR;
-+
-+#define TMP_FILE "/tmp/perf_temp_data.XXXXXX"
-+
-+struct perf_scan_thread {
-+	uint32_t tid;
-+	char *comm;
-+	struct perf_counts_values count;
-+};
-+
-+struct perf_handle {
-+	bool running;
-+	bool debug_resolved;
-+	pthread_t reader;
-+	int fd;
-+	int thr_count;
-+	uint32_t pid;
-+	uint32_t trace_time; /* in msec */
-+	char *command;
-+	char **argv;
-+	struct perf_scan_thread *thr_map;
-+	struct perf_evlist *evlist;
-+	struct perf_evsel *evsel;
-+	struct perf_event_attr attr;
-+	struct perf_cpu_map *cpus;
-+	struct dbg_trace_context *debug;
-+	struct perf_thread_map *threads;
-+};
-+
-+struct event_sample {
-+	uint64_t		id;		/* PERF_SAMPLE_IDENTIFIER */
-+	uint64_t		ip;		/* PERF_SAMPLE_IP */
-+	uint32_t		pid, tid;	/* PERF_SAMPLE_TID */
-+	uint64_t		time;		/* PERF_SAMPLE_TIME */
-+	uint32_t		cpu, res;	/* PERF_SAMPLE_CPU */
-+	uint64_t		nr;
-+	uint64_t		ips[];		/* PERF_SAMPLE_CALLCHAIN */
-+} __attribute__((packed));
-+
-+struct perf_event_sample {
-+	struct event_sample	data;
-+	struct perf_handle	*perf;
-+	char			*ip;
-+	char			*ips[];
-+} __attribute__((packed));
-+
-+int py_perf_handle_destroy(struct perf_handle *perf)
-+{
-+	if (!perf || !perf->running)
-+		return 0;
-+
-+	perf->running = false;
-+	pthread_join(perf->reader, NULL);
-+	fsync(perf->fd);
-+	if (perf->command && perf->pid > 0) {
-+		kill(perf->pid, SIGINT);
-+		perf->pid = 0;
-+	}
-+
-+	return 0;
-+}
-+
-+void py_perf_handle_free(struct perf_handle *perf)
-+{
-+	int i;
-+
-+	if (!perf)
-+		return;
-+
-+	if (perf->evlist)
-+		perf_evlist__delete(perf->evlist);
-+	if (perf->fd >= 0)
-+		close(perf->fd);
-+	if (perf->debug)
-+		dbg_trace_context_destroy(perf->debug);
-+	if (perf->cpus)
-+		perf_cpu_map__put(perf->cpus);
-+	if (perf->threads)
-+		perf_thread_map__put(perf->threads);
-+	if (perf->thr_map) {
-+		for (i = 0; i < perf->thr_count; i++)
-+			free(perf->thr_map[i].comm);
-+		free(perf->thr_map);
-+	}
-+	if (perf->argv) {
-+		i = 0;
-+		while (perf->argv[i])
-+			free(perf->argv[i++]);
-+		free(perf->argv);
-+	}
-+	free(perf->command);
-+
-+	free(perf);
-+}
-+
-+void py_perf_sample_free(struct perf_event_sample *sample)
-+{
-+	unsigned int i;
-+
-+	if (sample) {
-+		free(sample->ip);
-+		for (i = 0; i < sample->data.nr; i++)
-+			free((char *)(sample->ips[i]));
-+	}
-+	free(sample);
-+}
-+
-+static int pid_filter(const struct dirent *dir)
-+{
-+	const char *dname = dir->d_name;
-+
-+	if (!dname || dname[0] == '.')
-+		return 0;
-+
-+	while (*dname) {
-+		if (!isdigit(*dname))
-+			return 0;
-+		dname++;
-+	}
-+
-+	return 1;
-+}
-+
-+static int str_read_file(const char *file, char **buffer)
-+{
-+	char stbuf[BUFSIZ];
-+	char *buf = NULL;
-+	int size = 0;
-+	char *nbuf;
-+	int fd;
-+	int r;
-+
-+	fd = open(file, O_RDONLY);
-+	if (fd < 0)
-+		return -1;
-+
-+	do {
-+		r = read(fd, stbuf, BUFSIZ);
-+		if (r <= 0)
-+			break;
-+		nbuf = realloc(buf, size+r+1);
-+		if (!nbuf) {
-+			size = -1;
-+			break;
-+		}
-+		buf = nbuf;
-+		memcpy(buf+size, stbuf, r);
-+		size += r;
-+	} while (true);
-+
-+	close(fd);
-+	if (r == 0 && size > 0) {
-+		buf[size] = '\0';
-+		*buffer = buf;
-+	} else
-+		free(buf);
-+
-+	return size;
-+}
-+
-+static void strip_control_chars(char *str)
-+{
-+	while (*str) {
-+		if (iscntrl(*str)) {
-+			*str = '\0';
-+			break;
-+		}
-+		str++;
-+	}
-+}
-+
-+static struct perf_thread_map *create_thread_map(struct perf_handle *perf)
-+{
-+	struct perf_thread_map *tmap = NULL;
-+	struct dirent **pids = NULL;
-+	char path[PATH_MAX];
-+	int i, count;
-+	int success = 0;
-+
-+	snprintf(path, PATH_MAX, "/proc/%d/task", perf->pid);
-+	count = scandir(path, &pids, pid_filter, NULL);
-+	if (count < 1)
-+		goto out;
-+
-+	tmap = perf_thread_map__new_array(count, NULL);
-+	if (!tmap)
-+		goto out;
-+	free(perf->thr_map);
-+	perf->thr_map = calloc(count, sizeof(struct perf_scan_thread));
-+	if (!perf->thr_map)
-+		goto out;
-+	perf->thr_count = count;
-+
-+	for (i = 0; i < count; i++) {
-+		perf->thr_map[i].tid = atoi(pids[i]->d_name);
-+		perf_thread_map__set_pid(tmap, i, perf->thr_map[i].tid);
-+		if (snprintf(path, PATH_MAX, "/proc/%d/task/%s/comm", perf->pid, pids[i]->d_name) <= 0)
-+			goto out;
-+		if (str_read_file(path, &perf->thr_map[i].comm) < 0)
-+			goto out;
-+		strip_control_chars(perf->thr_map[i].comm);
-+	}
-+
-+	success = 1;
-+out:
-+	if (pids) {
-+		for (i = 0; i < count; i++)
-+			free(pids[i]);
-+		free(pids);
-+	}
-+
-+	if (!success) {
-+		if (tmap) {
-+			perf_thread_map__put(tmap);
-+			tmap = NULL;
-+		}
-+		free(perf->thr_map);
-+		perf->thr_map = NULL;
-+		perf->thr_count = 0;
-+	}
-+
-+	return tmap;
-+}
-+
-+static struct perf_handle *new_perf_sampling_handle(int freq, pid_t pid, char *command, char **argv)
-+{
-+	struct perf_handle *perf = NULL;
-+	char *tmp_file = NULL;
-+
-+	perf = calloc(1, sizeof(*perf));
-+	if (!perf)
-+		return NULL;
-+
-+	perf->fd = -1;
-+	perf->attr.type        = PERF_TYPE_HARDWARE;
-+	perf->attr.config      = PERF_COUNT_HW_CPU_CYCLES;
-+	perf->attr.disabled    = 1;
-+	perf->attr.freq        = 1;
-+	perf->attr.sample_freq = freq;
-+	perf->attr.exclude_kernel = 1;
-+	perf->attr.exclude_idle = 1;
-+	perf->attr.exclude_callchain_kernel = 1;
-+	perf->attr.comm = 1;
-+	perf->attr.mmap2 = 1;
-+	perf->attr.task = 1;
-+	perf->attr.precise_ip = 0;
-+	perf->attr.inherit = 1;
-+	perf->attr.task = 1;
-+	perf->attr.inherit_stat = 1;
-+	perf->attr.read_format = PERF_FORMAT_TOTAL_TIME_ENABLED |
-+				 PERF_FORMAT_TOTAL_TIME_RUNNING;
-+	perf->attr.sample_type = PERF_SAMPLE_IDENTIFIER |
-+				 PERF_SAMPLE_IP |
-+				 PERF_SAMPLE_TID |
-+				 PERF_SAMPLE_TIME |
-+				 PERF_SAMPLE_CPU |
-+				 PERF_SAMPLE_CALLCHAIN;
-+
-+	/* Trace all CPUs in the system. */
-+	perf->cpus = perf_cpu_map__new(NULL);
-+	if (!perf->cpus)
-+		goto error;
-+
-+	if (command) {
-+		perf->command = strdup(command);
-+		if (!perf->command)
-+			goto error;
-+		perf->argv = argv;
-+		perf->debug = dbg_trace_context_create_file(command, true);
-+	} else {
-+		perf->pid = pid;
-+		perf->debug = dbg_trace_context_create_pid(pid, true);
-+	}
-+	if (!perf->debug)
-+		goto error;
-+	perf->debug_resolved = false;
-+
-+	perf->evlist = perf_evlist__new();
-+	if (!perf->evlist)
-+		goto error;
-+
-+	tmp_file = strdup(TMP_FILE);
-+	if (!tmp_file)
-+		goto error;
-+
-+	mktemp(tmp_file);
-+	perf->fd = open(tmp_file, O_RDWR|O_CREAT|O_TRUNC, 0600);
-+	unlink(tmp_file);
-+	if (perf->fd < 0)
-+		goto error;
-+
-+	perf->evsel = perf_evsel__new(&perf->attr);
-+	if (!perf->evsel)
-+		goto error;
-+
-+	perf_evlist__add(perf->evlist, perf->evsel);
-+
-+	free(tmp_file);
-+	return perf;
-+
-+error:
-+	py_perf_handle_free(perf);
-+	free(tmp_file);
-+	return NULL;
-+}
-+
-+PyObject *PyPerf_sampler_instance(PyObject *self, PyObject *args, PyObject *kwargs)
-+{
-+	char *kwlist[] = {"pid", "command", "freq", "argv", NULL};
-+	PyObject *py_perf, *py_arg, *py_args = NULL;
-+	struct perf_handle *perf = NULL;
-+	int freq = 10, pid = 0;
-+	char *command = NULL;
-+	char **argv = NULL;
-+	int i, argc;
-+
-+	if (!PyArg_ParseTupleAndKeywords(args,
-+					 kwargs,
-+					 "|isiO",
-+					 kwlist,
-+					 &pid,
-+					 &command,
-+					 &freq,
-+					 &py_args
-+					 )) {
-+		return NULL;
-+	}
-+
-+	if (pid <= 0 && !command) {
-+		PyErr_Format(PERF_ERROR, "PID or command must be specified");
-+		return NULL;
-+	}
-+
-+	if (command && py_args) {
-+		if (!PyList_CheckExact(py_args)) {
-+			PyErr_SetString(PERF_ERROR, "Failed to parse argv list");
-+			return NULL;
-+		}
-+		argc = PyList_Size(py_args);
-+		argv = calloc(argc + 1, sizeof(char *));
-+		for (i = 0; i < argc; i++) {
-+			py_arg = PyList_GetItem(py_args, i);
-+			if (!PyUnicode_Check(py_arg))
-+				continue;
-+			argv[i] = strdup(PyUnicode_DATA(py_arg));
-+			if (!argv[i])
-+				return NULL;
-+		}
-+	}
-+
-+	perf = new_perf_sampling_handle(freq, pid, command, argv);
-+
-+	if (!perf) {
-+		PyErr_SetString(PERF_ERROR, "Failed create new perf context");
-+		return NULL;
-+	}
-+
-+	py_perf = PyPerf_New(perf);
-+
-+	return py_perf;
-+}
-+
-+static void perf_read_sample(struct perf_handle *perf, struct perf_record_sample *event)
-+{
-+	struct event_sample *sample;
-+	uint64_t i;
-+
-+	sample = (struct event_sample *)(event->array);
-+
-+	/* Check if the sample is for our PID. */
-+	if (sample->pid != perf->pid)
-+		return;
-+
-+	if (perf->debug)
-+		dbg_trace_add_resolve_symbol(perf->debug, sample->ip, NULL, 0);
-+
-+	if (write(perf->fd, sample, sizeof(*sample)) != sizeof(*sample))
-+		return;
-+
-+	for (i = 0; i < sample->nr; i++) {
-+		if (write(perf->fd, &sample->ips[i], sizeof(uint64_t)) != sizeof(uint64_t))
-+			return;
-+		if (perf->debug)
-+			dbg_trace_add_resolve_symbol(perf->debug, sample->ips[i], NULL, 0);
-+	}
-+}
-+
-+/* A new memory is mapped to traced process. */
-+static void perf_read_mmap2(struct perf_handle *perf, struct perf_record_mmap2 *mmap)
-+{
-+	/* Check if mmap is for our PID. */
-+	if (perf->pid != mmap->pid)
-+		return;
-+
-+	/* Check if executable memory is mapped. */
-+	if (mmap->header.misc & PERF_RECORD_MISC_MMAP_DATA)
-+		return;
-+
-+	/*
-+	 * A new dynamic library is dlopen() by the traced process,
-+	 * store it for vma -> name resolving
-+	 */
-+	dbg_trace_context_add_file(perf->debug, mmap->filename,
-+				   mmap->start, mmap->start + mmap->len, mmap->pgoff);
-+}
-+
-+/* A new thread is started. */
-+static void perf_read_comm(struct perf_handle *perf, struct perf_record_comm *comm)
-+{
-+	struct perf_scan_thread *tmp;
-+	int i;
-+
-+	/* Check if the thread is started by PID. */
-+	if (perf->pid != comm->pid)
-+		return;
-+
-+	for (i = 0; i < perf->thr_count; i++) {
-+		if (perf->thr_map[i].tid == comm->tid) {
-+			free(perf->thr_map[i].comm);
-+			perf->thr_map[i].comm = strdup(comm->comm);
-+			return;
-+		}
-+	}
-+
-+	tmp = realloc(perf->thr_map, (perf->thr_count + 1) * sizeof(struct perf_scan_thread));
-+	if (!tmp)
-+		return;
-+
-+	perf->thr_map = tmp;
-+	perf->thr_map[perf->thr_count].tid = comm->tid;
-+	perf->thr_map[perf->thr_count].comm = strdup(comm->comm);
-+	perf->thr_count++;
-+}
-+
-+static void *perf_reader_thread(void *data)
-+{
-+	struct perf_handle *perf = data;
-+	struct perf_mmap *map;
-+	union perf_event *event;
-+
-+	perf_evlist__enable(perf->evlist);
-+
-+	while (true) {
-+		if (!perf->running)
-+			break;
-+		perf_evlist__for_each_mmap(perf->evlist, map, false) {
-+			if (perf_mmap__read_init(map) < 0)
-+				continue;
-+
-+			while ((event = perf_mmap__read_event(map)) != NULL) {
-+				switch (event->sample.header.type) {
-+				case PERF_RECORD_SAMPLE:
-+					perf_read_sample(perf, (struct perf_record_sample *)event);
-+					break;
-+				case PERF_RECORD_COMM:
-+					perf_read_comm(perf, (struct perf_record_comm *)event);
-+					break;
-+				case PERF_RECORD_MMAP2:
-+					perf_read_mmap2(perf, (struct perf_record_mmap2 *)event);
-+					break;
-+				}
-+				perf_mmap__consume(map);
-+			}
-+			perf_mmap__read_done(map);
-+		}
-+	}
-+	perf_evlist__disable(perf->evlist);
-+	pthread_exit(0);
-+}
-+
-+static int increase_file_limit(void)
-+{
-+	struct rlimit lim;
-+
-+	if (getrlimit(RLIMIT_NOFILE, &lim))
-+		return -1;
-+
-+	if (lim.rlim_cur < lim.rlim_max) {
-+		lim.rlim_cur = lim.rlim_max;
-+	} else {
-+		lim.rlim_cur += 100;
-+		lim.rlim_max += 100;
-+	}
-+
-+	return setrlimit(RLIMIT_NOFILE, &lim);
-+}
-+
-+static int perf_maps_init(struct perf_handle *perf)
-+{
-+	int ret;
-+
-+	if (!perf->threads)
-+		perf->threads = create_thread_map(perf);
-+	if (!perf->threads)
-+		return -1;
-+
-+	perf_evlist__set_maps(perf->evlist, perf->cpus, perf->threads);
-+	do {
-+		ret = perf_evlist__open(perf->evlist);
-+		if (!ret)
-+			break;
-+		if (ret != -EMFILE)
-+			goto out;
-+		ret = increase_file_limit();
-+		if (ret)
-+			goto out;
-+	} while (ret);
-+
-+	ret = perf_evlist__mmap(perf->evlist, 4);
-+out:
-+	if (ret)
-+		perf_evlist__close(perf->evlist);
-+	return ret;
-+}
-+
-+static int perf_reader_start(struct perf_handle *perf)
-+{
-+	pthread_attr_t attrib;
-+	int ret;
-+
-+	pthread_attr_init(&attrib);
-+	pthread_attr_setdetachstate(&attrib, PTHREAD_CREATE_JOINABLE);
-+	ret = pthread_create(&perf->reader, &attrib, perf_reader_thread, perf);
-+	if (!ret)
-+		perf->running = true;
-+
-+	pthread_attr_destroy(&attrib);
-+	return ret;
-+}
-+
-+#define PERF_EXEC_SYNC	"/TC_PERF_SYNC_XXXXXX"
-+static int perf_run_cmd(struct perf_handle *perf)
-+{
-+	char *envp[] = {NULL};
-+	char sname[strlen(PERF_EXEC_SYNC) + 1];
-+	sem_t *sem;
-+	pid_t pid;
-+	int ret;
-+
-+	strcpy(sname, PERF_EXEC_SYNC);
-+	mktemp(sname);
-+	sem = sem_open(sname, O_CREAT | O_EXCL, 0644, 0);
-+	sem_unlink(sname);
-+
-+	pid = fork();
-+	if (pid < 0)
-+		return -1;
-+	if (pid == 0) {
-+		sem_wait(sem);
-+		execvpe(perf->command, perf->argv, envp);
-+	} else {
-+		perf->pid = pid;
-+		ret = perf_maps_init(perf);
-+		if (!ret)
-+			ret = perf_reader_start(perf);
-+		sem_post(sem);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int perf_start_sampling(struct perf_handle *perf)
-+{
-+	int ret;
-+
-+	if (perf->running)
-+		return 0;
-+
-+	if (perf->command)
-+		return perf_run_cmd(perf);
-+
-+	ret = perf_maps_init(perf);
-+	if (!ret)
-+		ret = perf_reader_start(perf);
-+
-+	return ret;
-+}
-+
-+static bool sampling_run;
-+
-+static void sampling_stop(int sig)
-+{
-+	sampling_run = false;
-+}
-+
-+static void sampling_timer(int sig, siginfo_t *si, void *uc)
-+{
-+	sampling_run = false;
-+}
-+
-+#define PID_WAIT_CHECK_USEC	500000
-+#define TIMER_SEC_NANO		1000000000LL
-+static int perf_wait_pid(struct perf_handle *perf)
-+{
-+	struct itimerspec tperiod = {0};
-+	struct sigaction saction = {0};
-+	struct sigevent stime = {0};
-+	timer_t timer_id;
-+
-+	if (perf->pid == 0)
-+		return -1;
-+
-+	sampling_run = true;
-+	signal(SIGINT, sampling_stop);
-+
-+	if (perf->trace_time) {
-+		stime.sigev_notify = SIGEV_SIGNAL;
-+		stime.sigev_signo = SIGRTMIN;
-+		if (timer_create(CLOCK_MONOTONIC, &stime, &timer_id))
-+			return -1;
-+		saction.sa_flags = SA_SIGINFO;
-+		saction.sa_sigaction = sampling_timer;
-+		sigemptyset(&saction.sa_mask);
-+		if (sigaction(SIGRTMIN, &saction, NULL)) {
-+			timer_delete(timer_id);
-+			return -1;
-+		}
-+		/* Covert trace_time from msec to sec, nsec. */
-+		tperiod.it_value.tv_nsec = ((unsigned long long)perf->trace_time * 1000000LL);
-+		if (tperiod.it_value.tv_nsec >= TIMER_SEC_NANO) {
-+			tperiod.it_value.tv_sec = tperiod.it_value.tv_nsec / TIMER_SEC_NANO;
-+			tperiod.it_value.tv_nsec %= TIMER_SEC_NANO;
-+		}
-+		if (timer_settime(timer_id, 0, &tperiod, NULL))
-+			return -1;
-+	}
-+
-+	do {
-+		if (perf->command) { /* Wait for a child. */
-+			if (waitpid(perf->pid, NULL, WNOHANG) == (int)perf->pid) {
-+				perf->pid = 0;
-+				sampling_run = false;
-+			}
-+		} else { /* Not a child, check if still exist. */
-+			if (kill(perf->pid, 0) == -1 && errno == ESRCH) {
-+				perf->pid = 0;
-+				sampling_run = false;
-+			}
-+		}
-+		usleep(PID_WAIT_CHECK_USEC);
-+	} while (sampling_run);
-+
-+	if (perf->trace_time)
-+		timer_delete(timer_id);
-+
-+	signal(SIGINT, SIG_DFL);
-+
-+	return 0;
-+}
-+
-+PyObject *PyPerf_enable(PyPerf *self, PyObject *args, PyObject *kwargs)
-+{
-+	char *kwlist[] = {"wait", "time", NULL};
-+	struct perf_handle *perf = self->ptrObj;
-+	int wait = false;
-+	int ret;
-+
-+	if (perf->running) {
-+		PyErr_Format(PERF_ERROR, "Perf sampling is already started");
-+		return NULL;
-+	}
-+
-+	perf->trace_time = 0;
-+	if (!PyArg_ParseTupleAndKeywords(args,
-+					 kwargs,
-+					 "|pi",
-+					 kwlist,
-+					 &wait,
-+					 &perf->trace_time)) {
-+		return NULL;
-+	}
-+
-+	ret = perf_start_sampling(perf);
-+	if (ret) {
-+		PyErr_Format(PERF_ERROR,
-+			     "Failed to start perf sampling - %s", strerror(-ret));
-+		return NULL;
-+	}
-+
-+	if (wait) {
-+		perf_wait_pid(perf);
-+		py_perf_handle_destroy(perf);
-+	}
-+
-+	Py_RETURN_NONE;
-+}
-+
-+PyObject *PyPerf_disable(PyPerf *self)
-+{
-+	struct perf_handle *perf = self->ptrObj;
-+
-+	if (!perf->running) {
-+		PyErr_Format(PERF_ERROR, "Perf reader is not started");
-+		return NULL;
-+	}
-+
-+	py_perf_handle_destroy(perf);
-+
-+	Py_RETURN_NONE;
-+}
-+
-+struct symb_walk {
-+	uint64_t ip;
-+	char *name;
-+};
-+
-+static int sym_get(struct dbg_trace_symbols *symb, void *data)
-+{
-+	struct symb_walk *s = (struct symb_walk *)data;
-+
-+	if (s->ip == symb->vma_near) {
-+		if (symb->name)
-+			asprintf(&s->name, "%s @ %s", symb->name, symb->fname);
-+		else
-+			asprintf(&s->name, "(0x%llX) @ %s", symb->vma_near, symb->fname);
-+		return 1;
-+	}
-+	return 0;
-+}
-+
-+static char *ip_name(struct perf_handle *perf, uint64_t ip)
-+{
-+	struct symb_walk symb;
-+
-+	symb.ip = ip;
-+	symb.name = NULL;
-+	if (perf && perf->debug)
-+		dbg_trace_walk_resolved_symbols(perf->debug, sym_get, &symb);
-+
-+	if (!symb.name)
-+		asprintf(&symb.name, "0x%lX", ip);
-+
-+	return symb.name;
-+}
-+
-+PyObject *PyPerf_getSamples(PyPerf *self)
-+{
-+	struct perf_handle *perf = self->ptrObj;
-+	struct event_sample sample;
-+	struct perf_event_sample *store;
-+	PyObject *slist, *sobject;
-+	uint64_t i, ip;
-+	int ca = 0, cs = 0;
-+
-+	if (perf->running) {
-+		PyErr_Format(PERF_ERROR, "Perf reader is running");
-+		return NULL;
-+	}
-+
-+	if (perf->debug && !perf->debug_resolved) {
-+		dbg_trace_resolve_symbols(perf->debug);
-+		perf->debug_resolved = true;
-+	}
-+
-+	if (lseek(perf->fd, 0, SEEK_SET) == (off_t)-1) {
-+		PyErr_Format(PERF_ERROR, "No samples");
-+		return NULL;
-+	}
-+
-+	slist = PyList_New(0);
-+	do {
-+		if (read(perf->fd, &sample, sizeof(sample)) != sizeof(sample))
-+			break;
-+		ca++;
-+		store = calloc(1, sizeof(*store) + (sample.nr * sizeof(char *)));
-+		if (!store)
-+			break;
-+		memcpy(&store->data, &sample, sizeof(sample));
-+		store->perf = perf;
-+		store->ip = ip_name(perf, store->data.ip);
-+		for (i = 0; i < sample.nr; i++) {
-+			if (read(perf->fd, &ip, sizeof(uint64_t)) != sizeof(uint64_t))
-+				break;
-+			store->ips[i] = ip_name(perf, ip);
-+		}
-+		cs += sample.nr;
-+		if (i < sample.nr)
-+			break;
-+		sobject = PyPerfEventSampler_New(store);
-+		PyList_Append(slist, sobject);
-+	} while (true);
-+	ftruncate(perf->fd, 0);
-+	return slist;
-+}
-+
-+PyObject *PyPerfEventSampler_id(PyPerfEventSampler *self)
-+{
-+	struct perf_event_sample *sample = self->ptrObj;
-+
-+	return PyLong_FromUnsignedLongLong(sample->data.id);
-+}
-+
-+PyObject *PyPerfEventSampler_pid(PyPerfEventSampler *self)
-+{
-+	struct perf_event_sample *sample = self->ptrObj;
-+
-+	return PyLong_FromUnsignedLong(sample->data.pid);
-+}
-+
-+PyObject *PyPerfEventSampler_tid(PyPerfEventSampler *self)
-+{
-+	struct perf_event_sample *sample = self->ptrObj;
-+
-+	return PyLong_FromUnsignedLong(sample->data.tid);
-+}
-+
-+PyObject *PyPerfEventSampler_time(PyPerfEventSampler *self)
-+{
-+	struct perf_event_sample *sample = self->ptrObj;
-+
-+	return PyLong_FromUnsignedLongLong(sample->data.time);
-+}
-+
-+PyObject *PyPerfEventSampler_cpu(PyPerfEventSampler *self)
-+{
-+	struct perf_event_sample *sample = self->ptrObj;
-+
-+	return PyLong_FromUnsignedLong(sample->data.cpu);
-+}
-+
-+PyObject *PyPerfEventSampler_stack_count(PyPerfEventSampler *self)
-+{
-+	struct perf_event_sample *sample = self->ptrObj;
-+
-+	return PyLong_FromUnsignedLongLong(sample->data.nr);
-+}
-+
-+PyObject *PyPerfEventSampler_ip(PyPerfEventSampler *self)
-+{
-+	struct perf_event_sample *sample = self->ptrObj;
-+
-+	return PyUnicode_FromString(sample->ip);
-+}
-+
-+PyObject *PyPerfEventSampler_tid_comm(PyPerfEventSampler *self, PyObject *args, PyObject *kwargs)
-+{
-+	struct perf_event_sample *sample = self->ptrObj;
-+	char *name = NULL;
-+	int i;
-+
-+	if (!sample->perf || !sample->perf->thr_count || !sample->perf->thr_map)
-+		Py_RETURN_NONE;
-+
-+	for (i = 0; i < sample->perf->thr_count; i++)
-+		if (sample->perf->thr_map[i].tid == sample->data.tid)
-+			break;
-+
-+	if (i < sample->perf->thr_count && sample->perf->thr_map[i].comm)
-+		name = sample->perf->thr_map[i].comm;
-+
-+	if (name)
-+		return PyUnicode_FromString(name);
-+
-+	Py_RETURN_NONE;
-+}
-+
-+PyObject *PyPerfEventSampler_stack(PyPerfEventSampler *self)
-+{
-+	struct perf_event_sample *sample = self->ptrObj;
-+	PyObject *slist;
-+	unsigned int i;
-+
-+	slist = PyList_New(0);
-+	for (i = 0 ; i < sample->data.nr; i++)
-+		PyList_Append(slist, PyUnicode_FromString((char *)sample->ips[i]));
-+
-+	return slist;
-+}
-diff --git a/src/perfpy-utils.h b/src/perfpy-utils.h
-new file mode 100644
-index 0000000..af1f090
---- /dev/null
-+++ b/src/perfpy-utils.h
-@@ -0,0 +1,43 @@
-+/* SPDX-License-Identifier: LGPL-2.1 */
-+
-+/*
-+ * Copyright 2022 VMware Inc, Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-+ */
-+
-+#ifndef _TC_PERF_PY_UTILS
-+#define _TC_PERF_PY_UTILS
-+
-+// Python
-+#include <Python.h>
-+
-+// trace-cruncher
-+#include "common.h"
-+
-+struct perf_handle;
-+struct perf_event_sample;
-+
-+C_OBJECT_WRAPPER_DECLARE(perf_handle, PyPerf);
-+C_OBJECT_WRAPPER_DECLARE(perf_event_sample, PyPerfEventSampler);
-+
-+PyObject *PyPerf_sampler_instance(PyObject *self, PyObject *args, PyObject *kwargs);
-+
-+PyObject *PyPerf_enable(PyPerf *self, PyObject *args, PyObject *kwargs);
-+PyObject *PyPerf_disable(PyPerf *self);
-+PyObject *PyPerf_getSamples(PyPerf *self);
-+
-+PyObject *PyPerfEventSampler_id(PyPerfEventSampler *self);
-+PyObject *PyPerfEventSampler_ip(PyPerfEventSampler *self);
-+PyObject *PyPerfEventSampler_pid(PyPerfEventSampler *self);
-+PyObject *PyPerfEventSampler_tid(PyPerfEventSampler *self);
-+PyObject *PyPerfEventSampler_tid_comm(PyPerfEventSampler *self, PyObject *args, PyObject *kwargs);
-+PyObject *PyPerfEventSampler_time(PyPerfEventSampler *self);
-+PyObject *PyPerfEventSampler_cpu(PyPerfEventSampler *self);
-+PyObject *PyPerfEventSampler_stack_count(PyPerfEventSampler *self);
-+PyObject *PyPerfEventSampler_stack(PyPerfEventSampler *self);
-+
-+void py_perf_handle_free(struct perf_handle *perf);
-+int py_perf_handle_destroy(struct perf_handle *perf);
-+
-+void py_perf_sample_free(struct perf_event_sample *sample);
-+
-+#endif
-diff --git a/src/perfpy.c b/src/perfpy.c
-new file mode 100644
-index 0000000..8d061b1
---- /dev/null
-+++ b/src/perfpy.c
-@@ -0,0 +1,141 @@
-+// SPDX-License-Identifier: LGPL-2.1
-+
-+/*
-+ * Copyright 2022 VMware Inc, Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-+ */
-+
-+// Python
-+#include <Python.h>
-+
-+// libperf
-+#include <perf/core.h>
-+#include <perf/evsel.h>
-+#include <perf/mmap.h>
-+#include <perf/event.h>
-+
-+// trace-cruncher
-+#include "common.h"
-+#include "perfpy-utils.h"
-+
-+extern PyObject *PERF_ERROR;
-+
-+static PyMethodDef PyPerf_methods[] = {
-+	{"enable",
-+	 (PyCFunction) PyPerf_enable,
-+	 METH_VARARGS | METH_KEYWORDS,
-+	 "start sampling"
-+	},
-+	{"disable",
-+	 (PyCFunction) PyPerf_disable,
-+	 METH_NOARGS,
-+	 "stop sampling"
-+	},
-+	{"get_samples",
-+	 (PyCFunction) PyPerf_getSamples,
-+	 METH_NOARGS,
-+	 "get recorded samples"
-+	},
-+	{NULL}
-+};
-+C_OBJECT_WRAPPER(perf_handle, PyPerf, py_perf_handle_destroy, py_perf_handle_free);
-+
-+static PyMethodDef PyPerfEventSampler_methods[] = {
-+	{"id",
-+	 (PyCFunction) PyPerfEventSampler_id,
-+	 METH_NOARGS,
-+	 "get sample id"
-+	},
-+	{"ip",
-+	 (PyCFunction) PyPerfEventSampler_ip,
-+	 METH_NOARGS,
-+	 "get sample ip"
-+	},
-+	{"pid",
-+	 (PyCFunction) PyPerfEventSampler_pid,
-+	 METH_NOARGS,
-+	 "get sample pid"
-+	},
-+	{"tid",
-+	 (PyCFunction) PyPerfEventSampler_tid,
-+	 METH_NOARGS,
-+	 "get sample tid"
-+	},
-+	{"tid_comm",
-+	 (PyCFunction) PyPerfEventSampler_tid_comm,
-+	 METH_VARARGS | METH_KEYWORDS,
-+	 "get sample tid"
-+	},
-+	{"time",
-+	 (PyCFunction) PyPerfEventSampler_time,
-+	 METH_NOARGS,
-+	 "get sample timestamp"
-+	},
-+	{"cpu",
-+	 (PyCFunction) PyPerfEventSampler_cpu,
-+	 METH_NOARGS,
-+	 "get sample cpu"
-+	},
-+	{"stack_count",
-+	 (PyCFunction) PyPerfEventSampler_stack_count,
-+	 METH_NOARGS,
-+	 "get sample stack count"
-+	},
-+	{"stack",
-+	 (PyCFunction) PyPerfEventSampler_stack,
-+	 METH_NOARGS,
-+	 "get sample stack"
-+	},
-+	{NULL}
-+};
-+C_OBJECT_WRAPPER(perf_event_sample, PyPerfEventSampler, NO_DESTROY, py_perf_sample_free);
-+
-+static PyMethodDef perfpy_methods[] = {
-+	{"sampler_instance",
-+	 (PyCFunction) PyPerf_sampler_instance,
-+	 METH_VARARGS | METH_KEYWORDS,
-+	 "Allocate new perf sampler instance"
-+	},
-+	{NULL}
-+};
-+
-+static int perf_error_print(enum libperf_print_level level,
-+			    const char *fmt, va_list ap)
-+{
-+	return vfprintf(stderr, fmt, ap);
-+}
-+
-+static struct PyModuleDef perfpy_module = {
-+	PyModuleDef_HEAD_INIT,
-+	"perfpy",
-+	"Python interface for Perf.",
-+	-1,
-+	perfpy_methods
-+};
-+
-+PyMODINIT_FUNC PyInit_perfpy(void)
-+{
-+
-+	if (!PyPerfTypeInit())
-+		return NULL;
-+	if (!PyPerfEventSamplerTypeInit())
-+		return NULL;
-+
-+	PERF_ERROR = PyErr_NewException("tracecruncher.perfpy.perf_error",
-+					NULL, NULL);
-+
-+	PyObject *module = PyModule_Create(&perfpy_module);
-+
-+	PyModule_AddObject(module, "perf_error", PERF_ERROR);
-+	PyModule_AddObject(module, "perf_handle", (PyObject *) &PyPerfType);
-+	PyModule_AddObject(module, "perf_event_sample", (PyObject *) &PyPerfEventSamplerType);
-+
-+	if (geteuid() != 0) {
-+		PyErr_SetString(PERF_ERROR,
-+				"Permission denied. Root privileges are required.");
-+		return NULL;
-+	}
-+
-+	libperf_init(perf_error_print);
-+
-+	return module;
-+}
--- 
-2.35.1
+RnJvbTogV2FuIEppYWJpbmcgPHdhbmppYWJpbmdAdml2by5jb20+DQoNCkZpeCB0aGUgZm9sbG93
+aW5nIG51bGwvZGVyZWZfbnVsbC5jb2NjaSBlcnJvcnM6DQouL3Rvb2xzL3RyYWNpbmcvcnRsYS9z
+cmMvb3Nub2lzZV9oaXN0LmM6ODcwOjMxLTM2OiBFUlJPUjogcmVjb3JkIGlzIE5VTEwgYnV0IGRl
+cmVmZXJlbmNlZC4NCi4vdG9vbHMvdHJhY2luZy9ydGxhL3NyYy9vc25vaXNlX3RvcC5jOjY1MDoz
+MS0zNjogRVJST1I6IHJlY29yZCBpcyBOVUxMIGJ1dCBkZXJlZmVyZW5jZWQuDQouL3Rvb2xzL3Ry
+YWNpbmcvcnRsYS9zcmMvdGltZXJsYXRfaGlzdC5jOjkwNTozMS0zNjogRVJST1I6IHJlY29yZCBp
+cyBOVUxMIGJ1dCBkZXJlZmVyZW5jZWQuDQouL3Rvb2xzL3RyYWNpbmcvcnRsYS9zcmMvdGltZXJs
+YXRfdG9wLmM6NzAwOjMxLTM2OiBFUlJPUjogcmVjb3JkIGlzIE5VTEwgYnV0IGRlcmVmZXJlbmNl
+ZC4NCg0KInJlY29yZCIgaXMgTlVMTCBiZWZvcmUgY2FsbGluZyBvc25vaXNlX2luaXRfdHJhY2Vf
+dG9vbC4NCkFkZCBhIHRhZyAib3V0X2ZyZWUiIHRvIGF2b2lkIGRlcmVmZXJyaW5nIGEgTlVMTCBw
+b2ludGVyLg0KDQpMaW5rOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjIwNDA4MTUxNDA2
+LjM0ODIzLTEtd2FuamlhYmluZ0B2aXZvLmNvbS8NCg0KQ2M6IGthZWxfd0B5ZWFoLm5ldA0KQ2M6
+IERhbmllbCBCcmlzdG90IGRlIE9saXZlaXJhIDxicmlzdG90QGtlcm5lbC5vcmc+DQpDYzogU3Rl
+dmVuIFJvc3RlZHQgPHJvc3RlZHRAZ29vZG1pcy5vcmc+DQpGaXhlczogNTFkNjRjM2ExODE5ICgi
+cnRsYTogQWRkIC1lLy0tZXZlbnQgc3VwcG9ydCIpDQpBY2tlZC1ieTogRGFuaWVsIEJyaXN0b3Qg
+ZGUgT2xpdmVpcmEgPGJyaXN0b3RAa2VybmVsLm9yZz4NClNpZ25lZC1vZmYtYnk6IFdhbiBKaWFi
+aW5nIDx3YW5qaWFiaW5nQHZpdm8uY29tPg0KU2lnbmVkLW9mZi1ieTogRGFuaWVsIEJyaXN0b3Qg
+ZGUgT2xpdmVpcmEgPGJyaXN0b3RAa2VybmVsLm9yZz4NCi0tLQ0KIHRvb2xzL3RyYWNpbmcvcnRs
+YS9zcmMvb3Nub2lzZV9oaXN0LmMgIHwgIDUgKysrLS0NCiB0b29scy90cmFjaW5nL3J0bGEvc3Jj
+L29zbm9pc2VfdG9wLmMgICB8ICA5ICsrKysrLS0tLQ0KIHRvb2xzL3RyYWNpbmcvcnRsYS9zcmMv
+dGltZXJsYXRfaGlzdC5jIHwgMTEgKysrKysrLS0tLS0NCiB0b29scy90cmFjaW5nL3J0bGEvc3Jj
+L3RpbWVybGF0X3RvcC5jICB8IDExICsrKysrKy0tLS0tDQogNCBmaWxlcyBjaGFuZ2VkLCAyMCBp
+bnNlcnRpb25zKCspLCAxNiBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdpdCBhL3Rvb2xzL3RyYWNp
+bmcvcnRsYS9zcmMvb3Nub2lzZV9oaXN0LmMgYi90b29scy90cmFjaW5nL3J0bGEvc3JjL29zbm9p
+c2VfaGlzdC5jDQppbmRleCBiNDM4MGQ0NWNhY2QuLjVkN2VhNDc5YWM4OSAxMDA2NDQNCi0tLSBh
+L3Rvb2xzL3RyYWNpbmcvcnRsYS9zcmMvb3Nub2lzZV9oaXN0LmMNCisrKyBiL3Rvb2xzL3RyYWNp
+bmcvcnRsYS9zcmMvb3Nub2lzZV9oaXN0LmMNCkBAIC04MDksNyArODA5LDcgQEAgaW50IG9zbm9p
+c2VfaGlzdF9tYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pDQogCQlyZXR2YWwgPSBzZXRfY29t
+bV9zY2hlZF9hdHRyKCJvc25vaXNlLyIsICZwYXJhbXMtPnNjaGVkX3BhcmFtKTsNCiAJCWlmIChy
+ZXR2YWwpIHsNCiAJCQllcnJfbXNnKCJGYWlsZWQgdG8gc2V0IHNjaGVkIHBhcmFtZXRlcnNcbiIp
+Ow0KLQkJCWdvdG8gb3V0X2hpc3Q7DQorCQkJZ290byBvdXRfZnJlZTsNCiAJCX0NCiAJfQ0KIA0K
+QEAgLTgxOSw3ICs4MTksNyBAQCBpbnQgb3Nub2lzZV9oaXN0X21haW4oaW50IGFyZ2MsIGNoYXIg
+KmFyZ3ZbXSkNCiAJCXJlY29yZCA9IG9zbm9pc2VfaW5pdF90cmFjZV90b29sKCJvc25vaXNlIik7
+DQogCQlpZiAoIXJlY29yZCkgew0KIAkJCWVycl9tc2coIkZhaWxlZCB0byBlbmFibGUgdGhlIHRy
+YWNlIGluc3RhbmNlXG4iKTsNCi0JCQlnb3RvIG91dF9oaXN0Ow0KKwkJCWdvdG8gb3V0X2ZyZWU7
+DQogCQl9DQogDQogCQlpZiAocGFyYW1zLT5ldmVudHMpIHsNCkBAIC04NjksNiArODY5LDcgQEAg
+aW50IG9zbm9pc2VfaGlzdF9tYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pDQogb3V0X2hpc3Q6
+DQogCXRyYWNlX2V2ZW50c19kZXN0cm95KCZyZWNvcmQtPnRyYWNlLCBwYXJhbXMtPmV2ZW50cyk7
+DQogCXBhcmFtcy0+ZXZlbnRzID0gTlVMTDsNCitvdXRfZnJlZToNCiAJb3Nub2lzZV9mcmVlX2hp
+c3RvZ3JhbSh0b29sLT5kYXRhKTsNCiBvdXRfZGVzdHJveToNCiAJb3Nub2lzZV9kZXN0cm95X3Rv
+b2wocmVjb3JkKTsNCmRpZmYgLS1naXQgYS90b29scy90cmFjaW5nL3J0bGEvc3JjL29zbm9pc2Vf
+dG9wLmMgYi90b29scy90cmFjaW5nL3J0bGEvc3JjL29zbm9pc2VfdG9wLmMNCmluZGV4IDcyYzJm
+ZDZjZTAwNS4uNzY0NzliZmIyOTIyIDEwMDY0NA0KLS0tIGEvdG9vbHMvdHJhY2luZy9ydGxhL3Ny
+Yy9vc25vaXNlX3RvcC5jDQorKysgYi90b29scy90cmFjaW5nL3J0bGEvc3JjL29zbm9pc2VfdG9w
+LmMNCkBAIC01NzIsNyArNTcyLDcgQEAgaW50IG9zbm9pc2VfdG9wX21haW4oaW50IGFyZ2MsIGNo
+YXIgKiphcmd2KQ0KIAlyZXR2YWwgPSBvc25vaXNlX3RvcF9hcHBseV9jb25maWcodG9vbCwgcGFy
+YW1zKTsNCiAJaWYgKHJldHZhbCkgew0KIAkJZXJyX21zZygiQ291bGQgbm90IGFwcGx5IGNvbmZp
+Z1xuIik7DQotCQlnb3RvIG91dF90b3A7DQorCQlnb3RvIG91dF9mcmVlOw0KIAl9DQogDQogCXRy
+YWNlID0gJnRvb2wtPnRyYWNlOw0KQEAgLTU4MCwxNCArNTgwLDE0IEBAIGludCBvc25vaXNlX3Rv
+cF9tYWluKGludCBhcmdjLCBjaGFyICoqYXJndikNCiAJcmV0dmFsID0gZW5hYmxlX29zbm9pc2Uo
+dHJhY2UpOw0KIAlpZiAocmV0dmFsKSB7DQogCQllcnJfbXNnKCJGYWlsZWQgdG8gZW5hYmxlIG9z
+bm9pc2UgdHJhY2VyXG4iKTsNCi0JCWdvdG8gb3V0X3RvcDsNCisJCWdvdG8gb3V0X2ZyZWU7DQog
+CX0NCiANCiAJaWYgKHBhcmFtcy0+c2V0X3NjaGVkKSB7DQogCQlyZXR2YWwgPSBzZXRfY29tbV9z
+Y2hlZF9hdHRyKCJvc25vaXNlLyIsICZwYXJhbXMtPnNjaGVkX3BhcmFtKTsNCiAJCWlmIChyZXR2
+YWwpIHsNCiAJCQllcnJfbXNnKCJGYWlsZWQgdG8gc2V0IHNjaGVkIHBhcmFtZXRlcnNcbiIpOw0K
+LQkJCWdvdG8gb3V0X3RvcDsNCisJCQlnb3RvIG91dF9mcmVlOw0KIAkJfQ0KIAl9DQogDQpAQCAt
+NTk3LDcgKzU5Nyw3IEBAIGludCBvc25vaXNlX3RvcF9tYWluKGludCBhcmdjLCBjaGFyICoqYXJn
+dikNCiAJCXJlY29yZCA9IG9zbm9pc2VfaW5pdF90cmFjZV90b29sKCJvc25vaXNlIik7DQogCQlp
+ZiAoIXJlY29yZCkgew0KIAkJCWVycl9tc2coIkZhaWxlZCB0byBlbmFibGUgdGhlIHRyYWNlIGlu
+c3RhbmNlXG4iKTsNCi0JCQlnb3RvIG91dF90b3A7DQorCQkJZ290byBvdXRfZnJlZTsNCiAJCX0N
+CiANCiAJCWlmIChwYXJhbXMtPmV2ZW50cykgew0KQEAgLTY0OSw2ICs2NDksNyBAQCBpbnQgb3Nu
+b2lzZV90b3BfbWFpbihpbnQgYXJnYywgY2hhciAqKmFyZ3YpDQogb3V0X3RvcDoNCiAJdHJhY2Vf
+ZXZlbnRzX2Rlc3Ryb3koJnJlY29yZC0+dHJhY2UsIHBhcmFtcy0+ZXZlbnRzKTsNCiAJcGFyYW1z
+LT5ldmVudHMgPSBOVUxMOw0KK291dF9mcmVlOg0KIAlvc25vaXNlX2ZyZWVfdG9wKHRvb2wtPmRh
+dGEpOw0KIAlvc25vaXNlX2Rlc3Ryb3lfdG9vbChyZWNvcmQpOw0KIAlvc25vaXNlX2Rlc3Ryb3lf
+dG9vbCh0b29sKTsNCmRpZmYgLS1naXQgYS90b29scy90cmFjaW5nL3J0bGEvc3JjL3RpbWVybGF0
+X2hpc3QuYyBiL3Rvb2xzL3RyYWNpbmcvcnRsYS9zcmMvdGltZXJsYXRfaGlzdC5jDQppbmRleCBk
+YzkwODEyNmM2MTAuLmYzZWM2MjhmNWU1MSAxMDA2NDQNCi0tLSBhL3Rvb2xzL3RyYWNpbmcvcnRs
+YS9zcmMvdGltZXJsYXRfaGlzdC5jDQorKysgYi90b29scy90cmFjaW5nL3J0bGEvc3JjL3RpbWVy
+bGF0X2hpc3QuYw0KQEAgLTgyMSw3ICs4MjEsNyBAQCBpbnQgdGltZXJsYXRfaGlzdF9tYWluKGlu
+dCBhcmdjLCBjaGFyICphcmd2W10pDQogCXJldHZhbCA9IHRpbWVybGF0X2hpc3RfYXBwbHlfY29u
+ZmlnKHRvb2wsIHBhcmFtcyk7DQogCWlmIChyZXR2YWwpIHsNCiAJCWVycl9tc2coIkNvdWxkIG5v
+dCBhcHBseSBjb25maWdcbiIpOw0KLQkJZ290byBvdXRfaGlzdDsNCisJCWdvdG8gb3V0X2ZyZWU7
+DQogCX0NCiANCiAJdHJhY2UgPSAmdG9vbC0+dHJhY2U7DQpAQCAtODI5LDE0ICs4MjksMTQgQEAg
+aW50IHRpbWVybGF0X2hpc3RfbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQ0KIAlyZXR2YWwg
+PSBlbmFibGVfdGltZXJsYXQodHJhY2UpOw0KIAlpZiAocmV0dmFsKSB7DQogCQllcnJfbXNnKCJG
+YWlsZWQgdG8gZW5hYmxlIHRpbWVybGF0IHRyYWNlclxuIik7DQotCQlnb3RvIG91dF9oaXN0Ow0K
+KwkJZ290byBvdXRfZnJlZTsNCiAJfQ0KIA0KIAlpZiAocGFyYW1zLT5zZXRfc2NoZWQpIHsNCiAJ
+CXJldHZhbCA9IHNldF9jb21tX3NjaGVkX2F0dHIoInRpbWVybGF0LyIsICZwYXJhbXMtPnNjaGVk
+X3BhcmFtKTsNCiAJCWlmIChyZXR2YWwpIHsNCiAJCQllcnJfbXNnKCJGYWlsZWQgdG8gc2V0IHNj
+aGVkIHBhcmFtZXRlcnNcbiIpOw0KLQkJCWdvdG8gb3V0X2hpc3Q7DQorCQkJZ290byBvdXRfZnJl
+ZTsNCiAJCX0NCiAJfQ0KIA0KQEAgLTg0NCw3ICs4NDQsNyBAQCBpbnQgdGltZXJsYXRfaGlzdF9t
+YWluKGludCBhcmdjLCBjaGFyICphcmd2W10pDQogCQlkbWFfbGF0ZW5jeV9mZCA9IHNldF9jcHVf
+ZG1hX2xhdGVuY3kocGFyYW1zLT5kbWFfbGF0ZW5jeSk7DQogCQlpZiAoZG1hX2xhdGVuY3lfZmQg
+PCAwKSB7DQogCQkJZXJyX21zZygiQ291bGQgbm90IHNldCAvZGV2L2NwdV9kbWFfbGF0ZW5jeS5c
+biIpOw0KLQkJCWdvdG8gb3V0X2hpc3Q7DQorCQkJZ290byBvdXRfZnJlZTsNCiAJCX0NCiAJfQ0K
+IA0KQEAgLTg1NCw3ICs4NTQsNyBAQCBpbnQgdGltZXJsYXRfaGlzdF9tYWluKGludCBhcmdjLCBj
+aGFyICphcmd2W10pDQogCQlyZWNvcmQgPSBvc25vaXNlX2luaXRfdHJhY2VfdG9vbCgidGltZXJs
+YXQiKTsNCiAJCWlmICghcmVjb3JkKSB7DQogCQkJZXJyX21zZygiRmFpbGVkIHRvIGVuYWJsZSB0
+aGUgdHJhY2UgaW5zdGFuY2VcbiIpOw0KLQkJCWdvdG8gb3V0X2hpc3Q7DQorCQkJZ290byBvdXRf
+ZnJlZTsNCiAJCX0NCiANCiAJCWlmIChwYXJhbXMtPmV2ZW50cykgew0KQEAgLTkwNCw2ICs5MDQs
+NyBAQCBpbnQgdGltZXJsYXRfaGlzdF9tYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pDQogCQlj
+bG9zZShkbWFfbGF0ZW5jeV9mZCk7DQogCXRyYWNlX2V2ZW50c19kZXN0cm95KCZyZWNvcmQtPnRy
+YWNlLCBwYXJhbXMtPmV2ZW50cyk7DQogCXBhcmFtcy0+ZXZlbnRzID0gTlVMTDsNCitvdXRfZnJl
+ZToNCiAJdGltZXJsYXRfZnJlZV9oaXN0b2dyYW0odG9vbC0+ZGF0YSk7DQogCW9zbm9pc2VfZGVz
+dHJveV90b29sKHJlY29yZCk7DQogCW9zbm9pc2VfZGVzdHJveV90b29sKHRvb2wpOw0KZGlmZiAt
+LWdpdCBhL3Rvb2xzL3RyYWNpbmcvcnRsYS9zcmMvdGltZXJsYXRfdG9wLmMgYi90b29scy90cmFj
+aW5nL3J0bGEvc3JjL3RpbWVybGF0X3RvcC5jDQppbmRleCAxZjc1NGMzZGY1M2YuLjM1NDUyYTFk
+NDVlOSAxMDA2NDQNCi0tLSBhL3Rvb2xzL3RyYWNpbmcvcnRsYS9zcmMvdGltZXJsYXRfdG9wLmMN
+CisrKyBiL3Rvb2xzL3RyYWNpbmcvcnRsYS9zcmMvdGltZXJsYXRfdG9wLmMNCkBAIC02MTIsNyAr
+NjEyLDcgQEAgaW50IHRpbWVybGF0X3RvcF9tYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pDQog
+CXJldHZhbCA9IHRpbWVybGF0X3RvcF9hcHBseV9jb25maWcodG9wLCBwYXJhbXMpOw0KIAlpZiAo
+cmV0dmFsKSB7DQogCQllcnJfbXNnKCJDb3VsZCBub3QgYXBwbHkgY29uZmlnXG4iKTsNCi0JCWdv
+dG8gb3V0X3RvcDsNCisJCWdvdG8gb3V0X2ZyZWU7DQogCX0NCiANCiAJdHJhY2UgPSAmdG9wLT50
+cmFjZTsNCkBAIC02MjAsMTQgKzYyMCwxNCBAQCBpbnQgdGltZXJsYXRfdG9wX21haW4oaW50IGFy
+Z2MsIGNoYXIgKmFyZ3ZbXSkNCiAJcmV0dmFsID0gZW5hYmxlX3RpbWVybGF0KHRyYWNlKTsNCiAJ
+aWYgKHJldHZhbCkgew0KIAkJZXJyX21zZygiRmFpbGVkIHRvIGVuYWJsZSB0aW1lcmxhdCB0cmFj
+ZXJcbiIpOw0KLQkJZ290byBvdXRfdG9wOw0KKwkJZ290byBvdXRfZnJlZTsNCiAJfQ0KIA0KIAlp
+ZiAocGFyYW1zLT5zZXRfc2NoZWQpIHsNCiAJCXJldHZhbCA9IHNldF9jb21tX3NjaGVkX2F0dHIo
+InRpbWVybGF0LyIsICZwYXJhbXMtPnNjaGVkX3BhcmFtKTsNCiAJCWlmIChyZXR2YWwpIHsNCiAJ
+CQllcnJfbXNnKCJGYWlsZWQgdG8gc2V0IHNjaGVkIHBhcmFtZXRlcnNcbiIpOw0KLQkJCWdvdG8g
+b3V0X3RvcDsNCisJCQlnb3RvIG91dF9mcmVlOw0KIAkJfQ0KIAl9DQogDQpAQCAtNjM1LDcgKzYz
+NSw3IEBAIGludCB0aW1lcmxhdF90b3BfbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQ0KIAkJ
+ZG1hX2xhdGVuY3lfZmQgPSBzZXRfY3B1X2RtYV9sYXRlbmN5KHBhcmFtcy0+ZG1hX2xhdGVuY3kp
+Ow0KIAkJaWYgKGRtYV9sYXRlbmN5X2ZkIDwgMCkgew0KIAkJCWVycl9tc2coIkNvdWxkIG5vdCBz
+ZXQgL2Rldi9jcHVfZG1hX2xhdGVuY3kuXG4iKTsNCi0JCQlnb3RvIG91dF90b3A7DQorCQkJZ290
+byBvdXRfZnJlZTsNCiAJCX0NCiAJfQ0KIA0KQEAgLTY0NSw3ICs2NDUsNyBAQCBpbnQgdGltZXJs
+YXRfdG9wX21haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkNCiAJCXJlY29yZCA9IG9zbm9pc2Vf
+aW5pdF90cmFjZV90b29sKCJ0aW1lcmxhdCIpOw0KIAkJaWYgKCFyZWNvcmQpIHsNCiAJCQllcnJf
+bXNnKCJGYWlsZWQgdG8gZW5hYmxlIHRoZSB0cmFjZSBpbnN0YW5jZVxuIik7DQotCQkJZ290byBv
+dXRfdG9wOw0KKwkJCWdvdG8gb3V0X2ZyZWU7DQogCQl9DQogDQogCQlpZiAocGFyYW1zLT5ldmVu
+dHMpIHsNCkBAIC02OTksNiArNjk5LDcgQEAgaW50IHRpbWVybGF0X3RvcF9tYWluKGludCBhcmdj
+LCBjaGFyICphcmd2W10pDQogCQljbG9zZShkbWFfbGF0ZW5jeV9mZCk7DQogCXRyYWNlX2V2ZW50
+c19kZXN0cm95KCZyZWNvcmQtPnRyYWNlLCBwYXJhbXMtPmV2ZW50cyk7DQogCXBhcmFtcy0+ZXZl
+bnRzID0gTlVMTDsNCitvdXRfZnJlZToNCiAJdGltZXJsYXRfZnJlZV90b3AodG9wLT5kYXRhKTsN
+CiAJb3Nub2lzZV9kZXN0cm95X3Rvb2wocmVjb3JkKTsNCiAJb3Nub2lzZV9kZXN0cm95X3Rvb2wo
+dG9wKTsNCi0tIA0KMi4zNS4xDQo=
 
