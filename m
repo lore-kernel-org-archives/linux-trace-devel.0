@@ -2,38 +2,40 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6E72C43217
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 15 Apr 2022 01:00:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 516FCC43219
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 15 Apr 2022 01:00:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245749AbiDOBC7 (ORCPT
+        id S1344291AbiDOBDA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 14 Apr 2022 21:02:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49948 "EHLO
+        Thu, 14 Apr 2022 21:03:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348324AbiDOBCi (ORCPT
+        with ESMTP id S1348334AbiDOBCj (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 14 Apr 2022 21:02:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B569286FE
-        for <linux-trace-devel@vger.kernel.org>; Thu, 14 Apr 2022 18:00:10 -0700 (PDT)
+        Thu, 14 Apr 2022 21:02:39 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E9A2F019
+        for <linux-trace-devel@vger.kernel.org>; Thu, 14 Apr 2022 18:00:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8BD80621F9
-        for <linux-trace-devel@vger.kernel.org>; Fri, 15 Apr 2022 01:00:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6443C385AA;
+        by ams.source.kernel.org (Postfix) with ESMTPS id BD6DBB82BF6
+        for <linux-trace-devel@vger.kernel.org>; Fri, 15 Apr 2022 01:00:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D955BC385AD;
         Fri, 15 Apr 2022 01:00:09 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1nfAJk-003w8R-Lf;
+        id 1nfAJk-003w8g-Q0;
         Thu, 14 Apr 2022 21:00:08 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 0/8] trace-cmd library: Remove dependency to vsockets
-Date:   Thu, 14 Apr 2022 20:59:59 -0400
-Message-Id: <20220415010007.938408-1-rostedt@goodmis.org>
+Subject: [PATCH 5/8] trace-cmd library: Have tracecmd_tsync_with_guest() not depend on cid/port
+Date:   Thu, 14 Apr 2022 21:00:04 -0400
+Message-Id: <20220415010007.938408-6-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220415010007.938408-1-rostedt@goodmis.org>
+References: <20220415010007.938408-1-rostedt@goodmis.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -42,46 +44,154 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-[ Sending again from my server in case my laptop had issues sending ]
+Have tracecmd_tsync_with_guest() get passed a file descriptor for
+connecting with the guest instead of passing in the cid and port, as
+this will allow it to be used for network connections as well.
 
-In an effort to have trace-cmd agent and the time synchronization to
-work with networks, the dependency to vsockets needs to be removed. In
-fact, libtracecmd should not have any dependency to vsockets, as
-everything can be done externally. This simplifies the code, and allows
-the use of trace-msg to be used in more scenarios.
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ .../include/private/trace-cmd-private.h       |  2 +-
+ lib/trace-cmd/trace-timesync.c                | 36 ++-----------------
+ tracecmd/trace-record.c                       |  7 ++--
+ 3 files changed, 9 insertions(+), 36 deletions(-)
 
-I tested host guest tracing to make sure that it did not break the
-existing use cases, although there may still be an outlier that I didn't
-cover.
-
-Steven Rostedt (Google) (8):
-  trace-cmd: Add NO_VSOCK make option to force vsock code off
-  trace-cmd library: Remove ports from clock context
-  trace-cmd library: Remove vsocket dependency on P2P protocol
-  trace-cmd library: Remove dependency on vsocks for sync identifiers
-  trace-cmd library: Have tracecmd_tsync_with_guest() not depend on
-    cid/port
-  trace-cmd library: Remove dependency on vsocks from
-    tracecmd_tsync_get_session_params()
-  trace-cmd library: Remove vsock dependency from
-    tracecmd_tsync_with_host()
-  trace-cmd: Move vsocket code into its own file
-
- Makefile                                      |   4 +
- .../include/private/trace-cmd-private.h       |  12 +-
- lib/trace-cmd/include/trace-tsync-local.h     |  21 +-
- lib/trace-cmd/trace-msg.c                     |   3 +-
- lib/trace-cmd/trace-timesync-ptp.c            |  25 ++-
- lib/trace-cmd/trace-timesync.c                | 180 ++----------------
- tracecmd/Makefile                             |   1 +
- tracecmd/include/trace-local.h                |  49 +++++
- tracecmd/trace-agent.c                        |  96 +++-------
- tracecmd/trace-record.c                       |  94 +--------
- tracecmd/trace-vm.c                           |   2 +-
- tracecmd/trace-vsock.c                        | 156 +++++++++++++++
- 12 files changed, 303 insertions(+), 340 deletions(-)
- create mode 100644 tracecmd/trace-vsock.c
-
+diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
+index 24295e4e09d3..06906b04fbd9 100644
+--- a/lib/trace-cmd/include/private/trace-cmd-private.h
++++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+@@ -493,7 +493,7 @@ tracecmd_tsync_with_host(const struct tracecmd_tsync_protos *tsync_protos,
+ int tracecmd_tsync_with_host_stop(struct tracecmd_time_sync *tsync);
+ struct tracecmd_time_sync *
+ tracecmd_tsync_with_guest(unsigned long long trace_id, int loop_interval,
+-			  unsigned int cid, unsigned int port, int guest_pid,
++			  unsigned int fd, int guest_pid,
+ 			  int guest_cpus, const char *proto_name, const char *clock);
+ int tracecmd_tsync_with_guest_stop(struct tracecmd_time_sync *tsync);
+ int tracecmd_tsync_get_offsets(struct tracecmd_time_sync *tsync, int cpu,
+diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
+index b41aece82082..2f812ca5fc74 100644
+--- a/lib/trace-cmd/trace-timesync.c
++++ b/lib/trace-cmd/trace-timesync.c
+@@ -345,25 +345,6 @@ error:
+ }
+ 
+ #ifdef VSOCK
+-static int vsock_open(unsigned int cid, unsigned int port)
+-{
+-	struct sockaddr_vm addr = {
+-		.svm_family = AF_VSOCK,
+-		.svm_cid = cid,
+-		.svm_port = port,
+-	};
+-	int sd;
+-
+-	sd = socket(AF_VSOCK, SOCK_STREAM, 0);
+-	if (sd < 0)
+-		return -errno;
+-
+-	if (connect(sd, (struct sockaddr *)&addr, sizeof(addr)))
+-		return -errno;
+-
+-	return sd;
+-}
+-
+ static int vsock_make(void)
+ {
+ 	struct sockaddr_vm addr = {
+@@ -388,7 +369,7 @@ static int vsock_make(void)
+ 	return sd;
+ }
+ 
+-int __hidden vsock_get_port(int sd, unsigned int *port)
++static int vsock_get_port(int sd, unsigned int *port)
+ {
+ 	struct sockaddr_vm addr;
+ 	socklen_t addr_len = sizeof(addr);
+@@ -406,11 +387,6 @@ int __hidden vsock_get_port(int sd, unsigned int *port)
+ }
+ 
+ #else
+-static int vsock_open(unsigned int cid, unsigned int port)
+-{
+-	return -ENOTSUP;
+-}
+-
+ static int vsock_make(void)
+ {
+ 	return -ENOTSUP;
+@@ -811,8 +787,7 @@ static void *tsync_host_thread(void *data)
+  * tracecmd_tsync_with_guest - Synchronize timestamps with guest
+  *
+  * @trace_id: Local ID for the current trace session
+- * @cid: CID of the guest
+- * @port: VSOCKET port, on which the guest listens for tsync requests
++ * @fd: file descriptor of guest
+  * @guest_pid: PID of the host OS process, running the guest
+  * @guest_cpus: Number of the guest VCPUs
+  * @proto_name: Name of the negotiated time synchronization protocol
+@@ -826,14 +801,13 @@ static void *tsync_host_thread(void *data)
+  */
+ struct tracecmd_time_sync *
+ tracecmd_tsync_with_guest(unsigned long long trace_id, int loop_interval,
+-			  unsigned int cid, unsigned int port, int guest_pid,
++			  unsigned int fd, int guest_pid,
+ 			  int guest_cpus, const char *proto_name, const char *clock)
+ {
+ 	struct tracecmd_time_sync *tsync;
+ 	cpu_set_t *pin_mask = NULL;
+ 	pthread_attr_t attrib;
+ 	size_t mask_size = 0;
+-	int fd = -1;
+ 	int ret;
+ 
+ 	if (!proto_name)
+@@ -846,9 +820,6 @@ tracecmd_tsync_with_guest(unsigned long long trace_id, int loop_interval,
+ 	tsync->trace_id = trace_id;
+ 	tsync->loop_interval = loop_interval;
+ 	tsync->proto_name = strdup(proto_name);
+-	fd = vsock_open(cid, port);
+-	if (fd < 0)
+-		goto error;
+ 
+ 	tsync->msg_handle = tracecmd_msg_handle_alloc(fd, 0);
+ 	if (!tsync->msg_handle) {
+@@ -1034,7 +1005,6 @@ out:
+ 
+ /**
+  * tracecmd_tsync_with_host - Synchronize timestamps with host
+- *
+  * @tsync_protos: List of tsync protocols, supported by the host
+  * @clock: Trace clock, used for that session
+  * @port: returned, VSOCKET port, on which the guest listens for tsync requests
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index c3e52a48fa07..56fa5a798dcc 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -3976,19 +3976,22 @@ static int host_tsync(struct common_record_context *ctx,
+ 		      unsigned int tsync_port, char *proto)
+ {
+ 	struct trace_guest *guest;
++	int fd;
+ 
+ 	if (!proto)
+ 		return -1;
++
+ 	guest = trace_get_guest(instance->cid, NULL);
+ 	if (guest == NULL)
+ 		return -1;
+ 
+ 	start_mapping_vcpus(guest);
+ 
++	fd = trace_open_vsock(instance->cid, tsync_port);
+ 	instance->tsync = tracecmd_tsync_with_guest(top_instance.trace_id,
+ 						    instance->tsync_loop_interval,
+-						    instance->cid, tsync_port,
+-						    guest->pid, instance->cpu_count,
++						    fd, guest->pid,
++						    instance->cpu_count,
+ 						    proto, ctx->clock);
+ 	stop_mapping_vcpus(instance, guest);
+ 
 -- 
 2.35.1
 
