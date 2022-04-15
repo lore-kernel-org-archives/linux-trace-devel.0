@@ -2,48 +2,45 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FBC9C43217
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 15 Apr 2022 13:37:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F63CC433FE
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 15 Apr 2022 13:37:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354039AbiDONkY (ORCPT
+        id S1348694AbiDONkY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 15 Apr 2022 09:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46900 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354102AbiDONkI (ORCPT
+        with ESMTP id S1354063AbiDONkI (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 15 Apr 2022 09:40:08 -0400
 Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B1502BD2E7
-        for <linux-trace-devel@vger.kernel.org>; Fri, 15 Apr 2022 06:36:59 -0700 (PDT)
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C4A38BD2E3
+        for <linux-trace-devel@vger.kernel.org>; Fri, 15 Apr 2022 06:36:58 -0700 (PDT)
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-414-fkvsvyNDMsSnVF3WO25dFQ-1; Fri, 15 Apr 2022 09:36:55 -0400
-X-MC-Unique: fkvsvyNDMsSnVF3WO25dFQ-1
+ us-mta-640-bt7Ow-LuMkC68MCFb30qgA-1; Fri, 15 Apr 2022 09:36:56 -0400
+X-MC-Unique: bt7Ow-LuMkC68MCFb30qgA-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 54191296A62C;
-        Fri, 15 Apr 2022 13:36:55 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 60897185A794;
+        Fri, 15 Apr 2022 13:36:56 +0000 (UTC)
 Received: from f34.bristot.me (unknown [10.22.8.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F185A9E89;
-        Fri, 15 Apr 2022 13:36:40 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8AE3F9E78;
+        Fri, 15 Apr 2022 13:36:55 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-trace-devel@vger.kernel.org, lkml@vger.kernel.org,
         Daniel Bristot de Oliveira <bristot@kernel.org>,
-        John Kacur <jkacur@redhat.com>,
-        Daniel Bristot de Oliveria <bristot@redhat.com>
-Subject: [PATCH 2/3] rtla: Don't overwrite existing directory mode
-Date:   Fri, 15 Apr 2022 15:36:29 +0200
-Message-Id: <a5d0f4f07cf0734307f0b6cc497bb4afc97e049f.1650029027.git.bristot@kernel.org>
+        John Kacur <jkacur@redhat.com>
+Subject: [PATCH 3/3] rtla: Minor grammar fix for rtla README
+Date:   Fri, 15 Apr 2022 15:36:30 +0200
+Message-Id: <d44df964e89e620fa5676c65333365778b15d42f.1650029027.git.bristot@kernel.org>
 In-Reply-To: <cover.1650029027.git.bristot@kernel.org>
 References: <cover.1650029027.git.bristot@kernel.org>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.79 on 10.11.54.5
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: kernel.org
 Content-Transfer-Encoding: base64
@@ -52,33 +49,36 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-RnJvbTogSm9obiBLYWN1ciA8amthY3VyQHJlZGhhdC5jb20+DQoNClRoZSBtb2RlIG9uIC91c3Iv
-YmluIGlzIG9mdGVuIDU1NSB0aGVzZSBkYXlzLA0KYnV0IG1ha2UgaW5zdGFsbCBvbiBydGxhIG92
-ZXJ3cml0ZXMgdGhpcyB3aXRoIDc1NQ0KDQpGaXggdGhpcyBieSBwcmVzZXJ2aW5nIHRoZSBjdXJy
-ZW50IGRpcmVjdG9yeSBpZiBpdCBleGlzdHMuDQoNCkxpbms6IGh0dHBzOi8vbG9yZS5rZXJuZWwu
-b3JnL3IvMjAyMjA0MDIwNDM5MzkuNjk2Mi0xLWprYWN1ckByZWRoYXQuY29tDQoNCkNjOiBTdGV2
-ZW4gUm9zdGVkdCA8cm9zdGVkdEBnb29kbWlzLm9yZz4NCkNjOiBEYW5pZWwgQnJpc3RvdCBkZSBP
-bGl2ZXJpYSA8YnJpc3RvdEByZWRoYXQuY29tPg0KRml4ZXM6IDc5Y2U4ZjQzYWM1YSAoInJ0bGE6
-IFJlYWwtVGltZSBMaW51eCBBbmFseXNpcyB0b29sIikNCkFja2VkLWJ5OiBEYW5pZWwgQnJpc3Rv
-dCBkZSBPbGl2ZWlyYSA8YnJpc3RvdEBrZXJuZWwub3JnPg0KU2lnbmVkLW9mZi1ieTogSm9obiBL
-YWN1ciA8amthY3VyQHJlZGhhdC5jb20+DQpTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgQnJpc3RvdCBk
-ZSBPbGl2ZWlyYSA8YnJpc3RvdEBrZXJuZWwub3JnPg0KLS0tDQogdG9vbHMvdHJhY2luZy9ydGxh
-L01ha2VmaWxlIHwgMyArKy0NCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAxIGRl
-bGV0aW9uKC0pDQoNCmRpZmYgLS1naXQgYS90b29scy90cmFjaW5nL3J0bGEvTWFrZWZpbGUgYi90
-b29scy90cmFjaW5nL3J0bGEvTWFrZWZpbGUNCmluZGV4IDVhMWVkYTYxNzk5Mi4uNGI2MzVkNGRl
-MDE4IDEwMDY0NA0KLS0tIGEvdG9vbHMvdHJhY2luZy9ydGxhL01ha2VmaWxlDQorKysgYi90b29s
-cy90cmFjaW5nL3J0bGEvTWFrZWZpbGUNCkBAIC0yMyw2ICsyMyw3IEBAICQoY2FsbCBhbGxvdy1v
-dmVycmlkZSxMRF9TT19DT05GX1BBVEgsL2V0Yy9sZC5zby5jb25mLmQvKQ0KICQoY2FsbCBhbGxv
-dy1vdmVycmlkZSxMRENPTkZJRyxsZGNvbmZpZykNCiANCiBJTlNUQUxMCT0JaW5zdGFsbA0KK01L
-RElSCT0JbWtkaXINCiBGT1BUUwk6PQktZmx0bz1hdXRvIC1mZmF0LWx0by1vYmplY3RzIC1mZXhj
-ZXB0aW9ucyAtZnN0YWNrLXByb3RlY3Rvci1zdHJvbmcgXA0KIAkJLWZhc3luY2hyb25vdXMtdW53
-aW5kLXRhYmxlcyAtZnN0YWNrLWNsYXNoLXByb3RlY3Rpb24NCiBXT1BUUwk6PSAJLVdhbGwgLVdl
-cnJvcj1mb3JtYXQtc2VjdXJpdHkgLVdwLC1EX0ZPUlRJRllfU09VUkNFPTIgLVdwLC1EX0dMSUJD
-WFhfQVNTRVJUSU9OUyAtV25vLW1heWJlLXVuaW5pdGlhbGl6ZWQNCkBAIC02OCw3ICs2OSw3IEBA
-IHN0YXRpYzogJChPQkopDQogDQogLlBIT05ZOiBpbnN0YWxsDQogaW5zdGFsbDogZG9jX2luc3Rh
-bGwNCi0JJChJTlNUQUxMKSAtZCAtbSA3NTUgJChERVNURElSKSQoQklORElSKQ0KKwkkKE1LRElS
-KSAtcCAkKERFU1RESVIpJChCSU5ESVIpDQogCSQoSU5TVEFMTCkgcnRsYSAtbSA3NTUgJChERVNU
-RElSKSQoQklORElSKQ0KIAkkKFNUUklQKSAkKERFU1RESVIpJChCSU5ESVIpL3J0bGENCiAJQHRl
-c3QgISAtZiAkKERFU1RESVIpJChCSU5ESVIpL29zbm9pc2UgfHwgcm0gJChERVNURElSKSQoQklO
-RElSKS9vc25vaXNlDQotLSANCjIuMzUuMQ0K
+RnJvbTogSm9obiBLYWN1ciA8amthY3VyQHJlZGhhdC5jb20+DQoNCi0gQ2hhbmdlIHRvICJUaGUg
+cnRsYSBtZXRhLXRvb2wgaW5jbHVkZXMiDQotIFJlbW92ZSBhbiB1bm5lY2Vzc2FyeSAiQnV0LCAi
+DQotIEFkanVzdCB0aGUgZm9ybWF0dGluZyBvZiB0aGUgcGFyYWdyYXBoIHJlc3VsdGluZyBmcm9t
+IHRoZSBjaGFuZ2VzLg0KLSBTaW1wbGlmeSB0aGUgd29yZGluZyBmb3IgdGhlIGxpYnJhcmllcyBh
+bmQgdG9vbHMuDQoNCkxpbms6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3IvMjAyMjA0MDgxNjEw
+MTIuMTA1NDQtMS1qa2FjdXJAcmVkaGF0LmNvbS8NCg0KQ2M6IFN0ZXZlbiBSb3N0ZWR0IDxyb3N0
+ZWR0QGdvb2RtaXMub3JnPg0KQ2M6IERhbmllbCBCcmlzdG90IGRlIE9saXZlcmlhIDxicmlzdG90
+QGtlcm5lbC5vcmc+DQpGaXhlczogNzljZThmNDNhYzVhICgicnRsYTogUmVhbC1UaW1lIExpbnV4
+IEFuYWx5c2lzIHRvb2wiKQ0KQWNrZWQtYnk6IERhbmllbCBCcmlzdG90IGRlIE9saXZlaXJhIDxi
+cmlzdG90QGtlcm5lbC5vcmc+DQpTaWduZWQtb2ZmLWJ5OiBKb2huIEthY3VyIDxqa2FjdXJAcmVk
+aGF0LmNvbT4NClNpZ25lZC1vZmYtYnk6IERhbmllbCBCcmlzdG90IGRlIE9saXZlaXJhIDxicmlz
+dG90QGtlcm5lbC5vcmc+DQotLS0NCiB0b29scy90cmFjaW5nL3J0bGEvUkVBRE1FLnR4dCB8IDEy
+ICsrKysrLS0tLS0tLQ0KIDEgZmlsZSBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKyksIDcgZGVsZXRp
+b25zKC0pDQoNCmRpZmYgLS1naXQgYS90b29scy90cmFjaW5nL3J0bGEvUkVBRE1FLnR4dCBiL3Rv
+b2xzL3RyYWNpbmcvcnRsYS9SRUFETUUudHh0DQppbmRleCA2Yzg4NDQ2ZjdlNzQuLjBmYmFkMjY0
+MGI4YyAxMDA2NDQNCi0tLSBhL3Rvb2xzL3RyYWNpbmcvcnRsYS9SRUFETUUudHh0DQorKysgYi90
+b29scy90cmFjaW5nL3J0bGEvUkVBRE1FLnR4dA0KQEAgLTEsMTUgKzEsMTMgQEANCiBSVExBOiBS
+ZWFsLVRpbWUgTGludXggQW5hbHlzaXMgdG9vbHMNCiANCi1UaGUgcnRsYSBpcyBhIG1ldGEtdG9v
+bCB0aGF0IGluY2x1ZGVzIGEgc2V0IG9mIGNvbW1hbmRzIHRoYXQNCi1haW1zIHRvIGFuYWx5emUg
+dGhlIHJlYWwtdGltZSBwcm9wZXJ0aWVzIG9mIExpbnV4LiBCdXQsIGluc3RlYWQgb2YNCi10ZXN0
+aW5nIExpbnV4IGFzIGEgYmxhY2sgYm94LCBydGxhIGxldmVyYWdlcyBrZXJuZWwgdHJhY2luZw0K
+LWNhcGFiaWxpdGllcyB0byBwcm92aWRlIHByZWNpc2UgaW5mb3JtYXRpb24gYWJvdXQgdGhlIHBy
+b3BlcnRpZXMNCi1hbmQgcm9vdCBjYXVzZXMgb2YgdW5leHBlY3RlZCByZXN1bHRzLg0KK1RoZSBy
+dGxhIG1ldGEtdG9vbCBpbmNsdWRlcyBhIHNldCBvZiBjb21tYW5kcyB0aGF0IGFpbXMgdG8gYW5h
+bHl6ZQ0KK3RoZSByZWFsLXRpbWUgcHJvcGVydGllcyBvZiBMaW51eC4gSW5zdGVhZCBvZiB0ZXN0
+aW5nIExpbnV4IGFzIGEgYmxhY2sgYm94LA0KK3J0bGEgbGV2ZXJhZ2VzIGtlcm5lbCB0cmFjaW5n
+IGNhcGFiaWxpdGllcyB0byBwcm92aWRlIHByZWNpc2UgaW5mb3JtYXRpb24NCithYm91dCB0aGUg
+cHJvcGVydGllcyBhbmQgcm9vdCBjYXVzZXMgb2YgdW5leHBlY3RlZCByZXN1bHRzLg0KIA0KIElu
+c3RhbGxpbmcgUlRMQQ0KIA0KLVJUTEEgZGVwZW5kcyBvbiBzb21lIGxpYnJhcmllcyBhbmQgdG9v
+bHMuIE1vcmUgcHJlY2lzZWx5LCBpdCBkZXBlbmRzIG9uIHRoZQ0KLWZvbGxvd2luZyBsaWJyYXJp
+ZXM6DQorUlRMQSBkZXBlbmRzIG9uIHRoZSBmb2xsb3dpbmcgbGlicmFyaWVzIGFuZCB0b29sczoN
+CiANCiAgLSBsaWJ0cmFjZWZzDQogIC0gbGlidHJhY2VldmVudA0KLS0gDQoyLjM1LjENCg==
 
