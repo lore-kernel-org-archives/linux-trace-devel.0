@@ -2,149 +2,80 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85960C4167D
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 17 Apr 2022 18:45:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCE08C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 17 Apr 2022 18:57:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234819AbiDQSsW (ORCPT
+        id S234290AbiDQS7f (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 17 Apr 2022 14:48:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59304 "EHLO
+        Sun, 17 Apr 2022 14:59:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234820AbiDQSsT (ORCPT
+        with ESMTP id S232425AbiDQS7e (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 17 Apr 2022 14:48:19 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69BDE27B24
-        for <linux-trace-devel@vger.kernel.org>; Sun, 17 Apr 2022 11:45:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 07998B80D90
-        for <linux-trace-devel@vger.kernel.org>; Sun, 17 Apr 2022 18:45:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3235BC385B2;
-        Sun, 17 Apr 2022 18:45:40 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.95)
-        (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1ng9tz-004NkG-6N;
-        Sun, 17 Apr 2022 14:45:39 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 9/9] trace-cmd agent: Have agent work without vsockets available
-Date:   Sun, 17 Apr 2022 14:45:38 -0400
-Message-Id: <20220417184538.1044417-10-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220417184538.1044417-1-rostedt@goodmis.org>
-References: <20220417184538.1044417-1-rostedt@goodmis.org>
+        Sun, 17 Apr 2022 14:59:34 -0400
+Received: from gnuweeb.org (gnuweeb.org [51.81.211.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F6D35872;
+        Sun, 17 Apr 2022 11:56:58 -0700 (PDT)
+Received: from integral2.. (unknown [36.80.217.41])
+        by gnuweeb.org (Postfix) with ESMTPSA id 541C97E3A7;
+        Sun, 17 Apr 2022 18:56:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gnuweeb.org;
+        s=default; t=1650221817;
+        bh=7LFtGbhJbighgt3Hy6I4fjCFUJTyU1XHUYCcmQ99z5k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=CS1UwVGqQaSu3kT/Hx6P0TMbc++/EvzQykt2eiqjRW68QxPkbWS6ss9mz+uQLigGN
+         dVuRvhzg3OLZRlpdVMjQM5wBdPpWqAuR2XYdDYEbTArq6xMSBvgGsB0EjYzdWmPxBA
+         nLUMNJlbfVPWvANFK3wFQ5A91zIeVHkFlDThgRzRl0CKrM1b6HKoenWP+YpOw6hZ++
+         zHmYtHN4S/c6ZFSSoBKctvpeKF+8fNoHrO3Ccs9ObfbgkJswBkkggT38OynouDfcBR
+         y+9zCNGpUf7cSeXBSeYPDKw5b0slyoKMsavR1TW6u41/yYnm8g3MFI7q0STptkjA4l
+         nr0j61AYsF9PQ==
+From:   Ammar Faizi <ammarfaizi2@gnuweeb.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Trace Devel Mailing List 
+        <linux-trace-devel@vger.kernel.org>
+Subject: [RESEND PATCH 0/2] Two tracing patches for trace_events_hist.c
+Date:   Mon, 18 Apr 2022 01:56:28 +0700
+Message-Id: <20220417185630.199062-1-ammarfaizi2@gnuweeb.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+[ Sorry, this is a resend, I sent it to the wrong address of trace devel list. ]
 
-Compile agent code without vsockets available to allow it to work with
-networking. This includes allowing the ptp time synchronization protocol
-to be used.
+Hi,
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Two patches here.
+
+## Patch 1
+If `WARN_ON(!glob)` is ever triggered, we will still continue executing
+the next lines. This will trigger the more serious problem, a NULL
+pointer dereference bug. Just return -EINVAL if @glob is NULL.
+
+## Patch 2
+Change `if (strlen(glob))` to `if (glob[0])`. No need to traverse to
+the end of string. If the first byte is not a NUL char, it's
+guaranteed `if (strlen(glob))` is true.
+
+
+Signed-off-by: Ammar Faizi <ammarfaizi2@gnuweeb.org>
 ---
- lib/trace-cmd/Makefile                    | 2 +-
- lib/trace-cmd/include/trace-tsync-local.h | 6 +-----
- tracecmd/Makefile                         | 5 ++---
- tracecmd/trace-cmd.c                      | 2 --
- tracecmd/trace-usage.c                    | 2 --
- 5 files changed, 4 insertions(+), 13 deletions(-)
 
-diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
-index da0ad4deeb4f..9374b163b5f3 100644
---- a/lib/trace-cmd/Makefile
-+++ b/lib/trace-cmd/Makefile
-@@ -21,8 +21,8 @@ ifeq ($(PERF_DEFINED), 1)
- OBJS += trace-perf.o
- endif
- OBJS += trace-timesync.o
--ifeq ($(VSOCK_DEFINED), 1)
- OBJS += trace-timesync-ptp.o
-+ifeq ($(VSOCK_DEFINED), 1)
- OBJS += trace-timesync-kvm.o
- endif
- OBJS += trace-compress.o
-diff --git a/lib/trace-cmd/include/trace-tsync-local.h b/lib/trace-cmd/include/trace-tsync-local.h
-index 885c9f51d891..5bbc1db622c4 100644
---- a/lib/trace-cmd/include/trace-tsync-local.h
-+++ b/lib/trace-cmd/include/trace-tsync-local.h
-@@ -64,15 +64,11 @@ int tracecmd_tsync_proto_register(const char *proto_name, int accuracy, int role
- 					      long long *, long long *, long long*,
- 					      long long *, unsigned int));
- int tracecmd_tsync_proto_unregister(char *proto_name);
-+int ptp_clock_sync_register(void);
- 
- #ifdef VSOCK
--int ptp_clock_sync_register(void);
- int kvm_clock_sync_register(void);
- #else
--static inline int ptp_clock_sync_register(void)
--{
--	return 0;
--}
- static inline int kvm_clock_sync_register(void)
- {
- 	return 0;
-diff --git a/tracecmd/Makefile b/tracecmd/Makefile
-index 13f7776e8e45..0114948fe385 100644
---- a/tracecmd/Makefile
-+++ b/tracecmd/Makefile
-@@ -37,11 +37,10 @@ TRACE_CMD_OBJS += trace-dump.o
- TRACE_CMD_OBJS += trace-clear.o
- TRACE_CMD_OBJS += trace-vm.o
- TRACE_CMD_OBJS += trace-convert.o
--TRACE_CMD_OBJS += trace-vsock.o
--
--ifeq ($(VSOCK_DEFINED), 1)
- TRACE_CMD_OBJS += trace-agent.o
- TRACE_CMD_OBJS += trace-setup-guest.o
-+ifeq ($(VSOCK_DEFINED), 1)
-+TRACE_CMD_OBJS += trace-vsock.o
- endif
- 
- ALL_OBJS := $(TRACE_CMD_OBJS:%.o=$(bdir)/%.o)
-diff --git a/tracecmd/trace-cmd.c b/tracecmd/trace-cmd.c
-index 3f3e69a7f1e2..69800d26c5ee 100644
---- a/tracecmd/trace-cmd.c
-+++ b/tracecmd/trace-cmd.c
-@@ -127,10 +127,8 @@ struct command commands[] = {
- 	{"hist", trace_hist},
- 	{"mem", trace_mem},
- 	{"listen", trace_listen},
--#ifdef VSOCK
- 	{"agent", trace_agent},
- 	{"setup-guest", trace_setup_guest},
--#endif
- 	{"split", trace_split},
- 	{"restore", trace_restore},
- 	{"stack", trace_stack},
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index ec6376557394..88eac10a4e75 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -325,7 +325,6 @@ static struct usage_help usage_help[] = {
- 		"          -l logfile to write messages to.\n"
- 		"          --verbose 'level' Set the desired log level\n"
- 	},
--#ifdef VSOCK
- 	{
- 		"agent",
- 		"listen on a vsocket for trace clients",
-@@ -344,7 +343,6 @@ static struct usage_help usage_help[] = {
- 		"          -g FIFOs group owner\n"
- 		"          -a Attach FIFOs to guest VM config\n"
- 	},
--#endif
- 	{
- 		"list",
- 		"list the available events, plugins or options",
+Ammar Faizi (2):
+  tracing: Return -EINVAL if WARN_ON(!glob) triggered in event_hist_trigger_parse()
+  tracing: Change `if (strlen(glob))` to `if (glob[0])`
+
+ kernel/trace/trace_events_hist.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+
+base-commit: a1901b464e7e3e28956ae7423db2847dbbfb5be8
 -- 
-2.35.1
+Ammar Faizi
 
