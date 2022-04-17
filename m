@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B71EC43219
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 17 Apr 2022 01:20:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 130BBC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 17 Apr 2022 01:20:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231734AbiDQBWj (ORCPT
+        id S231995AbiDQBWi (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 16 Apr 2022 21:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230237AbiDQBWi (ORCPT
-        <rfc822;linux-trace-devel@vger.kernel.org>);
         Sat, 16 Apr 2022 21:22:38 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 646902E08B
-        for <linux-trace-devel@vger.kernel.org>; Sat, 16 Apr 2022 18:20:04 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231489AbiDQBWh (ORCPT
+        <rfc822;linux-trace-devel@vger.kernel.org>);
+        Sat, 16 Apr 2022 21:22:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B332E689
+        for <linux-trace-devel@vger.kernel.org>; Sat, 16 Apr 2022 18:20:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DB808B80A71
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A9CA861053
         for <linux-trace-devel@vger.kernel.org>; Sun, 17 Apr 2022 01:20:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D980C385A1;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BA48C385B0;
         Sun, 17 Apr 2022 01:20:01 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1nfta4-004Fib-76;
+        id 1nfta4-004Fie-7t;
         Sat, 16 Apr 2022 21:20:00 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 5/8] trace-cmd library: Create tracecmd_debug() for debug printing
-Date:   Sat, 16 Apr 2022 21:19:55 -0400
-Message-Id: <20220417011958.1013591-6-rostedt@goodmis.org>
+Subject: [PATCH 6/8] trace-cmd: Add debug prints for network connections
+Date:   Sat, 16 Apr 2022 21:19:56 -0400
+Message-Id: <20220417011958.1013591-7-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220417011958.1013591-1-rostedt@goodmis.org>
 References: <20220417011958.1013591-1-rostedt@goodmis.org>
@@ -44,77 +44,116 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Move the dprint() of trace-msg.c into trace-utils.c and export it such
-that other applications could use it as well. It is now renamed to
-tracecmd_debug().
+To help debug the network agent and listener, add some debug prints that
+are enabled when --debug option is used.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- lib/trace-cmd/include/private/trace-cmd-private.h |  3 +++
- lib/trace-cmd/trace-msg.c                         | 12 +-----------
- lib/trace-cmd/trace-util.c                        | 12 ++++++++++++
- 3 files changed, 16 insertions(+), 11 deletions(-)
+ lib/trace-cmd/trace-timesync.c | 2 ++
+ tracecmd/trace-agent.c         | 3 +++
+ tracecmd/trace-listen.c        | 4 ++++
+ tracecmd/trace-record.c        | 9 +++++++++
+ 4 files changed, 18 insertions(+)
 
-diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 6e7b346cda07..766e0a762c2b 100644
---- a/lib/trace-cmd/include/private/trace-cmd-private.h
-+++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -43,6 +43,9 @@ enum {
- 	RINGBUF_TYPE_TIME_STAMP		= 31,
- };
+diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
+index 14cf20c870cb..cc44af38e8ad 100644
+--- a/lib/trace-cmd/trace-timesync.c
++++ b/lib/trace-cmd/trace-timesync.c
+@@ -925,7 +925,9 @@ static void *tsync_agent_thread(void *data)
+ 	int sd;
  
-+/* Can be overridden */
-+void tracecmd_debug(const char *fmt, ...);
-+
- void tracecmd_record_ref(struct tep_record *record);
+ 	while (true) {
++		tracecmd_debug("Listening on fd:%d\n", tsync->msg_handle->fd);
+ 		sd = accept(tsync->msg_handle->fd, NULL, NULL);
++		tracecmd_debug("Accepted fd:%d\n", sd);
+ 		if (sd < 0) {
+ 			if (errno == EINTR)
+ 				continue;
+diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
+index cd201ad948ad..819ac016612f 100644
+--- a/tracecmd/trace-agent.c
++++ b/tracecmd/trace-agent.c
+@@ -22,6 +22,8 @@
+ #include "trace-local.h"
+ #include "trace-msg.h"
  
- void tracecmd_set_debug(bool set_debug);
-diff --git a/lib/trace-cmd/trace-msg.c b/lib/trace-cmd/trace-msg.c
-index 6cf74f9b1c99..39465ade8ab3 100644
---- a/lib/trace-cmd/trace-msg.c
-+++ b/lib/trace-cmd/trace-msg.c
-@@ -31,17 +31,7 @@
- typedef __u32 u32;
- typedef __be32 be32;
- 
--static inline void dprint(const char *fmt, ...)
--{
--	va_list ap;
--
--	if (!tracecmd_get_debug())
--		return;
--
--	va_start(ap, fmt);
--	vprintf(fmt, ap);
--	va_end(ap);
--}
 +#define dprint(fmt, ...)	tracecmd_debug(fmt, ##__VA_ARGS__)
- 
- /* Two (4k) pages is the max transfer for now */
- #define MSG_MAX_LEN			8192
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index b5a0a1a601d4..9564c81a5c99 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -415,6 +415,18 @@ void __weak tracecmd_critical(const char *fmt, ...)
++
+ static void make_vsocks(int nr, int *fds, unsigned int *ports)
+ {
+ 	unsigned int port;
+@@ -55,6 +57,7 @@ static void make_net(int nr, int *fds, unsigned int *ports)
+ 			die("Failed to listen on port %d\n", port);
+ 		fds[i] = fd;
+ 		ports[i] = port;
++		dprint("CPU[%d]: fd:%d port:%d\n", i, fd, port);
+ 		start_port = port + 1;
  	}
  }
+diff --git a/tracecmd/trace-listen.c b/tracecmd/trace-listen.c
+index 8476fa51dadd..3b446acea972 100644
+--- a/tracecmd/trace-listen.c
++++ b/tracecmd/trace-listen.c
+@@ -26,6 +26,8 @@
+ #include "trace-local.h"
+ #include "trace-msg.h"
  
-+void __weak tracecmd_debug(const char *fmt, ...)
-+{
-+	va_list ap;
++#define dprint(fmt, ...)	tracecmd_debug(fmt, ##__VA_ARGS__)
 +
-+	if (!tracecmd_get_debug())
-+		return;
+ #define MAX_OPTION_SIZE 4096
+ 
+ #define _VAR_DIR_Q(dir)		#dir
+@@ -279,6 +281,8 @@ int trace_net_make(int port, enum port_type type)
+ 	if (rp == NULL)
+ 		return -1;
+ 
++	dprint("Create listen port: %d fd:%d\n", port, sd);
 +
-+	va_start(ap, fmt);
-+	vprintf(fmt, ap);
-+	va_end(ap);
-+}
+ 	return sd;
+ }
+ 
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 085944296934..3470ff729606 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -56,6 +56,8 @@
+ #define FUNC_STACK_TRACE "func_stack_trace"
+ #define TSC_CLOCK	"x86-tsc"
+ 
++#define dprint(fmt, ...)	tracecmd_debug(fmt, ##__VA_ARGS__)
 +
- #define LOG_BUF_SIZE 1024
- static void __plog(const char *prefix, const char *fmt, va_list ap, FILE *fp)
- {
+ enum trace_type {
+ 	TRACE_TYPE_RECORD	= 1,
+ 	TRACE_TYPE_START	= (1 << 1),
+@@ -3139,6 +3141,9 @@ static struct addrinfo *do_getaddrinfo(const char *host, unsigned int port,
+ 		return NULL;
+ 	}
+ 
++	dprint("Attached port %s: %d to results: %p\n",
++	       type == USE_TCP ? "TCP" : "UDP", port, results);
++
+ 	return results;
+ }
+ 
+@@ -3160,6 +3165,8 @@ static int connect_addr(struct addrinfo *results)
+ 	if (rp == NULL)
+ 		return -1;
+ 
++	dprint("connect results: %p with fd: %d\n", results, sfd);
++
+ 	return sfd;
+ }
+ 
+@@ -3193,7 +3200,9 @@ static int do_accept(int sd)
+ 	int cd;
+ 
+ 	for (;;) {
++		dprint("Wait on accept: %d\n", sd);
+ 		cd = accept(sd, NULL, NULL);
++		dprint("accepted: %d\n", cd);
+ 		if (cd < 0) {
+ 			if (errno == EINTR)
+ 				continue;
 -- 
 2.35.1
 
