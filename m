@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10B18C43217
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 17 Apr 2022 18:22:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EEC58C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 17 Apr 2022 18:22:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234759AbiDQSYf (ORCPT
+        id S234762AbiDQSYh (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 17 Apr 2022 14:24:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44212 "EHLO
+        Sun, 17 Apr 2022 14:24:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234760AbiDQSYe (ORCPT
+        with ESMTP id S234761AbiDQSYg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 17 Apr 2022 14:24:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14BB313D1D
-        for <linux-trace-devel@vger.kernel.org>; Sun, 17 Apr 2022 11:21:58 -0700 (PDT)
+        Sun, 17 Apr 2022 14:24:36 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D19E03D
+        for <linux-trace-devel@vger.kernel.org>; Sun, 17 Apr 2022 11:21:59 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 92AEA60C3C
-        for <linux-trace-devel@vger.kernel.org>; Sun, 17 Apr 2022 18:21:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52A29C385A9;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3E6AAB80D8E
+        for <linux-trace-devel@vger.kernel.org>; Sun, 17 Apr 2022 18:21:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5990CC385AD;
         Sun, 17 Apr 2022 18:21:56 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1ng9X1-004MzU-CH;
+        id 1ng9X1-004MzQ-BS;
         Sun, 17 Apr 2022 14:21:55 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 7/7] trace-cmd: Move vsocket code into its own file
-Date:   Sun, 17 Apr 2022 14:21:54 -0400
-Message-Id: <20220417182154.1041513-8-rostedt@goodmis.org>
+Subject: [PATCH v2 6/7] trace-cmd library: Remove vsock dependency from tracecmd_tsync_with_host()
+Date:   Sun, 17 Apr 2022 14:21:53 -0400
+Message-Id: <20220417182154.1041513-7-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220417182154.1041513-1-rostedt@goodmis.org>
 References: <20220417182154.1041513-1-rostedt@goodmis.org>
@@ -44,262 +44,77 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Create trace-vsock.c to hold vsock specific operations. Several files
-duplicate the implementation of vsocket connections. Consolidate all of
-them into a single file to be used by all, and also can be disabled in
-a single place, getting rid of a lot of the #ifdef VSOCKs that are
-poluting the code.
+The time synchronization works for networks too. In order to remove the
+dependency of vsockets, have tracecmd_tsync_with_host() get the file
+descriptor from the caller instead of creating one. This allows the
+caller to either create a vsocket or a network interface and it will
+still all work.
+
+This also requires changing tracecmd_tsync_get_session_params() to only
+return the selected protocol as the tsync_port has already been established
+before calling tracecmd_tsync_with_host(). Since it now only returns the
+selected protocol, rename it to tracecmd_tsync_get_selected_proto().
+
+This is needed to decouple vsockets from libtracecmd.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- lib/trace-cmd/include/trace-tsync-local.h |  11 ++
- lib/trace-cmd/trace-timesync-ptp.c        |   1 -
- lib/trace-cmd/trace-timesync.c            |   5 -
- tracecmd/Makefile                         |   1 +
- tracecmd/include/trace-local.h            |  48 +++++++
- tracecmd/trace-agent.c                    | 165 +---------------------
- tracecmd/trace-record.c                   |  86 +----------
- tracecmd/trace-vm.c                       |   2 +-
- tracecmd/trace-vsock.c                    | 156 ++++++++++++++++++++
- 9 files changed, 228 insertions(+), 247 deletions(-)
- create mode 100644 tracecmd/trace-vsock.c
+ .../include/private/trace-cmd-private.h       |  8 +-
+ lib/trace-cmd/trace-msg.c                     |  3 +-
+ lib/trace-cmd/trace-timesync.c                | 94 ++-----------------
+ tracecmd/trace-agent.c                        | 84 +++++++++++++++--
+ tracecmd/trace-record.c                       |  7 +-
+ 5 files changed, 97 insertions(+), 99 deletions(-)
 
-diff --git a/lib/trace-cmd/include/trace-tsync-local.h b/lib/trace-cmd/include/trace-tsync-local.h
-index 697c076c43a6..885c9f51d891 100644
---- a/lib/trace-cmd/include/trace-tsync-local.h
-+++ b/lib/trace-cmd/include/trace-tsync-local.h
-@@ -65,7 +65,18 @@ int tracecmd_tsync_proto_register(const char *proto_name, int accuracy, int role
- 					      long long *, unsigned int));
- int tracecmd_tsync_proto_unregister(char *proto_name);
+diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
+index 06906b04fbd9..45ae1dded66d 100644
+--- a/lib/trace-cmd/include/private/trace-cmd-private.h
++++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+@@ -488,7 +488,8 @@ void tracecmd_tsync_init(void);
+ int tracecmd_tsync_proto_getall(struct tracecmd_tsync_protos **protos, const char *clock, int role);
+ bool tsync_proto_is_supported(const char *proto_name);
+ struct tracecmd_time_sync *
+-tracecmd_tsync_with_host(const struct tracecmd_tsync_protos *tsync_protos,
++tracecmd_tsync_with_host(int fd,
++			 const struct tracecmd_tsync_protos *tsync_protos,
+ 			 const char *clock, int remote_id, int local_id);
+ int tracecmd_tsync_with_host_stop(struct tracecmd_time_sync *tsync);
+ struct tracecmd_time_sync *
+@@ -499,9 +500,8 @@ int tracecmd_tsync_with_guest_stop(struct tracecmd_time_sync *tsync);
+ int tracecmd_tsync_get_offsets(struct tracecmd_time_sync *tsync, int cpu,
+ 			       int *count, long long **ts,
+ 			       long long **offsets, long long **scalings, long long **frac);
+-int tracecmd_tsync_get_session_params(struct tracecmd_time_sync *tsync,
+-				      char **selected_proto,
+-				      unsigned int *tsync_port);
++int tracecmd_tsync_get_selected_proto(struct tracecmd_time_sync *tsync,
++				      char **selected_proto);
+ void tracecmd_tsync_free(struct tracecmd_time_sync *tsync);
+ int tracecmd_write_guest_time_shift(struct tracecmd_output *handle,
+ 				    struct tracecmd_time_sync *tsync);
+diff --git a/lib/trace-cmd/trace-msg.c b/lib/trace-cmd/trace-msg.c
+index 03b853e4368b..726e9424c8fd 100644
+--- a/lib/trace-cmd/trace-msg.c
++++ b/lib/trace-cmd/trace-msg.c
+@@ -629,7 +629,8 @@ static int flush_cache(struct tracecmd_msg_handle *msg_handle)
  
-+#ifdef VSOCK
- int ptp_clock_sync_register(void);
- int kvm_clock_sync_register(void);
-+#else
-+static inline int ptp_clock_sync_register(void)
-+{
-+	return 0;
-+}
-+static inline int kvm_clock_sync_register(void)
-+{
-+	return 0;
-+}
-+#endif
- 
- #endif /* _TRACE_TSYNC_LOCAL_H */
-diff --git a/lib/trace-cmd/trace-timesync-ptp.c b/lib/trace-cmd/trace-timesync-ptp.c
-index 0e23ff83869a..653d176e2e79 100644
---- a/lib/trace-cmd/trace-timesync-ptp.c
-+++ b/lib/trace-cmd/trace-timesync-ptp.c
-@@ -8,7 +8,6 @@
- #include <stdlib.h>
- #include <unistd.h>
- #include <arpa/inet.h>
--#include <linux/vm_sockets.h>
- #include <sys/types.h>
- #include <linux/types.h>
- #include <time.h>
+ void tracecmd_msg_handle_close(struct tracecmd_msg_handle *msg_handle)
+ {
+-	close(msg_handle->fd);
++	if (msg_handle->fd >= 0)
++		close(msg_handle->fd);
+ 	if (msg_handle->cfd >= 0)
+ 		close(msg_handle->cfd);
+ 	free(msg_handle);
 diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
-index 823dcf21ba26..14cf20c870cb 100644
+index 2f812ca5fc74..823dcf21ba26 100644
 --- a/lib/trace-cmd/trace-timesync.c
 +++ b/lib/trace-cmd/trace-timesync.c
-@@ -8,9 +8,6 @@
- #include <stdlib.h>
- #include <unistd.h>
- #include <arpa/inet.h>
--#ifdef VSOCK
--#include <linux/vm_sockets.h>
--#endif
- #include <linux/limits.h>
- #include <sys/types.h>
- #include <sys/stat.h>
-@@ -65,10 +62,8 @@ static struct tsync_proto *tsync_proto_find(const char *proto_name)
-  */
- void tracecmd_tsync_init(void)
- {
--#ifdef VSOCK
- 	ptp_clock_sync_register();
- 	kvm_clock_sync_register();
--#endif
- }
- 
- int tracecmd_tsync_proto_register(const char *proto_name, int accuracy, int roles,
-diff --git a/tracecmd/Makefile b/tracecmd/Makefile
-index 355f04723ad7..13f7776e8e45 100644
---- a/tracecmd/Makefile
-+++ b/tracecmd/Makefile
-@@ -37,6 +37,7 @@ TRACE_CMD_OBJS += trace-dump.o
- TRACE_CMD_OBJS += trace-clear.o
- TRACE_CMD_OBJS += trace-vm.o
- TRACE_CMD_OBJS += trace-convert.o
-+TRACE_CMD_OBJS += trace-vsock.o
- 
- ifeq ($(VSOCK_DEFINED), 1)
- TRACE_CMD_OBJS += trace-agent.o
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index bb33de06bb58..863635886769 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -9,6 +9,7 @@
- #include <sys/types.h>
- #include <dirent.h>	/* for DIR */
- #include <ctype.h>	/* for isdigit() */
-+#include <errno.h>
- #include <limits.h>
- 
- #include "trace-cmd-private.h"
-@@ -339,6 +340,53 @@ int trace_open_vsock(unsigned int cid, unsigned int port);
- 
- char *trace_get_guest_file(const char *file, const char *guest);
- 
-+#ifdef VSOCK
-+int trace_vsock_open(unsigned int cid, unsigned int port);
-+int trace_vsock_make(unsigned int port);
-+int trace_vsock_make_any(void);
-+int get_vsocket_params(int fd, unsigned int *lcid, unsigned int *rcid);
-+int trace_vsock_get_port(int sd, unsigned int *port);
-+bool trace_vsock_can_splice_read(void);
-+int trace_vsock_local_cid(void);
-+#else
-+static inline int trace_vsock_open(unsigned int cid, unsigned int port)
-+{
-+	return -ENOTSUP;
-+}
-+
-+static inline int trace_vsock_make(unsigned int port)
-+{
-+	return -ENOTSUP;
-+
-+}
-+
-+static inline int trace_vsock_make_any(void)
-+{
-+	return -ENOTSUP;
-+
-+}
-+
-+static inline int get_vsocket_params(int fd, unsigned int *lcid, unsigned int *rcid)
-+{
-+	return -ENOTSUP;
-+}
-+
-+static inline int trace_vsock_get_port(int sd, unsigned int *port)
-+{
-+	return -ENOTSUP;
-+}
-+
-+static inline bool trace_vsock_can_splice_read(void)
-+{
-+	return false;
-+}
-+
-+static inline int trace_vsock_local_cid(void)
-+{
-+	return -ENOTSUP;
-+}
-+#endif /* VSOCK */
-+
- /* No longer in event-utils.h */
- __printf(1,2)
- void __noreturn die(const char *fmt, ...); /* Can be overriden */
-diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
-index bfa9a534f153..719d7126ca67 100644
---- a/tracecmd/trace-agent.c
-+++ b/tracecmd/trace-agent.c
-@@ -14,85 +14,25 @@
- #include <stdbool.h>
- #include <stdio.h>
- #include <stdlib.h>
--#include <sys/ioctl.h>
- #include <sys/socket.h>
- #include <sys/wait.h>
- #include <unistd.h>
--#include <linux/vm_sockets.h>
- #include <pthread.h>
- 
- #include "trace-local.h"
- #include "trace-msg.h"
- 
--#define GET_LOCAL_CID	0x7b9
--
--static int get_local_cid(unsigned int *cid)
--{
--	int fd, ret = 0;
--
--	fd = open("/dev/vsock", O_RDONLY);
--	if (fd < 0)
--		return -errno;
--
--	if (ioctl(fd, GET_LOCAL_CID, cid))
--		ret = -errno;
--
--	close(fd);
--	return ret;
--}
--
--int trace_make_vsock(unsigned int port)
--{
--	struct sockaddr_vm addr = {
--		.svm_family = AF_VSOCK,
--		.svm_cid = VMADDR_CID_ANY,
--		.svm_port = port,
--	};
--	int sd;
--
--	sd = socket(AF_VSOCK, SOCK_STREAM, 0);
--	if (sd < 0)
--		return -errno;
--
--	setsockopt(sd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int));
--
--	if (bind(sd, (struct sockaddr *)&addr, sizeof(addr)))
--		return -errno;
--
--	if (listen(sd, SOMAXCONN))
--		return -errno;
--
--	return sd;
--}
--
--int trace_get_vsock_port(int sd, unsigned int *port)
--{
--	struct sockaddr_vm addr;
--	socklen_t addr_len = sizeof(addr);
--
--	if (getsockname(sd, (struct sockaddr *)&addr, &addr_len))
--		return -errno;
--
--	if (addr.svm_family != AF_VSOCK)
--		return -EINVAL;
--
--	if (port)
--		*port = addr.svm_port;
--
--	return 0;
--}
--
- static void make_vsocks(int nr, int *fds, unsigned int *ports)
- {
- 	unsigned int port;
- 	int i, fd, ret;
- 
- 	for (i = 0; i < nr; i++) {
--		fd = trace_make_vsock(VMADDR_PORT_ANY);
-+		fd = trace_vsock_make_any();
- 		if (fd < 0)
- 			die("Failed to open vsocket");
- 
--		ret = trace_get_vsock_port(fd, &port);
-+		ret = trace_vsock_get_port(fd, &port);
- 		if (ret < 0)
- 			die("Failed to get vsocket address");
- 
-@@ -140,98 +80,6 @@ static char *get_clock(int argc, char **argv)
- 	return NULL;
+@@ -344,61 +344,6 @@ error:
+ 	return -1;
  }
  
 -#ifdef VSOCK
--
 -static int vsock_make(void)
 -{
 -	struct sockaddr_vm addr = {
@@ -324,29 +139,6 @@ index bfa9a534f153..719d7126ca67 100644
 -	return sd;
 -}
 -
--static int get_vsocket_params(int fd, unsigned int *lcid, unsigned int *rcid)
--{
--	struct sockaddr_vm addr;
--	socklen_t addr_len = sizeof(addr);
--
--	memset(&addr, 0, sizeof(addr));
--	if (getsockname(fd, (struct sockaddr *)&addr, &addr_len))
--		return -1;
--	if (addr.svm_family != AF_VSOCK)
--		return -1;
--	*lcid = addr.svm_cid;
--
--	memset(&addr, 0, sizeof(addr));
--	addr_len = sizeof(addr);
--	if (getpeername(fd, (struct sockaddr *)&addr, &addr_len))
--		return -1;
--	if (addr.svm_family != AF_VSOCK)
--		return -1;
--	*rcid = addr.svm_cid;
--
--	return 0;
--}
--
 -static int vsock_get_port(int sd, unsigned int *port)
 -{
 -	struct sockaddr_vm addr;
@@ -363,246 +155,135 @@ index bfa9a534f153..719d7126ca67 100644
 -
 -	return 0;
 -}
--#else
--static inline bool can_splice_read_vsock(void)
--{
--	return false;
--}
 -
--static inline int vsock_make(void)
+-#else
+-static int vsock_make(void)
 -{
 -	return -ENOTSUP;
 -
--}
--
--static inline  int get_vsocket_params(int fd, unsigned int *lcid, unsigned int *rcid) {
--	return -1;
--}
--
--static inline int vsock_get_port(int sd, unsigned int *port)
--{
--	return -1;
 -}
 -
 -static int vsock_get_port(int sd, unsigned int *port)
 -{
 -	return -ENOTSUP;
 -}
--#endif
+-#endif /* VSOCK */
 -
- static void agent_handle(int sd, int nr_cpus, int page_size)
+ static struct tracefs_instance *
+ clock_synch_create_instance(const char *clock, unsigned int cid)
  {
- 	struct tracecmd_tsync_protos *tsync_protos = NULL;
-@@ -278,8 +126,8 @@ static void agent_handle(int sd, int nr_cpus, int page_size)
- 			remote_id = -1;
- 			local_id = -2;
- 		}
--		fd = vsock_make();
--		if (fd >= 0 && vsock_get_port(fd, &tsync_port) >= 0) {
-+		fd = trace_vsock_make_any();
-+		if (fd >= 0 && trace_vsock_get_port(fd, &tsync_port) >= 0) {
- 			tsync = tracecmd_tsync_with_host(fd, tsync_protos,
- 							 get_clock(argc, argv),
- 							 remote_id, local_id);
-@@ -356,12 +204,13 @@ static void agent_serve(unsigned int port, bool do_daemon)
- 	nr_cpus = tracecmd_count_cpus();
- 	page_size = getpagesize();
+@@ -1005,6 +950,7 @@ out:
  
--	sd = trace_make_vsock(port);
-+	sd = trace_vsock_make(port);
- 	if (sd < 0)
- 		die("Failed to open vsocket");
- 	tracecmd_tsync_init();
+ /**
+  * tracecmd_tsync_with_host - Synchronize timestamps with host
++ * @fd: File descriptor connecting with the host
+  * @tsync_protos: List of tsync protocols, supported by the host
+  * @clock: Trace clock, used for that session
+  * @port: returned, VSOCKET port, on which the guest listens for tsync requests
+@@ -1018,17 +964,16 @@ out:
+  * until tracecmd_tsync_with_host_stop() is called.
+  */
+ struct tracecmd_time_sync *
+-tracecmd_tsync_with_host(const struct tracecmd_tsync_protos *tsync_protos,
++tracecmd_tsync_with_host(int fd,
++			 const struct tracecmd_tsync_protos *tsync_protos,
+ 			 const char *clock, int remote_id, int local_id)
+ {
+ 	struct tracecmd_time_sync *tsync;
+ 	cpu_set_t *pin_mask = NULL;
+ 	pthread_attr_t attrib;
+ 	size_t mask_size = 0;
+-	unsigned int port;
+ 	const char *proto;
+ 	int ret;
+-	int fd;
  
--	if (!get_local_cid(&cid))
-+	cid = trace_vsock_local_cid();
-+	if (cid >= 0)
- 		printf("listening on @%u:%u\n", cid, port);
+ 	tsync = calloc(1, sizeof(struct tracecmd_time_sync));
+ 	if (!tsync)
+@@ -1039,12 +984,6 @@ tracecmd_tsync_with_host(const struct tracecmd_tsync_protos *tsync_protos,
+ 	if (!proto)
+ 		goto error;
+ 	tsync->proto_name = strdup(proto);
+-	fd = vsock_make();
+-	if (fd < 0)
+-		goto error;
+-
+-	if (vsock_get_port(fd, &port) < 0)
+-		goto error;
+ 	tsync->msg_handle = tracecmd_msg_handle_alloc(fd, 0);
+ 	if (clock)
+ 		tsync->clock_str = strdup(clock);
+@@ -1072,10 +1011,11 @@ tracecmd_tsync_with_host(const struct tracecmd_tsync_protos *tsync_protos,
  
- 	if (do_daemon && daemon(1, 0))
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 8e89aa94977c..ac6fb7e98892 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -37,9 +37,6 @@
- #include <poll.h>
- #include <pwd.h>
- #include <grp.h>
--#ifdef VSOCK
--#include <linux/vm_sockets.h>
--#endif
- 
- #include "tracefs.h"
- #include "version.h"
-@@ -3159,81 +3156,6 @@ static int connect_port(const char *host, unsigned int port)
- 	return sfd;
+ error:
+ 	if (tsync) {
+-		if (tsync->msg_handle)
++		if (tsync->msg_handle) {
++			/* Do not close the fd that was passed it */
++			tsync->msg_handle->fd = -1;
+ 			tracecmd_msg_handle_close(tsync->msg_handle);
+-		else if (fd >= 0)
+-			close(fd);
++		}
+ 		free(tsync->clock_str);
+ 		free(tsync);
+ 	}
+@@ -1098,37 +1038,23 @@ int tracecmd_tsync_with_host_stop(struct tracecmd_time_sync *tsync)
  }
  
--#ifdef VSOCK
--int trace_open_vsock(unsigned int cid, unsigned int port)
--{
--	struct sockaddr_vm addr = {
--		.svm_family = AF_VSOCK,
--		.svm_cid = cid,
--		.svm_port = port,
--	};
--	int sd;
--
--	sd = socket(AF_VSOCK, SOCK_STREAM, 0);
--	if (sd < 0)
--		return -errno;
--
--	if (connect(sd, (struct sockaddr *)&addr, sizeof(addr)))
--		return -errno;
--
--	return sd;
--}
--
--static int try_splice_read_vsock(void)
--{
--	int ret, sd, brass[2];
--
--	sd = socket(AF_VSOCK, SOCK_STREAM, 0);
--	if (sd < 0)
--		return -errno;
--
--	ret = pipe(brass);
--	if (ret < 0)
--		goto out_close_sd;
--
--	/*
--	 * On kernels that don't support splice reading from vsockets
--	 * this will fail with EINVAL, or ENOTCONN otherwise.
--	 * Technically, it should never succeed but if it does, claim splice
--	 * reading is supported.
--	 */
--	ret = splice(sd, NULL, brass[1], NULL, 10, 0);
--	if (ret < 0)
--		ret = errno != EINVAL;
--	else
--		ret = 1;
--
--	close(brass[0]);
--	close(brass[1]);
--out_close_sd:
--	close(sd);
--	return ret;
--}
--
--static bool can_splice_read_vsock(void)
--{
--	static bool initialized, res;
--
--	if (initialized)
--		return res;
--
--	res = try_splice_read_vsock() > 0;
--	initialized = true;
--	return res;
--}
--
--#else
--int trace_open_vsock(unsigned int cid, unsigned int port)
--{
--	die("vsock is not supported");
--	return -1;
--}
--static inline bool can_splice_read_vsock(void)
--{
--	return false;
--}
--#endif
--
- static int do_accept(int sd)
+ /**
+- * tracecmd_tsync_get_session_params - Get parameters of established time sync session
+- *
++ * tracecmd_tsync_get_selected_proto - Return the seleceted time sync protocol
+  * @tsync: Time sync context, representing a running time sync session
+  * @selected_proto: return, name of the selected time sync protocol for this session
+- * @tsync_port: return, a VSOCK port on which new time sync requests are accepted.
+  *
+  * Returns 0 on success, or -1 in case of an error.
+  *
+  */
+-int tracecmd_tsync_get_session_params(struct tracecmd_time_sync *tsync,
+-				      char **selected_proto,
+-				      unsigned int *tsync_port)
++int tracecmd_tsync_get_selected_proto(struct tracecmd_time_sync *tsync,
++				      char **selected_proto)
  {
- 	int cd;
-@@ -3366,14 +3288,14 @@ create_recorder_instance(struct buffer_instance *instance, const char *file, int
- 		if (instance->use_fifos)
- 			fd = instance->fds[cpu];
- 		else
--			fd = trace_open_vsock(instance->cid, instance->client_ports[cpu]);
-+			fd = trace_vsock_open(instance->cid, instance->client_ports[cpu]);
- 		if (fd < 0)
- 			die("Failed to connect to agent");
+-	int ret;
+-
+ 	if (!tsync)
+ 		return -1;
  
- 		flags = recorder_flags;
- 		if (instance->use_fifos)
- 			flags |= TRACECMD_RECORD_NOBRASS;
--		else if (!can_splice_read_vsock())
-+		else if (!trace_vsock_can_splice_read())
- 			flags |= TRACECMD_RECORD_NOSPLICE;
- 		return tracecmd_create_recorder_virt(file, cpu, flags, fd);
+-	if (tsync_port) {
+-		if (!tsync->msg_handle)
+-			return -1;
+-		ret = vsock_get_port(tsync->msg_handle->fd, tsync_port);
+-		if (ret < 0)
+-			return ret;
+-	}
+ 	if (selected_proto) {
+ 		if (!tsync->proto_name)
+ 			return -1;
+ 		(*selected_proto) = strdup(tsync->proto_name);
+-
  	}
-@@ -3988,7 +3910,7 @@ static int host_tsync(struct common_record_context *ctx,
- 	guest_pid = guest->pid;
- 	start_mapping_vcpus(guest);
+-
+ 	return 0;
+ }
+diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
+index 151ca19c2270..bfa9a534f153 100644
+--- a/tracecmd/trace-agent.c
++++ b/tracecmd/trace-agent.c
+@@ -141,6 +141,31 @@ static char *get_clock(int argc, char **argv)
+ }
  
--	fd = trace_open_vsock(instance->cid, tsync_port);
-+	fd = trace_vsock_open(instance->cid, tsync_port);
- 	instance->tsync = tracecmd_tsync_with_guest(top_instance.trace_id,
- 						    instance->tsync_loop_interval,
- 						    fd, guest_pid,
-@@ -4019,7 +3941,7 @@ static void connect_to_agent(struct common_record_context *ctx,
- 		use_fifos = nr_fifos > 0;
- 	}
- 
--	sd = trace_open_vsock(instance->cid, instance->port);
-+	sd = trace_vsock_open(instance->cid, instance->port);
- 	if (sd < 0)
- 		die("Failed to connect to vsocket @%u:%u",
- 		    instance->cid, instance->port);
-diff --git a/tracecmd/trace-vm.c b/tracecmd/trace-vm.c
-index 02979ba59a57..57dbef8d42e4 100644
---- a/tracecmd/trace-vm.c
-+++ b/tracecmd/trace-vm.c
-@@ -284,7 +284,7 @@ static void find_pid_by_cid(struct trace_guest *guest)
- 	int fd;
- 
- 	instance = start_trace_connect();
--	fd = trace_open_vsock(guest->cid, -1);
-+	fd = trace_vsock_open(guest->cid, -1);
- 	guest->pid = stop_trace_connect(instance);
- 	/* Just in case! */
- 	if (fd >= 0)
-diff --git a/tracecmd/trace-vsock.c b/tracecmd/trace-vsock.c
-new file mode 100644
-index 000000000000..d18ecb45004e
---- /dev/null
-+++ b/tracecmd/trace-vsock.c
-@@ -0,0 +1,156 @@
-+#include <unistd.h>
-+#include <errno.h>
-+#include <arpa/inet.h>
-+#include <sys/ioctl.h>
-+#include <linux/vm_sockets.h>
+ #ifdef VSOCK
 +
-+#include "trace-cmd-private.h"
-+
-+int __hidden trace_vsock_open(unsigned int cid, unsigned int port)
-+{
-+	struct sockaddr_vm addr = {
-+		.svm_family = AF_VSOCK,
-+		.svm_cid = cid,
-+		.svm_port = port,
-+	};
-+	int sd;
-+
-+	sd = socket(AF_VSOCK, SOCK_STREAM, 0);
-+	if (sd < 0)
-+		return -errno;
-+
-+	if (connect(sd, (struct sockaddr *)&addr, sizeof(addr)))
-+		return -errno;
-+
-+	return sd;
-+}
-+
-+int __hidden trace_vsock_make(unsigned int port)
++static int vsock_make(void)
 +{
 +	struct sockaddr_vm addr = {
 +		.svm_family = AF_VSOCK,
 +		.svm_cid = VMADDR_CID_ANY,
-+		.svm_port = port,
++		.svm_port = VMADDR_PORT_ANY,
 +	};
 +	int sd;
 +
@@ -621,12 +302,15 @@ index 000000000000..d18ecb45004e
 +	return sd;
 +}
 +
-+int __hidden trace_vsock_make_any(void)
-+{
-+	return trace_vsock_make(VMADDR_PORT_ANY);
-+}
+ static int get_vsocket_params(int fd, unsigned int *lcid, unsigned int *rcid)
+ {
+ 	struct sockaddr_vm addr;
+@@ -163,10 +188,48 @@ static int get_vsocket_params(int fd, unsigned int *lcid, unsigned int *rcid)
+ 
+ 	return 0;
+ }
 +
-+int __hidden trace_vsock_get_port(int sd, unsigned int *port)
++static int vsock_get_port(int sd, unsigned int *port)
 +{
 +	struct sockaddr_vm addr;
 +	socklen_t addr_len = sizeof(addr);
@@ -642,90 +326,106 @@ index 000000000000..d18ecb45004e
 +
 +	return 0;
 +}
-+
-+int get_vsocket_params(int fd, unsigned int *lcid, unsigned int *rcid)
+ #else
+-static inline int get_vsocket_params(int fd, unsigned int *lcid, unsigned int *rcid) {
++static inline bool can_splice_read_vsock(void)
 +{
-+	struct sockaddr_vm addr;
-+	socklen_t addr_len = sizeof(addr);
-+
-+	memset(&addr, 0, sizeof(addr));
-+	if (getsockname(fd, (struct sockaddr *)&addr, &addr_len))
-+		return -1;
-+	if (addr.svm_family != AF_VSOCK)
-+		return -1;
-+	*lcid = addr.svm_cid;
-+
-+	memset(&addr, 0, sizeof(addr));
-+	addr_len = sizeof(addr);
-+	if (getpeername(fd, (struct sockaddr *)&addr, &addr_len))
-+		return -1;
-+	if (addr.svm_family != AF_VSOCK)
-+		return -1;
-+	*rcid = addr.svm_cid;
-+
-+	return 0;
++	return false;
 +}
 +
-+static int try_splice_read_vsock(void)
++static inline int vsock_make(void)
 +{
-+	int ret, sd, brass[2];
++	return -ENOTSUP;
 +
-+	sd = socket(AF_VSOCK, SOCK_STREAM, 0);
-+	if (sd < 0)
-+		return -errno;
-+
-+	ret = pipe(brass);
-+	if (ret < 0)
-+		goto out_close_sd;
-+
-+	/*
-+	 * On kernels that don't support splice reading from vsockets
-+	 * this will fail with EINVAL, or ENOTCONN otherwise.
-+	 * Technically, it should never succeed but if it does, claim splice
-+	 * reading is supported.
-+	 */
-+	ret = splice(sd, NULL, brass[1], NULL, 10, 0);
-+	if (ret < 0)
-+		ret = errno != EINVAL;
-+	else
-+		ret = 1;
-+
-+	close(brass[0]);
-+	close(brass[1]);
-+out_close_sd:
-+	close(sd);
-+	return ret;
 +}
 +
-+bool __hidden trace_vsock_can_splice_read(void)
++static inline  int get_vsocket_params(int fd, unsigned int *lcid, unsigned int *rcid) {
+ 	return -1;
+ }
++
++static inline int vsock_get_port(int sd, unsigned int *port)
 +{
-+	static bool initialized, res;
-+
-+	if (initialized)
-+		return res;
-+
-+	res = try_splice_read_vsock() > 0;
-+	initialized = true;
-+	return res;
++	return -1;
 +}
 +
-+#define GET_LOCAL_CID	0x7b9
-+
-+int __hidden trace_vsock_local_cid(void)
++static int vsock_get_port(int sd, unsigned int *port)
 +{
-+	int cid;
++	return -ENOTSUP;
++}
+ #endif
+ 
+ static void agent_handle(int sd, int nr_cpus, int page_size)
+@@ -185,6 +248,7 @@ static void agent_handle(int sd, int nr_cpus, int page_size)
+ 	bool use_fifos;
+ 	int *fds;
+ 	int ret;
 +	int fd;
-+
-+	fd = open("/dev/vsock", O_RDONLY);
-+	if (fd < 0)
-+		return -errno;
-+
-+	if (ioctl(fd, GET_LOCAL_CID, &cid))
-+		cid = -errno;
-+
-+	close(fd);
-+	return cid;
-+}
+ 
+ 	fds = calloc(nr_cpus, sizeof(*fds));
+ 	ports = calloc(nr_cpus, sizeof(*ports));
+@@ -214,13 +278,19 @@ static void agent_handle(int sd, int nr_cpus, int page_size)
+ 			remote_id = -1;
+ 			local_id = -2;
+ 		}
+-		tsync = tracecmd_tsync_with_host(tsync_protos,
+-						 get_clock(argc, argv),
+-						 remote_id, local_id);
+-		if (tsync)
+-			tracecmd_tsync_get_session_params(tsync, &tsync_proto, &tsync_port);
+-		else
++		fd = vsock_make();
++		if (fd >= 0 && vsock_get_port(fd, &tsync_port) >= 0) {
++			tsync = tracecmd_tsync_with_host(fd, tsync_protos,
++							 get_clock(argc, argv),
++							 remote_id, local_id);
++		}
++		if (tsync) {
++			tracecmd_tsync_get_selected_proto(tsync, &tsync_proto);
++		} else {
+ 			warning("Failed to negotiate timestamps synchronization with the host");
++			if (fd >= 0)
++				close(fd);
++		}
+ 	}
+ 	trace_id = tracecmd_generate_traceid();
+ 	ret = tracecmd_msg_send_trace_resp(msg_handle, nr_cpus, page_size,
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 56fa5a798dcc..8e89aa94977c 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -3228,8 +3228,7 @@ int trace_open_vsock(unsigned int cid, unsigned int port)
+ 	die("vsock is not supported");
+ 	return -1;
+ }
+-
+-static bool can_splice_read_vsock(void)
++static inline bool can_splice_read_vsock(void)
+ {
+ 	return false;
+ }
+@@ -3976,6 +3975,7 @@ static int host_tsync(struct common_record_context *ctx,
+ 		      unsigned int tsync_port, char *proto)
+ {
+ 	struct trace_guest *guest;
++	int guest_pid = -1;
+ 	int fd;
+ 
+ 	if (!proto)
+@@ -3985,12 +3985,13 @@ static int host_tsync(struct common_record_context *ctx,
+ 	if (guest == NULL)
+ 		return -1;
+ 
++	guest_pid = guest->pid;
+ 	start_mapping_vcpus(guest);
+ 
+ 	fd = trace_open_vsock(instance->cid, tsync_port);
+ 	instance->tsync = tracecmd_tsync_with_guest(top_instance.trace_id,
+ 						    instance->tsync_loop_interval,
+-						    fd, guest->pid,
++						    fd, guest_pid,
+ 						    instance->cpu_count,
+ 						    proto, ctx->clock);
+ 	stop_mapping_vcpus(instance, guest);
 -- 
 2.35.1
 
