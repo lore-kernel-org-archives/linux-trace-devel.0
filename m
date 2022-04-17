@@ -2,74 +2,71 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85A1AC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 17 Apr 2022 18:57:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FFBEC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 17 Apr 2022 21:13:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234889AbiDQS7r (ORCPT
+        id S230081AbiDQVP5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 17 Apr 2022 14:59:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34884 "EHLO
+        Sun, 17 Apr 2022 17:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234898AbiDQS7q (ORCPT
+        with ESMTP id S232930AbiDQVP5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 17 Apr 2022 14:59:46 -0400
-Received: from gnuweeb.org (gnuweeb.org [51.81.211.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42BE135875;
-        Sun, 17 Apr 2022 11:57:10 -0700 (PDT)
-Received: from integral2.. (unknown [36.80.217.41])
-        by gnuweeb.org (Postfix) with ESMTPSA id 171F87E3C6;
-        Sun, 17 Apr 2022 18:57:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gnuweeb.org;
-        s=default; t=1650221828;
-        bh=W/B15O4/x8QrATxnTZ+KI9F1A5LySUR4+bRcaz8u5yU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bD/Bkb+G2IASp7bWPXJrLygzl5789e2fKMjlZQ51xEkJf5CkaBuiPexp/8F+ryICY
-         N2/V8108wtl81Ua+jdQmISkTthsoEJ9asSVqIZiiP71xuEbjdkMxDA6IXDaX3fd2DX
-         j4yKYFxJrxg/v0fXyRqtuy0k//sHc8QKMFJCCFbq66v08qL3uxQpQaoc3Ysjsm78Uu
-         TBbvgFt4SvYV8Lhzt9U2T4tRSff9rABXIDU+mkbrNLHlyhufyqxk6XY+YToyvRg60W
-         +OSCJbdQQbte/NQ03RL1rhLGRb1VM7M9xgCU/LJ77PZaIkZhM6NA2vspgxFtzzDZXQ
-         nWQ3BfcLDeCqQ==
-From:   Ammar Faizi <ammarfaizi2@gnuweeb.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Ammar Faizi <ammarfaizi2@gnuweeb.org>,
-        GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Trace Devel Mailing List 
-        <linux-trace-devel@vger.kernel.org>
-Subject: [RESEND PATCH 2/2] tracing: Change `if (strlen(glob))` to `if (glob[0])`
-Date:   Mon, 18 Apr 2022 01:56:30 +0700
-Message-Id: <20220417185630.199062-3-ammarfaizi2@gnuweeb.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220417185630.199062-1-ammarfaizi2@gnuweeb.org>
-References: <20220417185630.199062-1-ammarfaizi2@gnuweeb.org>
+        Sun, 17 Apr 2022 17:15:57 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C82711A39
+        for <linux-trace-devel@vger.kernel.org>; Sun, 17 Apr 2022 14:13:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 14F80B80D31
+        for <linux-trace-devel@vger.kernel.org>; Sun, 17 Apr 2022 21:13:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA28FC385A4;
+        Sun, 17 Apr 2022 21:13:17 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.95)
+        (envelope-from <rostedt@rostedt.homelinux.com>)
+        id 1ngCCq-004P1N-IT;
+        Sun, 17 Apr 2022 17:13:16 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Subject: [PATCH 0/2] trace-cmd agent: Add a little security to network connections
+Date:   Sun, 17 Apr 2022 17:13:13 -0400
+Message-Id: <20220417211315.1049221-1-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-No need to traverse to the end of string. If the first byte is not a NUL
-char, it's guaranteed `if (strlen(glob))` is true.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Signed-off-by: Ammar Faizi <ammarfaizi2@gnuweeb.org>
----
- kernel/trace/trace_events_hist.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Having an agent connection listening on a network is not the safest thing to do.
+This would allow anyone from anywhere to contol and read tracing of the host.
+Instead, force the -N to at least take an IP hostname/address to only connect
+to. This way the agent will only connect to a single machine. Any task on that
+machine can control the agent, so the machine must be fully trusted.
 
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 0b99ad68e3fa..1968e497ef44 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -6189,7 +6189,7 @@ static int event_hist_trigger_parse(struct event_command *cmd_ops,
- 	if (WARN_ON(!glob))
- 		return -EINVAL;
- 
--	if (strlen(glob)) {
-+	if (glob[0]) {
- 		hist_err_clear();
- 		last_cmd_set(file, param);
- 	}
+Also noticed that trace-cmd agent is missing a man page. Add that too with
+this change included in it.
+
+Depends on: https://patchwork.kernel.org/project/linux-trace-devel/cover/20220417184538.1044417-1-rostedt@goodmis.org/
+   https://lore.kernel.org/r/20220417184538.1044417-1-rostedt@goodmis.org
+
+Steven Rostedt (Google) (2):
+  trace-cmd agent: Have -N take a host name
+  trace-cmd agent: Add documentation
+
+ Documentation/trace-cmd/trace-cmd-agent.1.txt | 60 +++++++++++++++++++
+ tracecmd/include/trace-local.h                |  7 ++-
+ tracecmd/trace-agent.c                        | 34 ++++++++---
+ tracecmd/trace-listen.c                       | 55 +++++++++++++++++
+ tracecmd/trace-record.c                       | 13 +++-
+ tracecmd/trace-usage.c                        |  1 +
+ 6 files changed, 158 insertions(+), 12 deletions(-)
+ create mode 100644 Documentation/trace-cmd/trace-cmd-agent.1.txt
+
 -- 
-Ammar Faizi
+2.35.1
 
