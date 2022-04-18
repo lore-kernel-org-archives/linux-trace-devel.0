@@ -2,57 +2,57 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78A61C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Apr 2022 10:22:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B94AC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Apr 2022 10:23:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232949AbiDRKZR (ORCPT
+        id S234802AbiDRKZr (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 18 Apr 2022 06:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38280 "EHLO
+        Mon, 18 Apr 2022 06:25:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbiDRKZQ (ORCPT
+        with ESMTP id S234883AbiDRKZr (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 18 Apr 2022 06:25:16 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3964919C16
-        for <linux-trace-devel@vger.kernel.org>; Mon, 18 Apr 2022 03:22:38 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id t4so18122395pgc.1
-        for <linux-trace-devel@vger.kernel.org>; Mon, 18 Apr 2022 03:22:38 -0700 (PDT)
+        Mon, 18 Apr 2022 06:25:47 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E23FDA1BC
+        for <linux-trace-devel@vger.kernel.org>; Mon, 18 Apr 2022 03:23:07 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id t12so11993333pll.7
+        for <linux-trace-devel@vger.kernel.org>; Mon, 18 Apr 2022 03:23:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YAmmGpj51LH+T5qQ2qScMn09sLuxu93067dqnzy00bM=;
-        b=YP1s0SNh45b2t91xXf3qx5Z57Qy6p0pK+zZ9RD+NVaZXs83taR8ozqDW8bwSwCX93O
-         EPU8wZPwwMnMfIQjjyBKNQ6Qk1zQ+RgkhHcmw3QNedRPKz5MfKlksbdS3ZGISD1XcxLl
-         rrX9XnxxjEqeEJMD0KysohZjxNZG+e/c6CuD+akmACnta3ELgSJ3CtYuJJSwN3+mAX+z
-         aKv5Xt6ZdpeY6pRaVkFlsiKQbQMvE8c/cIRThRtY26pM993CgjiAsHci0lstEGck1EXv
-         aobRuDUBCHjdjFPjz2ozYOayjJWSOeDphmVIF2NfXmSUARh/CP6c2ufJDixnGjEvfusp
-         2d5w==
+        bh=H3kYn1MB4iZTnnLM0f7crGSIEgeDkoz+00Slm2SArvs=;
+        b=DmsSQBVcw83OfvWxHs1UD8zECmW8oNkfkIPr1d1ae97mPKu+UXZSQs9iTSmVcn6cSu
+         qkF8edhzZ9OwlNzZu0qwi0y5Or+PndYyzcHOVBRm1IbEUAiCQPBZhClrA7tw824L05Ty
+         PNYCwX/CsDa4zJvsY1oatyFi/Uq5vjzqNbbXSnL6Kyp+NRkENXiJ3HJSEYme2pLmJgNu
+         UG2m6yWOOUBwrAMpupRq6IJXSdIQpY6+6+j+teoUxyCSdxwMjESQqlzxiW4IaM1X8nzo
+         0h0W14XCwvXzZ+J++LodKKjxLRz9c7T2G6NSWex36kt0d4XTC1ZzV+NphSJMfiE3Fzmu
+         QZPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YAmmGpj51LH+T5qQ2qScMn09sLuxu93067dqnzy00bM=;
-        b=6mGRwD0ywwOQdKsmqyT+cy7ReNMCVkacSWwZBNWEpTGTF2sIU8kW92ltmkjip0Eln0
-         WFpCJ9rYYNwwyqJCYpENrQZF0r4MB0D+8o326EhgRj6jMgebBcYjIGBVkYPsPabGzWTx
-         Yr3Gw4NqmCQ4rN+osaxNymEE3u5Tkbh+/9oYz1cxb2h1X3Z06WrTHbCEOd1NLHIIHWV0
-         Gn9lZYlwXWEU9ySFoD29pQgVAzxqarlcPblPDIGbhiFzORAmxZQV3h++DyJgR07rmxnI
-         9rqZ98vRVQhhUc4prcVDWISDF9/CgN+gmmr1wWfiBEOFk7MOhbIIf4TgSi0ZID/wwEDk
-         X4iQ==
-X-Gm-Message-State: AOAM533BoW6Qz1LJjrDhmiwUb6yD9y0/rH/AXFW2/Wqzi+CIoJj4VLNH
-        JT/GUbiOu30pGNvuHeqveYC92wVOW8sNqgWUiJ53cb5H
-X-Google-Smtp-Source: ABdhPJwfdRyT+EMth9XN3tQK97KoEcOOmjP87cve0RSqilq0TzEFjAL3+2BYhHPfHtGnpsrQ9vtBUzUjMYFiDktp4QM=
-X-Received: by 2002:a63:1325:0:b0:39d:8eaa:27f7 with SMTP id
- i37-20020a631325000000b0039d8eaa27f7mr9597850pgl.297.1650277357650; Mon, 18
- Apr 2022 03:22:37 -0700 (PDT)
+        bh=H3kYn1MB4iZTnnLM0f7crGSIEgeDkoz+00Slm2SArvs=;
+        b=0bAFvmyGSMseLEky5rn4ozk48S4oEgexAbPVSlX10tOBpN+BBMGMekb1Oz2DcQnx8x
+         k7ldP3sadp7h3pgBd0eT8ZukRHmZorJxdeSHa6EBtADa13pXVaxZZy0EAzCEOqLKIS01
+         VwuPy/6fsrbI0ZTsY35c0qc3bOKDdZbi/rcC3wVS/BENQ19rrRCvOCYPwM2omgIBLIko
+         HvTL9CS3GLb61R9N/PpAkwTsZNLb14wlHob0rYKMzI3AzXMLqWtJckOzU3hDeeMUxXfp
+         hJS5mFLnCA7Esxyuuuu5mGuZQKR4sDOsm+p4MKVW3yjMhwy6xeDPand/qcGueNNs428f
+         fdCA==
+X-Gm-Message-State: AOAM530HWrna+Aod5tCBKNdGq2M/q5BiAF0e4BLBzBk75gj1G6DqkvAc
+        K7yHLadiPwvnVlyjMik86oMJ68tmQi9MeOLcwJQsvsSA
+X-Google-Smtp-Source: ABdhPJyP5hZ5b54Foh1Vg7YY1hAOOJF1HdeuJREkOedQtsgS5jVGjA7HbJTRuImOlszet4kfFI6UZrJ6wPyj/y47EL0=
+X-Received: by 2002:a17:90a:384d:b0:1d2:97de:eb8c with SMTP id
+ l13-20020a17090a384d00b001d297deeb8cmr4793454pjf.208.1650277387308; Mon, 18
+ Apr 2022 03:23:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220417184538.1044417-1-rostedt@goodmis.org> <20220417184538.1044417-2-rostedt@goodmis.org>
-In-Reply-To: <20220417184538.1044417-2-rostedt@goodmis.org>
+References: <20220417184538.1044417-1-rostedt@goodmis.org> <20220417184538.1044417-5-rostedt@goodmis.org>
+In-Reply-To: <20220417184538.1044417-5-rostedt@goodmis.org>
 From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Mon, 18 Apr 2022 13:22:21 +0300
-Message-ID: <CAPpZLN6hbomCn5DUPvOKyVtzqWeoGjdT2OUc9XNBYNgekjRtdQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/9] trace-cmd record: Move port_type into instance
+Date:   Mon, 18 Apr 2022 13:22:51 +0300
+Message-ID: <CAPpZLN6UyZ00koS+FWWsq_SKYpoYMkSb_TTNmehG2LwBu3P6OA@mail.gmail.com>
+Subject: Re: [PATCH v2 4/9] trace-cmd agent: Allow for ip connections from the agent
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -60,199 +60,319 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, Apr 18, 2022 at 10:11 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Mon, Apr 18, 2022 at 11:28 AM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
 > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 >
-> Instead of one global method of communication, have the "port_type" be
-> part of the instance. This will allow for different instances to have
-> different connection types.
+> Add a -N option to trace-cmd agent to listen on a network socket that
+> can be used by trace-cmd record -A to connect with.
 >
+
+I have concerns about exposing the agent over the network, without any
+client authentication. It runs with root privileges, the kernel
+tracing data will be exposed to anyone over the network. At least,
+this should be written clearly in the documentation and even should be
+printed by "trace-cmd agent -N ...". I saw your patch that adds a name
+or IP address of the client as parameter, it is some security, but the
+tracing data itself still flows unencrypted over the network and could
+be visible to anyone.
+
+
 > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 > ---
->  tracecmd/include/trace-local.h |  1 +
->  tracecmd/trace-record.c        | 41 ++++++++++++++++++----------------
->  2 files changed, 23 insertions(+), 19 deletions(-)
+>  tracecmd/include/trace-local.h |  6 +++
+>  tracecmd/trace-agent.c         | 89 ++++++++++++++++++++++++++--------
+>  tracecmd/trace-listen.c        | 58 ++++++++++++++--------
+>  3 files changed, 113 insertions(+), 40 deletions(-)
 >
 > diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-> index aa1cb8d939bd..2008449bab27 100644
+> index afbcab422c2f..fdb0d887557f 100644
 > --- a/tracecmd/include/trace-local.h
 > +++ b/tracecmd/include/trace-local.h
-> @@ -285,6 +285,7 @@ struct buffer_instance {
->         int                     *fds;
->         bool                    use_fifos;
+> @@ -306,6 +306,12 @@ extern struct buffer_instance *first_instance;
+>  #define is_guest(instance)     ((instance)->flags & BUFFER_FL_GUEST)
+>  #define is_network(instance)   ((instance)->flags & BUFFER_FL_NETWORK)
 >
-> +       enum port_type          port_type;
-
-I would suggest setting the default value of port_type explicitly in
-allocate_instance(). Even though USE_UDP is 0, it is more clear. The
-first time when I went through these changes, I was wondering why UDP
-is not set at all. Then found that it was a static boolean in the
-previous implementation, defaulting to false.
-
-
->         int                     tsync_loop_interval;
->         struct tracecmd_time_sync *tsync;
->  };
-> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-> index 674ec2c3ba65..14ba4ac5dc9e 100644
-> --- a/tracecmd/trace-record.c
-> +++ b/tracecmd/trace-record.c
-> @@ -90,8 +90,6 @@ static bool fork_process;
->  /* Max size to let a per cpu file get */
->  static int max_kb;
->
-> -static enum port_type port_type;
-> -
->  static int do_ptrace;
->
->  static int filter_task;
-> @@ -3119,7 +3117,7 @@ static void finish(int sig)
->         finished = 1;
+> +#define START_PORT_SEARCH 1500
+> +#define MAX_PORT_SEARCH 6000
+> +
+> +int trace_net_make(int port, enum port_type type);
+> +int trace_net_search(int start_port, int *sfd, enum port_type type);
+> +
+>  struct buffer_instance *allocate_instance(const char *name);
+>  void add_instance(struct buffer_instance *instance, int cpu_count);
+>  void update_first_instance(struct buffer_instance *instance, int topt);
+> diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
+> index 719d7126ca67..cd201ad948ad 100644
+> --- a/tracecmd/trace-agent.c
+> +++ b/tracecmd/trace-agent.c
+> @@ -41,6 +41,32 @@ static void make_vsocks(int nr, int *fds, unsigned int *ports)
+>         }
 >  }
 >
-> -static int connect_port(const char *host, unsigned int port)
-> +static int connect_port(const char *host, unsigned int port, enum port_type type)
+> +static void make_net(int nr, int *fds, unsigned int *ports)
+> +{
+> +       int port;
+> +       int i, fd;
+> +       int start_port = START_PORT_SEARCH;
+> +
+> +       for (i = 0; i < nr; i++) {
+> +               port = trace_net_search(start_port, &fd, USE_TCP);
+> +               if (port < 0)
+> +                       die("Failed to open socket");
+> +               if (listen(fd, 5) < 0)
+> +                       die("Failed to listen on port %d\n", port);
+> +               fds[i] = fd;
+> +               ports[i] = port;
+> +               start_port = port + 1;
+> +       }
+> +}
+> +
+> +static void make_sockets(int nr, int *fds, unsigned int *ports, bool network)
+> +{
+> +       if (network)
+> +               return make_net(nr, fds, ports);
+> +       else
+> +               return make_vsocks(nr, fds, ports);
+> +}
+> +
+>  static int open_agent_fifos(int nr_cpus, int *fds)
+>  {
+>         char path[PATH_MAX];
+> @@ -80,7 +106,7 @@ static char *get_clock(int argc, char **argv)
+>         return NULL;
+>  }
+>
+> -static void agent_handle(int sd, int nr_cpus, int page_size)
+> +static void agent_handle(int sd, int nr_cpus, int page_size, bool network)
+>  {
+>         struct tracecmd_tsync_protos *tsync_protos = NULL;
+>         struct tracecmd_time_sync *tsync = NULL;
+> @@ -117,17 +143,31 @@ static void agent_handle(int sd, int nr_cpus, int page_size)
+>                 use_fifos = false;
+>
+>         if (!use_fifos)
+> -               make_vsocks(nr_cpus, fds, ports);
+> +               make_sockets(nr_cpus, fds, ports, network);
+>         if (tsync_protos && tsync_protos->names) {
+> -               if (get_vsocket_params(msg_handle->fd, &local_id,
+> -                                      &remote_id)) {
+> -                       warning("Failed to get local and remote ids");
+> -                       /* Just make something up */
+> -                       remote_id = -1;
+> -                       local_id = -2;
+> +               if (network) {
+> +                       /* For now just use something */
+> +                       remote_id = 2;
+> +                       local_id = 1;
+> +                       tsync_port = trace_net_search(START_PORT_SEARCH, &fd, USE_TCP);
+> +                       if (listen(fd, 5) < 0)
+> +                               die("Failed to listen on %d\n", tsync_port);
+> +               } else {
+> +                       if (get_vsocket_params(msg_handle->fd, &local_id,
+> +                                              &remote_id)) {
+> +                               warning("Failed to get local and remote ids");
+> +                               /* Just make something up */
+> +                               remote_id = -1;
+> +                               local_id = -2;
+> +                       }
+> +                       fd = trace_vsock_make_any();
+> +                       if (fd >= 0 &&
+> +                           trace_vsock_get_port(fd, &tsync_port) < 0) {
+> +                               close(fd);
+> +                               fd = -1;
+> +                       }
+>                 }
+> -               fd = trace_vsock_make_any();
+> -               if (fd >= 0 && trace_vsock_get_port(fd, &tsync_port) >= 0) {
+> +               if (fd >= 0) {
+>                         tsync = tracecmd_tsync_with_host(fd, tsync_protos,
+>                                                          get_clock(argc, argv),
+>                                                          remote_id, local_id);
+> @@ -193,7 +233,7 @@ static pid_t do_fork()
+>         return fork();
+>  }
+>
+> -static void agent_serve(unsigned int port, bool do_daemon)
+> +static void agent_serve(unsigned int port, bool do_daemon, bool network)
+>  {
+>         int sd, cd, nr_cpus;
+>         unsigned int cid;
+> @@ -204,14 +244,21 @@ static void agent_serve(unsigned int port, bool do_daemon)
+>         nr_cpus = tracecmd_count_cpus();
+>         page_size = getpagesize();
+>
+> -       sd = trace_vsock_make(port);
+> +       if (network) {
+> +               sd = trace_net_make(port, USE_TCP);
+> +               if (listen(sd, 5) < 0)
+> +                       die("Failed to listen on %d\n", port);
+> +       } else
+> +               sd = trace_vsock_make(port);
+>         if (sd < 0)
+> -               die("Failed to open vsocket");
+> +               die("Failed to open socket");
+>         tracecmd_tsync_init();
+>
+> -       cid = trace_vsock_local_cid();
+> -       if (cid >= 0)
+> -               printf("listening on @%u:%u\n", cid, port);
+> +       if (!network) {
+> +               cid = trace_vsock_local_cid();
+> +               if (cid >= 0)
+> +                       printf("listening on @%u:%u\n", cid, port);
+> +       }
+>
+>         if (do_daemon && daemon(1, 0))
+>                 die("daemon");
+> @@ -231,7 +278,7 @@ static void agent_serve(unsigned int port, bool do_daemon)
+>                 if (pid == 0) {
+>                         close(sd);
+>                         signal(SIGCHLD, SIG_DFL);
+> -                       agent_handle(cd, nr_cpus, page_size);
+> +                       agent_handle(cd, nr_cpus, page_size, network);
+>                 }
+>                 if (pid > 0)
+>                         handler_pid = pid;
+> @@ -250,6 +297,7 @@ void trace_agent(int argc, char **argv)
+>  {
+>         bool do_daemon = false;
+>         unsigned int port = TRACE_AGENT_DEFAULT_PORT;
+> +       bool network = false;
+>
+>         if (argc < 2)
+>                 usage(argv);
+> @@ -267,7 +315,7 @@ void trace_agent(int argc, char **argv)
+>                         {NULL, 0, NULL, 0}
+>                 };
+>
+> -               c = getopt_long(argc-1, argv+1, "+hp:D",
+> +               c = getopt_long(argc-1, argv+1, "+hp:DN",
+>                                 long_options, &option_index);
+>                 if (c == -1)
+>                         break;
+> @@ -275,6 +323,9 @@ void trace_agent(int argc, char **argv)
+>                 case 'h':
+>                         usage(argv);
+>                         break;
+> +               case 'N':
+> +                       network = true;
+> +                       break;
+>                 case 'p':
+>                         port = atoi(optarg);
+>                         break;
+> @@ -296,5 +347,5 @@ void trace_agent(int argc, char **argv)
+>         if (optind < argc-1)
+>                 usage(argv);
+>
+> -       agent_serve(port, do_daemon);
+> +       agent_serve(port, do_daemon, network);
+>  }
+> diff --git a/tracecmd/trace-listen.c b/tracecmd/trace-listen.c
+> index 2338173fc8a6..8476fa51dadd 100644
+> --- a/tracecmd/trace-listen.c
+> +++ b/tracecmd/trace-listen.c
+> @@ -234,52 +234,68 @@ static int setup_vsock_port(int start_port, int *sfd)
+>         return start_port;
+>  }
+>
+> -#define START_PORT_SEARCH 1500
+> -#define MAX_PORT_SEARCH 6000
+> -
+> -static int bind_a_port(int start_port, int *sfd, enum port_type type)
+> +int trace_net_make(int port, enum port_type type)
 >  {
 >         struct addrinfo hints;
->         struct addrinfo *results, *rp;
-> @@ -3128,17 +3126,17 @@ static int connect_port(const char *host, unsigned int port)
+>         struct addrinfo *result, *rp;
+>         char buf[BUFSIZ];
+> +       int sd;
+>         int s;
+> -       int num_port = start_port;
 >
->         snprintf(buf, BUFSIZ, "%u", port);
->
-> -       if (port_type == USE_VSOCK)
-> +       if (type == USE_VSOCK)
->                 return trace_vsock_open(atoi(host), port);
+> -       if (type == USE_VSOCK)
+> -               return setup_vsock_port(start_port, sfd);
+> - again:
+> -       snprintf(buf, BUFSIZ, "%d", num_port);
+> +       snprintf(buf, BUFSIZ, "%d", port);
 >
 >         memset(&hints, 0, sizeof(hints));
 >         hints.ai_family = AF_UNSPEC;
-> -       hints.ai_socktype = port_type == USE_TCP ? SOCK_STREAM : SOCK_DGRAM;
-> +       hints.ai_socktype = type == USE_TCP ? SOCK_STREAM : SOCK_DGRAM;
+> -       hints.ai_socktype = type == USE_TCP ? SOCK_STREAM : SOCK_DGRAM;
+>         hints.ai_flags = AI_PASSIVE;
 >
->         s = getaddrinfo(host, buf, &hints, &results);
+> +       switch (type) {
+> +       case USE_TCP:
+> +               hints.ai_socktype = SOCK_STREAM;
+> +               break;
+> +       case USE_UDP:
+> +               hints.ai_socktype = SOCK_DGRAM;
+> +               break;
+> +       default:
+> +               return -1;
+> +       }
+> +
+>         s = getaddrinfo(NULL, buf, &hints, &result);
 >         if (s != 0)
->                 die("connecting to %s server %s:%s",
-> -                   port_type == USE_TCP ? "TCP" : "UDP", host, buf);
-> +                   type == USE_TCP ? "TCP" : "UDP", host, buf);
+>                 pdie("getaddrinfo: error opening socket");
 >
->         for (rp = results; rp != NULL; rp = rp->ai_next) {
->                 sfd = socket(rp->ai_family, rp->ai_socktype,
-> @@ -3152,7 +3150,7 @@ static int connect_port(const char *host, unsigned int port)
+>         for (rp = result; rp != NULL; rp = rp->ai_next) {
+> -               *sfd = socket(rp->ai_family, rp->ai_socktype,
+> -                             rp->ai_protocol);
+> -               if (*sfd < 0)
+> +               sd = socket(rp->ai_family, rp->ai_socktype,
+> +                           rp->ai_protocol);
+> +               if (sd < 0)
+>                         continue;
 >
->         if (rp == NULL)
->                 die("Can not connect to %s server %s:%s",
-> -                   port_type == USE_TCP ? "TCP" : "UDP", host, buf);
-> +                   type == USE_TCP ? "TCP" : "UDP", host, buf);
+> -               if (bind(*sfd, rp->ai_addr, rp->ai_addrlen) == 0)
+> +               if (bind(sd, rp->ai_addr, rp->ai_addrlen) == 0)
+>                         break;
 >
->         freeaddrinfo(results);
+> -               close(*sfd);
+> +               close(sd);
+>         }
+> +       freeaddrinfo(result);
+> +
+> +       if (rp == NULL)
+> +               return -1;
+> +
+> +       return sd;
+> +}
+> +
+> +int trace_net_search(int start_port, int *sfd, enum port_type type)
+> +{
+> +       int num_port = start_port;
 >
-> @@ -3359,7 +3357,8 @@ static int create_recorder(struct buffer_instance *instance, int cpu,
->                         else
->                                 fd = do_accept(instance->fds[cpu]);
->                 } else {
-> -                       fd = connect_port(host, instance->client_ports[cpu]);
-> +                       fd = connect_port(host, instance->client_ports[cpu],
-> +                                         instance->port_type);
->                 }
->                 if (fd < 0)
->                         die("Failed connecting to client");
-> @@ -3414,8 +3413,9 @@ static void check_first_msg_from_server(struct tracecmd_msg_handle *msg_handle)
->  }
->
->  static void communicate_with_listener_v1(struct tracecmd_msg_handle *msg_handle,
-> -                                        unsigned int **client_ports)
-> +                                        struct buffer_instance *instance)
->  {
-> +       unsigned int *client_ports;
->         char buf[BUFSIZ];
->         ssize_t n;
->         int cpu, i;
-> @@ -3442,11 +3442,11 @@ static void communicate_with_listener_v1(struct tracecmd_msg_handle *msg_handle,
->         /* TODO, test for ipv4 */
->         if (page_size >= UDP_MAX_PACKET) {
->                 warning("page size too big for UDP using TCP in live read");
-> -               port_type = USE_TCP;
-> +               instance->port_type = USE_TCP;
->                 msg_handle->flags |= TRACECMD_MSG_FL_USE_TCP;
+> -       if (rp == NULL) {
+> -               freeaddrinfo(result);
+> +       if (type == USE_VSOCK)
+> +               return setup_vsock_port(start_port, sfd);
+> + again:
+> +       *sfd = trace_net_make(num_port, type);
+> +       if (*sfd < 0) {
+>                 if (++num_port > MAX_PORT_SEARCH)
+>                         pdie("No available ports to bind");
+>                 goto again;
 >         }
 >
-> -       if (port_type == USE_TCP) {
-> +       if (instance->port_type == USE_TCP) {
->                 /* Send one option */
->                 write(msg_handle->fd, "1", 2);
->                 /* Size 4 */
-> @@ -3457,8 +3457,8 @@ static void communicate_with_listener_v1(struct tracecmd_msg_handle *msg_handle,
->                 /* No options */
->                 write(msg_handle->fd, "0", 2);
+> -       freeaddrinfo(result);
+> -
+>         return num_port;
+>  }
 >
-> -       *client_ports = malloc(local_cpu_count * sizeof(*client_ports));
-> -       if (!*client_ports)
-> +       client_ports = malloc(local_cpu_count * sizeof(*client_ports));
-> +       if (!client_ports)
->                 die("Failed to allocate client ports for %d cpus", local_cpu_count);
+> @@ -309,10 +325,10 @@ static int open_port(const char *node, const char *port, int *pid,
+>         int num_port;
 >
 >         /*
-> @@ -3476,8 +3476,10 @@ static void communicate_with_listener_v1(struct tracecmd_msg_handle *msg_handle,
->                 if (i == BUFSIZ)
->                         die("read bad port number");
->                 buf[i] = 0;
-> -               (*client_ports)[cpu] = atoi(buf);
-> +               client_ports[cpu] = atoi(buf);
->         }
-> +
-> +       instance->client_ports = client_ports;
->  }
+> -        * bind_a_port() currently does not return an error, but if that
+> +        * trace_net_search() currently does not return an error, but if that
+>          * changes in the future, we have a check for it now.
+>          */
+> -       num_port = bind_a_port(start_port, &sfd, type);
+> +       num_port = trace_net_search(start_port, &sfd, type);
+>         if (num_port < 0)
+>                 return num_port;
 >
->  static void communicate_with_listener_v3(struct tracecmd_msg_handle *msg_handle,
-> @@ -3609,10 +3611,11 @@ static int connect_ip(char *thost)
->  static struct tracecmd_msg_handle *setup_network(struct buffer_instance *instance)
->  {
->         struct tracecmd_msg_handle *msg_handle = NULL;
-> +       enum port_type type = instance->port_type;
->         int sfd;
->
->  again:
-> -       switch (port_type) {
-> +       switch (type) {
->         case USE_VSOCK:
->                 sfd = connect_vsock(host);
->                 break;
-> @@ -3634,7 +3637,7 @@ again:
->                 msg_handle->version = V3_PROTOCOL;
->         }
->
-> -       switch (port_type) {
-> +       switch (type) {
->         case USE_TCP:
->                 msg_handle->flags |= TRACECMD_MSG_FL_USE_TCP;
->                 break;
-> @@ -3657,7 +3660,7 @@ again:
->         }
->
->         if (msg_handle->version == V1_PROTOCOL)
-> -               communicate_with_listener_v1(msg_handle, &instance->client_ports);
-> +               communicate_with_listener_v1(msg_handle, instance);
->
->         return msg_handle;
->  }
-> @@ -6514,7 +6517,7 @@ static void parse_record_options(int argc,
->                         if (ctx->output)
->                                 die("-V incompatible with -o");
->                         host = optarg;
-> -                       port_type = USE_VSOCK;
-> +                       ctx->instance->port_type = USE_VSOCK;
->                         break;
->                 case 'm':
->                         if (max_kb)
-> @@ -6532,7 +6535,7 @@ static void parse_record_options(int argc,
->                         if (IS_EXTRACT(ctx))
->                                 ctx->topt = 1; /* Extract top instance also */
->                         else
-> -                               port_type = USE_TCP;
-> +                               ctx->instance->port_type = USE_TCP;
->                         break;
->                 case 'b':
->                         check_instance_die(ctx->instance, "-b");
 > --
 > 2.35.1
 >
