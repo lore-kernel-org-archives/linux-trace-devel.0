@@ -2,136 +2,72 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EFAAC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 17 Apr 2022 21:13:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64569C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Apr 2022 01:14:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232930AbiDQVP6 (ORCPT
+        id S235560AbiDRBRb (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 17 Apr 2022 17:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55180 "EHLO
+        Sun, 17 Apr 2022 21:17:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233153AbiDQVP5 (ORCPT
+        with ESMTP id S230078AbiDRBRa (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 17 Apr 2022 17:15:57 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C97011C38
-        for <linux-trace-devel@vger.kernel.org>; Sun, 17 Apr 2022 14:13:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 21867B80D9D
-        for <linux-trace-devel@vger.kernel.org>; Sun, 17 Apr 2022 21:13:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E03CAC385A7;
-        Sun, 17 Apr 2022 21:13:17 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.95)
-        (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1ngCCq-004P1T-KN;
-        Sun, 17 Apr 2022 17:13:16 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 2/2] trace-cmd agent: Add documentation
-Date:   Sun, 17 Apr 2022 17:13:15 -0400
-Message-Id: <20220417211315.1049221-3-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220417211315.1049221-1-rostedt@goodmis.org>
-References: <20220417211315.1049221-1-rostedt@goodmis.org>
+        Sun, 17 Apr 2022 21:17:30 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7641212094;
+        Sun, 17 Apr 2022 18:14:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=4J8PtHH4PrE8B/9vtKpbIgGLAeLCaFgTs0yhAH8f0cE=; b=1s4i9ZyzkWp2AMDKp7lj0eHfSm
+        0Tr3uvfYW33RCr4k9+r/R8IQLoz+6fYJmf3ozlwWqe8vPrU0N+rfVc/M1IwKdzEXzADSgtw0NsLL8
+        ffzG1bWg4sqJJ2gb1OrzQ2EfrBwf8hCO6u3py9vNRuPlRbIXCqqItlZWY9LCqG/6x+NBNh+6mVbv9
+        w+yihGv9/6+bfsY8zPKDLmXaiuFnK6ZESgCp8vOnalzDBdkPgnZaiB0GDVmpgNZTDQWXAnzFbWpqF
+        H+nRD+gBsSOHYW6TKl6toWZl6nNZQDGSWq0gnLWH+CgtPfFwReRFeTUT9CcYiOOngjicu9NpIpjG/
+        3EeSU+vg==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ngFyd-00FCIL-9h; Mon, 18 Apr 2022 01:14:51 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-doc@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Subject: [PATCH] rtla: Documentation: fix email addresses
+Date:   Sun, 17 Apr 2022 18:14:50 -0700
+Message-Id: <20220418011450.11821-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Correct lkml@vger to linux-kernel@vger.
+Add linux-trace-devel since that is what is in the MAINTAINERS file.
 
-Add a man page for trace-cmd agent, and also update the usage to include
-the new -N option.
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Fixes: d40d48e1f1f2 ("rtla: Add Documentation")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-doc@vger.kernel.org
+Cc: linux-trace-devel@vger.kernel.org
 ---
- Documentation/trace-cmd/trace-cmd-agent.1.txt | 60 +++++++++++++++++++
- tracecmd/trace-usage.c                        |  1 +
- 2 files changed, 61 insertions(+)
- create mode 100644 Documentation/trace-cmd/trace-cmd-agent.1.txt
+ Documentation/tools/rtla/common_appendix.rst |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/trace-cmd/trace-cmd-agent.1.txt b/Documentation/trace-cmd/trace-cmd-agent.1.txt
-new file mode 100644
-index 000000000000..ed82fcdedb26
---- /dev/null
-+++ b/Documentation/trace-cmd/trace-cmd-agent.1.txt
-@@ -0,0 +1,60 @@
-+TRACE-CMD-AGENT(1)
-+==================
-+
-+NAME
-+----
-+trace-cmd-agent - Run as an agent on a machine (to be controlled by another machine)
-+
-+SYNOPSIS
-+--------
-+*trace-cmd agent* ['OPTIONS']
-+
-+DESCRIPTION
-+-----------
-+The trace-cmd(1) agent listens over a vsocket (for virtual machines) or a TCP port
-+for connections to control the tracing of the machine. The agent will then start
-+tracing on the local machine and pass the data to the controlling connection.
-+
-+OPTIONS
-+-------
-+*-N* 'client'::
-+    Listen over TCP instead of a vsocket. Must pass in a client host name or IP address
-+    to allow connection to. It will only connect to the specified client. Note, any process
-+    on that client can control the agent. Only use if the client machine is totally trusted.
-+
-+*-p* 'port'::
-+    This option will specify the port to listen to.
-+
-+*-D*::
-+    This options causes trace-cmd agent to go into a daemon mode and run in
-+    the background.
-+
-+*--verbose*[='level']::
-+     Set the log level. Supported log levels are "none", "critical", "error", "warning",
-+     "info", "debug", "all" or their identifiers "0", "1", "2", "3", "4", "5", "6". Setting the log
-+     level to specific value enables all logs from that and all previous levels.
-+     The level will default to "info" if one is not specified.
-+
-+     Example: enable all critical, error and warning logs
-+
-+      trace-cmd listen --verbose=warning
-+
-+SEE ALSO
-+--------
-+trace-cmd(1), trace-cmd-record(1), trace-cmd-report(1), trace-cmd-start(1),
-+trace-cmd-stop(1), trace-cmd-extract(1), trace-cmd-reset(1),
-+trace-cmd-split(1), trace-cmd-list(1)
-+
-+AUTHOR
-+------
-+Written by Steven Rostedt, <rostedt@goodmis.org>
-+
-+RESOURCES
-+---------
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
-+
-+COPYING
-+-------
-+Copyright \(C) 2010 Red Hat, Inc. Free use of this software is granted under
-+the terms of the GNU Public License (GPL).
-+
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index 88eac10a4e75..e5ef6ea0aa97 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -330,6 +330,7 @@ static struct usage_help usage_help[] = {
- 		"listen on a vsocket for trace clients",
- 		" %s agent -p port[-D]\n"
- 		"          Creates a vsocket to listen for clients.\n"
-+		"          -N Connect to IP via TCP instead of vsockets\n"
- 		"          -p port number to listen on.\n"
- 		"          -D run in daemon mode.\n"
- 		"          --verbose 'level' Set the desired log level\n"
--- 
-2.35.1
-
+--- a/Documentation/tools/rtla/common_appendix.rst
++++ b/Documentation/tools/rtla/common_appendix.rst
+@@ -1,6 +1,7 @@
+ REPORTING BUGS
+ ==============
+-Report bugs to <lkml@vger.kernel.org>
++Report bugs to <linux-kernel@vger.kernel.org>
++and <linux-trace-devel@vger.kernel.org>
+ 
+ LICENSE
+ =======
