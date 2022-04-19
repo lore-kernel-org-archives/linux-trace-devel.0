@@ -2,88 +2,120 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AF13C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 19 Apr 2022 16:23:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F87AC433FE
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 19 Apr 2022 18:57:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354594AbiDSQ0Q (ORCPT
+        id S231173AbiDSS77 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 19 Apr 2022 12:26:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38542 "EHLO
+        Tue, 19 Apr 2022 14:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352524AbiDSQ0P (ORCPT
+        with ESMTP id S241056AbiDSS76 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 19 Apr 2022 12:26:15 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19D293A5F5
-        for <linux-trace-devel@vger.kernel.org>; Tue, 19 Apr 2022 09:23:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id EC238CE1A94
-        for <linux-trace-devel@vger.kernel.org>; Tue, 19 Apr 2022 16:23:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A61CC385A5;
-        Tue, 19 Apr 2022 16:23:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650385409;
-        bh=CjE/eIjApn/q3fuQy40MSlT/6v8fNGzjjvZG253OMAA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=YJ4EG2i4JoDocEaxUWz+4X3hao+YEcbeflcrXClKLJC2LR+CH6kexuAibFLjkWPfl
-         ynZnIeUcC5cEcPRuka+fT+V4AiY/v5Bqu69rlg0xKSGbEPJNRM6dLEvxgJNk3FZ4t0
-         +Y/KwfCjWsSOksMfP60N5Y+ck6aT0/l0uNHVOGVCXU2CPn+wURwUjyHBHfuT3Wj7jq
-         3pmaY3VH/GawBmEEFt1R9aMLx5oH/hZWY+3c1lehQSYK4hqPT1wQd8qY7CagcTPvt5
-         VhUhFEC1inQIRDW14g3BK/ZcTnVWExPmncxT/5fg8m3NS9R/Uq6A18hMNS7dbNKsuJ
-         vjgI2JE5vbWew==
-Message-ID: <d63d91c6-a466-0ca1-9d0d-76ad37f9eff9@kernel.org>
-Date:   Tue, 19 Apr 2022 18:23:25 +0200
+        Tue, 19 Apr 2022 14:59:58 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 59B25633B;
+        Tue, 19 Apr 2022 11:57:15 -0700 (PDT)
+Received: from kbox (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5542D20E1A7F;
+        Tue, 19 Apr 2022 11:57:14 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5542D20E1A7F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1650394634;
+        bh=1xNKG1fM8YQNLY3HXkQavqzQsj2uT3iyFwC11lzWWJ0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E49U5AUgtuDooLtNKXln9Uquk5N8njYn/p8Jn0+jlAPvoqQ81HqWPop36YDzCT+TR
+         lqwYq3NAWO41MAmse7ju1fSZke6kHpsi4LYP5bkB2hoHpfiw/7/9JMUvAGvSaNtCxL
+         Zh4so0YKfKMEr9gV2odjiQYCWk0hGGD50tj0eK9A=
+Date:   Tue, 19 Apr 2022 11:57:08 -0700
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [PATCH 6/7] tracing/user_events: Use bits vs bytes for enabled
+ status page data
+Message-ID: <20220419185708.GA1908@kbox>
+References: <20220401234309.21252-1-beaub@linux.microsoft.com>
+ <20220401234309.21252-7-beaub@linux.microsoft.com>
+ <337584634.26921.1650378945485.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH 0/3] rtla: v5.18-rc2 Fixes
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org
-References: <cover.1650029027.git.bristot@kernel.org>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <cover.1650029027.git.bristot@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <337584634.26921.1650378945485.JavaMail.zimbra@efficios.com>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Steven,
-
-Please ignore this email thread. For some reason I do not know, red hat's smtp
-is converting data to base64...
-
-On 4/15/22 15:36, Daniel Bristot de Oliveira wrote:
-> Steven,
+On Tue, Apr 19, 2022 at 10:35:45AM -0400, Mathieu Desnoyers wrote:
+> ----- On Apr 1, 2022, at 7:43 PM, Beau Belgrave beaub@linux.microsoft.com wrote:
 > 
-> Here are some fixes for rtla.
+> > User processes may require many events and when they do the cache
+> > performance of a byte index status check is less ideal than a bit index.
+> > The previous event limit per-page was 4096, the new limit is 32,768.
+> > 
+> > This change adds a mask property to the user_reg struct. Programs check
+> > that the byte at status_index has a bit set by ANDing the status_mask.
+> > 
+> > Link:
+> > https://lore.kernel.org/all/2059213643.196683.1648499088753.JavaMail.zimbra@efficios.com/
+> > 
+> > Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 > 
-> I do not include "rtla/Makefile: Properly handle dependencies"
-> because I will make two changes to it:
->         -  I need to check rst2man only in the make install phase
->         -  I will remove procps-devel dependency on another patch
+> Hi Beau,
 > 
-> I will send a v2 of the "Properly handle dependencies" and the removal
-> of procps-devel dependencies next week. But these ones are already ready.
-
-
-
-> John Kacur (2):
->   rtla: Don't overwrite existing directory mode
->   rtla: Minor grammar fix for rtla README
-> 
-> Wan Jiabing (1):
->   rtla: Avoid record NULL pointer dereference
-> 
->  tools/tracing/rtla/Makefile            |  3 ++-
->  tools/tracing/rtla/README.txt          | 12 +++++-------
->  tools/tracing/rtla/src/osnoise_hist.c  |  5 +++--
->  tools/tracing/rtla/src/osnoise_top.c   |  9 +++++----
->  tools/tracing/rtla/src/timerlat_hist.c | 11 ++++++-----
->  tools/tracing/rtla/src/timerlat_top.c  | 11 ++++++-----
->  6 files changed, 27 insertions(+), 24 deletions(-)
+> Considering this will be used in a fast-path, why choose bytewise
+> loads for the byte at status_index and the status_mask ?
 > 
 
+First, thanks for the review!
+
+Which loads are you concerned about? The user programs can store the
+index and mask in another type after registration instead of an int.
+
+However, you may be referring to something on the kernel side?
+
+> I'm concerned about the performance penalty associated with partial
+> register stalls when working with bytewise ALU operations rather than
+> operations using the entire registers.
+> 
+
+On the kernel side these only occur when a registration happens (pretty
+rare compared to enabled checks) or a delete (even rarer). But I have
+the feeling you are more concerned about the user side, right?
+
+> Ideally I would be tempted to use "unsigned long" type (32-bit on 32-bit
+> binaries and 64-bit on 64-bit binaries) for both the array access
+> and the status mask, but this brings extra complexity for 32-bit compat
+> handling.
+> 
+
+User programs can store the index and mask returned into better value
+types for their architecture.
+
+I agree it will cause compat handling issues if it's put into the user
+facing header as a long.
+
+I was hoping APIs, like libtracefs, could abstract many callers from how
+best to use the returned values. For example, it could save the index
+and mask as unsigned long for the callers and use those for the
+enablement checks.
+
+Do you think there is a way to enable these native types in the ABI
+without causing compat handling issues? I used ints to prevent compat
+issues between 32-bit user mode and 64-bit kernel mode.
+
+> Thanks,
+> 
+> Mathieu
+> 
+> -- 
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> http://www.efficios.com
+
+Thanks,
+-Beau
