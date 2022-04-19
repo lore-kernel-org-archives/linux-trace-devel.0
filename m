@@ -2,142 +2,86 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F6F5C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 19 Apr 2022 00:26:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44B12C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 19 Apr 2022 06:35:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240374AbiDSA2p (ORCPT
+        id S237454AbiDSGiB (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 18 Apr 2022 20:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57708 "EHLO
+        Tue, 19 Apr 2022 02:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbiDSA2l (ORCPT
+        with ESMTP id S1348921AbiDSGiA (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 18 Apr 2022 20:28:41 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D8DD422B33;
-        Mon, 18 Apr 2022 17:26:00 -0700 (PDT)
-Received: from kbox (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 5665F20C360F;
-        Mon, 18 Apr 2022 17:26:00 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5665F20C360F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1650327960;
-        bh=+d8zINXu1e0i7/hJ59NpTOShuy/1+3GCZlvbU1Rdgvo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HpBCjAQcruArdzyS36Depw/dKiQQIDqM8A4m10c2k9kvkXkVqWLlOBGF7L0zyd7m+
-         Ck0OEQaaW36v+cxfIm0jzDdkqUaQhoF+N7M1Wi5qmvQoGn6oG/hfHhySGqow7PtKk5
-         UG9XbMqFahkdEFdEhWQ2Babm/FSGQT8ijTgIE3X4=
-Date:   Mon, 18 Apr 2022 17:25:49 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Hagen Paul Pfeifer <hagen@jauu.net>
-Cc:     rostedt@goodmis.org, mhiramat@kernel.org,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH v8 00/12] user_events: Enable user processes to create
- and write to trace events
-Message-ID: <20220419002549.GA2055@kbox>
-References: <20211216173511.10390-1-beaub@linux.microsoft.com>
- <Yl3NcRRIJMrd0WZu@laniakea>
+        Tue, 19 Apr 2022 02:38:00 -0400
+X-Greylist: delayed 1345 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 18 Apr 2022 23:35:18 PDT
+Received: from gateway22.websitewelcome.com (gateway22.websitewelcome.com [192.185.46.224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06A821252
+        for <linux-trace-devel@vger.kernel.org>; Mon, 18 Apr 2022 23:35:18 -0700 (PDT)
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway22.websitewelcome.com (Postfix) with ESMTP id 57C1FC190
+        for <linux-trace-devel@vger.kernel.org>; Tue, 19 Apr 2022 01:10:29 -0500 (CDT)
+Received: from gator4132.hostgator.com ([192.185.4.144])
+        by cmsmtp with SMTP
+        id gh4HnQWETRnrrgh4Hn8Cdx; Tue, 19 Apr 2022 01:10:29 -0500
+X-Authority-Reason: nr=8
+Received: from host-95-246-22-34.retail.telecomitalia.it ([95.246.22.34]:44488 helo=[192.168.0.198])
+        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <bristot@kernel.org>)
+        id 1ngh4G-001KbM-Nt; Tue, 19 Apr 2022 01:10:28 -0500
+Message-ID: <552ada0e-62f9-1cca-0a81-5a67d30b3bbf@kernel.org>
+Date:   Tue, 19 Apr 2022 08:10:26 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yl3NcRRIJMrd0WZu@laniakea>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH] rtla: Documentation: fix email addresses
+Content-Language: en-US
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-doc@vger.kernel.org, linux-trace-devel@vger.kernel.org
+References: <20220418011450.11821-1-rdunlap@infradead.org>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <20220418011450.11821-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - kernel.org
+X-BWhitelist: no
+X-Source-IP: 95.246.22.34
+X-Source-L: No
+X-Exim-ID: 1ngh4G-001KbM-Nt
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: host-95-246-22-34.retail.telecomitalia.it ([192.168.0.198]) [95.246.22.34]:44488
+X-Source-Auth: kernel@bristot.me
+X-Email-Count: 1
+X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
+X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, Apr 18, 2022 at 10:43:29PM +0200, Hagen Paul Pfeifer wrote:
-> * Beau Belgrave | 2021-12-16 09:34:59 [-0800]:
-> 
-> >The typical scenario is on process start to mmap user_events_status. Processes
-> >then register the events they plan to use via the REG ioctl. The ioctl reads
-> >and updates the passed in user_reg struct. The status_index of the struct is
-> >used to know the byte in the status page to check for that event. The
-> >write_index of the struct is used to describe that event when writing out to
-> >the fd that was used for the ioctl call. The data must always include this
-> >index first when writing out data for an event. Data can be written either by
-> >write() or by writev().
-> 
-> Hey Beau, a little bit late to the party. A few questions from my side: What
-> are the exact weak points of USDT compared to User Events that stand in the
-> way of further extend USDT (in a non-compatible way, sure, just as an
-> different approach!)? The nice thing about USDT is that I can search for all
-> possible probes of the system via "find / | readelf | ". Since they are listed
-> in a dedicated ELF section (.note.stapsdt) - they are visible & transparent. I
-> can also map a hierarchy/structure in Executable/DSO via clever choice of
-> names. The big disadvantage of USDT is the lack of type information, but from
-> a registration, explicit point of view, they are nice.
-> 
-> Or in other words: why not extends the USDT approach? Why not
-> 
-> u32 val = 23;
-> const char *garbage = "tracestring";
-> 
-> DYNAMIC_TRACE_PROBE2("foo:bar", val, u32, garbage, cstring);
-> 
+On 4/18/22 03:14, Randy Dunlap wrote:
+> Correct lkml@vger to linux-kernel@vger.
+> Add linux-trace-devel since that is what is in the MAINTAINERS file.
 
-We actually tried some USDT extension methods early on, by extending the
-.note.stapsdt sections and seeing how far we could get our definitions
-into that form.
+Ouch, Daniel! :)
 
-There are a few problems when running in a highly container/CGROUP
-environment even if you can get our formats into stapsdt.
+> Fixes: d40d48e1f1f2 ("rtla: Add Documentation")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: linux-doc@vger.kernel.org
+> Cc: linux-trace-devel@vger.kernel.org
 
-It costs a lot to transverse every ELF file on the machine to find all
-the notes. When profiling or tracing many containers, each cgroup's
-mount space must be entered and then tracked. Since these files are in
-different locations, they each need a separate probe definition, since
-the definitions/patches are tied to the location of the binary to patch.
+Acked-by: Daniel Bristot de Oliveira
 
-As new cgroups come online, we would have to keep track of each new
-binary location and find probes that match their location. This becomes
-really hard to manage if for example we just want to always enable a
-specific event regardless of where it is on the filesystem. Events are
-limited to a max of 2^16 having many duplicate events in the system
-might start to approach that limit for high-core machines with many
-small cgroup isolations.
+Thanks, Randy!
 
-We run programs that are built on interpreted or JIT'd code (C#,
-javascript, etc.). These don't have great places to put a stap
-definition, since they aren't ELF files. I've seen approaches where
-temporary ELF files are generated, however, this costs a lot. Now we
-have even more temporarily files to go patch, meaning more events and
-more probe definitions (many of them in our case would be duplicates of
-the others).
-
-In production environments we have them locked down heavily with both
-SELINUX and IPE enabled. This prevents us from patching user mode code
-on the fly, the typical perf probe calls fail here.
-
-We typically want to know what events are available to us with very
-little overhead. Having programs register to a well known location
-already (trace_events, tracefs) I can easily see all the user events on
-the system by just doing ls on /sys/kernel/tracing/events/user_events. I
-can also see all their data formats and easily enable hist and filtering
-since these formats are known to the kernel.
-
-In our testing uprobes are much more costly to the running program than
-the write syscall.
-
-For managed code, as in java, code is moving around and are not always
-in static locations. The probe locations can change, etc. Calling from
-a managed location into a native one has performance implications as
-well when using a dynamic/temp elf stub approach.
-
-We are actively using user_events to solve these problems in our
-environments that have previously seen high overheads to achieve the
-same results. Many times we cannot afford to miss any events, so live
-scanning for new ELF files doesn't work for us as the programs and
-cgroups are short lived.
-
-> 
-> Sure, the argument names, here "val" and "garbage" should also be saved. I
-> also like the "just one additional header to the project to get things
-> running" (#include "sdt.h"). Sure, a DYNAMIC_TRACE_IS_ACTIVE("foo:bar") would
-> be great. But in fact we have never needed that in the past.
-> 
-> 
-> hgn
-
-Thanks,
--Beau
+-- Daniel
