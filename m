@@ -2,142 +2,103 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A0DBC4167E
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 20 Apr 2022 15:26:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1D95C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 20 Apr 2022 15:38:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354731AbiDTP3h (ORCPT
+        id S241421AbiDTPlW (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 20 Apr 2022 11:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60416 "EHLO
+        Wed, 20 Apr 2022 11:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354999AbiDTP3e (ORCPT
+        with ESMTP id S235881AbiDTPlW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 20 Apr 2022 11:29:34 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AF44579B
-        for <linux-trace-devel@vger.kernel.org>; Wed, 20 Apr 2022 08:26:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 5B458CE1E63
-        for <linux-trace-devel@vger.kernel.org>; Wed, 20 Apr 2022 15:26:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA117C385A1;
-        Wed, 20 Apr 2022 15:26:44 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.95)
-        (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1nhCE2-0003Rn-OB;
-        Wed, 20 Apr 2022 11:26:38 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v3 11/11] trace-cmd agent: Add documentation
-Date:   Wed, 20 Apr 2022 11:26:37 -0400
-Message-Id: <20220420152637.13105-12-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220420152637.13105-1-rostedt@goodmis.org>
-References: <20220420152637.13105-1-rostedt@goodmis.org>
+        Wed, 20 Apr 2022 11:41:22 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C634578A
+        for <linux-trace-devel@vger.kernel.org>; Wed, 20 Apr 2022 08:38:35 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id n33-20020a17090a5aa400b001d28f5ee3f9so2365944pji.4
+        for <linux-trace-devel@vger.kernel.org>; Wed, 20 Apr 2022 08:38:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=xgK7rKaxDgrcczOp86KARt5j5UUJJkgW1zAPFzgwEpc=;
+        b=fH8nsgrfc+xiuY5j3pZZze2rqA6m0wQuUcxxXs28TcmN248ROp2if/BxAyNRoRS8vG
+         1inqVwFBaQBZQuRRznDRH3wv5soIhXkgOIuB5Fa9Ntj6mpEJfZZ8OcF1y8UNv5fe2DqL
+         jt7pr7y7NY3O2yYJaOAUkOVRSQvoHg4Bhel77RaQY+gz8BcgxFwJovCBLhCu64eLRkY2
+         quDtsLMCzs0cps+VQ1wdKLbDMff7PwAIBY/4zKSoNXI9rk29xw5pijC0AylEgBYj8FOh
+         nG7gO6+SVaeERjRqMLjJMZxdWl6eeyHk3GCQbpUrTuJ379oXBwMDGyVsVLAia6pBUev+
+         DOKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=xgK7rKaxDgrcczOp86KARt5j5UUJJkgW1zAPFzgwEpc=;
+        b=rSid9fogH8qiAew5cqtex7XyKmbf8aZQxG3VmDV8fpWYKzbH0Q8IKGjm8N7sBjyfqQ
+         eg2aNixy3m783Ej0oDru0Jmj8N8wGJ/3YsEvsGX1oPtuc9O46Jpyc3Llv4aDUFODznCD
+         VAnw25+xHv2AdxFKpYE9xUdpqB9ghvckTrzu86ly1gSrFGN/drDVw/zT+IX8ZzyTpArt
+         9InZ/Eg9klM4uwXumPg9sWf73ZEU2xjgrZMbFl/ZFINevNc31NdETA34AHcgslVSokQ7
+         J8BJ77mSoFLYXmwq57FKXMJX6Si/Wv08Dw1uYEIW0ZTwPQkPlusTyVqfVdOUrSvgnIZl
+         RH0Q==
+X-Gm-Message-State: AOAM533v9lpYHkKXaUJgqB5Z8RjrmMKEEzDfejfQ3JMQHxUAr6KX5Mwn
+        1gQkPgbpNEeqzWgL5p43978=
+X-Google-Smtp-Source: ABdhPJzGONsV6yKy7EraVol07AMx3yEQq2+P+AwNreWxN27kzm7fU8QWKcLg8Zb0uVxXDPNV5JKZxg==
+X-Received: by 2002:a17:902:d70a:b0:158:7f07:e7c9 with SMTP id w10-20020a170902d70a00b001587f07e7c9mr21032202ply.109.1650469115358;
+        Wed, 20 Apr 2022 08:38:35 -0700 (PDT)
+Received: from localhost.localdomain ([14.100.48.186])
+        by smtp.gmail.com with ESMTPSA id ay13-20020a056a00300d00b0050a5af3fbc7sm15296534pfb.220.2022.04.20.08.38.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Apr 2022 08:38:35 -0700 (PDT)
+From:   Solomon Tan <wjsota@gmail.com>
+To:     y.karadz@gmail.com
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH 1/2] kernel-shark: Make FreeSans a compulsory component
+Date:   Wed, 20 Apr 2022 23:38:26 +0800
+Message-Id: <20220420153827.637413-1-wjsota@gmail.com>
+X-Mailer: git-send-email 2.36.0
+In-Reply-To: <YmAkAE+5wy2mLncD@ArchDesktop>
+References: <YmAkAE+5wy2mLncD@ArchDesktop>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+This patch is proposed for two reasons.
 
-Add a man page for trace-cmd agent, and also update the usage to include
-the new -N option.
+Firstly, with reference to
+https://lore.kernel.org/linux-trace-devel/Yl9WBztqKGD0PpmJ@ArchDesktop/
+when the CMake does not detect FreeSans, it should cease generating the
+Makefile since kernelshark requires FreeSans to output its graph
+properly.
 
-Link: https://lore.kernel.org/linux-trace-devel/20220417211315.1049221-3-rostedt@goodmis.org
+Secondly, when the make instructions on the README are followed, even
+when FreeSans is not detected, `make` continues to compile and `make
+install` (or `install_gui`) would install without indicating an error.
+This gives the impression of a successful install, but `kernelshark`
+will be missing.
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Therefore, making CMake quit with error when FreeSans is not installed
+solves these two issues.
+
+Signed-off-by: Solomon Tan <wjsota@gmail.com>
 ---
- Documentation/trace-cmd/trace-cmd-agent.1.txt | 62 +++++++++++++++++++
- tracecmd/trace-usage.c                        |  3 +
- 2 files changed, 65 insertions(+)
- create mode 100644 Documentation/trace-cmd/trace-cmd-agent.1.txt
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/trace-cmd/trace-cmd-agent.1.txt b/Documentation/trace-cmd/trace-cmd-agent.1.txt
-new file mode 100644
-index 000000000000..f247d41dcdb8
---- /dev/null
-+++ b/Documentation/trace-cmd/trace-cmd-agent.1.txt
-@@ -0,0 +1,62 @@
-+TRACE-CMD-AGENT(1)
-+==================
-+
-+NAME
-+----
-+trace-cmd-agent - Run as an agent on a machine (to be controlled by another machine)
-+
-+SYNOPSIS
-+--------
-+*trace-cmd agent* ['OPTIONS']
-+
-+DESCRIPTION
-+-----------
-+The trace-cmd(1) agent listens over a vsocket (for virtual machines) or a TCP port
-+for connections to control the tracing of the machine. The agent will then start
-+tracing on the local machine and pass the data to the controlling connection.
-+
-+OPTIONS
-+-------
-+*-N* 'client'::
-+    Listen over TCP instead of a vsocket. Must pass in a client host name or IP address
-+    to allow connection to. It will only connect to the specified client. Note, any process
-+    on that client can control the agent.
-+
-+    *This is a very insecure setting. Only use on a trusted network*
-+    *Only use if the client machine is totally trusted*
-+
-+*-p* 'port'::
-+    This option will specify the port to listen to.
-+
-+*-D*::
-+    This options causes trace-cmd agent to go into a daemon mode and run in
-+    the background.
-+
-+*--verbose*[='level']::
-+     Set the log level. Supported log levels are "none", "critical", "error", "warning",
-+     "info", "debug", "all" or their identifiers "0", "1", "2", "3", "4", "5", "6". Setting the log
-+     level to specific value enables all logs from that and all previous levels.
-+     The level will default to "info" if one is not specified.
-+
-+     Example: enable all critical, error and warning logs
-+
-+      trace-cmd listen --verbose=warning
-+
-+SEE ALSO
-+--------
-+trace-cmd(1), trace-cmd-record(1), trace-cmd-report(1), trace-cmd-start(1),
-+trace-cmd-stop(1), trace-cmd-extract(1), trace-cmd-reset(1),
-+trace-cmd-split(1), trace-cmd-list(1)
-+
-+AUTHOR
-+------
-+Written by Steven Rostedt, <rostedt@goodmis.org>
-+
-+RESOURCES
-+---------
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
-+
-+COPYING
-+-------
-+Copyright \(C) 2010 Red Hat, Inc. Free use of this software is granted under
-+the terms of the GNU Public License (GPL).
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index 88eac10a4e75..2cfa64f5aa0c 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -330,6 +330,9 @@ static struct usage_help usage_help[] = {
- 		"listen on a vsocket for trace clients",
- 		" %s agent -p port[-D]\n"
- 		"          Creates a vsocket to listen for clients.\n"
-+		"          -N Connect to IP via TCP instead of vsockets\n"
-+		"             *** Insecure setting, only use on a trusted network ***\n"
-+		"             ***   Only use if the client is totally trusted.    ***\n"
- 		"          -p port number to listen on.\n"
- 		"          -D run in daemon mode.\n"
- 		"          --verbose 'level' Set the desired log level\n"
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index e6a76d8..5473bfa 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -69,7 +69,7 @@ if (TT_FONT_FILE)
+ 
+ else (TT_FONT_FILE)
+ 
+-  message(WARNING "\nCould not find font ${KS_FONT}!\n")
++  message(FATAL_ERROR "\nCould not find font ${KS_FONT}!\n")
+ 
+ endif (TT_FONT_FILE)
+ 
 -- 
-2.35.1
+2.36.0
 
