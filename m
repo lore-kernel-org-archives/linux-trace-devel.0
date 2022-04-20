@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F6E5C433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B43DEC433EF
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 20 Apr 2022 15:26:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380237AbiDTP3a (ORCPT
+        id S1380260AbiDTP3c (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 20 Apr 2022 11:29:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60330 "EHLO
+        Wed, 20 Apr 2022 11:29:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380069AbiDTP31 (ORCPT
+        with ESMTP id S1380212AbiDTP31 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 20 Apr 2022 11:29:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB4645AC7
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F1E457BE
         for <linux-trace-devel@vger.kernel.org>; Wed, 20 Apr 2022 08:26:40 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C8F7618DE
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 51BCE616A5
         for <linux-trace-devel@vger.kernel.org>; Wed, 20 Apr 2022 15:26:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2E1EC385AB;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3CFFC385A0;
         Wed, 20 Apr 2022 15:26:39 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1nhCE2-0003Rb-Lh;
+        id 1nhCE2-0003RV-JZ;
         Wed, 20 Apr 2022 11:26:38 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v3 07/11] trace-cmd: Add print helpers to show connections
-Date:   Wed, 20 Apr 2022 11:26:33 -0400
-Message-Id: <20220420152637.13105-8-rostedt@goodmis.org>
+Subject: [PATCH v3 05/11] trace-cmd library: Create tracecmd_debug() for debug printing
+Date:   Wed, 20 Apr 2022 11:26:31 -0400
+Message-Id: <20220420152637.13105-6-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220420152637.13105-1-rostedt@goodmis.org>
 References: <20220420152637.13105-1-rostedt@goodmis.org>
@@ -44,147 +44,79 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add helper functions trace_net_print_connection() and
-trace_vsock_print_connection() to print the host/port or cid/port that
-has connected.
+Move the dprint() of trace-msg.c into trace-utils.c and export it such
+that other applications could use it as well. It is now renamed to
+tracecmd_debug().
 
-Link: https://lore.kernel.org/linux-trace-devel/20220417184538.1044417-8-rostedt@goodmis.org
+Link: https://lore.kernel.org/linux-trace-devel/20220417184538.1044417-6-rostedt@goodmis.org
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- tracecmd/include/trace-local.h |  6 ++++++
- tracecmd/trace-agent.c         | 14 ++++++++++++++
- tracecmd/trace-listen.c        | 22 ++++++++++++++++++++++
- tracecmd/trace-vsock.c         | 20 ++++++++++++++++++++
- 4 files changed, 62 insertions(+)
+ lib/trace-cmd/include/private/trace-cmd-private.h |  3 +++
+ lib/trace-cmd/trace-msg.c                         | 12 +-----------
+ lib/trace-cmd/trace-util.c                        | 12 ++++++++++++
+ 3 files changed, 16 insertions(+), 11 deletions(-)
 
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index 77d531d5056a..8c59595795a4 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -311,6 +311,7 @@ extern struct buffer_instance *first_instance;
+diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
+index 6e7b346cda07..766e0a762c2b 100644
+--- a/lib/trace-cmd/include/private/trace-cmd-private.h
++++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+@@ -43,6 +43,9 @@ enum {
+ 	RINGBUF_TYPE_TIME_STAMP		= 31,
+ };
  
- int trace_net_make(int port, enum port_type type);
- int trace_net_search(int start_port, int *sfd, enum port_type type);
-+int trace_net_print_connection(int fd);
- 
- struct buffer_instance *allocate_instance(const char *name);
- void add_instance(struct buffer_instance *instance, int cpu_count);
-@@ -366,6 +367,7 @@ int get_vsocket_params(int fd, unsigned int *lcid, unsigned int *rcid);
- int trace_vsock_get_port(int sd, unsigned int *port);
- bool trace_vsock_can_splice_read(void);
- int trace_vsock_local_cid(void);
-+int trace_vsock_print_connection(int fd);
- #else
- static inline int trace_vsock_open(unsigned int cid, unsigned int port)
- {
-@@ -403,6 +405,10 @@ static inline int trace_vsock_local_cid(void)
- {
- 	return -ENOTSUP;
- }
-+static inline int trace_vsock_print_connection(int fd)
-+{
-+	return -1;
-+}
- #endif /* VSOCK */
- 
- /* No longer in event-utils.h */
-diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
-index 819ac016612f..59cecae770a6 100644
---- a/tracecmd/trace-agent.c
-+++ b/tracecmd/trace-agent.c
-@@ -109,6 +109,18 @@ static char *get_clock(int argc, char **argv)
- 	return NULL;
- }
- 
-+static void trace_print_connection(int fd, bool network)
-+{
-+	int ret;
++/* Can be overridden */
++void tracecmd_debug(const char *fmt, ...);
 +
-+	if (network)
-+		ret = trace_net_print_connection(fd);
-+	else
-+		ret = trace_vsock_print_connection(fd);
-+	if (ret < 0)
-+		tracecmd_debug("Could not print connection fd:%d\n", fd);
-+}
-+
- static void agent_handle(int sd, int nr_cpus, int page_size, bool network)
- {
- 	struct tracecmd_tsync_protos *tsync_protos = NULL;
-@@ -273,6 +285,8 @@ static void agent_serve(unsigned int port, bool do_daemon, bool network)
- 				continue;
- 			die("accept");
- 		}
-+		if (tracecmd_get_debug())
-+			trace_print_connection(cd, network);
+ void tracecmd_record_ref(struct tep_record *record);
  
- 		if (handler_pid)
- 			goto busy;
-diff --git a/tracecmd/trace-listen.c b/tracecmd/trace-listen.c
-index 3b446acea972..b7be761d032e 100644
---- a/tracecmd/trace-listen.c
-+++ b/tracecmd/trace-listen.c
-@@ -756,6 +756,28 @@ static int do_fork(int cfd)
- 	return 0;
+ void tracecmd_set_debug(bool set_debug);
+diff --git a/lib/trace-cmd/trace-msg.c b/lib/trace-cmd/trace-msg.c
+index 6cf74f9b1c99..39465ade8ab3 100644
+--- a/lib/trace-cmd/trace-msg.c
++++ b/lib/trace-cmd/trace-msg.c
+@@ -31,17 +31,7 @@
+ typedef __u32 u32;
+ typedef __be32 be32;
+ 
+-static inline void dprint(const char *fmt, ...)
+-{
+-	va_list ap;
+-
+-	if (!tracecmd_get_debug())
+-		return;
+-
+-	va_start(ap, fmt);
+-	vprintf(fmt, ap);
+-	va_end(ap);
+-}
++#define dprint(fmt, ...)	tracecmd_debug(fmt, ##__VA_ARGS__)
+ 
+ /* Two (4k) pages is the max transfer for now */
+ #define MSG_MAX_LEN			8192
+diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
+index b5a0a1a601d4..9564c81a5c99 100644
+--- a/lib/trace-cmd/trace-util.c
++++ b/lib/trace-cmd/trace-util.c
+@@ -415,6 +415,18 @@ void __weak tracecmd_critical(const char *fmt, ...)
+ 	}
  }
  
-+int trace_net_print_connection(int fd)
++void __weak tracecmd_debug(const char *fmt, ...)
 +{
-+	char host[NI_MAXHOST], service[NI_MAXSERV];
-+	struct sockaddr_storage net_addr;
-+	socklen_t addr_len;
++	va_list ap;
 +
-+	addr_len = sizeof(net_addr);
-+	if (getpeername(fd, (struct sockaddr *)&net_addr, &addr_len))
-+		return -1;
++	if (!tracecmd_get_debug())
++		return;
 +
-+	if (getnameinfo((struct sockaddr *)&net_addr, addr_len,
-+			host, NI_MAXHOST,
-+			service, NI_MAXSERV, NI_NUMERICSERV))
-+		return -1;
-+
-+	if (tracecmd_get_debug())
-+		tracecmd_debug("Connected to %s:%s fd:%d\n", host, service, fd);
-+	else
-+		tracecmd_plog("Connected to %s:%s\n", host, service);
-+	return 0;
++	va_start(ap, fmt);
++	vprintf(fmt, ap);
++	va_end(ap);
 +}
 +
- static int do_connection(int cfd, struct sockaddr *addr,
- 			  socklen_t addr_len)
+ #define LOG_BUF_SIZE 1024
+ static void __plog(const char *prefix, const char *fmt, va_list ap, FILE *fp)
  {
-diff --git a/tracecmd/trace-vsock.c b/tracecmd/trace-vsock.c
-index d18ecb45004e..39294e7a2a3c 100644
---- a/tracecmd/trace-vsock.c
-+++ b/tracecmd/trace-vsock.c
-@@ -94,6 +94,26 @@ int get_vsocket_params(int fd, unsigned int *lcid, unsigned int *rcid)
- 	return 0;
- }
- 
-+int trace_vsock_print_connection(int fd)
-+{
-+	struct sockaddr_vm vm_addr;
-+	socklen_t addr_len;
-+	int cid, port;
-+
-+	addr_len = sizeof(vm_addr);
-+	if (getpeername(fd, (struct sockaddr *)&vm_addr, &addr_len))
-+		return -1;
-+	if (vm_addr.svm_family != AF_VSOCK)
-+		return -1;
-+	cid = vm_addr.svm_cid;
-+	port = vm_addr.svm_port;
-+	if (tracecmd_get_debug())
-+		tracecmd_debug("Connected to @%u:%u fd:%d\n", cid, port, fd);
-+	else
-+		tracecmd_plog("Connected to @%u:%u\n", cid, port);
-+	return 0;
-+}
-+
- static int try_splice_read_vsock(void)
- {
- 	int ret, sd, brass[2];
 -- 
 2.35.1
 
