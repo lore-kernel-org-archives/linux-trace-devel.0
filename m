@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A9E0C4167B
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 20 Apr 2022 15:26:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A0DBC4167E
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 20 Apr 2022 15:26:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380069AbiDTP3g (ORCPT
+        id S1354731AbiDTP3h (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 20 Apr 2022 11:29:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60370 "EHLO
+        Wed, 20 Apr 2022 11:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380234AbiDTP33 (ORCPT
+        with ESMTP id S1354999AbiDTP3e (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 20 Apr 2022 11:29:29 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9897345AE8
-        for <linux-trace-devel@vger.kernel.org>; Wed, 20 Apr 2022 08:26:42 -0700 (PDT)
+        Wed, 20 Apr 2022 11:29:34 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AF44579B
+        for <linux-trace-devel@vger.kernel.org>; Wed, 20 Apr 2022 08:26:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4695BB81FE6
-        for <linux-trace-devel@vger.kernel.org>; Wed, 20 Apr 2022 15:26:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF32FC385AE;
-        Wed, 20 Apr 2022 15:26:39 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 5B458CE1E63
+        for <linux-trace-devel@vger.kernel.org>; Wed, 20 Apr 2022 15:26:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA117C385A1;
+        Wed, 20 Apr 2022 15:26:44 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1nhCE2-0003RY-KE;
+        id 1nhCE2-0003Rn-OB;
         Wed, 20 Apr 2022 11:26:38 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v3 06/11] trace-cmd: Add debug prints for network connections
-Date:   Wed, 20 Apr 2022 11:26:32 -0400
-Message-Id: <20220420152637.13105-7-rostedt@goodmis.org>
+Subject: [PATCH v3 11/11] trace-cmd agent: Add documentation
+Date:   Wed, 20 Apr 2022 11:26:37 -0400
+Message-Id: <20220420152637.13105-12-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220420152637.13105-1-rostedt@goodmis.org>
 References: <20220420152637.13105-1-rostedt@goodmis.org>
@@ -44,118 +44,100 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-To help debug the network agent and listener, add some debug prints that
-are enabled when --debug option is used.
+Add a man page for trace-cmd agent, and also update the usage to include
+the new -N option.
 
-Link: https://lore.kernel.org/linux-trace-devel/20220417184538.1044417-7-rostedt@goodmis.org
+Link: https://lore.kernel.org/linux-trace-devel/20220417211315.1049221-3-rostedt@goodmis.org
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- lib/trace-cmd/trace-timesync.c | 2 ++
- tracecmd/trace-agent.c         | 3 +++
- tracecmd/trace-listen.c        | 4 ++++
- tracecmd/trace-record.c        | 9 +++++++++
- 4 files changed, 18 insertions(+)
+ Documentation/trace-cmd/trace-cmd-agent.1.txt | 62 +++++++++++++++++++
+ tracecmd/trace-usage.c                        |  3 +
+ 2 files changed, 65 insertions(+)
+ create mode 100644 Documentation/trace-cmd/trace-cmd-agent.1.txt
 
-diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
-index 14cf20c870cb..cc44af38e8ad 100644
---- a/lib/trace-cmd/trace-timesync.c
-+++ b/lib/trace-cmd/trace-timesync.c
-@@ -925,7 +925,9 @@ static void *tsync_agent_thread(void *data)
- 	int sd;
- 
- 	while (true) {
-+		tracecmd_debug("Listening on fd:%d\n", tsync->msg_handle->fd);
- 		sd = accept(tsync->msg_handle->fd, NULL, NULL);
-+		tracecmd_debug("Accepted fd:%d\n", sd);
- 		if (sd < 0) {
- 			if (errno == EINTR)
- 				continue;
-diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
-index cd201ad948ad..819ac016612f 100644
---- a/tracecmd/trace-agent.c
-+++ b/tracecmd/trace-agent.c
-@@ -22,6 +22,8 @@
- #include "trace-local.h"
- #include "trace-msg.h"
- 
-+#define dprint(fmt, ...)	tracecmd_debug(fmt, ##__VA_ARGS__)
+diff --git a/Documentation/trace-cmd/trace-cmd-agent.1.txt b/Documentation/trace-cmd/trace-cmd-agent.1.txt
+new file mode 100644
+index 000000000000..f247d41dcdb8
+--- /dev/null
++++ b/Documentation/trace-cmd/trace-cmd-agent.1.txt
+@@ -0,0 +1,62 @@
++TRACE-CMD-AGENT(1)
++==================
 +
- static void make_vsocks(int nr, int *fds, unsigned int *ports)
- {
- 	unsigned int port;
-@@ -55,6 +57,7 @@ static void make_net(int nr, int *fds, unsigned int *ports)
- 			die("Failed to listen on port %d\n", port);
- 		fds[i] = fd;
- 		ports[i] = port;
-+		dprint("CPU[%d]: fd:%d port:%d\n", i, fd, port);
- 		start_port = port + 1;
- 	}
- }
-diff --git a/tracecmd/trace-listen.c b/tracecmd/trace-listen.c
-index 8476fa51dadd..3b446acea972 100644
---- a/tracecmd/trace-listen.c
-+++ b/tracecmd/trace-listen.c
-@@ -26,6 +26,8 @@
- #include "trace-local.h"
- #include "trace-msg.h"
- 
-+#define dprint(fmt, ...)	tracecmd_debug(fmt, ##__VA_ARGS__)
++NAME
++----
++trace-cmd-agent - Run as an agent on a machine (to be controlled by another machine)
 +
- #define MAX_OPTION_SIZE 4096
- 
- #define _VAR_DIR_Q(dir)		#dir
-@@ -279,6 +281,8 @@ int trace_net_make(int port, enum port_type type)
- 	if (rp == NULL)
- 		return -1;
- 
-+	dprint("Create listen port: %d fd:%d\n", port, sd);
++SYNOPSIS
++--------
++*trace-cmd agent* ['OPTIONS']
 +
- 	return sd;
- }
- 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index dfcf3d494053..9c930920c89e 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -56,6 +56,8 @@
- #define FUNC_STACK_TRACE "func_stack_trace"
- #define TSC_CLOCK	"x86-tsc"
- 
-+#define dprint(fmt, ...)	tracecmd_debug(fmt, ##__VA_ARGS__)
++DESCRIPTION
++-----------
++The trace-cmd(1) agent listens over a vsocket (for virtual machines) or a TCP port
++for connections to control the tracing of the machine. The agent will then start
++tracing on the local machine and pass the data to the controlling connection.
 +
- enum trace_type {
- 	TRACE_TYPE_RECORD	= 1,
- 	TRACE_TYPE_START	= (1 << 1),
-@@ -3139,6 +3141,9 @@ static struct addrinfo *do_getaddrinfo(const char *host, unsigned int port,
- 		return NULL;
- 	}
- 
-+	dprint("Attached port %s: %d to results: %p\n",
-+	       type == USE_TCP ? "TCP" : "UDP", port, results);
++OPTIONS
++-------
++*-N* 'client'::
++    Listen over TCP instead of a vsocket. Must pass in a client host name or IP address
++    to allow connection to. It will only connect to the specified client. Note, any process
++    on that client can control the agent.
 +
- 	return results;
- }
- 
-@@ -3160,6 +3165,8 @@ static int connect_addr(struct addrinfo *results)
- 	if (rp == NULL)
- 		return -1;
- 
-+	dprint("connect results: %p with fd: %d\n", results, sfd);
++    *This is a very insecure setting. Only use on a trusted network*
++    *Only use if the client machine is totally trusted*
 +
- 	return sfd;
- }
- 
-@@ -3193,7 +3200,9 @@ static int do_accept(int sd)
- 	int cd;
- 
- 	for (;;) {
-+		dprint("Wait on accept: %d\n", sd);
- 		cd = accept(sd, NULL, NULL);
-+		dprint("accepted: %d\n", cd);
- 		if (cd < 0) {
- 			if (errno == EINTR)
- 				continue;
++*-p* 'port'::
++    This option will specify the port to listen to.
++
++*-D*::
++    This options causes trace-cmd agent to go into a daemon mode and run in
++    the background.
++
++*--verbose*[='level']::
++     Set the log level. Supported log levels are "none", "critical", "error", "warning",
++     "info", "debug", "all" or their identifiers "0", "1", "2", "3", "4", "5", "6". Setting the log
++     level to specific value enables all logs from that and all previous levels.
++     The level will default to "info" if one is not specified.
++
++     Example: enable all critical, error and warning logs
++
++      trace-cmd listen --verbose=warning
++
++SEE ALSO
++--------
++trace-cmd(1), trace-cmd-record(1), trace-cmd-report(1), trace-cmd-start(1),
++trace-cmd-stop(1), trace-cmd-extract(1), trace-cmd-reset(1),
++trace-cmd-split(1), trace-cmd-list(1)
++
++AUTHOR
++------
++Written by Steven Rostedt, <rostedt@goodmis.org>
++
++RESOURCES
++---------
++https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
++
++COPYING
++-------
++Copyright \(C) 2010 Red Hat, Inc. Free use of this software is granted under
++the terms of the GNU Public License (GPL).
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index 88eac10a4e75..2cfa64f5aa0c 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -330,6 +330,9 @@ static struct usage_help usage_help[] = {
+ 		"listen on a vsocket for trace clients",
+ 		" %s agent -p port[-D]\n"
+ 		"          Creates a vsocket to listen for clients.\n"
++		"          -N Connect to IP via TCP instead of vsockets\n"
++		"             *** Insecure setting, only use on a trusted network ***\n"
++		"             ***   Only use if the client is totally trusted.    ***\n"
+ 		"          -p port number to listen on.\n"
+ 		"          -D run in daemon mode.\n"
+ 		"          --verbose 'level' Set the desired log level\n"
 -- 
 2.35.1
 
