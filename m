@@ -2,82 +2,88 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 228CCC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Apr 2022 10:01:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BC06C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Apr 2022 11:43:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446378AbiDVKEi (ORCPT
+        id S1447130AbiDVLqs (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 22 Apr 2022 06:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43464 "EHLO
+        Fri, 22 Apr 2022 07:46:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1446372AbiDVKEe (ORCPT
+        with ESMTP id S1447127AbiDVLqq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 22 Apr 2022 06:04:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3CDB53B4E;
-        Fri, 22 Apr 2022 03:01:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7E83F61E24;
-        Fri, 22 Apr 2022 10:01:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7658AC385AB;
-        Fri, 22 Apr 2022 10:01:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650621700;
-        bh=cMsSW5/kTvhMw/MKLChTukDgmLgNss7KgrlFXjRpWug=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jT+sLeV7aPn2i/iEb23mZ5FK122o8oWRYzwyyyAKYYM9tIVytcwEvCfs9w78woKys
-         rNdXZ4whj9wUl50bcD6xWDTAKe6jU9otuM3ulTl/e/EYsvDJ92sD4AJvAoJHk/RkYZ
-         ZCz3G/hTvDo+VKNNDD5714LMaF/Rpoq7KEHkf1SCj6bn1F/cIhPpIIeyS2gVF6/S5X
-         4GJtGvaVUG1/4QmKUiGNVk4urfRqibhooH/9ZzTf2Yw2mKhaEgMoj7PmDFlMNO7p3y
-         HfCdkWg6YnPIGYglfnrbpyWTFFKEzdY6X8V8XGvaAQeEaHaLxQkUNDU5twrWxRmHeR
-         5fHGZtnuLWZIg==
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        John Kacur <jkacur@redhat.com>, Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH 2/2] rtla: Fix __set_sched_attr error message
-Date:   Fri, 22 Apr 2022 12:01:32 +0200
-Message-Id: <eeded730413e7feaa13f946924bcf2cbf7dd9561.1650617571.git.bristot@kernel.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <52161d343abeda6d039d2f0734904a1383a4c62e.1650617571.git.bristot@kernel.org>
-References: <52161d343abeda6d039d2f0734904a1383a4c62e.1650617571.git.bristot@kernel.org>
+        Fri, 22 Apr 2022 07:46:46 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12175546B5
+        for <linux-trace-devel@vger.kernel.org>; Fri, 22 Apr 2022 04:43:54 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id u15so6892694ple.4
+        for <linux-trace-devel@vger.kernel.org>; Fri, 22 Apr 2022 04:43:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DkXfE0V0XY6tIACSrb9SAknPWWFQnIed3Gh1/Wlfpxo=;
+        b=KVxIWioqFMkxXKj/aOSE4h+6hKkJRj1NTkFHBsUZrHtKkC1ojdS1RRxX5ggq0jJqe6
+         XhCZWdZsS13keNNFmgkzCoTbVTe+o4MjKqzXAwu1tFejjgUG0SBPSd84eHr3j/+D401v
+         0cwzItbxkXH5fBobHLY3rkzy0ymNXKB5mWikZkTf+ZFxbWHSKrzQp8MAjjbcl6DhnPGD
+         imxHsG6XqQqOdXWHKWXZH7HdeERSpKVRQr12pQrKhyxCqNZ0K8w3P8h1ezD5IFMhLra6
+         qxIh10+BMtWgxK4AYXVeatG4hr4BP8r65TG56PO/XUJ7sBtMrpo0WR2fAm2ORPltmotz
+         cK5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DkXfE0V0XY6tIACSrb9SAknPWWFQnIed3Gh1/Wlfpxo=;
+        b=q8dcSKNpZULwU10c4VZC+1c1/mmHWH4Hc16WjJUT6C01j0YMvDgXrnGkKsc34ZOYQi
+         iw+6o8DK5WNt1S5jkMF9JlvPOg/7vrqXD+2pLkZUm9P+RXBhlPTYCaxbm+Gn3idDyNik
+         fBEShn3XsIXbI7O8PEvSry6H4NQGrNvJ8UkWBvjMtYVr85inDJkW0oa0JLEfkceCIfEG
+         fw2wSPzviltaPh577NGGtX3zkLdeb0SgZ3b4wvcrm+19HQ/rIFwvblTGffvilacomv6L
+         9UzqffBoddofHV2qQ31O99TSo82VC4H4Pbw/tew1DsVW/bZTrBagg/FRoh4FLxvBhZXd
+         w7bA==
+X-Gm-Message-State: AOAM533VVJDcEt6tIs3JZAcx+teyE/w98y/Ifuhk29HNOyAtVwmxUjkY
+        MfG/S24q2rMRNyTQc9SkGT8=
+X-Google-Smtp-Source: ABdhPJxCdClDG4/hxGY7oDBxi2+EZxc0yAtZ/ld7gIvxVd3NpjqHtKav32vVsU68gi6+KzSJXLE8sA==
+X-Received: by 2002:a17:90b:3ecc:b0:1d2:c238:d92e with SMTP id rm12-20020a17090b3ecc00b001d2c238d92emr4924433pjb.79.1650627833460;
+        Fri, 22 Apr 2022 04:43:53 -0700 (PDT)
+Received: from localhost.localdomain ([14.100.36.163])
+        by smtp.gmail.com with ESMTPSA id p4-20020a637404000000b00375948e63d6sm1947470pgc.91.2022.04.22.04.43.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Apr 2022 04:43:53 -0700 (PDT)
+From:   Solomon Tan <wjsota@gmail.com>
+To:     y.karadz@gmail.com
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH] kernel-shark: Modify FreeSans warning msg for GUI
+Date:   Fri, 22 Apr 2022 19:43:00 +0800
+Message-Id: <20220422114259.4162-1-wjsota@gmail.com>
+X-Mailer: git-send-email 2.36.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-rtla's function __set_sched_attr() was borrowed from stalld, but I
-forgot to update the error message to something meaningful for rtla.
+Make the warning point out that the FreeSans font is required for the
+kernelshark GUI. This is to alert the user that the GUI will not be made
+when cmake does not detect FreeSans.
 
- Update the error message from:
-        boost_with_deadline failed to boost pid PID: STRERROR
- to a proper one:
-        Failed to set sched attributes to the pid PID: STRERROR
-
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Fixes: b1696371d865 ("rtla: Helper functions for rtla")
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+Signed-off-by: Solomon Tan <wjsota@gmail.com>
 ---
- tools/tracing/rtla/src/utils.c | 2 +-
+ CMakeLists.txt | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
-index baf9003d5d41..60dd48315315 100644
---- a/tools/tracing/rtla/src/utils.c
-+++ b/tools/tracing/rtla/src/utils.c
-@@ -255,7 +255,7 @@ int __set_sched_attr(int pid, struct sched_attr *attr)
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 9dd160e..390c7f5 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -69,7 +69,7 @@ if (TT_FONT_FILE)
  
- 	retval = sched_setattr(pid, attr, flags);
- 	if (retval < 0) {
--		err_msg("boost_with_deadline failed to boost pid %d: %s\n",
-+		err_msg("Failed to set sched attributes to the pid %d: %s\n",
- 			pid, strerror(errno));
- 		return 1;
- 	}
+ else (TT_FONT_FILE)
+ 
+-  message(WARNING "\nCould not find font ${KS_FONT}!\n")
++  message(WARNING "\nCould not find font ${KS_FONT}! Kernelshark GUI requires font ${KS_FONT}!\n")
+ 
+ endif (TT_FONT_FILE)
+ 
 -- 
-2.35.1
+2.36.0
 
