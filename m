@@ -2,101 +2,240 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EE30C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 21 Apr 2022 12:16:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15700C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Apr 2022 10:01:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238219AbiDUMTm (ORCPT
+        id S1446367AbiDVKEd (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 21 Apr 2022 08:19:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58936 "EHLO
+        Fri, 22 Apr 2022 06:04:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231570AbiDUMTl (ORCPT
+        with ESMTP id S1446354AbiDVKEc (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 21 Apr 2022 08:19:41 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7432D1DC
-        for <linux-trace-devel@vger.kernel.org>; Thu, 21 Apr 2022 05:16:51 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id c190-20020a1c35c7000000b0038e37907b5bso5780724wma.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 21 Apr 2022 05:16:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=S2Bt4ASIqR69YMKG1OKQVBQVJHONm9KQ9R/P70/0hpg=;
-        b=B4o6t7qPuvYzliohUUfN4nJhBgnhBftV6gEnjpaWAczWH0MquuF76tCF1biSVVojFM
-         +1MZuCQ9570IWsuFAt8eru7F0Y5KdUJ1IBmjQhCIpkLSV7UqNzQ89v+YWKl9KfBNusxJ
-         rW4QXmf/8xXI6wNVb16lAgpAtB7p9cILgkdl/t3Xc4S4YOwjjahxJZB95uG3bT0leAbc
-         X5aQ7nI78CkZL2dikRNoUXaUr1eYKnc5EB59jiKX7YkeSfWXrdAvJvOIpC7LtBq0vdWQ
-         RHyvTlaa8iq4MKuFHbuMsGoTiHUsqkjgxIgUvOhT2pz9oGc2g45Ubb4O2CVzygwig9nK
-         jI/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=S2Bt4ASIqR69YMKG1OKQVBQVJHONm9KQ9R/P70/0hpg=;
-        b=1vrXLXAeb4+aQiXiEeuoJcaWwVJjgFizzvwhY4eDsLOJrSd2rCuF/5u1SZtZQ9pJ8q
-         HmQDkqB+uGd7v1SZcR73Itkh0MJAjw3BQwoM9pFLsmD4FlDNlYOoXWKhkOq5/Dpt4oU+
-         saSAcWt1fXj5jivtjmHP7UlND7f4SnH2FLBo8vPxHEeh+kr5ZZs/uP0Wc292qmSdxIUE
-         RDGUzEkf5lIbRmTIF4GP6urOriiFep08zPIxvvLI/Cm6HYo3ynFYVctS7yTCBTuBOSMO
-         jrT50tFlEEfXSvkGJxC+7hHFuGc5KIArM+H3PEm0DXuxPe654HtawgoQEReUhtlOO4mh
-         NuZQ==
-X-Gm-Message-State: AOAM531mGSJb9XiiSaE/+Kcd1eGufPKf8O8i9XvTwegeZ0TYAK3QHhhl
-        Q6IEqQ4bUOOs9JSL5SwdRP4=
-X-Google-Smtp-Source: ABdhPJxLATA7oieodMKF9/X2pdUOsKjDxgQO/EQ7YksPJmlHEhHgaaLaDhECyQctXXt0FyGViTZokg==
-X-Received: by 2002:a05:600c:1550:b0:392:8de8:9df3 with SMTP id f16-20020a05600c155000b003928de89df3mr8693798wmg.9.1650543410149;
-        Thu, 21 Apr 2022 05:16:50 -0700 (PDT)
-Received: from [10.107.106.54] (78-154-13-168.ip.btc-net.bg. [78.154.13.168])
-        by smtp.gmail.com with ESMTPSA id 7-20020a056000156700b0020aa549d399sm2767594wrz.11.2022.04.21.05.16.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Apr 2022 05:16:49 -0700 (PDT)
-Message-ID: <3a1b3caf-03fd-7a70-b91f-72565bb98de7@gmail.com>
-Date:   Thu, 21 Apr 2022 15:16:48 +0300
+        Fri, 22 Apr 2022 06:04:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 052D853B4E;
+        Fri, 22 Apr 2022 03:01:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 959B461BCE;
+        Fri, 22 Apr 2022 10:01:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A024C385AA;
+        Fri, 22 Apr 2022 10:01:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650621699;
+        bh=axp9HX7cH7ozyam8yOtFy1KzpmCbuDnkcf64PAIPMj8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lp1i8A7HK35Z3HUTkFGQ0rxRAAHA6XB4dh1OCejV16WOt7HNoZzPjOqgEqtgxRlfy
+         eJz6WJtuduEAOeEFZq9mFScEe7PZUaZvbPFjYqorKuAt/c9PLiy95ChAZpgVjfxRfu
+         tit9ItGbfWRovD3ZH/mm0yuCoPiDt58dHNBSjEEpOaraWxXnaoZrfvmIKBYD2jkPCM
+         3+pRE9SuqDXgxuCF6Y6Nz3gjM6JMODye189vPlmxGJLwO/00FtkapNpvaNn5bOC5eN
+         Dc/kJAo2if8mz7hkImM4nvBh1I/12kk3T2xdixuChTmuZoie2X41PVIuTds23Wzs84
+         +B8YCslEOAovg==
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        John Kacur <jkacur@redhat.com>, Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH 1/2] rtla: Remove procps-ng dependency
+Date:   Fri, 22 Apr 2022 12:01:31 +0200
+Message-Id: <52161d343abeda6d039d2f0734904a1383a4c62e.1650617571.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH 2/2] kernel-shark: Allow FreeSans otf in addition to ttf
-Content-Language: en-US
-To:     Solomon Tan <wjsota@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org
-References: <YmAkAE+5wy2mLncD@ArchDesktop>
- <20220420153827.637413-1-wjsota@gmail.com>
- <20220420153827.637413-2-wjsota@gmail.com>
-From:   Yordan Karadzhov <y.karadz@gmail.com>
-In-Reply-To: <20220420153827.637413-2-wjsota@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Solomon,
+Daniel Wagner reported to me that readproc.h got deprecated. Also,
+while the procps-ng library was available on Fedora, it was not available
+on RHEL, which is a piece of evidence that it was not that used.
 
-I am taking this one.
+rtla uses procps-ng only to find the PID of the tracers' workload.
 
-Thanks!
-Yordan
+I used the procps-ng library to avoid reinventing the wheel. But in this
+case, reinventing the wheel took me less time than the time we already
+took trying to work around problems.
 
-On 20.04.22 г. 18:38 ч., Solomon Tan wrote:
-> FreeSans comes as otf rather than ttf in some cases. An example
-> is the gnu-free-fonts on Arch. With this patch, both FreeSans.otf and
-> FreeSans.ttf will be accepted to make kernelshark.
-> 
-> Signed-off-by: Solomon Tan <wjsota@gmail.com>
-> ---
->   CMakeLists.txt | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/CMakeLists.txt b/CMakeLists.txt
-> index 5473bfa..3a48b0e 100644
-> --- a/CMakeLists.txt
-> +++ b/CMakeLists.txt
-> @@ -59,7 +59,7 @@ find_package(GLUT)
->   
->   set(KS_FONT FreeSans)
->   if (NOT TT_FONT_FILE)
-> -    execute_process(COMMAND  bash "-c" "fc-list '${KS_FONT}' |grep ${KS_FONT}.ttf | cut -d':' -f 1 -z"
-> +    execute_process(COMMAND  bash "-c" "fc-list '${KS_FONT}' |grep -E ${KS_FONT}'(\.otf|\.ttf)' | cut -d':' -f 1 -z"
->                       OUTPUT_VARIABLE TT_FONT_FILE)
->   endif (NOT TT_FONT_FILE)
->   
+Implement a function that reads /proc/ entries, checking if:
+	- the entry is a directory
+	- the directory name is composed only of digits (PID)
+	- the directory contains the comm file
+	- the comm file contains a comm that matches the tracers'
+	  workload prefix.
+	- then return true; otherwise, return false.
+
+And use it instead of procps-ng.
+
+Cc: John Kacur <jkacur@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Fixes: b1696371d865 ("rtla: Helper functions for rtla")
+Reported-by: Daniel Wagner <dwagner@suse.de>
+Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+---
+ tools/tracing/rtla/Makefile    |  2 +-
+ tools/tracing/rtla/README.txt  |  1 -
+ tools/tracing/rtla/src/utils.c | 83 +++++++++++++++++++++++++++-------
+ tools/tracing/rtla/src/utils.h |  1 +
+ 4 files changed, 68 insertions(+), 19 deletions(-)
+
+diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
+index 11fb417abb42..90b8e20d1118 100644
+--- a/tools/tracing/rtla/Makefile
++++ b/tools/tracing/rtla/Makefile
+@@ -31,7 +31,7 @@ TRACEFS_HEADERS	:= $$($(PKG_CONFIG) --cflags libtracefs)
+ 
+ CFLAGS	:=	-O -g -DVERSION=\"$(VERSION)\" $(FOPTS) $(MOPTS) $(WOPTS) $(TRACEFS_HEADERS)
+ LDFLAGS	:=	-ggdb
+-LIBS	:=	$$($(PKG_CONFIG) --libs libtracefs) -lprocps
++LIBS	:=	$$($(PKG_CONFIG) --libs libtracefs)
+ 
+ SRC	:=	$(wildcard src/*.c)
+ HDR	:=	$(wildcard src/*.h)
+diff --git a/tools/tracing/rtla/README.txt b/tools/tracing/rtla/README.txt
+index 6c88446f7e74..7bc0b931ddfd 100644
+--- a/tools/tracing/rtla/README.txt
++++ b/tools/tracing/rtla/README.txt
+@@ -13,7 +13,6 @@ following libraries:
+ 
+  - libtracefs
+  - libtraceevent
+- - procps
+ 
+ It also depends on python3-docutils to compile man pages.
+ 
+diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
+index da2b590edaed..baf9003d5d41 100644
+--- a/tools/tracing/rtla/src/utils.c
++++ b/tools/tracing/rtla/src/utils.c
+@@ -3,7 +3,7 @@
+  * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
+  */
+ 
+-#include <proc/readproc.h>
++#include <dirent.h>
+ #include <stdarg.h>
+ #include <stdlib.h>
+ #include <string.h>
+@@ -262,6 +262,62 @@ int __set_sched_attr(int pid, struct sched_attr *attr)
+ 
+ 	return 0;
+ }
++
++/*
++ * procfs_is_workload_pid - check if a procfs entry contains a workload_prefix* comm
++ *
++ * Check if the procfs entry is a directory of a process, and then check if the
++ * process has a comm with the prefix set in char *workload_prefix. As the
++ * current users of this function only check for kernel threads, there is no
++ * need to check for the threads for the process.
++ *
++ * Return: True if the proc_entry contains a comm file with workload_prefix*.
++ * Otherwise returns false.
++ */
++static int procfs_is_workload_pid(const char *workload_prefix, struct dirent *proc_entry)
++{
++	char comm_path[MAX_PATH], comm[MAX_PATH];
++	int comm_fd, retval;
++	char *t_name;
++
++	if (proc_entry->d_type != DT_DIR)
++		return 0;
++
++	if (*proc_entry->d_name == '.')
++		return 0;
++
++	/* check if the string is a pid */
++	for (t_name = proc_entry->d_name; t_name; t_name++) {
++		if (!isdigit(*t_name))
++			break;
++	}
++
++	if (*t_name != '\0')
++		return 0;
++
++	snprintf(comm_path, MAX_PATH, "/proc/%s/comm", proc_entry->d_name);
++	comm_fd = open(comm_path, O_RDONLY);
++	if (comm_fd < 0)
++		return 0;
++
++	memset(comm, 0, MAX_PATH);
++	retval = read(comm_fd, comm, MAX_PATH);
++
++	close(comm_fd);
++
++	if (retval <= 0)
++		return 0;
++
++	retval = !strncmp(workload_prefix, comm, strlen(workload_prefix));
++	if (!retval)
++		return 0;
++
++	/* comm already have \n */
++	debug_msg("Found workload pid:%s comm:%s", proc_entry->d_name, comm);
++
++	return 1;
++}
++
+ /*
+  * set_comm_sched_attr - set sched params to threads starting with char *comm
+  *
+@@ -272,33 +328,26 @@ int __set_sched_attr(int pid, struct sched_attr *attr)
+  */
+ int set_comm_sched_attr(const char *comm, struct sched_attr *attr)
+ {
+-	int flags = PROC_FILLCOM | PROC_FILLSTAT;
+-	PROCTAB *ptp;
+-	proc_t task;
++	struct dirent *proc_entry;
++	DIR *procfs;
+ 	int retval;
+ 
+-	ptp = openproc(flags);
+-	if (!ptp) {
+-		err_msg("error openproc()\n");
+-		return -ENOENT;
+-	}
++	procfs = opendir("/proc");
+ 
+-	memset(&task, 0, sizeof(task));
++	while ((proc_entry = readdir(procfs))) {
+ 
+-	while (readproc(ptp, &task)) {
+-		retval = strncmp(comm, task.cmd, strlen(comm));
+-		if (retval)
++		retval = procfs_is_workload_pid(comm, proc_entry);
++		if (!retval)
+ 			continue;
+-		retval = __set_sched_attr(task.tid, attr);
++
++		/* procfs_is_workload_pid confirmed it is a pid */
++		retval = __set_sched_attr(atoi(proc_entry->d_name), attr);
+ 		if (retval)
+ 			goto out_err;
+ 	}
+-
+-	closeproc(ptp);
+ 	return 0;
+ 
+ out_err:
+-	closeproc(ptp);
+ 	return 1;
+ }
+ 
+diff --git a/tools/tracing/rtla/src/utils.h b/tools/tracing/rtla/src/utils.h
+index fa08e374870a..4959a3e2c0d5 100644
+--- a/tools/tracing/rtla/src/utils.h
++++ b/tools/tracing/rtla/src/utils.h
+@@ -6,6 +6,7 @@
+  * '18446744073709551615\0'
+  */
+ #define BUFF_U64_STR_SIZE	24
++#define MAX_PATH		1024
+ 
+ #define container_of(ptr, type, member)({			\
+ 	const typeof(((type *)0)->member) *__mptr = (ptr);	\
+-- 
+2.35.1
+
