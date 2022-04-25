@@ -2,88 +2,111 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BC06C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Apr 2022 11:43:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE000C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Apr 2022 18:46:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1447130AbiDVLqs (ORCPT
+        id S240561AbiDYStu (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 22 Apr 2022 07:46:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49538 "EHLO
+        Mon, 25 Apr 2022 14:49:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1447127AbiDVLqq (ORCPT
+        with ESMTP id S244559AbiDYSts (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 22 Apr 2022 07:46:46 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12175546B5
-        for <linux-trace-devel@vger.kernel.org>; Fri, 22 Apr 2022 04:43:54 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id u15so6892694ple.4
-        for <linux-trace-devel@vger.kernel.org>; Fri, 22 Apr 2022 04:43:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DkXfE0V0XY6tIACSrb9SAknPWWFQnIed3Gh1/Wlfpxo=;
-        b=KVxIWioqFMkxXKj/aOSE4h+6hKkJRj1NTkFHBsUZrHtKkC1ojdS1RRxX5ggq0jJqe6
-         XhCZWdZsS13keNNFmgkzCoTbVTe+o4MjKqzXAwu1tFejjgUG0SBPSd84eHr3j/+D401v
-         0cwzItbxkXH5fBobHLY3rkzy0ymNXKB5mWikZkTf+ZFxbWHSKrzQp8MAjjbcl6DhnPGD
-         imxHsG6XqQqOdXWHKWXZH7HdeERSpKVRQr12pQrKhyxCqNZ0K8w3P8h1ezD5IFMhLra6
-         qxIh10+BMtWgxK4AYXVeatG4hr4BP8r65TG56PO/XUJ7sBtMrpo0WR2fAm2ORPltmotz
-         cK5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DkXfE0V0XY6tIACSrb9SAknPWWFQnIed3Gh1/Wlfpxo=;
-        b=q8dcSKNpZULwU10c4VZC+1c1/mmHWH4Hc16WjJUT6C01j0YMvDgXrnGkKsc34ZOYQi
-         iw+6o8DK5WNt1S5jkMF9JlvPOg/7vrqXD+2pLkZUm9P+RXBhlPTYCaxbm+Gn3idDyNik
-         fBEShn3XsIXbI7O8PEvSry6H4NQGrNvJ8UkWBvjMtYVr85inDJkW0oa0JLEfkceCIfEG
-         fw2wSPzviltaPh577NGGtX3zkLdeb0SgZ3b4wvcrm+19HQ/rIFwvblTGffvilacomv6L
-         9UzqffBoddofHV2qQ31O99TSo82VC4H4Pbw/tew1DsVW/bZTrBagg/FRoh4FLxvBhZXd
-         w7bA==
-X-Gm-Message-State: AOAM533VVJDcEt6tIs3JZAcx+teyE/w98y/Ifuhk29HNOyAtVwmxUjkY
-        MfG/S24q2rMRNyTQc9SkGT8=
-X-Google-Smtp-Source: ABdhPJxCdClDG4/hxGY7oDBxi2+EZxc0yAtZ/ld7gIvxVd3NpjqHtKav32vVsU68gi6+KzSJXLE8sA==
-X-Received: by 2002:a17:90b:3ecc:b0:1d2:c238:d92e with SMTP id rm12-20020a17090b3ecc00b001d2c238d92emr4924433pjb.79.1650627833460;
-        Fri, 22 Apr 2022 04:43:53 -0700 (PDT)
-Received: from localhost.localdomain ([14.100.36.163])
-        by smtp.gmail.com with ESMTPSA id p4-20020a637404000000b00375948e63d6sm1947470pgc.91.2022.04.22.04.43.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Apr 2022 04:43:53 -0700 (PDT)
-From:   Solomon Tan <wjsota@gmail.com>
-To:     y.karadz@gmail.com
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH] kernel-shark: Modify FreeSans warning msg for GUI
-Date:   Fri, 22 Apr 2022 19:43:00 +0800
-Message-Id: <20220422114259.4162-1-wjsota@gmail.com>
-X-Mailer: git-send-email 2.36.0
+        Mon, 25 Apr 2022 14:49:48 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2B22D6F495;
+        Mon, 25 Apr 2022 11:46:44 -0700 (PDT)
+Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 3F74020E34C9;
+        Mon, 25 Apr 2022 11:46:43 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3F74020E34C9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1650912403;
+        bh=RD17CCIy6QCNVL2Ku4vGwqqqjkjUVEeOvlnQBknNKdk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SRkWH/aS0vCRkMsv95HA1EPqisy4h4OATs2Gdx086EcD34sDur3VEYyczGMDCejAp
+         lN2bx9opiY+STevjb+zLRWpTjo/A4IHQRn7/rYsCNQmjZ4ETyC7jXwvG0fU4JpZCNp
+         HIwuvFiNwww4IAWlh5o5Tmlizzf1mUem/wiuiSFI=
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     rostedt@goodmis.org, mhiramat@kernel.org,
+        mathieu.desnoyers@efficios.com
+Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, beaub@linux.microsoft.com
+Subject: [PATCH v2 0/7] tracing/user_events: Update user_events ABI from
+Date:   Mon, 25 Apr 2022 11:46:24 -0700
+Message-Id: <20220425184631.2068-1-beaub@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Make the warning point out that the FreeSans font is required for the
-kernelshark GUI. This is to alert the user that the GUI will not be made
-when cmake does not detect FreeSans.
+This series covers the changes that were brought up once user_events went into
+5.18. The largest change is moving away from byte index to a bit index, as
+first suggested by Mathieu Desnoyers.
 
-Signed-off-by: Solomon Tan <wjsota@gmail.com>
----
- CMakeLists.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The other changes are either fixes that have accumulated or found by Mathieu.
 
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 9dd160e..390c7f5 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -69,7 +69,7 @@ if (TT_FONT_FILE)
- 
- else (TT_FONT_FILE)
- 
--  message(WARNING "\nCould not find font ${KS_FONT}!\n")
-+  message(WARNING "\nCould not find font ${KS_FONT}! Kernelshark GUI requires font ${KS_FONT}!\n")
- 
- endif (TT_FONT_FILE)
- 
+NOTE: The sample and self-tests do not build unless you manually install
+user_events.h into usr/include/linux.
+
+Link:
+https://lore.kernel.org/all/2059213643.196683.1648499088753.JavaMail.zimbra@efficios.com/
+
+Psuedo code example of typical usage with the new ABI:
+struct user_reg reg;
+
+int page_fd = open("user_events_status", O_RDWR);
+char *page_data = mmap(NULL, PAGE_SIZE, PROT_READ, MAP_SHARED, page_fd,
+0);
+close(page_fd);
+
+int data_fd = open("user_events_data", O_RDWR);
+
+reg.size = sizeof(reg);
+reg.name_args = (__u64)"test";
+
+ioctl(data_fd, DIAG_IOCSREG, &reg);
+int status_id = reg.status_bit / 8;
+int status_mask = 1 << (reg.status_bit % 8);
+int write_id = reg.write_index;
+
+struct iovec io[2];
+io[0].iov_base = &write_id;
+io[0].iov_len = sizeof(write_id);
+io[1].iov_base = payload;
+io[1].iov_len = sizeof(payload);
+
+if (page_data[status_id] & status_mask)
+	writev(data_fd, io, 2);
+
+V2 Updates:
+Changed from status_index and status_mask on user_reg to just status_bit.
+Updated and added byte-wise and long-wise indexing pattern into docs.
+Updated tests to use byte-wise index pattern.
+Updated sample to show long-wise index pattern.
+
+Beau Belgrave (7):
+  tracing/user_events: Fix repeated word in comments
+  tracing/user_events: Use NULL for strstr checks
+  tracing/user_events: Use WRITE instead of READ for io vector import
+  tracing/user_events: Ensure user provided strings are safely formatted
+  tracing/user_events: Use refcount instead of atomic for ref tracking
+  tracing/user_events: Use bits vs bytes for enabled status page data
+  tracing/user_events: Update ABI documentation to align to bits vs
+    bytes
+
+ Documentation/trace/user_events.rst           |  86 ++++---
+ include/linux/user_events.h                   |  15 +-
+ kernel/trace/trace_events_user.c              | 212 ++++++++++++------
+ samples/user_events/example.c                 |  25 ++-
+ .../selftests/user_events/ftrace_test.c       |  47 +++-
+ .../testing/selftests/user_events/perf_test.c |  11 +-
+ 6 files changed, 264 insertions(+), 132 deletions(-)
+
+
+base-commit: 5cfff569cab8bf544bab62c911c5d6efd5af5e05
 -- 
-2.36.0
+2.25.1
 
