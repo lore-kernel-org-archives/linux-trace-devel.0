@@ -2,166 +2,121 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CCACC4332F
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Apr 2022 11:57:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CE2CC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Apr 2022 14:03:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349722AbiDZMA0 (ORCPT
+        id S241439AbiDZOGd (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 26 Apr 2022 08:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51890 "EHLO
+        Tue, 26 Apr 2022 10:06:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239509AbiDZMAZ (ORCPT
+        with ESMTP id S1351105AbiDZOGc (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 26 Apr 2022 08:00:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C0256425;
-        Tue, 26 Apr 2022 04:57:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 26 Apr 2022 10:06:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4A9DA194B3B
+        for <linux-trace-devel@vger.kernel.org>; Tue, 26 Apr 2022 07:03:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1650981802;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=EnkiOUcs/X4QjCPx55WSovEKwpXp0pSig3QcgoHeTyo=;
+        b=GZka7ofbukNsw9rS2hPNTYwjcjYeBAcpGxE5I2axbK+oimEkg/P93puYQ0S1dOC4nGqFqs
+        XisnHEq6OnR6srv/ZIsX4XGz6whIFjrMg3Sv1Jkubs7vpkw0IhyOjTWJDbhNX/zegeuQZs
+        dWyTUFSDViobdEKcq2SVxF2I7CQmp2w=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-671-lUpV6nwcPzaTl2wqcGR1xA-1; Tue, 26 Apr 2022 10:03:20 -0400
+X-MC-Unique: lUpV6nwcPzaTl2wqcGR1xA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C360061450;
-        Tue, 26 Apr 2022 11:57:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18D19C385AD;
-        Tue, 26 Apr 2022 11:57:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650974237;
-        bh=twfTbbwUvKw/8ZG6RW1rx/zAXpWAE+uv7bndMdyjTh4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ovmbWjM4yMUna6oFKMWFskjFHX7UssxUvkdzmOFocV6oOR932Hrv61+uG+kWdyWqX
-         RSvufD0OlEd1PHn7iRYbD6zs/e5IOLv432NI+fgyWvPB285wBoS09Y9kJFOKIL/Zvz
-         lyvXZQM9mTrQzD2qv5O9JGJm9gEoCzXcAzRmOyQMMS/iWW650OwOsFiMcYcczJD9c+
-         PWMumhLZ4XD+cMH7aLRlidJNsP8vEZ7FddLHHkLlrxin16WXiQ6VIlO8frKJb4qL37
-         d3eZuWR3CM6A49SDlQpdNjTGxsY1vHjL8l53K/oMae9WW7imJCCGiN8lwp32ViUPvv
-         zXjo7j4nOTjZw==
-Message-ID: <1535620a-5a41-1ec4-3963-c9bc3b8e117f@kernel.org>
-Date:   Tue, 26 Apr 2022 13:57:13 +0200
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7B8901815CFE
+        for <linux-trace-devel@vger.kernel.org>; Tue, 26 Apr 2022 14:03:20 +0000 (UTC)
+Received: from localhost (unknown [10.74.8.46])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DE6E2C2812C;
+        Tue, 26 Apr 2022 14:03:19 +0000 (UTC)
+From:   vnagare@redhat.com
+To:     linux-trace-devel@vger.kernel.org
+Cc:     vnagare@redhat.com
+Subject: [PATCH] trace-cmd: manpage: Added missing options
+Date:   Tue, 26 Apr 2022 19:33:18 +0530
+Message-Id: <20220426140318.221339-1-vnagare@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH 1/2] rtla: Remove procps-ng dependency
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        John Kacur <jkacur@redhat.com>, Daniel Wagner <dwagner@suse.de>
-References: <52161d343abeda6d039d2f0734904a1383a4c62e.1650617571.git.bristot@kernel.org>
- <20220425214559.55988956@gandalf.local.home>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <20220425214559.55988956@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.8
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 4/26/22 03:45, Steven Rostedt wrote:
-> On Fri, 22 Apr 2022 12:01:31 +0200
-> Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
-> 
-> 
->> +
->> +/*
->> + * procfs_is_workload_pid - check if a procfs entry contains a workload_prefix* comm
->> + *
->> + * Check if the procfs entry is a directory of a process, and then check if the
->> + * process has a comm with the prefix set in char *workload_prefix. As the
->> + * current users of this function only check for kernel threads, there is no
->> + * need to check for the threads for the process.
->> + *
->> + * Return: True if the proc_entry contains a comm file with workload_prefix*.
->> + * Otherwise returns false.
->> + */
->> +static int procfs_is_workload_pid(const char *workload_prefix, struct dirent *proc_entry)
->> +{
->> +	char comm_path[MAX_PATH], comm[MAX_PATH];
-> 
-> This is probably fine (but there is one issue), but I would have done this
-> a little different.
-> 
-> 	int len = strlen(workload_prefix);
-> 	char comm[len + 1];
-> 
->> +	int comm_fd, retval;
->> +	char *t_name;
->> +
->> +	if (proc_entry->d_type != DT_DIR)
->> +		return 0;
->> +
->> +	if (*proc_entry->d_name == '.')
->> +		return 0;
->> +
->> +	/* check if the string is a pid */
->> +	for (t_name = proc_entry->d_name; t_name; t_name++) {
->> +		if (!isdigit(*t_name))
->> +			break;
->> +	}
->> +
->> +	if (*t_name != '\0')
->> +		return 0;
->> +
->> +	snprintf(comm_path, MAX_PATH, "/proc/%s/comm", proc_entry->d_name);
->> +	comm_fd = open(comm_path, O_RDONLY);
->> +	if (comm_fd < 0)
->> +		return 0;
->> +
->> +	memset(comm, 0, MAX_PATH);
-> 
-> No need for the memset.
-> 
->> +	retval = read(comm_fd, comm, MAX_PATH);
-> 
-> 	retval = read(comm_fd, comm, len + 1);
-> 
->> +
->> +	close(comm_fd);
->> +
->> +	if (retval <= 0)
->> +		return 0;
-> 
-> 	if (comm[len] != '\n')
-> 		return 0;
-> 
->> +
->> +	retval = !strncmp(workload_prefix, comm, strlen(workload_prefix));
-> 
-> What happens if strlen(workload_prefix) is greater than MAX_PATH? ;-)
+From: Vaibhav Nagare <vnagare@redhat.com>
 
-That is a concern I had, but we have only two use cases on rtla so far, and they
-are both bounded: 'timerlat/' 'osnoise/'...
+Added multiple missing options which can be found in -h, help page.
 
-I will add a check though.
+Signed-off-by: Vaibhav Nagare <vnagare@redhat.com>
+---
+ Documentation/trace-cmd/trace-cmd.1.txt | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-> 
-> 	retval = !strncmp(workload_prefix, comm, len);
-> 
-> But that's me. If you want to keep this as is, let me know.
-
-I made these changes... but I am loosing the debug_msg() with the comm/pid that
-matched. I am adding these messages (and I plan to add more) so I can use on
-testing scripts...
-
-At the same time, I can share a char buffer[MAX_PATH] for both the comm and
-comm_path...
-
-I think I will go this way (using a single buffer), adding a warning... and...
-
-> -- Steve
-> 
-> 
-> 
->> +	if (!retval)
->> +		return 0;
-
-also removing ! in the the revtal = !strcmp(...); if (!retval).
-
-Thoughts?
-
--- Daniel
-
->> +
->> +	/* comm already have \n */
->> +	debug_msg("Found workload pid:%s comm:%s", proc_entry->d_name, comm);
->> +
->> +	return 1;
->> +}
->> +
+diff --git a/Documentation/trace-cmd/trace-cmd.1.txt b/Documentation/trace-cmd/trace-cmd.1.txt
+index 27c6e973..7e161273 100644
+--- a/Documentation/trace-cmd/trace-cmd.1.txt
++++ b/Documentation/trace-cmd/trace-cmd.1.txt
+@@ -23,9 +23,15 @@ COMMANDS
+   record  - record a live trace and write a trace.dat file to the
+             local disk or to the network.
+ 
++  set     - set a ftrace configuration parameter.
++
+   report  - reads a trace.dat file and converts the binary data to a
+             ASCII text readable format.
+ 
++  stream  - Start tracing and read the output directly
++
++  profile - Start profiling and read the output directly
++
+   hist    - show a histogram of the events.
+ 
+   stat    - show tracing (ftrace) status of the running system
+@@ -42,17 +48,27 @@ COMMANDS
+   extract - extract the data from the kernel buffer and create a trace.dat
+             file.
+ 
++  show    - display the contents of one of the Ftrace Linux kernel tracing files
++
+   reset   - disables all tracing and gives back the system performance.
+             (clears all data from the kernel buffers)
+ 
++  clear   - clear the content of the Ftrace ring buffers.
++
+   split   - splits a trace.dat file into smaller files.
+ 
+   list    - list the available plugins or events that can be recorded.
+ 
+   listen  - open up a port to listen for remote tracing connections.
+ 
++  agent   - listen on a vsocket for trace clients
++
++  setup-guest - create FIFOs for tracing guest VMs
++
+   restore - restore the data files of a crashed run of trace-cmd record
+ 
++  snapshot- take snapshot of running trace
++
+   stack   - run and display the stack tracer
+ 
+   check-events - parse format strings for all trace events and return
+@@ -60,6 +76,8 @@ COMMANDS
+ 
+   convert   - convert trace files
+ 
++  dump    - read out the meta data from a trace file
++
+ OPTIONS
+ -------
+ 
+-- 
+2.27.0
 
