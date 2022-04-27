@@ -2,121 +2,97 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CE2CC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Apr 2022 14:03:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFB11C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Apr 2022 22:23:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241439AbiDZOGd (ORCPT
+        id S232037AbiD0W0l (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 26 Apr 2022 10:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55254 "EHLO
+        Wed, 27 Apr 2022 18:26:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351105AbiDZOGc (ORCPT
+        with ESMTP id S232098AbiD0W0k (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 26 Apr 2022 10:06:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4A9DA194B3B
-        for <linux-trace-devel@vger.kernel.org>; Tue, 26 Apr 2022 07:03:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1650981802;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=EnkiOUcs/X4QjCPx55WSovEKwpXp0pSig3QcgoHeTyo=;
-        b=GZka7ofbukNsw9rS2hPNTYwjcjYeBAcpGxE5I2axbK+oimEkg/P93puYQ0S1dOC4nGqFqs
-        XisnHEq6OnR6srv/ZIsX4XGz6whIFjrMg3Sv1Jkubs7vpkw0IhyOjTWJDbhNX/zegeuQZs
-        dWyTUFSDViobdEKcq2SVxF2I7CQmp2w=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-671-lUpV6nwcPzaTl2wqcGR1xA-1; Tue, 26 Apr 2022 10:03:20 -0400
-X-MC-Unique: lUpV6nwcPzaTl2wqcGR1xA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 27 Apr 2022 18:26:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 142042DAA9
+        for <linux-trace-devel@vger.kernel.org>; Wed, 27 Apr 2022 15:23:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7B8901815CFE
-        for <linux-trace-devel@vger.kernel.org>; Tue, 26 Apr 2022 14:03:20 +0000 (UTC)
-Received: from localhost (unknown [10.74.8.46])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DE6E2C2812C;
-        Tue, 26 Apr 2022 14:03:19 +0000 (UTC)
-From:   vnagare@redhat.com
-To:     linux-trace-devel@vger.kernel.org
-Cc:     vnagare@redhat.com
-Subject: [PATCH] trace-cmd: manpage: Added missing options
-Date:   Tue, 26 Apr 2022 19:33:18 +0530
-Message-Id: <20220426140318.221339-1-vnagare@redhat.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9909961E13
+        for <linux-trace-devel@vger.kernel.org>; Wed, 27 Apr 2022 22:23:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5317AC385A7;
+        Wed, 27 Apr 2022 22:23:26 +0000 (UTC)
+Date:   Wed, 27 Apr 2022 18:23:24 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Kurt Kanzenbach <kurt@linutronix.de>
+Subject: [PATCH] kbuffer: Handle 64 bit timestamp event
+Message-ID: <20220427182324.6a7b7e91@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Vaibhav Nagare <vnagare@redhat.com>
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Added multiple missing options which can be found in -h, help page.
+With the new TAI clock, the clock source can use all 64 bits for the time
+stamp. The TIME_STAMP event only saves 59 bits of the clock, it is
+expected that the 5 MSBs will be extracted from the buffer page 64 bit
+timestamp.
 
-Signed-off-by: Vaibhav Nagare <vnagare@redhat.com>
+Link: https://lore.kernel.org/all/20220427153339.16c33f75@gandalf.local.home/
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/trace-cmd/trace-cmd.1.txt | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ src/kbuffer-parse.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/trace-cmd/trace-cmd.1.txt b/Documentation/trace-cmd/trace-cmd.1.txt
-index 27c6e973..7e161273 100644
---- a/Documentation/trace-cmd/trace-cmd.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd.1.txt
-@@ -23,9 +23,15 @@ COMMANDS
-   record  - record a live trace and write a trace.dat file to the
-             local disk or to the network.
+diff --git a/src/kbuffer-parse.c b/src/kbuffer-parse.c
+index 74999501f5bf..d174e7276df2 100644
+--- a/src/kbuffer-parse.c
++++ b/src/kbuffer-parse.c
+@@ -14,6 +14,9 @@
  
-+  set     - set a ftrace configuration parameter.
+ #define COMMIT_MASK ((1 << 27) - 1)
+ 
++/* Absolute time stamps do not have the 5 MSB, take from the real time stamp */
++#define TS_MSB		(0xf8ULL << 56)
 +
-   report  - reads a trace.dat file and converts the binary data to a
-             ASCII text readable format.
+ enum {
+ 	KBUFFER_FL_HOST_BIG_ENDIAN	= (1<<0),
+ 	KBUFFER_FL_BIG_ENDIAN		= (1<<1),
+@@ -347,7 +350,7 @@ static unsigned int
+ translate_data(struct kbuffer *kbuf, void *data, void **rptr,
+ 	       unsigned long long *delta, int *length)
+ {
+-	unsigned long long extend;
++	unsigned long long extend, msb = 0;
+ 	unsigned int type_len_ts;
+ 	unsigned int type_len;
  
-+  stream  - Start tracing and read the output directly
-+
-+  profile - Start profiling and read the output directly
-+
-   hist    - show a histogram of the events.
+@@ -362,13 +365,15 @@ translate_data(struct kbuffer *kbuf, void *data, void **rptr,
+ 		*length = read_4(kbuf, data);
+ 		break;
  
-   stat    - show tracing (ftrace) status of the running system
-@@ -42,17 +48,27 @@ COMMANDS
-   extract - extract the data from the kernel buffer and create a trace.dat
-             file.
- 
-+  show    - display the contents of one of the Ftrace Linux kernel tracing files
-+
-   reset   - disables all tracing and gives back the system performance.
-             (clears all data from the kernel buffers)
- 
-+  clear   - clear the content of the Ftrace ring buffers.
-+
-   split   - splits a trace.dat file into smaller files.
- 
-   list    - list the available plugins or events that can be recorded.
- 
-   listen  - open up a port to listen for remote tracing connections.
- 
-+  agent   - listen on a vsocket for trace clients
-+
-+  setup-guest - create FIFOs for tracing guest VMs
-+
-   restore - restore the data files of a crashed run of trace-cmd record
- 
-+  snapshot- take snapshot of running trace
-+
-   stack   - run and display the stack tracer
- 
-   check-events - parse format strings for all trace events and return
-@@ -60,6 +76,8 @@ COMMANDS
- 
-   convert   - convert trace files
- 
-+  dump    - read out the meta data from a trace file
-+
- OPTIONS
- -------
+-	case KBUFFER_TYPE_TIME_EXTEND:
+ 	case KBUFFER_TYPE_TIME_STAMP:
++		msb = kbuf->timestamp & TS_MSB;
++		/* fall through */
++	case KBUFFER_TYPE_TIME_EXTEND:
+ 		extend = read_4(kbuf, data);
+ 		data += 4;
+ 		extend <<= TS_SHIFT;
+ 		extend += *delta;
+-		*delta = extend;
++		*delta = extend | msb;
+ 		*length = 0;
+ 		break;
  
 -- 
-2.27.0
+2.35.1
 
