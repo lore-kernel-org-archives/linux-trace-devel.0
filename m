@@ -2,53 +2,134 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E72BDC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Apr 2022 16:38:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B7ECC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Apr 2022 17:49:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236358AbiD1Ql0 (ORCPT
+        id S1350638AbiD1RxI (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 28 Apr 2022 12:41:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46998 "EHLO
+        Thu, 28 Apr 2022 13:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235926AbiD1Ql0 (ORCPT
+        with ESMTP id S1350640AbiD1RxH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Apr 2022 12:41:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F700ABF42
-        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Apr 2022 09:38:11 -0700 (PDT)
+        Thu, 28 Apr 2022 13:53:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82631BAB9B
+        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Apr 2022 10:49:52 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C2676620C1
-        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Apr 2022 16:38:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8D59C385A0;
-        Thu, 28 Apr 2022 16:38:09 +0000 (UTC)
-Date:   Thu, 28 Apr 2022 12:38:08 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E9DE862171
+        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Apr 2022 17:49:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BB20C385AA;
+        Thu, 28 Apr 2022 17:49:51 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.95)
+        (envelope-from <rostedt@rostedt.homelinux.com>)
+        id 1nk8H0-003LWH-8b;
+        Thu, 28 Apr 2022 13:49:50 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     vnagare@redhat.com
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH] trace-cmd: manpage: Added missing options
-Message-ID: <20220428123808.184c5544@gandalf.local.home>
-In-Reply-To: <20220426140318.221339-1-vnagare@redhat.com>
-References: <20220426140318.221339-1-vnagare@redhat.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To:     linux-trace-devel@vger.kernel.org
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Subject: [PATCH 2/2] trace-cmd agent: Test if memfd_create() is available
+Date:   Thu, 28 Apr 2022 13:49:49 -0400
+Message-Id: <20220428174949.797657-3-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220428174949.797657-1-rostedt@goodmis.org>
+References: <20220428174949.797657-1-rostedt@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 26 Apr 2022 19:33:18 +0530
-vnagare@redhat.com wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> From: Vaibhav Nagare <vnagare@redhat.com>
-> 
-> Added multiple missing options which can be found in -h, help page.
-> 
-> Signed-off-by: Vaibhav Nagare <vnagare@redhat.com>
-> ---
+Some systems do not have memfd_create() available and it is a regression
+to require it. Fall back to tempfs if memfd_create() is not available at
+build time.
 
-Applied, thanks Vaibhav!
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ Makefile                                          | 11 ++++++++++-
+ lib/trace-cmd/include/private/trace-cmd-private.h |  5 +++++
+ lib/trace-cmd/trace-msg.c                         |  8 ++++++++
+ 3 files changed, 23 insertions(+), 1 deletion(-)
 
--- Steve
+diff --git a/Makefile b/Makefile
+index 9fbc6de25d05..abc4ac723db4 100644
+--- a/Makefile
++++ b/Makefile
+@@ -184,6 +184,15 @@ endef
+ # have flush/fua block layer instead of barriers?
+ blk-flags := $(call test-build,$(BLK_TC_FLUSH_SOURCE),-DHAVE_BLK_TC_FLUSH)
+ 
++define MEMFD_CREATE_SOURCE
++#define _GNU_SOURCE
++#include <sys/mman.h>
++int main(void) { return memfd_create(\"test\", 0); }
++endef
++
++# have memfd_create available
++memfd-flags := $(call test-build,$(MEMFD_CREATE_SOURCE),-DHAVE_MEMFD_CREATE)
++
+ ifeq ("$(origin O)", "command line")
+ 
+   saved-output := $(O)
+@@ -363,7 +372,7 @@ endif
+ # Append required CFLAGS
+ override CFLAGS += $(INCLUDES) $(VAR_DIR)
+ override CFLAGS += $(PLUGIN_DIR_TRACECMD_SQ)
+-override CFLAGS += $(udis86-flags) $(blk-flags)
++override CFLAGS += $(udis86-flags) $(blk-flags) $(memfd-flags)
+ override LDFLAGS += $(udis86-ldflags)
+ 
+ CMD_TARGETS = trace-cmd $(BUILD_PYTHON)
+diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
+index 0efc2a1c4850..3b84170f2258 100644
+--- a/lib/trace-cmd/include/private/trace-cmd-private.h
++++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+@@ -380,6 +380,8 @@ enum tracecmd_msg_flags {
+ 	TRACECMD_MSG_FL_USE_VSOCK	= 1 << 1,
+ };
+ 
++#define MSG_CACHE_FILE "/tmp/trace_msg_cacheXXXXXX"
++
+ /* for both client and server */
+ struct tracecmd_msg_handle {
+ 	int			fd;
+@@ -389,6 +391,9 @@ struct tracecmd_msg_handle {
+ 	bool			done;
+ 	bool			cache;
+ 	int			cfd;
++#ifndef HAVE_MEMFD_CREATE
++	char			cfile[sizeof(MSG_CACHE_FILE)];
++#endif
+ };
+ 
+ struct tracecmd_tsync_protos {
+diff --git a/lib/trace-cmd/trace-msg.c b/lib/trace-cmd/trace-msg.c
+index 5ba2eeb2d183..9899fa8796e2 100644
+--- a/lib/trace-cmd/trace-msg.c
++++ b/lib/trace-cmd/trace-msg.c
+@@ -591,9 +591,17 @@ tracecmd_msg_handle_alloc(int fd, unsigned long flags)
+ int tracecmd_msg_handle_cache(struct tracecmd_msg_handle *msg_handle)
+ {
+ 	if (msg_handle->cfd < 0) {
++#ifdef HAVE_MEMFD_CREATE
+ 		msg_handle->cfd = memfd_create("trace_msg_cache", 0);
+ 		if (msg_handle->cfd < 0)
+ 			return -1;
++#else
++		strcpy(msg_handle->cfile, MSG_CACHE_FILE);
++		msg_handle->cfd = mkstemp(msg_handle->cfile);
++		if (msg_handle->cfd < 0)
++			return -1;
++		unlink(msg_handle->cfile);
++#endif
+ 	}
+ 	msg_handle->cache = true;
+ 	return 0;
+-- 
+2.35.1
+
