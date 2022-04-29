@@ -2,80 +2,271 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 810D7C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Apr 2022 23:29:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10323C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Apr 2022 13:01:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353279AbiD1XdN (ORCPT
+        id S1359667AbiD2NFO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 28 Apr 2022 19:33:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47424 "EHLO
+        Fri, 29 Apr 2022 09:05:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233655AbiD1XdM (ORCPT
+        with ESMTP id S1350240AbiD2NFO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Apr 2022 19:33:12 -0400
+        Fri, 29 Apr 2022 09:05:14 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2CD1BCB71
-        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Apr 2022 16:29:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2DE2B0A47;
+        Fri, 29 Apr 2022 06:01:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6874CB82C97
-        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Apr 2022 23:29:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBDACC385A9
-        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Apr 2022 23:29:53 +0000 (UTC)
-Date:   Thu, 28 Apr 2022 19:29:51 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd: Add kernel-doc to trace_record_agent()
-Message-ID: <20220428192951.2c5e21fd@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 67406B83548;
+        Fri, 29 Apr 2022 13:01:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E21DC385A4;
+        Fri, 29 Apr 2022 13:01:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651237313;
+        bh=t2RBNUy21aj7/pi0PiAMQQGakq/Y+RKitgUzw82hPOw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QxWUazrsqh78I97B5LXzfVC1Pnxn/+MSOFxYVV7d3khqI1c6q92yAZqbAmiNg7+l7
+         6gJ3HhhsYjcNafOgqqR5hTBgTo/tllJ+4MunDtfTMM9yo94xZidTFE3AGM1aXbIGFw
+         awChpL+0+bTErkjGHSgD2US0N4VAIwnvXim7ZfPLAZ/Fxxgirv+MYVVWEKuKaauBrF
+         Nyu6SW8j62lBFZMCCKzVkXmc6kfnyxzanRl1rsXPrm0PTJzW+Hkquuz9xiAWxi9vwW
+         WmkWmYALtf61JbR8Fy5VHJGHk5vrYEAjd/LTZa7ewLPt4KvdeGXUDSZteC4xv7kGAU
+         M5Qx+tMpRK7aw==
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        John Kacur <jkacur@redhat.com>, Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH v2] rtla: Remove procps-ng dependency
+Date:   Fri, 29 Apr 2022 15:01:48 +0200
+Message-Id: <a0f9f8c1030c66305c9b921057c3d483064d5529.1651220820.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Daniel Wagner reported to me that readproc.h got deprecated. Also,
+while the procps-ng library was available on Fedora, it was not available
+on RHEL, which is a piece of evidence that it was not that used.
 
-I'm getting confused by what exactly is being passed to
-trace_record_agent(). Document it, so I can at least be only temporarily
-confused.
+rtla uses procps-ng only to find the PID of the tracers' workload.
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+I used the procps-ng library to avoid reinventing the wheel. But in this
+case, reinventing the wheel took me less time than the time we already
+took trying to work around problems.
+
+Implement a function that reads /proc/ entries, checking if:
+	- the entry is a directory
+	- the directory name is composed only of digits (PID)
+	- the directory contains the comm file
+	- the comm file contains a comm that matches the tracers'
+	  workload prefix.
+	- then return true; otherwise, return false.
+
+And use it instead of procps-ng.
+
+Changes from V1:
+  - Use a single buffer for comm and comm_path
+  - Cause an error in case of a too long command prefix
+  - Do a close_dir()
+  - Improve log messages
+
+Cc: John Kacur <jkacur@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Fixes: b1696371d865 ("rtla: Helper functions for rtla")
+Reported-by: Daniel Wagner <dwagner@suse.de>
+Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- tracecmd/trace-record.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ tools/tracing/rtla/Makefile    |   2 +-
+ tools/tracing/rtla/README.txt  |   1 -
+ tools/tracing/rtla/src/utils.c | 102 ++++++++++++++++++++++++++-------
+ tools/tracing/rtla/src/utils.h |   3 +-
+ 4 files changed, 84 insertions(+), 24 deletions(-)
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index a4a0d63d907d..64b966c89f11 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -7192,6 +7192,24 @@ void trace_record(int argc, char **argv)
- 	exit(0);
+diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
+index 5a3226e436ef..523f0a8c38c2 100644
+--- a/tools/tracing/rtla/Makefile
++++ b/tools/tracing/rtla/Makefile
+@@ -32,7 +32,7 @@ TRACEFS_HEADERS	:= $$($(PKG_CONFIG) --cflags libtracefs)
+ 
+ CFLAGS	:=	-O -g -DVERSION=\"$(VERSION)\" $(FOPTS) $(MOPTS) $(WOPTS) $(TRACEFS_HEADERS)
+ LDFLAGS	:=	-ggdb
+-LIBS	:=	$$($(PKG_CONFIG) --libs libtracefs) -lprocps
++LIBS	:=	$$($(PKG_CONFIG) --libs libtracefs)
+ 
+ SRC	:=	$(wildcard src/*.c)
+ HDR	:=	$(wildcard src/*.h)
+diff --git a/tools/tracing/rtla/README.txt b/tools/tracing/rtla/README.txt
+index 0fbad2640b8c..4af3fd40f171 100644
+--- a/tools/tracing/rtla/README.txt
++++ b/tools/tracing/rtla/README.txt
+@@ -11,7 +11,6 @@ RTLA depends on the following libraries and tools:
+ 
+  - libtracefs
+  - libtraceevent
+- - procps
+ 
+ It also depends on python3-docutils to compile man pages.
+ 
+diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
+index 3bd6f64780cf..f3d562f7f14c 100644
+--- a/tools/tracing/rtla/src/utils.c
++++ b/tools/tracing/rtla/src/utils.c
+@@ -3,7 +3,7 @@
+  * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
+  */
+ 
+-#include <proc/readproc.h>
++#include <dirent.h>
+ #include <stdarg.h>
+ #include <stdlib.h>
+ #include <string.h>
+@@ -262,43 +262,103 @@ int __set_sched_attr(int pid, struct sched_attr *attr)
+ 
+ 	return 0;
+ }
++
+ /*
+- * set_comm_sched_attr - set sched params to threads starting with char *comm
++ * procfs_is_workload_pid - check if a procfs entry contains a comm_prefix* comm
++ *
++ * Check if the procfs entry is a directory of a process, and then check if the
++ * process has a comm with the prefix set in char *comm_prefix. As the
++ * current users of this function only check for kernel threads, there is no
++ * need to check for the threads for the process.
+  *
+- * This function uses procps to list the currently running threads and then
+- * set the sched_attr *attr to the threads that start with char *comm. It is
++ * Return: True if the proc_entry contains a comm file with comm_prefix*.
++ * Otherwise returns false.
++ */
++static int procfs_is_workload_pid(const char *comm_prefix, struct dirent *proc_entry)
++{
++	char buffer[MAX_PATH];
++	int comm_fd, retval;
++	char*t_name;
++
++	if (proc_entry->d_type != DT_DIR)
++		return 0;
++
++	if (*proc_entry->d_name == '.')
++		return 0;
++
++	/* check if the string is a pid */
++	for (t_name = proc_entry->d_name; t_name; t_name++) {
++		if (!isdigit(*t_name))
++			break;
++	}
++
++	if (*t_name != '\0')
++		return 0;
++
++	snprintf(buffer, MAX_PATH, "/proc/%s/comm", proc_entry->d_name);
++	comm_fd = open(buffer, O_RDONLY);
++	if (comm_fd < 0)
++		return 0;
++
++	memset(buffer, 0, MAX_PATH);
++	retval = read(comm_fd, buffer, MAX_PATH);
++
++	close(comm_fd);
++
++	if (retval <= 0)
++		return 0;
++
++	retval = strncmp(comm_prefix, buffer, strlen(comm_prefix));
++	if (retval)
++		return 0;
++
++	/* comm already have \n */
++	debug_msg("Found workload pid:%s comm:%s", proc_entry->d_name, buffer);
++
++	return 1;
++}
++
++/*
++ * set_comm_sched_attr - set sched params to threads starting with char *comm_prefix
++ *
++ * This function uses procps to list the currently running threads and then set the
++ * sched_attr *attr to the threads that start with char *comm_prefix. It is
+  * mainly used to set the priority to the kernel threads created by the
+  * tracers.
+  */
+-int set_comm_sched_attr(const char *comm, struct sched_attr *attr)
++int set_comm_sched_attr(const char *comm_prefix, struct sched_attr *attr)
+ {
+-	int flags = PROC_FILLCOM | PROC_FILLSTAT;
+-	PROCTAB *ptp;
+-	proc_t task;
++	struct dirent *proc_entry;
++	DIR *procfs;
+ 	int retval;
+ 
+-	ptp = openproc(flags);
+-	if (!ptp) {
+-		err_msg("error openproc()\n");
+-		return -ENOENT;
++	if (strlen(comm_prefix) >= MAX_PATH) {
++		err_msg("Command prefix is too long: %d < strlen(%s)\n",
++			MAX_PATH, comm_prefix);
++		exit(EINVAL);
+ 	}
+ 
+-	memset(&task, 0, sizeof(task));
++	procfs = opendir("/proc");
++
++	while ((proc_entry = readdir(procfs))) {
+ 
+-	while (readproc(ptp, &task)) {
+-		retval = strncmp(comm, task.cmd, strlen(comm));
+-		if (retval)
++		retval = procfs_is_workload_pid(comm_prefix, proc_entry);
++		if (!retval)
+ 			continue;
+-		retval = __set_sched_attr(task.tid, attr);
+-		if (retval)
++
++		/* procfs_is_workload_pid confirmed it is a pid */
++		retval = __set_sched_attr(atoi(proc_entry->d_name), attr);
++		if (retval) {
++			err_msg("Error setting sched attributes for pid:%s\n", proc_entry->d_name);
+ 			goto out_err;
+-	}
++		}
+ 
+-	closeproc(ptp);
++		debug_msg("Set sched attributes for pid:%s\n", proc_entry->d_name);
++	}
+ 	return 0;
+ 
+ out_err:
+-	closeproc(ptp);
++	closedir(procfs);
+ 	return 1;
  }
  
-+/**
-+ * trace_record_agent - record command running from the agent
-+ * @msg_handle: The handle to communicate with the peer
-+ * @cpus: The number of CPUs the agent has to record
-+ * @fds: The array of file descriptors for the CPUs
-+ * @argc: The number of arguments to pass to the record session
-+ * @argv: The arguments to pass to the record session
-+ * @use_fifos: True if fifos are used instead of sockets.
-+ * @trace_id: The agent's trace_id
-+ * @host: Set if this is an IP connection and not a vsocket one
-+ *
-+ * This is used to enable tracing via the record command just
-+ * like trace-cmd record, but it is being done via the agent
-+ * and all the data is being transfered to the peer that is
-+ * connected on the other end of the sockets.
-+ *
-+ *  Returns zero on success, negative otherwise.
-+ */
- int trace_record_agent(struct tracecmd_msg_handle *msg_handle,
- 		       int cpus, int *fds,
- 		       int argc, char **argv,
+diff --git a/tools/tracing/rtla/src/utils.h b/tools/tracing/rtla/src/utils.h
+index fa08e374870a..5571afd3b549 100644
+--- a/tools/tracing/rtla/src/utils.h
++++ b/tools/tracing/rtla/src/utils.h
+@@ -6,6 +6,7 @@
+  * '18446744073709551615\0'
+  */
+ #define BUFF_U64_STR_SIZE	24
++#define MAX_PATH		1024
+ 
+ #define container_of(ptr, type, member)({			\
+ 	const typeof(((type *)0)->member) *__mptr = (ptr);	\
+@@ -53,5 +54,5 @@ struct sched_attr {
+ };
+ 
+ int parse_prio(char *arg, struct sched_attr *sched_param);
+-int set_comm_sched_attr(const char *comm, struct sched_attr *attr);
++int set_comm_sched_attr(const char *comm_prefix, struct sched_attr *attr);
+ int set_cpu_dma_latency(int32_t latency);
 -- 
-2.35.1
+2.32.0
 
