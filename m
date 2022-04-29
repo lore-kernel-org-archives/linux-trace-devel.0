@@ -2,44 +2,45 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D56AC433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB471C433FE
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Apr 2022 16:28:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379194AbiD2QcJ (ORCPT
+        id S1379142AbiD2QcK (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 29 Apr 2022 12:32:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50760 "EHLO
+        Fri, 29 Apr 2022 12:32:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379216AbiD2Qb6 (ORCPT
+        with ESMTP id S1379183AbiD2Qb5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 29 Apr 2022 12:31:58 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9776BDAA3E;
-        Fri, 29 Apr 2022 09:28:29 -0700 (PDT)
+        Fri, 29 Apr 2022 12:31:57 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA9F6DAA23;
+        Fri, 29 Apr 2022 09:28:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0ED3DB836A1;
-        Fri, 29 Apr 2022 16:28:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A15EDC385A4;
-        Fri, 29 Apr 2022 16:28:25 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 61276B83698;
+        Fri, 29 Apr 2022 16:28:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0AE1C385B0;
+        Fri, 29 Apr 2022 16:28:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1651249706;
-        bh=lAIRKSuq0bM0AuqbQaLq94Uoac+j3FgUzcXpkiyoZBw=;
+        s=k20201202; t=1651249705;
+        bh=vRyEqlNcMpIbrSgln4JDEa9oplTOWlImSzdZw5sUCBk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u4FxWR5MINP4k3ApgAv3PidBTU7pja68e4htNByhDpZ+MJnS+FeHDTcodm+zx+4Tc
-         DDbU/NXQcXBeN8L38hMqvM4Dtux92N07RHDB98dxnPyGD3TZkppijHxWe+5Fp0Z6sn
-         s5bWi0bSmZDB7CNxRcTNNANLqFBZt2xT9FYGIsLKx2zDCNAG4ev/4go25DckUtN2MP
-         PZ/upfQedj9cCZp1BFJ2JYEkE7zZ2XM0P551aoCtbWJIt+OC+8Z5HbisultW8+Yo0X
-         cO6LLYFThj4iZrk2hQoNzw9Jh7+27R2HHIMk3M3HCcDX/fnfvqvnQaou8M52c4ibS2
-         QhncBRklI7aZQ==
+        b=baepLr4jpL37Oq2cFOG6UyXqVVjrYaexwbyvAgrVKjnp0LMroCSC4Gd70FbRBmCpz
+         9Phbu6WlzSEMBZLa/iHo+24WQ2iRhZg3gNf/VF3Jb/fSEwDZqJ9n4Zqu5N/PaodiYH
+         VGg+jfdRvf7sMXigEw6DdfRH8/OWzZQSLbevUo+3vstolTOY/zR75+tL8fJ4AQVwZo
+         97YiFcowDrRLiDijnz3pSHp6aabR96K2OBxlyg87L/qMTSBTiH2oj16FHzBxK/CqrL
+         9a650fK96J4iel+WS7AaGpwXUwwpxrGZAZN1aQ84L+XTnZCYNkm9LCfdGtMKk9hrw9
+         urKw54HJWd5KQ==
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>,
         linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Subject: [PATCH 4/4] rtla: Fix __set_sched_attr error message
-Date:   Fri, 29 Apr 2022 18:28:13 +0200
-Message-Id: <a2d19b2c53f6512aefd1ee7f8c1bd19d4fc8b99d.1651247710.git.bristot@kernel.org>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        John Kacur <jkacur@redhat.com>
+Subject: [PATCH 3/4] rtla: Minor grammar fix for rtla README
+Date:   Fri, 29 Apr 2022 18:28:12 +0200
+Message-Id: <437f0accdde53713ab3cce46f3564be00487e031.1651247710.git.bristot@kernel.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <cover.1651247710.git.bristot@kernel.org>
 References: <cover.1651247710.git.bristot@kernel.org>
@@ -49,36 +50,50 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-rtla's function __set_sched_attr() was borrowed from stalld, but I
-forgot to update the error message to something meaningful for rtla.
+From: John Kacur <jkacur@redhat.com>
 
- Update the error message from:
-        boost_with_deadline failed to boost pid PID: STRERROR
- to a proper one:
-        Failed to set sched attributes to the pid PID: STRERROR
+- Change to "The rtla meta-tool includes"
+- Remove an unnecessary "But, "
+- Adjust the formatting of the paragraph resulting from the changes.
+- Simplify the wording for the libraries and tools.
 
-Link: https://lore.kernel.org/r/eeded730413e7feaa13f946924bcf2cbf7dd9561.1650617571.git.bristot@kernel.org/
+Link: https://lore.kernel.org/r/20220408161012.10544-1-jkacur@redhat.com/
 
 Cc: Steven Rostedt <rostedt@goodmis.org>
-Fixes: b1696371d865 ("rtla: Helper functions for rtla")
+Cc: Daniel Bristot de Oliveria <bristot@kernel.org>
+Fixes: 79ce8f43ac5a ("rtla: Real-Time Linux Analysis tool")
+Acked-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+Signed-off-by: John Kacur <jkacur@redhat.com>
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- tools/tracing/rtla/src/utils.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/tracing/rtla/README.txt | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
-index da2b590edaed..3bd6f64780cf 100644
---- a/tools/tracing/rtla/src/utils.c
-+++ b/tools/tracing/rtla/src/utils.c
-@@ -255,7 +255,7 @@ int __set_sched_attr(int pid, struct sched_attr *attr)
+diff --git a/tools/tracing/rtla/README.txt b/tools/tracing/rtla/README.txt
+index 6c88446f7e74..0fbad2640b8c 100644
+--- a/tools/tracing/rtla/README.txt
++++ b/tools/tracing/rtla/README.txt
+@@ -1,15 +1,13 @@
+ RTLA: Real-Time Linux Analysis tools
  
- 	retval = sched_setattr(pid, attr, flags);
- 	if (retval < 0) {
--		err_msg("boost_with_deadline failed to boost pid %d: %s\n",
-+		err_msg("Failed to set sched attributes to the pid %d: %s\n",
- 			pid, strerror(errno));
- 		return 1;
- 	}
+-The rtla is a meta-tool that includes a set of commands that
+-aims to analyze the real-time properties of Linux. But, instead of
+-testing Linux as a black box, rtla leverages kernel tracing
+-capabilities to provide precise information about the properties
+-and root causes of unexpected results.
++The rtla meta-tool includes a set of commands that aims to analyze
++the real-time properties of Linux. Instead of testing Linux as a black box,
++rtla leverages kernel tracing capabilities to provide precise information
++about the properties and root causes of unexpected results.
+ 
+ Installing RTLA
+ 
+-RTLA depends on some libraries and tools. More precisely, it depends on the
+-following libraries:
++RTLA depends on the following libraries and tools:
+ 
+  - libtracefs
+  - libtraceevent
 -- 
 2.32.0
 
