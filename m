@@ -2,95 +2,153 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BB31C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Apr 2022 16:28:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7297AC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 30 Apr 2022 10:29:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379181AbiD2QcL (ORCPT
+        id S1382554AbiD3Kcg (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 29 Apr 2022 12:32:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50292 "EHLO
+        Sat, 30 Apr 2022 06:32:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379206AbiD2Qbv (ORCPT
+        with ESMTP id S241493AbiD3Kcg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 29 Apr 2022 12:31:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E90EDAA05;
-        Fri, 29 Apr 2022 09:28:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 05E0362338;
-        Fri, 29 Apr 2022 16:28:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0C48C385AF;
-        Fri, 29 Apr 2022 16:28:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1651249703;
-        bh=i2s8MXletVaqxsQHutApX0kGzV6e20Tl+T1LrZsiZdQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XFJez6aLSagPmG2NVQ5jtfNBfUi4S0LFeqMFKDv31dtv+nkVDvCVCcGdgAiDf0WZk
-         /B+k0/QsWPxQGcVyHXjYMuP1keP1r+z8gz7acwVc/vDGoBAzqI5AKdiXUmfjyFmgRg
-         ffLaJylc1o83tF5p0Cx9cOmDONbI0bT6djg6/rI0uNIY0umJ0knA5fAnhLtfB0DQqX
-         YeWf/WRBcGWSYoYHoGZGGV7oA+hqUmIMqWwrvKNL+9+CBs+XpaK5u43XSvVSKGmfRV
-         TISokVBNQSXe0ozvzfPrUgMxLEJ2qFiYMycPkr2I4DQM2Wwy44tPANJt+mIi1/+1XS
-         tyyXLqCjxXQGg==
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        John Kacur <jkacur@redhat.com>,
-        Daniel Bristot de Oliveria <bristot@redhat.com>
-Subject: [PATCH 2/4] rtla: Don't overwrite existing directory mode
-Date:   Fri, 29 Apr 2022 18:28:11 +0200
-Message-Id: <8c294a6961080a1970fd8b73f7bcf1e3984579e2.1651247710.git.bristot@kernel.org>
+        Sat, 30 Apr 2022 06:32:36 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E3522D1DC
+        for <linux-trace-devel@vger.kernel.org>; Sat, 30 Apr 2022 03:29:14 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id i27so19643953ejd.9
+        for <linux-trace-devel@vger.kernel.org>; Sat, 30 Apr 2022 03:29:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=omTRKCRvsxRgs0JeBBMOS3y9AIqig0qv75n3AENhnwo=;
+        b=mgpHluRi3lGSdYG/jEHYxUUpMRLkQ4h7YYsM3tcK9h9LWSUf/AdsIoo6snI6rX/VGW
+         G2jZ94BnHgypLB4egsV6tlkl1B99n7EwtlIlAhHLaTwWkveVS2pqmvtFhvw6DYo6Y0nE
+         TF5/+iMWOaNrUGHpSnMFGwHJcbn19bAomNBuTpYB5NvIWKfyeEuzzuNmudH7JIxaTvuD
+         xH1YoBJtBwI99mxC4F3VvYR+AHTTa2uHI6tiYmOzB9mImn1oGqsEmsnbUDYXbKVnEttl
+         JmsIZDr9YaOK9eC4A20j+pmqig8NZgCmZOCCoj26WPK1NG7Rlwzh40sCF5DjJDUhpifD
+         DDZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=omTRKCRvsxRgs0JeBBMOS3y9AIqig0qv75n3AENhnwo=;
+        b=Wj5WchC2/vyf4IckhVxOwMdO2PYhoE5RFseRb0TltuSWtFSqIwE4Qh5btLfZNVtkg0
+         HfUkcE13fKyITE51vW+urAVV7JHUIN5xRCP+C722++frRdrCQYpTkEphbkD3mCGSUhI0
+         erL9UPDkGd1lmfNf8s/cbrXPu9qmKeudYAaDc5GoXwGyVePv6OgIgXtJDsaer1xwi2Bn
+         pcvKBdDWl+MzwM6hlwLht4t7e5pk/VVwJuhnFRoovkWK6eJT9+W7m0jgaXCJgKPWnBzF
+         zVCtMJpkqIvWSfazgq/wtE9pQfpBWY52pEnCT6SeEgMpelTqkoIau9RHEtBcw8S1neLZ
+         4p9A==
+X-Gm-Message-State: AOAM532XiK9+JSAXeHRk73wSSqFH77sdPhB2e2+o2SSshWBPxT+Ue4yu
+        wwlQ3MLbcClYyRsXMdzQh4l1H+pgYsY=
+X-Google-Smtp-Source: ABdhPJwYELojMFHGNtVEbvgKprxRZhG2R0OCYBMVq/gt+MLzzx2B2J9IL7NJXNu8fN0HRO57+lqJ4w==
+X-Received: by 2002:a17:907:6e07:b0:6f3:c01b:4890 with SMTP id sd7-20020a1709076e0700b006f3c01b4890mr3188645ejc.678.1651314552721;
+        Sat, 30 Apr 2022 03:29:12 -0700 (PDT)
+Received: from crow.. (78-154-13-120.ip.btc-net.bg. [78.154.13.120])
+        by smtp.gmail.com with ESMTPSA id jl25-20020a17090775d900b006f3ef214dc5sm1489603ejc.43.2022.04.30.03.29.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Apr 2022 03:29:11 -0700 (PDT)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     tz.stoyanov@gmail.com,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH v2] trace-cruncher: Build trace-obj-debug.c as library
+Date:   Sat, 30 Apr 2022 13:28:59 +0300
+Message-Id: <20220430102859.1769397-1-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1651247710.git.bristot@kernel.org>
-References: <cover.1651247710.git.bristot@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: John Kacur <jkacur@redhat.com>
+The code for resolving virtual address to function name gets build
+as shared library. The library is installed as package data. Later
+this library can be used by the different sub-modules of tracecruncher.
 
-The mode on /usr/bin is often 555 these days,
-but make install on rtla overwrites this with 755
-
-Fix this by preserving the current directory if it exists.
-
-Link: https://lore.kernel.org/r/20220402043939.6962-1-jkacur@redhat.com
-
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Daniel Bristot de Oliveria <bristot@redhat.com>
-Fixes: 79ce8f43ac5a ("rtla: Real-Time Linux Analysis tool")
-Acked-by: Daniel Bristot de Oliveira <bristot@kernel.org>
-Signed-off-by: John Kacur <jkacur@redhat.com>
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- tools/tracing/rtla/Makefile | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
-index 11fb417abb42..5a3226e436ef 100644
---- a/tools/tracing/rtla/Makefile
-+++ b/tools/tracing/rtla/Makefile
-@@ -23,6 +23,7 @@ $(call allow-override,LD_SO_CONF_PATH,/etc/ld.so.conf.d/)
- $(call allow-override,LDCONFIG,ldconfig)
+This patch applies on top of the patch:
+https://lore.kernel.org/all/20220420080206.252356-2-tz.stoyanov@gmail.com/
+
+Changes in v2:
+ - Fixing the problem of '$ORIGIN' not being properly added to
+   the 'RUNPATH' of the shared libraries, built by the sub-modules. 
+
+ Makefile | 24 +++++++++++++++++++++---
+ setup.py |  4 ++--
+ 2 files changed, 23 insertions(+), 5 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 52428c0..9b62c4a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -13,13 +13,31 @@ NC	:= '\e[0m'
  
- INSTALL	=	install
-+MKDIR	=	mkdir
- FOPTS	:=	-flto=auto -ffat-lto-objects -fexceptions -fstack-protector-strong \
- 		-fasynchronous-unwind-tables -fstack-clash-protection
- WOPTS	:= 	-Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -Wno-maybe-uninitialized
-@@ -68,7 +69,7 @@ static: $(OBJ)
+ DOCDIR = ./docs
  
- .PHONY: install
- install: doc_install
--	$(INSTALL) -d -m 755 $(DESTDIR)$(BINDIR)
-+	$(MKDIR) -p $(DESTDIR)$(BINDIR)
- 	$(INSTALL) rtla -m 755 $(DESTDIR)$(BINDIR)
- 	$(STRIP) $(DESTDIR)$(BINDIR)/rtla
- 	@test ! -f $(DESTDIR)$(BINDIR)/osnoise || rm $(DESTDIR)$(BINDIR)/osnoise
+-all:
++CC = gcc
++CFLAGS = -fPIC -Wall -Wextra -O2 -g
++LDFLAGS = -shared
++RM = rm -rf
++
++DBG_LIB = tracecruncher/libobjdebug.so
++PY_SETUP = setup
++
++DBG_SRCS = src/trace-obj-debug.c
++DBG_OBJS = src/trace-obj-debug.o
++
++all: $(DBG_LIB) $(PY_SETUP)
+ 	@ echo ${CYAN}Buildinging trace-cruncher:${NC};
++
++$(PY_SETUP):
+ 	python3 setup.py build
+ 
++$(DBG_LIB): $(DBG_OBJS)
++	$(CC) ${LDFLAGS} -o $@ $^ -L./tracecruncher -lbfd
++
+ clean:
+-	rm -f src/npdatawrapper.c
+-	rm -rf build
++	${RM} src/npdatawrapper.c
++	${RM} $(DBG_LIB)
++	${RM} src/*.o
++	${RM} build
+ 
+ install:
+ 	@ echo ${CYAN}Installing trace-cruncher:${NC};
+diff --git a/setup.py b/setup.py
+index 58561cf..d9e296b 100644
+--- a/setup.py
++++ b/setup.py
+@@ -37,7 +37,7 @@ def add_library(lib, min_version,
+         libs_found.extend([(lib, lib_version)])
+ 
+ def third_party_paths():
+-    library_dirs = []
++    library_dirs = ['$ORIGIN', 'tracecruncher']
+     include_dirs = [np.get_include()]
+     libs_required = [('libtraceevent', '1.5.0'),
+                      ('libtracefs',    '1.3.0'),
+@@ -61,7 +61,6 @@ include_dirs, library_dirs = third_party_paths()
+ 
+ def extension(name, sources, libraries):
+     runtime_library_dirs = library_dirs
+-    runtime_library_dirs.extend('$ORIGIN')
+     return Extension(name, sources=sources,
+                            include_dirs=include_dirs,
+                            library_dirs=library_dirs,
+@@ -91,6 +90,7 @@ def main():
+           url='https://github.com/vmware/trace-cruncher',
+           license='LGPL-2.1',
+           packages=find_packages(),
++          package_data={'tracecruncher': ['libobjdebug.so']},
+           ext_modules=[module_ft, module_data, module_ks],
+           classifiers=[
+               'Development Status :: 4 - Beta',
 -- 
 2.32.0
 
