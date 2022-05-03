@@ -2,78 +2,91 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6119CC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 May 2022 06:49:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9231EC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  3 May 2022 06:49:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229654AbiECGwd (ORCPT
+        id S229911AbiECGwg (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 3 May 2022 02:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41882 "EHLO
+        Tue, 3 May 2022 02:52:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbiECGwd (ORCPT
+        with ESMTP id S229818AbiECGwe (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 3 May 2022 02:52:33 -0400
+        Tue, 3 May 2022 02:52:34 -0400
 Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F21C37031
-        for <linux-trace-devel@vger.kernel.org>; Mon,  2 May 2022 23:49:01 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id gh6so31717942ejb.0
-        for <linux-trace-devel@vger.kernel.org>; Mon, 02 May 2022 23:49:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F214337031
+        for <linux-trace-devel@vger.kernel.org>; Mon,  2 May 2022 23:49:02 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id l7so31677020ejn.2
+        for <linux-trace-devel@vger.kernel.org>; Mon, 02 May 2022 23:49:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pEl2Q4IIZ8M0Nq6g2j5nglH7TGt6D1gyPpc5eGm9KLo=;
-        b=G2SWrP+PhynlbOFbpA3z527SFx0BA6nCTImZAY1QCjSawgk3AO5XS5Sd/Wq3rzyUp+
-         /P5pXpT27SHgrnk2dfzsfZYYeH5d7cl6npDL5t+NQorQ543lY9Wcl4es80w8A7wjZQ4t
-         EpkTrseSGv0SIeFRnSEfgTlmi+FFOd43zxEz0cg0S00ud/UuBltfQ6vLGezhHlghbyVv
-         YU6PvJ8m0konvxDwCdpuo4nDgG1rjTlpIfT36/b6wnMLz6w9BNUEr9Y26kq2oi1KZ6QT
-         1xFTTVh0J90iguyF85ms5+35FUxsiZCdzjBwUGxWbF/l9a4asKs8VjwZvbiD/aK/OGr0
-         QrUQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=4M8THBhG9j5YZoyswzf+9PE/jNFM++dhXAnfTpmBngg=;
+        b=JCTBLADKvgQJBHrkndRO4qmYc9B6tTiv70WPxVlWyYEgbe15DJadWdvQOL1H8iZN68
+         A4HkHOTIr9LmMOAjrxZib5/02e52BjRA1joiZaGPSuOMs/CQRekyujhQqDJay9X1MhTX
+         1+kDE6LNAeQQxytw8Pdddge6ry3WEY0JycsdrW/nL/BpzIXyamHnMbZOhUfH9NWYqKX8
+         5GQ9hEbxZkGMcV4Fi2n73WRvKLPsiFtGG37b3Zrtn6mgFp4leyutJ+AgZ8ZlkguO38qg
+         9Cds6GDSZ1I637hG2ZMnUwPC/92oAZW1CJjRkW3F3ompBLQhXF/J07PHjFiiOmc3YzwG
+         t1MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pEl2Q4IIZ8M0Nq6g2j5nglH7TGt6D1gyPpc5eGm9KLo=;
-        b=g/oFaG75YsUmFbXXIw8IodTMJEPQr4ICJ3WeG28QloPDQVjbUdQZ8Cns540QGEG92b
-         w0w+jNiDRc5lqFfdRuh4p300txr9Mq4vwvSoJA/H3bSAher1cHF5nssiQrLzC8t9SeA+
-         JKJYvvTqmX5NnyHwRcbM9fbiejiH6LE1x+siKhA47RL0K1jfTJFFfzFvNvaLZrfd91g+
-         vZAZOpzn55B0MPTZLjmLasEhDcECTxP0oPsGl0X48dr9fn4pyStRXAHPswJMAKjAS640
-         EKMdAWc0gMt9mZovnGdbfd4tpXSs82+HV1ZBUaKm/QR0A7nsOUXYg7GFa8zTIG/LS39m
-         0zSw==
-X-Gm-Message-State: AOAM531ASdcZOXBa2PyGS4L8T7KTAQRqOkzMH8i0T1keAAqE2G1ODzsF
-        KfJtKSHAGJt9wMXpy0VlE1acr/fRa2fPVw==
-X-Google-Smtp-Source: ABdhPJyO9Aeh+sZ1DdSt8V16UZSS5gcUeyTseBYY23bBCKyyrt29O4M1TtlqLnrldUyFAKDuVub6eg==
-X-Received: by 2002:a17:906:dc8a:b0:6e0:94bf:1ec3 with SMTP id cs10-20020a170906dc8a00b006e094bf1ec3mr13926437ejc.447.1651560539960;
-        Mon, 02 May 2022 23:48:59 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4M8THBhG9j5YZoyswzf+9PE/jNFM++dhXAnfTpmBngg=;
+        b=cjzvyYrrVw6Q4UZ/L8o/+2s44OQKJTZTMELaIWfa5ty4DfLoCF4R0HZtyop+azAqTO
+         D+2kd/hXxgZlTpY7zmUeZIS4ip4QBkzwA8Qx9X397R/Cg1sf7YAuTIVKrrfhN1IKuZrQ
+         a5pVL1RgDJizkMbgvqm0vzeeyFyt4EINDV1J2xfAQMn7ilKADcJHUgho9ahkXjJXZ7vf
+         0QCiwrG3/8L7wOIemYymiQBNIAWPB8+n6e/B4TnYpNE1Yo9z5h9a+mE9Ba0t0HX59Jna
+         6OI/e3DwypJgTejsiyhH3VZj8bPmkP3RZx+MSrAREFIKevMsC8xjxmzYsK8QC5Uj4XKK
+         5GpA==
+X-Gm-Message-State: AOAM533FBTcixi0jmzZVDa+O2BCI+A9GioLy2ZA6mkhxjwVl4NFiK8uL
+        ZyYepEmgYCt0TTaWIovNt0LcIJyOh4VJ6A==
+X-Google-Smtp-Source: ABdhPJxoLBkY3ghdKIAoRpuAuRGY+W9h6PhB9CM1VucR7vkteg8UwVSVHzkzPoHSWOZaWP9XAdFDAw==
+X-Received: by 2002:a17:907:9615:b0:6f4:92ab:4fce with SMTP id gb21-20020a170907961500b006f492ab4fcemr1453543ejc.95.1651560541572;
+        Mon, 02 May 2022 23:49:01 -0700 (PDT)
 Received: from oberon.zico.biz.com ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id e26-20020a170906845a00b006f3ef214e6csm4288457ejy.210.2022.05.02.23.48.59
+        by smtp.gmail.com with ESMTPSA id e26-20020a170906845a00b006f3ef214e6csm4288457ejy.210.2022.05.02.23.49.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 May 2022 23:48:59 -0700 (PDT)
+        Mon, 02 May 2022 23:49:01 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     y.karadz@gmail.com
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 0/3] trace-cruncher: Small fixes
-Date:   Tue,  3 May 2022 09:48:54 +0300
-Message-Id: <20220503064857.260937-1-tz.stoyanov@gmail.com>
+Subject: [PATCH 2/3] trace-cruncher: Update github workflows
+Date:   Tue,  3 May 2022 09:48:56 +0300
+Message-Id: <20220503064857.260937-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220503064857.260937-1-tz.stoyanov@gmail.com>
+References: <20220503064857.260937-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Fixed problems, found by github CI automatic workflow.
+Recent commits add functionality for function name to address resolving,
+using bfd library. This breaks the github action, used for
+trace-cruncher CI, as it does not have bfd development files. Updated
+the workflow with bfd development package.
 
-Tzvetomir Stoyanov (VMware) (3):
-  trace-cruncher: Add define for bool type
-  trace-cruncher: Update github workflows
-  trace-cruncher: Add object files to gitignore
-
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
  .github/workflows/main.yml | 2 +-
- .gitignore                 | 1 +
- src/trace-obj-debug.c      | 1 +
- 3 files changed, 3 insertions(+), 1 deletion(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/.github/workflows/main.yml b/.github/workflows/main.yml
+index a9520e7..0d72bbf 100644
+--- a/.github/workflows/main.yml
++++ b/.github/workflows/main.yml
+@@ -17,7 +17,7 @@ jobs:
+       shell: bash
+       run: |
+         sudo apt-get update
+-        sudo apt-get install build-essential git cmake libjson-c-dev -y
++        sudo apt-get install build-essential git cmake libjson-c-dev binutils-dev -y
+         sudo apt-get install libpython3-dev cython3 python3-numpy -y
+         sudo apt install python3-pip
+         sudo pip3 install --system pkgconfig GitPython
 -- 
 2.35.1
 
