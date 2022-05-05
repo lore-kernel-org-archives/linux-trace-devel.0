@@ -2,822 +2,309 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A86CC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  5 May 2022 16:09:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53CDAC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  5 May 2022 16:17:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381752AbiEEQNb (ORCPT
+        id S1381833AbiEEQUm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 5 May 2022 12:13:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60544 "EHLO
+        Thu, 5 May 2022 12:20:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1381930AbiEEQM3 (ORCPT
+        with ESMTP id S1381266AbiEEQUm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 5 May 2022 12:12:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523705C873;
-        Thu,  5 May 2022 09:08:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C3A5561DEA;
-        Thu,  5 May 2022 16:08:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A87AC385B0;
-        Thu,  5 May 2022 16:08:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1651766921;
-        bh=Ju0Rrb93btnGx8eJ81md1f7mUzJpF5JETERn7cCRZZA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TGt6GvWOudqxoz9QnSPT63Pt3LGxkVT3yAwsWvgCCm2y+xyHqwqmOIWH/NoPEGXNy
-         VCKqgZy/3Wrz/N5arVnErVsvdKjEZKbnh+fSEodOneuDgVw7svxU/hXWCD52HJUWqE
-         xL41T2VL4ncHT7DaerDGCQ8YKNhX34miPgLeUg0IwlzP+QbK9IgpqryW/h59NMoYgv
-         FHZmra8+hkUh90BotZBHRuYsRAaykl1AWD8J6K8p/wAO983fEqTTqbi6JWmkbgkuZT
-         oocagnLmx3xL+dlN7Op4aeBKU/KxiCe8UjR+hKS1MACcWinC69SMnxWyrheq9AJy9W
-         I4gSNqg8jExcA==
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Gabriele Paoloni <gpaoloni@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        linux-doc@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [RFC V3 19/20] rv/safety_app: Add an safety_app sample
-Date:   Thu,  5 May 2022 18:06:59 +0200
-Message-Id: <6b5d674059991ff6899d945711f7ae317e547b48.1651766361.git.bristot@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1651766361.git.bristot@kernel.org>
-References: <cover.1651766361.git.bristot@kernel.org>
+        Thu, 5 May 2022 12:20:42 -0400
+Received: from us-smtp-delivery-74.mimecast.com (us-smtp-delivery-74.mimecast.com [170.10.129.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9ED195C655
+        for <linux-trace-devel@vger.kernel.org>; Thu,  5 May 2022 09:16:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1651767418;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=f0wn4S0Qd/jGJIzBFDJr95jyTK1oLewaOA/pfqygxhs=;
+        b=VKHcWxYZKOAxP+9sO32ezUodHNWkBttJivF+VjfILNifkNXWy3soWvfOhW0n+NYhb/7nL0
+        nOgeQPgzB4MTS9xht8nyrdq0Q6Wj/YinmdhEyya/3qONk1uu/79orwJRXB1IMsuSO2Mj+C
+        Zu0sgnNbqYYvkTXFIIiGNhyrIRcrI2I=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-663-wAtn8mBaOSOHpSKbYXidsg-1; Thu, 05 May 2022 12:16:57 -0400
+X-MC-Unique: wAtn8mBaOSOHpSKbYXidsg-1
+Received: by mail-qk1-f199.google.com with SMTP id u6-20020a05620a430600b0069c0f5ad4e2so3162772qko.2
+        for <linux-trace-devel@vger.kernel.org>; Thu, 05 May 2022 09:16:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=f0wn4S0Qd/jGJIzBFDJr95jyTK1oLewaOA/pfqygxhs=;
+        b=ndQA6BO858psvCeAjGgtYiJL5LMyRHYuDoNmvYexebs7qYiKiyIsVzSX2nafxPtItG
+         v2gbWvwSOK+BtNr9WVjpn9pj6MgCK/Nk6gxKb5UCxX00Sdz6j5TWUxFnobeKUTKPePzz
+         qCnKdA+G1otgwZGtmhL28/g0/Alz56r5AI2GprMx3nrg0v6u3M1/ot8nc0gybe5lrWA4
+         c4o3KzsJ9iX3HS8PrYj+D83WUeEK8kxe6GzbUYJFoe0lV5asFOQR3kCrb6ujNM4Gl0lH
+         fysvPK1TyrdkscAnvXOxvmXGjFMTIw2yJvgbQhTbTyghp+OJQSwSDBNjkPibwstNK2Vu
+         OuWA==
+X-Gm-Message-State: AOAM5320LEbk/QuZZCqyCv7hjt34lEoaU8mzEQwtn0k4ZFA+hIzO3bfF
+        Vgcaoy5aRB9s9n4m1C/9LRylX666cfnRW8Kt9ZIktsmJyGn6HlRA+9XHcIW/z6fS0NHDQZ+kfNu
+        YdBTY4nHhQVYgQ1gbQTm0CJC44oKCpnE=
+X-Received: by 2002:a05:620a:2847:b0:67d:2bad:422f with SMTP id h7-20020a05620a284700b0067d2bad422fmr20240950qkp.559.1651767416591;
+        Thu, 05 May 2022 09:16:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz+S85zcq8WmL2ky3vro7SW9gMcurDgRBLcadYqEQ99Q4Kp8h2sgOWTgT0Lu2FWcfGhD8CgZQ==
+X-Received: by 2002:a05:620a:2847:b0:67d:2bad:422f with SMTP id h7-20020a05620a284700b0067d2bad422fmr20240923qkp.559.1651767416298;
+        Thu, 05 May 2022 09:16:56 -0700 (PDT)
+Received: from fionn (bras-base-rdwyon0600w-grc-09-184-147-143-93.dsl.bell.ca. [184.147.143.93])
+        by smtp.gmail.com with ESMTPSA id i16-20020a05620a075000b0069fc13ce1e7sm978292qki.24.2022.05.05.09.16.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 May 2022 09:16:55 -0700 (PDT)
+Date:   Thu, 5 May 2022 12:16:54 -0400 (EDT)
+From:   John Kacur <jkacur@redhat.com>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+cc:     Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniel Wagner <dwagner@suse.de>
+Subject: Re: [PATCH v2] rtla: Remove procps-ng dependency
+In-Reply-To: <a0f9f8c1030c66305c9b921057c3d483064d5529.1651220820.git.bristot@kernel.org>
+Message-ID: <cd9251-c95-b342-3694-777945cc374@redhat.com>
+References: <a0f9f8c1030c66305c9b921057c3d483064d5529.1651220820.git.bristot@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This is the sample code of a safety application that uses the
-watchdog as a safety monitor and the RV monitors to monitor
-this interaction/get feedback from kernel about the watchdog states.
 
-This tool first creates a trace instance to follow the RV events
-and then enables RV monitor. After that, the tool configures
-the watchdog and starts running the main loop.
 
-The main loop runs a use-case-specific function, like checking
-the system. If the system is running as expected, it pings the
-watchdog. After pinging the watchdog, the tool then collects
-trace information to see if the RV monitor received the expected
-events and is in a safe/safe_nwo state.
+On Fri, 29 Apr 2022, Daniel Bristot de Oliveira wrote:
 
-For further information, run safety_app --help
+> Daniel Wagner reported to me that readproc.h got deprecated. Also,
+> while the procps-ng library was available on Fedora, it was not available
+> on RHEL, which is a piece of evidence that it was not that used.
 
-The safety-app specification was developed together with Gabriele Paoloni,
-in the context of the Linux Foundation Elisa Project.
+I am for removing this dependency, but I feel I have to correct your 
+description. procps-ng is available on RHEL. The development library 
+however is just available at boot-time, but only because no other packages depend 
+on it. If we were to add a package that depended on it, it would then be 
+available at runtime. I would remove any references to RHEL in your 
+description, and just say you are reducing the dependency on this to 
+simply building rtla. 
 
-Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Marco Elver <elver@google.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Gabriele Paoloni <gpaoloni@redhat.com>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Clark Williams <williams@redhat.com>
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-trace-devel@vger.kernel.org
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- tools/tracing/rv/safety_app/Makefile     |  51 ++
- tools/tracing/rv/safety_app/safety_app.c | 645 +++++++++++++++++++++++
- 2 files changed, 696 insertions(+)
- create mode 100644 tools/tracing/rv/safety_app/Makefile
- create mode 100644 tools/tracing/rv/safety_app/safety_app.c
-
-diff --git a/tools/tracing/rv/safety_app/Makefile b/tools/tracing/rv/safety_app/Makefile
-new file mode 100644
-index 000000000000..002531022e45
---- /dev/null
-+++ b/tools/tracing/rv/safety_app/Makefile
-@@ -0,0 +1,51 @@
-+NAME	:=	safety_app
-+VERSION	:=	0.1
-+
-+# From libtracefs:
-+# Makefiles suck: This macro sets a default value of $(2) for the
-+# variable named by $(1), unless the variable has been set by
-+# environment or command line. This is necessary for CC and AR
-+# because make sets default values, so the simpler ?= approach
-+# won't work as expected.
-+define allow-override
-+  $(if $(or $(findstring environment,$(origin $(1))),\
-+            $(findstring command line,$(origin $(1)))),,\
-+    $(eval $(1) = $(2)))
-+endef
-+
-+# Allow setting CC and AR, or setting CROSS_COMPILE as a prefix.
-+$(call allow-override,CC,$(CROSS_COMPILE)gcc)
-+$(call allow-override,AR,$(CROSS_COMPILE)ar)
-+$(call allow-override,STRIP,$(CROSS_COMPILE)strip)
-+$(call allow-override,PKG_CONFIG,pkg-config)
-+$(call allow-override,LD_SO_CONF_PATH,/etc/ld.so.conf.d/)
-+$(call allow-override,LDCONFIG,ldconfig)
-+
-+INSTALL	=	install
-+FOPTS	:=	-flto=auto -ffat-lto-objects -fexceptions -fstack-protector-strong \
-+		-fasynchronous-unwind-tables -fstack-clash-protection
-+WOPTS	:= 	-Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -Wno-maybe-uninitialized
-+
-+TRACEFS_HEADERS	:= $$($(PKG_CONFIG) --cflags libtracefs)
-+
-+CFLAGS	:=	-O -g -DVERSION=\"$(VERSION)\" $(FOPTS) $(WOPTS) $(TRACEFS_HEADERS)
-+LDFLAGS	:=	-ggdb
-+LIBS	:=	$$($(PKG_CONFIG) --libs libtracefs)
-+FILES	:=	Makefile
-+BINDIR	:=	/usr/bin
-+
-+OBJ	:=	$(NAME).o
-+
-+.PHONY:	all
-+all:	$(OBJ)
-+	$(CC) -o $(NAME) $(LDFLAGS) $(OBJ) $(LIBS)
-+
-+.PHONY: install
-+install:
-+	$(INSTALL) -d -m 755 $(DESTDIR)$(BINDIR)
-+	$(INSTALL) $(NAME) -m 755 $(DESTDIR)$(BINDIR)
-+	$(STRIP) $(DESTDIR)$(BINDIR)/$(NAME)
-+
-+.PHONY: clean
-+clean:
-+	@rm -rf *~ $(OBJ) $(NAME)
-diff --git a/tools/tracing/rv/safety_app/safety_app.c b/tools/tracing/rv/safety_app/safety_app.c
-new file mode 100644
-index 000000000000..03962a92ebc3
---- /dev/null
-+++ b/tools/tracing/rv/safety_app/safety_app.c
-@@ -0,0 +1,645 @@
-+// SPDX-License-Identifier: LGPL-2.1
-+/*
-+ * This is the starting point for a safety monitor.
-+ *
-+ * The safety_check() function is where you need to add your own code.
-+ *
-+ * Copyright: Red Hat, Inc. Daniel Bristot de Oliveira <bristot@kernel.org>
-+ */
-+#define _GNU_SOURCE
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include <getopt.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <sys/ioctl.h>
-+#include <linux/watchdog.h>
-+#include <tracefs/tracefs.h>
-+
-+#define MAX_PATH	1024
-+
-+static int		config_watchdog_id;
-+static char		config_watchdog_path[MAX_PATH];
-+static int		config_nowayout;
-+static char		config_nowayout_path[MAX_PATH];
-+static long long	config_timeout = 10;
-+static long		config_cycles;
-+static long		config_monitor_period = 1;
-+static char		*config_rv_monitor = "safe_wtd";
-+static char		*config_rv_reactor = "panic";
-+static int		config_stop_monitor = 0;
-+static int		config_restart_monitor = 0;
-+
-+/*
-+ * print_msg - print a message to stdout
-+ */
-+void print_msg(const char *fmt, ...)
-+{
-+	char message[1024];
-+	va_list ap;
-+
-+	va_start(ap, fmt);
-+	vsnprintf(message, sizeof(message), fmt, ap);
-+	va_end(ap);
-+
-+	fprintf(stdout, "%s", message);
-+	fflush(NULL);
-+}
-+
-+/*
-+ * ==================================================================
-+ * The code section bellow is responsible for enabling the RV monitor.
-+ * ==================================================================
-+ */
-+
-+/*
-+ * __disable_rv_monitor - disables the RV monitor
-+ *
-+ * Unconditionally disables the RV monitor and set the reactor to nop.
-+ */
-+static void __disable_rv_monitor(char *monitor)
-+{
-+	char path[MAX_PATH];
-+	int retval;
-+
-+	snprintf(path, MAX_PATH, "rv/monitors/%s/enable", monitor);
-+	retval = tracefs_instance_file_write(NULL, path, "0\n");
-+	if (retval < 0) {
-+		perror("Error disabling the RV monitor");
-+		return;
-+	}
-+
-+	snprintf(path, MAX_PATH, "rv/monitors/%s/reactors", monitor);
-+	retval = tracefs_instance_file_write(NULL, path, "nop\n");
-+	if (retval < 0) {
-+		perror("Error disabling the RV reactor");
-+		return;
-+	}
-+}
-+
-+/*
-+ * disable_rv_monitor - conditionally disables the RV monitor
-+ */
-+static void disable_rv_monitor(char *monitor)
-+{
-+	if (!config_stop_monitor)
-+		return;
-+
-+	__disable_rv_monitor(monitor);
-+}
-+
-+/*
-+ * enable_rv_monitor - sets the 'reactor' and enable RV 'monitor'
-+ */
-+static int enable_rv_monitor(char *monitor, char *reactor)
-+{
-+	char buffer[MAX_PATH];
-+	char path[MAX_PATH];
-+	int size = 2;
-+	int retval;
-+	char *on;
-+
-+	snprintf(path, MAX_PATH, "rv/monitors/%s/enable", monitor);
-+	on = tracefs_instance_file_read(NULL, path, &size);
-+	if (on && on[0] == '1') {
-+		if (!config_restart_monitor)
-+			return 0;
-+		__disable_rv_monitor(monitor);
-+	}
-+
-+	snprintf(path, MAX_PATH, "rv/monitors/%s/reactors", monitor);
-+	snprintf(buffer, MAX_PATH, "%s\n", reactor);
-+	retval = tracefs_instance_file_write(NULL, path, buffer);
-+	if (retval < 0) {
-+		perror("Error enabling the RV reactor");
-+		return -1;
-+	}
-+
-+	snprintf(path, MAX_PATH, "rv/monitors/%s/enable", monitor);
-+	retval = tracefs_instance_file_write(NULL, path, "1\n");
-+	if (retval < 0) {
-+		perror("Error enabling the RV monitor");
-+		return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * ==================================================================
-+ * The code section bellow is responsible for parsing the RV monitor output.
-+ * ==================================================================
-+ */
-+struct trace_instance {
-+	struct tracefs_instance		*inst;
-+	struct tep_handle		*tep;
-+	struct trace_seq		*seq;
-+};
-+
-+int ping_counter = 0;
-+int last_state_running = 0;
-+
-+/*
-+ * handle_safe_wtd_rv_event - parse events from the safe_wtd RV monitor
-+ */
-+static int
-+handle_safe_wtd_rv_event(struct trace_seq *s, struct tep_record *record,
-+			 struct tep_event *event, void *context)
-+{
-+	/*
-+	 * From kernel/trace/rv/monitors/safe_wtd/model.h
-+	 */
-+	enum states_safe_wtd {
-+		init = 0,
-+		closed_running,
-+		closed_running_nwo,
-+		nwo,
-+		opened,
-+		opened_nwo,
-+		reopened,
-+		safe,
-+		safe_nwo,
-+		set,
-+		set_nwo,
-+		started,
-+		started_nwo,
-+		stopped,
-+		state_max
-+	};
-+
-+	enum events_safe_wtd {
-+		close = 0,
-+		nowayout,
-+		open,
-+		other_threads,
-+		ping,
-+		set_safe_timeout,
-+		start,
-+		stop,
-+		event_max
-+	};
-+	unsigned long long val;
-+
-+
-+	tep_get_field_val(s, event, "event", record, &val, 1);
-+	if (val == ping)
-+		ping_counter++;
-+
-+	tep_get_field_val(s, event, "next_state", record, &val, 1);
-+	if (val == safe || val == safe_nwo)
-+		last_state_running = 1;
-+	else
-+		last_state_running = 0;
-+
-+	return 0;
-+}
-+
-+/*
-+ * collect_registered_events - call the existing callback function for the event
-+ *
-+ * If an event has a registered callback function, call it.
-+ * Otherwise, ignore the event.
-+ */
-+static int
-+collect_registered_events(struct tep_event *event, struct tep_record *record,
-+			  int cpu, void *context)
-+{
-+	struct trace_instance *trace = context;
-+	struct trace_seq *s = trace->seq;
-+
-+	if (!event->handler)
-+		return 0;
-+
-+	event->handler(s, record, event, context);
-+
-+	return 0;
-+}
-+
-+/*
-+ * check_rv_events - parse trace events and check for the desired states
-+ *
-+ * Return 0 if success, 1 otherwise.
-+ */
-+static int check_rv_events(struct trace_instance *trace)
-+{
-+	int prev_ping_counter = ping_counter;
-+	int retval;
-+	int pings;
-+
-+	retval = tracefs_iterate_raw_events(trace->tep, trace->inst, NULL, 0,
-+					    collect_registered_events, trace);
-+	if (retval < 0) {
-+		print_msg("Error iterating on events\n");
-+		return 1;
-+	}
-+
-+	pings = ping_counter - prev_ping_counter;
-+	print_msg("RV read %d ping(s) and is %s the watchdog\n", pings,
-+			last_state_running ? "running" : "not running");
-+
-+	/*
-+	 * If there is exactly one ping and the last state is running,
-+	 * it is safe.
-+	 */
-+	if (pings == 1 && last_state_running) {
-+		/* reset the variable */
-+		last_state_running = 0;
-+		return 0;
-+	} else {
-+		return 1;
-+	}
-+}
-+
-+/*
-+ * trace_instance_destroy - destroy and free a trace instance
-+ */
-+static void trace_instance_destroy(struct trace_instance *trace)
-+{
-+	if (!trace)
-+		return;
-+
-+	if (trace->inst) {
-+		tracefs_instance_destroy(trace->inst);
-+		tracefs_instance_free(trace->inst);
-+	}
-+
-+	if (trace->seq)
-+		free(trace->seq);
-+
-+	if (trace->tep)
-+		tep_free(trace->tep);
-+
-+	free(trace);
-+}
-+
-+/*
-+ * trace_instance_init - create a trace instance to read monitor's event
-+ *
-+ * It is more than the tracefs instance, as it contains other
-+ * things required for the tracing, such as the local events and
-+ * a seq file.
-+ */
-+static struct trace_instance *trace_instance_init(void)
-+{
-+	struct trace_instance *trace;
-+
-+	trace = calloc(1, sizeof(*trace));
-+	if (!trace)
-+		return NULL;
-+
-+	trace->seq = calloc(1, sizeof(*trace->seq));
-+	if (!trace->seq)
-+		goto destroy_instance;
-+
-+	trace_seq_init(trace->seq);
-+
-+	trace->inst = tracefs_instance_create("safety_app");
-+	if (!trace->inst)
-+		goto destroy_instance;
-+
-+	trace->tep = tracefs_local_events(NULL);
-+	if (!trace->tep)
-+		goto destroy_instance;
-+
-+	/*
-+	 * register for both monitors, it is free.
-+	 */
-+	tep_register_event_handler(trace->tep, -1, "rv", "event_safe_wtd",
-+				   handle_safe_wtd_rv_event, trace);
-+	tracefs_event_enable(trace->inst, "rv", "event_safe_wtd");
-+
-+	return trace;
-+
-+destroy_instance:
-+	trace_instance_destroy(trace);
-+	return NULL;
-+}
-+
-+/*
-+ * ==================================================================
-+ * The code section bellow are helper functions to use a watchdog device.
-+ * ==================================================================
-+ */
-+
-+/*
-+ * set_nowayout - set the watchdog's nowayout option
-+ */
-+static int set_nowayout(char *nowayout_path)
-+{
-+	int nowayout_fd;
-+	int retval;
-+
-+	print_msg("nowayout\n");
-+
-+	nowayout_fd = open(nowayout_path, O_WRONLY);
-+	if (nowayout_path < 0) {
-+		perror("Error opening nowayout fd");
-+		return -1;
-+	}
-+
-+	retval = write(nowayout_fd, "1", 1);
-+	if (retval != 1) {
-+		perror("Error setting nowayout");
-+		close(nowayout_fd);
-+		return -1;
-+	}
-+
-+	close(nowayout_fd);
-+	return 0;
-+}
-+
-+/*
-+ * open_watchdog - open watchdog at the watchdog_path
-+ */
-+static int open_watchdog(char *watchdog_path)
-+{
-+	int watchdog_fd;
-+
-+	print_msg("open %s\n", watchdog_path);
-+
-+	watchdog_fd = open(watchdog_path, O_WRONLY);
-+	if (watchdog_fd < 0) {
-+		perror("Error opening watchdog");
-+		return -1;
-+	}
-+
-+	return watchdog_fd;
-+}
-+
-+/*
-+ * set_timeout - set the timeout in seconds for the previously opened watchdog_fd
-+ */
-+static int set_timeout(int watchdog_fd, int timeout)
-+{
-+	int retval;
-+
-+	print_msg("set_timeout %d\n", timeout);
-+
-+	retval = ioctl(watchdog_fd, WDIOC_SETTIMEOUT, &timeout);
-+	if (retval) {
-+		perror("Error set_timeout");
-+		return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * ping - ping (or pet) the watchdog
-+ */
-+static int ping(int watchdog_fd)
-+{
-+	int retval;
-+
-+	print_msg("ping\n");
-+
-+	retval = write(watchdog_fd, "1", 1);
-+	if (retval != 1) {
-+		perror("Error resseting watchdog");
-+		return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * stop - try to the watchdog
-+ *
-+ * Writing "V" to the watchdog is a special case. Unless nowayout is set,
-+ * it will stop the watchdog device.
-+ */
-+static void stop(int watchdog_fd)
-+{
-+	int retval;
-+
-+	print_msg("stop\n");
-+
-+	retval = write(watchdog_fd, "V", 1);
-+	if (retval != 1)
-+		perror("Error disabling the watchdog");
-+}
-+
-+/*
-+ * usage - print usage message
-+ */
-+static void usage(char *usage, int exitval)
-+{
-+	int i;
-+
-+	static const char * const msg[] = {
-+		"  usage: safety_app [-i id] [-t timeout in seconds ] [-n nowayout_path] \\",
-+		"			[-c cycles] [-p period] [-N] \\",
-+		"			[-N] [-r reactor] [-s] [-R] \\",
-+		"			[-h] \\",
-+		"",
-+		"Watchdog options",
-+		"	-i/--id:		watchdog id",
-+		"	-t/--timeout:		watchdog timeout",
-+		"	-n/--nowayout:		set nowayout",
-+		"",
-+		"Safety monitor options",
-+		"	-c/--cycles:		run cycle nr ping, 0 means forever (default)",
-+		"	-p/--period:		monitor loop period",
-+		"",
-+		"RV monitor options",
-+		"	-r/--reactor		set the reactor (panic is automatically set if no other reactor is passed)",
-+		"	-s/--stop-mon		stop the rv monitor at the end of the execution",
-+		"	-R/--restart-mon	restart the monitor if already started",
-+		"",
-+		"Generic options",
-+		"	-h/--help:		print help message",
-+		NULL,
-+	};
-+
-+	if (usage)
-+		fprintf(stderr, "%s\n", usage);
-+
-+	fprintf(stderr, "sample safety monitor (version %s)\n", VERSION);
-+
-+	for (i = 0; msg[i]; i++)
-+		fprintf(stderr, "%s\n", msg[i]);
-+	exit(exitval);
-+}
-+
-+static long long get_long_from_str(char *start)
-+{
-+	long value;
-+	char *end;
-+
-+	errno = 0;
-+	value = strtoll(start, &end, 10);
-+	if (errno || start == end) {
-+		fprintf(stderr, "Invalid value '%s'", start);
-+		return -1;
-+	}
-+
-+	return value;
-+}
-+
-+static int parse_args(int argc, char **argv)
-+{
-+	int c;
-+
-+	while (1) {
-+		static struct option long_options[] = {
-+			{"help",		no_argument,		0, 'h'},
-+			{"id",			required_argument,	0, 'i'},
-+			{"timeout",		required_argument,	0, 't'},
-+			{"nowayout",		optional_argument,	0, 'n'},
-+			{"cycles",		required_argument,	0, 'c'},
-+			{"period",		required_argument,	0, 'p'},
-+			{"reactor",		required_argument,	0, 'r'},
-+			{"stop-mon",		no_argument,		0, 's'},
-+			{"restart-mon",		no_argument,		0, 'R'},
-+			{0, 0, 0, 0}
-+		};
-+
-+		/* getopt_long stores the option index here. */
-+		int option_index = 0;
-+
-+		c = getopt_long(argc, argv, "hi:t:n::c:p:r:sR",
-+				 long_options, &option_index);
-+
-+		/* Detect the end of the options. */
-+		if (c == -1)
-+			break;
-+
-+		switch (c) {
-+		case 'i':
-+			config_watchdog_id = get_long_from_str(optarg);
-+			break;
-+		case 't':
-+			config_timeout = get_long_from_str(optarg);
-+			break;
-+		case 'n':
-+			config_nowayout = 1;
-+			if (optarg)
-+				strncpy(config_nowayout_path, optarg, MAX_PATH);
-+			break;
-+		case 'c':
-+			config_cycles = get_long_from_str(optarg);
-+			break;
-+		case 'p':
-+			config_monitor_period = get_long_from_str(optarg);
-+			break;
-+		case 'r':
-+			config_rv_reactor = optarg;
-+			break;
-+		case 's':
-+			config_stop_monitor = 1;
-+			break;
-+		case 'R':
-+			config_restart_monitor = 1;
-+			break;
-+		case 'h':
-+			usage("Help message", 0);
-+			break;
-+		default:
-+			usage("Invalid option", 1);
-+		}
-+	}
-+
-+	if (!strlen(config_nowayout_path)) {
-+		snprintf(config_nowayout_path, MAX_PATH,
-+			 "/sys/devices/virtual/watchdog/watchdog%i/nowayout",
-+			 config_watchdog_id);
-+	}
-+
-+	if (config_monitor_period > config_timeout)
-+		usage("Monitor period higher than the watchdog timeout.\n", 1);
-+
-+	snprintf(config_watchdog_path, MAX_PATH, "/dev/watchdog%d", config_watchdog_id);
-+
-+	return 0;
-+}
-+
-+/*
-+ * safety_check - check if the system is working properly
-+ *
-+ * This is the function where the system check will be actually done.
-+ * It will be periodically called by the safety_app. If it returns
-+ * true, the watchdog will be pinged and the system will continue running.
-+ * If this function returns false, the safety_app will not ping the
-+ * watchdog and will exit with an error.
-+ */
-+static int safety_check(void)
-+{
-+	/*
-+	 * Add your code here.
-+	 *
-+	 * Return 0 to make the safety monitor to skip the watchdog ping and
-+	 * exit with error, or just kill the system yourself.
-+	 */
-+	return 1;
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	struct trace_instance *trace;
-+	int exit_val = 1;
-+	int watchdog_fd;
-+	long cycles = 0;
-+	int retval;
-+
-+	parse_args(argc, argv);
-+
-+	trace = trace_instance_init();
-+
-+	retval = enable_rv_monitor(config_rv_monitor, config_rv_reactor);
-+	if (retval) {
-+		perror("Cannot proceed without the RV monitor");
-+		goto out_destroy_trace;
-+	}
-+
-+	if (config_nowayout)
-+		set_nowayout(config_nowayout_path);
-+
-+	watchdog_fd = open_watchdog(config_watchdog_path);
-+	if (watchdog_fd < 0) {
-+		perror("Error opening watchdog");
-+		exit(1);
-+	}
-+
-+	if (config_timeout) {
-+		retval = set_timeout(watchdog_fd, config_timeout);
-+		if (retval)
-+			goto out_close_watchdog;
-+	}
-+
-+	retval = check_rv_events(trace);
-+	if (retval) {
-+		print_msg("RV monitor returned a failure, it is not safe to continue\n");
-+		goto out_close_watchdog;
-+	}
-+
-+	do {
-+		retval = safety_check();
-+		if (!retval)
-+			goto out_close_watchdog;
-+
-+		retval = ping(watchdog_fd);
-+		if (retval)
-+			goto out_close_watchdog;
-+
-+		retval = check_rv_events(trace);
-+		if (retval) {
-+			print_msg("RV monitor returned a failure, it is not safe to continue\n");
-+			goto out_close_watchdog;
-+		}
-+
-+		sleep(config_monitor_period);
-+	} while (!config_cycles || ++cycles < config_cycles);
-+
-+	stop(watchdog_fd);
-+
-+	exit_val = 0;
-+
-+out_close_watchdog:
-+	close(watchdog_fd);
-+	disable_rv_monitor(config_rv_monitor);
-+out_destroy_trace:
-+	trace_instance_destroy(trace);
-+	return exit_val;
-+}
--- 
-2.35.1
+> 
+> rtla uses procps-ng only to find the PID of the tracers' workload.
+> 
+> I used the procps-ng library to avoid reinventing the wheel. But in this
+> case, reinventing the wheel took me less time than the time we already
+> took trying to work around problems.
+> 
+> Implement a function that reads /proc/ entries, checking if:
+> 	- the entry is a directory
+> 	- the directory name is composed only of digits (PID)
+> 	- the directory contains the comm file
+> 	- the comm file contains a comm that matches the tracers'
+> 	  workload prefix.
+> 	- then return true; otherwise, return false.
+> 
+> And use it instead of procps-ng.
+> 
+> Changes from V1:
+>   - Use a single buffer for comm and comm_path
+>   - Cause an error in case of a too long command prefix
+>   - Do a close_dir()
+>   - Improve log messages
+> 
+> Cc: John Kacur <jkacur@redhat.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Fixes: b1696371d865 ("rtla: Helper functions for rtla")
+> Reported-by: Daniel Wagner <dwagner@suse.de>
+> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+> ---
+>  tools/tracing/rtla/Makefile    |   2 +-
+>  tools/tracing/rtla/README.txt  |   1 -
+>  tools/tracing/rtla/src/utils.c | 102 ++++++++++++++++++++++++++-------
+>  tools/tracing/rtla/src/utils.h |   3 +-
+>  4 files changed, 84 insertions(+), 24 deletions(-)
+> 
+> diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
+> index 5a3226e436ef..523f0a8c38c2 100644
+> --- a/tools/tracing/rtla/Makefile
+> +++ b/tools/tracing/rtla/Makefile
+> @@ -32,7 +32,7 @@ TRACEFS_HEADERS	:= $$($(PKG_CONFIG) --cflags libtracefs)
+>  
+>  CFLAGS	:=	-O -g -DVERSION=\"$(VERSION)\" $(FOPTS) $(MOPTS) $(WOPTS) $(TRACEFS_HEADERS)
+>  LDFLAGS	:=	-ggdb
+> -LIBS	:=	$$($(PKG_CONFIG) --libs libtracefs) -lprocps
+> +LIBS	:=	$$($(PKG_CONFIG) --libs libtracefs)
+>  
+>  SRC	:=	$(wildcard src/*.c)
+>  HDR	:=	$(wildcard src/*.h)
+> diff --git a/tools/tracing/rtla/README.txt b/tools/tracing/rtla/README.txt
+> index 0fbad2640b8c..4af3fd40f171 100644
+> --- a/tools/tracing/rtla/README.txt
+> +++ b/tools/tracing/rtla/README.txt
+> @@ -11,7 +11,6 @@ RTLA depends on the following libraries and tools:
+>  
+>   - libtracefs
+>   - libtraceevent
+> - - procps
+>  
+>  It also depends on python3-docutils to compile man pages.
+>  
+> diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
+> index 3bd6f64780cf..f3d562f7f14c 100644
+> --- a/tools/tracing/rtla/src/utils.c
+> +++ b/tools/tracing/rtla/src/utils.c
+> @@ -3,7 +3,7 @@
+>   * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
+>   */
+>  
+> -#include <proc/readproc.h>
+> +#include <dirent.h>
+>  #include <stdarg.h>
+>  #include <stdlib.h>
+>  #include <string.h>
+> @@ -262,43 +262,103 @@ int __set_sched_attr(int pid, struct sched_attr *attr)
+>  
+>  	return 0;
+>  }
+> +
+>  /*
+> - * set_comm_sched_attr - set sched params to threads starting with char *comm
+> + * procfs_is_workload_pid - check if a procfs entry contains a comm_prefix* comm
+> + *
+> + * Check if the procfs entry is a directory of a process, and then check if the
+> + * process has a comm with the prefix set in char *comm_prefix. As the
+> + * current users of this function only check for kernel threads, there is no
+> + * need to check for the threads for the process.
+>   *
+> - * This function uses procps to list the currently running threads and then
+> - * set the sched_attr *attr to the threads that start with char *comm. It is
+> + * Return: True if the proc_entry contains a comm file with comm_prefix*.
+> + * Otherwise returns false.
+> + */
+> +static int procfs_is_workload_pid(const char *comm_prefix, struct dirent *proc_entry)
+> +{
+> +	char buffer[MAX_PATH];
+> +	int comm_fd, retval;
+> +	char*t_name;
+> +
+> +	if (proc_entry->d_type != DT_DIR)
+> +		return 0;
+> +
+> +	if (*proc_entry->d_name == '.')
+> +		return 0;
+> +
+> +	/* check if the string is a pid */
+> +	for (t_name = proc_entry->d_name; t_name; t_name++) {
+> +		if (!isdigit(*t_name))
+> +			break;
+> +	}
+> +
+> +	if (*t_name != '\0')
+> +		return 0;
+> +
+> +	snprintf(buffer, MAX_PATH, "/proc/%s/comm", proc_entry->d_name);
+> +	comm_fd = open(buffer, O_RDONLY);
+> +	if (comm_fd < 0)
+> +		return 0;
+> +
+> +	memset(buffer, 0, MAX_PATH);
+> +	retval = read(comm_fd, buffer, MAX_PATH);
+> +
+> +	close(comm_fd);
+> +
+> +	if (retval <= 0)
+> +		return 0;
+> +
+> +	retval = strncmp(comm_prefix, buffer, strlen(comm_prefix));
+> +	if (retval)
+> +		return 0;
+> +
+> +	/* comm already have \n */
+> +	debug_msg("Found workload pid:%s comm:%s", proc_entry->d_name, buffer);
+> +
+> +	return 1;
+> +}
+> +
+> +/*
+> + * set_comm_sched_attr - set sched params to threads starting with char *comm_prefix
+> + *
+> + * This function uses procps to list the currently running threads and then set the
+> + * sched_attr *attr to the threads that start with char *comm_prefix. It is
+>   * mainly used to set the priority to the kernel threads created by the
+>   * tracers.
+>   */
+> -int set_comm_sched_attr(const char *comm, struct sched_attr *attr)
+> +int set_comm_sched_attr(const char *comm_prefix, struct sched_attr *attr)
+>  {
+> -	int flags = PROC_FILLCOM | PROC_FILLSTAT;
+> -	PROCTAB *ptp;
+> -	proc_t task;
+> +	struct dirent *proc_entry;
+> +	DIR *procfs;
+>  	int retval;
+>  
+> -	ptp = openproc(flags);
+> -	if (!ptp) {
+> -		err_msg("error openproc()\n");
+> -		return -ENOENT;
+> +	if (strlen(comm_prefix) >= MAX_PATH) {
+> +		err_msg("Command prefix is too long: %d < strlen(%s)\n",
+> +			MAX_PATH, comm_prefix);
+> +		exit(EINVAL);
+>  	}
+>  
+> -	memset(&task, 0, sizeof(task));
+> +	procfs = opendir("/proc");
+> +
+> +	while ((proc_entry = readdir(procfs))) {
+>  
+> -	while (readproc(ptp, &task)) {
+> -		retval = strncmp(comm, task.cmd, strlen(comm));
+> -		if (retval)
+> +		retval = procfs_is_workload_pid(comm_prefix, proc_entry);
+> +		if (!retval)
+>  			continue;
+> -		retval = __set_sched_attr(task.tid, attr);
+> -		if (retval)
+> +
+> +		/* procfs_is_workload_pid confirmed it is a pid */
+> +		retval = __set_sched_attr(atoi(proc_entry->d_name), attr);
+> +		if (retval) {
+> +			err_msg("Error setting sched attributes for pid:%s\n", proc_entry->d_name);
+>  			goto out_err;
+> -	}
+> +		}
+>  
+> -	closeproc(ptp);
+> +		debug_msg("Set sched attributes for pid:%s\n", proc_entry->d_name);
+> +	}
+>  	return 0;
+>  
+>  out_err:
+> -	closeproc(ptp);
+> +	closedir(procfs);
+>  	return 1;
+>  }
+>  
+> diff --git a/tools/tracing/rtla/src/utils.h b/tools/tracing/rtla/src/utils.h
+> index fa08e374870a..5571afd3b549 100644
+> --- a/tools/tracing/rtla/src/utils.h
+> +++ b/tools/tracing/rtla/src/utils.h
+> @@ -6,6 +6,7 @@
+>   * '18446744073709551615\0'
+>   */
+>  #define BUFF_U64_STR_SIZE	24
+> +#define MAX_PATH		1024
+>  
+>  #define container_of(ptr, type, member)({			\
+>  	const typeof(((type *)0)->member) *__mptr = (ptr);	\
+> @@ -53,5 +54,5 @@ struct sched_attr {
+>  };
+>  
+>  int parse_prio(char *arg, struct sched_attr *sched_param);
+> -int set_comm_sched_attr(const char *comm, struct sched_attr *attr);
+> +int set_comm_sched_attr(const char *comm_prefix, struct sched_attr *attr);
+>  int set_cpu_dma_latency(int32_t latency);
+> -- 
+> 2.32.0
+> 
+> 
 
