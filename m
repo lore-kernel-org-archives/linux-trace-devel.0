@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE010C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 10 May 2022 09:45:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D4B0C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 10 May 2022 09:45:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238995AbiEJJtg (ORCPT
+        id S239154AbiEJJti (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 10 May 2022 05:49:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36022 "EHLO
+        Tue, 10 May 2022 05:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239132AbiEJJtg (ORCPT
+        with ESMTP id S239144AbiEJJth (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 10 May 2022 05:49:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A424B24F2B;
-        Tue, 10 May 2022 02:45:39 -0700 (PDT)
+        Tue, 10 May 2022 05:49:37 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 121E91CFC8;
+        Tue, 10 May 2022 02:45:40 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4592C615F6;
-        Tue, 10 May 2022 09:45:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F5FCC385C9;
-        Tue, 10 May 2022 09:45:36 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 5BCD8CE1D4B;
+        Tue, 10 May 2022 09:45:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3C70C385C6;
+        Tue, 10 May 2022 09:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652175938;
-        bh=9H7ysJz1vVhOl+TV+4Tl6mkvRpk278sDTvbAtJBV2PU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aHeL4smZjkVsPmMX5DELT9/H1TKlCLGOU2VioqwmG65chqG0QmjODQKoVcSvejKi3
-         K9o6p7Hco/5r85DpZx60cia+QCaOYaclimYC96A7onLGzEOg6FJhSp00bJ83B0hl7Y
-         wr30xVBToZdNNKz2UNfV9faYzQluC3nb8Am3H1p/q7SD9GqhpmD4NpaytY05m2lDeO
-         8lgz4XxFtBsnNVxBFZW+ddJW4SAqPswrt4+W1MB6nDta0DQqtkQW+wtjfV2uRyLARX
-         IPTjbpil7xjwbvxf1ofPdId3vCfw7QTKNqJOLCAgXg7A3wacY1M0bt8J+1WX6iFQIh
-         gVxIghiwxHrxw==
+        s=k20201202; t=1652175936;
+        bh=IeHcJjkEm22HUoN9FJufk1mDHii1OmdmHxmFKC/HWxA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WbjDsGFWixCGQi5LOctylCqHBWVoKQJU4mszBuElgMgmYLVYUeiBWtPFBq4kXq/zv
+         biwsVcQ0Badjw/APckLrCK0nevW1rxr0gZjon++6qToYxVmROIzLTVO8lo691OI4RI
+         5kn7OGGF0hTvsyxpuNW1wzEuQKTan01rIf0exHhqKiFmyZIZfIdRWccf754rOdiAk4
+         ERcQxofrHODkaoVQzSqHRorPrfFXss1gmtoc/Q3D9K0pAyRDTE7lu12p3TrWSB7II6
+         ZNVE/04wu+/T8tFSYrHskgbnW+Eg75yIJAg3vjGTCKkthhlyOM4Fok8oFgul71++Rd
+         fVq7Ww+nhNtdg==
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
@@ -40,71 +40,65 @@ Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Ingo Molnar <mingo@redhat.com>,
         Clark Williams <williams@redhat.com>
-Subject: [PATCH 2/3] tracing/timerlat: Print stacktrace in the IRQ handler if needed
-Date:   Tue, 10 May 2022 11:45:24 +0200
-Message-Id: <fd04530ce98ae9270e41bb124ee5bf67b05ecfed.1652175637.git.bristot@kernel.org>
+Subject: [PATCH 1/3] tracing/timerlat: Notify IRQ new max latency only if stop tracing is set
+Date:   Tue, 10 May 2022 11:45:23 +0200
+Message-Id: <2c2d9a56c0886c8402ba320de32856cbbb10c2bb.1652175637.git.bristot@kernel.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <2c2d9a56c0886c8402ba320de32856cbbb10c2bb.1652175637.git.bristot@kernel.org>
-References: <2c2d9a56c0886c8402ba320de32856cbbb10c2bb.1652175637.git.bristot@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-If print_stack and stop_tracing_us are set, and stop_tracing_us is hit
-with latency higher than or equal to print_stack, print the
-stack at the IRQ handler as it is useful to define the root cause for
-the IRQ latency.
+Currently, the notification of a new max latency is sent from
+timerlat's IRQ handler anytime a new max latency is found.
 
+While this behavior is not wrong, the send IPI overhead itself
+will increase the thread latency and that is not the desired
+effect (tracing overhead).
+
+Moreover, the thread will notify a new max latency again because
+the thread latency as it is always higher than the IRQ latency
+that woke it up.
+
+The only case in which it is helpful to notify a new max latency
+from IRQ is when stop tracing (for the IRQ) is set, as in this
+case, the thread will not be dispatched.
+
+Notify a new max latency from the IRQ handler only if stop tracing is
+set for the IRQ handler.
+
+Cc: Juri Lelli <juri.lelli@redhat.com>
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Ingo Molnar <mingo@redhat.com>
+Reported-by: Clark Williams <williams@redhat.com>
+Fixes: a955d7eac177 ("trace: Add timerlat tracer")
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- Documentation/trace/timerlat-tracer.rst |  5 +++--
- kernel/trace/trace_osnoise.c            | 13 +++++++++++++
- 2 files changed, 16 insertions(+), 2 deletions(-)
+ kernel/trace/trace_osnoise.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/trace/timerlat-tracer.rst b/Documentation/trace/timerlat-tracer.rst
-index 64d1fe6e9b93..d643c95c01eb 100644
---- a/Documentation/trace/timerlat-tracer.rst
-+++ b/Documentation/trace/timerlat-tracer.rst
-@@ -74,8 +74,9 @@ directory. The timerlat configs are:
-  - stop_tracing_total_us: stop the system tracing if a
-    timer latency at the *thread* context is higher than the configured
-    value happens. Writing 0 disables this option.
-- - print_stack: save the stack of the IRQ occurrence, and print
--   it after the *thread context* event".
-+ - print_stack: save the stack of the IRQ occurrence. The stack is printed
-+   after the *thread context* event, or at the IRQ handler if *stop_tracing_us*
-+   is hit.
- 
- timerlat and osnoise
- ----------------------------
 diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index 6494ca27ea6f..9b204ee3c6f5 100644
+index e9ae1f33a7f0..6494ca27ea6f 100644
 --- a/kernel/trace/trace_osnoise.c
 +++ b/kernel/trace/trace_osnoise.c
-@@ -1580,6 +1580,19 @@ static enum hrtimer_restart timerlat_irq(struct hrtimer *timer)
+@@ -1578,11 +1578,12 @@ static enum hrtimer_restart timerlat_irq(struct hrtimer *timer)
  
- 	if (osnoise_data.stop_tracing) {
- 		if (time_to_us(diff) >= osnoise_data.stop_tracing) {
-+
-+			/*
-+			 * At this point, if stop_tracing is set and <= print_stack,
-+			 * print_stack is set and would be printed in the thread handler.
-+			 *
-+			 * Thus, print the stack trace as it is helpful to define the
-+			 * root cause of an IRQ latency.
-+			 */
-+			if (osnoise_data.stop_tracing <= osnoise_data.print_stack) {
-+				timerlat_save_stack(0);
-+				timerlat_dump_stack(time_to_us(diff));
-+			}
-+
+ 	trace_timerlat_sample(&s);
+ 
+-	notify_new_max_latency(diff);
+-
+-	if (osnoise_data.stop_tracing)
+-		if (time_to_us(diff) >= osnoise_data.stop_tracing)
++	if (osnoise_data.stop_tracing) {
++		if (time_to_us(diff) >= osnoise_data.stop_tracing) {
  			osnoise_stop_tracing();
- 			notify_new_max_latency(diff);
- 		}
++			notify_new_max_latency(diff);
++		}
++	}
+ 
+ 	wake_up_process(tlat->kthread);
+ 
 -- 
 2.32.0
 
