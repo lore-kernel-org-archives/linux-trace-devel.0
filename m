@@ -2,40 +2,33 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 750FEC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 10 May 2022 14:40:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15282C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 10 May 2022 14:42:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239470AbiEJOoo (ORCPT
+        id S238594AbiEJOqW (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 10 May 2022 10:44:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46922 "EHLO
+        Tue, 10 May 2022 10:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344748AbiEJOoi (ORCPT
+        with ESMTP id S1346228AbiEJOmi (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 10 May 2022 10:44:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CAE524641E;
-        Tue, 10 May 2022 07:03:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1849B6062B;
-        Tue, 10 May 2022 14:03:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B0D7C385C2;
-        Tue, 10 May 2022 14:03:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652191419;
-        bh=KjDXrMRIgjl9mqK+1lZepnUpO/sXpVuQ6BE0MJGcLl4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ftzgu9vNda3LniGP6pt1aUYcmfQNMsGRCzzkPe7Ju5jVv55Vo8Km6RS6REDd052BK
-         ZPSzQRrNz/z5Du+mxpMlcqlPRTPsmXopKmmYWzaDphQboUeez0V7FKSP1JjN23tjlb
-         YbJIEKiZUVtLttBvGAarW3b+yiJOB2QP7KW1vJBiLvnWPZAb6OYhQqogyC9ukkZgj4
-         JkP8meYhGRCkL0uFRsxf0b5UAMx61qj+hYK3iSmMDh4I6KugoCSWl0zalm+qzFmdLE
-         f0pb8YOFwvDDTqVNFf219lp7UUQPvIwvUm5Y3ccEBaBLTXfjz6Lc80JiSmYd/GrMkM
-         zVa5iw1mP7J7g==
-Date:   Tue, 10 May 2022 15:03:33 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Francis Laniel <flaniel@linux.microsoft.com>
+        Tue, 10 May 2022 10:42:38 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B95652FF705;
+        Tue, 10 May 2022 07:00:17 -0700 (PDT)
+Received: from pwmachine.localnet (154.pool92-186-13.dynamic.orange.es [92.186.13.154])
+        by linux.microsoft.com (Postfix) with ESMTPSA id A601220EC9A5;
+        Tue, 10 May 2022 07:00:14 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A601220EC9A5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1652191217;
+        bh=7OCMzdl5ESPExXL11Am5FVLKgSI7cID21CgOvybjxvw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Dw697TJfld1wJuEyRncPW0WOPvcm4zY57brhwUmjrGHkewRFrfiMqsBGnZ/prTdqi
+         pbM5BdXqFufVjQTmQML1+tOBEi7nspAMBWTBvKPPOU6a1HlyhgxFlOytRxcOyFFymZ
+         qsMx9NCPwYHGJ9ObWDm9rY8x7tS7LovUiggj1nwY=
+From:   Francis Laniel <flaniel@linux.microsoft.com>
+To:     Will Deacon <will@kernel.org>
 Cc:     linux-arm-kernel@lists.infradead.org,
         linux-trace-devel@vger.kernel.org,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -44,79 +37,106 @@ Cc:     linux-arm-kernel@lists.infradead.org,
         Mark Rutland <mark.rutland@arm.com>,
         Kees Cook <keescook@chromium.org>,
         Daniel Kiss <daniel.kiss@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 1/1] arm64: Forget syscall if different from
- execve*()
-Message-ID: <20220510140333.GA28104@willie-the-truck>
-References: <20220509151958.441240-1-flaniel@linux.microsoft.com>
- <20220509151958.441240-2-flaniel@linux.microsoft.com>
- <20220510105948.GB27557@willie-the-truck>
- <2826417.e9J7NaK4W3@pwmachine>
+Subject: Re: [RFC PATCH v1 1/1] arm64: Forget syscall if different from execve*()
+Date:   Tue, 10 May 2022 15:00:11 +0100
+Message-ID: <2826417.e9J7NaK4W3@pwmachine>
+Organization: Microsoft
+In-Reply-To: <20220510105948.GB27557@willie-the-truck>
+References: <20220509151958.441240-1-flaniel@linux.microsoft.com> <20220509151958.441240-2-flaniel@linux.microsoft.com> <20220510105948.GB27557@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2826417.e9J7NaK4W3@pwmachine>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, May 10, 2022 at 03:00:11PM +0100, Francis Laniel wrote:
-> Le mardi 10 mai 2022, 11:59:48 BST Will Deacon a écrit :
-> > On Mon, May 09, 2022 at 04:19:57PM +0100, Francis Laniel wrote:
-> > > diff --git a/arch/arm64/include/asm/processor.h
-> > > b/arch/arm64/include/asm/processor.h index 73e38d9a540c..e12ceb363d6a
-> > > 100644
-> > > --- a/arch/arm64/include/asm/processor.h
-> > > +++ b/arch/arm64/include/asm/processor.h
-> > > @@ -34,6 +34,8 @@
-> > > 
-> > >  #include <vdso/processor.h>
-> > > 
-> > > +#include <asm-generic/unistd.h>
-> > > +
-> > > 
-> > >  #include <asm/alternative.h>
-> > >  #include <asm/cpufeature.h>
-> > >  #include <asm/hw_breakpoint.h>
-> > > 
-> > > @@ -250,8 +252,12 @@ void tls_preserve_current_state(void);
-> > > 
-> > >  static inline void start_thread_common(struct pt_regs *regs, unsigned
-> > >  long pc) {
-> > > 
-> > > +	s32 previous_syscall = regs->syscallno;
-> > > 
-> > >  	memset(regs, 0, sizeof(*regs));
-> > > 
-> > > -	forget_syscall(regs);
-> > > +	if (previous_syscall == __NR_execve || previous_syscall ==
-> > > __NR_execveat)
-> > > +		regs->syscallno = previous_syscall;
-> > > +	else
-> > > +		forget_syscall(regs);
-> > 
-> > Hmm, this really looks like a bodge and it doesn't handle the compat case
-> > either.
-> > 
-> > How do other architectures handle this?
-> 
-> My understanding of others architectures is quite limited, but here are my 
-> findings and understanding of some of them:
-> * arm (32 bits) EABI: start_thread() sets r7 to previous r7 for ELF FDPIC  and 
-> to 0 for other binfmts [1].
-> * arm (32 bits) OABI: syscall number is set to -1 if 
-> ptrace_report_syscall_entry() failed [2].
-> * mips: start_thread() does not modify current_thread_info->syscall which is 
-> taken directly from v0 [3, 4].
-> * riscv: start_thread() does not modify a7 [5].
-> * x86_64: start_thread_common() does not touch orig_ax which seems to contain 
-> the syscall number [6].
+Hi.
 
-Hmm, so the million dollar question is why on Earth we have that
-forget_syscall() call to start with. Amusingly I've, err, forgotten;
-forget_forget_syscall() perhaps?
+Le mardi 10 mai 2022, 11:59:48 BST Will Deacon a =E9crit :
+> On Mon, May 09, 2022 at 04:19:57PM +0100, Francis Laniel wrote:
+> > This patch enables exeve*() to be traced by syscalls:sys_exit_execve
+> > tracepoint.
+> > Previously, calling forget_syscall() would set syscall to -1, which
+> > impedes
+> > this tracepoint to prints its information.
+> > So, this patch makes call to forget_syscall() conditional by only calli=
+ng
+> > it when syscall number is not execve() or execveat().
+> >=20
+> > Signed-off-by: Francis Laniel <flaniel@linux.microsoft.com>
+> > ---
+> >=20
+> >  arch/arm64/include/asm/processor.h | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/arch/arm64/include/asm/processor.h
+> > b/arch/arm64/include/asm/processor.h index 73e38d9a540c..e12ceb363d6a
+> > 100644
+> > --- a/arch/arm64/include/asm/processor.h
+> > +++ b/arch/arm64/include/asm/processor.h
+> > @@ -34,6 +34,8 @@
+> >=20
+> >  #include <vdso/processor.h>
+> >=20
+> > +#include <asm-generic/unistd.h>
+> > +
+> >=20
+> >  #include <asm/alternative.h>
+> >  #include <asm/cpufeature.h>
+> >  #include <asm/hw_breakpoint.h>
+> >=20
+> > @@ -250,8 +252,12 @@ void tls_preserve_current_state(void);
+> >=20
+> >  static inline void start_thread_common(struct pt_regs *regs, unsigned
+> >  long pc) {
+> >=20
+> > +	s32 previous_syscall =3D regs->syscallno;
+> >=20
+> >  	memset(regs, 0, sizeof(*regs));
+> >=20
+> > -	forget_syscall(regs);
+> > +	if (previous_syscall =3D=3D __NR_execve || previous_syscall =3D=3D
+> > __NR_execveat)
+> > +		regs->syscallno =3D previous_syscall;
+> > +	else
+> > +		forget_syscall(regs);
+>=20
+> Hmm, this really looks like a bodge and it doesn't handle the compat case
+> either.
+>=20
+> How do other architectures handle this?
 
-Catalin? It's been there since day one afaict.
+My understanding of others architectures is quite limited, but here are my=
+=20
+findings and understanding of some of them:
+* arm (32 bits) EABI: start_thread() sets r7 to previous r7 for ELF FDPIC  =
+and=20
+to 0 for other binfmts [1].
+* arm (32 bits) OABI: syscall number is set to -1 if=20
+ptrace_report_syscall_entry() failed [2].
+* mips: start_thread() does not modify current_thread_info->syscall which i=
+s=20
+taken directly from v0 [3, 4].
+* riscv: start_thread() does not modify a7 [5].
+* x86_64: start_thread_common() does not touch orig_ax which seems to conta=
+in=20
+the syscall number [6].
 
-Will
+> Will
+
+Best regards.
+=2D--
+[1] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/arm/include/asm/
+processor.h#L52
+[2] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/arm/kernel/
+ptrace.c#L847
+[3] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/mips/kernel/
+process.c#L52
+[4] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/mips/kernel/
+scall64-n64.S#L85
+[5] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/riscv/kernel/
+process.c#L87
+[6] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/x86/kernel/
+process_64.c#L505
+
+
