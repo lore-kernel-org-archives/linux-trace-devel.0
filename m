@@ -2,131 +2,137 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96542C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 10 May 2022 14:48:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17604C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 11 May 2022 18:33:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234983AbiEJOwI (ORCPT
+        id S1346332AbiEKSdy (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 10 May 2022 10:52:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44634 "EHLO
+        Wed, 11 May 2022 14:33:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345434AbiEJOvV (ORCPT
+        with ESMTP id S1346335AbiEKSdx (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 10 May 2022 10:51:21 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 35D20267091;
-        Tue, 10 May 2022 07:12:17 -0700 (PDT)
-Received: from pwmachine.localnet (154.pool92-186-13.dynamic.orange.es [92.186.13.154])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 98D7C20DED47;
-        Tue, 10 May 2022 07:12:05 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 98D7C20DED47
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1652191929;
-        bh=SMXRjgASxoY9GANcr+RrOLPmCsV3l+6OdEbY8o5d4Y0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P/umbaWjpofQ6mQCCPA8N0L2yqe2CopqIn/eA+AtE38GGYUb5NNJGPC3It4bPFOHP
-         ri2QItOL4uMuhiPwcHtz2dNHE2g2+C7ePm/PvHMlOnhTB8vOQBUBTG0fFHKSXx6V5g
-         ZUA1qzPjqM1HMWfqk3fUJVY03fO965VV9fWaSUmQ=
-From:   Francis Laniel <flaniel@linux.microsoft.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-trace-devel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Kiss <daniel.kiss@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 1/1] arm64: Forget syscall if different from execve*()
-Date:   Tue, 10 May 2022 15:12:02 +0100
-Message-ID: <8061631.T7Z3S40VBb@pwmachine>
-Organization: Microsoft
-In-Reply-To: <20220510140333.GA28104@willie-the-truck>
-References: <20220509151958.441240-1-flaniel@linux.microsoft.com> <2826417.e9J7NaK4W3@pwmachine> <20220510140333.GA28104@willie-the-truck>
-MIME-Version: 1.0
+        Wed, 11 May 2022 14:33:53 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12851B57A0
+        for <linux-trace-devel@vger.kernel.org>; Wed, 11 May 2022 11:33:51 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id m20so5730507ejj.10
+        for <linux-trace-devel@vger.kernel.org>; Wed, 11 May 2022 11:33:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :content-transfer-encoding:user-agent:mime-version;
+        bh=x6mqLMyemfZg0yhCGkKFdMDvfqt2Un/fcjHTCRHmuNo=;
+        b=bYn7MvJRFUinkOG9I5Zqyz/TWRTsFMiZgTIGmmmOfxTKTmvof0bqKWFSsW13gxexBl
+         qlfZCZ9ebyZvBSj4xSd2Hzmi8RIBrozkWiPmXY09WLn6ynhdOKrtLmzPk2a1dqey+Jmr
+         mctgqXMqxHfUeSnqeZUPGej+hXFPhe7UBb7Qk9QOCysT6tC6bsP1lrYDeeMM7lY2aXJN
+         5lMMQCJWhXg/1q/GiIqUh7JoyaaNlkytv+Se+acH/YfNE7IlIipigDjSgXerHHo9LDTf
+         pesaScFyZ1S82KSzhAZC8460gyLZGoMWo6wR5F6goEgaNiGnN/TkJ4IdnOfasPdbT4tO
+         K3Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:content-transfer-encoding:user-agent:mime-version;
+        bh=x6mqLMyemfZg0yhCGkKFdMDvfqt2Un/fcjHTCRHmuNo=;
+        b=ZoiGsWToMC5hW8DTCdYepiIlEluxEBXM5HjDBRdmklA5GVOaWKFDolWvJ+UYHHqOn9
+         yp58jg7h8M6bKOwL7TyLtAETBABX69ro15ANncwt3RmBKIQgWh/PQOQggUtoSgGHqDBq
+         eBvvVsELufimQ6E3QMPtg6pSqxsnlYUEa4dHoq3AzxEIDgt1vAnKEKEI3vC0vxKhB2ZK
+         ij0M/qwBT25cyqt2+yeZiwZ3M3+lfIqbjYqSzX341nxN6qNi9FyFPkhTUwprBQpAVzhI
+         Mw0CL5BjwWmwpfNZyTCjl7Rimg7jkJ+DRcQgaerO3WX/CC2Y1B5eYSGkSrz5bSZXBSVS
+         F8UA==
+X-Gm-Message-State: AOAM5315E3cvj69Cs8SNNjr5xtCJMGLswdjml6DlZybYqtYkSMZrLDTs
+        5hLPsH1668pfbr2l6jjoSdDotkokoAA=
+X-Google-Smtp-Source: ABdhPJzKbxbSuWHRvHDsHr2yruaigDDOHH0w3B5ntMMXm3HAlA1okT1yRCQebWCqgz/6VBJdwKyoiQ==
+X-Received: by 2002:a17:906:9748:b0:6fa:8c68:af0e with SMTP id o8-20020a170906974800b006fa8c68af0emr13640902ejy.153.1652294030465;
+        Wed, 11 May 2022 11:33:50 -0700 (PDT)
+Received: from [192.168.3.2] (p5dd1ed70.dip0.t-ipconnect.de. [93.209.237.112])
+        by smtp.googlemail.com with ESMTPSA id c2-20020a170906528200b006f3ef214e15sm1229625ejm.123.2022.05.11.11.33.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 May 2022 11:33:49 -0700 (PDT)
+Message-ID: <fbb8049e2a9fcce07110d5d97f08458d27c977b4.camel@gmail.com>
+Subject: Re: how to register an event handler for the instance
+From:   christopher lee <christopher.lee.eu@gmail.com>
+To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Date:   Wed, 11 May 2022 20:33:48 +0200
+In-Reply-To: <CAPpZLN4A8tes3tnzDqLFBT7S2SvBixFwDW7GkYbSPeA+3e1yCQ@mail.gmail.com>
+References: <93fd065420c6a04141b5e8ba9c89dae1e7c9b6a0.camel@gmail.com>
+         <CAPpZLN4A8tes3tnzDqLFBT7S2SvBixFwDW7GkYbSPeA+3e1yCQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+User-Agent: Evolution 3.44.0-1 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Le mardi 10 mai 2022, 15:03:33 BST Will Deacon a =E9crit :
-> On Tue, May 10, 2022 at 03:00:11PM +0100, Francis Laniel wrote:
-> > Le mardi 10 mai 2022, 11:59:48 BST Will Deacon a =E9crit :
-> > > On Mon, May 09, 2022 at 04:19:57PM +0100, Francis Laniel wrote:
-> > > > diff --git a/arch/arm64/include/asm/processor.h
-> > > > b/arch/arm64/include/asm/processor.h index 73e38d9a540c..e12ceb363d=
-6a
-> > > > 100644
-> > > > --- a/arch/arm64/include/asm/processor.h
-> > > > +++ b/arch/arm64/include/asm/processor.h
-> > > > @@ -34,6 +34,8 @@
-> > > >=20
-> > > >  #include <vdso/processor.h>
-> > > >=20
-> > > > +#include <asm-generic/unistd.h>
-> > > > +
-> > > >=20
-> > > >  #include <asm/alternative.h>
-> > > >  #include <asm/cpufeature.h>
-> > > >  #include <asm/hw_breakpoint.h>
-> > > >=20
-> > > > @@ -250,8 +252,12 @@ void tls_preserve_current_state(void);
-> > > >=20
-> > > >  static inline void start_thread_common(struct pt_regs *regs, unsig=
-ned
-> > > >  long pc) {
-> > > >=20
-> > > > +	s32 previous_syscall =3D regs->syscallno;
-> > > >=20
-> > > >  	memset(regs, 0, sizeof(*regs));
-> > > >=20
-> > > > -	forget_syscall(regs);
-> > > > +	if (previous_syscall =3D=3D __NR_execve || previous_syscall =3D=3D
-> > > > __NR_execveat)
-> > > > +		regs->syscallno =3D previous_syscall;
-> > > > +	else
-> > > > +		forget_syscall(regs);
-> > >=20
-> > > Hmm, this really looks like a bodge and it doesn't handle the compat
-> > > case
-> > > either.
-> > >=20
-> > > How do other architectures handle this?
+On Sat, 2022-05-07 at 08:02 +0300, Tzvetomir Stoyanov wrote:
+> On Fri, May 6, 2022 at 7:18 PM christopher lee
+> <christopher.lee.eu@gmail.com> wrote:
 > >=20
-> > My understanding of others architectures is quite limited, but here are=
- my
-> > findings and understanding of some of them:
-> > * arm (32 bits) EABI: start_thread() sets r7 to previous r7 for ELF FDP=
-IC=20
-> > and to 0 for other binfmts [1].
-> > * arm (32 bits) OABI: syscall number is set to -1 if
-> > ptrace_report_syscall_entry() failed [2].
-> > * mips: start_thread() does not modify current_thread_info->syscall whi=
-ch
-> > is taken directly from v0 [3, 4].
-> > * riscv: start_thread() does not modify a7 [5].
-> > * x86_64: start_thread_common() does not touch orig_ax which seems to
-> > contain the syscall number [6].
+> > Hi all,
+> >=20
+> > I use libtraceevent in my trace tool to parse the event log. Now I
+> > allocated an instance, but no idea how to use
+> > tep_register_event_handler() to register a handler for the
+> > instance. Is
+> > it possilbe to register handler for the event in the instance?
+> >=20
 >=20
-> Hmm, so the million dollar question is why on Earth we have that
-> forget_syscall() call to start with. Amusingly I've, err, forgotten;
-> forget_forget_syscall() perhaps?
+> Hi Chrit,
+> All trace events are the same across all trace instances, thus the
+> handler registered with tep_register_event_handler() handles events
+> from all instances with a given id. That's why there are no
+> "instance"
+> oriented APIs in that library. I would suggest looking at the tracefs
+> library, which is instance aware. It can be used to allocate trace
+> instances and read events from a given instance.
+>=20
+> https://trace-cmd.org/Documentation/libtracefs/
+>=20
 
-I think this is maybe tied to this comment [1]:
-The de-facto standard way to skip a system call using ptrace=20
-is to set the system call to -1 (NO_SYSCALL)
 
-But I will let the original author explain as his/her explaination will be=
+Hi Tzvetomir Stoyanov,
+
+Thanks,  instance event handlers work now, but I'm confused with these
+codes, do I have to read trace_pipe_raw? I found that if I didn't read
+this file, the handler would not be able to get trace information.
+Becuase if I read this file, and also call tep_print_event() will
+consume lots of CPU resoruce. how can I parse the trace event info
+without reading this file?
 =20
-better than mine.
 
-> Catalin? It's been there since day one afaict.
+        for (i =3D 0; ; i++) {                                         =20
+                char *raw_buf;                                       =20
+                char *cpu;                                           =20
+                                                                           =
+                        =20
+                ret =3D asprintf(&cpu, "%s/cpu%d", per_cpu, i);        =20
+                if (ret < 0)                                         =20
+                        pdie("Could not allocate memory for cpu buffer
+%d name", i);               =20
+                                                                           =
+                        =20
+                ret =3D stat(cpu, &st);                                =20
+                if (ret < 0 || !S_ISDIR(st.st_mode)) {               =20
+                        free(cpu);                                   =20
+                        goto start;                                  =20
+                }                                                    =20
+                                                                           =
+                        =20
+                ret =3D asprintf(&raw_buf, "%s/trace_pipe_raw", cpu);  =20
+                if (ret < 0)                                         =20
+                        pdie("Could not allocate memory for cpu %d raw
+buffer name", i);           =20
+                                                                           =
+                        =20
+                read_raw_buffer(i, raw_buf);                         =20
+                free(raw_buf);                                       =20
+                free(cpu);                                           =20
+        }=20
+
+Best regards,
+Christ
+
 >=20
-> Will
-
-=2D--
-[1] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/arm64/kernel/
-syscall.c#L121
-
-
