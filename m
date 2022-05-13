@@ -2,149 +2,282 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10D16C433F5
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 May 2022 20:20:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B969C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 13 May 2022 06:46:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358096AbiELUUi (ORCPT
+        id S1353693AbiEMGqY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 12 May 2022 16:20:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45272 "EHLO
+        Fri, 13 May 2022 02:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357297AbiELUUh (ORCPT
+        with ESMTP id S1377440AbiEMGqW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 12 May 2022 16:20:37 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ADBDC26FA2D;
-        Thu, 12 May 2022 13:20:36 -0700 (PDT)
-Received: from kbox (unknown [98.59.227.103])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 3627F20ECB86;
-        Thu, 12 May 2022 13:20:36 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3627F20ECB86
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1652386836;
-        bh=lKLoduqjtrzaOJhx7C3HeM2d/gUSVsRaSXsqF86yC04=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qX9PHeISh5Wvk4EY9fv9A9Am1oAhtZtskv5bAPQqORdX9g9Bd1xk5qowcG36D6RGf
-         XDlCBi/65TRiAz1YZcBI+ymX0/f+5gTFxuDGC+u3Dt1xtqySt2QkKwuLnwfuNk56gx
-         3WRGZtEW/EWGgj7kacVjYnCz62F4DxBAE++tBddU=
-Date:   Thu, 12 May 2022 13:20:28 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Primiano Tucci <primiano@google.com>
-Subject: Re: Feedback on user-events UAPI
-Message-ID: <20220512202028.GA2559@kbox>
-References: <1651771383.54437.1652370439159.JavaMail.zimbra@efficios.com>
- <680139213.54888.1652384731022.JavaMail.zimbra@efficios.com>
+        Fri, 13 May 2022 02:46:22 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665F46B08E;
+        Thu, 12 May 2022 23:46:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 20F15B82C43;
+        Fri, 13 May 2022 06:46:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C6CBC34100;
+        Fri, 13 May 2022 06:46:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652424377;
+        bh=ze0b0axWCDrVgya6nRBYliB5ZrXVYoNcVjtMjvzuq8E=;
+        h=From:To:Cc:Subject:Date:From;
+        b=f8IWyg8FQh3kZSmrrxrzlwSmp1GMK5WNmq/IEYt1IEIPXXGAhriXNlvzbC1kRx/WH
+         tWafWc4ehm4MQNYWsYtzBCZNXUCX8QQ5GY4pCLhKHJfACK1XI5J0qW1sbLQbZLh3Ff
+         LnDwSPCNVtijQGfsX9TKH5lSu0fhHQibmWDgjSf1y5q64HWfEZI5jZ2xme3Om0K/Hn
+         tglPQlB/TKb4Tz8wTRSaRgVw6y5Xxu9ugvRH7JKDqp6ZpB1tVIsi0GZyP1rHWZ+K3M
+         sytzi4C9czTWTzgIIR8s7dfNK1FWkz0IqgEO4WfVwy8HSueKQs3Oc2P8/m6C5BuIQd
+         weJ/5LiUf4S2Q==
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        John Kacur <jkacur@redhat.com>, Tao Zhou <tao.zhou@linux.dev>,
+        Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH V4] rtla: Remove procps-ng dependency
+Date:   Fri, 13 May 2022 08:45:53 +0200
+Message-Id: <e8276e122ee9eb2c5a0ba8e673fb6488b924b825.1652423574.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <680139213.54888.1652384731022.JavaMail.zimbra@efficios.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, May 12, 2022 at 03:45:31PM -0400, Mathieu Desnoyers wrote:
-> ----- On May 12, 2022, at 11:47 AM, Mathieu Desnoyers mathieu.desnoyers@efficios.com wrote:
-> 
-> > Hi Beau,
-> > 
-> > I have queued a few questions I would like to discuss with respect to the
-> > proposed
-> > user events UAPI. I originally planned to expand further on them, but I now
-> > think it's
-> > best if I ask away right now and we clarify things through discussion:
-> > 
-> > First, I find it odd that the event enable bitmask and the event ID and payload
-> > type registration must be combined. I can think of various use-cases where other
-> > tracers would be interested to use the event-enable bitmask facility without
-> > polluting the event ID/payload registration data structures with useless data.
-> > Can those be split into two distinct independent ABIs ?
-> > 
-> > I can't help but notice that this new user-space instrumentation
-> > infrastructure/ABI
-> > can only be used for tracing user-space through kernel tracers. Considering that
-> > ABIs dictated by the kernel usually end up being de facto standards, I am
-> > concerned
-> > that if it is unable to allow purely user-space tracers to use it, then all
-> > applications
-> > will end up being statically instrumented in ways that prevent user-space
-> > tracers from
-> > hooking efficiently on the static instrumentation. As I have replied in an
-> > earlier
-> > thread, purely user-space tracers are not just marginally faster than kernel
-> > tracers
-> > for tracing user-space. They are an order of magnitude faster as soon as all the
-> > proper
-> > configuration steps are taken to ensure there are no system calls on the tracer
-> > fast path. Therefore, it would be sad to effectively dismiss efficient tracer
-> > implementations for the sake of easiness of implementation of today's user-event
-> > ABI. This will cause a precedent we will be stuck with later.
-> > 
-> > Linux kernel developers involved in implementation of instrumentation within
-> > Linux
-> > have spent a lot of effort to make sure the instrumentation is orthogonal to the
-> > tracing technology (tracepoints, kprobe, kretprobe...). I understand that making
-> > sure the user-space instrumentation ABI keeps this orthogonal is a lot more
-> > work,
-> > but nobody said that exposing ABIs to user-space was easy. ;-)
-> > 
-> > The other point I would like to raise is container awareness. I can't help but
-> > notice that the user events ABI is exposed to trace all containers, with the
-> > intent
-> > to be used (consumed) from some privileged namespace (e.g. root pid namespace).
-> > This works in use-cases where the user of the tracing data controls the entire
-> > machine (all containers), but not so much if the user is a single tenant within
-> > a multi-tenants systems. I would expect that a proper namespace-aware facility
-> > would take care of making sure that a trace consumer could observe what is
-> > instrumented within its own container, and within nested containers as well.
-> > The fact that all container questions are entirely dismissed, thus keeping a
-> > event-enable bitmask registry and event ID/type registry global to the entire
-> > system, is not compatible with consuming traces from a non-privileged container,
-> > and I suspect this may also be used as a side-channel to learn information about
-> > what other containers are doing in a multi-tenant system.
-> 
-> One more thought: I may have simply missed it, but is there any user events code 
-> which dynamically validates that the input from user-space writev() indeed match the
-> event description layout ? I'm thinking about wrong size, too short strings, too long
-> strings, missing null terminator and so on. Any user input that could make the trace
-> unreadable should never reach the tracing buffers.
-> 
+Daniel Wagner reported to me that readproc.h got deprecated. Also,
+while the procps-ng library was available on Fedora, it was not available
+on RHEL, which is a piece of evidence that it was not that used.
 
-Yes, there are validators attached to events to ensure that the minimum
-size is written and ensure types that require certain safety gaurantees
-are met. Currently I believe the only such requirement is for variable
-length strings to have proper null termination (beside the min size
-requirement).
+rtla uses procps-ng only to find the PID of the tracers' workload.
 
-See user_event_validate() in kernel/trace/trace_events_user.c.
-This is called for both perf and ftrace buffers, buffers discard if the
-validation fails.
+I used the procps-ng library to avoid reinventing the wheel. But in this
+case, reinventing the wheel took me less time than the time we already
+took trying to work around problems.
 
-Related patch:
-https://lore.kernel.org/all/20220118204326.2169-7-beaub@linux.microsoft.com/
+Implement a function that reads /proc/ entries, checking if:
+	- the entry is a directory
+	- the directory name is composed only of digits (PID)
+	- the directory contains the comm file
+	- the comm file contains a comm that matches the tracers'
+	  workload prefix.
+	- then return true; otherwise, return false.
 
-> Thanks,
-> 
-> Mathieu
-> 
-> > 
-> > Thanks,
-> > 
-> > Mathieu
-> > 
-> > --
-> > Mathieu Desnoyers
-> > EfficiOS Inc.
-> > http://www.efficios.com
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> http://www.efficios.com
+And use it instead of procps-ng.
 
-Thanks,
--Beau
+Cc: John Kacur <jkacur@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Tao Zhou <tao.zhou@linux.dev>
+Fixes: b1696371d865 ("rtla: Helper functions for rtla")
+Reported-by: Daniel Wagner <dwagner@suse.de>
+Reviewed-by: Daniel Wagner <dwagner@suse.de>
+Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+---
+Changes from V3:
+  - check opendir() for NULL 
+Changes from V2: 
+  - Add a space in char *t_name;
+  - s/procps/procfs/ in set_comm_sched_attr() comment
+Changes from V1:
+  - Use a single buffer for comm and comm_path
+  - Cause an error in case of a too long command prefix
+  - Do a close_dir()
+  - Improve log messages
+
+ tools/tracing/rtla/Makefile    |   2 +-
+ tools/tracing/rtla/README.txt  |   1 -
+ tools/tracing/rtla/src/utils.c | 106 ++++++++++++++++++++++++++-------
+ tools/tracing/rtla/src/utils.h |   3 +-
+ 4 files changed, 88 insertions(+), 24 deletions(-)
+
+diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
+index 5a3226e436ef..523f0a8c38c2 100644
+--- a/tools/tracing/rtla/Makefile
++++ b/tools/tracing/rtla/Makefile
+@@ -32,7 +32,7 @@ TRACEFS_HEADERS	:= $$($(PKG_CONFIG) --cflags libtracefs)
+ 
+ CFLAGS	:=	-O -g -DVERSION=\"$(VERSION)\" $(FOPTS) $(MOPTS) $(WOPTS) $(TRACEFS_HEADERS)
+ LDFLAGS	:=	-ggdb
+-LIBS	:=	$$($(PKG_CONFIG) --libs libtracefs) -lprocps
++LIBS	:=	$$($(PKG_CONFIG) --libs libtracefs)
+ 
+ SRC	:=	$(wildcard src/*.c)
+ HDR	:=	$(wildcard src/*.h)
+diff --git a/tools/tracing/rtla/README.txt b/tools/tracing/rtla/README.txt
+index 0fbad2640b8c..4af3fd40f171 100644
+--- a/tools/tracing/rtla/README.txt
++++ b/tools/tracing/rtla/README.txt
+@@ -11,7 +11,6 @@ RTLA depends on the following libraries and tools:
+ 
+  - libtracefs
+  - libtraceevent
+- - procps
+ 
+ It also depends on python3-docutils to compile man pages.
+ 
+diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
+index 3bd6f64780cf..5352167a1e75 100644
+--- a/tools/tracing/rtla/src/utils.c
++++ b/tools/tracing/rtla/src/utils.c
+@@ -3,7 +3,7 @@
+  * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
+  */
+ 
+-#include <proc/readproc.h>
++#include <dirent.h>
+ #include <stdarg.h>
+ #include <stdlib.h>
+ #include <string.h>
+@@ -262,43 +262,107 @@ int __set_sched_attr(int pid, struct sched_attr *attr)
+ 
+ 	return 0;
+ }
++
++/*
++ * procfs_is_workload_pid - check if a procfs entry contains a comm_prefix* comm
++ *
++ * Check if the procfs entry is a directory of a process, and then check if the
++ * process has a comm with the prefix set in char *comm_prefix. As the
++ * current users of this function only check for kernel threads, there is no
++ * need to check for the threads for the process.
++ *
++ * Return: True if the proc_entry contains a comm file with comm_prefix*.
++ * Otherwise returns false.
++ */
++static int procfs_is_workload_pid(const char *comm_prefix, struct dirent *proc_entry)
++{
++	char buffer[MAX_PATH];
++	int comm_fd, retval;
++	char *t_name;
++
++	if (proc_entry->d_type != DT_DIR)
++		return 0;
++
++	if (*proc_entry->d_name == '.')
++		return 0;
++
++	/* check if the string is a pid */
++	for (t_name = proc_entry->d_name; t_name; t_name++) {
++		if (!isdigit(*t_name))
++			break;
++	}
++
++	if (*t_name != '\0')
++		return 0;
++
++	snprintf(buffer, MAX_PATH, "/proc/%s/comm", proc_entry->d_name);
++	comm_fd = open(buffer, O_RDONLY);
++	if (comm_fd < 0)
++		return 0;
++
++	memset(buffer, 0, MAX_PATH);
++	retval = read(comm_fd, buffer, MAX_PATH);
++
++	close(comm_fd);
++
++	if (retval <= 0)
++		return 0;
++
++	retval = strncmp(comm_prefix, buffer, strlen(comm_prefix));
++	if (retval)
++		return 0;
++
++	/* comm already have \n */
++	debug_msg("Found workload pid:%s comm:%s", proc_entry->d_name, buffer);
++
++	return 1;
++}
++
+ /*
+- * set_comm_sched_attr - set sched params to threads starting with char *comm
++ * set_comm_sched_attr - set sched params to threads starting with char *comm_prefix
+  *
+- * This function uses procps to list the currently running threads and then
+- * set the sched_attr *attr to the threads that start with char *comm. It is
++ * This function uses procfs to list the currently running threads and then set the
++ * sched_attr *attr to the threads that start with char *comm_prefix. It is
+  * mainly used to set the priority to the kernel threads created by the
+  * tracers.
+  */
+-int set_comm_sched_attr(const char *comm, struct sched_attr *attr)
++int set_comm_sched_attr(const char *comm_prefix, struct sched_attr *attr)
+ {
+-	int flags = PROC_FILLCOM | PROC_FILLSTAT;
+-	PROCTAB *ptp;
+-	proc_t task;
++	struct dirent *proc_entry;
++	DIR *procfs;
+ 	int retval;
+ 
+-	ptp = openproc(flags);
+-	if (!ptp) {
+-		err_msg("error openproc()\n");
+-		return -ENOENT;
++	if (strlen(comm_prefix) >= MAX_PATH) {
++		err_msg("Command prefix is too long: %d < strlen(%s)\n",
++			MAX_PATH, comm_prefix);
++		return 1;
+ 	}
+ 
+-	memset(&task, 0, sizeof(task));
++	procfs = opendir("/proc");
++	if (!procfs) {
++		err_msg("Could not open procfs\n");
++		return 1;
++	}
+ 
+-	while (readproc(ptp, &task)) {
+-		retval = strncmp(comm, task.cmd, strlen(comm));
+-		if (retval)
++	while ((proc_entry = readdir(procfs))) {
++
++		retval = procfs_is_workload_pid(comm_prefix, proc_entry);
++		if (!retval)
+ 			continue;
+-		retval = __set_sched_attr(task.tid, attr);
+-		if (retval)
++
++		/* procfs_is_workload_pid confirmed it is a pid */
++		retval = __set_sched_attr(atoi(proc_entry->d_name), attr);
++		if (retval) {
++			err_msg("Error setting sched attributes for pid:%s\n", proc_entry->d_name);
+ 			goto out_err;
+-	}
++		}
+ 
+-	closeproc(ptp);
++		debug_msg("Set sched attributes for pid:%s\n", proc_entry->d_name);
++	}
+ 	return 0;
+ 
+ out_err:
+-	closeproc(ptp);
++	closedir(procfs);
+ 	return 1;
+ }
+ 
+diff --git a/tools/tracing/rtla/src/utils.h b/tools/tracing/rtla/src/utils.h
+index fa08e374870a..5571afd3b549 100644
+--- a/tools/tracing/rtla/src/utils.h
++++ b/tools/tracing/rtla/src/utils.h
+@@ -6,6 +6,7 @@
+  * '18446744073709551615\0'
+  */
+ #define BUFF_U64_STR_SIZE	24
++#define MAX_PATH		1024
+ 
+ #define container_of(ptr, type, member)({			\
+ 	const typeof(((type *)0)->member) *__mptr = (ptr);	\
+@@ -53,5 +54,5 @@ struct sched_attr {
+ };
+ 
+ int parse_prio(char *arg, struct sched_attr *sched_param);
+-int set_comm_sched_attr(const char *comm, struct sched_attr *attr);
++int set_comm_sched_attr(const char *comm_prefix, struct sched_attr *attr);
+ int set_cpu_dma_latency(int32_t latency);
+-- 
+2.32.0
