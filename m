@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4064FC4332F
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 14 May 2022 02:55:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4817CC433F5
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 14 May 2022 02:55:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbiENCz1 (ORCPT
+        id S230080AbiENCz2 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 13 May 2022 22:55:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58934 "EHLO
+        Fri, 13 May 2022 22:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbiENCzU (ORCPT
+        with ESMTP id S230117AbiENCzU (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 13 May 2022 22:55:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0632F34A37B
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44EA34A03D
         for <linux-trace-devel@vger.kernel.org>; Fri, 13 May 2022 19:48:01 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0921061E17
-        for <linux-trace-devel@vger.kernel.org>; Sat, 14 May 2022 02:48:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B081DC341C5;
+        by ams.source.kernel.org (Postfix) with ESMTPS id E0DC6B83259
+        for <linux-trace-devel@vger.kernel.org>; Sat, 14 May 2022 02:47:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79053C36AE2;
         Sat, 14 May 2022 02:47:58 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1nphoz-005XMt-Jo;
+        id 1nphoz-005XM2-9v;
         Fri, 13 May 2022 22:47:57 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 15/26] trace-cmd record: Add trace_tsync_as_host() helper
-Date:   Fri, 13 May 2022 22:47:45 -0400
-Message-Id: <20220514024756.1319681-16-rostedt@goodmis.org>
+Subject: [PATCH 02/26] trace-cmd: Move add_guest_info() into trace-vm.c
+Date:   Fri, 13 May 2022 22:47:32 -0400
+Message-Id: <20220514024756.1319681-3-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220514024756.1319681-1-rostedt@goodmis.org>
 References: <20220514024756.1319681-1-rostedt@goodmis.org>
@@ -44,99 +44,173 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-In the process of adding an agent proxy, it will be useful to have a
-function that will allow the agent to synchronize as the host. Move the
-code to do so into a helper function that can be used by the agent. This
-will be later moved to a separate file.
+In preparation for the agent proxy, move add_guest_info() into trace-vm.c
+and rename it to trace_add_guest_info(). This will be used by the agent
+when acting as a proxy.
+
+Also comment the function to state what it does and what it records into
+the trace.dat option.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- tracecmd/trace-record.c | 57 +++++++++++++++++++++++++++--------------
- 1 file changed, 38 insertions(+), 19 deletions(-)
+ tracecmd/include/trace-local.h |  1 +
+ tracecmd/trace-record.c        | 54 +-----------------------------
+ tracecmd/trace-vm.c            | 61 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 63 insertions(+), 53 deletions(-)
 
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index e3fec1319880..f3b805fa7bad 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -339,6 +339,7 @@ bool trace_have_guests_pid(void);
+ void read_qemu_guests(void);
+ int get_guest_pid(unsigned int guest_cid);
+ int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu);
++void trace_add_guest_info(struct tracecmd_output *handle, struct buffer_instance *instance);
+ 
+ /* moved from trace-cmd.h */
+ void tracecmd_remove_instances(void);
 diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index f05ad09c9723..2c595a7918f0 100644
+index a22935263625..67ad1208f90c 100644
 --- a/tracecmd/trace-record.c
 +++ b/tracecmd/trace-record.c
-@@ -3979,12 +3979,42 @@ static void stop_mapping_vcpus(int cpu_count, struct trace_guest *guest)
- 	tracefs_instance_free(guest->instance);
+@@ -4297,58 +4297,6 @@ static void append_buffer(struct tracecmd_output *handle,
+ 	}
  }
  
-+static struct tracecmd_time_sync *
-+trace_tsync_as_host(int fd, unsigned long long trace_id,
-+		    int loop_interval, int guest_id,
-+		    int guest_cpus, const char *proto_name,
-+		    const char *clock)
+-static void
+-add_guest_info(struct tracecmd_output *handle, struct buffer_instance *instance)
+-{
+-	struct trace_guest *guest;
+-	const char *name;
+-	char *buf, *p;
+-	int size;
+-	int pid;
+-	int i;
+-
+-	if (is_network(instance)) {
+-		name = instance->name;
+-	} else {
+-		guest = trace_get_guest(instance->cid, NULL);
+-		if (!guest)
+-			return;
+-		name = guest->name;
+-	}
+-
+-	size = strlen(name) + 1;
+-	size += sizeof(long long);	/* trace_id */
+-	size += sizeof(int);		/* cpu count */
+-	size += instance->cpu_count * 2 * sizeof(int);	/* cpu,pid pair */
+-
+-	buf = calloc(1, size);
+-	if (!buf)
+-		return;
+-	p = buf;
+-	strcpy(p, name);
+-	p += strlen(name) + 1;
+-
+-	memcpy(p, &instance->trace_id, sizeof(long long));
+-	p += sizeof(long long);
+-
+-	memcpy(p, &instance->cpu_count, sizeof(int));
+-	p += sizeof(int);
+-	for (i = 0; i < instance->cpu_count; i++) {
+-		pid = -1;
+-		if (!is_network(instance)) {
+-			if (i < guest->cpu_max)
+-				pid = guest->cpu_pid[i];
+-		}
+-		memcpy(p, &i, sizeof(int));
+-		p += sizeof(int);
+-		memcpy(p, &pid, sizeof(int));
+-		p += sizeof(int);
+-	}
+-
+-	tracecmd_add_option(handle, TRACECMD_OPTION_GUEST, size, buf);
+-	free(buf);
+-}
+-
+ static void
+ add_pid_maps(struct tracecmd_output *handle, struct buffer_instance *instance)
+ {
+@@ -4679,7 +4627,7 @@ static void record_data(struct common_record_context *ctx)
+ 
+ 		for_all_instances(instance) {
+ 			if (is_guest(instance))
+-				add_guest_info(handle, instance);
++				trace_add_guest_info(handle, instance);
+ 		}
+ 
+ 		if (ctx->tsc2nsec.mult) {
+diff --git a/tracecmd/trace-vm.c b/tracecmd/trace-vm.c
+index 57dbef8d42e4..47f8d96a4015 100644
+--- a/tracecmd/trace-vm.c
++++ b/tracecmd/trace-vm.c
+@@ -386,3 +386,64 @@ int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu)
+ 	}
+ 	return -1;
+ }
++
++/**
++ * trace_add_guest_info - Add the guest info into the trace file option
++ * @handle: The file handle that the guest info option is added to
++ * @instance: The instance that that represents the guest
++ *
++ * Adds information about the guest from the @instance into an option
++ * for the @instance. It records the trace_id, the number of CPUs,
++ * as well as the PIDs of the host that represent the CPUs.
++ */
++void
++trace_add_guest_info(struct tracecmd_output *handle, struct buffer_instance *instance)
 +{
-+	struct tracecmd_time_sync *tsync;
 +	struct trace_guest *guest;
-+	int guest_pid = -1;
++	const char *name;
++	char *buf, *p;
++	int size;
++	int pid;
++	int i;
 +
-+	if (fd < 0)
-+		return NULL;
-+
-+	if (guest_id >= 0) {
-+		guest = trace_get_guest(guest_id, NULL);
-+		if (guest == NULL)
-+			return NULL;
-+		guest_pid = guest->pid;
-+		start_mapping_vcpus(guest);
++	if (is_network(instance)) {
++		name = instance->name;
++	} else {
++		guest = trace_get_guest(instance->cid, NULL);
++		if (!guest)
++			return;
++		name = guest->name;
 +	}
 +
-+	tsync = tracecmd_tsync_with_guest(trace_id, loop_interval, fd,
-+					  guest_pid, guest_cpus, proto_name,
-+					  clock);
++	size = strlen(name) + 1;
++	size += sizeof(long long);	/* trace_id */
++	size += sizeof(int);		/* cpu count */
++	size += instance->cpu_count * 2 * sizeof(int);	/* cpu,pid pair */
 +
-+	if (guest_id >= 0)
-+		stop_mapping_vcpus(guest_cpus, guest);
++	buf = calloc(1, size);
++	if (!buf)
++		return;
++	p = buf;
++	strcpy(p, name);
++	p += strlen(name) + 1;
 +
-+	return tsync;
++	memcpy(p, &instance->trace_id, sizeof(long long));
++	p += sizeof(long long);
++
++	memcpy(p, &instance->cpu_count, sizeof(int));
++	p += sizeof(int);
++	for (i = 0; i < instance->cpu_count; i++) {
++		pid = -1;
++		if (!is_network(instance)) {
++			if (i < guest->cpu_max)
++				pid = guest->cpu_pid[i];
++		}
++		memcpy(p, &i, sizeof(int));
++		p += sizeof(int);
++		memcpy(p, &pid, sizeof(int));
++		p += sizeof(int);
++	}
++
++	tracecmd_add_option(handle, TRACECMD_OPTION_GUEST, size, buf);
++	free(buf);
 +}
-+
- static int host_tsync(struct common_record_context *ctx,
- 		      struct buffer_instance *instance,
- 		      unsigned int tsync_port, char *proto)
- {
--	struct trace_guest *guest;
--	int guest_pid = -1;
-+	int guest_id = -1;
- 	int fd;
- 
- 	if (!proto)
-@@ -3994,27 +4024,16 @@ static int host_tsync(struct common_record_context *ctx,
- 		fd = connect_port(instance->name, tsync_port,
- 				  instance->port_type);
- 	} else {
--		guest = trace_get_guest(instance->cid, NULL);
--		if (guest == NULL)
--			return -1;
--
--		guest_pid = guest->pid;
--		start_mapping_vcpus(guest);
-+		guest_id = instance->cid;
- 		fd = trace_vsock_open(instance->cid, tsync_port);
- 	}
- 
--	instance->tsync = tracecmd_tsync_with_guest(top_instance.trace_id,
--						    instance->tsync_loop_interval,
--						    fd, guest_pid,
--						    instance->cpu_count,
--						    proto, ctx->clock);
--	if (!is_network(instance))
--		stop_mapping_vcpus(instance->cpu_count, guest);
-+	instance->tsync = trace_tsync_as_host(fd, top_instance.trace_id,
-+					      instance->tsync_loop_interval,
-+					      guest_id, instance->cpu_count,
-+					      proto, ctx->clock);
- 
--	if (!instance->tsync)
--		return -1;
--
--	return 0;
-+	return instance->tsync ? 0 : -1;
- }
- 
- static void connect_to_agent(struct common_record_context *ctx,
 -- 
 2.35.1
 
