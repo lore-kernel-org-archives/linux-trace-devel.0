@@ -2,33 +2,32 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45A9AC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 21 May 2022 20:47:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 685ABC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 21 May 2022 22:08:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346204AbiEUUrz (ORCPT
+        id S1346365AbiEUWIv (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 21 May 2022 16:47:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
+        Sat, 21 May 2022 18:08:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346221AbiEUUru (ORCPT
+        with ESMTP id S1346344AbiEUWIu (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 21 May 2022 16:47:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E1650009
-        for <linux-trace-devel@vger.kernel.org>; Sat, 21 May 2022 13:47:48 -0700 (PDT)
+        Sat, 21 May 2022 18:08:50 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4371142A33
+        for <linux-trace-devel@vger.kernel.org>; Sat, 21 May 2022 15:08:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4BDF160ECC
-        for <linux-trace-devel@vger.kernel.org>; Sat, 21 May 2022 20:47:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C05FC385AA
-        for <linux-trace-devel@vger.kernel.org>; Sat, 21 May 2022 20:47:47 +0000 (UTC)
-Date:   Sat, 21 May 2022 16:47:45 -0400
+        by ams.source.kernel.org (Postfix) with ESMTPS id 52AD1B80AC6
+        for <linux-trace-devel@vger.kernel.org>; Sat, 21 May 2022 22:08:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD24CC385AA
+        for <linux-trace-devel@vger.kernel.org>; Sat, 21 May 2022 22:08:45 +0000 (UTC)
+Date:   Sat, 21 May 2022 18:08:44 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd listen: Do not compress for v1 of the msg
- protocol
-Message-ID: <20220521164745.54897f01@gandalf.local.home>
+Subject: [PATCH] trace-cmd listen: Use copy of host for connect_ip()
+Message-ID: <20220521180844.2af85772@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -39,46 +38,79 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The v1 of the msg protocol cannot handle compression being sent across
-the network. Do not compress if the listener can only handle the v1 message
-protocol.
+If an old trace-cmd only uses v1 in the listen communication, to determine
+this a trick is done by passing the v1 CPU communication a -1 followed by
+the communication version. V3 and beyond knows this as the version
+communication number, but v1 will error out. Then the connection is closed
+and v1 is tried anew. (Note, v2 never existed in a release so it can be ignored).
 
-Fixes: 3f8447b1e2f97 ("trace-cmd library: Add support for compression algorithms")
+The problem is that on the retry, the host has been updated with via a
+strchr(), and modified. The second time around, it will not have the port
+number attached to it, so it will fail to communicate.
+
+Fixes: 194467199c076 ("trace-cmd listen: Add vsocket usage")
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- tracecmd/trace-record.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ tracecmd/trace-record.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
 diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index f8d2bad70566..c770f698019f 100644
+index c770f698019f..ce20402af7c2 100644
 --- a/tracecmd/trace-record.c
 +++ b/tracecmd/trace-record.c
-@@ -3780,19 +3780,18 @@ setup_connection(struct buffer_instance *instance, struct common_record_context
- 		if (ret)
- 			goto error;
- 	} else {
-+		/*
-+		 * V3 can handle compression, but V1 can not.
-+		 * Set the file version back to 6.
-+		 */
-+		ctx->file_version = FILE_VERSION_MIN;
-+		ctx->compression = false;
- 		network_handle = tracecmd_output_create_fd(msg_handle->fd);
- 		if (!network_handle)
- 			goto error;
- 		if (tracecmd_output_set_version(network_handle, ctx->file_version))
- 			goto error;
+@@ -3630,7 +3630,7 @@ static int connect_ip(char *thost)
+ 	char *port;
+ 	char *p;
  
--		if (ctx->compression) {
--			if (tracecmd_output_set_compression(network_handle, ctx->compression))
--				goto error;
--		} else if (ctx->file_version >= FILE_VERSION_COMPRESSION) {
--			tracecmd_output_set_compression(network_handle, "any");
--		}
--
- 		if (tracecmd_output_write_headers(network_handle, listed_events))
- 			goto error;
- 		tracecmd_set_quiet(network_handle, quiet);
+-	if (!strchr(host, ':')) {
++	if (!strchr(thost, ':')) {
+ 		server = strdup("localhost");
+ 		if (!server)
+ 			die("alloctating server");
+@@ -3662,19 +3662,24 @@ static struct tracecmd_msg_handle *setup_network(struct buffer_instance *instanc
+ {
+ 	struct tracecmd_msg_handle *msg_handle = NULL;
+ 	enum port_type type = instance->port_type;
++	char *thost = strdup(host);
+ 	int sfd;
+ 
++	if (!thost)
++		die("Failed to allocate host");
+ again:
+ 	switch (type) {
+ 	case USE_VSOCK:
+-		sfd = connect_vsock(host);
++		sfd = connect_vsock(thost);
+ 		break;
+ 	default:
+-		sfd = connect_ip(host);
++		sfd = connect_ip(thost);
+ 	}
+ 
+-	if (sfd < 0)
++	if (sfd < 0) {
++		free(thost);
+ 		return NULL;
++	}
+ 
+ 	if (msg_handle) {
+ 		msg_handle->fd = sfd;
+@@ -3704,6 +3709,7 @@ again:
+ 			/* reconnect to the server for using the v1 protocol */
+ 			close(sfd);
+ 			free(host);
++			host = NULL;
+ 			goto again;
+ 		}
+ 		communicate_with_listener_v3(msg_handle, &instance->client_ports);
+@@ -3712,6 +3718,7 @@ again:
+ 	if (msg_handle->version == V1_PROTOCOL)
+ 		communicate_with_listener_v1(msg_handle, instance);
+ 
++	free(thost);
+ 	return msg_handle;
+ }
+ 
 -- 
 2.35.1
 
