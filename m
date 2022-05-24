@@ -2,82 +2,62 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74570C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 23 May 2022 13:47:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75B46C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 24 May 2022 01:50:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236571AbiEWNrL (ORCPT
+        id S229783AbiEXBug (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 23 May 2022 09:47:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
+        Mon, 23 May 2022 21:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236540AbiEWNrK (ORCPT
+        with ESMTP id S232783AbiEXBuf (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 23 May 2022 09:47:10 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7881355220
-        for <linux-trace-devel@vger.kernel.org>; Mon, 23 May 2022 06:47:05 -0700 (PDT)
+        Mon, 23 May 2022 21:50:35 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EBD5737A1
+        for <linux-trace-devel@vger.kernel.org>; Mon, 23 May 2022 18:50:33 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1BC77B810FE
-        for <linux-trace-devel@vger.kernel.org>; Mon, 23 May 2022 13:47:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7560FC385AA;
-        Mon, 23 May 2022 13:47:02 +0000 (UTC)
-Date:   Mon, 23 May 2022 09:47:00 -0400
+        by ams.source.kernel.org (Postfix) with ESMTPS id 01234B8171F
+        for <linux-trace-devel@vger.kernel.org>; Tue, 24 May 2022 01:50:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5779C385A9;
+        Tue, 24 May 2022 01:50:30 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.95)
+        (envelope-from <rostedt@rostedt.homelinux.com>)
+        id 1ntJgr-0015i5-LF;
+        Mon, 23 May 2022 21:50:29 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Vineeth Pillai <vineethrp@google.com>
-Cc:     linux-trace-devel@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH] trace-cmd: rework of the pid detection of vcpus
-Message-ID: <20220523094700.26eb2a05@gandalf.local.home>
-In-Reply-To: <CA+HDTgQ_pvxA6jwXCE2tnj_YWQCcqOLR9FBKRmX68THXcZGkfQ@mail.gmail.com>
-References: <20220504010242.1388192-1-vineethrp@google.com>
-        <20220520160842.75d0ecbe@gandalf.local.home>
-        <CA+HDTgQ_pvxA6jwXCE2tnj_YWQCcqOLR9FBKRmX68THXcZGkfQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To:     linux-trace-devel@vger.kernel.org
+Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Subject: [PATCH 0/2] trace-cmd: Fix clock setting of agent proxy
+Date:   Mon, 23 May 2022 21:50:26 -0400
+Message-Id: <20220524015028.260238-1-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 23 May 2022 09:39:45 -0400
-Vineeth Pillai <vineethrp@google.com> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> On Fri, May 20, 2022 at 4:08 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >  
-> >> +     be32 max_apicid;
-> >>       be32 page_size;
-> >>       u64 trace_id;
-> >>       char tsync_proto_name[TRACECMD_TSYNC_PNAME_LENGTH];  
-> >
-> >Unfortunately, the above will break the protocol for released instances of
-> >trace-cmd that is already out there. One requirement I have is that if two
-> >instances of trace-cmd use to work (on host and guest) that if you upgrade
-> >one of them, what use to work still does.
-> >
-> >We need to figure out another way to handle this :-/
-> >  
-> Ahh ok, understood..
-> I think we should also think about versioning the guest/host protocols
+trace-cmd record does not set its clock to TSC if it connects to a agent
+proxy, when it should. This breaks the synchronization. It works if the user
+manually sets the clock to TSC before running the record, but the user
+should not need to do that.
 
-We actually have that. We are currently at version 3. If this becomes too
-much of an issue, we can always move to v4. But to do that would require a
-lot more thinking, as I like to support all versions, and I don't want to
-have a lot of them. Thus, if we need to update to v4. It would likely be a
-entirely new protocol to fix and extend the issues of v3.
+Also, if the TSC2NSEC option is set, then print the timing out in seconds
+(with fractions) instead of the time stamp in nanoseconcds.
 
+Steven Rostedt (Google) (2):
+  trace-cmd library: Keep USECS flag if TSC multiplier is set
+  trace-cmd record: Set clock to TSC when connecting to a proxy with kvm
 
-> >We'll have to investigate a solution for this further.  
+ lib/trace-cmd/trace-input.c |  6 ++++++
+ tracecmd/trace-record.c     | 13 +++++++++++++
+ 2 files changed, 19 insertions(+)
 
-> Sure, I will have a look at this again and see if/how we can fix this without
-> touching existing protocol. I was thinking about adding the pid details to
-> debugfs and then reading it from there. Its not optimal as we would need a
-> supporting kernel, but it would be accurate if we have kernel support and we
-> need not rely on trace messages to get the pids.
-
-That would be useful too, in more than just trace-cmd I believe.
-
--- Steve
+-- 
+2.35.1
 
