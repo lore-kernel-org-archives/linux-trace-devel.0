@@ -2,94 +2,63 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5317C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 25 May 2022 01:28:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72C01C433F5
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 25 May 2022 13:21:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237096AbiEYB2k (ORCPT
+        id S232591AbiEYNU6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 24 May 2022 21:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48120 "EHLO
+        Wed, 25 May 2022 09:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233885AbiEYB2j (ORCPT
+        with ESMTP id S236207AbiEYNU6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 24 May 2022 21:28:39 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4FD719E3;
-        Tue, 24 May 2022 18:28:38 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id z25so5228198pfr.1;
-        Tue, 24 May 2022 18:28:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=J/O7QHB/83qp0R6uAeHC9GzIW1KgB7sgS2PTCnjrXA8=;
-        b=Y/KejWZjl/qnMwHs1oYTYrwTlKeFkQxA7jiUh+uO9Ib12Cv0aMkjHuid4wRSqGmK9v
-         +oXZCBC+KeNq6xIv8/OWMuS6bqBWQa5S3JaP/Tl7Tn9COzMto1ZpDLIalqP6gpOZnXGn
-         bwVmtWAeJ4aWvrO6iHqX3hZ0EFf8bwr3IxQjnxJXi3RjgYwRDhaM8OljALdrzF/Qo0eS
-         NVMqoIU/0y2R2Ut8yW9Iy6G5qS4IpdWXK8agaPFea9X8zZ13vspfOGeQDcdcOokLz3fX
-         33h1srwRbqzkG55OwCReaU3WeyuC1cm27U2UYBhi55jPhtB/Ct30gn+gBEXptDmhvApH
-         LLrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=J/O7QHB/83qp0R6uAeHC9GzIW1KgB7sgS2PTCnjrXA8=;
-        b=8EJn/E/zNEeTykYlmZVEzQhyg6mU5iPOuQ3WOGvAV05rru7iGT/9gpzfnMluJ+IBAh
-         S3iX6/BjVMk+Yz7tsCLp6RwAfQdBROLX6FILH8f3/ML30lYi342iyrggXBv4s0ZVguvl
-         +sRHLtjhi3LItGiNITW4b/GQrDlK3hnmrLBwBrq3H235lIMBDjJ1pEtBE//aKDjtAl8A
-         zOQw13e3JUT5BKzYEazHsYbW+O3D3Kn5lYgeN6XQYJLC4yb4O2zxuTEZIqou8/wL8PCq
-         VSloIK72HAruiZfm3+bXuK34LcIIpK/rqwfIU0CY/M2zbZq93o+LP2ocXyDTh7vcXkUc
-         0lqQ==
-X-Gm-Message-State: AOAM532e3sJ9CqMTmmct7c0y9x4UN9RCiJHp0SA0keONz11GfYYOMpr0
-        +G0I+XDJ3rQocxrjAa4i0EBy0RR8Uw==
-X-Google-Smtp-Source: ABdhPJxz1cpWGjZGtiQ+7Iib1gqWTaFhSN8JSkPhITcv0rxNQGbpVSKLwXdHZow5fUYR/38JDdZDXw==
-X-Received: by 2002:a63:9dc7:0:b0:3f6:17f0:f310 with SMTP id i190-20020a639dc7000000b003f617f0f310mr25982468pgd.285.1653442118027;
-        Tue, 24 May 2022 18:28:38 -0700 (PDT)
-Received: from localhost.localdomain (ns1003916.ip-51-81-154.us. [51.81.154.37])
-        by smtp.gmail.com with ESMTPSA id c13-20020a170902c1cd00b0015e8d4eb21asm7878285plc.100.2022.05.24.18.28.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 May 2022 18:28:37 -0700 (PDT)
-From:   sunliming <kelulanainsley@gmail.com>
-X-Google-Original-From: sunliming <sunliming@kylinos.cn>
-To:     mingo@redhat.com, rostedt@goodmis.org, tglx@linutronix.de,
-        bp@alien8.de, dave.hansen@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        x86@kernel.org, linux-trace-devel@vger.kernel.org,
-        sunliming@kylinos.cn
-Subject: [PATCH v2 RESEND] x86,trace: Remove unused headers
-Date:   Wed, 25 May 2022 09:28:27 +0800
-Message-Id: <20220525012827.93464-1-sunliming@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+        Wed, 25 May 2022 09:20:58 -0400
+X-Greylist: delayed 99603 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 25 May 2022 06:20:57 PDT
+Received: from box.indicandustries.com (hwsrv-970840.hostwindsdns.com [104.168.149.109])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B73186D6
+        for <linux-trace-devel@vger.kernel.org>; Wed, 25 May 2022 06:20:57 -0700 (PDT)
+Received: from authenticated-user (box.indicandustries.com [104.168.149.109])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by box.indicandustries.com (Postfix) with ESMTPSA id C7D131081D5
+        for <linux-trace-devel@vger.kernel.org>; Tue, 24 May 2022 03:24:36 -0600 (MDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=box.indicandustries.com; s=mail; t=1653384277;
+        bh=V6VCn7WEbqHjVVQ20/+SYu6rwS1WmTHcxX88g+j430s=;
+        h=Reply-To:From:To:Subject:Date:From;
+        b=H3SvzEu3+p2WF6bHUBMqlg56rxxr+VRjH4on8QKZnLSVAjzMH3iSC4sdRbdVouTij
+         heGqHWfKNrPHibb/urvVQpRD008oo7LKWgu6m8w4SU5+eabuCsFzeQtyqmlMQLSzEo
+         vhWT70TH7l/Ivnx15Xr/fItesTxFZ1GoprAP12eL/B+HzNOTTBeUzKP1OZ9pmh9Pbr
+         26NioLk2YQ0qkkUJ083xA4b6y+ymb/tOIaVlwdUloGPu0aLkCUoS/vdiR3FMrpyJbD
+         gS6cPyD/xEJQvqxt0rFVXB8q/B0t31XT+HPBQXZrDOGZNbQNBsPIYAOaWrFR2LY1rk
+         +mkBH/4qfJ6ww==
+Reply-To: amjalia90@gmail.com
+From:   amjad.ali@box.indicandustries.com
+To:     linux-trace-devel@vger.kernel.org
+Subject: Hello Sir, I seek your urgent consideration.
+Date:   24 May 2022 11:24:36 +0200
+Message-ID: <20220524112436.0C0E6E770B7FEE51@box.indicandustries.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Commit 4b9a8dca0e58 ("x86/idt: Remove the tracing IDT completely")
-removed the tracing IDT from the file arch/x86/kernel/tracepoint.c,
-but left the related headers unused, remove it.
+Hello,
 
-Signed-off-by: sunliming <sunliming@kylinos.cn>
----
- arch/x86/kernel/tracepoint.c | 3 ---
- 1 file changed, 3 deletions(-)
+Greetings? I am Amjad. I work with a leading Bio Firm.  Due to=20
+the setbacks of the pandemic, my company has opened a bid in=20
+search of new suppliers for basic raw materials needed in=20
+production.
 
-diff --git a/arch/x86/kernel/tracepoint.c b/arch/x86/kernel/tracepoint.c
-index fcfc077afe2d..f39aad69fb64 100644
---- a/arch/x86/kernel/tracepoint.c
-+++ b/arch/x86/kernel/tracepoint.c
-@@ -8,10 +8,7 @@
- #include <linux/jump_label.h>
- #include <linux/atomic.h>
- 
--#include <asm/hw_irq.h>
--#include <asm/desc.h>
- #include <asm/trace/exceptions.h>
--#include <asm/trace/irq_vectors.h>
- 
- DEFINE_STATIC_KEY_FALSE(trace_pagefault_key);
- 
--- 
-2.25.1
+I am seeking a representative=C2=A0as I am a staff, I can not be=20
+involved directly. It may not be your area of work but the=20
+profits are great and I will guide you through. I have already=20
+sourced a local supplier for this. I only need a reliable=20
+representative.
 
+Please get back to me so I can explain this in full.
+
+Amjad
