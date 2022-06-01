@@ -2,71 +2,76 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F19CCC433F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 31 May 2022 23:58:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B00FEC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  1 Jun 2022 10:26:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348753AbiEaX6y (ORCPT
+        id S1352027AbiFAK02 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 31 May 2022 19:58:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50792 "EHLO
+        Wed, 1 Jun 2022 06:26:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234487AbiEaX6x (ORCPT
+        with ESMTP id S1344810AbiFAK0Z (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 31 May 2022 19:58:53 -0400
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95537546A2
-        for <linux-trace-devel@vger.kernel.org>; Tue, 31 May 2022 16:58:52 -0700 (PDT)
-Received: from sandvich.controleur.wifipass.org (unknown [185.234.140.80])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        Wed, 1 Jun 2022 06:26:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B4C6A06B
+        for <linux-trace-devel@vger.kernel.org>; Wed,  1 Jun 2022 03:26:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: hws@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 4E56082A57;
-        Wed,  1 Jun 2022 01:58:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1654041530;
-        bh=OeauUBINJulx7DnfRKOdEO2+gMyyP9rv2GmsNIYupPk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=nxbP96+f1xGwodT8O4SPF/DnR25wgh1y5FVHrmNngSEDLdUn5h83SVvuyowIP4PrG
-         54CEcw2+FKMrMlfc13lD4gPuIAI3zRyR+q52EYRoT4H+tqnbNL80QtQma25hh1xLEJ
-         78T+HjX4EZ8GO3okBWRe5Fw7HNq0JyDAWsXN61pqq9BVAbb59NZByXT+TEBTIVNfSE
-         zPB6WiA5pO+fu0oenVzR52p1jkjVS7JYhX7XaHg6MPidC0KtZHxHda6xU5k6C3rBnA
-         LeVlK3Q6ac8dNZ2bQJqWOMJw+I2gWGprTcLIG+Zo1X7g2qcUUbSr/BekYqddtS3LFs
-         FrsVVWK1qrNvg==
-From:   Harald Seiler <hws@denx.de>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AE8BA611DD
+        for <linux-trace-devel@vger.kernel.org>; Wed,  1 Jun 2022 10:26:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47A73C385A5;
+        Wed,  1 Jun 2022 10:26:22 +0000 (UTC)
+Date:   Wed, 1 Jun 2022 06:26:19 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, Harald Seiler <hws@denx.de>
-Subject: [PATCH] libtracefs: Add missing ) in tracefs_sql docs
-Date:   Wed,  1 Jun 2022 01:58:06 +0200
-Message-Id: <20220531235806.47553-1-hws@denx.de>
-X-Mailer: git-send-email 2.36.1
+Cc:     hws@denx.de
+Subject: [PATCH] libtracefs: Have labels in selections be synthetic fields
+Message-ID: <20220601062619.2f601c8a@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.103.5 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Fix a small typo.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Signed-off-by: Harald Seiler <hws@denx.de>
+The labels in the selection case are suppose to be the fields for the
+created synthetic events. But for some reason they were ignored.
+
+For example:
+
+  sqlhist -n wakeup_lat 'select end.next_pid as pid, end.next_comm as comm, (end.TIMESTAMP - start.TIMESTAMP) as lat
+   from sched_waking as start join sched_switch as end on start.pid = end.next_pid'
+
+Produces the synthetic event of:
+
+  echo 'wakeup_lat pid_t next_pid; char next_comm[16]; u64 lat;' >> /sys/kernel/tracing/synthetic_events
+
+Where it should have used 'pid' instead of 'next_pid' and 'comm' instead
+of 'next_comm'
+
+Fixes: 25446407 ("libtracefs: Added new API tracefs_sql()")
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/libtracefs-sql.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ src/tracefs-sqlhist.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/libtracefs-sql.txt b/Documentation/libtracefs-sql.txt
-index ba4271e..5e48baa 100644
---- a/Documentation/libtracefs-sql.txt
-+++ b/Documentation/libtracefs-sql.txt
-@@ -195,7 +195,7 @@ That is:
+diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
+index 9811362..8d71800 100644
+--- a/src/tracefs-sqlhist.c
++++ b/src/tracefs-sqlhist.c
+@@ -253,6 +253,7 @@ __hidden int add_selection(struct sqlhist_bison *sb, void *select,
  
- [source,c]
- --
--  select CAST(common_pid AS comm, CAST(id AS syscall) FROM sys_enter
-+  select CAST(common_pid AS comm), CAST(id AS syscall) FROM sys_enter
- --
- 
- Which produces:
+ 	switch (expr->type) {
+ 	case EXPR_FIELD:
++		expr->field.label = name;
+ 		break;
+ 	case EXPR_COMPARE:
+ 		expr->compare.name = name;
 -- 
-2.36.1
+2.35.1
 
