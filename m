@@ -2,50 +2,88 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0129C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jun 2022 08:56:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 812D1C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 Jun 2022 17:43:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232557AbiFBI4C (ORCPT
+        id S1344937AbiFCRnk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 Jun 2022 04:56:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51878 "EHLO
+        Fri, 3 Jun 2022 13:43:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232031AbiFBI4B (ORCPT
+        with ESMTP id S1344979AbiFCRnD (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 2 Jun 2022 04:56:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFD41A8E17
-        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Jun 2022 01:56:00 -0700 (PDT)
+        Fri, 3 Jun 2022 13:43:03 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEED9FF0;
+        Fri,  3 Jun 2022 10:41:53 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6652461177
-        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Jun 2022 08:56:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C2AFC385A5;
-        Thu,  2 Jun 2022 08:55:58 +0000 (UTC)
-Date:   Thu, 2 Jun 2022 04:55:54 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Harald Seiler <hws@denx.de>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH] libtracefs: Add missing ) in tracefs_sql docs
-Message-ID: <20220602045554.6350d133@rorschach.local.home>
-In-Reply-To: <20220531235806.47553-1-hws@denx.de>
-References: <20220531235806.47553-1-hws@denx.de>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3BDC3B82430;
+        Fri,  3 Jun 2022 17:41:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3DACC385A9;
+        Fri,  3 Jun 2022 17:41:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1654278110;
+        bh=A588RVeDhK4NjzENZtV/3VQJOtZ/Cs2rL2WkvM7y+xQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=1PAs3IzBoEoYu9tMcNX7Sy4In/1krj+3JA1jLl7MvyamURsMwCc8TO1HleQ+Yp3ZX
+         M4qZPMizDMmCjqQbJABsOGWEzn8uqayxfAiJQJXC7OizHWVHdp5oqz43HMIPMhv0gR
+         tiW7bh9QPASpuQ+dzgKgntQPMh25mEfKp4dcIsk0=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
+        Salvatore Bonaccorso <carnil@debian.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-devel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        =?UTF-8?q?Daniel=20D=C3=ADaz?= <daniel.diaz@linaro.org>
+Subject: [PATCH 4.19 13/30] libtraceevent: Fix build with binutils 2.35
+Date:   Fri,  3 Jun 2022 19:39:41 +0200
+Message-Id: <20220603173815.484246154@linuxfoundation.org>
+X-Mailer: git-send-email 2.36.1
+In-Reply-To: <20220603173815.088143764@linuxfoundation.org>
+References: <20220603173815.088143764@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed,  1 Jun 2022 01:58:06 +0200
-Harald Seiler <hws@denx.de> wrote:
+From: Ben Hutchings <ben@decadent.org.uk>
 
-> Fix a small typo.
-> 
-> Signed-off-by: Harald Seiler <hws@denx.de>
+[ Upstream commit 39efdd94e314336f4acbac4c07e0f37bdc3bef71 ]
 
-Applied, thanks Harald!
+In binutils 2.35, 'nm -D' changed to show symbol versions along with
+symbol names, with the usual @@ separator.  When generating
+libtraceevent-dynamic-list we need just the names, so strip off the
+version suffix if present.
 
--- Steve
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+Tested-by: Salvatore Bonaccorso <carnil@debian.org>
+Reviewed-by: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-trace-devel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Daniel Díaz <daniel.diaz@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ tools/lib/traceevent/Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/tools/lib/traceevent/Makefile
++++ b/tools/lib/traceevent/Makefile
+@@ -263,7 +263,7 @@ define do_generate_dynamic_list_file
+ 	xargs echo "U w W" | tr 'w ' 'W\n' | sort -u | xargs echo`;\
+ 	if [ "$$symbol_type" = "U W" ];then				\
+ 		(echo '{';						\
+-		$(NM) -u -D $1 | awk 'NF>1 {print "\t"$$2";"}' | sort -u;\
++		$(NM) -u -D $1 | awk 'NF>1 {sub("@.*", "", $$2); print "\t"$$2";"}' | sort -u;\
+ 		echo '};';						\
+ 		) > $2;							\
+ 	else								\
+
+
