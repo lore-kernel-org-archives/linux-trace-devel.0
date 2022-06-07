@@ -2,124 +2,102 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BF27CCA486
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jun 2022 17:36:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1E4BC43334
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  8 Jun 2022 01:18:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346384AbiFGRgt (ORCPT
+        id S1359558AbiFHBSQ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 7 Jun 2022 13:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
+        Tue, 7 Jun 2022 21:18:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347445AbiFGRfR (ORCPT
+        with ESMTP id S1837382AbiFGX75 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 7 Jun 2022 13:35:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4EDF0109189
-        for <linux-trace-devel@vger.kernel.org>; Tue,  7 Jun 2022 10:30:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1654623002;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=Cd64zesxXwO9DDUxUPRw9NFg82m3SyiLm8HJHcXtYxs=;
-        b=EwQhh1GWs+NSlGnRIt3oBdfVII2m5AN1KPc3oWfndVsOMQb2V3MS09eu3qRMgtDHORYUHw
-        f4zS86Ip0irL26pwejhBAC/F/ibctbjP2l1jHnsP/0DcfmPDZBhyUzGa3pcHPDIROJphsA
-        8NPcWn1WcASgdB7tiIrPxOu3+kbZLwg=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-161-fZUjSg04PLadGHv-MvffeA-1; Tue, 07 Jun 2022 13:30:01 -0400
-X-MC-Unique: fZUjSg04PLadGHv-MvffeA-1
-Received: by mail-qk1-f200.google.com with SMTP id w22-20020a05620a445600b006a6c18678f2so4767244qkp.4
-        for <linux-trace-devel@vger.kernel.org>; Tue, 07 Jun 2022 10:30:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=Cd64zesxXwO9DDUxUPRw9NFg82m3SyiLm8HJHcXtYxs=;
-        b=kw01kvrwu//7JjziWvNEzhP2S6yt6FVfzVKoxi3k9V5wB/W1Dh8vbrgLSbbTCQWPfq
-         Xj8RERxMePjOZD7XXIJAjw8iEpM0lT+PkhCAOmOWv7s/GKPO8iO3h6wrpRAe3NyEsvv6
-         9TiNAPv96UO2NI0SxDu3Tktj5sEVy1B+YWeYf8PcMEAnsLv9LsCCv8gHbyCCihioXQl8
-         AwjGELVjKP3e0dAxymxziDELeXQtmqO25yu8CezwkZXKB0SVEE4Vi/ee/T2YW8p8MGvj
-         en5ZlWlOQPKWU0oph5syaYy6hZb9F01Zg3DzKkheyIinNp8+4u1ijgGkfuhMtdoATtx7
-         okzg==
-X-Gm-Message-State: AOAM530yA1931zhyoZeoBg9G4GcY576W5T6zE87A7IsXeo82JKIUjQFW
-        I8fTmEnaS6X7jUkQTjTJdbOmNCppHaR9AF4Mv5tX3XQIZWq1DnygfTO5qbCi1kAdRpawb+qbznh
-        wObIYQ/7349ousw+6ZdOEw3pnr35hM7vGB/oVPJuZfuQ/xvg=
-X-Received: by 2002:a37:510:0:b0:6a6:ab9e:1b80 with SMTP id 16-20020a370510000000b006a6ab9e1b80mr12714403qkf.770.1654623000862;
-        Tue, 07 Jun 2022 10:30:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyzBLb3AR0/c4UB2dMyC54NtqNuvP7ErFpaHdRPIuWyOScdvAhUmZE3B0ZcDDKCwgmCaug3oBt7gQ4WiS/BOaY=
-X-Received: by 2002:a37:510:0:b0:6a6:ab9e:1b80 with SMTP id
- 16-20020a370510000000b006a6ab9e1b80mr12714382qkf.770.1654623000642; Tue, 07
- Jun 2022 10:30:00 -0700 (PDT)
+        Tue, 7 Jun 2022 19:59:57 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D4B7C1A
+        for <linux-trace-devel@vger.kernel.org>; Tue,  7 Jun 2022 15:31:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E40B2B82459
+        for <linux-trace-devel@vger.kernel.org>; Tue,  7 Jun 2022 22:31:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59044C3411E
+        for <linux-trace-devel@vger.kernel.org>; Tue,  7 Jun 2022 22:31:44 +0000 (UTC)
+Date:   Tue, 7 Jun 2022 18:31:42 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd stat: Show all filter functions that are enabled
+Message-ID: <20220607183142.00dac63f@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-From:   Alexander Aring <aahringo@redhat.com>
-Date:   Tue, 7 Jun 2022 13:29:49 -0400
-Message-ID: <CAK-6q+gzQSbsfCEu5Gma_X7H16p0UipbK+nZeGNAqOi-czP+XA@mail.gmail.com>
-Subject: ANNOUNCE: Linux Distributed Lock Manager Viewer
-To:     cluster-devel <cluster-devel@redhat.com>
-Cc:     David Teigland <teigland@redhat.com>,
-        Christine Caulfield <ccaulfie@redhat.com>, rostedt@goodmis.org,
-        tz.stoyanov@gmail.com, chan@mcs.anl.gov, gropp@mcs.anl.gov,
-        lusk@mcs.anl.gov, song@kernel.org,
-        linux-trace-users@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi,
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-I've built with existing open source software a Linux DLM (Distributed
-Lock Manager) viewer [0]. The Linux DLM subsystem can be found in
-"fs/dlm" and its main users are gfs2, ocfs2 and cluster-md. It is like
-the name already propagates a distributed lock manager for Linux
-clusters. A cluster can have shared resources among several nodes. DLM
-offers to protect shared resources against mutual access e.g. cluster
-file system gfs2 which operates on shared block devices among several
-nodes. The viewer offers a graphical view about the used lock states
-over time in a cluster.
+The way the files are printed in trace-cmd stat uses a read loop and keeps
+allocating memory to read the content. It reads at BUFSIZ increments. But
+if a read does not read exactly BUFSIZ it stops reading and returns what
+it read but may not return the rest.
 
-Therefore we need to capture Linux DLM traces on all cluster nodes.
-This is done by using the trace-cmd record command with the time
-synchronization feature between multiple Linux machines which are part
-of the DLM cluster. Another tool is dlm2slog2 [1] reads the recorded
-Linux trace files, merges and converts them into a "drawable" open
-format known as "slog2" [2] by using the open slog2 sdk. The slog2sdk
-contains a viewer named "jumpshot" [3] which can be used to visualize
-the slog2 file. Originally this drawable format was invented to trace
-MPI (Message Passing Interface) applications, however it does not
-depend on MPI and offers a graphical tracing for distributed
-applications which I adapted for DLM lock states.
+This does not work with the filter functions as the read may not fill the
+buffer (it does not return an unfinished function). This makes the loop
+exit early.
 
-The only "missing" piece here was the convert and merge of the
-recorded Linux traces to the slog2 fileformat. Hereby I would like to
-thank all trace-cmd developers (especially those who made the time
-synchronization feature) and slog2sdk developers which offered they
-work as open source so it was easy for me to make a small piece of
-software "dlm2slog2" that works as a bridge between trace-cmd/linux
-tracing and slog2sdk.
+Instead just increase with BUFSIZ against what was allocated and comparing
+to the total.
 
-As the slog2sdk is written in Java I did Java bindings similar to the
-existing python bindings for libtracecmd, similar classes, etc.
-underneath it uses swig. I would like to try to bring those bindings
-upstream to trace-cmd. It's _not_ necessary to have a Java dependency
-on trace-cmd, there should be some trace-cmd-java package available
-which installs the necessary swig library libctracecmdjava that offers
-jni access to libtracecmd. As well a jar file which can be seen as a
-library/python module and follows the same license as libtracecmd. The
-alternative here would be to maintain an out-of-tree trace-cmd-java
-package. I would like to hear some feedback for it, the current code
-can be found at [4].
+The way to trigger the issue is by:
 
-If you want to get started or simply see what this is all about
-inclusive screenshots, see [0].
+   # trace-cmd start -p nop -l "*"
+   # trace-cmd show --ftrace_filter |wc -l
+ 50979
+   # trace-cmd stat | wc -l
+ 234
 
-- Alex
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=212489
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ tracecmd/trace-stat.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-[0] https://gitlab.com/netcoder/dlm2slog2/-/wikis/home
-[1] https://gitlab.com/netcoder/dlm2slog2
-[2] https://www.mcs.anl.gov/research/projects/perfvis/software/log_format/index.htm#SLOG-2
-[3] https://www.mcs.anl.gov/research/projects/perfvis/software/viewers/index.htm#Jumpshot-4
-[4] https://gitlab.com/netcoder/trace-cmd/-/commits/java_bindings
+diff --git a/tracecmd/trace-stat.c b/tracecmd/trace-stat.c
+index a5fb777b32b8..4c3dc6494922 100644
+--- a/tracecmd/trace-stat.c
++++ b/tracecmd/trace-stat.c
+@@ -71,21 +71,24 @@ char *append_file(const char *dir, const char *name)
+ 
+ static char *get_fd_content(int fd, const char *file)
+ {
++	size_t total = 0;
++	size_t alloc;
+ 	char *str = NULL;
+-	int cnt = 0;
+ 	int ret;
+ 
+ 	for (;;) {
+-		str = realloc(str, BUFSIZ * ++cnt);
++		alloc = ((total + BUFSIZ) / BUFSIZ) * BUFSIZ;
++		str = realloc(str, alloc + 1);
+ 		if (!str)
+ 			die("malloc");
+-		ret = read(fd, str + BUFSIZ * (cnt - 1), BUFSIZ);
++		ret = read(fd, str + total, alloc - total);
+ 		if (ret < 0)
+ 			die("reading %s\n", file);
+-		if (ret < BUFSIZ)
++		total += ret;
++		if (!ret)
+ 			break;
+ 	}
+-	str[BUFSIZ * (cnt-1) + ret] = 0;
++	str[total] = 0;
+ 
+ 	return str;
+ }
+-- 
+2.35.1
 
