@@ -2,37 +2,34 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4F51C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jun 2022 16:24:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83150C43334
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jun 2022 16:29:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344364AbiFGQYY (ORCPT
+        id S1343845AbiFGQ3I (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 7 Jun 2022 12:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
+        Tue, 7 Jun 2022 12:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243087AbiFGQYX (ORCPT
+        with ESMTP id S235612AbiFGQ3H (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 7 Jun 2022 12:24:23 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427666E8E8
-        for <linux-trace-devel@vger.kernel.org>; Tue,  7 Jun 2022 09:24:22 -0700 (PDT)
+        Tue, 7 Jun 2022 12:29:07 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BEEB7522D
+        for <linux-trace-devel@vger.kernel.org>; Tue,  7 Jun 2022 09:29:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DFDFBB821A2
-        for <linux-trace-devel@vger.kernel.org>; Tue,  7 Jun 2022 16:24:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41F6CC385A5;
-        Tue,  7 Jun 2022 16:24:19 +0000 (UTC)
-Date:   Tue, 7 Jun 2022 12:24:17 -0400
+        by sin.source.kernel.org (Postfix) with ESMTPS id 5AC9BCE221B
+        for <linux-trace-devel@vger.kernel.org>; Tue,  7 Jun 2022 16:29:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62951C385A5;
+        Tue,  7 Jun 2022 16:28:59 +0000 (UTC)
+Date:   Tue, 7 Jun 2022 12:28:57 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH] trace-cmd report: Explain the '-l' option better in the
- man page
-Message-ID: <20220607122417.2e1ae9da@gandalf.local.home>
-In-Reply-To: <alpine.DEB.2.22.394.2206071816580.11966@hadrien>
-References: <20220607113007.652e14e2@gandalf.local.home>
-        <alpine.DEB.2.22.394.2206071816580.11966@hadrien>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc:     Julia Lawall <julia.lawall@inria.fr>
+Subject: [PATCH v2] trace-cmd report: Explain the '-l' option better in the
+ man  page
+Message-ID: <20220607122857.2dd8b761@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -41,20 +38,74 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 7 Jun 2022 18:17:22 +0200 (CEST)
-Julia Lawall <julia.lawall@inria.fr> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> > +    The forth character represents the context the event was in when it triggered  
-> 
-> Thanks for the extra detail.
-> 
-> Forth should be fourth.
+The '-l' option shows latency information of each event. It is not well
+documented. Update the man page to show what the cryptic values mean.
 
-Bah, when people ask me what language is my mother tongue, I simply reply
+Reported-by: Julia Lawall <julia.lawall@inria.fr>
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=216069
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+Changes since v1: https://lore.kernel.org/all/20220607113007.652e14e2@gandalf.local.home/
 
-   "C"
+ - May the fourth be with you (not force or forth) (Julia Lawall)
 
+ - Also change 8 spaces into a tab.
 
-Thanks, will update.
+ .../trace-cmd/trace-cmd-report.1.txt          | 39 +++++++++++++++----
+ 1 file changed, 32 insertions(+), 7 deletions(-)
 
--- Steve
+diff --git a/Documentation/trace-cmd/trace-cmd-report.1.txt b/Documentation/trace-cmd/trace-cmd-report.1.txt
+index df60dd87d979..985f8acee9b4 100644
+--- a/Documentation/trace-cmd/trace-cmd-report.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-report.1.txt
+@@ -221,13 +221,38 @@ OPTIONS
+       <idle>-0       0d.h1. 106467.859747: function:             ktime_get <-- tick_check_idle
+ ----
+ 
+-    The 0d.h1. denotes this information. The first character is never a '.'
+-    and represents what CPU the trace was recorded on (CPU 0). The 'd' denotes
+-    that interrupts were disabled. The 'h' means that this was called inside
+-    an interrupt handler. The '1' is the preemption disabled (preempt_count)
+-    was set to one.  The two '.'s are "need_resched" flag and kernel lock
+-    counter.  If the "need_resched" flag is set, then that character would be a
+-    'N'.
++    The 0d.h1. denotes this information.
++
++    It starts with a number. This represents the CPU number that the event occurred
++    on.
++
++    The second character is one of the following:
++
++	'd' - Interrupts are disabled
++	'.' - Interrupts are enabled
++	'X' - Has flags that are not yet known by trace-cmd
++
++    The third character is the "need rescheduling" flag.
++
++	'N' - A schedule is set to take place
++	'.' - No scheduling is set
++
++    The fourth character represents the context the event was in when it triggered
++
++	'h' - Hard interrupt context
++	's' - Soft interrupt context
++	'H' - Hard interrupt context that interrupted a soft interrupt
++	'.' - Normal context
++
++    The next is a number (should be less than 10), that represents the preemption
++    depth (the number of times preempt_disable() is called without preempt_enable()).
++    '.' means preemption is enabled.
++
++    On some systems, "migrate disable" may exist, in which case a number will be
++    shown for that, or '.' meaning migration is enabled.
++
++    If lockdep in enabled on the system, then the number represents the depth of
++    locks that are held when the event triggered. '.' means no locks are held.
+ 
+ *-w*::
+     If both the 'sched_switch' and 'sched_wakeup' events are enabled, then
+-- 
+2.35.1
+
