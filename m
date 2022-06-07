@@ -2,259 +2,100 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A92BAC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jun 2022 09:17:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC094C43334
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:02:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239262AbiFGJRy (ORCPT
+        id S239844AbiFGKCL (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 7 Jun 2022 05:17:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
+        Tue, 7 Jun 2022 06:02:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235619AbiFGJRv (ORCPT
+        with ESMTP id S240483AbiFGKCD (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 7 Jun 2022 05:17:51 -0400
-X-Greylist: delayed 322 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 07 Jun 2022 02:17:43 PDT
-Received: from mail.nearlyone.de (mail.nearlyone.de [IPv6:2a01:488:66:1000:2ea3:7291:0:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A56B643C
-        for <linux-trace-devel@vger.kernel.org>; Tue,  7 Jun 2022 02:17:38 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 4069F5DA18;
-        Tue,  7 Jun 2022 11:12:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=monom.org; s=dkim;
-        t=1654593139; h=from:subject:date:message-id:to:cc:mime-version:
-         content-transfer-encoding; bh=lsV7Jd0vJPaEJkVrvxmoCuWg3BHHm8k2xGh+QIvGrzY=;
-        b=hcOd8U/7uWdX2/AYL4RDEextTbxsxiBtRMpTCaQII4KyAW56CZKny3GkkcYeS1xI7w2fzb
-        wbdUeMURm757222cwIVKxmtZl9GrWQyPeOPNC1dTSKJdTPpuIAGSvd4qICI8+tLawBIbDQ
-        St+WXzD1EbVa/km+R+v/3HkXpChsII/VsNsOtTTcixF/b4StXx7VoNe5i7UT3mRvSdNXOs
-        9NHfe+DOlH1xMONqYKMweeJEV0fjIiQdCBzBbTcMYqk/3KtUUbattPsP58VIlBFUHXBsBt
-        1fSrAr8rjeQTNV/KjHgJ3HvHRU52Nq3e/E/LcxbsTZ2eH497VF2/FCajPjTS6A==
-From:   Daniel Wagner <wagi@monom.org>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH] tracefs: Set visibility of parser symbols as 'internal'
-Date:   Tue,  7 Jun 2022 11:12:15 +0200
-Message-Id: <20220607091215.24447-1-wagi@monom.org>
+        Tue, 7 Jun 2022 06:02:03 -0400
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA3585EE5
+        for <linux-trace-devel@vger.kernel.org>; Tue,  7 Jun 2022 03:01:59 -0700 (PDT)
+Received: from maia.denx.de (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: hws@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id B6D768430F;
+        Tue,  7 Jun 2022 12:01:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1654596116;
+        bh=qw6JwKbywEK9TpYtg2Qqz8PKdx6FzJ87HwewwXCYQb8=;
+        h=Subject:From:To:Date:In-Reply-To:References:From;
+        b=QF/HC0z4hZPA46HIxLmURoI+tvVeeTMqqbCLRhDEDbn5u4AB6l/GB9AYZodARNw1f
+         9WWnpyKRpuazlXhO0VSK0plKMNsCVQpNvtEZ+fbdOjIh5wTE2b6AT5MgZmfD0Krrmr
+         aHUKisqaDxVlBVuHxmWUj35A6Ga/UMw1g7p9I3NPxZ6mCpHJNf2kl1tqDo9EK+9bV+
+         4CnPVhGy77B9qPwd2XvzTUF3s8MC0k2jHZZXMu7CvehK0XruRx48srLvm+TwCjEng3
+         dsPrYd2py1u8K5fIR2vD5vkUKnVwQYsRGAOfy4XJI+yii2GZBLZNqTKHqIl2qs2aQt
+         HOTQqIGe/ih5Q==
+Message-ID: <7f97718f4f23603c08baba8f801a688d5a41448b.camel@denx.de>
+Subject: Re: [PATCH 0/6] libtracefs: Fixes for sqlhist
+From:   Harald Seiler <hws@denx.de>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-devel@vger.kernel.org
+Date:   Tue, 07 Jun 2022 12:01:56 +0200
+In-Reply-To: <20220606192953.334315-1-rostedt@goodmis.org>
+References: <20220606192953.334315-1-rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 (3.42.4-2.fc35) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.103.5 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Daniel Wagner <dwagner@suse.de>
-
-Two declarations of an object with 'hidden' linkage refer to
-the same object if they are in the same shared object.
-
-Internal visibility is like hidden visibility, but with
-additional processor specific semantics. Unless otherwise specified by
-the psABI, GCC defines internal visibility to mean that a function is
-never called from another module.
-
-It was observed that an 32bit linking against libtracefs failed
-because the parser symbols were missing. As the parser symbols are
-supposed to be used only inside the library, mark them as internal.
-
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
-
 Hi,
 
-The rtla build with libtracefs failed with
+On Mon, 2022-06-06 at 15:29 -0400, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> At Kernel Recipes, I demonstrated sqlhist and how to use it. Along the way,
+> I discovered several bugs. This series addresses those bugs that were found.
 
-[  192s] gcc -o rtla -ggdb src/osnoise.o src/osnoise_hist.o src/osnoise_top.o src/rtla.o src/timerlat.o src/timerlat_hist.o src/timerlat_top.o src/trace.o src/utils.o $(pkg-config --libs libtracefs) -lprocps
-[  196s] /usr/lib/gcc/i586-suse-linux/12/../../../../i586-suse-linux/bin/ld: /usr/lib/gcc/i586-suse-linux/12/../../../libtracefs.so: undefined reference to `my_yyinput'
-[  196s] /usr/lib/gcc/i586-suse-linux/12/../../../../i586-suse-linux/bin/ld: /usr/lib/gcc/i586-suse-linux/12/../../../libtracefs.so: undefined reference to `add_from'
-[  196s] /usr/lib/gcc/i586-suse-linux/12/../../../../i586-suse-linux/bin/ld: /usr/lib/gcc/i586-suse-linux/12/../../../libtracefs.so: undefined reference to `add_number'
-[  196s] /usr/lib/gcc/i586-suse-linux/12/../../../../i586-suse-linux/bin/ld: /usr/lib/gcc/i586-suse-linux/12/../../../libtracefs.so: undefined reference to `add_where'
-[  196s] /usr/lib/gcc/i586-suse-linux/12/../../../../i586-suse-linux/bin/ld: /usr/lib/gcc/i586-suse-linux/12/../../../libtracefs.so: undefined reference to `add_filter'
-[  196s] /usr/lib/gcc/i586-suse-linux/12/../../../../i586-suse-linux/bin/ld: /usr/lib/gcc/i586-suse-linux/12/../../../libtracefs.so: undefined reference to `add_to'
-[  196s] /usr/lib/gcc/i586-suse-linux/12/../../../../i586-suse-linux/bin/ld: /usr/lib/gcc/i586-suse-linux/12/../../../libtracefs.so: undefined reference to `add_cast'
-[  196s] /usr/lib/gcc/i586-suse-linux/12/../../../../i586-suse-linux/bin/ld: /usr/lib/gcc/i586-suse-linux/12/../../../libtracefs.so: undefined reference to `add_compare'
-[  196s] /usr/lib/gcc/i586-suse-linux/12/../../../../i586-suse-linux/bin/ld: /usr/lib/gcc/i586-suse-linux/12/../../../libtracefs.so: undefined reference to `store_str'
-[  196s] /usr/lib/gcc/i586-suse-linux/12/../../../../i586-suse-linux/bin/ld: /usr/lib/gcc/i586-suse-linux/12/../../../libtracefs.so: undefined reference to `add_match'
-[  196s] /usr/lib/gcc/i586-suse-linux/12/../../../../i586-suse-linux/bin/ld: /usr/lib/gcc/i586-suse-linux/12/../../../libtracefs.so: undefined reference to `add_string'
-[  196s] /usr/lib/gcc/i586-suse-linux/12/../../../../i586-suse-linux/bin/ld: /usr/lib/gcc/i586-suse-linux/12/../../../libtracefs.so: undefined reference to `sql_parse_error'
-[  196s] /usr/lib/gcc/i586-suse-linux/12/../../../../i586-suse-linux/bin/ld: /usr/lib/gcc/i586-suse-linux/12/../../../libtracefs.so: undefined reference to `add_field'
-[  196s] /usr/lib/gcc/i586-suse-linux/12/../../../../i586-suse-linux/bin/ld: /usr/lib/gcc/i586-suse-linux/12/../../../libtracefs.so: undefined reference to `table_start'
-[  196s] /usr/lib/gcc/i586-suse-linux/12/../../../../i586-suse-linux/bin/ld: /usr/lib/gcc/i586-suse-linux/12/../../../libtracefs.so: undefined reference to `add_selection'
+For the whole series:
 
+Tested-by: Harald Seiler <hws@denx.de>
 
-According https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#Common-Function-Attributes
-it seems we want the internal visibilty flag here. A quick test with this
-patch resolved the build issue.
+As a sanity check I accumulated offcpu time for a process:
 
-Thanks,
-Daniel
+	sqlhist -e -n 'offcpu' 'SELECT start.prev_comm AS comm, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat FROM sched_switch as start JOIN sched_switch as end ON start.prev_pid == end.next_pid WHERE start.prev_comm == "ping"'
+	echo "hist:keys=comm:vals=lat:sort=lat" >/sys/kernel/tracing/events/synthetic/offcpu/trigger
 
+And then verified the collected time is consistent by comparing with
+getrusage(2) values for the process (as returned by time(1)).
 
- include/tracefs-local.h |  1 +
- src/tracefs-sqlhist.c   | 43 +++++++++++++++++++++--------------------
- 2 files changed, 23 insertions(+), 21 deletions(-)
+And indeed,
 
-diff --git a/include/tracefs-local.h b/include/tracefs-local.h
-index d0ed2abfe5e7..1213e0a49f12 100644
---- a/include/tracefs-local.h
-+++ b/include/tracefs-local.h
-@@ -7,6 +7,7 @@
- #define _TRACE_FS_LOCAL_H
- 
- #define __hidden __attribute__((visibility ("hidden")))
-+#define __internal __attribute__((visibility ("internal")))
- #define __weak __attribute__((weak))
- 
- #define ARRAY_SIZE(array) (sizeof(array) / sizeof((array)[0]))
-diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
-index caf927fd5e1c..c6789a2ca6b6 100644
---- a/src/tracefs-sqlhist.c
-+++ b/src/tracefs-sqlhist.c
-@@ -102,7 +102,7 @@ struct sql_table {
- 	struct expr		**next_selection;
- };
- 
--__hidden int my_yyinput(void *extra, char *buf, int max)
-+__internal int my_yyinput(void *extra, char *buf, int max)
- {
- 	struct sqlhist_bison *sb = extra;
- 
-@@ -120,8 +120,8 @@ __hidden int my_yyinput(void *extra, char *buf, int max)
- 	return max;
- }
- 
--__hidden void sql_parse_error(struct sqlhist_bison *sb, const char *text,
--			      const char *fmt, va_list ap)
-+__internal void sql_parse_error(struct sqlhist_bison *sb, const char *text,
-+			        const char *fmt, va_list ap)
- {
- 	const char *buffer = sb->buffer;
- 	struct trace_seq s;
-@@ -222,7 +222,7 @@ static char **add_hash(struct sqlhist_bison *sb, const char *str)
- 	return &hash->str;
- }
- 
--__hidden char *store_str(struct sqlhist_bison *sb, const char *str)
-+__internal char *store_str(struct sqlhist_bison *sb, const char *str)
- {
- 	char **pstr = add_hash(sb, str);
- 
-@@ -235,8 +235,8 @@ __hidden char *store_str(struct sqlhist_bison *sb, const char *str)
- 	return *pstr;
- }
- 
--__hidden void *add_cast(struct sqlhist_bison *sb,
--			void *data, const char *type)
-+__internal void *add_cast(struct sqlhist_bison *sb,
-+			  void *data, const char *type)
- {
- 	struct expr *expr = data;
- 	struct field *field = &expr->field;
-@@ -245,8 +245,8 @@ __hidden void *add_cast(struct sqlhist_bison *sb,
- 	return expr;
- }
- 
--__hidden int add_selection(struct sqlhist_bison *sb, void *select,
--			   const char *name)
-+__internal int add_selection(struct sqlhist_bison *sb, void *select,
-+			     const char *name)
- {
- 	struct sql_table *table = sb->table;
- 	struct expr *expr = select;
-@@ -361,8 +361,8 @@ static void *create_expr(struct sqlhist_bison *sb,
- #define create_number(var, expr)			\
- 	__create_expr(var, long, NUMBER, expr)
- 
--__hidden void *add_field(struct sqlhist_bison *sb,
--			 const char *field_name, const char *label)
-+__internal void *add_field(struct sqlhist_bison *sb,
-+			   const char *field_name, const char *label)
- {
- 	struct sql_table *table = sb->table;
- 	struct expr *expr;
-@@ -383,8 +383,8 @@ __hidden void *add_field(struct sqlhist_bison *sb,
- 	return expr;
- }
- 
--__hidden void *add_filter(struct sqlhist_bison *sb,
--			  void *A, void *B, enum filter_type op)
-+__internal void *add_filter(struct sqlhist_bison *sb,
-+			    void *A, void *B, enum filter_type op)
- {
- 	struct filter *filter;
- 	struct expr *expr;
-@@ -399,7 +399,7 @@ __hidden void *add_filter(struct sqlhist_bison *sb,
- 	return expr;
- }
- 
--__hidden int add_match(struct sqlhist_bison *sb, void *A, void *B)
-+__internal int add_match(struct sqlhist_bison *sb, void *A, void *B)
- {
- 	struct sql_table *table = sb->table;
- 	struct match *match;
-@@ -416,8 +416,9 @@ __hidden int add_match(struct sqlhist_bison *sb, void *A, void *B)
- 
- 	return 0;
- }
--__hidden void *add_compare(struct sqlhist_bison *sb,
--			   void *A, void *B, enum compare_type type)
-+
-+__internal void *add_compare(struct sqlhist_bison *sb,
-+			     void *A, void *B, enum compare_type type)
- {
- 	struct compare *compare;
- 	struct expr *expr;
-@@ -432,7 +433,7 @@ __hidden void *add_compare(struct sqlhist_bison *sb,
- 	return expr;
- }
- 
--__hidden int add_where(struct sqlhist_bison *sb, void *item)
-+__internal int add_where(struct sqlhist_bison *sb, void *item)
- {
- 	struct expr *expr = item;
- 	struct sql_table *table = sb->table;
-@@ -449,7 +450,7 @@ __hidden int add_where(struct sqlhist_bison *sb, void *item)
- 	return 0;
- }
- 
--__hidden int add_from(struct sqlhist_bison *sb, void *item)
-+__internal int add_from(struct sqlhist_bison *sb, void *item)
- {
- 	struct expr *expr = item;
- 
-@@ -461,7 +462,7 @@ __hidden int add_from(struct sqlhist_bison *sb, void *item)
- 	return 0;
- }
- 
--__hidden int add_to(struct sqlhist_bison *sb, void *item)
-+__internal int add_to(struct sqlhist_bison *sb, void *item)
- {
- 	struct expr *expr = item;
- 
-@@ -473,7 +474,7 @@ __hidden int add_to(struct sqlhist_bison *sb, void *item)
- 	return 0;
- }
- 
--__hidden void *add_string(struct sqlhist_bison *sb, const char *str)
-+__internal void *add_string(struct sqlhist_bison *sb, const char *str)
- {
- 	struct expr *expr;
- 	const char **str_p;
-@@ -483,7 +484,7 @@ __hidden void *add_string(struct sqlhist_bison *sb, const char *str)
- 	return expr;
- }
- 
--__hidden void *add_number(struct sqlhist_bison *sb, long val)
-+__internal void *add_number(struct sqlhist_bison *sb, long val)
- {
- 	struct expr *expr;
- 	long *num;
-@@ -493,7 +494,7 @@ __hidden void *add_number(struct sqlhist_bison *sb, long val)
- 	return expr;
- }
- 
--__hidden int table_start(struct sqlhist_bison *sb)
-+__internal int table_start(struct sqlhist_bison *sb)
- {
- 	struct sql_table *table;
- 
+	wall_time == ru_utime + ru_stime + lat
+
+So it is measuring exactly what I want.
+
+Thanks again for getting this working!
+
+> Steven Rostedt (Google) (6):
+>   libtracefs: Fix make sqlhist when built again
+>   libtracefs: Add libtracefs.a to dependency of sqlhist
+>   libtracefs: Differentiate FROM and JOIN events if they are the same
+>     event
+>   libtracefs: Use unique names for sql field variables
+>   libtracefs: Differentiate WHERE clause when FROM and TO events are the
+>     same
+>   libtracefs sqlhist: Report errors executing the commands
+> 
+>  Documentation/libtracefs-sql.txt |  18 ++++--
+>  include/tracefs-local.h          |   4 ++
+>  samples/Makefile                 |   4 +-
+>  src/sqlhist-parse.h              |   3 +-
+>  src/tracefs-hist.c               | 105 ++++++++++++++++++++++++++++---
+>  src/tracefs-sqlhist.c            |  44 +++++++++----
+>  6 files changed, 150 insertions(+), 28 deletions(-)
+> 
+
 -- 
-2.36.1
-
+Harald
