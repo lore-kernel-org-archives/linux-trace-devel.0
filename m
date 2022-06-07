@@ -2,128 +2,124 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22E5CC43334
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jun 2022 16:29:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BF27CCA486
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jun 2022 17:36:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343865AbiFGQ3z (ORCPT
+        id S1346384AbiFGRgt (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 7 Jun 2022 12:29:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46936 "EHLO
+        Tue, 7 Jun 2022 13:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235612AbiFGQ3z (ORCPT
+        with ESMTP id S1347445AbiFGRfR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 7 Jun 2022 12:29:55 -0400
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 294B9FC4E0
-        for <linux-trace-devel@vger.kernel.org>; Tue,  7 Jun 2022 09:29:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=m0PbXMeeKuwQehJ0KgLCpOzlRSPCJtotCoa5OlRYrYg=;
-  b=Z5P9q3oVAG+BIdnGxlH0pXlZCUeLWdQptFPWaDKxcs/XaKIIDfLMHXKY
-   rLbkMB37RINC/itp2RtpNfbVx6mcvbePD/JJS4xdmgayjVQdGjZbLF6um
-   HKakga2WO97g+v1O8bBGgO8mYAOs2/7Iq+Rb8UA9QH2DVTqbBsrUfW1o7
-   Q=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="5.91,284,1647298800"; 
-   d="scan'208";a="39880399"
-Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2022 18:29:52 +0200
-Date:   Tue, 7 Jun 2022 18:29:52 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: julia@hadrien
-To:     Steven Rostedt <rostedt@goodmis.org>
-cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Julia Lawall <julia.lawall@inria.fr>
-Subject: Re: [PATCH v2] trace-cmd report: Explain the '-l' option better in
- the man  page
-In-Reply-To: <20220607122857.2dd8b761@gandalf.local.home>
-Message-ID: <alpine.DEB.2.22.394.2206071829360.11966@hadrien>
-References: <20220607122857.2dd8b761@gandalf.local.home>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Tue, 7 Jun 2022 13:35:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4EDF0109189
+        for <linux-trace-devel@vger.kernel.org>; Tue,  7 Jun 2022 10:30:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1654623002;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=Cd64zesxXwO9DDUxUPRw9NFg82m3SyiLm8HJHcXtYxs=;
+        b=EwQhh1GWs+NSlGnRIt3oBdfVII2m5AN1KPc3oWfndVsOMQb2V3MS09eu3qRMgtDHORYUHw
+        f4zS86Ip0irL26pwejhBAC/F/ibctbjP2l1jHnsP/0DcfmPDZBhyUzGa3pcHPDIROJphsA
+        8NPcWn1WcASgdB7tiIrPxOu3+kbZLwg=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-161-fZUjSg04PLadGHv-MvffeA-1; Tue, 07 Jun 2022 13:30:01 -0400
+X-MC-Unique: fZUjSg04PLadGHv-MvffeA-1
+Received: by mail-qk1-f200.google.com with SMTP id w22-20020a05620a445600b006a6c18678f2so4767244qkp.4
+        for <linux-trace-devel@vger.kernel.org>; Tue, 07 Jun 2022 10:30:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=Cd64zesxXwO9DDUxUPRw9NFg82m3SyiLm8HJHcXtYxs=;
+        b=kw01kvrwu//7JjziWvNEzhP2S6yt6FVfzVKoxi3k9V5wB/W1Dh8vbrgLSbbTCQWPfq
+         Xj8RERxMePjOZD7XXIJAjw8iEpM0lT+PkhCAOmOWv7s/GKPO8iO3h6wrpRAe3NyEsvv6
+         9TiNAPv96UO2NI0SxDu3Tktj5sEVy1B+YWeYf8PcMEAnsLv9LsCCv8gHbyCCihioXQl8
+         AwjGELVjKP3e0dAxymxziDELeXQtmqO25yu8CezwkZXKB0SVEE4Vi/ee/T2YW8p8MGvj
+         en5ZlWlOQPKWU0oph5syaYy6hZb9F01Zg3DzKkheyIinNp8+4u1ijgGkfuhMtdoATtx7
+         okzg==
+X-Gm-Message-State: AOAM530yA1931zhyoZeoBg9G4GcY576W5T6zE87A7IsXeo82JKIUjQFW
+        I8fTmEnaS6X7jUkQTjTJdbOmNCppHaR9AF4Mv5tX3XQIZWq1DnygfTO5qbCi1kAdRpawb+qbznh
+        wObIYQ/7349ousw+6ZdOEw3pnr35hM7vGB/oVPJuZfuQ/xvg=
+X-Received: by 2002:a37:510:0:b0:6a6:ab9e:1b80 with SMTP id 16-20020a370510000000b006a6ab9e1b80mr12714403qkf.770.1654623000862;
+        Tue, 07 Jun 2022 10:30:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyzBLb3AR0/c4UB2dMyC54NtqNuvP7ErFpaHdRPIuWyOScdvAhUmZE3B0ZcDDKCwgmCaug3oBt7gQ4WiS/BOaY=
+X-Received: by 2002:a37:510:0:b0:6a6:ab9e:1b80 with SMTP id
+ 16-20020a370510000000b006a6ab9e1b80mr12714382qkf.770.1654623000642; Tue, 07
+ Jun 2022 10:30:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+From:   Alexander Aring <aahringo@redhat.com>
+Date:   Tue, 7 Jun 2022 13:29:49 -0400
+Message-ID: <CAK-6q+gzQSbsfCEu5Gma_X7H16p0UipbK+nZeGNAqOi-czP+XA@mail.gmail.com>
+Subject: ANNOUNCE: Linux Distributed Lock Manager Viewer
+To:     cluster-devel <cluster-devel@redhat.com>
+Cc:     David Teigland <teigland@redhat.com>,
+        Christine Caulfield <ccaulfie@redhat.com>, rostedt@goodmis.org,
+        tz.stoyanov@gmail.com, chan@mcs.anl.gov, gropp@mcs.anl.gov,
+        lusk@mcs.anl.gov, song@kernel.org,
+        linux-trace-users@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+Hi,
 
+I've built with existing open source software a Linux DLM (Distributed
+Lock Manager) viewer [0]. The Linux DLM subsystem can be found in
+"fs/dlm" and its main users are gfs2, ocfs2 and cluster-md. It is like
+the name already propagates a distributed lock manager for Linux
+clusters. A cluster can have shared resources among several nodes. DLM
+offers to protect shared resources against mutual access e.g. cluster
+file system gfs2 which operates on shared block devices among several
+nodes. The viewer offers a graphical view about the used lock states
+over time in a cluster.
 
-On Tue, 7 Jun 2022, Steven Rostedt wrote:
+Therefore we need to capture Linux DLM traces on all cluster nodes.
+This is done by using the trace-cmd record command with the time
+synchronization feature between multiple Linux machines which are part
+of the DLM cluster. Another tool is dlm2slog2 [1] reads the recorded
+Linux trace files, merges and converts them into a "drawable" open
+format known as "slog2" [2] by using the open slog2 sdk. The slog2sdk
+contains a viewer named "jumpshot" [3] which can be used to visualize
+the slog2 file. Originally this drawable format was invented to trace
+MPI (Message Passing Interface) applications, however it does not
+depend on MPI and offers a graphical tracing for distributed
+applications which I adapted for DLM lock states.
 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
->
-> The '-l' option shows latency information of each event. It is not well
-> documented. Update the man page to show what the cryptic values mean.
+The only "missing" piece here was the convert and merge of the
+recorded Linux traces to the slog2 fileformat. Hereby I would like to
+thank all trace-cmd developers (especially those who made the time
+synchronization feature) and slog2sdk developers which offered they
+work as open source so it was easy for me to make a small piece of
+software "dlm2slog2" that works as a bridge between trace-cmd/linux
+tracing and slog2sdk.
 
-Acked-by: Julia Lawall <julia.lawall@inria.fr>
+As the slog2sdk is written in Java I did Java bindings similar to the
+existing python bindings for libtracecmd, similar classes, etc.
+underneath it uses swig. I would like to try to bring those bindings
+upstream to trace-cmd. It's _not_ necessary to have a Java dependency
+on trace-cmd, there should be some trace-cmd-java package available
+which installs the necessary swig library libctracecmdjava that offers
+jni access to libtracecmd. As well a jar file which can be seen as a
+library/python module and follows the same license as libtracecmd. The
+alternative here would be to maintain an out-of-tree trace-cmd-java
+package. I would like to hear some feedback for it, the current code
+can be found at [4].
 
->
-> Reported-by: Julia Lawall <julia.lawall@inria.fr>
-> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=216069
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
-> Changes since v1: https://lore.kernel.org/all/20220607113007.652e14e2@gandalf.local.home/
->
->  - May the fourth be with you (not force or forth) (Julia Lawall)
->
->  - Also change 8 spaces into a tab.
->
->  .../trace-cmd/trace-cmd-report.1.txt          | 39 +++++++++++++++----
->  1 file changed, 32 insertions(+), 7 deletions(-)
->
-> diff --git a/Documentation/trace-cmd/trace-cmd-report.1.txt b/Documentation/trace-cmd/trace-cmd-report.1.txt
-> index df60dd87d979..985f8acee9b4 100644
-> --- a/Documentation/trace-cmd/trace-cmd-report.1.txt
-> +++ b/Documentation/trace-cmd/trace-cmd-report.1.txt
-> @@ -221,13 +221,38 @@ OPTIONS
->        <idle>-0       0d.h1. 106467.859747: function:             ktime_get <-- tick_check_idle
->  ----
->
-> -    The 0d.h1. denotes this information. The first character is never a '.'
-> -    and represents what CPU the trace was recorded on (CPU 0). The 'd' denotes
-> -    that interrupts were disabled. The 'h' means that this was called inside
-> -    an interrupt handler. The '1' is the preemption disabled (preempt_count)
-> -    was set to one.  The two '.'s are "need_resched" flag and kernel lock
-> -    counter.  If the "need_resched" flag is set, then that character would be a
-> -    'N'.
-> +    The 0d.h1. denotes this information.
-> +
-> +    It starts with a number. This represents the CPU number that the event occurred
-> +    on.
-> +
-> +    The second character is one of the following:
-> +
-> +	'd' - Interrupts are disabled
-> +	'.' - Interrupts are enabled
-> +	'X' - Has flags that are not yet known by trace-cmd
-> +
-> +    The third character is the "need rescheduling" flag.
-> +
-> +	'N' - A schedule is set to take place
-> +	'.' - No scheduling is set
-> +
-> +    The fourth character represents the context the event was in when it triggered
-> +
-> +	'h' - Hard interrupt context
-> +	's' - Soft interrupt context
-> +	'H' - Hard interrupt context that interrupted a soft interrupt
-> +	'.' - Normal context
-> +
-> +    The next is a number (should be less than 10), that represents the preemption
-> +    depth (the number of times preempt_disable() is called without preempt_enable()).
-> +    '.' means preemption is enabled.
-> +
-> +    On some systems, "migrate disable" may exist, in which case a number will be
-> +    shown for that, or '.' meaning migration is enabled.
-> +
-> +    If lockdep in enabled on the system, then the number represents the depth of
-> +    locks that are held when the event triggered. '.' means no locks are held.
->
->  *-w*::
->      If both the 'sched_switch' and 'sched_wakeup' events are enabled, then
-> --
-> 2.35.1
->
->
+If you want to get started or simply see what this is all about
+inclusive screenshots, see [0].
+
+- Alex
+
+[0] https://gitlab.com/netcoder/dlm2slog2/-/wikis/home
+[1] https://gitlab.com/netcoder/dlm2slog2
+[2] https://www.mcs.anl.gov/research/projects/perfvis/software/log_format/index.htm#SLOG-2
+[3] https://www.mcs.anl.gov/research/projects/perfvis/software/viewers/index.htm#Jumpshot-4
+[4] https://gitlab.com/netcoder/trace-cmd/-/commits/java_bindings
+
