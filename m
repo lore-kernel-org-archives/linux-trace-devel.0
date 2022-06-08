@@ -2,126 +2,128 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DE54C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  8 Jun 2022 15:21:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8680C43334
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  8 Jun 2022 16:25:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244195AbiFHPVe (ORCPT
+        id S238327AbiFHQZL (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 8 Jun 2022 11:21:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46810 "EHLO
+        Wed, 8 Jun 2022 12:25:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244855AbiFHPTy (ORCPT
+        with ESMTP id S245412AbiFHQZJ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 8 Jun 2022 11:19:54 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A9CAD8D0A
-        for <linux-trace-devel@vger.kernel.org>; Wed,  8 Jun 2022 08:14:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DF6B5B82615
-        for <linux-trace-devel@vger.kernel.org>; Wed,  8 Jun 2022 15:14:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EEB4C34116;
-        Wed,  8 Jun 2022 15:14:26 +0000 (UTC)
-Date:   Wed, 8 Jun 2022 11:14:24 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc:     Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] trace-cmd split: Save missed events
-Message-ID: <20220608111424.4a66d384@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 8 Jun 2022 12:25:09 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0404C1DF860;
+        Wed,  8 Jun 2022 09:25:06 -0700 (PDT)
+Received: from pwmachine.home (154.pool92-186-13.dynamic.orange.es [92.186.13.154])
+        by linux.microsoft.com (Postfix) with ESMTPSA id CF4D620BE61B;
+        Wed,  8 Jun 2022 09:25:01 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CF4D620BE61B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1654705506;
+        bh=ew5GzO4FE+U+0SWUgqG4Xavp3v72gNEOJF0LnOkp+rw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Fd3VFGu9AwImhcqGxwixF/Ih8YO5xFjwkPRdgo/nzbzT+c7gxHGAWKvdcoG68zMBf
+         R8LQMhgA/iStrvVoqt+B3eafaBIS4wMAhU23QY++PkFhMBGge194PNWzfgRjaXQKgZ
+         SqfNtFkJ8k9ZfBwctAkBG/1sB6uqewzgB3RIi1yM=
+From:   Francis Laniel <flaniel@linux.microsoft.com>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     James Morse <james.morse@arm.com>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Francis Laniel <flaniel@linux.microsoft.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Mark Brown <broonie@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH v2 0/1] Remove forget_syscall() from start_thread_common()
+Date:   Wed,  8 Jun 2022 17:24:45 +0100
+Message-Id: <20220608162447.666494-1-flaniel@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Hi.
 
-If the file that is being split has missed events, the new file does not
-create them. This gets confusing for users that see gaps in the trace.
 
-Have the split code preserve the missed events in the new file.
+First, I hope you are fine and the same for your relatives.
 
-Reported-by: Johannes Berg <johannes@sipsolutions.net>
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=212421
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+With this contribution, I enabled using syscalls:sys_exit_execve and
+syscalls:sys_exit_execveat as tracepoints on arm64.
+Indeed, before this contribution, the above tracepoint would not print their
+information as syscall number was set to -1 by calling forget_syscall().
+
+I tested it by compiling a kernel for arm64 and running it within a VM:
+# Perf was compiled with linux kernel source.
+root@vm-arm64:~# perf record -ag -e 'syscalls:sys_exit_execve' -e 'syscalls:sys_enter_execve' &
+[1] 263
+root@vm-arm64:~# ls
+perf.data  share
+root@vm-arm64:~# fg
+perf record -ag -e 'syscalls:sys_exit_execve' -e 'syscalls:sys_enter_execve'
+^C[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.061 MB perf.data (2 samples) ]
+root@vm-arm64:~# perf script
+bash   264 [000]    66.220187: syscalls:sys_enter_execve: filename: 0xaaab05d9d
+...
+# Below line does not appear without this patch.
+ls   264 [000]    66.226848:  syscalls:sys_exit_execve: 0x0
+...
+
+Forgetting the syscall number before starting a new thread was confirmed to be
+a bug [1].
+Particularly, the following architectures do not forget the syscall number
+before starting a new thread:
+* arm (32 bits) EABI: start_thread() sets r7 to previous r7 for ELF FDPIC  and
+to 0 for other binfmts [2].
+* arm (32 bits) OABI: syscall number is set to -1 if
+ptrace_report_syscall_entry() failed [3].
+* mips: start_thread() does not modify current_thread_info->syscall which is
+taken directly from v0 [4, 5].
+* riscv: start_thread() does not modify a7 [6].
+* x86_64: start_thread_common() does not touch orig_ax which seems to contain
+the syscall number [7].
+
+If you see any way to improve this contribution, feel free to share!
+
+Change since:
+v1:
+ * Remove call to forget_syscall() and store previous syscall number in
+ regs->syscallno unconditionnaly.
+
+Francis Laniel (1):
+  arm64: Do not forget syscall when starting a new thread.
+
+ arch/arm64/include/asm/processor.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+
+Best regards and thank you in advance.
 ---
- tracecmd/trace-split.c | 29 ++++++++++++++++++++++++++---
- 1 file changed, 26 insertions(+), 3 deletions(-)
-
-diff --git a/tracecmd/trace-split.c b/tracecmd/trace-split.c
-index 83c5402c279b..851ec94eda1f 100644
---- a/tracecmd/trace-split.c
-+++ b/tracecmd/trace-split.c
-@@ -40,6 +40,7 @@ enum split_types {
- struct cpu_data {
- 	unsigned long long		ts;
- 	unsigned long long		offset;
-+	unsigned long long		missed_events;
- 	struct tep_record		*record;
- 	int				cpu;
- 	int				fd;
-@@ -137,18 +138,37 @@ static int write_record(struct tracecmd_input *handle,
- 	return 1;
- }
- 
-+#define MISSING_EVENTS (1UL << 31)
-+#define MISSING_STORED (1UL << 30)
-+
-+#define COMMIT_MASK ((1 << 27) - 1)
-+
- static void write_page(struct tep_handle *pevent,
- 		       struct cpu_data *cpu_data, int long_size)
- {
-+	unsigned long long *ptr = NULL;
-+	unsigned int flags = 0;
-+
-+	if (cpu_data->missed_events) {
-+		flags |= MISSING_EVENTS;
-+		if (cpu_data->missed_events > 0) {
-+			flags |= MISSING_STORED;
-+			ptr = cpu_data->page + cpu_data->index;
-+		}
-+	}
-+
- 	if (long_size == 8) {
--		unsigned long long index = cpu_data->index - 16;
-+		unsigned long long index = cpu_data->index - 16 + flags;;
- 		*(unsigned long long *)cpu_data->commit =
- 				tep_read_number(pevent, &index, 8);
- 	} else {
--		unsigned int index = cpu_data->index - 12;
-+		unsigned int index = cpu_data->index - 12 + flags;;
- 		*(unsigned int *)cpu_data->commit =
- 			tep_read_number(pevent, &index, 4);
- 	}
-+	if (ptr)
-+		*ptr = tep_read_number(pevent, &cpu_data->missed_events, 8);
-+
- 	write(cpu_data->fd, cpu_data->page, page_size);
- }
- 
-@@ -224,7 +244,8 @@ static int parse_cpu(struct tracecmd_input *handle,
- 		start = record->ts;
- 
- 	while (record && (!end || record->ts <= end)) {
--		if (cpu_data[cpu].index + record->record_size > page_size) {
-+		if ((cpu_data[cpu].index + record->record_size > page_size) ||
-+		    record->missed_events) {
- 
- 			if (type == SPLIT_PAGES && ++pages > count_limit)
- 				break;
-@@ -237,6 +258,8 @@ static int parse_cpu(struct tracecmd_input *handle,
- 					die("Failed to allocate page");
- 			}
- 
-+			cpu_data[cpu].missed_events = record->missed_events;
-+
- 			memset(cpu_data[cpu].page, 0, page_size);
- 			ptr = cpu_data[cpu].page;
- 
+[1] https://lore.kernel.org/linux-arm-kernel/YoT1iLPEbteRTQGZ@arm.com/
+[2] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/arm/include/asm/
+processor.h#L52
+[3] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/arm/kernel/
+ptrace.c#L847
+[4] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/mips/kernel/
+process.c#L52
+[5] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/mips/kernel/
+scall64-n64.S#L85
+[6] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/riscv/kernel/
+process.c#L87
+[7] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/x86/kernel/
+process_64.c#L505
 -- 
-2.35.1
+2.25.1
 
