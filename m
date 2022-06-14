@@ -2,89 +2,105 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC25BCCA47A
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Jun 2022 12:45:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 286AACCA47A
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Jun 2022 22:24:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240381AbiFNMpJ (ORCPT
+        id S244276AbiFNWYM (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 14 Jun 2022 08:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55816 "EHLO
+        Tue, 14 Jun 2022 18:24:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235786AbiFNMpE (ORCPT
+        with ESMTP id S242406AbiFNWYL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 14 Jun 2022 08:45:04 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DFA1182F
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Jun 2022 05:45:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2068EB81871
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Jun 2022 12:44:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CAB1C3411B;
-        Tue, 14 Jun 2022 12:44:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655210697;
-        bh=J9jeaAxFh5xMNBfU+VEWczZsn32F5ZOPVZj5SwqRsgU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=g0f40S3iVhMV0IkGT3BJKJRXqk2/Fd59ddtWasK6AOEzwkNeRTKBmlGkBECIQT9y6
-         omjfpfbENX5RJF7sBqtR6jJMjYwIfyhMcolsHFOCqMOaqvygsJbKhq2e0pyeuReGJh
-         TvEL9xcit2V7IGukUr+dzIh35dfSSm3huLynI/aHPmR2qYzf3LWn5YjOuLuS4v9Lgq
-         I9mKpPaV+QTTQqSfX/f5008jGAPESHtjEuqH/h2Sj30Ylqbz/oOn0iYHTfW2zXIg5C
-         9N3klzGniYbbpB/9MoGyo03ALyQffHDPdQ4G5w05jjZlLK/xocFRwDtMDz2CDDkM9N
-         Uztm1++f0ziXg==
-Message-ID: <e9a891e6-586d-46a6-d623-6d25575f62c8@kernel.org>
-Date:   Tue, 14 Jun 2022 14:44:54 +0200
+        Tue, 14 Jun 2022 18:24:11 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D3044D609;
+        Tue, 14 Jun 2022 15:24:11 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id e80so10912305iof.3;
+        Tue, 14 Jun 2022 15:24:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to:cc;
+        bh=HU7+1VbBNzYXZnG0+WF8xI/FycmW+RkYu4I+dGFquvo=;
+        b=P6KWcuKWCZmM/ipSJcrD+VlSqzlWnp76FNm1uRNfRAcgn03NbJoun4AmA6lBKX7Z7F
+         /aFiVHH1kAmTqSQvGC4iL95Z+dvfLav4aq07XZsrk9GkHKTm3E+zIJ8C/MzyrRSJ0Aai
+         M7VGfTuuXrc/1kk5SipwaiZHjOYECVXoKzu803i+RRHTg+ou22H1ddnszrafjX4NY57l
+         i3StehSMr6tIIAfmRxEedLQCHuUsp6EQv4uoCqBKBDjS9GrNLma8ai1RPcA89eeJk5yG
+         BD96IkSM90D92oeV6SKEvMqYISWz412MI+Qypno/K71kyGEkQR4wyenMdXlJt8Lfu624
+         54nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=HU7+1VbBNzYXZnG0+WF8xI/FycmW+RkYu4I+dGFquvo=;
+        b=pfUYAGj/nsX8tJq7o6PIE6CL4fcZTqK+6wQygRYi5X0Ix+YWVAGdHieqGjobRNJQjA
+         N81dO3TDQrJnnrzPPzcTGLMHqtbVvylpUlGBoGjbUruukCJKMPkOqACOed7zJpmqz1PM
+         ys82f1YLjqliO0Xbnlp3btDE4clDqcJGR7BJwr1beRrkrYa24d2C63voe+CMyKVhVLeJ
+         /DJbD5totwboPuLX0lqWwypfMv2/Jw1aufDZ1SMMd9GqGE3/umH58D5w5giCD1MyRkPd
+         GzM3MK+A/e3d3hv2rCZFRKss67KanzscZo80VmJ4cLvB33cwyKL24SxuAyqVEqOYSf5o
+         /RDw==
+X-Gm-Message-State: AOAM531URVj25E66ZUp1JehvkovO7jv81+/oEAHf/yP7oqrezYOG7Ib9
+        Tfo35CHXbvHASXzrTSrEArbmxvqXKBCwXmdCvXxR8u0F4M0lnw==
+X-Google-Smtp-Source: ABdhPJy4mJL3DuTbiR8KG8/dPR3dILa+IhzS+daqkKIS3mklKJaUZENh0rMF/e9F6BcU6ZfPRhzxcqrrIe8yCF+9eOM=
+X-Received: by 2002:a05:6638:1415:b0:331:d318:83ab with SMTP id
+ k21-20020a056638141500b00331d31883abmr4185192jad.126.1655245450358; Tue, 14
+ Jun 2022 15:24:10 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH] rtla/utils: Fix the potential memory allocation failure
-Content-Language: en-US
-To:     jianchunfu <jianchunfu@cmss.chinamobile.com>
-Cc:     linux-trace-devel@vger.kernel.org, rostedt@goodmis.org
-References: <20220614093800.8743-1-jianchunfu@cmss.chinamobile.com>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <20220614093800.8743-1-jianchunfu@cmss.chinamobile.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Wed, 15 Jun 2022 00:23:34 +0200
+Message-ID: <CA+icZUX-=vjX1WgJLDGZYZhrpxy+KqynMMFmNPp8pWu0q2sDcg@mail.gmail.com>
+Subject: [Linux v5.19-rc2] rtla: Errors when running `make tools/clean`
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi
+[ CC linux-kbuild folks ]
 
-On 6/14/22 11:38, jianchunfu wrote:
-> Add memory allocating check of mon_cpus before used in utils.
-> 
-Yeah, you found a problem, thanks for you patch! But it needs improvement.
+Hi,
 
-Please, add the Fixes: tag.
-Please Cc: linux-kernel
+while digging into a perf issue I see this:
 
-> Signed-off-by: jianchunfu <jianchunfu@cmss.chinamobile.com>
-> ---
->  tools/tracing/rtla/src/utils.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
-> index ffaf8ec84..2a86440b3 100644
-> --- a/tools/tracing/rtla/src/utils.c
-> +++ b/tools/tracing/rtla/src/utils.c
-> @@ -106,6 +106,10 @@ int parse_cpu_list(char *cpu_list, char **monitored_cpus)
->  	nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
->  
->  	mon_cpus = malloc(nr_cpus * sizeof(char));
-> +	if (!mon_cpus) {
-> +		perror("Failed to allocate memory");
-> +		return -errno;
-> +	}
->  	memset(mon_cpus, 0, (nr_cpus * sizeof(char)));
+$ cd /path/to/linux.git
 
-Your patch is fixing the problem, but it can be improved by:
-	- using calloc (as in other .c)
-	- removing the memset
-	- instead of returning, goto err;
+$ LC_ALL=C make -C tools/ clean 2>&1 | tee ../make-log_tools-clean.txt
+...
+  DESCEND tracing
+make[1]: Entering directory '/home/dileks/src/linux-kernel/git/tools/tracing'
+ DESCEND latency
+make[2]: Entering directory
+'/home/dileks/src/linux-kernel/git/tools/tracing/latency'
+rm -f latency-collector
+make[2]: Leaving directory
+'/home/dileks/src/linux-kernel/git/tools/tracing/latency'
+ DESCEND rtla
+make[2]: Entering directory
+'/home/dileks/src/linux-kernel/git/tools/tracing/rtla'
+make -C /home/dileks/src/linux-kernel/git/tools/tracing/rtla/../../../Documentation/tools/rtla/
+clean
+make[3]: Entering directory
+'/home/dileks/src/linux-kernel/git/Documentation/tools/rtla'
+rm -f rtla-osnoise-hist.1 rtla-osnoise-top.1 rtla-osnoise.1
+rtla-timerlat-hist.1 rtla-timerlat-top.1 rtla-timerlat.1 rtla.1
+make[3]: Leaving directory
+'/home/dileks/src/linux-kernel/git/Documentation/tools/rtla'
+/bin/sh: 1: test: rtla-make[2]:: unexpected operator
+rm: cannot remove '/home/dileks/src/linux-kernel/git': Is a directory
+make[2]: *** [Makefile:120: clean] Error 1
+make[2]: Leaving directory
+'/home/dileks/src/linux-kernel/git/tools/tracing/rtla'
+make[1]: *** [Makefile:26: rtla_clean] Error 2
+make[1]: Leaving directory '/home/dileks/src/linux-kernel/git/tools/tracing'
+make: *** [Makefile:170: tracing_clean] Error 2
+make: Leaving directory '/home/dileks/src/linux-kernel/git/tools'
 
-Do you mind sending a v2?
+Please check yourself.
 
--- Daniel
+Regards,
+-Sedat-
