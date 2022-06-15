@@ -2,105 +2,103 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 286AACCA47A
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Jun 2022 22:24:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50AEFC43334
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 Jun 2022 02:54:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244276AbiFNWYM (ORCPT
+        id S243570AbiFOCyk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 14 Jun 2022 18:24:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48334 "EHLO
+        Tue, 14 Jun 2022 22:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242406AbiFNWYL (ORCPT
+        with ESMTP id S231631AbiFOCyk (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 14 Jun 2022 18:24:11 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D3044D609;
-        Tue, 14 Jun 2022 15:24:11 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id e80so10912305iof.3;
-        Tue, 14 Jun 2022 15:24:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to:cc;
-        bh=HU7+1VbBNzYXZnG0+WF8xI/FycmW+RkYu4I+dGFquvo=;
-        b=P6KWcuKWCZmM/ipSJcrD+VlSqzlWnp76FNm1uRNfRAcgn03NbJoun4AmA6lBKX7Z7F
-         /aFiVHH1kAmTqSQvGC4iL95Z+dvfLav4aq07XZsrk9GkHKTm3E+zIJ8C/MzyrRSJ0Aai
-         M7VGfTuuXrc/1kk5SipwaiZHjOYECVXoKzu803i+RRHTg+ou22H1ddnszrafjX4NY57l
-         i3StehSMr6tIIAfmRxEedLQCHuUsp6EQv4uoCqBKBDjS9GrNLma8ai1RPcA89eeJk5yG
-         BD96IkSM90D92oeV6SKEvMqYISWz412MI+Qypno/K71kyGEkQR4wyenMdXlJt8Lfu624
-         54nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=HU7+1VbBNzYXZnG0+WF8xI/FycmW+RkYu4I+dGFquvo=;
-        b=pfUYAGj/nsX8tJq7o6PIE6CL4fcZTqK+6wQygRYi5X0Ix+YWVAGdHieqGjobRNJQjA
-         N81dO3TDQrJnnrzPPzcTGLMHqtbVvylpUlGBoGjbUruukCJKMPkOqACOed7zJpmqz1PM
-         ys82f1YLjqliO0Xbnlp3btDE4clDqcJGR7BJwr1beRrkrYa24d2C63voe+CMyKVhVLeJ
-         /DJbD5totwboPuLX0lqWwypfMv2/Jw1aufDZ1SMMd9GqGE3/umH58D5w5giCD1MyRkPd
-         GzM3MK+A/e3d3hv2rCZFRKss67KanzscZo80VmJ4cLvB33cwyKL24SxuAyqVEqOYSf5o
-         /RDw==
-X-Gm-Message-State: AOAM531URVj25E66ZUp1JehvkovO7jv81+/oEAHf/yP7oqrezYOG7Ib9
-        Tfo35CHXbvHASXzrTSrEArbmxvqXKBCwXmdCvXxR8u0F4M0lnw==
-X-Google-Smtp-Source: ABdhPJy4mJL3DuTbiR8KG8/dPR3dILa+IhzS+daqkKIS3mklKJaUZENh0rMF/e9F6BcU6ZfPRhzxcqrrIe8yCF+9eOM=
-X-Received: by 2002:a05:6638:1415:b0:331:d318:83ab with SMTP id
- k21-20020a056638141500b00331d31883abmr4185192jad.126.1655245450358; Tue, 14
- Jun 2022 15:24:10 -0700 (PDT)
+        Tue, 14 Jun 2022 22:54:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B7C33374
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Jun 2022 19:54:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C6ADD60DC8
+        for <linux-trace-devel@vger.kernel.org>; Wed, 15 Jun 2022 02:54:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 308C8C341C0;
+        Wed, 15 Jun 2022 02:54:38 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.95)
+        (envelope-from <rostedt@rostedt.homelinux.com>)
+        id 1o1JAz-002Nx5-0K;
+        Tue, 14 Jun 2022 22:54:37 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+        Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH 2/2] trace-cmd library: Fix reading of temp file used to decompress
+Date:   Tue, 14 Jun 2022 22:54:36 -0400
+Message-Id: <20220615025436.568682-3-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220615025436.568682-1-rostedt@goodmis.org>
+References: <20220615025436.568682-1-rostedt@goodmis.org>
 MIME-Version: 1.0
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 15 Jun 2022 00:23:34 +0200
-Message-ID: <CA+icZUX-=vjX1WgJLDGZYZhrpxy+KqynMMFmNPp8pWu0q2sDcg@mail.gmail.com>
-Subject: [Linux v5.19-rc2] rtla: Errors when running `make tools/clean`
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-[ CC linux-kbuild folks ]
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Hi,
+When not using read_zpage, and reading from a temporary file, the offsets
+are not accounted for properly. That is, it uses the offset of the
+location of the trace.dat file to map the temporary file (that starts at
+offset zero).
 
-while digging into a perf issue I see this:
+Account for mapping of the temporary file when appropriate.
 
-$ cd /path/to/linux.git
+Reported-by: Johannes Berg <johannes@sipsolutions.net>
+Fixes: add83e0c8b51 ("trace-cmd library: Fix tracecmd_read_at()")
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ lib/trace-cmd/trace-input.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-$ LC_ALL=C make -C tools/ clean 2>&1 | tee ../make-log_tools-clean.txt
-...
-  DESCEND tracing
-make[1]: Entering directory '/home/dileks/src/linux-kernel/git/tools/tracing'
- DESCEND latency
-make[2]: Entering directory
-'/home/dileks/src/linux-kernel/git/tools/tracing/latency'
-rm -f latency-collector
-make[2]: Leaving directory
-'/home/dileks/src/linux-kernel/git/tools/tracing/latency'
- DESCEND rtla
-make[2]: Entering directory
-'/home/dileks/src/linux-kernel/git/tools/tracing/rtla'
-make -C /home/dileks/src/linux-kernel/git/tools/tracing/rtla/../../../Documentation/tools/rtla/
-clean
-make[3]: Entering directory
-'/home/dileks/src/linux-kernel/git/Documentation/tools/rtla'
-rm -f rtla-osnoise-hist.1 rtla-osnoise-top.1 rtla-osnoise.1
-rtla-timerlat-hist.1 rtla-timerlat-top.1 rtla-timerlat.1 rtla.1
-make[3]: Leaving directory
-'/home/dileks/src/linux-kernel/git/Documentation/tools/rtla'
-/bin/sh: 1: test: rtla-make[2]:: unexpected operator
-rm: cannot remove '/home/dileks/src/linux-kernel/git': Is a directory
-make[2]: *** [Makefile:120: clean] Error 1
-make[2]: Leaving directory
-'/home/dileks/src/linux-kernel/git/tools/tracing/rtla'
-make[1]: *** [Makefile:26: rtla_clean] Error 2
-make[1]: Leaving directory '/home/dileks/src/linux-kernel/git/tools/tracing'
-make: *** [Makefile:170: tracing_clean] Error 2
-make: Leaving directory '/home/dileks/src/linux-kernel/git/tools'
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index c181c7d93be4..0fef2ca7bb70 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -1401,8 +1401,11 @@ static void *allocate_page_map(struct tracecmd_input *handle,
+ 	int ret;
+ 	int fd;
+ 
+-	if (handle->cpu_compressed && handle->read_zpage)
+-		return read_zpage(handle, cpu, offset);
++	if (handle->cpu_compressed) {
++		if (handle->read_zpage)
++			return read_zpage(handle, cpu, offset);
++		offset -= cpu_data->file_offset;
++	}
+ 
+ 	if (handle->read_page) {
+ 		map = malloc(handle->page_size);
+@@ -1419,7 +1422,7 @@ static void *allocate_page_map(struct tracecmd_input *handle,
+ 	map_size = handle->page_map_size;
+ 	map_offset = offset & ~(map_size - 1);
+ 
+-	if (map_offset < cpu_data->file_offset) {
++	if (!handle->cpu_compressed && map_offset < cpu_data->file_offset) {
+ 		map_size -= cpu_data->file_offset - map_offset;
+ 		map_offset = cpu_data->file_offset;
+ 	}
+@@ -1442,10 +1445,9 @@ static void *allocate_page_map(struct tracecmd_input *handle,
+ 		map_size -= map_offset + map_size -
+ 			(cpu_data->file_offset + cpu_data->file_size);
+ 
+-	if (cpu_data->compress.fd >= 0) {
+-		map_offset -= cpu_data->file_offset;
++	if (cpu_data->compress.fd >= 0)
+ 		fd = cpu_data->compress.fd;
+-	} else
++	else
+ 		fd = handle->fd;
+  again:
+ 	page_map->size = map_size;
+-- 
+2.35.1
 
-Please check yourself.
-
-Regards,
--Sedat-
