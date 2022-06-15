@@ -2,56 +2,87 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54E3EC43334
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 Jun 2022 15:45:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF000C43334
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 Jun 2022 16:43:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbiFOPpr (ORCPT
+        id S1347511AbiFOQne (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 15 Jun 2022 11:45:47 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:42672 "EHLO
-        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229752AbiFOPpr (ORCPT
+        Wed, 15 Jun 2022 12:43:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348484AbiFOQmw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 15 Jun 2022 11:45:47 -0400
-Received: from [172.19.1.40] (not.afront.org [50.126.75.182])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id 116D4840E2BF;
-        Wed, 15 Jun 2022 08:45:47 -0700 (PDT)
-Message-ID: <05953c51-7139-f9ef-ed43-ecc2530bd071@eaglescrag.net>
-Date:   Wed, 15 Jun 2022 08:45:45 -0700
+        Wed, 15 Jun 2022 12:42:52 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D7A7DFAF
+        for <linux-trace-devel@vger.kernel.org>; Wed, 15 Jun 2022 09:42:50 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 25so16984125edw.8
+        for <linux-trace-devel@vger.kernel.org>; Wed, 15 Jun 2022 09:42:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=WaufT6NhOGkOUUiHssQ7I7VV3lFRlfxRg2L0WUCjh6k=;
+        b=noYbM5q4p6VBrupENwOLyhpsYyB7+ZaMlA2QaWLte+hieiBAzBmoAsRT3Zw8pULwSe
+         D0ogAOnfPdMVo65VcKX+RzMUXLwA2bvlwVo6lG26+lV0a4Di6EU8EeZ/7yZwiqyrhlx6
+         rQULPeGQO70TeOf6IBjMPFS/Ac90ivvO5OmAiQQ4Fp7hN/F8iCD0xFsJPnG9xehdpy2V
+         2eCkR4jTPu1tAE9OxfCJ0o1h6PDIJyBS909e/zSpeTTy6PQ108B4CcW47y0e/fcxmTla
+         eUxdQES0Ht+zlNihLLBLQN93sCCwmLO/qCygXwkjNL/HR4K4S0m6/RRU0FQXHxmhQt2g
+         0iHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=WaufT6NhOGkOUUiHssQ7I7VV3lFRlfxRg2L0WUCjh6k=;
+        b=xbUAJVHZ2GF0vMhUOBhiTCcUiGCt+CoQlsIVYefGJFFPBOlWMIq+e4FAgmpSZMTqTY
+         ga2/I5uiqRm2N3inXoRNkDQzc+nZ/Ov/9RNugavcpDpUOGUICwpHlsLMZuQ6YhKQ6dHi
+         A16P821S+1L47P5IV6W5ETHVs4hdYFimG0cSVx0+jZOdpcgX91gF4rFPSnuX0CXPy4hg
+         q51SEVFb1ByQD4YR1AXn3g1xtuj8e9Zwzc3eyhtief3Oecn24Ije/PfqJusOJfaVDGW/
+         Lb5eUgHw3WaRx6F2YviKCEscP5bab+pLG43YzR+kyRCmHZX9I6BpuqHL4GWQS5qgEEPb
+         oS8Q==
+X-Gm-Message-State: AJIora9ELoMzvuuprFEwXUl+XjbK5DNhykW0CxALcmeHHS6LsGsp2fIW
+        +7okfK30ZeAF1nwiyDZfrq66n6NcVbE=
+X-Google-Smtp-Source: AGRyM1ucdWbHOkBIkh7FKYP9ckrG5P35a8DsciaxVOMmxMY2qTZi108fXruCvhGMYSoCcdZvkMk9Jg==
+X-Received: by 2002:a05:6402:27cf:b0:431:54d9:28ed with SMTP id c15-20020a05640227cf00b0043154d928edmr767059ede.81.1655311368747;
+        Wed, 15 Jun 2022 09:42:48 -0700 (PDT)
+Received: from [10.107.150.145] (78-154-14-90.ip.btc-net.bg. [78.154.14.90])
+        by smtp.gmail.com with ESMTPSA id fe6-20020a1709072a4600b00704a5c530ccsm6467968ejc.162.2022.06.15.09.42.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Jun 2022 09:42:48 -0700 (PDT)
+Message-ID: <4f98c00b-ace7-3992-c251-1559153eec54@gmail.com>
+Date:   Wed, 15 Jun 2022 19:42:47 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
 Subject: Re: [PATCH] trace-cruncher: Enable Github development flow
 Content-Language: en-US
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
         linux-trace-devel@vger.kernel.org
 References: <20220615151558.226641-1-tz.stoyanov@gmail.com>
-From:   John 'Warthog9' Hawley <warthog9@eaglescrag.net>
+From:   Yordan Karadzhov <y.karadz@gmail.com>
 In-Reply-To: <20220615151558.226641-1-tz.stoyanov@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Wed, 15 Jun 2022 08:45:47 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 6/15/2022 8:15 AM, Tzvetomir Stoyanov (VMware) wrote:
+Looks good to me.
+
+Acked-by: Yordan Karadzhov <y.karadz@gmail.com>
+
+On 6/15/22 18:15, Tzvetomir Stoyanov (VMware) wrote:
 > Github development flow is more popular among python developers. The
 > CONTRIBUTING file is updated to enable both mailing list based (current
 > one) and PR based (github) development flows. The main motivation for
 > this change in to attract more contributors.
-> 
+>
 > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-
-This looks fine to me, and will be interesting to see how this ends up 
-working out.
-
-- John 'Warthog9' Hawley
-
 > ---
 >   CONTRIBUTING.md | 26 +++++++++++++++-----------
 >   1 file changed, 15 insertions(+), 11 deletions(-)
-> 
+>
 > diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
 > index 865fcc8..c22780b 100644
 > --- a/CONTRIBUTING.md
