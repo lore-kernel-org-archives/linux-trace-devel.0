@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AA64CCA47D
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Jun 2022 08:46:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5952C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Jun 2022 08:47:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376276AbiFPIqy (ORCPT
+        id S1359812AbiFPIq6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 16 Jun 2022 04:46:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34788 "EHLO
+        Thu, 16 Jun 2022 04:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359719AbiFPIqM (ORCPT
+        with ESMTP id S1359806AbiFPIqV (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 16 Jun 2022 04:46:12 -0400
+        Thu, 16 Jun 2022 04:46:21 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6900E5DBE3;
-        Thu, 16 Jun 2022 01:46:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5B25DBDA;
+        Thu, 16 Jun 2022 01:46:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 142C6B822A7;
-        Thu, 16 Jun 2022 08:46:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72F85C36AE3;
-        Thu, 16 Jun 2022 08:46:02 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 961E0B822AA;
+        Thu, 16 Jun 2022 08:46:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5140C341C6;
+        Thu, 16 Jun 2022 08:46:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655369166;
-        bh=q2Nr0Do4T+VNYLHE7CNjZGMYVNS+vUVZnmunR/+50Bw=;
+        s=k20201202; t=1655369176;
+        bh=/xZOtWjGXYTz/J2Aiul1V0Ty93/KmzjcS55M0yhNTrk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gJVathLlY3OD6ZpvCxIhusEa0wKl7DfZl2hmahA85dBfvkwSZMRr848G5H3M/D3I4
-         WYLpEnGcX9vbipHbR6zdmVE7tckIrY1MqK8Zb2BMfZ29RDwK8C4izI5Dn7Q0LXFzih
-         etj5tlof1DhAz74Jcw43VJwu19gSSc6ph8UbQPwyBVZSTJQKpg5bJqmhnSy+pt98GK
-         y/zyUYcbgEIt/FyWVIUgpDzJJfoVwBio2itHw2AimTVWGGawPr6rGnbGgDeW9fythz
-         WeIKDZC1Lq/iLIRisM2vovWbP1v8fNBRc7IgE11nlBUjHU6utqR+AWXoX9Ryc1uxUH
-         vLduASJbhVUuA==
+        b=doipYHKQb4BVV959SwfH4xhLIiAmUC5P4OunW4L2kNxA9OtOLSCnkPlNZOgrlGMsi
+         isfWf0Pnq+kQvZSDgukxH4KI/r4JZcDYxWmwl43YLk6lO7mGBuBEymZy2Wo+yly2c/
+         fqD9AnlWYXxGkOfVNpX7EgnsxN1l2gh1B85LDPSAENAoPVkjgciHotNZhnqsDEfciq
+         PSz9lcfbd1j7zHhU+QyZw/8H5qhdNX2DdxB/6Qf3AFrD9X+F9/VWx+CEsPLan7FDqK
+         aX3qP9BLjHe5yBIucBu3a/cNVEGXFtx8FpFzMTlQQCIK8SIBCu7n2e5XnDN3p8XTmt
+         TpuXFnt10mvig==
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
@@ -53,9 +53,9 @@ Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Clark Williams <williams@redhat.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
-Subject: [PATCH V4 11/20] rv/monitor: wwnr instrumentation and Makefile/Kconfig entries
-Date:   Thu, 16 Jun 2022 10:44:53 +0200
-Message-Id: <944694879f67c0e635815ac57154be477a1b9108.1655368610.git.bristot@kernel.org>
+Subject: [PATCH V4 13/20] rv/reactor: Add the panic reactor
+Date:   Thu, 16 Jun 2022 10:44:55 +0200
+Message-Id: <67e522ab57e64eee313af508a8c70f3cce33e525.1655368610.git.bristot@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1655368610.git.bristot@kernel.org>
 References: <cover.1655368610.git.bristot@kernel.org>
@@ -65,9 +65,8 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Adds the instrumentation to the previously created wwnr monitor, as an
-example of the developer work. It also adds a Makefile, Kconfig and
-tracepoint entries.
+Sample reactor that panics the system when an exception is found. This
+is useful both to capture a vmcore, or to fail-safe a critical system.
 
 Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
 Cc: Guenter Roeck <linux@roeck-us.net>
@@ -90,143 +89,88 @@ Cc: linux-kernel@vger.kernel.org
 Cc: linux-trace-devel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- include/trace/events/rv.h            | 12 +++++++++
- kernel/trace/rv/Kconfig              |  8 ++++++
- kernel/trace/rv/Makefile             |  1 +
- kernel/trace/rv/monitors/wwnr/wwnr.c | 38 ++++++++++++----------------
- 4 files changed, 37 insertions(+), 22 deletions(-)
+ kernel/trace/rv/Kconfig         |  8 ++++++
+ kernel/trace/rv/Makefile        |  1 +
+ kernel/trace/rv/reactor_panic.c | 44 +++++++++++++++++++++++++++++++++
+ 3 files changed, 53 insertions(+)
+ create mode 100644 kernel/trace/rv/reactor_panic.c
 
-diff --git a/include/trace/events/rv.h b/include/trace/events/rv.h
-index 4e0dabffcf29..00f11a8dac3b 100644
---- a/include/trace/events/rv.h
-+++ b/include/trace/events/rv.h
-@@ -122,6 +122,18 @@ DECLARE_EVENT_CLASS(error_da_monitor_id,
- 		__entry->event,
- 		__entry->state)
- );
-+
-+#ifdef CONFIG_RV_MON_WWNR
-+/* id is the pid of the task */
-+DEFINE_EVENT(event_da_monitor_id, event_wwnr,
-+	     TP_PROTO(int id, char *state, char *event, char *next_state, bool safe),
-+	     TP_ARGS(id, state, event, next_state, safe));
-+
-+DEFINE_EVENT(error_da_monitor_id, error_wwnr,
-+	     TP_PROTO(int id, char *state, char *event),
-+	     TP_ARGS(id, state, event));
-+#endif /* CONFIG_RV_MON_WWNR */
-+
- #endif /* CONFIG_DA_MON_EVENTS_ID */
- #endif /* _TRACE_RV_H */
- 
 diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
-index e9246b0bec9d..fba2ace2a22b 100644
+index be8e3dab0a52..91a17b13a080 100644
 --- a/kernel/trace/rv/Kconfig
 +++ b/kernel/trace/rv/Kconfig
-@@ -34,6 +34,14 @@ config RV_MON_WIP
- 	  Enable WIP sample monitor, this is a sample monitor that
- 	  illustrates the usage of per-cpu monitors.
+@@ -60,4 +60,12 @@ config RV_REACT_PRINTK
+ 	  Enables the printk reactor. The printk reactor emmits a printk()
+ 	  message if an exception is found.
  
-+config RV_MON_WWNR
-+	select DA_MON_EVENTS_ID
-+	bool "WWNR monitor"
++config RV_REACT_PANIC
++	bool "Panic reactor"
++	depends on RV_REACTORS
++	default y if RV_REACTORS
 +	help
-+	  Enable WWNR sample monitor, this is a sample monitor that
-+	  illustrates the usage of per-task monitor. The model is
-+	  broken on purpose: it serves to test reactors.
++	  Enables the panic reactor. The panic reactor emmits a printk()
++	  message if an exception is found and panic()s the system.
 +
- config RV_REACTORS
- 	bool "Runtime verification reactors"
- 	default y if RV
+ endif # RV
 diff --git a/kernel/trace/rv/Makefile b/kernel/trace/rv/Makefile
-index b41109d2750a..af0ff9a46418 100644
+index a13c750a35c1..963d14875b45 100644
 --- a/kernel/trace/rv/Makefile
 +++ b/kernel/trace/rv/Makefile
-@@ -3,3 +3,4 @@
- obj-$(CONFIG_RV) += rv.o
+@@ -5,3 +5,4 @@ obj-$(CONFIG_RV_MON_WIP) += monitors/wip/wip.o
+ obj-$(CONFIG_RV_MON_WWNR) += monitors/wwnr/wwnr.o
  obj-$(CONFIG_RV_REACTORS) += rv_reactors.o
- obj-$(CONFIG_RV_MON_WIP) += monitors/wip/wip.o
-+obj-$(CONFIG_RV_MON_WWNR) += monitors/wwnr/wwnr.o
-diff --git a/kernel/trace/rv/monitors/wwnr/wwnr.c b/kernel/trace/rv/monitors/wwnr/wwnr.c
-index 8ba01f0f0df8..3fe1ad9125d3 100644
---- a/kernel/trace/rv/monitors/wwnr/wwnr.c
-+++ b/kernel/trace/rv/monitors/wwnr/wwnr.c
-@@ -10,11 +10,8 @@
- 
- #define MODULE_NAME "wwnr"
- 
--/*
-- * XXX: include required tracepoint headers, e.g.,
-- * #include <linux/trace/events/sched.h>
-- */
- #include <trace/events/rv.h>
-+#include <trace/events/sched.h>
- 
- /*
-  * This is the self-generated part of the monitor. Generally, there is no need
-@@ -37,21 +34,20 @@ DECLARE_DA_MON_PER_TASK(wwnr, char);
-  * are translated into model's event.
-  *
-  */
--static void handle_switch_in(void *data, /* XXX: fill header */)
-+static void handle_switch(void *data, bool preempt, struct task_struct *p,
-+			  struct task_struct *n, unsigned int prev_state)
- {
--	struct task_struct *p = /* XXX: how do I get p? */;
--	da_handle_event_wwnr(p, switch_in_wwnr);
--}
-+	/* start monitoring only after the first suspension */
-+	if (prev_state == TASK_INTERRUPTIBLE)
-+		da_handle_init_event_wwnr(p, switch_out_wwnr);
-+	else
-+		da_handle_event_wwnr(p, switch_out_wwnr);
- 
--static void handle_switch_out(void *data, /* XXX: fill header */)
--{
--	struct task_struct *p = /* XXX: how do I get p? */;
--	da_handle_event_wwnr(p, switch_out_wwnr);
-+	da_handle_event_wwnr(n, switch_in_wwnr);
- }
- 
--static void handle_wakeup(void *data, /* XXX: fill header */)
-+static void handle_wakeup(void *data, struct task_struct *p)
- {
--	struct task_struct *p = /* XXX: how do I get p? */;
- 	da_handle_event_wwnr(p, wakeup_wwnr);
- }
- 
-@@ -63,9 +59,8 @@ static int start_wwnr(void)
- 	if (retval)
- 		return retval;
- 
--	rv_attach_trace_probe("wwnr", /* XXX: tracepoint */, handle_switch_in);
--	rv_attach_trace_probe("wwnr", /* XXX: tracepoint */, handle_switch_out);
--	rv_attach_trace_probe("wwnr", /* XXX: tracepoint */, handle_wakeup);
-+	rv_attach_trace_probe("wwnr", sched_switch, handle_switch);
-+	rv_attach_trace_probe("wwnr", sched_wakeup, handle_wakeup);
- 
- 	return 0;
- }
-@@ -74,9 +69,8 @@ static void stop_wwnr(void)
- {
- 	rv_wwnr.enabled = 0;
- 
--	rv_detach_trace_probe("wwnr", /* XXX: tracepoint */, handle_switch_in);
--	rv_detach_trace_probe("wwnr", /* XXX: tracepoint */, handle_switch_out);
--	rv_detach_trace_probe("wwnr", /* XXX: tracepoint */, handle_wakeup);
-+	rv_detach_trace_probe("wwnr", sched_switch, handle_switch);
-+	rv_detach_trace_probe("wwnr", sched_wakeup, handle_wakeup);
- 
- 	da_monitor_destroy_wwnr();
- }
-@@ -111,5 +105,5 @@ module_init(register_wwnr);
- module_exit(unregister_wwnr);
- 
- MODULE_LICENSE("GPL");
--MODULE_AUTHOR("dot2k: auto-generated");
--MODULE_DESCRIPTION("wwnr");
-+MODULE_AUTHOR("Daniel Bristot de Oliveira <bristot@kernel.org>");
-+MODULE_DESCRIPTION("wwnr: wakeup while not running monitor.");
+ obj-$(CONFIG_RV_REACT_PRINTK) += reactor_printk.o
++obj-$(CONFIG_RV_REACT_PANIC) += reactor_panic.o
+diff --git a/kernel/trace/rv/reactor_panic.c b/kernel/trace/rv/reactor_panic.c
+new file mode 100644
+index 000000000000..9d8d78a337a3
+--- /dev/null
++++ b/kernel/trace/rv/reactor_panic.c
+@@ -0,0 +1,44 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Panic RV reactor:
++ *   Prints the exception msg to the kernel message log and panic().
++ *
++ * Copyright (C) 2019-2022 Daniel Bristot de Oliveira <bristot@kernel.org>
++ *
++ */
++
++#include <linux/ftrace.h>
++#include <linux/tracepoint.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/rv.h>
++
++static void rv_panic_reaction(char *msg)
++{
++	panic(msg);
++}
++
++struct rv_reactor rv_panic = {
++	.name = "panic",
++	.description = "panic the system if an exception is found.",
++	.react = rv_panic_reaction
++};
++
++int register_react_panic(void)
++{
++	rv_register_reactor(&rv_panic);
++	return 0;
++}
++
++void unregister_react_panic(void)
++{
++	rv_unregister_reactor(&rv_panic);
++}
++
++module_init(register_react_panic);
++module_exit(unregister_react_panic);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Daniel Bristot de Oliveira");
++MODULE_DESCRIPTION("panic rv reactor: panic if an exception is found");
 -- 
 2.35.1
 
