@@ -2,46 +2,58 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27B97CCA47A
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Jun 2022 08:48:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62B8CC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Jun 2022 11:22:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376361AbiFPIsI (ORCPT
+        id S1376760AbiFPLWD (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 16 Jun 2022 04:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36352 "EHLO
+        Thu, 16 Jun 2022 07:22:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359805AbiFPIrq (ORCPT
+        with ESMTP id S1376767AbiFPLWD (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 16 Jun 2022 04:47:46 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472C15E75A;
-        Thu, 16 Jun 2022 01:46:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C56B0B822B0;
-        Thu, 16 Jun 2022 08:46:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E2BAC341CB;
-        Thu, 16 Jun 2022 08:46:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655369209;
-        bh=bdDAcR0HjZJFIwntvamKxxbeGIgFlMkgAgwD/aNZMUg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qhE2Z1kxHHmMoI0ytsNbGs77YMejHNJmaQtWeg8xugywbbBIzbfHqyFiQNPBhtObH
-         abEEZl3AQ2thYv6cQkW0TnUD9D8Jr/uTalMn2P8Gl8ceipda9naJk48Ed9028lDNqU
-         iWjp77uNu8NI6zIsKMsE7/8FfcbGv1LKF0pLv7m4ZFWsrXaaO09pLt3bt3y8zOPPqK
-         9mzngcI00N/QEJwYaK/4EdcOANSGxrb+NW4AI/8m2xHnpv7uF8Ocw7ZiarCe+44AsC
-         ceu24HWEe6HuDE+298zLQCqd6rrZKqHzOoKFm91cxf9it/pTCjG/Bwtx7U+2cJ+grt
-         iGQwmqDrdDokA==
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Thu, 16 Jun 2022 07:22:03 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0365E74B;
+        Thu, 16 Jun 2022 04:22:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1655378522; x=1686914522;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Wa3Kw7moqG+Xhp8cnm6XR1a7p5TXdG+ruXsnZQXyjSY=;
+  b=Fcghyy8cYobYiAwsD5/LRgP6GJZT27jJxju2tmd9P6VzGsI0Ub4GApWt
+   xnyp/+HXSsYw8t3vMya5OIjAqWnCxl3rBoJNeYnjLhwoO4qHYwYCdZChs
+   7wZXMgYP6p48rADBgxvMX8szUYf4WLdagRMI3TqUW5fFaTRSrOl1hBgW1
+   sG/kgItORRqobABR6ePKs4OP6ziZDbhG+Y5UfqDV79Irve8kkL7dYIhCO
+   iUJExuBtjal1jcD0BTEWH6gelXUJNzovGT0iikfT9KZMBMmabajOpEEvL
+   7cy9GzwtMuzVd2AigdyqnEDt21UvJgSTCEYrTPSqVYhlJorwK3GUyfp3f
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10379"; a="280259657"
+X-IronPort-AV: E=Sophos;i="5.91,305,1647327600"; 
+   d="scan'208";a="280259657"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2022 04:22:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,305,1647327600"; 
+   d="scan'208";a="762827224"
+Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 16 Jun 2022 04:21:57 -0700
+Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1o1nZV-000OKB-2n;
+        Thu, 16 Jun 2022 11:21:57 +0000
+Date:   Thu, 16 Jun 2022 19:21:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     kbuild-all@lists.01.org,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
         Wim Van Sebroeck <wim@linux-watchdog.org>,
         Guenter Roeck <linux@roeck-us.net>,
         Jonathan Corbet <corbet@lwn.net>,
         Ingo Molnar <mingo@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
         Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Marco Elver <elver@google.com>,
@@ -53,302 +65,141 @@ Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Clark Williams <williams@redhat.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
-Subject: [PATCH V4 20/20] Documentation/rv: Add watchdog-monitor documentation
-Date:   Thu, 16 Jun 2022 10:45:02 +0200
-Message-Id: <129a431c1a12610fa7b44f76ce73aa8058f55bc6.1655368610.git.bristot@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1655368610.git.bristot@kernel.org>
-References: <cover.1655368610.git.bristot@kernel.org>
+Subject: Re: [PATCH V4 09/20] rv/monitor: wip instrumentation and
+ Makefile/Kconfig entries
+Message-ID: <202206161937.RukeWKWk-lkp@intel.com>
+References: <9c05a95927c18bebcf0eb79bef15ec59667bc08c.1655368610.git.bristot@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9c05a95927c18bebcf0eb79bef15ec59667bc08c.1655368610.git.bristot@kernel.org>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Adds documentation about the safe_wtd and safe_wtd_nwo RV monitors,
-and their usage via a safety application.
+Hi Daniel,
 
-Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Marco Elver <elver@google.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Gabriele Paoloni <gpaoloni@redhat.com>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Clark Williams <williams@redhat.com>
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-trace-devel@vger.kernel.org
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- Documentation/trace/rv/watchdog-monitor.rst | 250 ++++++++++++++++++++
- 1 file changed, 250 insertions(+)
- create mode 100644 Documentation/trace/rv/watchdog-monitor.rst
+I love your patch! Perhaps something to improve:
 
-diff --git a/Documentation/trace/rv/watchdog-monitor.rst b/Documentation/trace/rv/watchdog-monitor.rst
-new file mode 100644
-index 000000000000..2b142fb31572
---- /dev/null
-+++ b/Documentation/trace/rv/watchdog-monitor.rst
-@@ -0,0 +1,250 @@
-+Watchdog monitor
-+----------------
-+
-+The watchdog is an essential building block for the usage of Linux in
-+safety-critical systems because it allows the system to be monitored from
-+an external element - the watchdog hardware, acting as a safety-monitor.
-+
-+A user-space application controls the watchdog device via the watchdog
-+interface. This application, hereafter safety_app, enables the watchdog
-+and periodically pets the watchdog upon correct completion of the safety
-+related processing.
-+
-+If the safety_app, for any reason, stops pinging the watchdog,
-+the watchdog hardware can set the system in a fail-safe state. For
-+example, shutting the system down.
-+
-+Given the importance of the safety_app / watchdog hardware couple,
-+the interaction between these software pieces also needs some
-+sort of monitoring. In other words, "who monitors the monitor?"
-+
-+The safe watchdog (safe_wtd) RV monitor monitors the interaction between
-+the safety_app and the watchdog device, enforcing the correct sequence of
-+events that leads the system to a safe state.
-+
-+Furthermore, the safety_app can monitor the RV monitor by collecting the
-+events generated by the RV monitor itself via tracing interface. In this way,
-+closing the monitoring loop with the safety_app.
-+
-+A diagram of the components and their interactions is::
-+
-+  user-space:
-+                  +--------------------------------+
-+                  | safety_app                     |-----------+
-+                  +--------------------------------+           |
-+                     |                    ^                    |
-+                     | Configure          | Enable and         |
-+                     |                    | check data         |
-+  ===================+====================+===============     |
-+  kernel-space:      |                    |                    |
-+                     v                    v                    |
-+                +----------+  instr.     +-------------+       |
-+                | watchdog | ----------->| RV Monitor  |----+  |
-+                | device   |             +-------------+    |  |
-+                +----------+                                |  |
-+                  |                                         |  |
-+                  |                                         |  |
-+  ================+======================================   |  |
-+  hardware:       |                                         |  |
-+                  v                                         |  +-> Bring the system
-+                +--------------------+                      +----> to a safe state,
-+                | watchdog hardware  |---------------------------> e.g., halt.
-+                +--------------------+
-+
-+Sample safety_app
-+-----------------
-+
-+The user-space safety_app sample code in ``tools/verification/safety_app/``
-+serves to illustrate the usage of the RV monitors for this use-case, as
-+well as the starting point to the development of a user-specific safety_app.
-+
-+Watchdog events
-+---------------
-+
-+The RV monitor observes the watchdog by using instrumentation to
-+process the events generated by the interaction between the
-+safety_app and the watchdog device layer in kernel.
-+
-+The monitored events are:
-+
-+  - watchdog:watchdog_open: open the watchdog device;
-+  - watchdog:watchdog_close: close the watchdog device;
-+  - watchdog:watchdog_start: start the watchdog;
-+  - watchdog:watchdog_stop: stop the watchdog;
-+  - watchdog:watchdog_set_timeout: set the watchdog timeout;
-+  - watchdog:watchdog_ping: reprogram the watchdog with the previously set
-+    timeout;
-+  - watchdog:watchdog_nowayout: prevents the watchdog from stopping;
-+  - watchdog:watchdog_set_keep_alive: set an intermediary ping to overcome
-+    the limitation of a hardware watchdog maximum timeout being shorter than
-+    the timeout set by the user-space tool;
-+  - watchdog:watchdog_keep_alive: the execution of the function that runs the
-+    intermediary keep alive ping;
-+
-+RV monitor events
-+-----------------
-+
-+The RV monitor monitors the relevant events as an outside observer,
-+interpreting all the components (the hardware; the watchdog device
-+interface; and the safety monitor) as an integrated component.
-+
-+The events selected for the monitor are:
-+
-+  - other_threads: an event generated by any thread other than the
-+    one that set nowayout or open the watchdog the last time.
-+  - open: a thread opens the watchdog to manipulate it;
-+  - close: a thread closes the watchdog;
-+  - start: starts the watchdog countdown;
-+  - stop: stops the watchdog;
-+  - set_safe_timeout: configures the watchdog with a given timeout;
-+  - ping: resets the watchdog countdown with the previously configured timeout;
-+  - nowayout: prevents the watchdog to be stopped until the system's shutdown;
-+  - sched_keep_alive: schedules a kernel worker to ping the watchdog if the
-+    timeout is longer than the watchdog hardware can handle.
-+  - keep_alive: executes the previously scheduled watchdog ping;
-+
-+Noting that the events that does not appear in the automata models are
-+considered blocked events, and their execution will always cause the
-+RV monitor to react to an unexpected event.
-+
-+RV monitor specification
-+------------------------
-+
-+The monitor's goal is to assess a set of specifications that conducts the
-+system to a safe state.
-+
-+These specifications are:
-+
-+  - 1: Once open, only one process manipulates the watchdog;
-+  - 2: Following 1, the keep-alive mechanisms will not be used;
-+  - 3: If required, nowayout will be set before opening the watchdog;
-+  - 4: A safe timeout must be set;
-+  - 5: At least one ping must be made before entering the safe/safe_nwo states
-+  - 6: The RV monitor does not react if the watchdog is closed without stopping.
-+       But the hardware watchdog is expected to react.
-+
-+Deterministic automata monitors
-+-------------------------------
-+
-+Following the specifications, a deterministic automata monitor
-+was developed. The monitor is modeled as Deterministic Automata model.
-+
-+The deterministic automata model for safe_wtd is::
-+
-+              #==================================#   other_threads
-+              H                                  H ----------------+
-+ -----------> H               init               H                 |
-+              H                                  H <---------------+
-+              #==================================#
-+                      |     |     ^
-+                      |     |     |               close
-+                      |     |     +----------------------------------------------------+
-+                      |     |                                                          |
-+                      |     |                     open                                 |
-+                      |     +------------------------------------------------------+   |
-+                      |                                                            |   |
-+                      |  nowayout                                                  |   |
-+                      v                                                            |   |
-+    nowayout        +-------------------+                                          |   |
-+    other_threads   |                   |          nowayout                        |   |
-+  +---------------- |        nwo        |<-------------------------------------+   |   |
-+  |                 |                   |                                      |   |   |
-+  +---------------> |                   | <+                                   |   |   |
-+                    +-------------------+  |                                   |   |   |
-+                      |                    |                                   |   |   |
-+                      | open               | close                             |   |   |
-+                      v                    |                                   |   |   |
-+                    +-------------------+  |                                   |   |   |
-+                    |    opened_nwo     | -+                                   |   |   |
-+                    +-------------------+                                      |   |   |
-+                      |                                                        |   |   |
-+                      | start                                                  |   |   |
-+                      v                                                        |   |   |
-+                    +-------------------+                                      |   |   |
-+  +---------------> |    started_nwo    | -+                                   |   |   |
-+  |                 +-------------------+  |                                   |   |   |
-+  |                   |                    |                                   |   |   |
-+  | open              | set_safe_timeout   |                                   |   |   |
-+  |                   v                    |                                   |   |   |
-+  |                 +-------------------+  |                                   |   |   |
-+  |                 |      set_nwo      |  |                                   |   |   |
-+  |                 +-------------------+  |                                   |   |   |
-+  |                           |            |                                   |   |   |
-+  |     +-------------+       | ping       |                                   |   |   |
-+  |     |             |       |            |                                   |   |   |
-+  |     | ping        v       v            |                                   |   |   |
-+  |     |           +-------------------+  |                                   |   |   |
-+  |     +-----------|     safe_nwo      |  |                                   |   |   |
-+  |                 +-------------------+  |                                   |   |   |
-+  |                   |                    |                                   |   |   |
-+  |                   | close              | close                             |   |   |
-+  |                   v                    v                                   |   |   |
-+  |                 +----------------------------------+   nowayout            |   |   |
-+  |                 |                                  |   other_threads       |   |   |
-+  |                 |        closed_running_nwo        | ----------------+     |   |   |
-+  |                 |                                  |                 |     |   |   |
-+  +---------------- |                                  | <---------------+     |   |   |
-+                    +----------------------------------+                       |   |   |
-+                        |        nowayout             ^                        |   |   |
-+                        +-----------------------------+                        |   |   |
-+                                                                               |   |   |
-+                                                                               |   |   |
-+                               +-------------------+           +--------+      |   |   |
-+                               |                   |           |        |------+---+   |
-+                               |      started      |  start    | opened |      |       |
-+             +---------------- |                   | <-------- |        |>-----+-------+
-+             |                 +-------------------+           +--------+      |       ^
-+             |                   |                                             |       |
-+             |                   | set_safe_timeout              +-------------+-------+
-+             |                   v                               |             |
-+             |                 +-------------------+             |             |
-+             |                 |                   |             |             |
-+             |                 |        set        |             |             |
-+  +----------+---------------> |                   |             |             |
-+  |          |                 +-------------------+             |             |
-+  |          |                   |                               |             |
-+  |          |                   | ping                          |             |
-+  |          |                   v                               |             |
-+  |          |                 +-------------------+   ping      |             |
-+  |          |                 |                   | -------+    |             |
-+  |          |           +---- |       safe        |        |    |             |
-+  |          |           |     |                   | <------+    |             |
-+  |          |           |     +-------------------+             |             |
-+  |          |           |       |                               |             |
-+  |          | stop      |       | stop                          |             |
-+  |          |           |       v                               |             |
-+  |          |           |     +-------------------+   close     |             |
-+  |          +-----------+---> |      stopped      |-------------+             |
-+  |                      |     +-------------------+                           |
-+  |                      +---+                                                 |
-+  |                          | close                                           |
-+  |                          v                                                 |
-+  |     other_threads  +----------------------------------------+              |
-+  |   +--------------> |                                        |              |
-+  |   |                |             closed_running             |              |
-+  |   +--------------- |                                        |--------------+
-+  |                    +----------------------------------------+
-+  |                               |          ^
-+  |                         open  |          | close
-+  |                               v          |
-+  |    set_safe_timeout       +-------------------+
-+  +-------------------------> |     reopened      |
-+                                +-------------------+
-+
-+It is important to note that the events sched_keep_alive and keep_alive
-+are not allowed in the monitor (they are said to be blocked events).
-+The execution of any blocked events leads the RV monitor to react.
-+
-+Additional options
-+------------------
-+
-+The RV monitor also has a set of options enabled via kernel command
-+line/module options. They are:
-+
-+ - watchdog_id: the device id to monitor (default 0);
-+ - dont_stop: once enabled, do not allow the RV monitor to be stopped (default off);
-+ - safe_timeout: define a maximum safe value that a user-space application can
-+   set as the watchdog timeout (default unlimited);
-+ - check_timeout: After every ping, check if the time left in the watchdog is less
-+   than or equal to the last timeout set for the watchdog. It only works for watchdog
-+   devices that provide the get_timeleft() function (default off);
+[auto build test WARNING on rostedt-trace/for-next]
+[also build test WARNING on tip/sched/core]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Bristot-de-Oliveira/The-Runtime-Verification-RV-interface/20220616-164837
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git for-next
+config: riscv-randconfig-r004-20220616 (https://download.01.org/0day-ci/archive/20220616/202206161937.RukeWKWk-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 11.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/a76032130de277ff6f39fc08277a70823fd85bf3
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Daniel-Bristot-de-Oliveira/The-Runtime-Verification-RV-interface/20220616-164837
+        git checkout a76032130de277ff6f39fc08277a70823fd85bf3
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=riscv SHELL=/bin/bash kernel/trace/rv/
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+   In file included from kernel/trace/rv/monitors/wip/wip.c:8:
+   kernel/trace/rv/monitors/wip/wip.c: In function 'start_wip':
+   include/rv/instrumentation.h:15:17: error: implicit declaration of function 'check_trace_callback_type_preempt_disable'; did you mean 'check_trace_callback_type_irq_disable'? [-Werror=implicit-function-declaration]
+      15 |                 check_trace_callback_type_##tp(rv_handler);                             \
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/trace/rv/monitors/wip/wip.c:61:9: note: in expansion of macro 'rv_attach_trace_probe'
+      61 |         rv_attach_trace_probe("wip", preempt_disable, handle_preempt_disable);
+         |         ^~~~~~~~~~~~~~~~~~~~~
+   In file included from include/linux/printk.h:11,
+                    from include/linux/kernel.h:29,
+                    from include/linux/interrupt.h:6,
+                    from include/linux/trace_recursion.h:5,
+                    from include/linux/ftrace.h:10,
+                    from kernel/trace/rv/monitors/wip/wip.c:2:
+   include/rv/instrumentation.h:16:27: error: implicit declaration of function 'register_trace_preempt_disable'; did you mean 'register_trace_prio_irq_disable'? [-Werror=implicit-function-declaration]
+      16 |                 WARN_ONCE(register_trace_##tp(rv_handler, NULL),                        \
+         |                           ^~~~~~~~~~~~~~~
+   include/linux/once_lite.h:15:41: note: in definition of macro 'DO_ONCE_LITE_IF'
+      15 |                 bool __ret_do_once = !!(condition);                     \
+         |                                         ^~~~~~~~~
+   include/rv/instrumentation.h:16:17: note: in expansion of macro 'WARN_ONCE'
+      16 |                 WARN_ONCE(register_trace_##tp(rv_handler, NULL),                        \
+         |                 ^~~~~~~~~
+   kernel/trace/rv/monitors/wip/wip.c:61:9: note: in expansion of macro 'rv_attach_trace_probe'
+      61 |         rv_attach_trace_probe("wip", preempt_disable, handle_preempt_disable);
+         |         ^~~~~~~~~~~~~~~~~~~~~
+   In file included from kernel/trace/rv/monitors/wip/wip.c:8:
+   include/rv/instrumentation.h:15:17: error: implicit declaration of function 'check_trace_callback_type_preempt_enable'; did you mean 'check_trace_callback_type_irq_enable'? [-Werror=implicit-function-declaration]
+      15 |                 check_trace_callback_type_##tp(rv_handler);                             \
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/trace/rv/monitors/wip/wip.c:62:9: note: in expansion of macro 'rv_attach_trace_probe'
+      62 |         rv_attach_trace_probe("wip", preempt_enable, handle_preempt_enable);
+         |         ^~~~~~~~~~~~~~~~~~~~~
+   In file included from include/linux/printk.h:11,
+                    from include/linux/kernel.h:29,
+                    from include/linux/interrupt.h:6,
+                    from include/linux/trace_recursion.h:5,
+                    from include/linux/ftrace.h:10,
+                    from kernel/trace/rv/monitors/wip/wip.c:2:
+   include/rv/instrumentation.h:16:27: error: implicit declaration of function 'register_trace_preempt_enable'; did you mean 'register_trace_prio_irq_enable'? [-Werror=implicit-function-declaration]
+      16 |                 WARN_ONCE(register_trace_##tp(rv_handler, NULL),                        \
+         |                           ^~~~~~~~~~~~~~~
+   include/linux/once_lite.h:15:41: note: in definition of macro 'DO_ONCE_LITE_IF'
+      15 |                 bool __ret_do_once = !!(condition);                     \
+         |                                         ^~~~~~~~~
+   include/rv/instrumentation.h:16:17: note: in expansion of macro 'WARN_ONCE'
+      16 |                 WARN_ONCE(register_trace_##tp(rv_handler, NULL),                        \
+         |                 ^~~~~~~~~
+   kernel/trace/rv/monitors/wip/wip.c:62:9: note: in expansion of macro 'rv_attach_trace_probe'
+      62 |         rv_attach_trace_probe("wip", preempt_enable, handle_preempt_enable);
+         |         ^~~~~~~~~~~~~~~~~~~~~
+   In file included from kernel/trace/rv/monitors/wip/wip.c:8:
+   kernel/trace/rv/monitors/wip/wip.c: In function 'stop_wip':
+   include/rv/instrumentation.h:22:17: error: implicit declaration of function 'unregister_trace_preempt_disable'; did you mean 'unregister_trace_irq_disable'? [-Werror=implicit-function-declaration]
+      22 |                 unregister_trace_##tp(rv_handler, NULL);                                \
+         |                 ^~~~~~~~~~~~~~~~~
+   kernel/trace/rv/monitors/wip/wip.c:72:9: note: in expansion of macro 'rv_detach_trace_probe'
+      72 |         rv_detach_trace_probe("wip", preempt_disable, handle_preempt_disable);
+         |         ^~~~~~~~~~~~~~~~~~~~~
+   include/rv/instrumentation.h:22:17: error: implicit declaration of function 'unregister_trace_preempt_enable'; did you mean 'unregister_trace_irq_enable'? [-Werror=implicit-function-declaration]
+      22 |                 unregister_trace_##tp(rv_handler, NULL);                                \
+         |                 ^~~~~~~~~~~~~~~~~
+   kernel/trace/rv/monitors/wip/wip.c:73:9: note: in expansion of macro 'rv_detach_trace_probe'
+      73 |         rv_detach_trace_probe("wip", preempt_enable, handle_preempt_enable);
+         |         ^~~~~~~~~~~~~~~~~~~~~
+   kernel/trace/rv/monitors/wip/wip.c: At top level:
+>> kernel/trace/rv/monitors/wip/wip.c:91:5: warning: no previous prototype for 'register_wip' [-Wmissing-prototypes]
+      91 | int register_wip(void)
+         |     ^~~~~~~~~~~~
+>> kernel/trace/rv/monitors/wip/wip.c:97:6: warning: no previous prototype for 'unregister_wip' [-Wmissing-prototypes]
+      97 | void unregister_wip(void)
+         |      ^~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
+
+
+vim +/register_wip +91 kernel/trace/rv/monitors/wip/wip.c
+
+15679ffb99664f Daniel Bristot de Oliveira 2022-06-16   90  
+15679ffb99664f Daniel Bristot de Oliveira 2022-06-16  @91  int register_wip(void)
+15679ffb99664f Daniel Bristot de Oliveira 2022-06-16   92  {
+15679ffb99664f Daniel Bristot de Oliveira 2022-06-16   93  	rv_register_monitor(&rv_wip);
+15679ffb99664f Daniel Bristot de Oliveira 2022-06-16   94  	return 0;
+15679ffb99664f Daniel Bristot de Oliveira 2022-06-16   95  }
+15679ffb99664f Daniel Bristot de Oliveira 2022-06-16   96  
+15679ffb99664f Daniel Bristot de Oliveira 2022-06-16  @97  void unregister_wip(void)
+15679ffb99664f Daniel Bristot de Oliveira 2022-06-16   98  {
+15679ffb99664f Daniel Bristot de Oliveira 2022-06-16   99  	if (rv_wip.enabled)
+15679ffb99664f Daniel Bristot de Oliveira 2022-06-16  100  		stop_wip();
+15679ffb99664f Daniel Bristot de Oliveira 2022-06-16  101  
+15679ffb99664f Daniel Bristot de Oliveira 2022-06-16  102  	rv_unregister_monitor(&rv_wip);
+15679ffb99664f Daniel Bristot de Oliveira 2022-06-16  103  }
+15679ffb99664f Daniel Bristot de Oliveira 2022-06-16  104  
+
 -- 
-2.35.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
