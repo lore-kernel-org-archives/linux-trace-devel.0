@@ -2,40 +2,39 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC609C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Jun 2022 21:00:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 006B8C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Jun 2022 21:03:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378647AbiFPVAp (ORCPT
+        id S1349355AbiFPVDo (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 16 Jun 2022 17:00:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48686 "EHLO
+        Thu, 16 Jun 2022 17:03:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233525AbiFPVAn (ORCPT
+        with ESMTP id S230154AbiFPVDo (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 16 Jun 2022 17:00:43 -0400
+        Thu, 16 Jun 2022 17:03:44 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C98F7606C1;
-        Thu, 16 Jun 2022 14:00:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD872CC9C;
+        Thu, 16 Jun 2022 14:03:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
         :In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
         Sender:Reply-To:Content-ID:Content-Description;
-        bh=mjWClmykFoP1P+NE+FHwPy2EeZJYzAdrJuiOYk2mq8A=; b=Bpe2zJD3VPzlHkuFdoWBx6AMC5
-        aZqWclk6HsPV30RI9X+EyoXpwJ7U0TybFWXFe3bMQxMD3JYEahQ/LMb11Q/iziReIT9XIbXTW9b09
-        h9sFynenOyJp9N2KT+ScMPPA5XKzszARDJB6idzEMEUSssXxkyUneT25zTOBrd4JiOyiqYnYPaR4r
-        XPG4LfeVvPr5RIdo4mSt+YKHov3/Zd7osIHEHq5ndkY2J3WbMtKEE4ulC+plqEYYx+F8KT2Jk6dLZ
-        buvGdNiNPM2kG2JOY8z3YU9+dH5O6oCEEPAYeODo07w4AU7Gc55HKYWDG7tHN7E3ToZCq3Q7JvSY6
-        Yn+5eJKw==;
+        bh=l5SmrcbO4GZrUo3EqVT75W/un0U3qwBg6eyDpd+eRLs=; b=P3IR48QvvLm+efucSZUbbj02F6
+        WSscTALgM/IMzD8eVS9UBe7Y8ahSF4J7Gz1wgx7ZYEb1sZTGIEoyaifNpan3/36AalpDYJv1RRxCU
+        +C6lp/aEtT78C5eUymdZQ5AkFyiUpnCzZOTzHhjW5V1QdiLkISHVowUyXV/SElc7GPCJ1NRiOddxa
+        KgWmONu2jPggVwiarSa/T0kbt62Xs4XTLwNA3gJwXUZgIUHqaIt3wdOdKGSgU9n+bNoy4AnY5auGJ
+        Klcs4PFrIRdwM/E+WLCejBXEyaAAiBkQMgS36zWKDHt7kUxUmBnfKIpR5nvWopxfMWG/B8Yx1oqYx
+        DWSWvLSg==;
 Received: from [2601:1c0:6280:3f0::aa0b]
         by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1o1wbE-008VuH-Bg; Thu, 16 Jun 2022 21:00:20 +0000
-Message-ID: <4d975ef5-7e50-9241-1a3e-f0f9bad9c5b5@infradead.org>
-Date:   Thu, 16 Jun 2022 14:00:10 -0700
+        id 1o1we6-008VxI-GG; Thu, 16 Jun 2022 21:03:19 +0000
+Message-ID: <3230f073-5228-693e-f7cd-5fc4b7226a66@infradead.org>
+Date:   Thu, 16 Jun 2022 14:03:11 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.9.1
-Subject: Re: [PATCH V4 09/20] rv/monitor: wip instrumentation and
- Makefile/Kconfig entries
+Subject: Re: [PATCH V4 13/20] rv/reactor: Add the panic reactor
 Content-Language: en-US
 To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>
@@ -57,9 +56,9 @@ Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
 References: <cover.1655368610.git.bristot@kernel.org>
- <9c05a95927c18bebcf0eb79bef15ec59667bc08c.1655368610.git.bristot@kernel.org>
+ <67e522ab57e64eee313af508a8c70f3cce33e525.1655368610.git.bristot@kernel.org>
 From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <9c05a95927c18bebcf0eb79bef15ec59667bc08c.1655368610.git.bristot@kernel.org>
+In-Reply-To: <67e522ab57e64eee313af508a8c70f3cce33e525.1655368610.git.bristot@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -70,26 +69,26 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 On 6/16/22 01:44, Daniel Bristot de Oliveira wrote:
 > diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
-> index 1eafb5adcfcb..e9246b0bec9d 100644
+> index be8e3dab0a52..91a17b13a080 100644
 > --- a/kernel/trace/rv/Kconfig
 > +++ b/kernel/trace/rv/Kconfig
-> @@ -26,6 +26,13 @@ menuconfig RV
->  	  the system behavior.
+> @@ -60,4 +60,12 @@ config RV_REACT_PRINTK
+>  	  Enables the printk reactor. The printk reactor emmits a printk()
+
+	                                                 emits
+
+>  	  message if an exception is found.
 >  
->  if RV
-> +config RV_MON_WIP
-> +	depends on PREEMPTIRQ_TRACEPOINTS
-> +	select DA_MON_EVENTS_IMPLICIT
-> +	bool "WIP monitor"
-
-Does WIP mean work-in-progress?  (It does to me.)
-
-If not, please explain what it means in the help text.
-
+> +config RV_REACT_PANIC
+> +	bool "Panic reactor"
+> +	depends on RV_REACTORS
+> +	default y if RV_REACTORS
 > +	help
-> +	  Enable WIP sample monitor, this is a sample monitor that
-> +	  illustrates the usage of per-cpu monitors.
+> +	  Enables the panic reactor. The panic reactor emmits a printk()
 
-thanks.
+	                                               emits
+
+> +	  message if an exception is found and panic()s the system.
+
 -- 
 ~Randy
