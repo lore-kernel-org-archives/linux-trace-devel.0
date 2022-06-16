@@ -2,68 +2,58 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93DAAC43334
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Jun 2022 13:44:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE66BC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Jun 2022 13:48:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233670AbiFPNom (ORCPT
+        id S230063AbiFPNsI (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 16 Jun 2022 09:44:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49194 "EHLO
+        Thu, 16 Jun 2022 09:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233364AbiFPNol (ORCPT
+        with ESMTP id S233077AbiFPNsH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 16 Jun 2022 09:44:41 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B23E2D1E0;
-        Thu, 16 Jun 2022 06:44:40 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id 73-20020a17090a0fcf00b001eaee69f600so1546957pjz.1;
-        Thu, 16 Jun 2022 06:44:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:message-id:date:mime-version:user-agent:content-language:to
-         :cc:references:from:subject:in-reply-to:content-transfer-encoding;
-        bh=dHd4NMnmd4gEBcXEaXsPg3WsIFVvJpyfsK6peOFdGiE=;
-        b=qNGbgYCtPAEaqRl6FEflE7UxtWIqGj/iIGbxoQaDM7YhCnfAAbuNc8DK4q7nJzHkz+
-         V0of0eOm1VgLkADUXp7iP0LHf3TjFWdTqDbOnJVuFJCBSgyxeKO4YxKqW6OrdLTQ3RBZ
-         TrNNpt9riTmyv4NiMlMhHReqUTzpQEbu0CrWDSbzvafX2mG85MgZUpK4M8G3iQRn/tzM
-         a+PZoQaYCg6h57NeG44CQpheDRM7cnVo7gYqQhIv6p8kC7WN1gMiL8oAta0A/jwW7LX/
-         2lWFRtukc4UnQ5QTPZy1UYpXbGiEILpoSr5IE69zFbuh7KRJq4AB03xrMAvM8mTDA7am
-         /fxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:subject:in-reply-to
-         :content-transfer-encoding;
-        bh=dHd4NMnmd4gEBcXEaXsPg3WsIFVvJpyfsK6peOFdGiE=;
-        b=IdpbbgqDbPS8Uh5xT7v9JLqvc+4lq7UoZVec/+O9COuVOE6Hd5EoiTIKbTEXtDt6+o
-         r+vwdoNpeqLsaanY9IGzbYPPfHWzMdcQu4aBJ6ATksCSKUHV2z6qjDkddCVWbFKQYOy1
-         cN+J1m+m0NrqGf7NLWCezfzfCe8uoi+NcikmL4JPQgrBX/brsNXbDWPXrooauXda09OF
-         qL3OjLZoJXNvtb6/SF3mh7v4reeV0SflqOur6ydfyMvSiw6+5J3r2/USqat4mO8+JqmI
-         0qwM++gWBMCH1jn5ofDPvgaXnq1MRvt4WB1k8rmvBpGmXXzIciKoT0Pz62EXYdmytMzT
-         qH7Q==
-X-Gm-Message-State: AJIora/eCD0cWGaSWCONID2v/8iMNLDC1T31NYVqi26ImzJTzGybwXh7
-        SqFoal0mX+h1TwzkudwM8Lc=
-X-Google-Smtp-Source: AGRyM1vbMYzQ7ZWU1I26Ikz+YgDT35l6qt263JCfVheG1LZ6Ni6k8ix7dWMTcXlnkv8CgKvtvxFgzg==
-X-Received: by 2002:a17:902:eccc:b0:167:5c6e:31e4 with SMTP id a12-20020a170902eccc00b001675c6e31e4mr4685416plh.90.1655387079521;
-        Thu, 16 Jun 2022 06:44:39 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a127-20020a621a85000000b0051bc721b838sm1764214pfa.188.2022.06.16.06.44.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Jun 2022 06:44:38 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <a141e63a-c62c-8094-fedf-7f22f9090b0f@roeck-us.net>
-Date:   Thu, 16 Jun 2022 06:44:35 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Content-Language: en-US
+        Thu, 16 Jun 2022 09:48:07 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93FEB3DDC9;
+        Thu, 16 Jun 2022 06:48:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1655387286; x=1686923286;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vGUkbkYnPTkRCUU0zk0sdqOdfKr4cQ3wFU8xRSXZG90=;
+  b=bNt9oJpnOTpv/RXljBjGt+ZKNIDYYErJZvNGyQ6HejA8qQHGx09f4lGk
+   DUAZ2rjM7qhT7Y4EdiORdG7dCrDfiTldlUVZ4aaUbtzcCn8N8KL2lwhP3
+   U5GH333kX9cl50V5gSf4L8YjnN+rQCz4tydz9mT4ZZAsFCgsK7xYdrPgH
+   uZ2yu9RHhIHgtgkCXJT4caCZjQXNG16mXrJ+ptpxTdE0OqWb2LgTPkMXO
+   P7CgpEIbr/vLz4DgkdxaZ2OnxF4QhYhQqrZbryDZCtQa49hPSwB2nY5qY
+   cEL4D1mfDgAarN4tGzK+8EtFyUE/QJwuCJYMHN4qqf/QtRxB9KFQadD21
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10379"; a="304695134"
+X-IronPort-AV: E=Sophos;i="5.92,305,1650956400"; 
+   d="scan'208";a="304695134"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2022 06:48:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,305,1650956400"; 
+   d="scan'208";a="675030959"
+Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 16 Jun 2022 06:48:01 -0700
+Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1o1pqr-000OQV-0g;
+        Thu, 16 Jun 2022 13:48:01 +0000
+Date:   Thu, 16 Jun 2022 21:47:13 +0800
+From:   kernel test robot <lkp@intel.com>
 To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+Cc:     kbuild-all@lists.01.org,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
         Jonathan Corbet <corbet@lwn.net>,
         Ingo Molnar <mingo@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
         Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Marco Elver <elver@google.com>,
@@ -75,365 +65,153 @@ Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
         Clark Williams <williams@redhat.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
-References: <cover.1655368610.git.bristot@kernel.org>
- <e153b772306577bcb3915474ed10eb3dcb228eda.1655368610.git.bristot@kernel.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH V4 17/20] watchdog/dev: Add tracepoints
-In-Reply-To: <e153b772306577bcb3915474ed10eb3dcb228eda.1655368610.git.bristot@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH V4 11/20] rv/monitor: wwnr instrumentation and
+ Makefile/Kconfig entries
+Message-ID: <202206162130.0xtEgymS-lkp@intel.com>
+References: <944694879f67c0e635815ac57154be477a1b9108.1655368610.git.bristot@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <944694879f67c0e635815ac57154be477a1b9108.1655368610.git.bristot@kernel.org>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 6/16/22 01:44, Daniel Bristot de Oliveira wrote:
-> Add a set of tracepoints, enabling the observability of the watchdog
-> device interactions with user-space.
-> 
-> The events are:
-> 	watchdog:watchdog_open
-> 	watchdog:watchdog_close
-> 	watchdog:watchdog_start
-> 	watchdog:watchdog_stop
-> 	watchdog:watchdog_set_timeout
-> 	watchdog:watchdog_ping
-> 	watchdog:watchdog_nowayout
-> 	watchdog:watchdog_set_keep_alive
-> 	watchdog:watchdog_keep_alive
-> 	watchdog:watchdog_set_pretimeout
-> 	watchdog:watchdog_pretimeout
-> 
-> Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Marco Elver <elver@google.com>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Shuah Khan <skhan@linuxfoundation.org>
-> Cc: Gabriele Paoloni <gpaoloni@redhat.com>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Clark Williams <williams@redhat.com>
-> Cc: linux-doc@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-trace-devel@vger.kernel.org
-> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
-> ---
->   drivers/watchdog/watchdog_dev.c        |  43 ++++++++++-
->   drivers/watchdog/watchdog_pretimeout.c |   2 +
->   include/linux/watchdog.h               |   7 +-
->   include/trace/events/watchdog.h        | 101 +++++++++++++++++++++++++
->   4 files changed, 143 insertions(+), 10 deletions(-)
->   create mode 100644 include/trace/events/watchdog.h
-> 
-> diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
-> index 54903f3c851e..2f28dc5ab763 100644
-> --- a/drivers/watchdog/watchdog_dev.c
-> +++ b/drivers/watchdog/watchdog_dev.c
-> @@ -44,6 +44,9 @@
->   #include <linux/watchdog.h>	/* For watchdog specific items */
->   #include <linux/uaccess.h>	/* For copy_to_user/put_user/... */
->   
-> +#define CREATE_TRACE_POINTS
-> +#include <trace/events/watchdog.h>
-> +
->   #include "watchdog_core.h"
->   #include "watchdog_pretimeout.h"
->   
-> @@ -130,9 +133,11 @@ static inline void watchdog_update_worker(struct watchdog_device *wdd)
->   	if (watchdog_need_worker(wdd)) {
->   		ktime_t t = watchdog_next_keepalive(wdd);
->   
-> -		if (t > 0)
-> +		if (t > 0) {
->   			hrtimer_start(&wd_data->timer, t,
->   				      HRTIMER_MODE_REL_HARD);
-> +			trace_watchdog_set_keep_alive(wdd, ktime_to_ms(t));
-> +		}
->   	} else {
->   		hrtimer_cancel(&wd_data->timer);
->   	}
-> @@ -141,7 +146,7 @@ static inline void watchdog_update_worker(struct watchdog_device *wdd)
->   static int __watchdog_ping(struct watchdog_device *wdd)
->   {
->   	struct watchdog_core_data *wd_data = wdd->wd_data;
-> -	ktime_t earliest_keepalive, now;
-> +	ktime_t earliest_keepalive, now, next_keepalive;
->   	int err;
->   
->   	earliest_keepalive = ktime_add(wd_data->last_hw_keepalive,
-> @@ -149,14 +154,16 @@ static int __watchdog_ping(struct watchdog_device *wdd)
->   	now = ktime_get();
->   
->   	if (ktime_after(earliest_keepalive, now)) {
-> -		hrtimer_start(&wd_data->timer,
-> -			      ktime_sub(earliest_keepalive, now),
-> +		next_keepalive = ktime_sub(earliest_keepalive, now);
-> +		hrtimer_start(&wd_data->timer, next_keepalive,
->   			      HRTIMER_MODE_REL_HARD);
-> +		trace_watchdog_set_keep_alive(wdd, ktime_to_ms(next_keepalive));
->   		return 0;
->   	}
->   
->   	wd_data->last_hw_keepalive = now;
->   
-> +	trace_watchdog_ping(wdd);
->   	if (wdd->ops->ping)
->   		err = wdd->ops->ping(wdd);  /* ping the watchdog */
->   	else
-> @@ -215,6 +222,7 @@ static void watchdog_ping_work(struct kthread_work *work)
->   	wd_data = container_of(work, struct watchdog_core_data, work);
->   
->   	mutex_lock(&wd_data->lock);
-> +	trace_watchdog_keep_alive(wd_data->wdd);
->   	if (watchdog_worker_should_ping(wd_data))
->   		__watchdog_ping(wd_data->wdd);
->   	mutex_unlock(&wd_data->lock);
-> @@ -250,6 +258,8 @@ static int watchdog_start(struct watchdog_device *wdd)
->   
->   	set_bit(_WDOG_KEEPALIVE, &wd_data->status);
->   
-> +	trace_watchdog_start(wdd);
-> +
->   	started_at = ktime_get();
->   	if (watchdog_hw_running(wdd) && wdd->ops->ping) {
->   		err = __watchdog_ping(wdd);
-> @@ -294,6 +304,7 @@ static int watchdog_stop(struct watchdog_device *wdd)
->   		return -EBUSY;
->   	}
->   
-> +	trace_watchdog_stop(wdd);
->   	if (wdd->ops->stop) {
->   		clear_bit(WDOG_HW_RUNNING, &wdd->status);
->   		err = wdd->ops->stop(wdd);
-> @@ -367,6 +378,7 @@ static int watchdog_set_timeout(struct watchdog_device *wdd,
->   	if (watchdog_timeout_invalid(wdd, timeout))
->   		return -EINVAL;
->   
-> +	trace_watchdog_set_timeout(wdd, timeout);
+Hi Daniel,
 
-The driver has no obligation to set the timeout to the
-requested value. It might be more valuable to report both
-the requested and the actual values.
+I love your patch! Perhaps something to improve:
+
+[auto build test WARNING on rostedt-trace/for-next]
+[also build test WARNING on tip/sched/core]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Bristot-de-Oliveira/The-Runtime-Verification-RV-interface/20220616-164837
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git for-next
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20220616/202206162130.0xtEgymS-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/31dad6685057c10f6301fbc4018b6586fce0757e
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Daniel-Bristot-de-Oliveira/The-Runtime-Verification-RV-interface/20220616-164837
+        git checkout 31dad6685057c10f6301fbc4018b6586fce0757e
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash kernel/trace/rv/
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+   In file included from kernel/trace/rv/monitors/wwnr/wwnr.c:8:
+   kernel/trace/rv/monitors/wwnr/wwnr.c: In function 'start_wwnr':
+   kernel/trace/rv/monitors/wwnr/wwnr.c:62:53: error: passing argument 1 of 'check_trace_callback_type_sched_switch' from incompatible pointer type [-Werror=incompatible-pointer-types]
+      62 |         rv_attach_trace_probe("wwnr", sched_switch, handle_switch);
+         |                                                     ^~~~~~~~~~~~~
+         |                                                     |
+         |                                                     void (*)(void *, bool,  struct task_struct *, struct task_struct *, unsigned int) {aka void (*)(void *, _Bool,  struct task_struct *, struct task_struct *, unsigned int)}
+   include/rv/instrumentation.h:15:48: note: in definition of macro 'rv_attach_trace_probe'
+      15 |                 check_trace_callback_type_##tp(rv_handler);                             \
+         |                                                ^~~~~~~~~~
+   In file included from kernel/trace/rv/monitors/wwnr/wwnr.c:3:
+   include/linux/tracepoint.h:279:49: note: expected 'void (*)(void *, bool,  unsigned int,  struct task_struct *, struct task_struct *)' {aka 'void (*)(void *, _Bool,  unsigned int,  struct task_struct *, struct task_struct *)'} but argument is of type 'void (*)(void *, bool,  struct task_struct *, struct task_struct *, unsigned int)' {aka 'void (*)(void *, _Bool,  struct task_struct *, struct task_struct *, unsigned int)'}
+     279 |         check_trace_callback_type_##name(void (*cb)(data_proto))        \
+         |                                          ~~~~~~~^~~~~~~~~~~~~~~
+   include/linux/tracepoint.h:419:9: note: in expansion of macro '__DECLARE_TRACE'
+     419 |         __DECLARE_TRACE(name, PARAMS(proto), PARAMS(args),              \
+         |         ^~~~~~~~~~~~~~~
+   include/linux/tracepoint.h:553:9: note: in expansion of macro 'DECLARE_TRACE'
+     553 |         DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
+         |         ^~~~~~~~~~~~~
+   include/trace/events/sched.h:222:1: note: in expansion of macro 'TRACE_EVENT'
+     222 | TRACE_EVENT(sched_switch,
+         | ^~~~~~~~~~~
+   In file included from include/linux/printk.h:11,
+                    from include/linux/kernel.h:29,
+                    from include/linux/interrupt.h:6,
+                    from include/linux/trace_recursion.h:5,
+                    from include/linux/ftrace.h:10,
+                    from kernel/trace/rv/monitors/wwnr/wwnr.c:2:
+   kernel/trace/rv/monitors/wwnr/wwnr.c:62:53: error: passing argument 1 of 'register_trace_sched_switch' from incompatible pointer type [-Werror=incompatible-pointer-types]
+      62 |         rv_attach_trace_probe("wwnr", sched_switch, handle_switch);
+         |                                                     ^~~~~~~~~~~~~
+         |                                                     |
+         |                                                     void (*)(void *, bool,  struct task_struct *, struct task_struct *, unsigned int) {aka void (*)(void *, _Bool,  struct task_struct *, struct task_struct *, unsigned int)}
+   include/linux/once_lite.h:15:41: note: in definition of macro 'DO_ONCE_LITE_IF'
+      15 |                 bool __ret_do_once = !!(condition);                     \
+         |                                         ^~~~~~~~~
+   include/rv/instrumentation.h:16:17: note: in expansion of macro 'WARN_ONCE'
+      16 |                 WARN_ONCE(register_trace_##tp(rv_handler, NULL),                        \
+         |                 ^~~~~~~~~
+   kernel/trace/rv/monitors/wwnr/wwnr.c:62:9: note: in expansion of macro 'rv_attach_trace_probe'
+      62 |         rv_attach_trace_probe("wwnr", sched_switch, handle_switch);
+         |         ^~~~~~~~~~~~~~~~~~~~~
+   In file included from kernel/trace/rv/monitors/wwnr/wwnr.c:3:
+   include/linux/tracepoint.h:260:38: note: expected 'void (*)(void *, bool,  unsigned int,  struct task_struct *, struct task_struct *)' {aka 'void (*)(void *, _Bool,  unsigned int,  struct task_struct *, struct task_struct *)'} but argument is of type 'void (*)(void *, bool,  struct task_struct *, struct task_struct *, unsigned int)' {aka 'void (*)(void *, _Bool,  struct task_struct *, struct task_struct *, unsigned int)'}
+     260 |         register_trace_##name(void (*probe)(data_proto), void *data)    \
+         |                               ~~~~~~~^~~~~~~~~~~~~~~~~~
+   include/linux/tracepoint.h:419:9: note: in expansion of macro '__DECLARE_TRACE'
+     419 |         __DECLARE_TRACE(name, PARAMS(proto), PARAMS(args),              \
+         |         ^~~~~~~~~~~~~~~
+   include/linux/tracepoint.h:553:9: note: in expansion of macro 'DECLARE_TRACE'
+     553 |         DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
+         |         ^~~~~~~~~~~~~
+   include/trace/events/sched.h:222:1: note: in expansion of macro 'TRACE_EVENT'
+     222 | TRACE_EVENT(sched_switch,
+         | ^~~~~~~~~~~
+   In file included from kernel/trace/rv/monitors/wwnr/wwnr.c:8:
+   kernel/trace/rv/monitors/wwnr/wwnr.c: In function 'stop_wwnr':
+   kernel/trace/rv/monitors/wwnr/wwnr.c:72:53: error: passing argument 1 of 'unregister_trace_sched_switch' from incompatible pointer type [-Werror=incompatible-pointer-types]
+      72 |         rv_detach_trace_probe("wwnr", sched_switch, handle_switch);
+         |                                                     ^~~~~~~~~~~~~
+         |                                                     |
+         |                                                     void (*)(void *, bool,  struct task_struct *, struct task_struct *, unsigned int) {aka void (*)(void *, _Bool,  struct task_struct *, struct task_struct *, unsigned int)}
+   include/rv/instrumentation.h:22:39: note: in definition of macro 'rv_detach_trace_probe'
+      22 |                 unregister_trace_##tp(rv_handler, NULL);                                \
+         |                                       ^~~~~~~~~~
+   In file included from kernel/trace/rv/monitors/wwnr/wwnr.c:3:
+   include/linux/tracepoint.h:273:40: note: expected 'void (*)(void *, bool,  unsigned int,  struct task_struct *, struct task_struct *)' {aka 'void (*)(void *, _Bool,  unsigned int,  struct task_struct *, struct task_struct *)'} but argument is of type 'void (*)(void *, bool,  struct task_struct *, struct task_struct *, unsigned int)' {aka 'void (*)(void *, _Bool,  struct task_struct *, struct task_struct *, unsigned int)'}
+     273 |         unregister_trace_##name(void (*probe)(data_proto), void *data)  \
+         |                                 ~~~~~~~^~~~~~~~~~~~~~~~~~
+   include/linux/tracepoint.h:419:9: note: in expansion of macro '__DECLARE_TRACE'
+     419 |         __DECLARE_TRACE(name, PARAMS(proto), PARAMS(args),              \
+         |         ^~~~~~~~~~~~~~~
+   include/linux/tracepoint.h:553:9: note: in expansion of macro 'DECLARE_TRACE'
+     553 |         DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
+         |         ^~~~~~~~~~~~~
+   include/trace/events/sched.h:222:1: note: in expansion of macro 'TRACE_EVENT'
+     222 | TRACE_EVENT(sched_switch,
+         | ^~~~~~~~~~~
+   kernel/trace/rv/monitors/wwnr/wwnr.c: At top level:
+>> kernel/trace/rv/monitors/wwnr/wwnr.c:90:5: warning: no previous prototype for 'register_wwnr' [-Wmissing-prototypes]
+      90 | int register_wwnr(void)
+         |     ^~~~~~~~~~~~~
+>> kernel/trace/rv/monitors/wwnr/wwnr.c:96:6: warning: no previous prototype for 'unregister_wwnr' [-Wmissing-prototypes]
+      96 | void unregister_wwnr(void)
+         |      ^~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
 
 
->   	if (wdd->ops->set_timeout) {
->   		err = wdd->ops->set_timeout(wdd, timeout);
->   	} else {
-> @@ -399,6 +411,8 @@ static int watchdog_set_pretimeout(struct watchdog_device *wdd,
->   	if (watchdog_pretimeout_invalid(wdd, timeout))
->   		return -EINVAL;
->   
-> +	trace_watchdog_set_pretimeout(wdd, timeout);
-> +
+vim +/register_wwnr +90 kernel/trace/rv/monitors/wwnr/wwnr.c
 
-Again, the driver has no obligation to set the timeout to the
-requested value.
+13d11b21732323 Daniel Bristot de Oliveira 2022-06-16   89  
+13d11b21732323 Daniel Bristot de Oliveira 2022-06-16  @90  int register_wwnr(void)
+13d11b21732323 Daniel Bristot de Oliveira 2022-06-16   91  {
+13d11b21732323 Daniel Bristot de Oliveira 2022-06-16   92  	rv_register_monitor(&rv_wwnr);
+13d11b21732323 Daniel Bristot de Oliveira 2022-06-16   93  	return 0;
+13d11b21732323 Daniel Bristot de Oliveira 2022-06-16   94  }
+13d11b21732323 Daniel Bristot de Oliveira 2022-06-16   95  
+13d11b21732323 Daniel Bristot de Oliveira 2022-06-16  @96  void unregister_wwnr(void)
+13d11b21732323 Daniel Bristot de Oliveira 2022-06-16   97  {
+13d11b21732323 Daniel Bristot de Oliveira 2022-06-16   98  	if (rv_wwnr.enabled)
+13d11b21732323 Daniel Bristot de Oliveira 2022-06-16   99  		stop_wwnr();
+13d11b21732323 Daniel Bristot de Oliveira 2022-06-16  100  
+13d11b21732323 Daniel Bristot de Oliveira 2022-06-16  101  	rv_unregister_monitor(&rv_wwnr);
+13d11b21732323 Daniel Bristot de Oliveira 2022-06-16  102  }
+13d11b21732323 Daniel Bristot de Oliveira 2022-06-16  103  
 
->   	if (wdd->ops->set_pretimeout && (wdd->info->options & WDIOF_PRETIMEOUT))
->   		err = wdd->ops->set_pretimeout(wdd, timeout);
->   	else
-> @@ -430,6 +444,23 @@ static int watchdog_get_timeleft(struct watchdog_device *wdd,
->   	return 0;
->   }
->   
-> +/**
-> + * watchdog_set_nowayout - set nowaout bit
-> + * @wdd:	The watchdog device to set nowayoutbit
-> + * @nowayout	A boolean on/off switcher
-> + *
-> + * If nowayout boolean is true, the nowayout option is set. No action is
-> + * taken if nowayout is false.
-> + */
-> +void watchdog_set_nowayout(struct watchdog_device *wdd, bool nowayout)
-> +{
-> +	if (nowayout) {
-> +		set_bit(WDOG_NO_WAY_OUT, &wdd->status);
-> +		trace_watchdog_nowayout(wdd);
-> +	}
-> +}
-> +EXPORT_SYMBOL(watchdog_set_nowayout);
-> +
->   #ifdef CONFIG_WATCHDOG_SYSFS
->   static ssize_t nowayout_show(struct device *dev, struct device_attribute *attr,
->   				char *buf)
-> @@ -861,6 +892,8 @@ static int watchdog_open(struct inode *inode, struct file *file)
->   		goto out_clear;
->   	}
->   
-> +	trace_watchdog_open(wdd);
-> +
->   	err = watchdog_start(wdd);
->   	if (err < 0)
->   		goto out_mod;
-> @@ -883,6 +916,7 @@ static int watchdog_open(struct inode *inode, struct file *file)
->   	return stream_open(inode, file);
->   
->   out_mod:
-> +	trace_watchdog_close(wdd);
->   	module_put(wd_data->wdd->ops->owner);
->   out_clear:
->   	clear_bit(_WDOG_DEV_OPEN, &wd_data->status);
-> @@ -944,6 +978,7 @@ static int watchdog_release(struct inode *inode, struct file *file)
->   	/* make sure that /dev/watchdog can be re-opened */
->   	clear_bit(_WDOG_DEV_OPEN, &wd_data->status);
->   
-> +	trace_watchdog_close(wdd);
->   done:
->   	running = wdd && watchdog_hw_running(wdd);
->   	mutex_unlock(&wd_data->lock);
-> diff --git a/drivers/watchdog/watchdog_pretimeout.c b/drivers/watchdog/watchdog_pretimeout.c
-> index 376a495ab80c..58c391ed2205 100644
-> --- a/drivers/watchdog/watchdog_pretimeout.c
-> +++ b/drivers/watchdog/watchdog_pretimeout.c
-> @@ -8,6 +8,7 @@
->   #include <linux/spinlock.h>
->   #include <linux/string.h>
->   #include <linux/watchdog.h>
-> +#include <trace/events/watchdog.h>
->   
->   #include "watchdog_core.h"
->   #include "watchdog_pretimeout.h"
-> @@ -107,6 +108,7 @@ void watchdog_notify_pretimeout(struct watchdog_device *wdd)
->   		return;
->   	}
->   
-> +	trace_watchdog_pretimeout(wdd);
->   	wdd->gov->pretimeout(wdd);
->   	spin_unlock_irqrestore(&pretimeout_lock, flags);
->   }
-> diff --git a/include/linux/watchdog.h b/include/linux/watchdog.h
-> index 99660197a36c..11d93407e492 100644
-> --- a/include/linux/watchdog.h
-> +++ b/include/linux/watchdog.h
-> @@ -139,12 +139,7 @@ static inline bool watchdog_hw_running(struct watchdog_device *wdd)
->   	return test_bit(WDOG_HW_RUNNING, &wdd->status);
->   }
->   
-> -/* Use the following function to set the nowayout feature */
-> -static inline void watchdog_set_nowayout(struct watchdog_device *wdd, bool nowayout)
-> -{
-> -	if (nowayout)
-> -		set_bit(WDOG_NO_WAY_OUT, &wdd->status);
-> -}
-> +void watchdog_set_nowayout(struct watchdog_device *wdd, bool nowayout);
->   
->   /* Use the following function to stop the watchdog on reboot */
->   static inline void watchdog_stop_on_reboot(struct watchdog_device *wdd)
-> diff --git a/include/trace/events/watchdog.h b/include/trace/events/watchdog.h
-> new file mode 100644
-> index 000000000000..145cd6cfaa02
-> --- /dev/null
-> +++ b/include/trace/events/watchdog.h
-> @@ -0,0 +1,101 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#undef TRACE_SYSTEM
-> +#define TRACE_SYSTEM watchdog
-> +
-> +#if !defined(_TRACE_WATCHDOG_H) || defined(TRACE_HEADER_MULTI_READ)
-> +#define _TRACE_WATCHDOG_H
-> +
-> +#include <linux/tracepoint.h>
-> +
-> +/*
-> + * These are all events whose sole argument is the watchdog id.
-> + */
-> +DECLARE_EVENT_CLASS(dev_operations_template,
-> +
-> +	TP_PROTO(struct watchdog_device *wdd),
-> +
-> +	TP_ARGS(wdd),
-> +
-> +	TP_STRUCT__entry(
-> +		__field(__u32, id)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->id = wdd->id;
-> +	),
-> +
-> +	TP_printk("id=%d",
-> +		  __entry->id)
-> +);
-> +
-> +DEFINE_EVENT(dev_operations_template, watchdog_open,
-> +	     TP_PROTO(struct watchdog_device *wdd),
-> +	     TP_ARGS(wdd));
-> +
-> +DEFINE_EVENT(dev_operations_template, watchdog_close,
-> +	     TP_PROTO(struct watchdog_device *wdd),
-> +	     TP_ARGS(wdd));
-> +
-> +DEFINE_EVENT(dev_operations_template, watchdog_start,
-> +	     TP_PROTO(struct watchdog_device *wdd),
-> +	     TP_ARGS(wdd));
-> +
-> +DEFINE_EVENT(dev_operations_template, watchdog_stop,
-> +	     TP_PROTO(struct watchdog_device *wdd),
-> +	     TP_ARGS(wdd));
-> +
-> +DEFINE_EVENT(dev_operations_template, watchdog_ping,
-> +	     TP_PROTO(struct watchdog_device *wdd),
-> +	     TP_ARGS(wdd));
-> +
-> +DEFINE_EVENT(dev_operations_template, watchdog_nowayout,
-> +	     TP_PROTO(struct watchdog_device *wdd),
-> +	     TP_ARGS(wdd));
-> +
-> +DEFINE_EVENT(dev_operations_template, watchdog_keep_alive,
-> +	     TP_PROTO(struct watchdog_device *wdd),
-> +	     TP_ARGS(wdd));
-> +
-> +DEFINE_EVENT(dev_operations_template, watchdog_pretimeout,
-> +	     TP_PROTO(struct watchdog_device *wdd),
-> +	     TP_ARGS(wdd));
-> +
-> +/*
-> + * These are all events with a device ID and a given timeout.
-> + */
-> +DECLARE_EVENT_CLASS(watchdog_timeout_template,
-> +
-> +	TP_PROTO(struct watchdog_device *wdd, u64 timeout),
-> +
-> +	TP_ARGS(wdd, timeout),
-> +
-> +	TP_STRUCT__entry(
-> +		__field(__u32, id)
-> +		__field(__u64, timeout)
-
-
-Why u64 ? timeout is unsigned long.
-
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->id		= wdd->id;
-> +		__entry->timeout	= timeout;
-> +	),
-> +
-> +	TP_printk("id=%d timeout=%llus",
-> +		  __entry->id, __entry->timeout)
-> +);
-> +
-> +DEFINE_EVENT(watchdog_timeout_template, watchdog_set_timeout,
-> +	     TP_PROTO(struct watchdog_device *wdd, u64 timeout),
-> +	     TP_ARGS(wdd, timeout));
-> +
-> +DEFINE_EVENT(watchdog_timeout_template, watchdog_set_pretimeout,
-> +	     TP_PROTO(struct watchdog_device *wdd, u64 timeout),
-> +	     TP_ARGS(wdd, timeout));
-> +
-> +DEFINE_EVENT(watchdog_timeout_template, watchdog_set_keep_alive,
-> +	     TP_PROTO(struct watchdog_device *wdd, u64 timeout),
-> +	     TP_ARGS(wdd, timeout));
-> +
-> +#endif /* _TRACE_WATCHDOG_H */
-> +
-> +/* This part must be outside protection */
-> +#include <trace/define_trace.h>
-
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
