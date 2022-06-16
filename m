@@ -2,39 +2,40 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92EDAC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Jun 2022 20:58:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC609C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Jun 2022 21:00:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378446AbiFPU6B (ORCPT
+        id S1378647AbiFPVAp (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 16 Jun 2022 16:58:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45012 "EHLO
+        Thu, 16 Jun 2022 17:00:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378764AbiFPU5z (ORCPT
+        with ESMTP id S233525AbiFPVAn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 16 Jun 2022 16:57:55 -0400
+        Thu, 16 Jun 2022 17:00:43 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E041A390;
-        Thu, 16 Jun 2022 13:57:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C98F7606C1;
+        Thu, 16 Jun 2022 14:00:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
         :In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
         Sender:Reply-To:Content-ID:Content-Description;
-        bh=PFkZtmLsuxj6bFObgpPU6iJZEmrUQykuqBIHQOpbhl4=; b=cuX/SlokYz6n6ygd+FK3a+KLZl
-        6eSamUGtmBtIJ90sI7e5gZb1TzmkOGAlYjR72r+YIxYReWXZPK5+a+sjn/2pIU39me3XJcxkvjhU+
-        cWfgFNAJ2m+/oLXStROeiJ5aUO+NwyXTS1r9qnnDuG3JSCB7YpzXPQnv8SWhF0CiTVc3T95ameoLS
-        6ry08EDrIdN57xShRHdNb13StyXqX8qlDeDWI9GzViN2l2sSKBHFbvsaItzywqXFwhZKfhjju6TVT
-        jcs0q3TGBjLxjV+f6716pwUvsMIat5iFBAItAEAI9LNTPavd5G5SPieFqwMAU4/Ot7RjdP98j7R18
-        6smoYBzQ==;
+        bh=mjWClmykFoP1P+NE+FHwPy2EeZJYzAdrJuiOYk2mq8A=; b=Bpe2zJD3VPzlHkuFdoWBx6AMC5
+        aZqWclk6HsPV30RI9X+EyoXpwJ7U0TybFWXFe3bMQxMD3JYEahQ/LMb11Q/iziReIT9XIbXTW9b09
+        h9sFynenOyJp9N2KT+ScMPPA5XKzszARDJB6idzEMEUSssXxkyUneT25zTOBrd4JiOyiqYnYPaR4r
+        XPG4LfeVvPr5RIdo4mSt+YKHov3/Zd7osIHEHq5ndkY2J3WbMtKEE4ulC+plqEYYx+F8KT2Jk6dLZ
+        buvGdNiNPM2kG2JOY8z3YU9+dH5O6oCEEPAYeODo07w4AU7Gc55HKYWDG7tHN7E3ToZCq3Q7JvSY6
+        Yn+5eJKw==;
 Received: from [2601:1c0:6280:3f0::aa0b]
         by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1o1wYE-008Vqk-0r; Thu, 16 Jun 2022 20:57:14 +0000
-Message-ID: <2a54bec4-5902-b22a-13f2-2237f4b10164@infradead.org>
-Date:   Thu, 16 Jun 2022 13:57:06 -0700
+        id 1o1wbE-008VuH-Bg; Thu, 16 Jun 2022 21:00:20 +0000
+Message-ID: <4d975ef5-7e50-9241-1a3e-f0f9bad9c5b5@infradead.org>
+Date:   Thu, 16 Jun 2022 14:00:10 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.9.1
-Subject: Re: [PATCH V4 18/20] rv/monitor: Add safe watchdog monitor
+Subject: Re: [PATCH V4 09/20] rv/monitor: wip instrumentation and
+ Makefile/Kconfig entries
 Content-Language: en-US
 To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>
@@ -56,40 +57,38 @@ Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
 References: <cover.1655368610.git.bristot@kernel.org>
- <6366fdc89d65b8d9b14ccd1e42fa0d793fbe9f73.1655368610.git.bristot@kernel.org>
+ <9c05a95927c18bebcf0eb79bef15ec59667bc08c.1655368610.git.bristot@kernel.org>
 From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <6366fdc89d65b8d9b14ccd1e42fa0d793fbe9f73.1655368610.git.bristot@kernel.org>
+In-Reply-To: <9c05a95927c18bebcf0eb79bef15ec59667bc08c.1655368610.git.bristot@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi--
 
-On 6/16/22 01:45, Daniel Bristot de Oliveira wrote:
+
+On 6/16/22 01:44, Daniel Bristot de Oliveira wrote:
 > diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
-> index 21f03fb3101a..b14ae63e792b 100644
+> index 1eafb5adcfcb..e9246b0bec9d 100644
 > --- a/kernel/trace/rv/Kconfig
 > +++ b/kernel/trace/rv/Kconfig
-> @@ -45,6 +45,16 @@ config RV_MON_WWNR
->  	  illustrates the usage of per-task monitor. The model is
->  	  broken on purpose: it serves to test reactors.
+> @@ -26,6 +26,13 @@ menuconfig RV
+>  	  the system behavior.
 >  
-> +config RV_MON_SAFE_WTD
+>  if RV
+> +config RV_MON_WIP
+> +	depends on PREEMPTIRQ_TRACEPOINTS
 > +	select DA_MON_EVENTS_IMPLICIT
-> +	bool "Safety watchdog"
+> +	bool "WIP monitor"
+
+Does WIP mean work-in-progress?  (It does to me.)
+
+If not, please explain what it means in the help text.
+
 > +	help
-> +	  Enable safe_wtd, this monitor observes the interaction
-> +	  between a user-space safety monitor and a watchdog device.
-> +
-> +	  For futher information see:
-> +	    Documentation/trace/rv/safety-monitor.rst
-
-I'm curious about what "WTD" means.
-
-I see lots of WDT in drivers/watchdog/Kconfig
-(where it means WatchDog Timer AFAIK).
+> +	  Enable WIP sample monitor, this is a sample monitor that
+> +	  illustrates the usage of per-cpu monitors.
 
 thanks.
 -- 
