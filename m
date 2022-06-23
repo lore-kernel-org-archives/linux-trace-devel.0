@@ -2,196 +2,143 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1748DC43334
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jun 2022 07:24:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACB99C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 23 Jun 2022 14:09:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350411AbiFVHYR (ORCPT
+        id S231661AbiFWOJI (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 22 Jun 2022 03:24:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57468 "EHLO
+        Thu, 23 Jun 2022 10:09:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbiFVHYQ (ORCPT
+        with ESMTP id S231849AbiFWOJH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 22 Jun 2022 03:24:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FD2A22BF6;
-        Wed, 22 Jun 2022 00:24:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A147660B27;
-        Wed, 22 Jun 2022 07:24:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12599C341CC;
-        Wed, 22 Jun 2022 07:24:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655882654;
-        bh=JiUmLr3/0e1RNKeHvzjIP+5tON2+whgVrIH7fVgqTNU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nIzNAf+DdKeOJK1+iYa4MglibigAJba7ldQE9PMVN3daaAT/O1BAMVxD9al0kJ+gB
-         Pe93OiGS1HcKmLgX5hzENJ4KiduRg2pCeNTLp7a+rjnSZxvL88DdzUEgjI6pfMeugB
-         PLj45fT94dGKiRk7bXXcLNjVM6sElJ6pSgG96pEOCseLtmmWDv7du1bVooB4I2nkAp
-         PnRVrEW+IvSuKrw5ottFrjsE0C6WyIsY1zVkHKi5kSJs+DQpaLYdIumIoVrLoK4xE7
-         juyED/M6mWK0IyFDDVv6B3WAkIxCmQZ9y9bxjvNsBiDZOE2NI4GplhpLXvm8EUvF5Z
-         Cw5KNpQ4yEaZw==
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-3137316bb69so153766697b3.10;
-        Wed, 22 Jun 2022 00:24:14 -0700 (PDT)
-X-Gm-Message-State: AJIora/AgujWmKmwB1DksrscHYq6FeTanl2jwnQSc+Nk4HaIS98/xewb
-        nlo9vUHOTxaA6mTMd3uxd9E1vfA6oaEvmOnjnPE=
-X-Google-Smtp-Source: AGRyM1tgZ+O9TJ8EHjbT4BHY3xD8wh4oZ1p44labWtawTe0cB2aSDAd92BXSVa0Kr7X+vv/etvHwZhHuEfcYC2PdVQk=
-X-Received: by 2002:a81:4ed4:0:b0:317:9581:589b with SMTP id
- c203-20020a814ed4000000b003179581589bmr2482870ywb.472.1655882653006; Wed, 22
- Jun 2022 00:24:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1655368610.git.bristot@kernel.org>
-In-Reply-To: <cover.1655368610.git.bristot@kernel.org>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 22 Jun 2022 00:24:02 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4eDhVs2iu0y40LiFyKweJ+3d82-748kavGg5KXWsRuZg@mail.gmail.com>
-Message-ID: <CAPhsuW4eDhVs2iu0y40LiFyKweJ+3d82-748kavGg5KXWsRuZg@mail.gmail.com>
-Subject: Re: [PATCH V4 00/20] The Runtime Verification (RV) interface
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
+        Thu, 23 Jun 2022 10:09:07 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B6646434BD;
+        Thu, 23 Jun 2022 07:09:06 -0700 (PDT)
+Received: from pwmachine.localnet (lfbn-lyo-1-1062-211.w86-248.abo.wanadoo.fr [86.248.131.211])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 8565520C7064;
+        Thu, 23 Jun 2022 07:09:03 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8565520C7064
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1655993346;
+        bh=LRpVeov3fFL6CWYvOD+HQ0kYTCxTXqw7Mo36h8/5pG4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Ar+l+hBnYQNHgReiMLu6jgCQm2vfeD5cacocn/0pOQhNSmwoxVnRedCclVbwxxKrJ
+         TDksNaQB7500x4ueuDlDgqOnrcx50e+N8g82ZcYLqFc/fGshsgBbfCoG9cSQc0Kr8z
+         Fp1kXz9TH1IlJg87u5HZCY6DJI9lw45SqGEI7Xos=
+From:   Francis Laniel <flaniel@linux.microsoft.com>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     James Morse <james.morse@arm.com>,
+        Daniel Kiss <daniel.kiss@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Gabriele Paoloni <gpaoloni@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-trace-devel <linux-trace-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Will Deacon <will@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Mark Brown <broonie@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v2 0/1] Remove forget_syscall() from start_thread_common()
+Date:   Thu, 23 Jun 2022 16:09:01 +0200
+Message-ID: <2635206.mvXUDI8C0e@pwmachine>
+Organization: Microsoft
+In-Reply-To: <20220608162447.666494-1-flaniel@linux.microsoft.com>
+References: <20220608162447.666494-1-flaniel@linux.microsoft.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Daniel,
+Hi.
 
-On Thu, Jun 16, 2022 at 1:45 AM Daniel Bristot de Oliveira
-<bristot@kernel.org> wrote:
->
-> Over the last years, I've been exploring the possibility of
-> verifying the Linux kernel behavior using Runtime Verification.
->
-> Runtime Verification (RV) is a lightweight (yet rigorous) method that
-> complements classical exhaustive verification techniques (such as model
-> checking and theorem proving) with a more practical approach for complex
-> systems.
->
-> Instead of relying on a fine-grained model of a system (e.g., a
-> re-implementation a instruction level), RV works by analyzing the trace of the
-> system's actual execution, comparing it against a formal specification of
-> the system behavior.
->
-> The usage of deterministic automaton for RV is a well-established
-> approach. In the specific case of the Linux kernel, you can check how
-> to model complex behavior of the Linux kernel with this paper:
->
->   DE OLIVEIRA, Daniel Bristot; CUCINOTTA, Tommaso; DE OLIVEIRA, Romulo Silva.
->   *Efficient formal verification for the Linux kernel.* In: International
->   Conference on Software Engineering and Formal Methods. Springer, Cham, 2019.
->   p. 315-332.
->
-> And how efficient is this approach here:
->
->   DE OLIVEIRA, Daniel B.; DE OLIVEIRA, Romulo S.; CUCINOTTA, Tommaso. *A thread
->   synchronization model for the PREEMPT_RT Linux kernel.* Journal of Systems
->   Architecture, 2020, 107: 101729.
->
-> tlrd: it is possible to model complex behaviors in a modular way, with
-> an acceptable overhead (even for production systems). See this
-> presentation at 2019's ELCE: https://www.youtube.com/watch?v=BfTuEHafNgg
->
-> Here I am proposing a more practical approach for the usage of deterministic
-> automata for runtime verification, and it includes:
->
->         - An interface for controlling the verification;
->         - A tool and set of headers that enables the automatic code
->           generation of the RV monitor (Monitor Synthesis);
->         - Sample monitors to evaluate the interface;
->         - A sample monitor developed in the context of the Elisa Project
->           demonstrating how to use RV in the context of safety-critical
->           systems.
->
-> Given that RV is a tracing consumer, the code is being placed inside the
-> tracing subsystem (Steven and I have been talking about it for a while).
+Le mercredi 8 juin 2022, 18:24:45 CEST Francis Laniel a =E9crit :
+> Hi.
+>=20
+>=20
+> First, I hope you are fine and the same for your relatives.
+>=20
+> With this contribution, I enabled using syscalls:sys_exit_execve and
+> syscalls:sys_exit_execveat as tracepoints on arm64.
+> Indeed, before this contribution, the above tracepoint would not print th=
+eir
+> information as syscall number was set to -1 by calling forget_syscall().
+>=20
+> I tested it by compiling a kernel for arm64 and running it within a VM:
+> # Perf was compiled with linux kernel source.
+> root@vm-arm64:~# perf record -ag -e 'syscalls:sys_exit_execve' -e
+> 'syscalls:sys_enter_execve' & [1] 263
+> root@vm-arm64:~# ls
+> perf.data  share
+> root@vm-arm64:~# fg
+> perf record -ag -e 'syscalls:sys_exit_execve' -e 'syscalls:sys_enter_exec=
+ve'
+> ^C[ perf record: Woken up 1 times to write data ]
+> [ perf record: Captured and wrote 0.061 MB perf.data (2 samples) ]
+> root@vm-arm64:~# perf script
+> bash   264 [000]    66.220187: syscalls:sys_enter_execve: filename:
+> 0xaaab05d9d ...
+> # Below line does not appear without this patch.
+> ls   264 [000]    66.226848:  syscalls:sys_exit_execve: 0x0
+> ...
+>=20
+> Forgetting the syscall number before starting a new thread was confirmed =
+to
+> be a bug [1].
+> Particularly, the following architectures do not forget the syscall number
+> before starting a new thread:
+> * arm (32 bits) EABI: start_thread() sets r7 to previous r7 for ELF FDPIC=
+=20
+> and to 0 for other binfmts [2].
+> * arm (32 bits) OABI: syscall number is set to -1 if
+> ptrace_report_syscall_entry() failed [3].
+> * mips: start_thread() does not modify current_thread_info->syscall which=
+ is
+> taken directly from v0 [4, 5].
+> * riscv: start_thread() does not modify a7 [6].
+> * x86_64: start_thread_common() does not touch orig_ax which seems to
+> contain the syscall number [7].
+>=20
+> If you see any way to improve this contribution, feel free to share!
+>=20
+> Change since:
+> v1:
+>  * Remove call to forget_syscall() and store previous syscall number in
+>  regs->syscallno unconditionnaly.
+>=20
+> Francis Laniel (1):
+>   arm64: Do not forget syscall when starting a new thread.
+>=20
+>  arch/arm64/include/asm/processor.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+>=20
+> Best regards and thank you in advance.
+> ---
+> [1] https://lore.kernel.org/linux-arm-kernel/YoT1iLPEbteRTQGZ@arm.com/
+> [2] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/arm/include/as=
+m/
+> processor.h#L52
+> [3] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/arm/kernel/
+> ptrace.c#L847
+> [4] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/mips/kernel/
+> process.c#L52
+> [5] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/mips/kernel/
+> scall64-n64.S#L85
+> [6] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/riscv/kernel/
+> process.c#L87
+> [7] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/x86/kernel/
+> process_64.c#L505
 
-This is interesting work!
+Can someone please take a quick look at this patch?
 
-I applied the series on top of commit 78ca55889a549a9a194c6ec666836329b774ab6d
-in upstream. Then, I got some compile/link error for CONFIG_RV_MON_WIP and
-CONFIG_RV_MON_SAFE_WTD. I was able to compile the kernel with these two
-configs disabled. However, I hit the some issue with monitors/wwnr/enabled :
 
-    [root@eth50-1 ~]# cd /sys/kernel/debug/tracing/rv/
-    [root@eth50-1 rv]# cat available_monitors
-    wwnr
-    [root@eth50-1 rv]# echo wwnr > enabled_monitors
-    [root@eth50-1 rv]# cd monitors/
-    [root@eth50-1 monitors]# cd wwnr/
-    [root@eth50-1 wwnr]# ls
-    desc  enable  reactors
-    [root@eth50-1 wwnr]# cat enable
-    1
-    [root@eth50-1 wwnr]# echo 0 > enable   <<< hangs
+Best regards and thank you in advance.
 
-The last echo command hangs forever on a qemu vm. I haven't figured out why
-this happens though.
 
-I also have a more general question: can we do RV with BPF and simplify the
-work? AFAICT, the idea of RV is to maintain a state machine based on events.
-If something unexpected happens, call the reactor.
-
-IIUC, BPF has most of these building blocks ready for use. With BPF, we
-can ship many RV monitors without much kernel changes.
-
-Here is my toy wwnr in bpftrace. The reactor is "print to console".
-It runs on most systems with BPF and tracepoint enabled. I probably
-missed some events, as a result, the script triggers the "reactor" a lot.
-
-=============== 8< ======================
-[root@ ~]# cat wwnr.bt
-/*
- * task_state[pid]
- * not_running = 1
- * running = 2
- */
-tracepoint:sched:sched_switch
-{
-        if (args->prev_state == 0x0001 /* TASK_INTERRUPTIBLE */) {
-           /* after first suspension */
-           @task_state[args->prev_pid] = 1;
-        } else {
-           if (@task_state[args->prev_pid] == 1) {
-              printf("Something wrong, call reactor\n");
-           }
-           @task_state[args->prev_pid] = 1;
-        }
-        @task_state[args->next_pid] = 2;
-}
-
-tracepoint:sched:sched_wakeup
-{
-        if (@task_state[args->pid] == 2) {
-           printf("Something wrong, call reactor\n");
-           }
-         @task_state[args->pid] = 2;
-}
-
-[root@ ~]# bpftrace wwnr.bt
-<<<< some print >>>>
-=============== 8< ======================
-
-Does this (BPF for RV) make any sense?
-
-Thanks,
-Song
