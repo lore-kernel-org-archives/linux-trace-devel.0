@@ -2,112 +2,141 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 946DFC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 23 Jun 2022 21:10:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79729C43334
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 24 Jun 2022 21:07:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229605AbiFWVKv (ORCPT
+        id S230324AbiFXVHb (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 23 Jun 2022 17:10:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60718 "EHLO
+        Fri, 24 Jun 2022 17:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbiFWVKu (ORCPT
+        with ESMTP id S229969AbiFXVHa (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 23 Jun 2022 17:10:50 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2CE93702C;
-        Thu, 23 Jun 2022 14:10:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AC48BB82552;
-        Thu, 23 Jun 2022 21:10:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C4E3C341CA;
-        Thu, 23 Jun 2022 21:10:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656018646;
-        bh=r/T1i7uSjy/kvl4qEG+UmoIxiLk85BbSD01Xc5GDApE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZTECbU+rF4/LujLr008VCc0+ZuOWuK/v13eYwV7fXwms/W3jJY6KJk2Mzwkjlk+tP
-         MyVvQ5vGad/iH++jhmNQbwt8Ft44YZjwOynm0QW7q88LQHlAhvS7dMoeXA0yZAixfI
-         1K6qeYJhHOwQmhv9KzcYOj4W6/Wphwc2TMtFnDYgPPY4z+8DprPxTh3I2A3GIWqV0p
-         fdE3+QlC8C2i6S++mrdVw8JXh83v4bS6I80Dm+ILseOH6YKtv0u3KZ6pgFC/DZ7niU
-         1Vvhwv3F0SbubfiflddDLLqv3EsYJxlxCqP1vsts39FMPeMPgQiDo0O11xJxLot2xM
-         0wycDe5leqSgg==
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-3178acf2a92so6589787b3.6;
-        Thu, 23 Jun 2022 14:10:46 -0700 (PDT)
-X-Gm-Message-State: AJIora+sw4rheiruxzO70DeXY1gsPnPmA4R3/MPI3eiGK6T5KV8hg7ch
-        hl51VuErvvuhamkcw4qN9dxmzXL6+w8gMnZhoyc=
-X-Google-Smtp-Source: AGRyM1sEMLychXrRpbFJTmnKuJNT329ZQQW+NKikrnKFu9k7PM/zI/bpamACz6qcjiiifsMT9ULrYzqIp6aEaayO7So=
-X-Received: by 2002:a81:8004:0:b0:318:7e2d:5bd5 with SMTP id
- q4-20020a818004000000b003187e2d5bd5mr4055817ywf.211.1656018645405; Thu, 23
- Jun 2022 14:10:45 -0700 (PDT)
+        Fri, 24 Jun 2022 17:07:30 -0400
+Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8852C85791
+        for <linux-trace-devel@vger.kernel.org>; Fri, 24 Jun 2022 14:07:28 -0700 (PDT)
+Received: by a3.inai.de (Postfix, from userid 65534)
+        id C1BDA587264B9; Fri, 24 Jun 2022 23:07:26 +0200 (CEST)
+Received: from a4.inai.de (a4.inai.de [IPv6:2a01:4f8:10b:45d8::f8])
+        by a3.inai.de (Postfix) with ESMTP id 6B0205872649E;
+        Fri, 24 Jun 2022 23:07:26 +0200 (CEST)
+From:   Jan Engelhardt <jengelh@inai.de>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     rostedt@goodmis.org
+Subject: [PATCH] libtracefs: unbreak parallel build
+Date:   Fri, 24 Jun 2022 23:07:26 +0200
+Message-Id: <20220624210726.84857-1-jengelh@inai.de>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-References: <cover.1655368610.git.bristot@kernel.org> <CAPhsuW4eDhVs2iu0y40LiFyKweJ+3d82-748kavGg5KXWsRuZg@mail.gmail.com>
- <850ef2bc-f70d-afb2-a12f-8cc4c795dac8@kernel.org> <CAPhsuW67decxVH4n4YitkW40OmUqq2LRX7Ry4jqdjrgXSAgknA@mail.gmail.com>
- <d0f37c76-9211-da12-20e8-a7dde9c220ef@kernel.org>
-In-Reply-To: <d0f37c76-9211-da12-20e8-a7dde9c220ef@kernel.org>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 23 Jun 2022 14:10:34 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7gt2fWj6KkHEsuVO6q9kSpU12nPTFq_DM8bffRk9=DFA@mail.gmail.com>
-Message-ID: <CAPhsuW7gt2fWj6KkHEsuVO6q9kSpU12nPTFq_DM8bffRk9=DFA@mail.gmail.com>
-Subject: Re: [PATCH V4 00/20] The Runtime Verification (RV) interface
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Gabriele Paoloni <gpaoloni@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-trace-devel <linux-trace-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Jun 23, 2022 at 1:29 PM Daniel Bristot de Oliveira
-<bristot@kernel.org> wrote:
->
-[...]
-> >>
-> >> The point is that there are use-cases in which the users need the code in
-> >> C. One of those is the work being done in the Linux Foundation Elisa group.
-> >> There will be more formalism, like timed automata... which will require
-> >> infra-structure that is easily accessible in C... including synchronization,
-> >> and reactors that are available only in C on "per use-cases" basis - for
-> >> example on embedded devices.
-> >
-> > Where can I find more information about the constraints of these use cases?
->
-> Check the LF elisa workgroup.
+The build is not parallel-safe. In particular,
 
-Thanks for the information. It looks interesting.
+	while :; do make clean; make -j8;
+	ldd -r lib/libtracefs.so.1.4.1; done
 
->
-> > I am asking because there are multiple ways to load a BPF program to the
-> > system. If the constraint is that we cannot have bpftrace or bcc in the system,
-> > maybe it is ok to run a standalone binary (written in C, compiled on a different
-> > system).
->
-> as I said... *I am aware of that*. I do like BPF! I was already convinced I will having
-> things in BPF :-)
->
-> dot2bpf does stand alone application, C + libbpf (and I did it this way to
-> have the most of flexibility), it works (for the things that are possible in BPF).
-> It shares most of the work in C/kernel, I will add it in the second patch series.
+randomly emits:
 
-This is great! Looking forward to trying it out. :)
+	undefined symbol: add_to        (/usr/lib64/libtracefs.so.1)
+	undefined symbol: add_field     (/usr/lib64/libtracefs.so.1)
+	undefined symbol: my_yyinput    (/usr/lib64/libtracefs.so.1)
+	[...]
 
-Thanks,
-Song
+A file gets regenerated in one job while another reads it. The
+hypothesis can be tested by interjecting the linker command. Like so:
+
+	@@ -73,7 +73,8 @@ do_build_static_lib =                         \
+
+	 do_compile_shared_library =                    \
+		($(print_shared_lib_compile)            \
+	-       $(CC) --shared $^ '-Wl,-soname,$(1),-rpath=$$ORIGIN' -o $@ $(LDFLAGS) $(LIBS))
+	+       mkdir -p $$$$; cp -v $^ $$$$/; \
+	+       $(CC) --shared $$$$/* '-Wl,-soname,$(1),-rpath=$$ORIGIN' -o $@ $(LDFLAGS) $(LIBS))
+
+	 do_compile_plugin_obj =                                \
+		($(print_plugin_obj_compile)            \
+
+This then reveals that indeed there is truncation:
+
+	$ ls -lgo src/25067/
+	total 416
+	drwxr-xr-x 2  4096 Jun 20 17:07 .
+	drwxr-xr-x 9  4096 Jun 20 17:07 ..
+	-rw-r--r-- 1 39240 Jun 20 17:07 sqlhist-lex.o
+	-rw-r--r-- 1 36088 Jun 20 17:07 sqlhist.tab.o
+	-rw-r--r-- 1 28912 Jun 20 17:07 tracefs-dynevents.o
+	-rw-r--r-- 1  5288 Jun 20 17:07 tracefs-eprobes.o
+	-rw-r--r-- 1 46592 Jun 20 17:07 tracefs-events.o
+	-rw-r--r-- 1 31136 Jun 20 17:07 tracefs-filter.o
+	-rw-r--r-- 1 66840 Jun 20 17:07 tracefs-hist.o
+	-rw-r--r-- 1 45368 Jun 20 17:07 tracefs-instance.o
+	-rw-r--r-- 1  8056 Jun 20 17:07 tracefs-kprobes.o
+	-rw-r--r-- 1 10912 Jun 20 17:07 tracefs-marker.o
+	-rw-r--r-- 1     0 Jun 20 17:07 tracefs-sqlhist.o
+	-rw-r--r-- 1 44968 Jun 20 17:07 tracefs-tools.o
+	-rw-r--r-- 1  6080 Jun 20 17:07 tracefs-uprobes.o
+	-rw-r--r-- 1 20784 Jun 20 17:07 tracefs-utils.o
+
+The lines emitted by make also speak a rather clear picture (but I
+agree we tend to not read it most of the time, especially when the
+build is performed by the infrastructure of distributions and with
+make V=1).
+
+	$ make clean; make -j16
+	  CLEAN              utest
+	  CLEAN              src
+	  CLEAN              samples
+	  CLEAN              libtracefs
+	  DESCEND            src libtracefs.so
+	make[1]: warning: jobserver unavailable: using -j1.  Add '+' to parent make rule.
+	  COMPILE FPIC       tracefs-utils.o
+	  DESCEND            src libtracefs.a
+	make[1]: warning: jobserver unavailable: using -j1.  Add '+' to parent make rule.
+	  COMPILE FPIC       tracefs-utils.o
+	  UPDATE             build_prefix
+	  UPDATE             tfs_version.h
+	  COMPILE FPIC       tracefs-instance.o
+	  COMPILE FPIC       tracefs-instance.o
+	  COMPILE FPIC       tracefs-events.o
+	  COMPILE FPIC       tracefs-events.o
+	[...]
+
+The problem stems from two targets (libtracefs.a, libtracefs.so)
+_individually_ invoking recursive make, which of course have no
+knowledge of one another with respect to which targets have already
+been made.
+
+So make job #1 processes the libtracefs.a rule, whose command invokes
+a sub-make which, at the time of checking, finds no .o files and
+queues gcc invocations to build those file. Meanwhile, make job #2
+processes the libtracefs.so rule, whose command also invokes a
+sub-make which, at the time of checking, *also* finds no .o files and
+queues gcc invocations for the *same* objects.
+
+Entering a directory concurrently is worse than anything the
+"recursive make considered harmful" essay could ever think of.
+
+Signed-off-by: Jan Engelhardt <jengelh@inai.de>
+---
+ Makefile | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/Makefile b/Makefile
+index fa0ba47..0044656 100644
+--- a/Makefile
++++ b/Makefile
+@@ -388,3 +388,7 @@ clean:
+ 	  $(BUILD_PREFIX))
+ 
+ .PHONY: clean
++
++# libtracefs.a and libtracefs.so would concurrently enter the same directory -
++# a recipe for collisions.
++.NOTPARALLEL:
+-- 
+2.36.1
+
