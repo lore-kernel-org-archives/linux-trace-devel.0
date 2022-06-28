@@ -2,32 +2,31 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6467BCCA481
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 28 Jun 2022 19:04:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CD0ECCA47F
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 28 Jun 2022 19:05:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233443AbiF1TEW (ORCPT
+        id S235337AbiF1TFs (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 28 Jun 2022 15:04:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33662 "EHLO
+        Tue, 28 Jun 2022 15:05:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236559AbiF1TEG (ORCPT
+        with ESMTP id S235415AbiF1TFL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 28 Jun 2022 15:04:06 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457903819C;
-        Tue, 28 Jun 2022 12:02:51 -0700 (PDT)
+        Tue, 28 Jun 2022 15:05:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8763C2CC8F;
+        Tue, 28 Jun 2022 12:05:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id F1F67B81E05;
-        Tue, 28 Jun 2022 19:02:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98CD7C3411D;
-        Tue, 28 Jun 2022 19:02:46 +0000 (UTC)
-Date:   Tue, 28 Jun 2022 15:02:45 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 18E9C618E2;
+        Tue, 28 Jun 2022 19:05:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97EEFC3411D;
+        Tue, 28 Jun 2022 19:05:07 +0000 (UTC)
+Date:   Tue, 28 Jun 2022 15:05:06 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
         Guenter Roeck <linux@roeck-us.net>,
         Jonathan Corbet <corbet@lwn.net>,
         Ingo Molnar <mingo@redhat.com>,
@@ -44,13 +43,12 @@ Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Clark Williams <williams@redhat.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH V4 09/20] rv/monitor: wip instrumentation and
+Subject: Re: [PATCH V4 11/20] rv/monitor: wwnr instrumentation and
  Makefile/Kconfig entries
-Message-ID: <20220628150245.6c59ea52@gandalf.local.home>
-In-Reply-To: <4d975ef5-7e50-9241-1a3e-f0f9bad9c5b5@infradead.org>
+Message-ID: <20220628150506.291d093a@gandalf.local.home>
+In-Reply-To: <944694879f67c0e635815ac57154be477a1b9108.1655368610.git.bristot@kernel.org>
 References: <cover.1655368610.git.bristot@kernel.org>
-        <9c05a95927c18bebcf0eb79bef15ec59667bc08c.1655368610.git.bristot@kernel.org>
-        <4d975ef5-7e50-9241-1a3e-f0f9bad9c5b5@infradead.org>
+        <944694879f67c0e635815ac57154be477a1b9108.1655368610.git.bristot@kernel.org>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -59,35 +57,61 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 16 Jun 2022 14:00:10 -0700
-Randy Dunlap <rdunlap@infradead.org> wrote:
+On Thu, 16 Jun 2022 10:44:53 +0200
+Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 
-> On 6/16/22 01:44, Daniel Bristot de Oliveira wrote:
-> > diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
-> > index 1eafb5adcfcb..e9246b0bec9d 100644
-> > --- a/kernel/trace/rv/Kconfig
-> > +++ b/kernel/trace/rv/Kconfig
-> > @@ -26,6 +26,13 @@ menuconfig RV
-> >  	  the system behavior.
-> >  
-> >  if RV
-> > +config RV_MON_WIP
-> > +	depends on PREEMPTIRQ_TRACEPOINTS
-> > +	select DA_MON_EVENTS_IMPLICIT
-> > +	bool "WIP monitor"  
-> 
-> Does WIP mean work-in-progress?  (It does to me.)
-> 
-> If not, please explain what it means in the help text.
+> diff --git a/kernel/trace/rv/monitors/wwnr/wwnr.c b/kernel/trace/rv/monitors/wwnr/wwnr.c
+> index 8ba01f0f0df8..3fe1ad9125d3 100644
+> --- a/kernel/trace/rv/monitors/wwnr/wwnr.c
+> +++ b/kernel/trace/rv/monitors/wwnr/wwnr.c
+> @@ -10,11 +10,8 @@
+>  
+>  #define MODULE_NAME "wwnr"
+>  
+> -/*
+> - * XXX: include required tracepoint headers, e.g.,
+> - * #include <linux/trace/events/sched.h>
+> - */
+>  #include <trace/events/rv.h>
+> +#include <trace/events/sched.h>
+>  
+>  /*
+>   * This is the self-generated part of the monitor. Generally, there is no need
+> @@ -37,21 +34,20 @@ DECLARE_DA_MON_PER_TASK(wwnr, char);
+>   * are translated into model's event.
+>   *
+>   */
+> -static void handle_switch_in(void *data, /* XXX: fill header */)
+> +static void handle_switch(void *data, bool preempt, struct task_struct *p,
+> +			  struct task_struct *n, unsigned int prev_state)
+>  {
 
-Yeah, that's exactly what I thought too ;-)
+
+Patch 8 was the "educational" patch. There's no reason to split 10 and 11
+up too.
 
 -- Steve
 
-> 
-> > +	help
-> > +	  Enable WIP sample monitor, this is a sample monitor that
-> > +	  illustrates the usage of per-cpu monitors.  
-> 
-> thanks.
 
+> -	struct task_struct *p = /* XXX: how do I get p? */;
+> -	da_handle_event_wwnr(p, switch_in_wwnr);
+> -}
+> +	/* start monitoring only after the first suspension */
+> +	if (prev_state == TASK_INTERRUPTIBLE)
+> +		da_handle_init_event_wwnr(p, switch_out_wwnr);
+> +	else
+> +		da_handle_event_wwnr(p, switch_out_wwnr);
+>  
+> -static void handle_switch_out(void *data, /* XXX: fill header */)
+> -{
+> -	struct task_struct *p = /* XXX: how do I get p? */;
+> -	da_handle_event_wwnr(p, switch_out_wwnr);
+> +	da_handle_event_wwnr(n, switch_in_wwnr);
+>  }
+>  
+> -static void handle_wakeup(void *data, /* XXX: fill header */)
+> +static void handle_wakeup(void *data, struct task_struct *p)
+>  {
+> -	struct task_struct *p = /* XXX: how do I get p? */;
+>  	da_handle_event_wwnr(p, wakeup_wwnr);
+>  }
