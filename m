@@ -2,28 +2,28 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF31CC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 28 Jun 2022 17:49:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB24CC43334
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 28 Jun 2022 18:10:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233329AbiF1RtV (ORCPT
+        id S232845AbiF1SK4 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 28 Jun 2022 13:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36008 "EHLO
+        Tue, 28 Jun 2022 14:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233346AbiF1Rsy (ORCPT
+        with ESMTP id S230126AbiF1SKz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 28 Jun 2022 13:48:54 -0400
+        Tue, 28 Jun 2022 14:10:55 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 561ECAE4F;
-        Tue, 28 Jun 2022 10:48:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF3017E2E;
+        Tue, 28 Jun 2022 11:10:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B86F619B3;
-        Tue, 28 Jun 2022 17:48:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B45E3C341C8;
-        Tue, 28 Jun 2022 17:48:34 +0000 (UTC)
-Date:   Tue, 28 Jun 2022 13:48:33 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9E21761ADB;
+        Tue, 28 Jun 2022 18:10:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18346C3411D;
+        Tue, 28 Jun 2022 18:10:51 +0000 (UTC)
+Date:   Tue, 28 Jun 2022 14:10:50 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
@@ -43,12 +43,11 @@ Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
         Clark Williams <williams@redhat.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH V4 03/20] rv/include: Add helper functions for
- deterministic automata
-Message-ID: <20220628134833.60b69f9f@gandalf.local.home>
-In-Reply-To: <2b5b14c821ee4b069f68571e7f78fbc2ee4e9626.1655368610.git.bristot@kernel.org>
+Subject: Re: [PATCH V4 06/20] tools/rv: Add dot2c
+Message-ID: <20220628141050.6d4ff81b@gandalf.local.home>
+In-Reply-To: <5b1e664b0c33f4da0430922718adc71a5d58d86c.1655368610.git.bristot@kernel.org>
 References: <cover.1655368610.git.bristot@kernel.org>
-        <2b5b14c821ee4b069f68571e7f78fbc2ee4e9626.1655368610.git.bristot@kernel.org>
+        <5b1e664b0c33f4da0430922718adc71a5d58d86c.1655368610.git.bristot@kernel.org>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -57,128 +56,32 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 16 Jun 2022 10:44:45 +0200
+On Thu, 16 Jun 2022 10:44:48 +0200
 Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 
-> Formally, a deterministic automaton, denoted by G, is defined as a
-> quintuple:
-> 
->   G = { X, E, f, x_0, X_m }
-> 
-> where:
-> 	- X is the set of states;
-> 	- E is the finite set of events;
-> 	- x_0 is the initial state;
-> 	- X_m (subset of X) is the set of marked states.
-> 	- f : X x E -> X $ is the transition function. It defines the
-> 	  state transition in the occurrence of a event from E in
-> 	  the state X. In the special case of deterministic automata,
-> 	  the occurrence of the event in E in a state in X has a
-> 	  deterministic next state from X.
-> 
-> An automaton can also be represented using a graphical format of
-> vertices (nodes) and edges. The open-source tool Graphviz can produce
-> this graphic format using the (textual) DOT language as the source code.
-> 
-> The dot2c tool presented in this paper:
-> 
-> DE OLIVEIRA, Daniel Bristot; CUCINOTTA, Tommaso; DE OLIVEIRA, Romulo
-> Silva. Efficient formal verification for the Linux kernel. In:
-> International Conference on Software Engineering and Formal Methods.
-> Springer, Cham, 2019. p. 315-332.
-> 
-> Translates a deterministic automaton in the DOT format into a C
-> source code representation that to be used for monitoring.
-> 
-> This header file implements helper functions to facilitate the usage
-> of the C output from dot2c for monitoring.
-> 
-> Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Marco Elver <elver@google.com>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Shuah Khan <skhan@linuxfoundation.org>
-> Cc: Gabriele Paoloni <gpaoloni@redhat.com>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Clark Williams <williams@redhat.com>
-> Cc: linux-doc@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-trace-devel@vger.kernel.org
-> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
-> ---
->  include/rv/automata.h | 49 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 49 insertions(+)
->  create mode 100644 include/rv/automata.h
-> 
-> diff --git a/include/rv/automata.h b/include/rv/automata.h
-> new file mode 100644
-> index 000000000000..0c0aa54bd820
-> --- /dev/null
-> +++ b/include/rv/automata.h
-> @@ -0,0 +1,49 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Deterministic automata helper functions, to be used with the automata
-> + * models in C generated by the dot2k tool.
-> + *
-> + * Copyright (C) 2019-2022 Daniel Bristot de Oliveira <bristot@kernel.org>
-
-Copyright before the description.
-
-> + */
+> +    def __create_matrix(self):
+> +        # transform the array into a dictionary
+> +        events = self.events
+> +        states = self.states
+> +        events_dict = {}
+> +        states_dict = {}
+> +        nr_event = 0
+> +        for event in events:
+> +            events_dict[event] = nr_event
+> +            nr_event += 1
+> +
+> +        nr_state = 0
+> +        for state in states:
+> +            states_dict[state] = nr_state
+> +            nr_state = nr_state + 1
 > +
 
-There should be comments here describing how the helper functions are used.
+Hmm, do you just like inconsistency?
+
+		nr_event += 1
+
+		nr_state = nr_state + 1
+
+??
 
 -- Steve
-
-> +#define DECLARE_AUTOMATA_HELPERS(name, type)					\
-> +										\
-> +static inline void *model_get_model_##name(void)				\
-> +{										\
-> +	return (void *) &automaton_##name;					\
-> +}										\
-> +										\
-> +static char *model_get_state_name_##name(enum states_##name state)		\
-> +{										\
-> +	return automaton_##name.state_names[state];				\
-> +}										\
-> +										\
-> +static char *model_get_event_name_##name(enum events_##name event)		\
-> +{										\
-> +	return automaton_##name.event_names[event];				\
-> +}										\
-> +										\
-> +static inline type model_get_init_state_##name(void)				\
-> +{										\
-> +	return automaton_##name.initial_state;					\
-> +}										\
-> +										\
-> +static inline type model_get_next_state_##name(enum states_##name curr_state,	\
-> +					       enum events_##name event)	\
-> +{										\
-> +	if ((curr_state < 0) || (curr_state > state_max_##name))		\
-> +		return -1;							\
-> +										\
-> +	if ((event < 0) || (event > event_max_##name))				\
-> +		return -1;							\
-> +										\
-> +	return automaton_##name.function[curr_state][event];			\
-> +}										\
-> +										\
-> +static inline bool model_is_final_state_##name(enum states_##name state)	\
-> +{										\
-> +	if ((state < 0) || (state > state_max_##name))				\
-> +		return 0;							\
-> +										\
-> +	return !!automaton_##name.final_states[state];				\
-> +}
-
