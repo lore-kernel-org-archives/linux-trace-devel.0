@@ -2,127 +2,222 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 807DAC43334
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 28 Jun 2022 19:30:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4A29C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 28 Jun 2022 19:41:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbiF1Taj (ORCPT
+        id S231187AbiF1Tl5 convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 28 Jun 2022 15:30:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39770 "EHLO
+        Tue, 28 Jun 2022 15:41:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbiF1TaF (ORCPT
+        with ESMTP id S229897AbiF1Tle (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 28 Jun 2022 15:30:05 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A9B8A2CC8F;
-        Tue, 28 Jun 2022 12:26:37 -0700 (PDT)
-Received: from pwmachine.localnet (lfbn-lyo-1-1062-211.w86-248.abo.wanadoo.fr [86.248.131.211])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 28D8620CDF22;
-        Tue, 28 Jun 2022 12:26:35 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 28D8620CDF22
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1656444397;
-        bh=yr6ynDdw6pyVh9Iwg4x+jvCjxckbKOv/2p2g1OJXeOk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mduRND+hdKqkoVwX7rwN2WOfSSmhv5moEqFiXNXdSoyWo8lF1IcJzK1POPG9dc71u
-         hcOxNdCTFYo+kw2fDyx1WE3cXbj585ZTHmUK0vNTkkbW4ypZwnGgBHwP3coyHuMO0y
-         mxSyI6BDmOlJM5RsyUO0sm4gNpKKdVXnW3+CPANQ=
-From:   Francis Laniel <flaniel@linux.microsoft.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-trace-devel@vger.kernel.org,
-        James Morse <james.morse@arm.com>,
-        Daniel Kiss <daniel.kiss@arm.com>,
+        Tue, 28 Jun 2022 15:41:34 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD521EC73;
+        Tue, 28 Jun 2022 12:33:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7E7A7B81F8E;
+        Tue, 28 Jun 2022 19:33:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3799EC341C6;
+        Tue, 28 Jun 2022 19:32:58 +0000 (UTC)
+Date:   Tue, 28 Jun 2022 15:32:56 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Gabriele Paoloni <gpaoloni@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] arm64: Do not forget syscall when starting a new thread.
-Date:   Tue, 28 Jun 2022 21:26:32 +0200
-Message-ID: <3439466.iIbC2pHGDl@pwmachine>
-Organization: Microsoft
-In-Reply-To: <20220628135834.GA24116@willie-the-truck>
-References: <20220608162447.666494-1-flaniel@linux.microsoft.com> <20220608162447.666494-2-flaniel@linux.microsoft.com> <20220628135834.GA24116@willie-the-truck>
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH V4 18/20] rv/monitor: Add safe watchdog monitor
+Message-ID: <20220628153256.65dc84dd@gandalf.local.home>
+In-Reply-To: <17ade9e2-8fbe-ea80-93c1-9f1e291805b6@roeck-us.net>
+References: <cover.1655368610.git.bristot@kernel.org>
+        <6366fdc89d65b8d9b14ccd1e42fa0d793fbe9f73.1655368610.git.bristot@kernel.org>
+        <168af019-70d1-3237-dc9c-56a82beb5990@roeck-us.net>
+        <04ca385b-47dc-5535-419e-1b814a383d1a@kernel.org>
+        <CA+wEVJbvcMZbCroO2_rdVxLvYkUo-ePxCwsp5vbDpoqys4HGWQ@mail.gmail.com>
+        <17ade9e2-8fbe-ea80-93c1-9f1e291805b6@roeck-us.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi.
+On Thu, 16 Jun 2022 16:53:54 -0700
+Guenter Roeck <linux@roeck-us.net> wrote:
 
-Le mardi 28 juin 2022, 15:58:35 CEST Will Deacon a =E9crit :
-> On Wed, Jun 08, 2022 at 05:24:46PM +0100, Francis Laniel wrote:
-> > This patch enables exeve*() to be traced with syscalls:sys_exit_execve
-> > tracepoint.
-> > Previous to it, by calling forget_syscall(), this tracepoint would not
-> > print its information as syscall is -1.
-> > So, this patch removes call to forget_syscall() and set regs->syscallno
-> > to its previous value.
-> >=20
-> > Signed-off-by: Francis Laniel <flaniel@linux.microsoft.com>
-> > ---
-> >=20
-> >  arch/arm64/include/asm/processor.h | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/arch/arm64/include/asm/processor.h
-> > b/arch/arm64/include/asm/processor.h index 9e58749db21d..86eb0bfe3b38
-> > 100644
-> > --- a/arch/arm64/include/asm/processor.h
-> > +++ b/arch/arm64/include/asm/processor.h
-> > @@ -272,8 +272,9 @@ void tls_preserve_current_state(void);
-> >=20
-> >  static inline void start_thread_common(struct pt_regs *regs, unsigned
-> >  long pc) {
-> >=20
-> > +	s32 previous_syscall =3D regs->syscallno;
-> >=20
-> >  	memset(regs, 0, sizeof(*regs));
-> >=20
-> > -	forget_syscall(regs);
-> > +	regs->syscallno =3D previous_syscall;
->=20
-> I'm still unsure about this. Even if we preserve the syscall number here,
-> won't all the arguments be reported as 0?
+> >      >> +
+> >      >> +struct automaton_safe_wtd automaton_safe_wtd = {
+> >      >> +    .state_names = {
+> >      >> +        "init",
+> >      >> +        "closed_running",
+> >      >> +        "closed_running_nwo",
+> >      >> +        "nwo",
+> >      >> +        "opened",
+> >      >> +        "opened_nwo",
+> >      >> +        "reopened",
+> >      >> +        "safe",
+> >      >> +        "safe_nwo",
+> >      >> +        "set",
+> >      >> +        "set_nwo",
+> >      >> +        "started",
+> >      >> +        "started_nwo",
+> >      >> +        "stoped"
+> >      >> +    },
+> >      >> +    .event_names = {
+> >      >> +        "close",
+> >      >> +        "nowayout",
+> >      >> +        "open",
+> >      >> +        "other_threads",
+> >      >> +        "ping",
+> >      >> +        "set_safe_timeout",
+> >      >> +        "start",
+> >      >> +        "stop"
+> >      >> +    },
+> >      >> +    .function = {
 
-I am not really sure what you meant about arguments, can you please precise=
-=20
-between command line arguments (ls -al) and syscall arguments (argp, envp,=
-=20
-etc.)?
-Indeed, if my understanding is correct syscall arguments are showed by=20
-sys_enter_* while sys_exit_* only reports the syscall return code.
+I think it could become much more readable if you added comments here that
+show what each column is. That way, we do not need to try to remember it.
 
-Regarding the return code I think the value is correct as it is used in=20
-syscall_trace_exit() but set in invoke_syscall() after the syscall finishes=
- [1,=20
-2].
-The comparison of arm64 and amd64 output also shows no difference:
-# amd64
-ls 435739 [002] 24689.292479:  syscalls:sys_exit_execve: 0x0
-            7fc43732e100 _start+0x0 (/usr/lib/x86_64-linux-gnu/ld-2.31.so)
-# arm64
-ls   266 [000]    34.708444:  syscalls:sys_exit_execve: 0x0
-                    1140 [unknown] (/usr/lib/aarch64-linux-gnu/ld-2.31.so)
-=20
-> I also looked quickly at the 32-bit arch/arm/ code and it looks like the
-> same behaviour exists there (module CONFIG_BINFMT_ELF_FDPIC).
+And maybe even a diagram in the comments. If we can automate the generating
+of an ASCII DFA diagram then that would be awesome too :-)
 
-I can try to fix it for this architecture too.
-Can you please point me the part of the code which shows the same behavior?
-=20
-> Will
+> >      >> +        {                          -1,                nwo_safe_wtd,             opened_safe_wtd,               init_safe_wtd,                          -1,                          -1,                         -1,                          -1 },
+> >      >> +        {                          -1, closed_running_nwo_safe_wtd,           reopened_safe_wtd,     closed_running_safe_wtd,                          -1,                          -1,                         -1,                          -1 },
+> >      >> +        {                          -1, closed_running_nwo_safe_wtd,        started_nwo_safe_wtd, closed_running_nwo_safe_wtd,                          -1,                          -1,                         -1,                          -1 },
+> >      >> +        {                          -1,                nwo_safe_wtd,         opened_nwo_safe_wtd,                nwo_safe_wtd,                          -1,                          -1,                         -1,                          -1 },
+> >      >> +        {               init_safe_wtd,                          -1,                          -1,                          -1,                          -1,                          -1,           started_safe_wtd,                          -1 },
+> >      >> +        {                nwo_safe_wtd,                          -1,                          -1,                          -1,                          -1,                          -1,       started_nwo_safe_wtd,                          -1 },
+> >      >> +        {     closed_running_safe_wtd,                          -1,                          -1,                          -1,                          -1,                set_safe_wtd,                          1,             opened_safe_wtd },
+> >      >> +        {     closed_running_safe_wtd,                          -1,                          -1,                          -1,               safe_safe_wtd,                          -1,                          1,             stoped_safe_wtd },
+> >      >> +        { closed_running_nwo_safe_wtd,                          -1,                          -1,                          -1,           safe_nwo_safe_wtd,                          -1,                         -1,                          -1 },
+> >      >> +        {                          -1,                          -1,                          -1,                          -1,               safe_safe_wtd,                          -1,                         -1,                          -1 },
+> >      >> +        {                          -1,                          -1,                          -1,                          -1,           safe_nwo_safe_wtd,                          -1,                         -1,                          -1 },
+> >      >> +        {     closed_running_safe_wtd,                          -1,                          -1,                          -1,                          -1,                set_safe_wtd,                         -1,             stoped_safe_wtd },
+> >      >> +        { closed_running_nwo_safe_wtd,                          -1,                          -1,                          -1,                          -1,            set_nwo_safe_wtd,                         -1,                          -1 },
+> >      >> +        {               init_safe_wtd,                          -1,                          -1,                          -1,                          -1,                          -1,                         -1,                          -1 },
+> >      >> +    },
+> >      >> +    .initial_state = init_safe_wtd,
+> >      >> +    .final_states = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },  
+> >      >
+> >      > I find this event table all but impossible to verify.  
+> > 
+> >     It is a matrix. Lines are states, and columns are events.
+> > 
+> >     On a given state/line, receiving a given event/column, the data is the next
+> >     state/row.
+> >   
+> 
+> I am aware of that, and I did program state machines before.
+> 
+> >     For instance, let's say "init" (row 0), event "nwo" (column 1), and the next
+> >     state is the "nwo" (row 3).
+> > 
+> >     -1 means invalid/blocked state (yeah, maybe it is better to have an #define
+> >     INVALID_STATE -1).
+> > 
+> >     This is the C representation of an automaton, following the formal definition of
+> >     a deterministic automaton. I've added an explanation of this representation in
+> >     the documentation (patch 15, file da_monitor_synthesis.rst).
+> > 
+> >     A deeper look into this subject is here (peer-reviewed conference paper at
+> >     Software Engineer and Formal Methods 2019):
+> >     https://bristot.me/wp-content/uploads/2019/09/paper.pdf <https://bristot.me/wp-content/uploads/2019/09/paper.pdf>
+> > 
+> >     One could translate it back to the automaton's graphical format... to a format
+> >     of by a tool used to analyze automaton properties... that is the good point of
+> >     using a well-established formalism. (The bad part is that they are often
+> >     boring... c'est la vie :-)).
+> >   
+> 
+> If the above state machine fails, no one but the authors will be able to even
+> remotely figure out what happened, and if the watchdog driver is at fault or
+> its monitor. It is a state machine making assumptions about state transitions,
+> sure, but who knows if those asssumptions are even remotely correct or match
+> reality. For example, I have no idea if the lack of a 'ping' function is handled
+> correctly,  if the lack of a 'stop' function is handled correctly, or what
+> happens if any of the driver functions returns an error.
+> 
+> I already found three assumptions which do not or not necessarily match
+> reality:
+> 
+> - The function to read the remaining timeout is optional and must not be
+>    used unconditionally, and its lack is not an error.
+> - The requested timeout (and pretimeout) do not have to match the actually
+>    configured timeout, and userspace must not rely on the assumption that
+>    the values match.
+> - The code assumes that the process opening the watchdog and the process
+>    accessing it are the same. While that is in general the case, it might
+>    well be that some application opens the watchdog and then handles it
+>    from a child process.
+> 
+> And that is just after briefly browsing through the code.
+> 
+> I am open to suggestions from others, but at this point I have serious doubts
+> that this code is maintainable in the kernel.
+> 
 
+Let me give some background on this. Various safety critical users
+(automotive, power plants, etc) are looking at using Linux in the field.
+Obviously, Linux itself is too big to verify properly. In fact, even small
+OSs that say they are verifiable seldom are. Part of the solution is to add
+a way to check that Linux is running as expected, and be able to detect
+when it is not. When that happens, you fall into a "fail-safe" mode (for
+example, if you have an autonomous driving vehicle, it could sound an alarm
+and inform the driver to go into manual mode, or it is going to simply
+"pull over". Note, this is just a hypothetical example, not something I've
+seen in reality).
 
-Best regards.
-=2D--
-[1] https://elixir.bootlin.com/linux/v5.18/source/arch/arm64/kernel/
-ptrace.c#L1868
-[2] https://elixir.bootlin.com/linux/v5.18/source/arch/arm64/kernel/
-syscall.c#L57
+But to implement this, you need to verify the verifier. In this case, the
+watchdog timer is what verifies that Linux is running properly. It is
+possible to verify parts of the kernel when you limit the inputs of the
+kernel. This means we are not trying to verify all use cases of the
+watchdog timer. That would be pretty much impossible, or take decades to
+complete. We only need to verify the use cases used in safety critical
+systems.
 
+Do not confuse this with static analyzers or other general purpose tooling
+to find bugs. This is not the purpose of the run time verify. It is just to
+prove that certain use cases will perform as expected, given a limited
+input.
 
+Years ago there was an interview with Linus where he was asked if he would
+trust Linux in real-time safety critical projects. And Linus's response was
+something to the effect that he would, as those projects have a very
+limited use case, and the code that actually gets run is not as big as you
+would think. And that code can be verified.
+
+That's exactly what we are doing here. There are very strict standards on
+what is considered safe for safety critical projects and by limiting the
+use cases of the code we are verifying, we can achieve those objectives.
+
+But your complaint about not being able to read or understand the table is
+legitimate, and that needs to be addressed. And what the limiting input is
+must also be commented as well, that way people will not get confused when
+they see a legitimate use case not covered by the DFA.
+
+Action Items:
+ 1. Add column title to the matrix. 
+ 2. Ideally, also add an ASCII DFA diagram.
+ 3. And finally, comment what the range of inputs are (what use cases are
+    being covered).
+
+-- Steve
