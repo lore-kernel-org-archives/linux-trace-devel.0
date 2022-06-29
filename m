@@ -2,116 +2,77 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC08FCCA479
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 29 Jun 2022 03:35:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A51E5C43334
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 29 Jun 2022 16:18:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbiF2Dfb (ORCPT
+        id S229948AbiF2QS4 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 28 Jun 2022 23:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60216 "EHLO
+        Wed, 29 Jun 2022 12:18:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229978AbiF2Df3 (ORCPT
+        with ESMTP id S229649AbiF2QSz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 28 Jun 2022 23:35:29 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9804217AA3;
-        Tue, 28 Jun 2022 20:35:28 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 73-20020a17090a0fcf00b001eaee69f600so14724143pjz.1;
-        Tue, 28 Jun 2022 20:35:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=D2aFA+bFpPxEe5bMLJ1ZIo9L1RS+fG1ZBQyRCUa2ETo=;
-        b=ZBIhBP1zYl4okzoyzm4jWVCrgC3CwdER63YQbkjxLRAXCB/YC82E0EEEJAS1Zuf8lU
-         H635lhJojzKQHO5wG8CrqQcELemBj4SPxAjFXR1yauX8desaJq3O4YFcU6copsbJJStl
-         mt1nh50u75y/frWjCOUzxkbWD1L0fEdKCLVdvnKp0ChSrR2bNtc7gF2LjuQV9AKNzNpl
-         VLOkkzY0+qsinMCamE+/PjT1DOQWnVUZxS/MTRcr9UQOpg2lwqqvwAmBFiNX1buMwLdc
-         zpzCbfSlmkdTzVW35wn9M8BKc1kcedHmDL+SBBG3pIrYxBVdyKwr37sCEBDWeo4BksSV
-         NERA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D2aFA+bFpPxEe5bMLJ1ZIo9L1RS+fG1ZBQyRCUa2ETo=;
-        b=cSB/3FFRXD1K/RveQ3HsY9M7jV5iJEhggl/4H4j/2JTp6o2JOjAtgWsRk412dSmetq
-         GBIl5K/wpE18KTFrZItfHlKt0hAjR5re6lksMepi84lcj0ACARXmDwSK+oXMrnoI/sFw
-         Dw28yU3syGVV4352Q0ZpVaFQiBaYG1Rc6DFYJRVHAofJsteLP1pDm1RwS/Qk1hJmti3D
-         j8sbX4TZkJEuZEiwZk2c+AsokpsPpdRcPszG7h3oVdyavPWAJSLhxJ8k+JyKY9Q1IflI
-         zQUFjZWoZd4zvPoChnA2J77HylFFGLbuBGPhEhBcdJ/yEGbQyAwrY6vzvvF4FR0MVUQY
-         7khQ==
-X-Gm-Message-State: AJIora/sju4F+UVgPZTY17ksW+hdjbw4tuYUoFYIeF7U0+vNgCrMWo6s
-        2TKP7LRm6cvcP4qiKVJ1anE=
-X-Google-Smtp-Source: AGRyM1u1TR/TpQ2WRWTmqoGhP82YyvnC1kKRqjw8xfSzHzCSqyJD4mZQfqFBCG1BWhafj69+/wb+vA==
-X-Received: by 2002:a17:90b:3a8d:b0:1ef:7d4:6a5f with SMTP id om13-20020a17090b3a8d00b001ef07d46a5fmr1430047pjb.139.1656473728111;
-        Tue, 28 Jun 2022 20:35:28 -0700 (PDT)
-Received: from debian.me (subs02-180-214-232-13.three.co.id. [180.214.232.13])
-        by smtp.gmail.com with ESMTPSA id j4-20020a170902c3c400b00163f5028fd6sm10145937plj.5.2022.06.28.20.35.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jun 2022 20:35:27 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 9E615102CC5; Wed, 29 Jun 2022 10:35:24 +0700 (WIB)
-Date:   Wed, 29 Jun 2022 10:35:24 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Gabriele Paoloni <gpaoloni@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH V4 14/20] Documentation/rv: Add a basic documentation
-Message-ID: <YrvIfPPvV7yXrpCf@debian.me>
-References: <cover.1655368610.git.bristot@kernel.org>
- <575554f7bebc0278dd3dfad056d4438c2fbab7b3.1655368610.git.bristot@kernel.org>
+        Wed, 29 Jun 2022 12:18:55 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3532338B9
+        for <linux-trace-devel@vger.kernel.org>; Wed, 29 Jun 2022 09:18:54 -0700 (PDT)
+Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LY64958b2z67NYn;
+        Thu, 30 Jun 2022 00:14:49 +0800 (CST)
+Received: from lhreml739-chm.china.huawei.com (10.201.108.189) by
+ fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Wed, 29 Jun 2022 18:18:52 +0200
+Received: from A2003111773.china.huawei.com (10.81.220.201) by
+ lhreml739-chm.china.huawei.com (10.201.108.189) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Wed, 29 Jun 2022 17:18:51 +0100
+From:   <matteo.bertolino@huawei.com>
+To:     <linux-trace-devel@vger.kernel.org>
+CC:     <rostedt@goodmis.org>,
+        "Matteo Bertolino (Huawei Technologies France)" 
+        <matteo.bertolino@huawei.com>
+Subject: [PATCH] trace-cmd: fixing description of a field in trace-cmd.dat.v7.5.txt doc
+Date:   Wed, 29 Jun 2022 18:18:45 +0200
+Message-ID: <20220629161845.2432-1-matteo.bertolino@huawei.com>
+X-Mailer: git-send-email 2.35.1.windows.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <575554f7bebc0278dd3dfad056d4438c2fbab7b3.1655368610.git.bristot@kernel.org>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.81.220.201]
+X-ClientProxiedBy: fraeml713-chm.china.huawei.com (10.206.15.32) To
+ lhreml739-chm.china.huawei.com (10.201.108.189)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Jun 16, 2022 at 10:44:56AM +0200, Daniel Bristot de Oliveira wrote:
-> +For further information about the principles of runtime verification and
-> +RV applied to Linux:
-> +
-> +  BARTOCCI, Ezio, et al. *Introduction to runtime verification.* In: Lectures on
-> +  Runtime Verification. Springer, Cham, 2018. p. 1-33.
-> +
-> +  FALCONE, Ylies, et al. *A taxonomy for classifying runtime verification tools.*
-> +  In: International Conference on Runtime Verification. Springer, Cham, 2018. p.
-> +  241-262.
-> +
-> +  DE OLIVEIRA, Daniel Bristot, et al. *Automata-based formal analysis and
-> +  verification of the real-time Linux kernel.* Ph.D. Thesis, 2020.
-> +
+From: "Matteo Bertolino (Huawei Technologies France)" <matteo.bertolino@huawei.com>
 
-Shouldn't these references be formatted citations reference syntax?
+Paragraph "Format of Section Header" states to write the size of a section on 4 bytes, but the actual size is 8 bytes (long long unsigned int).
+Submitted bug: https://bugzilla.kernel.org/show_bug.cgi?id=216185
 
+Signed-off-by: Matteo Bertolino (Huawei Technologies France) <matteo.bertolino@huawei.com>
+---
+ Documentation/trace-cmd/trace-cmd.dat.v7.5.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +For example::
-> +
-> +   [root@f32 rv]# cat available_monitors
-> +   wip
-> +   wwnr
-> +
-
-I think the prompt should be just `#` (without username and host).
-
-Thanks.
-
+diff --git a/Documentation/trace-cmd/trace-cmd.dat.v7.5.txt b/Documentation/trace-cmd/trace-cmd.dat.v7.5.txt
+index e5bcac7..b19d284 100644
+--- a/Documentation/trace-cmd/trace-cmd.dat.v7.5.txt
++++ b/Documentation/trace-cmd/trace-cmd.dat.v7.5.txt
+@@ -71,7 +71,7 @@ FORMAT OF THE SECTION HEADER
+   <2 bytes> unsigned short integer, section flags:
+     1 = the section is compressed.
+   <4 bytes> ID of a string, description of the section.
+-  <4 bytes> unsigned integer, size of the section in the file.
++  <8 bytes> long long unsigned integer, size of the section in the file.
+ 
+   If the section is compressed, the above is the compressed size.
+   The section must be uncompressed on reading. The described format of
 -- 
-An old man doll... just what I always wanted! - Clara
+2.35.1.windows.2
+
+Hello, this is my first (little) contribution!
+Please be nice :-) 
+Matteo
