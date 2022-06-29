@@ -2,33 +2,61 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4A29C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 28 Jun 2022 19:41:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC08FCCA479
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 29 Jun 2022 03:35:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbiF1Tl5 convert rfc822-to-8bit (ORCPT
+        id S230003AbiF2Dfb (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 28 Jun 2022 15:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36738 "EHLO
+        Tue, 28 Jun 2022 23:35:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbiF1Tle (ORCPT
+        with ESMTP id S229978AbiF2Df3 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 28 Jun 2022 15:41:34 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD521EC73;
-        Tue, 28 Jun 2022 12:33:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7E7A7B81F8E;
-        Tue, 28 Jun 2022 19:33:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3799EC341C6;
-        Tue, 28 Jun 2022 19:32:58 +0000 (UTC)
-Date:   Tue, 28 Jun 2022 15:32:56 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Gabriele Paoloni <gpaoloni@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Tue, 28 Jun 2022 23:35:29 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9804217AA3;
+        Tue, 28 Jun 2022 20:35:28 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id 73-20020a17090a0fcf00b001eaee69f600so14724143pjz.1;
+        Tue, 28 Jun 2022 20:35:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=D2aFA+bFpPxEe5bMLJ1ZIo9L1RS+fG1ZBQyRCUa2ETo=;
+        b=ZBIhBP1zYl4okzoyzm4jWVCrgC3CwdER63YQbkjxLRAXCB/YC82E0EEEJAS1Zuf8lU
+         H635lhJojzKQHO5wG8CrqQcELemBj4SPxAjFXR1yauX8desaJq3O4YFcU6copsbJJStl
+         mt1nh50u75y/frWjCOUzxkbWD1L0fEdKCLVdvnKp0ChSrR2bNtc7gF2LjuQV9AKNzNpl
+         VLOkkzY0+qsinMCamE+/PjT1DOQWnVUZxS/MTRcr9UQOpg2lwqqvwAmBFiNX1buMwLdc
+         zpzCbfSlmkdTzVW35wn9M8BKc1kcedHmDL+SBBG3pIrYxBVdyKwr37sCEBDWeo4BksSV
+         NERA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=D2aFA+bFpPxEe5bMLJ1ZIo9L1RS+fG1ZBQyRCUa2ETo=;
+        b=cSB/3FFRXD1K/RveQ3HsY9M7jV5iJEhggl/4H4j/2JTp6o2JOjAtgWsRk412dSmetq
+         GBIl5K/wpE18KTFrZItfHlKt0hAjR5re6lksMepi84lcj0ACARXmDwSK+oXMrnoI/sFw
+         Dw28yU3syGVV4352Q0ZpVaFQiBaYG1Rc6DFYJRVHAofJsteLP1pDm1RwS/Qk1hJmti3D
+         j8sbX4TZkJEuZEiwZk2c+AsokpsPpdRcPszG7h3oVdyavPWAJSLhxJ8k+JyKY9Q1IflI
+         zQUFjZWoZd4zvPoChnA2J77HylFFGLbuBGPhEhBcdJ/yEGbQyAwrY6vzvvF4FR0MVUQY
+         7khQ==
+X-Gm-Message-State: AJIora/sju4F+UVgPZTY17ksW+hdjbw4tuYUoFYIeF7U0+vNgCrMWo6s
+        2TKP7LRm6cvcP4qiKVJ1anE=
+X-Google-Smtp-Source: AGRyM1u1TR/TpQ2WRWTmqoGhP82YyvnC1kKRqjw8xfSzHzCSqyJD4mZQfqFBCG1BWhafj69+/wb+vA==
+X-Received: by 2002:a17:90b:3a8d:b0:1ef:7d4:6a5f with SMTP id om13-20020a17090b3a8d00b001ef07d46a5fmr1430047pjb.139.1656473728111;
+        Tue, 28 Jun 2022 20:35:28 -0700 (PDT)
+Received: from debian.me (subs02-180-214-232-13.three.co.id. [180.214.232.13])
+        by smtp.gmail.com with ESMTPSA id j4-20020a170902c3c400b00163f5028fd6sm10145937plj.5.2022.06.28.20.35.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jun 2022 20:35:27 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 9E615102CC5; Wed, 29 Jun 2022 10:35:24 +0700 (WIB)
+Date:   Wed, 29 Jun 2022 10:35:24 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
         Jonathan Corbet <corbet@lwn.net>,
         Ingo Molnar <mingo@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -39,185 +67,51 @@ Cc:     Gabriele Paoloni <gpaoloni@redhat.com>,
         Dmitry Vyukov <dvyukov@google.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Shuah Khan <skhan@linuxfoundation.org>,
+        Gabriele Paoloni <gpaoloni@redhat.com>,
         Juri Lelli <juri.lelli@redhat.com>,
         Clark Williams <williams@redhat.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH V4 18/20] rv/monitor: Add safe watchdog monitor
-Message-ID: <20220628153256.65dc84dd@gandalf.local.home>
-In-Reply-To: <17ade9e2-8fbe-ea80-93c1-9f1e291805b6@roeck-us.net>
+Subject: Re: [PATCH V4 14/20] Documentation/rv: Add a basic documentation
+Message-ID: <YrvIfPPvV7yXrpCf@debian.me>
 References: <cover.1655368610.git.bristot@kernel.org>
-        <6366fdc89d65b8d9b14ccd1e42fa0d793fbe9f73.1655368610.git.bristot@kernel.org>
-        <168af019-70d1-3237-dc9c-56a82beb5990@roeck-us.net>
-        <04ca385b-47dc-5535-419e-1b814a383d1a@kernel.org>
-        <CA+wEVJbvcMZbCroO2_rdVxLvYkUo-ePxCwsp5vbDpoqys4HGWQ@mail.gmail.com>
-        <17ade9e2-8fbe-ea80-93c1-9f1e291805b6@roeck-us.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+ <575554f7bebc0278dd3dfad056d4438c2fbab7b3.1655368610.git.bristot@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <575554f7bebc0278dd3dfad056d4438c2fbab7b3.1655368610.git.bristot@kernel.org>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 16 Jun 2022 16:53:54 -0700
-Guenter Roeck <linux@roeck-us.net> wrote:
+On Thu, Jun 16, 2022 at 10:44:56AM +0200, Daniel Bristot de Oliveira wrote:
+> +For further information about the principles of runtime verification and
+> +RV applied to Linux:
+> +
+> +  BARTOCCI, Ezio, et al. *Introduction to runtime verification.* In: Lectures on
+> +  Runtime Verification. Springer, Cham, 2018. p. 1-33.
+> +
+> +  FALCONE, Ylies, et al. *A taxonomy for classifying runtime verification tools.*
+> +  In: International Conference on Runtime Verification. Springer, Cham, 2018. p.
+> +  241-262.
+> +
+> +  DE OLIVEIRA, Daniel Bristot, et al. *Automata-based formal analysis and
+> +  verification of the real-time Linux kernel.* Ph.D. Thesis, 2020.
+> +
 
-> >      >> +
-> >      >> +struct automaton_safe_wtd automaton_safe_wtd = {
-> >      >> +    .state_names = {
-> >      >> +        "init",
-> >      >> +        "closed_running",
-> >      >> +        "closed_running_nwo",
-> >      >> +        "nwo",
-> >      >> +        "opened",
-> >      >> +        "opened_nwo",
-> >      >> +        "reopened",
-> >      >> +        "safe",
-> >      >> +        "safe_nwo",
-> >      >> +        "set",
-> >      >> +        "set_nwo",
-> >      >> +        "started",
-> >      >> +        "started_nwo",
-> >      >> +        "stoped"
-> >      >> +    },
-> >      >> +    .event_names = {
-> >      >> +        "close",
-> >      >> +        "nowayout",
-> >      >> +        "open",
-> >      >> +        "other_threads",
-> >      >> +        "ping",
-> >      >> +        "set_safe_timeout",
-> >      >> +        "start",
-> >      >> +        "stop"
-> >      >> +    },
-> >      >> +    .function = {
+Shouldn't these references be formatted citations reference syntax?
 
-I think it could become much more readable if you added comments here that
-show what each column is. That way, we do not need to try to remember it.
 
-And maybe even a diagram in the comments. If we can automate the generating
-of an ASCII DFA diagram then that would be awesome too :-)
+> +For example::
+> +
+> +   [root@f32 rv]# cat available_monitors
+> +   wip
+> +   wwnr
+> +
 
-> >      >> +        {                          -1,                nwo_safe_wtd,             opened_safe_wtd,               init_safe_wtd,                          -1,                          -1,                         -1,                          -1 },
-> >      >> +        {                          -1, closed_running_nwo_safe_wtd,           reopened_safe_wtd,     closed_running_safe_wtd,                          -1,                          -1,                         -1,                          -1 },
-> >      >> +        {                          -1, closed_running_nwo_safe_wtd,        started_nwo_safe_wtd, closed_running_nwo_safe_wtd,                          -1,                          -1,                         -1,                          -1 },
-> >      >> +        {                          -1,                nwo_safe_wtd,         opened_nwo_safe_wtd,                nwo_safe_wtd,                          -1,                          -1,                         -1,                          -1 },
-> >      >> +        {               init_safe_wtd,                          -1,                          -1,                          -1,                          -1,                          -1,           started_safe_wtd,                          -1 },
-> >      >> +        {                nwo_safe_wtd,                          -1,                          -1,                          -1,                          -1,                          -1,       started_nwo_safe_wtd,                          -1 },
-> >      >> +        {     closed_running_safe_wtd,                          -1,                          -1,                          -1,                          -1,                set_safe_wtd,                          1,             opened_safe_wtd },
-> >      >> +        {     closed_running_safe_wtd,                          -1,                          -1,                          -1,               safe_safe_wtd,                          -1,                          1,             stoped_safe_wtd },
-> >      >> +        { closed_running_nwo_safe_wtd,                          -1,                          -1,                          -1,           safe_nwo_safe_wtd,                          -1,                         -1,                          -1 },
-> >      >> +        {                          -1,                          -1,                          -1,                          -1,               safe_safe_wtd,                          -1,                         -1,                          -1 },
-> >      >> +        {                          -1,                          -1,                          -1,                          -1,           safe_nwo_safe_wtd,                          -1,                         -1,                          -1 },
-> >      >> +        {     closed_running_safe_wtd,                          -1,                          -1,                          -1,                          -1,                set_safe_wtd,                         -1,             stoped_safe_wtd },
-> >      >> +        { closed_running_nwo_safe_wtd,                          -1,                          -1,                          -1,                          -1,            set_nwo_safe_wtd,                         -1,                          -1 },
-> >      >> +        {               init_safe_wtd,                          -1,                          -1,                          -1,                          -1,                          -1,                         -1,                          -1 },
-> >      >> +    },
-> >      >> +    .initial_state = init_safe_wtd,
-> >      >> +    .final_states = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },  
-> >      >
-> >      > I find this event table all but impossible to verify.  
-> > 
-> >     It is a matrix. Lines are states, and columns are events.
-> > 
-> >     On a given state/line, receiving a given event/column, the data is the next
-> >     state/row.
-> >   
-> 
-> I am aware of that, and I did program state machines before.
-> 
-> >     For instance, let's say "init" (row 0), event "nwo" (column 1), and the next
-> >     state is the "nwo" (row 3).
-> > 
-> >     -1 means invalid/blocked state (yeah, maybe it is better to have an #define
-> >     INVALID_STATE -1).
-> > 
-> >     This is the C representation of an automaton, following the formal definition of
-> >     a deterministic automaton. I've added an explanation of this representation in
-> >     the documentation (patch 15, file da_monitor_synthesis.rst).
-> > 
-> >     A deeper look into this subject is here (peer-reviewed conference paper at
-> >     Software Engineer and Formal Methods 2019):
-> >     https://bristot.me/wp-content/uploads/2019/09/paper.pdf <https://bristot.me/wp-content/uploads/2019/09/paper.pdf>
-> > 
-> >     One could translate it back to the automaton's graphical format... to a format
-> >     of by a tool used to analyze automaton properties... that is the good point of
-> >     using a well-established formalism. (The bad part is that they are often
-> >     boring... c'est la vie :-)).
-> >   
-> 
-> If the above state machine fails, no one but the authors will be able to even
-> remotely figure out what happened, and if the watchdog driver is at fault or
-> its monitor. It is a state machine making assumptions about state transitions,
-> sure, but who knows if those asssumptions are even remotely correct or match
-> reality. For example, I have no idea if the lack of a 'ping' function is handled
-> correctly,  if the lack of a 'stop' function is handled correctly, or what
-> happens if any of the driver functions returns an error.
-> 
-> I already found three assumptions which do not or not necessarily match
-> reality:
-> 
-> - The function to read the remaining timeout is optional and must not be
->    used unconditionally, and its lack is not an error.
-> - The requested timeout (and pretimeout) do not have to match the actually
->    configured timeout, and userspace must not rely on the assumption that
->    the values match.
-> - The code assumes that the process opening the watchdog and the process
->    accessing it are the same. While that is in general the case, it might
->    well be that some application opens the watchdog and then handles it
->    from a child process.
-> 
-> And that is just after briefly browsing through the code.
-> 
-> I am open to suggestions from others, but at this point I have serious doubts
-> that this code is maintainable in the kernel.
-> 
+I think the prompt should be just `#` (without username and host).
 
-Let me give some background on this. Various safety critical users
-(automotive, power plants, etc) are looking at using Linux in the field.
-Obviously, Linux itself is too big to verify properly. In fact, even small
-OSs that say they are verifiable seldom are. Part of the solution is to add
-a way to check that Linux is running as expected, and be able to detect
-when it is not. When that happens, you fall into a "fail-safe" mode (for
-example, if you have an autonomous driving vehicle, it could sound an alarm
-and inform the driver to go into manual mode, or it is going to simply
-"pull over". Note, this is just a hypothetical example, not something I've
-seen in reality).
+Thanks.
 
-But to implement this, you need to verify the verifier. In this case, the
-watchdog timer is what verifies that Linux is running properly. It is
-possible to verify parts of the kernel when you limit the inputs of the
-kernel. This means we are not trying to verify all use cases of the
-watchdog timer. That would be pretty much impossible, or take decades to
-complete. We only need to verify the use cases used in safety critical
-systems.
-
-Do not confuse this with static analyzers or other general purpose tooling
-to find bugs. This is not the purpose of the run time verify. It is just to
-prove that certain use cases will perform as expected, given a limited
-input.
-
-Years ago there was an interview with Linus where he was asked if he would
-trust Linux in real-time safety critical projects. And Linus's response was
-something to the effect that he would, as those projects have a very
-limited use case, and the code that actually gets run is not as big as you
-would think. And that code can be verified.
-
-That's exactly what we are doing here. There are very strict standards on
-what is considered safe for safety critical projects and by limiting the
-use cases of the code we are verifying, we can achieve those objectives.
-
-But your complaint about not being able to read or understand the table is
-legitimate, and that needs to be addressed. And what the limiting input is
-must also be commented as well, that way people will not get confused when
-they see a legitimate use case not covered by the DFA.
-
-Action Items:
- 1. Add column title to the matrix. 
- 2. Ideally, also add an ASCII DFA diagram.
- 3. And finally, comment what the range of inputs are (what use cases are
-    being covered).
-
--- Steve
+-- 
+An old man doll... just what I always wanted! - Clara
