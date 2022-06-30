@@ -2,77 +2,84 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A51E5C43334
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 29 Jun 2022 16:18:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDE1BC43334
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 Jun 2022 09:57:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbiF2QS4 (ORCPT
+        id S232276AbiF3J5t (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 29 Jun 2022 12:18:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
+        Thu, 30 Jun 2022 05:57:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbiF2QSz (ORCPT
+        with ESMTP id S234681AbiF3J5q (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 29 Jun 2022 12:18:55 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3532338B9
-        for <linux-trace-devel@vger.kernel.org>; Wed, 29 Jun 2022 09:18:54 -0700 (PDT)
-Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LY64958b2z67NYn;
-        Thu, 30 Jun 2022 00:14:49 +0800 (CST)
-Received: from lhreml739-chm.china.huawei.com (10.201.108.189) by
- fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 29 Jun 2022 18:18:52 +0200
-Received: from A2003111773.china.huawei.com (10.81.220.201) by
- lhreml739-chm.china.huawei.com (10.201.108.189) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 29 Jun 2022 17:18:51 +0100
-From:   <matteo.bertolino@huawei.com>
-To:     <linux-trace-devel@vger.kernel.org>
-CC:     <rostedt@goodmis.org>,
-        "Matteo Bertolino (Huawei Technologies France)" 
-        <matteo.bertolino@huawei.com>
-Subject: [PATCH] trace-cmd: fixing description of a field in trace-cmd.dat.v7.5.txt doc
-Date:   Wed, 29 Jun 2022 18:18:45 +0200
-Message-ID: <20220629161845.2432-1-matteo.bertolino@huawei.com>
-X-Mailer: git-send-email 2.35.1.windows.2
+        Thu, 30 Jun 2022 05:57:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F40043ED5;
+        Thu, 30 Jun 2022 02:57:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1EA866207F;
+        Thu, 30 Jun 2022 09:57:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C8C6C34115;
+        Thu, 30 Jun 2022 09:57:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1656583064;
+        bh=CU8sfltvgR3OfUDZxSf9YawLMsQ0a1whK3wUGRtf0Bs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=kjV8bTdOSqdmcOfeELu+uLEV0wvLyXOx2uBHEzgnWssDAkuc6rKwgEtymggTqJJk/
+         jFGGckIGTbZ/tqsVcfn6ijY7yU+oZWB4tSXhYcVR0QZsDyIJdpXf1pe99aDEy8nnZi
+         8X/+IIcFkQWz7Es2xzU3Bx6Z4quSUWONKLVUr4E85iyhyf4xHhAPKZ/3he49+AZ3ja
+         uU1I7dCqXm/5QuMh6e2n+p9ZeVRYYeWmCVPaQxMjc/LPhnXKwwNzDCB7fxkcqOI77x
+         yFTYzx54qQPjhOdU/0gCP6CAd84Y8LXaDYs52BTmCB8tiYOgZHrGgnwaojYKd1ueY0
+         WmxNIPWum/oKQ==
+Message-ID: <178bee80-3ccc-812a-2e2e-46540bbdcc51@kernel.org>
+Date:   Thu, 30 Jun 2022 11:57:39 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.81.220.201]
-X-ClientProxiedBy: fraeml713-chm.china.huawei.com (10.206.15.32) To
- lhreml739-chm.china.huawei.com (10.201.108.189)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [Linux v5.19-rc2] rtla: Errors when running `make tools/clean`
+Content-Language: en-US
+To:     sedat.dilek@gmail.com
+Cc:     linux-trace-devel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
+References: <CA+icZUX-=vjX1WgJLDGZYZhrpxy+KqynMMFmNPp8pWu0q2sDcg@mail.gmail.com>
+ <CA+icZUWFUC5eiKS96vpoPQbX+jx5OYBfD40Ns86sUxE0hcft1w@mail.gmail.com>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <CA+icZUWFUC5eiKS96vpoPQbX+jx5OYBfD40Ns86sUxE0hcft1w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Matteo Bertolino (Huawei Technologies France)" <matteo.bertolino@huawei.com>
+Hi Sedat,
 
-Paragraph "Format of Section Header" states to write the size of a section on 4 bytes, but the actual size is 8 bytes (long long unsigned int).
-Submitted bug: https://bugzilla.kernel.org/show_bug.cgi?id=216185
+On 6/27/22 08:23, Sedat Dilek wrote:
+> On Wed, Jun 15, 2022 at 12:23 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>> [ CC linux-kbuild folks ]
+>>
+>> Hi,
+>>
+>> while digging into a perf issue I see this:
+>>
+>> $ cd /path/to/linux.git
+>>
+>> $ LC_ALL=C make -C tools/ clean 2>&1 | tee ../make-log_tools-clean.txt
+>> ...
 
-Signed-off-by: Matteo Bertolino (Huawei Technologies France) <matteo.bertolino@huawei.com>
----
- Documentation/trace-cmd/trace-cmd.dat.v7.5.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Do you mind trying this? 
 
-diff --git a/Documentation/trace-cmd/trace-cmd.dat.v7.5.txt b/Documentation/trace-cmd/trace-cmd.dat.v7.5.txt
-index e5bcac7..b19d284 100644
---- a/Documentation/trace-cmd/trace-cmd.dat.v7.5.txt
-+++ b/Documentation/trace-cmd/trace-cmd.dat.v7.5.txt
-@@ -71,7 +71,7 @@ FORMAT OF THE SECTION HEADER
-   <2 bytes> unsigned short integer, section flags:
-     1 = the section is compressed.
-   <4 bytes> ID of a string, description of the section.
--  <4 bytes> unsigned integer, size of the section in the file.
-+  <8 bytes> long long unsigned integer, size of the section in the file.
+diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
+index 3822f4ea5f49..1bea2d16d4c1 100644
+--- a/tools/tracing/rtla/Makefile
++++ b/tools/tracing/rtla/Makefile
+@@ -1,6 +1,6 @@
+ NAME	:=	rtla
+ # Follow the kernel version
+-VERSION :=	$(shell cat VERSION 2> /dev/null || make -sC ../../.. kernelversion)
++VERSION :=	$(shell cat VERSION 2> /dev/null || make -sC ../../.. kernelversion | grep -v make)
  
-   If the section is compressed, the above is the compressed size.
-   The section must be uncompressed on reading. The described format of
--- 
-2.35.1.windows.2
-
-Hello, this is my first (little) contribution!
-Please be nice :-) 
-Matteo
+ # From libtracefs:
+ # Makefiles suck: This macro sets a default value of $(2) for the
