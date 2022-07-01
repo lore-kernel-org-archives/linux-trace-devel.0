@@ -2,129 +2,151 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76500C43334
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Jul 2022 08:08:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 561CFC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Jul 2022 11:36:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236043AbiGAIIs (ORCPT
+        id S234586AbiGALgm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 1 Jul 2022 04:08:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37636 "EHLO
+        Fri, 1 Jul 2022 07:36:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236035AbiGAIIq (ORCPT
+        with ESMTP id S234207AbiGALgl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 1 Jul 2022 04:08:46 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25FA76EEB8;
-        Fri,  1 Jul 2022 01:08:45 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id r82so2592871oig.2;
-        Fri, 01 Jul 2022 01:08:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=V+qOhLMWaipbX4NclZqhWztNxiZLAR6zxs69J3D8vBU=;
-        b=msPkMQKE7m2JMmz2U/m6fipmb/ZN8lfjspxw9d59NMKbHj2d6avVf2y9+PLlXZcNvi
-         AeZoGGNIBr8GMfTNmCu18LZX7YS38s+Cgg7OW0t3mEolvRbrvSVrJgvFf7whwjjvr/P0
-         hI3NflFR6dLuRxtK7ua6Id4vY8fdaWRMMePB4Nso3GhQCXEazF7B/V+3aAoJ211YdqG0
-         R20wRiohqjc0QtwaekaSJ0a2Sx7xjI9HK16pWSQ+8R9kZtW1yNU9E7y1aFQbpdabw6an
-         ChZgM1rW4TUAnQ7EEfdD1d53/3hmUg39/qN3xR/DelECkMkmI3OE51QXM9t6DDis5A71
-         GvSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=V+qOhLMWaipbX4NclZqhWztNxiZLAR6zxs69J3D8vBU=;
-        b=LTnK5NGho+aGO2VXF2xiAqr9tVZXIuqBEdbNYKME7PsbFWO/nYFLpcLw4BZi25KKfR
-         qjO2CO1yz8VgNvQqN9Ve0cf1Kqfe7kaaBwANWTHEJAzO7/BBk5fQuTNcohv2m3bWXn8f
-         a2XG2q/Vuh6zDFQ2/vLVf18tdym3C2vWpSyHXvmBw/fpnJ0KO3EdPpwwE31lrIs8gnw8
-         yrmmTyYK6Aby/MMmR925q9amzwF3Pb+TrdP05G9dYdHsUGnsikkmf+Ct84CetzH+bv/p
-         FDuS8GsDCaYt8MPGgMoKL07IcomqUILErFKGSHHs2C/mTpSmvdHWIC/MtbgxsC8r1wvH
-         7UMw==
-X-Gm-Message-State: AJIora+AMcDvearMHd/Sw5LOXmbMs/OVZQz4u1gM+Q2uRYCdXXX0HBnx
-        zgkijH20GBgBis8Oe/ABM4aFtN6NBO5JSlufEdm/+AoTPRudww==
-X-Google-Smtp-Source: AGRyM1vDnC41lX66LaXItuRF6HCHHxL1uBKav1RurXkMnkwYZc7hKVRcMbHqrrxaqk9FRCY9/NVJBN3gbsKmsiIUNq0=
-X-Received: by 2002:a05:6808:302b:b0:2f9:eeef:f03 with SMTP id
- ay43-20020a056808302b00b002f9eeef0f03mr8924634oib.128.1656662924371; Fri, 01
- Jul 2022 01:08:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+icZUX-=vjX1WgJLDGZYZhrpxy+KqynMMFmNPp8pWu0q2sDcg@mail.gmail.com>
- <CA+icZUWFUC5eiKS96vpoPQbX+jx5OYBfD40Ns86sUxE0hcft1w@mail.gmail.com> <178bee80-3ccc-812a-2e2e-46540bbdcc51@kernel.org>
-In-Reply-To: <178bee80-3ccc-812a-2e2e-46540bbdcc51@kernel.org>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 1 Jul 2022 10:08:08 +0200
-Message-ID: <CA+icZUXz+rV-QUXZCrctRwXhz15jw+vStvgK5L+vh+zMu_V7uA@mail.gmail.com>
-Subject: Re: [Linux v5.19-rc2] rtla: Errors when running `make tools/clean`
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+        Fri, 1 Jul 2022 07:36:41 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD80D814AE;
+        Fri,  1 Jul 2022 04:36:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8F7CDB80813;
+        Fri,  1 Jul 2022 11:36:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8F63C3411E;
+        Fri,  1 Jul 2022 11:36:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1656675398;
+        bh=ht0/icXtp2sEhQfzOe1RuBtF1QGRO0mLy1F9NHIwIJo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qyZWqqP3YjsMKExY+ED0ZanHiTPDFeMdcC/nLGmH+vSBWrYqBQh8SxDCTc5Q21gLf
+         Lv5facBuIZ1jWgWiHzMjhxV4Occp1skkxdu6vo21XEI1H/F53M6Ye4LgopehyHWt49
+         htVQPCblbBFrPs9L7ob86ybN7B2z263YOm5+d3cq+yTRVCh0+rvTSDCHjwePEH5+wo
+         XEndL5gBSwwkmwkIWxSXidRDERgwEVE4V96JMjZ6g0aIzNE1k2HqV4wEZsAVbitjak
+         PC9dlRbm/nJ44eKV1THZwK+9YC2Sx7dSYUGjsd2DMCBAEuX9rSalrKbr+HGGdzg/1b
+         A5IWpBj0QR6GA==
+Date:   Fri, 1 Jul 2022 12:36:32 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Francis Laniel <flaniel@linux.microsoft.com>
 Cc:     linux-trace-devel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+        James Morse <james.morse@arm.com>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] arm64: Do not forget syscall when starting a new
+ thread.
+Message-ID: <20220701113631.GC28070@willie-the-truck>
+References: <20220608162447.666494-1-flaniel@linux.microsoft.com>
+ <20220628135834.GA24116@willie-the-truck>
+ <3439466.iIbC2pHGDl@pwmachine>
+ <4722000.GXAFRqVoOG@pwmachine>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4722000.GXAFRqVoOG@pwmachine>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Jun 30, 2022 at 11:57 AM Daniel Bristot de Oliveira
-<bristot@kernel.org> wrote:
->
-> Hi Sedat,
->
-> On 6/27/22 08:23, Sedat Dilek wrote:
-> > On Wed, Jun 15, 2022 at 12:23 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >> [ CC linux-kbuild folks ]
-> >>
-> >> Hi,
-> >>
-> >> while digging into a perf issue I see this:
-> >>
-> >> $ cd /path/to/linux.git
-> >>
-> >> $ LC_ALL=C make -C tools/ clean 2>&1 | tee ../make-log_tools-clean.txt
-> >> ...
->
-> Do you mind trying this?
->
-> diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
-> index 3822f4ea5f49..1bea2d16d4c1 100644
-> --- a/tools/tracing/rtla/Makefile
-> +++ b/tools/tracing/rtla/Makefile
-> @@ -1,6 +1,6 @@
->  NAME   :=      rtla
->  # Follow the kernel version
-> -VERSION :=     $(shell cat VERSION 2> /dev/null || make -sC ../../.. kernelversion)
-> +VERSION :=     $(shell cat VERSION 2> /dev/null || make -sC ../../.. kernelversion | grep -v make)
->
->  # From libtracefs:
->  # Makefiles suck: This macro sets a default value of $(2) for the
+On Thu, Jun 30, 2022 at 07:16:44PM +0200, Francis Laniel wrote:
+> Hi.
+> 
+> Le mardi 28 juin 2022, 21:26:32 CEST Francis Laniel a écrit :
+> > Hi.
+> > 
+> > Le mardi 28 juin 2022, 15:58:35 CEST Will Deacon a écrit :
+> > > On Wed, Jun 08, 2022 at 05:24:46PM +0100, Francis Laniel wrote:
+> > > > This patch enables exeve*() to be traced with syscalls:sys_exit_execve
+> > > > tracepoint.
+> > > > Previous to it, by calling forget_syscall(), this tracepoint would not
+> > > > print its information as syscall is -1.
+> > > > So, this patch removes call to forget_syscall() and set regs->syscallno
+> > > > to its previous value.
+> > > > 
+> > > > Signed-off-by: Francis Laniel <flaniel@linux.microsoft.com>
+> > > > ---
+> > > > 
+> > > >  arch/arm64/include/asm/processor.h | 3 ++-
+> > > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/arch/arm64/include/asm/processor.h
+> > > > b/arch/arm64/include/asm/processor.h index 9e58749db21d..86eb0bfe3b38
+> > > > 100644
+> > > > --- a/arch/arm64/include/asm/processor.h
+> > > > +++ b/arch/arm64/include/asm/processor.h
+> > > > @@ -272,8 +272,9 @@ void tls_preserve_current_state(void);
+> > > > 
+> > > >  static inline void start_thread_common(struct pt_regs *regs, unsigned
+> > > >  long pc) {
+> > > > 
+> > > > +	s32 previous_syscall = regs->syscallno;
+> > > > 
+> > > >  	memset(regs, 0, sizeof(*regs));
+> > > > 
+> > > > -	forget_syscall(regs);
+> > > > +	regs->syscallno = previous_syscall;
+> > > 
+> > > I'm still unsure about this. Even if we preserve the syscall number here,
+> > > won't all the arguments be reported as 0?
+> > 
+> > I am not really sure what you meant about arguments, can you please precise
+> > between command line arguments (ls -al) and syscall arguments (argp, envp,
+> > etc.)?
+> > Indeed, if my understanding is correct syscall arguments are showed by
+> > sys_enter_* while sys_exit_* only reports the syscall return code.
+> > 
+> > Regarding the return code I think the value is correct as it is used in
+> > syscall_trace_exit() but set in invoke_syscall() after the syscall finishes
+> > [1, 2].
+> > The comparison of arm64 and amd64 output also shows no difference:
+> > # amd64
+> > ls 435739 [002] 24689.292479:  syscalls:sys_exit_execve: 0x0
+> >             7fc43732e100 _start+0x0 (/usr/lib/x86_64-linux-gnu/ld-2.31.so)
+> > # arm64
+> > ls   266 [000]    34.708444:  syscalls:sys_exit_execve: 0x0
+> >                     1140 [unknown] (/usr/lib/aarch64-linux-gnu/ld-2.31.so)
+> > 
+> > > I also looked quickly at the 32-bit arch/arm/ code and it looks like the
+> > > same behaviour exists there (module CONFIG_BINFMT_ELF_FDPIC).
+> > 
+> 
+> I tested arm32 and it is not affected (even though I did not have 
+> CONFIG_BINFMT_ELF_FDPIC set).
+> Here is ftrace output for arm64 without this patch:
+>             bash-316     [000] .....    72.167342: sys_execve(filename: 
+> aaaaf9bbcd30, argv: aaaaf9bb54f0, envp: aaaaf9a7d9b0)
+> Here is the output for arm64 with this patch:
+>              cat-313     [000] .....   417.926073: sys_execve(filename: 
+> aaaaee7ce9f0, argv: aaaaee7833a0, envp: aaaaee6a69b0)
+>              cat-313     [000] .....   417.939619: sys_execve -> 0x0
+> And here is output for arm32:
+>              cat-254     [000] .....   127.804128: sys_execve(filename: 5bff18, 
+> argv: 53bb00, envp: 5543a8)
+>              cat-254     [000] .....   127.809142: sys_execve -> 0x0
+> From the above, the arm32 output seems correct even though:
+> # CONFIG_BINFMT_ELF_FDPIC is not set
+> 
+> After some debugging, I realized that arm32 syscall_get_nr() uses abi_syscall 
+> to get the syscall number and not a register (I guess abi_syscall was set to 
+> value of R7 before) [1].
+> So the fact that regs->uregs are memset'ed to 0 is not a problem.
 
-Thanks for the diff Daniel.
+Thanks for confirming this, I'll go ahead and queue your patch and let's
+hope nothing breaks :)
 
-Indeed, it fixes the build-error for me.
-
-$ cd /path/to/linux.git
-
-$ git status -s
-M tools/tracing/rtla/Makefile
-
-$ LANG=C LC_ALL=C make -C tools/ clean 2>&1 | tee ../make-log_tools-clean.txt
-[ ... ]
- DESCEND rtla
-make[2]: Entering directory '/home/dileks/src/linux/git/tools/tracing/rtla'
-make -C /home/dileks/src/linux/git/tools/tracing/rtla/../../../Documentation/tools/rtla/
-clean
-make[3]: Entering directory
-'/home/dileks/src/linux/git/Documentation/tools/rtla'
-rm -f rtla-osnoise-hist.1 rtla-osnoise-top.1 rtla-osnoise.1
-rtla-timerlat-hist.1 rtla-timerlat-top.1 rtla-timerlat.1 rtla.1
-make[3]: Leaving directory '/home/dileks/src/linux/git/Documentation/tools/rtla'
-make[2]: Leaving directory '/home/dileks/src/linux/git/tools/tracing/rtla'
-make[1]: Leaving directory '/home/dileks/src/linux/git/tools/tracing'
-
-Please feel free to add my...
-
-Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-
-...when you have prepared a real fix.
-
--sed@-
+Will
