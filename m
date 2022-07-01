@@ -2,102 +2,86 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9B9EC43334
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Jul 2022 15:38:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BEFCC43334
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Jul 2022 15:41:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbiGAPi6 (ORCPT
+        id S230090AbiGAPly (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 1 Jul 2022 11:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36506 "EHLO
+        Fri, 1 Jul 2022 11:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbiGAPi5 (ORCPT
+        with ESMTP id S229768AbiGAPlw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 1 Jul 2022 11:38:57 -0400
+        Fri, 1 Jul 2022 11:41:52 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922602E0A2;
-        Fri,  1 Jul 2022 08:38:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1011D3FBF7;
+        Fri,  1 Jul 2022 08:41:52 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1FD7E62480;
-        Fri,  1 Jul 2022 15:38:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FEA2C3411E;
-        Fri,  1 Jul 2022 15:38:53 +0000 (UTC)
-Date:   Fri, 1 Jul 2022 11:38:51 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Gabriele Paoloni <gpaoloni@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A0FF9623EB;
+        Fri,  1 Jul 2022 15:41:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B666CC341C7;
+        Fri,  1 Jul 2022 15:41:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1656690111;
+        bh=ODroCSaMiCiiMuCAo/Z3iSOvHvZXIuLHPYKFNrg/KRo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HiQ687KcF2DpmTocqn+IqFonoM2D1Iv9qoOOYzswDiwDl8kIZ2Z0qlI0/rhSTau4E
+         3NSpFKO6D400f0ml/7ooOyUGCByYYT+YhJkydmYqWcdsZVCgaZyENhgu/3ia78y1dA
+         iupUxZqsKuD5IxxerfCRctAPN6rlzunZ45REOCH40ehUKHtZqwoY1wU3Tw8tGwoxrq
+         bse6g9NBDfLrf9wgVop19aWpzHH1s7wARLooYxLJqzSbnEopXMrGf6Y1Csttwn6GRo
+         aBmHHJm/+DC3rpDQrb7dTqMrxC6c2FPPpw/RfoOuZiNhDzB5pqFluAfLcQUR1oorY6
+         gTJldSwi7SSFA==
+From:   Will Deacon <will@kernel.org>
+To:     linux-trace-devel@vger.kernel.org,
+        Francis Laniel <flaniel@linux.microsoft.com>
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
         Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH V4 18/20] rv/monitor: Add safe watchdog monitor
-Message-ID: <20220701113851.3167403e@gandalf.local.home>
-In-Reply-To: <56166be5-e30f-8f2a-e85a-09b993c7a8f0@roeck-us.net>
-References: <cover.1655368610.git.bristot@kernel.org>
-        <6366fdc89d65b8d9b14ccd1e42fa0d793fbe9f73.1655368610.git.bristot@kernel.org>
-        <168af019-70d1-3237-dc9c-56a82beb5990@roeck-us.net>
-        <04ca385b-47dc-5535-419e-1b814a383d1a@kernel.org>
-        <CA+wEVJbvcMZbCroO2_rdVxLvYkUo-ePxCwsp5vbDpoqys4HGWQ@mail.gmail.com>
-        <17ade9e2-8fbe-ea80-93c1-9f1e291805b6@roeck-us.net>
-        <20220628153256.65dc84dd@gandalf.local.home>
-        <56166be5-e30f-8f2a-e85a-09b993c7a8f0@roeck-us.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        James Morse <james.morse@arm.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Subject: Re: [PATCH v2 0/1] Remove forget_syscall() from start_thread_common()
+Date:   Fri,  1 Jul 2022 16:41:28 +0100
+Message-Id: <165667517849.792239.13818767623596011011.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20220608162447.666494-1-flaniel@linux.microsoft.com>
+References: <20220608162447.666494-1-flaniel@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 1 Jul 2022 07:45:50 -0700
-Guenter Roeck <linux@roeck-us.net> wrote:
-
-> > Do not confuse this with static analyzers or other general purpose tooling
-> > to find bugs. This is not the purpose of the run time verify. It is just to
-> > prove that certain use cases will perform as expected, given a limited
-> > input.
-> >   
+On Wed, 8 Jun 2022 17:24:45 +0100, Francis Laniel wrote:
+> First, I hope you are fine and the same for your relatives.
 > 
-> ... this is, unfortunately, not explained in the patch. I would have much less
-> of a problem with the series if those details were included.
-
-It's one of those cases where developers get so involved in their code that
-they leave out the things that are so obvious to them, but not obvious to
-others ;-)
-
-My new saying is: "We work in a field where the obvious seldom is".
-
-Hmm, I think I'll go tweet that :-)
-
+> With this contribution, I enabled using syscalls:sys_exit_execve and
+> syscalls:sys_exit_execveat as tracepoints on arm64.
+> Indeed, before this contribution, the above tracepoint would not print their
+> information as syscall number was set to -1 by calling forget_syscall().
 > 
-> Not that I would mind such a verifier, if it was possible to define one,
-> but it would have to be tested with a large number of watchdog drivers
-> to ensure that it addresses all use cases, or at least with a substantial
-> percentage of use cases. It would also require that the state machine is
-> readable to give people a chance to fix it if turns out to be broken.
-> It would also have to be robust, meaning it would have to reject invalid
-> (unsupported) settings from the start and not only during runtime.
+> [...]
 
-I would agree than any module would need to state up front exactly what it
-is modeling. In safety critical systems, all the components that are used
-are defined up front. Not sure if we can have the model not load if the
-required drivers to test are not loaded or ones not part of the model are
-(Daniel?).
+Applied to arm64 (for-next/misc), thanks!
 
-Anyway, thanks for the feedback.
+[1/1] arm64: Do not forget syscall when starting a new thread.
+      https://git.kernel.org/arm64/c/de6921856f99
 
--- Steve
+Cheers,
+-- 
+Will
+
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
