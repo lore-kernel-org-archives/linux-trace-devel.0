@@ -2,85 +2,176 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC529C43334
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jul 2022 08:55:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B98BCCA479
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jul 2022 12:41:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232820AbiGDIzj (ORCPT
+        id S233389AbiGDMlz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 4 Jul 2022 04:55:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55240 "EHLO
+        Mon, 4 Jul 2022 08:41:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232444AbiGDIzi (ORCPT
+        with ESMTP id S230337AbiGDMly (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 4 Jul 2022 04:55:38 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7427CB7F1;
-        Mon,  4 Jul 2022 01:55:37 -0700 (PDT)
-Received: from pwmachine.localnet (lfbn-lyo-1-1062-211.w86-248.abo.wanadoo.fr [86.248.131.211])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E029320DDC86;
-        Mon,  4 Jul 2022 01:55:33 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E029320DDC86
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1656924936;
-        bh=753qn467Cvr3a726KRzN40H4B1Qt8gfmorjxcMHm01U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QAWKkEo+MgU2vTZ6nDAebIE5KigE7o0wa5xBZNtvBHLwbkMzo70bNZD1jyQ+L6Vx9
-         v0pABJBglhYShgrDn7NRCfSRMrwGj7MBVLW5KxZ9PPYKJIppjohWOq5dQvymuqaMYG
-         vYh7z4MAHuno6Ql6JZ++J51KhWYCHi+R18+PM3q0=
-From:   Francis Laniel <flaniel@linux.microsoft.com>
-To:     linux-trace-devel@vger.kernel.org, Will Deacon <will@kernel.org>
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        James Morse <james.morse@arm.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH v2 0/1] Remove forget_syscall() from start_thread_common()
-Date:   Mon, 04 Jul 2022 10:55:31 +0200
-Message-ID: <2636542.mvXUDI8C0e@pwmachine>
-Organization: Microsoft
-In-Reply-To: <165667517849.792239.13818767623596011011.b4-ty@kernel.org>
-References: <20220608162447.666494-1-flaniel@linux.microsoft.com> <165667517849.792239.13818767623596011011.b4-ty@kernel.org>
+        Mon, 4 Jul 2022 08:41:54 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC1C11177;
+        Mon,  4 Jul 2022 05:41:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B902BB80EF7;
+        Mon,  4 Jul 2022 12:41:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E86BC3411E;
+        Mon,  4 Jul 2022 12:41:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1656938510;
+        bh=woMFBKGhZbbP6U8C9VLpfXm9CACfBtvBeAVHM0vUyw0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=t7MRw9ut8MceLs1bkRj2Y8T3OoJ/2PZ13T1oHMBYxpL7V8+ko2hNKInR8wT/2todk
+         OIMiBqlCnjJLFs2ZCT0eyussRy96qUoJ8QIMxv41VQuv2w04ACKDaU0E7t++KiushN
+         0p2cZU21o3ddsDVJUKy8XJGyqVqIMlp3mXbQG3XMroyAd3DYK0MCmEW0/cicTS/Snf
+         ftWa6nmUVqWYiZK5FZxFLs2aXYj9HQpKgPtvN2H7JevHqYeYZkKemWYTAo/YEmLBzz
+         lFY77WhZeC2pinH3sJ8XNsDgBzumIfC14xppbnqbMhXIzV4L7nCzdt4qgWtFANLhLU
+         ZoVWbrdyKazgA==
+Message-ID: <fe1c0bd0-303b-6758-a6fd-2eb5eeb5c0b8@kernel.org>
+Date:   Mon, 4 Jul 2022 14:41:43 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH V4 18/20] rv/monitor: Add safe watchdog monitor
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     Gabriele Paoloni <gpaoloni@redhat.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-trace-devel@vger.kernel.org
+References: <cover.1655368610.git.bristot@kernel.org>
+ <6366fdc89d65b8d9b14ccd1e42fa0d793fbe9f73.1655368610.git.bristot@kernel.org>
+ <168af019-70d1-3237-dc9c-56a82beb5990@roeck-us.net>
+ <04ca385b-47dc-5535-419e-1b814a383d1a@kernel.org>
+ <CA+wEVJbvcMZbCroO2_rdVxLvYkUo-ePxCwsp5vbDpoqys4HGWQ@mail.gmail.com>
+ <17ade9e2-8fbe-ea80-93c1-9f1e291805b6@roeck-us.net>
+ <20220628153256.65dc84dd@gandalf.local.home>
+ <56166be5-e30f-8f2a-e85a-09b993c7a8f0@roeck-us.net>
+ <20220701113851.3167403e@gandalf.local.home>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <20220701113851.3167403e@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi.
+On 7/1/22 17:38, Steven Rostedt wrote:
+> On Fri, 1 Jul 2022 07:45:50 -0700
+> Guenter Roeck <linux@roeck-us.net> wrote:
+> 
+>>> Do not confuse this with static analyzers or other general purpose tooling
+>>> to find bugs. This is not the purpose of the run time verify. It is just to
+>>> prove that certain use cases will perform as expected, given a limited
+>>> input.
+>>>   
+>>
+>> ... this is, unfortunately, not explained in the patch. I would have much less
+>> of a problem with the series if those details were included.
+> 
+> It's one of those cases where developers get so involved in their code that
+> they leave out the things that are so obvious to them, but not obvious to
+> others ;-)
 
+I agree that the main point here is that the documentation [patch 20/20] needs
+to be extended and correctly linked to the code.
 
-Le vendredi 1 juillet 2022, 17:41:28 CEST Will Deacon a =E9crit :
-> On Wed, 8 Jun 2022 17:24:45 +0100, Francis Laniel wrote:
-> > First, I hope you are fine and the same for your relatives.
-> >=20
-> > With this contribution, I enabled using syscalls:sys_exit_execve and
-> > syscalls:sys_exit_execveat as tracepoints on arm64.
-> > Indeed, before this contribution, the above tracepoint would not print
-> > their information as syscall number was set to -1 by calling
-> > forget_syscall().
-> >=20
-> > [...]
->=20
-> Applied to arm64 (for-next/misc), thanks!
+The goal of the model is to specify the minimum but obligatory steps to set a
+watchdog (start, set a safe timeout, ping...) so it can be used by
+"safety/heath" monitors in safety-critical systems.
 
-Thank you for the merge!
+Another goal is to reduce the amount of code/dependencies that will require
+deeper inspections to qualify the subsystem for usage in a given context via
+monitoring (as steven mentioned - more about it here [1]), without having to
+reduce the generic subsystem.
 
-> [1/1] arm64: Do not forget syscall when starting a new thread.
->       https://git.kernel.org/arm64/c/de6921856f99
->=20
-> Cheers,
+Although the method allows one to create a complete model of the watchdog device
+layer, covering all use cases, that is not the idea of this monitor. Moreover, a
+full model would not be the adequate model for this specific (but relevant) case
+raised and discussed in the Elisa workgroup [2].
 
+The goal of the monitor (that uses the model) is to verify that the interaction
+between the watchdog device layer and the "safety/heath" monitors follows this
+established model, at runtime.
 
-Best regards.
+> My new saying is: "We work in a field where the obvious seldom is".
+> 
+> Hmm, I think I'll go tweet that :-)
 
+/me liked the tweet... and yep, you clarified well the context in which this is
+being applied.
+
+>>
+>> Not that I would mind such a verifier, if it was possible to define one,
+>> but it would have to be tested with a large number of watchdog drivers
+>> to ensure that it addresses all use cases, or at least with a substantial
+>> percentage of use cases. It would also require that the state machine is
+>> readable to give people a chance to fix it if turns out to be broken.
+
+The patch 20/20 has the automaton in the ASCII art format. Both C and ASCII
+models were extracted from the same .dot file. I am not including the .dot file
+because there was a previous discussion with the doc people that prefer the
+ASCII format in the documentation. But I can add as well, not linked with the
+rst file. By reading the model in the ASCII format, it is possible to see that
+it is broad enough to cover many watchdogs as it uses simple/generic operations.
+
+The model (the .h) and the instrumentation (the .c) can be updated at any time.
+I am adding the tooling to facilitate that, like [patch 06/20].
+
+Patch 19/20 adds a safety application that enables the RV monitor, uses the
+watchdog, and collects feedback from the monitor to see if the requested actions
+are occurring in the model - and it can be used to test the RV monitor with
+any watchdog.
+
+The goal is the one I described above, so an exception generated by this monitor
+needs to be read accordingly: it does not imply that a watchdog driver is
+broken. It means the interaction between the safety/health monitor and the
+watchdog is not following specifications and must be checked at the development
+phase, or that something went really wrong at runtime phase.
+
+I will add that to the documentation and emphasize the context of this monitor.
+
+>> It would also have to be robust, meaning it would have to reject invalid
+>> (unsupported) settings from the start and not only during runtime.
+> 
+> I would agree than any module would need to state up front exactly what it
+> is modeling. In safety critical systems, all the components that are used
+> are defined up front. Not sure if we can have the model not load if the
+> required drivers to test are not loaded or ones not part of the model are
+> (Daniel?).
+
+I can add a check in the time in which the model is being enabled. But for this
+specific case, removing that part might be better and adding it later if it
+becomes fundamental.
+
+In practice, selecting a watchdog device can assume that the get_timeleft
+implementation is a requirement - so that option was just an additional check.
+
+[1] This is one use case for the broader goal of the strategy discussed here:
+https://www.youtube.com/watch?v=DkiwkAKOXNs
+
+[2] https://www.youtube.com/watch?v=qFSYlCbHCYk
+> Anyway, thanks for the feedback.
+> 
+> -- Steve
 
