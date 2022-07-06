@@ -2,37 +2,34 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF837C43334
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  6 Jul 2022 17:53:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 263C1C43334
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  6 Jul 2022 18:34:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232642AbiGFRxx (ORCPT
+        id S232913AbiGFSee (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 6 Jul 2022 13:53:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41206 "EHLO
+        Wed, 6 Jul 2022 14:34:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230472AbiGFRxw (ORCPT
+        with ESMTP id S230431AbiGFSee (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 6 Jul 2022 13:53:52 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288311DA7F;
-        Wed,  6 Jul 2022 10:53:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wIX3xKGkHpy5joBvYNCPfPDTfzV+c1/g7GJKc6QUDtk=; b=gEt5kyoNliPVilPC0D90PK4vJo
-        S4k1NidEXXLSSp+GXXKr1ocUWr9QZvoWNrpI7kT5EFzYHa/qAZebjZFi4uUcTD4BRAWplc2YGuOkn
-        vjh98+S83dHEmiOj1NFLkmxLED09BvIvTSlCGfS0/IZtO+wyUR2l7JA0nFXiJipnqO/nxRdb1i4vF
-        P+wIBQ5eff14eaCW1NbyfLafWY9brSPtl/nBcQo7OvBAz21c4EEcfeGPEJZO7WZAnRy7IzymWKXeZ
-        A/pVz/oOZHj2kHJ1BXfH4m55/NGtAdQPmZdEK3J5pZo8WJXd4EM4kot2yUigHGexwpm/HS00HqM3q
-        AeSI/uMQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1o99DF-001qad-79; Wed, 06 Jul 2022 17:53:21 +0000
-Date:   Wed, 6 Jul 2022 18:53:21 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Tao Zhou <tao.zhou@linux.dev>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        Wed, 6 Jul 2022 14:34:34 -0400
+Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84582186F1;
+        Wed,  6 Jul 2022 11:34:32 -0700 (PDT)
+Date:   Thu, 7 Jul 2022 02:35:36 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1657132470;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IO11bj6nk+Np3PVqv865QhkFdKjlAqHlVwGCt6I3fOc=;
+        b=OQWWsrwJIl6r1fSKhY4Z9Xt+JTyjL0JxygDTc4oUaCD/ViMTFy2fU7z6QUYPEnSWFCW50e
+        3cE4yeNrZGYHM7EohbouH+Z2sCBeqaLyoWq6MdO/GbNrwWTbagLsxKr84zS8caHrcCY4dL
+        DtAMxtsptEKG96+UhhixtKCfqLbWY4Y=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Tao Zhou <tao.zhou@linux.dev>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Wim Van Sebroeck <wim@linux-watchdog.org>,
         Guenter Roeck <linux@roeck-us.net>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -49,33 +46,154 @@ Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Clark Williams <williams@redhat.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH V4 01/20] rv: Add Runtime Verification (RV) interface
-Message-ID: <YsXMEeqGr2vdJCa7@casper.infradead.org>
+        linux-trace-devel@vger.kernel.org, Tao Zhou <tao.zhou@linux.dev>
+Subject: Re: [PATCH V4 03/20] rv/include: Add helper functions for
+ deterministic automata
+Message-ID: <YsXV+KTbOU0E5dU+@geo.homenetwork>
 References: <cover.1655368610.git.bristot@kernel.org>
- <60548902dbccaa7ba420e40e46835693e27f643f.1655368610.git.bristot@kernel.org>
- <YsXLDvjHqOxYtckg@geo.homenetwork>
+ <2b5b14c821ee4b069f68571e7f78fbc2ee4e9626.1655368610.git.bristot@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YsXLDvjHqOxYtckg@geo.homenetwork>
+In-Reply-To: <2b5b14c821ee4b069f68571e7f78fbc2ee4e9626.1655368610.git.bristot@kernel.org>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Jul 07, 2022 at 01:49:02AM +0800, Tao Zhou wrote:
-> > +struct rv_monitor {
-> > +	const char		*name;
-> > +	const char		*description;
-> > +	bool			enabled;
-> 
-> Can the 'bool enabled;' be put at the end like the definition of
-> structure rv_monitor_def. If '8+8+sizeof(bool)+8+8+8' not the same
-> as '8+8+8+8+8+sizeof(bool)', I mean is it possible that after the
-> end of stucture there is a int or char not require to align to 8 as
-> an example from my nonsense.
+On Thu, Jun 16, 2022 at 10:44:45AM +0200, Daniel Bristot de Oliveira wrote:
 
-That will make no difference at all.  C doesn't allow other variables
-to "fill in the hole" at the end of the structure like that.  For
-example, one could legitimately do 'memset(&rvm, sizeof(rvm))',
-and that would wipe out those other variables as well.
+> Formally, a deterministic automaton, denoted by G, is defined as a
+> quintuple:
+> 
+>   G = { X, E, f, x_0, X_m }
+> 
+> where:
+> 	- X is the set of states;
+> 	- E is the finite set of events;
+> 	- x_0 is the initial state;
+> 	- X_m (subset of X) is the set of marked states.
+> 	- f : X x E -> X $ is the transition function. It defines the
+> 	  state transition in the occurrence of a event from E in
+> 	  the state X. In the special case of deterministic automata,
+> 	  the occurrence of the event in E in a state in X has a
+> 	  deterministic next state from X.
+> 
+> An automaton can also be represented using a graphical format of
+> vertices (nodes) and edges. The open-source tool Graphviz can produce
+> this graphic format using the (textual) DOT language as the source code.
+> 
+> The dot2c tool presented in this paper:
+> 
+> DE OLIVEIRA, Daniel Bristot; CUCINOTTA, Tommaso; DE OLIVEIRA, Romulo
+> Silva. Efficient formal verification for the Linux kernel. In:
+> International Conference on Software Engineering and Formal Methods.
+> Springer, Cham, 2019. p. 315-332.
+> 
+> Translates a deterministic automaton in the DOT format into a C
+> surce code representation that to be used for monitoring.
+> 
+> This header file implements helper functions to facilitate the usage
+> of the C output from dot2c for monitoring.
+> 
+> Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Marco Elver <elver@google.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Shuah Khan <skhan@linuxfoundation.org>
+> Cc: Gabriele Paoloni <gpaoloni@redhat.com>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Clark Williams <williams@redhat.com>
+> Cc: linux-doc@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-trace-devel@vger.kernel.org
+> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+> ---
+>  include/rv/automata.h | 49 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 49 insertions(+)
+>  create mode 100644 include/rv/automata.h
+> 
+> diff --git a/include/rv/automata.h b/include/rv/automata.h
+> new file mode 100644
+> index 000000000000..0c0aa54bd820
+> --- /dev/null
+> +++ b/include/rv/automata.h
+> @@ -0,0 +1,49 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Deterministic automata helper functions, to be used with the automata
+> + * models in C generated by the dot2k tool.
+> + *
+> + * Copyright (C) 2019-2022 Daniel Bristot de Oliveira <bristot@kernel.org>
+> + */
+> +
+> +#define DECLARE_AUTOMATA_HELPERS(name, type)					\
+> +										\
+> +static inline void *model_get_model_##name(void)				\
+> +{										\
+> +	return (void *) &automaton_##name;					\
+> +}									\
+> +										\
+> +static char *model_get_state_name_##name(enum states_##name state)		\
+> +{										\
+> +	return automaton_##name.state_names[state];				\
+> +}										\
+> +										\
+> +static char *model_get_event_name_##name(enum events_##name event)		\
+> +{										\
+> +	return automaton_##name.event_names[event];				\
+> +}										\
+> +										\
+> +static inline type model_get_init_state_##name(void)				\
+> +{										\
+> +	return automaton_##name.initial_state;					\
+> +}										\
+> +										\
+> +static inline type model_get_next_state_##name(enum states_##name curr_state,	\
+> +					       enum events_##name event)	\
+> +{										\
+> +	if ((curr_state < 0) || (curr_state > state_max_##name))		\
+> +		return -1;							\
+
+curr_state can not be state_max_xxx. curr_state must be not bigger
+than state_max_xxx. Or am I miss something?
+
+> +	if ((event < 0) || (event > event_max_##name))				\
+> +		return -1;							\
+> +										\
+
+Same here for the event boundary check.
+
+> +	return automaton_##name.function[curr_state][event];			\
+> +}										\
+> +										\
+> +static inline bool model_is_final_state_##name(enum states_##name state)	\
+> +{										\
+> +	if ((state < 0) || (state > state_max_##name))				\
+> +		return 0;							\
+> +										\
+
+Same here.
+
+> +	return !!automaton_##name.final_states[state];				\
+
+If the value of .final_states[state] is 0 or 1, can the type of
+.final_states[state] be befined to bool. Or not need to use !! to
+explicitly transfer the type to bool. I remember that you define
+this as char array and the matrix model value of this array is 0 or 1
+see from the next patche. 1 delegate the state it is the initial state.
+0 for others.
+
+> +}
+> -- 
+> 2.35.1
+> 
