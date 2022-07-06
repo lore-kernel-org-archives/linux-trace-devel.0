@@ -2,240 +2,98 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 522A8C43334
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jul 2022 19:49:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B47CBC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  6 Jul 2022 11:31:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbiGDTt0 (ORCPT
+        id S230418AbiGFLbH (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 4 Jul 2022 15:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50726 "EHLO
+        Wed, 6 Jul 2022 07:31:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230057AbiGDTtZ (ORCPT
+        with ESMTP id S229531AbiGFLbG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 4 Jul 2022 15:49:25 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C7110A7;
-        Mon,  4 Jul 2022 12:49:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 950AAB812A1;
-        Mon,  4 Jul 2022 19:49:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F6AEC3411E;
-        Mon,  4 Jul 2022 19:49:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656964162;
-        bh=IQVtwsEeec0X0H652uGrEAoAYDLVO3bwow8hDmu8X1Q=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=kpCGHmlL9B5+2kXN4u2OZY977890MUVEO/g7l3Jtk4S0sPCxo2J2Vi9/q/z8bnH+e
-         EoAm6CqZb3mpJ8pwWEEdnUeTd9HzgVORioIA9IfOH8xLJ3m6oAimYuMq1h9rQC/8jP
-         jEO1XFKbBGRpXkX0DGD90lzBhF+6rIGj0UaCUYzgWkLv8agyZFyoCXhiapGKzfIW1d
-         JaE9YeTVnTbTSbkNraDMiTOGHAaQjeFNUYzalLcAuPu6FBRvfPMixCTPV2B7nMksd5
-         LEDv67WEktf3tvXPDC6B4tg/bGTJ8F4mIlfxN6N8q5yy7qV8n4FSErqd3lK0+yYsPC
-         62aUMJfvfY3Kg==
-Message-ID: <549fa553-ba75-97c1-9afb-9d2684902bde@kernel.org>
-Date:   Mon, 4 Jul 2022 21:49:14 +0200
+        Wed, 6 Jul 2022 07:31:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 307D725EA7
+        for <linux-trace-devel@vger.kernel.org>; Wed,  6 Jul 2022 04:31:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1657107064;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7+agReCcm5jknMuxFd1NOmlafXcyNcBcmNobCK4VXC0=;
+        b=Z+FSFOOaRLF3DP3CvPh8vgjeLpQoYL32VGrtCdhHrpN6CSuyL4UhIzUmFOSvLrNpAR0yJu
+        XUJbur6RsYuF+EM1YAGRZ1Sge9m/xgsCMwYKMxhguVmsEanbUo4p0GuuumAyhmgS9pqlqA
+        DGYLOKNjO7JSrUQ2fmmgz7Kjnp141WQ=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-287-3UDrLCf6PfaxGMA-gsN_tg-1; Wed, 06 Jul 2022 07:31:03 -0400
+X-MC-Unique: 3UDrLCf6PfaxGMA-gsN_tg-1
+Received: by mail-ej1-f70.google.com with SMTP id qf29-20020a1709077f1d00b00722e68806c4so3628074ejc.4
+        for <linux-trace-devel@vger.kernel.org>; Wed, 06 Jul 2022 04:31:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:cc:from:in-reply-to
+         :content-transfer-encoding;
+        bh=7+agReCcm5jknMuxFd1NOmlafXcyNcBcmNobCK4VXC0=;
+        b=xWZQIVZoL9gx0AhFxAGwuAaeZk6CeVdhubFX9qBXemk6qMKla/sH3VN/6Nen6YiK9A
+         CQFv41v1VN00kjcWlsGnaOV1cps+pPnSI4FEQip8YRDYNAnud9ee8fwc8wug3av9JO/8
+         qStkYfCrzfe1h2T9TwtxTroB0TIAl6h/J36+y07jPgkCw0l7Zx2jx+AkQqINe0OD40ad
+         4TB3eMYAsjkm+I2Ov7XZ9w8DGJ4G41ho4G+qBarJ17kVLQRxXdb+uODCCqW66QoC7AdV
+         1TsiTITFCkwC/e3a4aS7tSm09PHnZNkdOb3PTFYTIQ5GkninlFB4FbzjLfoohbpWbKMr
+         1wvw==
+X-Gm-Message-State: AJIora8onUcmpE+tKQRcXPpO3uT6gbWK/ijV66x/xE2wnPrE3L9gkL75
+        2ssjsjQXWa8LsE8lwKXnyV2zXfi+QV4/I+uZOuum3W01ebicjQB5ZIdZuEJ/LArxXwJ6I2jRdoC
+        32dwsnZNFOedTAmng1qruCa7+iJNfOA0=
+X-Received: by 2002:a05:6402:524d:b0:43a:72fe:76b7 with SMTP id t13-20020a056402524d00b0043a72fe76b7mr14114797edd.398.1657107061959;
+        Wed, 06 Jul 2022 04:31:01 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1uKrIGQo+bW3bqTqN2i8HBKCyWHsvCM/4Y+BfPNJnB61ImsP//Nqn0WrCxR+IxpQHTmzlEjGQ==
+X-Received: by 2002:a05:6402:524d:b0:43a:72fe:76b7 with SMTP id t13-20020a056402524d00b0043a72fe76b7mr14114779edd.398.1657107061763;
+        Wed, 06 Jul 2022 04:31:01 -0700 (PDT)
+Received: from [192.168.0.198] (host-80-104-20-93.retail.telecomitalia.it. [80.104.20.93])
+        by smtp.gmail.com with ESMTPSA id ec35-20020a0564020d6300b004316f94ec4esm25844708edb.66.2022.07.06.04.31.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Jul 2022 04:31:01 -0700 (PDT)
+Message-ID: <c8aa45af-9a64-8318-71d6-91511afed8e6@redhat.com>
+Date:   Wed, 6 Jul 2022 13:31:00 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH V4 01/20] rv: Add Runtime Verification (RV) interface
+ Thunderbird/91.11.0
+Subject: Re: stopping ftrace on event
 Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Gabriele Paoloni <gpaoloni@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org
-References: <cover.1655368610.git.bristot@kernel.org>
- <60548902dbccaa7ba420e40e46835693e27f643f.1655368610.git.bristot@kernel.org>
- <20220623162635.636f3d3c@rorschach.local.home>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <20220623162635.636f3d3c@rorschach.local.home>
+To:     Benjamin Steinke <benjamin.steinke@woks-audio.com>
+References: <4044532.36S9Iv5CRb@desktop>
+Cc:     linux-rt-users <linux-rt-users@vger.kernel.org>,
+        "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+In-Reply-To: <4044532.36S9Iv5CRb@desktop>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 6/23/22 22:26, Steven Rostedt wrote:
-> On Thu, 16 Jun 2022 10:44:43 +0200
-> Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+On 7/6/22 10:50, Benjamin Steinke wrote:
+> Hi all,
+> 
+> I'm hunting sporadic high irq-handler latencies in a pcie driver by using 
+> ftrace. I'm currently using trace-cmd record but get way to large files due to 
+> the event being so infrequent.
+> 
+> Is there a way to stop tracing or dump the current trace buffer when a specific 
+> event occurs?
 
-[ removing comments that I agreed and changed the code/log accordingly ]
-
->>
->>  "monitoring_on"
->>    - It is an on/off general switcher for monitoring. Note
->>    that it does not disable enabled monitors, but stop the per-entity
->>    monitors of monitoring the events received from the system.
->>    It resambles the "tracing_on" switcher.
-> 
-> You mean that the tracepoints are still attached, but the process of
-> monitoring isn't doing anything?
-
-correct, I am now mentioning it in the comment.
- 
-[...]
-
->> +static int disable_monitor(struct rv_monitor_def *mdef)
->> +{
->> +	if (mdef->monitor->enabled) {
->> +		mdef->monitor->enabled = 0;
->> +		mdef->monitor->stop();
->> +	}
->> +
->> +	mdef->enabled = 0;
-> 
-> What's the difference between mdef->enabled and mdef->monitor->enabled?
-
-Ooops, the mdef->enabled is a leftover... removing mdef->enabled.
-
->> +	return 0;
->> +}
->> +
-
-[...]
-
->> +static int create_monitor_dir(struct rv_monitor_def *mdef)
->> +{
->> +	struct dentry *root = get_monitors_root();
->> +	struct dentry *tmp;
->> +	const char *name = mdef->monitor->name;
->> +	int retval = 0;
->> +
->> +	mdef->root_d = rv_create_dir(name, root);
->> +
->> +	if (!mdef->root_d)
->> +		return -ENOMEM;
->> +
->> +	tmp = rv_create_file("enable", 0600,
-> 
-> I'd recommend make the modes (0600) into macros. I recently changed
-> these for tracing, and having them hard coded was a pain.
-> 
-> #define RV_FILE_READ	0600
-> 
-
-Added:
-#define RV_MODE_WRITE                   TRACE_MODE_WRITE
-#define RV_MODE_READ                    TRACE_MODE_READ
-
-
->> +			     mdef->root_d, mdef,
->> +			     &interface_enable_fops);
->> +	if (!tmp) {
->> +		retval = -ENOMEM;
->> +		goto out_remove_root;
->> +	}
->> +
->> +	tmp = rv_create_file("desc", 0400,
-> 
-> Same here, and in all other cases.
-> 
->> +			      mdef->root_d, mdef,
->> +			      &interface_desc_fops);
->> +	if (!tmp) {
->> +		retval = -ENOMEM;
->> +		goto out_remove_root;
->> +	}
->> +
->> +	return retval;
->> +
->> +out_remove_root:
->> +	rv_remove(mdef->root_d);
->> +	return retval;
->> +}
-
-[...]
->> +static ssize_t
->> +enabled_monitors_write(struct file *filp, const char __user *user_buf,
->> +		      size_t count, loff_t *ppos)
->> +{
->> +	char buff[MAX_RV_MONITOR_NAME_SIZE+1];
->> +	struct rv_monitor_def *mdef;
->> +	int retval = -EINVAL;
->> +	bool enable = true;
->> +	char *ptr = buff;
->> +	int len;
->> +
->> +	if (count < 1 || count > MAX_RV_MONITOR_NAME_SIZE+1)
->> +		return -EINVAL;
->> +
->> +	memset(buff, 0, sizeof(buff));
->> +
->> +	retval = simple_write_to_buffer(buff, sizeof(buff)-1, ppos, user_buf,
->> +					count);
->> +	if (!retval)
->> +		return -EFAULT;
->> +
->> +	if (buff[0] == '!') {
->> +		enable = false;
->> +		ptr++;
->> +	}
->> +
->> +	len = strlen(ptr);
->> +	if (!len)
->> +		return count;
->> +	/*
->> +	 * remove \n
->> +	 */
->> +	ptr[len-1] = '\0';
-> 
-> Are you sure there's an '\n' here?
-> 
-> One could just do "write(fd, "monitor", 7)"
-> 
-> Perhaps use strim()
-
-ack.
-
-> 
->> +
->> +	mutex_lock(&rv_interface_lock);
->> +
->> +	retval = -EINVAL;
->> +
->> +	list_for_each_entry(mdef, &rv_monitors_list, list) {
->> +		if (strcmp(ptr, mdef->monitor->name) == 0) {
-> 
-> BTW, you could do:
-> 
-> 		if (strcmp(ptr, mdef->monitor->name) != 0)
-> 			continue;
-> 
-> And then get rid of an extra indent below.
-> 
->> +			/*
->> +			 * Monitor found!
->> +			 */
->> +			if (enable)
->> +				retval = enable_monitor(mdef);
->> +			else
->> +				retval = disable_monitor(mdef);
->> +
->> +			if (retval)
->> +				goto out;
-> 
-> Why not just break?
-> 
-> In fact, you could just do:
-> 
-> 			if (!retval)
-> 				retval = count;
-> 			break;
-
-yep, it looks better.
+https://www.kernel.org/doc/html/latest/trace/events.html#event-triggers ?
 
 -- Daniel
+> Thanks for your help,
+> Benjamin
+> 
+> 
+> 
+> 
+
