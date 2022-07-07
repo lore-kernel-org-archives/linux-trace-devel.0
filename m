@@ -2,275 +2,147 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50FD3C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jul 2022 21:58:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12499CCA479
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jul 2022 21:58:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236741AbiGGV6g (ORCPT
+        id S236825AbiGGV6h (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 7 Jul 2022 17:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60742 "EHLO
+        Thu, 7 Jul 2022 17:58:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236809AbiGGV6e (ORCPT
+        with ESMTP id S236805AbiGGV6e (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 7 Jul 2022 17:58:34 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1324E1F2F6;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D89741D320;
         Thu,  7 Jul 2022 14:58:32 -0700 (PDT)
 Received: from localhost.localdomain (unknown [98.59.227.103])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 6CD022044E3C;
-        Thu,  7 Jul 2022 14:58:32 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6CD022044E3C
+        by linux.microsoft.com (Postfix) with ESMTPSA id 04A22201326C;
+        Thu,  7 Jul 2022 14:58:31 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 04A22201326C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
         s=default; t=1657231112;
-        bh=1WSR4Xe7Rvc6a41/orqjnmy+ao/eNdC8QRAORPXiFcE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CU52FYJ1iLFZprtu7ImZJT+eQ98qDEeSOEp7Sxj1dqgN7kzpmm3G/z/OaJX/R/cDV
-         MKuCUFCxCcT72Aq08eb4y3sUmGBWmFqVWTaGY9glo5fCWGmAhGVt33A/rMKAJznCQE
-         iTqptaJaUSA7MWVqxbynWPNhmehgFwyRr+IT3zk0=
+        bh=OA1r1wCh9LBEPcO9vdB7ZVEhQrFIKdlbqarqppMQbzk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BitkmtCAKi86lg357F7A2p12fa0gACdn/o0PXjuA2zqNE6g48Al+qvZysfR4N8jQE
+         V8rUX60QVjZzFW/ZQgGTWr9SYsmPl+gkkU4EDA1NuFpJEpbtT0WO0ryJukWnS5w8Y1
+         Dt1nKyTy6vHsqqVe1JT0PS1gt+qPUQl0GKfbplZw=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org,
         mathieu.desnoyers@efficios.com
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 2/7] tracing: Add namespace instance directory to tracefs
-Date:   Thu,  7 Jul 2022 14:58:23 -0700
-Message-Id: <20220707215828.2021-3-beaub@linux.microsoft.com>
+Subject: [RFC PATCH 0/7] tracing: Add tracing namespace API for user
+Date:   Thu,  7 Jul 2022 14:58:21 -0700
+Message-Id: <20220707215828.2021-1-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220707215828.2021-1-beaub@linux.microsoft.com>
-References: <20220707215828.2021-1-beaub@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Some tracing systems require a group or namespace isolation, such as
-user_events. The namespace directory in tracefs is a singleton like the
-instances directory. It also acts like the instances directory in that
-user-mode processes can create a directory within the namespace if they
-have appropriate permissions.
+This series is based on the ftrace/core branch.
 
-This change only covers adding the ability for a tracing system to
-create the namespace directory. A system for adding and managing
-namespaces will reside within another tracing API.
+You will need the following series to apply this series:
+Link: https://lore.kernel.org/all/20220425184631.2068-1-beaub@linux.microsoft.com/
 
+User facing tracing systems, such as user_events and LTTng, sometimes
+require multiple events with the same name, but from different
+containers. This can cause event name conflicts and leak out details
+of events not owned by the container.
+
+To create a tracing namespace, run mkdir under the new tracefs directory
+named "namespaces" (/sys/kernel/tracing/namespaces typically). This
+directory largely works the same as "instances" where the new directory
+will have files populated within it via the tracing system
+automatically. The tracing systems will put their files under the "root"
+directory, which is meant to be the directory that you can bind mount
+out to containers. The "options" file is meant to allow operators to
+configure the namespaces via the registered systems.
+
+The tracing namespace allows those user facing systems to register with
+the tracing namespace. When an operator creates a namespace directory
+under /sys/kernel/tracing/namespaces the registered systems will have
+their create operation run for that namespace. The systems can then
+create files in the new directory used for tracing via user programs. These
+files will then isolate events between each namespace the operator
+creates.
+
+Typically the system name of the event will have the tracing namespace
+name appended onto the system name. For example, if a namespace
+directory was created named "mygroup", then the system name would be
+"<system_name>.mygroup". Since the system names are different for each
+namespace, per-namespace recording/playback can be done by specifying
+the per-namespace system name and the event name. However, this decision is
+up to the registered tracing system for each namespace.
+
+The operator can then bind mount each namespace directory into
+containers. This provides isolation between events and containers, if
+required. It's also possible for several containers to share an
+isolation via bind mounts instead of having an isolation per-container.
+With these files being isolated, different permissions can be added for
+these files than normal tracefs files. This helps scenarios where
+non-admin processes would like to trace, but currently cannot.
+
+To create a namespace called isolated and limited to 256 events run:
+mkdir /sys/kernel/tracing/namespaces/isolated
+cd /sys/kernel/tracing/namespaces/isolated
+echo user_events_limit=256 > options
+
+To bind mount the isolated root to /isolated for use by others run:
+mkdir /isolated
+mount --bind /sys/kernel/tracing/namespaces/isolated/root /isolated
+
+Reading /isolated/user_events_status then outputs the following:
+
+Active: 0
+Busy: 0
+Max: 32768
+Limit: 256
+
+The normal user_event ABI methods work just as before, however, the
+events are now registered under a different system name and have
+their own status file/bitmap.
+
+There's been some previous discussion about this both in the tracefs
+meetings as well as on the mailing lists:
 Link: https://lore.kernel.org/all/20220312010140.1880-1-beaub@linux.microsoft.com/
+Link: https://lore.kernel.org/all/20220425184631.2068-1-beaub@linux.microsoft.com/
 
-Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
----
- fs/tracefs/inode.c      | 121 +++++++++++++++++++++++++++++++++++++---
- include/linux/tracefs.h |   5 ++
- 2 files changed, 119 insertions(+), 7 deletions(-)
+Beau Belgrave (7):
+  tracing/user_events: Remove BROKEN and restore user_events.h location
+  tracing: Add namespace instance directory to tracefs
+  tracing: Add tracing namespace API for systems to register with
+  tracing/user_events: Move pages/locks into groups to prepare for
+    namespaces
+  tracing/user_events: Register with trace namespace API
+  tracing/user_events: Enable setting event limit within namespace
+  tracing/user_events: Add self-test for namespace integration
 
-diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
-index de7252715b12..aba1f9cb6b75 100644
---- a/fs/tracefs/inode.c
-+++ b/fs/tracefs/inode.c
-@@ -24,6 +24,11 @@
- 
- #define TRACEFS_DEFAULT_MODE	0700
- 
-+enum tracefs_dir_type {
-+	TRACEFS_DIR_INSTANCES,
-+	TRACEFS_DIR_NAMESPACES,
-+};
-+
- static struct vfsmount *tracefs_mount;
- static int tracefs_mount_count;
- static bool tracefs_registered;
-@@ -50,6 +55,8 @@ static const struct file_operations tracefs_file_operations = {
- static struct tracefs_dir_ops {
- 	int (*mkdir)(const char *name);
- 	int (*rmdir)(const char *name);
-+	int (*ns_mkdir)(const char *name);
-+	int (*ns_rmdir)(const char *name);
- } tracefs_ops __ro_after_init;
- 
- static char *get_dname(struct dentry *dentry)
-@@ -67,9 +74,8 @@ static char *get_dname(struct dentry *dentry)
- 	return name;
- }
- 
--static int tracefs_syscall_mkdir(struct user_namespace *mnt_userns,
--				 struct inode *inode, struct dentry *dentry,
--				 umode_t mode)
-+static int tracefs_syscall_mkdir_core(int type, struct inode *inode,
-+				      struct dentry *dentry)
- {
- 	char *name;
- 	int ret;
-@@ -84,7 +90,22 @@ static int tracefs_syscall_mkdir(struct user_namespace *mnt_userns,
- 	 * mkdir routine to handle races.
- 	 */
- 	inode_unlock(inode);
--	ret = tracefs_ops.mkdir(name);
-+
-+	switch (type) {
-+	case TRACEFS_DIR_INSTANCES:
-+		ret = tracefs_ops.mkdir(name);
-+		break;
-+
-+	case TRACEFS_DIR_NAMESPACES:
-+		ret = tracefs_ops.ns_mkdir(name);
-+		break;
-+
-+	default:
-+		pr_debug("tracefs: unknown mkdir type '%d'\n", type);
-+		ret = -ENOENT;
-+		break;
-+	}
-+
- 	inode_lock(inode);
- 
- 	kfree(name);
-@@ -92,7 +113,24 @@ static int tracefs_syscall_mkdir(struct user_namespace *mnt_userns,
- 	return ret;
- }
- 
--static int tracefs_syscall_rmdir(struct inode *inode, struct dentry *dentry)
-+static int tracefs_syscall_mkdir(struct user_namespace *mnt_userns,
-+				 struct inode *inode, struct dentry *dentry,
-+				 umode_t mode)
-+{
-+	return tracefs_syscall_mkdir_core(TRACEFS_DIR_INSTANCES,
-+					  inode, dentry);
-+}
-+
-+static int tracefs_syscall_ns_mkdir(struct user_namespace *mnt_userns,
-+				    struct inode *inode, struct dentry *dentry,
-+				    umode_t mode)
-+{
-+	return tracefs_syscall_mkdir_core(TRACEFS_DIR_NAMESPACES,
-+					  inode, dentry);
-+}
-+
-+static int tracefs_syscall_rmdir_core(int type, struct inode *inode,
-+				      struct dentry *dentry)
- {
- 	char *name;
- 	int ret;
-@@ -111,7 +149,20 @@ static int tracefs_syscall_rmdir(struct inode *inode, struct dentry *dentry)
- 	inode_unlock(inode);
- 	inode_unlock(d_inode(dentry));
- 
--	ret = tracefs_ops.rmdir(name);
-+	switch (type) {
-+	case TRACEFS_DIR_INSTANCES:
-+		ret = tracefs_ops.rmdir(name);
-+		break;
-+
-+	case TRACEFS_DIR_NAMESPACES:
-+		ret = tracefs_ops.ns_rmdir(name);
-+		break;
-+
-+	default:
-+		pr_debug("tracefs: unknown rmdir type '%d'\n", type);
-+		ret = -ENOENT;
-+		break;
-+	}
- 
- 	inode_lock_nested(inode, I_MUTEX_PARENT);
- 	inode_lock(d_inode(dentry));
-@@ -121,12 +172,30 @@ static int tracefs_syscall_rmdir(struct inode *inode, struct dentry *dentry)
- 	return ret;
- }
- 
-+static int tracefs_syscall_rmdir(struct inode *inode, struct dentry *dentry)
-+{
-+	return tracefs_syscall_rmdir_core(TRACEFS_DIR_INSTANCES,
-+					  inode, dentry);
-+}
-+
-+static int tracefs_syscall_ns_rmdir(struct inode *inode, struct dentry *dentry)
-+{
-+	return tracefs_syscall_rmdir_core(TRACEFS_DIR_NAMESPACES,
-+					  inode, dentry);
-+}
-+
- static const struct inode_operations tracefs_dir_inode_operations = {
- 	.lookup		= simple_lookup,
- 	.mkdir		= tracefs_syscall_mkdir,
- 	.rmdir		= tracefs_syscall_rmdir,
- };
- 
-+static const struct inode_operations tracefs_dir_inode_ns_operations = {
-+	.lookup		= simple_lookup,
-+	.mkdir		= tracefs_syscall_ns_mkdir,
-+	.rmdir		= tracefs_syscall_ns_rmdir,
-+};
-+
- static struct inode *tracefs_get_inode(struct super_block *sb)
- {
- 	struct inode *inode = new_inode(sb);
-@@ -554,7 +623,7 @@ struct dentry *tracefs_create_dir(const char *name, struct dentry *parent)
-  * Only one instances directory is allowed.
-  *
-  * The instances directory is special as it allows for mkdir and rmdir to
-- * to be done by userspace. When a mkdir or rmdir is performed, the inode
-+ * be done by userspace. When a mkdir or rmdir is performed, the inode
-  * locks are released and the methods passed in (@mkdir and @rmdir) are
-  * called without locks and with the name of the directory being created
-  * within the instances directory.
-@@ -582,6 +651,44 @@ __init struct dentry *tracefs_create_instance_dir(const char *name,
- 	return dentry;
- }
- 
-+/**
-+ * tracefs_create_namespace_dir - create the tracing namespaces directory
-+ * @name: The name of the namespaces directory to create
-+ * @parent: The parent directory that the namespaces directory will exist
-+ * @mkdir: The function to call when a mkdir is performed.
-+ * @rmdir: The function to call when a rmdir is performed.
-+ *
-+ * Only one namespaces directory is allowed.
-+ *
-+ * The namespaces directory is special as it allows for mkdir and rmdir to
-+ * be done by userspace. When a mkdir or rmdir is performed, the inode
-+ * locks are released and the methods passed in (@mkdir and @rmdir) are
-+ * called without locks and with the name of the directory being created
-+ * within the namespaces directory.
-+ *
-+ * Returns the dentry of the namespaces directory.
-+ */
-+__init struct dentry *tracefs_create_namespace_dir(const char *name,
-+					  struct dentry *parent,
-+					  int (*mkdir)(const char *name),
-+					  int (*rmdir)(const char *name))
-+{
-+	struct dentry *dentry;
-+
-+	/* Only allow one instance of the namespaces directory. */
-+	if (WARN_ON(tracefs_ops.ns_mkdir || tracefs_ops.ns_rmdir))
-+		return NULL;
-+
-+	dentry = __create_dir(name, parent, &tracefs_dir_inode_ns_operations);
-+	if (!dentry)
-+		return NULL;
-+
-+	tracefs_ops.ns_mkdir = mkdir;
-+	tracefs_ops.ns_rmdir = rmdir;
-+
-+	return dentry;
-+}
-+
- static void remove_one(struct dentry *victim)
- {
- 	simple_release_fs(&tracefs_mount, &tracefs_mount_count);
-diff --git a/include/linux/tracefs.h b/include/linux/tracefs.h
-index 99912445974c..04870dee6c87 100644
---- a/include/linux/tracefs.h
-+++ b/include/linux/tracefs.h
-@@ -33,6 +33,11 @@ struct dentry *tracefs_create_instance_dir(const char *name, struct dentry *pare
- 					   int (*mkdir)(const char *name),
- 					   int (*rmdir)(const char *name));
- 
-+struct dentry *tracefs_create_namespace_dir(const char *name,
-+					    struct dentry *parent,
-+					    int (*mkdir)(const char *name),
-+					    int (*rmdir)(const char *name));
-+
- bool tracefs_initialized(void);
- 
- #endif /* CONFIG_TRACING */
+ fs/tracefs/inode.c                            | 121 +++-
+ include/linux/tracefs.h                       |   5 +
+ include/{ => uapi}/linux/user_events.h        |   0
+ kernel/trace/Kconfig                          |  12 +-
+ kernel/trace/Makefile                         |   1 +
+ kernel/trace/trace.c                          |  39 ++
+ kernel/trace/trace_events_user.c              | 589 +++++++++++++++---
+ kernel/trace/trace_namespace.c                | 567 +++++++++++++++++
+ kernel/trace/trace_namespace.h                |  57 ++
+ .../selftests/user_events/ftrace_test.c       | 150 +++++
+ 10 files changed, 1454 insertions(+), 87 deletions(-)
+ rename include/{ => uapi}/linux/user_events.h (100%)
+ create mode 100644 kernel/trace/trace_namespace.c
+ create mode 100644 kernel/trace/trace_namespace.h
+
+
+base-commit: b39181f7c6907dc66ff937b74758671fa6ba430c
+prerequisite-patch-id: 1872158d6a015caa0cedefe85d10a9e48b1d33e9
+prerequisite-patch-id: bb3e38a639be23a2df781547e4c87bc5bb1a05d0
+prerequisite-patch-id: e7c8f170457cbb6d467ddec6f9282e2cdd81bb32
+prerequisite-patch-id: ffbe40150b26469168a3f4abe97849d8708785d5
+prerequisite-patch-id: a5c2a495793f9db8103c13a4f1e5380ea0f78902
+prerequisite-patch-id: 3a0fbeaf8508f995f3cb271c9e603b666a69d5fa
+prerequisite-patch-id: 5df583c86e6de3fc504b478e52e91068c85fa2b9
 -- 
 2.25.1
 
