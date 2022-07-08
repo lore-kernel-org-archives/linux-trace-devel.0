@@ -2,109 +2,59 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16D62C43334
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Jul 2022 15:56:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94965C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Jul 2022 18:23:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238867AbiGHP4U (ORCPT
+        id S239541AbiGHSX1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 8 Jul 2022 11:56:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40286 "EHLO
+        Fri, 8 Jul 2022 14:23:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238231AbiGHP4U (ORCPT
+        with ESMTP id S239359AbiGHSXL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 8 Jul 2022 11:56:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A51070E56;
-        Fri,  8 Jul 2022 08:56:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=HoXhP8EOLekBdBcy/x+v3URd54YeRxp4rSwpn2gqPfY=; b=h7dLsvTcMAcpFVOpTTt9EgcXLz
-        YG+zs2fKUN8GjB0qd5UWx51u5SUzuUU5NhVd/YRyStMyrJ8iFJ9CW6EAydpZi5JzfBpXKAQSWPzpV
-        WsttHDXZTcIDhpLhE9pB43otACAOryZGWgaZph9TUfXscVAVxavNOv08rJcE8UcfxOjF1ZzJEV4hA
-        ky43E55V0pjs+vCJUhhqa8+662C/VKmgo1vHBKVQGSA+BTZjtKW89FhRoHgQD2Y2ifblnbe1spt8X
-        QlAmqTFb5GZTrUhh9TljDfq5egeb5MDvOlDwVB7R1BNViSbXK4jNmlCDTDBpOd4ythp+2xuYCuk89
-        TYin33qg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1o9qKW-003c8p-CP; Fri, 08 Jul 2022 15:55:44 +0000
-Date:   Fri, 8 Jul 2022 16:55:44 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Tao Zhou <tao.zhou@linux.dev>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Gabriele Paoloni <gpaoloni@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH V4 01/20] rv: Add Runtime Verification (RV) interface
-Message-ID: <YshTgMJcVBPuiEUN@casper.infradead.org>
-References: <cover.1655368610.git.bristot@kernel.org>
- <60548902dbccaa7ba420e40e46835693e27f643f.1655368610.git.bristot@kernel.org>
- <YsXLDvjHqOxYtckg@geo.homenetwork>
- <YsXMEeqGr2vdJCa7@casper.infradead.org>
- <YshO5tSeNyFpNFc4@geo.homenetwork>
+        Fri, 8 Jul 2022 14:23:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9082187341
+        for <linux-trace-devel@vger.kernel.org>; Fri,  8 Jul 2022 11:22:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1F10062474
+        for <linux-trace-devel@vger.kernel.org>; Fri,  8 Jul 2022 18:22:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CB4BC341C6;
+        Fri,  8 Jul 2022 18:22:50 +0000 (UTC)
+Date:   Fri, 8 Jul 2022 14:22:48 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH] libtracefs: avoid pointless extra DEP stage
+Message-ID: <20220708142248.19af0aa9@gandalf.local.home>
+In-Reply-To: <20220620150316.21022-1-jengelh@inai.de>
+References: <20220620150316.21022-1-jengelh@inai.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YshO5tSeNyFpNFc4@geo.homenetwork>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Jul 08, 2022 at 11:36:06PM +0800, Tao Zhou wrote:
-> On Wed, Jul 06, 2022 at 06:53:21PM +0100, Matthew Wilcox wrote:
-> 
-> > On Thu, Jul 07, 2022 at 01:49:02AM +0800, Tao Zhou wrote:
-> > > > +struct rv_monitor {
-> > > > +	const char		*name;
-> > > > +	const char		*description;
-> > > > +	bool			enabled;
-> > > 
-> > > Can the 'bool enabled;' be put at the end like the definition of
-> > > structure rv_monitor_def. If '8+8+sizeof(bool)+8+8+8' not the same
-> > > as '8+8+8+8+8+sizeof(bool)', I mean is it possible that after the
-> > > end of stucture there is a int or char not require to align to 8 as
-> > > an example from my nonsense.
-> > 
-> > That will make no difference at all.  C doesn't allow other variables
-> > to "fill in the hole" at the end of the structure like that.  For
-> > example, one could legitimately do 'memset(&rvm, sizeof(rvm))',
-> > and that would wipe out those other variables as well.
-> 
-> I mean if it is possible that if @enabled placed at the end of the
-> structure rv_monitor will save some bytes.
-> If @enabled place in between, the next function pointer which is 8 bytes
-> will align to be in x8 address and the size of structure rv_monitor is
-> larger than been placed at the end of the structure.
-> Or the compiler can do magic that I can not guess.
-> 
-> Sorry for my late reply. I am not sure about this. But your reply is not
-> about what I mean. You say that the size of structure is the same(I doute about this).
-> But what my concert is that the other data next to the structure rv_monitor 
-> how to align if placing the @enabled at the end.
-> 
-> Place in between, bytes:
-> 8+8+8(padd)+8+8+8=48
-> 
-> Place at the end, bytes:
-> 8+8+8+8+8+sizeof(bool)=?
-> 
-> ? is small than 48 and the data next to the data structure rv_monitor can use
-> the saved byte which is the result of placing @enabled at the end of structure
-> to place the data.
+On Mon, 20 Jun 2022 17:03:16 +0200
+Jan Engelhardt <jengelh@inai.de> wrote:
 
-You don't need to take my word for it.  You can try it yourself.
+>  clean:
+> -	$(Q)$(call do_clean,$(OBJS) .*.d)
+> +	$(Q)$(call do_clean,$(OBJS) *.d)
+>  
+> -dep_includes := $(wildcard $(DEPS))
+> -
+> -ifneq ($(dep_includes),)
+> -  include $(dep_includes)
+> -endif
+> +-include *.d
+>  
+
+After this change, the .d files are visible. Is there a way to keep them
+hidden? That is, keep the . in front?
+
+-- Steve
