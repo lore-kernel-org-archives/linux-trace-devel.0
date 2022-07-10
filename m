@@ -2,54 +2,145 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44B71CCA47F
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Jul 2022 19:46:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 013A1C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 10 Jul 2022 08:41:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239914AbiGHTq1 (ORCPT
+        id S229502AbiGJIl0 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 8 Jul 2022 15:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
+        Sun, 10 Jul 2022 04:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238387AbiGHTq1 (ORCPT
+        with ESMTP id S229450AbiGJIlZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 8 Jul 2022 15:46:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9ACF88F11
-        for <linux-trace-devel@vger.kernel.org>; Fri,  8 Jul 2022 12:46:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3AEA2627B0
-        for <linux-trace-devel@vger.kernel.org>; Fri,  8 Jul 2022 19:46:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F9E4C341C0;
-        Fri,  8 Jul 2022 19:46:25 +0000 (UTC)
-Date:   Fri, 8 Jul 2022 15:46:23 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     <matteo.bertolino@huawei.com>
-Cc:     <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH] trace-cmd: fixing description of a field in
- trace-cmd.dat.v7.5.txt doc
-Message-ID: <20220708154623.3e09d67c@gandalf.local.home>
-In-Reply-To: <20220629161845.2432-1-matteo.bertolino@huawei.com>
-References: <20220629161845.2432-1-matteo.bertolino@huawei.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Sun, 10 Jul 2022 04:41:25 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E4B0186F6;
+        Sun, 10 Jul 2022 01:41:24 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id w83so3631812oiw.1;
+        Sun, 10 Jul 2022 01:41:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=pV0ib9A/Zqn3DAPzUpkTVTd8pzK2zpC1aB/N9OYfh5Y=;
+        b=kCXhVzyFMw7S+lCU/LwpvzAgmS+/lwBU9Y9wpSCzuN8j/7QA+3wkf7yzUmi/kPbLHf
+         J/fixpM0ErV7ewQxrhAqwBZ0k2lmXYEDeSYvh5BzrQYiIrKZo+4fml4ZDjcE5uILr0QT
+         AqSR21dHKUr6+RQ0PKm3wpi9AlY8ZMUr4/E+vg+tnu61GeL0YH+TwOSAmbaiBYwn/oke
+         Jw09mIja3s3RYDeRIZBvYZxyRWvedwuFXD/TokPlT1FdSwWXdag9pakoy179+DyMKq0r
+         Fqph5L4mMCUMLex8y/R8760NWeEbFUpd6jPdgF3CxQTOk8wmYMEWDTBF0WLA6o/RQXcJ
+         ZZww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=pV0ib9A/Zqn3DAPzUpkTVTd8pzK2zpC1aB/N9OYfh5Y=;
+        b=8HwgW9Zx2gAl9EvnsCwN/AOzRlhuFOQfv1nDrfnZpW6gC/Kz4FbITl6sFLzKglWbRh
+         Fo5aEYZcoBTV7GiCX2rl6hAj1GsEinswjDUBlwDHcL22r7V+40RDb7SnlPJvNrohKtUu
+         ENjSXoFSWGSKmZKSmsx3oWT00ZkQRiWclPX/IsF4JcTRgVKKH4AG5mi6tmOjkHymwMpX
+         WAf0uTL9pKJHV0rPgwsHlX2f2jfNhmaPrgspGZru320hku7hlhJX5/B0J/pabMMXUPt4
+         efjXGjJCuQ2VBtzBdg+ZcjbCpfGo+tDO7SpsmEXaMH1n0f0UUjE44Orran7oJUDRrobu
+         tR9A==
+X-Gm-Message-State: AJIora+t+SSp0soQ/2BIsaKLN25nS0DNebdiuPbkSGzZ5nSsWaIV17TF
+        NOy6327zRisYHKSzZZm6cy2fCra3RnA00fbwKfO/ADXpSP02eg==
+X-Google-Smtp-Source: AGRyM1vCDFTJqvW+Rt/d3cAvtm4skROzzW1zVKfoq0OrYxutUdiMJZfk5XddtrqB1ox7OHdtCEe6EW/NrHNJVRbDq10=
+X-Received: by 2002:a05:6808:302b:b0:2f9:eeef:f03 with SMTP id
+ ay43-20020a056808302b00b002f9eeef0f03mr4446745oib.128.1657442483540; Sun, 10
+ Jul 2022 01:41:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <9154d66961804027b1bdc26f1ff08012bb7f9df8.1657269675.git.bristot@kernel.org>
+In-Reply-To: <9154d66961804027b1bdc26f1ff08012bb7f9df8.1657269675.git.bristot@kernel.org>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sun, 10 Jul 2022 10:40:47 +0200
+Message-ID: <CA+icZUUKiODjF0gZ1MaHPgVZS8zKEweR-1NkjHcegsLoRNUQ9w@mail.gmail.com>
+Subject: Re: [PATCH] rtla: Fix Makefile when called from -C tools/
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 29 Jun 2022 18:18:45 +0200
-<matteo.bertolino@huawei.com> wrote:
+On Fri, Jul 8, 2022 at 2:17 PM Daniel Bristot de Oliveira
+<bristot@kernel.org> wrote:
+>
+> Sedat Dilek reported an error on rtla Makefile when running:
+>
 
-> From: "Matteo Bertolino (Huawei Technologies France)" <matteo.bertolino@huawei.com>
-> 
-> Paragraph "Format of Section Header" states to write the size of a section on 4 bytes, but the actual size is 8 bytes (long long unsigned int).
-> Submitted bug: https://bugzilla.kernel.org/show_bug.cgi?id=216185
-> 
-> Signed-off-by: Matteo Bertolino (Huawei Technologies France) <matteo.bertolino@huawei.com>
+Hi Daniel,
 
-Applied, thanks Matteo!
+Thanks for the patch.
 
--- Steve
+>     $ make -C tools/
+
+No, that was with...
+
+$ make -C tools/ clean
+
+>     [...]
+>     make[2]: Entering directory
+>     '/home/dileks/src/linux-kernel/git/tools/tracing/rtla'
+>     [...]
+>     '/home/dileks/src/linux-kernel/git/Documentation/tools/rtla'
+>     /bin/sh: 1: test: rtla-make[2]:: unexpected operator    <------ The problem
+>     rm: cannot remove '/home/dileks/src/linux-kernel/git': Is a directory
+>     make[2]: *** [Makefile:120: clean] Error 1
+>     make[2]: Leaving directory
+>
+> This occurred because the rtla calls kernel's Makefile to get the
+> version in silence mode, e.g.,
+>
+>     $ make -sC ../../.. kernelversion
+>     5.19.0-rc4
+>
+> But the -s is being ignored when rtla's makefile is called from indirectly,
+> so the output looks like:
+>
+>     $ make -C ../../.. kernelversion
+>     make: Entering directory '/root/linux'
+>     5.19.0-rc4
+>     make: Leaving directory '/root/linux'
+>
+> 'grep -v make' to avoid this problem, e.g.,
+>
+
+Missing word at the beginning soething like:
+
+Use 'grep -v make' to avoid this problem ...
+
+>     $ make -C ../../.. kernelversion | grep -v make
+>     5.19.0-rc4
+>
+
+Shouldn't that be:
+
+$ make -sC ... (missing "s")
+
+Regards,
+-Sedat-
+
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Fixes: 8619e32825fd ("rtla: Follow kernel version")
+> Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+> ---
+>  tools/tracing/rtla/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
+> index 3822f4ea5f49..1bea2d16d4c1 100644
+> --- a/tools/tracing/rtla/Makefile
+> +++ b/tools/tracing/rtla/Makefile
+> @@ -1,6 +1,6 @@
+>  NAME   :=      rtla
+>  # Follow the kernel version
+> -VERSION :=     $(shell cat VERSION 2> /dev/null || make -sC ../../.. kernelversion)
+> +VERSION :=     $(shell cat VERSION 2> /dev/null || make -sC ../../.. kernelversion | grep -v make)
+>
+>  # From libtracefs:
+>  # Makefiles suck: This macro sets a default value of $(2) for the
+> --
+> 2.32.0
+>
