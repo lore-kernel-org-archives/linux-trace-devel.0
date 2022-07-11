@@ -2,94 +2,86 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC776C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Jul 2022 14:17:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4904DC43334
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Jul 2022 17:47:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232986AbiGLORs (ORCPT
+        id S229871AbiGKRru (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 12 Jul 2022 10:17:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33144 "EHLO
+        Mon, 11 Jul 2022 13:47:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233333AbiGLORa (ORCPT
+        with ESMTP id S231304AbiGKRre (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 12 Jul 2022 10:17:30 -0400
-Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CADF97D68
-        for <linux-trace-devel@vger.kernel.org>; Tue, 12 Jul 2022 07:17:30 -0700 (PDT)
-Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-10c0119dd16so10470334fac.6
-        for <linux-trace-devel@vger.kernel.org>; Tue, 12 Jul 2022 07:17:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/e3Zc6nON2eMWN7FGBf8WgIC9nuzZImCJRay+QGgpc4=;
-        b=ErEFhuXJ2vDvnylsjWE7lb/94Gm5dnv2kFTHUXhEcpetXhD7Gw8dH5brydJVyuUZbV
-         l5jtvqyFhozMvGNmu6llB8spuyFAep3i7o1k/fm495VYcvCS1Yqt4R0DsKfc9GWrZOGN
-         kCwkCELKa0oLxFNvBoMu1/iI0ITkK72TlSDVZEli3M42+oP1kcAUSaN8koEAkoycwtgm
-         9ZaZXMUloLI2ch3QEwNYpgW3HEnECnnQQQMI4PqB2dyAKwI59/lA3nOfvAvTIwDayJwp
-         tNo3iNj5JsfHkpgR+VI1aFRGqgBtsLmBbbdL+N6Avjhw7LvCMKkwpsk4cuRI+KmlgJtA
-         dwPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/e3Zc6nON2eMWN7FGBf8WgIC9nuzZImCJRay+QGgpc4=;
-        b=Y9MkMdkVRueL2F8Ugj4kvv065zF7zJ/X7gIqZsi5AqrSHyGnwsuUcwYS7q/h2PKytf
-         L4bNUkXU6bhpisSkTJnFCmpKa5xsJgMqAZp5XxLNVOJsEGjtygH80yTm5x7REeeUyp4x
-         V3L1vX3spLHRjo/5dJvbYSqGJ6Cdn7p8VLVxZWLeYxDiL7/4U8Y/WFT0dW6NnORKYz0F
-         Xq2AIK+272J2J7fCR/+werchuqATi7U7zOpIq1JumeMDY3UlstYC7yKhI6cBUO+mNSHp
-         eI3Wnw3XOgLqXqDjf352eh8tmgTyEaEbcn/G2tNhZEpIBxBiWf6AbsTTQox4GOW0T9lU
-         SBDA==
-X-Gm-Message-State: AJIora/M1rhX/LJh6eK2XownpKwUCS8UlP6dN86hQe/vhcoM0V4ty4qD
-        PXg5qCXtuJxq8Bx49oa3tKrcZZmkyLbYHa0Bi1BzHk5itCw=
-X-Google-Smtp-Source: AGRyM1vPatDYXH5A/VjWo5PWOFdm2Yyq58+IAdQv8bwQDR5vFUaubY9dSYuADWTINtFIDv1ozxDHf+uHmwKlBEwPWbc=
-X-Received: by 2002:a05:6870:461b:b0:e9:a015:36a6 with SMTP id
- z27-20020a056870461b00b000e9a01536a6mr1812037oao.185.1657635449133; Tue, 12
- Jul 2022 07:17:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220504010242.1388192-1-vineethrp@google.com> <20220711151655.5a4f4cc0@gandalf.local.home>
-In-Reply-To: <20220711151655.5a4f4cc0@gandalf.local.home>
-From:   Vineeth Pillai <vineethrp@google.com>
-Date:   Tue, 12 Jul 2022 10:17:17 -0400
-Message-ID: <CA+HDTgTUDhvywfNvzbFbiOTnAifPSZksu_9RnCeFvWb3Hzd61w@mail.gmail.com>
-Subject: Re: [PATCH] trace-cmd: rework of the pid detection of vcpus
+        Mon, 11 Jul 2022 13:47:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F52A72EE6
+        for <linux-trace-devel@vger.kernel.org>; Mon, 11 Jul 2022 10:47:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 17ED06135B
+        for <linux-trace-devel@vger.kernel.org>; Mon, 11 Jul 2022 17:47:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45B1AC341C8
+        for <linux-trace-devel@vger.kernel.org>; Mon, 11 Jul 2022 17:47:18 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Tv/hAJgN"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=L6nK1HTJs3obWwk+ljZ2j3Y10HjNuq9KKzXTw1l0KDE=;
+ b=Tv/hAJgNy1ixv4f5zFLTxZAYPzy9s937mprmLKB3aMMrdGTGgwW9GXk6EMwLiLxD7DP1
+ PBN+I4fZGjx652GQNoIEtuegHTEsRn0/9Jnrl37XoDLPvM8Ca+6iZVwIn+YaDt0Xoyec
+ 9/DdxXdkTMJhk5jLMZFFiCyqkFjwZLgBUyLpehoUhkIoPfmAb4Jwm6VQXzq4Lx6YQpZF
+ eL2xi1p9voCyamOyA+LLtblQwPyQEkdJVAo3NOmlNc7jUs+4JXP3w+vv5Qn4+4ToPmHD
+ VF1kOy1nUs9mTl7n3W100sz/5zF8EXvtaPil//XqzR9WVk6FNo+3VVuun35/Lh3d1RZK MA== 
+From:   Sven Schnelle <svens@linux.ibm.com> (by way of Steven Rostedt
+        <rostedt@goodmis.org>)
 To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        linux-s390@vger.kernel.org
+Date:   Mon, 11 Jul 2022 11:43:40 +0200
+Message-Id: <20220711094340.2829115-1-svens@linux.ibm.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: EcQeJhc4DR1fkrtSwK_UsWcyF3dAmAs-
+X-Proofpoint-ORIG-GUID: l_5IjszsdpqNZzwM3MOs3nFNb7yKApai
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-11_15,2022-07-08_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ clxscore=1015 impostorscore=0 phishscore=0 priorityscore=1501
+ mlxlogscore=853 bulkscore=0 spamscore=0 lowpriorityscore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2206140000 definitions=main-2207110040
+Subject: [PATCH v2] trace-cmd: fix writing of uncompressed size
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Steven,
+pointer in struct tracecmd_compression is 'unsigned long', which is 8 byte
+in size on most platforms, but the tep_read_number() call in the next line
+treats it as a 4 byte value. As there's no need for unsigned long change
+the type to unsigned int.
 
-On Mon, Jul 11, 2022 at 3:16 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> If you haven't noticed I have patches that are a workaround that fixes this
-> issue if the conditions are "right". (I Cc'd you) [1]
-I was on vacation and just combing through the mails :-). I shall have a look
-at the patch soon..
+Fixes: 3f8447b1 ("trace-cmd library: Add support for compression algorithms")
+Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+---
+ lib/trace-cmd/trace-compress.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
-> The work around is to not depend on the number in debugfs/kvm/vcpuX to
-> match the CPU of the guest, but instead to match the ordering of the CPUs
-> of the guest. It also requires that the guest's CPUs are consecutive and
-> non sparse. That is, if you have vcpu0, vcpu1, vcpu8 and vcpu9 on the
-> host, then the guest needs to have CPU 0-3 with the mapping of:
->
->  vcpu0 -> CPU 0
->  vcpu1 -> CPU 1
->  vcpu8 -> CPU 2
->  vcpu9 -> CPU 3
->
-> and then it works. Of course if this is not true, then it breaks again and
-> will require some more communication between the host and the guest.
-This makes sense.
-
-I vaguely remember seeing non-increasing patterns in some server machines,
-but that's really rare I guess. When the debugfs changes for exposing pid are
-widely available, we can have that also as an option.
-
-Thanks for the patches. I shall have a look at the patches soon.
-
-~Vineeth
+diff --git a/lib/trace-cmd/trace-compress.c b/lib/trace-cmd/trace-compress.c
+index a63295e..461de8d 100644
+--- a/lib/trace-cmd/trace-compress.c
++++ b/lib/trace-cmd/trace-compress.c
+@@ -32,7 +32,7 @@ struct tracecmd_compression {
+ 	int				fd;
+ 	unsigned int			capacity;
+ 	unsigned int			capacity_read;
+-	unsigned long			pointer;
++	unsigned int			pointer;
+ 	char				*buffer;
+ 	struct compress_proto		*proto;
+ 	struct tep_handle		*tep;
+-- 
+2.36.1
