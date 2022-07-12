@@ -2,64 +2,94 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2B98C43334
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Jul 2022 13:04:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC776C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Jul 2022 14:17:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbiGLNEp (ORCPT
+        id S232986AbiGLORs (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 12 Jul 2022 09:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49740 "EHLO
+        Tue, 12 Jul 2022 10:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbiGLNEo (ORCPT
+        with ESMTP id S233333AbiGLORa (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 12 Jul 2022 09:04:44 -0400
-X-Greylist: delayed 307 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 12 Jul 2022 06:04:42 PDT
-Received: from mail.nearlyone.de (mail.nearlyone.de [46.163.114.145])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD5821821
-        for <linux-trace-devel@vger.kernel.org>; Tue, 12 Jul 2022 06:04:42 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 4D6395DD2D;
-        Tue, 12 Jul 2022 14:59:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=monom.org; s=dkim;
-        t=1657630773; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-         in-reply-to:references; bh=hNqpOtXpRcsYnq3QvJfc7eBc3bJqo9olx8LgxScjYXo=;
-        b=dp74tHAhqXM2kZippzzZWG04LUzXofx0B3gVfbdBuRFUfm3WV0T8WoWYpmj3DrFxgTw466
-        DIBoElWSUPmFLXjp53L7+TAoCgjVQSIuTLhD1jTEzKu3Cr3Fskcdd3Im3pT66f+viOOBcr
-        GX2g3osLnitITKO0NA9A0nheoigFas4oTEAGnARle6++XaUUeRlKFYvK64tJJvh2nFeXpw
-        NHvPTynaVwjqhz6sYag51iYQzYKMrSpLaZh2dtFPncT05FBlFvSkicKp4ZfE2IrYv/V2FW
-        /O468kXGIuNEEk+1kwYcScxVGKCJqjg1WmttmgAD10k36K/qEM4hURwDfJEaCw==
-Date:   Tue, 12 Jul 2022 14:59:31 +0200
-From:   Daniel Wagner <wagi@monom.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Jan Engelhardt <jengelh@inai.de>
-Subject: Re: [PATCH] revert: 0de961e74f96 ("libtracefs: Set visibility of
- parser symbols as 'internal'")
-Message-ID: <20220712125931.47flimxqmz4ngxau@carbon.lan>
-References: <20220711124510.763371d7@gandalf.local.home>
+        Tue, 12 Jul 2022 10:17:30 -0400
+Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CADF97D68
+        for <linux-trace-devel@vger.kernel.org>; Tue, 12 Jul 2022 07:17:30 -0700 (PDT)
+Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-10c0119dd16so10470334fac.6
+        for <linux-trace-devel@vger.kernel.org>; Tue, 12 Jul 2022 07:17:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/e3Zc6nON2eMWN7FGBf8WgIC9nuzZImCJRay+QGgpc4=;
+        b=ErEFhuXJ2vDvnylsjWE7lb/94Gm5dnv2kFTHUXhEcpetXhD7Gw8dH5brydJVyuUZbV
+         l5jtvqyFhozMvGNmu6llB8spuyFAep3i7o1k/fm495VYcvCS1Yqt4R0DsKfc9GWrZOGN
+         kCwkCELKa0oLxFNvBoMu1/iI0ITkK72TlSDVZEli3M42+oP1kcAUSaN8koEAkoycwtgm
+         9ZaZXMUloLI2ch3QEwNYpgW3HEnECnnQQQMI4PqB2dyAKwI59/lA3nOfvAvTIwDayJwp
+         tNo3iNj5JsfHkpgR+VI1aFRGqgBtsLmBbbdL+N6Avjhw7LvCMKkwpsk4cuRI+KmlgJtA
+         dwPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/e3Zc6nON2eMWN7FGBf8WgIC9nuzZImCJRay+QGgpc4=;
+        b=Y9MkMdkVRueL2F8Ugj4kvv065zF7zJ/X7gIqZsi5AqrSHyGnwsuUcwYS7q/h2PKytf
+         L4bNUkXU6bhpisSkTJnFCmpKa5xsJgMqAZp5XxLNVOJsEGjtygH80yTm5x7REeeUyp4x
+         V3L1vX3spLHRjo/5dJvbYSqGJ6Cdn7p8VLVxZWLeYxDiL7/4U8Y/WFT0dW6NnORKYz0F
+         Xq2AIK+272J2J7fCR/+werchuqATi7U7zOpIq1JumeMDY3UlstYC7yKhI6cBUO+mNSHp
+         eI3Wnw3XOgLqXqDjf352eh8tmgTyEaEbcn/G2tNhZEpIBxBiWf6AbsTTQox4GOW0T9lU
+         SBDA==
+X-Gm-Message-State: AJIora/M1rhX/LJh6eK2XownpKwUCS8UlP6dN86hQe/vhcoM0V4ty4qD
+        PXg5qCXtuJxq8Bx49oa3tKrcZZmkyLbYHa0Bi1BzHk5itCw=
+X-Google-Smtp-Source: AGRyM1vPatDYXH5A/VjWo5PWOFdm2Yyq58+IAdQv8bwQDR5vFUaubY9dSYuADWTINtFIDv1ozxDHf+uHmwKlBEwPWbc=
+X-Received: by 2002:a05:6870:461b:b0:e9:a015:36a6 with SMTP id
+ z27-20020a056870461b00b000e9a01536a6mr1812037oao.185.1657635449133; Tue, 12
+ Jul 2022 07:17:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220711124510.763371d7@gandalf.local.home>
-X-Last-TLS-Session-Version: TLSv1.3
+References: <20220504010242.1388192-1-vineethrp@google.com> <20220711151655.5a4f4cc0@gandalf.local.home>
+In-Reply-To: <20220711151655.5a4f4cc0@gandalf.local.home>
+From:   Vineeth Pillai <vineethrp@google.com>
+Date:   Tue, 12 Jul 2022 10:17:17 -0400
+Message-ID: <CA+HDTgTUDhvywfNvzbFbiOTnAifPSZksu_9RnCeFvWb3Hzd61w@mail.gmail.com>
+Subject: Re: [PATCH] trace-cmd: rework of the pid detection of vcpus
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, Jul 11, 2022 at 12:45:10PM -0400, Steven Rostedt wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> With the addition of commit b64dc07ca44c ("libtracefs: Unbreak parallel
-> build"), the build works fine without using "internal" variables. We can
-> revert that commit.
-> 
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
-> 
-> [ Daniel, can you test to make sure this is true. Thanks ]
+Hi Steven,
 
-I've tested all possible combinations of master -/+ 0de961e74f96
-("libtracefs: Set visibility of parser symbols as 'internal'") and -/+
-b64dc07ca44c ("libtracefs: Unbreak parallel build"). My patch doesn't do
-a thing and Jan's patch fixes the problem.
+On Mon, Jul 11, 2022 at 3:16 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> If you haven't noticed I have patches that are a workaround that fixes this
+> issue if the conditions are "right". (I Cc'd you) [1]
+I was on vacation and just combing through the mails :-). I shall have a look
+at the patch soon..
 
-Tested-by: Daniel Wagner <dwagner@suse.de>
+>
+> The work around is to not depend on the number in debugfs/kvm/vcpuX to
+> match the CPU of the guest, but instead to match the ordering of the CPUs
+> of the guest. It also requires that the guest's CPUs are consecutive and
+> non sparse. That is, if you have vcpu0, vcpu1, vcpu8 and vcpu9 on the
+> host, then the guest needs to have CPU 0-3 with the mapping of:
+>
+>  vcpu0 -> CPU 0
+>  vcpu1 -> CPU 1
+>  vcpu8 -> CPU 2
+>  vcpu9 -> CPU 3
+>
+> and then it works. Of course if this is not true, then it breaks again and
+> will require some more communication between the host and the guest.
+This makes sense.
+
+I vaguely remember seeing non-increasing patterns in some server machines,
+but that's really rare I guess. When the debugfs changes for exposing pid are
+widely available, we can have that also as an option.
+
+Thanks for the patches. I shall have a look at the patches soon.
+
+~Vineeth
