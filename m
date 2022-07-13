@@ -2,49 +2,47 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33550C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Jul 2022 18:51:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 086CBC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Jul 2022 19:13:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbiGMSvy (ORCPT
+        id S231910AbiGMTNq (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 13 Jul 2022 14:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50006 "EHLO
+        Wed, 13 Jul 2022 15:13:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbiGMSvx (ORCPT
+        with ESMTP id S231612AbiGMTNp (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 13 Jul 2022 14:51:53 -0400
+        Wed, 13 Jul 2022 15:13:45 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E52D227161;
-        Wed, 13 Jul 2022 11:51:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95D8613F45;
+        Wed, 13 Jul 2022 12:13:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9F6E2B82120;
-        Wed, 13 Jul 2022 18:51:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB0D3C34114;
-        Wed, 13 Jul 2022 18:51:45 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3E7BEB8212F;
+        Wed, 13 Jul 2022 19:13:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7E60C34114;
+        Wed, 13 Jul 2022 19:13:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657738310;
-        bh=fZwxSrYskCEjj1E8KXTDQqSd/pffTu/D+tBRTXDP2SU=;
+        s=k20201202; t=1657739621;
+        bh=4gRkzlpRhfwDwt3txru4R7vN1hWK8tgG6Ph6530NTVo=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=MCyF9KHux3jcz94+nPSeBlKzrBtTaVSEE3pZx/ALCl+yLYg92juWEtxzUs0XDdnmF
-         PDs1VPM4n/y2u+kCq8v0hk9nCLSJbHlBpt6Ca3hk7zcv0v6ZFy9wNW1xhtAOlmi5jb
-         vLrOCJtPpRvcv9cEvf0ROFpGgswvoqdZSl4PWKEcwU7eOQvkKimqPzMVjQ3TYZU98k
-         TRkZXIWnnP4fX9gO0SoPTgBj1/Mly3ydQP+A5pxbnNvPIDsAYC3N23t+0KJ/SU1r2L
-         RGtCKXUwvuWrlpnX3Jct2rkF7OA8oMup6uxzyyU79+qBkG/yc6XSbd9wLuV/gtJbWo
-         gXuKZFnAFEIAQ==
-Message-ID: <0b59de96-a800-7018-5bf8-7dfa749fab61@kernel.org>
-Date:   Wed, 13 Jul 2022 20:51:43 +0200
+        b=UuH0pAnTY9nEcydrnNYcOa5n1c/Q3n+hmxm5Sk2ITyB+Uwc3RwAp7z9Ps05oK1Qwj
+         G/Jpu9PDW2tFbCKugdTVfT5/g0Unp976NCEOtJmzWgSFT29IKehx68gmSEweUprYdw
+         FIi9BBJoE6jlWrP85eNFO9ABl4iS0mPrLEjDDeI+uK4anIlJyirV68Wd4BPC5Ti8wd
+         eEgPgyXI7puyJVJsoA3It7LeDtk06PUUqXUzpMslOZSJ1KhtMxC3gX2kGfLFmJjJQX
+         JovsQTsc5N+8MbMt+tX89dUZYllae7XmiVdlRvJMuRhUEVeRhGl1POtkFjOeeAOZFB
+         o8/4C/5iUAXxA==
+Message-ID: <e53ddfa5-1e6b-a771-bb96-b43640b1d3b2@kernel.org>
+Date:   Wed, 13 Jul 2022 21:13:35 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
-Subject: Re: [PATCH V4 20/20] Documentation/rv: Add watchdog-monitor
- documentation
+Subject: Re: [PATCH V4 18/20] rv/monitor: Add safe watchdog monitor
 Content-Language: en-US
-To:     Tao Zhou <tao.zhou@linux.dev>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
         Jonathan Corbet <corbet@lwn.net>,
         Ingo Molnar <mingo@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -61,26 +59,43 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
 References: <cover.1655368610.git.bristot@kernel.org>
- <129a431c1a12610fa7b44f76ce73aa8058f55bc6.1655368610.git.bristot@kernel.org>
- <YsbUh8R0wfqTO+Un@geo.homenetwork>
+ <6366fdc89d65b8d9b14ccd1e42fa0d793fbe9f73.1655368610.git.bristot@kernel.org>
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <YsbUh8R0wfqTO+Un@geo.homenetwork>
+In-Reply-To: <6366fdc89d65b8d9b14ccd1e42fa0d793fbe9f73.1655368610.git.bristot@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 7/7/22 14:41, Tao Zhou wrote:
-> So I must check the model matrix in patch18 and the above graph to
-> check if the matrix have the not right value or something in this
-> graph go wrong.
 
-It was my fault, the ASCII art generated by graph-easy was too wide, so I had to manually
-change it... and so I broke it.
 
-At least this validates that it is better to have it automatically generated :-)
+On 6/16/22 10:45, Daniel Bristot de Oliveira wrote:
+> The watchdog is an essential building block for the usage of Linux in
+> safety-critical systems because it allows the system to be monitored from
+> an external element - the watchdog hardware, acting as a safety-monitor.
 
-Thanks for reviewing it Tao, I do appreciate these kind of reviews!!!!
+Guenter and Steven,
+
+I will move the watchdog monitor to a separated thread, as it will require
+further discussions specific to it, mainly to get feedback from watchdog
+maintainers.
+
+Anyways, I am adding additional information for the sample monitors based on our
+discussions here.
+
+They are:
+
+I added documentation about the automata format and the translation between
+the formal <-> dot -> C.
+
+I am adding the .dot file to the tools/verification/models/ so that one can get
+the .dot file and convert it to other formats, like, a png file. This
+will make it easy to read the automata model.
+
+I am adding a .rst documentation for each model, including details about it.
+
+I will send the v5 of RV without the safe_wtd monitor and then start a new
+one about the watchdog later, after getting the RV interface series ready.
 
 -- Daniel
