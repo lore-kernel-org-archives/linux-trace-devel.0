@@ -2,100 +2,130 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 086CBC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Jul 2022 19:13:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA4DFC43334
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Jul 2022 19:20:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbiGMTNq (ORCPT
+        id S235042AbiGMTUE (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 13 Jul 2022 15:13:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38256 "EHLO
+        Wed, 13 Jul 2022 15:20:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231612AbiGMTNp (ORCPT
+        with ESMTP id S229959AbiGMTUD (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 13 Jul 2022 15:13:45 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95D8613F45;
-        Wed, 13 Jul 2022 12:13:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3E7BEB8212F;
-        Wed, 13 Jul 2022 19:13:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7E60C34114;
-        Wed, 13 Jul 2022 19:13:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657739621;
-        bh=4gRkzlpRhfwDwt3txru4R7vN1hWK8tgG6Ph6530NTVo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=UuH0pAnTY9nEcydrnNYcOa5n1c/Q3n+hmxm5Sk2ITyB+Uwc3RwAp7z9Ps05oK1Qwj
-         G/Jpu9PDW2tFbCKugdTVfT5/g0Unp976NCEOtJmzWgSFT29IKehx68gmSEweUprYdw
-         FIi9BBJoE6jlWrP85eNFO9ABl4iS0mPrLEjDDeI+uK4anIlJyirV68Wd4BPC5Ti8wd
-         eEgPgyXI7puyJVJsoA3It7LeDtk06PUUqXUzpMslOZSJ1KhtMxC3gX2kGfLFmJjJQX
-         JovsQTsc5N+8MbMt+tX89dUZYllae7XmiVdlRvJMuRhUEVeRhGl1POtkFjOeeAOZFB
-         o8/4C/5iUAXxA==
-Message-ID: <e53ddfa5-1e6b-a771-bb96-b43640b1d3b2@kernel.org>
-Date:   Wed, 13 Jul 2022 21:13:35 +0200
+        Wed, 13 Jul 2022 15:20:03 -0400
+Received: from mail.efficios.com (mail.efficios.com [167.114.26.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F1721818;
+        Wed, 13 Jul 2022 12:20:02 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 9E9E242685E;
+        Wed, 13 Jul 2022 15:20:00 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id kKbS3WRHe1BQ; Wed, 13 Jul 2022 15:20:00 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 112C0426C13;
+        Wed, 13 Jul 2022 15:20:00 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 112C0426C13
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1657740000;
+        bh=RMWgUjxlJ5h9ifad36+paV2jGXpFbQkk5sUyLZfsdlU=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=EARasB/73KXy5eMCnFCiftad+GY4PfT9vwRYEREFi4KXWiDE0Pa5mTT8LNfVjS2cV
+         aiYjyjO4EfYYiJh3JhkpbEfbHGDHeGYMaLWFM1cGYPp7ggL4rHOR/vnFsZEQCXCpnj
+         41DCR8a6bV6YiAU7NgQSsiqQRRnJZqzH0Mfxu/Nq2Hgmk/TS3NE9ZhFPJnnInRjH/l
+         0aq0BaYpqf91Ko8fKoJb3/XJ4r53Fg1KUcGgtlc0FW0b9iDi80k2C5i5haygpt71Fk
+         3KFZnBttk7V5Zvmc7Cj7jEiT4ha8WdFFBCfaHffiwaXa7vFGpHCosb5KvSbBbwDLP9
+         G/4i3WZQt2r2w==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id LbT8Uuda7r0a; Wed, 13 Jul 2022 15:20:00 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id DBA664268F3;
+        Wed, 13 Jul 2022 15:19:59 -0400 (EDT)
+Date:   Wed, 13 Jul 2022 15:19:59 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Diamon discuss <diamon-discuss@lists.linuxfoundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
+        linux-trace-users <linux-trace-users@vger.kernel.org>,
+        linuxtools-dev@eclipse.org, lttng-dev <lttng-dev@lists.lttng.org>,
+        lwn <lwn@lwn.net>,
+        Trace Compass Developer Discussions 
+        <tracecompass-dev@eclipse.org>
+Message-ID: <1084656607.67311.1657739999848.JavaMail.zimbra@efficios.com>
+Subject: Tracing Summit 2022: Announcement and Call for Proposals, October
+ 11th - 13th, 2022, London, United Kingdom
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH V4 18/20] rv/monitor: Add safe watchdog monitor
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Gabriele Paoloni <gpaoloni@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org
-References: <cover.1655368610.git.bristot@kernel.org>
- <6366fdc89d65b8d9b14ccd1e42fa0d793fbe9f73.1655368610.git.bristot@kernel.org>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <6366fdc89d65b8d9b14ccd1e42fa0d793fbe9f73.1655368610.git.bristot@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4304 (ZimbraWebClient - FF100 (Linux)/8.8.15_GA_4304)
+Thread-Index: GhFp6sgYm5dGm85QpgTZYdYT1/wVUg==
+Thread-Topic: Tracing Summit 2022: Announcement and Call for Proposals, October 11th - 13th, 2022, London, United Kingdom
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+Hi all,
 
+This is a Call for Proposals for the Tracing Summit 2022[0] which will be held in London, United Kingdom on 11th to 13th of October, 2022.
 
-On 6/16/22 10:45, Daniel Bristot de Oliveira wrote:
-> The watchdog is an essential building block for the usage of Linux in
-> safety-critical systems because it allows the system to be monitored from
-> an external element - the watchdog hardware, acting as a safety-monitor.
+- Location: Google, 6 Pancras Sq, London N1C 4AG, UK
+- Event dates: Tuesday the 11th to Thursday the 13th of October, 2022
+- Cost: Free
+- CFP link: [1]
+- Register to attend: [2]
 
-Guenter and Steven,
+Timeline:
 
-I will move the watchdog monitor to a separated thread, as it will require
-further discussions specific to it, mainly to get feedback from watchdog
-maintainers.
+- CFP Opens: July 13th, 2022
+- Registration opens: July 13th, 2022
+- CFP Closes: September 1st, 2022
+- Registration closes: October 3rd, 2022
 
-Anyways, I am adding additional information for the sample monitors based on our
-discussions here.
+You can subscribe to the mailing list to get the latest information on the event: [3]
 
-They are:
+The Tracing Summit is a three-day, single-track conference on the topic of tracing. The event focuses on software and hardware tracing, gathering developers and end-users of tracing and trace analysis tools. The main goal of the Tracing Summit is to provide space for discussion between people of the various areas that benefit from tracing, namely parallel, distributed and/or real-time systems, as well as kernel development.
 
-I added documentation about the automata format and the translation between
-the formal <-> dot -> C.
+We are welcoming 30 minute presentations on topics covering, but not limited to:
 
-I am adding the .dot file to the tools/verification/models/ so that one can get
-the .dot file and convert it to other formats, like, a png file. This
-will make it easy to read the automata model.
+- Investigation workflow of real-time, latency, and throughput issues,
+- Trace collection and extraction,
+- Trace filtering,
+- Trace aggregation,
+- Trace formats,
+- Tracing multi-core systems,
+- Trace abstraction,
+- Trace modeling,
+- Automated trace analysis (e.g. dependency analysis),
+- Tracing large clusters and distributed systems,
+- Hardware-level tracing (e.g. DSP, GPU, bare-metal),
+- Trace visualization,
+- Interaction between debugging and tracing,
+- Tracing remote control,
+- Analysis of large trace datasets,
+- Cloud trace collection and analysis,
+- Integration between trace tools,
+- Live tracing & monitoring,
+- Programmable tracing (e.g. eBPF).
 
-I am adding a .rst documentation for each model, including details about it.
+Those can cover available technologies, ongoing work, and yet non-existent technologies (which are compelling to end-users).
+Please understand that this open forum is not the proper place to present sales or marketing pitches, nor technologies which are prevented from being freely used in open source.
 
-I will send the v5 of RV without the safe_wtd monitor and then start a new
-one about the watchdog later, after getting the RV interface series ready.
+This year tickets are free and seating is limited to 80 people.
 
--- Daniel
+To register use the following link: [2]
+
+Please send any queries about this conference to info@tracingsummit.org .
+
+[0]: https://tracingsummit.org
+[1]: https://docs.google.com/forms/d/e/1FAIpQLSf65-LaD5EiYSxSN6D6XGRazExSur0SW7oG6ZIpGpDN4ra_rg/viewform
+[2]: https://docs.google.com/forms/d/e/1FAIpQLSdq4whieesZeoHJq1h2CDbWeO5FuQnPk6G257hfSLgnWRenvg/viewform
+[3]: http://eepurl.com/goakfv
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
