@@ -2,86 +2,167 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4904DC43334
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Jul 2022 17:47:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52AD2C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Jul 2022 13:40:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbiGKRru (ORCPT
+        id S230496AbiGMNkw (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 11 Jul 2022 13:47:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48222 "EHLO
+        Wed, 13 Jul 2022 09:40:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231304AbiGKRre (ORCPT
+        with ESMTP id S229918AbiGMNko (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 11 Jul 2022 13:47:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F52A72EE6
-        for <linux-trace-devel@vger.kernel.org>; Mon, 11 Jul 2022 10:47:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 17ED06135B
-        for <linux-trace-devel@vger.kernel.org>; Mon, 11 Jul 2022 17:47:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45B1AC341C8
-        for <linux-trace-devel@vger.kernel.org>; Mon, 11 Jul 2022 17:47:18 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Tv/hAJgN"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=L6nK1HTJs3obWwk+ljZ2j3Y10HjNuq9KKzXTw1l0KDE=;
- b=Tv/hAJgNy1ixv4f5zFLTxZAYPzy9s937mprmLKB3aMMrdGTGgwW9GXk6EMwLiLxD7DP1
- PBN+I4fZGjx652GQNoIEtuegHTEsRn0/9Jnrl37XoDLPvM8Ca+6iZVwIn+YaDt0Xoyec
- 9/DdxXdkTMJhk5jLMZFFiCyqkFjwZLgBUyLpehoUhkIoPfmAb4Jwm6VQXzq4Lx6YQpZF
- eL2xi1p9voCyamOyA+LLtblQwPyQEkdJVAo3NOmlNc7jUs+4JXP3w+vv5Qn4+4ToPmHD
- VF1kOy1nUs9mTl7n3W100sz/5zF8EXvtaPil//XqzR9WVk6FNo+3VVuun35/Lh3d1RZK MA== 
-From:   Sven Schnelle <svens@linux.ibm.com> (by way of Steven Rostedt
-        <rostedt@goodmis.org>)
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        linux-s390@vger.kernel.org
-Date:   Mon, 11 Jul 2022 11:43:40 +0200
-Message-Id: <20220711094340.2829115-1-svens@linux.ibm.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 13 Jul 2022 09:40:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 91FFABE36
+        for <linux-trace-devel@vger.kernel.org>; Wed, 13 Jul 2022 06:40:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1657719641;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AKJFqVAEYMrSYdd5FQG6UXoFSGFARh5VVh8jAz8BGD4=;
+        b=EQBFiQQ1QOYGs/2d+ubrPzFYZvf337ygG7DLGi6i1SU+8cdYEfwh25qJmKk9eHDL6Uxny3
+        /G+flZjUXn9o9dxlUyp1YBCzZVFs1UzWt+GALXeLA3PA5jWsbdNYj7L0iLk1I4w7jPy4FM
+        5NzqVe8CTr+YeRGE3ZkVd4bZHxcMj0k=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-578-uqsgnbypPneereonQSth-Q-1; Wed, 13 Jul 2022 09:40:40 -0400
+X-MC-Unique: uqsgnbypPneereonQSth-Q-1
+Received: by mail-qk1-f199.google.com with SMTP id s9-20020a05620a254900b006b54dd4d6deso9880454qko.3
+        for <linux-trace-devel@vger.kernel.org>; Wed, 13 Jul 2022 06:40:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AKJFqVAEYMrSYdd5FQG6UXoFSGFARh5VVh8jAz8BGD4=;
+        b=3eCUQmQ86KEDWqaLT3OyZJiSWrXRfe1vVQlNYAKpaNmOJa50wKCKrVOyog842OpYcl
+         6iyIi/uJO+SRbxecRSeZQ/Nrj51TGCwcri0p6Xogk54c7+eCQSShw68ELYTFjNDp0hEb
+         t9Dsk3stEtllDLIbsuKvbS0CuooZl1XmF/AzY7nXV/dhG2hV4yTnfsfZZDbKCBsxSyIU
+         zlnzPFv0nGjtfcr6/0UFgB6VgwhAHbtNcfKNxWjhvZn3lEsQcn28qUKFQ8sYOoS5LOU/
+         yzcJK9Uz1Cukv14c9xMytW7O7DLrnZ2nE0deBSkxf5QBKU/qkqYBXraleZd1HKc3uJkO
+         fdqQ==
+X-Gm-Message-State: AJIora8CDYPr8UY8COLwXifvShBEXVcWR/MHUTNG7gT2x0tYj8X7wX28
+        qQDCkzqbSuehvMOoO4zr/h+Tkgw3DU2fENgYzyDFnWpadNxwSsJemyKf2ONxCcQu6xfx2Yk8kw2
+        +uL3yNr7nPww5I85p+mEd/R3Ma1GsZoAH+hDH0y8sOf0IQ7I=
+X-Received: by 2002:a05:620a:468d:b0:6b5:9e91:4b40 with SMTP id bq13-20020a05620a468d00b006b59e914b40mr2331740qkb.80.1657719639451;
+        Wed, 13 Jul 2022 06:40:39 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1uCnsh2Bv7xdTn4Gno39lxl0GxulXCeCnYySAGcf7LLtM5dFyAScpi8FOd/bQHhcZpD/DDq0AfPHWXnNfxLrSU=
+X-Received: by 2002:a05:620a:468d:b0:6b5:9e91:4b40 with SMTP id
+ bq13-20020a05620a468d00b006b59e914b40mr2331717qkb.80.1657719639134; Wed, 13
+ Jul 2022 06:40:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: EcQeJhc4DR1fkrtSwK_UsWcyF3dAmAs-
-X-Proofpoint-ORIG-GUID: l_5IjszsdpqNZzwM3MOs3nFNb7yKApai
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-11_15,2022-07-08_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- clxscore=1015 impostorscore=0 phishscore=0 priorityscore=1501
- mlxlogscore=853 bulkscore=0 spamscore=0 lowpriorityscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2206140000 definitions=main-2207110040
-Subject: [PATCH v2] trace-cmd: fix writing of uncompressed size
+References: <20220620204539.926948-1-aahringo@redhat.com> <20220708143031.29a271d7@gandalf.local.home>
+In-Reply-To: <20220708143031.29a271d7@gandalf.local.home>
+From:   Alexander Aring <aahringo@redhat.com>
+Date:   Wed, 13 Jul 2022 09:40:28 -0400
+Message-ID: <CAK-6q+guYP=X-QKayUeHc_a2r363K9=ES9sakKu9WYB908-0Bg@mail.gmail.com>
+Subject: Re: [PATCH/RFC] java: add initial bindings
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org,
+        cluster-devel <cluster-devel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-pointer in struct tracecmd_compression is 'unsigned long', which is 8 byte
-in size on most platforms, but the tep_read_number() call in the next line
-treats it as a 4 byte value. As there's no need for unsigned long change
-the type to unsigned int.
+Hi,
 
-Fixes: 3f8447b1 ("trace-cmd library: Add support for compression algorithms")
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
----
- lib/trace-cmd/trace-compress.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, Jul 8, 2022 at 2:31 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Mon, 20 Jun 2022 16:45:39 -0400
+> Alexander Aring <aahringo@redhat.com> wrote:
+>
+> Hi Alexander!
+>
+>
+> > This patch adds basic java bindings for libtracecmd. It currently
+> > supports very basic handling of parsing trace-cmd recorded trace files.
+> > There might of course additional improvements regarding swig bindings and
+> > the memory handling. E.g. in javas builtin iterator for-each handling
+> > everything will keep in memory. The license for the high-level java
+> > bindings jar file is LGPL-2.1 and is the same as libtracecmd.
+> >
+> > The author of this patch created a java application that uses those java
+> > bindings to trace locks and represent them in graphical GANTT diagram,
+> > see [0].
+> >
+> > You need to set the JAVA_HOME environment variable to let the Makefile know
+> > that it builds the java bindings. This is somehow standard in the java world
+> > as replacement for pkg-config or similar. There should no trace-cmd java
+> > dependency, the recommended way should be to provide a kind of trace-cmd-java
+> > package from your distribution containing the tracecmd.jar and
+> > libctracecmdjava.so. This package would have then a java dependency to
+> > e.g. OpenJDK, that I was using to test those bindings for.
+> >
+> > The author is not a swig expert but it works as it currently is. Also
+> > the author did not hit issues because memory _yet_. Those are beginning
+> > experimental bindings and can be changed/improved in future.
+>
+>
+> Are you "the author"?
+>
 
-diff --git a/lib/trace-cmd/trace-compress.c b/lib/trace-cmd/trace-compress.c
-index a63295e..461de8d 100644
---- a/lib/trace-cmd/trace-compress.c
-+++ b/lib/trace-cmd/trace-compress.c
-@@ -32,7 +32,7 @@ struct tracecmd_compression {
- 	int				fd;
- 	unsigned int			capacity;
- 	unsigned int			capacity_read;
--	unsigned long			pointer;
-+	unsigned int			pointer;
- 	char				*buffer;
- 	struct compress_proto		*proto;
- 	struct tep_handle		*tep;
--- 
-2.36.1
+yes.
+
+> Could you rephrase this better?
+>
+> Like:
+>
+> "There may be better ways to do this with swig, but this appears to work as
+> is, as there were no issues because of memory _yet_."
+>
+> That is, please try to rewrite the change log without referring to yourself.
+>
+
+okay.
+
+> >
+> > [0] https://gitlab.com/netcoder/dlm2slog2
+> > Signed-off-by: Alexander Aring <aahringo@redhat.com>
+> > ---
+> >  .gitignore                        |   4 +
+> >  Makefile                          |  60 ++++++-
+> >  java/Makefile                     |  39 +++++
+> >  java/TraceCmd.java                | 236 +++++++++++++++++++++++++
+> >  java/TraceCmdEvent.java           | 277 ++++++++++++++++++++++++++++++
+> >  java/TraceCmdException.java       |  16 ++
+> >  java/TraceCmdField.java           | 104 +++++++++++
+> >  java/ctracecmdjava.i              | 180 +++++++++++++++++++
+> >  java/example/Makefile             |   7 +
+> >  java/example/TraceCmdExample.java |  33 ++++
+> >  10 files changed, 953 insertions(+), 3 deletions(-)
+> >  create mode 100644 java/Makefile
+> >  create mode 100644 java/TraceCmd.java
+> >  create mode 100644 java/TraceCmdEvent.java
+> >  create mode 100644 java/TraceCmdException.java
+> >  create mode 100644 java/TraceCmdField.java
+> >  create mode 100644 java/ctracecmdjava.i
+> >  create mode 100644 java/example/Makefile
+> >  create mode 100644 java/example/TraceCmdExample.java
+> >
+>
+> I'm not a swig nor Java expert, and will likely not even test this code.
+> But I'm happy to include it if it doesn't break anything that I do test.
+> But if anyone complains of breakage, I'll simply point them to you ;-)
+>
+> Are you OK with that?
+>
+> Hmm, I should add a MAINTAINERS file to add people that support different
+> portions of trace-cmd.
+>
+
+I already created a new project trace-cmd-java [0]. This will static
+link against libtracecmd and their dependencies. At the end it
+produces a binary blob for the java bindings. The advantage here is
+that I have full control over the used version of libtracecmd and
+their dependencies.
+
+I would like to go this way and see how it goes. Meanwhile I can do
+more testing and cleanups. I may come back again to bring it upstream.
+
+- Alex
+
+[0] https://gitlab.com/netcoder/trace-cmd-java
+
