@@ -2,167 +2,206 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52AD2C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Jul 2022 13:40:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45D93CCA479
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Jul 2022 18:39:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230496AbiGMNkw (ORCPT
+        id S236733AbiGMSjN (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 13 Jul 2022 09:40:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39532 "EHLO
+        Wed, 13 Jul 2022 14:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbiGMNko (ORCPT
+        with ESMTP id S236732AbiGMSjL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 13 Jul 2022 09:40:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 91FFABE36
-        for <linux-trace-devel@vger.kernel.org>; Wed, 13 Jul 2022 06:40:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1657719641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AKJFqVAEYMrSYdd5FQG6UXoFSGFARh5VVh8jAz8BGD4=;
-        b=EQBFiQQ1QOYGs/2d+ubrPzFYZvf337ygG7DLGi6i1SU+8cdYEfwh25qJmKk9eHDL6Uxny3
-        /G+flZjUXn9o9dxlUyp1YBCzZVFs1UzWt+GALXeLA3PA5jWsbdNYj7L0iLk1I4w7jPy4FM
-        5NzqVe8CTr+YeRGE3ZkVd4bZHxcMj0k=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-578-uqsgnbypPneereonQSth-Q-1; Wed, 13 Jul 2022 09:40:40 -0400
-X-MC-Unique: uqsgnbypPneereonQSth-Q-1
-Received: by mail-qk1-f199.google.com with SMTP id s9-20020a05620a254900b006b54dd4d6deso9880454qko.3
-        for <linux-trace-devel@vger.kernel.org>; Wed, 13 Jul 2022 06:40:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AKJFqVAEYMrSYdd5FQG6UXoFSGFARh5VVh8jAz8BGD4=;
-        b=3eCUQmQ86KEDWqaLT3OyZJiSWrXRfe1vVQlNYAKpaNmOJa50wKCKrVOyog842OpYcl
-         6iyIi/uJO+SRbxecRSeZQ/Nrj51TGCwcri0p6Xogk54c7+eCQSShw68ELYTFjNDp0hEb
-         t9Dsk3stEtllDLIbsuKvbS0CuooZl1XmF/AzY7nXV/dhG2hV4yTnfsfZZDbKCBsxSyIU
-         zlnzPFv0nGjtfcr6/0UFgB6VgwhAHbtNcfKNxWjhvZn3lEsQcn28qUKFQ8sYOoS5LOU/
-         yzcJK9Uz1Cukv14c9xMytW7O7DLrnZ2nE0deBSkxf5QBKU/qkqYBXraleZd1HKc3uJkO
-         fdqQ==
-X-Gm-Message-State: AJIora8CDYPr8UY8COLwXifvShBEXVcWR/MHUTNG7gT2x0tYj8X7wX28
-        qQDCkzqbSuehvMOoO4zr/h+Tkgw3DU2fENgYzyDFnWpadNxwSsJemyKf2ONxCcQu6xfx2Yk8kw2
-        +uL3yNr7nPww5I85p+mEd/R3Ma1GsZoAH+hDH0y8sOf0IQ7I=
-X-Received: by 2002:a05:620a:468d:b0:6b5:9e91:4b40 with SMTP id bq13-20020a05620a468d00b006b59e914b40mr2331740qkb.80.1657719639451;
-        Wed, 13 Jul 2022 06:40:39 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1uCnsh2Bv7xdTn4Gno39lxl0GxulXCeCnYySAGcf7LLtM5dFyAScpi8FOd/bQHhcZpD/DDq0AfPHWXnNfxLrSU=
-X-Received: by 2002:a05:620a:468d:b0:6b5:9e91:4b40 with SMTP id
- bq13-20020a05620a468d00b006b59e914b40mr2331717qkb.80.1657719639134; Wed, 13
- Jul 2022 06:40:39 -0700 (PDT)
+        Wed, 13 Jul 2022 14:39:11 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416F0201AE;
+        Wed, 13 Jul 2022 11:39:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E069BB82123;
+        Wed, 13 Jul 2022 18:39:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39028C34114;
+        Wed, 13 Jul 2022 18:39:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657737547;
+        bh=tO5x8vlQaYbiXWOT1V2EnWLVdJW7QJQ7UgkTW94PdK8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=u/XRi340W0jDA+Jvki+5euQb2QKoxeniHCg2XsOQ8H/brEetZ5U3cAtVXp3p2nLDp
+         4/Qi37pTrI48NCfk8C8uwNHQYr41UNgmDkw5E0q6qrEtM0rImfZPWsXfn5mQ/kkEcD
+         7VOIeY6JWN+pBxpjBhUeG5Fh4XXdwCIvorJ1ov9drIb6XNQ7MyclHdIi49JIjfR7Be
+         GoQW9mAkdMyyGjhVXzECDbCm2wjbYC91ohOqWBhdkdT6Y9Ij8P5Gle+i8LB3tt2VZ1
+         FqBX4MGmGIIMEkwJiakKJzsGhEzuxGXW38hdSqJMlEkyrF/vkYzgUAoIbL5RVz9lHr
+         dyfkWg0r6+EHA==
+Message-ID: <9cf7711a-f36a-608d-1605-179f3037b644@kernel.org>
+Date:   Wed, 13 Jul 2022 20:38:59 +0200
 MIME-Version: 1.0
-References: <20220620204539.926948-1-aahringo@redhat.com> <20220708143031.29a271d7@gandalf.local.home>
-In-Reply-To: <20220708143031.29a271d7@gandalf.local.home>
-From:   Alexander Aring <aahringo@redhat.com>
-Date:   Wed, 13 Jul 2022 09:40:28 -0400
-Message-ID: <CAK-6q+guYP=X-QKayUeHc_a2r363K9=ES9sakKu9WYB908-0Bg@mail.gmail.com>
-Subject: Re: [PATCH/RFC] java: add initial bindings
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org,
-        cluster-devel <cluster-devel@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH V4 03/20] rv/include: Add helper functions for
+ deterministic automata
+Content-Language: en-US
+To:     Tao Zhou <tao.zhou@linux.dev>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Gabriele Paoloni <gpaoloni@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org
+References: <cover.1655368610.git.bristot@kernel.org>
+ <2b5b14c821ee4b069f68571e7f78fbc2ee4e9626.1655368610.git.bristot@kernel.org>
+ <YsXV+KTbOU0E5dU+@geo.homenetwork>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <YsXV+KTbOU0E5dU+@geo.homenetwork>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi,
+On 7/6/22 20:35, Tao Zhou wrote:
+> On Thu, Jun 16, 2022 at 10:44:45AM +0200, Daniel Bristot de Oliveira wrote:
+> 
+>> Formally, a deterministic automaton, denoted by G, is defined as a
+>> quintuple:
+>>
+>>   G = { X, E, f, x_0, X_m }
+>>
+>> where:
+>> 	- X is the set of states;
+>> 	- E is the finite set of events;
+>> 	- x_0 is the initial state;
+>> 	- X_m (subset of X) is the set of marked states.
+>> 	- f : X x E -> X $ is the transition function. It defines the
+>> 	  state transition in the occurrence of a event from E in
+>> 	  the state X. In the special case of deterministic automata,
+>> 	  the occurrence of the event in E in a state in X has a
+>> 	  deterministic next state from X.
+>>
+>> An automaton can also be represented using a graphical format of
+>> vertices (nodes) and edges. The open-source tool Graphviz can produce
+>> this graphic format using the (textual) DOT language as the source code.
+>>
+>> The dot2c tool presented in this paper:
+>>
+>> DE OLIVEIRA, Daniel Bristot; CUCINOTTA, Tommaso; DE OLIVEIRA, Romulo
+>> Silva. Efficient formal verification for the Linux kernel. In:
+>> International Conference on Software Engineering and Formal Methods.
+>> Springer, Cham, 2019. p. 315-332.
+>>
+>> Translates a deterministic automaton in the DOT format into a C
+>> surce code representation that to be used for monitoring.
+>>
+>> This header file implements helper functions to facilitate the usage
+>> of the C output from dot2c for monitoring.
+>>
+>> Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
+>> Cc: Guenter Roeck <linux@roeck-us.net>
+>> Cc: Jonathan Corbet <corbet@lwn.net>
+>> Cc: Steven Rostedt <rostedt@goodmis.org>
+>> Cc: Ingo Molnar <mingo@redhat.com>
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Peter Zijlstra <peterz@infradead.org>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Marco Elver <elver@google.com>
+>> Cc: Dmitry Vyukov <dvyukov@google.com>
+>> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+>> Cc: Shuah Khan <skhan@linuxfoundation.org>
+>> Cc: Gabriele Paoloni <gpaoloni@redhat.com>
+>> Cc: Juri Lelli <juri.lelli@redhat.com>
+>> Cc: Clark Williams <williams@redhat.com>
+>> Cc: linux-doc@vger.kernel.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Cc: linux-trace-devel@vger.kernel.org
+>> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+>> ---
+>>  include/rv/automata.h | 49 +++++++++++++++++++++++++++++++++++++++++++
+>>  1 file changed, 49 insertions(+)
+>>  create mode 100644 include/rv/automata.h
+>>
+>> diff --git a/include/rv/automata.h b/include/rv/automata.h
+>> new file mode 100644
+>> index 000000000000..0c0aa54bd820
+>> --- /dev/null
+>> +++ b/include/rv/automata.h
+>> @@ -0,0 +1,49 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/*
+>> + * Deterministic automata helper functions, to be used with the automata
+>> + * models in C generated by the dot2k tool.
+>> + *
+>> + * Copyright (C) 2019-2022 Daniel Bristot de Oliveira <bristot@kernel.org>
+>> + */
+>> +
+>> +#define DECLARE_AUTOMATA_HELPERS(name, type)					\
+>> +										\
+>> +static inline void *model_get_model_##name(void)				\
+>> +{										\
+>> +	return (void *) &automaton_##name;					\
+>> +}									\
+>> +										\
+>> +static char *model_get_state_name_##name(enum states_##name state)		\
+>> +{										\
+>> +	return automaton_##name.state_names[state];				\
+>> +}										\
+>> +										\
+>> +static char *model_get_event_name_##name(enum events_##name event)		\
+>> +{										\
+>> +	return automaton_##name.event_names[event];				\
+>> +}										\
+>> +										\
+>> +static inline type model_get_init_state_##name(void)				\
+>> +{										\
+>> +	return automaton_##name.initial_state;					\
+>> +}										\
+>> +										\
+>> +static inline type model_get_next_state_##name(enum states_##name curr_state,	\
+>> +					       enum events_##name event)	\
+>> +{										\
+>> +	if ((curr_state < 0) || (curr_state > state_max_##name))		\
+>> +		return -1;							\
+> 
+> curr_state can not be state_max_xxx. curr_state must be not bigger
+> than state_max_xxx. Or am I miss something?
+> 
+>> +	if ((event < 0) || (event > event_max_##name))				\
+>> +		return -1;							\
+>> +										\
+> 
+> Same here for the event boundary check.
+> 
+>> +	return automaton_##name.function[curr_state][event];			\
+>> +}										\
+>> +										\
+>> +static inline bool model_is_final_state_##name(enum states_##name state)	\
+>> +{										\
+>> +	if ((state < 0) || (state > state_max_##name))				\
+>> +		return 0;							\
+>> +										\
+> 
+> Same here.
+> 
+>> +	return !!automaton_##name.final_states[state];				\
+> 
+> If the value of .final_states[state] is 0 or 1, can the type of
+> .final_states[state] be befined to bool. Or not need to use !! to
+> explicitly transfer the type to bool. I remember that you define
+> this as char array and the matrix model value of this array is 0 or 1
+> see from the next patche. 1 delegate the state it is the initial state.
+> 0 for others.
 
-On Fri, Jul 8, 2022 at 2:31 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Mon, 20 Jun 2022 16:45:39 -0400
-> Alexander Aring <aahringo@redhat.com> wrote:
->
-> Hi Alexander!
->
->
-> > This patch adds basic java bindings for libtracecmd. It currently
-> > supports very basic handling of parsing trace-cmd recorded trace files.
-> > There might of course additional improvements regarding swig bindings and
-> > the memory handling. E.g. in javas builtin iterator for-each handling
-> > everything will keep in memory. The license for the high-level java
-> > bindings jar file is LGPL-2.1 and is the same as libtracecmd.
-> >
-> > The author of this patch created a java application that uses those java
-> > bindings to trace locks and represent them in graphical GANTT diagram,
-> > see [0].
-> >
-> > You need to set the JAVA_HOME environment variable to let the Makefile know
-> > that it builds the java bindings. This is somehow standard in the java world
-> > as replacement for pkg-config or similar. There should no trace-cmd java
-> > dependency, the recommended way should be to provide a kind of trace-cmd-java
-> > package from your distribution containing the tracecmd.jar and
-> > libctracecmdjava.so. This package would have then a java dependency to
-> > e.g. OpenJDK, that I was using to test those bindings for.
-> >
-> > The author is not a swig expert but it works as it currently is. Also
-> > the author did not hit issues because memory _yet_. Those are beginning
-> > experimental bindings and can be changed/improved in future.
->
->
-> Are you "the author"?
->
-
-yes.
-
-> Could you rephrase this better?
->
-> Like:
->
-> "There may be better ways to do this with swig, but this appears to work as
-> is, as there were no issues because of memory _yet_."
->
-> That is, please try to rewrite the change log without referring to yourself.
->
-
-okay.
-
-> >
-> > [0] https://gitlab.com/netcoder/dlm2slog2
-> > Signed-off-by: Alexander Aring <aahringo@redhat.com>
-> > ---
-> >  .gitignore                        |   4 +
-> >  Makefile                          |  60 ++++++-
-> >  java/Makefile                     |  39 +++++
-> >  java/TraceCmd.java                | 236 +++++++++++++++++++++++++
-> >  java/TraceCmdEvent.java           | 277 ++++++++++++++++++++++++++++++
-> >  java/TraceCmdException.java       |  16 ++
-> >  java/TraceCmdField.java           | 104 +++++++++++
-> >  java/ctracecmdjava.i              | 180 +++++++++++++++++++
-> >  java/example/Makefile             |   7 +
-> >  java/example/TraceCmdExample.java |  33 ++++
-> >  10 files changed, 953 insertions(+), 3 deletions(-)
-> >  create mode 100644 java/Makefile
-> >  create mode 100644 java/TraceCmd.java
-> >  create mode 100644 java/TraceCmdEvent.java
-> >  create mode 100644 java/TraceCmdException.java
-> >  create mode 100644 java/TraceCmdField.java
-> >  create mode 100644 java/ctracecmdjava.i
-> >  create mode 100644 java/example/Makefile
-> >  create mode 100644 java/example/TraceCmdExample.java
-> >
->
-> I'm not a swig nor Java expert, and will likely not even test this code.
-> But I'm happy to include it if it doesn't break anything that I do test.
-> But if anyone complains of breakage, I'll simply point them to you ;-)
->
-> Are you OK with that?
->
-> Hmm, I should add a MAINTAINERS file to add people that support different
-> portions of trace-cmd.
->
-
-I already created a new project trace-cmd-java [0]. This will static
-link against libtracecmd and their dependencies. At the end it
-produces a binary blob for the java bindings. The advantage here is
-that I have full control over the used version of libtracecmd and
-their dependencies.
-
-I would like to go this way and see how it goes. Meanwhile I can do
-more testing and cleanups. I may come back again to bring it upstream.
-
-- Alex
-
-[0] https://gitlab.com/netcoder/trace-cmd-java
-
+All points addressed!
+-- Daniel
