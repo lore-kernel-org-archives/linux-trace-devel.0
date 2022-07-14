@@ -2,57 +2,58 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E942BC43334
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Jul 2022 09:07:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B91DC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Jul 2022 09:54:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237609AbiGNJHw (ORCPT
+        id S234514AbiGNJyc (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 14 Jul 2022 05:07:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57090 "EHLO
+        Thu, 14 Jul 2022 05:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233386AbiGNJHt (ORCPT
+        with ESMTP id S230233AbiGNJyb (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 14 Jul 2022 05:07:49 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AC422BFB;
-        Thu, 14 Jul 2022 02:07:47 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id r191so1636257oie.7;
-        Thu, 14 Jul 2022 02:07:47 -0700 (PDT)
+        Thu, 14 Jul 2022 05:54:31 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1666D474D6;
+        Thu, 14 Jul 2022 02:54:29 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id n12-20020a9d64cc000000b00616ebd87fc4so812529otl.7;
+        Thu, 14 Jul 2022 02:54:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc;
-        bh=HtoAKV34fkg7oJD7fYEz8ioi5wZAzA+9Ww8IthJm6js=;
-        b=SGUOaQYgjTEUxx3qgHflmR3uXxb9Sdtf8NQ2J3S7+I9Fzk7GslAZLiWW5Tnn1uVSj1
-         dU9DoOwvNfecF2lHZxoxVKojNAZz1ta9JDkZycrvSBayPIntBof9VOnGEIbCnAxjWtRt
-         j6Awmt5ANPjlm/eLS3eoelzjFAtZvSJp1NgvJcV0/ad/ULiKtEdnBtrBdSNokFgWM/tA
-         8NeQSRzcF6CFq5RC3xjMHlKb6Yjlg7Y7L+pF2JW1BIsaApuEXq6M/lWZ8xC+tBtpm6MC
-         ep4EYgwdjkPVymQ4/pPO8YAO8PwTMk2A+zPFREd1a1OXDmvbDXd4lofhs+fCLxyKnACG
-         DAng==
+        bh=X6mRQhVSO5biAw/mXo/QUbT/IuLAZ3fsxf8wWVobTxs=;
+        b=AQnv6bm+0RwEPxeMJug4uEWaTRQiB0TwNLNvn064FDpcLOaCD7gKOtUp2lGAUZ8ovR
+         8+nyQ4Wpoh8hX89wInzJ/Ngb3qpI8TFVg/00WU5gkOmP2pFKtT5xH1ON+91sMuY1YJ6A
+         MBIXVvbH1piz14eP0epeaRwlmHnxnrBxhZyy+uIDP9jtcgKXXZo2f/1tkqkjWGUN2SPm
+         GD8VGIP4mpyKeSXaWnh07C6PqEeaCoaZfyiDKNcvijDGN+H3PlKnVWnkeoRKJTHxUc70
+         0e/h59bCxQs1fXsMnMzCtI6xlaESD7rBWwx9ppLsj17AniqJci633w87ueJIyo/nFG2V
+         jRAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc;
-        bh=HtoAKV34fkg7oJD7fYEz8ioi5wZAzA+9Ww8IthJm6js=;
-        b=BP45e1Mt30I13XuyluJlEyNg6G+y/F+qqV2mxpLV1QIvPIfRIByHtFjKLPy9ajZLjO
-         frauyp9s/1AizibtvISi/fjgaXisEj605W1oECFqUNBy1V4zHb1XKUF+SxJr9d7HlLva
-         IRr7RokDA8r87KKWVEIiALxE48DlQMKrsc8UG89iAPZpO9C85HmsVT3ukTprScmLUbKt
-         joauWorFSl+2VlgEcJwmvZmBW+U4WNt2UltWexRYaJOqIjRZYqrp/aVDYbvg5S4f4xw/
-         S2wr5leEmriqqz330DmhzAtM6qL4LmV0UgIeRchY8u7t/Nv+/Cxbx5CgHczqyDMDPrfP
-         oXKA==
-X-Gm-Message-State: AJIora+axvUoDl3UcyAUEaqaLKJYb1RFa7KrTnOJ3V/4td6X08y3u+8H
-        N41arBMKF+43TxJHu7RhWERACD45qmXEoFD/utNMsLITuy0MIw==
-X-Google-Smtp-Source: AGRyM1tYqmmTTh5yn+aJRqp7Gt0nH2iHs/VvgL4A/Z2KEfbB9bG1GoGX0CATwSeA424Pn/7rMywZUN2VoUO5xOKXPVk=
-X-Received: by 2002:a05:6808:bce:b0:337:aaf6:8398 with SMTP id
- o14-20020a0568080bce00b00337aaf68398mr4096084oik.252.1657789666301; Thu, 14
- Jul 2022 02:07:46 -0700 (PDT)
+        bh=X6mRQhVSO5biAw/mXo/QUbT/IuLAZ3fsxf8wWVobTxs=;
+        b=ZP/agJIPxUG2WzzCTzxpnwF+ew6s/MSJSsujxxTXYQ53BC14Kp+gfRyMKet/D9jLr+
+         rfiROI5TyC+uDQMKnb07qLvlSxxfXOQ02Mzwo7Cxc9C2hPI56NhLsWAol4loCRXB5mvw
+         GmCCOEApHWu0dJ7hCLjqchqN4Re2zseAMcHZikJ1oRo4OxwCcNCQcTd5I7gwtZ+SSM3h
+         aKPqtbpobvSlgkdxk2+SG3TWIULC3doigPsvLwOgrBW+0V9o6Zau37ktaBgyoPB+DWDS
+         DPPDa1ZsuOpKh+sLQayfaYKW8LK2jJTrfOCA7sbpUqZsygd4HX5y2yqsSx5L1zt0FeoH
+         w1Og==
+X-Gm-Message-State: AJIora8tifyIFmMCxjIp/xpoVIeFxsaLmuKL1H27RlW/QevAFfDqf5r9
+        /quwEhZJX6lMMNInZ1ylUhW6wsaqDUXunC8HLWjUIFE7WWOW/g==
+X-Google-Smtp-Source: AGRyM1utmP+baueRn1lT4LhqU3E8OboEVfz6YBmgkFA8G1Zd84Uk0LA58rQYSV95jQlLMcw/nSe6HR4Z95muJowDzdI=
+X-Received: by 2002:a05:6830:3686:b0:61c:4a56:5c8b with SMTP id
+ bk6-20020a056830368600b0061c4a565c8bmr3111730otb.49.1657792468382; Thu, 14
+ Jul 2022 02:54:28 -0700 (PDT)
 MIME-Version: 1.0
 References: <870c02d4d97a921f02a31fa3b229fc549af61a20.1657747763.git.bristot@kernel.org>
-In-Reply-To: <870c02d4d97a921f02a31fa3b229fc549af61a20.1657747763.git.bristot@kernel.org>
+ <CA+icZUVbQNM+MkMCQik83FoiWF_a1v7Mb-4hZX6SZgNcp2x5SA@mail.gmail.com>
+In-Reply-To: <CA+icZUVbQNM+MkMCQik83FoiWF_a1v7Mb-4hZX6SZgNcp2x5SA@mail.gmail.com>
 Reply-To: sedat.dilek@gmail.com
 From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Thu, 14 Jul 2022 11:07:10 +0200
-Message-ID: <CA+icZUVbQNM+MkMCQik83FoiWF_a1v7Mb-4hZX6SZgNcp2x5SA@mail.gmail.com>
+Date:   Thu, 14 Jul 2022 11:53:52 +0200
+Message-ID: <CA+icZUW-Mu-Cak481yrE9f6PvGcfaDN7ZPLhrtX6L7zOPU73Zg@mail.gmail.com>
 Subject: Re: [PATCH V2] rtla: Fix Makefile when called from -C tools/
 To:     Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
@@ -62,78 +63,90 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, Jul 13, 2022 at 11:32 PM Daniel Bristot de Oliveira
-<bristot@kernel.org> wrote:
+On Thu, Jul 14, 2022 at 11:07 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
 >
-> Sedat Dilek reported an error on rtla Makefile when running:
+> On Wed, Jul 13, 2022 at 11:32 PM Daniel Bristot de Oliveira
+> <bristot@kernel.org> wrote:
+> >
+> > Sedat Dilek reported an error on rtla Makefile when running:
+> >
+> >     $ make -C tools/ clean
+> >     [...]
+> >     make[2]: Entering directory
+> >     '/home/dileks/src/linux-kernel/git/tools/tracing/rtla'
+> >     [...]
+> >     '/home/dileks/src/linux-kernel/git/Documentation/tools/rtla'
+> >     /bin/sh: 1: test: rtla-make[2]:: unexpected operator    <------ The problem
+> >     rm: cannot remove '/home/dileks/src/linux-kernel/git': Is a directory
+> >     make[2]: *** [Makefile:120: clean] Error 1
+> >     make[2]: Leaving directory
+> >
+> > This occurred because the rtla calls kernel's Makefile to get the
+> > version in silence mode, e.g.,
+> >
+> >     $ make -sC ../../.. kernelversion
+> >     5.19.0-rc4
+> >
+> > But the -s is being ignored when rtla's makefile is called indirectly,
+> > so the output looks like this:
+> >
+> >     $ make -C ../../.. kernelversion
+> >     make: Entering directory '/root/linux'
+> >     5.19.0-rc4
+> >     make: Leaving directory '/root/linux'
+> >
+> > Using 'grep -v make' avoids this problem, e.g.,
+> >
+> >     $ make -C ../../.. kernelversion | grep -v make
+> >     5.19.0-rc4
+> >
+> > Thus, add | grep -v make.
+> >
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > Fixes: 8619e32825fd ("rtla: Follow kernel version")
+> > Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+> > Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> > Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+> > ---
 >
->     $ make -C tools/ clean
->     [...]
->     make[2]: Entering directory
->     '/home/dileks/src/linux-kernel/git/tools/tracing/rtla'
->     [...]
->     '/home/dileks/src/linux-kernel/git/Documentation/tools/rtla'
->     /bin/sh: 1: test: rtla-make[2]:: unexpected operator    <------ The problem
->     rm: cannot remove '/home/dileks/src/linux-kernel/git': Is a directory
->     make[2]: *** [Makefile:120: clean] Error 1
->     make[2]: Leaving directory
+> Thanks for v2.
+> That looks good to me.
 >
-> This occurred because the rtla calls kernel's Makefile to get the
-> version in silence mode, e.g.,
+> Daniel, you are right that not passing -s to make-line will not show
+> the grep output.
 >
->     $ make -sC ../../.. kernelversion
->     5.19.0-rc4
+> Formally and again my...
 >
-> But the -s is being ignored when rtla's makefile is called indirectly,
-> so the output looks like this:
->
->     $ make -C ../../.. kernelversion
->     make: Entering directory '/root/linux'
->     5.19.0-rc4
->     make: Leaving directory '/root/linux'
->
-> Using 'grep -v make' avoids this problem, e.g.,
->
->     $ make -C ../../.. kernelversion | grep -v make
->     5.19.0-rc4
->
-> Thus, add | grep -v make.
->
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Fixes: 8619e32825fd ("rtla: Follow kernel version")
 > Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
 > Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
-> ---
-
-Thanks for v2.
-That looks good to me.
-
-Daniel, you are right that not passing -s to make-line will not show
-the grep output.
-
-Formally and again my...
-
-Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-
--Sedat-
-
->  tools/tracing/rtla/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
-> index 3822f4ea5f49..1bea2d16d4c1 100644
-> --- a/tools/tracing/rtla/Makefile
-> +++ b/tools/tracing/rtla/Makefile
-> @@ -1,6 +1,6 @@
->  NAME   :=      rtla
->  # Follow the kernel version
-> -VERSION :=     $(shell cat VERSION 2> /dev/null || make -sC ../../.. kernelversion)
-> +VERSION :=     $(shell cat VERSION 2> /dev/null || make -sC ../../.. kernelversion | grep -v make)
+
+Addendum:
+
+Subject?
+
+[PATCH V2] rtla: Fix Makefile when called from -C tools/
+
+...called from -C tools/ clean?
+
+ -Sedat-
+
 >
->  # From libtracefs:
->  # Makefiles suck: This macro sets a default value of $(2) for the
-> --
-> 2.32.0
->
+> >  tools/tracing/rtla/Makefile | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
+> > index 3822f4ea5f49..1bea2d16d4c1 100644
+> > --- a/tools/tracing/rtla/Makefile
+> > +++ b/tools/tracing/rtla/Makefile
+> > @@ -1,6 +1,6 @@
+> >  NAME   :=      rtla
+> >  # Follow the kernel version
+> > -VERSION :=     $(shell cat VERSION 2> /dev/null || make -sC ../../.. kernelversion)
+> > +VERSION :=     $(shell cat VERSION 2> /dev/null || make -sC ../../.. kernelversion | grep -v make)
+> >
+> >  # From libtracefs:
+> >  # Makefiles suck: This macro sets a default value of $(2) for the
+> > --
+> > 2.32.0
+> >
