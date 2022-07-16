@@ -2,181 +2,94 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E169C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 15 Jul 2022 13:49:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BBC5C43334
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 16 Jul 2022 13:48:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232046AbiGONtU (ORCPT
+        id S229457AbiGPNsk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 15 Jul 2022 09:49:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49712 "EHLO
+        Sat, 16 Jul 2022 09:48:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbiGONtK (ORCPT
+        with ESMTP id S229937AbiGPNsj (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 15 Jul 2022 09:49:10 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0019E240BC;
-        Fri, 15 Jul 2022 06:49:08 -0700 (PDT)
-Date:   Fri, 15 Jul 2022 21:48:31 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1657892947;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9s4Mr1J+0suKDIGr85spAp3Op0wmtujQR9qtd1lm93Q=;
-        b=UPA7Px3FUyKI8wo6pTCUJG/aCYmUHN6Kz0zd9pwiVfRVba+VNSajQ7NJVAl1E6bop6whKW
-        r68p6r8hhd5aPz0AB87AzxqioLBg+R2cHl6cXRAngXUweWsvDbwoeZ6Oho0AOnfSIuzMcd
-        RuUh1DcNzb7Sf5qdpPDttYRrRqUsr/0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Tao Zhou <tao.zhou@linux.dev>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Gabriele Paoloni <gpaoloni@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org, Tao Zhou <tao.zhou@linux.dev>
-Subject: Re: [PATCH V5 01/16] rv: Add Runtime Verification (RV) interface
-Message-ID: <YtFwL+x9ruIZytW4@geo.homenetwork>
-References: <cover.1657745645.git.bristot@kernel.org>
- <442b03c687c298b25c79aa5a16ec7fb2aef0f2c9.1657745645.git.bristot@kernel.org>
- <Ys/J5fLaojYeiVzL@geo.homenetwork>
- <3758d3bd-7272-e907-a51a-44a21d757674@kernel.org>
+        Sat, 16 Jul 2022 09:48:39 -0400
+X-Greylist: delayed 84 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 16 Jul 2022 06:48:38 PDT
+Received: from maynard.decadent.org.uk (maynard.decadent.org.uk [95.217.213.242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004A51C933
+        for <linux-trace-devel@vger.kernel.org>; Sat, 16 Jul 2022 06:48:38 -0700 (PDT)
+Received: from [91.187.115.177] (helo=deadeye)
+        by maynard with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ben@decadent.org.uk>)
+        id 1oCi9r-0002yq-SB; Sat, 16 Jul 2022 15:48:35 +0200
+Received: from ben by deadeye with local (Exim 4.96)
+        (envelope-from <ben@decadent.org.uk>)
+        id 1oCi9q-006d0E-2p;
+        Sat, 16 Jul 2022 15:48:34 +0200
+Date:   Sat, 16 Jul 2022 15:48:34 +0200
+From:   Ben Hutchings <benh@debian.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-devel@vger.kernel.org
+Subject: [PATCH] tools/rtla: Build with EXTRA_{C,LD}FLAGS
+Message-ID: <YtLBshz0nMQ7530H@decadent.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="JnWgVlHI76m+bY57"
 Content-Disposition: inline
-In-Reply-To: <3758d3bd-7272-e907-a51a-44a21d757674@kernel.org>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
+X-SA-Exim-Connect-IP: 91.187.115.177
+X-SA-Exim-Mail-From: ben@decadent.org.uk
+X-SA-Exim-Scanned: No (on maynard); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Jul 15, 2022 at 01:47:28PM +0200,
-Daniel Bristot de Oliveira wrote:
 
-> On 7/14/22 09:46, Tao Zhou wrote:
-> > On Wed, Jul 13, 2022 at 11:17:17PM +0200,
-> > Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
-> > 
-> > [...]
-> > 
-> >> +void put_task_monitor_slot(int slot)
-> >> +{
-> >> +	lockdep_assert_held(&rv_interface_lock);
-> >> +
-> >> +	if (slot < 0 || slot > RV_PER_TASK_MONITORS) {
-> > 
-> > slot is the array index that should be 0 here. The up bound is not bigger
-> > than 0 because the element of array now is RV_PER_TASK_MONITORS. 
-> > 
-> > So up bound check is 'slot > RV_PER_TASK_MONITORS-1'.
-> 
-> fixed! (slot >= RV...)
-> 
-> > [...]
-> > 
-> >> +/*
-> >> + * interface for enabling/disabling a monitor.
-> >> + */
-> >> +static ssize_t monitor_enable_write_data(struct file *filp, const char __user *user_buf,
-> >> +					 size_t count, loff_t *ppos)
-> >> +{
-> >> +	struct rv_monitor_def *mdef = filp->private_data;
-> >> +	int retval;
-> >> +	bool val;
-> >> +
-> >> +	retval = kstrtobool_from_user(user_buf, count, &val);
-> >> +	if (retval)
-> >> +		return retval;
-> >> +
-> >> +	retval = count;
-> >> +
-> >> +	mutex_lock(&rv_interface_lock);
-> >> +
-> >> +	if (val)
-> >> +		retval = enable_monitor(mdef);
-> >> +	else
-> >> +		retval = disable_monitor(mdef);
-> >> +
-> >> +	mutex_unlock(&rv_interface_lock);
-> >> +
-> >> +	return retval ? retval : count;
-> > 
-> > Feel that this can be written `return retval ? : count;`
-> 
-> 
-> why not...
-> 
-> > [...]
-> > 
-> >> +static void *enabled_monitors_start(struct seq_file *m, loff_t *pos)
-> >> +{
-> >> +	struct rv_monitor_def *m_def;
-> >> +	loff_t l;
-> >> +
-> >> +	mutex_lock(&rv_interface_lock);
-> >> +
-> >> +	if (list_empty(&rv_monitors_list))
-> >> +		return NULL;
-> >> +
-> >> +	m_def = list_entry(&rv_monitors_list, struct rv_monitor_def, list);
-> >> +
-> >> +	for (l = 0; l <= *pos; ) {
-> >> +		m_def = enabled_monitors_next(m, m_def, &l);
-> >> +		if (!m_def)
-> >> +			break;
-> > 
-> > Is this check is inversed. enabled_monitors_start() will stop at first
-> > enabled monitor, then enabled_monitors_next() do loop to next. Check
-> > like the above, enabled_monitors_start() will loop to the last monitor.
-> > But I doubt myself I do not mention/see it. Sorry for these.
-> > 
-> > the check is:
-> > 
-> >   if (m_def)
-> >      break;
-> > 
-> > [...]
-> 
-> 
-> see kernel/trace/trace_events.c:s_start...
+--JnWgVlHI76m+bY57
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I presumed @l changed in function enabled_monitors_next() will
-impack on the @*pos of enabled_monitors_start(). But it's not.
-@l is increased by 1 in enabled_monitors_next() and is used to
-check with @*pos passed as parameter argument of enabled_monitors_start().
-Absolutely I lost here.. Thanks.
+To allow for distributions and other builders to apply hardening
+policy and other customisation, append EXTRA_CFLAGS and EXTRA_LDFLAGS
+to the corresponding variables.
 
-> >> +static ssize_t
-> >> +enabled_monitors_write(struct file *filp, const char __user *user_buf,
-> >> +		      size_t count, loff_t *ppos)
-> >> +{
-> >> +	char buff[MAX_RV_MONITOR_NAME_SIZE + 2];
-> >> +	struct rv_monitor_def *mdef;
-> >> +	int retval = -EINVAL;
-> >> +	bool enable = true;
-> >> +	char *ptr = buff;
-> >> +	int len;
-> >> +
-> >> +	if (count < 1 || count > MAX_RV_MONITOR_NAME_SIZE + 2)
-> > 
-> > @count would not include '\0'. That the max val of @count is
-> > MAX_RV_MONITOR_NAME_SIZE+1. So the up bound check of @count is
-> > `count > MAX_RV_MONITOR_NAME_SIZE + 1`.
-> 
-> Fixed for v6...
-> 
-> -- Daniel
+Signed-off-by: Ben Hutchings <benh@debian.org>
+---
+--- a/tools/tracing/rtla/Makefile
++++ b/tools/tracing/rtla/Makefile
+@@ -30,8 +30,8 @@ WOPTS	:=3D 	-Wall -Werror=3Dformat-security
+=20
+ TRACEFS_HEADERS	:=3D $$($(PKG_CONFIG) --cflags libtracefs)
+=20
+-CFLAGS	:=3D	-O -g -DVERSION=3D\"$(VERSION)\" $(FOPTS) $(MOPTS) $(WOPTS) $(=
+TRACEFS_HEADERS)
+-LDFLAGS	:=3D	-ggdb
++CFLAGS	:=3D	-O -g -DVERSION=3D\"$(VERSION)\" $(FOPTS) $(MOPTS) $(WOPTS) $(=
+TRACEFS_HEADERS) $(EXTRA_CFLAGS)
++LDFLAGS	:=3D	-ggdb $(EXTRA_LDFLAGS)
+ LIBS	:=3D	$$($(PKG_CONFIG) --libs libtracefs)
+=20
+ SRC	:=3D	$(wildcard src/*.c)
+
+--JnWgVlHI76m+bY57
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEErCspvTSmr92z9o8157/I7JWGEQkFAmLSwbIACgkQ57/I7JWG
+EQmqGQ/8Dep1OVgyrGFUGnIJGO5+cgiUGYI/NOKjSH0lel+SmkHonO3XsUCy80LH
+Yh4foO4uE78tLobRh7DF1tiimS1DXqQqc01JAckBjdq1w6giSfksNdAebpLcgXCl
+VFtVUhPRWsU03RY8Y7OIE2LmtwBpmOPUb7Re8gp+JjQMmmA4tMzZDclzid6g4xYa
+oBi8Q0ZFp7t2X22T/Qn08qaqkahWTyIqXaK8NkuBKzgXuZGoPKVvPN95kRM89LKo
+ZN/SaGRmUcpxtRmFpXU/eRTudyuninyjvKB8xYY7e5GE41TvGkRqh9Xm++geAK5O
+fAOVQV0HmhcsQFg+Qtkul5a6R5S8PF4NqBCLyUnHAmJq26BlRAjD3j2zf9St4/iv
+9TbexfJ/ILLR1DCiNRDj1hksvjDh57VB64gH3nTXd7ucIWe8dtEPtTEAfSC5MoQL
+4VAHFlTLkjS6oQYcB5+NoGgHO8ElTK2rl0QHz3L4uVZyaxXdaVOdWo8QP1W4RG0i
+H0CLFlJ/0GfZUSuoosGmAD8DILHnQcrLAV2ui+6IHGNcaPrBJ5Hi3ngBgvrfpz9V
+DBtKerp3dbSmZSASOWGO769NtEyfPz4JGbRmAu7AiS4/6ig+/iAy2WN7G1cMToR3
+hcti19YbWXxu1Ldf8EzoEwQbjpTqhYbdIXE1icLEuR4KnJWax3Y=
+=R2q9
+-----END PGP SIGNATURE-----
+
+--JnWgVlHI76m+bY57--
