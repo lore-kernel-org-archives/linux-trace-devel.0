@@ -2,48 +2,48 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A677C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 17 Jul 2022 18:57:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C020C43334
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 17 Jul 2022 23:53:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbiGQS5H (ORCPT
+        id S231535AbiGQXxM (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 17 Jul 2022 14:57:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51512 "EHLO
+        Sun, 17 Jul 2022 19:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbiGQS5G (ORCPT
+        with ESMTP id S229535AbiGQXxL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 17 Jul 2022 14:57:06 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 045FB101F9;
-        Sun, 17 Jul 2022 11:57:06 -0700 (PDT)
+        Sun, 17 Jul 2022 19:53:11 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36A610FF0;
+        Sun, 17 Jul 2022 16:53:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1658084226; x=1689620226;
+  t=1658101990; x=1689637990;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=mTiA/vrtq0gwBE8+IY0vEqWFd+SHutRTRDePbcfSerA=;
-  b=WVKRwQd9TMYt2gYxCZKH251kCK7/OKtn02wpjYIncwmfPsmW17dtfmDe
-   ye/k8LyAv5wCc4JtIBt/Tw6Mo/egUCHJZOy24uvndF6cqy8Q0U8Kkq2R9
-   /iDcavpYmcVZ8u5+9H41oPZQSniCnDTK0D5tzHvTxpL/6jLop/qrCTVu+
-   aeqZgJsTe9bFhgKioepbJTZON0Xi0/G+ZvghbIBxKn0x8JFeO1tarE8gW
-   e4GAfJm69DTGs4aJMcfgAkZz5QYnwqF20V3I/WQYMp959FoQe7ncJg2Rk
-   gnhtmLdT0RaV78L29JYW2Pz6aKfT613QgL6U2I7TAZK0TZXd+uWPhkmYh
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10411"; a="265868014"
-X-IronPort-AV: E=Sophos;i="5.92,279,1650956400"; 
-   d="scan'208";a="265868014"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2022 11:57:05 -0700
+  bh=9pF+52u5sIt8iKnb9u1XPMvY1nWRTKK736yt0w7idas=;
+  b=Uz1ZdOEWU1ks6zZDlYQyoiUF22njluq3RLkEUgfWOYU8pEF18XMvcn0A
+   I/W/7CvOH3idi0Vsiywpdb+9+imlZzP02iEEN5t6GiKQGd6T+HkyDw4v8
+   EipJKRncXZ0eWgxUB8Y0KDStidoH1GwmTFDYzhIosUh6x73TN1BOeMxU/
+   VpslscMRGEoQGrjDDsERwvQvv0nctdVHRUXJgb9xQ1HxYia2MzAtgxk4s
+   oM7DmHPwS8OojH4vGw6CTMxQn5PGBQKBqZQJ2TAw9LoRo/9ewHWPBnwSI
+   cc2e0dcXPRh7mJVXEDj7vfvYFiO24SgWnac29LMCu9ZOif99ZttlXhdBk
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10411"; a="287245441"
+X-IronPort-AV: E=Sophos;i="5.92,280,1650956400"; 
+   d="scan'208";a="287245441"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2022 16:53:10 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,279,1650956400"; 
-   d="scan'208";a="597025744"
+X-IronPort-AV: E=Sophos;i="5.92,280,1650956400"; 
+   d="scan'208";a="594283394"
 Received: from lkp-server02.sh.intel.com (HELO ff137eb26ff1) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 17 Jul 2022 11:57:00 -0700
+  by orsmga007.jf.intel.com with ESMTP; 17 Jul 2022 16:53:05 -0700
 Received: from kbuild by ff137eb26ff1 with local (Exim 4.95)
         (envelope-from <lkp@intel.com>)
-        id 1oD9Rr-0003ao-R6;
-        Sun, 17 Jul 2022 18:56:59 +0000
-Date:   Mon, 18 Jul 2022 02:56:21 +0800
+        id 1oDE4O-0003o3-FB;
+        Sun, 17 Jul 2022 23:53:04 +0000
+Date:   Mon, 18 Jul 2022 07:52:21 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>
@@ -68,13 +68,13 @@ Cc:     kbuild-all@lists.01.org,
         Randy Dunlap <rdunlap@infradead.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH V5 02/16] rv: Add runtime reactors interface
-Message-ID: <202207180241.ovP1XE48-lkp@intel.com>
-References: <4a66bc1c858b0a11750321696333d897677eff6b.1657745645.git.bristot@kernel.org>
+Subject: Re: [PATCH V5 15/16] rv/reactor: Add the printk reactor
+Message-ID: <202207180703.hiH5bbyO-lkp@intel.com>
+References: <5fcf3d21b51bc4c1a6d2968cfd0c60fdbc1d471b.1657745645.git.bristot@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4a66bc1c858b0a11750321696333d897677eff6b.1657745645.git.bristot@kernel.org>
+In-Reply-To: <5fcf3d21b51bc4c1a6d2968cfd0c60fdbc1d471b.1657745645.git.bristot@kernel.org>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -91,15 +91,15 @@ https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
 url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Bristot-de-Oliveira/The-Runtime-Verification-RV-interface/20220714-052220
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git for-next
-config: x86_64-allmodconfig (https://download.01.org/0day-ci/archive/20220718/202207180241.ovP1XE48-lkp@intel.com/config)
+config: x86_64-allmodconfig (https://download.01.org/0day-ci/archive/20220718/202207180703.hiH5bbyO-lkp@intel.com/config)
 compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
 reproduce:
         # apt-get install sparse
         # sparse version: v0.6.4-39-gce1a6720-dirty
-        # https://github.com/intel-lab-lkp/linux/commit/aa2ae8ed1dd28e5df7022e89ed27a9a5283647d9
+        # https://github.com/intel-lab-lkp/linux/commit/d1746223447deb1d1646f968512a065a1cd63a9c
         git remote add linux-review https://github.com/intel-lab-lkp/linux
         git fetch --no-tags linux-review Daniel-Bristot-de-Oliveira/The-Runtime-Verification-RV-interface/20220714-052220
-        git checkout aa2ae8ed1dd28e5df7022e89ed27a9a5283647d9
+        git checkout d1746223447deb1d1646f968512a065a1cd63a9c
         # save the config file
         mkdir build_dir && cp config build_dir/.config
         make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=x86_64 SHELL=/bin/bash drivers/misc/lkdtm/ kernel/trace/rv/
@@ -109,8 +109,9 @@ Reported-by: kernel test robot <lkp@intel.com>
 
 
 sparse warnings: (new ones prefixed by >>)
->> kernel/trace/rv/rv_reactors.c:73:1: sparse: sparse: symbol 'rv_reactors_list' was not declared. Should it be static?
->> kernel/trace/rv/rv_reactors.c:451:19: sparse: sparse: symbol 'rv_nop' was not declared. Should it be static?
+>> kernel/trace/rv/reactor_printk.c:20:19: sparse: sparse: symbol 'rv_printk' was not declared. Should it be static?
+>> kernel/trace/rv/reactor_printk.c:26:5: sparse: sparse: symbol 'register_react_printk' was not declared. Should it be static?
+>> kernel/trace/rv/reactor_printk.c:32:6: sparse: sparse: symbol 'unregister_react_printk' was not declared. Should it be static?
 
 -- 
 0-DAY CI Kernel Test Service
