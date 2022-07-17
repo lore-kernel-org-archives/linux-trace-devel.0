@@ -2,30 +2,30 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0CB3C43334
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 17 Jul 2022 15:20:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8755C43334
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 17 Jul 2022 15:29:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232806AbiGQPUU (ORCPT
+        id S233101AbiGQP31 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 17 Jul 2022 11:20:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52848 "EHLO
+        Sun, 17 Jul 2022 11:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbiGQPUT (ORCPT
+        with ESMTP id S229993AbiGQP30 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 17 Jul 2022 11:20:19 -0400
-Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733F513F36;
-        Sun, 17 Jul 2022 08:20:18 -0700 (PDT)
-Date:   Sun, 17 Jul 2022 23:20:09 +0800
+        Sun, 17 Jul 2022 11:29:26 -0400
+Received: from out1.migadu.com (out1.migadu.com [91.121.223.63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6C564D2;
+        Sun, 17 Jul 2022 08:29:24 -0700 (PDT)
+Date:   Sun, 17 Jul 2022 23:29:08 +0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1658071216;
+        t=1658071762;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=G2ZX3O3RybhbBzgke2t4zD+2cEJa/QEfPTWE2QGMEn4=;
-        b=E97hW4yPB0AtNvu7MJDPSyC7Lp3FocapuwdGbLRwf2T0YmogmVVPzbniW52Xlz8RFbPRxD
-        JXOx6rtEhhtl+6MbaWiw06nf0DnYDnC/+L3npsKi7KQdErP4gW8JklTUzrppApgXnPpjs7
-        Gz01sj6CfDkzDoXFkymHmAwQxYvG92A=
+        bh=rpLIqmeqxSgK6ObPPSBQ2wz/d25lWPq/Wmu2IPvSg70=;
+        b=s5XPf7/KgtDwKMNVxdDzc82xZhlKjXKIV46bFcSoo1p6tml176w3pWv0dWL1SQ2wvEptCE
+        Cq83OBpQR8ovxqV13aR50Wp7VlGyhhwexH5qEb01kEZHLycj23YKhfPdmNXTIM3CO/cdHA
+        ZvYfL+8T57bi0NU37bJNEySpdhWDfSQ=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Tao Zhou <tao.zhou@linux.dev>
 To:     Daniel Bristot de Oliveira <bristot@kernel.org>
@@ -48,24 +48,59 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Randy Dunlap <rdunlap@infradead.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org, Tao Zhou <tao.zhou@linux.dev>
-Subject: Re: [PATCH V5 11/16] Documentation/rv: Add deterministic automata
- instrumentation documentation
-Message-ID: <YtQoqV8tMKh3fvTw@geo.homenetwork>
+Subject: Re: [PATCH V5 02/16] rv: Add runtime reactors interface
+Message-ID: <YtQqxIUsRndVmTEg@geo.homenetwork>
 References: <cover.1657745645.git.bristot@kernel.org>
- <d05105da043c091d03bdc0cb45409ff774600261.1657745645.git.bristot@kernel.org>
+ <4a66bc1c858b0a11750321696333d897677eff6b.1657745645.git.bristot@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d05105da043c091d03bdc0cb45409ff774600261.1657745645.git.bristot@kernel.org>
+In-Reply-To: <4a66bc1c858b0a11750321696333d897677eff6b.1657745645.git.bristot@kernel.org>
 X-Migadu-Flow: FLOW_OUT
 X-Migadu-Auth-User: linux.dev
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, Jul 13, 2022 at 11:17:27PM +0200, Daniel Bristot de Oliveira wrote:
-> Add the da_monitor_instrumentation.rst. It describes the basics
-> of RV monitor instrumentation.
+On Wed, Jul 13, 2022 at 11:17:18PM +0200, Daniel Bristot de Oliveira wrote:
+> A runtime monitor can cause a reaction to the detection of an
+> exception on the model's execution. By default, the monitors have
+> tracing reactions, printing the monitor output via tracepoints.
+> But other reactions can be added (on-demand) via this interface.
+> 
+> The user interface resembles the kernel tracing interface and
+> presents these files:
+> 
+> "available_reactors"
+>   - Reading shows the available reactors, one per line.
+> 
+>    For example:
+>      # cat available_reactors
+>      nop
+>      panic
+>      printk
+> 
+>  "reacting_on"
+>    - It is an on/off general switch for reactors, disabling
+>    all reactions.
+> 
+>  "monitors/MONITOR/reactors"
+>    - List available reactors, with the select reaction for the given
+>    MONITOR inside []. The default one is the nop (no operation)
+>    reactor.
+>    - Writing the name of a reactor enables it to the given
+>    MONITOR.
+> 
+>    For example:
+>      # cat monitors/wip/reactors
+>      [nop]
+>      panic
+>      printk
+>      # echo panic > monitors/wip/reactors
+>      # cat monitors/wip/reactors
+>      nop
+>      [panic]
+>      printk
 > 
 > Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
 > Cc: Guenter Roeck <linux@roeck-us.net>
@@ -90,110 +125,522 @@ On Wed, Jul 13, 2022 at 11:17:27PM +0200, Daniel Bristot de Oliveira wrote:
 > Cc: linux-trace-devel@vger.kernel.org
 > Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 > ---
->  .../trace/rv/da_monitor_instrumentation.rst   | 169 ++++++++++++++++++
->  Documentation/trace/rv/index.rst              |   1 +
->  2 files changed, 170 insertions(+)
->  create mode 100644 Documentation/trace/rv/da_monitor_instrumentation.rst
-> 
-> diff --git a/Documentation/trace/rv/da_monitor_instrumentation.rst b/Documentation/trace/rv/da_monitor_instrumentation.rst
+>  include/linux/rv.h            |  11 +
+>  kernel/trace/rv/Kconfig       |  11 +
+>  kernel/trace/rv/Makefile      |   1 +
+>  kernel/trace/rv/rv.c          |   9 +
+>  kernel/trace/rv/rv.h          |  29 ++
+>  kernel/trace/rv/rv_reactors.c | 488 ++++++++++++++++++++++++++++++++++
+>  6 files changed, 549 insertions(+)
+>  create mode 100644 kernel/trace/rv/rv_reactors.c
+
+[snip]
+
 > new file mode 100644
-> index 000000000000..7b83d6c7dbed
+> index 000000000000..27f48fec5a51
 > --- /dev/null
-> +++ b/Documentation/trace/rv/da_monitor_instrumentation.rst
-> @@ -0,0 +1,169 @@
-> +Deterministic Automata Instrumentation
-> +========================================
+> +++ b/kernel/trace/rv/rv_reactors.c
+> @@ -0,0 +1,488 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2019-2022 Red Hat, Inc. Daniel Bristot de Oliveira <bristot@kernel.org>
+> + *
+> + * Runtime reactor interface.
+> + *
+> + * A runtime monitor can cause a reaction to the detection of an
+> + * exception on the model's execution. By default, the monitors have
+> + * tracing reactions, printing the monitor output via tracepoints.
+> + * But other reactions can be added (on-demand) via this interface.
+> + *
+> + * == Registering reactors ==
+> + *
+> + * The struct rv_reactor defines a callback function to be executed
+> + * in case of a model exception happens. The callback function
+> + * receives a message to be (optionally) printed before executing
+> + * the reaction.
+> + *
+> + * A RV reactor is registered via:
+> + *   int rv_register_reactor(struct rv_reactor *reactor)
+> + * And unregistered via:
+> + *   int rv_unregister_reactor(struct rv_reactor *reactor)
+> + *
+> + * These functions are exported to modules, enabling reactors to be
+> + * dynamically loaded.
+> + *
+> + * == User interface ==
+> + *
+> + * The user interface resembles the kernel tracing interface and
+> + * presents these files:
+> + *
+> + *  "available_reactors"
+> + *    - List the available reactors, one per line.
+> + *
+> + *    For example:
+> + *      # cat available_reactors
+> + *      nop
+> + *      panic
+> + *      printk
+> + *
+> + *  "reacting_on"
+> + *    - It is an on/off general switch for reactors, disabling
+> + *    all reactions.
+> + *
+> + *  "monitors/MONITOR/reactors"
+> + *    - List available reactors, with the select reaction for the given
+> + *    MONITOR inside []. The default one is the nop (no operation)
+> + *    reactor.
+> + *    - Writing the name of an reactor enables it to the given
+> + *    MONITOR.
+> + *
+> + *    For example:
+> + *      # cat monitors/wip/reactors
+> + *      [nop]
+> + *      panic
+> + *      printk
+> + *      # echo panic > monitors/wip/reactors
+> + *      # cat monitors/wip/reactors
+> + *      nop
+> + *      [panic]
+> + *      printk
+> + */
 > +
-> +The RV monitor file created by dot2k, with the name "$MODEL_NAME.c"
-> +includes a section dedicated to instrumentation.
+> +#include <linux/slab.h>
 > +
-> +In the example of the wip.dot monitor created on [1], it will look like::
+> +#include "rv.h"
 > +
-> +  /*
-> +   * This is the instrumentation part of the monitor.
-> +   *
-> +   * This is the section where manual work is required. Here the kernel events
-> +   * are translated into model's event.
-> +   *
-> +   */
-> +  static void handle_preempt_disable(void *data, /* XXX: fill header */)
-> +  {
-> +	da_handle_event_wip(preempt_disable_wip);
-> +  }
+> +bool __read_mostly reacting_on;
 > +
-> +  static void handle_preempt_enable(void *data, /* XXX: fill header */)
-> +  {
-> +	da_handle_event_wip(preempt_enable_wip);
-> +  }
+> +/*
+> + * Interface for the reactor register.
+> + */
+> +LIST_HEAD(rv_reactors_list);
 > +
-> +  static void handle_sched_waking(void *data, /* XXX: fill header */)
-> +  {
-> +	da_handle_event_wip(sched_waking_wip);
-> +  }
+> +static struct rv_reactor_def *get_reactor_rdef_by_name(char *name)
+> +{
+> +	struct rv_reactor_def *r;
 > +
-> +  static int start_wip(void)
-> +  {
+> +	list_for_each_entry(r, &rv_reactors_list, list) {
+> +		if (strcmp(name, r->reactor->name) == 0)
+> +			return r;
+> +	}
+> +	return NULL;
+> +}
+> +
+> +/*
+> + * Available reactors seq functions.
+> + */
+> +static int reactors_show(struct seq_file *m, void *p)
+> +{
+> +	struct rv_reactor_def *rea_def = p;
+> +
+> +	seq_printf(m, "%s\n", rea_def->reactor->name);
+> +	return 0;
+> +}
+> +
+> +static void reactors_stop(struct seq_file *m, void *p)
+> +{
+> +	mutex_unlock(&rv_interface_lock);
+> +}
+> +
+> +static void *reactors_start(struct seq_file *m, loff_t *pos)
+> +{
+> +	mutex_lock(&rv_interface_lock);
+> +	return seq_list_start(&rv_reactors_list, *pos);
+> +}
+> +
+> +static void *reactors_next(struct seq_file *m, void *p, loff_t *pos)
+> +{
+> +	return seq_list_next(p, &rv_reactors_list, pos);
+> +}
+> +
+> +/*
+> + * available reactors seq definition.
+> + */
+> +static const struct seq_operations available_reactors_seq_ops = {
+> +	.start	= reactors_start,
+> +	.next	= reactors_next,
+> +	.stop	= reactors_stop,
+> +	.show	= reactors_show
+> +};
+> +
+> +/*
+> + * available_reactors interface.
+> + */
+> +static int available_reactors_open(struct inode *inode, struct file *file)
+> +{
+> +	return seq_open(file, &available_reactors_seq_ops);
+> +};
+> +
+> +static const struct file_operations available_reactors_ops = {
+> +	.open    = available_reactors_open,
+> +	.read    = seq_read,
+> +	.llseek  = seq_lseek,
+> +	.release = seq_release
+> +};
+> +
+> +/*
+> + * Monitor reactor file.
+> + */
+> +static int monitor_reactor_show(struct seq_file *m, void *p)
+> +{
+> +	struct rv_monitor_def *mdef = m->private;
+> +	struct rv_reactor_def *rdef = p;
+> +
+> +	if (mdef->rdef == rdef)
+> +		seq_printf(m, "[%s]\n", rdef->reactor->name);
+> +	else
+> +		seq_printf(m, "%s\n", rdef->reactor->name);
+> +	return 0;
+> +}
+> +
+> +/*
+> + * available reactors seq definition.
+> + */
+> +static const struct seq_operations monitor_reactors_seq_ops = {
+> +	.start	= reactors_start,
+> +	.next	= reactors_next,
+> +	.stop	= reactors_stop,
+> +	.show	= monitor_reactor_show
+> +};
+> +
+> +static ssize_t
+> +monitor_reactors_write(struct file *file, const char __user *user_buf,
+> +		      size_t count, loff_t *ppos)
+> +{
+> +	char buff[MAX_RV_REACTOR_NAME_SIZE + 2];
+> +	struct rv_monitor_def *mdef;
+> +	struct rv_reactor_def *rdef;
+> +	struct seq_file *seq_f;
+> +	int retval = -EINVAL;
+> +	bool enabled;
+> +	char *ptr;
+> +	int len;
+> +
+> +	if (count < 1 || count > MAX_RV_REACTOR_NAME_SIZE + 2)
+> +		return -EINVAL;
+
+The same case as patch1. The up bound check need to be changed.
+
+> +
+> +	memset(buff, 0, sizeof(buff));
+> +
+> +	retval = simple_write_to_buffer(buff, sizeof(buff) - 1, ppos, user_buf,
+> +					count);
+> +	if (!retval)
+> +		return -EFAULT;
+
+If simple_write_to_buffer() is error(return value < 0), no return here.
+If the return value is 0, no write has happened. For this case, the code
+want to return -EFAULT.
+
+> +
+> +	ptr = strim(buff);
+> +
+> +	len = strlen(ptr);
+> +	if (!len)
+> +		return count;
+> +
+> +	/*
+> +	 * See monitor_reactors_open()
+> +	 */
+> +	seq_f = file->private_data;
+> +	mdef = seq_f->private;
+> +
+> +	mutex_lock(&rv_interface_lock);
+> +
+> +	retval = -EINVAL;
+> +
+> +	/*
+> +	 * nop special case: disable reacting.
+> +	 */
+> +	if (strcmp(ptr, "nop") == 0) {
+> +
+> +		enabled = mdef->monitor->enabled;
+> +		if (enabled)
+> +			mdef->monitor->stop();
+> +
+> +		mdef->rdef = get_reactor_rdef_by_name("nop");
+> +		mdef->reacting = false;
+> +		mdef->monitor->react = NULL;
+> +
+> +		if (enabled) {
+> +			mdef->monitor->start();
+> +			mdef->monitor->enabled = 1;
+> +		}
+> +
+> +		retval = count;
+> +		goto unlock;
+> +	}
+> +
+> +	list_for_each_entry(rdef, &rv_reactors_list, list) {
+> +		if (strcmp(ptr, rdef->reactor->name) != 0)
+> +			continue;
+> +
+> +		/*
+> +		 * found!
+> +		 */
+> +		enabled = mdef->monitor->enabled;
+> +		if (enabled)
+> +			mdef->monitor->stop();
+> +
+> +		mdef->rdef = rdef;
+> +		mdef->reacting = true;
+> +		mdef->monitor->react = rdef->reactor->react;
+> +
+> +		if (enabled) {
+> +			mdef->monitor->start();
+> +			mdef->monitor->enabled = 1;
+> +		}
+> +
+> +		retval = count;
+> +		break;
+> +	}
+> +
+> +unlock:
+> +	mutex_unlock(&rv_interface_lock);
+> +
+> +	return retval;
+> +}
+> +
+> +/*
+> + * available_reactors interface.
+> + */
+> +static int monitor_reactors_open(struct inode *inode, struct file *file)
+> +{
+> +	/*
+> +	 * create file "private" info is stored in the inode->i_private
+> +	 */
+> +	struct rv_monitor_def *mdef = inode->i_private;
+> +	struct seq_file *seq_f;
+> +	int ret;
+> +
+> +	ret = seq_open(file, &monitor_reactors_seq_ops);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/*
+> +	 * seq_open stores the seq_file on the file->private data.
+> +	 */
+> +	seq_f = file->private_data;
+> +
+> +	/*
+> +	 * Copy the create file "private" data to the seq_file
+> +	 * private data.
+> +	 */
+> +	seq_f->private = mdef;
+> +
+> +	return 0;
+> +};
+> +
+> +static const struct file_operations monitor_reactors_ops = {
+> +	.open    = monitor_reactors_open,
+> +	.read    = seq_read,
+> +	.llseek  = seq_lseek,
+> +	.release = seq_release,
+> +	.write = monitor_reactors_write
+> +};
+> +
+> +static int __rv_register_reactor(struct rv_reactor *reactor)
+> +{
+> +	struct rv_reactor_def *r;
+> +
+> +	list_for_each_entry(r, &rv_reactors_list, list) {
+> +		if (strcmp(reactor->name, r->reactor->name) == 0) {
+> +			pr_info("Reactor %s is already registered\n",
+> +				reactor->name);
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	r = kzalloc(sizeof(struct rv_reactor_def), GFP_KERNEL);
+> +	if (!r)
+> +		return -ENOMEM;
+> +
+> +	r->reactor = reactor;
+> +	r->counter = 0;
+> +
+> +	list_add_tail(&r->list, &rv_reactors_list);
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * rv_register_reactor - register a rv reactor.
+> + * @reactor:    The rv_reactor to be registered.
+> + *
+> + * Returns 0 if successful, error otherwise.
+> + */
+> +int rv_register_reactor(struct rv_reactor *reactor)
+> +{
+> +	int retval = 0;
+> +
+> +	if (strlen(reactor->name) >= MAX_RV_REACTOR_NAME_SIZE) {
+> +		pr_info("Reactor %s has a name longer than %d\n",
+> +			reactor->name, MAX_RV_MONITOR_NAME_SIZE);
+> +		return -EINVAL;
+> +	}
+> +
+> +	mutex_lock(&rv_interface_lock);
+> +	retval = __rv_register_reactor(reactor);
+> +	mutex_unlock(&rv_interface_lock);
+> +	return retval;
+> +}
+> +
+> +/**
+> + * rv_unregister_reactor - unregister a rv reactor.
+> + * @reactor:    The rv_reactor to be unregistered.
+> + *
+> + * Returns 0 if successful, error otherwise.
+> + */
+> +int rv_unregister_reactor(struct rv_reactor *reactor)
+> +{
+> +	struct rv_reactor_def *ptr, *next;
+> +
+> +	mutex_lock(&rv_interface_lock);
+> +
+> +	list_for_each_entry_safe(ptr, next, &rv_reactors_list, list) {
+> +		if (strcmp(reactor->name, ptr->reactor->name) == 0) {
+> +
+> +			if (!ptr->counter) {
+> +				list_del(&ptr->list);
+> +			} else {
+> +				printk(KERN_WARNING
+> +				       "rv: the rv_reactor %s is in use by %d monitor(s)\n",
+> +				       ptr->reactor->name, ptr->counter);
+> +				printk(KERN_WARNING "rv: the rv_reactor %s cannot be removed\n",
+> +				       ptr->reactor->name);
+> +				return -EBUSY;
+> +			}
+> +
+> +		}
+> +	}
+> +
+> +	mutex_unlock(&rv_interface_lock);
+> +	return 0;
+> +}
+> +
+> +/*
+> + * reacting_on interface.
+> + */
+> +static ssize_t reacting_on_read_data(struct file *filp,
+> +				     char __user *user_buf,
+> +				     size_t count, loff_t *ppos)
+> +{
+> +	char *buff;
+> +
+> +	mutex_lock(&rv_interface_lock);
+> +	buff = reacting_on ? "1\n" : "0\n";
+> +	mutex_unlock(&rv_interface_lock);
+> +
+> +	return simple_read_from_buffer(user_buf, count, ppos, buff, strlen(buff)+1);
+> +}
+> +
+> +static void turn_reacting_off(void)
+> +{
+> +	reacting_on = false;
+> +}
+> +
+> +static void turn_reacting_on(void)
+> +{
+> +	reacting_on = true;
+> +}
+> +
+> +static ssize_t
+> +reacting_on_write_data(struct file *filp, const char __user *user_buf,
+> +		       size_t count, loff_t *ppos)
+> +{
 > +	int retval;
+> +	bool val;
 > +
-> +	retval = da_monitor_init_wip();
+> +	retval = kstrtobool_from_user(user_buf, count, &val);
 > +	if (retval)
 > +		return retval;
 > +
-> +	rv_attach_trace_probe("wip", /* XXX: tracepoint */, handle_preempt_disable);
-> +	rv_attach_trace_probe("wip", /* XXX: tracepoint */, handle_preempt_enable);
-> +	rv_attach_trace_probe("wip", /* XXX: tracepoint */, handle_sched_waking);
+> +	mutex_lock(&rv_interface_lock);
+> +
+> +	if (val)
+> +		turn_reacting_on();
+> +	else
+> +		turn_reacting_off();
+> +
+> +	mutex_unlock(&rv_interface_lock);
+> +
+> +	return count;
+> +}
+> +
+> +static const struct file_operations reacting_on_fops = {
+> +	.open   = simple_open,
+> +	.llseek = no_llseek,
+> +	.write  = reacting_on_write_data,
+> +	.read   = reacting_on_read_data,
+> +};
+> +
+> +int reactor_create_monitor_files(struct rv_monitor_def *mdef)
+> +{
+> +	struct dentry *tmp;
+> +
+> +	tmp = rv_create_file("reactors", RV_MODE_WRITE, mdef->root_d, mdef, &monitor_reactors_ops);
+> +	if (!tmp)
+> +		return -ENOMEM;
+> +
+> +	/*
+> +	 * Configure as the rv_nop reactor.
+> +	 */
+> +	mdef->rdef = get_reactor_rdef_by_name("nop");
+> +	mdef->reacting = false;
+
+Not need `mdef->monitor->react = NULL;`. The monitor->react is
+not set to others that means it is set to NULL, When initializing
+the specific rv_monitor structure. Note to myself. Thanks.
+
 > +
 > +	return 0;
-> +  }
+> +}
 > +
-> +The comment at the top of the section explains the general idea: the
-> +instrumentation section translates *kernel events* into the *model's
-> +event*.
+> +/*
+> + * None reactor register
+> + */
+> +static void rv_nop_reaction(char *msg)
+> +{
+> +}
 > +
-> +Tracing callback functions
-> +-----------------------------
+> +struct rv_reactor rv_nop = {
+> +	.name = "nop",
+> +	.description = "no-operation reactor: do nothing.",
+> +	.react = rv_nop_reaction
+> +};
 > +
-> +The first three functions are the starting point of the callback *handler
-> +functions* for each of the three events from the wip model. The developer
-> +does not necessarily need to use them: they are just starting points.
+> +/*
+> + * This section collects the rv/ root dir files and folders.
+> + */
+> +int init_rv_reactors(struct dentry *root_dir)
+> +{
+> +	struct dentry *available, *reacting;
+> +	int retval;
 > +
-> +Using the example of::
+> +	available = rv_create_file("available_reactors", RV_MODE_READ, root_dir, NULL,
+> +				   &available_reactors_ops);
+> +	if (!available)
+> +		goto out_err;
 > +
-> + void handle_preempt_disable(void *data, /* XXX: fill header */)
-> + {
-> +        da_handle_event_wip(preempt_disable_wip);
-> + }
+> +	reacting = rv_create_file("reacting_on", RV_MODE_WRITE, root_dir, NULL, &reacting_on_fops);
+> +	if (!reacting)
+> +		goto rm_available;
 > +
-> +The preempt_disable event from the model connects directly to the
-> +preemptirq:preempt_disable. The preemptirq:preempt_disable event
-> +has the following signature, from include/trace/events/preemptirq.h::
+> +	retval = __rv_register_reactor(&rv_nop);
+> +	if (retval)
+> +		goto rm_reacting;
 > +
-> +  TP_PROTO(unsigned long ip, unsigned long parent_ip)
+> +	reacting_on = 1;
 > +
-> +Hence, the handle_preempt_disable() function will look like::
+> +	return 0;
 > +
-> +  void handle_preempt_disable(void *data, unsigned long ip, unsigned long parent_ip)
-> +
-> +In this case, the kernel event translates one to one with the automata
-> +event, and indeed, no other change is required for this function.
-> +
-> +The next handler function, handle_preempt_enable() has the same argument
-> +list from the handle_preempt_disable(). The difference is that the
-> +preempt_enable event will be used to synchronize the system to the model.
-> +
-> +Initially, the *model* is placed in the initial state. However, the *system*
-> +might or might not be in the initial state. The monitor cannot start
-> +processing events until it knows that the system has reached the initial state.
-> +Otherwise, the monitor and the system could be out-of-sync.
-> +
-> +Looking at the automata definition, it is possible to see that the system
-> +and the model are expected to return to the initial state after the
-> +preempt_enable execution. Hence, it can be used to synchronize the
-> +system and the model at the initialization of the monitoring section.
-> +
-> +The initialization is informed via a special handle function, the
-> +"da_handle_init_event_$(MONITOR)(event)", in this case::
-> +
-> +  da_handle_event_wip(preempt_disable_wip);
-
-In this case, it is da_handle_init_event_wip(preempt_disable_wip). Thanks.
+> +rm_reacting:
+> +	rv_remove(reacting);
+> +rm_available:
+> +	rv_remove(available);
+> +out_err:
+> +	return -ENOMEM;
+> +}
+> -- 
+> 2.35.1
