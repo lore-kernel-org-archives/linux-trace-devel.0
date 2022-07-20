@@ -2,30 +2,45 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1B15C43334
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 20 Jul 2022 14:47:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46581C43334
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 20 Jul 2022 15:20:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234804AbiGTOr1 (ORCPT
+        id S234835AbiGTPU1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 20 Jul 2022 10:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52352 "EHLO
+        Wed, 20 Jul 2022 11:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231962AbiGTOr0 (ORCPT
+        with ESMTP id S241278AbiGTPUY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 20 Jul 2022 10:47:26 -0400
+        Wed, 20 Jul 2022 11:20:24 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 409CB4E63C;
-        Wed, 20 Jul 2022 07:47:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E3252B628;
+        Wed, 20 Jul 2022 08:20:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E8C6CB81FB5;
-        Wed, 20 Jul 2022 14:47:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67C5DC3411E;
-        Wed, 20 Jul 2022 14:47:20 +0000 (UTC)
-Date:   Wed, 20 Jul 2022 10:47:18 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4FFD6B81FB7;
+        Wed, 20 Jul 2022 15:20:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B08EAC3411E;
+        Wed, 20 Jul 2022 15:20:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658330421;
+        bh=x+cgZ5X4Ep6UEjkiKUNBhV2MCaTDdeS8opcNoRCBkPQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=kMJby8dWE+VITkxrQy8XmXzRWixu18hn9Nt74JIRL1LXwGU2NbGBwjHXO2YR8ZRuc
+         H8t6g+7sZf6Wuta863wg9ChmuS5Ftf0l9VcKdPbkHPkGU2pxItBTvcPpS849moKAQs
+         NZGOnxy3z14U2cCbl85eK9nHEUOy8sZiM3coyKi70R2Q2ZxC0KTDaZr+VqLs4nSzQd
+         J6lIiUcy0nCQ9vnx4TVxgEZ4kkdHTXTEaR1YrKnI9A1iBkuDfaF+Qsr6gwxo0KALJg
+         GfcSnALGxNY5QZ0goteRjarX8qCXgmn7WAv5Me4AzHjQsv2Yqa0DAYAcsvVZl+k/9b
+         olRVUvLAhNPBw==
+Message-ID: <311a6ac0-98c0-708f-1866-fcfc6c5e90f2@kernel.org>
+Date:   Wed, 20 Jul 2022 17:20:14 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH V6 01/16] rv: Add Runtime Verification (RV) interface
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
         Guenter Roeck <linux@roeck-us.net>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -45,42 +60,41 @@ Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
         Randy Dunlap <rdunlap@infradead.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH V6 01/16] rv: Add Runtime Verification (RV) interface
-Message-ID: <20220720104718.59148968@gandalf.local.home>
-In-Reply-To: <69bb4c369b4f6f12014eb9ca3c28b74e4378c007.1658244826.git.bristot@kernel.org>
 References: <cover.1658244826.git.bristot@kernel.org>
-        <69bb4c369b4f6f12014eb9ca3c28b74e4378c007.1658244826.git.bristot@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+ <69bb4c369b4f6f12014eb9ca3c28b74e4378c007.1658244826.git.bristot@kernel.org>
+ <20220720104718.59148968@gandalf.local.home>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <20220720104718.59148968@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 19 Jul 2022 19:27:06 +0200
-Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+On 7/20/22 16:47, Steven Rostedt wrote:
+> On Tue, 19 Jul 2022 19:27:06 +0200
+> Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+> 
+>> +/*
+>> + * Interface to read the enable/disable status of a monitor.
+>> + */
+>> +static ssize_t monitor_desc_read_data(struct file *filp, char __user *user_buf, size_t count,
+>> +				      loff_t *ppos)
+>> +{
+>> +	struct rv_monitor_def *mdef = filp->private_data;
+>> +	char buff[256];
+>> +
+>> +	memset(buff, 0, sizeof(buff));
+>> +
+>> +	mutex_lock(&rv_interface_lock);
+>> +	snprintf(buff, sizeof(buff), "%s\n", mdef->monitor->description);
+>> +	mutex_unlock(&rv_interface_lock);
+> 
+> What exactly is the mutex protecting here?
 
-> +/*
-> + * Interface to read the enable/disable status of a monitor.
-> + */
-> +static ssize_t monitor_desc_read_data(struct file *filp, char __user *user_buf, size_t count,
-> +				      loff_t *ppos)
-> +{
-> +	struct rv_monitor_def *mdef = filp->private_data;
-> +	char buff[256];
-> +
-> +	memset(buff, 0, sizeof(buff));
-> +
-> +	mutex_lock(&rv_interface_lock);
-> +	snprintf(buff, sizeof(buff), "%s\n", mdef->monitor->description);
-> +	mutex_unlock(&rv_interface_lock);
+I placed it around all access on read/write in the interface,
+but indeed, it is not needed here (static data). It is in a file inside
+the monitor's directory... so the directory is there, and the
+module is there as well.
 
-What exactly is the mutex protecting here?
-
--- Steve
-
-> +
-> +	return simple_read_from_buffer(user_buf, count, ppos, buff, strlen(buff) + 1);
-> +}
-> +
+-- Daniel
