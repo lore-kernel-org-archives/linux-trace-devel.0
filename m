@@ -2,45 +2,30 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB938C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 20 Jul 2022 15:33:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A98AC43334
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 20 Jul 2022 16:41:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239560AbiGTPdd (ORCPT
+        id S232641AbiGTQlm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 20 Jul 2022 11:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41650 "EHLO
+        Wed, 20 Jul 2022 12:41:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237384AbiGTPd2 (ORCPT
+        with ESMTP id S232006AbiGTQlm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 20 Jul 2022 11:33:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E50624A9;
-        Wed, 20 Jul 2022 08:33:27 -0700 (PDT)
+        Wed, 20 Jul 2022 12:41:42 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD424F670;
+        Wed, 20 Jul 2022 09:41:41 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D462861C81;
-        Wed, 20 Jul 2022 15:33:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6F32C3411E;
-        Wed, 20 Jul 2022 15:33:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658331206;
-        bh=d4mdS9pZTeRzQCM3iqfclNNw6Cc99uSxF1XgR6Nm2dA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=F+/iPgUYr6Evj8LIHJNiNnUsFMXKP3GxHNrVLq2kGnoAFuQIo/HDSHnO8B/BtG3Ia
-         8ZLP0FymvUvqCSaKcixekcTZ2gKV8z60NgJ8Ph6djL4erJKP1jWqYXXXcmPKBMQn3c
-         6pPt7L6Kqhl1CpYH6EMv3QXP13N+d0Cf+/WX99GwOJMXE865mk9Qd0P/NMgu21OpKD
-         KgojtGKOlPTXgPn3ARlWkqfGDHVNyLBMNdBn7L79mamq11dtOboB7SKAmmOQ/ZdaXt
-         R/+qn0+twyK29bRlK5BpYaLViEwZ2Gz/2hiCUPcUpAIMgoVi29Et1EoymYnPAGPAwa
-         hM0WCOELMAC7g==
-Message-ID: <34d07ab4-7c95-ea56-054c-039eee704723@kernel.org>
-Date:   Wed, 20 Jul 2022 17:33:19 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH V6 01/16] rv: Add Runtime Verification (RV) interface
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
+        by sin.source.kernel.org (Postfix) with ESMTPS id ACDF9CE218F;
+        Wed, 20 Jul 2022 16:41:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF5E5C3411E;
+        Wed, 20 Jul 2022 16:41:35 +0000 (UTC)
+Date:   Wed, 20 Jul 2022 12:41:33 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
         Guenter Roeck <linux@roeck-us.net>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -60,32 +45,42 @@ Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
         Randy Dunlap <rdunlap@infradead.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH V6 02/16] rv: Add runtime reactors interface
+Message-ID: <20220720124133.3cdd2c44@gandalf.local.home>
+In-Reply-To: <4b5f93e3186b067073c1692d4c2b50d0b42101d5.1658244826.git.bristot@kernel.org>
 References: <cover.1658244826.git.bristot@kernel.org>
- <69bb4c369b4f6f12014eb9ca3c28b74e4378c007.1658244826.git.bristot@kernel.org>
- <20220720112102.32415cc7@gandalf.local.home>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <20220720112102.32415cc7@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8
+        <4b5f93e3186b067073c1692d4c2b50d0b42101d5.1658244826.git.bristot@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 7/20/22 17:21, Steven Rostedt wrote:
->> +static void disable_all_monitors(void)
->> +{
->> +	struct rv_monitor_def *mdef;
->> +
-> I think you need:
-> 
-> 	mutex_lock(&rv_interface_lock);
-> 
->> +	list_for_each_entry(mdef, &rv_monitors_list, list)
->> +		disable_monitor(mdef);
-> 	mutex_unlock(&rv_interface_lock);
-> 
->> +}
+On Tue, 19 Jul 2022 19:27:07 +0200
+Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 
-yes, we need.
+> +/*
+> + * reacting_on interface.
+> + */
+> +static ssize_t reacting_on_read_data(struct file *filp,
+> +				     char __user *user_buf,
+> +				     size_t count, loff_t *ppos)
+> +{
+> +	char *buff;
+> +
+> +	mutex_lock(&rv_interface_lock);
+> +	buff = reacting_on ? "1\n" : "0\n";
+> +	mutex_unlock(&rv_interface_lock);
 
--- Daniel
+Again, no need for the locks, but perhaps just to keep things sane:
+
+	buf = READ_ONCE(reacting_on) ? "1\n" : "0\n";
+
+-- Steve
+
+> +
+> +	return simple_read_from_buffer(user_buf, count, ppos, buff, strlen(buff)+1);
+> +}
+> +
