@@ -2,28 +2,28 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61268C43334
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 20 Jul 2022 17:45:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C310C43334
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 20 Jul 2022 20:06:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbiGTRpi (ORCPT
+        id S229493AbiGTUGN (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 20 Jul 2022 13:45:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42938 "EHLO
+        Wed, 20 Jul 2022 16:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230280AbiGTRph (ORCPT
+        with ESMTP id S229490AbiGTUGM (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 20 Jul 2022 13:45:37 -0400
+        Wed, 20 Jul 2022 16:06:12 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2AC3244C;
-        Wed, 20 Jul 2022 10:45:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13729422F1;
+        Wed, 20 Jul 2022 13:06:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0829B6151C;
-        Wed, 20 Jul 2022 17:45:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48216C3411E;
-        Wed, 20 Jul 2022 17:45:33 +0000 (UTC)
-Date:   Wed, 20 Jul 2022 13:45:31 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A383261C19;
+        Wed, 20 Jul 2022 20:06:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF2D6C3411E;
+        Wed, 20 Jul 2022 20:06:07 +0000 (UTC)
+Date:   Wed, 20 Jul 2022 16:06:06 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
@@ -45,15 +45,12 @@ Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
         Randy Dunlap <rdunlap@infradead.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH V6 02/16] rv: Add runtime reactors interface
-Message-ID: <20220720134531.400b87af@gandalf.local.home>
-In-Reply-To: <d168f357-e78e-5dc6-09cd-41e6e41e1f4f@kernel.org>
+Subject: Re: [PATCH V6 04/16] rv/include: Add deterministic automata monitor
+ definition via C macros
+Message-ID: <20220720160606.3e672b55@gandalf.local.home>
+In-Reply-To: <9ffc05b67fff087413143a420373731e0e34eef4.1658244826.git.bristot@kernel.org>
 References: <cover.1658244826.git.bristot@kernel.org>
-        <4b5f93e3186b067073c1692d4c2b50d0b42101d5.1658244826.git.bristot@kernel.org>
-        <20220720124133.3cdd2c44@gandalf.local.home>
-        <ba11409a-df46-8fad-61a9-256277c588c0@kernel.org>
-        <20220720130209.65f501b1@gandalf.local.home>
-        <d168f357-e78e-5dc6-09cd-41e6e41e1f4f@kernel.org>
+        <9ffc05b67fff087413143a420373731e0e34eef4.1658244826.git.bristot@kernel.org>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -62,16 +59,204 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 20 Jul 2022 19:37:58 +0200
+On Tue, 19 Jul 2022 19:27:09 +0200
 Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 
-> > That has logic that looks to require a lock to protect things from changing
-> > from underneath.  
-> 
-> ack, so the only variable I see we can use READ_ONCE/WRITE_ONCE is the reacting_on...
+> diff --git a/include/linux/rv.h b/include/linux/rv.h
+> index 4f5b70eee557..31d8b2614eae 100644
+> --- a/include/linux/rv.h
+> +++ b/include/linux/rv.h
+> @@ -7,6 +7,8 @@
+>  #ifndef _LINUX_RV_H
+>  #define _LINUX_RV_H
+>  
+> +#define MAX_DA_NAME_LEN         24
+> +
+>  struct rv_reactor {
+>  	char			*name;
+>  	char			*description;
+> diff --git a/include/rv/da_monitor.h b/include/rv/da_monitor.h
+> new file mode 100644
+> index 000000000000..ef7ee3ffcad6
+> --- /dev/null
+> +++ b/include/rv/da_monitor.h
+> @@ -0,0 +1,507 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2019-2022 Red Hat, Inc. Daniel Bristot de Oliveira <bristot@kernel.org>
+> + *
+> + * Deterministic automata (DA) monitor functions, to be used together
+> + * with automata models in C generated by the dot2k tool.
+> + *
+> + * The dot2k tool is available at tools/verification/dot2k/
+> + */
+> +
+> +#include <rv/automata.h>
+> +#include <linux/rv.h>
+> +#include <linux/bug.h>
+> +
+> +/*
+> + * Generic helpers for all types of deterministic automata monitors.
+> + */
+> +#define DECLARE_DA_MON_GENERIC_HELPERS(name, type)						\
+> +												\
+> +static char REACT_MSG[1024];									\
+> +												\
+> +static inline char *format_react_msg(type curr_state, type event)				\
 
-WRITE_ONCE() does not supply memory barriers, which you may need.
+You probably want to call this format_react_msg_##name() too.
 
-I'm only at patch 3, I'm not sure what the full requirements of that is.
+> +{												\
+> +	snprintf(REACT_MSG, 1024,								\
+> +		 "rv: monitor %s does not allow event %s on state %s\n",			\
+> +		 #name,										\
+> +		 model_get_event_name_##name(event),						\
+> +		 model_get_state_name_##name(curr_state));					\
+> +	return REACT_MSG;									\
+> +}												\
+> +												\
+> +static void cond_react(char *msg)								\
+
+And this cond_react_##name() as well. Otherwise you can have issues with
+the same function being used by multiple monitors. What if two are declared
+in the same file? This will fail to build.
+
+> +{												\
+> +	if (rv_##name.react)									\
+> +		rv_##name.react(msg);								\
+> +}												\
+> +												\
+> +/*												\
+> + * da_monitor_reset_##name - reset a monitor and setting it to init state			\
+> + */												\
+> +static inline void da_monitor_reset_##name(struct da_monitor *da_mon)				\
+> +{												\
+> +	da_mon->monitoring = 0;									\
+> +	da_mon->curr_state = model_get_initial_state_##name();					\
+> +}												\
+> +												\
+> +/*												\
+> + * da_monitor_curr_state_##name - return the current state					\
+> + */												\
+> +static inline type da_monitor_curr_state_##name(struct da_monitor *da_mon)			\
+> +{												\
+> +	return da_mon->curr_state;								\
+> +}												\
+> +												\
+> +/*												\
+> + * da_monitor_set_state_##name - set the new current state					\
+> + */												\
+> +static inline void										\
+> +da_monitor_set_state_##name(struct da_monitor *da_mon, enum states_##name state)		\
+> +{												\
+> +	da_mon->curr_state = state;								\
+> +}												\
+> +												\
+> +/*												\
+> + * da_monitor_start_##name - start monitoring							\
+> + *												\
+> + * The monitor will ignore all events until monitoring is set to true. This			\
+> + * function needs to be called to tell the monitor to start monitoring.				\
+> + */												\
+> +static inline void da_monitor_start_##name(struct da_monitor *da_mon)				\
+> +{												\
+> +	da_mon->monitoring = 1;									\
+> +}												\
+> +												\
+> +/*												\
+> + * da_monitoring_##name - returns true if the monitor is processing events			\
+> + */												\
+> +static inline bool da_monitoring_##name(struct da_monitor *da_mon)				\
+> +{												\
+> +	return da_mon->monitoring;								\
+> +}												\
+> +												\
+> +/*												\
+> + * da_monitor_enabled_##name - checks if the monitor is enabled					\
+> + */												\
+> +static inline bool da_monitor_enabled_##name(void)						\
+> +{												\
+
+Should we add a:
+
+	smp_rmb();
+
+here? And then a smp_wmb() where these switches get updated?
+
+I guess how critical is it that these turn off immediately after the switch
+is flipped?
+
+> +	/* global switch */									\
+> +	if (unlikely(!rv_monitoring_on()))							\
+> +		return 0;									\
+> +												\
+> +	/* monitor enabled */									\
+> +	if (unlikely(!rv_##name.enabled))							\
+> +		return 0;									\
+> +												\
+> +	return 1;										\
+> +}												\
+> +												\
+> +/*												\
+> + * da_monitor_handling_event_##name - checks if the monitor is ready to handle events		\
+> + */												\
+> +static inline bool da_monitor_handling_event_##name(struct da_monitor *da_mon)			\
+> +{												\
+> +												\
+> +	if (!da_monitor_enabled_##name())							\
+> +		return 0;									\
+> +												\
+> +	/* monitor is actually monitoring */							\
+> +	if (unlikely(!da_monitoring_##name(da_mon)))						\
+> +		return 0;									\
+> +												\
+> +	return 1;										\
+> +}
+
+
+> diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
+> index 3eb5d48ab4f6..0123bdf7052a 100644
+> --- a/kernel/trace/rv/Kconfig
+> +++ b/kernel/trace/rv/Kconfig
+> @@ -1,5 +1,19 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  #
+> +config DA_MON_EVENTS
+> +	default n
+> +	bool
+> +
+> +config DA_MON_EVENTS_IMPLICIT
+> +	select DA_MON_EVENTS
+> +	default n
+> +	bool
+> +
+> +config DA_MON_EVENTS_ID
+> +	select DA_MON_EVENTS
+> +	default n
+> +	bool
+
+The "default n" are not needed. The default is 'n' without it.
 
 -- Steve
+
+> +
+>  menuconfig RV
+>  	bool "Runtime Verification"
+>  	depends on TRACING
+> diff --git a/kernel/trace/rv/rv.c b/kernel/trace/rv/rv.c
+> index eb835777a59b..00183e056dfd 100644
+> --- a/kernel/trace/rv/rv.c
+> +++ b/kernel/trace/rv/rv.c
+> @@ -141,6 +141,11 @@
+>  #include <linux/slab.h>
+>  #include <rv/rv.h>
+>  
+> +#ifdef CONFIG_DA_MON_EVENTS
+> +#define CREATE_TRACE_POINTS
+> +#include <trace/events/rv.h>
+> +#endif
+> +
+>  #include "rv.h"
+>  
+>  DEFINE_MUTEX(rv_interface_lock);
+
