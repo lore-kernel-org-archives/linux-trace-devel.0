@@ -2,64 +2,85 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E250AC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 20 Jul 2022 12:33:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1B15C43334
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 20 Jul 2022 14:47:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238038AbiGTMdq (ORCPT
+        id S234804AbiGTOr1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 20 Jul 2022 08:33:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60950 "EHLO
+        Wed, 20 Jul 2022 10:47:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240987AbiGTMdd (ORCPT
+        with ESMTP id S231962AbiGTOr0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 20 Jul 2022 08:33:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C4448E92
-        for <linux-trace-devel@vger.kernel.org>; Wed, 20 Jul 2022 05:32:44 -0700 (PDT)
+        Wed, 20 Jul 2022 10:47:26 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 409CB4E63C;
+        Wed, 20 Jul 2022 07:47:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 31070615B7
-        for <linux-trace-devel@vger.kernel.org>; Wed, 20 Jul 2022 12:32:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA4FFC3411E;
-        Wed, 20 Jul 2022 12:32:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658320363;
-        bh=BctuJg6AV4ixukR5ds+P4wSzuulJ002pJoOaScm+Ock=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=KxagCprNj+7WrXKlZOMFBS4FAGpyWXlgY+jpFcs4LOF/3LzvIa2/QXVYZl1Wez8GB
-         KmLNcc+/c3HTl5uqE1oWTCallFJg05sBcwfREguaOs8Lh+npHi90ZAZ8GEiYMiQrvB
-         ej8CA/poZzOhJkw27g6mtbeI48JDpGBYwPM8wRpaI+h1VO5J+uKnh/gfoURjgn/D9n
-         B5Zp4nPUASg1kLd5zVARiiGm6UUmR+u6WlVqLfL0xZCpUdafiOKpnP6+BVl4VrH/Rk
-         k2HUdHw+sprqYWV4TGk5OMAC/mrzumeaKeuyucYYMwfSyktzB7mn8CQa98S4DaRVlS
-         G1pPVhW3rijCA==
-Message-ID: <b07f14bb-9771-2a7a-1e46-54c22e52c39a@kernel.org>
-Date:   Wed, 20 Jul 2022 14:32:39 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH] tools/rtla: Build with EXTRA_{C,LD}FLAGS
-Content-Language: en-US
-To:     Ben Hutchings <benh@debian.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        by ams.source.kernel.org (Postfix) with ESMTPS id E8C6CB81FB5;
+        Wed, 20 Jul 2022 14:47:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67C5DC3411E;
+        Wed, 20 Jul 2022 14:47:20 +0000 (UTC)
+Date:   Wed, 20 Jul 2022 10:47:18 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Gabriele Paoloni <gpaoloni@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        Tao Zhou <tao.zhou@linux.dev>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
-References: <YtLBshz0nMQ7530H@decadent.org.uk>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <YtLBshz0nMQ7530H@decadent.org.uk>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH V6 01/16] rv: Add Runtime Verification (RV) interface
+Message-ID: <20220720104718.59148968@gandalf.local.home>
+In-Reply-To: <69bb4c369b4f6f12014eb9ca3c28b74e4378c007.1658244826.git.bristot@kernel.org>
+References: <cover.1658244826.git.bristot@kernel.org>
+        <69bb4c369b4f6f12014eb9ca3c28b74e4378c007.1658244826.git.bristot@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 7/16/22 15:48, Ben Hutchings wrote:
-> To allow for distributions and other builders to apply hardening
-> policy and other customisation, append EXTRA_CFLAGS and EXTRA_LDFLAGS
-> to the corresponding variables.
-> 
-> Signed-off-by: Ben Hutchings <benh@debian.org>
+On Tue, 19 Jul 2022 19:27:06 +0200
+Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 
-Acked-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+> +/*
+> + * Interface to read the enable/disable status of a monitor.
+> + */
+> +static ssize_t monitor_desc_read_data(struct file *filp, char __user *user_buf, size_t count,
+> +				      loff_t *ppos)
+> +{
+> +	struct rv_monitor_def *mdef = filp->private_data;
+> +	char buff[256];
+> +
+> +	memset(buff, 0, sizeof(buff));
+> +
+> +	mutex_lock(&rv_interface_lock);
+> +	snprintf(buff, sizeof(buff), "%s\n", mdef->monitor->description);
+> +	mutex_unlock(&rv_interface_lock);
 
-Thanks!
--- Daniel
+What exactly is the mutex protecting here?
+
+-- Steve
+
+> +
+> +	return simple_read_from_buffer(user_buf, count, ppos, buff, strlen(buff) + 1);
+> +}
+> +
