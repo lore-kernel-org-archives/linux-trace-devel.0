@@ -2,31 +2,35 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AEEFC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 21 Jul 2022 13:59:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8320C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 21 Jul 2022 14:38:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbiGUN7e (ORCPT
+        id S229884AbiGUOij (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 21 Jul 2022 09:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39356 "EHLO
+        Thu, 21 Jul 2022 10:38:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbiGUN7c (ORCPT
+        with ESMTP id S229528AbiGUOii (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 21 Jul 2022 09:59:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DFD33C14A;
-        Thu, 21 Jul 2022 06:59:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CA6F561F5F;
-        Thu, 21 Jul 2022 13:59:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB1D0C3411E;
-        Thu, 21 Jul 2022 13:59:26 +0000 (UTC)
-Date:   Thu, 21 Jul 2022 09:59:24 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
+        Thu, 21 Jul 2022 10:38:38 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DAB085F96;
+        Thu, 21 Jul 2022 07:38:37 -0700 (PDT)
+Date:   Thu, 21 Jul 2022 22:38:25 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1658414315;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=y7NIy/sFvH7jcPjQz5rMP0tVdv+pcC943zyadbA9JMA=;
+        b=L0F5YCg/mY7nY9yWcaH8KzsTSg1GLC6SMZLH7EW7kL8sbqMO5Gu2Mz68CsIhU8JslpyEx+
+        BAkn7T5mS+VxVOZPAzPXfVhJOHkaWg2ePTD7fIWopZqwVLXHGRqRCYmMpHctSa+gXAX8z+
+        bbslSjgmX4YHZJxhdAewvyOGQW1srDc=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Tao Zhou <tao.zhou@linux.dev>
 To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Guenter Roeck <linux@roeck-us.net>,
         Jonathan Corbet <corbet@lwn.net>,
         Ingo Molnar <mingo@redhat.com>,
@@ -41,90 +45,72 @@ Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
         Gabriele Paoloni <gpaoloni@redhat.com>,
         Juri Lelli <juri.lelli@redhat.com>,
         Clark Williams <williams@redhat.com>,
-        Tao Zhou <tao.zhou@linux.dev>,
         Randy Dunlap <rdunlap@infradead.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH V6 04/16] rv/include: Add deterministic automata monitor
- definition via C macros
-Message-ID: <20220721095924.151c6f5d@gandalf.local.home>
-In-Reply-To: <3c0a4cb5-f88f-ec5f-e614-d1e8ceb036c2@kernel.org>
+        linux-trace-devel@vger.kernel.org, Tao Zhou <tao.zhou@linux.dev>
+Subject: Re: [PATCH V6 01/16] rv: Add Runtime Verification (RV) interface
+Message-ID: <Ytlk4ePA+TpGItJ6@geo.homenetwork>
 References: <cover.1658244826.git.bristot@kernel.org>
-        <9ffc05b67fff087413143a420373731e0e34eef4.1658244826.git.bristot@kernel.org>
-        <20220720160606.3e672b55@gandalf.local.home>
-        <3c0a4cb5-f88f-ec5f-e614-d1e8ceb036c2@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+ <69bb4c369b4f6f12014eb9ca3c28b74e4378c007.1658244826.git.bristot@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <69bb4c369b4f6f12014eb9ca3c28b74e4378c007.1658244826.git.bristot@kernel.org>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 21 Jul 2022 14:08:38 +0200
-Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+On Tue, Jul 19, 2022 at 07:27:06PM +0200, Daniel Bristot de Oliveira wrote:
 
-> On 7/20/22 22:06, Steven Rostedt wrote:
-> >> +/*												\
-> >> + * da_monitor_enabled_##name - checks if the monitor is enabled					\
-> >> + */												\
-> >> +static inline bool da_monitor_enabled_##name(void)						\
-> >> +{												\  
-> > Should we add a:
-> > 
-> > 	smp_rmb();
-> > 
-> > here? And then a smp_wmb() where these switches get updated?
-> >  
-> 
-> Makes sense.
-> 
-> Should I also add the READ_ONCE/WRITE_ONCE? like
-> 
-> smp_rmb()
-> READ_ONCE(var)
-> 
-> WRITE_ONCE(var, value)
-> smp_wmb()
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/init.h>
+> +#include <linux/slab.h>
+> +#include <rv/rv.h>
+> +
+> +#include "rv.h"
+> +
+> +DEFINE_MUTEX(rv_interface_lock);
+> +/*
+> + * Enable a given monitor.
+> + */
+> +static int enable_monitor(struct rv_monitor_def *mdef)
+> +{
+> +	int retval;
+> +
+> +	if (!mdef->monitor->enabled) {
+> +		retval = mdef->monitor->enable();
+> +		if (retval)
+> +			return retval;
+> +	}
+> +
+> +	mdef->monitor->enabled = 1;
 
-I'm not sure the WRITE_ONCE() is necessary with the memory barriers.
-Because they should also prevent gcc from doing anything after that
-barrier. As Linus once stated, most cases WRITE_ONCE() is useless, but it's
-fine to keep more for annotation (as to pair with the READ_ONCE()) than for
-anything that is critical.
+This should be placed at the end of the last if block. Otherwise
+another assignment may be duplicated because it is already 1 now.
+no?(not sure how compiler treat this..)
 
-> 
-> for all these on/off knobs, or just the barriers?
-> 
-> > I guess how critical is it that these turn off immediately after the switch
-> > is flipped?  
-> 
-> It is not critical to continue the execution of those that have already crossed by
-> the variable. Still, waiting for the tracepoints to finish their execution before
-> returning to the user-space task that disabled the variable might be a good thing.
+> +
+> +/*
+> + * Interface to read the enable/disable status of a monitor.
 
-You mean after disabling, to wait for the tracepoints that are currently
-running to end?
+I see the 'status' but look a little more this function is about the
+description of monitor, so:
+/* Interface to read the description message of a monitor */
+or others.
 
-> 
-> IIRC, we can do that via RCU... like, synchronize_rcu()?
-
-We have tracepoint_synchronize_unregister() that does that, as some
-traceponits use SRCU and not RCU.
-
--- Steve
-
-
-> 
-> >> +	/* global switch */									\
-> >> +	if (unlikely(!rv_monitoring_on()))							\
-> >> +		return 0;									\
-> >> +												\
-> >> +	/* monitor enabled */									\
-> >> +	if (unlikely(!rv_##name.enabled))							\
-> >> +		return 0;									\
-> >> +												\
-> >> +	return 1;										\
-> >> +}												\
-> >> +												\  
+> + */
+> +static ssize_t monitor_desc_read_data(struct file *filp, char __user *user_buf, size_t count,
+> +				      loff_t *ppos)
+> +{
+> +	struct rv_monitor_def *mdef = filp->private_data;
+> +	char buff[256];
+> +
+> +	memset(buff, 0, sizeof(buff));
+> +
+> +	mutex_lock(&rv_interface_lock);
+> +	snprintf(buff, sizeof(buff), "%s\n", mdef->monitor->description);
+> +	mutex_unlock(&rv_interface_lock);
 
