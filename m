@@ -2,44 +2,43 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E0E6C43334
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 21 Jul 2022 16:38:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13525C43334
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 21 Jul 2022 16:43:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbiGUQi6 (ORCPT
+        id S231944AbiGUQnU (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 21 Jul 2022 12:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43678 "EHLO
+        Thu, 21 Jul 2022 12:43:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230302AbiGUQi5 (ORCPT
+        with ESMTP id S231524AbiGUQnT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 21 Jul 2022 12:38:57 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 580337C18E;
-        Thu, 21 Jul 2022 09:38:54 -0700 (PDT)
+        Thu, 21 Jul 2022 12:43:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C6088F2A;
+        Thu, 21 Jul 2022 09:43:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0707FB8258F;
-        Thu, 21 Jul 2022 16:38:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43162C3411E;
-        Thu, 21 Jul 2022 16:38:45 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 963EE61E12;
+        Thu, 21 Jul 2022 16:43:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFFD1C3411E;
+        Thu, 21 Jul 2022 16:43:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658421531;
-        bh=XQuaI9JDOz1OBn9ObdPK5HEn8VD/Fw7EKM1NPRG5An0=;
+        s=k20201202; t=1658421798;
+        bh=3RI6nZRkNzei/6De1TBsop6oUMdID22DlrmrVjPcuuU=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=M/Uh2T7kTP3dCVvPz+LAe+f4IOJVm/09AEsKH1uHLzIeH+V/Lx5oQOb12/zYBuTcw
-         N1p+JBreNfBebraTaMw1n9SjLLYNZZJrFvmr1iEVwv03R9KyxYQq3xevqZZQIDNPIs
-         R/wZo3Qwr3IRUy/etzDCIiQNtDO8hwIzRK+SGae6Jq14nfqYBF4XyELRPlXL6gjg5d
-         Deo3f281WwJqbDQmNquxwYZ5OQ9it9JgbfccUmg7p7+yYICqQUyOmPdWTv5wGVdI8l
-         138Bn41gCCM33yVu6h323aRWbTS0n3TScA8H8e/h7jVlir3y3K1bGZnIPN4p/TSfQU
-         fH4ZYEz4oYeMg==
-Message-ID: <26c5c095-2aff-3c7b-80ad-7b21702a3fdd@kernel.org>
-Date:   Thu, 21 Jul 2022 18:38:42 +0200
+        b=fRHyIz91h+5ha6WwsOUAMB52Nr3I7iLScL0AZri8YiK1PW0Hv4kgI9CGfWPO0tZGn
+         tnS4sH7vAli5mkzLeGYftCc7DI0KGLhV/wqW41Jj9Up+0GQHfyrpQhw038asFxWK1Y
+         kfUQ9cy7tqdL8ssTpedw3FnQTRbot0954iAZ2BZnCAV5vP2YU5MvhUge+uHpro9ZKQ
+         Kkz1wv9PIZRQaUY2+pnVTZHh+I2iDs3+9sXYyF7yMj9IPARZdZB7diXmCNzSQ5dwow
+         fFQ1PR4UROBaE3apgdm+mUGDGlKRSTk1RHrdr8yIfdMX4uVqYAzzj0T3x9E0WBSBXX
+         gFgtmVsEav74Q==
+Message-ID: <9845acf0-1567-d4bb-ef56-588d3415f72e@kernel.org>
+Date:   Thu, 21 Jul 2022 18:43:10 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
-Subject: Re: [PATCH V6 04/16] rv/include: Add deterministic automata monitor
- definition via C macros
+Subject: Re: [PATCH V6 16/16] rv/reactor: Add the panic reactor
 Content-Language: en-US
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
@@ -62,92 +61,34 @@ Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
 References: <cover.1658244826.git.bristot@kernel.org>
- <9ffc05b67fff087413143a420373731e0e34eef4.1658244826.git.bristot@kernel.org>
- <20220720160606.3e672b55@gandalf.local.home>
- <3c0a4cb5-f88f-ec5f-e614-d1e8ceb036c2@kernel.org>
- <20220721095924.151c6f5d@gandalf.local.home>
+ <2701cbe85b1fd6940fa5eeafdc8cacded1ce99fe.1658244826.git.bristot@kernel.org>
+ <20220721113106.31d8a525@gandalf.local.home>
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <20220721095924.151c6f5d@gandalf.local.home>
+In-Reply-To: <20220721113106.31d8a525@gandalf.local.home>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 7/21/22 15:59, Steven Rostedt wrote:
-> On Thu, 21 Jul 2022 14:08:38 +0200
+On 7/21/22 17:31, Steven Rostedt wrote:
+> On Tue, 19 Jul 2022 19:27:21 +0200
 > Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 > 
->> On 7/20/22 22:06, Steven Rostedt wrote:
->>>> +/*												\
->>>> + * da_monitor_enabled_##name - checks if the monitor is enabled					\
->>>> + */												\
->>>> +static inline bool da_monitor_enabled_##name(void)						\
->>>> +{												\  
->>> Should we add a:
->>>
->>> 	smp_rmb();
->>>
->>> here? And then a smp_wmb() where these switches get updated?
->>>  
->>
->> Makes sense.
->>
->> Should I also add the READ_ONCE/WRITE_ONCE? like
->>
->> smp_rmb()
->> READ_ONCE(var)
->>
->> WRITE_ONCE(var, value)
->> smp_wmb()
+>> Sample reactor that panics the system when an exception is found. This
+>> is useful both to capture a vmcore, or to fail-safe a critical system.
 > 
-> I'm not sure the WRITE_ONCE() is necessary with the memory barriers.
-> Because they should also prevent gcc from doing anything after that
-> barrier. As Linus once stated, most cases WRITE_ONCE() is useless, but it's
-> fine to keep more for annotation (as to pair with the READ_ONCE()) than for
-> anything that is critical.
+> BTW, do you plan on adding models to model the reactors?
 
-Ack, I can keep for annotation.
+I was about to say that at the panic level, it would not be needed, as code inspection
+is reasonable (people in Elisa did IIRC). But then I recalled that we
+have a printk reactor, and one might model it - at event level :-)
 
->>
->> for all these on/off knobs, or just the barriers?
->>
->>> I guess how critical is it that these turn off immediately after the switch
->>> is flipped?  
->>
->> It is not critical to continue the execution of those that have already crossed by
->> the variable. Still, waiting for the tracepoints to finish their execution before
->> returning to the user-space task that disabled the variable might be a good thing.
-> 
-> You mean after disabling, to wait for the tracepoints that are currently
-> running to end?
+But then can disable the reactor :-).
 
-yes, after disabling tracepoints.
-
->>
->> IIRC, we can do that via RCU... like, synchronize_rcu()?
-> 
-> We have tracepoint_synchronize_unregister() that does that, as some
-> traceponits use SRCU and not RCU.
-
-yep, that is it!
- 
 -- Daniel
 
+> ;-)
+> 
 > -- Steve
-> 
-> 
->>
->>>> +	/* global switch */									\
->>>> +	if (unlikely(!rv_monitoring_on()))							\
->>>> +		return 0;									\
->>>> +												\
->>>> +	/* monitor enabled */									\
->>>> +	if (unlikely(!rv_##name.enabled))							\
->>>> +		return 0;									\
->>>> +												\
->>>> +	return 1;										\
->>>> +}												\
->>>> +												\  
-> 
 
