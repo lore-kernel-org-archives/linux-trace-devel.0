@@ -2,30 +2,30 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8320C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 21 Jul 2022 14:38:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7BF4C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 21 Jul 2022 14:46:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbiGUOij (ORCPT
+        id S229661AbiGUOqc (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 21 Jul 2022 10:38:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52800 "EHLO
+        Thu, 21 Jul 2022 10:46:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbiGUOii (ORCPT
+        with ESMTP id S229745AbiGUOqb (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 21 Jul 2022 10:38:38 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DAB085F96;
-        Thu, 21 Jul 2022 07:38:37 -0700 (PDT)
-Date:   Thu, 21 Jul 2022 22:38:25 +0800
+        Thu, 21 Jul 2022 10:46:31 -0400
+Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D296D9DB;
+        Thu, 21 Jul 2022 07:46:30 -0700 (PDT)
+Date:   Thu, 21 Jul 2022 22:46:19 +0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1658414315;
+        t=1658414788;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=y7NIy/sFvH7jcPjQz5rMP0tVdv+pcC943zyadbA9JMA=;
-        b=L0F5YCg/mY7nY9yWcaH8KzsTSg1GLC6SMZLH7EW7kL8sbqMO5Gu2Mz68CsIhU8JslpyEx+
-        BAkn7T5mS+VxVOZPAzPXfVhJOHkaWg2ePTD7fIWopZqwVLXHGRqRCYmMpHctSa+gXAX8z+
-        bbslSjgmX4YHZJxhdAewvyOGQW1srDc=
+        bh=LZnrhTW0Fqj+gV1iEGOju+ZSnDl7pKjgf6K7E8bIcz8=;
+        b=D4yelCpm2fyujnx6Wu3TMrwsEHCJ1zhM8vfCiRrX+f1zKcZixf8h767as8kaFyvN+bWx6E
+        ebbE5kvn0INXrsPDyDSKRRETbJzuEn503qshdDuA4SHITokWVT2ZiDSCN8JU6uR9yemMHt
+        3aXpmZa9Yzf2cq2rB8W0mlP0dESyav0=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Tao Zhou <tao.zhou@linux.dev>
 To:     Daniel Bristot de Oliveira <bristot@kernel.org>
@@ -48,69 +48,47 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Randy Dunlap <rdunlap@infradead.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org, Tao Zhou <tao.zhou@linux.dev>
-Subject: Re: [PATCH V6 01/16] rv: Add Runtime Verification (RV) interface
-Message-ID: <Ytlk4ePA+TpGItJ6@geo.homenetwork>
+Subject: Re: [PATCH V6 02/16] rv: Add runtime reactors interface
+Message-ID: <Ytlmu9xYkXXwIhip@geo.homenetwork>
 References: <cover.1658244826.git.bristot@kernel.org>
- <69bb4c369b4f6f12014eb9ca3c28b74e4378c007.1658244826.git.bristot@kernel.org>
+ <4b5f93e3186b067073c1692d4c2b50d0b42101d5.1658244826.git.bristot@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <69bb4c369b4f6f12014eb9ca3c28b74e4378c007.1658244826.git.bristot@kernel.org>
+In-Reply-To: <4b5f93e3186b067073c1692d4c2b50d0b42101d5.1658244826.git.bristot@kernel.org>
 X-Migadu-Flow: FLOW_OUT
 X-Migadu-Auth-User: linux.dev
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Jul 19, 2022 at 07:27:06PM +0200, Daniel Bristot de Oliveira wrote:
+On Tue, Jul 19, 2022 at 07:27:07PM +0200, Daniel Bristot de Oliveira wrote:
 
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/init.h>
-> +#include <linux/slab.h>
-> +#include <rv/rv.h>
-> +
-> +#include "rv.h"
-> +
-> +DEFINE_MUTEX(rv_interface_lock);
-> +/*
-> + * Enable a given monitor.
-> + */
-> +static int enable_monitor(struct rv_monitor_def *mdef)
-> +{
-> +	int retval;
-> +
-> +	if (!mdef->monitor->enabled) {
-> +		retval = mdef->monitor->enable();
-> +		if (retval)
-> +			return retval;
-> +	}
-> +
-> +	mdef->monitor->enabled = 1;
+> diff --git a/include/linux/rv.h b/include/linux/rv.h
+> index b6bcdb4888e6..4f5b70eee557 100644
+> --- a/include/linux/rv.h
+> +++ b/include/linux/rv.h
+> @@ -7,6 +7,12 @@
+>  #ifndef _LINUX_RV_H
+>  #define _LINUX_RV_H
+>  
+> +struct rv_reactor {
+> +	char			*name;
+> +	char			*description;
+> +	void			(*react)(char *msg);
+> +};
 
-This should be placed at the end of the last if block. Otherwise
-another assignment may be duplicated because it is already 1 now.
-no?(not sure how compiler treat this..)
+Like the definition of name and description in structure rv_monitor,
+use `const char *` for name and description.
 
-> +
-> +/*
-> + * Interface to read the enable/disable status of a monitor.
+> +#ifdef CONFIG_RV_REACTORS
+> +struct rv_reactor_def {
+> +	struct list_head	list;
+> +	struct rv_reactor	*reactor;
+> +	/* protected by the monitor interface lock */
+> +	int			counter;
 
-I see the 'status' but look a little more this function is about the
-description of monitor, so:
-/* Interface to read the description message of a monitor */
-or others.
+Not see the `counter` be used(inc/dec).
 
-> + */
-> +static ssize_t monitor_desc_read_data(struct file *filp, char __user *user_buf, size_t count,
-> +				      loff_t *ppos)
-> +{
-> +	struct rv_monitor_def *mdef = filp->private_data;
-> +	char buff[256];
-> +
-> +	memset(buff, 0, sizeof(buff));
-> +
-> +	mutex_lock(&rv_interface_lock);
-> +	snprintf(buff, sizeof(buff), "%s\n", mdef->monitor->description);
-> +	mutex_unlock(&rv_interface_lock);
-
+> +};
+> +#endif
