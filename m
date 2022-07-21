@@ -2,46 +2,30 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5AA5C43334
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 21 Jul 2022 12:08:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AEEFC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 21 Jul 2022 13:59:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233436AbiGUMIx (ORCPT
+        id S230350AbiGUN7e (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 21 Jul 2022 08:08:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49736 "EHLO
+        Thu, 21 Jul 2022 09:59:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232830AbiGUMIw (ORCPT
+        with ESMTP id S229778AbiGUN7c (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 21 Jul 2022 08:08:52 -0400
+        Thu, 21 Jul 2022 09:59:32 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDC6B85F95;
-        Thu, 21 Jul 2022 05:08:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DFD33C14A;
+        Thu, 21 Jul 2022 06:59:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 76A0A61CFF;
-        Thu, 21 Jul 2022 12:08:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22D1FC3411E;
-        Thu, 21 Jul 2022 12:08:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658405330;
-        bh=LXie3sbnk8wgU9gzwq8ntIR3HYeqzQkMMgEXBK+44jE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=fipYXFe5tkugtJrcKyXxa51hr12B18OxkCCuzLPicXgcFU20MBvpER5VMZsrll6nS
-         bE8UKSXOLSkCbjARk7NzKSVcLyWkyrSseoI3t3bkI7JqVziq+qyjIP/juaJRuub3Tf
-         VMhNkMUHeBXvBNGGC/rJuA6xQak+5eHNrJD1qP9++LypHnACsuCIefculn2UafC/KO
-         l1RJjkiz/gBrNBlZgiDcHnVTuEMiXElL4mZ/G3kDz93QU66JsHxnnRm3+SiKyn8nhQ
-         5RdyVlwiIpJgzpsuEMRKuQSyfQ9UfunsyPlob3N8oDajqgSMPV/oqtNrMsEb+PaKHJ
-         PkFglKMtlfOUg==
-Message-ID: <3c0a4cb5-f88f-ec5f-e614-d1e8ceb036c2@kernel.org>
-Date:   Thu, 21 Jul 2022 14:08:38 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH V6 04/16] rv/include: Add deterministic automata monitor
- definition via C macros
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CA6F561F5F;
+        Thu, 21 Jul 2022 13:59:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB1D0C3411E;
+        Thu, 21 Jul 2022 13:59:26 +0000 (UTC)
+Date:   Thu, 21 Jul 2022 09:59:24 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
         Guenter Roeck <linux@roeck-us.net>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -61,60 +45,86 @@ Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
         Randy Dunlap <rdunlap@infradead.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH V6 04/16] rv/include: Add deterministic automata monitor
+ definition via C macros
+Message-ID: <20220721095924.151c6f5d@gandalf.local.home>
+In-Reply-To: <3c0a4cb5-f88f-ec5f-e614-d1e8ceb036c2@kernel.org>
 References: <cover.1658244826.git.bristot@kernel.org>
- <9ffc05b67fff087413143a420373731e0e34eef4.1658244826.git.bristot@kernel.org>
- <20220720160606.3e672b55@gandalf.local.home>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <20220720160606.3e672b55@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8
+        <9ffc05b67fff087413143a420373731e0e34eef4.1658244826.git.bristot@kernel.org>
+        <20220720160606.3e672b55@gandalf.local.home>
+        <3c0a4cb5-f88f-ec5f-e614-d1e8ceb036c2@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 7/20/22 22:06, Steven Rostedt wrote:
->> +/*												\
->> + * da_monitor_enabled_##name - checks if the monitor is enabled					\
->> + */												\
->> +static inline bool da_monitor_enabled_##name(void)						\
->> +{												\
-> Should we add a:
+On Thu, 21 Jul 2022 14:08:38 +0200
+Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+
+> On 7/20/22 22:06, Steven Rostedt wrote:
+> >> +/*												\
+> >> + * da_monitor_enabled_##name - checks if the monitor is enabled					\
+> >> + */												\
+> >> +static inline bool da_monitor_enabled_##name(void)						\
+> >> +{												\  
+> > Should we add a:
+> > 
+> > 	smp_rmb();
+> > 
+> > here? And then a smp_wmb() where these switches get updated?
+> >  
 > 
-> 	smp_rmb();
+> Makes sense.
 > 
-> here? And then a smp_wmb() where these switches get updated?
->
+> Should I also add the READ_ONCE/WRITE_ONCE? like
+> 
+> smp_rmb()
+> READ_ONCE(var)
+> 
+> WRITE_ONCE(var, value)
+> smp_wmb()
 
-Makes sense.
+I'm not sure the WRITE_ONCE() is necessary with the memory barriers.
+Because they should also prevent gcc from doing anything after that
+barrier. As Linus once stated, most cases WRITE_ONCE() is useless, but it's
+fine to keep more for annotation (as to pair with the READ_ONCE()) than for
+anything that is critical.
 
-Should I also add the READ_ONCE/WRITE_ONCE? like
+> 
+> for all these on/off knobs, or just the barriers?
+> 
+> > I guess how critical is it that these turn off immediately after the switch
+> > is flipped?  
+> 
+> It is not critical to continue the execution of those that have already crossed by
+> the variable. Still, waiting for the tracepoints to finish their execution before
+> returning to the user-space task that disabled the variable might be a good thing.
 
-smp_rmb()
-READ_ONCE(var)
+You mean after disabling, to wait for the tracepoints that are currently
+running to end?
 
-WRITE_ONCE(var, value)
-smp_wmb()
+> 
+> IIRC, we can do that via RCU... like, synchronize_rcu()?
 
-for all these on/off knobs, or just the barriers?
+We have tracepoint_synchronize_unregister() that does that, as some
+traceponits use SRCU and not RCU.
 
-> I guess how critical is it that these turn off immediately after the switch
-> is flipped?
+-- Steve
 
-It is not critical to continue the execution of those that have already crossed by
-the variable. Still, waiting for the tracepoints to finish their execution before
-returning to the user-space task that disabled the variable might be a good thing.
 
-IIRC, we can do that via RCU... like, synchronize_rcu()?
-
->> +	/* global switch */									\
->> +	if (unlikely(!rv_monitoring_on()))							\
->> +		return 0;									\
->> +												\
->> +	/* monitor enabled */									\
->> +	if (unlikely(!rv_##name.enabled))							\
->> +		return 0;									\
->> +												\
->> +	return 1;										\
->> +}												\
->> +												\
+> 
+> >> +	/* global switch */									\
+> >> +	if (unlikely(!rv_monitoring_on()))							\
+> >> +		return 0;									\
+> >> +												\
+> >> +	/* monitor enabled */									\
+> >> +	if (unlikely(!rv_##name.enabled))							\
+> >> +		return 0;									\
+> >> +												\
+> >> +	return 1;										\
+> >> +}												\
+> >> +												\  
 
