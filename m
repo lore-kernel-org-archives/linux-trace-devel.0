@@ -2,35 +2,31 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5730C43334
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 21 Jul 2022 14:57:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D1FDC43334
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 21 Jul 2022 15:30:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231366AbiGUO5c (ORCPT
+        id S229704AbiGUPaD (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 21 Jul 2022 10:57:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44440 "EHLO
+        Thu, 21 Jul 2022 11:30:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231639AbiGUO51 (ORCPT
+        with ESMTP id S229379AbiGUPaC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 21 Jul 2022 10:57:27 -0400
-Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9358686C39;
-        Thu, 21 Jul 2022 07:57:23 -0700 (PDT)
-Date:   Thu, 21 Jul 2022 22:57:12 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1658415441;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HnJf3a3R/WDtkPI32iClfgBxpOQWUhxqHOYGsZd26QY=;
-        b=GdErNbbWgx1K8NgDU1VOOBBzhzkydujCEG+dIXTO5rqjXdQ4uALRBFSQIlECtB0b10E0n1
-        l3bxbzSgFHWEgMf1CePnOVqX+Qt9nNFm6PeKldh63AQdTpGSfflTCK9+De5fgf/QoHknF1
-        0Q7yHEiFdotNEEqfXVNPX4ergSGbLms=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Tao Zhou <tao.zhou@linux.dev>
+        Thu, 21 Jul 2022 11:30:02 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A32980497;
+        Thu, 21 Jul 2022 08:30:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C314BB8253C;
+        Thu, 21 Jul 2022 15:29:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A0C0C3411E;
+        Thu, 21 Jul 2022 15:29:55 +0000 (UTC)
+Date:   Thu, 21 Jul 2022 11:29:53 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
         Guenter Roeck <linux@roeck-us.net>,
         Jonathan Corbet <corbet@lwn.net>,
         Ingo Molnar <mingo@redhat.com>,
@@ -45,81 +41,144 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Gabriele Paoloni <gpaoloni@redhat.com>,
         Juri Lelli <juri.lelli@redhat.com>,
         Clark Williams <williams@redhat.com>,
+        Tao Zhou <tao.zhou@linux.dev>,
         Randy Dunlap <rdunlap@infradead.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org, Tao Zhou <tao.zhou@linux.dev>
-Subject: Re: [PATCH V6 11/16] Documentation/rv: Add deterministic automata
- instrumentation documentation
-Message-ID: <YtlpSGp590YJXT22@geo.homenetwork>
+        linux-trace-devel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        John Ogness <john.ogness@linutronix.de>
+Subject: Re: [PATCH V6 15/16] rv/reactor: Add the printk reactor
+Message-ID: <20220721112953.12828bd5@gandalf.local.home>
+In-Reply-To: <ad355eb25b933124e6e24045f6331ada5bf7adb3.1658244826.git.bristot@kernel.org>
 References: <cover.1658244826.git.bristot@kernel.org>
- <3c915ffd00f033d57dbac2f69e56a87b7b80adba.1658244826.git.bristot@kernel.org>
+        <ad355eb25b933124e6e24045f6331ada5bf7adb3.1658244826.git.bristot@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3c915ffd00f033d57dbac2f69e56a87b7b80adba.1658244826.git.bristot@kernel.org>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Jul 19, 2022 at 07:27:16PM +0200, Daniel Bristot de Oliveira wrote:
 
-> +Looking at the automata definition, it is possible to see that the system
-> +and the model are expected to return to the initial state after the
-> +preempt_enable execution. Hence, it can be used to synchronize the
-> +system and the model at the initialization of the monitoring section.
-> +
-> +The start is informed via a special handle function, the
-> +"da_handle_start_event_MONITOR_event)", in this case::
+[ Including the printk folks ]
 
-da_handle_start_event_$MONITOR(event) the same as the previous version
-should be right.
+On Tue, 19 Jul 2022 19:27:20 +0200
+Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 
+> A reactor that printks the reaction message.
+> 
+> Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Marco Elver <elver@google.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Shuah Khan <skhan@linuxfoundation.org>
+> Cc: Gabriele Paoloni <gpaoloni@redhat.com>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Clark Williams <williams@redhat.com>
+> Cc: Tao Zhou <tao.zhou@linux.dev>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Cc: linux-doc@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-trace-devel@vger.kernel.org
+> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+> ---
+>  kernel/trace/rv/Kconfig          |  8 ++++++
+>  kernel/trace/rv/Makefile         |  3 ++-
+>  kernel/trace/rv/reactor_printk.c | 42 ++++++++++++++++++++++++++++++++
+>  3 files changed, 52 insertions(+), 1 deletion(-)
+>  create mode 100644 kernel/trace/rv/reactor_printk.c
+> 
+> diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
+> index d8c40fd67e88..f1d92d431130 100644
+> --- a/kernel/trace/rv/Kconfig
+> +++ b/kernel/trace/rv/Kconfig
+> @@ -63,3 +63,11 @@ config RV_REACTORS
+>  	  on the model's execution. By default, the monitors have
+>  	  tracing reactions, printing the monitor output via tracepoints,
+>  	  but other reactions can be added (on-demand) via this interface.
 > +
-> +  da_handle_start_event_wip(preempt_disable_wip);
+> +config RV_REACT_PRINTK
+> +	bool "Printk reactor"
+> +	depends on RV_REACTORS
+> +	default y
+> +	help
+> +	  Enables the printk reactor. The printk reactor emits a printk()
+> +	  message if an exception is found.
+> diff --git a/kernel/trace/rv/Makefile b/kernel/trace/rv/Makefile
+> index af0ff9a46418..a13c750a35c1 100644
+> --- a/kernel/trace/rv/Makefile
+> +++ b/kernel/trace/rv/Makefile
+> @@ -1,6 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+>  obj-$(CONFIG_RV) += rv.o
+> -obj-$(CONFIG_RV_REACTORS) += rv_reactors.o
+>  obj-$(CONFIG_RV_MON_WIP) += monitors/wip/wip.o
+>  obj-$(CONFIG_RV_MON_WWNR) += monitors/wwnr/wwnr.o
+> +obj-$(CONFIG_RV_REACTORS) += rv_reactors.o
+> +obj-$(CONFIG_RV_REACT_PRINTK) += reactor_printk.o
+> diff --git a/kernel/trace/rv/reactor_printk.c b/kernel/trace/rv/reactor_printk.c
+> new file mode 100644
+> index 000000000000..8b5c70b05634
+> --- /dev/null
+> +++ b/kernel/trace/rv/reactor_printk.c
+> @@ -0,0 +1,42 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2019-2022 Red Hat, Inc. Daniel Bristot de Oliveira <bristot@kernel.org>
+> + *
+> + * Printk RV reactor:
+> + *   Prints the exception msg to the kernel message log.
+> + */
+> +#include <linux/ftrace.h>
+> +#include <linux/tracepoint.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/init.h>
+> +#include <linux/rv.h>
+> +
+> +static void rv_printk_reaction(char *msg)
+> +{
+> +	printk_deferred(msg);
 
-I didn't see this in last version that the event should be preempt_enable_wip.
+I added the printk folks just so that they are aware of another
+printk_deferred() being added to the kernel.
 
-> +
-> +So, the callback function will look like::
-> +
-> +  void handle_preempt_enable(void *data, unsigned long ip, unsigned long parent_ip)
-> +  {
-> +        da_handle_start_event_wip(preempt_enable_wip);
-> +  }
-> +
-> +Finally, the "handle_sched_waking()" will look like::
-> +
-> +  void handle_sched_waking(void *data, struct task_struct *task)
-> +  {
-> +        da_handle_event_wip(sched_waking_wip);
-> +  }
-> +
-> +And the explanation is left for the reader as an exercise.
-> +
-> +Start and Stop functions
+-- Steve
 
-Start and Stop functions are changed to enable and disable functions.
 
-> +------------------------
+> +}
 > +
-> +dot2k automatically creates two special functions::
+> +static struct rv_reactor rv_printk = {
+> +	.name = "printk",
+> +	.description = "prints the exception msg to the kernel message log",
+> +	.react = rv_printk_reaction
+> +};
 > +
-> +  enable_MONITOR()
-> +  disable_MONITOR()
+> +static int register_react_printk(void)
+> +{
+> +	rv_register_reactor(&rv_printk);
+> +	return 0;
+> +}
 > +
-> +These functions are called when the monitor is enabled and disabled,
-> +respectively.
+> +static void unregister_react_printk(void)
+> +{
+> +	rv_unregister_reactor(&rv_printk);
+> +}
 > +
-> +They should be used to *attach* and *detach* the instrumentation to the running
-> +system. The developer must add to the relative function all that is needed to
-> +*attach* and *detach* its monitor to the system.
+> +module_init(register_react_printk);
+> +module_exit(unregister_react_printk);
 > +
-> +For the wip case, these functions were named::
-> +
-> + enable_wip()
-> + disable_wip()
-> +
-> +But no change was required because: by default, these functions *attach* and
-> +*detach* the tracepoints_to_attach, which was enough for this case.
+> +MODULE_LICENSE("GPL");
+> +MODULE_AUTHOR("Daniel Bristot de Oliveira");
+> +MODULE_DESCRIPTION("printk rv reactor: printk if an exception is hit");
+
