@@ -2,33 +2,33 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E34ABC43334
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 23 Jul 2022 14:23:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 916CAC43334
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 23 Jul 2022 14:27:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236923AbiGWOX2 (ORCPT
+        id S237845AbiGWO1L (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 23 Jul 2022 10:23:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52322 "EHLO
+        Sat, 23 Jul 2022 10:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237613AbiGWOXN (ORCPT
+        with ESMTP id S237750AbiGWO1K (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 23 Jul 2022 10:23:13 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C415122B0E
-        for <linux-trace-devel@vger.kernel.org>; Sat, 23 Jul 2022 07:22:42 -0700 (PDT)
+        Sat, 23 Jul 2022 10:27:10 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F1117073
+        for <linux-trace-devel@vger.kernel.org>; Sat, 23 Jul 2022 07:27:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6B73EB801B9
-        for <linux-trace-devel@vger.kernel.org>; Sat, 23 Jul 2022 14:22:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE937C341C0
-        for <linux-trace-devel@vger.kernel.org>; Sat, 23 Jul 2022 14:22:34 +0000 (UTC)
-Date:   Sat, 23 Jul 2022 10:22:32 -0400
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5B6C2B8015A
+        for <linux-trace-devel@vger.kernel.org>; Sat, 23 Jul 2022 14:27:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3460C341C0
+        for <linux-trace-devel@vger.kernel.org>; Sat, 23 Jul 2022 14:27:06 +0000 (UTC)
+Date:   Sat, 23 Jul 2022 10:27:05 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] libtracefs: Set the number of CPUs in
+Subject: [PATCH v2] libtracefs: Set the number of CPUs in
  tracefs_local_events_system()
-Message-ID: <20220723102232.1ba19aa6@rorschach.local.home>
+Message-ID: <20220723102705.420e7d41@rorschach.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -45,17 +45,17 @@ so, so make that happen.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
-This is added on top of:
-     https://lore.kernel.org/all/20220722142803.24919c8a@gandalf.local.home/
+Changes since v1: https://lore.kernel.org/all/20220723102232.1ba19aa6@rorschach.local.home/
+  - Add a comment explaining why I did the counting the way I did.
 
- src/tracefs-events.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ src/tracefs-events.c | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
 diff --git a/src/tracefs-events.c b/src/tracefs-events.c
-index 86395101c96a..9dbeeac938b4 100644
+index 86395101c96a..b6ab8da3c8ce 100644
 --- a/src/tracefs-events.c
 +++ b/src/tracefs-events.c
-@@ -945,6 +945,33 @@ out:
+@@ -945,6 +945,40 @@ out:
  	return ret;
  }
  
@@ -71,6 +71,13 @@ index 86395101c96a..9dbeeac938b4 100644
 +	if (!tracing_dir)
 +		tracing_dir = tracefs_tracing_dir();
 +
++	/*
++	 * Paranoid: in case sysconf() above does not work.
++	 * And we also only care about the number of tracing
++	 * buffers that exist. If cpus is 32, but the top half
++	 * is offline, there may only be 16 tracing buffers.
++	 * That's what we want to know.
++	 */
 +	for (i = 0; !cpus || i < cpus; i++) {
 +		snprintf(path, PATH_MAX, "%s/per_cpu/cpu%d", tracing_dir, i);
 +		ret = stat(path, &st);
@@ -89,7 +96,7 @@ index 86395101c96a..9dbeeac938b4 100644
  /**
   * tracefs_local_events_system - create a tep from the events of the specified subsystem.
   *
-@@ -969,6 +996,8 @@ struct tep_handle *tracefs_local_events_system(const char *tracing_dir,
+@@ -969,6 +1003,8 @@ struct tep_handle *tracefs_local_events_system(const char *tracing_dir,
  		tep = NULL;
  	}
  
