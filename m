@@ -2,109 +2,116 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 916CAC43334
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 23 Jul 2022 14:27:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D11ACC43334
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 24 Jul 2022 18:12:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237845AbiGWO1L (ORCPT
+        id S229618AbiGXSMU (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 23 Jul 2022 10:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58836 "EHLO
+        Sun, 24 Jul 2022 14:12:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237750AbiGWO1K (ORCPT
+        with ESMTP id S229456AbiGXSMT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 23 Jul 2022 10:27:10 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F1117073
-        for <linux-trace-devel@vger.kernel.org>; Sat, 23 Jul 2022 07:27:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5B6C2B8015A
-        for <linux-trace-devel@vger.kernel.org>; Sat, 23 Jul 2022 14:27:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3460C341C0
-        for <linux-trace-devel@vger.kernel.org>; Sat, 23 Jul 2022 14:27:06 +0000 (UTC)
-Date:   Sat, 23 Jul 2022 10:27:05 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2] libtracefs: Set the number of CPUs in
- tracefs_local_events_system()
-Message-ID: <20220723102705.420e7d41@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Sun, 24 Jul 2022 14:12:19 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B17DEF8;
+        Sun, 24 Jul 2022 11:12:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1658686338; x=1690222338;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BjvRcMWl7wunZxrZm/S9IY/AhIjTpZkTi/HKbixiWb0=;
+  b=K5hdtLLye6Tdtq2aX6cI1JTZI54V0+oxaNUI3pwctV8ixTvPK7hXY6eL
+   zGlIGLiKLNYW0nhrSa+BwbbIsk2st6RGbDDxXguaYgQ5vBFjKDFbX7ky7
+   zXbzZlrgyUIJrSpuavczojxwQXWifV2YC2nw3Dqiqz8WafLVgSHHfgRCu
+   jcjUtq2V6Fs0V2y8eZzoQKbqV76BGj6QXTzqKcdWgkZiizr0j4NGKedI0
+   EAqwL/GpOHQjrWRlsuRpftrRZSvFgflVIEtVbM3fAFzf3RVInAJRTue6c
+   KpRpJFk02dsTNb95iqS4NiBHFI4VOlEGrSCR7Mq7f9bknoxhm/tFVsH5S
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10418"; a="270598022"
+X-IronPort-AV: E=Sophos;i="5.93,190,1654585200"; 
+   d="scan'208";a="270598022"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2022 11:12:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,190,1654585200"; 
+   d="scan'208";a="688813740"
+Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 24 Jul 2022 11:12:12 -0700
+Received: from kbuild by e0eace57cfef with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oFg5M-00045f-0E;
+        Sun, 24 Jul 2022 18:12:12 +0000
+Date:   Mon, 25 Jul 2022 02:12:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     kbuild-all@lists.01.org,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Gabriele Paoloni <gpaoloni@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        Tao Zhou <tao.zhou@linux.dev>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH V6 14/16] rv/monitor: Add the wwnr monitor
+Message-ID: <202207250209.ICMKu9h0-lkp@intel.com>
+References: <a1b9cb1679c6bd7431b0a0072f73c5d6ab353207.1658244826.git.bristot@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a1b9cb1679c6bd7431b0a0072f73c5d6ab353207.1658244826.git.bristot@kernel.org>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Hi Daniel,
 
-When tracefs_local_events() (which also uses tracefs_local_events_system())
-is called, it does not set the CPU count for the tep handler. It should do
-so, so make that happen.
+I love your patch! Yet something to improve:
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v1: https://lore.kernel.org/all/20220723102232.1ba19aa6@rorschach.local.home/
-  - Add a comment explaining why I did the counting the way I did.
+[auto build test ERROR on rostedt-trace/for-next]
+[also build test ERROR on tip/sched/core lwn-2.6/docs-next linus/master v5.19-rc7 next-20220722]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
- src/tracefs-events.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Bristot-de-Oliveira/The-Runtime-Verification-RV-interface/20220720-013343
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git for-next
+config: riscv-randconfig-c034-20220721 (https://download.01.org/0day-ci/archive/20220725/202207250209.ICMKu9h0-lkp@intel.com/config)
+compiler: riscv32-linux-gcc (GCC) 12.1.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/57c7d3b13625be619ed3759350904bfa0d5a307d
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Daniel-Bristot-de-Oliveira/The-Runtime-Verification-RV-interface/20220720-013343
+        git checkout 57c7d3b13625be619ed3759350904bfa0d5a307d
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=riscv SHELL=/bin/bash
 
-diff --git a/src/tracefs-events.c b/src/tracefs-events.c
-index 86395101c96a..b6ab8da3c8ce 100644
---- a/src/tracefs-events.c
-+++ b/src/tracefs-events.c
-@@ -945,6 +945,40 @@ out:
- 	return ret;
- }
- 
-+static void set_tep_cpus(const char *tracing_dir, struct tep_handle *tep)
-+{
-+	struct stat st;
-+	char path[PATH_MAX];
-+	int cpus = sysconf(_SC_NPROCESSORS_CONF);
-+	int max_cpu = 0;
-+	int ret;
-+	int i;
-+
-+	if (!tracing_dir)
-+		tracing_dir = tracefs_tracing_dir();
-+
-+	/*
-+	 * Paranoid: in case sysconf() above does not work.
-+	 * And we also only care about the number of tracing
-+	 * buffers that exist. If cpus is 32, but the top half
-+	 * is offline, there may only be 16 tracing buffers.
-+	 * That's what we want to know.
-+	 */
-+	for (i = 0; !cpus || i < cpus; i++) {
-+		snprintf(path, PATH_MAX, "%s/per_cpu/cpu%d", tracing_dir, i);
-+		ret = stat(path, &st);
-+		if (!ret && S_ISDIR(st.st_mode))
-+			max_cpu = i + 1;
-+		else if (i >= cpus)
-+			break;
-+	}
-+
-+	if (!max_cpu)
-+		max_cpu = cpus;
-+
-+	tep_set_cpus(tep, max_cpu);
-+}
-+
- /**
-  * tracefs_local_events_system - create a tep from the events of the specified subsystem.
-  *
-@@ -969,6 +1003,8 @@ struct tep_handle *tracefs_local_events_system(const char *tracing_dir,
- 		tep = NULL;
- 	}
- 
-+	set_tep_cpus(tracing_dir, tep);
-+
- 	/* Set the long size for this tep handle */
- 	tep_set_long_size(tep, tep_get_header_page_size(tep));
- 
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   riscv32-linux-ld: kernel/trace/rv/monitors/wwnr/wwnr.o: in function `.L32':
+>> wwnr.c:(.text+0x26c): undefined reference to `rv_reacting_on'
+
 -- 
-2.35.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
