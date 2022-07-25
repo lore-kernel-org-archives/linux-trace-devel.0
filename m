@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CC6CC43334
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Jul 2022 20:12:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 591A1C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Jul 2022 20:12:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236807AbiGYUMJ (ORCPT
+        id S236589AbiGYUMb (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 25 Jul 2022 16:12:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45150 "EHLO
+        Mon, 25 Jul 2022 16:12:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236811AbiGYUMG (ORCPT
+        with ESMTP id S236863AbiGYUMW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 25 Jul 2022 16:12:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5938D2127B;
-        Mon, 25 Jul 2022 13:12:01 -0700 (PDT)
+        Mon, 25 Jul 2022 16:12:22 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D2832183A;
+        Mon, 25 Jul 2022 13:12:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B98A2610E7;
-        Mon, 25 Jul 2022 20:12:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E59DC341D3;
-        Mon, 25 Jul 2022 20:11:55 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A395DB810F5;
+        Mon, 25 Jul 2022 20:12:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1F5BC385A9;
+        Mon, 25 Jul 2022 20:12:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658779920;
-        bh=3HSJiiSXXQMEekMmOQ6/ljkRYp4cNQsA20mqRGnD0FA=;
+        s=k20201202; t=1658779930;
+        bh=lC0lCg9aCtGVSpkMtOXnyaBYEifCeXCqjp+6K0SYiS4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hTSFQ3lrkmh/vJ8MJ7ebN0UYPop/APCuLpmQZvC9dk83LNSKLdjK4heu6ZlBkQOam
-         owmVemaLgxFXT/Bed8/qnvCo2ouK7Jn7+6rFtXNJAwfCHAa0mavtVJzOgI+i9RtwZH
-         uvagCngdgXcCAYPM2zi2YDfieDL1YVnvwMygJ4tFUpxebQlVFQJOH7/OV5SWqe1SIV
-         U4CUhIS+KPzHvZUKabAfIdcyB1ahwqpuTdkMP4RrjCR2u9BqsQWj67vvIhpcB+7mex
-         eXQyxUXbIsP49dFNp7YJCshCPUsKkAVu3g7rWkxG2yj+xFowWBcr5DnJS33t5804vo
-         +VjbH1FcXv17g==
+        b=QWfaNbNDYtlaVUuCledabIZJ0Tsi+C8fEPUqNe0aaZiB/F5jalYkFtXYkKLBSAa+r
+         Hfx7aekgK0YWd3JJAfPxGtbrUEeViTyw/OWMkWbblcheH/2Bf0w55yfsr381lf6KrU
+         NNR9iP18tEjxnyQEMl91eJDVlSKuKlQjT9kXNyYqdj30hTxg/9OPrXHYg1QtAtbm3H
+         RVk0myutqi+9VrP1ASs//5G3SIqBehsI3ERUNfDRZ7BvEGxzLvGDFYLZmoXG2WDKDq
+         J4SNZIPXs+/NfvoP4ae4c2qRSvoJ4jCgyUU9gI727a5EUqSqUMs3vsz4X614DOq/SC
+         /fwhOjDkTaAmg==
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
@@ -55,9 +55,9 @@ Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Randy Dunlap <rdunlap@infradead.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
-Subject: [PATCH V7 02/16] rv: Add runtime reactors interface
-Date:   Mon, 25 Jul 2022 22:11:14 +0200
-Message-Id: <516e8767f20f47b185b7dc0dceb1f1d3abb36dce.1658778484.git.bristot@kernel.org>
+Subject: [PATCH V7 04/16] rv/include: Add deterministic automata monitor definition via C macros
+Date:   Mon, 25 Jul 2022 22:11:16 +0200
+Message-Id: <75d14829c5234c2ff43aff744ac41f246b970ed8.1658778484.git.bristot@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1658778484.git.bristot@kernel.org>
 References: <cover.1658778484.git.bristot@kernel.org>
@@ -67,44 +67,51 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-A runtime monitor can cause a reaction to the detection of an
-exception on the model's execution. By default, the monitors have
-tracing reactions, printing the monitor output via tracepoints.
-But other reactions can be added (on-demand) via this interface.
+In Linux terms, the runtime verification monitors are encapsulated
+inside the "RV monitor" abstraction. The "RV monitor" includes a set
+of instances of the monitor (per-cpu monitor, per-task monitor, and
+so on), the helper functions that glue the monitor to the system
+reference model, and the trace output as a reaction for event parsing
+and exceptions, as depicted below:
 
-The user interface resembles the kernel tracing interface and
-presents these files:
+Linux  +----- RV Monitor ----------------------------------+ Formal
+ Realm |                                                   |  Realm
+ +-------------------+     +----------------+     +-----------------+
+ |   Linux kernel    |     |     Monitor    |     |     Reference   |
+ |     Tracing       |  -> |   Instance(s)  | <-  |       Model     |
+ | (instrumentation) |     | (verification) |     | (specification) |
+ +-------------------+     +----------------+     +-----------------+
+        |                          |                       |
+        |                          V                       |
+        |                     +----------+                 |
+        |                     | Reaction |                 |
+        |                     +--+--+--+-+                 |
+        |                        |  |  |                   |
+        |                        |  |  +-> trace output ?  |
+        +------------------------|--|----------------------+
+                                 |  +----> panic ?
+                                 +-------> <user-specified>
 
-"available_reactors"
-  - Reading shows the available reactors, one per line.
+Add the rv/da_monitor.h, enabling automatic code generation for the
+*Monitor Instance(s)* using C macros, and code to support it.
 
-   For example:
-     # cat available_reactors
-     nop
-     panic
-     printk
+The benefits of the usage of macro for monitor synthesis are 3-fold as it:
 
- "reacting_on"
-   - It is an on/off general switch for reactors, disabling
-   all reactions.
+- Reduces the code duplication;
+- Facilitates the bug fix/improvement;
+- Avoids the case of developers changing the core of the monitor code
+  to manipulate the model in a (let's say) non-standard way.
 
- "monitors/MONITOR/reactors"
-   - List available reactors, with the select reaction for the given
-   MONITOR inside []. The default one is the nop (no operation)
-   reactor.
-   - Writing the name of a reactor enables it to the given
-   MONITOR.
+This initial implementation presents three different types of monitor
+instances:
 
-   For example:
-     # cat monitors/wip/reactors
-     [nop]
-     panic
-     printk
-     # echo panic > monitors/wip/reactors
-     # cat monitors/wip/reactors
-     nop
-     [panic]
-     printk
+- DECLARE_DA_MON_GLOBAL(name, type)
+- DECLARE_DA_MON_PER_CPU(name, type)
+- DECLARE_DA_MON_PER_TASK(name, type)
+
+The first declares the functions for a global deterministic automata monitor,
+the second for monitors with per-cpu instances, and the third with per-task
+instances.
 
 Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
 Cc: Guenter Roeck <linux@roeck-us.net>
@@ -129,687 +136,782 @@ Cc: linux-kernel@vger.kernel.org
 Cc: linux-trace-devel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- include/linux/rv.h            |  17 ++
- kernel/trace/rv/Kconfig       |  11 +
- kernel/trace/rv/Makefile      |   1 +
- kernel/trace/rv/rv.c          |   9 +
- kernel/trace/rv/rv.h          |  35 +++
- kernel/trace/rv/rv_reactors.c | 506 ++++++++++++++++++++++++++++++++++
- 6 files changed, 579 insertions(+)
- create mode 100644 kernel/trace/rv/rv_reactors.c
+ include/linux/rv.h        |  10 +
+ include/rv/da_monitor.h   | 536 ++++++++++++++++++++++++++++++++++++++
+ include/trace/events/rv.h | 120 +++++++++
+ kernel/fork.c             |  14 +
+ kernel/trace/rv/Kconfig   |  11 +
+ kernel/trace/rv/rv.c      |   5 +
+ 6 files changed, 696 insertions(+)
+ create mode 100644 include/rv/da_monitor.h
+ create mode 100644 include/trace/events/rv.h
 
 diff --git a/include/linux/rv.h b/include/linux/rv.h
-index d8fa9e8be94a..dcce56987cf7 100644
+index dcce56987cf7..978fd62c1ff5 100644
 --- a/include/linux/rv.h
 +++ b/include/linux/rv.h
-@@ -24,6 +24,14 @@
+@@ -7,7 +7,16 @@
+ #ifndef _LINUX_RV_H
+ #define _LINUX_RV_H
+ 
++#define MAX_DA_NAME_LEN	24
++
+ #ifdef CONFIG_RV
++/*
++ * Deterministic automaton per-object variables.
++ */
++struct da_monitor {
++	bool	monitoring;
++	int	curr_state;
++};
+ 
+ /*
+  * Per-task RV monitors count. Nowadays fixed in RV_PER_TASK_MONITORS.
+@@ -22,6 +31,7 @@
+  * Futher monitor types are expected, so make this a union.
+  */
  union rv_task_monitor {
++	struct da_monitor da_mon;
  };
  
-+#ifdef CONFIG_RV_REACTORS
-+struct rv_reactor {
-+	const char		*name;
-+	const char		*description;
-+	void			(*react)(char *msg);
-+};
-+#endif
-+
- struct rv_monitor {
- 	const char		*name;
- 	const char		*description;
-@@ -31,6 +39,9 @@ struct rv_monitor {
- 	int			(*enable)(void);
- 	void			(*disable)(void);
- 	void			(*reset)(void);
-+#ifdef CONFIG_RV_REACTORS
-+	void			(*react)(char *msg);
-+#endif
- };
- 
- bool rv_monitoring_on(void);
-@@ -39,5 +50,11 @@ int rv_register_monitor(struct rv_monitor *monitor);
- int rv_get_task_monitor_slot(void);
- void rv_put_task_monitor_slot(int slot);
- 
-+#ifdef CONFIG_RV_REACTORS
-+bool rv_reacting_on(void);
-+int rv_unregister_reactor(struct rv_reactor *reactor);
-+int rv_register_reactor(struct rv_reactor *reactor);
-+#endif /* CONFIG_RV_REACTORS */
-+
- #endif /* CONFIG_RV */
- #endif /* _LINUX_RV_H */
-diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
-index 6d127cdb00dd..3eb5d48ab4f6 100644
---- a/kernel/trace/rv/Kconfig
-+++ b/kernel/trace/rv/Kconfig
-@@ -10,3 +10,14 @@ menuconfig RV
- 	  theorem proving). RV works by analyzing the trace of the system's
- 	  actual execution, comparing it against a formal specification of
- 	  the system behavior.
-+
-+config RV_REACTORS
-+	bool "Runtime verification reactors"
-+	default y
-+	depends on RV
-+	help
-+	  Enables the online runtime verification reactors. A runtime
-+	  monitor can cause a reaction to the detection of an exception
-+	  on the model's execution. By default, the monitors have
-+	  tracing reactions, printing the monitor output via tracepoints,
-+	  but other reactions can be added (on-demand) via this interface.
-diff --git a/kernel/trace/rv/Makefile b/kernel/trace/rv/Makefile
-index fd995379df67..8944274d9b41 100644
---- a/kernel/trace/rv/Makefile
-+++ b/kernel/trace/rv/Makefile
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- obj-$(CONFIG_RV) += rv.o
-+obj-$(CONFIG_RV_REACTORS) += rv_reactors.o
-diff --git a/kernel/trace/rv/rv.c b/kernel/trace/rv/rv.c
-index aee71bc8287d..3771c61aa846 100644
---- a/kernel/trace/rv/rv.c
-+++ b/kernel/trace/rv/rv.c
-@@ -354,6 +354,10 @@ static int create_monitor_dir(struct rv_monitor_def *mdef)
- 		goto out_remove_root;
- 	}
- 
-+	retval = reactor_populate_monitor(mdef);
-+	if (retval)
-+		goto out_remove_root;
-+
- 	return 0;
- 
- out_remove_root:
-@@ -730,6 +734,7 @@ int rv_unregister_monitor(struct rv_monitor *monitor)
- int __init rv_init_interface(void)
- {
- 	struct dentry *tmp;
-+	int retval;
- 
- 	rv_root.root_dir = rv_create_dir("rv", NULL);
- 	if (!rv_root.root_dir)
-@@ -754,6 +759,10 @@ int __init rv_init_interface(void)
- 	if (!tmp)
- 		goto out_err;
- 
-+	retval = init_rv_reactors(rv_root.root_dir);
-+	if (retval)
-+		goto out_err;
-+
- 	WRITE_ONCE(monitoring_on, true);
- 	/* monitoring_on */
- 	smp_wmb();
-diff --git a/kernel/trace/rv/rv.h b/kernel/trace/rv/rv.h
-index 47643840116e..a284a369fee0 100644
---- a/kernel/trace/rv/rv.h
-+++ b/kernel/trace/rv/rv.h
-@@ -18,13 +18,27 @@ struct rv_interface {
- #define rv_remove			tracefs_remove
- 
- #define MAX_RV_MONITOR_NAME_SIZE	32
-+#define MAX_RV_REACTOR_NAME_SIZE	32
- 
- extern struct mutex rv_interface_lock;
- 
-+#ifdef CONFIG_RV_REACTORS
-+struct rv_reactor_def {
-+	struct list_head	list;
-+	struct rv_reactor	*reactor;
-+	/* protected by the monitor interface lock */
-+	int			counter;
-+};
-+#endif
-+
- struct rv_monitor_def {
- 	struct list_head	list;
- 	struct rv_monitor	*monitor;
- 	struct dentry		*root_d;
-+#ifdef CONFIG_RV_REACTORS
-+	struct rv_reactor_def	*rdef;
-+	bool			reacting;
-+#endif
- 	bool			task_monitor;
- };
- 
-@@ -32,3 +46,24 @@ struct dentry *get_monitors_root(void);
- int init_rv_monitors(struct dentry *root_dir);
- int rv_disable_monitor(struct rv_monitor_def *mdef);
- int rv_enable_monitor(struct rv_monitor_def *mdef);
-+
-+#ifdef CONFIG_RV_REACTORS
-+int reactor_populate_monitor(struct rv_monitor_def *mdef);
-+void reactor_cleanup_monitor(struct rv_monitor_def *mdef);
-+int init_rv_reactors(struct dentry *root_dir);
-+#else
-+static inline int reactor_populate_monitor(struct rv_monitor_def *mdef)
-+{
-+	return 0;
-+}
-+
-+static inline void reactor_cleanup_monitor(struct rv_monitor_def *mdef)
-+{
-+	return;
-+}
-+
-+static inline int init_rv_reactors(struct dentry *root_dir)
-+{
-+	return 0;
-+}
-+#endif
-diff --git a/kernel/trace/rv/rv_reactors.c b/kernel/trace/rv/rv_reactors.c
+ #ifdef CONFIG_RV_REACTORS
+diff --git a/include/rv/da_monitor.h b/include/rv/da_monitor.h
 new file mode 100644
-index 000000000000..ef93cd5b4f82
+index 000000000000..e14dad3ec4a8
 --- /dev/null
-+++ b/kernel/trace/rv/rv_reactors.c
-@@ -0,0 +1,506 @@
-+// SPDX-License-Identifier: GPL-2.0
++++ b/include/rv/da_monitor.h
+@@ -0,0 +1,536 @@
++/* SPDX-License-Identifier: GPL-2.0 */
 +/*
 + * Copyright (C) 2019-2022 Red Hat, Inc. Daniel Bristot de Oliveira <bristot@kernel.org>
 + *
-+ * Runtime reactor interface.
++ * Deterministic automata (DA) monitor functions, to be used together
++ * with automata models in C generated by the dot2k tool.
 + *
-+ * A runtime monitor can cause a reaction to the detection of an
-+ * exception on the model's execution. By default, the monitors have
-+ * tracing reactions, printing the monitor output via tracepoints.
-+ * But other reactions can be added (on-demand) via this interface.
-+ *
-+ * == Registering reactors ==
-+ *
-+ * The struct rv_reactor defines a callback function to be executed
-+ * in case of a model exception happens. The callback function
-+ * receives a message to be (optionally) printed before executing
-+ * the reaction.
-+ *
-+ * A RV reactor is registered via:
-+ *   int rv_register_reactor(struct rv_reactor *reactor)
-+ * And unregistered via:
-+ *   int rv_unregister_reactor(struct rv_reactor *reactor)
-+ *
-+ * These functions are exported to modules, enabling reactors to be
-+ * dynamically loaded.
-+ *
-+ * == User interface ==
-+ *
-+ * The user interface resembles the kernel tracing interface and
-+ * presents these files:
-+ *
-+ *  "available_reactors"
-+ *    - List the available reactors, one per line.
-+ *
-+ *    For example:
-+ *      # cat available_reactors
-+ *      nop
-+ *      panic
-+ *      printk
-+ *
-+ *  "reacting_on"
-+ *    - It is an on/off general switch for reactors, disabling
-+ *    all reactions.
-+ *
-+ *  "monitors/MONITOR/reactors"
-+ *    - List available reactors, with the select reaction for the given
-+ *    MONITOR inside []. The default one is the nop (no operation)
-+ *    reactor.
-+ *    - Writing the name of an reactor enables it to the given
-+ *    MONITOR.
-+ *
-+ *    For example:
-+ *      # cat monitors/wip/reactors
-+ *      [nop]
-+ *      panic
-+ *      printk
-+ *      # echo panic > monitors/wip/reactors
-+ *      # cat monitors/wip/reactors
-+ *      nop
-+ *      [panic]
-+ *      printk
++ * The dot2k tool is available at tools/verification/dot2k/
 + */
 +
-+#include <linux/slab.h>
++#include <rv/automata.h>
++#include <linux/rv.h>
++#include <linux/bug.h>
 +
-+#include "rv.h"
++#ifdef CONFIG_RV_REACTORS
 +
-+/*
-+ * Interface for the reactor register.
-+ */
-+static LIST_HEAD(rv_reactors_list);
-+
-+static struct rv_reactor_def *get_reactor_rdef_by_name(char *name)
-+{
-+	struct rv_reactor_def *r;
-+
-+	list_for_each_entry(r, &rv_reactors_list, list) {
-+		if (strcmp(name, r->reactor->name) == 0)
-+			return r;
-+	}
-+	return NULL;
++#define DECLARE_RV_REACTING_HELPERS(name, type)							\
++static char REACT_MSG_##name[1024];								\
++												\
++static inline char *format_react_msg_##name(type curr_state, type event)			\
++{												\
++	snprintf(REACT_MSG_##name, 1024,							\
++		 "rv: monitor %s does not allow event %s on state %s\n",			\
++		 #name,										\
++		 model_get_event_name_##name(event),						\
++		 model_get_state_name_##name(curr_state));					\
++	return REACT_MSG_##name;								\
++}												\
++												\
++static void cond_react_##name(char *msg)							\
++{												\
++	if (rv_##name.react)									\
++		rv_##name.react(msg);								\
++}												\
++												\
++static bool rv_reacting_on_##name(void)								\
++{												\
++	return rv_reacting_on();								\
 +}
 +
-+/*
-+ * Available reactors seq functions.
-+ */
-+static int reactors_show(struct seq_file *m, void *p)
-+{
-+	struct rv_reactor_def *rea_def = p;
++#else /* CONFIG_RV_REACTOR */
 +
-+	seq_printf(m, "%s\n", rea_def->reactor->name);
-+	return 0;
++#define DECLARE_RV_REACTING_HELPERS(name, type)							\
++static inline char *format_react_msg_##name(type curr_state, type event)			\
++{												\
++	return NULL;										\
++}												\
++												\
++static void cond_react_##name(char *msg)							\
++{												\
++	return;											\
++}												\
++												\
++static bool rv_reacting_on_##name(void)								\
++{												\
++	return 0;										\
 +}
-+
-+static void reactors_stop(struct seq_file *m, void *p)
-+{
-+	mutex_unlock(&rv_interface_lock);
-+}
-+
-+static void *reactors_start(struct seq_file *m, loff_t *pos)
-+{
-+	mutex_lock(&rv_interface_lock);
-+	return seq_list_start(&rv_reactors_list, *pos);
-+}
-+
-+static void *reactors_next(struct seq_file *m, void *p, loff_t *pos)
-+{
-+	return seq_list_next(p, &rv_reactors_list, pos);
-+}
++#endif
 +
 +/*
-+ * available_reactors seq definition.
++ * Generic helpers for all types of deterministic automata monitors.
 + */
-+static const struct seq_operations available_reactors_seq_ops = {
-+	.start	= reactors_start,
-+	.next	= reactors_next,
-+	.stop	= reactors_stop,
-+	.show	= reactors_show
-+};
-+
-+/*
-+ * available_reactors interface.
-+ */
-+static int available_reactors_open(struct inode *inode, struct file *file)
-+{
-+	return seq_open(file, &available_reactors_seq_ops);
-+};
-+
-+static const struct file_operations available_reactors_ops = {
-+	.open    = available_reactors_open,
-+	.read    = seq_read,
-+	.llseek  = seq_lseek,
-+	.release = seq_release
-+};
-+
-+/*
-+ * Monitor's reactor file.
-+ */
-+static int monitor_reactor_show(struct seq_file *m, void *p)
-+{
-+	struct rv_monitor_def *mdef = m->private;
-+	struct rv_reactor_def *rdef = p;
-+
-+	if (mdef->rdef == rdef)
-+		seq_printf(m, "[%s]\n", rdef->reactor->name);
-+	else
-+		seq_printf(m, "%s\n", rdef->reactor->name);
-+	return 0;
++#define DECLARE_DA_MON_GENERIC_HELPERS(name, type)						\
++												\
++DECLARE_RV_REACTING_HELPERS(name, type)								\
++												\
++/*												\
++ * da_monitor_reset_##name - reset a monitor and setting it to init state			\
++ */												\
++static inline void da_monitor_reset_##name(struct da_monitor *da_mon)				\
++{												\
++	da_mon->monitoring = 0;									\
++	da_mon->curr_state = model_get_initial_state_##name();					\
++}												\
++												\
++/*												\
++ * da_monitor_curr_state_##name - return the current state					\
++ */												\
++static inline type da_monitor_curr_state_##name(struct da_monitor *da_mon)			\
++{												\
++	return da_mon->curr_state;								\
++}												\
++												\
++/*												\
++ * da_monitor_set_state_##name - set the new current state					\
++ */												\
++static inline void										\
++da_monitor_set_state_##name(struct da_monitor *da_mon, enum states_##name state)		\
++{												\
++	da_mon->curr_state = state;								\
++}												\
++												\
++/*												\
++ * da_monitor_start_##name - start monitoring							\
++ *												\
++ * The monitor will ignore all events until monitoring is set to true. This			\
++ * function needs to be called to tell the monitor to start monitoring.				\
++ */												\
++static inline void da_monitor_start_##name(struct da_monitor *da_mon)				\
++{												\
++	da_mon->monitoring = 1;									\
++}												\
++												\
++/*												\
++ * da_monitoring_##name - returns true if the monitor is processing events			\
++ */												\
++static inline bool da_monitoring_##name(struct da_monitor *da_mon)				\
++{												\
++	return da_mon->monitoring;								\
++}												\
++												\
++/*												\
++ * da_monitor_enabled_##name - checks if the monitor is enabled					\
++ */												\
++static inline bool da_monitor_enabled_##name(void)						\
++{												\
++	/* global switch */									\
++	if (unlikely(!rv_monitoring_on()))							\
++		return 0;									\
++												\
++	/* monitor enabled */									\
++	if (unlikely(!rv_##name.enabled))							\
++		return 0;									\
++												\
++	return 1;										\
++}												\
++												\
++/*												\
++ * da_monitor_handling_event_##name - checks if the monitor is ready to handle events		\
++ */												\
++static inline bool da_monitor_handling_event_##name(struct da_monitor *da_mon)			\
++{												\
++												\
++	if (!da_monitor_enabled_##name())							\
++		return 0;									\
++												\
++	/* monitor is actually monitoring */							\
++	if (unlikely(!da_monitoring_##name(da_mon)))						\
++		return 0;									\
++												\
++	return 1;										\
 +}
 +
 +/*
-+ * available_reactors seq definition.
++ * Event handler for implicit monitors. Implicit monitor is the one which the
++ * handler does not need to specify which da_monitor to manipulate. Examples
++ * of implicit monitor are the per_cpu or the global ones.
 + */
-+static const struct seq_operations monitor_reactors_seq_ops = {
-+	.start	= reactors_start,
-+	.next	= reactors_next,
-+	.stop	= reactors_stop,
-+	.show	= monitor_reactor_show
-+};
++#define DECLARE_DA_MON_MODEL_HANDLER_IMPLICIT(name, type)					\
++												\
++static inline bool										\
++da_event_##name(struct da_monitor *da_mon, enum events_##name event)				\
++{												\
++	type curr_state = da_monitor_curr_state_##name(da_mon);					\
++	type next_state = model_get_next_state_##name(curr_state, event);			\
++												\
++	if (next_state != INVALID_STATE) {							\
++		da_monitor_set_state_##name(da_mon, next_state);				\
++												\
++		trace_event_##name(model_get_state_name_##name(curr_state),			\
++				   model_get_event_name_##name(event),				\
++				   model_get_state_name_##name(next_state),			\
++				   model_is_final_state_##name(next_state));			\
++												\
++		return true;									\
++	}											\
++												\
++	if (rv_reacting_on_##name())								\
++		cond_react_##name(format_react_msg_##name(curr_state, event));			\
++												\
++	trace_error_##name(model_get_state_name_##name(curr_state),				\
++			   model_get_event_name_##name(event));					\
++												\
++	return false;										\
++}												\
 +
-+static void monitor_swap_reactors(struct rv_monitor_def *mdef, struct rv_reactor_def *rdef,
-+				    bool reacting)
-+{
-+	bool monitor_enabled;
-+
-+	/* nothing to do */
-+	if (mdef->rdef == rdef)
-+		return;
-+
-+	monitor_enabled = mdef->monitor->enabled;
-+	if (monitor_enabled)
-+		rv_disable_monitor(mdef);
-+
-+	/* swap reactor's usage */
-+	mdef->rdef->counter--;
-+	rdef->counter++;
-+
-+	mdef->rdef = rdef;
-+	mdef->reacting = reacting;
-+	mdef->monitor->react = rdef->reactor->react;
-+
-+	if (monitor_enabled)
-+		rv_enable_monitor(mdef);
-+}
-+
-+static ssize_t
-+monitor_reactors_write(struct file *file, const char __user *user_buf,
-+		      size_t count, loff_t *ppos)
-+{
-+	char buff[MAX_RV_REACTOR_NAME_SIZE + 2];
-+	struct rv_monitor_def *mdef;
-+	struct rv_reactor_def *rdef;
-+	struct seq_file *seq_f;
-+	int retval = -EINVAL;
-+	bool enable;
-+	char *ptr;
-+	int len;
-+
-+	if (count < 1 || count > MAX_RV_REACTOR_NAME_SIZE + 1)
-+		return -EINVAL;
-+
-+	memset(buff, 0, sizeof(buff));
-+
-+	retval = simple_write_to_buffer(buff, sizeof(buff) - 1, ppos, user_buf, count);
-+	if (retval < 0)
-+		return -EFAULT;
-+
-+	ptr = strim(buff);
-+
-+	len = strlen(ptr);
-+	if (!len)
-+		return count;
-+
-+	/*
-+	 * See monitor_reactors_open()
-+	 */
-+	seq_f = file->private_data;
-+	mdef = seq_f->private;
-+
-+	mutex_lock(&rv_interface_lock);
-+
-+	retval = -EINVAL;
-+
-+	list_for_each_entry(rdef, &rv_reactors_list, list) {
-+		if (strcmp(ptr, rdef->reactor->name) != 0)
-+			continue;
-+
-+		if (rdef == get_reactor_rdef_by_name("nop"))
-+			enable = false;
-+		else
-+			enable = true;
-+
-+		monitor_swap_reactors(mdef, rdef, enable);
-+
-+		retval = count;
-+		break;
-+	}
-+
-+	mutex_unlock(&rv_interface_lock);
-+
-+	return retval;
++/*
++ * Event handler for per_task monitors.
++ */
++#define DECLARE_DA_MON_MODEL_HANDLER_PER_TASK(name, type)					\
++												\
++static inline type da_event_##name(struct da_monitor *da_mon, struct task_struct *tsk,		\
++				   enum events_##name event)					\
++{												\
++	type curr_state = da_monitor_curr_state_##name(da_mon);					\
++	type next_state = model_get_next_state_##name(curr_state, event);			\
++												\
++	if (next_state != INVALID_STATE) {							\
++		da_monitor_set_state_##name(da_mon, next_state);				\
++												\
++		trace_event_##name(tsk->pid,							\
++				   model_get_state_name_##name(curr_state),			\
++				   model_get_event_name_##name(event),				\
++				   model_get_state_name_##name(next_state),			\
++				   model_is_final_state_##name(next_state));			\
++												\
++		return true;									\
++	}											\
++												\
++	if (rv_reacting_on_##name())								\
++		cond_react_##name(format_react_msg_##name(curr_state, event));			\
++												\
++	trace_error_##name(tsk->pid,								\
++			   model_get_state_name_##name(curr_state),				\
++			   model_get_event_name_##name(event));					\
++												\
++	return false;										\
 +}
 +
 +/*
-+ * available_reactors interface.
++ * Functions to define, init and get a global monitor.
 + */
-+static int monitor_reactors_open(struct inode *inode, struct file *file)
-+{
-+	struct rv_monitor_def *mdef = inode->i_private;
-+	struct seq_file *seq_f;
-+	int ret;
-+
-+	ret = seq_open(file, &monitor_reactors_seq_ops);
-+	if (ret < 0)
-+		return ret;
-+
-+	/*
-+	 * seq_open stores the seq_file on the file->private data.
-+	 */
-+	seq_f = file->private_data;
-+
-+	/*
-+	 * Copy the create file "private" data to the seq_file private data.
-+	 */
-+	seq_f->private = mdef;
-+
-+	return 0;
-+};
-+
-+static const struct file_operations monitor_reactors_ops = {
-+	.open    = monitor_reactors_open,
-+	.read    = seq_read,
-+	.llseek  = seq_lseek,
-+	.release = seq_release,
-+	.write = monitor_reactors_write
-+};
-+
-+static int __rv_register_reactor(struct rv_reactor *reactor)
-+{
-+	struct rv_reactor_def *r;
-+
-+	list_for_each_entry(r, &rv_reactors_list, list) {
-+		if (strcmp(reactor->name, r->reactor->name) == 0) {
-+			pr_info("Reactor %s is already registered\n", reactor->name);
-+			return -EINVAL;
-+		}
-+	}
-+
-+	r = kzalloc(sizeof(struct rv_reactor_def), GFP_KERNEL);
-+	if (!r)
-+		return -ENOMEM;
-+
-+	r->reactor = reactor;
-+	r->counter = 0;
-+
-+	list_add_tail(&r->list, &rv_reactors_list);
-+
-+	return 0;
-+}
-+
-+/**
-+ * rv_register_reactor - register a rv reactor.
-+ * @reactor:	The rv_reactor to be registered.
-+ *
-+ * Returns 0 if successful, error otherwise.
-+ */
-+int rv_register_reactor(struct rv_reactor *reactor)
-+{
-+	int retval = 0;
-+
-+	if (strlen(reactor->name) >= MAX_RV_REACTOR_NAME_SIZE) {
-+		pr_info("Reactor %s has a name longer than %d\n",
-+			reactor->name, MAX_RV_MONITOR_NAME_SIZE);
-+		return -EINVAL;
-+	}
-+
-+	mutex_lock(&rv_interface_lock);
-+	retval = __rv_register_reactor(reactor);
-+	mutex_unlock(&rv_interface_lock);
-+	return retval;
-+}
-+
-+/**
-+ * rv_unregister_reactor - unregister a rv reactor.
-+ * @reactor:	The rv_reactor to be unregistered.
-+ *
-+ * Returns 0 if successful, error otherwise.
-+ */
-+int rv_unregister_reactor(struct rv_reactor *reactor)
-+{
-+	struct rv_reactor_def *ptr, *next;
-+
-+	mutex_lock(&rv_interface_lock);
-+
-+	list_for_each_entry_safe(ptr, next, &rv_reactors_list, list) {
-+		if (strcmp(reactor->name, ptr->reactor->name) == 0) {
-+
-+			if (!ptr->counter) {
-+				list_del(&ptr->list);
-+			} else {
-+				printk(KERN_WARNING
-+				       "rv: the rv_reactor %s is in use by %d monitor(s)\n",
-+				       ptr->reactor->name, ptr->counter);
-+				printk(KERN_WARNING "rv: the rv_reactor %s cannot be removed\n",
-+				       ptr->reactor->name);
-+				return -EBUSY;
-+			}
-+		}
-+	}
-+
-+	mutex_unlock(&rv_interface_lock);
-+	return 0;
++#define DECLARE_DA_MON_INIT_GLOBAL(name, type)							\
++												\
++/*												\
++ * global monitor (a single variable)								\
++ */												\
++static struct da_monitor da_mon_##name;								\
++												\
++/*												\
++ * da_get_monitor_##name - return the global monitor address					\
++ */												\
++static struct da_monitor *da_get_monitor_##name(void)						\
++{												\
++	return &da_mon_##name;									\
++}												\
++												\
++/*												\
++ * da_monitor_reset_all_##name - reset the single monitor					\
++ */												\
++static void da_monitor_reset_all_##name(void)							\
++{												\
++	da_monitor_reset_##name(da_get_monitor_##name());					\
++}												\
++												\
++/*												\
++ * da_monitor_init_##name - initialize a monitor						\
++ */												\
++static inline int da_monitor_init_##name(void)							\
++{												\
++	da_monitor_reset_all_##name();								\
++	return 0;										\
++}												\
++												\
++/*												\
++ * da_monitor_destroy_##name - destroy the monitor						\
++ */												\
++static inline void da_monitor_destroy_##name(void)						\
++{												\
++	return;											\
 +}
 +
 +/*
-+ * reacting_on interface.
++ * Functions to define, init and get a per-cpu monitor.
 + */
-+static bool __read_mostly reacting_on;
-+
-+/**
-+ * rv_reacting_on - checks if reacting is on
-+ *
-+ * Returns 1 if on, 0 otherwise.
-+ */
-+bool rv_reacting_on(void)
-+{
-+	/* reacting_on */
-+	smp_rmb();
-+	return READ_ONCE(reacting_on);
-+}
-+
-+static ssize_t reacting_on_read_data(struct file *filp,
-+				     char __user *user_buf,
-+				     size_t count, loff_t *ppos)
-+{
-+	char *buff;
-+
-+	buff = rv_reacting_on() ? "1\n" : "0\n";
-+
-+	return simple_read_from_buffer(user_buf, count, ppos, buff, strlen(buff)+1);
-+}
-+
-+static void turn_reacting_off(void)
-+{
-+	WRITE_ONCE(reacting_on, false);
-+	/* reacting_on */
-+	smp_wmb();
-+}
-+
-+static void turn_reacting_on(void)
-+{
-+	WRITE_ONCE(reacting_on, true);
-+	/* reacting_on */
-+	smp_wmb();
-+}
-+
-+static ssize_t reacting_on_write_data(struct file *filp, const char __user *user_buf,
-+				      size_t count, loff_t *ppos)
-+{
-+	int retval;
-+	bool val;
-+
-+	retval = kstrtobool_from_user(user_buf, count, &val);
-+	if (retval)
-+		return retval;
-+
-+	mutex_lock(&rv_interface_lock);
-+
-+	if (val)
-+		turn_reacting_on();
-+	else
-+		turn_reacting_off();
-+
-+	/*
-+	 * Wait for the execution of all current events to notice
-+	 * the change before returning to user-space.
-+	 */
-+	tracepoint_synchronize_unregister();
-+
-+	mutex_unlock(&rv_interface_lock);
-+
-+	return count;
-+}
-+
-+static const struct file_operations reacting_on_fops = {
-+	.open   = simple_open,
-+	.llseek = no_llseek,
-+	.write  = reacting_on_write_data,
-+	.read   = reacting_on_read_data,
-+};
-+
-+/**
-+ * reactor_populate_monitor - creates per monitor reactors file
-+ * @mdef:	monitor's definition.
-+ *
-+ * Returns 0 if successful, error otherwise.
-+ */
-+int reactor_populate_monitor(struct rv_monitor_def *mdef)
-+{
-+	struct dentry *tmp;
-+
-+	tmp = rv_create_file("reactors", RV_MODE_WRITE, mdef->root_d, mdef, &monitor_reactors_ops);
-+	if (!tmp)
-+		return -ENOMEM;
-+
-+	/*
-+	 * Configure as the rv_nop reactor.
-+	 */
-+	mdef->rdef = get_reactor_rdef_by_name("nop");
-+	mdef->rdef->counter++;
-+	mdef->reacting = false;
-+
-+	return 0;
-+}
-+
-+/**
-+ * reactor_cleanup_monitor - cleanup a monitor reference
-+ * @mdef:       monitor's definition.
-+ */
-+void reactor_cleanup_monitor(struct rv_monitor_def *mdef)
-+{
-+	mdef->rdef->counter--;
++#define DECLARE_DA_MON_INIT_PER_CPU(name, type)							\
++												\
++/*												\
++ * per-cpu monitor variables									\
++ */												\
++DEFINE_PER_CPU(struct da_monitor, da_mon_##name);						\
++												\
++/*												\
++ * da_get_monitor_##name - return current CPU monitor address					\
++ */												\
++static struct da_monitor *da_get_monitor_##name(void)						\
++{												\
++	return this_cpu_ptr(&da_mon_##name);							\
++}												\
++												\
++/*												\
++ * da_monitor_reset_all_##name - reset all CPUs' monitor					\
++ */												\
++static void da_monitor_reset_all_##name(void)							\
++{												\
++	struct da_monitor *da_mon;								\
++	int cpu;										\
++	for_each_cpu(cpu, cpu_online_mask) {							\
++		da_mon = per_cpu_ptr(&da_mon_##name, cpu);					\
++		da_monitor_reset_##name(da_mon);						\
++	}											\
++}												\
++												\
++/*												\
++ * da_monitor_init_##name - initialize all CPUs' monitor					\
++ */												\
++static inline int da_monitor_init_##name(void)							\
++{												\
++	da_monitor_reset_all_##name();								\
++	return 0;										\
++}												\
++												\
++/*												\
++ * da_monitor_destroy_##name - destroy the monitor						\
++ */												\
++static inline void da_monitor_destroy_##name(void)						\
++{												\
++	return;											\
 +}
 +
 +/*
-+ * Nop reactor register
++ * Functions to define, init and get a per-task monitor.
 + */
-+static void rv_nop_reaction(char *msg)
-+{
++#define DECLARE_DA_MON_INIT_PER_TASK(name, type)						\
++												\
++/*												\
++ * The per-task monitor is stored a vector in the task struct. This variable			\
++ * stores the position on the vector reserved for this monitor.					\
++ */												\
++static int task_mon_slot_##name = RV_PER_TASK_MONITOR_INIT;					\
++												\
++/*												\
++ * da_get_monitor_##name - return the monitor in the allocated slot for tsk 			\
++ */												\
++static inline struct da_monitor *da_get_monitor_##name(struct task_struct *tsk)			\
++{												\
++	return &tsk->rv[task_mon_slot_##name].da_mon;						\
++}												\
++												\
++static void da_monitor_reset_all_##name(void)							\
++{												\
++	struct task_struct *g, *p;								\
++												\
++	read_lock(&tasklist_lock);								\
++	for_each_process_thread(g, p)								\
++		da_monitor_reset_##name(da_get_monitor_##name(p));				\
++	read_unlock(&tasklist_lock);								\
++}												\
++												\
++/*												\
++ * da_monitor_init_##name - initialize the per-task monitor					\
++ *												\
++ * Try to allocate a slot in the task's vector of monitors. If there				\
++ * is an available slot, use it and reset all task's monitor.					\
++ */												\
++static int da_monitor_init_##name(void)								\
++{												\
++	int slot;										\
++												\
++	slot = rv_get_task_monitor_slot();							\
++	if (slot < 0 || slot >= RV_PER_TASK_MONITOR_INIT)					\
++		return slot;									\
++												\
++	task_mon_slot_##name = slot;								\
++												\
++	da_monitor_reset_all_##name();								\
++	return 0;										\
++}												\
++												\
++/*												\
++ * da_monitor_destroy_##name - return the allocated slot					\
++ */												\
++static inline void da_monitor_destroy_##name(void)						\
++{												\
++	if (task_mon_slot_##name == RV_PER_TASK_MONITOR_INIT) {					\
++		WARN_ONCE(1, "Disabling a disabled monitor: " #name);				\
++		return;										\
++	}											\
++	rv_put_task_monitor_slot(task_mon_slot_##name);						\
++	task_mon_slot_##name = RV_PER_TASK_MONITOR_INIT;					\
++	return;											\
 +}
 +
-+static struct rv_reactor rv_nop = {
-+	.name = "nop",
-+	.description = "no-operation reactor: do nothing.",
-+	.react = rv_nop_reaction
-+};
-+
-+int init_rv_reactors(struct dentry *root_dir)
-+{
-+	struct dentry *available, *reacting;
-+	int retval;
-+
-+	available = rv_create_file("available_reactors", RV_MODE_READ, root_dir, NULL,
-+				   &available_reactors_ops);
-+	if (!available)
-+		goto out_err;
-+
-+	reacting = rv_create_file("reacting_on", RV_MODE_WRITE, root_dir, NULL, &reacting_on_fops);
-+	if (!reacting)
-+		goto rm_available;
-+
-+	retval = __rv_register_reactor(&rv_nop);
-+	if (retval)
-+		goto rm_reacting;
-+
-+	turn_reacting_on();
-+
-+	return 0;
-+
-+rm_reacting:
-+	rv_remove(reacting);
-+rm_available:
-+	rv_remove(available);
-+out_err:
-+	return -ENOMEM;
++/*
++ * Handle event for implicit monitor: da_get_monitor_##name() will figure out
++ * the monitor.
++ */
++#define DECLARE_DA_MON_MONITOR_HANDLER_IMPLICIT(name, type)					\
++												\
++static inline void __da_handle_event_##name(struct da_monitor *da_mon,				\
++					    enum events_##name event)				\
++{												\
++	int retval;										\
++												\
++	retval = da_monitor_handling_event_##name(da_mon);					\
++	if (!retval)										\
++		return;										\
++												\
++	retval = da_event_##name(da_mon, event);						\
++	if (!retval)										\
++		da_monitor_reset_##name(da_mon);						\
++}												\
++												\
++/*												\
++ * da_handle_event_##name - handle an event							\
++ */												\
++static inline void da_handle_event_##name(enum events_##name event)				\
++{												\
++	struct da_monitor *da_mon = da_get_monitor_##name();					\
++	__da_handle_event_##name(da_mon, event);						\
++}												\
++												\
++/*												\
++ * da_handle_start_event_##name - start monitoring or handle event				\
++ *												\
++ * This function is used notify the monitor that the system is returning			\
++ * to the initial state, so the monitor can start monitoring in the next event.			\
++ * Thus:											\
++ *												\
++ * If the monitor already started, handle the event.						\
++ * If the monitor did not start yet, start the monitor but skip the event.			\
++ */												\
++static inline bool da_handle_start_event_##name(enum events_##name event)			\
++{												\
++	struct da_monitor *da_mon;								\
++												\
++	if (!da_monitor_enabled_##name())							\
++		return 0;									\
++												\
++	da_mon = da_get_monitor_##name();							\
++												\
++	if (unlikely(!da_monitoring_##name(da_mon))) {						\
++		da_monitor_start_##name(da_mon);						\
++		return 0;									\
++	}											\
++												\
++	__da_handle_event_##name(da_mon, event);						\
++												\
++	return 1;										\
++}												\
++												\
++/*												\
++ * da_handle_start_run_event_##name - start monitoring and handle event				\
++ *												\
++ * This function is used notify the monitor that the system is in the				\
++ * initial state, so the monitor can start monitoring and handling event.			\
++ */												\
++static inline bool da_handle_start_run_event_##name(enum events_##name event)			\
++{												\
++	struct da_monitor *da_mon;								\
++												\
++	if (!da_monitor_enabled_##name())							\
++		return 0;									\
++												\
++	da_mon = da_get_monitor_##name();							\
++												\
++	if (unlikely(!da_monitoring_##name(da_mon)))						\
++		da_monitor_start_##name(da_mon);						\
++												\
++	__da_handle_event_##name(da_mon, event);						\
++												\
++	return 1;										\
 +}
++
++/*
++ * Handle event for per task.
++ */
++#define DECLARE_DA_MON_MONITOR_HANDLER_PER_TASK(name, type)					\
++												\
++static inline void										\
++__da_handle_event_##name(struct da_monitor *da_mon, struct task_struct *tsk,			\
++			 enum events_##name event)						\
++{												\
++	int retval;										\
++												\
++	retval = da_monitor_handling_event_##name(da_mon);					\
++	if (!retval)										\
++		return;										\
++												\
++	retval = da_event_##name(da_mon, tsk, event);						\
++	if (!retval)										\
++		da_monitor_reset_##name(da_mon);						\
++}												\
++												\
++/*												\
++ * da_handle_event_##name - handle an event							\
++ */												\
++static inline void										\
++da_handle_event_##name(struct task_struct *tsk, enum events_##name event)			\
++{												\
++	struct da_monitor *da_mon = da_get_monitor_##name(tsk);					\
++	__da_handle_event_##name(da_mon, tsk, event);						\
++}												\
++												\
++/*												\
++ * da_handle_start_event_##name - start monitoring or handle event				\
++ *												\
++ * This function is used notify the monitor that the system is returning			\
++ * to the initial state, so the monitor can start monitoring in the next event.			\
++ * Thus:											\
++ *												\
++ * If the monitor already started, handle the event.						\
++ * If the monitor did not start yet, start the monitor but skip the event.			\
++ */												\
++static inline bool										\
++da_handle_start_event_##name(struct task_struct *tsk, enum events_##name event)			\
++{												\
++	struct da_monitor *da_mon;								\
++												\
++	if (!da_monitor_enabled_##name())							\
++		return 0;									\
++												\
++	da_mon = da_get_monitor_##name(tsk);							\
++												\
++	if (unlikely(!da_monitoring_##name(da_mon))) {						\
++		da_monitor_start_##name(da_mon);						\
++		return 0;									\
++	}											\
++												\
++	__da_handle_event_##name(da_mon, tsk, event);						\
++												\
++	return 1;										\
++}
++
++/*
++ * Entry point for the global monitor.
++ */
++#define DECLARE_DA_MON_GLOBAL(name, type)							\
++												\
++DECLARE_AUTOMATA_HELPERS(name, type)								\
++DECLARE_DA_MON_GENERIC_HELPERS(name, type)							\
++DECLARE_DA_MON_MODEL_HANDLER_IMPLICIT(name, type)						\
++DECLARE_DA_MON_INIT_GLOBAL(name, type)								\
++DECLARE_DA_MON_MONITOR_HANDLER_IMPLICIT(name, type)
++
++/*
++ * Entry point for the per-cpu monitor.
++ */
++#define DECLARE_DA_MON_PER_CPU(name, type)							\
++												\
++DECLARE_AUTOMATA_HELPERS(name, type)								\
++DECLARE_DA_MON_GENERIC_HELPERS(name, type)							\
++DECLARE_DA_MON_MODEL_HANDLER_IMPLICIT(name, type)						\
++DECLARE_DA_MON_INIT_PER_CPU(name, type)								\
++DECLARE_DA_MON_MONITOR_HANDLER_IMPLICIT(name, type)
++
++/*
++ * Entry point for the per-task monitor.
++ */
++#define DECLARE_DA_MON_PER_TASK(name, type)							\
++												\
++DECLARE_AUTOMATA_HELPERS(name, type)								\
++DECLARE_DA_MON_GENERIC_HELPERS(name, type)							\
++DECLARE_DA_MON_MODEL_HANDLER_PER_TASK(name, type)						\
++DECLARE_DA_MON_INIT_PER_TASK(name, type)							\
++DECLARE_DA_MON_MONITOR_HANDLER_PER_TASK(name, type)
+diff --git a/include/trace/events/rv.h b/include/trace/events/rv.h
+new file mode 100644
+index 000000000000..20a2e09c6416
+--- /dev/null
++++ b/include/trace/events/rv.h
+@@ -0,0 +1,120 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM rv
++
++#if !defined(_TRACE_RV_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_RV_H
++
++#include <linux/rv.h>
++#include <linux/tracepoint.h>
++
++#ifdef CONFIG_DA_MON_EVENTS_IMPLICIT
++DECLARE_EVENT_CLASS(event_da_monitor,
++
++	TP_PROTO(char *state, char *event, char *next_state, bool final_state),
++
++	TP_ARGS(state, event, next_state, final_state),
++
++	TP_STRUCT__entry(
++		__array(	char,	state,		MAX_DA_NAME_LEN	)
++		__array(	char,	event,		MAX_DA_NAME_LEN	)
++		__array(	char,	next_state,	MAX_DA_NAME_LEN	)
++		__field(	bool,	final_state			)
++	),
++
++	TP_fast_assign(
++		memcpy(__entry->state,		state,		MAX_DA_NAME_LEN);
++		memcpy(__entry->event,		event,		MAX_DA_NAME_LEN);
++		memcpy(__entry->next_state,	next_state,	MAX_DA_NAME_LEN);
++		__entry->final_state		= final_state;
++	),
++
++	TP_printk("%s x %s -> %s %s",
++		__entry->state,
++		__entry->event,
++		__entry->next_state,
++		__entry->final_state ? "(final)" : "")
++);
++
++DECLARE_EVENT_CLASS(error_da_monitor,
++
++	TP_PROTO(char *state, char *event),
++
++	TP_ARGS(state, event),
++
++	TP_STRUCT__entry(
++		__array(	char,	state,		MAX_DA_NAME_LEN	)
++		__array(	char,	event,		MAX_DA_NAME_LEN	)
++	),
++
++	TP_fast_assign(
++		memcpy(__entry->state,		state,		MAX_DA_NAME_LEN);
++		memcpy(__entry->event,		event,		MAX_DA_NAME_LEN);
++	),
++
++	TP_printk("event %s not expected in the state %s",
++		__entry->event,
++		__entry->state)
++);
++#endif /* CONFIG_DA_MON_EVENTS_IMPLICIT */
++
++#ifdef CONFIG_DA_MON_EVENTS_ID
++DECLARE_EVENT_CLASS(event_da_monitor_id,
++
++	TP_PROTO(int id, char *state, char *event, char *next_state, bool final_state),
++
++	TP_ARGS(id, state, event, next_state, final_state),
++
++	TP_STRUCT__entry(
++		__field(	int,	id				)
++		__array(	char,	state,		MAX_DA_NAME_LEN	)
++		__array(	char,	event,		MAX_DA_NAME_LEN	)
++		__array(	char,	next_state,	MAX_DA_NAME_LEN	)
++		__field(	bool,	final_state			)
++	),
++
++	TP_fast_assign(
++		memcpy(__entry->state,		state,		MAX_DA_NAME_LEN);
++		memcpy(__entry->event,		event,		MAX_DA_NAME_LEN);
++		memcpy(__entry->next_state,	next_state,	MAX_DA_NAME_LEN);
++		__entry->id			= id;
++		__entry->final_state		= final_state;
++	),
++
++	TP_printk("%d: %s x %s -> %s %s",
++		__entry->id,
++		__entry->state,
++		__entry->event,
++		__entry->next_state,
++		__entry->final_state ? "(final)" : "")
++);
++
++DECLARE_EVENT_CLASS(error_da_monitor_id,
++
++	TP_PROTO(int id, char *state, char *event),
++
++	TP_ARGS(id, state, event),
++
++	TP_STRUCT__entry(
++		__field(	int,	id				)
++		__array(	char,	state,		MAX_DA_NAME_LEN	)
++		__array(	char,	event,		MAX_DA_NAME_LEN	)
++	),
++
++	TP_fast_assign(
++		memcpy(__entry->state,		state,		MAX_DA_NAME_LEN);
++		memcpy(__entry->event,		event,		MAX_DA_NAME_LEN);
++		__entry->id			= id;
++	),
++
++	TP_printk("%d: event %s not expected in the state %s",
++		__entry->id,
++		__entry->event,
++		__entry->state)
++);
++#endif /* CONFIG_DA_MON_EVENTS_ID */
++#endif /* _TRACE_RV_H */
++
++/* This part ust be outside protection */
++#undef TRACE_INCLUDE_PATH
++#include <trace/define_trace.h>
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 9d44f2d46c69..6f1f82ccd5f2 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1964,6 +1964,18 @@ static void copy_oom_score_adj(u64 clone_flags, struct task_struct *tsk)
+ 	mutex_unlock(&oom_adj_mutex);
+ }
+ 
++#ifdef CONFIG_RV
++static void rv_task_fork(struct task_struct *p)
++{
++	int i;
++
++	for (i = 0; i < RV_PER_TASK_MONITORS; i++)
++		p->rv[i].da_mon.monitoring = false;
++}
++#else
++#define rv_task_fork(p) do {} while (0)
++#endif
++
+ /*
+  * This creates a new process as a copy of the old one,
+  * but does not actually start it yet.
+@@ -2399,6 +2411,8 @@ static __latent_entropy struct task_struct *copy_process(
+ 	 */
+ 	copy_seccomp(p);
+ 
++	rv_task_fork(p);
++
+ 	rseq_fork(p, clone_flags);
+ 
+ 	/* Don't start children in a dying pid namespace */
+diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
+index 3eb5d48ab4f6..8714800e22ad 100644
+--- a/kernel/trace/rv/Kconfig
++++ b/kernel/trace/rv/Kconfig
+@@ -1,5 +1,16 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ #
++config DA_MON_EVENTS
++	bool
++
++config DA_MON_EVENTS_IMPLICIT
++	select DA_MON_EVENTS
++	bool
++
++config DA_MON_EVENTS_ID
++	select DA_MON_EVENTS
++	bool
++
+ menuconfig RV
+ 	bool "Runtime Verification"
+ 	depends on TRACING
+diff --git a/kernel/trace/rv/rv.c b/kernel/trace/rv/rv.c
+index 3771c61aa846..70259589f52d 100644
+--- a/kernel/trace/rv/rv.c
++++ b/kernel/trace/rv/rv.c
+@@ -140,6 +140,11 @@
+ #include <linux/init.h>
+ #include <linux/slab.h>
+ 
++#ifdef CONFIG_DA_MON_EVENTS
++#define CREATE_TRACE_POINTS
++#include <trace/events/rv.h>
++#endif
++
+ #include "rv.h"
+ 
+ DEFINE_MUTEX(rv_interface_lock);
 -- 
 2.35.1
 
