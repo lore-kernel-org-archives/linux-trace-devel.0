@@ -2,116 +2,82 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D11ACC43334
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 24 Jul 2022 18:12:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EBE8C433EF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Jul 2022 13:10:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbiGXSMU (ORCPT
+        id S234903AbiGYNKf (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 24 Jul 2022 14:12:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45598 "EHLO
+        Mon, 25 Jul 2022 09:10:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbiGXSMT (ORCPT
+        with ESMTP id S232380AbiGYNKf (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 24 Jul 2022 14:12:19 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B17DEF8;
-        Sun, 24 Jul 2022 11:12:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1658686338; x=1690222338;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BjvRcMWl7wunZxrZm/S9IY/AhIjTpZkTi/HKbixiWb0=;
-  b=K5hdtLLye6Tdtq2aX6cI1JTZI54V0+oxaNUI3pwctV8ixTvPK7hXY6eL
-   zGlIGLiKLNYW0nhrSa+BwbbIsk2st6RGbDDxXguaYgQ5vBFjKDFbX7ky7
-   zXbzZlrgyUIJrSpuavczojxwQXWifV2YC2nw3Dqiqz8WafLVgSHHfgRCu
-   jcjUtq2V6Fs0V2y8eZzoQKbqV76BGj6QXTzqKcdWgkZiizr0j4NGKedI0
-   EAqwL/GpOHQjrWRlsuRpftrRZSvFgflVIEtVbM3fAFzf3RVInAJRTue6c
-   KpRpJFk02dsTNb95iqS4NiBHFI4VOlEGrSCR7Mq7f9bknoxhm/tFVsH5S
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10418"; a="270598022"
-X-IronPort-AV: E=Sophos;i="5.93,190,1654585200"; 
-   d="scan'208";a="270598022"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2022 11:12:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,190,1654585200"; 
-   d="scan'208";a="688813740"
-Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 24 Jul 2022 11:12:12 -0700
-Received: from kbuild by e0eace57cfef with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oFg5M-00045f-0E;
-        Sun, 24 Jul 2022 18:12:12 +0000
-Date:   Mon, 25 Jul 2022 02:12:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     kbuild-all@lists.01.org,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Gabriele Paoloni <gpaoloni@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        Tao Zhou <tao.zhou@linux.dev>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH V6 14/16] rv/monitor: Add the wwnr monitor
-Message-ID: <202207250209.ICMKu9h0-lkp@intel.com>
-References: <a1b9cb1679c6bd7431b0a0072f73c5d6ab353207.1658244826.git.bristot@kernel.org>
+        Mon, 25 Jul 2022 09:10:35 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4919665E4;
+        Mon, 25 Jul 2022 06:10:28 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id D98B11FADC;
+        Mon, 25 Jul 2022 13:10:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1658754626; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=KX1pX+qxhjtmIbz/mv+FEb+97nfiqNjUtPVXNgyC9+k=;
+        b=rUKxaZX0CHPTS50VFaCO+mGOMhsdNEtgp1vg5BxHKnKW2AOa+lz9H2pdCywO1hbdmx6a12
+        RXcx0svD2XQLxceow51BjMeBWKi+WsEe7m4J14Omy/LBa3f6UCgztWlY7Wd0zsrhg3DYKt
+        spMKmHdGfEXrJoj06P+/vb6fleLOEaw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1658754626;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=KX1pX+qxhjtmIbz/mv+FEb+97nfiqNjUtPVXNgyC9+k=;
+        b=8kOgZbPTQT3vpyhm8I40dvouQa6bVFortCiKzh6Qdk7sYywtd8pQZXxpDgniuZklq2fxu/
+        Qypc2YvD108uEVCw==
+Received: from hawking.suse.de (unknown [10.168.4.11])
+        by relay2.suse.de (Postfix) with ESMTP id D24E82C152;
+        Mon, 25 Jul 2022 13:10:26 +0000 (UTC)
+Received: by hawking.suse.de (Postfix, from userid 17005)
+        id 56840444B2F; Mon, 25 Jul 2022 15:10:26 +0200 (CEST)
+From:   Andreas Schwab <schwab@suse.de>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Subject: [PATCH] rtla: fix double free
+CC:     Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Yow:  Should I do my BOBBIE VINTON medley?
+Date:   Mon, 25 Jul 2022 15:10:26 +0200
+Message-ID: <mvmzggxl4n1.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.1.90 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a1b9cb1679c6bd7431b0a0072f73c5d6ab353207.1658244826.git.bristot@kernel.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Daniel,
+Don't call trace_instance_destroy in trace_instance_init when it fails,
+this is done by the caller.
 
-I love your patch! Yet something to improve:
+Signed-off-by: Andreas Schwab <schwab@suse.de>
+---
+ tools/tracing/rtla/src/trace.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-[auto build test ERROR on rostedt-trace/for-next]
-[also build test ERROR on tip/sched/core lwn-2.6/docs-next linus/master v5.19-rc7 next-20220722]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+diff --git a/tools/tracing/rtla/src/trace.c b/tools/tracing/rtla/src/trace.c
+index 5784c9f9e570..7c27fc2a52cb 100644
+--- a/tools/tracing/rtla/src/trace.c
++++ b/tools/tracing/rtla/src/trace.c
+@@ -179,7 +179,6 @@ int trace_instance_init(struct trace_instance *trace, char *tool_name)
+ 	return 0;
+ 
+ out_err:
+-	trace_instance_destroy(trace);
+ 	return 1;
+ }
+ 
+-- 
+2.37.1
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Bristot-de-Oliveira/The-Runtime-Verification-RV-interface/20220720-013343
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git for-next
-config: riscv-randconfig-c034-20220721 (https://download.01.org/0day-ci/archive/20220725/202207250209.ICMKu9h0-lkp@intel.com/config)
-compiler: riscv32-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/57c7d3b13625be619ed3759350904bfa0d5a307d
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Daniel-Bristot-de-Oliveira/The-Runtime-Verification-RV-interface/20220720-013343
-        git checkout 57c7d3b13625be619ed3759350904bfa0d5a307d
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=riscv SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   riscv32-linux-ld: kernel/trace/rv/monitors/wwnr/wwnr.o: in function `.L32':
->> wwnr.c:(.text+0x26c): undefined reference to `rv_reacting_on'
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Andreas Schwab, SUSE Labs, schwab@suse.de
+GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
+"And now for something completely different."
