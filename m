@@ -2,67 +2,65 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 040C4C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Jul 2022 15:23:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E7E8C43334
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Jul 2022 16:26:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236141AbiGYPX5 (ORCPT
+        id S232437AbiGYQZ7 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 25 Jul 2022 11:23:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42990 "EHLO
+        Mon, 25 Jul 2022 12:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236452AbiGYPXm (ORCPT
+        with ESMTP id S232072AbiGYQZ6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 25 Jul 2022 11:23:42 -0400
+        Mon, 25 Jul 2022 12:25:58 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1AE6BEE;
-        Mon, 25 Jul 2022 08:23:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A0F1AD8A;
+        Mon, 25 Jul 2022 09:25:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 60D186122D;
-        Mon, 25 Jul 2022 15:23:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 943AAC341C6;
-        Mon, 25 Jul 2022 15:23:28 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DF1D86121A;
+        Mon, 25 Jul 2022 16:25:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FD63C341C6;
+        Mon, 25 Jul 2022 16:25:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658762609;
-        bh=3s3HCAIq22KW8xdlHADk+52r1ZJHJUwaz1P2FsyYFfU=;
+        s=k20201202; t=1658766357;
+        bh=m27zrRuz27RIjOldnMsydYQnvatN8iHP6d+tO/T1IcQ=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=oScXdJx5xfbg//Whh9manEFT986v5s9h4ig/+L7Fl1xIsraZpC69KrO3xVHv2ggmA
-         idz2nHsBB9F9cxAe/tY5SNmZlc2IVP381AKRbwRgDh9DDDAMD7MP3IOWlaIXQWuNgg
-         QB8+BaFbH+RJ54PsTorxmFWCtucEIEwhGP7JOx+YBJtmQ1sICZGqtGL4PBf9MgGeOg
-         s9ikuOiNopmUNnYFMOKXb3JEskJqAZXKCZELcy/2NcD+6iksi5d+cBwGZflga/A/Is
-         Ptkl432RnAvplE87qAavg5V9sfZR4dbvUzZCyGc0qHqlOWZs6+mV2///k4hiuW5nsx
-         7U7F1oXYPhyWQ==
-Message-ID: <8112c80c-8e65-aa0e-e335-562d9b8d3343@kernel.org>
-Date:   Mon, 25 Jul 2022 17:23:26 +0200
+        b=XbxynBN2mhBEdUenQF2DyW1O5BOqMxB2nRlrPaFiFUZMjbvaD211+K7a1fANPWWLO
+         QPSqyWwuI3VvINVLq3LCNCqqBz0Ngc0uo3VzAw+/p7TNCFLdpO6o1Qlo33N2WkXkcc
+         nr2YYpvWZjMC6onKt5qFK5deu0afcbUvwIf+HlqlwFW8cdurbM+T37XAXWVrw31tbU
+         uD41XlEnSy5eFi7k3MPUqugWN0uH0dQimVOQ9bAvyy4x4JkyUeV+3lNJfu7dT6wcYH
+         7Mj9SuLpMf7ynKbhKO1zCe6GyiHftZ4ykYBYCSurbkpjJ9wwVisX/0CUMuZOEUFk/n
+         bNor0on/hqmwA==
+Message-ID: <b7655e0e-3835-5463-87cd-0eef995fb388@kernel.org>
+Date:   Mon, 25 Jul 2022 18:25:52 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
-Subject: Re: [PATCH v2] rtla: Fix double free
+Subject: Re: [PATCH] rtla: Define syscall numbers for riscv
 Content-Language: en-US
-To:     Andreas Schwab <schwab@suse.de>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <mvmzggxl4n1.fsf@suse.de>
- <fd0888a4-099c-95fe-7e20-82be1489061f@kernel.org> <mvmv8rll2yn.fsf@suse.de>
- <20220725105639.295a7d7d@gandalf.local.home> <mvmilnlkyzx.fsf_-_@suse.de>
+To:     Andreas Schwab <schwab@suse.de>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <mvmr129l0qt.fsf@suse.de>
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <mvmilnlkyzx.fsf_-_@suse.de>
+In-Reply-To: <mvmr129l0qt.fsf@suse.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 7/25/22 17:12, Andreas Schwab wrote:
-> Avoid double free by making trace_instance_destroy indempotent.  When
-> trace_instance_init fails, it calls trace_instance_destroy, but its only
-> caller osnoise_destroy_tool calls it again.
-> 
-> Fixes: 0605bf009f18 ("rtla: Add osnoise tool")
+
+Maybe add a single line description here?
+
+On 7/25/22 16:34, Andreas Schwab wrote:
 > Signed-off-by: Andreas Schwab <schwab@suse.de>
 
-Acked-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+Note: we need to improve this, making rtla use the available headers.
 
-Thanks!
+I already tried but always entered a circular loop of dependencies...
+it is on my to-do list, but if anyone has time, feel free to do it.
+
 -- Daniel
