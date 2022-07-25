@@ -2,82 +2,78 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EBE8C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Jul 2022 13:10:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C420C43334
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Jul 2022 13:35:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234903AbiGYNKf (ORCPT
+        id S233197AbiGYNfE (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 25 Jul 2022 09:10:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41830 "EHLO
+        Mon, 25 Jul 2022 09:35:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232380AbiGYNKf (ORCPT
+        with ESMTP id S232799AbiGYNfD (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 25 Jul 2022 09:10:35 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4919665E4;
-        Mon, 25 Jul 2022 06:10:28 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id D98B11FADC;
-        Mon, 25 Jul 2022 13:10:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1658754626; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=KX1pX+qxhjtmIbz/mv+FEb+97nfiqNjUtPVXNgyC9+k=;
-        b=rUKxaZX0CHPTS50VFaCO+mGOMhsdNEtgp1vg5BxHKnKW2AOa+lz9H2pdCywO1hbdmx6a12
-        RXcx0svD2XQLxceow51BjMeBWKi+WsEe7m4J14Omy/LBa3f6UCgztWlY7Wd0zsrhg3DYKt
-        spMKmHdGfEXrJoj06P+/vb6fleLOEaw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1658754626;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=KX1pX+qxhjtmIbz/mv+FEb+97nfiqNjUtPVXNgyC9+k=;
-        b=8kOgZbPTQT3vpyhm8I40dvouQa6bVFortCiKzh6Qdk7sYywtd8pQZXxpDgniuZklq2fxu/
-        Qypc2YvD108uEVCw==
-Received: from hawking.suse.de (unknown [10.168.4.11])
-        by relay2.suse.de (Postfix) with ESMTP id D24E82C152;
-        Mon, 25 Jul 2022 13:10:26 +0000 (UTC)
-Received: by hawking.suse.de (Postfix, from userid 17005)
-        id 56840444B2F; Mon, 25 Jul 2022 15:10:26 +0200 (CEST)
-From:   Andreas Schwab <schwab@suse.de>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Subject: [PATCH] rtla: fix double free
-CC:     Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Yow:  Should I do my BOBBIE VINTON medley?
-Date:   Mon, 25 Jul 2022 15:10:26 +0200
-Message-ID: <mvmzggxl4n1.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.1.90 (gnu/linux)
+        Mon, 25 Jul 2022 09:35:03 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A6CDE96;
+        Mon, 25 Jul 2022 06:35:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DB6AAB80EBD;
+        Mon, 25 Jul 2022 13:35:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BD7BC341C6;
+        Mon, 25 Jul 2022 13:34:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658756100;
+        bh=iXTZl82xPnL3ZeeWoL4R6ZJJPzGA7rJ5dFSLoDqRxaA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=m/BXU7/ah1mbdoD00sd98wt4MogVXpkWjBxjPram94CyhbmReezVEuoezT5+b3GPw
+         S8RLQNeq06/sZAiSEHO7397zearvu5SqUpzNYj/KiUfUWIwX3Z69vXNSCCFTL1baga
+         6Myvcq0uoqM440cJqcc+Fd5TwF2OaLrbXe7srqoyEIizIrPQwhKzIvH1h1VuIq9hGE
+         PSnc98wIsf03Ciw2/t1EN5wP71ZH/QT8pQcE54wAiFqvDiFC+fvNeSk3LNZiFmq4KR
+         VL4AVC61BT9TWNlh6gYjYEDGGnSY4Y9QNohz0odYc5OHgr4lMkPpTDJ2hCMdWbpcE5
+         MRFhbqK935F6A==
+Message-ID: <fd0888a4-099c-95fe-7e20-82be1489061f@kernel.org>
+Date:   Mon, 25 Jul 2022 15:34:56 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH] rtla: fix double free
+Content-Language: en-US
+To:     Andreas Schwab <schwab@suse.de>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <mvmzggxl4n1.fsf@suse.de>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <mvmzggxl4n1.fsf@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Don't call trace_instance_destroy in trace_instance_init when it fails,
-this is done by the caller.
+Hi Andreas
 
-Signed-off-by: Andreas Schwab <schwab@suse.de>
----
- tools/tracing/rtla/src/trace.c | 1 -
- 1 file changed, 1 deletion(-)
+On 7/25/22 15:10, Andreas Schwab wrote:
+> Don't call trace_instance_destroy in trace_instance_init when it fails,
+> this is done by the caller.
 
-diff --git a/tools/tracing/rtla/src/trace.c b/tools/tracing/rtla/src/trace.c
-index 5784c9f9e570..7c27fc2a52cb 100644
---- a/tools/tracing/rtla/src/trace.c
-+++ b/tools/tracing/rtla/src/trace.c
-@@ -179,7 +179,6 @@ int trace_instance_init(struct trace_instance *trace, char *tool_name)
- 	return 0;
- 
- out_err:
--	trace_instance_destroy(trace);
- 	return 1;
- }
- 
--- 
-2.37.1
+Regarding the Subject, are you seeing a double-free error, or it is just an
+optimization?
 
+AFAICS, trace_instance_destroy() checks the pointers before calling free().
 
--- 
-Andreas Schwab, SUSE Labs, schwab@suse.de
-GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
-"And now for something completely different."
+Why am I asking? because if it is a double-free bug, we need to add the "Fixes:"
+tag, otherwise, we can think about a Subject that better describes the patch,  like:
+
+"rtla: Do not call trace_instance_destroy() twice on error"
+
+Also, after the "subsystem:," i.e., "rlta:" we need to use capital: e.g.,
+
+"rtla: Fix double free"
+
+Anyways, I see that the code makes sense. I am just trying to improve the
+description.
+
+Thanks!
+-- Daniel
