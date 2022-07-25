@@ -2,80 +2,100 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAAEEC43334
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Jul 2022 14:34:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34A24C43334
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Jul 2022 14:56:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235562AbiGYOej (ORCPT
+        id S235775AbiGYO4n (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 25 Jul 2022 10:34:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33276 "EHLO
+        Mon, 25 Jul 2022 10:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235589AbiGYOei (ORCPT
+        with ESMTP id S235692AbiGYO4n (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 25 Jul 2022 10:34:38 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D8E15A1B;
-        Mon, 25 Jul 2022 07:34:37 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 5477634980;
-        Mon, 25 Jul 2022 14:34:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1658759675; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=VKIwIxSvZed0EmGDVjgi1syZjsDw4biaoB/aoz8wtqk=;
-        b=Oikiv5VshcYpBWp/Mlge9tpM32Y3b7dG2D+TQTG1bZY73f43D5bg1RLsLcQIl+egs1rztq
-        HJ5rdQFsqiDhR9AKkT+x1BpTDjbc+jIfCTgLehG7fWNGKwiZhVkraHR8V9J8vmXTYRyzVA
-        JcG/KYGj3spsbyvYaT4sOZYbC/5hFq8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1658759675;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=VKIwIxSvZed0EmGDVjgi1syZjsDw4biaoB/aoz8wtqk=;
-        b=zL/UlUFGjGlMJ9W7gv+UiAQadgWOjj292h2kXrBke0cbDYons5d9k+JHTd7zbgO4rrSBD6
-        eh0P+QQCkQAHhxDA==
-Received: from hawking.suse.de (unknown [10.168.4.11])
-        by relay2.suse.de (Postfix) with ESMTP id 4A6BE2C153;
-        Mon, 25 Jul 2022 14:34:35 +0000 (UTC)
-Received: by hawking.suse.de (Postfix, from userid 17005)
-        id EFF53444B2F; Mon, 25 Jul 2022 16:34:34 +0200 (CEST)
-From:   Andreas Schwab <schwab@suse.de>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Subject: [PATCH] rtla: Define syscall numbers for riscv
-CC:     Steven Rostedt <rostedt@goodmis.org>,
+        Mon, 25 Jul 2022 10:56:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A04E0CC;
+        Mon, 25 Jul 2022 07:56:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 16F2A61226;
+        Mon, 25 Jul 2022 14:56:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9561C341C6;
+        Mon, 25 Jul 2022 14:56:40 +0000 (UTC)
+Date:   Mon, 25 Jul 2022 10:56:39 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Andreas Schwab <schwab@suse.de>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Yow:  Hold the MAYO & pass the COSMIC AWARENESS...
-Date:   Mon, 25 Jul 2022 16:34:34 +0200
-Message-ID: <mvmr129l0qt.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.1.90 (gnu/linux)
+Subject: Re: [PATCH] rtla: fix double free
+Message-ID: <20220725105639.295a7d7d@gandalf.local.home>
+In-Reply-To: <mvmv8rll2yn.fsf@suse.de>
+References: <mvmzggxl4n1.fsf@suse.de>
+        <fd0888a4-099c-95fe-7e20-82be1489061f@kernel.org>
+        <mvmv8rll2yn.fsf@suse.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Signed-off-by: Andreas Schwab <schwab@suse.de>
----
- tools/tracing/rtla/src/utils.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, 25 Jul 2022 15:46:40 +0200
+Andreas Schwab <schwab@suse.de> wrote:
 
-diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
-index 5352167a1e75..147921356e02 100644
---- a/tools/tracing/rtla/src/utils.c
-+++ b/tools/tracing/rtla/src/utils.c
-@@ -224,7 +224,7 @@ long parse_ns_duration(char *val)
- #elif __arm__
- # define __NR_sched_setattr	380
- # define __NR_sched_getattr	381
--#elif __aarch64__
-+#elif __aarch64__ || __riscv
- # define __NR_sched_setattr	274
- # define __NR_sched_getattr	275
- #elif __powerpc__
--- 
-2.37.1
+> On Jul 25 2022, Daniel Bristot de Oliveira wrote:
+> 
+> > Hi Andreas
+> >
+> > On 7/25/22 15:10, Andreas Schwab wrote:  
+> >> Don't call trace_instance_destroy in trace_instance_init when it fails,
+> >> this is done by the caller.  
+> >
+> > Regarding the Subject, are you seeing a double-free error, or it is just an
+> > optimization?  
+> 
+> A double free nowadays is almost always an error, due to better malloc
+> checking.
+> 
+> > AFAICS, trace_instance_destroy() checks the pointers before calling free().  
+> 
+> That doesn't help when the pointer is not cleared afterwards.  Do you
+> prefer that?
+> 
+> > Why am I asking? because if it is a double-free bug, we need to add the "Fixes:"
+> > tag,  
+> 
+> It's the first time I tried running rtla, so I don't know whether it is
+> a regression, but from looking at the history it appears to have been
+> introduced already in commit 0605bf009f18 ("rtla: Add osnoise tool")
+> 
 
+I think the real fix is to make trace_instance_destroy() be able to be
+called more than once.
 
--- 
-Andreas Schwab, SUSE Labs, schwab@suse.de
-GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
-"And now for something completely different."
+void trace_instance_destroy(struct trace_instance *trace)
+{
+        if (trace->inst) {
+                disable_tracer(trace->inst);
+                destroy_instance(trace->inst);
+		trace->inst = NULL;
+        }
+
+        if (trace->seq) {
+                free(trace->seq);
+		trace->seq = NULL;
+	}
+
+        if (trace->tep) {
+                tep_free(trace->tep);
+		trace->tep = NULL;
+	}
+}
+
+As trace_instance_init() is doing the above allocations, it should clean it
+up on error. But I also agree, this will lead to double free without
+changing trace_instance_destroy() to be the above and then calling it twice.
+
+-- Steve
