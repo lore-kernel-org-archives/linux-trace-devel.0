@@ -2,56 +2,39 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2176EC00144
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Jul 2022 20:59:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3ECB4C00144
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Jul 2022 22:01:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240000AbiGZU7L (ORCPT
+        id S232401AbiGZWBV (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 26 Jul 2022 16:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49596 "EHLO
+        Tue, 26 Jul 2022 18:01:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239997AbiGZU7K (ORCPT
+        with ESMTP id S229550AbiGZWBU (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 26 Jul 2022 16:59:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE2F39B82;
-        Tue, 26 Jul 2022 13:59:08 -0700 (PDT)
+        Tue, 26 Jul 2022 18:01:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179B732DAF;
+        Tue, 26 Jul 2022 15:01:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 61BB9615C9;
-        Tue, 26 Jul 2022 20:59:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8408CC433C1;
-        Tue, 26 Jul 2022 20:59:05 +0000 (UTC)
-Date:   Tue, 26 Jul 2022 16:59:03 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AAD24616E1;
+        Tue, 26 Jul 2022 22:01:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B814C433C1;
+        Tue, 26 Jul 2022 22:01:17 +0000 (UTC)
+Date:   Tue, 26 Jul 2022 18:01:15 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Gabriele Paoloni <gpaoloni@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        Tao Zhou <tao.zhou@linux.dev>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH V7 01/16] rv: Add Runtime Verification (RV) interface
-Message-ID: <20220726165903.262a0a65@gandalf.local.home>
-In-Reply-To: <1e03adf9-2aea-63ab-93ae-a73836a7081a@kernel.org>
-References: <cover.1658778484.git.bristot@kernel.org>
-        <2aa3b18239f170ba23263f18d166d08634ed65dd.1658778484.git.bristot@kernel.org>
-        <20220726122237.44386359@gandalf.local.home>
-        <1e03adf9-2aea-63ab-93ae-a73836a7081a@kernel.org>
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [PATCH v2 6/7] tracing/user_events: Use bits vs bytes for
+ enabled status page data
+Message-ID: <20220726180115.69320865@gandalf.local.home>
+In-Reply-To: <20220425184631.2068-7-beaub@linux.microsoft.com>
+References: <20220425184631.2068-1-beaub@linux.microsoft.com>
+        <20220425184631.2068-7-beaub@linux.microsoft.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -60,336 +43,53 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 26 Jul 2022 22:00:55 +0200
-Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+On Mon, 25 Apr 2022 11:46:30 -0700
+Beau Belgrave <beaub@linux.microsoft.com> wrote:
 
-> On 7/26/22 1
-> >> +static void disable_all_monitors(void)
-> >> +{
-> >> +	struct rv_monitor_def *mdef;
-> >> +	int enabled = 0;
-> >> +
-> >> +	mutex_lock(&rv_interface_lock);
-> >> +
-> >> +	list_for_each_entry(mdef, &rv_monitors_list, list)
-> >> +		enabled += __rv_disable_monitor(mdef);
-> >> +
-> >> +	if (enabled) {
-> >> +		/*
-> >> +		 * Wait for the execution of all current events.
+> diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+> index 2bcae7abfa81..4afc41e321ac 100644
+> --- a/kernel/trace/trace_events_user.c
+> +++ b/kernel/trace/trace_events_user.c
+> @@ -40,17 +40,26 @@
+>   */
+>  #define MAX_PAGE_ORDER 0
+>  #define MAX_PAGES (1 << MAX_PAGE_ORDER)
+> -#define MAX_EVENTS (MAX_PAGES * PAGE_SIZE)
+> +#define MAX_BYTES (MAX_PAGES * PAGE_SIZE)
+> +#define MAX_EVENTS (MAX_BYTES * 8)
+>  
+>  /* Limit how long of an event name plus args within the subsystem. */
+>  #define MAX_EVENT_DESC 512
+>  #define EVENT_NAME(user_event) ((user_event)->tracepoint.name)
+>  #define MAX_FIELD_ARRAY_SIZE 1024
+>  
+> +#define STATUS_BYTE(bit) ((bit) >> 3)
+> +#define STATUS_MASK(bit) (1 << ((bit) & 7))
+> +
+> +/* Internal bits to keep track of connected probes */
+> +#define EVENT_STATUS_FTRACE (1 << 0)
+> +#define EVENT_STATUS_PERF (1 << 1)
+> +#define EVENT_STATUS_OTHER (1 << 7)
 
-		"Wait for the execution of all events to finish."
+Did you mean to shift STATUS_OTHER by 7?
 
-> >> +		 */  
-> > 
-> > And do we really need to hold the locks when calling the synchronization?
-> > 
-> > I think we only care if the caller sees a synchronized view of changes, the
-> > locks will help synchronize the internal code.  
-> 
-> I think we need. For instance:
-> 
-> CPU 0:				CPU 1:
-> disable_monitor(x)              enable_monitor(x)
->    lock()
-> 	disable()
->    unlock()      		lock()
->    wait without the lock  	    enable()
->    	
->         <old preempted events with inconsistent data>
-> 
-> so by holding the lock we avoid this case...
-
-So you are synchronizing against it being re-enabled and not just to have a
-consistent state by the caller?
-
-If that's the case, then OK.
-
-
-> 
-> no?
-> 
-> >> +		tracepoint_synchronize_unregister();
-> >> +	}
-> >> +
-> >> +	mutex_unlock(&rv_interface_lock);
-> >> +}
-> >> +  
-> > 
-> > [..]
-> >   
-> >> +/**
-> >> + * rv_monitoring_on - checks if monitoring is on
-> >> + *
-> >> + * Returns 1 if on, 0 otherwise.
-> >> + */
-> >> +bool rv_monitoring_on(void)
-> >> +{
-> >> +	/* monitoring_on */  
-> > 
-> > You need a better comment than that.
-> > 
-> > What is this synchronizing?  
-> 
-> 
-> like:
-> 	/* Ensures that concurrent monitors reads a consistent data */
-> 
-> But I wonder if it is needed, given that we now wait for all the events
-> to be processed before switching it back again, e.g., having the
-> monitoring_on as old data is not a problem.
-> 
-> >> +	smp_rmb();
-> >> +	return READ_ONCE(monitoring_on);
-> >> +}
-> >> +
-> >> +/*
-> >> + * monitoring_on general switcher.
-> >> + */
-> >> +static ssize_t monitoring_on_read_data(struct file *filp, char __user *user_buf,
-> >> +				       size_t count, loff_t *ppos)
-> >> +{
-> >> +	const char *buff;
-> >> +
-> >> +	buff = rv_monitoring_on() ? "1\n" : "0\n";
-> >> +
-> >> +	return simple_read_from_buffer(user_buf, count, ppos, buff, strlen(buff) + 1);
-> >> +}
-> >> +
-> >> +static void turn_monitoring_off(void)
-> >> +{
-> >> +	WRITE_ONCE(monitoring_on, false);
-> >> +	/* monitoring_on */  
-> > 
-> > Same here.
-> >   
-> >> +	smp_wmb();
-> >> +}
-> >> +
-> >> +static void reset_all_monitors(void)
-> >> +{
-> >> +	struct rv_monitor_def *mdef;
-> >> +
-> >> +	list_for_each_entry(mdef, &rv_monitors_list, list) {
-> >> +		if (mdef->monitor->enabled)
-> >> +			mdef->monitor->reset();
-> >> +	}
-> >> +}
-> >> +
-> >> +static void turn_monitoring_on(void)
-> >> +{
-> >> +	reset_all_monitors();  
-> > 
-> > Why does this reset all monitors but turn_monitoring_off() does not?  
-> 
-> When we turn monitoring off, the monitors will stop monitoring while yet
-> in sync with the events generated by the system, i.e., all the events after
-> the start were processed.
-> 
-> But if we disabled the monitor, and some events get ignored, the monitors
-> will be out of sync with the system. Thus, resetting the monitor to
-> for a synchronization between the monitors and the system is needed, before
-> enabling monitoring back.
-> 
-> > You should keep that out.  
-> 
-> did not get :-(
-
-I don't like the way the _on() and _off() are different.
-
-Have the _on() just turn in on *without* the reset.
-
-If you need the reset, then make a separate function called:
-
-static void turn_monitoring_on_with_reset(void)
-{
-	reset_all_monitors();
-	turn_monitoring_on();
-}
-
-
-> 
-> >> +	WRITE_ONCE(monitoring_on, true);
-> >> +	/* monitoring_on */
-> >> +	smp_wmb();
-> >> +}
-> >> +
-> >> +static ssize_t monitoring_on_write_data(struct file *filp, const char __user *user_buf,
-> >> +					size_t count, loff_t *ppos)
-> >> +{
-> >> +	int retval;
-> >> +	bool val;
-> >> +
-> >> +	retval = kstrtobool_from_user(user_buf, count, &val);
-> >> +	if (retval)
-> >> +		return retval;
-> >> +
-> >> +	mutex_lock(&rv_interface_lock);
-> >> +
-> >> +	if (val)
-> >> +		turn_monitoring_on();
-> >> +	else
-> >> +		turn_monitoring_off();
-> >> +
-> >> +	/*
-> >> +	 * Wait for the execution of all current events to notice
-> >> +	 * the change before returning to user-space.
-> >> +	 */
-> >> +	tracepoint_synchronize_unregister();  
-> > 
-> > Again, I think we want this outside the lock.  
-> 
-> I fear a problem similar to the one I said before could happen. For
-> instance, turning monitoring off and on could result on monitors with
-> old data being back enable with "reseted" data...
-> 
-> >> +
-> >> +	mutex_unlock(&rv_interface_lock);
-> >> +
-> >> +	return count;
-> >> +}
-> >> +
-> >> +static const struct file_operations monitoring_on_fops = {
-> >> +	.open   = simple_open,
-> >> +	.llseek = no_llseek,
-> >> +	.write  = monitoring_on_write_data,
-> >> +	.read   = monitoring_on_read_data,
-> >> +};
-> >> +
-> >> +static void destroy_monitor_dir(struct rv_monitor_def *mdef)
-> >> +{
-> >> +	rv_remove(mdef->root_d);
-> >> +}
-> >> +
-> >> +/**
-> >> + * rv_register_monitor - register a rv monitor.
-> >> + * @monitor:    The rv_monitor to be registered.
-> >> + *
-> >> + * Returns 0 if successful, error otherwise.
-> >> + */
-> >> +int rv_register_monitor(struct rv_monitor *monitor)
-> >> +{
-> >> +	struct rv_monitor_def *r;
-> >> +	int retval = 0;
-> >> +
-> >> +	if (strlen(monitor->name) >= MAX_RV_MONITOR_NAME_SIZE) {
-> >> +		pr_info("Monitor %s has a name longer than %d\n", monitor->name,
-> >> +			MAX_RV_MONITOR_NAME_SIZE);
-> >> +		return -1;
-> >> +	}
-> >> +
-> >> +	mutex_lock(&rv_interface_lock);
-> >> +
-> >> +	list_for_each_entry(r, &rv_monitors_list, list) {
-> >> +		if (strcmp(monitor->name, r->monitor->name) == 0) {
-> >> +			pr_info("Monitor %s is already registered\n", monitor->name);
-> >> +			retval = -1;
-> >> +			goto out_unlock;
-> >> +		}
-> >> +	}
-> >> +
-> >> +	r = kzalloc(sizeof(struct rv_monitor_def), GFP_KERNEL);
-> >> +	if (!r) {
-> >> +		retval = -ENOMEM;
-> >> +		goto out_unlock;
-> >> +	}
-> >> +
-> >> +	r->monitor = monitor;
-> >> +
-> >> +	retval = create_monitor_dir(r);
-> >> +	if (retval) {
-> >> +		kfree(r);
-> >> +		goto out_unlock;
-> >> +	}
-> >> +
-> >> +	list_add_tail(&r->list, &rv_monitors_list);
-> >> +
-> >> +out_unlock:
-> >> +	mutex_unlock(&rv_interface_lock);
-> >> +	return retval;
-> >> +}
-> >> +
-> >> +/**
-> >> + * rv_unregister_monitor - unregister a rv monitor.
-> >> + * @monitor:    The rv_monitor to be unregistered.
-> >> + *
-> >> + * Returns 0 if successful, error otherwise.
-> >> + */
-> >> +int rv_unregister_monitor(struct rv_monitor *monitor)
-> >> +{
-> >> +	struct rv_monitor_def *ptr, *next;
-> >> +
-> >> +	mutex_lock(&rv_interface_lock);
-> >> +
-> >> +	list_for_each_entry_safe(ptr, next, &rv_monitors_list, list) {
-> >> +		if (strcmp(monitor->name, ptr->monitor->name) == 0) {
-> >> +			rv_disable_monitor(ptr);
-> >> +			list_del(&ptr->list);
-> >> +			destroy_monitor_dir(ptr);
-> >> +		}
-> >> +	}
-> >> +
-> >> +	mutex_unlock(&rv_interface_lock);
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +int __init rv_init_interface(void)
-> >> +{
-> >> +	struct dentry *tmp;
-> >> +
-> >> +	rv_root.root_dir = rv_create_dir("rv", NULL);
-> >> +	if (!rv_root.root_dir)
-> >> +		goto out_err;
-> >> +
-> >> +	rv_root.monitors_dir = rv_create_dir("monitors", rv_root.root_dir);
-> >> +	if (!rv_root.monitors_dir)
-> >> +		goto out_err;
-> >> +
-> >> +	tmp = rv_create_file("available_monitors", RV_MODE_READ, rv_root.root_dir, NULL,
-> >> +			     &available_monitors_ops);
-> >> +	if (!tmp)
-> >> +		goto out_err;
-> >> +
-> >> +	tmp = rv_create_file("enabled_monitors", RV_MODE_WRITE, rv_root.root_dir, NULL,
-> >> +			     &enabled_monitors_ops);
-> >> +	if (!tmp)
-> >> +		goto out_err;
-> >> +
-> >> +	tmp = rv_create_file("monitoring_on", RV_MODE_WRITE, rv_root.root_dir, NULL,
-> >> +			     &monitoring_on_fops);
-> >> +	if (!tmp)
-> >> +		goto out_err;
-> >> +  
-> > 
-> > This should call "turn_monitoriing_on()" instead of open coding it,
-> > especially since it includes a memory barrier (another reason to not
-> > reset the monitors in that function.  
-> 
-> Here we do not need to reset monitors... but monitors would not be enabled anyway as
-
-EXACTLY!!! Which is why the turn_monitoring_on() should only do that. Turn
-it on. No reset involved. You are convoluting implementation with the name.
-
-The reason you open coded turning on the monitor here, is because your
-turn_monitoring_on() function is broken by design.
+Is EVENT_STATUS_OTHER suppose to be one of the flags within the 3 bits of
+the 7 in STATUS_MASK?
 
 -- Steve
 
-
-> they are not loaded yet.... and so I wonder if we need the barrier here...
-> 
-
-> > 
-> >   
-> >> +	WRITE_ONCE(monitoring_on, true);
-> >> +	/* monitoring_on */
-> >> +	smp_wmb();
-> >> +
-> >> +	return 0;
-> >> +
-> >> +out_err:
-> >> +	rv_remove(rv_root.root_dir);
-> >> +	printk(KERN_ERR "RV: Error while creating the RV interface\n");
-> >> +	return 1;
-> >> +}  
-
+> +
+>  static char *register_page_data;
+>  
+>  static DEFINE_MUTEX(reg_mutex);
+> -static DEFINE_HASHTABLE(register_table, 4);
+> +static DEFINE_HASHTABLE(register_table, 8);
+>  static DECLARE_BITMAP(page_bitmap, MAX_EVENTS);
+>  
+>  /*
+> @@ -72,6 +81,7 @@ struct user_event {
+>  	int index;
+>  	int flags;
+>  	int min_size;
+> +	char status;
+>  };
