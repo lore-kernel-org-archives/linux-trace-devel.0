@@ -2,102 +2,82 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 394E4C433EF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Jul 2022 23:19:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85EBAC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Jul 2022 08:01:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237272AbiGYXTH (ORCPT
+        id S238129AbiGZIB0 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 25 Jul 2022 19:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47518 "EHLO
+        Tue, 26 Jul 2022 04:01:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237150AbiGYXTH (ORCPT
+        with ESMTP id S230377AbiGZIBZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 25 Jul 2022 19:19:07 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 74C2826541;
-        Mon, 25 Jul 2022 16:19:06 -0700 (PDT)
-Received: from kbox (unknown [76.135.27.191])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 0DA0020FE2F5;
-        Mon, 25 Jul 2022 16:19:06 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0DA0020FE2F5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1658791146;
-        bh=50UCpKOQPGTdS25dXIntvXoh2LEaS/tcG43pWXcm5W8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LF927PYThBgiN2hZSCi8yIABcvTjV2khn7vwGSLdsp8ERlwWypUKMVb+i8j5PDrqC
-         6sLXtx3pdcJYajn5LiLHuqi+xrXjlZ87fzbZP8zejl2QkbpFtb7sQC5fL5fgJ74lm1
-         gU1aHy14XHJJn3yeVgeByTg4OzW948MZWnvzVZnk=
-Date:   Mon, 25 Jul 2022 16:19:00 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     rostedt@goodmis.org, mhiramat@kernel.org,
-        mathieu.desnoyers@efficios.com
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        beaub@linux.microsoft.com
-Subject: tracing/user_events: Tracking broken status and feedback
-Message-ID: <20220725231900.GA2389@kbox>
+        Tue, 26 Jul 2022 04:01:25 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55172C137;
+        Tue, 26 Jul 2022 01:01:24 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 4F8FE1FA4D;
+        Tue, 26 Jul 2022 08:01:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1658822483; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=dkriu3vkrAZS1wyG+iHdOUg7blF/kske8YRN1wSZz4Q=;
+        b=G/TB7gZSJMp3dTlkyX9Ki+p/e4UW389p8OsG2awHmpK2GwdITd8kH6qbhW3bCC3p3nGZj7
+        m4lXBtKAtQ+QEtV54gFl1IuQj6k6qQvt20GD1iFjhGUiK+yiCVbGwZni4CbGQlP1Vkdb5y
+        AudXZOD8kdpxrmd9z6H25G3miMNiRbs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1658822483;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=dkriu3vkrAZS1wyG+iHdOUg7blF/kske8YRN1wSZz4Q=;
+        b=Je4a71CxVKPiPCsa7bNGifnvDS+87Nu/eTsiZ6MwHT5+hTJayEBGDjr01+VPME59S5OT0p
+        eATygcgUODSSFHDw==
+Received: from hawking.suse.de (unknown [10.168.4.11])
+        by relay2.suse.de (Postfix) with ESMTP id 45EAE2C16E;
+        Tue, 26 Jul 2022 08:01:23 +0000 (UTC)
+Received: by hawking.suse.de (Postfix, from userid 17005)
+        id B9114444B2F; Tue, 26 Jul 2022 10:01:22 +0200 (CEST)
+From:   Andreas Schwab <schwab@suse.de>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] rtla: Define syscall numbers for riscv
+X-Yow:  My uncle Murray conquered Egypt in 53 B.C.  And I can prove it too!!
+Date:   Tue, 26 Jul 2022 10:01:22 +0200
+Message-ID: <mvma68wl2ul.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.1.90 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-To help keep track of what is required to remove the broken status from
-user_events I am starting this thread. I would like to use this thread
-to provide status on the work that has been done so far and to have a
-discussion about when the broken status can be removed.
+RISC-V uses the same (generic) syscall numbers as ARM64.
 
-Feedback threads from 5.18 version of user_events:
-1. https://lore.kernel.org/all/2059213643.196683.1648499088753.JavaMail.zimbra@efficios.com/
-2. https://lore.kernel.org/all/1651771383.54437.1652370439159.JavaMail.zimbra@efficios.com/
+Signed-off-by: Andreas Schwab <schwab@suse.de>
+---
+ tools/tracing/rtla/src/utils.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-All the feedback has been addressed in the patchsets 1 and 2 (see below).
-Here are the details: 
+diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
+index 5352167a1e75..147921356e02 100644
+--- a/tools/tracing/rtla/src/utils.c
++++ b/tools/tracing/rtla/src/utils.c
+@@ -224,7 +224,7 @@ long parse_ns_duration(char *val)
+ #elif __arm__
+ # define __NR_sched_setattr	380
+ # define __NR_sched_getattr	381
+-#elif __aarch64__
++#elif __aarch64__ || __riscv
+ # define __NR_sched_setattr	274
+ # define __NR_sched_getattr	275
+ #elif __powerpc__
+-- 
+2.37.1
 
-1. Use bits vs bytes in event enabled memory mappings.
-Fixed in patchset 1.
 
-2. Pack ABI structures where size is used.
-Fixed in patchset 1.
-
-3. Don't trust user strings for string formatting.
-Fixed in patchset 1.
-
-4. Move to refcount APIs vs atomic for tracking references.
-Fixed in patchset 1.
-
-5. Ensure event_mutex is held during registration.
-Fixed in patchset 2.
-
-With these, I believe I have addressed all issues to remove the
-"broken status".
-
-Here is the list of additional feedback (and status) that I don't believe
-should have a bearing on removing the "broken status":
-
-1. Kernel vs user tracers in ABI.
-This is not done, the plan is to build a libtracepoint library that allows
-working with both kernel and user tracers in user programs. Steven is
-working on this at the moment. I don't believe this is required to remove
-the broken status, but it will help prove the ABI by having it.
-
-No patchset yet.
-
-2. Container/namespace isolation of events.
-user_events utilizes tracefs for user facing files in the ABI. I've created
-an RFC patchset showing how if tracefs offered an isolated directory
-structure per-namespace the user_events ABI is unaffected. This is true for
-other ABIs that tracefs hosts, if they would like to integrate. I don't
-believe this is required to remove the broken status, however, it's useful
-to have to see how the ABI is unaffected while we work toward enabling
-isolation within tracing.
-
-See patchset 3.
-
-Patchsets:
-1. https://lore.kernel.org/all/20220425184631.2068-1-beaub@linux.microsoft.com/
-2. https://lore.kernel.org/all/20220328223225.1992-1-beaub@linux.microsoft.com/
-3. https://lore.kernel.org/all/20220707215828.2021-1-beaub@linux.microsoft.com/
-
-Thanks,
--Beau
+-- 
+Andreas Schwab, SUSE Labs, schwab@suse.de
+GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
+"And now for something completely different."
