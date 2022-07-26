@@ -2,82 +2,62 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85EBAC433EF
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Jul 2022 08:01:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DF2CC433EF
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Jul 2022 08:31:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238129AbiGZIB0 (ORCPT
+        id S231345AbiGZIb3 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 26 Jul 2022 04:01:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49684 "EHLO
+        Tue, 26 Jul 2022 04:31:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbiGZIBZ (ORCPT
+        with ESMTP id S229749AbiGZIb3 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 26 Jul 2022 04:01:25 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55172C137;
-        Tue, 26 Jul 2022 01:01:24 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 4F8FE1FA4D;
-        Tue, 26 Jul 2022 08:01:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1658822483; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=dkriu3vkrAZS1wyG+iHdOUg7blF/kske8YRN1wSZz4Q=;
-        b=G/TB7gZSJMp3dTlkyX9Ki+p/e4UW389p8OsG2awHmpK2GwdITd8kH6qbhW3bCC3p3nGZj7
-        m4lXBtKAtQ+QEtV54gFl1IuQj6k6qQvt20GD1iFjhGUiK+yiCVbGwZni4CbGQlP1Vkdb5y
-        AudXZOD8kdpxrmd9z6H25G3miMNiRbs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1658822483;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=dkriu3vkrAZS1wyG+iHdOUg7blF/kske8YRN1wSZz4Q=;
-        b=Je4a71CxVKPiPCsa7bNGifnvDS+87Nu/eTsiZ6MwHT5+hTJayEBGDjr01+VPME59S5OT0p
-        eATygcgUODSSFHDw==
-Received: from hawking.suse.de (unknown [10.168.4.11])
-        by relay2.suse.de (Postfix) with ESMTP id 45EAE2C16E;
-        Tue, 26 Jul 2022 08:01:23 +0000 (UTC)
-Received: by hawking.suse.de (Postfix, from userid 17005)
-        id B9114444B2F; Tue, 26 Jul 2022 10:01:22 +0200 (CEST)
-From:   Andreas Schwab <schwab@suse.de>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+        Tue, 26 Jul 2022 04:31:29 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958582B1AF;
+        Tue, 26 Jul 2022 01:31:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 40999B80EBA;
+        Tue, 26 Jul 2022 08:31:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1186EC341C0;
+        Tue, 26 Jul 2022 08:31:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658824286;
+        bh=CpixotnHZyHcsyds4w+/sW0X7O3iizEWwOtMNxrL/Gk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=pv7ib0wAWrkDbgYhBwKhNmg2ayzKZBBm/bTw/FEJzEvv6B/sY31LB1eHRv2DrF/AJ
+         NdsvfAvRj5oAsyFC1rf9VOHihdmSAVcs/m4HjQb2B2Bm/aTyaaNg2uAiEdHixWwCBF
+         CdJlFQF3pIcFEroyahqa51th0OhzRWdEMuUDD3hlqCmxJ/xspz74f8HLjoi4R2r3Ce
+         Fa3VqCBUtsLN+r5k8A+zxIvOPcYojeLAtCOjK4eA67rLDN8ZJDFct1r0uypYSaCcRT
+         +vcfkk1lJBuKoe1QN3knsg8DA4nSHs+Ic7EipUzVBVZXM0HuGBDRpK8iSF2jbAloAI
+         ke4yY0sTXssWA==
+Message-ID: <08c868b0-6004-7909-01f5-65f9fe4d3a6b@kernel.org>
+Date:   Tue, 26 Jul 2022 10:31:22 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH v2] rtla: Define syscall numbers for riscv
+Content-Language: en-US
+To:     Andreas Schwab <schwab@suse.de>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] rtla: Define syscall numbers for riscv
-X-Yow:  My uncle Murray conquered Egypt in 53 B.C.  And I can prove it too!!
-Date:   Tue, 26 Jul 2022 10:01:22 +0200
-Message-ID: <mvma68wl2ul.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.1.90 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+References: <mvma68wl2ul.fsf@suse.de>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <mvma68wl2ul.fsf@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-RISC-V uses the same (generic) syscall numbers as ARM64.
+On 7/26/22 10:01, Andreas Schwab wrote:
+> RISC-V uses the same (generic) syscall numbers as ARM64.
+> 
+> Signed-off-by: Andreas Schwab <schwab@suse.de>
 
-Signed-off-by: Andreas Schwab <schwab@suse.de>
----
- tools/tracing/rtla/src/utils.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Acked-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 
-diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
-index 5352167a1e75..147921356e02 100644
---- a/tools/tracing/rtla/src/utils.c
-+++ b/tools/tracing/rtla/src/utils.c
-@@ -224,7 +224,7 @@ long parse_ns_duration(char *val)
- #elif __arm__
- # define __NR_sched_setattr	380
- # define __NR_sched_getattr	381
--#elif __aarch64__
-+#elif __aarch64__ || __riscv
- # define __NR_sched_setattr	274
- # define __NR_sched_getattr	275
- #elif __powerpc__
--- 
-2.37.1
-
-
--- 
-Andreas Schwab, SUSE Labs, schwab@suse.de
-GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
-"And now for something completely different."
+Thanks!
+-- Daniel
