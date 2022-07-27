@@ -2,46 +2,33 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BAD1C19F28
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Jul 2022 16:06:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B06BC04A68
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Jul 2022 16:10:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234321AbiG0QGm (ORCPT
+        id S234732AbiG0QK1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 27 Jul 2022 12:06:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37388 "EHLO
+        Wed, 27 Jul 2022 12:10:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233779AbiG0QGl (ORCPT
+        with ESMTP id S234563AbiG0QK0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 27 Jul 2022 12:06:41 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03FFC22515;
-        Wed, 27 Jul 2022 09:06:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7144AB821B2;
-        Wed, 27 Jul 2022 16:06:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA74DC433C1;
-        Wed, 27 Jul 2022 16:06:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658937997;
-        bh=5XHQir5HRajZVkwdA1nsiY7rF0CyIi1tGP/Ej1MXlVc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=SR4njLkGCtRQJ3ftmswRAWHh/ViyPNjAZRf1LECfzlX9vwebRSx2YzVnz2Yt5geJm
-         UVmHLIeM/aqdmfPOtMOrnPAhflq8YJ6ilQ3F49cId+mxj0xMzWKgnWkKgQ4X+yxtgV
-         jY3iTRmqxjfP4j3x3roONUwhqbSPCLIjp0euEsOEDMlDzprcEbSBXfL01AUqSrnq1A
-         dFpxkO1+z0ugV6PdgTLOtTGPbWn4ZYBqk+a/qov2ElVa+VDFSFwEmJXohuNMNsU+//
-         dq/1YffRTAyX95u7lXCVJZLVafPCFucN+4T0SleIK94cbf4vd0vTyM2t7GWpMabnnP
-         l4IrbSwNK1TUw==
-Message-ID: <973f6718-bb88-724b-0900-5c8eb0c24d78@kernel.org>
-Date:   Wed, 27 Jul 2022 18:06:26 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH V7 04/16] rv/include: Add deterministic automata monitor
- definition via C macros
-Content-Language: en-US
-To:     Tao Zhou <tao.zhou@linux.dev>
+        Wed, 27 Jul 2022 12:10:26 -0400
+Received: from out1.migadu.com (out1.migadu.com [91.121.223.63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C44E0DA;
+        Wed, 27 Jul 2022 09:10:25 -0700 (PDT)
+Date:   Thu, 28 Jul 2022 00:10:10 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1658938223;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vDTc2P3W0cdpqM6y0cdrKPPqHIzlLdGjU1Vo1e/Da/8=;
+        b=YaH+br3IhFwvw+NOWW8DYs8wG8Ahb3j41ozaHCskwVDzcCFo00PH3xdZfUUcqB/s6k1pet
+        Oc4bbVysDNsEBRsBdAcSvLR4GJ/e3QOXmbkiTD3OX5wF+Rn2QWB10gIde6YX1cLiUF2jNA
+        zI5l//nodSfPHEOaTR2YicOI+a1f0FY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Tao Zhou <tao.zhou@linux.dev>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Wim Van Sebroeck <wim@linux-watchdog.org>,
         Guenter Roeck <linux@roeck-us.net>,
@@ -60,88 +47,51 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Clark Williams <williams@redhat.com>,
         Randy Dunlap <rdunlap@infradead.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org
+        linux-trace-devel@vger.kernel.org, Tao Zhou <tao.zhou@linux.dev>
+Subject: Re: [PATCH V7 01/16] rv: Add Runtime Verification (RV) interface
+Message-ID: <YuFjGK53HH7pjdlv@geo.homenetwork>
 References: <cover.1658778484.git.bristot@kernel.org>
- <75d14829c5234c2ff43aff744ac41f246b970ed8.1658778484.git.bristot@kernel.org>
- <YuFZ2scVb658mhoq@geo.homenetwork>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <YuFZ2scVb658mhoq@geo.homenetwork>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ <2aa3b18239f170ba23263f18d166d08634ed65dd.1658778484.git.bristot@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2aa3b18239f170ba23263f18d166d08634ed65dd.1658778484.git.bristot@kernel.org>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 7/27/22 17:29, Tao Zhou wrote:
->> +/*
->> + * Handle event for implicit monitor: da_get_monitor_##name() will figure out
->> + * the monitor.
->> + */
->> +#define DECLARE_DA_MON_MONITOR_HANDLER_IMPLICIT(name, type)					\
->> +												\
->> +static inline void __da_handle_event_##name(struct da_monitor *da_mon,				\
->> +					    enum events_##name event)				\
->> +{												\
->> +	int retval;										\
->> +												\
->> +	retval = da_monitor_handling_event_##name(da_mon);					\
->> +	if (!retval)										\
->> +		return;										\
-> I checked the callers of __da_handle_event_##name():
-> da_handle_event_##name() for all cases need the above check.
-> da_handle_start_event_##name() for all cases may not need this check.
-> (this function checked the enable first and the da_monitoring later and if
-> it is not monitoring it will start monitoring and return, the later event
-> handler will not be called. Otherwise enable is enabled, da_monitoring is
-> monitoring)
-> da_handle_start_run_event_##name() for implicit case may not need this check.
-> (almost the same with the above, the difference is if da-monitor is not
-> monitoring, it will start monitoring and not return and do the event handler,
-> here enable is enabled and da_monitoring is monitoring, if I am not wrong)
-> So after another(v7) looking at this patch, I realized that this check can
-> be omited in two cases(all three cases). Just in fuction da_handle_event_##name()
-> we need to do da_monitor_handling_event_##name().
-> So I'd write like this:
-> static inline void __da_handle_event_##name(struct da_monitor *da_mon,				\
-> 					    enum events_##name event)				\
-> {												\
-> 	int retval;										\
->                                                     \
->     retval = da_event_##name(da_mon, event);						\
->     if (!retval)										\
->         da_monitor_reset_##name(da_mon);						\
-> }												\
-> 
-> static inline void da_handle_event_##name(enum events_##name event)				\
-> {												\
->     struct da_monitor *da_mon = da_get_monitor_##name();					\
-> 	int retval;										\
->                                                     \
->     retval = da_monitor_handling_event_##name(da_mon);					\
->     if (!retval)										\
->         return;										\
->                                                     \
->     __da_handle_event_##name(da_mon, event);						\
-> 
-> }												\
-> 
+On Mon, Jul 25, 2022 at 10:11:13PM +0200, Daniel Bristot de Oliveira wrote:
 
-IOW,
+> +void rv_put_task_monitor_slot(int slot)
+> +{
+> +	lockdep_assert_held(&rv_interface_lock);
+> +
+> +	if (slot < 0 || slot >= RV_PER_TASK_MONITORS) {
+> +		WARN_ONCE(1, "RV releasing an invalid slot!: %d\n", slot);
+> +		return;
+> +	}
+> +
+> +	WARN_ONCE(!task_monitor_slots[slot], "RV releasing unused task_monitor_slots: %d\n",
+> +		  slot);
+> +
+> +	task_monitor_count--;
+> +	task_monitor_slots[slot] = false;
+> +}
 
-The code is checking twice if the monitor is enabled in these two cases:
-	- da_handle_start_run_event_##name()
-	- da_handle_start_event_##name()
+I would say this can be implemented using bits. Also is an optimization.
+But now here just use bool and seems not that needed.
 
-Because it is checking in these functions first and then again in __da_handle_event_##name().
+> +static void turn_monitoring_off(void)
+> +{
+> +	WRITE_ONCE(monitoring_on, false);
+> +	/* monitoring_on */
+> +	smp_wmb();
 
-The function da_handle_event_##name() is not checking if the monitors are enabled because
-__da_handle_event_##name() does it.
-
-By adding the check on da_handle_event_##name(), we can remove it in
-__da_handle_event_##name(). Making the check run only once for all cases.
-
-This is an optimization, and it makes sense.
-
-(changed return value to bool)
-
--- Daniel
+Absolutely the sync I can not see.
+If not store another after smp_wmb(), even you have smp_wmb() pair,
+it is not valid in my poor mind that there is no another load before
+loading of monitoring_on that ensure something like if the another
+load is *what* then the after load is ensured to be *what* statement
+(I am sure I am poor on these, but just some words input yeah).
