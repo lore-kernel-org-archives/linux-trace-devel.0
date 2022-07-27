@@ -2,118 +2,109 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48EB1C00144
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Jul 2022 02:01:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED19EC04A68
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Jul 2022 13:42:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbiG0CB5 (ORCPT
+        id S232500AbiG0NmY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 26 Jul 2022 22:01:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
+        Wed, 27 Jul 2022 09:42:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbiG0CB4 (ORCPT
+        with ESMTP id S231716AbiG0NmX (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 26 Jul 2022 22:01:56 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F2F2817AA4;
-        Tue, 26 Jul 2022 19:01:52 -0700 (PDT)
-Received: from kbox (unknown [76.135.27.191])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 6716D20FE6C1;
-        Tue, 26 Jul 2022 19:01:52 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6716D20FE6C1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1658887312;
-        bh=bBfPFoDBhzmxwWOcOsa+z7Vs0VyW7iTOA0R6DE9Yyms=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QFFxRF/PnYQsSn3oCSPsQZmGeL0kCooqNIjdot8w5AJi5JGzdtSyzo3Oan93RRhM7
-         0UyRz9AZA3/EUmEM6LOFa7vbxRBgcvezp6+BYEqzg1477+FLI+IVbKsMhzHzAvDus8
-         BHjcoEX9A3CnrOn+jrx04Ou+0i4+//as7gRchHE8=
-Date:   Tue, 26 Jul 2022 19:01:47 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: [PATCH v2 6/7] tracing/user_events: Use bits vs bytes for
- enabled status page data
-Message-ID: <20220727020147.GA1705@kbox>
-References: <20220425184631.2068-1-beaub@linux.microsoft.com>
- <20220425184631.2068-7-beaub@linux.microsoft.com>
- <20220726180115.69320865@gandalf.local.home>
- <20220727000249.GA2289@kbox>
- <20220726201412.7fbd3b1f@rorschach.local.home>
+        Wed, 27 Jul 2022 09:42:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C68642CE27;
+        Wed, 27 Jul 2022 06:42:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6526E6176A;
+        Wed, 27 Jul 2022 13:42:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5D8CC433D6;
+        Wed, 27 Jul 2022 13:42:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658929341;
+        bh=BR6lIHvQshH5awQxKKtysghwmE9IJ6ziXFKne10F1nc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=cVRK/DFsk6dcXr5N/ybmT3hdsYYM4ETKpBjLl1B/sAYwhIUEGRKuY4CRC3floG565
+         nyQA05qKYk2N7wRuAl+2zyqepUQCmU7lWvDLNYhZ0lOoh2xuqkvlezLvF9KssEe2M0
+         n4ypLKGSJ7cyUOOq6c6QsVNYclwVoHiQx+oLQFNNh+KPzuM+n9PNT1l3YPYXEcl3jP
+         3SIPm5oJwEx2juJthSbwDWQZMSifprUduxcdmPC1kbYNYVfmlFcMVdLVXtk+OT0X0p
+         vr6M2UTgWqivwfd4nB3oTw3mK28aPND2qSx/E8YATZEDz2O1CZR2yemMnB1LJ6rgRy
+         Y6z79XUyhng5A==
+Message-ID: <1dad74ee-2d82-c8b1-7367-cbc6ea124785@kernel.org>
+Date:   Wed, 27 Jul 2022 15:42:12 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220726201412.7fbd3b1f@rorschach.local.home>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH V7 01/16] rv: Add Runtime Verification (RV) interface
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Gabriele Paoloni <gpaoloni@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        Tao Zhou <tao.zhou@linux.dev>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org
+References: <cover.1658778484.git.bristot@kernel.org>
+ <2aa3b18239f170ba23263f18d166d08634ed65dd.1658778484.git.bristot@kernel.org>
+ <20220726122237.44386359@gandalf.local.home>
+ <1e03adf9-2aea-63ab-93ae-a73836a7081a@kernel.org>
+ <20220726165903.262a0a65@gandalf.local.home>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <20220726165903.262a0a65@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Jul 26, 2022 at 08:14:12PM -0400, Steven Rostedt wrote:
-> On Tue, 26 Jul 2022 17:02:49 -0700
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+On 7/26/22 22:59, Steven Rostedt wrote:
+>>>> +static void turn_monitoring_on(void)
+>>>> +{
+>>>> +	reset_all_monitors();  
+>>> Why does this reset all monitors but turn_monitoring_off() does not?  
+>> When we turn monitoring off, the monitors will stop monitoring while yet
+>> in sync with the events generated by the system, i.e., all the events after
+>> the start were processed.
+>>
+>> But if we disabled the monitor, and some events get ignored, the monitors
+>> will be out of sync with the system. Thus, resetting the monitor to
+>> for a synchronization between the monitors and the system is needed, before
+>> enabling monitoring back.
+>>
+>>> You should keep that out.  
+>> did not get :-(
+> I don't like the way the _on() and _off() are different.
 > 
-> > > >  /* Limit how long of an event name plus args within the subsystem. */
-> > > >  #define MAX_EVENT_DESC 512
-> > > >  #define EVENT_NAME(user_event) ((user_event)->tracepoint.name)
-> > > >  #define MAX_FIELD_ARRAY_SIZE 1024
-> > > >  
-> > > > +#define STATUS_BYTE(bit) ((bit) >> 3)
-> > > > +#define STATUS_MASK(bit) (1 << ((bit) & 7))
-> > > > +
-> > > > +/* Internal bits to keep track of connected probes */
-> > > > +#define EVENT_STATUS_FTRACE (1 << 0)
-> > > > +#define EVENT_STATUS_PERF (1 << 1)
-> > > > +#define EVENT_STATUS_OTHER (1 << 7)  
-> > > 
-> > > Did you mean to shift STATUS_OTHER by 7?
-> > >   
-> > 
-> > Yes, it should be the value 128.
-> > 
-> > > Is EVENT_STATUS_OTHER suppose to be one of the flags within the 3 bits of
-> > > the 7 in STATUS_MASK?
-> > >   
-> > 
-> > My thought was that STATUS_OTHER would stay on the highest bit.
-> > Then when we have other systems they would slot into (1 << 2), etc.
-> > 
-> > This may not be as important now since the byte is never given back to
-> > the user and is only used when printing out status via the
-> > user_events_status file in text form.
+> Have the _on() just turn in on *without* the reset.
 > 
-> So, it is confusing because of STATUS_MASK() is bits 0,1,2 and we are
-> only using bits 0 and 1, with a OTHER bit at bit 7. And it would be
-> good to use the BIT() macro.
+> If you need the reset, then make a separate function called:
+> 
+> static void turn_monitoring_on_with_reset(void)
+> {
+> 	reset_all_monitors();
+> 	turn_monitoring_on();
+> }
 > 
 
-Ah, I see the confusion. Sorry.  
+as usual... https://www.youtube.com/watch?v=qYo0lVVH2wU
 
-EVENT_STATUS_* are internal bits that aren't used with STATUS_MASK or
-STATUS_BYTE. It's only used to set and check the user event status byte
-for checking if anything is attached and outputting which probe is
-connected within the kernel side.
+Fixed in v8, along with all other changes.
 
-STATUS_BYTE and STATUS_MASK take a bit in a bitmap and figure out which
-byte in the status mapping should be used and which bit in that byte
-should be set/reset (mask) when it's enabled/disabled via a probe. Both
-the user and kernel need to align on this logic.
-
-IE: Bits above the lower 3 of the index/bit of the event to enable is the byte
-and the lower 3 bits (& 7) is the actual bit to set.
-
-For example if the user_event with the index 1024 is enabled, we need to
-figure out which byte and bit represents that event when a probe is
-attached.
-
-I got into detail of this in the documentation for both a byte and long
-wise checking of these values.
-
-Hope that helps explain it.
-
-> Is STATUS_OTHER suppose to be part of STATUS_MASK()?
-> 
-> -- Steve
-
-Thanks,
--Beau
+Thanks
+-- Daniel
