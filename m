@@ -2,33 +2,46 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBFE7C04A68
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Jul 2022 15:29:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BAD1C19F28
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Jul 2022 16:06:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233284AbiG0P3w (ORCPT
+        id S234321AbiG0QGm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 27 Jul 2022 11:29:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38158 "EHLO
+        Wed, 27 Jul 2022 12:06:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232685AbiG0P3v (ORCPT
+        with ESMTP id S233779AbiG0QGl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 27 Jul 2022 11:29:51 -0400
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45A543E46;
-        Wed, 27 Jul 2022 08:29:48 -0700 (PDT)
-Date:   Wed, 27 Jul 2022 23:29:30 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1658935786;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XQrejTaMYuUHoomdqjHX2mOE0j2mTbj/6H4sN0Zrsqw=;
-        b=BDLGgqLijSSSZxT6bO95BcJxqoGAdzhHhq076epoxblFTz57dpT680fRFihm/k6DRVmQn+
-        k64E9CrW4YAR7xvhae+LO1EruFcoctTRLGaoFNn6DR9nI3mKl9/6Ae85IV1PlTc+CLZufn
-        1EoRHMBJkOFzXiTNXGD/+imhcw+EHK8=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Tao Zhou <tao.zhou@linux.dev>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+        Wed, 27 Jul 2022 12:06:41 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03FFC22515;
+        Wed, 27 Jul 2022 09:06:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7144AB821B2;
+        Wed, 27 Jul 2022 16:06:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA74DC433C1;
+        Wed, 27 Jul 2022 16:06:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658937997;
+        bh=5XHQir5HRajZVkwdA1nsiY7rF0CyIi1tGP/Ej1MXlVc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=SR4njLkGCtRQJ3ftmswRAWHh/ViyPNjAZRf1LECfzlX9vwebRSx2YzVnz2Yt5geJm
+         UVmHLIeM/aqdmfPOtMOrnPAhflq8YJ6ilQ3F49cId+mxj0xMzWKgnWkKgQ4X+yxtgV
+         jY3iTRmqxjfP4j3x3roONUwhqbSPCLIjp0euEsOEDMlDzprcEbSBXfL01AUqSrnq1A
+         dFpxkO1+z0ugV6PdgTLOtTGPbWn4ZYBqk+a/qov2ElVa+VDFSFwEmJXohuNMNsU+//
+         dq/1YffRTAyX95u7lXCVJZLVafPCFucN+4T0SleIK94cbf4vd0vTyM2t7GWpMabnnP
+         l4IrbSwNK1TUw==
+Message-ID: <973f6718-bb88-724b-0900-5c8eb0c24d78@kernel.org>
+Date:   Wed, 27 Jul 2022 18:06:26 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH V7 04/16] rv/include: Add deterministic automata monitor
+ definition via C macros
+Content-Language: en-US
+To:     Tao Zhou <tao.zhou@linux.dev>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Wim Van Sebroeck <wim@linux-watchdog.org>,
         Guenter Roeck <linux@roeck-us.net>,
@@ -47,242 +60,88 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Clark Williams <williams@redhat.com>,
         Randy Dunlap <rdunlap@infradead.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org, Tao Zhou <tao.zhou@linux.dev>
-Subject: Re: [PATCH V7 04/16] rv/include: Add deterministic automata monitor
- definition via C macros
-Message-ID: <YuFZ2scVb658mhoq@geo.homenetwork>
+        linux-trace-devel@vger.kernel.org
 References: <cover.1658778484.git.bristot@kernel.org>
  <75d14829c5234c2ff43aff744ac41f246b970ed8.1658778484.git.bristot@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <75d14829c5234c2ff43aff744ac41f246b970ed8.1658778484.git.bristot@kernel.org>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
+ <YuFZ2scVb658mhoq@geo.homenetwork>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <YuFZ2scVb658mhoq@geo.homenetwork>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, Jul 25, 2022 at 10:11:16PM +0200, Daniel Bristot de Oliveira wrote:
+On 7/27/22 17:29, Tao Zhou wrote:
+>> +/*
+>> + * Handle event for implicit monitor: da_get_monitor_##name() will figure out
+>> + * the monitor.
+>> + */
+>> +#define DECLARE_DA_MON_MONITOR_HANDLER_IMPLICIT(name, type)					\
+>> +												\
+>> +static inline void __da_handle_event_##name(struct da_monitor *da_mon,				\
+>> +					    enum events_##name event)				\
+>> +{												\
+>> +	int retval;										\
+>> +												\
+>> +	retval = da_monitor_handling_event_##name(da_mon);					\
+>> +	if (!retval)										\
+>> +		return;										\
+> I checked the callers of __da_handle_event_##name():
+> da_handle_event_##name() for all cases need the above check.
+> da_handle_start_event_##name() for all cases may not need this check.
+> (this function checked the enable first and the da_monitoring later and if
+> it is not monitoring it will start monitoring and return, the later event
+> handler will not be called. Otherwise enable is enabled, da_monitoring is
+> monitoring)
+> da_handle_start_run_event_##name() for implicit case may not need this check.
+> (almost the same with the above, the difference is if da-monitor is not
+> monitoring, it will start monitoring and not return and do the event handler,
+> here enable is enabled and da_monitoring is monitoring, if I am not wrong)
+> So after another(v7) looking at this patch, I realized that this check can
+> be omited in two cases(all three cases). Just in fuction da_handle_event_##name()
+> we need to do da_monitor_handling_event_##name().
+> So I'd write like this:
+> static inline void __da_handle_event_##name(struct da_monitor *da_mon,				\
+> 					    enum events_##name event)				\
+> {												\
+> 	int retval;										\
+>                                                     \
+>     retval = da_event_##name(da_mon, event);						\
+>     if (!retval)										\
+>         da_monitor_reset_##name(da_mon);						\
+> }												\
+> 
+> static inline void da_handle_event_##name(enum events_##name event)				\
+> {												\
+>     struct da_monitor *da_mon = da_get_monitor_##name();					\
+> 	int retval;										\
+>                                                     \
+>     retval = da_monitor_handling_event_##name(da_mon);					\
+>     if (!retval)										\
+>         return;										\
+>                                                     \
+>     __da_handle_event_##name(da_mon, event);						\
+> 
+> }												\
+> 
 
-> +/*
-> + * Event handler for per_task monitors.
-> + */
-> +#define DECLARE_DA_MON_MODEL_HANDLER_PER_TASK(name, type)					\
-> +												\
-> +static inline type da_event_##name(struct da_monitor *da_mon, struct task_struct *tsk,		\
+IOW,
 
-Not sure here the type `type` why not the bool. The return value is ture/false.
-I checked the caller of this function, the return value is stored on `int`.
+The code is checking twice if the monitor is enabled in these two cases:
+	- da_handle_start_run_event_##name()
+	- da_handle_start_event_##name()
 
-> +				   enum events_##name event)					\
-> +{												\
-> +	type curr_state = da_monitor_curr_state_##name(da_mon);					\
-> +	type next_state = model_get_next_state_##name(curr_state, event);			\
-> +												\
-> +	if (next_state != INVALID_STATE) {							\
-> +		da_monitor_set_state_##name(da_mon, next_state);				\
-> +												\
-> +		trace_event_##name(tsk->pid,							\
-> +				   model_get_state_name_##name(curr_state),			\
-> +				   model_get_event_name_##name(event),				\
-> +				   model_get_state_name_##name(next_state),			\
-> +				   model_is_final_state_##name(next_state));			\
-> +												\
-> +		return true;									\
-> +	}											\
-> +												\
-> +	if (rv_reacting_on_##name())								\
-> +		cond_react_##name(format_react_msg_##name(curr_state, event));			\
-> +												\
-> +	trace_error_##name(tsk->pid,								\
-> +			   model_get_state_name_##name(curr_state),				\
-> +			   model_get_event_name_##name(event));					\
-> +												\
-> +	return false;										\
-> +}
+Because it is checking in these functions first and then again in __da_handle_event_##name().
 
-[snip]
+The function da_handle_event_##name() is not checking if the monitors are enabled because
+__da_handle_event_##name() does it.
 
-> +/*
-> + * Handle event for implicit monitor: da_get_monitor_##name() will figure out
-> + * the monitor.
-> + */
-> +#define DECLARE_DA_MON_MONITOR_HANDLER_IMPLICIT(name, type)					\
-> +												\
-> +static inline void __da_handle_event_##name(struct da_monitor *da_mon,				\
-> +					    enum events_##name event)				\
-> +{												\
-> +	int retval;										\
-> +												\
-> +	retval = da_monitor_handling_event_##name(da_mon);					\
-> +	if (!retval)										\
-> +		return;										\
+By adding the check on da_handle_event_##name(), we can remove it in
+__da_handle_event_##name(). Making the check run only once for all cases.
 
-I checked the callers of __da_handle_event_##name():
-da_handle_event_##name() for all cases need the above check.
-da_handle_start_event_##name() for all cases may not need this check.
-(this function checked the enable first and the da_monitoring later and if
-it is not monitoring it will start monitoring and return, the later event
-handler will not be called. Otherwise enable is enabled, da_monitoring is
-monitoring)
-da_handle_start_run_event_##name() for implicit case may not need this check.
-(almost the same with the above, the difference is if da-monitor is not
-monitoring, it will start monitoring and not return and do the event handler,
-here enable is enabled and da_monitoring is monitoring, if I am not wrong)
-So after another(v7) looking at this patch, I realized that this check can
-be omited in two cases(all three cases). Just in fuction da_handle_event_##name()
-we need to do da_monitor_handling_event_##name().
-So I'd write like this:
-static inline void __da_handle_event_##name(struct da_monitor *da_mon,				\
-					    enum events_##name event)				\
-{												\
-	int retval;										\
-                                                    \
-    retval = da_event_##name(da_mon, event);						\
-    if (!retval)										\
-        da_monitor_reset_##name(da_mon);						\
-}												\
+This is an optimization, and it makes sense.
 
-static inline void da_handle_event_##name(enum events_##name event)				\
-{												\
-    struct da_monitor *da_mon = da_get_monitor_##name();					\
-	int retval;										\
-                                                    \
-    retval = da_monitor_handling_event_##name(da_mon);					\
-    if (!retval)										\
-        return;										\
-                                                    \
-    __da_handle_event_##name(da_mon, event);						\
+(changed return value to bool)
 
-}												\
-
-> +												\
-> +	retval = da_event_##name(da_mon, event);						\
-> +	if (!retval)										\
-> +		da_monitor_reset_##name(da_mon);						\
-> +}												\
-> +												\
-> +/*												\
-> + * da_handle_event_##name - handle an event							\
-> + */												\
-> +static inline void da_handle_event_##name(enum events_##name event)				\
-> +{												\
-> +	struct da_monitor *da_mon = da_get_monitor_##name();					\
-> +	__da_handle_event_##name(da_mon, event);						\
-> +}												\
-> +												\
-> +/*												\
-> + * da_handle_start_event_##name - start monitoring or handle event				\
-> + *												\
-> + * This function is used notify the monitor that the system is returning			\
-
-/used/used to/ :-) My wording is not well, sorry for not convenience, Thanks,
-
-> + * to the initial state, so the monitor can start monitoring in the next event.			\
-> + * Thus:											\
-> + *												\
-> + * If the monitor already started, handle the event.						\
-> + * If the monitor did not start yet, start the monitor but skip the event.			\
-> + */												\
-> +static inline bool da_handle_start_event_##name(enum events_##name event)			\
-> +{												\
-> +	struct da_monitor *da_mon;								\
-> +												\
-> +	if (!da_monitor_enabled_##name())							\
-> +		return 0;									\
-> +												\
-> +	da_mon = da_get_monitor_##name();							\
-> +												\
-> +	if (unlikely(!da_monitoring_##name(da_mon))) {						\
-> +		da_monitor_start_##name(da_mon);						\
-> +		return 0;									\
-> +	}											\
-> +												\
-> +	__da_handle_event_##name(da_mon, event);						\
-> +												\
-> +	return 1;										\
-> +}												\
-> +												\
-> +/*												\
-> + * da_handle_start_run_event_##name - start monitoring and handle event				\
-> + *												\
-> + * This function is used notify the monitor that the system is in the				\
-> + * initial state, so the monitor can start monitoring and handling event.			\
-> + */												\
-> +static inline bool da_handle_start_run_event_##name(enum events_##name event)			\
-> +{												\
-> +	struct da_monitor *da_mon;								\
-> +												\
-> +	if (!da_monitor_enabled_##name())							\
-> +		return 0;									\
-> +												\
-> +	da_mon = da_get_monitor_##name();							\
-> +												\
-> +	if (unlikely(!da_monitoring_##name(da_mon)))						\
-> +		da_monitor_start_##name(da_mon);						\
-> +												\
-> +	__da_handle_event_##name(da_mon, event);						\
-> +												\
-> +	return 1;										\
-> +}
-> +
-> +/*
-> + * Handle event for per task.
-> + */
-> +#define DECLARE_DA_MON_MONITOR_HANDLER_PER_TASK(name, type)					\
-> +												\
-> +static inline void										\
-> +__da_handle_event_##name(struct da_monitor *da_mon, struct task_struct *tsk,			\
-> +			 enum events_##name event)						\
-> +{												\
-> +	int retval;										\
-> +												\
-> +	retval = da_monitor_handling_event_##name(da_mon);					\
-> +	if (!retval)										\
-> +		return;										\
-> +												\
-> +	retval = da_event_##name(da_mon, tsk, event);						\
-> +	if (!retval)										\
-> +		da_monitor_reset_##name(da_mon);						\
-> +}												\
-> +												\
-> +/*												\
-> + * da_handle_event_##name - handle an event							\
-> + */												\
-> +static inline void										\
-> +da_handle_event_##name(struct task_struct *tsk, enum events_##name event)			\
-> +{												\
-> +	struct da_monitor *da_mon = da_get_monitor_##name(tsk);					\
-> +	__da_handle_event_##name(da_mon, tsk, event);						\
-> +}												\
-> +												\
-> +/*												\
-> + * da_handle_start_event_##name - start monitoring or handle event				\
-> + *												\
-> + * This function is used notify the monitor that the system is returning			\
-> + * to the initial state, so the monitor can start monitoring in the next event.			\
-> + * Thus:											\
-> + *												\
-> + * If the monitor already started, handle the event.						\
-> + * If the monitor did not start yet, start the monitor but skip the event.			\
-> + */												\
-> +static inline bool										\
-> +da_handle_start_event_##name(struct task_struct *tsk, enum events_##name event)			\
-> +{												\
-> +	struct da_monitor *da_mon;								\
-> +												\
-> +	if (!da_monitor_enabled_##name())							\
-> +		return 0;									\
-> +												\
-> +	da_mon = da_get_monitor_##name(tsk);							\
-> +												\
-> +	if (unlikely(!da_monitoring_##name(da_mon))) {						\
-> +		da_monitor_start_##name(da_mon);						\
-> +		return 0;									\
-> +	}											\
-> +												\
-> +	__da_handle_event_##name(da_mon, tsk, event);						\
-> +												\
-> +	return 1;										\
-> +}
+-- Daniel
