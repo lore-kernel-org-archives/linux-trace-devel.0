@@ -2,38 +2,38 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D7CAC19F2B
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Jul 2022 23:52:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30420C19F2D
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Jul 2022 23:52:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233247AbiG1Xwy (ORCPT
+        id S233366AbiG1Xwy (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Thu, 28 Jul 2022 19:52:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231925AbiG1Xwu (ORCPT
+        with ESMTP id S232383AbiG1Xwv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Jul 2022 19:52:50 -0400
+        Thu, 28 Jul 2022 19:52:51 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BA10272ECF;
-        Thu, 28 Jul 2022 16:52:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EB94A70E52;
+        Thu, 28 Jul 2022 16:52:48 -0700 (PDT)
 Received: from localhost.localdomain (unknown [76.135.27.191])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 47EC520FE9B1;
-        Thu, 28 Jul 2022 16:52:49 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 47EC520FE9B1
+        by linux.microsoft.com (Postfix) with ESMTPSA id A0D6D20FE9AA;
+        Thu, 28 Jul 2022 16:52:48 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A0D6D20FE9AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1659052369;
-        bh=5eRwg6MlWo573EnBgxRRM6VTU+gEpz5q8Hd5iRDGIg8=;
+        s=default; t=1659052368;
+        bh=kkeIYCk4xRugfOKaGOA3vKIixSzKEtc2wGMUQxDoCEw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cuSi9laXedSlBVsCx5ELVW8t2t4+PyF4tx4kgYARfCeMYRJmgknvB0VRD1XuEntk+
-         PlXqDY49fBlhGFDXqHja2dmL3Lcm+nIzS/9WSGlAspf0JWhxH3ZeDc+UNe/Ni4YAuI
-         QF/jycic2z6seY8Snc6VGYnfZcFZr4csqgN93ig8=
+        b=Gk4lcjuBPg1338bAh/yKzySDxaPtgFq6jJipfr7O/NCLn99FI8g6OzqdtMvqIlOeX
+         B+++hAJsMkqG5U0dYjOew/BBFffZH4gVhmuzAhMps8+DrAy5oHYIj591F3rKJ4wYyx
+         LcV66e6Rm7OqK4pxl63rZ9G+PDzsTgotckRkwBio=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org,
         mathieu.desnoyers@efficios.com
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v2 7/7] tracing/user_events: Add self-test for namespace integration
-Date:   Thu, 28 Jul 2022 16:52:41 -0700
-Message-Id: <20220728235241.2249-8-beaub@linux.microsoft.com>
+Subject: [RFC PATCH v2 4/7] tracing/user_events: Move pages/locks into groups to prepare for namespaces
+Date:   Thu, 28 Jul 2022 16:52:38 -0700
+Message-Id: <20220728235241.2249-5-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220728235241.2249-1-beaub@linux.microsoft.com>
 References: <20220728235241.2249-1-beaub@linux.microsoft.com>
@@ -43,190 +43,751 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Tests to ensure namespace cases are working correctly. Ensures that
-namespaces work as before for status/write cases and validates removing
-a namespace with open files, tracing enabled, etc.
+In order to enable namespaces or any sort of isolation within
+user_events the register lock and pages need to be broken up into
+groups. Each event and file now has a group pointer which stores the
+actual pages to map, lookup data and synchronization objects.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- .../selftests/user_events/ftrace_test.c       | 150 ++++++++++++++++++
- 1 file changed, 150 insertions(+)
+ kernel/trace/trace_events_user.c | 381 ++++++++++++++++++++++++-------
+ 1 file changed, 304 insertions(+), 77 deletions(-)
 
-diff --git a/tools/testing/selftests/user_events/ftrace_test.c b/tools/testing/selftests/user_events/ftrace_test.c
-index 404a2713dcae..5d384c1b31c4 100644
---- a/tools/testing/selftests/user_events/ftrace_test.c
-+++ b/tools/testing/selftests/user_events/ftrace_test.c
-@@ -22,6 +22,16 @@ const char *enable_file = "/sys/kernel/debug/tracing/events/user_events/__test_e
- const char *trace_file = "/sys/kernel/debug/tracing/trace";
- const char *fmt_file = "/sys/kernel/debug/tracing/events/user_events/__test_event/format";
+diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+index fd8ea555437a..44f9efd58af5 100644
+--- a/kernel/trace/trace_events_user.c
++++ b/kernel/trace/trace_events_user.c
+@@ -69,11 +69,23 @@
+ #define EVENT_STATUS_PERF BIT(1)
+ #define EVENT_STATUS_OTHER BIT(7)
  
-+const char *namespace_dir = "/sys/kernel/debug/tracing/namespaces/self_test";
-+const char *ns_data_file = "/sys/kernel/debug/tracing/namespaces/self_test/"
-+			   "root/user_events_data";
-+const char *ns_status_file = "/sys/kernel/debug/tracing/namespaces/self_test/"
-+			     "root/user_events_status";
-+const char *ns_enable_file = "/sys/kernel/debug/tracing/events/"
-+			     "user_events.self_test/__test_event/enable";
-+const char *ns_options_file = "/sys/kernel/debug/tracing/namespaces/self_test/"
-+			      "options";
-+
- static inline int status_check(char *status_page, int status_bit)
- {
- 	return status_page[status_bit >> 3] & (1 << (status_bit & 7));
-@@ -160,6 +170,53 @@ static int check_print_fmt(const char *event, const char *expected)
- 	return strcmp(print_fmt, expected);
- }
+-static char *register_page_data;
++struct user_event_group {
++	struct page *pages;
++	char *register_page_data;
++	char *system_name;
++	struct dentry *status_file;
++	struct dentry *data_file;
++	struct hlist_node node;
++	struct mutex reg_mutex;
++	DECLARE_HASHTABLE(register_table, 8);
++	DECLARE_BITMAP(page_bitmap, MAX_EVENTS);
++	refcount_t refcnt;
++	int id;
++};
  
-+FIXTURE(ns) {
-+	int status_fd;
-+	int data_fd;
-+	int enable_fd;
-+	int options_fd;
+-static DEFINE_MUTEX(reg_mutex);
+-static DEFINE_HASHTABLE(register_table, 8);
+-static DECLARE_BITMAP(page_bitmap, MAX_EVENTS);
++static DEFINE_HASHTABLE(group_table, 8);
++static DEFINE_MUTEX(group_mutex);
++static struct user_event_group *root_group;
+ 
+ /*
+  * Stores per-event properties, as users register events
+@@ -83,6 +95,7 @@ static DECLARE_BITMAP(page_bitmap, MAX_EVENTS);
+  * refcnt reaches one.
+  */
+ struct user_event {
++	struct user_event_group *group;
+ 	struct tracepoint tracepoint;
+ 	struct trace_event_call call;
+ 	struct trace_event_class class;
+@@ -109,6 +122,11 @@ struct user_event_refs {
+ 	struct user_event *events[];
+ };
+ 
++struct user_event_file_info {
++	struct user_event_group *group;
++	struct user_event_refs *refs;
 +};
 +
-+FIXTURE_SETUP(ns) {
-+	if (mkdir(namespace_dir, 770)) {
-+		ASSERT_EQ(EEXIST, errno);
-+	}
-+
-+	self->status_fd = open(ns_status_file, O_RDONLY);
-+	ASSERT_NE(-1, self->status_fd);
-+
-+	self->data_fd = open(ns_data_file, O_RDWR);
-+	ASSERT_NE(-1, self->data_fd);
-+
-+	self->options_fd = open(ns_options_file, O_RDWR);
-+	ASSERT_NE(-1, self->options_fd);
-+
-+	self->enable_fd = -1;
-+}
-+
-+FIXTURE_TEARDOWN(ns) {
-+	if (self->status_fd != -1)
-+		close(self->status_fd);
-+
-+	if (self->data_fd != -1)
-+		close(self->data_fd);
-+
-+	if (self->options_fd != -1)
-+		close(self->options_fd);
-+
-+	if (self->enable_fd != -1) {
-+		write(self->enable_fd, "0", sizeof("0"));
-+		close(self->enable_fd);
-+		self->enable_fd = -1;
-+	}
-+
-+	ASSERT_EQ(0, clear());
-+
-+	if (rmdir(namespace_dir)) {
-+		ASSERT_EQ(ENOENT, errno);
-+	}
-+}
-+
- FIXTURE(user) {
- 	int status_fd;
- 	int data_fd;
-@@ -477,6 +534,99 @@ TEST_F(user, print_fmt) {
- 	ASSERT_EQ(0, ret);
+ #define VALIDATOR_ENSURE_NULL (1 << 0)
+ #define VALIDATOR_REL (1 << 1)
+ 
+@@ -121,7 +139,8 @@ struct user_event_validator {
+ typedef void (*user_event_func_t) (struct user_event *user, struct iov_iter *i,
+ 				   void *tpdata, bool *faulted);
+ 
+-static int user_event_parse(char *name, char *args, char *flags,
++static int user_event_parse(struct user_event_group *group, char *name,
++			    char *args, char *flags,
+ 			    struct user_event **newuser);
+ 
+ static u32 user_event_key(char *name)
+@@ -129,12 +148,132 @@ static u32 user_event_key(char *name)
+ 	return jhash(name, strlen(name), 0);
  }
  
-+TEST_F(ns, namespaces) {
-+	struct user_reg reg = {0};
-+	struct iovec io[3];
-+	__u32 field1, field2;
-+	int before = 0, after = 0;
-+	int page_size = sysconf(_SC_PAGESIZE);
-+	char *status_page;
++static void set_page_reservations(char *pages, bool set)
++{
++	int page;
 +
-+	reg.size = sizeof(reg);
-+	reg.name_args = (__u64)"__test_event u32 field1; u32 field2";
++	for (page = 0; page < MAX_PAGES; ++page) {
++		void *addr = pages + (PAGE_SIZE * page);
 +
-+	field1 = 1;
-+	field2 = 2;
-+
-+	io[0].iov_base = &reg.write_index;
-+	io[0].iov_len = sizeof(reg.write_index);
-+	io[1].iov_base = &field1;
-+	io[1].iov_len = sizeof(field1);
-+	io[2].iov_base = &field2;
-+	io[2].iov_len = sizeof(field2);
-+
-+	/* Limit to 1 event */
-+	ASSERT_NE(-1, write(self->options_fd,
-+			    "user_events_limit=1\n",
-+			    sizeof("user_events_limit=1\n") - 1));
-+
-+	/* Register should work */
-+	ASSERT_EQ(0, ioctl(self->data_fd, DIAG_IOCSREG, &reg));
-+	ASSERT_EQ(0, reg.write_index);
-+	ASSERT_NE(0, reg.status_bit);
-+
-+	status_page = mmap(NULL, page_size, PROT_READ, MAP_SHARED,
-+			   self->status_fd, 0);
-+
-+	/* MMAP should work and be zero'd */
-+	ASSERT_NE(MAP_FAILED, status_page);
-+	ASSERT_NE(NULL, status_page);
-+	ASSERT_EQ(0, status_check(status_page, reg.status_bit));
-+
-+	/* Enable event (start tracing) */
-+	self->enable_fd = open(ns_enable_file, O_RDWR);
-+	ASSERT_NE(-1, write(self->enable_fd, "1", sizeof("1")))
-+
-+	/* Event should now be enabled */
-+	ASSERT_NE(0, status_check(status_page, reg.status_bit));
-+
-+	/* Write should make it out to ftrace buffers */
-+	before = trace_bytes();
-+	ASSERT_NE(-1, writev(self->data_fd, (const struct iovec *)io, 3));
-+	after = trace_bytes();
-+	ASSERT_GT(after, before);
-+
-+	/* Register above limit should fail */
-+	reg.name_args = (__u64)"__test_event_nope u32 field1; u32 field2";
-+	ASSERT_EQ(-1, ioctl(self->data_fd, DIAG_IOCSREG, &reg));
-+	ASSERT_EQ(EMFILE, errno);
-+
-+	/* Removing namespace while files open should fail */
-+	ASSERT_EQ(-1, rmdir(namespace_dir));
-+
-+	close(self->options_fd);
-+	self->options_fd = -1;
-+
-+	/* Removing namespace while files open should fail */
-+	ASSERT_EQ(-1, rmdir(namespace_dir));
-+
-+	close(self->status_fd);
-+	self->status_fd = -1;
-+
-+	/* Removing namespace while files open should fail */
-+	ASSERT_EQ(-1, rmdir(namespace_dir));
-+
-+	close(self->data_fd);
-+	self->data_fd = -1;
-+
-+	/* Removing namespace while mmaps are open should fail */
-+	ASSERT_EQ(-1, rmdir(namespace_dir));
-+
-+	/* Unmap */
-+	ASSERT_EQ(0, munmap(status_page, page_size));
-+
-+	/* Removing namespace with no files but tracing should fail */
-+	ASSERT_EQ(-1, rmdir(namespace_dir));
-+
-+	/* Disable event (stop tracing) */
-+	ASSERT_NE(-1, write(self->enable_fd, "0", sizeof("0")))
-+	close(self->enable_fd);
-+	self->enable_fd = -1;
-+
-+	/* Removing namespace should now work */
-+	ASSERT_EQ(0, rmdir(namespace_dir));
++		if (set)
++			SetPageReserved(virt_to_page(addr));
++		else
++			ClearPageReserved(virt_to_page(addr));
++	}
 +}
 +
- int main(int argc, char **argv)
++static void user_event_group_destroy(struct user_event_group *group)
++{
++	if (group->status_file)
++		tracefs_remove(group->status_file);
++
++	if (group->data_file)
++		tracefs_remove(group->data_file);
++
++	if (group->register_page_data)
++		set_page_reservations(group->register_page_data, false);
++
++	if (group->pages)
++		__free_pages(group->pages, MAX_PAGE_ORDER);
++
++	kfree(group->system_name);
++	kfree(group);
++}
++
++static char *user_event_group_system_name(const char *name)
++{
++	char *system_name;
++	int len = strlen(name) + sizeof(USER_EVENTS_SYSTEM) + 1;
++
++	system_name = kmalloc(len, GFP_KERNEL);
++
++	if (!system_name)
++		return NULL;
++
++	snprintf(system_name, len, "%s.%s", USER_EVENTS_SYSTEM, name);
++
++	return system_name;
++}
++
++static __always_inline
++void user_event_group_release(struct user_event_group *group)
++{
++	refcount_dec(&group->refcnt);
++}
++
++static struct user_event_group *user_event_group_find(int id)
++{
++	struct user_event_group *group;
++
++	mutex_lock(&group_mutex);
++
++	hash_for_each_possible(group_table, group, node, id)
++		if (group->id == id) {
++			refcount_inc(&group->refcnt);
++			mutex_unlock(&group_mutex);
++			return group;
++		}
++
++	mutex_unlock(&group_mutex);
++
++	return NULL;
++}
++
++static struct user_event_group *user_event_group_create(const char *name,
++							int id)
++{
++	struct user_event_group *group;
++
++	group = kzalloc(sizeof(*group), GFP_KERNEL);
++
++	if (!group)
++		return NULL;
++
++	if (name) {
++		group->system_name = user_event_group_system_name(name);
++
++		if (!group->system_name)
++			goto error;
++	}
++
++	group->pages = alloc_pages(GFP_KERNEL | __GFP_ZERO, MAX_PAGE_ORDER);
++
++	if (!group->pages)
++		goto error;
++
++	group->register_page_data = page_address(group->pages);
++
++	set_page_reservations(group->register_page_data, true);
++
++	/* Zero all bits beside 0 (which is reserved for failures) */
++	bitmap_zero(group->page_bitmap, MAX_EVENTS);
++	set_bit(0, group->page_bitmap);
++
++	mutex_init(&group->reg_mutex);
++	hash_init(group->register_table);
++
++	/* Mark and add to lookup */
++	group->id = id;
++	refcount_set(&group->refcnt, 2);
++
++	mutex_lock(&group_mutex);
++	hash_add(group_table, &group->node, group->id);
++	mutex_unlock(&group_mutex);
++
++	return group;
++error:
++	if (group)
++		user_event_group_destroy(group);
++
++	return NULL;
++};
++
+ static __always_inline
+ void user_event_register_set(struct user_event *user)
  {
- 	return test_harness_run(argc, argv);
+ 	int i = user->index;
+ 
+-	register_page_data[MAP_STATUS_BYTE(i)] |= MAP_STATUS_MASK(i);
++	user->group->register_page_data[MAP_STATUS_BYTE(i)] |= MAP_STATUS_MASK(i);
+ }
+ 
+ static __always_inline
+@@ -142,7 +281,7 @@ void user_event_register_clear(struct user_event *user)
+ {
+ 	int i = user->index;
+ 
+-	register_page_data[MAP_STATUS_BYTE(i)] &= ~MAP_STATUS_MASK(i);
++	user->group->register_page_data[MAP_STATUS_BYTE(i)] &= ~MAP_STATUS_MASK(i);
+ }
+ 
+ static __always_inline __must_check
+@@ -186,7 +325,8 @@ static struct list_head *user_event_get_fields(struct trace_event_call *call)
+  *
+  * Upon success user_event has its ref count increased by 1.
+  */
+-static int user_event_parse_cmd(char *raw_command, struct user_event **newuser)
++static int user_event_parse_cmd(struct user_event_group *group,
++				char *raw_command, struct user_event **newuser)
+ {
+ 	char *name = raw_command;
+ 	char *args = strpbrk(name, " ");
+@@ -200,7 +340,7 @@ static int user_event_parse_cmd(char *raw_command, struct user_event **newuser)
+ 	if (flags)
+ 		*flags++ = '\0';
+ 
+-	return user_event_parse(name, args, flags, newuser);
++	return user_event_parse(group, name, args, flags, newuser);
+ }
+ 
+ static int user_field_array_size(const char *type)
+@@ -688,7 +828,7 @@ static int destroy_user_event(struct user_event *user)
+ 	dyn_event_remove(&user->devent);
+ 
+ 	user_event_register_clear(user);
+-	clear_bit(user->index, page_bitmap);
++	clear_bit(user->index, user->group->page_bitmap);
+ 	hash_del(&user->node);
+ 
+ 	user_event_destroy_validators(user);
+@@ -699,14 +839,15 @@ static int destroy_user_event(struct user_event *user)
+ 	return ret;
+ }
+ 
+-static struct user_event *find_user_event(char *name, u32 *outkey)
++static struct user_event *find_user_event(struct user_event_group *group,
++					  char *name, u32 *outkey)
+ {
+ 	struct user_event *user;
+ 	u32 key = user_event_key(name);
+ 
+ 	*outkey = key;
+ 
+-	hash_for_each_possible(register_table, user, node, key)
++	hash_for_each_possible(group->register_table, user, node, key)
+ 		if (!strcmp(EVENT_NAME(user), name)) {
+ 			refcount_inc(&user->refcnt);
+ 			return user;
+@@ -953,14 +1094,14 @@ static int user_event_create(const char *raw_command)
+ 	if (!name)
+ 		return -ENOMEM;
+ 
+-	mutex_lock(&reg_mutex);
++	mutex_lock(&root_group->reg_mutex);
+ 
+-	ret = user_event_parse_cmd(name, &user);
++	ret = user_event_parse_cmd(root_group, name, &user);
+ 
+ 	if (!ret)
+ 		refcount_dec(&user->refcnt);
+ 
+-	mutex_unlock(&reg_mutex);
++	mutex_unlock(&root_group->reg_mutex);
+ 
+ 	if (ret)
+ 		kfree(name);
+@@ -1114,7 +1255,8 @@ static int user_event_trace_register(struct user_event *user)
+  * The name buffer lifetime is owned by this method for success cases only.
+  * Upon success the returned user_event has its ref count increased by 1.
+  */
+-static int user_event_parse(char *name, char *args, char *flags,
++static int user_event_parse(struct user_event_group *group, char *name,
++			    char *args, char *flags,
+ 			    struct user_event **newuser)
+ {
+ 	int ret;
+@@ -1124,7 +1266,7 @@ static int user_event_parse(char *name, char *args, char *flags,
+ 
+ 	/* Prevent dyn_event from racing */
+ 	mutex_lock(&event_mutex);
+-	user = find_user_event(name, &key);
++	user = find_user_event(group, name, &key);
+ 	mutex_unlock(&event_mutex);
+ 
+ 	if (user) {
+@@ -1137,7 +1279,7 @@ static int user_event_parse(char *name, char *args, char *flags,
+ 		return 0;
+ 	}
+ 
+-	index = find_first_zero_bit(page_bitmap, MAX_EVENTS);
++	index = find_first_zero_bit(group->page_bitmap, MAX_EVENTS);
+ 
+ 	if (index == MAX_EVENTS)
+ 		return -EMFILE;
+@@ -1151,6 +1293,7 @@ static int user_event_parse(char *name, char *args, char *flags,
+ 	INIT_LIST_HEAD(&user->fields);
+ 	INIT_LIST_HEAD(&user->validators);
+ 
++	user->group = group;
+ 	user->tracepoint.name = name;
+ 
+ 	ret = user_event_parse_fields(user, args);
+@@ -1170,7 +1313,11 @@ static int user_event_parse(char *name, char *args, char *flags,
+ 	user->call.tp = &user->tracepoint;
+ 	user->call.event.funcs = &user_event_funcs;
+ 
+-	user->class.system = USER_EVENTS_SYSTEM;
++	if (group->system_name)
++		user->class.system = group->system_name;
++	else
++		user->class.system = USER_EVENTS_SYSTEM;
++
+ 	user->class.fields_array = user_event_fields_array;
+ 	user->class.get_fields = user_event_get_fields;
+ 	user->class.reg = user_event_reg;
+@@ -1193,8 +1340,8 @@ static int user_event_parse(char *name, char *args, char *flags,
+ 
+ 	dyn_event_init(&user->devent, &user_event_dops);
+ 	dyn_event_add(&user->devent, &user->call);
+-	set_bit(user->index, page_bitmap);
+-	hash_add(register_table, &user->node, key);
++	set_bit(user->index, group->page_bitmap);
++	hash_add(group->register_table, &user->node, key);
+ 
+ 	mutex_unlock(&event_mutex);
+ 
+@@ -1212,10 +1359,10 @@ static int user_event_parse(char *name, char *args, char *flags,
+ /*
+  * Deletes a previously created event if it is no longer being used.
+  */
+-static int delete_user_event(char *name)
++static int delete_user_event(struct user_event_group *group, char *name)
+ {
+ 	u32 key;
+-	struct user_event *user = find_user_event(name, &key);
++	struct user_event *user = find_user_event(group, name, &key);
+ 
+ 	if (!user)
+ 		return -ENOENT;
+@@ -1233,6 +1380,7 @@ static int delete_user_event(char *name)
+  */
+ static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
+ {
++	struct user_event_file_info *info = file->private_data;
+ 	struct user_event_refs *refs;
+ 	struct user_event *user = NULL;
+ 	struct tracepoint *tp;
+@@ -1244,7 +1392,7 @@ static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
+ 
+ 	rcu_read_lock_sched();
+ 
+-	refs = rcu_dereference_sched(file->private_data);
++	refs = rcu_dereference_sched(info->refs);
+ 
+ 	/*
+ 	 * The refs->events array is protected by RCU, and new items may be
+@@ -1302,6 +1450,30 @@ static ssize_t user_events_write_core(struct file *file, struct iov_iter *i)
+ 	return ret;
+ }
+ 
++static int user_events_open(struct inode *node, struct file *file)
++{
++	struct user_event_group *group;
++	struct user_event_file_info *info;
++
++	group = user_event_group_find((int)(uintptr_t)node->i_private);
++
++	if (!group)
++		return -ENOENT;
++
++	info = kzalloc(sizeof(*info), GFP_KERNEL);
++
++	if (!info) {
++		user_event_group_release(group);
++		return -ENOMEM;
++	}
++
++	info->group = group;
++
++	file->private_data = info;
++
++	return 0;
++}
++
+ static ssize_t user_events_write(struct file *file, const char __user *ubuf,
+ 				 size_t count, loff_t *ppos)
+ {
+@@ -1323,13 +1495,15 @@ static ssize_t user_events_write_iter(struct kiocb *kp, struct iov_iter *i)
+ 	return user_events_write_core(kp->ki_filp, i);
+ }
+ 
+-static int user_events_ref_add(struct file *file, struct user_event *user)
++static int user_events_ref_add(struct user_event_file_info *info,
++			       struct user_event *user)
+ {
++	struct user_event_group *group = info->group;
+ 	struct user_event_refs *refs, *new_refs;
+ 	int i, size, count = 0;
+ 
+-	refs = rcu_dereference_protected(file->private_data,
+-					 lockdep_is_held(&reg_mutex));
++	refs = rcu_dereference_protected(info->refs,
++					 lockdep_is_held(&group->reg_mutex));
+ 
+ 	if (refs) {
+ 		count = refs->count;
+@@ -1355,7 +1529,7 @@ static int user_events_ref_add(struct file *file, struct user_event *user)
+ 
+ 	refcount_inc(&user->refcnt);
+ 
+-	rcu_assign_pointer(file->private_data, new_refs);
++	rcu_assign_pointer(info->refs, new_refs);
+ 
+ 	if (refs)
+ 		kfree_rcu(refs, rcu);
+@@ -1392,7 +1566,8 @@ static long user_reg_get(struct user_reg __user *ureg, struct user_reg *kreg)
+ /*
+  * Registers a user_event on behalf of a user process.
+  */
+-static long user_events_ioctl_reg(struct file *file, unsigned long uarg)
++static long user_events_ioctl_reg(struct user_event_file_info *info,
++				  unsigned long uarg)
+ {
+ 	struct user_reg __user *ureg = (struct user_reg __user *)uarg;
+ 	struct user_reg reg;
+@@ -1413,14 +1588,14 @@ static long user_events_ioctl_reg(struct file *file, unsigned long uarg)
+ 		return ret;
+ 	}
+ 
+-	ret = user_event_parse_cmd(name, &user);
++	ret = user_event_parse_cmd(info->group, name, &user);
+ 
+ 	if (ret) {
+ 		kfree(name);
+ 		return ret;
+ 	}
+ 
+-	ret = user_events_ref_add(file, user);
++	ret = user_events_ref_add(info, user);
+ 
+ 	/* No longer need parse ref, ref_add either worked or not */
+ 	refcount_dec(&user->refcnt);
+@@ -1438,7 +1613,8 @@ static long user_events_ioctl_reg(struct file *file, unsigned long uarg)
+ /*
+  * Deletes a user_event on behalf of a user process.
+  */
+-static long user_events_ioctl_del(struct file *file, unsigned long uarg)
++static long user_events_ioctl_del(struct user_event_file_info *info,
++				  unsigned long uarg)
+ {
+ 	void __user *ubuf = (void __user *)uarg;
+ 	char *name;
+@@ -1451,7 +1627,7 @@ static long user_events_ioctl_del(struct file *file, unsigned long uarg)
+ 
+ 	/* event_mutex prevents dyn_event from racing */
+ 	mutex_lock(&event_mutex);
+-	ret = delete_user_event(name);
++	ret = delete_user_event(info->group, name);
+ 	mutex_unlock(&event_mutex);
+ 
+ 	kfree(name);
+@@ -1465,19 +1641,21 @@ static long user_events_ioctl_del(struct file *file, unsigned long uarg)
+ static long user_events_ioctl(struct file *file, unsigned int cmd,
+ 			      unsigned long uarg)
+ {
++	struct user_event_file_info *info = file->private_data;
++	struct user_event_group *group = info->group;
+ 	long ret = -ENOTTY;
+ 
+ 	switch (cmd) {
+ 	case DIAG_IOCSREG:
+-		mutex_lock(&reg_mutex);
+-		ret = user_events_ioctl_reg(file, uarg);
+-		mutex_unlock(&reg_mutex);
++		mutex_lock(&group->reg_mutex);
++		ret = user_events_ioctl_reg(info, uarg);
++		mutex_unlock(&group->reg_mutex);
+ 		break;
+ 
+ 	case DIAG_IOCSDEL:
+-		mutex_lock(&reg_mutex);
+-		ret = user_events_ioctl_del(file, uarg);
+-		mutex_unlock(&reg_mutex);
++		mutex_lock(&group->reg_mutex);
++		ret = user_events_ioctl_del(info, uarg);
++		mutex_unlock(&group->reg_mutex);
+ 		break;
+ 	}
+ 
+@@ -1489,17 +1667,24 @@ static long user_events_ioctl(struct file *file, unsigned int cmd,
+  */
+ static int user_events_release(struct inode *node, struct file *file)
+ {
++	struct user_event_file_info *info = file->private_data;
++	struct user_event_group *group;
+ 	struct user_event_refs *refs;
+ 	struct user_event *user;
+ 	int i;
+ 
++	if (!info)
++		return -EINVAL;
++
++	group = info->group;
++
+ 	/*
+ 	 * Ensure refs cannot change under any situation by taking the
+ 	 * register mutex during the final freeing of the references.
+ 	 */
+-	mutex_lock(&reg_mutex);
++	mutex_lock(&group->reg_mutex);
+ 
+-	refs = file->private_data;
++	refs = info->refs;
+ 
+ 	if (!refs)
+ 		goto out;
+@@ -1518,32 +1703,54 @@ static int user_events_release(struct inode *node, struct file *file)
+ out:
+ 	file->private_data = NULL;
+ 
+-	mutex_unlock(&reg_mutex);
++	mutex_unlock(&group->reg_mutex);
+ 
+ 	kfree(refs);
++	kfree(info);
++
++	/* No longer using group */
++	user_event_group_release(group);
+ 
+ 	return 0;
+ }
+ 
+ static const struct file_operations user_data_fops = {
++	.open = user_events_open,
+ 	.write = user_events_write,
+ 	.write_iter = user_events_write_iter,
+ 	.unlocked_ioctl	= user_events_ioctl,
+ 	.release = user_events_release,
+ };
+ 
++static struct user_event_group *user_status_group(struct file *file)
++{
++	struct seq_file *m = file->private_data;
++
++	if (!m)
++		return NULL;
++
++	return m->private;
++}
++
+ /*
+  * Maps the shared page into the user process for checking if event is enabled.
+  */
+ static int user_status_mmap(struct file *file, struct vm_area_struct *vma)
+ {
++	char *pages;
++	struct user_event_group *group = user_status_group(file);
+ 	unsigned long size = vma->vm_end - vma->vm_start;
+ 
+ 	if (size != MAX_BYTES)
+ 		return -EINVAL;
+ 
++	if (!group)
++		return -EINVAL;
++
++	pages = group->register_page_data;
++
+ 	return remap_pfn_range(vma, vma->vm_start,
+-			       virt_to_phys(register_page_data) >> PAGE_SHIFT,
++			       virt_to_phys(pages) >> PAGE_SHIFT,
+ 			       size, vm_get_page_prot(VM_READ));
+ }
+ 
+@@ -1567,13 +1774,17 @@ static void user_seq_stop(struct seq_file *m, void *p)
+ 
+ static int user_seq_show(struct seq_file *m, void *p)
+ {
++	struct user_event_group *group = m->private;
+ 	struct user_event *user;
+ 	char status;
+ 	int i, active = 0, busy = 0, flags;
+ 
+-	mutex_lock(&reg_mutex);
++	if (!group)
++		return -EINVAL;
++
++	mutex_lock(&group->reg_mutex);
+ 
+-	hash_for_each(register_table, i, user, node) {
++	hash_for_each(group->register_table, i, user, node) {
+ 		status = user->status;
+ 		flags = user->flags;
+ 
+@@ -1597,7 +1808,7 @@ static int user_seq_show(struct seq_file *m, void *p)
+ 		active++;
+ 	}
+ 
+-	mutex_unlock(&reg_mutex);
++	mutex_unlock(&group->reg_mutex);
+ 
+ 	seq_puts(m, "\n");
+ 	seq_printf(m, "Active: %d\n", active);
+@@ -1616,7 +1827,38 @@ static const struct seq_operations user_seq_ops = {
+ 
+ static int user_status_open(struct inode *node, struct file *file)
+ {
+-	return seq_open(file, &user_seq_ops);
++	struct user_event_group *group;
++	int ret;
++
++	group = user_event_group_find((int)(uintptr_t)node->i_private);
++
++	if (!group)
++		return -ENOENT;
++
++	ret = seq_open(file, &user_seq_ops);
++
++	if (!ret) {
++		/* Chain group to seq_file */
++		struct seq_file *m = file->private_data;
++
++		m->private = group;
++	} else {
++		user_event_group_release(group);
++	}
++
++	return ret;
++}
++
++static int user_status_release(struct inode *node, struct file *file)
++{
++	struct user_event_group *group = user_status_group(file);
++
++	if (group)
++		user_event_group_release(group);
++	else
++		pr_warn("user_events: No group attached to status file\n");
++
++	return seq_release(node, file);
+ }
+ 
+ static const struct file_operations user_status_fops = {
+@@ -1624,18 +1866,20 @@ static const struct file_operations user_status_fops = {
+ 	.mmap = user_status_mmap,
+ 	.read = seq_read,
+ 	.llseek  = seq_lseek,
+-	.release = seq_release,
++	.release = user_status_release,
+ };
+ 
+ /*
+  * Creates a set of tracefs files to allow user mode interactions.
+  */
+-static int create_user_tracefs(void)
++static int create_user_tracefs(struct dentry *parent,
++			       struct user_event_group *group)
+ {
+ 	struct dentry *edata, *emmap;
+ 
+ 	edata = tracefs_create_file("user_events_data", TRACE_MODE_WRITE,
+-				    NULL, NULL, &user_data_fops);
++				    parent, (void *)(uintptr_t)group->id,
++				    &user_data_fops);
+ 
+ 	if (!edata) {
+ 		pr_warn("Could not create tracefs 'user_events_data' entry\n");
+@@ -1644,7 +1888,8 @@ static int create_user_tracefs(void)
+ 
+ 	/* mmap with MAP_SHARED requires writable fd */
+ 	emmap = tracefs_create_file("user_events_status", TRACE_MODE_WRITE,
+-				    NULL, NULL, &user_status_fops);
++				    parent, (void *)(uintptr_t)group->id,
++				    &user_status_fops);
+ 
+ 	if (!emmap) {
+ 		tracefs_remove(edata);
+@@ -1652,47 +1897,29 @@ static int create_user_tracefs(void)
+ 		goto err;
+ 	}
+ 
++	group->data_file = edata;
++	group->status_file = emmap;
++
+ 	return 0;
+ err:
+ 	return -ENODEV;
+ }
+ 
+-static void set_page_reservations(bool set)
+-{
+-	int page;
+-
+-	for (page = 0; page < MAX_PAGES; ++page) {
+-		void *addr = register_page_data + (PAGE_SIZE * page);
+-
+-		if (set)
+-			SetPageReserved(virt_to_page(addr));
+-		else
+-			ClearPageReserved(virt_to_page(addr));
+-	}
+-}
+-
+ static int __init trace_events_user_init(void)
+ {
+-	struct page *pages;
+ 	int ret;
+ 
+-	/* Zero all bits beside 0 (which is reserved for failures) */
+-	bitmap_zero(page_bitmap, MAX_EVENTS);
+-	set_bit(0, page_bitmap);
++	root_group = user_event_group_create(NULL, 0);
+ 
+-	pages = alloc_pages(GFP_KERNEL | __GFP_ZERO, MAX_PAGE_ORDER);
+-	if (!pages)
++	if (!root_group)
+ 		return -ENOMEM;
+-	register_page_data = page_address(pages);
+-
+-	set_page_reservations(true);
+ 
+-	ret = create_user_tracefs();
++	ret = create_user_tracefs(NULL, root_group);
+ 
+ 	if (ret) {
+ 		pr_warn("user_events could not register with tracefs\n");
+-		set_page_reservations(false);
+-		__free_pages(pages, MAX_PAGE_ORDER);
++		user_event_group_destroy(root_group);
++		root_group = NULL;
+ 		return ret;
+ 	}
+ 
 -- 
 2.25.1
 
