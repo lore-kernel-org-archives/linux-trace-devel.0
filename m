@@ -2,150 +2,271 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA3DAC19F2A
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Jul 2022 23:52:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 252A3C3F6B0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Jul 2022 23:52:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232734AbiG1Xww (ORCPT
+        id S233213AbiG1Xwx (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 28 Jul 2022 19:52:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35264 "EHLO
+        Thu, 28 Jul 2022 19:52:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230357AbiG1Xwt (ORCPT
+        with ESMTP id S231757AbiG1Xwu (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Jul 2022 19:52:49 -0400
+        Thu, 28 Jul 2022 19:52:50 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2A6776E2DF;
-        Thu, 28 Jul 2022 16:52:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AB85A7171A;
+        Thu, 28 Jul 2022 16:52:49 -0700 (PDT)
 Received: from localhost.localdomain (unknown [76.135.27.191])
-        by linux.microsoft.com (Postfix) with ESMTPSA id BB61420FE89F;
-        Thu, 28 Jul 2022 16:52:47 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BB61420FE89F
+        by linux.microsoft.com (Postfix) with ESMTPSA id D887820FE9AC;
+        Thu, 28 Jul 2022 16:52:48 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D887820FE9AC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1659052367;
-        bh=blXIlYFe5nKFVDiHVRlRnoomVR8gpOFVwvph2pxvkg4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gmRmVNFkIp5KSAJqBm//CMQTrcb37RdY2r35eW/bH2gS6UUk0eXn5tXfbAJ59ejVV
-         DjussXcr2M6gyDsnVoPnwfx8FTOirzPD2G5rhJL0cwvDe+77fPAQqFiD1gYgZQg5Bb
-         d5iXr+50M60Ob6vM+m1kJIjxayqElpby86RJmVSs=
+        s=default; t=1659052369;
+        bh=AUgYkvSQU9ibc65r7fNJmBL+pnRrox56knfluC9Psp0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=YLdQu5vLfUh67N0cayijcX5/lq1FjeIDFtaKnK3fJZTpfjspOm3paWB1+5Lf6uxQQ
+         zeavhYYpiFLpbq/WOPoXbqWmQsDMUIgAwQ37OLQVxAX/iaoxBhrSR0FpbfFkdh9n/X
+         A3Dooz/2a0QT+AxJW4xu43Xxqp1VoqjLnvyMBSlU=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org,
         mathieu.desnoyers@efficios.com
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v2 0/7] tracing: Add tracing namespace API for user
-Date:   Thu, 28 Jul 2022 16:52:34 -0700
-Message-Id: <20220728235241.2249-1-beaub@linux.microsoft.com>
+Subject: [RFC PATCH v2 5/7] tracing/user_events: Register with trace namespace API
+Date:   Thu, 28 Jul 2022 16:52:39 -0700
+Message-Id: <20220728235241.2249-6-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220728235241.2249-1-beaub@linux.microsoft.com>
+References: <20220728235241.2249-1-beaub@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This series is based on the ftrace/core branch.
+Register user_events up to the trace namespace API to allow user
+programs to interface with isolated events when required. Each namespace
+will have their own user_events_status and user_events_data files that
+have the same ABI as before, however, the system name for events created
+will be different (user_events.<namespace_name> vs user_events).
 
-You will need the following series to apply this series:
-Link: https://lore.kernel.org/all/20220728233309.1896-1-beaub@linux.microsoft.com/
+Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+---
+ kernel/trace/trace_events_user.c | 167 ++++++++++++++++++++++++++++++-
+ 1 file changed, 166 insertions(+), 1 deletion(-)
 
-User facing tracing systems, such as user_events and LTTng, sometimes
-require multiple events with the same name, but from different
-containers. This can cause event name conflicts and leak out details
-of events not owned by the container.
-
-To create a tracing namespace, run mkdir under the new tracefs directory
-named "namespaces" (/sys/kernel/tracing/namespaces typically). This
-directory largely works the same as "instances" where the new directory
-will have files populated within it via the tracing system
-automatically. The tracing systems will put their files under the "root"
-directory, which is meant to be the directory that you can bind mount
-out to containers. The "options" file is meant to allow operators to
-configure the namespaces via the registered systems.
-
-The tracing namespace allows those user facing systems to register with
-the tracing namespace. When an operator creates a namespace directory
-under /sys/kernel/tracing/namespaces the registered systems will have
-their create operation run for that namespace. The systems can then create
-files in the new directory used for tracing via user programs. These
-files will then isolate events between each namespace the operator
-creates.
-
-Typically the system name of the event will have the tracing namespace
-name appended onto the system name. For example, if a namespace
-directory was created named "mygroup", then the system name would be
-"<system_name>.mygroup". Since the system names are different for each
-namespace, per-namespace recording/playback can be done by specifying the
-per-namespace system name and the event name. However, this decision is
-up to the registered tracing system for each namespace.
-
-The operator can then bind mount each namespace directory into
-containers. This provides isolation between events and containers, if
-required. It's also possible for several containers to share an
-isolation via bind mounts instead of having an isolation per-container.
-With these files being isolated, different permissions can be added for
-these files than normal tracefs files. This helps scenarios where
-non-admin processes would like to trace, but currently cannot.
-
-To create a namespace called isolated and limited to 256 events run:
-mkdir /sys/kernel/tracing/namespaces/isolated
-cd /sys/kernel/tracing/namespaces/isolated
-echo user_events_limit=256 > options
-
-To bind mount the isolated root to /isolated for use by others run:
-mkdir /isolated
-mount --bind /sys/kernel/tracing/namespaces/isolated/root /isolated
-
-Reading /isolated/user_events_status then outputs the following:
-
-Active: 0
-Busy: 0
-Max: 32768
-Limit: 256
-
-The normal user_event ABI methods work just as before, however, the
-events are now registered under a different system name and have
-their own status file/bitmap.
-
-There's been some previous discussion about this both in the tracefs
-meetings as well as on the mailing lists:
-Link: https://lore.kernel.org/all/20220312010140.1880-1-beaub@linux.microsoft.com/
-Link: https://lore.kernel.org/all/20220425184631.2068-1-beaub@linux.microsoft.com/
-
-V2 Changes:
-Fixed typos and missing carriage return.
-Rebased to v3 user_events patch on ftrace/core.
-
-Beau Belgrave (7):
-  tracing/user_events: Remove BROKEN and restore user_events.h location
-  tracing: Add namespace instance directory to tracefs
-  tracing: Add tracing namespace API for systems to register with
-  tracing/user_events: Move pages/locks into groups to prepare for
-    namespaces
-  tracing/user_events: Register with trace namespace API
-  tracing/user_events: Enable setting event limit within namespace
-  tracing/user_events: Add self-test for namespace integration
-
- fs/tracefs/inode.c                            | 119 +++-
- include/linux/tracefs.h                       |   5 +
- include/{ => uapi}/linux/user_events.h        |   0
- kernel/trace/Kconfig                          |  12 +-
- kernel/trace/Makefile                         |   1 +
- kernel/trace/trace.c                          |  39 ++
- kernel/trace/trace_events_user.c              | 592 +++++++++++++++---
- kernel/trace/trace_namespace.c                | 568 +++++++++++++++++
- kernel/trace/trace_namespace.h                |  57 ++
- .../selftests/user_events/ftrace_test.c       | 150 +++++
- 10 files changed, 1457 insertions(+), 86 deletions(-)
- rename include/{ => uapi}/linux/user_events.h (100%)
- create mode 100644 kernel/trace/trace_namespace.c
- create mode 100644 kernel/trace/trace_namespace.h
-
-
-base-commit: 26b2da5fc0b41a9a6a5e30b858da28572a6f4cbc
-prerequisite-patch-id: bb3e38a639be23a2df781547e4c87bc5bb1a05d0
-prerequisite-patch-id: e7c8f170457cbb6d467ddec6f9282e2cdd81bb32
-prerequisite-patch-id: ffbe40150b26469168a3f4abe97849d8708785d5
-prerequisite-patch-id: a5c2a495793f9db8103c13a4f1e5380ea0f78902
-prerequisite-patch-id: a9e7b35a0d03b12cec5be60a53fa0ff5cdaf8d63
-prerequisite-patch-id: 5df583c86e6de3fc504b478e52e91068c85fa2b9
+diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+index 44f9efd58af5..9694eee27956 100644
+--- a/kernel/trace/trace_events_user.c
++++ b/kernel/trace/trace_events_user.c
+@@ -23,6 +23,10 @@
+ #include "trace.h"
+ #include "trace_dynevent.h"
+ 
++#ifdef CONFIG_TRACE_NAMESPACE
++#include "trace_namespace.h"
++#endif
++
+ #define USER_EVENTS_PREFIX_LEN (sizeof(USER_EVENTS_PREFIX)-1)
+ 
+ #define FIELD_DEPTH_TYPE 0
+@@ -180,6 +184,18 @@ static void user_event_group_destroy(struct user_event_group *group)
+ 	kfree(group);
+ }
+ 
++static void user_event_group_unlink(struct user_event_group *group)
++{
++	if (WARN_ON(refcount_read(&group->refcnt) != 1))
++		pr_warn("user_event: Group unlink with more than 1 ref\n");
++
++	mutex_lock(&group_mutex);
++	hash_del(&group->node);
++	mutex_unlock(&group_mutex);
++
++	user_event_group_destroy(group);
++}
++
+ static char *user_event_group_system_name(const char *name)
+ {
+ 	char *system_name;
+@@ -262,6 +278,7 @@ static struct user_event_group *user_event_group_create(const char *name,
+ 
+ 	return group;
+ error:
++	/* Hash table not added, safe to destroy vs unlink */
+ 	if (group)
+ 		user_event_group_destroy(group);
+ 
+@@ -1905,6 +1922,148 @@ static int create_user_tracefs(struct dentry *parent,
+ 	return -ENODEV;
+ }
+ 
++#ifdef CONFIG_TRACE_NAMESPACE
++static int user_event_ns_create(struct trace_namespace *ns)
++{
++	struct user_event_group *group;
++	int ret;
++
++	group = user_event_group_create(ns->name, ns->id);
++
++	if (!group)
++		return -ENOMEM;
++
++	ret = create_user_tracefs(ns->dir, group);
++
++	user_event_group_release(group);
++
++	if (ret) {
++		user_event_group_unlink(group);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int user_event_ns_remove(struct trace_namespace *ns)
++{
++	struct user_event_group *group = user_event_group_find(ns->id);
++	struct user_event *user;
++	struct hlist_node *tmp;
++	int i, ret = 0;
++
++	if (!group)
++		return -ENOENT;
++
++	/*
++	 * Lock out finding this namespace while we are doing this so that
++	 * user programs trying to open a file owned by this group will block
++	 * until we are done here. The user program upon unblocking will then
++	 * fail to find the group if we removed it.
++	 */
++	mutex_lock(&group_mutex);
++
++	/* Ensure we have the only reference */
++	if (refcount_read(&group->refcnt) != 2) {
++		ret = -EBUSY;
++		goto out;
++	}
++
++	/*
++	 * At this point no more files can be opened by user space programs
++	 * while we are holding the group_mutex (they'll block on group_mutex).
++	 * To ensure other parts of the kernel aren't registering something we
++	 * also grab the group register mutex as an extra precaution.
++	 *
++	 * The events might be being recorded, which will result in their
++	 * being busy and we'll bail out.
++	 *
++	 * NOTE: event_mutex is held, locking reg_mutex could deadlock so we
++	 * must try to lock it and treat as busy if we cannot.
++	 */
++	if (!mutex_trylock(&group->reg_mutex)) {
++		ret = -EBUSY;
++		goto out;
++	}
++
++	hash_for_each_safe(group->register_table, i, tmp, user, node) {
++		if (!user_event_last_ref(user)) {
++			ret = -EBUSY;
++			break;
++		}
++
++		ret = destroy_user_event(user);
++
++		if (ret)
++			break;
++	}
++
++	mutex_unlock(&group->reg_mutex);
++out:
++	mutex_unlock(&group_mutex);
++
++	user_event_group_release(group);
++
++	if (!ret)
++		user_event_group_unlink(group);
++
++	return ret;
++}
++
++static int user_event_ns_parse(struct trace_namespace *ns, const char *command)
++{
++	return -ECANCELED;
++}
++
++static int user_event_ns_show(struct trace_namespace *ns, struct seq_file *m)
++{
++	return 0;
++}
++
++static bool user_event_ns_is_busy(struct trace_namespace *ns)
++{
++	struct user_event_group *group = user_event_group_find(ns->id);
++	struct user_event *user;
++	int i;
++	bool busy = false;
++
++	if (!group)
++		return false;
++
++	/*
++	 * Quick check to ensure all events aren't busy:
++	 * The actual remove will do a more exhaustive check including
++	 * finding if any outstanding files are opened, etc.
++	 *
++	 * NOTE: event_mutex is held, locking reg_mutex could deadlock so we
++	 * must try to lock it and treat as busy if we cannot.
++	 */
++	if (!mutex_trylock(&group->reg_mutex))
++		return true;
++
++	hash_for_each(group->register_table, i, user, node) {
++		if (!user_event_last_ref(user)) {
++			busy = true;
++			break;
++		}
++	}
++
++	mutex_unlock(&group->reg_mutex);
++
++	user_event_group_release(group);
++
++	return busy;
++}
++
++static struct trace_namespace_operations user_event_ns_ops = {
++	.create = user_event_ns_create,
++	.remove = user_event_ns_remove,
++	.parse = user_event_ns_parse,
++	.show = user_event_ns_show,
++	.is_busy = user_event_ns_is_busy,
++};
++#endif
++
+ static int __init trace_events_user_init(void)
+ {
+ 	int ret;
+@@ -1918,7 +2077,8 @@ static int __init trace_events_user_init(void)
+ 
+ 	if (ret) {
+ 		pr_warn("user_events could not register with tracefs\n");
+-		user_event_group_destroy(root_group);
++		user_event_group_release(root_group);
++		user_event_group_unlink(root_group);
+ 		root_group = NULL;
+ 		return ret;
+ 	}
+@@ -1926,6 +2086,11 @@ static int __init trace_events_user_init(void)
+ 	if (dyn_event_register(&user_event_dops))
+ 		pr_warn("user_events could not register with dyn_events\n");
+ 
++#ifdef CONFIG_TRACE_NAMESPACE
++	if (trace_namespace_register(&user_event_ns_ops))
++		pr_warn("user_events could not register with namespaces\n");
++#endif
++
+ 	return 0;
+ }
+ 
 -- 
 2.25.1
 
