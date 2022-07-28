@@ -2,154 +2,106 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E9D8C04A68
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Jul 2022 08:16:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04E4AC04A68
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Jul 2022 16:14:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235074AbiG1IQQ (ORCPT
+        id S232739AbiG1QOQ convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 28 Jul 2022 04:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33536 "EHLO
+        Thu, 28 Jul 2022 12:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233818AbiG1IQQ (ORCPT
+        with ESMTP id S232778AbiG1QNt (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Jul 2022 04:16:16 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D535A2DE;
-        Thu, 28 Jul 2022 01:16:11 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id n206so1640381oia.6;
-        Thu, 28 Jul 2022 01:16:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=7lsW98oKPVkPLCsPCUl6IaHz/uaCklhdsPPA2BI505I=;
-        b=H1Z3mYYSuNgVzgTaMnKhTChwXt+zdTh2l2xOuhRSEwAzLofUyuHfBEUdrnklEexybx
-         F7SAUywk/419CihGTiYx5D7f3Yt932xZq94tpP8oU10oim8NwhGGXZZ3+lvFvBNBPamt
-         gZig97+R4szINucIMvgTQOjtsQOIDZ9HIvYAALDIJoEvFbzELVHjSav+dbEoF1QArtCc
-         VWfvmOyWZksumrEcAShJEII3LHYxotFwFBZ4tIY4q3tip5i6BbBcTBkt3zYqR9nBb0OF
-         QeZPIcWFSUlc8C9IL97fOjtF/H4fZLkwWi29k6vgQkHpqj01E1ZnXO8blJXMaDJ0voiy
-         kVkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=7lsW98oKPVkPLCsPCUl6IaHz/uaCklhdsPPA2BI505I=;
-        b=dbssjRcc/Nvsitx4NE3huDqNaB6Nk8WrNlqQq5RaeC8xeQj/YyRomr6gbhvVZzlqUB
-         lRqHYyvHkZUu45WtHT/VDgePe8W6DQ0A8/ikJROQyhUMr4F05AbyV49Fqc/D4/bfQxse
-         5DNJcgiEvyeXDNxc5ZK2+45+hlST3NVLxH3HUrvv/IyIFfRRRV5wNYVtXAfQWSAsAebL
-         EpbI4ixUcP9HvYgd/7uCVuByS3ccE3/Mh5dXNbW/wR2m2YbQMKuKrzzZPDUPhtAzyvQL
-         ekSkkL9n2Vh64xg5ld+nnE4j0wLFGRgMlaqa0etjQH/jYWZq31Kp5eWKr3RT2S8qyRNS
-         muLQ==
-X-Gm-Message-State: AJIora9wGUtsbqz40FhC8EesiRRo4pn8qE/TkbDv1cYYrv+dJmHo7tn3
-        01wBtvgPbnyw0PlplYLBADKKKUAzizhf7ByVmDQ8BFjcKqPeMA==
-X-Google-Smtp-Source: AGRyM1tGfo1Q6iew4ExpxYfhfjIpNHORqOyeSbAd494+gj107w43w2CJ9gxJXOFv/vgtpvTWQLmATunfa20FS1014gg=
-X-Received: by 2002:a05:6808:302b:b0:2f9:eeef:f03 with SMTP id
- ay43-20020a056808302b00b002f9eeef0f03mr3518377oib.128.1658996170924; Thu, 28
- Jul 2022 01:16:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <870c02d4d97a921f02a31fa3b229fc549af61a20.1657747763.git.bristot@kernel.org>
- <CA+icZUV9waE16ZW4RNEDeiemv6eRd=MetzdGbF-vpfT_u1N4_w@mail.gmail.com>
-In-Reply-To: <CA+icZUV9waE16ZW4RNEDeiemv6eRd=MetzdGbF-vpfT_u1N4_w@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Thu, 28 Jul 2022 10:15:34 +0200
-Message-ID: <CA+icZUX2v-u8tL-U73hZJ0nNHXJ6XQYPupTRBV9QaQN88OF2bw@mail.gmail.com>
-Subject: Re: [PATCH V2] rtla: Fix Makefile when called from -C tools/
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Thu, 28 Jul 2022 12:13:49 -0400
+X-Greylist: delayed 388 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 28 Jul 2022 09:13:48 PDT
+Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEDB06E8AD;
+        Thu, 28 Jul 2022 09:13:48 -0700 (PDT)
+Received: from omf01.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay10.hostedemail.com (Postfix) with ESMTP id 7D45FC14FE;
+        Thu, 28 Jul 2022 16:07:19 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf01.hostedemail.com (Postfix) with ESMTPA id 59FCD60017;
+        Thu, 28 Jul 2022 16:07:17 +0000 (UTC)
+Date:   Thu, 28 Jul 2022 09:07:13 -0700
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     sedat.dilek@gmail.com, Sedat Dilek <sedat.dilek@gmail.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+CC:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH V2] rtla: Fix Makefile when called from -C tools/
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CA+icZUX2v-u8tL-U73hZJ0nNHXJ6XQYPupTRBV9QaQN88OF2bw@mail.gmail.com>
+References: <870c02d4d97a921f02a31fa3b229fc549af61a20.1657747763.git.bristot@kernel.org> <CA+icZUV9waE16ZW4RNEDeiemv6eRd=MetzdGbF-vpfT_u1N4_w@mail.gmail.com> <CA+icZUX2v-u8tL-U73hZJ0nNHXJ6XQYPupTRBV9QaQN88OF2bw@mail.gmail.com>
+Message-ID: <8F70EC88-7DCD-43DB-9C59-55CD13D3141C@goodmis.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Rspamd-Queue-Id: 59FCD60017
+X-Stat-Signature: maijx8rq4potqe19ekdjge7anws66qej
+X-Rspamd-Server: rspamout03
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1+5Eq7VH7nYvxWpVY8RUXyydhWNv7z1uUI=
+X-HE-Tag: 1659024437-418652
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Jul 28, 2022 at 10:01 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Wed, Jul 13, 2022 at 11:32 PM Daniel Bristot de Oliveira
-> <bristot@kernel.org> wrote:
-> >
-> > Sedat Dilek reported an error on rtla Makefile when running:
-> >
-> >     $ make -C tools/ clean
-> >     [...]
-> >     make[2]: Entering directory
-> >     '/home/dileks/src/linux-kernel/git/tools/tracing/rtla'
-> >     [...]
-> >     '/home/dileks/src/linux-kernel/git/Documentation/tools/rtla'
-> >     /bin/sh: 1: test: rtla-make[2]:: unexpected operator    <------ The problem
-> >     rm: cannot remove '/home/dileks/src/linux-kernel/git': Is a directory
-> >     make[2]: *** [Makefile:120: clean] Error 1
-> >     make[2]: Leaving directory
-> >
-> > This occurred because the rtla calls kernel's Makefile to get the
-> > version in silence mode, e.g.,
-> >
-> >     $ make -sC ../../.. kernelversion
-> >     5.19.0-rc4
-> >
-> > But the -s is being ignored when rtla's makefile is called indirectly,
-> > so the output looks like this:
-> >
-> >     $ make -C ../../.. kernelversion
-> >     make: Entering directory '/root/linux'
-> >     5.19.0-rc4
-> >     make: Leaving directory '/root/linux'
-> >
-> > Using 'grep -v make' avoids this problem, e.g.,
-> >
-> >     $ make -C ../../.. kernelversion | grep -v make
-> >     5.19.0-rc4
-> >
-> > Thus, add | grep -v make.
-> >
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Fixes: 8619e32825fd ("rtla: Follow kernel version")
-> > Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-> > Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-> > Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
->
-> Hi,
->
-> what is the status of this patch?
->
-> Is it missing some ACKs e.g. from Steven?
->
-> Can this go directly to Linus tree as I wanted to see it in Linux v5.19 FINAL?
->
-> Thanks.
->
 
-INFO:
 
-Steven's autoresponder says:
+On July 28, 2022 1:15:34 AM PDT, Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>On Thu, Jul 28, 2022 at 10:01 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>>
+>> Hi,
+>>
+>> what is the status of this patch?
+>>
+>> Is it missing some ACKs e.g. from Steven?
+>>
+>> Can this go directly to Linus tree as I wanted to see it in Linux v5.19 FINAL?
+>>
+>> Thanks.
+>>
+>
+>INFO:
+>
+>Steven's autoresponder says:
+>
+>I'm currently traveling and may be slow to respond (and may not at all).
+>I'll be back at my normal hours on Tuesday, Aug 2nd.
 
-I'm currently traveling and may be slow to respond (and may not at all).
-I'll be back at my normal hours on Tuesday, Aug 2nd.
 
-Here the lore-link to v2:
+Yes, I'm currently at the SCaLE 19x conference, but I plan on pulling in rtla and rv work while I'm here.
 
-[1] https://lore.kernel.org/all/870c02d4d97a921f02a31fa3b229fc549af61a20.1657747763.git.bristot@kernel.org/
-
--Sedat-
+-- Steve
 
 >
-> > ---
-> >  tools/tracing/rtla/Makefile | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
-> > index 3822f4ea5f49..1bea2d16d4c1 100644
-> > --- a/tools/tracing/rtla/Makefile
-> > +++ b/tools/tracing/rtla/Makefile
-> > @@ -1,6 +1,6 @@
-> >  NAME   :=      rtla
-> >  # Follow the kernel version
-> > -VERSION :=     $(shell cat VERSION 2> /dev/null || make -sC ../../.. kernelversion)
-> > +VERSION :=     $(shell cat VERSION 2> /dev/null || make -sC ../../.. kernelversion | grep -v make)
-> >
-> >  # From libtracefs:
-> >  # Makefiles suck: This macro sets a default value of $(2) for the
-> > --
-> > 2.32.0
-> >
+>Here the lore-link to v2:
+>
+>[1] https://lore.kernel.org/all/870c02d4d97a921f02a31fa3b229fc549af61a20.1657747763.git.bristot@kernel.org/
+>
+>-Sedat-
+>
+>>
+>> > ---
+>> >  tools/tracing/rtla/Makefile | 2 +-
+>> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>> >
+>> > diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
+>> > index 3822f4ea5f49..1bea2d16d4c1 100644
+>> > --- a/tools/tracing/rtla/Makefile
+>> > +++ b/tools/tracing/rtla/Makefile
+>> > @@ -1,6 +1,6 @@
+>> >  NAME   :=      rtla
+>> >  # Follow the kernel version
+>> > -VERSION :=     $(shell cat VERSION 2> /dev/null || make -sC ../../.. kernelversion)
+>> > +VERSION :=     $(shell cat VERSION 2> /dev/null || make -sC ../../.. kernelversion | grep -v make)
+>> >
+>> >  # From libtracefs:
+>> >  # Makefiles suck: This macro sets a default value of $(2) for the
+>> > --
+>> > 2.32.0
+>> >
+
+-- 
+Sent from my Android device with K-9 Mail. Please excuse my brevity and top posting.
