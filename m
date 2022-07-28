@@ -2,199 +2,86 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2522DC04A68
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Jul 2022 19:53:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8369BC04A68
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Jul 2022 23:33:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232319AbiG1TxX (ORCPT
+        id S233599AbiG1XdO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 28 Jul 2022 15:53:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37038 "EHLO
+        Thu, 28 Jul 2022 19:33:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbiG1TxX (ORCPT
+        with ESMTP id S229944AbiG1XdO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Jul 2022 15:53:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D3481CFD5;
-        Thu, 28 Jul 2022 12:53:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 170AB61E26;
-        Thu, 28 Jul 2022 19:53:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9935AC433D6;
-        Thu, 28 Jul 2022 19:53:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659038001;
-        bh=+y6opbN7WD1OrVOWmvnLM/pFLYkbXR/iL3cSrSYb7VM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=INr1tGg8pxuO+MgtZfzXRIQKpYtPIr3gaSms9ac5wnKSSZ5AqIBdQIQhLJGIo5nlC
-         SujJUylOGhDoh8UXJ0+1RP/ciIixq7ZY3gqJvXMuZSNYYwGdo2YKaY+ScFwaWYaDgl
-         jA3GM52qm6ounJ1u0vJ3P3fKUO2GOj8eLDabzbUWFOIp2+6gW/bi+jK5wwySl58YzK
-         0ExCcQKjnKtecaHcHAguC46siqQ/BltXJcNHc7XBY0MhyrjPlFNL7EXtr5lE+lj3B6
-         Hn++zsb7El7iQYSJ4NPIaisWLT0Sks4g7IVMDIUD0iEEOxma/YRQFfZTQS7dQbgT0C
-         6r0lZ8kUwX5OQ==
-Message-ID: <c56991fe-5028-3a5a-3dc6-85f70864f184@kernel.org>
-Date:   Thu, 28 Jul 2022 21:53:13 +0200
+        Thu, 28 Jul 2022 19:33:14 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 93C1D785BC;
+        Thu, 28 Jul 2022 16:33:13 -0700 (PDT)
+Received: from localhost.localdomain (unknown [76.135.27.191])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 43A8120FE9A8;
+        Thu, 28 Jul 2022 16:33:13 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 43A8120FE9A8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1659051193;
+        bh=Oh80tgumXtzVzhggUEiO+Gt+FYTYz042ycLpTb3589E=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=VCnDRmLKxxH/Ic6i7hAMaN2xL7R9BWkV5Ijcs9YxXbW9OR+yCtZTjN0BMiItOzXmo
+         peCIQndhTbiP27oRpl5l4I7YrOa4zKuEiyvQ1pUDan/Bil8M1i27geo+zb9dEybSvc
+         irePdCUmgTcNYeCiuq2VKl2sTZTfncQQzHwxge70=
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     rostedt@goodmis.org, mhiramat@kernel.org,
+        mathieu.desnoyers@efficios.com
+Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, beaub@linux.microsoft.com
+Subject: [PATCH v3 1/6] tracing/user_events: Use NULL for strstr checks
+Date:   Thu, 28 Jul 2022 16:33:04 -0700
+Message-Id: <20220728233309.1896-2-beaub@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220728233309.1896-1-beaub@linux.microsoft.com>
+References: <20220728233309.1896-1-beaub@linux.microsoft.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH V8 01/16] rv: Add Runtime Verification (RV) interface
-Content-Language: en-US
-To:     Tao Zhou <tao.zhou@linux.dev>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Gabriele Paoloni <gpaoloni@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org
-References: <cover.1658940828.git.bristot@kernel.org>
- <04fcaacb8c1e8dc0fd0289ceca8e3b1d29747c30.1658940828.git.bristot@kernel.org>
- <YuLJL7CoSYsStdsV@geo.homenetwork>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <YuLJL7CoSYsStdsV@geo.homenetwork>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 7/28/22 19:36, Tao Zhou wrote:
-> On Wed, Jul 27, 2022 at 07:11:29PM +0200, Daniel Bristot de Oliveira wrote:
-> 
->> +static ssize_t enabled_monitors_write(struct file *filp, const char __user *user_buf,
->> +				      size_t count, loff_t *ppos)
->> +{
->> +	char buff[MAX_RV_MONITOR_NAME_SIZE + 2];
-> 
-> If I am not wrong, but "joke" from myself is very possible.
-> 
-> char buff[MAX_RV_MONITOR_NAME_SIZE + 1];
-> 
-> +1 is for one '\0'. The above have '\0\0'. One '\0' is enough.
+Trivial fix to ensure strstr checks use NULL instead of 0.
 
-!
+Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+---
+ kernel/trace/trace_events_user.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
->> +	struct rv_monitor_def *mdef;
->> +	int retval = -EINVAL;
->> +	bool enable = true;
->> +	char *ptr = buff;
->> +	int len;
->> +
->> +	if (count < 1 || count > MAX_RV_MONITOR_NAME_SIZE + 1)
-> 
-> Use `count > MAX_RV_MONITOR_NAME_SIZE` check the up bound.
-> 
->> +		return -EINVAL;
->> +
->> +	memset(buff, 0, sizeof(buff));
->> +
->> +	retval = simple_write_to_buffer(buff, sizeof(buff) - 1, ppos, user_buf, count);
-> 
-> simple_write_to_buffer(buff, sizeof(buff), ppos, user_buf, count)
-> 
->> +	if (retval < 0)
->> +		return -EFAULT;
->> +
->> +	ptr = strim(buff);
-> 
-> I see isspace() that the mask `_S` is for space/lf/tab, but I do
-> not know if the lf stands for being able to strim the '\n'. If so
-> there is no problem here. if use buffer is "wip\n\n", we should
-> treat it the same as "wip", no?
+diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+index a6621c52ce45..075d694d20e3 100644
+--- a/kernel/trace/trace_events_user.c
++++ b/kernel/trace/trace_events_user.c
+@@ -277,7 +277,7 @@ static int user_event_add_field(struct user_event *user, const char *type,
+ 	goto add_field;
+ 
+ add_validator:
+-	if (strstr(type, "char") != 0)
++	if (strstr(type, "char") != NULL)
+ 		validator_flags |= VALIDATOR_ENSURE_NULL;
+ 
+ 	validator = kmalloc(sizeof(*validator), GFP_KERNEL);
+@@ -458,7 +458,7 @@ static const char *user_field_format(const char *type)
+ 		return "%d";
+ 	if (strcmp(type, "unsigned char") == 0)
+ 		return "%u";
+-	if (strstr(type, "char[") != 0)
++	if (strstr(type, "char[") != NULL)
+ 		return "%s";
+ 
+ 	/* Unknown, likely struct, allowed treat as 64-bit */
+@@ -479,7 +479,7 @@ static bool user_field_is_dyn_string(const char *type, const char **str_func)
+ 
+ 	return false;
+ check:
+-	return strstr(type, "char") != 0;
++	return strstr(type, "char") != NULL;
+ }
+ 
+ #define LEN_OR_ZERO (len ? len - pos : 0)
+-- 
+2.25.1
 
-no.
-
-> 
->> +/*
->> + * Monitoring on global switcher!
->> + */
->> +static bool __read_mostly monitoring_on;
->> +
->> +/**
->> + * rv_monitoring_on - checks if monitoring is on
->> + *
->> + * Returns 1 if on, 0 otherwise.
->> + */
->> +bool rv_monitoring_on(void)
->> +{
->> +	/* Ensures that concurrent monitors read consistent monitoring_on */
->> +	smp_rmb();
-> 
-> Here invalidate message will be processed and send the read message
-> and get updated monitoring_on from another cpu. I feel confused
-> because there is half part of the memory barrier pair. But this half
-> way from my mind in this case has effect. This is the first time that
-> I know it can be synced this way. Let me guess this way.
-> 
->> +	return READ_ONCE(monitoring_on);
->> +}
-> 
-> I checked the load of monitoring_on, there are three cases:
-> file read     file write(call load self)     event handler check
-> Store of monitoring_on: one in init rv, another is file write after
-> call load self.
-> The file is created before the turn_monitoring_on() called in 
-> rv_init_interface(). So there may be existing the store race
-> at the init part. Just after the monitoring_on file created,
-> and other cpus do monitoring_on flips operations and at the
-> same time the init code do turn_monitor_on(). Or the enabled
-> file be writen to enable/disable monitors happening before
-> monitoring_on is set in init rv. That means the event handler
-> can be start before the monitoring_on is turned on in init rv.
-> The turn_monitoring_on() in rv_init_interface() is not a switcher
-> because it may has been beated by file flips operations before.
-
-there will be no monitors loaded at this point during boot time.
-
->> +
->> +/*
->> + * monitoring_on general switcher.
->> + */
->> +static ssize_t monitoring_on_read_data(struct file *filp, char __user *user_buf,
->> +				       size_t count, loff_t *ppos)
->> +{
->> +	const char *buff;
->> +
->> +	buff = rv_monitoring_on() ? "1\n" : "0\n";
-> 
-> I hope this will not be inlined..
-
-Even if I add a lock, the value can change after the lock is unlocked before
-returning to user-space...
-
-> 
->> +
->> +	return simple_read_from_buffer(user_buf, count, ppos, buff, strlen(buff) + 1);
->> +}
->> +static void destroy_monitor_dir(struct rv_monitor_def *mdef)
->> +{
->> +	reactor_cleanup_monitor(mdef);
-> 
-> reactor_cleanup_monitor() appear in this patch but not defined.
-
-I will have to send a v9 only fixing this because it breaks bisect.
-
-It was caused by a last minute change... (boooh, Daniel!)
-
->> +	rv_remove(mdef->root_d);
->> +}
->> +struct dentry *get_monitors_root(void);
->> +int init_rv_monitors(struct dentry *root_dir);
-> 
-> init_rv_monitors() definition do not appear in this patch. Thanks,
-
-Thanks!
--- Daniel
