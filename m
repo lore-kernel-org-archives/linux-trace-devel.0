@@ -2,177 +2,66 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8F5FC19F2B
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Jul 2022 09:41:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CF8CC00144
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Jul 2022 20:49:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235895AbiG2Jlf (ORCPT
+        id S233332AbiG2UtC (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 29 Jul 2022 05:41:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41330 "EHLO
+        Fri, 29 Jul 2022 16:49:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235902AbiG2Jk4 (ORCPT
+        with ESMTP id S230089AbiG2UtA (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 29 Jul 2022 05:40:56 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 579517C1B1;
-        Fri, 29 Jul 2022 02:40:40 -0700 (PDT)
+        Fri, 29 Jul 2022 16:49:00 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9186AA14
+        for <linux-trace-devel@vger.kernel.org>; Fri, 29 Jul 2022 13:49:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0647BB8270B;
-        Fri, 29 Jul 2022 09:40:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23480C4347C;
-        Fri, 29 Jul 2022 09:40:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659087627;
-        bh=b8X+BFzH2iCZK+xpE2p+40Q5LRHdNFPjgm8yK8trTBQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QeHeJ8s+6pafXdao7/owo8n9jZhvY4Y9okbI92hUti3u2yunW2LZ30ScOVFilHB2Z
-         6iFaxa4LYns+Xw0BDf1dypr84xzl+pgETtsfx/wTkL8xe6LuisAWk9SOwgAqBoQEWy
-         i+8NVn0MXePlsPtskbMk+wiicurGzDon9grkLBfvkPF9ElEsaT+X21pDAPXPQTO8Rp
-         CMhL9SiX5tEqXlWw32HpaI8EFnuxDHsHdI+zVwmqfF9DOazMUNrk7LmJ52PuhZt2yv
-         mU85srS0N74786oRq7uSgfLewh9547jiAG+sdfm3kBOdOFE8x/Pqv83AiVAQtjOQ3g
-         sayvBoL5D4QGw==
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Gabriele Paoloni <gpaoloni@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        Tao Zhou <tao.zhou@linux.dev>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org
-Subject: [PATCH V9 16/16] rv/reactor: Add the panic reactor
-Date:   Fri, 29 Jul 2022 11:38:55 +0200
-Message-Id: <729aae3aba95f35738b8f8180e626d747d1d9da2.1659052063.git.bristot@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1659052063.git.bristot@kernel.org>
-References: <cover.1659052063.git.bristot@kernel.org>
+        by sin.source.kernel.org (Postfix) with ESMTPS id 3C58ACE2B5C
+        for <linux-trace-devel@vger.kernel.org>; Fri, 29 Jul 2022 20:48:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C8C7C433C1
+        for <linux-trace-devel@vger.kernel.org>; Fri, 29 Jul 2022 20:48:56 +0000 (UTC)
+Date:   Fri, 29 Jul 2022 16:48:50 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd libs: Initialize msg to NULL
+ tracecmd_msg_read_data()
+Message-ID: <20220729164850.460886bb@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Sample reactor that panics the system when an exception is found. This
-is useful both to capture a vmcore, or to fail-safe a critical system.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Marco Elver <elver@google.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Gabriele Paoloni <gpaoloni@redhat.com>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Clark Williams <williams@redhat.com>
-Cc: Tao Zhou <tao.zhou@linux.dev>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-trace-devel@vger.kernel.org
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+If there are no parameters passed to the guest agent, then the loop
+inside tracecmd_msg_read_data() will not iterate and the msg variable
+will be accessed (freed) without being initailized causing a possible
+SEGFAULT.
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/rv/Kconfig         |  8 ++++++
- kernel/trace/rv/Makefile        |  1 +
- kernel/trace/rv/reactor_panic.c | 43 +++++++++++++++++++++++++++++++++
- 3 files changed, 52 insertions(+)
- create mode 100644 kernel/trace/rv/reactor_panic.c
+ lib/trace-cmd/trace-msg.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
-index e82d5015e6ab..831779607e84 100644
---- a/kernel/trace/rv/Kconfig
-+++ b/kernel/trace/rv/Kconfig
-@@ -68,3 +68,11 @@ config RV_REACT_PRINTK
- 	help
- 	  Enables the printk reactor. The printk reactor emits a printk()
- 	  message if an exception is found.
+diff --git a/lib/trace-cmd/trace-msg.c b/lib/trace-cmd/trace-msg.c
+index 9c26401a..342d03e4 100644
+--- a/lib/trace-cmd/trace-msg.c
++++ b/lib/trace-cmd/trace-msg.c
+@@ -980,6 +980,8 @@ int tracecmd_msg_read_data(struct tracecmd_msg_handle *msg_handle, int ofd)
+ 	ssize_t s;
+ 	int ret;
+ 
++	memset(&msg, 0, sizeof(msg));
 +
-+config RV_REACT_PANIC
-+	bool "Panic reactor"
-+	depends on RV_REACTORS
-+	default y
-+	help
-+	  Enables the panic reactor. The panic reactor emits a printk()
-+	  message if an exception is found and panic()s the system.
-diff --git a/kernel/trace/rv/Makefile b/kernel/trace/rv/Makefile
-index a13c750a35c1..963d14875b45 100644
---- a/kernel/trace/rv/Makefile
-+++ b/kernel/trace/rv/Makefile
-@@ -5,3 +5,4 @@ obj-$(CONFIG_RV_MON_WIP) += monitors/wip/wip.o
- obj-$(CONFIG_RV_MON_WWNR) += monitors/wwnr/wwnr.o
- obj-$(CONFIG_RV_REACTORS) += rv_reactors.o
- obj-$(CONFIG_RV_REACT_PRINTK) += reactor_printk.o
-+obj-$(CONFIG_RV_REACT_PANIC) += reactor_panic.o
-diff --git a/kernel/trace/rv/reactor_panic.c b/kernel/trace/rv/reactor_panic.c
-new file mode 100644
-index 000000000000..b698d05dd069
---- /dev/null
-+++ b/kernel/trace/rv/reactor_panic.c
-@@ -0,0 +1,43 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2019-2022 Red Hat, Inc. Daniel Bristot de Oliveira <bristot@kernel.org>
-+ *
-+ * Panic RV reactor:
-+ *   Prints the exception msg to the kernel message log and panic().
-+ */
-+
-+#include <linux/ftrace.h>
-+#include <linux/tracepoint.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/rv.h>
-+
-+static void rv_panic_reaction(char *msg)
-+{
-+	panic(msg);
-+}
-+
-+static struct rv_reactor rv_panic = {
-+	.name = "panic",
-+	.description = "panic the system if an exception is found.",
-+	.react = rv_panic_reaction
-+};
-+
-+static int register_react_panic(void)
-+{
-+	rv_register_reactor(&rv_panic);
-+	return 0;
-+}
-+
-+static void unregister_react_panic(void)
-+{
-+	rv_unregister_reactor(&rv_panic);
-+}
-+
-+module_init(register_react_panic);
-+module_exit(unregister_react_panic);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Daniel Bristot de Oliveira");
-+MODULE_DESCRIPTION("panic rv reactor: panic if an exception is found.");
+ 	while (!tracecmd_msg_done(msg_handle)) {
+ 		n = read_msg_data(msg_handle, &msg);
+ 		if (n <= 0)
 -- 
 2.35.1
 
