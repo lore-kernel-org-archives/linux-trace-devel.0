@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BD59C3F6B0
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Jul 2022 09:40:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87E5AC25B06
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Jul 2022 09:40:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235759AbiG2Jkt (ORCPT
+        id S235779AbiG2Jkv (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 29 Jul 2022 05:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40248 "EHLO
+        Fri, 29 Jul 2022 05:40:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235704AbiG2Jk3 (ORCPT
+        with ESMTP id S235698AbiG2Jk1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 29 Jul 2022 05:40:29 -0400
+        Fri, 29 Jul 2022 05:40:27 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 901DD2DE7;
-        Fri, 29 Jul 2022 02:40:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F691B8A;
+        Fri, 29 Jul 2022 02:40:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3054D61D43;
-        Fri, 29 Jul 2022 09:40:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 128B8C433C1;
-        Fri, 29 Jul 2022 09:40:02 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 26D8D61D96;
+        Fri, 29 Jul 2022 09:39:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 021A2C433D7;
+        Fri, 29 Jul 2022 09:39:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659087607;
-        bh=GB41tQKICNtDkQFxA/QWse4BCeG2/JC8OIwADKGp+BU=;
+        s=k20201202; t=1659087592;
+        bh=mG1y3TloQ/WvnZEwTPkdmc9Aeu5nRoK1ZFR7V90MsFw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pvP9bRcs4U6a5SmepAWpwIoR+qz/7LIz2zGFSZPptkjsfslE3iQK58d14RCFnGdvd
-         SNMdS54F88ov9m1UE0re11B6pCEubY3CVmJVQuYEiwxo7CF3LIaPCGmVYVnpnsi2in
-         Gyxhlud23+XUFtL1t7z8j/lkJxb+bqn++t52TeTmVxAColqge5i73VNJ+FSSpQWbdB
-         8e9A2TmuFyjWCjvezAUmJC5jqEd+VPAdSToszJxjmYcFZWz6E1IG/+NLCRU56YlOKP
-         yOhjvQ3ahWd+3LAWOcRJfNqNSGbyWWtV5ziZxzqzP65MaqKqqoUidjIJ33XPsOf617
-         IfNf4ZERkj+oQ==
+        b=TQiD7+iWVIViRYKRKmTEPlqjLyQED4YGm5NgjcuatDbY2cFGwl/Xqxzb3tKHYeU/x
+         VQQQMF5V72Z4gZfabaQtsuqx8vdD0x4jXJPkGIaPiSH3BDeQArLhPygW9W+jjpjjHt
+         s9tJ0ZCgB91Xh+3K+X3ha4Tt0DYgY8NdJSxqf5dMJKH68ND1FAxeY+yz9bZEUHVqyl
+         UnFsDW/aEfiLJYfmvX9LM+pvAGFEaP7oHkH2koXVecONnq96leOZ5oHkGz4bt+7ohc
+         A9JuRGHiqr5QGTnEcZACuKbM9y5fwmJbWOldXvha1SMJph9vA7zkQT6A6sXn4mhfQR
+         mBMmoGLw+bg8w==
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
@@ -55,9 +55,9 @@ Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Randy Dunlap <rdunlap@infradead.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
-Subject: [PATCH V9 12/16] rv/monitor: Add the wip monitor skeleton created by dot2k
-Date:   Fri, 29 Jul 2022 11:38:51 +0200
-Message-Id: <5eb7a9118917e8a814c5e49853a72fc62be0a101.1659052063.git.bristot@kernel.org>
+Subject: [PATCH V9 09/16] tools/rv: Add dot2k
+Date:   Fri, 29 Jul 2022 11:38:48 +0200
+Message-Id: <083b3ae61e5a62c1e2e5d08009baa91f82181618.1659052063.git.bristot@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1659052063.git.bristot@kernel.org>
 References: <cover.1659052063.git.bristot@kernel.org>
@@ -67,15 +67,16 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-THIS CODE IS NOT LINKED TO THE MAKEFILE.
+transform .dot file into kernel rv monitor
 
-This model does not compile because it lacks the instrumentation
-part, which will be added next. In the typical case, there will be
-only one patch, but it was split into two patches for educational
-purposes.
+usage: dot2k [-h] -d DOT_FILE -t MONITOR_TYPE [-n MODEL_NAME] [-D DESCRIPTION]
 
-This is the direct output this command line:
-  $ dot2k -d tools/verification/models/wip.dot -t per_cpu
+optional arguments:
+  -h, --help            show this help message and exit
+  -d DOT_FILE, --dot DOT_FILE
+  -t MONITOR_TYPE, --monitor_type MONITOR_TYPE
+  -n MODEL_NAME, --model_name MODEL_NAME
+  -D DESCRIPTION, --description DESCRIPTION
 
 Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
 Cc: Guenter Roeck <linux@roeck-us.net>
@@ -100,18 +101,268 @@ Cc: linux-kernel@vger.kernel.org
 Cc: linux-trace-devel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- kernel/trace/rv/monitors/wip/wip.c | 109 +++++++++++++++++++++++++++++
- kernel/trace/rv/monitors/wip/wip.h |  46 ++++++++++++
- 2 files changed, 155 insertions(+)
- create mode 100644 kernel/trace/rv/monitors/wip/wip.c
- create mode 100644 kernel/trace/rv/monitors/wip/wip.h
+ tools/verification/dot2/Makefile              |   5 +
+ tools/verification/dot2/dot2k                 |  44 +++++
+ tools/verification/dot2/dot2k.py              | 174 ++++++++++++++++++
+ .../dot2/dot2k_templates/main_global.c        |  91 +++++++++
+ .../dot2/dot2k_templates/main_per_cpu.c       |  91 +++++++++
+ .../dot2/dot2k_templates/main_per_task.c      |  91 +++++++++
+ 6 files changed, 496 insertions(+)
+ create mode 100644 tools/verification/dot2/dot2k
+ create mode 100644 tools/verification/dot2/dot2k.py
+ create mode 100644 tools/verification/dot2/dot2k_templates/main_global.c
+ create mode 100644 tools/verification/dot2/dot2k_templates/main_per_cpu.c
+ create mode 100644 tools/verification/dot2/dot2k_templates/main_per_task.c
 
-diff --git a/kernel/trace/rv/monitors/wip/wip.c b/kernel/trace/rv/monitors/wip/wip.c
+diff --git a/tools/verification/dot2/Makefile b/tools/verification/dot2/Makefile
+index 235d182f6b2c..021beb07a521 100644
+--- a/tools/verification/dot2/Makefile
++++ b/tools/verification/dot2/Makefile
+@@ -19,3 +19,8 @@ install:
+ 	$(INSTALL) automata.py -D -m 644 $(DESTDIR)$(PYLIB)/dot2/automata.py
+ 	$(INSTALL) dot2c.py -D -m 644 $(DESTDIR)$(PYLIB)/dot2/dot2c.py
+ 	$(INSTALL) dot2c -D -m 755 $(DESTDIR)$(bindir)/
++	$(INSTALL) dot2k.py -D -m 644 $(DESTDIR)$(PYLIB)/dot2/dot2k.py
++	$(INSTALL) dot2k -D -m 755 $(DESTDIR)$(bindir)/
++
++	mkdir -p ${miscdir}/
++	cp -rp dot2k_templates $(DESTDIR)$(miscdir)/
+diff --git a/tools/verification/dot2/dot2k b/tools/verification/dot2/dot2k
 new file mode 100644
-index 000000000000..79a054ca0cde
+index 000000000000..69106f4b7682
 --- /dev/null
-+++ b/kernel/trace/rv/monitors/wip/wip.c
-@@ -0,0 +1,109 @@
++++ b/tools/verification/dot2/dot2k
+@@ -0,0 +1,44 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Copyright (C) 2019-2022 Red Hat, Inc. Daniel Bristot de Oliveira <bristot@kernel.org>
++#
++# dot2k: transform dot files into a monitor for the Linux kernel.
++
++if __name__ == '__main__':
++    from dot2.dot2k import dot2k
++    import argparse
++    import ntpath
++    import os
++    import platform
++    import sys
++    import sys
++    import argparse
++
++    parser = argparse.ArgumentParser(description='transform .dot file into kernel rv monitor')
++    parser.add_argument('-d', "--dot", dest="dot_file", required=True)
++    parser.add_argument('-t', "--monitor_type", dest="monitor_type", required=True)
++    parser.add_argument('-n', "--model_name", dest="model_name", required=False)
++    parser.add_argument("-D", "--description", dest="description", required=False)
++    params = parser.parse_args()
++
++    print("Opening and parsing the dot file %s" % params.dot_file)
++    try:
++        monitor=dot2k(params.dot_file, params.monitor_type)
++    except Exception as e:
++        print('Error: '+ str(e))
++        print("Sorry : :-(")
++        sys.exit(1)
++
++    # easier than using argparse action.
++    if params.model_name != None:
++        print(params.model_name)
++
++    print("Writing the monitor into the directory %s" % monitor.name)
++    monitor.print_files()
++    print("Almost done, checklist")
++    print("  - Edit the %s/%s.c to add the instrumentation" % (monitor.name, monitor.name))
++    print("  - Edit include/trace/events/rv.h to add the tracepoint entry")
++    print("  - Move it to the kernel's monitor directory")
++    print("  - Edit kernel/trace/rv/Makefile")
++    print("  - Edit kernel/trace/rv/Kconfig")
+diff --git a/tools/verification/dot2/dot2k.py b/tools/verification/dot2/dot2k.py
+new file mode 100644
+index 000000000000..d85f755e3bc7
+--- /dev/null
++++ b/tools/verification/dot2/dot2k.py
+@@ -0,0 +1,174 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Copyright (C) 2019-2022 Red Hat, Inc. Daniel Bristot de Oliveira <bristot@kernel.org>
++#
++# dot2k: transform dot files into a monitor for the Linux kernel.
++
++from dot2.dot2c import Dot2c
++import platform
++import os
++
++class dot2k(Dot2c):
++    monitor_types = { "global" : 1, "per_cpu" : 2, "per_task" : 3 }
++    monitor_templates_dir = "dot2k/rv_templates/"
++    monitor_type = "per_cpu"
++
++    def __init__(self, file_path, MonitorType):
++        super().__init__(file_path)
++
++        self.monitor_type = self.monitor_types.get(MonitorType)
++        if self.monitor_type == None:
++            raise Exception("Unknown monitor type: %s" % MonitorType)
++
++        self.monitor_type = MonitorType
++        self.__fill_rv_templates_dir()
++        self.main_c = self.__open_file(self.monitor_templates_dir + "main_" + MonitorType + ".c")
++        self.enum_suffix = "_%s" % self.name
++
++    def __fill_rv_templates_dir(self):
++
++        if os.path.exists(self.monitor_templates_dir) == True:
++            return
++
++        if platform.system() != "Linux":
++            raise Exception("I can only run on Linux.")
++
++        kernel_path = "/lib/modules/%s/build/tools/verification/dot2/dot2k_templates/" % (platform.release())
++
++        if os.path.exists(kernel_path) == True:
++            self.monitor_templates_dir = kernel_path
++            return
++
++        if os.path.exists("/usr/share/dot2/dot2k_templates/") == True:
++            self.monitor_templates_dir = "/usr/share/dot2/dot2k_templates/"
++            return
++
++        raise Exception("Could not find the template directory, do you have the kernel source installed?")
++
++
++    def __open_file(self, path):
++        try:
++            fd = open(path)
++        except OSError:
++            raise Exception("Cannot open the file: %s" % path)
++
++        content = fd.read()
++
++        return content
++
++    def __buff_to_string(self, buff):
++        string = ""
++
++        for line in buff:
++            string = string + line + "\n"
++
++        # cut off the last \n
++        return string[:-1]
++
++    def fill_tracepoint_handlers_skel(self):
++        buff = []
++        for event in self.events:
++            buff.append("static void handle_%s(void *data, /* XXX: fill header */)" % event)
++            buff.append("{")
++            if self.monitor_type == "per_task":
++                buff.append("\tstruct task_struct *p = /* XXX: how do I get p? */;");
++                buff.append("\tda_handle_event_%s(p, %s%s);" % (self.name, event, self.enum_suffix));
++            else:
++                buff.append("\tda_handle_event_%s(%s%s);" % (self.name, event, self.enum_suffix));
++            buff.append("}")
++            buff.append("")
++        return self.__buff_to_string(buff)
++
++    def fill_tracepoint_attach_probe(self):
++        buff = []
++        for event in self.events:
++            buff.append("\trv_attach_trace_probe(\"%s\", /* XXX: tracepoint */, handle_%s);" % (self.name, event))
++        return self.__buff_to_string(buff)
++
++    def fill_tracepoint_detach_helper(self):
++        buff = []
++        for event in self.events:
++            buff.append("\trv_detach_trace_probe(\"%s\", /* XXX: tracepoint */, handle_%s);" % (self.name, event))
++        return self.__buff_to_string(buff)
++
++    def fill_main_c(self):
++        main_c = self.main_c
++        min_type = self.get_minimun_type()
++        nr_events = self.events.__len__()
++        tracepoint_handlers = self.fill_tracepoint_handlers_skel()
++        tracepoint_attach = self.fill_tracepoint_attach_probe()
++        tracepoint_detach = self.fill_tracepoint_detach_helper()
++
++        main_c = main_c.replace("MIN_TYPE", min_type)
++        main_c = main_c.replace("MODEL_NAME", self.name)
++        main_c = main_c.replace("NR_EVENTS", str(nr_events))
++        main_c = main_c.replace("TRACEPOINT_HANDLERS_SKEL", tracepoint_handlers)
++        main_c = main_c.replace("TRACEPOINT_ATTACH", tracepoint_attach)
++        main_c = main_c.replace("TRACEPOINT_DETACH", tracepoint_detach)
++
++        return main_c
++
++    def fill_model_h_header(self):
++        buff = []
++        buff.append("/*")
++        buff.append(" * Automatically generated C representation of %s automaton" % (self.name))
++        buff.append(" * For further information about this format, see kernel documentation:")
++        buff.append(" *   Documentation/trace/rv/deterministic_automata.rst")
++        buff.append(" */")
++        buff.append("")
++
++        return buff
++
++    def fill_model_h(self):
++        #
++        # Adjust the definition names
++        #
++        self.enum_states_def = "states_%s" % self.name
++        self.enum_events_def = "events_%s" % self.name
++        self.struct_automaton_def = "automaton_%s" % self.name
++        self.var_automaton_def = "automaton_%s" % self.name
++
++        buff = self.fill_model_h_header()
++        buff += self.format_model()
++
++        return self.__buff_to_string(buff)
++
++    def __create_directory(self):
++        try:
++            os.mkdir(self.name)
++        except FileExistsError:
++            return
++        except:
++            print("Fail creating the output dir: %s" % self.name)
++
++    def __create_file(self, file_name, content):
++        path = "%s/%s" % (self.name, file_name)
++        try:
++            file = open(path, 'w')
++        except FileExistsError:
++            return
++        except:
++            print("Fail creating file: %s" % path)
++
++        file.write(content)
++
++        file.close()
++
++    def __get_main_name(self):
++        path = "%s/%s" % (self.name, "main.c")
++        if os.path.exists(path) == False:
++           return "main.c"
++        return "__main.c"
++
++    def print_files(self):
++        main_c = self.fill_main_c()
++        model_h = self.fill_model_h()
++
++        self.__create_directory()
++
++        path = "%s.c" % self.name
++        self.__create_file(path, main_c)
++
++        path = "%s.h" % self.name
++        self.__create_file(path, model_h)
+diff --git a/tools/verification/dot2/dot2k_templates/main_global.c b/tools/verification/dot2/dot2k_templates/main_global.c
+new file mode 100644
+index 000000000000..f4b712dbc92e
+--- /dev/null
++++ b/tools/verification/dot2/dot2k_templates/main_global.c
+@@ -0,0 +1,91 @@
 +// SPDX-License-Identifier: GPL-2.0
 +#include <linux/ftrace.h>
 +#include <linux/tracepoint.h>
@@ -122,7 +373,104 @@ index 000000000000..79a054ca0cde
 +#include <rv/instrumentation.h>
 +#include <rv/da_monitor.h>
 +
-+#define MODULE_NAME "wip"
++#define MODULE_NAME "MODEL_NAME"
++
++/*
++ * XXX: include required tracepoint headers, e.g.,
++ * #include <trace/events/sched.h>
++ */
++#include <trace/events/rv.h>
++
++/*
++ * This is the self-generated part of the monitor. Generally, there is no need
++ * to touch this section.
++ */
++#include "MODEL_NAME.h"
++
++/*
++ * Declare the deterministic automata monitor.
++ *
++ * The rv monitor reference is needed for the monitor declaration.
++ */
++struct rv_monitor rv_MODEL_NAME;
++DECLARE_DA_MON_GLOBAL(MODEL_NAME, MIN_TYPE);
++
++/*
++ * This is the instrumentation part of the monitor.
++ *
++ * This is the section where manual work is required. Here the kernel events
++ * are translated into model's event.
++ *
++ */
++TRACEPOINT_HANDLERS_SKEL
++static int enable_MODEL_NAME(void)
++{
++	int retval;
++
++	retval = da_monitor_init_MODEL_NAME();
++	if (retval)
++		return retval;
++
++TRACEPOINT_ATTACH
++
++	return 0;
++}
++
++static void disable_MODEL_NAME(void)
++{
++	rv_MODEL_NAME.enabled = 0;
++
++TRACEPOINT_DETACH
++
++	da_monitor_destroy_MODEL_NAME();
++}
++
++/*
++ * This is the monitor register section.
++ */
++struct rv_monitor rv_MODEL_NAME = {
++	.name = "MODEL_NAME",
++	.description = "auto-generated MODEL_NAME",
++	.enable = enable_MODEL_NAME,
++	.disable = disable_MODEL_NAME,
++	.reset = da_monitor_reset_all_MODEL_NAME,
++	.enabled = 0,
++};
++
++static int register_MODEL_NAME(void)
++{
++	rv_register_monitor(&rv_MODEL_NAME);
++	return 0;
++}
++
++static void unregister_MODEL_NAME(void)
++{
++	rv_unregister_monitor(&rv_MODEL_NAME);
++}
++
++module_init(register_MODEL_NAME);
++module_exit(unregister_MODEL_NAME);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("dot2k: auto-generated");
++MODULE_DESCRIPTION("MODEL_NAME");
+diff --git a/tools/verification/dot2/dot2k_templates/main_per_cpu.c b/tools/verification/dot2/dot2k_templates/main_per_cpu.c
+new file mode 100644
+index 000000000000..4080d1ca3354
+--- /dev/null
++++ b/tools/verification/dot2/dot2k_templates/main_per_cpu.c
+@@ -0,0 +1,91 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/ftrace.h>
++#include <linux/tracepoint.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/rv.h>
++#include <rv/instrumentation.h>
++#include <rv/da_monitor.h>
++
++#define MODULE_NAME "MODEL_NAME"
 +
 +/*
 + * XXX: include required tracepoint headers, e.g.,
@@ -134,15 +482,15 @@ index 000000000000..79a054ca0cde
 + * This is the self-generated part of the monitor. Generally, there is no need
 + * to touch this section.
 + */
-+#include "wip.h"
++#include "MODEL_NAME.h"
 +
 +/*
 + * Declare the deterministic automata monitor.
 + *
 + * The rv monitor reference is needed for the monitor declaration.
 + */
-+struct rv_monitor rv_wip;
-+DECLARE_DA_MON_PER_CPU(wip, unsigned char);
++struct rv_monitor rv_MODEL_NAME;
++DECLARE_DA_MON_PER_CPU(MODEL_NAME, MIN_TYPE);
 +
 +/*
 + * This is the instrumentation part of the monitor.
@@ -151,128 +499,155 @@ index 000000000000..79a054ca0cde
 + * are translated into model's event.
 + *
 + */
-+static void handle_preempt_disable(void *data, /* XXX: fill header */)
-+{
-+	da_handle_event_wip(preempt_disable_wip);
-+}
-+
-+static void handle_preempt_enable(void *data, /* XXX: fill header */)
-+{
-+	da_handle_event_wip(preempt_enable_wip);
-+}
-+
-+static void handle_sched_waking(void *data, /* XXX: fill header */)
-+{
-+	da_handle_event_wip(sched_waking_wip);
-+}
-+
-+static int enable_wip(void)
++TRACEPOINT_HANDLERS_SKEL
++static int enable_MODEL_NAME(void)
 +{
 +	int retval;
 +
-+	retval = da_monitor_init_wip();
++	retval = da_monitor_init_MODEL_NAME();
 +	if (retval)
 +		return retval;
 +
-+	rv_attach_trace_probe("wip", /* XXX: tracepoint */, handle_preempt_disable);
-+	rv_attach_trace_probe("wip", /* XXX: tracepoint */, handle_preempt_enable);
-+	rv_attach_trace_probe("wip", /* XXX: tracepoint */, handle_sched_waking);
++TRACEPOINT_ATTACH
 +
 +	return 0;
 +}
 +
-+static void disable_wip(void)
++static void disable_MODEL_NAME(void)
 +{
-+	rv_wip.enabled = 0;
++	rv_MODEL_NAME.enabled = 0;
 +
-+	rv_detach_trace_probe("wip", /* XXX: tracepoint */, handle_preempt_disable);
-+	rv_detach_trace_probe("wip", /* XXX: tracepoint */, handle_preempt_enable);
-+	rv_detach_trace_probe("wip", /* XXX: tracepoint */, handle_sched_waking);
++TRACEPOINT_DETACH
 +
-+	da_monitor_destroy_wip();
++	da_monitor_destroy_MODEL_NAME();
 +}
 +
 +/*
 + * This is the monitor register section.
 + */
-+struct rv_monitor rv_wip = {
-+	.name = "wip",
-+	.description = "auto-generated wip",
-+	.enable = enable_wip,
-+	.disable = disable_wip,
-+	.reset = da_monitor_reset_all_wip,
++struct rv_monitor rv_MODEL_NAME = {
++	.name = "MODEL_NAME",
++	.description = "auto-generated MODEL_NAME",
++	.enable = enable_MODEL_NAME,
++	.disable = disable_MODEL_NAME,
++	.reset = da_monitor_reset_all_MODEL_NAME,
 +	.enabled = 0,
 +};
 +
-+static int register_wip(void)
++static int register_MODEL_NAME(void)
 +{
-+	rv_register_monitor(&rv_wip);
++	rv_register_monitor(&rv_MODEL_NAME);
 +	return 0;
 +}
 +
-+static void unregister_wip(void)
++static void unregister_MODEL_NAME(void)
 +{
-+	rv_unregister_monitor(&rv_wip);
++	rv_unregister_monitor(&rv_MODEL_NAME);
 +}
 +
-+module_init(register_wip);
-+module_exit(unregister_wip);
++module_init(register_MODEL_NAME);
++module_exit(unregister_MODEL_NAME);
 +
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("dot2k: auto-generated");
-+MODULE_DESCRIPTION("wip");
-diff --git a/kernel/trace/rv/monitors/wip/wip.h b/kernel/trace/rv/monitors/wip/wip.h
++MODULE_DESCRIPTION("MODEL_NAME");
+diff --git a/tools/verification/dot2/dot2k_templates/main_per_task.c b/tools/verification/dot2/dot2k_templates/main_per_task.c
 new file mode 100644
-index 000000000000..c1c47e2305ef
+index 000000000000..89197175384f
 --- /dev/null
-+++ b/kernel/trace/rv/monitors/wip/wip.h
-@@ -0,0 +1,46 @@
++++ b/tools/verification/dot2/dot2k_templates/main_per_task.c
+@@ -0,0 +1,91 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/ftrace.h>
++#include <linux/tracepoint.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/rv.h>
++#include <rv/instrumentation.h>
++#include <rv/da_monitor.h>
++
++#define MODULE_NAME "MODEL_NAME"
++
 +/*
-+ * Automatically generated C representation of wip automaton
-+ * For further information about this format, see kernel documentation:
-+ *   Documentation/trace/rv/deterministic_automata.rst
++ * XXX: include required tracepoint headers, e.g.,
++ * #include <linux/trace/events/sched.h>
 + */
++#include <trace/events/rv.h>
 +
-+enum states_wip {
-+	preemptive_wip = 0,
-+	non_preemptive_wip,
-+	state_max_wip
++/*
++ * This is the self-generated part of the monitor. Generally, there is no need
++ * to touch this section.
++ */
++#include "MODEL_NAME.h"
++
++/*
++ * Declare the deterministic automata monitor.
++ *
++ * The rv monitor reference is needed for the monitor declaration.
++ */
++struct rv_monitor rv_MODEL_NAME;
++DECLARE_DA_MON_PER_TASK(MODEL_NAME, MIN_TYPE);
++
++/*
++ * This is the instrumentation part of the monitor.
++ *
++ * This is the section where manual work is required. Here the kernel events
++ * are translated into model's event.
++ *
++ */
++TRACEPOINT_HANDLERS_SKEL
++static int enable_MODEL_NAME(void)
++{
++	int retval;
++
++	retval = da_monitor_init_MODEL_NAME();
++	if (retval)
++		return retval;
++
++TRACEPOINT_ATTACH
++
++	return 0;
++}
++
++static void disable_MODEL_NAME(void)
++{
++	rv_MODEL_NAME.enabled = 0;
++
++TRACEPOINT_DETACH
++
++	da_monitor_destroy_MODEL_NAME();
++}
++
++/*
++ * This is the monitor register section.
++ */
++struct rv_monitor rv_MODEL_NAME = {
++	.name = "MODEL_NAME",
++	.description = "auto-generated MODEL_NAME",
++	.enable = enable_MODEL_NAME,
++	.disable = disable_MODEL_NAME,
++	.reset = da_monitor_reset_all_MODEL_NAME,
++	.enabled = 0,
 +};
 +
-+#define INVALID_STATE state_max_wip
++static int register_MODEL_NAME(void)
++{
++	rv_register_monitor(&rv_MODEL_NAME);
++	return 0;
++}
 +
-+enum events_wip {
-+	preempt_disable_wip = 0,
-+	preempt_enable_wip,
-+	sched_waking_wip,
-+	event_max_wip
-+};
++static void unregister_MODEL_NAME(void)
++{
++	rv_unregister_monitor(&rv_MODEL_NAME);
++}
 +
-+struct automaton_wip {
-+	char *state_names[state_max_wip];
-+	char *event_names[event_max_wip];
-+	unsigned char function[state_max_wip][event_max_wip];
-+	unsigned char initial_state;
-+	bool final_states[state_max_wip];
-+};
++module_init(register_MODEL_NAME);
++module_exit(unregister_MODEL_NAME);
 +
-+struct automaton_wip automaton_wip = {
-+	.state_names = {
-+		"preemptive",
-+		"non_preemptive"
-+	},
-+	.event_names = {
-+		"preempt_disable",
-+		"preempt_enable",
-+		"sched_waking"
-+	},
-+	.function = {
-+		{ non_preemptive_wip,      INVALID_STATE,      INVALID_STATE },
-+		{      INVALID_STATE,     preemptive_wip, non_preemptive_wip },
-+	},
-+	.initial_state = preemptive_wip,
-+	.final_states = { 1, 0 },
-+};
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("dot2k: auto-generated");
++MODULE_DESCRIPTION("MODEL_NAME");
 -- 
 2.35.1
 
