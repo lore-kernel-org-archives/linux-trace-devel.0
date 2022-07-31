@@ -2,30 +2,30 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF554C00140
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 31 Jul 2022 15:12:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2F47C3F6B0
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 31 Jul 2022 15:13:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232619AbiGaPML (ORCPT
+        id S233290AbiGaPN6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 31 Jul 2022 11:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56444 "EHLO
+        Sun, 31 Jul 2022 11:13:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbiGaPMJ (ORCPT
+        with ESMTP id S232548AbiGaPN5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 31 Jul 2022 11:12:09 -0400
-Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C1C60ED;
-        Sun, 31 Jul 2022 08:12:08 -0700 (PDT)
-Date:   Sun, 31 Jul 2022 23:11:51 +0800
+        Sun, 31 Jul 2022 11:13:57 -0400
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E494DF8F;
+        Sun, 31 Jul 2022 08:13:56 -0700 (PDT)
+Date:   Sun, 31 Jul 2022 23:13:42 +0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1659280326;
+        t=1659280434;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=MlYMxr4RTjKSXNttPFczidbRb/FlMGktoNy0WMLR7Gs=;
-        b=ix+oqU1eRUu+Lx68xU5+ahbg5V9iJkl/16uOuxdLAS7KKz/rBzS1FeP08md9JxsVEQCmZL
-        F5zggzByGr6LnOFWh4277o29exDoNSDfqviguV1lGsL3+OQAj/GvWToz0ACST/oSVcUUJS
-        PLrFsWEhfUSf0EIiZnhSIg/n6ezeuEI=
+        bh=b02v1XH3P+9F45CvhEPqjJHQwOFxhbxcG3OZ5wGjyGI=;
+        b=gnbqC20NhelrvDLBnOx8VzIYg980Z4dNb2xWEYnlPyP/aWx2kn/aopOZat4ieAiZljt+Oj
+        Ge2H2PEx+nL6QG3u/AeHnjKJplCEBK4QeONwaVqOe7nr1exPVwjRMWnJeLNxwn9CgyvNJy
+        tMdWG1MQ3+8IzZEJuezNaYjwY0itCaw=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Tao Zhou <tao.zhou@linux.dev>
 To:     Daniel Bristot de Oliveira <bristot@kernel.org>
@@ -48,73 +48,32 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Randy Dunlap <rdunlap@infradead.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org, Tao Zhou <tao.zhou@linux.dev>
-Subject: Re: [PATCH V8 02/16] rv: Add runtime reactors interface
-Message-ID: <Yuabt8763yqoREnm@geo.homenetwork>
-References: <cover.1658940828.git.bristot@kernel.org>
- <8be3e66a8f0ab42feb3de4e6a630775b68df2d58.1658940828.git.bristot@kernel.org>
+Subject: Re: [PATCH V9 03/16] rv/include: Add helper functions for
+ deterministic automata
+Message-ID: <YuacJsPya8PSE8qt@geo.homenetwork>
+References: <cover.1659052063.git.bristot@kernel.org>
+ <563234f2bfa84b540f60cf9e39c2d9f0eea95a55.1659052063.git.bristot@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8be3e66a8f0ab42feb3de4e6a630775b68df2d58.1658940828.git.bristot@kernel.org>
+In-Reply-To: <563234f2bfa84b540f60cf9e39c2d9f0eea95a55.1659052063.git.bristot@kernel.org>
 X-Migadu-Flow: FLOW_OUT
 X-Migadu-Auth-User: linux.dev
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, Jul 27, 2022 at 07:11:30PM +0200, Daniel Bristot de Oliveira wrote:
-> A runtime monitor can cause a reaction to the detection of an
-> exception on the model's execution. By default, the monitors have
-> tracing reactions, printing the monitor output via tracepoints.
-> But other reactions can be added (on-demand) via this interface.
-> 
-> The user interface resembles the kernel tracing interface and
-> presents these files:
-> 
-> "available_reactors"
->   - Reading shows the available reactors, one per line.
-> 
->    For example:
->      # cat available_reactors
->      nop
->      panic
->      printk
-> 
->  "reacting_on"
->    - It is an on/off general switch for reactors, disabling
-
-s/switch/switcher/
-s/disabling/enabling\/disabling/
+On Fri, Jul 29, 2022 at 11:38:42AM +0200, Daniel Bristot de Oliveira wrote:
 
 [...]
 
-> + *  "available_reactors"
-> + *    - List the available reactors, one per line.
-> + *
-> + *    For example:
-> + *      # cat available_reactors
-> + *      nop
-> + *      panic
-> + *      printk
-> + *
-> + *  "reacting_on"
-> + *    - It is an on/off general switch for reactors, disabling
+> +static inline type model_get_next_state_##name(enum states_##name curr_state,	\
+> +					       enum events_##name event)	\
+> +{										\
+> +	if ((curr_state < 0) || (curr_state >= state_max_##name))		\
+> +		return INVALID_STATE;						\
+> +										\
+> +	if ((event < 0) || (event >= event_max_##name))				\
+> +		return INVALID_STATE;						\
 
-s/switch/switcher/
-s/disabling/enabling\/disabling/
-
-[...]
-
-> +/**
-> + * rv_register_reactor - register a rv reactor.
-> + * @reactor:	The rv_reactor to be registered.
-> + *
-> + * Returns 0 if successful, error otherwise.
-> + */
-> +int rv_register_reactor(struct rv_reactor *reactor)
-> +{
-> +	int retval = 0;
-> +
-> +	if (strlen(reactor->name) >= MAX_RV_REACTOR_NAME_SIZE) {
-
-s/>=/>/
+Should define the INVALID_EVENT corresponding to event invalid case.
