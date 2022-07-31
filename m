@@ -2,34 +2,34 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 445F4C00140
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 31 Jul 2022 19:04:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A76AC25B07
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 31 Jul 2022 19:04:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237773AbiGaTEj (ORCPT
+        id S237798AbiGaTEk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 31 Jul 2022 15:04:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49214 "EHLO
+        Sun, 31 Jul 2022 15:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237711AbiGaTEh (ORCPT
+        with ESMTP id S237713AbiGaTEh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Sun, 31 Jul 2022 15:04:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D754EE35;
-        Sun, 31 Jul 2022 12:04:35 -0700 (PDT)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EBFFF588;
+        Sun, 31 Jul 2022 12:04:36 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BFEE361033;
-        Sun, 31 Jul 2022 19:04:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52DF7C43155;
-        Sun, 31 Jul 2022 19:04:34 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3C59F61043;
+        Sun, 31 Jul 2022 19:04:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05267C43470;
+        Sun, 31 Jul 2022 19:04:35 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.96)
         (envelope-from <rostedt@goodmis.org>)
-        id 1oIEEr-007G63-1G;
-        Sun, 31 Jul 2022 15:04:33 -0400
-Message-ID: <20220731190433.217865346@goodmis.org>
+        id 1oIEEs-007G8J-0Q;
+        Sun, 31 Jul 2022 15:04:34 -0400
+Message-ID: <20220731190433.970153510@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Sun, 31 Jul 2022 15:03:37 -0400
+Date:   Sun, 31 Jul 2022 15:03:41 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
@@ -53,8 +53,7 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Randy Dunlap <rdunlap@infradead.org>,
         linux-doc@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         Daniel Bristot de Oliveira <bristot@kernel.org>
-Subject: [for-next][PATCH 08/21] rv/include: Add deterministic automata monitor definition via C
- macros
+Subject: [for-next][PATCH 12/21] Documentation/rv: Add deterministic automaton documentation
 References: <20220731190329.641602282@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -64,53 +63,10 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Daniel Bristot de Oliveira <bristot@kernel.org>
 
-In Linux terms, the runtime verification monitors are encapsulated
-inside the "RV monitor" abstraction. The "RV monitor" includes a set
-of instances of the monitor (per-cpu monitor, per-task monitor, and
-so on), the helper functions that glue the monitor to the system
-reference model, and the trace output as a reaction for event parsing
-and exceptions, as depicted below:
+Add documentation about deterministic automaton and its possible
+representations (formal, graphic, .dot and C).
 
-Linux  +----- RV Monitor ----------------------------------+ Formal
- Realm |                                                   |  Realm
- +-------------------+     +----------------+     +-----------------+
- |   Linux kernel    |     |     Monitor    |     |     Reference   |
- |     Tracing       |  -> |   Instance(s)  | <-  |       Model     |
- | (instrumentation) |     | (verification) |     | (specification) |
- +-------------------+     +----------------+     +-----------------+
-        |                          |                       |
-        |                          V                       |
-        |                     +----------+                 |
-        |                     | Reaction |                 |
-        |                     +--+--+--+-+                 |
-        |                        |  |  |                   |
-        |                        |  |  +-> trace output ?  |
-        +------------------------|--|----------------------+
-                                 |  +----> panic ?
-                                 +-------> <user-specified>
-
-Add the rv/da_monitor.h, enabling automatic code generation for the
-*Monitor Instance(s)* using C macros, and code to support it.
-
-The benefits of the usage of macro for monitor synthesis are 3-fold as it:
-
-- Reduces the code duplication;
-- Facilitates the bug fix/improvement;
-- Avoids the case of developers changing the core of the monitor code
-  to manipulate the model in a (let's say) non-standard way.
-
-This initial implementation presents three different types of monitor
-instances:
-
-- DECLARE_DA_MON_GLOBAL(name, type)
-- DECLARE_DA_MON_PER_CPU(name, type)
-- DECLARE_DA_MON_PER_TASK(name, type)
-
-The first declares the functions for a global deterministic automata monitor,
-the second for monitors with per-cpu instances, and the third with per-task
-instances.
-
-Link: https://lkml.kernel.org/r/51b0bf425a281e226dfeba7401d2115d6091f84e.1659052063.git.bristot@kernel.org
+Link: https://lkml.kernel.org/r/387edaed87630bd5eb37c4275045dfd229700aa6.1659052063.git.bristot@kernel.org
 
 Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
 Cc: Guenter Roeck <linux@roeck-us.net>
@@ -135,786 +91,254 @@ Cc: linux-trace-devel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/linux/rv.h        |  10 +
- include/rv/da_monitor.h   | 541 ++++++++++++++++++++++++++++++++++++++
- include/trace/events/rv.h | 120 +++++++++
- kernel/fork.c             |  14 +
- kernel/trace/rv/Kconfig   |  11 +
- kernel/trace/rv/rv.c      |   5 +
- 6 files changed, 701 insertions(+)
- create mode 100644 include/rv/da_monitor.h
- create mode 100644 include/trace/events/rv.h
+ .../trace/rv/deterministic_automata.rst       | 184 ++++++++++++++++++
+ Documentation/trace/rv/index.rst              |   1 +
+ tools/verification/dot2/automata.py           |   3 +
+ tools/verification/dot2/dot2c                 |   3 +
+ tools/verification/dot2/dot2c.py              |   3 +
+ 5 files changed, 194 insertions(+)
+ create mode 100644 Documentation/trace/rv/deterministic_automata.rst
 
-diff --git a/include/linux/rv.h b/include/linux/rv.h
-index dcce56987cf7..8883b41d88ec 100644
---- a/include/linux/rv.h
-+++ b/include/linux/rv.h
-@@ -7,7 +7,16 @@
- #ifndef _LINUX_RV_H
- #define _LINUX_RV_H
- 
-+#define MAX_DA_NAME_LEN	24
-+
- #ifdef CONFIG_RV
-+/*
-+ * Deterministic automaton per-object variables.
-+ */
-+struct da_monitor {
-+	bool		monitoring;
-+	unsigned int	curr_state;
-+};
- 
- /*
-  * Per-task RV monitors count. Nowadays fixed in RV_PER_TASK_MONITORS.
-@@ -22,6 +31,7 @@
-  * Futher monitor types are expected, so make this a union.
-  */
- union rv_task_monitor {
-+	struct da_monitor da_mon;
- };
- 
- #ifdef CONFIG_RV_REACTORS
-diff --git a/include/rv/da_monitor.h b/include/rv/da_monitor.h
+diff --git a/Documentation/trace/rv/deterministic_automata.rst b/Documentation/trace/rv/deterministic_automata.rst
 new file mode 100644
-index 000000000000..001bc298289f
+index 000000000000..d0638f95a455
 --- /dev/null
-+++ b/include/rv/da_monitor.h
-@@ -0,0 +1,541 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2019-2022 Red Hat, Inc. Daniel Bristot de Oliveira <bristot@kernel.org>
-+ *
-+ * Deterministic automata (DA) monitor functions, to be used together
-+ * with automata models in C generated by the dot2k tool.
-+ *
-+ * The dot2k tool is available at tools/verification/dot2k/
-+ */
++++ b/Documentation/trace/rv/deterministic_automata.rst
+@@ -0,0 +1,184 @@
++Deterministic Automata
++======================
 +
-+#include <rv/automata.h>
-+#include <linux/rv.h>
-+#include <linux/bug.h>
++Formally, a deterministic automaton, denoted by G, is defined as a quintuple:
 +
-+#ifdef CONFIG_RV_REACTORS
++        *G* = { *X*, *E*, *f*, x\ :subscript:`0`, X\ :subscript:`m` }
 +
-+#define DECLARE_RV_REACTING_HELPERS(name, type)							\
-+static char REACT_MSG_##name[1024];								\
-+												\
-+static inline char *format_react_msg_##name(type curr_state, type event)			\
-+{												\
-+	snprintf(REACT_MSG_##name, 1024,							\
-+		 "rv: monitor %s does not allow event %s on state %s\n",			\
-+		 #name,										\
-+		 model_get_event_name_##name(event),						\
-+		 model_get_state_name_##name(curr_state));					\
-+	return REACT_MSG_##name;								\
-+}												\
-+												\
-+static void cond_react_##name(char *msg)							\
-+{												\
-+	if (rv_##name.react)									\
-+		rv_##name.react(msg);								\
-+}												\
-+												\
-+static bool rv_reacting_on_##name(void)								\
-+{												\
-+	return rv_reacting_on();								\
-+}
++where:
 +
-+#else /* CONFIG_RV_REACTOR */
++- *X* is the set of states;
++- *E* is the finite set of events;
++- x\ :subscript:`0` is the initial state;
++- X\ :subscript:`m` (subset of *X*) is the set of marked (or final) states.
++- *f* : *X* x *E* -> *X* $ is the transition function. It defines the state
++  transition in the occurrence of an event from *E* in the state *X*. In the
++  special case of deterministic automata, the occurrence of the event in *E*
++  in a state in *X* has a deterministic next state from *X*.
 +
-+#define DECLARE_RV_REACTING_HELPERS(name, type)							\
-+static inline char *format_react_msg_##name(type curr_state, type event)			\
-+{												\
-+	return NULL;										\
-+}												\
-+												\
-+static void cond_react_##name(char *msg)							\
-+{												\
-+	return;											\
-+}												\
-+												\
-+static bool rv_reacting_on_##name(void)								\
-+{												\
-+	return 0;										\
-+}
-+#endif
++For example, a given automaton named 'wip' (wakeup in preemptive) can
++be defined as:
 +
-+/*
-+ * Generic helpers for all types of deterministic automata monitors.
-+ */
-+#define DECLARE_DA_MON_GENERIC_HELPERS(name, type)						\
-+												\
-+DECLARE_RV_REACTING_HELPERS(name, type)								\
-+												\
-+/*												\
-+ * da_monitor_reset_##name - reset a monitor and setting it to init state			\
-+ */												\
-+static inline void da_monitor_reset_##name(struct da_monitor *da_mon)				\
-+{												\
-+	da_mon->monitoring = 0;									\
-+	da_mon->curr_state = model_get_initial_state_##name();					\
-+}												\
-+												\
-+/*												\
-+ * da_monitor_curr_state_##name - return the current state					\
-+ */												\
-+static inline type da_monitor_curr_state_##name(struct da_monitor *da_mon)			\
-+{												\
-+	return da_mon->curr_state;								\
-+}												\
-+												\
-+/*												\
-+ * da_monitor_set_state_##name - set the new current state					\
-+ */												\
-+static inline void										\
-+da_monitor_set_state_##name(struct da_monitor *da_mon, enum states_##name state)		\
-+{												\
-+	da_mon->curr_state = state;								\
-+}												\
-+												\
-+/*												\
-+ * da_monitor_start_##name - start monitoring							\
-+ *												\
-+ * The monitor will ignore all events until monitoring is set to true. This			\
-+ * function needs to be called to tell the monitor to start monitoring.				\
-+ */												\
-+static inline void da_monitor_start_##name(struct da_monitor *da_mon)				\
-+{												\
-+	da_mon->curr_state = model_get_initial_state_##name();					\
-+	da_mon->monitoring = 1;									\
-+}												\
-+												\
-+/*												\
-+ * da_monitoring_##name - returns true if the monitor is processing events			\
-+ */												\
-+static inline bool da_monitoring_##name(struct da_monitor *da_mon)				\
-+{												\
-+	return da_mon->monitoring;								\
-+}												\
-+												\
-+/*												\
-+ * da_monitor_enabled_##name - checks if the monitor is enabled					\
-+ */												\
-+static inline bool da_monitor_enabled_##name(void)						\
-+{												\
-+	/* global switch */									\
-+	if (unlikely(!rv_monitoring_on()))							\
-+		return 0;									\
-+												\
-+	/* monitor enabled */									\
-+	if (unlikely(!rv_##name.enabled))							\
-+		return 0;									\
-+												\
-+	return 1;										\
-+}												\
-+												\
-+/*												\
-+ * da_monitor_handling_event_##name - checks if the monitor is ready to handle events		\
-+ */												\
-+static inline bool da_monitor_handling_event_##name(struct da_monitor *da_mon)			\
-+{												\
-+												\
-+	if (!da_monitor_enabled_##name())							\
-+		return 0;									\
-+												\
-+	/* monitor is actually monitoring */							\
-+	if (unlikely(!da_monitoring_##name(da_mon)))						\
-+		return 0;									\
-+												\
-+	return 1;										\
-+}
++- *X* = { ``preemptive``, ``non_preemptive``}
++- *E* = { ``preempt_enable``, ``preempt_disable``, ``sched_waking``}
++- x\ :subscript:`0` = ``preemptive``
++- X\ :subscript:`m` = {``preemptive``}
++- *f* =
++   - *f*\ (``preemptive``, ``preempt_disable``) = ``non_preemptive``
++   - *f*\ (``non_preemptive``, ``sched_waking``) = ``non_preemptive``
++   - *f*\ (``non_preemptive``, ``preempt_enable``) = ``preemptive``
 +
-+/*
-+ * Event handler for implicit monitors. Implicit monitor is the one which the
-+ * handler does not need to specify which da_monitor to manipulate. Examples
-+ * of implicit monitor are the per_cpu or the global ones.
-+ */
-+#define DECLARE_DA_MON_MODEL_HANDLER_IMPLICIT(name, type)					\
-+												\
-+static inline bool										\
-+da_event_##name(struct da_monitor *da_mon, enum events_##name event)				\
-+{												\
-+	type curr_state = da_monitor_curr_state_##name(da_mon);					\
-+	type next_state = model_get_next_state_##name(curr_state, event);			\
-+												\
-+	if (next_state != INVALID_STATE) {							\
-+		da_monitor_set_state_##name(da_mon, next_state);				\
-+												\
-+		trace_event_##name(model_get_state_name_##name(curr_state),			\
-+				   model_get_event_name_##name(event),				\
-+				   model_get_state_name_##name(next_state),			\
-+				   model_is_final_state_##name(next_state));			\
-+												\
-+		return true;									\
-+	}											\
-+												\
-+	if (rv_reacting_on_##name())								\
-+		cond_react_##name(format_react_msg_##name(curr_state, event));			\
-+												\
-+	trace_error_##name(model_get_state_name_##name(curr_state),				\
-+			   model_get_event_name_##name(event));					\
-+												\
-+	return false;										\
-+}												\
++One of the benefits of this formal definition is that it can be presented
++in multiple formats. For example, using a *graphical representation*, using
++vertices (nodes) and edges, which is very intuitive for *operating system*
++practitioners, without any loss.
 +
-+/*
-+ * Event handler for per_task monitors.
-+ */
-+#define DECLARE_DA_MON_MODEL_HANDLER_PER_TASK(name, type)					\
-+												\
-+static inline bool da_event_##name(struct da_monitor *da_mon, struct task_struct *tsk,		\
-+				   enum events_##name event)					\
-+{												\
-+	type curr_state = da_monitor_curr_state_##name(da_mon);					\
-+	type next_state = model_get_next_state_##name(curr_state, event);			\
-+												\
-+	if (next_state != INVALID_STATE) {							\
-+		da_monitor_set_state_##name(da_mon, next_state);				\
-+												\
-+		trace_event_##name(tsk->pid,							\
-+				   model_get_state_name_##name(curr_state),			\
-+				   model_get_event_name_##name(event),				\
-+				   model_get_state_name_##name(next_state),			\
-+				   model_is_final_state_##name(next_state));			\
-+												\
-+		return true;									\
-+	}											\
-+												\
-+	if (rv_reacting_on_##name())								\
-+		cond_react_##name(format_react_msg_##name(curr_state, event));			\
-+												\
-+	trace_error_##name(tsk->pid,								\
-+			   model_get_state_name_##name(curr_state),				\
-+			   model_get_event_name_##name(event));					\
-+												\
-+	return false;										\
-+}
++The previous 'wip' automaton can also be represented as::
 +
-+/*
-+ * Functions to define, init and get a global monitor.
-+ */
-+#define DECLARE_DA_MON_INIT_GLOBAL(name, type)							\
-+												\
-+/*												\
-+ * global monitor (a single variable)								\
-+ */												\
-+static struct da_monitor da_mon_##name;								\
-+												\
-+/*												\
-+ * da_get_monitor_##name - return the global monitor address					\
-+ */												\
-+static struct da_monitor *da_get_monitor_##name(void)						\
-+{												\
-+	return &da_mon_##name;									\
-+}												\
-+												\
-+/*												\
-+ * da_monitor_reset_all_##name - reset the single monitor					\
-+ */												\
-+static void da_monitor_reset_all_##name(void)							\
-+{												\
-+	da_monitor_reset_##name(da_get_monitor_##name());					\
-+}												\
-+												\
-+/*												\
-+ * da_monitor_init_##name - initialize a monitor						\
-+ */												\
-+static inline int da_monitor_init_##name(void)							\
-+{												\
-+	da_monitor_reset_all_##name();								\
-+	return 0;										\
-+}												\
-+												\
-+/*												\
-+ * da_monitor_destroy_##name - destroy the monitor						\
-+ */												\
-+static inline void da_monitor_destroy_##name(void)						\
-+{												\
-+	return;											\
-+}
++                       preempt_enable
++          +---------------------------------+
++          v                                 |
++        #============#  preempt_disable   +------------------+
++    --> H preemptive H -----------------> |  non_preemptive  |
++        #============#                    +------------------+
++                                            ^              |
++                                            | sched_waking |
++                                            +--------------+
 +
-+/*
-+ * Functions to define, init and get a per-cpu monitor.
-+ */
-+#define DECLARE_DA_MON_INIT_PER_CPU(name, type)							\
-+												\
-+/*												\
-+ * per-cpu monitor variables									\
-+ */												\
-+DEFINE_PER_CPU(struct da_monitor, da_mon_##name);						\
-+												\
-+/*												\
-+ * da_get_monitor_##name - return current CPU monitor address					\
-+ */												\
-+static struct da_monitor *da_get_monitor_##name(void)						\
-+{												\
-+	return this_cpu_ptr(&da_mon_##name);							\
-+}												\
-+												\
-+/*												\
-+ * da_monitor_reset_all_##name - reset all CPUs' monitor					\
-+ */												\
-+static void da_monitor_reset_all_##name(void)							\
-+{												\
-+	struct da_monitor *da_mon;								\
-+	int cpu;										\
-+	for_each_cpu(cpu, cpu_online_mask) {							\
-+		da_mon = per_cpu_ptr(&da_mon_##name, cpu);					\
-+		da_monitor_reset_##name(da_mon);						\
-+	}											\
-+}												\
-+												\
-+/*												\
-+ * da_monitor_init_##name - initialize all CPUs' monitor					\
-+ */												\
-+static inline int da_monitor_init_##name(void)							\
-+{												\
-+	da_monitor_reset_all_##name();								\
-+	return 0;										\
-+}												\
-+												\
-+/*												\
-+ * da_monitor_destroy_##name - destroy the monitor						\
-+ */												\
-+static inline void da_monitor_destroy_##name(void)						\
-+{												\
-+	return;											\
-+}
++Deterministic Automaton in C
++----------------------------
 +
-+/*
-+ * Functions to define, init and get a per-task monitor.
-+ */
-+#define DECLARE_DA_MON_INIT_PER_TASK(name, type)						\
-+												\
-+/*												\
-+ * The per-task monitor is stored a vector in the task struct. This variable			\
-+ * stores the position on the vector reserved for this monitor.					\
-+ */												\
-+static int task_mon_slot_##name = RV_PER_TASK_MONITOR_INIT;					\
-+												\
-+/*												\
-+ * da_get_monitor_##name - return the monitor in the allocated slot for tsk 			\
-+ */												\
-+static inline struct da_monitor *da_get_monitor_##name(struct task_struct *tsk)			\
-+{												\
-+	return &tsk->rv[task_mon_slot_##name].da_mon;						\
-+}												\
-+												\
-+static void da_monitor_reset_all_##name(void)							\
-+{												\
-+	struct task_struct *g, *p;								\
-+												\
-+	read_lock(&tasklist_lock);								\
-+	for_each_process_thread(g, p)								\
-+		da_monitor_reset_##name(da_get_monitor_##name(p));				\
-+	read_unlock(&tasklist_lock);								\
-+}												\
-+												\
-+/*												\
-+ * da_monitor_init_##name - initialize the per-task monitor					\
-+ *												\
-+ * Try to allocate a slot in the task's vector of monitors. If there				\
-+ * is an available slot, use it and reset all task's monitor.					\
-+ */												\
-+static int da_monitor_init_##name(void)								\
-+{												\
-+	int slot;										\
-+												\
-+	slot = rv_get_task_monitor_slot();							\
-+	if (slot < 0 || slot >= RV_PER_TASK_MONITOR_INIT)					\
-+		return slot;									\
-+												\
-+	task_mon_slot_##name = slot;								\
-+												\
-+	da_monitor_reset_all_##name();								\
-+	return 0;										\
-+}												\
-+												\
-+/*												\
-+ * da_monitor_destroy_##name - return the allocated slot					\
-+ */												\
-+static inline void da_monitor_destroy_##name(void)						\
-+{												\
-+	if (task_mon_slot_##name == RV_PER_TASK_MONITOR_INIT) {					\
-+		WARN_ONCE(1, "Disabling a disabled monitor: " #name);				\
-+		return;										\
-+	}											\
-+	rv_put_task_monitor_slot(task_mon_slot_##name);						\
-+	task_mon_slot_##name = RV_PER_TASK_MONITOR_INIT;					\
-+	return;											\
-+}
++In the paper "Efficient formal verification for the Linux kernel",
++the authors present a simple way to represent an automaton in C that can
++be used as regular code in the Linux kernel.
 +
-+/*
-+ * Handle event for implicit monitor: da_get_monitor_##name() will figure out
-+ * the monitor.
-+ */
-+#define DECLARE_DA_MON_MONITOR_HANDLER_IMPLICIT(name, type)					\
-+												\
-+static inline void __da_handle_event_##name(struct da_monitor *da_mon,				\
-+					    enum events_##name event)				\
-+{												\
-+	bool retval;										\
-+												\
-+	retval = da_event_##name(da_mon, event);						\
-+	if (!retval)										\
-+		da_monitor_reset_##name(da_mon);						\
-+}												\
-+												\
-+/*												\
-+ * da_handle_event_##name - handle an event							\
-+ */												\
-+static inline void da_handle_event_##name(enum events_##name event)				\
-+{												\
-+	struct da_monitor *da_mon = da_get_monitor_##name();					\
-+	bool retval;										\
-+												\
-+	retval = da_monitor_handling_event_##name(da_mon);					\
-+	if (!retval)										\
-+		return;										\
-+												\
-+	__da_handle_event_##name(da_mon, event);						\
-+}												\
-+												\
-+/*												\
-+ * da_handle_start_event_##name - start monitoring or handle event				\
-+ *												\
-+ * This function is used to notify the monitor that the system is returning			\
-+ * to the initial state, so the monitor can start monitoring in the next event.			\
-+ * Thus:											\
-+ *												\
-+ * If the monitor already started, handle the event.						\
-+ * If the monitor did not start yet, start the monitor but skip the event.			\
-+ */												\
-+static inline bool da_handle_start_event_##name(enum events_##name event)			\
-+{												\
-+	struct da_monitor *da_mon;								\
-+												\
-+	if (!da_monitor_enabled_##name())							\
-+		return 0;									\
-+												\
-+	da_mon = da_get_monitor_##name();							\
-+												\
-+	if (unlikely(!da_monitoring_##name(da_mon))) {						\
-+		da_monitor_start_##name(da_mon);						\
-+		return 0;									\
-+	}											\
-+												\
-+	__da_handle_event_##name(da_mon, event);						\
-+												\
-+	return 1;										\
-+}												\
-+												\
-+/*												\
-+ * da_handle_start_run_event_##name - start monitoring and handle event				\
-+ *												\
-+ * This function is used to notify the monitor that the system is in the			\
-+ * initial state, so the monitor can start monitoring and handling event.			\
-+ */												\
-+static inline bool da_handle_start_run_event_##name(enum events_##name event)			\
-+{												\
-+	struct da_monitor *da_mon;								\
-+												\
-+	if (!da_monitor_enabled_##name())							\
-+		return 0;									\
-+												\
-+	da_mon = da_get_monitor_##name();							\
-+												\
-+	if (unlikely(!da_monitoring_##name(da_mon)))						\
-+		da_monitor_start_##name(da_mon);						\
-+												\
-+	__da_handle_event_##name(da_mon, event);						\
-+												\
-+	return 1;										\
-+}
++For example, the 'wip' automata can be presented as (augmented with comments)::
 +
-+/*
-+ * Handle event for per task.
-+ */
-+#define DECLARE_DA_MON_MONITOR_HANDLER_PER_TASK(name, type)					\
-+												\
-+static inline void										\
-+__da_handle_event_##name(struct da_monitor *da_mon, struct task_struct *tsk,			\
-+			 enum events_##name event)						\
-+{												\
-+	bool retval;										\
-+												\
-+	retval = da_event_##name(da_mon, tsk, event);						\
-+	if (!retval)										\
-+		da_monitor_reset_##name(da_mon);						\
-+}												\
-+												\
-+/*												\
-+ * da_handle_event_##name - handle an event							\
-+ */												\
-+static inline void										\
-+da_handle_event_##name(struct task_struct *tsk, enum events_##name event)			\
-+{												\
-+	struct da_monitor *da_mon = da_get_monitor_##name(tsk);					\
-+	bool retval;										\
-+												\
-+	retval = da_monitor_handling_event_##name(da_mon);					\
-+	if (!retval)										\
-+		return;										\
-+												\
-+	__da_handle_event_##name(da_mon, tsk, event);						\
-+}												\
-+												\
-+/*												\
-+ * da_handle_start_event_##name - start monitoring or handle event				\
-+ *												\
-+ * This function is used to notify the monitor that the system is returning			\
-+ * to the initial state, so the monitor can start monitoring in the next event.			\
-+ * Thus:											\
-+ *												\
-+ * If the monitor already started, handle the event.						\
-+ * If the monitor did not start yet, start the monitor but skip the event.			\
-+ */												\
-+static inline bool										\
-+da_handle_start_event_##name(struct task_struct *tsk, enum events_##name event)			\
-+{												\
-+	struct da_monitor *da_mon;								\
-+												\
-+	if (!da_monitor_enabled_##name())							\
-+		return 0;									\
-+												\
-+	da_mon = da_get_monitor_##name(tsk);							\
-+												\
-+	if (unlikely(!da_monitoring_##name(da_mon))) {						\
-+		da_monitor_start_##name(da_mon);						\
-+		return 0;									\
-+	}											\
-+												\
-+	__da_handle_event_##name(da_mon, tsk, event);						\
-+												\
-+	return 1;										\
-+}
++  /* enum representation of X (set of states) to be used as index */
++  enum states {
++	preemptive = 0,
++	non_preemptive,
++	state_max
++  };
 +
-+/*
-+ * Entry point for the global monitor.
-+ */
-+#define DECLARE_DA_MON_GLOBAL(name, type)							\
-+												\
-+DECLARE_AUTOMATA_HELPERS(name, type)								\
-+DECLARE_DA_MON_GENERIC_HELPERS(name, type)							\
-+DECLARE_DA_MON_MODEL_HANDLER_IMPLICIT(name, type)						\
-+DECLARE_DA_MON_INIT_GLOBAL(name, type)								\
-+DECLARE_DA_MON_MONITOR_HANDLER_IMPLICIT(name, type)
++  #define INVALID_STATE state_max
 +
-+/*
-+ * Entry point for the per-cpu monitor.
-+ */
-+#define DECLARE_DA_MON_PER_CPU(name, type)							\
-+												\
-+DECLARE_AUTOMATA_HELPERS(name, type)								\
-+DECLARE_DA_MON_GENERIC_HELPERS(name, type)							\
-+DECLARE_DA_MON_MODEL_HANDLER_IMPLICIT(name, type)						\
-+DECLARE_DA_MON_INIT_PER_CPU(name, type)								\
-+DECLARE_DA_MON_MONITOR_HANDLER_IMPLICIT(name, type)
++  /* enum representation of E (set of events) to be used as index */
++  enum events {
++	preempt_disable = 0,
++	preempt_enable,
++	sched_waking,
++	event_max
++  };
 +
-+/*
-+ * Entry point for the per-task monitor.
-+ */
-+#define DECLARE_DA_MON_PER_TASK(name, type)							\
-+												\
-+DECLARE_AUTOMATA_HELPERS(name, type)								\
-+DECLARE_DA_MON_GENERIC_HELPERS(name, type)							\
-+DECLARE_DA_MON_MODEL_HANDLER_PER_TASK(name, type)						\
-+DECLARE_DA_MON_INIT_PER_TASK(name, type)							\
-+DECLARE_DA_MON_MONITOR_HANDLER_PER_TASK(name, type)
-diff --git a/include/trace/events/rv.h b/include/trace/events/rv.h
-new file mode 100644
-index 000000000000..20a2e09c6416
---- /dev/null
-+++ b/include/trace/events/rv.h
-@@ -0,0 +1,120 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM rv
++  struct automaton {
++	char *state_names[state_max];                   // X: the set of states
++	char *event_names[event_max];                   // E: the finite set of events
++	unsigned char function[state_max][event_max];   // f: transition function
++	unsigned char initial_state;                    // x_0: the initial state
++	bool final_states[state_max];                   // X_m: the set of marked states
++  };
 +
-+#if !defined(_TRACE_RV_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_RV_H
++  struct automaton aut = {
++	.state_names = {
++		"preemptive",
++		"non_preemptive"
++	},
++	.event_names = {
++		"preempt_disable",
++		"preempt_enable",
++		"sched_waking"
++	},
++	.function = {
++		{ non_preemptive,  INVALID_STATE,  INVALID_STATE },
++		{  INVALID_STATE,     preemptive, non_preemptive },
++	},
++	.initial_state = preemptive,
++	.final_states = { 1, 0 },
++  };
 +
-+#include <linux/rv.h>
-+#include <linux/tracepoint.h>
++The *transition function* is represented as a matrix of states (lines) and
++events (columns), and so the function *f* : *X* x *E* -> *X* can be solved
++in O(1). For example::
 +
-+#ifdef CONFIG_DA_MON_EVENTS_IMPLICIT
-+DECLARE_EVENT_CLASS(event_da_monitor,
++  next_state = automaton_wip.function[curr_state][event];
 +
-+	TP_PROTO(char *state, char *event, char *next_state, bool final_state),
++Graphviz .dot format
++--------------------
 +
-+	TP_ARGS(state, event, next_state, final_state),
++The Graphviz open-source tool can produce the graphical representation
++of an automaton using the (textual) DOT language as the source code.
++The DOT format is widely used and can be converted to many other formats.
 +
-+	TP_STRUCT__entry(
-+		__array(	char,	state,		MAX_DA_NAME_LEN	)
-+		__array(	char,	event,		MAX_DA_NAME_LEN	)
-+		__array(	char,	next_state,	MAX_DA_NAME_LEN	)
-+		__field(	bool,	final_state			)
-+	),
++For example, this is the 'wip' model in DOT::
 +
-+	TP_fast_assign(
-+		memcpy(__entry->state,		state,		MAX_DA_NAME_LEN);
-+		memcpy(__entry->event,		event,		MAX_DA_NAME_LEN);
-+		memcpy(__entry->next_state,	next_state,	MAX_DA_NAME_LEN);
-+		__entry->final_state		= final_state;
-+	),
++  digraph state_automaton {
++        {node [shape = circle] "non_preemptive"};
++        {node [shape = plaintext, style=invis, label=""] "__init_preemptive"};
++        {node [shape = doublecircle] "preemptive"};
++        {node [shape = circle] "preemptive"};
++        "__init_preemptive" -> "preemptive";
++        "non_preemptive" [label = "non_preemptive"];
++        "non_preemptive" -> "non_preemptive" [ label = "sched_waking" ];
++        "non_preemptive" -> "preemptive" [ label = "preempt_enable" ];
++        "preemptive" [label = "preemptive"];
++        "preemptive" -> "non_preemptive" [ label = "preempt_disable" ];
++        { rank = min ;
++                "__init_preemptive";
++                "preemptive";
++        }
++  }
 +
-+	TP_printk("%s x %s -> %s %s",
-+		__entry->state,
-+		__entry->event,
-+		__entry->next_state,
-+		__entry->final_state ? "(final)" : "")
-+);
++This DOT format can be transformed into a bitmap or vectorial image
++using the dot utility, or into an ASCII art using graph-easy. For
++instance::
 +
-+DECLARE_EVENT_CLASS(error_da_monitor,
++  $ dot -Tsvg -o wip.svg wip.dot
++  $ graph-easy wip.dot > wip.txt
 +
-+	TP_PROTO(char *state, char *event),
++dot2c
++-----
 +
-+	TP_ARGS(state, event),
++dot2c is a utility that can parse a .dot file containing an automaton as
++in the example above and automatically convert it to the C representation
++presented in [3].
 +
-+	TP_STRUCT__entry(
-+		__array(	char,	state,		MAX_DA_NAME_LEN	)
-+		__array(	char,	event,		MAX_DA_NAME_LEN	)
-+	),
++For example, having the previous 'wip' model into a file named 'wip.dot',
++the following command will transform the .dot file into the C
++representation (previously shown) in the 'wip.h' file::
 +
-+	TP_fast_assign(
-+		memcpy(__entry->state,		state,		MAX_DA_NAME_LEN);
-+		memcpy(__entry->event,		event,		MAX_DA_NAME_LEN);
-+	),
++  $ dot2c wip.dot > wip.h
 +
-+	TP_printk("event %s not expected in the state %s",
-+		__entry->event,
-+		__entry->state)
-+);
-+#endif /* CONFIG_DA_MON_EVENTS_IMPLICIT */
++The 'wip.h' content is the code sample in section 'Deterministic Automaton
++in C'.
 +
-+#ifdef CONFIG_DA_MON_EVENTS_ID
-+DECLARE_EVENT_CLASS(event_da_monitor_id,
++Remarks
++-------
 +
-+	TP_PROTO(int id, char *state, char *event, char *next_state, bool final_state),
++The automata formalism allows modeling discrete event systems (DES) in
++multiple formats, suitable for different applications/users.
 +
-+	TP_ARGS(id, state, event, next_state, final_state),
++For example, the formal description using set theory is better suitable
++for automata operations, while the graphical format for human interpretation;
++and computer languages for machine execution.
 +
-+	TP_STRUCT__entry(
-+		__field(	int,	id				)
-+		__array(	char,	state,		MAX_DA_NAME_LEN	)
-+		__array(	char,	event,		MAX_DA_NAME_LEN	)
-+		__array(	char,	next_state,	MAX_DA_NAME_LEN	)
-+		__field(	bool,	final_state			)
-+	),
++References
++----------
 +
-+	TP_fast_assign(
-+		memcpy(__entry->state,		state,		MAX_DA_NAME_LEN);
-+		memcpy(__entry->event,		event,		MAX_DA_NAME_LEN);
-+		memcpy(__entry->next_state,	next_state,	MAX_DA_NAME_LEN);
-+		__entry->id			= id;
-+		__entry->final_state		= final_state;
-+	),
++Many textbooks cover automata formalism. For a brief introduction see::
 +
-+	TP_printk("%d: %s x %s -> %s %s",
-+		__entry->id,
-+		__entry->state,
-+		__entry->event,
-+		__entry->next_state,
-+		__entry->final_state ? "(final)" : "")
-+);
++  O'Regan, Gerard. Concise guide to software engineering. Springer,
++  Cham, 2017.
 +
-+DECLARE_EVENT_CLASS(error_da_monitor_id,
++For a detailed description, including operations, and application on Discrete
++Event Systems (DES), see::
 +
-+	TP_PROTO(int id, char *state, char *event),
++  Cassandras, Christos G., and Stephane Lafortune, eds. Introduction to discrete
++  event systems. Boston, MA: Springer US, 2008.
 +
-+	TP_ARGS(id, state, event),
++For the C representation in kernel, see::
 +
-+	TP_STRUCT__entry(
-+		__field(	int,	id				)
-+		__array(	char,	state,		MAX_DA_NAME_LEN	)
-+		__array(	char,	event,		MAX_DA_NAME_LEN	)
-+	),
-+
-+	TP_fast_assign(
-+		memcpy(__entry->state,		state,		MAX_DA_NAME_LEN);
-+		memcpy(__entry->event,		event,		MAX_DA_NAME_LEN);
-+		__entry->id			= id;
-+	),
-+
-+	TP_printk("%d: event %s not expected in the state %s",
-+		__entry->id,
-+		__entry->event,
-+		__entry->state)
-+);
-+#endif /* CONFIG_DA_MON_EVENTS_ID */
-+#endif /* _TRACE_RV_H */
-+
-+/* This part ust be outside protection */
-+#undef TRACE_INCLUDE_PATH
-+#include <trace/define_trace.h>
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 9d44f2d46c69..6f1f82ccd5f2 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -1964,6 +1964,18 @@ static void copy_oom_score_adj(u64 clone_flags, struct task_struct *tsk)
- 	mutex_unlock(&oom_adj_mutex);
- }
++  De Oliveira, Daniel Bristot; Cucinotta, Tommaso; De Oliveira, Romulo
++  Silva. Efficient formal verification for the Linux kernel. In:
++  International Conference on Software Engineering and Formal Methods.
++  Springer, Cham, 2019. p. 315-332.
+diff --git a/Documentation/trace/rv/index.rst b/Documentation/trace/rv/index.rst
+index b54e49b1d0de..013a41a410cf 100644
+--- a/Documentation/trace/rv/index.rst
++++ b/Documentation/trace/rv/index.rst
+@@ -7,3 +7,4 @@ Runtime Verification
+    :glob:
  
-+#ifdef CONFIG_RV
-+static void rv_task_fork(struct task_struct *p)
-+{
-+	int i;
-+
-+	for (i = 0; i < RV_PER_TASK_MONITORS; i++)
-+		p->rv[i].da_mon.monitoring = false;
-+}
-+#else
-+#define rv_task_fork(p) do {} while (0)
-+#endif
-+
- /*
-  * This creates a new process as a copy of the old one,
-  * but does not actually start it yet.
-@@ -2399,6 +2411,8 @@ static __latent_entropy struct task_struct *copy_process(
- 	 */
- 	copy_seccomp(p);
- 
-+	rv_task_fork(p);
-+
- 	rseq_fork(p, clone_flags);
- 
- 	/* Don't start children in a dying pid namespace */
-diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
-index 3eb5d48ab4f6..8714800e22ad 100644
---- a/kernel/trace/rv/Kconfig
-+++ b/kernel/trace/rv/Kconfig
-@@ -1,5 +1,16 @@
- # SPDX-License-Identifier: GPL-2.0-only
+    runtime-verification.rst
++   deterministic_automata.rst
+diff --git a/tools/verification/dot2/automata.py b/tools/verification/dot2/automata.py
+index f22e1dff19ce..baffeb960ff0 100644
+--- a/tools/verification/dot2/automata.py
++++ b/tools/verification/dot2/automata.py
+@@ -4,6 +4,9 @@
+ # Copyright (C) 2019-2022 Red Hat, Inc. Daniel Bristot de Oliveira <bristot@kernel.org>
  #
-+config DA_MON_EVENTS
-+	bool
-+
-+config DA_MON_EVENTS_IMPLICIT
-+	select DA_MON_EVENTS
-+	bool
-+
-+config DA_MON_EVENTS_ID
-+	select DA_MON_EVENTS
-+	bool
-+
- menuconfig RV
- 	bool "Runtime Verification"
- 	depends on TRACING
-diff --git a/kernel/trace/rv/rv.c b/kernel/trace/rv/rv.c
-index 45cf64eb2600..df6678c86334 100644
---- a/kernel/trace/rv/rv.c
-+++ b/kernel/trace/rv/rv.c
-@@ -140,6 +140,11 @@
- #include <linux/init.h>
- #include <linux/slab.h>
+ # Automata object: parse an automata in dot file digraph format into a python object
++#
++# For further information, see:
++#   Documentation/trace/rv/deterministic_automata.rst
  
-+#ifdef CONFIG_DA_MON_EVENTS
-+#define CREATE_TRACE_POINTS
-+#include <trace/events/rv.h>
-+#endif
-+
- #include "rv.h"
+ import ntpath
  
- DEFINE_MUTEX(rv_interface_lock);
+diff --git a/tools/verification/dot2/dot2c b/tools/verification/dot2/dot2c
+index 8a8cd84bdfcf..3fe89ab88b65 100644
+--- a/tools/verification/dot2/dot2c
++++ b/tools/verification/dot2/dot2c
+@@ -9,6 +9,9 @@
+ #  de Oliveira, D. B. and Cucinotta, T. and de Oliveira, R. S.
+ #  "Efficient Formal Verification for the Linux Kernel." International
+ #  Conference on Software Engineering and Formal Methods. Springer, Cham, 2019.
++#
++# For further information, see:
++#   Documentation/trace/rv/deterministic_automata.rst
+ 
+ if __name__ == '__main__':
+     from dot2 import dot2c
+diff --git a/tools/verification/dot2/dot2c.py b/tools/verification/dot2/dot2c.py
+index bca902eec483..fa73353f7e56 100644
+--- a/tools/verification/dot2/dot2c.py
++++ b/tools/verification/dot2/dot2c.py
+@@ -9,6 +9,9 @@
+ #  de Oliveira, D. B. and Cucinotta, T. and de Oliveira, R. S.
+ #  "Efficient Formal Verification for the Linux Kernel." International
+ #  Conference on Software Engineering and Formal Methods. Springer, Cham, 2019.
++#
++# For further information, see:
++#   Documentation/trace/rv/deterministic_automata.rst
+ 
+ from dot2.automata import Automata
+ 
 -- 
 2.35.1
