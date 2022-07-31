@@ -2,323 +2,121 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5851C00140
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 31 Jul 2022 15:56:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FBA4C00140
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 31 Jul 2022 16:02:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237343AbiGaP4l (ORCPT
+        id S237475AbiGaQC6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 31 Jul 2022 11:56:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49980 "EHLO
+        Sun, 31 Jul 2022 12:02:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231197AbiGaP4j (ORCPT
+        with ESMTP id S237472AbiGaQC5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 31 Jul 2022 11:56:39 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2067EF5A8;
-        Sun, 31 Jul 2022 08:56:38 -0700 (PDT)
+        Sun, 31 Jul 2022 12:02:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89AEEFD10
+        for <linux-trace-devel@vger.kernel.org>; Sun, 31 Jul 2022 09:02:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A4C4FB80D11;
-        Sun, 31 Jul 2022 15:56:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87CE3C433C1;
-        Sun, 31 Jul 2022 15:56:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659282995;
-        bh=tFQ2FdOHf6AKo9snr8OPx7hE6X/OPvq/Rwof3jPZ8Hg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=b4j3PMw8WncsdsKlomHhx/t2bEH6vjqssCyFTDUFpYX+IGyecbFSRbsn7zNbwTcw5
-         9JCpE2Nv7jv4ZipuLfuwAFoyjayed9cfuk/CwKngS4Y0krOjPZxYuKdR3mB6AM/ut0
-         BOuELIsHpFAl0lQs3mJA0ayKwtHifXMjpoiGnfZadzKFSxgxx3bVyxRMjhMPipQ66M
-         8WcuDI9Xl5yXec3ZRUwcM50+i+jb0yW81wPvElfUcGWQE7YsTQXV+uFAa/1fxauYL0
-         wLd3vrXer3Yi8qs9v/IF7S9bIa1F+mm8Arnp8Yi0QFu08uU1ik/ljqdJBCw0bvm6dG
-         TBxxgP6ROs/bw==
-Message-ID: <e9c88889-3523-0466-cf52-71f04cb468b8@kernel.org>
-Date:   Sun, 31 Jul 2022 17:56:27 +0200
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 285C760EB5
+        for <linux-trace-devel@vger.kernel.org>; Sun, 31 Jul 2022 16:02:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 742B8C433C1
+        for <linux-trace-devel@vger.kernel.org>; Sun, 31 Jul 2022 16:02:54 +0000 (UTC)
+Date:   Sun, 31 Jul 2022 12:02:47 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] libtraceevent: Add warnings if fields are outside the event
+Message-ID: <20220731120247.71528711@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH V9 01/16] rv: Add Runtime Verification (RV) interface
-Content-Language: en-US
-To:     Tao Zhou <tao.zhou@linux.dev>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Gabriele Paoloni <gpaoloni@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org
-References: <cover.1659052063.git.bristot@kernel.org>
- <a4bfe038f50cb047bfb343ad0e12b0e646ab308b.1659052063.git.bristot@kernel.org>
- <YuU7TGxm5pzmBFTx@geo.homenetwork>
- <0197dd47-ea15-4d8b-5fc7-e466d8a501a7@kernel.org>
- <YuaadlzgSJLtzOUw@geo.homenetwork>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <YuaadlzgSJLtzOUw@geo.homenetwork>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 7/31/22 17:06, Tao Zhou wrote:
-> On Sat, Jul 30, 2022 at 08:07:07PM +0200, Daniel Bristot de Oliveira wrote:
->> On 7/30/22 16:08, Tao Zhou wrote:
->>> On Fri, Jul 29, 2022 at 11:38:40AM +0200, Daniel Bristot de Oliveira wrote:
->>>
->>>> +static int __rv_disable_monitor(struct rv_monitor_def *mdef, bool sync)
->>>> +{
->>>> +	lockdep_assert_held(&rv_interface_lock);
->>>> +
->>>> +	if (mdef->monitor->enabled) {
->>>> +		mdef->monitor->enabled = 0;
->>>> +		mdef->monitor->disable();
->>>
->>> If call disable(), the @enabled is set 0 there.
->>
->> Which is correct.
->>
->>>
->>>> +
->>>> +		/*
->>>> +		 * Wait for the execution of all events to finish.
->>>> +		 * Otherwise, the data used by the monitor could
->>>> +		 * be inconsistent. i.e., if the monitor is re-enabled.
->>>> +		 */
->>>> +		if (sync)
->>>> +			tracepoint_synchronize_unregister();
->>>> +		return 1;
->>>
->>> Return 0 indicate the actually disabling and successed.
->>
->> No, 1 indicates that *disable was called, 0 did not call disable function.
->>
->>>> +	}
->>>> +	return 0;
->>>
->>> If disable a diabled monitor, return error(negative).
->>
->> This is a "static __function", which alerts for internal aspects.
->>
->> It has a specific purpose of counting if the disable function
->> was actually called.
->>
->> Disabling a disabled monitor is not a problem.
->>
->> So all your argumentation based on this is not correct, and it is breaking
->> other parts of the code... see where it is called.
->>
->>>> +}
->>>> +
->>>> +/**
->>>> + * rv_disable_monitor - disable a given runtime monitor
->>>> + *
->>>> + * Returns 0 on success.
->>>> + */
->>>> +int rv_disable_monitor(struct rv_monitor_def *mdef)
->>>> +{
->>>> +	__rv_disable_monitor(mdef, true);
->>>> +	return 0;
->>>
->>> Always return 0 here, whatever the return value of __rv_disable_monitor().
->>> And this enforce me to look more here, see below.
->>
->> This is not a problem. Actually, disable functions often return void.
->> I am keeping an int just in case.
->>
->>>> +}
->>>
->>>> +static ssize_t enabled_monitors_write(struct file *filp, const char __user *user_buf,
->>>> +				      size_t count, loff_t *ppos)
->>>> +{
->>>> +	char buff[MAX_RV_MONITOR_NAME_SIZE + 2];
->>>> +	struct rv_monitor_def *mdef;
->>>> +	int retval = -EINVAL;
->>>> +	bool enable = true;
->>>> +	char *ptr = buff;
->>>> +	int len;
->>>> +
->>>> +	if (count < 1 || count > MAX_RV_MONITOR_NAME_SIZE + 1)
->>>> +		return -EINVAL;
->>>> +
->>>> +	memset(buff, 0, sizeof(buff));
->>>> +
->>>> +	retval = simple_write_to_buffer(buff, sizeof(buff) - 1, ppos, user_buf, count);
->>>> +	if (retval < 0)
->>>> +		return -EFAULT;
->>>> +
->>>> +	ptr = strim(buff);
->>>> +
->>>> +	if (ptr[0] == '!') {
->>>> +		enable = false;
->>>> +		ptr++;
->>>> +	}
->>>> +
->>>> +	len = strlen(ptr);
->>>> +	if (!len)
->>>> +		return count;
->>>> +
->>>> +	mutex_lock(&rv_interface_lock);
->>>> +
->>>> +	retval = -EINVAL;
->>>> +
->>>> +	list_for_each_entry(mdef, &rv_monitors_list, list) {
->>>> +		if (strcmp(ptr, mdef->monitor->name) != 0)
->>>> +			continue;
->>>> +
->>>> +		/*
->>>> +		 * Monitor found!
->>>> +		 */
->>>> +		if (enable)
->>>> +			retval = rv_enable_monitor(mdef);
->>>> +		else
->>>> +			retval = rv_disable_monitor(mdef);
->>>
->>> About the retval here. If count == 1 and retval == 0, then
->>> `retval = count` --> retval == 1. This retval will be returned to 
->>> user space and dedicate that how many character read and success
->>> If retval is 1(it is not possiable, the return value of
->>> da_monitor_init_*() called in enable callback in rv_enable_monitor()
->>> will be 0, so that return value check is not needed, or any other functions
->>> called in enable callback need to check the return value then,...
->>
->> All things above are misled by the first interpretation but,,,
-> 
-> Yeah, this is not that clear from my above words expression. I said the return
-> value of da_monitor_init_*() will be 0, but it is not right. Global and per-cpu
-> monitor will return 0, per-task monitor may return a positive value when the
-> slot is equal or greater than RV_PER_TASK_MONITOR_INIT(how possible this will
-> happen I do know yet). This is from reading the current code implementation.
-> I just want to say that there may be a bug here.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-goto my previous email;
+If a field is referenced outside of the event that is being processed,
+do not access that field and warn about it.
 
-> If rv_enable_monitor() return a positive value and the error happened(as above
-> said), user space will not know this is a error return value, but regard it as a
-> right writing. Even if the return value(the slot value not in [0..RV_PER_TASK_MONITOR_INIT))
-> is equal to count of charaters that are writen to the file(the string length of monitor name),
-> it will still be not a right writing.
-> 
->>
->> so I checked
->>> the WARN_ONCE() called in macro rv_attach_trace_probe() which is called in
->>> enable callback,if the WARN_ONCE is called, it means that something go wrong.
->>
->> The way that rv_attach_trace_probe() is attaching a probe is not different from the way
->> other *in kernel* tracing does.
->>
->>> We need to check the return value of WARN_ONCE() in enable callback), the
->>> return value will be returned to user space but actually the error(warn) happened.
->>> User space do not know. They treat the two kind of return value 1 the same
->>> but one is the write count value successed and another is the write error
->>> value returned.
->>> In enable callback, check rv_attach_trace_probe():
->>>
->>> static int enable_wip(void)
->>> {
->>>       int retval = 1;
->>>  	  
->>>       /* 
->>>        * Delete the check of return value of da_monitor_init_wip()
->>>        * because it is always 0
->>>        */
->>>       da_monitor_init_wip();
->>>
->>>       retval &= rv_attach_trace_probe("wip", preempt_enable, handle_preempt_enable);
->>>       retval &= rv_attach_trace_probe("wip", sched_waking, handle_sched_waking);
->>>       retval &= rv_attach_trace_probe("wip", preempt_disable, handle_preempt_disable);
->>
->> No, that is not the most robust way to do this. A better way is to do it like in the
->> early versions of this patch set, where it was searching for the existence of the tracepoint
-> 
-> Even if we check the return value of rv_attach_trace_probe() in current implementation,
-> once error happened from one register the previous trace pointers will not be unregistered.
+This was triggered when there was a bug in the kernel that showed the
+wrong offset to the fields that were outside the size of the event. When
+trace-cmd used this library to get a field of an event that was at the
+end of a sub buffer, it read past the page that was not allocated and
+crashed.
 
-goto my previous email; see other tracers.
+Not only warn when this happens, but also just return a zero value and
+not read past the event.
 
->> from the module perspective, taking notes of the ones that were enabled, and then actually disabling
->> all events that were enabled before the failure.
->>
->>>
->>>       /* 
->>>        * If the retval is not 0, it mean at least one rv_attach_trace_probe()
->>>        * is WARN_ONCE(). I am not sure that if the first WARN_ONCE() happened,
->>>        * then return directly or at here after all rv_attach_trace_probe() is
->>>        * called and check the retval is 0 or 1.
->>>        */
->>>       if (retval)
->>>              return -1;
->>
->> and here the system state is even worse than WARNING and doing nothing: the monitor is
->> disabled, but the tracepoints that were registered are still hooked to the system...
->> and you cannot unhook them because the monitor is not enabled.
->>
->> You still can unhook in current implementation.
-> 
-> Yes.
-> 
-> Thanks,
-> Tao
->>
->> So, for the in-kernel version, the current method is equivalent to the
->> the way we do on other tracers, and the monitors only compile if the
->> tracepoints exist, the callback has the correct signature and WARNs
->> in case of problems in the tracepoint.
->>
->> There will be a more robust way to do this, and it will be included in the
->> "add module support" patch set. But is its better to add it in a patch
->> set because we can analyze change by change instead of adding on top
->> of this initial implementation - which is quite large already.
->>
->>>       return retval;
->>> }
->>>
->>>> +
->>>> +		if (!retval)
->>>> +			retval = count;
->>>> +
->>>> +		break;
->>>> +	}
->>>
->>>> +/**
->>>> + * rv_register_monitor - register a rv monitor.
->>>> + * @monitor:    The rv_monitor to be registered.
->>>> + *
->>>> + * Returns 0 if successful, error otherwise.
->>>> + */
->>>> +int rv_register_monitor(struct rv_monitor *monitor)
->>>> +{
->>>> +	struct rv_monitor_def *r;
->>>> +	int retval = 0;
->>>> +
->>>> +	if (strlen(monitor->name) >= MAX_RV_MONITOR_NAME_SIZE) {
->>>
->>> s/>=/>/ no? The same check happened in patch 2. Thanks,
->>
->> Yep, this can be improved. But it is not a BUG, as it is allowing monitor
->>  with (MAX_RV_MONITOR_NAME_SIZE - 1) size, which is safe.
->>
->> Given that neither 'wip' or 'wwnr' are >= MAX_RV_MONITOR_NAME_SIZE, this
->> problem is not happening - and no other monitor can hit it because modules
->> are not yet supported.
->>
->> I took note and will patch it.
->>
->>>> +		pr_info("Monitor %s has a name longer than %d\n", monitor->name,
->>>> +			MAX_RV_MONITOR_NAME_SIZE);
->>
->> Thanks!
->> -- Daniel
+Link: https://lore.kernel.org/all/20220731015928.7ab3a154@rorschach.local.home/
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ src/event-parse.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+
+diff --git a/src/event-parse.c b/src/event-parse.c
+index b252c4d..b3caff6 100644
+--- a/src/event-parse.c
++++ b/src/event-parse.c
+@@ -4084,6 +4084,18 @@ static inline void dynamic_offset_field(struct tep_handle *tep,
+ 		*offset += field->offset + field->size;
+ }
+ 
++static bool check_data_offset_size(struct tep_event *event, const char *field_name,
++				    int data_size, int field_offset, int field_size)
++{
++	/* Check to make sure the field is within the data */
++	if (field_offset + field_size <= data_size)
++		return false;
++
++	tep_warning("Event '%s' field '%s' goes beyond the size of the event (%d > %d)",
++		    event->name, field_name, field_offset + field_size, data_size);
++	return true;
++}
++
+ static unsigned long long
+ eval_num_arg(void *data, int size, struct tep_event *event, struct tep_print_arg *arg)
+ {
+@@ -4110,6 +4122,12 @@ eval_num_arg(void *data, int size, struct tep_event *event, struct tep_print_arg
+ 			if (!arg->field.field)
+ 				goto out_warning_field;
+ 		}
++		if (check_data_offset_size(event, arg->field.name, size,
++					   arg->field.field->offset,
++					   arg->field.field->size)) {
++			val = 0;
++			break;
++		}
+ 		/* must be a number */
+ 		val = tep_read_number(tep, data + arg->field.field->offset,
+ 				      arg->field.field->size);
+@@ -4177,6 +4195,11 @@ eval_num_arg(void *data, int size, struct tep_event *event, struct tep_print_arg
+ 			default:
+ 				goto default_op; /* oops, all bets off */
+ 			}
++			if (check_data_offset_size(event, arg->field.name, size,
++						   offset, field_size)) {
++				val = 0;
++				break;
++			}
+ 			val = tep_read_number(tep,
+ 					      data + offset, field_size);
+ 			if (typearg)
+@@ -4286,6 +4309,11 @@ eval_num_arg(void *data, int size, struct tep_event *event, struct tep_print_arg
+ 		/* Without [], we pass the address to the dynamic data */
+ 		dynamic_offset_field(tep, arg->dynarray.field, data, size,
+ 				     &offset, NULL);
++		if (check_data_offset_size(event, arg->field.name, size,
++					   offset, field_size)) {
++			val = (unsigned long)data;
++			break;
++		}
+ 		val = (unsigned long long)((unsigned long)data + offset);
+ 		val = (unsigned long)data + offset;
+ 		break;
+-- 
+2.35.1
 
