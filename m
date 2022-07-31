@@ -2,34 +2,34 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD8E8C25B0E
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 31 Jul 2022 19:04:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61490C19F2D
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 31 Jul 2022 19:04:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237355AbiGaTEr (ORCPT
+        id S237875AbiGaTEs (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 31 Jul 2022 15:04:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49272 "EHLO
+        Sun, 31 Jul 2022 15:04:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237750AbiGaTEi (ORCPT
+        with ESMTP id S237800AbiGaTEk (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 31 Jul 2022 15:04:38 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF2B510563;
-        Sun, 31 Jul 2022 12:04:36 -0700 (PDT)
+        Sun, 31 Jul 2022 15:04:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AA4EE35;
+        Sun, 31 Jul 2022 12:04:38 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 840F9B80DD4;
-        Sun, 31 Jul 2022 19:04:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12F5AC4314C;
-        Sun, 31 Jul 2022 19:04:34 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6ACCF61088;
+        Sun, 31 Jul 2022 19:04:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44EDEC43145;
+        Sun, 31 Jul 2022 19:04:36 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.96)
         (envelope-from <rostedt@goodmis.org>)
-        id 1oIEEr-007G5U-0d;
-        Sun, 31 Jul 2022 15:04:33 -0400
-Message-ID: <20220731190433.031964424@goodmis.org>
+        id 1oIEEt-007GCG-1K;
+        Sun, 31 Jul 2022 15:04:35 -0400
+Message-ID: <20220731190435.248497238@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Sun, 31 Jul 2022 15:03:36 -0400
+Date:   Sun, 31 Jul 2022 15:03:48 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
@@ -53,7 +53,7 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Randy Dunlap <rdunlap@infradead.org>,
         linux-doc@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         Daniel Bristot de Oliveira <bristot@kernel.org>
-Subject: [for-next][PATCH 07/21] rv/include: Add helper functions for deterministic automata
+Subject: [for-next][PATCH 19/21] rv/reactor: Add the printk reactor
 References: <20220731190329.641602282@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -63,40 +63,9 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Daniel Bristot de Oliveira <bristot@kernel.org>
 
-Formally, a deterministic automaton, denoted by G, is defined as a
-quintuple:
+A reactor that printks the reaction message.
 
-  G = { X, E, f, x_0, X_m }
-
-where:
-	- X is the set of states;
-	- E is the finite set of events;
-	- x_0 is the initial state;
-	- X_m (subset of X) is the set of marked states.
-	- f : X x E -> X $ is the transition function. It defines the
-	  state transition in the occurrence of a event from E in
-	  the state X. In the special case of deterministic automata,
-	  the occurrence of the event in E in a state in X has a
-	  deterministic next state from X.
-
-An automaton can also be represented using a graphical format of
-vertices (nodes) and edges. The open-source tool Graphviz can produce
-this graphic format using the (textual) DOT language as the source code.
-
-The dot2c tool presented in this paper:
-
-De Oliveira, Daniel Bristot; Cucinotta, Tommaso; De Oliveira, Romulo
-Silva. Efficient formal verification for the Linux kernel. In:
-International Conference on Software Engineering and Formal Methods.
-Springer, Cham, 2019. p. 315-332.
-
-Translates a deterministic automaton in the DOT format into a C
-source code representation that to be used for monitoring.
-
-This header file implements helper functions to facilitate the usage
-of the C output from dot2c/k for monitoring.
-
-Link: https://lkml.kernel.org/r/563234f2bfa84b540f60cf9e39c2d9f0eea95a55.1659052063.git.bristot@kernel.org
+Link: https://lkml.kernel.org/r/b65f18a7fd6dc6659a3008fd7b7392de3465d47b.1659052063.git.bristot@kernel.org
 
 Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
 Cc: Guenter Roeck <linux@roeck-us.net>
@@ -121,90 +90,88 @@ Cc: linux-trace-devel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/rv/automata.h | 75 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 75 insertions(+)
- create mode 100644 include/rv/automata.h
+ kernel/trace/rv/Kconfig          |  8 ++++++
+ kernel/trace/rv/Makefile         |  3 ++-
+ kernel/trace/rv/reactor_printk.c | 42 ++++++++++++++++++++++++++++++++
+ 3 files changed, 52 insertions(+), 1 deletion(-)
+ create mode 100644 kernel/trace/rv/reactor_printk.c
 
-diff --git a/include/rv/automata.h b/include/rv/automata.h
-new file mode 100644
-index 000000000000..eb9e636809a0
---- /dev/null
-+++ b/include/rv/automata.h
-@@ -0,0 +1,75 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2019-2022 Red Hat, Inc. Daniel Bristot de Oliveira  <bristot@kernel.org>
-+ *
-+ * Deterministic automata helper functions, to be used with the automata
-+ * models in C generated by the dot2k tool.
-+ */
+diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
+index b259d6e8dc7c..e82d5015e6ab 100644
+--- a/kernel/trace/rv/Kconfig
++++ b/kernel/trace/rv/Kconfig
+@@ -60,3 +60,11 @@ config RV_REACTORS
+ 	  on the model's execution. By default, the monitors have
+ 	  tracing reactions, printing the monitor output via tracepoints,
+ 	  but other reactions can be added (on-demand) via this interface.
 +
++config RV_REACT_PRINTK
++	bool "Printk reactor"
++	depends on RV_REACTORS
++	default y
++	help
++	  Enables the printk reactor. The printk reactor emits a printk()
++	  message if an exception is found.
+diff --git a/kernel/trace/rv/Makefile b/kernel/trace/rv/Makefile
+index af0ff9a46418..a13c750a35c1 100644
+--- a/kernel/trace/rv/Makefile
++++ b/kernel/trace/rv/Makefile
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+ obj-$(CONFIG_RV) += rv.o
+-obj-$(CONFIG_RV_REACTORS) += rv_reactors.o
+ obj-$(CONFIG_RV_MON_WIP) += monitors/wip/wip.o
+ obj-$(CONFIG_RV_MON_WWNR) += monitors/wwnr/wwnr.o
++obj-$(CONFIG_RV_REACTORS) += rv_reactors.o
++obj-$(CONFIG_RV_REACT_PRINTK) += reactor_printk.o
+diff --git a/kernel/trace/rv/reactor_printk.c b/kernel/trace/rv/reactor_printk.c
+new file mode 100644
+index 000000000000..31899f953af4
+--- /dev/null
++++ b/kernel/trace/rv/reactor_printk.c
+@@ -0,0 +1,42 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * DECLARE_AUTOMATA_HELPERS - define a set of helper functions for automata
++ * Copyright (C) 2019-2022 Red Hat, Inc. Daniel Bristot de Oliveira <bristot@kernel.org>
 + *
-+ * Define a set of helper functions for automata. The 'name' argument is used
-+ * as suffix for the functions and data. These functions will handle automaton
-+ * with data type 'type'.
++ * Printk RV reactor:
++ *   Prints the exception msg to the kernel message log.
 + */
-+#define DECLARE_AUTOMATA_HELPERS(name, type)					\
-+										\
-+/*										\
-+ * model_get_state_name_##name - return the (string) name of the given state	\
-+ */ 										\
-+static char *model_get_state_name_##name(enum states_##name state)		\
-+{										\
-+	if ((state < 0) || (state >= state_max_##name))				\
-+		return "INVALID";						\
-+										\
-+	return automaton_##name.state_names[state];				\
-+}										\
-+										\
-+/*										\
-+ * model_get_event_name_##name - return the (string) name of the given event	\
-+ */										\
-+static char *model_get_event_name_##name(enum events_##name event)		\
-+{										\
-+	if ((event < 0) || (event >= event_max_##name))				\
-+		return "INVALID";						\
-+										\
-+	return automaton_##name.event_names[event];				\
-+}										\
-+										\
-+/*										\
-+ * model_get_initial_state_##name - return the automaton's initial state		\
-+ */										\
-+static inline type model_get_initial_state_##name(void)				\
-+{										\
-+	return automaton_##name.initial_state;					\
-+}										\
-+										\
-+/*										\
-+ * model_get_next_state_##name - process an automaton event occurrence		\
-+ *										\
-+ * Given the current state (curr_state) and the event (event), returns		\
-+ * the next state, or INVALID_STATE in case of error.				\
-+ */										\
-+static inline type model_get_next_state_##name(enum states_##name curr_state,	\
-+					       enum events_##name event)	\
-+{										\
-+	if ((curr_state < 0) || (curr_state >= state_max_##name))		\
-+		return INVALID_STATE;						\
-+										\
-+	if ((event < 0) || (event >= event_max_##name))				\
-+		return INVALID_STATE;						\
-+										\
-+	return automaton_##name.function[curr_state][event];			\
-+}										\
-+										\
-+/*										\
-+ * model_is_final_state_##name - check if the given state is a final state	\
-+ */										\
-+static inline bool model_is_final_state_##name(enum states_##name state)	\
-+{										\
-+	if ((state < 0) || (state >= state_max_##name))				\
-+		return 0;							\
-+										\
-+	return automaton_##name.final_states[state];				\
++#include <linux/ftrace.h>
++#include <linux/tracepoint.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/rv.h>
++
++static void rv_printk_reaction(char *msg)
++{
++	printk_deferred(msg);
 +}
++
++static struct rv_reactor rv_printk = {
++	.name = "printk",
++	.description = "prints the exception msg to the kernel message log.",
++	.react = rv_printk_reaction
++};
++
++static int register_react_printk(void)
++{
++	rv_register_reactor(&rv_printk);
++	return 0;
++}
++
++static void unregister_react_printk(void)
++{
++	rv_unregister_reactor(&rv_printk);
++}
++
++module_init(register_react_printk);
++module_exit(unregister_react_printk);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Daniel Bristot de Oliveira");
++MODULE_DESCRIPTION("printk rv reactor: printk if an exception is hit.");
 -- 
 2.35.1
