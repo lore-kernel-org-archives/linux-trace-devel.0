@@ -2,174 +2,64 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75547C3F6B0
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 31 Jul 2022 19:04:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB608C19F2B
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Aug 2022 11:06:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237935AbiGaTE4 (ORCPT
+        id S239422AbiHDLGH (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 31 Jul 2022 15:04:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49542 "EHLO
+        Thu, 4 Aug 2022 07:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237587AbiGaTEp (ORCPT
+        with ESMTP id S239039AbiHDLGF (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 31 Jul 2022 15:04:45 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E43B10563;
-        Sun, 31 Jul 2022 12:04:39 -0700 (PDT)
+        Thu, 4 Aug 2022 07:06:05 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1849954C85
+        for <linux-trace-devel@vger.kernel.org>; Thu,  4 Aug 2022 04:06:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B9AA8B80DC5;
-        Sun, 31 Jul 2022 19:04:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 764D5C433D7;
-        Sun, 31 Jul 2022 19:04:36 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.96)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1oIEEt-007GCp-1v;
-        Sun, 31 Jul 2022 15:04:35 -0400
-Message-ID: <20220731190435.430671181@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Sun, 31 Jul 2022 15:03:49 -0400
+        by ams.source.kernel.org (Postfix) with ESMTPS id A72A2B8119C
+        for <linux-trace-devel@vger.kernel.org>; Thu,  4 Aug 2022 11:06:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BE2BC433C1
+        for <linux-trace-devel@vger.kernel.org>; Thu,  4 Aug 2022 11:06:01 +0000 (UTC)
+Date:   Thu, 4 Aug 2022 07:05:59 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Gabriele Paoloni <gpaoloni@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        Tao Zhou <tao.zhou@linux.dev>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        Daniel Bristot de Oliveira <bristot@kernel.org>
-Subject: [for-next][PATCH 20/21] rv/reactor: Add the panic reactor
-References: <20220731190329.641602282@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] libtracefs: Add missed_events to record
+Message-ID: <20220804070559.36e6e6fc@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Daniel Bristot de Oliveira <bristot@kernel.org>
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Sample reactor that panics the system when an exception is found. This
-is useful both to capture a vmcore, or to fail-safe a critical system.
+When iterating over the events in the ring buffer, make sure to set the
+"missed_events" value of the record. This is very important for the
+callers to know that events were dropped.
 
-Link: https://lkml.kernel.org/r/729aae3aba95f35738b8f8180e626d747d1d9da2.1659052063.git.bristot@kernel.org
-
-Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Marco Elver <elver@google.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Gabriele Paoloni <gpaoloni@redhat.com>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Clark Williams <williams@redhat.com>
-Cc: Tao Zhou <tao.zhou@linux.dev>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-trace-devel@vger.kernel.org
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+Fixes: 3add2d75192e0 ("libtracefs: Iterate over raw events in sorted order")
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/rv/Kconfig         |  8 ++++++
- kernel/trace/rv/Makefile        |  1 +
- kernel/trace/rv/reactor_panic.c | 43 +++++++++++++++++++++++++++++++++
- 3 files changed, 52 insertions(+)
- create mode 100644 kernel/trace/rv/reactor_panic.c
+ src/tracefs-events.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
-index e82d5015e6ab..831779607e84 100644
---- a/kernel/trace/rv/Kconfig
-+++ b/kernel/trace/rv/Kconfig
-@@ -68,3 +68,11 @@ config RV_REACT_PRINTK
- 	help
- 	  Enables the printk reactor. The printk reactor emits a printk()
- 	  message if an exception is found.
-+
-+config RV_REACT_PANIC
-+	bool "Panic reactor"
-+	depends on RV_REACTORS
-+	default y
-+	help
-+	  Enables the panic reactor. The panic reactor emits a printk()
-+	  message if an exception is found and panic()s the system.
-diff --git a/kernel/trace/rv/Makefile b/kernel/trace/rv/Makefile
-index a13c750a35c1..963d14875b45 100644
---- a/kernel/trace/rv/Makefile
-+++ b/kernel/trace/rv/Makefile
-@@ -5,3 +5,4 @@ obj-$(CONFIG_RV_MON_WIP) += monitors/wip/wip.o
- obj-$(CONFIG_RV_MON_WWNR) += monitors/wwnr/wwnr.o
- obj-$(CONFIG_RV_REACTORS) += rv_reactors.o
- obj-$(CONFIG_RV_REACT_PRINTK) += reactor_printk.o
-+obj-$(CONFIG_RV_REACT_PANIC) += reactor_panic.o
-diff --git a/kernel/trace/rv/reactor_panic.c b/kernel/trace/rv/reactor_panic.c
-new file mode 100644
-index 000000000000..b698d05dd069
---- /dev/null
-+++ b/kernel/trace/rv/reactor_panic.c
-@@ -0,0 +1,43 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2019-2022 Red Hat, Inc. Daniel Bristot de Oliveira <bristot@kernel.org>
-+ *
-+ * Panic RV reactor:
-+ *   Prints the exception msg to the kernel message log and panic().
-+ */
-+
-+#include <linux/ftrace.h>
-+#include <linux/tracepoint.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/rv.h>
-+
-+static void rv_panic_reaction(char *msg)
-+{
-+	panic(msg);
-+}
-+
-+static struct rv_reactor rv_panic = {
-+	.name = "panic",
-+	.description = "panic the system if an exception is found.",
-+	.react = rv_panic_reaction
-+};
-+
-+static int register_react_panic(void)
-+{
-+	rv_register_reactor(&rv_panic);
-+	return 0;
-+}
-+
-+static void unregister_react_panic(void)
-+{
-+	rv_unregister_reactor(&rv_panic);
-+}
-+
-+module_init(register_react_panic);
-+module_exit(unregister_react_panic);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Daniel Bristot de Oliveira");
-+MODULE_DESCRIPTION("panic rv reactor: panic if an exception is found.");
+diff --git a/src/tracefs-events.c b/src/tracefs-events.c
+index 61a1c122e74e..d870241e127f 100644
+--- a/src/tracefs-events.c
++++ b/src/tracefs-events.c
+@@ -46,6 +46,7 @@ static int read_kbuf_record(struct cpu_iterate *cpu)
+ 	cpu->record.ts = ts;
+ 	cpu->record.size = kbuffer_event_size(cpu->kbuf);
+ 	cpu->record.record_size = kbuffer_curr_size(cpu->kbuf);
++	cpu->record.missed_events = kbuffer_missed_events(cpu->kbuf);
+ 	cpu->record.cpu = cpu->cpu;
+ 	cpu->record.data = ptr;
+ 	cpu->record.ref_count = 1;
 -- 
 2.35.1
+
