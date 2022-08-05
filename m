@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 076BFC25B0C
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Aug 2022 15:40:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7D4FC3F6B0
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Aug 2022 15:40:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240810AbiHEPku (ORCPT
+        id S240718AbiHEPku (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 5 Aug 2022 11:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44762 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240710AbiHEPkr (ORCPT
+        with ESMTP id S240721AbiHEPks (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 5 Aug 2022 11:40:47 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F4C21A82D
+        Fri, 5 Aug 2022 11:40:48 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9E025597
         for <linux-trace-devel@vger.kernel.org>; Fri,  5 Aug 2022 08:40:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 37066B8295E
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4A057B82961
         for <linux-trace-devel@vger.kernel.org>; Fri,  5 Aug 2022 15:40:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE943C433B5;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1C34C4347C;
         Fri,  5 Aug 2022 15:40:42 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.96)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1oJzRJ-008S4P-30;
+        id 1oJzRJ-008S4V-39;
         Fri, 05 Aug 2022 11:40:41 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 2/9] tracecmd library: Add tracecmd_iterate_events()
-Date:   Fri,  5 Aug 2022 11:40:33 -0400
-Message-Id: <20220805154040.2014381-3-rostedt@goodmis.org>
+Subject: [PATCH 4/9] tracecmd library: Add tracecmd_iterate_events_multi()
+Date:   Fri,  5 Aug 2022 11:40:35 -0400
+Message-Id: <20220805154040.2014381-5-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220805154040.2014381-1-rostedt@goodmis.org>
 References: <20220805154040.2014381-1-rostedt@goodmis.org>
@@ -44,84 +44,108 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add a helper function that will iterate over a list of events for a given
-handle. Requires the handle to be opened and ready for reading.
+Add a helper function that takes an array of tracecmd_input handles and
+calls the callback for each event in order of the record's timestamp for
+each handle.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/trace-cmd/trace-cmd.h |  7 ++++
- lib/trace-cmd/trace-input.c   | 70 +++++++++++++++++++++++++++++++++++
- 2 files changed, 77 insertions(+)
+ include/trace-cmd/trace-cmd.h |  6 +++
+ lib/trace-cmd/trace-input.c   | 91 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 97 insertions(+)
 
 diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index 5d71e8bab186..b91235751d64 100644
+index b91235751d64..86a3486972cc 100644
 --- a/include/trace-cmd/trace-cmd.h
 +++ b/include/trace-cmd/trace-cmd.h
-@@ -48,6 +48,13 @@ int tracecmd_buffer_instances(struct tracecmd_input *handle);
- const char *tracecmd_buffer_instance_name(struct tracecmd_input *handle, int indx);
- struct tracecmd_input *tracecmd_buffer_instance_handle(struct tracecmd_input *handle, int indx);
+@@ -54,6 +54,12 @@ int tracecmd_iterate_events(struct tracecmd_input *handle,
+ 					    struct tep_record *,
+ 					    int, void *),
+ 			    void *callback_data);
++int tracecmd_iterate_events_multi(struct tracecmd_input **handles,
++				  int nr_handles,
++				  int (*callback)(struct tracecmd_input *handle,
++						  struct tep_record *,
++						  int, void *),
++				  void *callback_data);
  
-+int tracecmd_iterate_events(struct tracecmd_input *handle,
-+			    cpu_set_t *cpus, int cpu_size,
-+			    int (*callback)(struct tracecmd_input *handle,
-+					    struct tep_record *,
-+					    int, void *),
-+			    void *callback_data);
-+
  void tracecmd_set_loglevel(enum tep_loglevel level);
  
- #endif /* _TRACE_CMD_H */
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 0fef2ca7bb70..e990600ad6b1 100644
+index e990600ad6b1..5df10716013d 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -2511,6 +2511,76 @@ tracecmd_read_next_data(struct tracecmd_input *handle, int *rec_cpu)
- 	return tracecmd_read_data(handle, next_cpu);
+@@ -170,6 +170,7 @@ struct tracecmd_input {
+ 	int			page_map_size;
+ 	int			max_cpu;
+ 	int			cpus;
++	int			start_cpu;
+ 	int			ref;
+ 	int			nr_buffers;	/* buffer instances */
+ 	bool			use_trace_clock;
+@@ -2581,6 +2582,96 @@ int tracecmd_iterate_events(struct tracecmd_input *handle,
+ 	return ret;
  }
  
++struct record_handle {
++	struct tep_record		*record;
++	struct tracecmd_input		*handle;
++};
++
 +/**
-+ * tracecmd_iterate_events - iterate events over a given handle
-+ * @handle: The handle to iterate over
-+ * @cpus: The CPU set to filter on (NULL for all CPUs)
-+ * @cpu_size: The size of @cpus (ignored if @cpus is NULL)
++ * tracecmd_iterate_events_multi - iterate events over multiple handles
++ * @handles: An array of handles to iterate over
++ * @nr_handles: The number of handles in the @handles array.
 + * @callback: The callback function for each event
 + * @callback_data: The data to pass to the @callback.
 + *
-+ * Will loop over all events in @handle (filtered by the given @cpus),
-+ * and will call @callback for each event in order of the event's records
-+ * timestamp.
++ * Will loop over all CPUs for each handle in @handles and call the
++ * @callback in the order of the timestamp for each event's record
++ * for each handle.
 + *
 + * Returns the -1 on error, or the value of the callbacks.
 + */
-+int tracecmd_iterate_events(struct tracecmd_input *handle,
-+			    cpu_set_t *cpus, int cpu_size,
-+			    int (*callback)(struct tracecmd_input *handle,
-+					    struct tep_record *,
-+					    int, void *),
-+			    void *callback_data)
++int tracecmd_iterate_events_multi(struct tracecmd_input **handles,
++				  int nr_handles,
++				  int (*callback)(struct tracecmd_input *handle,
++						  struct tep_record *,
++						  int, void *),
++				  void *callback_data)
 +{
-+	struct tep_record **records;
++	struct tracecmd_input *handle;
++	struct record_handle *records;
 +	struct tep_record *record;
 +	unsigned long long last_timestamp = 0;
 +	int next_cpu;
++	int cpus = 0;
++	int all_cpus = 0;
 +	int cpu;
++	int i;
 +	int ret = 0;
 +
-+	records = calloc(handle->max_cpu, sizeof(*records));
++	for (i = 0; i < nr_handles; i++) {
++		handle = handles[i];
++		cpus += handle->max_cpu;
++	}
++
++	records = calloc(cpus, sizeof(*records));
 +	if (!records)
 +		return -1;
 +
-+	for (cpu = 0; cpu < handle->max_cpu; cpu++) {
-+		if (cpus && !CPU_ISSET_S(cpu, cpu_size, cpus))
-+			continue;
-+
-+		records[cpu] = tracecmd_peek_data(handle, cpu);
++	for (i = 0; i < nr_handles; i++) {
++		handle = handles[i];
++		handle->start_cpu = all_cpus;
++		for (cpu = 0; cpu < handle->max_cpu; cpu++) {
++			records[all_cpus + cpu].record = tracecmd_peek_data(handle, cpu);
++			records[all_cpus + cpu].handle = handle;
++		}
++		all_cpus += cpu;
 +	}
 +
 +	do {
 +		next_cpu = -1;
-+		for (cpu = 0; cpu < handle->max_cpu; cpu++) {
-+			record = records[cpu];
++		for (cpu = 0; cpu < all_cpus; cpu++) {
++			record = records[cpu].record;
 +			if (!record)
 +				continue;
 +
@@ -131,19 +155,23 @@ index 0fef2ca7bb70..e990600ad6b1 100644
 +			}
 +		}
 +		if (next_cpu >= 0) {
++			record = records[next_cpu].record;
++			handle = records[next_cpu].handle;
++			cpu = next_cpu - handle->start_cpu;
 +			/* Need to call read_data to increment to the next record */
-+			record = tracecmd_read_data(handle, next_cpu);
-+			records[next_cpu] = tracecmd_peek_data(handle, next_cpu);
++			record = tracecmd_read_data(handle, cpu);
++			records[next_cpu].record = tracecmd_peek_data(handle, cpu);
 +
-+			ret = callback(handle, record, next_cpu, callback_data);
++			ret = callback(handle, record, cpu, callback_data);
 +			tracecmd_free_record(record);
 +		}
 +
 +	} while (next_cpu >= 0 && ret >= 0);
 +
-+	for (cpu = 0; cpu < handle->max_cpu; cpu++)
-+		tracecmd_free_record(records[cpu]);
-+
++	/*
++	 * The records array contains only records that were taken via
++	 * tracecmd_peek_data(), and do not need to be freed.
++	 */
 +	free(records);
 +
 +	return ret;
