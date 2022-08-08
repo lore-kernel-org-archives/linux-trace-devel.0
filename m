@@ -2,52 +2,105 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35D35C00140
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Aug 2022 15:50:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62261C00140
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Aug 2022 18:03:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241287AbiHEPua (ORCPT
+        id S238028AbiHHSDy (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 5 Aug 2022 11:50:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56168 "EHLO
+        Mon, 8 Aug 2022 14:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241316AbiHEPuP (ORCPT
+        with ESMTP id S238645AbiHHSDx (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 5 Aug 2022 11:50:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B3847B78A
-        for <linux-trace-devel@vger.kernel.org>; Fri,  5 Aug 2022 08:47:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Mon, 8 Aug 2022 14:03:53 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3C517077
+        for <linux-trace-devel@vger.kernel.org>; Mon,  8 Aug 2022 11:03:52 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BEDD261616
-        for <linux-trace-devel@vger.kernel.org>; Fri,  5 Aug 2022 15:47:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDDBBC433D7;
-        Fri,  5 Aug 2022 15:47:49 +0000 (UTC)
-Date:   Fri, 5 Aug 2022 11:47:48 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH] trace-cmd: Document new proxy args for {agent,record}
-Message-ID: <20220805114748.6e470854@gandalf.local.home>
-In-Reply-To: <20220804103729.1.Ia9701619f867f6acbec9e20bf89ed41979fcce87@changeid>
-References: <20220804103729.1.Ia9701619f867f6acbec9e20bf89ed41979fcce87@changeid>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C6FA433963;
+        Mon,  8 Aug 2022 18:03:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1659981826; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=lgIoSZ0i75Dg7dJZ8fBFibtvvAs8wVrZje6zNb0AFyE=;
+        b=jIgv4aqJMem/OwCFNd1vQCZnepCwyqE4IMCxTo+4Ay3q3owTT4BfuW9dokk8JKfb7raLpo
+        u16CICk3kmF30f+seiJuzDElfVtXqcekmr0wJ7nSjd+vB09EdQm8xAebaMPrdwO8OvgmJH
+        nYUS5+8aCB0yuRkatPmypnjtyyfFYBk=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A8EAB13AB3;
+        Mon,  8 Aug 2022 18:03:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Q2QRKAJQ8WLPYgAAMHmgww
+        (envelope-from <alexandre.vicenzi@suse.com>); Mon, 08 Aug 2022 18:03:46 +0000
+From:   Alexandre Vicenzi <alexandre.vicenzi@suse.com>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     bristot@kernel.org, rostedt@goodmis.org,
+        Alexandre Vicenzi <alexandre.vicenzi@suse.com>
+Subject: [PATCH] rtla: fix tracer name
+Date:   Mon,  8 Aug 2022 20:03:43 +0200
+Message-Id: <20220808180343.22262-1-alexandre.vicenzi@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu,  4 Aug 2022 10:37:43 -0700
-Brian Norris <briannorris@chromium.org> wrote:
+The correct tracer name is timerlat and not timelat.
 
-> Largely cribbed off the commit message introducing these:
-> 
-> 4f9d216ee312 trace-cmd: Add agent proxy communications between record and agent
-> 
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
+Signed-off-by: Alexandre Vicenzi <alexandre.vicenzi@suse.com>
+---
+ Documentation/tools/rtla/rtla-timerlat-hist.rst | 2 +-
+ tools/tracing/rtla/src/timerlat_hist.c          | 2 +-
+ tools/tracing/rtla/src/timerlat_top.c           | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-Applied. Thanks Brian!
+diff --git a/Documentation/tools/rtla/rtla-timerlat-hist.rst b/Documentation/tools/rtla/rtla-timerlat-hist.rst
+index e12eae1f3301..6bf7f0ca4556 100644
+--- a/Documentation/tools/rtla/rtla-timerlat-hist.rst
++++ b/Documentation/tools/rtla/rtla-timerlat-hist.rst
+@@ -33,7 +33,7 @@ EXAMPLE
+ =======
+ In the example below, **rtla timerlat hist** is set to run for *10* minutes,
+ in the cpus *0-4*, *skipping zero* only lines. Moreover, **rtla timerlat
+-hist** will change the priority of the *timelat* threads to run under
++hist** will change the priority of the *timerlat* threads to run under
+ *SCHED_DEADLINE* priority, with a *10us* runtime every *1ms* period. The
+ *1ms* period is also passed to the *timerlat* tracer::
+ 
+diff --git a/tools/tracing/rtla/src/timerlat_hist.c b/tools/tracing/rtla/src/timerlat_hist.c
+index f3ec628f5e51..4b48af8a8309 100644
+--- a/tools/tracing/rtla/src/timerlat_hist.c
++++ b/tools/tracing/rtla/src/timerlat_hist.c
+@@ -892,7 +892,7 @@ int timerlat_hist_main(int argc, char *argv[])
+ 	return_value = 0;
+ 
+ 	if (trace_is_off(&tool->trace, &record->trace)) {
+-		printf("rtla timelat hit stop tracing\n");
++		printf("rtla timerlat hit stop tracing\n");
+ 		if (params->trace_output) {
+ 			printf("  Saving trace to %s\n", params->trace_output);
+ 			save_trace_to_file(record->trace.inst, params->trace_output);
+diff --git a/tools/tracing/rtla/src/timerlat_top.c b/tools/tracing/rtla/src/timerlat_top.c
+index 35452a1d45e9..334271935222 100644
+--- a/tools/tracing/rtla/src/timerlat_top.c
++++ b/tools/tracing/rtla/src/timerlat_top.c
+@@ -687,7 +687,7 @@ int timerlat_top_main(int argc, char *argv[])
+ 	return_value = 0;
+ 
+ 	if (trace_is_off(&top->trace, &record->trace)) {
+-		printf("rtla timelat hit stop tracing\n");
++		printf("rtla timerlat hit stop tracing\n");
+ 		if (params->trace_output) {
+ 			printf("  Saving trace to %s\n", params->trace_output);
+ 			save_trace_to_file(record->trace.inst, params->trace_output);
+-- 
+2.34.1
 
--- Steve
