@@ -2,67 +2,82 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 720B2C19F2C
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 16 Aug 2022 05:12:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31F8EC00140
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Aug 2022 02:03:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbiHPFM3 (ORCPT
+        id S242524AbiHSCDm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 16 Aug 2022 01:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55706 "EHLO
+        Thu, 18 Aug 2022 22:03:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232289AbiHPFMJ (ORCPT
+        with ESMTP id S240319AbiHSCDk (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 16 Aug 2022 01:12:09 -0400
+        Thu, 18 Aug 2022 22:03:40 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B0F1CF5A4
-        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Aug 2022 14:19:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A402D5727B
+        for <linux-trace-devel@vger.kernel.org>; Thu, 18 Aug 2022 19:03:39 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BED0660F9F
-        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Aug 2022 21:19:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF657C433D6
-        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Aug 2022 21:19:40 +0000 (UTC)
-Date:   Mon, 15 Aug 2022 17:19:47 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3EF5C6142D
+        for <linux-trace-devel@vger.kernel.org>; Fri, 19 Aug 2022 02:03:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6793C433D6;
+        Fri, 19 Aug 2022 02:03:38 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.96)
+        (envelope-from <rostedt@rostedt.homelinux.com>)
+        id 1oOrMU-0038Ru-0C;
+        Thu, 18 Aug 2022 22:03:50 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd: Close socket descriptor on failed connection
-Message-ID: <20220815171947.57e919df@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To:     linux-trace-devel@vger.kernel.org
+Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Subject: [PATCH 3/3] libtracefs sqlhist: Allow pointers to match longs
+Date:   Thu, 18 Aug 2022 22:03:49 -0400
+Message-Id: <20220819020349.747429-4-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220819020349.747429-1-rostedt@goodmis.org>
+References: <20220819020349.747429-1-rostedt@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-In trace_vsock_open(), if the connection fails, the sd file descriptor
-still needs to be closed.
+Currently, if a field that is a long tries to match a field that is a
+pointer, tracefs_sqlhist() will fail with incompatible fields. But the
+kernel will still allow it to match, do not fail here.
 
-Fixes: 76aaeb474 ("trace-cmd: Add VM kernel tracing over vsockets transport")
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- tracecmd/trace-vsock.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ src/tracefs-hist.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/tracecmd/trace-vsock.c b/tracecmd/trace-vsock.c
-index 3bad9efad39a..baa310f7586b 100644
---- a/tracecmd/trace-vsock.c
-+++ b/tracecmd/trace-vsock.c
-@@ -19,8 +19,10 @@ int __hidden trace_vsock_open(unsigned int cid, unsigned int port)
- 	if (sd < 0)
- 		return -errno;
+diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
+index 302b9a75e6ee..14988d8dc185 100644
+--- a/src/tracefs-hist.c
++++ b/src/tracefs-hist.c
+@@ -796,6 +796,7 @@ static bool verify_event_fields(struct tep_event *start_event,
+ {
+ 	const struct tep_format_field *start_field;
+ 	const struct tep_format_field *end_field;
++	int start_flags, end_flags;
  
--	if (connect(sd, (struct sockaddr *)&addr, sizeof(addr)))
-+	if (connect(sd, (struct sockaddr *)&addr, sizeof(addr))) {
-+		close(sd);
- 		return -errno;
-+	}
+ 	if (!trace_verify_event_field(start_event, start_field_name,
+ 				      &start_field))
+@@ -806,7 +807,11 @@ static bool verify_event_fields(struct tep_event *start_event,
+ 					      &end_field))
+ 			return false;
  
- 	return sd;
- }
+-		if (start_field->flags != end_field->flags ||
++		/* A pointer can still match a long */
++		start_flags = start_field->flags & ~TEP_FIELD_IS_POINTER;
++		end_flags = end_field->flags & ~TEP_FIELD_IS_POINTER;
++
++		if (start_flags != end_flags ||
+ 		    start_field->size != end_field->size) {
+ 			errno = EBADE;
+ 			return false;
 -- 
 2.35.1
 
