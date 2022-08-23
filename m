@@ -2,83 +2,79 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93BDFC32774
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Aug 2022 17:37:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BFA4C32774
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Aug 2022 17:37:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbiHWRhL (ORCPT
+        id S232294AbiHWRhU (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 23 Aug 2022 13:37:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43066 "EHLO
+        Tue, 23 Aug 2022 13:37:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbiHWRgm (ORCPT
+        with ESMTP id S231856AbiHWRgy (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 23 Aug 2022 13:36:42 -0400
-X-Greylist: delayed 181 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 23 Aug 2022 08:19:00 PDT
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6BF6DF59
-        for <linux-trace-devel@vger.kernel.org>; Tue, 23 Aug 2022 08:19:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1661267751;
-    s=strato-dkim-0002; d=iokpp.de;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=w3zeJm9t5Ppx7ZEIb+hHZ+3isDi7H9YIBxUv4VmdaXg=;
-    b=AaCWUyBsVuDt0jOFFtQPn0MUjhUJWe970cu2VH2n4bAKrk6+bSCkmovtEWdMdcHSP/
-    UcvIjKcbAOmWC6Gbkqj7M8XUNNqKkU9kL6CRzYVynms07xoPATQqe7VKbWyPZ2Ukpoyr
-    GcB7/GAaJNwHdQZWhH6cV0XkS2wyeyTdhb+5/4q9ExbcQIfOlHTxQhCIh0qw9phB54Iy
-    EIU/10gemWk8bcXoaXRq7aPBq/iaYLeZfiGoMbgTGytb51nLpVR68HD8tNfJgeu01dhG
-    Ippm943GnmBxt5S7RkIYmbbEIEbtGR1B1BAZNgVmKdFp8CqI5lpJxiV+oBQQ3GJ8cGuo
-    zeUQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":LmkFe0i9dN8c2t4QQyGBB/NDXvjDB6pBSedrgBzPc9DUyubU4DD2QzemV2tdlNlNRZBXiUw="
-X-RZG-CLASS-ID: mo00
-Received: from linux.micron.com
-    by smtp.strato.de (RZmta 47.47.0 AUTH)
-    with ESMTPSA id z982dcy7NFFpQxO
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 23 Aug 2022 17:15:51 +0200 (CEST)
-From:   Bean Huo <beanhuo@iokpp.de>
-To:     linux-trace-devel@vger.kernel.org, rostedt@goodmis.org,
-        tz.stoyanov@gmail.com
-Cc:     Bean Huo <beanhuo@micron.com>
-Subject: [PATCH] libtraceevent: Documentation: Correct typo in example
-Date:   Tue, 23 Aug 2022 17:15:41 +0200
-Message-Id: <20220823151541.151549-1-beanhuo@iokpp.de>
-X-Mailer: git-send-email 2.34.1
+        Tue, 23 Aug 2022 13:36:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C9B7AC09;
+        Tue, 23 Aug 2022 08:20:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E38BB615E9;
+        Tue, 23 Aug 2022 15:20:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00D8BC433C1;
+        Tue, 23 Aug 2022 15:20:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661268036;
+        bh=R3JCBvCuFVOcgv2cpaHqmIPuKQnLpMXkz7+RnJAPMTY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RUzqgFBg7s4w5fBJZ1jilhw+kO3ADxqZl5YSqKS2ZDMuFGZMYXAr+bkFL8HFANyeH
+         eUmVS/M4o9dpmQrJrZ01YErwvtcEr9oP9HB9EsObVFJP/p5j+U/xuD9VXwBh9QRQ8q
+         pDpCBXgMucuqCCk0nCWwZ3MaOIxK7+yYFXTDh2x+DFnD5hjJ09f9TxAFSeEO0+5y3P
+         LYpkXj8BCo6+xV84EM8HO0WCDTo8bbZpXkv/JXwVXKeE2XQ1G6/OBE28aDLNrjYvzP
+         5BftSS5MxAI9Sx9VR8C6SxyoqxzO/Hyodl3CF4z2nowJyHl0U8efqm+DQNbGHxVP33
+         jkReXKEUibUoQ==
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH 1/2] rv/dot2c: Make automaton definition static
+Date:   Tue, 23 Aug 2022 17:20:28 +0200
+Message-Id: <ffbb92010f643307766c9307fd42f416e5b85fa0.1661266564.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+Monitor's automata definition is only used locally, so make dot2c generate
+a static definition.
 
-There is no struct tep_event_format, it should be struct tep_event. And
-the first parameter in tep_find_event_by_record() should be tep, instead
-of pevent.
+Link: https://lore.kernel.org/all/202208210332.gtHXje45-lkp@intel.com
+Link: https://lore.kernel.org/all/202208210358.6HH3OrVs-lkp@intel.com
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Fixes: e3c9fc78f096 ("tools/rv: Add dot2c")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- Documentation/libtraceevent-field_get_val.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/verification/dot2/dot2c.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/libtraceevent-field_get_val.txt b/Documentation/libtraceevent-field_get_val.txt
-index 69d51bfc1020..6a5f1cd74f4d 100644
---- a/Documentation/libtraceevent-field_get_val.txt
-+++ b/Documentation/libtraceevent-field_get_val.txt
-@@ -64,10 +64,10 @@ void process_record(struct tep_record *record)
- {
- 	int len;
- 	char *comm;
--	struct tep_event_format *event;
-+	struct tep_event *event;
- 	unsigned long long val;
+diff --git a/tools/verification/dot2/dot2c.py b/tools/verification/dot2/dot2c.py
+index fa73353f7e56..be8a364a469b 100644
+--- a/tools/verification/dot2/dot2c.py
++++ b/tools/verification/dot2/dot2c.py
+@@ -111,7 +111,7 @@ class Dot2c(Automata):
  
--	event = tep_find_event_by_record(pevent, record);
-+	event = tep_find_event_by_record(tep, record);
- 	if (event != NULL) {
- 		if (tep_get_common_field_val(NULL, event, "common_type",
- 					     record, &val, 0) == 0) {
+     def format_aut_init_header(self):
+         buff = []
+-        buff.append("struct %s %s = {" % (self.struct_automaton_def, self.var_automaton_def))
++        buff.append("static struct %s %s = {" % (self.struct_automaton_def, self.var_automaton_def))
+         return buff
+ 
+     def __get_string_vector_per_line_content(self, buff):
 -- 
-2.34.1
+2.35.1
 
