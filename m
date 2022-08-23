@@ -2,96 +2,84 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29B5CC32796
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Aug 2022 17:37:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00744C32789
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Aug 2022 17:46:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232300AbiHWRhV (ORCPT
+        id S229966AbiHWRqO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 23 Aug 2022 13:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41126 "EHLO
+        Tue, 23 Aug 2022 13:46:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232069AbiHWRgy (ORCPT
+        with ESMTP id S233480AbiHWRps (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 23 Aug 2022 13:36:54 -0400
+        Tue, 23 Aug 2022 13:45:48 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B93FC80B64;
-        Tue, 23 Aug 2022 08:20:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147EF14027;
+        Tue, 23 Aug 2022 08:33:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 685F4B81E07;
-        Tue, 23 Aug 2022 15:20:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2C2FC433B5;
-        Tue, 23 Aug 2022 15:20:36 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A9D5BB81CED;
+        Tue, 23 Aug 2022 15:33:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1698AC433C1;
+        Tue, 23 Aug 2022 15:33:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661268038;
-        bh=OCV4SD7jf1gl8FJIP/MP717c/wV/sjJ2VFg21xqMHf0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DVPWX5/bnlhjHSOiLI5Z0zKIy2IUYmuXKLGztHQ/Tw8cKRfvq6NyBRK9E4roe3LNz
-         bsFdBePCGoj5PI1TMme33d1MnHNF9B26lfMraMm6kPIdujzoLRf3T6oAOXQ22eN5Vy
-         OmQ+E6BqHkkISV1QwrSMiKo1mzNGHvGt2bX/XYeWfhmajGf5x+3IXte5wupLrFz2FO
-         SG5ecZBo2rVDgG9DYTby+V4ErK3I5PIH1qImziJwLEAZJz2YUcfEcuIKz+ikxS499w
-         hybrAsi2AOJx68vBmZTgP4Wyl+rS/YF5QVc9YShNE1zynAx9szX/cFyNG8OP7CdcfP
-         U8r9lcRN9RGvA==
+        s=k20201202; t=1661268807;
+        bh=RLIZ5nsGECRzprxLzsi6eCjr40Iz5URFLSPHCIA3EPk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Q+gn197Qelf7q2bTUQNPI/pER0LE01SfpdrNo9Q/a+NKy0SjCgKNHw0usrHCoB2dx
+         usr2Fc2IqSNzElikpE7z7fWaXYQwTN5kqJIQVl91jriVZROeDol1avgfumM5vnq/Vc
+         5p5hpf2S+s1FmDg3AT+dHN3hF4Fmq7VqWkZprh3H6UvDWKJR9KSjePGi1YDhdyaU4l
+         kYYWAX1TWSO2zottMhM5NIeHwChs8Xs27d6keKLBwKyvKUt27j/1aE7mtf8FqSDyK0
+         1kCSqvmujSn/1YKngsHog+NYpEWbCXrcmDPj535Cni37tY1BCs/b505332iseI3nV7
+         sRsw6hKBIgaRg==
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         Daniel Bristot de Oliveira <bristot@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH 2/2] rv/monitors: Make monitor's automata definition static
-Date:   Tue, 23 Aug 2022 17:20:29 +0200
-Message-Id: <a50e27c3738d6ef809f4201857229fed64799234.1661266564.git.bristot@kernel.org>
+        Joe Perches <joe@perches.com>
+Subject: [PATCH] MAINTAINERS: Add Runtime Verification (RV) entry
+Date:   Tue, 23 Aug 2022 17:33:16 +0200
+Message-Id: <b24c13553b6947a8da16d884ca464e4233eb8fb7.1661268579.git.bristot@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <ffbb92010f643307766c9307fd42f416e5b85fa0.1661266564.git.bristot@kernel.org>
-References: <ffbb92010f643307766c9307fd42f416e5b85fa0.1661266564.git.bristot@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Monitor's automata definition is only used locally, so make
-them static for all existing monitors.
-
-Link: https://lore.kernel.org/all/202208210332.gtHXje45-lkp@intel.com
-Link: https://lore.kernel.org/all/202208210358.6HH3OrVs-lkp@intel.com
+Add a Runtime Verification (RV) entry in the MAINTAINERS file
+with Steven Rostedt and myself as maintainers.
 
 Cc: Steven Rostedt <rostedt@goodmis.org>
-Fixes: ccc319dcb450 ("rv/monitor: Add the wwnr monitor")
-Fixes: 8812d21219b9 ("rv/monitor: Add the wip monitor skeleton created by dot2k")
-Reported-by: kernel test robot <lkp@intel.com>
+Cc: Joe Perches <joe@perches.com>
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- kernel/trace/rv/monitors/wip/wip.h   | 2 +-
- kernel/trace/rv/monitors/wwnr/wwnr.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ MAINTAINERS | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/kernel/trace/rv/monitors/wip/wip.h b/kernel/trace/rv/monitors/wip/wip.h
-index c1c47e2305ef..dacc37b62a2c 100644
---- a/kernel/trace/rv/monitors/wip/wip.h
-+++ b/kernel/trace/rv/monitors/wip/wip.h
-@@ -27,7 +27,7 @@ struct automaton_wip {
- 	bool final_states[state_max_wip];
- };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 96f47a7865d6..7baa8e643cff 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -17731,6 +17731,17 @@ L:	linux-rdma@vger.kernel.org
+ S:	Maintained
+ F:	drivers/infiniband/ulp/rtrs/
  
--struct automaton_wip automaton_wip = {
-+static struct automaton_wip automaton_wip = {
- 	.state_names = {
- 		"preemptive",
- 		"non_preemptive"
-diff --git a/kernel/trace/rv/monitors/wwnr/wwnr.h b/kernel/trace/rv/monitors/wwnr/wwnr.h
-index d1afe55cdd4c..118e576b91b4 100644
---- a/kernel/trace/rv/monitors/wwnr/wwnr.h
-+++ b/kernel/trace/rv/monitors/wwnr/wwnr.h
-@@ -27,7 +27,7 @@ struct automaton_wwnr {
- 	bool final_states[state_max_wwnr];
- };
- 
--struct automaton_wwnr automaton_wwnr = {
-+static struct automaton_wwnr automaton_wwnr = {
- 	.state_names = {
- 		"not_running",
- 		"running"
++RUNTIME VERIFICATION (RV)
++M:	Daniel Bristot de Oliveira <bristot@kernel.org>
++M:	Steven Rostedt <rostedt@goodmis.org>
++L:	linux-trace-devel@vger.kernel.org
++S:	Maintained
++F:	Documentation/trace/rv/
++F:	include/linux/rv.h
++F:	include/rv/
++F:	kernel/trace/rv/
++F:	tools/verification/
++
+ RXRPC SOCKETS (AF_RXRPC)
+ M:	David Howells <dhowells@redhat.com>
+ M:	Marc Dionne <marc.dionne@auristor.com>
 -- 
 2.35.1
 
