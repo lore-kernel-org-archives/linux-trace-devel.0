@@ -2,84 +2,91 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00744C32789
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Aug 2022 17:46:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4199CC00140
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Aug 2022 13:55:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229966AbiHWRqO (ORCPT
+        id S235329AbiHXNzy (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 23 Aug 2022 13:46:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57776 "EHLO
+        Wed, 24 Aug 2022 09:55:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233480AbiHWRps (ORCPT
+        with ESMTP id S238377AbiHXNyw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 23 Aug 2022 13:45:48 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147EF14027;
-        Tue, 23 Aug 2022 08:33:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 24 Aug 2022 09:54:52 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FCA7FE74
+        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Aug 2022 06:53:13 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A9D5BB81CED;
-        Tue, 23 Aug 2022 15:33:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1698AC433C1;
-        Tue, 23 Aug 2022 15:33:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661268807;
-        bh=RLIZ5nsGECRzprxLzsi6eCjr40Iz5URFLSPHCIA3EPk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Q+gn197Qelf7q2bTUQNPI/pER0LE01SfpdrNo9Q/a+NKy0SjCgKNHw0usrHCoB2dx
-         usr2Fc2IqSNzElikpE7z7fWaXYQwTN5kqJIQVl91jriVZROeDol1avgfumM5vnq/Vc
-         5p5hpf2S+s1FmDg3AT+dHN3hF4Fmq7VqWkZprh3H6UvDWKJR9KSjePGi1YDhdyaU4l
-         kYYWAX1TWSO2zottMhM5NIeHwChs8Xs27d6keKLBwKyvKUt27j/1aE7mtf8FqSDyK0
-         1kCSqvmujSn/1YKngsHog+NYpEWbCXrcmDPj535Cni37tY1BCs/b505332iseI3nV7
-         sRsw6hKBIgaRg==
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Joe Perches <joe@perches.com>
-Subject: [PATCH] MAINTAINERS: Add Runtime Verification (RV) entry
-Date:   Tue, 23 Aug 2022 17:33:16 +0200
-Message-Id: <b24c13553b6947a8da16d884ca464e4233eb8fb7.1661268579.git.bristot@kernel.org>
-X-Mailer: git-send-email 2.35.1
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 40245222D9;
+        Wed, 24 Aug 2022 13:53:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1661349192; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=bvT9tRNw7oFkSqp7gxmYbaprDYSAcxOzkA6sV8LDHa8=;
+        b=A2KQ5SBtNueOCJ6VNlagvRnzkH6s3udYA0fE0YPf+AYM5CDaHA+TXVj6r9M7RuTjHWilcX
+        XhlqZ0bZ++5olfh5QCM1GfwbGgkNOlx5pJhuFLPJ6dykQLwnOgLofPPmu0URvFw3HMNuk9
+        L6D6n1aoYdiwYQYHkD5fl6JZjD+J/K0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1661349192;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=bvT9tRNw7oFkSqp7gxmYbaprDYSAcxOzkA6sV8LDHa8=;
+        b=5y3fuSr2czXoUB3oCkJbqrld3kL38HJEZOjTLAqM5wkrJJrZz+VEPOfPIuJXSFDQ32+Qer
+        Wmyl8WfHofSk1OBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 31AD113780;
+        Wed, 24 Aug 2022 13:53:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id nOcPDEgtBmOwdgAAMHmgww
+        (envelope-from <dwagner@suse.de>); Wed, 24 Aug 2022 13:53:12 +0000
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH kernelshark] kernel-shark: Build missed_event as GUI plugin
+Date:   Wed, 24 Aug 2022 15:53:09 +0200
+Message-Id: <20220824135309.5347-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add a Runtime Verification (RV) entry in the MAINTAINERS file
-with Steven Rostedt and myself as maintainers.
+missed_events depends on GUI elements hence it should be build as GUI
+plugin.
 
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Joe Perches <joe@perches.com>
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+Signged-off-by: Daniel Wagner <dwagner@suse.de>
 ---
- MAINTAINERS | 11 +++++++++++
- 1 file changed, 11 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 96f47a7865d6..7baa8e643cff 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17731,6 +17731,17 @@ L:	linux-rdma@vger.kernel.org
- S:	Maintained
- F:	drivers/infiniband/ulp/rtrs/
+I had some build errors due to global build flags in our build service:
+
+  Linker flags : -flto=auto -Wl,--as-needed -Wl,--no-undefined -Wl,-z,now
+
+ src/plugins/CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/plugins/CMakeLists.txt b/src/plugins/CMakeLists.txt
+index e9d906863424..49aee3ed7560 100644
+--- a/src/plugins/CMakeLists.txt
++++ b/src/plugins/CMakeLists.txt
+@@ -61,8 +61,8 @@ if (Qt5Widgets_FOUND AND TT_FONT_FILE)
  
-+RUNTIME VERIFICATION (RV)
-+M:	Daniel Bristot de Oliveira <bristot@kernel.org>
-+M:	Steven Rostedt <rostedt@goodmis.org>
-+L:	linux-trace-devel@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/trace/rv/
-+F:	include/linux/rv.h
-+F:	include/rv/
-+F:	kernel/trace/rv/
-+F:	tools/verification/
-+
- RXRPC SOCKETS (AF_RXRPC)
- M:	David Howells <dhowells@redhat.com>
- M:	Marc Dionne <marc.dionne@auristor.com>
+ endif (Qt5Widgets_FOUND AND TT_FONT_FILE)
+ 
+-BUILD_PLUGIN(NAME missed_events
+-             SOURCE missed_events.c MissedEvents.cpp)
++BUILD_GUI_PLUGIN(NAME missed_events
++		 SOURCE missed_events.c MissedEvents.cpp)
+ list(APPEND PLUGIN_LIST "missed_events")
+ 
+ install(TARGETS ${PLUGIN_LIST}
 -- 
-2.35.1
+2.37.1
 
