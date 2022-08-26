@@ -2,102 +2,93 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6597ECAAD5
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Aug 2022 15:26:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1751BECAAD4
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Aug 2022 22:59:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343514AbiHZP0E (ORCPT
+        id S233267AbiHZW7I (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 26 Aug 2022 11:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344578AbiHZPZN (ORCPT
+        Fri, 26 Aug 2022 18:59:08 -0400
+Received: from shards.monkeyblade.net ([23.128.96.9]:51982 "EHLO
+        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231738AbiHZW7I (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 26 Aug 2022 11:25:13 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5345A817
-        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Aug 2022 08:20:58 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id sd33so3768575ejc.8
-        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Aug 2022 08:20:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=T8bVt1uu6tSAWPK0NNoAijbWwBZZjhspjR4nZA6Yaso=;
-        b=a+CXQf/bveIwaX1wJofMPwfn6PSW/eYpe/FDT2WQByOU8DrqyDV6zKUemO7iIsXUl8
-         Sj94jvnxJXGSWk4OFjS3fJirrXVm4ti57fjb4qVBXdZpmPmi5/3Sl0u4Uv1pGA/GtDiJ
-         uQ18nyc4awbv7ScnABWMCIYgDfMfpAJKfQfL2kcAapxVbPHWh9wXdM3aHDqjvU1fABmS
-         IHwgBkUaHXFP5paANPm5zmf/HGJa22cEcqrYogjKx2L4GqNxrnwyFJoBdgqZ+CwHRX1R
-         OBtq0XzYSiFGYedL6mYb2lTctsb1lJQmHUzCd35ymMOBu4D2DJiRQkGzILJdrUdZpH3j
-         9u3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=T8bVt1uu6tSAWPK0NNoAijbWwBZZjhspjR4nZA6Yaso=;
-        b=pn78mrBsbcq3L/oJBG3FjBQr184jVpUq/3CI0AmLn2BIgj/D1DQykfyJdTKmhkiEGt
-         DTAkX9eO8xM+6MmKdTKXRKaDMYjAj3MakkUi0LWJjsygYcOL5U37dlEM9awfiK3+F8Zu
-         CCcLBgiavTryZFxRXGF2eVYngxz3W5CC1CEoMHJeNtstpJcKsWq8xdDpWJgKbJdDZ5uo
-         8oFe7Af3lLC0HU92jBiPPsthPvD9sYh2J4Ja8+T8bkyfHd0bcJmx5MlnQMRizrxUmHfk
-         fkbsFGvbe0Iy4eNzn1VTBXWh7UyLJCar9TMuTQFaj6+3vW3h2qFf9E7Zl4CoJ4WNgmZY
-         wssg==
-X-Gm-Message-State: ACgBeo334vq30O7PqdqEJ0PWuqVYz1eFKhZWr2cXAzfQqtnYov4ddNQ7
-        TuEpx0ZB4pkChW/vCthAf6OwJDGhB8A=
-X-Google-Smtp-Source: AA6agR73HrpDO9u/dyazKNxN0W+82euXTprGQ20Qlpz27Hv53fJBR8mLaaoKwbPbs+FWWWRFHHfasA==
-X-Received: by 2002:a17:906:da86:b0:740:7120:c6e6 with SMTP id xh6-20020a170906da8600b007407120c6e6mr1796101ejb.44.1661527256788;
-        Fri, 26 Aug 2022 08:20:56 -0700 (PDT)
-Received: from [192.168.1.10] (213-91-248-192.ip.btc-net.bg. [213.91.248.192])
-        by smtp.gmail.com with ESMTPSA id c25-20020aa7d619000000b00447b5c37768sm1416984edr.42.2022.08.26.08.20.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Aug 2022 08:20:56 -0700 (PDT)
-Message-ID: <2f68dfa2-81eb-d07c-75ae-1b79a9007a21@gmail.com>
-Date:   Fri, 26 Aug 2022 18:20:53 +0300
+        Fri, 26 Aug 2022 18:59:08 -0400
+Received: from usagi.middle.earth (ethbase.usagi.not.afront.org [IPv6:2620:137:e001:0:1897:4108:901b:c660])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id 4A1EA846F2C1;
+        Fri, 26 Aug 2022 15:59:07 -0700 (PDT)
+Received: from usagi.middle.earth (localhost [IPv6:::1])
+        by usagi.middle.earth (Postfix) with ESMTP id 35033423F1D7;
+        Fri, 26 Aug 2022 15:59:04 -0700 (PDT)
+From:   John 'Warthog9' Hawley <warthog9@eaglescrag.net>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     rostedt@goodmis.org
+Subject: [PATCH] trace-cmd: Add compile time overrides for libraries
+Date:   Fri, 26 Aug 2022 15:59:04 -0700
+Message-Id: <20220826225904.1824344-1-warthog9@eaglescrag.net>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.12.0
-Subject: Re: [PATCH kernelshark] kernel-shark: Build missed_event as GUI
- plugin
-Content-Language: en-US
-To:     Daniel Wagner <dwagner@suse.de>, linux-trace-devel@vger.kernel.org
-References: <20220824135309.5347-1-dwagner@suse.de>
-From:   Yordan Karadzhov <y.karadz@gmail.com>
-In-Reply-To: <20220824135309.5347-1-dwagner@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Fri, 26 Aug 2022 15:59:07 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Thanks Daniel!
-Yordan
+Continuing in the ld.lld link issues trace-cmd needs to override
+-lrt -lpthread and -ldl.  This adds the ability, from the command line,
+adjust LIBS, LRT and LPTHREAD
 
-On 8/24/22 16:53, Daniel Wagner wrote:
-> missed_events depends on GUI elements hence it should be build as GUI
-> plugin.
-> 
-> Signged-off-by: Daniel Wagner <dwagner@suse.de>
-> ---
-> 
-> I had some build errors due to global build flags in our build service:
-> 
->    Linker flags : -flto=auto -Wl,--as-needed -Wl,--no-undefined -Wl,-z,now
-> 
->   src/plugins/CMakeLists.txt | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/src/plugins/CMakeLists.txt b/src/plugins/CMakeLists.txt
-> index e9d906863424..49aee3ed7560 100644
-> --- a/src/plugins/CMakeLists.txt
-> +++ b/src/plugins/CMakeLists.txt
-> @@ -61,8 +61,8 @@ if (Qt5Widgets_FOUND AND TT_FONT_FILE)
->   
->   endif (Qt5Widgets_FOUND AND TT_FONT_FILE)
->   
-> -BUILD_PLUGIN(NAME missed_events
-> -             SOURCE missed_events.c MissedEvents.cpp)
-> +BUILD_GUI_PLUGIN(NAME missed_events
-> +		 SOURCE missed_events.c MissedEvents.cpp)
->   list(APPEND PLUGIN_LIST "missed_events")
->   
->   install(TARGETS ${PLUGIN_LIST}
+Signed-off-by: John 'Warthog9' Hawley <warthog9@eaglescrag.net>
+---
+ Makefile               | 2 +-
+ lib/trace-cmd/Makefile | 4 +++-
+ tracecmd/Makefile      | 5 ++++-
+ 3 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 7178d7a9..92ba4ba4 100644
+--- a/Makefile
++++ b/Makefile
+@@ -216,7 +216,7 @@ export pkgconfig_dir PKG_CONFIG_FILE
+ 
+ export prefix bindir src obj
+ 
+-LIBS = -ldl
++LIBS ?= -ldl
+ 
+ LIBTRACECMD_DIR = $(obj)/lib/trace-cmd
+ LIBTRACECMD_STATIC = $(LIBTRACECMD_DIR)/libtracecmd.a
+diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
+index 81cde3de..28b4afc6 100644
+--- a/lib/trace-cmd/Makefile
++++ b/lib/trace-cmd/Makefile
+@@ -52,7 +52,9 @@ $(DEPS): | $(bdir)
+ $(LIBTRACECMD_STATIC): $(OBJS)
+ 	$(Q)$(call do_build_static_lib)
+ 
+-LIBS = $(LIBTRACEEVENT_LDLAGS) $(LIBTRACEFS_LDLAGS) $(ZLIB_LDLAGS) $(LIBZSTD_LDLAGS) -lpthread
++LPTHREAD ?= -lpthread
++
++LIBS = $(LIBTRACEEVENT_LDLAGS) $(LIBTRACEFS_LDLAGS) $(ZLIB_LDLAGS) $(LIBZSTD_LDLAGS) $(LPTHREAD)
+ 
+ $(LIBTRACECMD_SHARED_VERSION): $(LIBTRACECMD_SHARED)
+ 	@ln -sf $(<F) $@
+diff --git a/tracecmd/Makefile b/tracecmd/Makefile
+index 8207c54b..66387526 100644
+--- a/tracecmd/Makefile
++++ b/tracecmd/Makefile
+@@ -49,8 +49,11 @@ ALL_OBJS := $(TRACE_CMD_OBJS:%.o=$(bdir)/%.o)
+ all_objs := $(sort $(ALL_OBJS))
+ all_deps := $(all_objs:$(bdir)/%.o=$(bdir)/.%.d)
+ 
++LPTHREAD ?= -lpthread
++LRT ?= -lrt
++
+ CONFIG_INCLUDES =
+-CONFIG_LIBS	= -lrt -lpthread $(TRACE_LIBS) $(ZLIB_LDLAGS) $(LIBZSTD_LDLAGS)
++CONFIG_LIBS	= $(LRT) $(LPTHREAD) $(TRACE_LIBS) $(ZLIB_LDLAGS) $(LIBZSTD_LDLAGS)
+ CONFIG_FLAGS	=
+ 
+ all: $(TARGETS)
+-- 
+2.37.2
+
