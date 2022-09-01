@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73EFCECAAD3
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  1 Sep 2022 14:07:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1116ECAAD1
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  1 Sep 2022 15:12:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232830AbiIAOHD (ORCPT
+        id S232689AbiIAPMz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 1 Sep 2022 10:07:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46824 "EHLO
+        Thu, 1 Sep 2022 11:12:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbiIAOHC (ORCPT
+        with ESMTP id S229813AbiIAPMy (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 1 Sep 2022 10:07:02 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07ED310FE;
-        Thu,  1 Sep 2022 07:07:00 -0700 (PDT)
+        Thu, 1 Sep 2022 11:12:54 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D86DA85F96
+        for <linux-trace-devel@vger.kernel.org>; Thu,  1 Sep 2022 08:12:52 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B7860B826DB;
-        Thu,  1 Sep 2022 14:06:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4EC8C433D6;
-        Thu,  1 Sep 2022 14:06:57 +0000 (UTC)
-Date:   Thu, 1 Sep 2022 10:07:28 -0400
+        by ams.source.kernel.org (Postfix) with ESMTPS id 86545B82793
+        for <linux-trace-devel@vger.kernel.org>; Thu,  1 Sep 2022 15:12:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4929C433D6;
+        Thu,  1 Sep 2022 15:12:49 +0000 (UTC)
+Date:   Thu, 1 Sep 2022 11:13:20 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Michael Petlan <mpetlan@redhat.com>,
-        "linux-trace-users@vger.kernel.org" 
-        <linux-trace-users@vger.kernel.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: libtraceevent -- undefined functions
-Message-ID: <20220901100728.54562054@gandalf.local.home>
-In-Reply-To: <alpine.LRH.2.20.2208301214410.12613@Diego>
-References: <alpine.LRH.2.20.2208301214410.12613@Diego>
+To:     "Jiazi.Li" <jqqlijiazi@gmail.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        "Jiazi.Li" <jiazi.li@transsion.com>,
+        linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH] ring-buffer: Add barrire in rb_move_tail
+Message-ID: <20220901111320.04b57cb7@gandalf.local.home>
+In-Reply-To: <20220830120854.7545-1-jiazi.li@transsion.com>
+References: <20220830120854.7545-1-jiazi.li@transsion.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -41,113 +41,99 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+On Tue, 30 Aug 2022 20:08:54 +0800
+"Jiazi.Li" <jqqlijiazi@gmail.com> wrote:
 
-[ This is helpful information for trace users and developers so I've
-  included the two lists ]
-
-On Tue, 30 Aug 2022 12:59:46 +0200 (CEST)
-Michael Petlan <mpetlan@redhat.com> wrote:
-
-> Hello Steve,
+> The following crash issue was encountered several times when read
+> trace_pipe:
 > 
-> during perf testing, I have found out that the print formats of some tracepoints
-> are translated to quite complicated code, that differs per architecture and quite
-> often contains various builtins and functions that are not recognized by the parser
-> in libtraceevent.
+> 1. in ring_buffer_event_data, found event's type is bigger than
+> RINGBUF_TYPE_DATA_TYPE_LEN_MAX, print WARNING:
+> [249033.677658]WARNING: CPU: 1 PID: 9975 at ring_buffer_event_data+0x38/0x48
 > 
-> It looks like this:
+> 2. trace_read_pipe print this event resulting in crash issue:
+> [249033.806200] die+0xac/0x37c
+> [249033.806891] die_kernel_fault+0x60/0x70
+> [249033.807710] die_kernel_fault+0x0/0x70
+> [249033.808518] do_bad_area+0x30/0x130
+> [249033.809296] do_translation_fault+0x34/0x40
+> [249033.810158] do_mem_abort+0x4c/0xf8
+> [249033.810935] el1_da+0x1c/0xac
+> [249033.811647] string+0x38/0x74
+> [249033.812357] vsnprintf+0x430/0x65c
+> [249033.813122] seq_buf_vprintf+0x64/0xcc
+> [249033.813934] trace_seq_printf+0x70/0xd8
+> [249033.814755] trace_raw_output_ipi_handler+0x40/0x54
+> [249033.815705] print_trace_line+0x3ec/0x424
+> [249033.816547] tracing_read_pipe+0x28c/0x3ec
+> [249033.817402] __vfs_read+0x44/0x13c
+> [249033.818166] vfs_read+0xb8/0x150
+> [249033.818908] ksys_read+0x6c/0xcc
+> [249033.819651] __arm64_sys_read+0x18/0x20
+> [249033.820470] el0_svc_common+0x98/0x160
+> [249033.821278] el0_svc_handler+0x60/0x78
+> [249033.822086] el0_svc+0x8/0x300
 > 
-> [root@gigabyte-r120-03 base_kmem]# perf kmem --page record -o ./perf.data -- true
-> libtraceevent: No such file or directory
->   [kmem:mm_page_alloc] function __builtin_constant_p not defined
->   [kmem:mm_page_free] function __builtin_constant_p not defined
+> ipi event is not enable in my device, the event tracing_read_pipe
+
+The ipi event is *not* enabled? So you are saying that it translated the
+extra data at the end that was suppose to be PADDING?
+
+> want to print is a PADDING event generated in rb_move_tail.
+> array[0] of this event is 0x18, ipi entry trace event's type value
+> is 0x18 too in my device.
+> so trace_read_pipe call trace_raw_output_ipi_handler to print this
+> event, eventually, system crash because illegal pointers.
 > 
-> I have digged down to event-parse.c source and commits like 1b20d9491cf9 ("tools
-> lib traceevent: Add handler for __builtin_expect()") that add some missing func
-> support.
+> In ring_buffer_peek, PADDING type event will not return to caller.
+> So at least when ring_buffer_peek is called, this event has not
+> been set to PADDING.
 > 
-> I have added __builtin_constant_p, it helped to suppress the warning, but then
-> I found out I was missing sizeof()...
+> My reader task poll on trace_pipe and other files, wakeup
+> by other files and found that trace ring_buffer is not empty
+> because of read != commit.
+> But maybe because of cpu out-of-order execution, new event has not
+> been set to PADDING type, and leads to above issue.
 > 
-> On an x86_64 F35 machine, I have found the following list of missing funcs:
->  __builtin_choose_expr
->  decode_prq_descriptor
->  jiffies_to_msecs
->  libata_trace_parse_eh_action
->  libata_trace_parse_host_stat
->  libata_trace_parse_qc_flags
->  libata_trace_parse_subcmd
->  libata_trace_parse_tf_flags
->  mc_event_error_type
->  pgd_val
->  pmd_val
->  pte_val
->  pud_val
->  scsi_trace_parse_cdb
->  sizeof
+> Can we fix this issue by add a barrier between rb_reset_tail
+> and rb_end_commit?
+> Or are there other bugs that cause this issue?
 
-The problem with a lot of the above is that user space does not know how to
-parse them. "jiffies_to_msecs" depends on knowing the HZ value. Now if the
-kernel exported this, we could look for it and save this information, and
-then be able to parse it correctly.
-
->  xen_hypercall_name
->  xhci_decode_ctrl_ctx
->  xhci_decode_doorbell
->  xhci_decode_ep_context
->  xhci_decode_portsc
->  xhci_decode_slot_context
->  xhci_ring_type_string
-> 
-> There are of course more, since on other platforms, the print format expands to
-> different code.
-> 
-> I wonder, whether it might be useful to add these functions to libtraceevent
-> parser. Finally, what is the purpose of the handlers, such as __builtin_expect()
-> you have added? It looks like that the parser machine now accepts this token and
-> handles that it has to have two parameters, but does nothing more with it. It
-> lets the parser to dive deeper and process the first arg and forgets the second,
-> just like replacing
->   __builtin_expect( exp, c)
-> by
->   exp
-> so when something executes the code, it ignores the builtin? Am I right?
-
-Correct. As __builtin_expect() is just a compile time optimization that
-"likely()" and "unlikely()" are defined to, it has no meaning to the
-parser. But we still want the contents of the expression.
-
-I had to update libtraceevent to basically ignore the __builtin_expect().
-
-That is, "unlikely(cond)" turns into "!!__builtin_exepect(cond, 0)"
-
-libtraceevent does not care about the "unlikely()" part, only the
-condition, so the parser basically treats it the same:
-
-  "unlikely(cond)" == "cond"
+I rather not add a barrier in the writer because that will slow down the
+tracing.
 
 > 
-> The __builtin_constant_p(arg) should decide whether arg is constant or not and
-> return 1 or 0 respectively...
+> Signed-off-by: Jiazi.Li <jiazi.li@transsion.com>
+> ---
+>  kernel/trace/ring_buffer.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
+> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> index d59b6a328b7f..20f3ef839467 100644
+> --- a/kernel/trace/ring_buffer.c
+> +++ b/kernel/trace/ring_buffer.c
+> @@ -2717,6 +2717,11 @@ rb_move_tail(struct ring_buffer_per_cpu *cpu_buffer,
+>  
+>  	rb_reset_tail(cpu_buffer, tail, info);
+>  
+> +	/*
+> +	 * Add barrier to make sure tail event be set to
+> +	 * PADDING type before update commit.
+> +	 */
+> +	smp_mb();
 
-What is using __builting_constant_p() inside the TP_printk()?
+Hmm, I'm thinking this may be a bigger race than a memory barrier. I'm
+thinking that the reader has full access to this information at this
+moment, as soon as the tail page moved forward. I unfortunately do not have
+the time right now to do a full investigation, but thank you for reporting
+this.
 
-> My questions are:
->    1) Does it matther whether or not the above functions are accepted by the parser
->    grammar or not?
-
-When it can't parse something, it falls back to just printing out the raw
-fields the best it can.
-
->    2) Does (1) affect how the code is later executed somewhere?
-
-It affects how it prints the event. It then ignores the TP_printk() format,
-and then, as mentioned above, just prints the raw fields.
-
->    3) Would e.g. replacing __builtin_constant_p(arg) by 0 by default help/simplify
->    anything?
-
-I have to see how it's used. What event does that?
+I think your mb() solution is just making the race window smaller and not
+actually fixing the race.
 
 -- Steve
+
+>  	/* Commit what we have for now. */
+>  	rb_end_commit(cpu_buffer);
+>  	/* rb_end_commit() decs committing */
+
