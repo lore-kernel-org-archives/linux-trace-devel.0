@@ -2,62 +2,62 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B4C6ECAAD5
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  7 Sep 2022 03:05:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C722ECAAD3
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  7 Sep 2022 08:14:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229695AbiIGDFJ (ORCPT
+        id S229495AbiIGIOn (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 6 Sep 2022 23:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52560 "EHLO
+        Wed, 7 Sep 2022 04:14:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbiIGDFI (ORCPT
+        with ESMTP id S229585AbiIGIOl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 6 Sep 2022 23:05:08 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 820326068A
-        for <linux-trace-devel@vger.kernel.org>; Tue,  6 Sep 2022 20:05:06 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id fv3so7089749pjb.0
-        for <linux-trace-devel@vger.kernel.org>; Tue, 06 Sep 2022 20:05:06 -0700 (PDT)
+        Wed, 7 Sep 2022 04:14:41 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3852C11155
+        for <linux-trace-devel@vger.kernel.org>; Wed,  7 Sep 2022 01:14:34 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id m3so3163636pjo.1
+        for <linux-trace-devel@vger.kernel.org>; Wed, 07 Sep 2022 01:14:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=user-agent:in-reply-to:content-disposition:mime-version:references
          :message-id:subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=3y5AOQjmoH7/hHGL1oz7HpMyF52DACM11wqLR3kuOFI=;
-        b=A5YoAaRC9iPnbW4byjM/hycgiC95BS95bqSiN3xKaYeKrFNAT93nvDXF9iQSiUepMS
-         Gczb66da0xEsZa85CQDiVLuVDs7EY52YCKPIhxtg7NkDV8boe0WARp8jpLgHPH3W0CFG
-         VdQtPu3UpPOaKd+JwKgpm4zOBLJIldJlWg9FMumM3szJbEF7jYyNMkRYWkgvxiLAULug
-         oXtcC3X6tYcUbpAYN+n18Kv5XtG5anTUvsQVKaP4cTNH0r8HBPW/lSS/el/j1N/LKO8+
-         69vraTpkZCdVWFv/iDjBZ2Vd/mU5LTWxyuy+Hn10/kAWyQOsMvOaIEQW6louIT4eXTCw
-         FVkQ==
+        bh=LmuykuLx1+z/6z5i+5gmKNyIWUWQm/tvJcDFJ0sisIs=;
+        b=dAQ2hbG1quPW+Clt8KQ2a++xvnlvn5BAi0dA3Rh3xsoWDP8fxV9Mdt7sThCo2gc8AS
+         F2rZ7PpT9GEjE/qWG4kU74vc7QpFkhaQFI5wnLfyIOMSj4o/uInsGN0lkbSfz2I/s1dm
+         xGbv0uQDXxTuOxJRkFclO69USIEzhPq2qebYW4pBK9QqiTQPVbdBIlMvlhRhUl+44Pjg
+         uppCMgcrlZKVD/mxBSiJYaXuVllbnb597K/HaV7wAPmdz43y7K4brdJ+Cil5xJWDbr1s
+         jiedVkAGpBNMVUiDGkgCQRy/OpYTB7XdJ/cEkDARX/RYN9DqNTkzh5yTrjmb6Cy3X2nK
+         e3pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=user-agent:in-reply-to:content-disposition:mime-version:references
          :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=3y5AOQjmoH7/hHGL1oz7HpMyF52DACM11wqLR3kuOFI=;
-        b=H7e/N1NPUYfuHKaXcnAJTHXKy/o3ymiyQd3CiCNT8VbHuCcLDrY0GGVUEKETavy4ID
-         JbYx/Ntegpa2+gXGCtxhWscXqwY3BI4YUYDVSCAb5jRgbSkF/eG9BPe/eSlwJ+fz1pZl
-         J/LAxpK6E/MIIxXF7l2+4iQWQU5gEtZ2Wsi2Mg5fAU8LEubYdJSvzIcxcvjwNrshrt1N
-         nHS8BxCLrd38lhi36d8ASBDlJqhQpKqbRK1zpjbAgwi3kSSGjRk3d+AgsIIP3EbI0t5T
-         bAuEN9ZrCGJzCnaZ+ImAAWWziW4JEUniqvt6eBphtqwDjbEDMIslloqCSMNNkg4dFtvU
-         CfIQ==
-X-Gm-Message-State: ACgBeo2W3iCEJjLqICBjP3r54FOvLiDUALrOV70J49WP+MHExfMfhh4h
-        5AfjxHrRAJeFSODIzxm6hPwzCJ5sPng=
-X-Google-Smtp-Source: AA6agR78+8eb2JcDyUX91DCTCxmlahI3imhYmShDmxAVoLT75RqXkn23OTlJfk5GM3Rnw7SbhW2uBA==
-X-Received: by 2002:a17:903:32d2:b0:172:66e4:ba68 with SMTP id i18-20020a17090332d200b0017266e4ba68mr1854158plr.116.1662519905965;
-        Tue, 06 Sep 2022 20:05:05 -0700 (PDT)
+        bh=LmuykuLx1+z/6z5i+5gmKNyIWUWQm/tvJcDFJ0sisIs=;
+        b=rSe+G+Nn1d9hZrEU694qq7kM+N/dgBRCYPBX7PUbJ64N347QFQrqid0SaP9zoHA2PH
+         nCvK4VEZtpadyv+56GF9wztvNbDYXWCSV44ul0qLIQrQG/Lt7ynYgSRTVJDFXlOD16td
+         St/PUU+bdbsWIAo4tnnZ7Cip5fVVhm7iaTGxKYYCNW2wo/eoOenbzA2flpNdgpVH9F8e
+         ozZkRrLLC1SHuVx1Av306Tnnu70qUqTdsmBdVa9uLQe1FWvyQKmeb+TkDttLH+iJOKIy
+         K337fjsle7dts1Fqa8pIiXsJWLvk4VW+xDTuzn2SKpgpQpPEmooV7OD464igbXJcrR4N
+         DIiA==
+X-Gm-Message-State: ACgBeo1MLWtS2jNieoW/2iYE12JhgNGjZEVOOZQwq/4P9dLuymtZ2Oc6
+        Rp2MrNC6kEZ34YEd0bCNCyk=
+X-Google-Smtp-Source: AA6agR5nyQlMorFrtUdDLZ5ZpaIA3qu73C27Vw71UuAC9/q3pz6yfP3czD4Prdl93jngiqc+OvaulQ==
+X-Received: by 2002:a17:902:b606:b0:176:cde5:431a with SMTP id b6-20020a170902b60600b00176cde5431amr2589069pls.109.1662538473872;
+        Wed, 07 Sep 2022 01:14:33 -0700 (PDT)
 Received: from localhost ([58.34.94.196])
-        by smtp.gmail.com with ESMTPSA id q14-20020a17090311ce00b001743c51123esm10870932plh.72.2022.09.06.20.05.02
+        by smtp.gmail.com with ESMTPSA id c8-20020a621c08000000b0053e4296e1d3sm2959302pfc.198.2022.09.07.01.14.32
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 06 Sep 2022 20:05:05 -0700 (PDT)
-Date:   Wed, 7 Sep 2022 11:03:56 +0800
+        Wed, 07 Sep 2022 01:14:33 -0700 (PDT)
+Date:   Wed, 7 Sep 2022 16:13:58 +0800
 From:   lijiazi <jqqlijiazi@gmail.com>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Ingo Molnar <mingo@redhat.com>,
         "Jiazi.Li" <jiazi.li@transsion.com>,
         linux-trace-devel@vger.kernel.org
 Subject: Re: [PATCH] ring-buffer: Add barrire in rb_move_tail
-Message-ID: <20220907024930.GA24124@Jiazi.Li>
+Message-ID: <20220907081358.GB24124@Jiazi.Li>
 References: <20220830120854.7545-1-jiazi.li@transsion.com>
  <20220901111320.04b57cb7@gandalf.local.home>
  <20220902031717.GA27303@Jiazi.Li>
@@ -121,8 +121,6 @@ On Tue, Sep 06, 2022 at 12:25:42PM -0400, Steven Rostedt wrote:
 > 
 > Can you test this patch.
 > 
-Sure, I will test this patch.
-Thanks!
 > -- Steve
 > 
 > diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
@@ -136,6 +134,38 @@ Thanks!
 > +		/* Make sure the padding is visible before the write update */
 > +		smp_wmb();
 > +
+
+I checked several ramdumps, most of the padding event that caused crash not be
+written here. Because its corresponding ring_buffer_event->time_delta is
+not 0, take one of them as an example:
+crash> struct ring_buffer_event ffffffd10b553fe4
+struct ring_buffer_event {
+  type_len = 29,
+  time_delta = 1,
+  array = 0xffffffd10b553fe8
+}
+and array[0] is 0x18:
+crash> rd ffffffd10b553fe8
+ffffffd10b553fe8:  0000000500000018                    ........
+0x18 = 0xff0 - 0xfd4 - 0x4
+0xfd4 is end address of last data event in reader page.
+
+The available space size is 0x18 bytes, and next event want to write is
+signal_deliver, this event need 0x28 bytes:
+crash> trace_event_raw_signal_deliver -x
+struct trace_event_raw_signal_deliver {
+    struct trace_entry ent;
+    int sig;
+    int errno;
+    int code;
+    unsigned long sa_handler;
+    unsigned long sa_flags;
+    char __data[0];
+}
+SIZE: 0x28
+So trigger rb move tail, tail value in rb_reset_tail is 0xfd4, the
+following if condition is false:
+if (tail > (BUF_PAGE_SIZE - RB_EVNT_MIN_SIZE))
 >  		/* Set the write back to the previous setting */
 >  		local_sub(length, &tail_page->write);
 >  		return;
