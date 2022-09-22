@@ -2,41 +2,42 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CB11C6FA91
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD214C32771
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 22 Sep 2022 00:28:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbiIVA2p (ORCPT
+        id S229822AbiIVA2p (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 21 Sep 2022 20:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38748 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbiIVA2n (ORCPT
+        with ESMTP id S229522AbiIVA2o (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 21 Sep 2022 20:28:43 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1F1A926E
-        for <linux-trace-devel@vger.kernel.org>; Wed, 21 Sep 2022 17:28:41 -0700 (PDT)
+        Wed, 21 Sep 2022 20:28:44 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2CFB9FA98
+        for <linux-trace-devel@vger.kernel.org>; Wed, 21 Sep 2022 17:28:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6B90FB83344
-        for <linux-trace-devel@vger.kernel.org>; Thu, 22 Sep 2022 00:28:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B55DC433D6;
+        by sin.source.kernel.org (Postfix) with ESMTPS id 19308CE1EF4
+        for <linux-trace-devel@vger.kernel.org>; Thu, 22 Sep 2022 00:28:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DFD4C43470;
         Thu, 22 Sep 2022 00:28:39 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.96)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1obA61-00Dr5K-0L;
+        id 1obA61-00Dr5N-0P;
         Wed, 21 Sep 2022 20:29:41 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 4/5] libtracecmd: Add a man pages for handling of time stamps
-Date:   Wed, 21 Sep 2022 20:29:39 -0400
-Message-Id: <20220922002940.3302285-5-rostedt@goodmis.org>
+Subject: [PATCH 5/5] libtracecmd: Add documentation on tracecmd_set/get_private()
+Date:   Wed, 21 Sep 2022 20:29:40 -0400
+Message-Id: <20220922002940.3302285-6-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220922002940.3302285-1-rostedt@goodmis.org>
 References: <20220922002940.3302285-1-rostedt@goodmis.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
@@ -44,63 +45,85 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add to the man pages the function tracecmd_get_first_ts(), and
-tracecmd_add_ts_offset().
+The tracecmd_set_private() and tracecmd_get_private() functions were not
+in the man pages. Add them, and also add a working example for the
+tracecmd_open() (and other) function.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- .../libtracecmd/libtracecmd-timestamp.txt     | 138 ++++++++++++++++++
- Documentation/libtracecmd/libtracecmd.txt     |   4 +
- 2 files changed, 142 insertions(+)
- create mode 100644 Documentation/libtracecmd/libtracecmd-timestamp.txt
+ .../libtracecmd/libtracecmd-files.txt         | 72 ++++++++++++-------
+ Documentation/libtracecmd/libtracecmd.txt     |  2 +
+ 2 files changed, 50 insertions(+), 24 deletions(-)
 
-diff --git a/Documentation/libtracecmd/libtracecmd-timestamp.txt b/Documentation/libtracecmd/libtracecmd-timestamp.txt
-new file mode 100644
-index 000000000000..8695d003965b
---- /dev/null
-+++ b/Documentation/libtracecmd/libtracecmd-timestamp.txt
-@@ -0,0 +1,138 @@
-+libtracecmd(3)
-+=============
+diff --git a/Documentation/libtracecmd/libtracecmd-files.txt b/Documentation/libtracecmd/libtracecmd-files.txt
+index 382603efd50d..f8292cb4cbd5 100644
+--- a/Documentation/libtracecmd/libtracecmd-files.txt
++++ b/Documentation/libtracecmd/libtracecmd-files.txt
+@@ -4,7 +4,7 @@ libtracecmd(3)
+ NAME
+ ----
+ tracecmd_open, tracecmd_open_fd, tracecmd_open_head, tracecmd_init_data,
+-tracecmd_close - Open and close a trace file.
++tracecmd_close, tracecmd_set_private, tracecmd_get_private - Open and close a trace file.
+ 
+ SYNOPSIS
+ --------
+@@ -17,6 +17,8 @@ struct tracecmd_input pass:[*]*tracecmd_open_fd*(int _fd_, int _flags_);
+ struct tracecmd_input pass:[*]*tracecmd_open_head*(const char pass:[*]_file_, int _flags_);
+ int *tracecmd_init_data*(struct tracecmd_input pass:[*]_handle_);
+ void *tracecmd_close*(struct tracecmd_input pass:[*]_handle_);
++void *tracecmd_set_private*(struct tracecmd_input pass:[*]_handle_, void pass:[*]_data_);
++void pass:[*]*tracecmd_get_private*(struct tracecmd_input pass:[*]_handle_);
+ --
+ 
+ DESCRIPTION
+@@ -55,6 +57,12 @@ The *tracecmd_close()* function frees a _handle_, pointer to tracecmd_input
+ structure, previously allocated with *tracecmd_open()*, *tracecmd_open_fd()*
+ or *tracecmd_open_head()* APIs.
+ 
++The *tracecmd_set_private()* function allows to add specific _data_ to the
++_handle_ that can be retrieved later.
 +
-+NAME
-+----
-+tracecmd_get_first_ts, tracecmd_add_ts_offset - Handle time stamps from a trace file.
++The *tracecmd_get_private()* function will retrieve the _data_ set by
++*tracecmd_set_private()* for the given _handle_.
 +
-+SYNOPSIS
-+--------
-+[verse]
-+--
-+*#include <trace-cmd.h>*
+ RETURN VALUE
+ ------------
+ The *tracecmd_open()*, *tracecmd_open_fd()* and *tracecmd_open_head()*
+@@ -66,6 +74,8 @@ when *tracecmd_close()* is called to close it, that fd will be closed also.
+ The *tracecmd_init_data()* function returns -1 in case of an error or
+ 0 otherwise.
+ 
++The *tracecmd_get_private()* returns the _data_ set by *tracecmd_set_private()*.
 +
-+unsigned long long *tracecmd_get_first_ts*(struct tracecmd_input pass:[*]_handle_);
-+void *tracecmd_add_ts_offset*(struct tracecmd_input pass:[*]_handle_, long long _offset_);
-+--
-+
-+DESCRIPTION
-+-----------
-+This set of APIs can be used to read tracing data from a trace file opened
-+with _tracecmd_open()(3)_, _tracecmd_open_fd()(3)_ or _tracecmd_open_head()(3)_.
-+
-+The *tracecmd_get_first_ts()* function returns the time stamp of the first
-+record in the _handle_.
-+
-+The *tracecmd_add_ts_offset()* function adds an offset to each of the records
-+in the _handle_ that represents a trace file. This is useful for associating two
-+different tracing files by their offset (for example a trace file from a host
-+and a trace file from a guest that were not synchronized when created).
-+
-+RETURN VALUE
-+------------
-+The *tracecmd_get_first_ts()* function returns the timestamp of the first
-+record in a trace file for the given _handle_.
-+
-+EXAMPLE
-+-------
-+[source,c]
-+--
+ EXAMPLE
+ -------
+ [source,c]
+@@ -75,32 +85,46 @@ a trace file, which can be used depending on the use case.
+ 
+ 1. Open and initialise the trace file in а single step:
+ 
 +#include <stdlib.h>
-+#include <trace-cmd.h>
+ #include <trace-cmd.h>
+-...
+-struct tracecmd_input *handle = tracecmd_open("trace.dat");
+-	if (!handle) {
+-		/* Failed to open trace.dat file */
+-	}
+-...
+-	/* Read tracing data from the file, using the handle */
+-...
+-	tracecmd_close(handle);
+-...
+-int fd;
+-	fd = = open("trace.dat", O_RDONLY);
+-	if (fd < 0) {
+-		/* Failed to open trace file for reading */
+-	}
+-	handle = tracecmd_open_fd(fd);
+-	if (!handle) {
+-		close(fd);
+-		/* Failed to initialise handler for reading the trace file */
 +
 +static int print_events(struct tracecmd_input *handle, struct tep_record *record, int cpu, void *data)
 +{
@@ -123,96 +146,42 @@ index 000000000000..8695d003965b
 +
 +int main(int argc, char **argv)
 +{
-+	struct tracecmd_input **handles = NULL;
-+	unsigned long long ts, first_ts = 0;
-+	int nr_handles = 0;
-+	int i;
++	struct tracecmd_input *handle;
 +
 +	if (argc < 2) {
-+		printf("usage: %s trace.dat [trace.dat ...]\n", argv[0]);
++		printf("usage: %s trace.dat\n", argv[0]);
 +		exit(-1);
-+	}
+ 	}
+-...
+-	/* Read tracing data from the file, using the handle */
+-...
 +
-+	for (i = 1; i < argc; i++) {
-+		handles = realloc(handles, sizeof(*handles) * (nr_handles + 1));
-+		if (!handles)
-+			exit(-1);
-+		handles[nr_handles] = tracecmd_open(argv[i], 0);
-+		if (!handles[nr_handles])
-+			exit(-1);
-+		tracecmd_set_private(handles[nr_handles], argv[i]);
-+		ts = tracecmd_get_first_ts(handles[nr_handles]);
-+		if (!first_ts || ts < first_ts)
-+			first_ts = ts;
-+		nr_handles++;
-+	}
++	handle = tracecmd_open(argv[i], 0);
++	if (!handle)
++		exit(-1);
 +
-+	/* Set the time stamp to start at the first record found */
-+	for (i = 0; i < nr_handles; i++)
-+		tracecmd_add_ts_offset(handles[i], -first_ts);
++	tracecmd_set_private(handles[nr_handles], argv[i]);
++	tracecmd_iterate_events(handles, NULL, 0, print_events, NULL);
 +
-+	tracecmd_iterate_events_multi(handles, nr_handles, print_events, NULL);
-+
-+	for (i = 0; i < nr_handles; i++)
-+		tracecmd_close(handles[i]);
-+	free(handles);
+ 	tracecmd_close(handle);
+-...
 +}
-+--
-+FILES
-+-----
-+[verse]
-+--
-+*trace-cmd.h*
-+	Header file to include in order to have access to the library APIs.
-+*-ltracecmd*
-+	Linker switch to add when building a program that uses the library.
-+--
-+
-+SEE ALSO
-+--------
-+_libtracefs(3)_,
-+_libtraceevent(3)_,
-+_trace-cmd(1)_
-+_trace-cmd.dat(5)_
-+
-+AUTHOR
-+------
-+[verse]
-+--
-+*Steven Rostedt* <rostedt@goodmis.org>
-+*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>
-+--
-+REPORTING BUGS
-+--------------
-+Report bugs to  <linux-trace-devel@vger.kernel.org>
-+
-+LICENSE
-+-------
-+libtracecmd is Free Software licensed under the GNU LGPL 2.1
-+
-+RESOURCES
-+---------
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
-+
-+COPYING
-+-------
-+Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
-+the terms of the GNU Public License (GPL).
+ 
+ 2. Open and initialise the trace file in two steps. This allows to perform
+ some processing based on metadata, read from the file, before initialising
 diff --git a/Documentation/libtracecmd/libtracecmd.txt b/Documentation/libtracecmd/libtracecmd.txt
-index e9e11b32c8b6..1939c209dc34 100644
+index 1939c209dc34..141fec5d379c 100644
 --- a/Documentation/libtracecmd/libtracecmd.txt
 +++ b/Documentation/libtracecmd/libtracecmd.txt
-@@ -30,6 +30,10 @@ Read tracing instances from a trace file:
- 	const char pass:[*]*tracecmd_buffer_instance_name*(struct tracecmd_input pass:[*]_handle_, int _indx_);
- 	struct tracecmd_input pass:[*]*tracecmd_buffer_instance_handle*(struct tracecmd_input pass:[*]_handle_, int _indx_);
+@@ -16,6 +16,8 @@ Open and close trace file:
+ 	struct tracecmd_input pass:[*]*tracecmd_open_fd*(int _fd_, int _flags_);
+ 	struct tracecmd_input pass:[*]*tracecmd_open_head*(const char pass:[*]_file_, int _flags_);
+ 	void *tracecmd_close*(struct tracecmd_input pass:[*]_handle_);
++	void *tracecmd_set_private*(struct tracecmd_input pass:[*]_handle_, void pass:[*]_data_);
++	void pass:[*]*tracecmd_get_private*(struct tracecmd_input pass:[*]_handle_);
  
-+Handle time stamps from a trace file:
-+	unsigned long long *tracecmd_get_first_ts*(struct tracecmd_input pass:[*]_handle_);
-+	void *tracecmd_add_ts_offset*(struct tracecmd_input pass:[*]_handle_, long long _offset_);
-+
- Get traceing peer information from a trace file:
- 	unsigned long long *tracecmd_get_traceid*(struct tracecmd_input pass:[*]_handle_);
- 	int *tracecmd_get_guest_cpumap*(struct tracecmd_input pass:[*]_handle_, unsigned long long _trace_id_, const char pass:[*]pass:[*]_name_, int pass:[*]_vcpu_count_, const int pass:[*]pass:[*]_cpu_pid_);
+ Read tracing records from a trace file:
+ 	int *tracecmd_init_data*(struct tracecmd_input pass:[*]_handle_);
 -- 
 2.35.1
 
