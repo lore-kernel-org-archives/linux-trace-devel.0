@@ -2,50 +2,329 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CFC0C6FA86
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 22 Sep 2022 15:25:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BFABC6FA82
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 22 Sep 2022 15:25:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbiIVPZc (ORCPT
+        id S229967AbiIVPZz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 22 Sep 2022 11:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53598 "EHLO
+        Thu, 22 Sep 2022 11:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231977AbiIVPZa (ORCPT
+        with ESMTP id S232118AbiIVPZw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 22 Sep 2022 11:25:30 -0400
-Received: from mail.codeweavers.com (mail.codeweavers.com [65.103.31.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C0EE998E
-        for <linux-trace-devel@vger.kernel.org>; Thu, 22 Sep 2022 08:25:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
-        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=SBpaTzHQzVrsDtkwuvfZdZMfJTVUz2OSMbyYNu1jrUA=; b=GrYbWqoX/sxaGNqQl5nn2g8gMA
-        mVioxqR2h7LzfYnOLTFhaSiIvm+xDawHbXGqwdNYo3bvMW/B5uFrCDvoWK8BgtnFbKLQyCnLXw0ji
-        ywl3jFyLxrkHM17N/7iGnKr22hTMp34Ui3piROdLdveUlWkw8PB2Bf3+HpQ6C+BimCaU=;
-Received: from 174-20-99-193.mpls.qwest.net ([174.20.99.193] helo=[192.168.0.3])
-        by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <zfigura@codeweavers.com>)
-        id 1obO4q-009pYb-65
-        for linux-trace-devel@vger.kernel.org; Thu, 22 Sep 2022 10:25:27 -0500
-Message-ID: <482fa3dc-6dc0-1b0e-fa5e-a97cc9c131d3@codeweavers.com>
-Date:   Thu, 22 Sep 2022 10:25:23 -0500
+        Thu, 22 Sep 2022 11:25:52 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61DCE30F53
+        for <linux-trace-devel@vger.kernel.org>; Thu, 22 Sep 2022 08:25:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E4776B818F3
+        for <linux-trace-devel@vger.kernel.org>; Thu, 22 Sep 2022 15:25:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51720C433D7;
+        Thu, 22 Sep 2022 15:25:47 +0000 (UTC)
+Date:   Thu, 22 Sep 2022 11:26:49 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc:     uekawa@google.com
+Subject: [PATCH] libtraceevent: Add man pages for
+ tep_plugin_kvm_get/put_func()
+Message-ID: <20220922112649.235b885f@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.12.0
-Subject: Re: [PATCH] tracecmd extract: Allow using --compression.
-Content-Language: en-US
-To:     linux-trace-devel@vger.kernel.org
-References: <20220901205638.3247090-1-zfigura@codeweavers.com>
-From:   Zebediah Figura <zfigura@codeweavers.com>
-In-Reply-To: <20220901205638.3247090-1-zfigura@codeweavers.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Signed-off-by: Zeb Figura <zfigura@codeweavers.com>
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+
+Add man pages for the functions tep_plugin_kvm_get_func() and
+tep_plugin_kvm_put_func().
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ Documentation/libtraceevent-kvm-plugin.txt | 252 +++++++++++++++++++++
+ Documentation/libtraceevent.txt            |   6 +
+ 2 files changed, 258 insertions(+)
+ create mode 100644 Documentation/libtraceevent-kvm-plugin.txt
+
+diff --git a/Documentation/libtraceevent-kvm-plugin.txt b/Documentation/libtraceevent-kvm-plugin.txt
+new file mode 100644
+index 000000000000..a02e7866e93b
+--- /dev/null
++++ b/Documentation/libtraceevent-kvm-plugin.txt
+@@ -0,0 +1,252 @@
++libtraceevent(3)
++================
++
++NAME
++----
++tep_plugin_kvm_get_func, tep_plugin_kvm_put_func - Add function name for instruction pointer of kvm plugin
++
++SYNOPSIS
++--------
++[verse]
++--
++*#include <event-parse.h>*
++
++const char pass:[*]*tep_plugin_kvm_get_func*(struct tep_event pass:[*]event,
++				    struct tep_record pass:[*]record,
++				    unsigned long long pass:[*]paddr);
++void *tep_plugin_kvm_put_func*(const char pass:[*]func);
++--
++
++DESCRIPTION
++-----------
++The functions *tep_plugin_kvm_get_func()* and *tep_plugin_kvm_put_func()*
++are not to be called by an application, but instead are to be defined by
++an application.
++
++Certain events (like kvm_exit and kvm_entry) have the instruction pointer
++of where in the guest the context changed from guest to host. As the host
++only knows the instruction pointer and does not have information about what
++function in the guest that instruction pointer belongs to, it can only print
++the address.
++
++But the application may have more information about the guest, and know where
++the guest was when the exit occurred, and also even know the function name
++of that address.
++
++The KVM plugin for libtraceevent is called on these events, and then calls
++*tep_plugin_kvm_get_func()* to see if that function can resolve the instruction
++pointer address to a real function name. If the return is non NULL, it will
++print the function in the output for that event.
++
++These functions are currently defined as weak functions within the plugin, as
++to not require them to be defined elsewhere. For an application to override
++the weak function, it will need to define the function in a file that gets
++compiled with *-rdynamic*. That will tell the dynamic linker to examine that
++object file and use function names to resolve weak functions in other shared
++objects (in this case the KVM plugin shared object).
++
++If the application defines *tep_plugin_kvm_get_func()*, it must use the above
++prototype. The _event_ will hold the KVM event that has the instruction pointer
++field. The _record_ will be the instance of that event. The application's function
++does not need to use these parameters, but they may be useful for finding the
++function name for the address. The _paddr_ is a pointer to a 64 bit value (where
++only 32 bits may be used on 32 bit machines). This value is the instruction
++pointer to look up. If the application knows the start address of the function
++as well, it can set _paddr_ to that address, and the KVM plugin will also
++append a "+offset" to the function name where the offset is the original
++value in _paddr_ minus the value in _paddr_ when it is called. Finally,
++the application should return the function name as a nul terminated string
++if one is found.
++
++If the returned string of *tep_plugin_kvm_get_func()* was allocated, the KVM plugin
++will call *tep_plugin_kvm_put_func()* when it is through with it, passing the
++value returned by *tep_plugin_kvm_get_func()* as _func_. This allows the application
++to free it if necessary.
++
++RETURN VALUE
++------------
++The *tep_plugin_kvm_get_func()* is not to be called by the application but instead
++is to be defined by the application. It should return a nul terminated string representing
++the function for the given instruction pointer passed to it by reference in _paddr_. It
++can then optionally update the _paddr_ to a value that holds the start of the function.
++The string returned may be freed by the *tep_plugin_kvm_put_func()* that the application
++should define to clean up the string.
++
++The below example needs to be compiled with the *-rdynamic* flag so that the dynamic
++linker can resolve the *tep_plugin_kvm_get_func()* and *tep_plugin_kvm_put_func()* functions.
++
++When run against a trace.dat file produced by *trace-cmd(1)* recording the kvm_exit and
++kvm_entry events on a guest, and then the guest's /proc/kallsyms file is passed as the
++second parameter, the output produced will look something like:
++
++[source,c]
++--
++CPU 0/KVM-20407 83156.177626 [000] kvm_exit     reason APIC_ACCESS rip 0xffffffffb0056ee2 exit native_apic_mem_write+0x2 info 10b0 0
++CPU 0/KVM-20407 83156.177632 [000] kvm_entry     vcpu 0 rip 0xffffffffb0056ee8 enter native_apic_mem_write+0x8
++--
++
++But without those callbacks, it would look like:
++
++[source,c]
++--
++CPU 0/KVM-20407 83156.177626 [000] kvm_exit     reason APIC_ACCESS rip 0xffffffffb0056ee2 info 10b0 0
++CPU 0/KVM-20407 83156.177632 [000] kvm_entry     vcpu 0 rip 0xffffffffb0056ee8
++--
++
++EXAMPLE
++-------
++[source,c]
++--
++#include <stdio.h>
++#include <stdlib.h>
++#include <event-parse.h>
++#include <trace-cmd.h>
++#include <sys/stat.h>
++
++static struct tep_handle *tep;
++
++const char *tep_plugin_kvm_get_func(struct tep_event *event, struct tep_record *record,
++				    unsigned long long *paddr)
++{
++	const char *func;
++	char *event_func;
++	char *ename;
++
++	func = tep_find_function(tep, *paddr);
++	if (!func)
++		return NULL;
++
++	if (strcmp(event->name, "kvm_exit") == 0)
++		ename = "exit";
++	else
++		ename = "enter";
++
++	/*
++	 * Normally, passing back func directly is sufficient and then
++	 * tep_plugin_kvm_put_func() would not be required. But this example
++	 * is showing how to handle allocation of the returned string.
++	 */
++	event_func = malloc(strlen(ename) + strlen(func) + 2);
++	if (!event_func)
++		return NULL;
++	sprintf(event_func, "%s %s", ename, func);
++
++	*paddr = tep_find_function_address(tep, *paddr);
++
++	return event_func;
++}
++
++void tep_plugin_kvm_put_func(const char *func)
++{
++	char *f = (char *)func;
++
++	free(f);
++}
++
++static int show_event(struct tracecmd_input *handle, struct tep_event *event,
++		      struct tep_record *record, int cpu, void *data)
++{
++	static struct trace_seq seq;
++	tep = data;
++
++	if (!seq.buffer)
++		trace_seq_init(&seq);
++
++	trace_seq_reset(&seq);
++	tep_print_event(tracecmd_get_tep(handle), &seq, record,
++			"%s-%d\t%6.1000d [%03d] %s\t%s\n",
++			TEP_PRINT_COMM, TEP_PRINT_PID,
++			TEP_PRINT_TIME, TEP_PRINT_CPU,
++			TEP_PRINT_NAME, TEP_PRINT_INFO);
++	trace_seq_terminate(&seq);
++	trace_seq_do_printf(&seq);
++	return 0;
++}
++
++int main(int argc, char **argv)
++{
++	struct tracecmd_input *handle;
++	struct tep_handle *guest_tep;
++	struct stat st;
++	FILE *fp;
++	char *buf;
++
++	if (argc < 3) {
++		printf("usage: trace.dat guest_kallsyms_file\n");
++		exit(-1);
++	}
++
++	handle = tracecmd_open(argv[1], 0);
++	if (!handle) {
++		perror(argv[1]);
++		exit(-1);
++	}
++
++	/* Just for kallsyms parsing */
++	guest_tep = tep_alloc();
++	if (!guest_tep)
++		exit(-1);
++
++	if (stat(argv[2], &st) < 0) {
++		perror(argv[2]);
++		exit(-1);
++	}
++
++	buf = malloc(st.st_size + 1);
++	if (!buf)
++		exit(-1);
++
++	fp = fopen(argv[2], "r");
++	if (!fp) {
++		perror(argv[2]);
++		exit(-1);
++	}
++
++	if (fread(buf, st.st_size, 1, fp) < 0) {
++		perror(argv[2]);
++		exit(-1);
++	}
++
++	buf[st.st_size] = '\0';
++
++	if (tep_parse_kallsyms(guest_tep, buf) < 0) {
++		printf("Failed to parse %s\n", argv[2]);
++		exit(-1);
++	}
++	free(buf);
++
++	tracecmd_follow_event(handle, "kvm", "kvm_exit", show_event, guest_tep);
++	tracecmd_follow_event(handle, "kvm", "kvm_entry", show_event, guest_tep);
++
++	tracecmd_iterate_events(handle, NULL, 0, NULL, NULL);
++
++	tep_free(guest_tep);
++	tracecmd_close(handle);
++}
++--
++
++FILES
++-----
++[verse]
++--
++*event-parse.h*
++	Header file to include in order to have access to the library APIs.
++*-ltraceevent*
++	Linker switch to add when building a program that uses the library.
++--
++
++SEE ALSO
++--------
++*libtraceevent*(3), *trace-cmd*(1)
++
++REPORTING BUGS
++--------------
++Report bugs to  <linux-trace-devel@vger.kernel.org>
++
++LICENSE
++-------
++libtraceevent is Free Software licensed under the GNU LGPL 2.1
++
++RESOURCES
++---------
++https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/
+diff --git a/Documentation/libtraceevent.txt b/Documentation/libtraceevent.txt
+index 0d0795e79b53..67e964567736 100644
+--- a/Documentation/libtraceevent.txt
++++ b/Documentation/libtraceevent.txt
+@@ -154,6 +154,12 @@ Endian related APIs:
+ Control library logs:
+ 	int *tep_set_loglevel*(enum tep_loglevel _level_);
+ 
++KVM plugin calllbacks: (Defined by the application and complied with -rdynamic)
++	const char pass:[*]*tep_plugin_kvm_get_func*(struct tep_event pass:[*]event,
++				    struct tep_record pass:[*]record,
++				    unsigned long long pass:[*]paddr);
++	void *tep_plugin_kvm_put_func*(const char pass:[*]func);
++
+ Trace sequences:
+ *#include <trace-seq.h>*
+ 	void *trace_seq_init*(struct trace_seq pass:[*]_s_);
+-- 
+2.35.1
+
