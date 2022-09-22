@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D911AC6FA8E
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 22 Sep 2022 01:36:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A00A6C32771
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 22 Sep 2022 01:36:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230437AbiIVBgl (ORCPT
+        id S229459AbiIVBgn (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 21 Sep 2022 21:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33610 "EHLO
+        Wed, 21 Sep 2022 21:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbiIVBgk (ORCPT
+        with ESMTP id S230457AbiIVBgl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 21 Sep 2022 21:36:40 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781E69E125
+        Wed, 21 Sep 2022 21:36:41 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0989E9E2E9
         for <linux-trace-devel@vger.kernel.org>; Wed, 21 Sep 2022 18:36:39 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 14401B82183
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0FC72B81E1A
         for <linux-trace-devel@vger.kernel.org>; Thu, 22 Sep 2022 01:36:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5DDEC433C1;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B886AC433B5;
         Thu, 22 Sep 2022 01:36:36 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.96)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1obB9m-00DrE8-1Y;
+        id 1obB9m-00DrEB-1c;
         Wed, 21 Sep 2022 21:37:38 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     morg@google.com, "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 1/2] trace-cmd library: Add tracecmd_follow_event()
-Date:   Wed, 21 Sep 2022 21:37:36 -0400
-Message-Id: <20220922013737.3302850-2-rostedt@goodmis.org>
+Subject: [PATCH 2/2] trace-cmd library: Add man pages for iterator functions
+Date:   Wed, 21 Sep 2022 21:37:37 -0400
+Message-Id: <20220922013737.3302850-3-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220922013737.3302850-1-rostedt@goodmis.org>
 References: <20220922013737.3302850-1-rostedt@goodmis.org>
@@ -44,207 +44,351 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add the tracecmd_follow_event() to make it easier for applications to
-have a callback for specific events when calling either
-tracecmd_iterate_events() or tracecmd_iterate_events_multi()
+Add man pages for the following iterator functions:
+
+    tracecmd_iterate_events()
+    tracecmd_iterate_events_multi()
+    tracecmd_follow_event()
+    tracecmd_filter_add()
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/trace-cmd/trace-cmd.h |   8 +++
- lib/trace-cmd/trace-input.c   | 117 ++++++++++++++++++++++++++++++++--
- 2 files changed, 119 insertions(+), 6 deletions(-)
+ .../libtracecmd/libtracecmd-iterate.txt       | 291 ++++++++++++++++++
+ Documentation/libtracecmd/libtracecmd.txt     |  23 ++
+ 2 files changed, 314 insertions(+)
+ create mode 100644 Documentation/libtracecmd/libtracecmd-iterate.txt
 
-diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index 331815b9edc2..dc08b1bcc82f 100644
---- a/include/trace-cmd/trace-cmd.h
-+++ b/include/trace-cmd/trace-cmd.h
-@@ -51,6 +51,14 @@ struct tracecmd_input *tracecmd_buffer_instance_handle(struct tracecmd_input *ha
- void tracecmd_set_private(struct tracecmd_input *handle, void *data);
- void *tracecmd_get_private(struct tracecmd_input *handle);
- 
-+int tracecmd_follow_event(struct tracecmd_input *handle,
-+			  const char *system, const char *event_name,
-+			  int (*callback)(struct tracecmd_input *handle,
-+					  struct tep_event *,
-+					  struct tep_record *,
-+					  int, void *),
-+			  void *callback_data);
+diff --git a/Documentation/libtracecmd/libtracecmd-iterate.txt b/Documentation/libtracecmd/libtracecmd-iterate.txt
+new file mode 100644
+index 000000000000..c0a99f3087c2
+--- /dev/null
++++ b/Documentation/libtracecmd/libtracecmd-iterate.txt
+@@ -0,0 +1,291 @@
++libtracecmd(3)
++=============
 +
- int tracecmd_iterate_events(struct tracecmd_input *handle,
- 			    cpu_set_t *cpus, int cpu_size,
- 			    int (*callback)(struct tracecmd_input *handle,
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index cdaa17bd69f9..ce3584eef201 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -43,6 +43,15 @@ struct page_map {
- 	int			ref_count;
- };
- 
-+struct follow_event {
-+	struct tep_event	*event;
-+	void			*callback_data;
-+	int (*callback)(struct tracecmd_input *handle,
-+			struct tep_event *,
-+			struct tep_record *,
-+			int, void *);
++NAME
++----
++tracecmd_iterate_events, tracecmd_iterate_events_multi, tracecmd_follow_event,
++tracecmd_filter_add - Read events from a trace file
++
++SYNOPSIS
++--------
++[verse]
++--
++*#include <trace-cmd.h>*
++
++int *tracecmd_iterate_events*(struct tracecmd_input pass:[*]_handle_,
++			    cpu_set_t pass:[*]_cpus_, int _cpu_size_,
++			    int (pass:[*]_callback_)(struct tracecmd_input pass:[*],
++					    struct tep_record pass:[*],
++					    int, void pass:[*]),
++			    void pass:[*]_callback_data_);
++int *tracecmd_iterate_events_multi*(struct tracecmd_input pass:[**]_handles_,
++				  int _nr_handles_,
++				  int (pass:[*]_callback_)(struct tracecmd_input pass:[*],
++							   struct tep_record pass:[*],
++							   int, void pass:[*]),
++				  void pass:[*]_callback_data_);
++int *tracecmd_follow_event*(struct tracecmd_input pass:[*]_handle_,
++			  const char pass:[*]_system_, const char pass:[*]_event_name_,
++			  int (pass:[*]_callback_)(struct tracecmd_input pass:[*],
++					  struct tep_event pass:[*],
++					  struct tep_record pass:[*],
++					  int, void pass:[*]),
++			  void pass:[*]_callback_data_);
++struct tracecmd_filter pass:[*]*tracecmd_filter_add*(struct tracecmd_input *_handle_,
++					    const char pass:[*]_filter_str_, bool _neg_);
++--
++
++DESCRIPTION
++-----------
++This set of APIs can be used to iterate over events after opening a trace file
++using one of the open functions like *tracecmd_open(3)* or *tracecmd_open_fd(3)*.
++
++The function *tracecmd_iterate_events()* will iterate through all the
++events in the trace file defined by _handle_, where _handle_ is returned from
++one of the *tracecmd_open(3)* functions. It will call the _callback_() function
++on the events on the CPUs defined by _cpus_. The _cpu_size_ must be the size of
++_cpus_ (see *CPU_SET(3)*). If _cpus_ is NULL, then _cpu_size_ is ignored and _callback()_
++will be called for all events on all CPUs in the trace file. The _callback_data_
++is passed to the _callback()_ as its last parameter. _callback_ may be NULL, which
++is useful if *tracecmd_follow_event()* is used, but note if _callback_ is NULL, then
++_callback_data_ is ignored and not sent to the _callback_ of *tracecmd_follow_event()*.
++
++The function *tracecmd_iterate_events_multi()* is similar to *tracecmd_iterate_events()*
++except that it allows to iterate over more than one trace file. If *tracecmd agent(1)*
++is used to get a trace file for both the host and guest, make sure that the host trace
++file is the first entry in _handles_ and *tracecmd_iterate_events_multi()* will do
++the synchronization of the meta data for the guest files that come later in _handles_.
++_handles_ is an array of trace file descriptors that were opened by *tracecmd_open(3)*
++and friends. Note, unlike *tracecmd_iterate_events()*, *tracecmd_iterate_events_multi()*
++does not filter on CPUs, as it will cause the API to become too complex in knowing which
++handle to filter the CPUs on. If CPU filtering is desired, then the _callback_ should check
++the _record_->cpu to and return 0 if it is not the desired CPU to process. _nr_handles_
++denotes the number of elements in _handles_. The _callback_data_ is passed to the _callback_
++as its last parameter.  _callback_ may be NULL, which is useful if *tracecmd_follow_event()*
++is used, but note if _callback_ is NULL, then _callback_data_ is ignored and not sent to the
++_callback_ of *tracecmd_follow_event()*.
++
++The _callback()_ for both *tracecmd_iterate_events()* and *tracecmd_iterate_events_multi()* is of the prototype:
++
++int _callback()_(struct tracecmd_input pass:[*]_handle_, struct tep_record pass:[*]_record_,
++		 int _cpu_, void pass:[*]_data_);
++
++The _handle_ is the same _handle_ passed to *tracecmd_iterate_events()* or the current
++handle of _handles_ passed to *tracecmd_iterate_events_multi()* that the _record_ belongs to.
++The _record_ is the current event record. The _cpu_ is the current CPU being processed. Note, for
++*tracecmd_iterate_events_multi()* it may not be the actual CPU of the file, but the nth
++CPU of all the _handles_ put together. Use _record_->cpu to get the actual CPU that the
++event is on.
++
++The *tracecmd_follow_event()* function will attach to a trace file descriptor _handle_
++and call the _callback_ when the event described by _system_ and _name_ matches an event
++in the iteration of *tracecmd_iterate_events()* or *tracecmd_iterate_events_multi()*.
++For *tracecmd_iterate_events_multi()*, the _callback_ is only called if the _handle_
++matches the current trace file descriptor within _handles_. The _callback_data_ is
++passed as the last parameter to the _callback()_ function. Note, this _callback()_
++function will be called before the _callback()_ function of either *tracecmd_iterate_events()* or *tracecmd_iterate_events_multi()*.
++
++The _callback()_ prototype for *tracecmd_follow_event()_ is:
++
++int _callback()_(struct tracecmd_input pass:[*]_handle_, struct tep_event pass:[*]_event,
++		 struct tep_record pass:[*]_record_, int _cpu_, void pass:[*]_data_);
++
++The *tracecmd_filter_add()* function, adds a filter to _handle_ that affects
++both *tracecmd_iterate_events()* and *tracecmd_iterate_events_multi()*.
++The _filter_str_ is a character string defining a filter in a format that
++is defined by *tep_filter_add_filter_str(3)*. If _neg_ is true, then the events
++that match the filter will be skipped, otherwise the events that match will execute
++the _callback()_ function in the iterators.
++
++RETURN VALUE
++------------
++Both *tracecmd_iterate_events()* and *tracecmd_iterate_events_multi()* return zero
++if they successfully iterated all events (handling the follow and filters appropriately).
++Or an error value, which can include returning a non-zero result from the _callback()_
++function.
++
++EXAMPLE
++-------
++[source,c]
++--
++#define _GNU_SOURCE
++#include <sched.h>
++#include <stdlib.h>
++#include <getopt.h>
++#include <trace-cmd.h>
++
++struct private_data {
++	int		cpu;
++	const char	*file;
 +};
 +
- struct page {
- 	struct list_head	list;
- 	off64_t			offset;
-@@ -161,6 +170,7 @@ struct tracecmd_input {
- 	struct tep_plugin_list	*plugin_list;
- 	struct tracecmd_input	*parent;
- 	struct tracecmd_filter	*filter;
-+	struct follow_event	*followers;
- 	unsigned long		file_state;
- 	unsigned long long	trace_id;
- 	unsigned long long	next_offset;
-@@ -173,6 +183,7 @@ struct tracecmd_input {
- 	int			cpus;
- 	int			start_cpu;
- 	int			ref;
-+	int			nr_followers;
- 	int			nr_buffers;	/* buffer instances */
- 	bool			use_trace_clock;
- 	bool			read_page;
-@@ -2525,6 +2536,88 @@ tracecmd_read_next_data(struct tracecmd_input *handle, int *rec_cpu)
- 	return tracecmd_read_data(handle, next_cpu);
- }
- 
-+/**
-+ * tracecmd_follow_event - Add callback for specific events for iterators
-+ * @handle: The handle to get a callback from
-+ * @system: The system of the event to track
-+ * @event_name: The name of the event to track
-+ * @callback: The function to call when the event is hit in an iterator
-+ * @callback_data: The data to pass to @callback
-+ *
-+ * This attaches a callback to @handle where if tracecmd_iterate_events()
-+ * or tracecmd_iterate_events_multi() is called, that if the specified
-+ * event is hit, it will call @callback, with the following parameters:
-+ *  @handle: Same handle as passed to this function.
-+ *  @event: The event pointer that was found by @system and @event_name.
-+ *  @record; The event instance of @event.
-+ *  @cpu: The cpu that the event happened on.
-+ *  @callback_data: The same as @callback_data passed to the function.
-+ *
-+ * Note that when used with tracecmd_iterate_events_multi() that @cpu
-+ * may be the nth CPU of all handles it is processing, so if the CPU
-+ * that the @record is on is desired, then use @record->cpu.
-+ *
-+ * Returns 0 on success and -1 on error.
-+ */
-+int tracecmd_follow_event(struct tracecmd_input *handle,
-+			  const char *system, const char *event_name,
-+			  int (*callback)(struct tracecmd_input *handle,
-+					  struct tep_event *,
-+					  struct tep_record *,
-+					  int, void *),
-+			  void *callback_data)
++static int print_events(struct tracecmd_input *handle, struct tep_record *record, int cpu, void *data)
 +{
++	static struct trace_seq seq;
 +	struct tep_handle *tep = tracecmd_get_tep(handle);
-+	struct follow_event *followers;
-+	struct follow_event follow;
++	struct private_data *pdata = tracecmd_get_private(handle);
 +
-+	if (!tep) {
-+		errno = EINVAL;
-+		return -1;
-+	}
++	/* For multi handles we need this */
++	if (pdata->cpu >= 0 && pdata->cpu != record->cpu)
++		return 0;
 +
-+	follow.event = tep_find_event_by_name(tep, system, event_name);
-+	if (!follow.event) {
-+		errno = ENOENT;
-+		return -1;
-+	}
++	if (!seq.buffer)
++		trace_seq_init(&seq);
 +
-+	follow.callback = callback;
-+	follow.callback_data = callback_data;
-+
-+	followers = realloc(handle->followers, sizeof(*followers) *
-+			    (handle->nr_followers + 1));
-+	if (!followers)
-+		return -1;
-+
-+	handle->followers = followers;
-+	followers[handle->nr_followers++] = follow;
-+
++	trace_seq_reset(&seq);
++	trace_seq_printf(&seq, "%s: ", pdata->file);
++	tep_print_event(tep, &seq, record, "%6.1000d [%03d] %s-%d %s: %s\n",
++			TEP_PRINT_TIME, TEP_PRINT_CPU, TEP_PRINT_COMM, TEP_PRINT_PID,
++			TEP_PRINT_NAME, TEP_PRINT_INFO);
++	trace_seq_terminate(&seq);
++	trace_seq_do_printf(&seq);
 +	return 0;
 +}
 +
-+static int call_followers(struct tracecmd_input *handle,
-+			  struct tep_record *record, int cpu)
++static int print_event(struct tracecmd_input *handle, struct tep_event *event,
++		       struct tep_record *record, int cpu, void *data)
 +{
-+	struct tep_handle *tep = tracecmd_get_tep(handle);
-+	struct follow_event *followers = handle->followers;
-+	struct tep_event *event;
-+	int ret = 0;
-+	int i;
-+
-+	event = tep_find_event_by_record(tep, record);
-+	if (!event)
-+		return -1;
-+
-+	for (i = 0; i < handle->nr_followers; i++) {
-+		if (handle->followers[i].event == event)
-+			ret |= followers[i].callback(handle, event, record,
-+						     cpu, followers[i].callback_data);
-+	}
-+
-+	return ret;
++	return print_events(handle, record, cpu, data);
 +}
 +
- /**
-  * tracecmd_iterate_events - iterate events over a given handle
-  * @handle: The handle to iterate over
-@@ -2553,6 +2646,11 @@ int tracecmd_iterate_events(struct tracecmd_input *handle,
- 	int cpu;
- 	int ret = 0;
- 
-+	if (!callback && !handle->nr_followers) {
-+		errno = EINVAL;
-+		return -1;
++static void usage(const char *argv0)
++{
++	printf("usage: [-c cpu][-f filter][-e event] %s trace.dat [trace.dat ...]\n",
++	       argv0);
++	exit(-1);
++}
++
++int main(int argc, char **argv)
++{
++	struct tracecmd_input **handles = NULL;
++	const char *filter_str = NULL;
++	const char *argv0 = argv[0];
++	struct private_data *priv;
++	cpu_set_t *cpuset = NULL;
++	char *event = NULL;
++	size_t cpusize = 0;
++	int nr_handles = 0;
++	int cpu = -1;
++	int i;
++	int c;
++
++	while ((c = getopt(argc, argv, "c:f:e:")) >= 0) {
++		switch (c) {
++		case 'c':
++			/* filter all trace data to this one CPU. */
++			cpu = atoi(optarg);
++			break;
++		case 'f':
++			filter_str = optarg;
++			break;
++		case 'e':
++			event = optarg;
++			break;
++		default:
++			usage(argv0);
++		}
++	}
++	argc -= optind;
++	argv += optind;
++
++	if (argc == 0)
++		usage(argv0);
++
++	for (i = 0; i < argc; i++) {
++		handles = realloc(handles, sizeof(*handles) * (nr_handles + 1));
++		if (!handles)
++			exit(-1);
++		handles[nr_handles] = tracecmd_open(argv[i], 0);
++		if (!handles[nr_handles]) {
++			perror(argv[i]);
++			exit(-1);
++		}
++		if (filter_str) {
++			if (tracecmd_filter_add(handles[nr_handles], filter_str, false) == NULL) {
++				perror("adding filter");
++				exit(-1);
++			}
++		}
++		priv = calloc(1, sizeof(*priv));
++		if (!priv)
++			exit(-1);
++		priv->file = argv[i];
++		priv->cpu = cpu;
++		tracecmd_set_private(handles[nr_handles], priv);
++		if (event) {
++			if (tracecmd_follow_event(handles[nr_handles], NULL, event, print_event, NULL) < 0) {
++				printf("Could not follow event %s for file %s\n", event, argv[i]);
++				exit(-1);
++			}
++		}
++		nr_handles++;
 +	}
 +
- 	records = calloc(handle->max_cpu, sizeof(*records));
- 	if (!records)
- 		return -1;
-@@ -2582,12 +2680,14 @@ int tracecmd_iterate_events(struct tracecmd_input *handle,
- 			records[next_cpu] = tracecmd_peek_data(handle, next_cpu);
- 
- 			if (!handle->filter ||
--			    tracecmd_filter_match(handle->filter, record) == TRACECMD_FILTER_MATCH)
--				ret = callback(handle, record, next_cpu, callback_data);
--
-+			    tracecmd_filter_match(handle->filter, record) == TRACECMD_FILTER_MATCH) {
-+				if (handle->nr_followers)
-+					ret = call_followers(handle, record, next_cpu);
-+				if (!ret && callback)
-+					ret = callback(handle, record, next_cpu, callback_data);
-+			}
- 			tracecmd_free_record(record);
- 		}
--
- 	} while (next_cpu >= 0 && ret >= 0);
- 
- 	for (cpu = 0; cpu < handle->max_cpu; cpu++)
-@@ -2674,8 +2774,13 @@ int tracecmd_iterate_events_multi(struct tracecmd_input **handles,
- 			records[next_cpu].record = tracecmd_peek_data(handle, cpu);
- 
- 			if (!handle->filter ||
--			    tracecmd_filter_match(handle->filter, record) == TRACECMD_FILTER_MATCH)
--				ret = callback(handle, record, next_cpu, callback_data);
-+			    tracecmd_filter_match(handle->filter, record) == TRACECMD_FILTER_MATCH) {
-+				if (handle->nr_followers)
-+					ret = call_followers(handle, record, next_cpu);
++	/* Shortcut */
++	if (nr_handles == 1) {
++		if (cpu >= 0) {
++			cpuset = CPU_ALLOC(cpu + 1);
++			if (!cpuset)
++				exit(-1);
++			cpusize = CPU_ALLOC_SIZE(cpu + 1);
++			CPU_SET_S(cpu, cpusize, cpuset);
++		}
++		if (event)
++			tracecmd_iterate_events(handles[0], cpuset, cpusize, NULL, NULL);
++		else
++			tracecmd_iterate_events(handles[0], cpuset, cpusize, print_events, NULL);
++	} else {
++		if (event)
++			tracecmd_iterate_events_multi(handles, nr_handles, NULL, NULL);
++		else
++			tracecmd_iterate_events_multi(handles, nr_handles, print_events, NULL);
++	}
 +
-+				if (!ret && callback)
-+					ret = callback(handle, record, next_cpu, callback_data);
-+			}
- 			tracecmd_free_record(record);
- 		}
++	for (i = 0; i < nr_handles; i++) {
++		priv = tracecmd_get_private(handles[i]);
++		free(priv);
++		tracecmd_close(handles[i]);
++	}
++	free(handles);
++}
++--
++FILES
++-----
++[verse]
++--
++*trace-cmd.h*
++	Header file to include in order to have access to the library APIs.
++*-ltracecmd*
++	Linker switch to add when building a program that uses the library.
++--
++
++SEE ALSO
++--------
++*libtracefs(3)*,
++*libtraceevent(3)*,
++*trace-cmd(1)*
++*trace-cmd.dat(5)*
++
++AUTHOR
++------
++[verse]
++--
++*Steven Rostedt* <rostedt@goodmis.org>
++*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>
++--
++REPORTING BUGS
++--------------
++Report bugs to  <linux-trace-devel@vger.kernel.org>
++
++LICENSE
++-------
++libtracecmd is Free Software licensed under the GNU LGPL 2.1
++
++RESOURCES
++---------
++https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
++
++COPYING
++-------
++Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
++the terms of the GNU Public License (GPL).
+diff --git a/Documentation/libtracecmd/libtracecmd.txt b/Documentation/libtracecmd/libtracecmd.txt
+index 141fec5d379c..d2d17f7cbaba 100644
+--- a/Documentation/libtracecmd/libtracecmd.txt
++++ b/Documentation/libtracecmd/libtracecmd.txt
+@@ -27,6 +27,29 @@ Read tracing records from a trace file:
+ 	void *tracecmd_free_record*(struct tep_record pass:[*]_record_);
+ 	struct tep_handle pass:[*]*tracecmd_get_tep*(struct tracecmd_input pass:[*]_handle_);
  
++Iterating over events in a trace file:
++	int *tracecmd_iterate_events*(struct tracecmd_input pass:[*]_handle_,
++				    cpu_set_t pass:[*]_cpus_, int _cpu_size_,
++				    int (pass:[*]_callback_)(struct tracecmd_input pass:[*],
++						    struct tep_record pass:[*],
++						    int, void pass:[*]),
++				    void pass:[*]_callback_data_);
++	int *tracecmd_iterate_events_multi*(struct tracecmd_input pass:[**]_handles_,
++					  int _nr_handles_,
++					  int (pass:[*]_callback_)(struct tracecmd_input pass:[*],
++								   struct tep_record pass:[*],
++							   int, void pass:[*]),
++					  void pass:[*]_callback_data_);
++	int *tracecmd_follow_event*(struct tracecmd_input pass:[*]_handle_,
++				  const char pass:[*]_system_, const char pass:[*]_event_name_,
++				  int (pass:[*]_callback_)(struct tracecmd_input pass:[*],
++						  struct tep_event pass:[*],
++						  struct tep_record pass:[*],
++						  int, void pass:[*]),
++				  void pass:[*]_callback_data_);
++	struct tracecmd_filter pass:[*]*tracecmd_filter_add*(struct tracecmd_input *_handle_,
++						    const char pass:[*]_filter_str_, bool _neg_);
++
+ Read tracing instances from a trace file:
+ 	int *tracecmd_buffer_instances*(struct tracecmd_input pass:[*]_handle_);
+ 	const char pass:[*]*tracecmd_buffer_instance_name*(struct tracecmd_input pass:[*]_handle_, int _indx_);
 -- 
 2.35.1
 
