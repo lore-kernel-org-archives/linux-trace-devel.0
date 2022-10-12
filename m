@@ -2,73 +2,102 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1B0CC4332F
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 12 Oct 2022 12:51:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76F98C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 12 Oct 2022 21:57:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbiJLMvu (ORCPT
+        id S229537AbiJLV5W (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 12 Oct 2022 08:51:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37262 "EHLO
+        Wed, 12 Oct 2022 17:57:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbiJLMvt (ORCPT
+        with ESMTP id S229491AbiJLV5W (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 12 Oct 2022 08:51:49 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC1BB2D9A;
-        Wed, 12 Oct 2022 05:51:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DCCA3B81A84;
-        Wed, 12 Oct 2022 12:51:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4C27C433C1;
-        Wed, 12 Oct 2022 12:51:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665579105;
-        bh=1v6VsgWWJMhTeLPSeZwHMGLzy5xTUH1JKNIjGkBCVoQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=jnbYZgZHF0yUPthRu+mfs2QOAtxbKNLqGFMVZ2gOk0Zhmh6SAZt1CAUUzenUnQmJd
-         6d8t5pGQn0WlQVnHlNvfwH7S66g5GDhDtxnBBg6yFnFUWdTlJ6FsiY4AKVEJ9TxidW
-         dNzAF44lC2FVAhH56TKCwd/WYzINlSjus1deZfYVGiOmQAW5cFupIVqnI25XckvFDC
-         65RjbQh8XiHoHG/UcUf1MBP1Rv65xXJ6FYpZ8lxJ/N7N8Wvn+Ad8ekAth7eWm2gkyh
-         9W9+CdwTZctBb3Y/PxgbVWFN9mF1keu19J88eLJoDbvQ/DQ6eq5WIZyDrgizoDSqTY
-         fknizFIMU/WGg==
-Message-ID: <549e73bb-dcf8-7107-aff0-ff4f80d13db6@kernel.org>
-Date:   Wed, 12 Oct 2022 14:51:41 +0200
+        Wed, 12 Oct 2022 17:57:22 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 652E610451A;
+        Wed, 12 Oct 2022 14:57:21 -0700 (PDT)
+Received: from localhost.localdomain (unknown [76.135.50.127])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 179C920F0F77;
+        Wed, 12 Oct 2022 14:57:21 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 179C920F0F77
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1665611841;
+        bh=cBwmnLdZr7+xCHkswbZxO11VOAXb4IRb/2OCDhqD//U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nujnO1WCLnkK/yPReail5/fe+pehA5rL172rcM82lvRtobSLGnke5+syFW3Q3VsXu
+         zpuobY5doRb0jp5sPS7efPFbuhftxXGC2bIe6vFlvMNcGxW3iqHlVgOnbccu229v6u
+         DrSf1k/WpWuPaF4/73FaGy3KQfmcp/slGT8SDcrY=
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     rostedt@goodmis.org, mhiramat@kernel.org
+Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] tracing: Track event ref in tracefs enable/disable
+Date:   Wed, 12 Oct 2022 14:57:17 -0700
+Message-Id: <20221012215717.10492-1-beaub@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-Subject: Re: [PATCH] Documentation: rtla: Correct command line example
-To:     Pierre Gondois <pierre.gondois@arm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        linux-trace-devel@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20221006084409.3882542-1-pierre.gondois@arm.com>
-Content-Language: en-US
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <20221006084409.3882542-1-pierre.gondois@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 10/6/22 10:44, Pierre Gondois wrote:
-> The '-t/-T' parameters seem to have been swapped:
-> -t/--trace[=file]: save the stopped trace
-> to [file|timerlat_trace.txt]
-> -T/--thread us: stop trace if the thread latency
-> is higher than the argument in us
+When events are enabled via the "enable" file within tracefs there is no
+get or put ref. Add these to ensure modules and dynamic events do not
+unload while the event is enabled via tracefs.
 
-I swapped them during the development, but it seems that I got the example
-before swapping them :-).
+Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+---
+ kernel/trace/trace_events.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-> Swap them back.
-> 
-> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index 0356cae0cf74..f0b17adba1bc 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -634,6 +634,8 @@ static int __ftrace_event_enable_disable(struct trace_event_file *file,
+ 			}
+ 
+ 			call->class->reg(call, TRACE_REG_UNREGISTER, file);
++
++			trace_event_put_ref(call);
+ 		}
+ 		/* If in SOFT_MODE, just set the SOFT_DISABLE_BIT, else clear it */
+ 		if (file->flags & EVENT_FILE_FL_SOFT_MODE)
+@@ -659,7 +661,7 @@ static int __ftrace_event_enable_disable(struct trace_event_file *file,
+ 		}
+ 
+ 		if (!(file->flags & EVENT_FILE_FL_ENABLED)) {
+-			bool cmd = false, tgid = false;
++			bool cmd = false, tgid = false, put = false;
+ 
+ 			/* Keep the event disabled, when going to SOFT_MODE. */
+ 			if (soft_disable)
+@@ -677,14 +679,22 @@ static int __ftrace_event_enable_disable(struct trace_event_file *file,
+ 				set_bit(EVENT_FILE_FL_RECORDED_TGID_BIT, &file->flags);
+ 			}
+ 
++			if (!trace_event_try_get_ref(call))
++				goto error_enabling;
++
++			put = true;
++
+ 			ret = call->class->reg(call, TRACE_REG_REGISTER, file);
+ 			if (ret) {
++error_enabling:
++				pr_info("event trace: Could not enable event "
++					"%s\n", trace_event_name(call));
+ 				if (cmd)
+ 					tracing_stop_cmdline_record();
+ 				if (tgid)
+ 					tracing_stop_tgid_record();
+-				pr_info("event trace: Could not enable event "
+-					"%s\n", trace_event_name(call));
++				if (put)
++					trace_event_put_ref(call);
+ 				break;
+ 			}
+ 			set_bit(EVENT_FILE_FL_ENABLED_BIT, &file->flags);
 
-Acked-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+base-commit: 6c0f39e87b6ab1a3009e3a49d3e6f6db8dc756a8
+-- 
+2.25.1
 
-Thanks!
--- Daniel
