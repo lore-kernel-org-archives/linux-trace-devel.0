@@ -2,80 +2,128 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79E23C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 13 Oct 2022 16:37:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E8F7C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 13 Oct 2022 16:39:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229680AbiJMQhr (ORCPT
+        id S229613AbiJMQjs (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 13 Oct 2022 12:37:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59670 "EHLO
+        Thu, 13 Oct 2022 12:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbiJMQhk (ORCPT
+        with ESMTP id S229733AbiJMQjl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 13 Oct 2022 12:37:40 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6FA6147079;
-        Thu, 13 Oct 2022 09:37:38 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73:8b7:7001:c8aa:b65f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 1FF7F7DE;
-        Thu, 13 Oct 2022 16:37:38 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 1FF7F7DE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1665679058; bh=MPnAEr/uKZleldeAslfNMPix687dnUHgUseD/nzIDaM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=rpueZBUUc+RL/2ZVpZX/jvpJgi9ENHtBYPnOJWxH3jEXAxLHOAu8B3khSVkAr22HL
-         2tRGlCFSIkXHeykTQbLzXGwYenqYjwC7vv0x2QERklYsSiIU1+VOlwCSGPTnXXm+p7
-         dAuGnB6KvkmHFSyVnSFQkgYV+xC11+isAI2u5WEJivxEod4M7KvUqtidF+W1UbQQMv
-         7KNk69ZVWiaPUBDt+U/HjiDKnQztBszL7lqWM4UvBsmQvOri5bFVjoRqxGTFe0OErU
-         SM+l0HxzLdNZcDeZ+h2p7/0/GiE/jpejen59G+xKCw3d7wXJnUSgzgTvIFdRM/Npv5
-         k0gH3VuSvgTtA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Pierre Gondois <pierre.gondois@arm.com>,
+        Thu, 13 Oct 2022 12:39:41 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D70781F2;
+        Thu, 13 Oct 2022 09:39:35 -0700 (PDT)
+Received: from W11-BEAU-MD.localdomain (unknown [76.135.50.127])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 30E5320F3D02;
+        Thu, 13 Oct 2022 09:39:35 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 30E5320F3D02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1665679175;
+        bh=G/uNRMLSN6vYIqvoohGz3jalPyKYsyfvCErVNkCJVsU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WlCfKrckuJBL3dAWBtaYwBVKEE1OBwncV+CxjHeoN/d5vuOhkHzT13toW7/gxLURL
+         35bsrZn3Yzet8GzpHLfmU6080pLC5kiosYLGFgA4DeJ1v0NxdntNg7Ht8GPSI5suJz
+         m6z2ZyIRMoH2OmYbEjSGUPvwR3oVrxQY9xhQNhpc=
+Date:   Thu, 13 Oct 2022 09:39:28 -0700
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     mhiramat@kernel.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Pierre Gondois <pierre.gondois@arm.com>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH] Documentation: rtla: Correct command line example
-In-Reply-To: <20221006084409.3882542-1-pierre.gondois@arm.com>
-References: <20221006084409.3882542-1-pierre.gondois@arm.com>
-Date:   Thu, 13 Oct 2022 10:37:37 -0600
-Message-ID: <87tu47isry.fsf@meer.lwn.net>
+Subject: Re: [PATCH] tracing: Track event ref in tracefs enable/disable
+Message-ID: <20221013163928.GA80@W11-BEAU-MD.localdomain>
+References: <20221012215717.10492-1-beaub@linux.microsoft.com>
+ <20221012182639.5a607add@rorschach.local.home>
+ <20221013001938.GA281@W11-BEAU-MD.localdomain>
+ <20221013035827.43f7f25c@rorschach.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221013035827.43f7f25c@rorschach.local.home>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Pierre Gondois <pierre.gondois@arm.com> writes:
+On Thu, Oct 13, 2022 at 03:58:27AM -0400, Steven Rostedt wrote:
+> On Wed, 12 Oct 2022 17:19:38 -0700
+> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> 
+> > > 
+> > > The events are only called from the module code, and when the module is
+> > > unloaded, they are no longer called. Why keep the module from unloading
+> > > when enabled?  
+> > 
+> > Won't the modules remove the event calls? At the very least the event
+> > call structure in memory goes away during module unload. If it gets
+> > reused odd things will happen, right? IE: trace_module_remove_events().
+> 
+> Yes it gets removed along with the module. But everything about the
+> static event is part of the module.
+> 
 
-> The '-t/-T' parameters seem to have been swapped:
-> -t/--trace[=file]: save the stopped trace
-> to [file|timerlat_trace.txt]
-> -T/--thread us: stop trace if the thread latency
-> is higher than the argument in us
->
-> Swap them back.
->
-> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
-> ---
->  Documentation/tools/rtla/rtla-timerlat-top.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/tools/rtla/rtla-timerlat-top.rst b/Documentation/tools/rtla/rtla-timerlat-top.rst
-> index 1c321de1c171..7c4e4b109493 100644
-> --- a/Documentation/tools/rtla/rtla-timerlat-top.rst
-> +++ b/Documentation/tools/rtla/rtla-timerlat-top.rst
-> @@ -39,7 +39,7 @@ higher than *30 us*. It is also set to stop the session if a *Thread* timer
->  latency higher than *30 us* is hit. Finally, it is set to save the trace
->  buffer if the stop condition is hit::
->  
-> -  [root@alien ~]# rtla timerlat top -s 30 -t 30 -T
-> +  [root@alien ~]# rtla timerlat top -s 30 -T 30 -t
->                     Timer Latency
+I see, trace_module_remove_events() does remove the trace call for
+module cases only.
 
-Applied, thanks.
+> > 
+> > Maybe I have a bad assumption:
+> > I thought the point of trace_event_try_get_ref()/put_ref() was to tell
+> > the system the call cannot go away. However, if ftrace enable doesn't
+> > use these the lifetime is ambigious in this case. If this was
+> > intentional, how are event call lifetimes described if not within the
+> > ref?
+> > 
+> 
+> The purpose of trace_event_try_get_ref and friends is for the case of
+> dynamic events (eprobes and synthetic events) that can attach to any
+> event (including module events), and the module removal does not remove
+> the dynamic portion that was attached to them. And in this case, the
+> removal would have dire results.
+> 
 
-jon
+Got it, uprobes and user_events are also dynamic events. Here are things
+I found and am thinking about and questioning:
+
+Uprobe specifically calls trace_event_dyn_busy() during
+unregister_trace_uprobe(). This will return false in this case, since
+there is no reference. Fortunately trace_uprobe_is_busy() used by
+dyn_events checks the event flags to see if something really hooked
+there.
+
+User_events also tracks usage via the event.class.reg() REG/UNREG
+callback. It's dyn_events is_busy() op also checks internal flags.
+
+So normally these are not issues for either above system.
+
+However, once we have a tracing_namespace with put/get ref semantics for
+lifetime, those corner case checks won't keep us from removing the
+calls.
+
+It appears if perf attaches to any event it will take a reference. This
+would imply the module won't be allowed to go away while perf is
+running. I'm not sure why we wouldn't want consistency, perhaps it might
+break some scenarios I'm unaware of around module unload.
+
+> > In my namespace patches I hit this case when user_events try to go away
+> > during namespace teardown. Since there is no reference to the event
+> > being used I removed the call. However, it was clearly being used within
+> > tracefs at that point. When I cat "enable" in this case instead of "0"
+> > or "1" I get "?". I suppose worse things could happen when the memory of
+> > the call gets reused?
+> >
+> 
+> Could you have a callback telling tracefs that it is going away (like
+> the module notifier does)?
+> 
+
+I could, would it be limited to just tracefs? I don't believe perf or
+eBPF currently hooks into those notifiers?
+
+If we had a consistent get/put ref model I don't think we would need
+the notifiers (unless we cannot trust all legacy code doing a get/put
+ref). It appears in my testing that perf is always doing get/put refs
+in these cases to ensure the call cannot go away underneath it.
+
+Thanks,
+-Beau
