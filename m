@@ -2,66 +2,71 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95B62C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 18 Oct 2022 22:29:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36C5CC433FE
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 19 Oct 2022 13:30:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbiJRW3F (ORCPT
+        id S230498AbiJSNaa (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 18 Oct 2022 18:29:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45744 "EHLO
+        Wed, 19 Oct 2022 09:30:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbiJRW3E (ORCPT
+        with ESMTP id S231183AbiJSNaI (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 18 Oct 2022 18:29:04 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA65CAE61;
-        Tue, 18 Oct 2022 15:29:01 -0700 (PDT)
+        Wed, 19 Oct 2022 09:30:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540091FF8D;
+        Wed, 19 Oct 2022 06:17:29 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5D520B8218B;
-        Tue, 18 Oct 2022 22:28:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A494C4347C;
-        Tue, 18 Oct 2022 22:28:57 +0000 (UTC)
-Date:   Tue, 18 Oct 2022 18:28:58 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C03E861889;
+        Wed, 19 Oct 2022 13:15:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8CB8C433C1;
+        Wed, 19 Oct 2022 13:15:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666185359;
+        bh=pY5TUB/6IlNSwyBWrO9lqOljFr0jiKToNLZXhibz+C4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=a16lRnhE4AxisAaExKttajlfHCwytQPBcg9Bhyyi/cED8dcdLVtowwbiNXUcijgNC
+         +YlMyFSbSYZXhvsLuIhl/J0fmqCBahLxAooQEJ8DAlfb9vbOK9Dp/nzmoGFtXCWZiS
+         A7S0s8OE1TW3DllaqG7XAjrNaHtNIPkZzReN2pujwtm2YQ+EEU9WYkaL9D+w8xzh6s
+         TTrxW3kE8Bf1aqDN5P2s47AEdGItFUvqezuU2gu9jmoPGRAyd1zsR5YunbWrVEEfhN
+         vR/ICkY0bsM3by0dqwY90nmaXE2OC33/Mc4d9v63Ln896lVmgc3QL3menVAtLzATvx
+         VHV/puX0EQu3A==
+Message-ID: <73cbfbaf-9397-00ab-4844-e5dd96958912@kernel.org>
+Date:   Wed, 19 Oct 2022 15:15:54 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Subject: Re: [PATCH 1/2] rv/dot2c: Make automaton definition static
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH 1/2] rv/dot2c: Make automaton definition static
-Message-ID: <20221018182858.67d8b76e@gandalf.local.home>
-In-Reply-To: <20221018182553.06f13a50@gandalf.local.home>
 References: <ffbb92010f643307766c9307fd42f416e5b85fa0.1661266564.git.bristot@kernel.org>
-        <20221018182553.06f13a50@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+ <20221018182553.06f13a50@gandalf.local.home>
+Content-Language: en-US
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <20221018182553.06f13a50@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 18 Oct 2022 18:25:53 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
+On 10/19/22 00:25, Steven Rostedt wrote:
 > On Tue, 23 Aug 2022 17:20:28 +0200
 > Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 > 
-> > Monitor's automata definition is only used locally, so make dot2c generate
-> > a static definition.
-> > 
-> > Link: https://lore.kernel.org/all/202208210332.gtHXje45-lkp@intel.com
-> > Link: https://lore.kernel.org/all/202208210358.6HH3OrVs-lkp@intel.com
-> >   
-> 
+>> Monitor's automata definition is only used locally, so make dot2c generate
+>> a static definition.
+>>
+>> Link: https://lore.kernel.org/all/202208210332.gtHXje45-lkp@intel.com
+>> Link: https://lore.kernel.org/all/202208210358.6HH3OrVs-lkp@intel.com
+>>
 > Somehow this fell through the cracks.
 > 
 > Daniel, is there any reason I shouldn't pull this in now?
 
-I think when I applied:
+Oops... yes, it can be pulled.
 
-  https://patchwork.kernel.org/project/linux-trace-devel/patch/a50e27c3738d6ef809f4201857229fed64799234.1661266564.git.bristot@kernel.org/
-
-I mistook that to be a new version of this patch.
-
--- Steve
+-- Daniel
