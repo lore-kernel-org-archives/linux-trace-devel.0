@@ -2,39 +2,32 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87C7AC43217
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 Oct 2022 20:55:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11521C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 Oct 2022 23:33:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229484AbiJTUzZ (ORCPT
+        id S229565AbiJTXdg (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 20 Oct 2022 16:55:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35322 "EHLO
+        Thu, 20 Oct 2022 19:33:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbiJTUzZ (ORCPT
+        with ESMTP id S229558AbiJTXdf (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 20 Oct 2022 16:55:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E68E09A0;
-        Thu, 20 Oct 2022 13:55:23 -0700 (PDT)
+        Thu, 20 Oct 2022 19:33:35 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D248220B135
+        for <linux-trace-devel@vger.kernel.org>; Thu, 20 Oct 2022 16:33:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6007D61D12;
-        Thu, 20 Oct 2022 20:55:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 293B6C433C1;
-        Thu, 20 Oct 2022 20:55:22 +0000 (UTC)
-Date:   Thu, 20 Oct 2022 16:55:26 -0400
+        by ams.source.kernel.org (Postfix) with ESMTPS id 771C6B826C8
+        for <linux-trace-devel@vger.kernel.org>; Thu, 20 Oct 2022 23:33:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02DFEC433D6
+        for <linux-trace-devel@vger.kernel.org>; Thu, 20 Oct 2022 23:33:31 +0000 (UTC)
+Date:   Thu, 20 Oct 2022 19:33:36 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH 1/2] rv/dot2c: Make automaton definition static
-Message-ID: <20221020165526.18dcaa02@gandalf.local.home>
-In-Reply-To: <73cbfbaf-9397-00ab-4844-e5dd96958912@kernel.org>
-References: <ffbb92010f643307766c9307fd42f416e5b85fa0.1661266564.git.bristot@kernel.org>
-        <20221018182553.06f13a50@gandalf.local.home>
-        <73cbfbaf-9397-00ab-4844-e5dd96958912@kernel.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] libtracefs: Allow filters to use "COMM"
+Message-ID: <20221020193336.3070b37e@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -43,27 +36,71 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 19 Oct 2022 15:15:54 +0200
-Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> On 10/19/22 00:25, Steven Rostedt wrote:
-> > On Tue, 23 Aug 2022 17:20:28 +0200
-> > Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
-> >   
-> >> Monitor's automata definition is only used locally, so make dot2c generate
-> >> a static definition.
-> >>
-> >> Link: https://lore.kernel.org/all/202208210332.gtHXje45-lkp@intel.com
-> >> Link: https://lore.kernel.org/all/202208210358.6HH3OrVs-lkp@intel.com
-> >>  
-> > Somehow this fell through the cracks.
-> > 
-> > Daniel, is there any reason I shouldn't pull this in now?  
-> 
-> Oops... yes, it can be pulled.
-> 
+COMM is a legitimate filter for events, histograms and synthetic events.
+Allow it to be used in tracefs_sql().
 
-OK, I'm going to push this up as tools/urgent and send a pull request to
-Linus.
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ src/tracefs-filter.c  | 14 +++++++++++++-
+ src/tracefs-sqlhist.c |  5 +++++
+ 2 files changed, 18 insertions(+), 1 deletion(-)
 
--- Steve
+diff --git a/src/tracefs-filter.c b/src/tracefs-filter.c
+index b16dfadb3aa9..a3dd77b7c82c 100644
+--- a/src/tracefs-filter.c
++++ b/src/tracefs-filter.c
+@@ -35,6 +35,12 @@ static const struct tep_format_field common_timestamp_usecs = {
+ 	.size			= 8,
+ };
+ 
++static const struct tep_format_field common_comm = {
++	.type			= "char *",
++	.name			= "common_comm",
++	.size			= 16,
++};
++
+ /*
+  * This also must be able to accept fields that are OK via the histograms,
+  * such as common_timestamp.
+@@ -42,13 +48,19 @@ static const struct tep_format_field common_timestamp_usecs = {
+ static const struct tep_format_field *get_event_field(struct tep_event *event,
+ 					 const char *field_name)
+ {
++	const struct tep_format_field *field;
++
+ 	if (!strcmp(field_name, TRACEFS_TIMESTAMP))
+ 		return &common_timestamp;
+ 
+ 	if (!strcmp(field_name, TRACEFS_TIMESTAMP_USECS))
+ 		return &common_timestamp_usecs;
+ 
+-	return tep_find_any_field(event, field_name);
++	field = tep_find_any_field(event, field_name);
++	if (!field && (!strcmp(field_name, "COMM") || !strcmp(field_name, "comm")))
++		return &common_comm;
++
++	return field;
+ }
+ 
+ __hidden bool
+diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
+index fd0a4b390855..00207f9cd1e6 100644
+--- a/src/tracefs-sqlhist.c
++++ b/src/tracefs-sqlhist.c
+@@ -572,6 +572,11 @@ static int test_field_exists(struct tep_handle *tep,
+ 		tfield = tep_find_any_field(field->event, field_name);
+ 	free(field_name);
+ 
++	if (!tfield && (!strcmp(field->field, "COMM") || !strcmp(field->field, "comm"))) {
++		breakpoint();
++		tfield = (void *)1L;
++	}
++
+ 	if (tfield)
+ 		return 0;
+ 
+-- 
+2.35.1
+
