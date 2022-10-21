@@ -2,32 +2,32 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A987C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 21 Oct 2022 21:24:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21017C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 21 Oct 2022 22:23:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229476AbiJUVY2 (ORCPT
+        id S229803AbiJUWXs (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 21 Oct 2022 17:24:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57466 "EHLO
+        Fri, 21 Oct 2022 18:23:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbiJUVYZ (ORCPT
+        with ESMTP id S229583AbiJUWXo (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 21 Oct 2022 17:24:25 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A032811837
-        for <linux-trace-devel@vger.kernel.org>; Fri, 21 Oct 2022 14:24:23 -0700 (PDT)
+        Fri, 21 Oct 2022 18:23:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A411989B1
+        for <linux-trace-devel@vger.kernel.org>; Fri, 21 Oct 2022 15:23:41 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0AC8BB82D1B
-        for <linux-trace-devel@vger.kernel.org>; Fri, 21 Oct 2022 21:24:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6443DC433C1
-        for <linux-trace-devel@vger.kernel.org>; Fri, 21 Oct 2022 21:24:20 +0000 (UTC)
-Date:   Fri, 21 Oct 2022 17:24:26 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D261361F9B
+        for <linux-trace-devel@vger.kernel.org>; Fri, 21 Oct 2022 22:23:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03E84C433C1
+        for <linux-trace-devel@vger.kernel.org>; Fri, 21 Oct 2022 22:23:39 +0000 (UTC)
+Date:   Fri, 21 Oct 2022 18:23:45 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2] libtracefs: Add reading of per cpu files
-Message-ID: <20221021172426.0eb34368@gandalf.local.home>
+Subject: [PATCH] libtracefs: Add reading of per cpu files
+Message-ID: <20221021182345.092cdb50@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -44,8 +44,8 @@ Add the APIs:
     tracefs_cpu_close()
     tracefs_cpu_read_size()
     tracefs_cpu_read()
-    tracefs_cpu_pipe_read()
-    tracefs_cpu_pipe_write()
+    tracefs_cpu_buffered_read()
+    tracefs_cpu_write()
     tracefs_cpu_stop()
     tracefs_cpu_flush()
     tracefs_cpu_flush_write()
@@ -55,9 +55,12 @@ opening, reading and writing to a file from it.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
-Changes since v1: https://lore.kernel.org/all/20221021163930.3f94bb1c@gandalf.local.home/
+Changes since v2: https://lore.kernel.org/all/20221021172426.0eb34368@gandalf.local.home/
 
- - Removed unused "flags" variable in tracefs_cpu_flush()
+ - While using the interface, I realized tracefs_cpu_pipe_read() and
+   tracefv_cpu_pipe_write() were not the best names. Especially since
+   there needs to be an interface to interact with pipes. Rename the
+   read to tracefs_cpu_buffered_read() and the write to just tracefs_cpu_write().
 
  Documentation/libtracefs-cpu.txt | 239 +++++++++++++++
  Documentation/libtracefs.txt     |  12 +
@@ -71,7 +74,7 @@ Changes since v1: https://lore.kernel.org/all/20221021163930.3f94bb1c@gandalf.lo
 
 diff --git a/Documentation/libtracefs-cpu.txt b/Documentation/libtracefs-cpu.txt
 new file mode 100644
-index 000000000000..1aaae97c7774
+index 000000000000..d664ebb3082f
 --- /dev/null
 +++ b/Documentation/libtracefs-cpu.txt
 @@ -0,0 +1,239 @@
@@ -81,7 +84,7 @@ index 000000000000..1aaae97c7774
 +NAME
 +----
 +tracefs_cpu_open, tracefs_cpu_close, tracefs_cpu_read_size, tracefs_cpu_read,
-+tracefs_cpu_pipe_read, tracefs_cpu_pipe_write, tracefs_cpu_stop, tracefs_cpu_flush,
++tracefs_cpu_buffered_read, tracefs_cpu_write, tracefs_cpu_stop, tracefs_cpu_flush,
 +tracefs_cpu_flush_write - Reading trace_pipe_raw data
 +
 +SYNOPSIS
@@ -95,8 +98,8 @@ index 000000000000..1aaae97c7774
 +void *tracefs_cpu_close*(struct tracefs_cpu pass:[*]_tcpu_);
 +int *tracefs_cpu_read_size*(struct tracefs_cpu pass:[*]_tcpu_);
 +int *tracefs_cpu_read*(struct tracefs_cpu pass:[*]_tcpu_, void pass:[*]_buffer_, bool _nonblock_);
-+int *tracefs_cpu_pipe_read*(struct tracefs_cpu pass:[*]_tcpu_, void pass:[*]_buffer_, bool _nonblock_);
-+int *tracefs_cpu_pipe_write*(struct tracefs_cpu pass:[*]_tcpu_, int _wfd_, bool _nonblock_);
++int *tracefs_cpu_buffered_read*(struct tracefs_cpu pass:[*]_tcpu_, void pass:[*]_buffer_, bool _nonblock_);
++int *tracefs_cpu_write*(struct tracefs_cpu pass:[*]_tcpu_, int _wfd_, bool _nonblock_);
 +int *tracefs_cpu_stop*(struct tracefs_cpu pass:[*]_tcpu_);
 +int *tracefs_cpu_flush*(struct tracefs_cpu pass:[*]_tcpu_, void pass:[*]_buffer_);
 +int *tracefs_cpu_flush_write*(struct tracefs_cpu pass:[*]_tcpu_, int _wfd_);
@@ -124,7 +127,7 @@ index 000000000000..1aaae97c7774
 +on how _tcpu_ was opened, it will block. If _tcpu_ was opened with nonblock
 +set, then this _nonblock_ will make no difference.
 +
-+The *tracefs_cpu_pipe_read()* is basically the same as *tracefs_cpu_read()*
++The *tracefs_cpu_buffered_read()* is basically the same as *tracefs_cpu_read()*
 +except that it uses a pipe through splice to buffer reads. This will batch
 +reads keeping the reading from the ring buffer less intrusive to the system,
 +as just reading all the time can cause quite a disturbance. Note, one
@@ -133,7 +136,7 @@ index 000000000000..1aaae97c7774
 +return anything, even with _nonblock_ set.  Calls to *tracefs_cpu_flush()*
 +should be done to read the rest of the file at the end of the trace.
 +
-+The *tracefs_cpu_pipe_write()* will pipe the data from the trace_pipe_raw
++The *tracefs_cpu_write()* will pipe the data from the trace_pipe_raw
 +file associated with _tcpu_ into the _wfd_ file descriptor. If _nonblock_ is set,
 +then it will not block on if there's nothing to write. Note, it will only write
 +sub buffer size data to _wfd_. Calls to tracefs_cpu_flush_write() are needed to
@@ -160,14 +163,14 @@ index 000000000000..1aaae97c7774
 +used by the other functions or NULL on error.
 +
 +The *tracefs_cpu_read_size()* returns the minimum size of the buffers to be
-+used with *tracefs_cpu_read()*, *tracefs_cpu_pipe_read()* and *tracefs_cpu_flush()*.
++used with *tracefs_cpu_read()*, *tracefs_cpu_buffered_read()* and *tracefs_cpu_flush()*.
 +Returns negative on error.
 +
 +The *tracefs_cpu_read()* returns the number of bytes read, or negative on error.
 +
-+The *tracefs_cpu_pipe_read()* returns the number of bytes read or negative on error.
++The *tracefs_cpu_buffered_read()* returns the number of bytes read or negative on error.
 +
-+The *tracefs_cpu_pipe_write()* returns the number of bytes written to the file
++The *tracefs_cpu_write()* returns the number of bytes written to the file
 +or negative on error.
 +
 +The *tracefs_cpu_stop()* returns zero if any waiters were guaranteed to be
@@ -205,7 +208,7 @@ index 000000000000..1aaae97c7774
 +	int ret;
 +
 +	while (!data->done) {
-+		ret = tracefs_cpu_pipe_write(tcpu, fd, false);
++		ret = tracefs_cpu_write(tcpu, fd, false);
 +		printf("wrote %d\n", ret);
 +	}
 +	return NULL;
@@ -338,7 +341,7 @@ index b81c0301c27a..efe65811089c 100644
  
  DESCRIPTION
 diff --git a/include/tracefs.h b/include/tracefs.h
-index 539548f30a74..b855bcc2c7d4 100644
+index 539548f30a74..f500cb47c372 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
 @@ -595,4 +595,18 @@ struct tracefs_synth *tracefs_sql(struct tep_handle *tep, const char *name,
@@ -352,8 +355,8 @@ index 539548f30a74..b855bcc2c7d4 100644
 +void tracefs_cpu_close(struct tracefs_cpu *tcpu);
 +int tracefs_cpu_read_size(struct tracefs_cpu *tcpu);
 +int tracefs_cpu_read(struct tracefs_cpu *tcpu, void *buffer, bool nonblock);
-+int tracefs_cpu_pipe_read(struct tracefs_cpu *tcpu, void *buffer, bool nonblock);
-+int tracefs_cpu_pipe_write(struct tracefs_cpu *tcpu, int wfd, bool nonblock);
++int tracefs_cpu_buffered_read(struct tracefs_cpu *tcpu, void *buffer, bool nonblock);
++int tracefs_cpu_write(struct tracefs_cpu *tcpu, int wfd, bool nonblock);
 +int tracefs_cpu_stop(struct tracefs_cpu *tcpu);
 +int tracefs_cpu_flush(struct tracefs_cpu *tcpu, void *buffer);
 +int tracefs_cpu_flush_write(struct tracefs_cpu *tcpu, int wfd);
@@ -386,7 +389,7 @@ index d28b8f419016..e2965bc5e1e9 100644
  OBJS += sqlhist-lex.o
 diff --git a/src/tracefs-record.c b/src/tracefs-record.c
 new file mode 100644
-index 000000000000..31a57114554b
+index 000000000000..6d5e53edc262
 --- /dev/null
 +++ b/src/tracefs-record.c
 @@ -0,0 +1,511 @@
@@ -678,7 +681,7 @@ index 000000000000..31a57114554b
 +}
 +
 +/**
-+ * tracefs_cpu_pipe_read - Read the raw trace data buffering through a pipe
++ * tracefs_cpu_buffered_read - Read the raw trace data buffering through a pipe
 + * @tcpu: The descriptor representing the raw trace file
 + * @buffer: Where to read into (must be at least the size of the subbuffer)
 + * @nonblock: Hint to not block on the read if there's no data.
@@ -696,7 +699,7 @@ index 000000000000..31a57114554b
 + *
 + * Returns the amount read or -1 on error.
 + */
-+int tracefs_cpu_pipe_read(struct tracefs_cpu *tcpu, void *buffer, bool nonblock)
++int tracefs_cpu_buffered_read(struct tracefs_cpu *tcpu, void *buffer, bool nonblock)
 +{
 +	int mode = SPLICE_F_MOVE;
 +	int ret;
@@ -834,7 +837,7 @@ index 000000000000..31a57114554b
 +}
 +
 +/**
-+ * tracefs_cpu_pipe_write - Write the raw trace file into a file descriptor
++ * tracefs_cpu_write - Write the raw trace file into a file descriptor
 + * @tcpu: The descriptor representing the raw trace file
 + * @wfd: The write file descriptor to write the data to
 + * @nonblock: Hint to not block on the read if there's no data.
@@ -847,7 +850,7 @@ index 000000000000..31a57114554b
 + *
 + * Returns the number of bytes read or negative on error.
 + */
-+int tracefs_cpu_pipe_write(struct tracefs_cpu *tcpu, int wfd, bool nonblock)
++int tracefs_cpu_write(struct tracefs_cpu *tcpu, int wfd, bool nonblock)
 +{
 +	char buffer[tcpu->subbuf_size];
 +	int mode = SPLICE_F_MOVE;
