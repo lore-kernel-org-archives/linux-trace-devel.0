@@ -2,32 +2,32 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2E81C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 21 Oct 2022 20:39:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A987C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 21 Oct 2022 21:24:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229449AbiJUUjb (ORCPT
+        id S229476AbiJUVY2 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 21 Oct 2022 16:39:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44508 "EHLO
+        Fri, 21 Oct 2022 17:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbiJUUja (ORCPT
+        with ESMTP id S229574AbiJUVYZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 21 Oct 2022 16:39:30 -0400
+        Fri, 21 Oct 2022 17:24:25 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEAF21263D
-        for <linux-trace-devel@vger.kernel.org>; Fri, 21 Oct 2022 13:39:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A032811837
+        for <linux-trace-devel@vger.kernel.org>; Fri, 21 Oct 2022 14:24:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5A730B82C93
-        for <linux-trace-devel@vger.kernel.org>; Fri, 21 Oct 2022 20:39:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6021C433C1
-        for <linux-trace-devel@vger.kernel.org>; Fri, 21 Oct 2022 20:39:24 +0000 (UTC)
-Date:   Fri, 21 Oct 2022 16:39:30 -0400
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0AC8BB82D1B
+        for <linux-trace-devel@vger.kernel.org>; Fri, 21 Oct 2022 21:24:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6443DC433C1
+        for <linux-trace-devel@vger.kernel.org>; Fri, 21 Oct 2022 21:24:20 +0000 (UTC)
+Date:   Fri, 21 Oct 2022 17:24:26 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] libtracefs: Add reading of per cpu files
-Message-ID: <20221021163930.3f94bb1c@gandalf.local.home>
+Subject: [PATCH v2] libtracefs: Add reading of per cpu files
+Message-ID: <20221021172426.0eb34368@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -55,13 +55,17 @@ opening, reading and writing to a file from it.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
+Changes since v1: https://lore.kernel.org/all/20221021163930.3f94bb1c@gandalf.local.home/
+
+ - Removed unused "flags" variable in tracefs_cpu_flush()
+
  Documentation/libtracefs-cpu.txt | 239 +++++++++++++++
  Documentation/libtracefs.txt     |  12 +
  include/tracefs.h                |  14 +
  samples/Makefile                 |   1 +
  src/Makefile                     |   1 +
- src/tracefs-record.c             | 512 +++++++++++++++++++++++++++++++
- 6 files changed, 779 insertions(+)
+ src/tracefs-record.c             | 511 +++++++++++++++++++++++++++++++
+ 6 files changed, 778 insertions(+)
  create mode 100644 Documentation/libtracefs-cpu.txt
  create mode 100644 src/tracefs-record.c
 
@@ -382,10 +386,10 @@ index d28b8f419016..e2965bc5e1e9 100644
  OBJS += sqlhist-lex.o
 diff --git a/src/tracefs-record.c b/src/tracefs-record.c
 new file mode 100644
-index 000000000000..10e39fa8f498
+index 000000000000..31a57114554b
 --- /dev/null
 +++ b/src/tracefs-record.c
-@@ -0,0 +1,512 @@
+@@ -0,0 +1,511 @@
 +// SPDX-License-Identifier: LGPL-2.1
 +/*
 + * Copyright (C) 2022 Google Inc, Steven Rostedt <rostedt@goodmis.org>
@@ -780,7 +784,6 @@ index 000000000000..10e39fa8f498
 + */
 +int tracefs_cpu_flush(struct tracefs_cpu *tcpu, void *buffer)
 +{
-+	long flags;
 +	int ret;
 +
 +	/* Make sure that reading is now non blocking */
