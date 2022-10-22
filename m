@@ -2,659 +2,118 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D7BAC38A2D
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 22 Oct 2022 00:23:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7749C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 22 Oct 2022 02:55:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbiJVAXR convert rfc822-to-8bit (ORCPT
+        id S229634AbiJVCza (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 21 Oct 2022 20:23:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59216 "EHLO
+        Fri, 21 Oct 2022 22:55:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbiJVAXP (ORCPT
+        with ESMTP id S229661AbiJVCz1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 21 Oct 2022 20:23:15 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C492B4145
-        for <linux-trace-devel@vger.kernel.org>; Fri, 21 Oct 2022 17:23:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8EC3CB80D4D
-        for <linux-trace-devel@vger.kernel.org>; Sat, 22 Oct 2022 00:23:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02071C433D6
-        for <linux-trace-devel@vger.kernel.org>; Sat, 22 Oct 2022 00:23:09 +0000 (UTC)
-Date:   Fri, 21 Oct 2022 20:23:16 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2] trace-cmd library: Use tracefs_cpu for recorder heplers
-Message-ID: <20221021202316.3ad0105f@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 21 Oct 2022 22:55:27 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6F624C10A;
+        Fri, 21 Oct 2022 19:55:25 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id n12so7571532wrp.10;
+        Fri, 21 Oct 2022 19:55:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=wZQfSOG007JsloJZSjWgDXcu2EJ1dOkGZ6PoehGE318=;
+        b=gnkOAP1URqY/NavqdeDr5qlYr5U1Fpo5eHgq0NbuExKfsEoLXllMQAYIYfKSy28nZ0
+         u1IYUg7LyiGkp7CalxtkptnNtqHGL7sJ1tt5/WQmdHmQ3gG877WFoxMErf6e1EONefXz
+         XVWfnU7go4mdCPopwGMrH+OxUGLl1gpWM4S2Ii5XZtjO0ssGElCXNJwQ70kTlt3ZA9jh
+         8e8eyU8JRR7MO1hIRiFdMKSNp2Ag9BXkReVZAfY2Kzub2bArcKcB5GSqvi5KkzcfMPjA
+         AF1buO5yeZVVsSV/FQrbwgPrS4ahZdRwhlV2KHuzGultkPYQiOv70NJtDmtWmcQ+7Gkq
+         F6Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wZQfSOG007JsloJZSjWgDXcu2EJ1dOkGZ6PoehGE318=;
+        b=cXvqHsPrS2M60XpBeRshv7o+lEVIggyVAaQCpoQjOM0rwTL/bBfhCDr0xk49axPUiN
+         tRmVg+7NYleGY1lOe9VouD6lN+smpjwA30P++K5gOU9JmKpN19VgqEABHwDCY3tCLbRo
+         IvCJnPYmVRZ2HDUmHTSD142Ykzts9ggFWD0zqPc0RpgKLqmyDjOfHmfCoJmiEZsoWXxH
+         toXUB198rx2I5nZ0ENojri/wyRk5A9C4iB0j5cQlpDcKjTEZ58bLY4XGWJWVdQHbBfu7
+         mqhdwSpdwTKlP7iTMZVI8QBlmyqvjDXowdZXyJhyFskj+4OaYOPV4daIM8jjpf8VTD3O
+         dt4g==
+X-Gm-Message-State: ACrzQf2o898VUZUibMxMHBJATeRMutOUZndjaoqZxzWnAUbMnnbUwQlr
+        RHbzmGziRp1gxxcxiU5BG9mfBkww4g1oGuwe4QVbHEHOGt8=
+X-Google-Smtp-Source: AMsMyM5EZV7UZ5T2DfupDfA4ALKUvjmk8AUTc5iIsI10M7Ly8pniRmKQ9kyO4QEDREO9iHLONujQskwaay1ufoMGoTM=
+X-Received: by 2002:a5d:59a4:0:b0:230:eaa4:88d7 with SMTP id
+ p4-20020a5d59a4000000b00230eaa488d7mr14537675wrr.35.1666407323787; Fri, 21
+ Oct 2022 19:55:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8BIT
+References: <CAJNi4rM0K=-wgJrS0iLMkam77JTO7oRxcP9VkHGbuTiVGBovMA@mail.gmail.com>
+ <20221020111439.76e72230@gandalf.local.home> <CAJNi4rMVUzfZJPge=ncaULD87wLQ4TwWS=oKDuC1hZMoWi0OjA@mail.gmail.com>
+ <20221020221255.5b3dffe1@gandalf.local.home> <CAJNi4rPPDp0xeEmqMBqX-pBqgAX7Biivyd+P_zhC7Y0-K3W0VQ@mail.gmail.com>
+ <20221021083254.3c879824@rorschach.local.home>
+In-Reply-To: <20221021083254.3c879824@rorschach.local.home>
+From:   richard clark <richard.xnu.clark@gmail.com>
+Date:   Sat, 22 Oct 2022 10:55:12 +0800
+Message-ID: <CAJNi4rNM+5FBvONjEc9k+6bR2oEgjgGnJ6w8ih=ZJXkVbUnKpQ@mail.gmail.com>
+Subject: Re: Question about 'for_each_kernel_tracepoint(...)' function
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     bristot@kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From 6a5632d72f6707c4655f5a2a27dbd0441c24441b Mon Sep 17 00:00:00 2001
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Date: Fri, 21 Oct 2022 20:13:47 -0400
-Subject: [PATCH] trace-cmd library: Use tracefs_cpu for recorder heplers
+On Fri, Oct 21, 2022 at 8:32 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Fri, 21 Oct 2022 11:51:20 +0800
+> richard clark <richard.xnu.clark@gmail.com> wrote:
+>
+> > On Fri, Oct 21, 2022 at 10:12 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> > >
+> > > On Fri, 21 Oct 2022 09:43:14 +0800
+> > > richard clark <richard.xnu.clark@gmail.com> wrote:
+> > >
+> > >
+> > > > Ah, as you can see that I did it, but the result is not what I
+> > > > expected :-). Help?
+> > >
+> > > Looking at the code, I see it does indeed only look at builtin tracepoints.
+> >
+> > What the logic behind is not to implement a function like
+> > 'for_each_tracepoints' instead of 'for_each_kernel_tracepoint' to find
+> > all the TPs defined by both builtin kernel and external kernel
+> > modules, just like we can find all the kernel symbols and exported
+> > symbols from external module?
+>
+> Why? It's not needed upstream. If you push your code upstream and it's
+> something to get accepted, then we can think about adding that.
+>
+> >
+> > >
+> > > But if you want one module to have access to the tracepoints of another,
+> > > then you can have the first one export it.
+> > >
+> > > EXPORT_SYMBOL_TRACEPOINT_GPL(function_event_a);
+> > >
+> > > And then module b should have access to it.
+> > >
+> > Yes, but module b needs to register a new probe call back function for
+> > the new TPs defined by module a in my case, so first it needs to find
+> > the TPs defined by module a. Any comments?
+>
+> No, because I have no idea what you are doing or why you need this.
 
-Use the API from libtracefs on tracefs_cpu that is used for reading from
-the trace_pipe_raw files for the recorder.
+I've noticed that we have a Runtime Verification module merged into
+the mainline and very interesting, so I am trying to provide a monitor
+for my events in module A,  which means we need to register some new
+probe call back functions for the TPs defined in the external kernel
+modules. OK, I am writing this email just to confirm, maybe I need to
+think about if I can add the external TPs into the
+'for_each_kernel_tracepoint(...)' function...
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v1: https://lore.kernel.org/all/20221021201649.10aaf77d@gandalf.local.home/
+Thanks!
 
- - It's libtracefs 1.6 that will have this, not 1.5 :-p
-
-
- Makefile                                      |   2 +-
- .../include/private/trace-cmd-private.h       |   6 +-
- lib/trace-cmd/trace-recorder.c                | 307 +++---------------
- tracecmd/trace-record.c                       |  34 +-
- 4 files changed, 63 insertions(+), 286 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index e67cb77eaefc..41d885b88533 100644
---- a/Makefile
-+++ b/Makefile
-@@ -23,7 +23,7 @@ export LIBTRACECMD_VERSION
- VERSION_FILE = ltc_version.h
- 
- LIBTRACEEVENT_MIN_VERSION = 1.5
--LIBTRACEFS_MIN_VERSION = 1.4
-+LIBTRACEFS_MIN_VERSION = 1.6
- 
- MAKEFLAGS += --no-print-directory
- 
-diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index ef35c370c34e..271f0541982f 100644
---- a/lib/trace-cmd/include/private/trace-cmd-private.h
-+++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -371,9 +371,9 @@ struct tracecmd_recorder *tracecmd_create_recorder(const char *file, int cpu, un
- struct tracecmd_recorder *tracecmd_create_recorder_fd(int fd, int cpu, unsigned flags);
- struct tracecmd_recorder *tracecmd_create_recorder_virt(const char *file, int cpu, unsigned flags, int trace_fd);
- struct tracecmd_recorder *tracecmd_create_recorder_maxkb(const char *file, int cpu, unsigned flags, int maxkb);
--struct tracecmd_recorder *tracecmd_create_buffer_recorder_fd(int fd, int cpu, unsigned flags, const char *buffer);
--struct tracecmd_recorder *tracecmd_create_buffer_recorder(const char *file, int cpu, unsigned flags, const char *buffer);
--struct tracecmd_recorder *tracecmd_create_buffer_recorder_maxkb(const char *file, int cpu, unsigned flags, const char *buffer, int maxkb);
-+struct tracecmd_recorder *tracecmd_create_buffer_recorder_fd(int fd, int cpu, unsigned flags, struct tracefs_instance *instance);
-+struct tracecmd_recorder *tracecmd_create_buffer_recorder(const char *file, int cpu, unsigned flags, struct tracefs_instance *instance);
-+struct tracecmd_recorder *tracecmd_create_buffer_recorder_maxkb(const char *file, int cpu, unsigned flags, struct tracefs_instance *instance, int maxkb);
- 
- int tracecmd_start_recording(struct tracecmd_recorder *recorder, unsigned long sleep);
- void tracecmd_stop_recording(struct tracecmd_recorder *recorder);
-diff --git a/lib/trace-cmd/trace-recorder.c b/lib/trace-cmd/trace-recorder.c
-index 25c26def3784..ccc31654aaaa 100644
---- a/lib/trace-cmd/trace-recorder.c
-+++ b/lib/trace-cmd/trace-recorder.c
-@@ -32,20 +32,17 @@
- #define POLL_TIMEOUT_MS		1000
- 
- struct tracecmd_recorder {
-+	struct tracefs_cpu *tcpu;
- 	int		fd;
- 	int		fd1;
- 	int		fd2;
--	int		trace_fd;
--	int		brass[2];
--	int		pipe_size;
- 	int		page_size;
-+	int		subbuf_size;
- 	int		cpu;
- 	int		stop;
- 	int		max;
- 	int		pages;
- 	int		count;
--	unsigned	fd_flags;
--	unsigned	trace_fd_flags;
- 	unsigned	flags;
- };
- 
-@@ -94,14 +91,7 @@ void tracecmd_free_recorder(struct tracecmd_recorder *recorder)
- 		append_file(recorder->page_size, recorder->fd1, recorder->fd2);
- 	}
-  close:
--	if (recorder->brass[0] >= 0)
--		close(recorder->brass[0]);
--
--	if (recorder->brass[1] >= 0)
--		close(recorder->brass[1]);
--
--	if (recorder->trace_fd >= 0)
--		close(recorder->trace_fd);
-+	tracefs_cpu_close(recorder->tcpu);
- 
- 	if (recorder->fd1 >= 0)
- 		close(recorder->fd1);
-@@ -114,44 +104,22 @@ void tracecmd_free_recorder(struct tracecmd_recorder *recorder)
- 
- static void set_nonblock(struct tracecmd_recorder *recorder)
- {
--	long flags;
--
--	/* Do not block on reads */
--	flags = fcntl(recorder->trace_fd, F_GETFL);
--	fcntl(recorder->trace_fd, F_SETFL, flags | O_NONBLOCK);
--
--	/* Do not block on streams */
--	recorder->fd_flags |= SPLICE_F_NONBLOCK;
-+	tracefs_cpu_stop(recorder->tcpu);
- }
- 
--struct tracecmd_recorder *
--tracecmd_create_buffer_recorder_fd2(int fd, int fd2, int cpu, unsigned flags,
--				    const char *buffer, int maxkb)
-+static struct tracecmd_recorder *
-+create_buffer_recorder_fd2(int fd, int fd2, int cpu, unsigned flags,
-+			   struct tracefs_instance *instance, int maxkb, int tfd)
- {
- 	struct tracecmd_recorder *recorder;
--	char *path = NULL;
--	int pipe_size = 0;
--	int ret;
-+	bool nonblock = false;
- 
- 	recorder = malloc(sizeof(*recorder));
- 	if (!recorder)
- 		return NULL;
- 
--	recorder->cpu = cpu;
- 	recorder->flags = flags;
- 
--	recorder->fd_flags = SPLICE_F_MOVE;
--
--	if (!(recorder->flags & TRACECMD_RECORD_BLOCK_SPLICE))
--		recorder->fd_flags |= SPLICE_F_NONBLOCK;
--
--	recorder->trace_fd_flags = SPLICE_F_MOVE;
--
--	/* Init to know what to free and release */
--	recorder->trace_fd = -1;
--	recorder->brass[0] = -1;
--	recorder->brass[1] = -1;
--
- 	recorder->page_size = getpagesize();
- 	if (maxkb) {
- 		int kb_per_page = recorder->page_size >> 10;
-@@ -174,47 +142,18 @@ tracecmd_create_buffer_recorder_fd2(int fd, int fd2, int cpu, unsigned flags,
- 	recorder->fd1 = fd;
- 	recorder->fd2 = fd2;
- 
--	if (buffer) {
--		if (flags & TRACECMD_RECORD_SNAPSHOT)
--			ret = asprintf(&path, "%s/per_cpu/cpu%d/snapshot_raw",
--				       buffer, cpu);
--		else
--			ret = asprintf(&path, "%s/per_cpu/cpu%d/trace_pipe_raw",
--				       buffer, cpu);
--		if (ret < 0)
--			goto out_free;
--
--		recorder->trace_fd = open(path, O_RDONLY);
--		free(path);
--
--		if (recorder->trace_fd < 0)
--			goto out_free;
--	}
-+	if (recorder->flags & TRACECMD_RECORD_POLL)
-+		nonblock = true;
- 
--	if (!(recorder->flags & (TRACECMD_RECORD_NOSPLICE |
--				 TRACECMD_RECORD_NOBRASS))) {
--		ret = pipe(recorder->brass);
--		if (ret < 0)
--			goto out_free;
--
--		ret = fcntl(recorder->brass[0], F_GETPIPE_SZ, &pipe_size);
--		/*
--		 * F_GETPIPE_SZ was introduced in 2.6.35, ftrace was introduced
--		 * in 2.6.31. If we are running on an older kernel, just fall
--		 * back to using page_size for splice(). It could also return
--		 * success, but not modify pipe_size.
--		 */
--		if (ret > 0 && !pipe_size)
--			pipe_size = ret;
--		else if (ret < 0)
--			pipe_size = recorder->page_size;
--
--		recorder->pipe_size = pipe_size;
--	}
-+	if (tfd >= 0)
-+		recorder->tcpu = tracefs_cpu_create_fd(tfd, recorder->page_size, nonblock);
-+	else
-+		recorder->tcpu = tracefs_cpu_open(instance, cpu, nonblock);
- 
--	if (recorder->flags & TRACECMD_RECORD_POLL)
--		set_nonblock(recorder);
-+	if (!recorder->tcpu)
-+		goto out_free;
- 
-+	recorder->subbuf_size = tracefs_cpu_read_size(recorder->tcpu);
- 	return recorder;
- 
-  out_free:
-@@ -222,62 +161,31 @@ tracecmd_create_buffer_recorder_fd2(int fd, int fd2, int cpu, unsigned flags,
- 	return NULL;
- }
- 
--static void verify_splice(const char *file, unsigned *flags)
-+struct tracecmd_recorder *
-+tracecmd_create_buffer_recorder_fd2(int fd, int fd2, int cpu, unsigned flags,
-+				    struct tracefs_instance *instance, int maxkb)
- {
--	int brass[2];
--	int ret;
--	int fd;
--
--	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC | O_LARGEFILE, 0644);
--	if (fd < 0)
--		return; /* Will fail by the caller too */
--
--	if (pipe(brass) < 0)
--		goto fail_pipe;
--
--	ret = splice(brass[0], NULL, fd, NULL, 0, SPLICE_F_NONBLOCK);
--	if (ret < 0)
--		goto fail_splice;
--
-- out_pipe:
--	close(brass[0]);
--	close(brass[1]);
-- out:
--	close(fd);
--	return;
--
-- fail_pipe:
--	tracecmd_warning("Failed opening pipe, trying read/write");
--	*flags |= TRACECMD_RECORD_NOSPLICE;
--	goto out;
--
-- fail_splice:
--	tracecmd_warning("Failed splice to file, trying read/write");
--	*flags |= TRACECMD_RECORD_NOSPLICE;
--	goto out_pipe;
-+	return create_buffer_recorder_fd2(fd, fd2, cpu, flags, instance, maxkb, -1);
- }
- 
- struct tracecmd_recorder *
--tracecmd_create_buffer_recorder_fd(int fd, int cpu, unsigned flags, const char *buffer)
-+tracecmd_create_buffer_recorder_fd(int fd, int cpu, unsigned flags, struct tracefs_instance *instance)
- {
--	return tracecmd_create_buffer_recorder_fd2(fd, -1, cpu, flags, buffer, 0);
-+	return tracecmd_create_buffer_recorder_fd2(fd, -1, cpu, flags, instance, 0);
- }
- 
- static struct tracecmd_recorder *
- __tracecmd_create_buffer_recorder(const char *file, int cpu, unsigned flags,
--				  const char *buffer)
-+				  struct tracefs_instance *instance, int tfd)
- {
- 	struct tracecmd_recorder *recorder;
- 	int fd;
- 
--	if (!(flags & TRACECMD_RECORD_NOSPLICE))
--		verify_splice(file, &flags);
--
- 	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC | O_LARGEFILE, 0644);
- 	if (fd < 0)
- 		return NULL;
- 
--	recorder = tracecmd_create_buffer_recorder_fd(fd, cpu, flags, buffer);
-+	recorder = create_buffer_recorder_fd2(fd, -1, cpu, flags, instance, 0, tfd);
- 	if (!recorder) {
- 		close(fd);
- 		unlink(file);
-@@ -288,7 +196,7 @@ __tracecmd_create_buffer_recorder(const char *file, int cpu, unsigned flags,
- 
- struct tracecmd_recorder *
- tracecmd_create_buffer_recorder_maxkb(const char *file, int cpu, unsigned flags,
--				      const char *buffer, int maxkb)
-+				      struct tracefs_instance *instance, int maxkb)
- {
- 	struct tracecmd_recorder *recorder = NULL;
- 	char *file2;
-@@ -297,7 +205,7 @@ tracecmd_create_buffer_recorder_maxkb(const char *file, int cpu, unsigned flags,
- 	int fd2;
- 
- 	if (!maxkb)
--		return tracecmd_create_buffer_recorder(file, cpu, flags, buffer);
-+		return tracecmd_create_buffer_recorder(file, cpu, flags, instance);
- 
- 	len = strlen(file);
- 	file2 = malloc(len + 3);
-@@ -314,7 +222,7 @@ tracecmd_create_buffer_recorder_maxkb(const char *file, int cpu, unsigned flags,
- 	if (fd2 < 0)
- 		goto err;
- 
--	recorder = tracecmd_create_buffer_recorder_fd2(fd, fd2, cpu, flags, buffer, maxkb);
-+	recorder = tracecmd_create_buffer_recorder_fd2(fd, fd2, cpu, flags, instance, maxkb);
- 	if (!recorder)
- 		goto err2;
-  out:
-@@ -333,9 +241,9 @@ tracecmd_create_buffer_recorder_maxkb(const char *file, int cpu, unsigned flags,
- 
- struct tracecmd_recorder *
- tracecmd_create_buffer_recorder(const char *file, int cpu, unsigned flags,
--				const char *buffer)
-+				struct tracefs_instance *instance)
- {
--	return __tracecmd_create_buffer_recorder(file, cpu, flags, buffer);
-+	return __tracecmd_create_buffer_recorder(file, cpu, flags, instance, -1);
- }
- 
- /**
-@@ -350,53 +258,23 @@ struct tracecmd_recorder *
- tracecmd_create_recorder_virt(const char *file, int cpu, unsigned flags,
- 			      int trace_fd)
- {
--	struct tracecmd_recorder *recorder;
--
--	recorder = __tracecmd_create_buffer_recorder(file, cpu, flags, NULL);
--	if (recorder)
--		recorder->trace_fd = trace_fd;
--
--	return recorder;
-+	return __tracecmd_create_buffer_recorder(file, cpu, flags, NULL, trace_fd);
- }
- 
- struct tracecmd_recorder *tracecmd_create_recorder_fd(int fd, int cpu, unsigned flags)
- {
--	const char *tracing;
--
--	tracing = tracefs_tracing_dir();
--	if (!tracing) {
--		errno = ENODEV;
--		return NULL;
--	}
--
--	return tracecmd_create_buffer_recorder_fd(fd, cpu, flags, tracing);
-+	return tracecmd_create_buffer_recorder_fd(fd, cpu, flags, NULL);
- }
- 
- struct tracecmd_recorder *tracecmd_create_recorder(const char *file, int cpu, unsigned flags)
- {
--	const char *tracing;
--
--	tracing = tracefs_tracing_dir();
--	if (!tracing) {
--		errno = ENODEV;
--		return NULL;
--	}
--
--	return tracecmd_create_buffer_recorder(file, cpu, flags, tracing);
-+	return tracecmd_create_buffer_recorder(file, cpu, flags, NULL);
- }
- 
- struct tracecmd_recorder *
- tracecmd_create_recorder_maxkb(const char *file, int cpu, unsigned flags, int maxkb)
- {
--	const char *tracing;
--
--	tracing = tracefs_tracing_dir();
--	if (!tracing) {
--		errno = ENODEV;
--		return NULL;
--	}
--
--	return tracecmd_create_buffer_recorder_maxkb(file, cpu, flags, tracing, maxkb);
-+	return tracecmd_create_buffer_recorder_maxkb(file, cpu, flags, NULL, maxkb);
- }
- 
- static inline void update_fd(struct tracecmd_recorder *recorder, int size)
-@@ -433,105 +311,17 @@ static inline void update_fd(struct tracecmd_recorder *recorder, int size)
- 	recorder->fd = fd;
- }
- 
--/*
-- * Returns -1 on error.
-- *          or bytes of data read.
-- */
--static long splice_data(struct tracecmd_recorder *recorder)
--{
--	long total_read = 0;
--	long read;
--	long ret;
--
--	read = splice(recorder->trace_fd, NULL, recorder->brass[1], NULL,
--		      recorder->pipe_size, recorder->trace_fd_flags);
--	if (read < 0) {
--		if (errno == EAGAIN || errno == EINTR || errno == ENOTCONN)
--			return 0;
--
--		tracecmd_warning("recorder error in splice input");
--		return -1;
--	} else if (read == 0)
--		return 0;
--
-- again:
--	ret = splice(recorder->brass[0], NULL, recorder->fd, NULL,
--		     read, recorder->fd_flags);
--	if (ret < 0) {
--		if (errno != EAGAIN && errno != EINTR) {
--			tracecmd_warning("recorder error in splice output");
--			return -1;
--		}
--		return total_read;
--	} else
--		update_fd(recorder, ret);
--	total_read = ret;
--	read -= ret;
--	if (read)
--		goto again;
--
--	return total_read;
--}
--
--/*
-- * Returns -1 on error.
-- *          or bytes of data read.
-- */
--static long direct_splice_data(struct tracecmd_recorder *recorder)
--{
--	struct pollfd pfd = {
--		.fd = recorder->trace_fd,
--		.events = POLLIN,
--	};
--	long read;
--	int ret;
--
--	/*
--	 * splice(2) in Linux used to not check O_NONBLOCK flag of pipe file
--	 * descriptors before [1]. To avoid getting blocked in the splice(2)
--	 * call below after the user had requested to stop tracing, we poll(2)
--	 * here. This poll() is not necessary on newer kernels.
--	 *
--	 * [1] https://github.com/torvalds/linux/commit/ee5e001196d1345b8fee25925ff5f1d67936081e
--	 */
--	ret = poll(&pfd, 1, POLL_TIMEOUT_MS);
--	if (ret < 0)
--		return -1;
--
--	if (!(pfd.revents | POLLIN))
--		return 0;
--
--	read = splice(recorder->trace_fd, NULL, recorder->fd, NULL,
--		      recorder->pipe_size, recorder->fd_flags);
--	if (read < 0) {
--		if (errno == EAGAIN || errno == EINTR || errno == ENOTCONN)
--			return 0;
--
--		tracecmd_warning("recorder error in splice input");
--		return -1;
--	}
--
--	return read;
--}
--
- /*
-  * Returns -1 on error.
-  *          or bytes of data read.
-  */
- static long read_data(struct tracecmd_recorder *recorder)
- {
--	char buf[recorder->page_size];
-+	char buf[recorder->subbuf_size];
- 	long left;
- 	long r, w;
- 
--	r = read(recorder->trace_fd, buf, recorder->page_size);
--	if (r < 0) {
--		if (errno == EAGAIN || errno == EINTR || errno == ENOTCONN)
--			return 0;
--
--		tracecmd_warning("recorder error in read input");
--		return -1;
--	}
-+	r = tracefs_cpu_read(recorder->tcpu, buf, false); 
- 
- 	left = r;
- 	do {
-@@ -548,6 +338,15 @@ static long read_data(struct tracecmd_recorder *recorder)
- 	return r;
- }
- 
-+/*
-+ * Returns -1 on error.
-+ *          or bytes of data read.
-+ */
-+static long direct_splice_data(struct tracecmd_recorder *recorder)
-+{
-+	return tracefs_cpu_pipe(recorder->tcpu, recorder->fd, false);
-+}
-+
- static long move_data(struct tracecmd_recorder *recorder)
- {
- 	if (recorder->flags & TRACECMD_RECORD_NOSPLICE)
-@@ -556,7 +355,7 @@ static long move_data(struct tracecmd_recorder *recorder)
- 	if (recorder->flags & TRACECMD_RECORD_NOBRASS)
- 		return direct_splice_data(recorder);
- 
--	return splice_data(recorder);
-+	return tracefs_cpu_write(recorder->tcpu, recorder->fd, false);
- }
- 
- long tracecmd_flush_recording(struct tracecmd_recorder *recorder)
-@@ -577,12 +376,9 @@ long tracecmd_flush_recording(struct tracecmd_recorder *recorder)
- 
- 	/* splice only reads full pages */
- 	do {
--		ret = read(recorder->trace_fd, buf, recorder->page_size);
--		if (ret > 0) {
--			write(recorder->fd, buf, ret);
-+		ret = tracefs_cpu_flush_write(recorder->tcpu, recorder->fd);
-+		if (ret > 0)
- 			wrote += ret;
--		}
--
- 	} while (ret > 0);
- 
- 	/* Make sure we finish off with a page size boundary */
-@@ -615,10 +411,13 @@ int tracecmd_start_recording(struct tracecmd_recorder *recorder, unsigned long s
- 		read = 0;
- 		do {
- 			ret = move_data(recorder);
--			if (ret < 0)
-+			if (ret < 0) {
-+				if (errno == EINTR)
-+					continue;
- 				return ret;
-+			}
- 			read += ret;
--		} while (ret);
-+		} while (ret > 0 && !recorder->stop);
- 	} while (!recorder->stop);
- 
- 	/* Flush out the rest */
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 72f306228e77..361524b58772 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -3326,19 +3326,11 @@ create_recorder_instance_pipe(struct buffer_instance *instance,
- {
- 	struct tracecmd_recorder *recorder;
- 	unsigned flags = recorder_flags | TRACECMD_RECORD_BLOCK_SPLICE;
--	char *path;
--
--	path = tracefs_instance_get_dir(instance->tracefs);
--
--	if (!path)
--		die("malloc");
- 
- 	/* This is already the child */
- 	close(brass[0]);
- 
--	recorder = tracecmd_create_buffer_recorder_fd(brass[1], cpu, flags, path);
--
--	tracefs_put_tracing_file(path);
-+	recorder = tracecmd_create_buffer_recorder_fd(brass[1], cpu, flags, instance->tracefs);
- 
- 	return recorder;
- }
-@@ -3349,7 +3341,6 @@ create_recorder_instance(struct buffer_instance *instance, const char *file, int
- {
- 	struct tracecmd_recorder *record;
- 	struct addrinfo *result;
--	char *path;
- 
- 	if (is_guest(instance)) {
- 		int fd;
-@@ -3386,12 +3377,8 @@ create_recorder_instance(struct buffer_instance *instance, const char *file, int
- 	if (!tracefs_instance_get_name(instance->tracefs))
- 		return tracecmd_create_recorder_maxkb(file, cpu, recorder_flags, max_kb);
- 
--	path = tracefs_instance_get_dir(instance->tracefs);
--
- 	record = tracecmd_create_buffer_recorder_maxkb(file, cpu, recorder_flags,
--						       path, max_kb);
--	tracefs_put_tracing_file(path);
--
-+						       instance->tracefs, max_kb);
- 	return record;
- }
- 
-@@ -3402,6 +3389,7 @@ create_recorder_instance(struct buffer_instance *instance, const char *file, int
- static int create_recorder(struct buffer_instance *instance, int cpu,
- 			   enum trace_type type, int *brass)
- {
-+	struct tracefs_instance *recorder_instance = NULL;
- 	long ret;
- 	char *file;
- 	pid_t pid;
-@@ -3427,7 +3415,6 @@ static int create_recorder(struct buffer_instance *instance, int cpu,
- 
- 	if ((instance->client_ports && !is_guest(instance)) || is_agent(instance)) {
- 		unsigned int flags = recorder_flags;
--		char *path = NULL;
- 		int fd;
- 
- 		if (is_agent(instance)) {
-@@ -3449,19 +3436,10 @@ static int create_recorder(struct buffer_instance *instance, int cpu,
- 		}
- 		if (fd < 0)
- 			die("Failed connecting to client");
--		if (tracefs_instance_get_name(instance->tracefs) && !is_agent(instance)) {
--			path = tracefs_instance_get_dir(instance->tracefs);
--		} else {
--			const char *dir = tracefs_tracing_dir();
-+		if (tracefs_instance_get_name(instance->tracefs) && !is_agent(instance))
-+			recorder_instance = instance->tracefs;
- 
--			if (dir)
--				path = strdup(dir);
--		}
--		if (!path)
--			die("can't get the tracing directory");
--
--		recorder = tracecmd_create_buffer_recorder_fd(fd, cpu, flags, path);
--		tracefs_put_tracing_file(path);
-+		recorder = tracecmd_create_buffer_recorder_fd(fd, cpu, flags, recorder_instance);
- 	} else {
- 		file = get_temp_file(instance, cpu);
- 		recorder = create_recorder_instance(instance, file, cpu, brass);
--- 
-2.35.1
-
+>
+> -- Steve
