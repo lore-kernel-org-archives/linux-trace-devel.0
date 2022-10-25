@@ -2,40 +2,38 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91951C38A2D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8CA0FA373E
 	for <linux-trace-devel@archiver.kernel.org>; Tue, 25 Oct 2022 18:32:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231720AbiJYScF (ORCPT
+        id S229949AbiJYScG (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 25 Oct 2022 14:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38842 "EHLO
+        Tue, 25 Oct 2022 14:32:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231356AbiJYScE (ORCPT
+        with ESMTP id S231455AbiJYScF (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 25 Oct 2022 14:32:04 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A553BD674
-        for <linux-trace-devel@vger.kernel.org>; Tue, 25 Oct 2022 11:32:03 -0700 (PDT)
+        Tue, 25 Oct 2022 14:32:05 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73581C1DB5
+        for <linux-trace-devel@vger.kernel.org>; Tue, 25 Oct 2022 11:32:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 80FA8B81DAC
+        by sin.source.kernel.org (Postfix) with ESMTPS id C5232CE1BF6
         for <linux-trace-devel@vger.kernel.org>; Tue, 25 Oct 2022 18:32:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26C90C43470;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1876EC433D7;
         Tue, 25 Oct 2022 18:32:01 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.96)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1onOij-007Rz9-1F;
+        id 1onOij-007Rz0-12;
         Tue, 25 Oct 2022 14:32:13 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 3/5] libtracefs: Add tracefs_cpu_pipe()
-Date:   Tue, 25 Oct 2022 14:32:10 -0400
-Message-Id: <20221025183212.1775523-4-rostedt@goodmis.org>
+Subject: [PATCH v2 0/5] Add reading from per_cpu trace_pipe_raw helper functions
+Date:   Tue, 25 Oct 2022 14:32:07 -0400
+Message-Id: <20221025183212.1775523-1-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221025183212.1775523-1-rostedt@goodmis.org>
-References: <20221025183212.1775523-1-rostedt@goodmis.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -44,67 +42,54 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add the interface to call splice directly from the tracefs_cpu descriptor.
-The requirement is that either the passed in file descriptor is a pipe, or
-that the tcpu was created with tracefs_cpu_create_fd() and the fd used
-there was a pipe.
+Add functions that allow applications to read the trace_pipe_raw files:
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- include/tracefs.h    |  2 +-
- src/tracefs-record.c | 30 ++++++++++++++++++++++++++++++
- 2 files changed, 31 insertions(+), 1 deletion(-)
+    tracefs_cpu_create_fd()
+    tracefs_cpu_open()
+    tracefs_cpu_close()
+    tracefs_cpu_read_size()
+    tracefs_cpu_read()
+    tracefs_cpu_buffered_read()
+    tracefs_cpu_write()
+    tracefs_cpu_stop()
+    tracefs_cpu_flush()
+    tracefs_cpu_flush_write()
+    tracefs_cpu_pipe()
 
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 449bfd04a395..aaa77045625e 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -608,6 +608,6 @@ int tracefs_cpu_write(struct tracefs_cpu *tcpu, int wfd, bool nonblock);
- int tracefs_cpu_stop(struct tracefs_cpu *tcpu);
- int tracefs_cpu_flush(struct tracefs_cpu *tcpu, void *buffer);
- int tracefs_cpu_flush_write(struct tracefs_cpu *tcpu, int wfd);
--
-+int tracefs_cpu_pipe(struct tracefs_cpu *tcpu, int wfd, bool nonblock);
- 
- #endif /* _TRACE_FS_H */
-diff --git a/src/tracefs-record.c b/src/tracefs-record.c
-index fdc470d71f1e..4a15d19d5073 100644
---- a/src/tracefs-record.c
-+++ b/src/tracefs-record.c
-@@ -535,3 +535,33 @@ int tracefs_cpu_write(struct tracefs_cpu *tcpu, int wfd, bool nonblock)
- 
- 	return tot_write;
- }
-+
-+/**
-+ * tracefs_cpu_pipe - Write the raw trace file into a pipe descriptor
-+ * @tcpu: The descriptor representing the raw trace file
-+ * @wfd: The write file descriptor to write the data to (must be a pipe)
-+ * @nonblock: Hint to not block on the read if there's no data.
-+ *
-+ * This will splice directly the file descriptor of the trace_pipe_raw
-+ * file to the given @wfd, which must be a pipe. This can also be used
-+ * if @tcpu was created with tracefs_cpu_create_fd() where the passed
-+ * in @fd there was a pipe, then @wfd does not need to be a pipe.
-+ *
-+ * Returns the number of bytes read or negative on error.
-+ */
-+int tracefs_cpu_pipe(struct tracefs_cpu *tcpu, int wfd, bool nonblock)
-+{
-+	int mode = SPLICE_F_MOVE;
-+	int ret;
-+
-+	ret = wait_on_input(tcpu, nonblock);
-+	if (ret <= 0)
-+		return ret;
-+
-+	if (nonblock || tcpu->flags & TC_NONBLOCK)
-+		mode |= SPLICE_F_NONBLOCK;
-+
-+	ret = splice(tcpu->fd, NULL, wfd, NULL,
-+		     tcpu->pipe_size, mode);
-+	return ret;
-+}
+Changes since v1: https://lore.kernel.org/all/20221021182345.092cdb50@gandalf.local.home/
+
+ - Changed the names of tracefs_cpu_pipe_read() to tracefs_cpu_buffered_read()
+   and tracefs_cpu_pipe_write() to just tracefs_cpu_write()
+
+ - Added tracefs_cpu_create_fd() to attach to an already opened file descriptor
+   that could be just a copy of a trace_pipe_raw file, or to a socket for
+   remote tracing.
+
+ - Added tracefs_cpu_pipe() to write directly into a pipe (saves on a splice).
+
+ - Fixed some blocking issues.
+
+ - Added unit tests
+
+Steven Rostedt (Google) (5):
+  libtracefs: Add reading of per cpu files
+  libtracefs: Add tracefs_cpu_create_fd()
+  libtracefs: Add tracefs_cpu_pipe()
+  libtracefs utest: Make helper functions for affinity
+  libtracefs: Add unit tests for tracefs_cpu functions
+
+ Documentation/libtracefs-cpu.txt | 239 +++++++++++++
+ Documentation/libtracefs.txt     |  12 +
+ include/tracefs.h                |  15 +
+ samples/Makefile                 |   1 +
+ scripts/utils.mk                 |   2 +-
+ src/Makefile                     |   1 +
+ src/tracefs-record.c             | 586 +++++++++++++++++++++++++++++++
+ utest/tracefs-utest.c            | 372 +++++++++++++++++++-
+ 8 files changed, 1213 insertions(+), 15 deletions(-)
+ create mode 100644 Documentation/libtracefs-cpu.txt
+ create mode 100644 src/tracefs-record.c
+
 -- 
 2.35.1
 
