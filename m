@@ -2,139 +2,113 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E95BC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 26 Oct 2022 03:52:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0607FC38A2D
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 26 Oct 2022 10:45:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232447AbiJZDw1 (ORCPT
+        id S233389AbiJZKpA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 25 Oct 2022 23:52:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58826 "EHLO
+        Wed, 26 Oct 2022 06:45:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231877AbiJZDwZ (ORCPT
+        with ESMTP id S233439AbiJZKo6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 25 Oct 2022 23:52:25 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C3758060
-        for <linux-trace-devel@vger.kernel.org>; Tue, 25 Oct 2022 20:52:23 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id bs21so8385018wrb.4
-        for <linux-trace-devel@vger.kernel.org>; Tue, 25 Oct 2022 20:52:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=y85VeqQEDhleCKKn3WahJdTCJLJ6TIyX19YIan4CI30=;
-        b=eMjFKwluxrytKVdXvWNSsQiOx5UZW3j5LxkEcwddkoIub2jM1lCiFPZREruwKfn30W
-         A3kCluwK9Na6YzinmMjcOna/5XOZwp+vfoKVnq16wtksWjFoLu737apOq4z2xtmKF3N2
-         mr3vc2CLWTeeGZjeGvi/Bm9ScJvZPl6vkUC6On8uGZiMrU2whk5Fg0XMCsyBMdFkTU5m
-         GFzmpIxLruuRPYQ4elV4/PTl5HdWQjy5Yx4EeEcVRrWXDhA/Mkl9LP/W0287H84FKDUT
-         pT9gzlwkp/qYpJo68PDQaAf2QRAw+qidZNcaFhI/ljwwz9+HmdoUJxoFOHFz1vD9xgF6
-         JSEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=y85VeqQEDhleCKKn3WahJdTCJLJ6TIyX19YIan4CI30=;
-        b=hePl3dCqGo6JE83DXXZ13JCF2x9OQK+GFAdf4W2rkL2x+uEU0JElkNG33nJzfunB4T
-         7T5l/V+9yx5Yp/CFHuzV9rYxgON+Ai8aTbgzvf0Ga7o6nZ2jMSM1yzpkQ9sa9V2Mt+da
-         xn+Vg8heUrZSeK2ZCUWItDeQzZefPRn+P9gGG0O4MiCGrjW0J7wZmW5GyEXGxvcxdDXb
-         wZnm2uzuIIy6A+iX4gCE7HhzhgnRmzhyBv+5uEfKm6oeU394zq6As+YSw+0DKd3N51qX
-         V1lcW+7ILvGzAsUGlAa/adtndfII1d7dofOMFk5Dd879uk5K81JnSZaqKdn8lFMZ+zrp
-         EFRg==
-X-Gm-Message-State: ACrzQf3qfMKkP1yTnIRInBaHv23m0fO3zj13yHfRkDLODgr+bKeGkWLW
-        vOaBFMRb/4NBE24YwJYL3WOERE4/4J64xHQ8mrv0NMHW7N8=
-X-Google-Smtp-Source: AMsMyM6L+nnisoGx3AAaYfiMi+CFf2mLWgtlLAJDkcDG5y3f2Q1Nna/JOY5R1FhuDKsw//FHDGVa10LMcdWptcTDiOk=
-X-Received: by 2002:a5d:59a4:0:b0:230:eaa4:88d7 with SMTP id
- p4-20020a5d59a4000000b00230eaa488d7mr28024970wrr.35.1666756342108; Tue, 25
- Oct 2022 20:52:22 -0700 (PDT)
+        Wed, 26 Oct 2022 06:44:58 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 525424AD71;
+        Wed, 26 Oct 2022 03:44:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C340DB82189;
+        Wed, 26 Oct 2022 10:44:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F7E2C433C1;
+        Wed, 26 Oct 2022 10:44:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666781093;
+        bh=U82//oUDhaVje5b0sUsZV8SSFolQg4Jy8YYSsA3q5Ew=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uFq7Oc1SDyKqkgr6vxDa6I06tknv7JNntEqWuqHzhBEJlNkgPf0B9CDnhjJOmcVN5
+         6+3WI2CAym9pFj+teebjNYIDcmHTw4LtaxcHh0f+wXI3++Wmt4IKWpBjOhqKqxORlN
+         7b1RvOB0qWQhFnGXyq3Al/vM9r8BK/eJi483T178M9y0WVzoCGB8b49b9cLMzrQyAy
+         3h6wSd9cv1BxhSaChn7HHVKE4yBYBDEuML4KEHdEFheT+i2KhrwNBFQx28ukOp3g3+
+         8xZZuN6Afa7rCar+SthYyGxv3mFB26F9Q/tw4zHODc9hBEQ8gMIGbwq6yOdYxTiOVB
+         Oa2xf1IR9XYVQ==
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-devel@vger.kernel.org
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] verification/rv: Add rv tool
+Date:   Wed, 26 Oct 2022 12:44:38 +0200
+Message-Id: <cover.1666776642.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-References: <CAJNi4rN7WkbEJkr9+vP1bOXQ_U=4eyDSaHb1aqJti_rTs2K7Hw@mail.gmail.com>
- <bad5e241-4fc4-df03-894e-3c0a6d0f5ff0@kernel.org>
-In-Reply-To: <bad5e241-4fc4-df03-894e-3c0a6d0f5ff0@kernel.org>
-From:   richard clark <richard.xnu.clark@gmail.com>
-Date:   Wed, 26 Oct 2022 11:52:10 +0800
-Message-ID: <CAJNi4rPwcWXUSx1_ALfWECezbPocXg++=i3eN9L-QW3x2vXaSQ@mail.gmail.com>
-Subject: Re: About the output interpretation of the wip RV
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Daniel,
+This is the (user-space) runtime verification tool named rv.
 
-On Tue, Oct 25, 2022 at 3:16 PM Daniel Bristot de Oliveira
-<bristot@kernel.org> wrote:
->
-> Hi Richard!
->
-> On 10/25/22 09:10, richard clark wrote:
-> > Hi Daniel,
-> > I got several dmsg outputs like this after I insmod the 'wip' into
-> > system(with printk+dump_stack reactor, trivial changes for the wip):
->
-> Which version of the monitor are you using? I make this question because the
-> latest version of the monitor is not "loadable module" yet. So my guess is that
-> you are using a version from the paper?
+This tool aims to be the interface for in-kernel rv monitors, as
+well as the home for user-space controlled monitors.
 
-After switching to the builtin 'wip' monitor and enable it and the
-'printk' reactor...
->
-> > [78706.972957] event sched_waking not expected in the state preemptive
-> > [78706.972963] CPU: 2 PID: 410 Comm: kworker/2:4 Tainted: G
-> > OE     5.15.70-rt50 #1
-> > [78706.972972] Workqueue: events igb_watchdog_task [igb]
-> > [78706.973000] Call Trace:
-> > [78706.973003]  <IRQ>
-> > [78706.973006]  dump_stack_lvl+0x61/0x86
-> > [78706.973016]  dump_stack+0x10/0x18
-> > [78706.973022]  handle_sched_wakeup+0x92/0xd0 [rv_poc]
-> > [78706.973028]  ttwu_do_wakeup+0xc3/0x1d0
-> > [78706.973038]  ttwu_do_activate+0x6e/0x100
-> > [78706.973044]  try_to_wake_up+0x209/0x700
-> > [78706.973049]  ? hrtimer_interrupt+0x11f/0x230
-> > [78706.973059]  wake_up_process+0x15/0x30
-> > [78706.973065]  irq_exit_rcu+0x9b/0xe0
-> > [78706.973074]  sysvec_apic_timer_interrupt+0x92/0xd0
-> > [78706.973082]  </IRQ>
-> > [78706.973083]  <TASK>
-> > [78706.973084]  asm_sysvec_apic_timer_interrupt+0x1b/0x20
-> >
-> > Does that mean something is not unexpected in the system?
->
-> Not necessarily, this monitor shows a limitation of tracing, as explained in
-> the kernel documentation:
+The tool receives a command as the first argument, the current
+commands are:
 
-the dmesg shows below information with that enabled 'wip' monitor:
+  list	- list all available monitors
+  mon	- run a given monitor
 
-root@robotics:/sys/kernel/debug/tracing/rv/monitors# dmesg
-...
-[  332.834168] rv: monitor wip does not allow event sched_waking on
-state preemptive
-[  353.833699] rv: monitor wip does not allow event sched_waking on
-state preemptive
-[  354.833679] rv: monitor wip does not allow event sched_waking on
-state preemptive
-...
-I took a look at the discussion at
-https://lore.kernel.org/all/f2ca7336162b6dc45f413cfe4e0056e6aa32e7ed.1559051152.git.bristot@redhat.com/
-seems that patch was trying to resolve the limitation of the tracing:
-the __preempt_count_add() and its trace func is not atomic, does that
-mean this issue is still in my system from the dmesg output above?
-Another question is, except that the trace limitation, do we have some
-specific examples to show that maybe an 'unexpected' event happens
-against the current state?
+Each monitor is an independent piece of software inside the
+tool and can have their own arguments.
 
-Thanks!
+Daniel Bristot de Oliveira (3):
+  rv: Add rv tool
+  tools/rv: Add in-kernel monitor interface
+  Documentation/rv: Add verification/rv man pages
 
->
-> https://docs.kernel.org/trace/rv/monitor_wip.html
->
-> Anyway, I suggest you using the upstream version of the monitors...
->
-> -- Daniel
->
-> > Thanks,
-> > Richard
->
+ Documentation/tools/index.rst              |   1 +
+ Documentation/tools/rv/Makefile            |  52 ++
+ Documentation/tools/rv/common_appendix.rst |  13 +
+ Documentation/tools/rv/common_ikm.rst      |  21 +
+ Documentation/tools/rv/index.rst           |  24 +
+ Documentation/tools/rv/rv-list.rst         |  39 ++
+ Documentation/tools/rv/rv-mon-wip.rst      |  40 ++
+ Documentation/tools/rv/rv-mon-wwnr.rst     |  39 ++
+ Documentation/tools/rv/rv-mon.rst          |  51 ++
+ Documentation/tools/rv/rv.rst              |  57 ++
+ tools/verification/rv/Makefile             | 141 +++++
+ tools/verification/rv/README.txt           |  38 ++
+ tools/verification/rv/include/in_kernel.h  |   3 +
+ tools/verification/rv/include/rv.h         |  12 +
+ tools/verification/rv/include/trace.h      |  16 +
+ tools/verification/rv/include/utils.h      |   8 +
+ tools/verification/rv/src/in_kernel.c      | 698 +++++++++++++++++++++
+ tools/verification/rv/src/rv.c             | 177 ++++++
+ tools/verification/rv/src/trace.c          | 128 ++++
+ tools/verification/rv/src/utils.c          |  46 ++
+ 20 files changed, 1604 insertions(+)
+ create mode 100644 Documentation/tools/rv/Makefile
+ create mode 100644 Documentation/tools/rv/common_appendix.rst
+ create mode 100644 Documentation/tools/rv/common_ikm.rst
+ create mode 100644 Documentation/tools/rv/index.rst
+ create mode 100644 Documentation/tools/rv/rv-list.rst
+ create mode 100644 Documentation/tools/rv/rv-mon-wip.rst
+ create mode 100644 Documentation/tools/rv/rv-mon-wwnr.rst
+ create mode 100644 Documentation/tools/rv/rv-mon.rst
+ create mode 100644 Documentation/tools/rv/rv.rst
+ create mode 100644 tools/verification/rv/Makefile
+ create mode 100644 tools/verification/rv/README.txt
+ create mode 100644 tools/verification/rv/include/in_kernel.h
+ create mode 100644 tools/verification/rv/include/rv.h
+ create mode 100644 tools/verification/rv/include/trace.h
+ create mode 100644 tools/verification/rv/include/utils.h
+ create mode 100644 tools/verification/rv/src/in_kernel.c
+ create mode 100644 tools/verification/rv/src/rv.c
+ create mode 100644 tools/verification/rv/src/trace.c
+ create mode 100644 tools/verification/rv/src/utils.c
+
+-- 
+2.37.3
+
