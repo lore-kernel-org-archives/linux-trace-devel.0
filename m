@@ -2,253 +2,105 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31FADFA3744
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 27 Oct 2022 22:40:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9272FA373D
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 28 Oct 2022 00:27:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234184AbiJ0WkT (ORCPT
+        id S234802AbiJ1A1r (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 27 Oct 2022 18:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47312 "EHLO
+        Thu, 27 Oct 2022 20:27:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235629AbiJ0WkR (ORCPT
+        with ESMTP id S234552AbiJ1A1r (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 27 Oct 2022 18:40:17 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DB6F65B119;
-        Thu, 27 Oct 2022 15:40:15 -0700 (PDT)
-Received: from W11-BEAU-MD.localdomain (unknown [76.135.50.127])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 1CE2E210DD4C;
-        Thu, 27 Oct 2022 15:40:15 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1CE2E210DD4C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1666910415;
-        bh=f2uIrdDboNxBVlV0TX5bvVI0+LO4ZU7b2wcvL6RBD5E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G7Ew7TwvX2FgHZ0Cr/bVEvCqhx7ci+yepweA5NuYFQ/Q2d7v4jBncbB7+DEDxeEmo
-         24WdcYJ3+TGe0nOW4rj5zYI1hrlzz2TcTv4E4WCEGgGL6lGmLAqUMixdTuEw7Q+jVs
-         V2HBcWOmrn0wdO6dOMY2meYJAeCa+LIuIa9DsjEY=
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     rostedt@goodmis.org, mhiramat@kernel.org,
-        mathieu.desnoyers@efficios.com, dcook@linux.microsoft.com,
-        alanau@linux.microsoft.com
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 2/2] tracing/user_events: Fixup enable faults asyncly
-Date:   Thu, 27 Oct 2022 15:40:11 -0700
-Message-Id: <20221027224011.2075-3-beaub@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221027224011.2075-1-beaub@linux.microsoft.com>
-References: <20221027224011.2075-1-beaub@linux.microsoft.com>
+        Thu, 27 Oct 2022 20:27:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B1BA232A
+        for <linux-trace-devel@vger.kernel.org>; Thu, 27 Oct 2022 17:27:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D6B116257C
+        for <linux-trace-devel@vger.kernel.org>; Fri, 28 Oct 2022 00:27:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 499E8C433D7;
+        Fri, 28 Oct 2022 00:27:45 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.96)
+        (envelope-from <rostedt@rostedt.homelinux.com>)
+        id 1ooDE9-00DoZ2-0B;
+        Thu, 27 Oct 2022 20:28:01 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Subject: [PATCH 3/3] libtracefs: Add man pages for tracefs_cpu_pipe()
+Date:   Thu, 27 Oct 2022 20:27:58 -0400
+Message-Id: <20221028002758.3285764-4-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20221028002758.3285764-1-rostedt@goodmis.org>
+References: <20221028002758.3285764-1-rostedt@goodmis.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When events are enabled within the various tracing facilities, such as
-ftrace/perf, the event_mutex is held. As events are enabled pages are
-accessed. We do not want page faults to occur under this lock. Instead
-queue the fault to a workqueue to be handled in a process context safe
-way without the lock.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The enable address is disabled while the async fault-in occurs. This
-ensures that we don't attempt fault-in more than is necessary. Once the
-page has been faulted in, the address write is attempted again. If the
-page couldn't fault-in, then we wait until the next time the event is
-enabled to prevent any potential infinite loops.
+Update the man pages to describe the tracefs_cpu_pipe() function.
 
-Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/trace_events_user.c | 125 ++++++++++++++++++++++++++++++-
- 1 file changed, 121 insertions(+), 4 deletions(-)
+ Documentation/libtracefs-cpu.txt | 12 +++++++++++-
+ Documentation/libtracefs.txt     |  1 +
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 633f24c2a1ac..f1eb8101e053 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -81,11 +81,22 @@ struct user_event_enabler {
- 	struct list_head link;
- 	struct mm_struct *mm;
- 	struct file *file;
-+	refcount_t refcnt;
- 	unsigned long enable_addr;
- 	unsigned int enable_bit: 5,
--		     __reserved: 27;
-+		     __reserved: 26,
-+		     disabled: 1;
- };
+diff --git a/Documentation/libtracefs-cpu.txt b/Documentation/libtracefs-cpu.txt
+index 8975e6ec5a0b..d6215d9912c0 100644
+--- a/Documentation/libtracefs-cpu.txt
++++ b/Documentation/libtracefs-cpu.txt
+@@ -4,7 +4,8 @@ libtracefs(3)
+ NAME
+ ----
+ tracefs_cpu_read_size, tracefs_cpu_read, tracefs_cpu_buffered_read, tracefs_cpu_write,
+-tracefs_cpu_stop, tracefs_cpu_flush, tracefs_cpu_flush_write - Reading trace_pipe_raw data
++tracefs_cpu_stop, tracefs_cpu_flush, tracefs_cpu_flush_write, tracefs_cpu_pipe
++- Reading trace_pipe_raw data
  
-+/* Used for asynchronous faulting in of pages */
-+struct user_event_enabler_fault {
-+	struct work_struct work;
-+	struct user_event_enabler *enabler;
-+	struct user_event *event;
-+};
-+
-+static struct kmem_cache *fault_cache;
-+
- /*
-  * Stores per-event properties, as users register events
-  * within a file a user_event might be created if it does not
-@@ -236,6 +247,19 @@ static void user_event_enabler_destroy(struct user_event_enabler *enabler)
- 	kfree(enabler);
- }
+ SYNOPSIS
+ --------
+@@ -19,6 +20,7 @@ int *tracefs_cpu_write*(struct tracefs_cpu pass:[*]_tcpu_, int _wfd_, bool _nonb
+ int *tracefs_cpu_stop*(struct tracefs_cpu pass:[*]_tcpu_);
+ int *tracefs_cpu_flush*(struct tracefs_cpu pass:[*]_tcpu_, void pass:[*]_buffer_);
+ int *tracefs_cpu_flush_write*(struct tracefs_cpu pass:[*]_tcpu_, int _wfd_);
++int *tracefs_cpu_pipe*(struct tracefs_cpu pass:[*]_tcpu_, int _wfd_, bool _nonblock_);
+ --
  
-+static __always_inline struct user_event_enabler
-+*user_event_enabler_get(struct user_event_enabler *enabler)
-+{
-+	refcount_inc(&enabler->refcnt);
-+	return enabler;
-+}
-+
-+static void user_event_enabler_put(struct user_event_enabler *enabler)
-+{
-+	if (refcount_dec_and_test(&enabler->refcnt))
-+		user_event_enabler_destroy(enabler);
-+}
-+
- static void user_event_enabler_remove(struct file *file,
- 				      struct user_event *user)
- {
-@@ -249,13 +273,93 @@ static void user_event_enabler_remove(struct file *file,
- 		if (enabler->file != file)
- 			continue;
+ DESCRIPTION
+@@ -66,6 +68,14 @@ trace_pipe_raw into non-blocking mode.
+ The *tracefs_cpu_flush_write()* same as *trace_cpu_flush()* except it takes a file
+ descriptor _wfd_ to flush the data into.
  
-+		enabler->disabled = 0;
- 		list_del(&enabler->link);
--		user_event_enabler_destroy(enabler);
-+		user_event_enabler_put(enabler);
- 	}
++The *tracefs_cpu_pipe()* is similar to *tracefs_cpu_write()* but the _wfd_ file descriptor
++must be a pipe. This call is an optimization of *tracefs_cpu_write()* that uses two calls
++to *splice*(2) in order to connect the trace_pipe_raw file descriptor with the write file
++descriptor. *splice*(2) requires that one of the passed in file descriptors is a pipe.
++If the application wants to pass the data to an existing pipe, there's no reason for
++there to be two *splice*(2) system calls and *tracefs_cpu_pipe()* can simply use a single
++call to _wfd_.
++
+ RETURN VALUE
+ ------------
+ The *tracefs_cpu_open()* returns a struct tracefs_cpu descriptor that can be
+diff --git a/Documentation/libtracefs.txt b/Documentation/libtracefs.txt
+index 50af23e33026..0081210f8951 100644
+--- a/Documentation/libtracefs.txt
++++ b/Documentation/libtracefs.txt
+@@ -280,6 +280,7 @@ Recording of trace_pipe_raw files:
+ 	int *tracefs_cpu_stop*(struct tracefs_cpu pass:[*]_tcpu_);
+ 	int *tracefs_cpu_flush*(struct tracefs_cpu pass:[*]_tcpu_, void pass:[*]_buffer_);
+ 	int *tracefs_cpu_flush_write*(struct tracefs_cpu pass:[*]_tcpu_, int _wfd_);
++	int *tracefs_cpu_pipe*(struct tracefs_cpu pass:[*]_tcpu_, int _wfd_, bool _nonblock_);
  
- 	mutex_unlock(&event_mutex);
- }
+ --
  
-+static void user_event_enabler_write(struct user_event_enabler *enabler,
-+				     struct user_event *user);
-+
-+static void user_event_enabler_fault_fixup(struct work_struct *work)
-+{
-+	struct user_event_enabler_fault *fault = container_of(
-+		work, struct user_event_enabler_fault, work);
-+	struct user_event_enabler *enabler = fault->enabler;
-+	struct user_event *user = fault->event;
-+	struct mm_struct *mm = enabler->mm;
-+	unsigned long uaddr = enabler->enable_addr;
-+	bool unlocked = false;
-+	int ret;
-+
-+	might_sleep();
-+
-+	mmap_read_lock(mm);
-+
-+	ret = fixup_user_fault(mm, uaddr, FAULT_FLAG_WRITE | FAULT_FLAG_REMOTE,
-+			       &unlocked);
-+
-+	mmap_read_unlock(mm);
-+
-+	if (ret)
-+		pr_warn("user_events: Fixup fault failed with %d "
-+			"for mm: 0x%pK offset: 0x%llx event: %s\n", ret, mm,
-+			(unsigned long long)uaddr, EVENT_NAME(user));
-+
-+	/* Prevent state changes from racing */
-+	mutex_lock(&event_mutex);
-+
-+	/*
-+	 * If we managed to get the page, re-issue the write. We do not
-+	 * want to get into a possible infinite loop, which is why we only
-+	 * attempt again directly if the page came in. If we couldn't get
-+	 * the page here, then we will try again the next time the event is
-+	 * enabled/disabled.
-+	 */
-+	enabler->disabled = 0;
-+
-+	if (!ret)
-+		user_event_enabler_write(enabler, user);
-+
-+	mutex_unlock(&event_mutex);
-+
-+	refcount_dec(&user->refcnt);
-+	user_event_enabler_put(enabler);
-+	kmem_cache_free(fault_cache, fault);
-+}
-+
-+static bool user_event_enabler_queue_fault(struct user_event_enabler *enabler,
-+					   struct user_event *user)
-+{
-+	struct user_event_enabler_fault *fault;
-+
-+	fault = kmem_cache_zalloc(fault_cache, GFP_NOWAIT | __GFP_NOWARN);
-+
-+	if (!fault)
-+		return false;
-+
-+	INIT_WORK(&fault->work, user_event_enabler_fault_fixup);
-+	fault->enabler = user_event_enabler_get(enabler);
-+	fault->event = user;
-+
-+	refcount_inc(&user->refcnt);
-+	enabler->disabled = 1;
-+
-+	if (!schedule_work(&fault->work)) {
-+		enabler->disabled = 0;
-+		refcount_dec(&user->refcnt);
-+		user_event_enabler_put(enabler);
-+		kmem_cache_free(fault_cache, fault);
-+
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
- static void user_event_enabler_write(struct user_event_enabler *enabler,
- 				     struct user_event *user)
- {
-@@ -266,6 +370,11 @@ static void user_event_enabler_write(struct user_event_enabler *enabler,
- 	void *kaddr;
- 	int ret;
- 
-+	lockdep_assert_held(&event_mutex);
-+
-+	if (unlikely(enabler->disabled))
-+		return;
-+
- 	mmap_read_lock(mm);
- 
- 	ret = pin_user_pages_remote(mm, uaddr, 1, FOLL_WRITE | FOLL_NOFAULT,
-@@ -273,8 +382,10 @@ static void user_event_enabler_write(struct user_event_enabler *enabler,
- 
- 	mmap_read_unlock(mm);
- 
--	if (ret <= 0) {
--		pr_warn("user_events: Enable write failed\n");
-+	if (unlikely(ret <= 0)) {
-+		if (!user_event_enabler_queue_fault(enabler, user))
-+			pr_warn("user_events: Unable to queue fault handler\n");
-+
- 		return;
- 	}
- 
-@@ -321,6 +432,7 @@ static struct user_event_enabler
- 	enabler->file = file;
- 	enabler->enable_addr = (unsigned long)reg->enable_addr;
- 	enabler->enable_bit = reg->enable_bit;
-+	refcount_set(&enabler->refcnt, 1);
- 
- 	/* Prevents state changes from racing with new enablers */
- 	mutex_lock(&event_mutex);
-@@ -1902,6 +2014,11 @@ static int __init trace_events_user_init(void)
- {
- 	int ret;
- 
-+	fault_cache = KMEM_CACHE(user_event_enabler_fault, 0);
-+
-+	if (!fault_cache)
-+		return -ENOMEM;
-+
- 	init_group = user_event_group_create(&init_user_ns);
- 
- 	if (!init_group)
 -- 
-2.25.1
+2.35.1
 
