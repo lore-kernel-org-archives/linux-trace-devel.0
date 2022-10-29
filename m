@@ -2,106 +2,124 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29990ECAAA1
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 28 Oct 2022 22:43:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40A15FA3740
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 29 Oct 2022 13:58:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbiJ1WnF (ORCPT
+        id S229531AbiJ2N62 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 28 Oct 2022 18:43:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44978 "EHLO
+        Sat, 29 Oct 2022 09:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbiJ1WnD (ORCPT
+        with ESMTP id S229571AbiJ2N60 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 28 Oct 2022 18:43:03 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B34071C3E6D;
-        Fri, 28 Oct 2022 15:43:02 -0700 (PDT)
-Received: from W11-BEAU-MD.localdomain (unknown [76.135.50.127])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 40BDE20B929B;
-        Fri, 28 Oct 2022 15:43:02 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 40BDE20B929B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1666996982;
-        bh=exwdkJJVkHgeu5CgSV2tmHuOY0gdLfJcpPIolWHpg8A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dTyoGuSawivvWpRVYXxRALBgm2Kj4zrfSXexegAktFWYFJyhXE3wpl9L/fhSc+DM2
-         z4dovTLDNY6Zf5EtVJQZij9nAO0dfkWa2K1+NA5Z+kXQHQkcSAY78rxv5Ia6qdCe7q
-         KuGxUV6gJPwKyPSk+39IPC1+lXZgzRcEhhDGbdgU=
-Date:   Fri, 28 Oct 2022 15:42:56 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+        Sat, 29 Oct 2022 09:58:26 -0400
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9481627CEA;
+        Sat, 29 Oct 2022 06:58:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1667051903;
+        bh=SjEXVlrM7QtPJHNiPEUkuWpPg7Fp6YZ34g5udIk/1O0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=AQRlpKglle10SwG+lWoPr8TY+HdYODxM76E2VxOACZ7j/vCuXfhb+1UUakWOWEVAK
+         Ir6b7ZCYGnH/EJyBScIKo0kehjs7tUSYuBAWEHAgYsAip+0f2HrN5WUaHI5IKlrBWR
+         i6+dtzLkKyZ9UfPC8yLOkPF7oMFnr/mhknBEeNwpYzfz4kKpqiHAy5nVnTaRR2f7Hg
+         pKt0SOsAesAVrIVcDS06UmsXMfTbuV6h2+FkxzHSwgz21x5u5vBOf7Gix+aVNXE01h
+         28fqUoHgaJA5cxpztefwv0n/8vCfplvhYHckpQbA+vocfiC/t1ztxKkJke2Ow4wPH2
+         5ZaTdBabIYgWg==
+Received: from [10.1.0.216] (192-222-188-69.qc.cable.ebox.net [192.222.188.69])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4N01GR1qQGzy1t;
+        Sat, 29 Oct 2022 09:58:23 -0400 (EDT)
+Message-ID: <01d10e59-0ea6-e60f-8561-84aa5dee40d3@efficios.com>
+Date:   Sat, 29 Oct 2022 09:58:26 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: [RFC PATCH 0/2] tracing/user_events: Remote write ABI
+To:     Beau Belgrave <beaub@linux.microsoft.com>
 Cc:     rostedt@goodmis.org, mhiramat@kernel.org,
         dcook@linux.microsoft.com, alanau@linux.microsoft.com,
         linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] tracing/user_events: Fixup enable faults asyncly
-Message-ID: <20221028224256.GA202@W11-BEAU-MD.localdomain>
 References: <20221027224011.2075-1-beaub@linux.microsoft.com>
- <20221027224011.2075-3-beaub@linux.microsoft.com>
- <a18e940d-8423-0294-23b4-f2702313f3eb@efficios.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a18e940d-8423-0294-23b4-f2702313f3eb@efficios.com>
+ <96d9f066-2f39-78e6-9be7-f9c69235615e@efficios.com>
+ <20221028221728.GA162@W11-BEAU-MD.localdomain>
+Content-Language: en-US
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20221028221728.GA162@W11-BEAU-MD.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Oct 28, 2022 at 06:19:10PM -0400, Mathieu Desnoyers wrote:
-> On 2022-10-27 18:40, Beau Belgrave wrote:
-> > When events are enabled within the various tracing facilities, such as
-> > ftrace/perf, the event_mutex is held. As events are enabled pages are
-> > accessed. We do not want page faults to occur under this lock. Instead
-> > queue the fault to a workqueue to be handled in a process context safe
-> > way without the lock.
-> > 
-> > The enable address is disabled while the async fault-in occurs. This
-> > ensures that we don't attempt fault-in more than is necessary. Once the
-> > page has been faulted in, the address write is attempted again. If the
-> > page couldn't fault-in, then we wait until the next time the event is
-> > enabled to prevent any potential infinite loops.
-> 
-> I'm also unclear about how the system call initiating the enabled state
-> change is delayed (or not) when a page fault is queued.
-> 
+On 2022-10-28 18:17, Beau Belgrave wrote:
+> On Fri, Oct 28, 2022 at 05:50:04PM -0400, Mathieu Desnoyers wrote:
+>> On 2022-10-27 18:40, Beau Belgrave wrote:
 
-It's not, if needed we could call schedule_delayed_work(). However, I
-don't think we need it. When pin_user_pages_remote is invoked, it's with
-FOLL_NOFAULT. This will tell us if we need to fault pages in, we then
-call fixup_user_fault with unlocked value passed. This will cause the
-fixup to retry and get the page in.
-
-It's called out in the comments for this exact purpose (lucked out
-here):
-mm/gup.c
- * This is meant to be called in the specific scenario where for locking reasons
- * we try to access user memory in atomic context (within a pagefault_disable()
- * section), this returns -EFAULT, and we want to resolve the user fault before
- * trying again.
-
-The fault in happens in a workqueue, this is the same way KVM does it's
-async page fault logic, so it's not a new pattern. As soon as the
-fault-in is done, we have a page we should be able to use, so we
-re-attempt the write immediately. If the write fails, another queue
-happens and we could loop, but not like the unmap() case I replied with
-earlier.
-
-> I would expect that when a page fault is needed, after enqueuing work to the
-> worker thread, the system call initiating the state change would somehow
-> wait for a completion (after releasing the user events mutex). That
-> completion would be signaled by the worker thread either if the page fault
-> fails, or if the state change is done.
+[...]
 > 
+>>>
+>>> NOTE:
+>>> User programs that wish to have the enable bit shared across forks
+>>> either need to use a MAP_SHARED allocated address or register a new
+>>> address and file descriptor. If MAP_SHARED cannot be used or new
+>>> registrations cannot be done, then it's allowable to use MAP_PRIVATE
+>>> as long as the forked children never update the page themselves. Once
+>>> the page has been updated, the page from the parent will be copied over
+>>> to the child. This new copy-on-write page will not receive updates from
+>>> the kernel until another registration has been performed with this new
+>>> address.
+>>
+>> This seems rather odd. I would expect that if a parent process registers
+>> some instrumentation using private mappings for enabled state through the
+>> user events ioctl, and then forks, the child process would seamlessly be
+>> traced by the user events ABI while being able to also change the enabled
+>> state from the userspace tracer libraries (which would trigger COW).
+>> Requiring the child to re-register to user events is rather odd.
+>>
+> 
+> It's the COW that is the problem, see below.
+> 
+>> What is preventing us from tracing the child without re-registration in this
+>> scenario ?
+>>
+> 
+> Largely knowing when the COW occurs on a specific page. We don't make
+> the mappings, so I'm unsure if we can ask to be notified easily during
+> these times or not. If we could, that would solve this. I'm glad you are
+> thinking about this. The note here was exactly to trigger this
+> discussion :)
+> 
+> I believe this is the same as a Futex, I'll take another look at that
+> code to see if they've come up with anything regarding this.
+> 
+> Any ideas?
 
-I didn't see a generic fault-in + notify anywhere, do you know of one I
-could use? Otherwise, it seems the pattern used is check fault, fault-in
-via workqueue, re-attempt.
+Based on your description of the symptoms, AFAIU, upon registration of a 
+given user event associated with a mm_struct, the user events ioctl 
+appears to translates the virtual address into a page pointer 
+immediately, and keeps track of that page afterwards. This means it 
+loses track of the page when COW occurs.
 
-> Thoughts ?
-> 
-> Thanks,
-> 
-> Mathieu
-> 
+Why not keep track of the registered virtual address and struct_mm 
+associated with the event rather than the page ? Whenever a state change 
+is needed, the virtual-address-to-page translation will be performed 
+again. If it follows a COW, it will get the new copied page. If it 
+happens that no COW was done, it should map to the original page. If the 
+mapping is shared, the kernel would update that shared page. If the 
+mapping is private, then the kernel would COW the page before updating it.
+
+Thoughts ?
 
 Thanks,
--Beau
+
+Mathieu
+
+> 
+> Thanks,
+> -Beau
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
