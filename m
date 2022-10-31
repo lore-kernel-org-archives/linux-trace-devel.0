@@ -2,130 +2,147 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A127DFA3741
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 31 Oct 2022 16:46:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D68C4FA3741
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 31 Oct 2022 16:53:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231464AbiJaQqI (ORCPT
+        id S231911AbiJaQxk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 31 Oct 2022 12:46:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39348 "EHLO
+        Mon, 31 Oct 2022 12:53:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbiJaQqH (ORCPT
+        with ESMTP id S231770AbiJaQxi (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 31 Oct 2022 12:46:07 -0400
+        Mon, 31 Oct 2022 12:53:38 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 242071182B;
-        Mon, 31 Oct 2022 09:46:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0E28011155;
+        Mon, 31 Oct 2022 09:53:37 -0700 (PDT)
 Received: from W11-BEAU-MD.localdomain (unknown [76.135.50.127])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 8944120B929F;
-        Mon, 31 Oct 2022 09:46:05 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8944120B929F
+        by linux.microsoft.com (Postfix) with ESMTPSA id A0F7320B929F;
+        Mon, 31 Oct 2022 09:53:36 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A0F7320B929F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1667234765;
-        bh=nUof/meKu6oBnnf2OhPd3CRLta0VqYWxYJHb9SqWoyw=;
+        s=default; t=1667235216;
+        bh=+glsQfGhk6eNgBZppwMjZpIflDHfxbcQBUZcP0HKr0E=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pNoZGwVU1vBBBs46vUkhFcf/mgI+qdXI5D/I8kpXVGgGsRFDZXAyPqI7WGJDP3x5N
-         Pg/W669OBJSJ7PfsfxT13kvYKPDMSkR6QqK3ml2tbmIvWaPyRpkAUswUoCmPIAZ/9v
-         QC+5LpOHNVVtpt9bGMN9DTgBHb6esopGIdcQzJ/k=
-Date:   Mon, 31 Oct 2022 09:46:03 -0700
+        b=MIY4641xDeLa+QUmIfFsMjRWpxJF8gmyNnfDOs9PwIMGMuG9aqMvr0sW/JB2+fMvJ
+         kz1fg93ke+BGeunaY3SQykYf4pdcUVV0q5RPb8KdjKQk5ao7yf8dwBqdxaQnImaquZ
+         9/ynVuHxw8z4tOuUlFi24Util0NlT9x3uSYlEhbI=
+Date:   Mon, 31 Oct 2022 09:53:25 -0700
 From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     rostedt@goodmis.org, mhiramat@kernel.org,
         dcook@linux.microsoft.com, alanau@linux.microsoft.com,
         linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/2] tracing/user_events: Use remote writes for event
- enablement
-Message-ID: <20221031164603.GB69@W11-BEAU-MD.localdomain>
+Subject: Re: [RFC PATCH 0/2] tracing/user_events: Remote write ABI
+Message-ID: <20221031165314.GA129@W11-BEAU-MD.localdomain>
 References: <20221027224011.2075-1-beaub@linux.microsoft.com>
- <20221027224011.2075-2-beaub@linux.microsoft.com>
- <20221031234703.e275650899728e64cd3fb6c3@kernel.org>
+ <96d9f066-2f39-78e6-9be7-f9c69235615e@efficios.com>
+ <20221028221728.GA162@W11-BEAU-MD.localdomain>
+ <01d10e59-0ea6-e60f-8561-84aa5dee40d3@efficios.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221031234703.e275650899728e64cd3fb6c3@kernel.org>
+In-Reply-To: <01d10e59-0ea6-e60f-8561-84aa5dee40d3@efficios.com>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, Oct 31, 2022 at 11:47:03PM +0900, Masami Hiramatsu wrote:
-> Hi,
-> 
-> I have some comments.
-> 
-> On Thu, 27 Oct 2022 15:40:10 -0700
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+On Sat, Oct 29, 2022 at 09:58:26AM -0400, Mathieu Desnoyers wrote:
+> On 2022-10-28 18:17, Beau Belgrave wrote:
+> > On Fri, Oct 28, 2022 at 05:50:04PM -0400, Mathieu Desnoyers wrote:
+> > > On 2022-10-27 18:40, Beau Belgrave wrote:
 > 
 > [...]
-> > @@ -1570,11 +1610,12 @@ static long user_reg_get(struct user_reg __user *ureg, struct user_reg *kreg)
-> >   * Registers a user_event on behalf of a user process.
-> >   */
-> >  static long user_events_ioctl_reg(struct user_event_file_info *info,
-> > -				  unsigned long uarg)
-> > +				  struct file *file, unsigned long uarg)
-> >  {
-> >  	struct user_reg __user *ureg = (struct user_reg __user *)uarg;
-> >  	struct user_reg reg;
-> >  	struct user_event *user;
-> > +	struct user_event_enabler *enabler;
-> >  	char *name;
-> >  	long ret;
-> >  
-> > @@ -1607,8 +1648,12 @@ static long user_events_ioctl_reg(struct user_event_file_info *info,
-> >  	if (ret < 0)
-> >  		return ret;
-> >  
-> > +	enabler = user_event_enabler_create(file, &reg, user);
-> > +
-> > +	if (!enabler)
+> > 
+> > > > 
+> > > > NOTE:
+> > > > User programs that wish to have the enable bit shared across forks
+> > > > either need to use a MAP_SHARED allocated address or register a new
+> > > > address and file descriptor. If MAP_SHARED cannot be used or new
+> > > > registrations cannot be done, then it's allowable to use MAP_PRIVATE
+> > > > as long as the forked children never update the page themselves. Once
+> > > > the page has been updated, the page from the parent will be copied over
+> > > > to the child. This new copy-on-write page will not receive updates from
+> > > > the kernel until another registration has been performed with this new
+> > > > address.
+> > > 
+> > > This seems rather odd. I would expect that if a parent process registers
+> > > some instrumentation using private mappings for enabled state through the
+> > > user events ioctl, and then forks, the child process would seamlessly be
+> > > traced by the user events ABI while being able to also change the enabled
+> > > state from the userspace tracer libraries (which would trigger COW).
+> > > Requiring the child to re-register to user events is rather odd.
+> > > 
+> > 
+> > It's the COW that is the problem, see below.
+> > 
+> > > What is preventing us from tracing the child without re-registration in this
+> > > scenario ?
+> > > 
+> > 
+> > Largely knowing when the COW occurs on a specific page. We don't make
+> > the mappings, so I'm unsure if we can ask to be notified easily during
+> > these times or not. If we could, that would solve this. I'm glad you are
+> > thinking about this. The note here was exactly to trigger this
+> > discussion :)
+> > 
+> > I believe this is the same as a Futex, I'll take another look at that
+> > code to see if they've come up with anything regarding this.
+> > 
+> > Any ideas?
 > 
-> Shouldn't we free the user_event if needed here?
-> (I found the similar memory leak pattern in the above failure case
->  of the user_events_ref_add().)
-> 
-
-user_events are shared across the entire group. They cannot be cleaned
-up until all references are gone. This is true both in this case and the
-in the user_events_ref_add() case.
-
-The pattern is to register events in the group's hashtable, then add
-them to the local file ref array that is RCU protected. If the file ref
-cannot be allocated, etc. the refcount on user is decremented. If we
-cannot create an enabler, the refcount is still held until file release.
-
-If the event has already been added to the local file ref array, it is
-returned to prevent another reference.
-
-> > +		return -ENOMEM;
-> > +
-> >  	put_user((u32)ret, &ureg->write_index);
-> > -	put_user(user->index, &ureg->status_bit);
-> >  
-> >  	return 0;
-> >  }
-> [...]
-> > @@ -1849,7 +1863,6 @@ static int user_status_open(struct inode *node, struct file *file)
-> >  
-> >  static const struct file_operations user_status_fops = {
-> >  	.open = user_status_open,
-> > -	.mmap = user_status_mmap,
-> 
-> So, if this drops the mmap operation, can we drop the writable flag from
-> the status tracefs file?
+> Based on your description of the symptoms, AFAIU, upon registration of a
+> given user event associated with a mm_struct, the user events ioctl appears
+> to translates the virtual address into a page pointer immediately, and keeps
+> track of that page afterwards. This means it loses track of the page when
+> COW occurs.
 > 
 
-Good catch, yes I'll remove this.
+No, we keep the memory descriptor and virtual address so we can properly
+resolve to page per-process.
 
-> static int create_user_tracefs(void)
-> {
-> [...]
->         /* mmap with MAP_SHARED requires writable fd */
->         emmap = tracefs_create_file("user_events_status", TRACE_MODE_WRITE,
->                                     NULL, NULL, &user_status_fops);
+> Why not keep track of the registered virtual address and struct_mm
+> associated with the event rather than the page ? Whenever a state change is
+> needed, the virtual-address-to-page translation will be performed again. If
+> it follows a COW, it will get the new copied page. If it happens that no COW
+> was done, it should map to the original page. If the mapping is shared, the
+> kernel would update that shared page. If the mapping is private, then the
+> kernel would COW the page before updating it.
 > 
-> Thank you,
+> Thoughts ?
+> 
+
+I think you are forgetting about page table entries. My understanding is
+the process will have the VMAs copied on fork, but the page table
+entries will be marked read-only. Then when the write access occurs, the
+COW is created (since the PTE says readonly, but the VMA says writable).
+However, that COW page is now only mapped within that forked process
+page table.
+
+This requires tracking the child memory descriptors in addition to the
+parent. The most straightforward way I see this happening is requiring
+user side to mmap the user_event_data fd that is used for write. This
+way when fork occurs in dup_mm() / dup_mmap() that mmap'd
+user_event_data will get open() / close() called per-fork. I could then
+copy the enablers from the parent but with the child's memory descriptor
+to allow proper lookup.
+
+This is like fork before COW, it's a bummer I cannot see a way to do
+this per-page. Doing the above would work, but it requires copying all
+the enablers, not just the one that changed after the fork.
+
+> Thanks,
+> 
+> Mathieu
+> 
+> > 
+> > Thanks,
+> > -Beau
 > 
 > -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> https://www.efficios.com
 
 Thanks,
 -Beau
