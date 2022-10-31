@@ -2,150 +2,169 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E556AFA3741
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 31 Oct 2022 17:27:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CED4AFA3741
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 31 Oct 2022 18:25:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231552AbiJaR1Q (ORCPT
+        id S229928AbiJaSZ7 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 31 Oct 2022 13:27:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60782 "EHLO
+        Mon, 31 Oct 2022 14:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbiJaR1P (ORCPT
+        with ESMTP id S229457AbiJaSZ6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 31 Oct 2022 13:27:15 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1FEC313CEF;
-        Mon, 31 Oct 2022 10:27:15 -0700 (PDT)
-Received: from W11-BEAU-MD.localdomain (unknown [76.135.50.127])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B11FF20B9F80;
-        Mon, 31 Oct 2022 10:27:14 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B11FF20B9F80
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1667237234;
-        bh=L4bcpwHfvSCyNSoIiW3sfiEU7KvCeBel420vDpIzx7E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MLvO/EijXBb8yr9IPgjsOOirRr1jqXh/el0POirCQY4K5yn/sZ2NPxZEP5kZKcj3D
-         EJzYlxyNeoykWcsD2Z9Vfteg1smWtj83X4gHHuzHRfHq/7Nv+oTUT93SqO778m21Xy
-         ggl6qpaVKmoG/6aRx21d3r9dSOjHb9yLbyKMUN+I=
-Date:   Mon, 31 Oct 2022 10:27:06 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        dcook@linux.microsoft.com, alanau@linux.microsoft.com,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+        Mon, 31 Oct 2022 14:25:58 -0400
+Received: from smtpout.efficios.com (smtpout.efficios.com [IPv6:2607:5300:203:5aae::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3E8D80;
+        Mon, 31 Oct 2022 11:25:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1667240754;
+        bh=m792KA+Pm5MDPwGhivRQlp6KvZ3pAaFVx83kQl5D0lg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Ds06VAy/Vy1ll4dkzG+xu4/gozz1gqvkrto6HPQElkhj6hKjXUrsNRiPwEmh4zjXE
+         Lwofqwo8AVK2pOjCLOPNR8xBNPApQfgPMg2dh/rBZ55tJT65pg7K0nTlw3zivKh+43
+         /MYAQRmDIJr8eAc6BDLEdaBWkhLeklJKMzK81UUq2C0pSWWghLU/WtHr9za22b+ea1
+         Rja39Ue1hB9T0oCSjEw5zmteEU+opPt9PCxpnQ8NMNXrVhSuOZTi53dev08gwauQMP
+         1vopuhHWTgrgOYQrk6e7wRlugcmU+WfegqDSenlzsU+OLuu+EephNH6hE1ySCTjWhF
+         gSVRuEpdVlgQA==
+Received: from [172.16.0.153] (192-222-180-24.qc.cable.ebox.net [192.222.180.24])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4N1M6B5FVyz1RRJ;
+        Mon, 31 Oct 2022 14:25:54 -0400 (EDT)
+Message-ID: <16944a84-800b-f40a-8b46-23bae5e9b81c@efficios.com>
+Date:   Mon, 31 Oct 2022 14:25:59 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
 Subject: Re: [RFC PATCH 0/2] tracing/user_events: Remote write ABI
-Message-ID: <20221031172706.GA196@W11-BEAU-MD.localdomain>
+Content-Language: en-US
+To:     Beau Belgrave <beaub@linux.microsoft.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     rostedt@goodmis.org, dcook@linux.microsoft.com,
+        alanau@linux.microsoft.com, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 References: <20221027224011.2075-1-beaub@linux.microsoft.com>
  <20221031231556.a15846fd3513641d48820d5b@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221031231556.a15846fd3513641d48820d5b@kernel.org>
+ <20221031172706.GA196@W11-BEAU-MD.localdomain>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20221031172706.GA196@W11-BEAU-MD.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, Oct 31, 2022 at 11:15:56PM +0900, Masami Hiramatsu wrote:
-> Hi Beau,
+On 2022-10-31 13:27, Beau Belgrave wrote:
+> On Mon, Oct 31, 2022 at 11:15:56PM +0900, Masami Hiramatsu wrote:
+[...]
+>> And what is the actual advantage of this change? Are there any issue
+>> to use mmaped page? I would like to know more background of this
+>> change.
+>>
 > 
-> On Thu, 27 Oct 2022 15:40:09 -0700
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> Without this change user tracers like LTTng will have to check 2 values
+> instead of 1 to tell if the kernel tracer is enabled or not. Mathieu is
+> working on a user side tracing library in an effort to align writing
+> tracing code in user processes that works well for both kernel and user
+> tracers without much effort.
 > 
-> > As part of the discussions for user_events aligned with user space
-> > tracers, it was determined that user programs should register a 32-bit
-> > value to set or clear a bit when an event becomes enabled. Currently a
-> > shared page is being used that requires mmap().
-> > 
-> > In this new model during the event registration from user programs 2 new
-> > values are specified. The first is the address to update when the event
-> > is either enabled or disabled. The second is the bit to set/clear to
-> > reflect the event being enabled. This allows for a local 32-bit value in
-> > user programs to support both kernel and user tracers. As an example,
-> > setting bit 31 for kernel tracers when the event becomes enabled allows
-> > for user tracers to use the other bits for ref counts or other flags.
-> > The kernel side updates the bit atomically, user programs need to also
-> > update these values atomically.
+> See here:
+> https://github.com/compudj/side
 > 
-> I think you means the kernel tracer (ftrace/perf) and user tracers (e.g. 
-> LTTng) use the same 32bit data so that traced user-application only checks
-> that data for checking an event is enabled, right?
-> 
+> Are you proposing we keep the bitmap approach and have side library just
+> hook another branch? Mathieu had issues with that approach during our
+> talks.
 
-Yes, exactly, user code can just check a single uint32 or uint64 to tell
-if anything is enabled (kernel or user tracer).
+As overhead of the disabled tracepoints was a key factor in having the Linux
+kernel adopt tracepoints when I created those back in 2008, I expect that having
+minimal overhead in the disabled case will also prove to be a key factor for
+adoption by user-space applications.
 
-> If so, who the user tracer threads updates the data bit? Is that thread
-> safe to update both kernel tracer and user tracers at the same time?
-> 
+Another aspect that seems to be very important for wide adoption by user-space
+is that the instrumentation library needs to have a license that is very
+convenient for inclusion into statically linked software without additional
+license requirements. This therefore excludes GPL and LGPL. I've used the MIT
+license for the "side" project for that purpose.
 
-This is why atomics are used to set the bit on the kernel side. The user
-side should do the same. This is like the futex code. Do you see a
-problem with atomics being used between user and kernel space on a
-shared 32/64-bit address?
+Indeed, my ideal scenario is to use asm goto and implement something similar
+to jump labels in user-space so the instrumentation only costs a no-op or a
+jump when instrumentation is disabled. That can only be used in contexts where
+code patching is allowed though (not for Runtime Integrity Checked (RIC) processes).
 
-> And what is the actual advantage of this change? Are there any issue
-> to use mmaped page? I would like to know more background of this
-> change.
-> 
+My next-to-best scenario is to have a single load (from fixed offset), test and
+conditional branch in the userspace fast-path instead. This approach will need
+to be made available as a fall-back for processes which are flagged as RIC-protected.
 
-Without this change user tracers like LTTng will have to check 2 values
-instead of 1 to tell if the kernel tracer is enabled or not. Mathieu is
-working on a user side tracing library in an effort to align writing
-tracing code in user processes that works well for both kernel and user
-tracers without much effort.
+I currently focus my efforts on the load+test+conditional branch scheme, which is
+somewhat simpler than the code patching approach in terms of needed infrastructure.
 
-See here:
-https://github.com/compudj/side
+If we go for the current user events bitmap approach, then anything we do from
+userspace will have more overhead (additional pointer chasing, loads, and masks
+to apply). And it pretty much rules out code patching.
 
-Are you proposing we keep the bitmap approach and have side library just
-hook another branch? Mathieu had issues with that approach during our
-talks.
+In terms of missing pieces to allow code patching to be done in userspace, here
+is what I think we'd need:
 
-> Could you also provide any sample program which I can play it? :)
-> 
+- Extend the "side" (MIT-licensed) library to implement gadgets which support
+code patching, but fall-back to load+test+conditional branch if code patching
+is not available. Roughly, those would look like (this is really just pseudo-code):
 
-When I make the next patch version, I will update the user_events sample
-so you'll have something to try out.
+.pushsection side_jmp
+/*
+  * &side_enabled_value is the key used to change the enabled/disabled state.
+  * 1f is the address of the code to patch.
+  * 3f is the address of branch target when disabled.
+  * 4f is the address of branch target when enabled.
+  */
+.quad &side_enabled_value, 1f, 3f, 4f
+.popsection
 
-> > User provided addresses must be aligned on a 32-bit boundary, this
-> > allows for single page checking and prevents odd behaviors such as a
-> > 32-bit value straddling 2 pages instead of a single page.
-> > 
-> > When page faults are encountered they are done asyncly via a workqueue.
-> > If the page faults back in, the write update is attempted again. If the
-> > page cannot fault-in, then we log and wait until the next time the event
-> > is enabled/disabled. This is to prevent possible infinite loops resulting
-> > from bad user processes unmapping or changing protection values after
-> > registering the address.
-> > 
-> > NOTE:
-> > User programs that wish to have the enable bit shared across forks
-> > either need to use a MAP_SHARED allocated address or register a new
-> > address and file descriptor. If MAP_SHARED cannot be used or new
-> > registrations cannot be done, then it's allowable to use MAP_PRIVATE
-> > as long as the forked children never update the page themselves. Once
-> > the page has been updated, the page from the parent will be copied over
-> > to the child. This new copy-on-write page will not receive updates from
-> > the kernel until another registration has been performed with this new
-> > address.
-> > 
-> > Beau Belgrave (2):
-> >   tracing/user_events: Use remote writes for event enablement
-> >   tracing/user_events: Fixup enable faults asyncly
-> > 
-> >  include/linux/user_events.h      |  10 +-
-> >  kernel/trace/trace_events_user.c | 396 ++++++++++++++++++++-----------
-> >  2 files changed, 270 insertions(+), 136 deletions(-)
-> > 
-> > 
-> > base-commit: 23758867219c8d84c8363316e6dd2f9fd7ae3049
-> > -- 
-> > 2.25.1
-> > 
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+/*
+  * Place all jump instructions that will be modified by code patching into a
+  * single section. Therefore, this will minimize the amount of COW required when
+  * patching code from executables and shared libraries that have instances in
+  * many processes.
+  */
+.pushsection side_jmp_modify_code (executable section)
+1:
+jump to 2f
+.popsection
+
+jump to 1b
+2:
+load side_enabled_value
+test
+cond. branch to 4
+3:
+-> disabled
+4:
+-> enabled
+
+When loading the .so or the executable, the initial states uses the load,
+test, conditional branch. Then in a constructor, if code patching is available,
+the jump at label (1) can be updated to target (3) instead. Then when enabled,
+it can be updated to target (4) instead.
+
+- Implement a code patching system call in the kernel which takes care of all the
+details associated with code patching that supports concurrent execution (breakpoint
+bypass, or stopping target processes if required by the architecture). This system
+call could check whether the target process has Runtime Integrity Check enforced,
+and refuse code patching as needed.
+
+As a nice side-effect, this could allow us to implement things like "alternative"
+assembler instruction selection in user-space.
+
+- Figure out a way to let a user-space process let the kernel know that it needs
+to enforce Runtime Integrity Check. It could be either a prctl(), or perhaps a
+clone flag if this needs to be known very early in the process lifetime.
 
 Thanks,
--Beau
+
+Mathieu
+
+
+
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
