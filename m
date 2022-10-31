@@ -2,129 +2,61 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97295FA3741
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 31 Oct 2022 16:58:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82BDDFA3741
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 31 Oct 2022 17:13:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232003AbiJaQ6v (ORCPT
+        id S231437AbiJaRND (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 31 Oct 2022 12:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47820 "EHLO
+        Mon, 31 Oct 2022 13:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232006AbiJaQ6s (ORCPT
+        with ESMTP id S231772AbiJaRNA (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 31 Oct 2022 12:58:48 -0400
+        Mon, 31 Oct 2022 13:13:00 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 16296DFB0;
-        Mon, 31 Oct 2022 09:58:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 22CAE13CC1;
+        Mon, 31 Oct 2022 10:13:00 -0700 (PDT)
 Received: from W11-BEAU-MD.localdomain (unknown [76.135.50.127])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A1AB620B9F80;
-        Mon, 31 Oct 2022 09:58:46 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A1AB620B9F80
+        by linux.microsoft.com (Postfix) with ESMTPSA id B603520B9F80;
+        Mon, 31 Oct 2022 10:12:59 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B603520B9F80
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1667235526;
-        bh=WCeWx4JsP2/hoZYvwwN1qjJP0udG2YITWUcVCXmsFuQ=;
+        s=default; t=1667236379;
+        bh=7MYtgTpOImErUqFx21Cq556DodRed9oAoc6DfdN8n6Q=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N/psBIZq1k58WvtXr5Pvp1oCsCWQPxUFLtlycs3HZjIIKGWPn1ctZJU5L02N+aUsc
-         JiJ/Y1P1VKcBOBCptNvycvQZTtPDJL5KZFNvmhvitYps1SPvz3nnhDTu56uQAeiNre
-         aawgHMFCVs1KJJktuNpf02+3HMJ/GAYAcOYtKsZk=
-Date:   Mon, 31 Oct 2022 09:58:41 -0700
+        b=EW/SlfWYNXaAyxFtqWbE/G2/bvCQa5h76EnSH84EVsIncfyhYn73NxdkE+9z/WyLy
+         0kIiUnGicmN9HPPC6oavMXy2sDaq4DDQyfT4f/jop3iJPj/uKZzWHmEtre+tUCmDH+
+         5CItstX6bs2AMP5G+saDJUH9vC5W4cyidPdhEfRw=
+Date:   Mon, 31 Oct 2022 10:12:57 -0700
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc:     rostedt@goodmis.org, mhiramat@kernel.org,
         dcook@linux.microsoft.com, alanau@linux.microsoft.com,
         linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [RFC PATCH 2/2] tracing/user_events: Fixup enable faults asyncly
-Message-ID: <20221031165841.GA149@W11-BEAU-MD.localdomain>
+Message-ID: <20221031171257.GB149@W11-BEAU-MD.localdomain>
 References: <20221027224011.2075-1-beaub@linux.microsoft.com>
  <20221027224011.2075-3-beaub@linux.microsoft.com>
- <7697b674-1dab-4995-9589-9dfb2a65bb73@efficios.com>
- <20221028223545.GA182@W11-BEAU-MD.localdomain>
- <c6799933-d84b-e4dc-433c-bf1acc9ba03a@efficios.com>
+ <a18e940d-8423-0294-23b4-f2702313f3eb@efficios.com>
+ <20221028224256.GA202@W11-BEAU-MD.localdomain>
+ <f66cdb16-8a3b-35c1-9c24-c32c5c7b19fb@efficios.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c6799933-d84b-e4dc-433c-bf1acc9ba03a@efficios.com>
+In-Reply-To: <f66cdb16-8a3b-35c1-9c24-c32c5c7b19fb@efficios.com>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Sat, Oct 29, 2022 at 10:23:02AM -0400, Mathieu Desnoyers wrote:
-> On 2022-10-28 18:35, Beau Belgrave wrote:
-> > On Fri, Oct 28, 2022 at 06:07:34PM -0400, Mathieu Desnoyers wrote:
+On Sat, Oct 29, 2022 at 10:40:02AM -0400, Mathieu Desnoyers wrote:
+> On 2022-10-28 18:42, Beau Belgrave wrote:
+> > On Fri, Oct 28, 2022 at 06:19:10PM -0400, Mathieu Desnoyers wrote:
 > > > On 2022-10-27 18:40, Beau Belgrave wrote:
-> 
-> [...]
-> 
-> > 
-> > > I'm still slightly unsure about using "uint32_t" for enable check, or going
-> > > for "unsigned long". The core question there is whether a 32-bit word test
-> > > would cause partial register stalls on 64-bit architectures. Going for
-> > > unsigned long would require that user events receives information about the
-> > > bitness of the word as input from userspace. (bit=63 rather than 31).
-> > > Perhaps this is something the user events ABI should accommodate by
-> > > reserving more than 5 bits to express the target bit ?
-> > > 
-> > 
-> > Yeah, I thought about this. From the user side you can actually use any
-> > arbitrary bits you want by passing a 32-bit aligned value. So you could
-> > take the lower or top half of a 64-bit value. The reason I limit to 0-31
-> > bits is to ensure no page straddling occurs. Futex also does this, check
-> > out get_futex_key() in kernel/futex/core.c.
-> 
-> We can ensure no page straddling by checking the address alignment compared
-> to the size of the integer (4 or 8 bytes) also received as input.
-> 
-
-Ok.
-
-> > 
-> > I would recommend trying out uint64 but give the upper half to
-> > user_events ABI and checking if that works for you if you want say 63
-> > bits to user space. You'd tell the ABI bit 31, but in user space it
-> > would be bit 63.
-> 
-> That's tricky because Linux supports both big and little endian, which will
-> make the ABI tricky to use if we try to be too clever about this.
-> 
-> Also, just stating a "pointer" and "bits offset" is not enough if we want to
-> support 32-bit and 64-bit integer types, because the bit offset does not
-> consider endianness.
-> 
-> I would recommend to get the following information through the user events
-> registration:
-> 
-> - pointer address,
-> - size of integer type (4 or 8 bytes),
-> - bit offset (currently 31 or 63).
-> 
-> This way we have all the information we need to set the right bit in both
-> little and big endian. We also have all the information we need to validate
-> natural alignment, e.g.:
-> 
-> /* Check alignment */
-> if (addr & (type_size - 1))
-> 	return -EINVAL;
-> /* Check bit offset range */
-> if (bit_offset > (type_size * CHAR_BIT) - 1)
-> 	return -EINVAL;
-> switch (type_size) {
-> case 4:
-> 	/* Update 32-bit integer */
-> 	break;
-> #if BITS_PER_LONG >= 64
-> case 8:
-> 	/* Update 64-bit integer */
-> 	break;
-> #endif
-> default:
-> 	return -EINVAL;
-> }
-> 
-
-Sounds good, I'll update this.
-
-> 
-> > 
+> > > > When events are enabled within the various tracing facilities, such as
+> > > > ftrace/perf, the event_mutex is held. As events are enabled pages are
+> > > > accessed. We do not want page faults to occur under this lock. Instead
+> > > > queue the fault to a workqueue to be handled in a process context safe
+> > > > way without the lock.
 > > > > 
 > > > > The enable address is disabled while the async fault-in occurs. This
 > > > > ensures that we don't attempt fault-in more than is necessary. Once the
@@ -132,60 +64,108 @@ Sounds good, I'll update this.
 > > > > page couldn't fault-in, then we wait until the next time the event is
 > > > > enabled to prevent any potential infinite loops.
 > > > 
-> > > So if the page is removed from the page cache between the point where it is
-> > > faulted in and the moment the write is re-attempted, that will not trigger
-> > > another attempt at paging in the page, am I correct ?
+> > > I'm also unclear about how the system call initiating the enabled state
+> > > change is delayed (or not) when a page fault is queued.
 > > > 
 > > 
-> > If we fault and the fixup user fault fails still with retries, then we
-> > give up until the next enablement of that site.
+> > It's not, if needed we could call schedule_delayed_work(). However, I
+> > don't think we need it. When pin_user_pages_remote is invoked, it's with
+> > FOLL_NOFAULT. This will tell us if we need to fault pages in, we then
+> > call fixup_user_fault with unlocked value passed. This will cause the
+> > fixup to retry and get the page in.
 > > 
-> > However, if we fault and the fixup user fault with retries works, and
-> > then we fault again trying to write, that will retry.
+> > It's called out in the comments for this exact purpose (lucked out
+> > here):
+> > mm/gup.c
+> >   * This is meant to be called in the specific scenario where for locking reasons
+> >   * we try to access user memory in atomic context (within a pagefault_disable()
+> >   * section), this returns -EFAULT, and we want to resolve the user fault before
+> >   * trying again.
 > > 
-> > > I would think this is unexpected. I would expect that failing to fault in
-> > > the page would stop any further attempts, but simply failing to pin the page
-> > > after faulting it in should simply try again.
+> > The fault in happens in a workqueue, this is the same way KVM does it's
+> > async page fault logic, so it's not a new pattern. As soon as the
+> > fault-in is done, we have a page we should be able to use, so we
+> > re-attempt the write immediately. If the write fails, another queue
+> > happens and we could loop, but not like the unmap() case I replied with
+> > earlier.
+> > 
+> > > I would expect that when a page fault is needed, after enqueuing work to the
+> > > worker thread, the system call initiating the state change would somehow
+> > > wait for a completion (after releasing the user events mutex). That
+> > > completion would be signaled by the worker thread either if the page fault
+> > > fails, or if the state change is done.
 > > > 
 > > 
-> > The issue I repro is mmap() register the enable at that location, then
-> > unmap(). All the faulting errors just tell you -EFAULT in this case,
-> > even though it was maliciously removed. In this case you could get the
-> > kernel to infinite loop trying to page it in.
-> > 
-> > > Thoughts ?
-> > > 
-> > 
-> > We need to have some sanity toward giving up faulting in data that never
-> > will make it. The code currently assigns that line to if
-> > fixup_user_fault with retries fails, we give up. pin_user_pages_remote
-> > will not stop it from being attempted again.
+> > I didn't see a generic fault-in + notify anywhere, do you know of one I
+> > could use? Otherwise, it seems the pattern used is check fault, fault-in
+> > via workqueue, re-attempt.
 > 
-> What are the legitimate cases that can make fixup_user_fault fail ? If there
-> are none, and the only case that can make this fail is userspace unmapping
-> memory, then we should very well kill the offending process.
+> I don't think we're talking about the same thing. I'll try stating my
+> concern in a different way.
 > 
-
-I believe only VM_FAULT_ERROR:
-#define VM_FAULT_ERROR (VM_FAULT_OOM | VM_FAULT_SIGBUS |	\
-			VM_FAULT_SIGSEGV | VM_FAULT_HWPOISON |	\
-			VM_FAULT_HWPOISON_LARGE | VM_FAULT_FALLBACK)
-
-I don't believe in any of the above cases we should retry indefinitely
-for.
-
-> An example here is futex fault_in_user_writeable(). When it fails, it
-> appears that the futex_wake_op simply returns -EFAULT to the caller.
+> user_event_enabler_write() calls user_event_enabler_queue_fault() when it
+> cannot perform the enabled state update immediately (because a page fault is
+> needed).
+> 
+> But then AFAIU it returns immediately to the caller. The caller could very
+> well expect that the event has been enabled, as requested, immediately when
+> the enabler write returns. The fact that enabling the event can be delayed
+> for an arbitrary amount of time due to page faults means that we have no
+> hard guarantee that the event is enabled as requested upon return to the
+> caller.
 > 
 
-fault_in_user_writeable() calls fixup_user_fault(), so it should be the
-same scenario / failures as above.
+Yeah, sorry, I misread your statement.
+
+If the user registers an event and user_event_enabler_write() is invoked
+at that point the enabler is registered and will update the event as it
+changes, even though the initial write fails (it will try again
+repeatedly until a terminal state of faulting is reached).
+
+I agree though, if the initial data is faulted out at that point, and it
+has an error faulting in, the user doesn't know that (although it
+appears the only time this would fail is if someone did something silly,
+malicous, or the device is out of memory). They likely want to know if
+it's the silly/forgetful case.
+
+> I'd like to add a completion there, to be waited for after
+> user_event_enabler_queue_fault(), but before returning from
+> user_event_enabler_create(). Waiting for the completion should be done
+> without any mutexes held, so after releasing event_mutex.
+> 
+> The completion would be placed on the stack of user_event_enabler_create(),
+> and a reference to the completion would be placed in the queued fault
+> request. The completion notification would be emitted by the worker thread
+> either when enabling is done, or if a page fault fails.
+> 
+> See include/linux/completion.h
+> 
+> Thoughts ?
+> 
+
+If the case you are worried about is just the initial register, then I
+can do this synchronously outside of the lock. I believe you had the
+same thought later in the day.
+
+The main scenario I am worried about is that we have say 20 processes
+that share the same event. They have already been registered and they
+are running. Then a few of them have page faults when perf/ftrace
+enable the event and the register callback is invoked (which triggers
+a user write to the enablement address/bit). If most of these
+processes don't page fault, I don't want them to wait on the account of
+1 or 2 bad apples. If they all page fault, I don't want them to hold up
+the other parts the system that require event_mutex (since it is held by
+the register callback caller). So these should be as fast as possible
+while the event_mutex is being held.
 
 > Thanks,
 > 
 > Mathieu
 > 
+> 
 > > 
+> > > Thoughts ?
+> > > 
 > > > Thanks,
 > > > 
 > > > Mathieu
