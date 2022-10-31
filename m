@@ -2,175 +2,124 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A5CAFA3740
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 30 Oct 2022 11:45:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43F6BFA3741
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 31 Oct 2022 14:16:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbiJ3Lpj (ORCPT
+        id S229930AbiJaOQF (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 30 Oct 2022 07:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49072 "EHLO
+        Mon, 31 Oct 2022 10:16:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbiJ3Lpi (ORCPT
+        with ESMTP id S229628AbiJaOQD (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 30 Oct 2022 07:45:38 -0400
-Received: from smtpout.efficios.com (smtpout.efficios.com [IPv6:2607:5300:203:5aae::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F12247;
-        Sun, 30 Oct 2022 04:45:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1667130333;
-        bh=FHitCiRYLg3puiEvplBQIr9bBOi1r3xMt4XKwVmIP8g=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=m05x1tg3pEuo/oPHR9i9LBvx/H9XPzFxZuoXHoykJODzLaTiN9jxTYa8gNr3y+IZx
-         1o+FrV56VZC5w2/Kk3oeW4Ym/6efOWNl8k+TVisujboc3dl7/tBypOFQhAnpEmXbq7
-         byU/30qF5O81i2DGSkOZzZxnRBEQ1ctUDUb/aIwkseZrHtCEZGeDaL0lC2UniEgGeD
-         T2vMSdK1nIMmQRqmglhusvu0DSHAJeoR3jraeDZ+2QB7fQrAOgRDo5kpmiL5dwk/R0
-         NaHJw73t05wOS+S0cFpoFh+CS3y3gdYJ04KcCMDEh8mGgF+rBFq1krW6PJKZxVjAoy
-         QCfPIirceTzZA==
-Received: from [10.1.0.216] (192-222-188-69.qc.cable.ebox.net [192.222.188.69])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4N0ZGj4MxQzZ6W;
-        Sun, 30 Oct 2022 07:45:33 -0400 (EDT)
-Message-ID: <d955ff39-8823-d80f-e60f-9aafecc5708c@efficios.com>
-Date:   Sun, 30 Oct 2022 07:45:33 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Subject: Re: [RFC PATCH 2/2] tracing/user_events: Fixup enable faults asyncly
-Content-Language: en-US
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+        Mon, 31 Oct 2022 10:16:03 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3CC1F19;
+        Mon, 31 Oct 2022 07:16:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 85281B8188F;
+        Mon, 31 Oct 2022 14:16:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 034ACC433D6;
+        Mon, 31 Oct 2022 14:15:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667225759;
+        bh=1NjzKCQeF90TceJVq9hppXxp0Gw2AH3DhTZPPlIhx/k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qN0fneNmbZyBOAFNqYgzoXle0JuK84BF72xRAqDhcP1O+rNNLEE175NkKZRHrCJhk
+         cIIwHGA8DLqpCUYDMyB2qTRZhVplP5Vu1boT9VhROGwU8Rx0o7rGfkjIwca9CX3/XJ
+         U7ykerBYilVfbQXg63zyjVKTpudXDyR/kA3ABHyZmvkS6LRRJTj10hWTa7/IOv4PBs
+         i5XXV4KYPZoT0RnxbigwJaOeR2SLocGNTJWEudw4nqYBW3saRl0w16dhCvVxgpII8l
+         RECe2WIQro1nycClbeLMXdgruy00yx+4v/mtMizkZVYDJwEm9IRrt/PV3vTX9A5OGV
+         0Pt0dKE1BDgyg==
+Date:   Mon, 31 Oct 2022 23:15:56 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     rostedt@goodmis.org, mhiramat@kernel.org,
+Cc:     rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
         dcook@linux.microsoft.com, alanau@linux.microsoft.com,
         linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/2] tracing/user_events: Remote write ABI
+Message-Id: <20221031231556.a15846fd3513641d48820d5b@kernel.org>
+In-Reply-To: <20221027224011.2075-1-beaub@linux.microsoft.com>
 References: <20221027224011.2075-1-beaub@linux.microsoft.com>
- <20221027224011.2075-3-beaub@linux.microsoft.com>
- <a18e940d-8423-0294-23b4-f2702313f3eb@efficios.com>
- <20221028224256.GA202@W11-BEAU-MD.localdomain>
- <f66cdb16-8a3b-35c1-9c24-c32c5c7b19fb@efficios.com>
-In-Reply-To: <f66cdb16-8a3b-35c1-9c24-c32c5c7b19fb@efficios.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 2022-10-29 10:40, Mathieu Desnoyers wrote:
-> On 2022-10-28 18:42, Beau Belgrave wrote:
->> On Fri, Oct 28, 2022 at 06:19:10PM -0400, Mathieu Desnoyers wrote:
->>> On 2022-10-27 18:40, Beau Belgrave wrote:
->>>> When events are enabled within the various tracing facilities, such as
->>>> ftrace/perf, the event_mutex is held. As events are enabled pages are
->>>> accessed. We do not want page faults to occur under this lock. Instead
->>>> queue the fault to a workqueue to be handled in a process context safe
->>>> way without the lock.
->>>>
->>>> The enable address is disabled while the async fault-in occurs. This
->>>> ensures that we don't attempt fault-in more than is necessary. Once the
->>>> page has been faulted in, the address write is attempted again. If the
->>>> page couldn't fault-in, then we wait until the next time the event is
->>>> enabled to prevent any potential infinite loops.
->>>
->>> I'm also unclear about how the system call initiating the enabled state
->>> change is delayed (or not) when a page fault is queued.
->>>
->>
->> It's not, if needed we could call schedule_delayed_work(). However, I
->> don't think we need it. When pin_user_pages_remote is invoked, it's with
->> FOLL_NOFAULT. This will tell us if we need to fault pages in, we then
->> call fixup_user_fault with unlocked value passed. This will cause the
->> fixup to retry and get the page in.
->>
->> It's called out in the comments for this exact purpose (lucked out
->> here):
->> mm/gup.c
->>   * This is meant to be called in the specific scenario where for 
->> locking reasons
->>   * we try to access user memory in atomic context (within a 
->> pagefault_disable()
->>   * section), this returns -EFAULT, and we want to resolve the user 
->> fault before
->>   * trying again.
->>
->> The fault in happens in a workqueue, this is the same way KVM does it's
->> async page fault logic, so it's not a new pattern. As soon as the
->> fault-in is done, we have a page we should be able to use, so we
->> re-attempt the write immediately. If the write fails, another queue
->> happens and we could loop, but not like the unmap() case I replied with
->> earlier.
->>
->>> I would expect that when a page fault is needed, after enqueuing work 
->>> to the
->>> worker thread, the system call initiating the state change would somehow
->>> wait for a completion (after releasing the user events mutex). That
->>> completion would be signaled by the worker thread either if the page 
->>> fault
->>> fails, or if the state change is done.
->>>
->>
->> I didn't see a generic fault-in + notify anywhere, do you know of one I
->> could use? Otherwise, it seems the pattern used is check fault, fault-in
->> via workqueue, re-attempt.
-> 
-> I don't think we're talking about the same thing. I'll try stating my 
-> concern in a different way.
-> 
-> user_event_enabler_write() calls user_event_enabler_queue_fault() when 
-> it cannot perform the enabled state update immediately (because a page 
-> fault is needed).
-> 
-> But then AFAIU it returns immediately to the caller. The caller could 
-> very well expect that the event has been enabled, as requested, 
-> immediately when the enabler write returns. The fact that enabling the 
-> event can be delayed for an arbitrary amount of time due to page faults 
-> means that we have no hard guarantee that the event is enabled as 
-> requested upon return to the caller.
-> 
-> I'd like to add a completion there, to be waited for after 
-> user_event_enabler_queue_fault(), but before returning from 
-> user_event_enabler_create(). Waiting for the completion should be done 
-> without any mutexes held, so after releasing event_mutex.
-> 
-> The completion would be placed on the stack of 
-> user_event_enabler_create(), and a reference to the completion would be 
-> placed in the queued fault request. The completion notification would be 
-> emitted by the worker thread either when enabling is done, or if a page 
-> fault fails.
-> 
-> See include/linux/completion.h
-> 
-> Thoughts ?
+Hi Beau,
 
-Actually, after further thinking, I wonder if we need a worker thread at 
-all to perform the page faults.
+On Thu, 27 Oct 2022 15:40:09 -0700
+Beau Belgrave <beaub@linux.microsoft.com> wrote:
 
-Could we simply handle the page faults from user_event_enabler_create() 
-by releasing the mutex and re-trying ? From what contexts is 
-user_event_enabler_create() called ? (any locks taken ? system call 
-context ? irqs and preemption enabled or disabled ?)
+> As part of the discussions for user_events aligned with user space
+> tracers, it was determined that user programs should register a 32-bit
+> value to set or clear a bit when an event becomes enabled. Currently a
+> shared page is being used that requires mmap().
+> 
+> In this new model during the event registration from user programs 2 new
+> values are specified. The first is the address to update when the event
+> is either enabled or disabled. The second is the bit to set/clear to
+> reflect the event being enabled. This allows for a local 32-bit value in
+> user programs to support both kernel and user tracers. As an example,
+> setting bit 31 for kernel tracers when the event becomes enabled allows
+> for user tracers to use the other bits for ref counts or other flags.
+> The kernel side updates the bit atomically, user programs need to also
+> update these values atomically.
 
-Thanks,
+I think you means the kernel tracer (ftrace/perf) and user tracers (e.g. 
+LTTng) use the same 32bit data so that traced user-application only checks
+that data for checking an event is enabled, right?
 
-Mathieu
+If so, who the user tracer threads updates the data bit? Is that thread
+safe to update both kernel tracer and user tracers at the same time?
 
+And what is the actual advantage of this change? Are there any issue
+to use mmaped page? I would like to know more background of this
+change.
+
+Could you also provide any sample program which I can play it? :)
+
+> User provided addresses must be aligned on a 32-bit boundary, this
+> allows for single page checking and prevents odd behaviors such as a
+> 32-bit value straddling 2 pages instead of a single page.
 > 
-> Thanks,
+> When page faults are encountered they are done asyncly via a workqueue.
+> If the page faults back in, the write update is attempted again. If the
+> page cannot fault-in, then we log and wait until the next time the event
+> is enabled/disabled. This is to prevent possible infinite loops resulting
+> from bad user processes unmapping or changing protection values after
+> registering the address.
 > 
-> Mathieu
+> NOTE:
+> User programs that wish to have the enable bit shared across forks
+> either need to use a MAP_SHARED allocated address or register a new
+> address and file descriptor. If MAP_SHARED cannot be used or new
+> registrations cannot be done, then it's allowable to use MAP_PRIVATE
+> as long as the forked children never update the page themselves. Once
+> the page has been updated, the page from the parent will be copied over
+> to the child. This new copy-on-write page will not receive updates from
+> the kernel until another registration has been performed with this new
+> address.
+> 
+> Beau Belgrave (2):
+>   tracing/user_events: Use remote writes for event enablement
+>   tracing/user_events: Fixup enable faults asyncly
+> 
+>  include/linux/user_events.h      |  10 +-
+>  kernel/trace/trace_events_user.c | 396 ++++++++++++++++++++-----------
+>  2 files changed, 270 insertions(+), 136 deletions(-)
 > 
 > 
->>
->>> Thoughts ?
->>>
->>> Thanks,
->>>
->>> Mathieu
->>>
->>
->> Thanks,
->> -Beau
+> base-commit: 23758867219c8d84c8363316e6dd2f9fd7ae3049
+> -- 
+> 2.25.1
 > 
+
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
