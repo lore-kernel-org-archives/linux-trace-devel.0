@@ -2,180 +2,182 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D425BFA3743
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  1 Nov 2022 13:52:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95777C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  1 Nov 2022 16:45:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbiKANwc (ORCPT
+        id S229670AbiKAQpj (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 1 Nov 2022 09:52:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51612 "EHLO
+        Tue, 1 Nov 2022 12:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230129AbiKANw3 (ORCPT
+        with ESMTP id S229767AbiKAQpi (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 1 Nov 2022 09:52:29 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C0813F9B;
-        Tue,  1 Nov 2022 06:52:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 43DB9B81D9F;
-        Tue,  1 Nov 2022 13:52:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3BA8C433D7;
-        Tue,  1 Nov 2022 13:52:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667310743;
-        bh=dfziG2vuEiP9trk6wO8lQZ/+UBCzl6JP73fjp+e+yCw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GVht0bStMl0LY5OQ1gJdvPuL3+rAc+I7KDFXQzMgjnu0Qi0U9KrL/vrxMAA5t4HDd
-         6vcaIT4bnS6QenlaYLeovS7sKrjpxXfIjhTNx0bBykvnFITsSt4cAh/aweEQl3CLy9
-         /kWyPFgSF9wqJhmoXi38nARGy5MlhBK3ijPs3+RDoXFpZG01cuM7LJcCfI1DaavEco
-         m1wTkCX7cPC6WNnNIXDVN0msJoSOrqjwXU0pb+sochQAnpGKpA6ehZn+UuSkUkGJlY
-         PflBMLEedmG2camror4I3rf4wbQFJ/cd37ynZk5K7SU8vQ353foe+VCxeN616JCelT
-         2NkIw2ftaqqdA==
-Date:   Tue, 1 Nov 2022 22:52:20 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
+        Tue, 1 Nov 2022 12:45:38 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D301112A95;
+        Tue,  1 Nov 2022 09:45:37 -0700 (PDT)
+Received: from W11-BEAU-MD.localdomain (unknown [76.135.50.127])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 68D12205D3B7;
+        Tue,  1 Nov 2022 09:45:37 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 68D12205D3B7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1667321137;
+        bh=kZWPYfnjDKLxLTWrdqr9Ds1M/AA0Z2lq4cu8QG2GB3o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RU24pTU2zsUN6TCS6VUIxTURDOQkq00rL9zClZNHLplDmNxxirt0yEtZrMevsGfsg
+         YbO1IUWOtmnHOptL1Edurn34xNYI6DV4K5l6vKNobd4y+ptGcdTPtqw93+3Yw1iyI9
+         RggyvSY1IkAfVjOBCjWZ6PoBgkj951WthMs+0y64=
+Date:   Tue, 1 Nov 2022 09:45:30 -0700
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
 Cc:     rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
         dcook@linux.microsoft.com, alanau@linux.microsoft.com,
         linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] tracing/user_events: Remote write ABI
-Message-Id: <20221101225220.a948157064a47678d2ed6fd7@kernel.org>
-In-Reply-To: <20221031172706.GA196@W11-BEAU-MD.localdomain>
+Subject: Re: [RFC PATCH 1/2] tracing/user_events: Use remote writes for event
+ enablement
+Message-ID: <20221101164530.GA69@W11-BEAU-MD.localdomain>
 References: <20221027224011.2075-1-beaub@linux.microsoft.com>
-        <20221031231556.a15846fd3513641d48820d5b@kernel.org>
-        <20221031172706.GA196@W11-BEAU-MD.localdomain>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ <20221027224011.2075-2-beaub@linux.microsoft.com>
+ <20221031234703.e275650899728e64cd3fb6c3@kernel.org>
+ <20221031164603.GB69@W11-BEAU-MD.localdomain>
+ <20221101085501.443f2ac77bfb0803b91517c2@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221101085501.443f2ac77bfb0803b91517c2@kernel.org>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 31 Oct 2022 10:27:06 -0700
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
-
-> On Mon, Oct 31, 2022 at 11:15:56PM +0900, Masami Hiramatsu wrote:
-> > Hi Beau,
-> > 
-> > On Thu, 27 Oct 2022 15:40:09 -0700
-> > Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> > 
-> > > As part of the discussions for user_events aligned with user space
-> > > tracers, it was determined that user programs should register a 32-bit
-> > > value to set or clear a bit when an event becomes enabled. Currently a
-> > > shared page is being used that requires mmap().
+On Tue, Nov 01, 2022 at 08:55:01AM +0900, Masami Hiramatsu wrote:
+> On Mon, 31 Oct 2022 09:46:03 -0700
+> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> 
+> > On Mon, Oct 31, 2022 at 11:47:03PM +0900, Masami Hiramatsu wrote:
+> > > Hi,
 > > > 
-> > > In this new model during the event registration from user programs 2 new
-> > > values are specified. The first is the address to update when the event
-> > > is either enabled or disabled. The second is the bit to set/clear to
-> > > reflect the event being enabled. This allows for a local 32-bit value in
-> > > user programs to support both kernel and user tracers. As an example,
-> > > setting bit 31 for kernel tracers when the event becomes enabled allows
-> > > for user tracers to use the other bits for ref counts or other flags.
-> > > The kernel side updates the bit atomically, user programs need to also
-> > > update these values atomically.
+> > > I have some comments.
+> > > 
+> > > On Thu, 27 Oct 2022 15:40:10 -0700
+> > > Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> > > 
+> > > [...]
+> > > > @@ -1570,11 +1610,12 @@ static long user_reg_get(struct user_reg __user *ureg, struct user_reg *kreg)
+> > > >   * Registers a user_event on behalf of a user process.
+> > > >   */
+> > > >  static long user_events_ioctl_reg(struct user_event_file_info *info,
+> > > > -				  unsigned long uarg)
+> > > > +				  struct file *file, unsigned long uarg)
+> > > >  {
+> > > >  	struct user_reg __user *ureg = (struct user_reg __user *)uarg;
+> > > >  	struct user_reg reg;
+> > > >  	struct user_event *user;
+> > > > +	struct user_event_enabler *enabler;
+> > > >  	char *name;
+> > > >  	long ret;
+> > > >  
+> > > > @@ -1607,8 +1648,12 @@ static long user_events_ioctl_reg(struct user_event_file_info *info,
+> > > >  	if (ret < 0)
+> > > >  		return ret;
+> > > >  
+> > > > +	enabler = user_event_enabler_create(file, &reg, user);
+> > > > +
+> > > > +	if (!enabler)
+> > > 
+> > > Shouldn't we free the user_event if needed here?
+> > > (I found the similar memory leak pattern in the above failure case
+> > >  of the user_events_ref_add().)
+> > > 
 > > 
-> > I think you means the kernel tracer (ftrace/perf) and user tracers (e.g. 
-> > LTTng) use the same 32bit data so that traced user-application only checks
-> > that data for checking an event is enabled, right?
+> > user_events are shared across the entire group. They cannot be cleaned
+> > up until all references are gone. This is true both in this case and the
+> > in the user_events_ref_add() case.
 > > 
+> > The pattern is to register events in the group's hashtable, then add
+> > them to the local file ref array that is RCU protected. If the file ref
+> > cannot be allocated, etc. the refcount on user is decremented. If we
+> > cannot create an enabler, the refcount is still held until file release.
 > 
-> Yes, exactly, user code can just check a single uint32 or uint64 to tell
-> if anything is enabled (kernel or user tracer).
+> OK, when the ioctl returns, there should be 3 cases;
 > 
-> > If so, who the user tracer threads updates the data bit? Is that thread
-> > safe to update both kernel tracer and user tracers at the same time?
+> - Return success, a new(existing) user_event added.
+> - Return error, no new user_event added.
+> - Return error, a new user_event added but enabler is not initialized.
+> 
+> And in the last case, the new user_event will be released when user
+> closes the file. Could you comment it here?
+> 
+
+Sure thing, I'll add it.
+
 > > 
+> > If the event has already been added to the local file ref array, it is
+> > returned to prevent another reference.
 > 
-> This is why atomics are used to set the bit on the kernel side. The user
-> side should do the same. This is like the futex code. Do you see a
-> problem with atomics being used between user and kernel space on a
-> shared 32/64-bit address?
+> I'm not sure this point. Did you mean returning an error to prevent
+> registering the same event again?
+> 
 
-Ah, OK. set_bit()/clear_bit() are atomic ops. So the user tracer must
-use per-arch atomic ops implementation too. Hmm, can you comment it there?
+If a process uses the same fd and registers the same event multiple
+times, then only 1 index is returned to the caller. If someone either
+purposely or accidentally does this, the appropriate index will be
+returned and we won't just keep allocating user_event objects.
+
+However, in a threaded application, there may be situations where thread
+A registers event E, and thread B registers event E as well. However,
+they may pass different enable address locations. In this case you will
+get 2 enablers for the single event. Right now the code does this all
+the time, it does not do it only if the enable address differs.
+
+I'm not sure how common this scenario is, but I think I should likely
+check if the address is different or not before creating another enabler
+in this case.
+
+Thoughts?
 
 > 
-> > And what is the actual advantage of this change? Are there any issue
-> > to use mmaped page? I would like to know more background of this
-> > change.
 > > 
-> 
-> Without this change user tracers like LTTng will have to check 2 values
-> instead of 1 to tell if the kernel tracer is enabled or not. Mathieu is
-> working on a user side tracing library in an effort to align writing
-> tracing code in user processes that works well for both kernel and user
-> tracers without much effort.
-> 
-> See here:
-> https://github.com/compudj/side
-
-Thanks for pointing!
-
-> 
-> Are you proposing we keep the bitmap approach and have side library just
-> hook another branch? Mathieu had issues with that approach during our
-> talks.
-
-No, that makes things more complicated. We should choose one.
-
-> 
-> > Could you also provide any sample program which I can play it? :)
+> > > > +		return -ENOMEM;
+> > > > +
+> > > >  	put_user((u32)ret, &ureg->write_index);
+> > > > -	put_user(user->index, &ureg->status_bit);
+> > > >  
+> > > >  	return 0;
+> > > >  }
+> > > [...]
+> > > > @@ -1849,7 +1863,6 @@ static int user_status_open(struct inode *node, struct file *file)
+> > > >  
+> > > >  static const struct file_operations user_status_fops = {
+> > > >  	.open = user_status_open,
+> > > > -	.mmap = user_status_mmap,
+> > > 
+> > > So, if this drops the mmap operation, can we drop the writable flag from
+> > > the status tracefs file?
+> > > 
 > > 
+> > Good catch, yes I'll remove this.
 > 
-> When I make the next patch version, I will update the user_events sample
-> so you'll have something to try out.
-
-That's helpful for me. We can have the code under tools/tracing/user_events/.
-
-Thank you,
-
+> Thanks!
 > 
-> > > User provided addresses must be aligned on a 32-bit boundary, this
-> > > allows for single page checking and prevents odd behaviors such as a
-> > > 32-bit value straddling 2 pages instead of a single page.
+> > 
+> > > static int create_user_tracefs(void)
+> > > {
+> > > [...]
+> > >         /* mmap with MAP_SHARED requires writable fd */
+> > >         emmap = tracefs_create_file("user_events_status", TRACE_MODE_WRITE,
+> > >                                     NULL, NULL, &user_status_fops);
 > > > 
-> > > When page faults are encountered they are done asyncly via a workqueue.
-> > > If the page faults back in, the write update is attempted again. If the
-> > > page cannot fault-in, then we log and wait until the next time the event
-> > > is enabled/disabled. This is to prevent possible infinite loops resulting
-> > > from bad user processes unmapping or changing protection values after
-> > > registering the address.
+> > > Thank you,
 > > > 
-> > > NOTE:
-> > > User programs that wish to have the enable bit shared across forks
-> > > either need to use a MAP_SHARED allocated address or register a new
-> > > address and file descriptor. If MAP_SHARED cannot be used or new
-> > > registrations cannot be done, then it's allowable to use MAP_PRIVATE
-> > > as long as the forked children never update the page themselves. Once
-> > > the page has been updated, the page from the parent will be copied over
-> > > to the child. This new copy-on-write page will not receive updates from
-> > > the kernel until another registration has been performed with this new
-> > > address.
-> > > 
-> > > Beau Belgrave (2):
-> > >   tracing/user_events: Use remote writes for event enablement
-> > >   tracing/user_events: Fixup enable faults asyncly
-> > > 
-> > >  include/linux/user_events.h      |  10 +-
-> > >  kernel/trace/trace_events_user.c | 396 ++++++++++++++++++++-----------
-> > >  2 files changed, 270 insertions(+), 136 deletions(-)
-> > > 
-> > > 
-> > > base-commit: 23758867219c8d84c8363316e6dd2f9fd7ae3049
 > > > -- 
-> > > 2.25.1
-> > > 
+> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > > 
-> > 
-> > -- 
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > Thanks,
+> > -Beau
 > 
-> Thanks,
-> -Beau
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Thanks,
+-Beau
