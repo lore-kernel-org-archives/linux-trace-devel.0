@@ -2,93 +2,180 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC6C7C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  1 Nov 2022 11:15:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D425BFA3743
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  1 Nov 2022 13:52:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229475AbiKALP0 (ORCPT
+        id S230118AbiKANwc (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 1 Nov 2022 07:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51412 "EHLO
+        Tue, 1 Nov 2022 09:52:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbiKALPY (ORCPT
+        with ESMTP id S230129AbiKANw3 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 1 Nov 2022 07:15:24 -0400
-Received: from mailrelay1-1.pub.mailoutpod1-cph3.one.com (mailrelay1-1.pub.mailoutpod1-cph3.one.com [46.30.210.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F2A178BB
-        for <linux-trace-devel@vger.kernel.org>; Tue,  1 Nov 2022 04:15:23 -0700 (PDT)
-Received: from mailrelay6.pub.mailoutpod2-cph3.one.com (mailrelay6.pub.mailoutpod2-cph3.one.com [104.37.34.11])
-        by mailrelay1.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPS
-        id 7a04bf8a-59d6-11ed-a6d5-d0431ea8a283;
-        Tue, 01 Nov 2022 11:15:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=berginkonsult.se; s=rsa1;
-        h=content-transfer-encoding:content-type:in-reply-to:from:references:to:subject:
-         mime-version:date:message-id:from;
-        bh=Ym5Jr3BsyKUqUs55JEwcIK2d1n1du66eVJRBCx9zdPc=;
-        b=heiqOk7UEuwL+92Cz78uVRvTnqdGAIutVyHFw8q+/anV+GaJ5YYQB9N6qvM9fDqZi6qka55Qw8+1M
-         kW7fFjWMyfnLy8wi8E2DR8A6D9l5rH0qNB5ykOMnOPrK7LbC9uhl/+vjX20eicNrgoqPSegsGdpduW
-         jHDHgEzlG+mg533cqPNULjoMFEsdP0o4WZ9GuQgIuZdQpyM4qQH+cW9jXPU0aYCbJFwxqbntrpEEQy
-         Y+/GaqdtYbvInmdiVtvO+cTblWUcSbAhnCcUt4Oestg4tEotfl1VbfddJEXpvl5Pu1Jqe1mCQsDZ/a
-         R4iAGD0O2CreZ2mUI0hjGvFBsUvDIrQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-        d=berginkonsult.se; s=ed1;
-        h=content-transfer-encoding:content-type:in-reply-to:from:references:to:subject:
-         mime-version:date:message-id:from;
-        bh=Ym5Jr3BsyKUqUs55JEwcIK2d1n1du66eVJRBCx9zdPc=;
-        b=R74P+fRU5FVg2l/OjLfpnRmp+4VnOdXGSDDwa4woA+3Jv6p4KwPOXhPTJbdaFF555L51wpHAj74nW
-         Dd5NUQtBw==
-X-HalOne-ID: 793af140-59d6-11ed-8b9f-a782043f7fe3
-Received: from [192.168.100.34] (ua-213-113-159-147.bbcust.telenor.se [213.113.159.147])
-        by mailrelay6 (Halon) with ESMTPSA
-        id 793af140-59d6-11ed-8b9f-a782043f7fe3;
-        Tue, 01 Nov 2022 11:15:22 +0000 (UTC)
-Message-ID: <ed05620a-7ce2-cd8b-320f-9a07019758d2@berginkonsult.se>
-Date:   Tue, 1 Nov 2022 12:15:21 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [PATCH] libtraceevent: make it possible to set libdir and mandir
- from outside
-Content-Language: en-US
-To:     linux-trace-devel@vger.kernel.org
-References: <20221031212140.170601-1-peter@berginkonsult.se>
-From:   Peter Bergin <peter@berginkonsult.se>
-In-Reply-To: <20221031212140.170601-1-peter@berginkonsult.se>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Tue, 1 Nov 2022 09:52:29 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C0813F9B;
+        Tue,  1 Nov 2022 06:52:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 43DB9B81D9F;
+        Tue,  1 Nov 2022 13:52:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3BA8C433D7;
+        Tue,  1 Nov 2022 13:52:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667310743;
+        bh=dfziG2vuEiP9trk6wO8lQZ/+UBCzl6JP73fjp+e+yCw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GVht0bStMl0LY5OQ1gJdvPuL3+rAc+I7KDFXQzMgjnu0Qi0U9KrL/vrxMAA5t4HDd
+         6vcaIT4bnS6QenlaYLeovS7sKrjpxXfIjhTNx0bBykvnFITsSt4cAh/aweEQl3CLy9
+         /kWyPFgSF9wqJhmoXi38nARGy5MlhBK3ijPs3+RDoXFpZG01cuM7LJcCfI1DaavEco
+         m1wTkCX7cPC6WNnNIXDVN0msJoSOrqjwXU0pb+sochQAnpGKpA6ehZn+UuSkUkGJlY
+         PflBMLEedmG2camror4I3rf4wbQFJ/cd37ynZk5K7SU8vQ353foe+VCxeN616JCelT
+         2NkIw2ftaqqdA==
+Date:   Tue, 1 Nov 2022 22:52:20 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        dcook@linux.microsoft.com, alanau@linux.microsoft.com,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/2] tracing/user_events: Remote write ABI
+Message-Id: <20221101225220.a948157064a47678d2ed6fd7@kernel.org>
+In-Reply-To: <20221031172706.GA196@W11-BEAU-MD.localdomain>
+References: <20221027224011.2075-1-beaub@linux.microsoft.com>
+        <20221031231556.a15846fd3513641d48820d5b@kernel.org>
+        <20221031172706.GA196@W11-BEAU-MD.localdomain>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 2022-10-31 22:21, Peter Bergin wrote:
-> When building in build frameworks such as openembedded it is desired
-> to use the defintion of libdir and mandir from the build framework.
->
-> Signed-off-by: Peter Bergin <peter@berginkonsult.se>
-> ---
->   Makefile | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/Makefile b/Makefile
-> index fab8f7e..e974117 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -46,8 +46,8 @@ endif
->   
->   libdir_relative ?= $(libdir_relative_temp)
->   prefix ?= /usr/local
-> -libdir = $(prefix)/$(libdir_relative)
-> -man_dir = $(prefix)/share/man
-> +libdir ?= $(prefix)/$(libdir_relative)
-> +man_dir ?= $(prefix)/share/man
->   man_dir_SQ = '$(subst ','\'',$(man_dir))'
->   pkgconfig_dir ?= $(word 1,$(shell $(PKG_CONFIG) 		\
->   			--variable pc_path pkg-config | tr ":" " "))
+On Mon, 31 Oct 2022 10:27:06 -0700
+Beau Belgrave <beaub@linux.microsoft.com> wrote:
 
-This patch has been superseded by a v2 patch because I did a mistake and 
-wrote the wrong prefix. Reference to new patch: 
-https://lore.kernel.org/linux-trace-devel/20221101111143.191772-1-peter@berginkonsult.se/
+> On Mon, Oct 31, 2022 at 11:15:56PM +0900, Masami Hiramatsu wrote:
+> > Hi Beau,
+> > 
+> > On Thu, 27 Oct 2022 15:40:09 -0700
+> > Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> > 
+> > > As part of the discussions for user_events aligned with user space
+> > > tracers, it was determined that user programs should register a 32-bit
+> > > value to set or clear a bit when an event becomes enabled. Currently a
+> > > shared page is being used that requires mmap().
+> > > 
+> > > In this new model during the event registration from user programs 2 new
+> > > values are specified. The first is the address to update when the event
+> > > is either enabled or disabled. The second is the bit to set/clear to
+> > > reflect the event being enabled. This allows for a local 32-bit value in
+> > > user programs to support both kernel and user tracers. As an example,
+> > > setting bit 31 for kernel tracers when the event becomes enabled allows
+> > > for user tracers to use the other bits for ref counts or other flags.
+> > > The kernel side updates the bit atomically, user programs need to also
+> > > update these values atomically.
+> > 
+> > I think you means the kernel tracer (ftrace/perf) and user tracers (e.g. 
+> > LTTng) use the same 32bit data so that traced user-application only checks
+> > that data for checking an event is enabled, right?
+> > 
+> 
+> Yes, exactly, user code can just check a single uint32 or uint64 to tell
+> if anything is enabled (kernel or user tracer).
+> 
+> > If so, who the user tracer threads updates the data bit? Is that thread
+> > safe to update both kernel tracer and user tracers at the same time?
+> > 
+> 
+> This is why atomics are used to set the bit on the kernel side. The user
+> side should do the same. This is like the futex code. Do you see a
+> problem with atomics being used between user and kernel space on a
+> shared 32/64-bit address?
 
-Best regards,
-/Peter
+Ah, OK. set_bit()/clear_bit() are atomic ops. So the user tracer must
+use per-arch atomic ops implementation too. Hmm, can you comment it there?
 
+> 
+> > And what is the actual advantage of this change? Are there any issue
+> > to use mmaped page? I would like to know more background of this
+> > change.
+> > 
+> 
+> Without this change user tracers like LTTng will have to check 2 values
+> instead of 1 to tell if the kernel tracer is enabled or not. Mathieu is
+> working on a user side tracing library in an effort to align writing
+> tracing code in user processes that works well for both kernel and user
+> tracers without much effort.
+> 
+> See here:
+> https://github.com/compudj/side
+
+Thanks for pointing!
+
+> 
+> Are you proposing we keep the bitmap approach and have side library just
+> hook another branch? Mathieu had issues with that approach during our
+> talks.
+
+No, that makes things more complicated. We should choose one.
+
+> 
+> > Could you also provide any sample program which I can play it? :)
+> > 
+> 
+> When I make the next patch version, I will update the user_events sample
+> so you'll have something to try out.
+
+That's helpful for me. We can have the code under tools/tracing/user_events/.
+
+Thank you,
+
+> 
+> > > User provided addresses must be aligned on a 32-bit boundary, this
+> > > allows for single page checking and prevents odd behaviors such as a
+> > > 32-bit value straddling 2 pages instead of a single page.
+> > > 
+> > > When page faults are encountered they are done asyncly via a workqueue.
+> > > If the page faults back in, the write update is attempted again. If the
+> > > page cannot fault-in, then we log and wait until the next time the event
+> > > is enabled/disabled. This is to prevent possible infinite loops resulting
+> > > from bad user processes unmapping or changing protection values after
+> > > registering the address.
+> > > 
+> > > NOTE:
+> > > User programs that wish to have the enable bit shared across forks
+> > > either need to use a MAP_SHARED allocated address or register a new
+> > > address and file descriptor. If MAP_SHARED cannot be used or new
+> > > registrations cannot be done, then it's allowable to use MAP_PRIVATE
+> > > as long as the forked children never update the page themselves. Once
+> > > the page has been updated, the page from the parent will be copied over
+> > > to the child. This new copy-on-write page will not receive updates from
+> > > the kernel until another registration has been performed with this new
+> > > address.
+> > > 
+> > > Beau Belgrave (2):
+> > >   tracing/user_events: Use remote writes for event enablement
+> > >   tracing/user_events: Fixup enable faults asyncly
+> > > 
+> > >  include/linux/user_events.h      |  10 +-
+> > >  kernel/trace/trace_events_user.c | 396 ++++++++++++++++++++-----------
+> > >  2 files changed, 270 insertions(+), 136 deletions(-)
+> > > 
+> > > 
+> > > base-commit: 23758867219c8d84c8363316e6dd2f9fd7ae3049
+> > > -- 
+> > > 2.25.1
+> > > 
+> > 
+> > 
+> > -- 
+> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> Thanks,
+> -Beau
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
