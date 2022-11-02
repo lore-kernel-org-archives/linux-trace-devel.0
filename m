@@ -2,199 +2,164 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF03CC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  1 Nov 2022 16:55:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FC0EC4332F
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  2 Nov 2022 13:46:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbiKAQzd (ORCPT
+        id S230397AbiKBNqc (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 1 Nov 2022 12:55:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55646 "EHLO
+        Wed, 2 Nov 2022 09:46:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbiKAQzd (ORCPT
+        with ESMTP id S230280AbiKBNqa (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 1 Nov 2022 12:55:33 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2BEB42B2;
-        Tue,  1 Nov 2022 09:55:32 -0700 (PDT)
-Received: from W11-BEAU-MD.localdomain (unknown [76.135.50.127])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C3DCF205D3B7;
-        Tue,  1 Nov 2022 09:55:31 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C3DCF205D3B7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1667321731;
-        bh=ZxUDhag+SzXzqq0HYVtbUdQX9aVD/5bvmeFf32UifHk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AiN0IFR/B/56M3TVvT2kBDhXMIlq8FswTe+cBLNl/uXxo1MFU/KAGvrzO0q+ZiFdD
-         E0WwHYfKtcUgPf/zFgxdBMiD/qF19Rh4BvexW6NXhsjmdxSsWUeF5UPYuiB79TuEnh
-         y034XCVDdFhq2k0ehpteOibGtwjwvGen2p5dRXVk=
-Date:   Tue, 1 Nov 2022 09:55:28 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        Wed, 2 Nov 2022 09:46:30 -0400
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56BC32AC7C;
+        Wed,  2 Nov 2022 06:46:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1667396785;
+        bh=XYmFvXQ4GOXPUVmiEl6Ck9BNbLvwbpXoiDFUhcSXDR8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=mDsqjwsCguRcOe5Lmuj7UX8v4HO7pExu2d7XqR0jkyS2mKljUgfovldWUycD+git8
+         7zaNRdcDWQnqjiuRfMwnRdFQxA1x0gaUNb7gEKaT+YD+lWXs0gMpJKrk4DBFPj2khj
+         aG6OJ2ijIgZ/iKKonCGNIldnXtg/uq5msWO3NGZoPabhRNPne7Id/nWAF/3PgGnwDC
+         Xqqldiit6MbRzShPI1bdFKm8CP+rQKT92ZYlQ2k5ZERKhahwQXAlPaek2D/zTBrYUJ
+         pogmBwErol/CzH9BvPoaCisZTRt/Sg3UbC4liMZJJt8cUMNmyg7c9WIxWtgiSNRVGS
+         ftMTwN/AASvOw==
+Received: from [172.16.0.153] (192-222-180-24.qc.cable.ebox.net [192.222.180.24])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4N2Spn3K1jzfnH;
+        Wed,  2 Nov 2022 09:46:25 -0400 (EDT)
+Message-ID: <3ff4d759-307e-31a2-4124-98de9e423d7e@efficios.com>
+Date:   Wed, 2 Nov 2022 09:46:31 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: [RFC PATCH 0/2] tracing/user_events: Remote write ABI
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     rostedt@goodmis.org, mhiramat@kernel.org,
         dcook@linux.microsoft.com, alanau@linux.microsoft.com,
         linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] tracing/user_events: Remote write ABI
-Message-ID: <20221101165528.GB69@W11-BEAU-MD.localdomain>
 References: <20221027224011.2075-1-beaub@linux.microsoft.com>
- <20221031231556.a15846fd3513641d48820d5b@kernel.org>
- <20221031172706.GA196@W11-BEAU-MD.localdomain>
- <20221101225220.a948157064a47678d2ed6fd7@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221101225220.a948157064a47678d2ed6fd7@kernel.org>
+ <96d9f066-2f39-78e6-9be7-f9c69235615e@efficios.com>
+ <20221028221728.GA162@W11-BEAU-MD.localdomain>
+ <01d10e59-0ea6-e60f-8561-84aa5dee40d3@efficios.com>
+ <20221031165314.GA129@W11-BEAU-MD.localdomain>
+Content-Language: en-US
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20221031165314.GA129@W11-BEAU-MD.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Nov 01, 2022 at 10:52:20PM +0900, Masami Hiramatsu wrote:
-> On Mon, 31 Oct 2022 10:27:06 -0700
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+On 2022-10-31 12:53, Beau Belgrave wrote:
+> On Sat, Oct 29, 2022 at 09:58:26AM -0400, Mathieu Desnoyers wrote:
+>> On 2022-10-28 18:17, Beau Belgrave wrote:
+>>> On Fri, Oct 28, 2022 at 05:50:04PM -0400, Mathieu Desnoyers wrote:
+>>>> On 2022-10-27 18:40, Beau Belgrave wrote:
+>>
+>> [...]
+>>>
+>>>>>
+>>>>> NOTE:
+>>>>> User programs that wish to have the enable bit shared across forks
+>>>>> either need to use a MAP_SHARED allocated address or register a new
+>>>>> address and file descriptor. If MAP_SHARED cannot be used or new
+>>>>> registrations cannot be done, then it's allowable to use MAP_PRIVATE
+>>>>> as long as the forked children never update the page themselves. Once
+>>>>> the page has been updated, the page from the parent will be copied over
+>>>>> to the child. This new copy-on-write page will not receive updates from
+>>>>> the kernel until another registration has been performed with this new
+>>>>> address.
+>>>>
+>>>> This seems rather odd. I would expect that if a parent process registers
+>>>> some instrumentation using private mappings for enabled state through the
+>>>> user events ioctl, and then forks, the child process would seamlessly be
+>>>> traced by the user events ABI while being able to also change the enabled
+>>>> state from the userspace tracer libraries (which would trigger COW).
+>>>> Requiring the child to re-register to user events is rather odd.
+>>>>
+>>>
+>>> It's the COW that is the problem, see below.
+>>>
+>>>> What is preventing us from tracing the child without re-registration in this
+>>>> scenario ?
+>>>>
+>>>
+>>> Largely knowing when the COW occurs on a specific page. We don't make
+>>> the mappings, so I'm unsure if we can ask to be notified easily during
+>>> these times or not. If we could, that would solve this. I'm glad you are
+>>> thinking about this. The note here was exactly to trigger this
+>>> discussion :)
+>>>
+>>> I believe this is the same as a Futex, I'll take another look at that
+>>> code to see if they've come up with anything regarding this.
+>>>
+>>> Any ideas?
+>>
+>> Based on your description of the symptoms, AFAIU, upon registration of a
+>> given user event associated with a mm_struct, the user events ioctl appears
+>> to translates the virtual address into a page pointer immediately, and keeps
+>> track of that page afterwards. This means it loses track of the page when
+>> COW occurs.
+>>
 > 
-> > On Mon, Oct 31, 2022 at 11:15:56PM +0900, Masami Hiramatsu wrote:
-> > > Hi Beau,
-> > > 
-> > > On Thu, 27 Oct 2022 15:40:09 -0700
-> > > Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> > > 
-> > > > As part of the discussions for user_events aligned with user space
-> > > > tracers, it was determined that user programs should register a 32-bit
-> > > > value to set or clear a bit when an event becomes enabled. Currently a
-> > > > shared page is being used that requires mmap().
-> > > > 
-> > > > In this new model during the event registration from user programs 2 new
-> > > > values are specified. The first is the address to update when the event
-> > > > is either enabled or disabled. The second is the bit to set/clear to
-> > > > reflect the event being enabled. This allows for a local 32-bit value in
-> > > > user programs to support both kernel and user tracers. As an example,
-> > > > setting bit 31 for kernel tracers when the event becomes enabled allows
-> > > > for user tracers to use the other bits for ref counts or other flags.
-> > > > The kernel side updates the bit atomically, user programs need to also
-> > > > update these values atomically.
-> > > 
-> > > I think you means the kernel tracer (ftrace/perf) and user tracers (e.g. 
-> > > LTTng) use the same 32bit data so that traced user-application only checks
-> > > that data for checking an event is enabled, right?
-> > > 
-> > 
-> > Yes, exactly, user code can just check a single uint32 or uint64 to tell
-> > if anything is enabled (kernel or user tracer).
-> > 
-> > > If so, who the user tracer threads updates the data bit? Is that thread
-> > > safe to update both kernel tracer and user tracers at the same time?
-> > > 
-> > 
-> > This is why atomics are used to set the bit on the kernel side. The user
-> > side should do the same. This is like the futex code. Do you see a
-> > problem with atomics being used between user and kernel space on a
-> > shared 32/64-bit address?
+> No, we keep the memory descriptor and virtual address so we can properly
+> resolve to page per-process.
 > 
-> Ah, OK. set_bit()/clear_bit() are atomic ops. So the user tracer must
-> use per-arch atomic ops implementation too. Hmm, can you comment it there?
+>> Why not keep track of the registered virtual address and struct_mm
+>> associated with the event rather than the page ? Whenever a state change is
+>> needed, the virtual-address-to-page translation will be performed again. If
+>> it follows a COW, it will get the new copied page. If it happens that no COW
+>> was done, it should map to the original page. If the mapping is shared, the
+>> kernel would update that shared page. If the mapping is private, then the
+>> kernel would COW the page before updating it.
+>>
+>> Thoughts ?
+>>
 > 
+> I think you are forgetting about page table entries. My understanding is
+> the process will have the VMAs copied on fork, but the page table
+> entries will be marked read-only. Then when the write access occurs, the
+> COW is created (since the PTE says readonly, but the VMA says writable).
+> However, that COW page is now only mapped within that forked process
+> page table.
+> 
+> This requires tracking the child memory descriptors in addition to the
+> parent. The most straightforward way I see this happening is requiring
+> user side to mmap the user_event_data fd that is used for write. This
+> way when fork occurs in dup_mm() / dup_mmap() that mmap'd
+> user_event_data will get open() / close() called per-fork. I could then
+> copy the enablers from the parent but with the child's memory descriptor
+> to allow proper lookup.
+> 
+> This is like fork before COW, it's a bummer I cannot see a way to do
+> this per-page. Doing the above would work, but it requires copying all
+> the enablers, not just the one that changed after the fork.
 
-I can add a comment here, I also plan to update our documentation. I
-really want to get good feedback on this first, so I avoid updating the
-documentation several times as we progress this conversation. Expect
-documentation updates when I flip from RFC to normal patchset.
+This brings an overall design concern I have with user-events: AFAIU, 
+the lifetime of the user event registration appears to be linked to the 
+lifetime of a file descriptor.
 
-> > 
-> > > And what is the actual advantage of this change? Are there any issue
-> > > to use mmaped page? I would like to know more background of this
-> > > change.
-> > > 
-> > 
-> > Without this change user tracers like LTTng will have to check 2 values
-> > instead of 1 to tell if the kernel tracer is enabled or not. Mathieu is
-> > working on a user side tracing library in an effort to align writing
-> > tracing code in user processes that works well for both kernel and user
-> > tracers without much effort.
-> > 
-> > See here:
-> > https://github.com/compudj/side
-> 
-> Thanks for pointing!
-> 
-> > 
-> > Are you proposing we keep the bitmap approach and have side library just
-> > hook another branch? Mathieu had issues with that approach during our
-> > talks.
-> 
-> No, that makes things more complicated. We should choose one.
-> 
+What happens when that file descriptor is duplicated and send over to 
+another process through unix sockets credentials ? Does it mean that the 
+kernel have a handle on the wrong process to update the "enabled" state?
 
-Agree, it seems we are settling behind the user provided address
-approach, as long as we can work through fork() and other scenarios.
-During the bi-weekly tracefs meetings we've been going back and forth
-on which approach to take.
+Also, what happens on execve system call if the file descriptor 
+representing the user event is not marked as close-on-exec ? Does it 
+mean the kernel can corrupt user-space memory of the after-exec loaded 
+binary when it attempts to update the "enabled" state ?
 
-I promised a RFC patch to see how far I could get on this to see what
-edge cases exist that we need to work through. Currently fork() seems
-the hardest to do with private mappings, but I believe I have a path
-forward that I'll put in the next version of this patchset.
-
-> > 
-> > > Could you also provide any sample program which I can play it? :)
-> > > 
-> > 
-> > When I make the next patch version, I will update the user_events sample
-> > so you'll have something to try out.
-> 
-> That's helpful for me. We can have the code under tools/tracing/user_events/.
-> 
-
-I was planning to update the existing sample at samples/user_events/.
-Any reason that location can't be used?
-
-> Thank you,
-> 
-> > 
-> > > > User provided addresses must be aligned on a 32-bit boundary, this
-> > > > allows for single page checking and prevents odd behaviors such as a
-> > > > 32-bit value straddling 2 pages instead of a single page.
-> > > > 
-> > > > When page faults are encountered they are done asyncly via a workqueue.
-> > > > If the page faults back in, the write update is attempted again. If the
-> > > > page cannot fault-in, then we log and wait until the next time the event
-> > > > is enabled/disabled. This is to prevent possible infinite loops resulting
-> > > > from bad user processes unmapping or changing protection values after
-> > > > registering the address.
-> > > > 
-> > > > NOTE:
-> > > > User programs that wish to have the enable bit shared across forks
-> > > > either need to use a MAP_SHARED allocated address or register a new
-> > > > address and file descriptor. If MAP_SHARED cannot be used or new
-> > > > registrations cannot be done, then it's allowable to use MAP_PRIVATE
-> > > > as long as the forked children never update the page themselves. Once
-> > > > the page has been updated, the page from the parent will be copied over
-> > > > to the child. This new copy-on-write page will not receive updates from
-> > > > the kernel until another registration has been performed with this new
-> > > > address.
-> > > > 
-> > > > Beau Belgrave (2):
-> > > >   tracing/user_events: Use remote writes for event enablement
-> > > >   tracing/user_events: Fixup enable faults asyncly
-> > > > 
-> > > >  include/linux/user_events.h      |  10 +-
-> > > >  kernel/trace/trace_events_user.c | 396 ++++++++++++++++++++-----------
-> > > >  2 files changed, 270 insertions(+), 136 deletions(-)
-> > > > 
-> > > > 
-> > > > base-commit: 23758867219c8d84c8363316e6dd2f9fd7ae3049
-> > > > -- 
-> > > > 2.25.1
-> > > > 
-> > > 
-> > > 
-> > > -- 
-> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> > Thanks,
-> > -Beau
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+If I get this right, I suspect we might want to move the lifetime of the 
+user event registration to the memory space (mm_struct).
 
 Thanks,
--Beau
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
