@@ -2,102 +2,332 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82AD0C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Nov 2022 16:33:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBB97C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Nov 2022 23:53:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234086AbiKKQdL (ORCPT
+        id S234380AbiKKXx1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Nov 2022 11:33:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56840 "EHLO
+        Fri, 11 Nov 2022 18:53:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234128AbiKKQdK (ORCPT
+        with ESMTP id S234678AbiKKXxZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Nov 2022 11:33:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6235483682
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Nov 2022 08:32:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1668184332;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F2aMgNrmGwKwBaWad+YX98Mrt+mogZ0kg4N8L1HjPf0=;
-        b=JTGVTAvMip7Sa2Y3uf/f1W6f0NrBXPrRUa0vGPi+aNwxCR6uO0CwHLR2gy/mKdjw5UXdaI
-        3cRGhbKvL3Rk1KpEiMIHGXQu2r/eNJ6oJP+oR/Y32ZKt+2zGQHkdmXV5k7DMHyD2uUPZ5y
-        aUk0WukcheQrAzfR+QVv0ay138dL4pY=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-592-pfK5QsidPj-7zkq2YAr-nQ-1; Fri, 11 Nov 2022 11:32:11 -0500
-X-MC-Unique: pfK5QsidPj-7zkq2YAr-nQ-1
-Received: by mail-qv1-f72.google.com with SMTP id mb6-20020a056214550600b004bc0f14f7b2so3948085qvb.2
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Nov 2022 08:32:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F2aMgNrmGwKwBaWad+YX98Mrt+mogZ0kg4N8L1HjPf0=;
-        b=KTJBEhgkqS/si5BB1P03Cnv0ELegrS5NIl14ha0C4bIs5mF7oaMaLwOta4Pi3hAWZP
-         EA+numzglhaCcKbx2D7ms+LibhMqmV+xVLgsgDYSB7zR5n73xwjFAEPd3HaRluIWB0IN
-         VMeuY3q9X8EuiHVmdnsGGKBlNozWpIcNBhG9/1TZfQl80aNXxTuubNfxaQlwGJnfWcGd
-         tI7BP61ZtgPVIUNBADzyPzxjt6fG9HyOBE4bLIcw85KSNxF+4sCJfTJNFKuKuCsWBY8m
-         AH0AF6O4cQYQuvo/vK/1kOCq7LWL90Lva/1aMSFwznnG3DaqWpeKW+5nRfCHCy3bafJi
-         k50w==
-X-Gm-Message-State: ANoB5pl7CujGNnA+yPVSHHRtFxz37KmZA3PX05uDtaoqdpPG+VInxBkG
-        qch9enmRGB5lPpVfEBZ7TRPOO50a6XvwVXWngPHisUbkQPKGS29SCP5Fn/aa0jjUC7ZCiX/P+qq
-        NYXXa4yNXPJ255WUwn8n+Eh78M5jOjuE=
-X-Received: by 2002:a37:95c7:0:b0:6f8:3f8f:e629 with SMTP id x190-20020a3795c7000000b006f83f8fe629mr1654399qkd.684.1668184330649;
-        Fri, 11 Nov 2022 08:32:10 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf6UJlvo5WW+4eVxe52el69/zcvA5/DwtZ7h5zAHsgU5UMyslv39VfxOqXLHt4ERvp2X8ZGufA==
-X-Received: by 2002:a37:95c7:0:b0:6f8:3f8f:e629 with SMTP id x190-20020a3795c7000000b006f83f8fe629mr1654393qkd.684.1668184330450;
-        Fri, 11 Nov 2022 08:32:10 -0800 (PST)
-Received: from vschneid.remote.csb ([154.57.232.159])
-        by smtp.gmail.com with ESMTPSA id v65-20020a379344000000b006e54251993esm1597530qkd.97.2022.11.11.08.32.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Nov 2022 08:32:09 -0800 (PST)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        Douglas RAILLARD <douglas.raillard@arm.com>
-Subject: Re: [PATCH 1/2] libtraceevent: Add boiler-plate code for cpumask types
-In-Reply-To: <20221109190634.1fd9200d@rorschach.local.home>
-References: <20221018151630.1513535-1-vschneid@redhat.com>
- <20221018151630.1513535-2-vschneid@redhat.com>
- <20221109190634.1fd9200d@rorschach.local.home>
-Date:   Fri, 11 Nov 2022 16:32:03 +0000
-Message-ID: <xhsmhedu9zc3g.mognet@vschneid.remote.csb>
+        Fri, 11 Nov 2022 18:53:25 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEEC51B7
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Nov 2022 15:53:22 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7982B60F32
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Nov 2022 23:53:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2AEDC433D6
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Nov 2022 23:53:21 +0000 (UTC)
+Date:   Fri, 11 Nov 2022 18:53:18 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] libtracefs: Add tracefs_event_is_enabled() API
+Message-ID: <20221111185318.22e9bca9@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 09/11/22 19:06, Steven Rostedt wrote:
-> On Tue, 18 Oct 2022 16:16:29 +0100
-> Valentin Schneider <vschneid@redhat.com> wrote:
->
->> @@ -3484,6 +3498,11 @@ process_function(struct tep_event *event, struct tep_print_arg *arg,
->>              free_token(token);
->>              return process_bitmask(event, arg, tok);
->>      }
->> +	if (strcmp(token, "__get_cpumask") == 0 ||
->> +	    strcmp(token, "__get_cpumask") == 0) {
->
-> Hmm, not sure what the difference between the above two are.
->
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-One makes sense, the other doesn't :-)
+Add a function that checks if an event (or events) are enabled or not.
+Returns the enums:
 
-That's a copy/paste fail, the second one wants to be "__get_rel_cpumask"
+  TRACEFS_ERROR		= -1
+  TRACEFS_ALL_DISABLED	= 0
+  TRACEFS_ALL_ENABLED	= 1
+  TRACEFS_SOME_ENABLED	= 2
 
-> -- Steve
->
->> +		free_token(token);
->> +		return process_cpumask(event, arg, tok);
->> +	}
->>      if (strcmp(token, "__get_dynamic_array") == 0 ||
->>          strcmp(token, "__get_rel_dynamic_array") == 0 ||
->>          strcmp(token, "__get_sockaddr") == 0 ||
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ Documentation/libtracefs-events.txt |  30 ++++++-
+ include/tracefs.h                   |   9 ++
+ src/tracefs-events.c                | 128 ++++++++++++++++++++++++++--
+ 3 files changed, 157 insertions(+), 10 deletions(-)
+
+diff --git a/Documentation/libtracefs-events.txt b/Documentation/libtracefs-events.txt
+index f998c79b04ec..2c1c83bf7685 100644
+--- a/Documentation/libtracefs-events.txt
++++ b/Documentation/libtracefs-events.txt
+@@ -4,7 +4,7 @@ libtracefs(3)
+ NAME
+ ----
+ tracefs_event_systems, tracefs_system_events, tracefs_event_enable, tracefs_event_disable,
+-tracefs_iterate_raw_events, tracefs_iterate_stop - Work with trace systems and events.
++tracefs_event_is_enabled, tracefs_iterate_raw_events, tracefs_iterate_stop - Work with trace systems and events.
+ 
+ SYNOPSIS
+ --------
+@@ -12,12 +12,22 @@ SYNOPSIS
+ --
+ *#include <tracefs.h>*
+ 
++enum tracefs_event_state {
++	TRACEFS_ERROR = -1,
++	TRACEFS_ALL_DISABLED = 0,
++	TRACEFS_ALL_ENABLED = 1,
++	TRACEFS_SOME_ENABLED = 2,
++};
++
+ char pass:[*]pass:[*]*tracefs_event_systems*(const char pass:[*]_tracing_dir_);
+ char pass:[*]pass:[*]*tracefs_system_events*(const char pass:[*]_tracing_dir_, const char pass:[*]_system_);
+ int *tracefs_event_enable*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_system_,
+ 			   const char pass:[*]_event_);
+ int *tracefs_event_disable*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_system_,
+ 			    const char pass:[*]_event_);
++enum tracefs_enable_state *tracefs_event_is_enabled*(struct tracefs_instance pass:[*]instance,
++			 const char pass:[*]system, const char pass:[*]event);
++
+ int *tracefs_iterate_raw_events*(struct tep_handle pass:[*]_tep_, struct tracefs_instance pass:[*]_instance_,
+ 				 cpu_set_t pass:[*]_cpus_, int _cpu_size_,
+ 				 int (pass:[*]_callback_)(struct tep_event pass:[*], struct tep_record pass:[*], int, void pass:[*]),
+@@ -61,6 +71,24 @@ events. That is, if _instance_ is NULL, then the top level tracing directory
+ is used. If both _system_ and _event_ are NULL then all events are disabled
+ for the given _instance_, and so on.
+ 
++The *tracefs_event_is_enabled()* returns if an event is enabled, a set of
++events are enabled, a system is enabled, or all events are enabled. If both
++_system_ and _event_ are NULL, then it returns the enable state of all events.
++If _system_ is not NULL and _event_ is NULL, then it will check if all the events
++in all the systems that _system_ and return the enable state of those events.
++If _system_ is NULL and _event_ is not NULL, then it will match all the events
++in all systmes that match _event_ and return their enabled state. If both _system_
++and _event_ are not NULL, then it will return the enabled state of all matching
++events. The enabled state is defined as:
++
++*TRACEFS_ERROR* - An error occurred including no event were matched.
++
++*TRACEFS_ALL_DISABLED* - All matching events are disabled.
++
++*TRACEFS_ALL_ENABLED* - All matching events are enabled.
++
++*TRACEFS_SOME_ENABLED* - Some matching events were enabled while others were not.
++
+ The *tracefs_iterate_raw_events()* function will read the tracefs raw
+ data buffers and call the specified _callback_ function for every event it
+ encounters. Events are iterated in sorted order: oldest first. An initialized
+diff --git a/include/tracefs.h b/include/tracefs.h
+index 9f0bdc62836a..f2524b07501d 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -67,8 +67,17 @@ int tracefs_trace_off(struct tracefs_instance *instance);
+ int tracefs_trace_on_fd(int fd);
+ int tracefs_trace_off_fd(int fd);
+ 
++enum tracefs_enable_state {
++	TRACEFS_ERROR		= -1,
++	TRACEFS_ALL_DISABLED	= 0,
++	TRACEFS_ALL_ENABLED	= 1,
++	TRACEFS_SOME_ENABLED	= 2,
++};
++
+ int tracefs_event_enable(struct tracefs_instance *instance, const char *system, const char *event);
+ int tracefs_event_disable(struct tracefs_instance *instance, const char *system, const char *event);
++enum tracefs_enable_state tracefs_event_is_enabled(struct tracefs_instance *instance,
++			 const char *system, const char *event);
+ 
+ char *tracefs_error_last(struct tracefs_instance *instance);
+ char *tracefs_error_all(struct tracefs_instance *instance);
+diff --git a/src/tracefs-events.c b/src/tracefs-events.c
+index d870241e127f..57b22964f893 100644
+--- a/src/tracefs-events.c
++++ b/src/tracefs-events.c
+@@ -1044,9 +1044,68 @@ static bool match(const char *str, regex_t *re)
+ 	return regexec(re, str, 0, NULL, 0) == 0;
+ }
+ 
++enum event_state {
++	STATE_INIT,
++	STATE_ENABLED,
++	STATE_DISABLED,
++	STATE_MIXED,
++	STATE_ERROR,
++};
++
++static int read_event_state(struct tracefs_instance *instance, const char *file,
++			    enum event_state *state)
++{
++	char *val;
++	int ret = 0;
++
++	if (*state == STATE_ERROR)
++		return -1;
++
++	val = tracefs_instance_file_read(instance, file, NULL);
++	if (!val)
++		return -1;
++
++	switch (val[0]) {
++	case '0':
++		switch (*state) {
++		case STATE_INIT:
++			*state = STATE_DISABLED;
++			break;
++		case STATE_ENABLED:
++			*state = STATE_MIXED;
++			break;
++		default:
++			break;
++		}
++		break;
++	case '1':
++		switch (*state) {
++		case STATE_INIT:
++			*state = STATE_ENABLED;
++			break;
++		case STATE_DISABLED:
++			*state = STATE_MIXED;
++			break;
++		default:
++			break;
++		}
++		break;
++	case 'X':
++		*state = STATE_MIXED;
++		break;
++	default:
++		*state = TRACEFS_ERROR;
++		ret = -1;
++		break;
++	}
++	free(val);
++
++	return ret;
++}
++
+ static int enable_disable_event(struct tracefs_instance *instance,
+ 				const char *system, const char *event,
+-				bool enable)
++				bool enable, enum event_state *state)
+ {
+ 	const char *str = enable ? "1" : "0";
+ 	char *system_event;
+@@ -1056,14 +1115,18 @@ static int enable_disable_event(struct tracefs_instance *instance,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = tracefs_instance_file_write(instance, system_event, str);
++	if (state)
++		ret = read_event_state(instance, system_event, state);
++	else
++		ret = tracefs_instance_file_write(instance, system_event, str);
+ 	free(system_event);
+ 
+ 	return ret;
+ }
+ 
+ static int enable_disable_system(struct tracefs_instance *instance,
+-				 const char *system, bool enable)
++				 const char *system, bool enable,
++				 enum event_state *state)
+ {
+ 	const char *str = enable ? "1" : "0";
+ 	char *system_path;
+@@ -1073,7 +1136,10 @@ static int enable_disable_system(struct tracefs_instance *instance,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = tracefs_instance_file_write(instance, system_path, str);
++	if (state)
++		ret = read_event_state(instance, system_path, state);
++	else
++		ret = tracefs_instance_file_write(instance, system_path, str);
+ 	free(system_path);
+ 
+ 	return ret;
+@@ -1111,7 +1177,7 @@ static int make_regex(regex_t *re, const char *match)
+ 
+ static int event_enable_disable(struct tracefs_instance *instance,
+ 				const char *system, const char *event,
+-				bool enable)
++				bool enable, enum event_state *state)
+ {
+ 	regex_t system_re, event_re;
+ 	char **systems;
+@@ -1148,7 +1214,7 @@ static int event_enable_disable(struct tracefs_instance *instance,
+ 
+ 		/* Check for the short cut first */
+ 		if (!event) {
+-			ret = enable_disable_system(instance, systems[s], enable);
++			ret = enable_disable_system(instance, systems[s], enable, state);
+ 			if (ret < 0)
+ 				break;
+ 			ret = 0;
+@@ -1163,7 +1229,7 @@ static int event_enable_disable(struct tracefs_instance *instance,
+ 			if (!match(events[e], &event_re))
+ 				continue;
+ 			ret = enable_disable_event(instance, systems[s],
+-						   events[e], enable);
++						   events[e], enable, state);
+ 			if (ret < 0)
+ 				break;
+ 			ret = 0;
+@@ -1202,11 +1268,55 @@ static int event_enable_disable(struct tracefs_instance *instance,
+ int tracefs_event_enable(struct tracefs_instance *instance,
+ 			 const char *system, const char *event)
+ {
+-	return event_enable_disable(instance, system, event, true);
++	return event_enable_disable(instance, system, event, true, NULL);
+ }
+ 
+ int tracefs_event_disable(struct tracefs_instance *instance,
+ 			  const char *system, const char *event)
+ {
+-	return event_enable_disable(instance, system, event, false);
++	return event_enable_disable(instance, system, event, false, NULL);
++}
++
++/**
++ * tracefs_event_is_enabled - return if the event is enabled or not
++ * @instance: ftrace instance, can be NULL for the top instance
++ * @system: The name of the system to check
++ * @event: The name of the event to check
++ *
++ * Checks is an event or multiple events are enabled.
++ *
++ * If @system is NULL, then it will check all the systems where @event is
++ * a match.
++ *
++ * If @event is NULL, then it will check all events where @system is a match.
++ *
++ * If both @system and @event are NULL, then it will check all events
++ *
++ * Returns TRACEFS_ALL_ENABLED if all matching are enabled.
++ * Returns TRACEFS_SOME_ENABLED if some are enabled and some are not
++ * Returns TRACEFS_ALL_DISABLED if none of the events are enabled.
++ * Returns TRACEFS_ERROR if there is an error reading the events.
++ */
++enum tracefs_enable_state
++tracefs_event_is_enabled(struct tracefs_instance *instance,
++			 const char *system, const char *event)
++{
++	enum event_state state = STATE_INIT;
++	int ret;
++
++	ret = event_enable_disable(instance, system, event, false, &state);
++
++	if (ret < 0)
++		return TRACEFS_ERROR;
++
++	switch (state) {
++	case STATE_ENABLED:
++		return TRACEFS_ALL_ENABLED;
++	case STATE_DISABLED:
++		return TRACEFS_ALL_DISABLED;
++	case STATE_MIXED:
++		return TRACEFS_SOME_ENABLED;
++	default:
++		return TRACEFS_ERROR;
++	}
+ }
+-- 
+2.35.1
 
