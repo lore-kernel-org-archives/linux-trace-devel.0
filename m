@@ -2,570 +2,102 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CDF45C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Nov 2022 15:54:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82AD0C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Nov 2022 16:33:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234327AbiKKPyA (ORCPT
+        id S234086AbiKKQdL (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Nov 2022 10:54:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36362 "EHLO
+        Fri, 11 Nov 2022 11:33:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234266AbiKKPxY (ORCPT
+        with ESMTP id S234128AbiKKQdK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Nov 2022 10:53:24 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C0D099;
-        Fri, 11 Nov 2022 07:53:22 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CE9E662020;
-        Fri, 11 Nov 2022 15:53:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C52CDC43470;
-        Fri, 11 Nov 2022 15:53:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668182001;
-        bh=a7usgB36X4l2b1SUBUqYf0183V4b5jYQBoYkHh1DpFs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e987GeqhLKC5X/ZT0ULu76UvcpOPoYgmwJnXNOzkK/D+FzBdRO4uZan5NC0yJnb2B
-         /TVIxVsjKE58OjK6zOugl5ruKaowQbX/xvOC4007mkCeB1berQtyJ/5IhmGYXaHX4i
-         kcAZSZaOr6k0b8zw0EHzlCC8lHO14nK9vxRLwhXVdHTDPQtJbrPIsifBWpcJCyv5ZK
-         d0ZGMjEgEqTFWPHCGwSYEABUayQtXzF5vWLSAzGIGRrGiERkchmx0m1z5B5T9kfDZ/
-         mXPttKqZygHEHdweosXOXHXFzsKZ2fDtg8qnOXbLcSNlhHyZ1CitkkaoCRpWGhEN9f
-         1tm+t5qHovpGw==
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2 3/3] Documentation/rv: Add verification/rv man pages
-Date:   Fri, 11 Nov 2022 16:53:07 +0100
-Message-Id: <e841d7cfbdfc3ebdaf7cbd40278571940145d829.1668180100.git.bristot@kernel.org>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <cover.1668180100.git.bristot@kernel.org>
-References: <cover.1668180100.git.bristot@kernel.org>
+        Fri, 11 Nov 2022 11:33:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6235483682
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Nov 2022 08:32:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1668184332;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=F2aMgNrmGwKwBaWad+YX98Mrt+mogZ0kg4N8L1HjPf0=;
+        b=JTGVTAvMip7Sa2Y3uf/f1W6f0NrBXPrRUa0vGPi+aNwxCR6uO0CwHLR2gy/mKdjw5UXdaI
+        3cRGhbKvL3Rk1KpEiMIHGXQu2r/eNJ6oJP+oR/Y32ZKt+2zGQHkdmXV5k7DMHyD2uUPZ5y
+        aUk0WukcheQrAzfR+QVv0ay138dL4pY=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-592-pfK5QsidPj-7zkq2YAr-nQ-1; Fri, 11 Nov 2022 11:32:11 -0500
+X-MC-Unique: pfK5QsidPj-7zkq2YAr-nQ-1
+Received: by mail-qv1-f72.google.com with SMTP id mb6-20020a056214550600b004bc0f14f7b2so3948085qvb.2
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Nov 2022 08:32:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=F2aMgNrmGwKwBaWad+YX98Mrt+mogZ0kg4N8L1HjPf0=;
+        b=KTJBEhgkqS/si5BB1P03Cnv0ELegrS5NIl14ha0C4bIs5mF7oaMaLwOta4Pi3hAWZP
+         EA+numzglhaCcKbx2D7ms+LibhMqmV+xVLgsgDYSB7zR5n73xwjFAEPd3HaRluIWB0IN
+         VMeuY3q9X8EuiHVmdnsGGKBlNozWpIcNBhG9/1TZfQl80aNXxTuubNfxaQlwGJnfWcGd
+         tI7BP61ZtgPVIUNBADzyPzxjt6fG9HyOBE4bLIcw85KSNxF+4sCJfTJNFKuKuCsWBY8m
+         AH0AF6O4cQYQuvo/vK/1kOCq7LWL90Lva/1aMSFwznnG3DaqWpeKW+5nRfCHCy3bafJi
+         k50w==
+X-Gm-Message-State: ANoB5pl7CujGNnA+yPVSHHRtFxz37KmZA3PX05uDtaoqdpPG+VInxBkG
+        qch9enmRGB5lPpVfEBZ7TRPOO50a6XvwVXWngPHisUbkQPKGS29SCP5Fn/aa0jjUC7ZCiX/P+qq
+        NYXXa4yNXPJ255WUwn8n+Eh78M5jOjuE=
+X-Received: by 2002:a37:95c7:0:b0:6f8:3f8f:e629 with SMTP id x190-20020a3795c7000000b006f83f8fe629mr1654399qkd.684.1668184330649;
+        Fri, 11 Nov 2022 08:32:10 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf6UJlvo5WW+4eVxe52el69/zcvA5/DwtZ7h5zAHsgU5UMyslv39VfxOqXLHt4ERvp2X8ZGufA==
+X-Received: by 2002:a37:95c7:0:b0:6f8:3f8f:e629 with SMTP id x190-20020a3795c7000000b006f83f8fe629mr1654393qkd.684.1668184330450;
+        Fri, 11 Nov 2022 08:32:10 -0800 (PST)
+Received: from vschneid.remote.csb ([154.57.232.159])
+        by smtp.gmail.com with ESMTPSA id v65-20020a379344000000b006e54251993esm1597530qkd.97.2022.11.11.08.32.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Nov 2022 08:32:09 -0800 (PST)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        Douglas RAILLARD <douglas.raillard@arm.com>
+Subject: Re: [PATCH 1/2] libtraceevent: Add boiler-plate code for cpumask types
+In-Reply-To: <20221109190634.1fd9200d@rorschach.local.home>
+References: <20221018151630.1513535-1-vschneid@redhat.com>
+ <20221018151630.1513535-2-vschneid@redhat.com>
+ <20221109190634.1fd9200d@rorschach.local.home>
+Date:   Fri, 11 Nov 2022 16:32:03 +0000
+Message-ID: <xhsmhedu9zc3g.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add man pages for the rv command line, using the same scheme we used
-in rtla.
+On 09/11/22 19:06, Steven Rostedt wrote:
+> On Tue, 18 Oct 2022 16:16:29 +0100
+> Valentin Schneider <vschneid@redhat.com> wrote:
+>
+>> @@ -3484,6 +3498,11 @@ process_function(struct tep_event *event, struct tep_print_arg *arg,
+>>              free_token(token);
+>>              return process_bitmask(event, arg, tok);
+>>      }
+>> +	if (strcmp(token, "__get_cpumask") == 0 ||
+>> +	    strcmp(token, "__get_cpumask") == 0) {
+>
+> Hmm, not sure what the difference between the above two are.
+>
 
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- Documentation/tools/index.rst              |  1 +
- Documentation/tools/rv/Makefile            | 52 ++++++++++++++++++
- Documentation/tools/rv/common_appendix.rst | 16 ++++++
- Documentation/tools/rv/common_ikm.rst      | 21 ++++++++
- Documentation/tools/rv/index.rst           | 24 +++++++++
- Documentation/tools/rv/rv-list.rst         | 43 +++++++++++++++
- Documentation/tools/rv/rv-mon-wip.rst      | 44 +++++++++++++++
- Documentation/tools/rv/rv-mon-wwnr.rst     | 43 +++++++++++++++
- Documentation/tools/rv/rv-mon.rst          | 55 +++++++++++++++++++
- Documentation/tools/rv/rv.rst              | 63 ++++++++++++++++++++++
- tools/verification/rv/Makefile             | 26 ++++++++-
- 11 files changed, 386 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/tools/rv/Makefile
- create mode 100644 Documentation/tools/rv/common_appendix.rst
- create mode 100644 Documentation/tools/rv/common_ikm.rst
- create mode 100644 Documentation/tools/rv/index.rst
- create mode 100644 Documentation/tools/rv/rv-list.rst
- create mode 100644 Documentation/tools/rv/rv-mon-wip.rst
- create mode 100644 Documentation/tools/rv/rv-mon-wwnr.rst
- create mode 100644 Documentation/tools/rv/rv-mon.rst
- create mode 100644 Documentation/tools/rv/rv.rst
+One makes sense, the other doesn't :-)
 
-diff --git a/Documentation/tools/index.rst b/Documentation/tools/index.rst
-index 0bb1e61bdcc0..80488e290e10 100644
---- a/Documentation/tools/index.rst
-+++ b/Documentation/tools/index.rst
-@@ -11,6 +11,7 @@ more additions are needed here:
-    :maxdepth: 1
- 
-    rtla/index
-+   rv/index
- 
- .. only::  subproject and html
- 
-diff --git a/Documentation/tools/rv/Makefile b/Documentation/tools/rv/Makefile
-new file mode 100644
-index 000000000000..ec8713c1b35f
---- /dev/null
-+++ b/Documentation/tools/rv/Makefile
-@@ -0,0 +1,52 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+
-+INSTALL		?= install
-+RM		?= rm -f
-+RMDIR		?= rmdir --ignore-fail-on-non-empty
-+
-+PREFIX		?= /usr/share
-+MANDIR		?= $(PREFIX)/man
-+MAN1DIR		= $(MANDIR)/man1
-+
-+MAN1_RST	= $(wildcard rv*.rst)
-+
-+_DOC_MAN1	= $(patsubst %.rst,%.1,$(MAN1_RST))
-+DOC_MAN1	= $(addprefix $(OUTPUT),$(_DOC_MAN1))
-+
-+RST2MAN_DEP	:= $(shell command -v rst2man 2>/dev/null)
-+RST2MAN_OPTS	+= --verbose
-+
-+TEST_RST2MAN = $(shell sh -c "rst2man --version > /dev/null 2>&1 || echo n")
-+
-+$(OUTPUT)%.1: %.rst
-+ifndef RST2MAN_DEP
-+	$(info ********************************************)
-+	$(info ** NOTICE: rst2man not found)
-+	$(info **)
-+	$(info ** Consider installing the latest rst2man from your)
-+	$(info ** distribution, e.g., 'dnf install python3-docutils' on Fedora,)
-+	$(info ** or from source:)
-+	$(info **)
-+	$(info **  https://docutils.sourceforge.io/docs/dev/repository.html )
-+	$(info **)
-+	$(info ********************************************)
-+	$(error NOTICE: rst2man required to generate man pages)
-+endif
-+	rst2man $(RST2MAN_OPTS) $< > $@
-+
-+man1: $(DOC_MAN1)
-+man: man1
-+
-+clean:
-+	$(RM) $(DOC_MAN1)
-+
-+install: man
-+	$(INSTALL) -d -m 755 $(DESTDIR)$(MAN1DIR)
-+	$(INSTALL) -m 644 $(DOC_MAN1) $(DESTDIR)$(MAN1DIR)
-+
-+uninstall:
-+	$(RM) $(addprefix $(DESTDIR)$(MAN1DIR)/,$(_DOC_MAN1))
-+	$(RMDIR) $(DESTDIR)$(MAN1DIR)
-+
-+.PHONY: man man1 clean install uninstall
-+.DEFAULT_GOAL := man
-diff --git a/Documentation/tools/rv/common_appendix.rst b/Documentation/tools/rv/common_appendix.rst
-new file mode 100644
-index 000000000000..f4239192bee8
---- /dev/null
-+++ b/Documentation/tools/rv/common_appendix.rst
-@@ -0,0 +1,16 @@
-+REPORTING BUGS
-+==============
-+
-+Report bugs to <linux-kernel@vger.kernel.org>
-+and <linux-trace-devel@vger.kernel.org>
-+
-+LICENSE
-+=======
-+
-+**rv** is Free Software licensed under the GNU GPLv2
-+
-+COPYING
-+=======
-+
-+Copyright \(C) 2022 Red Hat, Inc. Free use of this software is granted under
-+the terms of the GNU Public License (GPL).
-diff --git a/Documentation/tools/rv/common_ikm.rst b/Documentation/tools/rv/common_ikm.rst
-new file mode 100644
-index 000000000000..e50a5f8a7142
---- /dev/null
-+++ b/Documentation/tools/rv/common_ikm.rst
-@@ -0,0 +1,21 @@
-+**-h**, **--help**
-+
-+        Print the monitor's options and the available reactors list.
-+
-+**-r**, **--reactor** *reactor*
-+
-+        Enables the *reactor*. See **-h** for a list of available reactors.
-+
-+**-s**, **--self**
-+
-+        When tracing (**-t**), also print the events that happened during the **rv**
-+        command itself. If the **rv** command itself generates too many events,
-+        the tool might get busy processing its own events only.
-+
-+**-t**, **--trace**
-+
-+        Trace monitor's events and error.
-+
-+**-v**, **--verbose**
-+
-+        Print debug messages.
-diff --git a/Documentation/tools/rv/index.rst b/Documentation/tools/rv/index.rst
-new file mode 100644
-index 000000000000..8fd16d91d639
---- /dev/null
-+++ b/Documentation/tools/rv/index.rst
-@@ -0,0 +1,24 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+==============================
-+Runtime verification (rv) tool
-+==============================
-+
-+**rv** tool provides the interface for a collection of runtime verification
-+(rv) monitors.
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   rv
-+   rv-list
-+   rv-mon
-+   rv-mon-wip
-+   rv-mon-wwnr
-+
-+.. only::  subproject and html
-+
-+   Indices
-+   =======
-+
-+   * :ref:`genindex`
-diff --git a/Documentation/tools/rv/rv-list.rst b/Documentation/tools/rv/rv-list.rst
-new file mode 100644
-index 000000000000..51e4608f9e99
---- /dev/null
-+++ b/Documentation/tools/rv/rv-list.rst
-@@ -0,0 +1,43 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=======
-+rv-list
-+=======
-+-----------------------
-+List available monitors
-+-----------------------
-+
-+:Manual section: 1
-+
-+SYNOPSIS
-+========
-+
-+**rv list** [*OPTIONS*]
-+
-+DESCRIPTION
-+===========
-+
-+The **rv list** command prints all available monitors. These monitors
-+can be enabled using the **rv mon** command.
-+
-+OPTIONS
-+=======
-+
-+**-h**, **--help**
-+
-+        Print help menu.
-+
-+SEE ALSO
-+========
-+
-+**rv**\(1), **rv-mon**\(1)
-+
-+Linux kernel *RV* documentation:
-+<https://www.kernel.org/doc/html/latest/trace/rv/index.html>
-+
-+AUTHOR
-+======
-+
-+Written by Daniel Bristot de Oliveira <bristot@kernel.org>
-+
-+.. include:: common_appendix.rst
-diff --git a/Documentation/tools/rv/rv-mon-wip.rst b/Documentation/tools/rv/rv-mon-wip.rst
-new file mode 100644
-index 000000000000..2d42104d63d1
---- /dev/null
-+++ b/Documentation/tools/rv/rv-mon-wip.rst
-@@ -0,0 +1,44 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+==========
-+rv-mon-wip
-+==========
-+----------------------------
-+Wakeup In Preemptive monitor
-+----------------------------
-+
-+:Manual section: 1
-+
-+SYNOPSIS
-+========
-+
-+**rv mon wip** [*OPTIONS*]
-+
-+DESCRIPTION
-+===========
-+
-+The wakeup in preemptive (**wip**) monitor is a sample per-cpu monitor that
-+checks if the wakeup events always take place with preemption disabled.
-+
-+See kernel documentation for further information about this monitor:
-+<https://docs.kernel.org/trace/rv/monitor_wip.html>
-+
-+OPTIONS
-+=======
-+
-+.. include:: common_ikm.rst
-+
-+SEE ALSO
-+========
-+
-+**rv**\(1), **rv-mon**\(1)
-+
-+Linux kernel *RV* documentation:
-+<https://www.kernel.org/doc/html/latest/trace/rv/index.html>
-+
-+AUTHOR
-+======
-+
-+Written by Daniel Bristot de Oliveira <bristot@kernel.org>
-+
-+.. include:: common_appendix.rst
-diff --git a/Documentation/tools/rv/rv-mon-wwnr.rst b/Documentation/tools/rv/rv-mon-wwnr.rst
-new file mode 100644
-index 000000000000..a18f3fd54af4
---- /dev/null
-+++ b/Documentation/tools/rv/rv-mon-wwnr.rst
-@@ -0,0 +1,43 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+===========
-+rv-mon-wwnr
-+===========
-+--------------------------------
-+Wakeup While Not Running monitor
-+--------------------------------
-+
-+:Manual section: 1
-+
-+SYNOPSIS
-+========
-+
-+**rv mon wip** [*OPTIONS*]
-+
-+DESCRIPTION
-+===========
-+
-+The wakeup while not running (**wwnr**) is a per-task sample monitor.
-+
-+See kernel documentation for further information about this monitor:
-+<https://docs.kernel.org/trace/rv/monitor_wwnr.html>
-+
-+OPTIONS
-+=======
-+
-+.. include:: common_ikm.rst
-+
-+SEE ALSO
-+========
-+
-+**rv**\(1), **rv-mon**\(1)
-+
-+Linux kernel *RV* documentation:
-+<https://www.kernel.org/doc/html/latest/trace/rv/index.html>
-+
-+AUTHOR
-+======
-+
-+Written by Daniel Bristot de Oliveira <bristot@kernel.org>
-+
-+.. include:: common_appendix.rst
-diff --git a/Documentation/tools/rv/rv-mon.rst b/Documentation/tools/rv/rv-mon.rst
-new file mode 100644
-index 000000000000..af0f329a7c9c
---- /dev/null
-+++ b/Documentation/tools/rv/rv-mon.rst
-@@ -0,0 +1,55 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=======
-+rv-list
-+=======
-+-----------------------
-+List available monitors
-+-----------------------
-+
-+:Manual section: 1
-+
-+SYNOPSIS
-+========
-+
-+**rv mon** [*-h*] **monitor_name** [*-h*] [*MONITOR OPTIONS*]
-+
-+DESCRIPTION
-+===========
-+
-+The **rv mon** command runs the monitor named *monitor_name*. Each monitor
-+has its own set of options. The **rv list** command shows all available
-+monitors.
-+
-+OPTIONS
-+=======
-+
-+**-h**, **--help**
-+
-+        Print help menu.
-+
-+AVAILABLE MONITORS
-+==================
-+
-+The **rv** tool provides the interface for a set of monitors. Use the
-+**rv list** command to list all available monitors.
-+
-+Each monitor has its own set of options. See man **rv-mon**-*monitor_name*
-+for details about each specific monitor. Also, running **rv mon**
-+**monitor_name** **-h** display the help menu with the available
-+options.
-+
-+SEE ALSO
-+========
-+
-+**rv**\(1), **rv-mon**\(1)
-+
-+Linux kernel *RV* documentation:
-+<https://www.kernel.org/doc/html/latest/trace/rv/index.html>
-+
-+AUTHOR
-+======
-+
-+Written by Daniel Bristot de Oliveira <bristot@kernel.org>
-+
-+.. include:: common_appendix.rst
-diff --git a/Documentation/tools/rv/rv.rst b/Documentation/tools/rv/rv.rst
-new file mode 100644
-index 000000000000..cee93dc21a76
---- /dev/null
-+++ b/Documentation/tools/rv/rv.rst
-@@ -0,0 +1,63 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+==
-+rv
-+==
-+--------------------
-+Runtime Verification
-+--------------------
-+
-+:Manual section: 1
-+
-+SYNOPSIS
-+========
-+
-+**rv** *COMMAND* [*OPTIONS*]
-+
-+DESCRIPTION
-+===========
-+
-+Runtime Verification (**RV**) is a lightweight (yet rigorous) method
-+for formal verification with a practical approach for complex systems.
-+Instead of relying on a fine-grained model of a system (e.g., a
-+re-implementation a instruction level), RV works by analyzing the trace
-+of the system's actual execution, comparing it against a formal
-+specification of the system behavior.
-+
-+The **rv** tool provides the interface for a collection of runtime
-+verification (rv) monitors.
-+
-+COMMANDS
-+========
-+
-+**list**
-+
-+        List all available monitors.
-+
-+**mon**
-+
-+        Run monitor.
-+
-+OPTIONS
-+=======
-+
-+**-h**, **--help**
-+
-+        Display the help text.
-+
-+For other options, see the man page for the corresponding command.
-+
-+SEE ALSO
-+========
-+
-+**rv-list**\(1), **rv-mon**\(1)
-+
-+Linux kernel *RV* documentation:
-+<https://www.kernel.org/doc/html/latest/trace/rv/index.html>
-+
-+AUTHOR
-+======
-+
-+Daniel Bristot de Oliveira <bristot@kernel.org>
-+
-+.. include:: common_appendix.rst
-diff --git a/tools/verification/rv/Makefile b/tools/verification/rv/Makefile
-index 1de111ac2641..3d0f3888a58c 100644
---- a/tools/verification/rv/Makefile
-+++ b/tools/verification/rv/Makefile
-@@ -44,10 +44,20 @@ TARBALL	:=	$(NAME)-$(VERSION).tar.$(CEXT)
- TAROPTS	:=	-cvjf $(TARBALL)
- BINDIR	:=	/usr/bin
- DATADIR	:=	/usr/share
-+DOCDIR	:=	$(DATADIR)/doc
- MANDIR	:=	$(DATADIR)/man
- LICDIR	:=	$(DATADIR)/licenses
- SRCTREE	:=	$(or $(BUILD_SRC),$(CURDIR))
- 
-+# If running from the tarball, man pages are stored in the Documentation
-+# dir. If running from the kernel source, man pages are stored in
-+# Documentation/tools/rv/.
-+ifneq ($(wildcard Documentation/.*),)
-+DOCSRC	=	Documentation/
-+else
-+DOCSRC	=	$(SRCTREE)/../../../Documentation/tools/rv/
-+endif
-+
- LIBTRACEEVENT_MIN_VERSION = 1.5
- LIBTRACEFS_MIN_VERSION = 1.3
- 
-@@ -100,13 +110,13 @@ rv: $(OBJ)
- 	$(CC) -o rv $(LDFLAGS) $(OBJ) $(LIBS)
- 
- .PHONY: install
--install:
-+install: doc_install
- 	$(MKDIR) -p $(DESTDIR)$(BINDIR)
- 	$(INSTALL) rv -m 755 $(DESTDIR)$(BINDIR)
- 	$(STRIP) $(DESTDIR)$(BINDIR)/rv
- 
- .PHONY: clean tarball
--clean:
-+clean: doc_clean
- 	@test ! -f rv || rm rv
- 	@test ! -f $(TARBALL) || rm -f $(TARBALL)
- 	@rm -rf *~ $(OBJ) *.tar.$(CEXT)
-@@ -115,5 +125,17 @@ tarball: clean
- 	rm -rf $(NAME)-$(VERSION) && mkdir $(NAME)-$(VERSION)
- 	echo $(VERSION) > $(NAME)-$(VERSION)/VERSION
- 	cp -r $(DIRS) $(FILES) $(NAME)-$(VERSION)
-+	mkdir $(NAME)-$(VERSION)/Documentation/
-+	cp -rp $(SRCTREE)/../../../Documentation/tools/rv/* $(NAME)-$(VERSION)/Documentation/
- 	tar $(TAROPTS) --exclude='*~' $(NAME)-$(VERSION)
- 	rm -rf $(NAME)-$(VERSION)
-+
-+.PHONY: doc doc_clean doc_install
-+doc:
-+	$(MAKE) -C $(DOCSRC)
-+
-+doc_clean:
-+	$(MAKE) -C $(DOCSRC) clean
-+
-+doc_install:
-+	$(MAKE) -C $(DOCSRC) install
--- 
-2.37.3
+That's a copy/paste fail, the second one wants to be "__get_rel_cpumask"
+
+> -- Steve
+>
+>> +		free_token(token);
+>> +		return process_cpumask(event, arg, tok);
+>> +	}
+>>      if (strcmp(token, "__get_dynamic_array") == 0 ||
+>>          strcmp(token, "__get_rel_dynamic_array") == 0 ||
+>>          strcmp(token, "__get_sockaddr") == 0 ||
 
