@@ -2,36 +2,42 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBB97C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Nov 2022 23:53:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB884C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 12 Nov 2022 00:40:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234380AbiKKXx1 (ORCPT
+        id S233734AbiKLAk5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Nov 2022 18:53:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35016 "EHLO
+        Fri, 11 Nov 2022 19:40:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234678AbiKKXxZ (ORCPT
+        with ESMTP id S233542AbiKLAk4 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Nov 2022 18:53:25 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEEC51B7
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Nov 2022 15:53:22 -0800 (PST)
+        Fri, 11 Nov 2022 19:40:56 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D20176FBA
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Nov 2022 16:40:55 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7982B60F32
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Nov 2022 23:53:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2AEDC433D6
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Nov 2022 23:53:21 +0000 (UTC)
-Date:   Fri, 11 Nov 2022 18:53:18 -0500
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A944062161
+        for <linux-trace-devel@vger.kernel.org>; Sat, 12 Nov 2022 00:40:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0ABC7C433B5;
+        Sat, 12 Nov 2022 00:40:53 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.96)
+        (envelope-from <rostedt@rostedt.homelinux.com>)
+        id 1oteaS-009fnN-0J;
+        Fri, 11 Nov 2022 19:41:32 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] libtracefs: Add tracefs_event_is_enabled() API
-Message-ID: <20221111185318.22e9bca9@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To:     linux-trace-devel@vger.kernel.org
+Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Subject: [PATCH 1/3] libtracefs: Add tracefs_event_is_enabled() API
+Date:   Fri, 11 Nov 2022 19:41:28 -0500
+Message-Id: <20221112004130.2305589-2-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20221112004130.2305589-1-rostedt@goodmis.org>
+References: <20221112004130.2305589-1-rostedt@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -48,13 +54,14 @@ Returns the enums:
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/libtracefs-events.txt |  30 ++++++-
+ Documentation/libtracefs-events.txt |  33 ++++++-
+ Documentation/libtracefs.txt        |   2 +
  include/tracefs.h                   |   9 ++
  src/tracefs-events.c                | 128 ++++++++++++++++++++++++++--
- 3 files changed, 157 insertions(+), 10 deletions(-)
+ 4 files changed, 162 insertions(+), 10 deletions(-)
 
 diff --git a/Documentation/libtracefs-events.txt b/Documentation/libtracefs-events.txt
-index f998c79b04ec..2c1c83bf7685 100644
+index f998c79b04ec..d5bd779273e2 100644
 --- a/Documentation/libtracefs-events.txt
 +++ b/Documentation/libtracefs-events.txt
 @@ -4,7 +4,7 @@ libtracefs(3)
@@ -83,8 +90,8 @@ index f998c79b04ec..2c1c83bf7685 100644
  			   const char pass:[*]_event_);
  int *tracefs_event_disable*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_system_,
  			    const char pass:[*]_event_);
-+enum tracefs_enable_state *tracefs_event_is_enabled*(struct tracefs_instance pass:[*]instance,
-+			 const char pass:[*]system, const char pass:[*]event);
++enum tracefs_enable_state *tracefs_event_is_enabled*(struct tracefs_instance pass:[*]_instance_,
++			 const char pass:[*]_system_, const char pass:[*]_event_);
 +
  int *tracefs_iterate_raw_events*(struct tep_handle pass:[*]_tep_, struct tracefs_instance pass:[*]_instance_,
  				 cpu_set_t pass:[*]_cpus_, int _cpu_size_,
@@ -99,7 +106,7 @@ index f998c79b04ec..2c1c83bf7685 100644
 +If _system_ is not NULL and _event_ is NULL, then it will check if all the events
 +in all the systems that _system_ and return the enable state of those events.
 +If _system_ is NULL and _event_ is not NULL, then it will match all the events
-+in all systmes that match _event_ and return their enabled state. If both _system_
++in all systems that match _event_ and return their enabled state. If both _system_
 +and _event_ are not NULL, then it will return the enabled state of all matching
 +events. The enabled state is defined as:
 +
@@ -114,6 +121,29 @@ index f998c79b04ec..2c1c83bf7685 100644
  The *tracefs_iterate_raw_events()* function will read the tracefs raw
  data buffers and call the specified _callback_ function for every event it
  encounters. Events are iterated in sorted order: oldest first. An initialized
+@@ -95,6 +123,9 @@ found, it will return -1 and errno will be set. If no errors occur, but no event
+ are found that match the _system_ and _event_ parameters, then -1 is returned
+ and errno is not set.
+ 
++The *tracefs_event_is_enabled()* returns the enabled status of the matching events
++or TRACEFS_ERROR on error.
++
+ The *tracefs_iterate_raw_events()* function returns -1 in case of an error or
+ 0 otherwise.
+ 
+diff --git a/Documentation/libtracefs.txt b/Documentation/libtracefs.txt
+index 0081210f8951..e02974004ef8 100644
+--- a/Documentation/libtracefs.txt
++++ b/Documentation/libtracefs.txt
+@@ -53,6 +53,8 @@ Trace events:
+                            const char pass:[*]_event_);
+ 	int *tracefs_event_disable*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_system_,
+                             const char pass:[*]_event_);
++	enum tracefs_enable_state *tracefs_event_is_enabled*(struct tracefs_instance pass:[*]_instance_,
++				 const char pass:[*]_system_, const char pass:[*]_event_);
+ 	int *tracefs_iterate_raw_events*(struct tep_handle pass:[*]_tep_, struct tracefs_instance pass:[*]_instance_, cpu_set_t pass:[*]_cpus_, int _cpu_size_, int (pass:[*]_callback_)(struct tep_event pass:[*], struct tep_record pass:[*], int, void pass:[*]), void pass:[*]_callback_context_);
+ 	void *tracefs_iterate_stop*(struct tracefs_instance pass:[*]_instance_);
+ 	struct tep_handle pass:[*]*tracefs_local_events*(const char pass:[*]_tracing_dir_);
 diff --git a/include/tracefs.h b/include/tracefs.h
 index 9f0bdc62836a..f2524b07501d 100644
 --- a/include/tracefs.h
