@@ -2,38 +2,40 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47916C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 12 Nov 2022 00:40:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD350C43219
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 12 Nov 2022 00:41:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234518AbiKLAk6 (ORCPT
+        id S234575AbiKLAlA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Nov 2022 19:40:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51326 "EHLO
+        Fri, 11 Nov 2022 19:41:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233542AbiKLAk5 (ORCPT
+        with ESMTP id S234427AbiKLAk7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Nov 2022 19:40:57 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249CA76FBA
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Nov 2022 16:40:57 -0800 (PST)
+        Fri, 11 Nov 2022 19:40:59 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B64F77211
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Nov 2022 16:40:58 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 75DBEB82878
+        by sin.source.kernel.org (Postfix) with ESMTPS id BCAA7CE1250
         for <linux-trace-devel@vger.kernel.org>; Sat, 12 Nov 2022 00:40:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0ABEFC43470;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04EB0C433D6;
         Sat, 12 Nov 2022 00:40:53 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.96)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1oteaS-009fnK-0D;
+        id 1oteaS-009fnT-0R;
         Fri, 11 Nov 2022 19:41:32 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 0/3] libtracefs: Add some helpful APIS
-Date:   Fri, 11 Nov 2022 19:41:27 -0500
-Message-Id: <20221112004130.2305589-1-rostedt@goodmis.org>
+Subject: [PATCH 3/3] libtracefs: Add tracefs_instance_set_buffer_size() API
+Date:   Fri, 11 Nov 2022 19:41:30 -0500
+Message-Id: <20221112004130.2305589-4-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20221112004130.2305589-1-rostedt@goodmis.org>
+References: <20221112004130.2305589-1-rostedt@goodmis.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -42,23 +44,107 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add tracefs_event_is_enabled() (which supersedes https://lore.kernel.org/all/20221111185318.22e9bca9@rorschach.local.home/)
+Add functionality that sets the ring buffer size.
 
-Also add getting and setting the ring buffer size.
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ Documentation/libtracefs-instances-utils.txt | 10 +++++++-
+ Documentation/libtracefs.txt                 |  1 +
+ src/tracefs-instance.c                       | 27 ++++++++++++++++++++
+ 3 files changed, 37 insertions(+), 1 deletion(-)
 
-Steven Rostedt (Google) (3):
-  libtracefs: Add tracefs_event_is_enabled() API
-  libtracefs: Add tracefs_instance_get_buffer_size() API
-  libtracefs: Add tracefs_instance_set_buffer_size() API
-
- Documentation/libtracefs-events.txt          |  33 ++++-
- Documentation/libtracefs-instances-utils.txt |  22 +++-
- Documentation/libtracefs.txt                 |   4 +
- include/tracefs.h                            |  10 ++
- src/tracefs-events.c                         | 128 +++++++++++++++++--
- src/tracefs-instance.c                       |  64 ++++++++++
- 6 files changed, 247 insertions(+), 14 deletions(-)
-
+diff --git a/Documentation/libtracefs-instances-utils.txt b/Documentation/libtracefs-instances-utils.txt
+index 9bec8a9163cd..bc8c9a7bf8e9 100644
+--- a/Documentation/libtracefs-instances-utils.txt
++++ b/Documentation/libtracefs-instances-utils.txt
+@@ -4,7 +4,7 @@ libtracefs(3)
+ NAME
+ ----
+ tracefs_instance_get_name, tracefs_instance_get_trace_dir, tracefs_instances_walk, tracefs_instance_exists,
+-tracefs_instance_get_buffer_size - Helper functions for working with tracing instances.
++tracefs_instance_get_buffer_size, tracefs_instance_set_buffer_size - Helper functions for working with tracing instances.
+ 
+ SYNOPSIS
+ --------
+@@ -17,6 +17,7 @@ const char pass:[*]*tracefs_instance_get_trace_dir*(struct tracefs_instance pass
+ int *tracefs_instances_walk*(int (pass:[*]_callback_)(const char pass:[*], void pass:[*]), void pass:[*]_context)_;
+ bool *tracefs_instance_exists*(const char pass:[*]_name_);
+ size_t *tracefs_instance_get_buffer_size*(struct tracefs_instance pass:[*]_instance_, int _cpu_);
++int *tracefs_instance_set_buffer_size*(struct tracefs_instance pass:[*]_instance_, size_t _size_, int _cpu_);
+ --
+ 
+ DESCRIPTION
+@@ -42,6 +43,11 @@ The *tracefs_instace_get_buffer_size()* returns the size of the ring buffer. If
+ is negative, it returns the total size of all the per CPU ring buffers, otherwise
+ it returns the size of the per CPU ring buffer for _cpu_.
+ 
++The *tracefs_instance_set_buffer_size()* function sets the size of the ring buffer.
++If _cpu_ is negative, then it sets all the per CPU ring buffers to _size_ (note
++the total size is the number of CPUs * _size_). If _cpu_ is specified, then it only
++sets the size of the per CPU ring buffer.
++
+ RETURN VALUE
+ ------------
+ The *tracefs_instance_get_name()* returns a string or NULL in case of the top
+@@ -59,6 +65,8 @@ exists in the system or false otherwise.
+ The *tracefs_instance_get_buffer_size()* returns the size of the ring buffer depending on
+ the _cpu_ value passed in, or -1 on error.
+ 
++The *tracefs_instance_set_buffer_size()* returns zero on success and -1 on error.
++
+ EXAMPLE
+ -------
+ [source,c]
+diff --git a/Documentation/libtracefs.txt b/Documentation/libtracefs.txt
+index 3b485a018ed4..73c4997efeef 100644
+--- a/Documentation/libtracefs.txt
++++ b/Documentation/libtracefs.txt
+@@ -46,6 +46,7 @@ Trace instances:
+ 	int *tracefs_instance_get_affinity_set*(struct tracefs_instance pass:[*]_instance_, cpu_set_t pass:[*]_set_, size_t _set_size_);
+ 	char pass:[*]*tracefs_instance_get_affinity_raw*(struct tracefs_instance pass:[*]_instance_);
+ 	size_t *tracefs_instance_get_buffer_size*(struct tracefs_instance pass:[*]_instance_, int _cpu_);
++	int *tracefs_instance_set_buffer_size*(struct tracefs_instance pass:[*]_instance_, size_t _size_, int _cpu_);
+ 
+ Trace events:
+ 	char pass:[*]pass:[*]*tracefs_event_systems*(const char pass:[*]_tracing_dir_);
+diff --git a/src/tracefs-instance.c b/src/tracefs-instance.c
+index 206f8c99cf36..6905f61ff929 100644
+--- a/src/tracefs-instance.c
++++ b/src/tracefs-instance.c
+@@ -400,6 +400,33 @@ ssize_t tracefs_instance_get_buffer_size(struct tracefs_instance *instance, int
+ 	return size;
+ }
+ 
++int tracefs_instance_set_buffer_size(struct tracefs_instance *instance, size_t size, int cpu)
++{
++	char *path;
++	char *val;
++	int ret;
++
++	ret = asprintf(&val, "%zd", size);
++	if (ret < 0)
++		return ret;
++
++	if (cpu < 0) {
++		ret = tracefs_instance_file_write(instance, "buffer_size_kb", val);
++	} else {
++		ret = asprintf(&path, "per_cpu/cpu%d/buffer_size_kb", cpu);
++		if (ret < 0) {
++			free(val);
++			return ret;
++		}
++
++		ret = tracefs_instance_file_write(instance, path, "val");
++		free(path);
++	}
++	free(val);
++
++	return ret < 0 ? -1 : 0;
++}
++
+ /**
+  * tracefs_instance_get_trace_dir - return the top trace directory, where the instance is confuigred
+  * @instance: ftrace instance
 -- 
 2.35.1
 
