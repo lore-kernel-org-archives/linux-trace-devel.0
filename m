@@ -2,40 +2,38 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 293F4C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Nov 2022 04:08:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C733CC4332F
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Nov 2022 04:08:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbiKOEID (ORCPT
+        id S229774AbiKOEIF (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 14 Nov 2022 23:08:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46286 "EHLO
+        Mon, 14 Nov 2022 23:08:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbiKOEH7 (ORCPT
+        with ESMTP id S229865AbiKOEID (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 14 Nov 2022 23:07:59 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D89EEF5AB
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Nov 2022 20:07:57 -0800 (PST)
+        Mon, 14 Nov 2022 23:08:03 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 533D4FD1B
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Nov 2022 20:07:58 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 72AAE6152F
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 571FC614FD
         for <linux-trace-devel@vger.kernel.org>; Tue, 15 Nov 2022 04:07:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1441C433D7;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B993CC433C1;
         Tue, 15 Nov 2022 04:07:56 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.96)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1ounFX-00AJ6u-2Y;
+        id 1ounFX-00AJ6f-2H;
         Mon, 14 Nov 2022 23:08:39 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v3 4/4] libtracefs: Add tracefs_follow_missed_events() API
-Date:   Mon, 14 Nov 2022 23:08:38 -0500
-Message-Id: <20221115040838.2456632-5-rostedt@goodmis.org>
+Subject: [PATCH v3 0/4] libtracefs: Add more iterator helpers
+Date:   Mon, 14 Nov 2022 23:08:34 -0500
+Message-Id: <20221115040838.2456632-1-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221115040838.2456632-1-rostedt@goodmis.org>
-References: <20221115040838.2456632-1-rostedt@goodmis.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -44,309 +42,31 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add the function tracefs_follow_missed_events() to allow applications to
-have callback when events are dropped due to overrun of the ring buffer.
+Add follow event and missed events callback helper to make it simpler to follow
+events using the tracefs_iterate_raw_events() function.
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- Documentation/libtracefs-iterator.txt | 56 ++++++++++++++---
- Documentation/libtracefs.txt          |  7 ++-
- include/tracefs-local.h               |  2 +
- include/tracefs.h                     |  5 ++
- src/tracefs-events.c                  | 89 +++++++++++++++++++++++++++
- 5 files changed, 149 insertions(+), 10 deletions(-)
+Also change tracefs_iterate_raw_events() to use the tracefs_cpu_buffered_read()
+that will read via splice and is much more efficient than using single reads.
 
-diff --git a/Documentation/libtracefs-iterator.txt b/Documentation/libtracefs-iterator.txt
-index f53991f5cebe..b971bd0e10c5 100644
---- a/Documentation/libtracefs-iterator.txt
-+++ b/Documentation/libtracefs-iterator.txt
-@@ -3,7 +3,7 @@ libtracefs(3)
- 
- NAME
- ----
--tracefs_iterate_raw_events, tracefs_iterate_stop, tracefs_follow_event - Iterate over events in the ring buffer
-+tracefs_iterate_raw_events, tracefs_iterate_stop, tracefs_follow_event, tracefs_follow_missed_events - Iterate over events in the ring buffer
- 
- SYNOPSIS
- --------
-@@ -22,7 +22,12 @@ int *tracefs_follow_event*(struct tep_handle pass:[*]_tep_, struct tracefs_insta
- 			  int (pass:[*]_callback_)(struct tep_event pass:[*],
- 					  struct tep_record pass:[*],
- 					  int, void pass:[*]),
--			  void pass:[*]_callback_data_):
-+			  void pass:[*]_callback_data_);
-+int *tracefs_follow_missed_events*(struct tracefs_instance pass:[*]_instance_,
-+			  int (pass:[*]_callback_)(struct tep_event pass:[*],
-+					  struct tep_record pass:[*],
-+					  int, void pass:[*]),
-+			  void pass:[*]_callback_data_);
- --
- 
- DESCRIPTION
-@@ -57,6 +62,12 @@ will be passed to the _callback_ as well. Note, if it returns something other
- than 0, it will stop the loop before the _callback_ of *tracefs_iterate_raw_events()*
- is called.
- 
-+The *tracefs_follow_missed_events()* will call the _callback_ when missed
-+events are detected. It will set the _record_ parameter of the callback to the
-+record that came after the missed events and _event_ will be of the type of
-+event _record_ is. _cpu_ will be set to the CPU that missed the events, and
-+_callback_data_ will be the content that was passed in to the function.
-+
- RETURN VALUE
- ------------
- The *tracefs_iterate_raw_events()* function returns -1 in case of an error or
-@@ -69,19 +80,22 @@ EXAMPLE
- #include <unistd.h>
- #include <tracefs.h>
- #include <stdbool.h>
-+#include <signal.h>
- 
- struct my_struct {
- 	bool		stopped;
- };
- 
-+#define MAX_COUNT 500000
-+static int counter;
-+
- static int callback(struct tep_event *event, struct tep_record *record,
- 		    int cpu, void *data)
- {
- 	struct my_struct *my_data = data;
- 	static struct trace_seq seq;
--	static int counter;
- 
--	if (counter++ > 10000) {
-+	if (counter++ > MAX_COUNT) {
- 		my_data->stopped = true;
- 		return 1;
- 	}
-@@ -124,28 +138,52 @@ static int sched_callback(struct tep_event *event, struct tep_record *record,
- 	return 0;
- }
- 
-+static int missed_callback(struct tep_event *event, struct tep_record *record,
-+			   int cpu, void *data)
-+{
-+	printf("OOPS! cpu %d dropped ", cpu);
-+	if (record->missed_events > 0)
-+		printf("%lld ", record->missed_events);
-+	printf("events\n");
-+	return 0;
-+}
-+
-+static struct tracefs_instance *instance;
-+static struct my_struct my_data;
-+
-+static void sig(int s)
-+{
-+	tracefs_iterate_stop(instance);
-+	my_data.stopped = true;
-+}
-+
- int main (int argc, char **argv, char **env)
- {
- 	struct tep_handle *tep;
--	struct tracefs_instance *instance;
--	struct my_struct my_data = { .stopped = false };
- 	int this_pid = getpid();
- 
- 	instance = tracefs_instance_create("my-buffer");
- 	if (!instance)
- 		return -1;
- 
--	tracefs_event_enable(instance, "sched", NULL);
-+	signal(SIGINT, sig);
-+
-+	tracefs_event_enable(instance, NULL, NULL);
- 	sleep(1);
- 	tracefs_event_disable(instance, NULL, NULL);
- 	tep = tracefs_local_events(NULL);
- 	tep_load_plugins(tep);
-+	tracefs_follow_missed_events(instance, missed_callback, NULL);
- 	tracefs_follow_event(tep, instance, "sched", "sched_switch", sched_callback, &this_pid);
- 	tracefs_iterate_raw_events(tep, instance, NULL, 0, callback, &my_data);
- 	tracefs_instance_destroy(instance);
- 
--	if (my_data.stopped)
--		printf("stopped!\n");
-+	if (my_data.stopped) {
-+		if (counter > MAX_COUNT)
-+			printf("Finished max count\n");
-+		else
-+			printf("Finished via signal\n");
-+	}
- 
- 	return 0;
- }
-diff --git a/Documentation/libtracefs.txt b/Documentation/libtracefs.txt
-index e4178062d319..c3f448d2419f 100644
---- a/Documentation/libtracefs.txt
-+++ b/Documentation/libtracefs.txt
-@@ -65,7 +65,12 @@ Trace events:
- 				  int (pass:[*]_callback_)(struct tep_event pass:[*],
- 						  struct tep_record pass:[*],
- 						  int, void pass:[*]),
--				  void pass:[*]_callback_data_):
-+				  void pass:[*]_callback_data_);
-+	int *tracefs_follow_missed_events*(struct tracefs_instance pass:[*]_instance_,
-+				  int (pass:[*]_callback_)(struct tep_event pass:[*],
-+						  struct tep_record pass:[*],
-+						  int, void pass:[*]),
-+				  void pass:[*]_callback_data_);
- 	struct tep_handle pass:[*]*tracefs_local_events*(const char pass:[*]_tracing_dir_);
- 	struct tep_handle pass:[*]*tracefs_local_events_system*(const char pass:[*]_tracing_dir_, const char pass:[*] const pass:[*]_sys_names_);
- 	int *tracefs_fill_local_events*(const char pass:[*]_tracing_dir_, struct tep_handle pass:[*]_tep_, int pass:[*]_parsing_failures_);
-diff --git a/include/tracefs-local.h b/include/tracefs-local.h
-index 4c636be8a1fe..2007d26361cb 100644
---- a/include/tracefs-local.h
-+++ b/include/tracefs-local.h
-@@ -35,6 +35,7 @@ struct tracefs_instance {
- 	struct tracefs_options_mask	supported_opts;
- 	struct tracefs_options_mask	enabled_opts;
- 	struct follow_event		*followers;
-+	struct follow_event		*missed_followers;
- 	char				*trace_dir;
- 	char				*name;
- 	pthread_mutex_t			lock;
-@@ -45,6 +46,7 @@ struct tracefs_instance {
- 	int				ftrace_marker_fd;
- 	int				ftrace_marker_raw_fd;
- 	int				nr_followers;
-+	int				nr_missed_followers;
- 	bool				pipe_keep_going;
- 	bool				iterate_keep_going;
- };
-diff --git a/include/tracefs.h b/include/tracefs.h
-index cb64e098883a..3547b5a348aa 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -132,6 +132,11 @@ int tracefs_follow_event(struct tep_handle *tep, struct tracefs_instance *instan
- 					  struct tep_record *,
- 					  int, void *),
- 			  void *callback_data);
-+int tracefs_follow_missed_events(struct tracefs_instance *instance,
-+				 int (*callback)(struct tep_event *,
-+						 struct tep_record *,
-+						 int, void *),
-+				 void *callback_data);
- 
- char *tracefs_event_get_file(struct tracefs_instance *instance,
- 			     const char *system, const char *event,
-diff --git a/src/tracefs-events.c b/src/tracefs-events.c
-index abd97da8abbd..e92663656688 100644
---- a/src/tracefs-events.c
-+++ b/src/tracefs-events.c
-@@ -23,6 +23,9 @@
- static struct follow_event *root_followers;
- static int nr_root_followers;
- 
-+static struct follow_event *root_missed_followers;
-+static int nr_root_missed_followers;
-+
- struct cpu_iterate {
- 	struct tracefs_cpu *tcpu;
- 	struct tep_record record;
-@@ -120,6 +123,87 @@ int read_next_record(struct tep_handle *tep, struct cpu_iterate *cpu)
- 	return -1;
- }
- 
-+/**
-+ * tracefs_follow_missed_events - Add callback for missed events for iterators
-+ * @instance: The instance to follow
-+ * @callback: The function to call when missed events is detected
-+ * @callback_data: The data to pass to @callback
-+ *
-+ * This attaches a callback to an @instance or the root instance if @instance
-+ * is NULL, where if tracefs_iterate_raw_events() is called, that if missed
-+ * events are detected, it will call @callback, with the following parameters:
-+ *  @event: The event pointer of the record with the missing events
-+ *  @record; The event instance of @event.
-+ *  @cpu: The cpu that the event happened on.
-+ *  @callback_data: The same as @callback_data passed to the function.
-+ *
-+ * If the count of missing events is available, @record->missed_events
-+ * will have a positive number holding the number of missed events since
-+ * the last event on the same CPU, or just -1 if that number is unknown
-+ * but missed events did happen.
-+ *
-+ * Returns 0 on success and -1 on error.
-+ */
-+int tracefs_follow_missed_events(struct tracefs_instance *instance,
-+				 int (*callback)(struct tep_event *,
-+						 struct tep_record *,
-+						 int, void *),
-+				 void *callback_data)
-+{
-+	struct follow_event **followers;
-+	struct follow_event *follower;
-+	struct follow_event follow;
-+	int *nr_followers;
-+
-+	follow.event = NULL;
-+	follow.callback = callback;
-+	follow.callback_data = callback_data;
-+
-+	if (instance) {
-+		followers = &instance->missed_followers;
-+		nr_followers = &instance->nr_missed_followers;
-+	} else {
-+		followers = &root_missed_followers;
-+		nr_followers = &nr_root_missed_followers;
-+	}
-+	follower = realloc(*followers, sizeof(*follower) *
-+			    ((*nr_followers) + 1));
-+	if (!follower)
-+		return -1;
-+
-+	*followers = follower;
-+	follower[(*nr_followers)++] = follow;
-+
-+	return 0;
-+}
-+
-+static int call_missed_events(struct tracefs_instance *instance,
-+			      struct tep_event *event, struct tep_record *record, int cpu)
-+{
-+	struct follow_event *followers;
-+	int nr_followers;
-+	int ret = 0;
-+	int i;
-+
-+	if (instance) {
-+		followers = instance->missed_followers;
-+		nr_followers = instance->nr_missed_followers;
-+	} else {
-+		followers = root_missed_followers;
-+		nr_followers = nr_root_missed_followers;
-+	}
-+
-+	if (!followers)
-+		return 0;
-+
-+	for (i = 0; i < nr_followers; i++) {
-+		ret |= followers[i].callback(event, record,
-+					     cpu, followers[i].callback_data);
-+	}
-+
-+	return ret;
-+}
-+
- static int call_followers(struct tracefs_instance *instance,
- 			  struct tep_event *event, struct tep_record *record, int cpu)
- {
-@@ -128,6 +212,11 @@ static int call_followers(struct tracefs_instance *instance,
- 	int ret = 0;
- 	int i;
- 
-+	if (record->missed_events)
-+		ret = call_missed_events(instance, event, record, cpu);
-+	if (ret)
-+		return ret;
-+
- 	if (instance) {
- 		followers = instance->followers;
- 		nr_followers = instance->nr_followers;
+Changes since v2: https://lore.kernel.org/all/20221115040417.2453172-1-rostedt@goodmis.org/
+
+ - Fixed up the documentation (again!)
+
+Steven Rostedt (Google) (4):
+  libtracefs: Use tracefs_cpu_read() for tracefs_iterate_raw_events()
+  libtracefs: Split out iterator functions from man page
+  libtracefs: Add tracefs_follow_event() API
+  libtracefs: Add tracefs_follow_missed_events() API
+
+ Documentation/libtracefs-events.txt   |  32 +--
+ Documentation/libtracefs-iterator.txt | 229 ++++++++++++++++++++
+ Documentation/libtracefs.txt          |  11 +
+ include/tracefs-local.h               |  12 ++
+ include/tracefs.h                     |  11 +
+ src/tracefs-events.c                  | 292 +++++++++++++++++++++-----
+ 6 files changed, 502 insertions(+), 85 deletions(-)
+ create mode 100644 Documentation/libtracefs-iterator.txt
+
 -- 
 2.35.1
 
