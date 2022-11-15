@@ -2,40 +2,40 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4F13C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Nov 2022 04:03:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 293F4C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Nov 2022 04:08:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbiKOEDz (ORCPT
+        id S230041AbiKOEID (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 14 Nov 2022 23:03:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44916 "EHLO
+        Mon, 14 Nov 2022 23:08:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237247AbiKOEDm (ORCPT
+        with ESMTP id S229774AbiKOEH7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 14 Nov 2022 23:03:42 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B2411A0F
-        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Nov 2022 20:03:38 -0800 (PST)
+        Mon, 14 Nov 2022 23:07:59 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D89EEF5AB
+        for <linux-trace-devel@vger.kernel.org>; Mon, 14 Nov 2022 20:07:57 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6E640B8167D
-        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Nov 2022 04:03:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FDEBC433D6;
-        Tue, 15 Nov 2022 04:03:35 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 72AAE6152F
+        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Nov 2022 04:07:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1441C433D7;
+        Tue, 15 Nov 2022 04:07:56 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.96)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1ounBK-00AIC6-0c;
-        Mon, 14 Nov 2022 23:04:18 -0500
+        id 1ounFX-00AJ6u-2Y;
+        Mon, 14 Nov 2022 23:08:39 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 4/4] libtracefs: Add tracefs_follow_missed_events() API
-Date:   Mon, 14 Nov 2022 23:04:17 -0500
-Message-Id: <20221115040417.2453172-5-rostedt@goodmis.org>
+Subject: [PATCH v3 4/4] libtracefs: Add tracefs_follow_missed_events() API
+Date:   Mon, 14 Nov 2022 23:08:38 -0500
+Message-Id: <20221115040838.2456632-5-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221115040417.2453172-1-rostedt@goodmis.org>
-References: <20221115040417.2453172-1-rostedt@goodmis.org>
+In-Reply-To: <20221115040838.2456632-1-rostedt@goodmis.org>
+References: <20221115040838.2456632-1-rostedt@goodmis.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -49,26 +49,37 @@ have callback when events are dropped due to overrun of the ring buffer.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/libtracefs-iterator.txt | 52 +++++++++++++---
- Documentation/libtracefs.txt          |  5 ++
+ Documentation/libtracefs-iterator.txt | 56 ++++++++++++++---
+ Documentation/libtracefs.txt          |  7 ++-
  include/tracefs-local.h               |  2 +
  include/tracefs.h                     |  5 ++
  src/tracefs-events.c                  | 89 +++++++++++++++++++++++++++
- 5 files changed, 146 insertions(+), 7 deletions(-)
+ 5 files changed, 149 insertions(+), 10 deletions(-)
 
 diff --git a/Documentation/libtracefs-iterator.txt b/Documentation/libtracefs-iterator.txt
-index f53991f5cebe..c640e7f10e44 100644
+index f53991f5cebe..b971bd0e10c5 100644
 --- a/Documentation/libtracefs-iterator.txt
 +++ b/Documentation/libtracefs-iterator.txt
-@@ -23,6 +23,11 @@ int *tracefs_follow_event*(struct tep_handle pass:[*]_tep_, struct tracefs_insta
+@@ -3,7 +3,7 @@ libtracefs(3)
+ 
+ NAME
+ ----
+-tracefs_iterate_raw_events, tracefs_iterate_stop, tracefs_follow_event - Iterate over events in the ring buffer
++tracefs_iterate_raw_events, tracefs_iterate_stop, tracefs_follow_event, tracefs_follow_missed_events - Iterate over events in the ring buffer
+ 
+ SYNOPSIS
+ --------
+@@ -22,7 +22,12 @@ int *tracefs_follow_event*(struct tep_handle pass:[*]_tep_, struct tracefs_insta
+ 			  int (pass:[*]_callback_)(struct tep_event pass:[*],
  					  struct tep_record pass:[*],
  					  int, void pass:[*]),
- 			  void pass:[*]_callback_data_):
-+int *tracefs_follow_missed_event*(struct tracefs_instance pass:[*]_instance_,
+-			  void pass:[*]_callback_data_):
++			  void pass:[*]_callback_data_);
++int *tracefs_follow_missed_events*(struct tracefs_instance pass:[*]_instance_,
 +			  int (pass:[*]_callback_)(struct tep_event pass:[*],
 +					  struct tep_record pass:[*],
 +					  int, void pass:[*]),
-+			  void pass:[*]_callback_data_):
++			  void pass:[*]_callback_data_);
  --
  
  DESCRIPTION
@@ -169,18 +180,20 @@ index f53991f5cebe..c640e7f10e44 100644
  	return 0;
  }
 diff --git a/Documentation/libtracefs.txt b/Documentation/libtracefs.txt
-index e4178062d319..42815b0cb434 100644
+index e4178062d319..c3f448d2419f 100644
 --- a/Documentation/libtracefs.txt
 +++ b/Documentation/libtracefs.txt
-@@ -66,6 +66,11 @@ Trace events:
+@@ -65,7 +65,12 @@ Trace events:
+ 				  int (pass:[*]_callback_)(struct tep_event pass:[*],
  						  struct tep_record pass:[*],
  						  int, void pass:[*]),
- 				  void pass:[*]_callback_data_):
-+	int *tracefs_follow_missed_event*(struct tracefs_instance pass:[*]_instance_,
+-				  void pass:[*]_callback_data_):
++				  void pass:[*]_callback_data_);
++	int *tracefs_follow_missed_events*(struct tracefs_instance pass:[*]_instance_,
 +				  int (pass:[*]_callback_)(struct tep_event pass:[*],
 +						  struct tep_record pass:[*],
 +						  int, void pass:[*]),
-+				  void pass:[*]_callback_data_):
++				  void pass:[*]_callback_data_);
  	struct tep_handle pass:[*]*tracefs_local_events*(const char pass:[*]_tracing_dir_);
  	struct tep_handle pass:[*]*tracefs_local_events_system*(const char pass:[*]_tracing_dir_, const char pass:[*] const pass:[*]_sys_names_);
  	int *tracefs_fill_local_events*(const char pass:[*]_tracing_dir_, struct tep_handle pass:[*]_tep_, int pass:[*]_parsing_failures_);
