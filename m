@@ -2,64 +2,71 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01069C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Nov 2022 20:53:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E75E1C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Nov 2022 21:09:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238564AbiKOUxk (ORCPT
+        id S232997AbiKOVJZ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 15 Nov 2022 15:53:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58534 "EHLO
+        Tue, 15 Nov 2022 16:09:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238610AbiKOUxQ (ORCPT
+        with ESMTP id S230168AbiKOVJY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 15 Nov 2022 15:53:16 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E0926489
-        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Nov 2022 12:53:15 -0800 (PST)
+        Tue, 15 Nov 2022 16:09:24 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E390A1C136
+        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Nov 2022 13:09:23 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id C2ED4CE1915
-        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Nov 2022 20:53:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B47CC433C1;
-        Tue, 15 Nov 2022 20:53:12 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.96)
-        (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1ov2wO-00ApFO-0D;
-        Tue, 15 Nov 2022 15:53:56 -0500
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8281B61A08
+        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Nov 2022 21:09:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58002C433C1;
+        Tue, 15 Nov 2022 21:09:22 +0000 (UTC)
+Date:   Tue, 15 Nov 2022 16:10:05 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 0/4] trace-cmd utest: Add test for max buffer (record -m)
-Date:   Tue, 15 Nov 2022 15:53:51 -0500
-Message-Id: <20221115205355.2580214-1-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.35.1
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     linux-trace-devel@vger.kernel.org,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        Douglas RAILLARD <douglas.raillard@arm.com>
+Subject: Re: [PATCH 1/2] libtraceevent: Add boiler-plate code for cpumask
+ types
+Message-ID: <20221115161005.74f62903@gandalf.local.home>
+In-Reply-To: <xhsmhedu9zc3g.mognet@vschneid.remote.csb>
+References: <20221018151630.1513535-1-vschneid@redhat.com>
+        <20221018151630.1513535-2-vschneid@redhat.com>
+        <20221109190634.1fd9200d@rorschach.local.home>
+        <xhsmhedu9zc3g.mognet@vschneid.remote.csb>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Fri, 11 Nov 2022 16:32:03 +0000
+Valentin Schneider <vschneid@redhat.com> wrote:
 
-Add a unit test to test the trace-cmd recorcd -m <size> option where the
-per_cpu buffers are capped at a maximum size. There was a bug due to the splice
-code that the size was not being calculated correctly, and was becoming much
-larger than specified.
+> On 09/11/22 19:06, Steven Rostedt wrote:
+> > On Tue, 18 Oct 2022 16:16:29 +0100
+> > Valentin Schneider <vschneid@redhat.com> wrote:
+> >  
+> >> @@ -3484,6 +3498,11 @@ process_function(struct tep_event *event, struct tep_print_arg *arg,
+> >>              free_token(token);
+> >>              return process_bitmask(event, arg, tok);
+> >>      }
+> >> +	if (strcmp(token, "__get_cpumask") == 0 ||
+> >> +	    strcmp(token, "__get_cpumask") == 0) {  
+> >
+> > Hmm, not sure what the difference between the above two are.
+> >  
+> 
+> One makes sense, the other doesn't :-)
+> 
+> That's a copy/paste fail, the second one wants to be "__get_rel_cpumask"
 
-In doing this, some restructuring needs to be done to make the helper functions
-a bit more flexible, and some other clean ups.
+I was expecting a v2, should I wait?
 
-Steven Rostedt (Google) (4):
-  trace-cmd: Make the unit test depend on the static library
-  trace-cmd: Only show unit test output when -v is supplied
-  trace-cmd utest: Separate out the grep and pipes
-  trace-cmd: Add test for max size option of record
-
- utest/Makefile         |   2 +-
- utest/tracecmd-utest.c | 187 +++++++++++++++++++++++++++++++++++++----
- 2 files changed, 170 insertions(+), 19 deletions(-)
-
--- 
-2.35.1
-
+-- Steve
