@@ -2,46 +2,43 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FECFC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 18 Nov 2022 09:31:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52DA0C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 18 Nov 2022 15:04:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241937AbiKRJbJ (ORCPT
+        id S241993AbiKRPEh (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 18 Nov 2022 04:31:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44728 "EHLO
+        Fri, 18 Nov 2022 10:04:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241940AbiKRJbH (ORCPT
+        with ESMTP id S235245AbiKRPDy (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 18 Nov 2022 04:31:07 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 762D18B12E;
-        Fri, 18 Nov 2022 01:31:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2md2gEsUQJxoAo1XmhLV28lHM6Rqe2aE3bcYs9xczcY=; b=WBzMGtkJsPbG2thGoYTYlmkkN6
-        ZnF9i89mUYPxwjQpPLNN9/lVwb54BzkfPAzcw4mooLNVxmYt43tzkR9D8PcYAhiF+zfURFMi/BBhN
-        3sRB701nMURS7GdJWrxNfavxMlIo+YEkaQChHM+lLExa2VkOV6Qtp+RbKlpqqF8Iexw89ZA9rxeKu
-        ijNwiulFlKNahvPU1kySbap5ku0pUrdfp3lz00RksIAxM9mZsx2VDyd/micZsL+x4kkuRicFLF6JG
-        VAKvrBMwwscKhpA9t9cc8+7d08vleIEQFOdNrQpUD1d6KayrTV4DrQLOA4N21vCIU9PQa1L2lshaW
-        vBeM0iKA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ovxhv-001w0a-KW; Fri, 18 Nov 2022 09:30:47 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 88F20300462;
-        Fri, 18 Nov 2022 10:30:45 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6A03D201AC447; Fri, 18 Nov 2022 10:30:45 +0100 (CET)
-Date:   Fri, 18 Nov 2022 10:30:45 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Fri, 18 Nov 2022 10:03:54 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5148E8754F;
+        Fri, 18 Nov 2022 07:02:42 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EC75C625B8;
+        Fri, 18 Nov 2022 15:02:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26359C433C1;
+        Fri, 18 Nov 2022 15:02:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668783761;
+        bh=q3AdceVXKG17FUFJhMNAS25TG3DfWOjPsij2iCMaBiA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gDrEnbj2Mo97VZeksz+3qmlZnpoCjUFJoa2ujergiAYVL+IDswDXdUJ4P5ru2aPwZ
+         A2/B9gZUVk0GWssEZKm4GwkGtPPnlvKvIUmPbDlspP2O8JVHkcKfVWIkGL6wglVF8j
+         JUjBg0GNsfhf3e/LHobPQ7mUpM4jD2ogYjcAN0F6pkr4grraotVpC6hpZ8QZyHWUBy
+         i1tBLOmicaMFvnH/texbDaLL5gzekQ9QDcdzRCQbmZ55x8FI8vZCbdtENVx1Xxwr6q
+         92Papa2KPTi1O/iyj/J2m4QhVDn9rkPANg9OqNpz2McNivOOHYtRvJ7dwwmHxtdgQB
+         6zxZr7iOqra3A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D8F784034E; Fri, 18 Nov 2022 12:02:38 -0300 (-03)
+Date:   Fri, 18 Nov 2022 12:02:38 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@kernel.org>,
@@ -54,25 +51,42 @@ Cc:     Ingo Molnar <mingo@redhat.com>,
         Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
         Stephane Eranian <eranian@google.com>
 Subject: Re: [PATCH v1 1/2] perf build: Require libtraceevent from the system
-Message-ID: <Y3dQxVNwGmQMWPP0@hirez.programming.kicks-ass.net>
+Message-ID: <Y3eejjLjChlGC96I@kernel.org>
 References: <20221117224952.358639-1-irogers@google.com>
  <20221117224952.358639-2-irogers@google.com>
+ <Y3dQxVNwGmQMWPP0@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221117224952.358639-2-irogers@google.com>
+In-Reply-To: <Y3dQxVNwGmQMWPP0@hirez.programming.kicks-ass.net>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Nov 17, 2022 at 02:49:51PM -0800, Ian Rogers wrote:
-> Unconditionally require libtraceevent to come from the system. Force
-> the determination of the libtracefs version if it is present.
+Em Fri, Nov 18, 2022 at 10:30:45AM +0100, Peter Zijlstra escreveu:
+> On Thu, Nov 17, 2022 at 02:49:51PM -0800, Ian Rogers wrote:
+> > Unconditionally require libtraceevent to come from the system. Force
+> > the determination of the libtracefs version if it is present.
+> 
+> -ENOMOTIVATION
 
--ENOMOTIVATION
+Yeah, I was going to ask for that as well :-\
 
-also:
+And the motivation was spelled out in the discussion that led to this
+patch:
 
-Makefile.config:1196: *** Error: libtraceevent is missing, please install libtraceevent-dev.  Stop.
+https://lore.kernel.org/lkml/CAP-5=fWxAjEia-Qbm0RVzKOxyiod8rUOBieqaGK=DtQboDe3Qw@mail.gmail.com
+ 
+> also:
+> 
+> Makefile.config:1196: *** Error: libtraceevent is missing, please install libtraceevent-dev.  Stop.
 
-Why do I need this?
+yeah, this probably should work like with other libraries, don't stop
+the build, just don't build features that depend on libtraceevent,
+warning the user that features foo, bar and baz won't be available.
+
+For people working with just hardware, software, cache events, no
+problem.
+
+- Arnaldo
