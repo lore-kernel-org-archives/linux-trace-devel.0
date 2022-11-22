@@ -2,40 +2,40 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1AD8C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 22 Nov 2022 22:52:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29DBFC4332F
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 22 Nov 2022 22:52:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235124AbiKVWwV (ORCPT
+        id S235159AbiKVWwZ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 22 Nov 2022 17:52:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51548 "EHLO
+        Tue, 22 Nov 2022 17:52:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234822AbiKVWwT (ORCPT
+        with ESMTP id S235093AbiKVWwU (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 22 Nov 2022 17:52:19 -0500
+        Tue, 22 Nov 2022 17:52:20 -0500
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EF568C9A81;
-        Tue, 22 Nov 2022 14:52:18 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DE788C846D;
+        Tue, 22 Nov 2022 14:52:19 -0800 (PST)
 Received: from W11-BEAU-MD.localdomain (unknown [76.135.50.127])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 85E6620B83DC;
-        Tue, 22 Nov 2022 14:52:18 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 85E6620B83DC
+        by linux.microsoft.com (Postfix) with ESMTPSA id 862A320B83E7;
+        Tue, 22 Nov 2022 14:52:19 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 862A320B83E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1669157538;
-        bh=jk2IuVU8cmJkCRUV6Ij9zg71CZ3rvzUDrUlfEXzRfrI=;
+        s=default; t=1669157539;
+        bh=aWHxZ0Rug7dYGjaDIv7NPEAr23iSo6VpFSdzAk+Y29c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iWk7ciDCdFqtbAGsaOgFgskI4c4GDvdVJHWIXjRAIBRefPVyWstG7frdYhttkuhx4
-         P8BzcIMMtzloGOMCy4mWgNUv4TPlvQn1JVLgjhsDN3sBkXJT8RgfSXNHGRfrTlwY/i
-         pNipP3HPRGbwWOpN2ZQxW9B/Vegw9j4vXW4Ke77I=
+        b=Xm57/hmKjPWLn+w/8khhSZxTrnh4JKt/YcPm3XBYT0N6jegv7CUNijMavwmn8fsPr
+         oxOP1OaZN/zCD5NvtjSAX8CYD/+cbGIjnE8bV8lQ3U4K647MeHDlFu/rhUd3kFFDLp
+         h73dq0SHOgxdl3M5hv4mxP4Rg41VmtKrkJEFvZyc=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org,
         mathieu.desnoyers@efficios.com, dcook@linux.microsoft.com,
         alanau@linux.microsoft.com, brauner@kernel.org,
         akpm@linux-foundation.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 4/9] tracing/user_events: Fixup enable faults asyncly
-Date:   Tue, 22 Nov 2022 14:52:08 -0800
-Message-Id: <20221122225213.2317-5-beaub@linux.microsoft.com>
+Subject: [PATCH v3 7/9] tracing/user_events: Add ABI self-test
+Date:   Tue, 22 Nov 2022 14:52:11 -0800
+Message-Id: <20221122225213.2317-8-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221122225213.2317-1-beaub@linux.microsoft.com>
 References: <20221122225213.2317-1-beaub@linux.microsoft.com>
@@ -45,203 +45,265 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When events are enabled within the various tracing facilities, such as
-ftrace/perf, the event_mutex is held. As events are enabled pages are
-accessed. We do not want page faults to occur under this lock. Instead
-queue the fault to a workqueue to be handled in a process context safe
-way without the lock.
-
-The enable address is marked faulting while the async fault-in occurs.
-This ensures that we don't attempt to fault-in more than is necessary.
-Once the page has been faulted in, an address write is re-attempted.
-If the page couldn't fault-in, then we wait until the next time the
-event is enabled to prevent any potential infinite loops.
+Add ABI specific self-test to ensure enablements work in various
+scenarios such as fork, VM_CLONE, and basic event enable/disable.
+Ensure ABI contracts/limits are also being upheld, such as bit limits
+and data size limits.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- kernel/trace/trace_events_user.c | 120 +++++++++++++++++++++++++++++--
- 1 file changed, 114 insertions(+), 6 deletions(-)
+ tools/testing/selftests/user_events/Makefile  |   2 +-
+ .../testing/selftests/user_events/abi_test.c  | 228 ++++++++++++++++++
+ 2 files changed, 229 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/user_events/abi_test.c
 
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index e43d8656afbe..8e49545d4bcc 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -99,9 +99,23 @@ struct user_event_enabler {
- /* Bits 0-5 are for the bit to update upon enable/disable (0-63 allowed) */
- #define ENABLE_VAL_BIT_MASK 0x3F
+diff --git a/tools/testing/selftests/user_events/Makefile b/tools/testing/selftests/user_events/Makefile
+index c765d8635d9a..d5f64ef93197 100644
+--- a/tools/testing/selftests/user_events/Makefile
++++ b/tools/testing/selftests/user_events/Makefile
+@@ -2,7 +2,7 @@
+ CFLAGS += -Wl,-no-as-needed -Wall -I../../../../usr/include
+ LDLIBS += -lrt -lpthread -lm
  
-+/* Bit 6 is for faulting status of enablement */
-+#define ENABLE_VAL_FAULTING_BIT 6
-+
- /* Only duplicate the bit value */
- #define ENABLE_VAL_DUP_MASK ENABLE_VAL_BIT_MASK
+-TEST_GEN_PROGS = ftrace_test dyn_test perf_test
++TEST_GEN_PROGS = ftrace_test dyn_test perf_test abi_test
  
-+#define ENABLE_BITOPS(e) ((unsigned long *)&(e)->values)
-+
-+/* Used for asynchronous faulting in of pages */
-+struct user_event_enabler_fault {
-+	struct work_struct work;
-+	struct user_event_mm *mm;
-+	struct user_event_enabler *enabler;
-+};
-+
-+static struct kmem_cache *fault_cache;
-+
- /* Global list of memory descriptors using user_events */
- static LIST_HEAD(user_event_mms);
- static DEFINE_SPINLOCK(user_event_mms_lock);
-@@ -263,7 +277,85 @@ static int user_event_mm_fault_in(struct user_event_mm *mm, unsigned long uaddr)
- }
+ TEST_FILES := settings
  
- static int user_event_enabler_write(struct user_event_mm *mm,
--				    struct user_event_enabler *enabler)
-+				    struct user_event_enabler *enabler,
-+				    bool fixup_fault);
+diff --git a/tools/testing/selftests/user_events/abi_test.c b/tools/testing/selftests/user_events/abi_test.c
+new file mode 100644
+index 000000000000..aab387af2a66
+--- /dev/null
++++ b/tools/testing/selftests/user_events/abi_test.c
+@@ -0,0 +1,228 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * User Events ABI Test Program
++ *
++ * Copyright (c) 2022 Beau Belgrave <beaub@linux.microsoft.com>
++ */
 +
-+static void user_event_enabler_fault_fixup(struct work_struct *work)
++#define _GNU_SOURCE
++#include <sched.h>
++
++#include <errno.h>
++#include <linux/user_events.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <fcntl.h>
++#include <sys/ioctl.h>
++#include <sys/stat.h>
++#include <unistd.h>
++#include <asm/unistd.h>
++
++#include "../kselftest_harness.h"
++
++const char *data_file = "/sys/kernel/tracing/user_events_data";
++const char *enable_file = "/sys/kernel/tracing/events/user_events/__abi_event/enable";
++
++static int change_event(bool enable)
 +{
-+	struct user_event_enabler_fault *fault = container_of(
-+		work, struct user_event_enabler_fault, work);
-+	struct user_event_enabler *enabler = fault->enabler;
-+	struct user_event_mm *mm = fault->mm;
-+	unsigned long uaddr = enabler->addr;
++	int fd = open(enable_file, O_RDWR);
 +	int ret;
 +
-+	ret = user_event_mm_fault_in(mm, uaddr);
++	if (fd < 0)
++		return -1;
 +
-+	if (ret && ret != -ENOENT) {
-+		struct user_event *user = enabler->event;
++	if (enable)
++		ret = write(fd, "1", 1);
++	else
++		ret = write(fd, "0", 1);
 +
-+		pr_warn("user_events: Fault for mm: 0x%pK @ 0x%llx event: %s\n",
-+			mm->mm, (unsigned long long)uaddr, EVENT_NAME(user));
-+	}
++	close(fd);
 +
-+	/* Prevent state changes from racing */
-+	mutex_lock(&event_mutex);
++	if (ret == 1)
++		ret = 0;
++	else
++		ret = -1;
 +
-+	/*
-+	 * If we managed to get the page, re-issue the write. We do not
-+	 * want to get into a possible infinite loop, which is why we only
-+	 * attempt again directly if the page came in. If we couldn't get
-+	 * the page here, then we will try again the next time the event is
-+	 * enabled/disabled.
-+	 */
-+	clear_bit(ENABLE_VAL_FAULTING_BIT, ENABLE_BITOPS(enabler));
-+
-+	if (!ret) {
-+		mmap_read_lock(mm->mm);
-+		user_event_enabler_write(mm, enabler, true);
-+		mmap_read_unlock(mm->mm);
-+	}
-+
-+	mutex_unlock(&event_mutex);
-+
-+	/* In all cases we no longer need the mm or fault */
-+	user_event_mm_put(mm);
-+	kmem_cache_free(fault_cache, fault);
++	return ret;
 +}
 +
-+static bool user_event_enabler_queue_fault(struct user_event_mm *mm,
-+					   struct user_event_enabler *enabler)
++static int reg_enable(long *enable, int size, int bit)
 +{
-+	struct user_event_enabler_fault *fault;
++	struct user_reg reg = {0};
++	int fd = open(data_file, O_RDWR);
++	int ret;
 +
-+	fault = kmem_cache_zalloc(fault_cache, GFP_NOWAIT | __GFP_NOWARN);
++	if (fd < 0)
++		return -1;
 +
-+	if (!fault)
-+		return false;
++	reg.size = sizeof(reg);
++	reg.name_args = (__u64)"__abi_event";
++	reg.enable_bit = bit;
++	reg.enable_addr = (__u64)enable;
++	reg.enable_size = size;
 +
-+	INIT_WORK(&fault->work, user_event_enabler_fault_fixup);
-+	fault->mm = user_event_mm_get(mm);
-+	fault->enabler = enabler;
++	ret = ioctl(fd, DIAG_IOCSREG, &reg);
 +
-+	/* Don't try to queue in again while we have a pending fault */
-+	set_bit(ENABLE_VAL_FAULTING_BIT, ENABLE_BITOPS(enabler));
++	close(fd);
 +
-+	if (!schedule_work(&fault->work)) {
-+		/* Allow another attempt later */
-+		clear_bit(ENABLE_VAL_FAULTING_BIT, ENABLE_BITOPS(enabler));
-+
-+		user_event_mm_put(mm);
-+		kmem_cache_free(fault_cache, fault);
-+
-+		return false;
-+	}
-+
-+	return true;
++	return ret;
 +}
 +
-+static int user_event_enabler_write(struct user_event_mm *mm,
-+				    struct user_event_enabler *enabler,
-+				    bool fixup_fault)
- {
- 	unsigned long uaddr = enabler->addr;
- 	unsigned long *ptr;
-@@ -278,11 +370,19 @@ static int user_event_enabler_write(struct user_event_mm *mm,
- 	if (refcount_read(&mm->tasks) == 0)
- 		return -ENOENT;
- 
-+	if (unlikely(test_bit(ENABLE_VAL_FAULTING_BIT, ENABLE_BITOPS(enabler))))
-+		return -EBUSY;
++static int reg_disable(long *enable, int bit)
++{
++	struct user_unreg reg = {0};
++	int fd = open(data_file, O_RDWR);
++	int ret;
 +
- 	ret = pin_user_pages_remote(mm->mm, uaddr, 1, FOLL_WRITE | FOLL_NOFAULT,
- 				    &page, NULL, NULL);
- 
--	if (ret <= 0) {
--		pr_warn("user_events: Enable write failed\n");
-+	if (unlikely(ret <= 0)) {
-+		if (!fixup_fault)
-+			return -EFAULT;
++	if (fd < 0)
++		return -1;
 +
-+		if (!user_event_enabler_queue_fault(mm, enabler))
-+			pr_warn("user_events: Unable to queue fault handler\n");
++	reg.size = sizeof(reg);
++	reg.disable_bit = bit;
++	reg.disable_addr = (__u64)enable;
 +
- 		return -EFAULT;
- 	}
- 
-@@ -314,7 +414,7 @@ static void user_event_enabler_update(struct user_event *user)
- 
- 		list_for_each_entry_rcu(enabler, &mm->enablers, link)
- 			if (enabler->event == user)
--				user_event_enabler_write(mm, enabler);
-+				user_event_enabler_write(mm, enabler, true);
- 
- 		rcu_read_unlock();
- 		mmap_read_unlock(mm->mm);
-@@ -552,7 +652,7 @@ static struct user_event_enabler
- 
- 	/* Attempt to reflect the current state within the process */
- 	mmap_read_lock(user_mm->mm);
--	*write_result = user_event_enabler_write(user_mm, enabler);
-+	*write_result = user_event_enabler_write(user_mm, enabler, false);
- 	mmap_read_unlock(user_mm->mm);
- 
- 	/*
-@@ -2184,15 +2284,23 @@ static int __init trace_events_user_init(void)
- {
- 	int ret;
- 
-+	fault_cache = KMEM_CACHE(user_event_enabler_fault, 0);
++	ret = ioctl(fd, DIAG_IOCSUNREG, &reg);
 +
-+	if (!fault_cache)
-+		return -ENOMEM;
++	close(fd);
 +
- 	init_group = user_event_group_create(&init_user_ns);
- 
--	if (!init_group)
-+	if (!init_group) {
-+		kmem_cache_destroy(fault_cache);
- 		return -ENOMEM;
++	return ret;
++}
++
++FIXTURE(user) {
++	long check;
++};
++
++FIXTURE_SETUP(user) {
++	change_event(false);
++	self->check = 0;
++}
++
++FIXTURE_TEARDOWN(user) {
++}
++
++TEST_F(user, enablement) {
++	/* Changes should be reflected immediately */
++	ASSERT_EQ(0, self->check);
++	ASSERT_EQ(0, reg_enable(&self->check, sizeof(int), 0));
++	ASSERT_EQ(0, change_event(true));
++	ASSERT_EQ(1, self->check);
++	ASSERT_EQ(0, change_event(false));
++	ASSERT_EQ(0, self->check);
++
++	/* Should not change after disable */
++	ASSERT_EQ(0, change_event(true));
++	ASSERT_EQ(1, self->check);
++	ASSERT_EQ(0, reg_disable(&self->check, 0));
++	ASSERT_EQ(0, change_event(false));
++	ASSERT_EQ(1, self->check);
++	self->check = 0;
++}
++
++TEST_F(user, bit_sizes) {
++	/* Allow 0-31 bits for 32-bit */
++	ASSERT_EQ(0, reg_enable(&self->check, sizeof(int), 0));
++	ASSERT_EQ(0, reg_enable(&self->check, sizeof(int), 31));
++	ASSERT_NE(0, reg_enable(&self->check, sizeof(int), 32));
++	ASSERT_EQ(0, reg_disable(&self->check, 0));
++	ASSERT_EQ(0, reg_disable(&self->check, 31));
++
++#if BITS_PER_LONG == 8
++	/* Allow 0-64 bits for 64-bit */
++	ASSERT_EQ(0, reg_enable(&self->check, sizeof(long), 63));
++	ASSERT_NE(0, reg_enable(&self->check, sizeof(long), 64));
++	ASSERT_EQ(0, reg_disable(&self->check, 63));
++#endif
++
++	/* Disallowed sizes (everything beside 4 and 8) */
++	ASSERT_NE(0, reg_enable(&self->check, 1, 0));
++	ASSERT_NE(0, reg_enable(&self->check, 2, 0));
++	ASSERT_NE(0, reg_enable(&self->check, 3, 0));
++	ASSERT_NE(0, reg_enable(&self->check, 5, 0));
++	ASSERT_NE(0, reg_enable(&self->check, 6, 0));
++	ASSERT_NE(0, reg_enable(&self->check, 7, 0));
++	ASSERT_NE(0, reg_enable(&self->check, 9, 0));
++	ASSERT_NE(0, reg_enable(&self->check, 128, 0));
++}
++
++TEST_F(user, forks) {
++	int i;
++
++	/* Ensure COW pages get updated after fork */
++	ASSERT_EQ(0, reg_enable(&self->check, sizeof(int), 0));
++	ASSERT_EQ(0, self->check);
++
++	if (fork() == 0) {
++		/* Force COW */
++		self->check = 0;
++
++		/* Up to 1 sec for enablement */
++		for (i=0; i<10; ++i) {
++			usleep(100000);
++
++			if (self->check)
++				exit(0);
++		}
++
++		exit(1);
 +	}
- 
- 	ret = create_user_tracefs();
- 
- 	if (ret) {
- 		pr_warn("user_events could not register with tracefs\n");
-+		kmem_cache_destroy(fault_cache);
- 		user_event_group_destroy(init_group);
- 		init_group = NULL;
- 		return ret;
++
++	/* Allow generous time for COW, then enable */
++	usleep(100000);
++	ASSERT_EQ(0, change_event(true));
++
++	ASSERT_NE(-1, wait(&i));
++	ASSERT_EQ(0, WEXITSTATUS(i));
++
++	/* Ensure child doesn't disable parent */
++	if (fork() == 0) {
++		exit(reg_disable(&self->check, 0));
++	}
++
++	ASSERT_NE(-1, wait(&i));
++	ASSERT_EQ(0, WEXITSTATUS(i));
++	ASSERT_EQ(1, self->check);
++	ASSERT_EQ(0, change_event(false));
++	ASSERT_EQ(0, self->check);
++}
++
++/* Waits up to 1 sec for enablement */
++static int clone_check(void *check)
++{
++	int i;
++
++	for (i=0; i<10; ++i) {
++		usleep(100000);
++
++		if (*(long *)check) {
++			return 0;
++		}
++	}
++
++	return 1;
++}	
++
++TEST_F(user, clones) {
++	int i, stack_size = 4096;
++	void *stack = mmap(NULL, stack_size, PROT_READ | PROT_WRITE,
++			   MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK,
++			   -1, 0);
++
++	ASSERT_NE(MAP_FAILED, stack);
++	ASSERT_EQ(0, reg_enable(&self->check, sizeof(int), 0));
++	ASSERT_EQ(0, self->check);
++
++	/* Shared VM should see enablements */
++	ASSERT_NE(-1, clone(&clone_check, stack + stack_size,
++			    CLONE_VM | SIGCHLD, &self->check));
++
++	ASSERT_EQ(0, change_event(true));
++	ASSERT_NE(-1, wait(&i));
++	ASSERT_EQ(0, WEXITSTATUS(i));
++	munmap(stack, stack_size);
++	ASSERT_EQ(0, change_event(false));
++}
++
++int main(int argc, char **argv)
++{
++	return test_harness_run(argc, argv);
++}
 -- 
 2.25.1
 
