@@ -2,78 +2,89 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0682C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 28 Nov 2022 13:24:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E2D7C43217
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 28 Nov 2022 15:25:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231723AbiK1NY0 (ORCPT
+        id S232016AbiK1PZT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 28 Nov 2022 08:24:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52334 "EHLO
+        Mon, 28 Nov 2022 10:25:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231722AbiK1NYZ (ORCPT
+        with ESMTP id S232046AbiK1PYz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 28 Nov 2022 08:24:25 -0500
-X-Greylist: delayed 180 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 28 Nov 2022 05:24:24 PST
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828C263CE
-        for <linux-trace-devel@vger.kernel.org>; Mon, 28 Nov 2022 05:24:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1669641676;
-    s=strato-dkim-0002; d=iokpp.de;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=Op+Nt0BUOanvcU64ZoT1WHx7680hKcqnqoppjo0UiuQ=;
-    b=O/avQ80YHRDTNaqSspOUpaiJcZ8jL6Dv8Hz/RIP3Aipm5QNMx6hI3wK0MmTd8/abZt
-    Jolib0HksG/UpvaF1z5KBAwQr/OtDpBDB4Smi/BMnxGI0+xv3TlR3yWMl0v8C+ZzdABc
-    IKCBUsm+f1IVa/7kp4kn99ETQmciWY3sBE1Uy/jurmfNxOFUXXC0CGBc0cf08DPgyMT6
-    gH4LjxwfKJo/Y/KrEK8TBdBMCZEFTYAH2XZ22hK8v1KcPYfZqzeP2RKfm8HSTvohyxIH
-    FyuF8y5h6ccCgr5YOFaLCPkvLtoEIfry2npXY5DbCOpFv/fkBsQaFaYvcyn/fHu6MZQk
-    L4XQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":LmkFe0i9dN8c2t4QQyGBB/NDXvjDB6pBSedrgBzPc9DUyubU4DD2QzemV2tdlNlNRZBXiUw="
-X-RZG-CLASS-ID: mo00
-Received: from blinux.micron.com
-    by smtp.strato.de (RZmta 48.2.1 AUTH)
-    with ESMTPSA id z9cfbfyASDLG44E
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 28 Nov 2022 14:21:16 +0100 (CET)
-From:   Bean Huo <beanhuo@iokpp.de>
-To:     linux-trace-devel@vger.kernel.org, rostedt@goodmis.org,
-        tz.stoyanov@gmail.com
-Cc:     Bean Huo <beanhuo@micron.com>
-Subject: [PATCH] libtracefs: Fix wrong return value in tracefs_tracing_dir_is_mounted()
-Date:   Mon, 28 Nov 2022 14:21:06 +0100
-Message-Id: <20221128132106.291101-1-beanhuo@iokpp.de>
-X-Mailer: git-send-email 2.25.1
+        Mon, 28 Nov 2022 10:24:55 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 968F624947
+        for <linux-trace-devel@vger.kernel.org>; Mon, 28 Nov 2022 07:24:14 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EF1E461207
+        for <linux-trace-devel@vger.kernel.org>; Mon, 28 Nov 2022 15:24:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA801C433C1;
+        Mon, 28 Nov 2022 15:24:12 +0000 (UTC)
+Date:   Mon, 28 Nov 2022 10:24:10 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Bean Huo <beanhuo@iokpp.de>
+Cc:     linux-trace-devel@vger.kernel.org, tz.stoyanov@gmail.com,
+        Bean Huo <beanhuo@micron.com>
+Subject: Re: [PATCH] libtracefs: Fix wrong return value in
+ tracefs_tracing_dir_is_mounted()
+Message-ID: <20221128102410.5ccf784d@gandalf.local.home>
+In-Reply-To: <20221128132106.291101-1-beanhuo@iokpp.de>
+References: <20221128132106.291101-1-beanhuo@iokpp.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+On Mon, 28 Nov 2022 14:21:06 +0100
+Bean Huo <beanhuo@iokpp.de> wrote:
 
-If it eventually mounts successfully, it should return 1 instead of
-0, otherwise it will make the caller's verification logic more complicated
+> From: Bean Huo <beanhuo@micron.com>
+> 
+> If it eventually mounts successfully, it should return 1 instead of
+> 0, otherwise it will make the caller's verification logic more complicated
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- src/tracefs-utils.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The man page shows:
 
-diff --git a/src/tracefs-utils.c b/src/tracefs-utils.c
-index 777912e..5d6e977 100644
---- a/src/tracefs-utils.c
-+++ b/src/tracefs-utils.c
-@@ -188,7 +188,7 @@ int tracefs_tracing_dir_is_mounted(bool mount, const char **path)
- 		return -1;
- 	if (path)
- 		*path = dir;
--	return 0;
-+	return 1;
- }
- 
- /**
--- 
-2.25.1
+  The tracefs_tracing_dir_is_mounted() returns 1 if the tracing directory is
+  already mounted, 0 if it is not, and -1 on error.
+
+If you only want to mount it and not care if it was already mounted then
+use tracefs_tracing_dir(), as it will return the path of the mount point
+and try to mount it if it is not already, or NULL if it could not mount it.
+
+This function is specifically created to tell the application if it mounted
+or not, so that it could unmount it when it is done. We have applications
+that do this.
+
+So, no, I'm not taking this change. It breaks the use case for this
+function.
+
+-- Steve
+
+
+> 
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> ---
+>  src/tracefs-utils.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/src/tracefs-utils.c b/src/tracefs-utils.c
+> index 777912e..5d6e977 100644
+> --- a/src/tracefs-utils.c
+> +++ b/src/tracefs-utils.c
+> @@ -188,7 +188,7 @@ int tracefs_tracing_dir_is_mounted(bool mount, const char **path)
+>  		return -1;
+>  	if (path)
+>  		*path = dir;
+> -	return 0;
+> +	return 1;
+>  }
+>  
+>  /**
 
