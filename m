@@ -2,211 +2,171 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B32BC4332F
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Dec 2022 23:06:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E776CC4321E
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Dec 2022 23:51:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234204AbiLBXGa (ORCPT
+        id S234508AbiLBXvp (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 2 Dec 2022 18:06:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36740 "EHLO
+        Fri, 2 Dec 2022 18:51:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234110AbiLBXG3 (ORCPT
+        with ESMTP id S229606AbiLBXvo (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 2 Dec 2022 18:06:29 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6261BF28A4
-        for <linux-trace-devel@vger.kernel.org>; Fri,  2 Dec 2022 15:06:28 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F3B2262412
-        for <linux-trace-devel@vger.kernel.org>; Fri,  2 Dec 2022 23:06:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27AA2C433C1
-        for <linux-trace-devel@vger.kernel.org>; Fri,  2 Dec 2022 23:06:27 +0000 (UTC)
-Date:   Fri, 2 Dec 2022 18:06:25 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] libtraceevent: Add tep_find_function_info()
-Message-ID: <20221202180625.58262735@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 2 Dec 2022 18:51:44 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EBB35FA469;
+        Fri,  2 Dec 2022 15:51:43 -0800 (PST)
+Received: from W11-BEAU-MD.localdomain (unknown [76.135.50.127])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 753AD20B83C2;
+        Fri,  2 Dec 2022 15:51:43 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 753AD20B83C2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1670025103;
+        bh=PoAvvl/mPrZFDqKMEDGS1qGB96XJcFDmRUXTOetKBkI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=q2PyeyhQxIhVb1ZhIaHnzsN+TqcCfnh2JdufwqWKJMNkB7mY7IrEzU4JVIcmnYYFI
+         rvfwLDsdXeXRy2grc1wtSGOFdvZTrWEg9gM1VCfBMR2OoSpT4Phk5lOkmGbuUADG3Q
+         5DdS2WtY/vqIbY9tH5+fFgTKZlIYjvAciMKQQt10=
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     rostedt@goodmis.org, mhiramat@kernel.org,
+        mathieu.desnoyers@efficios.com, dcook@linux.microsoft.com,
+        alanau@linux.microsoft.com, brauner@kernel.org,
+        akpm@linux-foundation.org
+Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 00/11] tracing/user_events: Remote write ABI
+Date:   Fri,  2 Dec 2022 15:51:27 -0800
+Message-Id: <20221202235138.450-1-beaub@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+As part of the discussions for user_events aligned with user space
+tracers, it was determined that user programs should register a aligned
+value to set or clear a bit when an event becomes enabled. Currently a
+shared page is being used that requires mmap(). Remove the shared page
+implementation and move to a user registered address implementation.
 
-I needed a way to get the size of a function, and instead of creating
-another function that gets the size (having to look up the function by
-address again), I decided it would be better to have a single function
-that retrieved the name, starting address and the size.
+In this new model during the event registration from user programs 3 new
+values are specified. The first is the address to update when the event
+is either enabled or disabled. The second is the bit to set/clear to
+reflect the event being enabled. The third is the size of the value at
+the specified address.
 
-This implements tep_find_function_info() that does just that.
+This allows for a local 32/64-bit value in user programs to support
+both kernel and user tracers. As an example, setting bit 31 for kernel
+tracers when the event becomes enabled allows for user tracers to use
+the other bits for ref counts or other flags. The kernel side updates
+the bit atomically, user programs need to also update these values
+atomically.
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- Documentation/libtraceevent-func_find.txt | 51 +++++++++++++++++++++--
- include/traceevent/event-parse.h          |  3 ++
- src/event-parse.c                         | 37 ++++++++++++++++
- 3 files changed, 87 insertions(+), 4 deletions(-)
+User provided addresses must be aligned on a natural boundary, this
+allows for single page checking and prevents odd behaviors such as a
+enable value straddling 2 pages instead of a single page.
 
-diff --git a/Documentation/libtraceevent-func_find.txt b/Documentation/libtraceevent-func_find.txt
-index 20982e91fa0b..26fac681fe8e 100644
---- a/Documentation/libtraceevent-func_find.txt
-+++ b/Documentation/libtraceevent-func_find.txt
-@@ -3,7 +3,7 @@ libtraceevent(3)
- 
- NAME
- ----
--tep_find_function,tep_find_function_address - Find function name / start address.
-+tep_find_function,tep_find_function_address,tep_find_function_info - Find function name / start address.
- 
- SYNOPSIS
- --------
-@@ -13,6 +13,8 @@ SYNOPSIS
- 
- const char pass:[*]*tep_find_function*(struct tep_handle pass:[*]_tep_, unsigned long long _addr_);
- unsigned long long *tep_find_function_address*(struct tep_handle pass:[*]_tep_, unsigned long long _addr_);
-+int *tep_find_function_info*(struct tep_handle pass:[*]_tep_, unsigned long long _addr_, const char pass:[**]_name_,
-+			   unsigned long long pass:[*]_start_, unsigned long pass:[*]_size_);
- --
- 
- DESCRIPTION
-@@ -28,6 +30,11 @@ The *tep_find_function_address()* function returns the function start address,
- by given address _addr_. The _addr_ does not have to be exact, it will select the
- function that would contain it. The _tep_ argument is the trace event parser context.
- 
-+The *tep_find_function_info()* function retrieves the _name_, starting address (_start_),
-+and the function text _size_ of the function at _address_, if it is found. Note,
-+if the _tep_ handle has a function resolver (used by perf), then _size_ is set to
-+zero.
-+
- RETURN VALUE
- ------------
- The *tep_find_function()* function returns the function name, or NULL in case
-@@ -36,6 +43,9 @@ it cannot be found.
- The *tep_find_function_address()* function returns the function start address,
- or 0 in case it cannot be found.
- 
-+The *tep_find_function_info()* function returns 1 if a function is found for the
-+given address, or 0 if it is not.
-+
- EXAMPLE
- -------
- [source,c]
-@@ -44,12 +54,45 @@ EXAMPLE
- ...
- struct tep_handle *tep = tep_alloc();
- ...
--void show_function( unsigned long long addr)
-+void show_function_name(unsigned long long addr)
-+{
-+	const char *fname = tep_find_function(tep, addr);
-+
-+	if (fname)
-+		printf("Found function %s at 0x%0llx\n", fname, addr);
-+	else
-+		printf("No function found at 0x%0llx\n", addr);
-+}
-+
-+void show_function_start_addr(unsigned long long addr)
- {
- 	const char *fname = tep_find_function(tep, addr);
--	unsigned long long fstart = tep_find_function_address(tep, addr);
-+	unsigned long long fstart;
-+
-+	if (!fname) {
-+		printf("No function found at 0x%0llx\n", addr);
-+		return;
-+	}
-+
-+	fstart = tep_find_function_address(tep, addr);
-+	printf("Function %s at 0x%llx starts at 0x%0llx\n",
-+	       fname, addr, fstart);
-+}
-+
-+void show_function_info(unsigned long long addr)
-+{
-+	const char *fname;
-+	unsigned long long fstart;
-+	unsigned long size;
-+
-+	ret = tep_find_function_info(tep, addr, &fname, &fstart, &size);
-+	if (!ret) {
-+		printf("No function found at 0x%0lx\n", addr);
-+		return;
-+	}
- 
--	/* addr is in function named fname, starting at fstart address, at offset (addr - fstart) */
-+	printf("Function %s at 0x%lx starts at 0x%0lx and is %ld in size\n",
-+	       fname, addr, fstart, size);
- }
- ...
- --
-diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index f749cc2656ba..df307666abfa 100644
---- a/include/traceevent/event-parse.h
-+++ b/include/traceevent/event-parse.h
-@@ -527,6 +527,9 @@ struct tep_format_field *tep_find_any_field(struct tep_event *event, const char
- const char *tep_find_function(struct tep_handle *tep, unsigned long long addr);
- unsigned long long
- tep_find_function_address(struct tep_handle *tep, unsigned long long addr);
-+int tep_find_function_info(struct tep_handle *tep, unsigned long long addr,
-+			   const char **name, unsigned long long *start,
-+			   unsigned long *size);
- unsigned long long tep_read_number(struct tep_handle *tep, const void *ptr, int size);
- int tep_read_number_field(struct tep_format_field *field, const void *data,
- 			  unsigned long long *value);
-diff --git a/src/event-parse.c b/src/event-parse.c
-index d842f9d4bbce..a6e9e936ac87 100644
---- a/src/event-parse.c
-+++ b/src/event-parse.c
-@@ -613,6 +613,43 @@ find_func(struct tep_handle *tep, unsigned long long addr)
- 	return map;
- }
- 
-+/**
-+ * tep_find_function_info - find a function by a given address
-+ * @tep: a handle to the trace event parser context
-+ * @addr: the address to find the function with
-+ * @name: Return the name of the function (if found)
-+ * @start: Return the start of the function (if found)
-+ * @size: Return the size of the function (if found)
-+ *
-+ * Returns 1 if found, and 0 if it is not.
-+ *  If found then @name will point to the name of the function.
-+ *                @start: will contain the starting address of the function.
-+ *                @size: will contain the size of the function.
-+ */
-+int tep_find_function_info(struct tep_handle *tep, unsigned long long addr,
-+			   const char **name, unsigned long long *start,
-+			   unsigned long *size)
-+{
-+	struct func_map *map;
-+
-+	map = find_func(tep, addr);
-+	if (!map)
-+		return 0;
-+
-+	if (name)
-+		*name = map->func;
-+	if (start)
-+		*start = map->addr;
-+	if (size) {
-+		if (!tep->func_resolver)
-+			*size = map[1].addr - map->addr;
-+		else
-+			*size = 0;
-+	}
-+
-+	return 1;
-+}
-+
- /**
-  * tep_find_function - find a function by a given address
-  * @tep: a handle to the trace event parser context
+When page faults are encountered they are done asyncly via a workqueue.
+If the page faults back in, the write update is attempted again. If the
+page cannot fault-in, then we log and wait until the next time the event
+is enabled/disabled. This is to prevent possible infinite loops resulting
+from bad user processes unmapping or changing protection values after
+registering the address.
+
+Change history
+
+V4:
+Rebase to 6.1-rc7.
+
+Moved user_events_fork() out of task signal lock and dropped use of
+GFP_NOWAIT. All allocations are now GFP_KERNEL or GFP_KERNEL_ACCOUNT.
+
+Added boot parameter user_events_max= to limit global events.
+
+Added sysctl value kernel.user_events_max to limit global events.
+
+Added cgroup tracking of memory allocated for events.
+
+V3:
+Rebase to 6.1-rc6.
+
+Removed RFC tag on series.
+
+Updated documentation to reflect ABI changes.
+
+Added self-test for ABI specific clone/fork cases.
+
+Moved user_event_mm removal into do_exit() to ensure RSS task accounting
+is done properly in async fault paths. Also lets us remove the delayed
+mmdrop(), saving memory in each user_event_mm struct.
+
+Fixed timing window where task exits, but write could be in-progress.
+During exit we now take mmap_write_lock to ensure we drain writes.
+
+V2:
+Rebase to 6.1-rc5.
+
+Added various comments based on feedback.
+
+Added enable_size to register struct, allows 32/64 bit addresses
+as long as the enable_bit fits and the address is naturally aligned.
+
+Changed user_event_enabler_write to accept a new flag indicating if a
+fault fixup should be done or not. This allows user_event_enabler_create
+to return back failures to the user ioctl reg call and retry to fault
+in data.
+
+Added tracking fork/exec/exit of tasks to have the user_event_mm lifetime
+tied more to the task than the file. This came with extra requirements
+around when you can lock, such as softirq cases, as well as a RCU
+pattern to ensure fork/exec/exit take minimal lock times.
+
+Changed enablers to use a single word-aligned value for saving the bit
+to set and any flags, such as faulting asyncly or being freed. This was
+required to ensure atomic bit set/test for fork cases where taking the
+event_mutex is not a good scalability decision.
+
+Added unregister IOCTL, since file lifetime no longer limits the enable
+time for any events (the mm does).
+
+Updated sample code to reflect the new remote write based ABI.
+
+Updated self-test code to reflect the new remote write based ABI.
+
+Beau Belgrave (11):
+  tracing/user_events: Split header into uapi and kernel
+  tracing/user_events: Track fork/exec/exit for mm lifetime
+  tracing/user_events: Use remote writes for event enablement
+  tracing/user_events: Fixup enable faults asyncly
+  tracing/user_events: Add ioctl for disabling addresses
+  tracing/user_events: Update self-tests to write ABI
+  tracing/user_events: Add ABI self-test
+  tracing/user_events: Use write ABI in example
+  tracing/user_events: Update documentation for ABI
+  tracing/user_events: Charge event allocs to cgroups
+  tracing/user_events: Limit global user_event count
+
+ Documentation/trace/user_events.rst           | 172 ++--
+ fs/exec.c                                     |   2 +
+ include/linux/sched.h                         |   5 +
+ include/linux/user_events.h                   |  99 +-
+ include/uapi/linux/user_events.h              |  81 ++
+ kernel/exit.c                                 |   2 +
+ kernel/fork.c                                 |   2 +
+ kernel/trace/Kconfig                          |   5 +-
+ kernel/trace/trace_events_user.c              | 847 +++++++++++++++---
+ samples/user_events/example.c                 |  47 +-
+ tools/testing/selftests/user_events/Makefile  |   2 +-
+ .../testing/selftests/user_events/abi_test.c  | 228 +++++
+ .../testing/selftests/user_events/dyn_test.c  |   2 +-
+ .../selftests/user_events/ftrace_test.c       | 162 ++--
+ .../testing/selftests/user_events/perf_test.c |  39 +-
+ 15 files changed, 1296 insertions(+), 399 deletions(-)
+ create mode 100644 include/uapi/linux/user_events.h
+ create mode 100644 tools/testing/selftests/user_events/abi_test.c
+
+
+base-commit: b7b275e60bcd5f89771e865a8239325f86d9927d
 -- 
-2.35.1
+2.25.1
 
