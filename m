@@ -2,174 +2,175 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48C05C4321E
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  5 Dec 2022 21:00:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CE77C47089
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  5 Dec 2022 21:00:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233335AbiLEVAZ (ORCPT
+        id S233505AbiLEVAZ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Mon, 5 Dec 2022 16:00:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59222 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231990AbiLEVAY (ORCPT
+        with ESMTP id S231598AbiLEVAY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 5 Dec 2022 16:00:24 -0500
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 697872528D;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DB16125E92;
         Mon,  5 Dec 2022 13:00:23 -0800 (PST)
 Received: from W11-BEAU-MD.localdomain (unknown [76.135.50.127])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C775520B6C40;
-        Mon,  5 Dec 2022 13:00:22 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C775520B6C40
+        by linux.microsoft.com (Postfix) with ESMTPSA id 7A19420B83DC;
+        Mon,  5 Dec 2022 13:00:23 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7A19420B83DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
         s=default; t=1670274023;
-        bh=wgvbYUS3974Re2/jAlcy5VeGB4akqj2Nyqve6yU4fvg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=X7gb/uToNGvSo5SrPKsdvrCaI/6x+VOatK+OnsXZffX9yP7DPB+jgyB0iN3xanpny
-         ooR3pUjoRQxJFL8g2Sl1cArFdkYAb9OWBQjdIlM3v4N7dlsGyKOEriBt1R45EMkxdg
-         EFKlt6EK00XSmA1rtjKU6voqr8wQksboDP27oHyA=
+        bh=uParTVU9Z9xqfA98lJokNpjIwc9u+HZsqpYzGti/vmY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=iMJDXP8Q5fT1haWV3G14W4tzih6QY47J8fXaYMvfsLe18yT12SuxO2g94oNrgxAtn
+         hqffpLzkQRBKe42aBOgM9z30NjI+oaYluLrYRVj8ur/hM5vXRoKU5IamaDBRE4rAyx
+         4Pvdk5uOD0ombKPG6wnNcfyyiRCfj/zoP4sbcOJ0=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org,
         mathieu.desnoyers@efficios.com, dcook@linux.microsoft.com,
         alanau@linux.microsoft.com, brauner@kernel.org,
         akpm@linux-foundation.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 00/11] tracing/user_events: Remote write ABI
-Date:   Mon,  5 Dec 2022 13:00:06 -0800
-Message-Id: <20221205210017.23440-1-beaub@linux.microsoft.com>
+Subject: [PATCH v5 02/11] tracing/user_events: Track fork/exec/exit for mm lifetime
+Date:   Mon,  5 Dec 2022 13:00:08 -0800
+Message-Id: <20221205210017.23440-3-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20221205210017.23440-1-beaub@linux.microsoft.com>
+References: <20221205210017.23440-1-beaub@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-As part of the discussions for user_events aligned with user space
-tracers, it was determined that user programs should register a aligned
-value to set or clear a bit when an event becomes enabled. Currently a
-shared page is being used that requires mmap(). Remove the shared page
-implementation and move to a user registered address implementation.
+During tracefs discussions it was decided instead of requiring a mapping
+within a user-process to track the lifetime of memory descriptors we
+should hook the appropriate calls. Do this by adding the minimal stubs
+required for task fork, exec, and exit. Currently this is just a NOP.
+Future patches will implement these calls fully.
 
-In this new model during the event registration from user programs 3 new
-values are specified. The first is the address to update when the event
-is either enabled or disabled. The second is the bit to set/clear to
-reflect the event being enabled. The third is the size of the value at
-the specified address.
+Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+---
+ fs/exec.c                   |  2 ++
+ include/linux/sched.h       |  5 +++++
+ include/linux/user_events.h | 16 +++++++++++++++-
+ kernel/exit.c               |  2 ++
+ kernel/fork.c               |  2 ++
+ 5 files changed, 26 insertions(+), 1 deletion(-)
 
-This allows for a local 32/64-bit value in user programs to support
-both kernel and user tracers. As an example, setting bit 31 for kernel
-tracers when the event becomes enabled allows for user tracers to use
-the other bits for ref counts or other flags. The kernel side updates
-the bit atomically, user programs need to also update these values
-atomically.
-
-User provided addresses must be aligned on a natural boundary, this
-allows for single page checking and prevents odd behaviors such as a
-enable value straddling 2 pages instead of a single page.
-
-When page faults are encountered they are done asyncly via a workqueue.
-If the page faults back in, the write update is attempted again. If the
-page cannot fault-in, then we log and wait until the next time the event
-is enabled/disabled. This is to prevent possible infinite loops resulting
-from bad user processes unmapping or changing protection values after
-registering the address.
-
-Change history
-
-V5:
-GFP_NOWAIT is still needed in user_event_enabler_dup(), due to rcu lock.
-
-V4:
-Rebase to 6.1-rc7.
-
-Moved user_events_fork() out of task signal lock and dropped use of
-GFP_NOWAIT. All allocations are now GFP_KERNEL or GFP_KERNEL_ACCOUNT.
-
-Added boot parameter user_events_max= to limit global events.
-
-Added sysctl value kernel.user_events_max to limit global events.
-
-Added cgroup tracking of memory allocated for events.
-
-V3:
-Rebase to 6.1-rc6.
-
-Removed RFC tag on series.
-
-Updated documentation to reflect ABI changes.
-
-Added self-test for ABI specific clone/fork cases.
-
-Moved user_event_mm removal into do_exit() to ensure RSS task accounting
-is done properly in async fault paths. Also lets us remove the delayed
-mmdrop(), saving memory in each user_event_mm struct.
-
-Fixed timing window where task exits, but write could be in-progress.
-During exit we now take mmap_write_lock to ensure we drain writes.
-
-V2:
-Rebase to 6.1-rc5.
-
-Added various comments based on feedback.
-
-Added enable_size to register struct, allows 32/64 bit addresses
-as long as the enable_bit fits and the address is naturally aligned.
-
-Changed user_event_enabler_write to accept a new flag indicating if a
-fault fixup should be done or not. This allows user_event_enabler_create
-to return back failures to the user ioctl reg call and retry to fault
-in data.
-
-Added tracking fork/exec/exit of tasks to have the user_event_mm lifetime
-tied more to the task than the file. This came with extra requirements
-around when you can lock, such as softirq cases, as well as a RCU
-pattern to ensure fork/exec/exit take minimal lock times.
-
-Changed enablers to use a single word-aligned value for saving the bit
-to set and any flags, such as faulting asyncly or being freed. This was
-required to ensure atomic bit set/test for fork cases where taking the
-event_mutex is not a good scalability decision.
-
-Added unregister IOCTL, since file lifetime no longer limits the enable
-time for any events (the mm does).
-
-Updated sample code to reflect the new remote write based ABI.
-
-Updated self-test code to reflect the new remote write based ABI.
-
-Beau Belgrave (11):
-  tracing/user_events: Split header into uapi and kernel
-  tracing/user_events: Track fork/exec/exit for mm lifetime
-  tracing/user_events: Use remote writes for event enablement
-  tracing/user_events: Fixup enable faults asyncly
-  tracing/user_events: Add ioctl for disabling addresses
-  tracing/user_events: Update self-tests to write ABI
-  tracing/user_events: Add ABI self-test
-  tracing/user_events: Use write ABI in example
-  tracing/user_events: Update documentation for ABI
-  tracing/user_events: Charge event allocs to cgroups
-  tracing/user_events: Limit global user_event count
-
- Documentation/trace/user_events.rst           | 172 ++--
- fs/exec.c                                     |   2 +
- include/linux/sched.h                         |   5 +
- include/linux/user_events.h                   |  99 +-
- include/uapi/linux/user_events.h              |  81 ++
- kernel/exit.c                                 |   2 +
- kernel/fork.c                                 |   2 +
- kernel/trace/Kconfig                          |   5 +-
- kernel/trace/trace_events_user.c              | 847 +++++++++++++++---
- samples/user_events/example.c                 |  47 +-
- tools/testing/selftests/user_events/Makefile  |   2 +-
- .../testing/selftests/user_events/abi_test.c  | 228 +++++
- .../testing/selftests/user_events/dyn_test.c  |   2 +-
- .../selftests/user_events/ftrace_test.c       | 162 ++--
- .../testing/selftests/user_events/perf_test.c |  39 +-
- 15 files changed, 1296 insertions(+), 399 deletions(-)
- create mode 100644 include/uapi/linux/user_events.h
- create mode 100644 tools/testing/selftests/user_events/abi_test.c
-
-
-base-commit: b7b275e60bcd5f89771e865a8239325f86d9927d
+diff --git a/fs/exec.c b/fs/exec.c
+index a0b1f0337a62..75ca6fbd195c 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -64,6 +64,7 @@
+ #include <linux/io_uring.h>
+ #include <linux/syscall_user_dispatch.h>
+ #include <linux/coredump.h>
++#include <linux/user_events.h>
+ 
+ #include <linux/uaccess.h>
+ #include <asm/mmu_context.h>
+@@ -1842,6 +1843,7 @@ static int bprm_execve(struct linux_binprm *bprm,
+ 	current->fs->in_exec = 0;
+ 	current->in_execve = 0;
+ 	rseq_execve(current);
++	user_events_execve(current);
+ 	acct_update_integrals(current);
+ 	task_numa_free(current, false);
+ 	return retval;
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index ffb6eb55cd13..61ed2f9deb26 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -69,6 +69,7 @@ struct sighand_struct;
+ struct signal_struct;
+ struct task_delay_info;
+ struct task_group;
++struct user_event_mm;
+ 
+ /*
+  * Task state bitmask. NOTE! These bits are also
+@@ -1528,6 +1529,10 @@ struct task_struct {
+ 	union rv_task_monitor		rv[RV_PER_TASK_MONITORS];
+ #endif
+ 
++#ifdef CONFIG_USER_EVENTS
++	struct user_event_mm		*user_event_mm;
++#endif
++
+ 	/*
+ 	 * New fields for task_struct should be added above here, so that
+ 	 * they are included in the randomized portion of task_struct.
+diff --git a/include/linux/user_events.h b/include/linux/user_events.h
+index 036b360f3d97..3d747c45d2fa 100644
+--- a/include/linux/user_events.h
++++ b/include/linux/user_events.h
+@@ -12,7 +12,21 @@
+ #include <uapi/linux/user_events.h>
+ 
+ #ifdef CONFIG_USER_EVENTS
+-#else
++struct user_event_mm {
++};
+ #endif
+ 
++static inline void user_events_fork(struct task_struct *t,
++				    unsigned long clone_flags)
++{
++}
++
++static inline void user_events_execve(struct task_struct *t)
++{
++}
++
++static inline void user_events_exit(struct task_struct *t)
++{
++}
++
+ #endif /* _LINUX_USER_EVENTS_H */
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 35e0a31a0315..0bfadc26d278 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -67,6 +67,7 @@
+ #include <linux/io_uring.h>
+ #include <linux/kprobes.h>
+ #include <linux/rethook.h>
++#include <linux/user_events.h>
+ 
+ #include <linux/uaccess.h>
+ #include <asm/unistd.h>
+@@ -769,6 +770,7 @@ void __noreturn do_exit(long code)
+ 
+ 	coredump_task_exit(tsk);
+ 	ptrace_event(PTRACE_EVENT_EXIT, code);
++	user_events_exit(tsk);
+ 
+ 	validate_creds_for_do_exit(tsk);
+ 
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 08969f5aa38d..a4be76276ccb 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -97,6 +97,7 @@
+ #include <linux/scs.h>
+ #include <linux/io_uring.h>
+ #include <linux/bpf.h>
++#include <linux/user_events.h>
+ 
+ #include <asm/pgalloc.h>
+ #include <linux/uaccess.h>
+@@ -2487,6 +2488,7 @@ static __latent_entropy struct task_struct *copy_process(
+ 
+ 	trace_task_newtask(p, clone_flags);
+ 	uprobe_copy_process(p, clone_flags);
++	user_events_fork(p, clone_flags);
+ 
+ 	copy_oom_score_adj(clone_flags, p);
+ 
 -- 
 2.25.1
 
