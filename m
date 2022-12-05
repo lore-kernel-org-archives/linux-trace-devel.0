@@ -2,40 +2,40 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D32D9C636F8
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  5 Dec 2022 21:00:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C915FC47090
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  5 Dec 2022 21:00:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233681AbiLEVAh (ORCPT
+        id S233701AbiLEVAh (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Mon, 5 Dec 2022 16:00:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59272 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233541AbiLEVA1 (ORCPT
+        with ESMTP id S233565AbiLEVA1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 5 Dec 2022 16:00:27 -0500
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F30F727DEB;
-        Mon,  5 Dec 2022 13:00:25 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0FE78286D5;
+        Mon,  5 Dec 2022 13:00:26 -0800 (PST)
 Received: from W11-BEAU-MD.localdomain (unknown [76.135.50.127])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A316420B83F7;
-        Mon,  5 Dec 2022 13:00:25 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A316420B83F7
+        by linux.microsoft.com (Postfix) with ESMTPSA id 9192920B83FD;
+        Mon,  5 Dec 2022 13:00:26 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9192920B83FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1670274025;
-        bh=dmkEXknb1A0Qhw2AWPTXryudmpuAFo4IqxhDoe6dNiw=;
+        s=default; t=1670274026;
+        bh=ucj0phlrsCOCEABbc8SVcAnCMpVQNUXl97uuBXh5AeA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PgkEwoFvx/FE49dVtQyFu+Db2KWQ8oz1VLtEXKu7zHPDDygKGOx2Oj0+RpOLmwBDq
-         6lkL0DbpQ6VuHZSRIw0drXbIRDvJIKVttebxiMa4aZU0WSLg70YVHgyiyEbMZHDruI
-         qgue6lzWIzOzP08/1TZbJ06Cvd+/POj34j4JPOjI=
+        b=ZpW5UiMShhFrc1MZzv+BVEtEbMbF09uVJiIJD+xgp6o799MPeXyg/21r7xHGYAqkA
+         fVFvqkEPeO0bgRyAyJ3ObF0WjYJ/jT7fOWK3tJ0+JMkqOv79612p86F9LTguegWQ7t
+         FN9OEDrfsv6ZPGoow58tSuQzaCwAObTLFgjVLa10=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org,
         mathieu.desnoyers@efficios.com, dcook@linux.microsoft.com,
         alanau@linux.microsoft.com, brauner@kernel.org,
         akpm@linux-foundation.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 08/11] tracing/user_events: Use write ABI in example
-Date:   Mon,  5 Dec 2022 13:00:14 -0800
-Message-Id: <20221205210017.23440-9-beaub@linux.microsoft.com>
+Subject: [PATCH v5 11/11] tracing/user_events: Limit global user_event count
+Date:   Mon,  5 Dec 2022 13:00:17 -0800
+Message-Id: <20221205210017.23440-12-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221205210017.23440-1-beaub@linux.microsoft.com>
 References: <20221205210017.23440-1-beaub@linux.microsoft.com>
@@ -45,111 +45,130 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The ABI has changed to use a remote write approach. Update the example
-to show the expected use of this new ABI. Also remove debugfs
-path and use tracefs to ensure example works in more environments.
+Operators want to be able to ensure enough tracepoints exist on the
+system for kernel components as well as for user components. Since there
+are only up to 64K events, by default allow up to half to be used by
+user events.
+
+Add a boot parameter (user_events_max=%d) and a kernel sysctl parameter
+(kernel.user_events_max) to set a global limit that is honored among all
+groups on the system. This ensures hard limits can be setup to prevent
+user processes from consuming all event IDs on the system.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- samples/user_events/example.c | 47 +++++++----------------------------
- 1 file changed, 9 insertions(+), 38 deletions(-)
+ kernel/trace/trace_events_user.c | 57 ++++++++++++++++++++++++++++++++
+ 1 file changed, 57 insertions(+)
 
-diff --git a/samples/user_events/example.c b/samples/user_events/example.c
-index d06dc24156ec..28165a096697 100644
---- a/samples/user_events/example.c
-+++ b/samples/user_events/example.c
-@@ -9,51 +9,28 @@
- #include <errno.h>
- #include <sys/ioctl.h>
- #include <sys/mman.h>
-+#include <sys/uio.h>
- #include <fcntl.h>
- #include <stdio.h>
- #include <unistd.h>
--#include <asm/bitsperlong.h>
--#include <endian.h>
+diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+index 36def244a755..754942ba92a1 100644
+--- a/kernel/trace/trace_events_user.c
++++ b/kernel/trace/trace_events_user.c
+@@ -20,6 +20,7 @@
+ #include <linux/types.h>
+ #include <linux/uaccess.h>
+ #include <linux/highmem.h>
++#include <linux/init.h>
  #include <linux/user_events.h>
+ #include "trace.h"
+ #include "trace_dynevent.h"
+@@ -61,6 +62,12 @@ struct user_event_group {
+ /* Group for init_user_ns mapping, top-most group */
+ static struct user_event_group *init_group;
  
--#if __BITS_PER_LONG == 64
--#define endian_swap(x) htole64(x)
--#else
--#define endian_swap(x) htole32(x)
--#endif
-+const char *data_file = "/sys/kernel/tracing/user_events_data";
-+int enabled = 0;
++/* Max allowed events for the whole system */
++static unsigned int max_user_events = 32768;
++
++/* Current number of events on the whole system */
++static unsigned int current_user_events;
++
+ /*
+  * Stores per-event properties, as users register events
+  * within a file a user_event might be created if it does not
+@@ -1247,6 +1254,11 @@ static int destroy_user_event(struct user_event *user)
+ 	kfree(EVENT_NAME(user));
+ 	kfree(user);
  
--/* Assumes debugfs is mounted */
--const char *data_file = "/sys/kernel/debug/tracing/user_events_data";
--const char *status_file = "/sys/kernel/debug/tracing/user_events_status";
--
--static int event_status(long **status)
--{
--	int fd = open(status_file, O_RDONLY);
--
--	*status = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ,
--		       MAP_SHARED, fd, 0);
--
--	close(fd);
--
--	if (*status == MAP_FAILED)
--		return -1;
--
--	return 0;
--}
--
--static int event_reg(int fd, const char *command, long *index, long *mask,
--		     int *write)
-+static int event_reg(int fd, const char *command, int *write, int *enabled)
++	if (current_user_events > 0)
++		current_user_events--;
++	else
++		pr_alert("BUG: Bad current_user_events\n");
++
+ 	return ret;
+ }
+ 
+@@ -1732,6 +1744,11 @@ static int user_event_parse(struct user_event_group *group, char *name,
+ 
+ 	mutex_lock(&event_mutex);
+ 
++	if (current_user_events >= max_user_events) {
++		ret = -EMFILE;
++		goto put_user_lock;
++	}
++
+ 	ret = user_event_trace_register(user);
+ 
+ 	if (ret)
+@@ -1743,6 +1760,7 @@ static int user_event_parse(struct user_event_group *group, char *name,
+ 	dyn_event_init(&user->devent, &user_event_dops);
+ 	dyn_event_add(&user->devent, &user->call);
+ 	hash_add(group->register_table, &user->node, key);
++	current_user_events++;
+ 
+ 	mutex_unlock(&event_mutex);
+ 
+@@ -2369,6 +2387,43 @@ static int create_user_tracefs(void)
+ 	return -ENODEV;
+ }
+ 
++static int __init set_max_user_events(char *str)
++{
++	if (!str)
++		return 0;
++
++	if (kstrtouint(str, 0, &max_user_events))
++		return 0;
++
++	return 1;
++}
++__setup("user_events_max=", set_max_user_events);
++
++static int set_max_user_events_sysctl(struct ctl_table *table, int write,
++				      void *buffer, size_t *lenp, loff_t *ppos)
++{
++	int ret;
++
++	mutex_lock(&event_mutex);
++
++	ret = proc_douintvec(table, write, buffer, lenp, ppos);
++
++	mutex_unlock(&event_mutex);
++
++	return ret;
++}
++
++static struct ctl_table user_event_sysctls[] = {
++	{
++		.procname	= "user_events_max",
++		.data		= &max_user_events,
++		.maxlen		= sizeof(unsigned int),
++		.mode		= 0644,
++		.proc_handler	= set_max_user_events_sysctl,
++	},
++	{}
++};
++
+ static int __init trace_events_user_init(void)
  {
- 	struct user_reg reg = {0};
+ 	int ret;
+@@ -2398,6 +2453,8 @@ static int __init trace_events_user_init(void)
+ 	if (dyn_event_register(&user_event_dops))
+ 		pr_warn("user_events could not register with dyn_events\n");
  
- 	reg.size = sizeof(reg);
-+	reg.enable_bit = 31;
-+	reg.enable_size = sizeof(*enabled);
-+	reg.enable_addr = (__u64)enabled;
- 	reg.name_args = (__u64)command;
- 
- 	if (ioctl(fd, DIAG_IOCSREG, &reg) == -1)
- 		return -1;
- 
--	*index = reg.status_bit / __BITS_PER_LONG;
--	*mask = endian_swap(1L << (reg.status_bit % __BITS_PER_LONG));
- 	*write = reg.write_index;
- 
++	register_sysctl_init("kernel", user_event_sysctls);
++
  	return 0;
-@@ -62,17 +39,12 @@ static int event_reg(int fd, const char *command, long *index, long *mask,
- int main(int argc, char **argv)
- {
- 	int data_fd, write;
--	long index, mask;
--	long *status_page;
- 	struct iovec io[2];
- 	__u32 count = 0;
- 
--	if (event_status(&status_page) == -1)
--		return errno;
--
- 	data_fd = open(data_file, O_RDWR);
- 
--	if (event_reg(data_fd, "test u32 count", &index, &mask, &write) == -1)
-+	if (event_reg(data_fd, "test u32 count", &write, &enabled) == -1)
- 		return errno;
- 
- 	/* Setup iovec */
-@@ -80,13 +52,12 @@ int main(int argc, char **argv)
- 	io[0].iov_len = sizeof(write);
- 	io[1].iov_base = &count;
- 	io[1].iov_len = sizeof(count);
--
- ask:
- 	printf("Press enter to check status...\n");
- 	getchar();
- 
- 	/* Check if anyone is listening */
--	if (status_page[index] & mask) {
-+	if (enabled) {
- 		/* Yep, trace out our data */
- 		writev(data_fd, (const struct iovec *)io, 2);
+ }
  
 -- 
 2.25.1
