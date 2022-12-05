@@ -2,41 +2,40 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79EA0C47088
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  5 Dec 2022 21:27:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E43EC47089
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  5 Dec 2022 21:33:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233000AbiLEV1z (ORCPT
+        id S231963AbiLEVdT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 5 Dec 2022 16:27:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
+        Mon, 5 Dec 2022 16:33:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233345AbiLEV1u (ORCPT
+        with ESMTP id S232145AbiLEVdR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 5 Dec 2022 16:27:50 -0500
-X-Greylist: delayed 626 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 05 Dec 2022 13:27:48 PST
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6E66565;
-        Mon,  5 Dec 2022 13:27:45 -0800 (PST)
+        Mon, 5 Dec 2022 16:33:17 -0500
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA492C64E;
+        Mon,  5 Dec 2022 13:33:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1670275665;
-        bh=IForlXy/HN1JxKlZ7ZKBLkhWSJNsqziLiIPYlvcsIxA=;
+        s=smtpout1; t=1670275996;
+        bh=b4IyhGJ3m6zNxw3owWYA/BBCmtAr/iUj4osvu+wxLOQ=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=uOs7a9CfXS37lHi9FvVbkGXEunA7XgSgSmgrh7pDGJiiP2LpNCCDVdrMUx8iRsFHT
-         XFiBsfrD1jiaN2TaJ16lbXmvUpfiZZfy8xsSGD25DzSHPmD6aXMn9coSgMGkQ/cbha
-         uM10Oq33zyCHfUupKeG+SqIDX1UMTZ0Qjuhy/CRnE40OvpHDQcxsiSW3csjWlfexQB
-         MN8o2E8AoaG4EHDUOZ2Yr4FK3qhm6LJNKXnH5BFks8mxokZc5D0dcCcnmDlE8ngrNM
-         Gal+jmaxxj3TZUXtt6RljdJeAcNdhdgVj9PnohNDaPDCME6E4A6kYYgLekXNOpwEW4
-         tUkHWaNPIfwxA==
+        b=u0gJQoTAMIcEyoxuj0pO7sjGJluy9w2J6EaiBtWm09eobUUbeXqpAsAf1i0Au+xbi
+         bRCIm7bXVd0y/JPID9dXR2zs/VA+C5LuYxEZsv/txXQw87WsI4S/Iy/0xYCIqFGnEI
+         tIwHD1QOxvFY6SBGZuFIEgfpE91z1knxpZ4a0G/rHzUOaMd2sGZV6xng9XwC6qtIsr
+         udRJnNkjyt5haFM61XjGEIwkcxOY3ajaE8Mpz0U6tpSujDZsyOJN0Hzs/Fi+jB0P44
+         NVZYr30EIgk8JKaUyKrZVcUs8pQD2s3vYYaY4ciug5e2H7Kd6kRsfdPALlD5NZivhD
+         JsdAKlDDQPW+w==
 Received: from [172.16.0.118] (192-222-180-24.qc.cable.ebox.net [192.222.180.24])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4NQxTr5nnNzZr4;
-        Mon,  5 Dec 2022 16:27:44 -0500 (EST)
-Message-ID: <acd9c1b1-e56f-e49c-6092-d53d51cd8d4c@efficios.com>
-Date:   Mon, 5 Dec 2022 16:28:03 -0500
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4NQxcC66zdzZ7l;
+        Mon,  5 Dec 2022 16:33:15 -0500 (EST)
+Message-ID: <18c4f109-522d-989d-23bb-2794791c2688@efficios.com>
+Date:   Mon, 5 Dec 2022 16:33:34 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.5.0
-Subject: Re: [PATCH v5 03/11] tracing/user_events: Use remote writes for event
- enablement
+Subject: Re: [PATCH v5 11/11] tracing/user_events: Limit global user_event
+ count
 Content-Language: en-US
 To:     Beau Belgrave <beaub@linux.microsoft.com>, rostedt@goodmis.org,
         mhiramat@kernel.org, dcook@linux.microsoft.com,
@@ -44,9 +43,9 @@ To:     Beau Belgrave <beaub@linux.microsoft.com>, rostedt@goodmis.org,
         akpm@linux-foundation.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20221205210017.23440-1-beaub@linux.microsoft.com>
- <20221205210017.23440-4-beaub@linux.microsoft.com>
+ <20221205210017.23440-12-beaub@linux.microsoft.com>
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20221205210017.23440-4-beaub@linux.microsoft.com>
+In-Reply-To: <20221205210017.23440-12-beaub@linux.microsoft.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -54,150 +53,140 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 On 2022-12-05 16:00, Beau Belgrave wrote:
-[...]
->   #ifdef CONFIG_USER_EVENTS
->   struct user_event_mm {
-> +	struct list_head link;
-> +	struct list_head enablers;
-> +	struct mm_struct *mm;
-> +	struct user_event_mm *next;
-> +	refcount_t refcnt;
-> +	refcount_t tasks;
->   };
-> -#endif
+> Operators want to be able to ensure enough tracepoints exist on the
+> system for kernel components as well as for user components. Since there
+> are only up to 64K events, by default allow up to half to be used by
+> user events.
+> 
+> Add a boot parameter (user_events_max=%d) and a kernel sysctl parameter
+> (kernel.user_events_max) to set a global limit that is honored among all
+> groups on the system. This ensures hard limits can be setup to prevent
+> user processes from consuming all event IDs on the system.
+> 
+> Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+> ---
+>   kernel/trace/trace_events_user.c | 57 ++++++++++++++++++++++++++++++++
+>   1 file changed, 57 insertions(+)
+> 
+> diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+> index 36def244a755..754942ba92a1 100644
+> --- a/kernel/trace/trace_events_user.c
+> +++ b/kernel/trace/trace_events_user.c
+> @@ -20,6 +20,7 @@
+>   #include <linux/types.h>
+>   #include <linux/uaccess.h>
+>   #include <linux/highmem.h>
+> +#include <linux/init.h>
+>   #include <linux/user_events.h>
+>   #include "trace.h"
+>   #include "trace_dynevent.h"
+> @@ -61,6 +62,12 @@ struct user_event_group {
+>   /* Group for init_user_ns mapping, top-most group */
+>   static struct user_event_group *init_group;
 >   
-> +extern void user_event_mm_dup(struct task_struct *t,
-> +			      struct user_event_mm *old_mm);
+> +/* Max allowed events for the whole system */
+> +static unsigned int max_user_events = 32768;
 > +
-> +extern void user_event_mm_remove(struct task_struct *t);
+> +/* Current number of events on the whole system */
+> +static unsigned int current_user_events;
 > +
-> +static inline void user_events_fork(struct task_struct *t,
-> +				    unsigned long clone_flags)
-> +{
-> +	struct user_event_mm *old_mm;
-> +
-> +	if (!t || !current->user_event_mm)
-> +		return;
-> +
-> +	old_mm = current->user_event_mm;
-> +
-> +	if (clone_flags & CLONE_VM) {
-> +		t->user_event_mm = old_mm;
-> +		refcount_inc(&old_mm->tasks);
-> +		return;
-> +	}
-> +
-> +	user_event_mm_dup(t, old_mm);
-> +}
-> +
-> +static inline void user_events_execve(struct task_struct *t)
-> +{
-> +	if (!t || !t->user_event_mm)
-> +		return;
-> +
-> +	user_event_mm_remove(t);
-> +}
-> +
-> +static inline void user_events_exit(struct task_struct *t)
-> +{
-> +	if (!t || !t->user_event_mm)
-> +		return;
-> +
-> +	user_event_mm_remove(t);
-> +}
+>   /*
+>    * Stores per-event properties, as users register events
+>    * within a file a user_event might be created if it does not
+> @@ -1247,6 +1254,11 @@ static int destroy_user_event(struct user_event *user)
+>   	kfree(EVENT_NAME(user));
+>   	kfree(user);
+>   
+> +	if (current_user_events > 0)
+> +		current_user_events--;
 
-So this is adding user_event_mm_remove() calls on each execve and each 
-process exit, correct ?
-
-[...]
-
-
-> +
-> +void user_event_mm_remove(struct task_struct *t)
-> +{
-> +	struct user_event_mm *mm;
-> +	unsigned long flags;
-> +
-> +	might_sleep();
-> +
-> +	mm = t->user_event_mm;
-> +	t->user_event_mm = NULL;
-> +
-> +	/* Clone will increment the tasks, only remove if last clone */
-> +	if (!refcount_dec_and_test(&mm->tasks))
-> +		return;
-> +
-> +	/* Remove the mm from the list, so it can no longer be enabled */
-> +	spin_lock_irqsave(&user_event_mms_lock, flags);
-> +	list_del_rcu(&mm->link);
-> +	spin_unlock_irqrestore(&user_event_mms_lock, flags);
-> +
-> +	/*
-> +	 * Put for mm must be done after RCU sync to handle new refs in
-> +	 * between the list_del_rcu() and now. This ensures any get refs
-> +	 * during rcu_read_lock() are accounted for during list removal.
-> +	 *
-> +	 * CPU A			|	CPU B
-> +	 * ---------------------------------------------------------------
-> +	 * user_event_mm_remove()	|	rcu_read_lock();
-> +	 * list_del_rcu()		|	list_for_each_entry_rcu();
-> +	 * synchronize_rcu()		|	refcount_inc();
-> +	 * .				|	rcu_read_unlock();
-> +	 * user_event_mm_put()		|	.
-> +	 */
-> +	synchronize_rcu();
-
-This means a synchronize_rcu() is added on each execve and each process 
-exit ? I am really worried about the performance impact of this big 
-hammer synchronization in those key points of process lifetime.
+What holds the user_events mutex that guarantees that non-atomic 
+decrement is safe here ?
 
 Thanks,
 
 Mathieu
 
+> +	else
+> +		pr_alert("BUG: Bad current_user_events\n");
 > +
-> +	/*
-> +	 * We need to wait for currently occurring writes to stop within
-> +	 * the mm. This is required since exit_mm() snaps the current rss
-> +	 * stats and clears them. On the final mmdrop(), check_mm() will
-> +	 * report a bug if these increment.
-> +	 *
-> +	 * All writes/pins are done under mmap_read lock, take the write
-> +	 * lock to ensure in-progress faults have completed. Faults that
-> +	 * are pending but yet to run will check the task count and skip
-> +	 * the fault since the mm is going away.
-> +	 */
-> +	mmap_write_lock(mm->mm);
-> +	mmap_write_unlock(mm->mm);
-> +
-> +	/* MM is still alive, but won't be updated anymore */
-> +	user_event_mm_put(mm);
-> +}
-> +
-> +void user_event_mm_dup(struct task_struct *t, struct user_event_mm *old_mm)
->   {
-> -	int i = user->index;
-> +	struct user_event_mm *mm = user_event_mm_create(t);
-> +	struct user_event_enabler *enabler;
-> +
-> +	if (!mm)
-> +		return;
-> +
-> +	rcu_read_lock();
->   
-> -	user->group->register_page_data[MAP_STATUS_BYTE(i)] |= MAP_STATUS_MASK(i);
-> +	list_for_each_entry_rcu(enabler, &old_mm->enablers, link)
-> +		if (!user_event_enabler_dup(enabler, mm))
-> +			goto error;
-> +
-> +	rcu_read_unlock();
-> +
-> +	return;
-> +error:
-> +	rcu_read_unlock();
-> +	user_event_mm_remove(t);
+>   	return ret;
 >   }
 >   
+> @@ -1732,6 +1744,11 @@ static int user_event_parse(struct user_event_group *group, char *name,
+>   
+>   	mutex_lock(&event_mutex);
+>   
+> +	if (current_user_events >= max_user_events) {
+> +		ret = -EMFILE;
+> +		goto put_user_lock;
+> +	}
+> +
+>   	ret = user_event_trace_register(user);
+>   
+>   	if (ret)
+> @@ -1743,6 +1760,7 @@ static int user_event_parse(struct user_event_group *group, char *name,
+>   	dyn_event_init(&user->devent, &user_event_dops);
+>   	dyn_event_add(&user->devent, &user->call);
+>   	hash_add(group->register_table, &user->node, key);
+> +	current_user_events++;
+>   
+>   	mutex_unlock(&event_mutex);
+>   
+> @@ -2369,6 +2387,43 @@ static int create_user_tracefs(void)
+>   	return -ENODEV;
+>   }
+>   
+> +static int __init set_max_user_events(char *str)
+> +{
+> +	if (!str)
+> +		return 0;
+> +
+> +	if (kstrtouint(str, 0, &max_user_events))
+> +		return 0;
+> +
+> +	return 1;
+> +}
+> +__setup("user_events_max=", set_max_user_events);
+> +
+> +static int set_max_user_events_sysctl(struct ctl_table *table, int write,
+> +				      void *buffer, size_t *lenp, loff_t *ppos)
+> +{
+> +	int ret;
+> +
+> +	mutex_lock(&event_mutex);
+> +
+> +	ret = proc_douintvec(table, write, buffer, lenp, ppos);
+> +
+> +	mutex_unlock(&event_mutex);
+> +
+> +	return ret;
+> +}
+> +
+> +static struct ctl_table user_event_sysctls[] = {
+> +	{
+> +		.procname	= "user_events_max",
+> +		.data		= &max_user_events,
+> +		.maxlen		= sizeof(unsigned int),
+> +		.mode		= 0644,
+> +		.proc_handler	= set_max_user_events_sysctl,
+> +	},
+> +	{}
+> +};
+> +
+>   static int __init trace_events_user_init(void)
+>   {
+>   	int ret;
+> @@ -2398,6 +2453,8 @@ static int __init trace_events_user_init(void)
+>   	if (dyn_event_register(&user_event_dops))
+>   		pr_warn("user_events could not register with dyn_events\n");
+>   
+> +	register_sysctl_init("kernel", user_event_sysctls);
+> +
+>   	return 0;
+>   }
+>   
+
 -- 
 Mathieu Desnoyers
 EfficiOS Inc.
