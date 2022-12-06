@@ -2,79 +2,68 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6DAFC352A1
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Dec 2022 21:13:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C62D9C352A1
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Dec 2022 21:20:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229507AbiLFVNV (ORCPT
+        id S229744AbiLFVUM convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 6 Dec 2022 16:13:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55876 "EHLO
+        Tue, 6 Dec 2022 16:20:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbiLFVNU (ORCPT
+        with ESMTP id S229774AbiLFVUH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 6 Dec 2022 16:13:20 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993AF2AED
-        for <linux-trace-devel@vger.kernel.org>; Tue,  6 Dec 2022 13:13:19 -0800 (PST)
+        Tue, 6 Dec 2022 16:20:07 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859FD48432
+        for <linux-trace-devel@vger.kernel.org>; Tue,  6 Dec 2022 13:20:03 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 567CEB81A21
-        for <linux-trace-devel@vger.kernel.org>; Tue,  6 Dec 2022 21:13:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85DC6C433D6;
-        Tue,  6 Dec 2022 21:13:16 +0000 (UTC)
-Date:   Tue, 6 Dec 2022 16:13:14 -0500
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2457B618C9
+        for <linux-trace-devel@vger.kernel.org>; Tue,  6 Dec 2022 21:20:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53873C433D6
+        for <linux-trace-devel@vger.kernel.org>; Tue,  6 Dec 2022 21:20:02 +0000 (UTC)
+Date:   Tue, 6 Dec 2022 16:20:00 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Bean Huo <beanhuo@iokpp.de>
-Cc:     linux-trace-devel@vger.kernel.org, tz.stoyanov@gmail.com,
-        Bean Huo <beanhuo@micron.com>
-Subject: Re: [PATCH] libtracefs: Fix wrong return value in
- tracefs_tracing_dir_is_mounted()
-Message-ID: <20221206161314.73ecbfd2@gandalf.local.home>
-In-Reply-To: <20221128133715.288fb265@gandalf.local.home>
-References: <20221128132106.291101-1-beanhuo@iokpp.de>
-        <20221128102410.5ccf784d@gandalf.local.home>
-        <e6c020fc59cd3a2333806fbaf2a90092866fb7b7.camel@iokpp.de>
-        <20221128133715.288fb265@gandalf.local.home>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] kbuffer: Add struct reference for tep_handle
+Message-ID: <20221206162000.289aca7a@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 28 Nov 2022 13:37:15 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> Ah, I think I see the issue here. If it returns NULL, then we need to do
-> more. I'll take a look into this later today.
+Hit this compile error:
 
-Can you test this patch?
+include/traceevent/kbuffer.h:32:39: warning: ‘struct tep_handle’ declared inside parameter list will not be visible outside of this definition or declaration
+   32 | struct kbuffer *kbuffer_create(struct tep_handle *tep);
 
-Thanks,
+kbuffer.h does not include event-parse.h, so it needs to declare
+sturct tep_handle too.
 
--- Steve
+Fixes: 21ba633645 ("libtraceevent: Add kbuffer_create()")
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ include/traceevent/kbuffer.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/src/tracefs-utils.c b/src/tracefs-utils.c
-index 777912e46821..d91ff40eee87 100644
---- a/src/tracefs-utils.c
-+++ b/src/tracefs-utils.c
-@@ -245,7 +245,7 @@ const char *tracefs_tracing_dir(void)
- 	if (tracing_dir)
- 		return tracing_dir;
+diff --git a/include/traceevent/kbuffer.h b/include/traceevent/kbuffer.h
+index 66b095833b81..c8983a000585 100644
+--- a/include/traceevent/kbuffer.h
++++ b/include/traceevent/kbuffer.h
+@@ -27,6 +27,7 @@ enum {
+ };
  
--	tracing_dir = trace_find_tracing_dir(false);
-+	tracing_dir = find_tracing_dir(false, true);
- 	return tracing_dir;
- }
+ struct kbuffer;
++struct tep_handle;
  
-@@ -263,7 +263,7 @@ const char *tracefs_debug_dir(void)
- 	if (debug_dir)
- 		return debug_dir;
- 
--	debug_dir = trace_find_tracing_dir(true);
-+	debug_dir = find_tracing_dir(true, true);
- 	return debug_dir;
- }
- 
+ struct kbuffer *kbuffer_alloc(enum kbuffer_long_size size, enum kbuffer_endian endian);
+ struct kbuffer *kbuffer_create(struct tep_handle *tep);
+-- 
+2.35.1
+
