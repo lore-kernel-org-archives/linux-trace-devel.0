@@ -2,34 +2,32 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C8E6C3DA7B
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  8 Dec 2022 16:41:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9DC5C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  8 Dec 2022 20:24:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbiLHQr0 (ORCPT
+        id S229907AbiLHUYa (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 8 Dec 2022 11:47:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52774 "EHLO
+        Thu, 8 Dec 2022 15:24:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229724AbiLHQrU (ORCPT
+        with ESMTP id S229558AbiLHUY2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 8 Dec 2022 11:47:20 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07EE7AFCD2
-        for <linux-trace-devel@vger.kernel.org>; Thu,  8 Dec 2022 08:47:19 -0800 (PST)
+        Thu, 8 Dec 2022 15:24:28 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B670C8427E
+        for <linux-trace-devel@vger.kernel.org>; Thu,  8 Dec 2022 12:24:27 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9FD6761FE4
-        for <linux-trace-devel@vger.kernel.org>; Thu,  8 Dec 2022 16:47:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADD63C433F0;
-        Thu,  8 Dec 2022 16:47:17 +0000 (UTC)
-Date:   Thu, 8 Dec 2022 11:47:16 -0500
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5FB7BB825A6
+        for <linux-trace-devel@vger.kernel.org>; Thu,  8 Dec 2022 20:24:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D67C9C433EF
+        for <linux-trace-devel@vger.kernel.org>; Thu,  8 Dec 2022 20:24:24 +0000 (UTC)
+Date:   Thu, 8 Dec 2022 15:24:22 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc:     Bean Huo <beanhuo@iokpp.de>
-Subject: [PATCH] libtracefs: Add unit test to test mounting of
- tracefs_{tracing,debug}_dir()
-Message-ID: <20221208114716.3af0d147@gandalf.local.home>
+Subject: [PATCH] libtraceevent kbuffer: Add SAME_AS_HOST for endian and size
+Message-ID: <20221208152422.2d0a62cc@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -40,146 +38,111 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-As there was a regression with the mounting of the tracefs and debugfs
-file systems when tracefs_tracing_dir() and tracefs_debug_dir() were
-called, add a unit test to make sure they continue to work.
+Add a SAME_AS_HOST to the endian and size parameters of kbuffer_alloc()
+that makes it easier for the applications that simply read the ring
+buffer.
+
+If the host has 4 byte word, it will call uname() and check the machine
+value. If machine contains the string "64", it will assume that the kernel
+is 64 bit and that is what the host will be considered.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- src/tracefs-utils.c   |  3 +-
- utest/tracefs-utest.c | 84 +++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 86 insertions(+), 1 deletion(-)
+ include/traceevent/kbuffer.h |  2 ++
+ src/kbuffer-parse.c          | 32 ++++++++++++++++++++++++++++++--
+ 2 files changed, 32 insertions(+), 2 deletions(-)
 
-diff --git a/src/tracefs-utils.c b/src/tracefs-utils.c
-index d91ff40eee87..ae249de06a39 100644
---- a/src/tracefs-utils.c
-+++ b/src/tracefs-utils.c
-@@ -85,7 +85,8 @@ static int mount_debugfs(void)
- 	return ret;
- }
+diff --git a/include/traceevent/kbuffer.h b/include/traceevent/kbuffer.h
+index c8983a000585..abfd83e6fe9f 100644
+--- a/include/traceevent/kbuffer.h
++++ b/include/traceevent/kbuffer.h
+@@ -13,11 +13,13 @@
+ enum kbuffer_endian {
+ 	KBUFFER_ENDIAN_BIG,
+ 	KBUFFER_ENDIAN_LITTLE,
++	KBUFFER_ENDIAN_SAME_AS_HOST,
+ };
  
--static char *find_tracing_dir(bool debugfs, bool mount)
-+/* Exported for testing purpose only */
-+__hidden char *find_tracing_dir(bool debugfs, bool mount)
- {
- 	char *debug_str = NULL;
- 	char fspath[PATH_MAX+1];
-diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index 010ff1d4a8fe..d1789a3d87f9 100644
---- a/utest/tracefs-utest.c
-+++ b/utest/tracefs-utest.c
-@@ -15,6 +15,8 @@
- #include <kbuffer.h>
- #include <pthread.h>
+ enum kbuffer_long_size {
+ 	KBUFFER_LSIZE_4,
+ 	KBUFFER_LSIZE_8,
++	KBUFFER_LSIZE_SAME_AS_HOST,
+ };
  
-+#include <sys/mount.h>
+ enum {
+diff --git a/src/kbuffer-parse.c b/src/kbuffer-parse.c
+index d174e7276df2..a787e7f9d694 100644
+--- a/src/kbuffer-parse.c
++++ b/src/kbuffer-parse.c
+@@ -6,6 +6,9 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <stdbool.h>
 +
- #include <CUnit/CUnit.h>
- #include <CUnit/Basic.h>
++#include <sys/utsname.h>
  
-@@ -47,6 +49,10 @@
- #define SQL_5_SQL	"select end.common_pid as pid, (end.common_timestamp.usecs - start.common_timestamp.usecs) as irq_lat from irq_disable as start join irq_enable as end on start.common_pid = end.common_pid, start.parent_offs == end.parent_offs where start.common_pid != 0"
- #define SQL_5_START	"irq_disable"
+ #include "kbuffer.h"
  
-+#define DEBUGFS_DEFAULT_PATH "/sys/kernel/debug"
-+#define TRACEFS_DEFAULT_PATH "/sys/kernel/tracing"
-+#define TRACEFS_DEFAULT2_PATH "/sys/kernel/debug/tracing"
-+
- static struct tracefs_instance *test_instance;
- static struct tep_handle *test_tep;
- struct test_sample {
-@@ -740,6 +746,80 @@ static void test_follow_events(void)
- 	test_instance_follow_events(test_instance);
- }
+@@ -159,6 +162,24 @@ static int calc_index(struct kbuffer *kbuf, void *ptr)
  
-+extern char *find_tracing_dir(bool debugfs, bool mount);
-+static void test_mounting(void)
+ static int __next_event(struct kbuffer *kbuf);
+ 
++/*
++ * Just because sizeof(long) is 4 bytes, doesn't mean the OS isn't
++ * 64bits
++ */
++static bool host_is_32bit(void)
 +{
-+	const char *tracing_dir;
-+	const char *debug_dir;
-+	char *save_tracing = NULL;
-+	char *save_debug = NULL;
-+	char *dir;
++	struct utsname buf;
 +	int ret;
 +
-+	/* First, unmount all instances of debugfs */
-+	do {
-+		dir = find_tracing_dir(true, false);
-+		if (dir) {
-+			ret = umount(dir);
-+			CU_TEST(ret == 0);
-+			if (ret < 0)
-+				return;
-+			/* Save the first instance that's not /sys/kernel/debug */
-+			if (!save_debug && strcmp(dir, DEBUGFS_DEFAULT_PATH) != 0)
-+				save_debug = dir;
-+			else
-+				free(dir);
-+		}
-+	} while (dir);
-+
-+	/* Next, unmount all instances of tracefs */
-+	do {
-+		dir = find_tracing_dir(false, false);
-+		if (dir) {
-+			ret = umount(dir);
-+			CU_TEST(ret == 0);
-+			if (ret < 0)
-+				return;
-+			/* Save the first instance that's not in /sys/kernel/ */
-+			if (!save_tracing && strncmp(dir, "/sys/kernel/", 12) != 0)
-+				save_tracing = dir;
-+			else
-+				free(dir);
-+		}
-+	} while (dir);
-+
-+	/* Mount first the tracing dir (which should mount at /sys/kernel/tracing */
-+	tracing_dir = tracefs_tracing_dir();
-+	CU_TEST(tracing_dir != NULL);
-+	if (tracing_dir != NULL) {
-+		CU_TEST(strcmp(tracing_dir, TRACEFS_DEFAULT_PATH) == 0 ||
-+			strcmp(tracing_dir, TRACEFS_DEFAULT2_PATH) == 0);
-+		if (strncmp(tracing_dir, "/sys/kernel/", 12) != 0)
-+			printf("Tracing directory mounted at '%s'\n",
-+			       tracing_dir);
++	ret = uname(&buf);
++	if (ret < 0) {
++		/* Oh well, just assume it is 32 bit */
++		return true;
 +	}
-+
-+	/* Now mount debugfs dir, which should mount at /sys/kernel/debug */
-+	debug_dir = tracefs_debug_dir();
-+	CU_TEST(debug_dir != NULL);
-+	if (debug_dir != NULL) {
-+		CU_TEST(strcmp(debug_dir, DEBUGFS_DEFAULT_PATH) == 0);
-+		if (strcmp(debug_dir, DEBUGFS_DEFAULT_PATH) != 0)
-+			printf("debug directory mounted at '%s'\n",
-+			       debug_dir);
-+	}
-+
-+	if (save_debug)
-+		mount("debugfs", save_debug, "debugfs", 0, NULL);
-+
-+	if (save_tracing &&
-+	    (!save_debug || strncmp(save_debug, save_tracing, strlen(save_debug) != 0)))
-+		mount("tracefs", save_tracing, "tracefs", 0, NULL);
-+
-+	free(save_debug);
-+	free(save_tracing);
++	/* If the uname machine value contains 64, assume the kernel is 64 bit */
++	return strstr(buf.machine, "64") == NULL;
 +}
 +
- static int read_trace_cpu_file(struct test_cpu_data *data)
- {
- 	unsigned long long ts;
-@@ -2248,6 +2328,10 @@ void test_tracefs_lib(void)
- 		fprintf(stderr, "Suite \"%s\" cannot be ceated\n", TRACEFS_SUITE);
- 		return;
+ /**
+  * kbuffer_alloc - allocat a new kbuffer
+  * @size;	enum to denote size of word
+@@ -175,15 +196,19 @@ kbuffer_alloc(enum kbuffer_long_size size, enum kbuffer_endian endian)
+ 	switch (size) {
+ 	case KBUFFER_LSIZE_4:
+ 		break;
++	case KBUFFER_LSIZE_SAME_AS_HOST:
++		if (sizeof(long) != 8 && host_is_32bit())
++			break;
++		/* fallthrough */
+ 	case KBUFFER_LSIZE_8:
+ 		flags |= KBUFFER_FL_LONG_8;
+-		break;
+ 	default:
+ 		return NULL;
  	}
-+
-+	/* Must be first test */
-+	CU_add_test(suite, "Test tracefs/debugfs mounting", test_mounting);
-+
- 	CU_add_test(suite, "Follow events", test_follow_events);
- 	CU_add_test(suite, "trace cpu read",
- 		    test_trace_cpu_read);
+ 
+ 	switch (endian) {
+ 	case KBUFFER_ENDIAN_LITTLE:
++	case KBUFFER_ENDIAN_SAME_AS_HOST:
+ 		break;
+ 	case KBUFFER_ENDIAN_BIG:
+ 		flags |= KBUFFER_FL_BIG_ENDIAN;
+@@ -198,8 +223,11 @@ kbuffer_alloc(enum kbuffer_long_size size, enum kbuffer_endian endian)
+ 
+ 	kbuf->flags = flags;
+ 
+-	if (host_is_bigendian())
++	if (host_is_bigendian()) {
++		if (endian == KBUFFER_ENDIAN_SAME_AS_HOST)
++			flags |= KBUFFER_FL_BIG_ENDIAN;
+ 		kbuf->flags |= KBUFFER_FL_HOST_BIG_ENDIAN;
++	}
+ 
+ 	if (do_swap(kbuf)) {
+ 		kbuf->read_8 = __read_8_sw;
 -- 
 2.35.1
 
