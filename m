@@ -2,32 +2,33 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0381C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  8 Dec 2022 20:53:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5ACCCC4332F
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  8 Dec 2022 21:36:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbiLHUxe (ORCPT
+        id S229661AbiLHVgv (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 8 Dec 2022 15:53:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47762 "EHLO
+        Thu, 8 Dec 2022 16:36:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbiLHUxd (ORCPT
+        with ESMTP id S229478AbiLHVgu (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 8 Dec 2022 15:53:33 -0500
+        Thu, 8 Dec 2022 16:36:50 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 380178B1A4
-        for <linux-trace-devel@vger.kernel.org>; Thu,  8 Dec 2022 12:53:32 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644959B28B
+        for <linux-trace-devel@vger.kernel.org>; Thu,  8 Dec 2022 13:36:49 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D542AB82625
-        for <linux-trace-devel@vger.kernel.org>; Thu,  8 Dec 2022 20:53:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CF36C433EF
-        for <linux-trace-devel@vger.kernel.org>; Thu,  8 Dec 2022 20:53:29 +0000 (UTC)
-Date:   Thu, 8 Dec 2022 15:53:25 -0500
+        by ams.source.kernel.org (Postfix) with ESMTPS id EE3A7B82440
+        for <linux-trace-devel@vger.kernel.org>; Thu,  8 Dec 2022 21:36:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F74BC433D2
+        for <linux-trace-devel@vger.kernel.org>; Thu,  8 Dec 2022 21:36:46 +0000 (UTC)
+Date:   Thu, 8 Dec 2022 16:36:44 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] libtraceevent: Rename kbuffer_create() to tep_kbuffer()
-Message-ID: <20221208155325.50bde2ea@gandalf.local.home>
+Subject: [PATCH v2] libtraceevent kbuffer: Add SAME_AS_HOST for endian and
+ size
+Message-ID: <20221208163644.185bf199@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -38,117 +39,112 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Instead of adding a dependency of tep_handle to the kbuffer code, as
-kbuffer should not reference the tep_handle, instead, it makes much more
-sense to return a kbuffer descriptor from an existing tep_handle from the
-tep interface.
+Add a SAME_AS_HOST to the endian and size parameters of kbuffer_alloc()
+that makes it easier for the applications that simply read the ring
+buffer.
 
-Rename kbuffer_create() to tep_kbuffer().
+If the host has 4 byte word, it will call uname() and check the machine
+value. If machine contains the string "64", it will assume that the kernel
+is 64 bit and that is what the host will be considered.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/libtraceevent-handle.txt | 9 ++++++++-
- Documentation/libtraceevent.txt        | 1 +
- include/traceevent/event-parse.h       | 2 ++
- include/traceevent/kbuffer.h           | 2 --
- src/parse-utils.c                      | 7 ++++---
- 5 files changed, 15 insertions(+), 6 deletions(-)
+Changes since v1 https://lore.kernel.org/all/20221208152422.2d0a62cc@gandalf.local.home/
+ - Accidentally deleted the "break" statement. Add it back.
 
-diff --git a/Documentation/libtraceevent-handle.txt b/Documentation/libtraceevent-handle.txt
-index 0d6afdae81df..64528ebc3433 100644
---- a/Documentation/libtraceevent-handle.txt
-+++ b/Documentation/libtraceevent-handle.txt
-@@ -3,7 +3,7 @@ libtraceevent(3)
- 
- NAME
- ----
--tep_alloc, tep_free,tep_ref, tep_unref,tep_get_ref - Create, destroy, manage
-+tep_alloc, tep_free,tep_ref, tep_unref,tep_get_ref, tep_kbuffer - Create, destroy, manage
- references of trace event parser context.
- 
- SYNOPSIS
-@@ -40,6 +40,10 @@ it had used are cleaned up.
- 
- The *tep_ref_get()* functions gets the current references of the _tep_ handler.
- 
-+The *tep_kbuffer()* function allocates a kbuffer descriptor that can be used to
-+parse raw data that is represented by the _tep_ handle descriptor. It must be freed
-+with *kbuf_free(3)*.
-+
- RETURN VALUE
- ------------
- *tep_alloc()* returns a pointer to a newly created tep_handle structure.
-@@ -48,6 +52,9 @@ NULL is returned in case there is not enough free memory to allocate it.
- *tep_ref_get()* returns the current references of _tep_.
- If _tep_ is NULL, 0 is returned.
- 
-+*tep_kbuffer()* returns a kbuffer descriptor that can parse the raw data that
-+represents the tep handle. Must be freed with *kbuf_free(3)*.
-+
- EXAMPLE
- -------
- [source,c]
-diff --git a/Documentation/libtraceevent.txt b/Documentation/libtraceevent.txt
-index 67e964567736..488e689f6c85 100644
---- a/Documentation/libtraceevent.txt
-+++ b/Documentation/libtraceevent.txt
-@@ -31,6 +31,7 @@ Management of tep handler data structure and access of its members:
- 	int *tep_get_header_timestamp_size*(struct tep_handle pass:[*]_tep_);
- 	bool *tep_is_old_format*(struct tep_handle pass:[*]_tep_);
- 	int *tep_strerror*(struct tep_handle pass:[*]_tep_, enum tep_errno _errnum_, char pass:[*]_buf_, size_t _buflen_);
-+	struct kbuffer pass:[*]*tep_kbuffer*(struct tep_handle pass:[*]:_tep_);
- 
- Register / unregister APIs:
- 	int *tep_register_function*(struct tep_handle pass:[*]_tep_, char pass:[*]_name_, unsigned long long _addr_, char pass:[*]_mod_);
-diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index df307666abfa..3be98b01671d 100644
---- a/include/traceevent/event-parse.h
-+++ b/include/traceevent/event-parse.h
-@@ -601,6 +601,8 @@ void tep_ref(struct tep_handle *tep);
- void tep_unref(struct tep_handle *tep);
- int tep_get_ref(struct tep_handle *tep);
- 
-+struct kbuffer *tep_kbuffer(struct tep_handle *tep);
-+
- /* for debugging */
- void tep_print_funcs(struct tep_handle *tep);
- void tep_print_printk(struct tep_handle *tep);
+ include/traceevent/kbuffer.h |  2 ++
+ src/kbuffer-parse.c          | 31 ++++++++++++++++++++++++++++++-
+ 2 files changed, 32 insertions(+), 1 deletion(-)
+
 diff --git a/include/traceevent/kbuffer.h b/include/traceevent/kbuffer.h
-index abfd83e6fe9f..ca638bc06dba 100644
+index c8983a000585..abfd83e6fe9f 100644
 --- a/include/traceevent/kbuffer.h
 +++ b/include/traceevent/kbuffer.h
-@@ -29,10 +29,8 @@ enum {
+@@ -13,11 +13,13 @@
+ enum kbuffer_endian {
+ 	KBUFFER_ENDIAN_BIG,
+ 	KBUFFER_ENDIAN_LITTLE,
++	KBUFFER_ENDIAN_SAME_AS_HOST,
  };
  
- struct kbuffer;
--struct tep_handle;
+ enum kbuffer_long_size {
+ 	KBUFFER_LSIZE_4,
+ 	KBUFFER_LSIZE_8,
++	KBUFFER_LSIZE_SAME_AS_HOST,
+ };
  
- struct kbuffer *kbuffer_alloc(enum kbuffer_long_size size, enum kbuffer_endian endian);
--struct kbuffer *kbuffer_create(struct tep_handle *tep);
- void kbuffer_free(struct kbuffer *kbuf);
- int kbuffer_load_subbuffer(struct kbuffer *kbuf, void *subbuffer);
- void *kbuffer_read_event(struct kbuffer *kbuf, unsigned long long *ts);
-diff --git a/src/parse-utils.c b/src/parse-utils.c
-index ffa6c5871289..9c38e1e644d7 100644
---- a/src/parse-utils.c
-+++ b/src/parse-utils.c
-@@ -125,12 +125,13 @@ void __weak __vpr_stat(const char *fmt, va_list ap)
- void vpr_stat(const char *fmt, va_list ap) __attribute__((weak, alias("__vpr_stat")));
+ enum {
+diff --git a/src/kbuffer-parse.c b/src/kbuffer-parse.c
+index d174e7276df2..390a789b20fb 100644
+--- a/src/kbuffer-parse.c
++++ b/src/kbuffer-parse.c
+@@ -6,6 +6,9 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <stdbool.h>
++
++#include <sys/utsname.h>
  
+ #include "kbuffer.h"
+ 
+@@ -159,6 +162,24 @@ static int calc_index(struct kbuffer *kbuf, void *ptr)
+ 
+ static int __next_event(struct kbuffer *kbuf);
+ 
++/*
++ * Just because sizeof(long) is 4 bytes, doesn't mean the OS isn't
++ * 64bits
++ */
++static bool host_is_32bit(void)
++{
++	struct utsname buf;
++	int ret;
++
++	ret = uname(&buf);
++	if (ret < 0) {
++		/* Oh well, just assume it is 32 bit */
++		return true;
++	}
++	/* If the uname machine value contains 64, assume the kernel is 64 bit */
++	return strstr(buf.machine, "64") == NULL;
++}
++
  /**
-- * kbuffer_create - create and allocate a new kbuffer
-- * @tep: the data to get the long size and endianess from
-+ * tep_kbuffer - return an allocated kbuffer that can be used for the tep handle
-+ * @tep: the handle that will work with the kbuffer descriptor
-  *
-  * Allocates and returns a new kbuffer.
-+ * The return must be freed by kbuffer_free();
-  */
--struct kbuffer *kbuffer_create(struct tep_handle *tep)
-+struct kbuffer *tep_kbuffer(struct tep_handle *tep)
- {
- 	enum kbuffer_endian endian;
- 	int long_size;
+  * kbuffer_alloc - allocat a new kbuffer
+  * @size;	enum to denote size of word
+@@ -175,6 +196,10 @@ kbuffer_alloc(enum kbuffer_long_size size, enum kbuffer_endian endian)
+ 	switch (size) {
+ 	case KBUFFER_LSIZE_4:
+ 		break;
++	case KBUFFER_LSIZE_SAME_AS_HOST:
++		if (sizeof(long) != 8 && host_is_32bit())
++			break;
++		/* fallthrough */
+ 	case KBUFFER_LSIZE_8:
+ 		flags |= KBUFFER_FL_LONG_8;
+ 		break;
+@@ -184,6 +209,7 @@ kbuffer_alloc(enum kbuffer_long_size size, enum kbuffer_endian endian)
+ 
+ 	switch (endian) {
+ 	case KBUFFER_ENDIAN_LITTLE:
++	case KBUFFER_ENDIAN_SAME_AS_HOST:
+ 		break;
+ 	case KBUFFER_ENDIAN_BIG:
+ 		flags |= KBUFFER_FL_BIG_ENDIAN;
+@@ -198,8 +224,11 @@ kbuffer_alloc(enum kbuffer_long_size size, enum kbuffer_endian endian)
+ 
+ 	kbuf->flags = flags;
+ 
+-	if (host_is_bigendian())
++	if (host_is_bigendian()) {
++		if (endian == KBUFFER_ENDIAN_SAME_AS_HOST)
++			flags |= KBUFFER_FL_BIG_ENDIAN;
+ 		kbuf->flags |= KBUFFER_FL_HOST_BIG_ENDIAN;
++	}
+ 
+ 	if (do_swap(kbuf)) {
+ 		kbuf->read_8 = __read_8_sw;
 -- 
 2.35.1
 
