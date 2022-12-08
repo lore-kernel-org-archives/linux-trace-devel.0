@@ -2,90 +2,103 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B09EC352A1
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  7 Dec 2022 09:56:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D77AC4332F
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  8 Dec 2022 12:05:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbiLGJ4m (ORCPT
+        id S229773AbiLHMFO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 7 Dec 2022 04:56:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59450 "EHLO
+        Thu, 8 Dec 2022 07:05:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbiLGJ4g (ORCPT
+        with ESMTP id S229696AbiLHMFN (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 7 Dec 2022 04:56:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0DF37223
-        for <linux-trace-devel@vger.kernel.org>; Wed,  7 Dec 2022 01:55:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1670406933;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+Ojphaq1iHwcXyLH5W6Z+h2EU2FFjs2keAwhsoLXaNI=;
-        b=PUk8iOOrwaelehVqT1Wf16QIQOxpxOBKmzHDiCRPcko7XIccB4qV+2eaDt9mnnkym3C8x6
-        DXfwIyCOBJMoAUgegVX6LQQuulXKYZ21qPBPOg8Wr/e7HoP7PdC41KT6yCLJa+J3VcighN
-        XYUz54Zfj+hZTLMImYT1yTu72+di/l0=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-269-7z4ly4X1PDqtTlVRjuu6AA-1; Wed, 07 Dec 2022 04:55:31 -0500
-X-MC-Unique: 7z4ly4X1PDqtTlVRjuu6AA-1
-Received: by mail-wm1-f70.google.com with SMTP id h81-20020a1c2154000000b003d1c8e519fbso569650wmh.2
-        for <linux-trace-devel@vger.kernel.org>; Wed, 07 Dec 2022 01:55:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Ojphaq1iHwcXyLH5W6Z+h2EU2FFjs2keAwhsoLXaNI=;
-        b=LfrBKZ4ix10FaHDBQQlO7DumDQAOL2sGGq1uG8mGbvjJpelvbxMpR7oHq0NMM7fdkM
-         RsLhue4j2G6+KVQrO3WeN6/ULCo1XrFXO3N7uAXTID/H0t0BTECqkII8jWFL32S6jpXh
-         lphWT8PdmJWE1EY99Dp+sgiY3TsPOAnL0FDmek2FuMjQmuJv5vVsuf0mrvnKYhLMbC+n
-         eJJptm6Meg1dqNVaS6jx3iIy7Di/r5W6DfQyWt2T6l5DvZ77fO9uS9skG0ziFMF4IRqQ
-         HPje4E0C21DhU33tIfl8mabJeNKQVf1G8TBzdGRAOgfu1BNZpsauZjcDqanM/JHvAui9
-         P2og==
-X-Gm-Message-State: ANoB5pktpvZ+zmLRboGH+lQvkn3Qnn1c82rX9xvKjDB8PtoUtQVNMda0
-        JMtxq3nQGUkkgQhrQHfKUycVcM67Va1Oh0fRB3qWzXtfwEdPAHA5CMzDveGzf/Cru58USJaUoja
-        lU8d4NKgXD4jCSIyhVUoGpgpV8NwFiK0=
-X-Received: by 2002:adf:e30b:0:b0:236:aacc:ea87 with SMTP id b11-20020adfe30b000000b00236aaccea87mr55911907wrj.414.1670406930763;
-        Wed, 07 Dec 2022 01:55:30 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf7qRTJyuS8qSDFaoLkcPzVzlhjXr2T/M6T1etvAzCqY+UqCUZSUVi12LJUJlqI1aCLPC1kwnw==
-X-Received: by 2002:adf:e30b:0:b0:236:aacc:ea87 with SMTP id b11-20020adfe30b000000b00236aaccea87mr55911894wrj.414.1670406930566;
-        Wed, 07 Dec 2022 01:55:30 -0800 (PST)
-Received: from vschneid.remote.csb ([154.57.232.159])
-        by smtp.gmail.com with ESMTPSA id n6-20020a05600c3b8600b003d1da8c7854sm1166051wms.45.2022.12.07.01.55.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Dec 2022 01:55:29 -0800 (PST)
-From:   Valentin Schneider <vschneid@redhat.com>
+        Thu, 8 Dec 2022 07:05:13 -0500
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.160])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A50880DA
+        for <linux-trace-devel@vger.kernel.org>; Thu,  8 Dec 2022 04:05:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1670501105;
+    s=strato-dkim-0002; d=iokpp.de;
+    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=EPOt6XZXpKOlpmuZv5Ijy6zEY25YXtgGlQuRDgSYot4=;
+    b=iCzZ/BxJBdQK1dlU2TRu+9kzCZjIIQBVXyVz3udEjddwdTP4gYwDzycww2Z+n422+o
+    Thn5kiV8fcgaxbwsKbisQe9gcm9f9zMud8Qvz78IWzcRutp9DLfDQApbpsk0pBV39F9A
+    f5oE5/sJpqR5glYnDFBJVNuq/JtJQoEJkM/m77CcDKjF0rfoTfP1ZdlsvFcHtZVlp7+7
+    PR+lO7PcnX/5mSCdQ2ZDCw5qVopvON+t+jC5zDCQXbUF1SzExmheWsI3/9uXg2kysXTX
+    2LjmbOu/aspdPHC3LdpSVuie8ZZRNz/05a83sQp+TNFp5ctusQtxI4ODirfD06ot/+WM
+    Em2w==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":LmkFe0i9dN8c2t4QQyGBB/NDXvjDB6pBSeBwhhSxarlUcu05JCAPyj3VPAceccYJs0uz"
+X-RZG-CLASS-ID: mo00
+Received: from blinux
+    by smtp.strato.de (RZmta 48.2.1 AUTH)
+    with ESMTPSA id z9cfbfyB8C55dPi
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Thu, 8 Dec 2022 13:05:05 +0100 (CET)
+Message-ID: <02721f85812a264d1e45cdc8164d73da55b4fa39.camel@iokpp.de>
+Subject: Re: [PATCH] libtracefs: Fix wrong return value in
+ tracefs_tracing_dir_is_mounted()
+From:   Bean Huo <beanhuo@iokpp.de>
 To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        Douglas RAILLARD <douglas.raillard@arm.com>
-Subject: Re: [PATCH v2 2/2] libtraceevent: Pretty-print cpumask fields as a
- cpulist
-In-Reply-To: <20221206153240.737e378b@gandalf.local.home>
-References: <20221116144154.3662923-1-vschneid@redhat.com>
- <20221116144646.3664012-1-vschneid@redhat.com>
- <20221206153240.737e378b@gandalf.local.home>
-Date:   Wed, 07 Dec 2022 09:55:28 +0000
-Message-ID: <xhsmh4ju7pmgf.mognet@vschneid.remote.csb>
+Cc:     linux-trace-devel@vger.kernel.org, tz.stoyanov@gmail.com,
+        Bean Huo <beanhuo@micron.com>
+Date:   Thu, 08 Dec 2022 13:05:04 +0100
+In-Reply-To: <20221206161314.73ecbfd2@gandalf.local.home>
+References: <20221128132106.291101-1-beanhuo@iokpp.de>
+         <20221128102410.5ccf784d@gandalf.local.home>
+         <e6c020fc59cd3a2333806fbaf2a90092866fb7b7.camel@iokpp.de>
+         <20221128133715.288fb265@gandalf.local.home>
+         <20221206161314.73ecbfd2@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 06/12/22 15:32, Steven Rostedt wrote:
-> On Wed, 16 Nov 2022 14:46:46 +0000
-> Valentin Schneider <vschneid@redhat.com> wrote:
->
->
-> This is a rather complex algorithm (I'm too tired to try to grasp it). It
-> really needs a unit test to make sure it's working as expected.
->
-
-I had missed there was already a testing infra for libtraceevent, that's my
-bad. I'll convert my local tests to that and ship it in v3. Thanks!
-
+On Tue, 2022-12-06 at 16:13 -0500, Steven Rostedt wrote:
+> On Mon, 28 Nov 2022 13:37:15 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > Ah, I think I see the issue here. If it returns NULL, then we need
+> > to do
+> > more. I'll take a look into this later today.
+> 
+> Can you test this patch?
+> 
+> Thanks,
+> 
 > -- Steve
+> 
+> diff --git a/src/tracefs-utils.c b/src/tracefs-utils.c
+> index 777912e46821..d91ff40eee87 100644
+> --- a/src/tracefs-utils.c
+> +++ b/src/tracefs-utils.c
+> @@ -245,7 +245,7 @@ const char *tracefs_tracing_dir(void)
+>  	if (tracing_dir)
+>  		return tracing_dir;
+>  
+> -	tracing_dir = trace_find_tracing_dir(false);
+> +	tracing_dir = find_tracing_dir(false, true);
+>  	return tracing_dir;
+>  }
+>  
+> @@ -263,7 +263,7 @@ const char *tracefs_debug_dir(void)
+>  	if (debug_dir)
+>  		return debug_dir;
+>  
+> -	debug_dir = trace_find_tracing_dir(true);
+> +	debug_dir = find_tracing_dir(true, true);
+>  	return debug_dir;
+>  }
+>  
+
+
+yes, it also works, thanks!
+
+Kind regards,
+Bean
 
