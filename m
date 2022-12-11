@@ -2,32 +2,33 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFB95C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 11 Dec 2022 00:10:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26348C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 11 Dec 2022 00:11:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229738AbiLKAKm (ORCPT
+        id S229775AbiLKALW (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 10 Dec 2022 19:10:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41108 "EHLO
+        Sat, 10 Dec 2022 19:11:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbiLKAKl (ORCPT
+        with ESMTP id S229475AbiLKALV (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 10 Dec 2022 19:10:41 -0500
+        Sat, 10 Dec 2022 19:11:21 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BAEE13F08
-        for <linux-trace-devel@vger.kernel.org>; Sat, 10 Dec 2022 16:10:39 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED7813F05
+        for <linux-trace-devel@vger.kernel.org>; Sat, 10 Dec 2022 16:11:20 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C7003B8094D
-        for <linux-trace-devel@vger.kernel.org>; Sun, 11 Dec 2022 00:10:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13103C433D2
-        for <linux-trace-devel@vger.kernel.org>; Sun, 11 Dec 2022 00:10:35 +0000 (UTC)
-Date:   Sat, 10 Dec 2022 19:10:34 -0500
+        by ams.source.kernel.org (Postfix) with ESMTPS id E8247B8094D
+        for <linux-trace-devel@vger.kernel.org>; Sun, 11 Dec 2022 00:11:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58C32C433EF
+        for <linux-trace-devel@vger.kernel.org>; Sun, 11 Dec 2022 00:11:17 +0000 (UTC)
+Date:   Sat, 10 Dec 2022 19:11:12 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] libtracefs: Fix tracefs_tracing_dir() mount test
-Message-ID: <20221210191034.26a1b156@gandalf.local.home>
+Subject: [PATCH] libtracefs: Have tracefs_{tracing,debug}_dir() make sure
+ it's still mounted
+Message-ID: <20221210191112.749f045c@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -38,71 +39,70 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The tracefs_tracing_dir() test was broken. The pre-test setup already
-called tracing_tracing_dir() and cached the value. When the mounting test
-ran, it unmounted the tracefs directory, and then called the
-tracefs_tracing_dir() again, which just returned the cached value, leaving
-the tracefs file system unmounted. This had the test incorrectly pass, but
-then broke the tests after that.
+The test to test tracefs_tracing_dir() actually did not mount the
+tracing_dir but only returned where it was mounted. This was because the
+setup of the tests already called tracefs_tracing_dir() and set the static
+variable to it. As the tracefs_tracing_dir() function already found the
+mounted tracefs file system, it cached the location. The test unmounted
+it, and then called tracefs_tracing_dir(), and since that returned a path,
+the test assumed (incorrectly) that it was mounted.
 
-Add a check to make sure that the content in both the mounted tracefs
-directory and the debugfs directory exists.
+Have tracefs_tracing_dir() and tracefs_debug_dir() check to make sure each
+time that the cached directory is still mounted by checking for a
+file/directory in it.
 
-Fixes: e6daa60cca ("libtracefs: Add unit test to test mounting of tracefs_{tracing,debug}_dir()")
+For tracefs, it checks to see if "trace" exists.
+
+For debugfs, it checks to see if "tracing" exists.
+
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- utest/tracefs-utest.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ src/tracefs-utils.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index d1789a3d87f9..a5666e40cac4 100644
---- a/utest/tracefs-utest.c
-+++ b/utest/tracefs-utest.c
-@@ -751,8 +751,10 @@ static void test_mounting(void)
- {
- 	const char *tracing_dir;
- 	const char *debug_dir;
+diff --git a/src/tracefs-utils.c b/src/tracefs-utils.c
+index ae249de06a39..9acf2ad61b16 100644
+--- a/src/tracefs-utils.c
++++ b/src/tracefs-utils.c
+@@ -230,6 +230,16 @@ int tracefs_set_tracing_dir(char *tracing_dir)
+ 	return 0;
+ }
+ 
++/* Used to check if the directory is still mounted */
++static int test_dir(const char *dir, const char *file)
++{
++	char path[strlen(dir) + strlen(file) + 2];
 +	struct stat st;
- 	char *save_tracing = NULL;
- 	char *save_debug = NULL;
-+	char *path;
- 	char *dir;
- 	int ret;
- 
-@@ -797,6 +799,11 @@ static void test_mounting(void)
- 		if (strncmp(tracing_dir, "/sys/kernel/", 12) != 0)
- 			printf("Tracing directory mounted at '%s'\n",
- 			       tracing_dir);
 +
-+		/* Make sure the directory has content.*/
-+		asprintf(&path, "%s/trace", tracing_dir);
-+		CU_TEST(stat(path, &st) == 0);
-+		free(path);
- 	}
- 
- 	/* Now mount debugfs dir, which should mount at /sys/kernel/debug */
-@@ -807,6 +814,11 @@ static void test_mounting(void)
- 		if (strcmp(debug_dir, DEBUGFS_DEFAULT_PATH) != 0)
- 			printf("debug directory mounted at '%s'\n",
- 			       debug_dir);
++	sprintf(path, "%s/%s", dir, file);
++	return stat(path, &st) < 0 ? 0 : 1;
++}
 +
-+		/* Make sure the directory has content.*/
-+		asprintf(&path, "%s/tracing", debug_dir);
-+		CU_TEST(stat(path, &st) == 0);
-+		free(path);
- 	}
+ /**
+  * tracefs_tracing_dir - Get tracing directory
+  *
+@@ -240,10 +250,11 @@ const char *tracefs_tracing_dir(void)
+ {
+ 	static const char *tracing_dir;
  
- 	if (save_debug)
-@@ -2329,9 +2341,7 @@ void test_tracefs_lib(void)
- 		return;
- 	}
++	/* Do not check custom_tracing_dir */
+ 	if (custom_tracing_dir)
+ 		return custom_tracing_dir;
  
--	/* Must be first test */
- 	CU_add_test(suite, "Test tracefs/debugfs mounting", test_mounting);
--
- 	CU_add_test(suite, "Follow events", test_follow_events);
- 	CU_add_test(suite, "trace cpu read",
- 		    test_trace_cpu_read);
+-	if (tracing_dir)
++	if (tracing_dir && test_dir(tracing_dir, "trace"))
+ 		return tracing_dir;
+ 
+ 	tracing_dir = find_tracing_dir(false, true);
+@@ -261,7 +272,7 @@ const char *tracefs_debug_dir(void)
+ {
+ 	static const char *debug_dir;
+ 
+-	if (debug_dir)
++	if (debug_dir && test_dir(debug_dir, "tracing"))
+ 		return debug_dir;
+ 
+ 	debug_dir = find_tracing_dir(true, true);
 -- 
 2.35.1
 
