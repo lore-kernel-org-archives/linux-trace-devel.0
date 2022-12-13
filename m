@@ -2,87 +2,102 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4913C10F1B
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 13 Dec 2022 17:04:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94317C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 13 Dec 2022 18:03:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235172AbiLMRED (ORCPT
+        id S235172AbiLMSDn (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 13 Dec 2022 12:04:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32928 "EHLO
+        Tue, 13 Dec 2022 13:03:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236311AbiLMRDC (ORCPT
+        with ESMTP id S235365AbiLMSDm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 13 Dec 2022 12:03:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BCBE22BD0
-        for <linux-trace-devel@vger.kernel.org>; Tue, 13 Dec 2022 08:58:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1670950722;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pajEUW+e2kGpIy2WjVXpBvH/EVcKDyakZt4OPG6bn5I=;
-        b=PDZCSY+iBhR6O541fctiaelt+VVxDE2IB8zpuFqVCD9QvbcCVIQlTl/F6Vuy2flftwWD8N
-        +V2q/KQf7wZmdVE+AJOvWnPnq9h/NM4eSFwlrQmwc0GGYc1zJBSPGHQlxlcyZW/+bfNygQ
-        af12WZ+pdTSzO+LbIhTXkTP6CJcTrv4=
-Received: from mimecast-mx02.redhat.com (66.187.233.88 [66.187.233.88]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-575-TdbiB_hNMK-3jEK8rTGm5g-1; Tue, 13 Dec 2022 11:57:07 -0500
-X-MC-Unique: TdbiB_hNMK-3jEK8rTGm5g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6E519806003;
-        Tue, 13 Dec 2022 16:57:05 +0000 (UTC)
-Received: from vschneid.remote.csb (unknown [10.33.36.185])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 951351121314;
-        Tue, 13 Dec 2022 16:57:04 +0000 (UTC)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        Douglas RAILLARD <douglas.raillard@arm.com>
-Subject: [PATCH v3 1/4] libtraceevent: Ensure print_field_raw() terminates with '\0'
-Date:   Tue, 13 Dec 2022 16:56:17 +0000
-Message-Id: <20221213165620.1034287-2-vschneid@redhat.com>
-In-Reply-To: <20221213165620.1034287-1-vschneid@redhat.com>
-References: <20221213165620.1034287-1-vschneid@redhat.com>
+        Tue, 13 Dec 2022 13:03:42 -0500
+Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7082520352;
+        Tue, 13 Dec 2022 10:03:40 -0800 (PST)
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4NWmZf5rWVz9smn;
+        Tue, 13 Dec 2022 19:03:38 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id UCqxqYXXsQ8T; Tue, 13 Dec 2022 19:03:38 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4NWmZf4ybRz9smJ;
+        Tue, 13 Dec 2022 19:03:38 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 998358B773;
+        Tue, 13 Dec 2022 19:03:38 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id U_aiRmb3iWhf; Tue, 13 Dec 2022 19:03:38 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.7.67])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5EEE98B766;
+        Tue, 13 Dec 2022 19:03:38 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 2BDI3NBF737221
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Tue, 13 Dec 2022 19:03:23 +0100
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 2BDI3LhP737213;
+        Tue, 13 Dec 2022 19:03:21 +0100
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     gregkh@linuxfoundation.org, stable@vger.kernel.org
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Ben Hutchings <ben@decadent.org.uk>,
+        Salvatore Bonaccorso <carnil@debian.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-devel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH] [BACKPORT FOR 4.14] libtraceevent: Fix build with binutils 2.35
+Date:   Tue, 13 Dec 2022 19:03:07 +0100
+Message-Id: <c4629a12d4a2a21ff131624d3ef1d9f8b5fd64ad.1670954579.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1670954585; l=1329; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=S7mrLyJvmUixcNAmwGFNK/txVTz4era2R9aIZnLMX2Y=; b=/7rRXy1Mh+5nF/pPOHuSwoiroRaCdraCGJQld2g8Ep1FH0UJXy92iMLkftOIuueBuB6hbY+h8pY8 nA3glJxhDvKjfUqzznkqivLGN+x/vFel/1wSLkc0SIdwNFRFDL22
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Testing printing cpumasks reveals an issue in print_field_raw()'s handling
-of arrays: its final operation is trace_seq_putc(']'), which omits a final
-'\0'.
+From: Ben Hutchings <ben@decadent.org.uk>
 
-The other cases in the function invoke trace_seq_printf() which does the
-right thing, only the TEP_FIELD_IS_ARRAY case has that issue. Still, to
-prevent any future surprises, add a call to trace_seq_terminate() at the
-end of print_field_raw().
+[upstream commit 39efdd94e314336f4acbac4c07e0f37bdc3bef71]
 
-Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+In binutils 2.35, 'nm -D' changed to show symbol versions along with
+symbol names, with the usual @@ separator.  When generating
+libtraceevent-dynamic-list we need just the names, so strip off the
+version suffix if present.
+
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+Tested-by: Salvatore Bonaccorso <carnil@debian.org>
+Reviewed-by: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-trace-devel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- src/event-parse.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/lib/traceevent/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/event-parse.c b/src/event-parse.c
-index a6e9e93..093b345 100644
---- a/src/event-parse.c
-+++ b/src/event-parse.c
-@@ -5681,6 +5681,7 @@ static void print_field_raw(struct trace_seq *s, void *data, int size,
- 				trace_seq_printf(s, "%llu", val);
- 		}
- 	}
-+	trace_seq_terminate(s);
- }
- 
- static int print_parse_data(struct tep_print_parse *parse, struct trace_seq *s,
+diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
+index a0ac01c647f5..2d6989f8a87c 100644
+--- a/tools/lib/traceevent/Makefile
++++ b/tools/lib/traceevent/Makefile
+@@ -263,7 +263,7 @@ define do_generate_dynamic_list_file
+ 	xargs echo "U w W" | tr 'w ' 'W\n' | sort -u | xargs echo`;\
+ 	if [ "$$symbol_type" = "U W" ];then				\
+ 		(echo '{';						\
+-		$(NM) -u -D $1 | awk 'NF>1 {print "\t"$$2";"}' | sort -u;\
++		$(NM) -u -D $1 | awk 'NF>1 {sub("@.*", "", $$2); print "\t"$$2";"}' | sort -u;\
+ 		echo '};';						\
+ 		) > $2;							\
+ 	else								\
 -- 
-2.31.1
+2.38.1
 
