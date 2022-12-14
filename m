@@ -2,32 +2,32 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FC38C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 14 Dec 2022 04:36:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEE6FC4332F
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 14 Dec 2022 13:41:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236844AbiLNEgv (ORCPT
+        id S229500AbiLNNlV (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 13 Dec 2022 23:36:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59744 "EHLO
+        Wed, 14 Dec 2022 08:41:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236827AbiLNEgt (ORCPT
+        with ESMTP id S237453AbiLNNlU (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 13 Dec 2022 23:36:49 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416C920F64
-        for <linux-trace-devel@vger.kernel.org>; Tue, 13 Dec 2022 20:36:48 -0800 (PST)
+        Wed, 14 Dec 2022 08:41:20 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 948A126AB2
+        for <linux-trace-devel@vger.kernel.org>; Wed, 14 Dec 2022 05:41:18 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D0BB96176C
-        for <linux-trace-devel@vger.kernel.org>; Wed, 14 Dec 2022 04:36:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB8CBC433EF
-        for <linux-trace-devel@vger.kernel.org>; Wed, 14 Dec 2022 04:36:46 +0000 (UTC)
-Date:   Tue, 13 Dec 2022 23:36:45 -0500
+        by ams.source.kernel.org (Postfix) with ESMTPS id 43922B818B4
+        for <linux-trace-devel@vger.kernel.org>; Wed, 14 Dec 2022 13:41:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8F43C433EF
+        for <linux-trace-devel@vger.kernel.org>; Wed, 14 Dec 2022 13:41:15 +0000 (UTC)
+Date:   Wed, 14 Dec 2022 08:41:13 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2] libtraceevent: Be able to handle some sizeof() calls
-Message-ID: <20221213233645.04fc15ed@gandalf.local.home>
+Subject: [PATCH] libtraceevent: Add test to test sizeof() processing
+Message-ID: <20221214084113.211924a7@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -38,133 +38,125 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Parse sizeof() for known types as well as fields.
-
- sizeof(int) is 4
- sizeof(unsigned int) is 4
- sizeof(long) is tep->long_size
- sizeof(unsigned long) is tep->long_size
- sizeof(long long) is 8
- sizeof(unsigned long long) is 8
- sizeof(REC->foo) is the field "foo" size value.
-
-This will now parse the sample events of trace_events in the kernel.
+Now that some sizeof() calls can be parsed, create a unit test to test the
+process_sizeof() algorithm.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
-Changes since v1: https://lore.kernel.org/linux-trace-devel/20221213222238.65a9c539@gandalf.local.home
+ utest/traceevent-utest.c | 88 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 88 insertions(+)
 
- - Fixed parsing of sizeof(REC->foo) as I forgot to get the next token
-
- - Fixed parsing of long, as it had just "strcmp()" and not "strcmp() == 0"
-
- src/event-parse.c | 86 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 86 insertions(+)
-
-diff --git a/src/event-parse.c b/src/event-parse.c
-index 1aeed953a120..aaa06b336efe 100644
---- a/src/event-parse.c
-+++ b/src/event-parse.c
-@@ -3509,6 +3509,88 @@ out_free:
- 	return TEP_EVENT_ERROR;
+diff --git a/utest/traceevent-utest.c b/utest/traceevent-utest.c
+index 4fc09e552ce4..954a592d5c3c 100644
+--- a/utest/traceevent-utest.c
++++ b/utest/traceevent-utest.c
+@@ -140,6 +140,45 @@ static char cpumask_##name##_event_data[] = {                       \
+ }
+ #endif
+ 
++#define SIZEOF_LONG4_FMT "int=4 unsigned=4 unsigned int=4 long=4 unsigned long=4 long long=8 unsigned long long=8 s4=4 u4=4 s8=8 u8=8"
++#define SIZEOF_LONG8_FMT "int=4 unsigned=4 unsigned int=4 long=8 unsigned long=8 long long=8 unsigned long long=8 s4=4 u4=4 s8=8 u8=8"
++
++static const char size_of_event[] =
++	"name: sizeof_event\n"
++	"ID: 23\n"
++	"format:\n"
++	"\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n"
++	"\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n"
++	"\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n"
++	"\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n"
++	"\n"
++        "\tfield:int s4;\toffset:8;\tsize:4;\tsigned:1;\n"
++        "\tfield:unsigned int u4;\toffset:12;\tsize:4;\tsigned:0;\n"
++        "\tfield:long long s8;\toffset:16;\tsize:8;\tsigned:1;\n"
++        "\tfield:unsigned long long u8;\toffset:24;\tsize:8;\tsigned:0;\n"
++	"\n"
++	"print fmt: \"int=%d unsigned=%d unsigned int=%d long=%d unsigned long=%d long long=%d unsigned long long=%d s4=%d u4=%d s8=%d u8=%d\", "
++	"sizeof(int), sizeof(unsigned), sizeof(unsigned int), sizeof(long), sizeof(unsigned long), "
++	"sizeof(long long), sizeof(unsigned long long), sizeof(REC->s4), "
++	"sizeof(REC->u4), sizeof(REC->s8), sizeof(REC->u8))\n";
++static char sizeof_data[] = {
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
++	/* common type */		23, 0x00,
++#else
++	/* common type */		0x00, 23
++#endif
++	/* common flags */		0x00,
++	/* common_preempt_count */	0x00,
++	/* common_pid */		0x00, 0x00, 0x00, 0x00,
++	/* irq */			0x00, 0x00, 0x00, 0x00,
++
++	/* s4 */			0x00, 0x00, 0x00, 0x00,
++	/* u4 */			0x00, 0x00, 0x00, 0x00,
++	/* s8 */			0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
++	/* u8 */			0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
++};
++static void *sizeof_event_data = (void *)sizeof_data;
++
+ DECL_CPUMASK_EVENT_DATA(full, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff);
+ #define CPUMASK_FULL     "ARRAY[ff, ff, ff, ff, ff, ff, ff, ff]"
+ #define CPUMASK_FULL_FMT "cpumask=0-63"
+@@ -288,6 +327,51 @@ static void test_parse_cpumask_bytepn(void)
+ 		      CPUMASK_BYTEPN, CPUMASK_BYTEPN_FMT);
  }
  
-+static enum tep_event_type
-+process_sizeof(struct tep_event *event, struct tep_print_arg *arg, char **tok)
++static void test_parse_sizeof(int long_size, int value, const char *system,
++			      const char *test_str)
 +{
-+	struct tep_format_field *field;
-+	enum tep_event_type type;
-+	char *token = NULL;
-+	bool ok = false;
-+	int ret;
++	struct tep_event *event;
++	struct tep_record record;
++	char *sizeof_event;
++	char *p;
 +
-+	type = read_token_item(&token);
++	tep_set_long_size(test_tep, long_size);
 +
-+	arg->type = TEP_PRINT_ATOM;
++	record.data = sizeof_event_data;
++	record.size = sizeof(sizeof_data);
 +
-+	/* We handle some sizeof types */
-+	if (strcmp(token, "unsigned") == 0) {
-+		free_token(token);
-+		type = read_token_item(&token);
++	sizeof_event = strdup(size_of_event);
++	CU_TEST(sizeof_event != NULL);
 +
-+		if (type == TEP_EVENT_ERROR)
-+			goto error;
++	/* Set a new id */
++	p = strstr(sizeof_event, "ID: 2");
++	p[5] = '0' + value;
 +
-+		if (type != TEP_EVENT_ITEM)
-+			ok = true;
-+	}
++	/* Handles endianess */
++	*(unsigned short *)sizeof_data = 20 + value;
 +
-+	if (ok || strcmp(token, "int") == 0) {
-+		arg->atom.atom = strdup("4");
++	CU_TEST(tep_parse_format(test_tep, &event, sizeof_event,
++				 strlen(sizeof_event),
++				 system) == TEP_ERRNO__SUCCESS);
 +
-+	} else if (strcmp(token, "long") == 0) {
-+		free_token(token);
-+		type = read_token_item(&token);
++	trace_seq_reset(test_seq);
++	tep_print_event(test_tep, test_seq, &record, "%s", TEP_PRINT_INFO);
++	trace_seq_do_printf(test_seq);
++	CU_TEST(strcmp(test_seq->buffer, test_str) == 0);
 +
-+		if (token && strcmp(token, "long") == 0) {
-+			arg->atom.atom = strdup("8");
-+		} else {
-+			if (event->tep->long_size == 4)
-+				arg->atom.atom = strdup("4");
-+			else
-+				arg->atom.atom = strdup("8");
-+			/* The token is the next token */
-+			ok = true;
-+		}
-+	} else if (strcmp(token, "REC") == 0) {
-+
-+		free_token(token);
-+		type = read_token_item(&token);
-+
-+		if (test_type_token(type, token,  TEP_EVENT_OP, "->"))
-+			goto error;
-+		free_token(token);
-+
-+		if (read_expect_type(TEP_EVENT_ITEM, &token) < 0)
-+			goto error;
-+
-+		field = tep_find_any_field(event, token);
-+		/* Can't handle arrays (yet) */
-+		if (!field || field->flags & TEP_FIELD_IS_ARRAY)
-+			goto error;
-+
-+		ret = asprintf(&arg->atom.atom, "%d", field->size);
-+		if (ret < 0)
-+			goto error;
-+
-+	} else if (!ok) {
-+		goto error;
-+	}
-+
-+	if (!ok) {
-+		free_token(token);
-+		type = read_token_item(tok);
-+	}
-+	if (test_type_token(type, token,  TEP_EVENT_DELIM, ")"))
-+		goto error;
-+
-+	free_token(token);
-+	return read_token_item(tok);
-+error:
-+	free_token(token);
-+	*tok = NULL;
-+	return TEP_EVENT_ERROR;
++	free(sizeof_event);
 +}
 +
- static enum tep_event_type
- process_function(struct tep_event *event, struct tep_print_arg *arg,
- 		 char *token, char **tok)
-@@ -3568,6 +3650,10 @@ process_function(struct tep_event *event, struct tep_print_arg *arg,
- 		free_token(token);
- 		return process_builtin_expect(event, arg, tok);
- 	}
-+	if (strcmp(token, "sizeof") == 0) {
-+		free_token(token);
-+		return process_sizeof(event, arg, tok);
-+	}
- 
- 	func = find_func_handler(event->tep, token);
- 	if (func) {
++static void test_parse_sizeof8(void)
++{
++	test_parse_sizeof(8, 3, "sizeof8", SIZEOF_LONG8_FMT);
++}
++
++static void test_parse_sizeof4(void)
++{
++	test_parse_sizeof(4, 4, "sizeof4", SIZEOF_LONG4_FMT);
++}
++
+ static int test_suite_destroy(void)
+ {
+ 	tep_free(test_tep);
+@@ -330,4 +414,8 @@ void test_traceevent_lib(void)
+ 		    test_parse_cpumask_bytep2);
+ 	CU_add_test(suite, "parse cpumask spanning all bytes",
+ 		    test_parse_cpumask_bytepn);
++	CU_add_test(suite, "parse sizeof() 8byte values",
++		    test_parse_sizeof8);
++	CU_add_test(suite, "parse sizeof() 4byte values",
++		    test_parse_sizeof4);
+ }
 -- 
 2.35.1
 
