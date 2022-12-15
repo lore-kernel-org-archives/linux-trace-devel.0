@@ -2,102 +2,75 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CE05C4167B
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 15 Dec 2022 18:34:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14C5EC4332F
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 15 Dec 2022 18:53:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbiLOSeD (ORCPT
+        id S230443AbiLOSxD (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 15 Dec 2022 13:34:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33002 "EHLO
+        Thu, 15 Dec 2022 13:53:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230311AbiLOSdh (ORCPT
+        with ESMTP id S230452AbiLOSws (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 15 Dec 2022 13:33:37 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29AF242
-        for <linux-trace-devel@vger.kernel.org>; Thu, 15 Dec 2022 10:31:59 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id x188-20020a2531c5000000b00716de19d76bso4774024ybx.19
-        for <linux-trace-devel@vger.kernel.org>; Thu, 15 Dec 2022 10:31:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=cQiNqKdPjqw4QnOS79pxkaJEwk3jEFOQF0llvUiiH9Y=;
-        b=renTso6WCBWxtuszmFZjnngIPAOzTdnVDmy8FwnqudUHboBAfGWw+ZYgRVqul4cTJ+
-         9vXIPh8dfha7sQdQPAiJRG0Z/B82L0TYgNQBho7MZWWh4EQSVzzavcSUIhjVoiXWSwv2
-         zH2jIGpJ4mHsGTwBvS6nWMEhNLT4AlpS2ALruUJwKEorQKywvCyBySu5iSVJo3Ep6uQt
-         8Aq48itutjckr5TBtNjDhgcXT2BSoVAJI8Ea6FpfhYejon8VbTzS6zlh2fKnMDCFqk3K
-         JOS6KmokNCxw6xI5mXypuW/zjZZiiLygTuXThXRg3o0NIVAbY2IwnFipzirGLCjj+rLd
-         E6FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cQiNqKdPjqw4QnOS79pxkaJEwk3jEFOQF0llvUiiH9Y=;
-        b=Ur80+flm7deN3YF0kZ697pFix/lFXvlJm26GzNWnUs7/6M6tRi/bpVRoLBSpz2JbwT
-         /7Q9WOvROAqJ2AeVPmquhwC+AHbHNRb6GAGUjdcXJ2mYSm3WD5Owq0+akEoXSJcLE05N
-         tKbJ1X1KEEe503+D18AXdzkSxsCM/PveUhdHMxpgGG9peTqAQ1UC06nI7jWsEOqw8Pfq
-         GaQFpkg5NGZlaUIdNAdPqVHdn5jWZagxvJNvTZ7S+inIR+tbArFR1B1wdINWutWWsjWf
-         fmcs9Fd35NtIbTqe8mqaNf7+QZxOIPcGTL98zoG4bJAmwmp/69i5r9HZaysIzVqksRf2
-         fwBA==
-X-Gm-Message-State: AFqh2kqSIyAmuJcaG8pFa6MGJ8EBM5nrDkaR6c8poEeuz9plH8H2MMha
-        F7ecssuY1ruq4l2SzegM4SeeOA5ypjehznQiXSrgXWPKcfcK5bFPMi2lfY/33ijuvuud9bstYYT
-        c2M9cnM6riPVzLZuCwZwspNiwYoy+X/JFZyAO3OaA8+cu+TF7aEvCe3q8Tfv/NiN/nWwgHZNHZG
-        /sDCU=
-X-Google-Smtp-Source: AMrXdXtWeIFDBVzvRDQ8zhyYdo7h2YF/kbn3w5QdpFyqX4VYpTO01lAzPbLX9S2aDyqm+hfqaMdNFLJ4GJQF
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:de6d:aa93:7423:e679])
- (user=irogers job=sendgmr) by 2002:a25:6f46:0:b0:739:a1c7:f11a with SMTP id
- k67-20020a256f46000000b00739a1c7f11amr102751ybc.461.1671129119188; Thu, 15
- Dec 2022 10:31:59 -0800 (PST)
-Date:   Thu, 15 Dec 2022 10:31:50 -0800
-Message-Id: <20221215183151.2685460-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
-Subject: [PATCH v1 1/2] libtracefs: Move initialization below a null test.
-From:   Ian Rogers <irogers@google.com>
-To:     linux-trace-devel@vger.kernel.org,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 15 Dec 2022 13:52:48 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E54D237229
+        for <linux-trace-devel@vger.kernel.org>; Thu, 15 Dec 2022 10:52:47 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8281061EC0
+        for <linux-trace-devel@vger.kernel.org>; Thu, 15 Dec 2022 18:52:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AF68C433D2;
+        Thu, 15 Dec 2022 18:52:46 +0000 (UTC)
+Date:   Thu, 15 Dec 2022 13:52:45 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Felipe Balbi <balbi@kernel.org>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: libtraceevent and threads
+Message-ID: <20221215135245.12a879d7@gandalf.local.home>
+In-Reply-To: <871qp0wol3.fsf@balbi.sh>
+References: <871qp0wol3.fsf@balbi.sh>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Computing the address from a NULL pointer results in undefined behavior
-which things like undefined behavior sanitizer promote into real
-failures.
+On Thu, 15 Dec 2022 19:42:32 +0200
+Felipe Balbi <balbi@kernel.org> wrote:
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- src/tracefs-dynevents.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+> Hi,
+> 
+> I was playing with binding `libtraceevent' to rust today. Generating the
+> bindings with rust's `bindgen' is very straight forward. When I moved to
+> porting the existing tests to rust, I found out that running a single
+> test always worked, while running all tests caused random allocation
+> failures and (apparent) corruption of the trace_seq buffer.
+> 
+> Upon further investigating the issue, I noticed that asking `cargo' to
+> run tests in a single thread (essentially one test at a time), always
+> gave me good results, but as soon as I let `cargo' run 2 threads (or
+> more) failures would show.
+> 
+> I appears that this is because `libtraceevent' keeps some global state
+> and that prevents different threads to keep their own "context" of the
+> library.
+> 
+> I can't say for sure, but it seems that the culprit here is:
+> 
+> 	static const char *input_buf;
+> 
+> in line 31 of src/event-parse.c. Would there be a way to hide that
+> perhaps as part of `struct tep_handle'?
 
-diff --git a/src/tracefs-dynevents.c b/src/tracefs-dynevents.c
-index 48bb26a..02e8023 100644
---- a/src/tracefs-dynevents.c
-+++ b/src/tracefs-dynevents.c
-@@ -709,13 +709,18 @@ dynevent_info(struct tracefs_dynevent *dynevent, char **system,
- 	      char **event, char **prefix, char **addr, char **format)
- {
- 	char **lv[] = { system, event, prefix, addr, format };
--	char **rv[] = { &dynevent->system, &dynevent->event, &dynevent->prefix,
--			&dynevent->address, &dynevent->format };
-+	char **rv[] = { NULL, NULL, NULL, NULL, NULL };
- 	int i;
- 
- 	if (!dynevent)
- 		return TRACEFS_DYNEVENT_UNKNOWN;
- 
-+	rv[0] = &dynevent->system;
-+	rv[1] = &dynevent->event;
-+	rv[2] = &dynevent->prefix;
-+	rv[3] = &dynevent->address;
-+	rv[4] = &dynevent->format;
-+
- 	for (i = 0; i < ARRAY_SIZE(lv); i++) {
- 		if (lv[i]) {
- 			if (*rv[i]) {
--- 
-2.39.0.314.g84b9a713c41-goog
+Ah sure. I think we discovered this once before and was meaning to change
+it. There may have been issues where we needed to design things
+differently. I don't recall.
 
+But if you want to send patches to move that to the tep handle and make it
+work, I'm all for it.
+
+-- Steve
