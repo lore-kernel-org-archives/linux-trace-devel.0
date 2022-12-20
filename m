@@ -2,207 +2,535 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 520F8C10F1E
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 20 Dec 2022 16:51:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F167AC4332F
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 20 Dec 2022 18:05:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233816AbiLTQvJ (ORCPT
+        id S231638AbiLTSFd (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 20 Dec 2022 11:51:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45302 "EHLO
+        Tue, 20 Dec 2022 13:05:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbiLTQvI (ORCPT
+        with ESMTP id S233281AbiLTSFb (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 20 Dec 2022 11:51:08 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A21B1CE
-        for <linux-trace-devel@vger.kernel.org>; Tue, 20 Dec 2022 08:51:06 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id jo4so21698923ejb.7
-        for <linux-trace-devel@vger.kernel.org>; Tue, 20 Dec 2022 08:51:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:from:references:to:content-language:subject:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4cmcqHmqap4BhJzoWao5t065lzNu5XpGdhSu7+7Bu7k=;
-        b=ADsiir+jvcNg2+FQ4DqzaOEC6nZw+TBfandAJjw2P/ZlrndxEkpLRlcpuVr4qEN6vW
-         U7pzbgdc+TX/YOze8O4fBdlnet6Cq82eBvmDoz/96Oh2b+LFf9h5YXZdZFBO9pXESWmL
-         1IHudKimDqdNml0yD+flLGDhwLn6UPb6FPnuDGVOTPv/ciH0tB6OmBmnnwfF65u3DvN4
-         1nxsCEjBeT7SN6bFgFqEBK5HII9e7D5RwsE0fX8jML4TK4R3o+C5n9BO/LIMxdodm0PL
-         lLLmiGmBtPUfV2EPK66WIr9AHnrCwuLyMTk8j8qr9zubclBsEqtm//KmI3g0frgbO45U
-         9HjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:from:references:to:content-language:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=4cmcqHmqap4BhJzoWao5t065lzNu5XpGdhSu7+7Bu7k=;
-        b=jZTrY8QOd+2sgC90HV8qGPz+UsH23oLP0SOzCuk4DIMg0OFScImwTG6wXq76c0hH8Q
-         +/4r2cW5nP9Xl7PrWOR3ycDY7nGeYBK9EkAsF3/tYhqFNs5ooPWN+JKgNe3GiYWUGgmp
-         xBdjnrcrnfRlAvYxAfGPnW1/5mUFdp2ZA+V21E44OgEz5JIy0xGWQ5FKU78+gCYnmwSk
-         9TbvB4K77pMhC2U8SmHWTDCm2fK0juPETHB4x7x0ROxkCb9yz1YGSMlHp/r1Osa4+Kc3
-         AiFVWIfZCDkhvSf8dut4tYdrkrijP/xbC/Z0e7NCBco+ZJwmBROlkHX6f0Ai6LVLg7NN
-         Xukw==
-X-Gm-Message-State: ANoB5pnGzsVR4ZVigF5miIDaZBCXEuB6Yaz0GiDBFk2dIsJcJF0Djx76
-        u5Vzx9f/bct5RLJH+u5q6qHirpqEOt0=
-X-Google-Smtp-Source: AA0mqf6GA7xH5J2c8J+myicz5UOn3wDG1ydyw5cQD1FNydXLhORiPWwGyQPryUA8HgUPlaXqvN5aDw==
-X-Received: by 2002:a17:906:164d:b0:7ad:e255:9238 with SMTP id n13-20020a170906164d00b007ade2559238mr38523812ejd.21.1671555065037;
-        Tue, 20 Dec 2022 08:51:05 -0800 (PST)
-Received: from [192.168.0.101] (78-154-14-113.ip.btc-net.bg. [78.154.14.113])
-        by smtp.gmail.com with ESMTPSA id kw16-20020a170907771000b007ba46867e6asm6002291ejc.16.2022.12.20.08.51.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Dec 2022 08:51:04 -0800 (PST)
-Content-Type: multipart/mixed; boundary="------------soG2ORCt6pDdf8nLb7yfoxpA"
-Message-ID: <4470bb69-1558-5775-67ff-9b6b0779f573@gmail.com>
-Date:   Tue, 20 Dec 2022 18:51:03 +0200
+        Tue, 20 Dec 2022 13:05:31 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CEAF186A3
+        for <linux-trace-devel@vger.kernel.org>; Tue, 20 Dec 2022 10:05:28 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 46C5B4D61C;
+        Tue, 20 Dec 2022 18:05:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1671559527; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=HeG4thFt1QupN+k+tL895iXJ3e/3L2AzjLivptyiBXQ=;
+        b=LlrYRJcQtECOPGXOhaDeYOreXkuEaUjxrVDT4zd85BaWtPjt/UeCFGpX+PcnRK2PMG2+QR
+        Kq5HnM9uI2+MD6xmH1MmDq97b1FhdtiTi3/L9BO9/KHYNRbfjrvTfboDmGg0/sb5jrMVQz
+        vcQyWghpXHv4kbck+vnecLUZD9JQMy0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1671559527;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=HeG4thFt1QupN+k+tL895iXJ3e/3L2AzjLivptyiBXQ=;
+        b=0E0Ee5RnMx2CBD0b4HtOZlRrDTQv+N+mhO10Y7rbOLHJTPDYFf4575QuFR0v1bFWZcHt5H
+        use8lkOrgT4fwkCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 38ED11390E;
+        Tue, 20 Dec 2022 18:05:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Qs/bDWf5oWPGGwAAMHmgww
+        (envelope-from <dwagner@suse.de>); Tue, 20 Dec 2022 18:05:27 +0000
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH v3] libtracefs: Add initial support for meson
+Date:   Tue, 20 Dec 2022 19:05:24 +0100
+Message-Id: <20221220180524.29722-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-Subject: Re: [PATCH] kernel-shark: Show multi-line events in quick view
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-References: <20221214154643.43a4e137@gandalf.local.home>
-From:   Yordan Karadzhov <y.karadz@gmail.com>
-In-Reply-To: <20221214154643.43a4e137@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------soG2ORCt6pDdf8nLb7yfoxpA
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Introduce Meson as build framework for building libtracefs. This
+lives besides the Makefiles until all the expected initial fallouts
+have been dealed with.
 
+The build steps are:
 
+  # configure using .build as build directory and install destination
+  # /tmp/test
+  meson --prefix=/tmp/libtracefs .build
 
-On 12/14/22 22:46, Steven Rostedt wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> Some events (stack traces) have multiple lines, but the list view of each
-> event is just a single line. To get the content of the full event, if the
-> user selects the right mouse button over the event to trigger the quick
-> view, display the entire content of the event.
-> 
-Hi Steven
+  # trigger the build
+  ninja -C .build
 
-I wonder if the context menu is the best place to display those 
-multi-line events. This menu is quite busy already and if you want to 
-check a number of events, each time you have to open it then close it 
-and reopen it again in order to see the next event. I think this can be 
-a bit annoying.
+  # install the library
+  ninja -C .build install
 
-An alternative can be to use the dual marker. For example we can make it 
-to work such that all lines of the event selected with the markers are 
-shown directly into the table.
+In case you want to build/install the documentation the setup is
 
-I am attaching a RFC patch that that implements this. Note that I didn't 
-time to fully test and debug this for all corner cases, but it should 
-work at leas for the most straight-forward  use case. Please try it and 
-tell me what you think.
+  meson -Ddocs-build=true .build
 
-Thanks!
-Y.
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+---
+ v3:
+  - build documetation
+  - build samples
+  - set default location to /usr/local
 
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
->   src/KsQuickContextMenu.cpp | 9 +++++++++
->   src/KsQuickContextMenu.hpp | 2 +-
->   2 files changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/src/KsQuickContextMenu.cpp b/src/KsQuickContextMenu.cpp
-> index 6fa242de348d..cc714bfb1aae 100644
-> --- a/src/KsQuickContextMenu.cpp
-> +++ b/src/KsQuickContextMenu.cpp
-> @@ -52,6 +52,7 @@ KsQuickContextMenu::KsQuickContextMenu(KsDualMarkerSM *dm,
->     _row(row),
->     _rawTime(this),
->     _rawEvent(this),
-> +  _eventInfo(this),
->     _graphSyncCBox(nullptr),
->     _listSyncCBox(nullptr),
->     _hideTaskAction(this),
-> @@ -104,6 +105,14 @@ KsQuickContextMenu::KsQuickContextMenu(KsDualMarkerSM *dm,
->   		evtData += field + ":  " + val.setNum(fieldVal) + "\n\t";
->   	}
->   
-> +	QString evtInfo("\t");
-> +	evtInfo += kshark_get_info(entry);
-> +	evtInfo += "\n";
-> +
-> +	addSection("Event info");
-> +	_eventInfo.setDefaultWidget(new QLabel(evtInfo));
-> +	addAction(&_eventInfo);
-> +
->   	addSection("Raw event");
->   	time = QString("\ttime:  %1 [ns]").arg(entry->ts);
->   
-> diff --git a/src/KsQuickContextMenu.hpp b/src/KsQuickContextMenu.hpp
-> index ca0b341dd363..c07c1a534d3a 100644
-> --- a/src/KsQuickContextMenu.hpp
-> +++ b/src/KsQuickContextMenu.hpp
-> @@ -91,7 +91,7 @@ private:
->   
->   	size_t		_row;
->   
-> -	QWidgetAction	_rawTime, _rawEvent;
-> +	QWidgetAction	_rawTime, _rawEvent, _eventInfo;
->   
->   	QCheckBox	*_graphSyncCBox, *_listSyncCBox;
->   
---------------soG2ORCt6pDdf8nLb7yfoxpA
-Content-Type: text/x-patch; charset=UTF-8;
- name="0001-kernel-shark-Show-multi-line-events-using-the-dual-m.patch"
-Content-Disposition: attachment;
- filename*0="0001-kernel-shark-Show-multi-line-events-using-the-dual-m.pa";
- filename*1="tch"
-Content-Transfer-Encoding: base64
+ v2:
+  - updated commit message
+  - dropped the include path patch, the pkg-config
+    from libtraceevent is including them
 
-RnJvbSA5OWJjZTA4MmZmMDhiMmZiNGNhMjBhNGY2YmZjMzJlZTA0M2YyM2RjIE1vbiBTZXAg
-MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBZb3JkYW4gS2FyYWR6aG92IDx5LmthcmFkekBnbWFp
-bC5jb20+CkRhdGU6IFR1ZSwgMjAgRGVjIDIwMjIgMTg6NDU6MzAgKzAyMDAKU3ViamVjdDog
-W1JGQyBQQVRDSF0ga2VybmVsLXNoYXJrOiBTaG93IG11bHRpLWxpbmUgZXZlbnRzIHVzaW5n
-IHRoZSBkdWFsCiBtYXJrZXIKClNpZ25lZC1vZmYtYnk6IFlvcmRhbiBLYXJhZHpob3YgPHku
-a2FyYWR6QGdtYWlsLmNvbT4KLS0tCiBzcmMvS3NUcmFjZVZpZXdlci5jcHAgfCAxOCArKysr
-KysrKysrKysrKysrKy0KIHNyYy9Lc1RyYWNlVmlld2VyLmhwcCB8ICAyICsrCiAyIGZpbGVz
-IGNoYW5nZWQsIDE5IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQg
-YS9zcmMvS3NUcmFjZVZpZXdlci5jcHAgYi9zcmMvS3NUcmFjZVZpZXdlci5jcHAKaW5kZXgg
-YmUwYTQxOS4uOTdjYWFhMCAxMDA2NDQKLS0tIGEvc3JjL0tzVHJhY2VWaWV3ZXIuY3BwCisr
-KyBiL3NyYy9Lc1RyYWNlVmlld2VyLmNwcApAQCAtMTEwLDYgKzExMCwyMCBAQCBLc1RyYWNl
-Vmlld2VyOjpLc1RyYWNlVmlld2VyKFFXaWRnZXQgKnBhcmVudCkKIAljb25uZWN0KCZfc2Vh
-cmNoRlNNLl9zZWFyY2hSZXN0YXJ0QnV0dG9uLAkmUVB1c2hCdXR0b246OnByZXNzZWQsCiAJ
-CXRoaXMsCQkJCSZLc1RyYWNlVmlld2VyOjpfc2VhcmNoQ29udGludWUpOwogCisJaW50IGRl
-ZmF1bHRSb3dIZWlnaHQgPSBGT05UX0hFSUdIVCAqIDEuMjU7CisJYXV0byBsYW1TZWxlY3Rp
-b25DaGFuZ2VkID0gW3RoaXMsIGRlZmF1bHRSb3dIZWlnaHRdKGNvbnN0IFFJdGVtU2VsZWN0
-aW9uICZzZWxlY3RlZCwgY29uc3QgUUl0ZW1TZWxlY3Rpb24gJmRlc2VsZWN0ZWQpIHsKKwkg
-ICAgaWYgKGRlc2VsZWN0ZWQuY291bnQoKSAmJgorCQlkZXNlbGVjdGVkLmluZGV4ZXMoKS5m
-aXJzdCgpLnJvdygpICE9IF9tU3RhdGUtPnBhc3NpdmVNYXJrZXIoKS5fcG9zKSB7CisJCV92
-aWV3LnZlcnRpY2FsSGVhZGVyKCktPnJlc2l6ZVNlY3Rpb24oZGVzZWxlY3RlZC5pbmRleGVz
-KCkuZmlyc3QoKS5yb3coKSwKKwkJCQkJCSAgICAgIGRlZmF1bHRSb3dIZWlnaHQpOworCSAg
-ICB9CisJICAgIGlmIChzZWxlY3RlZC5jb3VudCgpKSB7CisJCV92aWV3LnJlc2l6ZVJvd1Rv
-Q29udGVudHMoc2VsZWN0ZWQuaW5kZXhlcygpLmZpcnN0KCkucm93KCkpOworCSAgICB9CisJ
-fTsKKwljb25uZWN0KCZfc2VsZWN0aW9uTW9kZWwsCSZRSXRlbVNlbGVjdGlvbk1vZGVsOjpz
-ZWxlY3Rpb25DaGFuZ2VkLAorCQlsYW1TZWxlY3Rpb25DaGFuZ2VkKTsKKwogCV9zZWFyY2hG
-U00ucGxhY2VJblRvb2xCYXIoJl90b29sYmFyKTsKIAogCS8qCkBAIC0xMjgsMTMgKzE0Miwx
-NSBAQCBLc1RyYWNlVmlld2VyOjpLc1RyYWNlVmlld2VyKFFXaWRnZXQgKnBhcmVudCkKIAlf
-dmlldy5zZXRFZGl0VHJpZ2dlcnMoUUFic3RyYWN0SXRlbVZpZXc6Ok5vRWRpdFRyaWdnZXJz
-KTsKIAlfdmlldy5zZXRTZWxlY3Rpb25CZWhhdmlvcihRQWJzdHJhY3RJdGVtVmlldzo6U2Vs
-ZWN0Um93cyk7CiAJX3ZpZXcuc2V0U2VsZWN0aW9uTW9kZShRQWJzdHJhY3RJdGVtVmlldzo6
-U2luZ2xlU2VsZWN0aW9uKTsKLQlfdmlldy52ZXJ0aWNhbEhlYWRlcigpLT5zZXREZWZhdWx0
-U2VjdGlvblNpemUoRk9OVF9IRUlHSFQgKiAxLjI1KTsKKwlfdmlldy52ZXJ0aWNhbEhlYWRl
-cigpLT5zZXREZWZhdWx0U2VjdGlvblNpemUoZGVmYXVsdFJvd0hlaWdodCk7CiAJX3ZpZXcu
-c2V0Rm9udChRRm9udERhdGFiYXNlOjpzeXN0ZW1Gb250KFFGb250RGF0YWJhc2U6OkZpeGVk
-Rm9udCkpOwogCV92aWV3Lmhvcml6b250YWxIZWFkZXIoKS0+c2V0Rm9udCgKIAkJUUZvbnRE
-YXRhYmFzZTo6c3lzdGVtRm9udChRRm9udERhdGFiYXNlOjpHZW5lcmFsRm9udCkpOwogCiAJ
-IF9wcm94eU1vZGVsLnNldFNvdXJjZSgmX21vZGVsKTsKKwlfc2VsZWN0aW9uTW9kZWwuc2V0
-TW9kZWwoJl9wcm94eU1vZGVsKTsKIAlfdmlldy5zZXRNb2RlbCgmX3Byb3h5TW9kZWwpOwor
-CV92aWV3LnNldFNlbGVjdGlvbk1vZGVsKCZfc2VsZWN0aW9uTW9kZWwpOwogCWNvbm5lY3Qo
-Jl9wcm94eU1vZGVsLCAmUUFic3RyYWN0SXRlbU1vZGVsOjptb2RlbFJlc2V0LAogCQl0aGlz
-LCAmS3NUcmFjZVZpZXdlcjo6X3NlYXJjaFJlc2V0KTsKIApkaWZmIC0tZ2l0IGEvc3JjL0tz
-VHJhY2VWaWV3ZXIuaHBwIGIvc3JjL0tzVHJhY2VWaWV3ZXIuaHBwCmluZGV4IGYzOTc5YTYu
-LmFlMTkyOWQgMTAwNjQ0Ci0tLSBhL3NyYy9Lc1RyYWNlVmlld2VyLmhwcAorKysgYi9zcmMv
-S3NUcmFjZVZpZXdlci5ocHAKQEAgLTEwNiw2ICsxMDYsOCBAQCBwcml2YXRlOgogCiAJS3NG
-aWx0ZXJQcm94eU1vZGVsCV9wcm94eU1vZGVsOwogCisJUUl0ZW1TZWxlY3Rpb25Nb2RlbCAJ
-X3NlbGVjdGlvbk1vZGVsOworCiAJUVRvb2xCYXIJX3Rvb2xiYXI7CiAKIAlRTGFiZWwJCV9s
-YWJlbFNlYXJjaCwgX2xhYmVsR3JGb2xsb3dzOwotLSAKMi4zNy4zCgo=
+ v1:
+  - initial version
 
---------------soG2ORCt6pDdf8nLb7yfoxpA--
+ Documentation/list-txt.sh  |  11 +++
+ Documentation/meson.build  | 149 +++++++++++++++++++++++++++++++++++++
+ include/meson.build        |   9 +++
+ meson.build                |  47 ++++++++++++
+ meson_options.txt          |  18 +++++
+ samples/extract-example.sh |   3 +
+ samples/meson.build        |  44 +++++++++++
+ src/meson.build            |  64 ++++++++++++++++
+ utest/meson.build          |  17 +++++
+ 9 files changed, 362 insertions(+)
+ create mode 100644 Documentation/list-txt.sh
+ create mode 100644 Documentation/meson.build
+ create mode 100644 include/meson.build
+ create mode 100644 meson.build
+ create mode 100644 meson_options.txt
+ create mode 100644 samples/extract-example.sh
+ create mode 100644 samples/meson.build
+ create mode 100644 src/meson.build
+ create mode 100644 utest/meson.build
+
+diff --git a/Documentation/list-txt.sh b/Documentation/list-txt.sh
+new file mode 100644
+index 000000000000..d8937243250f
+--- /dev/null
++++ b/Documentation/list-txt.sh
+@@ -0,0 +1,11 @@
++#!/bin/bash
++
++SECTION=$1
++TXT_PATH=$2
++
++if [ "$SECTION" = "3" ] ; then
++  ls -1 ${TXT_PATH}/libtracefs-*.txt
++  ls -1 ${TXT_PATH}/libtracefs.txt
++elif [ "$SECTION" = "1" ] ; then
++  ls -1 ${TXT_PATH}/libtracefs-*.txt.1
++fi
+diff --git a/Documentation/meson.build b/Documentation/meson.build
+new file mode 100644
+index 000000000000..d4cd3619985c
+--- /dev/null
++++ b/Documentation/meson.build
+@@ -0,0 +1,149 @@
++# SPDX-License-Identifier: LGPL-2.1
++#
++# Copyright (c) 2022 Daniel Wagner, SUSE LLC
++
++list_txt = find_program('list-txt.sh')
++r = run_command(list_txt, '1', meson.current_source_dir(), check: true)
++sources1 = r.stdout().strip().split('\n')
++r = run_command(list_txt, '3', meson.current_source_dir(), check: true)
++sources3 = r.stdout().strip().split('\n')
++
++#
++# For asciidoc ...
++#	-7.1.2,	no extra settings are needed.
++#	8.0-,	set ASCIIDOC8.
++#
++
++#
++# For docbook-xsl ...
++#	-1.68.1,	set ASCIIDOC_NO_ROFF? (based on changelog from 1.73.0)
++#	1.69.0,		no extra settings are needed?
++#	1.69.1-1.71.0,	set DOCBOOK_SUPPRESS_SP?
++#	1.71.1,		no extra settings are needed?
++#	1.72.0,		set DOCBOOK_XSL_172.
++#	1.73.0-,	set ASCIIDOC_NO_ROFF
++#
++
++#
++# If you had been using DOCBOOK_XSL_172 in an attempt to get rid
++# of 'the ".ft C" problem' in your generated manpages, and you
++# instead ended up with weird characters around callouts, try
++# using ASCIIDOC_NO_ROFF instead (it works fine with ASCIIDOC8).
++#
++
++if get_option('asciidoctor')
++    asciidoc = find_program('asciidoctor')
++    asciidoc_extra  = ['-a', 'compat-mode']
++    asciidoc_extra += ['-I.']
++    asciidoc_extra += ['-r', 'asciidoctor-extensions']
++    asciidoc_extra += ['-a', 'mansource=libtraceevent']
++    asciidoc_extra += ['-a', 'manmanual="libtraceevent Manual"']
++    asciidoc_html = 'xhtml5'
++else
++    asciidoc = find_program('asciidoc')
++    asciidoc_extra  = ['--unsafe']
++    asciidoc_extra += ['-f', meson.current_source_dir() + '/asciidoc.conf']
++    asciidoc_html = 'xhtml11'
++
++    r = run_command(asciidoc, '--version', check: true)
++    v = r.stdout().strip()
++    if v.version_compare('>=8.0')
++        asciidoc_extra += ['-a', 'asciidoc7compatible']
++    endif
++endif
++
++manpage_xsl = meson.current_source_dir() + '/manpage-normal.xsl'
++
++if get_option('docbook-xls-172')
++    asciidoc_extra += ['-a', 'libtraceevent-asciidoc-no-roff']
++    manpage_xsl = meson.current_source_dir() + '/manpage-1.72.xsl'
++elif get_option('asciidoc-no-roff')
++    # docbook-xsl after 1.72 needs the regular XSL, but will not
++    # pass-thru raw roff codes from asciidoc.conf, so turn them off.
++    asciidoc_extra += ['-a', 'libtraceevent-asciidoc-no-roff']
++endif
++
++xmlto = find_program('xmlto')
++xmlto_extra = []
++
++if get_option('man-bold-literal')
++    xmlto_extra += ['-m ', meson.current_source_dir() + '/manpage-bold-literal.xsl']
++endif
++
++if get_option('docbook-suppress-sp')
++    xmlto_extra += ['-m ',  meson.current_source_dir() + '/manpage-suppress-sp.xsl']
++endif
++
++gen = generator(asciidoc,
++                output: '@BASENAME@.xml',
++                arguments: [
++                    '-b', 'docbook',
++                    '-d', 'manpage',
++                    '-a', 'libtraceevent_version=' + meson.project_version(),
++                    '-o', '@OUTPUT@']
++                    + asciidoc_extra
++                    + ['@INPUT@'])
++
++foreach src : sources1
++    # build man pages
++    xml = gen.process(src)
++    custom_target(
++        src.underscorify() + '_man',
++        input: xml,
++        output: '@BASENAME@.1',
++        command: [xmlto,
++                 '-m', manpage_xsl,
++                 'man',
++                 '-o', '@OUTPUT@']
++                 + xmlto_extra
++                 + ['@INPUT@'],
++        install: true,
++        install_dir: join_paths(mandir, 'man1'))
++
++    # build html pages
++    custom_target(
++       src.underscorify() + '_html',
++       input: src,
++       output: '@BASENAME@.html',
++       command: [asciidoc,
++                '-b', asciidoc_html,
++                '-d', 'manpage',
++	        '-a', 'libtraceevent_version=' + meson.project_version(),
++                '-o', '@OUTPUT@']
++                + asciidoc_extra
++                + ['@INPUT@'],
++       install: true,
++       install_dir: htmldir)
++endforeach
++
++foreach src : sources3
++    # build man pages
++    xml = gen.process(src)
++    custom_target(
++        src.underscorify() + '_man',
++        input: xml,
++        output: '@BASENAME@.3',
++        command: [xmlto,
++                 '-m', manpage_xsl,
++                 'man',
++                 '-o', '@OUTPUT@']
++                 + xmlto_extra
++                 + ['@INPUT@'],
++        install: true,
++        install_dir: join_paths(mandir, 'man3'))
++
++    # build html pages
++    custom_target(
++       src.underscorify() + '_html',
++       input: src,
++       output: '@BASENAME@.html',
++       command: [asciidoc,
++                '-b', asciidoc_html,
++                '-d', 'manpage',
++	        '-a', 'libtraceevent_version=' + meson.project_version(),
++                '-o', '@OUTPUT@']
++                + asciidoc_extra
++                + ['@INPUT@'],
++       install: true,
++       install_dir: htmldir)
++endforeach
+diff --git a/include/meson.build b/include/meson.build
+new file mode 100644
+index 000000000000..1bbfe8afb280
+--- /dev/null
++++ b/include/meson.build
+@@ -0,0 +1,9 @@
++# SPDX-License-Identifier: LGPL-2.1
++
++headers = [
++   'tracefs.h',
++]
++
++foreach h : headers
++	install_headers(h, subdir : 'libtracefs')
++endforeach
+diff --git a/meson.build b/meson.build
+new file mode 100644
+index 000000000000..310e96b9e23c
+--- /dev/null
++++ b/meson.build
+@@ -0,0 +1,47 @@
++# SPDX-License-Identifier: LGPL-2.1
++#
++# Copyright (c) 2022 Daniel Wagner, SUSE LLC
++
++project(
++    'libtracefs', ['c'],
++    meson_version: '>= 0.50.0',
++    license: 'LGPL-2.1',
++    version: '1.6.3',
++    default_options: [
++      'c_std=gnu99',
++      'buildtype=release',
++      'prefix=/usr/local',
++      'warning_level=1',
++    ]
++)
++
++library_version = meson.project_version()
++
++libtraceevent_dep = dependency('libtraceevent', version: '>= 1.7.0', required: true)
++cunit_dep = dependency('cunit', required : false)
++
++prefixdir = get_option('prefix')
++mandir    = join_paths(prefixdir, get_option('mandir'))
++htmldir   = join_paths(prefixdir, get_option('htmldir'))
++
++add_project_arguments(
++    [
++      '-D_GNU_SOURCE',
++    ],
++    language : 'c',
++)
++
++incdir = include_directories(['include'])
++
++subdir('src')
++subdir('include')
++subdir('utest')
++subdir('samples')
++if get_option('docs-build')
++    custom_target('check-doc',
++                   output: 'dummy',
++                   command : ['check-manpages.sh',
++                              meson.current_source_dir() + '/Documentation'],
++	           build_by_default : true)
++    subdir('Documentation')
++endif
+diff --git a/meson_options.txt b/meson_options.txt
+new file mode 100644
+index 000000000000..9bcd66f49f06
+--- /dev/null
++++ b/meson_options.txt
+@@ -0,0 +1,18 @@
++# SPDX-License-Identifier: LGPL-2.1
++#
++# Copyright (c) 2022 Daniel Wagner, SUSE LLC
++
++option('docs-build', type : 'boolean', value : false,
++       description : 'build documentation')
++option('htmldir', type : 'string', value : '',
++       description : 'directory for HTML documentation')
++option('asciidoctor', type : 'boolean', value: false,
++       description : 'use asciidoctor instead of asciidoc')
++option('docbook-xls-172', type : 'boolean', value : false,
++       description : 'enable docbook XLS 172 workaround')
++option('asciidoc-no-roff', type : 'boolean', value : false,
++       description : 'enable no roff workaround')
++option('man-bold-literal', type : 'boolean', value : false,
++       description : 'enable bold literals')
++option('docbook-suppress-sp', type : 'boolean', value : false,
++       description : 'docbook suppress sp')
+diff --git a/samples/extract-example.sh b/samples/extract-example.sh
+new file mode 100644
+index 000000000000..c5c0f702e7f0
+--- /dev/null
++++ b/samples/extract-example.sh
+@@ -0,0 +1,3 @@
++#!/bin/bash
++
++cat $1 | sed -ne '/^EXAMPLE/,/FILES/ { /EXAMPLE/,+2d ; /^FILES/d ;  /^--/d ; p}' > $2
+diff --git a/samples/meson.build b/samples/meson.build
+new file mode 100644
+index 000000000000..e71edacc2dd9
+--- /dev/null
++++ b/samples/meson.build
+@@ -0,0 +1,44 @@
++# SPDX-License-Identifier: LGPL-2.1
++#
++# Copyright (c) 2022 Daniel Wagner, SUSE LLC
++
++examples = [
++    'dynevents',
++    'kprobes',
++    'eprobes',
++    'uprobes',
++    'synth',
++    'error',
++    'filter',
++    'function-filter',
++    'hist',
++    'hist-cont',
++    'tracer',
++    'stream',
++    'instances-affinity',
++    'cpu',
++]
++
++extract_examples = find_program('extract-example.sh')
++gen = generator(extract_examples,
++                output: '@BASENAME@.c',
++                arguments: ['@INPUT@', '@OUTPUT@'])
++
++foreach ex : examples
++    src = gen.process(meson.current_source_dir() + '/../Documentation/libtracefs-@0@.txt'.format(ex))
++    executable(
++        ex.underscorify(),
++        src,
++        dependencies: [libtracefs_dep, libtraceevent_dep],
++        include_directories: [incdir]
++     )
++endforeach
++
++# sqlhist is unique and stands on its own
++src = gen.process(meson.current_source_dir() + '/../Documentation/libtracefs-sql.txt')
++executable(
++   'sqlhist',
++   src,
++   dependencies: [libtracefs_dep, libtraceevent_dep],
++   include_directories: [incdir]
++)
+diff --git a/src/meson.build b/src/meson.build
+new file mode 100644
+index 000000000000..0644d1549d13
+--- /dev/null
++++ b/src/meson.build
+@@ -0,0 +1,64 @@
++# SPDX-License-Identifier: LGPL-2.1
++#
++# Copyright (c) 2022 Daniel Wagner, SUSE LLC
++
++sources= [
++   'tracefs-dynevents.c',
++   'tracefs-eprobes.c',
++   'tracefs-events.c',
++   'tracefs-filter.c',
++   'tracefs-hist.c',
++   'tracefs-instance.c',
++   'tracefs-kprobes.c',
++   'tracefs-marker.c',
++   'tracefs-record.c',
++   'tracefs-sqlhist.c',
++   'tracefs-tools.c',
++   'tracefs-uprobes.c',
++   'tracefs-utils.c',
++]
++
++flex = find_program('flex', required: true)
++bison = find_program('bison', required: true)
++
++lgen = generator(flex,
++output : '@PLAINNAME@.yy.c',
++arguments : ['-o', '@OUTPUT@', '@INPUT@'])
++
++pgen = generator(bison,
++output : ['@BASENAME@.tab.c', '@BASENAME@.tab.h'],
++arguments : ['@INPUT@', '--defines=@OUTPUT1@', '--output=@OUTPUT0@'])
++
++lfiles = lgen.process('sqlhist.l')
++pfiles = pgen.process('sqlhist.y')
++
++libtracefs = library(
++    'tracefs',
++    sources, lfiles, pfiles,
++    version: library_version,
++    dependencies: [libtraceevent_dep],
++    include_directories: [incdir],
++    install: true,
++)
++
++libtracefs_static = static_library(
++    'tracefs_static',
++    sources, lfiles, pfiles,
++    dependencies: [libtraceevent_dep],
++    include_directories: [incdir],
++    install: false,
++)
++
++pkg = import('pkgconfig')
++pkg.generate(libtracefs,
++    filebase: meson.project_name(),
++    name: meson.project_name(),
++    version: meson.project_version(),
++    description: 'Manage trace fs',
++    url: 'https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/',
++)
++
++libtracefs_dep = declare_dependency(
++    include_directories: ['.'],
++    link_with: libtracefs,
++)
+diff --git a/utest/meson.build b/utest/meson.build
+new file mode 100644
+index 000000000000..8c8caf37803d
+--- /dev/null
++++ b/utest/meson.build
+@@ -0,0 +1,17 @@
++# SPDX-License-Identifier: LGPL-2.1
++#
++# Copyright (c) 2022 Daniel Wagner, SUSE LLC
++
++source = [
++    'trace-utest.c',
++    'tracefs-utest.c',
++]
++
++e = executable(
++   'trace-utest',
++   source,
++   include_directories: [incdir],
++   dependencies: [libtraceevent_dep, cunit_dep],
++   link_with: libtracefs_static)
++
++test('trace-utest', e)
+-- 
+2.39.0
+
