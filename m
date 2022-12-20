@@ -2,53 +2,63 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BAC8C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 20 Dec 2022 16:35:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2701C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 20 Dec 2022 16:40:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233705AbiLTQfd (ORCPT
+        id S229720AbiLTQkK (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 20 Dec 2022 11:35:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37062 "EHLO
+        Tue, 20 Dec 2022 11:40:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbiLTQfd (ORCPT
+        with ESMTP id S229560AbiLTQkK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 20 Dec 2022 11:35:33 -0500
+        Tue, 20 Dec 2022 11:40:10 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 054EEDFE7
-        for <linux-trace-devel@vger.kernel.org>; Tue, 20 Dec 2022 08:35:31 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4019DFCDA;
+        Tue, 20 Dec 2022 08:40:09 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 918BE614FE
-        for <linux-trace-devel@vger.kernel.org>; Tue, 20 Dec 2022 16:35:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DD30C433D2;
-        Tue, 20 Dec 2022 16:35:30 +0000 (UTC)
-Date:   Tue, 20 Dec 2022 11:35:28 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yordan Karadzhov <y.karadz@gmail.com>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH] kernel-shark: Do not truncate multi-line events
-Message-ID: <20221220113528.42b11c25@gandalf.local.home>
-In-Reply-To: <c1919b51-f030-ecf0-74a4-0894b177cb28@gmail.com>
-References: <20221214154404.5897fc23@gandalf.local.home>
-        <c1919b51-f030-ecf0-74a4-0894b177cb28@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D20D0614F8;
+        Tue, 20 Dec 2022 16:40:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35CDDC433EF;
+        Tue, 20 Dec 2022 16:40:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671554408;
+        bh=M9dWYNH12Wxtbj66Ae5BgZjxSkhFr5pV8ZS66+CzCck=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=BouhkvfmFAl3cXATPuwd9v7mjFGXgZd6VrzW0qJ5wnDapuiGs3sAEiet6hZYrBY2Q
+         CiYp+dl9n4p9r4wu/y8LO+UxCi7jZKGS3VGKFfPWtXYQNwhtlR69ejsn+gmNop2LKx
+         XZDnZcY7qU3OkGkTaocZiiq7QXIG/rGIpVGcVCqaaHNUJs/ao1ogulySxlgAzwtLrJ
+         3mJlB8AnGgVg8LE0+2vib6QE6qUM2qzSD86AsxeqNVC92AYYUL1zxKDAh3Of14mCE+
+         KhnZ3pqoBtPJIU29f6T3mxpyhBNRVbnQe0/1T0Sd7RBu9P+DeOBPoHdv++jjYIRkR2
+         z3FnF0HApvFnw==
+Message-ID: <51ff4c08-e330-70b6-389d-6b6787f85686@kernel.org>
+Date:   Tue, 20 Dec 2022 17:40:04 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH linux-next] tools/rv: Remove unneeded semicolon
+Content-Language: en-US
+To:     zhang.songyi@zte.com.cn
+Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <202212191431057948891@zte.com.cn>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <202212191431057948891@zte.com.cn>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 20 Dec 2022 18:33:44 +0200
-Yordan Karadzhov <y.karadz@gmail.com> wrote:
+On 12/19/22 07:31, zhang.songyi@zte.com.cn wrote:
+> From: zhang songyi <zhang.songyi@zte.com.cn>
+> 
+> The semicolon after the "}" is unneeded.
+> 
+> Signed-off-by: zhang songyi <zhang.songyi@zte.com.cn>
 
-> Sorry for the delay of my replay.
+Acked-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 
-No problem. It's that time of year ;-)
-
-> This patch looks good to me. I am going to apply it.
-
-Great! Thanks for continuing to maintain KernelShark!
-
--- Steve
+-- Daniel
