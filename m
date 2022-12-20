@@ -2,107 +2,73 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8535C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 20 Dec 2022 21:00:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9A9EC4332F
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 20 Dec 2022 21:30:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234346AbiLTVAJ (ORCPT
+        id S234006AbiLTVad (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 20 Dec 2022 16:00:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42264 "EHLO
+        Tue, 20 Dec 2022 16:30:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234282AbiLTVAI (ORCPT
+        with ESMTP id S233890AbiLTVab (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 20 Dec 2022 16:00:08 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D425592
-        for <linux-trace-devel@vger.kernel.org>; Tue, 20 Dec 2022 13:00:06 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AF6B1B8169F
-        for <linux-trace-devel@vger.kernel.org>; Tue, 20 Dec 2022 21:00:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2730EC433D2;
-        Tue, 20 Dec 2022 21:00:04 +0000 (UTC)
-Date:   Tue, 20 Dec 2022 16:00:02 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mike Frysinger <vapier@google.com>
+        Tue, 20 Dec 2022 16:30:31 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3FD1EEFC
+        for <linux-trace-devel@vger.kernel.org>; Tue, 20 Dec 2022 13:30:29 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id g14so13740409ljh.10
+        for <linux-trace-devel@vger.kernel.org>; Tue, 20 Dec 2022 13:30:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3PVEQThlMCQe37esCoDqjmSOXvrTlG1W6Q0egzVEBnE=;
+        b=QXUfR7GsyzgHRV1JULxb9q7GziTqNgavRlZZ6qqFDmTLrkss8RmNGbZqsVBPWzTUmb
+         EBLlRojkuDU1OlkwYD/eTeVwRxgEtg/9909/WcTPtFP7OurskcJHbfJpZvsrIpxRqN02
+         DiXTOWEdkCIrXk5sM/QsoGwInYmuhqIDekrE94KRhamvyjvYB0STp13JaSAW319IRUfx
+         pfbjsUhXJfiHRBmKeEeZ/1n8D4e1p37s4gn+qbkfsse6zSNtbt4Wrmhr3D6xBEQa9a3g
+         8NliCFuJm37fW4iEaSrWJVkhbfLECBAPdtoY+7BtM26Xw6GrQ12TU9FVqX8DyzG78MEj
+         wylA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3PVEQThlMCQe37esCoDqjmSOXvrTlG1W6Q0egzVEBnE=;
+        b=45m+kOo58Gjbx2295nUEDjqlZH8tCsgVDfFDdqiYFRYVfXUG3m/kW5DpxImqBR/ZRJ
+         aq9ZSR77lcJK3Hu+1UoWaKx4cA3EsGnqOaujp8oYyuw9jld+6MjBaiyVfGKv3LBZzybO
+         cDR350rtCbsMM4RMPUnJ8pbx5t8JZHsg98wqfEzI8uxZ1trlOVNj0sBC+3LjC49mvckQ
+         I3DNHLIGyfGV5SguvTWfVNsiYAFjxAVY7n8+vR4vSo5k7cq+NF314yssX3bFRJWlNh1N
+         yyJEv4huzJ1ZdujmqxC6TTUObZH22w+P3fm87lcjnnpkoUaXXnzlgtrgl0L0MPBVKXr7
+         iVNQ==
+X-Gm-Message-State: ANoB5plL9PWI25diXJddlEmX2L7y3kEHo7UVEEJ5MMMxdTSiG7z2Sx9H
+        vTssvo+fVKXURG7Im86co/WCVAP8hlK9OTuj2YnI3FCF4O/SKQ==
+X-Google-Smtp-Source: AA0mqf5C5WVllH1Sat0aCOVc3nz28WN30oUaH6Vajsc0bZ9UcE6vDcPa9WQsHRIk4VvcxH2C+EvYjdfnig0PqQnbJ9M=
+X-Received: by 2002:a05:651c:246:b0:279:de15:608e with SMTP id
+ x6-20020a05651c024600b00279de15608emr10531378ljn.211.1671571827830; Tue, 20
+ Dec 2022 13:30:27 -0800 (PST)
+MIME-Version: 1.0
+References: <20221219173414.032e2124@gandalf.local.home> <CAAbOScnLETawvZYhZnhVMP_rs6tYEty1-LcWGD9JcQX5tbQW5A@mail.gmail.com>
+ <20221220160002.1a34d937@gandalf.local.home>
+In-Reply-To: <20221220160002.1a34d937@gandalf.local.home>
+From:   Mike Frysinger <vapier@google.com>
+Date:   Tue, 20 Dec 2022 16:29:49 -0500
+Message-ID: <CAAbOScks--ApY2b+4voM73PSx5dL1rLU7R3=8Bs66HDKN-6LMA@mail.gmail.com>
+Subject: Re: [PATCH] libtraceevent: Have 32 bit compile with -D_FILE_OFFSET_BITS=64
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
         Ross Zwisler <zwisler@google.com>
-Subject: Re: [PATCH] libtraceevent: Have 32 bit compile with
- -D_FILE_OFFSET_BITS=64
-Message-ID: <20221220160002.1a34d937@gandalf.local.home>
-In-Reply-To: <CAAbOScnLETawvZYhZnhVMP_rs6tYEty1-LcWGD9JcQX5tbQW5A@mail.gmail.com>
-References: <20221219173414.032e2124@gandalf.local.home>
-        <CAAbOScnLETawvZYhZnhVMP_rs6tYEty1-LcWGD9JcQX5tbQW5A@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 20 Dec 2022 14:36:11 -0500
-Mike Frysinger <vapier@google.com> wrote:
+On Tue, Dec 20, 2022 at 4:00 PM Steven Rostedt wrote:
+> BTW, the only issue that will happen if stat fails, is that a feature will
+> be disabled.
 
-> On Mon, Dec 19, 2022 at 5:34 PM Steven Rostedt wrote:
-> > +# Make sure 32 bit on 64 bit doesn't have stat() bugs.  
-> 
-> i don't know what you're trying to say with "32 bit on 64 bit".  you
-> mean a 32 bit binary (which ABI?) with a 64 bit kernel ?  or something
-> else ?
-> 
-> the problem is entirely with using 32 bit filesystem interfaces.
-> there are no other runtime requirements, either in the userland or
-> kernel land.  filesystems moved to 64 bit fields in a number of places
-> long ago regardless of the userland or kernel ABIs.
-> 
-> saying "32 bit" or "64 bit" is imprecise.  is x86_64's x32 & aarch64's
-> ilp32 ABI "32 bit" ?  or is it "64 bit" ?  what about Window's x64
-> (LLP64) ?
-> https://en.wikipedia.org/wiki/64-bit_computing#64-bit_data_models
-> https://unix.org/version2/whatsnew/lp64_wp.html
-> 
-> usually it's better to specify ABI names and/or specific types so
-> people know what you're trying to cater to.
-
-You are technically correct. Practically speaking, 32 bit architectures are
-now mostly for niche devices that are most likely never going to see this
-issue. My main fear was for 32 bit applications running on 64 bit kernels
-where this is much more likely to be an issue. But I agree, I shouldn't
-have made it sound like that's the only place it is an issue.
-
-> 
-> > +ifeq ($(shell echo '' | $(CPP) -dM - | grep __SIZEOF_LONG__ | cut -d' ' -f3),4)
-> > +       CFLAGS += -D_FILE_OFFSET_BITS=64
-> > +endif  
-> 
-> why do you need to sniff the size of long ?  -D_FILE_OFFSET_BITS=64
-> should work fine regardless of the target ABI.
-> 
-> especially because you're assuming sizeof(long) == sizeof(off_t) which
-> is not guaranteed anywhere.  on newer ABIs, like x32, sizeof(off_t) is
-> always 64-bit while sizeof(long) is 32-bit.  i don't know if there's a
-> sizeof(long) == 8 & sizeof(off_t) == 4 ABI, but i wouldn't be
-> surprised if it showed up.  mips o64 or something wonky.
-> 
-> afaik, the exact output of the preprocessor isn't specified by a
-> standard, and it has changed subtly in the past.  so i wouldn't rely
-> on it in general.  something like `echo __SIZEOF_LONG__ | $(CPP) -E -P
-> - | tail -n1` would be a lot more reliable -- you aren't sniffing
-> preprocessor internals, you're actually preprocessing something.
-> 
-> POSIX does provide (optional) defines to try and sniff off_t sizes too:
-> https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/unistd.h.html
-> 
-> but i think the takeaway is that this is all not worth the effort, and
-> defining _FILE_OFFSET_BITS=64 all the time is way easier.
-> -mike
-
-Sure. I have no problem doing it for all archs.
-
-BTW, the only issue that will happen if stat fails, is that a feature will
-be disabled.
-
--- Steve
-
+i am certainly by no means an expert in this codebase.  from glancing
+at it, the impact is that people won't be able to load any plugins
+right ?  that's where stat() & readdir() appear to be used (the dirent
+returned by readdir has both ino_t & off_t in it).
+-mike
