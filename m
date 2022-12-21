@@ -2,79 +2,72 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA9FDC4332F
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 21 Dec 2022 10:52:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9788C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 21 Dec 2022 16:35:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229491AbiLUKwS (ORCPT
+        id S229591AbiLUQf4 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 21 Dec 2022 05:52:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60848 "EHLO
+        Wed, 21 Dec 2022 11:35:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbiLUKwR (ORCPT
+        with ESMTP id S229789AbiLUQfz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 21 Dec 2022 05:52:17 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27AF41902F
-        for <linux-trace-devel@vger.kernel.org>; Wed, 21 Dec 2022 02:52:15 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Wed, 21 Dec 2022 11:35:55 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14ABB21806
+        for <linux-trace-devel@vger.kernel.org>; Wed, 21 Dec 2022 08:35:54 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 962CB6B7C7;
-        Wed, 21 Dec 2022 10:52:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1671619934; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RSEFxPVgXizRRfDvKJiVsoeW7dVah7qEnF4brNMaGN4=;
-        b=t2oUv17iEXJYzhd83DioahTBqV0BWuZa7lj0pSCgMIiOqjtt0iQ0GNOoSYV/YmJo88PgiE
-        axqpnZ1vxEt+76bBAGVkqqJZAz/r4BlZNSjuBWkCxBj6c1pBd0YLO0p2EHVyoO5rRB7kRh
-        rTsXyGU3xmxAz+rbZtE7e4ngsvPGebk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1671619934;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RSEFxPVgXizRRfDvKJiVsoeW7dVah7qEnF4brNMaGN4=;
-        b=QqGP3ghuJ7tmRpno09uAixM9XkpHq//aJhYx10rr+mZ49QxyyDyOhQoHj+n37NgRtjttcb
-        ufQcmugPkUs9OGBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8A74C1390E;
-        Wed, 21 Dec 2022 10:52:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ceLEIV7lomPdMQAAMHmgww
-        (envelope-from <dwagner@suse.de>); Wed, 21 Dec 2022 10:52:14 +0000
-Date:   Wed, 21 Dec 2022 11:52:14 +0100
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v3] libtracefs: Add initial support for meson
-Message-ID: <20221221105112.evdhp3b2zivk2daf@carbon.lan>
-References: <20221220180524.29722-1-dwagner@suse.de>
+        by ams.source.kernel.org (Postfix) with ESMTPS id BE263B81AF5
+        for <linux-trace-devel@vger.kernel.org>; Wed, 21 Dec 2022 16:35:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E9B2C433D2;
+        Wed, 21 Dec 2022 16:35:51 +0000 (UTC)
+Date:   Wed, 21 Dec 2022 11:35:49 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Yordan Karadzhov <y.karadz@gmail.com>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH] kernel-shark: Show multi-line events in quick view
+Message-ID: <20221221113549.549f58b4@gandalf.local.home>
+In-Reply-To: <4470bb69-1558-5775-67ff-9b6b0779f573@gmail.com>
+References: <20221214154643.43a4e137@gandalf.local.home>
+        <4470bb69-1558-5775-67ff-9b6b0779f573@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221220180524.29722-1-dwagner@suse.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Dec 20, 2022 at 07:05:24PM +0100, Daniel Wagner wrote:
-> +pkg = import('pkgconfig')
-> +pkg.generate(libtracefs,
+On Tue, 20 Dec 2022 18:51:03 +0200
+Yordan Karadzhov <y.karadz@gmail.com> wrote:
+> 
+> I wonder if the context menu is the best place to display those 
+> multi-line events. This menu is quite busy already and if you want to 
+> check a number of events, each time you have to open it then close it 
+> and reopen it again in order to see the next event. I think this can be 
+> a bit annoying.
 
-+    subdirs: 'libtracefs',
+It doesn't annoy me ;-)
 
-Forgot to to add this here. with this in place I was able to build
-a mesonized libtracecmd project
+> 
+> An alternative can be to use the dual marker. For example we can make it 
+> to work such that all lines of the event selected with the markers are 
+> shown directly into the table.
+> 
+> I am attaching a RFC patch that that implements this. Note that I didn't 
+> time to fully test and debug this for all corner cases, but it should 
+> work at leas for the most straight-forward  use case. Please try it and 
+> tell me what you think.
+> 
 
-> +    filebase: meson.project_name(),
-> +    name: meson.project_name(),
-> +    version: meson.project_version(),
-> +    description: 'Manage trace fs',
-> +    url: 'https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/',
-> +)
+This works too. Either way, as long as I can get to the data.
+
+Also, for another feature request. Is it possible to implement a copy of
+the text in the list view? I would like to select text and copy it so that
+I can paste it into other windows.
+
+Thanks!
+
+-- Steve
