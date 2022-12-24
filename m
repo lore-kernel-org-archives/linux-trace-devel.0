@@ -2,109 +2,105 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAD19C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 24 Dec 2022 12:47:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A54BC4332F
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 24 Dec 2022 15:32:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229528AbiLXMrs (ORCPT
+        id S231271AbiLXPca (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 24 Dec 2022 07:47:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46860 "EHLO
+        Sat, 24 Dec 2022 10:32:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbiLXMrr (ORCPT
+        with ESMTP id S231277AbiLXPc3 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 24 Dec 2022 07:47:47 -0500
-X-Greylist: delayed 505 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 24 Dec 2022 04:47:45 PST
-Received: from serv15.avernis.de (serv15.avernis.de [IPv6:2a01:4f8:151:30a2::163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5F0CBE07;
-        Sat, 24 Dec 2022 04:47:45 -0800 (PST)
-Received: from webmail.serv15.avernis.de (ip6-localhost [IPv6:::1])
-        by serv15.avernis.de (Postfix) with ESMTPSA id B589ABDE7DCE;
-        Sat, 24 Dec 2022 13:39:15 +0100 (CET)
+        Sat, 24 Dec 2022 10:32:29 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E3DC75F
+        for <linux-trace-devel@vger.kernel.org>; Sat, 24 Dec 2022 07:32:27 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BACB460995;
+        Sat, 24 Dec 2022 15:32:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1671895945; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=einIG3SHvX6Z+iar4lX7bhq8YKiE1HbbjUvTdvWDuTA=;
+        b=196A1tCPVg9D8CGy3zZwmveUX7tgreSqxMRGhipgQXAEpS0WiNvAia8+j6xXqIY63/LUVE
+        6uTyWxgWDWjFAHFcGrKNNOXu3DZ3ZIX0uK/aaXp3eMYMqZcCqB+SX2iWhkz8iRYVjcmL5t
+        tVNVUvHXj5dgY6c/gGQ7uTn4PitJeNs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1671895945;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=einIG3SHvX6Z+iar4lX7bhq8YKiE1HbbjUvTdvWDuTA=;
+        b=NxuLwXsm+PXkIuhzRHVQ3z6W53Ih74x2c8INZ2fzomj/NIxzB1P3zKyBThLNZk1lmz9BzE
+        8xYBO0X7HB7oziDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE7D313489;
+        Sat, 24 Dec 2022 15:32:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id /oGNKokbp2PyZAAAMHmgww
+        (envelope-from <dwagner@suse.de>); Sat, 24 Dec 2022 15:32:25 +0000
+Date:   Sat, 24 Dec 2022 16:32:25 +0100
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH v4] libtraceevent: Add initial support for meson
+Message-ID: <20221224153225.ojre2c3fxktfxtj2@carbon.lan>
+References: <20221220180840.32586-1-dwagner@suse.de>
 MIME-Version: 1.0
-Date:   Sat, 24 Dec 2022 12:39:15 +0000
-From:   Andreas Ziegler <br015@umbiko.net>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: rtla osnoise hist: average duration is always zero
-Message-ID: <d7bb31547e9bbf6684801a7bbd857810@umbiko.net>
-X-Sender: br015@umbiko.net
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.103.7 at serv15.avernis.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221220180840.32586-1-dwagner@suse.de>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
--- Observed in, but not limited to, Linux 6.1.1
+On Tue, Dec 20, 2022 at 07:08:40PM +0100, Daniel Wagner wrote:
+> Introduce Meson as build framework for building libtraceevent. This
+> lives besides the Makefiles until all the expected initial fallouts
+> have been dealed with.
+> 
+> The build steps are:
+> 
+>   # configure using .build as build directory and install destination
+>   # /tmp/test
+>   meson --prefix=/tmp/libtraceevent .build
+> 
+>   # trigger the build
+>   ninja -C .build
+> 
+>   # install the library
+>   ninja -C .build install
+> 
+> In case you want to build/install the documentation the setup is
+> 
+>   meson -Ddocs-build=true .build
+> 
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> ---
+> v4:
+>  - install man pages to correct section, in this case 3
 
-Dear all,
+During my packaging attempt I found out that the man pages are installed
+into subdirs. So I started to look into the this and ... let's say it's
+complicated.
 
-rtla osnoise hist always outputs '0' as average duration value. Example:
+For example libtraceevent-func_apis.txt list a few function which are
+also listed in libtraceevent-func_find.txt. The Makefile uses these
+function as build names but, if we have two targets with the same name
+one will overwrite the other. make seems to tolerate something like
+this. Meson doesn't.
 
-# rtla osnoise hist -P F:1 -c 0-1 -r 900000 -d 1M -b 1 -E 5000 -T 1
-# RTLA osnoise histogram
-# Time unit is microseconds (us)
-# Duration:   0 00:01:00
-   ...
-count:     5629      1364
-min:          1         1
-avg:          0         0
-max:       2955        56
-
-This is due to sum_sample in osnoise_hist_update_multiple() being 
-calculated as the sum (duration), not as sum (duration * count).
-
-Rounding, instead of truncating, of the average value would be cool.
-
-The following patch would solve the issue described above:
-
-
-Sampled duration must be weighted by observed quantity, to arrive at a
-correct average duration value.
-
-Fix calculation of total duration by summing (duration * count).
-Introduce rounding for calculation of final value.
-
-Signed-off-by: Andreas Ziegler <br015@umbiko.net>
-
---- a/tools/tracing/rtla/src/osnoise_hist.c
-+++ b/tools/tracing/rtla/src/osnoise_hist.c
-@@ -121,6 +121,7 @@
-  {
-  	struct osnoise_hist_params *params = tool->params;
-  	struct osnoise_hist_data *data = tool->data;
-+	unsigned long long total_duration;
-  	int entries = data->entries;
-  	int bucket;
-  	int *hist;
-@@ -131,10 +132,12 @@
-  	if (data->bucket_size)
-  		bucket = duration / data->bucket_size;
-
-+	total_duration = duration * count;
-+
-  	hist = data->hist[cpu].samples;
-  	data->hist[cpu].count += count;
-  	update_min(&data->hist[cpu].min_sample, &duration);
--	update_sum(&data->hist[cpu].sum_sample, &duration);
-+	update_sum(&data->hist[cpu].sum_sample, &total_duration);
-  	update_max(&data->hist[cpu].max_sample, &duration);
-
-  	if (bucket < entries)
-@@ -333,7 +336,7 @@
-
-  		if (data->hist[cpu].count)
-  			trace_seq_printf(trace->seq, "%9llu ",
--					data->hist[cpu].sum_sample / data->hist[cpu].count);
-+				(data->hist[cpu].sum_sample + data->hist[cpu].count / 2) / 
-data->hist[cpu].count);
-  		else
-  			trace_seq_printf(trace->seq, "        - ");
-  	}
-
-
-Kind regards,
-Andreas
+I am playing with various ideas how we could handle this. Currently, I
+think the best way is to distinguish the different source txt files. So
+we have files which are for generating a mans per function (1:n)
+and we have txt files which are general documentation (1:1).
