@@ -2,150 +2,164 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E5DFC3DA7D
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Dec 2022 15:25:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CDC1C4167B
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Jan 2023 08:53:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233788AbiL1PZa (ORCPT
+        id S229851AbjABIw5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 28 Dec 2022 10:25:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43936 "EHLO
+        Mon, 2 Jan 2023 03:52:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233745AbiL1PZO (ORCPT
+        with ESMTP id S229582AbjABIw4 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Dec 2022 10:25:14 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9853F1402A;
-        Wed, 28 Dec 2022 07:25:13 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Mon, 2 Jan 2023 03:52:56 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B472666
+        for <linux-trace-devel@vger.kernel.org>; Mon,  2 Jan 2023 00:52:55 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 20DCA61564;
-        Wed, 28 Dec 2022 15:25:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A9ACC433EF;
-        Wed, 28 Dec 2022 15:25:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672241112;
-        bh=W6bfM3a4PKbIE7EIvoN/B544EGN62Ti2jZ8ZRlS6agI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=dWhrDKZZ054H/PNCvybtl+4JwCrIDKL2nK0cnD+3byQWU1WSy5X7Ko8QVDlWBNLZU
-         xWHAgia6r363o5dBy74BERghKah0T21uvYptg9jK3lu9WvPLez4ln/hWne1mwg056w
-         9Pm261wOGT7/ywSWiuz0ED2Dn1k5LtIqAMJO2/dW5JX7oKCCHYawZVZorIOUwnYXGJ
-         o0BZhEkhRBnRX1oyCmN7hIvPxLDwuo1wd+gGsVxvumhRoeCS/KZz9JoM3X19sF46RG
-         72xKX1TlBMaPcROwQ/9AQFVPjp4wSUBF9Mx/j1R6PRlPgOtG807UOumHXJoX8I236y
-         utr/qU+bMqmYg==
-Message-ID: <f47e877c-c95f-e3e6-b96f-89b0ca582878@kernel.org>
-Date:   Wed, 28 Dec 2022 16:25:08 +0100
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 705B52074A;
+        Mon,  2 Jan 2023 08:52:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1672649574; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8aIEkgpI0cDwaYWt6aH5xyh/JRACO7JWq9VnpwhTxPE=;
+        b=ElkZR547L/x0N445couhnMSIulQdkko5yI10ghWpxIWLxdyS6nMQLToWMZti9ik3dCSTbs
+        dIkNshUyglK+4E9e2Y8Boh7+DlGX88H7w4BUnzFv0WvoYOpSNhtiglg7cNJc7JHw0ri+ZV
+        tdDgzSEzKywXZg9S5rKsF88aDmAr3t0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1672649574;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8aIEkgpI0cDwaYWt6aH5xyh/JRACO7JWq9VnpwhTxPE=;
+        b=Kwu779p5t19APayjdOz2ZmL1zohWBzmF4kBTLX7DbfUP1XY6wLrGBVcirNXwepq69bHppC
+        PLZYAe2HkRYwQ/Cw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 628C213427;
+        Mon,  2 Jan 2023 08:52:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id m1gHGGabsmMlLgAAMHmgww
+        (envelope-from <dwagner@suse.de>); Mon, 02 Jan 2023 08:52:54 +0000
+Date:   Mon, 2 Jan 2023 09:52:53 +0100
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Michal Sojka <michal.sojka@cvut.cz>
+Cc:     linux-trace-devel@vger.kernel.org, Jan Engelhardt <jengelh@inai.de>
+Subject: Re: [PATCH] trace-cmd: Allow building with GNU Make 4.4
+Message-ID: <20230102085253.jpnwmwo72jfkzznc@carbon>
+References: <20221226164951.2632069-1-michal.sojka@cvut.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: rtla osnoise hist: average duration is always zero
-To:     Andreas Ziegler <br015@umbiko.net>
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <d7bb31547e9bbf6684801a7bbd857810@umbiko.net>
-Content-Language: en-US
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <d7bb31547e9bbf6684801a7bbd857810@umbiko.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221226164951.2632069-1-michal.sojka@cvut.cz>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Andreas,
+Hi Michal,
 
-On 12/24/22 13:39, Andreas Ziegler wrote:
-> -- Observed in, but not limited to, Linux 6.1.1
-
-Since original commit... The best way to report this is adding
-a Fixes: tag. For example:
-
-Fixes: 829a6c0b5698 ("rtla/osnoise: Add the hist mode")
-
-> rtla osnoise hist always outputs '0' as average duration value. Example:
+On Mon, Dec 26, 2022 at 05:49:51PM +0100, Michal Sojka wrote:
+> Make 4.4 introduces several backward incompatibilities and the result
+> is that building trace-cmd with it never finishes. It seems that make
+> ends up in some kind of infinite recursion. The symptoms are:
 > 
-> # rtla osnoise hist -P F:1 -c 0-1 -r 900000 -d 1M -b 1 -E 5000 -T 1
-> # RTLA osnoise histogram
-> # Time unit is microseconds (us)
-> # Duration:   0 00:01:00
->   ...
-> count:     5629      1364
-> min:          1         1
-> avg:          0         0
-> max:       2955        56
+>     $ make -d
+>     GNU Make 4.4
+>     Built for x86_64-pc-linux-gnu
+>     Copyright (C) 1988-2022 Free Software Foundation, Inc.
+>     License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>
+>     This is free software: you are free to change and redistribute it.
+>     There is NO WARRANTY, to the extent permitted by law.
+>     Reading makefiles...
+>     Reading makefile 'Makefile'...
+>     Makefile:79: not recursively expanding pkgconfig_dir to export to shell function
+>     Makefile:79: not recursively expanding pkgconfig_dir to export to shell function
+>     Makefile:224: not recursively expanding LIBTRACECMD_SHARED_VERSION to export to shell function
+>     Makefile:79: not recursively expanding pkgconfig_dir to export to shell function
+>     Makefile:224: not recursively expanding LIBTRACECMD_SHARED_VERSION to export to shell function
+>     Makefile:225: not recursively expanding LIBTRACECMD_SHARED_SO to export to shell function
+>     Makefile:79: not recursively expanding pkgconfig_dir to export to shell function
+>     Makefile:79: not recursively expanding pkgconfig_dir to export to shell function
 > 
-> This is due to sum_sample in osnoise_hist_update_multiple() being calculated as the sum (duration), not as sum (duration * count).
-
-Yeah, that is correct. It works on timerlat hist because timerlat hist collects
-each trace event. osnoise hist uses in-kernel histograms, so we need to multiply
-the value with the count. This is a leftover from the development phase, as I started
-using tracing and then moved to histograms (which is better).
-
-> Rounding, instead of truncating, of the average value would be cool.
-
-I thought: the values were already rounded up, so it might be rounding too much.
-
-But we are in user space. It is just easier to add a two digits precision
-to the value, no?
-
-> The following patch would solve the issue described above:
+> Build succeeds if recursively expanded variables (defined with '='),
+> which use $(shell ...) as its value, are replaced with simply expanded
+> variables (defined with ':=').
 > 
-> 
-> Sampled duration must be weighted by observed quantity, to arrive at a
-> correct average duration value.
-> 
-> Fix calculation of total duration by summing (duration * count).
-> Introduce rounding for calculation of final value.
-> 
-> Signed-off-by: Andreas Ziegler <br015@umbiko.net>
-> 
-> --- a/tools/tracing/rtla/src/osnoise_hist.c
-> +++ b/tools/tracing/rtla/src/osnoise_hist.c
-> @@ -121,6 +121,7 @@
->  {
->      struct osnoise_hist_params *params = tool->params;
->      struct osnoise_hist_data *data = tool->data;
-> +    unsigned long long total_duration;
->      int entries = data->entries;
->      int bucket;
->      int *hist;
-> @@ -131,10 +132,12 @@
->      if (data->bucket_size)
->          bucket = duration / data->bucket_size;
-> 
-> +    total_duration = duration * count;
-> +
->      hist = data->hist[cpu].samples;
->      data->hist[cpu].count += count;
->      update_min(&data->hist[cpu].min_sample, &duration);
-> -    update_sum(&data->hist[cpu].sum_sample, &duration);
-> +    update_sum(&data->hist[cpu].sum_sample, &total_duration);
+> Signed-off-by: Michal Sojka <michal.sojka@cvut.cz>
 
-How about re-seding a patch with the code above, adding the:
+This seems to address my make troubles. I am again able to build trace-cmd with make v4.4. Thanks!
 
-Fixes: 829a6c0b5698 ("rtla/osnoise: Add the hist mode")
+Tested-by: Daniel Wagner <dwagner@suse.de>
 
-and...
-
->      update_max(&data->hist[cpu].max_sample, &duration);
+> ---
+>  Makefile | 22 +++++++++++-----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
 > 
->      if (bucket < entries)
-> @@ -333,7 +336,7 @@
+> diff --git a/Makefile b/Makefile
+> index bda49dd..d50e625 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -221,8 +221,8 @@ LIBS ?= -ldl
+>  LIBTRACECMD_DIR = $(obj)/lib/trace-cmd
+>  LIBTRACECMD_STATIC = $(LIBTRACECMD_DIR)/libtracecmd.a
+>  LIBTRACECMD_SHARED = $(LIBTRACECMD_DIR)/libtracecmd.so.$(LIBTRACECMD_VERSION)
+> -LIBTRACECMD_SHARED_VERSION = $(shell echo $(LIBTRACECMD_SHARED) | sed -e 's/\(\.so\.[0-9]*\).*/\1/')
+> -LIBTRACECMD_SHARED_SO = $(shell echo $(LIBTRACECMD_SHARED) | sed -e 's/\(\.so\).*/\1/')
+> +LIBTRACECMD_SHARED_VERSION := $(shell echo $(LIBTRACECMD_SHARED) | sed -e 's/\(\.so\.[0-9]*\).*/\1/')
+> +LIBTRACECMD_SHARED_SO := $(shell echo $(LIBTRACECMD_SHARED) | sed -e 's/\(\.so\).*/\1/')
+>  
+>  export LIBTRACECMD_STATIC LIBTRACECMD_SHARED
+>  export LIBTRACECMD_SHARED_VERSION LIBTRACECMD_SHARED_SO
+> @@ -230,12 +230,12 @@ export LIBTRACECMD_SHARED_VERSION LIBTRACECMD_SHARED_SO
+>  LIBTRACEEVENT=libtraceevent
+>  LIBTRACEFS=libtracefs
+>  
+> -TEST_LIBTRACEEVENT = $(shell sh -c "$(PKG_CONFIG) --atleast-version $(LIBTRACEEVENT_MIN_VERSION) $(LIBTRACEEVENT) > /dev/null 2>&1 && echo y")
+> -TEST_LIBTRACEFS = $(shell sh -c "$(PKG_CONFIG) --atleast-version $(LIBTRACEFS_MIN_VERSION) $(LIBTRACEFS) > /dev/null 2>&1 && echo y")
+> +TEST_LIBTRACEEVENT := $(shell sh -c "$(PKG_CONFIG) --atleast-version $(LIBTRACEEVENT_MIN_VERSION) $(LIBTRACEEVENT) > /dev/null 2>&1 && echo y")
+> +TEST_LIBTRACEFS := $(shell sh -c "$(PKG_CONFIG) --atleast-version $(LIBTRACEFS_MIN_VERSION) $(LIBTRACEFS) > /dev/null 2>&1 && echo y")
+>  
+>  ifeq ("$(TEST_LIBTRACEEVENT)", "y")
+> -LIBTRACEEVENT_CFLAGS = $(shell sh -c "$(PKG_CONFIG) --cflags $(LIBTRACEEVENT)")
+> -LIBTRACEEVENT_LDLAGS = $(shell sh -c "$(PKG_CONFIG) --libs $(LIBTRACEEVENT)")
+> +LIBTRACEEVENT_CFLAGS := $(shell sh -c "$(PKG_CONFIG) --cflags $(LIBTRACEEVENT)")
+> +LIBTRACEEVENT_LDLAGS := $(shell sh -c "$(PKG_CONFIG) --libs $(LIBTRACEEVENT)")
+>  else
+>  .PHONY: warning
+>  warning:
+> @@ -253,8 +253,8 @@ endif
+>  export LIBTRACEEVENT_CFLAGS LIBTRACEEVENT_LDLAGS
+>  
+>  ifeq ("$(TEST_LIBTRACEFS)", "y")
+> -LIBTRACEFS_CFLAGS = $(shell sh -c "$(PKG_CONFIG) --cflags $(LIBTRACEFS)")
+> -LIBTRACEFS_LDLAGS = $(shell sh -c "$(PKG_CONFIG) --libs $(LIBTRACEFS)")
+> +LIBTRACEFS_CFLAGS := $(shell sh -c "$(PKG_CONFIG) --cflags $(LIBTRACEFS)")
+> +LIBTRACEFS_LDLAGS := $(shell sh -c "$(PKG_CONFIG) --libs $(LIBTRACEFS)")
+>  else
+>  .PHONY: warning
+>  warning:
+> @@ -324,11 +324,11 @@ endif
+>  export ZLIB_LDLAGS
+>  
+>  ifndef NO_LIBZSTD
+> -TEST_LIBZSTD = $(shell sh -c "$(PKG_CONFIG) --atleast-version 1.4.0 libzstd > /dev/null 2>&1 && echo y")
+> +TEST_LIBZSTD := $(shell sh -c "$(PKG_CONFIG) --atleast-version 1.4.0 libzstd > /dev/null 2>&1 && echo y")
+>  
+>  ifeq ("$(TEST_LIBZSTD)", "y")
+> -LIBZSTD_CFLAGS = $(shell sh -c "$(PKG_CONFIG) --cflags libzstd")
+> -LIBZSTD_LDLAGS = $(shell sh -c "$(PKG_CONFIG) --libs libzstd")
+> +LIBZSTD_CFLAGS := $(shell sh -c "$(PKG_CONFIG) --cflags libzstd")
+> +LIBZSTD_LDLAGS := $(shell sh -c "$(PKG_CONFIG) --libs libzstd")
+>  CFLAGS += -DHAVE_ZSTD
+>  ZSTD_INSTALLED=1
+>  $(info    Have ZSTD compression support)
+> -- 
+> 2.38.1
 > 
->          if (data->hist[cpu].count)
->              trace_seq_printf(trace->seq, "%9llu ",
-> -                    data->hist[cpu].sum_sample / data->hist[cpu].count);
-> +                (data->hist[cpu].sum_sample + data->hist[cpu].count / 2) / data->hist[cpu].count);
-
-another patch with this part, adding two digits precision?
-
->          else
->              trace_seq_printf(trace->seq, "        - ");
->      }
-> 
-Thanks!
--- Daniel
-
-> Kind regards,
-> Andreas
-
