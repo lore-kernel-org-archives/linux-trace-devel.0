@@ -2,95 +2,63 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8210CC4708D
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Jan 2023 17:19:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99116C4332F
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Jan 2023 17:27:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234929AbjADRTn (ORCPT
+        id S240082AbjADR1C (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 4 Jan 2023 12:19:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36268 "EHLO
+        Wed, 4 Jan 2023 12:27:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjADRTn (ORCPT
+        with ESMTP id S240106AbjADR1A (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 4 Jan 2023 12:19:43 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B062DF61
-        for <linux-trace-devel@vger.kernel.org>; Wed,  4 Jan 2023 09:19:42 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Wed, 4 Jan 2023 12:27:00 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E3921BF
+        for <linux-trace-devel@vger.kernel.org>; Wed,  4 Jan 2023 09:26:59 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E1FB23FF6C;
-        Wed,  4 Jan 2023 17:19:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1672852779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rm37F8inNP/eh2uod2wnPwVeOwdqGoq4mYFN0xJ3jK4=;
-        b=RcxD8jOokn6+b6UGMrtyyLGdDRzHMq7tRCb/L3v+4fBRAs7ctdcpcCpMAKmr6fr7re/Cbn
-        uk3HP6SwGeWJs80PnIFf20AXvvM5e1fzE1rAwaCj+hfydC7h/f4HLWq+CFYLManLvULENE
-        jqFCQx7nNncBXSlIP0xiut0QIg7wMtg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1672852779;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rm37F8inNP/eh2uod2wnPwVeOwdqGoq4mYFN0xJ3jK4=;
-        b=shprsexoNAjJ/ON8DI3Qc2odcvZQiIgCE9pooajorODGOyP2aOR2rR9j+c2LG91OGnHnGZ
-        6P9CWZzpPvM0uECQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D43241342C;
-        Wed,  4 Jan 2023 17:19:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id V4zAMyu1tWOOKgAAMHmgww
-        (envelope-from <dwagner@suse.de>); Wed, 04 Jan 2023 17:19:39 +0000
-Date:   Wed, 4 Jan 2023 18:19:39 +0100
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v5] libtracefs: Add initial support for meson
-Message-ID: <20230104171939.huntmzkbpy5tvrjg@carbon.lan>
-References: <20221228082927.3499-1-dwagner@suse.de>
- <20230104110916.4f652a96@gandalf.local.home>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 93527B81891
+        for <linux-trace-devel@vger.kernel.org>; Wed,  4 Jan 2023 17:26:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 480B3C433EF;
+        Wed,  4 Jan 2023 17:26:57 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.96)
+        (envelope-from <rostedt@rostedt.homelinux.com>)
+        id 1pD7XU-000bsL-0T;
+        Wed, 04 Jan 2023 12:26:56 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     Daniel Wagner <dwagner@suse.de>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Subject: [PATCH 0/2] libtraceevent: Remove duplicate man page functions
+Date:   Wed,  4 Jan 2023 12:26:53 -0500
+Message-Id: <20230104172655.145516-1-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230104110916.4f652a96@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, Jan 04, 2023 at 11:09:16AM -0500, Steven Rostedt wrote:
- This also doesn't build the static library libtracefs.a.
-> 
-> We have environments that we need to build trace-cmd statically. As
-> trace-cmd depends on libtraceevent and libtracefs, that means both need a
-> static library as well.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Configure the build with
+When Daniel Wagner was working on converting the Makefiles over to meson, he
+found that there were two functions that were duplicated in the man pages.
+This causes issues with meson in the build process.
 
-  'meson setup .build --default-library=both'
+Not only remove the duplicate functions, but also update the check-manpages.sh
+script to catch duplicates in the future.
 
-Though, we could add libtraceevent and libracefs as subprojects to trace-cmd
-which avoids all the hassle to install libtraceevent and libtracefs
-independenly from trace-cmd. It also takes care of all the dependency
-setup. Basically with
+Steven Rostedt (Google) (2):
+  libtraceevent: Add check for duplicate functions in man pages
+  libtraceevent: Remove tep_find_function{_address}() from
+    libtraceevent-func_apis.txt
 
+ Documentation/libtraceevent-func_apis.txt | 26 ++++-------------------
+ check-manpages.sh                         |  9 +++++++-
+ 2 files changed, 12 insertions(+), 23 deletions(-)
 
-  'meson setup .build --wrap-mode=forcefallback'
+-- 
+2.35.1
 
-in trace-cmd meson would download, setup and build libtraceevent and libtracefs
-within the trace-cmd build. This is makes the whole development process
-between these project way smoother. And if you would configure the build
-with
-
-  'meson setup .build --wrap-mode=forcefallback --default-library=static'
-
-would staticly link all subprojects into the trace-cmd binary.
-
-I haven't added this part to the initial mesonizing of the projects. Keep
-things simple to begin with.
