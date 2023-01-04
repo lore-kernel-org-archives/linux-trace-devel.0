@@ -2,308 +2,95 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9853EC54EBC
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Jan 2023 21:42:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBDBDC46467
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Jan 2023 23:54:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240035AbjADVmw (ORCPT
+        id S234761AbjADXy1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 4 Jan 2023 16:42:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49382 "EHLO
+        Wed, 4 Jan 2023 18:54:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238837AbjADVmm (ORCPT
+        with ESMTP id S234496AbjADXy0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 4 Jan 2023 16:42:42 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6B5661DDD0;
-        Wed,  4 Jan 2023 13:42:38 -0800 (PST)
-Received: from W11-BEAU-MD.localdomain (unknown [76.135.27.212])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 0CEFF20B92B7;
-        Wed,  4 Jan 2023 13:42:38 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0CEFF20B92B7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1672868558;
-        bh=aWHxZ0Rug7dYGjaDIv7NPEAr23iSo6VpFSdzAk+Y29c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J1gWnUNXdyNYqIOzjtbik/NfMgSta0zlOxGplH1x7khPN4TMZUGFbCG69xiKGRNRh
-         iNpn3k7PNEGczPGZqxxF7Lde8S998WQroWm+6XyT9nfvRrdqbKgpIDMM0XY2k4Tb/T
-         NIR69XIF51gOZ82OAzXtRtCehR89drKUmoW4FMv0=
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     rostedt@goodmis.org, mhiramat@kernel.org,
-        mathieu.desnoyers@efficios.com, dcook@linux.microsoft.com,
-        alanau@linux.microsoft.com, brauner@kernel.org,
-        akpm@linux-foundation.org
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 07/11] tracing/user_events: Add ABI self-test
-Date:   Wed,  4 Jan 2023 13:42:26 -0800
-Message-Id: <20230104214230.26349-8-beaub@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230104214230.26349-1-beaub@linux.microsoft.com>
-References: <20230104214230.26349-1-beaub@linux.microsoft.com>
+        Wed, 4 Jan 2023 18:54:26 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9ACBE0C
+        for <linux-trace-devel@vger.kernel.org>; Wed,  4 Jan 2023 15:54:26 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id 36so23409783pgp.10
+        for <linux-trace-devel@vger.kernel.org>; Wed, 04 Jan 2023 15:54:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XsEKwgZwsHZJ7Y/905ciaIE1WDacEVgdZUYdFUfzeYM=;
+        b=D4P3vQITREvwZEf5YeIYelzrpgJdsE9h6+qqb5ZlTkmDtKW0+5BUl8bw9yqVyHUiuz
+         yXh7EHtVZX5UPr448013vQYuZcL7g4bsuncEiQ8QHdPcPAQ2iLfNvyQ8JUMBrFoqTMZe
+         cOeNDKgLswfgWt9cisAQurRPGI3lGhDCIsjVEsufOSGqAMxSP5ftuPBqjBrL/FuU9wdx
+         7UqJ2uN1p0B/Hksskss6PexoteACTRWPNJ2VfZyYdxE26766hNDGeSB1TLBn0pzCvQfC
+         oKYd4+V9RsSFcXZiOP6n/YVtRgNQr2ZpikI4FdV5hDN3tr/sb4VrlSWEeXSgcHsOs//3
+         9joA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XsEKwgZwsHZJ7Y/905ciaIE1WDacEVgdZUYdFUfzeYM=;
+        b=TXfApThoYMGcLVp4Vjk+e7BkbyI/pEchkih0ImLy5r72YOL1GdbODzHjLsp8ns/dbS
+         ABYX4padLGXXLbGjhjukzRyeUrJ17gbySZ5dOJ8VJPD4qPEus5HlCuePLZzgmW0KZHZZ
+         eAUmSZDjS6Spjmd34QBwgLEuxkpxCm59v4dAOx/lhjMlFz4Y7wFE4/VjP4y0m26Cx7tk
+         sbnYfUn9blr28rc2DlMRMGLQgib3bCGpRFzTzSbtaCWPIa2Gp3+ID5jSgsZgWVQ4/giv
+         umrKqm4WsUkPG7+U940WeTCa+5plddUKP/fK3/CEy/HWaue2JAs1cFcEoE+1HZh14p7D
+         JlDQ==
+X-Gm-Message-State: AFqh2kpm2ZF33XvoJ5p54H8kSvGEXk6kqD/ch2zj+Y4/GdxJQgIoSIsr
+        V0w6QL8111ASlZEID+QuiAj3VgVJcL4=
+X-Google-Smtp-Source: AMrXdXtZKxMzTSbei6Ik21CeTMkEVG72/9KJOCqnjp4k4SLpYpqXgQxqte9y4BIqFsDecT6Q0GCmIg==
+X-Received: by 2002:a05:6a00:781:b0:57f:d5d1:41d0 with SMTP id g1-20020a056a00078100b0057fd5d141d0mr11609555pfu.3.1672876465160;
+        Wed, 04 Jan 2023 15:54:25 -0800 (PST)
+Received: from mail.google.com (125-237-37-88-fibre.sparkbb.co.nz. [125.237.37.88])
+        by smtp.gmail.com with ESMTPSA id e10-20020aa7980a000000b0056d98e31439sm13545297pfl.140.2023.01.04.15.54.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Jan 2023 15:54:24 -0800 (PST)
+Date:   Thu, 5 Jan 2023 12:54:20 +1300
+From:   Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     paulo.miguel.almeida.rodenas@gmail.com
+Subject: [PATCH] trace-cmd: fix makefile cscope target
+Message-ID: <Y7YRrHaV+V6v+9WZ@mail.google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add ABI specific self-test to ensure enablements work in various
-scenarios such as fork, VM_CLONE, and basic event enable/disable.
-Ensure ABI contracts/limits are also being upheld, such as bit limits
-and data size limits.
+existing cscope target using sh pipes was broken and cscope was throwing
+the following error:
 
-Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+	$ make cscope
+	[..]
+	cscope: no source files found
+
+fix cscope target by writing files to be indexed into a separate file
+called cscope.files which cscope reads by default
+
+Signed-off-by: Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>
 ---
- tools/testing/selftests/user_events/Makefile  |   2 +-
- .../testing/selftests/user_events/abi_test.c  | 228 ++++++++++++++++++
- 2 files changed, 229 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/user_events/abi_test.c
+ Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/user_events/Makefile b/tools/testing/selftests/user_events/Makefile
-index c765d8635d9a..d5f64ef93197 100644
---- a/tools/testing/selftests/user_events/Makefile
-+++ b/tools/testing/selftests/user_events/Makefile
-@@ -2,7 +2,7 @@
- CFLAGS += -Wl,-no-as-needed -Wall -I../../../../usr/include
- LDLIBS += -lrt -lpthread -lm
+diff --git a/Makefile b/Makefile
+index 5a350b6..8c2496c 100644
+--- a/Makefile
++++ b/Makefile
+@@ -485,7 +485,8 @@ TAGS:	force
  
--TEST_GEN_PROGS = ftrace_test dyn_test perf_test
-+TEST_GEN_PROGS = ftrace_test dyn_test perf_test abi_test
+ cscope: force
+ 	$(RM) cscope*
+-	$(call find_tag_files) | cscope -b -q
++	$(call find_tag_files) > cscope.files
++	cscope -b -q -f cscope.out
  
- TEST_FILES := settings
- 
-diff --git a/tools/testing/selftests/user_events/abi_test.c b/tools/testing/selftests/user_events/abi_test.c
-new file mode 100644
-index 000000000000..aab387af2a66
---- /dev/null
-+++ b/tools/testing/selftests/user_events/abi_test.c
-@@ -0,0 +1,228 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * User Events ABI Test Program
-+ *
-+ * Copyright (c) 2022 Beau Belgrave <beaub@linux.microsoft.com>
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sched.h>
-+
-+#include <errno.h>
-+#include <linux/user_events.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <fcntl.h>
-+#include <sys/ioctl.h>
-+#include <sys/stat.h>
-+#include <unistd.h>
-+#include <asm/unistd.h>
-+
-+#include "../kselftest_harness.h"
-+
-+const char *data_file = "/sys/kernel/tracing/user_events_data";
-+const char *enable_file = "/sys/kernel/tracing/events/user_events/__abi_event/enable";
-+
-+static int change_event(bool enable)
-+{
-+	int fd = open(enable_file, O_RDWR);
-+	int ret;
-+
-+	if (fd < 0)
-+		return -1;
-+
-+	if (enable)
-+		ret = write(fd, "1", 1);
-+	else
-+		ret = write(fd, "0", 1);
-+
-+	close(fd);
-+
-+	if (ret == 1)
-+		ret = 0;
-+	else
-+		ret = -1;
-+
-+	return ret;
-+}
-+
-+static int reg_enable(long *enable, int size, int bit)
-+{
-+	struct user_reg reg = {0};
-+	int fd = open(data_file, O_RDWR);
-+	int ret;
-+
-+	if (fd < 0)
-+		return -1;
-+
-+	reg.size = sizeof(reg);
-+	reg.name_args = (__u64)"__abi_event";
-+	reg.enable_bit = bit;
-+	reg.enable_addr = (__u64)enable;
-+	reg.enable_size = size;
-+
-+	ret = ioctl(fd, DIAG_IOCSREG, &reg);
-+
-+	close(fd);
-+
-+	return ret;
-+}
-+
-+static int reg_disable(long *enable, int bit)
-+{
-+	struct user_unreg reg = {0};
-+	int fd = open(data_file, O_RDWR);
-+	int ret;
-+
-+	if (fd < 0)
-+		return -1;
-+
-+	reg.size = sizeof(reg);
-+	reg.disable_bit = bit;
-+	reg.disable_addr = (__u64)enable;
-+
-+	ret = ioctl(fd, DIAG_IOCSUNREG, &reg);
-+
-+	close(fd);
-+
-+	return ret;
-+}
-+
-+FIXTURE(user) {
-+	long check;
-+};
-+
-+FIXTURE_SETUP(user) {
-+	change_event(false);
-+	self->check = 0;
-+}
-+
-+FIXTURE_TEARDOWN(user) {
-+}
-+
-+TEST_F(user, enablement) {
-+	/* Changes should be reflected immediately */
-+	ASSERT_EQ(0, self->check);
-+	ASSERT_EQ(0, reg_enable(&self->check, sizeof(int), 0));
-+	ASSERT_EQ(0, change_event(true));
-+	ASSERT_EQ(1, self->check);
-+	ASSERT_EQ(0, change_event(false));
-+	ASSERT_EQ(0, self->check);
-+
-+	/* Should not change after disable */
-+	ASSERT_EQ(0, change_event(true));
-+	ASSERT_EQ(1, self->check);
-+	ASSERT_EQ(0, reg_disable(&self->check, 0));
-+	ASSERT_EQ(0, change_event(false));
-+	ASSERT_EQ(1, self->check);
-+	self->check = 0;
-+}
-+
-+TEST_F(user, bit_sizes) {
-+	/* Allow 0-31 bits for 32-bit */
-+	ASSERT_EQ(0, reg_enable(&self->check, sizeof(int), 0));
-+	ASSERT_EQ(0, reg_enable(&self->check, sizeof(int), 31));
-+	ASSERT_NE(0, reg_enable(&self->check, sizeof(int), 32));
-+	ASSERT_EQ(0, reg_disable(&self->check, 0));
-+	ASSERT_EQ(0, reg_disable(&self->check, 31));
-+
-+#if BITS_PER_LONG == 8
-+	/* Allow 0-64 bits for 64-bit */
-+	ASSERT_EQ(0, reg_enable(&self->check, sizeof(long), 63));
-+	ASSERT_NE(0, reg_enable(&self->check, sizeof(long), 64));
-+	ASSERT_EQ(0, reg_disable(&self->check, 63));
-+#endif
-+
-+	/* Disallowed sizes (everything beside 4 and 8) */
-+	ASSERT_NE(0, reg_enable(&self->check, 1, 0));
-+	ASSERT_NE(0, reg_enable(&self->check, 2, 0));
-+	ASSERT_NE(0, reg_enable(&self->check, 3, 0));
-+	ASSERT_NE(0, reg_enable(&self->check, 5, 0));
-+	ASSERT_NE(0, reg_enable(&self->check, 6, 0));
-+	ASSERT_NE(0, reg_enable(&self->check, 7, 0));
-+	ASSERT_NE(0, reg_enable(&self->check, 9, 0));
-+	ASSERT_NE(0, reg_enable(&self->check, 128, 0));
-+}
-+
-+TEST_F(user, forks) {
-+	int i;
-+
-+	/* Ensure COW pages get updated after fork */
-+	ASSERT_EQ(0, reg_enable(&self->check, sizeof(int), 0));
-+	ASSERT_EQ(0, self->check);
-+
-+	if (fork() == 0) {
-+		/* Force COW */
-+		self->check = 0;
-+
-+		/* Up to 1 sec for enablement */
-+		for (i=0; i<10; ++i) {
-+			usleep(100000);
-+
-+			if (self->check)
-+				exit(0);
-+		}
-+
-+		exit(1);
-+	}
-+
-+	/* Allow generous time for COW, then enable */
-+	usleep(100000);
-+	ASSERT_EQ(0, change_event(true));
-+
-+	ASSERT_NE(-1, wait(&i));
-+	ASSERT_EQ(0, WEXITSTATUS(i));
-+
-+	/* Ensure child doesn't disable parent */
-+	if (fork() == 0) {
-+		exit(reg_disable(&self->check, 0));
-+	}
-+
-+	ASSERT_NE(-1, wait(&i));
-+	ASSERT_EQ(0, WEXITSTATUS(i));
-+	ASSERT_EQ(1, self->check);
-+	ASSERT_EQ(0, change_event(false));
-+	ASSERT_EQ(0, self->check);
-+}
-+
-+/* Waits up to 1 sec for enablement */
-+static int clone_check(void *check)
-+{
-+	int i;
-+
-+	for (i=0; i<10; ++i) {
-+		usleep(100000);
-+
-+		if (*(long *)check) {
-+			return 0;
-+		}
-+	}
-+
-+	return 1;
-+}	
-+
-+TEST_F(user, clones) {
-+	int i, stack_size = 4096;
-+	void *stack = mmap(NULL, stack_size, PROT_READ | PROT_WRITE,
-+			   MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK,
-+			   -1, 0);
-+
-+	ASSERT_NE(MAP_FAILED, stack);
-+	ASSERT_EQ(0, reg_enable(&self->check, sizeof(int), 0));
-+	ASSERT_EQ(0, self->check);
-+
-+	/* Shared VM should see enablements */
-+	ASSERT_NE(-1, clone(&clone_check, stack + stack_size,
-+			    CLONE_VM | SIGCHLD, &self->check));
-+
-+	ASSERT_EQ(0, change_event(true));
-+	ASSERT_NE(-1, wait(&i));
-+	ASSERT_EQ(0, WEXITSTATUS(i));
-+	munmap(stack, stack_size);
-+	ASSERT_EQ(0, change_event(false));
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	return test_harness_run(argc, argv);
-+}
+ install_plugins_tracecmd: force
+ 	$(Q)$(MAKE) -C $(src)/lib/trace-cmd/plugins install_plugins
 -- 
-2.25.1
+2.38.1
 
