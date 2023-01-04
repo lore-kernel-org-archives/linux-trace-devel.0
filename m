@@ -2,88 +2,183 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17B16C4332F
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Jan 2023 17:44:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E09BC53210
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Jan 2023 21:42:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233904AbjADRoT (ORCPT
+        id S230073AbjADVml (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 4 Jan 2023 12:44:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44590 "EHLO
+        Wed, 4 Jan 2023 16:42:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229845AbjADRoS (ORCPT
+        with ESMTP id S233514AbjADVmh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 4 Jan 2023 12:44:18 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C240513DCA
-        for <linux-trace-devel@vger.kernel.org>; Wed,  4 Jan 2023 09:44:17 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 59866616C3
-        for <linux-trace-devel@vger.kernel.org>; Wed,  4 Jan 2023 17:44:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56232C433D2;
-        Wed,  4 Jan 2023 17:44:16 +0000 (UTC)
-Date:   Wed, 4 Jan 2023 12:44:14 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v5] libtracefs: Add initial support for meson
-Message-ID: <20230104124414.727545d4@gandalf.local.home>
-In-Reply-To: <20230104171939.huntmzkbpy5tvrjg@carbon.lan>
-References: <20221228082927.3499-1-dwagner@suse.de>
-        <20230104110916.4f652a96@gandalf.local.home>
-        <20230104171939.huntmzkbpy5tvrjg@carbon.lan>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 4 Jan 2023 16:42:37 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CE88F1CFEA;
+        Wed,  4 Jan 2023 13:42:35 -0800 (PST)
+Received: from W11-BEAU-MD.localdomain (unknown [76.135.27.212])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 3EDA620B8762;
+        Wed,  4 Jan 2023 13:42:35 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3EDA620B8762
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1672868555;
+        bh=3KnWEe1zE/sUfKI42zHMJjGGqWe2xxBJUTJRZYNfnF4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=REoSSYljKkm1N5c+RAUfvtmT3kgHuE51A9ZaD79pFcOCt+OymuyXcQasbfg1N0spH
+         C6bO6NwdhDmCkyqbdamVlydWJkRXL5ZsmNbqVKaz642Srml64PwaGC4SyDcKtuIjey
+         p6I3R3mM/SxzmwFhtrmNYFupckqlkHCMxP8o9uEo=
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     rostedt@goodmis.org, mhiramat@kernel.org,
+        mathieu.desnoyers@efficios.com, dcook@linux.microsoft.com,
+        alanau@linux.microsoft.com, brauner@kernel.org,
+        akpm@linux-foundation.org
+Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v6 00/11] tracing/user_events: Remote write ABI
+Date:   Wed,  4 Jan 2023 13:42:19 -0800
+Message-Id: <20230104214230.26349-1-beaub@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 4 Jan 2023 18:19:39 +0100
-Daniel Wagner <dwagner@suse.de> wrote:
+As part of the discussions for user_events aligned with user space
+tracers, it was determined that user programs should register a aligned
+value to set or clear a bit when an event becomes enabled. Currently a
+shared page is being used that requires mmap(). Remove the shared page
+implementation and move to a user registered address implementation.
 
-> On Wed, Jan 04, 2023 at 11:09:16AM -0500, Steven Rostedt wrote:
->  This also doesn't build the static library libtracefs.a.
-> > 
-> > We have environments that we need to build trace-cmd statically. As
-> > trace-cmd depends on libtraceevent and libtracefs, that means both need a
-> > static library as well.  
-> 
-> Configure the build with
-> 
->   'meson setup .build --default-library=both'
-> 
-> Though, we could add libtraceevent and libracefs as subprojects to trace-cmd
-> which avoids all the hassle to install libtraceevent and libtracefs
-> independenly from trace-cmd. It also takes care of all the dependency
-> setup. Basically with
-> 
-> 
->   'meson setup .build --wrap-mode=forcefallback'
-> 
-> in trace-cmd meson would download, setup and build libtraceevent and libtracefs
-> within the trace-cmd build. This is makes the whole development process
-> between these project way smoother. And if you would configure the build
-> with
+In this new model during the event registration from user programs 3 new
+values are specified. The first is the address to update when the event
+is either enabled or disabled. The second is the bit to set/clear to
+reflect the event being enabled. The third is the size of the value at
+the specified address.
 
-I'm not sure that would make it easier for me. I work on each separately.
-And I don't always want them linked together, but sometimes I do! To
-control what gets linked to trace-cmd, I use dynamic libraries, and only
-install what I want to use there. That is, they really are three different
-projects! I use libtracefs on several other tools, not just trace-cmd.
+This allows for a local 32/64-bit value in user programs to support
+both kernel and user tracers. As an example, setting bit 31 for kernel
+tracers when the event becomes enabled allows for user tracers to use
+the other bits for ref counts or other flags. The kernel side updates
+the bit atomically, user programs need to also update these values
+atomically.
 
-> 
->   'meson setup .build --wrap-mode=forcefallback --default-library=static'
-> 
-> would staticly link all subprojects into the trace-cmd binary.
-> 
-> I haven't added this part to the initial mesonizing of the projects. Keep
-> things simple to begin with.
+User provided addresses must be aligned on a natural boundary, this
+allows for single page checking and prevents odd behaviors such as a
+enable value straddling 2 pages instead of a single page.
 
-For the environment that we require a static build, that isn't really
-needed. It would only make the initial setup easier, but that's a one time
-deal. After that, everything is automated.
+When page faults are encountered they are done asyncly via a workqueue.
+If the page faults back in, the write update is attempted again. If the
+page cannot fault-in, then we log and wait until the next time the event
+is enabled/disabled. This is to prevent possible infinite loops resulting
+from bad user processes unmapping or changing protection values after
+registering the address.
 
--- Steve
+Change history
+
+V6:
+Rebase to 6.2-rc2.
+
+Fixed small typos, code style.
+
+Changed from synchronize_rcu() to queue_rcu_work() to allow an rcu
+delay asyncly when mm is being removed and in an appropriate context
+for mmdrop().
+
+V5:
+GFP_NOWAIT is still needed in user_event_enabler_dup(), due to rcu lock.
+
+V4:
+Rebase to 6.1-rc7.
+
+Moved user_events_fork() out of task signal lock and dropped use of
+GFP_NOWAIT. All allocations are now GFP_KERNEL or GFP_KERNEL_ACCOUNT.
+
+Added boot parameter user_events_max= to limit global events.
+
+Added sysctl value kernel.user_events_max to limit global events.
+
+Added cgroup tracking of memory allocated for events.
+
+V3:
+Rebase to 6.1-rc6.
+
+Removed RFC tag on series.
+
+Updated documentation to reflect ABI changes.
+
+Added self-test for ABI specific clone/fork cases.
+
+Moved user_event_mm removal into do_exit() to ensure RSS task accounting
+is done properly in async fault paths. Also lets us remove the delayed
+mmdrop(), saving memory in each user_event_mm struct.
+
+Fixed timing window where task exits, but write could be in-progress.
+During exit we now take mmap_write_lock to ensure we drain writes.
+
+V2:
+Rebase to 6.1-rc5.
+
+Added various comments based on feedback.
+
+Added enable_size to register struct, allows 32/64 bit addresses
+as long as the enable_bit fits and the address is naturally aligned.
+
+Changed user_event_enabler_write to accept a new flag indicating if a
+fault fixup should be done or not. This allows user_event_enabler_create
+to return back failures to the user ioctl reg call and retry to fault
+in data.
+
+Added tracking fork/exec/exit of tasks to have the user_event_mm lifetime
+tied more to the task than the file. This came with extra requirements
+around when you can lock, such as softirq cases, as well as a RCU
+pattern to ensure fork/exec/exit take minimal lock times.
+
+Changed enablers to use a single word-aligned value for saving the bit
+to set and any flags, such as faulting asyncly or being freed. This was
+required to ensure atomic bit set/test for fork cases where taking the
+event_mutex is not a good scalability decision.
+
+Added unregister IOCTL, since file lifetime no longer limits the enable
+time for any events (the mm does).
+
+Updated sample code to reflect the new remote write based ABI.
+
+Updated self-test code to reflect the new remote write based ABI.
+
+Beau Belgrave (11):
+  tracing/user_events: Split header into uapi and kernel
+  tracing/user_events: Track fork/exec/exit for mm lifetime
+  tracing/user_events: Use remote writes for event enablement
+  tracing/user_events: Fixup enable faults asyncly
+  tracing/user_events: Add ioctl for disabling addresses
+  tracing/user_events: Update self-tests to write ABI
+  tracing/user_events: Add ABI self-test
+  tracing/user_events: Use write ABI in example
+  tracing/user_events: Update documentation for ABI
+  tracing/user_events: Charge event allocs to cgroups
+  tracing/user_events: Limit global user_event count
+
+ Documentation/trace/user_events.rst           | 172 ++--
+ fs/exec.c                                     |   2 +
+ include/linux/sched.h                         |   5 +
+ include/linux/user_events.h                   | 101 +-
+ include/uapi/linux/user_events.h              |  81 ++
+ kernel/exit.c                                 |   2 +
+ kernel/fork.c                                 |   2 +
+ kernel/trace/Kconfig                          |   5 +-
+ kernel/trace/trace_events_user.c              | 859 +++++++++++++++---
+ samples/user_events/example.c                 |  47 +-
+ tools/testing/selftests/user_events/Makefile  |   2 +-
+ .../testing/selftests/user_events/abi_test.c  | 228 +++++
+ .../testing/selftests/user_events/dyn_test.c  |   2 +-
+ .../selftests/user_events/ftrace_test.c       | 162 ++--
+ .../testing/selftests/user_events/perf_test.c |  39 +-
+ 15 files changed, 1310 insertions(+), 399 deletions(-)
+ create mode 100644 include/uapi/linux/user_events.h
+ create mode 100644 tools/testing/selftests/user_events/abi_test.c
+
+
+base-commit: 88603b6dc419445847923fcb7fe5080067a30f98
+-- 
+2.25.1
+
