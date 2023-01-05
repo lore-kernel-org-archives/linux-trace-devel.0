@@ -2,65 +2,99 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2315C46467
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  5 Jan 2023 00:59:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8332BC3DA7D
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  5 Jan 2023 07:05:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbjAEA75 (ORCPT
+        id S229839AbjAEHFg (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:59:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41014 "EHLO
+        Thu, 5 Jan 2023 02:05:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230171AbjAEA7l (ORCPT
+        with ESMTP id S229569AbjAEHFf (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:59:41 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9BD3057E
-        for <linux-trace-devel@vger.kernel.org>; Wed,  4 Jan 2023 16:58:06 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Thu, 5 Jan 2023 02:05:35 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A614FD46
+        for <linux-trace-devel@vger.kernel.org>; Wed,  4 Jan 2023 23:05:34 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9A2FE6185D
-        for <linux-trace-devel@vger.kernel.org>; Thu,  5 Jan 2023 00:58:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99EC3C433D2;
-        Thu,  5 Jan 2023 00:58:04 +0000 (UTC)
-Date:   Wed, 4 Jan 2023 19:58:02 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id CCE8D6B407;
+        Thu,  5 Jan 2023 07:05:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1672902331; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GuwSDtT6s1MF4BabWkhS9CQgxB1l3Sfs4+qFFq8ZstQ=;
+        b=Qb2dC8ythNBtQFmRVSJiYk3o3col7eVkPFnRjeFyLGxAonq1u9oTfRyPDtD15w9HjroBgG
+        iMP4fNKJkim2+l9zBYxNPBh/mBx7HIvwYwlh3KWv5MqReLfioGggq7Smz44cUOhfTIZDmg
+        +qDJzYXsWt8fJcT75TqbQ009h+yiZ8s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1672902331;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GuwSDtT6s1MF4BabWkhS9CQgxB1l3Sfs4+qFFq8ZstQ=;
+        b=HXW7u5z+OMHmGMgPxPad6IaqzOTO180qz466V/s+bT0mlXeMPFZKCVlo6N+x5a+10UiL3w
+        PzK1+5NsgGlXuwCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BE5E013273;
+        Thu,  5 Jan 2023 07:05:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id mGlpLrt2tmM+dgAAMHmgww
+        (envelope-from <dwagner@suse.de>); Thu, 05 Jan 2023 07:05:31 +0000
+Date:   Thu, 5 Jan 2023 08:05:31 +0100
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH] trace-cmd: fix makefile cscope target
-Message-ID: <20230104195802.5843614a@gandalf.local.home>
-In-Reply-To: <Y7YRrHaV+V6v+9WZ@mail.google.com>
-References: <Y7YRrHaV+V6v+9WZ@mail.google.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Subject: Re: [PATCH v5] libtraceevent: Add initial support for meson
+Message-ID: <20230105070531.p5z6czgflrljrnpq@carbon.lan>
+References: <20221228082906.3272-1-dwagner@suse.de>
+ <20230104104526.067d42f5@gandalf.local.home>
+ <20230104170559.kn2j3abp22l56chq@carbon.lan>
+ <20230104123143.405dcc5e@gandalf.local.home>
+ <20230104123456.70202ea9@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230104123456.70202ea9@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 5 Jan 2023 12:54:20 +1300
-Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com> wrote:
-
-> existing cscope target using sh pipes was broken and cscope was throwing
-> the following error:
+On Wed, Jan 04, 2023 at 12:34:56PM -0500, Steven Rostedt wrote:
+> On Wed, 4 Jan 2023 12:31:43 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
 > 
-> 	$ make cscope
-> 	[..]
-> 	cscope: no source files found
+> > On Wed, 4 Jan 2023 18:05:59 +0100
+> > Daniel Wagner <dwagner@suse.de> wrote:
+> > 
+> > > > It's still missing the building of the static library libtraceevent.a.    
+> > > 
+> > > This is controlled via 'meson setup --default-library {shared, static, both}'.  
+> > 
+> > Can we make it default to 'both' ?
 > 
-> fix cscope target by writing files to be indexed into a separate file
-> called cscope.files which cscope reads by default
-> 
+> Actually, I'm working on adding a Makefile that controls all this. I can
+> make that do the "both"
 
-Thanks Paulo.
+Sure, the defaults are controlled via the project() command:
 
-I don't use cscope, so I never tested it. In fact, I had to install it to
-test this patch after I applied it ;-)
-
-Anyway, I added it to the queue.
-
-Thanks!
-
--- Steve
-
+project(
+    'libtraceevent', ['c'],
+    meson_version: '>= 0.50.0',
+    license: 'LGPL-2.1',
+    version: '1.7.0',
+    default_options: [
+      'c_std=gnu99',
+      'buildtype=debug',
+      'default_library=both',
+      'prefix=/usr/local',
+      'warning_level=1',
+    ]
+)
