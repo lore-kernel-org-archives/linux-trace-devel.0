@@ -2,43 +2,43 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 547DBC3DA7D
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  5 Jan 2023 12:11:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C774C3DA7A
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  5 Jan 2023 12:12:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbjAEML5 (ORCPT
+        id S231797AbjAEMMI (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 5 Jan 2023 07:11:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48838 "EHLO
+        Thu, 5 Jan 2023 07:12:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232952AbjAEMLy (ORCPT
+        with ESMTP id S232963AbjAEMMG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 5 Jan 2023 07:11:54 -0500
+        Thu, 5 Jan 2023 07:12:06 -0500
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E566058FB1
-        for <linux-trace-devel@vger.kernel.org>; Thu,  5 Jan 2023 04:11:51 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C24544C7B
+        for <linux-trace-devel@vger.kernel.org>; Thu,  5 Jan 2023 04:12:05 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2E5246C3BC;
-        Thu,  5 Jan 2023 12:11:46 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DBD096C3B5;
+        Thu,  5 Jan 2023 12:11:59 +0000 (UTC)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1CDC3138DF;
-        Thu,  5 Jan 2023 12:11:46 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CE0A7138DF;
+        Thu,  5 Jan 2023 12:11:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id tXrQBoK+tmOtRgAAMHmgww
-        (envelope-from <dwagner@suse.de>); Thu, 05 Jan 2023 12:11:46 +0000
+        id 2w47Mo++tmPORgAAMHmgww
+        (envelope-from <dwagner@suse.de>); Thu, 05 Jan 2023 12:11:59 +0000
 From:   Daniel Wagner <dwagner@suse.de>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH v6] libtraceevent: Add initial support for meson
-Date:   Thu,  5 Jan 2023 13:11:44 +0100
-Message-Id: <20230105121144.11829-1-dwagner@suse.de>
+Subject: [PATCH v6] libtracefs: Add initial support for meson
+Date:   Thu,  5 Jan 2023 13:11:58 +0100
+Message-Id: <20230105121158.11901-1-dwagner@suse.de>
 X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -63,7 +63,7 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Introduce Meson as build framework for building libtraceevent.
+Introduce Meson as build framework for building libtracefs.
 
 The build steps are:
 
@@ -83,7 +83,7 @@ The build steps are:
 
 Signed-off-by: Daniel Wagner <dwagner@suse.de>
 ---
-v6:
+ v6:
  - changed project defaults to --default-library=both
  - code style consistency updates
  - hardening doc install script (shellcheck)
@@ -92,54 +92,53 @@ v6:
  - introduces docs target
  - updated copyright year
  - streamlined documentation meson build file
- 
+
 v5:
- - build unit test only if CUnit is found
+ - build unit test only if cunit is found
  - default build target is debug
  - do not install man pages into subdirs
- 
+ - install sqlhist (because we install the man page too, so why not the tool?)
+
 v4:
- - install man pages to correct section, in this case 3
- - run check-doc when building the docs
+ - add subdir include path to cflags in pkgconfg file
+ - refactoring build instruction for section 1 and section 3 documentation
+   into one loop (reduce code duplication)
 
 v3:
- - build documentation
+ - build documetation
  - build samples
- - changed default install to /usr/local
+ - set default location to /usr/local
 
 v2:
- - changed include path exported in pkg-config
-   exports the same paths as per Makefile
+ - updated commit message
+ - dropped the include path patch, the pkg-config
+   from libtraceevent is including them
 
 v1:
  - initial version
 
  Documentation/install-docs.sh.in |  20 ++++
- Documentation/install-man.sh.in  |  15 +++
- Documentation/meson.build        | 196 +++++++++++++++++++++++++++++++
- include/traceevent/meson.build   |  14 +++
- meson.build                      |  54 +++++++++
- meson_options.txt                |  18 +++
- plugins/dynamic_list.sh          |  11 ++
- plugins/meson.build              |  44 +++++++
- samples/meson.build              |   9 ++
- src/meson.build                  |  35 ++++++
- utest/meson.build                |  16 +++
- 11 files changed, 432 insertions(+)
- create mode 100644 Documentation/install-docs.sh.in
- create mode 100755 Documentation/install-man.sh.in
+ Documentation/meson.build        | 197 +++++++++++++++++++++++++++++++
+ include/meson.build              |  11 ++
+ meson.build                      |  47 ++++++++
+ meson_options.txt                |  16 +++
+ samples/extract-example.sh       |   3 +
+ samples/meson.build              |  45 +++++++
+ src/meson.build                  |  62 ++++++++++
+ utest/meson.build                |  17 +++
+ 9 files changed, 418 insertions(+)
+ create mode 100755 Documentation/install-docs.sh.in
  create mode 100644 Documentation/meson.build
- create mode 100644 include/traceevent/meson.build
+ create mode 100644 include/meson.build
  create mode 100644 meson.build
  create mode 100644 meson_options.txt
- create mode 100755 plugins/dynamic_list.sh
- create mode 100644 plugins/meson.build
+ create mode 100644 samples/extract-example.sh
  create mode 100644 samples/meson.build
  create mode 100644 src/meson.build
  create mode 100644 utest/meson.build
 
 diff --git a/Documentation/install-docs.sh.in b/Documentation/install-docs.sh.in
-new file mode 100644
+new file mode 100755
 index 000000000000..26a55aec2a76
 --- /dev/null
 +++ b/Documentation/install-docs.sh.in
@@ -164,83 +163,63 @@ index 000000000000..26a55aec2a76
 +    echo Installing "${html}" to "${DESTDIR}@HTMLDIR@"
 +    install -m 0644 "${html}" "${DESTDIR}@HTMLDIR@"
 +done< <(find "@SRCDIR@" -name "*\.html" -type f -print0)
-diff --git a/Documentation/install-man.sh.in b/Documentation/install-man.sh.in
-new file mode 100755
-index 000000000000..8ab2cb982e1d
---- /dev/null
-+++ b/Documentation/install-man.sh.in
-@@ -0,0 +1,15 @@
-+#!/bin/bash
-+
-+for man in $(find @SRCDIR@ -name '*\.1' -type f); do
-+    [ ! -d ${DESTDIR}/@MANDIR@/man1/ ] && install -d ${DESTDIR}/@MANDIR@/man1/
-+
-+    echo Installing $man to ${DESTDIR}/@MANDIR@/man1/
-+    install -m 0644 $man ${DESTDIR}/@MANDIR@/man1/
-+done
-+
-+for man in $(find @SRCDIR@ -name '*\.3' -type f); do
-+    [ ! -d ${DESTDIR}/@MANDIR@/man3/ ] && install -d ${DESTDIR}/@MANDIR@/man3/
-+
-+    echo Installing $man to ${DESTDIR}/@MANDIR@/man3/
-+    install -m 0644 $man ${DESTDIR}/@MANDIR@/man3/
-+done
 diff --git a/Documentation/meson.build b/Documentation/meson.build
 new file mode 100644
-index 000000000000..b0d3a88d66c9
+index 000000000000..efb78b602965
 --- /dev/null
 +++ b/Documentation/meson.build
-@@ -0,0 +1,196 @@
+@@ -0,0 +1,197 @@
 +# SPDX-License-Identifier: LGPL-2.1
 +#
 +# Copyright (c) 2023 Daniel Wagner, SUSE LLC
 +
 +# input text file: man page section
++
 +sources = {
-+    'libtraceevent.txt': '3',
-+    'libtraceevent-func_apis.txt': '3',
-+    'libtraceevent-commands.txt': '3',
-+    'libtraceevent-cpus.txt': '3',
-+    'libtraceevent-debug.txt': '3',
-+    'libtraceevent-endian_read.txt': '3',
-+    'libtraceevent-event_find.txt': '3',
-+    'libtraceevent-event_get.txt': '3',
-+    'libtraceevent-event_list.txt': '3',
-+    'libtraceevent-event_print.txt': '3',
-+    'libtraceevent-field_find.txt': '3',
-+    'libtraceevent-field_get_val.txt': '3',
-+    'libtraceevent-field_print.txt': '3',
-+    'libtraceevent-field_read.txt': '3',
-+    'libtraceevent-fields.txt': '3',
-+    'libtraceevent-file_endian.txt': '3',
-+    'libtraceevent-filter.txt': '3',
-+    'libtraceevent-func_find.txt': '3',
-+    'libtraceevent-handle.txt': '3',
-+    'libtraceevent-header_page.txt': '3',
-+    'libtraceevent-host_endian.txt': '3',
-+    'libtraceevent-kbuffer-create.txt': '3',
-+    'libtraceevent-kbuffer-read.txt': '3',
-+    'libtraceevent-kbuffer-timestamp.txt': '3',
-+    'libtraceevent-kvm-plugin.txt': '3',
-+    'libtraceevent-log.txt': '3',
-+    'libtraceevent-long_size.txt': '3',
-+    'libtraceevent-page_size.txt': '3',
-+    'libtraceevent-parse_event.txt': '3',
-+    'libtraceevent-parse-files.txt': '3',
-+    'libtraceevent-parse_head.txt': '3',
-+    'libtraceevent-plugins.txt': '3',
-+    'libtraceevent-record_parse.txt': '3',
-+    'libtraceevent-reg_event_handler.txt': '3',
-+    'libtraceevent-reg_print_func.txt': '3',
-+    'libtraceevent-set_flag.txt': '3',
-+    'libtraceevent-strerror.txt': '3',
-+    'libtraceevent-tseq.txt': '3',
++    'libtracefs-sqlhist.txt.1': '1',
++    'libtracefs-cpu-open.txt': '3',
++    'libtracefs-cpu.txt': '3',
++    'libtracefs-dynevents.txt': '3',
++    'libtracefs-eprobes.txt': '3',
++    'libtracefs-error.txt': '3',
++    'libtracefs-events-file.txt': '3',
++    'libtracefs-events-tep.txt': '3',
++    'libtracefs-events.txt': '3',
++    'libtracefs-files.txt': '3',
++    'libtracefs-filter.txt': '3',
++    'libtracefs-function-filter.txt': '3',
++    'libtracefs-hist-cont.txt': '3',
++    'libtracefs-hist-mod.txt': '3',
++    'libtracefs-hist.txt': '3',
++    'libtracefs-instances-affinity.txt': '3',
++    'libtracefs-instances-file-manip.txt': '3',
++    'libtracefs-instances-files.txt': '3',
++    'libtracefs-instances-manage.txt': '3',
++    'libtracefs-instances-utils.txt': '3',
++    'libtracefs-iterator.txt': '3',
++    'libtracefs-kprobes.txt': '3',
++    'libtracefs-log.txt': '3',
++    'libtracefs-marker_raw.txt': '3',
++    'libtracefs-marker.txt': '3',
++    'libtracefs-option-get.txt': '3',
++    'libtracefs-option-misc.txt': '3',
++    'libtracefs-options.txt': '3',
++    'libtracefs-sql.txt': '3',
++    'libtracefs-stream.txt': '3',
++    'libtracefs-synth2.txt': '3',
++    'libtracefs-synth-info.txt': '3',
++    'libtracefs-synth.txt': '3',
++    'libtracefs-traceon.txt': '3',
++    'libtracefs-tracer.txt': '3',
++    'libtracefs.txt': '3',
++    'libtracefs-uprobes.txt': '3',
++    'libtracefs-utils.txt': '3',
 +}
 +
 +conf_dir = meson.current_source_dir() + '/'
 +top_source_dir = meson.current_source_dir() + '/../'
 +
-+#
++##
 +# For asciidoc ...
 +#   -7.1.2,     no extra settings are needed.
 +#    8.0-,      set ASCIIDOC8.
@@ -387,75 +366,65 @@ index 000000000000..b0d3a88d66c9
 +
 +meson.add_install_script(
 +    join_paths(meson.current_build_dir(), 'install-docs.sh'))
-diff --git a/include/traceevent/meson.build b/include/traceevent/meson.build
+diff --git a/include/meson.build b/include/meson.build
 new file mode 100644
-index 000000000000..d3512cafbe38
+index 000000000000..52db432c8275
 --- /dev/null
-+++ b/include/traceevent/meson.build
-@@ -0,0 +1,14 @@
++++ b/include/meson.build
+@@ -0,0 +1,11 @@
 +# SPDX-License-Identifier: LGPL-2.1
 +#
 +# Copyright (c) 2023 Daniel Wagner, SUSE LLC
 +
 +headers = [
-+   'event-parse.h',
-+   'event-utils.h',
-+   'kbuffer.h',
-+   'trace-seq.h',
++   'tracefs.h',
 +]
 +
 +foreach h : headers
-+    install_headers(h, subdir : 'traceevent')
++    install_headers(h, subdir : 'libtracefs')
 +endforeach
 diff --git a/meson.build b/meson.build
 new file mode 100644
-index 000000000000..86907b23f0d9
+index 000000000000..e793cfc16e14
 --- /dev/null
 +++ b/meson.build
-@@ -0,0 +1,54 @@
+@@ -0,0 +1,47 @@
 +# SPDX-License-Identifier: LGPL-2.1
 +#
 +# Copyright (c) 2023 Daniel Wagner, SUSE LLC
 +
 +project(
-+    'libtraceevent', ['c'],
++    'libtracefs', ['c'],
 +    meson_version: '>= 0.50.0',
 +    license: 'LGPL-2.1',
-+    version: '1.7.0',
++    version: '1.6.3',
 +    default_options: [
 +        'c_std=gnu99',
 +        'buildtype=debug',
 +        'default_library=both',
 +        'prefix=/usr/local',
-+        'warning_level=1',
-+    ])
++        'warning_level=1'])
 +
 +library_version = meson.project_version()
 +
++libtraceevent_dep = dependency('libtraceevent', version: '>= 1.7.0', required: true)
 +cunit_dep = dependency('cunit', required : false)
 +
 +prefixdir = get_option('prefix')
++bindir = join_paths(prefixdir, get_option('bindir'))
 +mandir = join_paths(prefixdir, get_option('mandir'))
 +htmldir = join_paths(prefixdir, get_option('htmldir'))
-+libdir = join_paths(prefixdir, get_option('libdir'))
-+plugindir = get_option('plugindir')
-+if plugindir == ''
-+    plugindir = join_paths(libdir, 'libtraceevent/plugins')
-+endif
 +
 +add_project_arguments(
 +    [
 +        '-D_GNU_SOURCE',
-+        '-DPLUGIN_DIR="@0@"'.format(plugindir),
 +    ],
-+    language : 'c',
-+)
++    language : 'c')
 +
-+incdir = include_directories(['include', 'include/traceevent'])
++incdir = include_directories(['include'])
 +
 +subdir('src')
-+subdir('include/traceevent')
-+subdir('plugins')
++subdir('include')
 +if cunit_dep.found()
 +    subdir('utest')
 +endif
@@ -469,16 +438,14 @@ index 000000000000..86907b23f0d9
 +    command: ['echo'])
 diff --git a/meson_options.txt b/meson_options.txt
 new file mode 100644
-index 000000000000..a768002d4fb2
+index 000000000000..51142aaadedf
 --- /dev/null
 +++ b/meson_options.txt
-@@ -0,0 +1,18 @@
+@@ -0,0 +1,16 @@
 +# SPDX-License-Identifier: LGPL-2.1
 +#
 +# Copyright (c) 2023 Daniel Wagner, SUSE LLC
 +
-+option('plugindir', type : 'string',
-+       description : 'set the plugin dir')
 +option('htmldir', type : 'string', value : '',
 +       description : 'directory for HTML documentation')
 +option('asciidoctor', type : 'boolean', value: false,
@@ -491,149 +458,155 @@ index 000000000000..a768002d4fb2
 +       description : 'enable bold literals')
 +option('docbook-suppress-sp', type : 'boolean', value : false,
 +       description : 'docbook suppress sp')
-diff --git a/plugins/dynamic_list.sh b/plugins/dynamic_list.sh
-new file mode 100755
-index 000000000000..66bb0fadfdef
---- /dev/null
-+++ b/plugins/dynamic_list.sh
-@@ -0,0 +1,11 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: LGPL-2.1
-+
-+symbol_type=$(nm -u -D $@ | awk 'NF>1 {print $1}' | xargs echo "U w W" |
-+              tr 'w ' 'W\n' | sort -u | xargs echo)
-+
-+if [ "$symbol_type" = "U W" ]; then
-+    echo '{'
-+    nm -u -D $@ | awk 'NF>1 {sub("@.*", "", $2); print "\t"$2";"}' | sort -u
-+    echo '};'
-+fi
-diff --git a/plugins/meson.build b/plugins/meson.build
+diff --git a/samples/extract-example.sh b/samples/extract-example.sh
 new file mode 100644
-index 000000000000..74ad664e4b4b
+index 000000000000..c5c0f702e7f0
 --- /dev/null
-+++ b/plugins/meson.build
-@@ -0,0 +1,44 @@
-+# SPDX-License-Identifier: LGPL-2.1
-+#
-+# Copyright (c) 2023 Daniel Wagner, SUSE LLC
++++ b/samples/extract-example.sh
+@@ -0,0 +1,3 @@
++#!/bin/bash
 +
-+plugins = [
-+    'plugin_cfg80211.c',
-+    'plugin_function.c',
-+    'plugin_futex.c',
-+    'plugin_hrtimer.c',
-+    'plugin_jbd2.c',
-+    'plugin_kmem.c',
-+    'plugin_kvm.c',
-+    'plugin_mac80211.c',
-+    'plugin_sched_switch.c',
-+    'plugin_scsi.c',
-+    'plugin_tlb.c',
-+    'plugin_xen.c',
-+]
-+
-+pdeps = []
-+foreach plugin : plugins
-+    pdeps += library(
-+        plugin.replace('.c', ''),
-+        plugin,
-+        name_prefix: '',
-+        version: library_version,
-+        dependencies: [libtraceevent_dep],
-+        include_directories: [incdir],
-+        install: true,
-+        install_dir: plugindir)
-+endforeach
-+
-+# perf needs the exported symbol list
-+dynamic_list_file = find_program('dynamic_list.sh')
-+custom_target(
-+    'dynamic_list',
-+    depends: pdeps,
-+    input: pdeps,
-+    output: 'libtraceevent-dynamic-list',
-+    command: [dynamic_list_file, '@INPUT@'],
-+    capture: true,
-+    build_by_default: true,
-+    install: true,
-+    install_dir: plugindir)
++cat $1 | sed -ne '/^EXAMPLE/,/FILES/ { /EXAMPLE/,+2d ; /^FILES/d ;  /^--/d ; p}' > $2
 diff --git a/samples/meson.build b/samples/meson.build
 new file mode 100644
-index 000000000000..e62ff83d087d
+index 000000000000..5e8ad270f812
 --- /dev/null
 +++ b/samples/meson.build
-@@ -0,0 +1,9 @@
+@@ -0,0 +1,45 @@
 +# SPDX-License-Identifier: LGPL-2.1
 +#
 +# Copyright (c) 2023 Daniel Wagner, SUSE LLC
 +
++examples = [
++    'dynevents',
++    'kprobes',
++    'eprobes',
++    'uprobes',
++    'synth',
++    'error',
++    'filter',
++    'function-filter',
++    'hist',
++    'hist-cont',
++    'tracer',
++    'stream',
++    'instances-affinity',
++    'cpu',
++]
++
++extract_examples = find_program('extract-example.sh')
++gen = generator(
++   extract_examples,
++   output: '@BASENAME@.c',
++   arguments: ['@INPUT@', '@OUTPUT@'])
++
++foreach ex : examples
++    src = gen.process(meson.current_source_dir() + '/../Documentation/libtracefs-@0@.txt'.format(ex))
++    executable(
++        ex.underscorify(),
++        src,
++        dependencies: [libtracefs_dep, libtraceevent_dep],
++        include_directories: [incdir])
++endforeach
++
++# sqlhist is unique and stands on its own
++src = gen.process(meson.current_source_dir() + '/../Documentation/libtracefs-sql.txt')
 +executable(
-+    'test-event',
-+    ['test-event.c'],
-+    dependencies: libtraceevent_dep,
-+    include_directories: [incdir])
++   'sqlhist',
++   src,
++   dependencies: [libtracefs_dep, libtraceevent_dep],
++   include_directories: [incdir],
++   install: true,
++   install_dir: bindir)
 diff --git a/src/meson.build b/src/meson.build
 new file mode 100644
-index 000000000000..20b1b7bb95d9
+index 000000000000..2b76335d65b9
 --- /dev/null
 +++ b/src/meson.build
-@@ -0,0 +1,35 @@
+@@ -0,0 +1,62 @@
 +# SPDX-License-Identifier: LGPL-2.1
 +#
 +# Copyright (c) 2023 Daniel Wagner, SUSE LLC
 +
 +sources= [
-+   'event-parse-api.c',
-+   'event-parse.c',
-+   'event-plugin.c',
-+   'kbuffer-parse.c',
-+   'parse-filter.c',
-+   'parse-utils.c',
-+   'tep_strerror.c',
-+   'trace-seq.c',
++   'tracefs-dynevents.c',
++   'tracefs-eprobes.c',
++   'tracefs-events.c',
++   'tracefs-filter.c',
++   'tracefs-hist.c',
++   'tracefs-instance.c',
++   'tracefs-kprobes.c',
++   'tracefs-marker.c',
++   'tracefs-record.c',
++   'tracefs-sqlhist.c',
++   'tracefs-tools.c',
++   'tracefs-uprobes.c',
++   'tracefs-utils.c',
 +]
 +
-+libtraceevent = library(
-+    'traceevent',
-+    sources,
++flex = find_program('flex', required: true)
++bison = find_program('bison', required: true)
++
++lgen = generator(flex,
++output : '@PLAINNAME@.yy.c',
++arguments : ['-o', '@OUTPUT@', '@INPUT@'])
++
++pgen = generator(bison,
++output : ['@BASENAME@.tab.c', '@BASENAME@.tab.h'],
++arguments : ['@INPUT@', '--defines=@OUTPUT1@', '--output=@OUTPUT0@'])
++
++lfiles = lgen.process('sqlhist.l')
++pfiles = pgen.process('sqlhist.y')
++
++libtracefs = library(
++    'tracefs',
++    sources, lfiles, pfiles,
 +    version: library_version,
++    dependencies: [libtraceevent_dep],
 +    include_directories: [incdir],
 +    install: true)
 +
++libtracefs_static = static_library(
++    'tracefs_static',
++    sources, lfiles, pfiles,
++    dependencies: [libtraceevent_dep],
++    include_directories: [incdir],
++    install: false)
++
 +pkg = import('pkgconfig')
 +pkg.generate(
-+    libtraceevent,
-+    subdirs: 'traceevent',
++    libtracefs,
++    subdirs: 'libtracefs',
 +    filebase: meson.project_name(),
 +    name: meson.project_name(),
 +    version: meson.project_version(),
-+    description: 'Manage trace event',
-+    url: 'https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/')
++    description: 'Manage trace fs',
++    url: 'https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/')
 +
-+libtraceevent_dep = declare_dependency(
++libtracefs_dep = declare_dependency(
 +    include_directories: ['.'],
-+    link_with: libtraceevent)
++    link_with: libtracefs)
 diff --git a/utest/meson.build b/utest/meson.build
 new file mode 100644
-index 000000000000..d819a6c798b5
+index 000000000000..91a526fca2bf
 --- /dev/null
 +++ b/utest/meson.build
-@@ -0,0 +1,16 @@
+@@ -0,0 +1,17 @@
 +# SPDX-License-Identifier: LGPL-2.1
 +#
 +# Copyright (c) 2023 Daniel Wagner, SUSE LLC
 +
 +source = [
 +    'trace-utest.c',
-+    'traceevent-utest.c',
++    'tracefs-utest.c',
 +]
 +
 +e = executable(
 +   'trace-utest',
 +   source,
 +   include_directories: [incdir],
-+   dependencies: [libtraceevent_dep, cunit_dep])
++   dependencies: [libtraceevent_dep, cunit_dep],
++   link_with: libtracefs_static)
 +
 +test('trace-utest', e)
 -- 
