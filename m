@@ -2,32 +2,35 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35127C5479D
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  9 Jan 2023 23:41:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F03DC5479D
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  9 Jan 2023 23:51:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbjAIXlE (ORCPT
+        id S234571AbjAIXvb (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 9 Jan 2023 18:41:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33296 "EHLO
+        Mon, 9 Jan 2023 18:51:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237536AbjAIXkk (ORCPT
+        with ESMTP id S237669AbjAIXv3 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 9 Jan 2023 18:40:40 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E82183A0
-        for <linux-trace-devel@vger.kernel.org>; Mon,  9 Jan 2023 15:40:40 -0800 (PST)
+        Mon, 9 Jan 2023 18:51:29 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E619BDFCC
+        for <linux-trace-devel@vger.kernel.org>; Mon,  9 Jan 2023 15:51:06 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A1E5E61490
-        for <linux-trace-devel@vger.kernel.org>; Mon,  9 Jan 2023 23:40:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADB55C433EF
-        for <linux-trace-devel@vger.kernel.org>; Mon,  9 Jan 2023 23:40:38 +0000 (UTC)
-Date:   Mon, 9 Jan 2023 18:40:34 -0500
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9B8B9B810AB
+        for <linux-trace-devel@vger.kernel.org>; Mon,  9 Jan 2023 23:51:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED5D4C433EF;
+        Mon,  9 Jan 2023 23:51:03 +0000 (UTC)
+Date:   Mon, 9 Jan 2023 18:51:00 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] libtraceevent: Show migrate-disable field
-Message-ID: <20230109184034.359f10ad@gandalf.local.home>
+To:     Khem Raj <raj.khem@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 1/2] Replace LFS64 interfaces off64_t and lseek64
+Message-ID: <20230109185100.7b0cf697@gandalf.local.home>
+In-Reply-To: <20230109225315.1284538-1-raj.khem@gmail.com>
+References: <20230109225315.1284538-1-raj.khem@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -36,67 +39,29 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Mon,  9 Jan 2023 14:53:14 -0800
+Khem Raj <raj.khem@gmail.com> wrote:
 
-Since Linux kernel 5.15 (specifically with the addition of 54357f0c9149c
-("tracing: Add migrate-disabled counter to tracing output.")), the
-common_preempt_count field of each event also held the "migrate-disable"
-field in the most significant byte. This needs to be accounted for as when
-the migrate disable field is set, it will show:
+> Musl does not define these interfaces unless -D_LARGEFILE64_SOURCE is
+> defined and that too it is transitional until apps switch to using 64-bit
+> off_t. We pass -D_FILE_OFFSET_BITS=64 in makefiles already therefore
+> original lseek and off_t are already 64bit
+> 
+> This fixes build with latest musl which has dropped LFS64 interfaces [1]
+> 
+> [1] https://git.musl-libc.org/cgit/musl/commit/?id=246f1c811448f37a44b41cd8df8d0ef9736d95f4i
+> 
+> Signed-off-by: Khem Raj <raj.khem@gmail.com>
+> ---
 
-systemd--268     3d..3 15368.334398: rcu_dyntick:          --= 4000000000000002 4000000000000000 0x63c
-systemd--268     3d..13 15368.334399: rcu_dyntick:          ++= 4000000000000000 4000000000000002 0x63c
-systemd--268     3d..12 15368.334400: irq_disable:          caller=ct_irq_enter_irqson+0x17 parent=0x0
-systemd--268     3d..13 15368.334400: rcu_dyntick:          --= 4000000000000002 4000000000000000 0x63c
-systemd--268     3d..12 15368.334401: rcu_dyntick:          ++= 4000000000000000 4000000000000002 0x63c
+FYI, when submitting patches, please have the subject state the project, as
+the mailing list covers multiple projects, and the subjects are used to
+determine which project its for.
 
-Where the events above have:
+Subject: trace-cmd: Replace LFS64 interfaces off64_t and lseek64
 
-   preempt-count	migrate-disable
-   -------------        ---------------
-	3			0
-	3			1
-	2			1
-	3			1
-	2			1
+You don't need to resubmit, I can add it, but just for future submissions.
 
-That is, in the above print of "3d..13", the '3' of the '13' is the
-preempt count and the '1' is the migrate disable. But it really should be:
+Thanks!
 
-systemd--268     3d..3. 15368.334398: rcu_dyntick:          --= 4000000000000002 4000000000000000 0x63c
-systemd--268     3d..31 15368.334399: rcu_dyntick:          ++= 4000000000000000 4000000000000002 0x63c
-systemd--268     3d..21 15368.334400: irq_disable:          caller=ct_irq_enter_irqson+0x17 parent=0x0
-systemd--268     3d..31 15368.334400: rcu_dyntick:          --= 4000000000000002 4000000000000000 0x63c
-systemd--268     3d..21 15368.334401: rcu_dyntick:          ++= 4000000000000000 4000000000000002 0x63c
-
-Where the migrate disabled is always displayed with a '.' when zero and
-its hex count when set.
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- src/event-parse.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/src/event-parse.c b/src/event-parse.c
-index 18db7fcb456d..e655087dad60 100644
---- a/src/event-parse.c
-+++ b/src/event-parse.c
-@@ -6768,8 +6768,13 @@ static void data_latency_format(struct tep_handle *tep, struct trace_seq *s,
- 	       (hardirq && softirq) ? 'H' :
- 	       hardirq ? 'h' : softirq ? 's' : '.');
- 
--	if (pc)
--		trace_seq_printf(&sq, "%x", pc);
-+	if (pc & 0xf)
-+		trace_seq_printf(&sq, "%x", pc & 0xf);
-+	else
-+		trace_seq_printf(&sq, ".");
-+
-+	if (pc & 0xf0)
-+		trace_seq_printf(&sq, "%x", pc >> 4);
- 	else
- 		trace_seq_printf(&sq, ".");
- 
--- 
-2.35.1
-
+-- Steve
