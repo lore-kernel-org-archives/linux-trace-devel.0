@@ -2,88 +2,110 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3C53C5479D
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  9 Jan 2023 17:16:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D7D7C54EBD
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  9 Jan 2023 18:06:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235018AbjAIRQF (ORCPT
+        id S237026AbjAISGi (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 9 Jan 2023 12:16:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38826 "EHLO
+        Mon, 9 Jan 2023 13:06:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237369AbjAIRPk (ORCPT
+        with ESMTP id S237670AbjAISGC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 9 Jan 2023 12:15:40 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E8D17E3D
-        for <linux-trace-devel@vger.kernel.org>; Mon,  9 Jan 2023 09:15:23 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Mon, 9 Jan 2023 13:06:02 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204723FC94
+        for <linux-trace-devel@vger.kernel.org>; Mon,  9 Jan 2023 10:05:44 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5617B1FECE;
-        Mon,  9 Jan 2023 17:15:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1673284522; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eFG8RX230b0OJI+ULnDIuSKtC51SSSEPmiR1zHc30+Q=;
-        b=ykOaSi9trHAUvxjVYXa5y4CkzfjtGGTQP8epJhdSpDlvla5S5yJorUuCv64UQJk5nvypGr
-        1ZImgCp2h/cRVB5javkcA10IdTzVxCPKXzFuOj2p9FjZ1FvQHhdFKMFZJCiPfGpYDiHoNS
-        zwzULzOLAzQxmuPJpwgRriHiiQouEjQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1673284522;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eFG8RX230b0OJI+ULnDIuSKtC51SSSEPmiR1zHc30+Q=;
-        b=HEfuziwo5vBG0uSAiUbbbiQQVYRa2mzy392nse9myf2oRVAY9Lv4YsOGf4+MEdsCCiJbN3
-        mus60jReGtUe+aCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 47A43134AD;
-        Mon,  9 Jan 2023 17:15:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id KxR5EapLvGNNDwAAMHmgww
-        (envelope-from <dwagner@suse.de>); Mon, 09 Jan 2023 17:15:22 +0000
-Date:   Mon, 9 Jan 2023 18:15:21 +0100
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Steven Rostedt <rostedt@goodmis.org>
+        by ams.source.kernel.org (Postfix) with ESMTPS id C4F31B80DDE
+        for <linux-trace-devel@vger.kernel.org>; Mon,  9 Jan 2023 18:05:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 145B3C433F2;
+        Mon,  9 Jan 2023 18:05:40 +0000 (UTC)
+Date:   Mon, 9 Jan 2023 13:05:39 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Khem Raj <raj.khem@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v6] libtraceevent: Add initial support for meson
-Message-ID: <20230109171521.6pk2ukuimtfzreg3@carbon.lan>
-References: <20230105121144.11829-1-dwagner@suse.de>
- <20230109105616.168057c3@gandalf.local.home>
- <20230109163659.lddjs6zb45t32hyj@carbon.lan>
- <20230109114247.4cc214ff@gandalf.local.home>
+Subject: Re: [PATCH] Replace LFS64 interfaces off64_t and lseek64
+Message-ID: <20230109130539.62a15985@gandalf.local.home>
+In-Reply-To: <20230107010245.1290391-1-raj.khem@gmail.com>
+References: <20230107010245.1290391-1-raj.khem@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230109114247.4cc214ff@gandalf.local.home>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, Jan 09, 2023 at 11:42:47AM -0500, Steven Rostedt wrote:
-> On Mon, 9 Jan 2023 17:36:59 +0100
- After doing an install with the Makefiles:
+On Fri,  6 Jan 2023 17:02:45 -0800
+Khem Raj <raj.khem@gmail.com> wrote:
+
+> Musl does not define these interfaces unless -D_LARGEFILE64_SOURCE is
+> defined and that too it is transitional until apps switch to using 64bit
+> off_t. We pass -D_LARGEFILE64_SOURCE in makefiles already therefore
+> original lseek and off_t are already 64bit
+
+I just tested this, and that's not true.
+
+static void pdie(const char *msg)
+{
+	perror(msg);
+	exit(-1);
+}
+
+int main (int argc, char **argv)
+{
+	off_t off;
+	int fd;
+
+	argv0 = argv[0];
+
+	if (argc < 2)
+		usage();
+
+	printf("off size = %zd\n", sizeof(off));
+
+	fd = open(argv[1], O_RDONLY);
+	if (fd < 0)
+		pdie("open");
+	off = lseek(fd, 0, SEEK_END);
+	if (off < 0)
+		pdie("lseek");
+	printf("offset = %zd\n", off);
+	return 0;
+}
+
+I compiled the above on a 32bit machine with:
+
+$ gcc -D_LARGEFILE64_SOURCE -o lseek lseek.c
+$ ./lseek big-file
+
+Where big-file was 6GBs, and I got this:
+
+off size = 4
+lseek: Value too large for defined data type
+
+The _LARGEFILE64_SOURCE just makes the 64 bit versions available. It does
+not convert the original ones.
+
 > 
-> # ls -l /usr/local/share/doc/libtraceevent-doc/
+> This fixes build with latest musl which has dropped LFS64 interfaces [1]
+> 
+> [1] https://git.musl-libc.org/cgit/musl/commit/?id=246f1c811448f37a44b41cd8df8d0ef9736d95f4i
+> 
+> Signed-off-by: Khem Raj <raj.khem@gmail.com>
+> ---
 
-Okay, that's easy to fix
+What we could do is add something like:
 
---- a/meson_options.txt
-+++ b/meson_options.txt
-@@ -4,7 +4,7 @@
+#ifdef MUSL
+# define off64_t off_t
+# define lseek64 lseek
+[..]
+#endif
 
- option('plugindir', type : 'string',
-        description : 'set the plugin dir')
--option('htmldir', type : 'string', value : '',
-+option('htmldir', type : 'string', value : 'share/doc/libtraceevent-doc',
-        description : 'directory for HTML documentation')
- option('asciidoctor', type : 'boolean', value: false,
-        description : 'use asciidoctor instead of asciidoc')
+in one of the headers to make it work with musl.
 
-Is anything which I need to update?
+-- Steve
