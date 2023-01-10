@@ -2,36 +2,40 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E025C54EBC
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 10 Jan 2023 14:48:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBAD7C46467
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 10 Jan 2023 14:51:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233126AbjAJOse (ORCPT
+        id S238675AbjAJOvq (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 10 Jan 2023 09:48:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58370 "EHLO
+        Tue, 10 Jan 2023 09:51:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238697AbjAJOsS (ORCPT
+        with ESMTP id S238702AbjAJOvl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 10 Jan 2023 09:48:18 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C3A4FD7F;
-        Tue, 10 Jan 2023 06:48:17 -0800 (PST)
+        Tue, 10 Jan 2023 09:51:41 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCCC5F56;
+        Tue, 10 Jan 2023 06:51:40 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 54A266175A;
-        Tue, 10 Jan 2023 14:48:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5491AC433D2;
-        Tue, 10 Jan 2023 14:48:16 +0000 (UTC)
-Date:   Tue, 10 Jan 2023 09:48:14 -0500
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4AC1A6173B;
+        Tue, 10 Jan 2023 14:51:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38026C433EF;
+        Tue, 10 Jan 2023 14:51:39 +0000 (UTC)
+Date:   Tue, 10 Jan 2023 09:51:37 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Daniel Wagner <dwagner@suse.de>
 Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] tools/rtla: Explicitly list libtraceevent dependency
-Message-ID: <20230110094814.4af966a4@gandalf.local.home>
-In-Reply-To: <20230110131805.16242-1-dwagner@suse.de>
+Message-ID: <20230110095137.18168c29@gandalf.local.home>
+In-Reply-To: <20230110144536.knepnpxsp4mw67no@carbon.lan>
 References: <20230110131805.16242-1-dwagner@suse.de>
+        <42d1e999-79a6-94dc-cc88-77520ddce068@kernel.org>
+        <20230110140814.2yz4if2e2fasnu7t@carbon.lan>
+        <94fd6fb5-c87a-b02e-40bc-b2e2c99529d5@kernel.org>
+        <20230110144536.knepnpxsp4mw67no@carbon.lan>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -40,68 +44,35 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 10 Jan 2023 14:18:05 +0100
+On Tue, 10 Jan 2023 15:45:36 +0100
 Daniel Wagner <dwagner@suse.de> wrote:
 
-> The current libtracefs.pkg file lists the dependency on
-> libtraceevent ("pkg-config --libs libtracefs" -> "-ltracefs
-> -ltraceevent").
-> 
-> Dan Nicholson's Guide to pkg-config[1] stats that "Libs: The link
-> flags specific to this package and any required libraries that don't
-> support pkg-config". Thus the current libtracefs.pkg is not correct.
-> 
-> rtla is depending on libtraceevent but it doesn't express this in
-> 'pkg-config' part to retrieve the correct build flags.
-> 
-> In order to be able to update the "Libs:" section in the libtracefs
-> project we need to list the dependency explicitly to avoid future linker
-> failures.
-> 
-> [1] https://people.freedesktop.org/~dbn/pkg-config-guide.html
+> Just to clarify, the generated pkg file by Meson is adding the libtraceevent
+> dependency in the private section. So this part should be okay. I would be
+> surprised if Meson would get this wrong at this point.
 
-The Libs: field in tracefs only shows the -ltracefs and not -ltraceevent.
-It follows this rule. It's the "Requires:" tag that pulls in -ltraceevent,
-correctly.
+No that's incorrect.
+
+There's many interfaces that require the libtraceevent header files to work
+with libtracefs. Anything that uses libtracefs must also use libtraceevent,
+as libtracefs is really just an extension of libtraceevent.
 
 > 
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> ---
+> $ cat .build/meson-private/libtracefs.pc
+> prefix=/tmp/trace-cmd
+> includedir=${prefix}/include
+> libdir=${prefix}/lib64
 > 
-> I've got this fallout with because I am using libtraceevent and libtracefs build
-> with Meson. Meson generates different pkg files which seems to align with Dan's
-> Guide.
-> 
->  tools/tracing/rtla/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
-> index 22e28b76f800..0664e2db22c1 100644
-> --- a/tools/tracing/rtla/Makefile
-> +++ b/tools/tracing/rtla/Makefile
-> @@ -32,7 +32,7 @@ TRACEFS_HEADERS	:= $$($(PKG_CONFIG) --cflags libtracefs)
->  
->  CFLAGS	:=	-O -g -DVERSION=\"$(VERSION)\" $(FOPTS) $(MOPTS) $(WOPTS) $(TRACEFS_HEADERS) $(EXTRA_CFLAGS)
->  LDFLAGS	:=	-ggdb $(EXTRA_LDFLAGS)
-> -LIBS	:=	$$($(PKG_CONFIG) --libs libtracefs)
-> +LIBS	:=	$$($(PKG_CONFIG) --libs libtracefs libtraceevent)
+> Name: libtracefs
+> Description: Manage trace fs
+> URL: https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
+> Version: 1.6.3
+> Requires.private: libtraceevent >=  1.7.0
 
-I'm still confused as to why this is needed.
-
-According to Dan's document:
-
-Requires: A list of packages required by this package. The versions of these packages may be specified using the comparison operators =, <, >, <= or >=.
-Requires.private: A list of private packages required by this package but not exposed to applications. The version specific rules from the Requires field also apply here.
-
-The "Requires" is exported to other applications. It's the private that is
-not.
-
-What is this trying to fix?
+This is incorrect.
 
 -- Steve
 
-
->  
->  SRC	:=	$(wildcard src/*.c)
->  HDR	:=	$(wildcard src/*.h)
+> Libs: -L${libdir} -ltracefs
+> Cflags: -I${includedir}/libtracefs
 
