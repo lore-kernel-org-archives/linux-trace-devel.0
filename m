@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 076F8C678D5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 10 Jan 2023 20:08:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39C74C54EBC
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 10 Jan 2023 20:08:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233227AbjAJUIg (ORCPT
+        id S232546AbjAJUIi (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 10 Jan 2023 15:08:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58770 "EHLO
+        Tue, 10 Jan 2023 15:08:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232999AbjAJUI1 (ORCPT
+        with ESMTP id S232836AbjAJUIf (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 10 Jan 2023 15:08:27 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16FC62D1;
-        Tue, 10 Jan 2023 12:08:27 -0800 (PST)
+        Tue, 10 Jan 2023 15:08:35 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6314BC00;
+        Tue, 10 Jan 2023 12:08:33 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B9845B8197F;
-        Tue, 10 Jan 2023 20:08:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54B6AC433F0;
-        Tue, 10 Jan 2023 20:08:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 72CAA61847;
+        Tue, 10 Jan 2023 20:08:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7D0EC433D2;
+        Tue, 10 Jan 2023 20:08:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673381304;
-        bh=HUp0DzrBJhEg098mAGHnx7aoj0shJFUV+i6XYx2y+04=;
+        s=k20201202; t=1673381312;
+        bh=f7t2Tb6aVa91WI4iN6vlSINZLT/DS+dzcmYkQKr3WX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mtJK/8ZyfQbnMQeQJz+X37II6DDOdwT1bgc3lLt5k610wUyodg+S/r9YX4A7geXm1
-         HeKSKMSJDaOxwM/FlopIixGkhr6rFOp4rxK+gyI9gMvfAgzLokVx5ZgmEbusqFFm0Z
-         ODJZLOOEWamxGPI610mEsEK61B8p2LvRiSDFlp+b506BBc7KZqmiSdfR6Sv7LxCMxn
-         rLIRds/10H/qxXJhjqQTPhK/fPoxv0uXq3RZWd2xsxMKXn7EFOn3Ka3a1yDbgFPUl+
-         N6hf7i5tnlThAqxh6WL65r5q1WWJObJZH0JQV07teR26gTLKoILbc5npkiZwsKWf5I
-         0enJWVmFvmFTw==
+        b=kNKbsIQ6YZeWN5FzIM2RJojjB2x0a8+x4jTs+VI8fluL3bcI4JYFpmN/tyK9tUNBE
+         bKCfbge4hpWsOfBtw1Ft2qLZBWZ0jVLkVi8MlhLxQ7z7lhs4f+7jKdJJzm07D2qEZM
+         v/hhAlH/qkXA1fDF3nOc3dsOcgNoAO/9AOusn22YkC+/ZCCmoJkPvbZdZwSpz2/PO8
+         ysLysdLkE1xUVAyAHEIvmLpT2Fi1nI95NDkLQ/FHljrsYnl5rpYWAkvNMWSP+wWRLz
+         WPLt/OmB0926QNvurOYW+pT1vgQVwTcCWeuwS/BkuDYA30MQ5tdc+/xM1k0dXOOJhK
+         ZwPxZ+6ONe6/Q==
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -41,9 +41,9 @@ Cc:     Juri Lelli <juri.lelli@redhat.com>,
         Clark Williams <williams@redhat.com>,
         linux-trace-devel@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/6] rtla/osnoise: Add OSNOISE_IRQ_DISABLE option
-Date:   Tue, 10 Jan 2023 21:08:03 +0100
-Message-Id: <5e5cede08247fe55f4a66ac0f0d81d5549953395.1673380089.git.bristot@kernel.org>
+Subject: [PATCH 4/6] rtla/osnoise_top: Pass the params to the usage function
+Date:   Tue, 10 Jan 2023 21:08:05 +0100
+Message-Id: <d0d58a6eb2901689218bd9877ccec2e145b1fc17.1673380089.git.bristot@kernel.org>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <cover.1673380089.git.bristot@kernel.org>
 References: <cover.1673380089.git.bristot@kernel.org>
@@ -53,75 +53,103 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add OSNOISE_IRQ_DISABLE to the set of possible options in the osnoise
-context. Do not use it yet.
+In preparation to the hwnoise tool, pass the osnoise top params to the
+usage function so it can be adapted according to the mode of the tool.
 
-In preparation for the hwnoise tool.
+Also make it static, as it is only used in this file.
 
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Jonathan Corbet <corbet@lwn.net>
 ---
- tools/tracing/rtla/src/osnoise.c | 6 ++++++
- tools/tracing/rtla/src/osnoise.h | 6 ++++++
- 2 files changed, 12 insertions(+)
+ tools/tracing/rtla/src/osnoise_top.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/tools/tracing/rtla/src/osnoise.c b/tools/tracing/rtla/src/osnoise.c
-index 050a9997191c..6bf877ed8a77 100644
---- a/tools/tracing/rtla/src/osnoise.c
-+++ b/tools/tracing/rtla/src/osnoise.c
-@@ -842,6 +842,8 @@ static void osnoise_put_##name(struct osnoise_context *context)				\
- 	context->orig_opt_##name = OSNOISE_OPTION_INIT_VAL;				\
- }
- 
-+OSNOISE_OPTION(irq_disable, "OSNOISE_IRQ_DISABLE");
-+
+diff --git a/tools/tracing/rtla/src/osnoise_top.c b/tools/tracing/rtla/src/osnoise_top.c
+index d7bbd73e1a78..fd2104050e3c 100644
+--- a/tools/tracing/rtla/src/osnoise_top.c
++++ b/tools/tracing/rtla/src/osnoise_top.c
+@@ -246,7 +246,7 @@ osnoise_print_stats(struct osnoise_top_params *params, struct osnoise_tool *top)
  /*
-  * enable_osnoise - enable osnoise tracer in the trace_instance
+  * osnoise_top_usage - prints osnoise top usage message
   */
-@@ -906,6 +908,9 @@ struct osnoise_context *osnoise_context_alloc(void)
- 	context->orig_tracing_thresh	= OSNOISE_OPTION_INIT_VAL;
- 	context->tracing_thresh		= OSNOISE_OPTION_INIT_VAL;
+-void osnoise_top_usage(char *usage)
++static void osnoise_top_usage(struct osnoise_top_params *params, char *usage)
+ {
+ 	int i;
  
-+	context->orig_opt_irq_disable	= OSNOISE_OPTION_INIT_VAL;
-+	context->opt_irq_disable	= OSNOISE_OPTION_INIT_VAL;
-+
- 	osnoise_get_context(context);
+@@ -350,7 +350,7 @@ struct osnoise_top_params *osnoise_top_parse_args(int argc, char **argv)
+ 		case 'c':
+ 			retval = parse_cpu_list(optarg, &params->monitored_cpus);
+ 			if (retval)
+-				osnoise_top_usage("\nInvalid -c cpu list\n");
++				osnoise_top_usage(params, "\nInvalid -c cpu list\n");
+ 			params->cpus = optarg;
+ 			break;
+ 		case 'D':
+@@ -359,7 +359,7 @@ struct osnoise_top_params *osnoise_top_parse_args(int argc, char **argv)
+ 		case 'd':
+ 			params->duration = parse_seconds_duration(optarg);
+ 			if (!params->duration)
+-				osnoise_top_usage("Invalid -D duration\n");
++				osnoise_top_usage(params, "Invalid -D duration\n");
+ 			break;
+ 		case 'e':
+ 			tevent = trace_event_alloc(optarg);
+@@ -375,17 +375,17 @@ struct osnoise_top_params *osnoise_top_parse_args(int argc, char **argv)
+ 			break;
+ 		case 'h':
+ 		case '?':
+-			osnoise_top_usage(NULL);
++			osnoise_top_usage(params, NULL);
+ 			break;
+ 		case 'p':
+ 			params->period = get_llong_from_str(optarg);
+ 			if (params->period > 10000000)
+-				osnoise_top_usage("Period longer than 10 s\n");
++				osnoise_top_usage(params, "Period longer than 10 s\n");
+ 			break;
+ 		case 'P':
+ 			retval = parse_prio(optarg, &params->sched_param);
+ 			if (retval == -1)
+-				osnoise_top_usage("Invalid -P priority");
++				osnoise_top_usage(params, "Invalid -P priority");
+ 			params->set_sched = 1;
+ 			break;
+ 		case 'q':
+@@ -394,7 +394,7 @@ struct osnoise_top_params *osnoise_top_parse_args(int argc, char **argv)
+ 		case 'r':
+ 			params->runtime = get_llong_from_str(optarg);
+ 			if (params->runtime < 100)
+-				osnoise_top_usage("Runtime shorter than 100 us\n");
++				osnoise_top_usage(params, "Runtime shorter than 100 us\n");
+ 			break;
+ 		case 's':
+ 			params->stop_us = get_llong_from_str(optarg);
+@@ -420,7 +420,7 @@ struct osnoise_top_params *osnoise_top_parse_args(int argc, char **argv)
+ 					exit(EXIT_FAILURE);
+ 				}
+ 			} else {
+-				osnoise_top_usage("--trigger requires a previous -e\n");
++				osnoise_top_usage(params, "--trigger requires a previous -e\n");
+ 			}
+ 			break;
+ 		case '1': /* filter */
+@@ -431,11 +431,11 @@ struct osnoise_top_params *osnoise_top_parse_args(int argc, char **argv)
+ 					exit(EXIT_FAILURE);
+ 				}
+ 			} else {
+-				osnoise_top_usage("--filter requires a previous -e\n");
++				osnoise_top_usage(params, "--filter requires a previous -e\n");
+ 			}
+ 			break;
+ 		default:
+-			osnoise_top_usage("Invalid option");
++			osnoise_top_usage(params, "Invalid option");
+ 		}
+ 	}
  
- 	return context;
-@@ -932,6 +937,7 @@ void osnoise_put_context(struct osnoise_context *context)
- 	osnoise_put_timerlat_period_us(context);
- 	osnoise_put_print_stack(context);
- 	osnoise_put_tracing_thresh(context);
-+	osnoise_put_irq_disable(context);
- 
- 	free(context);
- }
-diff --git a/tools/tracing/rtla/src/osnoise.h b/tools/tracing/rtla/src/osnoise.h
-index 04a4384cc544..5bb0dc998f58 100644
---- a/tools/tracing/rtla/src/osnoise.h
-+++ b/tools/tracing/rtla/src/osnoise.h
-@@ -38,6 +38,10 @@ struct osnoise_context {
- 	/* -1 as init value because 0 is disabled */
- 	long long		orig_print_stack;
- 	long long		print_stack;
-+
-+	/* -1 as init value because 0 is off */
-+	int			orig_opt_irq_disable;
-+	int			opt_irq_disable;
- };
- 
- /*
-@@ -79,6 +83,8 @@ void osnoise_restore_print_stack(struct osnoise_context *context);
- int osnoise_set_print_stack(struct osnoise_context *context,
- 			    long long print_stack);
- 
-+int osnoise_set_irq_disable(struct osnoise_context *context, bool onoff);
-+
- /*
-  * osnoise_tool -  osnoise based tool definition.
-  */
 -- 
 2.38.1
 
