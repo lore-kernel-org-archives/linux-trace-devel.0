@@ -2,133 +2,101 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2768C54EBC
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Jan 2023 04:15:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1F10C54EBC
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Jan 2023 14:44:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236658AbjALEPc (ORCPT
+        id S239948AbjALOoe (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 11 Jan 2023 23:15:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49066 "EHLO
+        Thu, 12 Jan 2023 09:44:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236635AbjALEOl (ORCPT
+        with ESMTP id S239711AbjALOnw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 11 Jan 2023 23:14:41 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B964ECA9;
-        Wed, 11 Jan 2023 20:12:49 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id cp9-20020a17090afb8900b00226a934e0e5so5068721pjb.1;
-        Wed, 11 Jan 2023 20:12:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5liSXAAvdHHV1P0kLG2IlIkwUvuCtmHlTMmTb/hX368=;
-        b=gbgJJqRiV8CXMlc0ASfHJqoUv6qARhDeO4zHpr3WH1XgpkG8EHgCUnXAxVjN0urE18
-         DNcTfvGBL2qzXii9haGzPKEjfu/e3lTl0Hl0mpLONCznY+lNWo/0EUhvvrSWCib689M0
-         S/5F2YATZxI9nava+jDiSCfKA3U3ayzsJdPJdexdDKaOUIFiJCMvmO7pczFDkCkPEtWK
-         Om5KZmCCIHsvz7lGnYprXBoTVb5/OWJ8SXOphOaAOyTm75f8jZeL9OyVonErXTncURLq
-         sYmv02no6/fvi1ncFp/7Jtz6Od+SFkaFk3mQlyHe/Yd0nZozCM+dkKnKNkVhFqMI9ah8
-         XS2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5liSXAAvdHHV1P0kLG2IlIkwUvuCtmHlTMmTb/hX368=;
-        b=mMp8mx8EYXP5s7Q1QzMNXJ/eMoRskm/imzmgLm7ZcNRwhdTWCt8EG+iR+HWSeLWRye
-         VOyDAUuhEHU3oP1I8HCQd/tne89pYW05FlVTVXz0N30sTTGDwezPeq+XRgk1a3zxm8vi
-         +Uk9RdNFYEoHlUhJHLLT38ZhPAYK5AvsZzXc85+LwhkE9ngCy+SUBrTJEIotM2Mu2hsS
-         PvvgAk5tfIUWeazfpMg/a1Hdr+JFqFWS9WOw59bw0lu6uF6YF2IqQBXixftFc/Zf/rZ2
-         5aOdpe8nckVID9PdmjJIDjeIs0Ngiq/uk47LUOM6SkJrCVZNd6IgSxZD7jdOgvBE2lGL
-         3eIw==
-X-Gm-Message-State: AFqh2kob+4Uksd6mqUF6w5ZnAUmmau39pEGR8M5HHtnRbNddXRKQBdae
-        7eEpbjGRR7bWRAcNelRWDxk=
-X-Google-Smtp-Source: AMrXdXucOeq1G/f8unCyLciMiF99dSM4XixdnMT2o9Hq/jyhzlkevaKoZ1LMUdnLxaBb9ZbMLJ9zGQ==
-X-Received: by 2002:a17:902:8d94:b0:194:4337:d9df with SMTP id v20-20020a1709028d9400b001944337d9dfmr7089886plo.43.1673496768764;
-        Wed, 11 Jan 2023 20:12:48 -0800 (PST)
-Received: from debian.me (subs03-180-214-233-68.three.co.id. [180.214.233.68])
-        by smtp.gmail.com with ESMTPSA id e6-20020a17090301c600b00192dda430ddsm10941005plh.123.2023.01.11.20.12.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Jan 2023 20:12:47 -0800 (PST)
-Received: by debian.me (Postfix, from userid 1000)
-        id 2DCA9104889; Thu, 12 Jan 2023 11:12:44 +0700 (WIB)
-Date:   Thu, 12 Jan 2023 11:12:43 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        linux-trace-devel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/6] Documentation/rtla: Add hwnoise man page
-Message-ID: <Y7+IuzrCrhH+aTa/@debian.me>
-References: <cover.1673380089.git.bristot@kernel.org>
- <d4bdb3920693381794511068f04bf56cf221fb1f.1673380089.git.bristot@kernel.org>
+        Thu, 12 Jan 2023 09:43:52 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB80563394;
+        Thu, 12 Jan 2023 06:32:42 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 49431B81E73;
+        Thu, 12 Jan 2023 14:32:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB3A5C433EF;
+        Thu, 12 Jan 2023 14:32:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673533959;
+        bh=m9Ix+lLUkBPF9iqFxJS7VMgHIrgbScLcQu0xAEukD2E=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=l5VKHPZ/X/TaVa8tHeOb+/Qfm6x7qYKqMj8CXXGDtwzD1MJu9M0+6BWZM1fN1DDQi
+         R9h7b73SQj8z8FczfVo9A18y4Cqkv8z5i9HxIOqq8K2ajT5MSMaWyuC0vG+S1LRHf7
+         C6hmt719moqh8h3YgJQFSCG/0EGcLOpHSLrMP6nOhDwA6BVNbqoUGDxmCFJ2F8jP0O
+         4CEaF31QBxaROftW+fAE5RLjxeBw3wAY3FBNPoXQI4IXqsVmN9nombJCY/67RpYjiH
+         ZCPpXHq2iiusX3mxlaq0GO8thF+/Pf5k8/rEXhwXjmbqj0JGzIcNKJ0JBkDo6Rd1Sb
+         lLUlFUIOxtasA==
+Message-ID: <fefd9ded-b9d8-3b01-de39-7ff147206c84@kernel.org>
+Date:   Thu, 12 Jan 2023 15:32:36 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tNjOEzZVys9xKjiN"
-Content-Disposition: inline
-In-Reply-To: <d4bdb3920693381794511068f04bf56cf221fb1f.1673380089.git.bristot@kernel.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH 1/2 v2] tools/tracing/rtla: osnoise_hist: use total
+ duration for average calculation
+To:     Andreas Ziegler <br015@umbiko.net>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <f47e877c-c95f-e3e6-b96f-89b0ca582878@kernel.org>
+ <20230103103400.275566-2-br015@umbiko.net>
+Content-Language: en-US
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <20230103103400.275566-2-br015@umbiko.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+On 1/3/23 11:33, Andreas Ziegler wrote:
+> Sampled durations must be weighted by observed quantity, to arrive at a correct
+> average duration value.
+> 
+> Perform calculation of total duration by summing (duration * count).
+> 
+> Fixes: 829a6c0b5698 ("rtla/osnoise: Add the hist mode")
+> Signed-off-by: Andreas Ziegler <br015@umbiko.net>
 
---tNjOEzZVys9xKjiN
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+-- Daniel
 
-On Tue, Jan 10, 2023 at 09:08:07PM +0100, Daniel Bristot de Oliveira wrote:
-> Add a man page for the new rtla hwnoise tool, mostly based in the
-> rtla osnoise top.
->=20
-> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
-> Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Jonathan Corbet <corbet@lwn.net>
 > ---
->  Documentation/tools/rtla/rtla-hwnoise.rst | 107 ++++++++++++++++++++++
->  1 file changed, 107 insertions(+)
->  create mode 100644 Documentation/tools/rtla/rtla-hwnoise.rst
->=20
+> Changes v1 -> v2:
+>  - add 'Fixes' line (Daniel)
+> 
+>  tools/tracing/rtla/src/osnoise_hist.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/tracing/rtla/src/osnoise_hist.c b/tools/tracing/rtla/src/osnoise_hist.c
+> index 5d7ea479ac89..fe34452fc4ec 100644
+> --- a/tools/tracing/rtla/src/osnoise_hist.c
+> +++ b/tools/tracing/rtla/src/osnoise_hist.c
+> @@ -121,6 +121,7 @@ static void osnoise_hist_update_multiple(struct osnoise_tool *tool, int cpu,
+>  {
+>  	struct osnoise_hist_params *params = tool->params;
+>  	struct osnoise_hist_data *data = tool->data;
+> +	unsigned long long total_duration;
+>  	int entries = data->entries;
+>  	int bucket;
+>  	int *hist;
+> @@ -131,10 +132,12 @@ static void osnoise_hist_update_multiple(struct osnoise_tool *tool, int cpu,
+>  	if (data->bucket_size)
+>  		bucket = duration / data->bucket_size;
+>  
+> +	total_duration = duration * count;
+> +
+>  	hist = data->hist[cpu].samples;
+>  	data->hist[cpu].count += count;
+>  	update_min(&data->hist[cpu].min_sample, &duration);
+> -	update_sum(&data->hist[cpu].sum_sample, &duration);
+> +	update_sum(&data->hist[cpu].sum_sample, &total_duration);
+>  	update_max(&data->hist[cpu].max_sample, &duration);
+>  
+>  	if (bucket < entries)
 
-As kernel test robot has reported [1], you seems like forgetting to add the=
- new
-doc to the parent doc's index:
-
----- >8 ----
-diff --git a/Documentation/tools/rtla/index.rst b/Documentation/tools/rtla/=
-index.rst
-index 840f0bf3e8036f..19bda03c68f45f 100644
---- a/Documentation/tools/rtla/index.rst
-+++ b/Documentation/tools/rtla/index.rst
-@@ -11,6 +11,7 @@ behavior on specific hardware.
-    :maxdepth: 1
-=20
-    rtla
-+   rtla-hwnoise
-    rtla-osnoise
-    rtla-osnoise-hist
-    rtla-osnoise-top
-
-Thanks.
-
-[1]: https://lore.kernel.org/linux-doc/202301111416.SZPJ8cq5-lkp@intel.com/
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---tNjOEzZVys9xKjiN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCY7+ItwAKCRD2uYlJVVFO
-oxRyAQCW9G3kBTAnlfkNHWYKj5eGXIX6C+Lh1vLU1K6NF1tbEQEA93SVcO6D/2ws
-rUqbp6andD8pM2Jl4TbPjoHMS1F6xQY=
-=52K4
------END PGP SIGNATURE-----
-
---tNjOEzZVys9xKjiN--
