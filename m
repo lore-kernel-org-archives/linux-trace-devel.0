@@ -2,60 +2,60 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4661C3DA78
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 15 Jan 2023 18:43:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07D1BC3DA78
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 15 Jan 2023 18:44:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231492AbjAOSnZ (ORCPT
+        id S231243AbjAOSoT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 15 Jan 2023 13:43:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41022 "EHLO
+        Sun, 15 Jan 2023 13:44:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231585AbjAOSnV (ORCPT
+        with ESMTP id S231372AbjAOSoS (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 15 Jan 2023 13:43:21 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F51412F12
-        for <linux-trace-devel@vger.kernel.org>; Sun, 15 Jan 2023 10:43:17 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id v10so36844043edi.8
-        for <linux-trace-devel@vger.kernel.org>; Sun, 15 Jan 2023 10:43:17 -0800 (PST)
+        Sun, 15 Jan 2023 13:44:18 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13635F744
+        for <linux-trace-devel@vger.kernel.org>; Sun, 15 Jan 2023 10:44:17 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id 18so38043730edw.7
+        for <linux-trace-devel@vger.kernel.org>; Sun, 15 Jan 2023 10:44:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DwgX/5Ja+MzuaWvrKFGGS5dRAieqTv4wY1MMrFPCotg=;
-        b=o8LzfUHUPTwT9ZhnsvozpI+l+CyExWp2Sm3oWQ1E3F/HptZv7YB07yEjbucJaRHn9c
-         FJ5OZfN3lN2jTX6GcMEh+iQHjc90FMMwYJyijuKTfqOnLdqgtf1OvZdToO0tPV/J9xCf
-         edrW5YcW8gUqZmBuPe6HGheiyd/K3bylWMSuR2ypljqFJUOZwUMDj3dMNQlzUJUWOd8z
-         vrLk111R7M4t6QPnZaayM8GtnxD9MhudOPYFKcsDgki6iEukCX4dAOt6Do8MReTfs2Q4
-         ducBuOMDut548nKkGN04WqWBAw0EJpgil/+yNo7tjOI61tYw2S+m722tgNfncgEzjI91
-         aXgQ==
+        bh=WGu6dqcCWo8A9aq3hiouuLt4xdzX01nM7tdjDxbxg18=;
+        b=KFzczDuAYCjbyXrgXR8yvoemkwD39Af9iI3jOxbF+4XzVZ9AhXfxJh6Hc/meY1hLlc
+         o34gAS8+qUHxj6OgZvgKVsfaN49T2x6LnsOT2UouqwpqtALNu5yPfHEK2uoB03B+O9wx
+         oLZg5HbU4EN7L8BwqSazxZaYQFnqIdRwRCjP5rAX1GpbqjLO3S/skuIBgT2pL15OevG3
+         ZZAHFqGWzX1W+zNxPyi63OYBMgeO1yZULYNJ4DZWLSrAqNVaozkMN1KyTT1PVzxl85TA
+         DuOHPfOatFmC6aSrkzg6HIo4BtIH9Ml+ufza5Yip3EN+sGVz1vOPBH8q0tzk9+G3WuCR
+         YzXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=DwgX/5Ja+MzuaWvrKFGGS5dRAieqTv4wY1MMrFPCotg=;
-        b=hEMNx9TmPNbLXLKwPmvuyWNv7hN6C8FQRKnuMxPYulY950WYTCXe/zRVqQysjcH5GR
-         dnNkVoIEfwYaETdfXDNyOyvgWSOLsgtAA5FPnoWZhHKcuRy9gjdXisWPKgMIc1bRI0dM
-         4rHZP+cIafX/yiMcMhfo8Ue5mtCSYZOBhXx8qfnhhgLQgY7+DW4qJKd21Gn+iO9X43qr
-         LhBoShk2Dj3yragriuiiCCKLm4ScbSJyXnrWhsloj5Wf9y5QVxwv+OpcuQDKOTfvlmsL
-         7YiOm0wY3JgrMaU3w3cLfOb04dcsbZTnGoCHb2+LV+qF4Zu2jvycQMfbrD7ZUQ/p9s2Y
-         x3cA==
-X-Gm-Message-State: AFqh2kqQ3Aowjzy4AuvWu+86wTXGC72pTuIr/4s5GGQ0lxDb1ZSWQ0ul
-        6ceDNYezuT+0MkfF0GsfQtcuvPDcoQU=
-X-Google-Smtp-Source: AMrXdXsUnUxAsrE3LfLU0S5l+RZFEZ6PIY0axX8IiOYlWV+IoV7nYIK1Mfx8bJEtaiTJCGkNp1kYkg==
-X-Received: by 2002:aa7:d599:0:b0:496:b479:e437 with SMTP id r25-20020aa7d599000000b00496b479e437mr31078723edq.27.1673808195640;
-        Sun, 15 Jan 2023 10:43:15 -0800 (PST)
+        bh=WGu6dqcCWo8A9aq3hiouuLt4xdzX01nM7tdjDxbxg18=;
+        b=y3mcks/jMI2jg03seZecsiwdfhX2otDJgCxWoHV1gYZIIirDQ+a6MKzdwwk+cEaHzA
+         ToypZX5wEyRC9NdhWhw0VBbM/U8INK9TjfZm1zuPaYW55VRT2Y3khcpoT444uGBVYJrg
+         u/gfA8N3Z46yxbiGXLimXaHxZvuz+W2CEMt/oH64ok/ee1XuMfhkxwLdE+R6m9vpG+rf
+         J7KKhEPg92KXmmcFz7kiWR0fomVJkrW50pHmAvZ1XRZ11RC3x0nUc5bWYNkHrvfJ/bSN
+         owuB+waOh6lEqYo5dzUYjKpRfPjT6BKu21277RYVqMwZ99L57j3MqlV0ub2TDxB10WQn
+         HXkw==
+X-Gm-Message-State: AFqh2krCVFO5O6+39pknwkCYGSjRudeILTd5ZW+Sx8vjYVhoRQY49aqd
+        aJ9D+NDiJNVfcLgNkIisL1IHaFeDyYo=
+X-Google-Smtp-Source: AMrXdXuLYSMvWB5tu11ibpy9+G6zgXfOuHIBYOLv17Fy0neDRnC+HP4dEvjYimO6tShApbFFnUPdhA==
+X-Received: by 2002:a50:fc10:0:b0:49b:5a1c:9cb5 with SMTP id i16-20020a50fc10000000b0049b5a1c9cb5mr12286419edr.16.1673808255397;
+        Sun, 15 Jan 2023 10:44:15 -0800 (PST)
 Received: from belmeken.. (78-154-14-113.ip.btc-net.bg. [78.154.14.113])
-        by smtp.gmail.com with ESMTPSA id b20-20020aa7c6d4000000b004610899742asm10616552eds.13.2023.01.15.10.43.15
+        by smtp.gmail.com with ESMTPSA id cx26-20020a05640222ba00b0048ec121a52fsm10664192edb.46.2023.01.15.10.44.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Jan 2023 10:43:15 -0800 (PST)
+        Sun, 15 Jan 2023 10:44:15 -0800 (PST)
 From:   Yordan Karadzhov <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     rostedt@goodmis.org, Yordan Karadzhov <y.karadz@gmail.com>
-Subject: [PATCH] kernel-shark: Show multi-line events using the dual marker
-Date:   Sun, 15 Jan 2023 20:43:12 +0200
-Message-Id: <20230115184312.46666-1-y.karadz@gmail.com>
+Subject: [PATCH] kernel-shark: Make the text to be copyable.
+Date:   Sun, 15 Jan 2023 20:44:12 +0200
+Message-Id: <20230115184412.46720-1-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -63,73 +63,157 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Some events (stack traces) have multiple lines, but currently the list
-view of each event is just a single line. Make sure that the cells of
-the records, selected with the markers, are resized such that all lines
-are shown into the table.
+Implement an item delegate class for the Table widget. This will
+make possible the text of the records to be selected and copied
+so that it can be pasted into another windows.
 
 Signed-off-by: Yordan Karadzhov <y.karadz@gmail.com>
 ---
- src/KsTraceViewer.cpp | 23 ++++++++++++++++++++++-
- src/KsTraceViewer.hpp |  2 ++
- 2 files changed, 24 insertions(+), 1 deletion(-)
+ src/KsModels.cpp      | 14 ++++++++++++++
+ src/KsModels.hpp      |  2 ++
+ src/KsTraceViewer.cpp | 27 ++++++++++++++++++++++++---
+ src/KsTraceViewer.hpp | 22 ++++++++++++++++++++++
+ 4 files changed, 62 insertions(+), 3 deletions(-)
 
+diff --git a/src/KsModels.cpp b/src/KsModels.cpp
+index df8373e..e10f411 100644
+--- a/src/KsModels.cpp
++++ b/src/KsModels.cpp
+@@ -482,6 +482,20 @@ size_t KsViewModel::search(int column,
+ 	return matchList->count();
+ }
+ 
++/** @brief Reimplements handler to return a flags that enables the item
++ *	   (ItemIsEnabled) and allows it to be selecte.
++ *
++ * @param index: The index of the item.
++ *
++ * @returns Returns the item flags for the given index.
++ */
++Qt::ItemFlags KsViewModel::flags(const QModelIndex &index) const {
++	if (!index.isValid())
++	    return Qt::ItemIsEnabled;
++
++	return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
++}
++
+ /** Create a default (empty) KsFilterProxyModel object. */
+ KsGraphModel::KsGraphModel(QObject *parent)
+ : QAbstractTableModel(parent)
+diff --git a/src/KsModels.hpp b/src/KsModels.hpp
+index 3a6d3f1..2883ce3 100644
+--- a/src/KsModels.hpp
++++ b/src/KsModels.hpp
+@@ -130,6 +130,8 @@ public:
+ 		TRACE_VIEW_N_COLUMNS,
+ 	};
+ 
++	Qt::ItemFlags flags(const QModelIndex &index) const;
++
+ private:
+ 	void _updateHeader();
+ 
 diff --git a/src/KsTraceViewer.cpp b/src/KsTraceViewer.cpp
-index be0a419..12a95a7 100644
+index 12a95a7..05f5461 100644
 --- a/src/KsTraceViewer.cpp
 +++ b/src/KsTraceViewer.cpp
-@@ -110,6 +110,25 @@ KsTraceViewer::KsTraceViewer(QWidget *parent)
- 	connect(&_searchFSM._searchRestartButton,	&QPushButton::pressed,
- 		this,				&KsTraceViewer::_searchContinue);
+@@ -19,6 +19,26 @@
+ #include "KsTraceViewer.hpp"
+ #include "KsWidgetsLib.hpp"
  
-+	int defaultRowHeight = FONT_HEIGHT * 1.25;
-+	auto lamSelectionChanged = [this, defaultRowHeight] (const QItemSelection &selected,
-+							     const QItemSelection &deselected) {
-+		if (deselected.count()) {
-+			_view.verticalHeader()->resizeSection(deselected.indexes().first().row(),
-+							      defaultRowHeight);
-+		}
-+		if (selected.count()) {
-+			_view.resizeRowToContents(selected.indexes().first().row());
-+		}
++/**
++ * Reimplemented handler for creating delegate widget.
++ */
++QWidget *KsTableItemDelegate::createEditor(QWidget *parent,
++					   const QStyleOptionViewItem &option,
++					   const QModelIndex &index) const {
++	QTextEdit *edit = new QTextEdit(parent);
++	edit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
++	edit->setReadOnly(true);
++	return edit;
++}
 +
-+		if (_mState->passiveMarker().isVisible()) {
-+			QModelIndex index = _model.index(_mState->passiveMarker()._pos, 0);
-+			_view.resizeRowToContents(_proxyModel.mapFromSource(index).row());
-+		}
-+	};
-+	connect(&_selectionModel,	&QItemSelectionModel::selectionChanged,
-+		lamSelectionChanged);
++/**
++ * Reimplemented handler setting the data shown by the delegate widget.
++ */
++void KsTableItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const {
++	QTextEdit *textEditor = qobject_cast<QTextEdit *>(editor);
++	textEditor->setPlainText(_model->getValueStr(index.column(), index.row()));
++}
 +
- 	_searchFSM.placeInToolBar(&_toolbar);
+ /**
+  * Reimplemented handler for mouse press events. Right mouse click events will
+  * be ignored. This is done because we want the Right click is being used to
+@@ -47,13 +67,13 @@ void KsTableView::scrollTo(const QModelIndex &index, ScrollHint hint)
+ 	QTableView::scrollTo(index, hint);
+ }
  
- 	/*
-@@ -128,13 +147,15 @@ KsTraceViewer::KsTraceViewer(QWidget *parent)
- 	_view.setEditTriggers(QAbstractItemView::NoEditTriggers);
+-
+ /** Create a default (empty) Trace viewer widget. */
+ KsTraceViewer::KsTraceViewer(QWidget *parent)
+ : KsWidgetsLib::KsDataWidget(parent),
+   _view(this),
+   _model(this),
+   _proxyModel(this),
++  _itemDelegate(&_model, this),
+   _toolbar(this),
+   _labelSearch("Search: Column", this),
+   _labelGrFollows("Graph follows  ", this),
+@@ -144,7 +164,7 @@ KsTraceViewer::KsTraceViewer(QWidget *parent)
+ 	/* Initialize the trace viewer. */
+ 	_view.horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+ 	_view.verticalHeader()->setVisible(false);
+-	_view.setEditTriggers(QAbstractItemView::NoEditTriggers);
++	_view.setEditTriggers(QAbstractItemView::DoubleClicked);
  	_view.setSelectionBehavior(QAbstractItemView::SelectRows);
  	_view.setSelectionMode(QAbstractItemView::SingleSelection);
--	_view.verticalHeader()->setDefaultSectionSize(FONT_HEIGHT * 1.25);
-+	_view.verticalHeader()->setDefaultSectionSize(defaultRowHeight);
- 	_view.setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+ 	_view.verticalHeader()->setDefaultSectionSize(defaultRowHeight);
+@@ -152,7 +172,8 @@ KsTraceViewer::KsTraceViewer(QWidget *parent)
  	_view.horizontalHeader()->setFont(
  		QFontDatabase::systemFont(QFontDatabase::GeneralFont));
  
- 	 _proxyModel.setSource(&_model);
-+	_selectionModel.setModel(&_proxyModel);
+-	 _proxyModel.setSource(&_model);
++	_view.setItemDelegate(&_itemDelegate);
++	_proxyModel.setSource(&_model);
+ 	_selectionModel.setModel(&_proxyModel);
  	_view.setModel(&_proxyModel);
-+	_view.setSelectionModel(&_selectionModel);
- 	connect(&_proxyModel, &QAbstractItemModel::modelReset,
- 		this, &KsTraceViewer::_searchReset);
- 
+ 	_view.setSelectionModel(&_selectionModel);
 diff --git a/src/KsTraceViewer.hpp b/src/KsTraceViewer.hpp
-index f3979a6..ae1929d 100644
+index ae1929d..99e4d38 100644
 --- a/src/KsTraceViewer.hpp
 +++ b/src/KsTraceViewer.hpp
-@@ -106,6 +106,8 @@ private:
+@@ -22,6 +22,26 @@
+ #include "KsDualMarker.hpp"
+ #include "KsWidgetsLib.hpp"
  
- 	KsFilterProxyModel	_proxyModel;
++/**
++ * Class used to customize the display of the data items from the model.
++ */
++class KsTableItemDelegate : public QItemDelegate
++{
++public:
++	/** Create KsTableItemDelegate. */
++	KsTableItemDelegate(KsViewModel *model, QWidget *parent = nullptr)
++	: QItemDelegate(parent),
++	  _model(model) {};
++
++private:
++	QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
++			      const QModelIndex &index) const override;
++
++	void setEditorData(QWidget *editor, const QModelIndex &index) const override;
++
++	KsViewModel *_model;
++};
++
+ /**
+  * Table View class, needed in order to reimplemented the handler for mouse
+  * press events.
+@@ -108,6 +128,8 @@ private:
  
-+	QItemSelectionModel 	_selectionModel;
+ 	QItemSelectionModel 	_selectionModel;
+ 
++	KsTableItemDelegate	_itemDelegate;
 +
  	QToolBar	_toolbar;
  
