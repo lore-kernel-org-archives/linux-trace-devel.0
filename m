@@ -2,222 +2,94 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07D1BC3DA78
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 15 Jan 2023 18:44:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15CE4C54EBE
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 16 Jan 2023 16:28:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbjAOSoT (ORCPT
+        id S233240AbjAPQ20 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 15 Jan 2023 13:44:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41258 "EHLO
+        Mon, 16 Jan 2023 11:28:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231372AbjAOSoS (ORCPT
+        with ESMTP id S233052AbjAPQ2D (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 15 Jan 2023 13:44:18 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13635F744
-        for <linux-trace-devel@vger.kernel.org>; Sun, 15 Jan 2023 10:44:17 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id 18so38043730edw.7
-        for <linux-trace-devel@vger.kernel.org>; Sun, 15 Jan 2023 10:44:17 -0800 (PST)
+        Mon, 16 Jan 2023 11:28:03 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BC72CFE9;
+        Mon, 16 Jan 2023 08:16:14 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id k22-20020a05600c1c9600b003d1ee3a6289so22532389wms.2;
+        Mon, 16 Jan 2023 08:16:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WGu6dqcCWo8A9aq3hiouuLt4xdzX01nM7tdjDxbxg18=;
-        b=KFzczDuAYCjbyXrgXR8yvoemkwD39Af9iI3jOxbF+4XzVZ9AhXfxJh6Hc/meY1hLlc
-         o34gAS8+qUHxj6OgZvgKVsfaN49T2x6LnsOT2UouqwpqtALNu5yPfHEK2uoB03B+O9wx
-         oLZg5HbU4EN7L8BwqSazxZaYQFnqIdRwRCjP5rAX1GpbqjLO3S/skuIBgT2pL15OevG3
-         ZZAHFqGWzX1W+zNxPyi63OYBMgeO1yZULYNJ4DZWLSrAqNVaozkMN1KyTT1PVzxl85TA
-         DuOHPfOatFmC6aSrkzg6HIo4BtIH9Ml+ufza5Yip3EN+sGVz1vOPBH8q0tzk9+G3WuCR
-         YzXQ==
+        bh=f/E+8L2nNxeWkA6s3DUbOSQakN8jVIdhHcZDVIHwYps=;
+        b=VR7Ib1BBKuYLVSp3WIWB4DRQO+8D4J76bPB7KlZ3Jt4l0TERYiSe7a4+8GA21ZG2+X
+         co3XvgAsRR9S1UpfeVUfczUZe5h9Vtcsxbrq21VDtSv/J0yEFn99C64WLd5sdWH/MLPw
+         HlkoN0CsB0JMfw7okqZwRUEbz5jPdzxuBPBVQUH98Ub6rIeUYxChkzLvzjfPCvrgLQwm
+         F05PLtcBRkZgJbNvyXgbCmXDB4U/LVkh9F6r1IBWbQg/27hQ9ctCEV/UQ18EDT8uWAtM
+         ZGNJex0qAGLce+9EFs2Ht8SUhFyoJk9YVCUAELtPhl92CxDYgVkkIdCoJcN2UMU62ffC
+         k0Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=WGu6dqcCWo8A9aq3hiouuLt4xdzX01nM7tdjDxbxg18=;
-        b=y3mcks/jMI2jg03seZecsiwdfhX2otDJgCxWoHV1gYZIIirDQ+a6MKzdwwk+cEaHzA
-         ToypZX5wEyRC9NdhWhw0VBbM/U8INK9TjfZm1zuPaYW55VRT2Y3khcpoT444uGBVYJrg
-         u/gfA8N3Z46yxbiGXLimXaHxZvuz+W2CEMt/oH64ok/ee1XuMfhkxwLdE+R6m9vpG+rf
-         J7KKhEPg92KXmmcFz7kiWR0fomVJkrW50pHmAvZ1XRZ11RC3x0nUc5bWYNkHrvfJ/bSN
-         owuB+waOh6lEqYo5dzUYjKpRfPjT6BKu21277RYVqMwZ99L57j3MqlV0ub2TDxB10WQn
-         HXkw==
-X-Gm-Message-State: AFqh2krCVFO5O6+39pknwkCYGSjRudeILTd5ZW+Sx8vjYVhoRQY49aqd
-        aJ9D+NDiJNVfcLgNkIisL1IHaFeDyYo=
-X-Google-Smtp-Source: AMrXdXuLYSMvWB5tu11ibpy9+G6zgXfOuHIBYOLv17Fy0neDRnC+HP4dEvjYimO6tShApbFFnUPdhA==
-X-Received: by 2002:a50:fc10:0:b0:49b:5a1c:9cb5 with SMTP id i16-20020a50fc10000000b0049b5a1c9cb5mr12286419edr.16.1673808255397;
-        Sun, 15 Jan 2023 10:44:15 -0800 (PST)
-Received: from belmeken.. (78-154-14-113.ip.btc-net.bg. [78.154.14.113])
-        by smtp.gmail.com with ESMTPSA id cx26-20020a05640222ba00b0048ec121a52fsm10664192edb.46.2023.01.15.10.44.14
+        bh=f/E+8L2nNxeWkA6s3DUbOSQakN8jVIdhHcZDVIHwYps=;
+        b=NfzrG4w2l0pQ5xnW0RyN3v4EOjhrzE99+AbzHbWZwooEiemY1Qp4nwXHgL9bgJRk96
+         azAGMz2TX6W9mZkpCEbgcOcqe4V/r7mRh9gavUj0vnh/9qlkkconK5obY14s0qNFBrKz
+         oZ/U4BidIMAGgB81f1Ln/MKlFYEbaIO4Z0dVtolDb9zx0gsei0DsH4zqrtNBFrRiqpyf
+         +1mg5B2/HcMpEeQ5d3gIC/sOJokCFoQZLgO4eUjJewAhrzfWnFoSyeF+H9PAlqkDXKbM
+         hRa0gKTT9G4CmL2KjNn9l/7rBzYVRnW0etAK6gbIQeoxnr5a2F+WvsKWrumHysfkJNe5
+         2F9A==
+X-Gm-Message-State: AFqh2kqDrwBj1Ej7Wckj8w4vt9pczlnzsdf7UrLXt0OI3dDJPf2ipurH
+        J/zDVjgHdypyYiUQ9HmtcjrQm2nDiWfGZrsq
+X-Google-Smtp-Source: AMrXdXsgdvbCYVjrLvXsZb1bY+dKxiaYrFzVfelXx3yOCP1qxGF3nM9FHiJjEyC4aQYxfnFmCmKhEA==
+X-Received: by 2002:a05:600c:540c:b0:3cf:7704:50ce with SMTP id he12-20020a05600c540c00b003cf770450cemr7266wmb.38.1673885773414;
+        Mon, 16 Jan 2023 08:16:13 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id s7-20020a1cf207000000b003d98438a43asm32545526wmc.34.2023.01.16.08.16.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Jan 2023 10:44:15 -0800 (PST)
-From:   Yordan Karadzhov <y.karadz@gmail.com>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     rostedt@goodmis.org, Yordan Karadzhov <y.karadz@gmail.com>
-Subject: [PATCH] kernel-shark: Make the text to be copyable.
-Date:   Sun, 15 Jan 2023 20:44:12 +0200
-Message-Id: <20230115184412.46720-1-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.39.0
+        Mon, 16 Jan 2023 08:16:12 -0800 (PST)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-devel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] rv: remove redundant initialization of pointer ptr
+Date:   Mon, 16 Jan 2023 16:16:12 +0000
+Message-Id: <20230116161612.77192-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Implement an item delegate class for the Table widget. This will
-make possible the text of the records to be selected and copied
-so that it can be pasted into another windows.
+The pointer ptr is being initialized with a value that is never read,
+it is being updated later on a call to strim. Remove the extraneous
+initialization.
 
-Signed-off-by: Yordan Karadzhov <y.karadz@gmail.com>
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 ---
- src/KsModels.cpp      | 14 ++++++++++++++
- src/KsModels.hpp      |  2 ++
- src/KsTraceViewer.cpp | 27 ++++++++++++++++++++++++---
- src/KsTraceViewer.hpp | 22 ++++++++++++++++++++++
- 4 files changed, 62 insertions(+), 3 deletions(-)
+ kernel/trace/rv/rv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/KsModels.cpp b/src/KsModels.cpp
-index df8373e..e10f411 100644
---- a/src/KsModels.cpp
-+++ b/src/KsModels.cpp
-@@ -482,6 +482,20 @@ size_t KsViewModel::search(int column,
- 	return matchList->count();
- }
+diff --git a/kernel/trace/rv/rv.c b/kernel/trace/rv/rv.c
+index 6c97cc2d754a..7e9061828c24 100644
+--- a/kernel/trace/rv/rv.c
++++ b/kernel/trace/rv/rv.c
+@@ -516,7 +516,7 @@ static ssize_t enabled_monitors_write(struct file *filp, const char __user *user
+ 	struct rv_monitor_def *mdef;
+ 	int retval = -EINVAL;
+ 	bool enable = true;
+-	char *ptr = buff;
++	char *ptr;
+ 	int len;
  
-+/** @brief Reimplements handler to return a flags that enables the item
-+ *	   (ItemIsEnabled) and allows it to be selecte.
-+ *
-+ * @param index: The index of the item.
-+ *
-+ * @returns Returns the item flags for the given index.
-+ */
-+Qt::ItemFlags KsViewModel::flags(const QModelIndex &index) const {
-+	if (!index.isValid())
-+	    return Qt::ItemIsEnabled;
-+
-+	return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
-+}
-+
- /** Create a default (empty) KsFilterProxyModel object. */
- KsGraphModel::KsGraphModel(QObject *parent)
- : QAbstractTableModel(parent)
-diff --git a/src/KsModels.hpp b/src/KsModels.hpp
-index 3a6d3f1..2883ce3 100644
---- a/src/KsModels.hpp
-+++ b/src/KsModels.hpp
-@@ -130,6 +130,8 @@ public:
- 		TRACE_VIEW_N_COLUMNS,
- 	};
- 
-+	Qt::ItemFlags flags(const QModelIndex &index) const;
-+
- private:
- 	void _updateHeader();
- 
-diff --git a/src/KsTraceViewer.cpp b/src/KsTraceViewer.cpp
-index 12a95a7..05f5461 100644
---- a/src/KsTraceViewer.cpp
-+++ b/src/KsTraceViewer.cpp
-@@ -19,6 +19,26 @@
- #include "KsTraceViewer.hpp"
- #include "KsWidgetsLib.hpp"
- 
-+/**
-+ * Reimplemented handler for creating delegate widget.
-+ */
-+QWidget *KsTableItemDelegate::createEditor(QWidget *parent,
-+					   const QStyleOptionViewItem &option,
-+					   const QModelIndex &index) const {
-+	QTextEdit *edit = new QTextEdit(parent);
-+	edit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-+	edit->setReadOnly(true);
-+	return edit;
-+}
-+
-+/**
-+ * Reimplemented handler setting the data shown by the delegate widget.
-+ */
-+void KsTableItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const {
-+	QTextEdit *textEditor = qobject_cast<QTextEdit *>(editor);
-+	textEditor->setPlainText(_model->getValueStr(index.column(), index.row()));
-+}
-+
- /**
-  * Reimplemented handler for mouse press events. Right mouse click events will
-  * be ignored. This is done because we want the Right click is being used to
-@@ -47,13 +67,13 @@ void KsTableView::scrollTo(const QModelIndex &index, ScrollHint hint)
- 	QTableView::scrollTo(index, hint);
- }
- 
--
- /** Create a default (empty) Trace viewer widget. */
- KsTraceViewer::KsTraceViewer(QWidget *parent)
- : KsWidgetsLib::KsDataWidget(parent),
-   _view(this),
-   _model(this),
-   _proxyModel(this),
-+  _itemDelegate(&_model, this),
-   _toolbar(this),
-   _labelSearch("Search: Column", this),
-   _labelGrFollows("Graph follows  ", this),
-@@ -144,7 +164,7 @@ KsTraceViewer::KsTraceViewer(QWidget *parent)
- 	/* Initialize the trace viewer. */
- 	_view.horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
- 	_view.verticalHeader()->setVisible(false);
--	_view.setEditTriggers(QAbstractItemView::NoEditTriggers);
-+	_view.setEditTriggers(QAbstractItemView::DoubleClicked);
- 	_view.setSelectionBehavior(QAbstractItemView::SelectRows);
- 	_view.setSelectionMode(QAbstractItemView::SingleSelection);
- 	_view.verticalHeader()->setDefaultSectionSize(defaultRowHeight);
-@@ -152,7 +172,8 @@ KsTraceViewer::KsTraceViewer(QWidget *parent)
- 	_view.horizontalHeader()->setFont(
- 		QFontDatabase::systemFont(QFontDatabase::GeneralFont));
- 
--	 _proxyModel.setSource(&_model);
-+	_view.setItemDelegate(&_itemDelegate);
-+	_proxyModel.setSource(&_model);
- 	_selectionModel.setModel(&_proxyModel);
- 	_view.setModel(&_proxyModel);
- 	_view.setSelectionModel(&_selectionModel);
-diff --git a/src/KsTraceViewer.hpp b/src/KsTraceViewer.hpp
-index ae1929d..99e4d38 100644
---- a/src/KsTraceViewer.hpp
-+++ b/src/KsTraceViewer.hpp
-@@ -22,6 +22,26 @@
- #include "KsDualMarker.hpp"
- #include "KsWidgetsLib.hpp"
- 
-+/**
-+ * Class used to customize the display of the data items from the model.
-+ */
-+class KsTableItemDelegate : public QItemDelegate
-+{
-+public:
-+	/** Create KsTableItemDelegate. */
-+	KsTableItemDelegate(KsViewModel *model, QWidget *parent = nullptr)
-+	: QItemDelegate(parent),
-+	  _model(model) {};
-+
-+private:
-+	QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
-+			      const QModelIndex &index) const override;
-+
-+	void setEditorData(QWidget *editor, const QModelIndex &index) const override;
-+
-+	KsViewModel *_model;
-+};
-+
- /**
-  * Table View class, needed in order to reimplemented the handler for mouse
-  * press events.
-@@ -108,6 +128,8 @@ private:
- 
- 	QItemSelectionModel 	_selectionModel;
- 
-+	KsTableItemDelegate	_itemDelegate;
-+
- 	QToolBar	_toolbar;
- 
- 	QLabel		_labelSearch, _labelGrFollows;
+ 	if (count < 1 || count > MAX_RV_MONITOR_NAME_SIZE + 1)
 -- 
-2.38.1
+2.30.2
 
