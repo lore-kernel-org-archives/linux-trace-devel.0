@@ -2,94 +2,90 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15CE4C54EBE
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 16 Jan 2023 16:28:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E1B6C46467
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 16 Jan 2023 17:23:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233240AbjAPQ20 (ORCPT
+        id S234467AbjAPRXl (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 16 Jan 2023 11:28:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43060 "EHLO
+        Mon, 16 Jan 2023 12:23:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233052AbjAPQ2D (ORCPT
+        with ESMTP id S234652AbjAPRWo (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 16 Jan 2023 11:28:03 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BC72CFE9;
-        Mon, 16 Jan 2023 08:16:14 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id k22-20020a05600c1c9600b003d1ee3a6289so22532389wms.2;
-        Mon, 16 Jan 2023 08:16:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=f/E+8L2nNxeWkA6s3DUbOSQakN8jVIdhHcZDVIHwYps=;
-        b=VR7Ib1BBKuYLVSp3WIWB4DRQO+8D4J76bPB7KlZ3Jt4l0TERYiSe7a4+8GA21ZG2+X
-         co3XvgAsRR9S1UpfeVUfczUZe5h9Vtcsxbrq21VDtSv/J0yEFn99C64WLd5sdWH/MLPw
-         HlkoN0CsB0JMfw7okqZwRUEbz5jPdzxuBPBVQUH98Ub6rIeUYxChkzLvzjfPCvrgLQwm
-         F05PLtcBRkZgJbNvyXgbCmXDB4U/LVkh9F6r1IBWbQg/27hQ9ctCEV/UQ18EDT8uWAtM
-         ZGNJex0qAGLce+9EFs2Ht8SUhFyoJk9YVCUAELtPhl92CxDYgVkkIdCoJcN2UMU62ffC
-         k0Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=f/E+8L2nNxeWkA6s3DUbOSQakN8jVIdhHcZDVIHwYps=;
-        b=NfzrG4w2l0pQ5xnW0RyN3v4EOjhrzE99+AbzHbWZwooEiemY1Qp4nwXHgL9bgJRk96
-         azAGMz2TX6W9mZkpCEbgcOcqe4V/r7mRh9gavUj0vnh/9qlkkconK5obY14s0qNFBrKz
-         oZ/U4BidIMAGgB81f1Ln/MKlFYEbaIO4Z0dVtolDb9zx0gsei0DsH4zqrtNBFrRiqpyf
-         +1mg5B2/HcMpEeQ5d3gIC/sOJokCFoQZLgO4eUjJewAhrzfWnFoSyeF+H9PAlqkDXKbM
-         hRa0gKTT9G4CmL2KjNn9l/7rBzYVRnW0etAK6gbIQeoxnr5a2F+WvsKWrumHysfkJNe5
-         2F9A==
-X-Gm-Message-State: AFqh2kqDrwBj1Ej7Wckj8w4vt9pczlnzsdf7UrLXt0OI3dDJPf2ipurH
-        J/zDVjgHdypyYiUQ9HmtcjrQm2nDiWfGZrsq
-X-Google-Smtp-Source: AMrXdXsgdvbCYVjrLvXsZb1bY+dKxiaYrFzVfelXx3yOCP1qxGF3nM9FHiJjEyC4aQYxfnFmCmKhEA==
-X-Received: by 2002:a05:600c:540c:b0:3cf:7704:50ce with SMTP id he12-20020a05600c540c00b003cf770450cemr7266wmb.38.1673885773414;
-        Mon, 16 Jan 2023 08:16:13 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id s7-20020a1cf207000000b003d98438a43asm32545526wmc.34.2023.01.16.08.16.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Jan 2023 08:16:12 -0800 (PST)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Mon, 16 Jan 2023 12:22:44 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D1F34C1A;
+        Mon, 16 Jan 2023 09:00:48 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 54134B8108E;
+        Mon, 16 Jan 2023 17:00:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7A66C433F0;
+        Mon, 16 Jan 2023 17:00:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1673888446;
+        bh=JN7BAhi05lA95z4XwJ24gNQ7l0Zg5HPuQNnc4W+KX58=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jywSVsZc2pvRwBNd9UrHuDujYYBdVtztaa+fVdCBbxh+9PkpmyP0QIFaj65+2lKU7
+         L7JUhG5qlL59BDAU83vMsn07OYq9b3ag4ksIkecxvSRe1Y3jFGOeLg8QKC8xVEP2SP
+         Kpw82nLycbLY8s6ifegQGaeWPacqODNIfk1CRexc=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        patches@lists.linux.dev, Ben Hutchings <ben@decadent.org.uk>,
+        Salvatore Bonaccorso <carnil@debian.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
         linux-trace-devel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] rv: remove redundant initialization of pointer ptr
-Date:   Mon, 16 Jan 2023 16:16:12 +0000
-Message-Id: <20230116161612.77192-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH 4.14 001/338] libtraceevent: Fix build with binutils 2.35
+Date:   Mon, 16 Jan 2023 16:47:54 +0100
+Message-Id: <20230116154820.749600609@linuxfoundation.org>
+X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20230116154820.689115727@linuxfoundation.org>
+References: <20230116154820.689115727@linuxfoundation.org>
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The pointer ptr is being initialized with a value that is never read,
-it is being updated later on a call to strim. Remove the extraneous
-initialization.
+From: Ben Hutchings <ben@decadent.org.uk>
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+commit 39efdd94e314336f4acbac4c07e0f37bdc3bef71 upstream.
+
+In binutils 2.35, 'nm -D' changed to show symbol versions along with
+symbol names, with the usual @@ separator.  When generating
+libtraceevent-dynamic-list we need just the names, so strip off the
+version suffix if present.
+
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+Tested-by: Salvatore Bonaccorso <carnil@debian.org>
+Reviewed-by: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-trace-devel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/trace/rv/rv.c | 2 +-
+ tools/lib/traceevent/Makefile |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/trace/rv/rv.c b/kernel/trace/rv/rv.c
-index 6c97cc2d754a..7e9061828c24 100644
---- a/kernel/trace/rv/rv.c
-+++ b/kernel/trace/rv/rv.c
-@@ -516,7 +516,7 @@ static ssize_t enabled_monitors_write(struct file *filp, const char __user *user
- 	struct rv_monitor_def *mdef;
- 	int retval = -EINVAL;
- 	bool enable = true;
--	char *ptr = buff;
-+	char *ptr;
- 	int len;
- 
- 	if (count < 1 || count > MAX_RV_MONITOR_NAME_SIZE + 1)
--- 
-2.30.2
+--- a/tools/lib/traceevent/Makefile
++++ b/tools/lib/traceevent/Makefile
+@@ -263,7 +263,7 @@ define do_generate_dynamic_list_file
+ 	xargs echo "U w W" | tr 'w ' 'W\n' | sort -u | xargs echo`;\
+ 	if [ "$$symbol_type" = "U W" ];then				\
+ 		(echo '{';						\
+-		$(NM) -u -D $1 | awk 'NF>1 {print "\t"$$2";"}' | sort -u;\
++		$(NM) -u -D $1 | awk 'NF>1 {sub("@.*", "", $$2); print "\t"$$2";"}' | sort -u;\
+ 		echo '};';						\
+ 		) > $2;							\
+ 	else								\
+
 
