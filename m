@@ -2,164 +2,77 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9460C6379F
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 17 Jan 2023 16:36:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B727C004D4
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Jan 2023 21:11:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232570AbjAQQg1 (ORCPT
+        id S229699AbjASVLt (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 17 Jan 2023 11:36:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45230 "EHLO
+        Thu, 19 Jan 2023 16:11:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231829AbjAQQf5 (ORCPT
+        with ESMTP id S229826AbjASVKT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 17 Jan 2023 11:35:57 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C3343458
-        for <linux-trace-devel@vger.kernel.org>; Tue, 17 Jan 2023 08:35:49 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B1DAF614B7
-        for <linux-trace-devel@vger.kernel.org>; Tue, 17 Jan 2023 16:35:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96D75C433EF;
-        Tue, 17 Jan 2023 16:35:47 +0000 (UTC)
-Date:   Tue, 17 Jan 2023 11:35:45 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc:     Ross Zwisler <zwisler@google.com>
-Subject: [PATCH] libtracefs: Add stacktrace to tracefs_sql()
-Message-ID: <20230117113545.5effb1dc@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 19 Jan 2023 16:10:19 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78AE4A5CF1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 19 Jan 2023 13:03:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+        Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:Sender:
+        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=KsVxYe493tx3OaArUzMAblM3SgjynNuIVghAlIMVXNI=;
+        t=1674162210; x=1675371810; b=AuB2zR9O77R1lxgKI9lhyHD5Ec6MovojWHQ2IcGV+rD3LJK
+        9by7Y15uBrM0IodaHMJCpoEvyoAi/4lmvdlbTiR/o08YTFqrTwT2rPGNZhbKcHQ1KzvsMJ7pdrxhG
+        0Ak6TpMyQdsglfrI6ORP1IPtNllKdO1GqHblA3Aob1ZrEW5KpTT0ljDNGoY4HPDlnkeXyhcV1o3wT
+        Yb+2snSLSkITG771dAcKyzvVOleiYKd4qw9Ng0o1N5PxKcdbTS8A+H4i+vx5Fo8TVpfjUdWC3lMl2
+        IeuGvsZBEilqkFenKuo1X2TfAYQTdGfg5hgVQYEIAAWrbln0TC2wTtGSZL3h+PEg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.96)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1pIc4G-006fOB-1a;
+        Thu, 19 Jan 2023 22:03:28 +0100
+Message-ID: <d1ab88e414c66197163b80951fcf8639fb3d8f89.camel@sipsolutions.net>
+Subject: Re: [PATCH] trace-cmd record: Verify that splice works before using
+ it
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Date:   Thu, 19 Jan 2023 22:03:27 +0100
+In-Reply-To: <20220608130527.26e50cba@gandalf.local.home>
+References: <20220608130527.26e50cba@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.3 (3.46.3-1.fc37) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Wed, 2022-06-08 at 13:05 -0400, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+>=20
+> Add a test to make sure that splice works on the source directory before
+> using it, and if not automatically switch over to read/write method.
+>=20
+> Suggested-by: Johannes Berg <johannes@sipsolutions.net>
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=3D213659
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+> Johannes, can you test this?
+> I want to make sure that it fixes the issue.
+>=20
 
-Now that the kernel can pass stacktraces from the start to end of a
-synthetic event, update the tracefs_sql() (and by doing so sqlhist) to
-handle stacktrace.
+Umm, yeah, long time ago. Sorry, I've been meaning to do that, but it
+isn't easy, so I kept pushing it off.
 
-A new keyword STACKTRACE is added, so the following will now work:
+My use case for this was UML with hostfs, which I've since fixed (kernel
+upstream commit 1568cb0e6d97 ("hostfs: support splice_write"); I can
+revert that easily of course, but then I still have to build my own
+trace-cmd with that patch... But that needs libtracefs 1.6 which even
+Fedora doesn't ship.
 
-  sqlhist -e -n block_lat 'SELECT (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) AS delta,start.STACKTRACE AS stack
-     FROM sched_switch AS start JOIN sched_switch AS end ON end.next_pid = start.prev_pid
-     WHERE start.prev_state == 1 && start.prev_prio < 100'
+Given that you've merged the patch already, I think I'll just give up on
+testing it, sorry about that.
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- Documentation/libtracefs-sql.txt | 13 +++++++++++++
- include/tracefs.h                |  2 ++
- src/tracefs-filter.c             | 10 ++++++++++
- src/tracefs-hist.c               |  3 ++-
- src/tracefs-sqlhist.c            |  5 ++++-
- 5 files changed, 31 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/libtracefs-sql.txt b/Documentation/libtracefs-sql.txt
-index 6d606db..62fd771 100644
---- a/Documentation/libtracefs-sql.txt
-+++ b/Documentation/libtracefs-sql.txt
-@@ -162,6 +162,19 @@ select start.pid, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sche
-    WHERE start.prio < 100 || end.prev_prio < 100
- --
- 
-+If the kernel supports it, you can pass around a stacktrace between events.
-+
-+[source, c]
-+--
-+select start.prev_pid as pid, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as delta, start.STACKTRACE as stack
-+   FROM sched_switch as start JOIN sched_switch as end ON start.prev_pid = end.next_pid
-+   WHERE start.prev_state == 2
-+--
-+
-+The above will record a stacktrace when a task is in the UNINTERRUPTIBLE (blocked) state, and trigger
-+the synthetic event when it is scheduled back in, recording the time delta that it was blocked for.
-+It will record the stacktrace of where it was when it scheduled out along with the delta.
-+
- 
- KEYWORDS AS EVENT FIELDS
- ------------------------
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 3547b5a..23b3f8c 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -553,6 +553,8 @@ int tracefs_event_verify_filter(struct tep_event *event, const char *filter,
- #define TRACEFS_TIMESTAMP "common_timestamp"
- #define TRACEFS_TIMESTAMP_USECS "common_timestamp.usecs"
- 
-+#define TRACEFS_STACKTRACE "stacktrace"
-+
- enum tracefs_synth_handler {
- 	TRACEFS_SYNTH_HANDLE_NONE	= 0,
- 	TRACEFS_SYNTH_HANDLE_MATCH,
-diff --git a/src/tracefs-filter.c b/src/tracefs-filter.c
-index a3dd77b..068329e 100644
---- a/src/tracefs-filter.c
-+++ b/src/tracefs-filter.c
-@@ -41,6 +41,13 @@ static const struct tep_format_field common_comm = {
- 	.size			= 16,
- };
- 
-+static const struct tep_format_field stacktrace = {
-+	.type			= "unsigned long[]",
-+	.name			= "stacktrace",
-+	.size			= 4,
-+	.flags			= TEP_FIELD_IS_ARRAY | TEP_FIELD_IS_DYNAMIC,
-+};
-+
- /*
-  * This also must be able to accept fields that are OK via the histograms,
-  * such as common_timestamp.
-@@ -56,6 +63,9 @@ static const struct tep_format_field *get_event_field(struct tep_event *event,
- 	if (!strcmp(field_name, TRACEFS_TIMESTAMP_USECS))
- 		return &common_timestamp_usecs;
- 
-+	if (!strcmp(field_name, TRACEFS_STACKTRACE))
-+		return &stacktrace;
-+
- 	field = tep_find_any_field(event, field_name);
- 	if (!field && (!strcmp(field_name, "COMM") || !strcmp(field_name, "comm")))
- 		return &common_comm;
-diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index fb6231e..1918670 100644
---- a/src/tracefs-hist.c
-+++ b/src/tracefs-hist.c
-@@ -915,7 +915,8 @@ static char *add_synth_field(const struct tep_format_field *field,
- 	bool sign;
- 
- 	if (field->flags & TEP_FIELD_IS_ARRAY) {
--		str = strdup("char");
-+		str = strdup(field->type);
-+		str = strtok(str, "[");
- 		str = append_string(str, " ", name);
- 		str = append_string(str, NULL, "[");
- 
-diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
-index 3f571b7..0035922 100644
---- a/src/tracefs-sqlhist.c
-+++ b/src/tracefs-sqlhist.c
-@@ -566,7 +566,8 @@ static int test_field_exists(struct tep_handle *tep,
- 		return -1;
- 
- 	if (!strcmp(field_name, TRACEFS_TIMESTAMP) ||
--	    !strcmp(field->field, TRACEFS_TIMESTAMP_USECS))
-+	    !strcmp(field->field, TRACEFS_TIMESTAMP_USECS) ||
-+	    !strcmp(field->field, TRACEFS_STACKTRACE))
- 		tfield = (void *)1L;
- 	else
- 		tfield = tep_find_any_field(field->event, field_name);
-@@ -695,6 +696,8 @@ static int update_vars(struct tep_handle *tep,
- 			field->field = store_str(sb, TRACEFS_TIMESTAMP);
- 		if (!strcmp(field->field, "TIMESTAMP_USECS"))
- 			field->field = store_str(sb, TRACEFS_TIMESTAMP_USECS);
-+		if (!strcmp(field->field, "STACKTRACE"))
-+			field->field = store_str(sb, TRACEFS_STACKTRACE);
- 		if (test_field_exists(tep, sb, expr))
- 			return -1;
- 	}
--- 
-2.35.1
-
+johannes
