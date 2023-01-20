@@ -2,77 +2,66 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D77DCC004D4
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Jan 2023 22:14:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73222C05027
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Jan 2023 07:17:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbjASWOK (ORCPT
+        id S229980AbjATHRR (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 19 Jan 2023 17:14:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47096 "EHLO
+        Fri, 20 Jan 2023 02:17:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjASWNc (ORCPT
+        with ESMTP id S229764AbjATHRR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 19 Jan 2023 17:13:32 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFCD85F394
-        for <linux-trace-devel@vger.kernel.org>; Thu, 19 Jan 2023 13:53:08 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 3FB30CE25B2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 19 Jan 2023 21:53:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 373D6C433F2;
-        Thu, 19 Jan 2023 21:53:05 +0000 (UTC)
-Date:   Thu, 19 Jan 2023 16:53:03 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH] trace-cmd record: Verify that splice works before using
- it
-Message-ID: <20230119165303.357351b9@gandalf.local.home>
-In-Reply-To: <d1ab88e414c66197163b80951fcf8639fb3d8f89.camel@sipsolutions.net>
-References: <20220608130527.26e50cba@gandalf.local.home>
-        <d1ab88e414c66197163b80951fcf8639fb3d8f89.camel@sipsolutions.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 20 Jan 2023 02:17:17 -0500
+X-Greylist: delayed 525 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 19 Jan 2023 23:17:15 PST
+Received: from fulda116.server4you.de (mister-muffin.de [144.76.155.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0B4F88198B
+        for <linux-trace-devel@vger.kernel.org>; Thu, 19 Jan 2023 23:17:14 -0800 (PST)
+Received: from localhost (unknown [31.16.250.226])
+        by mister-muffin.de (Postfix) with ESMTPSA id B9BAE1F4;
+        Fri, 20 Jan 2023 08:08:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mister-muffin.de;
+        s=mail; t=1674198508;
+        bh=zxq8uAifScLg/KuxnXeG6bxEjJxJ7RmlIJDoCxDmw58=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PjMuYax4zYiZ7e9aWxUPT+nLqwEnt4tdwq/v30k29aOMnCq2ns18F2JWGrgtlaqPL
+         oIHFZZ9CtT4WBhS9kSKe5CKQbVlhOBRR9A35xk3k+Bt9TpLwmfm0bVKHkuC3KlNk1B
+         ZEERSijCpC/XD8OCUOrtT7upLNqytKgDR8ZknEKQ=
+From:   Johannes Schauer Marin Rodrigues <josch@mister-muffin.de>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     Johannes Schauer Marin Rodrigues <josch@mister-muffin.de>
+Subject: [PATCH] rtla: Fix cross building
+Date:   Fri, 20 Jan 2023 08:08:09 +0100
+Message-Id: <20230120070809.6169-1-josch@mister-muffin.de>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 19 Jan 2023 22:03:27 +0100
-Johannes Berg <johannes@sipsolutions.net> wrote:
+For a successful cross-build, the host-architecture version of
+pkg-config must be used or otherwise host architecture headers of
+libtracefs and libtraceevent will not be found.
 
-> On Wed, 2022-06-08 at 13:05 -0400, Steven Rostedt wrote:
-> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> > 
-> > Add a test to make sure that splice works on the source directory before
-> > using it, and if not automatically switch over to read/write method.
-> > 
-> > Suggested-by: Johannes Berg <johannes@sipsolutions.net>
-> > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=213659
-> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> > ---
-> > Johannes, can you test this?
-> > I want to make sure that it fixes the issue.
-> >   
-> 
-> Umm, yeah, long time ago. Sorry, I've been meaning to do that, but it
-> isn't easy, so I kept pushing it off.
-> 
-> My use case for this was UML with hostfs, which I've since fixed (kernel
-> upstream commit 1568cb0e6d97 ("hostfs: support splice_write"); I can
-> revert that easily of course, but then I still have to build my own
-> trace-cmd with that patch... But that needs libtracefs 1.6 which even
-> Fedora doesn't ship.
+Signed-off-by: Johannes Schauer Marin Rodrigues <josch@mister-muffin.de>
+---
+ tools/tracing/rtla/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-They should ;-)
+diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
+index 22e28b76f800..26ebd46ec29c 100644
+--- a/tools/tracing/rtla/Makefile
++++ b/tools/tracing/rtla/Makefile
+@@ -18,7 +18,7 @@ endef
+ $(call allow-override,CC,$(CROSS_COMPILE)gcc)
+ $(call allow-override,AR,$(CROSS_COMPILE)ar)
+ $(call allow-override,STRIP,$(CROSS_COMPILE)strip)
+-$(call allow-override,PKG_CONFIG,pkg-config)
++$(call allow-override,PKG_CONFIG,$(CROSS_COMPILE)pkg-config)
+ $(call allow-override,LD_SO_CONF_PATH,/etc/ld.so.conf.d/)
+ $(call allow-override,LDCONFIG,ldconfig)
+ 
+-- 
+2.39.0
 
-> 
-> Given that you've merged the patch already, I think I'll just give up on
-> testing it, sorry about that.
-
-No worries. I'll just close the bug. Thanks, for responding.
-
--- Steve
