@@ -2,28 +2,28 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 691FDC54EAA
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 26 Jan 2023 18:58:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E6D4C54EAA
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 26 Jan 2023 20:34:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbjAZS6b (ORCPT
+        id S229486AbjAZUen (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 26 Jan 2023 13:58:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43958 "EHLO
+        Thu, 26 Jan 2023 15:34:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjAZS6a (ORCPT
+        with ESMTP id S232108AbjAZUem (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 26 Jan 2023 13:58:30 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 518B620680;
-        Thu, 26 Jan 2023 10:58:29 -0800 (PST)
+        Thu, 26 Jan 2023 15:34:42 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B8D731E35;
+        Thu, 26 Jan 2023 12:34:42 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 987AAB81EDF;
-        Thu, 26 Jan 2023 18:58:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7925FC433EF;
-        Thu, 26 Jan 2023 18:58:25 +0000 (UTC)
-Date:   Thu, 26 Jan 2023 13:58:23 -0500
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8D6EC6191C;
+        Thu, 26 Jan 2023 20:34:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26ADCC433D2;
+        Thu, 26 Jan 2023 20:34:40 +0000 (UTC)
+Date:   Thu, 26 Jan 2023 15:34:38 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Jonathan Corbet <corbet@lwn.net>
 Cc:     Ross Zwisler <zwisler@chromium.org>,
@@ -32,7 +32,7 @@ Cc:     Ross Zwisler <zwisler@chromium.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Tom Zanussi <zanussi@kernel.org>
 Subject: Re: [PATCH] docs: ftrace: always use canonical ftrace path
-Message-ID: <20230126135823.36682c7e@gandalf.local.home>
+Message-ID: <20230126153438.5e98da15@gandalf.local.home>
 In-Reply-To: <87a6259mll.fsf@meer.lwn.net>
 References: <20230125213251.2013791-1-zwisler@google.com>
         <87a6259mll.fsf@meer.lwn.net>
@@ -67,12 +67,15 @@ Jonathan Corbet <corbet@lwn.net> wrote:
 > 
 > So this seems like a good cleanup to me.  Unless somebody objects, I'll
 > apply it to the docs tree in the near future.
-> 
+>
 
-Let me take a quick look, then I'll give it my ack. I just have some
-meetings to get through first.
+Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-Thanks!
+Doing a quick 'git grep 'debug/tracing' there's a lot more that needs to be
+cleaned up, but that's outside the Documentation directory.
+
+Ross, care to follow through with those? ;-)
+
+Thanks Jon and Ross,
 
 -- Steve
-
