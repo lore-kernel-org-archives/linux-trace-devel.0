@@ -2,46 +2,46 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE89CC636CC
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 31 Jan 2023 15:39:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BD65C636D3
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 31 Jan 2023 15:39:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbjAaPjY (ORCPT
+        id S233404AbjAaPj0 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 31 Jan 2023 10:39:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50626 "EHLO
+        Tue, 31 Jan 2023 10:39:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233422AbjAaPjR (ORCPT
+        with ESMTP id S233413AbjAaPjW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 31 Jan 2023 10:39:17 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C966A222F4;
-        Tue, 31 Jan 2023 07:39:07 -0800 (PST)
+        Tue, 31 Jan 2023 10:39:22 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F4B125A0;
+        Tue, 31 Jan 2023 07:39:09 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 18F43B81D6C;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0C00061584;
+        Tue, 31 Jan 2023 15:39:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B3EDC433EF;
         Tue, 31 Jan 2023 15:39:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB0CAC433EF;
-        Tue, 31 Jan 2023 15:39:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675179544;
-        bh=cxdFQQjv+D2bfVlyQZ9KralCosv9OHoGLdo/9iOz6q8=;
+        s=k20201202; t=1675179548;
+        bh=Qk1Z8jvFaCkQ+X8X7f5hjELbAOMKL3oSAPP4+h9Aq7U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FR0WMVnixyY55qaFQL59grPKheGTzZDEmUwqD+fYCOZJEsAGGIve2VvYp+7R9NtZ+
-         jzxRB/JgECnLFFjsBd0KIJexU8jj4oOnSWvbVphlNAXKV9ddH6lGsnu5OOmMwpg9K8
-         3SxSVNJtRiMmgApJKhWOgB4nxNVY3SbOQtrCdGPMrtjcM2GlbHMU3CqyBmHUI3sf+g
-         CX/BZXPV1yGwfIBtjR96KZE6DYKz8bRXYu3Fr0QOCrRm0LcMrf4g+plo0KPIp/VUKi
-         6GP/UTOQVdtxlmRxyQwLLEbXEtbDa2ldTFE5edxSZrLaRx3EnGDpUKgS33q6vnzNzo
-         L5CHp9bpwzXbw==
+        b=Tw2+FXLLCq6ldE48EI2yvVjfvzHMgEL+NlNDQfdBbRFTnA6vR829al4ZcMubFuwON
+         pLJ2GKb98uO0lT2Un8xBe3vX8MVMndhlu9Zi/2CBiAGlcKibBgxEm4cUFwOqw3AgU5
+         fyIygCYGbsWGfiI16yM5EViQK63Sqv9kKH5adhEGgmrg1Vh+7QEWV9JvS66Yq9e/iT
+         y2Z/mkavEoiarvx8LFZZ45IHZWEnjCM26xlUiBbGndDSLdLepYV2Cdq/ENYyKMTKOt
+         ZyhkBU7wzv4sH5Ghziq1ZVthmVavtDWsG/jrWFh8+nKfbHrzx2iXqhD4UbmxEcWpnp
+         NxT8nUHHPxHtQ==
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     linux-trace-devel@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] rtla/timerlat: Add auto-analysis core
-Date:   Tue, 31 Jan 2023 16:38:53 +0100
-Message-Id: <1ee073822f6a2cbb33da0c817331d0d4045e837f.1675179318.git.bristot@kernel.org>
+Subject: [PATCH 3/3] Documentation/rtla: Add timerlat-top auto-analysis options
+Date:   Tue, 31 Jan 2023 16:38:55 +0100
+Message-Id: <a3f5fb49432a55c3323b18725fc6e702f16ccc79.1675179318.git.bristot@kernel.org>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <cover.1675179318.git.bristot@kernel.org>
 References: <cover.1675179318.git.bristot@kernel.org>
@@ -51,1052 +51,212 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Currently, timerlat displays a summary of the timerlat tracer results
-saving the trace if the system hits a stop condition.
-
-While this represented a huge step forward, the root cause was not
-that is accessible to non-expert users.
-
-The auto-analysis fulfill this gap by parsing the trace timerlat runs,
-printing an intuitive auto-analysis.
+Add the new options to the man page, as well as updating the
+example to include the new output.
 
 Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Jonathan Corbet <corbet@lwn.net>
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- tools/tracing/rtla/src/timerlat_aa.c | 990 +++++++++++++++++++++++++++
- tools/tracing/rtla/src/timerlat_aa.h |  12 +
- tools/tracing/rtla/src/utils.h       |   3 +
- 3 files changed, 1005 insertions(+)
- create mode 100644 tools/tracing/rtla/src/timerlat_aa.c
- create mode 100644 tools/tracing/rtla/src/timerlat_aa.h
+ .../tools/rtla/common_timerlat_aa.rst         |   7 +
+ .../tools/rtla/rtla-timerlat-top.rst          | 164 ++++++++----------
+ 2 files changed, 80 insertions(+), 91 deletions(-)
+ create mode 100644 Documentation/tools/rtla/common_timerlat_aa.rst
 
-diff --git a/tools/tracing/rtla/src/timerlat_aa.c b/tools/tracing/rtla/src/timerlat_aa.c
+diff --git a/Documentation/tools/rtla/common_timerlat_aa.rst b/Documentation/tools/rtla/common_timerlat_aa.rst
 new file mode 100644
-index 000000000000..ec4e0f4b0e6c
+index 000000000000..077029e6b289
 --- /dev/null
-+++ b/tools/tracing/rtla/src/timerlat_aa.c
-@@ -0,0 +1,990 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2023 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
-+ */
-+
-+#include <stdlib.h>
-+#include <errno.h>
-+#include "utils.h"
-+#include "osnoise.h"
-+#include "timerlat.h"
-+
-+enum timelat_state {
-+	TIMERLAT_INIT = 0,
-+	TIMERLAT_WAITING_IRQ,
-+	TIMERLAT_WAITING_THREAD,
-+};
-+
-+#define MAX_COMM		24
-+
-+/*
-+ * Per-cpu data statistics and data.
-+ */
-+struct timerlat_aa_data {
-+	/* Current CPU state */
-+	int			curr_state;
-+
-+	/* timerlat IRQ latency */
-+	unsigned long long	tlat_irq_seqnum;
-+	unsigned long long	tlat_irq_latency;
-+	unsigned long long	tlat_irq_timstamp;
-+
-+	/* timerlat Thread latency */
-+	unsigned long long	tlat_thread_seqnum;
-+	unsigned long long	tlat_thread_latency;
-+	unsigned long long	tlat_thread_timstamp;
-+
-+	/*
-+	 * Information about the thread running when the IRQ
-+	 * arrived.
-+	 *
-+	 * This can be blocking or interference, depending on the
-+	 * priority of the thread. Assuming timerlat is the highest
-+	 * prio, it is blocking. If timerlat has a lower prio, it is
-+	 * interference.
-+	 * note: "unsigned long long" because they are fetch using tep_get_field_val();
-+	 */
-+	unsigned long long	run_thread_pid;
-+	char			run_thread_comm[MAX_COMM];
-+	unsigned long long	thread_blocking_duration;
-+	unsigned long long	max_exit_idle_latency;
-+
-+	/* Information about the timerlat timer irq */
-+	unsigned long long	timer_irq_start_time;
-+	unsigned long long	timer_irq_start_delay;
-+	unsigned long long	timer_irq_duration;
-+	unsigned long long	timer_exit_from_idle;
-+
-+	/*
-+	 * Information about the last IRQ before the timerlat irq
-+	 * arrived.
-+	 *
-+	 * If now - timestamp is <= latency, it might have influenced
-+	 * in the timerlat irq latency. Otherwise, ignore it.
-+	 */
-+	unsigned long long	prev_irq_duration;
-+	unsigned long long	prev_irq_timstamp;
-+
-+	/*
-+	 * Interference sum.
-+	 */
-+	unsigned long long	thread_nmi_sum;
-+	unsigned long long	thread_irq_sum;
-+	unsigned long long	thread_softirq_sum;
-+	unsigned long long	thread_thread_sum;
-+
-+	/*
-+	 * Interference task information.
-+	 */
-+	struct trace_seq	*prev_irqs_seq;
-+	struct trace_seq	*nmi_seq;
-+	struct trace_seq	*irqs_seq;
-+	struct trace_seq	*softirqs_seq;
-+	struct trace_seq	*threads_seq;
-+	struct trace_seq	*stack_seq;
-+
-+	/*
-+	 * Current thread.
-+	 */
-+	char			current_comm[MAX_COMM];
-+	unsigned long long	current_pid;
-+
-+	/*
-+	 * Is the system running a kworker?
-+	 */
-+	unsigned long long	kworker;
-+	unsigned long long	kworker_func;
-+};
-+
-+/*
-+ * The analysis context and system wide view
-+ */
-+struct timerlat_aa_context {
-+	int nr_cpus;
-+	int dump_tasks;
-+
-+	/* per CPU data */
-+	struct timerlat_aa_data *taa_data;
-+
-+	/*
-+	 * required to translate function names and register
-+	 * events.
-+	 */
-+	struct osnoise_tool *tool;
-+};
-+
-+/*
-+ * The data is stored as a local variable, but accessed via a helper function.
-+ *
-+ * It could be stored inside the trace context. But every access would
-+ * require container_of() + a series of pointers. Do we need it? Not sure.
-+ *
-+ * For now keep it simple. If needed, store it in the tool, add the *context
-+ * as a parameter in timerlat_aa_get_ctx() and do the magic there.
-+ */
-+static struct timerlat_aa_context *__timerlat_aa_ctx;
-+
-+static struct timerlat_aa_context *timerlat_aa_get_ctx(void)
-+{
-+	return __timerlat_aa_ctx;
-+}
-+
-+/*
-+ * timerlat_aa_get_data - Get the per-cpu data from the timerlat context
-+ */
-+static struct timerlat_aa_data
-+*timerlat_aa_get_data(struct timerlat_aa_context *taa_ctx, int cpu)
-+{
-+	return &taa_ctx->taa_data[cpu];
-+}
-+
-+/*
-+ * timerlat_aa_irq_latency - Handles timerlat IRQ event
-+ */
-+static int timerlat_aa_irq_latency(struct timerlat_aa_data *taa_data,
-+				   struct trace_seq *s, struct tep_record *record,
-+				   struct tep_event *event)
-+{
-+	/*
-+	 * For interference, we start now looking for things that can delay
-+	 * the thread.
-+	 */
-+	taa_data->curr_state = TIMERLAT_WAITING_THREAD;
-+	taa_data->tlat_irq_timstamp = record->ts;
-+
-+	/*
-+	 * Zero values.
-+	 */
-+	taa_data->thread_nmi_sum = 0;
-+	taa_data->thread_irq_sum = 0;
-+	taa_data->thread_softirq_sum = 0;
-+	taa_data->thread_blocking_duration = 0;
-+	taa_data->timer_irq_start_time = 0;
-+	taa_data->timer_irq_duration = 0;
-+	taa_data->timer_exit_from_idle = 0;
-+
-+	/*
-+	 * Zero interference tasks.
-+	 */
-+	trace_seq_reset(taa_data->nmi_seq);
-+	trace_seq_reset(taa_data->irqs_seq);
-+	trace_seq_reset(taa_data->softirqs_seq);
-+	trace_seq_reset(taa_data->threads_seq);
-+
-+	/* IRQ latency values */
-+	tep_get_field_val(s, event, "timer_latency", record, &taa_data->tlat_irq_latency, 1);
-+	tep_get_field_val(s, event, "seqnum", record, &taa_data->tlat_irq_seqnum, 1);
-+
-+	/* The thread that can cause blocking */
-+	tep_get_common_field_val(s, event, "common_pid", record, &taa_data->run_thread_pid, 1);
-+
-+	/*
-+	 * Get exit from idle case.
-+	 *
-+	 * If it is not idle thread:
-+	 */
-+	if (taa_data->run_thread_pid)
-+		return 0;
-+
-+	/*
-+	 * if the latency is shorter than the known exit from idle:
-+	 */
-+	if (taa_data->tlat_irq_latency < taa_data->max_exit_idle_latency)
-+		return 0;
-+
-+	/*
-+	 * To be safe, ignore the cases in which an IRQ/NMI could have
-+	 * interfered with the timerlat IRQ.
-+	 */
-+	if (taa_data->tlat_irq_timstamp - taa_data->tlat_irq_latency
-+	    < taa_data->prev_irq_timstamp + taa_data->prev_irq_duration)
-+		return 0;
-+
-+	taa_data->max_exit_idle_latency = taa_data->tlat_irq_latency;
-+
-+	return 0;
-+}
-+
-+/*
-+ * timerlat_aa_thread_latency - Handles timerlat thread event
-+ */
-+static int timerlat_aa_thread_latency(struct timerlat_aa_data *taa_data,
-+				      struct trace_seq *s, struct tep_record *record,
-+				      struct tep_event *event)
-+{
-+	/*
-+	 * For interference, we start now looking for things that can delay
-+	 * the IRQ of the next cycle.
-+	 */
-+	taa_data->curr_state = TIMERLAT_WAITING_IRQ;
-+	taa_data->tlat_thread_timstamp = record->ts;
-+
-+	/* Thread latency values */
-+	tep_get_field_val(s, event, "timer_latency", record, &taa_data->tlat_thread_latency, 1);
-+	tep_get_field_val(s, event, "seqnum", record, &taa_data->tlat_thread_seqnum, 1);
-+
-+	return 0;
-+}
-+
-+/*
-+ * timerlat_aa_handler - Handle timerlat events
-+ *
-+ * This function is called to handle timerlat events recording statistics.
-+ *
-+ * Returns 0 on success, -1 otherwise.
-+ */
-+int timerlat_aa_handler(struct trace_seq *s, struct tep_record *record,
-+			struct tep_event *event, void *context)
-+{
-+	struct timerlat_aa_context *taa_ctx = timerlat_aa_get_ctx();
-+	struct timerlat_aa_data *taa_data = timerlat_aa_get_data(taa_ctx, record->cpu);
-+	unsigned long long thread;
-+
-+	if (!taa_data)
-+		return -1;
-+
-+	tep_get_field_val(s, event, "context", record, &thread, 1);
-+	if (!thread)
-+		return timerlat_aa_irq_latency(taa_data, s, record, event);
-+	else
-+		return timerlat_aa_thread_latency(taa_data, s, record, event);
-+}
-+
-+/*
-+ * timerlat_aa_nmi_handler - Handles NMI noise
-+ *
-+ * It is used to collect information about interferences from NMI. It is
-+ * hooked to the osnoise:nmi_noise event.
-+ */
-+static int timerlat_aa_nmi_handler(struct trace_seq *s, struct tep_record *record,
-+				   struct tep_event *event, void *context)
-+{
-+	struct timerlat_aa_context *taa_ctx = timerlat_aa_get_ctx();
-+	struct timerlat_aa_data *taa_data = timerlat_aa_get_data(taa_ctx, record->cpu);
-+	unsigned long long duration;
-+	unsigned long long start;
-+
-+	tep_get_field_val(s, event, "duration", record, &duration, 1);
-+	tep_get_field_val(s, event, "start", record, &start, 1);
-+
-+	if (taa_data->curr_state == TIMERLAT_WAITING_IRQ) {
-+		taa_data->prev_irq_duration = duration;
-+		taa_data->prev_irq_timstamp = start;
-+
-+		trace_seq_reset(taa_data->prev_irqs_seq);
-+		trace_seq_printf(taa_data->prev_irqs_seq, "\t%24s	\t\t\t%9.2f us\n",
-+			 "nmi", ns_to_usf(duration));
-+		return 0;
-+	}
-+
-+	taa_data->thread_nmi_sum += duration;
-+	trace_seq_printf(taa_data->nmi_seq, "	%24s	\t\t\t%9.2f us\n",
-+		 "nmi", ns_to_usf(duration));
-+
-+	return 0;
-+}
-+
-+/*
-+ * timerlat_aa_irq_handler - Handles IRQ noise
-+ *
-+ * It is used to collect information about interferences from IRQ. It is
-+ * hooked to the osnoise:irq_noise event.
-+ *
-+ * It is a little bit more complex than the other because it measures:
-+ *	- The IRQs that can delay the timer IRQ before it happened.
-+ *	- The Timerlat IRQ handler
-+ *	- The IRQs that happened between the timerlat IRQ and the timerlat thread
-+ *	  (IRQ interference).
-+ */
-+static int timerlat_aa_irq_handler(struct trace_seq *s, struct tep_record *record,
-+				   struct tep_event *event, void *context)
-+{
-+	struct timerlat_aa_context *taa_ctx = timerlat_aa_get_ctx();
-+	struct timerlat_aa_data *taa_data = timerlat_aa_get_data(taa_ctx, record->cpu);
-+	unsigned long long expected_start;
-+	unsigned long long duration;
-+	unsigned long long vector;
-+	unsigned long long start;
-+	char *desc;
-+	int val;
-+
-+	tep_get_field_val(s, event, "duration", record, &duration, 1);
-+	tep_get_field_val(s, event, "start", record, &start, 1);
-+	tep_get_field_val(s, event, "vector", record, &vector, 1);
-+	desc = tep_get_field_raw(s, event, "desc", record, &val, 1);
-+
-+	/*
-+	 * Before the timerlat IRQ.
-+	 */
-+	if (taa_data->curr_state == TIMERLAT_WAITING_IRQ) {
-+		taa_data->prev_irq_duration = duration;
-+		taa_data->prev_irq_timstamp = start;
-+
-+		trace_seq_reset(taa_data->prev_irqs_seq);
-+		trace_seq_printf(taa_data->prev_irqs_seq, "\t%24s:%-3llu	\t\t%9.2f us\n",
-+				 desc, vector, ns_to_usf(duration));
-+		return 0;
-+	}
-+
-+	/*
-+	 * The timerlat IRQ: taa_data->timer_irq_start_time is zeroed at
-+	 * the timerlat irq handler.
-+	 */
-+	if (!taa_data->timer_irq_start_time) {
-+		expected_start = taa_data->tlat_irq_timstamp - taa_data->tlat_irq_latency;
-+
-+		taa_data->timer_irq_start_time = start;
-+		taa_data->timer_irq_duration = duration;
-+
-+		taa_data->timer_irq_start_delay = taa_data->timer_irq_start_time - expected_start;
-+
-+		/*
-+		 * not exit from idle.
-+		 */
-+		if (taa_data->run_thread_pid)
-+			return 0;
-+
-+		if (expected_start > taa_data->prev_irq_timstamp + taa_data->prev_irq_duration)
-+			taa_data->timer_exit_from_idle = taa_data->timer_irq_start_delay;
-+
-+		return 0;
-+	}
-+
-+	/*
-+	 * IRQ interference.
-+	 */
-+	taa_data->thread_irq_sum += duration;
-+	trace_seq_printf(taa_data->irqs_seq, "	%24s:%-3llu	\t	%9.2f us\n",
-+			 desc, vector, ns_to_usf(duration));
-+
-+	return 0;
-+}
-+
-+static char *softirq_name[] = { "HI", "TIMER",	"NET_TX", "NET_RX", "BLOCK",
-+				"IRQ_POLL", "TASKLET", "SCHED", "HRTIMER", "RCU" };
-+
-+
-+/*
-+ * timerlat_aa_softirq_handler - Handles Softirq noise
-+ *
-+ * It is used to collect information about interferences from Softirq. It is
-+ * hooked to the osnoise:softirq_noise event.
-+ *
-+ * It is only printed in the non-rt kernel, as softirqs become thread on RT.
-+ */
-+static int timerlat_aa_softirq_handler(struct trace_seq *s, struct tep_record *record,
-+				       struct tep_event *event, void *context)
-+{
-+	struct timerlat_aa_context *taa_ctx = timerlat_aa_get_ctx();
-+	struct timerlat_aa_data *taa_data = timerlat_aa_get_data(taa_ctx, record->cpu);
-+	unsigned long long duration;
-+	unsigned long long vector;
-+	unsigned long long start;
-+
-+	if (taa_data->curr_state == TIMERLAT_WAITING_IRQ)
-+		return 0;
-+
-+	tep_get_field_val(s, event, "duration", record, &duration, 1);
-+	tep_get_field_val(s, event, "start", record, &start, 1);
-+	tep_get_field_val(s, event, "vector", record, &vector, 1);
-+
-+	taa_data->thread_softirq_sum += duration;
-+
-+	trace_seq_printf(taa_data->softirqs_seq, "\t%24s:%-3llu	\t	%9.2f us\n",
-+			 softirq_name[vector], vector, ns_to_usf(duration));
-+	return 0;
-+}
-+
-+/*
-+ * timerlat_aa_softirq_handler - Handles thread noise
-+ *
-+ * It is used to collect information about interferences from threads. It is
-+ * hooked to the osnoise:thread_noise event.
-+ *
-+ * Note: if you see thread noise, your timerlat thread was not the highest prio one.
-+ */
-+static int timerlat_aa_thread_handler(struct trace_seq *s, struct tep_record *record,
-+				      struct tep_event *event, void *context)
-+{
-+	struct timerlat_aa_context *taa_ctx = timerlat_aa_get_ctx();
-+	struct timerlat_aa_data *taa_data = timerlat_aa_get_data(taa_ctx, record->cpu);
-+	unsigned long long duration;
-+	unsigned long long start;
-+	unsigned long long pid;
-+	const char *comm;
-+	int val;
-+
-+	if (taa_data->curr_state == TIMERLAT_WAITING_IRQ)
-+		return 0;
-+
-+	tep_get_field_val(s, event, "duration", record, &duration, 1);
-+	tep_get_field_val(s, event, "start", record, &start, 1);
-+
-+	tep_get_common_field_val(s, event, "common_pid", record, &pid, 1);
-+	comm = tep_get_field_raw(s, event, "comm", record, &val, 1);
-+
-+	if (pid == taa_data->run_thread_pid && !taa_data->thread_blocking_duration) {
-+		taa_data->thread_blocking_duration = duration;
-+
-+		if (comm)
-+			strncpy(taa_data->run_thread_comm, comm, MAX_COMM);
-+		else
-+			sprintf(taa_data->run_thread_comm, "<...>");
-+
-+	} else {
-+		taa_data->thread_thread_sum += duration;
-+
-+		trace_seq_printf(taa_data->threads_seq, "\t%24s:%-3llu	\t\t%9.2f us\n",
-+			 comm, pid, ns_to_usf(duration));
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * timerlat_aa_stack_handler - Handles timerlat IRQ stack trace
-+ *
-+ * Saves and parse the stack trace generated by the timerlat IRQ.
-+ */
-+static int timerlat_aa_stack_handler(struct trace_seq *s, struct tep_record *record,
-+			      struct tep_event *event, void *context)
-+{
-+	struct timerlat_aa_context *taa_ctx = timerlat_aa_get_ctx();
-+	struct timerlat_aa_data *taa_data = timerlat_aa_get_data(taa_ctx, record->cpu);
-+	unsigned long *caller;
-+	const char *function;
-+	int val, i;
-+
-+	trace_seq_reset(taa_data->stack_seq);
-+
-+	trace_seq_printf(taa_data->stack_seq, "    Blocking thread stack trace\n");
-+	caller = tep_get_field_raw(s, event, "caller", record, &val, 1);
-+	if (caller) {
-+		for (i = 0; ; i++) {
-+			function = tep_find_function(taa_ctx->tool->trace.tep, caller[i]);
-+			if (!function)
-+				break;
-+			trace_seq_printf(taa_data->stack_seq, "\t\t-> %s\n", function);
-+		}
-+	}
-+	return 0;
-+}
-+
-+/*
-+ * timerlat_aa_sched_switch_handler - Tracks the current thread running on the CPU
-+ *
-+ * Handles the sched:sched_switch event to trace the current thread running on the
-+ * CPU. It is used to display the threads running on the other CPUs when the trace
-+ * stops.
-+ */
-+static int timerlat_aa_sched_switch_handler(struct trace_seq *s, struct tep_record *record,
-+					    struct tep_event *event, void *context)
-+{
-+	struct timerlat_aa_context *taa_ctx = timerlat_aa_get_ctx();
-+	struct timerlat_aa_data *taa_data = timerlat_aa_get_data(taa_ctx, record->cpu);
-+	const char *comm;
-+	int val;
-+
-+	tep_get_field_val(s, event, "next_pid", record, &taa_data->current_pid, 1);
-+	comm = tep_get_field_raw(s, event, "next_comm", record, &val, 1);
-+
-+	strncpy(taa_data->current_comm, comm, MAX_COMM);
-+
-+	/*
-+	 * If this was a kworker, clean the last kworkers that ran.
-+	 */
-+	taa_data->kworker = 0;
-+	taa_data->kworker_func = 0;
-+
-+	return 0;
-+}
-+
-+/*
-+ * timerlat_aa_kworker_start_handler - Tracks a kworker running on the CPU
-+ *
-+ * Handles workqueue:workqueue_execute_start event, keeping track of
-+ * the job that a kworker could be doing in the CPU.
-+ *
-+ * We already catch problems of hardware related latencies caused by work queues
-+ * running driver code that causes hardware stall. For example, with DRM drivers.
-+ */
-+static int timerlat_aa_kworker_start_handler(struct trace_seq *s, struct tep_record *record,
-+					     struct tep_event *event, void *context)
-+{
-+	struct timerlat_aa_context *taa_ctx = timerlat_aa_get_ctx();
-+	struct timerlat_aa_data *taa_data = timerlat_aa_get_data(taa_ctx, record->cpu);
-+
-+	tep_get_field_val(s, event, "work", record, &taa_data->kworker, 1);
-+	tep_get_field_val(s, event, "function", record, &taa_data->kworker_func, 1);
-+	return 0;
-+}
-+
-+/*
-+ * timerlat_thread_analysis - Prints the analysis of a CPU that hit a stop tracing
-+ *
-+ * This is the core of the analysis.
-+ */
-+static void timerlat_thread_analysis(struct timerlat_aa_data *taa_data, int cpu,
-+				     int irq_thresh, int thread_thresh)
-+{
-+	unsigned long long exp_irq_ts;
-+	int total;
-+	int irq;
-+
-+	/*
-+	 * IRQ latency or Thread latency?
-+	 */
-+	if (taa_data->tlat_irq_seqnum > taa_data->tlat_thread_seqnum) {
-+		irq = 1;
-+		total = taa_data->tlat_irq_latency;
-+	} else {
-+		irq = 0;
-+		total = taa_data->tlat_thread_latency;
-+	}
-+
-+	/*
-+	 * Expected IRQ arrival time using the trace clock as the base.
-+	 */
-+	exp_irq_ts = taa_data->timer_irq_start_time - taa_data->timer_irq_start_delay;
-+
-+	if (exp_irq_ts < taa_data->prev_irq_timstamp + taa_data->prev_irq_duration)
-+		printf("  Previous IRQ interference:	\t	up to %9.2f us",
-+			ns_to_usf(taa_data->prev_irq_duration));
-+
-+	/*
-+	 * The delay that the IRQ suffered before starting.
-+	 */
-+	printf("  IRQ handler delay:		%16s	%9.2f us (%.2f %%)\n",
-+		(ns_to_usf(taa_data->timer_exit_from_idle) > 10) ? "(exit from idle)" : "",
-+		ns_to_usf(taa_data->timer_irq_start_delay),
-+		ns_to_per(total, taa_data->timer_irq_start_delay));
-+
-+	/*
-+	 * Timerlat IRQ.
-+	 */
-+	printf("  IRQ latency:	\t\t\t\t	%9.2f us\n",
-+		ns_to_usf(taa_data->tlat_irq_latency));
-+
-+	if (irq) {
-+		/*
-+		 * If the trace stopped due to IRQ, the other events will not happen
-+		 * because... the trace stopped :-).
-+		 *
-+		 * That is all folks, the stack trace was printed before the stop,
-+		 * so it will be displayed, it is the key.
-+		 */
-+		printf("  Blocking thread:\n");
-+		printf("	%24s:%-9llu\n",
-+			taa_data->run_thread_comm, taa_data->run_thread_pid);
-+	} else  {
-+		/*
-+		 * The duration of the IRQ handler that handled the timerlat IRQ.
-+		 */
-+		printf("  Timerlat IRQ duration:	\t\t	%9.2f us (%.2f %%)\n",
-+			ns_to_usf(taa_data->timer_irq_duration),
-+			ns_to_per(total, taa_data->timer_irq_duration));
-+
-+		/*
-+		 * The amount of time that the current thread postponed the scheduler.
-+		 *
-+		 * Recalling that it is net from NMI/IRQ/Softirq interference, so there
-+		 * is no need to compute values here.
-+		 */
-+		printf("  Blocking thread:	\t\t\t	%9.2f us (%.2f %%)\n",
-+			ns_to_usf(taa_data->thread_blocking_duration),
-+			ns_to_per(total, taa_data->thread_blocking_duration));
-+
-+		printf("	%24s:%-9llu		%9.2f us\n",
-+			taa_data->run_thread_comm, taa_data->run_thread_pid,
-+			ns_to_usf(taa_data->thread_blocking_duration));
-+	}
-+
-+	/*
-+	 * Print the stack trace!
-+	 */
-+	trace_seq_do_printf(taa_data->stack_seq);
-+
-+	/*
-+	 * NMIs can happen during the IRQ, so they are always possible.
-+	 */
-+	if (taa_data->thread_nmi_sum)
-+		printf("  NMI interference	\t\t\t	%9.2f us (%.2f %%)\n",
-+			ns_to_usf(taa_data->thread_nmi_sum),
-+			ns_to_per(total, taa_data->thread_nmi_sum));
-+
-+	/*
-+	 * If it is an IRQ latency, the other factors can be skipped.
-+	 */
-+	if (irq)
-+		goto print_total;
-+
-+	/*
-+	 * Prints the interference caused by IRQs to the thread latency.
-+	 */
-+	if (taa_data->thread_irq_sum) {
-+		printf("  IRQ interference	\t\t\t	%9.2f us (%.2f %%)\n",
-+			ns_to_usf(taa_data->thread_irq_sum),
-+			ns_to_per(total, taa_data->thread_irq_sum));
-+
-+		trace_seq_do_printf(taa_data->irqs_seq);
-+	}
-+
-+	/*
-+	 * Prints the interference caused by Softirqs to the thread latency.
-+	 */
-+	if (taa_data->thread_softirq_sum) {
-+		printf("  Softirq interference	\t\t\t	%9.2f us (%.2f %%)\n",
-+			ns_to_usf(taa_data->thread_softirq_sum),
-+			ns_to_per(total, taa_data->thread_softirq_sum));
-+
-+		trace_seq_do_printf(taa_data->softirqs_seq);
-+	}
-+
-+	/*
-+	 * Prints the interference caused by other threads to the thread latency.
-+	 *
-+	 * If this happens, your timerlat is not the highest prio. OK, migration
-+	 * thread can happen. But otherwise, you are not measuring the "scheduling
-+	 * latency" only, and here is the difference from scheduling latency and
-+	 * timer handling latency.
-+	 */
-+	if (taa_data->thread_thread_sum) {
-+		printf("  Thread interference	\t\t\t	%9.2f us (%.2f %%)\n",
-+			ns_to_usf(taa_data->thread_thread_sum),
-+			ns_to_per(total, taa_data->thread_thread_sum));
-+
-+		trace_seq_do_printf(taa_data->threads_seq);
-+	}
-+
-+	/*
-+	 * Done.
-+	 */
-+print_total:
-+	printf("------------------------------------------------------------------------\n");
-+	printf("  %s latency:	\t\t\t	%9.2f us (100%%)\n", irq ? "IRQ" : "Thread",
-+		ns_to_usf(total));
-+}
-+
-+/**
-+ * timerlat_auto_analysis - Analyze the collected data
-+ */
-+void timerlat_auto_analysis(int irq_thresh, int thread_thresh)
-+{
-+	struct timerlat_aa_context *taa_ctx = timerlat_aa_get_ctx();
-+	unsigned long long max_exit_from_idle = 0;
-+	struct timerlat_aa_data *taa_data;
-+	int max_exit_from_idle_cpu;
-+	struct tep_handle *tep;
-+	int cpu;
-+
-+	/* bring stop tracing to the ns scale */
-+	irq_thresh = irq_thresh * 1000;
-+	thread_thresh = thread_thresh * 1000;
-+
-+	for (cpu = 0; cpu < taa_ctx->nr_cpus; cpu++) {
-+		taa_data = timerlat_aa_get_data(taa_ctx, cpu);
-+
-+		if (irq_thresh && taa_data->tlat_irq_latency >= irq_thresh) {
-+			printf("## CPU %d hit stop tracing, analyzing it ##\n", cpu);
-+			timerlat_thread_analysis(taa_data, cpu, irq_thresh, thread_thresh);
-+		} else if (thread_thresh && (taa_data->tlat_thread_latency) >= thread_thresh) {
-+			printf("## CPU %d hit stop tracing, analyzing it ##\n", cpu);
-+			timerlat_thread_analysis(taa_data, cpu, irq_thresh, thread_thresh);
-+		}
-+
-+		if (taa_data->max_exit_idle_latency > max_exit_from_idle) {
-+			max_exit_from_idle = taa_data->max_exit_idle_latency;
-+			max_exit_from_idle_cpu = cpu;
-+		}
-+
-+	}
-+
-+	if (max_exit_from_idle) {
-+		printf("\n");
-+		printf("Max timerlat IRQ latency from idle: %.2f us in cpu %d\n",
-+			ns_to_usf(max_exit_from_idle), max_exit_from_idle_cpu);
-+	}
-+	if (!taa_ctx->dump_tasks)
-+		return;
-+
-+	printf("\n");
-+	printf("Printing CPU tasks:\n");
-+	for (cpu = 0; cpu < taa_ctx->nr_cpus; cpu++) {
-+		taa_data = timerlat_aa_get_data(taa_ctx, cpu);
-+		tep = taa_ctx->tool->trace.tep;
-+
-+		printf("    [%.3d] %24s:%llu", cpu, taa_data->current_comm, taa_data->current_pid);
-+
-+		if (taa_data->kworker_func)
-+			printf(" kworker:%s:%s",
-+				tep_find_function(tep, taa_data->kworker) ? : "<...>",
-+				tep_find_function(tep, taa_data->kworker_func));
-+		printf("\n");
-+	}
-+
-+}
-+
-+/*
-+ * timerlat_aa_destroy_seqs - Destroy seq files used to store parsed data
-+ */
-+static void timerlat_aa_destroy_seqs(struct timerlat_aa_context *taa_ctx)
-+{
-+	struct timerlat_aa_data *taa_data;
-+	int i;
-+
-+	if (!taa_ctx->taa_data)
-+		return;
-+
-+	for (i = 0; i < taa_ctx->nr_cpus; i++) {
-+		taa_data = timerlat_aa_get_data(taa_ctx, i);
-+
-+		if (taa_data->prev_irqs_seq) {
-+			trace_seq_destroy(taa_data->prev_irqs_seq);
-+			free(taa_data->prev_irqs_seq);
-+		}
-+
-+		if (taa_data->nmi_seq) {
-+			trace_seq_destroy(taa_data->nmi_seq);
-+			free(taa_data->nmi_seq);
-+		}
-+
-+		if (taa_data->irqs_seq) {
-+			trace_seq_destroy(taa_data->irqs_seq);
-+			free(taa_data->irqs_seq);
-+		}
-+
-+		if (taa_data->softirqs_seq) {
-+			trace_seq_destroy(taa_data->softirqs_seq);
-+			free(taa_data->softirqs_seq);
-+		}
-+
-+		if (taa_data->threads_seq) {
-+			trace_seq_destroy(taa_data->threads_seq);
-+			free(taa_data->threads_seq);
-+		}
-+
-+		if (taa_data->stack_seq) {
-+			trace_seq_destroy(taa_data->stack_seq);
-+			free(taa_data->stack_seq);
-+		}
-+	}
-+}
-+
-+/*
-+ * timerlat_aa_init_seqs - Init seq files used to store parsed information
-+ *
-+ * Instead of keeping data structures to store raw data, use seq files to
-+ * store parsed data.
-+ *
-+ * Allocates and initialize seq files.
-+ *
-+ * Returns 0 on success, -1 otherwise.
-+ */
-+static int timerlat_aa_init_seqs(struct timerlat_aa_context *taa_ctx)
-+{
-+	struct timerlat_aa_data *taa_data;
-+	int i;
-+
-+	for (i = 0; i < taa_ctx->nr_cpus; i++) {
-+
-+		taa_data = timerlat_aa_get_data(taa_ctx, i);
-+
-+		taa_data->prev_irqs_seq = calloc(1, sizeof(*taa_data->prev_irqs_seq));
-+		if (!taa_data->prev_irqs_seq)
-+			goto out_err;
-+
-+		trace_seq_init(taa_data->prev_irqs_seq);
-+
-+		taa_data->nmi_seq = calloc(1, sizeof(*taa_data->nmi_seq));
-+		if (!taa_data->nmi_seq)
-+			goto out_err;
-+
-+		trace_seq_init(taa_data->nmi_seq);
-+
-+		taa_data->irqs_seq = calloc(1, sizeof(*taa_data->irqs_seq));
-+		if (!taa_data->irqs_seq)
-+			goto out_err;
-+
-+		trace_seq_init(taa_data->irqs_seq);
-+
-+		taa_data->softirqs_seq = calloc(1, sizeof(*taa_data->softirqs_seq));
-+		if (!taa_data->softirqs_seq)
-+			goto out_err;
-+
-+		trace_seq_init(taa_data->softirqs_seq);
-+
-+		taa_data->threads_seq = calloc(1, sizeof(*taa_data->threads_seq));
-+		if (!taa_data->threads_seq)
-+			goto out_err;
-+
-+		trace_seq_init(taa_data->threads_seq);
-+
-+		taa_data->stack_seq = calloc(1, sizeof(*taa_data->stack_seq));
-+		if (!taa_data->stack_seq)
-+			goto out_err;
-+
-+		trace_seq_init(taa_data->stack_seq);
-+	}
-+
-+	return 0;
-+
-+out_err:
-+	timerlat_aa_destroy_seqs(taa_ctx);
-+	return -1;
-+}
-+
-+/*
-+ * timerlat_aa_unregister_events - Unregister events used in the auto-analysis
-+ */
-+static void timerlat_aa_unregister_events(struct osnoise_tool *tool, int dump_tasks)
-+{
-+	tracefs_event_disable(tool->trace.inst, "osnoise", NULL);
-+
-+	tep_unregister_event_handler(tool->trace.tep, -1, "osnoise", "nmi_noise",
-+				     timerlat_aa_nmi_handler, tool);
-+
-+	tep_unregister_event_handler(tool->trace.tep, -1, "osnoise", "irq_noise",
-+				     timerlat_aa_irq_handler, tool);
-+
-+	tep_unregister_event_handler(tool->trace.tep, -1, "osnoise", "softirq_noise",
-+				     timerlat_aa_softirq_handler, tool);
-+
-+	tep_unregister_event_handler(tool->trace.tep, -1, "osnoise", "thread_noise",
-+				     timerlat_aa_thread_handler, tool);
-+
-+	tep_unregister_event_handler(tool->trace.tep, -1, "ftrace", "kernel_stack",
-+				     timerlat_aa_stack_handler, tool);
-+	if (!dump_tasks)
-+		return;
-+
-+	tracefs_event_disable(tool->trace.inst, "sched", "sched_switch");
-+	tep_unregister_event_handler(tool->trace.tep, -1, "sched", "sched_switch",
-+				     timerlat_aa_sched_switch_handler, tool);
-+
-+	tracefs_event_disable(tool->trace.inst, "workqueue", "workqueue_execute_start");
-+	tep_unregister_event_handler(tool->trace.tep, -1, "workqueue", "workqueue_execute_start",
-+				     timerlat_aa_kworker_start_handler, tool);
-+}
-+
-+/*
-+ * timerlat_aa_register_events - Register events used in the auto-analysis
-+ *
-+ * Returns 0 on success, -1 otherwise.
-+ */
-+static int timerlat_aa_register_events(struct osnoise_tool *tool, int dump_tasks)
-+{
-+	int retval;
-+
-+	/*
-+	 * register auto-analysis handlers.
-+	 */
-+	retval = tracefs_event_enable(tool->trace.inst, "osnoise", NULL);
-+	if (retval < 0 && !errno) {
-+		err_msg("Could not find osnoise events\n");
-+		goto out_err;
-+	}
-+
-+	tep_register_event_handler(tool->trace.tep, -1, "osnoise", "nmi_noise",
-+				   timerlat_aa_nmi_handler, tool);
-+
-+	tep_register_event_handler(tool->trace.tep, -1, "osnoise", "irq_noise",
-+				   timerlat_aa_irq_handler, tool);
-+
-+	tep_register_event_handler(tool->trace.tep, -1, "osnoise", "softirq_noise",
-+				   timerlat_aa_softirq_handler, tool);
-+
-+	tep_register_event_handler(tool->trace.tep, -1, "osnoise", "thread_noise",
-+				   timerlat_aa_thread_handler, tool);
-+
-+	tep_register_event_handler(tool->trace.tep, -1, "ftrace", "kernel_stack",
-+				   timerlat_aa_stack_handler, tool);
-+
-+	if (!dump_tasks)
-+		return 0;
-+
-+	/*
-+	 * Dump task events.
-+	 */
-+	retval = tracefs_event_enable(tool->trace.inst, "sched", "sched_switch");
-+	if (retval < 0 && !errno) {
-+		err_msg("Could not find sched_switch\n");
-+		goto out_err;
-+	}
-+
-+	tep_register_event_handler(tool->trace.tep, -1, "sched", "sched_switch",
-+				   timerlat_aa_sched_switch_handler, tool);
-+
-+	retval = tracefs_event_enable(tool->trace.inst, "workqueue", "workqueue_execute_start");
-+	if (retval < 0 && !errno) {
-+		err_msg("Could not find workqueue_execute_start\n");
-+		goto out_err;
-+	}
-+
-+	tep_register_event_handler(tool->trace.tep, -1, "workqueue", "workqueue_execute_start",
-+				   timerlat_aa_kworker_start_handler, tool);
-+
-+	return 0;
-+
-+out_err:
-+	timerlat_aa_unregister_events(tool, dump_tasks);
-+	return -1;
-+}
-+
-+/**
-+ * timerlat_aa_destroy - Destroy timerlat auto-analysis
-+ */
-+void timerlat_aa_destroy(void)
-+{
-+	struct timerlat_aa_context *taa_ctx = timerlat_aa_get_ctx();
-+
-+	if (!taa_ctx)
-+		return;
-+
-+	if (!taa_ctx->taa_data)
-+		goto out_ctx;
-+
-+	timerlat_aa_unregister_events(taa_ctx->tool, taa_ctx->dump_tasks);
-+	timerlat_aa_destroy_seqs(taa_ctx);
-+	free(taa_ctx->taa_data);
-+out_ctx:
-+	free(taa_ctx);
-+}
-+
-+/**
-+ * timerlat_aa_init - Initialize timerlat auto-analysis
-+ *
-+ * Returns 0 on success, -1 otherwise.
-+ */
-+int timerlat_aa_init(struct osnoise_tool *tool, int nr_cpus, int dump_tasks)
-+{
-+	struct timerlat_aa_context *taa_ctx;
-+	int retval;
-+
-+	taa_ctx = calloc(1, sizeof(*taa_ctx));
-+	if (!taa_ctx)
-+		return -1;
-+
-+	__timerlat_aa_ctx = taa_ctx;
-+
-+	taa_ctx->nr_cpus = nr_cpus;
-+	taa_ctx->tool = tool;
-+	taa_ctx->dump_tasks = dump_tasks;
-+
-+	taa_ctx->taa_data = calloc(nr_cpus, sizeof(*taa_ctx->taa_data));
-+	if (!taa_ctx->taa_data)
-+		goto out_err;
-+
-+	retval = timerlat_aa_init_seqs(taa_ctx);
-+	if (retval)
-+		goto out_err;
-+
-+	retval = timerlat_aa_register_events(tool, dump_tasks);
-+	if (retval)
-+		goto out_err;
-+
-+	return 0;
-+
-+out_err:
-+	timerlat_aa_destroy();
-+	return -1;
-+}
-diff --git a/tools/tracing/rtla/src/timerlat_aa.h b/tools/tracing/rtla/src/timerlat_aa.h
-new file mode 100644
-index 000000000000..d4f6ca7e342a
---- /dev/null
-+++ b/tools/tracing/rtla/src/timerlat_aa.h
-@@ -0,0 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2023 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
-+ */
-+
-+int timerlat_aa_init(struct osnoise_tool *tool, int nr_cpus, int dump_task);
-+void timerlat_aa_destroy(void);
-+
-+int timerlat_aa_handler(struct trace_seq *s, struct tep_record *record,
-+			struct tep_event *event, void *context);
-+
-+void timerlat_auto_analysis(int irq_thresh, int thread_thresh);
-diff --git a/tools/tracing/rtla/src/utils.h b/tools/tracing/rtla/src/utils.h
-index 5571afd3b549..90e4f52a030b 100644
---- a/tools/tracing/rtla/src/utils.h
-+++ b/tools/tracing/rtla/src/utils.h
-@@ -56,3 +56,6 @@ struct sched_attr {
- int parse_prio(char *arg, struct sched_attr *sched_param);
- int set_comm_sched_attr(const char *comm_prefix, struct sched_attr *attr);
- int set_cpu_dma_latency(int32_t latency);
-+
-+#define ns_to_usf(x) (((double)x/1000))
-+#define ns_to_per(total, part) ((part * 100) / (double)total)
++++ b/Documentation/tools/rtla/common_timerlat_aa.rst
+@@ -0,0 +1,7 @@
++**--dump-tasks**
++
++        prints the task running on all CPUs if stop conditions are met (depends on !--no-aa)
++
++**--no-aa**
++
++        disable auto-analysis, reducing rtla timerlat cpu usage
+diff --git a/Documentation/tools/rtla/rtla-timerlat-top.rst b/Documentation/tools/rtla/rtla-timerlat-top.rst
+index 7c4e4b109493..73799c1150ad 100644
+--- a/Documentation/tools/rtla/rtla-timerlat-top.rst
++++ b/Documentation/tools/rtla/rtla-timerlat-top.rst
+@@ -30,102 +30,84 @@ OPTIONS
+ 
+ .. include:: common_options.rst
+ 
++.. include:: common_timerlat_aa.rst
++
+ EXAMPLE
+ =======
+ 
+-In the example below, the *timerlat* tracer is set to capture the stack trace at
+-the IRQ handler, printing it to the buffer if the *Thread* timer latency is
+-higher than *30 us*. It is also set to stop the session if a *Thread* timer
+-latency higher than *30 us* is hit. Finally, it is set to save the trace
+-buffer if the stop condition is hit::
++In the example below, the timerlat tracer is dispatched in cpus *1-23* in the
++automatic trace mode, instructing the tracer to stop if a *40 us* latency or
++higher is found::
+ 
+-  [root@alien ~]# rtla timerlat top -s 30 -T 30 -t
+-                   Timer Latency
+-    0 00:00:59   |          IRQ Timer Latency (us)        |         Thread Timer Latency (us)
++  # timerlat -a 40 -c 1-23 -q
++                                     Timer Latency
++    0 00:00:12   |          IRQ Timer Latency (us)        |         Thread Timer Latency (us)
+   CPU COUNT      |      cur       min       avg       max |      cur       min       avg       max
+-    0 #58634     |        1         0         1        10 |       11         2        10        23
+-    1 #58634     |        1         0         1         9 |       12         2         9        23
+-    2 #58634     |        0         0         1        11 |       10         2         9        23
+-    3 #58634     |        1         0         1        11 |       11         2         9        24
+-    4 #58634     |        1         0         1        10 |       11         2         9        26
+-    5 #58634     |        1         0         1         8 |       10         2         9        25
+-    6 #58634     |       12         0         1        12 |       30         2        10        30 <--- CPU with spike
+-    7 #58634     |        1         0         1         9 |       11         2         9        23
+-    8 #58633     |        1         0         1         9 |       11         2         9        26
+-    9 #58633     |        1         0         1         9 |       10         2         9        26
+-   10 #58633     |        1         0         1        13 |       11         2         9        28
+-   11 #58633     |        1         0         1        13 |       12         2         9        24
+-   12 #58633     |        1         0         1         8 |       10         2         9        23
+-   13 #58633     |        1         0         1        10 |       10         2         9        22
+-   14 #58633     |        1         0         1        18 |       12         2         9        27
+-   15 #58633     |        1         0         1        10 |       11         2         9        28
+-   16 #58633     |        0         0         1        11 |        7         2         9        26
+-   17 #58633     |        1         0         1        13 |       10         2         9        24
+-   18 #58633     |        1         0         1         9 |       13         2         9        22
+-   19 #58633     |        1         0         1        10 |       11         2         9        23
+-   20 #58633     |        1         0         1        12 |       11         2         9        28
+-   21 #58633     |        1         0         1        14 |       11         2         9        24
+-   22 #58633     |        1         0         1         8 |       11         2         9        22
+-   23 #58633     |        1         0         1        10 |       11         2         9        27
+-  timerlat hit stop tracing
+-  saving trace to timerlat_trace.txt
+-  [root@alien bristot]# tail -60 timerlat_trace.txt
+-  [...]
+-      timerlat/5-79755   [005] .......   426.271226: #58634 context thread timer_latency     10823 ns
+-              sh-109404  [006] dnLh213   426.271247: #58634 context    irq timer_latency     12505 ns
+-              sh-109404  [006] dNLh313   426.271258: irq_noise: local_timer:236 start 426.271245463 duration 12553 ns
+-              sh-109404  [006] d...313   426.271263: thread_noise:       sh:109404 start 426.271245853 duration 4769 ns
+-      timerlat/6-79756   [006] .......   426.271264: #58634 context thread timer_latency     30328 ns
+-      timerlat/6-79756   [006] ....1..   426.271265: <stack trace>
+-  => timerlat_irq
+-  => __hrtimer_run_queues
+-  => hrtimer_interrupt
+-  => __sysvec_apic_timer_interrupt
+-  => sysvec_apic_timer_interrupt
+-  => asm_sysvec_apic_timer_interrupt
+-  => _raw_spin_unlock_irqrestore			<---- spinlock that disabled interrupt.
+-  => try_to_wake_up
+-  => autoremove_wake_function
+-  => __wake_up_common
+-  => __wake_up_common_lock
+-  => ep_poll_callback
+-  => __wake_up_common
+-  => __wake_up_common_lock
+-  => fsnotify_add_event
+-  => inotify_handle_inode_event
+-  => fsnotify
+-  => __fsnotify_parent
+-  => __fput
+-  => task_work_run
+-  => exit_to_user_mode_prepare
+-  => syscall_exit_to_user_mode
+-  => do_syscall_64
+-  => entry_SYSCALL_64_after_hwframe
+-  => 0x7265000001378c
+-  => 0x10000cea7
+-  => 0x25a00000204a
+-  => 0x12e302d00000000
+-  => 0x19b51010901b6
+-  => 0x283ce00726500
+-  => 0x61ea308872
+-  => 0x00000fe3
+-            bash-109109  [007] d..h...   426.271265: #58634 context    irq timer_latency      1211 ns
+-      timerlat/6-79756   [006] .......   426.271267: timerlat_main: stop tracing hit on cpu 6
+-
+-In the trace, it is possible the notice that the *IRQ* timer latency was
+-already high, accounting *12505 ns*. The IRQ delay was caused by the
+-*bash-109109* process that disabled IRQs in the wake-up path
+-(*_try_to_wake_up()* function). The duration of the IRQ handler that woke
+-up the timerlat thread, informed with the **osnoise:irq_noise** event, was
+-also high and added more *12553 ns* to the Thread latency. Finally, the
+-**osnoise:thread_noise** added by the currently running thread (including
+-the scheduling overhead) added more *4769 ns*. Summing up these values,
+-the *Thread* timer latency accounted for *30328 ns*.
+-
+-The primary reason for this high value is the wake-up path that was hit
+-twice during this case: when the *bash-109109* was waking up a thread
+-and then when the *timerlat* thread was awakened. This information can
+-then be used as the starting point of a more fine-grained analysis.
++    1 #12322     |        0         0         1        15 |       10         3         9        31
++    2 #12322     |        3         0         1        12 |       10         3         9        23
++    3 #12322     |        1         0         1        21 |        8         2         8        34
++    4 #12322     |        1         0         1        17 |       10         2        11        33
++    5 #12322     |        0         0         1        12 |        8         3         8        25
++    6 #12322     |        1         0         1        14 |       16         3        11        35
++    7 #12322     |        0         0         1        14 |        9         2         8        29
++    8 #12322     |        1         0         1        22 |        9         3         9        34
++    9 #12322     |        0         0         1        14 |        8         2         8        24
++   10 #12322     |        1         0         0        12 |        9         3         8        24
++   11 #12322     |        0         0         0        15 |        6         2         7        29
++   12 #12321     |        1         0         0        13 |        5         3         8        23
++   13 #12319     |        0         0         1        14 |        9         3         9        26
++   14 #12321     |        1         0         0        13 |        6         2         8        24
++   15 #12321     |        1         0         1        15 |       12         3        11        27
++   16 #12318     |        0         0         1        13 |        7         3        10        24
++   17 #12319     |        0         0         1        13 |       11         3         9        25
++   18 #12318     |        0         0         0        12 |        8         2         8        20
++   19 #12319     |        0         0         1        18 |       10         2         9        28
++   20 #12317     |        0         0         0        20 |        9         3         8        34
++   21 #12318     |        0         0         0        13 |        8         3         8        28
++   22 #12319     |        0         0         1        11 |        8         3        10        22
++   23 #12320     |       28         0         1        28 |       41         3        11        41
++  rtla timerlat hit stop tracing
++  ## CPU 23 hit stop tracing, analyzing it ##
++  IRQ handler delay:                                        27.49 us (65.52 %)
++  IRQ latency:                                              28.13 us
++  Timerlat IRQ duration:                                     9.59 us (22.85 %)
++  Blocking thread:                                           3.79 us (9.03 %)
++                         objtool:49256                       3.79 us
++    Blocking thread stacktrace
++                -> timerlat_irq
++                -> __hrtimer_run_queues
++                -> hrtimer_interrupt
++                -> __sysvec_apic_timer_interrupt
++                -> sysvec_apic_timer_interrupt
++                -> asm_sysvec_apic_timer_interrupt
++                -> _raw_spin_unlock_irqrestore
++                -> cgroup_rstat_flush_locked
++                -> cgroup_rstat_flush_irqsafe
++                -> mem_cgroup_flush_stats
++                -> mem_cgroup_wb_stats
++                -> balance_dirty_pages
++                -> balance_dirty_pages_ratelimited_flags
++                -> btrfs_buffered_write
++                -> btrfs_do_write_iter
++                -> vfs_write
++                -> __x64_sys_pwrite64
++                -> do_syscall_64
++                -> entry_SYSCALL_64_after_hwframe
++  ------------------------------------------------------------------------
++    Thread latency:                                          41.96 us (100%)
++
++  The system has exit from idle latency!
++    Max timerlat IRQ latency from idle: 17.48 us in cpu 4
++  Saving trace to timerlat_trace.txt
++
++In this case, the major factor was the delay suffered by the *IRQ handler*
++that handles **timerlat** wakeup: *65.52%*. This can be caused by the
++current thread masking interrupts, which can be seen in the blocking
++thread stacktrace: the current thread (*objtool:49256*) disabled interrupts
++via *raw spin lock* operations inside mem cgroup, while doing write
++syscall in a btrfs file system.
++
++The raw trace is saved in the **timerlat_trace.txt** file for further analysis.
+ 
+ Note that **rtla timerlat** was dispatched without changing *timerlat* tracer
+ threads' priority. That is generally not needed because these threads hava
 -- 
 2.38.1
 
