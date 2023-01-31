@@ -2,137 +2,97 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11183C63797
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 31 Jan 2023 16:30:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57322C636CC
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 31 Jan 2023 16:31:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231831AbjAaQ37 (ORCPT
+        id S231904AbjAaQbD (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 31 Jan 2023 11:29:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39482 "EHLO
+        Tue, 31 Jan 2023 11:31:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231998AbjAaQ3T (ORCPT
+        with ESMTP id S231339AbjAaQan (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 31 Jan 2023 11:29:19 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B0E56488;
-        Tue, 31 Jan 2023 08:29:09 -0800 (PST)
+        Tue, 31 Jan 2023 11:30:43 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAAD58673;
+        Tue, 31 Jan 2023 08:30:16 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3F2E0B81DAE;
-        Tue, 31 Jan 2023 16:29:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 727A2C433EF;
-        Tue, 31 Jan 2023 16:28:50 +0000 (UTC)
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Cc:     Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Karsten Keil <isdn@linux-pingi.de>,
-        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Len Brown <len.brown@intel.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        by ams.source.kernel.org (Postfix) with ESMTPS id 206ABB81D12;
+        Tue, 31 Jan 2023 16:30:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C83BFC433D2;
+        Tue, 31 Jan 2023 16:30:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675182613;
+        bh=ThZBrAUV3an4YVAjVpxztvzY3NwtSkoPSNZhD30MYDA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gTwSpmdRsEkx7sMRMhAfoepkIlnVbxHABQGOp7X548IUkXlJOQvu5Y/CYjSbtj5Sj
+         e8uulV3TlZkGbJKRGdZPCWLS9+TRpKB1Hnx8zjsgBQCcXHunp9N0N6Zv/kWok9GJoZ
+         CuHRzRVmVIawB5RIYz8EKzZEq+PZ0kg5GybxgT6eXiOgAhh3ewO+fuBqlLfhrxBh8B
+         t4yTPIW/ih7OY1g/73yLKKAX+6Jngv/v7IVSyyELTxYlEfzzTco0k//+NNGRMzGjPF
+         Pd8CMqDAusK24fft3yTxn6KM+lP4hxno/qH1xwWNhxBs+AsRio0DRAmqHwbzP5yYzE
+         duEUsxUB+FZNg==
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Evgeniy Polyakov <zbr@ioremap.net>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, alsa-devel@alsa-project.org,
-        coresight@lists.linaro.org, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, isdn4linux@listserv.isdn4linux.de,
-        keyrings@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-sgx@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, live-patching@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-mm@kvack.org,
-        openrisc@lists.librecores.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
-        x86@kernel.org
-Subject: Re: (subset) [PATCH 00/35] Documentation: correct lots of spelling errors (series 1)
-Date:   Tue, 31 Jan 2023 16:28:48 +0000
-Message-Id: <167518251202.582976.5415495075435902323.b4-ty@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230127064005.1558-1-rdunlap@infradead.org>
-References: <20230127064005.1558-1-rdunlap@infradead.org>
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        linux-trace-devel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2 0/6] rtla: Add hwnoise tool
+Date:   Tue, 31 Jan 2023 17:30:01 +0100
+Message-Id: <cover.1675181734.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 26 Jan 2023 22:39:30 -0800, Randy Dunlap wrote:
-> Correct many spelling errors in Documentation/ as reported by codespell.
-> 
-> Maintainers of specific kernel subsystems are only Cc-ed on their
-> respective patches, not the entire series. [if all goes well]
-> 
-> These patches are based on linux-next-20230125.
-> 
-> [...]
+This series present a new tool inside rtla. It is named hwnoise.
 
-Applied to arm64 (for-next/misc), thanks!
+hwnoise dispatches the osnoise tracer and displays a summary of the noise.
+The difference is that it runs the tracer with the OSNOISE_IRQ_DISABLE
+option set, thus only allowing only hardware-related noise, resulting in
+a simplified output. hwnoise has the same features of osnoise.
 
-[01/35] Documentation: arm64: correct spelling
-        https://git.kernel.org/arm64/c/a70f00e7f1a3
+An example of the tool's output:
+
+ # rtla hwnoise -c 1-5 -T 1 -d 10m -q
+                                           Hardware-related Noise
+ duration:   0 00:10:00 | time is in us
+ CPU Period       Runtime        Noise  % CPU Aval   Max Noise   Max Single          HW          NMI
+   1 #599       599000000          138    99.99997           3            3           4           74
+   2 #599       599000000           85    99.99998           3            3           4           75
+   3 #599       599000000           86    99.99998           4            3           6           75
+   4 #599       599000000           81    99.99998           4            4           2           75
+   5 #599       599000000           85    99.99998           2            2           2           75
+
+Changes from v1:
+  Add rtla-hwnoise to the rtla documentation index
+	(kernel test robot/Bagas Sanjaya)
+
+Daniel Bristot de Oliveira (6):
+  rtla/osnoise: Add helper functions to manipulate osnoise/options
+  rtla/osnoise: Add OSNOISE_IRQ_DISABLE option
+  rtla/osnoise: Add the mode abstraction
+  rtla/osnoise_top: Pass the params to the usage function
+  rtla: Add hwnoise tool
+  Documentation/rtla: Add hwnoise man page
+
+ Documentation/tools/rtla/index.rst        |   1 +
+ Documentation/tools/rtla/rtla-hwnoise.rst | 107 +++++++++++++++++++
+ tools/tracing/rtla/Makefile               |   2 +
+ tools/tracing/rtla/src/osnoise.c          | 120 ++++++++++++++++++++++
+ tools/tracing/rtla/src/osnoise.h          |   7 ++
+ tools/tracing/rtla/src/osnoise_top.c      |  84 ++++++++++++---
+ tools/tracing/rtla/src/rtla.c             |   4 +
+ 7 files changed, 309 insertions(+), 16 deletions(-)
+ create mode 100644 Documentation/tools/rtla/rtla-hwnoise.rst
 
 -- 
-Catalin
+2.38.1
 
