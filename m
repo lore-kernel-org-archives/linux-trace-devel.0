@@ -2,131 +2,95 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 936B0C636CD
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Feb 2023 12:46:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DABE9C636CC
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Feb 2023 12:46:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231280AbjBGMqj (ORCPT
+        id S231660AbjBGMql (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 7 Feb 2023 07:46:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36840 "EHLO
+        Tue, 7 Feb 2023 07:46:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjBGMqi (ORCPT
+        with ESMTP id S229815AbjBGMqk (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 7 Feb 2023 07:46:38 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF8AAF
-        for <linux-trace-devel@vger.kernel.org>; Tue,  7 Feb 2023 04:46:37 -0800 (PST)
+        Tue, 7 Feb 2023 07:46:40 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D7C0110
+        for <linux-trace-devel@vger.kernel.org>; Tue,  7 Feb 2023 04:46:38 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1750738D10;
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E064F38DB6;
         Tue,  7 Feb 2023 12:46:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
         t=1675773996; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=q3Iq5tbVVzTzfQPe5btlEi3X5IuvBVz4YtsCDvO2VLQ=;
-        b=YAwP/9HtAwxQqngE68Ea2UFtjxmNbAjmE+OpbGyghdgxkPMy3XtRa+wq+0uHu1Jb6ngZrW
-        gbTd4nGZfkBBKx29sinbjKuQJhCfgXhxTCOruN279U+IDMn+SFOF/uLPQipwG4fCsXEEHC
-        GcigC+0nrDVcffoQeehouk88AiFfgHk=
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3t9shS8TnpcN/tg5bybztiC7vj93brzWVwm4bUJqamM=;
+        b=cOplPCy1Q5XDfB0200i0UYXDHjsEFNK8HSptjiajt0dddCMDg0u11mlgUzJ+PQ8ZEn1p2o
+        CMuzD0niSDSxtycjjvsdWHl72TMfwKyy8k4wfSj4jc4fOOO+0kyUnxSYioALtP4Oa6/4dw
+        ENJfxluuYNXnk8f7xWO8vTSZnu3BsEY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
         s=susede2_ed25519; t=1675773996;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=q3Iq5tbVVzTzfQPe5btlEi3X5IuvBVz4YtsCDvO2VLQ=;
-        b=capbot/yhHX+ihX+NphMVBEgcmtS3VgWM0/SUOrIvnvPZmsG2p2F/WoI8/7BDtG4u/8rCW
-        PpKn4KVYyZTBinAg==
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3t9shS8TnpcN/tg5bybztiC7vj93brzWVwm4bUJqamM=;
+        b=tDcXTN31y9e3n7lmIQSMw5a3c0OBdS9NN2sxwmNJgUK/lCceuLmPzyVT7TqF+dhSklAQN1
+        HoC9XBAgim5mr1BQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0786E13467;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D1D1C13467;
         Tue,  7 Feb 2023 12:46:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id bkWVASxI4mN2XwAAMHmgww
+        id uh0EMyxI4mN5XwAAMHmgww
         (envelope-from <dwagner@suse.de>); Tue, 07 Feb 2023 12:46:36 +0000
 From:   Daniel Wagner <dwagner@suse.de>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH v6 0/2] Add initial support for meson
-Date:   Tue,  7 Feb 2023 13:46:32 +0100
-Message-Id: <20230207124634.6515-1-dwagner@suse.de>
+Subject: [PATCH v6 1/2] libtracecmd: Add initial support for meson
+Date:   Tue,  7 Feb 2023 13:46:33 +0100
+Message-Id: <20230207124634.6515-2-dwagner@suse.de>
 X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230207124634.6515-1-dwagner@suse.de>
+References: <20230207124634.6515-1-dwagner@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This version brings a few cleanups on the documentation intallation path
-and pkg-config depenedency updates.
+Add support for building the project with meson.
 
-Changes:
+As libtracecmd lives in the same source tree as trace-cmd, we have
+to place the 'top' meson.builld file under lib but we can't reference
+it from the root meson.build which controlling the main trace-cmd
+build.
 
-v6:
-  - lib: isntall trace-cmd.h directly in /usr/include and not subdir
-    trace-cmd. kernelshark builds breaks otherwise
+This implies we can't access resources/path which are not below the
+library's main meson.build directly. Thus, to be able to build the
+documentation we have to use the symlink as workaround.
 
-v5:
-  - lib: set default html doc path to share/doc/libtracemd-doc
-  - lib: list libtraceevent and libtracefs in Required pkg-config section.
-  - lib: install (any) man5 pages (keep it in sync with other projects)
-  - trace-cmd: install (any) man5 pages (keep it in sync with other projects)
-  - trace-cmd: set default html doch patch to share/doc/trace-cmd-doc
-
-v4:
-  - changed project defaults to --default-library=both
-  - code style consistency updates
-  - hardening doc install script (shellcheck)
-  - renamed install-man.sh.in to install-docs.sh.in
-  - install-docs.sh.in installs html pages too
-  - introduces docs target
-  - updated copyright year
-  - streamlined documentation meson build file
-
-v3:
-  - generate tc_version.h file
-  - lib: cleaning up the standalone build vs trace-cmd build
-  - s/conf10.set/conf.set10/
-  - default build target is debug
-  - do not install man pages into subdirs
-
-v2:
-  - make audit dependency optional as default
-  - integrate static libtracecmd build into trace-cmd directly
-  - remove check-manpages target in trace-cmd
-
-v1:
-  - initial version
-
-Daniel Wagner (2):
-  libtracecmd: Add initial support for meson
-  trace-cmd: Add initial support for meson
-
- Documentation/libtracecmd/install-docs.sh.in |  20 ++
- Documentation/libtracecmd/meson.build        | 168 +++++++++++++++++
- Documentation/trace-cmd/install-docs.sh.in   |  20 ++
- Documentation/trace-cmd/meson.build          | 187 +++++++++++++++++++
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+---
+ Documentation/libtracecmd/install-docs.sh.in |  20 +++
+ Documentation/libtracecmd/meson.build        | 168 +++++++++++++++++++
  lib/Documentation                            |   1 +
  lib/check-manpages.sh                        |   1 +
- lib/meson.build                              | 112 +++++++++++
- lib/meson_options.txt                        |  19 ++
+ lib/meson.build                              | 112 +++++++++++++
+ lib/meson_options.txt                        |  19 +++
  lib/trace-cmd/include/meson.build            |   5 +
  lib/trace-cmd/include/private/meson.build    |  14 ++
- lib/trace-cmd/meson.build                    |  87 +++++++++
- meson-vcs-tag.sh                             |  17 ++
- meson.build                                  | 149 +++++++++++++++
- meson_options.txt                            |  23 +++
- python/meson.build                           |  40 ++++
- tracecmd/meson.build                         |  59 ++++++
- utest/meson.build                            |  26 +++
- 17 files changed, 948 insertions(+)
+ lib/trace-cmd/meson.build                    |  87 ++++++++++
+ 9 files changed, 427 insertions(+)
  create mode 100755 Documentation/libtracecmd/install-docs.sh.in
  create mode 100644 Documentation/libtracecmd/meson.build
- create mode 100755 Documentation/trace-cmd/install-docs.sh.in
- create mode 100644 Documentation/trace-cmd/meson.build
  create mode 120000 lib/Documentation
  create mode 120000 lib/check-manpages.sh
  create mode 100644 lib/meson.build
@@ -134,13 +98,490 @@ Daniel Wagner (2):
  create mode 100644 lib/trace-cmd/include/meson.build
  create mode 100644 lib/trace-cmd/include/private/meson.build
  create mode 100644 lib/trace-cmd/meson.build
- create mode 100755 meson-vcs-tag.sh
- create mode 100644 meson.build
- create mode 100644 meson_options.txt
- create mode 100644 python/meson.build
- create mode 100644 tracecmd/meson.build
- create mode 100644 utest/meson.build
 
+diff --git a/Documentation/libtracecmd/install-docs.sh.in b/Documentation/libtracecmd/install-docs.sh.in
+new file mode 100755
+index 000000000000..eca9b1f42dcc
+--- /dev/null
++++ b/Documentation/libtracecmd/install-docs.sh.in
+@@ -0,0 +1,20 @@
++#!/bin/bash
++# SPDX-License-Identifier: LGPL-2.1
++#
++# Copyright (c) 2023 Daniel Wagner, SUSE LLC
++
++for section in 1 3 5; do
++    while IFS= read -r -d '' man; do
++        [ ! -d "${DESTDIR}@MANDIR@/man${section}" ] && install -d "${DESTDIR}@MANDIR@/man${section}"
++
++        echo Installing "${man}" to "${DESTDIR}@MANDIR@/man${section}"
++        install -m 0644 "${man}" "${DESTDIR}@MANDIR@/man${section}/"
++    done< <(find "@SRCDIR@" -name "*\.${section}" -type f -print0)
++done
++
++while IFS= read -r -d '' html; do
++    [ ! -d "${DESTDIR}@HTMLDIR@"  ] && install -d "${DESTDIR}@HTMLDIR@"
++
++    echo Installing "${html}" to "${DESTDIR}@HTMLDIR@"
++    install -m 0644 "${html}" "${DESTDIR}@HTMLDIR@"
++done< <(find "@SRCDIR@" -name "*\.html" -type f -print0)
+diff --git a/Documentation/libtracecmd/meson.build b/Documentation/libtracecmd/meson.build
+new file mode 100644
+index 000000000000..c9fb16676812
+--- /dev/null
++++ b/Documentation/libtracecmd/meson.build
+@@ -0,0 +1,168 @@
++# SPDX-License-Identifier: LGPL-2.1
++#
++# Copyright (c) 2023 Daniel Wagner, SUSE LLC
++
++# input text file: man page section
++
++sources = {
++    'libtracecmd-files.txt': '3',
++    'libtracecmd-instances.txt': '3',
++    'libtracecmd-iterate.txt': '3',
++    'libtracecmd-log.txt': '3',
++    'libtracecmd-maps.txt': '3',
++    'libtracecmd-peer.txt': '3',
++    'libtracecmd-record.txt': '3',
++    'libtracecmd-timestamp.txt': '3',
++    'libtracecmd.txt': '3',
++}
++
++confdir = meson.current_source_dir() + '/../'
++top_source_dir = meson.current_source_dir() + '/../../'
++
++#
++# For asciidoc ...
++#   -7.1.2,     no extra settings are needed.
++#    8.0-,      set ASCIIDOC8.
++#
++
++#
++# For docbook-xsl ...
++#   -1.68.1,         set ASCIIDOC_NO_ROFF? (based on changelog from 1.73.0)
++#    1.69.0,         no extra settings are needed?
++#    1.69.1-1.71.0,  set DOCBOOK_SUPPRESS_SP?
++#    1.71.1,         no extra settings are needed?
++#    1.72.0,         set DOCBOOK_XSL_172.
++#    1.73.0-,        set ASCIIDOC_NO_ROFF
++#
++
++#
++# If you had been using DOCBOOK_XSL_172 in an attempt to get rid
++# of 'the ".ft C" problem' in your generated manpages, and you
++# instead ended up with weird characters around callouts, try
++# using ASCIIDOC_NO_ROFF instead (it works fine with ASCIIDOC8).
++#
++
++if get_option('asciidoctor')
++    asciidoc = find_program('asciidoctor')
++    asciidoc_extra  = ['-a', 'compat-mode']
++    asciidoc_extra += ['-I.']
++    asciidoc_extra += ['-r', 'asciidoctor-extensions']
++    asciidoc_extra += ['-a', 'mansource=libtraceevent']
++    asciidoc_extra += ['-a', 'manmanual="libtraceevent Manual"']
++    asciidoc_html = 'xhtml5'
++else
++    asciidoc = find_program('asciidoc')
++    asciidoc_extra  = ['--unsafe']
++    asciidoc_extra += ['-f', confdir + 'asciidoc.conf']
++    asciidoc_html = 'xhtml11'
++
++    r = run_command(asciidoc, '--version', check: true)
++    v = r.stdout().strip()
++    if v.version_compare('>=8.0')
++        asciidoc_extra += ['-a', 'asciidoc7compatible']
++    endif
++endif
++
++manpage_xsl = confdir + 'manpage-normal.xsl'
++
++if get_option('docbook-xls-172')
++    asciidoc_extra += ['-a', 'libtraceevent-asciidoc-no-roff']
++    manpage_xsl = confdir + 'manpage-1.72.xsl'
++elif get_option('asciidoc-no-roff')
++    # docbook-xsl after 1.72 needs the regular XSL, but will not
++    # pass-thru raw roff codes from asciidoc.conf, so turn them off.
++    asciidoc_extra += ['-a', 'libtraceevent-asciidoc-no-roff']
++endif
++
++xmlto = find_program('xmlto')
++xmlto_extra = []
++
++if get_option('man-bold-literal')
++    xmlto_extra += ['-m ', confdir + 'manpage-bold-literal.xsl']
++endif
++
++if get_option('docbook-suppress-sp')
++    xmlto_extra += ['-m ',  confdir + 'manpage-suppress-sp.xsl']
++endif
++
++check_doc = custom_target(
++    'check-doc',
++    output: 'dummy',
++    command : [
++        top_source_dir + 'check-manpages.sh',
++        meson.current_source_dir()])
++
++gen = generator(
++    asciidoc,
++    output: '@BASENAME@.xml',
++    arguments: [
++        '-b', 'docbook',
++        '-d', 'manpage',
++        '-a', 'libtraceevent_version=' + meson.project_version(),
++        '-o', '@OUTPUT@']
++        + asciidoc_extra
++        +  ['@INPUT@'])
++
++man = []
++html = []
++foreach txt, section : sources
++    # build man page(s)
++    xml = gen.process(txt)
++    man += custom_target(
++        txt.underscorify() + '_man',
++        input: xml,
++        output: '@BASENAME@.' + section,
++        depends: check_doc,
++        command: [
++            xmlto,
++            '-m', manpage_xsl,
++            'man',
++            '-o', '@OUTPUT@']
++            + xmlto_extra
++            + ['@INPUT@'])
++
++    # build html pages
++    html += custom_target(
++        txt.underscorify() + '_html',
++        input: txt,
++        output: '@BASENAME@.html',
++        depends: check_doc,
++        command: [
++            asciidoc,
++            '-b', asciidoc_html,
++            '-d', 'manpage',
++            '-a', 'libtraceevent_version=' + meson.project_version(),
++            '-o', '@OUTPUT@']
++            + asciidoc_extra
++            + ['@INPUT@'])
++endforeach
++
++# Install path workaround because:
++#
++# - xmlto might generate more than one file and we would to tell meson
++#   about those output files. We could figure out which files are generated
++#   (see sed match in check-manpages.sh).
++#
++# - The man page generation puts all the generated files under sub dirs
++#   and it's not obvious how to tell Meson it should not do this without
++#   causing the install step to fail (confusion where the generated files
++#   are stored)
++#
++# - The documentation build is not part of the 'build' target. The user
++#   has explicitly to trigger the doc build. Hence the documentation is
++#   not added to the 'install' target.
++#
++# Thus just use a plain old shell script to move the generated files to the
++# right location.
++
++conf = configuration_data()
++conf.set('SRCDIR', meson.current_build_dir())
++conf.set('MANDIR', mandir)
++conf.set('HTMLDIR', htmldir)
++configure_file(
++    input: 'install-docs.sh.in',
++    output: 'install-docs.sh',
++    configuration: conf)
++
++meson.add_install_script(
++    join_paths(meson.current_build_dir(), 'install-docs.sh'))
+diff --git a/lib/Documentation b/lib/Documentation
+new file mode 120000
+index 000000000000..fb996f28ab31
+--- /dev/null
++++ b/lib/Documentation
+@@ -0,0 +1 @@
++../Documentation
+\ No newline at end of file
+diff --git a/lib/check-manpages.sh b/lib/check-manpages.sh
+new file mode 120000
+index 000000000000..d9416662eaed
+--- /dev/null
++++ b/lib/check-manpages.sh
+@@ -0,0 +1 @@
++../check-manpages.sh
+\ No newline at end of file
+diff --git a/lib/meson.build b/lib/meson.build
+new file mode 100644
+index 000000000000..4061c7b506aa
+--- /dev/null
++++ b/lib/meson.build
+@@ -0,0 +1,112 @@
++# SPDX-License-Identifier: LGPL-2.1
++#
++# Copyright (c) 2023 Daniel Wagner, SUSE LLC
++
++project(
++    'libtracecmd', ['c'],
++    meson_version: '>= 0.50.0',
++    license: 'GPL-2.0',
++    version: '1.3.0',
++    default_options: [
++        'c_std=gnu99',
++        'buildtype=debug',
++        'default_library=both',
++        'prefix=/usr/local',
++        'warning_level=1'])
++
++cc = meson.get_compiler('c')
++
++prefixdir = get_option('prefix')
++mandir    = join_paths(prefixdir, get_option('mandir'))
++htmldir   = join_paths(prefixdir, get_option('htmldir'))
++
++libtracecmd_standalone_build = true
++
++library_version = meson.project_version()
++
++conf = configuration_data()
++
++libtraceevent_dep = dependency('libtraceevent', version: '>= 1.5.0', required: true)
++libtracefs_dep = dependency('libtracefs', version: '>= 1.6.0', required: true)
++
++zlib_dep = dependency('zlib', required: false)
++conf.set('HAVE_ZLIB', zlib_dep.found(), description: 'Is zlib avialable?')
++
++libzstd_dep = dependency('libzstd', version: '>= 1.4.0', required: false)
++conf.set('HAVE_ZSTD', libzstd_dep.found(), description: 'Is libzstd available?')
++
++cunit_dep = dependency('cunit', required : false)
++
++vsock_defined = get_option('vsock') and cc.has_header('linux/vm_sockets.h')
++conf.set('VSOCK', vsock_defined, description: 'Is vsock available?')
++
++perf_defined = cc.has_header('linux/perf_event.h')
++conf.set('PERF', perf_defined, description: 'Is perf available?')
++
++have_ptrace = get_option('ptrace') and cc.compiles(
++    '''
++    #include <stdio.h>
++    #include <sys/ptrace.h>
++
++    int main (void)
++    {
++            int ret;
++            ret = ptrace(PTRACE_ATTACH, 0, NULL, 0);
++            ptrace(PTRACE_TRACEME, 0, NULL, 0);
++            ptrace(PTRACE_GETSIGINFO, 0, NULL, NULL);
++            ptrace(PTRACE_GETEVENTMSG, 0, NULL, NULL);
++            ptrace(PTRACE_SETOPTIONS, NULL, NULL,
++                           PTRACE_O_TRACEFORK |
++                           PTRACE_O_TRACEVFORK |
++                           PTRACE_O_TRACECLONE |
++                           PTRACE_O_TRACEEXIT);
++            ptrace(PTRACE_CONT, NULL, NULL, 0);
++            ptrace(PTRACE_DETACH, 0, NULL, NULL);
++            ptrace(PTRACE_SETOPTIONS, 0, NULL,
++                   PTRACE_O_TRACEFORK |
++                   PTRACE_O_TRACEVFORK |
++                   PTRACE_O_TRACECLONE |
++                   PTRACE_O_TRACEEXIT);
++            return ret;
++    }
++    ''',
++    name: 'ptrace')
++if not have_ptrace
++    conf.set10('NO_PTRACE', true, description: 'Is ptrace missing?')
++    conf.set('WARN_NO_PTRACE', true, description: 'Issue no ptrace warning?')
++endif
++
++audit_dep = dependency('audit', required: false)
++if not audit_dep.found()
++    conf.set10('NO_AUDIT', true, description: 'Is audit missing?')
++    conf.set('WARN_NO_AUDIT', true, description: 'Issue no audit warning?')
++endif
++
++add_project_arguments(
++    [
++        '-D_GNU_SOURCE',
++        '-include', 'trace-cmd/include/private/config.h',
++    ],
++    language : 'c')
++
++libtracecmd_ext_incdir = include_directories(
++    [
++        '../include',
++        '../include/trace-cmd',
++        '../tracecmd/include'
++    ])
++
++subdir('trace-cmd/include')
++subdir('trace-cmd/include/private')
++subdir('trace-cmd')
++if libtracecmd_standalone_build
++    subdir('Documentation/libtracecmd')
++
++    custom_target(
++        'docs',
++        output: 'docs',
++        depends: [html, man],
++        command: ['echo'])
++endif
++
++install_headers('../include/trace-cmd/trace-cmd.h')
+diff --git a/lib/meson_options.txt b/lib/meson_options.txt
+new file mode 100644
+index 000000000000..9f5ed6d486d8
+--- /dev/null
++++ b/lib/meson_options.txt
+@@ -0,0 +1,19 @@
++# -*- mode: meson -*-
++# SPDX-License-Identifier: LGPL-2.1
++
++option('vsock', type : 'boolean', value : true,
++       description : 'build with vsock support')
++option('ptrace', type : 'boolean', value : true,
++       description : 'build with ptrace support')
++option('htmldir', type : 'string', value : 'share/doc/libtracecmd-doc',
++       description : 'directory for HTML documentation')
++option('asciidoctor', type : 'boolean', value: false,
++       description : 'use asciidoctor instead of asciidoc')
++option('docbook-xls-172', type : 'boolean', value : false,
++       description : 'enable docbook XLS 172 workaround')
++option('asciidoc-no-roff', type : 'boolean', value : false,
++       description : 'enable no roff workaround')
++option('man-bold-literal', type : 'boolean', value : false,
++       description : 'enable bold literals')
++option('docbook-suppress-sp', type : 'boolean', value : false,
++       description : 'docbook suppress sp')
+diff --git a/lib/trace-cmd/include/meson.build b/lib/trace-cmd/include/meson.build
+new file mode 100644
+index 000000000000..c1c83884948f
+--- /dev/null
++++ b/lib/trace-cmd/include/meson.build
+@@ -0,0 +1,5 @@
++# SPDX-License-Identifier: LGPL-2.1
++#
++# Copyright (c) 2023 Daniel Wagner, SUSE LLC
++
++libtracecmd_incdir = include_directories(['.'])
+diff --git a/lib/trace-cmd/include/private/meson.build b/lib/trace-cmd/include/private/meson.build
+new file mode 100644
+index 000000000000..0f36339a9cc3
+--- /dev/null
++++ b/lib/trace-cmd/include/private/meson.build
+@@ -0,0 +1,14 @@
++# SPDX-License-Identifier: LGPL-2.1
++#
++# Copyright (c) 2023 Daniel Wagner, SUSE LLC
++
++config_h = configure_file(
++    output: 'config.h',
++    configuration: conf
++)
++
++libtracecmd_private_incdir = include_directories(['.'])
++
++config_dep = declare_dependency(
++    include_directories : libtracecmd_private_incdir,
++    sources: config_h)
+diff --git a/lib/trace-cmd/meson.build b/lib/trace-cmd/meson.build
+new file mode 100644
+index 000000000000..377b51ce3393
+--- /dev/null
++++ b/lib/trace-cmd/meson.build
+@@ -0,0 +1,87 @@
++# SPDX-License-Identifier: LGPL-2.1
++#
++# Copyright (c) 2023 Daniel Wagner, SUSE LLC
++
++sources = [
++    'trace-hash.c',
++    'trace-hooks.c',
++    'trace-input.c',
++    'trace-output.c',
++    'trace-recorder.c',
++    'trace-util.c',
++    'trace-filter-hash.c',
++    'trace-filter.c',
++    'trace-msg.c',
++    'trace-plugin.c',
++    'trace-maps.c',
++    'trace-timesync.c',
++    'trace-timesync-ptp.c',
++    'trace-compress.c',
++    'trace-blk-hack.c',
++    'trace-ftrace.c',
++]
++
++if perf_defined
++    sources += 'trace-perf.c'
++endif
++
++if vsock_defined
++    sources += 'trace-timesync-kvm.c'
++endif
++
++if zlib_dep.found()
++    sources += 'trace-compress-zlib.c'
++endif
++
++if libzstd_dep.found()
++    sources += 'trace-compress-zstd.c'
++endif
++
++if libtracecmd_standalone_build
++    libtracecmd = library(
++        'tracecmd',
++        sources,
++        version: library_version,
++        dependencies: [
++            libtraceevent_dep,
++            libtracefs_dep,
++            zlib_dep,
++            libzstd_dep,
++            audit_dep],
++        include_directories: [
++            libtracecmd_incdir,
++            libtracecmd_private_incdir,
++            libtracecmd_ext_incdir],
++        install: true)
++
++    pkg = import('pkgconfig')
++    pkg.generate(
++        libtracecmd,
++        libraries: [
++            libtracefs_dep,
++            libtraceevent_dep],
++        filebase: meson.project_name(),
++        name: meson.project_name(),
++        version: meson.project_version(),
++        description: 'Library for creating and reading trace-cmd data files',
++        url: 'https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/')
++
++    libtracecmd_dep = declare_dependency(
++       include_directories: ['.'],
++       link_with: libtracecmd)
++else
++    static_libtracecmd = static_library(
++        'tracecmd',
++        sources,
++        dependencies: [
++            libtraceevent_dep,
++            libtracefs_dep,
++            zlib_dep,
++            libzstd_dep,
++            audit_dep],
++        include_directories: [
++            libtracecmd_incdir,
++            libtracecmd_private_incdir,
++            libtracecmd_ext_incdir],
++        install: false)
++endif
 -- 
 2.39.1
 
