@@ -2,103 +2,96 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 545EEC636D4
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Feb 2023 16:19:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5390AC636D4
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Feb 2023 20:04:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232740AbjBGQTy (ORCPT
+        id S229792AbjBGUEP (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 7 Feb 2023 11:19:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42002 "EHLO
+        Tue, 7 Feb 2023 15:04:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232808AbjBGQTt (ORCPT
+        with ESMTP id S229585AbjBGUEO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 7 Feb 2023 11:19:49 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB56861B5
-        for <linux-trace-devel@vger.kernel.org>; Tue,  7 Feb 2023 08:19:48 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Tue, 7 Feb 2023 15:04:14 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12AF40E6;
+        Tue,  7 Feb 2023 12:04:12 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 98AE13E952;
-        Tue,  7 Feb 2023 16:19:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1675786787; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1tR2j99D2WwqcZbWMVklq6h3kN+9nQqBtBHMyRkm5IM=;
-        b=NDvecDzZM0mtJFlfUmxZvfeEarnH0pbZ/DUmmNYETGiMgbITypZ/0Zm0v+XkcUBBIqm+sf
-        Cgrcmcb07UF9AEkrhGI7mjv6FCWfNHk4eS/yTQi6ZT0SibUjJh0gf57oCdhgOidE5h4aty
-        i+2t/4PhYthXCAURcPF1MrpVpb9pq7w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1675786787;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1tR2j99D2WwqcZbWMVklq6h3kN+9nQqBtBHMyRkm5IM=;
-        b=fuWHOVjWx52O+4iKa90swd68t2YE4Sp6/bvBUfw6RUAGjYOpdx9fRZKvZjrE0cVSJGeFWN
-        BmRSMtUetNj0JBAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8B5B3139ED;
-        Tue,  7 Feb 2023 16:19:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id UmXaISN64mOwQAAAMHmgww
-        (envelope-from <dwagner@suse.de>); Tue, 07 Feb 2023 16:19:47 +0000
-Date:   Tue, 7 Feb 2023 17:19:47 +0100
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v6 0/2] Add initial support for meson
-Message-ID: <20230207161947.ju3fl7k7isffqeuo@carbon.lan>
-References: <20230207124634.6515-1-dwagner@suse.de>
- <20230207134825.uexdcqlopkuqehuy@carbon.lan>
- <20230207101001.5ef90b44@gandalf.local.home>
- <20230207154546.zqfq27swtc66ar2v@carbon.lan>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4AA1DB81A5F;
+        Tue,  7 Feb 2023 20:04:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C2DEC433D2;
+        Tue,  7 Feb 2023 20:04:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675800250;
+        bh=spXGcRITlzZsmIWoKS2TkuRS9qUvnB+x6JOvZgMMNAI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=dh+K6viW+dMGv7YSc1JLJQ7NGvcSdn8F83DZ65YOr4ZVMl+b2wb98yvx/apg28E/q
+         Z2JMCt60I6aosfJeBbDYx92mz0MtKBYPfKUMkM+ECDihLgeWPoccwm0ictb50QEpHd
+         r6rOvsusiF7D1ddX+6xUsylzBstAbU2wHyFIZu5OJ1Nf4QR0VVUWObI/qLc6d9xOCc
+         Mthooe17N5LjdB6VfrO+ZsSQaAoXIWdXNLjzsX9mM+MwYr2nysOeC8Sr8+KqbDOfVq
+         8wCKhE6lMjsQDTxD4N6zBd28ukeC9pOc4Xmjtm25YKH30jZu+2tXW6nnFqip1ey4qB
+         7cJxvP5SJR5pA==
+Message-ID: <af58737f-1d0f-06f3-be68-8b5cae284cf0@kernel.org>
+Date:   Tue, 7 Feb 2023 21:04:03 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230207154546.zqfq27swtc66ar2v@carbon.lan>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH V2 1/6] rtla/osnoise: Add helper functions to manipulate
+ osnoise/options
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        linux-trace-devel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1675181734.git.bristot@kernel.org>
+ <930c4ef71c7bcb1158d2a8cad905f4de425b8d1e.1675181734.git.bristot@kernel.org>
+ <20230201142305.4920f893@gandalf.local.home>
+Content-Language: en-US
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <20230201142305.4920f893@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Feb 07, 2023 at 04:45:47PM +0100, Daniel Wagner wrote:
-> On Tue, Feb 07, 2023 at 10:10:01AM -0500, Steven Rostedt wrote:
-> > On Tue, 7 Feb 2023 14:48:25 +0100
-> > Daniel Wagner <dwagner@suse.de> wrote:
-> > 
-> > > On Tue, Feb 07, 2023 at 01:46:32PM +0100, Daniel Wagner wrote:
-> > > > This version brings a few cleanups on the documentation intallation path
-> > > > and pkg-config depenedency updates.
-> > > > 
-> > > > Changes:
-> > > > 
-> > > > v6:
-> > > >   - lib: isntall trace-cmd.h directly in /usr/include and not subdir
-> > > >     trace-cmd. kernelshark builds breaks otherwise  
-> > > 
-> > > No, this is not the real problem. The Makefile also installs it under
-> > > /usr/include/trace-cmd.
-> > 
-> > But `pkg-config --cflags libtracecmd` should give the right path:
-> > 
-> >   -I/usr/include/trace-cmd -I/usr/include/tracefs -I/usr/include/traceevent
-> > 
-> > This is the way it's always been. Why are your kernelshark builds breaking?
+On 2/1/23 20:23, Steven Rostedt wrote:
+> On Tue, 31 Jan 2023 17:30:02 +0100
+> Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 > 
-> Not sure what's happening. I've build and installed the library with make
-> and the kernelshark configuration step still fails. I see the following
-> output (make and meson):
+>> Add some helper functions to read and set the on/off osnoise/options.
+>> No usage in this patch.
+>>
+>> In preparation for hwnoise tool.
 > 
-> $ cmake -S . -B foo --debug-find
-> Running with debug output on for the `find` commands.
+> Honestly, I don't see why patches 1-5 isn't a single patch. It's not that
+> big of a change, and everything in 1-5 is to do what 5 does. Breaking it up
+> this fine grain isn't helpful in reviewing, as I found that I had to apply
+> 1-5 and then do a diff from where I started to make sense of any of it.
 
-There is something wierd going with the libtracecmd build in our build system.
-It produces a libtrace-cmd.pc and not a libtracecmd.pc file but this was
-with the v2 version of the meson patches. Doesn't happen with libtracecmd v5.
+Maybe what is missing is a clear:
 
-In short, just ignore v6.
+In preparation for hwnoise tool.
+
+IMHO, it is easier to understand by using small "logical" pieces in preparation
+for the "conclusion." But I see your point, and it does not hurt :-).
+
+I will reduce the number of patches.
+
+-- Daniel
+> 
+> -- Steve
+> 
+> 
+>>
+>> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+>> Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
+>> Cc: Steven Rostedt <rostedt@goodmis.org>
+>> Cc: Jonathan Corbet <corbet@lwn.net>
+>> ---
+>>
+
