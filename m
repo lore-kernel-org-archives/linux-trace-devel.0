@@ -2,61 +2,61 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99AF2C636CC
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  8 Feb 2023 09:13:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E9E5C636D3
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  8 Feb 2023 09:14:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231330AbjBHJNn (ORCPT
+        id S231252AbjBHJOS (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 8 Feb 2023 04:13:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56052 "EHLO
+        Wed, 8 Feb 2023 04:14:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231228AbjBHJNK (ORCPT
+        with ESMTP id S231177AbjBHJNt (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 8 Feb 2023 04:13:10 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7428E46D40
-        for <linux-trace-devel@vger.kernel.org>; Wed,  8 Feb 2023 01:12:09 -0800 (PST)
+        Wed, 8 Feb 2023 04:13:49 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D174946D42
+        for <linux-trace-devel@vger.kernel.org>; Wed,  8 Feb 2023 01:12:44 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id DEA383406E;
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 4BDA020610;
         Wed,  8 Feb 2023 09:12:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
         t=1675847527; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GhZID+6qHlSO5iLGzdqz6r5p/4odmWgi7WWSpnBhODM=;
-        b=Iyovpxs2GLhnJBoRj5C2//XmpcITod18LFTiDjJK6sBtsAbZVQn0MsyS/BdwikhbZ1SQaZ
-        AduamKb+YXYs9usyuiZdkqpGf0I4TcLJreDIqdnrXXd+oCbwMXQ2uRKqes2rmW+MLcNRVd
-        MDxk+SiPJ5NzT03hZp1MLJUJW15E1Lo=
+        bh=igrWFPRJ4Kqol+jwB4vb5Q8tXER5rO06xgaSvHP37m8=;
+        b=RAIsuwkr2pQwcL48+Y2RCsE7zVnXAhdyOrpfUKTHoMqlqolF2DqyzMZ38zNpszUpr2ZAgy
+        hSAflmMUMjgzofOu+sFRkl5Q0SHQgtQsCbA8Pkqp4TyDe/eGe41HDYqFiUCKzxfrvKexFQ
+        NzZP8gGJ75L3XUQdYAdY+rxHTLpFpbM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
         s=susede2_ed25519; t=1675847527;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GhZID+6qHlSO5iLGzdqz6r5p/4odmWgi7WWSpnBhODM=;
-        b=c1YEbkYdNZPuvUfUH18WSy7EQwcUu4ta5CLJmqOz4rJLjmzUn80XAxkAtSN2zWI7GMOf3J
-        8NoDNfFMEVFX5DAQ==
+        bh=igrWFPRJ4Kqol+jwB4vb5Q8tXER5rO06xgaSvHP37m8=;
+        b=ues06WM56AcmxEC6rjYNvYA2u1d0W/dv15HaSe1Gno6j66XWPt4G7MvndjTLQ4JhvJD+ip
+        91nhKB2WKplRDzDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CFD2C13A1F;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3E56313A1F;
         Wed,  8 Feb 2023 09:12:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id uBFRMmdn42PrEQAAMHmgww
+        id ppznDmdn42PpEQAAMHmgww
         (envelope-from <dwagner@suse.de>); Wed, 08 Feb 2023 09:12:07 +0000
 From:   Daniel Wagner <dwagner@suse.de>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH v7 2/2] trace-cmd: Add initial support for meson
-Date:   Wed,  8 Feb 2023 10:12:04 +0100
-Message-Id: <20230208091204.7443-3-dwagner@suse.de>
+Subject: [PATCH v7 1/2] libtracecmd: Add initial support for meson
+Date:   Wed,  8 Feb 2023 10:12:03 +0100
+Message-Id: <20230208091204.7443-2-dwagner@suse.de>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230208091204.7443-1-dwagner@suse.de>
 References: <20230208091204.7443-1-dwagner@suse.de>
@@ -68,41 +68,42 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 Add support for building the project with meson.
 
-trace-cmd depends on a statically linked libtracecmd
-(e.g. trace_perf_open, trace_perf_close, trace_perf_init).
+As libtracecmd lives in the same source tree as trace-cmd, we have
+to place the 'top' meson.builld file under lib but we can't reference
+it from the root meson.build which controlling the main trace-cmd
+build.
 
-Instead depending libtracecmd to be compiled and installed
-separately add libtracecmd directly to trace-cmd build. This
-avoids an additional step.
-
-We still are able to build libtracecmd as stand alone project.
-The top meson.build file just lives in the lib directory.
+This implies we can't access resources/path which are not below the
+library's main meson.build directly. Thus, to be able to build the
+documentation we have to use the symlink as workaround.
 
 Signed-off-by: Daniel Wagner <dwagner@suse.de>
 ---
- Documentation/trace-cmd/install-docs.sh.in |  20 +++
- Documentation/trace-cmd/meson.build        | 187 +++++++++++++++++++++
- meson-vcs-tag.sh                           |  17 ++
- meson.build                                | 149 ++++++++++++++++
- meson_options.txt                          |  23 +++
- python/meson.build                         |  40 +++++
- tracecmd/meson.build                       |  59 +++++++
- utest/meson.build                          |  26 +++
- 8 files changed, 521 insertions(+)
- create mode 100755 Documentation/trace-cmd/install-docs.sh.in
- create mode 100644 Documentation/trace-cmd/meson.build
- create mode 100755 meson-vcs-tag.sh
- create mode 100644 meson.build
- create mode 100644 meson_options.txt
- create mode 100644 python/meson.build
- create mode 100644 tracecmd/meson.build
- create mode 100644 utest/meson.build
+ Documentation/libtracecmd/install-docs.sh.in |  20 +++
+ Documentation/libtracecmd/meson.build        | 168 +++++++++++++++++++
+ lib/Documentation                            |   1 +
+ lib/check-manpages.sh                        |   1 +
+ lib/meson.build                              | 114 +++++++++++++
+ lib/meson_options.txt                        |  19 +++
+ lib/trace-cmd/include/meson.build            |   5 +
+ lib/trace-cmd/include/private/meson.build    |  14 ++
+ lib/trace-cmd/meson.build                    |  88 ++++++++++
+ 9 files changed, 430 insertions(+)
+ create mode 100755 Documentation/libtracecmd/install-docs.sh.in
+ create mode 100644 Documentation/libtracecmd/meson.build
+ create mode 120000 lib/Documentation
+ create mode 120000 lib/check-manpages.sh
+ create mode 100644 lib/meson.build
+ create mode 100644 lib/meson_options.txt
+ create mode 100644 lib/trace-cmd/include/meson.build
+ create mode 100644 lib/trace-cmd/include/private/meson.build
+ create mode 100644 lib/trace-cmd/meson.build
 
-diff --git a/Documentation/trace-cmd/install-docs.sh.in b/Documentation/trace-cmd/install-docs.sh.in
+diff --git a/Documentation/libtracecmd/install-docs.sh.in b/Documentation/libtracecmd/install-docs.sh.in
 new file mode 100755
 index 000000000000..eca9b1f42dcc
 --- /dev/null
-+++ b/Documentation/trace-cmd/install-docs.sh.in
++++ b/Documentation/libtracecmd/install-docs.sh.in
 @@ -0,0 +1,20 @@
 +#!/bin/bash
 +# SPDX-License-Identifier: LGPL-2.1
@@ -124,12 +125,12 @@ index 000000000000..eca9b1f42dcc
 +    echo Installing "${html}" to "${DESTDIR}@HTMLDIR@"
 +    install -m 0644 "${html}" "${DESTDIR}@HTMLDIR@"
 +done< <(find "@SRCDIR@" -name "*\.html" -type f -print0)
-diff --git a/Documentation/trace-cmd/meson.build b/Documentation/trace-cmd/meson.build
+diff --git a/Documentation/libtracecmd/meson.build b/Documentation/libtracecmd/meson.build
 new file mode 100644
-index 000000000000..d0cc3076d985
+index 000000000000..c9fb16676812
 --- /dev/null
-+++ b/Documentation/trace-cmd/meson.build
-@@ -0,0 +1,187 @@
++++ b/Documentation/libtracecmd/meson.build
+@@ -0,0 +1,168 @@
 +# SPDX-License-Identifier: LGPL-2.1
 +#
 +# Copyright (c) 2023 Daniel Wagner, SUSE LLC
@@ -137,34 +138,15 @@ index 000000000000..d0cc3076d985
 +# input text file: man page section
 +
 +sources = {
-+    'trace-cmd.1.txt': '1',
-+    'trace-cmd-agent.1.txt': '1',
-+    'trace-cmd-check-events.1.txt': '1',
-+    'trace-cmd-clear.1.txt': '1',
-+    'trace-cmd-convert.1.txt': '1',
-+    'trace-cmd.dat.v6.5.txt': '5',
-+    'trace-cmd.dat.v7.5.txt': '5',
-+    'trace-cmd-dump.1.txt': '1',
-+    'trace-cmd-extract.1.txt': '1',
-+    'trace-cmd-hist.1.txt': '1',
-+    'trace-cmd-list.1.txt': '1',
-+    'trace-cmd-listen.1.txt': '1',
-+    'trace-cmd-mem.1.txt': '1',
-+    'trace-cmd-options.1.txt': '1',
-+    'trace-cmd-profile.1.txt': '1',
-+    'trace-cmd-record.1.txt': '1',
-+    'trace-cmd-report.1.txt': '1',
-+    'trace-cmd-reset.1.txt': '1',
-+    'trace-cmd-restore.1.txt': '1',
-+    'trace-cmd-set.1.txt': '1',
-+    'trace-cmd-show.1.txt': '1',
-+    'trace-cmd-snapshot.1.txt': '1',
-+    'trace-cmd-split.1.txt': '1',
-+    'trace-cmd-stack.1.txt': '1',
-+    'trace-cmd-start.1.txt': '1',
-+    'trace-cmd-stat.1.txt': '1',
-+    'trace-cmd-stop.1.txt': '1',
-+    'trace-cmd-stream.1.txt': '1',
++    'libtracecmd-files.txt': '3',
++    'libtracecmd-instances.txt': '3',
++    'libtracecmd-iterate.txt': '3',
++    'libtracecmd-log.txt': '3',
++    'libtracecmd-maps.txt': '3',
++    'libtracecmd-peer.txt': '3',
++    'libtracecmd-record.txt': '3',
++    'libtracecmd-timestamp.txt': '3',
++    'libtracecmd.txt': '3',
 +}
 +
 +confdir = meson.current_source_dir() + '/../'
@@ -317,44 +299,37 @@ index 000000000000..d0cc3076d985
 +
 +meson.add_install_script(
 +    join_paths(meson.current_build_dir(), 'install-docs.sh'))
-diff --git a/meson-vcs-tag.sh b/meson-vcs-tag.sh
-new file mode 100755
-index 000000000000..8ce692498ada
+diff --git a/lib/Documentation b/lib/Documentation
+new file mode 120000
+index 000000000000..fb996f28ab31
 --- /dev/null
-+++ b/meson-vcs-tag.sh
-@@ -0,0 +1,17 @@
-+#!/usr/bin/env bash
-+# SPDX-License-Identifier: LGPL-2.1-or-later
-+
-+set -eu
-+set -o pipefail
-+
-+dir="${1:?}"
-+fallback="${2:?}"
-+
-+# Apparently git describe has a bug where it always considers the work-tree
-+# dirty when invoked with --git-dir (even though 'git status' is happy). Work
-+# around this issue by cd-ing to the source directory.
-+cd "$dir"
-+# Check that we have either .git/ (a normal clone) or a .git file (a work-tree)
-+# and that we don't get confused if a tarball is extracted in a higher-level
-+# git repository.
-+[ -e .git ] && git describe --abbrev=7 --dirty=+ 2>/dev/null | sed 's/^v//' || echo "$fallback"
-diff --git a/meson.build b/meson.build
++++ b/lib/Documentation
+@@ -0,0 +1 @@
++../Documentation
+\ No newline at end of file
+diff --git a/lib/check-manpages.sh b/lib/check-manpages.sh
+new file mode 120000
+index 000000000000..d9416662eaed
+--- /dev/null
++++ b/lib/check-manpages.sh
+@@ -0,0 +1 @@
++../check-manpages.sh
+\ No newline at end of file
+diff --git a/lib/meson.build b/lib/meson.build
 new file mode 100644
-index 000000000000..e537d6f25ea9
+index 000000000000..3906b3d27f24
 --- /dev/null
-+++ b/meson.build
-@@ -0,0 +1,149 @@
-+# SPDX-License-Identifier: GPL-2.0
++++ b/lib/meson.build
+@@ -0,0 +1,114 @@
++# SPDX-License-Identifier: LGPL-2.1
 +#
 +# Copyright (c) 2023 Daniel Wagner, SUSE LLC
 +
 +project(
-+    'trace-cmd', ['c'],
++    'libtracecmd', ['c'],
 +    meson_version: '>= 0.50.0',
 +    license: 'GPL-2.0',
-+    version: '3.1.5',
++    version: '1.3.0',
 +    default_options: [
 +        'c_std=gnu99',
 +        'buildtype=debug',
@@ -365,10 +340,12 @@ index 000000000000..e537d6f25ea9
 +cc = meson.get_compiler('c')
 +
 +prefixdir = get_option('prefix')
-+datadir = join_paths(prefixdir, get_option('datadir'))
-+bindir = join_paths(prefixdir, get_option('bindir'))
-+mandir = join_paths(prefixdir, get_option('mandir'))
-+htmldir = join_paths(prefixdir, get_option('htmldir'))
++mandir    = join_paths(prefixdir, get_option('mandir'))
++htmldir   = join_paths(prefixdir, get_option('htmldir'))
++
++libtracecmd_standalone_build = true
++
++library_version = meson.project_version()
 +
 +conf = configuration_data()
 +
@@ -428,89 +405,50 @@ index 000000000000..e537d6f25ea9
 +    conf.set('WARN_NO_AUDIT', true, description: 'Issue no audit warning?')
 +endif
 +
-+config_h = configure_file(
-+    output: 'config.h',
-+    configuration: conf
-+)
-+
-+version = meson.project_version().split('.')
-+
-+vconf = configuration_data()
-+vconf.set('VERSION_CODE', version[0].to_int() * 256 + version[1].to_int())
-+vconf.set('EXTRAVERSION', '"@0@"'.format(version[2]))
-+vconf.set('FILE_VERSION', '""')
-+vconf.set('VERSION_STRING', '"@0@"'.format(meson.project_version()))
-+
-+version_tag = get_option('version-tag')
-+if version_tag != ''
-+    vconf.set('VERSION_GIT', '"@0@"'.format(version_tag))
-+else
-+    r = run_command(
-+        'meson-vcs-tag.sh',
-+        meson.current_source_dir(),
-+        meson.project_version(),
-+        check: true)
-+    vconf.set('VERSION_GIT', '"@0@"'.format(r.stdout().strip()))
-+endif
-+version_h = configure_file(
-+    output: 'tc_version.h',
-+    configuration: vconf)
-+
 +add_project_arguments(
 +    [
-+      '-D_GNU_SOURCE',
-+      '-include', 'config.h',
++        '-D_GNU_SOURCE',
++        '-include', 'trace-cmd/include/private/config.h',
 +    ],
 +    language : 'c')
 +
-+incdir = include_directories(['.', 'include'])
-+
-+# libtracecmd: trace-cmd currently depends on a statically linked
-+# libtracecmd.  libtracecmd is sill very strongly coupled with
-+# trace-cmd (or the other way around). To reduce the development setup
-+# complexity we add some of the 'top meson.build' from libtracecmd and
-+# make it simpler to use.
-+library_version = '1.3.0'
-+libtracecmd_standalone_build = false
 +libtracecmd_ext_incdir = include_directories(
 +    [
-+        'include',
-+        'include/trace-cmd',
-+        'tracecmd/include'
++        '../include',
++        '../include/trace-cmd',
++        '../tracecmd/include'
 +    ])
-+subdir('lib/trace-cmd/include')
-+subdir('lib/trace-cmd/include/private')
-+subdir('lib/trace-cmd')
 +
-+# trace-cmd
-+subdir('tracecmd')
-+subdir('python')
-+if cunit_dep.found()
-+    subdir('utest')
++subdir('trace-cmd/include')
++subdir('trace-cmd/include/private')
++subdir('trace-cmd')
++if libtracecmd_standalone_build
++    subdir('Documentation/libtracecmd')
++
++    custom_target(
++        'docs',
++        output: 'docs',
++        depends: [html, man],
++        command: ['echo'])
 +endif
-+subdir('Documentation/trace-cmd')
 +
-+custom_target(
-+    'docs',
-+    output: 'docs',
-+    depends: [html, man],
-+    command: ['echo'])
-diff --git a/meson_options.txt b/meson_options.txt
++install_headers(
++    '../include/trace-cmd/trace-cmd.h',
++     subdir: 'trace-cmd')
+diff --git a/lib/meson_options.txt b/lib/meson_options.txt
 new file mode 100644
-index 000000000000..2d5d7457bed5
+index 000000000000..9f5ed6d486d8
 --- /dev/null
-+++ b/meson_options.txt
-@@ -0,0 +1,23 @@
++++ b/lib/meson_options.txt
+@@ -0,0 +1,19 @@
 +# -*- mode: meson -*-
-+# SPDX-License-Identifier: GPL-2.0
++# SPDX-License-Identifier: LGPL-2.1
 +
-+option('version-tag', type : 'string',
-+       description : 'override the git version string')
 +option('vsock', type : 'boolean', value : true,
 +       description : 'build with vsock support')
 +option('ptrace', type : 'boolean', value : true,
 +       description : 'build with ptrace support')
-+option('htmldir', type : 'string', value : 'share/doc/trace-cmd-doc',
++option('htmldir', type : 'string', value : 'share/doc/libtracecmd-doc',
 +       description : 'directory for HTML documentation')
 +option('asciidoctor', type : 'boolean', value: false,
 +       description : 'use asciidoctor instead of asciidoc')
@@ -522,151 +460,131 @@ index 000000000000..2d5d7457bed5
 +       description : 'enable bold literals')
 +option('docbook-suppress-sp', type : 'boolean', value : false,
 +       description : 'docbook suppress sp')
-+option('python', type : 'combo', choices : ['auto', 'true', 'false'],
-+       description : 'Generate trac-cmd Python bindings')
-diff --git a/python/meson.build b/python/meson.build
+diff --git a/lib/trace-cmd/include/meson.build b/lib/trace-cmd/include/meson.build
 new file mode 100644
-index 000000000000..5a91ff63a326
+index 000000000000..c1c83884948f
 --- /dev/null
-+++ b/python/meson.build
-@@ -0,0 +1,40 @@
-+# SPDX-License-Identifier: GPL-2.0
++++ b/lib/trace-cmd/include/meson.build
+@@ -0,0 +1,5 @@
++# SPDX-License-Identifier: LGPL-2.1
 +#
 +# Copyright (c) 2023 Daniel Wagner, SUSE LLC
 +
-+want_python = get_option('python')
-+if want_python != 'false'
-+    python3 = import('python').find_installation('python3')
-+    py3_dep = python3.dependency(required: want_python == 'true')
-+    swig = find_program('swig', required: want_python == 'true')
-+    header_found = cc.has_header('Python.h', dependencies: py3_dep)
-+    have_python_support = py3_dep.found() and swig.found() and header_found
-+else
-+    have_python_support = false
-+endif
-+
-+if have_python_support
-+    pymod_swig = custom_target(
-+        'ctracecmd.py',
-+        input:   ['ctracecmd.i'],
-+        output:  ['ctracecmd.py', 'ctracecmd_wrap.c'],
-+        command: [
-+            swig,
-+            '-python',
-+            '-I' + meson.current_source_dir() + '/../include/trace-cmd',
-+            '-I' + libtraceevent_dep.get_pkgconfig_variable('prefix') + '/include/traceevent',
-+            '-o', '@OUTPUT1@',
-+            '@INPUT0@'],
-+        install: true,
-+        install_dir: [ python3.get_install_dir(pure: false, subdir: 'trace-cmd'), false])
-+
-+    incdir_py = include_directories(['.', '../include/trace-cmd'])
-+
-+    pyctracecmd_clib = python3.extension_module(
-+        '_ctracecmd',
-+        pymod_swig[1],
-+        dependencies : [libtraceevent_dep, libtracefs_dep, py3_dep],
-+        include_directories: [incdir, incdir_py],
-+        install: true,
-+        subdir: 'trace-cmd')
-+endif
-diff --git a/tracecmd/meson.build b/tracecmd/meson.build
++libtracecmd_incdir = include_directories(['.'])
+diff --git a/lib/trace-cmd/include/private/meson.build b/lib/trace-cmd/include/private/meson.build
 new file mode 100644
-index 000000000000..bb0b5ca547fb
+index 000000000000..0f36339a9cc3
 --- /dev/null
-+++ b/tracecmd/meson.build
-@@ -0,0 +1,59 @@
-+# SPDX-License-Identifier: GPL-2.0
++++ b/lib/trace-cmd/include/private/meson.build
+@@ -0,0 +1,14 @@
++# SPDX-License-Identifier: LGPL-2.1
++#
++# Copyright (c) 2023 Daniel Wagner, SUSE LLC
++
++config_h = configure_file(
++    output: 'config.h',
++    configuration: conf
++)
++
++libtracecmd_private_incdir = include_directories(['.'])
++
++config_dep = declare_dependency(
++    include_directories : libtracecmd_private_incdir,
++    sources: config_h)
+diff --git a/lib/trace-cmd/meson.build b/lib/trace-cmd/meson.build
+new file mode 100644
+index 000000000000..8c00ca8f8ff7
+--- /dev/null
++++ b/lib/trace-cmd/meson.build
+@@ -0,0 +1,88 @@
++# SPDX-License-Identifier: LGPL-2.1
 +#
 +# Copyright (c) 2023 Daniel Wagner, SUSE LLC
 +
 +sources = [
-+    'trace-agent.c',
-+    'trace-check-events.c',
-+    'trace-clear.c',
-+    'trace-cmd.c',
-+    'trace-convert.c',
-+    'trace-dump.c',
-+    'trace-hist.c',
-+    'trace-list.c',
-+    'trace-listen.c',
-+    'trace-mem.c',
-+    'trace-profile.c',
-+    'trace-read.c',
-+    'trace-record.c',
-+    'trace-restore.c',
-+    'trace-setup-guest.c',
-+    'trace-show.c',
-+    'trace-snapshot.c',
-+    'trace-split.c',
-+    'trace-stack.c',
-+    'trace-stat.c',
-+    'trace-stream.c',
-+    'trace-tsync.c',
-+    'trace-usage.c',
-+    'trace-vm.c',
++    'trace-hash.c',
++    'trace-hooks.c',
++    'trace-input.c',
++    'trace-output.c',
++    'trace-recorder.c',
++    'trace-util.c',
++    'trace-filter-hash.c',
++    'trace-filter.c',
++    'trace-msg.c',
++    'trace-plugin.c',
++    'trace-maps.c',
++    'trace-timesync.c',
++    'trace-timesync-ptp.c',
++    'trace-compress.c',
++    'trace-blk-hack.c',
++    'trace-ftrace.c',
 +]
++
++if perf_defined
++    sources += 'trace-perf.c'
++endif
 +
 +if vsock_defined
-+    sources += 'trace-vsock.c'
++    sources += 'trace-timesync-kvm.c'
 +endif
 +
-+trace_cmd_incdir = include_directories(['.', 'include'])
++if zlib_dep.found()
++    sources += 'trace-compress-zlib.c'
++endif
 +
-+executable(
-+    'trace-cmd',
-+    sources,
-+    dependencies: [
-+        libtraceevent_dep,
-+        libtracefs_dep,
-+        zlib_dep,
-+        libzstd_dep,
-+        audit_dep],
-+    include_directories: [
-+        incdir,
-+        trace_cmd_incdir,
-+        libtracecmd_incdir,
-+        libtracecmd_private_incdir,
-+        libtracecmd_ext_incdir],
-+    link_with: [static_libtracecmd],
-+    install: true,
-+    install_dir: bindir)
++if libzstd_dep.found()
++    sources += 'trace-compress-zstd.c'
++endif
 +
-+install_data(
-+    'trace-cmd.bash',
-+    install_dir: datadir + '/bash-completion/completions')
-diff --git a/utest/meson.build b/utest/meson.build
-new file mode 100644
-index 000000000000..c1cc837c7639
---- /dev/null
-+++ b/utest/meson.build
-@@ -0,0 +1,26 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Copyright (c) 2023 Daniel Wagner, SUSE LLC
++if libtracecmd_standalone_build
++    libtracecmd = library(
++        'tracecmd',
++        sources,
++        version: library_version,
++        dependencies: [
++            libtraceevent_dep,
++            libtracefs_dep,
++            zlib_dep,
++            libzstd_dep,
++            audit_dep],
++        include_directories: [
++            libtracecmd_incdir,
++            libtracecmd_private_incdir,
++            libtracecmd_ext_incdir],
++        install: true)
 +
-+sources = [
-+    'tracecmd-utest.c',
-+    'trace-utest.c',
-+]
++    pkg = import('pkgconfig')
++    pkg.generate(
++        libtracecmd,
++        subdirs: 'trace-cmd',
++        libraries: [
++            libtracefs_dep,
++            libtraceevent_dep],
++        filebase: meson.project_name(),
++        name: meson.project_name(),
++        version: meson.project_version(),
++        description: 'Library for creating and reading trace-cmd data files',
++        url: 'https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/')
 +
-+e = executable(
-+   'trace-utest',
-+   sources,
-+   include_directories: [
-+       incdir,
-+       libtracecmd_incdir,
-+       libtracecmd_private_incdir,
-+       libtracecmd_ext_incdir],
-+   dependencies: [
-+       libtraceevent_dep,
-+       libtracefs_dep,
-+       zlib_dep,
-+       libzstd_dep,
-+       cunit_dep],
-+   link_with: [static_libtracecmd])
-+
-+test('trace-utest', e)
++    libtracecmd_dep = declare_dependency(
++       include_directories: ['.'],
++       link_with: libtracecmd)
++else
++    static_libtracecmd = static_library(
++        'tracecmd',
++        sources,
++        dependencies: [
++            libtraceevent_dep,
++            libtracefs_dep,
++            zlib_dep,
++            libzstd_dep,
++            audit_dep],
++        include_directories: [
++            libtracecmd_incdir,
++            libtracecmd_private_incdir,
++            libtracecmd_ext_incdir],
++        install: false)
++endif
 -- 
 2.39.1
 
