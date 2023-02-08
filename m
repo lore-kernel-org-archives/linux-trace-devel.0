@@ -2,197 +2,75 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34B8BC636CC
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Feb 2023 21:49:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67F58C636CC
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  8 Feb 2023 08:48:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbjBGVtL (ORCPT
+        id S230318AbjBHIs6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 7 Feb 2023 16:49:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45150 "EHLO
+        Wed, 8 Feb 2023 03:48:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjBGVtK (ORCPT
+        with ESMTP id S230404AbjBHIsw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 7 Feb 2023 16:49:10 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41223B65A;
-        Tue,  7 Feb 2023 13:49:07 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 8 Feb 2023 03:48:52 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E35E0458A6
+        for <linux-trace-devel@vger.kernel.org>; Wed,  8 Feb 2023 00:48:49 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8DB01B819AB;
-        Tue,  7 Feb 2023 21:49:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 460F8C4339C;
-        Tue,  7 Feb 2023 21:49:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675806545;
-        bh=dGLTzfXdSaqNImM9d72ilh/u5wp4NAAqM6F3nuAq08U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bPBei44ZZ0stX8oPu27rLcbRRq2/w2JAeugAPZUkjzn6u/lSa+N6vym0ieXtLIouP
-         b/w+0wW6aeBuREgK9Q2Jw7/1NcxAyb80CQx0Au5vdy8BSd4aj4A/7n+t1ucQLoxZN8
-         4GM8W4S+mCjiLlHINSiFa+GMOSWNeAVogUpxZtvM0rn10m2JP63Npa7ywPcorfTx0c
-         dyuecDqrROm9Shn1hD4WCYuBcGeFetwipnuoKb77OWRQhuUqesocWC2zbn/iYwZWPx
-         r/S1YDOzuPNmWUwtLJ/xHQh/w5z6snORmJmvGbUPP3bzVZ99ghlC15lil+ZKAK0jx2
-         MCOKy3oeGDqxQ==
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        linux-trace-devel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V3 2/2] Documentation/rtla: Add hwnoise man page
-Date:   Tue,  7 Feb 2023 22:48:51 +0100
-Message-Id: <27088e0f42a6129e9b75f789d78adff4171f2e79.1675805361.git.bristot@kernel.org>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <cover.1675805361.git.bristot@kernel.org>
-References: <cover.1675805361.git.bristot@kernel.org>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2518634038;
+        Wed,  8 Feb 2023 08:48:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1675846128; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uJvHlDvSJoBofJ3qQ4I58b8VjpmEZd52n1faygjQUl4=;
+        b=GkQxEIPS3blbPvuSy/pJIMug8DPkVZ1J2yh/UcpBRFzX78K+zhK1ewH+elypMtMQJ5sN9Q
+        iTey0mjWBJKePA8Ze0zDI6RhM0iQ6QZX4l+IfdXYMlilQN65tlO52qQAhkpQKfz0QWoZaU
+        uFcKZ09tAXFB7OOa1FRLzTz3yRwZtUA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1675846128;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uJvHlDvSJoBofJ3qQ4I58b8VjpmEZd52n1faygjQUl4=;
+        b=ZybN6/plRr5bhQ+72bPJN9s7X1ecSgPHJOY+gL3Xp8WcKyht5KHGVSVj5GJoVT4kgosyAz
+        iJgrgR6xQ6u/OaAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1792A13A1F;
+        Wed,  8 Feb 2023 08:48:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Kcu2BfBh42MhCAAAMHmgww
+        (envelope-from <dwagner@suse.de>); Wed, 08 Feb 2023 08:48:48 +0000
+Date:   Wed, 8 Feb 2023 09:48:47 +0100
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v6 0/2] Add initial support for meson
+Message-ID: <20230208084847.e23adawpzszpw3eh@carbon.lan>
+References: <20230207124634.6515-1-dwagner@suse.de>
+ <20230207134825.uexdcqlopkuqehuy@carbon.lan>
+ <20230207101001.5ef90b44@gandalf.local.home>
+ <20230207154546.zqfq27swtc66ar2v@carbon.lan>
+ <20230207161947.ju3fl7k7isffqeuo@carbon.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230207161947.ju3fl7k7isffqeuo@carbon.lan>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add a man page for the new rtla hwnoise tool, mostly based in the
-rtla osnoise top.
+On Tue, Feb 07, 2023 at 05:19:47PM +0100, Daniel Wagner wrote:
+ There is something wierd going with the libtracecmd build in our build system.
+> It produces a libtrace-cmd.pc and not a libtracecmd.pc file but this was
+> with the v2 version of the meson patches. Doesn't happen with libtracecmd v5.
 
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
----
- Documentation/tools/rtla/index.rst        |   1 +
- Documentation/tools/rtla/rtla-hwnoise.rst | 107 ++++++++++++++++++++++
- 2 files changed, 108 insertions(+)
- create mode 100644 Documentation/tools/rtla/rtla-hwnoise.rst
-
-diff --git a/Documentation/tools/rtla/index.rst b/Documentation/tools/rtla/index.rst
-index 840f0bf3e803..05d2652e4072 100644
---- a/Documentation/tools/rtla/index.rst
-+++ b/Documentation/tools/rtla/index.rst
-@@ -17,6 +17,7 @@ behavior on specific hardware.
-    rtla-timerlat
-    rtla-timerlat-hist
-    rtla-timerlat-top
-+   rtla-hwnoise
- 
- .. only::  subproject and html
- 
-diff --git a/Documentation/tools/rtla/rtla-hwnoise.rst b/Documentation/tools/rtla/rtla-hwnoise.rst
-new file mode 100644
-index 000000000000..fb1c52bbc00b
---- /dev/null
-+++ b/Documentation/tools/rtla/rtla-hwnoise.rst
-@@ -0,0 +1,107 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+============
-+rtla-hwnoise
-+============
-+------------------------------------------
-+Detect and quantify hardware-related noise
-+------------------------------------------
-+
-+:Manual section: 1
-+
-+SYNOPSIS
-+========
-+
-+**rtla hwnoise** [*OPTIONS*]
-+
-+DESCRIPTION
-+===========
-+
-+**rtla hwnoise** collects the periodic summary from the *osnoise* tracer
-+running with *interrupts disabled*. By disabling interrupts, and the scheduling
-+of threads as a consequence, only non-maskable interrupts and hardware-related
-+noise is allowed.
-+
-+The tool also allows the configurations of the *osnoise* tracer and the
-+collection of the tracer output.
-+
-+OPTIONS
-+=======
-+.. include:: common_osnoise_options.rst
-+
-+.. include:: common_top_options.rst
-+
-+.. include:: common_options.rst
-+
-+EXAMPLE
-+=======
-+In the example below, the **rtla hwnoise** tool is set to run on CPUs *1-7*
-+on a system with 8 cores/16 threads with hyper-threading enabled.
-+
-+The tool is set to detect any noise higher than *one microsecond*,
-+to run for *ten minutes*, displaying a summary of the report at the
-+end of the session::
-+
-+  # rtla hwnoise -c 1-7 -T 1 -d 10m -q
-+                                          Hardware-related Noise
-+  duration:   0 00:10:00 | time is in us
-+  CPU Period       Runtime        Noise  % CPU Aval   Max Noise   Max Single          HW          NMI
-+    1 #599       599000000          138    99.99997           3            3           4           74
-+    2 #599       599000000           85    99.99998           3            3           4           75
-+    3 #599       599000000           86    99.99998           4            3           6           75
-+    4 #599       599000000           81    99.99998           4            4           2           75
-+    5 #599       599000000           85    99.99998           2            2           2           75
-+    6 #599       599000000           76    99.99998           2            2           0           75
-+    7 #599       599000000           77    99.99998           3            3           0           75
-+
-+
-+The first column shows the *CPU*, and the second column shows how many
-+*Periods* the tool ran during the session. The *Runtime* is the time
-+the tool effectively runs on the CPU. The *Noise* column is the sum of
-+all noise that the tool observed, and the *% CPU Aval* is the relation
-+between the *Runtime* and *Noise*.
-+
-+The *Max Noise* column is the maximum hardware noise the tool detected in a
-+single period, and the *Max Single* is the maximum single noise seen.
-+
-+The *HW* and *NMI* columns show the total number of *hardware* and *NMI* noise
-+occurrence observed by the tool.
-+
-+For example, *CPU 3* ran *599* periods of *1 second Runtime*. The CPU received
-+*86 us* of noise during the entire execution, leaving *99.99997 %* of CPU time
-+for the application. In the worst single period, the CPU caused *4 us* of
-+noise to the application, but it was certainly caused by more than one single
-+noise, as the *Max Single* noise was of *3 us*. The CPU has *HW noise,* at a
-+rate of *six occurrences*/*ten minutes*. The CPU also has *NMIs*, at a higher
-+frequency: around *seven per second*.
-+
-+The tool should report *0* hardware-related noise in the ideal situation.
-+For example, by disabling hyper-threading to remove the hardware noise,
-+and disabling the TSC watchdog to remove the NMI (it is possible to identify
-+this using tracing options of **rtla hwnoise**), it was possible to reach
-+the ideal situation in the same hardware::
-+
-+  # rtla hwnoise -c 1-7 -T 1 -d 10m -q
-+                                          Hardware-related Noise
-+  duration:   0 00:10:00 | time is in us
-+  CPU Period       Runtime        Noise  % CPU Aval   Max Noise   Max Single          HW          NMI
-+    1 #599       599000000            0   100.00000           0            0           0            0
-+    2 #599       599000000            0   100.00000           0            0           0            0
-+    3 #599       599000000            0   100.00000           0            0           0            0
-+    4 #599       599000000            0   100.00000           0            0           0            0
-+    5 #599       599000000            0   100.00000           0            0           0            0
-+    6 #599       599000000            0   100.00000           0            0           0            0
-+    7 #599       599000000            0   100.00000           0            0           0            0
-+
-+SEE ALSO
-+========
-+
-+**rtla-osnoise**\(1)
-+
-+Osnoise tracer documentation: <https://www.kernel.org/doc/html/latest/trace/osnoise-tracer.html>
-+
-+AUTHOR
-+======
-+Written by Daniel Bristot de Oliveira <bristot@kernel.org>
-+
-+.. include:: common_appendix.rst
--- 
-2.38.1
-
+Finally found the problem in build setup. The generated pkg-config file
+doesn't include the trace-cmd subdir. I'll send an update on this patches.
