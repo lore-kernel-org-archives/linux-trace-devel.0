@@ -2,72 +2,118 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BEE33C636CC
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Feb 2023 07:54:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 865CBC636D4
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Feb 2023 12:06:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbjBMHyd (ORCPT
+        id S230520AbjBMMGT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 13 Feb 2023 02:54:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43918 "EHLO
+        Mon, 13 Feb 2023 07:06:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjBMHyc (ORCPT
+        with ESMTP id S230499AbjBMMGJ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 13 Feb 2023 02:54:32 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FD359D5
-        for <linux-trace-devel@vger.kernel.org>; Sun, 12 Feb 2023 23:54:31 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 66F86677F6;
-        Mon, 13 Feb 2023 07:54:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1676274870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+Oru6s1M5yzTl6IZqR29yspnFwsqek5JQAKE9wGBio8=;
-        b=GFbSav0lUb2d8ZvtZR3htFwmM/xNWvFfkaa4MKqx5cNhjdk5oPGXJhqa7aAT0cLqokYMfs
-        Kil+WXv++3Bfz2JToXMiTAn9d7kK65D5iaeGD6N2MQoo0a5ouq9JflUhPgtzvqPHI+YM3A
-        tJcUm/yM4lnZfk5cOuV83bpct07PCb4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1676274870;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+Oru6s1M5yzTl6IZqR29yspnFwsqek5JQAKE9wGBio8=;
-        b=WDBUMYsN7QoXW/lSE6i3wj2SgHtUs6ZxH3KiXjoVzlLXOgScLNO6iiiVfbtO9mwnQLxLnu
-        nEEHHlVaqdkE9kCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 591A8138E6;
-        Mon, 13 Feb 2023 07:54:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 2PCaFbbs6WMGKgAAMHmgww
-        (envelope-from <dwagner@suse.de>); Mon, 13 Feb 2023 07:54:30 +0000
-Date:   Mon, 13 Feb 2023 08:54:29 +0100
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v7 0/2] Add initial support for meson
-Message-ID: <20230213075429.7a3j564qzlcpcsxm@carbon.lan>
-References: <20230208091204.7443-1-dwagner@suse.de>
- <20230209093805.rg4sc3652in7smok@carbon.lan>
- <20230210164744.53f1073d@gandalf.local.home>
+        Mon, 13 Feb 2023 07:06:09 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9CCB74C1C
+        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Feb 2023 04:05:48 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 683F94B3;
+        Mon, 13 Feb 2023 04:05:20 -0800 (PST)
+Received: from [10.57.16.179] (unknown [10.57.16.179])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C142B3F703;
+        Mon, 13 Feb 2023 04:04:36 -0800 (PST)
+Message-ID: <35fe67d1-0865-486f-bdbe-5eb8e034352d@arm.com>
+Date:   Mon, 13 Feb 2023 12:04:36 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230210164744.53f1073d@gandalf.local.home>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: libtraceevent + Rust
+To:     Hidenori Kobayashi <hidenorik@chromium.org>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        rostedt@goodmis.org, Nikita Baksalyar <nikita.baksalyar@gmail.com>
+References: <96dc3f67-5405-c1a4-7c94-a98de3085cc5@arm.com>
+ <20230213051727.hvkd5wgqhxi66gqh@google.com>
+Content-Language: en-US
+From:   Douglas Raillard <douglas.raillard@arm.com>
+In-Reply-To: <20230213051727.hvkd5wgqhxi66gqh@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Feb 10, 2023 at 04:47:44PM -0500, Steven Rostedt wrote:
-> I'll take a look. Sorry I didn't get to it on my trip (other things came
-> up). Also, I'm still recovering from the flu now :-p
+Hi Hidenori,
 
-Thanks! No hurry, I don't have a problem if takes some more time if it moves
-forward eventually :)
+> On 13-02-2023 05:17, Hidenori Kobayashi wrote:
+> Hi Douglas,
+> 
+> On Fri, Oct 14, 2022 at 04:16:33PM +0100, Douglas Raillard wrote:
+>> Hi everyone,
+>>
+>> The idea of having some Rust interop for libtraceevent was floated during the
+>> Tracing Summit that took place this week.
+>>
+>> The overall work has two scopes:
+>>      1. libtraceevent: low-level helpers to decode event formats and binary buffer pages.
+>>      2. high level API that e.g. can consume a trace.dat file and expose an iterator API etc.
+>>
+>> The current discussion is only about #1. The 2nd part of the work has an
+>> entirely different set of constraints as it would aim at integrating in the
+>> Rust ecosystem as well as possible without trying to replace anything
+>> pre-existent.
+>   
+> Has anyone actually started working on these?
+
+We have, this has been my main focus since around November.
+
+> 
+> I have a Rust tool that parses the output from trace-cmd to infer the
+> internal states of a kernel module. While it serves our needs for now,
+> Steven kindly pointed me to this thread and suggested interacting
+> directly with the tracefs and using the tracefs libraries for parsing.
+> 
+> So I'd like to know:
+> - if this discussion reached a consensus
+
+You are the first one to answer on that thread but the twitter poll from Steven was encouraging. At any
+rate, we need it for LISA [1] so I'm making it happen.
+
+> - if there is any publicly available work already
+
+Yes and no: I'm currently developing it as part of LISA but in its own "traceevent" crate,
+as added by that PR under tools/analysis/traceevent/:
+https://github.com/ARM-software/lisa/pull/1843
+
+This is very much WIP, so far I got:
+* A parser for v6 header up to and including the event formats.
+   Since that requires a C parser, it was a large chunk of the total work.
+* A C interpreter as (somewhat) required for array lengths and mostly for the print fmt args.
+* a zero-copy I/O layer that can load data from:
+	* existing in-memory buffer
+	* Any type implementing Read + Seek
+	* mmap
+
+Adding support for v7 header should be straightforward except for the I/O that might require adjustment
+depending on how compression is implemented.
+
+
+My current roadmap is:
+1. Get to a state where I can share a trace-cmd report equivalent static tool for people to play with on
+    their own data and report issues.
+2. Make a serde backend hooked to it since we need it for LISA (assuming performance is good enough)
+3. Figure out exactly how it sits in the libtraceevent ecosystem and maintains it in the
+    long run, libtraceevent-style C bindings etc.
+
+Note that if and when a serde backend is available, that should bring a conversion to JSON for basically free.
+
+Unless I'm sidetracked by urgent things, 1. and 2. should become available in a few months. I expect 3. to happen
+when I have something concrete to show to the world.
+
+[1] LISA: https://github.com/ARM-software/lisa
+> 
+> Thanks,
+> Hidenori
+
+Thanks,
+
+Douglas
