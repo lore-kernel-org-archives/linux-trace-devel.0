@@ -2,139 +2,170 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06EBCC61DA4
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Feb 2023 10:39:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45831C64ED6
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Feb 2023 17:00:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231608AbjBNKjQ (ORCPT
+        id S232359AbjBNRAV (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 14 Feb 2023 05:39:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43346 "EHLO
+        Tue, 14 Feb 2023 12:00:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232617AbjBNKjP (ORCPT
+        with ESMTP id S229930AbjBNQ7g (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 14 Feb 2023 05:39:15 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CDE8925E3D
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Feb 2023 02:39:06 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 595891042;
-        Tue, 14 Feb 2023 02:39:48 -0800 (PST)
-Received: from [192.168.89.251] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 83FCD3F703;
-        Tue, 14 Feb 2023 02:39:04 -0800 (PST)
-Message-ID: <2c1381a6-164d-fc5c-fd69-653d69604c50@arm.com>
-Date:   Tue, 14 Feb 2023 10:38:52 +0000
+        Tue, 14 Feb 2023 11:59:36 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0140D2E0E6;
+        Tue, 14 Feb 2023 08:59:13 -0800 (PST)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31EGXk5t027870;
+        Tue, 14 Feb 2023 16:57:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2022-7-12;
+ bh=COxPmLf+paRDDdFuvH25Zi2bcrkGUWbmw1AV1Vzz6fg=;
+ b=YLvFKW+EqHo4lJihtKam5O2u/Ez9btXYR9UATFH2zB8Iu5e5Y/RW6Fp0KY6CkhCradAN
+ WTilqdKWZFcLKiqsqfa4V8mYN1ZQvBadLk2TsOnIkEtZUKsfbgOWWK7HvSPFJKd8W46X
+ 6I8lZN4dOtwp7sy+z6JM8Hyy2wb+bAGvhr+gIyRw8kVIAEWVmTfaTTf5O0Ec6XCJ2W+/
+ s+ECjqJ+6XkIgXtXUIiTIJDq/ia5qoW1iTGafvouFXOp0XKQKEIPCwqm6SXEU/hwPFGd
+ rIIwhMwB2pOtB0Be/uO7OEApgaB8P0mSiaWnOpESEKGFyDpTBPCUpGUYLIbIrtBSw8Fd aQ== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3np2mtdxts-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Feb 2023 16:57:48 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 31EGuKPb009707;
+        Tue, 14 Feb 2023 16:57:47 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3np1f5uuka-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Feb 2023 16:57:47 +0000
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31EGuHor039739;
+        Tue, 14 Feb 2023 16:57:45 GMT
+Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3np1f5uuff-9;
+        Tue, 14 Feb 2023 16:57:45 +0000
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Karsten Keil <isdn@linux-pingi.de>,
+        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Len Brown <len.brown@intel.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Evgeniy Polyakov <zbr@ioremap.net>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>, alsa-devel@alsa-project.org,
+        coresight@lists.linaro.org, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, isdn4linux@listserv.isdn4linux.de,
+        keyrings@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-sgx@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, live-patching@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-mm@kvack.org,
+        openrisc@lists.librecores.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
+        x86@kernel.org
+Subject: Re: (subset) [PATCH 00/35] Documentation: correct lots of spelling errors (series 1)
+Date:   Tue, 14 Feb 2023 11:57:35 -0500
+Message-Id: <167639371105.486235.1228754650636546815.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230127064005.1558-1-rdunlap@infradead.org>
+References: <20230127064005.1558-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: libtraceevent + Rust
-To:     Hidenori Kobayashi <hidenorik@chromium.org>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        rostedt@goodmis.org, Nikita Baksalyar <nikita.baksalyar@gmail.com>
-References: <96dc3f67-5405-c1a4-7c94-a98de3085cc5@arm.com>
- <20230213051727.hvkd5wgqhxi66gqh@google.com>
- <35fe67d1-0865-486f-bdbe-5eb8e034352d@arm.com>
- <20230214035657.4nz5tyirzfmvcxuq@google.com>
-Content-Language: en-US
-From:   Douglas Raillard <douglas.raillard@arm.com>
-In-Reply-To: <20230214035657.4nz5tyirzfmvcxuq@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-14_11,2023-02-14_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0
+ suspectscore=0 mlxscore=0 spamscore=0 mlxlogscore=997 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2302140144
+X-Proofpoint-GUID: F9bpdPmEiXIR5xn5JduF_4kuCVCc4so3
+X-Proofpoint-ORIG-GUID: F9bpdPmEiXIR5xn5JduF_4kuCVCc4so3
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 14-02-2023 03:56, Hidenori Kobayashi wrote:
-> Hi Douglas,
-> 
-> On Mon, Feb 13, 2023 at 12:04:36PM +0000, Douglas Raillard wrote:
->> Hi Hidenori,
->>
->>> On 13-02-2023 05:17, Hidenori Kobayashi wrote:
->>> Hi Douglas,
->>>
->>> On Fri, Oct 14, 2022 at 04:16:33PM +0100, Douglas Raillard wrote:
->>>> Hi everyone,
->>>>
->>>> The idea of having some Rust interop for libtraceevent was floated during the
->>>> Tracing Summit that took place this week.
->>>>
->>>> The overall work has two scopes:
->>>>       1. libtraceevent: low-level helpers to decode event formats and binary buffer pages.
->>>>       2. high level API that e.g. can consume a trace.dat file and expose an iterator API etc.
->>>>
->>>> The current discussion is only about #1. The 2nd part of the work has an
->>>> entirely different set of constraints as it would aim at integrating in the
->>>> Rust ecosystem as well as possible without trying to replace anything
->>>> pre-existent.
->>> Has anyone actually started working on these?
->>
->> We have, this has been my main focus since around November.
->>
->>>
->>> I have a Rust tool that parses the output from trace-cmd to infer the
->>> internal states of a kernel module. While it serves our needs for now,
->>> Steven kindly pointed me to this thread and suggested interacting
->>> directly with the tracefs and using the tracefs libraries for parsing.
->>>
->>> So I'd like to know:
->>> - if this discussion reached a consensus
->>
->> You are the first one to answer on that thread but the twitter poll from Steven was encouraging. At any
->> rate, we need it for LISA [1] so I'm making it happen.
->>
->>> - if there is any publicly available work already
->>
->> Yes and no: I'm currently developing it as part of LISA but in its own "traceevent" crate,
->> as added by that PR under tools/analysis/traceevent/:
->> https://github.com/ARM-software/lisa/pull/1843
-> 
-> Thanks! Let me take a look.
-> 
-> Do you intend to keep this inside the LISA project repository?
-> 
-> The LISA project per se is interesting, but I feel your work is also
-> valuable for other projects. Is there any chance that this becomes a
-> standalone crate?
+On Thu, 26 Jan 2023 22:39:30 -0800, Randy Dunlap wrote:
 
-Yes, LISA is not necessarily the final location of that piece of code. I've made it
-as a separate crate from the other Rust bits so it can be split effortlessly when the time comes.
-
+> Correct many spelling errors in Documentation/ as reported by codespell.
 > 
->> This is very much WIP, so far I got:
->> * A parser for v6 header up to and including the event formats.
->>    Since that requires a C parser, it was a large chunk of the total work.
->> * A C interpreter as (somewhat) required for array lengths and mostly for the print fmt args.
->> * a zero-copy I/O layer that can load data from:
->> 	* existing in-memory buffer
->> 	* Any type implementing Read + Seek
->> 	* mmap
->>
->> Adding support for v7 header should be straightforward except for the I/O that might require adjustment
->> depending on how compression is implemented.
->>
->>
->> My current roadmap is:
->> 1. Get to a state where I can share a trace-cmd report equivalent static tool for people to play with on
->>     their own data and report issues.
->> 2. Make a serde backend hooked to it since we need it for LISA (assuming performance is good enough)
->> 3. Figure out exactly how it sits in the libtraceevent ecosystem and maintains it in the
->>     long run, libtraceevent-style C bindings etc.
->>
->> Note that if and when a serde backend is available, that should bring a conversion to JSON for basically free.
->>
->> Unless I'm sidetracked by urgent things, 1. and 2. should become available in a few months. I expect 3. to happen
->> when I have something concrete to show to the world.
->>
->> [1] LISA: https://github.com/ARM-software/lisa
->>>
->>> Thanks,
->>> Hidenori
->>
->> Thanks,
->>
->> Douglas
+> Maintainers of specific kernel subsystems are only Cc-ed on their
+> respective patches, not the entire series. [if all goes well]
 > 
-> Thanks,
-> Hidenori
+> These patches are based on linux-next-20230125.
+> 
+> [...]
 
+Applied to 6.3/scsi-queue, thanks!
+
+[28/35] Documentation: target: correct spelling
+        https://git.kernel.org/mkp/scsi/c/c57ac5748be5
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
