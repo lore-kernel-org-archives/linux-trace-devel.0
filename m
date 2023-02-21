@@ -2,31 +2,31 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAFE6C678D5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDFF4C6FA99
 	for <linux-trace-devel@archiver.kernel.org>; Tue, 21 Feb 2023 21:11:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbjBUVLx (ORCPT
+        id S229998AbjBUVLy (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 21 Feb 2023 16:11:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
+        Tue, 21 Feb 2023 16:11:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjBUVLw (ORCPT
+        with ESMTP id S229716AbjBUVLw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 21 Feb 2023 16:11:52 -0500
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 708FC302B4;
-        Tue, 21 Feb 2023 13:11:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9E0EB305C2;
+        Tue, 21 Feb 2023 13:11:50 -0800 (PST)
 Received: from W11-BEAU-MD.localdomain (unknown [76.135.27.212])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 9DD01209A93B;
-        Tue, 21 Feb 2023 13:11:48 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9DD01209A93B
+        by linux.microsoft.com (Postfix) with ESMTPSA id E3B5A20B9C3D;
+        Tue, 21 Feb 2023 13:11:49 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E3B5A20B9C3D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1677013908;
-        bh=OSmDP26J8YzoMhJc3UKK7slznwSGVE3KNwggNF1IdJc=;
+        s=default; t=1677013910;
+        bh=LAT6es1zlcxHgyXQ+ccAd1DGKcAvO/9IswEU0C+E8Yk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QZ3afmGFFO8UhimsjFdIx0E4RrHMJCg4heN+JTPjRV3GYLMekM7QXuMqXGKy5udcd
-         Gaz2yWH8+42tekNvGACHxjUfQkGUos9QOD1o2avfJqKBV3+9EcfLpjpSWqwGMf5vz0
-         NDjm2lpVRVRRrKTG+YHJmaySM45/b0AJDcHG1bXU=
+        b=sD/1eaVnzd86RfhuQGs9V1soHDsH7AjM4ll3w5rmohEWwV3OxFGG6XcBwMOm64c7a
+         vnPXQliyyk3o1rTE4U2EYLVD5T/2Yany8n6FKAwF6q4dBLODMzeyqKlJKd6ezroU7z
+         lPJ2zTjDZZbJ63Li5seDtiZFeFZ3DDyOQdlWCWyw=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org,
         mathieu.desnoyers@efficios.com, dcook@linux.microsoft.com,
@@ -35,9 +35,9 @@ To:     rostedt@goodmis.org, mhiramat@kernel.org,
         keescook@chromium.org, tglx@linutronix.de
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org
-Subject: [PATCH v8 01/11] tracing/user_events: Split header into uapi and kernel
-Date:   Tue, 21 Feb 2023 13:11:33 -0800
-Message-Id: <20230221211143.574-2-beaub@linux.microsoft.com>
+Subject: [PATCH v8 04/11] tracing/user_events: Fixup enable faults asyncly
+Date:   Tue, 21 Feb 2023 13:11:36 -0800
+Message-Id: <20230221211143.574-5-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230221211143.574-1-beaub@linux.microsoft.com>
 References: <20230221211143.574-1-beaub@linux.microsoft.com>
@@ -47,155 +47,204 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The UAPI parts need to be split out from the kernel parts of user_events
-now that other parts of the kernel will reference it. Do so by moving
-the existing include/linux/user_events.h into
-include/uapi/linux/user_events.h.
+When events are enabled within the various tracing facilities, such as
+ftrace/perf, the event_mutex is held. As events are enabled pages are
+accessed. We do not want page faults to occur under this lock. Instead
+queue the fault to a workqueue to be handled in a process context safe
+way without the lock.
+
+The enable address is marked faulting while the async fault-in occurs.
+This ensures that we don't attempt to fault-in more than is necessary.
+Once the page has been faulted in, an address write is re-attempted.
+If the page couldn't fault-in, then we wait until the next time the
+event is enabled to prevent any potential infinite loops.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- include/linux/user_events.h      | 52 ++++----------------------------
- include/uapi/linux/user_events.h | 48 +++++++++++++++++++++++++++++
- kernel/trace/trace_events_user.c |  5 ---
- 3 files changed, 54 insertions(+), 51 deletions(-)
- create mode 100644 include/uapi/linux/user_events.h
+ kernel/trace/trace_events_user.c | 120 +++++++++++++++++++++++++++++--
+ 1 file changed, 114 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/user_events.h b/include/linux/user_events.h
-index 592a3fbed98e..13689589d36e 100644
---- a/include/linux/user_events.h
-+++ b/include/linux/user_events.h
-@@ -1,54 +1,14 @@
--/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-- * Copyright (c) 2021, Microsoft Corporation.
-+ * Copyright (c) 2022, Microsoft Corporation.
-  *
-  * Authors:
-  *   Beau Belgrave <beaub@linux.microsoft.com>
-  */
--#ifndef _UAPI_LINUX_USER_EVENTS_H
--#define _UAPI_LINUX_USER_EVENTS_H
- 
--#include <linux/types.h>
--#include <linux/ioctl.h>
-+#ifndef _LINUX_USER_EVENTS_H
-+#define _LINUX_USER_EVENTS_H
- 
--#ifdef __KERNEL__
--#include <linux/uio.h>
--#else
--#include <sys/uio.h>
--#endif
-+#include <uapi/linux/user_events.h>
- 
--#define USER_EVENTS_SYSTEM "user_events"
--#define USER_EVENTS_PREFIX "u:"
--
--/* Create dynamic location entry within a 32-bit value */
--#define DYN_LOC(offset, size) ((size) << 16 | (offset))
--
--/*
-- * Describes an event registration and stores the results of the registration.
-- * This structure is passed to the DIAG_IOCSREG ioctl, callers at a minimum
-- * must set the size and name_args before invocation.
-- */
--struct user_reg {
--
--	/* Input: Size of the user_reg structure being used */
--	__u32 size;
--
--	/* Input: Pointer to string with event name, description and flags */
--	__u64 name_args;
--
--	/* Output: Bitwise index of the event within the status page */
--	__u32 status_bit;
--
--	/* Output: Index of the event to use when writing data */
--	__u32 write_index;
--} __attribute__((__packed__));
--
--#define DIAG_IOC_MAGIC '*'
--
--/* Requests to register a user_event */
--#define DIAG_IOCSREG _IOWR(DIAG_IOC_MAGIC, 0, struct user_reg*)
--
--/* Requests to delete a user_event */
--#define DIAG_IOCSDEL _IOW(DIAG_IOC_MAGIC, 1, char*)
--
--#endif /* _UAPI_LINUX_USER_EVENTS_H */
-+#endif /* _LINUX_USER_EVENTS_H */
-diff --git a/include/uapi/linux/user_events.h b/include/uapi/linux/user_events.h
-new file mode 100644
-index 000000000000..03f92366068d
---- /dev/null
-+++ b/include/uapi/linux/user_events.h
-@@ -0,0 +1,48 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+/*
-+ * Copyright (c) 2021-2022, Microsoft Corporation.
-+ *
-+ * Authors:
-+ *   Beau Belgrave <beaub@linux.microsoft.com>
-+ */
-+#ifndef _UAPI_LINUX_USER_EVENTS_H
-+#define _UAPI_LINUX_USER_EVENTS_H
-+
-+#include <linux/types.h>
-+#include <linux/ioctl.h>
-+
-+#define USER_EVENTS_SYSTEM "user_events"
-+#define USER_EVENTS_PREFIX "u:"
-+
-+/* Create dynamic location entry within a 32-bit value */
-+#define DYN_LOC(offset, size) ((size) << 16 | (offset))
-+
-+/*
-+ * Describes an event registration and stores the results of the registration.
-+ * This structure is passed to the DIAG_IOCSREG ioctl, callers at a minimum
-+ * must set the size and name_args before invocation.
-+ */
-+struct user_reg {
-+
-+	/* Input: Size of the user_reg structure being used */
-+	__u32 size;
-+
-+	/* Input: Pointer to string with event name, description and flags */
-+	__u64 name_args;
-+
-+	/* Output: Bitwise index of the event within the status page */
-+	__u32 status_bit;
-+
-+	/* Output: Index of the event to use when writing data */
-+	__u32 write_index;
-+} __attribute__((__packed__));
-+
-+#define DIAG_IOC_MAGIC '*'
-+
-+/* Request to register a user_event */
-+#define DIAG_IOCSREG _IOWR(DIAG_IOC_MAGIC, 0, struct user_reg *)
-+
-+/* Request to delete a user_event */
-+#define DIAG_IOCSDEL _IOW(DIAG_IOC_MAGIC, 1, char *)
-+
-+#endif /* _UAPI_LINUX_USER_EVENTS_H */
 diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 908e8a13c675..070551480747 100644
+index 553a82ee7aeb..86bda1660536 100644
 --- a/kernel/trace/trace_events_user.c
 +++ b/kernel/trace/trace_events_user.c
-@@ -19,12 +19,7 @@
- #include <linux/tracefs.h>
- #include <linux/types.h>
- #include <linux/uaccess.h>
--/* Reminder to move to uapi when everything works */
--#ifdef CONFIG_COMPILE_TEST
- #include <linux/user_events.h>
--#else
--#include <uapi/linux/user_events.h>
--#endif
- #include "trace.h"
- #include "trace_dynevent.h"
+@@ -99,9 +99,23 @@ struct user_event_enabler {
+ /* Bits 0-5 are for the bit to update upon enable/disable (0-63 allowed) */
+ #define ENABLE_VAL_BIT_MASK 0x3F
  
++/* Bit 6 is for faulting status of enablement */
++#define ENABLE_VAL_FAULTING_BIT 6
++
+ /* Only duplicate the bit value */
+ #define ENABLE_VAL_DUP_MASK ENABLE_VAL_BIT_MASK
+ 
++#define ENABLE_BITOPS(e) ((unsigned long *)&(e)->values)
++
++/* Used for asynchronous faulting in of pages */
++struct user_event_enabler_fault {
++	struct work_struct work;
++	struct user_event_mm *mm;
++	struct user_event_enabler *enabler;
++};
++
++static struct kmem_cache *fault_cache;
++
+ /* Global list of memory descriptors using user_events */
+ static LIST_HEAD(user_event_mms);
+ static DEFINE_SPINLOCK(user_event_mms_lock);
+@@ -263,7 +277,85 @@ static int user_event_mm_fault_in(struct user_event_mm *mm, unsigned long uaddr)
+ }
+ 
+ static int user_event_enabler_write(struct user_event_mm *mm,
+-				    struct user_event_enabler *enabler)
++				    struct user_event_enabler *enabler,
++				    bool fixup_fault);
++
++static void user_event_enabler_fault_fixup(struct work_struct *work)
++{
++	struct user_event_enabler_fault *fault = container_of(
++		work, struct user_event_enabler_fault, work);
++	struct user_event_enabler *enabler = fault->enabler;
++	struct user_event_mm *mm = fault->mm;
++	unsigned long uaddr = enabler->addr;
++	int ret;
++
++	ret = user_event_mm_fault_in(mm, uaddr);
++
++	if (ret && ret != -ENOENT) {
++		struct user_event *user = enabler->event;
++
++		pr_warn("user_events: Fault for mm: 0x%pK @ 0x%llx event: %s\n",
++			mm->mm, (unsigned long long)uaddr, EVENT_NAME(user));
++	}
++
++	/* Prevent state changes from racing */
++	mutex_lock(&event_mutex);
++
++	/*
++	 * If we managed to get the page, re-issue the write. We do not
++	 * want to get into a possible infinite loop, which is why we only
++	 * attempt again directly if the page came in. If we couldn't get
++	 * the page here, then we will try again the next time the event is
++	 * enabled/disabled.
++	 */
++	clear_bit(ENABLE_VAL_FAULTING_BIT, ENABLE_BITOPS(enabler));
++
++	if (!ret) {
++		mmap_read_lock(mm->mm);
++		user_event_enabler_write(mm, enabler, true);
++		mmap_read_unlock(mm->mm);
++	}
++
++	mutex_unlock(&event_mutex);
++
++	/* In all cases we no longer need the mm or fault */
++	user_event_mm_put(mm);
++	kmem_cache_free(fault_cache, fault);
++}
++
++static bool user_event_enabler_queue_fault(struct user_event_mm *mm,
++					   struct user_event_enabler *enabler)
++{
++	struct user_event_enabler_fault *fault;
++
++	fault = kmem_cache_zalloc(fault_cache, GFP_NOWAIT | __GFP_NOWARN);
++
++	if (!fault)
++		return false;
++
++	INIT_WORK(&fault->work, user_event_enabler_fault_fixup);
++	fault->mm = user_event_mm_get(mm);
++	fault->enabler = enabler;
++
++	/* Don't try to queue in again while we have a pending fault */
++	set_bit(ENABLE_VAL_FAULTING_BIT, ENABLE_BITOPS(enabler));
++
++	if (!schedule_work(&fault->work)) {
++		/* Allow another attempt later */
++		clear_bit(ENABLE_VAL_FAULTING_BIT, ENABLE_BITOPS(enabler));
++
++		user_event_mm_put(mm);
++		kmem_cache_free(fault_cache, fault);
++
++		return false;
++	}
++
++	return true;
++}
++
++static int user_event_enabler_write(struct user_event_mm *mm,
++				    struct user_event_enabler *enabler,
++				    bool fixup_fault)
+ {
+ 	unsigned long uaddr = enabler->addr;
+ 	unsigned long *ptr;
+@@ -278,11 +370,19 @@ static int user_event_enabler_write(struct user_event_mm *mm,
+ 	if (refcount_read(&mm->tasks) == 0)
+ 		return -ENOENT;
+ 
++	if (unlikely(test_bit(ENABLE_VAL_FAULTING_BIT, ENABLE_BITOPS(enabler))))
++		return -EBUSY;
++
+ 	ret = pin_user_pages_remote(mm->mm, uaddr, 1, FOLL_WRITE | FOLL_NOFAULT,
+ 				    &page, NULL, NULL);
+ 
+-	if (ret <= 0) {
+-		pr_warn("user_events: Enable write failed\n");
++	if (unlikely(ret <= 0)) {
++		if (!fixup_fault)
++			return -EFAULT;
++
++		if (!user_event_enabler_queue_fault(mm, enabler))
++			pr_warn("user_events: Unable to queue fault handler\n");
++
+ 		return -EFAULT;
+ 	}
+ 
+@@ -314,7 +414,7 @@ static void user_event_enabler_update(struct user_event *user)
+ 
+ 		list_for_each_entry_rcu(enabler, &mm->enablers, link)
+ 			if (enabler->event == user)
+-				user_event_enabler_write(mm, enabler);
++				user_event_enabler_write(mm, enabler, true);
+ 
+ 		rcu_read_unlock();
+ 		mmap_read_unlock(mm->mm);
+@@ -562,7 +662,7 @@ static struct user_event_enabler
+ 
+ 	/* Attempt to reflect the current state within the process */
+ 	mmap_read_lock(user_mm->mm);
+-	*write_result = user_event_enabler_write(user_mm, enabler);
++	*write_result = user_event_enabler_write(user_mm, enabler, false);
+ 	mmap_read_unlock(user_mm->mm);
+ 
+ 	/*
+@@ -2201,16 +2301,24 @@ static int __init trace_events_user_init(void)
+ {
+ 	int ret;
+ 
++	fault_cache = KMEM_CACHE(user_event_enabler_fault, 0);
++
++	if (!fault_cache)
++		return -ENOMEM;
++
+ 	init_group = user_event_group_create(&init_user_ns);
+ 
+-	if (!init_group)
++	if (!init_group) {
++		kmem_cache_destroy(fault_cache);
+ 		return -ENOMEM;
++	}
+ 
+ 	ret = create_user_tracefs();
+ 
+ 	if (ret) {
+ 		pr_warn("user_events could not register with tracefs\n");
+ 		user_event_group_destroy(init_group);
++		kmem_cache_destroy(fault_cache);
+ 		init_group = NULL;
+ 		return ret;
+ 	}
 -- 
 2.25.1
 
