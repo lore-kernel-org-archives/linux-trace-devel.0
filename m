@@ -2,31 +2,31 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 399C6C6FA9E
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 21 Feb 2023 21:12:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ED20C6FD18
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 21 Feb 2023 21:12:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbjBUVL7 (ORCPT
+        id S229545AbjBUVMB (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 21 Feb 2023 16:11:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43432 "EHLO
+        Tue, 21 Feb 2023 16:12:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbjBUVLy (ORCPT
+        with ESMTP id S230020AbjBUVLy (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 21 Feb 2023 16:11:54 -0500
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3C98A30E8A;
-        Tue, 21 Feb 2023 13:11:53 -0800 (PST)
-Received: from W11-BEAU-MD.localdomain (unknown [76.135.27.212])
-        by linux.microsoft.com (Postfix) with ESMTPSA id BEE1620BC5E7;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9CB14301B9;
         Tue, 21 Feb 2023 13:11:52 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BEE1620BC5E7
+Received: from W11-BEAU-MD.localdomain (unknown [76.135.27.212])
+        by linux.microsoft.com (Postfix) with ESMTPSA id DD925209A941;
+        Tue, 21 Feb 2023 13:11:51 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DD925209A941
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1677013913;
-        bh=I/N19C63THCRBfckR+N4mJDWmIQC1iuXco7+RGR9L6U=;
+        s=default; t=1677013912;
+        bh=gZQIOerORAHQ2Mn7LD3nOn2GElU/ypPYbhlbPDEbsno=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dCRzQGcIfvRpOp9kpdwMTF1aaihpuvaIfHxS1euR/JCwnaOjxQUy3XkUPyUcF+G0t
-         U2AkicFcPC9hBHiH7CZP+EKRF6aPM1gjYIrEUJz8BSq2VL0LT7plTe302im6xToFwl
-         QP9/1kHRZa3txCLzPg3NMGhV5c8lGlBU2QrG8+Po=
+        b=BUdTvGEKFTxG53UcqiOSURDvw98xB+iyfYf9dF7ScN9+7MEOiD8QDyVROM6socop4
+         pBIogVpF1trRimejMkyNUnuRrfKuJtxESPX3a0I/JczzPZcQ4L/HAL2u/umMaulFYv
+         9fRFAzMV3r9vnlrAdnF2TyU6LKgM8FJMFct39tn4=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org,
         mathieu.desnoyers@efficios.com, dcook@linux.microsoft.com,
@@ -35,9 +35,9 @@ To:     rostedt@goodmis.org, mhiramat@kernel.org,
         keescook@chromium.org, tglx@linutronix.de
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org
-Subject: [PATCH v8 11/11] tracing/user_events: Limit global user_event count
-Date:   Tue, 21 Feb 2023 13:11:43 -0800
-Message-Id: <20230221211143.574-12-beaub@linux.microsoft.com>
+Subject: [PATCH v8 09/11] tracing/user_events: Update documentation for ABI
+Date:   Tue, 21 Feb 2023 13:11:41 -0800
+Message-Id: <20230221211143.574-10-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230221211143.574-1-beaub@linux.microsoft.com>
 References: <20230221211143.574-1-beaub@linux.microsoft.com>
@@ -47,140 +47,276 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Operators want to be able to ensure enough tracepoints exist on the
-system for kernel components as well as for user components. Since there
-are only up to 64K events, by default allow up to half to be used by
-user events.
-
-Add a boot parameter (user_events_max=%d) and a kernel sysctl parameter
-(kernel.user_events_max) to set a global limit that is honored among all
-groups on the system. This ensures hard limits can be setup to prevent
-user processes from consuming all event IDs on the system.
+The ABI for user_events has changed from mmap() based to remote writes.
+Update the documentation to reflect these changes, add new section for
+unregistering events since lifetime is now tied to tasks instead of
+files.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- kernel/trace/trace_events_user.c | 59 ++++++++++++++++++++++++++++++++
- 1 file changed, 59 insertions(+)
+ Documentation/trace/user_events.rst | 177 ++++++++++++++++------------
+ 1 file changed, 102 insertions(+), 75 deletions(-)
 
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 222f2eb59c7c..6a5ebe243999 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -20,6 +20,7 @@
- #include <linux/types.h>
- #include <linux/uaccess.h>
- #include <linux/highmem.h>
-+#include <linux/init.h>
- #include <linux/user_events.h>
- #include "trace.h"
- #include "trace_dynevent.h"
-@@ -61,6 +62,12 @@ struct user_event_group {
- /* Group for init_user_ns mapping, top-most group */
- static struct user_event_group *init_group;
+diff --git a/Documentation/trace/user_events.rst b/Documentation/trace/user_events.rst
+index 9f181f342a70..0180714f10e3 100644
+--- a/Documentation/trace/user_events.rst
++++ b/Documentation/trace/user_events.rst
+@@ -11,20 +11,19 @@ that can be viewed via existing tools, such as ftrace and perf.
+ To enable this feature, build your kernel with CONFIG_USER_EVENTS=y.
  
-+/* Max allowed events for the whole system */
-+static unsigned int max_user_events = 32768;
-+
-+/* Current number of events on the whole system */
-+static unsigned int current_user_events;
-+
- /*
-  * Stores per-event properties, as users register events
-  * within a file a user_event might be created if it does not
-@@ -1241,6 +1248,8 @@ static int destroy_user_event(struct user_event *user)
- {
- 	int ret = 0;
+ Programs can view status of the events via
+-/sys/kernel/debug/tracing/user_events_status and can both register and write
+-data out via /sys/kernel/debug/tracing/user_events_data.
++/sys/kernel/tracing/user_events_status and can both register and write
++data out via /sys/kernel/tracing/user_events_data.
  
-+	lockdep_assert_held(&event_mutex);
-+
- 	/* Must destroy fields before call removal */
- 	user_event_destroy_fields(user);
+-Programs can also use /sys/kernel/debug/tracing/dynamic_events to register and
++Programs can also use /sys/kernel/tracing/dynamic_events to register and
+ delete user based events via the u: prefix. The format of the command to
+ dynamic_events is the same as the ioctl with the u: prefix applied.
  
-@@ -1257,6 +1266,11 @@ static int destroy_user_event(struct user_event *user)
- 	kfree(EVENT_NAME(user));
- 	kfree(user);
+ Typically programs will register a set of events that they wish to expose to
+ tools that can read trace_events (such as ftrace and perf). The registration
+-process gives back two ints to the program for each event. The first int is
+-the status bit. This describes which bit in little-endian format in the
+-/sys/kernel/debug/tracing/user_events_status file represents this event. The
+-second int is the write index which describes the data when a write() or
+-writev() is called on the /sys/kernel/debug/tracing/user_events_data file.
++process tells the kernel which address and bit to reflect if any tool has
++enabled the event and data should be written. The registration will give back
++a write index which describes the data when a write() or writev() is called
++on the /sys/kernel/tracing/user_events_data file.
  
-+	if (current_user_events > 0)
-+		current_user_events--;
-+	else
-+		pr_alert("BUG: Bad current_user_events\n");
-+
- 	return ret;
- }
+ The structures referenced in this document are contained within the
+ /include/uapi/linux/user_events.h file in the source tree.
+@@ -35,29 +34,70 @@ filesystem and may be mounted at different paths than above.*
+ Registering
+ -----------
+ Registering within a user process is done via ioctl() out to the
+-/sys/kernel/debug/tracing/user_events_data file. The command to issue is
++/sys/kernel/tracing/user_events_data file. The command to issue is
+ DIAG_IOCSREG.
  
-@@ -1744,6 +1758,11 @@ static int user_event_parse(struct user_event_group *group, char *name,
+ This command takes a packed struct user_reg as an argument::
  
- 	mutex_lock(&event_mutex);
+   struct user_reg {
+-        u32 size;
+-        u64 name_args;
+-        u32 status_bit;
+-        u32 write_index;
+-  };
++        /* Input: Size of the user_reg structure being used */
++        __u32 size;
++
++        /* Input: Bit in enable address to use */
++        __u8 enable_bit;
++
++        /* Input: Enable size in bytes at address */
++        __u8 enable_size;
++
++        /* Input: Flags for future use, set to 0 */
++        __u16 flags;
++
++        /* Input: Address to update when enabled */
++        __u64 enable_addr;
++
++        /* Input: Pointer to string with event name, description and flags */
++        __u64 name_args;
++
++        /* Output: Index of the event to use when writing data */
++        __u32 write_index;
++  } __attribute__((__packed__));
++
++The struct user_reg requires all the above inputs to be set appropriately.
  
-+	if (current_user_events >= max_user_events) {
-+		ret = -EMFILE;
-+		goto put_user_lock;
-+	}
+-The struct user_reg requires two inputs, the first is the size of the structure
+-to ensure forward and backward compatibility. The second is the command string
+-to issue for registering. Upon success two outputs are set, the status bit
+-and the write index.
+++ size: This must be set to sizeof(struct user_reg).
 +
- 	ret = user_event_trace_register(user);
+++ enable_bit: The bit to reflect the event status at the address specified by
++  enable_addr.
++
+++ enable_size: The size of the value specified by enable_addr.
++  This must be 4 (32-bit) or 8 (64-bit). 64-bit values are only allowed to be
++  used on 64-bit kernels, however, 32-bit can be used on all kernels.
++
+++ flags: The flags to use, if any. For the initial version this must be 0.
++  Callers should first attempt to use flags and retry without flags to ensure
++  support for lower versions of the kernel. If a flag is not supported -EINVAL
++  is returned.
++
+++ enable_addr: The address of the value to use to reflect event status. This
++  must be naturally aligned and write accessible within the user program.
++
+++ name_args: The name and arguments to describe the event, see command format
++  for details.
++
++Upon successful registration the following is set.
++
+++ write_index: The index to use for this file descriptor that represents this
++  event when writing out data. The index is unique to this instance of the file
++  descriptor that was used for the registration. See writing data for details.
  
- 	if (ret)
-@@ -1755,6 +1774,7 @@ static int user_event_parse(struct user_event_group *group, char *name,
- 	dyn_event_init(&user->devent, &user_event_dops);
- 	dyn_event_add(&user->devent, &user->call);
- 	hash_add(group->register_table, &user->node, key);
-+	current_user_events++;
+ User based events show up under tracefs like any other event under the
+ subsystem named "user_events". This means tools that wish to attach to the
+-events need to use /sys/kernel/debug/tracing/events/user_events/[name]/enable
++events need to use /sys/kernel/tracing/events/user_events/[name]/enable
+ or perf record -e user_events:[name] when attaching/recording.
  
- 	mutex_unlock(&event_mutex);
+-**NOTE:** *The write_index returned is only valid for the FD that was used*
++**NOTE:** The event subsystem name by default is "user_events". Callers should
++not assume it will always be "user_events". Operators reserve the right in the
++future to change the subsystem name per-process to accomodate event isolation.
  
-@@ -2386,6 +2406,43 @@ static int create_user_tracefs(void)
- 	return -ENODEV;
- }
+ Command Format
+ ^^^^^^^^^^^^^^
+@@ -94,9 +134,9 @@ Would be represented by the following field::
+   struct mytype myname 20
  
-+static int __init set_max_user_events(char *str)
-+{
-+	if (!str)
-+		return 0;
-+
-+	if (kstrtouint(str, 0, &max_user_events))
-+		return 0;
-+
-+	return 1;
-+}
-+__setup("user_events_max=", set_max_user_events);
-+
-+static int set_max_user_events_sysctl(struct ctl_table *table, int write,
-+				      void *buffer, size_t *lenp, loff_t *ppos)
-+{
-+	int ret;
-+
-+	mutex_lock(&event_mutex);
-+
-+	ret = proc_douintvec(table, write, buffer, lenp, ppos);
-+
-+	mutex_unlock(&event_mutex);
-+
-+	return ret;
-+}
-+
-+static struct ctl_table user_event_sysctls[] = {
-+	{
-+		.procname	= "user_events_max",
-+		.data		= &max_user_events,
-+		.maxlen		= sizeof(unsigned int),
-+		.mode		= 0644,
-+		.proc_handler	= set_max_user_events_sysctl,
-+	},
-+	{}
-+};
-+
- static int __init trace_events_user_init(void)
- {
- 	int ret;
-@@ -2415,6 +2472,8 @@ static int __init trace_events_user_init(void)
- 	if (dyn_event_register(&user_event_dops))
- 		pr_warn("user_events could not register with dyn_events\n");
+ Deleting
+------------
++--------
+ Deleting an event from within a user process is done via ioctl() out to the
+-/sys/kernel/debug/tracing/user_events_data file. The command to issue is
++/sys/kernel/tracing/user_events_data file. The command to issue is
+ DIAG_IOCSDEL.
  
-+	register_sysctl_init("kernel", user_event_sysctls);
-+
- 	return 0;
- }
+ This command only requires a single string specifying the event to delete by
+@@ -104,92 +144,79 @@ its name. Delete will only succeed if there are no references left to the
+ event (in both user and kernel space). User programs should use a separate file
+ to request deletes than the one used for registration due to this.
  
+-Status
+-------
+-When tools attach/record user based events the status of the event is updated
+-in realtime. This allows user programs to only incur the cost of the write() or
+-writev() calls when something is actively attached to the event.
+-
+-User programs call mmap() on /sys/kernel/debug/tracing/user_events_status to
+-check the status for each event that is registered. The bit to check in the
+-file is given back after the register ioctl() via user_reg.status_bit. The bit
+-is always in little-endian format. Programs can check if the bit is set either
+-using a byte-wise index with a mask or a long-wise index with a little-endian
+-mask.
+-
+-Currently the size of user_events_status is a single page, however, custom
+-kernel configurations can change this size to allow more user based events. In
+-all cases the size of the file is a multiple of a page size.
++Unregistering
++-------------
++If after registering an event it is no longer wanted to be updated then it can
++be disabled via ioctl() out to the /sys/kernel/tracing/user_events_data file.
++The command to issue is DIAG_IOCSUNREG. This is different than deleting, where
++deleting actually removes the event from the system. Unregistering simply tells
++the kernel your process is no longer interested in updates to the event.
+ 
+-For example, if the register ioctl() gives back a status_bit of 3 you would
+-check byte 0 (3 / 8) of the returned mmap data and then AND the result with 8
+-(1 << (3 % 8)) to see if anything is attached to that event.
++This command takes a packed struct user_unreg as an argument::
+ 
+-A byte-wise index check is performed as follows::
++  struct user_unreg {
++        /* Input: Size of the user_unreg structure being used */
++        __u32 size;
+ 
+-  int index, mask;
+-  char *status_page;
++        /* Input: Bit to unregister */
++        __u8 disable_bit;
+ 
+-  index = status_bit / 8;
+-  mask = 1 << (status_bit % 8);
++        /* Input: Reserved, set to 0 */
++        __u8 __reserved;
+ 
+-  ...
++        /* Input: Reserved, set to 0 */
++        __u16 __reserved2;
+ 
+-  if (status_page[index] & mask) {
+-        /* Enabled */
+-  }
++        /* Input: Address to unregister */
++        __u64 disable_addr;
++  } __attribute__((__packed__));
+ 
+-A long-wise index check is performed as follows::
++The struct user_unreg requires all the above inputs to be set appropriately.
+ 
+-  #include <asm/bitsperlong.h>
+-  #include <endian.h>
+++ size: This must be set to sizeof(struct user_unreg).
+ 
+-  #if __BITS_PER_LONG == 64
+-  #define endian_swap(x) htole64(x)
+-  #else
+-  #define endian_swap(x) htole32(x)
+-  #endif
+++ disable_bit: This must be set to the bit to disable (same bit that was
++  previously registered via enable_bit).
+ 
+-  long index, mask, *status_page;
+++ disable_addr: This must be set to the address to disable (same address that was
++  previously registered via enable_addr).
+ 
+-  index = status_bit / __BITS_PER_LONG;
+-  mask = 1L << (status_bit % __BITS_PER_LONG);
+-  mask = endian_swap(mask);
++**NOTE:** Events are automatically unregistered when execve() is invoked. During
++fork() the registered events will be retained and must be unregistered manually
++in each process if wanted.
+ 
+-  ...
++Status
++------
++When tools attach/record user based events the status of the event is updated
++in realtime. This allows user programs to only incur the cost of the write() or
++writev() calls when something is actively attached to the event.
+ 
+-  if (status_page[index] & mask) {
+-        /* Enabled */
+-  }
++The kernel will update the specified bit that was registered for the event as
++tools attach/detach from the event. User programs simply check if the bit is set
++to see if something is attached or not.
+ 
+ Administrators can easily check the status of all registered events by reading
+ the user_events_status file directly via a terminal. The output is as follows::
+ 
+-  Byte:Name [# Comments]
++  Name [# Comments]
+   ...
+ 
+   Active: ActiveCount
+   Busy: BusyCount
+-  Max: MaxCount
+ 
+ For example, on a system that has a single event the output looks like this::
+ 
+-  1:test
++  test
+ 
+   Active: 1
+   Busy: 0
+-  Max: 32768
+ 
+ If a user enables the user event via ftrace, the output would change to this::
+ 
+-  1:test # Used by ftrace
++  test # Used by ftrace
+ 
+   Active: 1
+   Busy: 1
+-  Max: 32768
+-
+-**NOTE:** *A status bit of 0 will never be returned. This allows user programs
+-to have a bit that can be used on error cases.*
+ 
+ Writing Data
+ ------------
 -- 
 2.25.1
 
