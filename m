@@ -2,31 +2,31 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30E52C678DB
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 21 Feb 2023 21:11:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03094C64EC4
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 21 Feb 2023 21:11:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbjBUVLy (ORCPT
+        id S230084AbjBUVLz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 21 Feb 2023 16:11:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43402 "EHLO
+        Tue, 21 Feb 2023 16:11:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbjBUVLx (ORCPT
+        with ESMTP id S229840AbjBUVLx (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 21 Feb 2023 16:11:53 -0500
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 203F0305F7;
-        Tue, 21 Feb 2023 13:11:51 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4283130B0C;
+        Tue, 21 Feb 2023 13:11:52 -0800 (PST)
 Received: from W11-BEAU-MD.localdomain (unknown [76.135.27.212])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 4A74C20B9C3E;
-        Tue, 21 Feb 2023 13:11:50 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4A74C20B9C3E
+        by linux.microsoft.com (Postfix) with ESMTPSA id 8134B209A93F;
+        Tue, 21 Feb 2023 13:11:51 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8134B209A93F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1677013910;
-        bh=hPint7oilCioEigkIIslQUbcyG4C0cJ57YmYs/t8wm4=;
+        s=default; t=1677013911;
+        bh=dmkEXknb1A0Qhw2AWPTXryudmpuAFo4IqxhDoe6dNiw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jv3UDZtGn4MCJzppxz97f4vtpUvEDWVn9grdnd5DHfIYBdQYH0tWC57TDrXDygH9r
-         /ejC3JrJSkat9FDpQJUtBt8htUhJrxgVNZbHqwuNxLwyLoOWndWR8GVj0jnfBZx/pS
-         FrZdvmgb+hmbVHo4FmBegwQVXLNo5/hH4qGK9irg=
+        b=lx3feqfYF+aEhN1mP3tQCcQD1e60V/NolIzXLKvQb3OD0NFi/tqVHTvtuYYX9E39b
+         Q3k7ob2SXXoxxt8Wf/FzpCxyAqgo0vutRwwN79bYJPy3AyBVTE4RhOpUOfXAddi0EH
+         /hci1B8YQnPMz+s1a4T+A6LYfh2NggSBhkYNaUwg=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org,
         mathieu.desnoyers@efficios.com, dcook@linux.microsoft.com,
@@ -35,9 +35,9 @@ To:     rostedt@goodmis.org, mhiramat@kernel.org,
         keescook@chromium.org, tglx@linutronix.de
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org
-Subject: [PATCH v8 05/11] tracing/user_events: Add ioctl for disabling addresses
-Date:   Tue, 21 Feb 2023 13:11:37 -0800
-Message-Id: <20230221211143.574-6-beaub@linux.microsoft.com>
+Subject: [PATCH v8 08/11] tracing/user_events: Use write ABI in example
+Date:   Tue, 21 Feb 2023 13:11:40 -0800
+Message-Id: <20230221211143.574-9-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230221211143.574-1-beaub@linux.microsoft.com>
 References: <20230221211143.574-1-beaub@linux.microsoft.com>
@@ -47,207 +47,112 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Enablements are now tracked by the lifetime of the task/mm. User
-processes need to be able to disable their addresses if tracing is
-requested to be turned off. Before unmapping the page would suffice.
-However, we now need a stronger contract. Add an ioctl to enable this.
-
-A new flag bit is added, freeing, to user_event_enabler to ensure that
-if the event is attempted to be removed while a fault is being handled
-that the remove is delayed until after the fault is reattempted.
+The ABI has changed to use a remote write approach. Update the example
+to show the expected use of this new ABI. Also remove debugfs
+path and use tracefs to ensure example works in more environments.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- include/uapi/linux/user_events.h | 24 +++++++++
- kernel/trace/trace_events_user.c | 93 +++++++++++++++++++++++++++++++-
- 2 files changed, 115 insertions(+), 2 deletions(-)
+ samples/user_events/example.c | 47 +++++++----------------------------
+ 1 file changed, 9 insertions(+), 38 deletions(-)
 
-diff --git a/include/uapi/linux/user_events.h b/include/uapi/linux/user_events.h
-index 22521bc622db..3e7275e3234a 100644
---- a/include/uapi/linux/user_events.h
-+++ b/include/uapi/linux/user_events.h
-@@ -46,6 +46,27 @@ struct user_reg {
- 	__u32 write_index;
- } __attribute__((__packed__));
+diff --git a/samples/user_events/example.c b/samples/user_events/example.c
+index d06dc24156ec..28165a096697 100644
+--- a/samples/user_events/example.c
++++ b/samples/user_events/example.c
+@@ -9,51 +9,28 @@
+ #include <errno.h>
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
++#include <sys/uio.h>
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <unistd.h>
+-#include <asm/bitsperlong.h>
+-#include <endian.h>
+ #include <linux/user_events.h>
  
-+/*
-+ * Describes an event unregister, callers must set the size, address and bit.
-+ * This structure is passed to the DIAG_IOCSUNREG ioctl to disable bit updates.
-+ */
-+struct user_unreg {
-+	/* Input: Size of the user_unreg structure being used */
-+	__u32 size;
-+
-+	/* Input: Bit to unregister */
-+	__u8 disable_bit;
-+
-+	/* Input: Reserved, set to 0 */
-+	__u8 __reserved;
-+
-+	/* Input: Reserved, set to 0 */
-+	__u16 __reserved2;
-+
-+	/* Input: Address to unregister */
-+	__u64 disable_addr;
-+} __attribute__((__packed__));
-+
- #define DIAG_IOC_MAGIC '*'
+-#if __BITS_PER_LONG == 64
+-#define endian_swap(x) htole64(x)
+-#else
+-#define endian_swap(x) htole32(x)
+-#endif
++const char *data_file = "/sys/kernel/tracing/user_events_data";
++int enabled = 0;
  
- /* Request to register a user_event */
-@@ -54,4 +75,7 @@ struct user_reg {
- /* Request to delete a user_event */
- #define DIAG_IOCSDEL _IOW(DIAG_IOC_MAGIC, 1, char *)
- 
-+/* Requests to unregister a user_event */
-+#define DIAG_IOCSUNREG _IOW(DIAG_IOC_MAGIC, 2, struct user_unreg*)
-+
- #endif /* _UAPI_LINUX_USER_EVENTS_H */
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 86bda1660536..e4ee25d16f3b 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -102,6 +102,9 @@ struct user_event_enabler {
- /* Bit 6 is for faulting status of enablement */
- #define ENABLE_VAL_FAULTING_BIT 6
- 
-+/* Bit 7 is for freeing status of enablement */
-+#define ENABLE_VAL_FREEING_BIT 7
-+
- /* Only duplicate the bit value */
- #define ENABLE_VAL_DUP_MASK ENABLE_VAL_BIT_MASK
- 
-@@ -301,6 +304,12 @@ static void user_event_enabler_fault_fixup(struct work_struct *work)
- 	/* Prevent state changes from racing */
- 	mutex_lock(&event_mutex);
- 
-+	/* User asked for enabler to be removed during fault */
-+	if (test_bit(ENABLE_VAL_FREEING_BIT, ENABLE_BITOPS(enabler))) {
-+		user_event_enabler_destroy(enabler);
-+		goto out;
-+	}
-+
- 	/*
- 	 * If we managed to get the page, re-issue the write. We do not
- 	 * want to get into a possible infinite loop, which is why we only
-@@ -315,7 +324,7 @@ static void user_event_enabler_fault_fixup(struct work_struct *work)
- 		user_event_enabler_write(mm, enabler, true);
- 		mmap_read_unlock(mm->mm);
- 	}
+-/* Assumes debugfs is mounted */
+-const char *data_file = "/sys/kernel/debug/tracing/user_events_data";
+-const char *status_file = "/sys/kernel/debug/tracing/user_events_status";
 -
-+out:
- 	mutex_unlock(&event_mutex);
- 
- 	/* In all cases we no longer need the mm or fault */
-@@ -370,7 +379,8 @@ static int user_event_enabler_write(struct user_event_mm *mm,
- 	if (refcount_read(&mm->tasks) == 0)
- 		return -ENOENT;
- 
--	if (unlikely(test_bit(ENABLE_VAL_FAULTING_BIT, ENABLE_BITOPS(enabler))))
-+	if (unlikely(test_bit(ENABLE_VAL_FAULTING_BIT, ENABLE_BITOPS(enabler)) ||
-+		     test_bit(ENABLE_VAL_FREEING_BIT, ENABLE_BITOPS(enabler))))
- 		return -EBUSY;
- 
- 	ret = pin_user_pages_remote(mm->mm, uaddr, 1, FOLL_WRITE | FOLL_NOFAULT,
-@@ -428,6 +438,10 @@ static bool user_event_enabler_dup(struct user_event_enabler *orig,
+-static int event_status(long **status)
+-{
+-	int fd = open(status_file, O_RDONLY);
+-
+-	*status = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ,
+-		       MAP_SHARED, fd, 0);
+-
+-	close(fd);
+-
+-	if (*status == MAP_FAILED)
+-		return -1;
+-
+-	return 0;
+-}
+-
+-static int event_reg(int fd, const char *command, long *index, long *mask,
+-		     int *write)
++static int event_reg(int fd, const char *command, int *write, int *enabled)
  {
- 	struct user_event_enabler *enabler;
+ 	struct user_reg reg = {0};
  
-+	/* Skip pending frees */
-+	if (unlikely(test_bit(ENABLE_VAL_FREEING_BIT, ENABLE_BITOPS(orig))))
-+		return true;
-+
- 	enabler = kzalloc(sizeof(*enabler), GFP_NOWAIT);
+ 	reg.size = sizeof(reg);
++	reg.enable_bit = 31;
++	reg.enable_size = sizeof(*enabled);
++	reg.enable_addr = (__u64)enabled;
+ 	reg.name_args = (__u64)command;
  
- 	if (!enabler)
-@@ -2086,6 +2100,75 @@ static long user_events_ioctl_del(struct user_event_file_info *info,
- 	return ret;
- }
+ 	if (ioctl(fd, DIAG_IOCSREG, &reg) == -1)
+ 		return -1;
  
-+static long user_unreg_get(struct user_unreg __user *ureg,
-+			   struct user_unreg *kreg)
-+{
-+	u32 size;
-+	long ret;
-+
-+	ret = get_user(size, &ureg->size);
-+
-+	if (ret)
-+		return ret;
-+
-+	if (size > PAGE_SIZE)
-+		return -E2BIG;
-+
-+	if (size < offsetofend(struct user_unreg, disable_addr))
-+		return -EINVAL;
-+
-+	ret = copy_struct_from_user(kreg, sizeof(*kreg), ureg, size);
-+
-+	return ret;
-+}
-+
-+/*
-+ * Unregisters an enablement address/bit within a task/user mm.
-+ */
-+static long user_events_ioctl_unreg(unsigned long uarg)
-+{
-+	struct user_unreg __user *ureg = (struct user_unreg __user *)uarg;
-+	struct user_event_mm *mm = current->user_event_mm;
-+	struct user_event_enabler *enabler, *next;
-+	struct user_unreg reg;
-+	long ret;
-+
-+	ret = user_unreg_get(ureg, &reg);
-+
-+	if (ret)
-+		return ret;
-+
-+	if (!mm)
-+		return -ENOENT;
-+
-+	ret = -ENOENT;
-+
-+	/*
-+	 * Flags freeing and faulting are used to indicate if the enabler is in
-+	 * use at all. When faulting is set a page-fault is occurring asyncly.
-+	 * During async fault if freeing is set, the enabler will be destroyed.
-+	 * If no async fault is happening, we can destroy it now since we hold
-+	 * the event_mutex during these checks.
-+	 */
-+	mutex_lock(&event_mutex);
-+
-+	list_for_each_entry_safe(enabler, next, &mm->enablers, link)
-+		if (enabler->addr == reg.disable_addr &&
-+		    (enabler->values & ENABLE_VAL_BIT_MASK) == reg.disable_bit) {
-+			set_bit(ENABLE_VAL_FREEING_BIT, ENABLE_BITOPS(enabler));
-+
-+			if (!test_bit(ENABLE_VAL_FAULTING_BIT, ENABLE_BITOPS(enabler)))
-+				user_event_enabler_destroy(enabler);
-+
-+			/* Removed at least one */
-+			ret = 0;
-+		}
-+
-+	mutex_unlock(&event_mutex);
-+
-+	return ret;
-+}
-+
- /*
-  * Handles the ioctl from user mode to register or alter operations.
-  */
-@@ -2108,6 +2191,12 @@ static long user_events_ioctl(struct file *file, unsigned int cmd,
- 		ret = user_events_ioctl_del(info, uarg);
- 		mutex_unlock(&group->reg_mutex);
- 		break;
-+
-+	case DIAG_IOCSUNREG:
-+		mutex_lock(&group->reg_mutex);
-+		ret = user_events_ioctl_unreg(uarg);
-+		mutex_unlock(&group->reg_mutex);
-+		break;
- 	}
+-	*index = reg.status_bit / __BITS_PER_LONG;
+-	*mask = endian_swap(1L << (reg.status_bit % __BITS_PER_LONG));
+ 	*write = reg.write_index;
  
- 	return ret;
+ 	return 0;
+@@ -62,17 +39,12 @@ static int event_reg(int fd, const char *command, long *index, long *mask,
+ int main(int argc, char **argv)
+ {
+ 	int data_fd, write;
+-	long index, mask;
+-	long *status_page;
+ 	struct iovec io[2];
+ 	__u32 count = 0;
+ 
+-	if (event_status(&status_page) == -1)
+-		return errno;
+-
+ 	data_fd = open(data_file, O_RDWR);
+ 
+-	if (event_reg(data_fd, "test u32 count", &index, &mask, &write) == -1)
++	if (event_reg(data_fd, "test u32 count", &write, &enabled) == -1)
+ 		return errno;
+ 
+ 	/* Setup iovec */
+@@ -80,13 +52,12 @@ int main(int argc, char **argv)
+ 	io[0].iov_len = sizeof(write);
+ 	io[1].iov_base = &count;
+ 	io[1].iov_len = sizeof(count);
+-
+ ask:
+ 	printf("Press enter to check status...\n");
+ 	getchar();
+ 
+ 	/* Check if anyone is listening */
+-	if (status_page[index] & mask) {
++	if (enabled) {
+ 		/* Yep, trace out our data */
+ 		writev(data_fd, (const struct iovec *)io, 2);
+ 
 -- 
 2.25.1
 
