@@ -2,39 +2,40 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79E60C61DA4
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Mar 2023 22:33:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCD84C61DA4
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Mar 2023 22:36:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbjCMWdv convert rfc822-to-8bit (ORCPT
+        id S229814AbjCMWgj convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 13 Mar 2023 18:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50378 "EHLO
+        Mon, 13 Mar 2023 18:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbjCMWdu (ORCPT
+        with ESMTP id S229593AbjCMWgi (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 13 Mar 2023 18:33:50 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 820EBAB
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Mar 2023 15:33:48 -0700 (PDT)
+        Mon, 13 Mar 2023 18:36:38 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBDD929162
+        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Mar 2023 15:36:20 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id EA131B815BE
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Mar 2023 22:33:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16A64C433D2;
-        Mon, 13 Mar 2023 22:33:44 +0000 (UTC)
-Date:   Mon, 13 Mar 2023 18:33:43 -0400
+        by ams.source.kernel.org (Postfix) with ESMTPS id 73717B81200
+        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Mar 2023 22:36:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 757A6C433EF;
+        Mon, 13 Mar 2023 22:36:17 +0000 (UTC)
+Date:   Mon, 13 Mar 2023 18:36:15 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     linux-trace-devel@vger.kernel.org, Daniel Wagner <dwagner@suse.de>,
+Cc:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        linux-trace-devel@vger.kernel.org, Ian Rogers <irogers@google.com>,
+        Daniel Wagner <dwagner@suse.de>,
         Julia Lawall <julia.lawall@inria.fr>
-Subject: Re: [PATCH RFC] libtraceevent: Improve exception handling in
- parse_arg_add()
-Message-ID: <20230313183343.795c8c4f@gandalf.local.home>
-In-Reply-To: <1e0fe72f-2dac-f825-7cd3-a5727654810a@web.de>
-References: <94b6775c-406e-4b17-2984-84f1bb54f375@web.de>
-        <20230313121612.3b16fcf1@gandalf.local.home>
-        <1e0fe72f-2dac-f825-7cd3-a5727654810a@web.de>
+Subject: Re: [PATCH] libtracefs: Fix the label usage in check_option()
+Message-ID: <20230313183615.39130acc@gandalf.local.home>
+In-Reply-To: <ba3d11ce-6b52-3a6e-eb36-507c3473a4fb@web.de>
+References: <dc6bda64-4909-160f-dc94-b0a7ac999234@web.de>
+        <20230313124050.05750d39@gandalf.local.home>
+        <ba3d11ce-6b52-3a6e-eb36-507c3473a4fb@web.de>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +44,60 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 13 Mar 2023 21:35:38 +0100
+On Mon, 13 Mar 2023 21:55:10 +0100
 Markus Elfring <Markus.Elfring@web.de> wrote:
 
-> >> diff --git a/src/event-parse.c b/src/event-parse.c
-> >> index e655087..1ca5fdd 100644
-> >> --- a/src/event-parse.c
-> >> +++ b/src/event-parse.c
-> >> @@ -6388,22 +6388,20 @@ static int parse_arg_add(struct tep_print_parse **parse, char *format,
-> >>  
-> >>      parg = calloc(1, sizeof(*parg));
-> >>      if (!parg)
-> >> -        goto error;
-> >> +        return -1;
-> >> +  
+> >> The label “out” was used to jump to a source code place after some
+> >> failure cases. This implementation detail hindered better exception handling.  
+> > "out" is a perfectly fine name.  
 > 
-> The first failed memory allocation does not need clean-up.
+> I got the impression that this identifier can occasionally trigger
+> undesirable side effects.
 > 
-> 
-> >>      parg->format = strdup(format);
-> >> -    if (!parg->format)
-> >> -        goto error;
-> >> +    if (!parg->format) {
-> >> +        free(parg);  
-> >            ^^^^^^^^^^
-> >
-> > That's clean up.  
-> 
-> Yes. ‒ I propose to move a single memory release into an if branch
-> as a known design approach for better exception handling.
 
-This has nothing to do with clean ups, but personal preferences. Neither is
-more correct than the other. Both work. I prefer the code as is. End of
-discussion.
+No it doesn't.
+
+> 
+> >> Use more appropriate labels instead.
+> >>
+> >> * Reorder jump targets at the end.  
+> > Why?  
+> 
+> 
+> Resources should be released in the opposite order as they were allocated.
+
+That's a preference not a mandate.
+
+> 
+> 
+> >> * Delete a condition check.  
+> > Why?  
+> 
+> Such extra code can be avoided.
+
+So what?
+
+> 
+> 
+> >> * Omit an extra initialisation (for the variable “fd”)
+> >>   which became unnecessary with this change.
+> >>
+> >> Fixes: f7951864c7766ba3d683e8676fe0e497991796b2 ("libtracefs: Unit tests for tracing options APIs")  
+> > What was fixed???  
+> 
+> The exception handling was improved, wasn't it?
+
+No it wasn't.
+
+> 
+> 
+> >> +++ b/utest/tracefs-utest.c  
+> > This is a test file. It's run in tests.  
+> 
+> I propose to enhance it a bit.
+
+It's not enhanced at all. It's just changing to different personal
+preferences and does not improve the code one iota!
 
 -- Steve
+
