@@ -2,106 +2,111 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9665C76195
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 24 Mar 2023 20:09:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E15D2C6FD1C
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 26 Mar 2023 15:22:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbjCXUJa (ORCPT
+        id S231834AbjCZPWw (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 24 Mar 2023 16:09:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49664 "EHLO
+        Sun, 26 Mar 2023 11:22:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230088AbjCXUJ2 (ORCPT
+        with ESMTP id S229621AbjCZPWv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 24 Mar 2023 16:09:28 -0400
+        Sun, 26 Mar 2023 11:22:51 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A307158A0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 24 Mar 2023 13:09:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DFE67284;
+        Sun, 26 Mar 2023 08:22:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 17C2562C8B
-        for <linux-trace-devel@vger.kernel.org>; Fri, 24 Mar 2023 20:09:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 824B6C433A0;
-        Fri, 24 Mar 2023 20:09:26 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.96)
-        (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1pfnj3-001CqI-1L;
-        Fri, 24 Mar 2023 16:09:25 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 3/3] libtraceevent: Rename "ok" to "token_has_paren" in process_sizeof()
-Date:   Fri, 24 Mar 2023 16:09:24 -0400
-Message-Id: <20230324200924.287521-4-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230324200924.287521-1-rostedt@goodmis.org>
-References: <20230324200924.287521-1-rostedt@goodmis.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A150E60EF9;
+        Sun, 26 Mar 2023 15:22:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75B10C433EF;
+        Sun, 26 Mar 2023 15:22:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679844169;
+        bh=jPU/1PkEjmLpuG/yzDwbE8MsDf1jHD5VOMCtE/4q5oc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=l+6tQbymSzTr6IS5BMRpGd5XX4HuYNdB8yFSqDlx1qkM8+ajHIhyB11NSAoyEi3X1
+         zsMtVyf/RD87g3xLIEcjT8Rw8oK7sksjCyLOWb4bnSyaFgi/4yJhQSD/DUqgLfYedC
+         z7l43Imtg49EboK8X4ff1pDkxeKlccKwPIlE0f1uiPBIBTY2inebpqTus/toO2LFbw
+         zt3SCtxf6O4usZlE2+E+C10tZBZNr8BQbOVL79tf1hj0APyBIMRluLfWD+KK/efO9I
+         /3KmVvu1IQ9gaPZ98NCq83j+HnBbxc0rk7/a30FRo2xO0UpstqtDjo/s5Cpmy/4Uiu
+         ZnBhbIpEKrhFQ==
+Date:   Sun, 26 Mar 2023 23:22:42 +0800
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Beau Belgrave <beaub@linux.microsoft.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        mathieu.desnoyers@efficios.com, dcook@linux.microsoft.com,
+        alanau@linux.microsoft.com, brauner@kernel.org,
+        akpm@linux-foundation.org, ebiederm@xmission.com,
+        keescook@chromium.org, tglx@linutronix.de,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v8 11/11] tracing/user_events: Limit global user_event
+ count
+Message-Id: <20230326232242.adb5ad253b3810aaf9686d2f@kernel.org>
+In-Reply-To: <20230324130659.587ecfd2@gandalf.local.home>
+References: <20230221211143.574-1-beaub@linux.microsoft.com>
+        <20230221211143.574-12-beaub@linux.microsoft.com>
+        <20230324081824.b917c2944da217e5239e1223@kernel.org>
+        <d6c83572-17e1-93d4-65a0-d480989e54fb@suse.cz>
+        <20230324164353.GA1790@kbox>
+        <20230324130659.587ecfd2@gandalf.local.home>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Fri, 24 Mar 2023 13:06:59 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-The "ok" variable is set to true if at the end of the if/else blocks the
-token contains the last element of "sizeof(..)", which would be that ")"
-parenthesis. Calling it "ok" is meaningless and confusing.
+> On Fri, 24 Mar 2023 09:43:53 -0700
+> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> 
+> > > It was actually merged in 5.8. So sysctl should be sufficient with that.
+> > > But maybe it's weird to start adding sysctls, when the rest of tracing
+> > > tunables is AFAIK under /sys/kernel/tracing/ ?
+> > >   
+> > 
+> > During the TraceFS meetings Steven runs I was asked to add a boot
+> > parameter and sysctl for user_events to limit the max.
+> > 
+> > To me, it seems when user_events moves toward namespace awareness
+> > sysctl might be easier to use from within a namespace to turn knobs.
+> > 
+> > Happy to change to whatever, but I want to see Steven and Masami agree
+> > on the approach before doing so.
+> > 
+> > Steven, do you agree with Masami to move to just sysctl?
+> 
+> We do have some tracing related sysctls already:
+> 
+> # cd /proc/sys/kernel
+> # ls *trace*
+> ftrace_dump_on_oops  oops_all_cpu_backtrace  traceoff_on_warning
+> ftrace_enabled       stack_tracer_enabled    tracepoint_printk
+> 
+> Although I would love to deprecated ftrace_enable as that now has a
+> control in tracefs, but it's not unprecedented to have tracing tunables as
+> sysctl.
+> 
+> And if we get cmdline boot parameters for free from sysctls then all the
+> better.
 
-Call the variable what it is for "token_has_paren". That will make the
-logic much easier to understand.
+Yeah, I confirmed that sysctl can be set via kernel parameter. So it is OK
+for me to add a sysctl.
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- src/event-parse.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+Thank you,
 
-diff --git a/src/event-parse.c b/src/event-parse.c
-index 4a8b81c33a45..acf7fde4ead9 100644
---- a/src/event-parse.c
-+++ b/src/event-parse.c
-@@ -3522,7 +3522,7 @@ process_sizeof(struct tep_event *event, struct tep_print_arg *arg, char **tok)
- 	struct tep_format_field *field;
- 	enum tep_event_type type;
- 	char *token = NULL;
--	bool ok = false;
-+	bool token_has_paren = false;
- 	int ret;
- 
- 	type = read_token_item(event->tep, &token);
-@@ -3537,11 +3537,12 @@ process_sizeof(struct tep_event *event, struct tep_print_arg *arg, char **tok)
- 		if (type == TEP_EVENT_ERROR)
- 			goto error;
- 
-+		/* If it's not an item (like "long") then do not process more */
- 		if (type != TEP_EVENT_ITEM)
--			ok = true;
-+			token_has_paren = true;
- 	}
- 
--	if (ok || strcmp(token, "int") == 0) {
-+	if (token_has_paren || strcmp(token, "int") == 0) {
- 		arg->atom.atom = strdup("4");
- 
- 	} else if (strcmp(token, "long") == 0) {
-@@ -3563,7 +3564,7 @@ process_sizeof(struct tep_event *event, struct tep_print_arg *arg, char **tok)
- 				goto error;
- 			}
- 			/* The token is the next token */
--			ok = true;
-+			token_has_paren = true;
- 		}
- 	} else if (strcmp(token, "REC") == 0) {
- 
-@@ -3590,7 +3591,7 @@ process_sizeof(struct tep_event *event, struct tep_print_arg *arg, char **tok)
- 		goto error;
- 	}
- 
--	if (!ok) {
-+	if (!token_has_paren) {
- 		/* The token contains the last item before the parenthesis */
- 		free_token(token);
- 		type = read_token_item(event->tep, &token);
+> 
+> -- Steve
+
+
 -- 
-2.39.1
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
