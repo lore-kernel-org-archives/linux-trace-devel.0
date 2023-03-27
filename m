@@ -2,111 +2,115 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E15D2C6FD1C
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 26 Mar 2023 15:22:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0022DC6FD1D
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 27 Mar 2023 22:11:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231834AbjCZPWw (ORCPT
+        id S229663AbjC0WLH (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 26 Mar 2023 11:22:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54874 "EHLO
+        Mon, 27 Mar 2023 18:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjCZPWv (ORCPT
+        with ESMTP id S229493AbjC0WLG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 26 Mar 2023 11:22:51 -0400
+        Mon, 27 Mar 2023 18:11:06 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DFE67284;
-        Sun, 26 Mar 2023 08:22:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2FC997
+        for <linux-trace-devel@vger.kernel.org>; Mon, 27 Mar 2023 15:11:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A150E60EF9;
-        Sun, 26 Mar 2023 15:22:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75B10C433EF;
-        Sun, 26 Mar 2023 15:22:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679844169;
-        bh=jPU/1PkEjmLpuG/yzDwbE8MsDf1jHD5VOMCtE/4q5oc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=l+6tQbymSzTr6IS5BMRpGd5XX4HuYNdB8yFSqDlx1qkM8+ajHIhyB11NSAoyEi3X1
-         zsMtVyf/RD87g3xLIEcjT8Rw8oK7sksjCyLOWb4bnSyaFgi/4yJhQSD/DUqgLfYedC
-         z7l43Imtg49EboK8X4ff1pDkxeKlccKwPIlE0f1uiPBIBTY2inebpqTus/toO2LFbw
-         zt3SCtxf6O4usZlE2+E+C10tZBZNr8BQbOVL79tf1hj0APyBIMRluLfWD+KK/efO9I
-         /3KmVvu1IQ9gaPZ98NCq83j+HnBbxc0rk7/a30FRo2xO0UpstqtDjo/s5Cpmy/4Uiu
-         ZnBhbIpEKrhFQ==
-Date:   Sun, 26 Mar 2023 23:22:42 +0800
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Beau Belgrave <beaub@linux.microsoft.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        mathieu.desnoyers@efficios.com, dcook@linux.microsoft.com,
-        alanau@linux.microsoft.com, brauner@kernel.org,
-        akpm@linux-foundation.org, ebiederm@xmission.com,
-        keescook@chromium.org, tglx@linutronix.de,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v8 11/11] tracing/user_events: Limit global user_event
- count
-Message-Id: <20230326232242.adb5ad253b3810aaf9686d2f@kernel.org>
-In-Reply-To: <20230324130659.587ecfd2@gandalf.local.home>
-References: <20230221211143.574-1-beaub@linux.microsoft.com>
-        <20230221211143.574-12-beaub@linux.microsoft.com>
-        <20230324081824.b917c2944da217e5239e1223@kernel.org>
-        <d6c83572-17e1-93d4-65a0-d480989e54fb@suse.cz>
-        <20230324164353.GA1790@kbox>
-        <20230324130659.587ecfd2@gandalf.local.home>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 717FB6153A
+        for <linux-trace-devel@vger.kernel.org>; Mon, 27 Mar 2023 22:11:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C864C4339B;
+        Mon, 27 Mar 2023 22:11:04 +0000 (UTC)
+Date:   Mon, 27 Mar 2023 18:11:03 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Gabriel Krisman Bertazi <krisman@suse.de>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH trace-cmd] trace-cmd report: Ensure filter is applied to
+ single input file
+Message-ID: <20230327181103.3da07fa2@gandalf.local.home>
+In-Reply-To: <20230317212430.12675-1-krisman@suse.de>
+References: <20230317212430.12675-1-krisman@suse.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 24 Mar 2023 13:06:59 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Fri, 17 Mar 2023 18:24:30 -0300
+Gabriel Krisman Bertazi <krisman@suse.de> wrote:
 
-> On Fri, 24 Mar 2023 09:43:53 -0700
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> Since 955d05fc7aee ("trace-cmd report: Make filter arguments match their
+> files"), the -F filtering is silently ignored when a trace file is
+> provided with -i and the filter comes after -i .  The reason is that the
+> filter is now associated with input_files and not saved to the global
+> list only in this case, but process_filters still only checks the global
+> list when handles->input_file is not set.
 > 
-> > > It was actually merged in 5.8. So sysctl should be sufficient with that.
-> > > But maybe it's weird to start adding sysctls, when the rest of tracing
-> > > tunables is AFAIK under /sys/kernel/tracing/ ?
-> > >   
-> > 
-> > During the TraceFS meetings Steven runs I was asked to add a boot
-> > parameter and sysctl for user_events to limit the max.
-> > 
-> > To me, it seems when user_events moves toward namespace awareness
-> > sysctl might be easier to use from within a namespace to turn knobs.
-> > 
-> > Happy to change to whatever, but I want to see Steven and Masami agree
-> > on the approach before doing so.
-> > 
-> > Steven, do you agree with Masami to move to just sysctl?
+> Avoid this by checking last_input_file first, which always contains a
+> pointer to the correct filter in this case.
 > 
-> We do have some tracing related sysctls already:
+> This was only lightly tested, using a single trace file.
 > 
-> # cd /proc/sys/kernel
-> # ls *trace*
-> ftrace_dump_on_oops  oops_all_cpu_backtrace  traceoff_on_warning
-> ftrace_enabled       stack_tracer_enabled    tracepoint_printk
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=217038
+> Fixes: 955d05fc7aee ("trace-cmd report: Make filter arguments match their files")
+> Signed-off-by: Gabriel krisman Bertazi <krisman@suse.de>
+> ---
+>  tracecmd/trace-read.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
 > 
-> Although I would love to deprecated ftrace_enable as that now has a
-> control in tracefs, but it's not unprecedented to have tracing tunables as
-> sysctl.
-> 
-> And if we get cmdline boot parameters for free from sysctls then all the
-> better.
+> diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+> index 52ba818..dbbd124 100644
+> --- a/tracecmd/trace-read.c
+> +++ b/tracecmd/trace-read.c
+> @@ -567,11 +567,15 @@ static void process_filters(struct handle_list *handles)
+>  	struct tracecmd_filter *trace_filter;
+>  	struct filter_str *filter;
+>  	int filters = 0;
+> +	struct input_files *input_file = handles->input_file;
 
-Yeah, I confirmed that sysctl can be set via kernel parameter. So it is OK
-for me to add a sysctl.
+BTW, please keep the "upside-down x-mas tree" formatting of the above.
 
-Thank you,
+ie.
 
-> 
-> -- Steve
+static void process_filters(struct handle_list *handles)
+{
+        struct input_files *input_file = handles->input_file;
+        struct tracecmd_filter *trace_filter;
+        struct filter_str *filter;
+        int filters = 0;
 
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>  
+> -	make_pid_filter(handles->handle, handles->input_file);
+> +	if (!input_file)
+> +		input_file = last_input_file;
+>  
+> -	if (handles->input_file)
+> -		filter = handles->input_file->filter_str;
+> +	make_pid_filter(handles->handle, input_file);
+> +
+> +	if (input_file)
+> +		filter = input_file->filter_str;
+>  	else
+>  		filter = filter_strings;
+>  
+
+So I was playing with this, and I actually needed something else.
+
+If an -F comes before *any* file, I think it should be added to *all* files.
+
+That is:
+
+ -F sched_switch -i trace1.dat -i trace2.dat
+
+Should filter sched_switch for both trace1.dat and trace2.dat.
+
+I actually wanted this just a few minutes ago ;-)
+
+Can you do this, or would you want me to?
+
+-- Steve
