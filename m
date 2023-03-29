@@ -2,176 +2,223 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DE0BC6FD18
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 28 Mar 2023 21:43:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D01CEC761AF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 29 Mar 2023 16:23:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbjC1VnD (ORCPT
+        id S229931AbjC2QXt (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 28 Mar 2023 17:43:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39328 "EHLO
+        Wed, 29 Mar 2023 12:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjC1VnC (ORCPT
+        with ESMTP id S229829AbjC2QXp (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 28 Mar 2023 17:43:02 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 57DF010F5;
-        Tue, 28 Mar 2023 14:43:01 -0700 (PDT)
-Received: from W11-BEAU-MD.localdomain (unknown [76.135.27.212])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 6DCE820FD93E;
-        Tue, 28 Mar 2023 14:43:00 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6DCE820FD93E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1680039780;
-        bh=+850YOqLoGdgtDg3iL3aEjBqFLOqMf5TEeXHkCzL97I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CIzmU5iqR8HdDZffizvvLtEB9Wt/Y9BX4SAEK9yQsNcE5JwqCzAAISeFlMKvopgqf
-         5ZJ1LAhKvoQcXr7t2fWrqz+LzhBlsVmr5fiXIDugexcb1rcK9hUjEh1P4dU6mJdcAI
-         kk+orsVZCV/HMwHKo9yJQGM/4+cBivYqwU9GU9lE=
-Date:   Tue, 28 Mar 2023 14:42:54 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
-        dcook@linux.microsoft.com, alanau@linux.microsoft.com,
-        brauner@kernel.org, akpm@linux-foundation.org,
-        ebiederm@xmission.com, keescook@chromium.org, tglx@linutronix.de,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v8 04/11] tracing/user_events: Fixup enable faults asyncly
-Message-ID: <20230328214254.GA85@W11-BEAU-MD.localdomain>
-References: <20230221211143.574-1-beaub@linux.microsoft.com>
- <20230221211143.574-5-beaub@linux.microsoft.com>
- <20230328172049.10061257@gandalf.local.home>
+        Wed, 29 Mar 2023 12:23:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480375BA8;
+        Wed, 29 Mar 2023 09:23:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D6A9261D78;
+        Wed, 29 Mar 2023 16:23:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC267C4339B;
+        Wed, 29 Mar 2023 16:23:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680107017;
+        bh=PCrr5jt4AnAzXp5itb2Q6Tj3UBoSqk87mhIIlfHJbz4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NY4x7K3GRB/3y/ReAu7adjWDRPBzL/v3p19DzlqSR4Q+v98WQihzgPEMLo7vjEGiC
+         hUFCVmRQX7T6YQMSARHT4XAoR/5o3YW/HaxtHxOgiEXFcHJhXctGRmsvIfXSSKjLOF
+         LNVL1asyt2VbuwwsE0PBjeBh2utYNTZRuWsGtwHCNomt5OGZJY1jC3qFoKWQzxFnCr
+         i6IhCHklLvkz2hvADlk1Ti3DjaX2t+GRTNJO7HLyrZTMYBZ9sw6F0J+FGbHVYNkDrE
+         fS1DiFRF4cZDyO10/w3IECsbdBUDpIsAqLT0h8iP3z6acYN26Z3VWy1cHH/OBxwpjP
+         G7CchCAYVp8VA==
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     linux-trace-devel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH] rtla/timerlat: Add auto-analysis only option
+Date:   Wed, 29 Mar 2023 18:23:32 +0200
+Message-Id: <4dc514d1d5dc353c537a466a9b5af44c266b6da2.1680106912.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230328172049.10061257@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 05:20:49PM -0400, Steven Rostedt wrote:
-> On Tue, 21 Feb 2023 13:11:36 -0800
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> 
-> > @@ -263,7 +277,85 @@ static int user_event_mm_fault_in(struct user_event_mm *mm, unsigned long uaddr)
-> >  }
-> >  
-> >  static int user_event_enabler_write(struct user_event_mm *mm,
-> > -				    struct user_event_enabler *enabler)
-> > +				    struct user_event_enabler *enabler,
-> > +				    bool fixup_fault);
-> > +
-> > +static void user_event_enabler_fault_fixup(struct work_struct *work)
-> > +{
-> > +	struct user_event_enabler_fault *fault = container_of(
-> > +		work, struct user_event_enabler_fault, work);
-> > +	struct user_event_enabler *enabler = fault->enabler;
-> > +	struct user_event_mm *mm = fault->mm;
-> > +	unsigned long uaddr = enabler->addr;
-> > +	int ret;
-> > +
-> > +	ret = user_event_mm_fault_in(mm, uaddr);
-> > +
-> > +	if (ret && ret != -ENOENT) {
-> > +		struct user_event *user = enabler->event;
-> > +
-> > +		pr_warn("user_events: Fault for mm: 0x%pK @ 0x%llx event: %s\n",
-> > +			mm->mm, (unsigned long long)uaddr, EVENT_NAME(user));
-> > +	}
-> > +
-> > +	/* Prevent state changes from racing */
-> > +	mutex_lock(&event_mutex);
-> > +
-> > +	/*
-> > +	 * If we managed to get the page, re-issue the write. We do not
-> > +	 * want to get into a possible infinite loop, which is why we only
-> > +	 * attempt again directly if the page came in. If we couldn't get
-> > +	 * the page here, then we will try again the next time the event is
-> > +	 * enabled/disabled.
-> > +	 */
-> 
-> What case would we not get the page? A bad page mapping? User space doing
-> something silly?
-> 
+Parsing and formating timerlat data might consume a reasonable
+amount of CPU time on very large systems, or when timerlat
+has a too short period.
 
-A user space program unmapping the page is the most common I can think
-of. A silly action would be unmapping the page while forgetting to call
-the unregister IOCTL. We would then possibly see this if the event was
-enabled in perf/ftrace before the process exited (and the mm getting
-cleaned up).
+Add an option to run timerlat with auto-analysis enabled while
+skipping the statistics parsing. In this mode, rtla timerlat
+periodically checks if the tracing is on, going to sleep waiting
+for the stop tracing condition to stop tracing, or for the
+tracing session to finish.
 
-> Or something else, for which how can it go into an infinite loop? Can that
-> only happen if userspace is doing something mischievous?
-> 
+If the stop tracing condition is hit, the tool prints the auto
+analysis. Otherwise, the tool prints the max observed latency and
+exit. The max observed latency is captured via tracing_max_latency.
 
-I'm not sure if changing page permissions on the user side would prevent
-write permitted mapping in the kernel, but I wanted to ensure if that
-type of thing did occur, we wouldn't loop forever. The code lets the mm
-decide if a page is ever coming in via fixup_user_fault() with 
-FAULT_FLAG_WRITE | FAULT_FLAG_REMOTE set.
+Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+---
+ .../tools/rtla/common_timerlat_aa.rst         |  7 +++
+ tools/tracing/rtla/src/timerlat_top.c         | 49 +++++++++++++++++--
+ 2 files changed, 51 insertions(+), 5 deletions(-)
 
-My understanding is that fixup_user_fault() will retry to get the page
-up until it's decided it's either capable of coming in or not. It will
-do this since we pass the unlocked bool as a parameter. I used
-fixup_user_fault() since it was created for the futex code to handle
-this scenario better.
+diff --git a/Documentation/tools/rtla/common_timerlat_aa.rst b/Documentation/tools/rtla/common_timerlat_aa.rst
+index 077029e6b289..795b9fbcbc6d 100644
+--- a/Documentation/tools/rtla/common_timerlat_aa.rst
++++ b/Documentation/tools/rtla/common_timerlat_aa.rst
+@@ -5,3 +5,10 @@
+ **--no-aa**
+ 
+         disable auto-analysis, reducing rtla timerlat cpu usage
++
++**--aa-only** *us*
++
++        Set stop tracing conditions and run without collecting and displaying statistics.
++        Print the auto-analysis if the system hits the stop tracing condition. This option
++        is useful to reduce rtla timerlat CPU, enabling the debug without the overhead of
++        collecting the statistics.
+diff --git a/tools/tracing/rtla/src/timerlat_top.c b/tools/tracing/rtla/src/timerlat_top.c
+index eea5b3357e27..92c658c64f28 100644
+--- a/tools/tracing/rtla/src/timerlat_top.c
++++ b/tools/tracing/rtla/src/timerlat_top.c
+@@ -33,6 +33,7 @@ struct timerlat_top_params {
+ 	int			set_sched;
+ 	int			dma_latency;
+ 	int			no_aa;
++	int			aa_only;
+ 	int			dump_tasks;
+ 	struct sched_attr	sched_param;
+ 	struct trace_events	*events;
+@@ -142,10 +143,12 @@ timerlat_top_handler(struct trace_seq *s, struct tep_record *record,
+ 	top = container_of(trace, struct osnoise_tool, trace);
+ 	params = top->params;
+ 
+-	tep_get_field_val(s, event, "context", record, &thread, 1);
+-	tep_get_field_val(s, event, "timer_latency", record, &latency, 1);
++	if (!params->aa_only) {
++		tep_get_field_val(s, event, "context", record, &thread, 1);
++		tep_get_field_val(s, event, "timer_latency", record, &latency, 1);
+ 
+-	timerlat_top_update(top, cpu, thread, latency);
++		timerlat_top_update(top, cpu, thread, latency);
++	}
+ 
+ 	if (!params->no_aa)
+ 		timerlat_aa_handler(s, record, event, context);
+@@ -250,6 +253,9 @@ timerlat_print_stats(struct timerlat_top_params *params, struct osnoise_tool *to
+ 	static int nr_cpus = -1;
+ 	int i;
+ 
++	if (params->aa_only)
++		return;
++
+ 	if (nr_cpus == -1)
+ 		nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
+ 
+@@ -279,10 +285,11 @@ static void timerlat_top_usage(char *usage)
+ 		"",
+ 		"  usage: rtla timerlat [top] [-h] [-q] [-a us] [-d s] [-D] [-n] [-p us] [-i us] [-T us] [-s us] \\",
+ 		"	  [[-t[=file]] [-e sys[:event]] [--filter <filter>] [--trigger <trigger>] [-c cpu-list] \\",
+-		"	  [-P priority] [--dma-latency us]",
++		"	  [-P priority] [--dma-latency us] [--aa-only us]",
+ 		"",
+ 		"	  -h/--help: print this menu",
+ 		"	  -a/--auto: set automatic trace mode, stopping the session if argument in us latency is hit",
++		"	     --aa-only us: stop if <us> latency is hit, only printing the auto analysis (reduces CPU usage)",
+ 		"	  -p/--period us: timerlat period in us",
+ 		"	  -i/--irq us: stop trace if the irq latency is higher than the argument in us",
+ 		"	  -T/--thread us: stop trace if the thread latency is higher than the argument in us",
+@@ -362,13 +369,14 @@ static struct timerlat_top_params
+ 			{"dma-latency",		required_argument,	0, '2'},
+ 			{"no-aa",		no_argument,		0, '3'},
+ 			{"dump-tasks",		no_argument,		0, '4'},
++			{"aa-only",		required_argument,	0, '5'},
+ 			{0, 0, 0, 0}
+ 		};
+ 
+ 		/* getopt_long stores the option index here. */
+ 		int option_index = 0;
+ 
+-		c = getopt_long(argc, argv, "a:c:d:De:hi:np:P:qs:t::T:0:1:2:34",
++		c = getopt_long(argc, argv, "a:c:d:De:hi:np:P:qs:t::T:0:1:2:345:",
+ 				 long_options, &option_index);
+ 
+ 		/* detect the end of the options. */
+@@ -389,6 +397,20 @@ static struct timerlat_top_params
+ 			/* set trace */
+ 			params->trace_output = "timerlat_trace.txt";
+ 			break;
++		case '5':
++			/* it is here because it is similar to -a */
++			auto_thresh = get_llong_from_str(optarg);
++
++			/* set thread stop to auto_thresh */
++			params->stop_total_us = auto_thresh;
++			params->stop_us = auto_thresh;
++
++			/* get stack trace */
++			params->print_stack = auto_thresh;
++
++			/* set aa_only to avoid parsing the trace */
++			params->aa_only = 1;
++			break;
+ 		case 'c':
+ 			retval = parse_cpu_list(optarg, &params->monitored_cpus);
+ 			if (retval)
+@@ -503,6 +525,9 @@ static struct timerlat_top_params
+ 	if (!params->stop_us && !params->stop_total_us)
+ 		params->no_aa = 1;
+ 
++	if (params->no_aa && params->aa_only)
++		timerlat_top_usage("--no-aa and --aa-only are mutually exclusive!");
++
+ 	return params;
+ }
+ 
+@@ -634,6 +659,7 @@ int timerlat_top_main(int argc, char *argv[])
+ 	struct trace_instance *trace;
+ 	int dma_latency_fd = -1;
+ 	int return_value = 1;
++	char *max_lat;
+ 	int retval;
+ 
+ 	params = timerlat_top_parse_args(argc, argv);
+@@ -700,6 +726,9 @@ int timerlat_top_main(int argc, char *argv[])
+ 	while (!stop_tracing) {
+ 		sleep(params->sleep_time);
+ 
++		if (params->aa_only && !trace_is_off(&top->trace, &record->trace))
++			continue;
++
+ 		retval = tracefs_iterate_raw_events(trace->tep,
+ 						    trace->inst,
+ 						    NULL,
+@@ -733,6 +762,16 @@ int timerlat_top_main(int argc, char *argv[])
+ 			printf("  Saving trace to %s\n", params->trace_output);
+ 			save_trace_to_file(record->trace.inst, params->trace_output);
+ 		}
++	} else if (params->aa_only) {
++		/*
++		 * If the trace did not stop with --aa-only, at least print the
++		 * max known latency.
++		 */
++		max_lat = tracefs_instance_file_read(trace->inst, "tracing_max_latency", NULL);
++		if (max_lat) {
++			printf("  Max latency was %s\n", max_lat);
++			free(max_lat);
++		}
+ 	}
+ 
+ out_top:
+-- 
+2.38.1
 
-From what I gather, the fault in should only fail for these reasons:
-#define VM_FAULT_ERROR (VM_FAULT_OOM | VM_FAULT_SIGBUS |	\
-			VM_FAULT_SIGSEGV | VM_FAULT_HWPOISON |	\
-			VM_FAULT_HWPOISON_LARGE | VM_FAULT_FALLBACK)
-
-If these are hit, I don't believe we want to retry as they aren't likely
-to ever get corrected.
-
-Thanks,
--Beau
-
-> -- Steve
-> 
-> 
-> > +	clear_bit(ENABLE_VAL_FAULTING_BIT, ENABLE_BITOPS(enabler));
-> > +
-> > +	if (!ret) {
-> > +		mmap_read_lock(mm->mm);
-> > +		user_event_enabler_write(mm, enabler, true);
-> > +		mmap_read_unlock(mm->mm);
-> > +	}
-> > +
-> > +	mutex_unlock(&event_mutex);
-> > +
-> > +	/* In all cases we no longer need the mm or fault */
-> > +	user_event_mm_put(mm);
-> > +	kmem_cache_free(fault_cache, fault);
-> > +}
-> > +
-> > +static bool user_event_enabler_queue_fault(struct user_event_mm *mm,
-> > +					   struct user_event_enabler *enabler)
-> > +{
-> > +	struct user_event_enabler_fault *fault;
-> > +
-> > +	fault = kmem_cache_zalloc(fault_cache, GFP_NOWAIT | __GFP_NOWARN);
-> > +
-> > +	if (!fault)
-> > +		return false;
-> > +
-> > +	INIT_WORK(&fault->work, user_event_enabler_fault_fixup);
-> > +	fault->mm = user_event_mm_get(mm);
-> > +	fault->enabler = enabler;
-> > +
-> > +	/* Don't try to queue in again while we have a pending fault */
-> > +	set_bit(ENABLE_VAL_FAULTING_BIT, ENABLE_BITOPS(enabler));
-> > +
-> > +	if (!schedule_work(&fault->work)) {
-> > +		/* Allow another attempt later */
-> > +		clear_bit(ENABLE_VAL_FAULTING_BIT, ENABLE_BITOPS(enabler));
-> > +
-> > +		user_event_mm_put(mm);
-> > +		kmem_cache_free(fault_cache, fault);
-> > +
-> > +		return false;
-> > +	}
-> > +
-> > +	return true;
-> > +}
-> > +
