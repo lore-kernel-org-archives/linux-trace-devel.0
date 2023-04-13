@@ -2,97 +2,112 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1F9CC761A6
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 Mar 2023 18:52:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8622C77B6E
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 13 Apr 2023 12:18:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229521AbjC3Sw5 (ORCPT
+        id S229522AbjDMMRc (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 30 Mar 2023 14:52:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54868 "EHLO
+        Thu, 13 Apr 2023 08:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229862AbjC3Sw4 (ORCPT
+        with ESMTP id S230136AbjDMMRa (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 30 Mar 2023 14:52:56 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A35E38D
-        for <linux-trace-devel@vger.kernel.org>; Thu, 30 Mar 2023 11:52:31 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2EF5B219E1;
-        Thu, 30 Mar 2023 18:52:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1680202350; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9/LX+/x0zQKBc/HM3MPlOiF5a3jsDjP4p7tApoRAXuQ=;
-        b=HvgHFhfnfr8qdvI8J//nm0F8YKj5uKBH2IpmwHr2cP7E7UqYEvRy8PaYZMAoEr5kuQutVO
-        5WIHVhAHNkCEtkLgPZD+X+zJThB+HtuaeIp2IYOvzIBkTDOuNeJvLTaFAhs/qW2W01hvyh
-        ezWA5Kp2Fmb7i9h2VVKvIPnrvRtH1iE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1680202350;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9/LX+/x0zQKBc/HM3MPlOiF5a3jsDjP4p7tApoRAXuQ=;
-        b=0fVzk5go5qZEPI3mKDQrxnB6YeZ25UIHHYL9bb3dXKkpO362biFZCfHV+PqLK5jv1isycE
-        xsPhIVYgv21+mjAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9BC68133E0;
-        Thu, 30 Mar 2023 18:52:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id nHpzFm3aJWTFMgAAMHmgww
-        (envelope-from <krisman@suse.de>); Thu, 30 Mar 2023 18:52:29 +0000
-From:   Gabriel Krisman Bertazi <krisman@suse.de>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@suse.de>
-Subject: [PATCH trace-cmd v2 3/3] documentation: trace-cmd-report: Document filter scope
-Date:   Thu, 30 Mar 2023 15:52:11 -0300
-Message-Id: <20230330185211.5604-4-krisman@suse.de>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230330185211.5604-1-krisman@suse.de>
-References: <20230330185211.5604-1-krisman@suse.de>
+        Thu, 13 Apr 2023 08:17:30 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F6C448F
+        for <linux-trace-devel@vger.kernel.org>; Thu, 13 Apr 2023 05:17:29 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id dd8so2294668qvb.13
+        for <linux-trace-devel@vger.kernel.org>; Thu, 13 Apr 2023 05:17:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681388248; x=1683980248;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=epAiGoHWx109IMEaEVrXkijNvH1wZICfjpQ5X3V2TUI=;
+        b=XvZMX/+oebDsVaZUEB6Y1rWpMpfIyF1WnAjS+2y91M2TOHmtl8ya19irm8Kvhzqvvz
+         GPcO7s+nQVYErXieiNK0VWzWTOvFt4wbEz9IgZzJE7wWjtVcC9eRw/QsG7ldK6NcsIjF
+         LPBF/SUMW6tLOPTmI5FTl2jFYpGzcpPsoYpM5Z6Gmn95HDC7ml5E6xzJlnwTRw7Mibt8
+         OzSxy77XDBEj5BkQgq2EV7V1af1eVAPCYnAJdW6nO8DXyTQVVczKSkz+2/UY5uaFTLe3
+         R8m55IrygYegKVw1e2lpukVfaaM1I/Q8KyHlqyWIAOarw/MvIhCAxyaLycyMGstDHpJs
+         3J0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681388248; x=1683980248;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=epAiGoHWx109IMEaEVrXkijNvH1wZICfjpQ5X3V2TUI=;
+        b=Zqby7+bh2+E7vMgdcJvyY2G4OoiyvSWx8/2rHlOLqC+VygJa/u62kNaUHj4pSHOzRG
+         rS8g4ePwT/Bx5n9qnP498b7k2aYfQl2hidMPLMALg19uKvvKfGNyx52UrRV2gKPi/P9r
+         SHY5326Gk23dFMQpfbYG2BEaBNIDbWmxQKrkmtI8P1n2apxszKg9wcakgl//zMWS5Win
+         4A5WqYGI20EAZbGocBEgY2mOvPVHHPiftmEqycgo+F20aUJ4aWnE/8wWAF+mt4MUymBg
+         mhc8jnf36/57KtyW4lEeI8iGugmfDBWYkwgaBKw6QbipvL8F10YDvxnLqvL8Qv+I2Hgo
+         XfLg==
+X-Gm-Message-State: AAQBX9fFTSFw6QLSLkyJPd0sjxPJf+w5z4DrjGDKACN7RfdIvdtaiGM0
+        fquu1jjcKAaFw3jDPoSzLIuNdvJKWeFoifbKZl9MsICxHH0=
+X-Google-Smtp-Source: AKy350avFNPVCE6Avq1Jy+d/iE1uBE/zfyx3azt+IvH9guqzcBkk/JGx/Usw4UZqbpLwPzDZlL3UtDftnaR8lcX5cTU=
+X-Received: by 2002:a05:6214:933:b0:5ef:4789:6c33 with SMTP id
+ dk19-20020a056214093300b005ef47896c33mr437321qvb.2.1681388248213; Thu, 13 Apr
+ 2023 05:17:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230328150308.34783-1-tz.stoyanov@gmail.com> <20230328111331.1e9cb292@gandalf.local.home>
+In-Reply-To: <20230328111331.1e9cb292@gandalf.local.home>
+From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Date:   Thu, 13 Apr 2023 15:17:11 +0300
+Message-ID: <CAPpZLN7E4hFL-a1Eg5Gc3=fpyyPW8S+Gp+xrmD48hqnK2YCsoA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] Introduce new API to reset ftrace instance
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Document how filters provided before any input files are global while
-filters coming after a -i only apply to that filter.
+On Tue, Mar 28, 2023 at 6:13=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
+> wrote:
+>
+> On Tue, 28 Mar 2023 18:03:05 +0300
+> "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+>
+> > A new API tracefs_instance_reset() for resetting instance to its defaul=
+t
+> > state, based on the logic from "trace-cmd reset" command.
+>
+> HAH!!!
+>
+> I was just thinking that I needed to implement this earlier today.
+>
+> I'm so happy when someone else does my work for me :-D
+>
+> Thanks Tzvetomir, I'll hopefully get a chance to review this sometime thi=
+s
+> week.
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@suse.de>
----
- Documentation/trace-cmd/trace-cmd-report.1.txt | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ping
+Did you have time to take a look at these patches? I'm planing to use
+the library in a new project and need this new functionality.
 
-diff --git a/Documentation/trace-cmd/trace-cmd-report.1.txt b/Documentation/trace-cmd/trace-cmd-report.1.txt
-index 71df9a8..ddbde81 100644
---- a/Documentation/trace-cmd/trace-cmd-report.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-report.1.txt
-@@ -69,8 +69,12 @@ OPTIONS
-     is only to the microsecond. To see the full timestamp, add the *-t* option.
- 
- *-F* 'filter'::
--    Add a filter to limit what events are displayed. The format of the filter
--    is:
-+    Add a filter to limit what events are displayed.  Filters defined
-+    after an input file (specified with *-i*) only apply to that
-+    input file. Filters provided before any input file is given are
-+    considered global and apply to all input files.
-+
-+    The format of the filter is:
- 
- [source,bison]
- ----
--- 
-2.40.0
+>
+> -- Steve
+>
+> >
+> > Tzvetomir Stoyanov (VMware) (3):
+> >   libtracefs: New API to reset ftrace instance
+> >   libtracefs: Documentation for tracefs_instance_reset()
+> >   libtracefs: Unit test for tracefs_instance_reset()
+> >
+> >  Documentation/libtracefs-instances-manage.txt |   7 +-
+> >  Documentation/libtracefs.txt                  |   1 +
+> >  include/tracefs-local.h                       |   1 +
+> >  include/tracefs.h                             |   1 +
+> >  src/tracefs-instance.c                        | 196 ++++++++++++++++++
+> >  src/tracefs-utils.c                           |  20 ++
+> >  utest/tracefs-utest.c                         | 183 ++++++++++++++++
+> >  7 files changed, 407 insertions(+), 2 deletions(-)
+> >
+>
 
+
+--=20
+Tzvetomir (Ceco) Stoyanov
+VMware Open Source Technology Center
