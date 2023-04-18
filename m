@@ -2,62 +2,63 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8CF0C77B70
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 17 Apr 2023 10:41:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EBDE1C77B75
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 18 Apr 2023 15:00:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbjDQKlN (ORCPT
+        id S231195AbjDRPAX (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 17 Apr 2023 06:41:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42088 "EHLO
+        Tue, 18 Apr 2023 11:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbjDQKlJ (ORCPT
+        with ESMTP id S230465AbjDRPAW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 17 Apr 2023 06:41:09 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115F85FD8;
-        Mon, 17 Apr 2023 03:40:15 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3f173af6712so5392655e9.1;
-        Mon, 17 Apr 2023 03:40:14 -0700 (PDT)
+        Tue, 18 Apr 2023 11:00:22 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB61797;
+        Tue, 18 Apr 2023 08:00:21 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id fl25-20020a05600c0b9900b003f17b89ddfbso678604wmb.2;
+        Tue, 18 Apr 2023 08:00:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681727988; x=1684319988;
+        d=gmail.com; s=20221208; t=1681830020; x=1684422020;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HVv7DQKmipBRsAlvjF/Xgt2k292ApUl27jLAieToJD4=;
-        b=N2l7o0i/qr38pvN84zrzRmAVqphwalgLltPICajVbq3kBSm9Tp8tQPeGgj3gjH2JGB
-         GZB2pIhqNHGwVwRrznQTWJK0S2F1je3qU1SioBp3gw9d+yeARYYVMb5bEy2PATha9TB3
-         RpL+tfh7PDIObTykwpMwBw8zRypbjeMogmKLJhERbHU/wSlMEpH4PlQoXIXOF8AnT1Bh
-         nZ/LooqF/DU1YDodkwwO/KTeOMY2WL+CJLByGEakl2odWGfBQ2qYJQ9D0WE5DyurplLn
-         g16KOXuutH4S+M85pDPMNtomiozeo0vPjrnZQ4q70J/kHK4hVWxxS+W5x+A6fwAKSrsK
-         nMrA==
+        bh=0sLNEn4tBiA7Lkr9LNv5/UOC0rrF3XRNRmsS5gVdI9k=;
+        b=sImgZb1wcOoQgjNgCvJtfJlnGv2KUSccaVn8vuk+DKUNMXDz5u8gM7IwEVmH4EqxEP
+         I59BYxMb/1tGKNV27f5bgVgWINug3yBDTvjZFBa8rkQUTG4sPb42bvR5D33QtLz9pFsL
+         ioTZTnyGFeBIDrfurqt5bt7OPoYHzKVTfAyj+z+cDmN1nxkwxZ68T4dHX11Hdv5VaLLQ
+         sqeRIhJkg3mI1CfQtC5bStKYu1Vwcw/XzE5DZ3lRmI09KyRRfD1Z2dfsXhNb91L81YBY
+         8XtpmDrkC4d4zk6R8d/zskRUU+3y/v62hH67SOIsB4WJ6J6KhW07ynVGtTdLqpQWBnTm
+         +U1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681727988; x=1684319988;
+        d=1e100.net; s=20221208; t=1681830020; x=1684422020;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=HVv7DQKmipBRsAlvjF/Xgt2k292ApUl27jLAieToJD4=;
-        b=dIDAAyeLUlEPrKpeAVya6EV5FNuacCmEbC4Jnobow97apgIHsITk2L5DSaEW+p8/eL
-         DPwMOlqJrtknkFrPkv2ooDHmRj6q3tDFYWcDz6E8sZBAgNBD6f5wDcpeCPsGT84ZK2Q5
-         yEMqIstav/qxhaO3sc7uVub2aOln0tDGm9QSO3hD6Y1HLRXUx3f8UGZgs1/21xjKbf1t
-         BbLaVZOxdyqpW/cUuthlrwz36QxiIlYScjrIq1g67V1fdi5y7OeJbrrNG0E1eX+ghrmL
-         w0i7+OMOWv7FlfC0HGRrfNade/xGw/uyUDolo9nvExoMx4tx5UJ23PYh7vGAmuBggnAS
-         GYLw==
-X-Gm-Message-State: AAQBX9fZ7/a2AM3a2906hMV0cUsGksPdhrtpS1KwYcty0nEfAP2d7oQ7
-        xxIOWS+kXc10RdNVaOZU+EEU9Gv9gZU=
-X-Google-Smtp-Source: AKy350Z5lAyV3pnznwWuZtRfw18LONrxC/g5uyKRxLw3mrLdNXhB50AMHcfjs+a8+G0oCSt8q6V3Qw==
-X-Received: by 2002:a05:6000:1049:b0:2f5:ae53:f558 with SMTP id c9-20020a056000104900b002f5ae53f558mr5899380wrx.31.1681727988398;
-        Mon, 17 Apr 2023 03:39:48 -0700 (PDT)
+        bh=0sLNEn4tBiA7Lkr9LNv5/UOC0rrF3XRNRmsS5gVdI9k=;
+        b=apRSuPj4Dwch27mpVYAUOINKuHSlnLtQ3E4t4WsjCcqbDeWI0STE/wGSqc6YHUVnOl
+         2bLKU4ZnAbFrAFEoIruyGm01TF372NOrEsz+jiBmuQwsoO7fbj2zYv+QqI3N3ld5zLHD
+         z5jTHLcB0XpxdQKzRBYOlIKK8Q1jU/6Jmw90adh6spZxJpQfZnE/d3i2QkCpQid6GiaS
+         VqcEXZYrTL4KkFxVrHpxTBMdVzEt851ZKpwQsNrWBVTqjuY8TDKoe2mCtcRBswHfjYnc
+         jVj9GoLoNO6n6H7b6gpVtcKG9WCV+ykYUCNg5AbwoS0A/01cDY26qtiBbf/0IAX/2Tie
+         hTBA==
+X-Gm-Message-State: AAQBX9drwUGfCRZqicUWac9tZpTRFUQ93P7BzdrC+c7SCivAR9/wQ6iT
+        q/WuYv0uGFKl2SrV2el74F0=
+X-Google-Smtp-Source: AKy350ZeeEfRz/61M2eIo6oFMHMHMc4ozqTmwr70hcLoN4Y/jtiuwghQgqPcULSL3FXlozxnZ7zcyA==
+X-Received: by 2002:a7b:c40c:0:b0:3ee:5519:fae1 with SMTP id k12-20020a7bc40c000000b003ee5519fae1mr14216520wmi.12.1681830020331;
+        Tue, 18 Apr 2023 08:00:20 -0700 (PDT)
 Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id z18-20020adfd0d2000000b002da75c5e143sm10225757wrh.29.2023.04.17.03.39.47
+        by smtp.gmail.com with ESMTPSA id f16-20020a05600c155000b003f177cda5ebsm3160137wmg.33.2023.04.18.08.00.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Apr 2023 03:39:47 -0700 (PDT)
+        Tue, 18 Apr 2023 08:00:19 -0700 (PDT)
 From:   Colin Ian King <colin.i.king@gmail.com>
 To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
         linux-trace-devel@vger.kernel.org
 Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rv: Fix addition on an uninitialized variable 'run'
-Date:   Mon, 17 Apr 2023 11:39:46 +0100
-Message-Id: <20230417103946.29594-1-colin.i.king@gmail.com>
+Subject: [PATCH][next] rv: remove redundant assignment to variable retval
+Date:   Tue, 18 Apr 2023 16:00:18 +0100
+Message-Id: <20230418150018.3123753-1-colin.i.king@gmail.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -66,31 +67,32 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The variable run is not initialized however it is being accumulated
-by the return value from the call to ikm_run_monitor.  Fix this by
-replacing the += with an assignment since this is the first point
-where run is being assigned.
+Variable retval is being assigned a value that is never read, it is
+being re-assigned a new value in both paths of a following if statement.
+Remove the assignment.
 
-Fixes: 4bc4b131d44c ("rv: Add rv tool")
+Cleans up clang-scan warning:
+kernel/trace/rv/rv.c:293:2: warning: Value stored to 'retval' is never read [deadcode.DeadStores]
+        retval = count;
 
 Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 ---
- tools/verification/rv/src/rv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/rv/rv.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/tools/verification/rv/src/rv.c b/tools/verification/rv/src/rv.c
-index e601cd9c411e..da647ad4e733 100644
---- a/tools/verification/rv/src/rv.c
-+++ b/tools/verification/rv/src/rv.c
-@@ -111,7 +111,7 @@ static void rv_mon(int argc, char **argv)
- 	 * Call all possible monitor implementations, looking
- 	 * for the [monitor].
- 	 */
--	run += ikm_run_monitor(monitor_name, argc-1, &argv[1]);
-+	run = ikm_run_monitor(monitor_name, argc-1, &argv[1]);
+diff --git a/kernel/trace/rv/rv.c b/kernel/trace/rv/rv.c
+index 7e9061828c24..2f68e93fff0b 100644
+--- a/kernel/trace/rv/rv.c
++++ b/kernel/trace/rv/rv.c
+@@ -290,8 +290,6 @@ static ssize_t monitor_enable_write_data(struct file *filp, const char __user *u
+ 	if (retval)
+ 		return retval;
  
- 	if (!run)
- 		err_msg("rv: monitor %s does not exist\n", monitor_name);
+-	retval = count;
+-
+ 	mutex_lock(&rv_interface_lock);
+ 
+ 	if (val)
 -- 
 2.30.2
 
