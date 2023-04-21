@@ -2,97 +2,79 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EBDE1C77B75
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 18 Apr 2023 15:00:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1EEDC7618E
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 21 Apr 2023 12:14:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbjDRPAX (ORCPT
+        id S229980AbjDUMOO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 18 Apr 2023 11:00:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57326 "EHLO
+        Fri, 21 Apr 2023 08:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbjDRPAW (ORCPT
+        with ESMTP id S229843AbjDUMON (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 18 Apr 2023 11:00:22 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB61797;
-        Tue, 18 Apr 2023 08:00:21 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id fl25-20020a05600c0b9900b003f17b89ddfbso678604wmb.2;
-        Tue, 18 Apr 2023 08:00:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681830020; x=1684422020;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0sLNEn4tBiA7Lkr9LNv5/UOC0rrF3XRNRmsS5gVdI9k=;
-        b=sImgZb1wcOoQgjNgCvJtfJlnGv2KUSccaVn8vuk+DKUNMXDz5u8gM7IwEVmH4EqxEP
-         I59BYxMb/1tGKNV27f5bgVgWINug3yBDTvjZFBa8rkQUTG4sPb42bvR5D33QtLz9pFsL
-         ioTZTnyGFeBIDrfurqt5bt7OPoYHzKVTfAyj+z+cDmN1nxkwxZ68T4dHX11Hdv5VaLLQ
-         sqeRIhJkg3mI1CfQtC5bStKYu1Vwcw/XzE5DZ3lRmI09KyRRfD1Z2dfsXhNb91L81YBY
-         8XtpmDrkC4d4zk6R8d/zskRUU+3y/v62hH67SOIsB4WJ6J6KhW07ynVGtTdLqpQWBnTm
-         +U1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681830020; x=1684422020;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0sLNEn4tBiA7Lkr9LNv5/UOC0rrF3XRNRmsS5gVdI9k=;
-        b=apRSuPj4Dwch27mpVYAUOINKuHSlnLtQ3E4t4WsjCcqbDeWI0STE/wGSqc6YHUVnOl
-         2bLKU4ZnAbFrAFEoIruyGm01TF372NOrEsz+jiBmuQwsoO7fbj2zYv+QqI3N3ld5zLHD
-         z5jTHLcB0XpxdQKzRBYOlIKK8Q1jU/6Jmw90adh6spZxJpQfZnE/d3i2QkCpQid6GiaS
-         VqcEXZYrTL4KkFxVrHpxTBMdVzEt851ZKpwQsNrWBVTqjuY8TDKoe2mCtcRBswHfjYnc
-         jVj9GoLoNO6n6H7b6gpVtcKG9WCV+ykYUCNg5AbwoS0A/01cDY26qtiBbf/0IAX/2Tie
-         hTBA==
-X-Gm-Message-State: AAQBX9drwUGfCRZqicUWac9tZpTRFUQ93P7BzdrC+c7SCivAR9/wQ6iT
-        q/WuYv0uGFKl2SrV2el74F0=
-X-Google-Smtp-Source: AKy350ZeeEfRz/61M2eIo6oFMHMHMc4ozqTmwr70hcLoN4Y/jtiuwghQgqPcULSL3FXlozxnZ7zcyA==
-X-Received: by 2002:a7b:c40c:0:b0:3ee:5519:fae1 with SMTP id k12-20020a7bc40c000000b003ee5519fae1mr14216520wmi.12.1681830020331;
-        Tue, 18 Apr 2023 08:00:20 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id f16-20020a05600c155000b003f177cda5ebsm3160137wmg.33.2023.04.18.08.00.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Apr 2023 08:00:19 -0700 (PDT)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-devel@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] rv: remove redundant assignment to variable retval
-Date:   Tue, 18 Apr 2023 16:00:18 +0100
-Message-Id: <20230418150018.3123753-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 21 Apr 2023 08:14:13 -0400
+Received: from out162-62-57-137.mail.qq.com (out162-62-57-137.mail.qq.com [162.62.57.137])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBB95B93;
+        Fri, 21 Apr 2023 05:14:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1682079248;
+        bh=8x5jCW5wPuP6DrOsCE5IjoZHeW34R552D86Pcdt3a8A=;
+        h=From:To:Cc:Subject:Date;
+        b=TznuPqiM402uVGBNP03hOty7y6S/T6AGx5RZpOpbg3++DcuQ5KVfXKRCs46/EmknE
+         I6ptxt5QQhE1bh35JtY23MnnMvLqtbi0U+7iYm9NY2w+JFXxSdhRRmzVYt6Ri/ysIm
+         /NSBSirEYzLAHdWKukSAQrSMqke3wzjo3SZoDYhQ=
+Received: from localhost.localdomain ([39.156.73.13])
+        by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
+        id 32983668; Fri, 21 Apr 2023 20:12:41 +0800
+X-QQ-mid: xmsmtpt1682079161thbx1k54o
+Message-ID: <tencent_8042C05909979D2A1AAFA8A3028854065808@qq.com>
+X-QQ-XMAILINFO: MZ7OTbK+3aE539Ge5iJjPCG265xatopn3pMZtG9SI1lUM/33IpvN7YGJT0PCyE
+         TcD/x6XDYsiUx130hSZzjSd7d1N5KHtTCqheWcG7zzaCdnnU0kzSFf6SPosG0GSUMsYZaAeEYLbv
+         /nw8S4AgwDDa6+0WdH+eU5Q/D5OwjmC0+MYf0TAZOgvc1L3LTThydoM5uzIn+/wa7tMyd3sRVa1w
+         6NfLURRh04wBVIEDqgNINdnQDmoq3DNgb+EnBk3p/TVJQu7i4F+muBhzfUTC9tltk0dgYjgO6oz7
+         kSO0lUH9Fy9QuN3b/PGSOj5Fph7Tsd6CJIKMekMQjvS9Vs9OugGxfOMZ0Tn6A4qrAEHr/IWKWV0Y
+         FxtBrHJQmB6IoBXDssASsWUGJSYTvzo0zGbRWymjIypOvNga/knGdZcLo0v5ip8n9bguSuNHBVWY
+         klJIGW+4URbMYwb55Za040XFFbEzftLMZa+4sTlz+aI3OMLMX+j3IjKTaBBnJfvJSaChHAPtSK6S
+         678eSyGNlpN5S1PYMgcoYIzqxZirZug/p3g+jDqR89sTTlKYyEbzWRlb1AWg60KPURkNORL1tz/b
+         FJWFGg7o84mBNXdyqRZLLJAbTGKMPw1EAZCY4n2536E1SsvqpH5ixMaEoQUD2KLyhoDvwcWyMJfo
+         uGxsV0j45UmpTD+KCll6eEFN1AmiDJsO3DyIj1GmTlqmxvqvAFPJbQKa8ijra6ayi+SKpFkSYf5A
+         3tjc/APUhSM0Lju18o1CP6YN8zK8U1wesB1H/0L9livX53gZVwRQK26p8Y2XoBtD2agZuwSqRlFw
+         OQrVWfsLaFjJM4EQ2gG8f5GGmDpp+W5eRseeJtCIOgoQbHOwqk7PIVq7SIrnnIbA/fD/IXDd1Cwq
+         ggwODOY1CS5bl1vssUbnNB9WYDgM//BKXPGkFFwNEcLY6Ly6WI7nuvzDCCn3OKIzTm2uQXfhvZ9i
+         i5KC/EUMasmlym8WafJyVlmFNtbn68+jQ0o/p6LtUi20FiQKQwHry4gLVQljJo
+From:   Rong Tao <rtoax@foxmail.com>
+To:     bristot@kernel.org
+Cc:     rongtao@cestc.cn, Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-trace-devel@vger.kernel.org (open list:Real-time Linux Analysis
+        (RTLA) tools)
+Subject: [PATCH] tools/tracing/rtla: Add .gitignore
+Date:   Fri, 21 Apr 2023 20:12:37 +0800
+X-OQ-MSGID: <20230421121237.240390-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Variable retval is being assigned a value that is never read, it is
-being re-assigned a new value in both paths of a following if statement.
-Remove the assignment.
+From: Rong Tao <rongtao@cestc.cn>
 
-Cleans up clang-scan warning:
-kernel/trace/rv/rv.c:293:2: warning: Value stored to 'retval' is never read [deadcode.DeadStores]
-        retval = count;
+Ignore rtla binary.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
 ---
- kernel/trace/rv/rv.c | 2 --
- 1 file changed, 2 deletions(-)
+ tools/tracing/rtla/.gitignore | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 tools/tracing/rtla/.gitignore
 
-diff --git a/kernel/trace/rv/rv.c b/kernel/trace/rv/rv.c
-index 7e9061828c24..2f68e93fff0b 100644
---- a/kernel/trace/rv/rv.c
-+++ b/kernel/trace/rv/rv.c
-@@ -290,8 +290,6 @@ static ssize_t monitor_enable_write_data(struct file *filp, const char __user *u
- 	if (retval)
- 		return retval;
- 
--	retval = count;
--
- 	mutex_lock(&rv_interface_lock);
- 
- 	if (val)
+diff --git a/tools/tracing/rtla/.gitignore b/tools/tracing/rtla/.gitignore
+new file mode 100644
+index 000000000000..e9df32419b2b
+--- /dev/null
++++ b/tools/tracing/rtla/.gitignore
+@@ -0,0 +1 @@
++/rtla
 -- 
-2.30.2
+2.39.1
 
