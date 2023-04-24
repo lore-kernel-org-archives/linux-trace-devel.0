@@ -2,79 +2,96 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1EEDC7618E
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 21 Apr 2023 12:14:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EF35C7618E
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Apr 2023 09:09:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbjDUMOO (ORCPT
+        id S231515AbjDXJJq (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 21 Apr 2023 08:14:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54460 "EHLO
+        Mon, 24 Apr 2023 05:09:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbjDUMON (ORCPT
+        with ESMTP id S231243AbjDXJJq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 21 Apr 2023 08:14:13 -0400
-Received: from out162-62-57-137.mail.qq.com (out162-62-57-137.mail.qq.com [162.62.57.137])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBB95B93;
-        Fri, 21 Apr 2023 05:14:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1682079248;
-        bh=8x5jCW5wPuP6DrOsCE5IjoZHeW34R552D86Pcdt3a8A=;
-        h=From:To:Cc:Subject:Date;
-        b=TznuPqiM402uVGBNP03hOty7y6S/T6AGx5RZpOpbg3++DcuQ5KVfXKRCs46/EmknE
-         I6ptxt5QQhE1bh35JtY23MnnMvLqtbi0U+7iYm9NY2w+JFXxSdhRRmzVYt6Ri/ysIm
-         /NSBSirEYzLAHdWKukSAQrSMqke3wzjo3SZoDYhQ=
-Received: from localhost.localdomain ([39.156.73.13])
-        by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-        id 32983668; Fri, 21 Apr 2023 20:12:41 +0800
-X-QQ-mid: xmsmtpt1682079161thbx1k54o
-Message-ID: <tencent_8042C05909979D2A1AAFA8A3028854065808@qq.com>
-X-QQ-XMAILINFO: MZ7OTbK+3aE539Ge5iJjPCG265xatopn3pMZtG9SI1lUM/33IpvN7YGJT0PCyE
-         TcD/x6XDYsiUx130hSZzjSd7d1N5KHtTCqheWcG7zzaCdnnU0kzSFf6SPosG0GSUMsYZaAeEYLbv
-         /nw8S4AgwDDa6+0WdH+eU5Q/D5OwjmC0+MYf0TAZOgvc1L3LTThydoM5uzIn+/wa7tMyd3sRVa1w
-         6NfLURRh04wBVIEDqgNINdnQDmoq3DNgb+EnBk3p/TVJQu7i4F+muBhzfUTC9tltk0dgYjgO6oz7
-         kSO0lUH9Fy9QuN3b/PGSOj5Fph7Tsd6CJIKMekMQjvS9Vs9OugGxfOMZ0Tn6A4qrAEHr/IWKWV0Y
-         FxtBrHJQmB6IoBXDssASsWUGJSYTvzo0zGbRWymjIypOvNga/knGdZcLo0v5ip8n9bguSuNHBVWY
-         klJIGW+4URbMYwb55Za040XFFbEzftLMZa+4sTlz+aI3OMLMX+j3IjKTaBBnJfvJSaChHAPtSK6S
-         678eSyGNlpN5S1PYMgcoYIzqxZirZug/p3g+jDqR89sTTlKYyEbzWRlb1AWg60KPURkNORL1tz/b
-         FJWFGg7o84mBNXdyqRZLLJAbTGKMPw1EAZCY4n2536E1SsvqpH5ixMaEoQUD2KLyhoDvwcWyMJfo
-         uGxsV0j45UmpTD+KCll6eEFN1AmiDJsO3DyIj1GmTlqmxvqvAFPJbQKa8ijra6ayi+SKpFkSYf5A
-         3tjc/APUhSM0Lju18o1CP6YN8zK8U1wesB1H/0L9livX53gZVwRQK26p8Y2XoBtD2agZuwSqRlFw
-         OQrVWfsLaFjJM4EQ2gG8f5GGmDpp+W5eRseeJtCIOgoQbHOwqk7PIVq7SIrnnIbA/fD/IXDd1Cwq
-         ggwODOY1CS5bl1vssUbnNB9WYDgM//BKXPGkFFwNEcLY6Ly6WI7nuvzDCCn3OKIzTm2uQXfhvZ9i
-         i5KC/EUMasmlym8WafJyVlmFNtbn68+jQ0o/p6LtUi20FiQKQwHry4gLVQljJo
-From:   Rong Tao <rtoax@foxmail.com>
-To:     bristot@kernel.org
-Cc:     rongtao@cestc.cn, Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-trace-devel@vger.kernel.org (open list:Real-time Linux Analysis
-        (RTLA) tools)
-Subject: [PATCH] tools/tracing/rtla: Add .gitignore
-Date:   Fri, 21 Apr 2023 20:12:37 +0800
-X-OQ-MSGID: <20230421121237.240390-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.39.1
+        Mon, 24 Apr 2023 05:09:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02048E55;
+        Mon, 24 Apr 2023 02:09:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 93BA461F31;
+        Mon, 24 Apr 2023 09:09:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FEE1C433EF;
+        Mon, 24 Apr 2023 09:09:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1682327384;
+        bh=yV2sGi32MWGtguiaQhYp/hYKcUQB0aF3VYck+w+tbHo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=aR9JKCwa+38DptzFFGWTd27h1DSRt0D2u1W9etisVGNmSnXYE5TGyj57VhkSal7P/
+         pNGE1dU+Sm8nFJch/mQGMOkcNs1e+8R4bjj1sKEuulMlBrTmwSpwehAMJZ7HpbrvPr
+         GXrh5ZCb+5vmyWvuUPiiFdWLQWbN9nzzNuXeOoTSeX2wHgS6WxdeP+TH4ezHPte518
+         OT3nTDYE7QCPE/QcHBche51qat72KgluL81WuWdTEfYZWrvk484xZKoddhx6rledg6
+         iBI1h7HPylKnBZuRkX8KOVW/HZaKS0159YknfeQGISzIHZglDli4PtaWr41jmd9Uva
+         0VozqQQjyjY2A==
+Message-ID: <a19df26e-7c0c-e48e-8611-6035c8c7f1a4@kernel.org>
+Date:   Mon, 24 Apr 2023 11:09:38 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH] rv: Fix addition on an uninitialized variable 'run'
+To:     Colin Ian King <colin.i.king@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-devel@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230417103946.29594-1-colin.i.king@gmail.com>
+Content-Language: en-US
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <20230417103946.29594-1-colin.i.king@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Rong Tao <rongtao@cestc.cn>
+On 4/17/23 12:39, Colin Ian King wrote:
+> The variable run is not initialized
 
-Ignore rtla binary.
 
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
----
- tools/tracing/rtla/.gitignore | 1 +
- 1 file changed, 1 insertion(+)
- create mode 100644 tools/tracing/rtla/.gitignore
+Oops, that is a problem, it should be initialized as 0.
 
-diff --git a/tools/tracing/rtla/.gitignore b/tools/tracing/rtla/.gitignore
-new file mode 100644
-index 000000000000..e9df32419b2b
---- /dev/null
-+++ b/tools/tracing/rtla/.gitignore
-@@ -0,0 +1 @@
-+/rtla
--- 
-2.39.1
+however it is being accumulated
+> by the return value from the call to ikm_run_monitor.  Fix this by
+> replacing the += with an assignment since this is the first point
+> where run is being assigned.
+> 
+> Fixes: 4bc4b131d44c ("rv: Add rv tool")
+> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> ---
+>  tools/verification/rv/src/rv.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/verification/rv/src/rv.c b/tools/verification/rv/src/rv.c
+> index e601cd9c411e..da647ad4e733 100644
+> --- a/tools/verification/rv/src/rv.c
+> +++ b/tools/verification/rv/src/rv.c
+> @@ -111,7 +111,7 @@ static void rv_mon(int argc, char **argv)
+>  	 * Call all possible monitor implementations, looking
+>  	 * for the [monitor].
+>  	 */
+> -	run += ikm_run_monitor(monitor_name, argc-1, &argv[1]);
+> +	run = ikm_run_monitor(monitor_name, argc-1, &argv[1]);
+
+So, in the future, there will be more monitors types, and so we will check
+other functions to see if they find the monitor by name. Thus, the += is correct,
+what is not correct the run not being initialized.
+
+Mind sending a patch initializing the run = 0?
+
+Thanks!
+-- Daniel
+
+  
+>  	if (!run)
+>  		err_msg("rv: monitor %s does not exist\n", monitor_name);
 
