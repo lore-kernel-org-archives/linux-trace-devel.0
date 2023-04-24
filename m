@@ -2,99 +2,98 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01782C7618E
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Apr 2023 09:46:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DF75C77B61
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Apr 2023 09:48:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbjDXJqW (ORCPT
+        id S231516AbjDXJsA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 24 Apr 2023 05:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43138 "EHLO
+        Mon, 24 Apr 2023 05:48:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbjDXJqV (ORCPT
+        with ESMTP id S229658AbjDXJry (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 24 Apr 2023 05:46:21 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B4C3C27;
-        Mon, 24 Apr 2023 02:45:45 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3f193ca059bso18526465e9.3;
-        Mon, 24 Apr 2023 02:45:45 -0700 (PDT)
+        Mon, 24 Apr 2023 05:47:54 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16EB3C06;
+        Mon, 24 Apr 2023 02:47:33 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-2fddb442d47so3843059f8f.2;
+        Mon, 24 Apr 2023 02:47:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682329543; x=1684921543;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=duHeMOPaquEbxpvw/UJxFgzwcL0EWnQUhJm+862ifh4=;
-        b=XoWZSvbbZP6HP8sjR3e73o2+4zC7Glzq8vNFrSUPHO8LgJHIjXNfR19KpEpUxV+q/Y
-         wqenBxHq0v8mFInIeb87EySmlLrvbsHuQzW9eOw28EHYldGKVAM87f4+kuM9Hyvxt+uf
-         s2Tg+WNFuMcxTudO12uiY+XNQ1jkQU1ZCnGWfgFIbSdAmPddP+l/pw03OzjjSN5CEzBq
-         RpZLNFuOtEgFvikU3AOod1ZG/S2NzV9UpBhZcC7p2vXEkb1t0n5mdtwcp7c7hp4bwU/B
-         WrdtXAnBTA8hh11S0kzwvyLC4VYeGJ2gmBxrACVHjYD307YpsLKyPuvsLm/cywmnsDPB
-         oKEg==
+        d=gmail.com; s=20221208; t=1682329651; x=1684921651;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hZyWIeK34NmrQfsNJdgjh0DC7E3/9QF+r15VrIbQ35Y=;
+        b=KJbIYqlsYfx76iqy2WImXzJfB72YvSYkFQK1MDqVouVbgj0fftLkRXI08nEQRHmvxI
+         cRcb4SzfR/PgdfvRP0CAVuKSBurfDxrcK7zjy11c9ASPxJjmm/+xI5WhYfJGPhZ1i1lU
+         tsdJzhQZFEtP/TXZWK1lIgE6A2qED43jBQNLiojmm0mfeytglmCwAdNHVQdqUycfDIvN
+         5K/IekCFk8CHZtNHaWg0v2EUdr45ht22KvL5PkDC5njoxkI5RgeFp/Ufz1ap2gYINeJ1
+         kaaWXFLzDdtjYyFRbXxZrDIAcaUp8RwAKS9qvhavS6e1D75KVceOGVmFl4Cc3sXFD0QA
+         sDZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682329543; x=1684921543;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=duHeMOPaquEbxpvw/UJxFgzwcL0EWnQUhJm+862ifh4=;
-        b=kFvsETr9wG/gnQ5VqREeZjMzKqH1+zLTDrnGwX57YBrcazpOhwPqYouZAXy8WlRGcn
-         f3CuQ/zOjK0mVSprxMAWH4ERKZzQDQEGtdhXDcRnumkffFrZ3TnwriC6YhLaxtqYOT/P
-         oWbFTgMDSaS09FYB24CykM+JvsKXAbHkS4us8qHJyJBVIl8jU+D00qy52jyh5AZU2/iZ
-         6jvxXjQE6P7vO4uLaP9/xOtcU0/9RlGdYGurMhnzbHsaSUCDAGQbzj7nNe/3uHTxNE7z
-         Uw3KTqCElx1KPYi/NoGBAiyjZfNFEEDrIFBRrtJ+Awbv9HnEjx/5qvBOdG2H8OqpcWdi
-         uckg==
-X-Gm-Message-State: AAQBX9d32mshmFhYHM99uTLFG6D32xLqcz/aAQTIiNUH/IEKCNJkO/iS
-        mluVxkd71wox3pF/PgvSdIGY1IFvBGc=
-X-Google-Smtp-Source: AKy350b8JOCi4aFVszwnNNOtBs79KkORvtY9v75q+pYAGo2XBZ1tU1Uatf1o7f3joLKuJGlp+zIXkg==
-X-Received: by 2002:a7b:ca47:0:b0:3f1:9acf:8670 with SMTP id m7-20020a7bca47000000b003f19acf8670mr4476299wml.22.1682329542994;
-        Mon, 24 Apr 2023 02:45:42 -0700 (PDT)
-Received: from [192.168.0.210] (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.googlemail.com with ESMTPSA id m36-20020a05600c3b2400b003edc4788fa0sm15275083wms.2.2023.04.24.02.45.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Apr 2023 02:45:42 -0700 (PDT)
-Message-ID: <a9396dbe-08aa-620c-cb08-7ea9943e1561@gmail.com>
-Date:   Mon, 24 Apr 2023 10:45:41 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH] rv: Fix addition on an uninitialized variable 'run'
-From:   "Colin King (gmail)" <colin.i.king@gmail.com>
+        d=1e100.net; s=20221208; t=1682329651; x=1684921651;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hZyWIeK34NmrQfsNJdgjh0DC7E3/9QF+r15VrIbQ35Y=;
+        b=YUPaxG/yBDKkepamAt+fVJmXCqOvHyYsGyuFFgrFoQ6Lejn3hwnNanV/Uhwx1LG+Lc
+         cSJA57PvJH3EneGnKMfAS15Kw/QTlW5vkLF+CKiceVK1w/7dpC7bOblFJnkUDol9UNNx
+         //pZVKnMCpb6FZMrzQghjTigLU3hqlD3SPNXlmoU8+hRHCwf4BfQuu7ZmvNftVde6vbv
+         CgGLuJsSWkrlVwEO/JR2RS0Hru9YCKEdCfIux4TpLAGa6ymsCoAIbIekGFJGBXeyKNL9
+         JQlMmdLxrIoX/8T8tre++rgSitwioBUs5NSUGMc5gKN7DR1DJGtMvWc0jWd37+H9bU2X
+         NpFQ==
+X-Gm-Message-State: AAQBX9fiLyB/7YYMmdppXXlQdfubcQjmR1xD1/ipz2yuyMVL5NwaNm3b
+        NHtX7Sv3w/Dva4H0KdcGjn8=
+X-Google-Smtp-Source: AKy350YmPJrprooSLsRv+VV579NpsuRkKi9JaLoPey4tDdCVH42KcH7MUcYaRPwK0Q6T2i12/sApYw==
+X-Received: by 2002:a05:6000:1209:b0:304:6b64:4f30 with SMTP id e9-20020a056000120900b003046b644f30mr4636169wrx.18.1682329651558;
+        Mon, 24 Apr 2023 02:47:31 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id y4-20020adffa44000000b002f013fb708fsm10540320wrr.4.2023.04.24.02.47.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Apr 2023 02:47:31 -0700 (PDT)
+From:   Colin Ian King <colin.i.king@gmail.com>
 To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         linux-trace-devel@vger.kernel.org
 Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230424094446.105133-1-colin.i.king@gmail.com>
-Content-Language: en-US
-In-Reply-To: <20230424094446.105133-1-colin.i.king@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH][next][V3] rv: Fix addition on an uninitialized variable 'run'
+Date:   Mon, 24 Apr 2023 10:47:30 +0100
+Message-Id: <20230424094730.105313-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 24/04/2023 10:44, Colin Ian King wrote:
-> The variable run is not initialized however it is being accumulated
-> by the return value from the call to ikm_run_monitor.  Fix this by
-> initializing run to zero at the start of the function.
-> 
-> Fixes: 4bc4b131d44c ("rv: Add rv tool")
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->   tools/verification/rv/src/rv.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/verification/rv/src/rv.c b/tools/verification/rv/src/rv.c
-> index e601cd9c411e..1ddb85532816 100644
-> --- a/tools/verification/rv/src/rv.c
-> +++ b/tools/verification/rv/src/rv.c
-> @@ -74,7 +74,7 @@ static void rv_list(int argc, char **argv)
->   static void rv_mon(int argc, char **argv)
->   {
->   	char *monitor_name;
-> -	int i, run;
-> +	int i, run = 0;
->   
->   	static const char *const usage[] = {
->   		"",
+The variable run is not initialized however it is being accumulated
+by the return value from the call to ikm_run_monitor.  Fix this by
+initializing run to zero at the start of the function.
 
-Oops, I forgot the V2, will re-send as a V3. My bad.
+Fixes: 4bc4b131d44c ("rv: Add rv tool")
+
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+
+---
+V2: Initialize run rather than assign it from return from ikm_run_monitor
+V3: Add missing V3 and next in patch subject
+---
+ tools/verification/rv/src/rv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/verification/rv/src/rv.c b/tools/verification/rv/src/rv.c
+index e601cd9c411e..1ddb85532816 100644
+--- a/tools/verification/rv/src/rv.c
++++ b/tools/verification/rv/src/rv.c
+@@ -74,7 +74,7 @@ static void rv_list(int argc, char **argv)
+ static void rv_mon(int argc, char **argv)
+ {
+ 	char *monitor_name;
+-	int i, run;
++	int i, run = 0;
+ 
+ 	static const char *const usage[] = {
+ 		"",
+-- 
+2.30.2
+
