@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6F6DC7EE2A
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 May 2023 18:06:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D39F0C7EE30
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 May 2023 18:06:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239224AbjEKSF7 (ORCPT
+        id S239158AbjEKSGA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 11 May 2023 14:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60302 "EHLO
+        Thu, 11 May 2023 14:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239192AbjEKSFq (ORCPT
+        with ESMTP id S239181AbjEKSFs (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 11 May 2023 14:05:46 -0400
+        Thu, 11 May 2023 14:05:48 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F10F7EE8;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58B3D3;
         Thu, 11 May 2023 11:05:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C69B36508A;
-        Thu, 11 May 2023 18:04:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 230A2C433EF;
-        Thu, 11 May 2023 18:04:51 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C685265096;
+        Thu, 11 May 2023 18:04:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49BF9C4339C;
+        Thu, 11 May 2023 18:04:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683828294;
-        bh=Lo8FZAWJl35tTJ74PxG2G+/6DGoIbw32r9OQUCYExV4=;
+        s=k20201202; t=1683828299;
+        bh=hHesJQX+DZzTicW9tEXO+uTBEJ94ukGnFXjNeOZqXTo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gDAaOvOXleWWT2ML7LXmA8ekn0u/RfTKJUzNBlMz6T14g2GBEVRy3Ry9FUjyV037G
-         iTF7Z4RFxIecX2JsMnOy7QWzL2y3ixKppJK6/kGZzuxVtVuvyf8KUJ1yMWdwHp5nm8
-         4egfFbvbUO7ZoAPvrm2DlJBcfhHrkymxgLnX2m8LTPrR3C0hcp0eaSVIcXu0Olpcpj
-         3rEM2lQ/nuLOsWnSSTPVedmj93CKQWNGlPmkLNoPpSl9XsA9QXuOLKZFm9t6Rbs66/
-         cGgnIoyo2fw4BkIm+FnKQE7EVcjg+3GxW8mrzvwN8mZdCrU3H1wPmS/a0HTLrdWahy
-         fUe7c6w4lFnsw==
+        b=mSQcwNZY2Z6l0XCl8hrct4LobJ8CWG4op0o9q1ttE4AXekiMolyLhCZcQsrgduetf
+         uPOhtn7/OXfsUcVfOSL4AJ8tsm97tmWLlMTPYx6pcdMsnM9nj6HWK8/AKcoUQApUpt
+         tPV6txQw/JnMKQYnez4Ydzk4uFJnz55grne6YH+k4fdLIVgbxAP/IlUGPbLZwObKzD
+         dD0efyiUweTtKvGipOWCdn+2LM2VKgbQfcwWRhlFd6O3W+mphFV3EGIYDSpQtm7cAo
+         SftFWB5VkEKwsyI0/2UufcWadb2GrDE/VysbtXgGdkO1jARu9DrIz5ywqXMTOIEcD7
+         3n/A9kfIZ/0Bw==
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     linux-trace-devel@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>
@@ -40,11 +40,10 @@ Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Juri Lelli <juri.lelli@redhat.com>,
         William White <chwhite@redhat.com>,
         Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH 7/8] rtla: Start the tracers after creating all instances
-Date:   Thu, 11 May 2023 20:04:25 +0200
-Message-Id: <26d837baec9e9e261a1352fba6ffe9be8967ba25.1683827510.git.bristot@kernel.org>
+        0000-cover-letter.patch@vger.kernel.org
+Subject: 0001-rtla-Add-C-cgroup-support.patch
+Date:   Thu, 11 May 2023 20:04:27 +0200
+Message-Id: <20230511180457.7623-1-bristot@kernel.org>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <cover.1683827510.git.bristot@kernel.org>
 References: <cover.1683827510.git.bristot@kernel.org>
@@ -54,182 +53,309 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Group all start tracing after finishing creating all instances.
+Result: OK
+(mbox) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'From: Daniel Bristot de Oliveira <bristot@kernel.org>'
+(body) Adding cc: Steven Rostedt <rostedt@goodmis.org> from line 'Cc: Steven Rostedt <rostedt@goodmis.org>'
+(body) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'Cc: Daniel Bristot de Oliveira <bristot@kernel.org>'
+(body) Adding cc: Masami Hiramatsu <mhiramat@kernel.org> from line 'Cc: Masami Hiramatsu <mhiramat@kernel.org>'
+(body) Adding cc: Jonathan Corbet <corbet@lwn.net> from line 'Cc: Jonathan Corbet <corbet@lwn.net>'
+(body) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>'
+Dry-OK. Log says:
+Server: mail.kernel.org
+MAIL FROM:<bristot@kernel.org>
+RCPT TO:<linux-trace-devel@vger.kernel.org>
+RCPT TO:<rostedt@goodmis.org>
+RCPT TO:<linux-doc@vger.kernel.org>
+RCPT TO:<linux-kernel@vger.kernel.org>
+RCPT TO:<juri.lelli@redhat.com>
+RCPT TO:<chwhite@redhat.com>
+RCPT TO:<bristot@kernel.org>
+RCPT TO:<mhiramat@kernel.org>
+RCPT TO:<corbet@lwn.net>
+From: Daniel Bristot de Oliveira <bristot@kernel.org>
+To: linux-trace-devel@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Juri Lelli <juri.lelli@redhat.com>,
+	William White <chwhite@redhat.com>,
+	Daniel Bristot de Oliveira <bristot@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH 1/8] rtla: Add -C cgroup support
+Date: Thu, 11 May 2023 20:02:53 +0200
+Message-Id: <df9ab6da3d389ebc4e5049fd84079e801974a397.1683827510.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <cover.1683827510.git.bristot@kernel.org>
+References: <cover.1683827510.git.bristot@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-The tracing instance starts first for the case of hitting a stop
-tracing while enabling other instances. The trace instance is the
-one with most valuable information.
+Result: OK
+(mbox) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'From: Daniel Bristot de Oliveira <bristot@kernel.org>'
+(body) Adding cc: Steven Rostedt <rostedt@goodmis.org> from line 'Cc: Steven Rostedt <rostedt@goodmis.org>'
+(body) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'Cc: Daniel Bristot de Oliveira <bristot@kernel.org>'
+(body) Adding cc: Masami Hiramatsu <mhiramat@kernel.org> from line 'Cc: Masami Hiramatsu <mhiramat@kernel.org>'
+(body) Adding cc: Jonathan Corbet <corbet@lwn.net> from line 'Cc: Jonathan Corbet <corbet@lwn.net>'
+(body) Adding cc: Juri Lelli <juri.lelli@redhat.com> from line 'Suggested-by: Juri Lelli <juri.lelli@redhat.com>'
+(body) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>'
+Dry-OK. Log says:
+Server: mail.kernel.org
+MAIL FROM:<bristot@kernel.org>
+RCPT TO:<linux-trace-devel@vger.kernel.org>
+RCPT TO:<rostedt@goodmis.org>
+RCPT TO:<linux-doc@vger.kernel.org>
+RCPT TO:<linux-kernel@vger.kernel.org>
+RCPT TO:<juri.lelli@redhat.com>
+RCPT TO:<chwhite@redhat.com>
+RCPT TO:<bristot@kernel.org>
+RCPT TO:<mhiramat@kernel.org>
+RCPT TO:<corbet@lwn.net>
+From: Daniel Bristot de Oliveira <bristot@kernel.org>
+To: linux-trace-devel@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Juri Lelli <juri.lelli@redhat.com>,
+	William White <chwhite@redhat.com>,
+	Daniel Bristot de Oliveira <bristot@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH 2/8] rtla: Add --house-keeping option
+Date: Thu, 11 May 2023 20:02:54 +0200
+Message-Id: <9d24752f2af0cb5b6fe9893f236b576cedf31b62.1683827510.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <cover.1683827510.git.bristot@kernel.org>
+References: <cover.1683827510.git.bristot@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- tools/tracing/rtla/src/osnoise_hist.c  | 14 +++++++++++---
- tools/tracing/rtla/src/osnoise_top.c   | 13 ++++++++++---
- tools/tracing/rtla/src/timerlat_hist.c | 17 ++++++++++++-----
- tools/tracing/rtla/src/timerlat_top.c  | 19 +++++++++++++------
- 4 files changed, 46 insertions(+), 17 deletions(-)
+Result: OK
+(mbox) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'From: Daniel Bristot de Oliveira <bristot@kernel.org>'
+(body) Adding cc: Steven Rostedt <rostedt@goodmis.org> from line 'Cc: Steven Rostedt <rostedt@goodmis.org>'
+(body) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'Cc: Daniel Bristot de Oliveira <bristot@kernel.org>'
+(body) Adding cc: Masami Hiramatsu <mhiramat@kernel.org> from line 'Cc: Masami Hiramatsu <mhiramat@kernel.org>'
+(body) Adding cc: Jonathan Corbet <corbet@lwn.net> from line 'Cc: Jonathan Corbet <corbet@lwn.net>'
+(body) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>'
+Dry-OK. Log says:
+Server: mail.kernel.org
+MAIL FROM:<bristot@kernel.org>
+RCPT TO:<linux-trace-devel@vger.kernel.org>
+RCPT TO:<rostedt@goodmis.org>
+RCPT TO:<linux-doc@vger.kernel.org>
+RCPT TO:<linux-kernel@vger.kernel.org>
+RCPT TO:<juri.lelli@redhat.com>
+RCPT TO:<chwhite@redhat.com>
+RCPT TO:<bristot@kernel.org>
+RCPT TO:<mhiramat@kernel.org>
+RCPT TO:<corbet@lwn.net>
+From: Daniel Bristot de Oliveira <bristot@kernel.org>
+To: linux-trace-devel@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Juri Lelli <juri.lelli@redhat.com>,
+	William White <chwhite@redhat.com>,
+	Daniel Bristot de Oliveira <bristot@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH 3/8] rtla: Change monitored_cpus from char * to cpu_set_t
+Date: Thu, 11 May 2023 20:02:55 +0200
+Message-Id: <0b2e708c5951e5e3016b0a3838960066cfcea19d.1683827510.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <cover.1683827510.git.bristot@kernel.org>
+References: <cover.1683827510.git.bristot@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-diff --git a/tools/tracing/rtla/src/osnoise_hist.c b/tools/tracing/rtla/src/osnoise_hist.c
-index dfbcb5ca7ecb..8f81fa007364 100644
---- a/tools/tracing/rtla/src/osnoise_hist.c
-+++ b/tools/tracing/rtla/src/osnoise_hist.c
-@@ -870,8 +870,6 @@ int osnoise_hist_main(int argc, char *argv[])
- 		}
- 	}
- 
--	trace_instance_start(trace);
--
- 	if (params->trace_output) {
- 		record = osnoise_init_trace_tool("osnoise");
- 		if (!record) {
-@@ -885,9 +883,19 @@ int osnoise_hist_main(int argc, char *argv[])
- 				goto out_hist;
- 		}
- 
--		trace_instance_start(&record->trace);
- 	}
- 
-+	/*
-+	 * Start the tracer here, after having set all instances.
-+	 *
-+	 * Let the trace instance start first for the case of hitting a stop
-+	 * tracing while enabling other instances. The trace instance is the
-+	 * one with most valuable information.
-+	 */
-+	if (params->trace_output)
-+		trace_instance_start(&record->trace);
-+	trace_instance_start(trace);
-+
- 	tool->start_time = time(NULL);
- 	osnoise_hist_set_signals(params);
- 
-diff --git a/tools/tracing/rtla/src/osnoise_top.c b/tools/tracing/rtla/src/osnoise_top.c
-index 0833537bb2eb..85abba568faf 100644
---- a/tools/tracing/rtla/src/osnoise_top.c
-+++ b/tools/tracing/rtla/src/osnoise_top.c
-@@ -697,8 +697,6 @@ int osnoise_top_main(int argc, char **argv)
- 		}
- 	}
- 
--	trace_instance_start(trace);
--
- 	if (params->trace_output) {
- 		record = osnoise_init_trace_tool("osnoise");
- 		if (!record) {
-@@ -711,9 +709,18 @@ int osnoise_top_main(int argc, char **argv)
- 			if (retval)
- 				goto out_top;
- 		}
-+	}
- 
-+	/*
-+	 * Start the tracer here, after having set all instances.
-+	 *
-+	 * Let the trace instance start first for the case of hitting a stop
-+	 * tracing while enabling other instances. The trace instance is the
-+	 * one with most valuable information.
-+	 */
-+	if (params->trace_output)
- 		trace_instance_start(&record->trace);
--	}
-+	trace_instance_start(trace);
- 
- 	tool->start_time = time(NULL);
- 	osnoise_top_set_signals(params);
-diff --git a/tools/tracing/rtla/src/timerlat_hist.c b/tools/tracing/rtla/src/timerlat_hist.c
-index e720c8908906..f431cf43246c 100644
---- a/tools/tracing/rtla/src/timerlat_hist.c
-+++ b/tools/tracing/rtla/src/timerlat_hist.c
-@@ -922,8 +922,6 @@ int timerlat_hist_main(int argc, char *argv[])
- 		}
- 	}
- 
--	trace_instance_start(trace);
--
- 	if (params->trace_output) {
- 		record = osnoise_init_trace_tool("timerlat");
- 		if (!record) {
-@@ -936,8 +934,6 @@ int timerlat_hist_main(int argc, char *argv[])
- 			if (retval)
- 				goto out_hist;
- 		}
--
--		trace_instance_start(&record->trace);
- 	}
- 
- 	if (!params->no_aa) {
-@@ -956,9 +952,20 @@ int timerlat_hist_main(int argc, char *argv[])
- 			err_msg("Failed to enable timerlat tracer\n");
- 			goto out_hist;
- 		}
-+	}
- 
-+	/*
-+	 * Start the tracers here, after having set all instances.
-+	 *
-+	 * Let the trace instance start first for the case of hitting a stop
-+	 * tracing while enabling other instances. The trace instance is the
-+	 * one with most valuable information.
-+	 */
-+	if (params->trace_output)
-+		trace_instance_start(&record->trace);
-+	if (!params->no_aa)
- 		trace_instance_start(&aa->trace);
--	}
-+	trace_instance_start(trace);
- 
- 	tool->start_time = time(NULL);
- 	timerlat_hist_set_signals(params);
-diff --git a/tools/tracing/rtla/src/timerlat_top.c b/tools/tracing/rtla/src/timerlat_top.c
-index d6b5a382569e..02cff4948981 100644
---- a/tools/tracing/rtla/src/timerlat_top.c
-+++ b/tools/tracing/rtla/src/timerlat_top.c
-@@ -743,8 +743,6 @@ int timerlat_top_main(int argc, char *argv[])
- 		}
- 	}
- 
--	trace_instance_start(trace);
--
- 	if (params->trace_output) {
- 		record = osnoise_init_trace_tool("timerlat");
- 		if (!record) {
-@@ -757,8 +755,6 @@ int timerlat_top_main(int argc, char *argv[])
- 			if (retval)
- 				goto out_top;
- 		}
--
--		trace_instance_start(&record->trace);
- 	}
- 
- 	if (!params->no_aa) {
-@@ -785,11 +781,22 @@ int timerlat_top_main(int argc, char *argv[])
- 				err_msg("Failed to enable timerlat tracer\n");
- 				goto out_top;
- 			}
--
--			trace_instance_start(&aa->trace);
- 		}
- 	}
- 
-+	/*
-+	 * Start the tracers here, after having set all instances.
-+	 *
-+	 * Let the trace instance start first for the case of hitting a stop
-+	 * tracing while enabling other instances. The trace instance is the
-+	 * one with most valuable information.
-+	 */
-+	if (params->trace_output)
-+		trace_instance_start(&record->trace);
-+	if (!params->no_aa && aa != top)
-+		trace_instance_start(&aa->trace);
-+	trace_instance_start(trace);
-+
- 	top->start_time = time(NULL);
- 	timerlat_top_set_signals(params);
- 
--- 
-2.38.1
+Result: OK
+(mbox) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'From: Daniel Bristot de Oliveira <bristot@kernel.org>'
+(body) Adding cc: Steven Rostedt <rostedt@goodmis.org> from line 'Cc: Steven Rostedt <rostedt@goodmis.org>'
+(body) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'Cc: Daniel Bristot de Oliveira <bristot@kernel.org>'
+(body) Adding cc: Masami Hiramatsu <mhiramat@kernel.org> from line 'Cc: Masami Hiramatsu <mhiramat@kernel.org>'
+(body) Adding cc: Jonathan Corbet <corbet@lwn.net> from line 'Cc: Jonathan Corbet <corbet@lwn.net>'
+(body) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>'
+Dry-OK. Log says:
+Server: mail.kernel.org
+MAIL FROM:<bristot@kernel.org>
+RCPT TO:<linux-trace-devel@vger.kernel.org>
+RCPT TO:<rostedt@goodmis.org>
+RCPT TO:<linux-doc@vger.kernel.org>
+RCPT TO:<linux-kernel@vger.kernel.org>
+RCPT TO:<juri.lelli@redhat.com>
+RCPT TO:<chwhite@redhat.com>
+RCPT TO:<bristot@kernel.org>
+RCPT TO:<mhiramat@kernel.org>
+RCPT TO:<corbet@lwn.net>
+From: Daniel Bristot de Oliveira <bristot@kernel.org>
+To: linux-trace-devel@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Juri Lelli <juri.lelli@redhat.com>,
+	William White <chwhite@redhat.com>,
+	Daniel Bristot de Oliveira <bristot@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH 4/8] rtla: Automatically move rtla to a house-keeping cpu
+Date: Thu, 11 May 2023 20:02:56 +0200
+Message-Id: <ebe5dbd39620bfae91eb95fe6c69f766334c6381.1683827510.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <cover.1683827510.git.bristot@kernel.org>
+References: <cover.1683827510.git.bristot@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
+Result: OK
+(mbox) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'From: Daniel Bristot de Oliveira <bristot@kernel.org>'
+(body) Adding cc: Steven Rostedt <rostedt@goodmis.org> from line 'Cc: Steven Rostedt <rostedt@goodmis.org>'
+(body) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'Cc: Daniel Bristot de Oliveira <bristot@kernel.org>'
+(body) Adding cc: Masami Hiramatsu <mhiramat@kernel.org> from line 'Cc: Masami Hiramatsu <mhiramat@kernel.org>'
+(body) Adding cc: Jonathan Corbet <corbet@lwn.net> from line 'Cc: Jonathan Corbet <corbet@lwn.net>'
+(body) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>'
+Dry-OK. Log says:
+Server: mail.kernel.org
+MAIL FROM:<bristot@kernel.org>
+RCPT TO:<linux-trace-devel@vger.kernel.org>
+RCPT TO:<rostedt@goodmis.org>
+RCPT TO:<linux-doc@vger.kernel.org>
+RCPT TO:<linux-kernel@vger.kernel.org>
+RCPT TO:<juri.lelli@redhat.com>
+RCPT TO:<chwhite@redhat.com>
+RCPT TO:<bristot@kernel.org>
+RCPT TO:<mhiramat@kernel.org>
+RCPT TO:<corbet@lwn.net>
+From: Daniel Bristot de Oliveira <bristot@kernel.org>
+To: linux-trace-devel@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Juri Lelli <juri.lelli@redhat.com>,
+	William White <chwhite@redhat.com>,
+	Daniel Bristot de Oliveira <bristot@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH 5/8] rtla/timerlat: Give timerlat auto-analysis its own instance
+Date: Thu, 11 May 2023 20:02:57 +0200
+Message-Id: <dc2fa88f7c8c6103db986122baa496c944571d02.1683827510.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <cover.1683827510.git.bristot@kernel.org>
+References: <cover.1683827510.git.bristot@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+Result: OK
+(mbox) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'From: Daniel Bristot de Oliveira <bristot@kernel.org>'
+(body) Adding cc: Steven Rostedt <rostedt@goodmis.org> from line 'Cc: Steven Rostedt <rostedt@goodmis.org>'
+(body) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'Cc: Daniel Bristot de Oliveira <bristot@kernel.org>'
+(body) Adding cc: Masami Hiramatsu <mhiramat@kernel.org> from line 'Cc: Masami Hiramatsu <mhiramat@kernel.org>'
+(body) Adding cc: Jonathan Corbet <corbet@lwn.net> from line 'Cc: Jonathan Corbet <corbet@lwn.net>'
+(body) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>'
+Dry-OK. Log says:
+Server: mail.kernel.org
+MAIL FROM:<bristot@kernel.org>
+RCPT TO:<linux-trace-devel@vger.kernel.org>
+RCPT TO:<rostedt@goodmis.org>
+RCPT TO:<linux-doc@vger.kernel.org>
+RCPT TO:<linux-kernel@vger.kernel.org>
+RCPT TO:<juri.lelli@redhat.com>
+RCPT TO:<chwhite@redhat.com>
+RCPT TO:<bristot@kernel.org>
+RCPT TO:<mhiramat@kernel.org>
+RCPT TO:<corbet@lwn.net>
+From: Daniel Bristot de Oliveira <bristot@kernel.org>
+To: linux-trace-devel@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Juri Lelli <juri.lelli@redhat.com>,
+	William White <chwhite@redhat.com>,
+	Daniel Bristot de Oliveira <bristot@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH 6/8] rtla/timerlat_hist: Add auto-analysis support
+Date: Thu, 11 May 2023 20:02:58 +0200
+Message-Id: <09d6bbc8642fa930cdfc9fa003a0546f9106261d.1683827510.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <cover.1683827510.git.bristot@kernel.org>
+References: <cover.1683827510.git.bristot@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+Result: OK
+(mbox) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'From: Daniel Bristot de Oliveira <bristot@kernel.org>'
+(body) Adding cc: Steven Rostedt <rostedt@goodmis.org> from line 'Cc: Steven Rostedt <rostedt@goodmis.org>'
+(body) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'Cc: Daniel Bristot de Oliveira <bristot@kernel.org>'
+(body) Adding cc: Masami Hiramatsu <mhiramat@kernel.org> from line 'Cc: Masami Hiramatsu <mhiramat@kernel.org>'
+(body) Adding cc: Jonathan Corbet <corbet@lwn.net> from line 'Cc: Jonathan Corbet <corbet@lwn.net>'
+(body) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>'
+Dry-OK. Log says:
+Server: mail.kernel.org
+MAIL FROM:<bristot@kernel.org>
+RCPT TO:<linux-trace-devel@vger.kernel.org>
+RCPT TO:<rostedt@goodmis.org>
+RCPT TO:<linux-doc@vger.kernel.org>
+RCPT TO:<linux-kernel@vger.kernel.org>
+RCPT TO:<juri.lelli@redhat.com>
+RCPT TO:<chwhite@redhat.com>
+RCPT TO:<bristot@kernel.org>
+RCPT TO:<mhiramat@kernel.org>
+RCPT TO:<corbet@lwn.net>
+From: Daniel Bristot de Oliveira <bristot@kernel.org>
+To: linux-trace-devel@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Juri Lelli <juri.lelli@redhat.com>,
+	William White <chwhite@redhat.com>,
+	Daniel Bristot de Oliveira <bristot@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH 7/8] rtla: Start the tracers after creating all instances
+Date: Thu, 11 May 2023 20:02:59 +0200
+Message-Id: <26d837baec9e9e261a1352fba6ffe9be8967ba25.1683827510.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <cover.1683827510.git.bristot@kernel.org>
+References: <cover.1683827510.git.bristot@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+Result: OK
+(mbox) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'From: Daniel Bristot de Oliveira <bristot@kernel.org>'
+(body) Adding cc: Steven Rostedt <rostedt@goodmis.org> from line 'Cc: Steven Rostedt <rostedt@goodmis.org>'
+(body) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'Cc: Daniel Bristot de Oliveira <bristot@kernel.org>'
+(body) Adding cc: Masami Hiramatsu <mhiramat@kernel.org> from line 'Cc: Masami Hiramatsu <mhiramat@kernel.org>'
+(body) Adding cc: Jonathan Corbet <corbet@lwn.net> from line 'Cc: Jonathan Corbet <corbet@lwn.net>'
+(body) Adding cc: Daniel Bristot de Oliveira <bristot@kernel.org> from line 'Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>'
+Dry-OK. Log says:
+Server: mail.kernel.org
+MAIL FROM:<bristot@kernel.org>
+RCPT TO:<linux-trace-devel@vger.kernel.org>
+RCPT TO:<rostedt@goodmis.org>
+RCPT TO:<linux-doc@vger.kernel.org>
+RCPT TO:<linux-kernel@vger.kernel.org>
+RCPT TO:<juri.lelli@redhat.com>
+RCPT TO:<chwhite@redhat.com>
+RCPT TO:<bristot@kernel.org>
+RCPT TO:<mhiramat@kernel.org>
+RCPT TO:<corbet@lwn.net>
+From: Daniel Bristot de Oliveira <bristot@kernel.org>
+To: linux-trace-devel@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Juri Lelli <juri.lelli@redhat.com>,
+	William White <chwhite@redhat.com>,
+	Daniel Bristot de Oliveira <bristot@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH 8/8] rtla/hwnoise: Reduce runtime to 75%
+Date: Thu, 11 May 2023 20:03:00 +0200
+Message-Id: <09fd28d1be7a5f3e01da1c2c007cf56790635f39.1683827510.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <cover.1683827510.git.bristot@kernel.org>
+References: <cover.1683827510.git.bristot@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+Result: OK
