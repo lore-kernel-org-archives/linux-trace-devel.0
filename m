@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87869C77B7F
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 May 2023 18:05:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F342C7EE2E
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 May 2023 18:06:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239219AbjEKSF6 (ORCPT
+        id S239196AbjEKSGA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 11 May 2023 14:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60108 "EHLO
+        Thu, 11 May 2023 14:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239158AbjEKSFp (ORCPT
+        with ESMTP id S239194AbjEKSFq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 11 May 2023 14:05:45 -0400
+        Thu, 11 May 2023 14:05:46 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F7676BD;
-        Thu, 11 May 2023 11:05:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2AC58A4A;
+        Thu, 11 May 2023 11:05:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AB8D165090;
-        Thu, 11 May 2023 18:04:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03D57C433EF;
-        Thu, 11 May 2023 18:04:46 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6033765094;
+        Thu, 11 May 2023 18:04:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEF58C4339E;
+        Thu, 11 May 2023 18:04:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683828289;
-        bh=OOdhYxQnbsbsltTtXt6nP+lnhei8a/Ph8syUL4hrzGw=;
+        s=k20201202; t=1683828296;
+        bh=NspQ5eSfzkW/s4ZKEIvi8KiViH9J4SR7mF8q0fY8gJ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Esh3CADGUenMnpFri2rv4zRz95cRZNQdHt0TOSSaULBvs6js6/MeTId776aOUK02h
-         MEFOIR1/SayoZMP52dv51/sVqJ7gLAiHAves4WGXVCoBmQ10mX7SvxW449Ddch9Vbx
-         lYaNbsiIAUwpWsMDYWfrBr1RpXVHVDwTisx9wMFgyilD8pLXHbxUFQViLFpOq/yDAS
-         wyMif4E4XXAE3T6oc5MeYfLDdZTx50oAFkeOtzmvxTDqkm1i3J/aZLFY43hBGhLi5B
-         XxZOZ6hTM2O57cMRAQuTQx+4SUn4xlYqr4BApjg1+/iNxKA41kFsNnRBz6ODf6qtzk
-         LIUbjSwNDuosg==
+        b=bOsA92m9AdNn6Tp6Q5Wnrj0TfXWHfvnnMaQmEHfrYgBKfV4cchmUnOq3yX0DTJVcz
+         e8ehWgWWzwpTh3Egygs1D4qVUcu0jzpTTghtHA2HrA9EySOso3fzW1BpaysjTP85lA
+         otoTCSW4Y/IqsE/dYLDfwEk+uwFUtu8ReMEMNQbsjg9pFsXSxMOsOqu9Gmc2P8ZdkY
+         Vo1OdGxb2JF0RFFWfuwf7aea4mUgop1gxxKOhUJllL4wN29+MRszUa8AkKfNkJazfA
+         q4x46Nwl6tX+IBjW/PUg3noNu8sWh1H40XfzPqqmq7Wd9GuI6DMLnJ88bD4n7hq8yt
+         KrtTfLkY1Kh7g==
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     linux-trace-devel@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>
@@ -42,9 +42,9 @@ Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Daniel Bristot de Oliveira <bristot@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH 5/8] rtla/timerlat: Give timerlat auto-analysis its own instance
-Date:   Thu, 11 May 2023 20:04:23 +0200
-Message-Id: <dc2fa88f7c8c6103db986122baa496c944571d02.1683827510.git.bristot@kernel.org>
+Subject: [PATCH 8/8] rtla/hwnoise: Reduce runtime to 75%
+Date:   Thu, 11 May 2023 20:04:26 +0200
+Message-Id: <09fd28d1be7a5f3e01da1c2c007cf56790635f39.1683827510.git.bristot@kernel.org>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <cover.1683827510.git.bristot@kernel.org>
 References: <cover.1683827510.git.bristot@kernel.org>
@@ -54,241 +54,43 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Currently, the auto-analysis is attached to the timerlat top instance.
-The idea was to avoid creating another instance just for that, so one
-instance could be reused.
+osnoise runs 100% of time by default. It makes sense because osnoise
+is preemptive. hwnoise checks preemption once a second, so it
+reduces system progress.
 
-The drawback is that, by doing so, the auto-analysis run for the entire
-session, consuming CPU time. On my 24 box CPUs for timerlat with a 100
-us period consumed 50 % with auto analysis, but only 16 % without.
-
-By creating an instance for auto-analysis, we can keep the processing
-stopped until a stop tracing condition is hit. Once it happens,
-timerlat auto-analysis can use its own trace instance to parse only
-the end of the trace.
-
-By doing so, auto-analysis stop consuming cpu time when it is not
-needed.
-
-If the --aa-only is passed, the timerlat top instance is reused for
-auto analysis.
+Reduce runtime to 75% to avoid problems by default. I added a Fixes
+as it might avoid problems for first time users as it lands on distros.
 
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc: Masami Hiramatsu <mhiramat@kernel.org>
 Cc: Jonathan Corbet <corbet@lwn.net>
+Fixes: 1f428356c38d ("rtla: Add hwnoise tool")
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- tools/tracing/rtla/src/timerlat_aa.c  | 35 +++++++++++++++++--
- tools/tracing/rtla/src/timerlat_aa.h  |  5 +--
- tools/tracing/rtla/src/timerlat_top.c | 48 ++++++++++++++++++---------
- 3 files changed, 67 insertions(+), 21 deletions(-)
+ tools/tracing/rtla/src/osnoise_top.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/tools/tracing/rtla/src/timerlat_aa.c b/tools/tracing/rtla/src/timerlat_aa.c
-index 1843fff66da5..e0ffe69c271c 100644
---- a/tools/tracing/rtla/src/timerlat_aa.c
-+++ b/tools/tracing/rtla/src/timerlat_aa.c
-@@ -8,6 +8,7 @@
- #include "utils.h"
- #include "osnoise.h"
- #include "timerlat.h"
-+#include <unistd.h>
+diff --git a/tools/tracing/rtla/src/osnoise_top.c b/tools/tracing/rtla/src/osnoise_top.c
+index 85abba568faf..f7c959be8677 100644
+--- a/tools/tracing/rtla/src/osnoise_top.c
++++ b/tools/tracing/rtla/src/osnoise_top.c
+@@ -348,8 +348,14 @@ struct osnoise_top_params *osnoise_top_parse_args(int argc, char **argv)
+ 	if (!params)
+ 		exit(1);
  
- enum timelat_state {
- 	TIMERLAT_INIT = 0,
-@@ -233,7 +234,7 @@ static int timerlat_aa_thread_latency(struct timerlat_aa_data *taa_data,
-  *
-  * Returns 0 on success, -1 otherwise.
-  */
--int timerlat_aa_handler(struct trace_seq *s, struct tep_record *record,
-+static int timerlat_aa_handler(struct trace_seq *s, struct tep_record *record,
- 			struct tep_event *event, void *context)
- {
- 	struct timerlat_aa_context *taa_ctx = timerlat_aa_get_ctx();
-@@ -665,6 +666,25 @@ static void timerlat_thread_analysis(struct timerlat_aa_data *taa_data, int cpu,
- 		ns_to_usf(total));
- }
- 
-+static int timerlat_auto_analysis_collect_trace(struct timerlat_aa_context *taa_ctx)
-+{
-+	struct trace_instance *trace = &taa_ctx->tool->trace;
-+	int retval;
-+
-+	retval = tracefs_iterate_raw_events(trace->tep,
-+					    trace->inst,
-+					    NULL,
-+					    0,
-+					    collect_registered_events,
-+					    trace);
-+		if (retval < 0) {
-+			err_msg("Error iterating on events\n");
-+			return 0;
-+		}
-+
-+	return 1;
-+}
-+
- /**
-  * timerlat_auto_analysis - Analyze the collected data
-  */
-@@ -677,6 +697,8 @@ void timerlat_auto_analysis(int irq_thresh, int thread_thresh)
- 	struct tep_handle *tep;
- 	int cpu;
- 
-+	timerlat_auto_analysis_collect_trace(taa_ctx);
-+
- 	/* bring stop tracing to the ns scale */
- 	irq_thresh = irq_thresh * 1000;
- 	thread_thresh = thread_thresh * 1000;
-@@ -838,6 +860,10 @@ static int timerlat_aa_init_seqs(struct timerlat_aa_context *taa_ctx)
-  */
- static void timerlat_aa_unregister_events(struct osnoise_tool *tool, int dump_tasks)
- {
-+
-+	tep_unregister_event_handler(tool->trace.tep, -1, "ftrace", "timerlat",
-+				     timerlat_aa_handler, tool);
-+
- 	tracefs_event_disable(tool->trace.inst, "osnoise", NULL);
- 
- 	tep_unregister_event_handler(tool->trace.tep, -1, "osnoise", "nmi_noise",
-@@ -875,6 +901,10 @@ static int timerlat_aa_register_events(struct osnoise_tool *tool, int dump_tasks
- {
- 	int retval;
- 
-+	tep_register_event_handler(tool->trace.tep, -1, "ftrace", "timerlat",
-+				timerlat_aa_handler, tool);
-+
-+
- 	/*
- 	 * register auto-analysis handlers.
- 	 */
-@@ -955,8 +985,9 @@ void timerlat_aa_destroy(void)
-  *
-  * Returns 0 on success, -1 otherwise.
-  */
--int timerlat_aa_init(struct osnoise_tool *tool, int nr_cpus, int dump_tasks)
-+int timerlat_aa_init(struct osnoise_tool *tool, int dump_tasks)
- {
-+	int nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
- 	struct timerlat_aa_context *taa_ctx;
- 	int retval;
- 
-diff --git a/tools/tracing/rtla/src/timerlat_aa.h b/tools/tracing/rtla/src/timerlat_aa.h
-index d4f6ca7e342a..cea4bb1531a8 100644
---- a/tools/tracing/rtla/src/timerlat_aa.h
-+++ b/tools/tracing/rtla/src/timerlat_aa.h
-@@ -3,10 +3,7 @@
-  * Copyright (C) 2023 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
-  */
- 
--int timerlat_aa_init(struct osnoise_tool *tool, int nr_cpus, int dump_task);
-+int timerlat_aa_init(struct osnoise_tool *tool, int dump_task);
- void timerlat_aa_destroy(void);
- 
--int timerlat_aa_handler(struct trace_seq *s, struct tep_record *record,
--			struct tep_event *event, void *context);
--
- void timerlat_auto_analysis(int irq_thresh, int thread_thresh);
-diff --git a/tools/tracing/rtla/src/timerlat_top.c b/tools/tracing/rtla/src/timerlat_top.c
-index f0c6d9735e2a..d6b5a382569e 100644
---- a/tools/tracing/rtla/src/timerlat_top.c
-+++ b/tools/tracing/rtla/src/timerlat_top.c
-@@ -156,9 +156,6 @@ timerlat_top_handler(struct trace_seq *s, struct tep_record *record,
- 		timerlat_top_update(top, cpu, thread, latency);
- 	}
- 
--	if (!params->no_aa)
--		timerlat_aa_handler(s, record, event, context);
--
- 	return 0;
- }
- 
-@@ -644,7 +641,6 @@ static struct osnoise_tool
- {
- 	struct osnoise_tool *top;
- 	int nr_cpus;
--	int retval;
- 
- 	nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
- 
-@@ -661,16 +657,6 @@ static struct osnoise_tool
- 	tep_register_event_handler(top->trace.tep, -1, "ftrace", "timerlat",
- 				   timerlat_top_handler, top);
- 
--	/*
--	 * If no auto analysis, we are ready.
--	 */
--	if (params->no_aa)
--		return top;
--
--	retval = timerlat_aa_init(top, nr_cpus, params->dump_tasks);
--	if (retval)
--		goto out_err;
--
- 	return top;
- 
- out_err:
-@@ -702,6 +688,7 @@ int timerlat_top_main(int argc, char *argv[])
- 	struct timerlat_top_params *params;
- 	struct osnoise_tool *record = NULL;
- 	struct osnoise_tool *top = NULL;
-+	struct osnoise_tool *aa = NULL;
- 	struct trace_instance *trace;
- 	int dma_latency_fd = -1;
- 	int return_value = 1;
-@@ -774,6 +761,35 @@ int timerlat_top_main(int argc, char *argv[])
- 		trace_instance_start(&record->trace);
- 	}
- 
-+	if (!params->no_aa) {
-+		if (params->aa_only) {
-+			/* as top is not used for display, use it for aa */
-+			aa = top;
-+		} else  {
-+			/* otherwise, a new instance is needed */
-+			aa = osnoise_init_tool("timerlat_aa");
-+			if (!aa)
-+				goto out_top;
-+		}
-+
-+		retval = timerlat_aa_init(aa, params->dump_tasks);
-+		if (retval) {
-+			err_msg("Failed to enable the auto analysis instance\n");
-+			goto out_top;
-+		}
-+
-+		/* if it is re-using the main instance, there is no need to start it */
-+		if (aa != top) {
-+			retval = enable_timerlat(&aa->trace);
-+			if (retval) {
-+				err_msg("Failed to enable timerlat tracer\n");
-+				goto out_top;
-+			}
-+
-+			trace_instance_start(&aa->trace);
-+		}
+-	if (strcmp(argv[0], "hwnoise") == 0)
++	if (strcmp(argv[0], "hwnoise") == 0) {
+ 		params->mode = MODE_HWNOISE;
++		/*
++		 * Reduce CPU usage for 75% to avoid killing the system.
++		 */
++		params->runtime = 750000;
++		params->period = 1000000;
 +	}
-+
- 	top->start_time = time(NULL);
- 	timerlat_top_set_signals(params);
  
-@@ -829,13 +845,15 @@ int timerlat_top_main(int argc, char *argv[])
- 	}
- 
- out_top:
-+	timerlat_aa_destroy();
- 	if (dma_latency_fd >= 0)
- 		close(dma_latency_fd);
- 	trace_events_destroy(&record->trace, params->events);
- 	params->events = NULL;
- out_free:
- 	timerlat_free_top(top->data);
--	timerlat_aa_destroy();
-+	if (aa && aa != top)
-+		osnoise_destroy_tool(aa);
- 	osnoise_destroy_tool(record);
- 	osnoise_destroy_tool(top);
- 	free(params);
+ 	while (1) {
+ 		static struct option long_options[] = {
 -- 
 2.38.1
 
