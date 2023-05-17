@@ -2,97 +2,89 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6009C77B75
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 May 2023 18:30:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1915C77B7A
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 May 2023 18:30:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbjEQSaS (ORCPT
+        id S229460AbjEQSab (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 17 May 2023 14:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58296 "EHLO
+        Wed, 17 May 2023 14:30:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbjEQSaR (ORCPT
+        with ESMTP id S229476AbjEQSaa (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 17 May 2023 14:30:17 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD7E83D8
-        for <linux-trace-devel@vger.kernel.org>; Wed, 17 May 2023 11:30:14 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-510a59ead3fso1711511a12.2
-        for <linux-trace-devel@vger.kernel.org>; Wed, 17 May 2023 11:30:14 -0700 (PDT)
+        Wed, 17 May 2023 14:30:30 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91656106
+        for <linux-trace-devel@vger.kernel.org>; Wed, 17 May 2023 11:30:29 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-50bcb00a4c2so1692818a12.1
+        for <linux-trace-devel@vger.kernel.org>; Wed, 17 May 2023 11:30:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684348212; x=1686940212;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7PjQjwyenA2ydUVQbCzZozAq6aS3z6hC6mAOL5/BYuA=;
-        b=e1omt5X2pzitcwO/JBM8kJ7ff7lxgxW4xnNDDC73uQpAsZLfG+ohy+QidmYngWFqY7
-         0gzvFQkIm11+LEcqDdW5X01LHzGBp1vpx0jSgNRQbIT1Z8lGI1W1meQbhUG0pdGH6MHr
-         ajhfnJm0+WjtgL6H0edY8rrBK55kB4T5Ioz5/zMgNLOkrCT7lHZh1xYx+Bb10PkYTrRP
-         TOnPyum3SPvLHKYuZrnn+AjyrQCS84XhmsxnN9jVcaez+OgnjSE7R+k2was0+sP0fLuG
-         FtWyYAcSqx3Iu8hykCqdagAZXoNq9f8bcMYHlGuq6eFmFpi8KsL0ySd6Afm/5tgn390v
-         3kRw==
+        d=gmail.com; s=20221208; t=1684348227; x=1686940227;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DFsDejeobvuixEYeGLgJhtbLYB4BjUwC2DFJQYysNsE=;
+        b=sbG4vtw1owyHDilQIB+39kORp56A7Y956K81H3XJVlRc/Dwq7F2rbD/rZO1M4Fp5nQ
+         AyOkbqP/b9yUkc8fklOJM3GDAzY16TzHg2JewC8NBMLGPn64bwSTFjIJWG6oQWS5j1Ju
+         pQd9d5ZAa8xGihi5YR+R59CEgw3ZHrjZtHvwHjXu8qrgJuZHS1w9C9wk+mAonW/3soeK
+         Lwlh8GnoqZDj6ogpB9I1BPCsTrtCtAlc8esrBmrtNDzadXNfvUi/KXNjhuh+1z0/NROD
+         9NQlkjMXUt51xl+PsKarzX982UnJ99aZGxh/DQUbbTE3k1fLrSH8IKyTRfudGMlVidi0
+         PZsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684348212; x=1686940212;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7PjQjwyenA2ydUVQbCzZozAq6aS3z6hC6mAOL5/BYuA=;
-        b=EOXrFHNjyjUD6usn0n72O4Pd1oizB54aD2aDe9hPzVa62VTlgoJrfqX6KNkTrlWYbe
-         acdsSP4D51ucS0Qa8wjF2AJpzVN75x9+Y/DvOaWz2abwn1K0yI2EXLcVfJVcJmJkL8sv
-         eA22bEnJMgvn423rtwiUopAh6EEOfp7krFChG2T1mKrztzy3sLHdkDHs0dd7uhI4TBxJ
-         gkQawz+9FNa3BgLw2U5Ah192IwypGxupRWBFyfHtV1+IdgeYeyU5sArxxrVNuWF5SGUi
-         HZcJCtsTovQjZ8cK7RLkUOuXGsX1jvmcvRMBB9m+mOuuaTLipM8Awn+t5BkizT+dp1OP
-         +x0A==
-X-Gm-Message-State: AC+VfDxyci7T1hWpbRcC3FheYbeQJKPXNXt1tvPQO+cKVkWbSJl8OQ9h
-        8PAG/I7qVNYpByDEYTJsvl9acRDuTsc=
-X-Google-Smtp-Source: ACHHUZ4v4wshhOLLuIe2B/plGvgmXDqW7Tu4/R1ZiZ8zjXTnwcA456JMkltwiYBwnxoafaRn7p7soA==
-X-Received: by 2002:aa7:d311:0:b0:504:b228:878d with SMTP id p17-20020aa7d311000000b00504b228878dmr2713171edq.25.1684348211989;
-        Wed, 17 May 2023 11:30:11 -0700 (PDT)
-Received: from [192.168.0.107] (78-154-14-41.ip.btc-net.bg. [78.154.14.41])
-        by smtp.gmail.com with ESMTPSA id m26-20020a50ef1a000000b0050690bc07a3sm9848349eds.18.2023.05.17.11.30.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 May 2023 11:30:11 -0700 (PDT)
-Message-ID: <ec02e617-594e-2778-9126-61c78abb211b@gmail.com>
-Date:   Wed, 17 May 2023 21:30:10 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH] Fix segfault in libkshark-tepdata
-Content-Language: en-US
-To:     linux-trace-devel@vger.kernel.org
-Cc:     rostedt@goodmis.org
-References: <20230517182410.216670-1-y.karadz@gmail.com>
+        d=1e100.net; s=20221208; t=1684348227; x=1686940227;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DFsDejeobvuixEYeGLgJhtbLYB4BjUwC2DFJQYysNsE=;
+        b=ZM+jxKX9hBEQVLlVh4mM3Lvu1NArHAI5QlV1XPobGgE+AwZaM0hPRpvT7NrKxTM47v
+         ji1FaEXRxrf7LJevw0awz4QloRluXgQZRNoPBiZ4VYxtEM58zVz9lGT4+P3xLPiqKp2w
+         KIDcWVyZ3n/BCIHpvtUa+IjiCrH9oHDGnb1YJOwQcMgvzSDuLQmC6laOTpk/HUNJRL6+
+         CHN2TuCYbvltMgeVeCGu2df4y09yie2Eu39Kw8F+YtN+B9UWMP4t2YFagCLZBu38GM+I
+         2WwDlaeSFCfxWpKsKW5x7et1sZJummJ9EdAGTq3YCDpzX1yuUNmOypRIc0K4/+/rrLUK
+         zyPQ==
+X-Gm-Message-State: AC+VfDzdGRFTYefFNMYMrPV0XntK+HUH0Yo0MrkSjC5IHDPHYm5PvjdL
+        /6eK4EdgjdTCxu3JdlWfgjM2ZMR/1Dw=
+X-Google-Smtp-Source: ACHHUZ5WHjEjmD2wF7v4eOvxuXBGi+JjNVhTSIajrqsfcZj9SawEHOcREN6dQ3kMcpk/nCXMEi8kOA==
+X-Received: by 2002:a17:907:8a14:b0:94f:6218:191f with SMTP id sc20-20020a1709078a1400b0094f6218191fmr41376348ejc.52.1684348227340;
+        Wed, 17 May 2023 11:30:27 -0700 (PDT)
+Received: from belmeken.. (78-154-14-41.ip.btc-net.bg. [78.154.14.41])
+        by smtp.gmail.com with ESMTPSA id l21-20020a1709062a9500b00969f44bbef3sm12128776eje.11.2023.05.17.11.30.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 May 2023 11:30:26 -0700 (PDT)
 From:   Yordan Karadzhov <y.karadz@gmail.com>
-In-Reply-To: <20230517182410.216670-1-y.karadz@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To:     linux-trace-devel@vger.kernel.org
+Cc:     rostedt@goodmis.org, Yordan Karadzhov <y.karadz@gmail.com>
+Subject: [PATCH] kernel-shark: Fix segfault in libkshark-tepdata
+Date:   Wed, 17 May 2023 21:28:46 +0300
+Message-Id: <20230517182846.217058-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.40.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Please ignore this one.
-Thanks!
-Y.
+It turns out that the size of the info field of some events can be zero.
 
-On 5/17/23 21:24, Yordan Karadzhov wrote:
-> It turns out that the size of the info field of some events can be zero.
-> 
-> Fixing: 3146d0b (kernel-shark: Do not truncate multi-line events)
-> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=217429
-> Signed-off-by: Yordan Karadzhov <y.karadz@gmail.com>
-> ---
->   src/libkshark-tepdata.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/src/libkshark-tepdata.c b/src/libkshark-tepdata.c
-> index 2009ca6..b780957 100644
-> --- a/src/libkshark-tepdata.c
-> +++ b/src/libkshark-tepdata.c
-> @@ -825,6 +825,8 @@ static char *get_info_str(struct kshark_data_stream *stream,
->   	tep_print_event(kshark_get_tep(stream), &seq, record,
->   			"%s", TEP_PRINT_INFO);
->   
-> +	if (!seq.len)
-> +		return NULL;
->   	/*
->   	 * The event info string contains a trailing newline.
->   	 * Remove this newline.
+Fixing: 3146d0b (kernel-shark: Do not truncate multi-line events)
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=217429
+Signed-off-by: Yordan Karadzhov <y.karadz@gmail.com>
+---
+ src/libkshark-tepdata.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/libkshark-tepdata.c b/src/libkshark-tepdata.c
+index 2009ca6..b780957 100644
+--- a/src/libkshark-tepdata.c
++++ b/src/libkshark-tepdata.c
+@@ -825,6 +825,8 @@ static char *get_info_str(struct kshark_data_stream *stream,
+ 	tep_print_event(kshark_get_tep(stream), &seq, record,
+ 			"%s", TEP_PRINT_INFO);
+ 
++	if (!seq.len)
++		return NULL;
+ 	/*
+ 	 * The event info string contains a trailing newline.
+ 	 * Remove this newline.
+-- 
+2.40.0
+
