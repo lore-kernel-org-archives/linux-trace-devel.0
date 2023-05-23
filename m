@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6160CC7EE33
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 May 2023 17:45:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D56D9C77B75
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 May 2023 17:45:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238304AbjEWRo6 (ORCPT
+        id S238309AbjEWRpE (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 23 May 2023 13:44:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43670 "EHLO
+        Tue, 23 May 2023 13:45:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238288AbjEWRos (ORCPT
+        with ESMTP id S238302AbjEWRo6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 23 May 2023 13:44:48 -0400
+        Tue, 23 May 2023 13:44:58 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E258E;
-        Tue, 23 May 2023 10:44:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFEF190;
+        Tue, 23 May 2023 10:44:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6BD4163567;
-        Tue, 23 May 2023 17:44:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DC29C433EF;
-        Tue, 23 May 2023 17:44:42 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C51A63562;
+        Tue, 23 May 2023 17:44:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABFF9C4339B;
+        Tue, 23 May 2023 17:44:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1684863884;
-        bh=0ubVhPhyNbTPpZGTTaXHkR9+c1t8+bxgv6RbmWcdImM=;
+        s=k20201202; t=1684863895;
+        bh=wrC0UjEKUIFXbnICT6UkqA3YCTd+/hzNT3Qa2DVLVho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bs9o9EYNAYAZu3TemcNSHeeysnqu2gBHSBUsIXdnCOQINB55isIV1KP3UCyN+5L5X
-         EnrF9Z5zGe/xNBZoIlXo15iOC9KeppOlTM+StEU/Huvdzr594kiL38o1PLZb1djNwY
-         q6wt+kmE/Ik3JMGhGhzc/V+SfPCeKZcB4qF3glNJ50ZE8POZdiZJqSoT66wx8+6h7o
-         WPZq3V8V24tEnHdKq+f7WwHtKScactiIrbc7GrUlgenBBzrpG8UVlufAA9W+KwDr33
-         4Zfuii9WNFWX86+J5bH/cGhbvL9+MDL78UiI1rQp7Gixk0WfD5p6dVycT/8KVeepvZ
-         DgDoQYj8l6pmQ==
+        b=S4x5BO3J9YrnUl1dxdiITViZcDGS6t4q2jlfFDCZdVYDDop4FVo7XM+i2w/bf+CdE
+         5lp9cgU/V1sjI1ZJJTKMwSlrqM2upAd7MKmOxW/UPoaT45WkrfQee+27MdsaZsao9s
+         cgw94i4h3WIcjqxp4kvcJ21A1EdPR5wYDfxCcnH8afAbtKk+NhxQ4zma+zvJtkpZ9p
+         btO7z1KTUjXfq/r4kBfLUNWXkGTwu80fJoW3EHGwvZep8dJBjwz2Tjk28w24LVaYAX
+         03DfbmQTf9eYR8OlEZ+tyYF/Lrr7dOHounX+LXSfQcNAoV+Lhx64Ijzq6gqKp0E7xC
+         DGenDVADHURIQ==
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>
@@ -41,9 +41,9 @@ Cc:     linux-doc@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
         Daniel Bristot de Oliveira <bristot@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH V2 2/9] rtla: Add --house-keeping option
-Date:   Tue, 23 May 2023 19:44:24 +0200
-Message-Id: <1069965ccc14b69e8ce8b3b8d1641aa90a2a95ff.1684863094.git.bristot@kernel.org>
+Subject: [PATCH V2 6/9] rtla/timerlat_hist: Add auto-analysis support
+Date:   Tue, 23 May 2023 19:44:28 +0200
+Message-Id: <70c51d4903b758de1d812e63ea481b0a454ffd30.1684863094.git.bristot@kernel.org>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <cover.1684863094.git.bristot@kernel.org>
 References: <cover.1684863094.git.bristot@kernel.org>
@@ -53,521 +53,237 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-To avoid having rtla interfering with the measurement threads, add an
-option for the user to set the CPUs in which rtla should run. For
-instance:
-
-  # rtla timerlat top -H 0 -C 1-7
-
-Will place rtla in the CPU 0, while running the measurement threads in
-the CPU 1-7.
+Add auto-analysis to timerlat hist, including the --no-aa option to
+reduce overhead and --dump-task. --aa-only was not added as it is
+already on timerlat top.
 
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc: Masami Hiramatsu <mhiramat@kernel.org>
 Cc: Jonathan Corbet <corbet@lwn.net>
-Suggested-by: Juri Lelli <juri.lelli@redhat.com>
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- Documentation/tools/rtla/common_options.rst |  4 ++
- tools/tracing/rtla/src/osnoise_hist.c       | 29 +++++++++--
- tools/tracing/rtla/src/osnoise_top.c        | 27 +++++++++-
- tools/tracing/rtla/src/timerlat_hist.c      | 27 +++++++++-
- tools/tracing/rtla/src/timerlat_top.c       | 27 +++++++++-
- tools/tracing/rtla/src/utils.c              | 58 +++++++++++++++++++++
- tools/tracing/rtla/src/utils.h              |  3 ++
- 7 files changed, 166 insertions(+), 9 deletions(-)
+ .../tools/rtla/common_timerlat_aa.rst         |  7 ---
+ .../tools/rtla/rtla-timerlat-hist.rst         |  7 ++-
+ .../tools/rtla/rtla-timerlat-top.rst          |  7 +++
+ tools/tracing/rtla/src/timerlat_hist.c        | 51 ++++++++++++++++++-
+ 4 files changed, 61 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/tools/rtla/common_options.rst b/Documentation/tools/rtla/common_options.rst
-index ede07359d93c..aeb91ff3bd68 100644
---- a/Documentation/tools/rtla/common_options.rst
-+++ b/Documentation/tools/rtla/common_options.rst
-@@ -2,6 +2,10 @@
+diff --git a/Documentation/tools/rtla/common_timerlat_aa.rst b/Documentation/tools/rtla/common_timerlat_aa.rst
+index 795b9fbcbc6d..077029e6b289 100644
+--- a/Documentation/tools/rtla/common_timerlat_aa.rst
++++ b/Documentation/tools/rtla/common_timerlat_aa.rst
+@@ -5,10 +5,3 @@
+ **--no-aa**
  
-         Set the osnoise tracer to run the sample threads in the cpu-list.
+         disable auto-analysis, reducing rtla timerlat cpu usage
+-
+-**--aa-only** *us*
+-
+-        Set stop tracing conditions and run without collecting and displaying statistics.
+-        Print the auto-analysis if the system hits the stop tracing condition. This option
+-        is useful to reduce rtla timerlat CPU, enabling the debug without the overhead of
+-        collecting the statistics.
+diff --git a/Documentation/tools/rtla/rtla-timerlat-hist.rst b/Documentation/tools/rtla/rtla-timerlat-hist.rst
+index 6bf7f0ca4556..057db78d4095 100644
+--- a/Documentation/tools/rtla/rtla-timerlat-hist.rst
++++ b/Documentation/tools/rtla/rtla-timerlat-hist.rst
+@@ -29,15 +29,18 @@ OPTIONS
  
-+**-H**, **--house-keeping** *cpu-list*
+ .. include:: common_options.rst
+ 
++.. include:: common_timerlat_aa.rst
 +
-+        Run rtla control threads only on the given cpu-list.
+ EXAMPLE
+ =======
+ In the example below, **rtla timerlat hist** is set to run for *10* minutes,
+ in the cpus *0-4*, *skipping zero* only lines. Moreover, **rtla timerlat
+ hist** will change the priority of the *timerlat* threads to run under
+ *SCHED_DEADLINE* priority, with a *10us* runtime every *1ms* period. The
+-*1ms* period is also passed to the *timerlat* tracer::
++*1ms* period is also passed to the *timerlat* tracer. Auto-analysis is disabled
++to reduce overhead ::
+ 
+-  [root@alien ~]# timerlat hist -d 10m -c 0-4 -P d:100us:1ms -p 1ms
++  [root@alien ~]# timerlat hist -d 10m -c 0-4 -P d:100us:1ms -p 1ms --no-aa
+   # RTLA timerlat histogram
+   # Time unit is microseconds (us)
+   # Duration:   0 00:10:00
+diff --git a/Documentation/tools/rtla/rtla-timerlat-top.rst b/Documentation/tools/rtla/rtla-timerlat-top.rst
+index 73799c1150ad..1b7cf4e3eafe 100644
+--- a/Documentation/tools/rtla/rtla-timerlat-top.rst
++++ b/Documentation/tools/rtla/rtla-timerlat-top.rst
+@@ -32,6 +32,13 @@ OPTIONS
+ 
+ .. include:: common_timerlat_aa.rst
+ 
++**--aa-only** *us*
 +
- **-d**, **--duration** *time[s|m|h|d]*
- 
-         Set the duration of the session.
-diff --git a/tools/tracing/rtla/src/osnoise_hist.c b/tools/tracing/rtla/src/osnoise_hist.c
-index 076f4c6af3dd..d2b68177ffac 100644
---- a/tools/tracing/rtla/src/osnoise_hist.c
-+++ b/tools/tracing/rtla/src/osnoise_hist.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
-  */
- 
-+#define _GNU_SOURCE
- #include <getopt.h>
- #include <stdlib.h>
- #include <string.h>
-@@ -11,6 +12,7 @@
- #include <errno.h>
- #include <stdio.h>
- #include <time.h>
-+#include <sched.h>
- 
- #include "utils.h"
- #include "osnoise.h"
-@@ -30,6 +32,8 @@ struct osnoise_hist_params {
- 	int			set_sched;
- 	int			output_divisor;
- 	int			cgroup;
-+	int			hk_cpus;
-+	cpu_set_t		hk_cpu_set;
- 	struct sched_attr	sched_param;
- 	struct trace_events	*events;
- 
-@@ -434,8 +438,8 @@ static void osnoise_hist_usage(char *usage)
- 		"",
- 		"  usage: rtla osnoise hist [-h] [-D] [-d s] [-a us] [-p us] [-r us] [-s us] [-S us] \\",
- 		"	  [-T us] [-t[=file]] [-e sys[:event]] [--filter <filter>] [--trigger <trigger>] \\",
--		"	  [-c cpu-list] [-P priority] [-b N] [-E N] [--no-header] [--no-summary] [--no-index] \\",
--		"	  [--with-zeros] [-C[=cgroup_name]]",
-+		"	  [-c cpu-list] [-H cpu-list] [-P priority] [-b N] [-E N] [--no-header] [--no-summary] \\",
-+		"	  [--no-index] [--with-zeros] [-C[=cgroup_name]]",
- 		"",
- 		"	  -h/--help: print this menu",
- 		"	  -a/--auto: set automatic trace mode, stopping the session if argument in us sample is hit",
-@@ -445,6 +449,7 @@ static void osnoise_hist_usage(char *usage)
- 		"	  -S/--stop-total us: stop trace if the total sample is higher than the argument in us",
- 		"	  -T/--threshold us: the minimum delta to be considered a noise",
- 		"	  -c/--cpus cpu-list: list of cpus to run osnoise threads",
-+		"	  -H/--house-keeping cpus: run rtla control threads only on the given cpus",
- 		"	  -C/--cgroup[=cgroup_name]: set cgroup, if no cgroup_name is passed, the rtla's cgroup will be inherited",
- 		"	  -d/--duration time[s|m|h|d]: duration of the session",
- 		"	  -D/--debug: print debug info",
-@@ -507,6 +512,7 @@ static struct osnoise_hist_params
- 			{"cgroup",		optional_argument,	0, 'C'},
- 			{"debug",		no_argument,		0, 'D'},
- 			{"duration",		required_argument,	0, 'd'},
-+			{"house-keeping",	required_argument,		0, 'H'},
- 			{"help",		no_argument,		0, 'h'},
- 			{"period",		required_argument,	0, 'p'},
- 			{"priority",		required_argument,	0, 'P'},
-@@ -528,7 +534,7 @@ static struct osnoise_hist_params
- 		/* getopt_long stores the option index here. */
- 		int option_index = 0;
- 
--		c = getopt_long(argc, argv, "a:c:C::b:d:e:E:Dhp:P:r:s:S:t::T:01234:5:",
-+		c = getopt_long(argc, argv, "a:c:C::b:d:e:E:DhH:p:P:r:s:S:t::T:01234:5:",
- 				 long_options, &option_index);
- 
- 		/* detect the end of the options. */
-@@ -597,6 +603,14 @@ static struct osnoise_hist_params
- 		case '?':
- 			osnoise_hist_usage(NULL);
- 			break;
-+		case 'H':
-+			params->hk_cpus = 1;
-+			retval = parse_cpu_set(optarg, &params->hk_cpu_set);
-+			if (retval) {
-+				err_msg("Error parsing house keeping CPUs\n");
-+				exit(EXIT_FAILURE);
-+			}
-+			break;
- 		case 'p':
- 			params->period = get_llong_from_str(optarg);
- 			if (params->period > 10000000)
-@@ -732,6 +746,15 @@ osnoise_hist_apply_config(struct osnoise_tool *tool, struct osnoise_hist_params
- 		}
- 	}
- 
-+	if (params->hk_cpus) {
-+		retval = sched_setaffinity(getpid(), sizeof(params->hk_cpu_set),
-+					   &params->hk_cpu_set);
-+		if (retval == -1) {
-+			err_msg("Failed to set rtla to the house keeping CPUs\n");
-+			goto out_err;
-+		}
-+	}
++        Set stop tracing conditions and run without collecting and displaying statistics.
++        Print the auto-analysis if the system hits the stop tracing condition. This option
++        is useful to reduce rtla timerlat CPU, enabling the debug without the overhead of
++        collecting the statistics.
 +
- 	return 0;
+ EXAMPLE
+ =======
  
- out_err:
-diff --git a/tools/tracing/rtla/src/osnoise_top.c b/tools/tracing/rtla/src/osnoise_top.c
-index 139d8d392540..fcf6c14ce1bc 100644
---- a/tools/tracing/rtla/src/osnoise_top.c
-+++ b/tools/tracing/rtla/src/osnoise_top.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
-  */
- 
-+#define _GNU_SOURCE
- #include <getopt.h>
- #include <stdlib.h>
- #include <string.h>
-@@ -10,6 +11,7 @@
- #include <unistd.h>
- #include <stdio.h>
- #include <time.h>
-+#include <sched.h>
- 
- #include "osnoise.h"
- #include "utils.h"
-@@ -37,6 +39,8 @@ struct osnoise_top_params {
- 	int			quiet;
- 	int			set_sched;
- 	int			cgroup;
-+	int			hk_cpus;
-+	cpu_set_t		hk_cpu_set;
- 	struct sched_attr	sched_param;
- 	struct trace_events	*events;
- 	enum osnoise_mode	mode;
-@@ -278,7 +282,7 @@ static void osnoise_top_usage(struct osnoise_top_params *params, char *usage)
- 	static const char * const msg[] = {
- 		" [-h] [-q] [-D] [-d s] [-a us] [-p us] [-r us] [-s us] [-S us] \\",
- 		"	  [-T us] [-t[=file]] [-e sys[:event]] [--filter <filter>] [--trigger <trigger>] \\",
--		"	  [-c cpu-list] [-P priority] [-C[=cgroup_name]]",
-+		"	  [-c cpu-list] [-H cpu-list] [-P priority] [-C[=cgroup_name]]",
- 		"",
- 		"	  -h/--help: print this menu",
- 		"	  -a/--auto: set automatic trace mode, stopping the session if argument in us sample is hit",
-@@ -288,6 +292,7 @@ static void osnoise_top_usage(struct osnoise_top_params *params, char *usage)
- 		"	  -S/--stop-total us: stop trace if the total sample is higher than the argument in us",
- 		"	  -T/--threshold us: the minimum delta to be considered a noise",
- 		"	  -c/--cpus cpu-list: list of cpus to run osnoise threads",
-+		"	  -H/--house-keeping cpus: run rtla control threads only on the given cpus",
- 		"	  -C/--cgroup[=cgroup_name]: set cgroup, if no cgroup_name is passed, the rtla's cgroup will be inherited",
- 		"	  -d/--duration time[s|m|h|d]: duration of the session",
- 		"	  -D/--debug: print debug info",
-@@ -354,6 +359,7 @@ struct osnoise_top_params *osnoise_top_parse_args(int argc, char **argv)
- 			{"debug",		no_argument,		0, 'D'},
- 			{"duration",		required_argument,	0, 'd'},
- 			{"event",		required_argument,	0, 'e'},
-+			{"house-keeping",	required_argument,	0, 'H'},
- 			{"help",		no_argument,		0, 'h'},
- 			{"period",		required_argument,	0, 'p'},
- 			{"priority",		required_argument,	0, 'P'},
-@@ -371,7 +377,7 @@ struct osnoise_top_params *osnoise_top_parse_args(int argc, char **argv)
- 		/* getopt_long stores the option index here. */
- 		int option_index = 0;
- 
--		c = getopt_long(argc, argv, "a:c:C::d:De:hp:P:qr:s:S:t::T:0:1:",
-+		c = getopt_long(argc, argv, "a:c:C::d:De:hH:p:P:qr:s:S:t::T:0:1:",
- 				 long_options, &option_index);
- 
- 		/* Detect the end of the options. */
-@@ -430,6 +436,14 @@ struct osnoise_top_params *osnoise_top_parse_args(int argc, char **argv)
- 		case '?':
- 			osnoise_top_usage(params, NULL);
- 			break;
-+		case 'H':
-+			params->hk_cpus = 1;
-+			retval = parse_cpu_set(optarg, &params->hk_cpu_set);
-+			if (retval) {
-+				err_msg("Error parsing house keeping CPUs\n");
-+				exit(EXIT_FAILURE);
-+			}
-+			break;
- 		case 'p':
- 			params->period = get_llong_from_str(optarg);
- 			if (params->period > 10000000)
-@@ -561,6 +575,15 @@ osnoise_top_apply_config(struct osnoise_tool *tool, struct osnoise_top_params *p
- 		}
- 	}
- 
-+	if (params->hk_cpus) {
-+		retval = sched_setaffinity(getpid(), sizeof(params->hk_cpu_set),
-+					   &params->hk_cpu_set);
-+		if (retval == -1) {
-+			err_msg("Failed to set rtla to the house keeping CPUs\n");
-+			goto out_err;
-+		}
-+	}
-+
- 	return 0;
- 
- out_err:
 diff --git a/tools/tracing/rtla/src/timerlat_hist.c b/tools/tracing/rtla/src/timerlat_hist.c
-index 459c159923e8..d48c05d238f9 100644
+index 1675d54cae81..e720c8908906 100644
 --- a/tools/tracing/rtla/src/timerlat_hist.c
 +++ b/tools/tracing/rtla/src/timerlat_hist.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
-  */
- 
-+#define _GNU_SOURCE
- #include <getopt.h>
- #include <stdlib.h>
- #include <string.h>
-@@ -10,6 +11,7 @@
- #include <unistd.h>
- #include <stdio.h>
- #include <time.h>
-+#include <sched.h>
- 
+@@ -16,6 +16,7 @@
  #include "utils.h"
  #include "osnoise.h"
-@@ -31,6 +33,8 @@ struct timerlat_hist_params {
- 	int			set_sched;
+ #include "timerlat.h"
++#include "timerlat_aa.h"
+ 
+ struct timerlat_hist_params {
+ 	char			*cpus;
+@@ -34,6 +35,8 @@ struct timerlat_hist_params {
  	int			dma_latency;
  	int			cgroup;
-+	int			hk_cpus;
-+	cpu_set_t		hk_cpu_set;
+ 	int			hk_cpus;
++	int			no_aa;
++	int			dump_tasks;
+ 	cpu_set_t		hk_cpu_set;
  	struct sched_attr	sched_param;
  	struct trace_events	*events;
- 	char			no_irq;
-@@ -432,7 +436,7 @@ static void timerlat_hist_usage(char *usage)
- 	char *msg[] = {
- 		"",
+@@ -438,7 +441,7 @@ static void timerlat_hist_usage(char *usage)
  		"  usage: [rtla] timerlat hist [-h] [-q] [-d s] [-D] [-n] [-a us] [-p us] [-i us] [-T us] [-s us] \\",
--		"         [-t[=file]] [-e sys[:event]] [--filter <filter>] [--trigger <trigger>] [-c cpu-list] \\",
-+		"         [-t[=file]] [-e sys[:event]] [--filter <filter>] [--trigger <trigger>] [-c cpu-list] [-H cpu-list]\\",
+ 		"         [-t[=file]] [-e sys[:event]] [--filter <filter>] [--trigger <trigger>] [-c cpu-list] [-H cpu-list]\\",
  		"	  [-P priority] [-E N] [-b N] [--no-irq] [--no-thread] [--no-header] [--no-summary] \\",
- 		"	  [--no-index] [--with-zeros] [--dma-latency us] [-C[=cgroup_name]]",
- 		"",
-@@ -443,6 +447,7 @@ static void timerlat_hist_usage(char *usage)
- 		"	  -T/--thread us: stop trace if the thread latency is higher than the argument in us",
- 		"	  -s/--stack us: save the stack trace at the IRQ if a thread latency is higher than the argument in us",
- 		"	  -c/--cpus cpus: run the tracer only on the given cpus",
-+		"	  -H/--house-keeping cpus: run rtla control threads only on the given cpus",
- 		"	  -C/--cgroup[=cgroup_name]: set cgroup, if no cgroup_name is passed, the rtla's cgroup will be inherited",
- 		"	  -d/--duration time[m|h|d]: duration of the session in seconds",
- 		"	  -D/--debug: print debug info",
-@@ -513,6 +518,7 @@ static struct timerlat_hist_params
- 			{"debug",		no_argument,		0, 'D'},
- 			{"entries",		required_argument,	0, 'E'},
- 			{"duration",		required_argument,	0, 'd'},
-+			{"house-keeping",	required_argument,	0, 'H'},
- 			{"help",		no_argument,		0, 'h'},
- 			{"irq",			required_argument,	0, 'i'},
- 			{"nano",		no_argument,		0, 'n'},
-@@ -537,7 +543,7 @@ static struct timerlat_hist_params
- 		/* getopt_long stores the option index here. */
- 		int option_index = 0;
- 
--		c = getopt_long(argc, argv, "a:c:C::b:d:e:E:Dhi:np:P:s:t::T:0123456:7:8:",
-+		c = getopt_long(argc, argv, "a:c:C::b:d:e:E:DhH:i:np:P:s:t::T:0123456:7:8:",
- 				 long_options, &option_index);
- 
- 		/* detect the end of the options. */
-@@ -608,6 +614,14 @@ static struct timerlat_hist_params
- 		case '?':
- 			timerlat_hist_usage(NULL);
- 			break;
-+		case 'H':
-+			params->hk_cpus = 1;
-+			retval = parse_cpu_set(optarg, &params->hk_cpu_set);
-+			if (retval) {
-+				err_msg("Error parsing house keeping CPUs\n");
-+				exit(EXIT_FAILURE);
-+			}
-+			break;
- 		case 'i':
- 			params->stop_us = get_llong_from_str(optarg);
- 			break;
-@@ -755,6 +769,15 @@ timerlat_hist_apply_config(struct osnoise_tool *tool, struct timerlat_hist_param
- 		}
- 	}
- 
-+	if (params->hk_cpus) {
-+		retval = sched_setaffinity(getpid(), sizeof(params->hk_cpu_set),
-+					   &params->hk_cpu_set);
-+		if (retval == -1) {
-+			err_msg("Failed to set rtla to the house keeping CPUs\n");
-+			goto out_err;
-+		}
-+	}
-+
- 	return 0;
- 
- out_err:
-diff --git a/tools/tracing/rtla/src/timerlat_top.c b/tools/tracing/rtla/src/timerlat_top.c
-index a19cbc2aa1f4..5395d1c5921e 100644
---- a/tools/tracing/rtla/src/timerlat_top.c
-+++ b/tools/tracing/rtla/src/timerlat_top.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
-  */
- 
-+#define _GNU_SOURCE
- #include <getopt.h>
- #include <stdlib.h>
- #include <string.h>
-@@ -11,6 +12,7 @@
- #include <stdio.h>
- #include <time.h>
- #include <errno.h>
-+#include <sched.h>
- 
- #include "utils.h"
- #include "osnoise.h"
-@@ -37,6 +39,8 @@ struct timerlat_top_params {
- 	int			aa_only;
- 	int			dump_tasks;
- 	int			cgroup;
-+	int			hk_cpus;
-+	cpu_set_t		hk_cpu_set;
- 	struct sched_attr	sched_param;
- 	struct trace_events	*events;
- };
-@@ -286,7 +290,7 @@ static void timerlat_top_usage(char *usage)
- 	static const char *const msg[] = {
- 		"",
- 		"  usage: rtla timerlat [top] [-h] [-q] [-a us] [-d s] [-D] [-n] [-p us] [-i us] [-T us] [-s us] \\",
--		"	  [[-t[=file]] [-e sys[:event]] [--filter <filter>] [--trigger <trigger>] [-c cpu-list] \\",
-+		"	  [[-t[=file]] [-e sys[:event]] [--filter <filter>] [--trigger <trigger>] [-c cpu-list] [-H cpu-list]\\",
- 		"	  [-P priority] [--dma-latency us] [--aa-only us] [-C[=cgroup_name]]",
+-		"	  [--no-index] [--with-zeros] [--dma-latency us] [-C[=cgroup_name]]",
++		"	  [--no-index] [--with-zeros] [--dma-latency us] [-C[=cgroup_name]] [--no-aa] [--dump-task]",
  		"",
  		"	  -h/--help: print this menu",
-@@ -297,6 +301,7 @@ static void timerlat_top_usage(char *usage)
- 		"	  -T/--thread us: stop trace if the thread latency is higher than the argument in us",
- 		"	  -s/--stack us: save the stack trace at the IRQ if a thread latency is higher than the argument in us",
- 		"	  -c/--cpus cpus: run the tracer only on the given cpus",
-+		"	  -H/--house-keeping cpus: run rtla control threads only on the given cpus",
+ 		"	  -a/--auto: set automatic trace mode, stopping the session if argument in us latency is hit",
+@@ -450,12 +453,14 @@ static void timerlat_hist_usage(char *usage)
+ 		"	  -H/--house-keeping cpus: run rtla control threads only on the given cpus",
  		"	  -C/--cgroup[=cgroup_name]: set cgroup, if no cgroup_name is passed, the rtla's cgroup will be inherited",
  		"	  -d/--duration time[m|h|d]: duration of the session in seconds",
++		"	     --dump-tasks: prints the task running on all CPUs if stop conditions are met (depends on !--no-aa)",
  		"	  -D/--debug: print debug info",
-@@ -360,6 +365,7 @@ static struct timerlat_top_params
- 			{"duration",		required_argument,	0, 'd'},
- 			{"event",		required_argument,	0, 'e'},
- 			{"help",		no_argument,		0, 'h'},
-+			{"house-keeping",	required_argument,	0, 'H'},
- 			{"irq",			required_argument,	0, 'i'},
- 			{"nano",		no_argument,		0, 'n'},
- 			{"period",		required_argument,	0, 'p'},
-@@ -380,7 +386,7 @@ static struct timerlat_top_params
+ 		"	  -t/--trace[=file]: save the stopped trace to [file|timerlat_trace.txt]",
+ 		"	  -e/--event <sys:event>: enable the <sys:event> in the trace instance, multiple -e are allowed",
+ 		"	     --filter <filter>: enable a trace event filter to the previous -e event",
+ 		"	     --trigger <trigger>: enable a trace event trigger to the previous -e event",
+ 		"	  -n/--nano: display data in nanoseconds",
++		"	     --no-aa: disable auto-analysis, reducing rtla timerlat cpu usage",
+ 		"	  -b/--bucket-size N: set the histogram bucket size (default 1)",
+ 		"	  -E/--entries N: set the number of entries of the histogram (default 256)",
+ 		"	     --no-irq: ignore IRQ latencies",
+@@ -537,13 +542,15 @@ static struct timerlat_hist_params
+ 			{"trigger",		required_argument,	0, '6'},
+ 			{"filter",		required_argument,	0, '7'},
+ 			{"dma-latency",		required_argument,	0, '8'},
++			{"no-aa",		no_argument,		0, '9'},
++			{"dump-task",		no_argument,		0, '\1'},
+ 			{0, 0, 0, 0}
+ 		};
+ 
  		/* getopt_long stores the option index here. */
  		int option_index = 0;
  
--		c = getopt_long(argc, argv, "a:c:C::d:De:hi:np:P:qs:t::T:0:1:2:345:",
-+		c = getopt_long(argc, argv, "a:c:C::d:De:hH:i:np:P:qs:t::T:0:1:2:345:",
+-		c = getopt_long(argc, argv, "a:c:C::b:d:e:E:DhH:i:np:P:s:t::T:0123456:7:8:",
++		c = getopt_long(argc, argv, "a:c:C::b:d:e:E:DhH:i:np:P:s:t::T:0123456:7:8:9\1",
  				 long_options, &option_index);
  
  		/* detect the end of the options. */
-@@ -454,6 +460,14 @@ static struct timerlat_top_params
- 		case '?':
- 			timerlat_top_usage(NULL);
+@@ -556,6 +563,7 @@ static struct timerlat_hist_params
+ 
+ 			/* set thread stop to auto_thresh */
+ 			params->stop_total_us = auto_thresh;
++			params->stop_us = auto_thresh;
+ 
+ 			/* get stack trace */
+ 			params->print_stack = auto_thresh;
+@@ -699,6 +707,12 @@ static struct timerlat_hist_params
+ 				exit(EXIT_FAILURE);
+ 			}
  			break;
-+		case 'H':
-+			params->hk_cpus = 1;
-+			retval = parse_cpu_set(optarg, &params->hk_cpu_set);
-+			if (retval) {
-+				err_msg("Error parsing house keeping CPUs\n");
-+				exit(EXIT_FAILURE);
-+			}
++		case '9':
++			params->no_aa = 1;
 +			break;
- 		case 'i':
- 			params->stop_us = get_llong_from_str(optarg);
- 			break;
-@@ -598,6 +612,15 @@ timerlat_top_apply_config(struct osnoise_tool *top, struct timerlat_top_params *
++		case '\1':
++			params->dump_tasks = 1;
++			break;
+ 		default:
+ 			timerlat_hist_usage("Invalid option");
  		}
- 	}
+@@ -715,6 +729,12 @@ static struct timerlat_hist_params
+ 	if (params->no_index && !params->with_zeros)
+ 		timerlat_hist_usage("no-index set with with-zeros is not set - it does not make sense");
  
-+	if (params->hk_cpus) {
-+		retval = sched_setaffinity(getpid(), sizeof(params->hk_cpu_set),
-+					   &params->hk_cpu_set);
-+		if (retval == -1) {
-+			err_msg("Failed to set rtla to the house keeping CPUs\n");
-+			goto out_err;
-+		}
-+	}
++	/*
++	 * Auto analysis only happens if stop tracing, thus:
++	 */
++	if (!params->stop_us && !params->stop_total_us)
++		params->no_aa = 1;
 +
- 	return 0;
- 
- out_err:
-diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
-index bcc0a9f39cfe..ee6fab09acae 100644
---- a/tools/tracing/rtla/src/utils.c
-+++ b/tools/tracing/rtla/src/utils.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
-  */
- 
-+#define _GNU_SOURCE
- #include <dirent.h>
- #include <stdarg.h>
- #include <stdlib.h>
-@@ -150,6 +151,63 @@ int parse_cpu_list(char *cpu_list, char **monitored_cpus)
- 	return 1;
+ 	return params;
  }
  
-+/*
-+ * parse_cpu_set - parse a cpu_list filling cpu_set_t argument
-+ *
-+ * Receives a cpu list, like 1-3,5 (cpus 1, 2, 3, 5), and then set
-+ * filling cpu_set_t argument.
-+ *
-+ * Returns 1 on success, 0 otherwise.
-+ */
-+int parse_cpu_set(char *cpu_list, cpu_set_t *set)
-+{
-+	const char *p;
-+	int end_cpu;
-+	int nr_cpus;
-+	int cpu;
-+	int i;
+@@ -848,6 +868,7 @@ int timerlat_hist_main(int argc, char *argv[])
+ 	struct timerlat_hist_params *params;
+ 	struct osnoise_tool *record = NULL;
+ 	struct osnoise_tool *tool = NULL;
++	struct osnoise_tool *aa = NULL;
+ 	struct trace_instance *trace;
+ 	int dma_latency_fd = -1;
+ 	int return_value = 1;
+@@ -919,6 +940,26 @@ int timerlat_hist_main(int argc, char *argv[])
+ 		trace_instance_start(&record->trace);
+ 	}
+ 
++	if (!params->no_aa) {
++		aa = osnoise_init_tool("timerlat_aa");
++		if (!aa)
++			goto out_hist;
 +
-+	CPU_ZERO(set);
-+
-+	nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
-+
-+	for (p = cpu_list; *p; ) {
-+		cpu = atoi(p);
-+		if (cpu < 0 || (!cpu && *p != '0') || cpu >= nr_cpus)
-+			goto err;
-+
-+		while (isdigit(*p))
-+			p++;
-+		if (*p == '-') {
-+			p++;
-+			end_cpu = atoi(p);
-+			if (end_cpu < cpu || (!end_cpu && *p != '0') || end_cpu >= nr_cpus)
-+				goto err;
-+			while (isdigit(*p))
-+				p++;
-+		} else
-+			end_cpu = cpu;
-+
-+		if (cpu == end_cpu) {
-+			debug_msg("cpu_set: adding cpu %d\n", cpu);
-+			CPU_SET(cpu, set);
-+		} else {
-+			for (i = cpu; i <= end_cpu; i++) {
-+				debug_msg("cpu_set: adding cpu %d\n", i);
-+				CPU_SET(i, set);
-+			}
++		retval = timerlat_aa_init(aa, params->dump_tasks);
++		if (retval) {
++			err_msg("Failed to enable the auto analysis instance\n");
++			goto out_hist;
 +		}
 +
-+		if (*p == ',')
-+			p++;
++		retval = enable_timerlat(&aa->trace);
++		if (retval) {
++			err_msg("Failed to enable timerlat tracer\n");
++			goto out_hist;
++		}
++
++		trace_instance_start(&aa->trace);
 +	}
 +
-+	return 0;
-+err:
-+	debug_msg("Error parsing the cpu set %s\n", cpu_list);
-+	return 1;
-+}
-+
- /*
-  * parse_duration - parse duration with s/m/h/d suffix converting it to seconds
-  */
-diff --git a/tools/tracing/rtla/src/utils.h b/tools/tracing/rtla/src/utils.h
-index 42b6f099d10a..9ab2f0d7bc1c 100644
---- a/tools/tracing/rtla/src/utils.h
-+++ b/tools/tracing/rtla/src/utils.h
-@@ -1,6 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
-+
- #include <stdint.h>
- #include <time.h>
-+#include <sched.h>
+ 	tool->start_time = time(NULL);
+ 	timerlat_hist_set_signals(params);
  
- /*
-  * '18446744073709551615\0'
-@@ -54,6 +56,7 @@ struct sched_attr {
- };
+@@ -946,6 +987,10 @@ int timerlat_hist_main(int argc, char *argv[])
  
- int parse_prio(char *arg, struct sched_attr *sched_param);
-+int parse_cpu_set(char *cpu_list, cpu_set_t *set);
- int set_comm_sched_attr(const char *comm_prefix, struct sched_attr *attr);
- int set_comm_cgroup(const char *comm_prefix, const char *cgroup);
- int set_cpu_dma_latency(int32_t latency);
+ 	if (trace_is_off(&tool->trace, &record->trace)) {
+ 		printf("rtla timerlat hit stop tracing\n");
++
++		if (!params->no_aa)
++			timerlat_auto_analysis(params->stop_us, params->stop_total_us);
++
+ 		if (params->trace_output) {
+ 			printf("  Saving trace to %s\n", params->trace_output);
+ 			save_trace_to_file(record->trace.inst, params->trace_output);
+@@ -953,12 +998,14 @@ int timerlat_hist_main(int argc, char *argv[])
+ 	}
+ 
+ out_hist:
++	timerlat_aa_destroy();
+ 	if (dma_latency_fd >= 0)
+ 		close(dma_latency_fd);
+ 	trace_events_destroy(&record->trace, params->events);
+ 	params->events = NULL;
+ out_free:
+ 	timerlat_free_histogram(tool->data);
++	osnoise_destroy_tool(aa);
+ 	osnoise_destroy_tool(record);
+ 	osnoise_destroy_tool(tool);
+ 	free(params);
 -- 
 2.38.1
 
