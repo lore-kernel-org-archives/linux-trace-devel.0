@@ -2,235 +2,107 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85A52C7EE23
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 18 May 2023 14:24:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 471F0C7EE23
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 May 2023 17:44:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbjEROYb (ORCPT
+        id S237394AbjEWRom (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 18 May 2023 10:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51786 "EHLO
+        Tue, 23 May 2023 13:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbjEROYa (ORCPT
+        with ESMTP id S237723AbjEWRol (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 18 May 2023 10:24:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F751E69
-        for <linux-trace-devel@vger.kernel.org>; Thu, 18 May 2023 07:24:29 -0700 (PDT)
+        Tue, 23 May 2023 13:44:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07BC8C2;
+        Tue, 23 May 2023 10:44:40 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A11BF647AC
-        for <linux-trace-devel@vger.kernel.org>; Thu, 18 May 2023 14:24:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2604C4339B;
-        Thu, 18 May 2023 14:24:27 +0000 (UTC)
-Date:   Thu, 18 May 2023 10:24:21 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc:     Ross Zwisler <zwisler@google.com>
-Subject: [PATCH v2] libtracefs: Add stacktrace to tracefs_sql()
-Message-ID: <20230518102421.0dadbe26@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7F57463564;
+        Tue, 23 May 2023 17:44:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93CFAC433D2;
+        Tue, 23 May 2023 17:44:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1684863878;
+        bh=oWpv0JJ4KVfHOHESY1z8zrd5HeQS1i0jsjMhHlSCsd4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=o7ALmsTxImOubWs8UMvaMoPKWvnaroijVaeu5M/wpU1QfSimwxK3COphovNq6Bh6Z
+         IJmTVyI1Ob96tNwvcM5FWFLmTI9WHST9C0pocBSRPhgC83CxofM2gF3k7KLhAkRM7e
+         gp5vVTkiHV4TgE5u43++uzct4hjPzqFs6zieXZU1qMnL7ddKl/22eMTOn2/8Z9AW7A
+         oaEL0EAudrcdUT06vaLqeIu3palPkZayV8oWIKrDFkLP8lEzIz94H0NnpMcmzpFIQg
+         VufBbc5cAWEPzAImWbCSy7NcTLgHr+3DBUbjZoB9CLRfwMuVvT+ZAHh1G5mb8JG/V9
+         acdvM8AqYUGGQ==
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-doc@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        William White <chwhite@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH V2 0/9] rtla improvements
+Date:   Tue, 23 May 2023 19:44:22 +0200
+Message-Id: <cover.1684863094.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+This is a series of improvements for rtla, mainly as a result of our
+daily usage of the tool debugging problems at red hat.
 
-Now that the kernel can pass stacktraces from the start to end of a
-synthetic event, update the tracefs_sql() (and by doing so sqlhist) to
-handle stacktrace.
+The cgroup support and house keeping options are from our usage
+of the tool debugging containers.
 
-A new keyword STACKTRACE is added, so the following will now work:
+The auto-analysis overhead reduction is needed when we go to
+large boxes - but it is really hand in practice, as it gives an idea
+of the problem without having to look at the trace.
 
-  sqlhist -e -n block_lat 'SELECT (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) AS delta,start.STACKTRACE AS stack
-     FROM sched_switch AS start JOIN sched_switch AS end ON end.next_pid = start.prev_pid
-     WHERE start.prev_state == 1 && start.prev_prio < 100'
+Running hwnoise 100 % of CPU time might cause some systems
+to slow down too much. Reduce its utilization to 75% by default to
+avoid problems for people using it for the first time.
 
-Cc: Ross Zwisler <zwisler@google.com>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v1: https://lore.kernel.org/linux-trace-devel/20230117113545.5effb1dc@gandalf.local.home
- - The kernel is switching to use common_stacktrace instead of stacktrace
-   Use that instead.
+Finally, it adds support for running timerlat user-space threads,
+and to collect the additional field via rtla timerlat top.
 
- Documentation/libtracefs-sql.txt | 13 +++++++++++++
- include/tracefs-local.h          |  2 ++
- include/tracefs.h                |  3 +++
- src/tracefs-filter.c             | 10 ++++++++++
- src/tracefs-hist.c               | 18 +++++++++++++++++-
- src/tracefs-sqlhist.c            |  5 ++++-
- 6 files changed, 49 insertions(+), 2 deletions(-)
+Changes from V1:
+  - Add the user-space thread support to rtla timerlat top
+    Link: https://lore.kernel.org/lkml/cover.1683827510.git.bristot@kernel.org/
 
-diff --git a/Documentation/libtracefs-sql.txt b/Documentation/libtracefs-sql.txt
-index 6d606db..62fd771 100644
---- a/Documentation/libtracefs-sql.txt
-+++ b/Documentation/libtracefs-sql.txt
-@@ -162,6 +162,19 @@ select start.pid, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sche
-    WHERE start.prio < 100 || end.prev_prio < 100
- --
- 
-+If the kernel supports it, you can pass around a stacktrace between events.
-+
-+[source, c]
-+--
-+select start.prev_pid as pid, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as delta, start.STACKTRACE as stack
-+   FROM sched_switch as start JOIN sched_switch as end ON start.prev_pid = end.next_pid
-+   WHERE start.prev_state == 2
-+--
-+
-+The above will record a stacktrace when a task is in the UNINTERRUPTIBLE (blocked) state, and trigger
-+the synthetic event when it is scheduled back in, recording the time delta that it was blocked for.
-+It will record the stacktrace of where it was when it scheduled out along with the delta.
-+
- 
- KEYWORDS AS EVENT FIELDS
- ------------------------
-diff --git a/include/tracefs-local.h b/include/tracefs-local.h
-index da99a30..9e5a568 100644
---- a/include/tracefs-local.h
-+++ b/include/tracefs-local.h
-@@ -51,6 +51,8 @@ struct tracefs_instance {
- 	bool				iterate_keep_going;
- };
- 
-+extern const struct tep_format_field common_stacktrace;
-+
- extern pthread_mutex_t toplevel_lock;
- 
- static inline pthread_mutex_t *trace_get_lock(struct tracefs_instance *instance)
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 5e9d84b..5410d00 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -335,6 +335,7 @@ enum tracefs_hist_key_type {
- 	TRACEFS_HIST_KEY_LOG,
- 	TRACEFS_HIST_KEY_USECS,
- 	TRACEFS_HIST_KEY_BUCKETS,
-+	TRACEFS_HIST_KEY_STACKTRACE,
- 	TRACEFS_HIST_KEY_MAX
- };
- 
-@@ -554,6 +555,8 @@ int tracefs_event_verify_filter(struct tep_event *event, const char *filter,
- #define TRACEFS_TIMESTAMP "common_timestamp"
- #define TRACEFS_TIMESTAMP_USECS "common_timestamp.usecs"
- 
-+#define TRACEFS_STACKTRACE "common_stacktrace"
-+
- enum tracefs_synth_handler {
- 	TRACEFS_SYNTH_HANDLE_NONE	= 0,
- 	TRACEFS_SYNTH_HANDLE_MATCH,
-diff --git a/src/tracefs-filter.c b/src/tracefs-filter.c
-index a3dd77b..3628eae 100644
---- a/src/tracefs-filter.c
-+++ b/src/tracefs-filter.c
-@@ -41,6 +41,13 @@ static const struct tep_format_field common_comm = {
- 	.size			= 16,
- };
- 
-+const struct tep_format_field common_stacktrace __hidden = {
-+	.type			= "unsigned long[]",
-+	.name			= "stacktrace",
-+	.size			= 4,
-+	.flags			= TEP_FIELD_IS_ARRAY | TEP_FIELD_IS_DYNAMIC,
-+};
-+
- /*
-  * This also must be able to accept fields that are OK via the histograms,
-  * such as common_timestamp.
-@@ -56,6 +63,9 @@ static const struct tep_format_field *get_event_field(struct tep_event *event,
- 	if (!strcmp(field_name, TRACEFS_TIMESTAMP_USECS))
- 		return &common_timestamp_usecs;
- 
-+	if (!strcmp(field_name, TRACEFS_STACKTRACE))
-+		return &common_stacktrace;
-+
- 	field = tep_find_any_field(event, field_name);
- 	if (!field && (!strcmp(field_name, "COMM") || !strcmp(field_name, "comm")))
- 		return &common_comm;
-diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index fb6231e..e8d984b 100644
---- a/src/tracefs-hist.c
-+++ b/src/tracefs-hist.c
-@@ -416,6 +416,9 @@ int tracefs_hist_add_key_cnt(struct tracefs_hist *hist, const char *key,
- 	case TRACEFS_HIST_KEY_BUCKETS:
- 		ret = asprintf(&key_type, "%s.buckets=%d", key, cnt);
- 		break;
-+	case TRACEFS_HIST_KEY_STACKTRACE:
-+		ret = asprintf(&key_type, "%s.stacktrace", key);
-+		break;
- 	case TRACEFS_HIST_KEY_MAX:
- 		/* error */
- 		break;
-@@ -500,14 +503,23 @@ add_sort_key(struct tracefs_hist *hist, const char *sort_key, char **list)
- {
- 	char **key_list = hist->keys;
- 	char **val_list = hist->values;
-+	char *dot;
-+	int len;
- 	int i;
- 
- 	if (strcmp(sort_key, TRACEFS_HIST_HITCOUNT) == 0)
- 		goto out;
- 
-+	len = strlen(sort_key);
-+
- 	for (i = 0; key_list[i]; i++) {
- 		if (strcmp(key_list[i], sort_key) == 0)
- 			break;
-+		dot = strchr(key_list[i], '.');
-+		if (!dot || dot - key_list[i] != len)
-+			continue;
-+		if (strncmp(key_list[i], sort_key, len) == 0)
-+			break;
- 	}
- 
- 	if (!key_list[i] && val_list) {
-@@ -915,7 +927,8 @@ static char *add_synth_field(const struct tep_format_field *field,
- 	bool sign;
- 
- 	if (field->flags & TEP_FIELD_IS_ARRAY) {
--		str = strdup("char");
-+		str = strdup(field->type);
-+		str = strtok(str, "[");
- 		str = append_string(str, " ", name);
- 		str = append_string(str, NULL, "[");
- 
-@@ -967,6 +980,9 @@ static char *add_synth_field(const struct tep_format_field *field,
- 		return NULL;
- 	}
- 
-+	if (field == &common_stacktrace)
-+		type = field->type;
-+
- 	str = strdup(type);
- 	str = append_string(str, " ", name);
- 	return append_string(str, NULL, ";");
-diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
-index 3f571b7..0035922 100644
---- a/src/tracefs-sqlhist.c
-+++ b/src/tracefs-sqlhist.c
-@@ -566,7 +566,8 @@ static int test_field_exists(struct tep_handle *tep,
- 		return -1;
- 
- 	if (!strcmp(field_name, TRACEFS_TIMESTAMP) ||
--	    !strcmp(field->field, TRACEFS_TIMESTAMP_USECS))
-+	    !strcmp(field->field, TRACEFS_TIMESTAMP_USECS) ||
-+	    !strcmp(field->field, TRACEFS_STACKTRACE))
- 		tfield = (void *)1L;
- 	else
- 		tfield = tep_find_any_field(field->event, field_name);
-@@ -695,6 +696,8 @@ static int update_vars(struct tep_handle *tep,
- 			field->field = store_str(sb, TRACEFS_TIMESTAMP);
- 		if (!strcmp(field->field, "TIMESTAMP_USECS"))
- 			field->field = store_str(sb, TRACEFS_TIMESTAMP_USECS);
-+		if (!strcmp(field->field, "STACKTRACE"))
-+			field->field = store_str(sb, TRACEFS_STACKTRACE);
- 		if (test_field_exists(tep, sb, expr))
- 			return -1;
- 	}
+Daniel Bristot de Oliveira (9):
+  rtla: Add -C cgroup support
+  rtla: Add --house-keeping option
+  rtla: Change monitored_cpus from char * to cpu_set_t
+  rtla: Automatically move rtla to a house-keeping cpu
+  rtla/timerlat: Give timerlat auto analysis its own instance
+  rtla/timerlat_hist: Add auto-analysis support
+  rtla: Start the tracers after creating all instances
+  rtla/hwnoise: Reduce runtime to 75%
+  rtla: Add timerlat user-space support for timerlat top
+
+ Documentation/tools/rtla/common_options.rst   |   8 +
+ .../tools/rtla/common_timerlat_aa.rst         |   7 -
+ .../tools/rtla/rtla-timerlat-hist.rst         |   7 +-
+ .../tools/rtla/rtla-timerlat-top.rst          |  14 +
+ tools/tracing/rtla/src/osnoise.c              |  65 ++++
+ tools/tracing/rtla/src/osnoise.h              |   5 +
+ tools/tracing/rtla/src/osnoise_hist.c         |  90 ++++-
+ tools/tracing/rtla/src/osnoise_top.c          |  83 ++++-
+ tools/tracing/rtla/src/timerlat_aa.c          |  35 +-
+ tools/tracing/rtla/src/timerlat_aa.h          |   5 +-
+ tools/tracing/rtla/src/timerlat_hist.c        | 139 +++++++-
+ tools/tracing/rtla/src/timerlat_top.c         | 229 +++++++++++--
+ tools/tracing/rtla/src/timerlat_u.c           | 224 ++++++++++++
+ tools/tracing/rtla/src/timerlat_u.h           |  18 +
+ tools/tracing/rtla/src/utils.c                | 324 +++++++++++++++++-
+ tools/tracing/rtla/src/utils.h                |   7 +
+ 16 files changed, 1162 insertions(+), 98 deletions(-)
+ create mode 100644 tools/tracing/rtla/src/timerlat_u.c
+ create mode 100644 tools/tracing/rtla/src/timerlat_u.h
+
 -- 
-2.39.2
+2.38.1
 
