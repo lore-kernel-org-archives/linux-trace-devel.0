@@ -2,37 +2,37 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 471F0C7EE23
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 May 2023 17:44:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54F2AC7EE2D
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 May 2023 17:44:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237394AbjEWRom (ORCPT
+        id S238270AbjEWRo4 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 23 May 2023 13:44:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
+        Tue, 23 May 2023 13:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237723AbjEWRol (ORCPT
+        with ESMTP id S238320AbjEWRox (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 23 May 2023 13:44:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07BC8C2;
-        Tue, 23 May 2023 10:44:40 -0700 (PDT)
+        Tue, 23 May 2023 13:44:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A1D197;
+        Tue, 23 May 2023 10:44:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7F57463564;
-        Tue, 23 May 2023 17:44:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93CFAC433D2;
-        Tue, 23 May 2023 17:44:36 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 04D7863571;
+        Tue, 23 May 2023 17:44:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AD2BC4339B;
+        Tue, 23 May 2023 17:44:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1684863878;
-        bh=oWpv0JJ4KVfHOHESY1z8zrd5HeQS1i0jsjMhHlSCsd4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=o7ALmsTxImOubWs8UMvaMoPKWvnaroijVaeu5M/wpU1QfSimwxK3COphovNq6Bh6Z
-         IJmTVyI1Ob96tNwvcM5FWFLmTI9WHST9C0pocBSRPhgC83CxofM2gF3k7KLhAkRM7e
-         gp5vVTkiHV4TgE5u43++uzct4hjPzqFs6zieXZU1qMnL7ddKl/22eMTOn2/8Z9AW7A
-         oaEL0EAudrcdUT06vaLqeIu3palPkZayV8oWIKrDFkLP8lEzIz94H0NnpMcmzpFIQg
-         VufBbc5cAWEPzAImWbCSy7NcTLgHr+3DBUbjZoB9CLRfwMuVvT+ZAHh1G5mb8JG/V9
-         acdvM8AqYUGGQ==
+        s=k20201202; t=1684863890;
+        bh=I75jhz8De3NPiqlgBoHOa8UPruFRWJnxpiQkId7IjnI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=O1VD3oHb0/IyMuEtPFzUOvEHiNtzhZCp4mtbHGOPcoDllUpUyDSwVQrCvaX1O2fvh
+         n9qYHbMEDqgjF1VIce51yXjvQjFpJ28aTzca2PfTkUsPmheSGlUcBTqrBCD1tc0fcA
+         znlHzknbtm56gM1A6vRRqkLHP9Axs8R11NcJfQvLMh/NNeZfsEB5qlm/yb33q9KvKu
+         3bF48i3XqteEgEB7kxw3Hlnja0jtg8hDBifRkcdfieuqp1jLNqajcGq1otF+dxsoR7
+         0MwpCT8xvw7sPghtUGty3qoWDpxQNERrWN6wUy4IfNacqWuuGr0PItH2gZX9QHslS6
+         bJ74iwmDYxBsQ==
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>
@@ -41,68 +41,191 @@ Cc:     linux-doc@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
         Daniel Bristot de Oliveira <bristot@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH V2 0/9] rtla improvements
-Date:   Tue, 23 May 2023 19:44:22 +0200
-Message-Id: <cover.1684863094.git.bristot@kernel.org>
+Subject: [PATCH V2 4/9] rtla: Automatically move rtla to a house-keeping cpu
+Date:   Tue, 23 May 2023 19:44:26 +0200
+Message-Id: <2a9c16fedbef08d483f92c5af08a9b637d396056.1684863094.git.bristot@kernel.org>
 X-Mailer: git-send-email 2.38.1
+In-Reply-To: <cover.1684863094.git.bristot@kernel.org>
+References: <cover.1684863094.git.bristot@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This is a series of improvements for rtla, mainly as a result of our
-daily usage of the tool debugging problems at red hat.
+When the user sets -c <cpu-list> try to move rtla out of the <cpu-list>,
+even without an -H option. This is useful to avoid having rtla
+interfering with the workload.
 
-The cgroup support and house keeping options are from our usage
-of the tool debugging containers.
+This works by removing <cpu-list> from rtla's current affinity.
 
-The auto-analysis overhead reduction is needed when we go to
-large boxes - but it is really hand in practice, as it gives an idea
-of the problem without having to look at the trace.
+If rtla fails to move itself away it is not that of a problem as this
+is an automatic measure.
 
-Running hwnoise 100 % of CPU time might cause some systems
-to slow down too much. Reduce its utilization to 75% by default to
-avoid problems for people using it for the first time.
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+---
+ tools/tracing/rtla/src/osnoise_hist.c  |  9 +++++
+ tools/tracing/rtla/src/osnoise_top.c   |  9 +++++
+ tools/tracing/rtla/src/timerlat_hist.c |  9 +++++
+ tools/tracing/rtla/src/timerlat_top.c  |  9 +++++
+ tools/tracing/rtla/src/utils.c         | 50 ++++++++++++++++++++++++++
+ tools/tracing/rtla/src/utils.h         |  1 +
+ 6 files changed, 87 insertions(+)
 
-Finally, it adds support for running timerlat user-space threads,
-and to collect the additional field via rtla timerlat top.
-
-Changes from V1:
-  - Add the user-space thread support to rtla timerlat top
-    Link: https://lore.kernel.org/lkml/cover.1683827510.git.bristot@kernel.org/
-
-Daniel Bristot de Oliveira (9):
-  rtla: Add -C cgroup support
-  rtla: Add --house-keeping option
-  rtla: Change monitored_cpus from char * to cpu_set_t
-  rtla: Automatically move rtla to a house-keeping cpu
-  rtla/timerlat: Give timerlat auto analysis its own instance
-  rtla/timerlat_hist: Add auto-analysis support
-  rtla: Start the tracers after creating all instances
-  rtla/hwnoise: Reduce runtime to 75%
-  rtla: Add timerlat user-space support for timerlat top
-
- Documentation/tools/rtla/common_options.rst   |   8 +
- .../tools/rtla/common_timerlat_aa.rst         |   7 -
- .../tools/rtla/rtla-timerlat-hist.rst         |   7 +-
- .../tools/rtla/rtla-timerlat-top.rst          |  14 +
- tools/tracing/rtla/src/osnoise.c              |  65 ++++
- tools/tracing/rtla/src/osnoise.h              |   5 +
- tools/tracing/rtla/src/osnoise_hist.c         |  90 ++++-
- tools/tracing/rtla/src/osnoise_top.c          |  83 ++++-
- tools/tracing/rtla/src/timerlat_aa.c          |  35 +-
- tools/tracing/rtla/src/timerlat_aa.h          |   5 +-
- tools/tracing/rtla/src/timerlat_hist.c        | 139 +++++++-
- tools/tracing/rtla/src/timerlat_top.c         | 229 +++++++++++--
- tools/tracing/rtla/src/timerlat_u.c           | 224 ++++++++++++
- tools/tracing/rtla/src/timerlat_u.h           |  18 +
- tools/tracing/rtla/src/utils.c                | 324 +++++++++++++++++-
- tools/tracing/rtla/src/utils.h                |   7 +
- 16 files changed, 1162 insertions(+), 98 deletions(-)
- create mode 100644 tools/tracing/rtla/src/timerlat_u.c
- create mode 100644 tools/tracing/rtla/src/timerlat_u.h
-
+diff --git a/tools/tracing/rtla/src/osnoise_hist.c b/tools/tracing/rtla/src/osnoise_hist.c
+index b616a72d5c0a..dfbcb5ca7ecb 100644
+--- a/tools/tracing/rtla/src/osnoise_hist.c
++++ b/tools/tracing/rtla/src/osnoise_hist.c
+@@ -753,6 +753,15 @@ osnoise_hist_apply_config(struct osnoise_tool *tool, struct osnoise_hist_params
+ 			err_msg("Failed to set rtla to the house keeping CPUs\n");
+ 			goto out_err;
+ 		}
++	} else if (params->cpus) {
++		/*
++		 * Even if the user do not set a house-keeping CPU, try to
++		 * move rtla to a CPU set different to the one where the user
++		 * set the workload to run.
++		 *
++		 * No need to check results as this is an automatic attempt.
++		 */
++		auto_house_keeping(&params->monitored_cpus);
+ 	}
+ 
+ 	return 0;
+diff --git a/tools/tracing/rtla/src/osnoise_top.c b/tools/tracing/rtla/src/osnoise_top.c
+index 0e2f3b216d34..0833537bb2eb 100644
+--- a/tools/tracing/rtla/src/osnoise_top.c
++++ b/tools/tracing/rtla/src/osnoise_top.c
+@@ -582,6 +582,15 @@ osnoise_top_apply_config(struct osnoise_tool *tool, struct osnoise_top_params *p
+ 			err_msg("Failed to set rtla to the house keeping CPUs\n");
+ 			goto out_err;
+ 		}
++	} else if (params->cpus) {
++		/*
++		 * Even if the user do not set a house-keeping CPU, try to
++		 * move rtla to a CPU set different to the one where the user
++		 * set the workload to run.
++		 *
++		 * No need to check results as this is an automatic attempt.
++		 */
++		auto_house_keeping(&params->monitored_cpus);
+ 	}
+ 
+ 	return 0;
+diff --git a/tools/tracing/rtla/src/timerlat_hist.c b/tools/tracing/rtla/src/timerlat_hist.c
+index 00287e96f22e..1675d54cae81 100644
+--- a/tools/tracing/rtla/src/timerlat_hist.c
++++ b/tools/tracing/rtla/src/timerlat_hist.c
+@@ -776,6 +776,15 @@ timerlat_hist_apply_config(struct osnoise_tool *tool, struct timerlat_hist_param
+ 			err_msg("Failed to set rtla to the house keeping CPUs\n");
+ 			goto out_err;
+ 		}
++	} else if (params->cpus) {
++		/*
++		 * Even if the user do not set a house-keeping CPU, try to
++		 * move rtla to a CPU set different to the one where the user
++		 * set the workload to run.
++		 *
++		 * No need to check results as this is an automatic attempt.
++		 */
++		auto_house_keeping(&params->monitored_cpus);
+ 	}
+ 
+ 	return 0;
+diff --git a/tools/tracing/rtla/src/timerlat_top.c b/tools/tracing/rtla/src/timerlat_top.c
+index 920f2f6ef842..f0c6d9735e2a 100644
+--- a/tools/tracing/rtla/src/timerlat_top.c
++++ b/tools/tracing/rtla/src/timerlat_top.c
+@@ -619,6 +619,15 @@ timerlat_top_apply_config(struct osnoise_tool *top, struct timerlat_top_params *
+ 			err_msg("Failed to set rtla to the house keeping CPUs\n");
+ 			goto out_err;
+ 		}
++	} else if (params->cpus) {
++		/*
++		 * Even if the user do not set a house-keeping CPU, try to
++		 * move rtla to a CPU set different to the one where the user
++		 * set the workload to run.
++		 *
++		 * No need to check results as this is an automatic attempt.
++		 */
++		auto_house_keeping(&params->monitored_cpus);
+ 	}
+ 
+ 	return 0;
+diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
+index 8f9ad8f01e0f..3e25f0277fb9 100644
+--- a/tools/tracing/rtla/src/utils.c
++++ b/tools/tracing/rtla/src/utils.c
+@@ -709,3 +709,53 @@ int set_comm_cgroup(const char *comm_prefix, const char *cgroup)
+ 	close(cg_fd);
+ 	return 0;
+ }
++
++/**
++ * auto_house_keeping - Automatically move rtla out of measurement threads
++ *
++ * Try to move rtla away from the tracer, if possible.
++ *
++ * Returns 1 on success, 0 otherwise.
++ */
++int auto_house_keeping(cpu_set_t *monitored_cpus)
++{
++	cpu_set_t rtla_cpus, house_keeping_cpus;
++	int retval;
++
++	/* first get the CPUs in which rtla can actually run. */
++	retval = sched_getaffinity(getpid(), sizeof(rtla_cpus), &rtla_cpus);
++	if (retval == -1) {
++		debug_msg("Could not get rtla affinity, rtla might run with the threads!\n");
++		return 0;
++	}
++
++	/* then check if the existing setup is already good. */
++	CPU_AND(&house_keeping_cpus, &rtla_cpus, monitored_cpus);
++	if (!CPU_COUNT(&house_keeping_cpus)) {
++		debug_msg("rtla and the monitored CPUs do not share CPUs.");
++		debug_msg("Skipping auto house-keeping\n");
++		return 1;
++	}
++
++	/* remove the intersection */
++	CPU_XOR(&house_keeping_cpus, &rtla_cpus, monitored_cpus);
++
++	/* get only those that rtla can run */
++	CPU_AND(&house_keeping_cpus, &house_keeping_cpus, &rtla_cpus);
++
++	/* is there any cpu left? */
++	if (!CPU_COUNT(&house_keeping_cpus)) {
++		debug_msg("Could not find any CPU for auto house-keeping\n");
++		return 0;
++	}
++
++	retval = sched_setaffinity(getpid(), sizeof(house_keeping_cpus), &house_keeping_cpus);
++	if (retval == -1) {
++		debug_msg("Could not set affinity for auto house-keeping\n");
++		return 0;
++	}
++
++	debug_msg("rtla automatically moved to an auto house-keeping cpu set\n");
++
++	return 1;
++}
+diff --git a/tools/tracing/rtla/src/utils.h b/tools/tracing/rtla/src/utils.h
+index 9ab2f0d7bc1c..dec59163cfbc 100644
+--- a/tools/tracing/rtla/src/utils.h
++++ b/tools/tracing/rtla/src/utils.h
+@@ -60,6 +60,7 @@ int parse_cpu_set(char *cpu_list, cpu_set_t *set);
+ int set_comm_sched_attr(const char *comm_prefix, struct sched_attr *attr);
+ int set_comm_cgroup(const char *comm_prefix, const char *cgroup);
+ int set_cpu_dma_latency(int32_t latency);
++int auto_house_keeping(cpu_set_t *monitored_cpus);
+ 
+ #define ns_to_usf(x) (((double)x/1000))
+ #define ns_to_per(total, part) ((part * 100) / (double)total)
 -- 
 2.38.1
 
