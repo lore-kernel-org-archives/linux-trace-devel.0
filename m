@@ -2,41 +2,35 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD7C0C7EE29
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 29 May 2023 08:43:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27855C7EE29
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 29 May 2023 08:50:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231529AbjE2InV (ORCPT
+        id S229678AbjE2Iu1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 29 May 2023 04:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46666 "EHLO
+        Mon, 29 May 2023 04:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231531AbjE2InP (ORCPT
+        with ESMTP id S231660AbjE2IuS (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 29 May 2023 04:43:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10738B1;
-        Mon, 29 May 2023 01:43:14 -0700 (PDT)
+        Mon, 29 May 2023 04:50:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C92C2
+        for <linux-trace-devel@vger.kernel.org>; Mon, 29 May 2023 01:50:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 932066127C;
-        Mon, 29 May 2023 08:43:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5773EC433EF;
-        Mon, 29 May 2023 08:43:11 +0000 (UTC)
-Date:   Mon, 29 May 2023 04:43:07 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D8897611EA
+        for <linux-trace-devel@vger.kernel.org>; Mon, 29 May 2023 08:50:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D880C433EF;
+        Mon, 29 May 2023 08:50:14 +0000 (UTC)
+Date:   Mon, 29 May 2023 04:50:10 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        William White <chwhite@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH V2 0/9] rtla improvements
-Message-ID: <20230529044307.2dcfca3d@rorschach.local.home>
-In-Reply-To: <838075fb-8b82-1aee-97a1-95102c03c16d@kernel.org>
-References: <cover.1684863094.git.bristot@kernel.org>
-        <20230529042839.5d4af427@rorschach.local.home>
-        <838075fb-8b82-1aee-97a1-95102c03c16d@kernel.org>
+To:     David Ahern <dsahern@kernel.org>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH] libtraceevent: Handle %c
+Message-ID: <20230529045010.0b1e22ca@rorschach.local.home>
+In-Reply-To: <20230508224121.12861-1-dsahern@kernel.org>
+References: <20230508224121.12861-1-dsahern@kernel.org>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -45,41 +39,32 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 29 May 2023 10:38:16 +0200
-Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+On Mon,  8 May 2023 16:41:21 -0600
+David Ahern <dsahern@kernel.org> wrote:
 
-> On 5/29/23 10:28, Steven Rostedt wrote:
-> > Hi Daniel,
-> > 
-> > Could you make sure to Cc linux-trace-kernel@vger.kernel.org and not
-> > linux-trace-devel. The former is for any patch that goes into the
-> > kernel repo, the later is for the tracing libraries (like libtracefs).
-> > The reason why this matters is that the patchwork that is associated to
-> > the Linux kernel tree will not get these (and I will not work on them
-> > when I'm working on kernel patches). But it will go into the 
-> > patchwork for the libraries (and never be processed by the patchwork
-> > infrastructure), and I will likely not work on them, because when I
-> > look at the library patchwork, I ignore anything that goes into the
-> > kernel.  
+> Use of %c in tracepoints is throwing off the argument order when printing
+> event data via perf. Handle '%c' in parse_arg_format.
 > 
-> Sure, I will do that. IIRC, we agreed that we would use linux-trace-devel for
-> rtla because it is a user-space tool. But I agree with you, as they are patches
-> going to the kernel repo, linux-trace-kernel is a better place. It is easier to
-> myself too... :-).
+> Signed-off-by: David Ahern <dsahern@kernel.org>
 
-I think we agreed on that because linux-trace-kernel didn't exist yet ;-)
-
-> 
-> > 
-> > Perhaps resend with the proper Cc and it will then be processed. I
-> > allowed this to happen before, but that's because I did everything
-> > manually and not with my scripts. And I'm tired of doing that.  
-> 
-> I will do that in the v3.
-> 
-> I will also update the maintainers entry for RTLA and RV, as both are pointing to
-> linux-trace-devel.
-
-I already sent the patch!
+Applied, Thanks David!
 
 -- Steve
+
+> ---
+>  src/event-parse.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/src/event-parse.c b/src/event-parse.c
+> index acf7fde4ead9..12c6f560019b 100644
+> --- a/src/event-parse.c
+> +++ b/src/event-parse.c
+> @@ -6486,6 +6486,7 @@ static int parse_arg_format(struct tep_print_parse **parse,
+>  			*arg = (*arg)->next;
+>  			ret++;
+>  			return ret;
+> +		case 'c':
+>  		case 'd':
+>  		case 'u':
+>  		case 'i':
+
