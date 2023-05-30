@@ -2,35 +2,36 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5889EC77B73
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 30 May 2023 08:20:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05769C7EE23
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 30 May 2023 08:51:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229528AbjE3IUf (ORCPT
+        id S229754AbjE3Iv1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 30 May 2023 04:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37000 "EHLO
+        Tue, 30 May 2023 04:51:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbjE3IUc (ORCPT
+        with ESMTP id S229852AbjE3Iv0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 30 May 2023 04:20:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB38107
-        for <linux-trace-devel@vger.kernel.org>; Tue, 30 May 2023 01:20:23 -0700 (PDT)
+        Tue, 30 May 2023 04:51:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492D9BE
+        for <linux-trace-devel@vger.kernel.org>; Tue, 30 May 2023 01:51:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 229AD6146B
-        for <linux-trace-devel@vger.kernel.org>; Tue, 30 May 2023 08:20:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C14C1C433EF;
-        Tue, 30 May 2023 08:20:21 +0000 (UTC)
-Date:   Tue, 30 May 2023 04:20:18 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CDCCF61C14
+        for <linux-trace-devel@vger.kernel.org>; Tue, 30 May 2023 08:51:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D61CCC433EF;
+        Tue, 30 May 2023 08:51:23 +0000 (UTC)
+Date:   Tue, 30 May 2023 04:51:19 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Gabriel Krisman Bertazi <krisman@suse.de>
+To:     avidanborisov@gmail.com
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH trace-cmd v2 0/3] trace-cmd filtering
-Message-ID: <20230530042018.3abd4cae@rorschach.local.home>
-In-Reply-To: <20230330185211.5604-1-krisman@suse.de>
-References: <20230330185211.5604-1-krisman@suse.de>
+Subject: Re: [PATCH 0/3] trace-cmd record: Support daemonization after
+ recording starts
+Message-ID: <20230530045119.30c8d973@rorschach.local.home>
+In-Reply-To: <20230501203118.3105605-1-avidanborisov@gmail.com>
+References: <20230501203118.3105605-1-avidanborisov@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -39,50 +40,108 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 30 Mar 2023 15:52:08 -0300
-Gabriel Krisman Bertazi <krisman@suse.de> wrote:
+On Mon,  1 May 2023 23:31:15 +0300
+avidanborisov@gmail.com wrote:
 
-> Hi Steve,
+> From: Avidan Borisov <avidanborisov@gmail.com>
 
-Hi Gabriel,
+Hi Avidan,
 
-Sorry for taking so long. I finally got time to start looking at the
-libtrace* trace-cmd code, and I queued this up for the next push.
+I finally got around to looking at this. Nice work! Some nits though.
 
-Thanks Gabriel!
+> 
+> This patch series adds support for daemonizing trace-cmd record after tracing
+> has started. The motivation is to be able to use trace-cmd more easily
+> in automated setups.
+> 
+> The main reason to do this in trace-cmd itself, is that it allows us to do the daemonization
+> at the latest point possible. This has few advantages over daemonizing trace-cmd as a whole:
+> 
+>   1. We can cleanly fail if something failed during initialization, and signal
+>      it up to the caller normally with a status code. This is not possible if we
+>      daemonize trace-cmd as a whole, since the the error could happen after the
+>      daemonization, but at that point trace-cmd is already a background process,
+>      and it's cumbersome to check if it failed or not.
+> 
+>   2. The next thing that executes after trace-cmd exits will definitely be recorded
+>      in the trace, since we exit to the caller only after tracing has started. This
+>      is especially important when we trace guests as well, since the KVM/PTP time synchronization
+>      can take a while to complete, and we can't know for sure when the actual tracing
+>      starts. With --daemonize we know that once trace-cmd exits, the tracing has started.
+> 
+> Here's an example how naive daemonization fails:
+> 
+> $ sudo setsid trace-cmd record -p nop -e 'net:sched_process_exec' -A guest -p nop -e net & \
+>     > ping -c 1 10.20.1.2 &&
+>     > sudo kill -SIGINT $! &&
+>     > sudo trace-cmd report -i trace.dat -i trace-guest.dat | head  
+> [1] 3087529
+> PING 10.20.1.2 (10.20.1.2) 56(84) bytes of data.
+> 64 bytes from 10.20.1.2: icmp_seq=1 ttl=64 time=0.233 ms
+> --- 10.20.1.2 ping statistics ---
+> 1 packets transmitted, 1 received, 0% packet loss, time 0ms
+> rtt min/avg/max/mdev = 0.233/0.233/0.233/0.000 ms
+> [1]+  Interrupt               sudo setsid trace-cmd record -p nop -e 'net:sched_process_exec' -A guest -p nop -e net
+> trace-cmd: No such file or directory
+>   opening 'trace.dat'
+> 
+> Here we have stopped trace-cmd too early, and no trace was generated. Now with --daemonize:
+> 
+> $ sudo trace-cmd record --daemonize -p nop -e 'sched:sched_process_exec' -A guest -p nop -e net &&
+>     > ping -c 1 10.20.1.2 &&
+>     > sudo start-stop-daemon --stop --signal INT --retry 20 --pidfile /var/run/trace-cmd-record.pid &&
+>     > sudo trace-cmd report -i trace.dat -i trace-guest.dat | head  
+> Negotiated kvm time sync protocol with guest guest
+> Send SIGINT to pid 3071371 to stop recording
+> PING 10.20.1.2 (10.20.1.2) 56(84) bytes of data.
+> 64 bytes from 10.20.1.2: icmp_seq=1 ttl=64 time=0.134 ms
+> --- 10.20.1.2 ping statistics ---
+> 1 packets transmitted, 1 received, 0% packet loss, time 0ms
+> rtt min/avg/max/mdev = 0.134/0.134/0.134/0.000 ms
+> CPU0 data recorded at offset=0x14f000
+>     229 bytes in size (4096 uncompressed)
+> ....
+>       trace.dat: cpus=28
+> trace-guest.dat: cpus=1
+>       trace.dat:           ping-3071450 [013] 1196830.834258: sched_process_exec:     filename=/bin/ping pid=3071450 old_pid=3071450
+> trace-guest.dat:           <idle>-0     [000] 1196830.835990: napi_gro_receive_entry: dev=eth1 napi_id=0x2002 queue_mapping=1 skbaddr=0xffff95d051a5c400 vlan_tagged=0 vlan_proto=0x0000 vlan_tci=0x0000 protocol=0x0800 ip_summed=0 hash=0x00000000 l4_hash=0 len=84 data_len=0 truesize=768 mac_header_valid=1 mac_header=-14 nr_frags=0 gso_size=0 gso_type=0
+> trace-guest.dat:           <idle>-0     [000] 1196830.835997: napi_gro_receive_exit:  ret=3
+> trace-guest.dat:           <idle>-0     [000] 1196830.835998: netif_receive_skb:      dev=eth1 skbaddr=0xffff95d051a5c400x len=84
+> trace-guest.dat:           <idle>-0     [000] 1196830.836021: net_dev_queue:          dev=eth1 skbaddr=0xffff95d051a5c700x len=98
+> trace-guest.dat:           <idle>-0     [000] 1196830.836024: net_dev_start_xmit:     dev=eth1 queue_mapping=0 skbaddr=0xffff95d051a5c700 vlan_tagged=0 vlan_proto=0x0000 vlan_tci=0x0000 protocol=0x0800 ip_summed=0 len=98 data_len=0 network_offset=14 transport_offset_valid=1 transport_offset=34 tx_flags=0 gso_size=0 gso_segs=0 gso_type=0
+> trace-guest.dat:           <idle>-0     [000] 1196830.836069: net_dev_xmit:           dev=eth1 skbaddr=0xffff95d051a5c700 len=98 rc=0
+>       trace.dat:           sudo-3071451 [015] 1196830.838262: sched_process_exec:     filename=/usr/bin/sudo pid=3071451 old_pid=3071451
+
+Could you add the above example to the man pages?
 
 -- Steve
 
-
 > 
-> This implements my fix to restore single input filtering behavior
-> (bz217038) and adds support for global filters, as you requested.
+> As for the implementation itself - unfortunately since daemon(3) calls fork(), we can't call it after
+> creating other processes/threads (if we call it after creating the recorder processes it'll mess up the
+> process hierarchy, and if after the tsync thread creation, it will mess up memory sharing).
+> However the point in time where we want to exit to the caller is after those processes/threads
+> have started, since that's when tracing actually starts.
 > 
-> On another topic, a current behavior that seems weird in my opinion is
-> that the following negates the second filter as well.
+> Therefore, we implement the daemonization ourselves in the following way:
+>     1. We fork() early, and make the parent waitpid on the child.
+>     2. When the child finishes initializing everything, it detaches
+>        from the session and sends a signal to the parent.
+>     3. The parent can now exit, causing the entire process hierarchy
+>        of the child to be inherited by init.
+>     4. The daemonization is now complete, and the caller to trace-cmd
+>        now executes the next thing, which will be traced.
 > 
->   "trace-cmd -i trace.dat.1 -v -F tp1 -i trace.dat.2 -F tp2"
+> Avidan Borisov (3):
+>   trace-cmd record: Add --daemonize
+>   trace-cmd: export pidfile functions from trace-listen.c
+>   trace-cmd record: Create a pidfile when using --daemonize
 > 
-> I'd prefer that -v would apply only to the following -F. It'd allow me
-> to do:
-> 
->   "trace-cmd -v -F 'mm_page_alloc' -i trace.dat.1 -i trace.dat.2 ... \
->              -i trace.dat.10 -F 'mm_page_alloc:order==1'"
-> 
-> It obviously breaks the interface, so I didn't implement it here.  Would
-> like to hear your input, though.  We could have a new syntax:
-> 
->   "trace-cmd ! -F tp1 -F tp2 ! -F tp3"
-> 
-> Thanks,
-> 
-> Gabriel Krisman Bertazi (3):
->   trace-cmd report: Ensure filter is applied to single input file
->   trace-cmd-report: Support global filters
->   documentation: trace-cmd-report: Document filter scope
-> 
->  .../trace-cmd/trace-cmd-report.1.txt          |  8 +++-
->  tracecmd/trace-read.c                         | 45 ++++++++++++-------
->  2 files changed, 34 insertions(+), 19 deletions(-)
+>  .../trace-cmd/trace-cmd-record.1.txt          |   4 +
+>  tracecmd/include/trace-local.h                |   4 +
+>  tracecmd/trace-listen.c                       |  32 ++--
+>  tracecmd/trace-record.c                       | 141 +++++++++++++++++-
+>  tracecmd/trace-usage.c                        |   3 +
+>  5 files changed, 164 insertions(+), 20 deletions(-)
 > 
 
