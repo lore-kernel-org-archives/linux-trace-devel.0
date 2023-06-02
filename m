@@ -2,35 +2,34 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E427C7EE29
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jun 2023 07:37:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 127B0C77B7A
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Jun 2023 07:58:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234090AbjFBHhx (ORCPT
+        id S233979AbjFBH6V (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 2 Jun 2023 03:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43190 "EHLO
+        Fri, 2 Jun 2023 03:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234389AbjFBHhd (ORCPT
+        with ESMTP id S233391AbjFBH6V (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 2 Jun 2023 03:37:33 -0400
+        Fri, 2 Jun 2023 03:58:21 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C69E44
-        for <linux-trace-devel@vger.kernel.org>; Fri,  2 Jun 2023 00:37:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC32123
+        for <linux-trace-devel@vger.kernel.org>; Fri,  2 Jun 2023 00:58:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CA8EC64CFB
-        for <linux-trace-devel@vger.kernel.org>; Fri,  2 Jun 2023 07:37:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6DD3C4339B;
-        Fri,  2 Jun 2023 07:37:29 +0000 (UTC)
-Date:   Fri, 2 Jun 2023 03:37:26 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 471D960E9B
+        for <linux-trace-devel@vger.kernel.org>; Fri,  2 Jun 2023 07:58:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC57CC433EF;
+        Fri,  2 Jun 2023 07:58:17 +0000 (UTC)
+Date:   Fri, 2 Jun 2023 03:58:15 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc:     Douglas RAILLARD <douglas.raillard@arm.com>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Subject: [PATCH] trace-cmd: Update v7 trace.dat documentation to clarify the
- strings section
-Message-ID: <20230602033726.3c0ac34a@rorschach.local.home>
+Cc:     Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] libtracecmd: Free buf_from in error path of
+ tracecmd_compress_copy_from()
+Message-ID: <20230602035815.43904076@rorschach.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -41,53 +40,31 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The string section description in the trace.dat v7 man page is a little
-confusing. It is missing its section id, and so is the buffer text
-section. Add the ids and clear up the description slightly.
+The failure of allocating buf_to returns without freeing buf_from.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=217351
-Reported-by: Douglas RAILLARD <douglas.raillard@arm.com>
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=217127
+Reported-by: Markus Elfring <Markus.Elfring@web.de>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/trace-cmd/trace-cmd.dat.v7.5.txt | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ lib/trace-cmd/trace-compress.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/trace-cmd/trace-cmd.dat.v7.5.txt b/Documentation/trace-cmd/trace-cmd.dat.v7.5.txt
-index b19d2842a745..2f7e6a4a4654 100644
---- a/Documentation/trace-cmd/trace-cmd.dat.v7.5.txt
-+++ b/Documentation/trace-cmd/trace-cmd.dat.v7.5.txt
-@@ -226,6 +226,10 @@ OPTIONS SECTION
-        <4 bytes> unsigned integer, time shift.
-        <8 bytes> unsigned long long integer, time offset.
+diff --git a/lib/trace-cmd/trace-compress.c b/lib/trace-cmd/trace-compress.c
+index ca6e03b88e69..e550dbd4b0d5 100644
+--- a/lib/trace-cmd/trace-compress.c
++++ b/lib/trace-cmd/trace-compress.c
+@@ -696,8 +696,10 @@ int tracecmd_compress_copy_from(struct tracecmd_compression *handle, int fd, int
+ 		return -1;
  
-+  STRINGS: id 15, size vary
-+    The STRINGS option holds a list of nul terminated strings that holds the names of the
-+    other sections.
-+
-   HEADER_INFO: id 16, size 8
-     The HEADER_INFO option data is:
-       <8 bytes> long long unsigned integer, offset into the trace file where the HEADER INFO
-@@ -419,14 +423,18 @@ BUFFER FLYRECORD SECTION
- BUFFER TEXT SECTION
- ------------------------
+ 	buf_to = malloc(csize);
+-	if (!buf_to)
++	if (!buf_to) {
++		free(buf_from);
+ 		return -1;
++	}
  
-+  Section ID: 22
-+
-   This section contains latency tracing data, ASCII text taken from the
-   target's debugfs/tracing/trace file.
- 
- STRINGS SECTION
- ------------------------
- 
--  All strings from trace file metadata are stored in string section in the file. The section
--  contains a list of NULL terminated ASCII strings. An ID of the string is used in the file
-+  Section ID: 15
-+
-+  All strings of the trace file metadata are stored in a string section within the file. The section
-+  contains a list of nul terminated ASCII strings. An ID of the string is used in the file
-   meta data, which is the offset of the actual string into the string section. Strings can be stored
-   into multiple string sections in the file.
- 
+ 	/* save the initial offset and write 0 as initial chunk count */
+ 	offset = lseek(handle->fd, 0, SEEK_CUR);
 -- 
 2.39.2
 
