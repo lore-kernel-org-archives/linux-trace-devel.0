@@ -2,33 +2,32 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80629C7EE23
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Jun 2023 00:55:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25F01C77B73
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Jun 2023 01:42:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbjFFAzS (ORCPT
+        id S233866AbjFFBmU (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 5 Jun 2023 20:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45874 "EHLO
+        Mon, 5 Jun 2023 21:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231220AbjFFAzS (ORCPT
+        with ESMTP id S231534AbjFFBmT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 5 Jun 2023 20:55:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AEA1102
-        for <linux-trace-devel@vger.kernel.org>; Mon,  5 Jun 2023 17:55:17 -0700 (PDT)
+        Mon, 5 Jun 2023 21:42:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 948EB110
+        for <linux-trace-devel@vger.kernel.org>; Mon,  5 Jun 2023 18:42:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 085C862030
-        for <linux-trace-devel@vger.kernel.org>; Tue,  6 Jun 2023 00:55:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 213A9C433EF
-        for <linux-trace-devel@vger.kernel.org>; Tue,  6 Jun 2023 00:55:15 +0000 (UTC)
-Date:   Mon, 5 Jun 2023 20:55:14 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3154362C3D
+        for <linux-trace-devel@vger.kernel.org>; Tue,  6 Jun 2023 01:42:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F993C433EF;
+        Tue,  6 Jun 2023 01:42:16 +0000 (UTC)
+Date:   Mon, 5 Jun 2023 21:42:14 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2] libtracefs tests: Add helper function to destroy dynamic
- events
-Message-ID: <20230605205514.7ea9293c@gandalf.local.home>
+Subject: [PATCH] libtracefs: Add tracefs_kprobe_destory() API
+Message-ID: <20230605214214.2289969d@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -39,107 +38,163 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Create a helper function in the test code called destroy_dynevent() that
-takes the type of event and performs:
+Currently the only way to remove kprobes from the system via tracefs that
+was created by tracefs_kprobe_raw() or tracefs_ketprobe_all is with the
+big hammer of tracefs_dynevent_destroy_all(), as removing a single kprobe
+requires having the tracefs_dynevent descriptor for it (which the raw
+functions do not return).
 
-	ret = tracefs_dynevent_destroy_all(type, true);
-	CU_TEST(ret == 0);
-	get_dynevents_check(type, 0);
-
-Instead of open coding those three lines over and over again.
+Add tracefs_kprobe_destroy() that will remove an individual kprobe or
+kretprobe that was created by one of the raw functions.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
-Changes since v1: https://lore.kernel.org/linux-trace-devel/20230605205000.1f478c26@gandalf.local.home/
+ Documentation/libtracefs-kprobes.txt | 14 +++++++++++--
+ include/tracefs.h                    |  2 ++
+ samples/Makefile                     |  2 ++
+ src/tracefs-kprobes.c                | 30 ++++++++++++++++++++++++++++
+ utest/tracefs-utest.c                | 18 ++++++++++++++++-
+ 5 files changed, 63 insertions(+), 3 deletions(-)
 
- - Remove accidental addition of tracefs_kprobe_destroy() addition
-
- utest/tracefs-utest.c | 30 ++++++++++++++----------------
- 2 files changed, 31 insertions(+), 16 deletions(-)
-
-diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index 3d88d927e320..cd2304474089 100644
---- a/utest/tracefs-utest.c
-+++ b/utest/tracefs-utest.c
-@@ -1006,6 +1006,15 @@ static void test_synth_compare(struct test_synth *sevents, struct tracefs_dyneve
- 	CU_TEST(devents == NULL || devents[i] == NULL);
- }
+diff --git a/Documentation/libtracefs-kprobes.txt b/Documentation/libtracefs-kprobes.txt
+index 593ef9ee11fb..f03b096778a5 100644
+--- a/Documentation/libtracefs-kprobes.txt
++++ b/Documentation/libtracefs-kprobes.txt
+@@ -3,8 +3,9 @@ libtracefs(3)
  
-+static void destroy_dynevents(unsigned int type)
+ NAME
+ ----
+-tracefs_kprobe_alloc, tracefs_kretprobe_alloc, tracefs_kprobe_raw, tracefs_kretprobe_raw -
+-Allocate, get, and create kprobes
++tracefs_kprobe_alloc, tracefs_kretprobe_alloc, tracefs_kprobe_raw, tracefs_kretprobe_raw,
++tracefs_kprobe_destroy -
++Allocate, get, create, and remove kprobes
+ 
+ SYNOPSIS
+ --------
+@@ -22,6 +23,8 @@ int *tracefs_kprobe_raw*(const char pass:[*]_system_, const char pass:[*]_event_
+ 			 const char pass:[*]_addr_, const char pass:[*]_format_);
+ int *tracefs_kretprobe_raw*(const char pass:[*]_system_, const char pass:[*]_event_,
+ 			    const char pass:[*]_addr_, const char pass:[*]_format_);
++int *tracefs_kprobe_destroy*(const char pass:[*]_system_, const char pass:[*]_event_,
++			   const char pass:[*]_addr_, const char pass:[*]_format_, bool _force_);
+ --
+ 
+ DESCRIPTION
+@@ -49,6 +52,9 @@ document.
+ creates a kretprobe instead of a kprobe. The difference is also described
+ in the Linux kernel source in the Documentation/trace/kprobetrace.rst file.
+ 
++*tracefs_kprobe_destroy*() will destroy a specific kprobe or kretprobe created by
++*tracefs_kprobe_raw*() or *tracefs_kretprobe_raw*() with the same parameters.
++
+ RETURN VALUE
+ ------------
+ 
+@@ -61,6 +67,10 @@ tracefs_dynevent structure, describing the probe. This pointer must be freed by
+ *tracefs_dynevent_free*(3). Note, this only allocates a descriptor representing the kprobe. It does
+ not modify the running system.
+ 
++The *tracefs_kprobe_destroy*() returns 0 on success or -1 on error if it was not able to
++successful destory (or find) the kprobe or kretprobe.
++
++
+ ERRORS
+ ------
+ The following errors are for all the above calls:
+diff --git a/include/tracefs.h b/include/tracefs.h
+index 7c442e47204d..269b119ffc2a 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -325,6 +325,8 @@ int tracefs_kprobe_raw(const char *system, const char *event,
+ 		       const char *addr, const char *format);
+ int tracefs_kretprobe_raw(const char *system, const char *event,
+ 			  const char *addr, const char *format);
++int tracefs_kprobe_destroy(const char *system, const char *event,
++			   const char *addr, const char *format, bool force);
+ 
+ enum tracefs_hist_key_type {
+ 	TRACEFS_HIST_KEY_NORMAL = 0,
+diff --git a/samples/Makefile b/samples/Makefile
+index fa88ffc75b1d..d782e8f79424 100644
+--- a/samples/Makefile
++++ b/samples/Makefile
+@@ -63,6 +63,8 @@ $(EXAMPLES): $(patsubst %,$(sdir)/%,$(TARGETS))
+ #
+ # $(bdir)/XX.o: $(bdir)/XX.c
+ #	$(CC) -g -Wall $(CFLAGS) -c -o $@ $^ -I../include/ $(LIBTRACEEVENT_INCLUDES)
++$(bdir)/kprobes.o: $(bdir)/kprobes.c
++	$(CC) -g -Wall $(CFLAGS) -c -o $@ $^ -I../include/ $(LIBTRACEEVENT_INCLUDES)
+ 
+ $(bdir)/%.o: $(bdir)/%.c
+ 	$(call do_sample_obj,$@,$^)
+diff --git a/src/tracefs-kprobes.c b/src/tracefs-kprobes.c
+index a8c016376118..5c50b21753e6 100644
+--- a/src/tracefs-kprobes.c
++++ b/src/tracefs-kprobes.c
+@@ -196,3 +196,33 @@ int tracefs_kretprobe_raw(const char *system, const char *event,
+ {
+ 	return kprobe_raw(TRACEFS_DYNEVENT_KRETPROBE, system, event, addr, format);
+ }
++
++/**
++ * tracefs_kprobe_destroy - Remove an individual kprobe or kretprobe
++ * @system: The system of the kprobe to remove (could be NULL)
++ * @event: The event of the kprobe or kretprobe to remove
++ * @addr: The address used to create the kprobe
++ * @format: The format used to create the kprobe
++ * @force: If true, try to disable the kprobe/kretprobe first
++ *
++ * This removes the kprobe or kretprobe that was created by
++ * tracefs_kprobe_raw() or tracefs_kretprobe_raw().
++ *
++ * Returns 0 on success and -1 otherwise.
++ */
++int tracefs_kprobe_destroy(const char *system, const char *event,
++			   const char *addr, const char *format, bool force)
 +{
++	struct tracefs_dynevent *kp;
 +	int ret;
 +
-+	ret = tracefs_dynevent_destroy_all(type, true);
-+	CU_TEST(ret == 0);
-+	get_dynevents_check(type, 0);
-+}
++	kp = tracefs_kprobe_alloc(system, event, addr, format);
++	if (!kp)
++		return -1;
 +
- static void test_instance_synthetic(struct tracefs_instance *instance)
- {
- 	struct test_synth sevents[] = {
-@@ -1025,9 +1034,7 @@ static void test_instance_synthetic(struct tracefs_instance *instance)
- 	CU_TEST(tep != NULL);
- 
- 	/* kprobes APIs */
--	ret = tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_SYNTH, true);
--	CU_TEST(ret == 0);
--	get_dynevents_check(TRACEFS_DYNEVENT_SYNTH, 0);
-+	destroy_dynevents(TRACEFS_DYNEVENT_SYNTH);
- 
- 	for (i = 0; i < sevents_count; i++) {
- 		synth[i] = tracefs_synth_alloc(tep,  sevents[i].name,
-@@ -1260,9 +1267,7 @@ static void test_kprobes_instance(struct tracefs_instance *instance)
- 	CU_TEST(tracefs_kretprobe_raw("test", "test", NULL, "test") != 0);
- 
- 	/* kprobes APIs */
--	ret = tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, true);
--	CU_TEST(ret == 0);
--	get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, 0);
-+	destroy_dynevents(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE);
- 
- 	for (i = 0; i < kprobe_count; i++) {
- 		dkprobe[i] = tracefs_kprobe_alloc(ktests[i].system, ktests[i].event,
-@@ -1327,9 +1332,7 @@ static void test_kprobes_instance(struct tracefs_instance *instance)
- 		tracefs_dynevent_free(dkretprobe[i]);
- 
- 	/* kprobes raw APIs */
--	ret = tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, true);
--	CU_TEST(ret == 0);
--	get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, 0);
-+	destroy_dynevents(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE);
- 
- 	for (i = 0; i < kprobe_count; i++) {
- 		ret = tracefs_kprobe_raw(ktests[i].system, ktests[i].event,
-@@ -1365,9 +1368,7 @@ static void test_kprobes_instance(struct tracefs_instance *instance)
++	ret = tracefs_dynevent_destroy(kp, force);
++
++	tracefs_dynevent_free(kp);
++
++	return ret;
++}
+diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
+index cd2304474089..398c94368e66 100644
+--- a/utest/tracefs-utest.c
++++ b/utest/tracefs-utest.c
+@@ -1368,7 +1368,23 @@ static void test_kprobes_instance(struct tracefs_instance *instance)
  	tracefs_dynevent_list_free(devents);
  	devents = NULL;
  
--	ret = tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, true);
--	CU_TEST(ret == 0);
--	get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, 0);
-+	destroy_dynevents(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE);
+-	destroy_dynevents(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE);
++	/* Try destroying all the events using tracefs_kprobe_destroy */
++	for (i = 0; i < kprobe_count; i++) {
++		ret = tracefs_kprobe_destroy(ktests[i].system, ktests[i].event,
++					     ktests[i].address, ktests[i].format, true);
++		CU_TEST(ret == 0);
++		get_dynevents_check(TRACEFS_DYNEVENT_KPROBE, kprobe_count - (i + 1));
++	}
++	get_dynevents_check(TRACEFS_DYNEVENT_KPROBE, 0);
++
++	for (i = 0; i < kretprobe_count; i++) {
++		ret = tracefs_kprobe_destroy(kretests[i].system, kretests[i].event,
++					     kretests[i].address, kretests[i].format, true);
++		CU_TEST(ret == 0);
++		get_dynevents_check(TRACEFS_DYNEVENT_KRETPROBE, kretprobe_count - (i + 1));
++	}
++	get_dynevents_check(TRACEFS_DYNEVENT_KRETPROBE, 0);
++
  	free(dkretprobe);
  	free(dkprobe);
  	tep_free(tep);
-@@ -1392,7 +1393,6 @@ static void test_eprobes_instance(struct tracefs_instance *instance)
- 	struct tep_handle *tep;
- 	char *tsys, *tevent;
- 	char *tmp, *sav;
--	int ret;
- 	int i;
- 
- 	tep = tep_alloc();
-@@ -1405,9 +1405,7 @@ static void test_eprobes_instance(struct tracefs_instance *instance)
- 	CU_TEST(tracefs_eprobe_alloc("test", "test", NULL, "test", "test") == NULL);
- 	CU_TEST(tracefs_eprobe_alloc("test", "test", "test", NULL, "test") == NULL);
- 
--	ret = tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_EPROBE, true);
--	CU_TEST(ret == 0);
--	get_dynevents_check(TRACEFS_DYNEVENT_EPROBE, 0);
-+	destroy_dynevents(TRACEFS_DYNEVENT_EPROBE);
- 
- 	for (i = 0; i < count; i++) {
- 		tmp = strdup(etests[i].address);
 -- 
 2.39.2
 
