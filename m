@@ -2,33 +2,33 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A44EFC7EE24
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Jun 2023 00:50:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80629C7EE23
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Jun 2023 00:55:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbjFFAuF (ORCPT
+        id S231277AbjFFAzS (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 5 Jun 2023 20:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44884 "EHLO
+        Mon, 5 Jun 2023 20:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231936AbjFFAuF (ORCPT
+        with ESMTP id S231220AbjFFAzS (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 5 Jun 2023 20:50:05 -0400
+        Mon, 5 Jun 2023 20:55:18 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9763BE
-        for <linux-trace-devel@vger.kernel.org>; Mon,  5 Jun 2023 17:50:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AEA1102
+        for <linux-trace-devel@vger.kernel.org>; Mon,  5 Jun 2023 17:55:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5BF9F622CF
-        for <linux-trace-devel@vger.kernel.org>; Tue,  6 Jun 2023 00:50:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77119C433EF
-        for <linux-trace-devel@vger.kernel.org>; Tue,  6 Jun 2023 00:50:02 +0000 (UTC)
-Date:   Mon, 5 Jun 2023 20:50:00 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 085C862030
+        for <linux-trace-devel@vger.kernel.org>; Tue,  6 Jun 2023 00:55:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 213A9C433EF
+        for <linux-trace-devel@vger.kernel.org>; Tue,  6 Jun 2023 00:55:15 +0000 (UTC)
+Date:   Mon, 5 Jun 2023 20:55:14 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] libtracefs tests: Add helper function to destroy dynamic
+Subject: [PATCH v2] libtracefs tests: Add helper function to destroy dynamic
  events
-Message-ID: <20230605205000.1f478c26@gandalf.local.home>
+Message-ID: <20230605205514.7ea9293c@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -50,35 +50,13 @@ Instead of open coding those three lines over and over again.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- src/tracefs-kprobes.c | 17 +++++++++++++++++
+Changes since v1: https://lore.kernel.org/linux-trace-devel/20230605205000.1f478c26@gandalf.local.home/
+
+ - Remove accidental addition of tracefs_kprobe_destroy() addition
+
  utest/tracefs-utest.c | 30 ++++++++++++++----------------
  2 files changed, 31 insertions(+), 16 deletions(-)
 
-diff --git a/src/tracefs-kprobes.c b/src/tracefs-kprobes.c
-index a8c016376118..20807e2a8baf 100644
---- a/src/tracefs-kprobes.c
-+++ b/src/tracefs-kprobes.c
-@@ -196,3 +196,20 @@ int tracefs_kretprobe_raw(const char *system, const char *event,
- {
- 	return kprobe_raw(TRACEFS_DYNEVENT_KRETPROBE, system, event, addr, format);
- }
-+
-+int tracefs_kprobe_destroy(const char *system, const char *event,
-+			   const char *addr, const char *format, bool force)
-+{
-+	struct tracefs_dynevent *kp;
-+	int ret;
-+
-+	kp = tracefs_kprobe_alloc(system, event, addr, format);
-+	if (!kp)
-+		return -1;
-+
-+	ret = tracefs_dynevent_destroy(kp, force);
-+
-+	tracefs_dynevent_free(kp);
-+
-+	return ret;
-+}
 diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
 index 3d88d927e320..cd2304474089 100644
 --- a/utest/tracefs-utest.c
