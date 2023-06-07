@@ -2,33 +2,33 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF0C1C7EE43
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  7 Jun 2023 00:00:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CE73C77B7A
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  7 Jun 2023 01:17:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239987AbjFGAAZ (ORCPT
+        id S234423AbjFGBRH (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 6 Jun 2023 20:00:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37926 "EHLO
+        Tue, 6 Jun 2023 21:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234601AbjFGAAY (ORCPT
+        with ESMTP id S234661AbjFGBRF (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 6 Jun 2023 20:00:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C0C411A
-        for <linux-trace-devel@vger.kernel.org>; Tue,  6 Jun 2023 17:00:22 -0700 (PDT)
+        Tue, 6 Jun 2023 21:17:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF99172D
+        for <linux-trace-devel@vger.kernel.org>; Tue,  6 Jun 2023 18:17:02 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 55AAD63940
-        for <linux-trace-devel@vger.kernel.org>; Wed,  7 Jun 2023 00:00:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36B15C433D2;
-        Wed,  7 Jun 2023 00:00:20 +0000 (UTC)
-Date:   Tue, 6 Jun 2023 20:00:16 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A9916300E
+        for <linux-trace-devel@vger.kernel.org>; Wed,  7 Jun 2023 01:17:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D23CC433D2;
+        Wed,  7 Jun 2023 01:17:00 +0000 (UTC)
+Date:   Tue, 6 Jun 2023 21:16:58 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Cc:     keiichiw@google.com, takayas@google.com, uekawa@google.com
-Subject: [PATCH] trace-cmd attach: Add new command "attach"
-Message-ID: <20230606200016.2b605d59@gandalf.local.home>
+Subject: [PATCH v2] trace-cmd attach: Add new command "attach"
+Message-ID: <20230606211658.580d3063@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -37,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+\From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
 Add a new trace-cmd command called "attach". This will attach a trace.dat
 file created on a guest to a trace.dat file created on the host at the
@@ -56,20 +56,26 @@ then they will be supported.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
+Changes since v1: https://lore.kernel.org/linux-trace-devel/20230606200016.2b605d59@gandalf.local.home
+
+  - Fixed a few memory leaks
+  - Removed some debug printf()s
+  - Fixed the cmp operation to use the correct pointers
+
  .../trace-cmd/trace-cmd-attach.1.txt          | 124 +++++
  Documentation/trace-cmd/trace-cmd.1.txt       |   5 +-
  tracecmd/Makefile                             |   1 +
  tracecmd/include/trace-local.h                |   4 +
- tracecmd/trace-attach.c                       | 471 ++++++++++++++++++
+ tracecmd/trace-attach.c                       | 500 ++++++++++++++++++
  tracecmd/trace-cmd.c                          |  22 +
  tracecmd/trace-usage.c                        |   9 +
- 7 files changed, 635 insertions(+), 1 deletion(-)
+ 7 files changed, 664 insertions(+), 1 deletion(-)
  create mode 100644 Documentation/trace-cmd/trace-cmd-attach.1.txt
  create mode 100644 tracecmd/trace-attach.c
 
 diff --git a/Documentation/trace-cmd/trace-cmd-attach.1.txt b/Documentation/trace-cmd/trace-cmd-attach.1.txt
 new file mode 100644
-index 000000000000..74efe14f3f79
+index 000000000000..1edef4a16f34
 --- /dev/null
 +++ b/Documentation/trace-cmd/trace-cmd-attach.1.txt
 @@ -0,0 +1,124 @@
@@ -154,7 +160,7 @@ index 000000000000..74efe14f3f79
 +
 +  $ # Find the tsc offset
 +  $ su
-+  # cat /sys/kernel/debug/kvm/63170-15/vcpu0/tsc-offset 
++  # cat /sys/kernel/debug/kvm/63170-15/vcpu0/tsc-offset
 + -27950965013436847
 +
 +  # trace-cmd record -C tsc2nesc -e kvm -e sched -e irq -e timer
@@ -256,10 +262,10 @@ index ae208fb6b593..8f18f6d5865c 100644
  int tracecmd_add_event(const char *event_str, int stack);
 diff --git a/tracecmd/trace-attach.c b/tracecmd/trace-attach.c
 new file mode 100644
-index 000000000000..f54f6033b386
+index 000000000000..c20c75310f77
 --- /dev/null
 +++ b/tracecmd/trace-attach.c
-@@ -0,0 +1,471 @@
+@@ -0,0 +1,500 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright (C) 2023 Google Inc, Steven Rostedt <rostedt@goodmis.org>
@@ -344,6 +350,17 @@ index 000000000000..f54f6033b386
 +	tshift->timestamp = timestamp;
 +}
 +
++static void free_timeshifts(void)
++{
++	struct timeshift_sample *tshift;
++
++	while (tshifts) {
++		tshift = tshifts;
++		tshifts = tshift->next;
++		free(tshift);
++	}
++}
++
 +static void add_vcpu_pid(const char *pid)
 +{
 +	struct vcpu_pid *vpid;
@@ -353,6 +370,17 @@ index 000000000000..f54f6033b386
 +	vpid->cpu = -1;
 +	vpid->next = vcpu_pids;
 +	vcpu_pids = vpid;
++}
++
++static void free_vcpu_pids(void)
++{
++	struct vcpu_pid *vpid;
++
++	while (vcpu_pids) {
++		vpid = vcpu_pids;
++		vcpu_pids = vpid->next;
++		free(vpid);
++	}
 +}
 +
 +static inline int test_vcpu_id(struct tep_format_field **vcpu_id_field,
@@ -414,13 +442,13 @@ index 000000000000..f54f6033b386
 +
 +static int cmp_vcpus(const void *A, const void *B)
 +{
-+	const struct vcpu_pid *a = A;
-+	const struct vcpu_pid *b = B;
++	struct vcpu_pid * const *a = A;
++	struct vcpu_pid * const *b = B;
 +
-+	if (a->cpu < b->cpu)
++	if ((*a)->cpu < (*b)->cpu)
 +		return -1;
 +
-+	return a->cpu > b->cpu;
++	return (*a)->cpu > (*b)->cpu;
 +}
 +
 +static void update_end(char **end, void *data, int size, const char *stop)
@@ -493,6 +521,9 @@ index 000000000000..f54f6033b386
 +
 +	if (tracecmd_add_option(host_ohandle, TRACECMD_OPTION_GUEST, size, buf) == NULL)
 +		die("Failed to add GUEST option to host");
++
++	free(vcpu_list);
++	free(buf);
 +}
 +
 +static void add_timeshift_to_guest(struct tracecmd_output *guest_ohandle,
@@ -588,6 +619,8 @@ index 000000000000..f54f6033b386
 +
 +	if (tracecmd_add_option(guest_ohandle, TRACECMD_OPTION_TIME_SHIFT, size, buf) == NULL)
 +		die("Failed to add TIME SHIFT option");
++
++	free(buf);
 +}
 +
 +static void add_tsc2nsec_to_guest(struct tracecmd_output *guest_ohandle,
@@ -674,7 +707,6 @@ index 000000000000..f54f6033b386
 +	host_file = argv[optind++];
 +	guest_file = argv[optind++];
 +
-+	printf("host = %s\n", host_file);
 +	for (; optind < argc; optind++)
 +		add_vcpu_pid(argv[optind]);
 +
@@ -728,6 +760,9 @@ index 000000000000..f54f6033b386
 +
 +	tracecmd_close(guest_ihandle);
 +	tracecmd_close(host_ihandle);
++
++	free_timeshifts();
++	free_vcpu_pids();
 +
 +	return;
 +}
