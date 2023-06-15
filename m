@@ -2,88 +2,76 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CC5DEB64D9
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 14 Jun 2023 07:28:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02464EB64DC
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 15 Jun 2023 17:11:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243213AbjFNH2c (ORCPT
+        id S237974AbjFORLl (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 14 Jun 2023 03:28:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45984 "EHLO
+        Thu, 15 Jun 2023 13:11:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243325AbjFNH2R (ORCPT
+        with ESMTP id S237963AbjFORLk (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 14 Jun 2023 03:28:17 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC27C2690
-        for <linux-trace-devel@vger.kernel.org>; Wed, 14 Jun 2023 00:28:02 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b3f66dda65so9606195ad.1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 14 Jun 2023 00:28:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686727682; x=1689319682;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FPOhwAo+NWTTOYPCJ+QkIDXC4vSx57EXIruSIr21QKw=;
-        b=gjjz+Wng46Swi48UgOi0NEa1BvaWaSgHdraVFLEH4489/n7DNko0vLLhnFPQrYbbXz
-         jP0NN0DcYphC4bX9efeHz6p8ntK2nO3qRp6pGfGQT3aOX5HkXleVzNhEj+FooItwnqv7
-         /H5SNCYYagJibCbrHLoHUBW8LcsJB5afnCJtQPRazImyFa5/inaI5b7d0Tj8Otz60EQQ
-         OgahjGEC+aTaJePJwJU8HA/6JT7YyouT4mKvDt137LjChVhzkMFCqWttaNGpOTqLE7vg
-         4qxMdGjMMzL5jtLFZw1G6FRwxLeJG3M5LJbFyMUZLiHtwwG5GSQ9dAz84TjMm0BSOdWv
-         M2bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686727682; x=1689319682;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FPOhwAo+NWTTOYPCJ+QkIDXC4vSx57EXIruSIr21QKw=;
-        b=WbX4kdqlQ8W4vNPYb04eDqFT1mmm5Rhcwp3Bg8gdgtolmbKkOnF2cnR6p0AE5UoTBd
-         KaoR4MLjRvWEs3+u27JX/L542O5EZl2Mu/fLYfxhbvyRS+5nM3brnMRGWIhKlZoiL5P5
-         EFOr2uTQeJzspZ/+Jf4GsebrChfgMx0ZpU072CBHhzyT9YeLEnjyZOITMaqex4NKjob3
-         HP0niTst2/wO17GYDDsngX70UU4PVo1pAsbhDdT8sXHR5bSgv/AIhlP9vBeX/SUFVnGA
-         dzkCioy2xqwVAQC07v9+XUg2XsK4ATGOjBEJAVF4LKp9MPciO8JE0GoMk0AbyU/wVUpX
-         ZTEg==
-X-Gm-Message-State: AC+VfDzMgSq+cOiwbcNAfxLYBnYtaU9oDGijbGBiA0PLmD3mqn/NxCBB
-        +Vz9e79cpKP8yV14j5YcRzRRCQbDbog=
-X-Google-Smtp-Source: ACHHUZ4R6JwX+cuymN3gKoxHIxyU+n3Lw/Ge1MCrYXPCjQyY8xerIOIvv8DtgubNxA4FPoc5pbiZrQ==
-X-Received: by 2002:a17:903:2447:b0:1b3:bb30:d8ec with SMTP id l7-20020a170903244700b001b3bb30d8ecmr12253495pls.58.1686727681716;
-        Wed, 14 Jun 2023 00:28:01 -0700 (PDT)
-Received: from apollo.hsd1.ca.comcast.net ([2601:646:9181:d380::eb87])
-        by smtp.gmail.com with ESMTPSA id l12-20020a170903120c00b001ae6fe84244sm11430521plh.243.2023.06.14.00.28.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jun 2023 00:28:01 -0700 (PDT)
-From:   Khem Raj <raj.khem@gmail.com>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     Khem Raj <raj.khem@gmail.com>
-Subject: [PATCH] tracefs-perf: Add missing headers for syscall() and SYS_* defines
-Date:   Wed, 14 Jun 2023 00:27:59 -0700
-Message-ID: <20230614072759.316154-1-raj.khem@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Thu, 15 Jun 2023 13:11:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6389199
+        for <linux-trace-devel@vger.kernel.org>; Thu, 15 Jun 2023 10:11:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5EBA462286
+        for <linux-trace-devel@vger.kernel.org>; Thu, 15 Jun 2023 17:11:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A425C433C8
+        for <linux-trace-devel@vger.kernel.org>; Thu, 15 Jun 2023 17:11:37 +0000 (UTC)
+Date:   Thu, 15 Jun 2023 13:11:35 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd library: Have callbacks exit out of the iterator
+Message-ID: <20230615131135.123e38af@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-These headers are needed to provide prototype definitions for functions
-e.g. close(), syscall(), getpagesize(), getpid()
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The issue is observed with clang-16+ compiler on musl systems
+In the man page for tracecmd_iterate_events() it states that if the
+callback() returns anything other than zero, it will exit the iterator.
+But this is not true. It only exits if the callback returns less than
+zero. This is a bug as the code should do what the man page states. Have
+it exit the loop if the callback returns non zero.
 
-Signed-off-by: Khem Raj <raj.khem@gmail.com>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- src/tracefs-perf.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ lib/trace-cmd/trace-input.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/src/tracefs-perf.c b/src/tracefs-perf.c
-index 96d12cd..62c1508 100644
---- a/src/tracefs-perf.c
-+++ b/src/tracefs-perf.c
-@@ -1,4 +1,5 @@
--#include <asm/unistd.h>
-+#include <unistd.h>
-+#include <sys/syscall.h>
- #include <sys/mman.h>
- #include <signal.h>
- #include <linux/perf_event.h>
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 145c02eeb718..51420c13c750 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -2816,7 +2816,7 @@ int tracecmd_iterate_events(struct tracecmd_input *handle,
+ 			records[next_cpu] = tracecmd_peek_data(handle, next_cpu);
+ 			tracecmd_free_record(record);
+ 		}
+-	} while (next_cpu >= 0 && ret >= 0);
++	} while (next_cpu >= 0 && ret == 0);
+ 
+ 	/* Need to unlock and free the records */
+ 	for (cpu = 0; cpu < handle->max_cpu; cpu++) {
+@@ -2912,7 +2912,7 @@ int tracecmd_iterate_events_multi(struct tracecmd_input **handles,
+ 			records[next_cpu].record = tracecmd_peek_data(handle, cpu);
+ 		}
+ 
+-	} while (next_cpu >= 0 && ret >= 0);
++	} while (next_cpu >= 0 && ret == 0);
+ 
+ 	/* Unlock and free the records */
+ 	for (cpu = 0; cpu < all_cpus; cpu++) {
 -- 
-2.41.0
+2.39.2
 
