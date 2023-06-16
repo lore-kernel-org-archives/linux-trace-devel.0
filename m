@@ -2,34 +2,34 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9A2DEB64D9
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 15 Jun 2023 19:23:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33AD8EB64D7
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 16 Jun 2023 20:02:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbjFOTXu (ORCPT
+        id S1344428AbjFPUC6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 15 Jun 2023 15:23:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52970 "EHLO
+        Fri, 16 Jun 2023 16:02:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbjFOTXt (ORCPT
+        with ESMTP id S1345861AbjFPUCw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 15 Jun 2023 15:23:49 -0400
+        Fri, 16 Jun 2023 16:02:52 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100552949
-        for <linux-trace-devel@vger.kernel.org>; Thu, 15 Jun 2023 12:23:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB583AB8
+        for <linux-trace-devel@vger.kernel.org>; Fri, 16 Jun 2023 13:02:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A099160C08
-        for <linux-trace-devel@vger.kernel.org>; Thu, 15 Jun 2023 19:23:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9B04C433C0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 15 Jun 2023 19:23:46 +0000 (UTC)
-Date:   Thu, 15 Jun 2023 15:23:45 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 17C61632A3
+        for <linux-trace-devel@vger.kernel.org>; Fri, 16 Jun 2023 20:02:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BE37C433C0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 16 Jun 2023 20:02:31 +0000 (UTC)
+Date:   Fri, 16 Jun 2023 16:02:28 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd library: Add tracecmd_iterate_events_reverse()
+Subject: [PATCH v2] trace-cmd library: Add tracecmd_iterate_events_reverse()
  API
-Message-ID: <20230615152345.3ff2be25@gandalf.local.home>
+Message-ID: <20230616160228.4c9f97d8@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -57,11 +57,15 @@ case.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
+Changes since v1: https://lore.kernel.org/linux-trace-devel/20230615152345.3ff2be25@gandalf.local.home/T/#u
+
+  - Honor the cpuset if it is passed in (it was ignoring it).
+
  .../libtracecmd/libtracecmd-iterate.txt       |  29 ++-
  Documentation/libtracecmd/libtracecmd.txt     |   6 +
  include/trace-cmd/trace-cmd.h                 |   6 +
- lib/trace-cmd/trace-input.c                   | 198 ++++++++++++++++++
- 4 files changed, 234 insertions(+), 5 deletions(-)
+ lib/trace-cmd/trace-input.c                   | 205 ++++++++++++++++++
+ 4 files changed, 241 insertions(+), 5 deletions(-)
 
 diff --git a/Documentation/libtracecmd/libtracecmd-iterate.txt b/Documentation/libtracecmd/libtracecmd-iterate.txt
 index 5c1eece0e463..12c54b2ce1a0 100644
@@ -152,10 +156,10 @@ index 8b467fe514a9..e6527b7116c1 100644
  void tracecmd_set_loglevel(enum tep_loglevel level);
  
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 5279f581439d..504108a1a3d4 100644
+index 5279f581439d..af51b3d71e1a 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -2836,6 +2836,204 @@ int tracecmd_iterate_events(struct tracecmd_input *handle,
+@@ -2836,6 +2836,211 @@ int tracecmd_iterate_events(struct tracecmd_input *handle,
  	return ret;
  }
  
@@ -216,7 +220,9 @@ index 5279f581439d..504108a1a3d4 100644
 +}
 +
 +static void initialize_last_events(struct tracecmd_input *handle,
-+				  struct tep_record **last_records, int cpus, bool cont)
++				   struct tep_record **last_records,
++				   cpu_set_t *cpu_set, int cpu_size,
++				   int cpus, bool cont)
 +{
 +	unsigned long long page_offset;
 +	unsigned long long start_offset = 0;
@@ -224,6 +230,9 @@ index 5279f581439d..504108a1a3d4 100644
 +	int cpu;
 +
 +	for (cpu = 0; cpu < cpus; cpu++) {
++		if (cpu_set && !CPU_ISSET_S(cpu, cpu_size, cpu_set))
++			continue;
++
 +		if (!handle->cpu_data[cpu].file_size)
 +			continue;
 +
@@ -316,11 +325,13 @@ index 5279f581439d..504108a1a3d4 100644
 +	if (!records)
 +		return -1;
 +
-+	initialize_last_events(handle, records, max_cpus, cont);
++	initialize_last_events(handle, records, cpus, cpu_size, max_cpus, cont);
 +
 +	do {
 +		next_cpu = -1;
 +		for (cpu = 0; cpu < max_cpus; cpu++) {
++			if (cpus && !CPU_ISSET_S(cpu, cpu_size, cpus))
++				continue;
 +			record = peek_last_event(handle, records, cpu);
 +			if (!record)
 +				continue;
