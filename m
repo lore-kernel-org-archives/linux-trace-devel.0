@@ -2,100 +2,97 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60E3DEB64D7
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jun 2023 12:18:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BD3CEB64DD
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jun 2023 12:45:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229935AbjF1MSS (ORCPT
+        id S230255AbjF1Mpx (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 28 Jun 2023 08:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38904 "EHLO
+        Wed, 28 Jun 2023 08:45:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjF1MSR (ORCPT
+        with ESMTP id S232088AbjF1Mo5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Jun 2023 08:18:17 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4F51BC3;
-        Wed, 28 Jun 2023 05:18:16 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fb7dc16ff0so3694058e87.2;
-        Wed, 28 Jun 2023 05:18:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687954694; x=1690546694;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4FYIxAMkhkhiAjDiPN+KI7EBsu/xU4FGXFKUcyj7bx8=;
-        b=FAdfpsuuwPtBqoIZEb1jLfLqbuc1jj3PzETRwPGNdTzsgFQ9fRpf08qU+QwLMi1Ia9
-         ZHWbThZFG6j5GKkkFG2szDHhcseNgS62ZmR5lZuF04vmJdo40ubsfXOkg8hbqMCHQdWa
-         GMnAPYcm3jO23oDxSY59hnhlNMk1FFu5dsnWZ8umoBeaZ+NbPCfRUyyD3FCnLzvFUw87
-         UsU0b5mCW0VMuhgHLcyMJQdH6ShdR/B2uOG2OF1sBkKyuMhC3zurMkUT/EFOVf5WIWYE
-         USBfFi6TkYQDIncrfH2f84H4t0fvZmjtep+hUZVmS3uEvYIyABrB6ePZx1JarEsZMVTX
-         pLwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687954694; x=1690546694;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4FYIxAMkhkhiAjDiPN+KI7EBsu/xU4FGXFKUcyj7bx8=;
-        b=Cuf2TDwzm0YKpJ8Ho9x7BOHBT8loLWntFk9YiWO2BtRyfm+MKFc1/XWOlkzuIasWWV
-         ILA27fIhJ36XK1GGkk1EIU8uh3UB/vHk9/+ZfJ+1ex9RgGl5DzTISInmG+w1KTVb+EeN
-         D2gPD+7VrIiI1gpsgrnZ4Ojl+sbeWGiMh6gSIz/Fr+oy4DvoNiPYDiWMPjOkQdTSjUgd
-         Tv6rUMaRevoKwfFKMmW6YdbBBFZsDC8UF/Wdpg/suY6ZzeYyLcRaAkJDuf6nKFA8pfeU
-         8UWErkmlHw0AOVATdOl71DYh/lF6/gYFGgtXT+9hmObwUNF5DEXNVV4MBPmiNwQrVG2Q
-         ep1A==
-X-Gm-Message-State: AC+VfDwKJJz3xUKi7eA71IlD8y8TYdTkJGbc6lPL4AEsxBhq4Cb+DtM1
-        Vd9W7phFIM6qs+zNLSRm4mI=
-X-Google-Smtp-Source: ACHHUZ7OXOQxRsAX0aD4U5RT8WOW8kqx2K3fjQ47nANcHQbcQoZbPLldxuOr9IJ+f8EpU3/bBSPrZw==
-X-Received: by 2002:ac2:4f0f:0:b0:4fb:8c2a:d43f with SMTP id k15-20020ac24f0f000000b004fb8c2ad43fmr2809030lfr.7.1687954693971;
-        Wed, 28 Jun 2023 05:18:13 -0700 (PDT)
-Received: from oberon.zico.biz (77-85-190-39.ip.btc-net.bg. [77.85.190.39])
-        by smtp.gmail.com with ESMTPSA id g11-20020a7bc4cb000000b003fbab76165asm2978672wmk.48.2023.06.28.05.18.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jun 2023 05:18:13 -0700 (PDT)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
+        Wed, 28 Jun 2023 08:44:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D5630F3;
+        Wed, 28 Jun 2023 05:44:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8CF6661320;
+        Wed, 28 Jun 2023 12:44:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80D13C433C0;
+        Wed, 28 Jun 2023 12:44:34 +0000 (UTC)
+Date:   Wed, 28 Jun 2023 08:44:28 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     mhiramat@kernel.org, dan.carpenter@linaro.org,
         linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] kernel/trace: Fix cleanup logic of enable_trace_eprobe
-Date:   Wed, 28 Jun 2023 15:18:11 +0300
-Message-ID: <20230628121811.338655-1-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.41.0
+Subject: Re: [PATCH] kernel/trace: Fix cleanup logic of enable_trace_eprobe
+Message-ID: <20230628084428.7bb32d65@rorschach.local.home>
+In-Reply-To: <20230628121811.338655-1-tz.stoyanov@gmail.com>
+References: <20230628121811.338655-1-tz.stoyanov@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The enable_trace_eprobe() function enables all event probes, attached
-to given trace probe. If an error occurs in enabling one of the event
-probes, all others should be roll backed. There is a bug in that roll
-back logic - instead of all event probes, only the failed one is
-disabled.
+On Wed, 28 Jun 2023 15:18:11 +0300
+"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Fixes: 7491e2c44278 ("tracing: Add a probe that attaches to trace events")
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- kernel/trace/trace_eprobe.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+> The enable_trace_eprobe() function enables all event probes, attached
+> to given trace probe. If an error occurs in enabling one of the event
+> probes, all others should be roll backed. There is a bug in that roll
+> back logic - instead of all event probes, only the failed one is
+> disabled.
+> 
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Fixes: 7491e2c44278 ("tracing: Add a probe that attaches to trace events")
+> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> ---
+>  kernel/trace/trace_eprobe.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_eprobe.c b/kernel/trace/trace_eprobe.c
+> index 67e854979d53..ba9a28bc773f 100644
+> --- a/kernel/trace/trace_eprobe.c
+> +++ b/kernel/trace/trace_eprobe.c
+> @@ -702,8 +702,12 @@ static int enable_trace_eprobe(struct trace_event_call *call,
+>  
+>  	if (ret) {
+>  		/* Failed to enable one of them. Roll back all */
+> -		if (enabled)
+> -			disable_eprobe(ep, file->tr);
+> +		if (enabled) {
 
-diff --git a/kernel/trace/trace_eprobe.c b/kernel/trace/trace_eprobe.c
-index 67e854979d53..ba9a28bc773f 100644
---- a/kernel/trace/trace_eprobe.c
-+++ b/kernel/trace/trace_eprobe.c
-@@ -702,8 +702,12 @@ static int enable_trace_eprobe(struct trace_event_call *call,
- 
- 	if (ret) {
- 		/* Failed to enable one of them. Roll back all */
--		if (enabled)
--			disable_eprobe(ep, file->tr);
-+		if (enabled) {
-+			list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
-+				ep = container_of(pos, struct trace_eprobe, tp);
-+				disable_eprobe(ep, file->tr);
-+			}
-+		}
- 		if (file)
- 			trace_probe_remove_file(tp, file);
- 		else
--- 
-2.41.0
+If one was enabled and the second one failed, that should only happen
+if there's a bug in the kernel (unless the failure was due to a memory
+problem).
+
+I wonder if we should add:
+
+			int cnt = 0;
+
+> +			list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
+
+				/*
+				 * It's a bug if one failed for something other than memory
+				 * not being available but another eprobe succeeded.
+				 */
+				WARN_ON_ONCE(cnt++ && ret != -ENOMEM);
+
+-- Steve
+
+
+> +				ep = container_of(pos, struct trace_eprobe, tp);
+> +				disable_eprobe(ep, file->tr);
+> +			}
+> +		}
+>  		if (file)
+>  			trace_probe_remove_file(tp, file);
+>  		else
 
