@@ -2,39 +2,49 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BD3CEB64DD
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Jun 2023 12:45:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27C03EB64D7
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Jun 2023 01:04:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbjF1Mpx (ORCPT
+        id S231319AbjF2BEp (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 28 Jun 2023 08:45:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
+        Wed, 28 Jun 2023 21:04:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232088AbjF1Mo5 (ORCPT
+        with ESMTP id S231127AbjF2BEp (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Jun 2023 08:44:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D5630F3;
-        Wed, 28 Jun 2023 05:44:37 -0700 (PDT)
+        Wed, 28 Jun 2023 21:04:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 921602690;
+        Wed, 28 Jun 2023 18:04:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8CF6661320;
-        Wed, 28 Jun 2023 12:44:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80D13C433C0;
-        Wed, 28 Jun 2023 12:44:34 +0000 (UTC)
-Date:   Wed, 28 Jun 2023 08:44:28 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3026E6146E;
+        Thu, 29 Jun 2023 01:04:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8FE1C433C8;
+        Thu, 29 Jun 2023 01:04:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1688000683;
+        bh=OGglsy19OA3jQrxtGR0uERKGoZjdKQBPLNOf+RMSjMI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=A8IQFl2f/ObKHFVALUcYEMqMdsYk4T9X3pOrwFbC7l3SCeHieSz2XFkXChxB/g/vZ
+         fXVfU/jUHZdWhwtBFSr0z9V8QeGXEYImlrWq5h/CLyj1udG2XuJEjyBnSG6v1kCPu2
+         XaLEpt+Tmu8qL/3QBi9Dt64g1g5Uix0ZmbLtpZCGO1YFgjrEsC8U2qKnSPr6MJhZ8n
+         JF/Ou0bmoxb1JkAXi4W9jb6FAUv0dLc+9bhavybwR3hsqYAymlSBOJhZ3w4lpSDcNU
+         lN8zjPqLk6KBZRHGaxTsTwI0Hd2qgcCUMW6xKbWyTZECfIi8zHGdKz7cHHYXVTgial
+         PN+EqF4wC/gCQ==
+Date:   Thu, 29 Jun 2023 10:04:39 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc:     mhiramat@kernel.org, dan.carpenter@linaro.org,
+Cc:     rostedt@goodmis.org, mhiramat@kernel.org, dan.carpenter@linaro.org,
         linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] kernel/trace: Fix cleanup logic of enable_trace_eprobe
-Message-ID: <20230628084428.7bb32d65@rorschach.local.home>
+Message-Id: <20230629100439.ff373368c40b3ad2284ef07f@kernel.org>
 In-Reply-To: <20230628121811.338655-1-tz.stoyanov@gmail.com>
 References: <20230628121811.338655-1-tz.stoyanov@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -50,6 +60,11 @@ On Wed, 28 Jun 2023 15:18:11 +0300
 > back logic - instead of all event probes, only the failed one is
 > disabled.
 > 
+
+Thanks, this looks good to me.
+
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
 > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
 > Fixes: 7491e2c44278 ("tracing: Add a probe that attaches to trace events")
 > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
@@ -68,26 +83,7 @@ On Wed, 28 Jun 2023 15:18:11 +0300
 > -		if (enabled)
 > -			disable_eprobe(ep, file->tr);
 > +		if (enabled) {
-
-If one was enabled and the second one failed, that should only happen
-if there's a bug in the kernel (unless the failure was due to a memory
-problem).
-
-I wonder if we should add:
-
-			int cnt = 0;
-
 > +			list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
-
-				/*
-				 * It's a bug if one failed for something other than memory
-				 * not being available but another eprobe succeeded.
-				 */
-				WARN_ON_ONCE(cnt++ && ret != -ENOMEM);
-
--- Steve
-
-
 > +				ep = container_of(pos, struct trace_eprobe, tp);
 > +				disable_eprobe(ep, file->tr);
 > +			}
@@ -95,4 +91,10 @@ I wonder if we should add:
 >  		if (file)
 >  			trace_probe_remove_file(tp, file);
 >  		else
+> -- 
+> 2.41.0
+> 
 
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
