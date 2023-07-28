@@ -2,155 +2,184 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BBEEC41513
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 28 Jul 2023 17:29:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4CA7C0015E
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 28 Jul 2023 19:05:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234144AbjG1R3z (ORCPT
+        id S229509AbjG1TFp (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 28 Jul 2023 13:29:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55294 "EHLO
+        Fri, 28 Jul 2023 15:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234185AbjG1R3p (ORCPT
+        with ESMTP id S229740AbjG1TFn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:29:45 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21BF63A9B
-        for <linux-trace-devel@vger.kernel.org>; Fri, 28 Jul 2023 10:29:34 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-407db3e9669so13081cf.1
-        for <linux-trace-devel@vger.kernel.org>; Fri, 28 Jul 2023 10:29:34 -0700 (PDT)
+        Fri, 28 Jul 2023 15:05:43 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33FEC3AB3
+        for <linux-trace-devel@vger.kernel.org>; Fri, 28 Jul 2023 12:05:42 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-348db491d0eso10588355ab.3
+        for <linux-trace-devel@vger.kernel.org>; Fri, 28 Jul 2023 12:05:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690565373; x=1691170173;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1690571141; x=1691175941;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RFPU8SbvYweWy/0B9ZVn/iGNrEhN7Hrca5mOWZOVSiU=;
-        b=nEit5NaFSV+d69VnhyIMyDi7ZFOro3SqVLWfk35Rsp2LrpqqOYa11gQbZ1dGhFYZjO
-         Afh6VozNEL0ks6qP/Uq8h5Dbc5eJaKnFb2AZhHCKwngdd7KYq+MJkjoFkeFaaGBiJX3H
-         4EjbTVeBBlsTq62ugO4uQCYA3Tr7JW7a8emgyx9YqxPfgmqlbfNcj2KNfflSsUMRgYkL
-         yENQ2Re/UG/e1i7YlvnWuUuGrDiAmxZGLGbv0tHqm/CWX8cbI016jCyDNP49GxfIfG35
-         3x2v1Aq4lLl1ktCUyWnf4NS43oOYW4M4IkVzX91LeYkdN9cWDWMbMsPeOhMqiyHVICPr
-         iDIA==
+        bh=Z1ssfZnnt5Fl/bPSmz3r2pmt8oVxKZGgBLxCrOoJiIc=;
+        b=jX11NnuAJMphNL0qOdzPhAotZ7PIR1sQT6oPfMICBurSmTIAJCiehF9sehjtnxdpM+
+         rBLs3Y9hvOeN7BXlcGXG7mCpa5TaH25LJt1SzYkbDzmzFnW/W+octu8UsGaHys8V0oeP
+         Mg/sdBtbZsHPy/kp3TxzXeihjYMjA5zkPWB+o8Nruf5Llhudff3uzOcD/jdIoh4zLHDg
+         cZEe6Rp92leYbJIsUSxmWdYOHgOi1hEYa3VxPxG9vx37ci6Z5e9zf9QmgN3ES12MXOr7
+         VNmJlY87vqAXD08p04r7A4ZunwNdZErInFnc2t11e/ubrL33GWSzfHsIaJlK37FlEQoV
+         elmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690565373; x=1691170173;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1690571141; x=1691175941;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RFPU8SbvYweWy/0B9ZVn/iGNrEhN7Hrca5mOWZOVSiU=;
-        b=f+DvVodaRkE69tWVnd5YTxOruPHrL/UcYWTjOE4EY5iYp/tWkJYjEYRohT7OwqpLnb
-         g3P1mtmc6pAnMLtkk1YRxOdn46KQ/+h3zhKEW7K9T95scVUY76enhQIX5+rG0tO2qKuS
-         Xc4/c5xUsAo/w20yKmZvkiEiHnDW6GTwM1NmaRWvIKZDadxL+ISrHW5zPTWz/pc66RyN
-         VTrYv8endNKxebYxJwFHShJgLoVvtxo4KHm2clnSVxp0qeW41fi34x+QKwUviyhIVSyj
-         pefFehgAmsPBrhVHrD7zUwLlKpo6F1inLlwpeE4yoLJwbYrg4eBS5EzuSHu1gONEj0VW
-         1+zw==
-X-Gm-Message-State: ABy/qLaG8QEt8kmQIJ05/gXn2BLo/LfUfOtbGAzKb3HOcb2Ng8Rworh7
-        Izp8MWjTfJWPfJMCwpwUJud+IvuCKZT/L/Y/z+YJwRTeX1zuXMjKzeOwVA==
-X-Google-Smtp-Source: APBJJlG3vkdSXwaK+QDwCWAi4fCSKVsG1lcjeI6l+A0NqIBc3JZ3ilJG1lR+n3Zlckmgqy8iCgjf90vwAh2UPBOumC4=
-X-Received: by 2002:a05:622a:1301:b0:403:dcd4:b9b1 with SMTP id
- v1-20020a05622a130100b00403dcd4b9b1mr7450qtk.18.1690565373022; Fri, 28 Jul
- 2023 10:29:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230726121618.19198-1-zegao@tencent.com>
-In-Reply-To: <20230726121618.19198-1-zegao@tencent.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 28 Jul 2023 10:29:21 -0700
-Message-ID: <CAP-5=fVJ_RL9Md92R4nWBKvZcF9iovL07-=dJ7bqN3LWwufVGw@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/3] report task state in symbolic chars from sched tracepoint
-To:     Ze Gao <zegao2021@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+        bh=Z1ssfZnnt5Fl/bPSmz3r2pmt8oVxKZGgBLxCrOoJiIc=;
+        b=Y5kAdPOas5BuUalMFn9k671DjLu+7Sob1be8zkxpBSrZq/GgZiSXN6XDJjxQPRxFIn
+         t/U3OcMdKr4YDLFVxmBtP9Y4f9qQ8T5fdPYAp7p/iafN7hKOwt9Ul45/pfDT/P75epAJ
+         DxeVrUwWZcJVcLmwMW7tpQX5db7VzrY0F/FA62WwgSSGMt7UIvPFgbPG1eFoqVFiLxcb
+         XAHFEPcvEGKu9h3gFnqfyBai/lL03taNWmSytRjfkwleMO9q+Z2YPx1iUIc9FofA2tK1
+         oahYiGJTTEJK5FQnBzHOnHu9xo7J8HXzJSJADfCyv+2zYlUIXrMVCyzLW5vJ0DIalAWv
+         tWWQ==
+X-Gm-Message-State: ABy/qLZwNo/V2PA9HVQKe82EhCoca6pjTOy8xV6iaeE6oDP87wBxI/5d
+        ngnKi5XdahQTPYGd2+hAuotKHII2EuuFxg==
+X-Google-Smtp-Source: APBJJlFVPCATJoEPny6NMLYeOLLtZYdm8IqrJwBgnfeLa0NCHC39vxLtwZj38QKkAd7o6BXggPsacQ==
+X-Received: by 2002:a05:6602:692:b0:780:ce72:ac55 with SMTP id dp18-20020a056602069200b00780ce72ac55mr436293iob.10.1690571141236;
+        Fri, 28 Jul 2023 12:05:41 -0700 (PDT)
+Received: from localhost.localdomain ([2a00:79e1:abc:1705:d317:f8ec:adf0:bb06])
+        by smtp.gmail.com with ESMTPSA id u22-20020a02aa96000000b0042b3a328ee0sm1268452jai.166.2023.07.28.12.05.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 12:05:40 -0700 (PDT)
+From:   Stevie Alvarez <stevie.6strings@gmail.com>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     "Stevie Alvarez (Google)" <stevie.6strings@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Ross Zwisler <zwisler@google.com>
+Subject: [PATCH 3/5] histograms: traceeval release
+Date:   Fri, 28 Jul 2023 15:04:38 -0400
+Message-ID: <20230728190515.23088-3-stevie.6strings@gmail.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230728190515.23088-1-stevie.6strings@gmail.com>
+References: <20230728190515.23088-1-stevie.6strings@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 5:16=E2=80=AFAM Ze Gao <zegao2021@gmail.com> wrote:
->
->
-> This is the 2nd attempt to fix the report task state issue in sched
-> tracepint, here is the first version:
->
-> https://lore.kernel.org/linux-trace-kernel/20230725072254.32045-1-zegao@t=
-encent.com
->
-> Against v1, add a new var to report task state in symbolic char instead
-> of replacing the old one and to not to break anything.
->
-> --
->
-> In the status quo, we should see three different outcomes of the reported
-> sched-out task state from perf-script, perf-sched-timehist, and Tp_printk
-> of tracepoint sched_switch.  And it's not hard to figure out that the
-> former two are built upon the third one, and the reason why we see this
-> inconsistency is that the former two does not catch up with the internal
-> change of reported task state definitions as the kernel evolves.
->
-> IMHO, exporting internal representations of task state in the tracepoint
-> sched_switch is not a good practice and not encouraged at all, which can
-> easily break userspace tools that relies on it. Especially when tracepoin=
-ts
-> are massively used in many observability tools nowadays due to its stable
-> nature, which makes them no longer used for debug only purpose and we
-> should be careful to decide what ought to be reported to userspace and wh=
-at
-> ought not.
->
-> Therefore, to fix the issues mentioned above for good, instead of choosin=
-g
-> I proposed to add a new variable to report task state in sched_switch wit=
-h
-> a symbolic character along with the old hardcoded value, and save the
-> further processing of userspace tools and spare them from knowing
-> implementation details in the kernel.
->
-> After this patch seires, we report 'RSDTtXZPI' the same as in procfs, plu=
-s
-> a 'p' which denotes PREEMP_ACTIVE and is used for sched_switch tracepoint=
- only.
->
-> Reviews welcome!
+From: "Stevie Alvarez (Google)" <stevie.6strings@gmail.com>
 
-Thanks Ze,
+traceeval_release() deconstructs a given struct traceeval instance. It
+frees any data allocated to the heap within the union traceeval_data
+arrays of entries to the histogram, and the names allocated for the
+struct traceeval_type key-value definitions.
 
-I think this is worthwhile cleanup and makes the code overall simpler.
-I don't know if others have strong opinions, I don't often work in
-this code, but I think the patches are worth landing this.
+Signed-off-by: Stevie Alvarez (Google) <stevie.6strings@gmail.com>
+---
+ src/histograms.c | 87 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 85 insertions(+), 2 deletions(-)
 
-Acked-by: Ian Rogers <irogers@google.com>
+diff --git a/src/histograms.c b/src/histograms.c
+index 13830e4..f46a0e0 100644
+--- a/src/histograms.c
++++ b/src/histograms.c
+@@ -209,10 +209,93 @@ fail_eval_init_unalloced:
+ 	return NULL;
+ }
+ 
+-// TODO
+-void traceeval_release(struct traceeval *teval)
++/**
++ * Deallocate array of traceeval_type's, which must be terminated by
++ * TRACEEVAL_TYPE_NONE.
++ */
++static void type_release(struct traceeval_type *defs)
+ {
++	size_t i = 0;
++
++	if (!defs)
++		return;
++
++	for_each_key(i, defs) {
++		if (defs[i].name)
++			free(defs[i].name);
++	}
++
++	free(defs);
++}
++
++/**
++ * Deallocate any specified dynamic data in @data.
++ */
++static void clean_data(union traceeval_data *data, struct traceeval_type *def)
++{
++	size_t i = 0;
++
++	if (!data || !def)
++		return;
++
++	for_each_key(i, def) {
++		switch (def[i].type) {
++		case TRACEEVAL_TYPE_STRING:
++			if (data[i].string)
++				free(data[i].string);
++			break;
++		case TRACEEVAL_TYPE_DYNAMIC:
++			def[i].dyn_release(data[i].dyn_data, &def[i]);
++			break;
++		default:
++			break;
++		}
++	}
++}
+ 
++/**
++ * Deallocate all possible data stored within the entry.
++ */
++static void clean_entry(struct entry *entry, struct traceeval *teval)
++{
++	if (!entry)
++		return;
++
++	// deallocate dynamic traceeval_data
++	clean_data(entry->keys, teval->def_keys);
++	clean_data(entry->vals, teval->def_vals);
++	free(entry->keys);
++	free(entry->vals);
++}
++
++/**
++ * Deallocate the hist_table allocated to a traceeval instance.
++ */
++static void hist_table_release(struct traceeval *teval)
++{
++	struct hist_table *hist = teval->hist;
++
++	if (!hist)
++		return;
++
++	for (size_t i = 0; i < hist->nr_entries; i++) {
++		clean_entry(&hist->map[i], teval);
++	}
++	free(hist->map);
++	free(hist);
++}
++
++/**
++ * Deallocate a traceeval instance.
++ */
++void traceeval_release(struct traceeval *teval)
++{
++	if (teval) {
++		hist_table_release(teval);
++		type_release(teval->def_keys);
++		type_release(teval->def_vals);
++		free(teval);
++	}
+ }
+ 
+ // TODO
+-- 
+2.41.0
 
-Thanks,
-Ian
-
-> Regards,
->
-> Ze
->
-> Ze Gao (2):
->   sched, tracing: add to report task state in symbolic chars
->   perf sched: use the new prev_state_char instead in tracepoint
->     sched_switch
->
->  include/trace/events/sched.h | 60 +++++++++++++++++++++---------------
->  tools/perf/builtin-sched.c   | 57 ++++++----------------------------
->  2 files changed, 45 insertions(+), 72 deletions(-)
->
-> Ze Gao (1):
->   libtraceevent: use the new prev_state_char instead in tracepoint
->     sched_switch
->
->  plugins/plugin_sched_switch.c | 29 ++++-------------------------
->  1 file changed, 4 insertions(+), 25 deletions(-)
->
-> --
-> 2.40.1
->
