@@ -2,63 +2,63 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F3B1C41513
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 28 Jul 2023 19:05:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2C1FC001DF
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 28 Jul 2023 19:05:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230125AbjG1TFr (ORCPT
+        id S230026AbjG1TFq (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 28 Jul 2023 15:05:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36262 "EHLO
+        Fri, 28 Jul 2023 15:05:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbjG1TFp (ORCPT
+        with ESMTP id S229888AbjG1TFo (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 28 Jul 2023 15:05:45 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B910FE48
-        for <linux-trace-devel@vger.kernel.org>; Fri, 28 Jul 2023 12:05:43 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-348f5193c12so8521165ab.2
-        for <linux-trace-devel@vger.kernel.org>; Fri, 28 Jul 2023 12:05:43 -0700 (PDT)
+        Fri, 28 Jul 2023 15:05:44 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339E73AA8
+        for <linux-trace-devel@vger.kernel.org>; Fri, 28 Jul 2023 12:05:41 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-78374596182so99033939f.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 28 Jul 2023 12:05:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690571143; x=1691175943;
+        d=gmail.com; s=20221208; t=1690571140; x=1691175940;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mp7/cVbHihUV4P3uaG03ycADHtmZqZ64FVpuX6pQwA0=;
-        b=mOnjU8vfrO9PrxwoiQpjJivpteVw8rnUeZNvw1qHtwaD24jOJAK3cS7VVq+RFm3e7t
-         H8Pc6/B0QtvsCdM8YnN5HfG21LndhTjBT15UPkJ0ywZtL18CzPwr2vBeb/LryQ3ExCoH
-         676Ig+mOuYa8UXRnWz3dqmMV1siR2w4aT+T1eTRp9ikgWWE5uPAkh8EssOpCFYR7CTQu
-         0zwy1I6y+LyCpTrE5lFhTBej4OhVpvO9AF8FXRmuvbcAwNGhar0tov7telLArOTB8TvV
-         W7kApcEjWs2jGZ2p1FgjQjU/6KQAsGDSyOVtW1F4JQDgyGW5AQMjT5Zy2jDtVczMbrtG
-         FSfQ==
+        bh=JMbb7Q3GMhiHEEnUcGGyQZpaC0Zkjt1iZeRWhkvmC1k=;
+        b=LcURZXLQmHNhrJ4H8GEb0QBykD0FIuHSui+03uoRKnwbu9JFuwAQ2lUL0HR0KOPnIw
+         A6KqtJ9aPIF71kFMIwVXpuJnt3cFevGOGaRaqhrYf49tbsurQXKmS6/pcucxNuKLgRwK
+         hfR0UoD9WX7tYpGLAuHME4NZzqccJDf8SSELe+Lum+pMg0p1kFcJ0PuLOpjHdoxb5MVS
+         0Qr9M+4VgtLVJUJhVXMkHlxttr7eU2Zc7+nMvgCQBsvo7nKf3U+YxDFKTavCn1egcUR6
+         v9EZhZgK9F93ecUIAmmcun8J3tsimrQyelJegmHbxzSuMpdxFJ/t8ZLskoZd90cwvomM
+         +Lig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690571143; x=1691175943;
+        d=1e100.net; s=20221208; t=1690571140; x=1691175940;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mp7/cVbHihUV4P3uaG03ycADHtmZqZ64FVpuX6pQwA0=;
-        b=BKnaOOp/xKQvkXWk1JxjUKPpOtGb9gp2QqriV6CovGJW5ESqDgd7JETtXwf8FucwcU
-         AwKk8+whZdAVAn9jjOaFsumbnGv+2PQ4sEONDtnn6+C81ulkxlTP6l3SR/PoykP8Y6vN
-         GJdz1QJ7U9LNYTlJnrBXWonKEWkrnRgBbrJ7z6c0CbEhWbHa1amKQVE97UhqBUy2xiA2
-         F7p9nUqvmiWIQqeiD/K24etK7Qc8LSLPizIy+kG66LnGoIx8CBrUkxwDv+ZiGXjZx/Pi
-         i0zdN2MtMxC1xv9mdBQy7IU3EZGHr4l43d7V0p4lLZQfNvdhSyO7l5vgCYaI2MTBBEMV
-         P0hg==
-X-Gm-Message-State: ABy/qLYoWBOdyGa/lweX0wsQomfSo22L0Q+btG9r3leiGuCWX3EwqSt+
-        KKX+RmvCe5oquj0fxdy0smLc/NsTgbxweg==
-X-Google-Smtp-Source: APBJJlG6LZrn88YKcL0XoaU24kfFfBaG1JMBcvpz+lt/WOqt/RK4rc7nIrjfIX+UbiTS0mC385GSIA==
-X-Received: by 2002:a05:6e02:1a6d:b0:348:c940:1845 with SMTP id w13-20020a056e021a6d00b00348c9401845mr541515ilv.8.1690571142724;
-        Fri, 28 Jul 2023 12:05:42 -0700 (PDT)
+        bh=JMbb7Q3GMhiHEEnUcGGyQZpaC0Zkjt1iZeRWhkvmC1k=;
+        b=W01fk8ayYq4gzNNIU8jnMPVzHPW9IOdk3mwLSvRNRnbIpxh2seyf95NGs5qcAmqWM6
+         OMUa9Evs6RWKEWDTZWnzZ2C2PrBObtaBW7Pu2myZlTC0a+sa3VhOgNmV3cMNlKdiNuPY
+         7Q/myFUnrqBas8nc1fenk9gIlp+bxaXLjhK1WDHUyLLbz0ItAUEZdBi3Qpbk0CR7+LAb
+         Gphw5GW3U148tKaAuXa8mn3ULRdzBLQ9HnI9jScTYPndo8LndVp7HgteFkEG+FD5DgS1
+         AW1FdkvH7qBLiQiKx28L5C2HTgsaUYznz5S99xXeNaT+5boUSNJSUO9vhE5e9gMmLdPU
+         GAsw==
+X-Gm-Message-State: ABy/qLYyzwR7geYiSVxxNvNR0TwgxFh1Q3shLqoEcZo5il9JqrOd5Y7p
+        Odl9PohCG6nssImD5KY5fzl81YxAZA1uWg==
+X-Google-Smtp-Source: APBJJlHp5Q4CYHpJSDn2T1Diq4BoPIMIOrNfIpO+/KJSzP2gKB01zaeMlpJZG/kiiUq9N7hkfYNsZA==
+X-Received: by 2002:a6b:5903:0:b0:785:d0d7:3304 with SMTP id n3-20020a6b5903000000b00785d0d73304mr439961iob.14.1690571140404;
+        Fri, 28 Jul 2023 12:05:40 -0700 (PDT)
 Received: from localhost.localdomain ([2a00:79e1:abc:1705:d317:f8ec:adf0:bb06])
-        by smtp.gmail.com with ESMTPSA id u22-20020a02aa96000000b0042b3a328ee0sm1268452jai.166.2023.07.28.12.05.41
+        by smtp.gmail.com with ESMTPSA id u22-20020a02aa96000000b0042b3a328ee0sm1268452jai.166.2023.07.28.12.05.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 12:05:42 -0700 (PDT)
+        Fri, 28 Jul 2023 12:05:40 -0700 (PDT)
 From:   Stevie Alvarez <stevie.6strings@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Stevie Alvarez (Google)" <stevie.6strings@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Ross Zwisler <zwisler@google.com>
-Subject: [PATCH 5/5] histograms: Add struct traceeval unit tests
-Date:   Fri, 28 Jul 2023 15:04:40 -0400
-Message-ID: <20230728190515.23088-5-stevie.6strings@gmail.com>
+Subject: [PATCH 2/5] histograms: traceeval initialize
+Date:   Fri, 28 Jul 2023 15:04:37 -0400
+Message-ID: <20230728190515.23088-2-stevie.6strings@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230728190515.23088-1-stevie.6strings@gmail.com>
 References: <20230728190515.23088-1-stevie.6strings@gmail.com>
@@ -70,348 +70,337 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Stevie Alvarez (Google)" <stevie.6strings@gmail.com>
 
-Add unit tests for traceeval_init(), traceeval_release(), and
-traceeval_compare() to check edge cases and ensure the interface is
-functional.
+traceeval_init() creates a new struct traceeval instance with regards
+to the struct traceeval_type array arguments keys and vals. These arrays
+define the structure of the histogram, with each describing the expected
+structure of inserted arrays of union traceeval_data. The keys and vals
+arguments are copied on the heap to ensure that the struct traceeval
+instance has access to the definition regardless of how the user
+initialized keys and vals.
 
 Signed-off-by: Stevie Alvarez (Google) <stevie.6strings@gmail.com>
 ---
- utest/.gitignore        |   1 +
- utest/Makefile          |  35 +++++++
- utest/eval-test.h       |  10 ++
- utest/eval-utest.c      |  27 +++++
- utest/traceeval-utest.c | 222 ++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 295 insertions(+)
- create mode 100644 utest/.gitignore
- create mode 100644 utest/Makefile
- create mode 100644 utest/eval-test.h
- create mode 100644 utest/eval-utest.c
- create mode 100644 utest/traceeval-utest.c
+ Makefile         |   2 +-
+ src/Makefile     |   1 +
+ src/histograms.c | 285 +++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 287 insertions(+), 1 deletion(-)
+ create mode 100644 src/histograms.c
 
-diff --git a/utest/.gitignore b/utest/.gitignore
+diff --git a/Makefile b/Makefile
+index 4a24d5a..3ea051c 100644
+--- a/Makefile
++++ b/Makefile
+@@ -172,7 +172,7 @@ libs: $(LIBRARY_A) $(LIBRARY_SO)
+ 
+ VALGRIND = $(shell which valgrind)
+ UTEST_DIR = utest
+-UTEST_BINARY = trace-utest
++UTEST_BINARY = eval-utest
+ 
+ test: force $(LIBRARY_STATIC)
+ ifneq ($(CUNIT_INSTALLED),1)
+diff --git a/src/Makefile b/src/Makefile
+index b4b6e52..b32a389 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -4,6 +4,7 @@ include $(src)/scripts/utils.mk
+ 
+ OBJS =
+ OBJS += trace-analysis.o
++OBJS += histograms.o
+ 
+ OBJS := $(OBJS:%.o=$(bdir)/%.o)
+ 
+diff --git a/src/histograms.c b/src/histograms.c
 new file mode 100644
-index 0000000..ca0ac10
+index 0000000..13830e4
 --- /dev/null
-+++ b/utest/.gitignore
-@@ -0,0 +1 @@
-+eval-utest
-diff --git a/utest/Makefile b/utest/Makefile
-new file mode 100644
-index 0000000..955f91e
---- /dev/null
-+++ b/utest/Makefile
-@@ -0,0 +1,35 @@
-+# SPDX-License-Identifier: MIT
++++ b/src/histograms.c
+@@ -0,0 +1,285 @@
 +
-+include $(src)/scripts/utils.mk
-+
-+bdir := $(obj)/utest
-+eval_lib := $(obj)/lib/libtraceeval.a
-+
-+TARGETS = $(bdir)/eval-utest
-+
-+OBJS := eval-utest.o
-+OBJS += traceeval-utest.o
-+
-+LIBS += -lcunit				\
-+	-ldl				\
-+	$(eval_lib)
-+
-+OBJS := $(OBJS:%.o=$(bdir)/%.o)
-+
-+$(bdir):
-+	@mkdir -p $(bdir)
-+
-+$(OBJS): | $(bdir)
-+
-+$(bdir)/eval-utest: $(OBJS) $(eval_lib)
-+	$(Q)$(do_app_build)
-+
-+$(bdir)/%.o: %.c
-+	$(Q)$(call do_fpic_compile)
-+
-+-include .*.d
-+
-+test: $(TARGETS)
-+
-+clean:
-+	$(Q)$(call do_clean,$(TARGETS) $(bdir)/*.o $(bdir)/.*.d)
-diff --git a/utest/eval-test.h b/utest/eval-test.h
-new file mode 100644
-index 0000000..f3372e8
---- /dev/null
-+++ b/utest/eval-test.h
-@@ -0,0 +1,10 @@
 +/* SPDX-License-Identifier: MIT */
 +/*
++ * libtraceeval histogram interface implementation.
++ *
 + * Copyright (C) 2023 Google Inc, Stevie Alvarez <stevie.6strings@gmail.com>
 + */
-+#ifndef _EVAL_UTEST_H_
-+#define _EVAL_UTEST_H_
-+
-+void test_traceeval_lib(void);
-+
-+#endif /* _EVAL_UTEST_H_ */
-diff --git a/utest/eval-utest.c b/utest/eval-utest.c
-new file mode 100644
-index 0000000..771a0c4
---- /dev/null
-+++ b/utest/eval-utest.c
-@@ -0,0 +1,27 @@
-+
-+// SPDX-License-Identifier: MIT
-+/*
-+ * Copyright (C) 2023 Google Inc, Stevie Alvarez <stevie.6strings@gmail.com>
-+ */
-+#include <stdio.h>
-+#include <stdlib.h>
-+
-+#include <CUnit/CUnit.h>
-+#include <CUnit/Basic.h>
-+
-+#include "eval-test.h"
-+
-+int main(int argc, char **argv)
-+{
-+	if (CU_initialize_registry() != CUE_SUCCESS) {
-+		printf("Test registry cannot be initialized\n");
-+		return EXIT_FAILURE;
-+	}
-+
-+	test_traceeval_lib();
-+
-+	CU_basic_set_mode(CU_BRM_VERBOSE);
-+	CU_basic_run_tests();
-+	CU_cleanup_registry();
-+	return EXIT_SUCCESS;
-+}
-diff --git a/utest/traceeval-utest.c b/utest/traceeval-utest.c
-new file mode 100644
-index 0000000..2bcb4b9
---- /dev/null
-+++ b/utest/traceeval-utest.c
-@@ -0,0 +1,222 @@
-+// SPDX-License-Identifier: MIT
-+/*
-+ * Copyright (C) 2023 Google Inc, Stevie Alvarez <stevie.6strings@gmail.com>
-+ */
-+
-+#include <string.h>
-+#include <stdio.h>
-+#include <stdbool.h>
-+#include <CUnit/CUnit.h>
-+#include <CUnit/Basic.h>
 +
 +#include <histograms.h>
-+
-+#define TRACEEVAL_SUITE		"traceeval library"
-+#define TRACEEVAL_SUCCESS	0
-+#define TRACEEVAL_FAILURE	-1
-+#define TRACEEVAL_NOT_SAME	1
++#include <stdio.h>
++#include <stdbool.h>
++#include <string.h>
++#include <stdarg.h>
 +
 +/**
-+ * Test traceeval_init(), traceeval_release(), and traceeval_compare() with
-+ * NULL values.
++ * Iterate over @keys, which should be an array of struct traceeval_type's,
++ * until reaching an instance of type TRACEEVAL_TYPE_NONE.
++ * @i should be a declared integer type.
 + */
-+void test_eval_null(void)
++#define for_each_key(i, keys)	\
++	for (i = 0; (keys)[(i)].type != TRACEEVAL_TYPE_NONE; (i)++)
++
++/** A key-value pair */
++struct entry {
++	union traceeval_data	*keys;
++	union traceeval_data	*vals;
++};
++
++/** A table of key-value entries */
++struct hist_table {
++	struct entry	*map;
++	size_t		nr_entries;
++};
++
++/** Histogram */
++struct traceeval {
++	struct traceeval_type		*def_keys;
++	struct traceeval_type		*def_vals;
++	struct hist_table		*hist;
++};
++
++/** Iterate over results of histogram */
++struct traceeval_iterator {};  // TODO
++
++/**
++ * Print error message.
++ * Additional arguments are used with respect to fmt.
++ */
++static void print_err(const char *fmt, ...)
 +{
-+	// set up
-+	char *name = "test null";
-+	enum traceeval_data_type type = TRACEEVAL_TYPE_NONE;
-+	const struct traceeval_type test_data[] =  {
-+		{
-+			.type = TRACEEVAL_TYPE_NUMBER,
-+			.name = name
-+		},
-+		{
-+			.type = type,
-+			.name = NULL
-+		}
-+	};
++	va_list ap;
 +
-+	// test init
-+	struct traceeval *result_null = traceeval_init(NULL, NULL);
-+	struct traceeval *result_key = traceeval_init(test_data, NULL);
-+	struct traceeval *result_val = traceeval_init(NULL, test_data);
-+	
-+	// analyze init
-+	CU_ASSERT(!result_null);
-+	CU_ASSERT(result_key != NULL);
-+	CU_ASSERT(!result_val);
++	va_start(ap, fmt);
++	vfprintf(stderr, fmt, ap);
++	va_end(ap);
++	fprintf(stderr, "\n");
++}
 +
-+	// release
-+	traceeval_release(NULL);
-+	traceeval_release(result_key);
++// TODO
++int traceeval_compare(struct traceeval *orig, struct traceeval *copy)
++{
++	return -1;
 +}
 +
 +/**
-+ * Use provided data to test traceeval_init(), traceeval_compare(), and
-+ * traceeval_release().
++ * Resize a struct traceeval_type array to a size of @size + 1.
++ *
++ * Returns a pointer to the resized array, or NULL if the provided pointer was
++ * freed to due lack of memory.
 + */
-+void test_eval_base(const struct traceeval_type *keys1,
-+		const struct traceeval_type *vals1,
-+		const struct traceeval_type *keys2,
-+		const struct traceeval_type *vals2,
-+		bool init_not_null1, bool init_not_null2,
-+		int compare_result)
++static struct traceeval_type *type_realloc(struct traceeval_type *defs,
++		size_t size)
 +{
-+	struct traceeval *init1;
-+	struct traceeval *init2;
-+	int result;
++	struct traceeval_type *tmp_defs = NULL;
++	tmp_defs = realloc(defs,
++			(size + 1) * sizeof(struct traceeval_type));
++	if (!tmp_defs)
++		goto fail_type_realloc;
++	return tmp_defs;
 +
-+	// test init
-+	init1 = traceeval_init(keys1, vals1);
-+	init2 = traceeval_init(keys2, vals2);
++fail_type_realloc:
++	for (int i = 0; i < size; i++) {
++		if (defs[i].name)
++			free(defs[i].name);
++	}
++	free(defs);
++	return NULL;
++}
 +
-+	result = init1 != NULL;
-+	if (init_not_null1) {
-+		CU_ASSERT(result);
-+	} else {
-+		CU_ASSERT(!result);
++/**
++ * Clone traceeval_type array @defs to the heap. Must be terminated with
++ * an instance of type TRACEEVAL_TYPE_NONE.
++ * Returns NULL if @defs is NULL, or a name is not null terminated.
++ */
++static struct traceeval_type *type_alloc(const struct traceeval_type *defs)
++{
++	struct traceeval_type *new_defs = NULL;
++	char *name;
++	size_t size = 0;
++
++	// Empty def is represented with single TRACEEVAL_TYPE_NONE
++	if (defs == NULL) {
++		if (!(new_defs = calloc(1, sizeof(struct traceeval_type))))
++			goto fail_type_alloc;
++		new_defs->type = TRACEEVAL_TYPE_NONE;
++		return new_defs;
 +	}
 +
-+	result = init2 != NULL;
-+	if (init_not_null2) {
-+		CU_ASSERT(result);
-+	} else {
-+		CU_ASSERT(!result);
++	for_each_key(size, defs) {
++		// Resize heap defs and clone
++		new_defs = type_realloc(new_defs, size);
++		if (!new_defs)
++			goto fail_type_alloc;
++
++		// copy current def data to new_def
++		new_defs[size] = defs[size];
++		new_defs[size].name = NULL;
++		// copy name to heap if it's not NULL or type NONE
++		if (defs[size].type != TRACEEVAL_TYPE_NONE) {
++			name = NULL;
++			if (!defs[size].name)
++				goto fail_type_alloc_name;
++
++			name = strdup(defs[size].name);
++			if (!name)
++				goto fail_type_alloc_name;
++			new_defs[size].name = name;
++		}
 +	}
 +
-+	// test compare
-+	result = traceeval_compare(init1, init2);
-+	
-+	// analyze compare
-+	CU_ASSERT(result == compare_result);
-+	
-+	// release
-+	traceeval_release(init1);
-+	traceeval_release(init2);
++	// append array terminator
++	new_defs = type_realloc(new_defs, size);
++	if (!new_defs)
++		goto fail_type_alloc;
++	new_defs[size].type = TRACEEVAL_TYPE_NONE;
++
++	return new_defs;
++fail_type_alloc:
++	if (defs[size].name)
++		print_err("failed to allocate memory for traceeval_type %s", defs[size].name);
++	print_err("failed to allocate memory for traceeval_type index %zu", size);
++	return NULL;
++
++fail_type_alloc_name:
++	if (defs[size].name)
++		print_err("failed to allocate name for traceeval_type %s", defs[size].name);
++
++	print_err("failed to allocate name for traceeval_type index %zu", size);
++	return NULL;
 +}
 +
 +/**
-+ * Test traceeval_init(), traceeval_release(), and traceeval_compare() with
-+ * TRACEEVAL_TYPE_NONE.
++ * Create a new histogram over the given keys and values.
 + */
-+void test_eval_none(void)
++struct traceeval *traceeval_init(const struct traceeval_type *keys,
++				 const struct traceeval_type *vals)
 +{
-+	// set up
-+	char *name = "test none";
-+	char *name2 = "test none (some)";
-+	const struct traceeval_type test_data_none[] =  {
-+		{
-+			.type = TRACEEVAL_TYPE_NONE,
-+			.name = name
-+		}
-+	};
-+	const struct traceeval_type test_data_some[] =  {
-+		{
-+			.type = TRACEEVAL_TYPE_NUMBER,
-+			.name = name2
-+		},
-+		{
-+			.type = TRACEEVAL_TYPE_NONE,
-+			.name = NULL
-+		}
++	struct traceeval *teval;
++	char *err_msg;
++	struct traceeval_type type = {
++		.type = TRACEEVAL_TYPE_NONE
 +	};
 +
-+	test_eval_base(test_data_some, test_data_none, test_data_some,
-+			test_data_none, true, true, TRACEEVAL_SUCCESS);
-+	test_eval_base(test_data_none, test_data_none, test_data_some,
-+			test_data_none, false, true, TRACEEVAL_FAILURE);
-+	test_eval_base(test_data_none, test_data_none, test_data_none,
-+			test_data_none, false, false, TRACEEVAL_FAILURE);
-+}
++	if (!keys)
++		return NULL;
 +
-+/**
-+ * Test traceeval_init() and traceeval_release() with equivalent values.
-+ */
-+void test_eval_same(void)
-+{
-+	// set up
-+	char *name = "test data";
-+	char *name2 = "test done";
-+	const struct traceeval_type test_data[] =  {
-+		{
-+			.type = TRACEEVAL_TYPE_NUMBER,
-+			.name = name
-+		},
-+		{
-+			.type = TRACEEVAL_TYPE_NONE,
-+			.name = name2
-+		}
-+	};
-+	
-+	test_eval_base(test_data, test_data, test_data, test_data, true, true,
-+			TRACEEVAL_SUCCESS);
-+}
-+
-+/**
-+ * Test traceeval_init() and traceeval_release() with non-equivalent values.
-+ */
-+void test_eval_not_same(void)
-+{
-+	const struct traceeval_type test_data1[] =  {
-+		{
-+			.type = TRACEEVAL_TYPE_NUMBER,
-+			.name = "test data 1"
-+		},
-+		{
-+			.type = TRACEEVAL_TYPE_NONE,
-+			.name = NULL
-+		}
-+	};
-+	const struct traceeval_type test_data2[] =  {
-+		{
-+			.type = TRACEEVAL_TYPE_NUMBER,
-+			.name = "test data 2"
-+		},
-+		{
-+			.type = TRACEEVAL_TYPE_NONE,
-+			.name = NULL
-+		}
-+	};
-+
-+	// type 1 key diff
-+	test_eval_base(test_data2, test_data1, test_data1, test_data1, true,
-+			true, TRACEEVAL_NOT_SAME);
-+	// type 1 data diff
-+	test_eval_base(test_data1, test_data2, test_data1, test_data1, true,
-+			true, TRACEEVAL_NOT_SAME);
-+	// type 2 key diff
-+	test_eval_base(test_data1, test_data1, test_data2, test_data1, true,
-+			true, TRACEEVAL_NOT_SAME);
-+	// type 2 data diff
-+	test_eval_base(test_data1, test_data1, test_data1, test_data2, true,
-+			true, TRACEEVAL_NOT_SAME);
-+}
-+
-+/**
-+ * Tests the traceeval_init() and traceeval_release() functions.
-+ */
-+void test_eval(void)
-+{
-+	test_eval_null();
-+	test_eval_none();
-+	test_eval_same();
-+	test_eval_not_same();
-+}
-+
-+/**
-+ * Register tests with CUnit.
-+ */
-+void test_traceeval_lib(void)
-+{
-+	CU_pSuite suite = NULL;
-+	
-+	// set up suite
-+	suite = CU_add_suite(TRACEEVAL_SUITE, NULL, NULL);
-+	if (suite == NULL) {
-+		fprintf(stderr, "Suite %s cannot be created\n", TRACEEVAL_SUITE);
-+		return;
++	if (keys->type == TRACEEVAL_TYPE_NONE) {
++		err_msg = "keys cannot start with type TRACEEVAL_TYPE_NONE";
++		goto fail_eval_init_unalloced;
 +	}
 +
-+	// add tests to suite
-+	CU_add_test(suite, "Test traceeval alloc and release", test_eval);
++	teval = calloc(1, sizeof(struct traceeval));
++	if (!teval) {
++		err_msg = "failed to allocate memory for traceeval instance";
++		goto fail_eval_init_unalloced;
++	}
++
++	teval->def_keys = type_alloc(keys);
++	if (!teval->def_keys) {
++		err_msg = "failed to allocate user defined keys";
++		goto fail_eval_init;
++	}
++
++	// if vals is NULL, alloc single type NONE
++	if (vals)
++		teval->def_vals = type_alloc(vals);
++	else
++		teval->def_vals = type_alloc(&type);
++
++	if (!teval->def_vals) {
++		err_msg = "failed to allocate user defined values";
++		goto fail_eval_init;
++	}
++
++	teval->hist = calloc(1, sizeof(struct hist_table));
++	if (!teval->hist) {
++		err_msg = "failed to allocate memory for histogram";
++		goto fail_eval_init;
++	}
++	teval->hist->nr_entries = 0;
++
++	return teval;
++fail_eval_init:
++	traceeval_release(teval);
++	/* fall-through */
++
++fail_eval_init_unalloced:
++	print_err(err_msg);
++	return NULL;
++}
++
++// TODO
++void traceeval_release(struct traceeval *teval)
++{
++
++}
++
++// TODO
++int traceeval_insert(struct traceeval *teval,
++		     const union traceeval_data *keys,
++		     const union traceeval_data *vals)
++{
++	return -1;
++}
++
++// TODO
++int traceeval_query(struct traceeval *teval,
++		    const union traceeval_data *keys,
++		    union traceeval_data * const *results)
++{
++	return 0;
++}
++
++// TODO
++int traceeval_find_key(struct traceeval *teval, const char *field)
++{
++	return -1;
++}
++
++// TODO
++int traceeval_find_val(struct traceeval *teval, const char *field)
++{
++	return -1;
++}
++
++// TODO
++void traceeval_results_release(struct traceeval *teval,
++			       const union traceeval_data *results)
++{
++
++}
++
++// TODO
++struct traceeval_iterator *traceeval_iterator_get(struct traceeval *teval)
++{
++	return NULL;
++}
++
++// TODO
++int traceeval_iterator_sort(struct traceeval_iterator *iter,
++			    const char *sort_field, int level, bool ascending)
++{
++	return -1;
++}
++
++// TODO
++int traceeval_iterator_next(struct traceeval_iterator *iter,
++			    const union traceeval_data **keys)
++{
++	return 0;
++}
++
++// TODO
++void traceeval_keys_release(struct traceeval_iterator *iter,
++			    const union traceeval_data *keys)
++{
++
++}
++
++// TODO
++int traceeval_stat(struct traceeval *teval, const union traceeval_data *keys,
++		   const char *field, struct traceeval_stat *stat)
++{
++	return -1;
 +}
 -- 
 2.41.0
