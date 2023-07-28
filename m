@@ -2,38 +2,38 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8ACB2EB64DD
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 28 Jul 2023 22:07:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D37AEB64DD
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 28 Jul 2023 22:25:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbjG1WHi (ORCPT
+        id S229619AbjG1WZc (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 28 Jul 2023 18:07:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43080 "EHLO
+        Fri, 28 Jul 2023 18:25:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbjG1WHh (ORCPT
+        with ESMTP id S229605AbjG1WZb (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 28 Jul 2023 18:07:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B37E2D73
-        for <linux-trace-devel@vger.kernel.org>; Fri, 28 Jul 2023 15:07:36 -0700 (PDT)
+        Fri, 28 Jul 2023 18:25:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6084B448A
+        for <linux-trace-devel@vger.kernel.org>; Fri, 28 Jul 2023 15:25:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1974E6219A
-        for <linux-trace-devel@vger.kernel.org>; Fri, 28 Jul 2023 22:07:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 541A6C433C7;
-        Fri, 28 Jul 2023 22:07:35 +0000 (UTC)
-Date:   Fri, 28 Jul 2023 18:07:33 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E94CD6220B
+        for <linux-trace-devel@vger.kernel.org>; Fri, 28 Jul 2023 22:25:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 215C2C433C8;
+        Fri, 28 Jul 2023 22:25:29 +0000 (UTC)
+Date:   Fri, 28 Jul 2023 18:25:27 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Stevie Alvarez <stevie.6strings@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org,
         Ross Zwisler <zwisler@google.com>
-Subject: Re: [PATCH 3/5] histograms: traceeval release
-Message-ID: <20230728180733.2720ae8c@rorschach.local.home>
-In-Reply-To: <20230728190515.23088-3-stevie.6strings@gmail.com>
+Subject: Re: [PATCH 4/5] histograms: traceeval compare
+Message-ID: <20230728182527.4713014a@rorschach.local.home>
+In-Reply-To: <20230728190515.23088-4-stevie.6strings@gmail.com>
 References: <20230728190515.23088-1-stevie.6strings@gmail.com>
-        <20230728190515.23088-3-stevie.6strings@gmail.com>
+        <20230728190515.23088-4-stevie.6strings@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -42,135 +42,259 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 28 Jul 2023 15:04:38 -0400
+On Fri, 28 Jul 2023 15:04:39 -0400
 Stevie Alvarez <stevie.6strings@gmail.com> wrote:
+> +/**
+> + * Return 0 if @orig and @copy are the same, 1 otherwise.
+> + */
+> +static int compare_traceeval_type(struct traceeval_type *orig,
+> +		struct traceeval_type *copy)
+> +{
+> +	int o_name_null;
+> +	int c_name_null;
+> +
+> +	// same memory/null
+> +	if (orig == copy)
+> +		return 0;
 
-> From: "Stevie Alvarez (Google)" <stevie.6strings@gmail.com>
-> 
-> traceeval_release() deconstructs a given struct traceeval instance. It
-> frees any data allocated to the heap within the union traceeval_data
-> arrays of entries to the histogram, and the names allocated for the
-> struct traceeval_type key-value definitions.
-> 
-> Signed-off-by: Stevie Alvarez (Google) <stevie.6strings@gmail.com>
-> ---
->  src/histograms.c | 87 ++++++++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 85 insertions(+), 2 deletions(-)
-> 
-> diff --git a/src/histograms.c b/src/histograms.c
-> index 13830e4..f46a0e0 100644
-> --- a/src/histograms.c
-> +++ b/src/histograms.c
-> @@ -209,10 +209,93 @@ fail_eval_init_unalloced:
->  	return NULL;
+You say memory/null, so I'm assuming one can be NULL. Then you need to add;
+
+	if (!!orig != !!copy)
+		return 1;
+
+Little C trick above ;-)
+
+> +
+> +	size_t i = 0;
+> +	do {
+> +		if (orig[i].type != copy[i].type)
+> +			return 1;
+> +		if (orig[i].type == TRACEEVAL_TYPE_NONE)
+> +			return 0;
+> +		if (orig[i].flags != copy[i].flags)
+> +			return 1;
+> +		if (orig[i].id != copy[i].id)
+> +			return 1;
+> +		if (orig[i].dyn_release != copy[i].dyn_release)
+> +			return 1;
+> +		if (orig[i].dyn_cmp != copy[i].dyn_cmp)
+> +			return 1;
+> +
+> +		// make sure both names are same type
+> +		o_name_null = !orig[i].name;
+> +		c_name_null = !copy[i].name;
+> +		if (o_name_null != c_name_null)
+> +			return 1;
+> +		if (o_name_null)
+> +			continue;
+
+You can replace the above with:
+
+		if (!!orig[i].name != !!copy[i].name)
+			return 1;
+		if (!orig[i].name)
+			continue;
+
+And get rid of the o_name_null and c_name_null variables.
+
+> +		if (strcmp(orig[i].name, copy[i].name) != 0)
+> +			return 1;
+> +	} while (orig[i++].type != TRACEEVAL_TYPE_NONE);
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * Return 0 if @orig and @copy are the same, 1 if @orig is greater than @copy,
+> + * -1 for the other way around, and -2 on error.
+> + */
+> +static int compare_traceeval_data(union traceeval_data *orig,
+> +		const union traceeval_data *copy, struct traceeval_type *type)
+> +{
+> +	if (!orig || !copy)
+> +		return 1;
+
+So if either is NULL then you return 1?
+
+> +
+> +	switch (type->type) {
+> +	case TRACEEVAL_TYPE_NONE:
+> +		/* There is no corresponding traceeval_data for TRACEEVAL_TYPE_NONE */
+> +		return -2;
+> +
+> +	case TRACEEVAL_TYPE_STRING:
+> +		int i = strcmp(orig->string, copy->string);
+
+I do prefer the "int i" above for this case.
+
+
+> +		if (!i)
+> +			return 0;
+> +		if (i > 0)
+> +			return 1;
+> +		return -1;
+
+Again, the above can be replaced with:
+
+		if (i < 0)
+			return -1;
+
+		return i > 0;
+or even:
+		return !!i;
+
+
+> +
+> +	case TRACEEVAL_TYPE_NUMBER:
+> +		compare_numbers_return(orig->number, copy->number);
+> +
+> +	case TRACEEVAL_TYPE_NUMBER_64:
+> +		compare_numbers_return(orig->number_64, copy->number_64);
+> +
+> +	case TRACEEVAL_TYPE_NUMBER_32:
+> +		compare_numbers_return(orig->number_32, copy->number_32);
+> +
+> +	case TRACEEVAL_TYPE_NUMBER_16:
+> +		compare_numbers_return(orig->number_16, copy->number_16);
+> +
+> +	case TRACEEVAL_TYPE_NUMBER_8:
+> +		compare_numbers_return(orig->number_8, copy->number_8);
+> +
+> +	case TRACEEVAL_TYPE_DYNAMIC:
+> +		return type->dyn_cmp(orig->dyn_data, copy->dyn_data, type);
+> +
+> +	default:
+> +		print_err("%d is out of range of enum traceeval_data_type", type->type);
+> +		return -2;
+> +	}
+> +}
+> +
+> +/**
+> + * Compare arrays fo union traceeval_data's with respect to @def.
+
+   "fo"?
+
+> + *
+> + * Return 0 if @orig and @copy are the same, 1 if not, and -1 on error.
+> + */
+> +static int compare_traceeval_data_set(union traceeval_data *orig,
+> +		const union traceeval_data *copy, struct traceeval_type *def)
+> +{
+> +	int i = 0;
+> +	int check;
+> +
+> +	// compare data arrays
+> +	for_each_key(i, def) {
+> +		if ((check = compare_traceeval_data(&orig[i], &copy[i], &def[i])))
+> +			goto fail_compare_data_set;
+
+Let's make the labels less verbose.
+
+> +	}
+> +
+> +	return 0;
+> +fail_compare_data_set:
+> +	if (check == -2)
+> +		return -1;
+> +	return 1;
+
+	return check == -2 ? -1; 1;
+
+> +}
+> +
+> +/**
+> + * Return 0 if @orig and @copy are the same, 1 if not, and -1 on error.
+> + */
+> +static int compare_entries(struct entry *orig, struct entry *copy,
+> +		struct traceeval *teval)
+> +{
+> +	int check;
+> +
+> +	// compare keys
+> +	check = compare_traceeval_data_set(orig->keys, copy->keys,
+> +			teval->def_keys);
+> +	if (check)
+> +		return check;
+> +
+> +	// compare values
+> +	check = compare_traceeval_data_set(orig->vals, copy->vals,
+> +			teval->def_vals);
+> +	return check;
+> +}
+> +
+> +/**
+> + * Return 0 if struct hist_table of @orig and @copy are the same, 1 if not,
+> + * and -1 on error.
+> + */
+> +static int compare_hist(struct traceeval *orig, struct traceeval *copy)
+> +{
+> +	struct hist_table *o_hist = orig->hist;
+> +	struct hist_table *c_hist = copy->hist;
+> +	int cnt = !(o_hist->nr_entries == c_hist->nr_entries);
+
+Add space between declarations and code.
+
+> +	if (cnt)
+> +		return 1;
+
+Why the cnt variable?
+
+	if (o_hist->nr_entries != c_hist->nr_entries)
+		return 1;
+
+> +
+> +	for (size_t i = 0; i < o_hist->nr_entries; i++) {
+> +		// cmp each entry
+
+The above comment is as useful as: /* add one to x */ x++;
+
+No need for it.
+
+> +		compare_entries(&o_hist->map[i], &c_hist->map[i], orig);
+> +	}
+> +	return 0;	
+
+White space attached to the end of the above line.
+
+If you do a git show of each of your commits, it should show you white
+space errors like that with a block red color.
+
+> +}
+> +
+> +/**
+> + * Return 0 if @orig and @copy are the same, 1 if not, -1 if error.
+> + */
+>  int traceeval_compare(struct traceeval *orig, struct traceeval *copy)
+>  {
+> -	return -1;
+> +	if ((!orig) || (!copy))
+> +		return -1;
+> +
+> +	int keys = compare_traceeval_type(orig->def_keys, copy->def_keys);
+> +	int vals = compare_traceeval_type(orig->def_vals, copy->def_vals);
+> +	int hists = compare_hist(orig, copy);
+
+First, you need to add the above as declarations. Following Linux
+kernel styling, only variables for "for" loops may be declared locally
+like that. Otherwise, we prefer old style C.
+
+Also, can't any of the above return an error? The below doesn't catch
+that.
+
+	if (keys < 0 || vals < 0 || hists < 0)
+		return -1;
+
+ ?
+
+> +
+> +	return (keys || vals || hists);
+
+return is not a function. No need for the parenthesis.
+
+	return keys || vals || hists;
+
 >  }
 >  
-> -// TODO
-> -void traceeval_release(struct traceeval *teval)
-> +/**
-> + * Deallocate array of traceeval_type's, which must be terminated by
-> + * TRACEEVAL_TYPE_NONE.
-> + */
-> +static void type_release(struct traceeval_type *defs)
-
-So if we keep track of the number of defs, we should just pass in the
-size. And ignore the NONE.
-
->  {
-> +	size_t i = 0;
-> +
-> +	if (!defs)
-> +		return;
-> +
-> +	for_each_key(i, defs) {
-> +		if (defs[i].name)
-> +			free(defs[i].name);
-> +	}
-> +
-> +	free(defs);
-> +}
-> +
-> +/**
-> + * Deallocate any specified dynamic data in @data.
-> + */
-> +static void clean_data(union traceeval_data *data, struct traceeval_type *def) +{
-> +	size_t i = 0;
-> +
-> +	if (!data || !def)
-> +		return;
-> +
-> +	for_each_key(i, def) {
-> +		switch (def[i].type) {
-> +		case TRACEEVAL_TYPE_STRING:
-> +			if (data[i].string)
-> +				free(data[i].string);
-> +			break;
-> +		case TRACEEVAL_TYPE_DYNAMIC:
-> +			def[i].dyn_release(data[i].dyn_data, &def[i]);
-
-Note, it should be OK if the dynamic event does not have a release
-function. This should be:
-
-			if (def[i].dyn_release)
-				def[i].dyn_release(data[i].dyn_data, &def[i]);
-
-> +			break;
-> +		default:
-> +			break;
-> +		}
-> +	}
-> +}
->  
-> +/**
-> + * Deallocate all possible data stored within the entry.
-
-Use the word "Free" and not "Deallocate". This goes for all other
-places.
+>  /**
 
 -- Steve
-
-> + */
-> +static void clean_entry(struct entry *entry, struct traceeval *teval)
-> +{
-> +	if (!entry)
-> +		return;
-> +
-> +	// deallocate dynamic traceeval_data
-> +	clean_data(entry->keys, teval->def_keys);
-> +	clean_data(entry->vals, teval->def_vals);
-> +	free(entry->keys);
-> +	free(entry->vals);
-> +}
-> +
-> +/**
-> + * Deallocate the hist_table allocated to a traceeval instance.
-> + */
-> +static void hist_table_release(struct traceeval *teval)
-> +{
-> +	struct hist_table *hist = teval->hist;
-> +
-> +	if (!hist)
-> +		return;
-> +
-> +	for (size_t i = 0; i < hist->nr_entries; i++) {
-> +		clean_entry(&hist->map[i], teval);
-> +	}
-> +	free(hist->map);
-> +	free(hist);
-> +}
-> +
-> +/**
-> + * Deallocate a traceeval instance.
-> + */
-> +void traceeval_release(struct traceeval *teval)
-> +{
-> +	if (teval) {
-> +		hist_table_release(teval);
-> +		type_release(teval->def_keys);
-> +		type_release(teval->def_vals);
-> +		free(teval);
-> +	}
->  }
->  
->  // TODO
-
