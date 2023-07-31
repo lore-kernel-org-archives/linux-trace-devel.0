@@ -2,106 +2,173 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 519FFC41513
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 28 Jul 2023 23:36:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10AB4C41513
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 31 Jul 2023 02:09:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232598AbjG1XgO (ORCPT
+        id S229510AbjGaCJj (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 28 Jul 2023 19:36:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39792 "EHLO
+        Sun, 30 Jul 2023 22:09:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbjG1XgN (ORCPT
+        with ESMTP id S229437AbjGaCJi (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 28 Jul 2023 19:36:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522893AB4;
-        Fri, 28 Jul 2023 16:36:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CEF8A62207;
-        Fri, 28 Jul 2023 23:36:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED89EC433C7;
-        Fri, 28 Jul 2023 23:36:10 +0000 (UTC)
-Date:   Fri, 28 Jul 2023 19:36:09 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sang QianLong <hacksonsang@gmail.com>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        "linux-trace-users@vger.kernel.org" 
-        <linux-trace-users@vger.kernel.org>
-Subject: Re: [Issue of trace-cmd] undefined symbol when import ctracecmd.so
- in python
-Message-ID: <20230728193609.79e91e44@rorschach.local.home>
-In-Reply-To: <CANF=BhZScysm9BchEFytPgOFR4Gx-jeeOV6VpbKnAHZ102onSQ@mail.gmail.com>
-References: <CANF=BhZScysm9BchEFytPgOFR4Gx-jeeOV6VpbKnAHZ102onSQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Sun, 30 Jul 2023 22:09:38 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C817A4;
+        Sun, 30 Jul 2023 19:09:37 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fe1e1142caso8396475e9.0;
+        Sun, 30 Jul 2023 19:09:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690769375; x=1691374175;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3nqjr596pMoOTR0MHkgpKhNB8FMr2abG/11cQfPMno8=;
+        b=fPLYv/WQnpLXi50r0B0N1uytjAp7sO9fq3+e62vHH1UBfRfZUcdI5FvWgANg8GnJY5
+         j+zS3EWFge0nCvlDL61R9yujmcfDdCLJ6FXERsSTqNxDWSttH/DElTzVaTx8KV7MW/ZP
+         7pKa5x7DKcd8hGOEFxdzTDRuvkH3iiUCzFfAbafDFf2CK+gUDn6iQE8Fltd80vNEpmKb
+         LPeESzuT6T0MFy2AGIv9hvtC5/LcUw5M0AoIn3BzMxzwWldcOdDjRmX5tVQ9Z7eUp6U9
+         M71Y3xbr6A8K+mndwCEl/IFhA6SI+HDVfctPTIge/ONoMHttQMDZj2WUrV885qA/FmDt
+         ulWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690769375; x=1691374175;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3nqjr596pMoOTR0MHkgpKhNB8FMr2abG/11cQfPMno8=;
+        b=gPHSD+/+0ZoPui+BKQ0TJv+ZWR7NYkF7+iZwTpt68ln3IHBpXiytmPK5glNklaD8f1
+         19jm+KI664e+kMX7Zs+dIFTPF50fBuZzDm5bjWtyA0WmBoNfobXeNg27taPK9tt5un2/
+         ni3IisfZQ9Z9Q9rCbxRRT8Ef+Rc1XQaZS7ykSnj59F+Btshqm3y1Tgv0HiY3I5Y9xvDk
+         A+dOzxroCREO1AnlUvBgoEoaT0zGMi48ImNUL6hgyg1qikPwr5+Ygpb9CD1n7KnbFkNj
+         GN0YA1LLY8T8pSj7nZzPhC5k4xGkmFcaULFD99Ngg8ps0q43omnPTYoDGJE3zQ0zX2F1
+         AjoA==
+X-Gm-Message-State: ABy/qLbc5xegQ2ajAXcOfMBGNd2gHKdEE/z/jc5jbAQaTFhjIhecMZWQ
+        s2c9GUa9NsB/B5rI7xCTRlYjdFixjyBzJ9vk329Oyl883ms=
+X-Google-Smtp-Source: APBJJlFkd4zDhULgADlEQsYZLK6qTtbOsuVRrqiKOiBn362F7WJxSlCt4mgWd495AlQzBHS72tiuC60CShZ6MPNGmh4=
+X-Received: by 2002:adf:df02:0:b0:316:f3cf:6f12 with SMTP id
+ y2-20020adfdf02000000b00316f3cf6f12mr6913491wrl.48.1690769374958; Sun, 30 Jul
+ 2023 19:09:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20230726121618.19198-1-zegao@tencent.com> <CAP-5=fVJ_RL9Md92R4nWBKvZcF9iovL07-=dJ7bqN3LWwufVGw@mail.gmail.com>
+In-Reply-To: <CAP-5=fVJ_RL9Md92R4nWBKvZcF9iovL07-=dJ7bqN3LWwufVGw@mail.gmail.com>
+From:   Ze Gao <zegao2021@gmail.com>
+Date:   Mon, 31 Jul 2023 10:09:23 +0800
+Message-ID: <CAD8CoPBC-OT+EWp_Gfqg31p8S91hbReR1nEnVWBzsUmtmKtZKw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 0/3] report task state in symbolic chars from sched tracepoint
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+Thanks Ian,
 
-I'm Cc'ing the trace users and devel mailing list just to keep this
-archived.
+In regard to ABI, symbolic chars are much more stable and I think
+we can benefit from this in the long run.
 
-On Fri, 28 Jul 2023 11:29:26 +0800
-Sang QianLong <hacksonsang@gmail.com> wrote:
+Regards,
+Ze
 
-> Dear rostedt,
-> 
-> I hope this email finds you well. My name is Hacksonsang, and I am reaching
-> out for your assistance regarding a persistent issue I am facing while
-> working with "ctracecmd.so" in Python.
-> 
-
-I have to admit that I personally do not use python, and this code was
-added by others.
-
-Note, there's patches to fix the python code, but as I'm not a python
-expert, I'm still holding off to applying them.
-
-Not sure if this helps you, but you may want to look at this:
-
-  https://patchwork.kernel.org/project/linux-trace-devel/patch/Y+w51nOhNd+PGo/k@slm.duckdns.org/
-
-Does the above help you?
-
--- Steve
-
-
-> I am currently using Ubuntu 20.04 with GCC 9.4.0 and Python 3.8.8. The
-> problem arises when I try to import "ctracecmd.so" into my Python script. I
-> consistently encounter the error message: "Undefined symbol: uncompress."
-> 
-> To address this, I initially attempted to include the "-lz" flag in
-> LD_FLAGS, hoping to resolve the "uncompress" issue. However, this action
-> resulted in encountering more "undefined symbol" errors, such as
-> "tep_plugin_kvm_get_func."
-> Upon investigating further, I found that these symbols are defined in the
-> "trace-xxx.c" files within the "tracecmd" directory. Unfortunately, it
-> appears that the Python/Makefile only utilizes the ".c" files from the
-> "lib/trace-cmd" directory during the compilation of "ctracecmd.so." To
-> address this limitation, I tried compiling "ctracecmd.so" by including the
-> ".c" files from the "tracecmd" directory using "-fpic" compilation.
-> Despite these efforts, I am still facing the same issue, and the "undefined
-> symbol" errors persist.
-> 
-> Given the situation's complexity, I am seeking your expertise and guidance
-> in resolving this matter. I believe that resolving this problem is crucial
-> as the functionalities offered by trace-cmd are vital for the successful
-> execution of my project.
-> 
-> If there are any specific steps or configurations that I missed or any
-> other troubleshooting suggestions you could provide, I would greatly
-> appreciate it. Please let me know if you require any additional
-> information, logs, or code snippets to understand the issue better. I am
-> willing to provide whatever is necessary for a comprehensive analysis.
-> 
-> Thank you so much for your time and consideration. I am eagerly looking
-> forward to your valuable insights and assistance.
-> 
-> Best regards
-
+On Sat, Jul 29, 2023 at 1:29=E2=80=AFAM Ian Rogers <irogers@google.com> wro=
+te:
+>
+> On Wed, Jul 26, 2023 at 5:16=E2=80=AFAM Ze Gao <zegao2021@gmail.com> wrot=
+e:
+> >
+> >
+> > This is the 2nd attempt to fix the report task state issue in sched
+> > tracepint, here is the first version:
+> >
+> > https://lore.kernel.org/linux-trace-kernel/20230725072254.32045-1-zegao=
+@tencent.com
+> >
+> > Against v1, add a new var to report task state in symbolic char instead
+> > of replacing the old one and to not to break anything.
+> >
+> > --
+> >
+> > In the status quo, we should see three different outcomes of the report=
+ed
+> > sched-out task state from perf-script, perf-sched-timehist, and Tp_prin=
+tk
+> > of tracepoint sched_switch.  And it's not hard to figure out that the
+> > former two are built upon the third one, and the reason why we see this
+> > inconsistency is that the former two does not catch up with the interna=
+l
+> > change of reported task state definitions as the kernel evolves.
+> >
+> > IMHO, exporting internal representations of task state in the tracepoin=
+t
+> > sched_switch is not a good practice and not encouraged at all, which ca=
+n
+> > easily break userspace tools that relies on it. Especially when tracepo=
+ints
+> > are massively used in many observability tools nowadays due to its stab=
+le
+> > nature, which makes them no longer used for debug only purpose and we
+> > should be careful to decide what ought to be reported to userspace and =
+what
+> > ought not.
+> >
+> > Therefore, to fix the issues mentioned above for good, instead of choos=
+ing
+> > I proposed to add a new variable to report task state in sched_switch w=
+ith
+> > a symbolic character along with the old hardcoded value, and save the
+> > further processing of userspace tools and spare them from knowing
+> > implementation details in the kernel.
+> >
+> > After this patch seires, we report 'RSDTtXZPI' the same as in procfs, p=
+lus
+> > a 'p' which denotes PREEMP_ACTIVE and is used for sched_switch tracepoi=
+nt only.
+> >
+> > Reviews welcome!
+>
+> Thanks Ze,
+>
+> I think this is worthwhile cleanup and makes the code overall simpler.
+> I don't know if others have strong opinions, I don't often work in
+> this code, but I think the patches are worth landing this.
+>
+> Acked-by: Ian Rogers <irogers@google.com>
+>
+> Thanks,
+> Ian
+>
+> > Regards,
+> >
+> > Ze
+> >
+> > Ze Gao (2):
+> >   sched, tracing: add to report task state in symbolic chars
+> >   perf sched: use the new prev_state_char instead in tracepoint
+> >     sched_switch
+> >
+> >  include/trace/events/sched.h | 60 +++++++++++++++++++++---------------
+> >  tools/perf/builtin-sched.c   | 57 ++++++----------------------------
+> >  2 files changed, 45 insertions(+), 72 deletions(-)
+> >
+> > Ze Gao (1):
+> >   libtraceevent: use the new prev_state_char instead in tracepoint
+> >     sched_switch
+> >
+> >  plugins/plugin_sched_switch.c | 29 ++++-------------------------
+> >  1 file changed, 4 insertions(+), 25 deletions(-)
+> >
+> > --
+> > 2.40.1
+> >
