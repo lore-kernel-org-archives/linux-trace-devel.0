@@ -2,283 +2,164 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17025C001DF
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  1 Aug 2023 01:25:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 833FFC41513
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  1 Aug 2023 01:36:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbjHABZs (ORCPT
+        id S231405AbjHABgN (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 31 Jul 2023 21:25:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35240 "EHLO
+        Mon, 31 Jul 2023 21:36:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjHABZr (ORCPT
+        with ESMTP id S229585AbjHABgM (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 31 Jul 2023 21:25:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0786810D
-        for <linux-trace-devel@vger.kernel.org>; Mon, 31 Jul 2023 18:25:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 62CB161384
-        for <linux-trace-devel@vger.kernel.org>; Tue,  1 Aug 2023 01:25:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 472D9C433C8;
-        Tue,  1 Aug 2023 01:25:44 +0000 (UTC)
-Date:   Mon, 31 Jul 2023 21:25:42 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ross Zwisler <zwisler@google.com>
-Cc:     Stevie Alvarez <stevie.6strings@gmail.com>,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 1/5] histograms: initial histograms interface
-Message-ID: <20230731212542.3fb668b1@gandalf.local.home>
-In-Reply-To: <20230801003624.GA2304479@google.com>
-References: <20230728190515.23088-1-stevie.6strings@gmail.com>
-        <20230801003624.GA2304479@google.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Mon, 31 Jul 2023 21:36:12 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78970114;
+        Mon, 31 Jul 2023 18:36:11 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe21e7f3d1so5528197e87.3;
+        Mon, 31 Jul 2023 18:36:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690853770; x=1691458570;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kTN64aQK1aLiDWyd71+xyKuSM4NGn6Hr4yVjOFLrX4Y=;
+        b=BuEGdnqVDsbrkk14K1tG6Ztj9Mi2l4o012+wxn8qUuWF0/XG7f/mKSUanj8c8KVPPf
+         6c5p6ZdK9XObNVdd0SjD0+yQJir6m0pDPmYWZBLefbuHr2UjoHWhVzZGPrETjphG4xOc
+         3NPHCL24vfW4MvA2R/fv2Z3/htkPcP/8fPYgPpKpkbLqaA08n0kZ5OpTGzMw0zIrdE/E
+         Yf6ZFuBvkTfRedDlshcL5co95VoGSev45ZEKi2Um0w7rMnxFRbaoSdZTYsZmtyYVS0gC
+         t5iHTKAthad36u9khz/tzFXDvBov+NEi6rfAEEOzqMSfg1rQu7GcnLm4G+Eo53jcTRSX
+         224w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690853770; x=1691458570;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kTN64aQK1aLiDWyd71+xyKuSM4NGn6Hr4yVjOFLrX4Y=;
+        b=NPU1y/oAyQxcN/331Wni/S02qgx6pUf+9ziAzTf34tyZrNAuBUCq7qxXUZYrNfmOTn
+         Z+XA+dYSFejPszspq0+wA3GkYzmjYF1y6skZfMLjbLAnxFMaFAqVVX1iWoZZYZw7FHTv
+         HOJR49nnlpppra/okM7RY9BusiaqEFraQd5ouvhkWfwAeH4fTxzMhMnbfmM2gqwVg2of
+         aFprrLb7zhduJP6nXRiK29ruFc9FyJ5kJ8wR5DmCfKZKXBfGA1xiRoyVWE1yw06Ehxfs
+         p6YEW5whC1It43cwDfz3D59kZWsKBKbByWyersqvM7V6YE0IyEm2RwkQ0c8SYsS4BbNG
+         HWCA==
+X-Gm-Message-State: ABy/qLbkYzeKEuWg4754aUKpho4dtjPGpIzQqGZOm/ey+y9Onvn+a/kZ
+        a/VW6oTUx06NIZv26gcbfmB5Rt206vqC0xsBN3E=
+X-Google-Smtp-Source: APBJJlFUaediJqXSE+1MQonIwaYh18YkYgKOOVYB4/tx6z3KZnFQ6py22N11b0aG6Hykpk8xq9dxOWPVIwRhDkaS4EI=
+X-Received: by 2002:ac2:4d97:0:b0:4f9:5404:af5 with SMTP id
+ g23-20020ac24d97000000b004f954040af5mr991330lfe.46.1690853769397; Mon, 31 Jul
+ 2023 18:36:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20230726121618.19198-1-zegao@tencent.com> <20230726121618.19198-2-zegao@tencent.com>
+ <20230731113807.1a4a455c@gandalf.local.home>
+In-Reply-To: <20230731113807.1a4a455c@gandalf.local.home>
+From:   Ze Gao <zegao2021@gmail.com>
+Date:   Tue, 1 Aug 2023 09:35:58 +0800
+Message-ID: <CAD8CoPAym8fuL50vevxBxPy6-RU4kU49KV+Sz4OO0+Xh_doDCQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/3] sched, tracing: add to report task state in
+ symbolic chars
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 31 Jul 2023 18:36:24 -0600
-Ross Zwisler <zwisler@google.com> wrote:
+Thanks Steven,
 
-> On Fri, Jul 28, 2023 at 03:04:36PM -0400, Stevie Alvarez wrote:
+Indeed this did not consider the struct alignment. I left the field order i=
+ntact
+because I was not sure whether the order here matters for reporting or pars=
+ing.
+Now I will fix this and send a v3, and again thanks for pointing it out.
 
-> > +/**
-> > + * traceeval_query - Find the last instance defined by the keys
-> > + * @teval: The descriptor to search from
-> > + * @keys: A list of data to look for
-> > + * @results: A pointer to where to place the results (if found)
-> > + *
-> > + * This does a lookup for an instance within the traceeval data.
-> > + * The @keys is an array defined by the keys declared in traceeval_init().
-> > + * The @keys will return an item that had the same keys when it was
-> > + * inserted by traceeval_insert(). The @keys here follow the same rules
-> > + * as the keys for traceeval_insert().
-> > + *
-> > + * Note, when the caller is done with @results, it must call
-> > + * traceeval_results_release() on it.
-> > + *
-> > + * Returns 1 if found, 0 if not found, and -1 on error.
-> > + */
-> > +int traceeval_query(struct traceeval *teval,
-> > +		const union traceeval_data *keys,
-> > +		union traceeval_data * const *results);  
-> 
-> I don't think this 'union traceeval_data * const *results' will give you what
-> you want.  This will pass in an immutable pointer to 'results', and you need
-> to modify the 'results' pointer.
+Thanks,
+Ze
 
-That's my fault. I had it it that way in the code I had him base this off
-of. In fact, in Boulder I said I need to check that because it may be
-wrong. It was ;-)
-
-Yes, Ross is right, it should be "const union traceeval_data **results".
-
-Thanks Ross.
-
-> 
-> I think you actually want 'const union traceeval_data **results' because you
-> want a mutable pointer (results) to immutable results data.  This is similar
-> to the 'const union traceeval_data **keys' arg given to
-> 
-> > int traceeval_iterator_next(struct traceeval_iterator *iter,
-> > 		const union traceeval_data **keys);  
-> 
-> and will match the const placement on the 'results' argument to 
-> 
-> > void traceeval_results_release(struct traceeval *teval,
-> > 		const union traceeval_data *results);  
-> 
-> With the current code there is no way to get results back out of this
-> function, because 'results' is const and you won't be able to set the pointer.
-> 
-> Here is a quick example I made to make sure I understood the various
-> placements of const in this arg list. :)
-
-I was going to do this too while in Boulder, but we got distracted :-p
-
--- Steve
-
-
-> 
-> --- >8 ---  
-> #include <stdio.h>
-> #include <stdlib.h>
-> #include <histogram.h>
-> 
-> int traceeval_query(struct traceeval *teval,
-> 		const union traceeval_data *keys,
-> 		const union traceeval_data **results)
-> {
-> 	union traceeval_data *r = malloc(sizeof r);
-> 	*results = r;
-> 	r->string = "foo";
+On Mon, Jul 31, 2023 at 11:38=E2=80=AFPM Steven Rostedt <rostedt@goodmis.or=
+g> wrote:
+>
+> On Wed, 26 Jul 2023 20:16:16 +0800
+> Ze Gao <zegao2021@gmail.com> wrote:
+>
+> > @@ -231,41 +253,29 @@ TRACE_EVENT(sched_switch,
+> >       TP_STRUCT__entry(
+> >               __array(        char,   prev_comm,      TASK_COMM_LEN   )
+> >               __field(        pid_t,  prev_pid                        )
+> > -             __field(        int,    prev_prio                       )
+> > -             __field(        long,   prev_state                      )
+> > +             __field(        short,  prev_prio                       )
+> > +             __field(        int,    prev_state                      )
+> > +             __field(        char,   prev_state_char                 )
+> >               __array(        char,   next_comm,      TASK_COMM_LEN   )
+> >               __field(        pid_t,  next_pid                        )
+> > -             __field(        int,    next_prio                       )
+> > +             __field(        short,  next_prio                       )
+> >       ),
+>
+> The above adds a bunch of holes. This needs to be reordered to condense t=
+he
+> event, we don't want to increase it. libtraceevent will handle reordering=
+.
+>
+> The above produces:
+>
+> struct {
+>         char    prev_comm[16];
+>         pid_t   prev_pid;
+>         short   prev_prio; <-- 2 character padding
+>         int     prev_state;
+>         char    prev_state_char;
+>         char    next_comm[16]; <- 3 character padding
+>         pid_t   next_pid;
+>         short   next_prio; <- 2 char padding
+> };
+>
+> (all events are at least 4 byte aligned, and are multiple of 4 bytes in
+> size, thus that last short of next_prio did nothing)
+>
+> The above is a total of 56 bytes (note, that is the same as the current
+> sched_switch event size);
+>
+> What the above should be:
+>
+>         TP_STRUCT__entry(
+>                 __field(        pid_t,  prev_pid                        )
+>                 __field(        pid_t,  next_pid                        )
+>                 __field(        short,  prev_prio                       )
+>                 __field(        short,  next_prio                       )
+>                 __field(        int,    prev_state                      )
+>                 __array(        char,   prev_comm,      TASK_COMM_LEN   )
+>                 __array(        char,   next_comm,      TASK_COMM_LEN   )
+>                 __field(        char,   prev_state_char                 )
+>         ),
+>
+>
+> Which would be:
+>
+> struct {
+>         pid_t   prev_pid;
+>         pid_t   next_pid;
+>         short   prev_prio;
+>         short   next_prio;
+>         int     prev_state;
+>         char    prev_comm[16];
+>         char    next_comm[16];
+>         char    prev_stat_char; <-- 3 characters of padding
 > }
-> 
-> void main()
-> {
-> 	const union traceeval_data *results;
-> 
-> 	traceeval_query(NULL, NULL, &results);
-> 	printf("results->name:'%s'\n", results->string);
-> 
->         // This next line would fail because the results data itself is
->         // read-only.
-> //	results->name = "bar";
-> }
-> --- >8 ---  
-> 
-> > +
-> > +/** Field name/descriptor for number of hits */
-> > +#define TRACEEVAL_VAL_HITS ((const char *)(-1UL))
-> > +
-> > +/**
-> > + * traceeval_find_key - find the index of a key
-> > + * @teval: The descriptor to find the key for
-> > + * @field: The name of the key to return the index for
-> > + *
-> > + * As the order of how keys are defined by traceeval_init(), it
-> > + * is important to know what index they are for when dealing with
-> > + * the other functions.
-> > + *
-> > + * Returns the index of the key with @field as the name.
-> > + * Return -1 if not found.
-> > + */
-> > +int traceeval_find_key(struct traceeval *teval, const char *field);
-> > +
-> > +/**
-> > + * traceeval_find_val - find the index of a value
-> > + * @teval: The descriptor to find the value for
-> > + * @field: The name of the value to return the index for
-> > + *
-> > + * As the order of how values are defined by traceeval_init(), it
-> > + * is important to know what index they are for when dealing with
-> > + * the results array from traceeval_query(). In order to facilitate
-> > + * this, traceeval_find_val() will return the index for a given
-> > + * @field so that the caller does not have to keep track of it.
-> > + *
-> > + * Returns the index of the value with @field as the name that can be
-> > + * used to index the @results array from traceeval_query().
-> > + * Return -1 if not found.
-> > + */
-> > +int traceeval_find_val(struct traceeval *teval, const char *field);
-> > +
-> > +/**
-> > + * traceeval_results_release - Release the results return by traceeval_query()
-> > + * @teval: The descriptor used in traceeval_query()
-> > + * @results: The results returned by traceeval_query()
-> > + *
-> > + * The @results returned by traceeval_query() is owned by @teval, and
-> > + * how it manages it is implementation specific. The caller should not
-> > + * worry about it. When the caller of traceeval_query() is done with
-> > + * the @results, it must call traceeval_results_release() on it to
-> > + * allow traceeval to clean up its references.
-> > + */
-> > +void traceeval_results_release(struct traceeval *teval,
-> > +		const union traceeval_data *results);
-> > +
-> > +// Result iterator/histogram dump interfaces
-> > +
-> > +/** Iterator over aggregated data */
-> > +struct traceeval_iterator;
-> > +
-> > +/**
-> > + * traceeval_iterator_get - get an iterator to read the data from traceeval
-> > + * @teval: The descriptor to read from
-> > + *
-> > + * This returns a descriptor that can be used to interate through all the
-> > + * data within @teval.
-> > + *
-> > + * Returns the iterator on success, NULL on error.
-> > + */
-> > +struct traceeval_iterator *traceeval_iterator_get(struct traceeval *teval);
-> > +
-> > +/**
-> > + * traceeval_iterator_sort - Set how the iterator is sorted
-> > + * @iter: The iterator to set the sorting
-> > + * @sort_field: The field (defined by traceeval_init) to sort by.
-> > + * @level: The level of sorting.
-> > + * @ascending: Set to true to sort ascending order, or false to descending
-> > + *
-> > + * Sets how the iterator shall be sorted. @sort_field is the field to sort
-> > + * by and may be the name of either a key or a value.
-> > + *
-> > + * The @level should be zero the first time this is called to define the main sort
-> > + * field. If secondary sorting is to be done, then this function should be called
-> > + * again with @level as 1. For more levels of sorting just call this function
-> > + * for each level incrementing level each time. Note, if a level is missed,
-> > + * then this will return an error and sorting will not be done for that level.
-> > + *
-> > + * Returns 0 on success, -1 or error (including missing a level).
-> > + */
-> > +int traceeval_iterator_sort(struct traceeval_iterator *iter,
-> > +		const char *sort_field, int level, bool ascending);
-> > +
-> > +/**
-> > + * traceeval_iterator_next - Iterate through the data of a traceeval descriptor
-> > + * @iter: The iterator that holds the location and sorting of the data
-> > + * @keys: The current set of keys of the traceeval the @iter is sorting through
-> > + *
-> > + * This will iterate through all the data of the traceeval descriptor held
-> > + * by @iter in the sort pattern defined by traceeval_iterator_sort().
-> > + * The @keys return is same as the data used to populate the data passed into
-> > + * traceveal_insert(). When the caller is done with @keys, it should be passed
-> > + * into traceeval_keys_release().
-> > + *
-> > + * Returns 1 if it returned an item, 0 if there's no more data to return,
-> > + * and -1 on error.
-> > + */
-> > +int traceeval_iterator_next(struct traceeval_iterator *iter,
-> > +		const union traceeval_data **keys);
-> > +
-> > +/**
-> > + * traceeval_keys_release - Release the keys return by traceeval_iterator_next()
-> > + * @iter: The iterator used in traceeval_iterator_next().
-> > + * @keys: The results returned by traceeval_iterator_next()
-> > + *
-> > + * The @keys returned by traceeval_iterator_next() is owned by @iter, and
-> > + * how it manages it is implementation specific. The caller should not
-> > + * worry about it. When the caller of traceeval_iterator_next() is done with
-> > + * the @keys, it must call traceeval_keys_release() on it to
-> > + * allow traceeval to clean up its references.
-> > + */
-> > +void traceeval_keys_release(struct traceeval_iterator *iter,
-> > +		const union traceeval_data *keys);
-> > +
-> > +// Statistic extraction
-> > +
-> > +/** Statistics about a given field */
-> > +struct traceeval_stat {
-> > +	unsigned long long	max;
-> > +	unsigned long long	min;
-> > +	unsigned long long	total;
-> > +	unsigned long long	avg;
-> > +	unsigned long long	std;
-> > +};
-> > +
-> > +/**
-> > + * traceeval_stat - Extract stats from a field marke a TRACEEVAL_FL_STATS
-> > + * @teval: The descriptor holding the traceeval information
-> > + * @keys: The list of keys to find the instance to get the stats on
-> > + * @field: The field to retreive the stats for
-> > + * @stats: A structure to place the stats into.
-> > + *
-> > + * This returns the stats of the the given @field. Note, if @field was
-> > + * not marked for recording stats with the TRACEEVAL_FL_STATS flag, or
-> > + * if no instance is found that has @keys, this will return an error.
-> > + *
-> > + * Returns 0 on success, -1 on error.
-> > + */
-> > +int traceeval_stat(struct traceeval *teval, const union traceeval_data *keys,
-> > +		const char *field, struct traceeval_stat *stat);
-> > +
-> > +#endif /* __LIBTRACEEVAL_HIST_H__ */
-> > +
-> > -- 
-> > 2.41.0
-> >   
-
+>
+> which would be 52 byte. Saving us 4 bytes per event. Which is a big deal!
+>
+> -- Steve
+>
