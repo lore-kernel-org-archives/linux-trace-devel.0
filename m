@@ -2,58 +2,45 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D883C001E0
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  1 Aug 2023 09:02:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5ADA7C41513
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  1 Aug 2023 11:34:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232401AbjHAJCX (ORCPT
+        id S233798AbjHALee (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 1 Aug 2023 05:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60292 "EHLO
+        Tue, 1 Aug 2023 07:34:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231949AbjHAJCO (ORCPT
+        with ESMTP id S233774AbjHALed (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:02:14 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DEFB2121;
-        Tue,  1 Aug 2023 02:01:56 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3a3efebcc24so4104504b6e.1;
-        Tue, 01 Aug 2023 02:01:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690880516; x=1691485316;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w1czaeXwKPoW79DQXCoJFC1V8bFxJyQ215iwxz8lUyU=;
-        b=ms8c2ZbB4R4fcbOy+mUJuwgXu4e0yufWtAlHMDXY2WnBmnyeTwE7ArkyOg6QsjA2bF
-         SFuuk5Az0zk8szoQauYILOraZ47zU/hlFz++Kexz1kHY7bRL5ni1Q7n2u0vma1bhrKcx
-         9is5gEAYNI8Q7DXpoPBNDolyn3ifDb+Cswg7wY6ws96ts/SHMg7sXLMaBIx6NHz8eA4x
-         IiW+VBQfO6KbRqBTLiKIqqnLAa+MoQil/+hq8vda8g3cCzy8U0SgyUK+PfNSBjd1m68g
-         PZnJjsRC6jhWQm29Eo9oSg0WFrasNY1uIsqDwVxjf/q75cC/ICsVPyEhobGM1jBNjrCH
-         MOcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690880516; x=1691485316;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w1czaeXwKPoW79DQXCoJFC1V8bFxJyQ215iwxz8lUyU=;
-        b=aWBV2NJ9WTJ7m5VPHRi50sDgRREdhC84t+HJQoKN6hegMFAGhL13iGVHt/AqtOibhd
-         segJb3lyOYaoXDi0S2NbMf2ZkudZyupzvsXO5mImsYz5eewNUlhS6Q9+9fnmDwbXzict
-         zlIQ17lPTHWgiZzGihJQ+dJxV51PKMkv+510CEMopK0IV3lMoSzBIlDGX7PocvYp/nEd
-         JZBB31t6K5fnnrkdnlQNjRt0t56Ua/y714yFrPYFo4By20r68C8byH+OB1Y/ILOP3Y/L
-         /bveExIat7XcD+X+4NFS3mOmVSHEpYXh9vfjbnHodoZU5Noo8nu0OKceN1+oQK3COib+
-         05Wg==
-X-Gm-Message-State: ABy/qLa3M5vnEp1eNchkDI/3EVhj7Gwwp2eRXojbqhxQ1kB7F4Cv0rrO
-        Jo8IfQND0hbaA1MChE6P1mA=
-X-Google-Smtp-Source: APBJJlEgEGfL/Sa0Hc20kBqI0KCpcup53YVIjfJ2cJlZF3NxpUjHae3cj6zpEWs3NbpHX6xjWwFvxw==
-X-Received: by 2002:a05:6808:1595:b0:3a7:4e0c:faa9 with SMTP id t21-20020a056808159500b003a74e0cfaa9mr910611oiw.29.1690880515818;
-        Tue, 01 Aug 2023 02:01:55 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.20])
-        by smtp.googlemail.com with ESMTPSA id x34-20020a17090a6c2500b00264044cca0fsm1592523pjj.1.2023.08.01.02.01.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 02:01:55 -0700 (PDT)
-From:   Ze Gao <zegao2021@gmail.com>
-X-Google-Original-From: Ze Gao <zegao@tencent.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Tue, 1 Aug 2023 07:34:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38536D3;
+        Tue,  1 Aug 2023 04:34:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=m1F9HPkA3rCfG5++ie5WawGo0UTj2vVNhV/5rI+7dho=; b=mB9lQRj8ne7QFWU/SvSHLBtwb6
+        h8xkNxWTv4f5uznh/z9xyszKEHyfllEKko5I05DM439vdurXjN3Ng5UlhclOvPdYJlzKN75ic1PuZ
+        MkQx7FVcynX8dz8FJWvDGDtTmTY6w2TLbbQbh1NXLy0plifn86o+u0GEsiobPMM55N+aULATCl7o5
+        IdlMhHYGS/bCJUhVDMRtgJ0e44vX5wwj0q4PNb9Z8iad4ngKUWtCkhUbkQ5tg+F1QUWm/fiUrNvg3
+        EPHixlaFooaWC4Zv49H6rXFD2n+pHXC40U/U929HsM7rOoe7LlXEaVvwd+4uv5LM1aBGZQGY/RYTp
+        2VqoqZEA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qQndb-008R8A-MR; Tue, 01 Aug 2023 11:34:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3184E300134;
+        Tue,  1 Aug 2023 13:34:02 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EDD41200C570F; Tue,  1 Aug 2023 13:34:01 +0200 (CEST)
+Date:   Tue, 1 Aug 2023 13:34:01 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ze Gao <zegao2021@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
         Ian Rogers <irogers@google.com>,
@@ -61,62 +48,46 @@ To:     Adrian Hunter <adrian.hunter@intel.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
         linux-trace-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Subject: [RFC PATCH v3 6/6] libtraceevent: prefer to use prev_state_char introduced in sched_switch
-Date:   Tue,  1 Aug 2023 17:01:24 +0800
-Message-Id: <20230801090124.8050-7-zegao@tencent.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230801090124.8050-1-zegao@tencent.com>
+Subject: Re: [RFC PATCH v3 3/6] sched, tracing: add to report task state in
+ symbolic chars
+Message-ID: <20230801113401.GC79828@hirez.programming.kicks-ass.net>
 References: <20230801090124.8050-1-zegao@tencent.com>
+ <20230801090124.8050-4-zegao@tencent.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801090124.8050-4-zegao@tencent.com>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Since the sched_switch tracepoint introduces a new variable to
-report sched-out task state in symbolic char, we prefer to use
-it to spare from knowing internal implementations in kernel.
+On Tue, Aug 01, 2023 at 05:01:21PM +0800, Ze Gao wrote:
+> Internal representations of task state are likely to be changed
+> or ordered, and reporting them to userspace without exporting
+> them as part of API is basically wrong, which can easily break
+> a userspace observability tool as kernel evolves. For example,
+> perf suffers from this and still reports wrong states as of this
+> writing.
+> 
+> OTOH, some masqueraded states like TASK_REPORT_IDLE and
+> TASK_REPORT_MAX are also reported inadvertently, which confuses
+> things even more and most userspace tools do not even take them
+> into consideration.
+> 
+> So add a new variable in company with the old raw value to
+> report task state in symbolic chars, which are self-explaining
+> and no further translation is needed. Of course this does not
+> break any userspace tool.
+> 
+> Note for PREEMPT_ACTIVE, we introduce 'p' to report it and use
+> the old conventions for the rest.
 
-Also we keep the old parsing logic intact but sync the state char
-array with the latest kernel.
+*sigh*... just because userspace if daft, we need to change the kernel?
 
-Signed-off-by: Ze Gao <zegao@tencent.com>
----
- plugins/plugin_sched_switch.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switch.c
-index 8752cae..4c57322 100644
---- a/plugins/plugin_sched_switch.c
-+++ b/plugins/plugin_sched_switch.c
-@@ -11,7 +11,7 @@
- 
- static void write_state(struct trace_seq *s, int val)
- {
--	const char states[] = "SDTtZXxW";
-+	const char states[] = "SDTtXZPIp";
- 	int found = 0;
- 	int i;
- 
-@@ -99,7 +99,12 @@ static int sched_switch_handler(struct trace_seq *s,
- 	if (tep_get_field_val(s, event, "prev_prio", record, &val, 1) == 0)
- 		trace_seq_printf(s, "[%d] ", (int) val);
- 
--	if (tep_get_field_val(s,  event, "prev_state", record, &val, 1) == 0)
-+	//find if has prev_state_char, otherwise fallback to prev_state
-+	if (tep_find_field(event, "prev_state_char")) {
-+		if (tep_get_field_val(s,  event, "prev_state_char", record, &val, 1) == 0)
-+			trace_seq_putc(s, (char) val);
-+	}
-+	else if (tep_get_field_val(s,  event, "prev_state", record, &val, 1) == 0)
- 		write_state(s, val);
- 
- 	trace_seq_puts(s, " ==> ");
--- 
-2.40.1
-
+Why do we need this character anyway, why not just print the state in
+hex and leave it at that? These single character state things are a
+relic, please just let them die.
