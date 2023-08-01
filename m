@@ -2,62 +2,45 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7AA7C41513
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  1 Aug 2023 13:17:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0106C00528
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  1 Aug 2023 13:42:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233944AbjHANRI (ORCPT
+        id S231597AbjHANmU (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 1 Aug 2023 09:17:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34056 "EHLO
+        Tue, 1 Aug 2023 09:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232541AbjHANRH (ORCPT
+        with ESMTP id S230472AbjHANmS (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 1 Aug 2023 09:17:07 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CFFE9;
-        Tue,  1 Aug 2023 06:17:02 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe457ec6e7so1059888e87.3;
-        Tue, 01 Aug 2023 06:17:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690895820; x=1691500620;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YIXWLmHWaAppS2BxnmUwozE9qzcrfXtbdStzdLC/lgA=;
-        b=COYlb4Ga4N1eBlWAcXr7YiqPw4OBJOT0EcO5/bzHq6jKC+4SZUg4RwcUkk65mGgCGr
-         LSwXIaq3rCpJ0841e2fgii2K91DtVz+9S4ZOsrHsPiI77c6oQwaW+MYD/mI8roDiLpmR
-         iNGWb+sSmBpy2erneqAUBbDZ2bg0/7VRDWp/vljkiNkPtE7kFXqfq4aftuvsIqNyL43y
-         1B49mLUy9fKqbWzpLnPwh7Y3DqrNOWTtSB9GPbk6tgRvAomhKW/elZxeDxcAMNUwbUSP
-         7jHeGLOANXc9HcB5u9TOGgXkQpBlAF9JMcxCiZ+FapEKrxclrOCNiKFN0t11STAFUhnz
-         qeCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690895820; x=1691500620;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YIXWLmHWaAppS2BxnmUwozE9qzcrfXtbdStzdLC/lgA=;
-        b=T2+eSGYxZI6f1jQ0FK0UTnGDCGB5bqln9qQedPluRvu+jePvUbiazLWDmpgP+QrU94
-         8jXG5ZBTDXt1ay9WKwc5FtQFprkr3LFvXPk2ZJZ0lEmKkb1ABeKp0zSkqVEf9etamtae
-         NzsY7RGVbDCCtxhpqH+i/jw9o5IeAmIeGAbZTmLYiGT69L7uM5WE8iCEQRKNBhh4YrXi
-         8p0PFcoCmFtZ3FqUl823HRmKNVguwDudOjOb8xdoBQLyis8i+aEfQc8C8sKC3eUvNuih
-         arNhrhyF/k2qeE/yzB153HdLv9RRCFmpldifbU2qyjPfgUE1YMWZ3cYIdr/4Lvi+dpSv
-         z08A==
-X-Gm-Message-State: ABy/qLYBFfsutfkHJu0l4RThlNbKm+GznutNTEH44gFEa3mBm6cRHfEH
-        F9+mYFZzjThh0JYxehYB4m3UjUnNBRctZQ4/0EjuxWvFWs0=
-X-Google-Smtp-Source: APBJJlEaeifujEnX/crqUtvzVD864qQAiL4PlyAVphNY10MLKwdXfLjV4kSyQfs69RecRyDEtCRnM5vrhQa0JW41zLY=
-X-Received: by 2002:ac2:51a1:0:b0:4fd:c715:5667 with SMTP id
- f1-20020ac251a1000000b004fdc7155667mr2000808lfk.20.1690895820122; Tue, 01 Aug
- 2023 06:17:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230801090124.8050-1-zegao@tencent.com> <20230801090124.8050-5-zegao@tencent.com>
- <20230801114650.GE79828@hirez.programming.kicks-ass.net>
-In-Reply-To: <20230801114650.GE79828@hirez.programming.kicks-ass.net>
-From:   Ze Gao <zegao2021@gmail.com>
-Date:   Tue, 1 Aug 2023 21:16:49 +0800
-Message-ID: <CAD8CoPCJ0g7CLjQH9NL9bCfiPJqito1XZnitDg1MQOC6=gb=Gg@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 4/6] sched, tracing: reorganize fields of switch
- event struct
-To:     Peter Zijlstra <peterz@infradead.org>
+        Tue, 1 Aug 2023 09:42:18 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E76110DB;
+        Tue,  1 Aug 2023 06:42:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kHEuKxJGDY+7U7sNajb0X1Ns5oYmL8eJ2Q/fI659OrA=; b=ZfzWa2Uwxfx+eILLpeM4bZQsyW
+        VIHueX5vDEdDRI82cfXR4kQANxgvUU+glgIgqAKKQIrG9bU1HRUdqrb/ektsFIgbG3bvkrj1mZ78W
+        Yf4k12V2I+l7HtScf9cbmt+3Lvu9PXMKHZkQSk3eXWQ3GnGTpf6JbbGRdOANcQ5iX+rnEDO9U32Z6
+        bbAFtKqNoBfgUd63qSEeQBofnohDAxTBzpWkJ0jarhkLP2AYDpEphQqwExP3pH95RgfJJIpv/HqJu
+        uRFH98SVcUHTyuCW7hjAusHnFF2ZBmBb2nK8/kcfMNlHt5tg+EqjSFr0x6J2PEJ5aO4vL0w2LdP8i
+        rYx0aHdg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qQpdA-00Eh3Q-0t;
+        Tue, 01 Aug 2023 13:41:44 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BF5D33001DD;
+        Tue,  1 Aug 2023 15:41:42 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9EE892066B201; Tue,  1 Aug 2023 15:41:42 +0200 (CEST)
+Date:   Tue, 1 Aug 2023 15:41:42 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ze Gao <zegao2021@gmail.com>
 Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -70,34 +53,132 @@ Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
         linux-trace-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [RFC PATCH v3 3/6] sched, tracing: add to report task state in
+ symbolic chars
+Message-ID: <20230801134142.GC11704@hirez.programming.kicks-ass.net>
+References: <20230801090124.8050-1-zegao@tencent.com>
+ <20230801090124.8050-4-zegao@tencent.com>
+ <20230801113401.GC79828@hirez.programming.kicks-ass.net>
+ <CAD8CoPA-cqe+hY8dHjO+6WhcL2VKy2Wq=rYSSkwUqBFRJ4ECWg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD8CoPA-cqe+hY8dHjO+6WhcL2VKy2Wq=rYSSkwUqBFRJ4ECWg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Oops, I thought sending this series for RFC is the "effort" you mean
-to audit the users :/
+On Tue, Aug 01, 2023 at 09:03:51PM +0800, Ze Gao wrote:
 
-Correct me if I'm making stupid moves here and enlighten me what
-I should do furthermore to audit the users.
+> It's just the design that exporting internal details is fundamentally wrong.
 
-Thanks,
-Ze
+This is tracing... it wasn't supposed to be ABI (although it somehow
+ended up being one). But even then, things like PF_foo get exposed in
+procfs but even that we change.
 
-On Tue, Aug 1, 2023 at 7:47=E2=80=AFPM Peter Zijlstra <peterz@infradead.org=
-> wrote:
->
-> On Tue, Aug 01, 2023 at 05:01:22PM +0800, Ze Gao wrote:
-> > Report priorities in 'short' and prev_state in 'int' to save
-> > some buffer space. And also reorder the fields so that we take
-> > struct alignment into consideration to make the record compact.
-> >
-> > Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
->
-> I don't see a single line describing the effort you've done to audit
-> consumers of this tracepoint.
->
-> *IF* you're wanting to break this tracepoint ABI, because seriously
-> that's what it is, then you get to invest the time and effort to audit
-> the users.
+The whole point of tracing is to see internals in order to figure out
+wth is going wrong.
+
+> And even worse,  I did not see any userspace tool is aware of masqueraded
+> states like TASK_REPORT_IDLE and TASK_REPORT_MAX and let alone
+> parse it correctly.
+
+That's probably because I never use tools, I just look at the raw trace
+output -- sometimes an impromptu awk script. I'm pretty sure I ran with
+something like the below when I did the freezer rewrite -- or perhaps I
+just stuck in trace_printk() and didn't even bother with the
+tracepoints, I can't remember.
+
+> > Why do we need this character anyway, why not just print the state in
+> > hex and leave it at that? These single character state things are a
+> > relic, please just let them die.
+> 
+> I believe hex is ok only after having the reported task state mapping
+> appear in the uapi headers, otherwise it's still useless to userspace
+> especially for value like TASK_REPORT_IDLE and TASK_REPORT_MAX, which
+> need to dig into the kernel to see what the hell is going on here.
+> 
+> Thoughts?
+
+If you're tracing the kernel, you had better know what the kernel is
+doing, otherwise you get to keep the pieces.
+
+Anyway, if you're doing BPF then why do you care about the trace event
+at all, just attach to the raw tracepoint and consume @preemt, @prev,
+@next and @prev_state.
+
+---
+diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+index fbb99a61f714..cb0c1251729e 100644
+--- a/include/trace/events/sched.h
++++ b/include/trace/events/sched.h
+@@ -186,36 +186,6 @@ DEFINE_EVENT(sched_wakeup_template, sched_wakeup_new,
+ 	     TP_PROTO(struct task_struct *p),
+ 	     TP_ARGS(p));
+ 
+-#ifdef CREATE_TRACE_POINTS
+-static inline long __trace_sched_switch_state(bool preempt,
+-					      unsigned int prev_state,
+-					      struct task_struct *p)
+-{
+-	unsigned int state;
+-
+-#ifdef CONFIG_SCHED_DEBUG
+-	BUG_ON(p != current);
+-#endif /* CONFIG_SCHED_DEBUG */
+-
+-	/*
+-	 * Preemption ignores task state, therefore preempted tasks are always
+-	 * RUNNING (we will not have dequeued if state != RUNNING).
+-	 */
+-	if (preempt)
+-		return TASK_REPORT_MAX;
+-
+-	/*
+-	 * task_state_index() uses fls() and returns a value from 0-8 range.
+-	 * Decrement it by 1 (except TASK_RUNNING state i.e 0) before using
+-	 * it for left shift operation to get the correct task->state
+-	 * mapping.
+-	 */
+-	state = __task_state_index(prev_state, p->exit_state);
+-
+-	return state ? (1 << (state - 1)) : state;
+-}
+-#endif /* CREATE_TRACE_POINTS */
+-
+ /*
+  * Tracepoint for task switches, performed by the scheduler:
+  */
+@@ -242,29 +212,16 @@ TRACE_EVENT(sched_switch,
+ 		memcpy(__entry->next_comm, next->comm, TASK_COMM_LEN);
+ 		__entry->prev_pid	= prev->pid;
+ 		__entry->prev_prio	= prev->prio;
+-		__entry->prev_state	= __trace_sched_switch_state(preempt, prev_state, prev);
++		__entry->prev_state	= prev_state | (preempt * TASK_STATE_MAX);
+ 		memcpy(__entry->prev_comm, prev->comm, TASK_COMM_LEN);
+ 		__entry->next_pid	= next->pid;
+ 		__entry->next_prio	= next->prio;
+ 		/* XXX SCHED_DEADLINE */
+ 	),
+ 
+-	TP_printk("prev_comm=%s prev_pid=%d prev_prio=%d prev_state=%s%s ==> next_comm=%s next_pid=%d next_prio=%d",
++	TP_printk("prev_comm=%s prev_pid=%d prev_prio=%d prev_state=%x ==> next_comm=%s next_pid=%d next_prio=%d",
+ 		__entry->prev_comm, __entry->prev_pid, __entry->prev_prio,
+-
+-		(__entry->prev_state & (TASK_REPORT_MAX - 1)) ?
+-		  __print_flags(__entry->prev_state & (TASK_REPORT_MAX - 1), "|",
+-				{ TASK_INTERRUPTIBLE, "S" },
+-				{ TASK_UNINTERRUPTIBLE, "D" },
+-				{ __TASK_STOPPED, "T" },
+-				{ __TASK_TRACED, "t" },
+-				{ EXIT_DEAD, "X" },
+-				{ EXIT_ZOMBIE, "Z" },
+-				{ TASK_PARKED, "P" },
+-				{ TASK_DEAD, "I" }) :
+-		  "R",
+-
+-		__entry->prev_state & TASK_REPORT_MAX ? "+" : "",
++		__entry->prev_state,
+ 		__entry->next_comm, __entry->next_pid, __entry->next_prio)
+ );
+ 
