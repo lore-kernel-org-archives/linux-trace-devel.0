@@ -2,45 +2,62 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE076C001E0
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  1 Aug 2023 11:47:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E80DDC04FDF
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  1 Aug 2023 13:04:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234389AbjHALrS (ORCPT
+        id S232482AbjHANEH (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 1 Aug 2023 07:47:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
+        Tue, 1 Aug 2023 09:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234369AbjHALrQ (ORCPT
+        with ESMTP id S231502AbjHANEG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 1 Aug 2023 07:47:16 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0A71712;
-        Tue,  1 Aug 2023 04:47:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TdpPIvgN+cdaHFVUOeW5qe3U6jUZBrGZ60UhJBXmvpY=; b=nlMuLsMdUfdbuRxXz8ioQYr9dR
-        o686TG0N5P3FFJm71RgPXPuXuyi5MGCmJAwWjvWWD1FGfOVZghopNFrXVMrGwmCltAbzFaEPUjz67
-        +bYTPHB8bqmpL17ba+a4/SToPkoEqTYC06G6LWtHg7RqwZbkDfAFypL/pDqf6zpIdc3l997qe2lYk
-        F0PcYe0qRh4M0IsAHqoBm0KuTPdMbvaxxlfjXkMhxyizUyV5yVdvP+Rb6keTanahrL+cMkhP9gA+o
-        reZfMTOT1G8UYsSshlsOnnC36pK5Q7ZKpVzTiP5oLC2H+MK0ytmlEIBGpfi67VDUB+P3jejVM1fMR
-        +ZjaBQoA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qQnpz-00Edek-29;
-        Tue, 01 Aug 2023 11:46:51 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 07920300134;
-        Tue,  1 Aug 2023 13:46:51 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id ED4EF200C570F; Tue,  1 Aug 2023 13:46:50 +0200 (CEST)
-Date:   Tue, 1 Aug 2023 13:46:50 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ze Gao <zegao2021@gmail.com>
+        Tue, 1 Aug 2023 09:04:06 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18468E6;
+        Tue,  1 Aug 2023 06:04:05 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fe21e7f3d1so6370794e87.3;
+        Tue, 01 Aug 2023 06:04:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690895043; x=1691499843;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ESOJn7ONX5e3KsUtVteD7jAuVQBZSQbe5TvZKAUJyX8=;
+        b=IoASiyGxFXMTHGJ9ZFj2Mszo2J4M+dr0WujwXHVx95AifbGPIZa+wlmAMVJ+E4Z3X9
+         xUtLx+UJMeM2FeSIw/lmt2vjGe+5YsyJPiloHf7nYuQ5s61oia8YG6isNatrEK7m0i/g
+         Llo0n4QBzEfVP2BASzko88jI5McpBAc1jWj7DS2iJUR7oPIA70c0erY6GGRhMCqZufZW
+         MdQ/cESX+mo3pI5e66BbYgJksMoqun7Qd7b7Su80A4q3Tls28TEuWgNs6glcBHVygXJO
+         vDjZaOTLtycFzNRQ4wgSdwi8S3SiyKy8vYdbjdEMeSnEKtTs8QN119xQ4nxdhs2l3hFq
+         b7Fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690895043; x=1691499843;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ESOJn7ONX5e3KsUtVteD7jAuVQBZSQbe5TvZKAUJyX8=;
+        b=HGdNEB4kVs2zcl73wEgXOHWXirJWvEmVfWrwH9kinFp5Zrl6kqo/IqE+BVfJd+jRkK
+         f8DVpRgnos6O14/uPJ9hHhBJq/8gHN9XGb+dhJE2C5Z0xG8sIn+M66Y0byIgveo7EWCr
+         4tfw6mK+yaduUsOyfejTlHErJNdUWuUqnAOiPF2sf9bD/DIfPaJMzTBJmwrbSVncLn9Z
+         gPAKrGj0OpH5KRug4Gny5SV2yDtWLZF3XHwz8IFLgG0X/RMVnfNAz3QrcyBDpH6rjoU5
+         qkig0N4jiKdUx0gHQrtWuW2vV4TbWX4Gp1JP3HhJ8pKpAu6mUZa/UXcCf7unGHQspfUO
+         PIQg==
+X-Gm-Message-State: ABy/qLatTueFJy5BOAT3gWnWFewkn0KtHwVqKCkobV7j9HW8T03rkcUt
+        fTqEL5o3hIEJ0Cmvf62ZUHvM23vZ+ThGlBkRjxs=
+X-Google-Smtp-Source: APBJJlFpmDaP7mIbTs7l60A9w0PLxLS6C5KHMw/Q8UTIvkcTJfIJCWAvNWpCa4uyst/3e9LTRwn32e2wxuimvx/vahw=
+X-Received: by 2002:a05:6512:20cd:b0:4f8:70d8:28f8 with SMTP id
+ u13-20020a05651220cd00b004f870d828f8mr2028017lfr.55.1690895043030; Tue, 01
+ Aug 2023 06:04:03 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230801090124.8050-1-zegao@tencent.com> <20230801090124.8050-4-zegao@tencent.com>
+ <20230801113401.GC79828@hirez.programming.kicks-ass.net>
+In-Reply-To: <20230801113401.GC79828@hirez.programming.kicks-ass.net>
+From:   Ze Gao <zegao2021@gmail.com>
+Date:   Tue, 1 Aug 2023 21:03:51 +0800
+Message-ID: <CAD8CoPA-cqe+hY8dHjO+6WhcL2VKy2Wq=rYSSkwUqBFRJ4ECWg@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 3/6] sched, tracing: add to report task state in
+ symbolic chars
+To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -53,29 +70,74 @@ Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
         linux-trace-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Subject: Re: [RFC PATCH v3 4/6] sched, tracing: reorganize fields of switch
- event struct
-Message-ID: <20230801114650.GE79828@hirez.programming.kicks-ass.net>
-References: <20230801090124.8050-1-zegao@tencent.com>
- <20230801090124.8050-5-zegao@tencent.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801090124.8050-5-zegao@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 05:01:22PM +0800, Ze Gao wrote:
-> Report priorities in 'short' and prev_state in 'int' to save
-> some buffer space. And also reorder the fields so that we take
-> struct alignment into consideration to make the record compact.
-> 
-> Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+On Tue, Aug 1, 2023 at 7:34=E2=80=AFPM Peter Zijlstra <peterz@infradead.org=
+> wrote:
+>
+> On Tue, Aug 01, 2023 at 05:01:21PM +0800, Ze Gao wrote:
+> > Internal representations of task state are likely to be changed
+> > or ordered, and reporting them to userspace without exporting
+> > them as part of API is basically wrong, which can easily break
+> > a userspace observability tool as kernel evolves. For example,
+> > perf suffers from this and still reports wrong states as of this
+> > writing.
+> >
+> > OTOH, some masqueraded states like TASK_REPORT_IDLE and
+> > TASK_REPORT_MAX are also reported inadvertently, which confuses
+> > things even more and most userspace tools do not even take them
+> > into consideration.
+> >
+> > So add a new variable in company with the old raw value to
+> > report task state in symbolic chars, which are self-explaining
+> > and no further translation is needed. Of course this does not
+> > break any userspace tool.
+> >
+> > Note for PREEMPT_ACTIVE, we introduce 'p' to report it and use
+> > the old conventions for the rest.
+>
+> *sigh*... just because userspace if daft, we need to change the kernel?
 
-I don't see a single line describing the effort you've done to audit
-consumers of this tracepoint.
+Hi Peter,
 
-*IF* you're wanting to break this tracepoint ABI, because seriously
-that's what it is, then you get to invest the time and effort to audit
-the users.
+Sorry that I don't quite agree with you on this one.
+
+It's just the design that exporting internal details is fundamentally wrong=
+.
+And even worse,  I did not see any userspace tool is aware of masqueraded
+states like TASK_REPORT_IDLE and TASK_REPORT_MAX and let alone
+parse it correctly.  This confused me a lot when I decided to write my own =
+bpf
+version of sched-latency analysis tool and only after I figured out everyth=
+ing
+underneath, I started to make things right here.
+
+Again, I mean it's not me that deliberately "breaks" ABI here and I am
+never meant
+to upset anyone.  My confusion is why did people forget to update in-tree p=
+erf
+the very last time they decide to rearrange the task state mapping
+since we all agree
+this is important "ABI" here.  I don't think it's the tool's fault.
+And that's my initiative
+to request this RFC.
+
+> Why do we need this character anyway, why not just print the state in
+> hex and leave it at that? These single character state things are a
+> relic, please just let them die.
+
+I believe hex is ok only after having the reported task state mapping
+appear in the
+uapi headers, otherwise it's still useless to userspace especially for
+value like
+TASK_REPORT_IDLE and TASK_REPORT_MAX, which need to dig into the
+kernel to see what the hell is going on here.
+
+Thoughts?
+
+Regards,
+Ze
