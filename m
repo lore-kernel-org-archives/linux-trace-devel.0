@@ -2,42 +2,43 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5ADA7C41513
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  1 Aug 2023 11:34:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 926C1C41513
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  1 Aug 2023 11:46:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233798AbjHALee (ORCPT
+        id S234374AbjHALqP (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 1 Aug 2023 07:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36338 "EHLO
+        Tue, 1 Aug 2023 07:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233774AbjHALed (ORCPT
+        with ESMTP id S234357AbjHALqM (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 1 Aug 2023 07:34:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38536D3;
-        Tue,  1 Aug 2023 04:34:32 -0700 (PDT)
+        Tue, 1 Aug 2023 07:46:12 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA0B11A;
+        Tue,  1 Aug 2023 04:46:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=m1F9HPkA3rCfG5++ie5WawGo0UTj2vVNhV/5rI+7dho=; b=mB9lQRj8ne7QFWU/SvSHLBtwb6
-        h8xkNxWTv4f5uznh/z9xyszKEHyfllEKko5I05DM439vdurXjN3Ng5UlhclOvPdYJlzKN75ic1PuZ
-        MkQx7FVcynX8dz8FJWvDGDtTmTY6w2TLbbQbh1NXLy0plifn86o+u0GEsiobPMM55N+aULATCl7o5
-        IdlMhHYGS/bCJUhVDMRtgJ0e44vX5wwj0q4PNb9Z8iad4ngKUWtCkhUbkQ5tg+F1QUWm/fiUrNvg3
-        EPHixlaFooaWC4Zv49H6rXFD2n+pHXC40U/U929HsM7rOoe7LlXEaVvwd+4uv5LM1aBGZQGY/RYTp
-        2VqoqZEA==;
+        bh=ziNPMPkgZbjnyw4o3Yiy+e5PXDvLaLqinVQyax6y4tI=; b=gCImosHCb8eTt1d5VbBVrSEbjF
+        lbZzqpVBYMsdBzCyD77NVrvxMXcJIaL8itHlGapNPvFdOuFeZFzYM6/Hum6o/066Uq1f8Y7srvEop
+        rB/Uz92QRwN1dksks2Nlbh2I1VNfFSYzSXzC2/8NkovxsLlGsSigvpFqM0SIjsZ7sOIN/inVOQKyC
+        DU6prbfAbdLwmkCgSppxuhcAQWq26kFUWVb4uh1vEe4eZM2SI4fvSSvuGEVHhASpl3Uay/ACizKQK
+        SotJp4vOhbmL4q17rZ3V080h3RnYkLzMqnXCEd/QGTx2nNCGN6w2/jv7Vs7210lharyFk5ee7wj+C
+        gYylc0oQ==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qQndb-008R8A-MR; Tue, 01 Aug 2023 11:34:03 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qQnow-00EdeF-0n;
+        Tue, 01 Aug 2023 11:45:46 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3184E300134;
-        Tue,  1 Aug 2023 13:34:02 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3DF3B300134;
+        Tue,  1 Aug 2023 13:45:45 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EDD41200C570F; Tue,  1 Aug 2023 13:34:01 +0200 (CEST)
-Date:   Tue, 1 Aug 2023 13:34:01 +0200
+        id 20D71200C570F; Tue,  1 Aug 2023 13:45:45 +0200 (CEST)
+Date:   Tue, 1 Aug 2023 13:45:45 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     Ze Gao <zegao2021@gmail.com>
 Cc:     Adrian Hunter <adrian.hunter@intel.com>,
@@ -54,7 +55,7 @@ Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
 Subject: Re: [RFC PATCH v3 3/6] sched, tracing: add to report task state in
  symbolic chars
-Message-ID: <20230801113401.GC79828@hirez.programming.kicks-ass.net>
+Message-ID: <20230801114545.GD79828@hirez.programming.kicks-ass.net>
 References: <20230801090124.8050-1-zegao@tencent.com>
  <20230801090124.8050-4-zegao@tencent.com>
 MIME-Version: 1.0
@@ -66,28 +67,14 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 On Tue, Aug 01, 2023 at 05:01:21PM +0800, Ze Gao wrote:
-> Internal representations of task state are likely to be changed
-> or ordered, and reporting them to userspace without exporting
-> them as part of API is basically wrong, which can easily break
-> a userspace observability tool as kernel evolves. For example,
-> perf suffers from this and still reports wrong states as of this
-> writing.
-> 
-> OTOH, some masqueraded states like TASK_REPORT_IDLE and
-> TASK_REPORT_MAX are also reported inadvertently, which confuses
-> things even more and most userspace tools do not even take them
-> into consideration.
-> 
-> So add a new variable in company with the old raw value to
-> report task state in symbolic chars, which are self-explaining
-> and no further translation is needed. Of course this does not
-> break any userspace tool.
-> 
-> Note for PREEMPT_ACTIVE, we introduce 'p' to report it and use
-> the old conventions for the rest.
+> @@ -233,6 +255,7 @@ TRACE_EVENT(sched_switch,
+>  		__field(	pid_t,	prev_pid			)
+>  		__field(	int,	prev_prio			)
+>  		__field(	long,	prev_state			)
+> +		__field(	char,	prev_state_char			)
+>  		__array(	char,	next_comm,	TASK_COMM_LEN	)
+>  		__field(	pid_t,	next_pid			)
+>  		__field(	int,	next_prio			)
 
-*sigh*... just because userspace if daft, we need to change the kernel?
-
-Why do we need this character anyway, why not just print the state in
-hex and leave it at that? These single character state things are a
-relic, please just let them die.
+And this again will wreck everybody that consumes the raw tracepoint
+without looking at tracefs.
