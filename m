@@ -2,139 +2,70 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D393C001E0
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  2 Aug 2023 12:49:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BF0BC41513
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  2 Aug 2023 13:48:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234924AbjHBMt5 (ORCPT
+        id S234236AbjHBNsJ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 2 Aug 2023 08:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41634 "EHLO
+        Wed, 2 Aug 2023 09:48:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234818AbjHBMtT (ORCPT
+        with ESMTP id S229492AbjHBNrz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:49:19 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEDA2D4A;
-        Wed,  2 Aug 2023 05:49:16 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bbc64f9a91so57190995ad.0;
-        Wed, 02 Aug 2023 05:49:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690980556; x=1691585356;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KWetw+9fo7xpR+/Y1RDX5IOHvVHf8sfB8Rgzd3Bsv2A=;
-        b=GIHzjFSzPcLYW4yJrPyLa5ImpMP+/3NnozdLXPCWfIEItaUDWT708653DBDRF9JDF1
-         7KJP2GCIClBAH9TSQ1KVLatrwc9yTBnkpzhENvv4RrL7sEfnb7UiXjrEyIlloYFhdoPb
-         kV1D/qaJGKouufSXYhMmCQ6s3RuM7Snwrzt8TCemadIkH1WZ+Bjv5jWhtNkd1ZyZsdBX
-         V9GoTGqzCtbsRZqsjZNFncaj+eA6BDJ5scmBkGEoP4jvts/pO08/1t3W/xVXwEtFegRb
-         mzsuOG7V5o6E5TBzDQ56qCiReA6n102vgs9RiJ+P/P0i3axrYk1X/byHeLt3snHWyPwR
-         aBRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690980556; x=1691585356;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KWetw+9fo7xpR+/Y1RDX5IOHvVHf8sfB8Rgzd3Bsv2A=;
-        b=RMSoKbTxu3CpfqqqlJ8ThXzPCJWfgfEffOJ+UcwW8a6y1beW0RG+b/SnFhC7ISv7J6
-         klf1g5KJosImE4XA5lCwxTdElzxzIzEKRC0anRqfTGYZHTVq8E9nMA1Y+cABTICiWdRP
-         OHmV6+J8uJE9ck4nuSaKbeL6ikmaHwioqzGVwbM75G4EfS7TuTVPUGwD+vMBipJ9CoFJ
-         gm4BhbZQmuCudJuwOKc/M9CrGWR/WtIRyToMm4D4+1u7gP5ml1CdIZcUVMiVscAheDag
-         gb9ROKYR/7ZZ7mXxZ+GF6Ro/JyERrMXvaxUr00+8PvzN3zMaR8rEvsrP6ROALB8f1g1A
-         O51g==
-X-Gm-Message-State: ABy/qLZuDCHWBNqKL7p9vDfX2eQe2sthYRGpbuwsAicoEU7GhDk9tWvK
-        TlQSUNChgeVRSVxMwds3nks=
-X-Google-Smtp-Source: APBJJlHw4hmPYrgetk+3UmXtsG7PL5InI9GFCxvW4F0oTwPBOrp7ldLy1FZuk2Y69spe/Xv1ftUHXA==
-X-Received: by 2002:a17:902:f551:b0:1ae:8892:7d27 with SMTP id h17-20020a170902f55100b001ae88927d27mr17956049plf.42.1690980556116;
-        Wed, 02 Aug 2023 05:49:16 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.17])
-        by smtp.googlemail.com with ESMTPSA id x34-20020a17090a6c2500b00264044cca0fsm4811993pjj.1.2023.08.02.05.49.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 05:49:15 -0700 (PDT)
-From:   Ze Gao <zegao2021@gmail.com>
-X-Google-Original-From: Ze Gao <zegao@tencent.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Subject: [RFC PATCH v5 7/7] perf sched: prefer to use prev_state_char introduced in sched_switch
-Date:   Wed,  2 Aug 2023 08:47:30 -0400
-Message-ID: <20230802124840.335638-8-zegao@tencent.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230802124840.335638-1-zegao@tencent.com>
-References: <20230802124840.335638-1-zegao@tencent.com>
+        Wed, 2 Aug 2023 09:47:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2AE26B7;
+        Wed,  2 Aug 2023 06:47:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D3AD661935;
+        Wed,  2 Aug 2023 13:47:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5FC3C433C8;
+        Wed,  2 Aug 2023 13:47:52 +0000 (UTC)
+Date:   Wed, 2 Aug 2023 09:47:51 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sang QianLong <hacksonsang@gmail.com>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        "linux-trace-users@vger.kernel.org" 
+        <linux-trace-users@vger.kernel.org>
+Subject: Re: [Issue of trace-cmd] undefined symbol when import ctracecmd.so
+ in python
+Message-ID: <20230802094751.49906f34@gandalf.local.home>
+In-Reply-To: <CANF=BhYAbU+sLYxpaRVA=m0_jgJFr0c+JAAx+HQ4FcTkuSnB7w@mail.gmail.com>
+References: <CANF=BhZScysm9BchEFytPgOFR4Gx-jeeOV6VpbKnAHZ102onSQ@mail.gmail.com>
+        <20230728193609.79e91e44@rorschach.local.home>
+        <CANF=BhYAbU+sLYxpaRVA=m0_jgJFr0c+JAAx+HQ4FcTkuSnB7w@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Since the sched_switch tracepoint introduces a new variable to
-report sched-out task state in symbolic char, we prefer to use
-it to spare from knowing internal implementations in kernel.
+On Wed, 2 Aug 2023 16:13:20 +0800
+Sang QianLong <hacksonsang@gmail.com> wrote:
 
-Also we keep the old parsing logic intact but sync the state char
-array with the latest kernel.
+> Hi Steven,
+> Thanks for reaching out to me. I appreciate your effort in helping me with
+> my persistent issue while working with "ctracecmd.so" in Python.
+> 
+> I understand that you personally do not use Python, and the code was added
+> by others. I also appreciate your honesty in not applying the patches yet
+> since you are not a Python expert. I have used the patch from
+> https://patchwork.kernel.org/project/linux-trace-devel/patch/Y+w51nOhNd+PGo/k@slm.duckdns.org/
+> and it works!
+> 
+> Once again, thank you for your help.
+> 
 
-Signed-off-by: Ze Gao <zegao@tencent.com>
----
- tools/perf/builtin-sched.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+I could add it with a:
 
-diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
-index eb310d1a7625..7f76ba51e36d 100644
---- a/tools/perf/builtin-sched.c
-+++ b/tools/perf/builtin-sched.c
-@@ -837,7 +837,7 @@ replay_wakeup_event(struct perf_sched *sched,
- 
- static inline char task_state_char(int state)
- {
--	static const char state_to_char[] = "RSDTtXZPI";
-+	static const char state_to_char[] = "RSDTtXZPIp";
- 	unsigned bit = state ? ffs(state) : 0;
- 	return bit < sizeof(state_to_char) - 1 ? state_to_char[bit] : '?';
- }
-@@ -845,8 +845,20 @@ static inline char task_state_char(int state)
- static inline char get_task_prev_state(struct evsel *evsel,
- 				       struct perf_sample *sample)
- {
--	const int prev_state = evsel__intval(evsel, sample, "prev_state");
--	return task_state_char(prev_state);
-+	char prev_state_char;
-+	int prev_state;
-+
-+	//prefer to use prev_state_char
-+	if (evsel__field(evsel, "prev_state_char"))
-+		prev_state_char = (char) evsel__intval(evsel,
-+				sample, "prev_state_char");
-+	else {
-+		prev_state = (int) evsel__intval(evsel,
-+				sample, "prev_state");
-+		prev_state_char = task_state_char(prev_state);
-+	}
-+
-+	return prev_state_char;
- }
- 
- static int replay_switch_event(struct perf_sched *sched,
-@@ -2143,7 +2155,7 @@ static void timehist_update_runtime_stats(struct thread_runtime *r,
- 		else if (r->last_time) {
- 			u64 dt_wait = tprev - r->last_time;
- 
--			if (r->last_state == 'R')
-+			if (r->last_state == 'R' || r->last_state == 'p')
- 				r->dt_preempt = dt_wait;
- 			else if (r->last_state == 'D')
- 				r->dt_iowait = dt_wait;
--- 
-2.41.0
+Tested-by: Sang QianLong <hacksonsang@gmail.com>
+
+if you are fine with that.
+
+-- Steve
 
