@@ -2,41 +2,49 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BF0BC41513
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  2 Aug 2023 13:48:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB7C6C001E0
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  2 Aug 2023 14:36:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234236AbjHBNsJ (ORCPT
+        id S233993AbjHBOgh (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 2 Aug 2023 09:48:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40656 "EHLO
+        Wed, 2 Aug 2023 10:36:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbjHBNrz (ORCPT
+        with ESMTP id S232807AbjHBOgg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 2 Aug 2023 09:47:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2AE26B7;
-        Wed,  2 Aug 2023 06:47:54 -0700 (PDT)
+        Wed, 2 Aug 2023 10:36:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8109819B0;
+        Wed,  2 Aug 2023 07:36:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D3AD661935;
-        Wed,  2 Aug 2023 13:47:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5FC3C433C8;
-        Wed,  2 Aug 2023 13:47:52 +0000 (UTC)
-Date:   Wed, 2 Aug 2023 09:47:51 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1F8FE619C0;
+        Wed,  2 Aug 2023 14:36:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCC56C433C7;
+        Wed,  2 Aug 2023 14:36:32 +0000 (UTC)
+Date:   Wed, 2 Aug 2023 10:36:30 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sang QianLong <hacksonsang@gmail.com>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        "linux-trace-users@vger.kernel.org" 
-        <linux-trace-users@vger.kernel.org>
-Subject: Re: [Issue of trace-cmd] undefined symbol when import ctracecmd.so
- in python
-Message-ID: <20230802094751.49906f34@gandalf.local.home>
-In-Reply-To: <CANF=BhYAbU+sLYxpaRVA=m0_jgJFr0c+JAAx+HQ4FcTkuSnB7w@mail.gmail.com>
-References: <CANF=BhZScysm9BchEFytPgOFR4Gx-jeeOV6VpbKnAHZ102onSQ@mail.gmail.com>
-        <20230728193609.79e91e44@rorschach.local.home>
-        <CANF=BhYAbU+sLYxpaRVA=m0_jgJFr0c+JAAx+HQ4FcTkuSnB7w@mail.gmail.com>
+To:     Ze Gao <zegao2021@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
+Subject: Re: [RFC PATCH v4 1/7] libtraceevent: sync state char array with
+ the kernel
+Message-ID: <20230802103630.45d95c06@gandalf.local.home>
+In-Reply-To: <20230802121116.324604-2-zegao@tencent.com>
+References: <20230802121116.324604-1-zegao@tencent.com>
+        <20230802121116.324604-2-zegao@tencent.com>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -45,27 +53,35 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 2 Aug 2023 16:13:20 +0800
-Sang QianLong <hacksonsang@gmail.com> wrote:
+On Wed,  2 Aug 2023 08:09:56 -0400
+Ze Gao <zegao2021@gmail.com> wrote:
 
-> Hi Steven,
-> Thanks for reaching out to me. I appreciate your effort in helping me with
-> my persistent issue while working with "ctracecmd.so" in Python.
-> 
-> I understand that you personally do not use Python, and the code was added
-> by others. I also appreciate your honesty in not applying the patches yet
-> since you are not a Python expert. I have used the patch from
-> https://patchwork.kernel.org/project/linux-trace-devel/patch/Y+w51nOhNd+PGo/k@slm.duckdns.org/
-> and it works!
-> 
-> Once again, thank you for your help.
-> 
+> Update state char array to match the latest kernel
+> definitions.
 
-I could add it with a:
+Can you send this separately to linux-trace-devel@vger.kernel.org?
 
-Tested-by: Sang QianLong <hacksonsang@gmail.com>
-
-if you are fine with that.
+Thanks,
 
 -- Steve
+
+> 
+> Signed-off-by: Ze Gao <zegao@tencent.com>
+> ---
+>  plugins/plugin_sched_switch.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switch.c
+> index 8752cae..e0986ac 100644
+> --- a/plugins/plugin_sched_switch.c
+> +++ b/plugins/plugin_sched_switch.c
+> @@ -11,7 +11,7 @@
+>  
+>  static void write_state(struct trace_seq *s, int val)
+>  {
+> -	const char states[] = "SDTtZXxW";
+> +	const char states[] = "SDTtXZPI";
+>  	int found = 0;
+>  	int i;
+>  
 
