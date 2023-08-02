@@ -2,64 +2,64 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 721EDC41513
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  2 Aug 2023 03:04:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22B3DC001DF
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  2 Aug 2023 03:06:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbjHBDEC (ORCPT
+        id S231742AbjHBDGW (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 1 Aug 2023 23:04:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51124 "EHLO
+        Tue, 1 Aug 2023 23:06:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbjHBDEB (ORCPT
+        with ESMTP id S230261AbjHBDGV (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 1 Aug 2023 23:04:01 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F207C11D;
-        Tue,  1 Aug 2023 20:03:55 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-522bc9556f5so5041919a12.0;
-        Tue, 01 Aug 2023 20:03:55 -0700 (PDT)
+        Tue, 1 Aug 2023 23:06:21 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A208AC;
+        Tue,  1 Aug 2023 20:06:18 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-5222c5d71b8so8954418a12.2;
+        Tue, 01 Aug 2023 20:06:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690945434; x=1691550234;
+        d=gmail.com; s=20221208; t=1690945577; x=1691550377;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rRDW343rKr3uaSvf+MuL3Eyi4eGed4kF3MaiwtYb/ts=;
-        b=nP7+2MTCMINDLvVjbKX+brXHBi8NOv2/ncNW4+V2pSVlTCEUrDD+7OpTfBTjEVIPDB
-         CN7fOKtwsrCRpUx6jzW0fIt8ELZIJlv4opLYWxdF1r01lu3mXBrwgbkOTMmP7XUXkqKm
-         3eAhLATTDg5fDWg+aDXzFEuQY2PAVxDXds24sGURBojrDXPDKYgBZiM97kzqp3B0N5z1
-         nVkePLvLJG9QuXobVcIJlCMsOZQIaa5QVJOvRty8nhEgOdUcWTum7NIbyMz9EZt+Vr73
-         C+hpyV2ge7uwX9/OmKT6Z1c9dw3K0EJlt/66CX694mI3H3imckucFjHup2up2+cpdCkZ
-         7QHw==
+        bh=fjCa5fCGA5c0sBNIjPzRV62nYHp7nzSq3BtvJOrnO+w=;
+        b=By/JMFuxmimrvNsuLjPeoII+8qmCISQMQozt4h6bX/XCX43Gl+TeF6Pwl1Wzc4Fhs4
+         Gfb6AOrcHW3IBx+eV+xZPF6Hy6/fAl+7qvpZQ7wgrkxNq7xN3+A6wfzjOf8rzs5wBo3g
+         qBK45caShxCjRZFOSorzWd3g8F1rUgBzdgccX5HSV6G267UhGE65Lm00dbDwxxpuPx7z
+         MDBZ+UJOjrdgIsSwRNjbN7Y7vNzpyN2CQ/8b0/W3LQNKlmOT4V2Vtea09eRZb9OYIDYu
+         hE/VejtErNiOo6PXEtQOUu6czbVeJCvUJn1ElbPZh2DQ9rM0kvZXIaCkWfqS5dmIS0sp
+         IASg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690945434; x=1691550234;
+        d=1e100.net; s=20221208; t=1690945577; x=1691550377;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rRDW343rKr3uaSvf+MuL3Eyi4eGed4kF3MaiwtYb/ts=;
-        b=D1QS812shG6049Yn4V/bDb9ESenrcuQ0yu3AONFOV9VBDX9IaMMwXjd3E1M1YSlgwN
-         p17ONyjmstOSXywslqcsWQS5Le9n9ii2LbuVUEjh5F8tDvOGQE+a/lzW6q8qTwrydpvF
-         PTo9fKRcmxGAPMUitUzmmO6ZSWMxfUiNjcd1SXpkLppteRxtKtJhQBUJWJxhRdE9ys3D
-         zcMXUPkfnf4utIsYBch591PPcxvi9vELHnN9lEjisvljdoq1G3Xqc1bkTfS2TMEIa4RP
-         fqvDZBrx5/gKly56NstrQIdTJanyGOo+jICNTcVL17IYEpY6zDDtbk91pdx350ta6ksu
-         I3bQ==
-X-Gm-Message-State: ABy/qLa1RoMUsiaTQozoQd8pF28Nw3CTC91hQPWT7lLqp3DM7fuw26eV
-        y9DAZ6hw4mMgkbSj2El6djcgZt7AMOF8MlxfieQ=
-X-Google-Smtp-Source: APBJJlHWT0tISsKHvlwoWc5tzUWGfgF9GauSizJRNtGCLahO8ZzBiX4g4OZFAE2hxHF4+BcMu7v++0N2lkOiq8OiSbI=
-X-Received: by 2002:a05:6402:180f:b0:521:7a5e:ab1e with SMTP id
- g15-20020a056402180f00b005217a5eab1emr4097953edy.21.1690945433945; Tue, 01
- Aug 2023 20:03:53 -0700 (PDT)
+        bh=fjCa5fCGA5c0sBNIjPzRV62nYHp7nzSq3BtvJOrnO+w=;
+        b=WYFHC4rmcHu4H8c9S/FW71DRXR6UFKzWEhtOQIfQxFDgvTiVmmduAcM7p+Lb6XlS/M
+         4kBjIY3L3kTODAehOetj7CVt9aVqrlMvOvGtlYHLDOGpvgnDopf+djcWIWeqeyG+GzHl
+         uIT4Rvm7hWpQ41pgz2nsy67LzykcygyCRSbMkGKai7CQGo3Hu8CW0khcSKcEkffB4Dlw
+         nfCWbZDgxs53DAzZOiPUATe6fugpgYw7Yuc5acB3GkCNrtMpYQDXIX6mmqTLhCdxXE3Z
+         SEFtgi8VRoX957QFMYMvDyLnjuJIiSV72Ht7l0jwwcgAKhFwbFx1Mz0a7UEY8TSh+Ziv
+         Tyhw==
+X-Gm-Message-State: ABy/qLZcwGNXPgNYS9xFgV/qOtPfU7wdlyDJOoXGKpF8MMLOKxBP/LZ/
+        Fsvi6t6hXtn7Ls4pkymIgcINFqLkM2K3psKXpIU=
+X-Google-Smtp-Source: APBJJlEP1WyNHQeDfzsMH9265DrUPKteZVP8X1+Z7aiKVLN4sw3qDqh3VXfXbkMQEZM3cEvbr4H+//KtSpwod8E8SB8=
+X-Received: by 2002:aa7:d293:0:b0:51e:f83:6de6 with SMTP id
+ w19-20020aa7d293000000b0051e0f836de6mr4012423edq.16.1690945576747; Tue, 01
+ Aug 2023 20:06:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230801090124.8050-1-zegao@tencent.com> <20230801090124.8050-4-zegao@tencent.com>
- <20230801113401.GC79828@hirez.programming.kicks-ass.net> <CAD8CoPA-cqe+hY8dHjO+6WhcL2VKy2Wq=rYSSkwUqBFRJ4ECWg@mail.gmail.com>
- <20230801134142.GC11704@hirez.programming.kicks-ass.net>
-In-Reply-To: <20230801134142.GC11704@hirez.programming.kicks-ass.net>
+References: <20230801090124.8050-1-zegao@tencent.com> <20230801090124.8050-5-zegao@tencent.com>
+ <20230801114650.GE79828@hirez.programming.kicks-ass.net> <20230801103340.5dfa7133@gandalf.local.home>
+In-Reply-To: <20230801103340.5dfa7133@gandalf.local.home>
 From:   Ze Gao <zegao2021@gmail.com>
-Date:   Wed, 2 Aug 2023 11:03:42 +0800
-Message-ID: <CAD8CoPDR=jn4-kE2r=RX0FPk_9LhXps=ZkdBqWDb7Vy05ur3Pg@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 3/6] sched, tracing: add to report task state in
- symbolic chars
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+Date:   Wed, 2 Aug 2023 11:06:05 +0800
+Message-ID: <CAD8CoPAPsCyg=P=pDmzjM3qZt5qcTp7Q=AL2w3_ZwGCnNpgu2g@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 4/6] sched, tracing: reorganize fields of switch
+ event struct
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
         Ian Rogers <irogers@google.com>,
@@ -67,7 +67,6 @@ Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
         linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
         linux-trace-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
@@ -77,164 +76,45 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Aug 1, 2023 at 9:42=E2=80=AFPM Peter Zijlstra <peterz@infradead.org=
-> wrote:
->
-> On Tue, Aug 01, 2023 at 09:03:51PM +0800, Ze Gao wrote:
->
-> > It's just the design that exporting internal details is fundamentally w=
-rong.
->
-> This is tracing... it wasn't supposed to be ABI (although it somehow
-
-Sorry, I'm confused. And it sounds contradicting here
-because you said this change is abi break before.
-
-> ended up being one). But even then, things like PF_foo get exposed in
-> procfs but even that we change.
->
-> The whole point of tracing is to see internals in order to figure out
-> wth is going wrong.
-
-Fair point, but I think tracepoints are somewhat different from
-kprobes/raw_tracepoints due to their stable nature. And I think
-at least more and more observability tools use them in this way.
-
-With all due respect, If it was for kernel developers only, what's the
-point of leaking this since now we have raw tracepoints support?
-Does that mean all tracepoints are useless now? Apparently the
-answer is no. So I'm not convinced by this "for internal inspecting"
-defense to not ignore what the problem is.
-
-Honestly, I would've never thought to change this if I I got the correct
-meaning for values I captured like 0x80/0x100  when I tried to look it up
-in include/linux/sched.h the first time. But it really annoyed me to
-figure out what it is only after I dived into the kernel and collected all
-the pieces.  And you know what, when I turned to the famous in-tree perf
-for possible help, only to find out it's horribly broken and still uses an
-outdated state char array to interpret this weird raw value.
-
-Anyway, we have to accept the fact that prev_state leaves a huge burden
-on its users to make things right.  And I'm open and glad to see any
-solutions (possibly better than this one) or efforts or suggestions to impr=
-ove
-this.
+Thanks for clarifying this ! Steven. This is really helpful.
 
 Regards,
 Ze
 
-> > And even worse,  I did not see any userspace tool is aware of masquerad=
-ed
-> > states like TASK_REPORT_IDLE and TASK_REPORT_MAX and let alone
-> > parse it correctly.
+On Tue, Aug 1, 2023 at 10:33=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
+> wrote:
 >
-> That's probably because I never use tools, I just look at the raw trace
-> output -- sometimes an impromptu awk script. I'm pretty sure I ran with
-> something like the below when I did the freezer rewrite -- or perhaps I
-> just stuck in trace_printk() and didn't even bother with the
-> tracepoints, I can't remember.
+> On Tue, 1 Aug 2023 13:46:50 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> > > Why do we need this character anyway, why not just print the state in
-> > > hex and leave it at that? These single character state things are a
-> > > relic, please just let them die.
+> > On Tue, Aug 01, 2023 at 05:01:22PM +0800, Ze Gao wrote:
+> > > Report priorities in 'short' and prev_state in 'int' to save
+> > > some buffer space. And also reorder the fields so that we take
+> > > struct alignment into consideration to make the record compact.
+> > >
+> > > Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 > >
-> > I believe hex is ok only after having the reported task state mapping
-> > appear in the uapi headers, otherwise it's still useless to userspace
-> > especially for value like TASK_REPORT_IDLE and TASK_REPORT_MAX, which
-> > need to dig into the kernel to see what the hell is going on here.
+> > I don't see a single line describing the effort you've done to audit
+> > consumers of this tracepoint.
 > >
-> > Thoughts?
+> > *IF* you're wanting to break this tracepoint ABI, because seriously
+> > that's what it is, then you get to invest the time and effort to audit
+> > the users.
 >
-> If you're tracing the kernel, you had better know what the kernel is
-> doing, otherwise you get to keep the pieces.
+> The known major users that I am aware of is raesdaemon,
+> powertop/latencytop, perf, trace-cmd and some bpf tools. The bpf tooling =
+is
+> known to update per kernel. The others all use libtraceevent that can
+> handle this change.
 >
-> Anyway, if you're doing BPF then why do you care about the trace event
-> at all, just attach to the raw tracepoint and consume @preemt, @prev,
-> @next and @prev_state.
+> What other tools are there? There's Perfetto, but it also looks at tracef=
+s
+> to examine where the values are. There's LTTng, but I believe it uses the
+> raw tracepoint directly and doesn't look at the layout of the ftrace/perf
+> buffers.
 >
-> ---
-> diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
-> index fbb99a61f714..cb0c1251729e 100644
-> --- a/include/trace/events/sched.h
-> +++ b/include/trace/events/sched.h
-> @@ -186,36 +186,6 @@ DEFINE_EVENT(sched_wakeup_template, sched_wakeup_new=
-,
->              TP_PROTO(struct task_struct *p),
->              TP_ARGS(p));
+> All other tooling I am slightly aware of uses libtracefs and libtraceveen=
+t,
+> as I've been giving many talks on how to use those libraries.
 >
-> -#ifdef CREATE_TRACE_POINTS
-> -static inline long __trace_sched_switch_state(bool preempt,
-> -                                             unsigned int prev_state,
-> -                                             struct task_struct *p)
-> -{
-> -       unsigned int state;
-> -
-> -#ifdef CONFIG_SCHED_DEBUG
-> -       BUG_ON(p !=3D current);
-> -#endif /* CONFIG_SCHED_DEBUG */
-> -
-> -       /*
-> -        * Preemption ignores task state, therefore preempted tasks are a=
-lways
-> -        * RUNNING (we will not have dequeued if state !=3D RUNNING).
-> -        */
-> -       if (preempt)
-> -               return TASK_REPORT_MAX;
-> -
-> -       /*
-> -        * task_state_index() uses fls() and returns a value from 0-8 ran=
-ge.
-> -        * Decrement it by 1 (except TASK_RUNNING state i.e 0) before usi=
-ng
-> -        * it for left shift operation to get the correct task->state
-> -        * mapping.
-> -        */
-> -       state =3D __task_state_index(prev_state, p->exit_state);
-> -
-> -       return state ? (1 << (state - 1)) : state;
-> -}
-> -#endif /* CREATE_TRACE_POINTS */
-> -
->  /*
->   * Tracepoint for task switches, performed by the scheduler:
->   */
-> @@ -242,29 +212,16 @@ TRACE_EVENT(sched_switch,
->                 memcpy(__entry->next_comm, next->comm, TASK_COMM_LEN);
->                 __entry->prev_pid       =3D prev->pid;
->                 __entry->prev_prio      =3D prev->prio;
-> -               __entry->prev_state     =3D __trace_sched_switch_state(pr=
-eempt, prev_state, prev);
-> +               __entry->prev_state     =3D prev_state | (preempt * TASK_=
-STATE_MAX);
->                 memcpy(__entry->prev_comm, prev->comm, TASK_COMM_LEN);
->                 __entry->next_pid       =3D next->pid;
->                 __entry->next_prio      =3D next->prio;
->                 /* XXX SCHED_DEADLINE */
->         ),
->
-> -       TP_printk("prev_comm=3D%s prev_pid=3D%d prev_prio=3D%d prev_state=
-=3D%s%s =3D=3D> next_comm=3D%s next_pid=3D%d next_prio=3D%d",
-> +       TP_printk("prev_comm=3D%s prev_pid=3D%d prev_prio=3D%d prev_state=
-=3D%x =3D=3D> next_comm=3D%s next_pid=3D%d next_prio=3D%d",
->                 __entry->prev_comm, __entry->prev_pid, __entry->prev_prio=
-,
-> -
-> -               (__entry->prev_state & (TASK_REPORT_MAX - 1)) ?
-> -                 __print_flags(__entry->prev_state & (TASK_REPORT_MAX - =
-1), "|",
-> -                               { TASK_INTERRUPTIBLE, "S" },
-> -                               { TASK_UNINTERRUPTIBLE, "D" },
-> -                               { __TASK_STOPPED, "T" },
-> -                               { __TASK_TRACED, "t" },
-> -                               { EXIT_DEAD, "X" },
-> -                               { EXIT_ZOMBIE, "Z" },
-> -                               { TASK_PARKED, "P" },
-> -                               { TASK_DEAD, "I" }) :
-> -                 "R",
-> -
-> -               __entry->prev_state & TASK_REPORT_MAX ? "+" : "",
-> +               __entry->prev_state,
->                 __entry->next_comm, __entry->next_pid, __entry->next_prio=
-)
->  );
->
+> -- Steve
