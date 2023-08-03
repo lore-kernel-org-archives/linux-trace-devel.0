@@ -2,61 +2,60 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D3B9C001DF
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Aug 2023 02:02:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EAA28C04A94
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Aug 2023 02:13:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbjHCCCU (ORCPT
+        id S231277AbjHCCNb (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 2 Aug 2023 22:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38064 "EHLO
+        Wed, 2 Aug 2023 22:13:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjHCCCU (ORCPT
+        with ESMTP id S229446AbjHCCNa (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 2 Aug 2023 22:02:20 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F219C13E;
-        Wed,  2 Aug 2023 19:02:17 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fe48d0ab0fso740230e87.1;
-        Wed, 02 Aug 2023 19:02:17 -0700 (PDT)
+        Wed, 2 Aug 2023 22:13:30 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BAB319F;
+        Wed,  2 Aug 2023 19:13:29 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fe0d5f719dso769449e87.2;
+        Wed, 02 Aug 2023 19:13:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691028136; x=1691632936;
+        d=gmail.com; s=20221208; t=1691028807; x=1691633607;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OcK6gslx0LoIyGj+/TpyBsBC+gruy1kemhKkiJB+8W8=;
-        b=RPwVsk4sOj2Nq+sKh3qHWv5DoD9cfQy6DEJ0Xn0EP9Ohsx5uqkXr1sq33B4R0hQlcm
-         nn50Nxo6gN8AfE1bLB+54DPKFLHRswl4IRGMJF4eAwBbggUrk6pOzAYTn0ypCFTsIhgU
-         mmnLiPjuzQNEOWw7esUMP3kfC01KdQYe8d1l3lDrFckvKr6nd26cL0f0ZU/S0Wo94j27
-         7ZH14DzJuuQ0RCMRZhA/3ZodUUQW5SRRVCHptEXjUIyl7HI0RoljhkDoYbPcb0KuGR8t
-         Ube0htK2aiilLm6tlCcF8gQcBgStQ0Bi8GhhrwneXS+YwmDhwdASPvV75e+cN24bIVzY
-         lk4A==
+        bh=qr8l99N0UAXqm7iLRTOZb3Ym1/MspXtXvjO4SDDXucQ=;
+        b=PzkH9q21FzCw51bdRZa3uYtTqOt8jJwtm7l7OqS5dh9RpTR07ZjHRaDjM++rvV6V5B
+         iBISJFND0y+gETvj9BNzEZ5kAIfd1hYGvql1JxqlTpNQBGZADTqzFymQQKo2acxMX1Ve
+         OEPjU6e9rLY56BnQmQgras+/CUisU+1zf7MuqI9Uut6b/E75stL79+jt43zc0407WgiN
+         4PD0Rp6nS7dX7PJJ+yCyYThIzJa+CQ+gDTWjP3HbqywJTip+iLThRQGgFij4DcABP98a
+         IFuNSf39ukMf9yndshXSTmMOaVXCJVlnK/K4AQqyuytkMtQ7HonneRSNeg8+9QhL9hOY
+         MMZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691028136; x=1691632936;
+        d=1e100.net; s=20221208; t=1691028807; x=1691633607;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OcK6gslx0LoIyGj+/TpyBsBC+gruy1kemhKkiJB+8W8=;
-        b=NX4dP+Q/0iOmImVpT+4RBHsWPGe3Nd7QX4Ut18Q355buO5g8NDS0a4dVnigUWyqolP
-         rnnZGluaiKr2KM4ajluvslb9+ShfElArz6ZsfH4wsPhkj/qFLbZIi6crtzzwWgAy1ZPb
-         qNAqEdqwE3ZWgVGeTI80OL3VkkmP/NB1WK6zrdU9bNtl7OLiBXpsm+P83pwlNAUlo8Cj
-         Mzy5ES1jm410mvhwJzBoka3T7FM6vN8autmBvQBA/G8anMd8S70CrVMPEXLtEhAsIp5s
-         F6K9OIDD2GyuM/DC55CyK2+wqKGbWi9qcw5HoCiSzAU9p1Cr7vISntu4WZUeNV5xZ6ds
-         H65Q==
-X-Gm-Message-State: ABy/qLYzbATFHJzx7svClVE7WWzt0J/DdxQODnVZK3wTZ+LqoBzy7DGq
-        wfBAR5RAxrq4P3Sgod0fgw85juLoJbKlcuTl6wU=
-X-Google-Smtp-Source: APBJJlFQhf0kZ84BOcTysEnD0b4btfk6w9fnBq19hPWw57ei4khkRRWhYI+YozSgtnSXcZlMZ0w2YrKbBWkXD/ljXPg=
-X-Received: by 2002:a19:384d:0:b0:4f7:6685:2c5f with SMTP id
- d13-20020a19384d000000b004f766852c5fmr5164267lfj.61.1691028135872; Wed, 02
- Aug 2023 19:02:15 -0700 (PDT)
+        bh=qr8l99N0UAXqm7iLRTOZb3Ym1/MspXtXvjO4SDDXucQ=;
+        b=DXMvyfbJ9uaSPAGr2EbvDzC5MuXy8D9e7Y3fPxlmoa076CZ6oK7MGdkgfi9B2Gymqm
+         NMCgTbm9yPjS3eiKyAAZl1z+dHOSGzK11pDbsgF9vTgljUeUCvDGKWK4PzrzMjDSFBh1
+         l4JHvqpzq74FkNM2CDdRKHQn+vd2fwyF/qi/61cMQpp6Ck2ln/xA44ngmPcU5asNeJpK
+         PXcMjg8A6YkKZyXyDDsRxxkQi9sCs8ZBki+/8NzsE6vMwOyOormeZTmBjDaWYT2X3AXC
+         OFjzNa7VG/MNkdxVXnwq17+pTLI5cqbZT7O5e3/IkskwpLBVY8wAOPoynm+TlkLvRyEK
+         1iTQ==
+X-Gm-Message-State: ABy/qLbBNeOG+mdMPQH5zxnQ690Pi4kwQBT/3QDBGoC2Thej+vA1qj+E
+        rlHDRodnUnkndOYhjhn6mxa7G1WsKFQ70+MrfZI=
+X-Google-Smtp-Source: APBJJlFwOhPDCUK6rCWKc1UNLNMZv6my2LO/4GCzDODBrrhi7TaCWiEEyrjtXES8p3JVAnXX1VwVdxgcGDiUQjbe5AI=
+X-Received: by 2002:a19:5e57:0:b0:4fc:6e21:ff50 with SMTP id
+ z23-20020a195e57000000b004fc6e21ff50mr5442878lfi.55.1691028807352; Wed, 02
+ Aug 2023 19:13:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230802121116.324604-1-zegao@tencent.com> <20230802121116.324604-5-zegao@tencent.com>
- <20230802110552.768f0487@gandalf.local.home>
-In-Reply-To: <20230802110552.768f0487@gandalf.local.home>
+References: <20230802121116.324604-1-zegao@tencent.com> <20230802121116.324604-2-zegao@tencent.com>
+ <20230802103630.45d95c06@gandalf.local.home>
+In-Reply-To: <20230802103630.45d95c06@gandalf.local.home>
 From:   Ze Gao <zegao2021@gmail.com>
-Date:   Thu, 3 Aug 2023 10:02:04 +0800
-Message-ID: <CAD8CoPDad+PckQVD51c4bU7Z-cDuguknWMhoBVQ5G1PX0R-npQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v4 4/7] sched, tracing: reorganize fields of switch
- event struct
+Date:   Thu, 3 Aug 2023 10:13:16 +0800
+Message-ID: <CAD8CoPAPjuE5Ni2aTJcS5=M8TNOLqp3t4gfL=iWVrx39a25r2Q@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 1/7] libtraceevent: sync state char array with the kernel
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
@@ -76,59 +75,47 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 11:05=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
->
-> On Wed,  2 Aug 2023 08:09:59 -0400
-> Ze Gao <zegao2021@gmail.com> wrote:
->
-> > From: Ze Gao <zegao2021@gmail.com>
-> >
-> > Report priorities in 'short' and prev_state in 'int' to save
-> > some buffer space. And also reorder the fields so that we take
-> > struct alignment into consideration to make the record compact.
-> >
-> > Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> > Signed-off-by: Ze Gao <zegao@tencent.com>
-> > ---
-> >  include/trace/events/sched.h | 24 ++++++++++++------------
-> >  1 file changed, 12 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/include/trace/events/sched.h b/include/trace/events/sched.=
-h
-> > index fbb99a61f714..7d34db20b2c6 100644
-> > --- a/include/trace/events/sched.h
-> > +++ b/include/trace/events/sched.h
-> > @@ -187,7 +187,7 @@ DEFINE_EVENT(sched_wakeup_template, sched_wakeup_ne=
-w,
-> >            TP_ARGS(p));
-> >
-> >  #ifdef CREATE_TRACE_POINTS
-> > -static inline long __trace_sched_switch_state(bool preempt,
-> > +static inline int __trace_sched_switch_state(bool preempt,
-> >                                             unsigned int prev_state,
-> >                                             struct task_struct *p)
-> >  {
-> > @@ -229,23 +229,23 @@ TRACE_EVENT(sched_switch,
-> >       TP_ARGS(preempt, prev, next, prev_state),
-> >
-> >       TP_STRUCT__entry(
-> > -             __array(        char,   prev_comm,      TASK_COMM_LEN   )
-> >               __field(        pid_t,  prev_pid                        )
-> > -             __field(        int,    prev_prio                       )
-> > -             __field(        long,   prev_state                      )
-> > -             __array(        char,   next_comm,      TASK_COMM_LEN   )
-> >               __field(        pid_t,  next_pid                        )
-> > -             __field(        int,    next_prio                       )
-> > +             __field(        short,  prev_prio                       )
-> > +             __field(        short,  next_prio                       )
-> > +             __field(        int,    prev_state                      )
->
-> I was talking with Peter on IRC and since the biggest number that
-> prev_state can be is TASK_REPORT_MASK which is 0x100, I think we can make
-> prev_state into a short as well.
-
-Make sense, let's change it to short.
+FYI, I=E2=80=98ve already cc-ed to it.  Do you mean I need to resend this p=
+atch
+to linux-trace-devel@vger.kernel.org solely and exclude this one from
+this series?
 
 Regards,
 Ze
+
+On Wed, Aug 2, 2023 at 10:36=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
+> wrote:
+>
+> On Wed,  2 Aug 2023 08:09:56 -0400
+> Ze Gao <zegao2021@gmail.com> wrote:
+>
+> > Update state char array to match the latest kernel
+> > definitions.
+>
+> Can you send this separately to linux-trace-devel@vger.kernel.org?
+>
+> Thanks,
+>
+> -- Steve
+>
+> >
+> > Signed-off-by: Ze Gao <zegao@tencent.com>
+> > ---
+> >  plugins/plugin_sched_switch.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switc=
+h.c
+> > index 8752cae..e0986ac 100644
+> > --- a/plugins/plugin_sched_switch.c
+> > +++ b/plugins/plugin_sched_switch.c
+> > @@ -11,7 +11,7 @@
+> >
+> >  static void write_state(struct trace_seq *s, int val)
+> >  {
+> > -     const char states[] =3D "SDTtZXxW";
+> > +     const char states[] =3D "SDTtXZPI";
+> >       int found =3D 0;
+> >       int i;
+> >
+>
