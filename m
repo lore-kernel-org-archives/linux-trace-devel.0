@@ -2,85 +2,79 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 315C8C001DE
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Aug 2023 16:15:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA9D3C04A6A
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Aug 2023 17:01:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbjHDQPg (ORCPT
+        id S229784AbjHDRBG (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 4 Aug 2023 12:15:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34198 "EHLO
+        Fri, 4 Aug 2023 13:01:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbjHDQPg (ORCPT
+        with ESMTP id S231493AbjHDRBB (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 4 Aug 2023 12:15:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26FA3170F;
-        Fri,  4 Aug 2023 09:15:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B1493620A3;
-        Fri,  4 Aug 2023 16:15:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 933CDC433C7;
-        Fri,  4 Aug 2023 16:15:33 +0000 (UTC)
-Date:   Fri, 4 Aug 2023 12:15:31 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Lv Ying <lvying6@huawei.com>
-Cc:     <linux-trace-users@vger.kernel.org>,
-        <linux-trace-devel@vger.kernel.org>,
-        "Fangxiuning (Jack, EulerOS)" <fangxiuning@huawei.com>
-Subject: Re: How to solve the coupling between libtraceevent and kernel
- trace?
-Message-ID: <20230804121531.06f7bf0e@gandalf.local.home>
-In-Reply-To: <4767bcf3-589a-9dfb-5b45-9ac9279f08e6@huawei.com>
-References: <4767bcf3-589a-9dfb-5b45-9ac9279f08e6@huawei.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 4 Aug 2023 13:01:01 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F654C3F
+        for <linux-trace-devel@vger.kernel.org>; Fri,  4 Aug 2023 10:00:49 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-77ac14ff51bso83502739f.3
+        for <linux-trace-devel@vger.kernel.org>; Fri, 04 Aug 2023 10:00:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691168449; x=1691773249;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=v4TCdtGx4PLF0fJ1Mn7wht9Y0iFwsdMBg0lP6jlYJCA=;
+        b=EXz/JVXEN70KAxzWqdS87KDsRIcBl4Fx/83XwzuAreirD9EwjV0JsFK0qAaBTYPsDn
+         QRv82PfxGXbkKniZ1TejJIIUOyzCsUXkcl5OwTi/dkOc/OTNdQ0jV2chmGRVMXWtJqRv
+         rTUS/z+Ebds0GOmmnTNS1zFevyd7I9f5h45cVgt66q/QnVWo+oY+1Rk9KQ4u8z+V5v13
+         hwVUqnrEolp6dtbr8We+kR3WWuHHo88d3ozeZo1/Ce4MBF8jwZEDME6uXZt7x2omeMtK
+         3tzv+LX2byZOczBU7wSdre6/Usilx32WV+5y6Dl6tQJm0Ej+z8zjnzHlZPrzgFlyh2ZU
+         QKLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691168449; x=1691773249;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v4TCdtGx4PLF0fJ1Mn7wht9Y0iFwsdMBg0lP6jlYJCA=;
+        b=CnHWQ/P2eyN7Ubmz0kXktV0rM6NyL1iiL9OG0lqIhfAdX61UVBQTKaCNmBphGBmoUM
+         UmY4NNZSPowv9VRKJXadQCmuxAP3XEGY21s9s1dQjpuFipznO4bgurPnvtjP8uqe98E3
+         buN3G9xZv5LTYBIPXQgytFQKiJcA4c07PCvDm6v65meWWAcr3L2xFDiGEHjw9XlUsP7T
+         muSa2zoxiZF3M2VmpvJ+h+YgsmxaO22gFiFYaDha4KiWtE2gWmt4IPYqkbNKiVlcMqcy
+         mpNhS2MTRt3ebscG+cVmRXVB8UxNqyCkn/NHB3y4Phuh32S9VW4Ng5e0pTqku6YFWKd/
+         76OA==
+X-Gm-Message-State: AOJu0YzLRhLaKWcN0f4Z79PkSP9112qXMDZgymCmhw17nuqBvqObkJXl
+        egMJuY8mxw1chHSRUwgZZ64hJPXpmhsv/XiyZBcZKA==
+X-Google-Smtp-Source: AGHT+IFGg3MVG0rNyy3zFp2WdiUB8MHqjeA9yRqVFEKAh2IsIAf12JmCrE8gb/5EXwuq4s5Xt93LGQ==
+X-Received: by 2002:a05:6e02:1a28:b0:347:712c:dc9 with SMTP id g8-20020a056e021a2800b00347712c0dc9mr3127469ile.22.1691168448599;
+        Fri, 04 Aug 2023 10:00:48 -0700 (PDT)
+Received: from google.com ([2620:15c:183:200:1c86:9b99:8ac1:8749])
+        by smtp.gmail.com with ESMTPSA id p6-20020a92c106000000b00348a5e95d47sm760806ile.14.2023.08.04.10.00.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 10:00:42 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 11:00:34 -0600
+From:   Ross Zwisler <zwisler@google.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        Stevie Alvarez <stevie.6strings@gmail.com>
+Subject: Re: [PATCH] traceeval: Remove free_results()
+Message-ID: <20230804170034.GA4046351@google.com>
+References: <20230804095219.41d66349@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230804095219.41d66349@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 4 Aug 2023 17:52:48 +0800
-Lv Ying <lvying6@huawei.com> wrote:
-
-> Hi, all:
+On Fri, Aug 04, 2023 at 09:52:19AM -0400, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
-> I am a rasdaemon developer which depeneds on libtraceevent to parse 
-> kernel trace events. There is coupling between libtraceevnt and kernel 
-> trace, if something in libtraceevent and kernel does not match, which 
-> will cause libtraceevent parse wrong thing. e.g 
-> https://github.com/mchehab/rasdaemon/pull/98
+> The static function free_results() was never used. I kept it around for
+> when I was going to add it (and to remind myself not to forgot about it,
+> which is why I left the warning). But now that the code is being
+> rewritten, there's no more need to keep he warning around to remind me to
+> attach it. Get rid of it, all that code is going away anyway.
 > 
-> We also encounter similar problem:
-> * libtrace(old) KBUFFER_TYPE_TIME_STAMP size = 12
-> * kernel(new) KBUFFER_TYPE_TIME_STAMP size = 8
-> Such mismatch will cause strange behavior when parsing trace events.
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-So what happened was the old 12 byte version of TIME_STAMP was never
-actually implemented in the kernel. When we finally got around to
-implementing it, we only needed 8 bytes for it, so it became 8 bytes.
-
-I made the mistake of adding that code in kbuffer.c before it was ever
-implemented in the kernel and said it would be 12 bytes.
-
-> 
-> So if libtraceevent is released out of(independent) kernel, how does 
-> libtraceevnt to keep compatible with the running kernel(maybe not the 
-> newest)?
-> 
-
-Now that it has been implemented, it's not going to change. 8 bytes is now
-an API. Any more updates should not cause a problem with libtraceevent as
-there's many more tools that depend on it working. And the fact that it is
-no longer in the kernel, guarantees more that the interface will remain
-stable.
-
-rasdaemon should be using the external libtraceevent library because it
-will be able to get more information out of any new data. Newer kernels
-should not break existing libtracevent, but it may just skip over new
-features.
-
--- Steve
+Reviewed-by: Ross Zwisler <zwisler@google.com>
