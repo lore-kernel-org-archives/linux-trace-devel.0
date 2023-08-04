@@ -2,129 +2,175 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 286F6C001DB
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Aug 2023 18:28:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA774C001DE
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Aug 2023 19:20:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbjHDS2J (ORCPT
+        id S229459AbjHDTU4 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 4 Aug 2023 14:28:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52978 "EHLO
+        Fri, 4 Aug 2023 15:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231285AbjHDS0Z (ORCPT
+        with ESMTP id S229510AbjHDTUy (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 4 Aug 2023 14:26:25 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 310315592
-        for <linux-trace-devel@vger.kernel.org>; Fri,  4 Aug 2023 11:25:49 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-68336d06620so2192021b3a.1
-        for <linux-trace-devel@vger.kernel.org>; Fri, 04 Aug 2023 11:25:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691173549; x=1691778349;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3Uj+qHSCjfbUWLRY+Fwt1VqSSv01Dlprqpkb03sOELY=;
-        b=K4iaYJe62LJTrS5Ph0sVcsrD2dIrPtEESzWnn9bbx5sz3e3VW4fIpQZqHgzqNml4jh
-         F3z53qSZH/Zcb36ktoV8StnL1H6gDFH6d6KzPH/P6+usBK6ZiJ+2FaW3b23Eedvnuzua
-         zXr1bUWpIpATDxiza5JCbBQZhHKO55xR4aSNFkZL5wuzUmEcV2tSOCk0OmySJGR/jHsa
-         LwWFVYi12nD2JmSm7HvSmESmIAxsXzBj9edXfaHlhZocI8GyRqSW8Jqpz4eViuFNEdtO
-         /6hZzRJzQCxe6ajIgk17VxvCN1V+Uh5uQtGOktGxyde8Ge18rMaVh9gdzFL7COCOdJoe
-         DDSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691173549; x=1691778349;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3Uj+qHSCjfbUWLRY+Fwt1VqSSv01Dlprqpkb03sOELY=;
-        b=mAMCa9vNnYWNFtl6ctONdFVls4JwoB0ODu2Q4pgYC0QvE5pvbA03smHimjRBblPFhQ
-         HCSrcvepUdC4W5v/MUkqgsrzneeX6ISxl1uVzfMlZVfiQxgtKYXQoiQ2y2CvW7K4i6yn
-         edBEVdlB+nNAHNzXA+SSlDcvr/mB9LZY4km1zYbAlSKksfzS6Jke4OcBSbO0SOAIPsMp
-         r+AVMIJvBGIvdBTXUwrLEYuics/5ASaJcbjcLBE0+E73R5tMiYAQHoqpmjjgyrQ7s93t
-         05xs3krhED9vZfXbwxYHcRaX83T9ykcNIb1say1wdjlIiiNcn26u/2TedVohLX84Cqqq
-         Sw1g==
-X-Gm-Message-State: AOJu0Yw6dLs9nwZXig2QfFb75K4LyE9Tt02uqDVIQgq91x3LMJBoaePU
-        y+e85f39u5lKsHtJYrL0yro=
-X-Google-Smtp-Source: AGHT+IFOs2gnpcV7nLuHXZ41fFL/o12pBOjB81iMULvedbjhGJRxwKCOkJWUv2y962eVAiVUdH4nVA==
-X-Received: by 2002:a05:6a21:99a1:b0:13d:40a9:8ac9 with SMTP id ve33-20020a056a2199a100b0013d40a98ac9mr3331804pzb.40.1691173548994;
-        Fri, 04 Aug 2023 11:25:48 -0700 (PDT)
-Received: from 3xKetch ([2601:600:a17f:b422::ffc])
-        by smtp.gmail.com with ESMTPSA id g12-20020a63be4c000000b005641bbe783bsm1237629pgo.11.2023.08.04.11.25.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 11:25:48 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 14:25:41 -0400
-From:   Stevie Alvarez <stevie.6strings@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
+        Fri, 4 Aug 2023 15:20:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6242E7
+        for <linux-trace-devel@vger.kernel.org>; Fri,  4 Aug 2023 12:20:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 444F0620F4
+        for <linux-trace-devel@vger.kernel.org>; Fri,  4 Aug 2023 19:20:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 340E9C433C8;
+        Fri,  4 Aug 2023 19:20:52 +0000 (UTC)
+Date:   Fri, 4 Aug 2023 15:20:49 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Stevie Alvarez <stevie.6strings@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org,
         Ross Zwisler <zwisler@google.com>
-Subject: Re: [PATCH v2 1/5] histograms: Initial histograms interface
-Message-ID: <20230804182541.GB4353@3xKetch>
+Subject: Re: [PATCH v2 2/5] histograms: Add traceeval initialize
+Message-ID: <20230804152049.76965462@gandalf.local.home>
+In-Reply-To: <20230804182311.GA4353@3xKetch>
 References: <20230803225413.40697-1-stevie.6strings@gmail.com>
- <20230803225413.40697-2-stevie.6strings@gmail.com>
- <20230804095058.756fccb0@gandalf.local.home>
- <20230804174159.GA2510@3xKetch>
- <20230804135718.70dba76c@gandalf.local.home>
+        <20230803225413.40697-3-stevie.6strings@gmail.com>
+        <20230804104039.09c90e85@gandalf.local.home>
+        <20230804182311.GA4353@3xKetch>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804135718.70dba76c@gandalf.local.home>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 01:57:18PM -0400, Steven Rostedt wrote:
-> On Fri, 4 Aug 2023 13:41:59 -0400
-> Stevie Alvarez <stevie.6strings@gmail.com> wrote:
-> 
-> > > > +struct traceeval_type {
-> > > > +	char				*name;
-> > > > +	traceeval_dyn_release_fn	dyn_release;
-> > > > +	traceeval_dyn_cmp_fn		dyn_cmp;
-> > > > +	enum traceeval_data_type	type;
-> > > > +	size_t				flags;
-> > > > +	size_t				id;  
-> > > 
-> > > Let's reorder this a little. Normally function pointers come at the end of
-> > > a structure. That's more of a guideline than a rule, but let's have it here.
-> > > 
-> > > struct traceeval_type {
-> > > 	char				*name;
-> > > 	enum traceeval_data_type	type;
-> > > 	size_t				flags;
-> > > 	size_t				id;
-> > > 	traceeval_dyn_release_fn	dyn_release;
-> > > 	traceeval_dyn_cmp_fn		dyn_cmp;
-> > > };
-> > > 
-> > > Especially since dynamic types are going to be rare, we don't want it in
-> > > the hot cache.  
+On Fri, 4 Aug 2023 14:23:11 -0400
+Stevie Alvarez <stevie.6strings@gmail.com> wrote:
+
+> > > + * traceeval_init - create a traceeval descriptor
+> > > + * @keys: Defines the keys to differentiate traceeval entries
+> > > + * @vals: Defines values attached to entries differentiated by @keys.
+> > > + *
+> > > + * The @keys and @vals define how the traceeval instance will be populated.
+> > > + * The @keys will be used by traceeval_query() to find an instance within
+> > > + * the "histogram". Note, both the @keys and @vals array must end with:
+> > > + * { .type = TRACEEVAL_TYPE_NONE }.
+> > > + *
+> > > + * The @keys and @vals passed in are copied for internal use.
+> > > + *
+> > > + * For any member of @keys or @vals that isn't of type TRACEEVAL_TYPE_NONE,
+> > > + * the name field must be a null-terminated string. For members of type
+> > > + * TRACEEVAL_TYPE_NONE, the name is ignored.
+> > > + *
+> > > + * @vals can be NULL or start with its type field as TRACEEVAL_TYPE_NONE to
+> > > + * define the values of the histogram to be empty.
+> > > + * @keys must be populated with at least one element that is not
+> > > + * TRACEEVAL_TYPE_NONE.
+> > > + *
+> > > + * Returns the descriptor on success, or NULL on error.
+> > > + */
+> > > +struct traceeval *traceeval_init(const struct traceeval_type *keys,
+> > > +				 const struct traceeval_type *vals)
+> > > +{
+> > > +	struct traceeval *teval;
+> > > +	char *err_msg;
+> > > +
+> > > +	if (!keys)
+> > > +		return NULL;
+> > > +
+> > > +	if (keys->type == TRACEEVAL_TYPE_NONE) {
+> > > +		err_msg = "keys cannot start with type TRACEEVAL_TYPE_NONE";  
 > > 
-> > Does the order of the fields in a struct definition not matter? I
-> > thought word-boundaries applied to struct definitions? Or does the
-> > compiler take care of this?
+> > BTW, all the error messages should start with a capital letter.
+> > 
+> > 			"Keys cannot .."
+> >   
+> > > +		goto fail_init_unalloced;  
+> > 
+> > Just make this: goto fail;  
 > 
-> They do matter. Word bounders are important, but the compiler will just
-> make "holes" if needed. For example, let's say on 64 bit, everything above
-> is 64 bits but the type. I would have created a "hole". But because the
-> type is more important than the id, I kept it at the top.
-> 
-> struct traceeval_type {
-> 	char				*name;			// offset 0
->  	enum traceeval_data_type	type;			// offset 8
-> 
-> [ compiler adds 4 byte "hole" or "padding" ]
-> 
->  	size_t				flags;			// offset 16
->  	size_t				id;			// offset 24
->  	traceeval_dyn_release_fn	dyn_release;		// offset 32
->  	traceeval_dyn_cmp_fn		dyn_cmp;		// offset 40
-> };
-> 
-> If a cache line is 32 bytes (most is usually 128, but let's say on an older
-> architecture) I don't care if the the dyn_release and dyn_cmp are in the
-> same cache line as name.
-> 
-> -- Steve
+> Having multiple of the same label segfaults my tests. I'm relatively new
+> to using C labels, is that behavior expected? And if so is it acceptable
+> for me to distingush the two fail labels by a single character?
 
-This makes sense, I appreciate the explination! I was treating size_t as
-an int in my head by accident.... oops!
+labels must be unique per function. But I constantly use  the same label
+multiple times per C file.
 
--- Stevie
+As I stated in the email, convert one to "fail:" and the other one to "fail_release:"
+
+> 
+> -- Stevie
+> 
+> >   
+> > > +	}
+> > > +
+> > > +	/* alloc teval */
+> > > +	teval = calloc(1, sizeof(*teval));
+> > > +	if (!teval) {
+> > > +		err_msg = "failed to allocate memory for traceeval instance";
+> > > +		goto fail_init_unalloced;
+> > > +	}
+> > > +
+> > > +	/* alloc key types */
+> > > +	teval->nr_key_types = type_alloc(keys, &teval->key_types);
+> > > +	if (teval->nr_key_types <= 0) {
+> > > +		teval->nr_key_types *= -1;  
+> > 
+> > Get rid of the above setting.
+> >   
+> > > +		err_msg = "failed to allocate user defined keys";
+> > > +		goto fail_init;  
+> > 
+> > and this: goto fail_release;
+> >   
+> > > +	}
+> > > +
+> > > +	/* alloc val types */
+> > > +	teval->nr_val_types = type_alloc(vals, &teval->val_types);
+> > > +	if (teval->nr_val_types < 0) {
+> > > +		teval->nr_val_types *= -1;  
+> > 
+> > And git rid of the above too.
+> >   
+> > > +		err_msg = "failed to allocate user defined values";
+> > > +		goto fail_init;
+> > > +	}
+> > > +
+> > > +	/* alloc hist */
+> > > +	teval->hist = calloc(1, sizeof(*teval->hist));
+> > > +	if (!teval->hist) {
+> > > +		err_msg = "failed to allocate memory for histogram";
+> > > +		goto fail_init;
+> > > +	}
+> > > +
+> > > +	return teval;
+> > > +
+> > > +fail_init:
+
+This would be
+
+ fail_release:
+
+as it releases the teval.
+
+> > > +	traceeval_release(teval);  
+> > 
+> > The above isn't defined. If you reference a function in a patch, it must be
+> > at least defined.
+> >   
+> > > +
+> > > +fail_init_unalloced:
+
+and this one be
+
+ fail:
+
+As it is part of the fail path for both.
+
+-- Steve
+
+
+> > > +	print_err(err_msg);
+> > > +	return NULL;
+> > > +}  
+> > 
