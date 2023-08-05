@@ -2,175 +2,126 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA774C001DE
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Aug 2023 19:20:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79FBAC41513
+	for <linux-trace-devel@archiver.kernel.org>; Sat,  5 Aug 2023 03:49:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229459AbjHDTU4 (ORCPT
+        id S229436AbjHEDtm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 4 Aug 2023 15:20:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49406 "EHLO
+        Fri, 4 Aug 2023 23:49:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjHDTUy (ORCPT
+        with ESMTP id S229479AbjHEDtl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 4 Aug 2023 15:20:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6242E7
-        for <linux-trace-devel@vger.kernel.org>; Fri,  4 Aug 2023 12:20:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 444F0620F4
-        for <linux-trace-devel@vger.kernel.org>; Fri,  4 Aug 2023 19:20:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 340E9C433C8;
-        Fri,  4 Aug 2023 19:20:52 +0000 (UTC)
-Date:   Fri, 4 Aug 2023 15:20:49 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Stevie Alvarez <stevie.6strings@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org,
-        Ross Zwisler <zwisler@google.com>
-Subject: Re: [PATCH v2 2/5] histograms: Add traceeval initialize
-Message-ID: <20230804152049.76965462@gandalf.local.home>
-In-Reply-To: <20230804182311.GA4353@3xKetch>
-References: <20230803225413.40697-1-stevie.6strings@gmail.com>
-        <20230803225413.40697-3-stevie.6strings@gmail.com>
-        <20230804104039.09c90e85@gandalf.local.home>
-        <20230804182311.GA4353@3xKetch>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 4 Aug 2023 23:49:41 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE42413E;
+        Fri,  4 Aug 2023 20:49:39 -0700 (PDT)
+Received: from kwepemi500015.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RHpTW3ZV7z1K9KX;
+        Sat,  5 Aug 2023 11:48:31 +0800 (CST)
+Received: from [10.174.176.219] (10.174.176.219) by
+ kwepemi500015.china.huawei.com (7.221.188.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Sat, 5 Aug 2023 11:49:36 +0800
+Subject: Re: How to solve the coupling between libtraceevent and kernel trace?
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     <linux-trace-users@vger.kernel.org>,
+        <linux-trace-devel@vger.kernel.org>,
+        "Fangxiuning (Jack, EulerOS)" <fangxiuning@huawei.com>
+References: <4767bcf3-589a-9dfb-5b45-9ac9279f08e6@huawei.com>
+ <20230804121531.06f7bf0e@gandalf.local.home>
+From:   Lv Ying <lvying6@huawei.com>
+Message-ID: <00684bf7-fb3f-0d6e-d870-0a8b95ae7f16@huawei.com>
+Date:   Sat, 5 Aug 2023 11:49:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20230804121531.06f7bf0e@gandalf.local.home>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.219]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500015.china.huawei.com (7.221.188.92)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 4 Aug 2023 14:23:11 -0400
-Stevie Alvarez <stevie.6strings@gmail.com> wrote:
+Hi Steven:
 
-> > > + * traceeval_init - create a traceeval descriptor
-> > > + * @keys: Defines the keys to differentiate traceeval entries
-> > > + * @vals: Defines values attached to entries differentiated by @keys.
-> > > + *
-> > > + * The @keys and @vals define how the traceeval instance will be populated.
-> > > + * The @keys will be used by traceeval_query() to find an instance within
-> > > + * the "histogram". Note, both the @keys and @vals array must end with:
-> > > + * { .type = TRACEEVAL_TYPE_NONE }.
-> > > + *
-> > > + * The @keys and @vals passed in are copied for internal use.
-> > > + *
-> > > + * For any member of @keys or @vals that isn't of type TRACEEVAL_TYPE_NONE,
-> > > + * the name field must be a null-terminated string. For members of type
-> > > + * TRACEEVAL_TYPE_NONE, the name is ignored.
-> > > + *
-> > > + * @vals can be NULL or start with its type field as TRACEEVAL_TYPE_NONE to
-> > > + * define the values of the histogram to be empty.
-> > > + * @keys must be populated with at least one element that is not
-> > > + * TRACEEVAL_TYPE_NONE.
-> > > + *
-> > > + * Returns the descriptor on success, or NULL on error.
-> > > + */
-> > > +struct traceeval *traceeval_init(const struct traceeval_type *keys,
-> > > +				 const struct traceeval_type *vals)
-> > > +{
-> > > +	struct traceeval *teval;
-> > > +	char *err_msg;
-> > > +
-> > > +	if (!keys)
-> > > +		return NULL;
-> > > +
-> > > +	if (keys->type == TRACEEVAL_TYPE_NONE) {
-> > > +		err_msg = "keys cannot start with type TRACEEVAL_TYPE_NONE";  
-> > 
-> > BTW, all the error messages should start with a capital letter.
-> > 
-> > 			"Keys cannot .."
-> >   
-> > > +		goto fail_init_unalloced;  
-> > 
-> > Just make this: goto fail;  
+Thanks for your reply. I also add Mauro to the discussion.
+
+On 2023/8/5 0:15, Steven Rostedt wrote:
+> On Fri, 4 Aug 2023 17:52:48 +0800
+> Lv Ying <lvying6@huawei.com> wrote:
 > 
-> Having multiple of the same label segfaults my tests. I'm relatively new
-> to using C labels, is that behavior expected? And if so is it acceptable
-> for me to distingush the two fail labels by a single character?
-
-labels must be unique per function. But I constantly use  the same label
-multiple times per C file.
-
-As I stated in the email, convert one to "fail:" and the other one to "fail_release:"
-
+>> Hi, all:
+>>
+>> I am a rasdaemon developer which depeneds on libtraceevent to parse
+>> kernel trace events. There is coupling between libtraceevnt and kernel
+>> trace, if something in libtraceevent and kernel does not match, which
+>> will cause libtraceevent parse wrong thing. e.g
+>> https://github.com/mchehab/rasdaemon/pull/98
+>>
+>> We also encounter similar problem:
+>> * libtrace(old) KBUFFER_TYPE_TIME_STAMP size = 12
+>> * kernel(new) KBUFFER_TYPE_TIME_STAMP size = 8
+>> Such mismatch will cause strange behavior when parsing trace events.
 > 
-> -- Stevie
+> So what happened was the old 12 byte version of TIME_STAMP was never
+> actually implemented in the kernel. When we finally got around to
+> implementing it, we only needed 8 bytes for it, so it became 8 bytes.
 > 
-> >   
-> > > +	}
-> > > +
-> > > +	/* alloc teval */
-> > > +	teval = calloc(1, sizeof(*teval));
-> > > +	if (!teval) {
-> > > +		err_msg = "failed to allocate memory for traceeval instance";
-> > > +		goto fail_init_unalloced;
-> > > +	}
-> > > +
-> > > +	/* alloc key types */
-> > > +	teval->nr_key_types = type_alloc(keys, &teval->key_types);
-> > > +	if (teval->nr_key_types <= 0) {
-> > > +		teval->nr_key_types *= -1;  
-> > 
-> > Get rid of the above setting.
-> >   
-> > > +		err_msg = "failed to allocate user defined keys";
-> > > +		goto fail_init;  
-> > 
-> > and this: goto fail_release;
-> >   
-> > > +	}
-> > > +
-> > > +	/* alloc val types */
-> > > +	teval->nr_val_types = type_alloc(vals, &teval->val_types);
-> > > +	if (teval->nr_val_types < 0) {
-> > > +		teval->nr_val_types *= -1;  
-> > 
-> > And git rid of the above too.
-> >   
-> > > +		err_msg = "failed to allocate user defined values";
-> > > +		goto fail_init;
-> > > +	}
-> > > +
-> > > +	/* alloc hist */
-> > > +	teval->hist = calloc(1, sizeof(*teval->hist));
-> > > +	if (!teval->hist) {
-> > > +		err_msg = "failed to allocate memory for histogram";
-> > > +		goto fail_init;
-> > > +	}
-> > > +
-> > > +	return teval;
-> > > +
-> > > +fail_init:
+> I made the mistake of adding that code in kbuffer.c before it was ever
+> implemented in the kernel and said it would be 12 bytes.
+> 
+I find this kernel 
+patch(https://lore.kernel.org/all/477b362dba1ce7fab9889a1a8e885a62c472f041.1516069914.git.tom.zanussi@linux.intel.com/T/#u) 
+change TIME_STAMP to 8 bytes. Maybe this commit is the first time 
+RINGBUF_TYPE_TIME_STAMP is really implemented in the kernel.
 
-This would be
+When rasdaemon use old libtrace(12 byte version of TIME_STAMP) on newer 
+kernel(8 bytes version of RINGBUF_TYPE_TIME_STAMP). Libtrace takes too 
+long to parse timestamp events and appends the first 4 bytes of the next 
+trace event as the last 4 bytes of the timestamp event. Such wrong 
+parsing will lead to completely wrong parsing of the adjacent trace 
+event field. For example, in rasdaemon we have a situation like this, 
+libtrace parse devlink_health_report trace event next timestamp trace 
+event as block_rq_complete trace event, which will cause coredump in 
+block_rq_complete rasdaemon handler.
+>>
+>> So if libtraceevent is released out of(independent) kernel, how does
+>> libtraceevnt to keep compatible with the running kernel(maybe not the
+>> newest)?
+>>
+> 
+> Now that it has been implemented, it's not going to change. 8 bytes is now
+> an API. Any more updates should not cause a problem with libtraceevent as
+> there's many more tools that depend on it working. And the fact that it is
+> no longer in the kernel, guarantees more that the interface will remain
+> stable.
+> 
+I am worried similar libtraceevent-kernel compatibility problem. I think 
+it's a good way to sort out the interfaces that libtraceevent depends on 
+the kernel and add test cases to determine whether libtraceevent can run 
+on the current kernel, and to know which interfaces do not match.
 
- fail_release:
+> rasdaemon should be using the external libtraceevent library because it
+> will be able to get more information out of any new data. Newer kernels
+> should not break existing libtracevent, but it may just skip over new
+> features.
+> 
+> -- Steve
+> 
+> .
+> 
 
-as it releases the teval.
+rasdaemon now use the external libtraceevent, but rasdaemon will be 
+shipped in many version OS by OSV, so how to ensure that rasdaemon runs 
+correctly on various kernel versions using external libtraceevent needs 
+to be considered.
 
-> > > +	traceeval_release(teval);  
-> > 
-> > The above isn't defined. If you reference a function in a patch, it must be
-> > at least defined.
-> >   
-> > > +
-> > > +fail_init_unalloced:
-
-and this one be
-
- fail:
-
-As it is part of the fail path for both.
-
--- Steve
-
-
-> > > +	print_err(err_msg);
-> > > +	return NULL;
-> > > +}  
-> > 
+-- 
+Thanks!
+Lv Ying
