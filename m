@@ -2,132 +2,102 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5CCBC04A6A
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Aug 2023 20:37:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C725C001B0
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Aug 2023 21:51:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235088AbjHHUhf (ORCPT
+        id S230105AbjHHVvJ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 8 Aug 2023 16:37:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37262 "EHLO
+        Tue, 8 Aug 2023 17:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235220AbjHHUhU (ORCPT
+        with ESMTP id S229715AbjHHVvJ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:37:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E75E7F
-        for <linux-trace-devel@vger.kernel.org>; Tue,  8 Aug 2023 13:05:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 94ED062C14
-        for <linux-trace-devel@vger.kernel.org>; Tue,  8 Aug 2023 20:05:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD2ECC433C8;
-        Tue,  8 Aug 2023 20:05:02 +0000 (UTC)
-Date:   Tue, 8 Aug 2023 16:05:00 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Stevie Alvarez <stevie.6strings@gmail.com>
+        Tue, 8 Aug 2023 17:51:09 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 995E4B1
+        for <linux-trace-devel@vger.kernel.org>; Tue,  8 Aug 2023 14:51:08 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-407ff54164dso40337951cf.2
+        for <linux-trace-devel@vger.kernel.org>; Tue, 08 Aug 2023 14:51:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691531468; x=1692136268;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4ws0rQi6Goqb5YSAFl+KukERlUmSo4lPzm76sACg9+o=;
+        b=TAyzSvw5a+kAJHiCRcWh7q2U/C5voBrKSJPuFthu/Uu2SZ1nUJ6zx9ruPgfMRTpFRH
+         d0xFLW22cAr1JYz4SvBMjr7N0Ha04yvP4771TSi3mo8iwj3QqpXkkJgxSclrfO4anojx
+         4BJI1uifXtxmTTiyAiz8T2wqXuFnjTzxedpqEBPAsI/FLKcWPfsFVOZEBi8SNxvJmLKG
+         EuwlZPdqqtflqogaOuztTOuafZ4ZNFs3zGRBd8WGctFw3N4pj9lIax4biVBIF8mNsEB6
+         v/t5GLTQ6uj1tgXl9YGmQ4xx+eMSvnElU3sEkHMGgj4dnfn/DNWFXb2O29BkNtK+MEbO
+         3+3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691531468; x=1692136268;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4ws0rQi6Goqb5YSAFl+KukERlUmSo4lPzm76sACg9+o=;
+        b=jkHbv51DFE56dCQZVIwfkZnuRojy1Dr/dcbkiYyD1PKJswGIjHppFGm8hqXoIJmqVH
+         FF62O4nmohDbQd8T+gg0yFJvsMJ9ZckXWB5ji4Y9UnMiWoynoqMcJlyU1sYlnhq1JpIV
+         rRJdomhpcxZUuM97OCPuSBWfobcpznoAgJiOZHFaQYjj7LgT0oL2k9RigR3uC92IDv3B
+         7UWGJMI1T/znU5XuAbCo+9rbmAk/2BbroMAoRz9bOBDZUwsQ8SdC5csTOuECW4jWJ3F2
+         dg+54CHiIqhdusWuRQZRKQeFkyNbPanbgqy83VxnkRPl/GhENxS3ItYYVH62hMANYyxq
+         gqkA==
+X-Gm-Message-State: AOJu0YzXI7GtFfKDF1S1iId0gTCFhupMzvjilZYSdnfsdadzZXDodxJO
+        B2mNWdZrvhber50JF12R0ZA=
+X-Google-Smtp-Source: AGHT+IHowhYvYdGCLhhukBCSz6sjuHXRBGNC8KUVKO0w4T3NZ+vmhwRBFl5bObOS69IwFuk4d21P4Q==
+X-Received: by 2002:ac8:5954:0:b0:403:ae78:1517 with SMTP id 20-20020ac85954000000b00403ae781517mr1034440qtz.30.1691531467662;
+        Tue, 08 Aug 2023 14:51:07 -0700 (PDT)
+Received: from 3xKetch ([2601:180:8300:500::6aa8])
+        by smtp.gmail.com with ESMTPSA id 3-20020ac85743000000b0040f8ac751a5sm3630881qtx.96.2023.08.08.14.51.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 14:51:07 -0700 (PDT)
+Date:   Tue, 8 Aug 2023 17:51:05 -0400
+From:   Stevie Alvarez <stevie.6strings@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-trace-devel@vger.kernel.org,
         Ross Zwisler <zwisler@google.com>
 Subject: Re: [PATCH v3 1/6] histograms: Initial histograms interface
-Message-ID: <20230808160500.7fa99988@gandalf.local.home>
-In-Reply-To: <20230808161204.5704-2-stevie.6strings@gmail.com>
+Message-ID: <20230808215105.GA1258@3xKetch>
 References: <20230808161204.5704-1-stevie.6strings@gmail.com>
-        <20230808161204.5704-2-stevie.6strings@gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+ <20230808161204.5704-2-stevie.6strings@gmail.com>
+ <20230808153547.29b7bc60@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230808153547.29b7bc60@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue,  8 Aug 2023 12:11:54 -0400
-Stevie Alvarez <stevie.6strings@gmail.com> wrote:
-
-> From: Stevie Alvarez (Google) <stevie.6strings@gmail.com>
+On Tue, Aug 08, 2023 at 03:35:47PM -0400, Steven Rostedt wrote:
+> On Tue,  8 Aug 2023 12:11:54 -0400
+> Stevie Alvarez <stevie.6strings@gmail.com> wrote:
 > 
-> Initial header file for libtraceeval's histogram API. The interface
-> provides a simple way of aggregating trace data and reading through said
-> data.
+> > +/*
+> > + * Trace data entry for a traceeval histogram
+> > + * Constitutes keys and values.
+> > + */
+> > +union traceeval_data {
+> > +	char				*string;
 > 
-> Signed-off-by: Stevie Alvarez (Google) <stevie.6strings@gmail.com>
-> ---
->  include/traceeval-hist.h | 130 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 130 insertions(+)
->  create mode 100644 include/traceeval-hist.h
+> We need to also add:
 > 
-> diff --git a/include/traceeval-hist.h b/include/traceeval-hist.h
-> new file mode 100644
-> index 0000000..ebce94e
-> --- /dev/null
-> +++ b/include/traceeval-hist.h
-> @@ -0,0 +1,130 @@
-> +/* SPDX-License-Identifier: MIT */
-> +/*
-> + * libtraceeval histogram interface.
-> + *
-> + * Copyright (C) 2023 Google Inc, Steven Rostedt <rostedt@goodmis.org>
-> + * Copyright (C) 2023 Google Inc, Stevie Alvarez <stevie.6strings@gmail.com>
-> + */
-> +#ifndef __LIBTRACEEVAL_HIST_H__
-> +#define __LIBTRACEEVAL_HIST_H__
-> +
-> +#include <stdlib.h>
-> +#include <stddef.h>
-> +#include <stdbool.h>
-> +
-> +/* Data definition interfaces */
-> +
-> +/* Field name/descriptor for number of hits */
-> +#define TRACEEVAL_VAL_HITS ((const char *)(-1UL))
-> +
-> +/* Data type distinguishers */
-> +enum traceeval_data_type {
-> +	TRACEEVAL_TYPE_NONE,
-> +	TRACEEVAL_TYPE_NUMBER_64,
-> +	TRACEEVAL_TYPE_NUMBER_32,
-> +	TRACEEVAL_TYPE_NUMBER_16,
-> +	TRACEEVAL_TYPE_NUMBER_8,
-> +	TRACEEVAL_TYPE_NUMBER,
-> +	TRACEEVAL_TYPE_STRING,
-> +	TRACEEVAL_TYPE_DYNAMIC
-> +};
-> +
-> +/* Statistics specification flags */
-> +enum traceeval_flags {
-> +	TRACEEVAL_FL_SIGNED		= (1 << 0),
-> +	TRACEEVAL_FL_TIMESTAMP		= (1 << 1),
-> +};
-> +
-> +/*
-> + * Trace data entry for a traceeval histogram
-> + * Constitutes keys and values.
-> + */
-> +union traceeval_data {
-> +	char				*string;
-> +	struct traceeval_dynamic	*dyn_data;
+> 	const char			*cstring;
+> 
+> At least for the user interface, as I'm converting task-eval over to this,
+> and I need to assign const strings to this union.
 
-I think the above should be:
+I assume I should treat cstring the same as string, execept because it's
+constant, it should not be updated on insertion, correct?
 
-	struct traceeval_dynamic	dyn_data;
-
-and not a pointer. Otherwise it really does not give us any benefit having
-it be anything but a pointer.
-
-That is, keeping it a pointer is as useful as:
-
-	void				*dyn_data;
-
-Which is fine, but we need to do one or the other.
-
--- Steve
-
-
-> +	unsigned long long		number_64;
-> +	unsigned long			number;
-> +	unsigned int			number_32;
-> +	unsigned short			number_16;
-> +	unsigned char			number_8;
-> +};
-> +
+-- Stevie
+> 
+> -- Steve
+> 
+> > +	struct traceeval_dynamic	*dyn_data;
+> > +	unsigned long long		number_64;
+> > +	unsigned long			number;
+> > +	unsigned int			number_32;
+> > +	unsigned short			number_16;
+> > +	unsigned char			number_8;
+> > +};
+> > +
