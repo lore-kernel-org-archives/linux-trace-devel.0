@@ -2,63 +2,63 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F2C3C04FE0
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Aug 2023 17:30:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2285C001B0
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Aug 2023 17:30:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234702AbjHHRaX (ORCPT
+        id S234706AbjHHRaY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 8 Aug 2023 13:30:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51516 "EHLO
+        Tue, 8 Aug 2023 13:30:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234570AbjHHR3t (ORCPT
+        with ESMTP id S234674AbjHHR3v (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:29:49 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 424EB7D91
-        for <linux-trace-devel@vger.kernel.org>; Tue,  8 Aug 2023 09:12:54 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-76ce66110edso331219585a.0
-        for <linux-trace-devel@vger.kernel.org>; Tue, 08 Aug 2023 09:12:54 -0700 (PDT)
+        Tue, 8 Aug 2023 13:29:51 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F94A7D97
+        for <linux-trace-devel@vger.kernel.org>; Tue,  8 Aug 2023 09:12:56 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-76cded293e8so417622285a.2
+        for <linux-trace-devel@vger.kernel.org>; Tue, 08 Aug 2023 09:12:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691511139; x=1692115939;
+        d=gmail.com; s=20221208; t=1691511140; x=1692115940;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4lTto//e6/WjHt1+L+0ysW/GG7vKg5Pn02EvpM1WfNc=;
-        b=aRY9HoObCCja8VN8XbM5JlA5ltSNUo0GqZp4qS4ABRoHpV0fXx8xMiFChj/G5Ss3V3
-         EcJcVZtK0bmP+TC0qLgGMoAxVHXgabRfbYjLU+iBZM0szcPgNCqs7/h301oUETNvyGZ5
-         DtzEgOByNi8SG6ZxHvH2gV/AjOYnUL2juazqEPA0nUHxZwrUF+UWEJdWJF94U/h8kVUF
-         XWDQL3Er0/sOZan9i0VncywiLUC3htwAMRjo4brLw9qz0W9HZRJPljJZP2GYUFPa/nSY
-         4+SegiRWF2sdGk2SPS4/cDWjUvSDP3L7KVQsFFjHCUGED63m5gvYS9IEPkZ/Epp9RFnZ
-         cEqg==
+        bh=pymTTMAWpgak4wnEpP61xlzcxw79iN+EeTosW6u0QRI=;
+        b=N/ZaId3t+Vun/tiJyAqBJMRw4cHgBEpJYElzcfXEdad4Ui38M/wJA4vJsopvK/miC+
+         AZkd0sq3qKa1Ith9YzXjcaAfYEDju2Od20D96csiLVqhGb0AWLt0zJiwtZrzJz49XWeQ
+         pE+Y438LoF0HN47hSg1NRI7noIfYB6wyvvNovVc1pwjkU4kAXRbva4MQkfs0nTHQym6D
+         nwlp4vtRGKgmMTG9vJKZlMVZBOKyEndooNCToV3bXtLlfQpDippVAM1rH8Bjjjy5y0Hl
+         sC3PfNLeOvOgBg4GKWG76gtVSv/9kBghJb/tl2CNij5u5/jYgoaLookYNFwg3uKBr5We
+         ZpAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691511139; x=1692115939;
+        d=1e100.net; s=20221208; t=1691511140; x=1692115940;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4lTto//e6/WjHt1+L+0ysW/GG7vKg5Pn02EvpM1WfNc=;
-        b=EtlDandJmKMCO2N2/2XEQo0gt1mf7F9unHlqSxXYW0UFqzbVwVNJ9YY5FSxjvYuabr
-         FsHNcKEUnmyA9TS5KlkqttIt9lqog0wmGofoNa7lw1dY84HopDISw+h5qGSNNO2c+zZ5
-         DDpJeib8CYKSTRhAdAPHSDH/75RrE13XfZMn/zRzw5a7EkTUw4S2a1fBXQFqxyop/aLm
-         WYHD29LbmYSTvQYGkQdVYW3QQSQZQqQvTqouP4ZXiu93+OBXfnJJyXYrGvFtDTi/w+jz
-         YSNp7poepgWCUM/UWb/JFtOr91fUnHtDhXpvcre9y73bx3mhzjbCKdp8jS2BRZaw6usY
-         G09Q==
-X-Gm-Message-State: AOJu0YyJYp8ZELDhCRIsHvnv8fXCm4aj8/sHouaTG9Vd8jPbzbYEGFl6
-        c33PilrEIr/tuJsMQibwi3cxjEweon8=
-X-Google-Smtp-Source: AGHT+IEqIHAsEBMgkrHx/RhzhRNbtat8urctzxVLqtd1t+NxqkLlVo4tKrKjheyU3z283rfNIjyT3w==
-X-Received: by 2002:a05:620a:370c:b0:76c:f72a:1934 with SMTP id de12-20020a05620a370c00b0076cf72a1934mr224845qkb.25.1691511138678;
-        Tue, 08 Aug 2023 09:12:18 -0700 (PDT)
+        bh=pymTTMAWpgak4wnEpP61xlzcxw79iN+EeTosW6u0QRI=;
+        b=HM1QFJ3rmiaONMhZwjchdXCthPN7LxYrWV+AAHjWv2b1sOZ+z60eS3AMnUKPJvvnhR
+         A4g2qz5gYOAxgRSkSIL0SSvh+MIvLM5//qhlVlrZVFSSvyI/Y5NIdDzwW+7YkERhgU3h
+         zCtg9rjisqvF6sGlDMFh/vG++ttWnVsHLBHaC5x+bSRblEI6JwTAJmdW5zpK0m8olOg8
+         ICkAQwsqiICe6DsTmEGSXB5hBFzTfNg/QvkEDX+9CJOcNDPENW09EhVsdu4rRiwcyWMS
+         0DWA18Wr8hCwsps6uer6H3WcP1K9ZGu8y0EgK4P1C1uHnKS8aIK+4oPBV58B9MfElyBc
+         VeJQ==
+X-Gm-Message-State: AOJu0YwuqFR7b0GUtTke5zG2No/HMJkZPHop3lQTxam9zSdLieNmp3F3
+        bR9Ofpdrx6tp41YK4MUDw+EChxGVmR4=
+X-Google-Smtp-Source: AGHT+IGr8mEO17eonzrq1Bj2rargVr7Oa4J9dNJsG2cQZWr2BfmNnh0d0pq7a/WrRA/5qiCIbHSfCQ==
+X-Received: by 2002:a05:620a:24e:b0:76c:ce1c:930c with SMTP id q14-20020a05620a024e00b0076cce1c930cmr150451qkn.53.1691511139694;
+        Tue, 08 Aug 2023 09:12:19 -0700 (PDT)
 Received: from 3xKetch.hsd1.ma.comcast.net ([2601:180:8300:500::6aa8])
-        by smtp.gmail.com with ESMTPSA id s7-20020a05620a030700b0076c97ae43b9sm3381540qkm.66.2023.08.08.09.12.17
+        by smtp.gmail.com with ESMTPSA id s7-20020a05620a030700b0076c97ae43b9sm3381540qkm.66.2023.08.08.09.12.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 09:12:18 -0700 (PDT)
+        Tue, 08 Aug 2023 09:12:19 -0700 (PDT)
 From:   Stevie Alvarez <stevie.6strings@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     Stevie Alvarez <stevie.6strings@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Ross Zwisler <zwisler@google.com>
-Subject: [PATCH v3 3/6] histograms: Add traceeval compare
-Date:   Tue,  8 Aug 2023 12:11:56 -0400
-Message-ID: <20230808161204.5704-4-stevie.6strings@gmail.com>
+Subject: [PATCH v3 4/6] histograms: Add traceeval query
+Date:   Tue,  8 Aug 2023 12:11:57 -0400
+Message-ID: <20230808161204.5704-5-stevie.6strings@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230808161204.5704-1-stevie.6strings@gmail.com>
 References: <20230808161204.5704-1-stevie.6strings@gmail.com>
@@ -70,269 +70,205 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Stevie Alvarez (Google) <stevie.6strings@gmail.com>
 
-traceeval_compare() compares two struct traceeval instances for
-equality. This suite of comparitors was made for testing purposes.
+traceeval_query() fetches the values (aka results) of an entry with
+keys that match the array of keys provided. The results of a query can
+be useful for aggregating data between entries/trace events.
+
+traceeval_results_release() frees the results fetched by the query. The
+user must free the results of a successful query.
 
 Signed-off-by: Stevie Alvarez (Google) <stevie.6strings@gmail.com>
 ---
- include/traceeval-test.h |  16 +++
- src/histograms.c         | 213 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 229 insertions(+)
- create mode 100644 include/traceeval-test.h
+ include/traceeval-hist.h |   6 ++
+ src/histograms.c         | 163 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 169 insertions(+)
 
-diff --git a/include/traceeval-test.h b/include/traceeval-test.h
-new file mode 100644
-index 0000000..bb8092a
---- /dev/null
-+++ b/include/traceeval-test.h
-@@ -0,0 +1,16 @@
-+/* SPDX-License-Identifier: MIT */
-+/*
-+ * libtraceeval interface for unit testing.
-+ *
-+ * Copyright (C) 2023 Google Inc, Steven Rostedt <rostedt@goodmis.org>
-+ * Copyright (C) 2023 Google Inc, Stevie Alvarez <stevie.6strings@gmail.com>
-+ */
+diff --git a/include/traceeval-hist.h b/include/traceeval-hist.h
+index 5203520..4923de1 100644
+--- a/include/traceeval-hist.h
++++ b/include/traceeval-hist.h
+@@ -134,4 +134,10 @@ struct traceeval *traceeval_init(const struct traceeval_type *keys,
+ 
+ void traceeval_release(struct traceeval *teval);
+ 
++int traceeval_query(struct traceeval *teval, const union traceeval_data *keys,
++		    union traceeval_data **results);
 +
-+#ifndef __LIBTRACEEVAL_TEST_H__
-+#define __LIBTRACEEVAL_TEST_H__
++void traceeval_results_release(struct traceeval *teval,
++			       union traceeval_data *results);
 +
-+#include <traceeval-hist.h>
-+
-+int traceeval_compare(struct traceeval *orig, struct traceeval *copy);
-+
-+#endif /* __LIBTRACEEVAL_TEST_H__ */
+ #endif /* __LIBTRACEEVAL_HIST_H__ */
 diff --git a/src/histograms.c b/src/histograms.c
-index b85d1a8..6fac205 100644
+index 6fac205..47ff175 100644
 --- a/src/histograms.c
 +++ b/src/histograms.c
-@@ -11,6 +11,20 @@
- #include <stdio.h>
- 
- #include <traceeval-hist.h>
-+#include <traceeval-test.h>
-+
-+/*
-+ * Compare two integers of variable length.
-+ *
-+ * Return 0 if @a and @b are the same, 1 if @a is greater than @b, and -1
-+ * if @b is greater than @a.
-+ */
-+#define compare_numbers_return(a, b)	\
-+do {					\
-+	if ((a) < (b))			\
-+		return -1;		\
-+	return (a) != (b);		\
-+} while (0)				\
- 
- /* A key-value pair */
- struct entry {
-@@ -48,6 +62,205 @@ static void print_err(const char *fmt, ...)
- 	fprintf(stderr, "\n");
+@@ -521,3 +521,166 @@ void traceeval_release(struct traceeval *teval)
+ 	teval->val_types = NULL;
+ 	free(teval);
  }
- 
++
 +/*
-+ * Compare traceeval_type instances for equality.
++ * Find the entry that @keys corresponds to within @teval.
 + *
-+ * Return 0 if @orig and @copy are the same, 1 otherwise.
++ * Returns 0 on success, 1 if no match found, -1 on error.
 + */
-+static int compare_traceeval_type(struct traceeval_type *orig,
-+				  struct traceeval_type *copy,
-+				  size_t orig_size, size_t copy_size)
++static int get_entry(struct traceeval *teval, const union traceeval_data *keys,
++		     struct entry **result)
 +{
-+	size_t i;
++	struct hist_table *hist;
++	int i;
++	int check;
 +
-+	/* same memory/NULL */
-+	if (orig == copy)
-+		return 0;
-+	if (!!orig != !!copy)
-+		return 1;
++	if (!teval || !keys)
++		return -1;
 +
-+	if (orig_size != copy_size)
-+		return 1;
++	hist = teval->hist;
++	i = 0;
++	for (struct entry *entry = hist->map; i < hist->nr_entries;
++			entry = &hist->map[++i]) {
++		check = compare_traceeval_data_set(entry->keys, keys,
++				teval->key_types, teval->nr_key_types);
 +
-+	for (i = 0; i < orig_size; i++) {
-+		if (orig[i].type != copy[i].type)
-+			return 1;
-+		if (orig[i].flags != copy[i].flags)
-+			return 1;
-+		if (orig[i].id != copy[i].id)
-+			return 1;
-+		if (orig[i].dyn_release != copy[i].dyn_release)
-+			return 1;
-+		if (orig[i].dyn_cmp != copy[i].dyn_cmp)
-+			return 1;
-+
-+		// make sure both names are same type
-+		if (!!orig[i].name != !!copy[i].name)
-+			return 1;
-+		if (!orig[i].name)
++		/* return entry if keys match */
++		if (!check) {
++			*result = entry;
++			return 0;
++		} else if (check == 1) {
 +			continue;
-+		if (strcmp(orig[i].name, copy[i].name) != 0)
-+			return 1;
++		} else {
++			return check;
++		}
 +	}
 +
-+	return 0;
++	return 1;
 +}
 +
 +/*
-+ * Compare traceeval_data instances.
++ * Copy @orig to @copy with respect to @type.
 + *
-+ * Return 0 if @orig and @copy are the same, 1 if @orig is greater than @copy,
-+ * -1 for the other way around, and -2 on error.
++ * Return 0 on success, -1 on error.
 + */
-+static int compare_traceeval_data(union traceeval_data *orig,
-+				  const union traceeval_data *copy,
-+				  struct traceeval_type *type)
++static int copy_traceeval_data(struct traceeval_type *type,
++				const union traceeval_data *orig,
++				union traceeval_data *copy)
 +{
-+	int i;
-+
-+	if (orig == copy)
-+		return 0;
-+
-+	if (!orig)
-+		return -1;
-+
-+	if (!copy)
-+		return 1;
++	*copy = *orig;
 +
 +	switch (type->type) {
 +	case TRACEEVAL_TYPE_STRING:
-+		i = strcmp(orig->string, copy->string);
-+		compare_numbers_return(i, 0);
-+
-+	case TRACEEVAL_TYPE_NUMBER:
-+		compare_numbers_return(orig->number, copy->number);
-+
-+	case TRACEEVAL_TYPE_NUMBER_64:
-+		compare_numbers_return(orig->number_64, copy->number_64);
-+
-+	case TRACEEVAL_TYPE_NUMBER_32:
-+		compare_numbers_return(orig->number_32, copy->number_32);
-+
-+	case TRACEEVAL_TYPE_NUMBER_16:
-+		compare_numbers_return(orig->number_16, copy->number_16);
-+
-+	case TRACEEVAL_TYPE_NUMBER_8:
-+		compare_numbers_return(orig->number_8, copy->number_8);
-+
-+	case TRACEEVAL_TYPE_DYNAMIC:
-+		if (type->dyn_cmp)
-+			return type->dyn_cmp(orig->dyn_data, copy->dyn_data, type);
-+		return 0;
++		copy->string = NULL;
++		if (orig->string)
++			copy->string = strdup(orig->string);
++		if (!copy->string)
++			return -1;
++		break;
 +
 +	default:
-+		print_err("%d is an invalid enum traceeval_data_type member",
-+				type->type);
-+		return -2;
++		break;
 +	}
++
++	return 0;
 +}
 +
 +/*
-+ * Compare arrays of union traceeval_data's with respect to @def.
++ * Free @data with respect to @size and @type.
 + *
-+ * Return 0 if @orig and @copy are the same, 1 if not, and -1 on error.
++ * Does not call dyn_release on type TRACEEVAL_TYPE_DYNAMIC.
 + */
-+static int compare_traceeval_data_set(union traceeval_data *orig,
-+				      const union traceeval_data *copy,
-+				      struct traceeval_type *defs, size_t size)
++static void data_release(size_t size, union traceeval_data **data,
++				struct traceeval_type *type)
 +{
-+	int check;
++	for (size_t i = 0; i < size; i++) {
++		if (type[i].type == TRACEEVAL_TYPE_STRING)
++			free((*data)[i].string);
++	}
++	free(*data);
++	*data = NULL;
++}
++
++/*
++ * Copy @orig to @copy with respect to @size and @type.
++ *
++ * Returns 1 on success, -1 on error.
++ */
++static int copy_traceeval_data_set(size_t size, struct traceeval_type *type,
++				    const union traceeval_data *orig,
++				    union traceeval_data **copy)
++{
 +	size_t i;
 +
-+	/* compare data arrays */
++	*copy = calloc(size, sizeof(**copy));
++	if (!*copy)
++		return -1;
++
 +	for (i = 0; i < size; i++) {
-+		if ((check = compare_traceeval_data(orig + i, copy + i, defs + i)))
-+			return check == -2 ? -1 : 1;
++		if (copy_traceeval_data(type + i, orig + i, (*copy) + i))
++			goto fail;
 +	}
 +
-+	return 0;
++	return 1;
++
++fail:
++	data_release(i, copy, type);
++	return -1;
 +}
 +
++
 +/*
-+ * Return 0 if @orig and @copy are the same, 1 if not, and -1 on error.
++ * traceeval_query - find the last instance defined by the keys
++ * @teval: The descriptor to search from
++ * @keys: A list of data to look for
++ * @results: A pointer to where to place the results (if found)
++ *
++ * This does a lookup for an instance within the traceeval data.
++ * The @keys is an array defined by the keys declared in traceeval_init().
++ * The @keys will return an item that had the same keys when it was
++ * inserted by traceeval_insert(). The @keys here follow the same rules
++ * as the keys for traceeval_insert().
++ *
++ * Note, when the caller is done with @results, it must call
++ * traceeval_results_release() on it.
++ *
++ * Returns 1 if found, 0 if not found, and -1 on error.
 + */
-+static int compare_entries(struct entry *orig, struct entry *copy,
-+			   struct traceeval *teval)
++int traceeval_query(struct traceeval *teval, const union traceeval_data *keys,
++		    union traceeval_data **results)
 +{
++	struct entry *entry;
 +	int check;
 +
-+	/* compare keys */
-+	check = compare_traceeval_data_set(orig->keys, copy->keys,
-+			teval->key_types, teval->nr_key_types);
-+	if (check)
-+		return check;
++	if (!teval || !keys || !results)
++		return -1;
 +
-+	/* compare values */
-+	check = compare_traceeval_data_set(orig->vals, copy->vals,
-+			teval->val_types, teval->nr_val_types);
-+	return check;
++	/* find key and copy its corresponding value pair */
++	if ((check = get_entry(teval, keys, &entry)))
++		return check;
++	return copy_traceeval_data_set(teval->nr_val_types, teval->val_types,
++			entry->vals, results);
 +}
 +
 +/*
-+ * Compares the hist fields of @orig and @copy for equality.
++ * traceeval_results_release - release the results return by traceeval_query()
++ * @teval: The descriptor used in traceeval_query()
++ * @results: The results returned by traceeval_query()
 + *
-+ * Assumes all other aspects of @orig and @copy are the same.
-+ *
-+ * Return 0 if struct hist_table of @orig and @copy are the same, 1 if not,
-+ * and -1 on error.
++ * The @results returned by traceeval_query() is owned by @teval, and
++ * how it manages it is implementation specific. The caller should not
++ * worry about it. When the caller of traceeval_query() is done with
++ * the @results, it must call traceeval_results_release() on it to
++ * allow traceeval to clean up its references.
 + */
-+static int compare_hist(struct traceeval *orig, struct traceeval *copy)
++void traceeval_results_release(struct traceeval *teval,
++			       union traceeval_data *results)
 +{
-+	struct hist_table *o_hist;
-+	struct hist_table *c_hist;
-+	int c;
-+
-+	o_hist = orig->hist;
-+	c_hist = copy->hist;
-+
-+	if (o_hist->nr_entries != c_hist->nr_entries)
-+		return 1;
-+
-+	for (size_t i = 0; i < o_hist->nr_entries; i++) {
-+		if ((c = compare_entries(o_hist->map + i, c_hist->map + i, orig)))
-+			return c;
++	if (!teval || !results) {
++		if (!results)
++			print_err("Results to be freed without accompanied traceeval instance!");
++		return;
 +	}
 +
-+	return 0;
++	data_release(teval->nr_val_types, &results, teval->val_types);
 +}
-+
-+/*
-+ * traceeval_compare - Check equality between two traceeval instances
-+ * @orig: The first traceeval instance
-+ * @copy: The second traceeval instance
-+ *
-+ * This compares the values of the key definitions, value definitions, and
-+ * inserted data between @orig and @copy in order. It does not compare
-+ * by memory address, except for struct traceeval_type's dyn_release() and
-+ * dyn_cmp() fields.
-+ *
-+ * Returns 0 if @orig and @copy are the same, 1 if not, and -1 on error.
-+ */
-+ int traceeval_compare(struct traceeval *orig, struct traceeval *copy)
-+{
-+	int keys;
-+	int vals;
-+	int hists;
-+
-+	if (!orig || !copy)
-+		return -1;
-+
-+	keys = compare_traceeval_type(orig->key_types, copy->key_types,
-+			orig->nr_key_types, copy->nr_key_types);
-+	vals = compare_traceeval_type(orig->val_types, copy->val_types,
-+			orig->nr_val_types, copy->nr_val_types);
-+	hists = compare_hist(orig, copy);
-+
-+	if (hists == -1)
-+		return -1;
-+
-+	return keys || vals || hists;
-+}
-+
- /*
-  * type_release() - free a struct traceeval_type array
-  * @defs: The array to release
 -- 
 2.41.0
 
