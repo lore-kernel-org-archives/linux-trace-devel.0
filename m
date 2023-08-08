@@ -2,123 +2,121 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54E58C001DB
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Aug 2023 02:36:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F513C04A6A
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Aug 2023 17:30:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbjHHCgW (ORCPT
+        id S232095AbjHHRaP (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 7 Aug 2023 22:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54828 "EHLO
+        Tue, 8 Aug 2023 13:30:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjHHCgW (ORCPT
+        with ESMTP id S233028AbjHHR3o (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 7 Aug 2023 22:36:22 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0150DB8;
-        Mon,  7 Aug 2023 19:36:19 -0700 (PDT)
-Received: from kwepemi500015.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RKcgY0pQgz1Z1cH;
-        Tue,  8 Aug 2023 10:33:29 +0800 (CST)
-Received: from [10.174.176.219] (10.174.176.219) by
- kwepemi500015.china.huawei.com (7.221.188.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 8 Aug 2023 10:36:17 +0800
-Subject: Re: How to solve the coupling between libtraceevent and kernel trace?
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     <mchehab@kernel.org>, <linux-trace-users@vger.kernel.org>,
-        <linux-trace-devel@vger.kernel.org>,
-        "Fangxiuning (Jack, EulerOS)" <fangxiuning@huawei.com>
-References: <4767bcf3-589a-9dfb-5b45-9ac9279f08e6@huawei.com>
- <20230804121531.06f7bf0e@gandalf.local.home>
- <47475eaa-229e-f1bd-dcc7-31427f130ca3@huawei.com>
- <20230807210937.3ece4d63@gandalf.local.home>
-From:   Lv Ying <lvying6@huawei.com>
-Message-ID: <03d598ef-864d-c6d7-2c6f-65744b32eb2d@huawei.com>
-Date:   Tue, 8 Aug 2023 10:36:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Tue, 8 Aug 2023 13:29:44 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E0E8C0AD
+        for <linux-trace-devel@vger.kernel.org>; Tue,  8 Aug 2023 09:12:48 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-76cab6fe9c0so553681785a.0
+        for <linux-trace-devel@vger.kernel.org>; Tue, 08 Aug 2023 09:12:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691511136; x=1692115936;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zzhg2LMyeKE000rALn1qsfhP9DIZBCqS827bMolOPv4=;
+        b=Sa2tm2XtnLfwkgIUj7YG+Z0Q0y7dz6SZ5cv0ZZweKvzFEiEa+JKz5jupzjz0YqzM/r
+         50CzCcjM2l8Mw1ApGlmgogvsmQm78FuVdzrPhSAIbfAUCG91TBfkGGdbqfhEHFGnIqc2
+         BMEfPnF6u8fb7kqiyksQUVrkWCyAE2cWQ7v6fdXxPlzqrL8tCkrZdHogVQaqr6v+Ks02
+         4NdKLFAS5QcPBRPQWmOAxaMihdhFxKpaSJIxZSCbSjIaiePvoSpo7L/im0Awnrm0r5rP
+         79XHe0kEVlapebEqG1urYSW/MtS74DYbRUm6hqeJpR8H95rGGW+WfqEfTSBowQ2TbN3H
+         OsoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691511136; x=1692115936;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Zzhg2LMyeKE000rALn1qsfhP9DIZBCqS827bMolOPv4=;
+        b=L6jKD96DGY6X5Oh8IsP4ZZKHBdRzDglssFgCB0/zgn+xVWPRREoScWGazWGEydQdr3
+         ReG9eDtBXX/hliFieTI7gt6Jzg9eeragjx1Lc5oopvJnA/xmA3O0li7kLYhVy7/4rP3T
+         gOu5YwIfe0jLI3thuH/aUfKuTm4BAo6yp9Pp2UPRAkV5VtLcQ6gGaP3c9DVelHLKLjCp
+         weSbPhH5y6AMNW2DLU9HpY4ij89AI2J2zsuCev/2CF0Cv3THod/l+et+K2vVOmS9epJF
+         ot/p738F9idMAgISIOGEmVaLdGznbPBqbG/eW0HpDbQ8tTDUhc+135keBjvk1OIVniG4
+         7HUA==
+X-Gm-Message-State: AOJu0YwAE5ODYKDWHSkRKxPqaxAlb4sbx0i2bRZj+fiJ1c0QyOqepN/Y
+        VpFQbv7VCJ7Bi8OoZ96PAlvjbghp7Qo=
+X-Google-Smtp-Source: AGHT+IEBoouxQRv+aEeav9yIXCPISRCujovC0aFQO+AyR8wzxv5xA1qHCGG3jOrJFi1kVVVU5ZycRQ==
+X-Received: by 2002:a05:620a:31a8:b0:767:1a27:5302 with SMTP id bi40-20020a05620a31a800b007671a275302mr157674qkb.7.1691511135858;
+        Tue, 08 Aug 2023 09:12:15 -0700 (PDT)
+Received: from 3xKetch.hsd1.ma.comcast.net ([2601:180:8300:500::6aa8])
+        by smtp.gmail.com with ESMTPSA id s7-20020a05620a030700b0076c97ae43b9sm3381540qkm.66.2023.08.08.09.12.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 09:12:15 -0700 (PDT)
+From:   Stevie Alvarez <stevie.6strings@gmail.com>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     Stevie Alvarez <stevie.6strings@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ross Zwisler <zwisler@google.com>
+Subject: [PATCH v3 0/6] histograms: Add query and insert
+Date:   Tue,  8 Aug 2023 12:11:53 -0400
+Message-ID: <20230808161204.5704-1-stevie.6strings@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-In-Reply-To: <20230807210937.3ece4d63@gandalf.local.home>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.219]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemi500015.china.huawei.com (7.221.188.92)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Steven:
+From: Stevie Alvarez (Google) <stevie.6strings@gmail.com>
 
-On 2023/8/8 9:09, Steven Rostedt wrote:
-> On Sat, 5 Aug 2023 11:57:48 +0800
-> Lv Ying<lvying6@huawei.com>  wrote:
-> 
->> I find this kernel
->> patch(https://lore.kernel.org/all/477b362dba1ce7fab9889a1a8e885a62c472f041.1516069914.git.tom.zanussi@linux.intel.com/T/#u)
->> change TIME_STAMP to 8 bytes. Maybe this commit is the first time
->> RINGBUF_TYPE_TIME_STAMP is really implemented in the kernel.
-> Yes, I know what caused the breakage.
-> 
->> When rasdaemon use old libtrace(12 byte version of TIME_STAMP) on newer
->> kernel(8 bytes version of RINGBUF_TYPE_TIME_STAMP). Libtrace takes too
->> long to parse timestamp events and appends the first 4 bytes of the next
->> trace event as the last 4 bytes of the timestamp event. Such wrong
->> parsing will lead to completely wrong parsing of the adjacent trace
->> event field. For example, in rasdaemon we have a situation like this,
->> libtrace parse devlink_health_report trace event next timestamp trace
->> event as block_rq_complete trace event, which will cause coredump in
->> block_rq_complete rasdaemon handler.
->>>> So if libtraceevent is released out of(independent) kernel, how does
->>>> libtraceevnt to keep compatible with the running kernel(maybe not the
->>>> newest)?
->>>>   
->>> Now that it has been implemented, it's not going to change. 8 bytes is now
->>> an API. Any more updates should not cause a problem with libtraceevent as
->>> there's many more tools that depend on it working. And the fact that it is
->>> no longer in the kernel, guarantees more that the interface will remain
->>> stable.
->>>    
->> I am worried similar libtraceevent-kernel compatibility problem. I think
->> it's a good way to sort out the interfaces that libtraceevent depends on
->> the kernel and add test cases to determine whether libtraceevent can run
->> on the current kernel, or to know which interfaces do not match.
->>
->>> rasdaemon should be using the external libtraceevent library because it
->>> will be able to get more information out of any new data. Newer kernels
->>> should not break existing libtracevent, but it may just skip over new
->>> features.
->>>
->>> -- Steve
->>>
->>> .
->>>    
->> rasdaemon now use the external libtraceevent, but rasdaemon will be
->> shipped in many version OS by OSV, so how to ensure that rasdaemon runs
->> correctly on various kernel versions using external libtraceevent needs
->> to be considered.
->>
+Changes in v3:
+ * Added traceeval_query() and traceeval_results_release().
+ * Added traceeval_insert().
+ * Reordered enum traceeval_data_type for logical numeric use.
+ * Reordered traceeval_type fields for legibility.
+ * Removed traceeval_flag's STAT as numerics will aggregate by default.
+ * Declared traceeval_type before dyn function typedefs.
+ * Changed dyn_release call's argument to pointer offset for legibility.
+ * Changed dyn_release signature's argument order for legibility.
+ * Removed traceeval_iterator since it isn't used.
+ * Moved type_alloc()'s for-loop's semi-colon to a new line for legibility.
+ * Made lables less verbose.
+ * Updated type_alloc's error messages.
+ * type_alloc() frees allocated data on error instead of traceeval_init().
+ * Squashed initialize and release patches as init depends on release.
+ * Capitalized first letter of error messages.
+ * Added error message for clean_data() if data exists without defs.
+ * Aligned all function parameters with opening parenthesis.
+ * Remove compare and testing patches, beyond current scope of project.
+---
+v2 discussion: https://lore.kernel.org/linux-trace-devel/20230804083737.0d8f1d95@gandalf.local.home/T/#t
 
-> The latest libtraceevent and libtracefs should work with all previous
-> versions of the kernel. TIMESTAMP was not implemented in the kernel when
-> kbuffer.c added it. That was my mistake and it will not happen again.
-> 
-> trace-cmd uses the latest libtracevent and libtracefs, and it works on
-> kernels back to 2.6.32 (when tracing was added). Using the latest
-> libtraceevent will work on all older kernels.
-> 
-> All should be good. What exactly are you worried about?
+Stevie Alvarez (Google) (6):
+  histograms: Initial histograms interface
+  histograms: Add traceeval initialize and release
+  histograms: Add traceeval compare
+  histograms: Add traceeval query
+  histograms: Add traceeval insert
+  histograms: Initial unit tests
 
-
-I didn't know much about kernel tracefs before, so I thought there was a 
-compatibility problem like timestamp. After your answer, I know that 
-timestamp is an exception. I can now happily use libtraceevent directly 
-on different versions of the kernel.
-
-Thanks again for your answer :)
+ Makefile                 |   2 +-
+ include/traceeval-hist.h | 147 ++++++++
+ include/traceeval-test.h |  16 +
+ src/Makefile             |   1 +
+ src/histograms.c         | 792 +++++++++++++++++++++++++++++++++++++++
+ utest/.gitignore         |   1 +
+ utest/Makefile           |  35 ++
+ utest/eval-test.h        |  13 +
+ utest/eval-utest.c       |  28 ++
+ utest/traceeval-utest.c  | 290 ++++++++++++++
+ 10 files changed, 1324 insertions(+), 1 deletion(-)
+ create mode 100644 include/traceeval-hist.h
+ create mode 100644 include/traceeval-test.h
+ create mode 100644 src/histograms.c
+ create mode 100644 utest/.gitignore
+ create mode 100644 utest/Makefile
+ create mode 100644 utest/eval-test.h
+ create mode 100644 utest/eval-utest.c
+ create mode 100644 utest/traceeval-utest.c
 
 -- 
-Thanks!
-Lv Ying
+2.41.0
+
