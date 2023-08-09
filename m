@@ -2,63 +2,63 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F7C8C001E0
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Aug 2023 17:53:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 630A4C04E69
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Aug 2023 17:53:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbjHIRxx (ORCPT
+        id S229456AbjHIRxw (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 9 Aug 2023 13:53:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45022 "EHLO
+        Wed, 9 Aug 2023 13:53:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbjHIRxx (ORCPT
+        with ESMTP id S229978AbjHIRxw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 9 Aug 2023 13:53:53 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D57010FB
-        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Aug 2023 10:53:52 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-63d1238c300so609206d6.0
-        for <linux-trace-devel@vger.kernel.org>; Wed, 09 Aug 2023 10:53:52 -0700 (PDT)
+        Wed, 9 Aug 2023 13:53:52 -0400
+Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2168810D2
+        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Aug 2023 10:53:51 -0700 (PDT)
+Received: by mail-vk1-xa36.google.com with SMTP id 71dfb90a1353d-4871e8fdcfeso46342e0c.2
+        for <linux-trace-devel@vger.kernel.org>; Wed, 09 Aug 2023 10:53:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691603631; x=1692208431;
+        d=gmail.com; s=20221208; t=1691603630; x=1692208430;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VLaMsZyfh3kdnwuZu2mOjfu9FkuAZKI4YATx7fYp+SU=;
-        b=JZi5r2k/JoHKrRav5S0b15oiB4UJ1s9Uao5B+91wwDP7sAYrlo3wS7z4SI9MaInLVp
-         /CmwcfyHItO5Plk7RMw7BxlF6r1pyVzFGwDyxYOPGPOsQ7nC46IGLw0sO42rzFt1QlFZ
-         oU9xkw2ao8GL2qqnteYAbbzY8hHURULW8Yxt1N4HGxzZExBB+dPXfoLoY3yX/BEJq3ac
-         OzAyA3Ye759yQ6iP8etYIeFgKaFss0iwWqLyPlgQ/cZS/vG7W2j/Y5KbDPbXqZCJEAbG
-         GEcZv6Dvp/0YgwDNfcTybVPyh7ypB2i/jP9fAnYUe1tyHr2zFNY4D/EHdU8y5h4b6NQj
-         Sfug==
+        bh=4907FKRmX3ceovQo+cWr+kmFWgMDszrcRWKDtwkgTSs=;
+        b=b+inm9Rfs9Z3NBai71ewAOmDs6gPyBLNyPJT7lKUUH187JRIXlqsrQuTmUwodcm++3
+         y6Gv7tHKkrjrWF6DKBjWrD5n6ZoIiiYxWXwyHE9tz7mmvvvLDQXCrztpLq7ee5Vlucxk
+         bdNdeyejt++q8YjFTFtKxWhvll3Z5XDXk79f0CnQuOHyDVofLjtv+eUwU454kkDCS7AF
+         p9EyGZ2J0nDYYODXrMyheV/Wevkg2KofkphChox38p13vF72gjm3AbDOF2GvjO1Ft+t1
+         z/NMX59szKw+ntV8mjN0IaUjwH5CIOPMFUJGC61mz2sF8zse09GQYD8+3H6m//lNTpLo
+         8oew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691603631; x=1692208431;
+        d=1e100.net; s=20221208; t=1691603630; x=1692208430;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VLaMsZyfh3kdnwuZu2mOjfu9FkuAZKI4YATx7fYp+SU=;
-        b=iKPG7ykYEayF4A65/U/fKtd0EEzMVGkPDqeau4Mex81GJA4tcxtQcbkagmOefUnTQR
-         Dz/tz1+HUITT2MOQdcti7JjWDSI1ow4+CUvPKjXkGda8P90udjlZwO+6chesrJ+cDzQZ
-         WN0lZugAIuxo12lBtW3lOo6UugeSECUdBAi3CUZ2kivEYDD6GeNjKNyFJzjlxKAAblPc
-         a5ULiYh5vUHRZBRxeIj+M4bmx3N1+FMN9mzq25KPWVlF/dtL2Ot1CQfONYBybeFLDmp4
-         DWX9cLFpikcdhjVtqLB97fNFo4b7gyXYO1Z24Mtvrjw3KZZdaJ+Qe1WmIVjUl86sODRg
-         yEfQ==
-X-Gm-Message-State: AOJu0Yx+2ytuwBfOwVY0pv0/u6VYL3wKgVRautvKtvmr4vDAv/ld95no
-        qNCaVhjBx6JdhkBwRzuPgJvW9Pb8Tgo=
-X-Google-Smtp-Source: AGHT+IFEofSb+Ozy/WxneQxEqSJesOB0D0tiJVOEDHjwcoPgXEnpm+BJFVGfBBqE47btk5HxeK2xZg==
-X-Received: by 2002:a0c:f18e:0:b0:635:e0dd:db4c with SMTP id m14-20020a0cf18e000000b00635e0dddb4cmr3057438qvl.25.1691603630964;
-        Wed, 09 Aug 2023 10:53:50 -0700 (PDT)
+        bh=4907FKRmX3ceovQo+cWr+kmFWgMDszrcRWKDtwkgTSs=;
+        b=hXGYsLzCCZmFx0d/ekviY1bC6UpeM0/BCIbCLEZHhWL8uU1d4+EqH45L/JqAOlT5Kw
+         klHRhnBXDzo4Av4Xt+tE7W8ayRMCO7ItmvOwdYbWNm79Ix0mupsBOFbBg7UoGCOpQjit
+         Y1JKTpkZG5jsvtrQEv9N+KMR4xlKUugWwl4IjXlBRoG9G0sYSM44P46p7f3+4in0EPNH
+         Js4KXWv05O/HhJ6IYGqcpd+qS0zkU9W7cYb3KON+ruu97YEaxSomg2irbljoojrhqQ+E
+         axKxC53DubrRPad/L3gf3XShgih1ZRigom+0kIlz4iztn5cBRArPEf+BL7q0/Hua7vkQ
+         ngog==
+X-Gm-Message-State: AOJu0YxHRygLxlKe8lXbzEnfvYgXaxGhFAhvEXSpg59Yw6c0j5UPL6fL
+        xP/iQz82KfGKD9QNx86/n59blzQJ3dQ=
+X-Google-Smtp-Source: AGHT+IH3dQQ/9BcHJOWavjnQRgOF0SC1oH8z6pypbmWfUAqAi1AAtl+a3cIkTqPqwRlkOXyopiexvg==
+X-Received: by 2002:a1f:5c41:0:b0:487:10c9:3f08 with SMTP id q62-20020a1f5c41000000b0048710c93f08mr195143vkb.0.1691603628571;
+        Wed, 09 Aug 2023 10:53:48 -0700 (PDT)
 Received: from 3xKetch.hsd1.ma.comcast.net ([2601:180:8300:500::2409])
-        by smtp.gmail.com with ESMTPSA id x4-20020a0c8e84000000b00623839cba8csm4633646qvb.44.2023.08.09.10.53.49
+        by smtp.gmail.com with ESMTPSA id x4-20020a0c8e84000000b00623839cba8csm4633646qvb.44.2023.08.09.10.53.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 10:53:50 -0700 (PDT)
+        Wed, 09 Aug 2023 10:53:47 -0700 (PDT)
 From:   Stevie Alvarez <stevie.6strings@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     Stevie Alvarez <stevie.6strings@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Ross Zwisler <zwisler@google.com>
-Subject: [PATCH v4 4/5] histograms: Add traceeval query
-Date:   Wed,  9 Aug 2023 13:53:37 -0400
-Message-ID: <20230809175340.3066-5-stevie.6strings@gmail.com>
+Subject: [PATCH v4 2/5] histograms: Add traceeval initialize and release
+Date:   Wed,  9 Aug 2023 13:53:35 -0400
+Message-ID: <20230809175340.3066-3-stevie.6strings@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230809175340.3066-1-stevie.6strings@gmail.com>
 References: <20230809175340.3066-1-stevie.6strings@gmail.com>
@@ -70,202 +70,392 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Stevie Alvarez (Google) <stevie.6strings@gmail.com>
 
-traceeval_query() fetches the values (aka results) of an entry with
-keys that match the array of keys provided. The results of a query can
-be useful for aggregating data between entries/trace events.
+traceeval_init() creates a new struct traceeval instance with regards
+to the struct traceeval_type array arguments keys and vals. These arrays
+define the structure of the histogram, with each describing the expected
+structure of inserted arrays of union traceeval_data. The keys and vals
+arguments are copied on the heap to ensure that the struct traceeval
+instance has access to the definition regardless of how the user
+initialized keys and vals.
 
-traceeval_results_release() frees the results fetched by the query. The
-user must free the results of a successful query.
+traceeval_init() uses traceeval_release() and it's helper functions to
+clean up on error.
+
+traceeval_release() deconstructs a given struct traceeval instance. It
+frees any data allocated to the heap within the entries to the histogram,
+and the names allocated for the struct traceeval_type key-value
+definitions.
 
 Signed-off-by: Stevie Alvarez (Google) <stevie.6strings@gmail.com>
 ---
- include/traceeval-hist.h |   6 ++
- src/histograms.c         | 161 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 167 insertions(+)
+ Makefile                 |   2 +-
+ include/traceeval-hist.h |   7 +
+ src/Makefile             |   1 +
+ src/histograms.c         | 315 +++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 324 insertions(+), 1 deletion(-)
+ create mode 100644 src/histograms.c
 
+diff --git a/Makefile b/Makefile
+index 4a24d5a..3ea051c 100644
+--- a/Makefile
++++ b/Makefile
+@@ -172,7 +172,7 @@ libs: $(LIBRARY_A) $(LIBRARY_SO)
+ 
+ VALGRIND = $(shell which valgrind)
+ UTEST_DIR = utest
+-UTEST_BINARY = trace-utest
++UTEST_BINARY = eval-utest
+ 
+ test: force $(LIBRARY_STATIC)
+ ifneq ($(CUNIT_INSTALLED),1)
 diff --git a/include/traceeval-hist.h b/include/traceeval-hist.h
-index 63e8b0e..82cfbb1 100644
+index 3565756..63e8b0e 100644
 --- a/include/traceeval-hist.h
 +++ b/include/traceeval-hist.h
-@@ -134,4 +134,10 @@ struct traceeval *traceeval_init(const struct traceeval_type *keys,
+@@ -127,4 +127,11 @@ struct traceeval_iterator;
  
- void traceeval_release(struct traceeval *teval);
+ struct traceeval;
  
-+int traceeval_query(struct traceeval *teval, const union traceeval_data *keys,
-+		    union traceeval_data **results);
++/* Histogram interfaces */
 +
-+void traceeval_results_release(struct traceeval *teval,
-+			       union traceeval_data *results);
++struct traceeval *traceeval_init(const struct traceeval_type *keys,
++				 const struct traceeval_type *vals);
++
++void traceeval_release(struct traceeval *teval);
 +
  #endif /* __LIBTRACEEVAL_HIST_H__ */
+diff --git a/src/Makefile b/src/Makefile
+index b4b6e52..b32a389 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -4,6 +4,7 @@ include $(src)/scripts/utils.mk
+ 
+ OBJS =
+ OBJS += trace-analysis.o
++OBJS += histograms.o
+ 
+ OBJS := $(OBJS:%.o=$(bdir)/%.o)
+ 
 diff --git a/src/histograms.c b/src/histograms.c
-index ed631b0..1b6e3a0 100644
---- a/src/histograms.c
+new file mode 100644
+index 0000000..568c631
+--- /dev/null
 +++ b/src/histograms.c
-@@ -527,3 +527,164 @@ void traceeval_release(struct traceeval *teval)
- 	teval->val_types = NULL;
- 	free(teval);
- }
+@@ -0,0 +1,315 @@
++/* SPDX-License-Identifier: MIT */
++/*
++ * libtraceeval histogram interface implementation.
++ *
++ * Copyright (C) 2023 Google Inc, Stevie Alvarez <stevie.6strings@gmail.com>
++ */
++
++#include <stdbool.h>
++#include <string.h>
++#include <stdarg.h>
++#include <stdio.h>
++
++#include <traceeval-hist.h>
++
++/* A key-value pair */
++struct entry {
++	union traceeval_data	*keys;
++	union traceeval_data	*vals;
++};
++
++/* A table of key-value entries */
++struct hist_table {
++	struct entry	*map;
++	size_t		nr_entries;
++};
++
++/* Histogram */
++struct traceeval {
++	struct traceeval_type		*key_types;
++	struct traceeval_type		*val_types;
++	struct hist_table		*hist;
++	size_t				nr_key_types;
++	size_t				nr_val_types;
++};
 +
 +/*
-+ * Find the entry that @keys corresponds to within @teval.
-+ *
-+ * Returns 1 on success, 0 if no match found, -1 on error.
++ * print_err - print an error message
++ * @fmt: String format
++ * @...: (optional) Additional arguments to print in conjunction with @format
 + */
-+static int get_entry(struct traceeval *teval, const union traceeval_data *keys,
-+		     struct entry **result)
++static void print_err(const char *fmt, ...)
 +{
-+	struct hist_table *hist;
-+	struct entry *entry;
-+	int check = 0;
-+	int i;
++	va_list ap;
 +
-+	if (!teval || !keys)
-+		return -1;
-+
-+	hist = teval->hist;
-+	for (i = 0, entry = hist->map; i < hist->nr_entries; entry = &hist->map[++i]) {
-+		check = compare_traceeval_data_set(entry->keys, keys,
-+				teval->key_types, teval->nr_key_types);
-+
-+		if (!check)
-+			continue;
-+		break;
-+	}
-+
-+	if (check > 0)
-+		*result = entry;
-+	return check;
++	va_start(ap, fmt);
++	vfprintf(stderr, fmt, ap);
++	va_end(ap);
++	fprintf(stderr, "\n");
 +}
 +
 +/*
-+ * Copy @orig to @copy with respect to @type.
++ * type_release - free a struct traceeval_type array
++ * @defs: The array to release
++ * @len: The length of @defs
 + *
-+ * Return 0 on success, -1 on error.
++ * It is assumed that all elements of @defs, within the length of @len, have
++ * name fields initialized to valid pointers.
++ *
++ * This function was designed to be used on an array allocated by type_alloc().
++ * Note that type_alloc() initializes all name fields of elements within the
++ * returned size.
 + */
-+static int copy_traceeval_data(struct traceeval_type *type,
-+				const union traceeval_data *orig,
-+				union traceeval_data *copy)
++static void type_release(struct traceeval_type *defs, size_t len)
 +{
-+	*copy = *orig;
++	if (!defs)
++		return;
 +
-+	if (type->type == TRACEEVAL_TYPE_STRING) {
-+		copy->string = NULL;
-+
-+		if (orig->string)
-+			copy->string = strdup(orig->string);
-+		else
-+			return 0;
-+
-+		if (!copy->string)
-+			return -1;
++	for (size_t i = 0; i < len; i++) {
++		free(defs[i].name);
 +	}
 +
-+	return 0;
++	free(defs);
 +}
 +
 +/*
-+ * Free @data with respect to @size and @type.
++ * type_alloc - clone a struct traceeval_type array
++ * @defs: The original array
++ * @copy: A pointer to where to place the @defs copy
 + *
-+ * Does not call dyn_release on type TRACEEVAL_TYPE_DYNAMIC.
-+ */
-+static void data_release(size_t size, union traceeval_data **data,
-+				struct traceeval_type *type)
-+{
-+	for (size_t i = 0; i < size; i++) {
-+		if (type[i].type == TRACEEVAL_TYPE_STRING)
-+			free((*data)[i].string);
-+	}
-+	free(*data);
-+	*data = NULL;
-+}
-+
-+/*
-+ * Copy @orig to @copy with respect to @size and @type.
++ * Clone traceeval_type array @defs to the heap, and place in @copy.
++ * @defs must be terminated with an instance of type TRACEEVAL_TYPE_NONE.
 + *
-+ * Returns 1 on success, -1 on error.
++ * The size of the copy pointed to by @copy is returned. It counts all elements
++ * in @defs excluding the terminating TRACEEVAL_TYPE_NONE traceeval_type.
++ * The copy contains everything from @defs excluding the TRACEEVAL_TYPE_NONE
++ * traceeval_type.
++ * On error, copy is set to point to NULL.
++ *
++ * The name field of each element of @defs (except for the terminating
++ * TRACEEVAL_TYPE_NONE) must be a NULL-terminated string. The validity of the
++ * name field is not checked, but errors are returned upon finding unset name
++ * fields and string duplication failures. It is guaranteed that all elements
++ * of the copy within the returned size have valid pointers in their name
++ * fields.
++ *
++ * Returns the size of the array pointed to by @copy, or -1 on error.
 + */
-+static int copy_traceeval_data_set(size_t size, struct traceeval_type *type,
-+				    const union traceeval_data *orig,
-+				    union traceeval_data **copy)
++static size_t type_alloc(const struct traceeval_type *defs,
++			 struct traceeval_type **copy)
 +{
++	struct traceeval_type *new_defs = NULL;
++	size_t size;
 +	size_t i;
 +
 +	*copy = NULL;
-+	if (!size)
-+		return 1;
 +
-+	*copy = calloc(size, sizeof(**copy));
-+	if (!*copy)
-+		return -1;
++	if (!defs)
++		return 0;
++
++	for (size = 0; defs && defs[size].type != TRACEEVAL_TYPE_NONE; size++)
++		;
++
++	if (!size)
++		return 0;
++
++	new_defs = calloc(size, sizeof(*new_defs));
 +
 +	for (i = 0; i < size; i++) {
-+		if (copy_traceeval_data(type + i, orig + i, (*copy) + i))
++		/* copy current def data to new_def */
++		new_defs[i] = defs[i];
++
++		/* copy name to heap, ensures name copied */
++		if (!defs[i].name)
++			goto fail;
++		new_defs[i].name = strdup(defs[i].name);
++
++		if (!new_defs[i].name)
 +			goto fail;
 +	}
 +
-+	return 1;
++	*copy = new_defs;
++	return size;
 +
 +fail:
-+	data_release(i, copy, type);
++	if (defs[i].name)
++		print_err("Failed to allocate traceeval_type %zu", size);
++	else
++		print_err("traceeval_type list missing a name");
++
++	for (; i >=0; i--)
++		free(new_defs[i].name);
++	free(new_defs);
 +	return -1;
 +}
 +
-+
 +/*
-+ * traceeval_query - find the last instance defined by the keys
-+ * @teval: The descriptor to search from
-+ * @keys: A list of data to look for
-+ * @results: A pointer to where to place the results (if found)
++ * traceeval_init - create a traceeval descriptor
++ * @keys: Defines the keys to differentiate traceeval entries
++ * @vals: Defines values attached to entries differentiated by @keys.
 + *
-+ * This does a lookup for an instance within the traceeval data.
-+ * The @keys is an array defined by the keys declared in traceeval_init().
-+ * The @keys will return an item that had the same keys when it was
-+ * inserted by traceeval_insert(). The @keys here follow the same rules
-+ * as the keys for traceeval_insert().
++ * The @keys and @vals define how the traceeval instance will be populated.
++ * The @keys will be used by traceeval_query() to find an instance within
++ * the "histogram". Note, both the @keys and @vals array must end with:
++ * { .type = TRACEEVAL_TYPE_NONE }.
 + *
-+ * Note, when the caller is done with @results, it must call
-+ * traceeval_results_release() on it.
++ * The @keys and @vals passed in are copied for internal use.
 + *
-+ * Returns 1 if found, 0 if not found, and -1 on error.
++ * For any member of @keys or @vals that isn't of type TRACEEVAL_TYPE_NONE,
++ * the name field must be a null-terminated string. Members of type
++ * TRACEEVAL_TYPE_NONE are used to terminate the array, therefore their other
++ * fields are ignored.
++ *
++ * @vals can be NULL or start with its type field as TRACEEVAL_TYPE_NONE to
++ * define the values of the histogram to be empty.
++ * @keys must be populated with at least one element that is not of type
++ * TRACEEVAL_TYPE_NONE.
++ *
++ * Returns the descriptor on success, or NULL on error.
 + */
-+int traceeval_query(struct traceeval *teval, const union traceeval_data *keys,
-+		    union traceeval_data **results)
++struct traceeval *traceeval_init(const struct traceeval_type *keys,
++				 const struct traceeval_type *vals)
 +{
-+	struct entry *entry;
-+	int check;
++	struct traceeval *teval;
++	char *err_msg;
 +
-+	if (!teval || !keys || !results)
-+		return -1;
++	if (!keys)
++		return NULL;
 +
-+	/* find key and copy its corresponding value pair */
-+	if ((check = get_entry(teval, keys, &entry)) < 1)
-+		return check;
-+	return copy_traceeval_data_set(teval->nr_val_types, teval->val_types,
-+			entry->vals, results);
++	if (keys->type == TRACEEVAL_TYPE_NONE) {
++		err_msg = "Keys cannot start with type TRACEEVAL_TYPE_NONE";
++		goto fail;
++	}
++
++	/* alloc teval */
++	teval = calloc(1, sizeof(*teval));
++	if (!teval) {
++		err_msg = "Failed to allocate memory for traceeval instance";
++		goto fail;
++	}
++
++	/* alloc key types */
++	teval->nr_key_types = type_alloc(keys, &teval->key_types);
++	if (teval->nr_key_types <= 0) {
++		err_msg = "Failed to allocate user defined keys";
++		goto fail_release;
++	}
++
++	/* alloc val types */
++	teval->nr_val_types = type_alloc(vals, &teval->val_types);
++	if (teval->nr_val_types < 0) {
++		err_msg = "Failed to allocate user defined values";
++		goto fail_release;
++	}
++
++	/* alloc hist */
++	teval->hist = calloc(1, sizeof(*teval->hist));
++	if (!teval->hist) {
++		err_msg = "Failed to allocate memory for histogram";
++		goto fail_release;
++	}
++
++	return teval;
++
++fail_release:
++	traceeval_release(teval);
++
++fail:
++	print_err(err_msg);
++	return NULL;
 +}
 +
 +/*
-+ * traceeval_results_release - release the results return by traceeval_query()
-+ * @teval: The descriptor used in traceeval_query()
-+ * @results: The results returned by traceeval_query()
-+ *
-+ * The @results returned by traceeval_query() is owned by @teval, and
-+ * how it manages it is implementation specific. The caller should not
-+ * worry about it. When the caller of traceeval_query() is done with
-+ * the @results, it must call traceeval_results_release() on it to
-+ * allow traceeval to clean up its references.
++ * Frees dynamic data in @data if @type specifies a dynamic data type.
 + */
-+void traceeval_results_release(struct traceeval *teval,
-+			       union traceeval_data *results)
++static void clean_data(union traceeval_data *data, struct traceeval_type *type)
 +{
-+	if (!teval || !results) {
-+		if (!results)
-+			print_err("Results to be freed without accompanied traceeval instance!");
++		switch (type->type) {
++		case TRACEEVAL_TYPE_STRING:
++			free(data->string);
++			break;
++		case TRACEEVAL_TYPE_DYNAMIC:
++			if (type->dyn_release)
++				type->dyn_release(type, data->dyn_data);
++			break;
++		default:
++			break;
++		}
++}
++
++/*
++ * Free any specified dynamic data in @data.
++ */
++static void clean_data_set(union traceeval_data *data, struct traceeval_type *defs,
++		       size_t size)
++{
++	size_t i;
++
++	if (!data || !defs) {
++		if (data)
++			print_err("Data to be freed without accompanied types!");
 +		return;
 +	}
 +
-+	data_release(teval->nr_val_types, &results, teval->val_types);
++	for (i = 0; i < size; i++) {
++		clean_data(data + i, defs + i);
++	}
++
++	free(data);
++}
++
++/*
++ * Free all possible data stored within the entry.
++ */
++static void clean_entry(struct entry *entry, struct traceeval *teval)
++{
++	if (!entry)
++		return;
++
++	/* free dynamic traceeval_data */
++	clean_data_set(entry->keys, teval->key_types, teval->nr_key_types);
++	clean_data_set(entry->vals, teval->val_types, teval->nr_val_types);
++}
++
++/*
++ * Free the hist_table allocated to a traceeval instance.
++ */
++static void hist_table_release(struct traceeval *teval)
++{
++	struct hist_table *hist = teval->hist;
++
++	if (!hist)
++		return;
++
++	for (size_t i = 0; i < hist->nr_entries; i++) {
++		clean_entry(hist->map + i, teval);
++	}
++
++	free(hist->map);
++	free(hist);
++	teval->hist = NULL;
++}
++
++/*
++ * traceeval_release - release a traceeval descriptor
++ * @teval: An instance of traceeval returned by traceeval_init()
++ *
++ * When the caller of traceeval_init() is done with the returned @teval,
++ * it must call traceeval_release().
++ *
++ * This frees all internally allocated data of @teval and will call the
++ * corresponding dyn_release() functions registered for keys and values of
++ * type TRACEEVAL_TYPE_DYNAMIC.
++ */
++void traceeval_release(struct traceeval *teval)
++{
++	if (!teval)
++		return;
++
++	hist_table_release(teval);
++	type_release(teval->key_types, teval->nr_key_types);
++	type_release(teval->val_types, teval->nr_val_types);
++	teval->key_types = NULL;
++	teval->val_types = NULL;
++	free(teval);
 +}
 -- 
 2.41.0
