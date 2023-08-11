@@ -2,40 +2,40 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29F4EC41513
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Aug 2023 05:39:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C2DFC04A94
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Aug 2023 05:39:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232672AbjHKFjx (ORCPT
+        id S232773AbjHKFjz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Aug 2023 01:39:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47062 "EHLO
+        Fri, 11 Aug 2023 01:39:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232749AbjHKFjs (ORCPT
+        with ESMTP id S232795AbjHKFjs (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 11 Aug 2023 01:39:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5769D2D52
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15E32D69
         for <linux-trace-devel@vger.kernel.org>; Thu, 10 Aug 2023 22:39:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 15A24655E0
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2B843659F9
         for <linux-trace-devel@vger.kernel.org>; Fri, 11 Aug 2023 05:39:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E30D6C433A9;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 001B7C433AB;
         Fri, 11 Aug 2023 05:39:44 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1qUKsB-005uQF-34;
-        Fri, 11 Aug 2023 01:39:43 -0400
+        id 1qUKsC-005uQR-04;
+        Fri, 11 Aug 2023 01:39:44 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     Stevie Alvarez <stevie.6strings@gmail.com>,
         Ross Zwisler <zwisler@google.com>,
         "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 11/17] libtraceeval histogram: Add iterator APIs
-Date:   Fri, 11 Aug 2023 01:39:34 -0400
-Message-Id: <20230811053940.1408424-12-rostedt@goodmis.org>
+Subject: [PATCH v2 14/17] libtraceeval histogram: Use stack for old copy in update
+Date:   Fri, 11 Aug 2023 01:39:37 -0400
+Message-Id: <20230811053940.1408424-15-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230811053940.1408424-1-rostedt@goodmis.org>
 References: <20230811053940.1408424-1-rostedt@goodmis.org>
@@ -47,360 +47,116 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Provide an interface for the application to iterate over all the entries
-in the traceeval histogram.
-
- traceeval_iterator_get() - acquire an iterator for the given traceeval
- traceveal_iterator_put() - release the iterator
- traceeval_iterator_sort() - sort the iterator for a given key/value
- traceeval_iterator_next() - return the keys of the next entry in the
-                             traceeval
+In the update, instead of using the heap, use the stack to save the old
+values. This should save time where it does not need to allocate and then
+free the value list to do an update.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/traceeval-hist.h |   7 ++
- src/eval-local.h         |  11 ++
- src/hash.c               |   4 +
- src/histograms.c         | 255 ++++++++++++++++++++++++++++++++++++++-
- 4 files changed, 276 insertions(+), 1 deletion(-)
+ src/histograms.c | 48 ++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 34 insertions(+), 14 deletions(-)
 
-diff --git a/include/traceeval-hist.h b/include/traceeval-hist.h
-index d061a4532b06..2fc81a64e324 100644
---- a/include/traceeval-hist.h
-+++ b/include/traceeval-hist.h
-@@ -163,4 +163,11 @@ unsigned long long traceeval_stat_min(struct traceeval_stat *stat);
- unsigned long long traceeval_stat_total(struct traceeval_stat *stat);
- unsigned long long traceeval_stat_count(struct traceeval_stat *stat);
- 
-+struct traceeval_iterator *traceeval_iterator_get(struct traceeval *teval);
-+void traceeval_iterator_put(struct traceeval_iterator *iter);
-+int traceeval_iterator_sort(struct traceeval_iterator *iter, const char *sort_field,
-+			    int level, bool ascending);
-+int traceeval_iterator_next(struct traceeval_iterator *iter,
-+			    const union traceeval_data **keys);
-+
- #endif /* __LIBTRACEEVAL_HIST_H__ */
-diff --git a/src/eval-local.h b/src/eval-local.h
-index 190b19db14d2..c3ea920ed2e8 100644
---- a/src/eval-local.h
-+++ b/src/eval-local.h
-@@ -70,6 +70,17 @@ struct traceeval {
- 	size_t				nr_val_types;
- };
- 
-+struct traceeval_iterator {
-+	struct traceeval		*teval;
-+	struct entry			**entries;
-+	struct traceeval_type		**sort;
-+	bool				*direction;
-+	size_t				nr_entries;
-+	size_t				nr_sort;
-+	size_t				next;
-+	bool				needs_sort;
-+};
-+
- extern struct hash_table *hash_alloc(void);
- extern void hash_free(struct hash_table *hash);
- extern void hash_add(struct hash_table *hash, struct hash_item *item, unsigned key);
-diff --git a/src/hash.c b/src/hash.c
-index e4f2a983d39c..221145efcbb9 100644
---- a/src/hash.c
-+++ b/src/hash.c
-@@ -67,6 +67,7 @@ __hidden struct hash_iter *hash_iter_start(struct hash_table *hash)
- 		if (!hash->hash[i])
- 			continue;
- 		iter->next_item = hash->hash[i];
-+		break;
- 	}
- 	iter->current_bucket = i;
- 	return iter;
-@@ -81,6 +82,8 @@ __hidden struct hash_item *hash_iter_next(struct hash_iter *iter)
- 		return NULL;
- 
- 	item = iter->next_item;
-+	if (!item)
-+		return NULL;
- 
- 	iter->next_item = item->next;
- 	if (!iter->next_item) {
-@@ -90,6 +93,7 @@ __hidden struct hash_item *hash_iter_next(struct hash_iter *iter)
- 			if (!hash->hash[i])
- 				continue;
- 			iter->next_item = hash->hash[i];
-+			break;
- 		}
- 		iter->current_bucket = i;
- 	}
 diff --git a/src/histograms.c b/src/histograms.c
-index 9a8ec4d85301..2b823ad5c26d 100644
+index 8c73d8cd9f45..643a550422f6 100644
 --- a/src/histograms.c
 +++ b/src/histograms.c
-@@ -37,7 +37,7 @@ static void print_err(const char *fmt, ...)
-  * -1 for the other way around, and -2 on error.
+@@ -598,17 +598,23 @@ static int copy_traceeval_data(struct traceeval_type *type,
+  *
+  * Does not call release() if a copy() exists.
   */
- static int compare_traceeval_data(struct traceeval *teval,
--				  union traceeval_data *orig,
-+				  const union traceeval_data *orig,
- 				  const union traceeval_data *copy,
- 				  struct traceeval_type *type)
+-static void data_release(size_t size, union traceeval_data **data,
+-				struct traceeval_type *type)
++static void data_release(size_t size, union traceeval_data *data,
++			 struct traceeval_type *type)
  {
-@@ -904,3 +904,256 @@ int traceeval_insert(struct traceeval *teval,
- 	else
- 		return update_entry(teval, entry, vals);
+ 	for (size_t i = 0; i < size; i++) {
+ 		/* A copy should handle releases */
+ 		if (type[i].release && !type[i].copy)
+-			type[i].release(&type[i], &(*data)[i]);
++			type[i].release(&type[i], &data[i]);
+ 
+ 		if (type[i].type == TRACEEVAL_TYPE_STRING)
+-			free((*data)[i].string);
++			free(data[i].string);
+ 	}
++}
++
++static void data_release_and_free(size_t size, union traceeval_data **data,
++				struct traceeval_type *type)
++{
++	data_release(size, *data, type);
+ 	free(*data);
+ 	*data = NULL;
  }
+@@ -642,7 +648,7 @@ static int copy_traceeval_data_set(size_t size, struct traceeval_type *type,
+ 	return 1;
+ 
+ fail:
+-	data_release(i, copy, type);
++	data_release_and_free(i, copy, type);
+ 	return -1;
+ }
+ 
+@@ -701,7 +707,7 @@ void traceeval_results_release(struct traceeval *teval,
+ 		return;
+ 	}
+ 
+-	data_release(teval->nr_val_types, &results, teval->val_types);
++	data_release_and_free(teval->nr_val_types, &results, teval->val_types);
+ }
+ 
+ static struct entry *create_hist_entry(struct traceeval *teval,
+@@ -757,7 +763,7 @@ static int create_entry(struct traceeval *teval,
+ 	return 0;
+ 
+ fail:
+-	data_release(teval->nr_key_types, &new_keys, teval->key_types);
++	data_release_and_free(teval->nr_key_types, &new_keys, teval->key_types);
+ 
+ fail_stats:
+ 	free(entry->val_stats);
+@@ -772,20 +778,34 @@ fail_entry:
+  *
+  * Frees the old vals field of @entry, unless an error occurs.
+  *
+- * Return 0 on success, -1 on error.
++ * Return 1 on success, -1 on error.
+  */
+ static int update_entry(struct traceeval *teval, struct entry *entry,
+ 			const union traceeval_data *vals)
+ {
+-	union traceeval_data *new_vals;
++	struct traceeval_stat *stats = entry->val_stats;
++	struct traceeval_type *types = teval->val_types;
++	union traceeval_data *copy = entry->vals;
++	union traceeval_data old[teval->nr_val_types];
++	size_t size = teval->nr_val_types;
++	size_t i;
+ 
+-	if (copy_traceeval_data_set(teval->nr_val_types, teval->val_types,
+-				vals, entry->val_stats, &new_vals) == -1)
+-		return -1;
++	if (!size)
++		return 1;
 +
-+/**
-+ * traceeval_iterator_put - release a given iterator
-+ * @iter: The iterartor to release
-+ *
-+ * Frees the resources of an @iter that was created by
-+ * traceeval_iterator_get().
-+ */
-+void traceeval_iterator_put(struct traceeval_iterator *iter)
-+{
-+	if (!iter)
-+		return;
++	for (i = 0; i < size; i++) {
++		old[i] = copy[i];
 +
-+	free(iter->entries);
-+	free(iter);
-+}
-+
-+/**
-+ * traceeval_iterator_get - get a handle to iterate over a given traceeval
-+ * @teval: The traceeval handle to iterate over
-+ *
-+ * Returns a handle to iterate over the given @teval. Must be freed with
-+ * traceeval_iterator_put(). It can be used with traceeval_iterator_next()
-+ * to retrieve the keys of the next entry in @teval.
-+ *
-+ * Use traceeval_iterator_sort() to specify the order of the entries
-+ * returned by traceeval_iterator_next().
-+ *
-+ * Returns an allocated iterator on success, and NULL on failure.
-+ */
-+struct traceeval_iterator *traceeval_iterator_get(struct traceeval *teval)
-+{
-+	struct traceeval_iterator *iter;
-+	struct hash_table *hist = teval->hist;
-+	struct hash_iter *hiter;
-+	struct hash_item *item;
-+	int i;
-+
-+	iter = calloc(1, sizeof(*iter));
-+	if (!iter)
-+		return NULL;
-+
-+	iter->teval = teval;
-+	iter->nr_entries = hash_nr_items(hist);
-+	iter->entries = calloc(iter->nr_entries, sizeof(*iter->entries));
-+	if (!iter->entries) {
-+		free(iter);
-+		return NULL;
++		if (copy_traceeval_data(types + i, stats + i,
++					vals + i, copy + i))
++			goto fail;
 +	}
+ 
+-	clean_data_set(entry->vals, teval->val_types, teval->nr_val_types);
+-	entry->vals = new_vals;
+ 	return 0;
 +
-+	for (i = 0, hiter = hash_iter_start(hist); (item = hash_iter_next(hiter)); i++) {
-+		struct entry *entry = container_of(item, struct entry, hash);
-+
-+		iter->entries[i] = entry;
-+	}
-+
-+	/* Loop must match entries */
-+	if (i != iter->nr_entries) {
-+		traceeval_iterator_put(iter);
-+		return NULL;
-+	}
-+
-+	return iter;
-+}
-+
-+static struct traceeval_type *find_sort_type(struct traceeval *teval,
-+					     const char *name)
-+{
-+	struct traceeval_type *type;
-+	int i;
-+
-+	/* Check values first, and then keys */
-+	for (i = 0; i < teval->nr_val_types; i++) {
-+		type = &teval->val_types[i];
-+
-+		if (strcmp(type->name, name) == 0)
-+			return type;
-+	}
-+
-+	for (i = 0; i < teval->nr_key_types; i++) {
-+		type = &teval->key_types[i];
-+
-+		if (strcmp(type->name, name) == 0)
-+			return type;
-+	}
-+
-+	return NULL;
-+}
-+
-+/**
-+ * traceeval_iterator_sort - sort the entries that an iterator will return
-+ * @iter: The iterator to specify the sort order of the entries
-+ * @sort_field: The name of the key or value to sort with.
-+ * @level: The level of sorting (0 for first order, 1 for second, ...)
-+ * @ascending: If the sort should go forward or backward.
-+ *
-+ * The iterator has a list of entries to produce with traceeval_iterator_next().
-+ * This function specifies what the order of the output of that function will
-+ * be. Note, whenever this function is called, it resets the @iter so that
-+ * the traceveal_iterator_next() will start from the beginning again.
-+ *
-+ * In other words, be very careful to ever call this function in a middle
-+ * of a loop that is using traceeval_iterator_next(), otherwise you may end
-+ * up in an infinite loop!
-+ *
-+ * The @level specifies the level of sorting. That is, for @level = 0,
-+ * it will decide the main sorting of the @iter. For @level = 1, it will
-+ * be the tie breaker for two entries that are equal for the @level = 0
-+ * sort. @level = 2, will be the tie breaker for @level = 1, and so on.
-+ *
-+ * Note, if traceeval_iterator_next() is called, and there's a missing @level,
-+ * it will fail. That is, if this function is called once with @level = 0 and
-+ * againg with @level = 2, but never with @level = 1, the call to
-+ * traceeval_iterator_next() will fail.
-+ *
-+ * If this function is called multiple times with the same @level, then the
-+ * last call will define the what that @level will do.
-+ *
-+ * The @ascending will determine if "smaller" items go first if true, and
-+ * "larger" items go first if false.
-+ *
-+ * Return 0 on success and -1 on failure.
-+ */
-+int traceeval_iterator_sort(struct traceeval_iterator *iter, const char *sort_field,
-+			    int level, bool ascending)
-+{
-+	bool *direction = iter->direction;
-+	struct traceeval_type **sort = iter->sort;
-+	struct traceeval_type *type;
-+
-+	type = find_sort_type(iter->teval, sort_field);
-+	if (!type)
-+		return -1;
-+
-+	/* pointer and dynamic types must have a cmp function */
-+	switch (type->type) {
-+	case TRACEEVAL_TYPE_POINTER:
-+	case TRACEEVAL_TYPE_DYNAMIC:
-+		if (!type->cmp)
-+			return -1;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	if ((level + 1) > iter->nr_sort) {
-+		sort = realloc(sort, sizeof(*sort) * (level + 1));
-+		if (!sort)
-+			return -1;
-+
-+		iter->sort = sort;
-+
-+		direction = realloc(direction, sizeof(*direction) * (level + 1));
-+		if (!direction)
-+			return -1;
-+
-+		iter->direction = direction;
-+
-+		/* Make sure the newly allocated contain NULL */
-+		for (int i = iter->nr_sort; i < (level + 1); i++)
-+			sort[i] = NULL;
-+
-+		iter->nr_sort = level + 1;
-+	}
-+
-+	sort[level] = type;
-+	direction[level] = ascending;
-+	iter->needs_sort = true;
-+	return 0;
-+}
-+
-+static int iter_cmp(const void *A, const void *B, void *data)
-+{
-+	struct traceeval_iterator *iter = data;
-+	struct traceeval *teval = iter->teval;
-+	const struct entry *a = *((const struct entry **)A);
-+	const struct entry *b = *((const struct entry **)B);
-+	int ret;
-+
-+	for (int i = 0; i < iter->nr_sort; i++) {
-+		struct traceeval_type *type;
-+		union traceeval_data *dataA;
-+		union traceeval_data *dataB;
-+
-+		type = iter->sort[i];
-+
-+		if (type->flags & TRACEEVAL_FL_KEY) {
-+			dataA = &a->keys[type->index];
-+			dataB = &b->keys[type->index];
-+		} else {
-+			dataA = &a->vals[type->index];
-+			dataB = &b->vals[type->index];
-+		}
-+
-+		ret = compare_traceeval_data(teval, dataA, dataB, type);
-+
-+		if (ret)
-+			return iter->direction[i] ? ret : ret * -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int sort_iter(struct traceeval_iterator *iter)
-+{
-+	int i;
-+
-+	/* Make sure all levels are filled */
-+	for (i = 0; i < iter->nr_sort; i++) {
-+		if (!iter->sort[i])
-+			return -1;
-+	}
-+
-+	qsort_r(iter->entries, iter->nr_entries, sizeof(*iter->entries),
-+		iter_cmp, iter);
-+
-+	iter->needs_sort = false;
-+	iter->next = 0;
-+
-+	return 0;
-+}
-+
-+/**
-+ * traceeval_iterator_next - retrieve the next entry from an iterator
-+ * @iter: The iterator to retrieve the next entry from
-+ * @keys: The returned keys of the next entry (if exists)
-+ *
-+ * This returns the keys for the next entry in the traceeval being
-+ * iterated over by @iter. If there are no more entries, 0 is returned
-+ * and @keys are untouched.
-+ *
-+ * Returns 1 if another entry is returned, or 0 if not (or negative on error)
-+ */
-+int traceeval_iterator_next(struct traceeval_iterator *iter,
-+			    const union traceeval_data **keys)
-+{
-+	struct entry *entry;
-+	int ret;
-+
-+	if (iter->needs_sort) {
-+		ret = sort_iter(iter);
-+		if (ret < 0)
-+			return ret;
-+		iter->next = 0;
-+	}
-+
-+	if (iter->next >= iter->nr_entries)
-+		return 0;
-+
-+	entry = iter->entries[iter->next++];
-+	*keys = entry->keys;
-+	return 1;
-+}
++fail:
++	data_release(i, old, types);
++	return -1;
+ }
+ 
+ struct traceeval_stat *traceeval_stat(struct traceeval *teval,
 -- 
 2.40.1
 
