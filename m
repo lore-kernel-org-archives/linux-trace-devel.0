@@ -2,188 +2,135 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CF5CEB64DD
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Aug 2023 05:30:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47B14EB64DD
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Aug 2023 05:39:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbjHKFaQ (ORCPT
+        id S232383AbjHKFjq (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Aug 2023 01:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44134 "EHLO
+        Fri, 11 Aug 2023 01:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjHKFaQ (ORCPT
+        with ESMTP id S229577AbjHKFjq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Aug 2023 01:30:16 -0400
+        Fri, 11 Aug 2023 01:39:46 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE04272D
-        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Aug 2023 22:30:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5FF2D43
+        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Aug 2023 22:39:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 26BE360EF8
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Aug 2023 05:30:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C978C433C8;
-        Fri, 11 Aug 2023 05:30:13 +0000 (UTC)
-Date:   Fri, 11 Aug 2023 01:30:12 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5FC5164150
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Aug 2023 05:39:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4E98C433C8;
+        Fri, 11 Aug 2023 05:39:44 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.96)
+        (envelope-from <rostedt@rostedt.homelinux.com>)
+        id 1qUKsB-005uPY-2B;
+        Fri, 11 Aug 2023 01:39:43 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ross Zwisler <zwisler@google.com>
-Cc:     linux-trace-devel@vger.kernel.org,
-        Stevie Alvarez <stevie.6strings@gmail.com>
-Subject: Re: [PATCH 6/6] libtraceeval samples: Update task-eval to use the
- histogram logic
-Message-ID: <20230811013012.2528a864@gandalf.local.home>
-In-Reply-To: <20230810202838.GB1961992@google.com>
-References: <20230809031313.1298605-1-rostedt@goodmis.org>
-        <20230809031313.1298605-7-rostedt@goodmis.org>
-        <20230810202838.GB1961992@google.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To:     linux-trace-devel@vger.kernel.org
+Cc:     Stevie Alvarez <stevie.6strings@gmail.com>,
+        Ross Zwisler <zwisler@google.com>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Subject: [PATCH v2 00/17] libtraceeval histogram: Updates
+Date:   Fri, 11 Aug 2023 01:39:23 -0400
+Message-Id: <20230811053940.1408424-1-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 10 Aug 2023 14:28:38 -0600
-Ross Zwisler <zwisler@google.com> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> On Tue, Aug 08, 2023 at 11:13:13PM -0400, Steven Rostedt wrote:
-> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> > 
-> > Convert task-eval over to the new API.
-> > 
-> > Note, it still requires some functions for displaying the output, but
-> > those were added just as stubs to get an idea on how to use it.
-> > 
-> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> > ---
-> >  include/traceeval-hist.h |   1 +
-> >  samples/Makefile         |   2 +-
-> >  samples/task-eval.c      | 683 ++++++++++++++++++++++-----------------
-> >  3 files changed, 388 insertions(+), 298 deletions(-)
-> > 
-> > diff --git a/include/traceeval-hist.h b/include/traceeval-hist.h
-> > index b3427c662d99..c363444f7fae 100644
-> > --- a/include/traceeval-hist.h
-> > +++ b/include/traceeval-hist.h  
-> <>
-> > @@ -111,28 +192,45 @@ static void update_process(struct task_data *tdata, const char *comm,
-> >  			   enum sched_state state, enum command cmd,
-> >  			   unsigned long long ts)  
-> 
-> update_process(), update_cpu() and update_thread() are all pretty much the
-> same, and I think you could combine them if you wanted.  Just create a generic
-> 'update' that takes keys & vals & a pair of 'struct traceval' pointers, one
-> for start data and one for delta data.  That also relies on the fact that the
-> TS always comes first in 'vals'.  Up to you if that's cleaner or not.
+This patch set is based on top of:
 
-I did actually create a struct teval_pair because I was getting confused ;-)
+ https://lore.kernel.org/all/20230809175340.3066-1-stevie.6strings@gmail.com/
 
-But I do agree, some of this can be consolidated a bit more. Right now,
-this is just a bare minimum switch from the old logic to the new so that I
-can make sure they produce the same output.
+I added a sample program task-eval which is one of the tools that will be
+using this library. The first patch adds task-eval but that is still using
+the old API (defined in trace-analysis.c).
 
-> 
-> >  {
-> > -	struct traceeval_key keys[] = {
-> > +	union traceeval_data keys[] = {
-> >  		{
-> > -			.type = TRACEEVAL_TYPE_STRING,
-> > -			.string = comm,
-> > +			.cstring	= comm,
-> >  		},
-> >  		{
-> > -			.type = TRACEEVAL_TYPE_NUMBER,
-> > -			.number = state,
-> > +			.number		= state,
-> > +		},
-> > +	};
-> > +	union traceeval_data vals[] = {
-> > +		{
-> > +			.number_64	= ts,
-> > +		},
-> > +		{
-> > +			.number		= (long)NULL, /* data */
-> >  		}
-> >  	};
-> > +	union traceeval_data *results;
-> > +	unsigned long long delta;
-> >  	int ret;
-> >  
-> >  	switch (cmd) {
-> >  	case START:
-> > -		ret = traceeval_n_start(tdata->teval_processes, keys, ts);
-> > +		ret = traceeval_insert(tdata->teval_processes_start, keys, vals);
-> >  		if (ret < 0)
-> >  			pdie("Could not start process");
-> >  		return;
-> >  	case STOP:
-> > -		ret = traceeval_n_stop(tdata->teval_processes, keys, ts);
-> > +		ret = traceeval_query(tdata->teval_processes_start, keys, &results);
-> > +		if (ret < 0)
-> > +			return;
-> > +
-> > +		delta = ts - results[0].number_64;
-> > +		results[0].number_64 = delta;
-> > +
-> > +		ret = traceeval_insert(tdata->teval_processes, keys, results);
-> >  		if (ret < 0)
-> >  			pdie("Could not stop process");
-> > +
-> > +		traceeval_results_release(tdata->teval_processes_start, results);
-> >  		return;
-> >  	}
-> >  }  
-> <>
-> > @@ -283,32 +421,15 @@ static struct tep_format_field *get_field(struct tep_event *event, const char *n
-> >  
-> >  static void init_process_data(struct process_data *pdata)
-> >  {
-> > -	struct traceeval_key_info cpu_info[] = {
-> > -		{
-> > -			.type = TRACEEVAL_TYPE_NUMBER,
-> > -			.name = "CPU",
-> > -		},
-> > -		{
-> > -			.type = TRACEEVAL_TYPE_NUMBER,
-> > -			.name = "Schedule state",
-> > -		}
-> > -	};
-> > -	struct traceeval_key_info thread_info[] = {
-> > -		{
-> > -			.type = TRACEEVAL_TYPE_NUMBER,
-> > -			.name = "TID",
-> > -		},
-> > -		{
-> > -			.type = TRACEEVAL_TYPE_NUMBER,
-> > -			.name = "Schedule state",
-> > -		}
-> > -	};
-> >  
-> > -	pdata->teval_cpus = traceeval_2_alloc("CPUs", cpu_info);
-> > +	pdata->teval_cpus = traceeval_init(cpu_keys, timestamp_vals);
-> > +	if (!pdata->teval_cpus)
-> > +		pdie("Creating trace eval");
-> > +	pdata->teval_cpus = traceeval_init(cpu_keys, timestamp_vals);
-> >  	if (!pdata->teval_cpus)
-> >  		pdie("Creating trace eval");  
-> 
-> We're initializing pdata->teval_cpus twice - I'm guessing one of these wants to
-> be pdata->teval_cpus_start?
+The next patches modify the new API to fit with the use case of task-eval.
+One is to use "pointer" as I'm not sure exactly the usecase of the dynamic
+structure.
 
-Good catch. I also caught it when I started working back on it.
+The cmp and release callbacks are changed to be more generic, and they get
+called if they simply exist for a given type. I can imagine wanting a
+release function for event the most mundane types (like number_32).
 
-> 
-> >  
-> > -	pdata->teval_threads = traceeval_2_alloc("Threads", thread_info);
-> > +	pdata->teval_threads = traceeval_init(thread_keys, timestamp_vals);
-> >  	if (!pdata->teval_threads)
-> >  		pdie("Creating trace eval");  
-> 
-> Missing init of pdata->teval_threads_start?
+The cmp was also updated to pass in the traceeval descriptor, as I found
+that I needed access to it while doing a compare (although, I rewrote the
+code a bit where that use case isn't in the tool anymore).
 
-Yep.
+Some fixes were made to the query.
 
-new patches in a bit. (now I can go to bed!)
+I also did a bit of code restructuring and add the hash and iterator logic.
 
--- Steve
+The last patch updates the sample code task-eval.c and has it give pretty
+much the same logic as the original.
+
+That sample could be updated to implement the code consolidation that Ross
+suggested. I may do that later.
+
+Happy programming!
+
+Changes since v1: https://lore.kernel.org/all/20230809031313.1298605-1-rostedt@goodmis.org/
+
+ - Lots!
+
+   - Converted to using a hash table
+
+   - Removed the unused compare code. With the other updates, it was
+     taking too much time to keep updating them.
+
+   - Added checks and labels to the types to have them know what type
+     they are, and index they are at.
+
+   - Added stat logic
+
+   - Added iterator logic
+
+   - Have a working sample with the new code!
+
+Steven Rostedt (Google) (17):
+  libtraceeval histograms: Fix traceeval_results_release() error message
+  libtraceeval: Add sample task-eval program
+  libtraceeval hist: Add pointer and const string types
+  libtraceeval histogram: Have cmp and release functions be generic
+  libtraceeval histograms: Add traceeval struct to compare function
+  libtraceeval histogram: Remove comparing of traceeval and types
+  libtraceeval: Convert hist array into a hash table
+  libtraceeval histograms: Move hash functions into their own file
+  libtraceeval histogram: Label and check keys and values
+  libtraceeval histogram: Add updating of stats
+  libtraceeval histogram: Add iterator APIs
+  libtraceeval histogram: Add data copy callback
+  libtraceeval histogram: Do the release on updates
+  libtraceeval histogram: Use stack for old copy in update
+  libtraceeval histogram: Add traceeval_iterator_sort_custom()
+  libtraceeval histogram: Have traceeval_query() just give the pointer
+    to results
+  libtraceeval samples: Update task-eval to use the histogram logic
+
+ Makefile                 |   4 +-
+ include/traceeval-hist.h | 110 +++--
+ include/traceeval-test.h |  16 -
+ samples/Makefile         |  29 ++
+ samples/task-eval.c      | 952 +++++++++++++++++++++++++++++++++++++++
+ src/Makefile             |   1 +
+ src/eval-local.h         | 123 +++++
+ src/hash.c               | 123 +++++
+ src/histograms.c         | 878 ++++++++++++++++++++++++++----------
+ 9 files changed, 1952 insertions(+), 284 deletions(-)
+ delete mode 100644 include/traceeval-test.h
+ create mode 100644 samples/Makefile
+ create mode 100644 samples/task-eval.c
+ create mode 100644 src/eval-local.h
+ create mode 100644 src/hash.c
+
+-- 
+2.40.1
+
