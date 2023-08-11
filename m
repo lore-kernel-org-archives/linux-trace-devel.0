@@ -2,40 +2,40 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 321EAC04A94
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Aug 2023 05:39:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CFBCDC04E69
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Aug 2023 05:39:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232365AbjHKFju (ORCPT
+        id S232013AbjHKFju (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 11 Aug 2023 01:39:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46996 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232555AbjHKFjr (ORCPT
+        with ESMTP id S232365AbjHKFjq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Aug 2023 01:39:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68862D54
+        Fri, 11 Aug 2023 01:39:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1790D2D52
         for <linux-trace-devel@vger.kernel.org>; Thu, 10 Aug 2023 22:39:46 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F08CD647C1
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 707C864400
         for <linux-trace-devel@vger.kernel.org>; Fri, 11 Aug 2023 05:39:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCEA6C433CC;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9E4AC433D9;
         Fri, 11 Aug 2023 05:39:44 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1qUKsB-005uQ7-2v;
+        id 1qUKsB-005uPv-2h;
         Fri, 11 Aug 2023 01:39:43 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     Stevie Alvarez <stevie.6strings@gmail.com>,
         Ross Zwisler <zwisler@google.com>,
         "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 09/17] libtraceeval histogram: Label and check keys and values
-Date:   Fri, 11 Aug 2023 01:39:32 -0400
-Message-Id: <20230811053940.1408424-10-rostedt@goodmis.org>
+Subject: [PATCH v2 06/17] libtraceeval histogram: Remove comparing of traceeval and types
+Date:   Fri, 11 Aug 2023 01:39:29 -0400
+Message-Id: <20230811053940.1408424-7-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230811053940.1408424-1-rostedt@goodmis.org>
 References: <20230811053940.1408424-1-rostedt@goodmis.org>
@@ -47,159 +47,205 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-When initializing the traceeval descriptor, mark each key and value as
-their type via the flags (keys get TRACEEVAL_FL_KEY and values get
-TRACEEVAL_FL_VALUE) as well as adding the index of that key/value type of
-the key/value data it represents. This will be used by the iterators for
-sorting. The iterator will point to the key/value type and use that
-information to know which key/value data to sort with.
-
-The keys and values passed in will also be updated to have their flags
-match the proper key/value type as well as the index. This will be useful
-for traceeval_stat() that will take the type as a parameter, and use it to
-figure out fast where the data is that is to be looked up.
-
-All pointer and dynamic types in keys must have both a cmp and hash
-function defined, otherwise they cannot be indexed or hashed. Add a check
-to make sure all key types of pointer and dynamic have those functions.
+The compare functions for traceeval and types were created for testing. But
+because the tests have not yet been pulled in, remove these functions as
+they are currently unused and cause an unnecessary burden of making sure
+they are updated when other code they use is updated.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/traceeval-hist.h | 11 +++++---
- src/histograms.c         | 60 ++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 64 insertions(+), 7 deletions(-)
+ Makefile                 |   1 -
+ include/traceeval-test.h |  16 -----
+ src/histograms.c         | 127 ---------------------------------------
+ 3 files changed, 144 deletions(-)
+ delete mode 100644 include/traceeval-test.h
 
-diff --git a/include/traceeval-hist.h b/include/traceeval-hist.h
-index 4baed4237787..1c02f3039809 100644
---- a/include/traceeval-hist.h
-+++ b/include/traceeval-hist.h
-@@ -32,8 +32,10 @@ enum traceeval_data_type {
+diff --git a/Makefile b/Makefile
+index 62ca9285d7a0..d8c57ef4e356 100644
+--- a/Makefile
++++ b/Makefile
+@@ -172,7 +172,6 @@ libs: $(LIBRARY_A) $(LIBRARY_SO)
  
- /* Statistics specification flags */
- enum traceeval_flags {
--	TRACEEVAL_FL_SIGNED		= (1 << 0),
--	TRACEEVAL_FL_TIMESTAMP		= (1 << 1),
-+	TRACEEVAL_FL_KEY		= (1 << 0),
-+	TRACEEVAL_FL_VALUE		= (1 << 1),
-+	TRACEEVAL_FL_SIGNED		= (1 << 2),
-+	TRACEEVAL_FL_TIMESTAMP		= (1 << 3),
- };
+ VALGRIND = $(shell which valgrind)
+ UTEST_DIR = utest
+-UTEST_BINARY = eval-utest
  
- /*
-@@ -120,6 +122,7 @@ struct traceeval_type {
- 	char				*name;
- 	enum traceeval_data_type	type;
- 	size_t				flags;
-+	size_t				index;
- 	size_t				id;
- 	traceeval_data_release_fn	release;
- 	traceeval_data_cmp_fn		cmp;
-@@ -142,8 +145,8 @@ struct traceeval;
- 
- /* Histogram interfaces */
- 
--struct traceeval *traceeval_init(const struct traceeval_type *keys,
--				 const struct traceeval_type *vals);
-+struct traceeval *traceeval_init(struct traceeval_type *keys,
-+				 struct traceeval_type *vals);
- 
- void traceeval_release(struct traceeval *teval);
- 
+ test: force $(LIBRARY_STATIC)
+ ifneq ($(CUNIT_INSTALLED),1)
+diff --git a/include/traceeval-test.h b/include/traceeval-test.h
+deleted file mode 100644
+index bb8092ac2e50..000000000000
+--- a/include/traceeval-test.h
++++ /dev/null
+@@ -1,16 +0,0 @@
+-/* SPDX-License-Identifier: MIT */
+-/*
+- * libtraceeval interface for unit testing.
+- *
+- * Copyright (C) 2023 Google Inc, Steven Rostedt <rostedt@goodmis.org>
+- * Copyright (C) 2023 Google Inc, Stevie Alvarez <stevie.6strings@gmail.com>
+- */
+-
+-#ifndef __LIBTRACEEVAL_TEST_H__
+-#define __LIBTRACEEVAL_TEST_H__
+-
+-#include <traceeval-hist.h>
+-
+-int traceeval_compare(struct traceeval *orig, struct traceeval *copy);
+-
+-#endif /* __LIBTRACEEVAL_TEST_H__ */
 diff --git a/src/histograms.c b/src/histograms.c
-index 574bb115ffc0..a1a2daaa2e9b 100644
+index ece1395ac300..1ae1d793b6a2 100644
 --- a/src/histograms.c
 +++ b/src/histograms.c
-@@ -203,6 +203,44 @@ fail:
- 	return -1;
+@@ -12,8 +12,6 @@
+ 
+ #include <traceeval-hist.h>
+ 
+-#include "traceeval-test.h"
+-
+ /*
+  * Compare two integers of variable length.
+  *
+@@ -63,50 +61,6 @@ static void print_err(const char *fmt, ...)
+ 	fprintf(stderr, "\n");
  }
  
-+static int check_keys(struct traceeval_type *keys)
-+{
-+	for (int i = 0; keys[i].type != TRACEEVAL_TYPE_NONE; i++) {
-+		/* Define this as a key */
-+		keys[i].flags |= TRACEEVAL_FL_KEY;
-+		keys[i].flags &= ~TRACEEVAL_FL_VALUE;
-+
-+		keys[i].index = i;
-+
-+		switch (keys[i].type) {
-+		case TRACEEVAL_TYPE_POINTER:
-+		case TRACEEVAL_TYPE_DYNAMIC:
-+			/*
-+			 * Key pointers and dynamic types must have a
-+			 * cmp and hash function
-+			 */
-+			if (!keys[i].cmp || !keys[i].hash)
-+				return -1;
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static int check_vals(struct traceeval_type *vals)
-+{
-+	for (int i = 0; vals[i].type != TRACEEVAL_TYPE_NONE; i++) {
-+		/* Define this as a value */
-+		vals[i].flags |= TRACEEVAL_FL_VALUE;
-+		vals[i].flags &= ~TRACEEVAL_FL_KEY;
-+
-+		vals[i].index = i;
-+	}
-+	return 0;
-+}
-+
+-/*
+- * Compare traceeval_type instances for equality.
+- *
+- * Return 1 if @orig and @copy are the same, 0 otherwise.
+- */
+-static int compare_traceeval_type(struct traceeval_type *orig,
+-				  struct traceeval_type *copy,
+-				  size_t orig_size, size_t copy_size)
+-{
+-	size_t i;
+-
+-	/* same memory/NULL */
+-	if (orig == copy)
+-		return 1;
+-	if (!!orig != !!copy)
+-		return 0;
+-
+-	if (orig_size != copy_size)
+-		return 0;
+-
+-	for (i = 0; i < orig_size; i++) {
+-		if (orig[i].type != copy[i].type)
+-			return 0;
+-		if (orig[i].flags != copy[i].flags)
+-			return 0;
+-		if (orig[i].id != copy[i].id)
+-			return 0;
+-		if (orig[i].release != copy[i].release)
+-			return 0;
+-		if (orig[i].cmp != copy[i].cmp)
+-			return 0;
+-
+-		// make sure both names are same type
+-		if (!!orig[i].name != !!copy[i].name)
+-			return 0;
+-		if (!orig[i].name)
+-			continue;
+-		if (strcmp(orig[i].name, copy[i].name) != 0)
+-			return 0;
+-	}
+-
+-	return 1;
+-}
+-
  /*
-  * traceeval_init - create a traceeval descriptor
-  * @keys: Defines the keys to differentiate traceeval entries
-@@ -213,7 +251,12 @@ fail:
-  * the "histogram". Note, both the @keys and @vals array must end with:
-  * { .type = TRACEEVAL_TYPE_NONE }.
+  * Compare traceeval_data instances.
   *
-- * The @keys and @vals passed in are copied for internal use.
-+ * The @keys and @vals passed in are copied for internal use, but they are
-+ * still modified to add the flags to denote their type (key or value) as
-+ * well as the index into the keys or vals array respectively. This is
-+ * to help speed up other operations that may need to know the index of
-+ * the given type, and remove the burden from the user to make sure they
-+ * are added.
-  *
-  * For any member of @keys or @vals that isn't of type TRACEEVAL_TYPE_NONE,
-  * the name field must be a null-terminated string. Members of type
-@@ -227,11 +270,12 @@ fail:
-  *
-  * Returns the descriptor on success, or NULL on error.
-  */
--struct traceeval *traceeval_init(const struct traceeval_type *keys,
--				 const struct traceeval_type *vals)
-+struct traceeval *traceeval_init(struct traceeval_type *keys,
-+				 struct traceeval_type *vals)
- {
- 	struct traceeval *teval;
- 	char *err_msg;
-+	int ret;
+@@ -185,87 +139,6 @@ static int compare_traceeval_data_set(struct traceeval *teval,
+ 	return 1;
+ }
  
- 	if (!keys)
- 		return NULL;
-@@ -248,6 +292,16 @@ struct traceeval *traceeval_init(const struct traceeval_type *keys,
- 		goto fail;
- 	}
- 
-+	ret = check_keys(keys);
-+	if (ret < 0)
-+		goto fail;
-+
-+	if (vals) {
-+		ret = check_vals(vals);
-+		if (ret < 0)
-+			goto fail;
-+	}
-+
- 	/* alloc key types */
- 	teval->nr_key_types = type_alloc(keys, &teval->key_types);
- 	if (teval->nr_key_types <= 0) {
+-/*
+- * Return 1 if @orig and @copy are the same, 0 if not, and -1 on error.
+- */
+-static int compare_entries(struct entry *orig, struct entry *copy,
+-			   struct traceeval *teval)
+-{
+-	int check;
+-
+-	/* compare keys */
+-	check = compare_traceeval_data_set(teval, orig->keys, copy->keys,
+-			teval->key_types, teval->nr_key_types);
+-	if (check < 1)
+-		return check;
+-
+-	/* compare values */
+-	check = compare_traceeval_data_set(teval, orig->vals, copy->vals,
+-			teval->val_types, teval->nr_val_types);
+-	return check;
+-}
+-
+-/*
+- * Compares the hist fields of @orig and @copy for equality.
+- *
+- * Assumes all other aspects of @orig and @copy are the same.
+- *
+- * Return 1 if struct hist_table of @orig and @copy are the same, 0 if not,
+- * and -1 on error.
+- */
+-static int compare_hist(struct traceeval *orig, struct traceeval *copy)
+-{
+-	struct hist_table *o_hist;
+-	struct hist_table *c_hist;
+-	int c;
+-
+-	o_hist = orig->hist;
+-	c_hist = copy->hist;
+-
+-	if (o_hist->nr_entries != c_hist->nr_entries)
+-		return 0;
+-
+-	for (size_t i = 0; i < o_hist->nr_entries; i++) {
+-		if ((c = compare_entries(o_hist->map + i, c_hist->map + i, orig)) < 1)
+-			return c;
+-	}
+-
+-	return 1;
+-}
+-
+-/*
+- * traceeval_compare - Check equality between two traceeval instances
+- * @orig: The first traceeval instance
+- * @copy: The second traceeval instance
+- *
+- * This compares the values of the key definitions, value definitions, and
+- * inserted data between @orig and @copy in order. It does not compare
+- * by memory address, except for struct traceeval_type's release() and
+- * cmp() fields.
+- *
+- * Returns 1 if @orig and @copy are the same, 0 if not, and -1 on error.
+- */
+- int traceeval_compare(struct traceeval *orig, struct traceeval *copy)
+-{
+-	int keys;
+-	int vals;
+-	int hists;
+-
+-	if (!orig || !copy)
+-		return -1;
+-
+-	keys = compare_traceeval_type(orig->key_types, copy->key_types,
+-			orig->nr_key_types, copy->nr_key_types);
+-	vals = compare_traceeval_type(orig->val_types, copy->val_types,
+-			orig->nr_val_types, copy->nr_val_types);
+-	hists = compare_hist(orig, copy);
+-
+-	if (hists == -1)
+-		return -1;
+-
+-	return keys && vals && hists;
+-}
+-
+ /*
+  * type_release - free a struct traceeval_type array
+  * @defs: The array to release
 -- 
 2.40.1
 
