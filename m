@@ -2,123 +2,244 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0FA3C001B0
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Aug 2023 19:49:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E91FCC04A94
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Aug 2023 20:24:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240005AbjHOTsn (ORCPT
+        id S237353AbjHOUYL (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 15 Aug 2023 15:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
+        Tue, 15 Aug 2023 16:24:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240004AbjHOTsP (ORCPT
+        with ESMTP id S234108AbjHOUXg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 15 Aug 2023 15:48:15 -0400
-Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EADE11B2
-        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Aug 2023 12:48:14 -0700 (PDT)
-Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1c11d53221cso3522564fac.2
-        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Aug 2023 12:48:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692128893; x=1692733693;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CJcMEY2/djKsCIBdv31QPV5NAQo5pL66OLNxGUUdf34=;
-        b=5xNpBwCUrAS4ezT6UDGjOi8O/5DoIaSylkwFU41DEWfI3GkUau6m4nbluA/iJr7sWS
-         cisw6YGKz9BvtHeVb0CHcIKgY0zp86MDDHKkvw1yloh31nlCGjZnFFNshL6tcP9lpTzM
-         D2nh4ekGthg9uaiPrylfEWheAJB8yICGWb9v4wIl/L4K7kwR654nWI425k6OvRTA/joq
-         jPfsdqea6w1Exb067NlDUSO4JwaWE2mHifOR4SDU3YDP6xe5yEDg7D3sRejCQum0NjQ1
-         5fjnKzbAVHPGn9e0OpDE3UtNTIrAkJ03Q1Zm2wL/gaHouBkalaY1w8tPWEzJtZqlMkv1
-         5H5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692128893; x=1692733693;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CJcMEY2/djKsCIBdv31QPV5NAQo5pL66OLNxGUUdf34=;
-        b=Ge0wEpOIibISp5gJpBEdZ5+rmC6Kfvz3VHN6bzhdHo9hNCiUfR2CJlV04r2OdOp4xv
-         R86UTHJ4te57DXptaZG0AaLkcbtTITSNae4Jqr1Lfb4yOgWCIcuSc/3e22Gitkz/A4x/
-         fGQqXBAYCLDoOal2JqtZrr3JAn7df/BIq1MiWKeDDS7ZBOWFhYRmAv0ZjPa+lXG/Qkc+
-         XLlbU17AT0xBqcTqyo8VculBwpKwVPwVZywByBDwbFmWnY1ylFsaL1PDMMppMFi634it
-         X+iP8IYt97tkMp/cbS9DWEG8S91laGyBpCc+xi3LFrEa+iNatswik5OZC1RcWcJW/Pzm
-         Teig==
-X-Gm-Message-State: AOJu0YwfqrE0bdpx/wL9Hv+RRrO2Qk76jfsOY5Xzw6vDmQ/A3k/1sMUQ
-        YsB6IvsqYuR9EBxUsyiC5PGaZk1NPm91LQLOTjex7Q==
-X-Google-Smtp-Source: AGHT+IFuNeXHG6FczhrE7fFGBHvgKuDuj0ZxWTIkmE5cfK4iMziwpw2+o1pYzuEc4Vf63jUQza+lXQ==
-X-Received: by 2002:a05:6870:31c5:b0:1be:c688:1c0 with SMTP id x5-20020a05687031c500b001bec68801c0mr14008758oac.47.1692128893332;
-        Tue, 15 Aug 2023 12:48:13 -0700 (PDT)
-Received: from google.com ([2620:15c:183:200:f77a:c0d7:f137:55fe])
-        by smtp.gmail.com with ESMTPSA id u3-20020a02cbc3000000b0042b45475212sm3888780jaq.81.2023.08.15.12.48.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 12:48:12 -0700 (PDT)
-Date:   Tue, 15 Aug 2023 13:48:09 -0600
-From:   Ross Zwisler <zwisler@google.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
+        Tue, 15 Aug 2023 16:23:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FAEB10E9
+        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Aug 2023 13:23:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 38DE064647
+        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Aug 2023 20:23:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30791C433C8;
+        Tue, 15 Aug 2023 20:23:33 +0000 (UTC)
+Date:   Tue, 15 Aug 2023 16:23:33 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ross Zwisler <zwisler@google.com>
 Cc:     linux-trace-devel@vger.kernel.org,
         Stevie Alvarez <stevie.6strings@gmail.com>
-Subject: Re: [PATCH v2 09/17] libtraceeval histogram: Label and check keys
- and values
-Message-ID: <20230815194809.GE780024@google.com>
+Subject: Re: [PATCH v2 08/17] libtraceeval histograms: Move hash functions
+ into their own file
+Message-ID: <20230815162333.621b6d8b@gandalf.local.home>
+In-Reply-To: <20230815193156.GD780024@google.com>
 References: <20230811053940.1408424-1-rostedt@goodmis.org>
- <20230811053940.1408424-10-rostedt@goodmis.org>
+        <20230811053940.1408424-9-rostedt@goodmis.org>
+        <20230815193156.GD780024@google.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230811053940.1408424-10-rostedt@goodmis.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 01:39:32AM -0400, Steven Rostedt wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> When initializing the traceeval descriptor, mark each key and value as
-> their type via the flags (keys get TRACEEVAL_FL_KEY and values get
-> TRACEEVAL_FL_VALUE) as well as adding the index of that key/value type of
-> the key/value data it represents. This will be used by the iterators for
-> sorting. The iterator will point to the key/value type and use that
-> information to know which key/value data to sort with.
-> 
-> The keys and values passed in will also be updated to have their flags
-> match the proper key/value type as well as the index. This will be useful
-> for traceeval_stat() that will take the type as a parameter, and use it to
-> figure out fast where the data is that is to be looked up.
-> 
-> All pointer and dynamic types in keys must have both a cmp and hash
-> function defined, otherwise they cannot be indexed or hashed. Add a check
-> to make sure all key types of pointer and dynamic have those functions.
-> 
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
->  include/traceeval-hist.h | 11 +++++---
->  src/histograms.c         | 60 ++++++++++++++++++++++++++++++++++++++--
->  2 files changed, 64 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/traceeval-hist.h b/include/traceeval-hist.h
-> index 4baed4237787..1c02f3039809 100644
-> --- a/include/traceeval-hist.h
-> +++ b/include/traceeval-hist.h
-<>
-> @@ -248,6 +292,16 @@ struct traceeval *traceeval_init(const struct traceeval_type *keys,
->  		goto fail;
->  	}
->  
-> +	ret = check_keys(keys);
-> +	if (ret < 0)
-> +		goto fail;
-> +
-> +	if (vals) {
-> +		ret = check_vals(vals);
-> +		if (ret < 0)
-> +			goto fail;
+On Tue, 15 Aug 2023 13:31:56 -0600
+Ross Zwisler <zwisler@google.com> wrote:
 
-These two goto statements should both be to fail_release so we clean up
-'teval', else we could do this check above the alloc.
-
-> +	}
-> +
->  	/* alloc key types */
->  	teval->nr_key_types = type_alloc(keys, &teval->key_types);
->  	if (teval->nr_key_types <= 0) {
-> -- 
-> 2.40.1
 > 
+> > diff --git a/src/hash.c b/src/hash.c
+> > new file mode 100644
+> > index 000000000000..e4f2a983d39c
+> > --- /dev/null
+> > +++ b/src/hash.c
+> > @@ -0,0 +1,119 @@
+> > +/* SPDX-License-Identifier: MIT */
+> > +/*
+> > + * libtraceeval hashtable interface implementation.
+> > + *
+> > + * Copyright (C) 2023 Google Inc, Steven Rostedt <rostedt@goodmis.org>
+> > + */
+> > +
+> > +#include <traceeval-hist.h>
+> > +
+> > +#include "eval-local.h"
+> > +
+> > +__hidden struct hash_table *hash_alloc(void)
+> > +{
+> > +	struct hash_table *hash;
+> > +
+> > +	hash = calloc(1, sizeof(*hash));
+> > +	if (!hash)
+> > +		return NULL;
+> > +
+> > +	hash->bits = HASH_BITS;
+> > +	hash->hash = calloc(HASH_SIZE(hash->bits), sizeof(*hash->hash));
+> > +	if (!hash->hash) {
+> > +		free(hash);
+> > +		hash = NULL;
+> > +	}
+> > +
+> > +	return hash;
+> > +}
+> > +
+> > +__hidden void hash_free(struct hash_table *hash)
+> > +{
+> > +	free(hash->hash);
+> > +	free(hash);
+> > +}
+> > +
+> > +__hidden void hash_add(struct hash_table *hash, struct hash_item *item, unsigned key)
+> > +{
+> > +	key &= HASH_MASK(hash->bits);  
+> 
+> key should already be masked to HASH_MASK(hash->bits) via make_hash().  If
+> those bits are set, we have a bug somewhere.
+> 
+> I think it's better to check to see if those bits are set and bail out loudly
+> with an error.
+
+I debated a bit about where to do the mask. I didn't want to put a
+dependency that the bits were already masked, so I just did it twice. It's
+a very fast operation.
+
+I also don't want to make the dependency that key can only come from
+mask_hash(). As it's critical that key is masked here (or we have a array
+overflow), I just kept it in both places.
+
+I can comment that here.
+
+> 
+> > +
+> > +	item->next = hash->hash[key];
+> > +	hash->hash[key] = item;
+> > +	item->key = key;
+> > +
+> > +	hash->nr_items++;
+> > +}
+> > +
+> > +__hidden int hash_remove(struct hash_table *hash, struct hash_item *item)
+> > +{
+> > +	struct hash_item **parent;
+> > +
+> > +	for (parent = &hash->hash[item->key]; *parent; parent = &(*parent)->next) {
+> > +		if (*parent == item) {
+> > +			*parent = item->next;
+> > +			hash->nr_items--;
+> > +			return 1;
+> > +		}
+> > +	}
+> > +	return 0;
+> > +}
+> > +
+> > +__hidden struct hash_iter *hash_iter_start(struct hash_table *hash)
+> > +{
+> > +	struct hash_iter *iter = &hash->iter;
+> > +	size_t i;
+> > +
+> > +	for (i = 0; i < HASH_SIZE(hash->bits); i++) {
+> > +		if (!hash->hash[i])
+> > +			continue;
+> > +		iter->next_item = hash->hash[i];  
+> 
+> I think we need to break here after we've found a populated bucket and set
+> iter->next_item.  Right now this works only if we have a single populated
+> bucket, because we'll set iter->next_item once and then keep iterating until
+> i == HASH_SIZE(hash->bits).
+> 
+> This will mean that iter->current_bucket will always == HASH_SIZE(hash->bits),
+> but we have a bug in hash_iter_next() that meant we weren't returning early
+> with NULL when we hit this condition.
+
+Nice catch, but I found this bug during my tests but fixed it in patch 11. :-p
+
+I'll move that change here, as that's the proper place it belongs.
+
+> 
+> > +	}
+> > +	iter->current_bucket = i;
+> > +	return iter;
+> > +}
+> > +
+> > +__hidden struct hash_item *hash_iter_next(struct hash_iter *iter)
+> > +{
+> > +	struct hash_table *hash = container_of(iter, struct
+> > hash_table, iter);
+> > +	struct hash_item *item;
+> > +
+> > +	if (iter->current_bucket > HASH_SIZE(hash->bits))  
+> 
+> 	if (iter->current_bucket >= HASH_SIZE(hash->bits))
+> 
+> Right now we're missing the exit case where
+> iter->current_bucket == HASH_SIZE(hash->bits), which means we've run out
+> of buckets with entries.
+
+You are correct that it should be fixed, but it just happens that the rest
+of the logic will still end up returning NULL when this happens. But the
+above was suppose to be a "shortcut" that never gets hit (or why I fixed it
+in patch 11)!
+
+> 
+> > +		return NULL;
+> > +
+> > +	item = iter->next_item;
+
+In patch 11, I added:
+
+	if (!item)
+		return NULL;
+
+That should be here too (along with the above off by one fix).
+
+> > +
+> > +	iter->next_item = item->next;
+> > +	if (!iter->next_item) {
+> > +		size_t i;
+> > +
+> > +		for (i = iter->current_bucket + 1; i <
+> > HASH_SIZE(hash->bits); i++) {
+> > +			if (!hash->hash[i])
+> > +				continue;
+> > +			iter->next_item = hash->hash[i];  
+> 
+> As in hash_iter_start(), we need to break when we find the next non-empty
+> bucket and set iter->next_item.  This will let us set iter->current_bucket
+> correctly as well.
+
+And this too was fixed in patch 11.
+
+> 
+> > +		}
+> > +		iter->current_bucket = i;
+> > +	}
+> > +	return item;
+> > +}
+> > +
+> > +__hidden struct hash_iter *hash_iter_bucket(struct hash_table *hash,
+> > unsigned key) +{
+> > +	struct hash_iter *iter = &hash->iter;
+> > +
+> > +	key &= HASH_MASK(hash->bits);  
+> 
+> As with hash_add(), 'key' should already be masked and I think it'd be
+> better to error out loudly if upper bits in 'key' are unexpectedly set.
+
+Again, I don't want to add a dependency of where key was created. It may be
+used for other purposes (and the upper bits may hold info later).  I think
+it's just more robust to keep the extra masks. Again, they are very fast
+operations.
+
+Thanks Ross,
+
+-- Steve
+
+> 
+> > +
+> > +	iter->current_bucket = key;
+> > +	iter->next_item = hash->hash[key];
+> > +
+> > +	return iter;
+> > +}
+> > +  
+
