@@ -2,129 +2,252 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36E5CC001E0
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Aug 2023 19:10:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 293B3C001B0
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Aug 2023 19:32:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239776AbjHOTJm (ORCPT
+        id S239699AbjHOTcY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 15 Aug 2023 15:09:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35322 "EHLO
+        Tue, 15 Aug 2023 15:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239462AbjHOTJK (ORCPT
+        with ESMTP id S239839AbjHOTcF (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 15 Aug 2023 15:09:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 190B52116
-        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Aug 2023 12:08:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0CF4962C50
-        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Aug 2023 19:05:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 266F9C433C8;
-        Tue, 15 Aug 2023 19:05:45 +0000 (UTC)
-Date:   Tue, 15 Aug 2023 15:05:46 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ross Zwisler <zwisler@google.com>
+        Tue, 15 Aug 2023 15:32:05 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A4E1737
+        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Aug 2023 12:32:02 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-790fc019c62so136801739f.0
+        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Aug 2023 12:32:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692127922; x=1692732722;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wVEqkBuChM8+L+3I9g8DRH+nGwFZzgx8rub5JmuzUmU=;
+        b=p1dvyT++AqoZ5JEb+jCl4GcPTa3jKSB0Vi0/hNUzsHZ7lJ/UtR6w9mpw7BsL5co26O
+         wYRRWcqssJnXz4tTJwQnPvY2H183drBhOXtng6nxanaNzYKGjggrNdasflU/19T73EsX
+         xYC9UzHWdO0NSgFpLs6oGz2NCGgZQbKr5sX9lTs+HxgSRWZVP2/D9Ljvo3KIhguPGKg6
+         CqBTQeUAVG18Cab6KR31YBThvINjZdXJq2Bo6EgWjAr6RbstHE7GIgEOQzOKu20ujm3I
+         k/oYbSaSysvsUegSePF0A3J38vMUriTDLsPuENu7MqoDWa6Xme+H1YjCMir47u6clUnS
+         ToEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692127922; x=1692732722;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wVEqkBuChM8+L+3I9g8DRH+nGwFZzgx8rub5JmuzUmU=;
+        b=YdYoVUpF4QWhub6mu/XcI23yAQbmBuA4/QQS7+DDsNxC+XnZY0WgPo1QcatN9AIU1V
+         zF+KXN1+M8brgmJ/ZYlKfLGYxRRLSK4fxl7xi4KUBgUwxxZyrJ/mvDPb740wq4xPZ4/M
+         ELxwtXKJTtpymkDrPAjhtp+dvx3kO+McTyN4hmZI0FDkwFj53srId3IJK8wPIOyNrtJP
+         qYeXfuPpVfAtfsCFSxycXBwVxyeJ79ZElqeaUm8D7puVmY8r6xIbr/+mEo+gRgoJ6sfU
+         RKXsRtqk9IGyMB9KesTO6lFH4gm6HH0DbObMeHZi2T5FumoB/TM+dtWtJS56/fi8hzbD
+         7YuA==
+X-Gm-Message-State: AOJu0Yz5L8cuBTqsvQzGgIFCLScORU1e2DaqI2t10j/FYnOUQzazf7vS
+        idy5n01vKECQH9iSatM07aVx7Q==
+X-Google-Smtp-Source: AGHT+IFvZBzMln6yrXVFeeXORR7dAKRAvou8bd5Hch1p1daDN7aj3C83r8iyp6VuWK1Fgaea7kjpDA==
+X-Received: by 2002:a6b:f30f:0:b0:783:727a:8e15 with SMTP id m15-20020a6bf30f000000b00783727a8e15mr4197475ioh.6.1692127921754;
+        Tue, 15 Aug 2023 12:32:01 -0700 (PDT)
+Received: from google.com ([2620:15c:183:200:f77a:c0d7:f137:55fe])
+        by smtp.gmail.com with ESMTPSA id s15-20020a5e980f000000b00786fe5039b8sm4156405ioj.46.2023.08.15.12.32.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Aug 2023 12:32:01 -0700 (PDT)
+Date:   Tue, 15 Aug 2023 13:31:56 -0600
+From:   Ross Zwisler <zwisler@google.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-trace-devel@vger.kernel.org,
         Stevie Alvarez <stevie.6strings@gmail.com>
-Subject: Re: [PATCH v2 07/17] libtraceeval: Convert hist array into a hash
- table
-Message-ID: <20230815150546.07174f7c@gandalf.local.home>
-In-Reply-To: <20230815184421.GC780024@google.com>
+Subject: Re: [PATCH v2 08/17] libtraceeval histograms: Move hash functions
+ into their own file
+Message-ID: <20230815193156.GD780024@google.com>
 References: <20230811053940.1408424-1-rostedt@goodmis.org>
-        <20230811053940.1408424-8-rostedt@goodmis.org>
-        <20230815184421.GC780024@google.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+ <20230811053940.1408424-9-rostedt@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811053940.1408424-9-rostedt@goodmis.org>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 15 Aug 2023 12:44:21 -0600
-Ross Zwisler <zwisler@google.com> wrote:
-
-> On Fri, Aug 11, 2023 at 01:39:30AM -0400, Steven Rostedt wrote:
-> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> > 
-> > The lookups need to be extremely fast. Instead of doing a linear search
-> > across all entries (which could be thousands), do a hash lookup instead.
-> > 
-> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> > ---
-> >  include/traceeval-hist.h |   7 ++
-> >  src/histograms.c         | 172 +++++++++++++++++++++++++++++++++------
-> >  2 files changed, 153 insertions(+), 26 deletions(-)
-> > 
-> > diff --git a/include/traceeval-hist.h b/include/traceeval-hist.h
-> > index 412efdbe8681..4baed4237787 100644
-> > --- a/include/traceeval-hist.h
-> > +++ b/include/traceeval-hist.h  
-> <>
-> > @@ -12,6 +13,14 @@
-> >  
-> >  #include <traceeval-hist.h>
-> >  
-> > +#define offset_of(type, field) (&(((type *)(NULL))->field))  
+On Fri, Aug 11, 2023 at 01:39:31AM -0400, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
-> This currently returns a pointer type, but the kernel implementation(s) have
-> this cast back to a size_t, which makes sense I think.
+> Move the hash functions into their own file so that it does not clutter
+> the histogram.c file. Functionality should be the same, but some code
+> restructuring was done.
 > 
-> https://elixir.bootlin.com/linux/latest/source/tools/include/nolibc/types.h#L220
-
-As this is under an MIT license, I created this without looking at the GPL version.
-
-It's really too small and common to be licensed, but still. I'll make the update.
-
-
+> To keep the hash abstract, helper functions were introduced:
 > 
-> > +#define container_of(ptr, type, field) \
-> > +	(type *)((void *)(ptr) - (void *)offset_of(type, field))
-> > +
-> > +#define HASH_BITS 10	/* Start with 1K of buckets */
-> > +#define HASH_SIZE(bits)	(1 << (bits))
-> > +#define HASH_MASK(bits)	(HASH_SIZE(bits) - 1)
-> > +
-> >  /*
-> >   * Compare two integers of variable length.
-> >   *  
-> <>
-> > @@ -365,16 +406,19 @@ static void clean_entry(struct entry *entry, struct traceeval *teval)
-> >   */
-> >  static void hist_table_release(struct traceeval *teval)  
+>   hash_iter_start() - to start iterating over all items in the hash
+>   hash_iter_next() - to get the next item in the hash
 > 
-> This probably wants to be 'hash_table_release()' now since 'hist_table' is
-> gone.
-
-I actually purposely kept the "hist" name (teval->hist) for this local file.
-
-Just because that's what Stevie called it ;-)
-
--- Steve
-
+>   hash_iter_bucket() - to start iterating over a single bucket in the hash
+>   hash_iter_bucket_next() - to get the next item in the bucket
 > 
-> >  {
-> > -	struct hist_table *hist = teval->hist;
-> > +	struct hash_table *hist = teval->hist;
-> >  
-> >  	if (!hist)
-> >  		return;
-> >  
-> > -	for (size_t i = 0; i < hist->nr_entries; i++) {
-> > -		clean_entry(hist->map + i, teval);
-> > +	for (size_t i = 0; i < HASH_SIZE(hist->bits); i++) {
-> > +		if (!hist->hash[i])
-> > +			continue;
-> > +
-> > +		free_entries(teval, hist->hash[i]);
-> >  	}
-> >  
-> > -	free(hist->map);
-> > +	free(hist->hash);
-> >  	free(hist);
-> >  	teval->hist = NULL;
-> >  }  
+>   hash_nr_items() - to get the number of items in the hash
+> 
+> Also implemented hash_remove() to remove an item from the hash.
+> 
+> Also created a eval-local.h header file to store the prototypes of the
+> local functions as well as moved the structures there too.
+> 
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  src/Makefile     |   1 +
+>  src/eval-local.h | 103 ++++++++++++++++++++++++++++++++++++++
+>  src/hash.c       | 119 ++++++++++++++++++++++++++++++++++++++++++++
+>  src/histograms.c | 126 +++++++----------------------------------------
+>  4 files changed, 240 insertions(+), 109 deletions(-)
+>  create mode 100644 src/eval-local.h
+>  create mode 100644 src/hash.c
 
+<>
+
+> diff --git a/src/hash.c b/src/hash.c
+> new file mode 100644
+> index 000000000000..e4f2a983d39c
+> --- /dev/null
+> +++ b/src/hash.c
+> @@ -0,0 +1,119 @@
+> +/* SPDX-License-Identifier: MIT */
+> +/*
+> + * libtraceeval hashtable interface implementation.
+> + *
+> + * Copyright (C) 2023 Google Inc, Steven Rostedt <rostedt@goodmis.org>
+> + */
+> +
+> +#include <traceeval-hist.h>
+> +
+> +#include "eval-local.h"
+> +
+> +__hidden struct hash_table *hash_alloc(void)
+> +{
+> +	struct hash_table *hash;
+> +
+> +	hash = calloc(1, sizeof(*hash));
+> +	if (!hash)
+> +		return NULL;
+> +
+> +	hash->bits = HASH_BITS;
+> +	hash->hash = calloc(HASH_SIZE(hash->bits), sizeof(*hash->hash));
+> +	if (!hash->hash) {
+> +		free(hash);
+> +		hash = NULL;
+> +	}
+> +
+> +	return hash;
+> +}
+> +
+> +__hidden void hash_free(struct hash_table *hash)
+> +{
+> +	free(hash->hash);
+> +	free(hash);
+> +}
+> +
+> +__hidden void hash_add(struct hash_table *hash, struct hash_item *item, unsigned key)
+> +{
+> +	key &= HASH_MASK(hash->bits);
+
+key should already be masked to HASH_MASK(hash->bits) via make_hash().  If
+those bits are set, we have a bug somewhere.
+
+I think it's better to check to see if those bits are set and bail out loudly
+with an error.
+
+> +
+> +	item->next = hash->hash[key];
+> +	hash->hash[key] = item;
+> +	item->key = key;
+> +
+> +	hash->nr_items++;
+> +}
+> +
+> +__hidden int hash_remove(struct hash_table *hash, struct hash_item *item)
+> +{
+> +	struct hash_item **parent;
+> +
+> +	for (parent = &hash->hash[item->key]; *parent; parent = &(*parent)->next) {
+> +		if (*parent == item) {
+> +			*parent = item->next;
+> +			hash->nr_items--;
+> +			return 1;
+> +		}
+> +	}
+> +	return 0;
+> +}
+> +
+> +__hidden struct hash_iter *hash_iter_start(struct hash_table *hash)
+> +{
+> +	struct hash_iter *iter = &hash->iter;
+> +	size_t i;
+> +
+> +	for (i = 0; i < HASH_SIZE(hash->bits); i++) {
+> +		if (!hash->hash[i])
+> +			continue;
+> +		iter->next_item = hash->hash[i];
+
+I think we need to break here after we've found a populated bucket and set
+iter->next_item.  Right now this works only if we have a single populated
+bucket, because we'll set iter->next_item once and then keep iterating until
+i == HASH_SIZE(hash->bits).
+
+This will mean that iter->current_bucket will always == HASH_SIZE(hash->bits),
+but we have a bug in hash_iter_next() that meant we weren't returning early
+with NULL when we hit this condition.
+
+> +	}
+> +	iter->current_bucket = i;
+> +	return iter;
+> +}
+> +
+> +__hidden struct hash_item *hash_iter_next(struct hash_iter *iter)
+> +{
+> +	struct hash_table *hash = container_of(iter, struct hash_table, iter);
+> +	struct hash_item *item;
+> +
+> +	if (iter->current_bucket > HASH_SIZE(hash->bits))
+
+	if (iter->current_bucket >= HASH_SIZE(hash->bits))
+
+Right now we're missing the exit case where
+iter->current_bucket == HASH_SIZE(hash->bits), which means we've run out of
+buckets with entries.
+
+> +		return NULL;
+> +
+> +	item = iter->next_item;
+> +
+> +	iter->next_item = item->next;
+> +	if (!iter->next_item) {
+> +		size_t i;
+> +
+> +		for (i = iter->current_bucket + 1; i < HASH_SIZE(hash->bits); i++) {
+> +			if (!hash->hash[i])
+> +				continue;
+> +			iter->next_item = hash->hash[i];
+
+As in hash_iter_start(), we need to break when we find the next non-empty
+bucket and set iter->next_item.  This will let us set iter->current_bucket
+correctly as well.
+
+> +		}
+> +		iter->current_bucket = i;
+> +	}
+> +	return item;
+> +}
+> +
+> +__hidden struct hash_iter *hash_iter_bucket(struct hash_table *hash, unsigned key)
+> +{
+> +	struct hash_iter *iter = &hash->iter;
+> +
+> +	key &= HASH_MASK(hash->bits);
+
+As with hash_add(), 'key' should already be masked and I think it'd be better
+to error out loudly if upper bits in 'key' are unexpectedly set.
+
+> +
+> +	iter->current_bucket = key;
+> +	iter->next_item = hash->hash[key];
+> +
+> +	return iter;
+> +}
+> +
