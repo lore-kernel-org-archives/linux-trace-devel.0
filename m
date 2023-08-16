@@ -2,232 +2,145 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7816C27C42
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Aug 2023 21:50:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 240C4C27C6E
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Aug 2023 22:38:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346655AbjHPVtm (ORCPT
+        id S1346968AbjHPWiY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 16 Aug 2023 17:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40346 "EHLO
+        Wed, 16 Aug 2023 18:38:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346734AbjHPVtf (ORCPT
+        with ESMTP id S1347003AbjHPWiA (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 16 Aug 2023 17:49:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD992D4E
-        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Aug 2023 14:49:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 60B746492F
-        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Aug 2023 21:49:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DD6DC433C8;
-        Wed, 16 Aug 2023 21:49:23 +0000 (UTC)
-Date:   Wed, 16 Aug 2023 17:49:27 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ross Zwisler <zwisler@google.com>
+        Wed, 16 Aug 2023 18:38:00 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5FC2701
+        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Aug 2023 15:37:59 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-79198e7d9bcso10249439f.0
+        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Aug 2023 15:37:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692225479; x=1692830279;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+HpYOE+xbFsalcZA8yAHl9x6Fr896TYTWcod3nLlL4E=;
+        b=F2XPx9Cy/DFbtFyURgXX6aPQytx9B/x+x25XWwrThKaqzBjS38U+zo6kdPIXwz7kRr
+         VeL4OFojqoIDWvwdMTNE2PTmFLwnOrwcSHDGEGX4CG3ww3uY9fSjVrmNpmC6tW8iRUxi
+         79/WonksXsy8Z/5A29BR3jX10CGX8zBH/PZovud8icx4Hvc2DbbhCPLjVCcvgYCz20Vg
+         Kclu14/1vpoTUu4I7q9d5LIbAbCGlY0Bsm8CWNaG9IP+kggf4jgv9YIH+lDUa3hT/oFt
+         WI7bvm7UMw6C+eKun07ZgY13YDzPIgL/GA76BMbJ4FGG1nwfQmxEsXhitxEf+ev4C97k
+         lYWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692225479; x=1692830279;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+HpYOE+xbFsalcZA8yAHl9x6Fr896TYTWcod3nLlL4E=;
+        b=QwtIIts9QB2zNX7Y67N48+CD2I7CcJQFWL2mn5dq0ZqH6UIZAPHVyaCh6fGFz5phl7
+         8tXTRcoPwqTcW0cU7OmOWoe4kNlK2O3DImsBlwkQ1lnhPvgukLzdxkLhKtAjQCMEjr6a
+         qZDrkRsGm4rES1Wp3NORermK/BYQYCNL4orhU5dAAHlcMj7cyaC3ex4b+cTG1fZWPXzh
+         pxTaev6wgtYk77wrHr/vRtr4SzaX/JfKgpw7nFWX+XwgYpXx3HTErbtRmYGFpfLT6AAi
+         t9zyEzOFDMQGsEzZq7V19JkxMV8jGyg203gYTXtyQPsOP4QZ3lwbwQtJE14ReIzYs7MF
+         2i+A==
+X-Gm-Message-State: AOJu0Yzc0R0t8v8hAfMOeT3MNDmTx+s58wiUP+sqKvMSlUCwVAdQ9etc
+        oi8fXmCi0tsPcFXVv7WeciuNTwyw71zOx7huMVDFWw==
+X-Google-Smtp-Source: AGHT+IHrcAcGf7dM7w4dFfXXCUz7PZdtWMOm/LfwnuE/fu8GDTdFSyg9Px/GCvKJGrAS3oLh5juc6w==
+X-Received: by 2002:a05:6e02:1b04:b0:348:7f18:68be with SMTP id i4-20020a056e021b0400b003487f1868bemr1950088ilv.4.1692225478598;
+        Wed, 16 Aug 2023 15:37:58 -0700 (PDT)
+Received: from google.com ([2620:15c:183:200:55c4:49c7:23c3:7d80])
+        by smtp.gmail.com with ESMTPSA id h10-20020a92d08a000000b00348abdfad8esm4802160ilh.32.2023.08.16.15.37.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 15:37:58 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 16:37:54 -0600
+From:   Ross Zwisler <zwisler@google.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-trace-devel@vger.kernel.org,
         Stevie Alvarez <stevie.6strings@gmail.com>
-Subject: Re: [PATCH v2 11/17] libtraceeval histogram: Add iterator APIs
-Message-ID: <20230816174927.55777a95@gandalf.local.home>
-In-Reply-To: <20230816213449.GA3686281@google.com>
+Subject: Re: [PATCH v2 14/17] libtraceeval histogram: Use stack for old copy
+ in update
+Message-ID: <20230816223754.GB3686281@google.com>
 References: <20230811053940.1408424-1-rostedt@goodmis.org>
-        <20230811053940.1408424-12-rostedt@goodmis.org>
-        <20230816213449.GA3686281@google.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+ <20230811053940.1408424-15-rostedt@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811053940.1408424-15-rostedt@goodmis.org>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 16 Aug 2023 15:34:49 -0600
-Ross Zwisler <zwisler@google.com> wrote:
-
-> > +
-> > +/**
-> > + * traceeval_iterator_put - release a given iterator
-> > + * @iter: The iterartor to release
-> > + *
-> > + * Frees the resources of an @iter that was created by
-> > + * traceeval_iterator_get().
-> > + */
-> > +void traceeval_iterator_put(struct traceeval_iterator *iter)
-> > +{
-> > +	if (!iter)
-> > +		return;
-> > +
-> > +	free(iter->entries);  
+On Fri, Aug 11, 2023 at 01:39:37AM -0400, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
-> I think we also need to free **sort and *direction, which are both allocated
-> in traceeval_iterator_sort().    Probably need to update the function comment
-> as well to include allocs from that function.
-
-Yes, thanks.
-
+> In the update, instead of using the heap, use the stack to save the old
+> values. This should save time where it does not need to allocate and then
+> free the value list to do an update.
 > 
-> > +	free(iter);
-> > +}  
-> <>
-> > +/**
-> > + * traceeval_iterator_sort - sort the entries that an iterator will return
-> > + * @iter: The iterator to specify the sort order of the entries
-> > + * @sort_field: The name of the key or value to sort with.
-> > + * @level: The level of sorting (0 for first order, 1 for second, ...)
-> > + * @ascending: If the sort should go forward or backward.
-> > + *
-> > + * The iterator has a list of entries to produce with traceeval_iterator_next().
-> > + * This function specifies what the order of the output of that function will
-> > + * be. Note, whenever this function is called, it resets the @iter so that
-> > + * the traceveal_iterator_next() will start from the beginning again.
-> > + *
-> > + * In other words, be very careful to ever call this function in a middle
-> > + * of a loop that is using traceeval_iterator_next(), otherwise you may end
-> > + * up in an infinite loop!
-> > + *
-> > + * The @level specifies the level of sorting. That is, for @level = 0,
-> > + * it will decide the main sorting of the @iter. For @level = 1, it will
-> > + * be the tie breaker for two entries that are equal for the @level = 0
-> > + * sort. @level = 2, will be the tie breaker for @level = 1, and so on.
-> > + *
-> > + * Note, if traceeval_iterator_next() is called, and there's a missing @level,
-> > + * it will fail. That is, if this function is called once with @level = 0 and
-> > + * againg with @level = 2, but never with @level = 1, the call to
-> > + * traceeval_iterator_next() will fail.
-> > + *
-> > + * If this function is called multiple times with the same @level, then the
-> > + * last call will define the what that @level will do.
-> > + *
-> > + * The @ascending will determine if "smaller" items go first if true, and
-> > + * "larger" items go first if false.
-> > + *
-> > + * Return 0 on success and -1 on failure.
-> > + */
-> > +int traceeval_iterator_sort(struct traceeval_iterator *iter, const char *sort_field,
-> > +			    int level, bool ascending)
-> > +{
-> > +	bool *direction = iter->direction;
-> > +	struct traceeval_type **sort = iter->sort;
-> > +	struct traceeval_type *type;
-> > +
-> > +	type = find_sort_type(iter->teval, sort_field);
-> > +	if (!type)
-> > +		return -1;
-> > +
-> > +	/* pointer and dynamic types must have a cmp function */
-> > +	switch (type->type) {
-> > +	case TRACEEVAL_TYPE_POINTER:
-> > +	case TRACEEVAL_TYPE_DYNAMIC:
-> > +		if (!type->cmp)
-> > +			return -1;
-> > +		break;
-> > +	default:
-> > +		break;
-> > +	}
-> > +  
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  src/histograms.c | 48 ++++++++++++++++++++++++++++++++++--------------
+>  1 file changed, 34 insertions(+), 14 deletions(-)
 > 
-> nit: It'd probably help with readability to have:
+<>
+> @@ -772,20 +778,34 @@ fail_entry:
+>   *
+>   * Frees the old vals field of @entry, unless an error occurs.
+>   *
+> - * Return 0 on success, -1 on error.
+> + * Return 1 on success, -1 on error.
+
+The code is now returning 1, 0 and -1 in different cases, and all three of
+these return values are percolating up to be returned by traceeval_insert(),
+which is only supposed to return 0 or 1.
+
+>   */
+>  static int update_entry(struct traceeval *teval, struct entry *entry,
+>  			const union traceeval_data *vals)
+>  {
+> -	union traceeval_data *new_vals;
+> +	struct traceeval_stat *stats = entry->val_stats;
+> +	struct traceeval_type *types = teval->val_types;
+> +	union traceeval_data *copy = entry->vals;
+> +	union traceeval_data old[teval->nr_val_types];
+> +	size_t size = teval->nr_val_types;
+> +	size_t i;
+>  
+> -	if (copy_traceeval_data_set(teval->nr_val_types, teval->val_types,
+> -				vals, entry->val_stats, &new_vals) == -1)
+> -		return -1;
+> +	if (!size)
+> +		return 1;
+
+If we try and copy a 0 length val, is it okay to just return 0 here and call
+it success?
+
+> +
+> +	for (i = 0; i < size; i++) {
+> +		old[i] = copy[i];
+> +
+> +		if (copy_traceeval_data(types + i, stats + i,
+> +					vals + i, copy + i))
+> +			goto fail;
+> +	}
+
+I think we still need to rip through old[] and free strings, and also call
+.release on types that define it, probably via data_release().
+
+I don't understand why data_release() only calls .release if a .copy function
+isn't defined?  Are we saying that .copy() must also release the old data?  If
+so that needs to be explicit, but I think we still need to free strings at a
+minimum.
+
+>  
+> -	clean_data_set(entry->vals, teval->val_types, teval->nr_val_types);
+> -	entry->vals = new_vals;
+>  	return 0;
+> +
+> +fail:
+> +	data_release(i, old, types);
+> +	return -1;
+>  }
+>  
+>  struct traceeval_stat *traceeval_stat(struct traceeval *teval,
+> -- 
+> 2.40.1
 > 
->   int num_levels = level + 1;
-> 
-> and use that instead of (level + 1).
-
-Sure, I'm just so use to the (level + 1), that it comes natural for me now.
-But I do agree, from a readability standpoint, having a "num_levels" would
-be better.
-
-> 
-> > +	if ((level + 1) > iter->nr_sort) {
-> > +		sort = realloc(sort, sizeof(*sort) * (level + 1));
-> > +		if (!sort)
-> > +			return -1;
-> > +
-> > +		iter->sort = sort;
-> > +
-> > +		direction = realloc(direction, sizeof(*direction) * (level + 1));
-> > +		if (!direction)
-> > +			return -1;
-> > +
-> > +		iter->direction = direction;
-> > +
-> > +		/* Make sure the newly allocated contain NULL */
-> > +		for (int i = iter->nr_sort; i < (level + 1); i++)
-> > +			sort[i] = NULL;
-> > +
-> > +		iter->nr_sort = level + 1;
-> > +	}
-> > +
-> > +	sort[level] = type;
-> > +	direction[level] = ascending;
-> > +	iter->needs_sort = true;
-> > +	return 0;
-> > +}  
-> <>
-> > +static int sort_iter(struct traceeval_iterator *iter)
-> > +{
-> > +	int i;
-> > +
-> > +	/* Make sure all levels are filled */
-> > +	for (i = 0; i < iter->nr_sort; i++) {
-> > +		if (!iter->sort[i])
-> > +			return -1;
-> > +	}
-> > +
-> > +	qsort_r(iter->entries, iter->nr_entries, sizeof(*iter->entries),
-> > +		iter_cmp, iter);
-> > +
-> > +	iter->needs_sort = false;
-> > +	iter->next = 0;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/**
-> > + * traceeval_iterator_next - retrieve the next entry from an iterator
-> > + * @iter: The iterator to retrieve the next entry from
-> > + * @keys: The returned keys of the next entry (if exists)
-> > + *
-> > + * This returns the keys for the next entry in the traceeval being
-> > + * iterated over by @iter. If there are no more entries, 0 is returned
-> > + * and @keys are untouched.
-> > + *
-> > + * Returns 1 if another entry is returned, or 0 if not (or negative on error)
-> > + */
-> > +int traceeval_iterator_next(struct traceeval_iterator *iter,
-> > +			    const union traceeval_data **keys)
-> > +{
-> > +	struct entry *entry;
-> > +	int ret;
-> > +
-> > +	if (iter->needs_sort) {
-> > +		ret = sort_iter(iter);
-> > +		if (ret < 0)
-> > +			return ret;
-> > +		iter->next = 0;  
-> 
-> This is already done in sort_iter().
-
-
-Yep, I know. But I love redundancy ;-)
-
-I actually added it to both at the same time because I didn't know which
-one was better to have it. I compromised, and just said "OK do it in both!"
-
--- Steve
-
-> 
-> > +	}
-> > +
-> > +	if (iter->next >= iter->nr_entries)
-> > +		return 0;
-> > +
-> > +	entry = iter->entries[iter->next++];
-> > +	*keys = entry->keys;
-> > +	return 1;
-> > +}
-> > -- 
-> > 2.40.1
-> >   
-
