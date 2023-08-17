@@ -2,90 +2,98 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46163C05052
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 17 Aug 2023 01:14:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD1D4C05052
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 17 Aug 2023 01:33:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347447AbjHQBNa (ORCPT
+        id S1347558AbjHQBdM (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 16 Aug 2023 21:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33560 "EHLO
+        Wed, 16 Aug 2023 21:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347478AbjHQBN3 (ORCPT
+        with ESMTP id S1347550AbjHQBdK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 16 Aug 2023 21:13:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F6E1987
-        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Aug 2023 18:13:28 -0700 (PDT)
+        Wed, 16 Aug 2023 21:33:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A9E7272B
+        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Aug 2023 18:33:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CA7226433E
-        for <linux-trace-devel@vger.kernel.org>; Thu, 17 Aug 2023 01:13:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C29B3C433C7;
-        Thu, 17 Aug 2023 01:13:26 +0000 (UTC)
-Date:   Wed, 16 Aug 2023 21:13:30 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3FFEC64A72
+        for <linux-trace-devel@vger.kernel.org>; Thu, 17 Aug 2023 01:33:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2096CC4339A;
+        Thu, 17 Aug 2023 01:33:07 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.96)
+        (envelope-from <rostedt@rostedt.homelinux.com>)
+        id 1qWRst-000N4M-2I;
+        Wed, 16 Aug 2023 21:33:11 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ross Zwisler <zwisler@google.com>
-Cc:     linux-trace-devel@vger.kernel.org,
-        Stevie Alvarez <stevie.6strings@gmail.com>
-Subject: Re: [PATCH v2 14/17] libtraceeval histogram: Use stack for old copy
- in update
-Message-ID: <20230816211330.7f6e2cb3@gandalf.local.home>
-In-Reply-To: <20230816191225.7e3e7d85@gandalf.local.home>
-References: <20230811053940.1408424-1-rostedt@goodmis.org>
-        <20230811053940.1408424-15-rostedt@goodmis.org>
-        <20230816223754.GB3686281@google.com>
-        <20230816191225.7e3e7d85@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To:     linux-trace-devel@vger.kernel.org
+Cc:     Ross Zwisler <zwisler@google.com>,
+        Stevie Alvarez <stevie.6strings@gmail.com>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Subject: [PATCH v3 12/18] libtraceeval histogram: Add data copy callback
+Date:   Wed, 16 Aug 2023 21:33:04 -0400
+Message-Id: <20230817013310.88582-13-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230817013310.88582-1-rostedt@goodmis.org>
+References: <20230817013310.88582-1-rostedt@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 16 Aug 2023 19:12:25 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> > > +
-> > > +	for (i = 0; i < size; i++) {
-> > > +		old[i] = copy[i];
-> > > +
-> > > +		if (copy_traceeval_data(types + i, stats + i,
-> > > +					vals + i, copy + i))
-> > > +			goto fail;
-> > > +	}    
-> > 
-> > I think we still need to rip through old[] and free strings, and also call  
-> 
-> Yes, I forgot to add that :-p 
-> 
-> > .release on types that define it, probably via data_release().
-> > 
+Add a callback "copy" to the type that gets called when a copy is done.
+This is can be used to copy dynamic types. Otherwise the old one is just
+going to be released.
 
-I realized I actually had this kind of backwards. On failure, we want to put
-back old and remove the data added to vals (aka copy).
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ include/traceeval-hist.h | 5 +++++
+ src/histograms.c         | 3 +++
+ 2 files changed, 8 insertions(+)
 
-Here's what I'm doing:
+diff --git a/include/traceeval-hist.h b/include/traceeval-hist.h
+index e8a7981ac2c0..8992ace81cdf 100644
+--- a/include/traceeval-hist.h
++++ b/include/traceeval-hist.h
+@@ -82,6 +82,10 @@ typedef int (*traceeval_data_hash_fn)(struct traceeval *teval,
+ 				      const struct traceeval_type *type,
+ 				      const union traceeval_data *data);
+ 
++typedef int (*traceeval_data_copy_fn)(const struct traceeval_type *type,
++				      union traceeval_data *copy,
++				      const union traceeval_data *origin);
++
+ /*
+  * struct traceeval_type - Describes the type of a traceevent_data instance
+  * @type: The enum type that describes the traceeval_data
+@@ -126,6 +130,7 @@ struct traceeval_type {
+ 	size_t				id;
+ 	traceeval_data_release_fn	release;
+ 	traceeval_data_cmp_fn		cmp;
++	traceeval_data_copy_fn		copy;
+ 	traceeval_data_hash_fn		hash;
+ };
+ 
+diff --git a/src/histograms.c b/src/histograms.c
+index 8cd1b288a7fc..fe13884ccff6 100644
+--- a/src/histograms.c
++++ b/src/histograms.c
+@@ -511,6 +511,9 @@ static int copy_traceeval_data(struct traceeval_type *type,
+ {
+ 	unsigned long long val;
+ 
++	if (type->copy)
++		return type->copy(type, copy, orig);
++
+ 	*copy = *orig;
+ 
+ 	switch(type->type) {
+-- 
+2.40.1
 
-	for (i = 0; i < size; i++) {
-		old[i] = copy[i];
-
-		if (copy_traceeval_data(types + i, stats + i,
-					vals + i, copy + i))
-			goto fail;
-	}
-	data_release(size, old, types);
-	return 0;
- fail:
-	/* Free the new values that were added */
-	data_release(i, copy, types);
-	/* Put back the old values */
-	for (i--; i >= 0; i--) {
-		copy_traceeval_data(types + i, NULL,
-				    copy + i, old + i);
-	}
-	return -1;
-
--- Steve
