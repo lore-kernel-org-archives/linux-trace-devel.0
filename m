@@ -2,115 +2,144 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6AB0C531DC
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 17 Aug 2023 19:45:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 602BDC5ACA0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 17 Aug 2023 20:13:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354729AbjHQTpJ (ORCPT
+        id S1346430AbjHQUMh (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 17 Aug 2023 15:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43850 "EHLO
+        Thu, 17 Aug 2023 16:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354736AbjHQTpF (ORCPT
+        with ESMTP id S1354821AbjHQUMN (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 17 Aug 2023 15:45:05 -0400
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62EA4359B
-        for <linux-trace-devel@vger.kernel.org>; Thu, 17 Aug 2023 12:45:04 -0700 (PDT)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1bbb4bde76dso41246fac.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 17 Aug 2023 12:45:04 -0700 (PDT)
+        Thu, 17 Aug 2023 16:12:13 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCDC30DF
+        for <linux-trace-devel@vger.kernel.org>; Thu, 17 Aug 2023 13:12:08 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-34ba9d6561aso686245ab.2
+        for <linux-trace-devel@vger.kernel.org>; Thu, 17 Aug 2023 13:12:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692301503; x=1692906303;
+        d=google.com; s=20221208; t=1692303128; x=1692907928;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Zyov34DTQseXaFYy6Pw2m7UgTmnnDS3hbh8RQeIvMo=;
-        b=6hmMb4iaQ3kMSHviY+fUJIjI17fQaB1einzcr95m2OeRpIkRNS+2zDQYN0fsRH+eOo
-         Mm356nB4WvwWCAlGlC800C3aWWYuRCtuS3GuIqxESHQpt+8PrRevotLM9NJ/i+NtPfHq
-         vnkio1KQxwq9K/yR5nklfp+f2MzKQE4N932Xect/gCdaltLcgIY1ni0BnUAOdGrR1d6a
-         A9MpM08msBrri5NvgK83tL5uZiTxHtRwKgFyDVV+CkmDG1yhKFY4+ISOLc1vPOt0xWh+
-         yJmO7+OgfRI0opguaUWVdK4L0T0cm2CCpG0cMEGGKIZ6ET/1s8ZG+Hzax+hGl5J3osB3
-         MMWw==
+        bh=eaudOPaP5kyW7akpBDYGlcG5z1zM8zBLMXgVUE4eGW4=;
+        b=Rz0m2BwszO1puFmxj1hKq2HQ8sPzP3IFY/Sme11EUg3CscBNiTA8YjueKOQaQXoQ5y
+         3dk+1IzLG8dshISi7wJfvWmLIXZWoq+Zoo2BlQMpcoCU17hCfPDupuKNTHCNvz7kbkcD
+         0CclGO7Sr1E+7GX51GO6UYy7AS0cOZPYe9p8pyWcTV33wj74TCBCk4cm8tgLCGKyFevZ
+         hngD0XpYIr2m4xS5JeYH/QfgpnAquEuiHCyjt4rJqX+qX+mAu0go0ypLmZ3PhwSgyKhh
+         fcuozFSpxBqEOh4773vN7wIpsmBvb/kba/e6AB9HMBt4+Ao2IVfSueqfUEMQClrEp3OT
+         8AQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692301503; x=1692906303;
+        d=1e100.net; s=20221208; t=1692303128; x=1692907928;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1Zyov34DTQseXaFYy6Pw2m7UgTmnnDS3hbh8RQeIvMo=;
-        b=cY/TmDxuPUcf8kgsmXTfuH05FMenMomMCRUatufUq8mhK8BjuSxGdRX5gX5TkthzW3
-         8NheFzM+CLg8P1U+7VN2ick5sWfnHlMyXitYQN0wlNhJTg9Igd/OP8gYxefwD9AapfOF
-         EvUCwpaBlUCah/ER9I+x2zHoJFKl1G6843UStsN+/Bllpvh7rB5ijyegYduWRsxea2SL
-         ze37+Q5nRdadffszRynE8Ls1h6OI7uYrbBjH7TFD+7RNzbsE1tGP7QA9i0kU/iknnnbO
-         sCT0TZedcfLHtBuuSCW1GwTKjs1Zghvt3L+JZJDPFx1IYp/O6y9RhXzw8eneWaedElf8
-         5A8Q==
-X-Gm-Message-State: AOJu0Yw+zZKTbd0o3Iohs0VUC4MP0mrMrc7Janpfg8L6QEUNpDQF3Ecv
-        EGdgc3k+BIzc1VhoXpFx4bdiGA==
-X-Google-Smtp-Source: AGHT+IEdogvwKIxs20qz/AxCSP3TeGX/UwqlwJBI6yPmg+VItd2PSRlaMUfeIENSkhbQr4gula8D+Q==
-X-Received: by 2002:a05:6871:202:b0:1b0:408a:1d05 with SMTP id t2-20020a056871020200b001b0408a1d05mr464647oad.38.1692301503310;
-        Thu, 17 Aug 2023 12:45:03 -0700 (PDT)
+        bh=eaudOPaP5kyW7akpBDYGlcG5z1zM8zBLMXgVUE4eGW4=;
+        b=bFIwCMtRLz+agDkrFU7vqMflil2fI0MJB3BKUMuVVOgGuorEKEgnAfDgmZnza4moZe
+         w2TQPMLnjYwoiLUQMCxNSeWFRQw9FFOrTjnNb6Z4fWhQZK70j21gupzTFk+Um45bl4sL
+         b4cBGhxbk06HGq0ciVSnH6RlSx61kEF7SyN3TTwQAGuPk3r/CPt0YUbOOHBNv+zsoj9Q
+         yriS5aoO60IrW0Hz1vp/HX/cRXDCLTjOxZYczyY2wiTcZGkDd0Y3L0t4Ua8zaJC7DHrQ
+         TRYS2L/VRPIFQodmskBVd55f0pnipwrTWZoGy1mHjYqwYoWokNAkP+D+5ljhCkGUujqM
+         afsg==
+X-Gm-Message-State: AOJu0YwvJVVk3bts4hgjU/hUilBXRZ5Wq6+iLkuBFFBQ5JkfR3R8D6bP
+        67MF/RUhIicOpBlQ1mBr3B5LKmrvNZtBSSeJDVEsaQ==
+X-Google-Smtp-Source: AGHT+IHyzwTxy6MT666DCUyWsbd/s49367WAM4wLN/CJGbM3Ix+tuyk9o0NoWyA3ev/nCJRMP0LKRg==
+X-Received: by 2002:a05:6e02:f48:b0:349:849d:bdf7 with SMTP id y8-20020a056e020f4800b00349849dbdf7mr668352ilj.17.1692303127762;
+        Thu, 17 Aug 2023 13:12:07 -0700 (PDT)
 Received: from google.com ([2620:15c:183:200:b4cc:633b:f35:be2e])
-        by smtp.gmail.com with ESMTPSA id dx5-20020a0566381d0500b0042bb6431487sm42418jab.65.2023.08.17.12.45.02
+        by smtp.gmail.com with ESMTPSA id s18-20020a92cbd2000000b0034912793df5sm74429ilq.41.2023.08.17.13.12.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 12:45:02 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 13:44:59 -0600
+        Thu, 17 Aug 2023 13:12:07 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 14:12:03 -0600
 From:   Ross Zwisler <zwisler@google.com>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-trace-devel@vger.kernel.org,
         Stevie Alvarez <stevie.6strings@gmail.com>
-Subject: Re: [PATCH v3 14/18] libtraceeval histogram: Use stack for old copy
- in update
-Message-ID: <20230817194459.GB73817@google.com>
+Subject: Re: [PATCH v3 18/18] libtraceeval: Add traceeval_remove()
+Message-ID: <20230817201203.GC73817@google.com>
 References: <20230817013310.88582-1-rostedt@goodmis.org>
- <20230817013310.88582-15-rostedt@goodmis.org>
- <20230817192926.GA73817@google.com>
- <20230817154245.26b014e6@gandalf.local.home>
+ <20230817013310.88582-19-rostedt@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230817154245.26b014e6@gandalf.local.home>
+In-Reply-To: <20230817013310.88582-19-rostedt@goodmis.org>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 03:42:45PM -0400, Steven Rostedt wrote:
-> On Thu, 17 Aug 2023 13:29:26 -0600
-> Ross Zwisler <zwisler@google.com> wrote:
+On Wed, Aug 16, 2023 at 09:33:10PM -0400, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
-> > > + fail:
-> > > +	/* Free the new values that were added */
-> > > +	data_release(i, copy, types);
-> > > +	/* Put back the old values */
-> > > +	for (i--; i >= 0; i--) {
-> > > +		copy_traceeval_data(types + i, NULL,
-> > > +				    copy + i, old + i);  
-> > 
-> > should be:                          old + i, copy + i);
-> > 
-> > Right now we're copying 'copy' into 'old', but we want to be doing it the
-> > other way around so we restore 'copy' back to its saved state in 'old'
+> Add a way to remove an entry that's in the traceeval. Currently there's
+> only ways to add entries, but there also needs to be a way to remove them
+> too.
 > 
-> I need to change the parameter names to "src" and "dst" as I can't think of
-> "orig" and "copy" as which direction they go. 
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  include/traceeval-hist.h |  3 +++
+>  src/histograms.c         | 29 +++++++++++++++++++++++++++++
+>  2 files changed, 32 insertions(+)
+> 
+> diff --git a/include/traceeval-hist.h b/include/traceeval-hist.h
+> index 37147d626fbb..8e5a6451f399 100644
+> --- a/include/traceeval-hist.h
+> +++ b/include/traceeval-hist.h
+> @@ -160,6 +160,9 @@ int traceeval_insert(struct traceeval *teval,
+>  		     const union traceeval_data *keys,
+>  		     const union traceeval_data *vals);
+>  
+> +int traceeval_remove(struct traceeval *teval,
+> +		     const union traceeval_data *keys);
+> +
+>  int traceeval_query(struct traceeval *teval, const union traceeval_data *keys,
+>  		    const union traceeval_data **results);
+>  
+> diff --git a/src/histograms.c b/src/histograms.c
+> index c16b8866b84a..f35d1b2e583d 100644
+> --- a/src/histograms.c
+> +++ b/src/histograms.c
+> @@ -934,6 +934,35 @@ int traceeval_insert(struct traceeval *teval,
+>  		return update_entry(teval, entry, vals);
+>  }
+>  
+> +/**
+> + * traceeval_remove - remove an item from the traceeval descriptor
+> + * @teval: The descriptor to insert into
+                                remove from
 
-I was thinking the same thing, 'src' and 'dst' would be better. :)
+Aside from that one nit you can add:
 
-> I looked at that three times,
-> and still am confused. And probably reverse them too to make it equivalent
-> to memcpy():
-> 
-> From memcpy() man page;
-> 
-> SYNOPSIS
->        #include <string.h>
-> 
->        void *memcpy(void *restrict dest, const void *restrict src, size_t n);
-> 
-> DESCRIPTION
->        The memcpy() function copies n bytes from memory area src to memory
->        area dest.  The memory areas must not overlap.  Use memmove(3) if
->        the memory areas do overlap.
-> 
-> As most standard libraries have it "dst, src" I'm pretty much thinking that
-> way, and my "direction" is always dst = src --> dst, src. And that's
-> exactly what I was thinking above :-p
-> 
-> -- Steve
+Reviewed-by: Ross Zwisler <zwisler@google.com>
+
+> + * @keys: The list of keys that defines what is being removed
+> + *
+> + * This is the opposite of traceeval_insert(). Instead of inserting
+> + * an item into the traceeval historgram, it removes it.
+> + *
+> + * Returns 1 if it found and removed an item,
+> + *         0 if it did not find an time matching @keys
+> + *        -1 if there was an error.
+> + */
+> +int traceeval_remove(struct traceeval *teval,
+> +		     const union traceeval_data *keys)
+> +{
+> +	struct hash_table *hist = teval->hist;
+> +	struct entry *entry;
+> +	int check;
+> +
+> +	entry = NULL;
+> +	check = get_entry(teval, keys, &entry);
+> +
+> +	if (check < 1)
+> +		return check;
+> +
+> +	hash_remove(hist, &entry->hash);
+> +	return 1;
+> +}
+> +
+>  /**
+>   * traceeval_iterator_put - release a given iterator
+>   * @iter: The iterartor to release
+> -- 
+> 2.40.1
 > 
