@@ -2,1091 +2,403 @@ Return-Path: <linux-trace-devel-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B48F8C2FC1F
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 17 Aug 2023 01:34:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 158C1C05052
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 17 Aug 2023 01:35:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347537AbjHQBds (ORCPT
+        id S1347571AbjHQBfV (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 16 Aug 2023 21:33:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58132 "EHLO
+        Wed, 16 Aug 2023 21:35:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347555AbjHQBdO (ORCPT
+        with ESMTP id S1347565AbjHQBfR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 16 Aug 2023 21:33:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6182D46
-        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Aug 2023 18:33:10 -0700 (PDT)
+        Wed, 16 Aug 2023 21:35:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632C32727
+        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Aug 2023 18:35:15 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6BEC864B74
-        for <linux-trace-devel@vger.kernel.org>; Thu, 17 Aug 2023 01:33:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F55BC433AD;
-        Thu, 17 Aug 2023 01:33:07 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.96)
-        (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1qWRst-000N4g-2g;
-        Wed, 16 Aug 2023 21:33:11 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F2D82612B2
+        for <linux-trace-devel@vger.kernel.org>; Thu, 17 Aug 2023 01:35:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 028DAC433C7;
+        Thu, 17 Aug 2023 01:35:13 +0000 (UTC)
+Date:   Wed, 16 Aug 2023 21:35:18 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     Ross Zwisler <zwisler@google.com>,
-        Stevie Alvarez <stevie.6strings@gmail.com>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v3 17/18] libtraceeval samples: Update task-eval to use the histogram logic
-Date:   Wed, 16 Aug 2023 21:33:09 -0400
-Message-Id: <20230817013310.88582-18-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.40.1
+        Stevie Alvarez <stevie.6strings@gmail.com>
+Subject: Re: [PATCH v3 00/18] libtraceeval histogram: Updates
+Message-ID: <20230816213518.58eafe61@gandalf.local.home>
 In-Reply-To: <20230817013310.88582-1-rostedt@goodmis.org>
 References: <20230817013310.88582-1-rostedt@goodmis.org>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Wed, 16 Aug 2023 21:32:52 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Convert task-eval over to the new API.
+> Changes since v2: https://lore.kernel.org/all/20230811053940.1408424-1-rostedt@goodmis.org/
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- samples/Makefile    |   2 +-
- samples/task-eval.c | 743 +++++++++++++++++++++++++-------------------
- 2 files changed, 426 insertions(+), 319 deletions(-)
+The diff between this version and the last version:
 
-diff --git a/samples/Makefile b/samples/Makefile
-index 012301ec5542..eb14411189f6 100644
---- a/samples/Makefile
-+++ b/samples/Makefile
-@@ -19,7 +19,7 @@ $(sdir):
+diff --git a/include/traceeval-hist.h b/include/traceeval-hist.h
+index 315b66adb7ee..8e5a6451f399 100644
+--- a/include/traceeval-hist.h
++++ b/include/traceeval-hist.h
+@@ -67,11 +67,11 @@ union traceeval_data {
+ struct traceeval_type;
+ struct traceeval;
  
- $(TARGETS): $(sdir) $(LIBTRACEEVAL_STATIC)
+-/* struct traceeval_dynamic release function signature */
++/* release function callback on traceeval_data */
+ typedef void (*traceeval_data_release_fn)(const struct traceeval_type *type,
+ 					  union traceeval_data *data);
  
--$(sdir)/%: $(bdir)/%.o
-+$(sdir)/%: $(LIBTRACEEVAL_STATIC) $(bdir)/%.o
- 	$(call do_sample_build,$@,$<)
+-/* struct traceeval_dynamic compare function signature */
++/* compare function callback to compare traceeval_data */
+ typedef int (*traceeval_data_cmp_fn)(struct traceeval *teval,
+ 				     const struct traceeval_type *type,
+ 				     const union traceeval_data *A,
+@@ -160,6 +160,9 @@ int traceeval_insert(struct traceeval *teval,
+ 		     const union traceeval_data *keys,
+ 		     const union traceeval_data *vals);
  
- $(bdir)/%.o: $(bdir)/%.c
++int traceeval_remove(struct traceeval *teval,
++		     const union traceeval_data *keys);
++
+ int traceeval_query(struct traceeval *teval, const union traceeval_data *keys,
+ 		    const union traceeval_data **results);
+ 
 diff --git a/samples/task-eval.c b/samples/task-eval.c
-index 9214777ee2e1..66d0c40dc0c8 100644
+index e0ef2d0bcb30..66d0c40dc0c8 100644
 --- a/samples/task-eval.c
 +++ b/samples/task-eval.c
-@@ -5,7 +5,7 @@
- #include <getopt.h>
- #include <errno.h>
- #include <trace-cmd.h>
--#include <traceeval.h>
-+#include <traceeval-hist.h>
- 
- static char *argv0;
- 
-@@ -80,6 +80,79 @@ void pdie(const char *fmt, ...)
- 	va_end(ap);
- }
- 
-+static struct traceeval_type cpu_keys[] = {
-+	{
-+		.type = TRACEEVAL_TYPE_NUMBER,
-+		.name = "CPU",
-+	},
-+	{
-+		.type = TRACEEVAL_TYPE_NUMBER,
-+		.name = "Schedule state",
-+	},
-+	{
-+		.type = TRACEEVAL_TYPE_NONE
-+	}
-+};
-+
-+static struct traceeval_type process_keys[] = {
-+	{
-+		.type = TRACEEVAL_TYPE_STRING,
-+		.name = "COMM"
-+	},
-+	{
-+		.type = TRACEEVAL_TYPE_NUMBER,
-+		.name = "Schedule state"
-+	},
-+	{
-+		.type	= TRACEEVAL_TYPE_NONE,
-+	}
-+};
-+
-+static struct traceeval_type process_data_vals[] = {
-+	{
-+		.type = TRACEEVAL_TYPE_POINTER,
-+		.name = "data",
-+	},
-+	{
-+		.type = TRACEEVAL_TYPE_NONE
-+	}
-+};
-+
-+static struct traceeval_type thread_keys[] = {
-+	{
-+		.type = TRACEEVAL_TYPE_NUMBER,
-+		.name = "TID",
-+	},
-+	{
-+		.type = TRACEEVAL_TYPE_NUMBER,
-+		.name = "Schedule state",
-+	},
-+	{
-+		.type = TRACEEVAL_TYPE_NONE,
-+	}
-+};
-+
-+static struct traceeval_type timestamp_vals[] = {
-+	{
-+		.type = TRACEEVAL_TYPE_NUMBER_64,
-+		.name = "Timestamp",
-+		.flags = TRACEEVAL_FL_TIMESTAMP,
-+	},
-+	{
-+		.type = TRACEEVAL_TYPE_NONE
-+	}
-+};
-+
-+static struct traceeval_type delta_vals[] = {
-+	{
-+		.type	= TRACEEVAL_TYPE_NUMBER_64,
-+		.name	= "delta",
-+	},
-+	{
-+		.type	= TRACEEVAL_TYPE_NONE,
-+	},
-+};
-+
- enum sched_state {
- 	RUNNING,
- 	BLOCKED,
-@@ -89,16 +162,22 @@ enum sched_state {
- 	OTHER
- };
- 
-+struct teval_pair {
-+	struct traceeval	*start;
-+	struct traceeval	*stop;
-+};
-+
- struct process_data {
--	struct traceeval	*teval_cpus;
--	struct traceeval	*teval_threads;
-+	struct teval_pair	teval_cpus;
-+	struct teval_pair	teval_threads;
- 	char			*comm;
- 	int			state;
- };
- 
- struct task_data {
--	struct traceeval	*teval_cpus;
--	struct traceeval	*teval_processes;
-+	struct teval_pair	teval_cpus;
-+	struct teval_pair	teval_processes;
-+	struct traceeval	*teval_processes_data;
- 	char			*comm;
- };
- 
-@@ -111,30 +190,52 @@ static void update_process(struct task_data *tdata, const char *comm,
- 			   enum sched_state state, enum command cmd,
- 			   unsigned long long ts)
- {
--	struct traceeval_key keys[] = {
-+	union traceeval_data keys[] = {
- 		{
--			.type = TRACEEVAL_TYPE_STRING,
--			.string = comm,
-+			.cstring	= comm,
- 		},
- 		{
--			.type = TRACEEVAL_TYPE_NUMBER,
--			.number = state,
--		}
-+			.number		= state,
-+		},
- 	};
-+	union traceeval_data vals[] = {
-+		{
-+			.number_64	= ts,
-+		},
-+	};
-+	union traceeval_data new_vals[1] = { };
-+	const union traceeval_data *results;
- 	int ret;
- 
- 	switch (cmd) {
- 	case START:
--		ret = traceeval_n_start(tdata->teval_processes, keys, ts);
-+		ret = traceeval_insert(tdata->teval_processes.start, keys, vals);
- 		if (ret < 0)
- 			pdie("Could not start process");
+@@ -215,7 +215,9 @@ static void update_process(struct task_data *tdata, const char *comm,
  		return;
  	case STOP:
--		ret = traceeval_n_stop(tdata->teval_processes, keys, ts);
-+		ret = traceeval_query(tdata->teval_processes.start, keys, &results);
+ 		ret = traceeval_query(tdata->teval_processes.start, keys, &results);
+-		if (ret <= 0)
 +		if (ret < 0)
 +			pdie("Could not query start process");
 +		if (ret == 0)
-+			return;
-+		if (!results[0].number_64)
-+			break;
-+
-+		new_vals[0].number_64 = ts - results[0].number_64;
-+
-+		ret = traceeval_insert(tdata->teval_processes.stop, keys, new_vals);
- 		if (ret < 0)
- 			pdie("Could not stop process");
--		return;
-+
-+		/* Reset the start */
-+		new_vals[0].number_64 = 0;
-+		ret = traceeval_insert(tdata->teval_processes.start, keys, new_vals);
-+		if (ret < 0)
-+			pdie("Could not start CPU");
-+		break;
- 	}
-+	traceeval_results_release(tdata->teval_processes.start, results);
- }
+ 			return;
+ 		if (!results[0].number_64)
+ 			break;
+@@ -264,7 +266,9 @@ get_process_data(struct task_data *tdata, const char *comm)
+ 	int ret;
  
- static void start_process(struct task_data *tdata, const char *comm,
-@@ -152,105 +253,172 @@ static void stop_process(struct task_data *tdata, const char *comm,
- static struct process_data *
- get_process_data(struct task_data *tdata, const char *comm)
- {
--	struct traceeval_key keys[] = {
-+	union traceeval_data keys[] = {
- 		{
--			.type = TRACEEVAL_TYPE_STRING,
--			.string = comm,
-+			.cstring = comm,
- 		},
- 		{
--			.type = TRACEEVAL_TYPE_NUMBER,
- 			.number = RUNNING,
- 		}
- 	};
-+	const union traceeval_data *results;
-+	void *data;
-+	int ret;
-+
-+	ret = traceeval_query(tdata->teval_processes_data, keys, &results);
+ 	ret = traceeval_query(tdata->teval_processes_data, keys, &results);
+-	if (ret <= 0)
 +	if (ret < 0)
 +		pdie("Could not query process data");
 +	if (ret == 0)
-+		return NULL;
+ 		return NULL;
  
--	return traceeval_n_get_private(tdata->teval_processes, keys);
-+	data = results[0].pointer;
-+	traceeval_results_release(tdata->teval_processes_data, results);
-+	return data;
- }
- 
- void set_process_data(struct task_data *tdata, const char *comm, void *data)
- {
--	struct traceeval_key keys[] = {
-+	union traceeval_data keys[] = {
- 		{
--			.type = TRACEEVAL_TYPE_STRING,
--			.string = comm,
-+			.cstring = comm,
- 		},
- 		{
--			.type = TRACEEVAL_TYPE_NUMBER,
- 			.number = RUNNING,
- 		}
- 	};
-+	union traceeval_data new_vals[1] = { };
-+	const union traceeval_data *results;
- 	int ret;
- 
--	ret = traceeval_n_set_private(tdata->teval_processes, keys, data);
-+	ret = traceeval_query(tdata->teval_processes_data, keys, &results);
-+	if (ret > 0)
-+		goto out; /* It already exists ? */
+ 	data = results[0].pointer;
+@@ -289,6 +293,8 @@ void set_process_data(struct task_data *tdata, const char *comm, void *data)
+ 	ret = traceeval_query(tdata->teval_processes_data, keys, &results);
+ 	if (ret > 0)
+ 		goto out; /* It already exists ? */
 +	if (ret < 0)
 +		pdie("Could not query process data");
-+
-+	new_vals[0].pointer = data;
-+	ret = traceeval_insert(tdata->teval_processes_data, keys, new_vals);
- 	if (ret < 0)
- 		pdie("Failed to set process data");
-+
-+ out:
-+	traceeval_results_release(tdata->teval_processes_data, results);
- }
  
--static void update_cpu(struct traceeval *teval, int cpu,
-+static void update_cpu(struct teval_pair *teval_pair, int cpu,
- 		       enum sched_state state, enum command cmd,
- 		       unsigned long long ts)
- {
--	struct traceeval_key keys[] = {
-+	const union traceeval_data *results;
-+	union traceeval_data keys[] = {
- 		{
--			.type = TRACEEVAL_TYPE_NUMBER,
- 			.number = cpu,
- 		},
- 		{
--			.type = TRACEEVAL_TYPE_NUMBER,
- 			.number = state,
+ 	new_vals[0].pointer = data;
+ 	ret = traceeval_insert(tdata->teval_processes_data, keys, new_vals);
+@@ -328,13 +334,17 @@ static void update_cpu(struct teval_pair *teval_pair, int cpu,
+ 			if (results[0].number_64)
+ 				break;
  		}
- 	};
-+	union traceeval_data vals[] = {
-+		{
-+			.number_64	= ts,
-+		},
-+	};
-+	union traceeval_data new_vals[1] = { };
- 	int ret;
- 
- 	switch (cmd) {
- 	case START:
--		ret = traceeval_n_continue(teval, keys, ts);
-+		/* Only set if the timestamp is zero (or doesn't exist) */
-+		ret = traceeval_query(teval_pair->start, keys, &results);
-+		if (ret > 0) {
-+			if (results[0].number_64)
-+				break;
-+		}
 +		if (ret < 0)
 +			pdie("Could not query cpu start data");
-+		ret = traceeval_insert(teval_pair->start, keys, vals);
+ 		ret = traceeval_insert(teval_pair->start, keys, vals);
  		if (ret < 0)
  			pdie("Could not start CPU");
--		return;
-+		break;
+ 		break;
  	case STOP:
--		ret = traceeval_n_stop(teval, keys, ts);
-+		ret = traceeval_query(teval_pair->start, keys, &results);
+ 		ret = traceeval_query(teval_pair->start, keys, &results);
+-		if (ret <= 0)
 +		if (ret < 0)
 +			pdie("Could not query cpu stop data");
 +		if (ret == 0)
-+			return;
-+
-+		if (!results[0].number_64)
-+			break;
-+
-+		new_vals[0].number_64 = ts - results[0].number_64;
-+
-+		ret = traceeval_insert(teval_pair->stop, keys, new_vals);
- 		if (ret < 0)
- 			pdie("Could not stop CPU");
--		return;
-+
-+		/* Reset the start */
-+		new_vals[0].number_64 = 0;
-+		ret = traceeval_insert(teval_pair->start, keys, new_vals);
-+		if (ret < 0)
-+			pdie("Could not start CPU");
-+
-+		break;
-+		default:
-+			return;
- 	}
-+	traceeval_results_release(teval_pair->start, results);
- }
+ 			return;
  
--static void start_cpu(struct traceeval *teval, int cpu,
-+static void start_cpu(struct teval_pair *teval_pair, int cpu,
- 		      enum sched_state state,  unsigned long long ts)
- {
--	update_cpu(teval, cpu, state, START, ts);
-+	update_cpu(teval_pair, cpu, state, START, ts);
- }
- 
--static void stop_cpu(struct traceeval *teval, int cpu,
-+static void stop_cpu(struct teval_pair *teval_pair, int cpu,
- 		     enum sched_state state, unsigned long long ts)
- {
--	update_cpu(teval, cpu, state, STOP, ts);
-+	update_cpu(teval_pair, cpu, state, STOP, ts);
- }
- 
- static void update_thread(struct process_data *pdata, int tid,
- 			  enum sched_state state, enum command cmd,
- 			  unsigned long long ts)
- {
--	struct traceeval_key keys[] = {
-+	const union traceeval_data *results;
-+	union traceeval_data keys[] = {
- 		{
--			.type = TRACEEVAL_TYPE_NUMBER,
- 			.number = tid,
- 		},
- 		{
--			.type = TRACEEVAL_TYPE_NUMBER,
- 			.number = state,
- 		}
- 	};
-+	union traceeval_data vals[] = {
-+		{
-+			.number_64	= ts,
-+		},
-+	};
-+	union traceeval_data new_vals[1] = { };
- 	int ret;
- 
- 	switch (cmd) {
- 	case START:
--		ret = traceeval_n_start(pdata->teval_threads, keys, ts);
-+		ret = traceeval_insert(pdata->teval_threads.start, keys, vals);
- 		if (ret < 0)
- 			pdie("Could not start thread");
+ 		if (!results[0].number_64)
+@@ -400,7 +410,9 @@ static void update_thread(struct process_data *pdata, int tid,
  		return;
  	case STOP:
--		ret = traceeval_n_stop(pdata->teval_threads, keys, ts);
-+		ret = traceeval_query(pdata->teval_threads.start, keys, &results);
+ 		ret = traceeval_query(pdata->teval_threads.start, keys, &results);
+-		if (ret <= 0)
 +		if (ret < 0)
 +			pdie("Could not query thread start");
 +		if (ret == 0)
-+			return;
-+
-+		new_vals[0].number_64 = ts - results[0].number_64;
-+
-+		ret = traceeval_insert(pdata->teval_threads.stop, keys, new_vals);
-+		traceeval_results_release(pdata->teval_threads.start, results);
- 		if (ret < 0)
- 			pdie("Could not stop thread");
- 		return;
-@@ -283,34 +451,21 @@ static struct tep_format_field *get_field(struct tep_event *event, const char *n
+ 			return;
  
- static void init_process_data(struct process_data *pdata)
- {
--	struct traceeval_key_info cpu_info[] = {
--		{
--			.type = TRACEEVAL_TYPE_NUMBER,
--			.name = "CPU",
--		},
--		{
--			.type = TRACEEVAL_TYPE_NUMBER,
--			.name = "Schedule state",
--		}
--	};
--	struct traceeval_key_info thread_info[] = {
--		{
--			.type = TRACEEVAL_TYPE_NUMBER,
--			.name = "TID",
--		},
--		{
--			.type = TRACEEVAL_TYPE_NUMBER,
--			.name = "Schedule state",
--		}
--	};
+ 		new_vals[0].number_64 = ts - results[0].number_64;
+@@ -825,6 +837,8 @@ static void display_processes(struct traceeval *teval,
+ 		const char *comm = keys[0].cstring;
  
--	pdata->teval_cpus = traceeval_2_alloc("CPUs", cpu_info);
--	if (!pdata->teval_cpus)
--		pdie("Creating trace eval");
-+	pdata->teval_cpus.start = traceeval_init(cpu_keys, timestamp_vals);
-+	if (!pdata->teval_cpus.start)
-+		pdie("Creating trace eval cpus start");
-+	pdata->teval_cpus.stop = traceeval_init(cpu_keys, delta_vals);
-+	if (!pdata->teval_cpus.stop)
-+		pdie("Creating trace eval cpus");
- 
--	pdata->teval_threads = traceeval_2_alloc("Threads", thread_info);
--	if (!pdata->teval_threads)
--		pdie("Creating trace eval");
-+	pdata->teval_threads.start = traceeval_init(thread_keys, timestamp_vals);
-+	if (!pdata->teval_threads.start)
-+		pdie("Creating trace eval threads start");
-+
-+	pdata->teval_threads.stop = traceeval_init(thread_keys, delta_vals);
-+	if (!pdata->teval_threads.stop)
-+		pdie("Creating trace eval threads");
- }
- 
- static struct process_data *alloc_pdata(struct task_data *tdata, const char *comm)
-@@ -344,7 +499,7 @@ static void sched_out(struct task_data *tdata, const char *comm,
- 	pid = val;
- 	if (!pid) {
- 		/* Record the runtime for the process CPUs */
--		stop_cpu(tdata->teval_cpus, record->cpu, IDLE, record->ts);
-+		stop_cpu(&tdata->teval_cpus, record->cpu, IDLE, record->ts);
- 		return;
- 	}
- 
-@@ -381,10 +536,10 @@ static void sched_out(struct task_data *tdata, const char *comm,
- 	start_thread(pdata, pid, pdata->state, record->ts);
- 
- 	/* Record the runtime for the process CPUs */
--	stop_cpu(pdata->teval_cpus, record->cpu, RUNNING, record->ts);
-+	stop_cpu(&pdata->teval_cpus, record->cpu, RUNNING, record->ts);
- 
- 	/* Record the runtime for the all CPUs */
--	stop_cpu(tdata->teval_cpus, record->cpu, RUNNING, record->ts);
-+	stop_cpu(&tdata->teval_cpus, record->cpu, RUNNING, record->ts);
- }
- 
- static void sched_in(struct task_data *tdata, const char *comm,
-@@ -405,7 +560,7 @@ static void sched_in(struct task_data *tdata, const char *comm,
- 	/* Ignore the idle task */
- 	if (!pid) {
- 		/* Record the runtime for the process CPUs */
--		start_cpu(tdata->teval_cpus, record->cpu, IDLE, record->ts);
-+		start_cpu(&tdata->teval_cpus, record->cpu, IDLE, record->ts);
- 		return;
- 	}
- 
-@@ -415,7 +570,7 @@ static void sched_in(struct task_data *tdata, const char *comm,
- 	pdata = get_process_data(tdata, comm);
- 
- 	/* Start recording the running time of process CPUs */
--	start_cpu(tdata->teval_cpus, record->cpu, RUNNING, record->ts);
-+	start_cpu(&tdata->teval_cpus, record->cpu, RUNNING, record->ts);
- 
- 	/* If there was no pdata, then this process did not go through sched out */
- 	if (!pdata) {
-@@ -427,7 +582,7 @@ static void sched_in(struct task_data *tdata, const char *comm,
- 	start_thread(pdata, pid, RUNNING, record->ts);
- 
- 	/* Start recording the running time of process CPUs */
--	start_cpu(pdata->teval_cpus, record->cpu, RUNNING, record->ts);
-+	start_cpu(&pdata->teval_cpus, record->cpu, RUNNING, record->ts);
- 
- 	/* If it was just created, there's nothing to stop */
- 	if (is_new)
-@@ -482,32 +637,83 @@ static void print_microseconds(int idx, unsigned long long nsecs)
- 		printf("%*d.%03lld\n", idx, 0, nsecs);
- }
- 
-+/*
-+ * Sort all the processes by the RUNNING state.
-+ *  If A and B have the same COMM, then sort by state.
-+ *  else
-+ *    Find the RUNNNIG state for A and B
-+ *    If the RUNNING state does not exist, it's considered -1
-+ *  If RUNNING is equal, then sort by COMM.
-+ */
-+static int compare_pdata(struct traceeval *teval_data,
-+				const union traceeval_data *Akeys,
-+				const union traceeval_data *Avals,
-+				const union traceeval_data *Bkeys,
-+				const union traceeval_data *Bvals,
-+				void *data)
-+{
-+	struct traceeval *teval = data; /* The deltas are here */
-+	union traceeval_data keysA[] = {
-+		{ .cstring = Akeys[0].cstring }, { .number = RUNNING } };
-+	union traceeval_data keysB[] = {
-+		{ .cstring = Bkeys[0].cstring }, { .number = RUNNING } };
-+	struct traceeval_stat *statA;
-+	struct traceeval_stat *statB;
-+	unsigned long long totalA = -1;
-+	unsigned long long totalB = -1;
-+
-+	/* First check if we are on the same task */
-+	if (strcmp(Akeys[0].cstring, Bkeys[0].cstring) == 0) {
-+		/* Sort decending */
-+		if (Bkeys[1].number > Akeys[1].number)
-+			return -1;
-+		return Bkeys[1].number != Akeys[1].number;
-+	}
-+
-+	/* Get the RUNNING values for both processes */
-+	statA = traceeval_stat(teval, keysA, &delta_vals[0]);
-+	if (statA)
-+		totalA = traceeval_stat_total(statA);
-+
-+	statB = traceeval_stat(teval, keysB, &delta_vals[0]);
-+	if (statB)
-+		totalB = traceeval_stat_total(statB);
-+
-+	if (totalB < totalA)
-+		return -1;
-+	if (totalB > totalA)
-+		return 1;
-+
-+	return strcmp(Bkeys[0].cstring, Akeys[0].cstring);
-+}
-+
- static void display_cpus(struct traceeval *teval)
- {
--	struct traceeval_key_array *karray;
--	const struct traceeval_key *ckey;
--	const struct traceeval_key *skey;
-+	struct traceeval_iterator *iter = traceeval_iterator_get(teval);
-+	const union traceeval_data *keys;
-+	struct traceeval_stat *stat;
- 	int last_cpu = -1;
--	int i, nr;
-+
-+	if (!iter)
-+		pdie("Could not get iterator?");
- 
- 	printf("\n");
- 
--	nr = traceeval_result_nr(teval);
--	if (!nr)
--		die("No result for CPUs\n");
-+	traceeval_iterator_sort(iter, cpu_keys[0].name, 0, true);
-+	traceeval_iterator_sort(iter, cpu_keys[1].name, 1, true);
- 
--	for (i = 0; i < nr; i++) {
--		karray = traceeval_result_indx_key_array(teval, i);
--		if (!karray)
--			die("No cpu key for result %d\n", i);
--		ckey = traceeval_key_array_indx(karray, 0);
--		skey = traceeval_key_array_indx(karray, 1);
-+	while (traceeval_iterator_next(iter, &keys) > 0) {
-+		int state = keys[1].number;
-+		int cpu = keys[0].number;
- 
-+		stat = traceeval_stat(teval, keys, &delta_vals[0]);
-+		if (!stat)
-+			continue; // die?
- 
--		if (last_cpu != ckey->number)
--			printf("    CPU [%d]:\n", (int)ckey->number);
-+		if (last_cpu != cpu)
-+			printf("    CPU [%d]:\n", cpu);
- 
--		switch (skey->number) {
-+		switch (state) {
- 		case RUNNING:
- 			printf("       Running: ");
- 			break;
-@@ -518,256 +724,170 @@ static void display_cpus(struct traceeval *teval)
- 		case PREEMPT:
- 		case SLEEP:
- 		case OTHER:
--			printf("         \?\?(%ld): ", skey->number);
-+			printf("         \?\?(%d): ", state);
- 			break;
- 		}
- 		printf(" time (us):");
--		print_microseconds(12, traceeval_result_indx_total(teval, i));
-+		print_microseconds(12, traceeval_stat_total(stat));
- 
--		last_cpu = ckey->number;
-+		last_cpu = cpu;
- 	}
-+
-+	if (last_cpu < 0)
-+		die("No result for CPUs\n");
-+
- }
- 
--static void display_thread(struct traceeval *teval, int tid)
--{
--	struct traceeval_key keys[2] =
--		{
--			{
--				.type = TRACEEVAL_TYPE_NUMBER,
--				.number = tid,
--			},
--			{
--				.type = TRACEEVAL_TYPE_NUMBER,
--				.number = RUNNING,
--			}
--		};
--	ssize_t ret;
--
--	printf("\n    thread id: %d\n", tid);
--
--	printf("      Total run time (us):");
--	print_microseconds(14, (ret = traceeval_result_keys_total(teval, keys)) < 0 ? 0 : ret);
--
--	keys[1].number = PREEMPT;
--	printf("      Total preempt time (us):");
--	print_microseconds(10, (ret = traceeval_result_keys_total(teval, keys)) < 0 ? 0 : ret);
--
--	keys[1].number = BLOCKED;
--	printf("      Total blocked time (us):");
--	print_microseconds(10, (ret = traceeval_result_keys_total(teval, keys)) < 0 ? 0 : ret);
--
--	keys[1].number = SLEEP;
--	printf("      Total sleep time (us):");
--	print_microseconds(12, (ret = traceeval_result_keys_total(teval, keys)) < 0 ? 0 : ret);
--};
-+static void display_state_times(int state, unsigned long long total)
-+{
-+	switch (state) {
-+	case RUNNING:
-+		printf("      Total run time (us):");
-+		print_microseconds(14, total);
-+		break;
-+	case BLOCKED:
-+		printf("      Total blocked time (us):");
-+		print_microseconds(10, total);
-+		break;
-+	case PREEMPT:
-+		printf("      Total preempt time (us):");
-+		print_microseconds(10, total);
-+		break;
-+	case SLEEP:
-+		printf("      Total sleep time (us):");
-+		print_microseconds(12, total);
-+	}
-+}
- 
- static void display_threads(struct traceeval *teval)
- {
--	struct traceeval_key_array *karray;
--	const struct traceeval_key *tkey;
--	struct traceeval_key keys[2];
-+	struct traceeval_iterator *iter = traceeval_iterator_get(teval);
-+	const union traceeval_data *keys;
-+	struct traceeval_stat *stat;
- 	int last_tid = -1;
--	int i, nr;
- 
--	nr = traceeval_result_nr(teval);
--	if (!nr)
--		die("No result for threads\n");
-+	traceeval_iterator_sort(iter, thread_keys[0].name, 0, true);
-+	traceeval_iterator_sort(iter, thread_keys[1].name, 1, true);
- 
--	memset(keys, 0, sizeof(keys));
--	keys[1].type = TRACEEVAL_TYPE_NUMBER;
--
--	for (i = 0; i < nr; i++) {
--		karray = traceeval_result_indx_key_array(teval, i);
--		if (!karray)
--			die("No thread key for result %d\n", i);
--		tkey = traceeval_key_array_indx(karray, 0);
--		if (!tkey)
--			die("No thread keys for result?");
--
--		/*
--		 * All the TIDS should be together in the results,
--		 * as the results are sorted by the first key, which
--		 * is the comm.
--		 */
--		if (last_tid == tkey->number)
--			continue;
-+	while (traceeval_iterator_next(iter, &keys) > 0) {
-+		int state = keys[1].number;
-+		int tid = keys[0].number;
-+
-+		stat = traceeval_stat(teval, keys, &delta_vals[0]);
-+		if (!stat)
-+			continue; // die?
-+
-+		if (last_tid != keys[0].number)
-+			printf("\n    thread id: %d\n", tid);
- 
--		last_tid = tkey->number;
-+		last_tid = tid;
- 
--		display_thread(teval, tkey->number);
-+		display_state_times(state, traceeval_stat_total(stat));
- 	}
-+
-+	if (last_tid < 0)
-+		die("No result for threads\n");
-+
- }
- 
--static void display_process(struct traceeval *teval, struct process_data *pdata,
--			    const char *comm)
-+static void display_process(struct process_data *pdata)
- {
--	struct traceeval_key keys[2] =
--		{
--			{
--				.type = TRACEEVAL_TYPE_STRING,
--				.string = comm,
--			},
--			{
--				.type = TRACEEVAL_TYPE_NUMBER,
--				.number = RUNNING,
--			}
--		};
--	ssize_t ret;
--
--	printf("Task: %s\n", comm);
--
--	printf("  Total run time (us):");
--	print_microseconds(18, (ret = traceeval_result_keys_total(teval, keys)) < 0 ? 0 : ret);
--
--	keys[1].number = PREEMPT;
--	printf("  Total preempt time (us):");
--	print_microseconds(14, (ret = traceeval_result_keys_total(teval, keys)) < 0 ? 0 : ret);
--
--	keys[1].number = BLOCKED;
--	printf("  Total blocked time (us):");
--	print_microseconds(14, (ret = traceeval_result_keys_total(teval, keys)) < 0 ? 0 : ret);
--
--	keys[1].number = SLEEP;
--	printf("  Total sleep time (us):");
--	print_microseconds(16, (ret = traceeval_result_keys_total(teval, keys)) < 0 ? 0 : ret);
--
--	display_threads(pdata->teval_threads);
--	display_cpus(pdata->teval_cpus);
-+	display_threads(pdata->teval_threads.stop);
-+	display_cpus(pdata->teval_cpus.stop);
- 	printf("\n");
- }
- 
--static int compare_pdata(struct traceeval *teval,
--			 const struct traceeval_key_array *A,
--			 const struct traceeval_key_array *B,
--			 void *data)
-+static void display_process_stats(struct traceeval *teval,
-+				  struct process_data *pdata, const char *comm)
- {
--	struct traceeval_key akeys[2];
--	struct traceeval_key bkeys[2];
--	const struct traceeval_key *akey;
--	const struct traceeval_key *bkey;
--	long long aval;
--	long long bval;
--	int ret;
--
--	/* Get the RUNNING values for this process */
--
--	akey = traceeval_key_array_indx(A, 0);
--	akeys[0] = *akey;
--	akeys[1].type = TRACEEVAL_TYPE_NUMBER;
--	akeys[1].number = RUNNING;
--
--	bkey = traceeval_key_array_indx(B, 0);
--	bkeys[0] = *bkey;
--	bkeys[1].type = TRACEEVAL_TYPE_NUMBER;
--	bkeys[1].number = RUNNING;
--
--	aval = traceeval_result_keys_total(teval, akey);
--	bval = traceeval_result_keys_total(teval, bkeys);
--
--	if (aval < 0)
--		return -1;
--	if (bval < 0)
--		return -1;
--
--	if (bval < aval)
--		return -1;
--	if (bval > aval)
--		return 1;
--
--	ret = strcmp(bkeys[0].string, akeys[0].string);
-+	struct traceeval_stat *stat;
-+	unsigned long long delta;
-+	union traceeval_data keys[] = {
-+		{
-+			.cstring = comm,
-+		},
-+		{
-+			.number = RUNNING,
-+		}
-+	};
- 
--	/* If two different processes have the same runtime, sort by name */
--	if (ret)
--		return ret;
-+	for (int i = 0; i < OTHER; i++) {
-+		keys[1].number = i;
- 
--	/* Same process, sort by state */
-+		delta = 0;
-+		stat = traceeval_stat(teval, keys, &delta_vals[0]);
-+		if (stat)
-+			delta = traceeval_stat_total(stat);
-+		display_state_times(i, delta);
-+	}
-+}
- 
--	akey = traceeval_key_array_indx(A, 1);
--	bkey = traceeval_key_array_indx(B, 1);
-+static void display_processes(struct traceeval *teval,
-+			      struct traceeval *teval_data)
-+{
-+	struct traceeval_iterator *iter = traceeval_iterator_get(teval_data);
-+	const union traceeval_data *keys;
-+	int ret;
- 
--	if (bkey->number < akey->number)
--		return -1;
-+	traceeval_iterator_sort_custom(iter, compare_pdata, teval);
- 
--	return bkey->number > akey->number;
--}
-+	while (traceeval_iterator_next(iter, &keys) > 0) {
-+		const union traceeval_data *results;
-+		struct process_data *pdata = NULL;
-+		const char *comm = keys[0].cstring;
- 
--static void display_processes(struct traceeval *teval)
--{
--	struct traceeval_key_array *karray;
--	const struct traceeval_key *tkey;
--	struct traceeval_key keys[2];
--	struct process_data *pdata;
--	const char *last_comm = NULL;
--	int i, nr;
--
--	nr = traceeval_result_nr(teval);
--	if (!nr)
--		die("No result for processes\n");
--
--	memset(keys, 0, sizeof(keys));
--	keys[1].type = TRACEEVAL_TYPE_NUMBER;
--
--	for (i = 0; i < nr; i++) {
--		karray = traceeval_result_indx_key_array(teval, i);
--		if (!karray)
--			die("No process key for result %d\n", i);
--		tkey = traceeval_key_array_indx(karray, 0);
--		if (!tkey)
--			die("No process keys for result?");
--
--		/*
--		 * All the comms should be together in the results,
--		 * as the results are sorted by the first key, which
--		 * is the comm.
--		 */
--		if (last_comm && strcmp(tkey->string, last_comm) == 0)
--			continue;
-+		ret = traceeval_query(teval_data, keys, &results);
+ 		ret = traceeval_query(teval_data, keys, &results);
 +		if (ret < 0)
 +			pdie("Could not query iterator");
-+		if (ret < 1)
-+			continue; /* ?? */
+ 		if (ret < 1)
+ 			continue; /* ?? */
  
--		last_comm = tkey->string;
-+		pdata = results[0].pointer;
-+		traceeval_results_release(teval_data, results);
+diff --git a/src/eval-local.h b/src/eval-local.h
+index c3ea920ed2e8..5c3918f17cc1 100644
+--- a/src/eval-local.h
++++ b/src/eval-local.h
+@@ -6,7 +6,7 @@
  
--		keys[0] = *tkey;
--		keys[1].number = RUNNING;
-+		printf("Task: %s\n", comm);
+ #define __hidden __attribute__((visibility ("hidden")))
  
--		/* All processes should have a running state */
--		pdata = traceeval_n_get_private(teval, keys);
-+		display_process_stats(teval, pdata, comm);
- 		if (pdata)
--			display_process(teval, pdata, keys[0].string);
-+			display_process(pdata);
+-#define offset_of(type, field) (&(((type *)(NULL))->field))
++#define offset_of(type, field) ((size_t)(&(((type *)(NULL))->field)))
+ #define container_of(ptr, type, field) \
+ 	(type *)((void *)(ptr) - (void *)offset_of(type, field))
+ 
+diff --git a/src/hash.c b/src/hash.c
+index 221145efcbb9..82962fbba8d8 100644
+--- a/src/hash.c
++++ b/src/hash.c
+@@ -78,7 +78,7 @@ __hidden struct hash_item *hash_iter_next(struct hash_iter *iter)
+ 	struct hash_table *hash = container_of(iter, struct hash_table, iter);
+ 	struct hash_item *item;
+ 
+-	if (iter->current_bucket > HASH_SIZE(hash->bits))
++	if (iter->current_bucket >= HASH_SIZE(hash->bits))
+ 		return NULL;
+ 
+ 	item = iter->next_item;
+diff --git a/src/histograms.c b/src/histograms.c
+index cd68d4c834af..f35d1b2e583d 100644
+--- a/src/histograms.c
++++ b/src/histograms.c
+@@ -12,7 +12,6 @@
+ #include <stdio.h>
+ 
+ #include <traceeval-hist.h>
+-
+ #include "eval-local.h"
+ 
+ /*
+@@ -37,9 +36,9 @@ static void print_err(const char *fmt, ...)
+  * -1 for the other way around, and -2 on error.
+  */
+ static int compare_traceeval_data(struct traceeval *teval,
++				  struct traceeval_type *type,
+ 				  const union traceeval_data *orig,
+-				  const union traceeval_data *copy,
+-				  struct traceeval_type *type)
++				  const union traceeval_data *copy)
+ {
+ 	int i;
+ 
+@@ -92,16 +91,16 @@ static int compare_traceeval_data(struct traceeval *teval,
+  * Return 1 if @orig and @copy are the same, 0 if not, and -1 on error.
+  */
+ static int compare_traceeval_data_set(struct traceeval *teval,
++				      struct traceeval_type *defs,
+ 				      union traceeval_data *orig,
+-				      const union traceeval_data *copy,
+-				      struct traceeval_type *defs, size_t size)
++				      const union traceeval_data *copy, size_t size)
+ {
+ 	int check;
+ 	size_t i;
+ 
+ 	/* compare data arrays */
+ 	for (i = 0; i < size; i++) {
+-		if ((check = compare_traceeval_data(teval, orig + i, copy + i, defs + i)))
++		if ((check = compare_traceeval_data(teval, defs + i, orig + i, copy + i)))
+ 			return check == -2 ? -1 : 0;
  	}
+ 
+@@ -294,12 +293,12 @@ struct traceeval *traceeval_init(struct traceeval_type *keys,
+ 
+ 	ret = check_keys(keys);
+ 	if (ret < 0)
+-		goto fail;
++		goto fail_release;
+ 
+ 	if (vals) {
+ 		ret = check_vals(vals);
+ 		if (ret < 0)
+-			goto fail;
++			goto fail_release;
+ 	}
+ 
+ 	/* alloc key types */
+@@ -463,7 +462,7 @@ static unsigned make_hash(struct traceeval *teval, const union traceeval_data *k
+ 		key += hash_number(val);
+ 	}
+ 
+-	return key & HASH_MASK(bits);
++	return key;
  }
  
- static void display(struct task_data *tdata)
- {
-+	struct traceeval *teval = tdata->teval_cpus.stop;
-+	struct traceeval_iterator *iter = traceeval_iterator_get(teval);
-+	const union traceeval_data *keys;
-+	struct traceeval_stat *stat;
- 	unsigned long long total_time = 0;
- 	unsigned long long idle_time = 0;
--	struct traceeval_key_array *karray;
--	const struct traceeval_key *tkey;
--	unsigned long long val;
--	int i, nr;
+ /*
+@@ -489,8 +488,8 @@ static int get_entry(struct traceeval *teval, const union traceeval_data *keys,
+ 	for (iter = hash_iter_bucket(hist, key); (item = hash_iter_bucket_next(iter)); ) {
+ 		entry = container_of(item, struct entry, hash);
  
--	if (tdata->comm)
--		return display_processes(tdata->teval_processes);
-+	if (tdata->comm) {
-+		return display_processes(tdata->teval_processes.stop,
-+					 tdata->teval_processes_data);
+-		check = compare_traceeval_data_set(teval, entry->keys, keys,
+-						   teval->key_types, teval->nr_key_types);
++		check = compare_traceeval_data_set(teval, teval->key_types,
++						   entry->keys, keys, teval->nr_key_types);
+ 		if (check)
+ 			break;
+ 	}
+@@ -596,7 +595,7 @@ static int copy_traceeval_data(struct traceeval_type *type,
+ /*
+  * Free @data with respect to @size and @type.
+  *
+- * Does not call release() if a copy() exists.
++ * Does not call the release() callback if a copy() exists.
+  */
+ static void data_release(size_t size, union traceeval_data *data,
+ 			 struct traceeval_type *type)
+@@ -776,7 +775,7 @@ fail_entry:
+  *
+  * Frees the old vals field of @entry, unless an error occurs.
+  *
+- * Return 1 on success, -1 on error.
++ * Return 0 on success, -1 on error.
+  */
+ static int update_entry(struct traceeval *teval, struct entry *entry,
+ 			const union traceeval_data *vals)
+@@ -789,7 +788,7 @@ static int update_entry(struct traceeval *teval, struct entry *entry,
+ 	size_t i;
+ 
+ 	if (!size)
+-		return 1;
++		return 0;
+ 
+ 	for (i = 0; i < size; i++) {
+ 		old[i] = copy[i];
+@@ -798,11 +797,16 @@ static int update_entry(struct traceeval *teval, struct entry *entry,
+ 					vals + i, copy + i))
+ 			goto fail;
+ 	}
+-
++	data_release(size, old, types);
+ 	return 0;
+-
+-fail:
+-	data_release(i, old, types);
++ fail:
++	/* Free the new values that were added */
++	data_release(i, copy, types);
++	/* Put back the old values */
++	for (i--; i >= 0; i--) {
++		copy_traceeval_data(types + i, NULL,
++				    copy + i, old + i);
 +	}
- 
- 	printf("Total:\n");
- 
--	nr = traceeval_result_nr(tdata->teval_cpus);
--	for (i = 0; i < nr; i++) {
--		karray = traceeval_result_indx_key_array(tdata->teval_cpus, i);
--		if (!karray)
--			die("No CPU keys for result %d\n", i);
--		tkey = traceeval_key_array_indx(karray, 1);
--		if (!tkey)
--			die("No state keys for CPU result %d?", i);
--
--		val = traceeval_result_indx_total(tdata->teval_cpus, i);
--		switch (tkey->number) {
-+	if (!iter)
-+		pdie("No cpus?");
-+
-+	while (traceeval_iterator_next(iter, &keys) > 0) {
-+		int state = keys[1].number;
-+
-+		stat = traceeval_stat(teval, keys, &delta_vals[0]);
-+		if (!stat)
-+			continue;
-+
-+		switch (state) {
- 		case RUNNING:
--			total_time += val;
-+			total_time += traceeval_stat_total(stat);
- 			break;
- 		case IDLE:
--			idle_time += val;
-+			idle_time += traceeval_stat_total(stat);
- 			break;
- 		default:
--			die("Invalid CPU state: %d\n", tkey->number);
-+			die("Invalid CPU state: %d\n", state);
- 		}
- 	}
- 
-@@ -776,12 +896,10 @@ static void display(struct task_data *tdata)
- 	printf("  Total idle time (us):");
- 	print_microseconds(16, idle_time);
- 
--	display_cpus(tdata->teval_cpus);
--
--	traceeval_sort_custom(tdata->teval_processes, compare_pdata, NULL);
-+	display_cpus(tdata->teval_cpus.stop);
- 
- 	printf("\n");
--	display_processes(tdata->teval_processes);
-+	display_processes(tdata->teval_processes.stop, tdata->teval_processes_data);
+ 	return -1;
  }
  
- static void free_tdata(struct task_data *tdata)
-@@ -792,26 +910,6 @@ int main (int argc, char **argv)
- {
- 	struct tracecmd_input *handle;
- 	struct task_data data;
--	struct traceeval_key_info cpu_tinfo[2] = {
--		{
--			.type = TRACEEVAL_TYPE_NUMBER,
--			.name = "CPU"
--		},
--		{
--			.type = TRACEEVAL_TYPE_NUMBER,
--			.name = "Schedule state"
--		}
--	};
--	struct traceeval_key_info process_tinfo[2] = {
--		{
--			.type = TRACEEVAL_TYPE_STRING,
--			.name = "COMM"
--		},
--		{
--			.type = TRACEEVAL_TYPE_NUMBER,
--			.name = "Schedule state"
--		}
--	};
- 	int c;
+@@ -930,6 +934,35 @@ int traceeval_insert(struct traceeval *teval,
+ 		return update_entry(teval, entry, vals);
+ }
  
- 	memset(&data, 0, sizeof(data));
-@@ -839,12 +937,21 @@ int main (int argc, char **argv)
- 	if (!handle)
- 		pdie("Error opening %s", argv[0]);
++/**
++ * traceeval_remove - remove an item from the traceeval descriptor
++ * @teval: The descriptor to insert into
++ * @keys: The list of keys that defines what is being removed
++ *
++ * This is the opposite of traceeval_insert(). Instead of inserting
++ * an item into the traceeval historgram, it removes it.
++ *
++ * Returns 1 if it found and removed an item,
++ *         0 if it did not find an time matching @keys
++ *        -1 if there was an error.
++ */
++int traceeval_remove(struct traceeval *teval,
++		     const union traceeval_data *keys)
++{
++	struct hash_table *hist = teval->hist;
++	struct entry *entry;
++	int check;
++
++	entry = NULL;
++	check = get_entry(teval, keys, &entry);
++
++	if (check < 1)
++		return check;
++
++	hash_remove(hist, &entry->hash);
++	return 1;
++}
++
+ /**
+  * traceeval_iterator_put - release a given iterator
+  * @iter: The iterartor to release
+@@ -942,7 +975,9 @@ void traceeval_iterator_put(struct traceeval_iterator *iter)
+ 	if (!iter)
+ 		return;
  
--	data.teval_processes = traceeval_2_alloc("Processes", process_tinfo);
--	if (!data.teval_processes)
-+	data.teval_processes.start = traceeval_init(process_keys, timestamp_vals);
-+	if (!data.teval_processes.start)
-+		pdie("Creating trace eval start");
-+	data.teval_processes_data = traceeval_init(process_keys, process_data_vals);
-+	if (!data.teval_processes_data)
-+		pdie("Creating trace eval data");
-+	data.teval_processes.stop = traceeval_init(process_keys, delta_vals);
-+	if (!data.teval_processes.stop)
- 		pdie("Creating trace eval");
++	free(iter->direction);
+ 	free(iter->entries);
++	free(iter->sort);
+ 	free(iter);
+ }
  
--	data.teval_cpus = traceeval_2_alloc("CPUs", cpu_tinfo);
--	if (!data.teval_cpus)
-+	data.teval_cpus.start = traceeval_init(cpu_keys, timestamp_vals);
-+	if (!data.teval_cpus.start)
-+		pdie("Creating trace eval");
-+	data.teval_cpus.stop = traceeval_init(cpu_keys, delta_vals);
-+	if (!data.teval_cpus.stop)
- 		pdie("Creating trace eval");
+@@ -1058,6 +1093,7 @@ int traceeval_iterator_sort(struct traceeval_iterator *iter, const char *sort_fi
+ 	bool *direction = iter->direction;
+ 	struct traceeval_type **sort = iter->sort;
+ 	struct traceeval_type *type;
++	int num_levels = level + 1;
  
- 	tracecmd_follow_event(handle, "sched", "sched_switch", switch_func, &data);
--- 
-2.40.1
+ 	type = find_sort_type(iter->teval, sort_field);
+ 	if (!type)
+@@ -1074,21 +1110,21 @@ int traceeval_iterator_sort(struct traceeval_iterator *iter, const char *sort_fi
+ 		break;
+ 	}
+ 
+-	if ((level + 1) > iter->nr_sort) {
+-		sort = realloc(sort, sizeof(*sort) * (level + 1));
++	if (num_levels > iter->nr_sort) {
++		sort = realloc(sort, sizeof(*sort) * num_levels);
+ 		if (!sort)
+ 			return -1;
+ 
+ 		iter->sort = sort;
+ 
+-		direction = realloc(direction, sizeof(*direction) * (level + 1));
++		direction = realloc(direction, sizeof(*direction) * num_levels);
+ 		if (!direction)
+ 			return -1;
+ 
+ 		iter->direction = direction;
+ 
+ 		/* Make sure the newly allocated contain NULL */
+-		for (int i = iter->nr_sort; i < (level + 1); i++)
++		for (int i = iter->nr_sort; i < num_levels; i++)
+ 			sort[i] = NULL;
+ 
+ 		iter->nr_sort = level + 1;
+@@ -1123,7 +1159,7 @@ static int iter_cmp(const void *A, const void *B, void *data)
+ 			dataB = &b->vals[type->index];
+ 		}
+ 
+-		ret = compare_traceeval_data(teval, dataA, dataB, type);
++		ret = compare_traceeval_data(teval, type, dataA, dataB);
+ 
+ 		if (ret)
+ 			return iter->direction[i] ? ret : ret * -1;
+@@ -1182,6 +1218,7 @@ int traceeval_iterator_sort_custom(struct traceeval_iterator *iter,
+ 		iter_custom_cmp, &cust_data);
+ 
+ 	iter->needs_sort = false;
++	iter->next = 0;
+ 	return 0;
+ }
+ 
 
+-- Steve
