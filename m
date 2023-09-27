@@ -1,22 +1,22 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0E8126E0D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C134E273E2
 	for <linux-trace-devel@vger.kernel.org>; Wed, 27 Sep 2023 12:32:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C2D0C433CC;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F7D4C433C9;
 	Wed, 27 Sep 2023 12:32:23 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1qlTj9-0049Tw-0v;
+	id 1qlTj9-0049U0-11;
 	Wed, 27 Sep 2023 08:33:15 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: Ross Zwisler <zwisler@google.com>,
 	Stevie Alvarez <stevie.6strings@gmail.com>,
 	"Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 09/11] libtraceeval: Make traceeval_remove() check size of keys array
-Date: Wed, 27 Sep 2023 08:33:12 -0400
-Message-Id: <20230927123314.989589-10-rostedt@goodmis.org>
+Subject: [PATCH v2 10/11] libtraceeval: Make traceeval_stat() check size of keys array
+Date: Wed, 27 Sep 2023 08:33:13 -0400
+Message-Id: <20230927123314.989589-11-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230927123314.989589-1-rostedt@goodmis.org>
 References: <20230927123314.989589-1-rostedt@goodmis.org>
@@ -30,56 +30,61 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Make traceeval_remove() into a macro to pass in the size of the keys
-array, and rename the function to traceeval_remove_size() that now takes
+Make traceeval_stat() into a macro to pass in the size of the keys
+array, and rename the function to traceeval_stat_size() that now takes
 the size of the keys array.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/traceeval-hist.h | 7 +++++--
- src/histograms.c         | 7 +++++--
- 2 files changed, 10 insertions(+), 4 deletions(-)
+ include/traceeval-hist.h | 10 +++++++---
+ src/histograms.c         | 10 +++++++---
+ 2 files changed, 14 insertions(+), 6 deletions(-)
 
 diff --git a/include/traceeval-hist.h b/include/traceeval-hist.h
-index 7f48bb92cc96..804a0aaa631d 100644
+index 804a0aaa631d..a1b498108fb4 100644
 --- a/include/traceeval-hist.h
 +++ b/include/traceeval-hist.h
-@@ -196,8 +196,11 @@ int traceeval_insert_size(struct traceeval *teval,
- 	traceeval_insert_size(teval, keys, TRACEEVAL_ARRAY_SIZE(keys), \
- 			      vals, TRACEEVAL_ARRAY_SIZE(vals))
+@@ -211,9 +211,13 @@ int traceeval_query_size(struct traceeval *teval, const struct traceeval_data *k
+ void traceeval_results_release(struct traceeval *teval,
+ 			       const struct traceeval_data *results);
  
--int traceeval_remove(struct traceeval *teval,
--		     const struct traceeval_data *keys);
-+int traceeval_remove_size(struct traceeval *teval,
-+			  const struct traceeval_data *keys, size_t nr_keys);
+-struct traceeval_stat *traceeval_stat(struct traceeval *teval,
+-				      const struct traceeval_data *keys,
+-				      struct traceeval_type *type);
++#define traceeval_stat(teval, keys, type)				\
++	traceeval_stat_size(teval, keys, TRACEEVAL_ARRAY_SIZE(keys), type)
 +
-+#define traceeval_remove(teval, keys)					\
-+	traceeval_remove_size(teval, keys, TRACEEVAL_ARRAY_SIZE(keys))
++struct traceeval_stat *traceeval_stat_size(struct traceeval *teval,
++					   const struct traceeval_data *keys,
++					   size_t nr_keys,
++					   struct traceeval_type *type);
  
- int traceeval_query_size(struct traceeval *teval, const struct traceeval_data *keys,
- 			 size_t nr_keys, const struct traceeval_data **results);
+ unsigned long long traceeval_stat_max(struct traceeval_stat *stat);
+ unsigned long long traceeval_stat_min(struct traceeval_stat *stat);
 diff --git a/src/histograms.c b/src/histograms.c
-index ab8a560fe14d..28cf0d4ed225 100644
+index 28cf0d4ed225..4d534d127cff 100644
 --- a/src/histograms.c
 +++ b/src/histograms.c
-@@ -977,13 +977,16 @@ int traceeval_insert_size(struct traceeval *teval,
-  *         0 if it did not find an time matching @keys
-  *        -1 if there was an error.
-  */
--int traceeval_remove(struct traceeval *teval,
--		     const struct traceeval_data *keys)
-+int traceeval_remove_size(struct traceeval *teval,
-+			  const struct traceeval_data *keys, size_t nr_keys)
+@@ -844,13 +844,17 @@ static bool is_stat_type(struct traceeval_type *type)
+ 	}
+ }
+ 
+-struct traceeval_stat *traceeval_stat(struct traceeval *teval,
+-				      const struct traceeval_data *keys,
+-				      struct traceeval_type *type)
++struct traceeval_stat *traceeval_stat_size(struct traceeval *teval,
++					   const struct traceeval_data *keys,
++					   size_t nr_keys,
++					   struct traceeval_type *type)
  {
- 	struct hash_table *hist = teval->hist;
  	struct entry *entry;
- 	int check;
+ 	int ret;
  
 +	if (teval->nr_key_types != nr_keys)
-+		return -1;
++		return NULL;
 +
- 	entry = NULL;
- 	check = get_entry(teval, keys, &entry);
+ 	if (!is_stat_type(type))
+ 		return NULL;
  
 -- 
 2.40.1
