@@ -1,25 +1,23 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C06A18AFA
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C0A81C6A3
 	for <linux-trace-devel@vger.kernel.org>; Wed, 27 Sep 2023 12:32:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 459D9C433CD;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42791C433CB;
 	Wed, 27 Sep 2023 12:32:23 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1qlTj9-0049TQ-0D;
+	id 1qlTj9-0049TN-05;
 	Wed, 27 Sep 2023 08:33:15 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: Ross Zwisler <zwisler@google.com>,
 	Stevie Alvarez <stevie.6strings@gmail.com>,
 	"Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 01/11] libtraceeval: Add check for updates to know to recreate iter array
-Date: Wed, 27 Sep 2023 08:33:04 -0400
-Message-Id: <20230927123314.989589-2-rostedt@goodmis.org>
+Subject: [PATCH v2 00/11] libtraceeval: Even more updates!
+Date: Wed, 27 Sep 2023 08:33:03 -0400
+Message-Id: <20230927123314.989589-1-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230927123314.989589-1-rostedt@goodmis.org>
-References: <20230927123314.989589-1-rostedt@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -30,202 +28,84 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-When an iterator is created, it creates an array of pointers to point to
-all the elements in the traceeval. This is used to index through the
-entities in an nice order. But if an event is added or removed from the
-traceeval, the size and count of this array will be off in the iterator.
+More updates to libtraceeval
 
-Add an "update_counter" that gets incremented every time an item is added
-or removed (doesn't need to keep track of updates to existing entries). If
-the counter is different from the last time the iterator created the sort
-array, it will need to delete and recreate the list again before it can do
-a sort.
+- As the results and stats are often needed in the iterator loops, add helper
+  functions to quickly retrieve them. The iterator has a handle on the current
+  entry, no need to do a key lookup to find it.
 
-Note: It is safe to use the iterator to remove items, so a removal (or
-even insert) should not affect the traceeval_iterator_next(). But it
-should be explained in the man pages (soon to be written) that doing so
-must be done with care. And maybe a helper function should be used
-instead!
+- The iterator can be used to search for items to remove or update. Add a
+  helper function to remove the current iterator item. This will also update
+  the iterator so that other functions called are still safe, even if the removed
+  entry is the current one.
 
-Reviewed-by: Ross Zwisler <zwisler@google.com>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- src/eval-local.h |  2 ++
- src/histograms.c | 91 ++++++++++++++++++++++++++++++++++++++----------
- 2 files changed, 74 insertions(+), 19 deletions(-)
+- Convert traceeval_data into a proper structure with a "type" field and a
+  union data portion. This will allow for checking the type of data being
+  passed into the functions to make sure they match their corresponding types.
 
-diff --git a/src/eval-local.h b/src/eval-local.h
-index 5c3918f17cc1..73f52efdf0da 100644
---- a/src/eval-local.h
-+++ b/src/eval-local.h
-@@ -68,6 +68,7 @@ struct traceeval {
- 	struct hash_table		*hist;
- 	size_t				nr_key_types;
- 	size_t				nr_val_types;
-+	size_t				update_counter;
- };
- 
- struct traceeval_iterator {
-@@ -75,6 +76,7 @@ struct traceeval_iterator {
- 	struct entry			**entries;
- 	struct traceeval_type		**sort;
- 	bool				*direction;
-+	size_t				update_counter;
- 	size_t				nr_entries;
- 	size_t				nr_sort;
- 	size_t				next;
-diff --git a/src/histograms.c b/src/histograms.c
-index fdc9f0c2fbce..9bf20e4d6d26 100644
---- a/src/histograms.c
-+++ b/src/histograms.c
-@@ -757,6 +757,8 @@ static int create_entry(struct traceeval *teval,
- 	entry->keys = new_keys;
- 	entry->vals = new_vals;
- 
-+	teval->update_counter++;
-+
- 	return 0;
- 
- fail:
-@@ -960,6 +962,9 @@ int traceeval_remove(struct traceeval *teval,
- 		return check;
- 
- 	hash_remove(hist, &entry->hash);
-+
-+	teval->update_counter++;
-+
- 	return 1;
- }
- 
-@@ -981,6 +986,37 @@ void traceeval_iterator_put(struct traceeval_iterator *iter)
- 	free(iter);
- }
- 
-+static int create_iter_array(struct traceeval_iterator *iter)
-+{
-+	struct traceeval *teval = iter->teval;
-+	struct hash_table *hist = teval->hist;
-+	struct hash_iter *hiter;
-+	struct hash_item *item;
-+	int i;
-+
-+	iter->nr_entries = hash_nr_items(hist);
-+	iter->entries = calloc(iter->nr_entries, sizeof(*iter->entries));
-+	if (!iter->entries)
-+		return -1;
-+
-+	for (i = 0, hiter = hash_iter_start(hist); (item = hash_iter_next(hiter)); i++) {
-+		struct entry *entry = container_of(item, struct entry, hash);
-+
-+		iter->entries[i] = entry;
-+	}
-+
-+	/* Loop must match entries */
-+	if (i != iter->nr_entries) {
-+		free(iter->entries);
-+		iter->entries = NULL;
-+		return -1;
-+	}
-+
-+	iter->update_counter = teval->update_counter;
-+
-+	return 0;
-+}
-+
- /**
-  * traceeval_iterator_get - get a handle to iterate over a given traceeval
-  * @teval: The traceeval handle to iterate over
-@@ -997,33 +1033,19 @@ void traceeval_iterator_put(struct traceeval_iterator *iter)
- struct traceeval_iterator *traceeval_iterator_get(struct traceeval *teval)
- {
- 	struct traceeval_iterator *iter;
--	struct hash_table *hist = teval->hist;
--	struct hash_iter *hiter;
--	struct hash_item *item;
--	int i;
-+	int ret;
- 
- 	iter = calloc(1, sizeof(*iter));
- 	if (!iter)
- 		return NULL;
- 
- 	iter->teval = teval;
--	iter->nr_entries = hash_nr_items(hist);
--	iter->entries = calloc(iter->nr_entries, sizeof(*iter->entries));
--	if (!iter->entries) {
--		free(iter);
--		return NULL;
--	}
--
--	for (i = 0, hiter = hash_iter_start(hist); (item = hash_iter_next(hiter)); i++) {
--		struct entry *entry = container_of(item, struct entry, hash);
- 
--		iter->entries[i] = entry;
--	}
-+	ret = create_iter_array(iter);
- 
--	/* Loop must match entries */
--	if (i != iter->nr_entries) {
--		traceeval_iterator_put(iter);
--		return NULL;
-+	if (ret < 0) {
-+		free(iter);
-+		iter = NULL;
- 	}
- 
- 	return iter;
-@@ -1168,6 +1190,31 @@ static int iter_cmp(const void *A, const void *B, void *data)
- 	return 0;
- }
- 
-+static int check_update(struct traceeval_iterator *iter)
-+{
-+	struct entry **entries;
-+	size_t nr_entries;
-+	int ret;
-+
-+	/* Was something added or removed from the teval? */
-+	if (iter->teval->update_counter == iter->update_counter)
-+		return 0;
-+
-+	entries = iter->entries;
-+	nr_entries = iter->nr_entries;
-+
-+	/* Something changed, need to recreate the array */
-+	ret = create_iter_array(iter);
-+	if (ret < 0) {
-+		iter->entries = entries;
-+		iter->nr_entries = nr_entries;
-+		return -1;
-+	}
-+	free(entries);
-+
-+	return 0;
-+}
-+
- static int sort_iter(struct traceeval_iterator *iter)
- {
- 	int i;
-@@ -1178,6 +1225,9 @@ static int sort_iter(struct traceeval_iterator *iter)
- 			return -1;
- 	}
- 
-+	if (check_update(iter) < 0)
-+		return -1;
-+
- 	qsort_r(iter->entries, iter->nr_entries, sizeof(*iter->entries),
- 		iter_cmp, iter);
- 
-@@ -1214,6 +1264,9 @@ int traceeval_iterator_sort_custom(struct traceeval_iterator *iter,
- 		.data = data
- 	};
- 
-+	if (check_update(iter) < 0)
-+		return -1;
-+
- 	qsort_r(iter->entries, iter->nr_entries, sizeof(*iter->entries),
- 		iter_custom_cmp, &cust_data);
- 
+- Add checks to make sure that the data matches the types.
+
+- Make traceeval_insert() and traceeval_query() into macros and add a
+  traceeval_query_size() and traceeval_insert_size() that take the size of the
+  list of data being passed into it. The macros work when the arrays are defined.
+
+- Add checks to make sure the array sizes passed in match the sizes internally.
+
+- Add back the STATS flag, and only do STATS on values that are numeric and
+  have this set. This should speed things up, and also allow for optimizations
+  in the future.
+
+Changes since v1: https://lore.kernel.org/linux-trace-devel/20230817222422.118568-1-rostedt@goodmis.org/
+
+- Use of ARRAY_SIZE() macro to make some other macro logic simpler.
+
+- Fix TRACEEVAL_FL_STAT (was a duplicate of 3 not 4) (Ross Zwisler)
+
+- Add traceeval_remove_size() to check traceeval_remove()
+
+- Add traceeval_query_size() to check traceeval_query()
+
+- Add traceeval_stat_size() to check traceeval_stat()
+
+- Add traceeval_iterator_results_release()
+
+- Use TRACEEVAL_SET_NUMBER() on keys in task-eval.c (Ross Zwisler)
+
+- Use is_stat_type() in copy_traceeval_data() (Ross Zwisler)
+
+- Add type test to update_entry() (Ross Zwisler)
+
+- Folded checking patch into size check patches (Ross Zwisler)
+
+- Free entry on traceeval_remove() and trace_iterator_remove (Ross Zwisler)
+
+- Fix added tab of return -1 (Ross Zwisler)
+
+- Fix comment of traceeval_iterator_query() (Ross Zwisler)
+
+- Fix comment of traceeval_iterator_remove() (Ross Zwisler)
+
+
+Steven Rostedt (Google) (11):
+  libtraceeval: Add check for updates to know to recreate iter array
+  libtraceeval: Add traceeval_iterator_query()
+  libtraceeval: Add traceeval_iterator_results_release()
+  libtraceeval: Add traceeval_iterator_stat()
+  libtraceeval: Add traceeval_iterator_remove()
+  libtraceeval histogram: Add type to traceeval_data and make it a
+    structure
+  libtraceveal: Add type checks to traceeval_data vals and keys
+  libtraceeval: Add size checks to insert and query functions
+  libtraceeval: Make traceeval_remove() check size of keys array
+  libtraceeval: Make traceeval_stat() check size of keys array
+  libtraceeval: Only do stats on values marked with the STAT flag
+
+ include/traceeval-hist.h | 118 +++++++++----
+ samples/task-eval.c      | 148 +++++++----------
+ src/eval-local.h         |   6 +-
+ src/histograms.c         | 349 +++++++++++++++++++++++++++++++--------
+ 4 files changed, 429 insertions(+), 192 deletions(-)
+
 -- 
 2.40.1
 
