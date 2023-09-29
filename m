@@ -1,17 +1,17 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 008014418
-	for <linux-trace-devel@vger.kernel.org>; Fri, 29 Sep 2023 12:11:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56277C433C8;
-	Fri, 29 Sep 2023 12:11:04 +0000 (UTC)
-Date: Fri, 29 Sep 2023 08:10:59 -0400
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 118C9F9CC
+	for <linux-trace-devel@vger.kernel.org>; Fri, 29 Sep 2023 12:22:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F870C433C9;
+	Fri, 29 Sep 2023 12:22:46 +0000 (UTC)
+Date: Fri, 29 Sep 2023 08:22:40 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: Ross Zwisler <zwisler@google.com>, Stevie Alvarez
+Cc: Ross Zwisler <zwisler@google.com>, Stevie Alvarez 
  <stevie.6strings@gmail.com>
-Subject: [PATCH] libtraceeval: Move traceeval-hist.h to traceeval.h
-Message-ID: <20230929081059.47c45ea8@rorschach.local.home>
+Subject: [PATCH v2] libtraceeval: Move traceeval-hist.h to traceeval.h
+Message-ID: <20230929082240.21420a2a@rorschach.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -32,10 +32,17 @@ the old code of the histogram and use the new code.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
+Changes since v1: https://lore.kernel.org/all/20230929081059.47c45ea8@rorschach.local.home/
+
+ - Committed the changes to src/Makefile to remove trace-analysis.o compilation.
+ - Forgot to replace traceeval-hist.h to traceeval.h in histograms.c.
+
  include/traceeval-hist.h | 245 ------------
  include/traceeval.h      | 327 +++++++++++-----
+ src/Makefile             |   1 -
+ src/histograms.c         |   2 +-
  src/trace-analysis.c     | 805 ---------------------------------------
- 3 files changed, 226 insertions(+), 1151 deletions(-)
+ 5 files changed, 227 insertions(+), 1153 deletions(-)
  delete mode 100644 include/traceeval-hist.h
  delete mode 100644 src/trace-analysis.c
 
@@ -641,6 +648,31 @@ index 24415ca..48c28df 100644
 +int traceeval_iterator_remove(struct traceeval_iterator *iter);
 +
 +#endif /* __LIBTRACEEVAL_HIST_H__ */
+diff --git a/src/Makefile b/src/Makefile
+index 4b7b305..168d90a 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -3,7 +3,6 @@
+ include $(src)/scripts/utils.mk
+ 
+ OBJS =
+-OBJS += trace-analysis.o
+ OBJS += histograms.o
+ OBJS += hash.o
+ 
+diff --git a/src/histograms.c b/src/histograms.c
+index 5a98473..c562605 100644
+--- a/src/histograms.c
++++ b/src/histograms.c
+@@ -11,7 +11,7 @@
+ #include <stdarg.h>
+ #include <stdio.h>
+ 
+-#include <traceeval-hist.h>
++#include <traceeval.h>
+ #include "eval-local.h"
+ 
+ /*
 diff --git a/src/trace-analysis.c b/src/trace-analysis.c
 deleted file mode 100644
 index ba4e1c7..0000000
