@@ -1,65 +1,90 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ED26156DF
-	for <linux-trace-devel@vger.kernel.org>; Sat, 30 Sep 2023 20:39:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 410E7C433C8;
-	Sat, 30 Sep 2023 20:39:12 +0000 (UTC)
-Date: Sat, 30 Sep 2023 16:39:00 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Giulio Benetti <giulio.benetti@benettiengineering.com>
-Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH] libtraceevent: add option to disable documentation
-Message-ID: <20230930163900.152d49fd@rorschach.local.home>
-In-Reply-To: <ce8cac08-58be-4221-b5ab-fde7f9aab2bd@benettiengineering.com>
-References: <20230930201339.2525344-1-giulio.benetti@benettiengineering.com>
-	<20230930162825.4f8544c3@rorschach.local.home>
-	<ce8cac08-58be-4221-b5ab-fde7f9aab2bd@benettiengineering.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30962B66C
+	for <linux-trace-devel@vger.kernel.org>; Sat, 30 Sep 2023 20:40:13 +0000 (UTC)
+Received: from smtpcmd13147.aruba.it (smtpcmd13147.aruba.it [62.149.156.147])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3BC8CA
+	for <linux-trace-devel@vger.kernel.org>; Sat, 30 Sep 2023 13:40:11 -0700 (PDT)
+Received: from localhost.localdomain ([146.241.127.78])
+	by Aruba Outgoing Smtp  with ESMTPSA
+	id mgkzqsNaHa8HKmgkzqo8ux; Sat, 30 Sep 2023 22:40:09 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+	t=1696106409; bh=vbvvJSglB03SRfbGPyIDREambIiXBhoq2dMRs3ysQK8=;
+	h=From:To:Subject:Date:MIME-Version;
+	b=cnxARjTjmkLHEjNtmy2JIOksQGHL9JRbdSCEYUeG/9elYcm+j3S0q3kvPwrC5wlWr
+	 K+c8WEvbcnd9GUXbwx5QiA/B0h1p7gv2CS8Rw6GFVn3XasyxlnG+0XPLyq3ZY8Z/6g
+	 0BRkXoG4iEM9NO1Di9rTKhC1QojhAuQVnbNMmgKOy9eyWn8u0uIgrdKWk/bCZXYj0z
+	 Ap03bDvdtdVMd1jiJxr7lzBtuKN/opA3VxjlMgoR1qVgZ2bNf9vcY1g7Biog3C2BsV
+	 pu5P+fWx8NGE3bI0G6E3zYsKd4mpY3l8KwZCZKB3pg3aVQT3jGhiX1M9sF+CeGiRd/
+	 nsBxJD6XZ0ieA==
+From: Giulio Benetti <giulio.benetti@benettiengineering.com>
+To: linux-trace-devel@vger.kernel.org
+Cc: Giulio Benetti <giulio.benetti@benettiengineering.com>
+Subject: [PATCH v2] libtracefs: add option to disable documentation
+Date: Sat, 30 Sep 2023 22:40:08 +0200
+Message-Id: <20230930204008.2528607-1-giulio.benetti@benettiengineering.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfDV2LXXjzL0szZhrYwzlpiMwY1n6ihFjTpCo9ZhPogKryplSuV3mHw+CTVbzX6eO2mpkU7G/zG4ug7oe8vZv+d3nA89gXpNdaNF4TbzDS/BX/oHF3Y0C
+ bo5Fj941hIto6CaWNx95AI7mSrEgh+DqfR6mzGzp6l2g7BuJA3Nf9TET32PVSxgBwn91INLz2XAlRhllgPxe9nLpKHo10vQIyZxEKWBCG+eAsHN0faO72TFd
+ uDz8QulsNfrZP2MmU1jhdIp+YefFPMxpfnIgQKRQvGYMtfAhDt/jpP8U9oXXLx3S
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Sat, 30 Sep 2023 22:32:52 +0200
-Giulio Benetti <giulio.benetti@benettiengineering.com> wrote:
+On some Linux environment builder(i.e. Buildroot) host asciidoc is not
+provided since by default all man/docs are not installed to target but
+meson.build at the moment build ascii and html documentation and
+requires asciidoc making the building to fail. So let's add doc option
+set to true by default to let the user to override it and not produce
+the documentation.
 
-> Hi Steve,
-> 
-> On 30/09/23 22:28, Steven Rostedt wrote:
-> > On Sat, 30 Sep 2023 22:13:39 +0200
-> > Giulio Benetti <giulio.benetti@benettiengineering.com> wrote:
-> > 
-> > Hi Giulio,
-> > 
-> > Thanks for the patch, but could you please add a change log to explain
-> > why this patch is needed? I'm not saying it isn't but I'd like to know
-> > the rational for disabling documentation.  
-> 
-> Sure, same for libtracefs then.
-> 
-> Would it be possible to release a minor version after committing?
-> This is because I've updated libtraceevent, libtracefs and trace-cmd in
-> buildroot but without using meson due to asciidoc not found(in Buildroot
-> we never produce documentation for target).
+Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+---
+V1->V2:
+* improve commit log as suggested by Steve Rostedt
+---
+ meson.build       | 3 +++
+ meson_options.txt | 2 ++
+ 2 files changed, 5 insertions(+)
 
-Sure, it's time for me to start working on the user space libraries
-again anyway (I toggle my time between the kernel and user space
-tracing).
+diff --git a/meson.build b/meson.build
+index 9d42d78..f1e492e 100644
+--- a/meson.build
++++ b/meson.build
+@@ -39,6 +39,8 @@ if cunit_dep.found()
+     subdir('utest')
+ endif
+ subdir('samples')
++
++if get_option('doc')
+ subdir('Documentation')
+ 
+ custom_target(
+@@ -46,3 +48,4 @@ custom_target(
+     output: 'docs',
+     depends: [html, man],
+     command: ['echo'])
++endif
+diff --git a/meson_options.txt b/meson_options.txt
+index 1d92c28..5533a88 100644
+--- a/meson_options.txt
++++ b/meson_options.txt
+@@ -14,3 +14,5 @@ option('man-bold-literal', type : 'boolean', value : false,
+        description : 'enable bold literals')
+ option('docbook-suppress-sp', type : 'boolean', value : false,
+        description : 'docbook suppress sp')
++option('doc', type : 'boolean', value: true,
++       description : 'produce documentation')
+-- 
+2.34.1
 
-> 
-> So if you could release new versions of libtraceevent and libtracefs
-> after committing V2 patches I could bump in Buildroot and use meson
-> that is very clean compared to the actual Makefile custom build calls.
-> 
-> Going to send V2 patches in the meanwhile.
-> 
-> Best regards
-
-Appreciated!
-
--- Steve
