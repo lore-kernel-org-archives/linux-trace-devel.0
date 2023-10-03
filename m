@@ -1,43 +1,62 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A4262770F
-	for <linux-trace-devel@vger.kernel.org>; Tue,  3 Oct 2023 13:47:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87BCDC433C9;
-	Tue,  3 Oct 2023 13:46:59 +0000 (UTC)
-Date: Tue, 3 Oct 2023 09:48:04 -0400
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83DF01548D
+	for <linux-trace-devel@vger.kernel.org>; Tue,  3 Oct 2023 14:06:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3534EC433D9;
+	Tue,  3 Oct 2023 14:06:58 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.96)
+	(envelope-from <rostedt@rostedt.homelinux.com>)
+	id 1qng4B-004mVE-2W;
+	Tue, 03 Oct 2023 10:08:03 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Ross Zwisler <zwisler@google.com>
-Cc: linux-trace-devel@vger.kernel.org, Stevie Alvarez
- <stevie.6strings@gmail.com>
-Subject: Re: [PATCH 0/2] libtraceeval: Remove the need of
- TRACEEVAL_TYPE_NONE
-Message-ID: <20231003094804.77078cb6@gandalf.local.home>
-In-Reply-To: <20231002211826.GO1532181@google.com>
-References: <20230929100025.1018258-1-rostedt@goodmis.org>
-	<20231002210749.GN1532181@google.com>
-	<20231002211826.GO1532181@google.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To: linux-trace-devel@vger.kernel.org
+Cc: Ross Zwisler <zwisler@google.com>,
+	Stevie Alvarez <stevie.6strings@gmail.com>,
+	"Steven Rostedt (Google)" <rostedt@goodmis.org>
+Subject: [PATCH v2 0/2] libtraceeval: Remove the need of TRACEEVAL_TYPE_NONE
+Date: Tue,  3 Oct 2023 10:08:00 -0400
+Message-Id: <20231003140802.1139616-1-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Mon, 2 Oct 2023 15:18:26 -0600
-Ross Zwisler <zwisler@google.com> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> > Looks good, you can add:
-> > Reviewed-by: Ross Zwisler <zwisler@google.com>  
-> 
-> Actually, I think we need to make similar updates in check_keys() and
-> check_vals(), else calls to traceeval_init_data_size() will walk off the end
-> of those respective arrays.
+The use of macros to determine the size of the keys and vals arrays made
+me think a bit more about how we initialize the traceeval. The more I'm
+using the library, the less I like having to add the TRACEEVAL_TYPE_NONE
+to the end of the keys and vals array.
 
-Good catch! I'm surprised this didn't crash it my testing. Maybe it as just
-aligned in a way that there was a NULL after it.
+Instead, use the same macro trick of TRACEEVAL_ARRAY_SIZE() to determine
+the number of elements. Still allow the use of using the
+TRACEEVAL_TYPE_NONE to determine the size (if the number passed in is
+still bigger), so that most applications that still use that still work.
 
--- Steve
+I made the change separate than updating the sample code to test that
+the old way still works. Then I updated the sample to make sure the new
+way works. Perhaps when we add unit tests back in, we'll test both
+cases.
+
+Changes since v1: https://lore.kernel.org/linux-trace-devel/20230929100025.1018258-1-rostedt@goodmis.org/
+
+ - Added size checks to check_keys() and check_vals() (Ross Zwisler)
+
+Steven Rostedt (Google) (2):
+  libtraceeval: Remove need to use TRACEEVAL_TYPE_NONE in keys and vals
+  libtraceeval samples: Remove adding TRACEEVAL_TYPE_NONE to keys and
+    vals
+
+ include/traceeval-hist.h | 11 +++++++++--
+ samples/task-eval.c      | 18 ------------------
+ src/histograms.c         | 23 +++++++++++++----------
+ 3 files changed, 22 insertions(+), 30 deletions(-)
+
+-- 
+2.40.1
+
