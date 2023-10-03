@@ -1,23 +1,25 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83DF01548D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83E292134E
 	for <linux-trace-devel@vger.kernel.org>; Tue,  3 Oct 2023 14:06:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3534EC433D9;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 319DAC433CC;
 	Tue,  3 Oct 2023 14:06:58 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1qng4B-004mVE-2W;
+	id 1qng4B-004mVH-2e;
 	Tue, 03 Oct 2023 10:08:03 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: Ross Zwisler <zwisler@google.com>,
 	Stevie Alvarez <stevie.6strings@gmail.com>,
 	"Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 0/2] libtraceeval: Remove the need of TRACEEVAL_TYPE_NONE
-Date: Tue,  3 Oct 2023 10:08:00 -0400
-Message-Id: <20231003140802.1139616-1-rostedt@goodmis.org>
+Subject: [PATCH v2 1/2] libtraceeval: Remove need to use TRACEEVAL_TYPE_NONE in keys and vals
+Date: Tue,  3 Oct 2023 10:08:01 -0400
+Message-Id: <20231003140802.1139616-2-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231003140802.1139616-1-rostedt@goodmis.org>
+References: <20231003140802.1139616-1-rostedt@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -28,35 +30,138 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The use of macros to determine the size of the keys and vals arrays made
-me think a bit more about how we initialize the traceeval. The more I'm
-using the library, the less I like having to add the TRACEEVAL_TYPE_NONE
-to the end of the keys and vals array.
+Currently, the size of the keys and vals are determined by the
+requirement that the traceeval_type array end with an empty element of
+type TRACEEVAL_TYPE_NONE.
 
-Instead, use the same macro trick of TRACEEVAL_ARRAY_SIZE() to determine
-the number of elements. Still allow the use of using the
-TRACEEVAL_TYPE_NONE to determine the size (if the number passed in is
-still bigger), so that most applications that still use that still work.
+To make the API be able to handle changes of the size of that structure,
+the traceeval_init() was converted to a macro to pass in the sizeof of
+that structure. This also means it can calculate the size of the array
+with the TRACEEVAL_ARRAY_SIZE() macro.
 
-I made the change separate than updating the sample code to test that
-the old way still works. Then I updated the sample to make sure the new
-way works. Perhaps when we add unit tests back in, we'll test both
-cases.
+Remove the need to have the initialization of traceeval keys and vals
+have to add the NONE element at the end. It can still do so and this
+will work just the same (the size will be determined by either the size
+passed in or the first NONE element, which ever is smaller).
 
-Changes since v1: https://lore.kernel.org/linux-trace-devel/20230929100025.1018258-1-rostedt@goodmis.org/
-
- - Added size checks to check_keys() and check_vals() (Ross Zwisler)
-
-Steven Rostedt (Google) (2):
-  libtraceeval: Remove need to use TRACEEVAL_TYPE_NONE in keys and vals
-  libtraceeval samples: Remove adding TRACEEVAL_TYPE_NONE to keys and
-    vals
-
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
  include/traceeval-hist.h | 11 +++++++++--
- samples/task-eval.c      | 18 ------------------
  src/histograms.c         | 23 +++++++++++++----------
- 3 files changed, 22 insertions(+), 30 deletions(-)
+ 2 files changed, 22 insertions(+), 12 deletions(-)
 
+diff --git a/include/traceeval-hist.h b/include/traceeval-hist.h
+index 65a905034773..cd089b28b852 100644
+--- a/include/traceeval-hist.h
++++ b/include/traceeval-hist.h
+@@ -171,12 +171,19 @@ struct traceeval;
+ 
+ /* Histogram interfaces */
+ 
+-#define traceeval_init(keys, vals) \
+-	traceeval_init_data_size(keys, vals, sizeof(struct traceeval_type), \
++#define traceeval_init(keys, vals)					\
++	traceeval_init_size(keys, vals,					\
++			    TRACEEVAL_ARRAY_SIZE(keys),			\
++			    (void *)vals == NULL ?  0 : TRACEEVAL_ARRAY_SIZE(vals))
++
++#define traceeval_init_size(keys, vals, nr_keys, nr_vals)		\
++	traceeval_init_data_size(keys, vals, nr_keys, nr_vals,		\
++				 sizeof(struct traceeval_type),		\
+ 				 sizeof(struct traceeval_data))
+ 
+ struct traceeval *traceeval_init_data_size(struct traceeval_type *keys,
+ 					   struct traceeval_type *vals,
++					   size_t nr_keys, size_t nr_vals,
+ 					   size_t sizeof_type, size_t sizeof_data);
+ 
+ void traceeval_release(struct traceeval *teval);
+diff --git a/src/histograms.c b/src/histograms.c
+index d8ee373be705..0f20d76b5e04 100644
+--- a/src/histograms.c
++++ b/src/histograms.c
+@@ -151,7 +151,8 @@ static void type_release(struct traceeval_type *defs, size_t len)
+  * Returns the size of the array pointed to by @copy, or -1 on error.
+  */
+ static size_t type_alloc(const struct traceeval_type *defs,
+-			 struct traceeval_type **copy)
++			 struct traceeval_type **copy,
++			 size_t cnt)
+ {
+ 	struct traceeval_type *new_defs = NULL;
+ 	size_t size;
+@@ -162,7 +163,8 @@ static size_t type_alloc(const struct traceeval_type *defs,
+ 	if (!defs)
+ 		return 0;
+ 
+-	for (size = 0; defs && defs[size].type != TRACEEVAL_TYPE_NONE; size++)
++	for (size = 0; defs && size < cnt &&
++		     defs[size].type != TRACEEVAL_TYPE_NONE; size++)
+ 		;
+ 
+ 	if (!size)
+@@ -198,9 +200,9 @@ fail:
+ 	return -1;
+ }
+ 
+-static int check_keys(struct traceeval_type *keys)
++static int check_keys(struct traceeval_type *keys, int cnt)
+ {
+-	for (int i = 0; keys[i].type != TRACEEVAL_TYPE_NONE; i++) {
++	for (int i = 0; i < cnt && keys[i].type != TRACEEVAL_TYPE_NONE; i++) {
+ 		/* Define this as a key */
+ 		keys[i].flags |= TRACEEVAL_FL_KEY;
+ 		keys[i].flags &= ~TRACEEVAL_FL_VALUE;
+@@ -220,9 +222,9 @@ static int check_keys(struct traceeval_type *keys)
+ 	return 0;
+ }
+ 
+-static int check_vals(struct traceeval_type *vals)
++static int check_vals(struct traceeval_type *vals, int cnt)
+ {
+-	for (int i = 0; vals[i].type != TRACEEVAL_TYPE_NONE; i++) {
++	for (int i = 0; i < cnt && vals[i].type != TRACEEVAL_TYPE_NONE; i++) {
+ 		/* Define this as a value */
+ 		vals[i].flags |= TRACEEVAL_FL_VALUE;
+ 		vals[i].flags &= ~TRACEEVAL_FL_KEY;
+@@ -269,6 +271,7 @@ static int check_vals(struct traceeval_type *vals)
+  */
+ struct traceeval *traceeval_init_data_size(struct traceeval_type *keys,
+ 					   struct traceeval_type *vals,
++					   size_t nr_keys, size_t nr_vals,
+ 					   size_t sizeof_type, size_t sizeof_data)
+ {
+ 	struct traceeval *teval;
+@@ -290,25 +293,25 @@ struct traceeval *traceeval_init_data_size(struct traceeval_type *keys,
+ 		goto fail;
+ 	}
+ 
+-	ret = check_keys(keys);
++	ret = check_keys(keys, nr_keys);
+ 	if (ret < 0)
+ 		goto fail_release;
+ 
+ 	if (vals) {
+-		ret = check_vals(vals);
++		ret = check_vals(vals, nr_vals);
+ 		if (ret < 0)
+ 			goto fail_release;
+ 	}
+ 
+ 	/* alloc key types */
+-	teval->nr_key_types = type_alloc(keys, &teval->key_types);
++	teval->nr_key_types = type_alloc(keys, &teval->key_types, nr_keys);
+ 	if (teval->nr_key_types <= 0) {
+ 		err_msg = "Failed to allocate user defined keys";
+ 		goto fail_release;
+ 	}
+ 
+ 	/* alloc val types */
+-	teval->nr_val_types = type_alloc(vals, &teval->val_types);
++	teval->nr_val_types = type_alloc(vals, &teval->val_types, nr_vals);
+ 	if (teval->nr_val_types < 0) {
+ 		err_msg = "Failed to allocate user defined values";
+ 		goto fail_release;
 -- 
 2.40.1
 
