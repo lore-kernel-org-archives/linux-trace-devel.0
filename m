@@ -1,17 +1,17 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46CCD12B74
-	for <linux-trace-devel@vger.kernel.org>; Thu,  5 Oct 2023 22:13:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 516A212B74
+	for <linux-trace-devel@vger.kernel.org>; Thu,  5 Oct 2023 22:15:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F603C433C7;
-	Thu,  5 Oct 2023 22:13:38 +0000 (UTC)
-Date: Thu, 5 Oct 2023 18:14:48 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AD02C433CB;
+	Thu,  5 Oct 2023 22:15:13 +0000 (UTC)
+Date: Thu, 5 Oct 2023 18:16:21 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Cc: Ross Zwisler <zwisler@google.com>
-Subject: [PATCH] libtraceeval: Add traceeval_stat_max/min_timestamp() API
-Message-ID: <20231005181448.176e9563@gandalf.local.home>
+Subject: [PATCH] libtraceeval: Add wake-lat sample code
+Message-ID: <20231005181621.118120c3@gandalf.local.home>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -24,300 +24,208 @@ Content-Transfer-Encoding: 7bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-If a value field is flagged as a TIMESTAMP, and another field is flagged
-as a STAT, have the statistics for the STAT field automatically keep track
-of when the max and min happened (what the TIMESTAMP field was at those
-instances).
+Add code that reads a trace.dat file and searches for the sched_waking and
+sched_switch events. It then keeps track of the wake up latency of each
+task as well as keeps statistics on that latency. At the end, it will
+report the max/min total and count of each latency. For the max and min,
+it also shows the timestamp of when they happened.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/traceeval.h |   4 ++
- src/eval-local.h    |   3 ++
- src/histograms.c    | 105 +++++++++++++++++++++++++++++++++++++-------
- 3 files changed, 97 insertions(+), 15 deletions(-)
+ samples/Makefile   |   1 +
+ samples/wake-lat.c | 171 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 172 insertions(+)
+ create mode 100644 samples/wake-lat.c
 
-diff --git a/include/traceeval.h b/include/traceeval.h
-index a70a5b09057b..bbf8f6ac7dd1 100644
---- a/include/traceeval.h
-+++ b/include/traceeval.h
-@@ -242,6 +242,10 @@ unsigned long long traceeval_stat_max(struct traceeval_stat *stat);
- unsigned long long traceeval_stat_min(struct traceeval_stat *stat);
- unsigned long long traceeval_stat_total(struct traceeval_stat *stat);
- unsigned long long traceeval_stat_count(struct traceeval_stat *stat);
-+unsigned long long traceeval_stat_max_timestamp(struct traceeval_stat *stat,
-+						unsigned long long *ts);
-+unsigned long long traceeval_stat_min_timestamp(struct traceeval_stat *stat,
-+						unsigned long long *ts);
+diff --git a/samples/Makefile b/samples/Makefile
+index eb14411189f6..256018aab572 100644
+--- a/samples/Makefile
++++ b/samples/Makefile
+@@ -4,6 +4,7 @@ include $(src)/scripts/utils.mk
  
- struct traceeval_iterator *traceeval_iterator_get(struct traceeval *teval);
- void traceeval_iterator_put(struct traceeval_iterator *iter);
-diff --git a/src/eval-local.h b/src/eval-local.h
-index 01b1b838e8bf..fabb1a06e7df 100644
---- a/src/eval-local.h
-+++ b/src/eval-local.h
-@@ -47,7 +47,9 @@ struct hash_table {
+ TARGETS :=
+ TARGETS += task-eval
++TARGETS += wake-lat
  
- struct traceeval_stat {
- 	unsigned long long	max;
-+	unsigned long long	max_ts;
- 	unsigned long long	min;
-+	unsigned long long	min_ts;
- 	unsigned long long	total;
- 	unsigned long long	std;
- 	size_t			count;
-@@ -72,6 +74,7 @@ struct traceeval {
- 	size_t				nr_elements;
- 	size_t				sizeof_type;
- 	size_t				sizeof_data;
-+	ssize_t				timestamp_idx;
- };
+ sdir := $(obj)/bin
  
- struct traceeval_iterator {
-diff --git a/src/histograms.c b/src/histograms.c
-index 2be95e6a8d1f..0cf52225a03a 100644
---- a/src/histograms.c
-+++ b/src/histograms.c
-@@ -222,15 +222,32 @@ static int check_keys(struct traceeval_type *keys, int cnt)
- 	return 0;
- }
- 
--static int check_vals(struct traceeval_type *vals, int cnt)
-+static int check_vals(struct traceeval *teval, struct traceeval_type *vals, int cnt)
- {
-+	bool ts_found = false;
+diff --git a/samples/wake-lat.c b/samples/wake-lat.c
+new file mode 100644
+index 000000000000..0a6fcc909fba
+--- /dev/null
++++ b/samples/wake-lat.c
+@@ -0,0 +1,171 @@
++#include <unistd.h>
++#include <sys/wait.h>
++#include <trace-cmd.h>
++#include <traceeval.h>
 +
- 	for (int i = 0; i < cnt && vals[i].type != TRACEEVAL_TYPE_NONE; i++) {
- 		/* Define this as a value */
- 		vals[i].flags |= TRACEEVAL_FL_VALUE;
- 		vals[i].flags &= ~TRACEEVAL_FL_KEY;
- 
-+		if (vals[i].flags & TRACEEVAL_FL_TIMESTAMP) {
-+			/* Only one field may be marked as a timestamp */
-+			if (ts_found)
-+				return -1;
-+			/* The type must be numeric */
-+			if (vals[i].type > TRACEEVAL_TYPE_NUMBER)
-+				return -1;
-+			/* TIMESTAMPS can not be STATs themselves */
-+			if (vals[i].flags & TRACEEVAL_FL_STAT)
-+				return -1;
-+			ts_found = true;
-+			teval->timestamp_idx = i;
-+		}
- 		vals[i].index = i;
- 	}
-+	if (!ts_found)
-+		teval->timestamp_idx = -1;
- 	return 0;
- }
- 
-@@ -298,7 +315,7 @@ struct traceeval *traceeval_init_data_size(struct traceeval_type *keys,
- 		goto fail_release;
- 
- 	if (vals) {
--		ret = check_vals(vals, nr_vals);
-+		ret = check_vals(teval, vals, nr_vals);
- 		if (ret < 0)
- 			goto fail_release;
- 	}
-@@ -535,7 +552,8 @@ static bool is_stat_type(struct traceeval_type *type)
- static int copy_traceeval_data(struct traceeval_type *type,
- 			       struct traceeval_stat *stat,
- 			       struct traceeval_data *dst,
--			       const struct traceeval_data *src)
-+			       const struct traceeval_data *src,
-+			       unsigned long long ts)
- {
- 	unsigned long long val;
- 
-@@ -599,21 +617,31 @@ static int copy_traceeval_data(struct traceeval_type *type,
- 	if (!stat->count++) {
- 		stat->max = val;
- 		stat->min = val;
-+		stat->max_ts = ts;
-+		stat->min_ts = ts;
- 		stat->total = val;
- 		return 0;
- 	}
- 
- 	if (type->flags & TRACEEVAL_FL_SIGNED) {
--		if ((long long)stat->max < (long long)val)
-+		if ((long long)stat->max < (long long)val) {
- 			stat->max = val;
--		if ((long long)stat->min > (long long)val)
-+			stat->max_ts = ts;
-+		}
-+		if ((long long)stat->min > (long long)val) {
- 			stat->min = val;
-+			stat->min_ts = ts;
-+		}
- 		stat->total += (long long)val;
- 	} else {
--		if (stat->max < val)
-+		if (stat->max < val) {
-+			stat->max_ts = ts;
- 			stat->max = val;
--		if (stat->min > val)
-+		}
-+		if (stat->min > val) {
- 			stat->min = val;
-+			stat->min_ts = ts;
-+		}
- 		stat->total += val;
- 	}
- 
-@@ -654,7 +682,8 @@ static void data_release_and_free(size_t size, struct traceeval_data **data,
- static int dup_traceeval_data_set(size_t size, struct traceeval_type *type,
- 				  struct traceeval_stat *stats,
- 				  const struct traceeval_data *orig,
--				  struct traceeval_data **copy)
-+				  struct traceeval_data **copy,
-+				  unsigned long long ts)
- {
- 	size_t i;
- 
-@@ -668,7 +697,7 @@ static int dup_traceeval_data_set(size_t size, struct traceeval_type *type,
- 
- 	for (i = 0; i < size; i++) {
- 		if (copy_traceeval_data(type + i, stats ? stats + i : NULL,
--					 (*copy) + i, orig + i))
-+					 (*copy) + i, orig + i, ts))
- 			goto fail;
- 	}
- 
-@@ -754,6 +783,14 @@ static struct entry *create_hist_entry(struct traceeval *teval,
- 	return entry;
- }
- 
-+static unsigned long long get_timestamp(struct traceeval *teval,
-+					const struct traceeval_data *vals)
++struct data {
++	struct traceeval		*teval_wakeup;
++	struct traceeval		*teval_sched;
++};
++
++struct traceeval_type wakeup_keys[] = {
++	{
++		.name		= "PID",
++		.type		= TRACEEVAL_TYPE_NUMBER,
++	}
++};
++
++struct traceeval_type wakeup_vals[] = {
++	{
++		.name		= "timestamp",
++		.flags		= TRACEEVAL_FL_TIMESTAMP,
++		.type		= TRACEEVAL_TYPE_NUMBER_64,
++	}
++};
++
++struct traceeval_type sched_keys[] = {
++	{
++		.name		= "COMM",
++		.type		= TRACEEVAL_TYPE_STRING,
++	},
++	{
++		.name		= "PID",
++		.type		= TRACEEVAL_TYPE_NUMBER,
++	}
++};
++
++struct traceeval_type sched_vals[] = {
++	{
++		.name		= "timestamp",
++		.flags		= TRACEEVAL_FL_TIMESTAMP,
++		.type		= TRACEEVAL_TYPE_NUMBER_64,
++	},
++	{
++		.name		= "delta",
++		.flags		= TRACEEVAL_FL_STAT,
++		.type		= TRACEEVAL_TYPE_NUMBER_64,
++	}
++};
++
++static int wakeup_callback(struct tracecmd_input *handle, struct tep_event *event,
++			   struct tep_record *record, int cpu, void *d)
 +{
-+	if (teval->timestamp_idx < 0)
++	static struct tep_format_field *pid_field;
++	struct data *data = d;
++	unsigned long long val;
++	long pid;
++	struct traceeval_data keys[1];
++	struct traceeval_data vals[1];
++
++	if (!pid_field)
++		pid_field = tep_find_field(event, "pid");
++
++	tep_read_number_field(pid_field, record->data, &val);
++	pid = val;
++
++	TRACEEVAL_SET_NUMBER(keys[0], pid);
++	TRACEEVAL_SET_NUMBER_64(vals[0], record->ts);
++
++	traceeval_insert(data->teval_wakeup, keys, vals);
++
++	return 0;
++}
++
++static int sched_callback(struct tracecmd_input *handle, struct tep_event *event,
++			   struct tep_record *record, int cpu, void *d)
++{
++	static struct tep_format_field *next_pid_field;
++	static struct tep_format_field *next_comm_field;
++	struct data *data = d;
++	unsigned long long delta;
++	unsigned long long val;
++	long pid;
++	struct traceeval_data wakeup_keys[1];
++	struct traceeval_data keys[2];
++	struct traceeval_data vals[2];
++	const struct traceeval_data *results;
++
++	if (!next_pid_field) {
++		next_pid_field = tep_find_field(event, "next_pid");
++		next_comm_field = tep_find_field(event, "next_comm");
++	}
++
++	tep_read_number_field(next_pid_field, record->data, &val);
++	pid = val;
++
++	TRACEEVAL_SET_NUMBER(wakeup_keys[0], pid);
++
++	if (traceeval_query(data->teval_wakeup, wakeup_keys, &results) <= 0)
 +		return 0;
-+	return vals[teval->timestamp_idx].number_64;
++
++	delta = record->ts - results[0].number_64;
++	traceeval_results_release(data->teval_wakeup, results);
++
++	TRACEEVAL_SET_CSTRING(keys[0], record->data + next_comm_field->offset);
++	TRACEEVAL_SET_NUMBER(keys[1], pid);
++
++	TRACEEVAL_SET_NUMBER_64(vals[0], record->ts);
++	TRACEEVAL_SET_NUMBER_64(vals[1], delta);
++
++	traceeval_insert(data->teval_sched, keys, vals);
++
++	return 0;
 +}
 +
- /*
-  * Create a new entry in @teval with respect to @keys and @vals.
-  *
-@@ -765,6 +802,7 @@ static int create_entry(struct traceeval *teval,
- {
- 	struct traceeval_data *new_keys;
- 	struct traceeval_data *new_vals;
-+	unsigned long long ts;
- 	struct entry *entry;
- 
- 	entry = create_hist_entry(teval, keys);
-@@ -775,14 +813,16 @@ static int create_entry(struct traceeval *teval,
- 	if (!entry->val_stats)
- 		goto fail_entry;
- 
-+	ts = get_timestamp(teval, vals);
-+
- 	/* copy keys */
- 	if (dup_traceeval_data_set(teval->nr_key_types, teval->key_types,
--				   NULL, keys, &new_keys) == -1)
-+				   NULL, keys, &new_keys, 0) == -1)
- 		goto fail_stats;
- 
- 	/* copy vals */
- 	if (dup_traceeval_data_set(teval->nr_val_types, teval->val_types,
--				   entry->val_stats, vals, &new_vals) == -1)
-+				   entry->val_stats, vals, &new_vals, ts) == -1)
- 		goto fail;
- 
- 	entry->keys = new_keys;
-@@ -818,12 +858,15 @@ static int update_entry(struct traceeval *teval, struct entry *entry,
- 	struct traceeval_type *types = teval->val_types;
- 	struct traceeval_data *copy = entry->vals;
- 	struct traceeval_data old[teval->nr_val_types];
-+	unsigned long long ts;
- 	size_t size = teval->nr_val_types;
- 	ssize_t i;
- 
- 	if (!size)
- 		return 0;
- 
-+	ts = get_timestamp(teval, vals);
-+
- 	for (i = 0; i < teval->nr_val_types; i++) {
- 		if (vals[i].type != teval->val_types[i].type)
- 			return -1;
-@@ -833,7 +876,7 @@ static int update_entry(struct traceeval *teval, struct entry *entry,
- 		old[i] = copy[i];
- 
- 		if (copy_traceeval_data(types + i, stats + i,
--					copy + i, vals + i))
-+					copy + i, vals + i, ts))
- 			goto fail;
- 	}
- 	data_release(size, old, types);
-@@ -844,7 +887,7 @@ static int update_entry(struct traceeval *teval, struct entry *entry,
- 	/* Put back the old values */
- 	for (i--; i >= 0; i--) {
- 		copy_traceeval_data(types + i, NULL,
--				    copy + i, old + i);
-+				    copy + i, old + i, 0);
- 	}
- 	return -1;
- }
-@@ -889,6 +932,38 @@ struct traceeval_stat *traceeval_stat_size(struct traceeval *teval,
- 	return &entry->val_stats[type->index];
- }
- 
-+/**
-+ * traceeval_stat_max_timestamp - return max value of stat and where it happend
-+ * @stat: The stat structure that holds the stats
-+ * @ts: The return value for the time stamp of where the max happened
-+ *
-+ * Returns the max value within @stat, and the timestamp of where that max
-+ * happened in @ts.
-+ */
-+unsigned long long traceeval_stat_max_timestamp(struct traceeval_stat *stat,
-+						unsigned long long *ts)
++static void show_latency(struct data *data)
 +{
-+	if (ts)
-+		*ts = stat->max_ts;
-+	return stat->max;
++	struct traceeval_iterator *iter = traceeval_iterator_get(data->teval_sched);
++	const struct traceeval_data *keys;
++
++	printf("\n");
++	while (traceeval_iterator_next(iter, &keys) > 0) {
++		struct traceeval_stat *stat;
++		unsigned long long val;
++		unsigned long long ts;
++
++		stat = traceeval_iterator_stat(iter, sched_vals[1].name);
++		if (!stat)
++			continue;
++
++		printf("%s-%ld\n", keys[0].string, keys[1].number);
++
++		val = traceeval_stat_max_timestamp(stat, &ts),
++
++		printf("\tmax:%lld at %lld\n", val, ts);
++
++		val = traceeval_stat_min_timestamp(stat, &ts);
++		printf("\tmin:%lld at %lld\n", val, ts);
++		printf("\ttotal:%lld count:%lld\n",
++		       traceeval_stat_total(stat),
++		       traceeval_stat_count(stat));
++	}
 +}
 +
-+/**
-+ * traceeval_stat_min_timestamp - return min value of stat and where it happend
-+ * @stat: The stat structure that holds the stats
-+ * @ts: The return value for the time stamp of where the min happened
-+ *
-+ * Returns the min value within @stat, and the timestamp of where that min
-+ * happened in @ts.
-+ */
-+unsigned long long traceeval_stat_min_timestamp(struct traceeval_stat *stat,
-+						unsigned long long *ts)
++int main (int argc, char **argv)
 +{
-+	if (ts)
-+		*ts = stat->min_ts;
-+	return stat->min;
-+}
++	struct tracecmd_input *handle;
++	struct data data;
 +
- /**
-  * traceeval_stat_max - return max value of stat
-  * @stat: The stat structure that holds the stats
-@@ -897,7 +972,7 @@ struct traceeval_stat *traceeval_stat_size(struct traceeval *teval,
-  */
- unsigned long long traceeval_stat_max(struct traceeval_stat *stat)
- {
--	return stat->max;
-+	return traceeval_stat_max_timestamp(stat, NULL);
- }
- 
- /**
-@@ -908,7 +983,7 @@ unsigned long long traceeval_stat_max(struct traceeval_stat *stat)
-  */
- unsigned long long traceeval_stat_min(struct traceeval_stat *stat)
- {
--	return stat->min;
-+	return traceeval_stat_min_timestamp(stat, NULL);
- }
- 
- /**
++	if (argc < 2) {
++		printf("usage: wake-lat trace.dat\n");
++		exit(-1);
++	}
++
++	data.teval_wakeup = traceeval_init(wakeup_keys, wakeup_vals);
++	data.teval_sched = traceeval_init(sched_keys, sched_vals);
++
++	handle = tracecmd_open(argv[1], TRACECMD_FL_LOAD_NO_PLUGINS);
++	if (!handle) {
++		perror(argv[0]);
++		exit(-1);
++	}
++
++	tracecmd_follow_event(handle, "sched", "sched_waking", wakeup_callback, &data);
++	tracecmd_follow_event(handle, "sched", "sched_switch", sched_callback, &data);
++
++	tracecmd_iterate_events(handle, NULL, 0, NULL, NULL);
++
++	show_latency(&data);
++
++	return 0;
++}
 -- 
 2.40.1
 
