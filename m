@@ -1,191 +1,323 @@
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CD2E41E45
-	for <linux-trace-devel@vger.kernel.org>; Thu,  5 Oct 2023 22:03:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="e+YOaJMU"
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BB59E
-	for <linux-trace-devel@vger.kernel.org>; Thu,  5 Oct 2023 15:02:59 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-35140cc9187so6571145ab.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 05 Oct 2023 15:02:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696543378; x=1697148178; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lnyWeH4qaAVEDMR6jQbvoffDTKG9ouVhogo78d4WJBQ=;
-        b=e+YOaJMUjUJfYVSTmMJcuVTKJlA7/0c5c3ozm5MOdSelQP+gG/yuJ5osI0Vh8RhxJd
-         41e81YY68rqumAK1IywFecX1aR4vpm6Em4F3yBXnDDt026XTqJwgNnkCqXMnn2XAKwGW
-         bGXIRwY/Yr8up2qfcBi58OWjt/fxSRG0b22rNNDKC9gtat4sDmfsaFylpr6ZOx+U7/Uf
-         nV+9NMzGzKGZK9SsB4/eCjO/3TsWnSJnGzvlmyCql6g+4JEHjK8e3UORzDJF/OWMMXUO
-         G7OdNnPDVLBQRt4A8KETyBYEd0t2gd5rSknK9cc6jjptnCT5Ai2dvn/FZVaxqMqtNDW5
-         IOVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696543378; x=1697148178;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lnyWeH4qaAVEDMR6jQbvoffDTKG9ouVhogo78d4WJBQ=;
-        b=YJBOMFwdhAFIFuc3WtKIlxvnLALaAI08rc+emVg7aXDFgJVN4d05LIyeZ6Zg5dwgfC
-         oip2ZX33nx7w3updT6XflMzEJ5bamewj8Z0cM5ue2uCyEO/ojLZEY/zUteF+gZbj4T5q
-         BwDIqHAQe5nTfs41YgC3stfXTPb7/nR1/0AK1giKmksOUgbCyM3MSeB0+qUcsrN3miha
-         DSyeL8Tj0hvEm3yxIvmqbtK0/B89+XnWmwyYztGA1/JNhL9eaJF9DEdjy4WNwOad9Kqx
-         Q+x6ACBMaeDRtL95g6bFu45+393kwJHylr/0gLc3qx1ucx7P+YgzT7EAQJOQBhliVxvD
-         ykaQ==
-X-Gm-Message-State: AOJu0Yw3LjuY8hEphSECPL/JAt7xT9dE8tbD//G4nW2xSN8xRxaco8vL
-	4hbVrZUf5NFa1efllaxhs3EVBA27YFrifi3iw8brBA==
-X-Google-Smtp-Source: AGHT+IHAAFeLwrJmsyVbUrB4BsSzlkFWwPbigRkObJYAdD9GZLpLujBYN/UMw6dH2o0g7y/o2nfwTQ==
-X-Received: by 2002:a05:6e02:11aa:b0:351:59db:a20e with SMTP id 10-20020a056e0211aa00b0035159dba20emr5577506ilj.18.1696543378539;
-        Thu, 05 Oct 2023 15:02:58 -0700 (PDT)
-Received: from google.com ([2620:15c:183:200:8c22:bb19:99aa:e163])
-        by smtp.gmail.com with ESMTPSA id p4-20020a92d684000000b0035146678bd5sm669455iln.65.2023.10.05.15.02.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 15:02:58 -0700 (PDT)
-Date: Thu, 5 Oct 2023 16:02:55 -0600
-From: Ross Zwisler <zwisler@google.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-	Stevie Alvarez <stevie.6strings@gmail.com>
-Subject: Re: [PATCH v2] libtraceeval: Use trick to force static array usage
- where needed
-Message-ID: <20231005220255.GA3160669@google.com>
-References: <20231005180228.32449777@gandalf.local.home>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46CCD12B74
+	for <linux-trace-devel@vger.kernel.org>; Thu,  5 Oct 2023 22:13:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F603C433C7;
+	Thu,  5 Oct 2023 22:13:38 +0000 (UTC)
+Date: Thu, 5 Oct 2023 18:14:48 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc: Ross Zwisler <zwisler@google.com>
+Subject: [PATCH] libtraceeval: Add traceeval_stat_max/min_timestamp() API
+Message-ID: <20231005181448.176e9563@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231005180228.32449777@gandalf.local.home>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Oct 05, 2023 at 06:02:28PM -0400, Steven Rostedt wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> Some functions use the TRACEEVAL_ARRAY_SIZE() macro to determine the size
-> of the array passed to it. But this will not work if the developer uses a
-> pointer to the array. gcc may give a warning, but it will still happily
-> compile it leaving the developer wondering why their code does not work.
-> 
-> Use a little trick that checks that tests if the array is static, and will
-> fail the build if it is not.
-> 
->  #define TRACEEVAL_ARRAY_SIZE(data)					\
-> 	((sizeof(data) / sizeof((data)[0])) +				\
-> 	(int)(sizeof(struct {						\
-> 		int:(-!!(__builtin_types_compatible_p(typeof(data),	\
-> 						      typeof(&((data)[0]))))); \
-> 			})))
-> 
-> Going backwards to explain the above, we have:
-> 
->   __builtin_types_compatible_p(typeof(data), typeof(&((data)[0]))
-> 
-> Which is a gcc/clang compiler directive that returns true if the two
-> pointers are compatible. For a static array, we would have
-> 
->  struct traceeval_data data[5]
-> 
-> Where typeof(data) is "struct traceeval []" and the type of
->  &data[0] is a pointer to "struct traceeval_data", and the above
-> would return false (zero).
-> 
-> For pointers:
-> 
->  struct traceeval_data *data;
-> 
-> Then type of data is the same as &data[0] and it would return true (1).
-> 
-> Now we have a structure defined:
-> 
->   struct {
->     int: (-!!(<result>));
->   }
-> 
-> Which if <result> of the __builtin_types_compatible_p() returned false
-> (zero), then it would be:
-> 
->   struct {
->     int: 0;
->  }
-> 
-> Which is perfectly valid. But if <result> returned true (as it would if it
-> was a pointer and not a static array), then it would be:
-> 
->   struct {
->      int: -1;
->   }
-> 
-> Which is not valid to compile, and the build will fail.
-> 
-> But in order to make sure this is in the code that uses
-> TRACEEVAL_ARRAY_SIZE(), it needs to be part of the computation. To do
-> that, as "struct { int:0; }" is of size zero, we can simply add a sizeof()
-> around it, and attach the above with an addition "+".
-> 
->  ... + sizeof((int)(sizeof(struct { int:0;}))) is the same as:
-> 
->  ... + 0
-> 
-> Now with this logic, if a pointer is passed to something like
-> traceeval_init(), it will fail to build, and not cause hours of scratching
-> head debugging for the developer at runtime.
-> 
-> Of course, the developer will likely to now scratch their head on why it
-> doesn't build, but that's because they didn't RTFM!
-> 
-> Reviewed-by: Ross Zwisler <zwisler@google.com>
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
-> Changes since v1: https://lore.kernel.org/linux-trace-devel/20231004185225.366c1739@gandalf.local.home/
-> 
->  - Added comment to why the compile may fail due to the above trick.
-> 
->  include/traceeval.h | 19 ++++++++++++++++++-
->  1 file changed, 18 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/traceeval.h b/include/traceeval.h
-> index 4cc5eb6ef3de..a70a5b09057b 100644
-> --- a/include/traceeval.h
-> +++ b/include/traceeval.h
-> @@ -17,7 +17,24 @@
->  /* Field name/descriptor for number of hits */
->  #define TRACEEVAL_VAL_HITS ((const char *)(-1UL))
->  
-> -#define TRACEEVAL_ARRAY_SIZE(data)	(sizeof(data) / sizeof((data)[0]))
-> +/*
-> + * If your compile failed due to the below macro, it is likely you used
-> + * a pointer to struct traceeval_data, and not a static array.
-> + *
-> + * That is:
-> + *
-> + *    struct traceeval_data *keys;
-> + *
-> + * and not:
-> + *
-> + *    struct traceeval_data keys[] = { ... };
-> + */
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Perfect, thanks!
+If a value field is flagged as a TIMESTAMP, and another field is flagged
+as a STAT, have the statistics for the STAT field automatically keep track
+of when the max and min happened (what the TIMESTAMP field was at those
+instances).
 
-> +#define TRACEEVAL_ARRAY_SIZE(data)					\
-> +	((sizeof(data) / sizeof((data)[0])) +				\
-> +	(int)(sizeof(struct {						\
-> +		int:(-!!(__builtin_types_compatible_p(typeof(data),	\
-> +						      typeof(&((data)[0]))))); \
-> +			})))
->  
->  /* Data type distinguishers */
->  enum traceeval_data_type {
-> -- 
-> 2.40.1
-> 
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ include/traceeval.h |   4 ++
+ src/eval-local.h    |   3 ++
+ src/histograms.c    | 105 +++++++++++++++++++++++++++++++++++++-------
+ 3 files changed, 97 insertions(+), 15 deletions(-)
+
+diff --git a/include/traceeval.h b/include/traceeval.h
+index a70a5b09057b..bbf8f6ac7dd1 100644
+--- a/include/traceeval.h
++++ b/include/traceeval.h
+@@ -242,6 +242,10 @@ unsigned long long traceeval_stat_max(struct traceeval_stat *stat);
+ unsigned long long traceeval_stat_min(struct traceeval_stat *stat);
+ unsigned long long traceeval_stat_total(struct traceeval_stat *stat);
+ unsigned long long traceeval_stat_count(struct traceeval_stat *stat);
++unsigned long long traceeval_stat_max_timestamp(struct traceeval_stat *stat,
++						unsigned long long *ts);
++unsigned long long traceeval_stat_min_timestamp(struct traceeval_stat *stat,
++						unsigned long long *ts);
+ 
+ struct traceeval_iterator *traceeval_iterator_get(struct traceeval *teval);
+ void traceeval_iterator_put(struct traceeval_iterator *iter);
+diff --git a/src/eval-local.h b/src/eval-local.h
+index 01b1b838e8bf..fabb1a06e7df 100644
+--- a/src/eval-local.h
++++ b/src/eval-local.h
+@@ -47,7 +47,9 @@ struct hash_table {
+ 
+ struct traceeval_stat {
+ 	unsigned long long	max;
++	unsigned long long	max_ts;
+ 	unsigned long long	min;
++	unsigned long long	min_ts;
+ 	unsigned long long	total;
+ 	unsigned long long	std;
+ 	size_t			count;
+@@ -72,6 +74,7 @@ struct traceeval {
+ 	size_t				nr_elements;
+ 	size_t				sizeof_type;
+ 	size_t				sizeof_data;
++	ssize_t				timestamp_idx;
+ };
+ 
+ struct traceeval_iterator {
+diff --git a/src/histograms.c b/src/histograms.c
+index 2be95e6a8d1f..0cf52225a03a 100644
+--- a/src/histograms.c
++++ b/src/histograms.c
+@@ -222,15 +222,32 @@ static int check_keys(struct traceeval_type *keys, int cnt)
+ 	return 0;
+ }
+ 
+-static int check_vals(struct traceeval_type *vals, int cnt)
++static int check_vals(struct traceeval *teval, struct traceeval_type *vals, int cnt)
+ {
++	bool ts_found = false;
++
+ 	for (int i = 0; i < cnt && vals[i].type != TRACEEVAL_TYPE_NONE; i++) {
+ 		/* Define this as a value */
+ 		vals[i].flags |= TRACEEVAL_FL_VALUE;
+ 		vals[i].flags &= ~TRACEEVAL_FL_KEY;
+ 
++		if (vals[i].flags & TRACEEVAL_FL_TIMESTAMP) {
++			/* Only one field may be marked as a timestamp */
++			if (ts_found)
++				return -1;
++			/* The type must be numeric */
++			if (vals[i].type > TRACEEVAL_TYPE_NUMBER)
++				return -1;
++			/* TIMESTAMPS can not be STATs themselves */
++			if (vals[i].flags & TRACEEVAL_FL_STAT)
++				return -1;
++			ts_found = true;
++			teval->timestamp_idx = i;
++		}
+ 		vals[i].index = i;
+ 	}
++	if (!ts_found)
++		teval->timestamp_idx = -1;
+ 	return 0;
+ }
+ 
+@@ -298,7 +315,7 @@ struct traceeval *traceeval_init_data_size(struct traceeval_type *keys,
+ 		goto fail_release;
+ 
+ 	if (vals) {
+-		ret = check_vals(vals, nr_vals);
++		ret = check_vals(teval, vals, nr_vals);
+ 		if (ret < 0)
+ 			goto fail_release;
+ 	}
+@@ -535,7 +552,8 @@ static bool is_stat_type(struct traceeval_type *type)
+ static int copy_traceeval_data(struct traceeval_type *type,
+ 			       struct traceeval_stat *stat,
+ 			       struct traceeval_data *dst,
+-			       const struct traceeval_data *src)
++			       const struct traceeval_data *src,
++			       unsigned long long ts)
+ {
+ 	unsigned long long val;
+ 
+@@ -599,21 +617,31 @@ static int copy_traceeval_data(struct traceeval_type *type,
+ 	if (!stat->count++) {
+ 		stat->max = val;
+ 		stat->min = val;
++		stat->max_ts = ts;
++		stat->min_ts = ts;
+ 		stat->total = val;
+ 		return 0;
+ 	}
+ 
+ 	if (type->flags & TRACEEVAL_FL_SIGNED) {
+-		if ((long long)stat->max < (long long)val)
++		if ((long long)stat->max < (long long)val) {
+ 			stat->max = val;
+-		if ((long long)stat->min > (long long)val)
++			stat->max_ts = ts;
++		}
++		if ((long long)stat->min > (long long)val) {
+ 			stat->min = val;
++			stat->min_ts = ts;
++		}
+ 		stat->total += (long long)val;
+ 	} else {
+-		if (stat->max < val)
++		if (stat->max < val) {
++			stat->max_ts = ts;
+ 			stat->max = val;
+-		if (stat->min > val)
++		}
++		if (stat->min > val) {
+ 			stat->min = val;
++			stat->min_ts = ts;
++		}
+ 		stat->total += val;
+ 	}
+ 
+@@ -654,7 +682,8 @@ static void data_release_and_free(size_t size, struct traceeval_data **data,
+ static int dup_traceeval_data_set(size_t size, struct traceeval_type *type,
+ 				  struct traceeval_stat *stats,
+ 				  const struct traceeval_data *orig,
+-				  struct traceeval_data **copy)
++				  struct traceeval_data **copy,
++				  unsigned long long ts)
+ {
+ 	size_t i;
+ 
+@@ -668,7 +697,7 @@ static int dup_traceeval_data_set(size_t size, struct traceeval_type *type,
+ 
+ 	for (i = 0; i < size; i++) {
+ 		if (copy_traceeval_data(type + i, stats ? stats + i : NULL,
+-					 (*copy) + i, orig + i))
++					 (*copy) + i, orig + i, ts))
+ 			goto fail;
+ 	}
+ 
+@@ -754,6 +783,14 @@ static struct entry *create_hist_entry(struct traceeval *teval,
+ 	return entry;
+ }
+ 
++static unsigned long long get_timestamp(struct traceeval *teval,
++					const struct traceeval_data *vals)
++{
++	if (teval->timestamp_idx < 0)
++		return 0;
++	return vals[teval->timestamp_idx].number_64;
++}
++
+ /*
+  * Create a new entry in @teval with respect to @keys and @vals.
+  *
+@@ -765,6 +802,7 @@ static int create_entry(struct traceeval *teval,
+ {
+ 	struct traceeval_data *new_keys;
+ 	struct traceeval_data *new_vals;
++	unsigned long long ts;
+ 	struct entry *entry;
+ 
+ 	entry = create_hist_entry(teval, keys);
+@@ -775,14 +813,16 @@ static int create_entry(struct traceeval *teval,
+ 	if (!entry->val_stats)
+ 		goto fail_entry;
+ 
++	ts = get_timestamp(teval, vals);
++
+ 	/* copy keys */
+ 	if (dup_traceeval_data_set(teval->nr_key_types, teval->key_types,
+-				   NULL, keys, &new_keys) == -1)
++				   NULL, keys, &new_keys, 0) == -1)
+ 		goto fail_stats;
+ 
+ 	/* copy vals */
+ 	if (dup_traceeval_data_set(teval->nr_val_types, teval->val_types,
+-				   entry->val_stats, vals, &new_vals) == -1)
++				   entry->val_stats, vals, &new_vals, ts) == -1)
+ 		goto fail;
+ 
+ 	entry->keys = new_keys;
+@@ -818,12 +858,15 @@ static int update_entry(struct traceeval *teval, struct entry *entry,
+ 	struct traceeval_type *types = teval->val_types;
+ 	struct traceeval_data *copy = entry->vals;
+ 	struct traceeval_data old[teval->nr_val_types];
++	unsigned long long ts;
+ 	size_t size = teval->nr_val_types;
+ 	ssize_t i;
+ 
+ 	if (!size)
+ 		return 0;
+ 
++	ts = get_timestamp(teval, vals);
++
+ 	for (i = 0; i < teval->nr_val_types; i++) {
+ 		if (vals[i].type != teval->val_types[i].type)
+ 			return -1;
+@@ -833,7 +876,7 @@ static int update_entry(struct traceeval *teval, struct entry *entry,
+ 		old[i] = copy[i];
+ 
+ 		if (copy_traceeval_data(types + i, stats + i,
+-					copy + i, vals + i))
++					copy + i, vals + i, ts))
+ 			goto fail;
+ 	}
+ 	data_release(size, old, types);
+@@ -844,7 +887,7 @@ static int update_entry(struct traceeval *teval, struct entry *entry,
+ 	/* Put back the old values */
+ 	for (i--; i >= 0; i--) {
+ 		copy_traceeval_data(types + i, NULL,
+-				    copy + i, old + i);
++				    copy + i, old + i, 0);
+ 	}
+ 	return -1;
+ }
+@@ -889,6 +932,38 @@ struct traceeval_stat *traceeval_stat_size(struct traceeval *teval,
+ 	return &entry->val_stats[type->index];
+ }
+ 
++/**
++ * traceeval_stat_max_timestamp - return max value of stat and where it happend
++ * @stat: The stat structure that holds the stats
++ * @ts: The return value for the time stamp of where the max happened
++ *
++ * Returns the max value within @stat, and the timestamp of where that max
++ * happened in @ts.
++ */
++unsigned long long traceeval_stat_max_timestamp(struct traceeval_stat *stat,
++						unsigned long long *ts)
++{
++	if (ts)
++		*ts = stat->max_ts;
++	return stat->max;
++}
++
++/**
++ * traceeval_stat_min_timestamp - return min value of stat and where it happend
++ * @stat: The stat structure that holds the stats
++ * @ts: The return value for the time stamp of where the min happened
++ *
++ * Returns the min value within @stat, and the timestamp of where that min
++ * happened in @ts.
++ */
++unsigned long long traceeval_stat_min_timestamp(struct traceeval_stat *stat,
++						unsigned long long *ts)
++{
++	if (ts)
++		*ts = stat->min_ts;
++	return stat->min;
++}
++
+ /**
+  * traceeval_stat_max - return max value of stat
+  * @stat: The stat structure that holds the stats
+@@ -897,7 +972,7 @@ struct traceeval_stat *traceeval_stat_size(struct traceeval *teval,
+  */
+ unsigned long long traceeval_stat_max(struct traceeval_stat *stat)
+ {
+-	return stat->max;
++	return traceeval_stat_max_timestamp(stat, NULL);
+ }
+ 
+ /**
+@@ -908,7 +983,7 @@ unsigned long long traceeval_stat_max(struct traceeval_stat *stat)
+  */
+ unsigned long long traceeval_stat_min(struct traceeval_stat *stat)
+ {
+-	return stat->min;
++	return traceeval_stat_min_timestamp(stat, NULL);
+ }
+ 
+ /**
+-- 
+2.40.1
+
