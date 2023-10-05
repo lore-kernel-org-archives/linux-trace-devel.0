@@ -1,22 +1,19 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4A8A42BF4
-	for <linux-trace-devel@vger.kernel.org>; Thu,  5 Oct 2023 21:58:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D9DA41E45
+	for <linux-trace-devel@vger.kernel.org>; Thu,  5 Oct 2023 22:01:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2962FC433C8;
-	Thu,  5 Oct 2023 21:58:44 +0000 (UTC)
-Date: Thu, 5 Oct 2023 17:59:54 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D896C433C8;
+	Thu,  5 Oct 2023 22:01:20 +0000 (UTC)
+Date: Thu, 5 Oct 2023 18:02:28 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Ross Zwisler <zwisler@google.com>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Stevie Alvarez
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc: Ross Zwisler <zwisler@google.com>, Stevie Alvarez  
  <stevie.6strings@gmail.com>
-Subject: Re: [PATCH] libtraceeval: Use trick to force static array usage
+Subject: [PATCH v2] libtraceeval: Use trick to force static array usage
  where needed
-Message-ID: <20231005175954.77c6c1da@gandalf.local.home>
-In-Reply-To: <20231005212521.GA3146009@google.com>
-References: <20231004185225.366c1739@gandalf.local.home>
-	<20231005212521.GA3146009@google.com>
+Message-ID: <20231005180228.32449777@gandalf.local.home>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -27,45 +24,120 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 5 Oct 2023 15:25:21 -0600
-Ross Zwisler <zwisler@google.com> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> That's some scary deep magic.  :)
+Some functions use the TRACEEVAL_ARRAY_SIZE() macro to determine the size
+of the array passed to it. But this will not work if the developer uses a
+pointer to the array. gcc may give a warning, but it will still happily
+compile it leaving the developer wondering why their code does not work.
 
-Yeah it is. Hence the detailed change log, and not just:
+Use a little trick that checks that tests if the array is static, and will
+fail the build if it is not.
 
-  "The macro prevents static traceeval_data *keys from being used"
+ #define TRACEEVAL_ARRAY_SIZE(data)					\
+	((sizeof(data) / sizeof((data)[0])) +				\
+	(int)(sizeof(struct {						\
+		int:(-!!(__builtin_types_compatible_p(typeof(data),	\
+						      typeof(&((data)[0]))))); \
+			})))
 
-> 
-> We may want to add a comment above this to briefly explain, i.e. "This macro
-> will fail to build if 'data' is a pointer and not a static array" and refer
-> them to the commit history?  That way they have some way to proceed if/when
-> their build fails.
+Going backwards to explain the above, we have:
 
-Well, I don't think they need to understand how the macro work. But just
-why it failed. Even though new compilers also warn about why it doesn't
-work, I can still add:
+  __builtin_types_compatible_p(typeof(data), typeof(&((data)[0]))
 
-/*
- * If your compile failed due to the below macro, it is likely you used
- * a pointer to struct traceeval_data, and not a static array.
- *
- * That is:
- *
- *    struct traceeval_data *keys;
- *
- * and not:
- *
- *    struct traceeval_data keys[] = { ... };
- */
+Which is a gcc/clang compiler directive that returns true if the two
+pointers are compatible. For a static array, we would have
 
-I'll send a v2
+ struct traceeval_data data[5]
 
-> 
-> Otherwise looks good:
-> Reviewed-by: Ross Zwisler <zwisler@google.com>
+Where typeof(data) is "struct traceeval []" and the type of
+ &data[0] is a pointer to "struct traceeval_data", and the above
+would return false (zero).
 
-Thanks!
+For pointers:
 
--- Steve
+ struct traceeval_data *data;
+
+Then type of data is the same as &data[0] and it would return true (1).
+
+Now we have a structure defined:
+
+  struct {
+    int: (-!!(<result>));
+  }
+
+Which if <result> of the __builtin_types_compatible_p() returned false
+(zero), then it would be:
+
+  struct {
+    int: 0;
+ }
+
+Which is perfectly valid. But if <result> returned true (as it would if it
+was a pointer and not a static array), then it would be:
+
+  struct {
+     int: -1;
+  }
+
+Which is not valid to compile, and the build will fail.
+
+But in order to make sure this is in the code that uses
+TRACEEVAL_ARRAY_SIZE(), it needs to be part of the computation. To do
+that, as "struct { int:0; }" is of size zero, we can simply add a sizeof()
+around it, and attach the above with an addition "+".
+
+ ... + sizeof((int)(sizeof(struct { int:0;}))) is the same as:
+
+ ... + 0
+
+Now with this logic, if a pointer is passed to something like
+traceeval_init(), it will fail to build, and not cause hours of scratching
+head debugging for the developer at runtime.
+
+Of course, the developer will likely to now scratch their head on why it
+doesn't build, but that's because they didn't RTFM!
+
+Reviewed-by: Ross Zwisler <zwisler@google.com>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+Changes since v1: https://lore.kernel.org/linux-trace-devel/20231004185225.366c1739@gandalf.local.home/
+
+ - Added comment to why the compile may fail due to the above trick.
+
+ include/traceeval.h | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
+
+diff --git a/include/traceeval.h b/include/traceeval.h
+index 4cc5eb6ef3de..a70a5b09057b 100644
+--- a/include/traceeval.h
++++ b/include/traceeval.h
+@@ -17,7 +17,24 @@
+ /* Field name/descriptor for number of hits */
+ #define TRACEEVAL_VAL_HITS ((const char *)(-1UL))
+ 
+-#define TRACEEVAL_ARRAY_SIZE(data)	(sizeof(data) / sizeof((data)[0]))
++/*
++ * If your compile failed due to the below macro, it is likely you used
++ * a pointer to struct traceeval_data, and not a static array.
++ *
++ * That is:
++ *
++ *    struct traceeval_data *keys;
++ *
++ * and not:
++ *
++ *    struct traceeval_data keys[] = { ... };
++ */
++#define TRACEEVAL_ARRAY_SIZE(data)					\
++	((sizeof(data) / sizeof((data)[0])) +				\
++	(int)(sizeof(struct {						\
++		int:(-!!(__builtin_types_compatible_p(typeof(data),	\
++						      typeof(&((data)[0]))))); \
++			})))
+ 
+ /* Data type distinguishers */
+ enum traceeval_data_type {
+-- 
+2.40.1
 
