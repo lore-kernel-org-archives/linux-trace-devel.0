@@ -1,22 +1,22 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A156243AA1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A442B43AAD
 	for <linux-trace-devel@vger.kernel.org>; Thu,  5 Oct 2023 23:23:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41CFFC433C9;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F642C433C8;
 	Thu,  5 Oct 2023 23:23:41 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1qoXi7-005VCd-31;
+	id 1qoXi7-005VCX-2p;
 	Thu, 05 Oct 2023 19:24:51 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: Ross Zwisler <zwisler@google.com>,
 	"Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 5/5] libtraceeval: Add man pages for traceeval statistics
-Date: Thu,  5 Oct 2023 19:24:50 -0400
-Message-Id: <20231005232450.1311519-6-rostedt@goodmis.org>
+Subject: [PATCH 3/5] libtraceeval: Add man pages for insertion and removal of elements in a traceeval
+Date: Thu,  5 Oct 2023 19:24:48 -0400
+Message-Id: <20231005232450.1311519-4-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231005232450.1311519-1-rostedt@goodmis.org>
 References: <20231005232450.1311519-1-rostedt@goodmis.org>
@@ -32,35 +32,35 @@ From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
 Add man pages for:
 
- traceeval_stat()
- traceeval_stat_size()
- traceeval_stat_max()
- traceeval_stat_min()
- traceeval_stat_max_timestamp()
- traceeval_stat_min_timestamp()
- traceeval_stat_total()
- traceeval_stat_count()
+ traceeval_insert()
+ traceeval_insert_size()
+ traceeval_remove()
+ traceeval_remove_size()
+ traceeval_query()
+ traceeval_query_size()
+ traceeval_results_release()
+ traceeval_count()
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/libtraceeval-stat.txt | 307 ++++++++++++++++++++++++++++
- Documentation/libtraceeval.txt      |  16 ++
- 2 files changed, 323 insertions(+)
- create mode 100644 Documentation/libtraceeval-stat.txt
+ Documentation/libtraceeval-insert.txt | 389 ++++++++++++++++++++++++++
+ Documentation/libtraceeval.txt        |  25 ++
+ 2 files changed, 414 insertions(+)
+ create mode 100644 Documentation/libtraceeval-insert.txt
 
-diff --git a/Documentation/libtraceeval-stat.txt b/Documentation/libtraceeval-stat.txt
+diff --git a/Documentation/libtraceeval-insert.txt b/Documentation/libtraceeval-insert.txt
 new file mode 100644
-index 000000000000..6e9866f4daf2
+index 000000000000..84b4f07af539
 --- /dev/null
-+++ b/Documentation/libtraceeval-stat.txt
-@@ -0,0 +1,307 @@
++++ b/Documentation/libtraceeval-insert.txt
+@@ -0,0 +1,389 @@
 +libtraceeval(3)
 +===============
 +
 +NAME
 +----
-+traceeval_stat, traceeval_stat_size, traceeval_stat_max, traceeval_stat_min, traceeval_stat_max_timestamp,
-+traceeval_stat_min_timestamp, traceeval_stat_total, traceeval_stat_count - Get statistics of an elements value/key in a traceeval.
++traceeval_insert, traceeval_insert_size, traceeval_remove, traceeval_remove_size,
++traceeval_query, traceeval_query_size, traceeval_results_release, traceeval_count - Insert, remove and query traceeval elements
 +
 +SYNOPSIS
 +--------
@@ -68,93 +68,141 @@ index 000000000000..6e9866f4daf2
 +--
 +*#include <traceeval.h>*
 +
-+struct traceeval_stat pass:[*]*traceeval_stat*(struct traceeval pass:[*]_teval_,
-+				      const struct traceeval_data pass:[*]_keys_,
-+				      const char pass:[*]_val_name_);
-+struct traceeval_stat pass:[*]*traceeval_stat_size*(struct traceeval pass:[*]_teval_,
-+					   const struct traceeval_data pass:[*]_keys_,
-+					   size_t _nr_keys_,
-+					   const char pass:[*]_val_name_);
++int *traceeval_insert*(struct traceeval pass:[*]_teval_,
++			  const struct traceeval_data pass:[*]_keys_,
++			  const struct traceeval_data pass:[*]_vals_);
 +
-+unsigned long long *traceeval_stat_max*(struct traceeval_stat pass:[*]_stat_);
-+unsigned long long *traceeval_stat_min*(struct traceeval_stat pass:[*]_stat_);
-+unsigned long long *traceeval_stat_max_timestamp*(struct traceeval_stat pass:[*]_stat_, unsigned long long pass:[*]ts);
-+unsigned long long *traceeval_stat_min_timestamp*(struct traceeval_stat pass:[*]_stat_, unsigned long long pass:[*]ts);
-+unsigned long long *traceeval_stat_total*(struct traceeval_stat pass:[*]_stat_);
-+unsigned long long *traceeval_stat_count*(struct traceeval_stat pass:[*]_stat_);
++int *traceeval_insert_size*(struct traceeval pass:[*]_teval_,
++			  const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_,
++			  const struct traceeval_data pass:[*]_vals_, size_t _nr_vals_);
++
++int *traceeval_remove*(struct traceeval pass:[*]_teval_, const struct traceeval_data pass:[*]_keys_);
++
++int *traceeval_remove_size*(struct traceeval pass:[*]_teval_,
++			  const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_);
++
++int *traceeval_query*(struct traceeval pass:[*]_teval_, const struct traceeval_data pass:[*]_keys_,
++			 const struct traceeval_data pass:[**]_results_);
++
++int *traceeval_query_size*(struct traceeval pass:[*]_teval_, const struct traceeval_data pass:[*]_keys_,
++			 size_t _nr_keys_, const struct traceeval_data pass:[**]_results_);
++
++void *traceeval_results_release*(struct traceeval pass:[*]_teval_,
++			       const struct traceeval_data pass:[**]_results_);
++
++size_t *traceeval_count*(struct traceeval pass:[*]_teval_);
 +--
 +
 +DESCRIPTION
 +-----------
-+If a type of a value is numeric (*TRACEEVAL_TYPE_NUMBERpass:[*]*) and has the
-+*TRACEEVAL_FL_STAT* flag set, then every instance added will save the maximum,
-+minimum, count and total for that value. These functions are used to retrieve
-+that information.
++These functions deal with inserting, finding and removing elements from the
++traceeval descriptor.
 +
-+If one of the values has *TRACEEVAL_FL_TIMESTAMP* set, that value will also be used
-+to record that value for when a maximum or minimum stat value is hit. Note that
-+a value can not have both the *TRACEEVAL_FL_TIMESTAMP* and *TRACEEVAL_FL_STAT* flags set.
-+That will cause an error when creating the traceeval via *traceeval_init*(3).
-+Note that fields marked with *TRACEEVAL_FL_TIMESTAMP* must also be of the
-+*TRACEEVAL_TYPE_NUMBERpass:[*]* types.
++The *traceeval_insert()* will add a new or update a current element into the
++given _teval_. The _keys_ must be a static array that is the same size as the
++key types given to *traceeval_init*(3). The same is true for the _vals_, as
++they must be an array of the same size as the val type array given. Both _keys_
++and _vals_ are of type struct traceeval_data.
 +
-+The *traceeval_stat()* will return a struct traceeval_stat descriptor for the
-+given field that is numeric and is marked as a stat type. The _teval_ is the
-+traceeval descriptor that contains the elements, the _keys_ are the keys to find
-+the element to get the stats of the vals, and _val_name_ is the name of the value
-+field to retrieve the stats from (this is the same name for the field passed to
-+*traceeval_init*(3)). Note that the _keys_ passed in must be a static array.
-+If only a dynamic array (pointer) is available, then *traceeval_stat_size()* needs to
-+be used instead. This is because *traceeval_stat()* is a macro that will calculate
-+the size of the array.
++[verse]
++--
++struct traceeval_data {
++	enum traceeval_data_type		type;
++	union {
++		char				*string;
++		const char			*cstring;
++		void				*pointer;
++		unsigned long			number;
++		unsigned long long		number_64;
++		unsigned int			number_32;
++		unsigned short			number_16;
++		unsigned char			number_8;
++	};
++};
++--
 +
-+Once a traceeval_stat descriptor is retrieved, then it can be used to extract the
-+statistics for that give value field whith the below functions.
++For each _keys_ and _vals_ their types must match the keys and vals of the
++types passed to *traceeval_init*(3).
 +
-+The *traceeval_stat_max()* will return the maximum value for the value represented by
-+the _stat_ descriptor passed in.
++The struct traceeval_data then has a union that represent each of the types.
++For example, a data field with a key type defined as TRACEEVAL_TYPE_POINTER,
++must use the _pointer_ union field.
 +
-+The *traceeval_stat_min()* will return the minimum value for the value represented by
-+the _stat_ descriptor passed in.
++*traceveal_insert()* will make a copy of each of the _keys_ and _vals_ passed
++in. As to pass in a constant string, the field _cstring_ was added to allow
++constants to be passed to the function.
 +
-+The *traceeval_stat_max_timestamp()* and *traceeval_stat_min_timestamp()* functions
-+return the same result as the *traceeval_stat_max()* and *traceeval_stat_min()* functions
-+respectively, but they take another parameter. The _ts_ is a pointer to a unsigend long long that
-+if not NULL, will be used to return the timestamp of when the maximum or minimum values
-+respectively were retrieved. This only works if another field of the traceeval descriptor
-+values was marked as *TRACEEVAL_FL_TIMESTAMP*. That field is saved when a new maximum or
-+minimum is found.
++Like *traceeval_init*(3), elements can also be inserted or updated updated with
++dynamically allocatend _keys_ and _vals_ with *traceeval_insert_size()*. This
++takes two more values: _nr_keys_ and _nr_vals_ to denote the size. This is to
++test against the key and val types registered in *traceeval_init*(3) to make
++sure they match. Once again, *traceeval_insert()* is really just a macro
++defined to pass in the array sizes to *traceeval_insert_size()*.
 +
-+The *traceeval_stat_total()* returns the sum of all the values of the field that the _stat_
-+represents.
++In order to facilitate assgining the struct traceeval_data to the proper types,
++macros should be used.
 +
-+The *traceeval_stat_count()* returns the number of times the value was calculated. Note that
-+this may not be the same as *traceveal_count*(3) as that function returns the number
-+of instances currently in the traceeval. If *traceeval_remove*(3) is called on the traceeval
-+descriptor to remove an element, the *traceeval_count*(3) will return one less. The removal
-+of elements does not affect the count of the traceeval_stat, and the same goes for
-+the total count. The number returned from this function can safely be used against the number
-+returned by *traceeval_stat_total()* to calculate the average.
++For initializing data:
++
++[verse]
++--
++*DEFINE_TRACEEVAL_NUMBER*(_data_) - assign a natural word size (size_t).
++*DEFINE_TRACEEVAL_NUMBER_8*(_data_) - assign an 8 bit value (char).
++*DEFINE_TRACEEVAL_NUMBER_16*(_data_) - assign a 16 bit value (short)
++*DEFINE_TRACEEVAL_NUMBER_32*(_data_) - assign a 32 bit value (int)
++*DEFINE_TRACEEVAL_NUMBER_64*(_data_) - assign a 64 bit value (long long).
++*DEFINE_TRACEEVAL_STRING*(_data_) - assign a nul terminated string value.
++*DEFINE_TRACEEVAL_CSTRING*(_data_) - assign a constant nul terminated string value.
++*DEFINE_TRACEEVAL_POINTER*(_data_) - assign a pointer value.
++
++static int foo(const char *str, int val)
++{
++	struct traceeval_data keys[] = {
++			DEFINE_TRACEEVAL_CSTRING(	str	),
++			DEFINE_TRACEEVAL_NUMBER(	val	),
++	};
++	[..]
++--
++
++There are also macros to set the data later:
++
++[verse]
++--
++TRACEEVAL_SET_NUMBER(_data_, _val_) - assign a natural word size (size_t)
++TRACEEVAL_SET_NUMBER_8(_data_, _val_) - assign an 8 bit value (char).
++TRACEEVAL_SET_NUMBER_16(_data_, _val_) - assign an 16 bit value (short).
++TRACEEVAL_SET_NUMBER_32(_data_, _val_) - assign an 32 bit value (int).
++TRACEEVAL_SET_NUMBER_64(_data_, _val_) - assign an 64 bit value (long long).
++--
++
++
++The *traceeval_query()* will return the element that matches the _keys_. The
++_keys_ must be a static array that is the same size as the key types defined by
++*traceeval_init()*. If an element is found, it will fill in the _results_
++pointer to point to the content of the values for the given element. The
++results must be released with *traceeval_results_release()*.
++
++Similar to *traceeval_init*(3) and *traceeval_insert()*, there's a
++*traceeval_queury_size()* that takes the size of the key array and allows for
++dynamic arrays to be passed to it.
++
++The *traceeval_results_release()* will release any necessary resources that a
++*traceeval_query()* may have added to return the _results_.
++
++The *traceeval_count()* will return the number of elements in the _teval_.
 +
 +RETURN VALUE
 +------------
-+The *traceeval_stat()* and *traceeval_stat_size()* both return a descriptor to a traceeval_stat
-+on success, and NULL on error.
++The *traceeval_insert()* and *traceeval_insert_size()* return 0 on succes and -1 on error.
 +
-+The *traceeval_stat_max()* and *traceeval_stat_max_timestamp()* both return the maximum value that
-+the traceeval_stat represtents. The *traceeval_stat_max_timestamp()* also returns the timestamp
-+that was recorded when the maximum was found. Note, if no other value field was marked with
-+*TRACEEVAL_FL_TIMESTAMP* then the timestamp _ts_ will contain zero.
++The *traceeval_remove()* and *traceeval_remove_size()* returns 1 if the item was found and removed,
++0 if the item was not found, and -1 on an error (like invalid keys).
 +
-+The *traceeval_stat_min()* and *traceeval_stat_min_timestamp()* both return the minimum value that
-+the traceeval_stat represtents. The *traceeval_stat_min_timestamp()* also returns the timestamp
-+that was recorded when the minimum was found. Note, if no other value field was marked with
-+*TRACEEVAL_FL_TIMESTAMP* then the timestamp _ts_ will contain zero.
++The *traceeval_query()* and *traceveal_query_size()* return 1 if the item is found that matches
++the _keys_ and _results_ will contain the values of the last values of that time. It will return
++0 if not found, and -1 on error (like invalid keys).
 +
-+The *traceeval_stat_total()* returns the total sum of all the values that the traceeval_stat
-+represents.
-+
-+The *traceeval_stat_count()* returns the number of times the traceeval_stat total was updated.
++The *traceeval_count()* returns the number of elements currently in the _teval_.
 +
 +EXAMPLE
 +-------
@@ -162,7 +210,7 @@ index 000000000000..6e9866f4daf2
 +--
 +#include <unistd.h>
 +#include <sys/wait.h>
-+#include <trace-cmd.h>
++#include <tracefs.h>
 +#include <traceeval.h>
 +
 +struct data {
@@ -209,8 +257,7 @@ index 000000000000..6e9866f4daf2
 +	}
 +};
 +
-+static int wakeup_callback(struct tracecmd_input *handle, struct tep_event *event,
-+			   struct tep_record *record, int cpu, void *d)
++static int wakeup_callback(struct tep_event *event, struct tep_record *record, int cpu, void *d)
 +{
 +	static struct tep_format_field *pid_field;
 +	struct data *data = d;
@@ -233,8 +280,7 @@ index 000000000000..6e9866f4daf2
 +	return 0;
 +}
 +
-+static int sched_callback(struct tracecmd_input *handle, struct tep_event *event,
-+			   struct tep_record *record, int cpu, void *d)
++static int sched_callback(struct tep_event *event, struct tep_record *record, int cpu, void *d)
 +{
 +	static struct tep_format_field *next_pid_field;
 +	static struct tep_format_field *next_comm_field;
@@ -274,6 +320,25 @@ index 000000000000..6e9866f4daf2
 +	return 0;
 +}
 +
++static pid_t call_code(struct tracefs_instance *instance, int argc, char **argv)
++{
++	char pid_str[64];
++	pid_t pid;
++
++	pid = fork();
++
++	if (pid)
++		return pid;
++
++	sprintf(pid_str, "%d", getpid());
++
++	tracefs_instance_file_write(instance, "set_event_pid", pid_str);
++	tracefs_trace_on(instance);
++
++	execvp(argv[0], argv);
++	exit(-1);
++}
++
 +static void show_latency(struct data *data)
 +{
 +	struct traceeval_iterator *iter = traceeval_iterator_get(data->teval_sched);
@@ -282,50 +347,67 @@ index 000000000000..6e9866f4daf2
 +	printf("\n");
 +	while (traceeval_iterator_next(iter, &keys) > 0) {
 +		struct traceeval_stat *stat;
-+		unsigned long long val;
-+		unsigned long long ts;
 +
 +		stat = traceeval_iterator_stat(iter, sched_vals[1].name);
 +		if (!stat)
 +			continue;
 +
-+		printf("%s-%ld\n", keys[0].string, keys[1].number);
-+
-+		val = traceeval_stat_max_timestamp(stat, &ts),
-+
-+		printf("\tmax:%lld at %lld\n", val, ts);
-+
-+		val = traceeval_stat_min_timestamp(stat, &ts);
-+		printf("\tmin:%lld at %lld\n", val, ts);
-+		printf("\ttotal:%lld count:%lld\n",
++		printf("%s-%ld max:%lld min:%lld total:%lld count:%lld\n",
++		       keys[0].string, keys[1].number,
++		       traceeval_stat_max(stat),
++		       traceeval_stat_min(stat),
 +		       traceeval_stat_total(stat),
 +		       traceeval_stat_count(stat));
 +	}
 +}
 +
++static pid_t wait_pid;
++static bool done;
++
++static void sig(int sig)
++{
++	pid_t ret;
++
++	ret = waitpid(wait_pid, NULL, WNOHANG);
++	if (ret == wait_pid)
++		done = true;
++}
++
 +int main (int argc, char **argv)
 +{
-+	struct tracecmd_input *handle;
++	struct tracefs_instance *instance;
++	struct tep_handle *tep;
 +	struct data data;
 +
 +	if (argc < 2) {
-+		printf("usage: wake-lat trace.dat\n");
++		printf("usage: wakeup_latency exec\n");
 +		exit(-1);
 +	}
 +
 +	data.teval_wakeup = traceeval_init(wakeup_keys, wakeup_vals);
 +	data.teval_sched = traceeval_init(sched_keys, sched_vals);
 +
-+	handle = tracecmd_open(argv[1], TRACECMD_FL_LOAD_NO_PLUGINS);
-+	if (!handle) {
-+		perror(argv[0]);
-+		exit(-1);
-+	}
++	tep = tracefs_local_events(NULL);
 +
-+	tracecmd_follow_event(handle, "sched", "sched_waking", wakeup_callback, &data);
-+	tracecmd_follow_event(handle, "sched", "sched_switch", sched_callback, &data);
++	instance = tracefs_instance_create("wakeup_latency");
++	tracefs_trace_off(instance);
++	tracefs_event_enable(instance, "sched", "sched_waking");
++	tracefs_event_enable(instance, "sched", "sched_switch");
 +
-+	tracecmd_iterate_events(handle, NULL, 0, NULL, NULL);
++	tracefs_follow_event(tep, instance, "sched", "sched_waking", wakeup_callback, &data);
++	tracefs_follow_event(tep, instance, "sched", "sched_switch", sched_callback, &data);
++
++	signal(SIGCHLD, sig);
++
++	wait_pid = call_code(instance, argc - 1, argv + 1);
++
++	do {
++		tracefs_iterate_raw_events(tep, instance, NULL, 0, NULL, NULL);
++	} while (!done);
++
++	tracefs_event_disable(instance, NULL, NULL);
++	tracefs_instance_destroy(instance);
++	tracefs_instance_free(instance);
 +
 +	show_latency(&data);
 +
@@ -362,29 +444,38 @@ index 000000000000..6e9866f4daf2
 +libtraceeval is licensed under MIT.
 +
 diff --git a/Documentation/libtraceeval.txt b/Documentation/libtraceeval.txt
-index fc7c621878ac..173b1ddb3df8 100644
+index 83d69b6eeda1..9f753aaadf12 100644
 --- a/Documentation/libtraceeval.txt
 +++ b/Documentation/libtraceeval.txt
-@@ -58,6 +58,22 @@ Functions for iterating over the elements of the libtraceeval:
- 	struct traceeval_stat pass:[*]*traceeval_iterator_stat*(struct traceeval_iterator pass:[*]_iter_,
- 					       struct traceeval_type pass:[*]_type_);
- 	int *traceeval_iterator_remove*(struct traceeval_iterator pass:[*]_iter_);
+@@ -16,6 +16,31 @@ Creating and releasing the traceeval resources:
+ 	struct traceeval pass:[*]*traceeval_init_size*(struct traceeval_type pass:[*]_keys_, struct traceeval_type pass:[*]_vals_,
+ 				       int _nr_keys_, int _nr_vals_);
+ 	void *traceeval_release*(struct traceeval pass:[*]_teval_);
 +
-+Functions to manage statistics of values of a traceeval:
-+	struct traceeval_stat pass:[*]*traceeval_stat*(struct traceeval pass:[*]_teval_,
-+				      const struct traceeval_data pass:[*]_keys_,
-+				      const char pass:[*]_val_name_);
-+	struct traceeval_stat pass:[*]*traceeval_stat_size*(struct traceeval pass:[*]_teval_,
-+					   const struct traceeval_data pass:[*]_keys_,
-+					   size_t _nr_keys_,
-+					   const char pass:[*]_val_name_);
++Inserting and removing elements from the traceeval:
++	int *traceeval_insert*(struct traceeval pass:[*]_teval_,
++			  const struct traceeval_data pass:[*]_keys_,
++			  const struct traceeval_data pass:[*]_vals_);
 +
-+	unsigned long long *traceeval_stat_max*(struct traceeval_stat pass:[*]_stat_);
-+	unsigned long long *traceeval_stat_min*(struct traceeval_stat pass:[*]_stat_);
-+	unsigned long long *traceeval_stat_max_timestamp*(struct traceeval_stat pass:[*]_stat_, unsigned long long pass:[*]ts);
-+	unsigned long long *traceeval_stat_min_timestamp*(struct traceeval_stat pass:[*]_stat_, unsigned long long pass:[*]ts);
-+	unsigned long long *traceeval_stat_total*(struct traceeval_stat pass:[*]_stat_);
-+	unsigned long long *traceeval_stat_count*(struct traceeval_stat pass:[*]_stat_);
++	int *traceeval_insert_size*(struct traceeval pass:[*]_teval_,
++			  const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_,
++			  const struct traceeval_data pass:[*]_vals_, size_t _nr_vals_);
++
++	int *traceeval_remove*(struct traceeval pass:[*]_teval_, const struct traceeval_data pass:[*]_keys_);
++
++	int *traceeval_remove_size*(struct traceeval pass:[*]_teval_,
++			  const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_);
++
++	int *traceeval_query*(struct traceeval pass:[*]_teval_, const struct traceeval_data pass:[*]_keys_,
++			 const struct traceeval_data pass:[**]_results_);
++
++	int *traceeval_query_size*(struct traceeval pass:[*]_teval_, const struct traceeval_data pass:[*]_keys_,
++			 size_t _nr_keys_, const struct traceeval_data pass:[**]_results_);
++
++	void *traceeval_results_release*(struct traceeval pass:[*]_teval_,
++			       const struct traceeval_data pass:[**]_results_);
++
++	size_t *traceeval_count*(struct traceeval pass:[*]_teval_);
  --
  
  DESCRIPTION
