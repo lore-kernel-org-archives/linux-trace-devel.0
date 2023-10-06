@@ -1,22 +1,22 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A673041AB4
-	for <linux-trace-devel@vger.kernel.org>; Fri,  6 Oct 2023 20:11:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46CE930FA0
+	for <linux-trace-devel@vger.kernel.org>; Fri,  6 Oct 2023 20:11:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14144C433C7;
-	Fri,  6 Oct 2023 20:11:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A376C433C7;
+	Fri,  6 Oct 2023 20:11:04 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1qorBH-005oRf-2P;
+	id 1qorBH-005oRl-2b;
 	Fri, 06 Oct 2023 16:12:15 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: Ross Zwisler <zwisler@google.com>,
 	"Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 1/3] libtraceeval: Add man pages for traceeval_delta init/start/stop functions
-Date: Fri,  6 Oct 2023 16:12:12 -0400
-Message-Id: <20231006201214.1385447-2-rostedt@goodmis.org>
+Subject: [PATCH v2 3/3] libtraceeval: Add man pages for libtraceeval_delta retrieving of deltas
+Date: Fri,  6 Oct 2023 16:12:14 -0400
+Message-Id: <20231006201214.1385447-4-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231006201214.1385447-1-rostedt@goodmis.org>
 References: <20231006201214.1385447-1-rostedt@goodmis.org>
@@ -32,42 +32,35 @@ From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
 Add man pages for:
 
- traceeval_delta_init()
- traceeval_delta_init_size()
- traceeval_delta_release()
- traceeval_delta_start()
- traceeval_delta_start_size()
- traceeval_delta_stop()
- traceeval_delta_stop_size()
- traceeval_delta_continue()
- traceeval_delta_continue_size()
+ traceeval_delta_stat()
+ traceeval_delta_stat_size()
+ traceeval_delta_teval_get()
+ traceeval_delta_teval_put()
+ traceeval_iterator_delta_stat()
 
-Link: https://lore.kernel.org/linux-trace-devel/20231006185405.1379249-2-rostedt@goodmis.org
+Link: https://lore.kernel.org/linux-trace-devel/20231006185405.1379249-4-rostedt@goodmis.org
 
 Cc: Ross Zwisler <zwisler@google.com>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/libtraceeval-delta-init.txt | 346 ++++++++++++++++++++++
- Documentation/libtraceeval.txt            |  29 ++
- check-manpages.sh                         |   2 +-
- 3 files changed, 376 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/libtraceeval-delta-init.txt
+ Documentation/libtraceeval-delta-rest.txt | 308 ++++++++++++++++++++++
+ Documentation/libtraceeval.txt            |  14 +
+ 2 files changed, 322 insertions(+)
+ create mode 100644 Documentation/libtraceeval-delta-rest.txt
 
-diff --git a/Documentation/libtraceeval-delta-init.txt b/Documentation/libtraceeval-delta-init.txt
+diff --git a/Documentation/libtraceeval-delta-rest.txt b/Documentation/libtraceeval-delta-rest.txt
 new file mode 100644
-index 000000000000..9d37035dcd60
+index 000000000000..3b056fd480cc
 --- /dev/null
-+++ b/Documentation/libtraceeval-delta-init.txt
-@@ -0,0 +1,346 @@
++++ b/Documentation/libtraceeval-delta-rest.txt
+@@ -0,0 +1,308 @@
 +libtraceeval(3)
 +===============
 +
 +NAME
 +----
-+traceeval_delta_init, traceeval_delta_init_size, traceeval_delta_release,
-+traceeval_delta_start, traceeval_delta_start_size, traceeval_delta_stop,
-+traceeval_delta_stop_size, traceeval_delta_continue, traceeval_delta_continue_size
-+- Create and start/stop a traceeval_delta instance
++traceeval_delta_stat, traceeval_delta_stat_size, traceeval_delta_teval_get,
++traceeval_delta_teval_put, traceeval_iterator_delta_stat - Reading the libtraceeval_data elements
 +
 +SYNOPSIS
 +--------
@@ -75,109 +68,72 @@ index 000000000000..9d37035dcd60
 +--
 +*#include <traceeval.h>*
 +
-+struct traceeval_delta pass:[*]*traceeval_delta_init*(struct traceeval_type pass:[*]_keys_,
-+					     struct traceeval_type pass:[*]_vals_);
-+struct traceeval_delta pass:[*]*traceeval_delta_init_size*(struct traceeval_type pass:[*]_keys_,
-+						  struct traceeval_type pass:[*]_vals_,
-+						  size_t _nr_keys_, size_t _nr_vals_);
-+void *traceeval_delta_release*(struct traceeval_delta pass:[*]tdelta);
++struct traceeval_stat pass:[*]*traceeval_delta_stat*(struct traceeval_delta pass:[*]_tdelta_,
++						 const struct traceeval_data pass:[*]_keys_)
++struct traceeval_stat pass:[*]*traceeval_delta_stat_size*(struct traceeval_delta pass:[*]_tdelta_,
++						 const struct traceeval_data pass:[*]_keys_,
++						 size_t _nr_keys_);
 +
-+int *traceeval_delta_start*(struct traceeval_delta pass:[*]_tdelta_,
-+			  const struct traceeval_data pass:[*]_keys_,
-+			  unsigned long long _timestamp_);
-+int *traceeval_delta_start_size*(struct traceeval_delta pass:[*]_tdelta_,
-+			       const struct traceeval_data pass:[*]keys, size_t _nr_keys_,
-+			       unsigned long long _timestamp_);
++struct traceeval pass:[*]*traceeval_delta_teval_get*(struct traceeval_delta pass:[*]_tdelta_);
 +
-+int *traceeval_delta_stop*(struct traceeval_delta pass:[*]_tdelta_,
-+			 const struct traceeval_data pass:[*]_keys_,
-+			 unsigned long long _timestamp_);
-+int *traceeval_delta_stop_size*(struct traceeval_delta pass:[*]_tdelta_,
-+			      const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_,
-+			      unsigned long long _timestamp_);
++void *traceeval_delta_teval_put*(struct traceeval pass:[*]_teval_);
 +
-+int *traceeval_delta_continue*(struct traceeval_delta pass:[*]_tdelta_,
-+			     const struct traceeval_data pass:[*]_keys_,
-+			     unsigned long long _timestamp_);
-+int *traceeval_delta_continue_size*(struct traceeval_delta pass:[*]_tdelta_,
-+				  const struct traceeval_data pass:[*]keys, size_t _nr_keys_,
-+				  unsigned long long _timestamp_);
++struct traceeval_stat pass:[*]*traceeval_iterator_delta_stat*(struct traceeval_iterator pass:[*]_iter_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The traceeval handles mapping keys and values for various events. One common use case
-+is to attach two traceevals together via the same keys, and to have one of the values
-+be a timestamp. The first event would record the current timestamp and the second
-+event would query the traceeval that is used by the first event using the current
-+keys to retrieve the timestamp of the event that matches the second event. This
-+timestamp would be used to calculate the delta between the current timestamp, and that
-+would be saved in another traceeval to record the deltas. This delta value would be
-+tagged as a TRACEEVAL_FL_STAT to keep track of the maximum and mimimum deltas along
-+with the timestamp of where those occurred.
++The traceeval_delta is used to record the time deltas between events. These
++functions help show that information that was recorded.
 +
-+Since the above is very common, the traceeval_delta is used to facilitate this approach.
-+Instead of having two traceevals to handle this situation, a single traceeval_delta
-+can be used.
++The *traceeval_delta_stat()* function will return a traceeval_stat descriptor
++(see *traceeval_stat*(3)) for the time delta that it recorded for the element
++represented by _keys_. The delta is calculated from various calls to
++*traceeval_delta_start*(3) and *traceeval_delta_stop*(3). Since the delta field
++of a traceeval_delta is not visible from other routines (nor is it name), the
++way to get the information for the delta is via the *traceeval_delta_stat()*
++function.
 +
-+The *traceeval_delta_init()* takes the _keys_ and _vals_ just like *traceeval_init*(3)
-+does. The difference is that this function will add two additional values to hold
-+a timestamp and the delta. The _keys_ must be something that can match the two events
-+that are to be timed. The _vals_ is optional and can accept NULL. If _vals_ is used
-+it can be returned by *traceeval_delta_query*(3) and from *traceeval_iterator_query*(3).
++The *traceeval_delta_stat()* requires _keys_ to be a static array, if it is a
++dynamic array, then *traceeval_delta_stat_size()* must be used instead. This function
++provides a parameter, _nr_keys_, to specify how many elements _keys_ has. Note that
++_keys_ must be the same size as the keys passed to *traceeval_delta_init*(3).
 +
-+The _keys_ and _vals_ passed to *traceeval_delta_init()* must be a static array. If
-+dynamically sized arrays are to be required, then *traceeval_delta_init_size()* can be
-+used and the caller can pass in _nr_keys_ to denote how many _keys_ are being passed in
-+as well as _nr_vals_ to denote how many _vals_ are passed in (0 for NULL).
++The traceeval_delta does not provide any direct means to use an iterator, so
++a handle to its internal traceeval can be used for this purpose with
++*traceeval_delta_teval_get()*. This will return the internal traceeval handle for
++the given _tdelta traceeval_delta descriptor. The returned traceeval should only
++be used with iterators, as other functions that take a traceeval descriptor will
++likely have undefined results if used.
 +
-+The *traceeval_delta_release()* frees all the resources of a traceeval_delta created
-+by *traceeval_delta_init()* or *traceeval_delta_init_size()*.
++When finished with the traceeval handle retrieved from traceeval_delta_teval_get(),
++the _teval_ should be passed to *traceeval_delta_teval_put()* to clean up any
++resources that were allocated.
 +
-+The traceeval_delta is for timing between two events, and only the _keys_ and _timestamp_ need
-+to be used to do so. When the starting event is found, a call to *traceeval_delta_start()*
-+is done passing in the _keys_ that differentiate the event and will map to the stopping event,
-+and the _timestamp_ to start the timings. This will be saved in the _tdelta_ that was created
-+by one of the *traceeval_delta_init()* functions.
-+
-+When an ending event is found and a delta is to be recorded from the starting event,
-+*traceeval_delta_stop()* is used. Passing the _keys_ that match the starting event
-+and a _timestamp_ to calculate the delta, where this timestamp will subtract
-+the timestamp passed to *traceeval_delta_start()* or *traceeval_delta_continue()*
-+to create the delta between the two and save that in the given _tdelta_.
-+
-+There's some cases where there may be more than one starting event, and the first
-+starting event is to be required for starting the timings and any new starting event
-+that happens before an ending event occurs should be ignored. In this case,
-+*traceeval_delta_continue()* is used. It acts the same as *traceeval_delta_start()*
-+except that if the matching _keys_ have not encountered a *traceeval_delta_stop()*
-+since a previous *traceeval_delta_start()* or *traceeval_delta_continue()* then
-+the _tdelta_ will not be updated.
-+
-+To describe one use case for this, if the runtime of a CPU is being recorded,
-+and anytime a task is scheduled on the CPU, it is considered a starting event,
-+but the delta should be only used when the CPU switches from idle to running a task,
-+*traceeval_delta_continue()* can be used whenever a task is scheduled on the CPU
-+and *traceeval_delta_stop()* can be used when the CPU goes idle. Only the first
-+occurrence of a task scheduling on the CPU will start the timing. If a task
-+is scheduled on the CPU when another task was already running, no update should
-+be made. If *traceeval_delta_start()* is used, the timestamp of the start event
-+will be that of the time the new task came onto the CPU preempting the previous
-+task and that would only show the runtime of the last task and not how long the
-+CPU itself was running tasks.
-+
-+The *traceeval_delta_continue()* _keys_ must be a static array, if a dynamic array
-+is required then *traceveal_delta_continue_size()* is to be used to specify the
-+size of _keys_ with _nr_keys_.
++Because the delta stored in traceeval_delta is hidden, when using an iterator on
++a traceeval that came from *traceeval_delta_teval_get()*, the *traceeval_iterator_delta_stat()*
++can be used to retrieve the traceeval_stat that represents the internal delta
++of the traceeval_delta the traceeval the iterator is using came from.
 +
 +RETURN VALUE
 +------------
-+The *traceeval_delta_init()* and *traceeval_delta_init_size()* both return a descriptor
-+to the traceeval_delta or NULL on error.
++The *traceeval_iterator_get()* returns a traceeval_iterator descriptor that will iterate
++over the given _teval_ on success, and NULL on error.
 +
-+The *traceeval_delta_start()*, *traceeval_delta_start_size()*, *traceeval_delta_stop()*,
-+*traceeval_delta_stop_size()*, traceeval_delta_continue()* and *traceeval_delta_continue_size()*
-+all return 0 on success and -1 on error.
++The *traceeval_iterator_sort()* and traceeval_iterator_sort_custom()* return 0 on success and -1 or error.
++
++The *traceeval_iterator_next()* returns 1 when it reads a new element from the traceeval and places the element's
++keys into _keys_. It returns 0 when there's no more elements to read and -1 on error.
++
++The *traceeval_iterator_query()* returns 1 if it successfully reads the current element from the
++*traceeval_iterator_next()* and places the values in _results_. It returns 0 if there are no more elements,
++and -1 on error.
++
++The *traceeval_iterator_stat()* returns a descriptor for the current element's given _field_ on success and
++NULL if there are no current elements or the _field_ is not a valid stat type.
++
++The *traceeval_iterator_remove()* returns 1 if the current element was successfully removed, or 0
++if there was no element (called before *traceeval_iterator_next()*).
 +
 +EXAMPLE
 +-------
@@ -346,6 +302,7 @@ index 000000000000..9d37035dcd60
 +		printf("Task %s [%zd]:\n", keys[0].cstring, keys[1].number);
 +		print_stat(stat);
 +	}
++
 +	traceeval_delta_teval_put(teval);
 +};
 +
@@ -406,58 +363,30 @@ index 000000000000..9d37035dcd60
 +libtraceeval is licensed under MIT.
 +
 diff --git a/Documentation/libtraceeval.txt b/Documentation/libtraceeval.txt
-index 173b1ddb3df8..4d23ba0c5928 100644
+index 68fc182f7c46..f30d427255e1 100644
 --- a/Documentation/libtraceeval.txt
 +++ b/Documentation/libtraceeval.txt
-@@ -74,6 +74,35 @@ Functions to manage statistics of values of a traceeval:
- 	unsigned long long *traceeval_stat_min_timestamp*(struct traceeval_stat pass:[*]_stat_, unsigned long long pass:[*]ts);
- 	unsigned long long *traceeval_stat_total*(struct traceeval_stat pass:[*]_stat_);
- 	unsigned long long *traceeval_stat_count*(struct traceeval_stat pass:[*]_stat_);
+@@ -125,6 +125,20 @@ Handling insertion, deletion and querying of traceeval_delta elements:
+ 
+ 	void *traceeval_delta_results_release*(struct traceeval_delta pass:[*]_tdelta_,
+ 				     const struct traceeval_data pass:[*]_results_);
 +
-+Handling delta times between events:
-+	struct traceeval_delta pass:[*]*traceeval_delta_init*(struct traceeval_type pass:[*]_keys_,
-+					     struct traceeval_type pass:[*]_vals_);
-+	struct traceeval_delta pass:[*]*traceeval_delta_init_size*(struct traceeval_type pass:[*]_keys_,
-+						  struct traceeval_type pass:[*]_vals_,
-+						  size_t _nr_keys_, size_t _nr_vals_);
-+	void *traceeval_delta_release*(struct traceeval_delta pass:[*]tdelta);
++Handling reading the deltas of a traceeval_delta:
++	struct traceeval_stat pass:[*]*traceeval_delta_stat*(struct traceeval_delta pass:[*]_tdelta_,
++						 const struct traceeval_data pass:[*]_keys_)
++	struct traceeval_stat pass:[*]*traceeval_delta_stat_size*(struct traceeval_delta pass:[*]_tdelta_,
++						 const struct traceeval_data pass:[*]_keys_,
++						 size_t _nr_keys_);
 +
-+	int *traceeval_delta_start*(struct traceeval_delta pass:[*]_tdelta_,
-+			  const struct traceeval_data pass:[*]_keys_,
-+			  unsigned long long _timestamp_);
-+	int *traceeval_delta_start_size*(struct traceeval_delta pass:[*]_tdelta_,
-+			       const struct traceeval_data pass:[*]keys, size_t _nr_keys_,
-+			       unsigned long long _timestamp_);
++	struct traceeval pass:[*]*traceeval_delta_teval_get*(struct traceeval_delta pass:[*]_tdelta_);
 +
-+	int *traceeval_delta_stop*(struct traceeval_delta pass:[*]_tdelta_,
-+			 const struct traceeval_data pass:[*]_keys_,
-+			 unsigned long long _timestamp_);
-+	int *traceeval_delta_stop_size*(struct traceeval_delta pass:[*]_tdelta_,
-+			      const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_,
-+			      unsigned long long _timestamp_);
++	void *traceeval_delta_teval_put*(struct traceeval_delta pass:[*]_tdelta_,
++			       struct traceeval pass:[*]_teval_);
 +
-+	int *traceeval_delta_continue*(struct traceeval_delta pass:[*]_tdelta_,
-+			     const struct traceeval_data pass:[*]_keys_,
-+			     unsigned long long _timestamp_);
-+	int *traceeval_delta_continue_size*(struct traceeval_delta pass:[*]_tdelta_,
-+				  const struct traceeval_data pass:[*]keys, size_t _nr_keys_,
-+				  unsigned long long _timestamp_);
++	struct traceeval_stat pass:[*]*traceeval_iterator_delta_stat*(struct traceeval_iterator pass:[*]_iter_);
  --
  
  DESCRIPTION
-diff --git a/check-manpages.sh b/check-manpages.sh
-index 07acc12ecbc4..b62406cce242 100755
---- a/check-manpages.sh
-+++ b/check-manpages.sh
-@@ -45,7 +45,7 @@ for man in ${MAIN}-*.txt; do
- done
- 
- # traceeval_init_data_size is not deprecated, but users shouldn't be using it directly.
--DEPRECATED="*traceeval_init_data_size*"
-+DEPRECATED="*traceeval_init_data_size* *traceeval_delta_init_data_size*"
- 
- last=""
- sed -ne 's/^[a-z].*[ \*]\([a-z_][a-z_]*\)(.*/\1/p' -e 's/^\([a-z_][a-z_]*\)(.*/\1/p' ../include/traceeval.h | while read f; do
 -- 
 2.40.1
 
