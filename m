@@ -1,22 +1,22 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 118544122F
-	for <linux-trace-devel@vger.kernel.org>; Fri,  6 Oct 2023 19:54:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84F98405DA
+	for <linux-trace-devel@vger.kernel.org>; Fri,  6 Oct 2023 19:54:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9190AC433C7;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C369C433CB;
 	Fri,  6 Oct 2023 19:54:25 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1qoqvC-005o9C-14;
+	id 1qoqvC-005o93-0m;
 	Fri, 06 Oct 2023 15:55:38 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: Ross Zwisler <zwisler@google.com>,
 	"Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 4/5] libtraceeval: Add man pages for the traceeval iterator functions
-Date: Fri,  6 Oct 2023 15:55:35 -0400
-Message-Id: <20231006195536.1384287-5-rostedt@goodmis.org>
+Subject: [PATCH v2 1/5] libtraceeval: Start creating the documentation man pages
+Date: Fri,  6 Oct 2023 15:55:32 -0400
+Message-Id: <20231006195536.1384287-2-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231006195536.1384287-1-rostedt@goodmis.org>
 References: <20231006195536.1384287-1-rostedt@goodmis.org>
@@ -30,42 +30,438 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add man pages for:
+Create a Documentation directory and start adding man pages for the
+libtraceeval functions.
 
- traceeval_iterator_get()
- traceeval_iterator_put()
- traceeval_iterator_sort()
- traceeval_iterator_sort_custom()
- traceeval_iterator_next()
- traceeval_iterator_query()
- traceeval_iterator_results_release()
- traceeval_iterator_stat()
- traceeval_iterator_remove()
+This just adds the infrastructure for the man pages. The man pages
+themselves will come later.
 
-Link: https://lore.kernel.org/linux-trace-devel/20231005232450.1311519-5-rostedt@goodmis.org
+Link: https://lore.kernel.org/linux-trace-devel/20231005232450.1311519-2-rostedt@goodmis.org
 
 Cc: Ross Zwisler <zwisler@google.com>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/libtraceeval-iterator.txt | 921 ++++++++++++++++++++++++
- Documentation/libtraceeval.txt          |  17 +
- 2 files changed, 938 insertions(+)
- create mode 100644 Documentation/libtraceeval-iterator.txt
+ Documentation/.gitignore               |   4 +
+ Documentation/Makefile                 | 245 +++++++++++++++++++++++++
+ Documentation/asciidoc.conf            | 120 ++++++++++++
+ Documentation/libtraceeval.txt         |  55 ++++++
+ Documentation/manpage-1.72.xsl         |  14 ++
+ Documentation/manpage-base.xsl         |  35 ++++
+ Documentation/manpage-bold-literal.xsl |  17 ++
+ Documentation/manpage-normal.xsl       |  13 ++
+ Documentation/manpage-suppress-sp.xsl  |  21 +++
+ check-manpages.sh                      |  63 +++++++
+ 10 files changed, 587 insertions(+)
+ create mode 100644 Documentation/.gitignore
+ create mode 100644 Documentation/Makefile
+ create mode 100644 Documentation/asciidoc.conf
+ create mode 100644 Documentation/libtraceeval.txt
+ create mode 100644 Documentation/manpage-1.72.xsl
+ create mode 100644 Documentation/manpage-base.xsl
+ create mode 100644 Documentation/manpage-bold-literal.xsl
+ create mode 100644 Documentation/manpage-normal.xsl
+ create mode 100644 Documentation/manpage-suppress-sp.xsl
+ create mode 100755 check-manpages.sh
 
-diff --git a/Documentation/libtraceeval-iterator.txt b/Documentation/libtraceeval-iterator.txt
+diff --git a/Documentation/.gitignore b/Documentation/.gitignore
 new file mode 100644
-index 000000000000..9c03b5855749
+index 000000000000..747b2584d55b
 --- /dev/null
-+++ b/Documentation/libtraceeval-iterator.txt
-@@ -0,0 +1,921 @@
++++ b/Documentation/.gitignore
+@@ -0,0 +1,4 @@
++*.3
++*.m
++*.xml
++*.html
+diff --git a/Documentation/Makefile b/Documentation/Makefile
+new file mode 100644
+index 000000000000..3540440e1dae
+--- /dev/null
++++ b/Documentation/Makefile
+@@ -0,0 +1,245 @@
++# SPDX-License-Identifier: LGPL-2.1
++
++include $(src)/scripts/utils.mk
++
++
++# This Makefile and manpage XSL files were taken from libtracefs
++# and modified for libtraceeval
++
++MAN3_TXT= \
++	libtraceeval.txt
++
++MAN1_TEXT=
++
++MAN_TXT = $(MAN3_TXT)
++_MAN_XML=$(patsubst %.txt,%.xml,$(MAN_TXT))
++_MAN_HTML=$(patsubst %.txt,%.html,$(MAN_TXT))
++_DOC_MAN3=$(patsubst %.txt,%.m,$(MAN3_TXT))
++
++MAN_XML=$(addprefix $(OUTPUT),$(_MAN_XML))
++MAN_HTML=$(addprefix $(OUTPUT),$(_MAN_HTML))
++DOC_MAN3=$(addprefix $(OUTPUT),$(_DOC_MAN3))
++
++_MAN1_XML=$(patsubst %.txt.1,%.xml,$(MAN1_TEXT))
++_MAN1_HTML=$(patsubst %.txt.1,%.html,$(MAN1_TEXT))
++_DOC_MAN1=$(patsubst %.txt.1,%.m,$(MAN1_TEXT))
++
++MAN1_XML=$(addprefix $(OUTPUT),$(_MAN1_XML))
++MAN1_HTML=$(addprefix $(OUTPUT),$(_MAN1_HTML))
++DOC_MAN1=$(addprefix $(OUTPUT),$(_DOC_MAN1))
++
++
++# Make the path relative to DESTDIR, not prefix
++ifndef DESTDIR
++prefix?=$(HOME)
++endif
++bindir?=$(prefix)/bin
++htmldir?=$(prefix)/share/doc/libtraceeval-doc
++pdfdir?=$(prefix)/share/doc/libtraceeval-doc
++mandir?=$(prefix)/share/man
++man3dir=$(mandir)/man3
++man1dir=$(mandir)/man1
++
++ASCIIDOC=asciidoc
++ASCIIDOC_EXTRA = --unsafe -f asciidoc.conf
++ASCIIDOC_HTML = xhtml11
++MANPAGE_XSL = manpage-normal.xsl
++XMLTO_EXTRA =
++INSTALL?=install
++RM ?= rm -f
++
++ifdef USE_ASCIIDOCTOR
++ASCIIDOC = asciidoctor
++ASCIIDOC_EXTRA = -a compat-mode
++ASCIIDOC_EXTRA += -I. -rasciidoctor-extensions
++ASCIIDOC_EXTRA += -a mansource="libtraceeval" -a manmanual="libtraceeval Manual"
++ASCIIDOC_HTML = xhtml5
++endif
++
++ASCIIDOC_INSTALLED := $(shell command -v $(ASCIIDOC) 2> /dev/null)
++ifndef ASCIIDOC_INSTALLED
++	missing_tools += $(ASCIIDOC)
++endif
++
++XMLTO=xmlto
++XMLTO_INSTALLED := $(shell command -v $(XMLTO) 2> /dev/null)
++ifndef XMLTO_INSTALLED
++	missing_tools += $(XMLTO)
++endif
++
++#
++# For asciidoc ...
++#	-7.1.2,	no extra settings are needed.
++#	8.0-,	set ASCIIDOC8.
++#
++
++#
++# For docbook-xsl ...
++#	-1.68.1,	set ASCIIDOC_NO_ROFF? (based on changelog from 1.73.0)
++#	1.69.0,		no extra settings are needed?
++#	1.69.1-1.71.0,	set DOCBOOK_SUPPRESS_SP?
++#	1.71.1,		no extra settings are needed?
++#	1.72.0,		set DOCBOOK_XSL_172.
++#	1.73.0-,	set ASCIIDOC_NO_ROFF
++#
++
++#
++# If you had been using DOCBOOK_XSL_172 in an attempt to get rid
++# of 'the ".ft C" problem' in your generated manpages, and you
++# instead ended up with weird characters around callouts, try
++# using ASCIIDOC_NO_ROFF instead (it works fine with ASCIIDOC8).
++#
++
++ifdef ASCIIDOC8
++ASCIIDOC_EXTRA += -a asciidoc7compatible
++endif
++ifdef DOCBOOK_XSL_172
++ASCIIDOC_EXTRA += -a libtraceeval-asciidoc-no-roff
++MANPAGE_XSL = manpage-1.72.xsl
++else
++	ifdef ASCIIDOC_NO_ROFF
++	# docbook-xsl after 1.72 needs the regular XSL, but will not
++	# pass-thru raw roff codes from asciidoc.conf, so turn them off.
++	ASCIIDOC_EXTRA += -a libtraceeval-asciidoc-no-roff
++	endif
++endif
++ifdef MAN_BOLD_LITERAL
++XMLTO_EXTRA += -m manpage-bold-literal.xsl
++endif
++ifdef DOCBOOK_SUPPRESS_SP
++XMLTO_EXTRA += -m manpage-suppress-sp.xsl
++endif
++
++SHELL_PATH ?= $(SHELL)
++# Shell quote;
++SHELL_PATH_SQ = $(subst ','\'',$(SHELL_PATH))
++
++DESTDIR ?=
++DESTDIR_SQ = '$(subst ','\'',$(DESTDIR))'
++
++export DESTDIR DESTDIR_SQ
++
++QUIET_SUBDIR0  = +$(MAKE) -C # space to separate -C and subdir
++QUIET_SUBDIR1  =
++
++ifneq ($(findstring $(MAKEFLAGS),w),w)
++PRINT_DIR = --no-print-directory
++else # "make -w"
++NO_SUBDIR = :
++endif
++
++ifneq ($(findstring $(MAKEFLAGS),s),s)
++ifneq ($(V),1)
++	QUIET_ASCIIDOC	= @echo '  ASCIIDOC '$@;
++	QUIET_XMLTO	= @echo '  XMLTO    '$@;
++	QUIET_SUBDIR0	= +@subdir=
++	QUIET_SUBDIR1	= ;$(NO_SUBDIR) \
++			   echo '  SUBDIR   ' $$subdir; \
++			  $(MAKE) $(PRINT_DIR) -C $$subdir
++	export V
++endif
++endif
++
++all: check-man-tools html man
++
++man: man3 man1
++man3: $(DOC_MAN3)
++man1: $(DOC_MAN1)
++
++html: $(MAN_HTML) $(MAN1_HTML)
++
++$(MAN_HTML) $(MAN1_HTML) $(DOC_MAN3) $(DOC_MAN1): asciidoc.conf
++
++install: check-man-tools install-man install-html
++
++check-man-tools:
++ifdef missing_tools
++	$(error "You need to install $(missing_tools) for man pages")
++endif
++
++install-%.3: $(OUTPUT)%.3
++	$(Q)$(call do_install,$<,$(man3dir),644);
++
++install-%.1: $(OUTPUT)%.1
++	$(Q)$(call do_install,$<,$(man1dir),644);
++
++do-install-man: man $(addprefix install-,$(wildcard $(OUTPUT)*.3)) $(addprefix install-,$(wildcard $(OUTPUT)*.1))
++
++install-man: man
++	$(Q)$(MAKE) -C . do-install-man
++
++install-%.txt: $(OUTPUT)%.html
++	$(Q)$(call do_install,$<,$(htmldir),644);
++
++install-%.txt.1: $(OUTPUT)%.html
++	$(Q)$(call do_install,$<,$(htmldir),644);
++
++do-install-html: html $(addprefix install-,$(wildcard *.txt)) $(addprefix install-,$(wildcard *.txt.1))
++
++install-html: html do-install-html
++
++uninstall: uninstall-man uninstall-html
++
++uninstall-man:
++	$(Q)$(RM) $(addprefix $(DESTDIR)$(man3dir)/,$(DOC_MAN3)) $(addprefix $(DESTDIR)$(man1dir)/,$(DOC_MAN1))
++
++uninstall-html:
++	$(Q)$(RM) $(addprefix $(DESTDIR)$(htmldir)/,$(MAN_HTML)) $(addprefix $(DESTDIR)$(htmldir)/,$(MAN1_HTML))
++
++ifdef missing_tools
++  DO_INSTALL_MAN = $(warning Please install $(missing_tools) to have the man pages installed)
++else
++  DO_INSTALL_MAN = do-install-man
++endif
++
++CLEAN_FILES =					\
++	$(MAN_XML) $(addsuffix +,$(MAN_XML))	\
++	$(MAN_HTML) $(addsuffix +,$(MAN_HTML))	\
++	$(MAN1_HTML) $(addsuffix +,$(MAN1_HTML))	\
++	$(filter-out $(MAN1_TEXT),$(wildcard *.1)) \
++	$(DOC_MAN3) *.3 *.m
++
++clean:
++	$(Q) $(RM) $(CLEAN_FILES)
++
++ifdef USE_ASCIIDOCTOR
++$(OUTPUT)%.3 : $(OUTPUT)%.txt
++	$(QUIET_ASCIIDOC)$(RM) $@+ $@ && \
++	$(ASCIIDOC) -b manpage -d manpage \
++		$(ASCIIDOC_EXTRA) -alibtraceeval_version=$(TRACEEVAL_VERSION) -o $@+ $< && \
++	mv $@+ $@
++$(OUTPUT)%.1 : $(OUTPUT)%.txt.1
++	$(QUIET_ASCIIDOC)$(RM) $@+ $@ && \
++	$(ASCIIDOC) -b manpage -d manpage \
++		$(ASCIIDOC_EXTRA) -alibtraceeval_version=$(TRACEEVAL_VERSION) -o $@+ $< && \
++	mv $@+ $@
++endif
++
++$(OUTPUT)%.m : $(OUTPUT)%.xml
++	$(QUIET_XMLTO)$(RM) $@ && \
++	$(XMLTO) -o $(OUTPUT). -m $(MANPAGE_XSL) $(XMLTO_EXTRA) man $<; \
++	touch $@
++
++$(OUTPUT)%.xml : %.txt
++	$(QUIET_ASCIIDOC)$(RM) $@+ $@ && \
++	$(ASCIIDOC) -b docbook -d manpage \
++		$(ASCIIDOC_EXTRA) -alibtraceeval_version=$(TRACEEVAL_VERSION) -o $@+ $< && \
++	mv $@+ $@
++
++$(OUTPUT)%.xml : %.txt.1
++	$(QUIET_ASCIIDOC)$(RM) $@+ $@ && \
++	$(ASCIIDOC) -b docbook -d manpage \
++		$(ASCIIDOC_EXTRA) -alibtraceeval_version=$(TRACEEVAL_VERSION) -o $@+ $< && \
++	mv $@+ $@
++
++$(MAN_HTML): $(OUTPUT)%.html : %.txt
++	$(QUIET_ASCIIDOC)$(RM) $@+ $@ && \
++	$(ASCIIDOC) -b $(ASCIIDOC_HTML) -d manpage \
++		$(ASCIIDOC_EXTRA) -alibtraceeval_version=$(TRACEEVAL_VERSION) -o $@+ $< && \
++	mv $@+ $@
++
++$(MAN1_HTML): $(OUTPUT)%.html : %.txt.1
++	$(QUIET_ASCIIDOC)$(RM) $@+ $@ && \
++	$(ASCIIDOC) -b $(ASCIIDOC_HTML) -d manpage \
++		$(ASCIIDOC_EXTRA) -alibtraceeval_version=$(TRACEEVAL_VERSION) -o $@+ $< && \
++	mv $@+ $@
+diff --git a/Documentation/asciidoc.conf b/Documentation/asciidoc.conf
+new file mode 100644
+index 000000000000..c15aa13b21ef
+--- /dev/null
++++ b/Documentation/asciidoc.conf
+@@ -0,0 +1,120 @@
++## linktep: macro
++#
++# Usage: linktep:command[manpage-section]
++#
++# Note, {0} is the manpage section, while {target} is the command.
++#
++# Show TEP link as: <command>(<section>); if section is defined, else just show
++# the command.
++
++[macros]
++(?su)[\\]?(?P<name>linktep):(?P<target>\S*?)\[(?P<attrlist>.*?)\]=
++
++[attributes]
++asterisk=&#42;
++plus=&#43;
++caret=&#94;
++startsb=&#91;
++endsb=&#93;
++tilde=&#126;
++
++ifdef::backend-docbook[]
++[linktep-inlinemacro]
++{0%{target}}
++{0#<citerefentry>}
++{0#<refentrytitle>{target}</refentrytitle><manvolnum>{0}</manvolnum>}
++{0#</citerefentry>}
++endif::backend-docbook[]
++
++ifdef::backend-docbook[]
++ifndef::tep-asciidoc-no-roff[]
++# "unbreak" docbook-xsl v1.68 for manpages. v1.69 works with or without this.
++# v1.72 breaks with this because it replaces dots not in roff requests.
++[listingblock]
++<example><title>{title}</title>
++<literallayout>
++ifdef::doctype-manpage[]
++&#10;.ft C&#10;
++endif::doctype-manpage[]
++|
++ifdef::doctype-manpage[]
++&#10;.ft&#10;
++endif::doctype-manpage[]
++</literallayout>
++{title#}</example>
++endif::tep-asciidoc-no-roff[]
++
++ifdef::tep-asciidoc-no-roff[]
++ifdef::doctype-manpage[]
++# The following two small workarounds insert a simple paragraph after screen
++[listingblock]
++<example><title>{title}</title>
++<literallayout>
++|
++</literallayout><simpara></simpara>
++{title#}</example>
++
++[verseblock]
++<formalpara{id? id="{id}"}><title>{title}</title><para>
++{title%}<literallayout{id? id="{id}"}>
++{title#}<literallayout>
++|
++</literallayout>
++{title#}</para></formalpara>
++{title%}<simpara></simpara>
++endif::doctype-manpage[]
++endif::tep-asciidoc-no-roff[]
++endif::backend-docbook[]
++
++ifdef::doctype-manpage[]
++ifdef::backend-docbook[]
++[header]
++template::[header-declarations]
++<refentry>
++<refmeta>
++<refentrytitle>{mantitle}</refentrytitle>
++<manvolnum>{manvolnum}</manvolnum>
++<refmiscinfo class="source">libtracefs</refmiscinfo>
++<refmiscinfo class="version">{libtracefs_version}</refmiscinfo>
++<refmiscinfo class="manual">libtracefs Manual</refmiscinfo>
++</refmeta>
++<refnamediv>
++  <refname>{manname1}</refname>
++  <refname>{manname2}</refname>
++  <refname>{manname3}</refname>
++  <refname>{manname4}</refname>
++  <refname>{manname5}</refname>
++  <refname>{manname6}</refname>
++  <refname>{manname7}</refname>
++  <refname>{manname8}</refname>
++  <refname>{manname9}</refname>
++  <refname>{manname10}</refname>
++  <refname>{manname11}</refname>
++  <refname>{manname12}</refname>
++  <refname>{manname13}</refname>
++  <refname>{manname14}</refname>
++  <refname>{manname15}</refname>
++  <refname>{manname16}</refname>
++  <refname>{manname17}</refname>
++  <refname>{manname18}</refname>
++  <refname>{manname19}</refname>
++  <refname>{manname20}</refname>
++  <refname>{manname21}</refname>
++  <refname>{manname22}</refname>
++  <refname>{manname23}</refname>
++  <refname>{manname24}</refname>
++  <refname>{manname25}</refname>
++  <refname>{manname26}</refname>
++  <refname>{manname27}</refname>
++  <refname>{manname28}</refname>
++  <refname>{manname29}</refname>
++  <refname>{manname30}</refname>
++  <refpurpose>{manpurpose}</refpurpose>
++</refnamediv>
++endif::backend-docbook[]
++endif::doctype-manpage[]
++
++ifdef::backend-xhtml11[]
++[linktep-inlinemacro]
++<a href="{target}.html">{target}{0?({0})}</a>
++endif::backend-xhtml11[]
+diff --git a/Documentation/libtraceeval.txt b/Documentation/libtraceeval.txt
+new file mode 100644
+index 000000000000..d3b97805d6ca
+--- /dev/null
++++ b/Documentation/libtraceeval.txt
+@@ -0,0 +1,55 @@
 +libtraceeval(3)
 +===============
 +
 +NAME
 +----
-+traceeval_iterator_get, traceeval_iterator_put, traceeval_iterator_sort, traceeval_iterator_sort_custom,
-+traceeval_iterator_next, traceeval_iterator_query, traceeval_iterator_results_release, traceeval_iterator_stat,
-+traceeval_iterator_remove - Operations to iterate over the elements of a traceeval
++libtraceeval - A trace evaluation helper library
 +
 +SYNOPSIS
 +--------
@@ -73,889 +469,17 @@ index 000000000000..9c03b5855749
 +--
 +*#include <traceeval.h>*
 +
-+struct traceeval_iterator pass:[*]*traceeval_iterator_get*(struct traceeval pass:[*]_teval_);
-+void *traceeval_iterator_put*(struct traceeval_iterator pass:[*]_iter_);
-+int *traceeval_iterator_sort*(struct traceeval_iterator pass:[*]_iter_, const char pass:[*]_sort_field_,
-+			    int _level_, bool _ascending_);
-+int *traceeval_iterator_sort_custom*(struct traceeval_iterator pass:[*]_iter_,
-+				   traceeval_cmp_fn _sort_fn_, void pass:[*]_data_);
-+int *traceeval_iterator_next*(struct traceeval_iterator pass:[*]_iter_,
-+			    const struct traceeval_data pass:[**]_keys_);
-+int *traceeval_iterator_query*(struct traceeval_iterator pass:[*]_iter_,
-+			     const struct traceeval_data pass:[**]_results_);
-+void *traceeval_iterator_results_release*(struct traceeval_iterator pass:[*]_iter_,
-+					const struct traceeval_data pass:[*]_results_);
-+struct traceeval_stat pass:[*]*traceeval_iterator_stat*(struct traceeval_iterator pass:[*]_iter_,
-+					       struct traceeval_type pass:[*]_type_);
-+int *traceeval_iterator_remove*(struct traceeval_iterator pass:[*]_iter_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The traceeval utility facilitates the collection of data as a tool iterates over
-+trace events. The traceeval_iterator is a means to read the data that was collected.
-+
-+The *traceeval_iterator_get()* takes a _teval_ descriptor of the traceeval that is
-+to be extracted and returns a struct traceeval_iterator descriptor that can be
-+used to iterate over the events of the traceeval.
-+
-+When the iterator is no longer required, *traceeval_iterator_put()* is used to
-+release any of the allocated memory of the _iter_ traceeval_iterator.
-+
-+Before iterating, the data may be sorted using *traceeval_iterator_sort()*.
-+This will sort how the elements will be iterated over via the given _iter_ iterator.
-+The _sort_field_ is a string that matches the .name element of a struct traceeval_type 
-+for either keys or vals that were passed into the *traceeval_init*(3) for the given
-+traceeval passed to *traceeval_iterator_get()*. The _level_ is the sorting priority
-+of this field, where 0 is the highest priority (sort this field first), 1 is the
-+next priority (sort this field for elements that have matching fields of level 0),
-+2 is the next priority and so on. This function should be called for each level.
-+If a level is skipped, it may cause an error with *traceeval_iterator_next()*.
-+
-+If a custom sort needs to be done (one that is not simply following the fields)
-+then *traceeval_iterator_sort_custom()* may be used. This takes a parameter
-+_sort_fn_ that is a function of type traceeval_cmp_fn to sort. The _data_ parameter
-+is used to pass data to the _sort_fn_.
-+
-+[verse]
-+--
-+typedef  int (*traceeval_cmp_fn)(struct traceeval *teval,
-+				const struct traceeval_data *Akeys,
-+				const struct traceeval_data *Avals,
-+				const struct traceeval_data *Bkeys,
-+				const struct traceeval_data *Bvals,
-+				void *data);
-+--
-+
-+The compare function passed to *traceeval_iterator_sort_custom()* takes a _teval_ that
-+holds the traceeval passed to *traceeval_iterator_get()*. Then the _Akeys_ and _Avals_ of one element
-+and the _Bkeys_ and _Bvals_ of another element to use for comapring the two. The _data_ is a pointer
-+to the data that was passed into *traceeval_iterator_sort_custom()*. This function should return
-+less than zero if Akeys and Avals is less than Bkeys and Bvals, 0 if they are equal, and greater than zero
-+if greater than.
-+
-+The *traceeval_iterator_next()* is used to do the iteration over the traceeval passed
-+to *traceeval_iterator_get()* in the sorted order defined with *traceeval_iterator_sort()*.
-+If the _iter_ was not sorted, the order will be somewhat random, but all the elements
-+will still be convered just once. For each iteration, _keys_ will be assigned the
-+struct traceeval_data keys of the next element. If an element is found, this will return
-+1.
-+
-+Inside the *traceeval_iterator_next()* loop, the values of the element returned by
-+the keys can be quickly retrieved with *traceeval_iterator_query()*. This will
-+place the values in _results_, which when finished with should call *traceeval_iterator_results_release()*
-+on.
-+
-+
-+The *traceeval_iterator_stat()* will quickly return the stats of one of the current
-+element's fields (if it as desginated as a stat field). See *traceeval_stat*(3).
-+
-+The *traceeval_iterator_remove()* is a safe way to remove an element from the traceeval
-+that was passed to *traceeval_iterator_get()*. It will remove the current element
-+returned by *traceeveal_iterator_next()* from the traceeval of _iter_.
-+
-+RETURN VALUE
-+------------
-+The *traceeval_iterator_get()* returns a traceeval_iterator descriptor that will iterate
-+over the given _teval_ on success, and NULL on error.
-+
-+The *traceeval_iterator_sort()* and traceeval_iterator_sort_custom()* return 0 on success and -1 or error.
-+
-+The *traceeval_iterator_next()* returns 1 when it reads a new element from the traceeval and places the element's
-+keys into _keys_. It returns 0 when there's no more elements to read and -1 on error.
-+
-+The *traceeval_iterator_query()* returns 1 if it successfully reads the current element from the
-+*traceeval_iterator_next()* and places the values in _results_. It returns 0 if there are no more elements,
-+and -1 on error.
-+
-+The *traceeval_iterator_stat()* returns a descriptor for the current element's given _field_ on success and
-+NULL if there are no current elements or the _field_ is not a valid stat type.
-+
-+The *traceeval_iterator_remove()* returns 1 if the current element was successfully removed, or 0
-+if there was no element (called before *traceeval_iterator_next()*).
-+
-+EXAMPLE
-+-------
-+This example takes a trace.dat file created by *trace-cmd*(1) with the following command:
-+
-+[verse]
-+--
-+	trace-cmd record -e sched_switch
-+--
-+
-+And will report the times that all the tasks were preempted, running, sleeping or blocked and
-+break it up between tasks with the same name. It also shows how long the CPUs were running
-+and idle.
-+
-+[source,c]
-+--
-+#include <trace-cmd.h>
-+#include <traceeval.h>
-+
-+static struct traceeval_type cpu_keys[] = {
-+	{
-+		.type = TRACEEVAL_TYPE_NUMBER,
-+		.name = "CPU",
-+	},
-+	{
-+		.type = TRACEEVAL_TYPE_NUMBER,
-+		.name = "Schedule state",
-+	},
-+};
-+
-+static struct traceeval_type process_keys[] = {
-+	{
-+		.type = TRACEEVAL_TYPE_STRING,
-+		.name = "COMM"
-+	},
-+	{
-+		.type = TRACEEVAL_TYPE_NUMBER,
-+		.name = "Schedule state"
-+	},
-+};
-+
-+static struct traceeval_type process_data_vals[] = {
-+	{
-+		.type = TRACEEVAL_TYPE_POINTER,
-+		.name = "data",
-+	},
-+};
-+
-+static struct traceeval_type thread_keys[] = {
-+	{
-+		.type = TRACEEVAL_TYPE_NUMBER,
-+		.name = "TID",
-+	},
-+	{
-+		.type = TRACEEVAL_TYPE_NUMBER,
-+		.name = "Schedule state",
-+	},
-+};
-+
-+static struct traceeval_type timestamp_vals[] = {
-+	{
-+		.type = TRACEEVAL_TYPE_NUMBER_64,
-+		.name = "Timestamp",
-+		.flags = TRACEEVAL_FL_TIMESTAMP,
-+	},
-+};
-+
-+static struct traceeval_type delta_vals[] = {
-+	{
-+		.type	= TRACEEVAL_TYPE_NUMBER_64,
-+		.name	= "delta",
-+		.flags = TRACEEVAL_FL_STAT,
-+	},
-+};
-+
-+enum sched_state {
-+	RUNNING,
-+	BLOCKED,
-+	PREEMPT,
-+	SLEEP,
-+	IDLE,
-+	OTHER
-+};
-+
-+struct teval_pair {
-+	struct traceeval	*start;
-+	struct traceeval	*stop;
-+};
-+
-+struct process_data {
-+	struct teval_pair	teval_cpus;
-+	struct teval_pair	teval_threads;
-+	char			*comm;
-+	int			state;
-+};
-+
-+struct task_data {
-+	struct teval_pair	teval_cpus;
-+	struct teval_pair	teval_processes;
-+	struct traceeval	*teval_processes_data;
-+	char			*comm;
-+};
-+
-+enum command {
-+	START,
-+	STOP
-+};
-+
-+static void update_process(struct task_data *tdata, const char *comm,
-+			   enum sched_state state, enum command cmd,
-+			   unsigned long long ts)
-+{
-+	struct traceeval_data keys[] = {
-+		DEFINE_TRACEEVAL_CSTRING(	comm	),
-+		DEFINE_TRACEEVAL_NUMBER(	state	),
-+	};
-+	struct traceeval_data vals[] = {
-+		DEFINE_TRACEEVAL_NUMBER_64(	ts	),
-+	};
-+	struct traceeval_data new_vals[1] = { };
-+	const struct traceeval_data *results;
-+	int ret;
-+
-+	switch (cmd) {
-+	case START:
-+		ret = traceeval_insert(tdata->teval_processes.start, keys, vals);
-+		return;
-+	case STOP:
-+		ret = traceeval_query(tdata->teval_processes.start, keys, &results);
-+		if (ret == 0)
-+			return;
-+		if (!results[0].number_64)
-+			break;
-+
-+		TRACEEVAL_SET_NUMBER_64(new_vals[0], ts - results[0].number_64);
-+
-+		ret = traceeval_insert(tdata->teval_processes.stop, keys, new_vals);
-+
-+		/* Reset the start */
-+		TRACEEVAL_SET_NUMBER_64(new_vals[0], 0);
-+
-+		ret = traceeval_insert(tdata->teval_processes.start, keys, new_vals);
-+		break;
-+	}
-+	traceeval_results_release(tdata->teval_processes.start, results);
-+}
-+
-+static void start_process(struct task_data *tdata, const char *comm,
-+			   enum sched_state state, unsigned long long ts)
-+{
-+	update_process(tdata, comm, state, START, ts);
-+}
-+
-+static void stop_process(struct task_data *tdata, const char *comm,
-+			   enum sched_state state, unsigned long long ts)
-+{
-+	update_process(tdata, comm, state, STOP, ts);
-+}
-+
-+static struct process_data *
-+get_process_data(struct task_data *tdata, const char *comm)
-+{
-+	struct traceeval_data keys[] = {
-+		DEFINE_TRACEEVAL_CSTRING(	comm	),
-+		DEFINE_TRACEEVAL_NUMBER(	RUNNING	),
-+	};
-+	const struct traceeval_data *results;
-+	void *data;
-+	int ret;
-+
-+	ret = traceeval_query(tdata->teval_processes_data, keys, &results);
-+	if (ret == 0)
-+		return NULL;
-+
-+	data = results[0].pointer;
-+	traceeval_results_release(tdata->teval_processes_data, results);
-+	return data;
-+}
-+
-+void set_process_data(struct task_data *tdata, const char *comm, void *data)
-+{
-+	struct traceeval_data keys[] = {
-+		DEFINE_TRACEEVAL_CSTRING(	comm	),
-+		DEFINE_TRACEEVAL_NUMBER(	RUNNING	),
-+	};
-+	struct traceeval_data new_vals[1] = { };
-+	const struct traceeval_data *results;
-+	int ret;
-+
-+	ret = traceeval_query(tdata->teval_processes_data, keys, &results);
-+	if (ret > 0)
-+		goto out; /* It already exists ? */
-+
-+	TRACEEVAL_SET_POINTER(new_vals[0], data);
-+	ret = traceeval_insert(tdata->teval_processes_data, keys, new_vals);
-+
-+ out:
-+	traceeval_results_release(tdata->teval_processes_data, results);
-+}
-+
-+static void update_cpu(struct teval_pair *teval_pair, int cpu,
-+		       enum sched_state state, enum command cmd,
-+		       unsigned long long ts)
-+{
-+	const struct traceeval_data *results;
-+	struct traceeval_data keys[] = {
-+		DEFINE_TRACEEVAL_NUMBER(	cpu	),
-+		DEFINE_TRACEEVAL_NUMBER(	state	),
-+	};
-+	struct traceeval_data vals[] = {
-+		DEFINE_TRACEEVAL_NUMBER_64(	ts	),
-+	};
-+	struct traceeval_data new_vals[1] = { };
-+	int ret;
-+
-+	switch (cmd) {
-+	case START:
-+		/* Only set if the timestamp is zero (or doesn't exist) */
-+		ret = traceeval_query(teval_pair->start, keys, &results);
-+		if (ret > 0) {
-+			if (results[0].number_64)
-+				break;
-+		}
-+		ret = traceeval_insert(teval_pair->start, keys, vals);
-+		break;
-+	case STOP:
-+		ret = traceeval_query(teval_pair->start, keys, &results);
-+		if (ret == 0)
-+			return;
-+
-+		if (!results[0].number_64)
-+			break;
-+
-+		TRACEEVAL_SET_NUMBER_64(new_vals[0], ts - results[0].number_64);
-+
-+		ret = traceeval_insert(teval_pair->stop, keys, new_vals);
-+
-+		/* Reset the start */
-+		TRACEEVAL_SET_NUMBER_64(new_vals[0], 0);
-+		ret = traceeval_insert(teval_pair->start, keys, new_vals);
-+
-+		break;
-+		default:
-+			return;
-+	}
-+	traceeval_results_release(teval_pair->start, results);
-+}
-+
-+static void start_cpu(struct teval_pair *teval_pair, int cpu,
-+		      enum sched_state state,  unsigned long long ts)
-+{
-+	update_cpu(teval_pair, cpu, state, START, ts);
-+}
-+
-+static void stop_cpu(struct teval_pair *teval_pair, int cpu,
-+		     enum sched_state state, unsigned long long ts)
-+{
-+	update_cpu(teval_pair, cpu, state, STOP, ts);
-+}
-+
-+static void update_thread(struct process_data *pdata, int tid,
-+			  enum sched_state state, enum command cmd,
-+			  unsigned long long ts)
-+{
-+	const struct traceeval_data *results;
-+	struct traceeval_data keys[] = {
-+		DEFINE_TRACEEVAL_NUMBER(	tid	),
-+		DEFINE_TRACEEVAL_NUMBER(	state	),
-+	};
-+	struct traceeval_data vals[] = {
-+		DEFINE_TRACEEVAL_NUMBER_64(	ts	),
-+	};
-+	struct traceeval_data new_vals[1] = { };
-+	int ret;
-+
-+	switch (cmd) {
-+	case START:
-+		ret = traceeval_insert(pdata->teval_threads.start, keys, vals);
-+		return;
-+	case STOP:
-+		ret = traceeval_query(pdata->teval_threads.start, keys, &results);
-+		if (ret == 0)
-+			return;
-+
-+		TRACEEVAL_SET_NUMBER_64(new_vals[0], ts - results[0].number_64);
-+
-+		ret = traceeval_insert(pdata->teval_threads.stop, keys, new_vals);
-+		traceeval_results_release(pdata->teval_threads.start, results);
-+		return;
-+	}
-+}
-+
-+static void start_thread(struct process_data *pdata, int tid,
-+			   enum sched_state state, unsigned long long ts)
-+{
-+	update_thread(pdata, tid, state, START, ts);
-+}
-+
-+static void stop_thread(struct process_data *pdata, int tid,
-+			enum sched_state state, unsigned long long ts)
-+{
-+	update_thread(pdata, tid, state, STOP, ts);
-+}
-+
-+static struct tep_format_field *get_field(struct tep_event *event, const char *name)
-+{
-+	static struct tep_format_field *field;
-+
-+	field = tep_find_field(event, name);
-+	if (!field) {
-+		fprintf(stderr, "Could not find field %s for %s",
-+			name, event->name);
-+		exit(-1);
-+	}
-+
-+	return field;
-+}
-+
-+static void init_process_data(struct process_data *pdata)
-+{
-+
-+	pdata->teval_cpus.start = traceeval_init(cpu_keys, timestamp_vals);
-+	pdata->teval_cpus.stop = traceeval_init(cpu_keys, delta_vals);
-+
-+	pdata->teval_threads.start = traceeval_init(thread_keys, timestamp_vals);
-+
-+	pdata->teval_threads.stop = traceeval_init(thread_keys, delta_vals);
-+}
-+
-+static struct process_data *alloc_pdata(struct task_data *tdata, const char *comm)
-+{
-+	struct process_data *pdata;
-+
-+	pdata = calloc(1, sizeof(*pdata));
-+	init_process_data(pdata);
-+	set_process_data(tdata, comm, pdata);
-+
-+	return pdata;
-+}
-+
-+static void sched_out(struct task_data *tdata, const char *comm,
-+		      struct tep_event *event,
-+		      struct tep_record *record, struct tep_format_field *prev_pid,
-+		      struct tep_format_field *prev_state)
-+{
-+	struct process_data *pdata;
-+	unsigned long long val;
-+	int pid;
-+
-+	tep_read_number_field(prev_pid, record->data, &val);
-+
-+	/* Ignore the idle task */
-+	pid = val;
-+	if (!pid) {
-+		/* Record the runtime for the process CPUs */
-+		stop_cpu(&tdata->teval_cpus, record->cpu, IDLE, record->ts);
-+		return;
-+	}
-+
-+	/* The process is scheduling out. Stop the run time. */
-+	update_process(tdata, comm, RUNNING, STOP, record->ts);
-+
-+	/* Get the process data from the process running state */
-+	pdata = get_process_data(tdata, comm);
-+	if (!pdata)
-+		pdata = alloc_pdata(tdata, comm);
-+
-+	tep_read_number_field(prev_state, record->data, &val);
-+	val &= 3;
-+	/*
-+	 * Save the state the process is exiting with. Will need this
-+	 * when scheduled back in.
-+	 */
-+	if (!val)
-+		pdata->state = PREEMPT;
-+	else if (val & 1)
-+		pdata->state = SLEEP;
-+	else if (val & 2)
-+		pdata->state = BLOCKED;
-+
-+	/* Record the state timings for the process */
-+	start_process(tdata, comm, pdata->state, record->ts);
-+
-+	/* Record the state timings for the individual thread */
-+	stop_thread(pdata, pid, RUNNING, record->ts);
-+
-+	/* Record the state timings for the individual thread */
-+	start_thread(pdata, pid, pdata->state, record->ts);
-+
-+	/* Record the runtime for the process CPUs */
-+	stop_cpu(&pdata->teval_cpus, record->cpu, RUNNING, record->ts);
-+
-+	/* Record the runtime for the all CPUs */
-+	stop_cpu(&tdata->teval_cpus, record->cpu, RUNNING, record->ts);
-+}
-+
-+static void sched_in(struct task_data *tdata, const char *comm,
-+		     struct tep_event *event,
-+		     struct tep_record *record, struct tep_format_field *next_pid)
-+{
-+	struct process_data *pdata;
-+	unsigned long long val;
-+	bool is_new = false;
-+	int pid;
-+
-+	tep_read_number_field(next_pid, record->data, &val);
-+	pid = val;
-+
-+	/* Ignore the idle task */
-+	if (!pid) {
-+		/* Record the runtime for the process CPUs */
-+		start_cpu(&tdata->teval_cpus, record->cpu, IDLE, record->ts);
-+		return;
-+	}
-+
-+	/* Start recording the running time of this process */
-+	start_process(tdata, comm, RUNNING, record->ts);
-+
-+	pdata = get_process_data(tdata, comm);
-+
-+	/* Start recording the running time of process CPUs */
-+	start_cpu(&tdata->teval_cpus, record->cpu, RUNNING, record->ts);
-+
-+	/* If there was no pdata, then this process did not go through sched out */
-+	if (!pdata) {
-+		pdata = alloc_pdata(tdata, comm);
-+		is_new = true;
-+	}
-+
-+	/* Record the state timings for the individual thread */
-+	start_thread(pdata, pid, RUNNING, record->ts);
-+
-+	/* Start recording the running time of process CPUs */
-+	start_cpu(&pdata->teval_cpus, record->cpu, RUNNING, record->ts);
-+
-+	/* If it was just created, there's nothing to stop */
-+	if (is_new)
-+		return;
-+
-+	/* Stop recording the thread time for its scheduled out state */
-+	stop_thread(pdata, val, pdata->state, record->ts);
-+
-+	/* Stop recording the process time for its scheduled out state */
-+	stop_process(tdata, comm, pdata->state, record->ts);
-+}
-+
-+static int switch_func(struct tracecmd_input *handle, struct tep_event *event,
-+		       struct tep_record *record, int cpu, void *data)
-+{
-+	static struct tep_format_field *prev_comm;
-+	static struct tep_format_field *prev_pid;
-+	static struct tep_format_field *prev_state;
-+	static struct tep_format_field *next_comm;
-+	static struct tep_format_field *next_pid;
-+	struct task_data *tdata = data;
-+	const char *comm;
-+
-+	if (!next_comm) {
-+		prev_comm = get_field(event, "prev_comm");
-+		prev_pid = get_field(event, "prev_pid");
-+		prev_state = get_field(event, "prev_state");
-+
-+		next_comm = get_field(event, "next_comm");
-+		next_pid = get_field(event, "next_pid");
-+	}
-+
-+	comm = record->data + prev_comm->offset;
-+	if (!tdata->comm || strcmp(comm, tdata->comm) == 0)
-+		sched_out(tdata, comm, event, record, prev_pid, prev_state);
-+
-+	comm = record->data + next_comm->offset;
-+	if (!tdata->comm || strcmp(comm, tdata->comm) == 0)
-+		sched_in(tdata, comm, event, record, next_pid);
-+
-+	return 0;
-+}
-+
-+static void print_microseconds(int idx, unsigned long long nsecs)
-+{
-+	unsigned long long usecs;
-+
-+	usecs = nsecs / 1000;
-+	if (!nsecs || usecs)
-+		printf("%*lld\n", idx, usecs);
-+	else
-+		printf("%*d.%03lld\n", idx, 0, nsecs);
-+}
-+
-+/*
-+ * Sort all the processes by the RUNNING state.
-+ *  If A and B have the same COMM, then sort by state.
-+ *  else
-+ *    Find the RUNNNIG state for A and B
-+ *    If the RUNNING state does not exist, it's considered -1
-+ *  If RUNNING is equal, then sort by COMM.
-+ */
-+static int compare_pdata(struct traceeval *teval_data,
-+				const struct traceeval_data *Akeys,
-+				const struct traceeval_data *Avals,
-+				const struct traceeval_data *Bkeys,
-+				const struct traceeval_data *Bvals,
-+				void *data)
-+{
-+	struct traceeval *teval = data; /* The deltas are here */
-+	struct traceeval_data keysA[] = {
-+		DEFINE_TRACEEVAL_CSTRING(	Akeys[0].cstring	),
-+		DEFINE_TRACEEVAL_NUMBER(	RUNNING			), };
-+	struct traceeval_data keysB[] = {
-+		DEFINE_TRACEEVAL_CSTRING(	Bkeys[0].cstring	),
-+		DEFINE_TRACEEVAL_NUMBER(	RUNNING			), };
-+	struct traceeval_stat *statA;
-+	struct traceeval_stat *statB;
-+	unsigned long long totalA = -1;
-+	unsigned long long totalB = -1;
-+
-+	/* First check if we are on the same task */
-+	if (strcmp(Akeys[0].cstring, Bkeys[0].cstring) == 0) {
-+		/* Sort decending */
-+		if (Bkeys[1].number > Akeys[1].number)
-+			return -1;
-+		return Bkeys[1].number != Akeys[1].number;
-+	}
-+
-+	/* Get the RUNNING values for both processes */
-+	statA = traceeval_stat(teval, keysA, delta_vals[0].name);
-+	if (statA)
-+		totalA = traceeval_stat_total(statA);
-+
-+	statB = traceeval_stat(teval, keysB, delta_vals[0].name);
-+	if (statB)
-+		totalB = traceeval_stat_total(statB);
-+
-+	if (totalB < totalA)
-+		return -1;
-+	if (totalB > totalA)
-+		return 1;
-+
-+	return strcmp(Bkeys[0].cstring, Akeys[0].cstring);
-+}
-+
-+static void display_cpus(struct traceeval *teval)
-+{
-+	struct traceeval_iterator *iter = traceeval_iterator_get(teval);
-+	const struct traceeval_data *keys;
-+	struct traceeval_stat *stat;
-+	int last_cpu = -1;
-+
-+	printf("\n");
-+
-+	traceeval_iterator_sort(iter, cpu_keys[0].name, 0, true);
-+	traceeval_iterator_sort(iter, cpu_keys[1].name, 1, true);
-+
-+	while (traceeval_iterator_next(iter, &keys) > 0) {
-+		int state = keys[1].number;
-+		int cpu = keys[0].number;
-+
-+		stat = traceeval_iterator_stat(iter, delta_vals[0].name);
-+		if (!stat)
-+			continue; // die?
-+
-+		if (last_cpu != cpu)
-+			printf("    CPU [%d]:\n", cpu);
-+
-+		switch (state) {
-+		case RUNNING:
-+			printf("       Running: ");
-+			break;
-+		case IDLE:
-+			printf("          Idle: ");
-+			break;
-+		case BLOCKED:
-+		case PREEMPT:
-+		case SLEEP:
-+		case OTHER:
-+			printf("         \?\?(%d): ", state);
-+			break;
-+		}
-+		printf(" time (us):");
-+		print_microseconds(12, traceeval_stat_total(stat));
-+
-+		last_cpu = cpu;
-+	}
-+	traceeval_iterator_put(iter);
-+}
-+
-+static void display_state_times(int state, unsigned long long total)
-+{
-+	switch (state) {
-+	case RUNNING:
-+		printf("      Total run time (us):");
-+		print_microseconds(14, total);
-+		break;
-+	case BLOCKED:
-+		printf("      Total blocked time (us):");
-+		print_microseconds(10, total);
-+		break;
-+	case PREEMPT:
-+		printf("      Total preempt time (us):");
-+		print_microseconds(10, total);
-+		break;
-+	case SLEEP:
-+		printf("      Total sleep time (us):");
-+		print_microseconds(12, total);
-+	}
-+}
-+
-+static void display_threads(struct traceeval *teval)
-+{
-+	struct traceeval_iterator *iter = traceeval_iterator_get(teval);
-+	const struct traceeval_data *keys;
-+	struct traceeval_stat *stat;
-+	int last_tid = -1;
-+
-+	traceeval_iterator_sort(iter, thread_keys[0].name, 0, true);
-+	traceeval_iterator_sort(iter, thread_keys[1].name, 1, true);
-+
-+	while (traceeval_iterator_next(iter, &keys) > 0) {
-+		int state = keys[1].number;
-+		int tid = keys[0].number;
-+
-+		stat = traceeval_iterator_stat(iter, delta_vals[0].name);
-+
-+		if (last_tid != keys[0].number)
-+			printf("\n    thread id: %d\n", tid);
-+
-+		last_tid = tid;
-+
-+		display_state_times(state, traceeval_stat_total(stat));
-+	}
-+	traceeval_iterator_put(iter);
-+}
-+
-+static void display_process(struct process_data *pdata)
-+{
-+	display_threads(pdata->teval_threads.stop);
-+	display_cpus(pdata->teval_cpus.stop);
-+	printf("\n");
-+}
-+
-+static void display_process_stats(struct traceeval *teval,
-+				  struct process_data *pdata, const char *comm)
-+{
-+	struct traceeval_stat *stat;
-+	unsigned long long delta;
-+	struct traceeval_data keys[] = {
-+		DEFINE_TRACEEVAL_CSTRING(	comm		),
-+		DEFINE_TRACEEVAL_NUMBER(	RUNNING		),
-+	};
-+
-+	for (int i = 0; i < OTHER; i++) {
-+		TRACEEVAL_SET_NUMBER(keys[1], i);
-+
-+		delta = 0;
-+		stat = traceeval_stat(teval, keys, delta_vals[0].name);
-+		if (stat)
-+			delta = traceeval_stat_total(stat);
-+		display_state_times(i, delta);
-+	}
-+}
-+
-+static void display_processes(struct traceeval *teval,
-+			      struct traceeval *teval_data)
-+{
-+	struct traceeval_iterator *iter = traceeval_iterator_get(teval_data);
-+	const struct traceeval_data *keys;
-+
-+	traceeval_iterator_sort_custom(iter, compare_pdata, teval);
-+
-+	while (traceeval_iterator_next(iter, &keys) > 0) {
-+		const struct traceeval_data *results;
-+		struct process_data *pdata = NULL;
-+		const char *comm = keys[0].cstring;
-+
-+		traceeval_iterator_query(iter, &results);
-+		pdata = results[0].pointer;
-+		traceeval_results_release(teval_data, results);
-+
-+		if (!pdata)
-+			continue;
-+
-+		printf("Task: %s\n", comm);
-+
-+		display_process_stats(teval, pdata, comm);
-+		if (pdata)
-+			display_process(pdata);
-+	}
-+	traceeval_iterator_put(iter);
-+}
-+
-+static void display(struct task_data *tdata)
-+{
-+	struct traceeval *teval = tdata->teval_cpus.stop;
-+	struct traceeval_iterator *iter = traceeval_iterator_get(teval);
-+	const struct traceeval_data *keys;
-+	struct traceeval_stat *stat;
-+	unsigned long long total_time = 0;
-+	unsigned long long idle_time = 0;
-+
-+	if (tdata->comm) {
-+		return display_processes(tdata->teval_processes.stop,
-+					 tdata->teval_processes_data);
-+	}
-+
-+	printf("Total:\n");
-+
-+	while (traceeval_iterator_next(iter, &keys) > 0) {
-+		int state = keys[1].number;
-+
-+		stat = traceeval_iterator_stat(iter, delta_vals[0].name);
-+		if (!stat)
-+			continue;
-+
-+		switch (state) {
-+		case RUNNING:
-+			total_time += traceeval_stat_total(stat);
-+			break;
-+		case IDLE:
-+			idle_time += traceeval_stat_total(stat);
-+			break;
-+		default:
-+			return;
-+		}
-+	}
-+	traceeval_iterator_put(iter);
-+
-+	printf("  Total  run time (us):");
-+	print_microseconds(16, total_time);
-+	printf("  Total idle time (us):");
-+	print_microseconds(16, idle_time);
-+
-+	display_cpus(tdata->teval_cpus.stop);
-+
-+	printf("\n");
-+	display_processes(tdata->teval_processes.stop, tdata->teval_processes_data);
-+}
-+
-+static void free_tdata(struct task_data *tdata)
-+{
-+}
-+
-+int main (int argc, char **argv)
-+{
-+	struct tracecmd_input *handle;
-+	struct task_data data;
-+
-+	memset(&data, 0, sizeof(data));
-+
-+	if (argc < 2) {
-+		printf("Pass in trace.dat file\n");
-+		exit(-1);
-+	}
-+
-+	handle = tracecmd_open(argv[1], TRACECMD_FL_LOAD_NO_PLUGINS);
-+	if (!handle) {
-+		perror(argv[1]);
-+		exit(-1);
-+	}
-+
-+	data.teval_processes.start = traceeval_init(process_keys, timestamp_vals);
-+	data.teval_processes_data = traceeval_init(process_keys, process_data_vals);
-+	data.teval_processes.stop = traceeval_init(process_keys, delta_vals);
-+
-+
-+	data.teval_cpus.start = traceeval_init(cpu_keys, timestamp_vals);
-+	data.teval_cpus.stop = traceeval_init(cpu_keys, delta_vals);
-+
-+	tracecmd_follow_event(handle, "sched", "sched_switch", switch_func, &data);
-+
-+	tracecmd_iterate_events(handle, NULL, 0, NULL, NULL);
-+
-+	display(&data);
-+
-+	free_tdata(&data);
-+
-+	return 0;
-+}
-+--
++The libtracefs(3) library provides APIs to access kernel trace file system.
 +
 +FILES
 +-----
 +[verse]
 +--
-+*traceval.h*
++*traceeval.h*
 +	Header file to include in order to have access to the library APIs.
 +*-ltraceeval*
 +	Linker switch to add when building a program that uses the library.
@@ -963,50 +487,229 @@ index 000000000000..9c03b5855749
 +
 +SEE ALSO
 +--------
-+*libtraceeval*(3)
++*libtracecmd*
 +
 +AUTHOR
 +------
 +[verse]
 +--
-+*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceeval*.
++*Steven Rostedt* <rostedt@goodmis.org>
 +--
++
 +REPORTING BUGS
 +--------------
 +Report bugs to  <linux-trace-devel@vger.kernel.org>
 +
 +LICENSE
 +-------
-+libtraceeval is licensed under MIT.
++TBD
 +
-diff --git a/Documentation/libtraceeval.txt b/Documentation/libtraceeval.txt
-index 9f753aaadf12..fc7c621878ac 100644
---- a/Documentation/libtraceeval.txt
-+++ b/Documentation/libtraceeval.txt
-@@ -41,6 +41,23 @@ Inserting and removing elements from the traceeval:
- 			       const struct traceeval_data pass:[**]_results_);
- 
- 	size_t *traceeval_count*(struct traceeval pass:[*]_teval_);
++RESOURCES
++---------
++TBD
 +
-+Functions for iterating over the elements of the libtraceeval:
-+	struct traceeval_iterator pass:[*]*traceeval_iterator_get*(struct traceeval pass:[*]_teval_);
-+	void *traceeval_iterator_put*(struct traceeval_iterator pass:[*]_iter_);
-+	int *traceeval_iterator_sort*(struct traceeval_iterator pass:[*]_iter_, const char pass:[*]_sort_field_,
-+			    int _level_, bool _ascending_);
-+	int *traceeval_iterator_sort_custom*(struct traceeval_iterator pass:[*]_iter_,
-+				   traceeval_cmp_fn _sort_fn_, void pass:[*]_data_);
-+	int *traceeval_iterator_next*(struct traceeval_iterator pass:[*]_iter_,
-+			    const struct traceeval_data pass:[**]_keys_);
-+	int *traceeval_iterator_query*(struct traceeval_iterator pass:[*]_iter_,
-+			     const struct traceeval_data pass:[**]_results_);
-+	void *traceeval_iterator_results_release*(struct traceeval_iterator pass:[*]_iter_,
-+					const struct traceeval_data pass:[*]_results_);
-+	struct traceeval_stat pass:[*]*traceeval_iterator_stat*(struct traceeval_iterator pass:[*]_iter_,
-+					       struct traceeval_type pass:[*]_type_);
-+	int *traceeval_iterator_remove*(struct traceeval_iterator pass:[*]_iter_);
- --
- 
- DESCRIPTION
++COPYING
++-------
++Copyright \(C) 2023 Google, llc.
+diff --git a/Documentation/manpage-1.72.xsl b/Documentation/manpage-1.72.xsl
+new file mode 100644
+index 000000000000..b4d315cb8c47
+--- /dev/null
++++ b/Documentation/manpage-1.72.xsl
+@@ -0,0 +1,14 @@
++<!-- manpage-1.72.xsl:
++     special settings for manpages rendered from asciidoc+docbook
++     handles peculiarities in docbook-xsl 1.72.0 -->
++<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
++		version="1.0">
++
++<xsl:import href="manpage-base.xsl"/>
++
++<!-- these are the special values for the roff control characters
++     needed for docbook-xsl 1.72.0 -->
++<xsl:param name="git.docbook.backslash">&#x2593;</xsl:param>
++<xsl:param name="git.docbook.dot"      >&#x2302;</xsl:param>
++
++</xsl:stylesheet>
+diff --git a/Documentation/manpage-base.xsl b/Documentation/manpage-base.xsl
+new file mode 100644
+index 000000000000..a264fa616093
+--- /dev/null
++++ b/Documentation/manpage-base.xsl
+@@ -0,0 +1,35 @@
++<!-- manpage-base.xsl:
++     special formatting for manpages rendered from asciidoc+docbook -->
++<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
++		version="1.0">
++
++<!-- these params silence some output from xmlto -->
++<xsl:param name="man.output.quietly" select="1"/>
++<xsl:param name="refentry.meta.get.quietly" select="1"/>
++
++<!-- convert asciidoc callouts to man page format;
++     git.docbook.backslash and git.docbook.dot params
++     must be supplied by another XSL file or other means -->
++<xsl:template match="co">
++	<xsl:value-of select="concat(
++			      $git.docbook.backslash,'fB(',
++			      substring-after(@id,'-'),')',
++			      $git.docbook.backslash,'fR')"/>
++</xsl:template>
++<xsl:template match="calloutlist">
++	<xsl:value-of select="$git.docbook.dot"/>
++	<xsl:text>sp&#10;</xsl:text>
++	<xsl:apply-templates/>
++	<xsl:text>&#10;</xsl:text>
++</xsl:template>
++<xsl:template match="callout">
++	<xsl:value-of select="concat(
++			      $git.docbook.backslash,'fB',
++			      substring-after(@arearefs,'-'),
++			      '. ',$git.docbook.backslash,'fR')"/>
++	<xsl:apply-templates/>
++	<xsl:value-of select="$git.docbook.dot"/>
++	<xsl:text>br&#10;</xsl:text>
++</xsl:template>
++
++</xsl:stylesheet>
+diff --git a/Documentation/manpage-bold-literal.xsl b/Documentation/manpage-bold-literal.xsl
+new file mode 100644
+index 000000000000..608eb5df6281
+--- /dev/null
++++ b/Documentation/manpage-bold-literal.xsl
+@@ -0,0 +1,17 @@
++<!-- manpage-bold-literal.xsl:
++     special formatting for manpages rendered from asciidoc+docbook -->
++<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
++		version="1.0">
++
++<!-- render literal text as bold (instead of plain or monospace);
++     this makes literal text easier to distinguish in manpages
++     viewed on a tty -->
++<xsl:template match="literal">
++	<xsl:value-of select="$git.docbook.backslash"/>
++	<xsl:text>fB</xsl:text>
++	<xsl:apply-templates/>
++	<xsl:value-of select="$git.docbook.backslash"/>
++	<xsl:text>fR</xsl:text>
++</xsl:template>
++
++</xsl:stylesheet>
+diff --git a/Documentation/manpage-normal.xsl b/Documentation/manpage-normal.xsl
+new file mode 100644
+index 000000000000..a48f5b11f3dc
+--- /dev/null
++++ b/Documentation/manpage-normal.xsl
+@@ -0,0 +1,13 @@
++<!-- manpage-normal.xsl:
++     special settings for manpages rendered from asciidoc+docbook
++     handles anything we want to keep away from docbook-xsl 1.72.0 -->
++<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
++		version="1.0">
++
++<xsl:import href="manpage-base.xsl"/>
++
++<!-- these are the normal values for the roff control characters -->
++<xsl:param name="git.docbook.backslash">\</xsl:param>
++<xsl:param name="git.docbook.dot"	>.</xsl:param>
++
++</xsl:stylesheet>
+diff --git a/Documentation/manpage-suppress-sp.xsl b/Documentation/manpage-suppress-sp.xsl
+new file mode 100644
+index 000000000000..a63c7632a87d
+--- /dev/null
++++ b/Documentation/manpage-suppress-sp.xsl
+@@ -0,0 +1,21 @@
++<!-- manpage-suppress-sp.xsl:
++     special settings for manpages rendered from asciidoc+docbook
++     handles erroneous, inline .sp in manpage output of some
++     versions of docbook-xsl -->
++<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
++		version="1.0">
++
++<!-- attempt to work around spurious .sp at the tail of the line
++     that some versions of docbook stylesheets seem to add -->
++<xsl:template match="simpara">
++  <xsl:variable name="content">
++    <xsl:apply-templates/>
++  </xsl:variable>
++  <xsl:value-of select="normalize-space($content)"/>
++  <xsl:if test="not(ancestor::authorblurb) and
++                not(ancestor::personblurb)">
++    <xsl:text>&#10;&#10;</xsl:text>
++  </xsl:if>
++</xsl:template>
++
++</xsl:stylesheet>
+diff --git a/check-manpages.sh b/check-manpages.sh
+new file mode 100755
+index 000000000000..07acc12ecbc4
+--- /dev/null
++++ b/check-manpages.sh
+@@ -0,0 +1,63 @@
++#!/bin/bash
++# SPDX-License-Identifier: LGPL-2.1
++# Copyright (C) 2022, Google Inc, Steven Rostedt <rostedt@goodmis.org>
++#
++# This checks if any function is listed in a man page that is not listed
++# in the main man page.
++
++if [ $# -lt 1 ]; then
++	echo "usage: check-manpages man-page-path"
++	exit 1
++fi
++
++cd $1
++
++MAIN=libtraceeval
++MAIN_FILE=${MAIN}.txt
++
++PROCESSED=""
++
++# Ignore man pages that do not contain functions
++IGNORE=""
++
++for man in ${MAIN}-*.txt; do
++
++	for a in `sed -ne '/^NAME/,/^SYNOP/{/^[a-z]/{s/, *$//;s/,/\n/g;s/ //g;s/-.*$/-/;/-/{s/-//p;q};p}}' $man`; do
++		if [ "${PROCESSED/:${a} /}" != "${PROCESSED}" ]; then
++			P="${PROCESSED/:${a} */}"
++			echo "Found ${a} in ${man} and in ${P/* /}"
++		fi
++		PROCESSED="${man}:${a} ${PROCESSED}"
++		if [ "${IGNORE/$man/}" != "${IGNORE}" ]; then
++			continue
++		fi
++		if ! grep -q '\*'${a}'\*' $MAIN_FILE; then
++			if [ "$last" == "" ]; then
++				echo
++			fi
++			if [ "$last" != "$man" ]; then
++				echo "Missing functions from $MAIN_FILE that are in $man"
++				last=$man
++			fi
++			echo "   ${a}"
++		fi
++	done
++done
++
++# traceeval_init_data_size is not deprecated, but users shouldn't be using it directly.
++DEPRECATED="*traceeval_init_data_size*"
++
++last=""
++sed -ne 's/^[a-z].*[ \*]\([a-z_][a-z_]*\)(.*/\1/p' -e 's/^\([a-z_][a-z_]*\)(.*/\1/p' ../include/traceeval.h | while read f; do
++	if ! grep -q '\*'${f}'\*' $MAIN_FILE; then
++		if [ "${DEPRECATED/\*$f\*/}" != "${DEPRECATED}" ]; then
++			continue;
++		fi
++		if [ "$last" == "" ]; then
++			echo
++			echo "Missing functions from $MAIN_FILE that are in traceeval.h"
++			last=$f
++		fi
++		echo "   ${f}"
++	fi
++done
 -- 
 2.40.1
 
