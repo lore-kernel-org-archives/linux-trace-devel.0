@@ -1,20 +1,20 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61C63629
-	for <linux-trace-devel@vger.kernel.org>; Fri,  6 Oct 2023 00:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B452A111F
+	for <linux-trace-devel@vger.kernel.org>; Fri,  6 Oct 2023 01:22:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74888C433C7;
-	Fri,  6 Oct 2023 00:50:19 +0000 (UTC)
-Date: Thu, 5 Oct 2023 20:51:29 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6887CC433C7;
+	Fri,  6 Oct 2023 01:22:35 +0000 (UTC)
+Date: Thu, 5 Oct 2023 21:22:33 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: Ross Zwisler <zwisler@google.com>, Stevie Alvarez
+Cc: Ross Zwisler <zwisler@google.com>, Stevie Alvarez 
  <stevie.6strings@gmail.com>
-Subject: [PATCH] libtraceeval: Have TRACEEVAL_ARRAY_SIZE() handle NULL
+Subject: [PATCH v2] libtraceeval: Have TRACEEVAL_ARRAY_SIZE() handle NULL
  pointer
-Message-ID: <20231005205129.6d6cbfad@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Message-ID: <20231005212233.22ae4e13@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -35,11 +35,11 @@ that:
 
    (void *)vals == NULL ? TRACEEVAL_ARRAY_SIZE(vals))
 
-Would solve this, but gcc was still actually giving a warning about
+Would solve this, but it gcc was actually still giving a warning about
 
   warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements
 
-And now it even fails to build with the magic check.
+But now it actually fails to build with the magic check.
 
 Change TRACEEVAL_ARRAY_SIZE() to handle NULL for both keys and vals, by
 not only having:
@@ -47,8 +47,8 @@ not only having:
  #define TRACEEVAL_ARRAY_SIZE(data) \
 	((void *)(data) == NULL ?  0 : __TRACEEVAL_ARRAY_SIZE(data))
 
-As that is not enough, because gcc still evaluates the second part, and it
-will fail to build. To handle this, add the following:
+But that is not enough, as gcc still evaluates the second part, and it
+will fail to build. To handle this, change that to:
 
  #define __TRACEEVAL_ARRAY_SIZE(data)					\
 	((sizeof(data) / (sizeof((data)[0])) + 0) +			\
@@ -63,19 +63,21 @@ an array size).
 			 (void *)(data) != NULL));			\
 
 Added "&& (void *)(data) != NULL" that makes the above return false (zero)
-for a static array as well as NULL, which is exactly what we want.
+for a static array and NULL, which is exactly what we want.
 
 			})))
 
-No need to treat vals any different from keys.
-
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
+Changes since v1: https://lore.kernel.org/all/20231005205129.6d6cbfad@gandalf.local.home/
+
+- Fixed error in placement of parenthesis.
+
  include/traceeval.h | 14 +++++++++-----
  1 file changed, 9 insertions(+), 5 deletions(-)
 
 diff --git a/include/traceeval.h b/include/traceeval.h
-index bbf8f6ac7dd1..67fb1eaad501 100644
+index bbf8f6ac7dd1..d8095ba5c1a1 100644
 --- a/include/traceeval.h
 +++ b/include/traceeval.h
 @@ -29,13 +29,17 @@
@@ -85,7 +87,7 @@ index bbf8f6ac7dd1..67fb1eaad501 100644
 -#define TRACEEVAL_ARRAY_SIZE(data)					\
 -	((sizeof(data) / sizeof((data)[0])) +				\
 +#define __TRACEEVAL_ARRAY_SIZE(data)					\
-+	((sizeof(data) / (sizeof((data)[0])) + 0) +			\
++	((sizeof(data) / (sizeof((data)[0]) + 0)) +			\
  	(int)(sizeof(struct {						\
  		int:(-!!(__builtin_types_compatible_p(typeof(data),	\
 -						      typeof(&((data)[0]))))); \
