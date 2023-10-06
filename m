@@ -1,22 +1,22 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46CE930FA0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9130B30FA0
 	for <linux-trace-devel@vger.kernel.org>; Fri,  6 Oct 2023 20:11:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A376C433C7;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13E55C433C8;
 	Fri,  6 Oct 2023 20:11:04 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1qorBH-005oRl-2b;
+	id 1qorBH-005oRi-2V;
 	Fri, 06 Oct 2023 16:12:15 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: Ross Zwisler <zwisler@google.com>,
 	"Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 3/3] libtraceeval: Add man pages for libtraceeval_delta retrieving of deltas
-Date: Fri,  6 Oct 2023 16:12:14 -0400
-Message-Id: <20231006201214.1385447-4-rostedt@goodmis.org>
+Subject: [PATCH v2 2/3] libtraceeval: Add man pages for insert/remove/query of traceeval_delta items
+Date: Fri,  6 Oct 2023 16:12:13 -0400
+Message-Id: <20231006201214.1385447-3-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231006201214.1385447-1-rostedt@goodmis.org>
 References: <20231006201214.1385447-1-rostedt@goodmis.org>
@@ -32,35 +32,38 @@ From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
 Add man pages for:
 
- traceeval_delta_stat()
- traceeval_delta_stat_size()
- traceeval_delta_teval_get()
- traceeval_delta_teval_put()
- traceeval_iterator_delta_stat()
+ traceeval_delta_insert()
+ traceeval_delta_insert_size()
+ traceeval_delta_remove()
+ traceeval_delta_remove_size()
+ traceeval_delta_query()
+ traceeval_delta_query_size()
+ traceeval_delta_results_release()
 
-Link: https://lore.kernel.org/linux-trace-devel/20231006185405.1379249-4-rostedt@goodmis.org
+Link: https://lore.kernel.org/linux-trace-devel/20231006185405.1379249-3-rostedt@goodmis.org
 
 Cc: Ross Zwisler <zwisler@google.com>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/libtraceeval-delta-rest.txt | 308 ++++++++++++++++++++++
- Documentation/libtraceeval.txt            |  14 +
- 2 files changed, 322 insertions(+)
- create mode 100644 Documentation/libtraceeval-delta-rest.txt
+ Documentation/libtraceeval-delta-insert.txt | 122 ++++++++++++++++++++
+ Documentation/libtraceeval.txt              |  22 ++++
+ 2 files changed, 144 insertions(+)
+ create mode 100644 Documentation/libtraceeval-delta-insert.txt
 
-diff --git a/Documentation/libtraceeval-delta-rest.txt b/Documentation/libtraceeval-delta-rest.txt
+diff --git a/Documentation/libtraceeval-delta-insert.txt b/Documentation/libtraceeval-delta-insert.txt
 new file mode 100644
-index 000000000000..3b056fd480cc
+index 000000000000..23ef6b201fe9
 --- /dev/null
-+++ b/Documentation/libtraceeval-delta-rest.txt
-@@ -0,0 +1,308 @@
++++ b/Documentation/libtraceeval-delta-insert.txt
+@@ -0,0 +1,122 @@
 +libtraceeval(3)
 +===============
 +
 +NAME
 +----
-+traceeval_delta_stat, traceeval_delta_stat_size, traceeval_delta_teval_get,
-+traceeval_delta_teval_put, traceeval_iterator_delta_stat - Reading the libtraceeval_data elements
++traceeval_delta_insert, traceeval_delta_insert_size, traceeval_delta_remove,
++traceeval_delta_remove_size, traceeval_delta_query, traceeval_delta_query_size,
++traceeval_delta_results_release - Insert, remove, query traceeval delta elements
 +
 +SYNOPSIS
 +--------
@@ -68,271 +71,77 @@ index 000000000000..3b056fd480cc
 +--
 +*#include <traceeval.h>*
 +
-+struct traceeval_stat pass:[*]*traceeval_delta_stat*(struct traceeval_delta pass:[*]_tdelta_,
-+						 const struct traceeval_data pass:[*]_keys_)
-+struct traceeval_stat pass:[*]*traceeval_delta_stat_size*(struct traceeval_delta pass:[*]_tdelta_,
-+						 const struct traceeval_data pass:[*]_keys_,
-+						 size_t _nr_keys_);
 +
-+struct traceeval pass:[*]*traceeval_delta_teval_get*(struct traceeval_delta pass:[*]_tdelta_);
++int *traceeval_delta_insert*(struct traceeval_delta pass:[*]_tdelta_,
++			   const struct traceeval_data pass:[*]_keys_,
++			   const struct traceeval_data pass:[*]_vals_);
++int *traceeval_delta_insert_size*(struct traceeval_delta pass:[*]_tdelta_,
++				const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_,
++				const struct traceeval_data pass:[*]_vals_, size_t _nr_vals_);
 +
-+void *traceeval_delta_teval_put*(struct traceeval pass:[*]_teval_);
++int *traceeval_delta_remove*(struct traceeval_delta pass:[*]_tdelta_,
++			   const struct traceeval_data pass:[*]_keys_);
++int *traceeval_delta_remove_size*(struct traceeval_delta pass:[*]_tdelta_,
++				const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_);
 +
-+struct traceeval_stat pass:[*]*traceeval_iterator_delta_stat*(struct traceeval_iterator pass:[*]_iter_);
++int *traceeval_delta_query*(struct traceeval_delta pass:[*]_tdelta_, const struct traceeval_data pass:[*]_keys_,
++			  const struct traceeval_data pass:[**]_results_);
++int *traceeval_delta_query_size*(struct traceeval_delta pass:[*]_tdelta_,
++			       const struct traceeval_data pass:[*]_keys_,
++			       size_t nr_keys, const struct traceeval_data pass:[**]_results_);
++
++void *traceeval_delta_results_release*(struct traceeval_delta pass:[*]_tdelta_,
++				     const struct traceeval_data pass:[*]_results_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The traceeval_delta is used to record the time deltas between events. These
-+functions help show that information that was recorded.
++These functions manipulate the traceeval_delta created by *traceeval_delta_init*(3),
++and act very similar to the functions with the similar names for the traceeval
++element (see *traceeval_insert*(3)).
 +
-+The *traceeval_delta_stat()* function will return a traceeval_stat descriptor
-+(see *traceeval_stat*(3)) for the time delta that it recorded for the element
-+represented by _keys_. The delta is calculated from various calls to
-+*traceeval_delta_start*(3) and *traceeval_delta_stop*(3). Since the delta field
-+of a traceeval_delta is not visible from other routines (nor is it name), the
-+way to get the information for the delta is via the *traceeval_delta_stat()*
-+function.
 +
-+The *traceeval_delta_stat()* requires _keys_ to be a static array, if it is a
-+dynamic array, then *traceeval_delta_stat_size()* must be used instead. This function
-+provides a parameter, _nr_keys_, to specify how many elements _keys_ has. Note that
-+_keys_ must be the same size as the keys passed to *traceeval_delta_init*(3).
++The *traceveal_delta_insert()* will create a new instance if one does not exist
++that matches the _keys_, or it will update an existing one. Note, this will not
++modify the timestamp or delta associated with the instance. For new instances
++the timestamp and delta will be zero, and for existing ones, they will remain
++unchanged.
 +
-+The traceeval_delta does not provide any direct means to use an iterator, so
-+a handle to its internal traceeval can be used for this purpose with
-+*traceeval_delta_teval_get()*. This will return the internal traceeval handle for
-+the given _tdelta traceeval_delta descriptor. The returned traceeval should only
-+be used with iterators, as other functions that take a traceeval descriptor will
-+likely have undefined results if used.
++Note that the _keys_ and _vals_ for *traceeval_data_insert()* must be static arrays.
++If dynamic arrays are required, then use *traceeval_data_insert_size()* that
++takes two additional arguments: _nr_keys_ to denote how many _keys_ are there,
++and _nr_vals_ for the number of _vals_.
 +
-+When finished with the traceeval handle retrieved from traceeval_delta_teval_get(),
-+the _teval_ should be passed to *traceeval_delta_teval_put()* to clean up any
-+resources that were allocated.
++Use *traceeval_delta_remove()* or *traceeval_delta_remove_size()* to remove
++an instance matching the _keys_ from the traceeval_delta. The difference between
++the two functions is that *traceeval_delta_remove()* requires _keys_ to be a
++static array.
 +
-+Because the delta stored in traceeval_delta is hidden, when using an iterator on
-+a traceeval that came from *traceeval_delta_teval_get()*, the *traceeval_iterator_delta_stat()*
-+can be used to retrieve the traceeval_stat that represents the internal delta
-+of the traceeval_delta the traceeval the iterator is using came from.
++The *traceeval_delta_query()* will return the element that matches the _keys_. The
++_keys_ must be a static array that is the same size as the key types defined by
++*traceeval_init()*. If an element is found, it will fill in the _results_
++pointer to point to the content of the values for the given element. The
++results must be released with *traceeval_delta_results_release()*.
++
++The *traceeval_delta_results_release()* will release any necessary resources that a
++*traceeval_delta_query()* may have added to return the _results_.
 +
 +RETURN VALUE
 +------------
-+The *traceeval_iterator_get()* returns a traceeval_iterator descriptor that will iterate
-+over the given _teval_ on success, and NULL on error.
++The *traceeval_delta_insert()* and *traceeval_delta_insert_size()* return 0 on succes and -1 on error.
 +
-+The *traceeval_iterator_sort()* and traceeval_iterator_sort_custom()* return 0 on success and -1 or error.
++The *traceeval_delta_remove()* and *traceeval_delta_remove_size()* returns 1 if the item was found and removed,
++0 if the item was not found, and -1 on an error (like invalid keys).
 +
-+The *traceeval_iterator_next()* returns 1 when it reads a new element from the traceeval and places the element's
-+keys into _keys_. It returns 0 when there's no more elements to read and -1 on error.
++The *traceeval_delta_query()* and *traceveal_delta_query_size()* return 1 if the item is found that matches
++the _keys_ and _results_ will contain the values of the last values of that time. It will return
++0 if not found, and -1 on error (like invalid keys).
 +
-+The *traceeval_iterator_query()* returns 1 if it successfully reads the current element from the
-+*traceeval_iterator_next()* and places the values in _results_. It returns 0 if there are no more elements,
-+and -1 on error.
-+
-+The *traceeval_iterator_stat()* returns a descriptor for the current element's given _field_ on success and
-+NULL if there are no current elements or the _field_ is not a valid stat type.
-+
-+The *traceeval_iterator_remove()* returns 1 if the current element was successfully removed, or 0
-+if there was no element (called before *traceeval_iterator_next()*).
 +
 +EXAMPLE
 +-------
-+[source,c]
-+--
-+#include <trace-cmd.h>
-+#include <traceeval.h>
-+
-+static struct traceeval_type task_types[] = {
-+	{
-+		.name		= "COMM",
-+		.type		= TRACEEVAL_TYPE_STRING,
-+	},
-+	{
-+		.name		= "PID",
-+		.type		= TRACEEVAL_TYPE_NUMBER,
-+	}
-+};
-+
-+static struct traceeval_type cpu_types[] = {
-+	{
-+		.name		= "CPU",
-+		.type		= TRACEEVAL_TYPE_NUMBER,
-+	}
-+};
-+
-+struct data {
-+	struct traceeval_delta		*tdelta_tasks;
-+	struct traceeval_delta		*tdelta_cpus;
-+};
-+
-+static struct tep_format_field *get_field(struct tep_event *event, const char *name)
-+{
-+	static struct tep_format_field *field;
-+
-+	field = tep_find_field(event, name);
-+	if (!field) {
-+		fprintf(stderr, "Could not find field %s for %s", name, event->name);
-+		exit(-1);
-+	}
-+
-+	return field;
-+}
-+
-+static int switch_func(struct tracecmd_input *handle, struct tep_event *event,
-+		       struct tep_record *record, int cpu, void *d)
-+{
-+	static struct tep_format_field *prev_comm;
-+	static struct tep_format_field *prev_pid;
-+	static struct tep_format_field *next_comm;
-+	static struct tep_format_field *next_pid;
-+	struct traceeval_data task_keys[2];
-+	struct traceeval_data cpu_keys[1];
-+	struct data *data = d;
-+	unsigned long long val;
-+	const char *comm;
-+
-+	if (!next_comm) {
-+		prev_comm = get_field(event, "prev_comm");
-+		prev_pid = get_field(event, "prev_pid");
-+
-+		next_comm = get_field(event, "next_comm");
-+		next_pid = get_field(event, "next_pid");
-+	}
-+
-+	comm = record->data + prev_comm->offset;
-+	tep_read_number_field(prev_pid, record->data, &val);
-+
-+	TRACEEVAL_SET_CSTRING(task_keys[0], comm);
-+	TRACEEVAL_SET_NUMBER(task_keys[1], val);
-+
-+	if (val)
-+		traceeval_delta_stop(data->tdelta_tasks, task_keys, record->ts);
-+
-+	comm = record->data + next_comm->offset;
-+	tep_read_number_field(next_pid, record->data, &val);
-+
-+	TRACEEVAL_SET_CSTRING(task_keys[0], comm);
-+	TRACEEVAL_SET_NUMBER(task_keys[1], val);
-+
-+	TRACEEVAL_SET_NUMBER(cpu_keys[0], record->cpu);
-+
-+	if (val) {
-+		if (traceeval_delta_start(data->tdelta_tasks, task_keys, record->ts) < 0)
-+			printf("FAILED\n");
-+		traceeval_delta_continue(data->tdelta_cpus, cpu_keys, record->ts);
-+	} else {
-+		traceeval_delta_stop(data->tdelta_cpus, cpu_keys, record->ts);
-+	}
-+
-+	return 0;
-+}
-+
-+static void print_microseconds(int idx, unsigned long long nsecs)
-+{
-+	unsigned long long usecs;
-+
-+	usecs = nsecs / 1000;
-+	if (!nsecs || usecs)
-+		printf("%*lld", idx, usecs);
-+	else
-+		printf("%*d.%03lld", idx, 0, nsecs);
-+}
-+
-+static void print_stat(struct traceeval_stat *stat)
-+{
-+	unsigned long long total;
-+	unsigned long long cnt;
-+	unsigned long long ts;
-+
-+	printf("\tmax: ");
-+	print_microseconds(12, traceeval_stat_max_timestamp(stat, &ts));
-+	printf("  timestamp: ");
-+	print_microseconds(10, ts);
-+	printf("\n\tmin: ");
-+	print_microseconds(12, traceeval_stat_min_timestamp(stat, &ts));
-+	printf("  timestamp: ");
-+	print_microseconds(10, ts);
-+	printf("\n\ttotal: ");
-+	total = traceeval_stat_total(stat);
-+	print_microseconds(10, total);
-+	cnt = traceeval_stat_count(stat);
-+	printf("\n\tcount: %*lld\n", 10, cnt);
-+	printf("\taverage:");
-+	print_microseconds(9, cnt ? total / cnt : 0);
-+	printf("\n");
-+}
-+
-+static void display_cpus(struct traceeval_delta *tdelta)
-+{
-+	struct traceeval *teval = traceeval_delta_teval_get(tdelta);
-+	struct traceeval_iterator *iter = traceeval_iterator_get(teval);
-+	const struct traceeval_data *keys;
-+
-+	printf("\n");
-+
-+	traceeval_iterator_sort(iter, cpu_types[0].name, 0, true);
-+
-+	while (traceeval_iterator_next(iter, &keys) > 0) {
-+		struct traceeval_stat *stat;
-+
-+		stat = traceeval_iterator_delta_stat(iter);
-+
-+		printf("CPU [%zd]:\n", keys[0].number);
-+		print_stat(stat);
-+	}
-+	traceeval_delta_teval_put(teval);
-+}
-+
-+static void display_tasks(struct traceeval_delta *tdelta)
-+{
-+	struct traceeval *teval = traceeval_delta_teval_get(tdelta);
-+	struct traceeval_iterator *iter = traceeval_iterator_get(teval);
-+	const struct traceeval_data *keys;
-+
-+	printf("\n");
-+
-+	traceeval_iterator_sort(iter, task_types[0].name, 0, true);
-+	traceeval_iterator_sort(iter, task_types[1].name, 1, true);
-+
-+	while (traceeval_iterator_next(iter, &keys) > 0) {
-+		struct traceeval_stat *stat;
-+
-+		stat = traceeval_iterator_delta_stat(iter);
-+
-+		printf("Task %s [%zd]:\n", keys[0].cstring, keys[1].number);
-+		print_stat(stat);
-+	}
-+
-+	traceeval_delta_teval_put(teval);
-+};
-+
-+int main (int argc, char **argv)
-+{
-+	struct tracecmd_input *handle;
-+	struct data data;
-+
-+	if (argc < 2) {
-+		printf("Need to pass trace.dat file to this\n");
-+		exit(-1);
-+	}
-+
-+	handle = tracecmd_open(argv[1], TRACECMD_FL_LOAD_NO_PLUGINS);
-+
-+	data.tdelta_tasks = traceeval_delta_init(task_types, NULL);
-+	data.tdelta_cpus = traceeval_delta_init(cpu_types, NULL);
-+
-+	tracecmd_follow_event(handle, "sched", "sched_switch", switch_func, &data);
-+	tracecmd_iterate_events(handle, NULL, 0, NULL, NULL);
-+
-+	display_cpus(data.tdelta_cpus);
-+	display_tasks(data.tdelta_tasks);
-+
-+	traceeval_delta_release(data.tdelta_cpus);
-+	traceeval_delta_release(data.tdelta_tasks);
-+
-+	return 0;
-+}
-+--
++The usage for these functions are the same as the functions with similar names with
++traceeval, and referencing those functions will give the same use cases.
 +
 +FILES
 +-----
@@ -346,7 +155,14 @@ index 000000000000..3b056fd480cc
 +
 +SEE ALSO
 +--------
-+*libtraceeval*(3)
++*libtraceeval*(3),
++*traceeval_insert*(3),
++*traceeval_insert_size*(3),
++*traceeval_remove*(3),
++*traceeval_remove_size*(3),
++*traceeval_query*(3),
++*traceeval_query_size*(3),
++*traceeval_results_release*(3)
 +
 +AUTHOR
 +------
@@ -363,27 +179,35 @@ index 000000000000..3b056fd480cc
 +libtraceeval is licensed under MIT.
 +
 diff --git a/Documentation/libtraceeval.txt b/Documentation/libtraceeval.txt
-index 68fc182f7c46..f30d427255e1 100644
+index 4d23ba0c5928..68fc182f7c46 100644
 --- a/Documentation/libtraceeval.txt
 +++ b/Documentation/libtraceeval.txt
-@@ -125,6 +125,20 @@ Handling insertion, deletion and querying of traceeval_delta elements:
- 
- 	void *traceeval_delta_results_release*(struct traceeval_delta pass:[*]_tdelta_,
- 				     const struct traceeval_data pass:[*]_results_);
+@@ -103,6 +103,28 @@ Handling delta times between events:
+ 	int *traceeval_delta_continue_size*(struct traceeval_delta pass:[*]_tdelta_,
+ 				  const struct traceeval_data pass:[*]keys, size_t _nr_keys_,
+ 				  unsigned long long _timestamp_);
 +
-+Handling reading the deltas of a traceeval_delta:
-+	struct traceeval_stat pass:[*]*traceeval_delta_stat*(struct traceeval_delta pass:[*]_tdelta_,
-+						 const struct traceeval_data pass:[*]_keys_)
-+	struct traceeval_stat pass:[*]*traceeval_delta_stat_size*(struct traceeval_delta pass:[*]_tdelta_,
-+						 const struct traceeval_data pass:[*]_keys_,
-+						 size_t _nr_keys_);
++Handling insertion, deletion and querying of traceeval_delta elements:
++	int *traceeval_delta_insert*(struct traceeval_delta pass:[*]_tdelta_,
++			   const struct traceeval_data pass:[*]_keys_,
++			   const struct traceeval_data pass:[*]_vals_);
++	int *traceeval_delta_insert_size*(struct traceeval_delta pass:[*]_tdelta_,
++				const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_,
++				const struct traceeval_data pass:[*]_vals_, size_t _nr_vals_);
 +
-+	struct traceeval pass:[*]*traceeval_delta_teval_get*(struct traceeval_delta pass:[*]_tdelta_);
++	int *traceeval_delta_remove*(struct traceeval_delta pass:[*]_tdelta_,
++			   const struct traceeval_data pass:[*]_keys_);
++	int *traceeval_delta_remove_size*(struct traceeval_delta pass:[*]_tdelta_,
++				const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_);
 +
-+	void *traceeval_delta_teval_put*(struct traceeval_delta pass:[*]_tdelta_,
-+			       struct traceeval pass:[*]_teval_);
++	int *traceeval_delta_query*(struct traceeval_delta pass:[*]_tdelta_, const struct traceeval_data pass:[*]_keys_,
++			  const struct traceeval_data pass:[**]_results_);
++	int *traceeval_delta_query_size*(struct traceeval_delta pass:[*]_tdelta_,
++			       const struct traceeval_data pass:[*]_keys_,
++			       size_t nr_keys, const struct traceeval_data pass:[**]_results_);
 +
-+	struct traceeval_stat pass:[*]*traceeval_iterator_delta_stat*(struct traceeval_iterator pass:[*]_iter_);
++	void *traceeval_delta_results_release*(struct traceeval_delta pass:[*]_tdelta_,
++				     const struct traceeval_data pass:[*]_results_);
  --
  
  DESCRIPTION
