@@ -1,23 +1,25 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7774121C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F5F54122A
 	for <linux-trace-devel@vger.kernel.org>; Fri,  6 Oct 2023 19:54:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1845C433CD;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95099C433C8;
 	Fri,  6 Oct 2023 19:54:25 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1qoqvC-005o90-0f;
+	id 1qoqvC-005o99-0y;
 	Fri, 06 Oct 2023 15:55:38 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: Ross Zwisler <zwisler@google.com>,
 	"Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 0/5] libtraceeval: Add man pages
-Date: Fri,  6 Oct 2023 15:55:31 -0400
-Message-Id: <20231006195536.1384287-1-rostedt@goodmis.org>
+Subject: [PATCH v2 3/5] libtraceeval: Add man pages for insertion and removal of elements in a traceeval
+Date: Fri,  6 Oct 2023 15:55:34 -0400
+Message-Id: <20231006195536.1384287-4-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231006195536.1384287-1-rostedt@goodmis.org>
+References: <20231006195536.1384287-1-rostedt@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -28,54 +30,459 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-This series adds the man pages for all the currently defined APIs in
-traceeval.h.
+Add man pages for:
 
-Changes since v1: https://lore.kernel.org/all/20231005232450.1311519-1-rostedt@goodmis.org/
+ traceeval_insert()
+ traceeval_insert_size()
+ traceeval_remove()
+ traceeval_remove_size()
+ traceeval_query()
+ traceeval_query_size()
+ traceeval_results_release()
+ traceeval_count()
 
- - Made one of the examples a bit smaller (was too big, although it's still pretty big)
+Link: https://lore.kernel.org/linux-trace-devel/20231005232450.1311519-4-rostedt@goodmis.org
 
- - Fixed up missing traceeval_iterator_put() in the examples.
-
-Steven Rostedt (Google) (5):
-  libtraceeval: Start creating the documentation man pages
-  libtraceeval: Add man pages for creating and releasing the traceeval
-    descriptor
-  libtraceeval: Add man pages for insertion and removal of elements in a
-    traceeval
-  libtraceeval: Add man pages for the traceeval iterator functions
-  libtraceeval: Add man pages for traceeval statistics
-
- Documentation/.gitignore                |   4 +
- Documentation/Makefile                  | 247 +++++++
- Documentation/asciidoc.conf             | 120 +++
- Documentation/libtraceeval-init.txt     | 395 ++++++++++
- Documentation/libtraceeval-insert.txt   | 390 ++++++++++
- Documentation/libtraceeval-iterator.txt | 921 ++++++++++++++++++++++++
- Documentation/libtraceeval-stat.txt     | 308 ++++++++
- Documentation/libtraceeval.txt          | 118 +++
- Documentation/manpage-1.72.xsl          |  14 +
- Documentation/manpage-base.xsl          |  35 +
- Documentation/manpage-bold-literal.xsl  |  17 +
- Documentation/manpage-normal.xsl        |  13 +
- Documentation/manpage-suppress-sp.xsl   |  21 +
- check-manpages.sh                       |  63 ++
- 14 files changed, 2666 insertions(+)
- create mode 100644 Documentation/.gitignore
- create mode 100644 Documentation/Makefile
- create mode 100644 Documentation/asciidoc.conf
- create mode 100644 Documentation/libtraceeval-init.txt
+Cc: Ross Zwisler <zwisler@google.com>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ Documentation/libtraceeval-insert.txt | 390 ++++++++++++++++++++++++++
+ Documentation/libtraceeval.txt        |  25 ++
+ 2 files changed, 415 insertions(+)
  create mode 100644 Documentation/libtraceeval-insert.txt
- create mode 100644 Documentation/libtraceeval-iterator.txt
- create mode 100644 Documentation/libtraceeval-stat.txt
- create mode 100644 Documentation/libtraceeval.txt
- create mode 100644 Documentation/manpage-1.72.xsl
- create mode 100644 Documentation/manpage-base.xsl
- create mode 100644 Documentation/manpage-bold-literal.xsl
- create mode 100644 Documentation/manpage-normal.xsl
- create mode 100644 Documentation/manpage-suppress-sp.xsl
- create mode 100755 check-manpages.sh
 
+diff --git a/Documentation/libtraceeval-insert.txt b/Documentation/libtraceeval-insert.txt
+new file mode 100644
+index 000000000000..138c3d2fd0b8
+--- /dev/null
++++ b/Documentation/libtraceeval-insert.txt
+@@ -0,0 +1,390 @@
++libtraceeval(3)
++===============
++
++NAME
++----
++traceeval_insert, traceeval_insert_size, traceeval_remove, traceeval_remove_size,
++traceeval_query, traceeval_query_size, traceeval_results_release, traceeval_count - Insert, remove and query traceeval elements
++
++SYNOPSIS
++--------
++[verse]
++--
++*#include <traceeval.h>*
++
++int *traceeval_insert*(struct traceeval pass:[*]_teval_,
++			  const struct traceeval_data pass:[*]_keys_,
++			  const struct traceeval_data pass:[*]_vals_);
++
++int *traceeval_insert_size*(struct traceeval pass:[*]_teval_,
++			  const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_,
++			  const struct traceeval_data pass:[*]_vals_, size_t _nr_vals_);
++
++int *traceeval_remove*(struct traceeval pass:[*]_teval_, const struct traceeval_data pass:[*]_keys_);
++
++int *traceeval_remove_size*(struct traceeval pass:[*]_teval_,
++			  const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_);
++
++int *traceeval_query*(struct traceeval pass:[*]_teval_, const struct traceeval_data pass:[*]_keys_,
++			 const struct traceeval_data pass:[**]_results_);
++
++int *traceeval_query_size*(struct traceeval pass:[*]_teval_, const struct traceeval_data pass:[*]_keys_,
++			 size_t _nr_keys_, const struct traceeval_data pass:[**]_results_);
++
++void *traceeval_results_release*(struct traceeval pass:[*]_teval_,
++			       const struct traceeval_data pass:[**]_results_);
++
++size_t *traceeval_count*(struct traceeval pass:[*]_teval_);
++--
++
++DESCRIPTION
++-----------
++These functions deal with inserting, finding and removing elements from the
++traceeval descriptor.
++
++The *traceeval_insert()* will add a new or update a current element into the
++given _teval_. The _keys_ must be a static array that is the same size as the
++key types given to *traceeval_init*(3). The same is true for the _vals_, as
++they must be an array of the same size as the val type array given. Both _keys_
++and _vals_ are of type struct traceeval_data.
++
++[verse]
++--
++struct traceeval_data {
++	enum traceeval_data_type		type;
++	union {
++		char				*string;
++		const char			*cstring;
++		void				*pointer;
++		unsigned long			number;
++		unsigned long long		number_64;
++		unsigned int			number_32;
++		unsigned short			number_16;
++		unsigned char			number_8;
++	};
++};
++--
++
++For each _keys_ and _vals_ their types must match the keys and vals of the
++types passed to *traceeval_init*(3).
++
++The struct traceeval_data then has a union that represent each of the types.
++For example, a data field with a key type defined as TRACEEVAL_TYPE_POINTER,
++must use the _pointer_ union field.
++
++*traceveal_insert()* will make a copy of each of the _keys_ and _vals_ passed
++in. As to pass in a constant string, the field _cstring_ was added to allow
++constants to be passed to the function.
++
++Like *traceeval_init*(3), elements can also be inserted or updated updated with
++dynamically allocatend _keys_ and _vals_ with *traceeval_insert_size()*. This
++takes two more values: _nr_keys_ and _nr_vals_ to denote the size. This is to
++test against the key and val types registered in *traceeval_init*(3) to make
++sure they match. Once again, *traceeval_insert()* is really just a macro
++defined to pass in the array sizes to *traceeval_insert_size()*.
++
++In order to facilitate assgining the struct traceeval_data to the proper types,
++macros should be used.
++
++For initializing data:
++
++[verse]
++--
++*DEFINE_TRACEEVAL_NUMBER*(_data_) - assign a natural word size (size_t).
++*DEFINE_TRACEEVAL_NUMBER_8*(_data_) - assign an 8 bit value (char).
++*DEFINE_TRACEEVAL_NUMBER_16*(_data_) - assign a 16 bit value (short)
++*DEFINE_TRACEEVAL_NUMBER_32*(_data_) - assign a 32 bit value (int)
++*DEFINE_TRACEEVAL_NUMBER_64*(_data_) - assign a 64 bit value (long long).
++*DEFINE_TRACEEVAL_STRING*(_data_) - assign a nul terminated string value.
++*DEFINE_TRACEEVAL_CSTRING*(_data_) - assign a constant nul terminated string value.
++*DEFINE_TRACEEVAL_POINTER*(_data_) - assign a pointer value.
++
++static int foo(const char *str, int val)
++{
++	struct traceeval_data keys[] = {
++			DEFINE_TRACEEVAL_CSTRING(	str	),
++			DEFINE_TRACEEVAL_NUMBER(	val	),
++	};
++	[..]
++--
++
++There are also macros to set the data later:
++
++[verse]
++--
++TRACEEVAL_SET_NUMBER(_data_, _val_) - assign a natural word size (size_t)
++TRACEEVAL_SET_NUMBER_8(_data_, _val_) - assign an 8 bit value (char).
++TRACEEVAL_SET_NUMBER_16(_data_, _val_) - assign an 16 bit value (short).
++TRACEEVAL_SET_NUMBER_32(_data_, _val_) - assign an 32 bit value (int).
++TRACEEVAL_SET_NUMBER_64(_data_, _val_) - assign an 64 bit value (long long).
++--
++
++
++The *traceeval_query()* will return the element that matches the _keys_. The
++_keys_ must be a static array that is the same size as the key types defined by
++*traceeval_init()*. If an element is found, it will fill in the _results_
++pointer to point to the content of the values for the given element. The
++results must be released with *traceeval_results_release()*.
++
++Similar to *traceeval_init*(3) and *traceeval_insert()*, there's a
++*traceeval_queury_size()* that takes the size of the key array and allows for
++dynamic arrays to be passed to it.
++
++The *traceeval_results_release()* will release any necessary resources that a
++*traceeval_query()* may have added to return the _results_.
++
++The *traceeval_count()* will return the number of elements in the _teval_.
++
++RETURN VALUE
++------------
++The *traceeval_insert()* and *traceeval_insert_size()* return 0 on succes and -1 on error.
++
++The *traceeval_remove()* and *traceeval_remove_size()* returns 1 if the item was found and removed,
++0 if the item was not found, and -1 on an error (like invalid keys).
++
++The *traceeval_query()* and *traceveal_query_size()* return 1 if the item is found that matches
++the _keys_ and _results_ will contain the values of the last values of that time. It will return
++0 if not found, and -1 on error (like invalid keys).
++
++The *traceeval_count()* returns the number of elements currently in the _teval_.
++
++EXAMPLE
++-------
++[source,c]
++--
++#include <unistd.h>
++#include <sys/wait.h>
++#include <tracefs.h>
++#include <traceeval.h>
++
++struct data {
++	struct traceeval		*teval_wakeup;
++	struct traceeval		*teval_sched;
++};
++
++struct traceeval_type wakeup_keys[] = {
++	{
++		.name		= "PID",
++		.type		= TRACEEVAL_TYPE_NUMBER,
++	}
++};
++
++struct traceeval_type wakeup_vals[] = {
++	{
++		.name		= "timestamp",
++		.flags		= TRACEEVAL_FL_TIMESTAMP,
++		.type		= TRACEEVAL_TYPE_NUMBER_64,
++	}
++};
++
++struct traceeval_type sched_keys[] = {
++	{
++		.name		= "COMM",
++		.type		= TRACEEVAL_TYPE_STRING,
++	},
++	{
++		.name		= "PID",
++		.type		= TRACEEVAL_TYPE_NUMBER,
++	}
++};
++
++struct traceeval_type sched_vals[] = {
++	{
++		.name		= "timestamp",
++		.flags		= TRACEEVAL_FL_TIMESTAMP,
++		.type		= TRACEEVAL_TYPE_NUMBER_64,
++	},
++	{
++		.name		= "delta",
++		.flags		= TRACEEVAL_FL_STAT,
++		.type		= TRACEEVAL_TYPE_NUMBER_64,
++	}
++};
++
++static int wakeup_callback(struct tep_event *event, struct tep_record *record, int cpu, void *d)
++{
++	static struct tep_format_field *pid_field;
++	struct data *data = d;
++	unsigned long long val;
++	long pid;
++	struct traceeval_data keys[1];
++	struct traceeval_data vals[1];
++
++	if (!pid_field)
++		pid_field = tep_find_field(event, "pid");
++
++	tep_read_number_field(pid_field, record->data, &val);
++	pid = val;
++
++	TRACEEVAL_SET_NUMBER(keys[0], pid);
++	TRACEEVAL_SET_NUMBER_64(vals[0], record->ts);
++
++	traceeval_insert(data->teval_wakeup, keys, vals);
++
++	return 0;
++}
++
++static int sched_callback(struct tep_event *event, struct tep_record *record, int cpu, void *d)
++{
++	static struct tep_format_field *next_pid_field;
++	static struct tep_format_field *next_comm_field;
++	struct data *data = d;
++	unsigned long long delta;
++	unsigned long long val;
++	long pid;
++	struct traceeval_data wakeup_keys[1];
++	struct traceeval_data keys[2];
++	struct traceeval_data vals[2];
++	const struct traceeval_data *results;
++
++	if (!next_pid_field) {
++		next_pid_field = tep_find_field(event, "next_pid");
++		next_comm_field = tep_find_field(event, "next_comm");
++	}
++
++	tep_read_number_field(next_pid_field, record->data, &val);
++	pid = val;
++
++	TRACEEVAL_SET_NUMBER(wakeup_keys[0], pid);
++
++	if (traceeval_query(data->teval_wakeup, wakeup_keys, &results) <= 0)
++		return 0;
++
++	delta = record->ts - results[0].number_64;
++	traceeval_results_release(data->teval_wakeup, results);
++
++	TRACEEVAL_SET_CSTRING(keys[0], record->data + next_comm_field->offset);
++	TRACEEVAL_SET_NUMBER(keys[1], pid);
++
++	TRACEEVAL_SET_NUMBER_64(vals[0], record->ts);
++	TRACEEVAL_SET_NUMBER_64(vals[1], delta);
++
++	traceeval_insert(data->teval_sched, keys, vals);
++
++	return 0;
++}
++
++static pid_t call_code(struct tracefs_instance *instance, int argc, char **argv)
++{
++	char pid_str[64];
++	pid_t pid;
++
++	pid = fork();
++
++	if (pid)
++		return pid;
++
++	sprintf(pid_str, "%d", getpid());
++
++	tracefs_instance_file_write(instance, "set_event_pid", pid_str);
++	tracefs_trace_on(instance);
++
++	execvp(argv[0], argv);
++	exit(-1);
++}
++
++static void show_latency(struct data *data)
++{
++	struct traceeval_iterator *iter = traceeval_iterator_get(data->teval_sched);
++	const struct traceeval_data *keys;
++
++	printf("\n");
++	while (traceeval_iterator_next(iter, &keys) > 0) {
++		struct traceeval_stat *stat;
++
++		stat = traceeval_iterator_stat(iter, sched_vals[1].name);
++		if (!stat)
++			continue;
++
++		printf("%s-%ld max:%lld min:%lld total:%lld count:%lld\n",
++		       keys[0].string, keys[1].number,
++		       traceeval_stat_max(stat),
++		       traceeval_stat_min(stat),
++		       traceeval_stat_total(stat),
++		       traceeval_stat_count(stat));
++	}
++	traceeval_iterator_put(iter);
++}
++
++static pid_t wait_pid;
++static bool done;
++
++static void sig(int sig)
++{
++	pid_t ret;
++
++	ret = waitpid(wait_pid, NULL, WNOHANG);
++	if (ret == wait_pid)
++		done = true;
++}
++
++int main (int argc, char **argv)
++{
++	struct tracefs_instance *instance;
++	struct tep_handle *tep;
++	struct data data;
++
++	if (argc < 2) {
++		printf("usage: wakeup_latency exec\n");
++		exit(-1);
++	}
++
++	data.teval_wakeup = traceeval_init(wakeup_keys, wakeup_vals);
++	data.teval_sched = traceeval_init(sched_keys, sched_vals);
++
++	tep = tracefs_local_events(NULL);
++
++	instance = tracefs_instance_create("wakeup_latency");
++	tracefs_trace_off(instance);
++	tracefs_event_enable(instance, "sched", "sched_waking");
++	tracefs_event_enable(instance, "sched", "sched_switch");
++
++	tracefs_follow_event(tep, instance, "sched", "sched_waking", wakeup_callback, &data);
++	tracefs_follow_event(tep, instance, "sched", "sched_switch", sched_callback, &data);
++
++	signal(SIGCHLD, sig);
++
++	wait_pid = call_code(instance, argc - 1, argv + 1);
++
++	do {
++		tracefs_iterate_raw_events(tep, instance, NULL, 0, NULL, NULL);
++	} while (!done);
++
++	tracefs_event_disable(instance, NULL, NULL);
++	tracefs_instance_destroy(instance);
++	tracefs_instance_free(instance);
++
++	show_latency(&data);
++
++	return 0;
++}
++--
++
++FILES
++-----
++[verse]
++--
++*traceval.h*
++	Header file to include in order to have access to the library APIs.
++*-ltraceeval*
++	Linker switch to add when building a program that uses the library.
++--
++
++SEE ALSO
++--------
++*libtraceeval*(3)
++
++AUTHOR
++------
++[verse]
++--
++*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceeval*.
++--
++REPORTING BUGS
++--------------
++Report bugs to  <linux-trace-devel@vger.kernel.org>
++
++LICENSE
++-------
++libtraceeval is licensed under MIT.
++
+diff --git a/Documentation/libtraceeval.txt b/Documentation/libtraceeval.txt
+index 83d69b6eeda1..9f753aaadf12 100644
+--- a/Documentation/libtraceeval.txt
++++ b/Documentation/libtraceeval.txt
+@@ -16,6 +16,31 @@ Creating and releasing the traceeval resources:
+ 	struct traceeval pass:[*]*traceeval_init_size*(struct traceeval_type pass:[*]_keys_, struct traceeval_type pass:[*]_vals_,
+ 				       int _nr_keys_, int _nr_vals_);
+ 	void *traceeval_release*(struct traceeval pass:[*]_teval_);
++
++Inserting and removing elements from the traceeval:
++	int *traceeval_insert*(struct traceeval pass:[*]_teval_,
++			  const struct traceeval_data pass:[*]_keys_,
++			  const struct traceeval_data pass:[*]_vals_);
++
++	int *traceeval_insert_size*(struct traceeval pass:[*]_teval_,
++			  const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_,
++			  const struct traceeval_data pass:[*]_vals_, size_t _nr_vals_);
++
++	int *traceeval_remove*(struct traceeval pass:[*]_teval_, const struct traceeval_data pass:[*]_keys_);
++
++	int *traceeval_remove_size*(struct traceeval pass:[*]_teval_,
++			  const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_);
++
++	int *traceeval_query*(struct traceeval pass:[*]_teval_, const struct traceeval_data pass:[*]_keys_,
++			 const struct traceeval_data pass:[**]_results_);
++
++	int *traceeval_query_size*(struct traceeval pass:[*]_teval_, const struct traceeval_data pass:[*]_keys_,
++			 size_t _nr_keys_, const struct traceeval_data pass:[**]_results_);
++
++	void *traceeval_results_release*(struct traceeval pass:[*]_teval_,
++			       const struct traceeval_data pass:[**]_results_);
++
++	size_t *traceeval_count*(struct traceeval pass:[*]_teval_);
+ --
+ 
+ DESCRIPTION
 -- 
 2.40.1
 
