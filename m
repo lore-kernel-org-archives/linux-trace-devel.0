@@ -1,216 +1,130 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9130B30FA0
-	for <linux-trace-devel@vger.kernel.org>; Fri,  6 Oct 2023 20:11:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0DAC171C2
+	for <linux-trace-devel@vger.kernel.org>; Sat,  7 Oct 2023 13:07:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13E55C433C8;
-	Fri,  6 Oct 2023 20:11:04 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.96)
-	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1qorBH-005oRi-2V;
-	Fri, 06 Oct 2023 16:12:15 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88FC0C433C8;
+	Sat,  7 Oct 2023 13:07:42 +0000 (UTC)
+Date: Sat, 7 Oct 2023 09:07:40 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-trace-devel@vger.kernel.org
-Cc: Ross Zwisler <zwisler@google.com>,
-	"Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 2/3] libtraceeval: Add man pages for insert/remove/query of traceeval_delta items
-Date: Fri,  6 Oct 2023 16:12:13 -0400
-Message-Id: <20231006201214.1385447-3-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231006201214.1385447-1-rostedt@goodmis.org>
-References: <20231006201214.1385447-1-rostedt@goodmis.org>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc: Ross Zwisler <zwisler@google.com>
+Subject: [PATCH v2] libtraceeval: Have TRACEEVAL_SET_*() functions fail on
+ wrong type
+Message-ID: <20231007090740.7b0963cf@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add man pages for:
+I've hit a few bugs using libtraceeval because of a common cut and paste
+error. To assign keys, the following is common to do:
 
- traceeval_delta_insert()
- traceeval_delta_insert_size()
- traceeval_delta_remove()
- traceeval_delta_remove_size()
- traceeval_delta_query()
- traceeval_delta_query_size()
- traceeval_delta_results_release()
+  TRACEEVAL_SET_STRING(keys[0], "string");
+  TRACEEVAL_SET_NUMBER(keys[0], 123);
 
-Link: https://lore.kernel.org/linux-trace-devel/20231006185405.1379249-3-rostedt@goodmis.org
+But the above has a bug! The second entry was supposed to be keys[1], and
+not keys[0]. This bug had me scratching my head a few times until I found
+it. The failure is that passing keys to traceeval_insert() or something
+similar, the traceeval_insert() will fail because it's expecting keys[0]
+to be a string, but the above converted it to a number.
 
-Cc: Ross Zwisler <zwisler@google.com>
+Help prevent this by passing a string into one of the NUMBER() macros or a
+number in the STRING() macro fail to build. It doesn't prevent all
+combinations as it is common to pass various size to NUMBER() for example:
+
+  unsigned long long val;
+  TRACEEVAL_SET_NUMBER_16(keys[0], val);
+
+The above is allowed, but a string should never go into a number and vice
+versa. Catching that should find some bugs at build.
+
+Nothing is done with TRACEEVAL_SET_POINTER() as pointers are totally the
+responsibility of the developer.
+
+This also requires that you can not just pass a void pointer to one of the
+STRING() macros and it requires a typecast now (as the samples had to be
+updated).
+
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/libtraceeval-delta-insert.txt | 122 ++++++++++++++++++++
- Documentation/libtraceeval.txt              |  22 ++++
- 2 files changed, 144 insertions(+)
- create mode 100644 Documentation/libtraceeval-delta-insert.txt
+Changes since v1: https://lore.kernel.org/linux-trace-devel/20231006131647.0bae5a20@gandalf.local.home
 
-diff --git a/Documentation/libtraceeval-delta-insert.txt b/Documentation/libtraceeval-delta-insert.txt
-new file mode 100644
-index 000000000000..23ef6b201fe9
---- /dev/null
-+++ b/Documentation/libtraceeval-delta-insert.txt
-@@ -0,0 +1,122 @@
-+libtraceeval(3)
-+===============
-+
-+NAME
-+----
-+traceeval_delta_insert, traceeval_delta_insert_size, traceeval_delta_remove,
-+traceeval_delta_remove_size, traceeval_delta_query, traceeval_delta_query_size,
-+traceeval_delta_results_release - Insert, remove, query traceeval delta elements
-+
-+SYNOPSIS
-+--------
-+[verse]
-+--
-+*#include <traceeval.h>*
-+
-+
-+int *traceeval_delta_insert*(struct traceeval_delta pass:[*]_tdelta_,
-+			   const struct traceeval_data pass:[*]_keys_,
-+			   const struct traceeval_data pass:[*]_vals_);
-+int *traceeval_delta_insert_size*(struct traceeval_delta pass:[*]_tdelta_,
-+				const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_,
-+				const struct traceeval_data pass:[*]_vals_, size_t _nr_vals_);
-+
-+int *traceeval_delta_remove*(struct traceeval_delta pass:[*]_tdelta_,
-+			   const struct traceeval_data pass:[*]_keys_);
-+int *traceeval_delta_remove_size*(struct traceeval_delta pass:[*]_tdelta_,
-+				const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_);
-+
-+int *traceeval_delta_query*(struct traceeval_delta pass:[*]_tdelta_, const struct traceeval_data pass:[*]_keys_,
-+			  const struct traceeval_data pass:[**]_results_);
-+int *traceeval_delta_query_size*(struct traceeval_delta pass:[*]_tdelta_,
-+			       const struct traceeval_data pass:[*]_keys_,
-+			       size_t nr_keys, const struct traceeval_data pass:[**]_results_);
-+
-+void *traceeval_delta_results_release*(struct traceeval_delta pass:[*]_tdelta_,
-+				     const struct traceeval_data pass:[*]_results_);
-+--
-+
-+DESCRIPTION
-+-----------
-+These functions manipulate the traceeval_delta created by *traceeval_delta_init*(3),
-+and act very similar to the functions with the similar names for the traceeval
-+element (see *traceeval_insert*(3)).
-+
-+
-+The *traceveal_delta_insert()* will create a new instance if one does not exist
-+that matches the _keys_, or it will update an existing one. Note, this will not
-+modify the timestamp or delta associated with the instance. For new instances
-+the timestamp and delta will be zero, and for existing ones, they will remain
-+unchanged.
-+
-+Note that the _keys_ and _vals_ for *traceeval_data_insert()* must be static arrays.
-+If dynamic arrays are required, then use *traceeval_data_insert_size()* that
-+takes two additional arguments: _nr_keys_ to denote how many _keys_ are there,
-+and _nr_vals_ for the number of _vals_.
-+
-+Use *traceeval_delta_remove()* or *traceeval_delta_remove_size()* to remove
-+an instance matching the _keys_ from the traceeval_delta. The difference between
-+the two functions is that *traceeval_delta_remove()* requires _keys_ to be a
-+static array.
-+
-+The *traceeval_delta_query()* will return the element that matches the _keys_. The
-+_keys_ must be a static array that is the same size as the key types defined by
-+*traceeval_init()*. If an element is found, it will fill in the _results_
-+pointer to point to the content of the values for the given element. The
-+results must be released with *traceeval_delta_results_release()*.
-+
-+The *traceeval_delta_results_release()* will release any necessary resources that a
-+*traceeval_delta_query()* may have added to return the _results_.
-+
-+RETURN VALUE
-+------------
-+The *traceeval_delta_insert()* and *traceeval_delta_insert_size()* return 0 on succes and -1 on error.
-+
-+The *traceeval_delta_remove()* and *traceeval_delta_remove_size()* returns 1 if the item was found and removed,
-+0 if the item was not found, and -1 on an error (like invalid keys).
-+
-+The *traceeval_delta_query()* and *traceveal_delta_query_size()* return 1 if the item is found that matches
-+the _keys_ and _results_ will contain the values of the last values of that time. It will return
-+0 if not found, and -1 on error (like invalid keys).
-+
-+
-+EXAMPLE
-+-------
-+The usage for these functions are the same as the functions with similar names with
-+traceeval, and referencing those functions will give the same use cases.
-+
-+FILES
-+-----
-+[verse]
-+--
-+*traceval.h*
-+	Header file to include in order to have access to the library APIs.
-+*-ltraceeval*
-+	Linker switch to add when building a program that uses the library.
-+--
-+
-+SEE ALSO
-+--------
-+*libtraceeval*(3),
-+*traceeval_insert*(3),
-+*traceeval_insert_size*(3),
-+*traceeval_remove*(3),
-+*traceeval_remove_size*(3),
-+*traceeval_query*(3),
-+*traceeval_query_size*(3),
-+*traceeval_results_release*(3)
-+
-+AUTHOR
-+------
-+[verse]
-+--
-+*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceeval*.
-+--
-+REPORTING BUGS
-+--------------
-+Report bugs to  <linux-trace-devel@vger.kernel.org>
-+
-+LICENSE
-+-------
-+libtraceeval is licensed under MIT.
-+
-diff --git a/Documentation/libtraceeval.txt b/Documentation/libtraceeval.txt
-index 4d23ba0c5928..68fc182f7c46 100644
---- a/Documentation/libtraceeval.txt
-+++ b/Documentation/libtraceeval.txt
-@@ -103,6 +103,28 @@ Handling delta times between events:
- 	int *traceeval_delta_continue_size*(struct traceeval_delta pass:[*]_tdelta_,
- 				  const struct traceeval_data pass:[*]keys, size_t _nr_keys_,
- 				  unsigned long long _timestamp_);
-+
-+Handling insertion, deletion and querying of traceeval_delta elements:
-+	int *traceeval_delta_insert*(struct traceeval_delta pass:[*]_tdelta_,
-+			   const struct traceeval_data pass:[*]_keys_,
-+			   const struct traceeval_data pass:[*]_vals_);
-+	int *traceeval_delta_insert_size*(struct traceeval_delta pass:[*]_tdelta_,
-+				const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_,
-+				const struct traceeval_data pass:[*]_vals_, size_t _nr_vals_);
-+
-+	int *traceeval_delta_remove*(struct traceeval_delta pass:[*]_tdelta_,
-+			   const struct traceeval_data pass:[*]_keys_);
-+	int *traceeval_delta_remove_size*(struct traceeval_delta pass:[*]_tdelta_,
-+				const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_);
-+
-+	int *traceeval_delta_query*(struct traceeval_delta pass:[*]_tdelta_, const struct traceeval_data pass:[*]_keys_,
-+			  const struct traceeval_data pass:[**]_results_);
-+	int *traceeval_delta_query_size*(struct traceeval_delta pass:[*]_tdelta_,
-+			       const struct traceeval_data pass:[*]_keys_,
-+			       size_t nr_keys, const struct traceeval_data pass:[**]_results_);
-+
-+	void *traceeval_delta_results_release*(struct traceeval_delta pass:[*]_tdelta_,
-+				     const struct traceeval_data pass:[*]_results_);
- --
+ - Rebased to updated wake-lat.c example.
+
+ include/traceeval.h | 28 +++++++++++++++++++++-------
+ samples/wake-lat.c  |  4 +++-
+ 2 files changed, 24 insertions(+), 8 deletions(-)
+
+diff --git a/include/traceeval.h b/include/traceeval.h
+index d8095ba5c1a1..5464a5a55fe4 100644
+--- a/include/traceeval.h
++++ b/include/traceeval.h
+@@ -97,13 +97,27 @@ struct traceeval_data {
+ 		(data).member = (val);				\
+ 	} while (0)
  
- DESCRIPTION
+-#define TRACEEVAL_SET_NUMBER(data, val)	     __TRACEEVAL_SET(data, NUMBER, number, val)
+-#define TRACEEVAL_SET_NUMBER_8(data, val)    __TRACEEVAL_SET(data, NUMBER_8, number_8, val)
+-#define TRACEEVAL_SET_NUMBER_16(data, val)   __TRACEEVAL_SET(data, NUMBER_16, number_16, val)
+-#define TRACEEVAL_SET_NUMBER_32(data, val)   __TRACEEVAL_SET(data, NUMBER_32, number_32, val)
+-#define TRACEEVAL_SET_NUMBER_64(data, val)   __TRACEEVAL_SET(data, NUMBER_64, number_64, val)
+-#define TRACEEVAL_SET_STRING(data, val)	     __TRACEEVAL_SET(data, STRING, string, val)
+-#define TRACEEVAL_SET_CSTRING(data, val)     __TRACEEVAL_SET(data, STRING, cstring, val)
++/* Have strings and pointers fail to be set to numbers */
++#define __TRACEEVAL_SET_NUM(data, data_type, member, val)	\
++	do {							\
++		char *__test__[val] __attribute__((unused));	\
++		__TRACEEVAL_SET(data, data_type, member, val);	\
++	} while (0)
++
++/* Have numbers fail to be assigned as strings */
++#define __TRACEEVAL_SET_STR(data, data_type, member, val)		\
++	do {								\
++		char __test__  __attribute__((unused)) = (val)[0];	\
++		__TRACEEVAL_SET(data, data_type, member, val);		\
++	} while (0)
++
++#define TRACEEVAL_SET_NUMBER(data, val)	     __TRACEEVAL_SET_NUM(data, NUMBER, number, val)
++#define TRACEEVAL_SET_NUMBER_8(data, val)    __TRACEEVAL_SET_NUM(data, NUMBER_8, number_8, val)
++#define TRACEEVAL_SET_NUMBER_16(data, val)   __TRACEEVAL_SET_NUM(data, NUMBER_16, number_16, val)
++#define TRACEEVAL_SET_NUMBER_32(data, val)   __TRACEEVAL_SET_NUM(data, NUMBER_32, number_32, val)
++#define TRACEEVAL_SET_NUMBER_64(data, val)   __TRACEEVAL_SET_NUM(data, NUMBER_64, number_64, val)
++#define TRACEEVAL_SET_STRING(data, val)	     __TRACEEVAL_SET_STR(data, STRING, string, val)
++#define TRACEEVAL_SET_CSTRING(data, val)     __TRACEEVAL_SET_STR(data, STRING, cstring, val)
+ #define TRACEEVAL_SET_POINTER(data, val)     __TRACEEVAL_SET(data, POINTER, pointer, val)
+ 
+ struct traceeval_type;
+diff --git a/samples/wake-lat.c b/samples/wake-lat.c
+index 086f67d8fe49..163815997793 100644
+--- a/samples/wake-lat.c
++++ b/samples/wake-lat.c
+@@ -84,6 +84,7 @@ static int sched_callback(struct tracecmd_input *handle, struct tep_event *event
+ 	struct traceeval_data keys[2];
+ 	struct traceeval_data vals[2];
+ 	const struct traceeval_data *results;
++	const char *comm;
+ 
+ 	if (!next_pid_field) {
+ 		next_pid_field = tep_find_field(event, "next_pid");
+@@ -101,7 +102,8 @@ static int sched_callback(struct tracecmd_input *handle, struct tep_event *event
+ 	delta = record->ts - results[0].number_64;
+ 	traceeval_results_release(data->teval_wakeup, results);
+ 
+-	TRACEEVAL_SET_CSTRING(keys[0], record->data + next_comm_field->offset);
++	comm = (char *)record->data + next_comm_field->offset;
++	TRACEEVAL_SET_CSTRING(keys[0],comm);
+ 	TRACEEVAL_SET_NUMBER(keys[1], pid);
+ 
+ 	TRACEEVAL_SET_NUMBER_64(vals[0], record->ts);
 -- 
 2.40.1
 
