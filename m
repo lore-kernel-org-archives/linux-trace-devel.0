@@ -1,177 +1,141 @@
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93E0224A16
-	for <linux-trace-devel@vger.kernel.org>; Wed, 11 Oct 2023 22:33:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JvBkGqxB"
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C03D691
-	for <linux-trace-devel@vger.kernel.org>; Wed, 11 Oct 2023 15:33:52 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-79f9acc857cso14043139f.2
-        for <linux-trace-devel@vger.kernel.org>; Wed, 11 Oct 2023 15:33:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697063632; x=1697668432; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YLA+MnXZ3Um6yalNJ07GjA2IVowN1zsW9UYBvq1syVE=;
-        b=JvBkGqxBv0rpTaq5GNqSC2ggf0NiT14VhVZesgXJqpvuDT/3kdPWEuwAZjwGZ1GxDx
-         7uCq1FdNdMGJzvQAgGTg5U5ZfVdSjqzpuF+IQOFVqdvRmIf3HB8zb5G1OApB/TAYh8Yx
-         V/0296AV0SFbM4kI2GieAx2RuZxcWYegb0CcUSVPSwyGrVc2z0gsoBgIJ3sbF5WoCx5d
-         oE13Ee3TeRz0LAJBFGP96m53P30Ui1hGd0BVLBQFD37OgGks/ctMJ6dXYs8ktSuf15eu
-         1qnUnjgin9s6KfXP1E/yDCCh4sKjmJo85AcpSrSbNBSFXj9Cnngnm03VwmF8ww+GITrA
-         9WGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697063632; x=1697668432;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YLA+MnXZ3Um6yalNJ07GjA2IVowN1zsW9UYBvq1syVE=;
-        b=tA9sHLs14kTcvPt93Wyl8KdWGvxl83YK2RS1voQa3HPm4J9l/qGKVQq2gTfKQIcrz0
-         PeeWQZZPNbpXv0nMqprZJUV36q5UWYMKqaitIneIOfTvlKgF0x2UyCIoUqI/4JFKWfgS
-         KkgiH6GberPz+CAZ+uSIF12Sef/6djo20GwKVJ5sBPukrdzKD0XFzDmU9r3CN/YWs/vb
-         M1aF1I0YqdjG7zPlV7F27AlhMSB9Z/3a6/0PvnwGbgmGMhODibstm44HBEBqVCpnWVm3
-         bNSW+beMvGKu0tfweP22yVOFvG7SGY9YHFpCnpmsnEEoQKYCJbfYqlZZmdkilW/GKSeW
-         BQGQ==
-X-Gm-Message-State: AOJu0YymW+HGWM2j4N1OoAdHKXIlKVV6dcjHg3dnG8+R1woW6z9kQVs5
-	Jf3zFX2J8dMOBD9onFIdjnPtCWImGTLduIOIT91BIQ==
-X-Google-Smtp-Source: AGHT+IFvV4pT3wulFQaeOA5I8M325lti9gkQWunD83tad+ld34hQTemIhQlxXdanpcHzztSnNDdnxQ==
-X-Received: by 2002:a5e:c10c:0:b0:79f:97b6:76de with SMTP id v12-20020a5ec10c000000b0079f97b676demr25964958iol.3.1697063631959;
-        Wed, 11 Oct 2023 15:33:51 -0700 (PDT)
-Received: from google.com ([2620:15c:183:200:6fb5:b607:f4ac:85])
-        by smtp.gmail.com with ESMTPSA id o16-20020a02cc30000000b0042bb296863asm3540340jap.56.2023.10.11.15.33.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 15:33:51 -0700 (PDT)
-Date: Wed, 11 Oct 2023 16:33:48 -0600
-From: Ross Zwisler <zwisler@google.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-	Stevie Alvarez <stevie.6strings@gmail.com>
-Subject: Re: [PATCH v2] libtraceeval: Have TRACEEVAL_ARRAY_SIZE() handle NULL
- pointer
-Message-ID: <20231011223348.GB94116@google.com>
-References: <20231005212233.22ae4e13@rorschach.local.home>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0B8D249FE
+	for <linux-trace-devel@vger.kernel.org>; Wed, 11 Oct 2023 23:07:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F4C1C433C8;
+	Wed, 11 Oct 2023 23:07:55 +0000 (UTC)
+Date: Wed, 11 Oct 2023 19:09:17 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Ross Zwisler <zwisler@google.com>
+Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH] libtraceeval: Add traceeval_stat_max/min_timestamp()
+ API
+Message-ID: <20231011190917.1d57a7e9@gandalf.local.home>
+In-Reply-To: <20231011222100.GA94116@google.com>
+References: <20231005181448.176e9563@gandalf.local.home>
+	<20231011222100.GA94116@google.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231005212233.22ae4e13@rorschach.local.home>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Oct 05, 2023 at 09:22:33PM -0400, Steven Rostedt wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> In the new addition to make sure that pointers passed to traceeval_init()
-> and other functions that require a static array and not a dynamic one will
-> cause the build to fail, this causes NULL pointers to fail the build too.
-> 
-> Although keys must be filled, vals are allowed to be NULL. It was assumed
-> that:
-> 
->    (void *)vals == NULL ? TRACEEVAL_ARRAY_SIZE(vals))
-> 
-> Would solve this, but it gcc was actually still giving a warning about
-> 
->   warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements
-> 
-> But now it actually fails to build with the magic check.
-> 
-> Change TRACEEVAL_ARRAY_SIZE() to handle NULL for both keys and vals, by
-> not only having:
-> 
->  #define TRACEEVAL_ARRAY_SIZE(data) \
-> 	((void *)(data) == NULL ?  0 : __TRACEEVAL_ARRAY_SIZE(data))
-> 
-> But that is not enough, as gcc still evaluates the second part, and it
-> will fail to build. To handle this, change that to:
-> 
->  #define __TRACEEVAL_ARRAY_SIZE(data)					\
-> 	((sizeof(data) / (sizeof((data)[0])) + 0) +			\
-> 
-> The above adds " + 0" to the "sizeof((data)[0])" which quiets the warning
-> mentioned above (the addition of zero breaks the normal pattern of finding
-> an array size).
-> 
-> 	(int)(sizeof(struct {						\
-> 		int:(-!!(__builtin_types_compatible_p(typeof(data),	\
-> 						      typeof(&((data)[0]))) && \
-> 			 (void *)(data) != NULL));			\
-> 
-> Added "&& (void *)(data) != NULL" that makes the above return false (zero)
-> for a static array and NULL, which is exactly what we want.
+On Wed, 11 Oct 2023 16:21:00 -0600
+Ross Zwisler <zwisler@google.com> wrote:
 
-Don't we already know it's not NULL because of the check in
-TRACEEVAL_ARRAY_SIZE()?  Or do we really need to check for NULL in both
-macros?
+> On Thu, Oct 05, 2023 at 06:14:48PM -0400, Steven Rostedt wrote:
+> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> > 
+> > If a value field is flagged as a TIMESTAMP, and another field is flagged
+> > as a STAT, have the statistics for the STAT field automatically keep track
+> > of when the max and min happened (what the TIMESTAMP field was at those
+> > instances).  
+> 
+> I'm confused as to why we have TRACEEVAL_FL_TIMESTAMP and a separate data
+> entry with that flag, instead of only storing the timestamp in the entry
+> metadata, as we do with the other STATs?
+
+Actually, I may remove this part entirely, as it's pretty much superseded
+by the TRACEEVAL_TYPE_DELTA, which I moved to, and haven't needed the
+separate val marked for the timestamp.
 
 > 
-> 			})))
+> >From the description above where we have one TIMESTAMP and one STAT, I would  
+> expect to see structures defined like this
+> (from [PATCH v2] libtraceeval: Add wake-lat sample code):
+> 
+> +struct traceeval_type sched_vals[] = {
+> +       {
+> +               .name           = "timestamp",
+> +               .flags          = TRACEEVAL_FL_TIMESTAMP,
+> +               .type           = TRACEEVAL_TYPE_NUMBER_64,
+> +       },
+> +       {
+> +               .name           = "delta",
+> +               .flags          = TRACEEVAL_FL_STAT,
+> +               .type           = TRACEEVAL_TYPE_NUMBER_64,
+> +       }
+> 
+> where the timestamp is sync'd with the STAT min and max, right?
 
-A few random parens in the changelog. :)
+The new type is done like:
+
+	{
+		.name		= "delta",
+		.type		= TRACEEVAL_TYPE_DELTA,
+	}
+
+Which will automatically be marked as STAT flag, and is set with:
+
+	TRACEEVAL_SET_DELTA(vals, delta, timestamp);
+
+Is that what you are thinking about?
+
+-- Steve
+
+
 
 > 
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
-> Changes since v1: https://lore.kernel.org/all/20231005205129.6d6cbfad@gandalf.local.home/
+> But we also have this:
 > 
-> - Fixed error in placement of parenthesis.
+> +struct traceeval_type wakeup_vals[] = {
+> +       {
+> +               .name           = "timestamp",
+> +               .flags          = TRACEEVAL_FL_TIMESTAMP,
+> +               .type           = TRACEEVAL_TYPE_NUMBER_64,
+> +       }
+> +};
 > 
->  include/traceeval.h | 14 +++++++++-----
->  1 file changed, 9 insertions(+), 5 deletions(-)
+> in a structure that doesn't have a corresponding STAT field?  This is also
+> confusing to me because we need to keep 2 values (min and max TS), but this
+> only holds one?
 > 
-> diff --git a/include/traceeval.h b/include/traceeval.h
-> index bbf8f6ac7dd1..d8095ba5c1a1 100644
-> --- a/include/traceeval.h
-> +++ b/include/traceeval.h
-> @@ -29,13 +29,17 @@
->   *
->   *    struct traceeval_data keys[] = { ... };
->   */
-> -#define TRACEEVAL_ARRAY_SIZE(data)					\
-> -	((sizeof(data) / sizeof((data)[0])) +				\
-> +#define __TRACEEVAL_ARRAY_SIZE(data)					\
-> +	((sizeof(data) / (sizeof((data)[0]) + 0)) +			\
->  	(int)(sizeof(struct {						\
->  		int:(-!!(__builtin_types_compatible_p(typeof(data),	\
-> -						      typeof(&((data)[0]))))); \
-> +						      typeof(&((data)[0]))) && \
-> +			 (void *)(data) != NULL));			\
->  			})))
->  
-> +#define TRACEEVAL_ARRAY_SIZE(data) \
-> +	((void *)(data) == NULL ?  0 : __TRACEEVAL_ARRAY_SIZE(data))
-> +
->  /* Data type distinguishers */
->  enum traceeval_data_type {
->  	TRACEEVAL_TYPE_NONE,
-> @@ -191,7 +195,7 @@ struct traceeval;
->  #define traceeval_init(keys, vals)					\
->  	traceeval_init_size(keys, vals,					\
->  			    TRACEEVAL_ARRAY_SIZE(keys),			\
-> -			    (void *)vals == NULL ?  0 : TRACEEVAL_ARRAY_SIZE(vals))
-> +			    TRACEEVAL_ARRAY_SIZE(vals))
->  
->  #define traceeval_init_size(keys, vals, nr_keys, nr_vals)		\
->  	traceeval_init_data_size(keys, vals, nr_keys, nr_vals,		\
-> @@ -211,7 +215,7 @@ int traceeval_insert_size(struct traceeval *teval,
->  
->  #define traceeval_insert(teval, keys, vals)				\
->  	traceeval_insert_size(teval, keys, TRACEEVAL_ARRAY_SIZE(keys), \
-> -			      vals, (void *)vals == NULL ? 0 : TRACEEVAL_ARRAY_SIZE(vals))
-> +			      vals, TRACEEVAL_ARRAY_SIZE(vals))
->  
->  int traceeval_remove_size(struct traceeval *teval,
->  			  const struct traceeval_data *keys, size_t nr_keys);
-> -- 
-> 2.40.1
+> The timestamp is already stored independently in the stat metadata in
+> struct traceeval_stat:
 > 
+> >  struct traceeval_stat {
+> >  	unsigned long long	max;
+> > +	unsigned long long	max_ts;
+> >  	unsigned long long	min;
+> > +	unsigned long long	min_ts;
+> >  	unsigned long long	total;
+> >  	unsigned long long	std;
+> >  	size_t			count;  
+> 
+> which I think is enough?
+> 
+> It seems like instead we really want our two flags to be:
+> 
+> TRACEEVAL_FL_STAT
+> and
+> TRACEEVAL_FL_STAT_TS
+> 
+> where the first just keeps the normal stats (min, max, average, std. dev, etc)
+> and the second does all that plus timestamps for min and max?
+> 
+> This would also allow you to keep min and max stats independently for multiple
+> entries in a single structure, i.e.:
+> 
+> struct traceeval_type task_vals[] = {
+>        {
+>                .name           = "wake_delay",
+>                .flags          = TRACEEVAL_FL_STAT_TS,
+>                .type           = TRACEEVAL_TYPE_NUMBER_64,
+>        },
+>        {
+>                .name           = "runtime",
+>                .flags          = TRACEEVAL_FL_STAT_TS,
+>                .type           = TRACEEVAL_TYPE_NUMBER_64,
+>        }
+> };
+> 
+> which I don't think is possible under the current scheme?
+> 
+> What am I missing?
+
