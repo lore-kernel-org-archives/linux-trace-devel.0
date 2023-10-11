@@ -1,219 +1,177 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05EE2249EB
-	for <linux-trace-devel@vger.kernel.org>; Wed, 11 Oct 2023 22:27:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B145C433C8;
-	Wed, 11 Oct 2023 22:27:27 +0000 (UTC)
-Date: Wed, 11 Oct 2023 18:28:48 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: Ross Zwisler <zwisler@google.com>
-Subject: [PATCH] libtraceeval: Add traceeval_hitcount() API
-Message-ID: <20231011182848.35a006d6@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93E0224A16
+	for <linux-trace-devel@vger.kernel.org>; Wed, 11 Oct 2023 22:33:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JvBkGqxB"
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C03D691
+	for <linux-trace-devel@vger.kernel.org>; Wed, 11 Oct 2023 15:33:52 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-79f9acc857cso14043139f.2
+        for <linux-trace-devel@vger.kernel.org>; Wed, 11 Oct 2023 15:33:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697063632; x=1697668432; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YLA+MnXZ3Um6yalNJ07GjA2IVowN1zsW9UYBvq1syVE=;
+        b=JvBkGqxBv0rpTaq5GNqSC2ggf0NiT14VhVZesgXJqpvuDT/3kdPWEuwAZjwGZ1GxDx
+         7uCq1FdNdMGJzvQAgGTg5U5ZfVdSjqzpuF+IQOFVqdvRmIf3HB8zb5G1OApB/TAYh8Yx
+         V/0296AV0SFbM4kI2GieAx2RuZxcWYegb0CcUSVPSwyGrVc2z0gsoBgIJ3sbF5WoCx5d
+         oE13Ee3TeRz0LAJBFGP96m53P30Ui1hGd0BVLBQFD37OgGks/ctMJ6dXYs8ktSuf15eu
+         1qnUnjgin9s6KfXP1E/yDCCh4sKjmJo85AcpSrSbNBSFXj9Cnngnm03VwmF8ww+GITrA
+         9WGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697063632; x=1697668432;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YLA+MnXZ3Um6yalNJ07GjA2IVowN1zsW9UYBvq1syVE=;
+        b=tA9sHLs14kTcvPt93Wyl8KdWGvxl83YK2RS1voQa3HPm4J9l/qGKVQq2gTfKQIcrz0
+         PeeWQZZPNbpXv0nMqprZJUV36q5UWYMKqaitIneIOfTvlKgF0x2UyCIoUqI/4JFKWfgS
+         KkgiH6GberPz+CAZ+uSIF12Sef/6djo20GwKVJ5sBPukrdzKD0XFzDmU9r3CN/YWs/vb
+         M1aF1I0YqdjG7zPlV7F27AlhMSB9Z/3a6/0PvnwGbgmGMhODibstm44HBEBqVCpnWVm3
+         bNSW+beMvGKu0tfweP22yVOFvG7SGY9YHFpCnpmsnEEoQKYCJbfYqlZZmdkilW/GKSeW
+         BQGQ==
+X-Gm-Message-State: AOJu0YymW+HGWM2j4N1OoAdHKXIlKVV6dcjHg3dnG8+R1woW6z9kQVs5
+	Jf3zFX2J8dMOBD9onFIdjnPtCWImGTLduIOIT91BIQ==
+X-Google-Smtp-Source: AGHT+IFvV4pT3wulFQaeOA5I8M325lti9gkQWunD83tad+ld34hQTemIhQlxXdanpcHzztSnNDdnxQ==
+X-Received: by 2002:a5e:c10c:0:b0:79f:97b6:76de with SMTP id v12-20020a5ec10c000000b0079f97b676demr25964958iol.3.1697063631959;
+        Wed, 11 Oct 2023 15:33:51 -0700 (PDT)
+Received: from google.com ([2620:15c:183:200:6fb5:b607:f4ac:85])
+        by smtp.gmail.com with ESMTPSA id o16-20020a02cc30000000b0042bb296863asm3540340jap.56.2023.10.11.15.33.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 15:33:51 -0700 (PDT)
+Date: Wed, 11 Oct 2023 16:33:48 -0600
+From: Ross Zwisler <zwisler@google.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+	Stevie Alvarez <stevie.6strings@gmail.com>
+Subject: Re: [PATCH v2] libtraceeval: Have TRACEEVAL_ARRAY_SIZE() handle NULL
+ pointer
+Message-ID: <20231011223348.GB94116@google.com>
+References: <20231005212233.22ae4e13@rorschach.local.home>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231005212233.22ae4e13@rorschach.local.home>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Thu, Oct 05, 2023 at 09:22:33PM -0400, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> In the new addition to make sure that pointers passed to traceeval_init()
+> and other functions that require a static array and not a dynamic one will
+> cause the build to fail, this causes NULL pointers to fail the build too.
+> 
+> Although keys must be filled, vals are allowed to be NULL. It was assumed
+> that:
+> 
+>    (void *)vals == NULL ? TRACEEVAL_ARRAY_SIZE(vals))
+> 
+> Would solve this, but it gcc was actually still giving a warning about
+> 
+>   warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements
+> 
+> But now it actually fails to build with the magic check.
+> 
+> Change TRACEEVAL_ARRAY_SIZE() to handle NULL for both keys and vals, by
+> not only having:
+> 
+>  #define TRACEEVAL_ARRAY_SIZE(data) \
+> 	((void *)(data) == NULL ?  0 : __TRACEEVAL_ARRAY_SIZE(data))
+> 
+> But that is not enough, as gcc still evaluates the second part, and it
+> will fail to build. To handle this, change that to:
+> 
+>  #define __TRACEEVAL_ARRAY_SIZE(data)					\
+> 	((sizeof(data) / (sizeof((data)[0])) + 0) +			\
+> 
+> The above adds " + 0" to the "sizeof((data)[0])" which quiets the warning
+> mentioned above (the addition of zero breaks the normal pattern of finding
+> an array size).
+> 
+> 	(int)(sizeof(struct {						\
+> 		int:(-!!(__builtin_types_compatible_p(typeof(data),	\
+> 						      typeof(&((data)[0]))) && \
+> 			 (void *)(data) != NULL));			\
+> 
+> Added "&& (void *)(data) != NULL" that makes the above return false (zero)
+> for a static array and NULL, which is exactly what we want.
 
-Add a new function traceeval_hitcount() that returns the number of times
-the entry represented by the given keys was updated.
+Don't we already know it's not NULL because of the check in
+TRACEEVAL_ARRAY_SIZE()?  Or do we really need to check for NULL in both
+macros?
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- Documentation/libtraceeval-init.txt | 37 ++++-------------------------
- include/traceeval.h                 |  6 +++++
- src/eval-local.h                    |  1 +
- src/histograms.c                    | 36 ++++++++++++++++++++++++++++
- 4 files changed, 48 insertions(+), 32 deletions(-)
+> 
+> 			})))
 
-diff --git a/Documentation/libtraceeval-init.txt b/Documentation/libtraceeval-init.txt
-index ed505d11713c..71251f2cc8ff 100644
---- a/Documentation/libtraceeval-init.txt
-+++ b/Documentation/libtraceeval-init.txt
-@@ -204,30 +204,18 @@ struct traceeval_type sched_keys[] = {
- 	},
- };
- 
--
--struct traceeval_type sched_vals[] = {
--	{
--		.type = TRACEEVAL_TYPE_NUMBER_64,
--		.name = "Hitcount",
--	},
--};
--
- static int sched_callback(struct tep_event *event, struct tep_record *record,
- 			  int cpu, void *data)
- {
- 	static struct tep_format_field *pid_field;
- 	static struct tep_format_field *comm_field;
- 	static struct tep_format_field *state_field;
--	const struct traceeval_data *results;
- 	struct traceeval_data keys[3];
--	struct traceeval_data vals[1];
- 	struct traceeval *teval = data;
--	unsigned long long hits = 0;
- 	unsigned long long val;
- 	char *comm;
- 	int state;
- 	int pid;
--	int ret;
- 
- 	if (!pid_field) {
- 		pid_field = tep_find_field(event, "prev_pid");
-@@ -250,20 +238,7 @@ static int sched_callback(struct tep_event *event, struct tep_record *record,
- 	TRACEEVAL_SET_NUMBER(keys[1], pid);
- 	TRACEEVAL_SET_NUMBER(keys[2], state);
- 
--	ret = traceeval_query(teval, keys, &results);
--	if (ret < 0)
--		pdie("Failed to query keys");
--
--	if (ret) {
--		hits = results[0].number_64;
--		traceeval_results_release(teval, results);
--	}
--
--	hits++;
--
--	TRACEEVAL_SET_NUMBER_64(vals[0], hits);
--
--	traceeval_insert(teval, keys, vals);
-+	traceeval_insert(teval, keys, NULL);
- 
- 	return 0;
- }
-@@ -284,7 +259,6 @@ static char *get_state(int state)
- static void display_teval(struct traceeval *teval)
- {
- 	struct traceeval_iterator *iter = traceeval_iterator_get(teval);
--	const struct traceeval_data *results;
- 	const struct traceeval_data *keys;
- 
- 	/* Sort comms first. */
-@@ -295,11 +269,10 @@ static void display_teval(struct traceeval *teval)
- 	traceeval_iterator_sort(iter, sched_keys[2].name, 2, true);
- 
- 	while (traceeval_iterator_next(iter, &keys) > 0) {
--		traceeval_iterator_query(iter, &results);
-+		ssize_t hits = traceeval_hitcount_size(teval, keys, TRACEEVAL_ARRAY_SIZE(sched_keys));
- 
--		printf("%s [%ld] %s: %lld\n",
--		       keys[0].string, keys[1].number, get_state(keys[2].number),
--		       results[0].number_64);
-+		printf("%s [%ld] %s: %zd\n",
-+		       keys[0].string, keys[1].number, get_state(keys[2].number), hits);
- 	}
- 	traceeval_iterator_put(iter);
- }
-@@ -318,7 +291,7 @@ int main (int argc, char **argv)
- 	bool finished = false;
- 	int ret;
- 
--	teval = traceeval_init(sched_keys, sched_vals);
-+	teval = traceeval_init(sched_keys, NULL);
- 	if (!teval)
- 		pdie("Creating traceeval");
- 
-diff --git a/include/traceeval.h b/include/traceeval.h
-index 69c7c45a7bea..58c220c0f81c 100644
---- a/include/traceeval.h
-+++ b/include/traceeval.h
-@@ -274,6 +274,12 @@ int traceeval_query_size(struct traceeval *teval, const struct traceeval_data *k
- void traceeval_results_release(struct traceeval *teval,
- 			       const struct traceeval_data *results);
- 
-+#define traceeval_hitcount(teval, keys)					\
-+	traceeval_hitcount_size(teval, keys, TRACEEVAL_ARRAY_SIZE(keys))
-+
-+ssize_t traceeval_hitcount_size(struct traceeval *teval,
-+				const struct traceeval_data *keys, size_t nr_keys);
-+
- size_t traceeval_count(struct traceeval *teval);
- 
- #define traceeval_delta_create(teval, keys, vals)			\
-diff --git a/src/eval-local.h b/src/eval-local.h
-index 6ae61cf41922..9f387e500efa 100644
---- a/src/eval-local.h
-+++ b/src/eval-local.h
-@@ -67,6 +67,7 @@ struct entry {
- 	struct traceeval_data	*keys;
- 	struct traceeval_data	*vals;
- 	struct traceeval_stat	*val_stats;
-+	size_t			hitcount;
- };
- 
- enum {
-diff --git a/src/histograms.c b/src/histograms.c
-index f77afc3a86a1..f6bbc4444361 100644
---- a/src/histograms.c
-+++ b/src/histograms.c
-@@ -974,6 +974,7 @@ static int create_entry(struct traceeval *teval,
- 
- 	entry->keys = new_keys;
- 	entry->vals = new_vals;
-+	entry->hitcount = 1;
- 
- 	teval->update_counter++;
- 	teval->nr_elements++;
-@@ -1009,6 +1010,8 @@ static int update_entry(struct traceeval *teval, struct entry *entry,
- 	size_t size = teval->nr_val_types;
- 	ssize_t i;
- 
-+	entry->hitcount++;
-+
- 	if (!size)
- 		return 0;
- 
-@@ -1055,6 +1058,39 @@ static struct traceeval_type *find_val_type(struct traceeval *teval, const char
- 	return NULL;
- }
- 
-+/**
-+ * traceeval_hitcount - return the number of times a entry was updated
-+ * @teval: The traceeval descriptor
-+ * @keys: The keys to find how many times it was hit
-+ * @nr_keys: The size of @keys
-+ *
-+ * This looks for the entry represested by @keys in @teval and returns
-+ * the number of times it was updated. If no entry is found, it will
-+ * return 0 and if @nr_keys does not match what is expected it will return
-+ * -1.
-+ *
-+ * Returns number of hits @keys had on success, 0 if not found, and -1 on error.
-+ */
-+ssize_t traceeval_hitcount_size(struct traceeval *teval,
-+				const struct traceeval_data *keys,
-+				size_t nr_keys)
-+{
-+	struct entry *entry;
-+	int ret;
-+
-+	if (nr_keys != teval->nr_key_types) {
-+		teval_print_failed_count("traceeval_hitcount", "key",
-+					 nr_keys, teval->nr_key_types);
-+		return -1;
-+	}
-+
-+	ret = _teval_get_entry(teval, keys, &entry);
-+	if (ret <= 0)
-+		return 0;
-+
-+	return entry->hitcount;
-+}
-+
- struct traceeval_stat *traceeval_stat_size(struct traceeval *teval,
- 					   const struct traceeval_data *keys,
- 					   size_t nr_keys,
--- 
-2.42.0
+A few random parens in the changelog. :)
 
+> 
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+> Changes since v1: https://lore.kernel.org/all/20231005205129.6d6cbfad@gandalf.local.home/
+> 
+> - Fixed error in placement of parenthesis.
+> 
+>  include/traceeval.h | 14 +++++++++-----
+>  1 file changed, 9 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/traceeval.h b/include/traceeval.h
+> index bbf8f6ac7dd1..d8095ba5c1a1 100644
+> --- a/include/traceeval.h
+> +++ b/include/traceeval.h
+> @@ -29,13 +29,17 @@
+>   *
+>   *    struct traceeval_data keys[] = { ... };
+>   */
+> -#define TRACEEVAL_ARRAY_SIZE(data)					\
+> -	((sizeof(data) / sizeof((data)[0])) +				\
+> +#define __TRACEEVAL_ARRAY_SIZE(data)					\
+> +	((sizeof(data) / (sizeof((data)[0]) + 0)) +			\
+>  	(int)(sizeof(struct {						\
+>  		int:(-!!(__builtin_types_compatible_p(typeof(data),	\
+> -						      typeof(&((data)[0]))))); \
+> +						      typeof(&((data)[0]))) && \
+> +			 (void *)(data) != NULL));			\
+>  			})))
+>  
+> +#define TRACEEVAL_ARRAY_SIZE(data) \
+> +	((void *)(data) == NULL ?  0 : __TRACEEVAL_ARRAY_SIZE(data))
+> +
+>  /* Data type distinguishers */
+>  enum traceeval_data_type {
+>  	TRACEEVAL_TYPE_NONE,
+> @@ -191,7 +195,7 @@ struct traceeval;
+>  #define traceeval_init(keys, vals)					\
+>  	traceeval_init_size(keys, vals,					\
+>  			    TRACEEVAL_ARRAY_SIZE(keys),			\
+> -			    (void *)vals == NULL ?  0 : TRACEEVAL_ARRAY_SIZE(vals))
+> +			    TRACEEVAL_ARRAY_SIZE(vals))
+>  
+>  #define traceeval_init_size(keys, vals, nr_keys, nr_vals)		\
+>  	traceeval_init_data_size(keys, vals, nr_keys, nr_vals,		\
+> @@ -211,7 +215,7 @@ int traceeval_insert_size(struct traceeval *teval,
+>  
+>  #define traceeval_insert(teval, keys, vals)				\
+>  	traceeval_insert_size(teval, keys, TRACEEVAL_ARRAY_SIZE(keys), \
+> -			      vals, (void *)vals == NULL ? 0 : TRACEEVAL_ARRAY_SIZE(vals))
+> +			      vals, TRACEEVAL_ARRAY_SIZE(vals))
+>  
+>  int traceeval_remove_size(struct traceeval *teval,
+>  			  const struct traceeval_data *keys, size_t nr_keys);
+> -- 
+> 2.40.1
+> 
