@@ -1,151 +1,154 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36A8739922
-	for <linux-trace-devel@vger.kernel.org>; Wed, 11 Oct 2023 22:05:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4308AC433C8;
-	Wed, 11 Oct 2023 22:05:57 +0000 (UTC)
-Date: Wed, 11 Oct 2023 18:07:19 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: Ross Zwisler <zwisler@google.com>
-Subject: [PATCH] libtraceeval: Add generic message about bad nr_keys/vals
-Message-ID: <20231011180719.663ac16a@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CC9A249ED
+	for <linux-trace-devel@vger.kernel.org>; Wed, 11 Oct 2023 22:21:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1iYdtJIV"
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0DFAF
+	for <linux-trace-devel@vger.kernel.org>; Wed, 11 Oct 2023 15:21:05 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-3512efed950so1151495ab.2
+        for <linux-trace-devel@vger.kernel.org>; Wed, 11 Oct 2023 15:21:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697062864; x=1697667664; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JMlgrV0SBKYPyRV3Ikc5hKhGQD/Jfn91CEyeMSHPZyM=;
+        b=1iYdtJIVU9M62WdctwBRgMjBiuM0f8/nQDVRkwPamlnINUwrIAvEsba2q7a15DScDR
+         DakuW6MXmn1DPQyr0H2HHeBogfQuPJNWNRHXU+CWwLp4jLm++XAVrm5wPVa/vKLNBZYH
+         IH50qyuFq5v2/WJYzIezwe7zyhA8p8BblNgwV66MOQmJxUs+HVEWw4XreMnVaNtqYNQj
+         ZWdpm2OIGntaBvb8MrKh0bCRfA/1U1S9fINm0MOACn8oXlRBEXjH19Jt4W34/KbEPXW1
+         SqtoVwNu33r/Sr6TFHue2DtCdCnuDbnzSR6SAAfuVMYrkoaLoiGAR4J1SCzoLPZXdhMP
+         j50Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697062864; x=1697667664;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JMlgrV0SBKYPyRV3Ikc5hKhGQD/Jfn91CEyeMSHPZyM=;
+        b=v68cVdUaNlMvJkeHrmSI5nD0CPmQwj1dx1Pfr1l6fuyFLU2jZ3v9ZZw8hRS7ekSEML
+         MVSwDGWg1QNhRRII0xwhph464ntUkuXU3mhAkA5Y2a2Z+hmhU8yhJiC5o0qln5aERxEQ
+         2KdiogGbGlXvD6/P8J7w+FRN3aNN3PfCz8iqhaLL68d94yz6v0iax1ftiTdh3NQbC66r
+         hNvfHNDEkQuZCy0fIXRCE8hxCVd1vzJ3+Pi679agu6fmq8AttfjQvDivZJn7IOBCCfCm
+         sM6TqdRqUna6dfxBqPU9nYJPb6EWLvyO6WVkfwCtsleY2+yainV5a/kfCRLRR6z+lnpi
+         hJHw==
+X-Gm-Message-State: AOJu0YyZYvvx9KsD/XZG8u/OZ1KPlwFiDmZxP8G99QZpBK/6ELyBtv9h
+	bv+XCDEjMznWxANq19o1AsBleaJRYEMZNfEtwMYulQ==
+X-Google-Smtp-Source: AGHT+IH1PPbgMyp5vZcDczJ8aDxmu9FH60GQ8Zd6TnooU2dLJ1KOPxkaNLHVRGOCzwDIpV8vXND6DA==
+X-Received: by 2002:a5e:c813:0:b0:795:c6f:59ff with SMTP id y19-20020a5ec813000000b007950c6f59ffmr25675861iol.17.1697062864512;
+        Wed, 11 Oct 2023 15:21:04 -0700 (PDT)
+Received: from google.com ([2620:15c:183:200:6fb5:b607:f4ac:85])
+        by smtp.gmail.com with ESMTPSA id v16-20020a02cbb0000000b0042b1061c6a8sm3671948jap.84.2023.10.11.15.21.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 15:21:04 -0700 (PDT)
+Date: Wed, 11 Oct 2023 16:21:00 -0600
+From: Ross Zwisler <zwisler@google.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH] libtraceeval: Add traceeval_stat_max/min_timestamp() API
+Message-ID: <20231011222100.GA94116@google.com>
+References: <20231005181448.176e9563@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231005181448.176e9563@gandalf.local.home>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Thu, Oct 05, 2023 at 06:14:48PM -0400, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> If a value field is flagged as a TIMESTAMP, and another field is flagged
+> as a STAT, have the statistics for the STAT field automatically keep track
+> of when the max and min happened (what the TIMESTAMP field was at those
+> instances).
 
-Add the helper function teval_print_failed_count() that will warn about a
-mismatch of nr_keys vs teval->nr_key_types as well as nr_vals vs
-teval->nr_val_types.
+I'm confused as to why we have TRACEEVAL_FL_TIMESTAMP and a separate data
+entry with that flag, instead of only storing the timestamp in the entry
+metadata, as we do with the other STATs?
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- src/delta.c      |  8 ++++----
- src/eval-local.h |  3 +++
- src/histograms.c | 30 ++++++++++++++++++++----------
- 3 files changed, 27 insertions(+), 14 deletions(-)
+From the description above where we have one TIMESTAMP and one STAT, I would
+expect to see structures defined like this
+(from [PATCH v2] libtraceeval: Add wake-lat sample code):
 
-diff --git a/src/delta.c b/src/delta.c
-index 9f308189fe1d..c83aa9a39756 100644
---- a/src/delta.c
-+++ b/src/delta.c
-@@ -208,14 +208,14 @@ static int delta_start(struct traceeval *teval,
- 	teval = teval->tdelta->teval;
- 
- 	if (nr_keys != teval->nr_key_types) {
--		teval_print_err(TEVAL_WARN, "traceeval_delta_start/continue: Received %zd keys but expected %zd",
--				nr_keys, teval->nr_key_types);
-+		teval_print_failed_count("traceeval_delta_start/continue", "keys",
-+					 nr_keys, teval->nr_key_types);
- 		return -1;
- 	}
- 
- 	if (nr_vals != teval->nr_val_types - 1) {
--		teval_print_err(TEVAL_WARN, "traceeval_delta_start/continue: Received %zd vals but expected %zd",
--				nr_vals, teval->nr_val_types - 1);
-+		teval_print_failed_count("traceeval_delta_start/continue", "vals",
-+					 nr_vals, teval->nr_val_types - 1);
- 		return -1;
- 	}
- 
-diff --git a/src/eval-local.h b/src/eval-local.h
-index 5ae63841f39f..6ae61cf41922 100644
---- a/src/eval-local.h
-+++ b/src/eval-local.h
-@@ -108,6 +108,9 @@ extern void teval_print_failed_type(const char *type,
- 				    const struct traceeval_type *expect,
- 				    const struct traceeval_data *got);
- 
-+extern void teval_print_failed_count(const char *func, const char *type,
-+				     size_t cnt, size_t expect);
-+
- extern int _teval_get_entry(struct traceeval *teval, const struct traceeval_data *keys,
- 			    struct entry **result);
- 
-diff --git a/src/histograms.c b/src/histograms.c
-index 3323fcacae4a..572f33eb3ac6 100644
---- a/src/histograms.c
-+++ b/src/histograms.c
-@@ -90,6 +90,13 @@ __hidden void teval_print_failed_type(const char *type,
- 			get_type_name(expect->type));
- }
- 
-+__hidden void teval_print_failed_count(const char *func, const char *type,
-+				       size_t cnt, size_t expect)
-+{
-+	teval_print_err(TEVAL_WARN, "%s: %s array size is %zd but expected %zd",
-+				func, type, cnt, expect);
-+}
-+
- /*
-  * Compare traceeval_data instances.
-  *
-@@ -871,8 +878,8 @@ int traceeval_query_size(struct traceeval *teval, const struct traceeval_data *k
- 	}
- 
- 	if (nr_keys != teval->nr_key_types) {
--		teval_print_err(TEVAL_WARN, "traceeval_query: key array size is %zd but expected %zd",
--				nr_keys, teval->nr_key_types);
-+		teval_print_failed_count("traceeval_query", "key",
-+					 nr_keys, teval->nr_key_types);
- 		return -1;
- 	}
- 
-@@ -1057,8 +1064,11 @@ struct traceeval_stat *traceeval_stat_size(struct traceeval *teval,
- 	struct entry *entry;
- 	int ret;
- 
--	if (teval->nr_key_types != nr_keys)
-+	if (nr_keys != teval->nr_key_types) {
-+		teval_print_failed_count("traceeval_stat", "key",
-+					 nr_keys, teval->nr_key_types);
- 		return NULL;
-+	}
- 
- 	type = find_val_type(teval, val_name);
- 	if (!type)
-@@ -1248,14 +1258,14 @@ int traceeval_insert_size(struct traceeval *teval,
- 			  const struct traceeval_data *vals, size_t nr_vals)
- {
- 	if (nr_keys != teval->nr_key_types) {
--		teval_print_err(TEVAL_WARN, "traceeval_insert: received %zd keys but expected %zd",
--				nr_keys, teval->nr_key_types);
-+		teval_print_failed_count("traceeval_insert", "key",
-+					 nr_keys, teval->nr_key_types);
- 		return -1;
- 	}
- 
- 	if (nr_vals != teval->nr_val_types) {
--		teval_print_err(TEVAL_WARN, "traceeval_insert: received %zd vals but expected %zd",
--				nr_vals, teval->nr_val_types);
-+		teval_print_failed_count("traceeval_insert", "vals",
-+					 nr_vals, teval->nr_val_types);
- 		return -1;
- 	}
- 
-@@ -1282,9 +1292,9 @@ int traceeval_remove_size(struct traceeval *teval,
- 	struct entry *entry;
- 	int check;
- 
--	if (teval->nr_key_types != nr_keys) {
--		teval_print_err(TEVAL_WARN, "traceeval_remove: received %zd keys but expected %zd",
--				nr_keys, teval->nr_key_types);
-+	if (nr_keys != teval->nr_key_types) {
-+		teval_print_failed_count("traceeval_remove", "keys",
-+					 nr_keys, teval->nr_key_types);
- 		return -1;
- 	}
- 
--- 
-2.42.0
++struct traceeval_type sched_vals[] = {
++       {
++               .name           = "timestamp",
++               .flags          = TRACEEVAL_FL_TIMESTAMP,
++               .type           = TRACEEVAL_TYPE_NUMBER_64,
++       },
++       {
++               .name           = "delta",
++               .flags          = TRACEEVAL_FL_STAT,
++               .type           = TRACEEVAL_TYPE_NUMBER_64,
++       }
 
+where the timestamp is sync'd with the STAT min and max, right?
+
+But we also have this:
+
++struct traceeval_type wakeup_vals[] = {
++       {
++               .name           = "timestamp",
++               .flags          = TRACEEVAL_FL_TIMESTAMP,
++               .type           = TRACEEVAL_TYPE_NUMBER_64,
++       }
++};
+
+in a structure that doesn't have a corresponding STAT field?  This is also
+confusing to me because we need to keep 2 values (min and max TS), but this
+only holds one?
+
+The timestamp is already stored independently in the stat metadata in
+struct traceeval_stat:
+
+>  struct traceeval_stat {
+>  	unsigned long long	max;
+> +	unsigned long long	max_ts;
+>  	unsigned long long	min;
+> +	unsigned long long	min_ts;
+>  	unsigned long long	total;
+>  	unsigned long long	std;
+>  	size_t			count;
+
+which I think is enough?
+
+It seems like instead we really want our two flags to be:
+
+TRACEEVAL_FL_STAT
+and
+TRACEEVAL_FL_STAT_TS
+
+where the first just keeps the normal stats (min, max, average, std. dev, etc)
+and the second does all that plus timestamps for min and max?
+
+This would also allow you to keep min and max stats independently for multiple
+entries in a single structure, i.e.:
+
+struct traceeval_type task_vals[] = {
+       {
+               .name           = "wake_delay",
+               .flags          = TRACEEVAL_FL_STAT_TS,
+               .type           = TRACEEVAL_TYPE_NUMBER_64,
+       },
+       {
+               .name           = "runtime",
+               .flags          = TRACEEVAL_FL_STAT_TS,
+               .type           = TRACEEVAL_TYPE_NUMBER_64,
+       }
+};
+
+which I don't think is possible under the current scheme?
+
+What am I missing?
