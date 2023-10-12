@@ -1,127 +1,106 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 983F7347CD
-	for <linux-trace-devel@vger.kernel.org>; Thu, 12 Oct 2023 18:17:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97BE0C433C8;
-	Thu, 12 Oct 2023 18:17:20 +0000 (UTC)
-Date: Thu, 12 Oct 2023 14:18:45 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: Ross Zwisler <zwisler@google.com>
-Subject: [PATCH] libtraceeval: Remove sizeof() checks from
- traceeval_data_create_size()
-Message-ID: <20231012141845.68116b67@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC743A270;
+	Thu, 12 Oct 2023 18:33:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GEchmT1H"
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7606BE;
+	Thu, 12 Oct 2023 11:33:08 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-53df747cfe5so2420514a12.2;
+        Thu, 12 Oct 2023 11:33:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697135587; x=1697740387; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5Yt4HEDKKo6+d4XZeN0QMyHve5mG55+QEMOQYKa6AoA=;
+        b=GEchmT1HUyrD5ndeq8eQvC4BXcid0V1eA3aPYnpS7ES+aKQcQmmO2Bynt6+9yNHmKE
+         iR3DQgoZSlD34fWpxu4CBiMFTIx/l1WxkIGSu8EHjG6VkoBxMvy4uzCXrzY2F13leE/U
+         7dBvnXP6QOYaHaGYzSLle43vxlp44JpkyBcyw47/f5DIABXVX3ynzfCJqOh8zyS0a/Ic
+         AWAw/LzJc6ILx+E9OIeMs1AfwAZdrMlnrIrpkp3eMba1BBWs9e30RowUKOPIDQTSQaHJ
+         msVINpDGZopk+ZhU/109zHYlgO4LoFIBMRd2KUMraEEo1T6aZlNFX+o5cL7gJi/O5QNC
+         tVYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697135587; x=1697740387;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5Yt4HEDKKo6+d4XZeN0QMyHve5mG55+QEMOQYKa6AoA=;
+        b=P0XRWzf2MAuTTlOXFvbPz8UYaoVpg8t5p/iC5jSK0jWJ/jgGJ4O354nXY+DUh5rkaH
+         oNmXFgNTCn2KCOHoCllXymsAL+EZIWEBHFQNYKRFSizrXUhQHde+mxWpME0zijajcF2p
+         k110HO2OzGjNWcrip7A/4gxyqI8gHVltMypW2b4G96qhceKGCrxZpjqf2c+7G1E8s4yI
+         8Y6Y4DRBGQWp6ZZi/iowSASwEzgnu0Jt+Cpx0otYm+LLce+lyR0viAvGQxKY9a4FmTmq
+         szy5TUH7n0/UYAuUdwDqg8Zy2OvxFi8uXMBnRkVLtcFbjBbr5Kz6OiSSbq2UCQjRLXhG
+         GRuQ==
+X-Gm-Message-State: AOJu0Yw96VPI1aNA6WDH3a14qWzP4EN/y/KIwBusE2FkopA2XAFxi1oo
+	pSqnZgadrMCJzRhRC+5nvoo=
+X-Google-Smtp-Source: AGHT+IFWp5v0KAwI2KVBXMv/+3XOFfW27pUVJ8GaJohETW+Lt3zJP/kCBmLgd6NrMdPNYaikHa5d9g==
+X-Received: by 2002:a17:907:b1a:b0:9b6:5a86:2926 with SMTP id h26-20020a1709070b1a00b009b65a862926mr20502640ejl.62.1697135587281;
+        Thu, 12 Oct 2023 11:33:07 -0700 (PDT)
+Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
+        by smtp.gmail.com with ESMTPSA id b13-20020a170906d10d00b009930c80b87csm11532318ejz.142.2023.10.12.11.33.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 11:33:06 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Thu, 12 Oct 2023 20:33:03 +0200
+From: Ingo Molnar <mingo@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Stephane Eranian <eranian@google.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+	Ben Woodard <woodard@redhat.com>, Joe Mario <jmario@redhat.com>,
+	Kees Cook <keescook@chromium.org>,
+	David Blaikie <blaikie@google.com>, Xu Liu <xliuprof@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Ravi Bangoria <ravi.bangoria@amd.com>
+Subject: Re: [RFC 00/48] perf tools: Introduce data type profiling (v1)
+Message-ID: <ZSg73+7Ar/U2OWMO@gmail.com>
+References: <20231012035111.676789-1-namhyung@kernel.org>
+ <ZSeMGPPfxkMvdaP3@gmail.com>
+ <CAM9d7chzw4UeHHeXaMfPTiRdLbv7PbpK=xkgxMDojAxAc8y7Jg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7chzw4UeHHeXaMfPTiRdLbv7PbpK=xkgxMDojAxAc8y7Jg@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The first version of the traceeval_delta required the user to create the
-type externally. That was cumbersome and was changed to simply use:
+* Namhyung Kim <namhyung@kernel.org> wrote:
 
-  traceeval_delta_create()
+> > Could we perhaps add an IP filter to perf events to get this built-in?
+> > Perhaps attr->exclude_user would achieve something similar?
+> 
+> Unfortunately IBS doesn't support privilege filters IIUC.  Maybe
+> we could add a general filtering logic in the NMI handler but I'm
+> afraid it can complicate the code and maybe slow it down a bit.
+> Probably it's ok to have only a simple privilege filter by IP range.
 
-to create a delta element of an existing traceeval. As the original
-version did not depend on an existing traceeval, it had to have the
-sizeof checks on the traceeval structures in case they ever change in the
-future.
+It will still be so much faster than moving it through the BPF machinery, 
+and bonus points if we merge this into the existing privilege-domain 
+filtering ABI, so no magic 0x800000000000 constants are needed.
 
-Now that the code requires an existing traceeval to create a
-traceeval_delta, the checks have already been done at the creation of the
-traceeval itself. No need to repeat the checks in traceeval_data_create().
+'Overhead' to other usecases shouldn't be much more than a single branch 
+somewhere.
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- include/traceeval.h | 15 ++++-----------
- src/delta.c         | 21 ++++++++-------------
- 2 files changed, 12 insertions(+), 24 deletions(-)
+Thanks,
 
-diff --git a/include/traceeval.h b/include/traceeval.h
-index 99b3f7b86915..9b723f30e1d6 100644
---- a/include/traceeval.h
-+++ b/include/traceeval.h
-@@ -287,17 +287,10 @@ size_t traceeval_count(struct traceeval *teval);
- 				  TRACEEVAL_ARRAY_SIZE(keys),		\
- 				  TRACEEVAL_ARRAY_SIZE(vals))
- 
--#define traceeval_delta_create_size(teval, keys, vals, nr_keys, nr_vals) \
--	traceeval_delta_create_data_size(teval, keys, vals, nr_keys, nr_vals, \
--				       sizeof(struct traceeval_type),	\
--				       sizeof(struct traceeval_data))
--
--int traceeval_delta_create_data_size(struct traceeval *teval,
--				     struct traceeval_type *keys,
--				     struct traceeval_type *vals,
--				     size_t nr_keys, size_t nr_vals,
--				     size_t sizeof_type,
--				     size_t sizeof_data);
-+int traceeval_delta_create_size(struct traceeval *teval,
-+				struct traceeval_type *keys,
-+				struct traceeval_type *vals,
-+				size_t nr_keys, size_t nr_vals);
- 
- int traceeval_delta_start_size(struct traceeval *teval,
- 			       const struct traceeval_data *keys, size_t nr_keys,
-diff --git a/src/delta.c b/src/delta.c
-index c83aa9a39756..c802959e9d89 100644
---- a/src/delta.c
-+++ b/src/delta.c
-@@ -23,14 +23,12 @@ struct traceeval_delta {
- #define TEVAL_TIMESTAMP_NAME	"__TRACEEVAL_DELTA_TIMESTAMP__"
- 
- /**
-- * traceeval_delta_create_data_size - create a delta for a teval
-+ * traceeval_delta_create_size - create a delta for a teval
-  * @teval: The traceeval to create a delta query for
-  * @keys: Defines the keys to differentiate traceeval delta entries
-  * @vals: Defines values attached to entries differentiated by @keys.
-  * @nr_keys: The number of @keys passed in
-  * @nr_vals: The number of @vals passed in
-- * @sizeof_type: The size of struct traceeval_type
-- * @sizeof_data: The size of struct traceeval_data
-  *
-  * This adds a specialized internal traceeval descriptor to @teval.
-  * This descriptor is used to find the start and stop timings between
-@@ -44,13 +42,11 @@ struct traceeval_delta {
-  *
-  * Returns 0 on success and -1 on error.
-  */
--int traceeval_delta_create_data_size(struct traceeval *teval,
--				     struct traceeval_type *keys,
--				     struct traceeval_type *vals,
--				     size_t nr_keys,
--				     size_t nr_vals,
--				     size_t sizeof_type,
--				     size_t sizeof_data)
-+int traceeval_delta_create_size(struct traceeval *teval,
-+				struct traceeval_type *keys,
-+				struct traceeval_type *vals,
-+				size_t nr_keys,
-+				size_t nr_vals)
- {
- 	struct traceeval_type *delta_vals;
- 	struct traceeval_type *val;
-@@ -90,9 +86,8 @@ int traceeval_delta_create_data_size(struct traceeval *teval,
- 	val->name = TEVAL_TIMESTAMP_NAME;
- 	val->type = TRACEEVAL_TYPE_NUMBER_64;
- 
--	tdelta->teval = traceeval_init_data_size(keys, delta_vals, nr_keys,
--						 nr_vals, sizeof_type,
--						 sizeof_data);
-+	tdelta->teval = traceeval_init_size(keys, delta_vals, nr_keys, nr_vals);
-+
- 	/* The delta_vals are no longer needed */
- 	free(delta_vals);
- 
--- 
-2.42.0
-
+	Ingo
