@@ -1,48 +1,48 @@
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B6C61378;
-	Thu, 12 Oct 2023 03:52:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97E051368;
+	Thu, 12 Oct 2023 03:52:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bt1cO1HK"
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F97A10E3;
-	Wed, 11 Oct 2023 20:51:57 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c88b467ef8so4754815ad.0;
-        Wed, 11 Oct 2023 20:51:57 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jeNudOb1"
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0881B10FE;
+	Wed, 11 Oct 2023 20:51:59 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c9daca2b85so3889955ad.1;
+        Wed, 11 Oct 2023 20:51:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697082715; x=1697687515; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697082718; x=1697687518; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IpeT682jXo8zHQtou6ZhNNKzbowV2y0VimL5UVLWBn8=;
-        b=Bt1cO1HK3G6coroGMGSCNYFwRd4qnfdCkfYk8pVezNvlkWhh0NHgFq/+qFLKFSa/q2
-         otz+wwWidkFSHfUj4CUGzJJMXvh/mWy+NZKDI+gzld25vKdKhZ2TkOsjqZljYl4qOo/v
-         l7jwqmFbLweTcEgZ5Yxw3g7+PwFBY+ukFg9xO4dKAT2reVP4X1HKKb1g7/BqLpGqFM49
-         7NXcN1k2si/iuL2IrUwrb/1pmNEhUzTXFbu6XulCIA7j/NzByyvJbgmUi4IKUZL5PEnA
-         z4zIiM1YzbZmlEE56cK7/4dAcjFeZ32IhbdBj+uvLanCTjAX8e7a16u5kkouhQv/+C9c
-         5Jzg==
+        bh=l0uukPGLNEM1tQxhVgCDG+pFph2Ypn/ZDoH5IEqzJ3I=;
+        b=jeNudOb1UFmXpW89hxAkI3WSiEB6zlvZNbAm5Que5kBkvID8hDLLLKCOiQLA/hBXfS
+         NCbWDJrizyD2dHCeQ9TaQlO78OWvFi7tvOvpd9kBdLPJ24N0d3wtq0nCl3NwvXG5oS+7
+         hSmqaTQ6r8mZw67GNIlKGMbSVcB+iJUIGXiAVayU9q6eDu22XDNxExiJNVwrlUpfD/Id
+         P4XYlZS3fSwTbXx7CPBz7Q0rO13TRIHfVDBngzD4pm4/xJ7YF01yEkjIioiJdI/B1pzc
+         IVh5kQPiJgN2ViKeI6zPO7oxdYABRC6xL2cuDxi+WwO/0bGalc3G8pnoQa5PmrHs/YZY
+         ROeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697082715; x=1697687515;
+        d=1e100.net; s=20230601; t=1697082718; x=1697687518;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=IpeT682jXo8zHQtou6ZhNNKzbowV2y0VimL5UVLWBn8=;
-        b=Q6O3eVVPCyN3IehfXfvgMz+RORUSJWBnZ0oJbLwn04L1Tj1jahV5sjhrZZmSehUqv7
-         lRnko1M3aXjI1yDqBn+sJ9+Yw9lAA56cD7ocXwGPiEm1Q97nBJdrWYPD/Dl/2kY3A8vA
-         o+EBAk3izt/HDGGEGQg9phPt8SZKHMqcfkSoAmXF30R4kizGY/p6e5v8IjiyEe7SBRP4
-         vwmukVyO5GQU/E9mU9GDuvs4wvY4xLyp5PADQTvD2tgjOu9g7B6qjcVe3qx0BnEJvX0J
-         ndpfzDc1VNEQNer7z2bkBmkKyJPD8GfWfRAszcQO/YoFJqQ6F+10uKXx+GugJ3JNvMmy
-         Ys5Q==
-X-Gm-Message-State: AOJu0YzEYa1s3i6IfzTWhfPwjgiv6A4gw75Dh0h2JBd5SqxgkyFK7kLa
-	OdNP++AaczFVylFhM/ptinhmf3dhGoo=
-X-Google-Smtp-Source: AGHT+IGObjCpXIRGXvxG2XeisCJpHRn7826etev5dtkSoj7pISBW7/J+f91nhwI9aX8oEoEP+26kOg==
-X-Received: by 2002:a17:902:c947:b0:1c7:4a8a:32d1 with SMTP id i7-20020a170902c94700b001c74a8a32d1mr24944285pla.28.1697082715545;
-        Wed, 11 Oct 2023 20:51:55 -0700 (PDT)
+        bh=l0uukPGLNEM1tQxhVgCDG+pFph2Ypn/ZDoH5IEqzJ3I=;
+        b=wA71cMn91nK+ya4aySVgXJIYw3kwqWv/EGQ5rko8RspoDU9qHsG+zBPHCHG50tVkuI
+         r9ggxOFXyCsLE3/FUsHPPqjFqBSWE0mes6x0Ev76gVEVCCm0l2PvkVqOL0Bp2wNc7iDR
+         rlM4kutFSB6PjI3nqZN3rGfQwSXN3zykiGEYJKKkw4OIPGrv7vVZAGuiuoIfcg5B9c4Q
+         NOedrqi042YAqGQFicjFMhRRAGigD75xS1pu1cLzaSsYHHcO5weu0+giDz9uiPndbnDc
+         nTEEUMGCIPQdBzRp/gunfgplHl6e1VBDVYjFFOXpiZTjoucd+KNG9kiuvy601CR2zIOl
+         uPfA==
+X-Gm-Message-State: AOJu0YylSRkGZ+VNS1rrKKcgQDvlot2EOUqJWwLWyPwxG9vzP9ER2OMT
+	8TDnJy36r2FOlL2bDveRAoM=
+X-Google-Smtp-Source: AGHT+IEclYaWjsPPKcKoo/WLvGVTPPpcj9luv3OfJd0T5zaVimdTR2Sng9+6xF99eXfZeJP14Uworg==
+X-Received: by 2002:a17:902:e852:b0:1c5:59dc:6e93 with SMTP id t18-20020a170902e85200b001c559dc6e93mr34503545plg.3.1697082718091;
+        Wed, 11 Oct 2023 20:51:58 -0700 (PDT)
 Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:b1b9:d490:2f5e:be06])
-        by smtp.gmail.com with ESMTPSA id w8-20020a170902d70800b001bc18e579aesm711374ply.101.2023.10.11.20.51.54
+        by smtp.gmail.com with ESMTPSA id w8-20020a170902d70800b001bc18e579aesm711374ply.101.2023.10.11.20.51.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 20:51:55 -0700 (PDT)
+        Wed, 11 Oct 2023 20:51:57 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -58,9 +58,9 @@ Cc: Ian Rogers <irogers@google.com>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-toolchains@vger.kernel.org,
 	linux-trace-devel@vger.kernel.org
-Subject: [PATCH 31/48] perf dwarf-aux: Add die_get_cfa()
-Date: Wed, 11 Oct 2023 20:50:54 -0700
-Message-ID: <20231012035111.676789-32-namhyung@kernel.org>
+Subject: [PATCH 33/48] perf dwarf-aux: Check allowed DWARF Ops
+Date: Wed, 11 Oct 2023 20:50:56 -0700
+Message-ID: <20231012035111.676789-34-namhyung@kernel.org>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
 In-Reply-To: <20231012035111.676789-1-namhyung@kernel.org>
 References: <20231012035111.676789-1-namhyung@kernel.org>
@@ -78,118 +78,145 @@ X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-The die_get_cfa() is to get frame base register and offset at the given
-instruction address (pc).  This info will be used to locate stack
-variables which have location expression using DW_OP_fbreg.
+The DWARF location expression can be fairly complex and it'd be hard
+to match it with the condition correctly.  So let's be conservative
+and only allow simple expressions.  For now it just checks the first
+operation in the list.  The following operations looks ok:
+
+ * DW_OP_stack_value
+ * DW_OP_deref_size
+ * DW_OP_deref
+ * DW_OP_piece
+
+To refuse complex (and unsupported) location expressions, add
+check_allowed_ops() to compare the rest of the list.  It seems earlier
+result contained those unsupported expressions.  For example, I found
+some local struct variable is placed like below.
+
+ <2><43d1517>: Abbrev Number: 62 (DW_TAG_variable)
+    <43d1518>   DW_AT_location    : 15 byte block: 91 50 93 8 91 78 93 4 93 84 8 91 68 93 4
+        (DW_OP_fbreg: -48; DW_OP_piece: 8;
+         DW_OP_fbreg: -8; DW_OP_piece: 4;
+         DW_OP_piece: 1028;
+         DW_OP_fbreg: -24; DW_OP_piece: 4)
+
+Another example is something like this.
+
+    0057c8be ffffffffffffffff ffffffff812109f0 (base address)
+    0057c8ce ffffffff812112b5 ffffffff812112c8 (DW_OP_breg3 (rbx): 0;
+                                                DW_OP_constu: 18446744073709551612;
+                                                DW_OP_and;
+                                                DW_OP_stack_value)
+
+It should refuse them.  After the change, the stat shows:
+
+  Annotate data type stats:
+  total 294, ok 158 (53.7%), bad 136 (46.3%)
+  -----------------------------------------------------------
+          30 : no_sym
+          32 : no_mem_ops
+          53 : no_var
+          14 : no_typeinfo
+           7 : bad_offset
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/dwarf-aux.c | 64 +++++++++++++++++++++++++++++++++++++
- tools/perf/util/dwarf-aux.h |  9 ++++++
- 2 files changed, 73 insertions(+)
+ tools/perf/util/dwarf-aux.c | 44 +++++++++++++++++++++++++++++++++----
+ 1 file changed, 40 insertions(+), 4 deletions(-)
 
 diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
-index 97d9ae56350e..796413eb4e8f 100644
+index 7f3822d08ab7..093d7e82b333 100644
 --- a/tools/perf/util/dwarf-aux.c
 +++ b/tools/perf/util/dwarf-aux.c
-@@ -1408,6 +1408,70 @@ Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die, Dwarf_Addr pc,
- 	return result;
+@@ -1305,6 +1305,34 @@ static bool match_var_offset(Dwarf_Die *die_mem, struct find_var_data *data,
+ 	return true;
  }
  
-+static int reg_from_dwarf_op(Dwarf_Op *op)
++static bool check_allowed_ops(Dwarf_Op *ops, size_t nops)
 +{
-+	switch (op->atom) {
-+	case DW_OP_reg0 ... DW_OP_reg31:
-+		return op->atom - DW_OP_reg0;
-+	case DW_OP_breg0 ... DW_OP_breg31:
-+		return op->atom - DW_OP_breg0;
-+	case DW_OP_regx:
-+	case DW_OP_bregx:
-+		return op->number;
-+	default:
-+		break;
++	/* The first op is checked separately */
++	ops++;
++	nops--;
++
++	/*
++	 * It needs to make sure if the location expression matches to the given
++	 * register and offset exactly.  Thus it rejects any complex expressions
++	 * and only allows a few of selected operators that doesn't change the
++	 * location.
++	 */
++	while (nops) {
++		switch (ops->atom) {
++		case DW_OP_stack_value:
++		case DW_OP_deref_size:
++		case DW_OP_deref:
++		case DW_OP_piece:
++			break;
++		default:
++			return false;
++		}
++		ops++;
++		nops--;
 +	}
-+	return -1;
++	return true;
 +}
 +
-+static int offset_from_dwarf_op(Dwarf_Op *op)
-+{
-+	switch (op->atom) {
-+	case DW_OP_reg0 ... DW_OP_reg31:
-+	case DW_OP_regx:
-+		return 0;
-+	case DW_OP_breg0 ... DW_OP_breg31:
-+		return op->number;
-+	case DW_OP_bregx:
-+		return op->number2;
-+	default:
-+		break;
-+	}
-+	return -1;
-+}
-+
-+/**
-+ * die_get_cfa - Get frame base information
-+ * @dwarf: a Dwarf info
-+ * @pc: program address
-+ * @preg: pointer for saved register
-+ * @poffset: pointer for saved offset
-+ *
-+ * This function gets register and offset for CFA (Canonical Frame Address)
-+ * by searching the CIE/FDE info.  The CFA usually points to the start address
-+ * of the current stack frame and local variables can be located using an offset
-+ * from the CFA.  The @preg and @poffset will be updated if it returns 0.
-+ */
-+int die_get_cfa(Dwarf *dwarf, u64 pc, int *preg, int *poffset)
-+{
-+	Dwarf_CFI *cfi;
-+	Dwarf_Frame *frame = NULL;
-+	Dwarf_Op *ops = NULL;
-+	size_t nops;
-+
-+	cfi = dwarf_getcfi(dwarf);
-+	if (cfi == NULL)
-+		return -1;
-+
-+	if (!dwarf_cfi_addrframe(cfi, pc, &frame) &&
-+	    !dwarf_frame_cfa(frame, &ops, &nops) && nops == 1) {
-+		*preg = reg_from_dwarf_op(ops);
-+		*poffset = offset_from_dwarf_op(ops);
-+		return 0;
-+	}
-+	return -1;
-+}
-+
- #endif
+ /* Only checks direct child DIEs in the given scope. */
+ static int __die_find_var_reg_cb(Dwarf_Die *die_mem, void *arg)
+ {
+@@ -1332,25 +1360,31 @@ static int __die_find_var_reg_cb(Dwarf_Die *die_mem, void *arg)
+ 		/* Local variables accessed using frame base register */
+ 		if (data->is_fbreg && ops->atom == DW_OP_fbreg &&
+ 		    data->offset >= (int)ops->number &&
++		    check_allowed_ops(ops, nops) &&
+ 		    match_var_offset(die_mem, data, data->offset, ops->number))
+ 			return DIE_FIND_CB_END;
  
- /*
-diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
-index 742098e3ee7e..29a7243b1a45 100644
---- a/tools/perf/util/dwarf-aux.h
-+++ b/tools/perf/util/dwarf-aux.h
-@@ -149,6 +149,9 @@ Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die, Dwarf_Addr pc,
- 				     Dwarf_Addr addr, Dwarf_Die *die_mem,
- 				     int *offset);
+ 		/* Only match with a simple case */
+ 		if (data->reg < DWARF_OP_DIRECT_REGS) {
+-			if (ops->atom == (DW_OP_reg0 + data->reg) && nops == 1)
++			/* pointer variables saved in a register 0 to 31 */
++			if (ops->atom == (DW_OP_reg0 + data->reg) &&
++			    check_allowed_ops(ops, nops))
+ 				return DIE_FIND_CB_END;
  
-+/* Get the frame base information from CFA */
-+int die_get_cfa(Dwarf *dwarf, u64 pc, int *preg, int *poffset);
-+
- #else /*  HAVE_DWARF_GETLOCATIONS_SUPPORT */
+ 			/* Local variables accessed by a register + offset */
+ 			if (ops->atom == (DW_OP_breg0 + data->reg) &&
++			    check_allowed_ops(ops, nops) &&
+ 			    match_var_offset(die_mem, data, data->offset, ops->number))
+ 				return DIE_FIND_CB_END;
+ 		} else {
++			/* pointer variables saved in a register 32 or above */
+ 			if (ops->atom == DW_OP_regx && ops->number == data->reg &&
+-			    nops == 1)
++			    check_allowed_ops(ops, nops))
+ 				return DIE_FIND_CB_END;
  
- static inline int die_get_var_range(Dwarf_Die *sp_die __maybe_unused,
-@@ -175,6 +178,12 @@ static inline Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die __maybe_unu
- 	return NULL;
- }
+ 			/* Local variables accessed by a register + offset */
+ 			if (ops->atom == DW_OP_bregx && data->reg == ops->number &&
++			    check_allowed_ops(ops, nops) &&
+ 			    match_var_offset(die_mem, data, data->offset, ops->number2))
+ 				return DIE_FIND_CB_END;
+ 		}
+@@ -1412,7 +1446,8 @@ static int __die_find_var_addr_cb(Dwarf_Die *die_mem, void *arg)
+ 		if (data->addr < ops->number)
+ 			continue;
  
-+static inline int die_get_cfa(Dwarf *dwarf __maybe_unused, u64 pc __maybe_unused,
-+			      int *preg __maybe_unused, int *poffset __maybe_unused)
-+{
-+	return -1;
-+}
-+
- #endif /* HAVE_DWARF_GETLOCATIONS_SUPPORT */
+-		if (match_var_offset(die_mem, data, data->addr, ops->number))
++		if (check_allowed_ops(ops, nops) &&
++		    match_var_offset(die_mem, data, data->addr, ops->number))
+ 			return DIE_FIND_CB_END;
+ 	}
+ 	return DIE_FIND_CB_SIBLING;
+@@ -1501,7 +1536,8 @@ int die_get_cfa(Dwarf *dwarf, u64 pc, int *preg, int *poffset)
+ 		return -1;
  
- #endif /* _DWARF_AUX_H */
+ 	if (!dwarf_cfi_addrframe(cfi, pc, &frame) &&
+-	    !dwarf_frame_cfa(frame, &ops, &nops) && nops == 1) {
++	    !dwarf_frame_cfa(frame, &ops, &nops) &&
++	    check_allowed_ops(ops, nops)) {
+ 		*preg = reg_from_dwarf_op(ops);
+ 		*poffset = offset_from_dwarf_op(ops);
+ 		return 0;
 -- 
 2.42.0.655.g421f12c284-goog
 
