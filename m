@@ -1,57 +1,36 @@
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1C44613F;
-	Thu, 12 Oct 2023 06:03:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA75320B2A;
+	Thu, 12 Oct 2023 09:14:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LsRtx4w9"
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F56B7;
-	Wed, 11 Oct 2023 23:03:09 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9b2f73e3af3so86250066b.3;
-        Wed, 11 Oct 2023 23:03:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697090587; x=1697695387; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kndtBynulzd80/3J4MlffDuuBlHDmwn71hGuSrPpZLw=;
-        b=LsRtx4w9pztGtB8bCb7XxL0sY2Nd4X77WFHEpPSLT7NhecpGUksEPofxIM+vzMLH3K
-         71Vwa9CRBxFAtxq7S993Gva7O3J0BlogP+ea54TqO66+UiHEi7SE9xi6rvU8Q2L0smIV
-         ESxzSKQ8os4+/10ZC8sLJoNu9LtlpDNSHmTyAgjHwqbYO0wctzMLlYAC/BCC9K2NzCkv
-         nDreiE1vdJien0QffVh57cKBdGnaBVvkwMDYpn5DESbdhkj07HRgz/Cmtg5LCFwmZSC5
-         HKNYnxs7K5yx+vR0GUAjQyY/u1DSxFbcVm+jmKFQ4xghOJSG8e5Z25oQFBPvhMzVHeah
-         o4PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697090587; x=1697695387;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kndtBynulzd80/3J4MlffDuuBlHDmwn71hGuSrPpZLw=;
-        b=Yvw2bWie7d78INAjW/EmUQx410Jj12gMqsiU5OaaGE6dy3roHWl+FsdkZ+fuf3ftvT
-         swU0Y7Ia1YsgIKJcud9cE7Y88VGW4ygYcI68GjohrLQjyK0isAs5hKH8ijut7nYxtgBk
-         WQ/gqGUzPomt+KATyeC+e/Sv0BJlNatKGXf1SwVEC9eFYioaVEqZZBeawFs/D4c0B8OU
-         rZfgXjTAsqV6Projx6U9xJBD5ckWphDmWYLFaQJwSU4y5zLpxAIJ+lvZAHNHI40+FfoL
-         NhzrkYm+zyO9Ewbf6P97eS2KOR/Ph8yejpEx33UHydXhD2Z3MxlBJtvpbuzztrJUj0dA
-         foZQ==
-X-Gm-Message-State: AOJu0YyVfBiLMJ0jiJf9Hb+X7e1nXDJgHEeroayhqKW8E5dJgM6X4661
-	HRdv9e/frwuBKXC/DUVQpxM=
-X-Google-Smtp-Source: AGHT+IEmX/JzwUcGC7jbh+Rrf2P2akTGynH5UTwmvD+60tSI08BzZGYYPdNgwsSVyfhdDsgNlPxROQ==
-X-Received: by 2002:a17:906:738f:b0:9ba:14a3:7221 with SMTP id f15-20020a170906738f00b009ba14a37221mr10002481ejl.73.1697090587162;
-        Wed, 11 Oct 2023 23:03:07 -0700 (PDT)
-Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
-        by smtp.gmail.com with ESMTPSA id h17-20020a1709063c1100b009b94a8150d8sm10725280ejg.199.2023.10.11.23.03.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 23:03:06 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Thu, 12 Oct 2023 08:03:04 +0200
-From: Ingo Molnar <mingo@kernel.org>
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="eNWXa9sq"
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA65B18F;
+	Thu, 12 Oct 2023 02:13:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Wp5Iab3YQO+kL2Pt3Wg09MfvraapsTSQohQxc/XyOAI=; b=eNWXa9sqk4ENg6S8BbBDcg1EY2
+	ZW9K/9WSBmHYbd3xwxx6y5aULE2lPFtgrWR0psD8ShVyr94YICzSnABslC3mX2BSW3abqjKeeIzC3
+	lMZ+HlgBgCoOg5KkHuvxMIce0vM+Q1Zi+m1dXYAABXJZAgSPHMJhPV9i7N/AlPuao1M3u8Utw+jt7
+	P4QTObyKIjP4oXjm+isnYZvLn07TDuCe13TO+1KzOGglIPFHYi0E1/9lQzc5UBsQeB7jk4XPYpSKn
+	WTd4TKfzAKfXC8rzxxmWILMQpgeD2Sgi/KdcZjuc8Mx6he6T+peLMyuJSnUhTyoO57XLPk6rWnAEJ
+	wDbgaV9w==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1qqrj6-001hHm-02;
+	Thu, 12 Oct 2023 09:13:30 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 1D60F30036C; Thu, 12 Oct 2023 11:11:29 +0200 (CEST)
+Date: Thu, 12 Oct 2023 11:11:28 +0200
+From: Peter Zijlstra <peterz@infradead.org>
 To: Namhyung Kim <namhyung@kernel.org>
 Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-	Ian Rogers <irogers@google.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
 	Adrian Hunter <adrian.hunter@intel.com>,
-	LKML <linux-kernel@vger.kernel.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
 	linux-perf-users@vger.kernel.org,
 	Linus Torvalds <torvalds@linux-foundation.org>,
 	Stephane Eranian <eranian@google.com>,
@@ -63,7 +42,7 @@ Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Kan Liang <kan.liang@linux.intel.com>,
 	Ravi Bangoria <ravi.bangoria@amd.com>
 Subject: Re: [RFC 00/48] perf tools: Introduce data type profiling (v1)
-Message-ID: <ZSeMGPPfxkMvdaP3@gmail.com>
+Message-ID: <20231012091128.GL6307@noisy.programming.kicks-ass.net>
 References: <20231012035111.676789-1-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -74,15 +53,16 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20231012035111.676789-1-namhyung@kernel.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
 
-* Namhyung Kim <namhyung@kernel.org> wrote:
+W00t!! Finally! :-)
+
+On Wed, Oct 11, 2023 at 08:50:23PM -0700, Namhyung Kim wrote:
 
 > * How to use it
 > 
@@ -94,18 +74,9 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 > 
 >     # To get memory access samples in kernel for 1 second (on Intel)
 >     $ sudo perf mem record -a -K --ldlat=4 -- sleep 1
-> 
->     # Similar for the AMD (but it requires 6.3+ kernel for BPF filters)
->     $ sudo perf mem record -a --filter 'mem_op == load, ip > 0x8000000000000000' -- sleep 1
 
-BTW., it would be nice for 'perf mem record' to just do the right thing on 
-whatever machine it is running on.
-
-Also, why are BPF filters required - due to the IP filtering of mem-load 
-events?
-
-Could we perhaps add an IP filter to perf events to get this built-in? 
-Perhaps attr->exclude_user would achieve something similar?
+Fundamentally this should work with anything PEBS from MEM_ as
+well, no? No real reason to rely on perf mem for this.
 
 > In perf report, it's just a matter of selecting new sort keys: 'type'
 > and 'typeoff'.  The 'type' shows name of the data type as a whole while
@@ -141,9 +112,88 @@ Perhaps attr->exclude_user would achieve something similar?
 >             0.10%     struct task_struct +976 (nr_cpus_allowed)
 >             0.09%     struct task_struct +2272 (mm)
 >         ...
+> 
+> The (stack operation) and (unknown) have no type and field info.  FYI,
+> the stack operations are samples in PUSH, POP or RET instructions which
+> save or restore registers from/to the stack.  They are usually parts of
+> function prologue and epilogue and have no type info.  The next is the
+> struct pcpu_hot and you can see the first field (current_task) at offset
+> 0 was accessed mostly.  It's listed in order of access frequency (not in
+> offset) as you can see it in the task_struct.
+> 
+> In perf annotate, new --data-type option was added to enable data
+> field level annotation.  Now it only shows number of samples for each
+> field but we can improve it.
+> 
+>     $ sudo perf annotate --data-type
+>     Annotate type: 'struct pcpu_hot' in [kernel.kallsyms] (223 samples):
+>     ============================================================================
+>         samples     offset       size  field
+>             223          0         64  struct pcpu_hot       {
+>             223          0         64      union     {
+>             223          0         48          struct        {
+>              78          0          8              struct task_struct*      current_task;
+>              98          8          4              int      preempt_count;
+>              45         12          4              int      cpu_number;
+>               0         16          8              u64      call_depth;
+>               1         24          8              long unsigned int        top_of_stack;
+>               0         32          8              void*    hardirq_stack_ptr;
+>               1         40          2              u16      softirq_pending;
+>               0         42          1              bool     hardirq_stack_inuse;
+>                                                };
+>             223          0         64          u8*  pad;
+>                                            };
+>                                        };
+>     ...
+> 
+> This shows each struct one by one and field-level access info in C-like
+> style.  The number of samples for the outer struct is a sum of number of
+> samples in every field in the struct.  In unions, each field is placed
+> in the same offset so they will have the same number of samples.
 
-This looks really useful!
+This is excellent -- and pretty much what I've been asking for forever.
 
-Thanks,
+Would it be possible to have multiple sample columns, for eg.
+MEM_LOADS_UOPS_RETIRED.L1_HIT and MEM_LOADS_UOPS_RETIRED.L1_MISS
+or even more (adding LLC hit and miss as well etc.) ?
 
-	Ingo
+(for bonus points: --data-type=typename, would be awesome)
+
+Additionally, annotating the regular perf-annotate output with data-type
+information (where we have it) might also be very useful. That way, even
+when profiling with PEBS-cycles, an expensive memop immediately gives a
+clue as to what data-type to look at.
+
+> No TUI support yet.
+
+Yeah, nobody needs that anyway :-)
+
+> This can generate instructions like below.
+> 
+>     ...
+>     0x123456:  mov    0x18(%rdi), %rcx
+>     0x12345a:  mov    0x10(%rcx), %rax     <=== sample
+>     0x12345e:  test   %rax, %rax
+>     0x123461:  je     <...>
+>     ...
+> 
+> And imagine we have a sample at 0x12345a.  Then it cannot find a
+> variable for %rcx since DWARF didn't generate one (it only knows about
+> 'bar').  Without compiler support, all it can do is to track the code
+> execution in each instruction and propagate the type info in each
+> register and stack location by following the memory access.
+
+Right, this has more or less been the 'excuse' for why doing this has
+been 'difficult' for the past 10+ years :/
+
+> Actually I found a discussion in the DWARF mailing list to support
+> "inverted location lists" and it seems a perfect fit for this project.
+> It'd be great if new DWARF would provide a way to lookup variable and
+> type info using a concrete location info (like a register number).
+> 
+>   https://lists.dwarfstd.org/pipermail/dwarf-discuss/2023-June/002278.html 
+
+Stephane was going to talk to tools people about this over 10 years ago
+:-)
+
+Thanks for *finally* getting this started!!
