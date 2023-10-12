@@ -1,48 +1,48 @@
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6F59A2C;
-	Thu, 12 Oct 2023 03:51:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4689A38;
+	Thu, 12 Oct 2023 03:51:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SGXUrJOW"
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ADD5111;
-	Wed, 11 Oct 2023 20:51:33 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c9a1762b43so4586725ad.1;
-        Wed, 11 Oct 2023 20:51:33 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C29ND8KE"
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E1111A;
+	Wed, 11 Oct 2023 20:51:34 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-2773f776f49so384420a91.1;
+        Wed, 11 Oct 2023 20:51:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697082691; x=1697687491; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697082693; x=1697687493; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DbaN0yRuaza8BL6icLDagknshS4zfy6sspTNGP7mdKc=;
-        b=SGXUrJOW/DMwXuopDy0AWGqPqDVkwNDtGo99RtyLx17yqtplD0hGQfo1pYmzEuu3wQ
-         2jzyFGLorTIp/HaavUAWee+JYvpkOlVS9MG5UyHPwobOEvSLYeXEYwCII9Gsg3FvVGbe
-         j8/SBNx63+MzHca1T83ZBlXwAfJ8E4CyrotzSX4UZmYaeS658RD6qXemYsHzjlKyZ4yH
-         kQObvA1OfzUmhYFRD4apoxOjikQew2ut5sfJwt4jGfhyvxeG3gz8fuQNByealAZzO2cB
-         tmgIuDCsNSgZyMoGjReVxOUZyHZrKc3X4wwBSnOvi67sustvhdxA42kGOFI5UUOQL/sd
-         0nLA==
+        bh=XqS3acjNyfHXAKt2i/1MQ99UO2nZZIth1PMAMz3P27M=;
+        b=C29ND8KEE5MDVIMfoJfdXWO59SmotPpaHeA47qxLOHhvXOnAZI3kMXWMxT9Hox/S5z
+         XJS1s0wyWGkXy7bWHT0eUZgVc8JgjE30oXQ/k8ArVDwEgAzs+IA+QLLpj7NDWhimfsR8
+         ZjFzZTDKZf628b9AuNNI2S8oltRKJaucQxmoR7120Xd2Pi4kcSRKThWryEYKF3PC+RyZ
+         Dtc9wdee8HOCgdcfQEnCXeGpxamj4x+tBAcRm5SpkaG/yiYiM9fB9u8ZAuPcIS7o6lo0
+         jkiaFfepENb4SxSuu+T5kANY+c8uRJu9oHrHbJEIYSkzZzWSrWd+3JyBwJodyvCEmqmq
+         pe2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697082691; x=1697687491;
+        d=1e100.net; s=20230601; t=1697082693; x=1697687493;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=DbaN0yRuaza8BL6icLDagknshS4zfy6sspTNGP7mdKc=;
-        b=Lpd7lbB0ZfYauvazvZWpCOh0KP4OtvWfo4QRMZchaLZUajmNt0txPCN2qZBbPqfhyU
-         fybAv1Nt9d2XEkq/sBxyL6OH/o6y/1qg/oTBXpuiHR7dKYfdknzNszhbnzeWjL0qHriz
-         /TuRlaZvnVUcU1+vbIEF+k0lauBp9Q4925p7YPNepG5yoFXZw/pDRoKTXp2eiF/38bDq
-         U5dSf+hnh7+HpZdbXNSkNotjkWq7okcS9mYngk/zrsBKu1QpXtEHLMfr7PBa/TxGdedL
-         u176lxbMSzih8N6dxEYH00AsWPAVzhm+xeFvKDGMHPmdD/ODcSQYOdTqo7TMwGQ8yFrx
-         Z0eQ==
-X-Gm-Message-State: AOJu0Ywpe10DmDOyyE7o8PApIzW22ZdWEJ2V3ap48uXlwSOJ/CHneaZI
-	5HD+/faZjm0kGWOtj3QgS/Y=
-X-Google-Smtp-Source: AGHT+IEheQbgSpqZROi/n4uDdh6jZhcA+SuMT7pxBEGYErtpNcfwWcfp7IM0f+AV2I97ngR3oxSuCw==
-X-Received: by 2002:a17:902:ec91:b0:1c8:9d32:3392 with SMTP id x17-20020a170902ec9100b001c89d323392mr16052935plg.63.1697082690648;
-        Wed, 11 Oct 2023 20:51:30 -0700 (PDT)
+        bh=XqS3acjNyfHXAKt2i/1MQ99UO2nZZIth1PMAMz3P27M=;
+        b=hRRa4OGA9lBWRDoA1/udlsv4DvUKAq1stiuyKPyJitaUnUJvDc/SQXaOBhqb13s9Rs
+         WxGMaRy5oK5fV/vw8xXe55KhHM4CaQ74WnNYSqBhApo/dAwZ1WxsGA8Vna5ml89ttXBU
+         mdKh1kkEQeWJBOCItTNIafnNGYq1oeNvdpplochoNqRFRzaJB0mlM66nAFRuBLraQXif
+         3Vy6zWa2CBheAm1qP3gsv9kMH9DagkjWmxhlhX0FbemE5ob3AEoAP6cmvwbexDcALOBa
+         /XHKywz+1VPFtEg7/xtfiVG5sISzz3qRGTGGuND0zbNwxYZuwu9BUBvMowZpRzPtxsVe
+         I7JA==
+X-Gm-Message-State: AOJu0YzjC191Ceqznwl3B/H+XW6vXaEy7URyIMfL7PHq/RA7CeIWNC7L
+	WGiNPas7gv/geHfTzPgA/Y0=
+X-Google-Smtp-Source: AGHT+IHU2Vzhh9c+hkafnr864Gn2ZGcWbCgPbXYDp4+67dqafL09eG+KoUve+ApCUO/3uvOuZCOUIA==
+X-Received: by 2002:a17:90a:858b:b0:277:5cd5:6f80 with SMTP id m11-20020a17090a858b00b002775cd56f80mr28649847pjn.16.1697082693327;
+        Wed, 11 Oct 2023 20:51:33 -0700 (PDT)
 Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:b1b9:d490:2f5e:be06])
-        by smtp.gmail.com with ESMTPSA id w8-20020a170902d70800b001bc18e579aesm711374ply.101.2023.10.11.20.51.29
+        by smtp.gmail.com with ESMTPSA id w8-20020a170902d70800b001bc18e579aesm711374ply.101.2023.10.11.20.51.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 20:51:30 -0700 (PDT)
+        Wed, 11 Oct 2023 20:51:33 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -58,9 +58,9 @@ Cc: Ian Rogers <irogers@google.com>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-toolchains@vger.kernel.org,
 	linux-trace-devel@vger.kernel.org
-Subject: [PATCH 12/48] perf annotate: Factor out evsel__get_arch()
-Date: Wed, 11 Oct 2023 20:50:35 -0700
-Message-ID: <20231012035111.676789-13-namhyung@kernel.org>
+Subject: [PATCH 14/48] perf annotate: Implement hist_entry__get_data_type()
+Date: Wed, 11 Oct 2023 20:50:37 -0700
+Message-ID: <20231012035111.676789-15-namhyung@kernel.org>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
 In-Reply-To: <20231012035111.676789-1-namhyung@kernel.org>
 References: <20231012035111.676789-1-namhyung@kernel.org>
@@ -73,117 +73,150 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-The evsel__get_arch() is to get architecture info from the environ.
-It'll be used by other places later so let's factor it out.
+It's the function to find out the type info from the given sample data
+and will be called from the hist_entry sort logic when 'type' sort key
+is used.
 
-Also add arch__is() to check the arch info by name.
+It first calls objdump to disassemble the instructions and figure out
+information about memory access at the location.  Maybe we can do it
+better by analyzing the instruction directly, but I'll leave it for
+later work.
+
+The memory access is determined by checking instruction operands to
+have "(" and then extract register name and offset.  It'll return NULL
+if no data type is found.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/annotate.c | 44 +++++++++++++++++++++++++++-----------
- tools/perf/util/annotate.h |  2 ++
- 2 files changed, 33 insertions(+), 13 deletions(-)
+ tools/perf/util/annotate.c | 85 ++++++++++++++++++++++++++++++++++++++
+ tools/perf/util/annotate.h |  4 ++
+ 2 files changed, 89 insertions(+)
 
 diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index 605298410ed4..254cc9f224f4 100644
+index 9d653a1e84ce..e5dc3d6fc6d0 100644
 --- a/tools/perf/util/annotate.c
 +++ b/tools/perf/util/annotate.c
-@@ -840,6 +840,11 @@ static struct arch *arch__find(const char *name)
- 	return bsearch(name, architectures, nmemb, sizeof(struct arch), arch__key_cmp);
- }
+@@ -25,6 +25,7 @@
+ #include "units.h"
+ #include "debug.h"
+ #include "annotate.h"
++#include "annotate-data.h"
+ #include "evsel.h"
+ #include "evlist.h"
+ #include "bpf-event.h"
+@@ -3591,3 +3592,87 @@ int annotate_get_insn_location(struct arch *arch, struct disasm_line *dl,
  
-+bool arch__is(struct arch *arch, const char *name)
+ 	return 0;
+ }
++
++static void symbol__ensure_annotate(struct map_symbol *ms, struct evsel *evsel)
 +{
-+	return !strcmp(arch->name, name);
++	struct disasm_line *dl, *tmp_dl;
++	struct annotation *notes;
++
++	notes = symbol__annotation(ms->sym);
++	if (!list_empty(&notes->src->source))
++		return;
++
++	if (symbol__annotate(ms, evsel, notes->options, NULL) < 0)
++		return;
++
++	/* remove non-insn disasm lines for simplicity */
++	list_for_each_entry_safe(dl, tmp_dl, &notes->src->source, al.node) {
++		if (dl->al.offset == -1) {
++			list_del(&dl->al.node);
++			free(dl);
++		}
++	}
 +}
 +
- static struct annotated_source *annotated_source__new(void)
- {
- 	struct annotated_source *src = zalloc(sizeof(*src));
-@@ -2344,15 +2349,8 @@ void symbol__calc_percent(struct symbol *sym, struct evsel *evsel)
- 	annotation__calc_percent(notes, evsel, symbol__size(sym));
- }
- 
--int symbol__annotate(struct map_symbol *ms, struct evsel *evsel,
--		     struct annotation_options *options, struct arch **parch)
-+static int evsel__get_arch(struct evsel *evsel, struct arch **parch)
- {
--	struct symbol *sym = ms->sym;
--	struct annotation *notes = symbol__annotation(sym);
--	struct annotate_args args = {
--		.evsel		= evsel,
--		.options	= options,
--	};
- 	struct perf_env *env = evsel__env(evsel);
- 	const char *arch_name = perf_env__arch(env);
- 	struct arch *arch;
-@@ -2361,23 +2359,43 @@ int symbol__annotate(struct map_symbol *ms, struct evsel *evsel,
- 	if (!arch_name)
- 		return errno;
- 
--	args.arch = arch = arch__find(arch_name);
-+	*parch = arch = arch__find(arch_name);
- 	if (arch == NULL) {
- 		pr_err("%s: unsupported arch %s\n", __func__, arch_name);
- 		return ENOTSUP;
- 	}
- 
--	if (parch)
--		*parch = arch;
--
- 	if (arch->init) {
- 		err = arch->init(arch, env ? env->cpuid : NULL);
- 		if (err) {
--			pr_err("%s: failed to initialize %s arch priv area\n", __func__, arch->name);
-+			pr_err("%s: failed to initialize %s arch priv area\n",
-+			       __func__, arch->name);
- 			return err;
- 		}
- 	}
-+	return 0;
++static struct disasm_line *find_disasm_line(struct symbol *sym, u64 ip)
++{
++	struct disasm_line *dl;
++	struct annotation *notes;
++
++	notes = symbol__annotation(sym);
++
++	list_for_each_entry(dl, &notes->src->source, al.node) {
++		if (sym->start + dl->al.offset == ip)
++			return dl;
++	}
++	return NULL;
 +}
 +
-+int symbol__annotate(struct map_symbol *ms, struct evsel *evsel,
-+		     struct annotation_options *options, struct arch **parch)
++/**
++ * hist_entry__get_data_type - find data type for given hist entry
++ * @he: hist entry
++ *
++ * This function first annotates the instruction at @he->ip and extracts
++ * register and offset info from it.  Then it searches the DWARF debug
++ * info to get a variable and type information using the address, register,
++ * and offset.
++ */
++struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
 +{
-+	struct symbol *sym = ms->sym;
-+	struct annotation *notes = symbol__annotation(sym);
-+	struct annotate_args args = {
-+		.evsel		= evsel,
-+		.options	= options,
-+	};
-+	struct arch *arch = NULL;
-+	int err;
++	struct map_symbol *ms = &he->ms;
++	struct evsel *evsel = hists_to_evsel(he->hists);
++	struct arch *arch;
++	struct disasm_line *dl;
++	struct annotated_insn_loc loc;
++	struct annotated_op_loc *op_loc;
++	u64 ip = he->ip;
++	int i;
 +
-+	err = evsel__get_arch(evsel, &arch);
-+	if (err < 0)
-+		return err;
++	if (ms->map == NULL || ms->sym == NULL)
++		return NULL;
 +
-+	if (parch)
-+		*parch = arch;
- 
-+	args.arch = arch;
- 	args.ms = *ms;
- 	if (notes->options && notes->options->full_addr)
- 		notes->start = map__objdump_2mem(ms->map, ms->sym->start);
++	if (evsel__get_arch(evsel, &arch) < 0)
++		return NULL;
++
++	/* Make sure it runs objdump to get disasm of the function */
++	symbol__ensure_annotate(ms, evsel);
++
++	/*
++	 * Get a disasm to extract the location from the insn.
++	 * This is too slow...
++	 */
++	dl = find_disasm_line(ms->sym, ip);
++	if (dl == NULL)
++		return NULL;
++
++	if (annotate_get_insn_location(arch, dl, &loc) < 0)
++		return NULL;
++
++	for_each_insn_op_loc(&loc, i, op_loc) {
++		if (!op_loc->mem_ref)
++			continue;
++
++		return find_data_type(ms, ip, op_loc->reg, op_loc->offset);
++	}
++	return NULL;
++}
 diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
-index e33a55431bad..c74f8f10f705 100644
+index 4adda492233d..299b4a18e804 100644
 --- a/tools/perf/util/annotate.h
 +++ b/tools/perf/util/annotate.h
-@@ -61,6 +61,8 @@ struct ins_operands {
+@@ -23,6 +23,7 @@ struct option;
+ struct perf_sample;
+ struct evsel;
+ struct symbol;
++struct annotated_data_type;
  
- struct arch;
+ struct ins {
+ 	const char     *name;
+@@ -473,4 +474,7 @@ struct annotated_insn_loc {
+ int annotate_get_insn_location(struct arch *arch, struct disasm_line *dl,
+ 			       struct annotated_insn_loc *loc);
  
-+bool arch__is(struct arch *arch, const char *name);
++/* Returns a data type from the sample instruction (if any) */
++struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he);
 +
- struct ins_ops {
- 	void (*free)(struct ins_operands *ops);
- 	int (*parse)(struct arch *arch, struct ins_operands *ops, struct map_symbol *ms);
+ #endif	/* __PERF_ANNOTATE_H */
 -- 
 2.42.0.655.g421f12c284-goog
 
