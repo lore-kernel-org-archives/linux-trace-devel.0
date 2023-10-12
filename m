@@ -1,48 +1,48 @@
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE95CEBC;
-	Thu, 12 Oct 2023 03:51:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EF03EBC;
+	Thu, 12 Oct 2023 03:51:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jTXr5cED"
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E54BD12C;
-	Wed, 11 Oct 2023 20:51:37 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-690bc3f82a7so465775b3a.0;
-        Wed, 11 Oct 2023 20:51:37 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="krSfokDD"
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B78D3185;
+	Wed, 11 Oct 2023 20:51:39 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c871a095ceso4550015ad.2;
+        Wed, 11 Oct 2023 20:51:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697082694; x=1697687494; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697082697; x=1697687497; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9Mm0EFKSyzZeq7wlW+V5DIgnESjW48EHe3H1udzSRfI=;
-        b=jTXr5cEDneyU68rbb5CNcqO+exc4TsJZFY/p/3whJSNmvknj3+pHapCkOkA/OHYoGD
-         0xkbfyL29BVtoHIYmLHVkLxGas44IQwOO73o0gy+jYa+ebPO5z9Uqo8gzgXO1BFyOPtk
-         1Iw6b8Fh/NUG33XVkc0qzdzcfrVBM9SK0wqd5mSIA50EcarvHs3qQGvZE+/EgcIMQvzn
-         WlVtAufXGDMn5jTwIpbHUoAyzjbKojcgVhMG3emX1akdIKD6F8Wikldx3Rwe9Ww7NJzz
-         Vmos4ZY+0oPDXwZhAk+0s777poBZL2z2z4AmNsrlemL+iO0yV9438gp4bND7dYMdvFG/
-         EPeA==
+        bh=l/1w/NdKs766XcCtqpVuOkRbnXHH9DRAZo4m/CjTbtY=;
+        b=krSfokDDOcXRmjVI49Pbu9TJA2twsnhOVjSCVYbBQ8Ipanev75JKldUyeiYK+qS4ch
+         ECg2X2LhaEy3G0jiJNIEcY94brRUryhQ8NoZu/2thEVSh3/zv3hTyRlB2/aWkdfKcDFC
+         dZRHDUAgYA8rNjiuh3/pA2HKHH1TR1guW/p9r/QtpC0rsV2wKMhtyTF4QIcg/bgoIh0V
+         M55pJNfGLA+71jCejUVctsBhQLFaO7RojvES9EiechX9cr82GBvjQUxcR9Hc89aZgvt1
+         xxjmPjUdqYYQ++rF3OlbmIjPJcRW4uQa9WZA18R+mQcWGgAL7Xf4vX3KUh8oeyK3hk5u
+         ytIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697082694; x=1697687494;
+        d=1e100.net; s=20230601; t=1697082697; x=1697687497;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=9Mm0EFKSyzZeq7wlW+V5DIgnESjW48EHe3H1udzSRfI=;
-        b=NO1Q7RqMWTh9Qy7DTMgaVDJnbDK+nkkVRR6VZKrntLStPyBkujyIjKLkxh9RMFeHPF
-         /gkIFENsT28EOirtf+zwDTH+Eluxw8rsJ8SVj3/vREkrJ9cP5Fbx7flM2KL6nbNmJohM
-         UDA/SVpEp39kAY0DOjtowDcLl18c4sCE4XW448M468n4nBOw/tIn5VZETQA6VSBzqEda
-         mQhD0ieL4tH6y3GYvCrNBCRvt7TIldM8zhlSbti8nv9QTOOdO6M8PEFnDrOWVcBeB+X8
-         8u6bL+5+pljyhVQm7Ae3RZHzLfUsDG53BGvzWlGJ4cG1UfxFbjBrxyovqPrY/NXL0zeZ
-         WXZw==
-X-Gm-Message-State: AOJu0YylcV8x9GCXGKki5jUrwoWvRvs7oZP71ST6MBegvVVfhq+PfAMF
-	gmGXKYdY1JFAxKrtNZc4//g=
-X-Google-Smtp-Source: AGHT+IFcT2BsO5as9+E/OMNGu003MjUidyOdjBLI4kMSG8Rqcj5UofTcT31NaKmciu8TxK3TKE2I+w==
-X-Received: by 2002:a05:6a21:a5a3:b0:15b:c800:48af with SMTP id gd35-20020a056a21a5a300b0015bc80048afmr26689958pzc.23.1697082694569;
-        Wed, 11 Oct 2023 20:51:34 -0700 (PDT)
+        bh=l/1w/NdKs766XcCtqpVuOkRbnXHH9DRAZo4m/CjTbtY=;
+        b=o4Wbtb9DVLa0fxVVxosoBAiT8lKKaw26LmnP4rdKoMfQFM6a4SgLzMOtPOIvF1Hoya
+         Rt5mCA+BGWxFxjEloFUU3PPbBMsBX3wtRZeeygngKgls3ZUzAyyEzZ5xONAtlrF7S0Ag
+         Soo40h+yfHmttYjHcfgvAJmifRF+I5ekhvHduy+aGLQ/SWGle5PdFrZwWWWlpDHrXafs
+         LNLngeWRM+Wt5fCnjGaZr5vPGVyAGgMINqqRxXTjes/hE3HkAaxti8pK0HD5XWw6ZhTJ
+         zcZwRM0QFRIZekazXLfDwqYoWC18oFaUFepR6AiaR+6gb3sDRgGY3KGM9O/vVNFcImfe
+         LafQ==
+X-Gm-Message-State: AOJu0Yxkbzy6Z4pRMrW20q1p6iVaUEVQWNJmwM7GycFZIWx5YZMCDtXr
+	2kQq5SI8v7Sow6rfCaFYtO4=
+X-Google-Smtp-Source: AGHT+IF2d6T/3yhTEjm5f4jVYkGuQsMM+wvl5SxF88c1ATenxd3apUceICs/gkVGvC3XmEF3vC+oYA==
+X-Received: by 2002:a17:902:9a93:b0:1c8:8d9a:49d with SMTP id w19-20020a1709029a9300b001c88d9a049dmr13999009plp.47.1697082697296;
+        Wed, 11 Oct 2023 20:51:37 -0700 (PDT)
 Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:b1b9:d490:2f5e:be06])
-        by smtp.gmail.com with ESMTPSA id w8-20020a170902d70800b001bc18e579aesm711374ply.101.2023.10.11.20.51.33
+        by smtp.gmail.com with ESMTPSA id w8-20020a170902d70800b001bc18e579aesm711374ply.101.2023.10.11.20.51.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 20:51:34 -0700 (PDT)
+        Wed, 11 Oct 2023 20:51:36 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -58,9 +58,9 @@ Cc: Ian Rogers <irogers@google.com>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-toolchains@vger.kernel.org,
 	linux-trace-devel@vger.kernel.org
-Subject: [PATCH 15/48] perf report: Add 'type' sort key
-Date: Wed, 11 Oct 2023 20:50:38 -0700
-Message-ID: <20231012035111.676789-16-namhyung@kernel.org>
+Subject: [PATCH 17/48] perf annotate-data: Add member field in the data type
+Date: Wed, 11 Oct 2023 20:50:40 -0700
+Message-ID: <20231012035111.676789-18-namhyung@kernel.org>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
 In-Reply-To: <20231012035111.676789-1-namhyung@kernel.org>
 References: <20231012035111.676789-1-namhyung@kernel.org>
@@ -73,212 +73,243 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-The 'type' sort key is to aggregate hist entries by data type they
-access.  Add mem_type field to hist_entry struct to save the type.
-If hist_entry__get_data_type() returns NULL, it'd use the
-'unknown_type' instance.
+Add child member field if the current type is a composite type like a
+struct or union.  The member fields are linked in the children list
+and do the same recursively if the child itself is a composite type.
+Add 'self' member to the annotated_data_type to handle the members in
+the same way.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/Documentation/perf-report.txt |  1 +
- tools/perf/util/annotate-data.c          |  5 ++
- tools/perf/util/annotate-data.h          |  2 +
- tools/perf/util/hist.h                   |  1 +
- tools/perf/util/sort.c                   | 65 +++++++++++++++++++++++-
- tools/perf/util/sort.h                   |  4 ++
- 6 files changed, 76 insertions(+), 2 deletions(-)
+ tools/perf/util/annotate-data.c | 106 ++++++++++++++++++++++++++++----
+ tools/perf/util/annotate-data.h |  27 ++++++--
+ tools/perf/util/sort.c          |   4 +-
+ 3 files changed, 119 insertions(+), 18 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-report.txt b/tools/perf/Documentation/perf-report.txt
-index af068b4f1e5a..aec34417090b 100644
---- a/tools/perf/Documentation/perf-report.txt
-+++ b/tools/perf/Documentation/perf-report.txt
-@@ -118,6 +118,7 @@ OPTIONS
- 	- retire_lat: On X86, this reports pipeline stall of this instruction compared
- 	  to the previous instruction in cycles. And currently supported only on X86
- 	- simd: Flags describing a SIMD operation. "e" for empty Arm SVE predicate. "p" for partial Arm SVE predicate
-+	- type: Data type of sample memory access.
- 
- 	By default, comm, dso and symbol keys are used.
- 	(i.e. --sort comm,dso,symbol)
 diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
-index 23381c0a5d38..3e3a561d73e3 100644
+index 3e3a561d73e3..63205506b9fe 100644
 --- a/tools/perf/util/annotate-data.c
 +++ b/tools/perf/util/annotate-data.c
-@@ -17,6 +17,11 @@
- #include "strbuf.h"
- #include "symbol.h"
+@@ -19,7 +19,10 @@
  
-+/* Pseudo data types */
-+struct annotated_data_type unknown_type = {
-+	.type_name = (char *)"(unknown)",
-+};
-+
+ /* Pseudo data types */
+ struct annotated_data_type unknown_type = {
+-	.type_name = (char *)"(unknown)",
++	.self = {
++		.type_name = (char *)"(unknown)",
++		.children = LIST_HEAD_INIT(unknown_type.self.children),
++	},
+ };
+ 
  /*
-  * Compare type name and size to maintain them in a tree.
-  * I'm not sure if DWARF would have information of a single type in many
+@@ -35,9 +38,9 @@ static int data_type_cmp(const void *_key, const struct rb_node *node)
+ 
+ 	type = rb_entry(node, struct annotated_data_type, node);
+ 
+-	if (key->type_size != type->type_size)
+-		return key->type_size - type->type_size;
+-	return strcmp(key->type_name, type->type_name);
++	if (key->self.size != type->self.size)
++		return key->self.size - type->self.size;
++	return strcmp(key->self.type_name, type->self.type_name);
+ }
+ 
+ static bool data_type_less(struct rb_node *node_a, const struct rb_node *node_b)
+@@ -47,9 +50,80 @@ static bool data_type_less(struct rb_node *node_a, const struct rb_node *node_b)
+ 	a = rb_entry(node_a, struct annotated_data_type, node);
+ 	b = rb_entry(node_b, struct annotated_data_type, node);
+ 
+-	if (a->type_size != b->type_size)
+-		return a->type_size < b->type_size;
+-	return strcmp(a->type_name, b->type_name) < 0;
++	if (a->self.size != b->self.size)
++		return a->self.size < b->self.size;
++	return strcmp(a->self.type_name, b->self.type_name) < 0;
++}
++
++/* Recursively add new members for struct/union */
++static int __add_member_cb(Dwarf_Die *die, void *arg)
++{
++	struct annotated_member *parent = arg;
++	struct annotated_member *member;
++	Dwarf_Die member_type, die_mem;
++	Dwarf_Word size, loc;
++	Dwarf_Attribute attr;
++	struct strbuf sb;
++	int tag;
++
++	if (dwarf_tag(die) != DW_TAG_member)
++		return DIE_FIND_CB_SIBLING;
++
++	member = zalloc(sizeof(*member));
++	if (member == NULL)
++		return DIE_FIND_CB_END;
++
++	strbuf_init(&sb, 32);
++	die_get_typename(die, &sb);
++
++	die_get_real_type(die, &member_type);
++	if (dwarf_aggregate_size(&member_type, &size) < 0)
++		size = 0;
++
++	if (!dwarf_attr_integrate(die, DW_AT_data_member_location, &attr))
++		loc = 0;
++	else
++		dwarf_formudata(&attr, &loc);
++
++	member->type_name = strbuf_detach(&sb, NULL);
++	/* member->var_name can be NULL */
++	if (dwarf_diename(die))
++		member->var_name = strdup(dwarf_diename(die));
++	member->size = size;
++	member->offset = loc + parent->offset;
++	INIT_LIST_HEAD(&member->children);
++	list_add_tail(&member->node, &parent->children);
++
++	tag = dwarf_tag(&member_type);
++	switch (tag) {
++	case DW_TAG_structure_type:
++	case DW_TAG_union_type:
++		die_find_child(&member_type, __add_member_cb, member, &die_mem);
++		break;
++	default:
++		break;
++	}
++	return DIE_FIND_CB_SIBLING;
++}
++
++static void add_member_types(struct annotated_data_type *parent, Dwarf_Die *type)
++{
++	Dwarf_Die die_mem;
++
++	die_find_child(type, __add_member_cb, &parent->self, &die_mem);
++}
++
++static void delete_members(struct annotated_member *member)
++{
++	struct annotated_member *child, *tmp;
++
++	list_for_each_entry_safe(child, tmp, &member->children, node) {
++		list_del(&child->node);
++		delete_members(child);
++		free(child->type_name);
++		free(child->var_name);
++		free(child);
++	}
+ }
+ 
+ static struct annotated_data_type *dso__findnew_data_type(struct dso *dso,
+@@ -69,8 +143,8 @@ static struct annotated_data_type *dso__findnew_data_type(struct dso *dso,
+ 	dwarf_aggregate_size(type_die, &size);
+ 
+ 	/* Check existing nodes in dso->data_types tree */
+-	key.type_name = type_name;
+-	key.type_size = size;
++	key.self.type_name = type_name;
++	key.self.size = size;
+ 	node = rb_find(&key, &dso->data_types, data_type_cmp);
+ 	if (node) {
+ 		result = rb_entry(node, struct annotated_data_type, node);
+@@ -85,8 +159,15 @@ static struct annotated_data_type *dso__findnew_data_type(struct dso *dso,
+ 		return NULL;
+ 	}
+ 
+-	result->type_name = type_name;
+-	result->type_size = size;
++	result->self.type_name = type_name;
++	result->self.size = size;
++	INIT_LIST_HEAD(&result->self.children);
++
++	/*
++	 * Fill member info unconditionally for now,
++	 * later perf annotate would need it.
++	 */
++	add_member_types(result, type_die);
+ 
+ 	rb_add(&result->node, &dso->data_types, data_type_less);
+ 	return result;
+@@ -237,7 +318,8 @@ void annotated_data_type__tree_delete(struct rb_root *root)
+ 
+ 		rb_erase(node, root);
+ 		pos = rb_entry(node, struct annotated_data_type, node);
+-		free(pos->type_name);
++		delete_members(&pos->self);
++		free(pos->self.type_name);
+ 		free(pos);
+ 	}
+ }
 diff --git a/tools/perf/util/annotate-data.h b/tools/perf/util/annotate-data.h
-index ab9f187bd7f1..6efdd7e21b28 100644
+index 6efdd7e21b28..33748222e6aa 100644
 --- a/tools/perf/util/annotate-data.h
 +++ b/tools/perf/util/annotate-data.h
-@@ -22,6 +22,8 @@ struct annotated_data_type {
- 	int type_size;
- };
+@@ -9,17 +9,36 @@
  
-+extern struct annotated_data_type unknown_type;
-+
- #ifdef HAVE_DWARF_SUPPORT
+ struct map_symbol;
  
- /* Returns data type at the location (ip, reg, offset) */
-diff --git a/tools/perf/util/hist.h b/tools/perf/util/hist.h
-index afc9f1c7f4dc..9bfed867f288 100644
---- a/tools/perf/util/hist.h
-+++ b/tools/perf/util/hist.h
-@@ -82,6 +82,7 @@ enum hist_column {
- 	HISTC_ADDR_TO,
- 	HISTC_ADDR,
- 	HISTC_SIMD,
-+	HISTC_TYPE,
- 	HISTC_NR_COLS, /* Last entry */
- };
- 
-diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
-index 6aa1c7f2b444..c79564c1d5df 100644
---- a/tools/perf/util/sort.c
-+++ b/tools/perf/util/sort.c
-@@ -24,6 +24,7 @@
- #include "strbuf.h"
- #include "mem-events.h"
- #include "annotate.h"
-+#include "annotate-data.h"
- #include "event.h"
- #include "time-utils.h"
- #include "cgroup.h"
-@@ -2094,7 +2095,7 @@ struct sort_entry sort_dso_size = {
- 	.se_width_idx	= HISTC_DSO_SIZE,
- };
- 
--/* --sort dso_size */
-+/* --sort addr */
- 
- static int64_t
- sort__addr_cmp(struct hist_entry *left, struct hist_entry *right)
-@@ -2131,6 +2132,65 @@ struct sort_entry sort_addr = {
- 	.se_width_idx	= HISTC_ADDR,
- };
- 
-+/* --sort type */
-+
-+static int64_t
-+sort__type_cmp(struct hist_entry *left, struct hist_entry *right)
-+{
-+	return sort__addr_cmp(left, right);
-+}
-+
-+static void sort__type_init(struct hist_entry *he)
-+{
-+	if (he->mem_type)
-+		return;
-+
-+	he->mem_type = hist_entry__get_data_type(he);
-+	if (he->mem_type == NULL)
-+		he->mem_type = &unknown_type;
-+}
-+
-+static int64_t
-+sort__type_collapse(struct hist_entry *left, struct hist_entry *right)
-+{
-+	struct annotated_data_type *left_type = left->mem_type;
-+	struct annotated_data_type *right_type = right->mem_type;
-+
-+	if (!left_type) {
-+		sort__type_init(left);
-+		left_type = left->mem_type;
-+	}
-+
-+	if (!right_type) {
-+		sort__type_init(right);
-+		right_type = right->mem_type;
-+	}
-+
-+	return strcmp(left_type->type_name, right_type->type_name);
-+}
-+
-+static int64_t
-+sort__type_sort(struct hist_entry *left, struct hist_entry *right)
-+{
-+	return sort__type_collapse(left, right);
-+}
-+
-+static int hist_entry__type_snprintf(struct hist_entry *he, char *bf,
-+				     size_t size, unsigned int width)
-+{
-+	return repsep_snprintf(bf, size, "%-*s", width, he->mem_type->type_name);
-+}
-+
-+struct sort_entry sort_type = {
-+	.se_header	= "Data Type",
-+	.se_cmp		= sort__type_cmp,
-+	.se_collapse	= sort__type_collapse,
-+	.se_sort	= sort__type_sort,
-+	.se_init	= sort__type_init,
-+	.se_snprintf	= hist_entry__type_snprintf,
-+	.se_width_idx	= HISTC_TYPE,
++/**
++ * struct annotated_member - Type of member field
++ * @node: List entry in the parent list
++ * @children: List head for child nodes
++ * @type_name: Name of the member type
++ * @var_name: Name of the member variable
++ * @offset: Offset from the outer data type
++ * @size: Size of the member field
++ *
++ * This represents a member type in a data type.
++ */
++struct annotated_member {
++	struct list_head node;
++	struct list_head children;
++	char *type_name;
++	char *var_name;
++	int offset;
++	int size;
 +};
 +
- 
- struct sort_dimension {
- 	const char		*name;
-@@ -2185,7 +2245,8 @@ static struct sort_dimension common_sort_dimensions[] = {
- 	DIM(SORT_ADDR, "addr", sort_addr),
- 	DIM(SORT_LOCAL_RETIRE_LAT, "local_retire_lat", sort_local_p_stage_cyc),
- 	DIM(SORT_GLOBAL_RETIRE_LAT, "retire_lat", sort_global_p_stage_cyc),
--	DIM(SORT_SIMD, "simd", sort_simd)
-+	DIM(SORT_SIMD, "simd", sort_simd),
-+	DIM(SORT_ANNOTATE_DATA_TYPE, "type", sort_type),
+ /**
+  * struct annotated_data_type - Data type to profile
+- * @type_name: Name of the data type
+- * @type_size: Size of the data type
++ * @node: RB-tree node for dso->type_tree
++ * @self: Actual type information
+  *
+  * This represents a data type accessed by samples in the profile data.
+  */
+ struct annotated_data_type {
+ 	struct rb_node node;
+-	char *type_name;
+-	int type_size;
++	struct annotated_member self;
  };
  
- #undef DIM
-diff --git a/tools/perf/util/sort.h b/tools/perf/util/sort.h
-index ecfb7f1359d5..aabf0b8331a3 100644
---- a/tools/perf/util/sort.h
-+++ b/tools/perf/util/sort.h
-@@ -15,6 +15,7 @@
+ extern struct annotated_data_type unknown_type;
+diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
+index c79564c1d5df..01300831333e 100644
+--- a/tools/perf/util/sort.c
++++ b/tools/perf/util/sort.c
+@@ -2166,7 +2166,7 @@ sort__type_collapse(struct hist_entry *left, struct hist_entry *right)
+ 		right_type = right->mem_type;
+ 	}
  
- struct option;
- struct thread;
-+struct annotated_data_type;
+-	return strcmp(left_type->type_name, right_type->type_name);
++	return strcmp(left_type->self.type_name, right_type->self.type_name);
+ }
  
- extern regex_t parent_regex;
- extern const char *sort_order;
-@@ -34,6 +35,7 @@ extern struct sort_entry sort_dso_to;
- extern struct sort_entry sort_sym_from;
- extern struct sort_entry sort_sym_to;
- extern struct sort_entry sort_srcline;
-+extern struct sort_entry sort_type;
- extern const char default_mem_sort_order[];
- extern bool chk_double_cl;
+ static int64_t
+@@ -2178,7 +2178,7 @@ sort__type_sort(struct hist_entry *left, struct hist_entry *right)
+ static int hist_entry__type_snprintf(struct hist_entry *he, char *bf,
+ 				     size_t size, unsigned int width)
+ {
+-	return repsep_snprintf(bf, size, "%-*s", width, he->mem_type->type_name);
++	return repsep_snprintf(bf, size, "%-*s", width, he->mem_type->self.type_name);
+ }
  
-@@ -154,6 +156,7 @@ struct hist_entry {
- 	struct perf_hpp_list	*hpp_list;
- 	struct hist_entry	*parent_he;
- 	struct hist_entry_ops	*ops;
-+	struct annotated_data_type *mem_type;
- 	union {
- 		/* this is for hierarchical entry structure */
- 		struct {
-@@ -243,6 +246,7 @@ enum sort_type {
- 	SORT_LOCAL_RETIRE_LAT,
- 	SORT_GLOBAL_RETIRE_LAT,
- 	SORT_SIMD,
-+	SORT_ANNOTATE_DATA_TYPE,
- 
- 	/* branch stack specific sort keys */
- 	__SORT_BRANCH_STACK,
+ struct sort_entry sort_type = {
 -- 
 2.42.0.655.g421f12c284-goog
 
