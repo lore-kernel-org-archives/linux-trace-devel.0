@@ -1,48 +1,48 @@
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 237A5A3C;
-	Thu, 12 Oct 2023 03:51:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE935EA3;
+	Thu, 12 Oct 2023 03:51:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fh/U7yOU"
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F08116;
-	Wed, 11 Oct 2023 20:51:33 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5a7d532da4bso6895567b3.2;
-        Wed, 11 Oct 2023 20:51:33 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kKTQafDw"
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F32138;
+	Wed, 11 Oct 2023 20:51:38 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1bdf4752c3cso4012275ad.2;
+        Wed, 11 Oct 2023 20:51:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697082692; x=1697687492; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697082696; x=1697687496; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wwugeUz2Kizrt8bo2ssr4th1+PIs+ybthYkaJJ9iBxc=;
-        b=fh/U7yOUJdScqGCTsxHDN6EaC7RXG4Di7DwztT/Vy8dYflmO6SJcSkrFQXnpDH1oGl
-         nmdjP1LgWaO2EVjF70TBALpFbEOlhYiGnwMpvfzXgPTVuasbFK8lUaF4rDHXimvEM1ui
-         F2jEtu8j8F0GwWPKtkzF3F7AouMZ+KDkJomVCNnrO3YNdV0UUWo6LQlV2gbTLxIYH55j
-         bQBK0mOF+jVqOs806CMlr2P3nkDlUzMnrooiR+KsYXla9nqppo+lRj9Xjhrrq0lrCGpi
-         FBMTHdGwHjkPYBBal2mCNfeMYW4uMRFz72sI76GCf4ZC28DOwSCe+J8Zoyip6z7c1znr
-         XKfA==
+        bh=ZII5vF3dprwXJP49CiS8ixHpGtBs+wAGFWOW7yk/k14=;
+        b=kKTQafDwBS3LnqLJJl/sGP0kPj0dFyOBIdszVkK/c2O2NsyGGINKG2UTmdGs5LyK0q
+         DbrAzKI97ANciQ9bHroC3HygOoGshLomfSW6ohN3RIj2iQn24zWWBmiehttQ1HkWg24Z
+         wR2xqRRF46EOmQ2FeklYlhbmWIVXuAH4wsfUQuf7UfzF8WZ4FC5nkOtV5KcEP3Fs3u5z
+         vy0T369S9P++g3ZvqQuF0dbgjn/njnmSuBGsplqFcLANPntNA3mchl+8B0InJ0CMF4Os
+         /Bt0RODOFS06ypD4T3hxCSQ3LoszGLIX2yvAgZ827FhrVARijcvvTz+VGxyMEfA5I60m
+         BCng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697082692; x=1697687492;
+        d=1e100.net; s=20230601; t=1697082696; x=1697687496;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=wwugeUz2Kizrt8bo2ssr4th1+PIs+ybthYkaJJ9iBxc=;
-        b=SyEYSzBTWVdzKK+cNSJmNXnLrEoNaiVKJMgZln/5bbgS8wSYVm0SqxmdKuWqVKlj0h
-         LVZv/TWpm3DCT76b1hCpUhVqBnab5IxcArR7uO2cqvAVz0yuCAizZs/bIl0eqlXTtAM8
-         pYAU0XG7VbWTpwfrTV7erVK4+RhtcW+NHgZ0JH+0xP6UYmn98cKjSaR27LK+ePr/QbRV
-         LlT/LlZtdH5EN9dHiAgW13DcxGWhyZ6UTusEpezzzsK3wxWVh8/bc07xEZgniX7P45nw
-         6NTu4t9FehMsVJ9rWMqdh8qybgv95ulbu86sp/q76Oym56zk/Sd3NYV9LvuuV2VW4P5c
-         e5Zw==
-X-Gm-Message-State: AOJu0YwYh34OLfFo0eRsqg4t8AN6ap1xHPmM29/KF0uG4QkD6XIJRZYU
-	RrWpXRDzUhXqDNTeQPdZXgU=
-X-Google-Smtp-Source: AGHT+IHylZn0o9l2x1CECps0Fs/T61+2AgZHx3X6wLdIXl9pwLIFxKlIo0r01FrU6L/p+JpPh+pnuA==
-X-Received: by 2002:a05:690c:3744:b0:5a7:d4a2:cd13 with SMTP id fw4-20020a05690c374400b005a7d4a2cd13mr5373990ywb.8.1697082692066;
-        Wed, 11 Oct 2023 20:51:32 -0700 (PDT)
+        bh=ZII5vF3dprwXJP49CiS8ixHpGtBs+wAGFWOW7yk/k14=;
+        b=C4JwWdn4wVVKkSHJMuRHfY7MuX/Op71+9xPubXesNCeizBGlVnFPiH2GDEyG+cX1ed
+         G97ceBTOzws+e3UYGrpXswelTycUG4BauNw8CjCdiZvUd2MHAoFsP+DC8efxBdG/BejH
+         sNLK/XuwLJSmFMClTQ269Jpq1hzfz8AmZ+sCZGhr8LJQ1H4M9U0+Yk6vHppdz0qWrGtX
+         umsAnXet5JHil0KS7airM/yAFVmManFDrAAzXAKhwO9fDRmq12HP5Y2c1dFxplQ4YtA8
+         gPTp0r9Irg1OGtiIQYDl/ydpe1HYRU3JNKdlk51JwU870uu3Yz6Rg1/qUe7bHPrH9G/m
+         uEtg==
+X-Gm-Message-State: AOJu0YyCY1a3LgClmb59AeKdEjPFZiBMLg+RgKj2h6seVMl9aQVbxyOS
+	13GEA1RURYU7aSuFz+3s+EE=
+X-Google-Smtp-Source: AGHT+IEIgqdokKUdY0Jf5HR5a5Ezvauld/zyeGxQe5mfTKMuxdBz2qQI6SIiqrgYj4w0bmg90PJhgQ==
+X-Received: by 2002:a17:902:6bc5:b0:1c9:bef4:e11 with SMTP id m5-20020a1709026bc500b001c9bef40e11mr5717841plt.46.1697082695866;
+        Wed, 11 Oct 2023 20:51:35 -0700 (PDT)
 Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:b1b9:d490:2f5e:be06])
-        by smtp.gmail.com with ESMTPSA id w8-20020a170902d70800b001bc18e579aesm711374ply.101.2023.10.11.20.51.30
+        by smtp.gmail.com with ESMTPSA id w8-20020a170902d70800b001bc18e579aesm711374ply.101.2023.10.11.20.51.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 20:51:31 -0700 (PDT)
+        Wed, 11 Oct 2023 20:51:35 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -58,9 +58,9 @@ Cc: Ian Rogers <irogers@google.com>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-toolchains@vger.kernel.org,
 	linux-trace-devel@vger.kernel.org
-Subject: [PATCH 13/48] perf annotate: Add annotate_get_insn_location()
-Date: Wed, 11 Oct 2023 20:50:36 -0700
-Message-ID: <20231012035111.676789-14-namhyung@kernel.org>
+Subject: [PATCH 16/48] perf report: Support data type profiling
+Date: Wed, 11 Oct 2023 20:50:39 -0700
+Message-ID: <20231012035111.676789-17-namhyung@kernel.org>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
 In-Reply-To: <20231012035111.676789-1-namhyung@kernel.org>
 References: <20231012035111.676789-1-namhyung@kernel.org>
@@ -78,185 +78,89 @@ X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-The annotate_get_insn_location() is to get the detailed information of
-instruction locations like registers and offset.  It has source and
-target operands locations in an array.  Each operand can have a
-register and an offset.  The offset is meaningful when mem_ref flag is
-set.
+Enable type annotation when the 'type' sort key is used.
+It shows type of variables the samples access at the moment.
+Users can see which types are accessed frequently.
+
+  $ perf report -s dso,type --stdio
+  ...
+  # Overhead  Shared Object      Data Type
+  # ........  .................  .........
+  #
+      35.47%  [kernel.kallsyms]  (unknown)
+       1.62%  [kernel.kallsyms]  struct sched_entry
+       1.23%  [kernel.kallsyms]  struct cfs_rq
+       0.83%  [kernel.kallsyms]  struct task_struct
+       0.34%  [kernel.kallsyms]  struct list_head
+       0.30%  [kernel.kallsyms]  struct mem_cgroup
+  ...
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/annotate.c | 107 +++++++++++++++++++++++++++++++++++++
- tools/perf/util/annotate.h |  36 +++++++++++++
- 2 files changed, 143 insertions(+)
+ tools/perf/builtin-report.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index 254cc9f224f4..9d653a1e84ce 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -31,6 +31,7 @@
- #include "bpf-utils.h"
- #include "block-range.h"
- #include "string2.h"
-+#include "dwarf-regs.h"
- #include "util/event.h"
- #include "util/sharded_mutex.h"
- #include "arch/common.h"
-@@ -3484,3 +3485,109 @@ int annotate_check_args(struct annotation_options *args)
- 	}
- 	return 0;
- }
+diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+index dcedfe00f04d..e60c6bb32d92 100644
+--- a/tools/perf/builtin-report.c
++++ b/tools/perf/builtin-report.c
+@@ -96,6 +96,7 @@ struct report {
+ 	bool			stitch_lbr;
+ 	bool			disable_order;
+ 	bool			skip_empty;
++	bool			data_type;
+ 	int			max_stack;
+ 	struct perf_read_values	show_threads_values;
+ 	struct annotation_options annotation_opts;
+@@ -171,7 +172,7 @@ static int hist_iter__report_callback(struct hist_entry_iter *iter,
+ 	struct mem_info *mi;
+ 	struct branch_info *bi;
+ 
+-	if (!ui__has_annotation() && !rep->symbol_ipc)
++	if (!ui__has_annotation() && !rep->symbol_ipc && !rep->data_type)
+ 		return 0;
+ 
+ 	if (sort__mode == SORT_MODE__BRANCH) {
+@@ -323,10 +324,19 @@ static int process_sample_event(struct perf_tool *tool,
+ 	if (al.map != NULL)
+ 		map__dso(al.map)->hit = 1;
+ 
+-	if (ui__has_annotation() || rep->symbol_ipc || rep->total_cycles_mode) {
++	if (ui__has_annotation() || rep->symbol_ipc || rep->total_cycles_mode ||
++	    rep->data_type) {
+ 		hist__account_cycles(sample->branch_stack, &al, sample,
+ 				     rep->nonany_branch_mode,
+ 				     &rep->total_cycles);
++		if (rep->data_type) {
++			struct symbol *sym = al.sym;
++			struct annotation *notes = sym ? symbol__annotation(sym) : NULL;
 +
-+/*
-+ * Get register number and access offset from the given instruction.
-+ * It assumes AT&T x86 asm format like OFFSET(REG).  Maybe it needs
-+ * to revisit the format when it handles different architecture.
-+ * Fills @reg and @offset when return 0.
-+ */
-+static int extract_reg_offset(struct arch *arch, const char *str,
-+			      struct annotated_op_loc *op_loc)
-+{
-+	char *p;
-+	char *regname;
-+
-+	if (arch->objdump.register_char == 0)
-+		return -1;
-+
-+	/*
-+	 * It should start from offset, but it's possible to skip 0
-+	 * in the asm.  So 0(%rax) should be same as (%rax).
-+	 *
-+	 * However, it also start with a segment select register like
-+	 * %gs:0x18(%rbx).  In that case it should skip the part.
-+	 */
-+	if (*str == arch->objdump.register_char) {
-+		while (*str && !isdigit(*str) &&
-+		       *str != arch->objdump.memory_ref_char)
-+			str++;
-+	}
-+
-+	op_loc->offset = strtol(str, &p, 0);
-+
-+	p = strchr(p, arch->objdump.register_char);
-+	if (p == NULL)
-+		return -1;
-+
-+	regname = strdup(p);
-+	if (regname == NULL)
-+		return -1;
-+
-+	op_loc->reg = get_dwarf_regnum(regname, 0);
-+	free(regname);
-+	return 0;
-+}
-+
-+/**
-+ * annotate_get_insn_location - Get location of instruction
-+ * @arch: the architecture info
-+ * @dl: the target instruction
-+ * @loc: a buffer to save the data
-+ *
-+ * Get detailed location info (register and offset) in the instruction.
-+ * It needs both source and target operand and whether it accesses a
-+ * memory location.  The offset field is meaningful only when the
-+ * corresponding mem flag is set.
-+ *
-+ * Some examples on x86:
-+ *
-+ *   mov  (%rax), %rcx   # src_reg = rax, src_mem = 1, src_offset = 0
-+ *                       # dst_reg = rcx, dst_mem = 0
-+ *
-+ *   mov  0x18, %r8      # src_reg = -1, dst_reg = r8
-+ */
-+int annotate_get_insn_location(struct arch *arch, struct disasm_line *dl,
-+			       struct annotated_insn_loc *loc)
-+{
-+	struct ins_operands *ops;
-+	struct annotated_op_loc *op_loc;
-+	int i;
-+
-+	if (!strcmp(dl->ins.name, "lock"))
-+		ops = dl->ops.locked.ops;
-+	else
-+		ops = &dl->ops;
-+
-+	if (ops == NULL)
-+		return -1;
-+
-+	memset(loc, 0, sizeof(*loc));
-+
-+	for_each_insn_op_loc(loc, i, op_loc) {
-+		const char *insn_str = ops->source.raw;
-+
-+		if (i == INSN_OP_TARGET)
-+			insn_str = ops->target.raw;
-+
-+		/* Invalidate the register by default */
-+		op_loc->reg = -1;
-+
-+		if (insn_str == NULL)
-+			continue;
-+
-+		if (strchr(insn_str, arch->objdump.memory_ref_char)) {
-+			op_loc->mem_ref = true;
-+			extract_reg_offset(arch, insn_str, op_loc);
-+		} else {
-+			char *s = strdup(insn_str);
-+
-+			if (s) {
-+				op_loc->reg = get_dwarf_regnum(s, 0);
-+				free(s);
-+			}
++			/* XXX: Save annotate options here */
++			if (notes)
++				notes->options = &rep->annotation_opts;
 +		}
-+	}
-+
-+	return 0;
-+}
-diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
-index c74f8f10f705..4adda492233d 100644
---- a/tools/perf/util/annotate.h
-+++ b/tools/perf/util/annotate.h
-@@ -437,4 +437,40 @@ int annotate_parse_percent_type(const struct option *opt, const char *_str,
+ 	}
  
- int annotate_check_args(struct annotation_options *args);
+ 	ret = hist_entry_iter__add(&iter, &al, rep->max_stack, rep);
+@@ -1600,6 +1610,9 @@ int cmd_report(int argc, const char **argv)
+ 			sort_order = NULL;
+ 	}
  
-+/**
-+ * struct annotated_op_loc - Location info of instruction operand
-+ * @reg: Register in the operand
-+ * @offset: Memory access offset in the operand
-+ * @mem_ref: Whether the operand accesses memory
-+ */
-+struct annotated_op_loc {
-+	int reg;
-+	int offset;
-+	bool mem_ref;
-+};
++	if (sort_order && strstr(sort_order, "type"))
++		report.data_type = true;
 +
-+enum annotated_insn_ops {
-+	INSN_OP_SOURCE = 0,
-+	INSN_OP_TARGET = 1,
-+
-+	INSN_OP_MAX,
-+};
-+
-+/**
-+ * struct annotated_insn_loc - Location info of instruction
-+ * @ops: Array of location info for source and target operands
-+ */
-+struct annotated_insn_loc {
-+	struct annotated_op_loc ops[INSN_OP_MAX];
-+};
-+
-+#define for_each_insn_op_loc(insn_loc, i, op_loc)			\
-+	for (i = INSN_OP_SOURCE, op_loc = &(insn_loc)->ops[i];		\
-+	     i < INSN_OP_MAX;						\
-+	     i++, op_loc++)
-+
-+/* Get detailed location info in the instruction */
-+int annotate_get_insn_location(struct arch *arch, struct disasm_line *dl,
-+			       struct annotated_insn_loc *loc);
-+
- #endif	/* __PERF_ANNOTATE_H */
+ 	if (strcmp(input_name, "-") != 0)
+ 		setup_browser(true);
+ 	else
+@@ -1658,7 +1671,7 @@ int cmd_report(int argc, const char **argv)
+ 	 * so don't allocate extra space that won't be used in the stdio
+ 	 * implementation.
+ 	 */
+-	if (ui__has_annotation() || report.symbol_ipc ||
++	if (ui__has_annotation() || report.symbol_ipc || report.data_type ||
+ 	    report.total_cycles_mode) {
+ 		ret = symbol__annotation_init();
+ 		if (ret < 0)
 -- 
 2.42.0.655.g421f12c284-goog
 
