@@ -1,143 +1,89 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5823226288
-	for <linux-trace-devel@vger.kernel.org>; Thu, 12 Oct 2023 18:50:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEED23B28F;
+	Thu, 12 Oct 2023 20:45:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C04CEC433C8;
-	Thu, 12 Oct 2023 18:50:13 +0000 (UTC)
-Date: Thu, 12 Oct 2023 14:51:39 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: Ross Zwisler <zwisler@google.com>
-Subject: [PATCH] libtraceeval: Add timestamp to traceeval_delta_query()
-Message-ID: <20231012145139.4b66f9cf@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDA39C0;
+	Thu, 12 Oct 2023 13:45:16 -0700 (PDT)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-690d2441b95so1052526b3a.1;
+        Thu, 12 Oct 2023 13:45:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697143516; x=1697748316;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pxBM1WL5YWehdPAMO4b4zshfBpUnsTGMOdYs0eBjj/w=;
+        b=lLZEUKtqOpwzuxc9E4pKErfnIrhMUb4GXfRoUPSP2OpjCeet3XB/MxiwAvbZCJFxmz
+         kMpcVuUeueQ2Y08tZ10xeIHwTgMWdOJOkDr5xzS+8QHbe7dhkaXIdr0Uzr4oZhDaZhXq
+         BBxn1a2utTH0OYXl0MX3jWfrbqFM4h4PCxRf290SUAvdl7ZfxQDDp+JjhqdR8pntknFL
+         TChy446uJ/+0xAl2Ldmctno7oECEj7wnkf9k1tbv3BL6tE79bGUaxWYtZfePoDwqau4Q
+         7i8gDLA0OX5UJ7NoZg10+pWC6aEUlE9vqPKIz8WaCuu5KMszQKR2w2E6bPMjANfS7mli
+         QPCA==
+X-Gm-Message-State: AOJu0Yzn5KbrQdQTs9EX8XMieXJtUXDfnd9TW53mQqaK1CTIXPCG+tol
+	vw67CXrY0Bb7vrtT3W/AcosJEF41NzzfNmhHo2zPiHlJ
+X-Google-Smtp-Source: AGHT+IG70/F9hrde7bl7cPJIFM2rVadqEHlOfFeA+ynkkcPuBHcvxTD8ozOM+i26QK02Nds7OPOekjk0bS4K2rMBLiI=
+X-Received: by 2002:a05:6a00:238d:b0:690:f877:aa1e with SMTP id
+ f13-20020a056a00238d00b00690f877aa1emr38987459pfc.12.1697143515938; Thu, 12
+ Oct 2023 13:45:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20231012035111.676789-1-namhyung@kernel.org> <ZSeMGPPfxkMvdaP3@gmail.com>
+ <CAM9d7chzw4UeHHeXaMfPTiRdLbv7PbpK=xkgxMDojAxAc8y7Jg@mail.gmail.com> <ZSg73+7Ar/U2OWMO@gmail.com>
+In-Reply-To: <ZSg73+7Ar/U2OWMO@gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Thu, 12 Oct 2023 13:45:04 -0700
+Message-ID: <CAM9d7cgQXLt-UAfq=HhQ=ajeLXFfRHSfnYeWd-rX+2R7VwvOxQ@mail.gmail.com>
+Subject: Re: [RFC 00/48] perf tools: Introduce data type profiling (v1)
+To: Ingo Molnar <mingo@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
+	linux-trace-devel@vger.kernel.org, Ben Woodard <woodard@redhat.com>, 
+	Joe Mario <jmario@redhat.com>, Kees Cook <keescook@chromium.org>, 
+	David Blaikie <blaikie@google.com>, Xu Liu <xliuprof@google.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Ravi Bangoria <ravi.bangoria@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Thu, Oct 12, 2023 at 11:33=E2=80=AFAM Ingo Molnar <mingo@kernel.org> wro=
+te:
+>
+>
+> * Namhyung Kim <namhyung@kernel.org> wrote:
+>
+> > > Could we perhaps add an IP filter to perf events to get this built-in=
+?
+> > > Perhaps attr->exclude_user would achieve something similar?
+> >
+> > Unfortunately IBS doesn't support privilege filters IIUC.  Maybe
+> > we could add a general filtering logic in the NMI handler but I'm
+> > afraid it can complicate the code and maybe slow it down a bit.
+> > Probably it's ok to have only a simple privilege filter by IP range.
+>
+> It will still be so much faster than moving it through the BPF machinery,
+> and bonus points if we merge this into the existing privilege-domain
+> filtering ABI, so no magic 0x800000000000 constants are needed.
+>
+> 'Overhead' to other usecases shouldn't be much more than a single branch
+> somewhere.
 
-When writing the man pages for traceeval_delta_query(), I realized that it
-should also return the timestamp associated to the delta. This may be
-useful as well, and it should be added before the API is set.
+Ok, maybe overhead is not a concern.  But users need to pass the
+filter expression to the kernel.
 
-The timestamp parameter may be NULL if it is to be ignored.
-
-If it is retrieved, it will be the last value of a traceeval_delta_stop()
-or traceeval_delta_continue() if that was the last function called on the
-give keys. If traceeval_delat_stop() is called last, then the timestamp
-will be zero.
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- include/traceeval.h |  8 +++++---
- samples/task-eval.c |  2 +-
- src/delta.c         | 33 +++++++++++++++++++++++++++++----
- 3 files changed, 35 insertions(+), 8 deletions(-)
-
-diff --git a/include/traceeval.h b/include/traceeval.h
-index 9b723f30e1d6..f02ecdd58ffb 100644
---- a/include/traceeval.h
-+++ b/include/traceeval.h
-@@ -303,10 +303,12 @@ int traceeval_delta_start_size(struct traceeval *teval,
- 
- int traceeval_delta_query_size(struct traceeval *teval,
- 			       const struct traceeval_data *keys,
--			       size_t nr_keys, const struct traceeval_data **results);
-+			       size_t nr_keys, const struct traceeval_data **results,
-+			       unsigned long long *timestamp);
- 
--#define traceeval_delta_query(teval, keys, results)			\
--	traceeval_delta_query_size(teval, keys, TRACEEVAL_ARRAY_SIZE(keys), results)
-+#define traceeval_delta_query(teval, keys, results, timestamp)		\
-+	traceeval_delta_query_size(teval, keys, TRACEEVAL_ARRAY_SIZE(keys), \
-+				   results, timestamp)
- 
- int traceeval_delta_continue_size(struct traceeval *teval,
- 				  const struct traceeval_data *keys, size_t nr_keys,
-diff --git a/samples/task-eval.c b/samples/task-eval.c
-index e355d0755b8a..c68ae854e680 100644
---- a/samples/task-eval.c
-+++ b/samples/task-eval.c
-@@ -173,7 +173,7 @@ int cpu_last_state(struct traceeval *teval, int cpu, int *state)
- 
- 	TRACEEVAL_SET_NUMBER(keys[0], cpu);
- 
--	ret = traceeval_delta_query(teval, keys, &results);
-+	ret = traceeval_delta_query(teval, keys, &results, NULL);
- 	if (ret < 1)
- 		return ret;
- 
-diff --git a/src/delta.c b/src/delta.c
-index c802959e9d89..70997db045dc 100644
---- a/src/delta.c
-+++ b/src/delta.c
-@@ -145,6 +145,7 @@ int traceeval_delta_remove_size(struct traceeval *teval,
-  * @teval: The traceeval descriptor to search the traceeval_delta from
-  * @keys: A list of data to look for
-  * @results: A pointer to where to place the results (if found)
-+ * @timestamp: A pointer to where to place the starting timestamp (if found)
-  *
-  * This does a lookup for an instance within the traceeval_delta.
-  * The @keys is an array defined by the keys declared in traceeval_delta_init().
-@@ -152,7 +153,11 @@ int traceeval_delta_remove_size(struct traceeval *teval,
-  * inserted by traceeval_delta_start().
-  *
-  * The @results will hold the vals passed to the last traceeval_delta_start()
-- * for the given @keys if found, or undefined if not.
-+ * for the given @keys if found, or undefined if not. The current timestamp
-+ * will be stored in @timestamp. Note it will be zero if the last call to
-+ * @keys was traceeval_delta_stop().
-+ *
-+ * Both @results and @timestamp may be NULL if they are to be ignored.
-  *
-  * Note, when the caller is done with @results, it must call
-  * traceeval_results_release() on it.
-@@ -161,14 +166,34 @@ int traceeval_delta_remove_size(struct traceeval *teval,
-  */
- int traceeval_delta_query_size(struct traceeval *teval,
- 			       const struct traceeval_data *keys,
--			       size_t nr_keys, const struct traceeval_data **results)
-+			       size_t nr_keys, const struct traceeval_data **results,
-+			       unsigned long long *timestamp)
- {
-+	const struct traceeval_data *tresults;
-+	size_t ts_idx = teval->nr_val_types - 1;
-+	int ret;
-+
- 	if (!teval->tdelta) {
- 		teval_print_err(TEVAL_WARN, "traceeval_delta_query: traceeval does not have delta to query");
- 		return -1;
- 	}
--	return traceeval_query_size(teval->tdelta->teval, keys,
--				    nr_keys, results);
-+	ret = traceeval_query_size(teval->tdelta->teval, keys,
-+				 nr_keys, &tresults);
-+	if (ret < 1)
-+		return ret;
-+
-+	/*
-+	 * Note, the timestamp is stored in the results, it's just that
-+	 * the caller doesn't know about it.
-+	 */
-+	if (timestamp)
-+		*timestamp = tresults[ts_idx].number_64;
-+
-+	if (results)
-+		*results = tresults;
-+	else
-+		traceeval_results_release(teval, tresults);
-+	return 1;
- }
- 
- static int insert_vals(struct traceeval *teval, const struct traceeval_data *keys,
--- 
-2.42.0
-
+Thanks,
+Namhyung
