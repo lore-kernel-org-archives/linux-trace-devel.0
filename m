@@ -1,48 +1,48 @@
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 162271373;
-	Thu, 12 Oct 2023 03:52:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FCAD17E6;
+	Thu, 12 Oct 2023 03:52:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iRapRysN"
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADBFE8;
-	Wed, 11 Oct 2023 20:52:00 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-584a761b301so415664a12.3;
-        Wed, 11 Oct 2023 20:52:00 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JTNPmJY1"
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 419F7170F;
+	Wed, 11 Oct 2023 20:52:04 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c9b7c234a7so4824385ad.3;
+        Wed, 11 Oct 2023 20:52:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697082719; x=1697687519; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697082723; x=1697687523; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qpkTPPnVT3dzSfLyQxD7kyX6iWqu+XT6fM/HnJbBp0M=;
-        b=iRapRysNegmLAW1kiMHDQ4vuiqCWLikuCH0jTI1/dsgffAgGr3rXkHUV4VlrFdpag+
-         JDdTYuM6LINFSSyGxqUNJ5LBfM4kpPOMiIbclYN+T7Jz9NO3pPZNCDOYypR7ZVy/YJ/k
-         +DOtJvofpNpUY/lxVowM7blG9+ED2OwkUs18DWbPtS9pO0QTvfCDmT3j2y32nQ3jpN7H
-         76522aVSORHXN4IKb3vyuxgTGXo9rA1hYmX1jX9t8q7Hb2X8/uhaawOZlcVj+2OzfxMV
-         +x5l7APhZEJHQ3HV6f8MUrgBiJfDEAcRYoL1q+mbcTU+5AN+1c9o6ojnbBhMhs7rcVQz
-         8TXA==
+        bh=luk3YMKHP4GBeY8OhFINcROss2mB/uL2Fi/9FHog88E=;
+        b=JTNPmJY17mvmWeekp6EbtnHWVBVsqKijrmriYRPO7H93g6CP46HdEsotwkxTaOTgn4
+         8nOZ2FEitIOagqfteLV3GG3/th0zm2ZyPPobFJ79tW8vhnkcNkAevkcAkF7wqWd9lUdH
+         fzC9Q1PwAek+3t5Av4A8sjUjkeDBOIBhzndgSMRR2wPL0NUnzgwiWZyDA4x/bejWo4qV
+         2U/q/CineA/MFqNjLmOR7IUbySKWjGw412JeLsQDlYV7UWtWopeyHFFrInELQDPgwtYV
+         fvIFdHSbj4ZZ9ruNjvumN0R6z4/XZJ4L2eyrWB4rk+KdJ/zlJspUPKTny4pTb3w7F3Me
+         Rwzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697082719; x=1697687519;
+        d=1e100.net; s=20230601; t=1697082723; x=1697687523;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=qpkTPPnVT3dzSfLyQxD7kyX6iWqu+XT6fM/HnJbBp0M=;
-        b=ly6KmVDfC9RYV6JtT78xmxnpwuvpQsDXpBU9T86grKWhOvB6UWD4Ku6fDrqIhsbbuE
-         qX++g7BmyJ7UXokY7JwYUGR5RbFOX3zoaHu/kjGiY9+jLdkVRwf/pI1izFwLVvP9rHoo
-         CHhsjtWD9+h1jpidjl5AZ/1AsNr0yWfShHE18HHwfKtfdohMrBC05Gmk7IccpqkbwCWS
-         HdIHxxddIJ507EqNnvIj8zF8BC+iY+OE73ovwAlE8caUalQgAgZqbFyNiu/s8zn+5SOv
-         QDLAg2Qh8WQUbfK0an4+r56/4RyaalZZQDr00dASJQ54hqmVa9z6cjhhsANzJhu98Idv
-         KYMQ==
-X-Gm-Message-State: AOJu0YzirwGlzgFTO5dgdsRlFscz6OV+jM+8ryHU4tMgarqoBxdiDNTq
-	z6R2KJV5qHhtQpp7sf6gQFk=
-X-Google-Smtp-Source: AGHT+IHRPDCm4a1A17Vsd5OLn71LjwNXJRyjzHslksOAB3XteLeIMZ230y1oM0Ecxkq4Xj7r6Arg2A==
-X-Received: by 2002:a05:6a20:6a0c:b0:13a:59b1:c884 with SMTP id p12-20020a056a206a0c00b0013a59b1c884mr25517428pzk.40.1697082719385;
-        Wed, 11 Oct 2023 20:51:59 -0700 (PDT)
+        bh=luk3YMKHP4GBeY8OhFINcROss2mB/uL2Fi/9FHog88E=;
+        b=voHCJ+lQZUmZsu/G5ijsbyZHBq3zbCKg2pBRcWtxN/BWeKLQxJFTdOjwJHZC1TcNOt
+         do45x/kz8lJFZWeGFE6KcY9yEEpLZg5Md4J8zSdiUX+EYJkpCIMzG+vaOvk1AFbHoVMO
+         ev54GT4thKlcMgF9mPLcmeDSdQoHUT62y3wXjMJkYVurwD0orzMpw+vKD02fVozM5ekE
+         Hm09vHNbBI9Vv3B8Iebu//xoAFeB3Cw47ylu+9vqXuwgvxK4Orz5W947gFDBD1vZ83bp
+         QZPRuqti8WRBMGJJyV79sM01US/eSOUX3Y6+d58eXkhJPO+rQse9HzJQNWjvRoGyonrN
+         rGXA==
+X-Gm-Message-State: AOJu0YxGEeuVfUCacbpICNKu7ixvg4SMhOg7Qvd5BUassmo5MjPaWGZn
+	KSZgOGT4VsSH6529BlHKXPfyy59nYO0=
+X-Google-Smtp-Source: AGHT+IEGtcf7HXRETg051KX40JXX4Za2TWn2bJI9mhVghyM9tjR/pC/6W+Oa23Iy4nk6K9fou4X08Q==
+X-Received: by 2002:a17:903:228f:b0:1c7:1fbc:b9e7 with SMTP id b15-20020a170903228f00b001c71fbcb9e7mr27350552plh.43.1697082723294;
+        Wed, 11 Oct 2023 20:52:03 -0700 (PDT)
 Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:b1b9:d490:2f5e:be06])
-        by smtp.gmail.com with ESMTPSA id w8-20020a170902d70800b001bc18e579aesm711374ply.101.2023.10.11.20.51.58
+        by smtp.gmail.com with ESMTPSA id w8-20020a170902d70800b001bc18e579aesm711374ply.101.2023.10.11.20.52.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 20:51:59 -0700 (PDT)
+        Wed, 11 Oct 2023 20:52:02 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -58,9 +58,9 @@ Cc: Ian Rogers <irogers@google.com>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-toolchains@vger.kernel.org,
 	linux-trace-devel@vger.kernel.org
-Subject: [PATCH 34/48] perf dwarf-aux: Add die_collect_vars()
-Date: Wed, 11 Oct 2023 20:50:57 -0700
-Message-ID: <20231012035111.676789-35-namhyung@kernel.org>
+Subject: [PATCH 37/48] perf map: Add map__objdump_2rip()
+Date: Wed, 11 Oct 2023 20:51:00 -0700
+Message-ID: <20231012035111.676789-38-namhyung@kernel.org>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
 In-Reply-To: <20231012035111.676789-1-namhyung@kernel.org>
 References: <20231012035111.676789-1-namhyung@kernel.org>
@@ -78,130 +78,62 @@ X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-The die_collect_vars() is to find all variable information in the scope
-including function parameters.  The struct die_var_type is to save the
-type of the variable with the location (reg and offset) as well as where
-it's defined in the code (addr).
+Sometimes we want to convert an address in objdump output to
+map-relative address to match with a sample data.  Let's add
+map__objdump_2rip() for that.
 
+Cc: Adrian Hunter <adrian.hunter@intel.com>
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/dwarf-aux.c | 60 +++++++++++++++++++++++++++++++++++++
- tools/perf/util/dwarf-aux.h | 17 +++++++++++
- 2 files changed, 77 insertions(+)
+ tools/perf/util/map.c | 20 ++++++++++++++++++++
+ tools/perf/util/map.h |  3 +++
+ 2 files changed, 23 insertions(+)
 
-diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
-index 093d7e82b333..16e63d8caf83 100644
---- a/tools/perf/util/dwarf-aux.c
-+++ b/tools/perf/util/dwarf-aux.c
-@@ -1545,6 +1545,66 @@ int die_get_cfa(Dwarf *dwarf, u64 pc, int *preg, int *poffset)
- 	return -1;
+diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
+index f64b83004421..f25cf664c898 100644
+--- a/tools/perf/util/map.c
++++ b/tools/perf/util/map.c
+@@ -595,6 +595,26 @@ u64 map__objdump_2mem(struct map *map, u64 ip)
+ 	return ip + map__reloc(map);
  }
  
-+static int __die_collect_vars_cb(Dwarf_Die *die_mem, void *arg)
++u64 map__objdump_2rip(struct map *map, u64 ip)
 +{
-+	struct die_var_type **var_types = arg;
-+	Dwarf_Die type_die;
-+	int tag = dwarf_tag(die_mem);
-+	Dwarf_Attribute attr;
-+	Dwarf_Addr base, start, end;
-+	Dwarf_Op *ops;
-+	size_t nops;
-+	struct die_var_type *vt;
++	const struct dso *dso = map__dso(map);
 +
-+	if (tag != DW_TAG_variable && tag != DW_TAG_formal_parameter)
-+		return DIE_FIND_CB_SIBLING;
++	if (!dso->adjust_symbols)
++		return ip;
 +
-+	if (dwarf_attr(die_mem, DW_AT_location, &attr) == NULL)
-+		return DIE_FIND_CB_SIBLING;
++	if (dso->rel)
++		return ip + map__pgoff(map);
 +
 +	/*
-+	 * Only collect the first location as it can reconstruct the
-+	 * remaining state by following the instructions.
-+	 * start = 0 means it covers the whole range.
++	 * kernel modules also have DSO_TYPE_USER in dso->kernel,
++	 * but all kernel modules are ET_REL, so won't get here.
 +	 */
-+	if (dwarf_getlocations(&attr, 0, &base, &start, &end, &ops, &nops) <= 0)
-+		return DIE_FIND_CB_SIBLING;
++	if (dso->kernel == DSO_SPACE__USER)
++		return ip - dso->text_offset;
 +
-+	if (die_get_real_type(die_mem, &type_die) == NULL)
-+		return DIE_FIND_CB_SIBLING;
-+
-+	vt = malloc(sizeof(*vt));
-+	if (vt == NULL)
-+		return DIE_FIND_CB_END;
-+
-+	vt->die_off = dwarf_dieoffset(&type_die);
-+	vt->addr = start;
-+	vt->reg = reg_from_dwarf_op(ops);
-+	vt->offset = offset_from_dwarf_op(ops);
-+	vt->next = *var_types;
-+	*var_types = vt;
-+
-+	return DIE_FIND_CB_SIBLING;
++	return map__map_ip(map, ip + map__reloc(map));
 +}
 +
-+/**
-+ * die_collect_vars - Save all variables and parameters
-+ * @sc_die: a scope DIE
-+ * @var_types: a pointer to save the resulting list
-+ *
-+ * Save all variables and parameters in the @sc_die and save them to @var_types.
-+ * The @var_types is a singly-linked list containing type and location info.
-+ * Actual type can be retrieved using dwarf_offdie() with 'die_off' later.
-+ *
-+ * Callers should free @var_types.
-+ */
-+void die_collect_vars(Dwarf_Die *sc_die, struct die_var_type **var_types)
-+{
-+	Dwarf_Die die_mem;
+ bool map__contains_symbol(const struct map *map, const struct symbol *sym)
+ {
+ 	u64 ip = map__unmap_ip(map, sym->start);
+diff --git a/tools/perf/util/map.h b/tools/perf/util/map.h
+index 1b53d53adc86..b7bcf0aa3b67 100644
+--- a/tools/perf/util/map.h
++++ b/tools/perf/util/map.h
+@@ -129,6 +129,9 @@ u64 map__rip_2objdump(struct map *map, u64 rip);
+ /* objdump address -> memory address */
+ u64 map__objdump_2mem(struct map *map, u64 ip);
+ 
++/* objdump address -> rip */
++u64 map__objdump_2rip(struct map *map, u64 ip);
 +
-+	die_find_child(sc_die, __die_collect_vars_cb, (void *)var_types, &die_mem);
-+}
-+
- #endif
+ struct symbol;
+ struct thread;
  
- /*
-diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
-index dc7e98678216..d0ef41738abd 100644
---- a/tools/perf/util/dwarf-aux.h
-+++ b/tools/perf/util/dwarf-aux.h
-@@ -135,6 +135,15 @@ void die_skip_prologue(Dwarf_Die *sp_die, Dwarf_Die *cu_die,
- /* Get the list of including scopes */
- int die_get_scopes(Dwarf_Die *cu_die, Dwarf_Addr pc, Dwarf_Die **scopes);
- 
-+/* Variable type information */
-+struct die_var_type {
-+	struct die_var_type *next;
-+	u64 die_off;
-+	u64 addr;
-+	int reg;
-+	int offset;
-+};
-+
- #ifdef HAVE_DWARF_GETLOCATIONS_SUPPORT
- 
- /* Get byte offset range of given variable DIE */
-@@ -153,6 +162,9 @@ Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die, Dwarf_Addr pc,
- /* Get the frame base information from CFA */
- int die_get_cfa(Dwarf *dwarf, u64 pc, int *preg, int *poffset);
- 
-+/* Save all variables and parameters in this scope */
-+void die_collect_vars(Dwarf_Die *sc_die, struct die_var_type **var_types);
-+
- #else /*  HAVE_DWARF_GETLOCATIONS_SUPPORT */
- 
- static inline int die_get_var_range(Dwarf_Die *sp_die __maybe_unused,
-@@ -187,6 +199,11 @@ static inline int die_get_cfa(Dwarf *dwarf __maybe_unused, u64 pc __maybe_unused
- 	return -1;
- }
- 
-+static inline void die_collect_vars(Dwarf_Die *sc_die __maybe_unused,
-+				    struct die_var_type **var_types __maybe_unused)
-+{
-+}
-+
- #endif /* HAVE_DWARF_GETLOCATIONS_SUPPORT */
- 
- #endif /* _DWARF_AUX_H */
 -- 
 2.42.0.655.g421f12c284-goog
 
