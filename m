@@ -1,580 +1,438 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B1187E4
-	for <linux-trace-devel@vger.kernel.org>; Fri, 13 Oct 2023 00:49:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1755C433C9;
-	Fri, 13 Oct 2023 00:48:59 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.96)
-	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1qr6Nm-008Upi-1M;
-	Thu, 12 Oct 2023 20:50:26 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-trace-devel@vger.kernel.org
-Cc: Ross Zwisler <zwisler@google.com>,
-	"Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 1/2] libtraceeval: Add man pages for traceeval_delta create/start/stop functions
-Date: Thu, 12 Oct 2023 20:49:27 -0400
-Message-ID: <20231013005025.2025080-2-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231013005025.2025080-1-rostedt@goodmis.org>
-References: <20231013005025.2025080-1-rostedt@goodmis.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF43219BA1;
+	Fri, 13 Oct 2023 14:15:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h7P5cz3Q"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3A45C433C8;
+	Fri, 13 Oct 2023 14:15:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1697206557;
+	bh=vaBQANTmaEowKS5n5Xz4PYWxLnM7bQeyeVcAcBH8dVk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=h7P5cz3QOEMz/PT3aPX7rzYzD6tfCe0VDZGQsgQqYJYYu0o8iTG0VRNoxdpM7WmBm
+	 ISfsVLjVvYJBnxDli/vsgekRaeHw8ryYlikdwF74jRDUsiB3hDK5o2yHeVkEjYuiUN
+	 BXjxH4Lx82//2pRe1xLaRadeq1RJVg4HXp0+y5SShPFcNPVyi1n080WsUBHtLurrqe
+	 tmRVcdFly3U7VRyyqNVgWq/FfxrtbmytWmz+J7w+tKL5sJKM0M4O8iv4MxgN1Sc38l
+	 FM1KYEp9t6r13sag1YbPOP0VIW06iEeRZFRIs9P9R7vM2utl9yTVhjp25Qf3mJVYBf
+	 n//t6/sgq6s9A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 45B7D40016; Fri, 13 Oct 2023 11:15:54 -0300 (-03)
+Date: Fri, 13 Oct 2023 11:15:54 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Stephane Eranian <eranian@google.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+	Ben Woodard <woodard@redhat.com>, Joe Mario <jmario@redhat.com>,
+	Kees Cook <keescook@chromium.org>,
+	David Blaikie <blaikie@google.com>, Xu Liu <xliuprof@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Ravi Bangoria <ravi.bangoria@amd.com>
+Subject: Re: [RFC 00/48] perf tools: Introduce data type profiling (v1)
+Message-ID: <ZSlRGnFjEO9fuH3i@kernel.org>
+References: <20231012035111.676789-1-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231012035111.676789-1-namhyung@kernel.org>
+X-Url: http://acmel.wordpress.com
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Em Wed, Oct 11, 2023 at 08:50:23PM -0700, Namhyung Kim escreveu:
+> Hello,
+> 
+> I'm happy to share my work on data type profiling.  This is to associate
+> PMU samples to data types they refer using DWARF debug information.  So
+> basically it depends on quality of PMU events and compiler for producing
+> DWARF info.  But it doesn't require any changes in the target program.
 
-Add man pages for:
+Great news, finally work on this started :-)
 
- traceeval_delta_create()
- traceeval_delta_create_size()
- traceeval_delta_start()
- traceeval_delta_start_size()
- traceeval_delta_stop()
- traceeval_delta_stop_size()
- traceeval_delta_continue()
- traceeval_delta_continue_size()
+And using what is already available, so that we get to see what are the
+road blocks to cover more cases, great.
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- Documentation/libtraceeval-delta-init.txt | 470 ++++++++++++++++++++++
- Documentation/libtraceeval.txt            |  40 ++
- 2 files changed, 510 insertions(+)
- create mode 100644 Documentation/libtraceeval-delta-init.txt
+I'll test it all and report back,
 
-diff --git a/Documentation/libtraceeval-delta-init.txt b/Documentation/libtraceeval-delta-init.txt
-new file mode 100644
-index 000000000000..0ae5fc629880
---- /dev/null
-+++ b/Documentation/libtraceeval-delta-init.txt
-@@ -0,0 +1,470 @@
-+libtraceeval(3)
-+===============
-+
-+NAME
-+----
-+traceeval_delta_create, traceeval_delta_create_size,
-+traceeval_delta_start, traceeval_delta_start_size, traceeval_delta_stop,
-+traceeval_delta_stop_size, traceeval_delta_continue, traceeval_delta_continue_size
-+- Create and start/stop a traceeval_delta instance
-+
-+SYNOPSIS
-+--------
-+[verse]
-+--
-+*#include <traceeval.h>*
-+
-+int *traceeval_delta_create*(struct traceeval pass:[*]_teval_,
-+			     struct traceeval_type pass:[*]_keys_,
-+			     struct traceeval_type pass:[*]_vals_);
-+int *traceeval_delta_create_size*(struct traceeval pass:[*]_teval_,
-+				struct traceeval_type pass:[*]_keys_,
-+				struct traceeval_type pass:[*]_vals_,
-+				size_t _nr_keys_, size_t _nr_vals_);
-+
-+int *traceeval_delta_start*(struct traceeval pass:[*]_teval_,
-+		  const struct traceeval_data pass:[*]_keys_,
-+		  const struct traceeval_data pass:[*]_vals_,
-+		  unsigned long long _timestamp_);
-+int *traceeval_delta_start_size*(struct traceeval pass:[*]_teval_,
-+		       const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_,
-+		       const struct traceeval_data pass:[*]_vals_, size_t _nr_vals_,
-+		       unsigned long long _timestamp_);
-+
-+int *traceeval_delta_stop*(struct traceeval pass:[*]_teval_,
-+			 const struct traceeval_data pass:[*]_keys_,
-+			 const struct traceeval_data pass:[**]_results_,
-+			 unsigned long long _timestamp_,
-+			 unsigned long long *_delta_,
-+			 unsigned long long *_start_timestamp_);
-+int *traceeval_delta_stop_size*(struct traceeval pass:[*]_teval_,
-+			      const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_,
-+			      const struct traceeval_data pass:[**]_results_,
-+			      unsigned long long _timestamp_,
-+			      unsigned long long *_delta_,
-+			      unsigned long long *_start_timestamp_);
-+
-+int *traceeval_delta_continue*(struct traceeval pass:[*]_teval_,
-+			     const struct traceeval_data pass:[*]_keys_,
-+			     const struct traceeval_data pass:[*]_vals_,
-+			     unsigned long long _timestamp_);
-+int *traceeval_delta_continue_size*(struct traceeval pass:[*]_teval_,
-+				  const struct traceeval_data pass:[*]keys, size_t _nr_keys_,
-+				  const struct traceeval_data pass:[*]_vals_, size_t _nr_vals_,
-+				  unsigned long long _timestamp_);
-+--
-+
-+DESCRIPTION
-+-----------
-+The traceeval handles mapping keys and values for various events. One common use case
-+is to attach two events together to create a delta between their associated timestamps
-+and insert that information into a traceeval along with information from both the
-+starting event as well as the ending event.
-+
-+Since the above is very common, the traceeval_delta is used to facilitate this approach.
-+The traceeval_delta is a specialized traceeval that is designed to keep track of
-+the timestamps and deltas and pass values from the starting event to the stopping event.
-+
-+The *traceeval_delta_create()* creates a helper to the attached _teval_. It
-+takes _keys_ and _vals_ just like *traceeval_init*(3) but these _keys_ and _vals_
-+are unrelated to the keys and vals associated to the attached _teval_. The _keys_
-+are used to map fields of two events to be able to match a stopping event to the
-+corresponding starting event. The _vals_ is used to store data from the starting
-+event to pass over to the stopping event that can then be used to add information
-+to the _teval_.
-+
-+The _keys_ and _vals_ passed to *traceeval_delta_create()* must be a static array. If
-+dynamically sized arrays are to be required, then *traceeval_delta_create_size()* can be
-+used and the caller can pass in _nr_keys_ to denote how many _keys_ are being passed in
-+as well as _nr_vals_ to denote how many _vals_ are passed in (0 for NULL).
-+
-+When the starting event is encountered, *traceeval_delta_start()* is called with the
-+associated _teval_ and _keys_ that hold information about the starting event that will
-+be used to map this event to the stopping event. The _vals_ array will hold any
-+data about the starting event that should be passed to the ending event (or NULL if
-+unused). The _timestamp_ denotes the time that this event happened. The _timestamp_
-+will be used at the stopping event to calculate a delta between the two events.
-+
-+When the stopping event is encountered, *traceeval_delta_stop()* is called with
-+the associated _teval_ and _keys_ that hold an array of fields that are to match
-+the keys passed to *traceeval_delta_start()*. If vals were specified for the delta
-+element, then _results_ will hold an array that has the data stored into the vals
-+array of *traceeval_delta_start()*. The _timestamp_ holds the time of the stopping
-+event and will be used for calculating _delta_, as _delta_ is simply the timestamp
-+passed to *traceeval_delta_start()* subtracted from _timestamp_. The timestamp
-+from the starting event will be stored in _start_timestamp_. Note, that _delta_,
-+_results_ and _start_timestamp_ are all optional and may be NULL if not needed.
-+
-+There's some cases where there may be more than one starting event, and the first
-+starting event is to be required for starting the timings and any new starting event
-+that happens before an ending event occurs should be ignored. In this case,
-+*traceeval_delta_continue()* is used. It acts the same as *traceeval_delta_start()*
-+except that if the matching _keys_ have not encountered a *traceeval_delta_stop()*
-+since a previous *traceeval_delta_start()* or *traceeval_delta_continue()* then
-+it will simply be ignored (Both the _timestamp_ and the _vals_ will be dropped).
-+
-+To describe one use case for this, if the runtime of a CPU is being recorded,
-+and anytime a task is scheduled on the CPU, it is considered a starting event,
-+but the delta should only be used when the CPU switches from idle to a running task,
-+*traceeval_delta_continue()* can be used whenever a task is scheduled on the CPU
-+and *traceeval_delta_stop()* can be used when the CPU goes idle. Only the first
-+occurrence of a task scheduling on the CPU will start the timing. If a task
-+is scheduled on the CPU when another task was already running, no update should
-+be made. If *traceeval_delta_start()* is used, the timestamp of the start event
-+will be that of the time the new task came onto the CPU preempting the previous
-+task and that would only show the runtime of the last task and not how long the
-+CPU itself was running tasks.
-+
-+*traceeval_delta_start()*, *traceeval_delta_stop()* and *traceeval_delta_continue()*
-+must have their _keys_ and _vals_ be static arrays. If a dynamic array is required
-+then their corresponding functions that end with "*_size()*" must be used to
-+specify the size of _keys_ with _nr_keys_ and _vals_ with _nr_vals_.
-+
-+RETURN VALUE
-+------------
-+The *traceeval_delta_create()* and *traceeval_delta_create_size()* both return a 0
-+on success and -1 on error.
-+
-+The *traceeval_delta_start()*, *traceeval_delta_start_size()*, *traceeval_delta_continue()*
-+and *traceeval_delta_continue_size()* return 0 on success and -1 on error.
-+
-+The *traceeval_delta_stop()* and *traceeval_delta_stop_size()* return 1 if there was
-+a corresponding start event found via the passed in _keys_, 0 if a corresponding
-+event was not found and -1 on error.
-+
-+EXAMPLE
-+-------
-+[source,c]
-+--
-+#include <trace-cmd.h>
-+#include <traceeval.h>
-+
-+static struct traceeval_type task_delta_types[] = {
-+	{
-+		.name		= "PID",
-+		.type		= TRACEEVAL_TYPE_NUMBER,
-+	}
-+};
-+
-+static struct traceeval_type task_delta_val_types[] = {
-+	{
-+		.name		= "COMM",
-+		.type		= TRACEEVAL_TYPE_STRING,
-+	}
-+};
-+
-+static void start_task(struct traceeval *teval, int pid, const char *comm,
-+		       unsigned long long ts)
-+{
-+	struct traceeval_data keys[1];
-+	struct traceeval_data vals[1];
-+
-+	TRACEEVAL_SET_NUMBER(keys[0], pid);
-+	TRACEEVAL_SET_CSTRING(vals[0], comm);
-+
-+	if (traceeval_delta_start(teval, keys, vals, ts) < 0)
-+		printf("FAILED\n");
-+}
-+
-+static int stop_task(struct traceeval *teval, int pid, const char **comm,
-+		     unsigned long long ts, unsigned long long *delta)
-+{
-+	const struct traceeval_data *results;
-+	struct traceeval_data keys[1];
-+	int ret;
-+
-+	TRACEEVAL_SET_NUMBER(keys[0], pid);
-+
-+	ret = traceeval_delta_stop(teval, keys, &results, ts, delta, NULL);
-+	if (ret < 1)
-+		return ret;
-+
-+	if (comm)
-+		*comm = results[0].string;
-+
-+	traceeval_results_release(teval, results);
-+	return 1;
-+}
-+
-+static struct traceeval_type task_types[] = {
-+	{
-+		.name		= "COMM",
-+		.type		= TRACEEVAL_TYPE_STRING,
-+	},
-+	{
-+		.name		= "PID",
-+		.type		= TRACEEVAL_TYPE_NUMBER,
-+	}
-+};
-+
-+static void insert_task(struct traceeval *teval, const char *comm, int pid,
-+		       unsigned long long delta, unsigned long long ts)
-+{
-+	struct traceeval_data keys[2];
-+	struct traceeval_data vals[1];
-+
-+	TRACEEVAL_SET_CSTRING(keys[0], comm);
-+	TRACEEVAL_SET_NUMBER(keys[1], pid);
-+
-+	TRACEEVAL_SET_DELTA(vals[0], delta, ts);
-+
-+	traceeval_insert(teval, keys, vals);
-+}
-+
-+static struct traceeval_type cpu_delta_types[] = {
-+	{
-+		.name		= "CPU",
-+		.type		= TRACEEVAL_TYPE_NUMBER,
-+	}
-+};
-+
-+static void start_cpu(struct traceeval *teval, int cpu, unsigned long long ts)
-+{
-+	struct traceeval_data keys[1];
-+
-+	TRACEEVAL_SET_NUMBER(keys[0], cpu);
-+
-+	if (traceeval_delta_continue(teval, keys, NULL, ts) < 0)
-+		printf("FAILED\n");
-+}
-+
-+static int stop_cpu(struct traceeval *teval, int cpu,
-+		    unsigned long long ts, unsigned long long *delta)
-+{
-+	struct traceeval_data keys[1];
-+	int ret;
-+
-+	TRACEEVAL_SET_NUMBER(keys[0], cpu);
-+
-+	ret = traceeval_delta_stop(teval, keys, NULL, ts, delta, NULL);
-+	if (ret < 1)
-+		return ret;
-+	return 1;
-+}
-+
-+static struct traceeval_type cpu_types[] = {
-+	{
-+		.name		= "CPU",
-+		.type		= TRACEEVAL_TYPE_NUMBER,
-+	}
-+};
-+
-+static struct traceeval_type delta_type[] = {
-+	{
-+		.name		= "delta",
-+		.type		= TRACEEVAL_TYPE_DELTA,
-+	}
-+};
-+
-+static void insert_cpu(struct traceeval *teval, int cpu,
-+		       unsigned long long delta, unsigned long long ts)
-+{
-+	struct traceeval_data keys[1];
-+	struct traceeval_data vals[1];
-+
-+	TRACEEVAL_SET_NUMBER(keys[0], cpu);
-+
-+	TRACEEVAL_SET_DELTA(vals[0], delta, ts);
-+
-+	traceeval_insert(teval, keys, vals);
-+}
-+
-+struct data {
-+	struct traceeval		*teval_tasks;
-+	struct traceeval		*teval_cpus;
-+};
-+
-+static struct tep_format_field *get_field(struct tep_event *event, const char *name)
-+{
-+	static struct tep_format_field *field;
-+
-+	field = tep_find_field(event, name);
-+	if (!field) {
-+		fprintf(stderr, "Could not find field %s for %s", name, event->name);
-+		exit(-1);
-+	}
-+
-+	return field;
-+}
-+
-+static int switch_func(struct tracecmd_input *handle, struct tep_event *event,
-+		       struct tep_record *record, int cpu, void *d)
-+{
-+	static struct tep_format_field *next_comm;
-+	static struct tep_format_field *prev_pid;
-+	static struct tep_format_field *next_pid;
-+	struct data *data = d;
-+	unsigned long long delta;
-+	unsigned long long val;
-+	const char *comm;
-+	int ret;
-+
-+	if (!next_comm) {
-+		prev_pid = get_field(event, "prev_pid");
-+
-+		next_comm = get_field(event, "next_comm");
-+		next_pid = get_field(event, "next_pid");
-+	}
-+
-+	tep_read_number_field(prev_pid, record->data, &val);
-+
-+	if (val) {
-+		ret = stop_task(data->teval_tasks, val, &comm, record->ts, &delta);
-+		if (ret > 0)
-+			insert_task(data->teval_tasks, comm, val, delta, record->ts);
-+	}
-+
-+	tep_read_number_field(next_pid, record->data, &val);
-+
-+	if (val) {
-+		comm = record->data + next_comm->offset;
-+		start_task(data->teval_tasks, val, comm, record->ts);
-+		start_cpu(data->teval_cpus, record->cpu, record->ts);
-+		return 0;
-+	}
-+
-+	ret = stop_cpu(data->teval_cpus, record->cpu, record->ts, &delta);
-+	if (ret > 0)
-+		insert_cpu(data->teval_cpus, record->cpu, delta, record->ts);
-+
-+	return 0;
-+}
-+
-+static void print_microseconds(int idx, unsigned long long nsecs)
-+{
-+	unsigned long long usecs;
-+
-+	usecs = nsecs / 1000;
-+	if (!nsecs || usecs)
-+		printf("%*lld", idx, usecs);
-+	else
-+		printf("%*d.%03lld", idx, 0, nsecs);
-+}
-+
-+static void print_stat(struct traceeval_stat *stat)
-+{
-+	unsigned long long average;
-+	unsigned long long total;
-+	unsigned long long cnt;
-+	unsigned long long ts;
-+	double stddev;
-+
-+	printf("\tmax: ");
-+	print_microseconds(12, traceeval_stat_max_timestamp(stat, &ts));
-+	printf("  timestamp: ");
-+	print_microseconds(10, ts);
-+	printf("\n\tmin: ");
-+	print_microseconds(12, traceeval_stat_min_timestamp(stat, &ts));
-+	printf("  timestamp: ");
-+	print_microseconds(10, ts);
-+	printf("\n\ttotal: ");
-+	total = traceeval_stat_total(stat);
-+	print_microseconds(10, total);
-+	cnt = traceeval_stat_count(stat);
-+	printf("\n\tcount: %*lld\n", 10, cnt);
-+	average = traceeval_stat_average(stat);
-+	printf("\taverage: ");
-+	print_microseconds(8, average);
-+	stddev = traceeval_stat_stddev(stat);
-+	printf("\n\tstddev: %*.3f\n", 13, stddev / 1000);
-+}
-+
-+static void display_cpus(struct traceeval *teval)
-+{
-+	struct traceeval_iterator *iter = traceeval_iterator_get(teval);
-+	const struct traceeval_data *keys;
-+
-+	printf("\n");
-+
-+	traceeval_iterator_sort(iter, cpu_types[0].name, 0, true);
-+
-+	while (traceeval_iterator_next(iter, &keys) > 0) {
-+		struct traceeval_stat *stat;
-+
-+		stat = traceeval_iterator_stat(iter, delta_type[0].name);
-+
-+		printf("CPU [%zd]:\n", keys[0].number);
-+		print_stat(stat);
-+	}
-+	traceeval_iterator_put(iter);
-+}
-+
-+static void display_tasks(struct traceeval *teval)
-+{
-+	struct traceeval_iterator *iter = traceeval_iterator_get(teval);
-+	const struct traceeval_data *keys;
-+
-+	printf("\n");
-+
-+	traceeval_iterator_sort(iter, task_types[0].name, 0, true);
-+	traceeval_iterator_sort(iter, task_types[1].name, 1, true);
-+
-+	while (traceeval_iterator_next(iter, &keys) > 0) {
-+		struct traceeval_stat *stat;
-+
-+		stat = traceeval_iterator_stat(iter, delta_type[0].name);
-+
-+		printf("Task %s [%zd]:\n", keys[0].cstring, keys[1].number);
-+		print_stat(stat);
-+	}
-+	traceeval_iterator_put(iter);
-+};
-+
-+int main (int argc, char **argv)
-+{
-+	struct tracecmd_input *handle;
-+	struct data data;
-+
-+	if (argc < 2) {
-+		printf("Need to pass trace.dat file to this\n");
-+		exit(-1);
-+	}
-+
-+	handle = tracecmd_open(argv[1], TRACECMD_FL_LOAD_NO_PLUGINS);
-+
-+	data.teval_tasks = traceeval_init(task_types, delta_type);
-+	traceeval_delta_create(data.teval_tasks, task_delta_types, task_delta_val_types);
-+	data.teval_cpus = traceeval_init(cpu_types, delta_type);
-+	traceeval_delta_create(data.teval_cpus, cpu_delta_types, NULL);
-+
-+	tracecmd_follow_event(handle, "sched", "sched_switch", switch_func, &data);
-+	tracecmd_iterate_events(handle, NULL, 0, NULL, NULL);
-+
-+	display_cpus(data.teval_cpus);
-+	display_tasks(data.teval_tasks);
-+
-+	traceeval_release(data.teval_cpus);
-+	traceeval_release(data.teval_tasks);
-+
-+	return 0;
-+}
-+--
-+
-+FILES
-+-----
-+[verse]
-+--
-+*traceval.h*
-+	Header file to include in order to have access to the library APIs.
-+*-ltraceeval*
-+	Linker switch to add when building a program that uses the library.
-+--
-+
-+SEE ALSO
-+--------
-+*libtraceeval*(3)
-+
-+AUTHOR
-+------
-+[verse]
-+--
-+*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceeval*.
-+--
-+REPORTING BUGS
-+--------------
-+Report bugs to  <linux-trace-devel@vger.kernel.org>
-+
-+LICENSE
-+-------
-+libtraceeval is licensed under MIT.
-+
-diff --git a/Documentation/libtraceeval.txt b/Documentation/libtraceeval.txt
-index e65ebd270445..e856d1152594 100644
---- a/Documentation/libtraceeval.txt
-+++ b/Documentation/libtraceeval.txt
-@@ -76,6 +76,46 @@ Functions to manage statistics of values of a traceeval:
- 	unsigned long long *traceeval_stat_count*(struct traceeval_stat pass:[*]_stat_);
- 	unsigned long long *traceeval_stat_average*(struct traceeval_stat pass:[*]_stat_);
- 	double *traceeval_stat_stddev*(struct traceeval_stat pass:[*]_stat_);
-+
-+Handling delta times between events:
-+	int *traceeval_delta_create*(struct traceeval pass:[*]_teval_,
-+			     struct traceeval_type pass:[*]_keys_,
-+			     struct traceeval_type pass:[*]_vals_);
-+	int *traceeval_delta_create_size*(struct traceeval pass:[*]_teval_,
-+				struct traceeval_type pass:[*]_keys_,
-+				struct traceeval_type pass:[*]_vals_,
-+				size_t _nr_keys_, size_t _nr_vals_);
-+
-+	int *traceeval_delta_start*(struct traceeval pass:[*]_teval_,
-+		  const struct traceeval_data pass:[*]_keys_,
-+		  const struct traceeval_data pass:[*]_vals_,
-+		  unsigned long long _timestamp_);
-+	int *traceeval_delta_start_size*(struct traceeval pass:[*]_teval_,
-+		       const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_,
-+		       const struct traceeval_data pass:[*]_vals_, size_t _nr_vals_,
-+		       unsigned long long _timestamp_);
-+
-+	int *traceeval_delta_stop*(struct traceeval pass:[*]_teval_,
-+			 const struct traceeval_data pass:[*]_keys_,
-+			 const struct traceeval_data pass:[**]_results_,
-+			 unsigned long long _timestamp_,
-+			 unsigned long long *_delta_,
-+			 unsigned long long *_start_timestamp_);
-+	int *traceeval_delta_stop_size*(struct traceeval pass:[*]_teval_,
-+			      const struct traceeval_data pass:[*]_keys_, size_t _nr_keys_,
-+			      const struct traceeval_data pass:[**]_results_,
-+			      unsigned long long _timestamp_,
-+			      unsigned long long *_delta_,
-+			      unsigned long long *_start_timestamp_);
-+
-+	int *traceeval_delta_continue*(struct traceeval pass:[*]_teval_,
-+			     const struct traceeval_data pass:[*]_keys_,
-+			     const struct traceeval_data pass:[*]_vals_,
-+			     unsigned long long _timestamp_);
-+	int *traceeval_delta_continue_size*(struct traceeval pass:[*]_teval_,
-+				  const struct traceeval_data pass:[*]keys, size_t _nr_keys_,
-+				  const struct traceeval_data pass:[*]_vals_, size_t _nr_vals_,
-+				  unsigned long long _timestamp_);
- --
+Thanks for doing this work!
+
+- Arnaldo
  
- DESCRIPTION
--- 
-2.42.0
+> As it's an early stage, I've targeted the kernel on x86 to reduce the
+> amount of work but IIUC there's no fundamental blocker to apply it to
+> other architectures and applications.
+> 
+> 
+> * How to use it
+> 
+> To get precise memory access samples, users can use `perf mem record`
+> command to utilize those events supported by their architecture.  Intel
+> machines would work best as they have dedicated memory access events but
+> they would have a filter to ignore low latency loads like less than 30
+> cycles (use --ldlat option to change the default value).
+> 
+>     # To get memory access samples in kernel for 1 second (on Intel)
+>     $ sudo perf mem record -a -K --ldlat=4 -- sleep 1
+> 
+>     # Similar for the AMD (but it requires 6.3+ kernel for BPF filters)
+>     $ sudo perf mem record -a --filter 'mem_op == load, ip > 0x8000000000000000' -- sleep 1
+> 
+> Note that it used 'sudo' command because it's collecting the event in
+> system wide mode.  Actually it would depend on the sysctl setting of
+> kernel.perf_event_paranoid.  AMD still needs root due to the BPF filter
+> though.
+> 
+> After getting a profile data, you would run perf report or perf
+> annotate as usual to see the result.  Make sure that you have a kernel
+> debug package installed or vmlinux with DWARF info.
+ 
+> I've added new options and sort keys to enable the data type profiling.
+> Probably I need to add it to perf mem or perf c2c command for better
+> user experience.  I'm open to discussion how we can make it simpler and
+> intuitive for regular users.  But let's talk about the lower level
+> interface for now.
+> 
+> In perf report, it's just a matter of selecting new sort keys: 'type'
+> and 'typeoff'.  The 'type' shows name of the data type as a whole while
+> 'typeoff' shows name of the field in the data type.  I found it useful
+> to use it with --hierarchy option to group relevant entries in the same
+> level.
+> 
+>     $ sudo perf report -s type,typeoff --hierarchy --stdio
+>     ...
+>     #
+>     #    Overhead  Data Type / Data Type Offset
+>     # ...........  ............................
+>     #
+>         23.95%     (stack operation)
+>            23.95%     (stack operation) +0 (no field)
+>         23.43%     (unknown)
+>            23.43%     (unknown) +0 (no field)
+>         10.30%     struct pcpu_hot
+>             4.80%     struct pcpu_hot +0 (current_task)
+>             3.53%     struct pcpu_hot +8 (preempt_count)
+>             1.88%     struct pcpu_hot +12 (cpu_number)
+>             0.07%     struct pcpu_hot +24 (top_of_stack)
+>             0.01%     struct pcpu_hot +40 (softirq_pending)
+>          4.25%     struct task_struct
+>             1.48%     struct task_struct +2036 (rcu_read_lock_nesting)
+>             0.53%     struct task_struct +2040 (rcu_read_unlock_special.b.blocked)
+>             0.49%     struct task_struct +2936 (cred)
+>             0.35%     struct task_struct +3144 (audit_context)
+>             0.19%     struct task_struct +46 (flags)
+>             0.17%     struct task_struct +972 (policy)
+>             0.15%     struct task_struct +32 (stack)
+>             0.15%     struct task_struct +8 (thread_info.syscall_work)
+>             0.10%     struct task_struct +976 (nr_cpus_allowed)
+>             0.09%     struct task_struct +2272 (mm)
+>         ...
+> 
+> The (stack operation) and (unknown) have no type and field info.  FYI,
+> the stack operations are samples in PUSH, POP or RET instructions which
+> save or restore registers from/to the stack.  They are usually parts of
+> function prologue and epilogue and have no type info.  The next is the
+> struct pcpu_hot and you can see the first field (current_task) at offset
+> 0 was accessed mostly.  It's listed in order of access frequency (not in
+> offset) as you can see it in the task_struct.
+> 
+> In perf annotate, new --data-type option was added to enable data
+> field level annotation.  Now it only shows number of samples for each
+> field but we can improve it.
+> 
+>     $ sudo perf annotate --data-type
+>     Annotate type: 'struct pcpu_hot' in [kernel.kallsyms] (223 samples):
+>     ============================================================================
+>         samples     offset       size  field
+>             223          0         64  struct pcpu_hot       {
+>             223          0         64      union     {
+>             223          0         48          struct        {
+>              78          0          8              struct task_struct*      current_task;
+>              98          8          4              int      preempt_count;
+>              45         12          4              int      cpu_number;
+>               0         16          8              u64      call_depth;
+>               1         24          8              long unsigned int        top_of_stack;
+>               0         32          8              void*    hardirq_stack_ptr;
+>               1         40          2              u16      softirq_pending;
+>               0         42          1              bool     hardirq_stack_inuse;
+>                                                };
+>             223          0         64          u8*  pad;
+>                                            };
+>                                        };
+>     ...
+> 
+> This shows each struct one by one and field-level access info in C-like
+> style.  The number of samples for the outer struct is a sum of number of
+> samples in every field in the struct.  In unions, each field is placed
+> in the same offset so they will have the same number of samples.
+> 
+> No TUI support yet.
+> 
+> 
+> * How it works
+> 
+> The basic idea is to use DWARF location expression in debug entries for
+> variables.  Say we got a sample in the instruction below:
+> 
+>     0x123456:  mov    0x18(%rdi), %rcx
+> 
+> Then we know the instruction at 0x123456 is accessing to a memory region
+> where %rdi register has a base address and offset 0x18 from the base.
+> DWARF would have a debug info entry for a function or a block which
+> covers that address.  For example, we might have something like this:
+> 
+>     <1><100>: Abbrev Number: 10 (DW_TAG_subroutine_type)
+>        <101>    DW_AT_name       : (indirect string, offset: 0x184e6): foo
+>        <105>    DW_AT_type       : <0x29ad7>
+>        <106>    DW_AT_low_pc     : 0x123400
+>        <10e>    DW_AT_high_pc    : 0x1234ff
+>     <2><116>: Abbrev Number: 8 (DW_TAG_formal_parameter)
+>        <117>    DW_AT_name       : (indirect string, offset: 0x18527): bar
+>        <11b>    DW_AT_type       : <0x29b3a>
+>        <11c>    DW_AT_location   : 1 byte block: 55    (DW_OP_reg2 (rdi))
+> 
+> So the function 'foo' covers the instruction from 0x123400 to 0x1234ff
+> and we know the sample instruction belongs to the function.  And it has
+> a parameter called 'bar' and it's located at the %rdi register.  Then we
+> know the instruction is using the variable bar and its type would be a
+> pointer (to a struct).  We can follow the type info of bar and verify
+> its access by checking the size of the (struct) type and offset in the
+> instruction (0x18).
+> 
+> Well.. this is a simple example that the 'bar' has a single location.
+> Other variables might be located in various places over time but it
+> should be covered by the location list of the debug entry.  Therefore,
+> as long as DWARF produces a correct location expression for a variable,
+> it should be able to find the variable using the location info.
+> 
+> Global variables and local variables are different as they can be
+> accessed directly without a pointer.  They are located in an absolute
+> address or relative position from the current stack frame.  So it needs
+> to handle such location expressions as well.
+> 
+> However, some memory accesses don't have a variable in some cases.  For
+> example, you have a pointer variable for a struct which contains another
+> pointers.  And then you can directly dereference it without using a
+> variable.  Consider the following source code.
+> 
+>     int foo(struct baz *bar) {
+>         ...
+>         if (bar->p->q == 0)
+>             return 1;
+>         ...
+>     }
+> 
+> This can generate instructions like below.
+> 
+>     ...
+>     0x123456:  mov    0x18(%rdi), %rcx
+>     0x12345a:  mov    0x10(%rcx), %rax     <=== sample
+>     0x12345e:  test   %rax, %rax
+>     0x123461:  je     <...>
+>     ...
+> 
+> And imagine we have a sample at 0x12345a.  Then it cannot find a
+> variable for %rcx since DWARF didn't generate one (it only knows about
+> 'bar').  Without compiler support, all it can do is to track the code
+> execution in each instruction and propagate the type info in each
+> register and stack location by following the memory access.
+> 
+> Actually I found a discussion in the DWARF mailing list to support
+> "inverted location lists" and it seems a perfect fit for this project.
+> It'd be great if new DWARF would provide a way to lookup variable and
+> type info using a concrete location info (like a register number).
+> 
+>   https://lists.dwarfstd.org/pipermail/dwarf-discuss/2023-June/002278.html 
+> 
+> 
+> * Patch structure
+> 
+> The patch 1-5 are cleanups and a fix that can be applied separately.
+> The patch 6-21 are the main changes in perf report and perf annotate to
+> support simple cases with a pointer variable.  The patch 22-33 are to
+> improve it by handling global and local variables (without a pointer)
+> and some edge cases.  The patch 34-43 implemented instruction tracking
+> to infer data type when there's no variable for that.  The patch 44-47
+> handles kernel-specific per-cpu variables (only for current CPU).  The
+> patch 48 is to help debugging and is not intended for merge.
+> 
+> 
+> * Limitations and future work
+> 
+> As I said earlier, this work is in a very early shape and has many
+> limitations or rooms for improvement.  Basically it uses objdump tool to
+> extract location information from the sample instruction.  And the
+> parsing code and instruction tracking work on x86 only.
+> 
+> Actually there's a performance issue about getting disassembly from the
+> objdump for kernel.  On my system, GNU objdump was really slower than the
+> one from LLVM for some reason so I had to pass the following option for
+> each perf report and perf annotate.
+> 
+>     $ sudo perf report --objdump=llvm-objdump ...
+> 
+>     # To save it in the config file and drop the command line option
+>     $ sudo perf config annotate.objdump=llvm-objdump
+> 
+> Even with this change, still the most processing time was spent on the
+> objdump to get the disassembly.  It'd be nice if we can get the result
+> without using objdump at all.
+> 
+> Also I only tested it with C programs (mostly vmlinux) and I believe
+> there are many issues on handling C++ applications.  Probably other
+> languages (like Rust?) could be supported too.  But even for C programs,
+> it could improve things like better supporting union and array types and
+> dealing with type casts and so on.
+> 
+> I think compiler could generate more DWARF information to help this kind
+> of analysis.  Like I mentioned, it doesn't have a variable for
+> intermediate pointers when they are chained: a->b->c.  This chain could
+> be longer and hard to track the type from the previous variable.  If
+> compiler could generate (artificial) debug entries for the intermediate
+> pointers with a precise location expression and type info, it would be
+> really helpful.
+> 
+> And I plan to improve the analysis in perf tools with better integration
+> to the existing command like perf mem and/or perf c2c.  It'd be pretty
+> interesting to see per-struct or per-field access patterns both for load
+> and store event at the same time.  Also using data-source or snoop info
+> for each struct/field would give some insights on optimizing memory
+> usage or layout.
+> 
+> There are kernel specific issues too.  Some per-cpu variable accesses
+> created complex instruction patterns so it was hard to determine which
+> data/type it accessed.  For now, it just parsed simple patterns for
+> this-cpu access using %gs segment register.  Also it should handle
+> self-modifying codes like kprobe, ftrace, live patch and so on.  I guess
+> they would usually create an out-of-line copy of modified instructions
+> but needs more checking.  And I have no idea about the status of struct
+> layout randomization and the DWARF info of the resulting struct.  Maybe
+> there are more issues I'm not aware of, please let me know if you notice
+> something.
+> 
+> 
+> * Summary
+> 
+> Despite all the issues, I believe this would be a good addition to our
+> performance toolset.  It would help to observe memory overheads in a
+> different angle and to optimize the memory usage.  I'm really looking
+> forward to hearing any feedback.
+> 
+> The code is available at 'perf/data-profile-v1' branch in
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+> 
+> Enjoy,
+> Namhyung
+> 
+> 
+> Cc: Ben Woodard <woodard@redhat.com> 
+> Cc: Joe Mario <jmario@redhat.com>
+> CC: Kees Cook <keescook@chromium.org>
+> Cc: David Blaikie <blaikie@google.com>
+> Cc: Xu Liu <xliuprof@google.com>
+> Cc: Kan Liang <kan.liang@linux.intel.com>
+> Cc: Ravi Bangoria <ravi.bangoria@amd.com>
+> 
+> 
+> Namhyung Kim (48):
+>   perf annotate: Move raw_comment and raw_func_start
+>   perf annotate: Check if operand has multiple regs
+>   perf tools: Add util/debuginfo.[ch] files
+>   perf dwarf-aux: Fix die_get_typename() for void *
+>   perf dwarf-aux: Move #ifdef code to the header file
+>   perf dwarf-aux: Add die_get_scopes() helper
+>   perf dwarf-aux: Add die_find_variable_by_reg() helper
+>   perf dwarf-aux: Factor out __die_get_typename()
+>   perf dwarf-regs: Add get_dwarf_regnum()
+>   perf annotate-data: Add find_data_type()
+>   perf annotate-data: Add dso->data_types tree
+>   perf annotate: Factor out evsel__get_arch()
+>   perf annotate: Add annotate_get_insn_location()
+>   perf annotate: Implement hist_entry__get_data_type()
+>   perf report: Add 'type' sort key
+>   perf report: Support data type profiling
+>   perf annotate-data: Add member field in the data type
+>   perf annotate-data: Update sample histogram for type
+>   perf report: Add 'typeoff' sort key
+>   perf report: Add 'symoff' sort key
+>   perf annotate: Add --data-type option
+>   perf annotate: Add --type-stat option for debugging
+>   perf annotate: Add --insn-stat option for debugging
+>   perf annotate-data: Parse 'lock' prefix from llvm-objdump
+>   perf annotate-data: Handle macro fusion on x86
+>   perf annotate-data: Handle array style accesses
+>   perf annotate-data: Add stack operation pseudo type
+>   perf dwarf-aux: Add die_find_variable_by_addr()
+>   perf annotate-data: Handle PC-relative addressing
+>   perf annotate-data: Support global variables
+>   perf dwarf-aux: Add die_get_cfa()
+>   perf annotate-data: Support stack variables
+>   perf dwarf-aux: Check allowed DWARF Ops
+>   perf dwarf-aux: Add die_collect_vars()
+>   perf dwarf-aux: Handle type transfer for memory access
+>   perf annotate-data: Introduce struct data_loc_info
+>   perf map: Add map__objdump_2rip()
+>   perf annotate: Add annotate_get_basic_blocks()
+>   perf annotate-data: Maintain variable type info
+>   perf annotate-data: Add update_insn_state()
+>   perf annotate-data: Handle global variable access
+>   perf annotate-data: Handle call instructions
+>   perf annotate-data: Implement instruction tracking
+>   perf annotate: Parse x86 segment register location
+>   perf annotate-data: Handle this-cpu variables in kernel
+>   perf annotate-data: Track instructions with a this-cpu variable
+>   perf annotate-data: Add stack canary type
+>   perf annotate-data: Add debug message
+> 
+>  tools/perf/Documentation/perf-report.txt      |    3 +
+>  .../arch/loongarch/annotate/instructions.c    |    6 +-
+>  tools/perf/arch/x86/util/dwarf-regs.c         |   38 +
+>  tools/perf/builtin-annotate.c                 |  149 +-
+>  tools/perf/builtin-report.c                   |   19 +-
+>  tools/perf/util/Build                         |    2 +
+>  tools/perf/util/annotate-data.c               | 1246 +++++++++++++++++
+>  tools/perf/util/annotate-data.h               |  222 +++
+>  tools/perf/util/annotate.c                    |  763 +++++++++-
+>  tools/perf/util/annotate.h                    |  104 +-
+>  tools/perf/util/debuginfo.c                   |  205 +++
+>  tools/perf/util/debuginfo.h                   |   64 +
+>  tools/perf/util/dso.c                         |    4 +
+>  tools/perf/util/dso.h                         |    2 +
+>  tools/perf/util/dwarf-aux.c                   |  561 +++++++-
+>  tools/perf/util/dwarf-aux.h                   |   86 +-
+>  tools/perf/util/dwarf-regs.c                  |   33 +
+>  tools/perf/util/hist.h                        |    3 +
+>  tools/perf/util/include/dwarf-regs.h          |   11 +
+>  tools/perf/util/map.c                         |   20 +
+>  tools/perf/util/map.h                         |    3 +
+>  tools/perf/util/probe-finder.c                |  193 +--
+>  tools/perf/util/probe-finder.h                |   19 +-
+>  tools/perf/util/sort.c                        |  195 ++-
+>  tools/perf/util/sort.h                        |    7 +
+>  tools/perf/util/symbol_conf.h                 |    4 +-
+>  26 files changed, 3703 insertions(+), 259 deletions(-)
+>  create mode 100644 tools/perf/util/annotate-data.c
+>  create mode 100644 tools/perf/util/annotate-data.h
+>  create mode 100644 tools/perf/util/debuginfo.c
+>  create mode 100644 tools/perf/util/debuginfo.h
+> 
+> 
+> base-commit: 87cd3d48191e533cd9c224f2da1d78b3513daf47
+> -- 
+> 2.42.0.655.g421f12c284-goog
+> 
 
+-- 
+
+- Arnaldo
