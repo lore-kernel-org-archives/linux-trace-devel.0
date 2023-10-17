@@ -1,438 +1,676 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF43219BA1;
-	Fri, 13 Oct 2023 14:15:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h7P5cz3Q"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3A45C433C8;
-	Fri, 13 Oct 2023 14:15:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697206557;
-	bh=vaBQANTmaEowKS5n5Xz4PYWxLnM7bQeyeVcAcBH8dVk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=h7P5cz3QOEMz/PT3aPX7rzYzD6tfCe0VDZGQsgQqYJYYu0o8iTG0VRNoxdpM7WmBm
-	 ISfsVLjVvYJBnxDli/vsgekRaeHw8ryYlikdwF74jRDUsiB3hDK5o2yHeVkEjYuiUN
-	 BXjxH4Lx82//2pRe1xLaRadeq1RJVg4HXp0+y5SShPFcNPVyi1n080WsUBHtLurrqe
-	 tmRVcdFly3U7VRyyqNVgWq/FfxrtbmytWmz+J7w+tKL5sJKM0M4O8iv4MxgN1Sc38l
-	 FM1KYEp9t6r13sag1YbPOP0VIW06iEeRZFRIs9P9R7vM2utl9yTVhjp25Qf3mJVYBf
-	 n//t6/sgq6s9A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id 45B7D40016; Fri, 13 Oct 2023 11:15:54 -0300 (-03)
-Date: Fri, 13 Oct 2023 11:15:54 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Stephane Eranian <eranian@google.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-	Ben Woodard <woodard@redhat.com>, Joe Mario <jmario@redhat.com>,
-	Kees Cook <keescook@chromium.org>,
-	David Blaikie <blaikie@google.com>, Xu Liu <xliuprof@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Ravi Bangoria <ravi.bangoria@amd.com>
-Subject: Re: [RFC 00/48] perf tools: Introduce data type profiling (v1)
-Message-ID: <ZSlRGnFjEO9fuH3i@kernel.org>
-References: <20231012035111.676789-1-namhyung@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B89C5440D
+	for <linux-trace-devel@vger.kernel.org>; Tue, 17 Oct 2023 02:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92112C433C8;
+	Tue, 17 Oct 2023 02:59:24 +0000 (UTC)
+Date: Mon, 16 Oct 2023 23:00:58 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc: Yordan Karadzhov <y.karadz@gmail.com>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Julia Lawall <Julia.Lawall@inria.fr>, Ross Zwisler
+ <zwisler@google.com>
+Subject: [PATCH] libtracecmd: Use an rbtree for mapping of cache pages
+Message-ID: <20231016230058.2f0e95b1@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231012035111.676789-1-namhyung@kernel.org>
-X-Url: http://acmel.wordpress.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Em Wed, Oct 11, 2023 at 08:50:23PM -0700, Namhyung Kim escreveu:
-> Hello,
-> 
-> I'm happy to share my work on data type profiling.  This is to associate
-> PMU samples to data types they refer using DWARF debug information.  So
-> basically it depends on quality of PMU events and compiler for producing
-> DWARF info.  But it doesn't require any changes in the target program.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Great news, finally work on this started :-)
+I was loading a very large trace.dat file into kernelshark when it just
+stopped near the end off the load and hung there for a very long time. I
+ran it under gdb and hit Ctrl^C when it hit the hang to see what it was
+doing and found that it was spinning in:
 
-And using what is already available, so that we get to see what are the
-road blocks to cover more cases, great.
+  libtracecmd trace-input.c: free_zpage
 
-I'll test it all and report back,
+static void free_zpage(struct cpu_data *cpu_data, void *map)
+{
+	struct zchunk_cache *cache;
 
-Thanks for doing this work!
+	list_for_each_entry(cache, &cpu_data->compress.cache, list) {
+		if (map <= cache->map && map > (cache->map + cache->chunk->size))
+			goto found;
+	}
+	return;
 
-- Arnaldo
+found:
+
+It seems that there can be over 10 thousand cache pages in that link
+list and that kernelshark is constantly hitting that. So it's doing a
+linear search for the mapped page to free it.
+
+I ran:  time kernelshark trace.dat
+
+And exited out when it finished loading and the result was:
+
+real    6m14.772s
+user    6m0.649s
+sys     0m12.718s
+
+That's over 6 minutes to load the trace.dat file!!!
+
+I ran perf record on it and it showed 77% of the time was in free_zpage().
+
+I pulled out my old algorithms book and wrote up a rbtree for internal use
+of libtracecmd. Then I switched the cache into a binary rbtree to do the
+look ups. As the lookups used both where the memory of the compressed page
+is mapped as well as the offset depending on how the search was done, I
+found that it only used the memory allocation address in one location.
+Luckily, the memory allocation mapping lookup also had access to the
+offset of the file the memory represented. That allowed me to make all
+lookups use the file offset (Thanks to Masami Hiramatsu for helping me
+realize that).
+
+After converting the cache to an rbtree lookup, I ran kernelshark again on
+opening that file and exited out as soon as it finished loading and the
+timings was:
+
+real    1m22.356s
+user    1m10.532s
+sys     0m10.901s
+
+Still a bit long, but it dropped from over 6 minutes to under 1 1/2
+minutes. Also, free_zpages() was no longer in the perf record output.
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ lib/trace-cmd/Makefile                       |   1 +
+ lib/trace-cmd/include/private/trace-rbtree.h |  34 ++
+ lib/trace-cmd/trace-input.c                  |  81 +++--
+ lib/trace-cmd/trace-rbtree.c                 | 345 +++++++++++++++++++
+ 4 files changed, 438 insertions(+), 23 deletions(-)
+ create mode 100644 lib/trace-cmd/include/private/trace-rbtree.h
+ create mode 100644 lib/trace-cmd/trace-rbtree.c
+
+diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
+index e9d26b2bb367..aba6fda5b0f6 100644
+--- a/lib/trace-cmd/Makefile
++++ b/lib/trace-cmd/Makefile
+@@ -9,6 +9,7 @@ DEFAULT_TARGET = $(LIBTRACECMD_STATIC)
  
-> As it's an early stage, I've targeted the kernel on x86 to reduce the
-> amount of work but IIUC there's no fundamental blocker to apply it to
-> other architectures and applications.
-> 
-> 
-> * How to use it
-> 
-> To get precise memory access samples, users can use `perf mem record`
-> command to utilize those events supported by their architecture.  Intel
-> machines would work best as they have dedicated memory access events but
-> they would have a filter to ignore low latency loads like less than 30
-> cycles (use --ldlat option to change the default value).
-> 
->     # To get memory access samples in kernel for 1 second (on Intel)
->     $ sudo perf mem record -a -K --ldlat=4 -- sleep 1
-> 
->     # Similar for the AMD (but it requires 6.3+ kernel for BPF filters)
->     $ sudo perf mem record -a --filter 'mem_op == load, ip > 0x8000000000000000' -- sleep 1
-> 
-> Note that it used 'sudo' command because it's collecting the event in
-> system wide mode.  Actually it would depend on the sysctl setting of
-> kernel.perf_event_paranoid.  AMD still needs root due to the BPF filter
-> though.
-> 
-> After getting a profile data, you would run perf report or perf
-> annotate as usual to see the result.  Make sure that you have a kernel
-> debug package installed or vmlinux with DWARF info.
+ OBJS =
+ OBJS += trace-hash.o
++OBJS += trace-rbtree.o
+ OBJS += trace-hooks.o
+ OBJS += trace-input.o
+ OBJS += trace-output.o
+diff --git a/lib/trace-cmd/include/private/trace-rbtree.h b/lib/trace-cmd/include/private/trace-rbtree.h
+new file mode 100644
+index 000000000000..822111998e7a
+--- /dev/null
++++ b/lib/trace-cmd/include/private/trace-rbtree.h
+@@ -0,0 +1,34 @@
++/* SPDX-License-Identifier: LGPL-2.1 */
++/*
++ * Copyright (C) 2023 Google, Steven Rostedt <rostedt@goodmis.org>
++ *
++ */
++#ifndef _TRACE_RBTREE_H
++#define _TRACE_RBTREE_H
++
++struct trace_rbtree_node {
++	struct trace_rbtree_node	*parent;
++	struct trace_rbtree_node	*left;
++	struct trace_rbtree_node	*right;
++	int				color;
++};
++
++typedef int (*trace_rbtree_cmp_fn)(const struct trace_rbtree_node *A, const struct trace_rbtree_node *B);
++
++typedef int (*trace_rbtree_search_fn)(const struct trace_rbtree_node *n, const void *data);
++
++struct trace_rbtree {
++	struct trace_rbtree_node	*node;
++	trace_rbtree_search_fn		search;
++	trace_rbtree_cmp_fn		cmp;
++	size_t				nr_nodes;
++};
++
++void trace_rbtree_init(struct trace_rbtree *tree, trace_rbtree_cmp_fn cmp_fn,
++		       trace_rbtree_search_fn search_fn);
++struct trace_rbtree_node *trace_rbtree_find(struct trace_rbtree *tree, const void *data);
++void trace_rbtree_delete(struct trace_rbtree *tree, struct trace_rbtree_node *node);
++int trace_rbtree_insert(struct trace_rbtree *tree, struct trace_rbtree_node *node);
++struct trace_rbtree_node *trace_rbtree_pop_nobalance(struct trace_rbtree *tree);
++
++#endif /* _TRACE_RBTREE_H */
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index af51b3d71e1a..42c8312f8395 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -16,6 +16,7 @@
  
-> I've added new options and sort keys to enable the data type profiling.
-> Probably I need to add it to perf mem or perf c2c command for better
-> user experience.  I'm open to discussion how we can make it simpler and
-> intuitive for regular users.  But let's talk about the lower level
-> interface for now.
-> 
-> In perf report, it's just a matter of selecting new sort keys: 'type'
-> and 'typeoff'.  The 'type' shows name of the data type as a whole while
-> 'typeoff' shows name of the field in the data type.  I found it useful
-> to use it with --hierarchy option to group relevant entries in the same
-> level.
-> 
->     $ sudo perf report -s type,typeoff --hierarchy --stdio
->     ...
->     #
->     #    Overhead  Data Type / Data Type Offset
->     # ...........  ............................
->     #
->         23.95%     (stack operation)
->            23.95%     (stack operation) +0 (no field)
->         23.43%     (unknown)
->            23.43%     (unknown) +0 (no field)
->         10.30%     struct pcpu_hot
->             4.80%     struct pcpu_hot +0 (current_task)
->             3.53%     struct pcpu_hot +8 (preempt_count)
->             1.88%     struct pcpu_hot +12 (cpu_number)
->             0.07%     struct pcpu_hot +24 (top_of_stack)
->             0.01%     struct pcpu_hot +40 (softirq_pending)
->          4.25%     struct task_struct
->             1.48%     struct task_struct +2036 (rcu_read_lock_nesting)
->             0.53%     struct task_struct +2040 (rcu_read_unlock_special.b.blocked)
->             0.49%     struct task_struct +2936 (cred)
->             0.35%     struct task_struct +3144 (audit_context)
->             0.19%     struct task_struct +46 (flags)
->             0.17%     struct task_struct +972 (policy)
->             0.15%     struct task_struct +32 (stack)
->             0.15%     struct task_struct +8 (thread_info.syscall_work)
->             0.10%     struct task_struct +976 (nr_cpus_allowed)
->             0.09%     struct task_struct +2272 (mm)
->         ...
-> 
-> The (stack operation) and (unknown) have no type and field info.  FYI,
-> the stack operations are samples in PUSH, POP or RET instructions which
-> save or restore registers from/to the stack.  They are usually parts of
-> function prologue and epilogue and have no type info.  The next is the
-> struct pcpu_hot and you can see the first field (current_task) at offset
-> 0 was accessed mostly.  It's listed in order of access frequency (not in
-> offset) as you can see it in the task_struct.
-> 
-> In perf annotate, new --data-type option was added to enable data
-> field level annotation.  Now it only shows number of samples for each
-> field but we can improve it.
-> 
->     $ sudo perf annotate --data-type
->     Annotate type: 'struct pcpu_hot' in [kernel.kallsyms] (223 samples):
->     ============================================================================
->         samples     offset       size  field
->             223          0         64  struct pcpu_hot       {
->             223          0         64      union     {
->             223          0         48          struct        {
->              78          0          8              struct task_struct*      current_task;
->              98          8          4              int      preempt_count;
->              45         12          4              int      cpu_number;
->               0         16          8              u64      call_depth;
->               1         24          8              long unsigned int        top_of_stack;
->               0         32          8              void*    hardirq_stack_ptr;
->               1         40          2              u16      softirq_pending;
->               0         42          1              bool     hardirq_stack_inuse;
->                                                };
->             223          0         64          u8*  pad;
->                                            };
->                                        };
->     ...
-> 
-> This shows each struct one by one and field-level access info in C-like
-> style.  The number of samples for the outer struct is a sum of number of
-> samples in every field in the struct.  In unions, each field is placed
-> in the same offset so they will have the same number of samples.
-> 
-> No TUI support yet.
-> 
-> 
-> * How it works
-> 
-> The basic idea is to use DWARF location expression in debug entries for
-> variables.  Say we got a sample in the instruction below:
-> 
->     0x123456:  mov    0x18(%rdi), %rcx
-> 
-> Then we know the instruction at 0x123456 is accessing to a memory region
-> where %rdi register has a base address and offset 0x18 from the base.
-> DWARF would have a debug info entry for a function or a block which
-> covers that address.  For example, we might have something like this:
-> 
->     <1><100>: Abbrev Number: 10 (DW_TAG_subroutine_type)
->        <101>    DW_AT_name       : (indirect string, offset: 0x184e6): foo
->        <105>    DW_AT_type       : <0x29ad7>
->        <106>    DW_AT_low_pc     : 0x123400
->        <10e>    DW_AT_high_pc    : 0x1234ff
->     <2><116>: Abbrev Number: 8 (DW_TAG_formal_parameter)
->        <117>    DW_AT_name       : (indirect string, offset: 0x18527): bar
->        <11b>    DW_AT_type       : <0x29b3a>
->        <11c>    DW_AT_location   : 1 byte block: 55    (DW_OP_reg2 (rdi))
-> 
-> So the function 'foo' covers the instruction from 0x123400 to 0x1234ff
-> and we know the sample instruction belongs to the function.  And it has
-> a parameter called 'bar' and it's located at the %rdi register.  Then we
-> know the instruction is using the variable bar and its type would be a
-> pointer (to a struct).  We can follow the type info of bar and verify
-> its access by checking the size of the (struct) type and offset in the
-> instruction (0x18).
-> 
-> Well.. this is a simple example that the 'bar' has a single location.
-> Other variables might be located in various places over time but it
-> should be covered by the location list of the debug entry.  Therefore,
-> as long as DWARF produces a correct location expression for a variable,
-> it should be able to find the variable using the location info.
-> 
-> Global variables and local variables are different as they can be
-> accessed directly without a pointer.  They are located in an absolute
-> address or relative position from the current stack frame.  So it needs
-> to handle such location expressions as well.
-> 
-> However, some memory accesses don't have a variable in some cases.  For
-> example, you have a pointer variable for a struct which contains another
-> pointers.  And then you can directly dereference it without using a
-> variable.  Consider the following source code.
-> 
->     int foo(struct baz *bar) {
->         ...
->         if (bar->p->q == 0)
->             return 1;
->         ...
->     }
-> 
-> This can generate instructions like below.
-> 
->     ...
->     0x123456:  mov    0x18(%rdi), %rcx
->     0x12345a:  mov    0x10(%rcx), %rax     <=== sample
->     0x12345e:  test   %rax, %rax
->     0x123461:  je     <...>
->     ...
-> 
-> And imagine we have a sample at 0x12345a.  Then it cannot find a
-> variable for %rcx since DWARF didn't generate one (it only knows about
-> 'bar').  Without compiler support, all it can do is to track the code
-> execution in each instruction and propagate the type info in each
-> register and stack location by following the memory access.
-> 
-> Actually I found a discussion in the DWARF mailing list to support
-> "inverted location lists" and it seems a perfect fit for this project.
-> It'd be great if new DWARF would provide a way to lookup variable and
-> type info using a concrete location info (like a register number).
-> 
->   https://lists.dwarfstd.org/pipermail/dwarf-discuss/2023-June/002278.html 
-> 
-> 
-> * Patch structure
-> 
-> The patch 1-5 are cleanups and a fix that can be applied separately.
-> The patch 6-21 are the main changes in perf report and perf annotate to
-> support simple cases with a pointer variable.  The patch 22-33 are to
-> improve it by handling global and local variables (without a pointer)
-> and some edge cases.  The patch 34-43 implemented instruction tracking
-> to infer data type when there's no variable for that.  The patch 44-47
-> handles kernel-specific per-cpu variables (only for current CPU).  The
-> patch 48 is to help debugging and is not intended for merge.
-> 
-> 
-> * Limitations and future work
-> 
-> As I said earlier, this work is in a very early shape and has many
-> limitations or rooms for improvement.  Basically it uses objdump tool to
-> extract location information from the sample instruction.  And the
-> parsing code and instruction tracking work on x86 only.
-> 
-> Actually there's a performance issue about getting disassembly from the
-> objdump for kernel.  On my system, GNU objdump was really slower than the
-> one from LLVM for some reason so I had to pass the following option for
-> each perf report and perf annotate.
-> 
->     $ sudo perf report --objdump=llvm-objdump ...
-> 
->     # To save it in the config file and drop the command line option
->     $ sudo perf config annotate.objdump=llvm-objdump
-> 
-> Even with this change, still the most processing time was spent on the
-> objdump to get the disassembly.  It'd be nice if we can get the result
-> without using objdump at all.
-> 
-> Also I only tested it with C programs (mostly vmlinux) and I believe
-> there are many issues on handling C++ applications.  Probably other
-> languages (like Rust?) could be supported too.  But even for C programs,
-> it could improve things like better supporting union and array types and
-> dealing with type casts and so on.
-> 
-> I think compiler could generate more DWARF information to help this kind
-> of analysis.  Like I mentioned, it doesn't have a variable for
-> intermediate pointers when they are chained: a->b->c.  This chain could
-> be longer and hard to track the type from the previous variable.  If
-> compiler could generate (artificial) debug entries for the intermediate
-> pointers with a precise location expression and type info, it would be
-> really helpful.
-> 
-> And I plan to improve the analysis in perf tools with better integration
-> to the existing command like perf mem and/or perf c2c.  It'd be pretty
-> interesting to see per-struct or per-field access patterns both for load
-> and store event at the same time.  Also using data-source or snoop info
-> for each struct/field would give some insights on optimizing memory
-> usage or layout.
-> 
-> There are kernel specific issues too.  Some per-cpu variable accesses
-> created complex instruction patterns so it was hard to determine which
-> data/type it accessed.  For now, it just parsed simple patterns for
-> this-cpu access using %gs segment register.  Also it should handle
-> self-modifying codes like kprobe, ftrace, live patch and so on.  I guess
-> they would usually create an out-of-line copy of modified instructions
-> but needs more checking.  And I have no idea about the status of struct
-> layout randomization and the DWARF info of the resulting struct.  Maybe
-> there are more issues I'm not aware of, please let me know if you notice
-> something.
-> 
-> 
-> * Summary
-> 
-> Despite all the issues, I believe this would be a good addition to our
-> performance toolset.  It would help to observe memory overheads in a
-> different angle and to optimize the memory usage.  I'm really looking
-> forward to hearing any feedback.
-> 
-> The code is available at 'perf/data-profile-v1' branch in
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
-> 
-> Enjoy,
-> Namhyung
-> 
-> 
-> Cc: Ben Woodard <woodard@redhat.com> 
-> Cc: Joe Mario <jmario@redhat.com>
-> CC: Kees Cook <keescook@chromium.org>
-> Cc: David Blaikie <blaikie@google.com>
-> Cc: Xu Liu <xliuprof@google.com>
-> Cc: Kan Liang <kan.liang@linux.intel.com>
-> Cc: Ravi Bangoria <ravi.bangoria@amd.com>
-> 
-> 
-> Namhyung Kim (48):
->   perf annotate: Move raw_comment and raw_func_start
->   perf annotate: Check if operand has multiple regs
->   perf tools: Add util/debuginfo.[ch] files
->   perf dwarf-aux: Fix die_get_typename() for void *
->   perf dwarf-aux: Move #ifdef code to the header file
->   perf dwarf-aux: Add die_get_scopes() helper
->   perf dwarf-aux: Add die_find_variable_by_reg() helper
->   perf dwarf-aux: Factor out __die_get_typename()
->   perf dwarf-regs: Add get_dwarf_regnum()
->   perf annotate-data: Add find_data_type()
->   perf annotate-data: Add dso->data_types tree
->   perf annotate: Factor out evsel__get_arch()
->   perf annotate: Add annotate_get_insn_location()
->   perf annotate: Implement hist_entry__get_data_type()
->   perf report: Add 'type' sort key
->   perf report: Support data type profiling
->   perf annotate-data: Add member field in the data type
->   perf annotate-data: Update sample histogram for type
->   perf report: Add 'typeoff' sort key
->   perf report: Add 'symoff' sort key
->   perf annotate: Add --data-type option
->   perf annotate: Add --type-stat option for debugging
->   perf annotate: Add --insn-stat option for debugging
->   perf annotate-data: Parse 'lock' prefix from llvm-objdump
->   perf annotate-data: Handle macro fusion on x86
->   perf annotate-data: Handle array style accesses
->   perf annotate-data: Add stack operation pseudo type
->   perf dwarf-aux: Add die_find_variable_by_addr()
->   perf annotate-data: Handle PC-relative addressing
->   perf annotate-data: Support global variables
->   perf dwarf-aux: Add die_get_cfa()
->   perf annotate-data: Support stack variables
->   perf dwarf-aux: Check allowed DWARF Ops
->   perf dwarf-aux: Add die_collect_vars()
->   perf dwarf-aux: Handle type transfer for memory access
->   perf annotate-data: Introduce struct data_loc_info
->   perf map: Add map__objdump_2rip()
->   perf annotate: Add annotate_get_basic_blocks()
->   perf annotate-data: Maintain variable type info
->   perf annotate-data: Add update_insn_state()
->   perf annotate-data: Handle global variable access
->   perf annotate-data: Handle call instructions
->   perf annotate-data: Implement instruction tracking
->   perf annotate: Parse x86 segment register location
->   perf annotate-data: Handle this-cpu variables in kernel
->   perf annotate-data: Track instructions with a this-cpu variable
->   perf annotate-data: Add stack canary type
->   perf annotate-data: Add debug message
-> 
->  tools/perf/Documentation/perf-report.txt      |    3 +
->  .../arch/loongarch/annotate/instructions.c    |    6 +-
->  tools/perf/arch/x86/util/dwarf-regs.c         |   38 +
->  tools/perf/builtin-annotate.c                 |  149 +-
->  tools/perf/builtin-report.c                   |   19 +-
->  tools/perf/util/Build                         |    2 +
->  tools/perf/util/annotate-data.c               | 1246 +++++++++++++++++
->  tools/perf/util/annotate-data.h               |  222 +++
->  tools/perf/util/annotate.c                    |  763 +++++++++-
->  tools/perf/util/annotate.h                    |  104 +-
->  tools/perf/util/debuginfo.c                   |  205 +++
->  tools/perf/util/debuginfo.h                   |   64 +
->  tools/perf/util/dso.c                         |    4 +
->  tools/perf/util/dso.h                         |    2 +
->  tools/perf/util/dwarf-aux.c                   |  561 +++++++-
->  tools/perf/util/dwarf-aux.h                   |   86 +-
->  tools/perf/util/dwarf-regs.c                  |   33 +
->  tools/perf/util/hist.h                        |    3 +
->  tools/perf/util/include/dwarf-regs.h          |   11 +
->  tools/perf/util/map.c                         |   20 +
->  tools/perf/util/map.h                         |    3 +
->  tools/perf/util/probe-finder.c                |  193 +--
->  tools/perf/util/probe-finder.h                |   19 +-
->  tools/perf/util/sort.c                        |  195 ++-
->  tools/perf/util/sort.h                        |    7 +
->  tools/perf/util/symbol_conf.h                 |    4 +-
->  26 files changed, 3703 insertions(+), 259 deletions(-)
->  create mode 100644 tools/perf/util/annotate-data.c
->  create mode 100644 tools/perf/util/annotate-data.h
->  create mode 100644 tools/perf/util/debuginfo.c
->  create mode 100644 tools/perf/util/debuginfo.h
-> 
-> 
-> base-commit: 87cd3d48191e533cd9c224f2da1d78b3513daf47
-> -- 
-> 2.42.0.655.g421f12c284-goog
-> 
-
+ #include "trace-write-local.h"
+ #include "trace-cmd-local.h"
++#include "trace-rbtree.h"
+ #include "trace-local.h"
+ #include "kbuffer.h"
+ #include "list.h"
+@@ -66,7 +67,7 @@ struct page {
+ };
+ 
+ struct zchunk_cache {
+-	struct list_head		list;
++	struct trace_rbtree_node	node;
+ 	struct tracecmd_compress_chunk *chunk;
+ 	void				*map;
+ 	int				ref;
+@@ -78,7 +79,7 @@ struct cpu_zdata {
+ 	char			file[26]; /* strlen(COMPR_TEMP_FILE) */
+ 	unsigned int		count;
+ 	unsigned int		last_chunk;
+-	struct list_head	cache;
++	struct trace_rbtree	cache;
+ 	struct tracecmd_compress_chunk	*chunks;
+ };
+ 
+@@ -1378,21 +1379,24 @@ static struct tracecmd_compress_chunk *get_zchunk(struct cpu_data *cpu, off_t of
+ 	return chunk;
+ }
+ 
+-static void free_zpage(struct cpu_data *cpu_data, void *map)
++static void free_zpage(struct cpu_data *cpu_data, off_t offset)
+ {
++	struct trace_rbtree_node *node;
+ 	struct zchunk_cache *cache;
+ 
+-	list_for_each_entry(cache, &cpu_data->compress.cache, list) {
+-		if (map <= cache->map && map > (cache->map + cache->chunk->size))
+-			goto found;
+-	}
+-	return;
++	node = trace_rbtree_find(&cpu_data->compress.cache, (void *)&offset);
++
++	if (!node)
++		return;
++
++	cache = container_of(node, struct zchunk_cache, node);
+ 
+-found:
+ 	cache->ref--;
+ 	if (cache->ref)
+ 		return;
+-	list_del(&cache->list);
++
++	trace_rbtree_delete(&cpu_data->compress.cache, node);
++
+ 	free(cache->map);
+ 	free(cache);
+ }
+@@ -1401,6 +1405,7 @@ static void *read_zpage(struct tracecmd_input *handle, int cpu, off_t offset)
+ {
+ 	struct cpu_data *cpu_data = &handle->cpu_data[cpu];
+ 	struct tracecmd_compress_chunk *chunk;
++	struct trace_rbtree_node *node;
+ 	struct zchunk_cache *cache;
+ 	void *map = NULL;
+ 	int pindex;
+@@ -1409,11 +1414,11 @@ static void *read_zpage(struct tracecmd_input *handle, int cpu, off_t offset)
+ 	offset -= cpu_data->file_offset;
+ 
+ 	/* Look in the cache of already loaded chunks */
+-	list_for_each_entry(cache, &cpu_data->compress.cache, list) {
+-		if (CHUNK_CHECK_OFFSET(cache->chunk, offset)) {
+-			cache->ref++;
+-			goto out;
+-		}
++	node = trace_rbtree_find(&cpu_data->compress.cache, (void *)&offset);
++	if (node) {
++		cache = container_of(node, struct zchunk_cache, node);
++		cache->ref++;
++		goto out;
+ 	}
+ 
+ 	chunk =  get_zchunk(cpu_data, offset);
+@@ -1435,7 +1440,7 @@ static void *read_zpage(struct tracecmd_input *handle, int cpu, off_t offset)
+ 	cache->ref = 1;
+ 	cache->chunk = chunk;
+ 	cache->map = map;
+-	list_add(&cache->list, &cpu_data->compress.cache);
++	trace_rbtree_insert(&cpu_data->compress.cache, &cache->node);
+ 
+ 	/* a chunk can hold multiple pages, get the requested one */
+ out:
+@@ -1606,7 +1611,7 @@ static void __free_page(struct tracecmd_input *handle, struct page *page)
+ 	if (handle->read_page)
+ 		free(page->map);
+ 	else if (handle->read_zpage)
+-		free_zpage(cpu_data, page->map);
++		free_zpage(cpu_data, page->offset);
+ 	else
+ 		free_page_map(page->page_map);
+ 
+@@ -2102,7 +2107,7 @@ tracecmd_read_cpu_first(struct tracecmd_input *handle, int cpu)
+ 	/* If the page was already mapped, we need to reset it */
+ 	if (ret)
+ 		update_page_info(handle, cpu);
+-		
++
+ 	free_next(handle, cpu);
+ 
+ 	return tracecmd_read_data(handle, cpu);
+@@ -3348,6 +3353,35 @@ static int init_cpu_zpage(struct tracecmd_input *handle, int cpu)
+ 	return 0;
+ }
+ 
++static int compress_cmp(const struct trace_rbtree_node *A,
++			const struct trace_rbtree_node *B)
++{
++	const struct zchunk_cache *cacheA;
++	const struct zchunk_cache *cacheB;
++
++	cacheA = container_of(A, struct zchunk_cache, node);
++	cacheB = container_of(B, struct zchunk_cache, node);
++
++	return chunk_cmp(cacheA->chunk, cacheB->chunk);
++}
++
++static int compress_search(const struct trace_rbtree_node *A,
++			   const void *data)
++{
++	const struct zchunk_cache *cache;
++	off_t offset = *(off_t *)data;
++
++	cache = container_of(A, struct zchunk_cache, node);
++
++	if (CHUNK_CHECK_OFFSET(cache->chunk, offset))
++		return 0;
++
++	if (cache->chunk->offset < offset)
++		return -1;
++
++	return 1;
++}
++
+ static int init_cpu(struct tracecmd_input *handle, int cpu)
+ {
+ 	struct cpu_data *cpu_data = &handle->cpu_data[cpu];
+@@ -3368,7 +3402,8 @@ static int init_cpu(struct tracecmd_input *handle, int cpu)
+ 	cpu_data->timestamp = 0;
+ 
+ 	list_head_init(&cpu_data->page_maps);
+-	list_head_init(&cpu_data->compress.cache);
++
++	trace_rbtree_init(&cpu_data->compress.cache, compress_cmp, compress_search);
+ 
+ 	if (!cpu_data->size) {
+ 		tracecmd_info("CPU %d is empty", cpu);
+@@ -5131,10 +5166,10 @@ void tracecmd_close(struct tracecmd_input *handle)
+ 				close(cpu_data->compress.fd);
+ 				unlink(cpu_data->compress.file);
+ 			}
+-			while (!list_empty(&cpu_data->compress.cache)) {
+-				cache = container_of(cpu_data->compress.cache.next,
+-						     struct zchunk_cache, list);
+-				list_del(&cache->list);
++			while (cpu_data->compress.cache.node) {
++				struct trace_rbtree_node *node;
++				node = trace_rbtree_pop_nobalance(&cpu_data->compress.cache);
++				cache = container_of(node, struct zchunk_cache, node);
+ 				free(cache->map);
+ 				free(cache);
+ 			}
+diff --git a/lib/trace-cmd/trace-rbtree.c b/lib/trace-cmd/trace-rbtree.c
+new file mode 100644
+index 000000000000..b015773ed2d6
+--- /dev/null
++++ b/lib/trace-cmd/trace-rbtree.c
+@@ -0,0 +1,345 @@
++// SPDX-License-Identifier: LGPL-2.1
++/*
++ * Copyright (C) 2023 Google, Steven Rostedt <rostedt@goodmis.org>
++ *
++ */
++#include <stdlib.h>
++#include <stdbool.h>
++#include "trace-local.h"
++#include "trace-rbtree.h"
++
++enum {
++	RED,
++	BLACK,
++};
++
++void __hidden trace_rbtree_init(struct trace_rbtree *tree, trace_rbtree_cmp_fn cmp_fn,
++				trace_rbtree_search_fn search_fn)
++{
++	memset(tree, 0, sizeof(*tree));
++	tree->search = search_fn;
++	tree->cmp = cmp_fn;
++}
++
++static bool is_left(struct trace_rbtree_node *node)
++{
++	return node == node->parent->left;
++}
++
++static void check_tree(struct trace_rbtree_node *node)
++{
++	if (!node)
++		return;
++
++	if (node->color == RED &&
++	    ((node->left && node->left->color == RED) ||
++	    ((node->right && node->right->color == RED))))
++		breakpoint();
++
++	check_tree(node->left);
++	check_tree(node->right);
++}
++
++static struct trace_rbtree_node **get_parent_ptr(struct trace_rbtree *tree,
++						 struct trace_rbtree_node *node)
++{
++	if (!node->parent)
++		return &tree->node;
++	else if (is_left(node))
++		return &node->parent->left;
++	else
++		return &node->parent->right;
++}
++
++static void rotate_left(struct trace_rbtree *tree,
++			struct trace_rbtree_node *node)
++{
++	struct trace_rbtree_node **parent_ptr = get_parent_ptr(tree, node);
++	struct trace_rbtree_node *parent = node->parent;
++	struct trace_rbtree_node *old_right = node->right;
++
++	*parent_ptr = old_right;
++	node->right = old_right->left;
++	old_right->left = node;
++
++	node->parent = old_right;
++	old_right->parent = parent;
++}
++
++static void rotate_right(struct trace_rbtree *tree,
++			 struct trace_rbtree_node *node)
++{
++	struct trace_rbtree_node **parent_ptr = get_parent_ptr(tree, node);
++	struct trace_rbtree_node *parent = node->parent;
++	struct trace_rbtree_node *old_left = node->left;
++
++	*parent_ptr = old_left;
++	node->left = old_left->right;
++	old_left->right = node;
++
++	node->parent = old_left;
++	old_left->parent = parent;
++}
++
++static void insert_tree(struct trace_rbtree *tree,
++			struct trace_rbtree_node *node)
++{
++	struct trace_rbtree_node *next = tree->node;
++	struct trace_rbtree_node *last_next = NULL;
++	bool went_left = false;
++
++	while (next) {
++		last_next = next;
++		if (tree->cmp(next, node) > 0) {
++			next = next->right;
++			went_left = false;
++		} else {
++			next = next->left;
++			went_left = true;
++		}
++	}
++
++	if (!last_next) {
++		tree->node = node;
++		return;
++	}
++
++	if (went_left)
++		last_next->left = node;
++	else
++		last_next->right = node;
++
++	node->parent = last_next;
++}
++
++int __hidden trace_rbtree_insert(struct trace_rbtree *tree,
++				 struct trace_rbtree_node *node)
++{
++	memset(node, 0, sizeof(*node));
++
++	insert_tree(tree, node);
++	node->color = RED;
++	while (node && node->parent && node->parent->color == RED) {
++		if (is_left(node->parent)) {
++			struct trace_rbtree_node *old_right;
++
++			old_right = node->parent->parent->right;
++			if (old_right && old_right->color == RED) {
++				node->parent->color = BLACK;
++				old_right->color = BLACK;
++				node->parent->parent = RED;
++				node = node->parent->parent;
++			} else {
++				if (!is_left(node)) {
++					node = node->parent;
++					rotate_left(tree, node);
++				}
++				node->parent->color = BLACK;
++				node->parent->parent->color = RED;
++				rotate_right(tree, node->parent->parent);
++			}
++		} else {
++			struct trace_rbtree_node *old_left;
++
++			old_left = node->parent->parent->right;
++			if (old_left && old_left->color == RED) {
++				node->parent->color = BLACK;
++				old_left->color = BLACK;
++				node->parent->parent = RED;
++				node = node->parent->parent;
++			} else {
++				if (is_left(node)) {
++					node = node->parent;
++					rotate_right(tree, node);
++				}
++				node->parent->color = BLACK;
++				node->parent->parent->color = RED;
++				rotate_left(tree, node->parent->parent);
++			}
++		}
++	}
++	tree->node->color = BLACK;
++	tree->nr_nodes++;
++	check_tree(tree->node);
++	return 0;
++}
++
++struct trace_rbtree_node *trace_rbtree_find(struct trace_rbtree *tree, const void *data)
++{
++	struct trace_rbtree_node *node = tree->node;
++	int ret;
++
++	while (node) {
++		ret = tree->search(node, data);
++		if (!ret)
++			return node;
++		if (ret > 0)
++			node = node->right;
++		else
++			node = node->left;
++	}
++	return NULL;
++}
++
++static struct trace_rbtree_node *next_node(struct trace_rbtree_node *node)
++{
++	if (node->right) {
++		node = node->right;
++		while (node->left)
++			node = node->left;
++		return node;
++	}
++
++	while (node->parent && !is_left(node))
++		node = node->parent;
++
++	return node->parent;
++}
++
++static void tree_fixup(struct trace_rbtree *tree, struct trace_rbtree_node *node)
++{
++	while (node->parent && node->color == BLACK) {
++		if (is_left(node)) {
++			struct trace_rbtree_node *old_right = node->parent->right;
++
++			if (old_right->color == RED) {
++				old_right->color = BLACK;
++				node->parent->color = RED;
++				rotate_left(tree, node->parent);
++				old_right = node->parent->right;
++			}
++			if (old_right->left->color == BLACK &&
++			    old_right->right->color == BLACK) {
++				old_right->color = RED;
++				node = node->parent;
++			} else {
++				if (old_right->right->color == BLACK) {
++					old_right->left->color = BLACK;
++					old_right->color = RED;
++					rotate_right(tree, old_right);
++					old_right = node->parent->right;
++				}
++				old_right->color = node->parent->color;
++				node->parent->color = BLACK;
++				old_right->right->color = BLACK;
++				rotate_left(tree, node->parent);
++				node = tree->node;
++			}
++		} else {
++			struct trace_rbtree_node *old_left = node->parent->left;
++
++			if (old_left->color == RED) {
++				old_left->color = BLACK;
++				node->parent->color = RED;
++				rotate_right(tree, node->parent);
++				old_left = node->parent->left;
++			}
++			if (old_left->right->color == BLACK &&
++			    old_left->left->color == BLACK) {
++				old_left->color = RED;
++				node = node->parent;
++			} else {
++				if (old_left->left->color == BLACK) {
++					old_left->right->color = BLACK;
++					old_left->color = RED;
++					rotate_left(tree, old_left);
++					old_left = node->parent->left;
++				}
++				old_left->color = node->parent->color;
++				node->parent->color = BLACK;
++				old_left->left->color = BLACK;
++				rotate_right(tree, node->parent);
++				node = tree->node;
++			}
++		}
++	}
++	node->color = BLACK;
++}
++
++void trace_rbtree_delete(struct trace_rbtree *tree, struct trace_rbtree_node *node)
++{
++	struct trace_rbtree_node *x, *y;
++
++	if (!node->left && !node->right) {
++		tree->node = NULL;
++		goto out;
++	}
++
++	if (!node->left || !node->right)
++		y = node;
++	else
++		y = next_node(node);
++
++	if (y->left)
++		x = y->left;
++	else
++		x = y->right;
++
++	x->parent = y->parent;
++
++	if (!x->parent) {
++		tree->node = x;
++	} else {
++		if (is_left(y))
++			y->parent->left = x;
++		else
++			y->parent->right = x;
++	}
++
++	if (y != node) {
++		y->parent = node->parent;
++		y->left = node->left;
++		y->right = node->right;
++		if (y->left)
++			y->left->parent = y;
++		if (y->right)
++			y->right->parent = y;
++		if (!y->parent) {
++			tree->node = y;
++		} else {
++			if (is_left(node))
++				y->parent->left = y;
++			else
++				y->parent->right = y;
++		}
++	}
++
++	if (y->color == BLACK)
++		tree_fixup(tree, x);
++
++ out:
++	node->parent = node->left = node->right = NULL;
++	tree->nr_nodes--;
++	check_tree(tree->node);
++}
++
++/*
++ * Used for freeing a tree, just quickly pop off the children in
++ * no particular order. This will corrupt the tree! That is,
++ * do not do any inserting or deleting of this tree after calling
++ * this function.
++ */
++struct trace_rbtree_node *trace_rbtree_pop_nobalance(struct trace_rbtree *tree)
++{
++	struct trace_rbtree_node *node = tree->node;
++
++	if (!node)
++		return NULL;
++
++	while (node->left)
++		node = node->left;
++
++	while (node->right)
++		node = node->right;
++
++	if (node->parent) {
++		if (is_left(node))
++			node->parent->left = NULL;
++		else
++			node->parent->right = NULL;
++	} else {
++		tree->node = NULL;
++	}
++
++	return node;
++}
 -- 
+2.42.0
 
-- Arnaldo
