@@ -1,37 +1,17 @@
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B717405C8
-	for <linux-trace-devel@vger.kernel.org>; Tue, 17 Oct 2023 14:57:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="WcUmfdKh"
-Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C58602366E
-	for <linux-trace-devel@vger.kernel.org>; Tue, 17 Oct 2023 07:57:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=qBu1gOdER1KOwTLVuE0hTX4dJdDSFtOsJ+sAmQ5TumU=;
-  b=WcUmfdKha8VKDUeovypeOlg2BrXtwOlTaHonEqFFACH+FNcM90ugrb3p
-   CtIrlL5x7j0qAD2IOZu8pUICfcQcCiiKdfSNDGYQDJX+QJ7sNR0oftdt7
-   JfOICEyuxgFJubyySVpf6k3KVjObN9xEqHOwXaSCUDxaammco90cg1Vi1
-   g=;
-Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.03,232,1694728800"; 
-   d="scan'208";a="68974771"
-Received: from dhcp-138-246-3-50.dynamic.eduroam.mwn.de (HELO hadrien) ([138.246.3.50])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 16:57:50 +0200
-Date: Tue, 17 Oct 2023 16:57:49 +0200 (CEST)
-From: Julia Lawall <julia.lawall@inria.fr>
-To: Steven Rostedt <rostedt@goodmis.org>
-cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>, 
-    Yordan Karadzhov <y.karadz@gmail.com>, 
-    Masami Hiramatsu <mhiramat@kernel.org>, Ross Zwisler <zwisler@google.com>
-Subject: Re: [PATCH] libtracecmd: Use an rbtree for mapping of cache pages
-In-Reply-To: <20231017103548.5b2f7af7@gandalf.local.home>
-Message-ID: <cbfe1ac7-3cda-b58d-8c22-b5ffa83aed18@inria.fr>
-References: <20231016230058.2f0e95b1@gandalf.local.home> <d482ec-641e-f2a5-42d6-fbfdadaa4d2f@inria.fr> <20231017103548.5b2f7af7@gandalf.local.home>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BD99450E2
+	for <linux-trace-devel@vger.kernel.org>; Tue, 17 Oct 2023 15:48:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65AE7C433C8
+	for <linux-trace-devel@vger.kernel.org>; Tue, 17 Oct 2023 15:48:26 +0000 (UTC)
+Date: Tue, 17 Oct 2023 11:50:03 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] libtracecmd: Add tracecmd_iterate_reset() API
+Message-ID: <20231017115003.21559343@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -39,78 +19,132 @@ List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Transfer-Encoding: 7bit
 
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
+As tracecmd_iterate_events_reverse() takes a flag to state if it should
+continue where it left off the last time it was called, or to start back
+at the end of the file, I realized there was no equivalent flag for
+tracecmd_iterate_events() itself. Currently it always starts where it left
+off.
 
-On Tue, 17 Oct 2023, Steven Rostedt wrote:
+Add tracecmd_iterate_reset() that will make cause
+tracecmd_iterate_events() to start at the beginning of the file.
 
-> On Tue, 17 Oct 2023 09:34:30 +0200 (CEST)
-> Julia Lawall <julia.lawall@inria.fr> wrote:
->
-> > > And exited out when it finished loading and the result was:
-> > >
-> > > real    6m14.772s
-> > > user    6m0.649s
-> > > sys     0m12.718s
-> > >
-> > > That's over 6 minutes to load the trace.dat file!!!
-> > >
-> > > I ran perf record on it and it showed 77% of the time was in free_zpage().
-> > >
-> > > I pulled out my old algorithms book and wrote up a rbtree for internal use
-> > > of libtracecmd. Then I switched the cache into a binary rbtree to do the
-> > > look ups. As the lookups used both where the memory of the compressed page
-> > > is mapped as well as the offset depending on how the search was done, I
-> > > found that it only used the memory allocation address in one location.
-> > > Luckily, the memory allocation mapping lookup also had access to the
-> > > offset of the file the memory represented. That allowed me to make all
-> > > lookups use the file offset (Thanks to Masami Hiramatsu for helping me
-> > > realize that).
-> > >
-> > > After converting the cache to an rbtree lookup, I ran kernelshark again on
-> > > opening that file and exited out as soon as it finished loading and the
-> > > timings was:
-> > >
-> > > real    1m22.356s
-> > > user    1m10.532s
-> > > sys     0m10.901s
-> > >
-> > > Still a bit long, but it dropped from over 6 minutes to under 1 1/2
-> > > minutes. Also, free_zpages() was no longer in the perf record output.
-> >
-> > Does it impact trace-cmd report?
->
-> Not as drastically as the above, but running this on the same trace.dat
-> file without the patch:
->
->   $ time trace-cmd report trace.dat > /dev/null
->  real    9m20.390s
->  user    9m16.391s
->  sys     0m3.529s
->
-> With the patch:
->
->   $ time trace-cmd report trace.dat > /dev/null
->  real    6m22.935s
->  user    6m19.537s
->  sys     0m3.139s
->
-> So it does bring it down by a third.
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ .../libtracecmd/libtracecmd-iterate.txt       |  9 +++++-
+ Documentation/libtracecmd/libtracecmd.txt     |  1 +
+ include/trace-cmd/trace-cmd.h                 |  2 ++
+ lib/trace-cmd/trace-input.c                   | 28 +++++++++++++++++++
+ 4 files changed, 39 insertions(+), 1 deletion(-)
 
-Great!
+diff --git a/Documentation/libtracecmd/libtracecmd-iterate.txt b/Documentation/libtracecmd/libtracecmd-iterate.txt
+index 12c54b2ce1a0..4d66a9708717 100644
+--- a/Documentation/libtracecmd/libtracecmd-iterate.txt
++++ b/Documentation/libtracecmd/libtracecmd-iterate.txt
+@@ -4,7 +4,7 @@ libtracecmd(3)
+ NAME
+ ----
+ tracecmd_iterate_events, tracecmd_iterate_events_multi, tracecmd_follow_event,
+-tracecmd_follow_missed_events, tracecmd_filter_add - Read events from a trace file
++tracecmd_follow_missed_events, tracecmd_filter_add, tracecmd_iterate_reset - Read events from a trace file
+ 
+ SYNOPSIS
+ --------
+@@ -30,6 +30,7 @@ int *tracecmd_iterate_events_reverse*(struct tracecmd_input pass:[*]_handle_,
+ 					    struct tep_record pass:[*],
+ 					    int, void pass:[*]),
+ 			    void pass:[*]_callback_data_, bool _cont_);
++void *tracecmd_iterate_reset*(struct tracecmd_input pass:[*]_handle_);
+ int *tracecmd_follow_event*(struct tracecmd_input pass:[*]_handle_,
+ 			  const char pass:[*]_system_, const char pass:[*]_event_name_,
+ 			  int (pass:[*]_callback_)(struct tracecmd_input pass:[*],
+@@ -102,6 +103,10 @@ The _record_ is the current event record. The _cpu_ is the current CPU being pro
+ CPU of all the _handles_ put together. Use _record_->cpu to get the actual CPU that the
+ event is on.
+ 
++The *tracecmd_iterate_reset()* function resets the cursor back to the start of the
++trace file. That is, the next call to *tracecmd_iterate_events()* on _handle_ will start at the
++first event of _handle_.
++
+ The *tracecmd_follow_event()* function will attach to a trace file descriptor _handle_
+ and call the _callback_ when the event described by _system_ and _name_ matches an event
+ in the iteration of *tracecmd_iterate_events()* or *tracecmd_iterate_events_multi()*.
+@@ -147,6 +152,8 @@ Both *tracecmd_iterate_events()*, *tracecmd_iterate_events_reverse()* and
+ (handling the follow and filters appropriately). Or an error value, which can include
+ returning a non-zero result from the _callback()_ function.
+ 
++The *tracecmd_iterate_reset()* returns 0 on success and -1 on error.
++
+ EXAMPLE
+ -------
+ [source,c]
+diff --git a/Documentation/libtracecmd/libtracecmd.txt b/Documentation/libtracecmd/libtracecmd.txt
+index bbe6cc78b575..4db901ec9b72 100644
+--- a/Documentation/libtracecmd/libtracecmd.txt
++++ b/Documentation/libtracecmd/libtracecmd.txt
+@@ -46,6 +46,7 @@ Iterating over events in a trace file:
+ 						    struct tep_record pass:[*],
+ 						    int, void pass:[*]),
+ 				    void pass:[*]_callback_data_, bool _cont_);
++	void *tracecmd_iterate_reset*(struct tracecmd_input pass:[*]_handle_);
+ 	int *tracecmd_follow_event*(struct tracecmd_input pass:[*]_handle_,
+ 				  const char pass:[*]_system_, const char pass:[*]_event_name_,
+ 				  int (pass:[*]_callback_)(struct tracecmd_input pass:[*],
+diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+index e6527b7116c1..d8c313b0c472 100644
+--- a/include/trace-cmd/trace-cmd.h
++++ b/include/trace-cmd/trace-cmd.h
+@@ -72,6 +72,8 @@ int tracecmd_follow_missed_events(struct tracecmd_input *handle,
+ 						  int, void *),
+ 				  void *callback_data);
+ 
++void tracecmd_iterate_reset(struct tracecmd_input *handle);
++
+ int tracecmd_iterate_events(struct tracecmd_input *handle,
+ 			    cpu_set_t *cpus, int cpu_size,
+ 			    int (*callback)(struct tracecmd_input *handle,
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index af51b3d71e1a..3ea706a86a54 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -2108,6 +2108,34 @@ tracecmd_read_cpu_first(struct tracecmd_input *handle, int cpu)
+ 	return tracecmd_read_data(handle, cpu);
+ }
+ 
++/**
++ * tracecmd_iterate_reset - Set the handle to iterate from the beginning
++ * @handle: input handle for the trace.dat file
++ *
++ * This causes tracecmd_iterate_events*() to start from the beginning
++ * of the trace.dat file.
++ */
++void tracecmd_iterate_reset(struct tracecmd_input *handle)
++{
++	unsigned long long page_offset;
++	int cpu;
++	int ret;
++
++	for (cpu = 0; cpu < handle->cpus; cpu++) {
++		page_offset = calc_page_offset(handle, handle->cpu_data[cpu].file_offset);
++
++		ret = get_page(handle, cpu, page_offset);
++		if (ret < 0)
++			continue; /* ?? */
++
++		/* If the page was already mapped, we need to reset it */
++		if (ret)
++			update_page_info(handle, cpu);
++
++		free_next(handle, cpu);
++	}
++}
++
+ /**
+  * tracecmd_read_cpu_last - get the last record in a CPU
+  * @handle: input handle for the trace.dat file
+-- 
+2.42.0
 
-julia
-
->
-> I need to send a v2 as I found I left some debugging code in, as well as I
-> found a small bug in the update of the color of the deleted node if it
-> wasn't the node to be deleted.
->
-> -- Steve
->
