@@ -1,17 +1,19 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CDAD225D3
-	for <linux-trace-devel@vger.kernel.org>; Thu, 19 Oct 2023 15:30:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07A8208B8
+	for <linux-trace-devel@vger.kernel.org>; Thu, 19 Oct 2023 20:52:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9E40C433C7;
-	Thu, 19 Oct 2023 15:30:10 +0000 (UTC)
-Date: Thu, 19 Oct 2023 11:30:08 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5F10C433C7;
+	Thu, 19 Oct 2023 20:52:07 +0000 (UTC)
+Date: Thu, 19 Oct 2023 16:52:05 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: Ross Zwisler <zwisler@google.com>
-Subject: [PATCH] libtraceeval: Add traceeval_type_index() API
-Message-ID: <20231019113008.4699da30@gandalf.local.home>
+Cc: Yordan Karadzhov <y.karadz@gmail.com>, Masami Hiramatsu  
+ <mhiramat@kernel.org>, Julia Lawall <Julia.Lawall@inria.fr>, Ross Zwisler 
+  <zwisler@google.com>
+Subject: [PATCH v3] libtracecmd: Use an rbtree for mapping of cache pages
+Message-ID: <20231019165205.371e8092@gandalf.local.home>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -24,736 +26,784 @@ Content-Transfer-Encoding: 7bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add a way to get the index of a traceeval_type from its name. This makes
-indexing the elements more robust and less error prone. By adding a way to
-index the names via variables, keys can be added and rearranged without
-worrying about the other accesses in the program being affected.
+I was loading a very large trace.dat file into kernelshark when it just
+stopped near the end off the load and hung there for a very long time. I
+ran it under gdb and hit Ctrl^C when it hit the hang to see what it was
+doing and found that it was spinning in:
 
-The new functions are:
+  libtracecmd trace-input.c: free_zpage
 
-   traceeval_type_index()
-   traceeval_type_index_size()
+static void free_zpage(struct cpu_data *cpu_data, void *map)
+{
+	struct zchunk_cache *cache;
 
-The use case can by:
-
-static struct traceeval_type keys[] = {
-	{
-		.type = TRACEEVAL_TYPE_NUMBER,
-		.name = "PID"
+	list_for_each_entry(cache, &cpu_data->compress.cache, list) {
+		if (map <= cache->map && map > (cache->map + cache->chunk->size))
+			goto found;
 	}
-};
+	return;
 
-static ssize_t MY_KEY;
+found:
 
-static void init_keys(void)
-{
-	MY_KEY = traceeval_type_index("PID", keys);
-}
+It seems that there can be over 10 thousand cache pages in that link
+list and that kernelshark is constantly hitting that. So it's doing a
+linear search for the mapped page to free it.
 
-static void insert_data(struct traceeval *teval, int data)
-{
-	struct traceeval_data keys[TRACEEVAL_ARRAY_SIZE(keys)];
+I ran:  time kernelshark trace.dat
 
-	TRACEEVAL_SET_NUMBER(keys[MY_KEY], data);
+And exited out when it finished loading and the result was:
 
-	traceeval_insert(teval, keys, NULL);
-}
+real    6m14.772s
+user    6m0.649s
+sys     0m12.718s
 
-Using this method keeps from having to constantly tinker with hardcoded
-index numbers when adding or rearranging keys and values.
+That's over 6 minutes to load the trace.dat file!!!
 
+I ran perf record on it and it showed 77% of the time was in free_zpage().
+
+I pulled out my old algorithms book and wrote up a rbtree for internal use
+of libtracecmd. Then I switched the cache into a binary rbtree to do the
+look ups. As the lookups used both where the memory of the compressed page
+is mapped as well as the offset depending on how the search was done, I
+found that it only used the memory allocation address in one location.
+Luckily, the memory allocation mapping lookup also had access to the
+offset of the file the memory represented. That allowed me to make all
+lookups use the file offset.
+
+After converting the cache to an rbtree lookup, I ran kernelshark again on
+opening that file and exited out as soon as it finished loading and the
+timings was:
+
+real    1m22.356s
+user    1m10.532s
+sys     0m10.901s
+
+Still a bit long, but it dropped from over 6 minutes to under 1 1/2
+minutes. Also, free_zpages() was no longer in the perf record output.
+
+Running the same file under trace-cmd produced:
+
+Without this change:
+
+  $ time trace-cmd report trace.dat > /dev/null
+ real    9m20.390s
+ user    9m16.391s
+ sys     0m3.529s
+
+With this change:
+
+  $ time trace-cmd report trace.dat > /dev/null
+ real    6m22.935s
+ user    6m19.537s
+ sys     0m3.139s
+
+Not as drastic as the KernelShark speedup, but still brings it down by a
+third.
+
+Link: https://lore.kernel.org/linux-trace-devel/20231017104307.662aaa5e@gandalf.local.home
+
+Cc: Yordan Karadzhov <y.karadz@gmail.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Julia Lawall <Julia.Lawall@inria.fr>
+Cc: Ross Zwisler <zwisler@google.com>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/libtraceeval-init.txt |  52 ++++--
- Documentation/libtraceeval.txt      |   4 +
- include/traceeval.h                 |  15 ++
- samples/task-eval.c                 | 241 ++++++++++++++++++----------
- 4 files changed, 217 insertions(+), 95 deletions(-)
+Changes since v2: https://lore.kernel.org/all/20231017104307.662aaa5e@gandalf.local.home/
 
-diff --git a/Documentation/libtraceeval-init.txt b/Documentation/libtraceeval-init.txt
-index 1c09cee319c8..10a2729372bb 100644
---- a/Documentation/libtraceeval-init.txt
-+++ b/Documentation/libtraceeval-init.txt
-@@ -3,7 +3,8 @@ libtraceeval(3)
+ - Fixed a few more bugs
+ - Added a nice little iterator (although not used)
+ - Added a "check_tree()" routine in case I need to debug it again
+   This is #if out but nice to keep in the code anyway.
+
+Changes since v1: https://lore.kernel.org/linux-trace-devel/20231016230058.2f0e95b1@gandalf.local.home/
+
+- Removed some leftover debug
+- Fix deletion in setting the color of the node that replaces the deleted
+  node.
+
+
+ lib/trace-cmd/Makefile                       |   1 +
+ lib/trace-cmd/include/private/trace-rbtree.h |  34 ++
+ lib/trace-cmd/trace-input.c                  |  81 +++-
+ lib/trace-cmd/trace-rbtree.c                 | 440 +++++++++++++++++++
+ 4 files changed, 533 insertions(+), 23 deletions(-)
+ create mode 100644 lib/trace-cmd/include/private/trace-rbtree.h
+ create mode 100644 lib/trace-cmd/trace-rbtree.c
+
+diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
+index e9d26b2bb367..aba6fda5b0f6 100644
+--- a/lib/trace-cmd/Makefile
++++ b/lib/trace-cmd/Makefile
+@@ -9,6 +9,7 @@ DEFAULT_TARGET = $(LIBTRACECMD_STATIC)
  
- NAME
- ----
--traceeval_init, traceeval_init_size, traceeval_release - Create a trace evaluation helper mechanism.
-+traceeval_init, traceeval_init_size, traceeval_release, traceeval_type_index, traceeval_type_index_size
-+- Create a trace evaluation helper mechanism.
- 
- SYNOPSIS
- --------
-@@ -15,6 +16,8 @@ struct traceeval pass:[*]*traceeval_init*(struct traceeval_type pass:[*]_keys_,
- struct traceeval pass:[*]*traceeval_init_size*(struct traceeval_type pass:[*]_keys_, struct traceeval_type pass:[*]_vals_,
- 				       int _nr_keys_, int _nr_vals_);
- void *traceeval_release*(struct traceeval pass:[*]_teval_);
-+ssize_t *traceeval_type_index*(const char pass:[*]_name_, struct traceeval_type pass:*]_type_);
-+ssize_t *traceeval_type_index_size*(const char pass:[*]_name_, struct traceeval_type pass:*]_type_, size_t nr_types);
- --
- 
- DESCRIPTION
-@@ -164,11 +167,22 @@ requires static size arrays is because it is really just a macro that calles
- The *traceeval_release()* function releases and frees all the resources of
- a traceeval returned by *traceeval_init()* and *traceeval_init_size()*.
- 
-+The *traceeval_type_index()* is a helper function that is used to find the
-+index of a traceeval_type _type_ by its given _name_. If the name is not found, it returns
-+-1. This is handy to not have to remember which index belongs to which field.
-+By creating variables to hold the indexes, the variables can be used instead.
-+The *traceeval_type_index()* requires that _type_ is a static array. If a dynamic
-+array is required, then *traceeval_type_index_size()* can be used where _nr_types_
-+is the size of the _type_ array.
+ OBJS =
+ OBJS += trace-hash.o
++OBJS += trace-rbtree.o
+ OBJS += trace-hooks.o
+ OBJS += trace-input.o
+ OBJS += trace-output.o
+diff --git a/lib/trace-cmd/include/private/trace-rbtree.h b/lib/trace-cmd/include/private/trace-rbtree.h
+new file mode 100644
+index 000000000000..822111998e7a
+--- /dev/null
++++ b/lib/trace-cmd/include/private/trace-rbtree.h
+@@ -0,0 +1,34 @@
++/* SPDX-License-Identifier: LGPL-2.1 */
++/*
++ * Copyright (C) 2023 Google, Steven Rostedt <rostedt@goodmis.org>
++ *
++ */
++#ifndef _TRACE_RBTREE_H
++#define _TRACE_RBTREE_H
 +
- RETURN VALUE
- ------------
- The *traceeval_init()* and *traceeval_init_size()* both return a descriptor
- to the traceeval or NULL on error.
- 
-+The *traceeval_type_index()* and *traceeval_type_index_size()* return the index
-+of the given _name_ in _type_ or -1 if not found.
++struct trace_rbtree_node {
++	struct trace_rbtree_node	*parent;
++	struct trace_rbtree_node	*left;
++	struct trace_rbtree_node	*right;
++	int				color;
++};
 +
- EXAMPLE
- -------
- [source,c]
-@@ -202,13 +216,29 @@ struct traceeval_type sched_keys[] = {
- 	},
++typedef int (*trace_rbtree_cmp_fn)(const struct trace_rbtree_node *A, const struct trace_rbtree_node *B);
++
++typedef int (*trace_rbtree_search_fn)(const struct trace_rbtree_node *n, const void *data);
++
++struct trace_rbtree {
++	struct trace_rbtree_node	*node;
++	trace_rbtree_search_fn		search;
++	trace_rbtree_cmp_fn		cmp;
++	size_t				nr_nodes;
++};
++
++void trace_rbtree_init(struct trace_rbtree *tree, trace_rbtree_cmp_fn cmp_fn,
++		       trace_rbtree_search_fn search_fn);
++struct trace_rbtree_node *trace_rbtree_find(struct trace_rbtree *tree, const void *data);
++void trace_rbtree_delete(struct trace_rbtree *tree, struct trace_rbtree_node *node);
++int trace_rbtree_insert(struct trace_rbtree *tree, struct trace_rbtree_node *node);
++struct trace_rbtree_node *trace_rbtree_pop_nobalance(struct trace_rbtree *tree);
++
++#endif /* _TRACE_RBTREE_H */
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index af51b3d71e1a..42c8312f8395 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -16,6 +16,7 @@
+ 
+ #include "trace-write-local.h"
+ #include "trace-cmd-local.h"
++#include "trace-rbtree.h"
+ #include "trace-local.h"
+ #include "kbuffer.h"
+ #include "list.h"
+@@ -66,7 +67,7 @@ struct page {
  };
  
-+static ssize_t SCHED_COMM;
-+static ssize_t SCHED_PID;
-+static ssize_t SCHED_STATE;
+ struct zchunk_cache {
+-	struct list_head		list;
++	struct trace_rbtree_node	node;
+ 	struct tracecmd_compress_chunk *chunk;
+ 	void				*map;
+ 	int				ref;
+@@ -78,7 +79,7 @@ struct cpu_zdata {
+ 	char			file[26]; /* strlen(COMPR_TEMP_FILE) */
+ 	unsigned int		count;
+ 	unsigned int		last_chunk;
+-	struct list_head	cache;
++	struct trace_rbtree	cache;
+ 	struct tracecmd_compress_chunk	*chunks;
+ };
+ 
+@@ -1378,21 +1379,24 @@ static struct tracecmd_compress_chunk *get_zchunk(struct cpu_data *cpu, off_t of
+ 	return chunk;
+ }
+ 
+-static void free_zpage(struct cpu_data *cpu_data, void *map)
++static void free_zpage(struct cpu_data *cpu_data, off_t offset)
+ {
++	struct trace_rbtree_node *node;
+ 	struct zchunk_cache *cache;
+ 
+-	list_for_each_entry(cache, &cpu_data->compress.cache, list) {
+-		if (map <= cache->map && map > (cache->map + cache->chunk->size))
+-			goto found;
+-	}
+-	return;
++	node = trace_rbtree_find(&cpu_data->compress.cache, (void *)&offset);
 +
-+static void init_indexes(void)
++	if (!node)
++		return;
++
++	cache = container_of(node, struct zchunk_cache, node);
+ 
+-found:
+ 	cache->ref--;
+ 	if (cache->ref)
+ 		return;
+-	list_del(&cache->list);
++
++	trace_rbtree_delete(&cpu_data->compress.cache, node);
++
+ 	free(cache->map);
+ 	free(cache);
+ }
+@@ -1401,6 +1405,7 @@ static void *read_zpage(struct tracecmd_input *handle, int cpu, off_t offset)
+ {
+ 	struct cpu_data *cpu_data = &handle->cpu_data[cpu];
+ 	struct tracecmd_compress_chunk *chunk;
++	struct trace_rbtree_node *node;
+ 	struct zchunk_cache *cache;
+ 	void *map = NULL;
+ 	int pindex;
+@@ -1409,11 +1414,11 @@ static void *read_zpage(struct tracecmd_input *handle, int cpu, off_t offset)
+ 	offset -= cpu_data->file_offset;
+ 
+ 	/* Look in the cache of already loaded chunks */
+-	list_for_each_entry(cache, &cpu_data->compress.cache, list) {
+-		if (CHUNK_CHECK_OFFSET(cache->chunk, offset)) {
+-			cache->ref++;
+-			goto out;
+-		}
++	node = trace_rbtree_find(&cpu_data->compress.cache, (void *)&offset);
++	if (node) {
++		cache = container_of(node, struct zchunk_cache, node);
++		cache->ref++;
++		goto out;
+ 	}
+ 
+ 	chunk =  get_zchunk(cpu_data, offset);
+@@ -1435,7 +1440,7 @@ static void *read_zpage(struct tracecmd_input *handle, int cpu, off_t offset)
+ 	cache->ref = 1;
+ 	cache->chunk = chunk;
+ 	cache->map = map;
+-	list_add(&cache->list, &cpu_data->compress.cache);
++	trace_rbtree_insert(&cpu_data->compress.cache, &cache->node);
+ 
+ 	/* a chunk can hold multiple pages, get the requested one */
+ out:
+@@ -1606,7 +1611,7 @@ static void __free_page(struct tracecmd_input *handle, struct page *page)
+ 	if (handle->read_page)
+ 		free(page->map);
+ 	else if (handle->read_zpage)
+-		free_zpage(cpu_data, page->map);
++		free_zpage(cpu_data, page->offset);
+ 	else
+ 		free_page_map(page->page_map);
+ 
+@@ -2102,7 +2107,7 @@ tracecmd_read_cpu_first(struct tracecmd_input *handle, int cpu)
+ 	/* If the page was already mapped, we need to reset it */
+ 	if (ret)
+ 		update_page_info(handle, cpu);
+-		
++
+ 	free_next(handle, cpu);
+ 
+ 	return tracecmd_read_data(handle, cpu);
+@@ -3348,6 +3353,35 @@ static int init_cpu_zpage(struct tracecmd_input *handle, int cpu)
+ 	return 0;
+ }
+ 
++static int compress_cmp(const struct trace_rbtree_node *A,
++			const struct trace_rbtree_node *B)
 +{
-+	SCHED_COMM = traceeval_type_index("COMM", sched_keys);
-+	SCHED_PID = traceeval_type_index("PID", sched_keys);
-+	SCHED_STATE = traceeval_type_index("State", sched_keys);
++	const struct zchunk_cache *cacheA;
++	const struct zchunk_cache *cacheB;
 +
-+	if (SCHED_COMM < 0 || SCHED_PID < 0 || SCHED_STATE < 0) {
-+		printf("Had a typo in assiging indexes\n");
-+		exit(-1);
-+	}
++	cacheA = container_of(A, struct zchunk_cache, node);
++	cacheB = container_of(B, struct zchunk_cache, node);
++
++	return chunk_cmp(cacheA->chunk, cacheB->chunk);
 +}
 +
- static int sched_callback(struct tep_event *event, struct tep_record *record,
- 			  int cpu, void *data)
- {
- 	static struct tep_format_field *pid_field;
- 	static struct tep_format_field *comm_field;
- 	static struct tep_format_field *state_field;
--	struct traceeval_data keys[3];
-+	struct traceeval_data keys[TRACEEVAL_ARRAY_SIZE(sched_keys)];
- 	struct traceeval *teval = data;
- 	unsigned long long val;
- 	char *comm;
-@@ -232,9 +262,9 @@ static int sched_callback(struct tep_event *event, struct tep_record *record,
- 
- 	comm = record->data + comm_field->offset;
- 
--	TRACEEVAL_SET_STRING(keys[0], comm);
--	TRACEEVAL_SET_NUMBER(keys[1], pid);
--	TRACEEVAL_SET_NUMBER(keys[2], state);
-+	TRACEEVAL_SET_STRING(keys[SCHED_COMM], comm);
-+	TRACEEVAL_SET_NUMBER(keys[SCHED_PID], pid);
-+	TRACEEVAL_SET_NUMBER(keys[SCHED_STATE], state);
- 
- 	traceeval_insert(teval, keys, NULL);
- 
-@@ -243,7 +273,7 @@ static int sched_callback(struct tep_event *event, struct tep_record *record,
- 
- static char *get_state(int state)
- {
--	switch (state & 7) {
-+	switch (state & 0x1ff) {
- 	case 0:
- 		return "R";
- 	case 1:
-@@ -260,17 +290,17 @@ static void display_teval(struct traceeval *teval)
- 	const struct traceeval_data *keys;
- 
- 	/* Sort comms first. */
--	traceeval_iterator_sort(iter, sched_keys[0].name, 0, true);
-+	traceeval_iterator_sort(iter, sched_keys[SCHED_COMM].name, 0, true);
- 	/* Sort pids next */
--	traceeval_iterator_sort(iter, sched_keys[1].name, 1, true);
-+	traceeval_iterator_sort(iter, sched_keys[SCHED_PID].name, 1, true);
- 	/* Sort state last */
--	traceeval_iterator_sort(iter, sched_keys[2].name, 2, true);
-+	traceeval_iterator_sort(iter, sched_keys[SCHED_STATE].name, 2, true);
- 
- 	while (traceeval_iterator_next(iter, &keys) > 0) {
- 		ssize_t hits = traceeval_hitcount_size(teval, keys, TRACEEVAL_ARRAY_SIZE(sched_keys));
- 
- 		printf("%s [%ld] %s: %zd\n",
--		       keys[0].string, keys[1].number, get_state(keys[2].number), hits);
-+		       keys[SCHED_COMM].string, keys[SCHED_PID].number, get_state(keys[SCHED_STATE].number), hits);
- 	}
- 	traceeval_iterator_put(iter);
- }
-@@ -289,6 +319,8 @@ int main (int argc, char **argv)
- 	bool finished = false;
- 	int ret;
- 
-+	init_indexes();
-+
- 	teval = traceeval_init(sched_keys, NULL);
- 	if (!teval)
- 		pdie("Creating traceeval");
-diff --git a/Documentation/libtraceeval.txt b/Documentation/libtraceeval.txt
-index e65ebd270445..d6f90244320e 100644
---- a/Documentation/libtraceeval.txt
-+++ b/Documentation/libtraceeval.txt
-@@ -17,6 +17,10 @@ Creating and releasing the traceeval resources:
- 				       int _nr_keys_, int _nr_vals_);
- 	void *traceeval_release*(struct traceeval pass:[*]_teval_);
- 
-+Helper functions for indexing the traceeval_type and traceveal_data elements:
-+	ssize_t *traceeval_type_index*(const char pass:[*]_name_, struct traceeval_type pass:*]_type_);
-+	ssize_t *traceeval_type_index_size*(const char pass:[*]_name_, struct traceeval_type pass:*]_type_, size_t nr_types);
-+
- Inserting and removing elements from the traceeval:
- 	int *traceeval_insert*(struct traceeval pass:[*]_teval_,
- 			  const struct traceeval_data pass:[*]_keys_,
-diff --git a/include/traceeval.h b/include/traceeval.h
-index 99b3f7b86915..84625709a81d 100644
---- a/include/traceeval.h
-+++ b/include/traceeval.h
-@@ -11,6 +11,7 @@
- #include <stdlib.h>
- #include <stddef.h>
- #include <stdarg.h>
-+#include <string.h>
- #include <stdbool.h>
- 
- /* Data definition interfaces */
-@@ -224,6 +225,20 @@ struct traceeval_type {
- 	traceeval_data_hash_fn		hash;
- };
- 
-+#define traceeval_type_index(name, type)					\
-+	traceeval_type_index_size(name, type, TRACEEVAL_ARRAY_SIZE(type))
-+
-+static inline ssize_t traceeval_type_index_size(const char *name,
-+						struct traceeval_type *type,
-+						size_t size)
++static int compress_search(const struct trace_rbtree_node *A,
++			   const void *data)
 +{
-+	for (size_t i = 0; i < size; i++) {
-+		if (strcmp(type[i].name, name) == 0)
-+			return i;
++	const struct zchunk_cache *cache;
++	off_t offset = *(off_t *)data;
++
++	cache = container_of(A, struct zchunk_cache, node);
++
++	if (CHUNK_CHECK_OFFSET(cache->chunk, offset))
++		return 0;
++
++	if (cache->chunk->offset < offset)
++		return -1;
++
++	return 1;
++}
++
+ static int init_cpu(struct tracecmd_input *handle, int cpu)
+ {
+ 	struct cpu_data *cpu_data = &handle->cpu_data[cpu];
+@@ -3368,7 +3402,8 @@ static int init_cpu(struct tracecmd_input *handle, int cpu)
+ 	cpu_data->timestamp = 0;
+ 
+ 	list_head_init(&cpu_data->page_maps);
+-	list_head_init(&cpu_data->compress.cache);
++
++	trace_rbtree_init(&cpu_data->compress.cache, compress_cmp, compress_search);
+ 
+ 	if (!cpu_data->size) {
+ 		tracecmd_info("CPU %d is empty", cpu);
+@@ -5131,10 +5166,10 @@ void tracecmd_close(struct tracecmd_input *handle)
+ 				close(cpu_data->compress.fd);
+ 				unlink(cpu_data->compress.file);
+ 			}
+-			while (!list_empty(&cpu_data->compress.cache)) {
+-				cache = container_of(cpu_data->compress.cache.next,
+-						     struct zchunk_cache, list);
+-				list_del(&cache->list);
++			while (cpu_data->compress.cache.node) {
++				struct trace_rbtree_node *node;
++				node = trace_rbtree_pop_nobalance(&cpu_data->compress.cache);
++				cache = container_of(node, struct zchunk_cache, node);
+ 				free(cache->map);
+ 				free(cache);
+ 			}
+diff --git a/lib/trace-cmd/trace-rbtree.c b/lib/trace-cmd/trace-rbtree.c
+new file mode 100644
+index 000000000000..d21f0f56820a
+--- /dev/null
++++ b/lib/trace-cmd/trace-rbtree.c
+@@ -0,0 +1,440 @@
++// SPDX-License-Identifier: LGPL-2.1
++/*
++ * Copyright (C) 2023 Google, Steven Rostedt <rostedt@goodmis.org>
++ *
++ */
++#include <stdlib.h>
++#include <stdbool.h>
++#include "trace-local.h"
++#include "trace-rbtree.h"
++
++enum {
++	RED,
++	BLACK,
++};
++
++void __hidden trace_rbtree_init(struct trace_rbtree *tree, trace_rbtree_cmp_fn cmp_fn,
++				trace_rbtree_search_fn search_fn)
++{
++	memset(tree, 0, sizeof(*tree));
++	tree->search = search_fn;
++	tree->cmp = cmp_fn;
++}
++
++static bool is_left(struct trace_rbtree_node *node)
++{
++	return node == node->parent->left;
++}
++
++static struct trace_rbtree_node **get_parent_ptr(struct trace_rbtree *tree,
++						 struct trace_rbtree_node *node)
++{
++	if (!node->parent)
++		return &tree->node;
++	else if (is_left(node))
++		return &node->parent->left;
++	else
++		return &node->parent->right;
++}
++
++static void rotate_left(struct trace_rbtree *tree,
++			struct trace_rbtree_node *node)
++{
++	struct trace_rbtree_node **parent_ptr = get_parent_ptr(tree, node);
++	struct trace_rbtree_node *parent = node->parent;
++	struct trace_rbtree_node *old_right = node->right;
++
++	*parent_ptr = old_right;
++	node->right = old_right->left;
++	old_right->left = node;
++
++	if (node->right)
++		node->right->parent = node;
++	node->parent = old_right;
++	old_right->parent = parent;
++}
++
++static void rotate_right(struct trace_rbtree *tree,
++			 struct trace_rbtree_node *node)
++{
++	struct trace_rbtree_node **parent_ptr = get_parent_ptr(tree, node);
++	struct trace_rbtree_node *parent = node->parent;
++	struct trace_rbtree_node *old_left = node->left;
++
++	*parent_ptr = old_left;
++	node->left = old_left->right;
++	old_left->right = node;
++
++	if (node->left)
++		node->left->parent = node;
++	node->parent = old_left;
++	old_left->parent = parent;
++}
++
++static void insert_tree(struct trace_rbtree *tree,
++			struct trace_rbtree_node *node)
++{
++	struct trace_rbtree_node *next = tree->node;
++	struct trace_rbtree_node *last_next = NULL;
++	bool went_left = false;
++
++	while (next) {
++		last_next = next;
++		if (tree->cmp(next, node) > 0) {
++			next = next->right;
++			went_left = false;
++		} else {
++			next = next->left;
++			went_left = true;
++		}
 +	}
++
++	if (!last_next) {
++		tree->node = node;
++		return;
++	}
++
++	if (went_left)
++		last_next->left = node;
++	else
++		last_next->right = node;
++
++	node->parent = last_next;
++}
++
++#if 0
++static int check_node(struct trace_rbtree *tree, struct trace_rbtree_node *node)
++{
++	if (!node->parent) {
++		if (tree->node != node)
++			goto fail;
++	} else {
++		if (!is_left(node)) {
++			if (node->parent->right != node)
++				goto fail;
++		}
++	}
++	return 0;
++fail:
++	printf("FAILED ON NODE!");
++	breakpoint();
 +	return -1;
 +}
 +
- /* Statistics about a given entry element */
- struct traceeval_stat;
- 
-diff --git a/samples/task-eval.c b/samples/task-eval.c
-index 6ae361196486..7f438d8a5cf4 100644
---- a/samples/task-eval.c
-+++ b/samples/task-eval.c
-@@ -121,14 +121,17 @@ static struct traceeval_type cpu_delta_vals[] = {
- 	},
- };
- 
-+static ssize_t CPU_DELTA_KEY;
-+static ssize_t CPU_DELTA_STATE;
-+
- static void start_cpu_data(struct traceeval *teval, int cpu, int state,
- 			   unsigned long long ts)
- {
--	struct traceeval_data keys[1];
--	struct traceeval_data vals[1];
-+	struct traceeval_data keys[TRACEEVAL_ARRAY_SIZE(cpu_delta_keys)];
-+	struct traceeval_data vals[TRACEEVAL_ARRAY_SIZE(cpu_delta_vals)];
- 
--	TRACEEVAL_SET_NUMBER(keys[0], cpu);
--	TRACEEVAL_SET_NUMBER(vals[0], state);
-+	TRACEEVAL_SET_NUMBER(keys[CPU_DELTA_KEY], cpu);
-+	TRACEEVAL_SET_NUMBER(vals[CPU_DELTA_STATE], state);
- 
- 	traceeval_delta_start(teval, keys, vals, ts);
- }
-@@ -136,11 +139,11 @@ static void start_cpu_data(struct traceeval *teval, int cpu, int state,
- static void continue_cpu_data(struct traceeval *teval, int cpu, int state,
- 			      unsigned long long ts)
- {
--	struct traceeval_data keys[1];
--	struct traceeval_data vals[1];
-+	struct traceeval_data keys[TRACEEVAL_ARRAY_SIZE(cpu_delta_keys)];
-+	struct traceeval_data vals[TRACEEVAL_ARRAY_SIZE(cpu_delta_vals)];
- 
--	TRACEEVAL_SET_NUMBER(keys[0], cpu);
--	TRACEEVAL_SET_NUMBER(vals[0], state);
-+	TRACEEVAL_SET_NUMBER(keys[CPU_DELTA_KEY], cpu);
-+	TRACEEVAL_SET_NUMBER(vals[CPU_DELTA_STATE], state);
- 
- 	traceeval_delta_continue(teval, keys, vals, ts);
- }
-@@ -149,18 +152,18 @@ static int stop_cpu_data(struct traceeval *teval, int cpu, int *state,
- 			 unsigned long long ts,
- 			 unsigned long long *delta)
- {
-+	struct traceeval_data keys[TRACEEVAL_ARRAY_SIZE(cpu_delta_keys)];
- 	const struct traceeval_data *results;
--	struct traceeval_data keys[1];
- 	int ret;
- 
--	TRACEEVAL_SET_NUMBER(keys[0], cpu);
-+	TRACEEVAL_SET_NUMBER(keys[CPU_DELTA_KEY], cpu);
- 
- 	ret = traceeval_delta_stop(teval, keys, &results, ts, delta, NULL);
- 	if (ret < 1)
- 		return ret;
- 
- 	if (state)
--		*state = results[0].number;
-+		*state = results[CPU_DELTA_STATE].number;
- 
- 	traceeval_results_release(teval, results);
- 	return 1;
-@@ -168,17 +171,17 @@ static int stop_cpu_data(struct traceeval *teval, int cpu, int *state,
- 
- int cpu_last_state(struct traceeval *teval, int cpu, int *state)
- {
-+	struct traceeval_data keys[TRACEEVAL_ARRAY_SIZE(cpu_delta_keys)];
- 	const struct traceeval_data *results;
--	struct traceeval_data keys[1];
- 	int ret;
- 
--	TRACEEVAL_SET_NUMBER(keys[0], cpu);
-+	TRACEEVAL_SET_NUMBER(keys[CPU_DELTA_KEY], cpu);
- 
- 	ret = traceeval_delta_query(teval, keys, &results);
- 	if (ret < 1)
- 		return ret;
- 
--	*state = results[0].number;
-+	*state = results[CPU_DELTA_STATE].number;
- 
- 	traceeval_results_release(teval, results);
- 	return 1;
-@@ -209,16 +212,20 @@ static struct traceeval_type cpu_vals[] = {
- 	},
- };
- 
-+static ssize_t CPU_KEY;
-+static ssize_t CPU_STATE;
-+static ssize_t CPU_DELTA;
-+
- static void insert_cpu_data(struct traceeval *teval, int cpu, int state,
- 			    unsigned long long delta, unsigned long long ts)
- {
--	struct traceeval_data keys[2];
--	struct traceeval_data vals[1];
-+	struct traceeval_data keys[TRACEEVAL_ARRAY_SIZE(cpu_keys)];
-+	struct traceeval_data vals[TRACEEVAL_ARRAY_SIZE(cpu_vals)];
- 
--	TRACEEVAL_SET_NUMBER(keys[0], cpu);
--	TRACEEVAL_SET_NUMBER(keys[1], state);
-+	TRACEEVAL_SET_NUMBER(keys[CPU_KEY], cpu);
-+	TRACEEVAL_SET_NUMBER(keys[CPU_STATE], state);
- 
--	TRACEEVAL_SET_DELTA(vals[0], delta, ts);
-+	TRACEEVAL_SET_DELTA(vals[CPU_DELTA], delta, ts);
- 
- 	traceeval_insert(teval, keys, vals);
- }
-@@ -247,16 +254,20 @@ static struct traceeval_type wakeup_delta_vals[] = {
- 	},
- };
- 
-+static ssize_t WAKEUP_DELTA_PID;
-+static ssize_t WAKEUP_DELTA_COMM;
-+static ssize_t WAKEUP_DELTA_PRIO;
-+
- static void start_wakeup_data(struct traceeval *teval, int pid,
- 			      const char *comm, int prio, unsigned long long ts)
- {
--	struct traceeval_data keys[1];
--	struct traceeval_data vals[2];
-+	struct traceeval_data keys[TRACEEVAL_ARRAY_SIZE(wakeup_delta_keys)];
-+	struct traceeval_data vals[TRACEEVAL_ARRAY_SIZE(wakeup_delta_vals)];
- 
--	TRACEEVAL_SET_NUMBER(keys[0], pid);
-+	TRACEEVAL_SET_NUMBER(keys[WAKEUP_DELTA_PID], pid);
- 
--	TRACEEVAL_SET_CSTRING(vals[0], comm);
--	TRACEEVAL_SET_NUMBER(vals[1], prio);
-+	TRACEEVAL_SET_CSTRING(vals[WAKEUP_DELTA_COMM], comm);
-+	TRACEEVAL_SET_NUMBER(vals[WAKEUP_DELTA_PRIO], prio);
- 
- 	traceeval_delta_start(teval, keys, vals, ts);
- }
-@@ -265,21 +276,21 @@ static int stop_wakeup_data(struct traceeval *teval, int pid,
- 			    const char **comm, int *prio, unsigned long long ts,
- 			    unsigned long long *delta)
- {
-+	struct traceeval_data keys[TRACEEVAL_ARRAY_SIZE(wakeup_delta_keys)];
- 	const struct traceeval_data *results;
--	struct traceeval_data keys[1];
- 	int ret;
- 
--	TRACEEVAL_SET_NUMBER(keys[0], pid);
-+	TRACEEVAL_SET_NUMBER(keys[WAKEUP_DELTA_PID], pid);
- 
- 	ret = traceeval_delta_stop(teval, keys, &results, ts, delta, NULL);
- 	if (ret < 1)
- 		return ret;
- 
- 	if (comm)
--		*comm = results[0].string;
-+		*comm = results[WAKEUP_DELTA_COMM].string;
- 
- 	if (prio)
--		*prio = results[1].number;
-+		*prio = results[WAKEUP_DELTA_PRIO].number;
- 
- 	traceeval_results_release(teval, results);
- 	return 1;
-@@ -316,17 +327,22 @@ static struct traceeval_type task_delta_vals[] = {
- 	},
- };
- 
-+static ssize_t TASK_DELTA_PID;
-+static ssize_t TASK_DELTA_STATE;
-+static ssize_t TASK_DELTA_COMM;
-+static ssize_t TASK_DELTA_PRIO;
-+
- static void start_task_data(struct traceeval *teval, int pid, int state,
- 			    const char *comm, int prio, unsigned long long ts)
- {
--	struct traceeval_data keys[1];
--	struct traceeval_data vals[3];
-+	struct traceeval_data keys[TRACEEVAL_ARRAY_SIZE(task_delta_keys)];
-+	struct traceeval_data vals[TRACEEVAL_ARRAY_SIZE(task_delta_vals)];
- 
--	TRACEEVAL_SET_NUMBER(keys[0], pid);
-+	TRACEEVAL_SET_NUMBER(keys[TASK_DELTA_PID], pid);
- 
--	TRACEEVAL_SET_NUMBER(vals[0], state);
--	TRACEEVAL_SET_CSTRING(vals[1], comm);
--	TRACEEVAL_SET_NUMBER(vals[2], prio);
-+	TRACEEVAL_SET_NUMBER(vals[TASK_DELTA_STATE], state);
-+	TRACEEVAL_SET_CSTRING(vals[TASK_DELTA_COMM], comm);
-+	TRACEEVAL_SET_NUMBER(vals[TASK_DELTA_PRIO], prio);
- 
- 	traceeval_delta_start(teval, keys, vals, ts);
- }
-@@ -335,24 +351,24 @@ static int stop_task_data(struct traceeval *teval, int pid, int *state,
- 			  const char **comm, int *prio, unsigned long long ts,
- 			  unsigned long long *delta, unsigned long long *save_ts)
- {
-+	struct traceeval_data keys[TRACEEVAL_ARRAY_SIZE(task_delta_keys)];
- 	const struct traceeval_data *results;
--	struct traceeval_data keys[1];
- 	int ret;
- 
--	TRACEEVAL_SET_NUMBER(keys[0], pid);
-+	TRACEEVAL_SET_NUMBER(keys[TASK_DELTA_PID], pid);
- 
- 	ret = traceeval_delta_stop(teval, keys, &results, ts, delta, save_ts);
- 	if (ret < 1)
- 		return ret;
- 
- 	if (state)
--		*state = results[0].number;
-+		*state = results[TASK_DELTA_STATE].number;
- 
- 	if (comm)
--		*comm = results[1].string;
-+		*comm = results[TASK_DELTA_COMM].string;
- 
- 	if (prio)
--		*prio = results[2].number;
-+		*prio = results[TASK_DELTA_PRIO].number;
- 
- 	traceeval_results_release(teval, results);
- 	return 1;
-@@ -410,15 +426,20 @@ static struct traceeval_type task_vals[] = {
- 	},
- };
- 
-+static ssize_t TASK_COMM;
-+static ssize_t TASK_STATE;
-+static ssize_t TASK_DATA;
-+static ssize_t TASK_DELTA;
-+
- static int insert_task_data(struct traceeval *teval, const char *comm,
- 			     int state, void *data, unsigned long long delta,
- 			     unsigned long long timestamp)
- {
--	struct traceeval_data keys[2];
--	struct traceeval_data vals[2];
-+	struct traceeval_data keys[TRACEEVAL_ARRAY_SIZE(task_keys)];
-+	struct traceeval_data vals[TRACEEVAL_ARRAY_SIZE(task_vals)];
- 
--	TRACEEVAL_SET_CSTRING(keys[0], comm);
--	TRACEEVAL_SET_NUMBER(keys[1], state);
-+	TRACEEVAL_SET_CSTRING(keys[TASK_COMM], comm);
-+	TRACEEVAL_SET_NUMBER(keys[TASK_STATE], state);
- 
- 	/*
- 	 * Can not have data stored more than once, only save it for
-@@ -427,8 +448,8 @@ static int insert_task_data(struct traceeval *teval, const char *comm,
- 	if (state != RUNNING)
- 		data = NULL;
- 
--	TRACEEVAL_SET_POINTER(vals[0], data);
--	TRACEEVAL_SET_DELTA(vals[1], delta, timestamp);
-+	TRACEEVAL_SET_POINTER(vals[TASK_DATA], data);
-+	TRACEEVAL_SET_DELTA(vals[TASK_DELTA], delta, timestamp);
- 
- 	return traceeval_insert(teval, keys, vals);
- }
-@@ -486,19 +507,24 @@ static struct traceeval_type thread_vals[] = {
- 	},
- };
- 
-+static ssize_t THREAD_TID;
-+static ssize_t THREAD_PRIO;
-+static ssize_t THREAD_STATE;
-+static ssize_t THREAD_DELTA;
-+
- static void insert_thread_data(struct traceeval *teval, 
- 			       int tid, int state, int prio,
- 			       unsigned long long delta,
- 			       unsigned long long timestamp)
- {
--	struct traceeval_data keys[3];
--	struct traceeval_data vals[1];
-+	struct traceeval_data keys[TRACEEVAL_ARRAY_SIZE(thread_keys)];
-+	struct traceeval_data vals[TRACEEVAL_ARRAY_SIZE(thread_vals)];
- 
--	TRACEEVAL_SET_NUMBER(keys[0], tid);
--	TRACEEVAL_SET_NUMBER(keys[1], prio);
--	TRACEEVAL_SET_NUMBER(keys[2], state);
-+	TRACEEVAL_SET_NUMBER(keys[THREAD_TID], tid);
-+	TRACEEVAL_SET_NUMBER(keys[THREAD_PRIO], prio);
-+	TRACEEVAL_SET_NUMBER(keys[THREAD_STATE], state);
- 
--	TRACEEVAL_SET_DELTA(vals[0], delta, timestamp);
-+	TRACEEVAL_SET_DELTA(vals[THREAD_DELTA], delta, timestamp);
- 
- 	traceeval_insert(teval, keys, vals);
- }
-@@ -528,17 +554,60 @@ static struct traceeval_type wakeup_vals[] = {
- 	},
- };
- 
-+static ssize_t WAKEUP_TASK_COMM;
-+static ssize_t WAKEUP_THREAD_PID;
-+static ssize_t WAKEUP_THREAD_PRIO;
-+static ssize_t WAKEUP_DELTA;
-+
-+#define assign_type(type, name, array) \
-+	if ((type = traceeval_type_index(name, array)) < 0)	\
-+		die("Invalid index %s for %s", name, #type);
-+
-+static void init_indexes(void)
++static void check_tree(struct trace_rbtree *tree)
 +{
-+	assign_type(CPU_DELTA_KEY, "CPU", cpu_delta_keys);
-+	assign_type(CPU_DELTA_STATE, "Schedule state", cpu_delta_vals);
++	struct trace_rbtree_node *node = tree->node;
 +
-+	assign_type(CPU_KEY, "CPU", cpu_keys);
-+	assign_type(CPU_STATE, "Schedule state", cpu_keys);
-+	assign_type(CPU_DELTA, DELTA_NAME, cpu_vals);
++	if (node) {
++		if (check_node(tree, node))
++			return;
++		while (node->left) {
++			node = node->left;
++			if (check_node(tree, node))
++				return;
++		}
++	}
 +
-+	assign_type(WAKEUP_DELTA_PID, "PID", wakeup_delta_keys);
-+	assign_type(WAKEUP_DELTA_COMM, "COMM", wakeup_delta_vals);
-+	assign_type(WAKEUP_DELTA_PRIO, "Prio", wakeup_delta_vals);
++	while (node) {
++		if (check_node(tree, node))
++			return;
++		if (node->right) {
++			node = node->right;
++			if (check_node(tree, node))
++				return;
++			while (node->left) {
++				node = node->left;
++				if (check_node(tree, node))
++				    return;
++			}
++			continue;
++		}
++		while (node->parent) {
++			if (is_left(node))
++				break;
++			node = node->parent;
++			if (check_node(tree, node))
++				return;
++		}
++		node = node->parent;
++	}
++}
++#else
++static inline void check_tree(struct trace_rbtree *tree) { }
++#endif
 +
-+	assign_type(TASK_DELTA_PID, "PID", task_delta_keys);
-+	assign_type(TASK_DELTA_STATE, "Schedule state", task_delta_vals);
-+	assign_type(TASK_DELTA_COMM, "COMM", task_delta_vals);
-+	assign_type(TASK_DELTA_PRIO, "Prio", task_delta_vals);
++int __hidden trace_rbtree_insert(struct trace_rbtree *tree,
++				 struct trace_rbtree_node *node)
++{
++	struct trace_rbtree_node *uncle;
 +
-+	assign_type(TASK_COMM, "COMM", task_keys);
-+	assign_type(TASK_STATE, "Schedule state", task_keys);
-+	assign_type(TASK_DATA, "data", task_vals);
-+	assign_type(TASK_DELTA, DELTA_NAME, task_vals);
++	memset(node, 0, sizeof(*node));
 +
-+	assign_type(THREAD_TID, "TID", thread_keys);
-+	assign_type(THREAD_PRIO, "Prio", thread_keys);
-+	assign_type(THREAD_STATE, "Schedule state", thread_keys);
-+	assign_type(THREAD_DELTA, DELTA_NAME, thread_vals);
-+
-+	assign_type(WAKEUP_TASK_COMM, "COMM", wakeup_task_keys);
-+	assign_type(WAKEUP_THREAD_PID, "PID", wakeup_thread_keys);
-+	assign_type(WAKEUP_THREAD_PRIO, "Prio", wakeup_thread_keys);
-+	assign_type(WAKEUP_DELTA, DELTA_NAME, wakeup_vals)
++	insert_tree(tree, node);
++	node->color = RED;
++	while (node && node->parent && node->parent->color == RED) {
++		if (is_left(node->parent)) {
++			uncle = node->parent->parent->right;
++			if (uncle && uncle->color == RED) {
++				node->parent->color = BLACK;
++				uncle->color = BLACK;
++				node->parent->parent->color = RED;
++				node = node->parent->parent;
++			} else {
++				if (!is_left(node)) {
++					node = node->parent;
++					rotate_left(tree, node);
++					check_tree(tree);
++				}
++				node->parent->color = BLACK;
++				node->parent->parent->color = RED;
++				rotate_right(tree, node->parent->parent);
++				check_tree(tree);
++			}
++		} else {
++			uncle = node->parent->parent->left;
++			if (uncle && uncle->color == RED) {
++				node->parent->color = BLACK;
++				uncle->color = BLACK;
++				node->parent->parent->color = RED;
++				node = node->parent->parent;
++			} else {
++				if (is_left(node)) {
++					node = node->parent;
++					rotate_right(tree, node);
++					check_tree(tree);
++				}
++				node->parent->color = BLACK;
++				node->parent->parent->color = RED;
++				rotate_left(tree, node->parent->parent);
++				check_tree(tree);
++			}
++		}
++	}
++	check_tree(tree);
++	tree->node->color = BLACK;
++	tree->nr_nodes++;
++	return 0;
 +}
 +
- static void insert_wakeup_task_data(struct traceeval *teval, 
- 				    const char *comm,
- 				    unsigned long long delta,
- 				    unsigned long long timestamp)
- {
--	struct traceeval_data keys[1];
--	struct traceeval_data vals[1];
-+	struct traceeval_data keys[TRACEEVAL_ARRAY_SIZE(wakeup_task_keys)];
-+	struct traceeval_data vals[TRACEEVAL_ARRAY_SIZE(wakeup_vals)];
- 
--	TRACEEVAL_SET_CSTRING(keys[0], comm);
-+	TRACEEVAL_SET_CSTRING(keys[WAKEUP_TASK_COMM], comm);
- 
--	TRACEEVAL_SET_DELTA(vals[0], delta, timestamp);
-+	TRACEEVAL_SET_DELTA(vals[WAKEUP_DELTA], delta, timestamp);
- 
- 	traceeval_insert(teval, keys, vals);
- }
-@@ -548,13 +617,13 @@ static void insert_wakeup_thread_data(struct traceeval *teval,
- 				      unsigned long long delta,
- 				      unsigned long long timestamp)
- {
--	struct traceeval_data keys[2];
--	struct traceeval_data vals[1];
-+	struct traceeval_data keys[TRACEEVAL_ARRAY_SIZE(wakeup_thread_keys)];
-+	struct traceeval_data vals[TRACEEVAL_ARRAY_SIZE(wakeup_vals)];
- 
--	TRACEEVAL_SET_NUMBER(keys[0], tid);
--	TRACEEVAL_SET_NUMBER(keys[1], prio);
-+	TRACEEVAL_SET_NUMBER(keys[WAKEUP_THREAD_PID], tid);
-+	TRACEEVAL_SET_NUMBER(keys[WAKEUP_THREAD_PRIO], prio);
- 
--	TRACEEVAL_SET_DELTA(vals[0], delta, timestamp);
-+	TRACEEVAL_SET_DELTA(vals[WAKEUP_DELTA], delta, timestamp);
- 
- 	traceeval_insert(teval, keys, vals);
- }
-@@ -968,22 +1037,22 @@ static int compare_pdata(struct traceeval *teval,
- 				void *data)
- {
- 	struct traceeval_data keysA[] = {
--		DEFINE_TRACEEVAL_CSTRING(	Akeys[0].cstring	),
--		DEFINE_TRACEEVAL_NUMBER(	RUNNING			), };
-+		DEFINE_TRACEEVAL_CSTRING(	Akeys[TASK_COMM].cstring	),
-+		DEFINE_TRACEEVAL_NUMBER(	RUNNING				), };
- 	struct traceeval_data keysB[] = {
--		DEFINE_TRACEEVAL_CSTRING(	Bkeys[0].cstring	),
--		DEFINE_TRACEEVAL_NUMBER(	RUNNING			), };
-+		DEFINE_TRACEEVAL_CSTRING(	Bkeys[TASK_COMM].cstring	),
-+		DEFINE_TRACEEVAL_NUMBER(	RUNNING				), };
- 	struct traceeval_stat *statA;
- 	struct traceeval_stat *statB;
- 	unsigned long long totalA = -1;
- 	unsigned long long totalB = -1;
- 
- 	/* First check if we are on the same task */
--	if (strcmp(Akeys[0].cstring, Bkeys[0].cstring) == 0) {
-+	if (strcmp(Akeys[TASK_COMM].cstring, Bkeys[TASK_COMM].cstring) == 0) {
- 		/* Sort decending */
--		if (Bkeys[1].number > Akeys[1].number)
-+		if (Bkeys[TASK_STATE].number > Akeys[TASK_STATE].number)
- 			return -1;
--		return Bkeys[1].number != Akeys[1].number;
-+		return Bkeys[TASK_STATE].number != Akeys[TASK_STATE].number;
- 	}
- 
- 	/* Get the RUNNING values for both processes */
-@@ -1000,7 +1069,7 @@ static int compare_pdata(struct traceeval *teval,
- 	if (totalB > totalA)
- 		return 1;
- 
--	return strcmp(Bkeys[0].cstring, Akeys[0].cstring);
-+	return strcmp(Bkeys[TASK_COMM].cstring, Akeys[TASK_COMM].cstring);
- }
- 
- static void display_cpus(struct traceeval *teval)
-@@ -1016,12 +1085,12 @@ static void display_cpus(struct traceeval *teval)
- 
- 	printf("\n");
- 
--	traceeval_iterator_sort(iter, cpu_keys[0].name, 0, true);
--	traceeval_iterator_sort(iter, cpu_keys[1].name, 1, true);
-+	traceeval_iterator_sort(iter, cpu_keys[CPU_KEY].name, 0, true);
-+	traceeval_iterator_sort(iter, cpu_keys[CPU_STATE].name, 1, true);
- 
- 	while (traceeval_iterator_next(iter, &keys) > 0) {
--		int state = keys[1].number;
--		int cpu = keys[0].number;
-+		int state = keys[CPU_STATE].number;
-+		int cpu = keys[CPU_KEY].number;
- 
- 		stat = traceeval_iterator_stat(iter, DELTA_NAME);
- 		if (!stat)
-@@ -1140,18 +1209,18 @@ static void display_threads(struct traceeval *teval, struct traceeval *wake_teva
- 	int last_prio = -1;
- 
- 	/* PID */
--	traceeval_iterator_sort(iter, thread_keys[0].name, 0, true);
-+	traceeval_iterator_sort(iter, thread_keys[THREAD_TID].name, 0, true);
- 
- 	/* PRIO */
--	traceeval_iterator_sort(iter, thread_keys[1].name, 1, true);
-+	traceeval_iterator_sort(iter, thread_keys[THREAD_PRIO].name, 1, true);
- 
- 	/* STATE */
--	traceeval_iterator_sort(iter, thread_keys[2].name, 2, true);
-+	traceeval_iterator_sort(iter, thread_keys[THREAD_STATE].name, 2, true);
- 
- 	while (traceeval_iterator_next(iter, &keys) > 0) {
--		int tid = keys[0].number;
--		int prio = keys[1].number;
--		int state = keys[2].number;
-+		int tid = keys[THREAD_TID].number;
-+		int prio = keys[THREAD_PRIO].number;
-+		int state = keys[THREAD_STATE].number;
- 
- 		stat = traceeval_iterator_stat(iter, DELTA_NAME);
- 		if (!stat)
-@@ -1228,7 +1297,7 @@ static void display_processes(struct traceeval *teval, struct traceeval *wake_te
- 	while (traceeval_iterator_next(iter, &keys) > 0) {
- 		const struct traceeval_data *results;
- 		struct process_data *pdata = NULL;
--		const char *comm = keys[0].cstring;
-+		const char *comm = keys[TASK_COMM].cstring;
- 
- 		if (strcmp(comm, last_comm) == 0)
- 			continue;
-@@ -1241,7 +1310,7 @@ static void display_processes(struct traceeval *teval, struct traceeval *wake_te
- 		if (ret < 1)
- 			continue; /* ?? */
- 
--		pdata = results[0].pointer;
-+		pdata = results[TASK_DATA].pointer;
- 		traceeval_results_release(teval, results);
- 
- 		printf("Task: %s\n", comm);
-@@ -1274,7 +1343,7 @@ static void display(struct task_data *tdata)
- 		pdie("No cpus?");
- 
- 	while (traceeval_iterator_next(iter, &keys) > 0) {
--		int state = keys[1].number;
-+		int state = keys[CPU_STATE].number;
- 
- 		stat = traceeval_iterator_stat(iter, DELTA_NAME);
- 		if (!stat)
-@@ -1336,11 +1405,11 @@ static void finish_leftovers(struct task_data *data)
- 		traceeval_iterator_delta_stop(iter, &results, data->last_ts,
- 					      &delta, NULL);
- 
--		pid = keys[0].number;
-+		pid = keys[TASK_DELTA_PID].number;
- 
--		state = results[0].number;
--		comm = results[1].cstring;
--		prio = results[2].number;
-+		state = results[TASK_DELTA_STATE].number;
-+		comm = results[TASK_DELTA_COMM].cstring;
-+		prio = results[TASK_DELTA_PRIO].number;
- 
- 		update_thread(data, pid, comm, state, prio, delta, data->last_ts);
- 	}
-@@ -1398,6 +1467,8 @@ int main (int argc, char **argv)
- 	if (argc < 1)
- 		usage();
- 
-+	init_indexes();
++struct trace_rbtree_node *trace_rbtree_find(struct trace_rbtree *tree, const void *data)
++{
++	struct trace_rbtree_node *node = tree->node;
++	int ret;
 +
- 	handle = tracecmd_open(argv[0], TRACECMD_FL_LOAD_NO_PLUGINS);
- 	if (!handle)
- 		pdie("Error opening %s", argv[0]);
++	while (node) {
++		ret = tree->search(node, data);
++		if (!ret)
++			return node;
++		if (ret > 0)
++			node = node->right;
++		else
++			node = node->left;
++	}
++	return NULL;
++}
++
++static struct trace_rbtree_node *next_node(struct trace_rbtree_node *node)
++{
++	if (node->right) {
++		node = node->right;
++		while (node->left)
++			node = node->left;
++		return node;
++	}
++
++	while (node->parent && !is_left(node))
++		node = node->parent;
++
++	return node->parent;
++}
++
++static void tree_fixup(struct trace_rbtree *tree, struct trace_rbtree_node *node)
++{
++	while (node->parent && node->color == BLACK) {
++		if (is_left(node)) {
++			struct trace_rbtree_node *old_right = node->parent->right;
++
++			if (old_right->color == RED) {
++				old_right->color = BLACK;
++				node->parent->color = RED;
++				rotate_left(tree, node->parent);
++				old_right = node->parent->right;
++			}
++			if (old_right->left->color == BLACK &&
++			    old_right->right->color == BLACK) {
++				old_right->color = RED;
++				node = node->parent;
++			} else {
++				if (old_right->right->color == BLACK) {
++					old_right->left->color = BLACK;
++					old_right->color = RED;
++					rotate_right(tree, old_right);
++					old_right = node->parent->right;
++				}
++				old_right->color = node->parent->color;
++				node->parent->color = BLACK;
++				old_right->right->color = BLACK;
++				rotate_left(tree, node->parent);
++				node = tree->node;
++			}
++		} else {
++			struct trace_rbtree_node *old_left = node->parent->left;
++
++			if (old_left->color == RED) {
++				old_left->color = BLACK;
++				node->parent->color = RED;
++				rotate_right(tree, node->parent);
++				old_left = node->parent->left;
++			}
++			if (old_left->right->color == BLACK &&
++			    old_left->left->color == BLACK) {
++				old_left->color = RED;
++				node = node->parent;
++			} else {
++				if (old_left->left->color == BLACK) {
++					old_left->right->color = BLACK;
++					old_left->color = RED;
++					rotate_left(tree, old_left);
++					old_left = node->parent->left;
++				}
++				old_left->color = node->parent->color;
++				node->parent->color = BLACK;
++				old_left->left->color = BLACK;
++				rotate_right(tree, node->parent);
++				node = tree->node;
++			}
++		}
++	}
++	node->color = BLACK;
++}
++
++void trace_rbtree_delete(struct trace_rbtree *tree, struct trace_rbtree_node *node)
++{
++	struct trace_rbtree_node *x, *y;
++	bool do_fixup = false;
++
++	if (!node->left && !node->right) {
++		tree->node = NULL;
++		goto out;
++	}
++
++	if (!node->left || !node->right)
++		y = node;
++	else
++		y = next_node(node);
++
++	if (y->left)
++		x = y->left;
++	else
++		x = y->right;
++
++	x->parent = y->parent;
++
++	if (!x->parent) {
++		tree->node = x;
++	} else {
++		if (is_left(y))
++			y->parent->left = x;
++		else
++			y->parent->right = x;
++	}
++
++	do_fixup = y->color == BLACK;
++
++	if (y != node) {
++		y->color = node->color;
++		y->parent = node->parent;
++		y->left = node->left;
++		y->right = node->right;
++		if (y->left)
++			y->left->parent = y;
++		if (y->right)
++			y->right->parent = y;
++		if (!y->parent) {
++			tree->node = y;
++		} else {
++			if (is_left(node))
++				y->parent->left = y;
++			else
++				y->parent->right = y;
++		}
++	}
++
++	if (do_fixup)
++		tree_fixup(tree, x);
++
++ out:
++	node->parent = node->left = node->right = NULL;
++	tree->nr_nodes--;
++}
++
++__hidden struct trace_rbtree_node *trace_rbtree_next(struct trace_rbtree *tree,
++						     struct trace_rbtree_node *node)
++{
++	check_tree(tree);
++	/*
++	 * When either starting or the previous iteration returned a
++	 * node with a right branch, then go to the first node (if starting)
++	 * or the right node, and then return the left most node.
++	 */
++	if (!node || node->right) {
++		if (!node)
++			node = tree->node;
++		else
++			node = node->right;
++		while (node->left)
++			node = node->left;
++		return node;
++	}
++
++	/*
++	 * If we are here, then the previous iteration returned the
++	 * left most node of the tree or the right branch. If this
++	 * is a left node, then simply return the parent. If this
++	 * is a right node, then keep going up until its a left node,
++	 * or we finished the iteration.
++	 *
++	 * If we are here and are the top node, then there is no right
++	 * node, and this is finished (return NULL).
++	 */
++	if (!node->parent || is_left(node))
++		return node->parent;
++
++	do {
++		node = node->parent;
++	} while (node->parent && !is_left(node));
++
++	return node->parent;
++}
++
++/*
++ * Used for freeing a tree, just quickly pop off the children in
++ * no particular order. This will corrupt the tree! That is,
++ * do not do any inserting or deleting of this tree after calling
++ * this function.
++ */
++struct trace_rbtree_node *trace_rbtree_pop_nobalance(struct trace_rbtree *tree)
++{
++	struct trace_rbtree_node *node = tree->node;
++
++	if (!node)
++		return NULL;
++
++	while (node->left)
++		node = node->left;
++
++	while (node->right)
++		node = node->right;
++
++	if (node->parent) {
++		if (is_left(node))
++			node->parent->left = NULL;
++		else
++			node->parent->right = NULL;
++	} else {
++		tree->node = NULL;
++	}
++
++	return node;
++}
 -- 
 2.42.0
 
