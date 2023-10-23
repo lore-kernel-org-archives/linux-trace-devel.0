@@ -1,59 +1,97 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9787421340;
-	Mon, 23 Oct 2023 17:41:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6EE41859;
+	Mon, 23 Oct 2023 21:58:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PynV0iN4"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E43E8C433CC;
-	Mon, 23 Oct 2023 17:40:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698082860;
-	bh=s4PKCMf+mYuSUwyiknZuLzVRYAXpdi2OJwb++cxkFEs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PynV0iN4icEZwIhXh70iTiOLjBEUrQgryyDXXlM+tU3CX9N1FACwjCvT2WP+yuFGu
-	 j02ZCdlLP5FMs5/pM6IAmRx1eBwpIHHRjGILuM15bVM8UHBThh4Fx5l5pCzr9m/IqY
-	 /AoosjqM0s3Tg3M9m1no734HSQoWqd0fs8oxF4oJI6lmI+8yggG8eCC5FWGKTKFraw
-	 wj3JJl6uaiCad+He5ZFMI0b9X+TIVt3O3aaS2sZy/KsLAkxaph2TEqg9wJkn5UjixR
-	 4BhDQ1AdiV06mnf88EBW8g5m0zwkbKIWTa8+dbsAJQKH/aMAZaeIhmVw9l2jFuRFUy
-	 iBMOPDDrndtsg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id 5CCB64035D; Mon, 23 Oct 2023 14:40:57 -0300 (-03)
-Date: Mon, 23 Oct 2023 14:40:57 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GVe8UPUK"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF71810E;
+	Mon, 23 Oct 2023 14:58:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698098290; x=1729634290;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=eQ4oTqW1YIBrI/iNAfG19WNteOpQMt+CUi5D2Mm2CjA=;
+  b=GVe8UPUKTFZe32JoWG5AzLcFPxeCKy4Jb/3Z9Ted95b9nheSJfKNR+cP
+   i/Mnm3uwvbo2R1lpDFosdTGAcn1JqBJjGCzMPxLSLJzd8UavtRS843ERz
+   1nK/cCM2AcOIqRUHpS9X9ydHz2+LRRl31x6dRgbjfZMqf1vNOH+FqjxZi
+   xv7+HFRmtPqaEc8szJww4h3/Yg35zaPQZzSIMySuTvuURivgNhYo46SNa
+   ZJ+pC9yNcRdhHCDKL7Qdw0HvCTrbc83Ox9ucDUPVvWcCQ6ZwYF7Su9tif
+   kqNsu4nijDqUFYutVZIH6o/gJt3x2eEDe8KqaT2GZBSBgvpnlNULbmWey
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="367165652"
+X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
+   d="scan'208";a="367165652"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 14:58:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="708064639"
+X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
+   d="scan'208";a="708064639"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.54.38.190])
+  by orsmga003.jf.intel.com with ESMTP; 23 Oct 2023 14:58:09 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+	id 04477301C7C; Mon, 23 Oct 2023 14:58:08 -0700 (PDT)
+From: Andi Kleen <ak@linux.intel.com>
 To: Namhyung Kim <namhyung@kernel.org>
-Cc: Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Stephane Eranian <eranian@google.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 22/48] perf annotate: Add --type-stat option for debugging
-Message-ID: <ZTawKZK/ImWsPkUI@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,  Jiri Olsa
+ <jolsa@kernel.org>,  Peter Zijlstra <peterz@infradead.org>,  Ian Rogers
+ <irogers@google.com>,  Adrian Hunter <adrian.hunter@intel.com>,  Ingo
+ Molnar <mingo@kernel.org>,  LKML <linux-kernel@vger.kernel.org>,
+  linux-perf-users@vger.kernel.org,  Linus Torvalds
+ <torvalds@linux-foundation.org>,  Stephane Eranian <eranian@google.com>,
+  Masami Hiramatsu <mhiramat@kernel.org>,
+  linux-toolchains@vger.kernel.org,  linux-trace-devel@vger.kernel.org,
+  Ben Woodard <woodard@redhat.com>,  Joe Mario <jmario@redhat.com>,  Kees
+ Cook <keescook@chromium.org>,  David Blaikie <blaikie@google.com>,  Xu Liu
+ <xliuprof@google.com>,  Kan Liang <kan.liang@linux.intel.com>,  Ravi
+ Bangoria <ravi.bangoria@amd.com>
+Subject: Re: [RFC 00/48] perf tools: Introduce data type profiling (v1)
 References: <20231012035111.676789-1-namhyung@kernel.org>
- <20231012035111.676789-23-namhyung@kernel.org>
- <ZTatKUD6nS7OlvuC@kernel.org>
+Date: Mon, 23 Oct 2023 14:58:08 -0700
+In-Reply-To: <20231012035111.676789-1-namhyung@kernel.org> (Namhyung Kim's
+	message of "Wed, 11 Oct 2023 20:50:23 -0700")
+Message-ID: <87pm15vw5r.fsf@linux.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.3 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZTatKUD6nS7OlvuC@kernel.org>
-X-Url: http://acmel.wordpress.com
+Content-Type: text/plain
 
-Em Mon, Oct 23, 2023 at 02:28:10PM -0300, Arnaldo Carvalho de Melo escreveu:
-> When building with NO_DWARF=1 or in systems lacking the used DWARF
-> libraries. I noticed with some of the build containers, will updated
-> those to have the required libraries so that this feature gets compile
-> tested there.
+Namhyung Kim <namhyung@kernel.org> writes:
 
-The problem was that I build with/without NO_LIBELF=1, and with it set
-NO_DWARF=1 is enabled and thus breaks the build.
+> Hello,
+>
+> I'm happy to share my work on data type profiling.  This is to associate
+> PMU samples to data types they refer using DWARF debug information.  So
+> basically it depends on quality of PMU events and compiler for producing
+> DWARF info.  But it doesn't require any changes in the target program.
+>
+> As it's an early stage, I've targeted the kernel on x86 to reduce the
+> amount of work but IIUC there's no fundamental blocker to apply it to
+> other architectures and applications.
 
-- Arnaldo
+FWIW i posted a similar patchkit a long time ago
+
+https://lore.kernel.org/lkml/20171128002321.2878-13-andi@firstfloor.org/
+
+It was on my list to resurrect that, it's great that you are doing
+something similar.
+
+The latest iteration (not posted) was here:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/ak/linux-misc.git/log/?h=perf/var-resolve-7
+
+The main difference seems to be that mine was more for perf script
+(e.g. i supported PT decoding), while you are more focused on sampling.
+I relied on the kprobes/uprobes engine, which unfortunately was always
+quite slow and had many limitations.
+
+Perhaps it would be possible merge the useful parts of the two approaches?
+
+-Andi
