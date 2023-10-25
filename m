@@ -1,50 +1,50 @@
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6BC52D61D;
-	Wed, 25 Oct 2023 05:51:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD7F11732;
+	Wed, 25 Oct 2023 05:58:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F1E12F;
-	Tue, 24 Oct 2023 22:51:54 -0700 (PDT)
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-27d0e3d823fso3670181a91.1;
-        Tue, 24 Oct 2023 22:51:53 -0700 (PDT)
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CEB7AC;
+	Tue, 24 Oct 2023 22:58:17 -0700 (PDT)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-27d3c886671so4634592a91.3;
+        Tue, 24 Oct 2023 22:58:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698213113; x=1698817913;
+        d=1e100.net; s=20230601; t=1698213496; x=1698818296;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2TMBfJBS6+PFjOoTjREUjGF4g9nD1G3ML89T7sHAIHE=;
-        b=II2AkRLF6IPNL205+OTGUatUsEU3SWGKh68OXC4qkEjkHvv7/v6H3vwlLPjc8GgMdC
-         N2qkBfEF82oYLnuVIuMoLNduH0n6Rr47LzNvOMi0Td3E0+tbHasPHdgCg2i/R3mxA9D+
-         XFGjvLD0qpR7oQCbc0HsZ0SsbCRlCjJ0eA5YfYUNNvB2W1shJ9bp0bAxzZufjsajFepN
-         5WGyW7LCdCoIfNNkdfALHkIrNBD+GUW+aeyYbyoHy0nJ8CnXPKeXUrVkwAvX/fMhXpt4
-         yhimHvBMxQeZDUycJeC22P4WTpAP6euCZujB6D3Z5hLZ3AxBltjeOtSTX+fxt+uNAzRb
-         4xcw==
-X-Gm-Message-State: AOJu0Yy4OVnmG1wOX1fmaWfryP4i+MNWYVHJnomzOw1T1MQYVd5I1ZMB
-	zak7GpKpqMam8geZqhrOsPIAcg2ItnrEXjUrMks=
-X-Google-Smtp-Source: AGHT+IHs6VkUGZcdZf7cWbqnymCoL3HDLsrq7a6rHvnt2eg1riPr61FqkJKAeE2+gtViW6QDTWgTrhrfzcetKAkILH4=
-X-Received: by 2002:a17:90b:3784:b0:27d:8fbd:be95 with SMTP id
- mz4-20020a17090b378400b0027d8fbdbe95mr11992237pjb.28.1698213113310; Tue, 24
- Oct 2023 22:51:53 -0700 (PDT)
+        bh=V05i2ECvWgChxk8nStR6mE0WuTD+NL192RARRKjFwM4=;
+        b=KdKhdXrJbHwks4dDUY5wugqHfzHx2H2YrHU5uE132pdi8CdmzT8dqlXklw/jdwbkI1
+         bwhP9Vyaic8cFgJghFxDCrSz+lEYgXwHtXeKVDz9HDQ1+rGTwHVaM3OpqQSrpQCPmB72
+         O95BiQyRmns8yxrVSGXbsz3skrx65ZqvZs5EZ3SRI08s1OO6q7Awhc7NkV/4QGa+IDWy
+         sZ0XdaWSIDSr1PxEw6jMM88L0bLStscDFDJNY24KYQ8Vic8z4/tJ40mSEK62SNl4qB+Y
+         v9nhQFkFPP52a3XL4dVKRuZQyyg8Sw86wpYFymYZ0EqTHhK2lNNSiIPDbUevKSmQ8sC/
+         puHg==
+X-Gm-Message-State: AOJu0YwAijsFzLkYRbTwFILNVE2F780e15PyxkA/ocSfA3UHdIweBuW9
+	UYS7uYzx9QOuUNe6PiUZe9Btt9SDlYUtJbqS3vo=
+X-Google-Smtp-Source: AGHT+IG+vHgzKghvsoVyNwhQEBIST83HNK3dp1eKEgC/ffGx+TKBO/S/DFDh2BcIfu5GbvxcbPLsGTgjzwQGyyDK7Gc=
+X-Received: by 2002:a17:90a:4b0f:b0:27d:ed83:fdff with SMTP id
+ g15-20020a17090a4b0f00b0027ded83fdffmr478973pjh.16.1698213496543; Tue, 24 Oct
+ 2023 22:58:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231012035111.676789-1-namhyung@kernel.org> <87pm15vw5r.fsf@linux.intel.com>
- <CAM9d7ch504cnFzTL1qPh349uSrbEZop19kB-DbUsnoOKEvtFBQ@mail.gmail.com> <ZTh41epbjwGsMPaB@tassilo>
-In-Reply-To: <ZTh41epbjwGsMPaB@tassilo>
+References: <20231012035111.676789-1-namhyung@kernel.org> <20231012091128.GL6307@noisy.programming.kicks-ass.net>
+ <CAM9d7cgcFCidNamZm+O-89N-Jf4EYF263f1GbxYf0xEbkwwE6Q@mail.gmail.com> <CADzB+2mu98v9EUsA1Y-wVDSrXT2kznKi87Tb6QdN5y4mMFNsyg@mail.gmail.com>
+In-Reply-To: <CADzB+2mu98v9EUsA1Y-wVDSrXT2kznKi87Tb6QdN5y4mMFNsyg@mail.gmail.com>
 From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 24 Oct 2023 22:51:41 -0700
-Message-ID: <CAM9d7cgin9=dh-cypSzpvfZu_N7qv8Gxg0VVGdOm+VXB8i1FAQ@mail.gmail.com>
+Date: Tue, 24 Oct 2023 22:58:05 -0700
+Message-ID: <CAM9d7ciTKe4O-23j10wC8DUbX_cmNewbLwZq99kMh_1ZA+5e0w@mail.gmail.com>
 Subject: Re: [RFC 00/48] perf tools: Introduce data type profiling (v1)
-To: Andi Kleen <ak@linux.intel.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Ingo Molnar <mingo@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org, 
+To: Jason Merrill <jason@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org, 
 	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
 	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
 	linux-trace-devel@vger.kernel.org, Ben Woodard <woodard@redhat.com>, 
@@ -54,46 +54,74 @@ Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 24, 2023 at 7:09=E2=80=AFPM Andi Kleen <ak@linux.intel.com> wro=
-te:
->
-> >
-> > >
-> > > The main difference seems to be that mine was more for perf script
-> > > (e.g. i supported PT decoding), while you are more focused on samplin=
-g.
-> > > I relied on the kprobes/uprobes engine, which unfortunately was alway=
-s
-> > > quite slow and had many limitations.
-> >
-> > Right, I think dealing with regular samples would be more useful.
->
-> My code supported samples too, but only through perf script, not report.
->
-> See
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/ak/linux-misc.git/commit/=
-?h=3Dperf/var-resolve-7&id=3D4775664750a6296acb732b7adfa224c6a06a126f
->
-> for an example.
->
-> My take was that i wasn't sure that perf report is the right interface
-> to visualize the variables changing -- to be really usable you probably
-> need some plots and likely something like an UI.
+Hello,
 
-I see.  Your concern is to see how variables are changing.
-But it seems you only displayed constant values.
+On Tue, Oct 24, 2023 at 8:07=E2=80=AFPM Jason Merrill <jason@redhat.com> wr=
+ote:
+>
+> On Thu, Oct 12, 2023 at 12:44=E2=80=AFPM Namhyung Kim <namhyung@kernel.or=
+g> wrote:
+>>
+>> On Thu, Oct 12, 2023 at 2:13=E2=80=AFAM Peter Zijlstra <peterz@infradead=
+.org> wrote:
+>>
+>> > > This can generate instructions like below.
+>> > >
+>> > >     ...
+>> > >     0x123456:  mov    0x18(%rdi), %rcx
+>> > >     0x12345a:  mov    0x10(%rcx), %rax     <=3D=3D=3D sample
+>> > >     0x12345e:  test   %rax, %rax
+>> > >     0x123461:  je     <...>
+>> > >     ...
+>> > >
+>> > > And imagine we have a sample at 0x12345a.  Then it cannot find a
+>> > > variable for %rcx since DWARF didn't generate one (it only knows abo=
+ut
+>> > > 'bar').  Without compiler support, all it can do is to track the cod=
+e
+>> > > execution in each instruction and propagate the type info in each
+>> > > register and stack location by following the memory access.
+>> >
+>> > Right, this has more or less been the 'excuse' for why doing this has
+>> > been 'difficult' for the past 10+ years :/
+>>
+>> I'm sure I missed some cases, but I managed to make it work on
+>> usual cases.  We can improve it by handling it more cases and
+>> instructions but it'd be great if we have a better support from the
+>> toolchains.
+>
+>
+> How helpful would it be for the compiler to generate an unnamed DW_TAG_va=
+riable for the temporary in %rcx?
+
+That'd be fantastic, and that's exactly what I'm asking. :)
 
 >
-> For you I think you focus more on the types than the individual
-> variables? That's a slightly different approach.
-
-Right, you can see which fields in a struct are accessed
-mostly and probably change the layout for better result.
-
+>>
+>> > > Actually I found a discussion in the DWARF mailing list to support
+>> > > "inverted location lists" and it seems a perfect fit for this projec=
+t.
+>> > > It'd be great if new DWARF would provide a way to lookup variable an=
+d
+>> > > type info using a concrete location info (like a register number).
+>> > >
+>> > >   https://lists.dwarfstd.org/pipermail/dwarf-discuss/2023-June/00227=
+8.html
+>> >
+>> > Stephane was going to talk to tools people about this over 10 years ag=
+o
+>> > :-)
+>>
+>> Hope that they would make some progress.
 >
-> But then my engine had a lot of limitations, i suppose redoing that on
-> top of yours would give better results.
+>
+> This seems expensive in debug info size for a lookup optimization; better=
+ IMO to construct the reverse lookup table from the existing information, a=
+s it sounds like you are doing.  Though it would be good to cache that tabl=
+e between runs, and ideally share it with other interested tools.
 
-Sounds good, thanks.
+Probably.  Then it still needs a standard way to express such data.
+Maybe we can have an option to generate the table.
+
+Thanks,
 Namhyung
