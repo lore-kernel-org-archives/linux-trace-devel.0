@@ -1,104 +1,96 @@
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8ABA208AB;
-	Tue, 24 Oct 2023 19:16:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966FE109;
-	Tue, 24 Oct 2023 12:16:45 -0700 (PDT)
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-27d0acd0903so3300557a91.1;
-        Tue, 24 Oct 2023 12:16:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698175005; x=1698779805;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vlrMdORzuIhiCBvkEoOY6AWWIm1ZLrThelr3CoWzGZs=;
-        b=G2uQ1r6dV0Sexax7tleAPNzf9PDdohQaUNLyjU71+QWblGZhm34T/sknLmvijR7fCN
-         5Ec1aEklFtawW92pLmBRIAej8T2d8VAzEdPYvJ7RgDRzjAR+5aQNroGuDQ4CCGUgju/A
-         rPpbqDzJRdGP56P/VSb60x9WH9GhbnNB9c0ycZ9XCqDMxHEjube5Baeu8G10nBE8YKNs
-         koBDYaKedhO6zOWX0Lyi2kyfKI+Tce/VjrrsI1dPcT1+euresj7QW+0wTqZB4qfDPp9q
-         RP7WN0ifzV96CxkS0hpB6JX7b3fAoEWZhuzZdgwOIipuYaB9xldzUgpOEEqqY//nj7Ha
-         mS5A==
-X-Gm-Message-State: AOJu0YzX/6F7qhMfzE5uujK0Ts8ifRzVpplBE0lJc7tJeJl4IAE5FDTv
-	+MvI4e+nHlCVK1MWUhLuIcTSWROdZ+YgkNANyUU=
-X-Google-Smtp-Source: AGHT+IEeRsQ1loc1YYpY1a97APjF3K2XayF3rTQMK7R5xL0iD1J55Zh+XzcrB698bMOcSnEoPrg92TWKjW0OoSHcWxQ=
-X-Received: by 2002:a17:90a:199e:b0:27e:3342:5c1f with SMTP id
- 30-20020a17090a199e00b0027e33425c1fmr6738107pji.43.1698175004908; Tue, 24 Oct
- 2023 12:16:44 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C425817FC;
+	Wed, 25 Oct 2023 02:09:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Amw346gw"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF65C10C6;
+	Tue, 24 Oct 2023 19:09:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698199768; x=1729735768;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=tM33/slKrB++OIadj/NigLF45+0D5ztylCW7LoOSFx8=;
+  b=Amw346gwBAWcmqbMD3zFFxRfXzzNWx/+HAnvQ3X8P7nziwwRuTAIfrjf
+   TnIkwWvSxBKyjUfZy/3ZWuv17NosarJ9dE4Fx/nf/k48jmxTzrXmRr2Ce
+   IQti6KsorWdEuP/k3ZhoOIc7/5XKGX8+WJgXwaMIH642mf4eKDeHxlD36
+   p1lK7EqgWoKsscHm8I+VbzcubhBhFNq4x3lUXMEXcFifDxwYg2Y2kKgSR
+   25CFfw7sPIv/0voqZ/TY75SN+YG0wYc+2H7QxpBG3/JxEDrxlheOwcGvK
+   t/Hz1ZNqexgdq3nkyIlzj+0nwS9hGejybqTUaJdR6u8ZXbbofuUIGgcI+
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="367433559"
+X-IronPort-AV: E=Sophos;i="6.03,249,1694761200"; 
+   d="scan'208";a="367433559"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 19:09:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="1005841775"
+X-IronPort-AV: E=Sophos;i="6.03,249,1694761200"; 
+   d="scan'208";a="1005841775"
+Received: from tassilo.jf.intel.com (HELO tassilo) ([10.54.38.190])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 19:09:26 -0700
+Date: Tue, 24 Oct 2023 19:09:25 -0700
+From: Andi Kleen <ak@linux.intel.com>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Stephane Eranian <eranian@google.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+	Ben Woodard <woodard@redhat.com>, Joe Mario <jmario@redhat.com>,
+	Kees Cook <keescook@chromium.org>,
+	David Blaikie <blaikie@google.com>, Xu Liu <xliuprof@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Ravi Bangoria <ravi.bangoria@amd.com>
+Subject: Re: [RFC 00/48] perf tools: Introduce data type profiling (v1)
+Message-ID: <ZTh41epbjwGsMPaB@tassilo>
+References: <20231012035111.676789-1-namhyung@kernel.org>
+ <87pm15vw5r.fsf@linux.intel.com>
+ <CAM9d7ch504cnFzTL1qPh349uSrbEZop19kB-DbUsnoOKEvtFBQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231012035111.676789-1-namhyung@kernel.org> <87pm15vw5r.fsf@linux.intel.com>
-In-Reply-To: <87pm15vw5r.fsf@linux.intel.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 24 Oct 2023 12:16:32 -0700
-Message-ID: <CAM9d7ch504cnFzTL1qPh349uSrbEZop19kB-DbUsnoOKEvtFBQ@mail.gmail.com>
-Subject: Re: [RFC 00/48] perf tools: Introduce data type profiling (v1)
-To: Andi Kleen <ak@linux.intel.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Ingo Molnar <mingo@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
-	linux-trace-devel@vger.kernel.org, Ben Woodard <woodard@redhat.com>, 
-	Joe Mario <jmario@redhat.com>, Kees Cook <keescook@chromium.org>, 
-	David Blaikie <blaikie@google.com>, Xu Liu <xliuprof@google.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Ravi Bangoria <ravi.bangoria@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7ch504cnFzTL1qPh349uSrbEZop19kB-DbUsnoOKEvtFBQ@mail.gmail.com>
 
-Hi Andi,
-
-On Mon, Oct 23, 2023 at 2:58=E2=80=AFPM Andi Kleen <ak@linux.intel.com> wro=
-te:
->
-> Namhyung Kim <namhyung@kernel.org> writes:
->
-> > Hello,
+> 
 > >
-> > I'm happy to share my work on data type profiling.  This is to associat=
-e
-> > PMU samples to data types they refer using DWARF debug information.  So
-> > basically it depends on quality of PMU events and compiler for producin=
-g
-> > DWARF info.  But it doesn't require any changes in the target program.
-> >
-> > As it's an early stage, I've targeted the kernel on x86 to reduce the
-> > amount of work but IIUC there's no fundamental blocker to apply it to
-> > other architectures and applications.
->
-> FWIW i posted a similar patchkit a long time ago
->
-> https://lore.kernel.org/lkml/20171128002321.2878-13-andi@firstfloor.org/
->
-> It was on my list to resurrect that, it's great that you are doing
-> something similar.
->
-> The latest iteration (not posted) was here:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/ak/linux-misc.git/log/?h=
-=3Dperf/var-resolve-7
+> > The main difference seems to be that mine was more for perf script
+> > (e.g. i supported PT decoding), while you are more focused on sampling.
+> > I relied on the kprobes/uprobes engine, which unfortunately was always
+> > quite slow and had many limitations.
+> 
+> Right, I think dealing with regular samples would be more useful.
 
-Oh, I wasn't aware of this series.  I'll take a look.
+My code supported samples too, but only through perf script, not report.
 
->
-> The main difference seems to be that mine was more for perf script
-> (e.g. i supported PT decoding), while you are more focused on sampling.
-> I relied on the kprobes/uprobes engine, which unfortunately was always
-> quite slow and had many limitations.
+See 
 
-Right, I think dealing with regular samples would be more useful.
-But Intel PT support looks interesting.
+https://git.kernel.org/pub/scm/linux/kernel/git/ak/linux-misc.git/commit/?h=perf/var-resolve-7&id=4775664750a6296acb732b7adfa224c6a06a126f
 
->
-> Perhaps it would be possible merge the useful parts of the two approaches=
-?
+for an example.
 
-Sounds good!  Thanks for your comment!
-Namhyung
+My take was that i wasn't sure that perf report is the right interface
+to visualize the variables changing -- to be really usable you probably
+need some plots and likely something like an UI.
+
+For you I think you focus more on the types than the individual
+variables? That's a slightly different approach.
+
+But then my engine had a lot of limitations, i suppose redoing that on
+top of yours would give better results.
+
+
+-Andi
