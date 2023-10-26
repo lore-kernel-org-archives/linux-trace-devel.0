@@ -1,106 +1,138 @@
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51CB3328C0;
-	Wed, 25 Oct 2023 20:03:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KdrfpdGK"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D04183;
-	Wed, 25 Oct 2023 13:03:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698264202; x=1729800202;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=YLZGgBkznfjPx0x7i1mnmcfOOiepLxrJSAVTpEABg3I=;
-  b=KdrfpdGKHZzii6dq6/Njstq5GoQlhBH3oJQZrwmL9AP5KtqjEwYc9f/w
-   S75sMxRCMuUeoX+aToXqz4jFdf641drwhyTlaNFhxax/tOWJWXV8WEazp
-   gn1PIjdFvRT4xLLLFToJPOJ3zpgQtL32mDN6h98sN+W8O9TZscy5vKomc
-   kxx1Xqllgm2qCitCFcNt4ntzBHjd8LNSONVB4VSPDSCR8T8ZT4r3qKD+e
-   kjqzaNmwVcnt4rTjtW6aOvNYgPe7Y+mCyi58LHdA/H1XeFPgPEpurUT4y
-   lnC0W5ketLiAvQkZJC3sdJ2T0FtbBWK10QbTxg7gluo+KL+HmcRw3Ziu6
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="473624936"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="473624936"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 13:01:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="902664878"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="902664878"
-Received: from tassilo.jf.intel.com (HELO tassilo) ([10.54.38.190])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 12:59:31 -0700
-Date: Wed, 25 Oct 2023 13:01:53 -0700
-From: Andi Kleen <ak@linux.intel.com>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Stephane Eranian <eranian@google.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-	Ben Woodard <woodard@redhat.com>, Joe Mario <jmario@redhat.com>,
-	Kees Cook <keescook@chromium.org>,
-	David Blaikie <blaikie@google.com>, Xu Liu <xliuprof@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Ravi Bangoria <ravi.bangoria@amd.com>
-Subject: Re: [RFC 00/48] perf tools: Introduce data type profiling (v1)
-Message-ID: <ZTl0MdKauLd21ahn@tassilo>
-References: <20231012035111.676789-1-namhyung@kernel.org>
- <87pm15vw5r.fsf@linux.intel.com>
- <CAM9d7ch504cnFzTL1qPh349uSrbEZop19kB-DbUsnoOKEvtFBQ@mail.gmail.com>
- <ZTh41epbjwGsMPaB@tassilo>
- <CAM9d7cgin9=dh-cypSzpvfZu_N7qv8Gxg0VVGdOm+VXB8i1FAQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C40849C;
+	Thu, 26 Oct 2023 05:26:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A68DC;
+	Wed, 25 Oct 2023 22:26:44 -0700 (PDT)
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6b1e46ca282so479782b3a.2;
+        Wed, 25 Oct 2023 22:26:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698298004; x=1698902804;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fkwhE1tq13CFNHMxPtXkTbeVkmQsKLfvU2fVKCp1d+4=;
+        b=fVEDwguWRAnqmUEQ6Xwre3jWXLKxOFX+bk021PmOQR7FzQ0VlBy+o+GhKfD7LY6h61
+         5eGX0DtYLHRFjaL2VPJE+IG+H2QMevs97VzI42XLg8/ovYH5MhY7lH3eRqQts9KD34j6
+         NZ4W/AfMlmlpxzkDIV7yydgmDpl0y4HsXyocZS6UYymsETWh6gq2FaReyTsqhqzxNZeY
+         W6DKRcNqKGAq8qYsezbVBcbWYv2D2dx4RbBHHUi6gZMct4/Bf9KManhdhvOIC/ILAWRI
+         8gbXqrRHaWdgjW5H3lVgSM/+aV50wI3rbmHJb+sVQhwcwTjwLkxP4w6GpNn81Pfr7yTb
+         wbvA==
+X-Gm-Message-State: AOJu0YydMjA2pFLIKbTaoGnB1b0oJetDckpioWQfcA00uhYTt0qgd92R
+	sCt4gNrVKO1rUjrdNaI9tNqQC+MercCNFlqOGS/YKnFp
+X-Google-Smtp-Source: AGHT+IF9EIq1vb+jjYGoqaOOW1kHY58DrZb9p6mV96BDR21MhsmYXqAyVHHfIpytaB8LYx9GC8fEvLh5sj6lCmcjMxU=
+X-Received: by 2002:a05:6a21:1a3:b0:17b:7505:8ab7 with SMTP id
+ le35-20020a056a2101a300b0017b75058ab7mr10362811pzb.46.1698298003837; Wed, 25
+ Oct 2023 22:26:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM9d7cgin9=dh-cypSzpvfZu_N7qv8Gxg0VVGdOm+VXB8i1FAQ@mail.gmail.com>
+References: <20231012035111.676789-1-namhyung@kernel.org> <20231012035111.676789-14-namhyung@kernel.org>
+ <ZTahaOOOgFkclARB@kernel.org> <CAM9d7cg65AYsPg+0eKg8Cj1Vb42vwCdjJAP3_1G_r7-Dwu7z8A@mail.gmail.com>
+In-Reply-To: <CAM9d7cg65AYsPg+0eKg8Cj1Vb42vwCdjJAP3_1G_r7-Dwu7z8A@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Wed, 25 Oct 2023 22:26:32 -0700
+Message-ID: <CAM9d7ciZ0axC1A=q2mT-5fCmNUZF=QtmfcQmfs8aR-tgYftYmA@mail.gmail.com>
+Subject: Re: [PATCH 13/48] perf annotate: Add annotate_get_insn_location()
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
+	linux-trace-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 24, 2023 at 10:51:41PM -0700, Namhyung Kim wrote:
-> On Tue, Oct 24, 2023 at 7:09 PM Andi Kleen <ak@linux.intel.com> wrote:
+On Tue, Oct 24, 2023 at 12:10=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
+ wrote:
+>
+> Hi Arnaldo,
+>
+> On Mon, Oct 23, 2023 at 9:38=E2=80=AFAM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
 > >
-> > >
-> > > >
-> > > > The main difference seems to be that mine was more for perf script
-> > > > (e.g. i supported PT decoding), while you are more focused on sampling.
-> > > > I relied on the kprobes/uprobes engine, which unfortunately was always
-> > > > quite slow and had many limitations.
-> > >
-> > > Right, I think dealing with regular samples would be more useful.
+> > Em Wed, Oct 11, 2023 at 08:50:36PM -0700, Namhyung Kim escreveu:
+> > > The annotate_get_insn_location() is to get the detailed information o=
+f
+> > > instruction locations like registers and offset.  It has source and
+> > > target operands locations in an array.  Each operand can have a
+> > > register and an offset.  The offset is meaningful when mem_ref flag i=
+s
+> > > set.
 > >
-> > My code supported samples too, but only through perf script, not report.
-> >
-> > See
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/ak/linux-misc.git/commit/?h=perf/var-resolve-7&id=4775664750a6296acb732b7adfa224c6a06a126f
-> >
-> > for an example.
-> >
-> > My take was that i wasn't sure that perf report is the right interface
-> > to visualize the variables changing -- to be really usable you probably
-> > need some plots and likely something like an UI.
-> 
-> I see.  Your concern is to see how variables are changing.
-> But it seems you only displayed constant values.
+> > This needs to be enclosed in HAVE_DWARF_SUPPORT, as the build is failin=
+g
+> > in systems where this isn't available, see patch below.
+>
+> Thanks for the test and the patch, will add it to v2.
 
-Yes the examples were not very good, but that was the intention.
-Values can be much more powerful than only types!
+Hmm.. I think this function can work without DWARF.
+If the only problem is get_dwarf_regnum() probably
+I can add a dummy function when libdw is not found.
+Maybe I need to use arch reg number here and
+convert to DWARF later.
 
-For PT I also had special compiler patch that added suitable ptwrites
-(see [1]) that allowed to track any variable.
+Thanks,
+Namhyung
 
--Andi
 
-[1] https://github.com/andikleen/gcc-old-svn/tree/ptwrite-18
+> >
+> >   CC      /tmp/build/perf/arch/x86/util/pmu.o
+> > util/annotate.c: In function 'extract_reg_offset':
+> > util/annotate.c:3537:24: error: implicit declaration of function 'get_d=
+warf_regnum' [-Werror=3Dimplicit-function-declaration]
+> >  3537 |         op_loc->reg1 =3D get_dwarf_regnum(regname, 0);
+> >       |                        ^~~~~~~~~~~~~~~~
+> >   CC      /tmp/build/perf/tests/vmlinux-kallsyms.o
+> >
+> > I tested it with 'make NO_DWARF=3D1'
+> >
+> > - Arnaldo
+> >
+> > diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+> > index 9d653a1e84ce4889..b998c81c89be04fc 100644
+> > --- a/tools/perf/util/annotate.c
+> > +++ b/tools/perf/util/annotate.c
+> > @@ -3486,6 +3486,7 @@ int annotate_check_args(struct annotation_options=
+ *args)
+> >         return 0;
+> >  }
+> >
+> > +#ifdef HAVE_DWARF_SUPPORT
+> >  /*
+> >   * Get register number and access offset from the given instruction.
+> >   * It assumes AT&T x86 asm format like OFFSET(REG).  Maybe it needs
+> > @@ -3591,3 +3592,4 @@ int annotate_get_insn_location(struct arch *arch,=
+ struct disasm_line *dl,
+> >
+> >         return 0;
+> >  }
+> > +#endif // HAVE_DWARF_SUPPORT
+> > diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
+> > index 4adda492233d2742..484be346a279c481 100644
+> > --- a/tools/perf/util/annotate.h
+> > +++ b/tools/perf/util/annotate.h
+> > @@ -437,6 +437,7 @@ int annotate_parse_percent_type(const struct option=
+ *opt, const char *_str,
+> >
+> >  int annotate_check_args(struct annotation_options *args);
+> >
+> > +#ifdef HAVE_DWARF_SUPPORT
+> >  /**
+> >   * struct annotated_op_loc - Location info of instruction operand
+> >   * @reg: Register in the operand
+> > @@ -473,4 +474,5 @@ struct annotated_insn_loc {
+> >  int annotate_get_insn_location(struct arch *arch, struct disasm_line *=
+dl,
+> >                                struct annotated_insn_loc *loc);
+> >
+> > +#endif /* HAVE_DWARF_SUPPORT */
+> >  #endif /* __PERF_ANNOTATE_H */
