@@ -1,23 +1,23 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C37A2D616;
-	Sat,  4 Nov 2023 10:52:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FFE2C2D0;
+	Sat,  4 Nov 2023 10:59:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t4NrV/C/"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54C48C433C7;
-	Sat,  4 Nov 2023 10:52:05 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AlNk1U0o"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04F89C433BA;
+	Sat,  4 Nov 2023 10:59:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699095128;
-	bh=JAQzfnL7a2XNBBwy0ihLXq/4JX6Tfc5YeXjkF7JEm9s=;
+	s=k20201202; t=1699095574;
+	bh=KcH3qtrbrngsmcLmJ9FlXeAJy5bZDec5KEhDaAEVk3c=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=t4NrV/C/8GIF+0H0zbZtQPYxVDEDCMLd4m+FsVXa1Rj+XWpC22zaSCG8QXRjYLjA9
-	 of9cchfnYtFBK0W5RasRZpy77ydRhq0H+hBkOk6YKNInyZPHlpedAe5Z2foH5DNu7A
-	 NKESoqXC1rol9dNinnXBD4gy2KLN99lMVw+KHWHgIBvLSimfrfi4S+gge536BlBNR/
-	 PDDs5YQqjKMPTUTWA0HqvLDyO/sRdMTKvbipwuTyzvqDinmrXqUNrkiqEj9oS4Olda
-	 XN18veNqzgZy9yJYiwpivh35AM4ZG9Fx8l7V5hAfPPPEQqcVOkE+6Rd3uI8gJSHOAp
-	 88nhJ+44DN7dA==
-Date: Sat, 4 Nov 2023 19:52:02 +0900
+	b=AlNk1U0oZ3ISi8TOWwssSrRJFs0B7YQBch4HvrDq0LyHReYD+ZnwydQYjBSTU9lxU
+	 nuywVDYZjKtOBsCdP37kdVQIgRGwOxOkvXD3W7x0CFxmEn02yOybwaA4mkwI3gkMF+
+	 AOFzXbuO5hhXov/xwQwxw9zXQlCmXKyYgyYZsQQ5S0odfCLgsCz8CZiIKmInROVyLC
+	 5d36LB6GadaTQgNQ/Jnt3/ae5pSHEF34h3WshVtgFl2qcbwl9aFzlSbDKfz01/70f5
+	 INZ2RnOyKJUueoa/rUU+XzEpIhvxnfFzsgsZFsfiEBHFNRZTmj+p/hMlgdko8Hh2pm
+	 IjRk0wt/2NWWg==
+Date: Sat, 4 Nov 2023 19:59:29 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To: Namhyung Kim <namhyung@kernel.org>
 Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa
@@ -28,11 +28,12 @@ Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa
  <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>,
  Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org,
  linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 04/48] perf dwarf-aux: Fix die_get_typename() for void *
-Message-Id: <20231104195202.e8c300fcdc3938e2bf13f5cf@kernel.org>
-In-Reply-To: <20231012035111.676789-5-namhyung@kernel.org>
+Subject: Re: [PATCH 05/48] perf dwarf-aux: Move #ifdef code to the header
+ file
+Message-Id: <20231104195929.d229225a0dc6242ba8c8a517@kernel.org>
+In-Reply-To: <20231012035111.676789-6-namhyung@kernel.org>
 References: <20231012035111.676789-1-namhyung@kernel.org>
-	<20231012035111.676789-5-namhyung@kernel.org>
+	<20231012035111.676789-6-namhyung@kernel.org>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -43,63 +44,79 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 11 Oct 2023 20:50:27 -0700
+On Wed, 11 Oct 2023 20:50:28 -0700
 Namhyung Kim <namhyung@kernel.org> wrote:
 
-> The die_get_typename() is to return a C-like type name from DWARF debug
-> entry and it follows data type if the target entry is a pointer type.
-> But I found void pointers don't have the type attribte to follow and
-> then the function returns an error for that case.  This results in a
-> broken type string for void pointer types.
-> 
-> For example, the following type entries are pointer types.
-> 
->  <1><48c>: Abbrev Number: 4 (DW_TAG_pointer_type)
->     <48d>   DW_AT_byte_size   : 8
->     <48d>   DW_AT_type        : <0x481>
->  <1><491>: Abbrev Number: 211 (DW_TAG_pointer_type)
->     <493>   DW_AT_byte_size   : 8
->  <1><494>: Abbrev Number: 4 (DW_TAG_pointer_type)
->     <495>   DW_AT_byte_size   : 8
->     <495>   DW_AT_type        : <0x49e>
-> 
-> The first one at offset 48c and the third one at offset 494 have type
-> information.  Then they are pointer types for the referenced types.
-> But the second one at offset 491 doesn't have the type attribute.
+> It's a usual convention that the conditional code is handled in a header
+> file.  As I'm planning to add some more of them, let's move the current
+> code to the header first.
 
-This looks good to me!
+OK, looks good to me.
 
 Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Thanks!
+Thanks,
 
 > 
 > Cc: Masami Hiramatsu <mhiramat@kernel.org>
 > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 > ---
->  tools/perf/util/dwarf-aux.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
+>  tools/perf/util/dwarf-aux.c |  7 -------
+>  tools/perf/util/dwarf-aux.h | 19 +++++++++++++++++--
+>  2 files changed, 17 insertions(+), 9 deletions(-)
 > 
 > diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
-> index 2941d88f2199..4849c3bbfd95 100644
+> index 4849c3bbfd95..adef2635587d 100644
 > --- a/tools/perf/util/dwarf-aux.c
 > +++ b/tools/perf/util/dwarf-aux.c
-> @@ -1090,7 +1090,14 @@ int die_get_typename(Dwarf_Die *vr_die, struct strbuf *buf)
->  		return strbuf_addf(buf, "%s%s", tmp, name ?: "");
->  	}
->  	ret = die_get_typename(&type, buf);
-> -	return ret ? ret : strbuf_addstr(buf, tmp);
-> +	if (ret < 0) {
-> +		/* void pointer has no type attribute */
-> +		if (tag == DW_TAG_pointer_type && ret == -ENOENT)
-> +			return strbuf_addf(buf, "void*");
-> +
-> +		return ret;
-> +	}
-> +	return strbuf_addstr(buf, tmp);
+> @@ -1245,13 +1245,6 @@ int die_get_var_range(Dwarf_Die *sp_die, Dwarf_Die *vr_die, struct strbuf *buf)
+>  out:
+>  	return ret;
 >  }
+> -#else
+> -int die_get_var_range(Dwarf_Die *sp_die __maybe_unused,
+> -		      Dwarf_Die *vr_die __maybe_unused,
+> -		      struct strbuf *buf __maybe_unused)
+> -{
+> -	return -ENOTSUP;
+> -}
+>  #endif
 >  
->  /**
+>  /*
+> diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
+> index 7ec8bc1083bb..4f5d0211ee4f 100644
+> --- a/tools/perf/util/dwarf-aux.h
+> +++ b/tools/perf/util/dwarf-aux.h
+> @@ -121,7 +121,6 @@ int die_get_typename(Dwarf_Die *vr_die, struct strbuf *buf);
+>  
+>  /* Get the name and type of given variable DIE, stored as "type\tname" */
+>  int die_get_varname(Dwarf_Die *vr_die, struct strbuf *buf);
+> -int die_get_var_range(Dwarf_Die *sp_die, Dwarf_Die *vr_die, struct strbuf *buf);
+>  
+>  /* Check if target program is compiled with optimization */
+>  bool die_is_optimized_target(Dwarf_Die *cu_die);
+> @@ -130,4 +129,20 @@ bool die_is_optimized_target(Dwarf_Die *cu_die);
+>  void die_skip_prologue(Dwarf_Die *sp_die, Dwarf_Die *cu_die,
+>  		       Dwarf_Addr *entrypc);
+>  
+> -#endif
+> +#ifdef HAVE_DWARF_GETLOCATIONS_SUPPORT
+> +
+> +/* Get byte offset range of given variable DIE */
+> +int die_get_var_range(Dwarf_Die *sp_die, Dwarf_Die *vr_die, struct strbuf *buf);
+> +
+> +#else /*  HAVE_DWARF_GETLOCATIONS_SUPPORT */
+> +
+> +static inline int die_get_var_range(Dwarf_Die *sp_die __maybe_unused,
+> +				    Dwarf_Die *vr_die __maybe_unused,
+> +				    struct strbuf *buf __maybe_unused)
+> +{
+> +	return -ENOTSUP;
+> +}
+> +
+> +#endif /* HAVE_DWARF_GETLOCATIONS_SUPPORT */
+> +
+> +#endif /* _DWARF_AUX_H */
 > -- 
 > 2.42.0.655.g421f12c284-goog
 > 
