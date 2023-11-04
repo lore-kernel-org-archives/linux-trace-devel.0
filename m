@@ -1,85 +1,109 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED193B2A3;
-	Thu, 26 Oct 2023 19:37:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C37A2D616;
+	Sat,  4 Nov 2023 10:52:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XrQsUwHn"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E91E6C433C8;
-	Thu, 26 Oct 2023 19:37:42 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t4NrV/C/"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54C48C433C7;
+	Sat,  4 Nov 2023 10:52:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698349063;
-	bh=uvyIqOBKNfkFHe0q/wlli3JBnyltBarFakFaKmvDmFQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XrQsUwHnBd2TcXUEDuaqTNHZ1Hp9O8Hws1njlwmYTNGZfI6KqoNWhSB0i3NBasXkd
-	 p1V/M80GAPwhhHBshBMFU0rFFB+LTiSxD6+9cqfiu5T7mDbW587X/fE4vBoMgB5fUR
-	 jthL2hlDcon2dyul3HJ8W7XI9yIkYVKCchyfSDjhOkKkYRD7d1mR4Lw84sqquCTGHA
-	 LyMQ+lqbS1G8A2u5yq7Bk6i6LssU+2PGxHu6/Nm9QCohVFx29ivMi7boKa55TOhgyF
-	 ChlcVVz166XfVf7tisa77/G6bUoR6plUb9gwKbf8dHu9pjX10l3/c0YWtETHbMtN7d
-	 2+ICEayNhHpYg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id D93054035D; Thu, 26 Oct 2023 16:37:39 -0300 (-03)
-Date: Thu, 26 Oct 2023 16:37:39 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+	s=k20201202; t=1699095128;
+	bh=JAQzfnL7a2XNBBwy0ihLXq/4JX6Tfc5YeXjkF7JEm9s=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=t4NrV/C/8GIF+0H0zbZtQPYxVDEDCMLd4m+FsVXa1Rj+XWpC22zaSCG8QXRjYLjA9
+	 of9cchfnYtFBK0W5RasRZpy77ydRhq0H+hBkOk6YKNInyZPHlpedAe5Z2foH5DNu7A
+	 NKESoqXC1rol9dNinnXBD4gy2KLN99lMVw+KHWHgIBvLSimfrfi4S+gge536BlBNR/
+	 PDDs5YQqjKMPTUTWA0HqvLDyO/sRdMTKvbipwuTyzvqDinmrXqUNrkiqEj9oS4Olda
+	 XN18veNqzgZy9yJYiwpivh35AM4ZG9Fx8l7V5hAfPPPEQqcVOkE+6Rd3uI8gJSHOAp
+	 88nhJ+44DN7dA==
+Date: Sat, 4 Nov 2023 19:52:02 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To: Namhyung Kim <namhyung@kernel.org>
-Cc: Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Stephane Eranian <eranian@google.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 13/48] perf annotate: Add annotate_get_insn_location()
-Message-ID: <ZTrAA57YAQiNxQ1e@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa
+ <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ian Rogers
+ <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, Ingo Molnar
+ <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ linux-perf-users@vger.kernel.org, Linus Torvalds
+ <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org,
+ linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 04/48] perf dwarf-aux: Fix die_get_typename() for void *
+Message-Id: <20231104195202.e8c300fcdc3938e2bf13f5cf@kernel.org>
+In-Reply-To: <20231012035111.676789-5-namhyung@kernel.org>
 References: <20231012035111.676789-1-namhyung@kernel.org>
- <20231012035111.676789-14-namhyung@kernel.org>
- <ZTahaOOOgFkclARB@kernel.org>
- <CAM9d7cg65AYsPg+0eKg8Cj1Vb42vwCdjJAP3_1G_r7-Dwu7z8A@mail.gmail.com>
- <CAM9d7ciZ0axC1A=q2mT-5fCmNUZF=QtmfcQmfs8aR-tgYftYmA@mail.gmail.com>
+	<20231012035111.676789-5-namhyung@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM9d7ciZ0axC1A=q2mT-5fCmNUZF=QtmfcQmfs8aR-tgYftYmA@mail.gmail.com>
-X-Url: http://acmel.wordpress.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Em Wed, Oct 25, 2023 at 10:26:32PM -0700, Namhyung Kim escreveu:
-> On Tue, Oct 24, 2023 at 12:10 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> > On Mon, Oct 23, 2023 at 9:38 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > > Em Wed, Oct 11, 2023 at 08:50:36PM -0700, Namhyung Kim escreveu:
-> > > > The annotate_get_insn_location() is to get the detailed information of
-> > > > instruction locations like registers and offset.  It has source and
-> > > > target operands locations in an array.  Each operand can have a
-> > > > register and an offset.  The offset is meaningful when mem_ref flag is
-> > > > set.
+On Wed, 11 Oct 2023 20:50:27 -0700
+Namhyung Kim <namhyung@kernel.org> wrote:
 
-> > > This needs to be enclosed in HAVE_DWARF_SUPPORT, as the build is failing
-> > > in systems where this isn't available, see patch below.
+> The die_get_typename() is to return a C-like type name from DWARF debug
+> entry and it follows data type if the target entry is a pointer type.
+> But I found void pointers don't have the type attribte to follow and
+> then the function returns an error for that case.  This results in a
+> broken type string for void pointer types.
+> 
+> For example, the following type entries are pointer types.
+> 
+>  <1><48c>: Abbrev Number: 4 (DW_TAG_pointer_type)
+>     <48d>   DW_AT_byte_size   : 8
+>     <48d>   DW_AT_type        : <0x481>
+>  <1><491>: Abbrev Number: 211 (DW_TAG_pointer_type)
+>     <493>   DW_AT_byte_size   : 8
+>  <1><494>: Abbrev Number: 4 (DW_TAG_pointer_type)
+>     <495>   DW_AT_byte_size   : 8
+>     <495>   DW_AT_type        : <0x49e>
+> 
+> The first one at offset 48c and the third one at offset 494 have type
+> information.  Then they are pointer types for the referenced types.
+> But the second one at offset 491 doesn't have the type attribute.
 
-> > Thanks for the test and the patch, will add it to v2.
- 
-> Hmm.. I think this function can work without DWARF.
-> If the only problem is get_dwarf_regnum() probably
-> I can add a dummy function when libdw is not found.
-> Maybe I need to use arch reg number here and
-> convert to DWARF later.
+This looks good to me!
 
-That can be a possibility, but the interesting thing is to try to run
-'make -C tools/perf build-test' regularly to catch these builds without
-some of the components, I bet this one:
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-make_no_libelf      := NO_LIBELF=1
+Thanks!
 
-As my container builds did, as that is one of the things built there.
+> 
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/dwarf-aux.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+> index 2941d88f2199..4849c3bbfd95 100644
+> --- a/tools/perf/util/dwarf-aux.c
+> +++ b/tools/perf/util/dwarf-aux.c
+> @@ -1090,7 +1090,14 @@ int die_get_typename(Dwarf_Die *vr_die, struct strbuf *buf)
+>  		return strbuf_addf(buf, "%s%s", tmp, name ?: "");
+>  	}
+>  	ret = die_get_typename(&type, buf);
+> -	return ret ? ret : strbuf_addstr(buf, tmp);
+> +	if (ret < 0) {
+> +		/* void pointer has no type attribute */
+> +		if (tag == DW_TAG_pointer_type && ret == -ENOENT)
+> +			return strbuf_addf(buf, "void*");
+> +
+> +		return ret;
+> +	}
+> +	return strbuf_addstr(buf, tmp);
+>  }
+>  
+>  /**
+> -- 
+> 2.42.0.655.g421f12c284-goog
+> 
 
-One other suggestion would be to add some warning when the required
-components to build the data profiling feature are not present.
 
-- Arnaldo
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
