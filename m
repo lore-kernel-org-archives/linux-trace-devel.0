@@ -1,23 +1,23 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FFE2C2D0;
-	Sat,  4 Nov 2023 10:59:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B33BF1C05;
+	Sun,  5 Nov 2023 08:36:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AlNk1U0o"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04F89C433BA;
-	Sat,  4 Nov 2023 10:59:31 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lgdbL1ug"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6161C433C7;
+	Sun,  5 Nov 2023 08:36:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699095574;
-	bh=KcH3qtrbrngsmcLmJ9FlXeAJy5bZDec5KEhDaAEVk3c=;
+	s=k20201202; t=1699173384;
+	bh=cq1uyWY//yo7TAcMVEgPAIfwQ/7UUGgpAXQ4/ztZPIs=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=AlNk1U0oZ3ISi8TOWwssSrRJFs0B7YQBch4HvrDq0LyHReYD+ZnwydQYjBSTU9lxU
-	 nuywVDYZjKtOBsCdP37kdVQIgRGwOxOkvXD3W7x0CFxmEn02yOybwaA4mkwI3gkMF+
-	 AOFzXbuO5hhXov/xwQwxw9zXQlCmXKyYgyYZsQQ5S0odfCLgsCz8CZiIKmInROVyLC
-	 5d36LB6GadaTQgNQ/Jnt3/ae5pSHEF34h3WshVtgFl2qcbwl9aFzlSbDKfz01/70f5
-	 INZ2RnOyKJUueoa/rUU+XzEpIhvxnfFzsgsZFsfiEBHFNRZTmj+p/hMlgdko8Hh2pm
-	 IjRk0wt/2NWWg==
-Date: Sat, 4 Nov 2023 19:59:29 +0900
+	b=lgdbL1ughmbn5SdYS5NIgJkGd+qRDZYZOzn5e9qsvTMSftldjyJfIbdv7XZSfB1sP
+	 hOazaIlNu3WlZho88+1iQRAbdZaATP66mIlHR8fGOdVPho9yyq+teZCAvJQOju4bmD
+	 h06LFkWCYRAJHzr4EGBaYfoPKs4NMzpGgZ6LahhFjLup4TPfkjbL1Bf1t4ooKdXhzL
+	 budJSW4Q4gqzydby7ppFXZGRbFTiQ0peo4w6Zwo0HAWtjjU5oYlcFbpPsaLqtsQefC
+	 XrC8TCmAe8x5lUitirZZ7cDk145QcshXEfvm0XZbOSc5o08UvdjSBcbuL/uQvrgwCf
+	 CNKoNfupxJRHw==
+Date: Sun, 5 Nov 2023 17:36:18 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To: Namhyung Kim <namhyung@kernel.org>
 Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa
@@ -28,12 +28,11 @@ Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa
  <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>,
  Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org,
  linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 05/48] perf dwarf-aux: Move #ifdef code to the header
- file
-Message-Id: <20231104195929.d229225a0dc6242ba8c8a517@kernel.org>
-In-Reply-To: <20231012035111.676789-6-namhyung@kernel.org>
+Subject: Re: [PATCH 09/48] perf dwarf-regs: Add get_dwarf_regnum()
+Message-Id: <20231105173618.c3e5d9faef347f27a6c4f049@kernel.org>
+In-Reply-To: <20231012035111.676789-10-namhyung@kernel.org>
 References: <20231012035111.676789-1-namhyung@kernel.org>
-	<20231012035111.676789-6-namhyung@kernel.org>
+	<20231012035111.676789-10-namhyung@kernel.org>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -44,83 +43,169 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 11 Oct 2023 20:50:28 -0700
+On Wed, 11 Oct 2023 20:50:32 -0700
 Namhyung Kim <namhyung@kernel.org> wrote:
 
-> It's a usual convention that the conditional code is handled in a header
-> file.  As I'm planning to add some more of them, let's move the current
-> code to the header first.
-
-OK, looks good to me.
-
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thanks,
-
+> The get_dwarf_regnum() returns a DWARF register number from a register
+> name string according to the psABI.  Also add two pseudo encodings of
+> DWARF_REG_PC which is a register that are used by PC-relative addressing
+> and DWARF_REG_FB which is a frame base register.  They need to be
+> handled in a special way.
 > 
+
+I have some comments below.
+
 > Cc: Masami Hiramatsu <mhiramat@kernel.org>
 > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 > ---
->  tools/perf/util/dwarf-aux.c |  7 -------
->  tools/perf/util/dwarf-aux.h | 19 +++++++++++++++++--
->  2 files changed, 17 insertions(+), 9 deletions(-)
+>  tools/perf/arch/x86/util/dwarf-regs.c | 38 +++++++++++++++++++++++++++
+>  tools/perf/util/dwarf-regs.c          | 33 +++++++++++++++++++++++
+>  tools/perf/util/include/dwarf-regs.h  | 11 ++++++++
+>  3 files changed, 82 insertions(+)
 > 
-> diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
-> index 4849c3bbfd95..adef2635587d 100644
-> --- a/tools/perf/util/dwarf-aux.c
-> +++ b/tools/perf/util/dwarf-aux.c
-> @@ -1245,13 +1245,6 @@ int die_get_var_range(Dwarf_Die *sp_die, Dwarf_Die *vr_die, struct strbuf *buf)
->  out:
->  	return ret;
+> diff --git a/tools/perf/arch/x86/util/dwarf-regs.c b/tools/perf/arch/x86/util/dwarf-regs.c
+> index 530934805710..79835b897cae 100644
+> --- a/tools/perf/arch/x86/util/dwarf-regs.c
+> +++ b/tools/perf/arch/x86/util/dwarf-regs.c
+> @@ -113,3 +113,41 @@ int regs_query_register_offset(const char *name)
+>  			return roff->offset;
+>  	return -EINVAL;
 >  }
-> -#else
-> -int die_get_var_range(Dwarf_Die *sp_die __maybe_unused,
-> -		      Dwarf_Die *vr_die __maybe_unused,
-> -		      struct strbuf *buf __maybe_unused)
-> -{
-> -	return -ENOTSUP;
-> -}
->  #endif
->  
->  /*
-> diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
-> index 7ec8bc1083bb..4f5d0211ee4f 100644
-> --- a/tools/perf/util/dwarf-aux.h
-> +++ b/tools/perf/util/dwarf-aux.h
-> @@ -121,7 +121,6 @@ int die_get_typename(Dwarf_Die *vr_die, struct strbuf *buf);
->  
->  /* Get the name and type of given variable DIE, stored as "type\tname" */
->  int die_get_varname(Dwarf_Die *vr_die, struct strbuf *buf);
-> -int die_get_var_range(Dwarf_Die *sp_die, Dwarf_Die *vr_die, struct strbuf *buf);
->  
->  /* Check if target program is compiled with optimization */
->  bool die_is_optimized_target(Dwarf_Die *cu_die);
-> @@ -130,4 +129,20 @@ bool die_is_optimized_target(Dwarf_Die *cu_die);
->  void die_skip_prologue(Dwarf_Die *sp_die, Dwarf_Die *cu_die,
->  		       Dwarf_Addr *entrypc);
->  
-> -#endif
-> +#ifdef HAVE_DWARF_GETLOCATIONS_SUPPORT
 > +
-> +/* Get byte offset range of given variable DIE */
-> +int die_get_var_range(Dwarf_Die *sp_die, Dwarf_Die *vr_die, struct strbuf *buf);
+> +struct dwarf_regs_idx {
+> +	const char *name;
+> +	int idx;
+> +};
 > +
-> +#else /*  HAVE_DWARF_GETLOCATIONS_SUPPORT */
+> +static const struct dwarf_regs_idx x86_regidx_table[] = {
+> +	{ "rax", 0 }, { "eax", 0 }, { "ax", 0 }, { "al", 0 },
+> +	{ "rdx", 1 }, { "edx", 1 }, { "dx", 1 }, { "dl", 1 },
+> +	{ "rcx", 2 }, { "ecx", 2 }, { "cx", 2 }, { "cl", 2 },
+> +	{ "rbx", 3 }, { "edx", 3 }, { "bx", 3 }, { "bl", 3 },
+> +	{ "rsi", 4 }, { "esi", 4 }, { "si", 4 }, { "sil", 4 },
+> +	{ "rdi", 5 }, { "edi", 5 }, { "di", 5 }, { "dil", 5 },
+> +	{ "rbp", 6 }, { "ebp", 6 }, { "bp", 6 }, { "bpl", 6 },
+> +	{ "rsp", 7 }, { "esp", 7 }, { "sp", 7 }, { "spl", 7 },
+> +	{ "r8", 8 }, { "r8d", 8 }, { "r8w", 8 }, { "r8b", 8 },
+> +	{ "r9", 9 }, { "r9d", 9 }, { "r9w", 9 }, { "r9b", 9 },
+> +	{ "r10", 10 }, { "r10d", 10 }, { "r10w", 10 }, { "r10b", 10 },
+> +	{ "r11", 11 }, { "r11d", 11 }, { "r11w", 11 }, { "r11b", 11 },
+> +	{ "r12", 12 }, { "r12d", 12 }, { "r12w", 12 }, { "r12b", 12 },
+> +	{ "r13", 13 }, { "r13d", 13 }, { "r13w", 13 }, { "r13b", 13 },
+> +	{ "r14", 14 }, { "r14d", 14 }, { "r14w", 14 }, { "r14b", 14 },
+> +	{ "r15", 15 }, { "r15d", 15 }, { "r15w", 15 }, { "r15b", 15 },
+> +	{ "rip", DWARF_REG_PC },
+> +};
 > +
-> +static inline int die_get_var_range(Dwarf_Die *sp_die __maybe_unused,
-> +				    Dwarf_Die *vr_die __maybe_unused,
-> +				    struct strbuf *buf __maybe_unused)
+> +int get_arch_regnum(const char *name)
 > +{
-> +	return -ENOTSUP;
+> +	unsigned int i;
+> +
+> +	if (*name != '%')
+> +		return -1;
+
+Isn't it better to return an error code? e.g. -EINVAL.
+
+> +
+> +	for (i = 0; i < ARRAY_SIZE(x86_regidx_table); i++)
+> +		if (!strcmp(x86_regidx_table[i].name, name + 1))
+> +			return x86_regidx_table[i].idx;
+> +	return -1;
+
+And -ENOENT.
+
+> +}
+> diff --git a/tools/perf/util/dwarf-regs.c b/tools/perf/util/dwarf-regs.c
+> index 69cfaa5953bf..28d786c7df55 100644
+> --- a/tools/perf/util/dwarf-regs.c
+> +++ b/tools/perf/util/dwarf-regs.c
+> @@ -5,6 +5,8 @@
+>   * Written by: Masami Hiramatsu <mhiramat@kernel.org>
+>   */
+>  
+> +#include <stdlib.h>
+> +#include <string.h>
+>  #include <debug.h>
+>  #include <dwarf-regs.h>
+>  #include <elf.h>
+> @@ -68,3 +70,34 @@ const char *get_dwarf_regstr(unsigned int n, unsigned int machine)
+>  	}
+>  	return NULL;
+>  }
+> +
+> +__weak int get_arch_regnum(const char *name __maybe_unused)
+> +{
+> +	return -1;
+
+And -EOPNOTSUPP.
+
 > +}
 > +
-> +#endif /* HAVE_DWARF_GETLOCATIONS_SUPPORT */
+> +/* Return DWARF register number from architecture register name */
+> +int get_dwarf_regnum(const char *name, unsigned int machine)
+> +{
+> +	char *regname = strdup(name);
+> +	int reg = -1;
+> +	char *p;
 > +
-> +#endif /* _DWARF_AUX_H */
+> +	if (regname == NULL)
+> +		return -1;
+
+Here, -EINVAL.
+
+> +
+> +	/* For convenience, remove trailing characters */
+> +	p = strpbrk(regname, " ,)");
+> +	if (p)
+> +		*p = '\0';
+> +
+> +	switch (machine) {
+> +	case EM_NONE:	/* Generic arch - use host arch */
+> +		reg = get_arch_regnum(regname);
+> +		break;
+> +	default:
+> +		pr_err("ELF MACHINE %x is not supported.\n", machine);
+> +	}
+> +	free(regname);
+> +	return reg;
+> +}
+> diff --git a/tools/perf/util/include/dwarf-regs.h b/tools/perf/util/include/dwarf-regs.h
+> index 7d99a084e82d..b515f694f55e 100644
+> --- a/tools/perf/util/include/dwarf-regs.h
+> +++ b/tools/perf/util/include/dwarf-regs.h
+> @@ -2,6 +2,9 @@
+>  #ifndef _PERF_DWARF_REGS_H_
+>  #define _PERF_DWARF_REGS_H_
+>  
+> +#define DWARF_REG_PC  0xd3af9c /* random number */
+> +#define DWARF_REG_FB  0xd3affb /* random number */
+> +
+
+Is this for other patch in the series?
+
+>  #ifdef HAVE_DWARF_SUPPORT
+>  const char *get_arch_regstr(unsigned int n);
+>  /*
+> @@ -10,6 +13,14 @@ const char *get_arch_regstr(unsigned int n);
+>   * machine: ELF machine signature (EM_*)
+>   */
+>  const char *get_dwarf_regstr(unsigned int n, unsigned int machine);
+> +
+> +int get_arch_regnum(const char *name);
+> +/*
+> + * get_dwarf_regnum - Returns DWARF regnum from register name
+> + * name: architecture register name
+> + * machine: ELF machine signature (EM_*)
+> + */
+> +int get_dwarf_regnum(const char *name, unsigned int machine);
+>  #endif
+>  
+>  #ifdef HAVE_ARCH_REGS_QUERY_REGISTER_OFFSET
 > -- 
 > 2.42.0.655.g421f12c284-goog
 > 
 
+Thank you,
 
 -- 
 Masami Hiramatsu (Google) <mhiramat@kernel.org>
