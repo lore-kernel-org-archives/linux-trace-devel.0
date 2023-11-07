@@ -1,204 +1,86 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0765AE569;
-	Tue,  7 Nov 2023 09:32:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E17A2A8C7
+	for <linux-trace-devel@vger.kernel.org>; Tue,  7 Nov 2023 22:33:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LNyTBRsD"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA885C433C7;
-	Tue,  7 Nov 2023 09:32:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699349532;
-	bh=2de/ujfjpG8mGlZWE7v/o1nNFaTyVAJBU4Ts5xFC4U0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=LNyTBRsD05STGYMOgAp7X7/N0gA+x1NsiEoSS9iKpCh7a3mCWBTau6vGYnAjuUXfw
-	 CJWgEeO9HFa7knJEmYnCEG30wnz+oNoIhDQKXlWq70W6BC/NyqxgajmtDgHzZ2Shle
-	 Cjjpukmc2z9RJ6V3ngSJKpEI8DgRCk1zmPP7J9imVDfx1Ii6XeQmKNGFgKHSgqbfo+
-	 qTM1Lv+gAGaNTmROZVigZlRoR6PnBbBpaIzgSPK6vq+uVLHudGOl58oyEhaJfH/WYp
-	 am1yeP2MM2KY5omGv3KBPE+AJ346FMudJYcicBuxYh2EIGi/d24+PEEHkLi5ltuVXJ
-	 T9U6eMbLNszNw==
-Date: Tue, 7 Nov 2023 18:32:07 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa
- <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ian Rogers
- <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, Ingo Molnar
- <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- linux-perf-users@vger.kernel.org, Linus Torvalds
- <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>,
- Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org,
- linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 33/48] perf dwarf-aux: Check allowed DWARF Ops
-Message-Id: <20231107183207.2e3aded5985f699fdb3bcd16@kernel.org>
-In-Reply-To: <20231012035111.676789-34-namhyung@kernel.org>
-References: <20231012035111.676789-1-namhyung@kernel.org>
-	<20231012035111.676789-34-namhyung@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b="1FV+hSWy"
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B24D11C
+	for <linux-trace-devel@vger.kernel.org>; Tue,  7 Nov 2023 14:33:07 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40839807e82so1019755e9.0
+        for <linux-trace-devel@vger.kernel.org>; Tue, 07 Nov 2023 14:33:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=smile-fr.20230601.gappssmtp.com; s=20230601; t=1699396385; x=1700001185; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cgJyOMZZeBdJH1Xou73gegM/w1x/25Pjj9ShslfxkgY=;
+        b=1FV+hSWyHmobRlKu5l4gyLYmWCO2RuWLChRBUDn4TGyqZs29fIpQmVT6SSThi2KXdN
+         xCmqc/9qWeV1thqVKDZzuOv5NscMIX9yBO9F4puw/CknHwWtFWYdZdG2LJKtN+xFpJ5B
+         hsQSErYQieDDgDl4Yyh0RS0/8YRh85+gPKmfbpiNM1h6nKmMI9rTKdl4OmB0r1sYDkcl
+         TElOS+2CitwLdTamcD0/EW2PL8GTVYO27GeVR5ZwjJaw53cIV5TSajKBVxV7ShDTrs/V
+         /MR+BuHlfpDHkwDnk/4xjZtPn1TZqk46Dx/wig5vPldHCH9nQDOKIm525xQAaznvXSCw
+         38AA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699396385; x=1700001185;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cgJyOMZZeBdJH1Xou73gegM/w1x/25Pjj9ShslfxkgY=;
+        b=huyAG5zXPciZ5unWPB1DjUX5hFZ9WfYP4txr3hVKdYDSFK2ZV3766rL57syvXsZBvC
+         fgmGAJpiQLDcosZE925neBf066kUh/ZJ3YGXn30YLSuvtZ43k96FhR9IO/B4glyBz2yH
+         Ql6JZO33Sb+pkvcXgmmN3zE1yf2nIutWPCtl4xkXfT5oaIWpjHf6CtwhJly5XLLuWb5X
+         eAidXwnvQUOLG7I1OZGncDt6GkwQA5Z2RsNQHwT2006ezVX9VOYQR9fitN1RFBVeNxJu
+         s6az0GU08E9TW2bG6GZv51lkrcxyjMz8zA5w6cTF7CfaZW+dRv5JS2pvnfnBWO66Q1G7
+         jCGw==
+X-Gm-Message-State: AOJu0Yyo7EUcxaJK3/y+UhJ2Be8iqTkZ+AjnerBrFagW0HIOGFJcr44J
+	hCKc3Qew4CHXQCiqgOXm21sDcX/B6DA54Zst9b8=
+X-Google-Smtp-Source: AGHT+IFRRnnwtwVojTwvTpVSCC1qYwdqJqEeorp5z76CV6g9vyEOMqldkmpd6ZM0WJwAUzvJOgGFhA==
+X-Received: by 2002:a05:600c:45c6:b0:3ff:516b:5c4c with SMTP id s6-20020a05600c45c600b003ff516b5c4cmr107793wmo.18.1699396385005;
+        Tue, 07 Nov 2023 14:33:05 -0800 (PST)
+Received: from P-ASN-ECS-830T8C3.numericable.fr ([89.159.1.53])
+        by smtp.gmail.com with ESMTPSA id p12-20020a05600c358c00b003fe61c33df5sm17252303wmq.3.2023.11.07.14.33.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 14:33:04 -0800 (PST)
+From: Yoann Congal <yoann.congal@smile.fr>
+To: linux-trace-devel@vger.kernel.org
+Cc: Yoann Congal <yoann.congal@smile.fr>
+Subject: [PATCH] trace cmd record: Remove extra characters in documentation
+Date: Tue,  7 Nov 2023 23:32:44 +0100
+Message-Id: <20231107223244.1121582-1-yoann.congal@smile.fr>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Wed, 11 Oct 2023 20:50:56 -0700
-Namhyung Kim <namhyung@kernel.org> wrote:
+In --tsync-interval option documentation, remove extra characters that
+should not be there.
 
-> The DWARF location expression can be fairly complex and it'd be hard
-> to match it with the condition correctly.  So let's be conservative
-> and only allow simple expressions.  For now it just checks the first
-> operation in the list.  The following operations looks ok:
-> 
->  * DW_OP_stack_value
->  * DW_OP_deref_size
->  * DW_OP_deref
->  * DW_OP_piece
-> 
-> To refuse complex (and unsupported) location expressions, add
-> check_allowed_ops() to compare the rest of the list.  It seems earlier
-> result contained those unsupported expressions.  For example, I found
-> some local struct variable is placed like below.
-> 
->  <2><43d1517>: Abbrev Number: 62 (DW_TAG_variable)
->     <43d1518>   DW_AT_location    : 15 byte block: 91 50 93 8 91 78 93 4 93 84 8 91 68 93 4
->         (DW_OP_fbreg: -48; DW_OP_piece: 8;
->          DW_OP_fbreg: -8; DW_OP_piece: 4;
->          DW_OP_piece: 1028;
->          DW_OP_fbreg: -24; DW_OP_piece: 4)
-> 
-> Another example is something like this.
-> 
->     0057c8be ffffffffffffffff ffffffff812109f0 (base address)
->     0057c8ce ffffffff812112b5 ffffffff812112c8 (DW_OP_breg3 (rbx): 0;
->                                                 DW_OP_constu: 18446744073709551612;
->                                                 DW_OP_and;
->                                                 DW_OP_stack_value)
-> 
-> It should refuse them.  After the change, the stat shows:
-> 
->   Annotate data type stats:
->   total 294, ok 158 (53.7%), bad 136 (46.3%)
->   -----------------------------------------------------------
->           30 : no_sym
->           32 : no_mem_ops
->           53 : no_var
->           14 : no_typeinfo
->            7 : bad_offset
-> 
+Signed-off-by: Yoann Congal <yoann.congal@smile.fr>
+---
+ Documentation/trace-cmd/trace-cmd-record.1.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The code itself looks good to me.
-
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-If this fixes the previous patch in the same series (this seems a fix for the
-main usecase), please make it to a single patch.
-
-Thank you,
-
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/util/dwarf-aux.c | 44 +++++++++++++++++++++++++++++++++----
->  1 file changed, 40 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
-> index 7f3822d08ab7..093d7e82b333 100644
-> --- a/tools/perf/util/dwarf-aux.c
-> +++ b/tools/perf/util/dwarf-aux.c
-> @@ -1305,6 +1305,34 @@ static bool match_var_offset(Dwarf_Die *die_mem, struct find_var_data *data,
->  	return true;
->  }
->  
-> +static bool check_allowed_ops(Dwarf_Op *ops, size_t nops)
-> +{
-> +	/* The first op is checked separately */
-> +	ops++;
-> +	nops--;
-> +
-> +	/*
-> +	 * It needs to make sure if the location expression matches to the given
-> +	 * register and offset exactly.  Thus it rejects any complex expressions
-> +	 * and only allows a few of selected operators that doesn't change the
-> +	 * location.
-> +	 */
-> +	while (nops) {
-> +		switch (ops->atom) {
-> +		case DW_OP_stack_value:
-> +		case DW_OP_deref_size:
-> +		case DW_OP_deref:
-> +		case DW_OP_piece:
-> +			break;
-> +		default:
-> +			return false;
-> +		}
-> +		ops++;
-> +		nops--;
-> +	}
-> +	return true;
-> +}
-> +
->  /* Only checks direct child DIEs in the given scope. */
->  static int __die_find_var_reg_cb(Dwarf_Die *die_mem, void *arg)
->  {
-> @@ -1332,25 +1360,31 @@ static int __die_find_var_reg_cb(Dwarf_Die *die_mem, void *arg)
->  		/* Local variables accessed using frame base register */
->  		if (data->is_fbreg && ops->atom == DW_OP_fbreg &&
->  		    data->offset >= (int)ops->number &&
-> +		    check_allowed_ops(ops, nops) &&
->  		    match_var_offset(die_mem, data, data->offset, ops->number))
->  			return DIE_FIND_CB_END;
->  
->  		/* Only match with a simple case */
->  		if (data->reg < DWARF_OP_DIRECT_REGS) {
-> -			if (ops->atom == (DW_OP_reg0 + data->reg) && nops == 1)
-> +			/* pointer variables saved in a register 0 to 31 */
-> +			if (ops->atom == (DW_OP_reg0 + data->reg) &&
-> +			    check_allowed_ops(ops, nops))
->  				return DIE_FIND_CB_END;
->  
->  			/* Local variables accessed by a register + offset */
->  			if (ops->atom == (DW_OP_breg0 + data->reg) &&
-> +			    check_allowed_ops(ops, nops) &&
->  			    match_var_offset(die_mem, data, data->offset, ops->number))
->  				return DIE_FIND_CB_END;
->  		} else {
-> +			/* pointer variables saved in a register 32 or above */
->  			if (ops->atom == DW_OP_regx && ops->number == data->reg &&
-> -			    nops == 1)
-> +			    check_allowed_ops(ops, nops))
->  				return DIE_FIND_CB_END;
->  
->  			/* Local variables accessed by a register + offset */
->  			if (ops->atom == DW_OP_bregx && data->reg == ops->number &&
-> +			    check_allowed_ops(ops, nops) &&
->  			    match_var_offset(die_mem, data, data->offset, ops->number2))
->  				return DIE_FIND_CB_END;
->  		}
-> @@ -1412,7 +1446,8 @@ static int __die_find_var_addr_cb(Dwarf_Die *die_mem, void *arg)
->  		if (data->addr < ops->number)
->  			continue;
->  
-> -		if (match_var_offset(die_mem, data, data->addr, ops->number))
-> +		if (check_allowed_ops(ops, nops) &&
-> +		    match_var_offset(die_mem, data, data->addr, ops->number))
->  			return DIE_FIND_CB_END;
->  	}
->  	return DIE_FIND_CB_SIBLING;
-> @@ -1501,7 +1536,8 @@ int die_get_cfa(Dwarf *dwarf, u64 pc, int *preg, int *poffset)
->  		return -1;
->  
->  	if (!dwarf_cfi_addrframe(cfi, pc, &frame) &&
-> -	    !dwarf_frame_cfa(frame, &ops, &nops) && nops == 1) {
-> +	    !dwarf_frame_cfa(frame, &ops, &nops) &&
-> +	    check_allowed_ops(ops, nops)) {
->  		*preg = reg_from_dwarf_op(ops);
->  		*poffset = offset_from_dwarf_op(ops);
->  		return 0;
-> -- 
-> 2.42.0.655.g421f12c284-goog
-> 
-
-
+diff --git a/Documentation/trace-cmd/trace-cmd-record.1.txt b/Documentation/trace-cmd/trace-cmd-record.1.txt
+index b709e483..cebe2a0b 100644
+--- a/Documentation/trace-cmd/trace-cmd-record.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-record.1.txt
+@@ -363,9 +363,9 @@ OPTIONS
+ *--tsync-interval*::
+     Set the loop interval, in ms, for timestamps synchronization with guests:
+         If a negative number is specified, timestamps synchronization is disabled
+-        If 0 is specified, no loop is performed - timestamps offset is calculated only twice,"
++        If 0 is specified, no loop is performed - timestamps offset is calculated only twice,
+         at the beginning and at the end of the trace.
+-        Timestamps synchronization with guests works only if there is support for VSOCK.\n"
++        Timestamps synchronization with guests works only if there is support for VSOCK.
+ 
+ *--tsc2nsec*::
+     Convert the current clock to nanoseconds, using tsc multiplier and shift from the Linux
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.30.2
+
