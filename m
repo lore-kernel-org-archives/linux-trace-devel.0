@@ -1,246 +1,189 @@
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23687CA4C;
-	Wed,  8 Nov 2023 05:34:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1350D1A4;
-	Tue,  7 Nov 2023 21:34:57 -0800 (PST)
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-28014fed9efso5201343a91.0;
-        Tue, 07 Nov 2023 21:34:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699421696; x=1700026496;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aj8+KDGZnfeN+8vQSl4+O0eA16A22y/CzIXhddtooPI=;
-        b=chiOmGcCvmay3WnHKRgdSBIs/runRq8AxloMCPfSWWfvM43YI/CWvQQ0zUuGfdVAFp
-         P15/mmZKH/RWCclnNWmKE2BspVQ3tyirYkq8lPUs5VEX9sp06IBs7rieyLtvCLceX0wT
-         9wsMfXwhCqArT/XvW9Z04PzlxS9MshS/DvTSnEGQkXRzSyPwqLV3Jie7djKS+4/3khhh
-         6ocICQgE0r/1/oDmvPJTYHT6OOJnRi+cH2bXIfqJrgKuMQ+c7FeESNNM2u+IQqLV21z3
-         drFt5l75CbwZDMKuQ8Cg1CVE0i8FFvbxQyvMKchsglpSFwylqL7UZ4uRaQzPN+brG6EM
-         X7nA==
-X-Gm-Message-State: AOJu0Yyy4eLcnT5dHKtQLzsqqd/B3OohFE6H6/M+eRaAasWsMePk5mzf
-	a44RX3w6NdRiFwICGvueNmfc+YiSWo5EN8IRCdonL2cP
-X-Google-Smtp-Source: AGHT+IHm0pTIf2r+NoqJKkrRqkdT1E+A2wxNwpGxOCzkgbJykuseWPI4yruowkm/BHxXXY7fUJTQBmLSTBPTGAXUV0k=
-X-Received: by 2002:a17:90b:1b0e:b0:27c:ef18:d270 with SMTP id
- nu14-20020a17090b1b0e00b0027cef18d270mr755936pjb.20.1699421696369; Tue, 07
- Nov 2023 21:34:56 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3FA715487;
+	Wed,  8 Nov 2023 10:52:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F/R7fBAZ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E76F0C433C7;
+	Wed,  8 Nov 2023 10:52:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1699440730;
+	bh=t69XfdiHhJahtVbVhsn1LHGQM/HRauoe8VYClKKVkqI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=F/R7fBAZhpriEEiaQnueNxy3EqSxEY6to0uIwAImHY5kP8o8dWaAiZaqq1zsOwMsq
+	 Gg6JYYGK79+ZCTDiFChbbgYlQMIGAhnZFip2wFOPNuf0CrhIAmAt6NPX3GRz0mjOtL
+	 EktXEtAkYvF5S/qunlrvb07PUiYcYtr6Jm1S8AqRxBSZNByN1zjp9YIZBN/brk4oAw
+	 s+HVokS5Gl215Ydg6yGrgFAi37RmpFzrCFutfYXi2d7mb6Aajgd6gJ5WgqQmsRU4v3
+	 V2Rx5GAJA1QZjqxPX+F/5fsI3wCa2o08nWH1mhdm7CzHXvpdmIW/uCUUG/7CDsL7gX
+	 P9LAp5kYGeOOg==
+Date: Wed, 8 Nov 2023 19:52:04 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa
+ <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ian Rogers
+ <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, Ingo Molnar
+ <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ linux-perf-users@vger.kernel.org, Linus Torvalds
+ <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org,
+ linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 34/48] perf dwarf-aux: Add die_collect_vars()
+Message-Id: <20231108195204.a3ddfe5965e9c33661460ff4@kernel.org>
+In-Reply-To: <20231012035111.676789-35-namhyung@kernel.org>
+References: <20231012035111.676789-1-namhyung@kernel.org>
+	<20231012035111.676789-35-namhyung@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231012035111.676789-1-namhyung@kernel.org> <20231012035111.676789-34-namhyung@kernel.org>
- <20231107183207.2e3aded5985f699fdb3bcd16@kernel.org>
-In-Reply-To: <20231107183207.2e3aded5985f699fdb3bcd16@kernel.org>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 7 Nov 2023 21:34:45 -0800
-Message-ID: <CAM9d7chtQ7EUracK9f87NN-Er=u+rvKWShbqpvy=De7jyjauEQ@mail.gmail.com>
-Subject: Re: [PATCH 33/48] perf dwarf-aux: Check allowed DWARF Ops
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Ingo Molnar <mingo@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
-	linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Nov 7, 2023 at 1:32=E2=80=AFAM Masami Hiramatsu <mhiramat@kernel.or=
-g> wrote:
->
-> On Wed, 11 Oct 2023 20:50:56 -0700
-> Namhyung Kim <namhyung@kernel.org> wrote:
->
-> > The DWARF location expression can be fairly complex and it'd be hard
-> > to match it with the condition correctly.  So let's be conservative
-> > and only allow simple expressions.  For now it just checks the first
-> > operation in the list.  The following operations looks ok:
-> >
-> >  * DW_OP_stack_value
-> >  * DW_OP_deref_size
-> >  * DW_OP_deref
-> >  * DW_OP_piece
-> >
-> > To refuse complex (and unsupported) location expressions, add
-> > check_allowed_ops() to compare the rest of the list.  It seems earlier
-> > result contained those unsupported expressions.  For example, I found
-> > some local struct variable is placed like below.
-> >
-> >  <2><43d1517>: Abbrev Number: 62 (DW_TAG_variable)
-> >     <43d1518>   DW_AT_location    : 15 byte block: 91 50 93 8 91 78 93 =
-4 93 84 8 91 68 93 4
-> >         (DW_OP_fbreg: -48; DW_OP_piece: 8;
-> >          DW_OP_fbreg: -8; DW_OP_piece: 4;
-> >          DW_OP_piece: 1028;
-> >          DW_OP_fbreg: -24; DW_OP_piece: 4)
-> >
-> > Another example is something like this.
-> >
-> >     0057c8be ffffffffffffffff ffffffff812109f0 (base address)
-> >     0057c8ce ffffffff812112b5 ffffffff812112c8 (DW_OP_breg3 (rbx): 0;
-> >                                                 DW_OP_constu: 184467440=
-73709551612;
-> >                                                 DW_OP_and;
-> >                                                 DW_OP_stack_value)
-> >
-> > It should refuse them.  After the change, the stat shows:
-> >
-> >   Annotate data type stats:
-> >   total 294, ok 158 (53.7%), bad 136 (46.3%)
-> >   -----------------------------------------------------------
-> >           30 : no_sym
-> >           32 : no_mem_ops
-> >           53 : no_var
-> >           14 : no_typeinfo
-> >            7 : bad_offset
-> >
->
-> The code itself looks good to me.
->
-> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Wed, 11 Oct 2023 20:50:57 -0700
+Namhyung Kim <namhyung@kernel.org> wrote:
 
-Thanks!
+> The die_collect_vars() is to find all variable information in the scope
+> including function parameters.  The struct die_var_type is to save the
+> type of the variable with the location (reg and offset) as well as where
+> it's defined in the code (addr).
+> 
 
->
-> If this fixes the previous patch in the same series (this seems a fix for=
- the
-> main usecase), please make it to a single patch.
+This looks good to me.
 
-Well.. I think it's a fix and also a quality issue.  And I'd like to
-have this separately to document and confirm which operations
-are safe or acceptable.  I listed 4 operations here based on my
-local tests but I may miss something.
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Thanks,
-Namhyung
+BTW, I did similar thing in collect_variables_cb()@probe-finder.c, maybe
+this can simplify that too.
+
+Thank you,
+
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/dwarf-aux.c | 60 +++++++++++++++++++++++++++++++++++++
+>  tools/perf/util/dwarf-aux.h | 17 +++++++++++
+>  2 files changed, 77 insertions(+)
+> 
+> diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+> index 093d7e82b333..16e63d8caf83 100644
+> --- a/tools/perf/util/dwarf-aux.c
+> +++ b/tools/perf/util/dwarf-aux.c
+> @@ -1545,6 +1545,66 @@ int die_get_cfa(Dwarf *dwarf, u64 pc, int *preg, int *poffset)
+>  	return -1;
+>  }
+>  
+> +static int __die_collect_vars_cb(Dwarf_Die *die_mem, void *arg)
+> +{
+> +	struct die_var_type **var_types = arg;
+> +	Dwarf_Die type_die;
+> +	int tag = dwarf_tag(die_mem);
+> +	Dwarf_Attribute attr;
+> +	Dwarf_Addr base, start, end;
+> +	Dwarf_Op *ops;
+> +	size_t nops;
+> +	struct die_var_type *vt;
+> +
+> +	if (tag != DW_TAG_variable && tag != DW_TAG_formal_parameter)
+> +		return DIE_FIND_CB_SIBLING;
+> +
+> +	if (dwarf_attr(die_mem, DW_AT_location, &attr) == NULL)
+> +		return DIE_FIND_CB_SIBLING;
+> +
+> +	/*
+> +	 * Only collect the first location as it can reconstruct the
+> +	 * remaining state by following the instructions.
+> +	 * start = 0 means it covers the whole range.
+> +	 */
+> +	if (dwarf_getlocations(&attr, 0, &base, &start, &end, &ops, &nops) <= 0)
+> +		return DIE_FIND_CB_SIBLING;
+> +
+> +	if (die_get_real_type(die_mem, &type_die) == NULL)
+> +		return DIE_FIND_CB_SIBLING;
+> +
+> +	vt = malloc(sizeof(*vt));
+> +	if (vt == NULL)
+> +		return DIE_FIND_CB_END;
+> +
+> +	vt->die_off = dwarf_dieoffset(&type_die);
+> +	vt->addr = start;
+> +	vt->reg = reg_from_dwarf_op(ops);
+> +	vt->offset = offset_from_dwarf_op(ops);
+> +	vt->next = *var_types;
+> +	*var_types = vt;
+> +
+> +	return DIE_FIND_CB_SIBLING;
+> +}
+> +
+> +/**
+> + * die_collect_vars - Save all variables and parameters
+> + * @sc_die: a scope DIE
+> + * @var_types: a pointer to save the resulting list
+> + *
+> + * Save all variables and parameters in the @sc_die and save them to @var_types.
+> + * The @var_types is a singly-linked list containing type and location info.
+> + * Actual type can be retrieved using dwarf_offdie() with 'die_off' later.
+> + *
+> + * Callers should free @var_types.
+> + */
+> +void die_collect_vars(Dwarf_Die *sc_die, struct die_var_type **var_types)
+> +{
+> +	Dwarf_Die die_mem;
+> +
+> +	die_find_child(sc_die, __die_collect_vars_cb, (void *)var_types, &die_mem);
+> +}
+> +
+>  #endif
+>  
+>  /*
+> diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
+> index dc7e98678216..d0ef41738abd 100644
+> --- a/tools/perf/util/dwarf-aux.h
+> +++ b/tools/perf/util/dwarf-aux.h
+> @@ -135,6 +135,15 @@ void die_skip_prologue(Dwarf_Die *sp_die, Dwarf_Die *cu_die,
+>  /* Get the list of including scopes */
+>  int die_get_scopes(Dwarf_Die *cu_die, Dwarf_Addr pc, Dwarf_Die **scopes);
+>  
+> +/* Variable type information */
+> +struct die_var_type {
+> +	struct die_var_type *next;
+> +	u64 die_off;
+> +	u64 addr;
+> +	int reg;
+> +	int offset;
+> +};
+> +
+>  #ifdef HAVE_DWARF_GETLOCATIONS_SUPPORT
+>  
+>  /* Get byte offset range of given variable DIE */
+> @@ -153,6 +162,9 @@ Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die, Dwarf_Addr pc,
+>  /* Get the frame base information from CFA */
+>  int die_get_cfa(Dwarf *dwarf, u64 pc, int *preg, int *poffset);
+>  
+> +/* Save all variables and parameters in this scope */
+> +void die_collect_vars(Dwarf_Die *sc_die, struct die_var_type **var_types);
+> +
+>  #else /*  HAVE_DWARF_GETLOCATIONS_SUPPORT */
+>  
+>  static inline int die_get_var_range(Dwarf_Die *sp_die __maybe_unused,
+> @@ -187,6 +199,11 @@ static inline int die_get_cfa(Dwarf *dwarf __maybe_unused, u64 pc __maybe_unused
+>  	return -1;
+>  }
+>  
+> +static inline void die_collect_vars(Dwarf_Die *sc_die __maybe_unused,
+> +				    struct die_var_type **var_types __maybe_unused)
+> +{
+> +}
+> +
+>  #endif /* HAVE_DWARF_GETLOCATIONS_SUPPORT */
+>  
+>  #endif /* _DWARF_AUX_H */
+> -- 
+> 2.42.0.655.g421f12c284-goog
+> 
 
 
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/util/dwarf-aux.c | 44 +++++++++++++++++++++++++++++++++----
-> >  1 file changed, 40 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
-> > index 7f3822d08ab7..093d7e82b333 100644
-> > --- a/tools/perf/util/dwarf-aux.c
-> > +++ b/tools/perf/util/dwarf-aux.c
-> > @@ -1305,6 +1305,34 @@ static bool match_var_offset(Dwarf_Die *die_mem,=
- struct find_var_data *data,
-> >       return true;
-> >  }
-> >
-> > +static bool check_allowed_ops(Dwarf_Op *ops, size_t nops)
-> > +{
-> > +     /* The first op is checked separately */
-> > +     ops++;
-> > +     nops--;
-> > +
-> > +     /*
-> > +      * It needs to make sure if the location expression matches to th=
-e given
-> > +      * register and offset exactly.  Thus it rejects any complex expr=
-essions
-> > +      * and only allows a few of selected operators that doesn't chang=
-e the
-> > +      * location.
-> > +      */
-> > +     while (nops) {
-> > +             switch (ops->atom) {
-> > +             case DW_OP_stack_value:
-> > +             case DW_OP_deref_size:
-> > +             case DW_OP_deref:
-> > +             case DW_OP_piece:
-> > +                     break;
-> > +             default:
-> > +                     return false;
-> > +             }
-> > +             ops++;
-> > +             nops--;
-> > +     }
-> > +     return true;
-> > +}
-> > +
-> >  /* Only checks direct child DIEs in the given scope. */
-> >  static int __die_find_var_reg_cb(Dwarf_Die *die_mem, void *arg)
-> >  {
-> > @@ -1332,25 +1360,31 @@ static int __die_find_var_reg_cb(Dwarf_Die *die=
-_mem, void *arg)
-> >               /* Local variables accessed using frame base register */
-> >               if (data->is_fbreg && ops->atom =3D=3D DW_OP_fbreg &&
-> >                   data->offset >=3D (int)ops->number &&
-> > +                 check_allowed_ops(ops, nops) &&
-> >                   match_var_offset(die_mem, data, data->offset, ops->nu=
-mber))
-> >                       return DIE_FIND_CB_END;
-> >
-> >               /* Only match with a simple case */
-> >               if (data->reg < DWARF_OP_DIRECT_REGS) {
-> > -                     if (ops->atom =3D=3D (DW_OP_reg0 + data->reg) && =
-nops =3D=3D 1)
-> > +                     /* pointer variables saved in a register 0 to 31 =
-*/
-> > +                     if (ops->atom =3D=3D (DW_OP_reg0 + data->reg) &&
-> > +                         check_allowed_ops(ops, nops))
-> >                               return DIE_FIND_CB_END;
-> >
-> >                       /* Local variables accessed by a register + offse=
-t */
-> >                       if (ops->atom =3D=3D (DW_OP_breg0 + data->reg) &&
-> > +                         check_allowed_ops(ops, nops) &&
-> >                           match_var_offset(die_mem, data, data->offset,=
- ops->number))
-> >                               return DIE_FIND_CB_END;
-> >               } else {
-> > +                     /* pointer variables saved in a register 32 or ab=
-ove */
-> >                       if (ops->atom =3D=3D DW_OP_regx && ops->number =
-=3D=3D data->reg &&
-> > -                         nops =3D=3D 1)
-> > +                         check_allowed_ops(ops, nops))
-> >                               return DIE_FIND_CB_END;
-> >
-> >                       /* Local variables accessed by a register + offse=
-t */
-> >                       if (ops->atom =3D=3D DW_OP_bregx && data->reg =3D=
-=3D ops->number &&
-> > +                         check_allowed_ops(ops, nops) &&
-> >                           match_var_offset(die_mem, data, data->offset,=
- ops->number2))
-> >                               return DIE_FIND_CB_END;
-> >               }
-> > @@ -1412,7 +1446,8 @@ static int __die_find_var_addr_cb(Dwarf_Die *die_=
-mem, void *arg)
-> >               if (data->addr < ops->number)
-> >                       continue;
-> >
-> > -             if (match_var_offset(die_mem, data, data->addr, ops->numb=
-er))
-> > +             if (check_allowed_ops(ops, nops) &&
-> > +                 match_var_offset(die_mem, data, data->addr, ops->numb=
-er))
-> >                       return DIE_FIND_CB_END;
-> >       }
-> >       return DIE_FIND_CB_SIBLING;
-> > @@ -1501,7 +1536,8 @@ int die_get_cfa(Dwarf *dwarf, u64 pc, int *preg, =
-int *poffset)
-> >               return -1;
-> >
-> >       if (!dwarf_cfi_addrframe(cfi, pc, &frame) &&
-> > -         !dwarf_frame_cfa(frame, &ops, &nops) && nops =3D=3D 1) {
-> > +         !dwarf_frame_cfa(frame, &ops, &nops) &&
-> > +         check_allowed_ops(ops, nops)) {
-> >               *preg =3D reg_from_dwarf_op(ops);
-> >               *poffset =3D offset_from_dwarf_op(ops);
-> >               return 0;
-> > --
-> > 2.42.0.655.g421f12c284-goog
-> >
->
->
-> --
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
