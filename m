@@ -1,23 +1,23 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3FA715487;
-	Wed,  8 Nov 2023 10:52:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 255E914287;
+	Wed,  8 Nov 2023 10:57:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F/R7fBAZ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E76F0C433C7;
-	Wed,  8 Nov 2023 10:52:06 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NLbDPV0K"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94986C433C8;
+	Wed,  8 Nov 2023 10:57:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699440730;
-	bh=t69XfdiHhJahtVbVhsn1LHGQM/HRauoe8VYClKKVkqI=;
+	s=k20201202; t=1699441039;
+	bh=bBfDtun/yig5gpao6MlDL0MdQfODZaj79tb/Ng2zcrY=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=F/R7fBAZhpriEEiaQnueNxy3EqSxEY6to0uIwAImHY5kP8o8dWaAiZaqq1zsOwMsq
-	 Gg6JYYGK79+ZCTDiFChbbgYlQMIGAhnZFip2wFOPNuf0CrhIAmAt6NPX3GRz0mjOtL
-	 EktXEtAkYvF5S/qunlrvb07PUiYcYtr6Jm1S8AqRxBSZNByN1zjp9YIZBN/brk4oAw
-	 s+HVokS5Gl215Ydg6yGrgFAi37RmpFzrCFutfYXi2d7mb6Aajgd6gJ5WgqQmsRU4v3
-	 V2Rx5GAJA1QZjqxPX+F/5fsI3wCa2o08nWH1mhdm7CzHXvpdmIW/uCUUG/7CDsL7gX
-	 P9LAp5kYGeOOg==
-Date: Wed, 8 Nov 2023 19:52:04 +0900
+	b=NLbDPV0Ky8LzRtPakVUO7Cv8Wi3j9VnFF84uCAxizTtfl1XUeAPVVoFvr7IicLrNR
+	 rtvDMubsOP1PjsGIu/vTFJWqe+Xcy4f1v935tdqsL0mcfEU0MUXI6wlTzYWtYyaETp
+	 bVx/O8jSRYBVdk96z2Xa8ScXpsnlOIAi/76W3l78d8DIj9HD9d3nZQwDdAqQNn5duI
+	 Fnl8Ks+cimy5jNHY1vz6SHUpTkIuiQnLP437vad9w1nilUXlV6kFTj9M77+rc3tyqg
+	 yM4hLgRl0j6fI1dPNyIALHiNf0yFG6sKASltx+jY8fwnPcRn8IvpTifJ4MK09sj/W0
+	 wnymegX3uuc1g==
+Date: Wed, 8 Nov 2023 19:57:12 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To: Namhyung Kim <namhyung@kernel.org>
 Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa
@@ -28,11 +28,12 @@ Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa
  <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>,
  Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org,
  linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 34/48] perf dwarf-aux: Add die_collect_vars()
-Message-Id: <20231108195204.a3ddfe5965e9c33661460ff4@kernel.org>
-In-Reply-To: <20231012035111.676789-35-namhyung@kernel.org>
+Subject: Re: [PATCH 35/48] perf dwarf-aux: Handle type transfer for memory
+ access
+Message-Id: <20231108195712.efc2b701bdec85de386e1e55@kernel.org>
+In-Reply-To: <20231012035111.676789-36-namhyung@kernel.org>
 References: <20231012035111.676789-1-namhyung@kernel.org>
-	<20231012035111.676789-35-namhyung@kernel.org>
+	<20231012035111.676789-36-namhyung@kernel.org>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -43,143 +44,188 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 11 Oct 2023 20:50:57 -0700
+On Wed, 11 Oct 2023 20:50:58 -0700
 Namhyung Kim <namhyung@kernel.org> wrote:
 
-> The die_collect_vars() is to find all variable information in the scope
-> including function parameters.  The struct die_var_type is to save the
-> type of the variable with the location (reg and offset) as well as where
-> it's defined in the code (addr).
+> We want to track type states as instructions are executed.  Each
+> instruction can access compound types like struct or union and load/
+> store its members to a different location.
 > 
+> The die_deref_ptr_type() is to find a type of memory access with a
+> pointer variable.  If it points to a compound type like struct, the
+> target memory is a member in the struct.  The access will happen
+> with an offset indicating which member it refers.  Let's follow the
+> DWARF info to figure out the type of the pointer target.
+> 
+> For example, say we have the following code.
+> 
+>   struct foo {
+>     int a;
+>     int b;
+>   };
+> 
+>   struct foo *p = malloc(sizeof(*p));
+>   p->b = 0;
+> 
+> The last pointer access should produce x86 asm like below:
+> 
+>   mov  0x0, 4(%rbx)
+> 
+> And we know %rbx register has a pointer to struct foo.  Then offset 4
+> should return the debug info of member 'b'.
+> 
+> Also variables of compound types can be accessed directly without a
+> pointer.  The die_get_member_type() is to handle a such case.
 
-This looks good to me.
+Looks good to me. perf probe search the member by name, but these
+APIs searches it by offset.
 
 Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-BTW, I did similar thing in collect_variables_cb()@probe-finder.c, maybe
-this can simplify that too.
+Thanks!
 
-Thank you,
-
+> 
 > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 > ---
->  tools/perf/util/dwarf-aux.c | 60 +++++++++++++++++++++++++++++++++++++
->  tools/perf/util/dwarf-aux.h | 17 +++++++++++
->  2 files changed, 77 insertions(+)
+>  tools/perf/util/dwarf-aux.c | 110 ++++++++++++++++++++++++++++++++++++
+>  tools/perf/util/dwarf-aux.h |   6 ++
+>  2 files changed, 116 insertions(+)
 > 
 > diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
-> index 093d7e82b333..16e63d8caf83 100644
+> index 16e63d8caf83..5ec895e0a069 100644
 > --- a/tools/perf/util/dwarf-aux.c
 > +++ b/tools/perf/util/dwarf-aux.c
-> @@ -1545,6 +1545,66 @@ int die_get_cfa(Dwarf *dwarf, u64 pc, int *preg, int *poffset)
->  	return -1;
+> @@ -1838,3 +1838,113 @@ int die_get_scopes(Dwarf_Die *cu_die, Dwarf_Addr pc, Dwarf_Die **scopes)
+>  	*scopes = data.scopes;
+>  	return data.nr;
 >  }
->  
-> +static int __die_collect_vars_cb(Dwarf_Die *die_mem, void *arg)
+> +
+> +static int __die_find_member_offset_cb(Dwarf_Die *die_mem, void *arg)
 > +{
-> +	struct die_var_type **var_types = arg;
 > +	Dwarf_Die type_die;
+> +	Dwarf_Word size, loc;
+> +	Dwarf_Word offset = (long)arg;
 > +	int tag = dwarf_tag(die_mem);
-> +	Dwarf_Attribute attr;
-> +	Dwarf_Addr base, start, end;
-> +	Dwarf_Op *ops;
-> +	size_t nops;
-> +	struct die_var_type *vt;
 > +
-> +	if (tag != DW_TAG_variable && tag != DW_TAG_formal_parameter)
+> +	if (tag != DW_TAG_member)
 > +		return DIE_FIND_CB_SIBLING;
 > +
-> +	if (dwarf_attr(die_mem, DW_AT_location, &attr) == NULL)
-> +		return DIE_FIND_CB_SIBLING;
+> +	/* Unions might not have location */
+> +	if (die_get_data_member_location(die_mem, &loc) < 0)
+> +		loc = 0;
 > +
-> +	/*
-> +	 * Only collect the first location as it can reconstruct the
-> +	 * remaining state by following the instructions.
-> +	 * start = 0 means it covers the whole range.
-> +	 */
-> +	if (dwarf_getlocations(&attr, 0, &base, &start, &end, &ops, &nops) <= 0)
-> +		return DIE_FIND_CB_SIBLING;
-> +
-> +	if (die_get_real_type(die_mem, &type_die) == NULL)
-> +		return DIE_FIND_CB_SIBLING;
-> +
-> +	vt = malloc(sizeof(*vt));
-> +	if (vt == NULL)
+> +	if (offset == loc)
 > +		return DIE_FIND_CB_END;
 > +
-> +	vt->die_off = dwarf_dieoffset(&type_die);
-> +	vt->addr = start;
-> +	vt->reg = reg_from_dwarf_op(ops);
-> +	vt->offset = offset_from_dwarf_op(ops);
-> +	vt->next = *var_types;
-> +	*var_types = vt;
+> +	die_get_real_type(die_mem, &type_die);
+> +
+> +	if (dwarf_aggregate_size(&type_die, &size) < 0)
+> +		size = 0;
+> +
+> +	if (loc < offset && offset < (loc + size))
+> +		return DIE_FIND_CB_END;
 > +
 > +	return DIE_FIND_CB_SIBLING;
 > +}
 > +
 > +/**
-> + * die_collect_vars - Save all variables and parameters
-> + * @sc_die: a scope DIE
-> + * @var_types: a pointer to save the resulting list
+> + * die_get_member_type - Return type info of struct member
+> + * @type_die: a type DIE
+> + * @offset: offset in the type
+> + * @die_mem: a buffer to save the resulting DIE
 > + *
-> + * Save all variables and parameters in the @sc_die and save them to @var_types.
-> + * The @var_types is a singly-linked list containing type and location info.
-> + * Actual type can be retrieved using dwarf_offdie() with 'die_off' later.
-> + *
-> + * Callers should free @var_types.
+> + * This function returns a type of a member in @type_die where it's located at
+> + * @offset if it's a struct.  For now, it just returns the first matching
+> + * member in a union.  For other types, it'd return the given type directly
+> + * if it's within the size of the type or NULL otherwise.
 > + */
-> +void die_collect_vars(Dwarf_Die *sc_die, struct die_var_type **var_types)
+> +Dwarf_Die *die_get_member_type(Dwarf_Die *type_die, int offset,
+> +			       Dwarf_Die *die_mem)
 > +{
-> +	Dwarf_Die die_mem;
+> +	Dwarf_Die *member;
+> +	Dwarf_Die mb_type;
+> +	int tag;
 > +
-> +	die_find_child(sc_die, __die_collect_vars_cb, (void *)var_types, &die_mem);
+> +	tag = dwarf_tag(type_die);
+> +	/* If it's not a compound type, return the type directly */
+> +	if (tag != DW_TAG_structure_type && tag != DW_TAG_union_type) {
+> +		Dwarf_Word size;
+> +
+> +		if (dwarf_aggregate_size(type_die, &size) < 0)
+> +			size = 0;
+> +
+> +		if ((unsigned)offset >= size)
+> +			return NULL;
+> +
+> +		*die_mem = *type_die;
+> +		return die_mem;
+> +	}
+> +
+> +	mb_type = *type_die;
+> +	/* TODO: Handle union types better? */
+> +	while (tag == DW_TAG_structure_type || tag == DW_TAG_union_type) {
+> +		member = die_find_child(&mb_type, __die_find_member_offset_cb,
+> +					(void *)(long)offset, die_mem);
+> +		if (member == NULL)
+> +			return NULL;
+> +
+> +		if (die_get_real_type(member, &mb_type) == NULL)
+> +			return NULL;
+> +
+> +		tag = dwarf_tag(&mb_type);
+> +
+> +		if (tag == DW_TAG_structure_type || tag == DW_TAG_union_type) {
+> +			Dwarf_Word loc;
+> +
+> +			/* Update offset for the start of the member struct */
+> +			if (die_get_data_member_location(member, &loc) == 0)
+> +				offset -= loc;
+> +		}
+> +	}
+> +	*die_mem = mb_type;
+> +	return die_mem;
 > +}
 > +
->  #endif
->  
->  /*
+> +/**
+> + * die_deref_ptr_type - Return type info for pointer access
+> + * @ptr_die: a pointer type DIE
+> + * @offset: access offset for the pointer
+> + * @die_mem: a buffer to save the resulting DIE
+> + *
+> + * This function follows the pointer in @ptr_die with given @offset
+> + * and saves the resulting type in @die_mem.  If the pointer points
+> + * a struct type, actual member at the offset would be returned.
+> + */
+> +Dwarf_Die *die_deref_ptr_type(Dwarf_Die *ptr_die, int offset,
+> +			      Dwarf_Die *die_mem)
+> +{
+> +	Dwarf_Die type_die;
+> +
+> +	if (dwarf_tag(ptr_die) != DW_TAG_pointer_type)
+> +		return NULL;
+> +
+> +	if (die_get_real_type(ptr_die, &type_die) == NULL)
+> +		return NULL;
+> +
+> +	return die_get_member_type(&type_die, offset, die_mem);
+> +}
 > diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
-> index dc7e98678216..d0ef41738abd 100644
+> index d0ef41738abd..df846bd30134 100644
 > --- a/tools/perf/util/dwarf-aux.h
 > +++ b/tools/perf/util/dwarf-aux.h
-> @@ -135,6 +135,15 @@ void die_skip_prologue(Dwarf_Die *sp_die, Dwarf_Die *cu_die,
->  /* Get the list of including scopes */
->  int die_get_scopes(Dwarf_Die *cu_die, Dwarf_Addr pc, Dwarf_Die **scopes);
+> @@ -144,6 +144,12 @@ struct die_var_type {
+>  	int offset;
+>  };
 >  
-> +/* Variable type information */
-> +struct die_var_type {
-> +	struct die_var_type *next;
-> +	u64 die_off;
-> +	u64 addr;
-> +	int reg;
-> +	int offset;
-> +};
+> +/* Return type info of a member at offset */
+> +Dwarf_Die *die_get_member_type(Dwarf_Die *type_die, int offset, Dwarf_Die *die_mem);
+> +
+> +/* Return type info where the pointer and offset point to */
+> +Dwarf_Die *die_deref_ptr_type(Dwarf_Die *ptr_die, int offset, Dwarf_Die *die_mem);
 > +
 >  #ifdef HAVE_DWARF_GETLOCATIONS_SUPPORT
 >  
 >  /* Get byte offset range of given variable DIE */
-> @@ -153,6 +162,9 @@ Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die, Dwarf_Addr pc,
->  /* Get the frame base information from CFA */
->  int die_get_cfa(Dwarf *dwarf, u64 pc, int *preg, int *poffset);
->  
-> +/* Save all variables and parameters in this scope */
-> +void die_collect_vars(Dwarf_Die *sc_die, struct die_var_type **var_types);
-> +
->  #else /*  HAVE_DWARF_GETLOCATIONS_SUPPORT */
->  
->  static inline int die_get_var_range(Dwarf_Die *sp_die __maybe_unused,
-> @@ -187,6 +199,11 @@ static inline int die_get_cfa(Dwarf *dwarf __maybe_unused, u64 pc __maybe_unused
->  	return -1;
->  }
->  
-> +static inline void die_collect_vars(Dwarf_Die *sc_die __maybe_unused,
-> +				    struct die_var_type **var_types __maybe_unused)
-> +{
-> +}
-> +
->  #endif /* HAVE_DWARF_GETLOCATIONS_SUPPORT */
->  
->  #endif /* _DWARF_AUX_H */
 > -- 
 > 2.42.0.655.g421f12c284-goog
 > 
