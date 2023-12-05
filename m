@@ -1,126 +1,91 @@
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="CPRZYmha"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD70124;
-	Mon,  4 Dec 2023 23:18:03 -0800 (PST)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B57GpM3003171;
-	Tue, 5 Dec 2023 07:17:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to; s=pp1;
- bh=w7s5uPnQeAOXaXsUxQOrmvA9KHnUaXjaxqKSnCdyQIw=;
- b=CPRZYmhakiIMEMgoPt/MYG5oAcdDL5xmeFj+0gr5/Go7uJe9CTr19mKpQRNp1UUvengV
- 6ID2L1LpqekhWO/liT1DwHViTR+ctxtLMXYaJpIBtTrp/xxpf9cGtNanj2c7M/7vgNDm
- kp3mvuzZNum1bxKbZomc53T3Q3NmKHGH8YQUBKdw5d5LnO1cYbDi1C68BkzIGYgmqMon
- twZBCSOc0anWbptBbyi7DduIVgpm/L+H6awbALRkdAkvLkR8jl4Q58EHAnSnwO+qXq5Z
- Oqnudr5tNiqVvIWzlpl0uYSXrEXXj4yRlpTylp7bOuqvGIabZD4ywC9kHIjXOrQdkUCt VQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usxhs1qct-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Dec 2023 07:17:47 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B57HI36006621;
-	Tue, 5 Dec 2023 07:17:46 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usxhs1qbn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Dec 2023 07:17:46 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B56Y5de009423;
-	Tue, 5 Dec 2023 07:17:45 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3urh4kcrwe-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Dec 2023 07:17:45 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B57HhbR41222800
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 5 Dec 2023 07:17:43 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 73E3D20043;
-	Tue,  5 Dec 2023 07:17:43 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 344712004B;
-	Tue,  5 Dec 2023 07:17:41 +0000 (GMT)
-Received: from smtpclient.apple (unknown [9.109.215.218])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue,  5 Dec 2023 07:17:41 +0000 (GMT)
-Content-Type: text/plain;
-	charset=utf-8
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B549A10F
+	for <linux-trace-devel@vger.kernel.org>; Tue,  5 Dec 2023 02:58:32 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id AE91921EAD;
+	Tue,  5 Dec 2023 10:58:30 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 9B7E3139E2;
+	Tue,  5 Dec 2023 10:58:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id FNB9JFYCb2UgQgAAn2gu4w
+	(envelope-from <dwagner@suse.de>); Tue, 05 Dec 2023 10:58:30 +0000
+From: Daniel Wagner <dwagner@suse.de>
+To: linux-trace-devel@vger.kernel.org
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH] libtracecmd: add trace-rbtree to meson build
+Date: Tue,  5 Dec 2023 11:58:26 +0100
+Message-ID: <20231205105826.16428-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
-Subject: Re: [PATCH 36/48] perf annotate-data: Introduce struct data_loc_info
-From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-In-Reply-To: <CAM9d7cgdUfdMnhmMpqnkpJyV5hJE9dgGuwPetSNM0KfDuYfs6A@mail.gmail.com>
-Date: Tue, 5 Dec 2023 12:47:29 +0530
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephane Eranian <eranian@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <4A9408B2-46A8-45B2-BC0E-A4187F7AD462@linux.vnet.ibm.com>
-References: <20231012035111.676789-1-namhyung@kernel.org>
- <20231012035111.676789-37-namhyung@kernel.org>
- <852644CC-CF12-475A-A7D2-84EFDCE9D248@linux.vnet.ibm.com>
- <CAM9d7cgdUfdMnhmMpqnkpJyV5hJE9dgGuwPetSNM0KfDuYfs6A@mail.gmail.com>
-To: Namhyung Kim <namhyung@kernel.org>
-X-Mailer: Apple Mail (2.3774.200.91.1.1)
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: whYKbKwFFwRWzv8QG3yHaOtTYtkmXf3g
-X-Proofpoint-GUID: y7LkMEuwxQ1rA9fqgBMoWaM-p1VIBX_K
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-05_03,2023-12-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 phishscore=0 suspectscore=0 mlxscore=0 malwarescore=0
- adultscore=0 impostorscore=0 spamscore=0 lowpriorityscore=0
- mlxlogscore=851 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2312050058
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: ++++++++++++++++++
+X-Spam-Score: 18.29
+X-Rspamd-Server: rspamd1
+Authentication-Results: smtp-out1.suse.de;
+	dkim=none;
+	spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of dwagner@suse.de) smtp.mailfrom=dwagner@suse.de;
+	dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none)
+X-Rspamd-Queue-Id: AE91921EAD
+X-Spamd-Result: default: False [18.29 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_SPAM(0.00)[17.67%];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_SPAM_SHORT(3.00)[1.000];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 R_SPF_SOFTFAIL(4.60)[~all:c];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_DN_SOME(0.00)[];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_SPAM_LONG(3.50)[1.000];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
 
+A red black tree implementation was recently added but it only enabled
+for the make build process. Add it also to the meson build.
 
+Fixes: 5274db32a7ef ("libtracecmd: Use an rbtree for mapping of cache pages")
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+---
+ lib/trace-cmd/meson.build | 1 +
+ 1 file changed, 1 insertion(+)
 
-> On 05-Dec-2023, at 5:40=E2=80=AFAM, Namhyung Kim <namhyung@kernel.org> =
-wrote:
->=20
-> Hello,
->=20
-> On Sun, Dec 3, 2023 at 8:22=E2=80=AFAM Athira Rajeev
-> <atrajeev@linux.vnet.ibm.com> wrote:
->> Hi Namhyung,
->>=20
->> I have a thought there. For the type and typeoff sort keys to work, =
-we depend on Dwarf support in perf, right ?
->> If the perf is built without dwarf support ( either due to older =
-elfutils or missing libdw.h ) , find_data_type will return NULL and we =
-will get =E2=80=9Cunknown=E2=80=9D for Data Type and Data Type Offset in =
-the result.
->=20
-> Yes, right.
->=20
->>=20
->> Can we add a pr_debug line in find_data_type (which is in else part =
-for HAVE_DWARF_SUPPORT) so that user can understand if =E2=80=9Cunknown=E2=
-=80=9D is due to missing devel during the build ? Or may be restrict -s =
-type,typeoff if dwarf support is missing ?
->=20
-> I think it's better to add a warning if DWARF is not supported.
-> Thanks for your review!
-
-Sure, having a warning if DWARF is not supported will help
-
-Thanks
-Athira
->=20
-> Namhyung
+diff --git a/lib/trace-cmd/meson.build b/lib/trace-cmd/meson.build
+index 2193e5265b22..25bdd36357bc 100644
+--- a/lib/trace-cmd/meson.build
++++ b/lib/trace-cmd/meson.build
+@@ -4,6 +4,7 @@
+ 
+ sources = [
+     'trace-hash.c',
++    'trace-rbtree.c',
+     'trace-hooks.c',
+     'trace-input.c',
+     'trace-output.c',
+-- 
+2.43.0
 
