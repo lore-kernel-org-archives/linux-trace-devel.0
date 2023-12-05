@@ -1,71 +1,126 @@
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5AFFF0;
-	Mon,  4 Dec 2023 16:10:35 -0800 (PST)
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so2916208a12.1;
-        Mon, 04 Dec 2023 16:10:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701735035; x=1702339835;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qNrtMZXRyIGyhkjT4JI1KSJerGhWTgoNl7m2Gv0tWQ8=;
-        b=d95sEYLXlzwo5ZENkQxq/8Q5V6ecULN8XUf8zbv9VBWwIgpSg0rH77Q2SM9eCAA6Ws
-         fAUorDaYeJeMWDrpcbEDra928bX8YDQhODcNE+A0o3s06FQzZhtfQIvoidnqGN6Fszkk
-         XDEVErqNWw95pIlnEfq/3W3C3m32po/hV/jV9gB1D3sKAZKaOfFsWDt/6jBOW33bUbeI
-         molWnZT29nOLv4i/EYz7WQ+5yAfBGgZQzFkCwq3YbizXEaYeywKwLczB925bnAxPfG98
-         hJ+uzguBNBIE54Ddi57yXxQQrMF3lK37K/37TSEveNHPycDx8u8pG8igR1GkMzq4gwwm
-         GmIQ==
-X-Gm-Message-State: AOJu0YweMnoMJ0IQHu1inSJU6OxbS+Ea3PmYbpSrqHqU0CVWA6M9XWI8
-	fRWBxcD2iksmZX/KllDD+yVhn6IRM+2Gt3TQBFVyP2QKqNs=
-X-Google-Smtp-Source: AGHT+IHpJOO1gjA+QD4Y2Vv8sBMHvrZDvCNXRG2CGvSQAxz+GqJV4mQxzYN3cA8/d3COk14Ub3zwaYtqJBJGsTAuVqQ=
-X-Received: by 2002:a17:90a:8005:b0:286:6cc1:3f1f with SMTP id
- b5-20020a17090a800500b002866cc13f1fmr476637pjn.86.1701735035239; Mon, 04 Dec
- 2023 16:10:35 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="CPRZYmha"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD70124;
+	Mon,  4 Dec 2023 23:18:03 -0800 (PST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B57GpM3003171;
+	Tue, 5 Dec 2023 07:17:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to; s=pp1;
+ bh=w7s5uPnQeAOXaXsUxQOrmvA9KHnUaXjaxqKSnCdyQIw=;
+ b=CPRZYmhakiIMEMgoPt/MYG5oAcdDL5xmeFj+0gr5/Go7uJe9CTr19mKpQRNp1UUvengV
+ 6ID2L1LpqekhWO/liT1DwHViTR+ctxtLMXYaJpIBtTrp/xxpf9cGtNanj2c7M/7vgNDm
+ kp3mvuzZNum1bxKbZomc53T3Q3NmKHGH8YQUBKdw5d5LnO1cYbDi1C68BkzIGYgmqMon
+ twZBCSOc0anWbptBbyi7DduIVgpm/L+H6awbALRkdAkvLkR8jl4Q58EHAnSnwO+qXq5Z
+ Oqnudr5tNiqVvIWzlpl0uYSXrEXXj4yRlpTylp7bOuqvGIabZD4ywC9kHIjXOrQdkUCt VQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usxhs1qct-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 05 Dec 2023 07:17:47 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B57HI36006621;
+	Tue, 5 Dec 2023 07:17:46 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usxhs1qbn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 05 Dec 2023 07:17:46 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B56Y5de009423;
+	Tue, 5 Dec 2023 07:17:45 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3urh4kcrwe-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 05 Dec 2023 07:17:45 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B57HhbR41222800
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 5 Dec 2023 07:17:43 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 73E3D20043;
+	Tue,  5 Dec 2023 07:17:43 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 344712004B;
+	Tue,  5 Dec 2023 07:17:41 +0000 (GMT)
+Received: from smtpclient.apple (unknown [9.109.215.218])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue,  5 Dec 2023 07:17:41 +0000 (GMT)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231012035111.676789-1-namhyung@kernel.org> <20231012035111.676789-37-namhyung@kernel.org>
- <852644CC-CF12-475A-A7D2-84EFDCE9D248@linux.vnet.ibm.com>
-In-Reply-To: <852644CC-CF12-475A-A7D2-84EFDCE9D248@linux.vnet.ibm.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Mon, 4 Dec 2023 16:10:24 -0800
-Message-ID: <CAM9d7cgdUfdMnhmMpqnkpJyV5hJE9dgGuwPetSNM0KfDuYfs6A@mail.gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
 Subject: Re: [PATCH 36/48] perf annotate-data: Introduce struct data_loc_info
-To: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users <linux-perf-users@vger.kernel.org>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
-	linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+In-Reply-To: <CAM9d7cgdUfdMnhmMpqnkpJyV5hJE9dgGuwPetSNM0KfDuYfs6A@mail.gmail.com>
+Date: Tue, 5 Dec 2023 12:47:29 +0530
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephane Eranian <eranian@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <4A9408B2-46A8-45B2-BC0E-A4187F7AD462@linux.vnet.ibm.com>
+References: <20231012035111.676789-1-namhyung@kernel.org>
+ <20231012035111.676789-37-namhyung@kernel.org>
+ <852644CC-CF12-475A-A7D2-84EFDCE9D248@linux.vnet.ibm.com>
+ <CAM9d7cgdUfdMnhmMpqnkpJyV5hJE9dgGuwPetSNM0KfDuYfs6A@mail.gmail.com>
+To: Namhyung Kim <namhyung@kernel.org>
+X-Mailer: Apple Mail (2.3774.200.91.1.1)
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: whYKbKwFFwRWzv8QG3yHaOtTYtkmXf3g
+X-Proofpoint-GUID: y7LkMEuwxQ1rA9fqgBMoWaM-p1VIBX_K
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-05_03,2023-12-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 phishscore=0 suspectscore=0 mlxscore=0 malwarescore=0
+ adultscore=0 impostorscore=0 spamscore=0 lowpriorityscore=0
+ mlxlogscore=851 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2312050058
 
-Hello,
 
-On Sun, Dec 3, 2023 at 8:22=E2=80=AFAM Athira Rajeev
-<atrajeev@linux.vnet.ibm.com> wrote:
-> Hi Namhyung,
->
-> I have a thought there. For the type and typeoff sort keys to work, we de=
-pend on Dwarf support in perf, right ?
-> If the perf is built without dwarf support ( either due to older elfutils=
- or missing libdw.h ) , find_data_type will return NULL and we will get =E2=
-=80=9Cunknown=E2=80=9D for Data Type and Data Type Offset in the result.
 
-Yes, right.
+> On 05-Dec-2023, at 5:40=E2=80=AFAM, Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>=20
+> Hello,
+>=20
+> On Sun, Dec 3, 2023 at 8:22=E2=80=AFAM Athira Rajeev
+> <atrajeev@linux.vnet.ibm.com> wrote:
+>> Hi Namhyung,
+>>=20
+>> I have a thought there. For the type and typeoff sort keys to work, =
+we depend on Dwarf support in perf, right ?
+>> If the perf is built without dwarf support ( either due to older =
+elfutils or missing libdw.h ) , find_data_type will return NULL and we =
+will get =E2=80=9Cunknown=E2=80=9D for Data Type and Data Type Offset in =
+the result.
+>=20
+> Yes, right.
+>=20
+>>=20
+>> Can we add a pr_debug line in find_data_type (which is in else part =
+for HAVE_DWARF_SUPPORT) so that user can understand if =E2=80=9Cunknown=E2=
+=80=9D is due to missing devel during the build ? Or may be restrict -s =
+type,typeoff if dwarf support is missing ?
+>=20
+> I think it's better to add a warning if DWARF is not supported.
+> Thanks for your review!
 
->
-> Can we add a pr_debug line in find_data_type (which is in else part for H=
-AVE_DWARF_SUPPORT) so that user can understand if =E2=80=9Cunknown=E2=80=9D=
- is due to missing devel during the build ? Or may be restrict -s type,type=
-off if dwarf support is missing ?
+Sure, having a warning if DWARF is not supported will help
 
-I think it's better to add a warning if DWARF is not supported.
-Thanks for your review!
+Thanks
+Athira
+>=20
+> Namhyung
 
-Namhyung
