@@ -1,17 +1,17 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1BC27096A
-	for <linux-trace-devel@vger.kernel.org>; Wed,  6 Dec 2023 23:07:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFD6BC433C8;
-	Wed,  6 Dec 2023 23:07:21 +0000 (UTC)
-Date: Wed, 6 Dec 2023 18:07:50 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF3D92EB0F
+	for <linux-trace-devel@vger.kernel.org>; Wed,  6 Dec 2023 23:57:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C540AC433C7;
+	Wed,  6 Dec 2023 23:57:30 +0000 (UTC)
+Date: Wed, 6 Dec 2023 18:57:59 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Cc: Ze Gao <zegao2021@gmail.com>, Ze Gao <zegao@tencent.com>
-Subject: [PATCH] libtraceevent: Parse sched_switch "prev_state" field for
- state info
-Message-ID: <20231206180750.68fc8648@gandalf.local.home>
+Subject: [PATCH v2] libtraceevent plugins: Parse sched_switch "prev_state"
+ field for state info
+Message-ID: <20231206185759.7792f272@gandalf.local.home>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -47,14 +47,18 @@ Link: https://lore.kernel.org/linux-trace-devel/20231206175506.14f6081d@gandalf.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- plugins/plugin_sched_switch.c | 130 ++++++++++++++++++++++++++++++++--
- 1 file changed, 125 insertions(+), 5 deletions(-)
+Changes since v1: https://lore.kernel.org/linux-trace-devel/20231206180750.68fc8648@gandalf.local.home/
+
+- Added check for field is NULL if the prev_state does not exist.
+
+ plugins/plugin_sched_switch.c | 133 ++++++++++++++++++++++++++++++++--
+ 1 file changed, 128 insertions(+), 5 deletions(-)
 
 diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switch.c
-index e0986ac9cc3d..af1ca6dd1c2a 100644
+index e0986ac9cc3d..bde68c4b602d 100644
 --- a/plugins/plugin_sched_switch.c
 +++ b/plugins/plugin_sched_switch.c
-@@ -9,13 +9,133 @@
+@@ -9,13 +9,136 @@
  #include "event-parse.h"
  #include "trace-seq.h"
  
@@ -176,6 +180,9 @@ index e0986ac9cc3d..af1ca6dd1c2a 100644
  	int i;
  
 -	for (i = 0; i < (sizeof(states) - 1); i++) {
++	if (!field)
++		return;
++
 +	if (!states || field != prev_state_field) {
 +		states = get_states(field);
 +		if (!states)
@@ -191,7 +198,7 @@ index e0986ac9cc3d..af1ca6dd1c2a 100644
  		if (!(val & (1 << i)))
  			continue;
  
-@@ -99,8 +219,8 @@ static int sched_switch_handler(struct trace_seq *s,
+@@ -99,8 +222,8 @@ static int sched_switch_handler(struct trace_seq *s,
  	if (tep_get_field_val(s, event, "prev_prio", record, &val, 1) == 0)
  		trace_seq_printf(s, "[%d] ", (int) val);
  
