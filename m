@@ -1,91 +1,222 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B549A10F
-	for <linux-trace-devel@vger.kernel.org>; Tue,  5 Dec 2023 02:58:32 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id AE91921EAD;
-	Tue,  5 Dec 2023 10:58:30 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 9B7E3139E2;
-	Tue,  5 Dec 2023 10:58:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id FNB9JFYCb2UgQgAAn2gu4w
-	(envelope-from <dwagner@suse.de>); Tue, 05 Dec 2023 10:58:30 +0000
-From: Daniel Wagner <dwagner@suse.de>
-To: linux-trace-devel@vger.kernel.org
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH] libtracecmd: add trace-rbtree to meson build
-Date: Tue,  5 Dec 2023 11:58:26 +0100
-Message-ID: <20231205105826.16428-1-dwagner@suse.de>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77B6A70963
+	for <linux-trace-devel@vger.kernel.org>; Wed,  6 Dec 2023 22:54:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA97DC433C8;
+	Wed,  6 Dec 2023 22:54:37 +0000 (UTC)
+Date: Wed, 6 Dec 2023 17:55:06 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Ze Gao <zegao2021@gmail.com>
+Cc: linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
+Subject: Re: [PATCH v6 1/2] libtraceevent: sync state char array with the
+ kernel
+Message-ID: <20231206175506.14f6081d@gandalf.local.home>
+In-Reply-To: <20230803030955.380537-1-zegao@tencent.com>
+References: <20230803030955.380537-1-zegao@tencent.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: ++++++++++++++++++
-X-Spam-Score: 18.29
-X-Rspamd-Server: rspamd1
-Authentication-Results: smtp-out1.suse.de;
-	dkim=none;
-	spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of dwagner@suse.de) smtp.mailfrom=dwagner@suse.de;
-	dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none)
-X-Rspamd-Queue-Id: AE91921EAD
-X-Spamd-Result: default: False [18.29 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_SPAM(0.00)[17.67%];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_SPAM_SHORT(3.00)[1.000];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 R_SPF_SOFTFAIL(4.60)[~all:c];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_DN_SOME(0.00)[];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_SPAM_LONG(3.50)[1.000];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 R_DKIM_NA(2.20)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-A red black tree implementation was recently added but it only enabled
-for the make build process. Add it also to the meson build.
+On Wed,  2 Aug 2023 23:09:54 -0400
+Ze Gao <zegao2021@gmail.com> wrote:
 
-Fixes: 5274db32a7ef ("libtracecmd: Use an rbtree for mapping of cache pages")
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
- lib/trace-cmd/meson.build | 1 +
- 1 file changed, 1 insertion(+)
+> Update state char array to match the latest kernel
+> definitions.
+> 
+> Signed-off-by: Ze Gao <zegao@tencent.com>
+> ---
+>  plugins/plugin_sched_switch.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switch.c
+> index 8752cae..e0986ac 100644
+> --- a/plugins/plugin_sched_switch.c
+> +++ b/plugins/plugin_sched_switch.c
+> @@ -11,7 +11,7 @@
+>  
+>  static void write_state(struct trace_seq *s, int val)
+>  {
+> -	const char states[] = "SDTtZXxW";
+> +	const char states[] = "SDTtXZPI";
+>  	int found = 0;
+>  	int i;
+>  
 
-diff --git a/lib/trace-cmd/meson.build b/lib/trace-cmd/meson.build
-index 2193e5265b22..25bdd36357bc 100644
---- a/lib/trace-cmd/meson.build
-+++ b/lib/trace-cmd/meson.build
-@@ -4,6 +4,7 @@
+Hi Ze,
+
+As your update never made it into the kernel I never pulled these patches
+in. But we do have an issue with the state getting out of sync with what
+the kernel actually uses.
+
+I did this "hack" but it seems to work. What I do is to look at the
+sched_switch event print parsing arguments, find the __print_flags
+arguments for the "prev_state" field. And then parse them, creating a new
+output and I use that for the write_state() function.
+
+I guess this should work for you too?
+
+I still need to pull in this patch and use that as the default. I'll do
+that before applying this one, and have your above update be the default.
+
+Thanks!
+
+-- Steve
+
+diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switch.c
+index 8752caea5c38..760d224f5507 100644
+--- a/plugins/plugin_sched_switch.c
++++ b/plugins/plugin_sched_switch.c
+@@ -9,13 +9,132 @@
+ #include "event-parse.h"
+ #include "trace-seq.h"
  
- sources = [
-     'trace-hash.c',
-+    'trace-rbtree.c',
-     'trace-hooks.c',
-     'trace-input.c',
-     'trace-output.c',
--- 
-2.43.0
-
+-static void write_state(struct trace_seq *s, int val)
++static const char *convert_sym(struct tep_print_flag_sym *sym)
+ {
+-	const char states[] = "SDTtZXxW";
++	static char save_states[33];
++
++	memset(save_states, 0, sizeof(save_states));
++
++	/* This is the flags for the prev_state_field, now make them into a string */
++	for (; sym; sym = sym->next) {
++		long bitmask = strtoul(sym->value, NULL, 0);
++		int i;
++
++		for (i = 0; !(bitmask & 1); i++)
++			bitmask >>= 1;
++
++		if (i > 32)
++			continue; // warn?
++
++		save_states[i] = sym->str[0];
++	}
++
++	return save_states;
++}
++
++static struct tep_print_arg_field *
++find_arg_field(struct tep_format_field *prev_state_field, struct tep_print_arg *arg)
++{
++	struct tep_print_arg_field *field;
++
++	if (!arg)
++		return NULL;
++
++	if (arg->type == TEP_PRINT_FIELD)
++		return &arg->field;
++
++	if (arg->type == TEP_PRINT_OP) {
++		field = find_arg_field(prev_state_field, arg->op.left);
++		if (field && field->field == prev_state_field)
++			return field;
++		field = find_arg_field(prev_state_field, arg->op.right);
++		if (field && field->field == prev_state_field)
++			return field;
++	}
++	return NULL;
++}
++
++static struct tep_print_flag_sym *
++test_flags(struct tep_format_field *prev_state_field, struct tep_print_arg *arg)
++{
++	struct tep_print_arg_field *field;
++
++	field = find_arg_field(prev_state_field, arg->flags.field);
++	if (!field)
++		return NULL;
++
++	return arg->flags.flags;
++}
++
++static struct tep_print_flag_sym *
++search_op(struct tep_format_field *prev_state_field, struct tep_print_arg *arg)
++{
++	struct tep_print_flag_sym *sym = NULL;
++
++	if (!arg)
++		return NULL;
++
++	if (arg->type == TEP_PRINT_OP) {
++		sym = search_op(prev_state_field, arg->op.left);
++		if (sym)
++			return sym;
++
++		sym = search_op(prev_state_field, arg->op.right);
++		if (sym)
++			return sym;
++	} else if (arg->type == TEP_PRINT_FLAGS) {
++		sym = test_flags(prev_state_field, arg);
++	}
++
++	return sym;
++}
++
++static const char *get_states(struct tep_format_field *prev_state_field)
++{
++	struct tep_print_flag_sym *sym;
++	struct tep_print_arg *arg;
++	struct tep_event *event;
++
++	event = prev_state_field->event;
++
++	/*
++	 * Look at the event format fields, and search for where
++	 * the prev_state is parsed via the format flags.
++	 */
++	for (arg = event->print_fmt.args; arg; arg = arg->next) {
++		/*
++		 * Currently, the __print_flags() for the prev_state
++		 * is embedded in operations, so they too must be
++		 * searched.
++		 */
++		sym = search_op(prev_state_field, arg);
++		if (sym)
++			return convert_sym(sym);
++	}
++	return NULL;
++}
++
++static void write_state(struct trace_seq *s, struct tep_format_field *field,
++			struct tep_record *record)
++{
++	static struct tep_format_field *prev_state_field;
++	static const char *states;
++	unsigned long long val;
+ 	int found = 0;
++	int len;
+ 	int i;
+ 
+-	for (i = 0; i < (sizeof(states) - 1); i++) {
++	if (field != prev_state_field) {
++		states = get_states(field);
++		if (!states)
++			states = "SDTtZXxW";
++		prev_state_field = field;
++	}
++
++	tep_read_number_field(field, record->data, &val);
++
++	len = strlen(states);
++	for (i = 0; i < len; i++) {
+ 		if (!(val & (1 << i)))
+ 			continue;
+ 
+@@ -99,8 +218,8 @@ static int sched_switch_handler(struct trace_seq *s,
+ 	if (tep_get_field_val(s, event, "prev_prio", record, &val, 1) == 0)
+ 		trace_seq_printf(s, "[%d] ", (int) val);
+ 
+-	if (tep_get_field_val(s,  event, "prev_state", record, &val, 1) == 0)
+-		write_state(s, val);
++	field = tep_find_any_field(event, "prev_state");
++	write_state(s, field, record);
+ 
+ 	trace_seq_puts(s, " ==> ");
+ 
