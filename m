@@ -1,19 +1,17 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77B6A70963
-	for <linux-trace-devel@vger.kernel.org>; Wed,  6 Dec 2023 22:54:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA97DC433C8;
-	Wed,  6 Dec 2023 22:54:37 +0000 (UTC)
-Date: Wed, 6 Dec 2023 17:55:06 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1BC27096A
+	for <linux-trace-devel@vger.kernel.org>; Wed,  6 Dec 2023 23:07:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFD6BC433C8;
+	Wed,  6 Dec 2023 23:07:21 +0000 (UTC)
+Date: Wed, 6 Dec 2023 18:07:50 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Ze Gao <zegao2021@gmail.com>
-Cc: linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Subject: Re: [PATCH v6 1/2] libtraceevent: sync state char array with the
- kernel
-Message-ID: <20231206175506.14f6081d@gandalf.local.home>
-In-Reply-To: <20230803030955.380537-1-zegao@tencent.com>
-References: <20230803030955.380537-1-zegao@tencent.com>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc: Ze Gao <zegao2021@gmail.com>, Ze Gao <zegao@tencent.com>
+Subject: [PATCH] libtraceevent: Parse sched_switch "prev_state" field for
+ state info
+Message-ID: <20231206180750.68fc8648@gandalf.local.home>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -24,63 +22,46 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed,  2 Aug 2023 23:09:54 -0400
-Ze Gao <zegao2021@gmail.com> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> Update state char array to match the latest kernel
-> definitions.
-> 
-> Signed-off-by: Ze Gao <zegao@tencent.com>
-> ---
->  plugins/plugin_sched_switch.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switch.c
-> index 8752cae..e0986ac 100644
-> --- a/plugins/plugin_sched_switch.c
-> +++ b/plugins/plugin_sched_switch.c
-> @@ -11,7 +11,7 @@
->  
->  static void write_state(struct trace_seq *s, int val)
->  {
-> -	const char states[] = "SDTtZXxW";
-> +	const char states[] = "SDTtXZPI";
->  	int found = 0;
->  	int i;
->  
+The write_state() function uses a hard coded string "SDTtXZPI" to index
+the sched_switch prev_state field bitmask. This is fine, except for when
+the kernel changes this string, in which case this will break again.
 
-Hi Ze,
+Worse yet, there can be various saved trace files that have various
+versions of this string, and updating the string may work for one trace
+file, it will likely break another trace file.
 
-As your update never made it into the kernel I never pulled these patches
-in. But we do have an issue with the state getting out of sync with what
-the kernel actually uses.
+Instead, look into the event itself, and how it parsed the "print fmt".
+Using the tep_print_args, the mapping between the bits and the output that
+the kernel uses is exposed to user space. Walk the print arguments until
+the __print_flags() for the "prev_state" field is found, and use that to
+build the states string for future parsing.
 
-I did this "hack" but it seems to work. What I do is to look at the
-sched_switch event print parsing arguments, find the __print_flags
-arguments for the "prev_state" field. And then parse them, creating a new
-output and I use that for the write_state() function.
+Save the "prev_state_field" pointer, as it should be the same for later
+occurrences, but if more than one trace data (more than one tep handler)
+is being parsed, the string will need to be updated each time a new field
+is passed in, as this is not saved in the tep handle itself.
 
-I guess this should work for you too?
+Link: https://lore.kernel.org/linux-trace-devel/20231206175506.14f6081d@gandalf.local.home/
 
-I still need to pull in this patch and use that as the default. I'll do
-that before applying this one, and have your above update be the default.
-
-Thanks!
-
--- Steve
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ plugins/plugin_sched_switch.c | 130 ++++++++++++++++++++++++++++++++--
+ 1 file changed, 125 insertions(+), 5 deletions(-)
 
 diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switch.c
-index 8752caea5c38..760d224f5507 100644
+index e0986ac9cc3d..af1ca6dd1c2a 100644
 --- a/plugins/plugin_sched_switch.c
 +++ b/plugins/plugin_sched_switch.c
-@@ -9,13 +9,132 @@
+@@ -9,13 +9,133 @@
  #include "event-parse.h"
  #include "trace-seq.h"
  
 -static void write_state(struct trace_seq *s, int val)
 +static const char *convert_sym(struct tep_print_flag_sym *sym)
  {
--	const char states[] = "SDTtZXxW";
+-	const char states[] = "SDTtXZPI";
 +	static char save_states[33];
 +
 +	memset(save_states, 0, sizeof(save_states));
@@ -195,10 +176,11 @@ index 8752caea5c38..760d224f5507 100644
  	int i;
  
 -	for (i = 0; i < (sizeof(states) - 1); i++) {
-+	if (field != prev_state_field) {
++	if (!states || field != prev_state_field) {
 +		states = get_states(field);
 +		if (!states)
-+			states = "SDTtZXxW";
++			states = "SDTtXZPI";
++		printf("states = '%s'\n", states);
 +		prev_state_field = field;
 +	}
 +
@@ -209,7 +191,7 @@ index 8752caea5c38..760d224f5507 100644
  		if (!(val & (1 << i)))
  			continue;
  
-@@ -99,8 +218,8 @@ static int sched_switch_handler(struct trace_seq *s,
+@@ -99,8 +219,8 @@ static int sched_switch_handler(struct trace_seq *s,
  	if (tep_get_field_val(s, event, "prev_prio", record, &val, 1) == 0)
  		trace_seq_printf(s, "[%d] ", (int) val);
  
@@ -220,3 +202,6 @@ index 8752caea5c38..760d224f5507 100644
  
  	trace_seq_puts(s, " ==> ");
  
+-- 
+2.42.0
+
