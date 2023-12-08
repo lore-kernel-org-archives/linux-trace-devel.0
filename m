@@ -1,171 +1,299 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D92DC3D0D9
-	for <linux-trace-devel@vger.kernel.org>; Thu,  7 Dec 2023 13:20:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BAA9C433C7;
-	Thu,  7 Dec 2023 13:20:15 +0000 (UTC)
-Date: Thu, 7 Dec 2023 08:20:44 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Ze Gao <zegao2021@gmail.com>
-Cc: linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Subject: Re: [PATCH v6 1/2] libtraceevent: sync state char array with the
- kernel
-Message-ID: <20231207082044.353ba52f@gandalf.local.home>
-In-Reply-To: <CAD8CoPAVJYS0YFmEYhXSn-MZ59QUgC5T6y35-R0GpjATOqHbYg@mail.gmail.com>
-References: <20230803030955.380537-1-zegao@tencent.com>
-	<20231206175506.14f6081d@gandalf.local.home>
-	<CAD8CoPAVJYS0YFmEYhXSn-MZ59QUgC5T6y35-R0GpjATOqHbYg@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CFq6bF4+"
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B2631730
+	for <linux-trace-devel@vger.kernel.org>; Thu,  7 Dec 2023 23:41:15 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-54c9116d05fso2423239a12.3
+        for <linux-trace-devel@vger.kernel.org>; Thu, 07 Dec 2023 23:41:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702021273; x=1702626073; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5LXJK3LWSsuSaszBxMhiYja2aYBJ1pweOkwS3OjEs0g=;
+        b=CFq6bF4+ZUYh4Xmtj924Cd0rMNfX68nDKz6vSX8nVnfnMHCgptZdi968dMH0YG12e6
+         kvhOYQFLEj/OIe7k4JDAzq40BQCKfvAhSLLNcZON6Q3BFY8Xt8IqHt7nl49Ns7E/UcBq
+         9Aai8S2WUXC4ySkiPMAVyOAJ9nCeVQ34Mu58aNCWI/w8bim4dw62dPseM4ECUDX1WUKI
+         m6GHeoVTjexKLdDfd2X9zTEK9/iIiCtpRhMDd/M+dTr5lm7dCQBUoh84zT2vxw+LHP/W
+         KKJXzxjUG+cw7GUcJz4DJGEYVt4G/DP/5RC7XwGKoYtXrA2ArIE5mCc7lRN3pK2oYFA4
+         KlNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702021273; x=1702626073;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5LXJK3LWSsuSaszBxMhiYja2aYBJ1pweOkwS3OjEs0g=;
+        b=QyQgJsAIrETDiPfATw/fO6tNlVdUaQbrPD8LfUXOZeRI9r7PScqMBEkVZuaEs0SRX+
+         ZJjntfAekKipuUwuM0A3qBHj9n9F2LUBNCEcI1TP1oXTGkRzkoZp1d7tKXiP+UBK/kM8
+         XzxF1ssqPm27jbKVTXc5I1DfOlQRXk0VUnov+JUXNteqsb28b+at9AVjq9unMkxz+h3u
+         p+IzjgxxqoPNkmJlD8bVV7Pk4ay/gIRWpXSEC8iv8SFqG0D8MfoStX3nW6XpSnI6Oaf2
+         FPbV03UT++LVPYW1BMzlUe2aldNiESzFScjikpc1kBboAPqa2MWVUQR32udZYSYgs9v5
+         R8Kw==
+X-Gm-Message-State: AOJu0YyaNEhSMR8vyrLFd/f9EqyG2bnwpUbmqj+oZM5aHUn/L0c0U4gt
+	XhGmoyGunYrAu96ofEmEg0xaZ5+Wg+Xesnz1Wt9N9EYjMTexck76
+X-Google-Smtp-Source: AGHT+IHNN/Cju4kJC7b2mlla4SO5u4n4JMCwXOrJ9ASU+mMEluALLGBV4TJ2iDHZU928iLAuSKsoSbG57LUwjOPpXG8=
+X-Received: by 2002:a50:c353:0:b0:54c:f1dc:a428 with SMTP id
+ q19-20020a50c353000000b0054cf1dca428mr1238193edb.95.1702021273085; Thu, 07
+ Dec 2023 23:41:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20231206185759.7792f272@gandalf.local.home>
+In-Reply-To: <20231206185759.7792f272@gandalf.local.home>
+From: Ze Gao <zegao2021@gmail.com>
+Date: Fri, 8 Dec 2023 15:41:01 +0800
+Message-ID: <CAD8CoPC5Wi24OMPXtbacQuGdz1Eg771xLNbEd_iD0RgOWEfCnQ@mail.gmail.com>
+Subject: Re: [PATCH v2] libtraceevent plugins: Parse sched_switch "prev_state"
+ field for state info
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Ze Gao <zegao@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 7 Dec 2023 10:52:35 +0800
-Ze Gao <zegao2021@gmail.com> wrote:
+On Thu, Dec 7, 2023 at 7:57=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org>=
+ wrote:
+>
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+>
+> The write_state() function uses a hard coded string "SDTtXZPI" to index
+> the sched_switch prev_state field bitmask. This is fine, except for when
+> the kernel changes this string, in which case this will break again.
+>
+> Worse yet, there can be various saved trace files that have various
+> versions of this string, and updating the string may work for one trace
+> file, it will likely break another trace file.
+>
+> Instead, look into the event itself, and how it parsed the "print fmt".
+> Using the tep_print_args, the mapping between the bits and the output tha=
+t
+> the kernel uses is exposed to user space. Walk the print arguments until
+> the __print_flags() for the "prev_state" field is found, and use that to
+> build the states string for future parsing.
+>
+> Save the "prev_state_field" pointer, as it should be the same for later
+> occurrences, but if more than one trace data (more than one tep handler)
+> is being parsed, the string will need to be updated each time a new field
+> is passed in, as this is not saved in the tep handle itself.
+>
+> Link: https://lore.kernel.org/linux-trace-devel/20231206175506.14f6081d@g=
+andalf.local.home/
+>
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+> Changes since v1: https://lore.kernel.org/linux-trace-devel/2023120618075=
+0.68fc8648@gandalf.local.home/
+>
+> - Added check for field is NULL if the prev_state does not exist.
+>
+>  plugins/plugin_sched_switch.c | 133 ++++++++++++++++++++++++++++++++--
+>  1 file changed, 128 insertions(+), 5 deletions(-)
+>
+> diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switch.=
+c
+> index e0986ac9cc3d..bde68c4b602d 100644
+> --- a/plugins/plugin_sched_switch.c
+> +++ b/plugins/plugin_sched_switch.c
+> @@ -9,13 +9,136 @@
+>  #include "event-parse.h"
+>  #include "trace-seq.h"
+>
+> -static void write_state(struct trace_seq *s, int val)
+> +static const char *convert_sym(struct tep_print_flag_sym *sym)
+>  {
+> -       const char states[] =3D "SDTtXZPI";
+> +       static char save_states[33];
+> +
+> +       memset(save_states, 0, sizeof(save_states));
+> +
+> +       /* This is the flags for the prev_state_field, now make them into=
+ a string */
+> +       for (; sym; sym =3D sym->next) {
+> +               long bitmask =3D strtoul(sym->value, NULL, 0);
+> +               int i;
+> +
+> +               for (i =3D 0; !(bitmask & 1); i++)
+> +                       bitmask >>=3D 1;
 
-> On Thu, Dec 7, 2023 at 6:54=E2=80=AFAM Steven Rostedt <rostedt@goodmis.or=
-g> wrote:
-> >
-> > On Wed,  2 Aug 2023 23:09:54 -0400
-> > Ze Gao <zegao2021@gmail.com> wrote:
-> > =20
-> > As your update never made it into the kernel I never pulled these patch=
-es
-> > in. But we do have an issue with the state getting out of sync with what
-> > the kernel actually uses.
-> >
-> > I did this "hack" but it seems to work. What I do is to look at the
-> > sched_switch event print parsing arguments, find the __print_flags
-> > arguments for the "prev_state" field. And then parse them, creating a n=
-ew
-> > output and I use that for the write_state() function. =20
->=20
-> Thanks for your updates, I remembered to reply with my "hacks"  which
-> fix both libtraceevent and "perf sched timehist --state".
-> FYI,  for libtraceevent in this thread:
-> https://lore.kernel.org/all/CAD8CoPDqZrd2HOUCVkrOq9JgJEQwQnqBn9zD1A3M4aKL=
-Z4mLvg@mail.gmail.com
+It's no big deal but I think glibc has a faster version of ffs here
+we can directly call that one instead.
 
-And somehow I missed this reply :-/
+> +               if (i > 32)
+> +                       continue; // warn?
+> +
+> +               save_states[i] =3D sym->str[0];
+> +       }
+> +
+> +       return save_states;
+> +}
+> +
+> +static struct tep_print_arg_field *
+> +find_arg_field(struct tep_format_field *prev_state_field, struct tep_pri=
+nt_arg *arg)
+> +{
+> +       struct tep_print_arg_field *field;
+> +
+> +       if (!arg)
+> +               return NULL;
+> +
+> +       if (arg->type =3D=3D TEP_PRINT_FIELD)
+> +               return &arg->field;
+> +
+> +       if (arg->type =3D=3D TEP_PRINT_OP) {
+> +               field =3D find_arg_field(prev_state_field, arg->op.left);
+> +               if (field && field->field =3D=3D prev_state_field)
+> +                       return field;
+> +               field =3D find_arg_field(prev_state_field, arg->op.right)=
+;
+> +               if (field && field->field =3D=3D prev_state_field)
+> +                       return field;
+> +       }
+> +       return NULL;
+> +}
+> +
+> +static struct tep_print_flag_sym *
+> +test_flags(struct tep_format_field *prev_state_field, struct tep_print_a=
+rg *arg)
+> +{
+> +       struct tep_print_arg_field *field;
+> +
+> +       field =3D find_arg_field(prev_state_field, arg->flags.field);
+> +       if (!field)
+> +               return NULL;
+> +
+> +       return arg->flags.flags;
+> +}
+> +
+> +static struct tep_print_flag_sym *
+> +search_op(struct tep_format_field *prev_state_field, struct tep_print_ar=
+g *arg)
+> +{
+> +       struct tep_print_flag_sym *sym =3D NULL;
+> +
+> +       if (!arg)
+> +               return NULL;
+> +
+> +       if (arg->type =3D=3D TEP_PRINT_OP) {
+> +               sym =3D search_op(prev_state_field, arg->op.left);
+> +               if (sym)
+> +                       return sym;
+> +
+> +               sym =3D search_op(prev_state_field, arg->op.right);
+> +               if (sym)
+> +                       return sym;
+> +       } else if (arg->type =3D=3D TEP_PRINT_FLAGS) {
+> +               sym =3D test_flags(prev_state_field, arg);
+> +       }
+> +
+> +       return sym;
+> +}
+> +
+> +static const char *get_states(struct tep_format_field *prev_state_field)
+> +{
+> +       struct tep_print_flag_sym *sym;
+> +       struct tep_print_arg *arg;
+> +       struct tep_event *event;
+> +
+> +       event =3D prev_state_field->event;
+> +
+> +       /*
+> +        * Look at the event format fields, and search for where
+> +        * the prev_state is parsed via the format flags.
+> +        */
+> +       for (arg =3D event->print_fmt.args; arg; arg =3D arg->next) {
+> +               /*
+> +                * Currently, the __print_flags() for the prev_state
+> +                * is embedded in operations, so they too must be
+> +                * searched.
+> +                */
+> +               sym =3D search_op(prev_state_field, arg);
+> +               if (sym)
+> +                       return convert_sym(sym);
+> +       }
+> +       return NULL;
+> +}
+> +
+> +static void write_state(struct trace_seq *s, struct tep_format_field *fi=
+eld,
+> +                       struct tep_record *record)
+> +{
+> +       static struct tep_format_field *prev_state_field;
+> +       static const char *states;
+> +       unsigned long long val;
+>         int found =3D 0;
+> +       int len;
+>         int i;
+>
+> -       for (i =3D 0; i < (sizeof(states) - 1); i++) {
+> +       if (!field)
+> +               return;
+> +
+> +       if (!states || field !=3D prev_state_field) {
+> +               states =3D get_states(field);
+> +               if (!states)
+> +                       states =3D "SDTtXZPI";
+> +               printf("states =3D '%s'\n", states);
 
-Sorry about that.
+printf here introduces some noises when I use perf script to inspect
+the raw events,
+and it always shows this "out-of-nowhere" message in the first
+sched_switch record.
+Still, no big deal, and better without this one.
 
-> and here for perf:
-> https://lore.kernel.org/all/CAD8CoPDqZrd2HOUCVkrOq9JgJEQwQnqBn9zD1A3M4aKL=
-Z4mLvg@mail.gmail.com/
->=20
-> My only concern at that time was the very hacky way to pinpoint the
-> TEP_PRINT_FLAGS due to the lack of knowledge of libtraceevent design.
-> So I was not actively seeking to push my fixes to the upstream.
->=20
-> > I guess this should work for you too? =20
->=20
-> I'll give it a try definitely.
->=20
-> > I still need to pull in this patch and use that as the default. I'll do
-> > that before applying this one, and have your above update be the defaul=
-t.
-> >
-> > Thanks! =20
->=20
->=20
-> > -- Steve
-> >
-> > diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switc=
-h.c
-> > index 8752caea5c38..760d224f5507 100644
-> > --- a/plugins/plugin_sched_switch.c
-> > +++ b/plugins/plugin_sched_switch.c
-> > @@ -9,13 +9,132 @@
-> >  #include "event-parse.h"
-> >  #include "trace-seq.h"
-> >
-> > -static void write_state(struct trace_seq *s, int val)
-> > +static const char *convert_sym(struct tep_print_flag_sym *sym)
-> >  {
-> > -       const char states[] =3D "SDTtZXxW";
-> > +       static char save_states[33]; =20
->=20
-> how about a gobal counter instead of fixed sized constant here,
-> and we can warn if it outbounds, u know, just in case.
+> +               prev_state_field =3D field;
+> +       }
+> +
+> +       tep_read_number_field(field, record->data, &val);
+> +
+> +       len =3D strlen(states);
+> +       for (i =3D 0; i < len; i++) {
+>                 if (!(val & (1 << i)))
+>                         continue;
 
-I picked 33 to be 1 greater than 32 as that's the max size of prev_state on
-32 bit systems. I should change that to be a macro though.
+I think here is another case to consider, the preemption state. it's
+exposed as well IIRC.
+and the kernel denotes this as "R+", maybe we can follow that
+convention by adding
+checks like:
 
->=20
-> > +       memset(save_states, 0, sizeof(save_states));
-> > +
-> > +       /* This is the flags for the prev_state_field, now make them in=
-to a string */
-> > +       for (; sym; sym =3D sym->next) {
-> > +               long bitmask =3D strtoul(sym->value, NULL, 0);
-> > +               int i;
-> > +
-> > +               for (i =3D 0; !(bitmask & 1); i++)
-> > +                       bitmask >>=3D 1;
-> > +
-> > +               if (i > 32)
-> > +                       continue; // warn?
-> > +
-> > +               save_states[i] =3D sym->str[0];
-> > +       }
-> > +
-> > +       return save_states;
-> > +}
-> > +
+        if (!found) {
+                trace_seq_putc(s, 'R');
+                if (val)
+                     trace_seq_putc(s,  =E2=80=98+=E2=80=99);
+        }
 
+Just in case, if you were not intentional to make it as it is now.
 
-> > +static void write_state(struct trace_seq *s, struct tep_format_field *=
-field,
-> > +                       struct tep_record *record)
-> > +{
-> > +       static struct tep_format_field *prev_state_field;
-> > +       static const char *states;
-> > +       unsigned long long val;
-> >         int found =3D 0;
-> > +       int len;
-> >         int i;
-> >
-> > -       for (i =3D 0; i < (sizeof(states) - 1); i++) {
-> > +       if (field !=3D prev_state_field) {
-> > +               states =3D get_states(field); =20
->=20
-> I think we only need to build the task_state_char_array once,
-> and there are no other possibilities here. Correct me if I'm stupid :)
+> @@ -99,8 +222,8 @@ static int sched_switch_handler(struct trace_seq *s,
+>         if (tep_get_field_val(s, event, "prev_prio", record, &val, 1) =3D=
+=3D 0)
+>                 trace_seq_printf(s, "[%d] ", (int) val);
+>
+> -       if (tep_get_field_val(s,  event, "prev_state", record, &val, 1) =
+=3D=3D 0)
+> -               write_state(s, val);
+> +       field =3D tep_find_any_field(event, "prev_state");
+> +       write_state(s, field, record);
+>
+>         trace_seq_puts(s, " =3D=3D> ");
+>
+> --
+> 2.42.0
+>
 
-libtracecmd can be used for multiple trace.dat files, that in theory can
-have more than one version of sched_switch. And yes this can be called with
-two different versions of prev_state.
+Overall, I did the tests on my settings, and the patch worked. It's much mo=
+re
+robust in finding and validating TEP_PRINT_FLAG than the one I posted and
+This is the first time I know we are capable of doing analyses on multiple =
+data
+records simultaneously. Learned a lot!
 
-  trace-cmd report -i trace1.dat -i trace2.dat
-
-This is commonly done to see host and guest trace data interleaved, where
-the host and guest could have different versions of sched_switch.
-
-> So here we can check if the char array is built, if so, we can
-> directly look it up in the mapping, right?
->=20
-> > +               if (!states)
-> > +                       states =3D "SDTtZXxW"; =20
->=20
-> I think I've done experiments on the very old kernel in which the TP_print
-> is brought in the sched_switch tracepoint. The "hack" works for it too,
-> so this should not happen. Anyway, I'll give it a try and keep this
-
-I agree that "this should not happen" but I prefer to be safe than sorry,
-and always try to write robust code. If in never happens we just waste a
-branch, if it does happen, it can give some weird result. I don't know what
-is in the future.
-
-> thread updated
-> if anything goes wrong.
+Last but the least,  I had trouble applying the diff to the branch libtrace=
+event
+initially but had to copy and paste on my own.  Just FYI. Still no big deal=
+ :)
 
 Thanks,
-
--- Steve
+Ze
