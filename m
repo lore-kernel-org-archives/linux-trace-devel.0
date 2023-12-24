@@ -1,21 +1,23 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAE56D2F0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E76B5D298
 	for <linux-trace-devel@vger.kernel.org>; Sun, 24 Dec 2023 19:17:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 645D5C433C9;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 841F1C433CB;
 	Sun, 24 Dec 2023 19:17:04 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rHTzL-00000004VxD-2qEc;
+	id 1rHTzL-00000004VxK-3RTq;
 	Sun, 24 Dec 2023 14:18:15 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 0/6] libtraceevent/kbuffer: Add more kbuffer APIs
-Date: Sun, 24 Dec 2023 14:15:57 -0500
-Message-ID: <20231224191813.1076074-1-rostedt@goodmis.org>
+Subject: [PATCH 2/6] libtraceevent: Fix tep_kbuffer() to have kbuf assign long_size
+Date: Sun, 24 Dec 2023 14:15:59 -0500
+Message-ID: <20231224191813.1076074-3-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231224191813.1076074-1-rostedt@goodmis.org>
+References: <20231224191813.1076074-1-rostedt@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -26,29 +28,33 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-In preparation to add more advanced kbuffer functionality to libtracefs,
-some kbuffer APIs are needed. This will also allow libtracefs to add APIs
-for the upcoming memory mapping of the kernel ring buffer.
+If the tep handle that returns the kbuf from tep_kbuffer() did not have its
+long_size initialized, neither will the kbuffer it returns. This can cause
+inconsistent results. Default the long_size to the "commit" size of the header
+page as that should also be the size of long.
 
-Steven Rostedt (Google) (6):
-  libtraceevent: Add tep_get_sub_buffer_commit_offset()
-  libtraceevent: Fix tep_kbuffer() to have kbuf assign long_size
-  kbuffer: Add kbuffer_read_buffer()
-  kbuffer: Add kbuffer_dup()
-  kbuffer: Add kbuffer_subbuffer() API
-  kbuffer: Add kbuffer_refresh() API
+Fixes: 21ba6336 ("libtraceevent: Add kbuffer_create()")
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ src/parse-utils.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
- .../libtraceevent-kbuffer-create.txt          |  30 ++-
- Documentation/libtraceevent-kbuffer-read.txt  |  19 +-
- Documentation/libtraceevent-page_size.txt     |   9 +
- Documentation/libtraceevent.txt               |   5 +
- include/traceevent/event-parse.h              |   1 +
- include/traceevent/kbuffer.h                  |   4 +
- src/event-parse-api.c                         |  15 ++
- src/kbuffer-parse.c                           | 223 ++++++++++++++++--
- src/parse-utils.c                             |   5 +
- 9 files changed, 287 insertions(+), 24 deletions(-)
-
+diff --git a/src/parse-utils.c b/src/parse-utils.c
+index 9c38e1e644d7..b434e24e44df 100644
+--- a/src/parse-utils.c
++++ b/src/parse-utils.c
+@@ -137,6 +137,11 @@ struct kbuffer *tep_kbuffer(struct tep_handle *tep)
+ 	int long_size;
+ 
+ 	long_size = tep_get_long_size(tep);
++
++	/* If the long_size is not set, then use the commit size */
++	if (!long_size)
++		long_size = tep_get_header_page_size(tep);
++
+ 	if (long_size == 8)
+ 		long_size = KBUFFER_LSIZE_8;
+ 	else
 -- 
 2.42.0
 
