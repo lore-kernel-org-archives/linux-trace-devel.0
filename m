@@ -1,20 +1,20 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4972FD297
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49765D298
 	for <linux-trace-devel@vger.kernel.org>; Sun, 24 Dec 2023 19:17:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2AA2C433CD;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95E06C433CC;
 	Sun, 24 Dec 2023 19:17:04 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rHTzM-00000004Vxa-0QmW;
+	id 1rHTzM-00000004VxW-08Ul;
 	Sun, 24 Dec 2023 14:18:16 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 6/6] kbuffer: Add kbuffer_refresh() API
-Date: Sun, 24 Dec 2023 14:16:03 -0500
-Message-ID: <20231224191813.1076074-7-rostedt@goodmis.org>
+Subject: [PATCH 5/6] kbuffer: Add kbuffer_subbuffer() API
+Date: Sun, 24 Dec 2023 14:16:02 -0500
+Message-ID: <20231224191813.1076074-6-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231224191813.1076074-1-rostedt@goodmis.org>
 References: <20231224191813.1076074-1-rostedt@goodmis.org>
@@ -28,123 +28,108 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add a way to refresh the current size of the loaded subbuffer of the
-kbuffer. This is needed if the loaded subbuffer has a writer on it and it
-needs to update for new events that have been written.
+Add a way to retrieve the last loaded subbuffer to the kbuffer.
 
-Note, no memory barriers are used here and that would be required by the
-application.
+The kbuffer_subbuffer() will return a pointer to the last loaded subbuffer or
+NULL if none was ever loaded.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- .../libtraceevent-kbuffer-create.txt          | 15 ++++++++++++--
- Documentation/libtraceevent.txt               |  1 +
- include/traceevent/kbuffer.h                  |  1 +
- src/kbuffer-parse.c                           | 20 +++++++++++++++++++
- 4 files changed, 35 insertions(+), 2 deletions(-)
+ Documentation/libtraceevent-kbuffer-create.txt | 11 ++++++++++-
+ Documentation/libtraceevent.txt                |  1 +
+ include/traceevent/kbuffer.h                   |  1 +
+ src/kbuffer-parse.c                            | 11 +++++++++++
+ 4 files changed, 23 insertions(+), 1 deletion(-)
 
 diff --git a/Documentation/libtraceevent-kbuffer-create.txt b/Documentation/libtraceevent-kbuffer-create.txt
-index 0dca31432455..6f89de914f39 100644
+index 7279dbe56b01..0dca31432455 100644
 --- a/Documentation/libtraceevent-kbuffer-create.txt
 +++ b/Documentation/libtraceevent-kbuffer-create.txt
-@@ -4,7 +4,7 @@ libtraceevent(3)
+@@ -3,7 +3,8 @@ libtraceevent(3)
+ 
  NAME
  ----
- kbuffer_alloc, kbuffer_dup, kbuffer_free, kbuffer_load_subbuffer, kbuffer_subbuffer,
--kbuffer_subbuffer_size, kbuffer_start_of_data - Creating of kbuffer element to parse
-+kbuffer_refresh, kbuffer_subbuffer_size, kbuffer_start_of_data - Creating of kbuffer element to parse
+-kbuffer_alloc, kbuffer_dup, kbuffer_free, kbuffer_load_subbuffer, kbuffer_subbuffer_size, kbuffer_start_of_data - Creating of kbuffer element to parse
++kbuffer_alloc, kbuffer_dup, kbuffer_free, kbuffer_load_subbuffer, kbuffer_subbuffer,
++kbuffer_subbuffer_size, kbuffer_start_of_data - Creating of kbuffer element to parse
  the Linux kernel tracing ring buffer
  
  SYNOPSIS
-@@ -32,7 +32,8 @@ struct kbuffer pass:[*]*kbuffer_alloc*(enum kbuffer_long_size _size_, enum kbuff
- struct kbuffer pass:[*]*kbuffer_dup*(struct kbuffer pass:[*]_kbuf_);
- void *kbuffer_free*(struct kbuffer pass:[*]_kbuf_);
+@@ -33,6 +34,7 @@ void *kbuffer_free*(struct kbuffer pass:[*]_kbuf_);
  int *kbuffer_load_subbuffer*(struct kbuffer pass:[*]_kbuf_, void pass:[*]_subbuffer_);
--int *kbuffer_subbuffer_size*(struct kbuffer pass:[*]_kbuf);
-+int *kbuffer_subbuffer_size*(struct kbuffer pass:[*]_kbuf_);
-+int *kbuffer_refresh*(struct kbuffer pass:[*]_kbuf_);
+ int *kbuffer_subbuffer_size*(struct kbuffer pass:[*]_kbuf);
  int *kbuffer_start_of_data*(struct kbuffer pass:[*]_kbuf_);
- void pass:[*]*kbuffer_subbuffer*(struct kbuffer pass:[*]_kbuf);
++void pass:[*]*kbuffer_subbuffer*(struct kbuffer pass:[*]_kbuf);
  --
-@@ -78,6 +79,13 @@ is what kbuffer uses to walk the events.
- The *kbuffer_subbuffer_size()* returns the location of the end of the last event
- on the sub-buffer. It does not return the size of the sub-buffer itself.
  
-+The *kbuffer_refresh()* is to be used if more writes were done on the loaded kbuffer
-+where the size of the kbuffer needs to be refreshed to be able to read the new
-+events that were written since the last *kbuffer_load_subbuffer()* was called on it.
-+
-+Note, no memory barriers are implemented with this function and any synchronization
-+with the writer is the responsibility of the application.
-+
+ DESCRIPTION
+@@ -79,6 +81,10 @@ on the sub-buffer. It does not return the size of the sub-buffer itself.
  The *kbuffer_start_of_data()* function returns the offset of where the actual
  data load of the sub-buffer begins.
  
-@@ -101,6 +109,9 @@ sub-buffer loaded in _kbuf_.
- *kbuffer_subbuffer()* returns the last loaded subbuffer to _kbuf_ that was loaded
- by *kbuffer_load_subbuffer()* or NULL if none was loaded.
++The *kbuffer_subbuffer()* function returns the pointer to the currently loaded
++subbuffer. That is, the last subbuffer that was loaded by *kbuffer_load_subbuffer()*.
++If no subbuffer was loaded NULL is returned.
++
+ RETURN VALUE
+ ------------
+ *kbuffer_alloc()* returns an allocated kbuffer descriptor or NULL on error.
+@@ -92,6 +98,9 @@ of the last event is located.
+ *kbuffer_start_of_data()* returns the offset of where the data begins on the
+ sub-buffer loaded in _kbuf_.
  
-+*kbuffer_refresh()* returns 0 on success and -1 if _kbuf_ is NULL or it does not
-+have a subbuffer loaded via *kbuffer_load_subbuffer()*.
++*kbuffer_subbuffer()* returns the last loaded subbuffer to _kbuf_ that was loaded
++by *kbuffer_load_subbuffer()* or NULL if none was loaded.
 +
  EXAMPLE
  -------
  [source,c]
 diff --git a/Documentation/libtraceevent.txt b/Documentation/libtraceevent.txt
-index 253c9ea810aa..d1aef40804e3 100644
+index 8b63982e541e..253c9ea810aa 100644
 --- a/Documentation/libtraceevent.txt
 +++ b/Documentation/libtraceevent.txt
-@@ -186,6 +186,7 @@ kbuffer parsing:
+@@ -185,6 +185,7 @@ kbuffer parsing:
+ 	void *kbuffer_free*(struct kbuffer pass:[*]_kbuf_);
  	int *kbuffer_load_subbuffer*(struct kbuffer pass:[*]_kbuf_, void pass:[*]_subbuffer_);
  	int *kbuffer_subbuffer_size*(struct kbuffer pass:[*]_kbuf);
- 	void pass:[*]*kbuffer_subbuffer*(struct kbuffer pass:[*]_kbuf);
-+	int *kbuffer_refresh*(struct kbuffer pass:[*]_kbuf_);
++	void pass:[*]*kbuffer_subbuffer*(struct kbuffer pass:[*]_kbuf);
  	int *kbuffer_start_of_data*(struct kbuffer pass:[*]_kbuf_);
  	unsigned long long *kbuffer_timestamp*(struct kbuffer pass:[*]_kbuf_);
  	unsigned long long *kbuffer_subbuf_timestamp*(struct kbuffer pass:[*]_kbuf_, void pass:[*]_subbuf_);
 diff --git a/include/traceevent/kbuffer.h b/include/traceevent/kbuffer.h
-index 624517ed334b..31a8c62d7a61 100644
+index 7086e0303e5c..624517ed334b 100644
 --- a/include/traceevent/kbuffer.h
 +++ b/include/traceevent/kbuffer.h
-@@ -34,6 +34,7 @@ struct kbuffer *kbuffer_alloc(enum kbuffer_long_size size, enum kbuffer_endian e
- struct kbuffer *kbuffer_dup(struct kbuffer *kbuf);
- void kbuffer_free(struct kbuffer *kbuf);
- int kbuffer_load_subbuffer(struct kbuffer *kbuf, void *subbuffer);
-+int kbuffer_refresh(struct kbuffer *kbuf);
- void *kbuffer_read_event(struct kbuffer *kbuf, unsigned long long *ts);
- void *kbuffer_next_event(struct kbuffer *kbuf, unsigned long long *ts);
- unsigned long long kbuffer_timestamp(struct kbuffer *kbuf);
+@@ -52,6 +52,7 @@ int kbuffer_curr_size(struct kbuffer *kbuf);
+ int kbuffer_event_size(struct kbuffer *kbuf);
+ int kbuffer_missed_events(struct kbuffer *kbuf);
+ int kbuffer_subbuffer_size(struct kbuffer *kbuf);
++void *kbuffer_subbuffer(struct kbuffer *kbuf);
+ 
+ void kbuffer_set_old_format(struct kbuffer *kbuf);
+ int kbuffer_start_of_data(struct kbuffer *kbuf);
 diff --git a/src/kbuffer-parse.c b/src/kbuffer-parse.c
-index b218d1fc9679..d43fe5d972fd 100644
+index b117094856bc..b218d1fc9679 100644
 --- a/src/kbuffer-parse.c
 +++ b/src/kbuffer-parse.c
-@@ -299,6 +299,26 @@ void kbuffer_free(struct kbuffer *kbuf)
- 	free(kbuf);
+@@ -747,6 +747,17 @@ int kbuffer_subbuffer_size(struct kbuffer *kbuf)
+ 	return kbuf->size;
  }
  
 +/**
-+ * kbuffer_refresh - update the meta data from the subbuffer
-+ * @kbuf; The kbuffer to update
++ * kbuffer_subbuffer - the currently loaded subbuffer
++ * @kbuf:	The kbuffer to read from
 + *
-+ * If the loaded subbuffer changed its meta data (the commit)
-+ * then update the pointers for it.
++ * Returns the currently loaded subbuffer.
 + */
-+int kbuffer_refresh(struct kbuffer *kbuf)
++void *kbuffer_subbuffer(struct kbuffer *kbuf)
 +{
-+	unsigned long long flags;
-+
-+	if (!kbuf || !kbuf->subbuffer)
-+		return -1;
-+
-+	flags = read_long(kbuf, kbuf->subbuffer + 8);
-+	kbuf->size = (unsigned int)flags & COMMIT_MASK;
-+
-+	return 0;
++	return kbuf->subbuffer;
 +}
 +
- static unsigned int type4host(struct kbuffer *kbuf,
- 			      unsigned int type_len_ts)
- {
+ /**
+  * kbuffer_curr_index - Return the index of the record
+  * @kbuf:	The kbuffer to read from
 -- 
 2.42.0
 
