@@ -1,135 +1,119 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49765D298
-	for <linux-trace-devel@vger.kernel.org>; Sun, 24 Dec 2023 19:17:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95E06C433CC;
-	Sun, 24 Dec 2023 19:17:04 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rHTzM-00000004VxW-08Ul;
-	Sun, 24 Dec 2023 14:18:16 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A46651C2B
+	for <linux-trace-devel@vger.kernel.org>; Tue, 26 Dec 2023 18:12:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A20FEC433C8
+	for <linux-trace-devel@vger.kernel.org>; Tue, 26 Dec 2023 18:12:55 +0000 (UTC)
+Date: Tue, 26 Dec 2023 13:13:39 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-trace-devel@vger.kernel.org
-Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 5/6] kbuffer: Add kbuffer_subbuffer() API
-Date: Sun, 24 Dec 2023 14:16:02 -0500
-Message-ID: <20231224191813.1076074-6-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231224191813.1076074-1-rostedt@goodmis.org>
-References: <20231224191813.1076074-1-rostedt@goodmis.org>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] libtraceevent: Add tep_get_sub_buffer_data_size()
+Message-ID: <20231226131339.7b0b727c@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add a way to retrieve the last loaded subbuffer to the kbuffer.
-
-The kbuffer_subbuffer() will return a pointer to the last loaded subbuffer or
-NULL if none was ever loaded.
+Add an API to be able to read the header page file and return the data size of
+the sub buffers. This is the total size of the sub buffer minus the meta
+data.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/libtraceevent-kbuffer-create.txt | 11 ++++++++++-
- Documentation/libtraceevent.txt                |  1 +
- include/traceevent/kbuffer.h                   |  1 +
- src/kbuffer-parse.c                            | 11 +++++++++++
- 4 files changed, 23 insertions(+), 1 deletion(-)
+ Documentation/libtraceevent-page_size.txt |  6 +++++-
+ Documentation/libtraceevent.txt           |  1 +
+ include/traceevent/event-parse.h          |  1 +
+ src/event-parse-api.c                     | 14 ++++++++++++++
+ 4 files changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/libtraceevent-kbuffer-create.txt b/Documentation/libtraceevent-kbuffer-create.txt
-index 7279dbe56b01..0dca31432455 100644
---- a/Documentation/libtraceevent-kbuffer-create.txt
-+++ b/Documentation/libtraceevent-kbuffer-create.txt
-@@ -3,7 +3,8 @@ libtraceevent(3)
+diff --git a/Documentation/libtraceevent-page_size.txt b/Documentation/libtraceevent-page_size.txt
+index 0264e52..18fa5ae 100644
+--- a/Documentation/libtraceevent-page_size.txt
++++ b/Documentation/libtraceevent-page_size.txt
+@@ -3,7 +3,7 @@ libtraceevent(3)
  
  NAME
  ----
--kbuffer_alloc, kbuffer_dup, kbuffer_free, kbuffer_load_subbuffer, kbuffer_subbuffer_size, kbuffer_start_of_data - Creating of kbuffer element to parse
-+kbuffer_alloc, kbuffer_dup, kbuffer_free, kbuffer_load_subbuffer, kbuffer_subbuffer,
-+kbuffer_subbuffer_size, kbuffer_start_of_data - Creating of kbuffer element to parse
- the Linux kernel tracing ring buffer
+-tep_get_page_size, tep_set_page_size, tep_get_sub_buffer_size - Get / set the size of a memory page on
++tep_get_page_size, tep_set_page_size, tep_get_sub_buffer_data_size, tep_get_sub_buffer_size - Get / set the size of a memory page on
+ the machine, where the trace is generated
  
  SYNOPSIS
-@@ -33,6 +34,7 @@ void *kbuffer_free*(struct kbuffer pass:[*]_kbuf_);
- int *kbuffer_load_subbuffer*(struct kbuffer pass:[*]_kbuf_, void pass:[*]_subbuffer_);
- int *kbuffer_subbuffer_size*(struct kbuffer pass:[*]_kbuf);
- int *kbuffer_start_of_data*(struct kbuffer pass:[*]_kbuf_);
-+void pass:[*]*kbuffer_subbuffer*(struct kbuffer pass:[*]_kbuf);
+@@ -15,6 +15,7 @@ SYNOPSIS
+ int *tep_get_page_size*(struct tep_handle pass:[*]_tep_);
+ void *tep_set_page_size*(struct tep_handle pass:[*]_tep_, int _page_size_);
+ int *tep_get_sub_buffer_size*(struct tep_handle pass:[*]_tep_);
++int *tep_get_sub_buffer_data_size*(struct tep_handle pass:[*]_tep_);
+ int *tep_get_sub_buffer_commit_offset*(struct tep_handle pass:[*]_tep_);
  --
  
- DESCRIPTION
-@@ -79,6 +81,10 @@ on the sub-buffer. It does not return the size of the sub-buffer itself.
- The *kbuffer_start_of_data()* function returns the offset of where the actual
- data load of the sub-buffer begins.
+@@ -33,6 +34,9 @@ The *tep_get_sub_buffer_size()* returns the size of each "sub buffer" of the
+ ring buffer. The Linux kernel ring buffer is broken up into sections called
+ sub buffers. This returns the size of those buffers.
  
-+The *kbuffer_subbuffer()* function returns the pointer to the currently loaded
-+subbuffer. That is, the last subbuffer that was loaded by *kbuffer_load_subbuffer()*.
-+If no subbuffer was loaded NULL is returned.
++The *tep_get_sub_buffer_data_size()* returns the size of just the data portion
++of the sub buffers.
 +
- RETURN VALUE
- ------------
- *kbuffer_alloc()* returns an allocated kbuffer descriptor or NULL on error.
-@@ -92,6 +98,9 @@ of the last event is located.
- *kbuffer_start_of_data()* returns the offset of where the data begins on the
- sub-buffer loaded in _kbuf_.
- 
-+*kbuffer_subbuffer()* returns the last loaded subbuffer to _kbuf_ that was loaded
-+by *kbuffer_load_subbuffer()* or NULL if none was loaded.
-+
- EXAMPLE
- -------
- [source,c]
+ The *tep_get_sub_buffer_commit_offset()* returns the offset on the sub buffer
+ that holds the committed portion of data. This number contains the index from
+ the data portion of the sub buffer that is the end of the last element on the
 diff --git a/Documentation/libtraceevent.txt b/Documentation/libtraceevent.txt
-index 8b63982e541e..253c9ea810aa 100644
+index d1aef40..26e3ad2 100644
 --- a/Documentation/libtraceevent.txt
 +++ b/Documentation/libtraceevent.txt
-@@ -185,6 +185,7 @@ kbuffer parsing:
- 	void *kbuffer_free*(struct kbuffer pass:[*]_kbuf_);
- 	int *kbuffer_load_subbuffer*(struct kbuffer pass:[*]_kbuf_, void pass:[*]_subbuffer_);
- 	int *kbuffer_subbuffer_size*(struct kbuffer pass:[*]_kbuf);
-+	void pass:[*]*kbuffer_subbuffer*(struct kbuffer pass:[*]_kbuf);
- 	int *kbuffer_start_of_data*(struct kbuffer pass:[*]_kbuf_);
- 	unsigned long long *kbuffer_timestamp*(struct kbuffer pass:[*]_kbuf_);
- 	unsigned long long *kbuffer_subbuf_timestamp*(struct kbuffer pass:[*]_kbuf_, void pass:[*]_subbuf_);
-diff --git a/include/traceevent/kbuffer.h b/include/traceevent/kbuffer.h
-index 7086e0303e5c..624517ed334b 100644
---- a/include/traceevent/kbuffer.h
-+++ b/include/traceevent/kbuffer.h
-@@ -52,6 +52,7 @@ int kbuffer_curr_size(struct kbuffer *kbuf);
- int kbuffer_event_size(struct kbuffer *kbuf);
- int kbuffer_missed_events(struct kbuffer *kbuf);
- int kbuffer_subbuffer_size(struct kbuffer *kbuf);
-+void *kbuffer_subbuffer(struct kbuffer *kbuf);
- 
- void kbuffer_set_old_format(struct kbuffer *kbuf);
- int kbuffer_start_of_data(struct kbuffer *kbuf);
-diff --git a/src/kbuffer-parse.c b/src/kbuffer-parse.c
-index b117094856bc..b218d1fc9679 100644
---- a/src/kbuffer-parse.c
-+++ b/src/kbuffer-parse.c
-@@ -747,6 +747,17 @@ int kbuffer_subbuffer_size(struct kbuffer *kbuf)
- 	return kbuf->size;
+@@ -27,6 +27,7 @@ Management of tep handler data structure and access of its members:
+ 	int *tep_get_page_size*(struct tep_handle pass:[*]_tep_);
+ 	void *tep_set_page_size*(struct tep_handle pass:[*]_tep_, int _page_size_);
+ 	int *tep_get_sub_buffer_size*(struct tep_handle pass:[*]_tep_);
++	int *tep_get_sub_buffer_data_size*(struct tep_handle pass:[*]_tep_);
+ 	int *tep_get_sub_buffer_commit_offset*(struct tep_handle pass:[*]_tep_);
+ 	int *tep_get_header_page_size*(struct tep_handle pass:[*]_tep_);
+ 	int *tep_get_header_timestamp_size*(struct tep_handle pass:[*]_tep_);
+diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
+index adfb770..c03f459 100644
+--- a/include/traceevent/event-parse.h
++++ b/include/traceevent/event-parse.h
+@@ -588,6 +588,7 @@ int tep_get_long_size(struct tep_handle *tep);
+ void tep_set_long_size(struct tep_handle *tep, int long_size);
+ int tep_get_page_size(struct tep_handle *tep);
+ int tep_get_sub_buffer_size(struct tep_handle *tep);
++int tep_get_sub_buffer_data_size(struct tep_handle *tep);
+ int tep_get_sub_buffer_commit_offset(struct tep_handle *tep);
+ void tep_set_page_size(struct tep_handle *tep, int _page_size);
+ bool tep_is_file_bigendian(struct tep_handle *tep);
+diff --git a/src/event-parse-api.c b/src/event-parse-api.c
+index 1a94573..fd03daf 100644
+--- a/src/event-parse-api.c
++++ b/src/event-parse-api.c
+@@ -262,6 +262,20 @@ void tep_set_page_size(struct tep_handle *tep, int _page_size)
+ 		tep->page_size = _page_size;
  }
  
 +/**
-+ * kbuffer_subbuffer - the currently loaded subbuffer
-+ * @kbuf:	The kbuffer to read from
++ * tep_get_sub_buffer_data_size - get the size of the data portion
++ * @tep: The handle to the tep to get the data size from
 + *
-+ * Returns the currently loaded subbuffer.
++ * Returns the size of the data portion of the sub buffer
 + */
-+void *kbuffer_subbuffer(struct kbuffer *kbuf)
++int tep_get_sub_buffer_data_size(struct tep_handle *tep)
 +{
-+	return kbuf->subbuffer;
++	if (!tep)
++		return -1;
++
++	return tep->header_page_data_size;
 +}
 +
  /**
-  * kbuffer_curr_index - Return the index of the record
-  * @kbuf:	The kbuffer to read from
+  * tep_get_sub_buffer_size - get the size of a trace buffer page
+  * @tep: a handle to the tep_handle
 -- 
 2.42.0
 
