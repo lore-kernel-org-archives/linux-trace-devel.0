@@ -1,20 +1,20 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52C8010968
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52C5210967
 	for <linux-trace-devel@vger.kernel.org>; Thu, 28 Dec 2023 21:53:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1552DC43397;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29B97C433B6;
 	Thu, 28 Dec 2023 21:53:45 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rIyKo-00000000EJF-4Are;
-	Thu, 28 Dec 2023 16:54:34 -0500
+	id 1rIyKp-00000000EJR-0K9g;
+	Thu, 28 Dec 2023 16:54:35 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 10/22] libtracefs: Add tracefs_instance_file_write_number()
-Date: Thu, 28 Dec 2023 16:52:05 -0500
-Message-ID: <20231228215433.54854-11-rostedt@goodmis.org>
+Subject: [PATCH v2 13/22] libtracefs: Add tracefs_instance_clear() API
+Date: Thu, 28 Dec 2023 16:52:08 -0500
+Message-ID: <20231228215433.54854-14-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231228215433.54854-1-rostedt@goodmis.org>
 References: <20231228215433.54854-1-rostedt@goodmis.org>
@@ -28,174 +28,104 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add the helper function to write a number into a tracefs file. As tracefs
-files require writing strings and not binary numbers, this is a helper
-function that does the conversion to string followed by a
-tracefs_instance_file_write() on that string.
+Add tracefs_instance_clear() that will clear the ring buffer of a given
+instance or the top level ring buffer if NULL is passed to it.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- .../libtracefs-instances-file-manip.txt       |  9 +++++-
+ Documentation/libtracefs-instances-manage.txt |  9 ++++++++-
  Documentation/libtracefs.txt                  |  1 +
- include/tracefs.h                             |  2 ++
- src/tracefs-instance.c                        | 21 +++++++++++++
- utest/tracefs-utest.c                         | 30 ++++++++++++++++++-
- 5 files changed, 61 insertions(+), 2 deletions(-)
+ include/tracefs.h                             |  1 +
+ src/tracefs-instance.c                        | 11 +++++++++++
+ 4 files changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/libtracefs-instances-file-manip.txt b/Documentation/libtracefs-instances-file-manip.txt
-index 8c04240523d3..bb1b36e36c3e 100644
---- a/Documentation/libtracefs-instances-file-manip.txt
-+++ b/Documentation/libtracefs-instances-file-manip.txt
-@@ -5,7 +5,7 @@ NAME
+diff --git a/Documentation/libtracefs-instances-manage.txt b/Documentation/libtracefs-instances-manage.txt
+index 1e0735ee153c..4e5c64588772 100644
+--- a/Documentation/libtracefs-instances-manage.txt
++++ b/Documentation/libtracefs-instances-manage.txt
+@@ -4,7 +4,7 @@ libtracefs(3)
+ NAME
  ----
- 
- tracefs_instance_file_open,
--tracefs_instance_file_write, tracefs_instance_file_append, tracefs_instance_file_clear,
-+tracefs_instance_file_write, tracefs_instance_file_write_number, tracefs_instance_file_append, tracefs_instance_file_clear,
- tracefs_instance_file_read, tracefs_instance_file_read_number - Work with files in tracing instances.
+ tracefs_instance_create, tracefs_instance_destroy, tracefs_instance_alloc, tracefs_instance_free,
+-tracefs_instance_is_new, tracefs_instances, tracefs_instance_reset - Manage trace instances.
++tracefs_instance_is_new, tracefs_instances, tracefs_instance_clear, tracefs_instance_reset - Manage trace instances.
  
  SYNOPSIS
-@@ -16,6 +16,7 @@ SYNOPSIS
+ --------
+@@ -18,6 +18,7 @@ struct tracefs_instance pass:[*]*tracefs_instance_alloc*(const char pass:[*]_tra
+ void *tracefs_instance_free*(struct tracefs_instance pass:[*]_instance_);
+ bool *tracefs_instance_is_new*(struct tracefs_instance pass:[*]_instance_);
+ char pass:[**]*tracefs_instances*(const char pass:[*]_regex_);
++void *tracefs_instance_clear*(struct tracefs_instance pass:[*]_instance_);
+ void *tracefs_instance_reset*(struct tracefs_instance pass:[*]_instance_);
  
- int *tracefs_instance_file_open*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_file_, int _mode_);
- int *tracefs_instance_file_write*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_file_, const char pass:[*]_str_);
-+int *tracefs_instance_file_write_number*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_file_, size_t _val_);
- int *tracefs_instance_file_append*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_file_, const char pass:[*]_str_);
- int *tracefs_instance_file_clear*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_file_);
- char pass:[*]*tracefs_instance_file_read*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_file_, int pass:[*]_psize_);
-@@ -38,6 +39,10 @@ The *tracefs_instance_file_write()* function writes a string _str_ in a _file_ f
- the given _instance_, without the terminating NULL character. When opening the file, this function
- tries to truncates the size of the file to zero, which clears all previously existing settings.
+ --
+@@ -61,6 +62,9 @@ it will match all instances that exist. The returned list must be freed with
+ *tracefs_list_free*(3). Note, if no instances are found an empty list is returned
+ and that too needs to be free with *tracefs_list_free*(3).
  
-+The *tracefs_instance_file_write_number()* function converts _val_ into a string
-+and then writes it to the given file. This is a helper function that does the number
-+conversion to string and then calls *tracefs_instance_file_write()*.
++The *tracefs_instance_clear()* function clears the ring buffer of the given _instance_
++or the top level ring buffer if _instance_ is NULL.
 +
- The *tracefs_instance_file_append()* function writes a string _str_ in a _file_ from
- the given _instance_, without the terminating NULL character.  This function is similar to
- *tracefs_instance_file_write()*, but the existing content of the is not cleared. Thus the
-@@ -61,6 +66,8 @@ closed with *close*(3). In case of an error, -1 is returned.
- The *tracefs_instance_file_write()* function returns the number of written bytes,
- or -1 in case of an error.
+ The *tracefs_instance_reset*() function resets the given _instance_ to its default state.
  
-+The *tracefs_instance_file_write_number()* function returns 0 on success and -1 on error.
+ RETURN VALUE
+@@ -83,6 +87,9 @@ The list must be freed with *tracefs_list_free*(3). An empty list is returned if
+ no instance exists that matches _regex_, and this needs to be freed with
+ *tracefs_list_free*(3) as well. NULL is returned on error.
+ 
++The *tracefs_instance_clear()* returns 0 if it successfully cleared the ring buffer,
++or -1 on error.
 +
- The *tracefs_instance_file_append()* function returns the number of written bytes,
- or -1 in case of an error.
- 
+ EXAMPLE
+ -------
+ [source,c]
 diff --git a/Documentation/libtracefs.txt b/Documentation/libtracefs.txt
-index 850118302ab2..11ff576e826c 100644
+index 529922580f8d..273423cecf4a 100644
 --- a/Documentation/libtracefs.txt
 +++ b/Documentation/libtracefs.txt
-@@ -33,6 +33,7 @@ Trace instances:
- 	char pass:[*]*tracefs_instance_get_dir*(struct tracefs_instance pass:[*]_instance_);
- 	int *tracefs_instance_file_open*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_file_, int _mode_);
- 	int *tracefs_instance_file_write*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_file_, const char pass:[*]_str_);
-+	int *tracefs_instance_file_write_number*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_file_, size_t _val_);
- 	int *tracefs_instance_file_append*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_file_, const char pass:[*]_str_);
- 	int *tracefs_instance_file_clear*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_file_);
- 	char pass:[*]*tracefs_instance_file_read*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_file_, int pass:[*]_psize_);
+@@ -25,6 +25,7 @@ Trace instances:
+ 	struct tracefs_instance pass:[*]*tracefs_instance_alloc*(const char pass:[*]_tracing_dir_, const char pass:[*]_name_);
+ 	void *tracefs_instance_free*(struct tracefs_instance pass:[*]_instance_);
+ 	char pass:[**]*tracefs_instances*(const char pass:[*]_regex_);
++	void *tracefs_instance_clear*(struct tracefs_instance pass:[*]_instance_);
+ 	void *tracefs_instance_reset*(struct tracefs_instance pass:[*]_instance_);
+ 	bool *tracefs_instance_is_new*(struct tracefs_instance pass:[*]_instance_);
+ 	bool *tracefs_file_exists*(struct tracefs_instance pass:[*]_instance_, char pass:[*]_name_);
 diff --git a/include/tracefs.h b/include/tracefs.h
-index 25429a30c028..0971d54dd7c7 100644
+index 4be66b488536..31aba92d9a16 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
-@@ -36,6 +36,8 @@ tracefs_instance_get_file(struct tracefs_instance *instance, const char *file);
- char *tracefs_instance_get_dir(struct tracefs_instance *instance);
- int tracefs_instance_file_write(struct tracefs_instance *instance,
- 				const char *file, const char *str);
-+int tracefs_instance_file_write_number(struct tracefs_instance *instance,
-+				       const char *file, size_t val);
- int tracefs_instance_file_append(struct tracefs_instance *instance,
- 				 const char *file, const char *str);
- int tracefs_instance_file_clear(struct tracefs_instance *instance,
+@@ -25,6 +25,7 @@ struct tracefs_instance;
+ 
+ void tracefs_instance_free(struct tracefs_instance *instance);
+ void tracefs_instance_reset(struct tracefs_instance *instance);
++int tracefs_instance_clear(struct tracefs_instance *instance);
+ struct tracefs_instance *tracefs_instance_create(const char *name);
+ struct tracefs_instance *tracefs_instance_alloc(const char *tracing_dir,
+ 						const char *name);
 diff --git a/src/tracefs-instance.c b/src/tracefs-instance.c
-index 2efcc75dfd98..b019836333a3 100644
+index b019836333a3..4e7434157109 100644
 --- a/src/tracefs-instance.c
 +++ b/src/tracefs-instance.c
-@@ -493,6 +493,27 @@ int tracefs_instance_file_write(struct tracefs_instance *instance,
- 	return instance_file_write(instance, file, str, O_WRONLY | O_TRUNC);
+@@ -1409,6 +1409,17 @@ static void clear_func_filters(struct tracefs_instance *instance)
+ 		clear_func_filter(instance, files[i]);
  }
  
 +/**
-+ * tracefs_instance_file_write_number - Write integer from a trace file.
-+ * @instance: ftrace instance, can be NULL for the top instance
-+ * @file: name of the file
-+ * @res: The integer to write to @file
++ * tracefs_instance_clear - clear the trace buffer
++ * @instance: The instance to clear the trace for.
 + *
-+ * Returns 0 if the write succeeds, -1 on error.
++ * Returns 0 on succes, -1 on error
 + */
-+int tracefs_instance_file_write_number(struct tracefs_instance *instance,
-+				       const char *file, size_t val)
++int tracefs_instance_clear(struct tracefs_instance *instance)
 +{
-+	char buf[64];
-+	int ret;
-+
-+	snprintf(buf, 64, "%zd\n", val);
-+
-+	ret = tracefs_instance_file_write(instance, file, buf);
-+
-+	return ret > 1 ? 0 : -1;
++	return tracefs_instance_file_clear(instance, "trace");
 +}
 +
  /**
-  * tracefs_instance_file_append - Append to a trace file of specific instance.
-  * @instance: ftrace instance, can be NULL for the top instance.
-diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index 492e5c05551f..98cfd322b171 100644
---- a/utest/tracefs-utest.c
-+++ b/utest/tracefs-utest.c
-@@ -488,7 +488,7 @@ static int setup_trace_cpu(struct tracefs_instance *instance, struct test_cpu_da
- 	if (!data->buf)
- 		goto fail;
- 
--	data->kbuf = kbuffer_alloc(sizeof(long) == 8, !tep_is_bigendian());
-+	data->kbuf = tep_kbuffer(data->tep);
- 	CU_TEST(data->kbuf != NULL);
- 	if (!data->kbuf)
- 		goto fail;
-@@ -2127,6 +2127,7 @@ static void test_instance_file_fd(struct tracefs_instance *instance)
- 	const char *name = get_rand_str();
- 	const char *tdir = tracefs_instance_get_trace_dir(instance);
- 	long long res = -1;
-+	long long res2;
- 	char rd[2];
- 	int fd;
- 
-@@ -2146,7 +2147,34 @@ static void test_instance_file_fd(struct tracefs_instance *instance)
- 	CU_TEST(read(fd, &rd, 1) == 1);
- 	rd[1] = 0;
- 	CU_TEST(res == atoi(rd));
-+	close(fd);
-+
-+	/* Inverse tracing_on and test changing it with write_number */
-+	res ^= 1;
- 
-+	CU_TEST(tracefs_instance_file_write_number(instance, TRACE_ON, (size_t)res) == 0);
-+
-+	CU_TEST(tracefs_instance_file_read_number(instance, TRACE_ON, &res2) == 0);
-+	CU_TEST(res2 == res);
-+	fd = tracefs_instance_file_open(instance, TRACE_ON, O_RDONLY);
-+	CU_TEST(fd >= 0);
-+	CU_TEST(read(fd, &rd, 1) == 1);
-+	rd[1] = 0;
-+	CU_TEST(res2 == atoi(rd));
-+	close(fd);
-+
-+	/* Put back the result of tracing_on */
-+	res ^= 1;
-+
-+	CU_TEST(tracefs_instance_file_write_number(instance, TRACE_ON, (size_t)res) == 0);
-+
-+	CU_TEST(tracefs_instance_file_read_number(instance, TRACE_ON, &res2) == 0);
-+	CU_TEST(res2 == res);
-+	fd = tracefs_instance_file_open(instance, TRACE_ON, O_RDONLY);
-+	CU_TEST(fd >= 0);
-+	CU_TEST(read(fd, &rd, 1) == 1);
-+	rd[1] = 0;
-+	CU_TEST(res2 == atoi(rd));
- 	close(fd);
- }
- 
+  * tracefs_instance_reset - Reset a ftrace instance to its default state
+  * @instance - a ftrace instance to be reseted
 -- 
 2.42.0
 
