@@ -1,20 +1,20 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 949CD107A3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5BCB107BD
 	for <linux-trace-devel@vger.kernel.org>; Thu, 28 Dec 2023 20:36:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23F8AC433AB;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1862EC4339A;
 	Thu, 28 Dec 2023 20:36:26 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rIx7z-00000000DtQ-3ilH;
+	id 1rIx7z-00000000DtE-3P7R;
 	Thu, 28 Dec 2023 15:37:15 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 14/23] libtracefs utest: Add test to test tracefs_instance_set/get_buffer_percent()
-Date: Thu, 28 Dec 2023 15:35:36 -0500
-Message-ID: <20231228203714.53294-15-rostedt@goodmis.org>
+Subject: [PATCH 11/23] libtracefs: Add API to read tracefs_cpu and return a kbuffer
+Date: Thu, 28 Dec 2023 15:35:33 -0500
+Message-ID: <20231228203714.53294-12-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231228203714.53294-1-rostedt@goodmis.org>
 References: <20231228203714.53294-1-rostedt@goodmis.org>
@@ -28,273 +28,451 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add a utest that tests different "buffer_percent" values using the
-tracefs_instance_set_buffer_percent() API. It also will test the
-tracefs_instance_get_buffer_percent().
+Instead of having the caller have to allocate a buffer and a kbuffer to read
+the content of a tracefs_cpu, add an interface to allow the tracefs_cpu to
+handle this for the application.
+
+The following three functions are added to the API:
+
+    tracefs_cpu_read_buf()
+    tracefs_cpu_buffered_read_buf()
+    tracefs_cpu_flush_buf()
+
+That act the same as the corresponding functions with the same name minus the
+ending "_buf", but instead of requiring to send a buffer in and then add it to
+a kbuffer element to read, just return a kbuffer structure that can be used to
+read.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- utest/tracefs-utest.c | 163 +++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 154 insertions(+), 9 deletions(-)
+ Documentation/libtracefs-cpu-buf.txt | 171 +++++++++++++++++++++++++++
+ Documentation/libtracefs-cpu.txt     |   3 +
+ Documentation/libtracefs.txt         |   3 +
+ include/tracefs.h                    |   4 +
+ samples/Makefile                     |   1 +
+ src/tracefs-record.c                 | 116 ++++++++++++++++++
+ 6 files changed, 298 insertions(+)
+ create mode 100644 Documentation/libtracefs-cpu-buf.txt
 
-diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index 98cfd322b171..6a817125419f 100644
---- a/utest/tracefs-utest.c
-+++ b/utest/tracefs-utest.c
-@@ -53,6 +53,8 @@
- #define TRACEFS_DEFAULT_PATH "/sys/kernel/tracing"
- #define TRACEFS_DEFAULT2_PATH "/sys/kernel/debug/tracing"
- 
-+static pthread_barrier_t trace_barrier;
+diff --git a/Documentation/libtracefs-cpu-buf.txt b/Documentation/libtracefs-cpu-buf.txt
+new file mode 100644
+index 000000000000..943cb1f2f437
+--- /dev/null
++++ b/Documentation/libtracefs-cpu-buf.txt
+@@ -0,0 +1,171 @@
++libtracefs(3)
++=============
 +
- static struct tracefs_instance *test_instance;
- static struct tep_handle *test_tep;
- struct test_sample {
-@@ -435,6 +437,7 @@ struct test_cpu_data {
- 	void				*buf;
- 	int				events_per_buf;
- 	int				bufsize;
-+	int				nr_subbufs;
- 	int				data_size;
- 	int				this_pid;
- 	int				fd;
-@@ -452,11 +455,21 @@ static void cleanup_trace_cpu(struct test_cpu_data *data)
- #define EVENT_SYSTEM "syscalls"
- #define EVENT_NAME  "sys_enter_getppid"
- 
--static int setup_trace_cpu(struct tracefs_instance *instance, struct test_cpu_data *data)
-+static int make_trace_temp_file(void)
++NAME
++----
++tracefs_cpu_read_buf, tracefs_cpu_buffered_read_buf, tracefs_cpu_flush_buf
++- Reading trace_pipe_raw data returning a kbuffer
++
++SYNOPSIS
++--------
++[verse]
++--
++*#include <tracefs.h>*
++
++struct kbuffer pass:[*]*tracefs_cpu_read_buf*(struct tracefs_cpu pass:[*]_tcpu_, bool _nonblock_);
++struct kbuffer pass:[*]*tracefs_cpu_buffered_read_buf*(struct tracefs_cpu pass:[*]_tcpu_, bool _nonblock_);
++struct kbuffer pass:[*]*tracefs_cpu_flush_buf*(struct tracefs_cpu pass:[*]_tcpu_);
++--
++
++DESCRIPTION
++-----------
++This set of APIs can be used to read the raw data from the trace_pipe_raw
++files in the tracefs file system and return a kbuffer structure to read it with.
++
++The *tracefs_cpu_read_buf()* reads the trace_pipe_raw files associated to _tcpu_
++and returns a kbuffer structure that can be used to iterate the events.
++If _nonblock_ is set, and there's no data available, it will return immediately.
++Otherwise depending on how _tcpu_ was opened, it will block. If _tcpu_ was
++opened with nonblock set, then this _nonblock_ will make no difference.
++
++The *tracefs_cpu_buffered_read_buf()* is basically the same as *tracefs_cpu_read_buf()*
++except that it uses a pipe through splice to buffer reads. This will batch
++reads keeping the reading from the ring buffer less intrusive to the system,
++as just reading all the time can cause quite a disturbance. Note, one
++difference between this and *tracefs_cpu_read()* is that it will read only in
++sub buffer pages. If the ring buffer has not filled a page, then it will not
++return anything, even with _nonblock_ set.  Calls to *tracefs_cpu_flush_buf()*
++or *tracefs_cpu_flush()* should be done to read the rest of the file at the
++end of the trace.
++
++The *tracefs_cpu_flush_buf()* reads the trace_pipe_raw file associated by the
++_tcpu_ and puts it into _buffer_, which must be the size of the sub buffer
++which is retrieved.  This should be called at the end of tracing
++to get the rest of the data. This call will convert the file descriptor of
++trace_pipe_raw into non-blocking mode.
++
++RETURN VALUE
++------------
++The functions *tracefs_cpu_read_buf()*, tracefs_cpu_buffered_read_buf()* and
++*tracefs_cpu_flush()* returns a kbuffer descriptor that can be iterated
++over to find the events. Note, this descriptor is part of the tracefs_cpu structure
++and should not be freed. It will be freed. It returns NULL on error or if nonblock
++is set and there are no events available. In the case of no events, errno will be
++set with EAGAIN.
++
++EXAMPLE
++-------
++[source,c]
++--
++#include <stdlib.h>
++#include <ctype.h>
++#include <tracefs.h>
++
++static void read_page(struct tep_handle *tep, struct kbuffer *kbuf)
 +{
-+	char tmpfile[] = "/tmp/utest-libtracefsXXXXXX";
-+	int fd;
++	static struct trace_seq seq;
++	struct tep_record record;
 +
-+	fd = mkstemp(tmpfile);
-+	unlink(tmpfile);
-+	return fd;
++	if (seq.buffer)
++		trace_seq_reset(&seq);
++	else
++		trace_seq_init(&seq);
++
++	while ((record.data = kbuffer_read_event(kbuf, &record.ts))) {
++		record.size = kbuffer_event_size(kbuf);
++		kbuffer_next_event(kbuf, NULL);
++		tep_print_event(tep, &seq, &record,
++				"%s-%d %9d\t%s: %s\n",
++				TEP_PRINT_COMM,
++				TEP_PRINT_PID,
++				TEP_PRINT_TIME,
++				TEP_PRINT_NAME,
++				TEP_PRINT_INFO);
++		trace_seq_do_printf(&seq);
++		trace_seq_reset(&seq);
++	}
 +}
 +
-+static int setup_trace_cpu(struct tracefs_instance *instance, struct test_cpu_data *data, bool nonblock)
- {
- 	struct tep_format_field **fields;
- 	struct tep_event *event;
--	char tmpfile[] = "/tmp/utest-libtracefsXXXXXX";
-+	ssize_t buffer_size;
- 	int max = 0;
- 	int ret;
- 	int i;
-@@ -468,20 +481,26 @@ static int setup_trace_cpu(struct tracefs_instance *instance, struct test_cpu_da
- 
- 	data->instance = instance;
- 
--	data->fd = mkstemp(tmpfile);
-+	data->fd = make_trace_temp_file();
- 	CU_TEST(data->fd >= 0);
--	unlink(tmpfile);
- 	if (data->fd < 0)
- 		return -1;
- 
- 	data->tep = test_tep;
- 
--	data->tcpu = tracefs_cpu_open(instance, 0, true);
-+	data->tcpu = tracefs_cpu_open(instance, 0, nonblock);
- 	CU_TEST(data->tcpu != NULL);
- 	if (!data->tcpu)
- 		goto fail;
- 
- 	data->bufsize = tracefs_cpu_read_size(data->tcpu);
-+	CU_TEST(data->bufsize > 0);
-+
-+	data->data_size = tep_get_sub_buffer_data_size(data->tep);
-+	CU_TEST(data->data_size > 0);
-+
-+	buffer_size = tracefs_instance_get_buffer_size(instance, 0) * 1024;
-+	data->nr_subbufs = buffer_size/ data->data_size;
- 
- 	data->buf = calloc(1, data->bufsize);
- 	CU_TEST(data->buf != NULL);
-@@ -493,8 +512,6 @@ static int setup_trace_cpu(struct tracefs_instance *instance, struct test_cpu_da
- 	if (!data->kbuf)
- 		goto fail;
- 
--	data->data_size = data->bufsize - kbuffer_start_of_data(data->kbuf);
--
- 	tracefs_instance_file_clear(instance, "trace");
- 
- 	event = tep_find_event_by_name(data->tep, EVENT_SYSTEM, EVENT_NAME);
-@@ -518,6 +535,12 @@ static int setup_trace_cpu(struct tracefs_instance *instance, struct test_cpu_da
- 	if (!max)
- 		goto fail;
- 
-+	/* round up to long size alignment */
-+	max = ((max + sizeof(long) - 1)) & ~(sizeof(long) - 1);
-+
-+	/* Add meta header */
-+	max += 4;
-+
- 	data->events_per_buf = data->data_size / max;
- 
- 	data->this_pid = getpid();
-@@ -549,6 +572,17 @@ static void shutdown_trace_cpu(struct test_cpu_data *data)
- 	cleanup_trace_cpu(data);
- }
- 
-+static void reset_trace_cpu(struct test_cpu_data *data, bool nonblock)
++int main (int argc, char **argv)
 +{
-+	close(data->fd);
-+	tracefs_cpu_close(data->tcpu);
-+
-+	data->fd = make_trace_temp_file();
-+	CU_TEST(data->fd >= 0);
-+	data->tcpu = tracefs_cpu_open(data->instance, 0, nonblock);
-+	CU_TEST(data->tcpu != NULL);
-+}
-+
- static void call_getppid(int cnt)
- {
- 	int i;
-@@ -597,7 +631,7 @@ static void test_instance_trace_cpu_read(struct tracefs_instance *instance)
- {
- 	struct test_cpu_data data;
- 
--	if (setup_trace_cpu(instance, &data))
-+	if (setup_trace_cpu(instance, &data, true))
- 		return;
- 
- 	test_cpu_read(&data, 1);
-@@ -615,6 +649,115 @@ static void test_trace_cpu_read(void)
- 	test_instance_trace_cpu_read(test_instance);
- }
- 
-+static void *trace_cpu_read_thread(void *arg)
-+{
-+	struct test_cpu_data *data = arg;
-+	struct tracefs_cpu *tcpu = data->tcpu;
++	struct tracefs_cpu *tcpu;
++	struct tep_handle *tep;
 +	struct kbuffer *kbuf;
-+	long ret = 0;
++	int cpu;
 +
-+	pthread_barrier_wait(&trace_barrier);
-+
-+	kbuf = tracefs_cpu_read_buf(tcpu, false);
-+	CU_TEST(kbuf != NULL);
-+	data->done = true;
-+
-+	return (void *)ret;
-+}
-+
-+static void test_cpu_read_buf_percent(struct test_cpu_data *data, int percent)
-+{
-+	pthread_t thread;
-+	int save_percent;
-+	ssize_t expect;
-+	int ret;
-+
-+	tracefs_instance_clear(data->instance);
-+
-+	save_percent = tracefs_instance_get_buffer_percent(data->instance);
-+	CU_TEST(save_percent >= 0);
-+
-+	ret = tracefs_instance_set_buffer_percent(data->instance, percent);
-+	CU_TEST(ret == 0);
-+
-+	data->done = false;
-+
-+	pthread_barrier_init(&trace_barrier, NULL, 2);
-+
-+	pthread_create(&thread, NULL, trace_cpu_read_thread, data);
-+
-+	pthread_barrier_wait(&trace_barrier);
-+
-+	msleep(100);
-+
-+	CU_TEST(data->done == false);
-+
-+	/* For percent == 0, just test for any data */
-+	if (percent) {
-+		expect = data->nr_subbufs * data->events_per_buf * percent / 100;
-+
-+		/* Add just under the percent */
-+		expect -= data->events_per_buf;
-+		CU_TEST(expect > 0);
-+
-+		call_getppid(expect);
-+
-+		msleep(100);
-+
-+		CU_TEST(data->done == false);
-+
-+		/* Add just over the percent */
-+		expect = data->events_per_buf * 2;
-+	} else {
-+		expect = data->events_per_buf;
++	if (argc < 2 || !isdigit(argv[1][0])) {
++		printf("usage: %s cpu\n\n", argv[0]);
++		exit(-1);
 +	}
 +
-+	call_getppid(expect);
++	cpu = atoi(argv[1]);
 +
-+	msleep(100);
++	tep = tracefs_local_events(NULL);
++	if (!tep) {
++		perror("Reading trace event formats");
++		exit(-1);
++	}
 +
-+	CU_TEST(data->done == true);
++	tcpu = tracefs_cpu_open(NULL, cpu, 0);
++	if (!tcpu) {
++		perror("Open CPU 0 file");
++		exit(-1);
++	}
 +
-+	while (tracefs_cpu_flush_buf(data->tcpu))
-+		;
++	while ((kbuf = tracefs_cpu_buffered_read_buf(tcpu, true))) {
++		read_page(tep, kbuf);
++	}
 +
-+	tracefs_cpu_stop(data->tcpu);
-+	pthread_join(thread, NULL);
++	kbuf = tracefs_cpu_flush_buf(tcpu);
++	if (kbuf)
++		read_page(tep, kbuf);
 +
-+	ret = tracefs_instance_set_buffer_percent(data->instance, save_percent);
-+	CU_TEST(ret == 0);
++	tracefs_cpu_close(tcpu);
++	tep_free(tep);
++
++	return 0;
 +}
++--
++FILES
++-----
++[verse]
++--
++*tracefs.h*
++	Header file to include in order to have access to the library APIs.
++*-ltracefs*
++	Linker switch to add when building a program that uses the library.
++--
 +
-+static void test_instance_trace_cpu_read_buf_percent(struct tracefs_instance *instance)
-+{
-+	struct test_cpu_data data;
++SEE ALSO
++--------
++*tracefs_cpu_open*(3)
++*tracefs_cpu_close*(3)
++*tracefs_cpu_read*(3)
++*tracefs_cpu_buffered_read*(3)
++*tracefs_cpu_flush*(3)
++*libtracefs*(3),
++*libtraceevent*(3),
++*trace-cmd*(1)
 +
-+	if (setup_trace_cpu(instance, &data, false))
-+		return;
++AUTHOR
++------
++[verse]
++--
++*Steven Rostedt* <rostedt@goodmis.org>
++--
++REPORTING BUGS
++--------------
++Report bugs to  <linux-trace-devel@vger.kernel.org>
 +
-+	test_cpu_read_buf_percent(&data, 0);
++LICENSE
++-------
++libtracefs is Free Software licensed under the GNU LGPL 2.1
 +
-+	reset_trace_cpu(&data, false);
++RESOURCES
++---------
++https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
 +
-+	test_cpu_read_buf_percent(&data, 1);
-+
-+	reset_trace_cpu(&data, false);
-+
-+	test_cpu_read_buf_percent(&data, 50);
-+
-+	reset_trace_cpu(&data, false);
-+
-+	test_cpu_read_buf_percent(&data, 100);
-+
-+	shutdown_trace_cpu(&data);
-+}
-+
-+static void test_trace_cpu_read_buf_percent(void)
-+{
-+	test_instance_trace_cpu_read_buf_percent(NULL);
-+	test_instance_trace_cpu_read_buf_percent(test_instance);
-+}
-+
- struct follow_data {
- 	struct tep_event *sched_switch;
- 	struct tep_event *sched_waking;
-@@ -1152,7 +1295,7 @@ static void test_instance_trace_cpu_pipe(struct tracefs_instance *instance)
++COPYING
++-------
++Copyright \(C) 2022 Google, Inc. Free use of this software is granted under
++the terms of the GNU Public License (GPL).
+diff --git a/Documentation/libtracefs-cpu.txt b/Documentation/libtracefs-cpu.txt
+index d6215d9912c0..6fb65248089b 100644
+--- a/Documentation/libtracefs-cpu.txt
++++ b/Documentation/libtracefs-cpu.txt
+@@ -212,6 +212,9 @@ SEE ALSO
+ --------
+ *tracefs_cpu_open*(3)
+ *tracefs_cpu_close*(3)
++*tracefs_cpu_read_buf*(3)
++*tracefs_cpu_buffered_read_buf*(3)
++*tracefs_cpu_flush_buf*(3)
+ *libtracefs*(3),
+ *libtraceevent*(3),
+ *trace-cmd*(1)
+diff --git a/Documentation/libtracefs.txt b/Documentation/libtracefs.txt
+index 11ff576e826c..8ca19a04fe77 100644
+--- a/Documentation/libtracefs.txt
++++ b/Documentation/libtracefs.txt
+@@ -304,6 +304,9 @@ Recording of trace_pipe_raw files:
+ 	int *tracefs_cpu_flush*(struct tracefs_cpu pass:[*]_tcpu_, void pass:[*]_buffer_);
+ 	int *tracefs_cpu_flush_write*(struct tracefs_cpu pass:[*]_tcpu_, int _wfd_);
+ 	int *tracefs_cpu_pipe*(struct tracefs_cpu pass:[*]_tcpu_, int _wfd_, bool _nonblock_);
++	struct kbuffer pass:[*]*tracefs_cpu_read_buf*(struct tracefs_cpu pass:[*]_tcpu_, bool _nonblock_);
++	struct kbuffer pass:[*]*tracefs_cpu_buffered_read_buf*(struct tracefs_cpu pass:[*]_tcpu_, bool _nonblock_);
++	struct kbuffer pass:[*]*tracefs_cpu_flush_buf*(struct tracefs_cpu pass:[*]_tcpu_);
+ 
+ Helper functions for guest tracing:
+ 	char pass:[*]*tracefs_find_cid_pid*(int _cid_);
+diff --git a/include/tracefs.h b/include/tracefs.h
+index 0971d54dd7c7..1722cbd60598 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -9,6 +9,7 @@
+ #include <fcntl.h>
+ #include <sched.h>
+ #include <event-parse.h>
++#include <kbuffer.h>
+ 
+ char *tracefs_get_tracing_file(const char *name);
+ void tracefs_put_tracing_file(char *name);
+@@ -641,10 +642,13 @@ void tracefs_cpu_close(struct tracefs_cpu *tcpu);
+ void tracefs_cpu_free_fd(struct tracefs_cpu *tcpu);
+ int tracefs_cpu_read_size(struct tracefs_cpu *tcpu);
+ int tracefs_cpu_read(struct tracefs_cpu *tcpu, void *buffer, bool nonblock);
++struct kbuffer *tracefs_cpu_read_buf(struct tracefs_cpu *tcpu, bool nonblock);
+ int tracefs_cpu_buffered_read(struct tracefs_cpu *tcpu, void *buffer, bool nonblock);
++struct kbuffer *tracefs_cpu_buffered_read_buf(struct tracefs_cpu *tcpu, bool nonblock);
+ int tracefs_cpu_write(struct tracefs_cpu *tcpu, int wfd, bool nonblock);
+ int tracefs_cpu_stop(struct tracefs_cpu *tcpu);
+ int tracefs_cpu_flush(struct tracefs_cpu *tcpu, void *buffer);
++struct kbuffer *tracefs_cpu_flush_buf(struct tracefs_cpu *tcpu);
+ int tracefs_cpu_flush_write(struct tracefs_cpu *tcpu, int wfd);
+ int tracefs_cpu_pipe(struct tracefs_cpu *tcpu, int wfd, bool nonblock);
+ 
+diff --git a/samples/Makefile b/samples/Makefile
+index d782e8f79424..13ad99579ea3 100644
+--- a/samples/Makefile
++++ b/samples/Makefile
+@@ -23,6 +23,7 @@ EXAMPLES += stream
+ EXAMPLES += instances-affinity
+ EXAMPLES += cpu
+ EXAMPLES += guest
++EXAMPLES += cpu-buf
+ 
+ TARGETS :=
+ TARGETS += sqlhist
+diff --git a/src/tracefs-record.c b/src/tracefs-record.c
+index 8750fe7e0e29..bfeae18fd77f 100644
+--- a/src/tracefs-record.c
++++ b/src/tracefs-record.c
+@@ -34,6 +34,8 @@ struct tracefs_cpu {
+ 	int		subbuf_size;
+ 	int		buffered;
+ 	int		splice_read_flags;
++	struct kbuffer	*kbuf;
++	void		*buffer;
+ };
+ 
+ /**
+@@ -106,6 +108,7 @@ tracefs_cpu_open(struct tracefs_instance *instance, int cpu, bool nonblock)
  {
- 	struct test_cpu_data data;
+ 	struct tracefs_cpu *tcpu;
+ 	struct tep_handle *tep;
++	struct kbuffer *kbuf;
+ 	char path[128];
+ 	char *buf;
+ 	int mode = O_RDONLY;
+@@ -138,6 +141,11 @@ tracefs_cpu_open(struct tracefs_instance *instance, int cpu, bool nonblock)
+ 		goto fail;
  
--	if (setup_trace_cpu(instance, &data))
-+	if (setup_trace_cpu(instance, &data, true))
- 		return;
+ 	subbuf_size = tep_get_sub_buffer_size(tep);
++
++	kbuf = tep_kbuffer(tep);
++	if (!kbuf)
++		goto fail;
++
+ 	tep_free(tep);
+ 	tep = NULL;
  
- 	test_cpu_pipe(&data, 1);
-@@ -2808,6 +2951,8 @@ void test_tracefs_lib(void)
- 	CU_add_test(suite, "Test tracefs/debugfs mounting", test_mounting);
- 	CU_add_test(suite, "trace cpu read",
- 		    test_trace_cpu_read);
-+	CU_add_test(suite, "trace cpu read_buf_percent",
-+		    test_trace_cpu_read_buf_percent);
- 	CU_add_test(suite, "trace cpu pipe",
- 		    test_trace_cpu_pipe);
- 	CU_add_test(suite, "trace sql",
+@@ -145,6 +153,8 @@ tracefs_cpu_open(struct tracefs_instance *instance, int cpu, bool nonblock)
+ 	if (!tcpu)
+ 		goto fail;
+ 
++	tcpu->kbuf = kbuf;
++
+ 	return tcpu;
+  fail:
+ 	tep_free(tep);
+@@ -173,6 +183,7 @@ void tracefs_cpu_free_fd(struct tracefs_cpu *tcpu)
+ 	close_fd(tcpu->splice_pipe[0]);
+ 	close_fd(tcpu->splice_pipe[1]);
+ 
++	kbuffer_free(tcpu->kbuf);
+ 	free(tcpu);
+ }
+ 
+@@ -317,6 +328,49 @@ int tracefs_cpu_read(struct tracefs_cpu *tcpu, void *buffer, bool nonblock)
+ 	return ret;
+ }
+ 
++static bool get_buffer(struct tracefs_cpu *tcpu)
++{
++	if (!tcpu->buffer) {
++		tcpu->buffer = malloc(tcpu->subbuf_size);
++		if (!tcpu->buffer)
++			return false;
++	}
++	return true;
++}
++
++/**
++ * tracefs_cpu_read_buf - read from the raw trace file and return kbuffer
++ * @tcpu: The descriptor representing the raw trace file
++ * @nonblock: Hint to not block on the read if there's no data.
++ *
++ * Reads the trace_pipe_raw files associated to @tcpu and returns a kbuffer
++ * associated with the read that can be used to parse events.
++ *
++ * If @nonblock is set, and there's no data available, it will return
++ * immediately. Otherwise depending on how @tcpu was opened, it will
++ * block. If @tcpu was opened with nonblock set, then this @nonblock
++ * will make no difference.
++ *
++ * Returns a kbuffer associated to the next sub-buffer or NULL on error
++ * or no data to read with nonblock set (EAGAIN will be set).
++ *
++ * The kbuffer returned should not be freed!
++ */
++struct kbuffer *tracefs_cpu_read_buf(struct tracefs_cpu *tcpu, bool nonblock)
++{
++	int ret;
++
++	if (!get_buffer(tcpu))
++		return NULL;
++
++	ret = tracefs_cpu_read(tcpu, tcpu->buffer, nonblock);
++	if (ret <= 0)
++		return NULL;
++
++	kbuffer_load_subbuffer(tcpu->kbuf, tcpu->buffer);
++	return tcpu->kbuf;
++}
++
+ static int init_splice(struct tracefs_cpu *tcpu)
+ {
+ 	char *buf;
+@@ -409,6 +463,42 @@ int tracefs_cpu_buffered_read(struct tracefs_cpu *tcpu, void *buffer, bool nonbl
+ 	return ret;
+ }
+ 
++/**
++ * tracefs_cpu_buffered_read_buf - Read the raw trace data buffering through a pipe
++ * @tcpu: The descriptor representing the raw trace file
++ * @nonblock: Hint to not block on the read if there's no data.
++ *
++ * This is basically the same as tracefs_cpu_read() except that it uses
++ * a pipe through splice to buffer reads. This will batch reads keeping
++ * the reading from the ring buffer less intrusive to the system, as
++ * just reading all the time can cause quite a disturbance.
++ *
++ * Note, one difference between this and tracefs_cpu_read() is that it
++ * will read only in sub buffer pages. If the ring buffer has not filled
++ * a page, then it will not return anything, even with @nonblock set.
++ * Calls to tracefs_cpu_flush() should be done to read the rest of
++ * the file at the end of the trace.
++ *
++ * Returns a kbuffer associated to the next sub-buffer or NULL on error
++ * or no data to read with nonblock set (EAGAIN will be set).
++ *
++ * The kbuffer returned should not be freed!
++ */
++struct kbuffer *tracefs_cpu_buffered_read_buf(struct tracefs_cpu *tcpu, bool nonblock)
++{
++	int ret;
++
++	if (!get_buffer(tcpu))
++		return NULL;
++
++	ret = tracefs_cpu_buffered_read(tcpu, tcpu->buffer, nonblock);
++	if (ret <= 0)
++		return NULL;
++
++	kbuffer_load_subbuffer(tcpu->kbuf, tcpu->buffer);
++	return tcpu->kbuf;
++}
++
+ /**
+  * tracefs_cpu_stop - Stop a blocked read of the raw tracing file
+  * @tcpu: The descriptor representing the raw trace file
+@@ -492,6 +582,32 @@ int tracefs_cpu_flush(struct tracefs_cpu *tcpu, void *buffer)
+ 	return ret;
+ }
+ 
++/**
++ * tracefs_cpu_flush_buf - Finish out and read the rest of the raw tracing file
++ * @tcpu: The descriptor representing the raw trace file
++ *
++ * Reads the trace_pipe_raw file associated by the @tcpu and puts it
++ * into @buffer, which must be the size of the sub buffer which is retrieved.
++ * by tracefs_cpu_read_size(). This should be called at the end of tracing
++ * to get the rest of the data.
++ *
++ * This will set the file descriptor for reading to non-blocking mode.
++ */
++struct kbuffer *tracefs_cpu_flush_buf(struct tracefs_cpu *tcpu)
++{
++	int ret;
++
++	if (!get_buffer(tcpu))
++		return NULL;
++
++	ret = tracefs_cpu_flush(tcpu, tcpu->buffer);
++	if (ret <= 0)
++		return NULL;
++
++	kbuffer_load_subbuffer(tcpu->kbuf, tcpu->buffer);
++	return tcpu->kbuf;
++}
++
+ /**
+  * tracefs_cpu_flush_write - Finish out and read the rest of the raw tracing file
+  * @tcpu: The descriptor representing the raw trace file
 -- 
 2.42.0
 
