@@ -1,20 +1,20 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7101C10967
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73C8110A05
 	for <linux-trace-devel@vger.kernel.org>; Thu, 28 Dec 2023 21:53:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12AB3C43395;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2695FC433AD;
 	Thu, 28 Dec 2023 21:53:45 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rIyKo-00000000EJB-43Pa;
-	Thu, 28 Dec 2023 16:54:34 -0500
+	id 1rIyKp-00000000EJV-0QGK;
+	Thu, 28 Dec 2023 16:54:35 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 09/22] libtracefs: Increase splice to use pipe max size
-Date: Thu, 28 Dec 2023 16:52:04 -0500
-Message-ID: <20231228215433.54854-10-rostedt@goodmis.org>
+Subject: [PATCH v2 14/22] libtracefs utest: Add test to test tracefs_instance_set/get_buffer_percent()
+Date: Thu, 28 Dec 2023 16:52:09 -0500
+Message-ID: <20231228215433.54854-15-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231228215433.54854-1-rostedt@goodmis.org>
 References: <20231228215433.54854-1-rostedt@goodmis.org>
@@ -28,40 +28,294 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-When a pipe is created for splicing to read the tracing ring buffer, instead
-of using the default size, which is usually around 65K, read
-/proc/sys/fs/pipe_max_size and try to set the pipe to use that size instead.
+Add a utest that tests different "buffer_percent" values using the
+tracefs_instance_set_buffer_percent() API. It also will test the
+tracefs_instance_get_buffer_percent().
+
+Since the test now needs libtraceevent 1.8.1 which has:
+
+  tep_get_sub_buffer_data_size()
+
+and meson will not build unless the tests build, update the minimum
+libtraceevent version to 1.8.1 in meson.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- src/tracefs-record.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ meson.build           |   2 +-
+ utest/tracefs-utest.c | 163 +++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 155 insertions(+), 10 deletions(-)
 
-diff --git a/src/tracefs-record.c b/src/tracefs-record.c
-index b078c8615194..8750fe7e0e29 100644
---- a/src/tracefs-record.c
-+++ b/src/tracefs-record.c
-@@ -319,6 +319,7 @@ int tracefs_cpu_read(struct tracefs_cpu *tcpu, void *buffer, bool nonblock)
+diff --git a/meson.build b/meson.build
+index 9d42d78ad957..a10be0d6d1b2 100644
+--- a/meson.build
++++ b/meson.build
+@@ -16,7 +16,7 @@ project(
  
- static int init_splice(struct tracefs_cpu *tcpu)
+ library_version = meson.project_version()
+ 
+-libtraceevent_dep = dependency('libtraceevent', version: '>= 1.7.0', required: true)
++libtraceevent_dep = dependency('libtraceevent', version: '>= 1.8.1', required: true)
+ threads_dep = dependency('threads', required: true)
+ cunit_dep = dependency('cunit', required : false)
+ 
+diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
+index 98cfd322b171..6a817125419f 100644
+--- a/utest/tracefs-utest.c
++++ b/utest/tracefs-utest.c
+@@ -53,6 +53,8 @@
+ #define TRACEFS_DEFAULT_PATH "/sys/kernel/tracing"
+ #define TRACEFS_DEFAULT2_PATH "/sys/kernel/debug/tracing"
+ 
++static pthread_barrier_t trace_barrier;
++
+ static struct tracefs_instance *test_instance;
+ static struct tep_handle *test_tep;
+ struct test_sample {
+@@ -435,6 +437,7 @@ struct test_cpu_data {
+ 	void				*buf;
+ 	int				events_per_buf;
+ 	int				bufsize;
++	int				nr_subbufs;
+ 	int				data_size;
+ 	int				this_pid;
+ 	int				fd;
+@@ -452,11 +455,21 @@ static void cleanup_trace_cpu(struct test_cpu_data *data)
+ #define EVENT_SYSTEM "syscalls"
+ #define EVENT_NAME  "sys_enter_getppid"
+ 
+-static int setup_trace_cpu(struct tracefs_instance *instance, struct test_cpu_data *data)
++static int make_trace_temp_file(void)
++{
++	char tmpfile[] = "/tmp/utest-libtracefsXXXXXX";
++	int fd;
++
++	fd = mkstemp(tmpfile);
++	unlink(tmpfile);
++	return fd;
++}
++
++static int setup_trace_cpu(struct tracefs_instance *instance, struct test_cpu_data *data, bool nonblock)
  {
-+	char *buf;
+ 	struct tep_format_field **fields;
+ 	struct tep_event *event;
+-	char tmpfile[] = "/tmp/utest-libtracefsXXXXXX";
++	ssize_t buffer_size;
+ 	int max = 0;
  	int ret;
+ 	int i;
+@@ -468,20 +481,26 @@ static int setup_trace_cpu(struct tracefs_instance *instance, struct test_cpu_da
  
- 	if (tcpu->splice_pipe[0] >= 0)
-@@ -328,6 +329,12 @@ static int init_splice(struct tracefs_cpu *tcpu)
- 	if (ret < 0)
- 		return ret;
+ 	data->instance = instance;
  
-+	if (str_read_file("/proc/sys/fs/pipe-max-size", &buf, false)) {
-+		int size = atoi(buf);
-+		fcntl(tcpu->splice_pipe[0], F_SETPIPE_SZ, &size);
-+		free(buf);
+-	data->fd = mkstemp(tmpfile);
++	data->fd = make_trace_temp_file();
+ 	CU_TEST(data->fd >= 0);
+-	unlink(tmpfile);
+ 	if (data->fd < 0)
+ 		return -1;
+ 
+ 	data->tep = test_tep;
+ 
+-	data->tcpu = tracefs_cpu_open(instance, 0, true);
++	data->tcpu = tracefs_cpu_open(instance, 0, nonblock);
+ 	CU_TEST(data->tcpu != NULL);
+ 	if (!data->tcpu)
+ 		goto fail;
+ 
+ 	data->bufsize = tracefs_cpu_read_size(data->tcpu);
++	CU_TEST(data->bufsize > 0);
++
++	data->data_size = tep_get_sub_buffer_data_size(data->tep);
++	CU_TEST(data->data_size > 0);
++
++	buffer_size = tracefs_instance_get_buffer_size(instance, 0) * 1024;
++	data->nr_subbufs = buffer_size/ data->data_size;
+ 
+ 	data->buf = calloc(1, data->bufsize);
+ 	CU_TEST(data->buf != NULL);
+@@ -493,8 +512,6 @@ static int setup_trace_cpu(struct tracefs_instance *instance, struct test_cpu_da
+ 	if (!data->kbuf)
+ 		goto fail;
+ 
+-	data->data_size = data->bufsize - kbuffer_start_of_data(data->kbuf);
+-
+ 	tracefs_instance_file_clear(instance, "trace");
+ 
+ 	event = tep_find_event_by_name(data->tep, EVENT_SYSTEM, EVENT_NAME);
+@@ -518,6 +535,12 @@ static int setup_trace_cpu(struct tracefs_instance *instance, struct test_cpu_da
+ 	if (!max)
+ 		goto fail;
+ 
++	/* round up to long size alignment */
++	max = ((max + sizeof(long) - 1)) & ~(sizeof(long) - 1);
++
++	/* Add meta header */
++	max += 4;
++
+ 	data->events_per_buf = data->data_size / max;
+ 
+ 	data->this_pid = getpid();
+@@ -549,6 +572,17 @@ static void shutdown_trace_cpu(struct test_cpu_data *data)
+ 	cleanup_trace_cpu(data);
+ }
+ 
++static void reset_trace_cpu(struct test_cpu_data *data, bool nonblock)
++{
++	close(data->fd);
++	tracefs_cpu_close(data->tcpu);
++
++	data->fd = make_trace_temp_file();
++	CU_TEST(data->fd >= 0);
++	data->tcpu = tracefs_cpu_open(data->instance, 0, nonblock);
++	CU_TEST(data->tcpu != NULL);
++}
++
+ static void call_getppid(int cnt)
+ {
+ 	int i;
+@@ -597,7 +631,7 @@ static void test_instance_trace_cpu_read(struct tracefs_instance *instance)
+ {
+ 	struct test_cpu_data data;
+ 
+-	if (setup_trace_cpu(instance, &data))
++	if (setup_trace_cpu(instance, &data, true))
+ 		return;
+ 
+ 	test_cpu_read(&data, 1);
+@@ -615,6 +649,115 @@ static void test_trace_cpu_read(void)
+ 	test_instance_trace_cpu_read(test_instance);
+ }
+ 
++static void *trace_cpu_read_thread(void *arg)
++{
++	struct test_cpu_data *data = arg;
++	struct tracefs_cpu *tcpu = data->tcpu;
++	struct kbuffer *kbuf;
++	long ret = 0;
++
++	pthread_barrier_wait(&trace_barrier);
++
++	kbuf = tracefs_cpu_read_buf(tcpu, false);
++	CU_TEST(kbuf != NULL);
++	data->done = true;
++
++	return (void *)ret;
++}
++
++static void test_cpu_read_buf_percent(struct test_cpu_data *data, int percent)
++{
++	pthread_t thread;
++	int save_percent;
++	ssize_t expect;
++	int ret;
++
++	tracefs_instance_clear(data->instance);
++
++	save_percent = tracefs_instance_get_buffer_percent(data->instance);
++	CU_TEST(save_percent >= 0);
++
++	ret = tracefs_instance_set_buffer_percent(data->instance, percent);
++	CU_TEST(ret == 0);
++
++	data->done = false;
++
++	pthread_barrier_init(&trace_barrier, NULL, 2);
++
++	pthread_create(&thread, NULL, trace_cpu_read_thread, data);
++
++	pthread_barrier_wait(&trace_barrier);
++
++	msleep(100);
++
++	CU_TEST(data->done == false);
++
++	/* For percent == 0, just test for any data */
++	if (percent) {
++		expect = data->nr_subbufs * data->events_per_buf * percent / 100;
++
++		/* Add just under the percent */
++		expect -= data->events_per_buf;
++		CU_TEST(expect > 0);
++
++		call_getppid(expect);
++
++		msleep(100);
++
++		CU_TEST(data->done == false);
++
++		/* Add just over the percent */
++		expect = data->events_per_buf * 2;
++	} else {
++		expect = data->events_per_buf;
 +	}
 +
- 	ret = fcntl(tcpu->splice_pipe[0], F_GETPIPE_SZ, &tcpu->pipe_size);
- 	/*
- 	 * F_GETPIPE_SZ was introduced in 2.6.35, ftrace was introduced
++	call_getppid(expect);
++
++	msleep(100);
++
++	CU_TEST(data->done == true);
++
++	while (tracefs_cpu_flush_buf(data->tcpu))
++		;
++
++	tracefs_cpu_stop(data->tcpu);
++	pthread_join(thread, NULL);
++
++	ret = tracefs_instance_set_buffer_percent(data->instance, save_percent);
++	CU_TEST(ret == 0);
++}
++
++static void test_instance_trace_cpu_read_buf_percent(struct tracefs_instance *instance)
++{
++	struct test_cpu_data data;
++
++	if (setup_trace_cpu(instance, &data, false))
++		return;
++
++	test_cpu_read_buf_percent(&data, 0);
++
++	reset_trace_cpu(&data, false);
++
++	test_cpu_read_buf_percent(&data, 1);
++
++	reset_trace_cpu(&data, false);
++
++	test_cpu_read_buf_percent(&data, 50);
++
++	reset_trace_cpu(&data, false);
++
++	test_cpu_read_buf_percent(&data, 100);
++
++	shutdown_trace_cpu(&data);
++}
++
++static void test_trace_cpu_read_buf_percent(void)
++{
++	test_instance_trace_cpu_read_buf_percent(NULL);
++	test_instance_trace_cpu_read_buf_percent(test_instance);
++}
++
+ struct follow_data {
+ 	struct tep_event *sched_switch;
+ 	struct tep_event *sched_waking;
+@@ -1152,7 +1295,7 @@ static void test_instance_trace_cpu_pipe(struct tracefs_instance *instance)
+ {
+ 	struct test_cpu_data data;
+ 
+-	if (setup_trace_cpu(instance, &data))
++	if (setup_trace_cpu(instance, &data, true))
+ 		return;
+ 
+ 	test_cpu_pipe(&data, 1);
+@@ -2808,6 +2951,8 @@ void test_tracefs_lib(void)
+ 	CU_add_test(suite, "Test tracefs/debugfs mounting", test_mounting);
+ 	CU_add_test(suite, "trace cpu read",
+ 		    test_trace_cpu_read);
++	CU_add_test(suite, "trace cpu read_buf_percent",
++		    test_trace_cpu_read_buf_percent);
+ 	CU_add_test(suite, "trace cpu pipe",
+ 		    test_trace_cpu_pipe);
+ 	CU_add_test(suite, "trace sql",
 -- 
 2.42.0
 
