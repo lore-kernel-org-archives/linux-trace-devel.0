@@ -1,20 +1,20 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73C8110A05
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73CB310A06
 	for <linux-trace-devel@vger.kernel.org>; Thu, 28 Dec 2023 21:53:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2695FC433AD;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C78BC433A9;
 	Thu, 28 Dec 2023 21:53:45 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rIyKp-00000000EJV-0QGK;
+	id 1rIyKp-00000000EJN-0Dd6;
 	Thu, 28 Dec 2023 16:54:35 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 14/22] libtracefs utest: Add test to test tracefs_instance_set/get_buffer_percent()
-Date: Thu, 28 Dec 2023 16:52:09 -0500
-Message-ID: <20231228215433.54854-15-rostedt@goodmis.org>
+Subject: [PATCH v2 12/22] libtracefs: Add tracefs_instance_get/set_buffer_percent()
+Date: Thu, 28 Dec 2023 16:52:07 -0500
+Message-ID: <20231228215433.54854-13-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231228215433.54854-1-rostedt@goodmis.org>
 References: <20231228215433.54854-1-rostedt@goodmis.org>
@@ -28,294 +28,133 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add a utest that tests different "buffer_percent" values using the
-tracefs_instance_set_buffer_percent() API. It also will test the
-tracefs_instance_get_buffer_percent().
-
-Since the test now needs libtraceevent 1.8.1 which has:
-
-  tep_get_sub_buffer_data_size()
-
-and meson will not build unless the tests build, update the minimum
-libtraceevent version to 1.8.1 in meson.
+Add an API that allows modifying the buffer_percent of the tracing ring
+buffer. That is the amount that is written into the ring buffer before the
+trace is woken up.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- meson.build           |   2 +-
- utest/tracefs-utest.c | 163 +++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 155 insertions(+), 10 deletions(-)
+ Documentation/libtracefs-instances-utils.txt | 28 +++++++++++++++++++-
+ Documentation/libtracefs.txt                 |  2 ++
+ include/tracefs.h                            |  3 +++
+ src/tracefs-utils.c                          | 27 +++++++++++++++++++
+ 4 files changed, 59 insertions(+), 1 deletion(-)
 
-diff --git a/meson.build b/meson.build
-index 9d42d78ad957..a10be0d6d1b2 100644
---- a/meson.build
-+++ b/meson.build
-@@ -16,7 +16,7 @@ project(
+diff --git a/Documentation/libtracefs-instances-utils.txt b/Documentation/libtracefs-instances-utils.txt
+index bc8c9a7bf8e9..d2c4f163902d 100644
+--- a/Documentation/libtracefs-instances-utils.txt
++++ b/Documentation/libtracefs-instances-utils.txt
+@@ -4,7 +4,8 @@ libtracefs(3)
+ NAME
+ ----
+ tracefs_instance_get_name, tracefs_instance_get_trace_dir, tracefs_instances_walk, tracefs_instance_exists,
+-tracefs_instance_get_buffer_size, tracefs_instance_set_buffer_size - Helper functions for working with tracing instances.
++tracefs_instance_get_buffer_size, tracefs_instance_set_buffer_size, tracefs_instance_get_buffer_percent,
++tracefs_instance_set_buffer_percent - Helper functions for working with tracing instances.
  
- library_version = meson.project_version()
+ SYNOPSIS
+ --------
+@@ -18,6 +19,8 @@ int *tracefs_instances_walk*(int (pass:[*]_callback_)(const char pass:[*], void
+ bool *tracefs_instance_exists*(const char pass:[*]_name_);
+ size_t *tracefs_instance_get_buffer_size*(struct tracefs_instance pass:[*]_instance_, int _cpu_);
+ int *tracefs_instance_set_buffer_size*(struct tracefs_instance pass:[*]_instance_, size_t _size_, int _cpu_);
++int *tracefs_instance_get_buffer_percent*(struct tracefs_instance pass:[*]_instance_);
++int *tracefs_instance_set_buffer_percent*(struct tracefs_instance pass:[*]_instance_, int _val_);
+ --
  
--libtraceevent_dep = dependency('libtraceevent', version: '>= 1.7.0', required: true)
-+libtraceevent_dep = dependency('libtraceevent', version: '>= 1.8.1', required: true)
- threads_dep = dependency('threads', required: true)
- cunit_dep = dependency('cunit', required : false)
+ DESCRIPTION
+@@ -48,6 +51,29 @@ If _cpu_ is negative, then it sets all the per CPU ring buffers to _size_ (note
+ the total size is the number of CPUs * _size_). If _cpu_ is specified, then it only
+ sets the size of the per CPU ring buffer.
  
-diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index 98cfd322b171..6a817125419f 100644
---- a/utest/tracefs-utest.c
-+++ b/utest/tracefs-utest.c
-@@ -53,6 +53,8 @@
- #define TRACEFS_DEFAULT_PATH "/sys/kernel/tracing"
- #define TRACEFS_DEFAULT2_PATH "/sys/kernel/debug/tracing"
- 
-+static pthread_barrier_t trace_barrier;
++The *tracefs_instance_set_buffer_percent()* sets the buffer percent value of
++the tracing ring buffer for _instance_ or the top level buffer if _instance_ is
++NULL. The buffer percent decides when readers on *tracefs_cpu_read*(3),
++*tracefs_cpu_buffered_read*(3), *tracefs_cpu_write*(3) and *tracefs_cpu_pipe*(3)
++will block when O_NONBLOCK is not set. The value of _val_ must be between 0 and
++100, where:
 +
- static struct tracefs_instance *test_instance;
- static struct tep_handle *test_tep;
- struct test_sample {
-@@ -435,6 +437,7 @@ struct test_cpu_data {
- 	void				*buf;
- 	int				events_per_buf;
- 	int				bufsize;
-+	int				nr_subbufs;
- 	int				data_size;
- 	int				this_pid;
- 	int				fd;
-@@ -452,11 +455,21 @@ static void cleanup_trace_cpu(struct test_cpu_data *data)
- #define EVENT_SYSTEM "syscalls"
- #define EVENT_NAME  "sys_enter_getppid"
- 
--static int setup_trace_cpu(struct tracefs_instance *instance, struct test_cpu_data *data)
-+static int make_trace_temp_file(void)
-+{
-+	char tmpfile[] = "/tmp/utest-libtracefsXXXXXX";
-+	int fd;
++[verse]
++--
++  0   - block until there's any data in the ring buffer
++  1   - block until 1% of the ring buffer sub-buffers are filled
++  50  - block until 50% of the ring buffer sub-buffers are filled
++  100 - block until the entire ring buffer is filled
++--
 +
-+	fd = mkstemp(tmpfile);
-+	unlink(tmpfile);
-+	return fd;
-+}
++Note, any number from 0 to 100 can be used where it is the percentage of the
++ring buffer that must be filled before a blocked reader will be notified that
++there's data to be retrieved.
 +
-+static int setup_trace_cpu(struct tracefs_instance *instance, struct test_cpu_data *data, bool nonblock)
- {
- 	struct tep_format_field **fields;
- 	struct tep_event *event;
--	char tmpfile[] = "/tmp/utest-libtracefsXXXXXX";
-+	ssize_t buffer_size;
- 	int max = 0;
- 	int ret;
- 	int i;
-@@ -468,20 +481,26 @@ static int setup_trace_cpu(struct tracefs_instance *instance, struct test_cpu_da
- 
- 	data->instance = instance;
- 
--	data->fd = mkstemp(tmpfile);
-+	data->fd = make_trace_temp_file();
- 	CU_TEST(data->fd >= 0);
--	unlink(tmpfile);
- 	if (data->fd < 0)
- 		return -1;
- 
- 	data->tep = test_tep;
- 
--	data->tcpu = tracefs_cpu_open(instance, 0, true);
-+	data->tcpu = tracefs_cpu_open(instance, 0, nonblock);
- 	CU_TEST(data->tcpu != NULL);
- 	if (!data->tcpu)
- 		goto fail;
- 
- 	data->bufsize = tracefs_cpu_read_size(data->tcpu);
-+	CU_TEST(data->bufsize > 0);
++The *tracefs_instance_get_buffer_percent()* retrieves the current buffer percent
++setting of the tracing ring buffer for _instance_ or the top level buffer
++if _instance_ is NULL.
 +
-+	data->data_size = tep_get_sub_buffer_data_size(data->tep);
-+	CU_TEST(data->data_size > 0);
+ RETURN VALUE
+ ------------
+ The *tracefs_instance_get_name()* returns a string or NULL in case of the top
+diff --git a/Documentation/libtracefs.txt b/Documentation/libtracefs.txt
+index 8ca19a04fe77..529922580f8d 100644
+--- a/Documentation/libtracefs.txt
++++ b/Documentation/libtracefs.txt
+@@ -50,6 +50,8 @@ Trace instances:
+ 	char pass:[*]*tracefs_instance_get_affinity_raw*(struct tracefs_instance pass:[*]_instance_);
+ 	size_t *tracefs_instance_get_buffer_size*(struct tracefs_instance pass:[*]_instance_, int _cpu_);
+ 	int *tracefs_instance_set_buffer_size*(struct tracefs_instance pass:[*]_instance_, size_t _size_, int _cpu_);
++	int *tracefs_instance_get_buffer_percent*(struct tracefs_instance pass:[*]_instance_);
++	int *tracefs_instance_set_buffer_percent*(struct tracefs_instance pass:[*]_instance_, int _val_);
+ 
+ Trace events:
+ 	char pass:[*]pass:[*]*tracefs_event_systems*(const char pass:[*]_tracing_dir_);
+diff --git a/include/tracefs.h b/include/tracefs.h
+index 1722cbd60598..4be66b488536 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -64,6 +64,9 @@ ssize_t tracefs_instance_get_buffer_size(struct tracefs_instance *instance, int
+ int tracefs_instance_set_buffer_size(struct tracefs_instance *instance, size_t size, int cpu);
+ char **tracefs_instances(const char *regex);
+ 
++int tracefs_instance_get_buffer_percent(struct tracefs_instance *instance);
++int tracefs_instance_set_buffer_percent(struct tracefs_instance *instance, int val);
 +
-+	buffer_size = tracefs_instance_get_buffer_size(instance, 0) * 1024;
-+	data->nr_subbufs = buffer_size/ data->data_size;
- 
- 	data->buf = calloc(1, data->bufsize);
- 	CU_TEST(data->buf != NULL);
-@@ -493,8 +512,6 @@ static int setup_trace_cpu(struct tracefs_instance *instance, struct test_cpu_da
- 	if (!data->kbuf)
- 		goto fail;
- 
--	data->data_size = data->bufsize - kbuffer_start_of_data(data->kbuf);
--
- 	tracefs_instance_file_clear(instance, "trace");
- 
- 	event = tep_find_event_by_name(data->tep, EVENT_SYSTEM, EVENT_NAME);
-@@ -518,6 +535,12 @@ static int setup_trace_cpu(struct tracefs_instance *instance, struct test_cpu_da
- 	if (!max)
- 		goto fail;
- 
-+	/* round up to long size alignment */
-+	max = ((max + sizeof(long) - 1)) & ~(sizeof(long) - 1);
-+
-+	/* Add meta header */
-+	max += 4;
-+
- 	data->events_per_buf = data->data_size / max;
- 
- 	data->this_pid = getpid();
-@@ -549,6 +572,17 @@ static void shutdown_trace_cpu(struct test_cpu_data *data)
- 	cleanup_trace_cpu(data);
+ bool tracefs_instance_exists(const char *name);
+ bool tracefs_file_exists(struct tracefs_instance *instance, const char *name);
+ bool tracefs_dir_exists(struct tracefs_instance *instance, const char *name);
+diff --git a/src/tracefs-utils.c b/src/tracefs-utils.c
+index e67b698f5b99..50a7c7474145 100644
+--- a/src/tracefs-utils.c
++++ b/src/tracefs-utils.c
+@@ -643,3 +643,30 @@ bool tracefs_tracer_available(const char *tracing_dir, const char *tracer)
+ 	tracefs_list_free(tracers);
+ 	return ret;
  }
- 
-+static void reset_trace_cpu(struct test_cpu_data *data, bool nonblock)
++
++/**
++ * tracefs_instance_get_buffer_percent - get the instance buffer percent
++ * @instance: The instance to get from (NULL for toplevel)
++ *
++ * Returns the buffer percent setting of the given instance.
++ *  (-1 if not found).
++ */
++int tracefs_instance_get_buffer_percent(struct tracefs_instance *instance)
 +{
-+	close(data->fd);
-+	tracefs_cpu_close(data->tcpu);
-+
-+	data->fd = make_trace_temp_file();
-+	CU_TEST(data->fd >= 0);
-+	data->tcpu = tracefs_cpu_open(data->instance, 0, nonblock);
-+	CU_TEST(data->tcpu != NULL);
-+}
-+
- static void call_getppid(int cnt)
- {
- 	int i;
-@@ -597,7 +631,7 @@ static void test_instance_trace_cpu_read(struct tracefs_instance *instance)
- {
- 	struct test_cpu_data data;
- 
--	if (setup_trace_cpu(instance, &data))
-+	if (setup_trace_cpu(instance, &data, true))
- 		return;
- 
- 	test_cpu_read(&data, 1);
-@@ -615,6 +649,115 @@ static void test_trace_cpu_read(void)
- 	test_instance_trace_cpu_read(test_instance);
- }
- 
-+static void *trace_cpu_read_thread(void *arg)
-+{
-+	struct test_cpu_data *data = arg;
-+	struct tracefs_cpu *tcpu = data->tcpu;
-+	struct kbuffer *kbuf;
-+	long ret = 0;
-+
-+	pthread_barrier_wait(&trace_barrier);
-+
-+	kbuf = tracefs_cpu_read_buf(tcpu, false);
-+	CU_TEST(kbuf != NULL);
-+	data->done = true;
-+
-+	return (void *)ret;
-+}
-+
-+static void test_cpu_read_buf_percent(struct test_cpu_data *data, int percent)
-+{
-+	pthread_t thread;
-+	int save_percent;
-+	ssize_t expect;
++	long long val;
 +	int ret;
 +
-+	tracefs_instance_clear(data->instance);
-+
-+	save_percent = tracefs_instance_get_buffer_percent(data->instance);
-+	CU_TEST(save_percent >= 0);
-+
-+	ret = tracefs_instance_set_buffer_percent(data->instance, percent);
-+	CU_TEST(ret == 0);
-+
-+	data->done = false;
-+
-+	pthread_barrier_init(&trace_barrier, NULL, 2);
-+
-+	pthread_create(&thread, NULL, trace_cpu_read_thread, data);
-+
-+	pthread_barrier_wait(&trace_barrier);
-+
-+	msleep(100);
-+
-+	CU_TEST(data->done == false);
-+
-+	/* For percent == 0, just test for any data */
-+	if (percent) {
-+		expect = data->nr_subbufs * data->events_per_buf * percent / 100;
-+
-+		/* Add just under the percent */
-+		expect -= data->events_per_buf;
-+		CU_TEST(expect > 0);
-+
-+		call_getppid(expect);
-+
-+		msleep(100);
-+
-+		CU_TEST(data->done == false);
-+
-+		/* Add just over the percent */
-+		expect = data->events_per_buf * 2;
-+	} else {
-+		expect = data->events_per_buf;
-+	}
-+
-+	call_getppid(expect);
-+
-+	msleep(100);
-+
-+	CU_TEST(data->done == true);
-+
-+	while (tracefs_cpu_flush_buf(data->tcpu))
-+		;
-+
-+	tracefs_cpu_stop(data->tcpu);
-+	pthread_join(thread, NULL);
-+
-+	ret = tracefs_instance_set_buffer_percent(data->instance, save_percent);
-+	CU_TEST(ret == 0);
++	ret = tracefs_instance_file_read_number(instance, "buffer_percent", &val);
++	return !ret ? (int)val : ret;
 +}
 +
-+static void test_instance_trace_cpu_read_buf_percent(struct tracefs_instance *instance)
++/**
++ * tracefs_instance_set_buffer_percent - set the instance buffer percent
++ * @instance: The instance to set (NULL for toplevel)
++ *
++ * Returns zero on success or -1 on error
++ */
++int tracefs_instance_set_buffer_percent(struct tracefs_instance *instance, int val)
 +{
-+	struct test_cpu_data data;
-+
-+	if (setup_trace_cpu(instance, &data, false))
-+		return;
-+
-+	test_cpu_read_buf_percent(&data, 0);
-+
-+	reset_trace_cpu(&data, false);
-+
-+	test_cpu_read_buf_percent(&data, 1);
-+
-+	reset_trace_cpu(&data, false);
-+
-+	test_cpu_read_buf_percent(&data, 50);
-+
-+	reset_trace_cpu(&data, false);
-+
-+	test_cpu_read_buf_percent(&data, 100);
-+
-+	shutdown_trace_cpu(&data);
++	return tracefs_instance_file_write_number(instance, "buffer_percent", val);
 +}
-+
-+static void test_trace_cpu_read_buf_percent(void)
-+{
-+	test_instance_trace_cpu_read_buf_percent(NULL);
-+	test_instance_trace_cpu_read_buf_percent(test_instance);
-+}
-+
- struct follow_data {
- 	struct tep_event *sched_switch;
- 	struct tep_event *sched_waking;
-@@ -1152,7 +1295,7 @@ static void test_instance_trace_cpu_pipe(struct tracefs_instance *instance)
- {
- 	struct test_cpu_data data;
- 
--	if (setup_trace_cpu(instance, &data))
-+	if (setup_trace_cpu(instance, &data, true))
- 		return;
- 
- 	test_cpu_pipe(&data, 1);
-@@ -2808,6 +2951,8 @@ void test_tracefs_lib(void)
- 	CU_add_test(suite, "Test tracefs/debugfs mounting", test_mounting);
- 	CU_add_test(suite, "trace cpu read",
- 		    test_trace_cpu_read);
-+	CU_add_test(suite, "trace cpu read_buf_percent",
-+		    test_trace_cpu_read_buf_percent);
- 	CU_add_test(suite, "trace cpu pipe",
- 		    test_trace_cpu_pipe);
- 	CU_add_test(suite, "trace sql",
 -- 
 2.42.0
 
