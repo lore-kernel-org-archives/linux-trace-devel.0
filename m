@@ -1,20 +1,20 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D642E107BF
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6408107BE
 	for <linux-trace-devel@vger.kernel.org>; Thu, 28 Dec 2023 20:36:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3625CC433B9;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42263C433BA;
 	Thu, 28 Dec 2023 20:36:26 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rIx7z-00000000Dtc-43Wc;
-	Thu, 28 Dec 2023 15:37:15 -0500
+	id 1rIx80-00000000Dtk-04ze;
+	Thu, 28 Dec 2023 15:37:16 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 17/23] libtracefs: Add API to extract ring buffer statistics
-Date: Thu, 28 Dec 2023 15:35:39 -0500
-Message-ID: <20231228203714.53294-18-rostedt@goodmis.org>
+Subject: [PATCH 19/23] libtracefs: Add ring buffer memory mapping APIs
+Date: Thu, 28 Dec 2023 15:35:41 -0500
+Message-ID: <20231228203714.53294-20-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231228203714.53294-1-rostedt@goodmis.org>
 References: <20231228203714.53294-1-rostedt@goodmis.org>
@@ -28,47 +28,47 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add the API that reads the tracefs/per_cpu/cpu*/stats
+Add the following APIs:
 
-  tracefs_instance_get_stat()
-  tracefs_instance_put_stat()
-  tracefs_buffer_stat_entries()
-  tracefs_buffer_stat_overrun()
-  tracefs_buffer_stat_commit_overrun()
-  tracefs_buffer_stat_bytes()
-  tracefs_buffer_stat_event_timestamp()
-  tracefs_buffer_stat_timestamp()
-  tracefs_buffer_stat_dropped_events()
-  tracefs_buffer_stat_read_events()
+ tracefs_cpu_open_mapped()
+ tracefs_cpu_is_mapped()
+ tracefs_cpu_map()
+ tracefs_cpu_unmap()
+
+This will allow applications to choose to memory map the tracing ring buffer
+if it is supported. This will improve the performance of tracefs_cpu_read()
+and tracefs_cpu_read_buf(), but it is not done by default because it will
+also hurt the performance of tracefs_cpu_buffered_read() and
+tracefs_cpu_buffered_read_buf() as those use splicing, and with the ring
+buffer memory mapped, the splice has to do a copy instead of a copyless
+subbuffer move.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/libtracefs-instances-stat.txt | 183 ++++++++++++++++++++
- Documentation/libtracefs.txt                |  12 ++
- include/tracefs-local.h                     |  11 ++
- include/tracefs.h                           |  13 ++
- samples/Makefile                            |   1 +
- src/Makefile                                |   1 +
- src/tracefs-stats.c                         | 162 +++++++++++++++++
- 7 files changed, 383 insertions(+)
- create mode 100644 Documentation/libtracefs-instances-stat.txt
- create mode 100644 src/tracefs-stats.c
+ Documentation/libtracefs-cpu-map.txt | 194 +++++++++++++++++++++++++++
+ Documentation/libtracefs.txt         |   7 +
+ include/tracefs-local.h              |   6 +
+ include/tracefs.h                    |   7 +
+ samples/Makefile                     |   1 +
+ src/Makefile                         |   1 +
+ src/tracefs-mmap.c                   | 190 ++++++++++++++++++++++++++
+ src/tracefs-record.c                 |  61 +++++++++
+ 8 files changed, 467 insertions(+)
+ create mode 100644 Documentation/libtracefs-cpu-map.txt
+ create mode 100644 src/tracefs-mmap.c
 
-diff --git a/Documentation/libtracefs-instances-stat.txt b/Documentation/libtracefs-instances-stat.txt
+diff --git a/Documentation/libtracefs-cpu-map.txt b/Documentation/libtracefs-cpu-map.txt
 new file mode 100644
-index 000000000000..d3bb3c93d9d1
+index 000000000000..9bcd29715795
 --- /dev/null
-+++ b/Documentation/libtracefs-instances-stat.txt
-@@ -0,0 +1,183 @@
++++ b/Documentation/libtracefs-cpu-map.txt
+@@ -0,0 +1,194 @@
 +libtracefs(3)
 +=============
 +
 +NAME
 +----
-+tracefs_instance_get_stat, tracefs_instance_put_stat, tracefs_buffer_stat_entries, tracefs_buffer_stat_overrun,
-+tracefs_buffer_stat_commit_overrun, tracefs_buffer_stat_bytes, tracefs_buffer_stat_event_timestamp,
-+tracefs_buffer_stat_timestamp, tracefs_buffer_stat_dropped_events, tracefs_buffer_stat_read_events
-+- Handling tracing buffer stats
++tracefs_cpu_open_mapped, tracefs_cpu_is_mapped, tracefs_cpu_map, tracefs_cpu_unmap - Memory mapping of the ring buffer
 +
 +SYNOPSIS
 +--------
@@ -76,135 +76,144 @@ index 000000000000..d3bb3c93d9d1
 +--
 +*#include <tracefs.h>*
 +
-+struct tracefs_buffer_stat pass:[*]*tracefs_instance_get_stat*(struct tracefs_instance pass:[*]_instance_, int _cpu_);
-+void *tracefs_instance_put_stat*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+ssize_t *tracefs_buffer_stat_entries*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+ssize_t *tracefs_buffer_stat_overrun*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+ssize_t *tracefs_buffer_stat_commit_overrun*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+ssize_t *tracefs_buffer_stat_bytes*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+long long *tracefs_buffer_stat_event_timestamp*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+long long *tracefs_buffer_stat_timestamp*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+ssize_t *tracefs_buffer_stat_dropped_events*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+ssize_t *tracefs_buffer_stat_read_events*(struct tracefs_buffer_stat pass:[*]_tstat_);
++bool *tracefs_cpu_is_mapped*(struct tracefs_cpu pass:[*]tcpu);
++int *tracefs_cpu_map*(struct tracefs_cpu pass:[*]tcpu);
++void *tracefs_cpu_unmap*(struct tracefs_cpu pass:[*]tcpu);
++struct tracefs_cpu pass:[*]*tracefs_cpu_open_mapped*(struct tracefs_instance pass:[*]instance,
++					    int cpu, bool nonblock);
 +--
 +
 +DESCRIPTION
 +-----------
-+This set of functions read and parse the tracefs/per_cpu/cpuX/stats file.
-+These files hold the statistics of the per CPU ring buffer, such as how
-+many events are in the ring buffer, how many have been read and so on.
++If the trace_pipe_raw supports memory mapping, this is usually a more efficient
++method to stream data from the kernel ring buffer than by reading it, as it does
++not require copying the memory that is being read.
 +
-+The *tracefs_instance_get_stat()* function will read and parse a given statistics
-+file for a given _instance_ and _cpu_. As the ring buffer is split into per_cpu buffers,
-+the information is only associated to the given _cpu_. The returned tracefs_buffer_stat
-+pointer can be used with the other *tracefs_buffer_stat* functions and must be freed with
-+*tracefs_instance_put_stat()*.
++If memory mapping is supported by the kernel and the application asks to use the
++memory mapping via either *tracefs_cpu_map()* or by *tracefs_cpu_open_mapped()*
++then the functions *tracefs_cpu_read*(3) and *tracefs_cpu_read_buf*(3) will use
++the mapping directly instead of calling the read system call.
 +
-+The *tracefs_instance_put_stat()* will free the resources allocated for the given _stat_
-+that was created by *tracefs_instance_get_stat()*.
++Note, mapping can also slow down *tracefs_cpu_buffered_read*(3) and
++*tracefs_cpu_buffered_read_buf*(3), as those use splice piping and when the
++kernel ring buffer is memory mapped, splice does a copy instead of using the
++ring buffer directly. Thus care must be used when determining to map the
++ring buffer or not, and why it does not get mapped by default.
 +
-+The *tracefs_buffer_stat_entries()* returns the number of events that are currently
-+in the ring buffer associated with _tstat_.
++The *tracefs_cpu_is_mapped()* function will return true if _tcpu_ currently has
++its ring buffer memory mapped and false otherwise. This does not return whether or
++not that the kernel supports memory mapping, but that can usually be determined
++by calling *tracefs_cpu_map()*.
 +
-+The *tracefs_buffer_stat_overrun()* returns the number of events that were lost by
-+the ring buffer writer overrunning the reader.
++The *tracefs_cpu_map()* function will attempt to map the ring buffer associated
++to _tcpu_ if it is not already mapped.
 +
-+The *tracefs_buffer_stat_commit_overrun()* returns the number of events that were
-+lost because the ring buffer was too small and an interrupt interrupted a lower
-+context event being recorded and it added more events than the ring buffer could
-+hold. Note this is not a common occurrence and when it happens it means that
-+something was not set up properly.
++The *tracefs_cpu_unmap()* function will unmap the ring buffer associated to
++_tcpu_ if it is mapped.
 +
-+The *tracefs_buffer_stat_bytes()* returns the number of bytes that the current events
-+take up. Note, it includes the meta data for the events, but does not include the
-+meta data for the sub-buffers.
-+
-+The *tracefs_buffer_stat_event_timestamp()* returns the timestamp of the last event in the
-+ring buffer.
-+
-+The *tracefs_buffer_stat_timestamp()* returns the current timestamp of the ring buffer.
-+Note, it is only read when *tracefs_instance_get_stat()* is called. It will have the
-+timestamp of the ring buffer when that function was called.
-+
-+The *tracefs_buffer_stat_dropped_events()* returns the number of events that were
-+dropped if overwrite mode is disabled. It will show the events that were lost because
-+the writer caught up to the reader and could not write any more events.
-+
-+The *tracefs_buffer_stat_read_events()* returns the number of events that were consumed
-+by a reader.
-+
++The *tracefs_cpu_open_mapped()* is equivalent to calling *tracefs_cpu_open*(3) followed
++by *tracefs_cpu_map()* on the returned _tcpu_ of *tracefs_cpu_open*(3). Note, this
++will still succeed if the mapping fails, in which case it acts the same as
++*tracefs_cpu_open*(3). If knowing if the mapping succeed or not, *tracefs_cpu_is_mapped()*
++should be called on the return _tcpu_.
 +
 +RETURN VALUE
 +------------
-+The *tracefs_instance_get_stat()* returns a tracefs_buffer_stat structure that can
-+be used to retrieve the statistics via the other functions. It must be freed with
-+*tracefs_instance_put_stat()*.
++*tracefs_cpu_is_mapped()* returns true if the given _tcpu_ has its ring buffer
++memory mapped or false otherwise.
 +
-+The other functions that return different values from the tracefs_buffer_stat structure
-+all return the value, or -1 if the value was not found.
++*tracefs_cpu_map()* returns 0 on success and -1 on error in mapping. If 0 is
++returned then *tracefs_cpu_is_mapped()* will return true afterward, or false
++if the mapping failed.
 +
++*tracefs_cpu_open_mapped()* returns an allocated tracefs_cpu on success of creation
++regardless if it succeed in mapping the ring buffer or not. It returns NULL for
++the same reasons *tracefs_cpu_open*(3) returns NULL. If success of mapping is
++to be known, then calling *tracefs_cpu_is_mapped()* afterward is required.
 +
 +EXAMPLE
 +-------
 +[source,c]
 +--
 +#include <stdlib.h>
-+#include <unistd.h>
++#include <ctype.h>
 +#include <tracefs.h>
 +
-+int main(int argc, char **argv)
++static void read_page(struct tep_handle *tep, struct kbuffer *kbuf)
 +{
-+	char *trace;
-+	char buf[1000];
-+	int ret;
-+	int i;
++	static struct trace_seq seq;
++	struct tep_record record;
 +
-+	for (i = 0; i < sizeof(buf) - 1; i++) {
-+		buf[i] = '0' + i % 10;
-+	}
-+	buf[i] = '\0';
++	if (seq.buffer)
++		trace_seq_reset(&seq);
++	else
++		trace_seq_init(&seq);
 +
-+	tracefs_instance_clear(NULL);
-+
-+	for (i = 0; i < 4; i++) {
-+		ret = tracefs_printf(NULL, "%s\n", buf);
-+		if (ret < 0)
-+			perror("write");
-+	}
-+
-+	trace = tracefs_instance_file_read(NULL, "trace", NULL);
-+	printf("%s\n", trace);
-+	free(trace);
-+
-+	for (i = 0; i < sysconf(_SC_NPROCESSORS_CONF); i++) {
-+		struct tracefs_buffer_stat *tstat;
-+		ssize_t entries, eread;
-+
-+		tstat = tracefs_instance_get_stat(NULL, i);
-+		if (!tstat)
-+			continue;
-+
-+		entries = tracefs_buffer_stat_entries(tstat);
-+		eread = tracefs_buffer_stat_read_events(tstat);
-+		if (!entries && !eread) {
-+			tracefs_instance_put_stat(tstat);
-+			continue;
-+		}
-+
-+		printf("CPU: %d\n", i);;
-+		printf("\tentries: %zd\n", entries);
-+		printf("\toverrun: %zd\n", tracefs_buffer_stat_overrun(tstat));
-+		printf("\tcommit_overrun: %zd\n", tracefs_buffer_stat_commit_overrun(tstat));
-+		printf("\tbytes: %zd\n", tracefs_buffer_stat_bytes(tstat));
-+		printf("\tevent_timestamp: %lld\n", tracefs_buffer_stat_event_timestamp(tstat));
-+		printf("\ttimestamp: %lld\n", tracefs_buffer_stat_timestamp(tstat));
-+		printf("\tdropped_events: %zd\n", tracefs_buffer_stat_dropped_events(tstat));
-+		printf("\tread_events: %zd\n", eread);
-+
-+		tracefs_instance_put_stat(tstat);
++	while ((record.data = kbuffer_read_event(kbuf, &record.ts))) {
++		record.size = kbuffer_event_size(kbuf);
++		kbuffer_next_event(kbuf, NULL);
++		tep_print_event(tep, &seq, &record,
++				"%s-%d %9d\t%s: %s\n",
++				TEP_PRINT_COMM,
++				TEP_PRINT_PID,
++				TEP_PRINT_TIME,
++				TEP_PRINT_NAME,
++				TEP_PRINT_INFO);
++		trace_seq_do_printf(&seq);
++		trace_seq_reset(&seq);
 +	}
 +}
++
++int main (int argc, char **argv)
++{
++	struct tracefs_cpu *tcpu;
++	struct tep_handle *tep;
++	struct kbuffer *kbuf;
++	bool mapped;
++	int cpu;
++
++	if (argc < 2 || !isdigit(argv[1][0])) {
++		printf("usage: %s cpu\n\n", argv[0]);
++		exit(-1);
++	}
++
++	cpu = atoi(argv[1]);
++
++	tep = tracefs_local_events(NULL);
++	if (!tep) {
++		perror("Reading trace event formats");
++		exit(-1);
++	}
++
++	tcpu = tracefs_cpu_open_mapped(NULL, cpu, 0);
++	if (!tcpu) {
++		perror("Open CPU 0 file");
++		exit(-1);
++	}
++
++	/*
++	 * If this kernel supports mapping, use normal read,
++	 * otherwise use the piped buffer read.
++	 */
++	mapped = tracefs_cpu_is_mapped(tcpu);
++	if (!mapped)
++		printf("Was not able to map, falling back to buffered read\n");
++	while ((kbuf = mapped ? tracefs_cpu_read_buf(tcpu, true) :
++			tracefs_cpu_buffered_read_buf(tcpu, true))) {
++		read_page(tep, kbuf);
++	}
++
++	kbuf = tracefs_cpu_flush_buf(tcpu);
++	if (kbuf)
++		read_page(tep, kbuf);
++
++	tracefs_cpu_close(tcpu);
++	tep_free(tep);
++
++	return 0;
++}
 +--
++
 +FILES
 +-----
 +[verse]
@@ -217,6 +226,11 @@ index 000000000000..d3bb3c93d9d1
 +
 +SEE ALSO
 +--------
++*tracefs_cpu_open*(3),
++*tracefs_cpu_read*(3),
++*tracefs_cpu_read_buf*(3),
++*tracefs_cpu_buffered_read*(3),
++*tracefs_cpu_buffered_read_buf*(3),
 +*libtracefs*(3),
 +*libtraceevent*(3),
 +*trace-cmd*(1)
@@ -241,269 +255,388 @@ index 000000000000..d3bb3c93d9d1
 +
 +COPYING
 +-------
-+Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
++Copyright \(C) 2022 Google, Inc. Free use of this software is granted under
 +the terms of the GNU Public License (GPL).
 diff --git a/Documentation/libtracefs.txt b/Documentation/libtracefs.txt
-index 70bd8116b2b1..6752ed3c9b98 100644
+index 1962b3b34622..2f2b4d488942 100644
 --- a/Documentation/libtracefs.txt
 +++ b/Documentation/libtracefs.txt
-@@ -155,6 +155,18 @@ Writing data in the trace buffer:
- Control library logs:
- 	int *tracefs_set_loglevel*(enum tep_loglevel _level_);
+@@ -124,6 +124,13 @@ Trace stream:
+ 	ssize_t *tracefs_trace_pipe_print*(struct tracefs_instance pass:[*]_instance_, int _flags_);
+ 	void *tracefs_trace_pipe_stop*(struct tracefs_instance pass:[*]_instance_);
  
-+Read the ring buffer statistics:
-+	struct tracefs_buffer_stat pass:[*]*tracefs_instance_get_stat*(struct tracefs_instance pass:[*]_instance_, int _cpu_);
-+	void *tracefs_instance_put_stat*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+	ssize_t *tracefs_buffer_stat_entries*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+	ssize_t *tracefs_buffer_stat_overrun*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+	ssize_t *tracefs_buffer_stat_commit_overrun*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+	ssize_t *tracefs_buffer_stat_bytes*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+	long long *tracefs_buffer_stat_event_timestamp*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+	long long *tracefs_buffer_stat_timestamp*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+	ssize_t *tracefs_buffer_stat_dropped_events*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+	ssize_t *tracefs_buffer_stat_read_events*(struct tracefs_buffer_stat pass:[*]_tstat_);
++Memory mapping the ring buffer:
++	bool *tracefs_cpu_is_mapped*(struct tracefs_cpu pass:[*]tcpu);
++	int *tracefs_cpu_map*(struct tracefs_cpu pass:[*]tcpu);
++	void *tracefs_cpu_unmap*(struct tracefs_cpu pass:[*]tcpu);
++	struct tracefs_cpu pass:[*]*tracefs_cpu_open_mapped*(struct tracefs_instance pass:[*]instance,
++						int cpu, bool nonblock);
 +
- Dynamic event generic APIs:
- 	struct *tracefs_dynevent*;
- 	enum *tracefs_dynevent_type*;
+ Trace options:
+ 	const struct tracefs_options_mask pass:[*]*tracefs_options_get_supported*(struct tracefs_instance pass:[*]_instance_);
+ 	bool *tracefs_option_is_supported*(struct tracefs_instance pass:[*]_instance_, enum tracefs_option_id _id_);
 diff --git a/include/tracefs-local.h b/include/tracefs-local.h
-index 9e5a568468b4..9cae73c8b806 100644
+index 9cae73c8b806..ffc9d33b1796 100644
 --- a/include/tracefs-local.h
 +++ b/include/tracefs-local.h
-@@ -51,6 +51,17 @@ struct tracefs_instance {
- 	bool				iterate_keep_going;
- };
+@@ -6,6 +6,7 @@
+ #ifndef _TRACE_FS_LOCAL_H
+ #define _TRACE_FS_LOCAL_H
  
-+struct tracefs_buffer_stat {
-+	ssize_t				entries;
-+	ssize_t				overrun;
-+	ssize_t				commit_overrun;
-+	ssize_t				bytes;
-+	long long			oldest_ts;
-+	long long			now_ts;
-+	ssize_t				dropped_events;
-+	ssize_t				read_events;
-+};
++#include <tracefs.h>
+ #include <pthread.h>
+ 
+ #define __hidden __attribute__((visibility ("hidden")))
+@@ -116,6 +117,11 @@ int trace_append_filter(char **filter, unsigned int *state,
+ 			enum tracefs_compare compare,
+ 			 const char *val);
+ 
++void *trace_mmap(int fd, struct kbuffer *kbuf);
++void trace_unmap(void *mapping);
++int trace_mmap_load_subbuf(void *mapping, struct kbuffer *kbuf);
++int trace_mmap_read(void *mapping, void *buffer);
 +
- extern const struct tep_format_field common_stacktrace;
- 
- extern pthread_mutex_t toplevel_lock;
+ struct tracefs_synth *synth_init_from(struct tep_handle *tep,
+ 				      const char *start_system,
+ 				      const char *start_event);
 diff --git a/include/tracefs.h b/include/tracefs.h
-index 95bff1f244f9..3ae78d4f3af7 100644
+index c66bfd2edf0b..d20d733b7d92 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
-@@ -68,6 +68,19 @@ char **tracefs_instances(const char *regex);
- int tracefs_instance_get_buffer_percent(struct tracefs_instance *instance);
- int tracefs_instance_set_buffer_percent(struct tracefs_instance *instance, int val);
+@@ -673,6 +673,13 @@ struct kbuffer *tracefs_cpu_flush_buf(struct tracefs_cpu *tcpu);
+ int tracefs_cpu_flush_write(struct tracefs_cpu *tcpu, int wfd);
+ int tracefs_cpu_pipe(struct tracefs_cpu *tcpu, int wfd, bool nonblock);
  
-+struct tracefs_buffer_stat;
++/* Memory mapping of ring buffer */
++bool tracefs_cpu_is_mapped(struct tracefs_cpu *tcpu);
++int tracefs_cpu_map(struct tracefs_cpu *tcpu);
++void tracefs_cpu_unmap(struct tracefs_cpu *tcpu);
++struct tracefs_cpu *tracefs_cpu_open_mapped(struct tracefs_instance *instance,
++					    int cpu, bool nonblock);
 +
-+struct tracefs_buffer_stat *tracefs_instance_get_stat(struct tracefs_instance *instance, int cpu);
-+void tracefs_instance_put_stat(struct tracefs_buffer_stat *tstat);
-+ssize_t tracefs_buffer_stat_entries(struct tracefs_buffer_stat *tstat);
-+ssize_t tracefs_buffer_stat_overrun(struct tracefs_buffer_stat *tstat);
-+ssize_t tracefs_buffer_stat_commit_overrun(struct tracefs_buffer_stat *tstat);
-+ssize_t tracefs_buffer_stat_bytes(struct tracefs_buffer_stat *tstat);
-+long long tracefs_buffer_stat_event_timestamp(struct tracefs_buffer_stat *tstat);
-+long long tracefs_buffer_stat_timestamp(struct tracefs_buffer_stat *tstat);
-+ssize_t tracefs_buffer_stat_dropped_events(struct tracefs_buffer_stat *tstat);
-+ssize_t tracefs_buffer_stat_read_events(struct tracefs_buffer_stat *tstat);
-+
- bool tracefs_instance_exists(const char *name);
- bool tracefs_file_exists(struct tracefs_instance *instance, const char *name);
- bool tracefs_dir_exists(struct tracefs_instance *instance, const char *name);
+ /* Mapping vsocket cids to pids using tracing */
+ int tracefs_instance_find_cid_pid(struct tracefs_instance *instance, int cid);
+ int tracefs_find_cid_pid(int cid);
 diff --git a/samples/Makefile b/samples/Makefile
-index 13ad99579ea3..787d28769051 100644
+index 77739c8b0aa7..81c8006f823e 100644
 --- a/samples/Makefile
 +++ b/samples/Makefile
-@@ -24,6 +24,7 @@ EXAMPLES += instances-affinity
- EXAMPLES += cpu
- EXAMPLES += guest
+@@ -26,6 +26,7 @@ EXAMPLES += guest
  EXAMPLES += cpu-buf
-+EXAMPLES += instances-stat
+ EXAMPLES += instances-stat
+ EXAMPLES += instances-subbuf
++EXAMPLES += cpu-map
  
  TARGETS :=
  TARGETS += sqlhist
 diff --git a/src/Makefile b/src/Makefile
-index 90bd88df44c2..faa3b25c4002 100644
+index faa3b25c4002..be81059ce10a 100644
 --- a/src/Makefile
 +++ b/src/Makefile
-@@ -10,6 +10,7 @@ OBJS += tracefs-tools.o
- OBJS += tracefs-marker.o
- OBJS += tracefs-kprobes.o
- OBJS += tracefs-hist.o
-+OBJS += tracefs-stats.o
- OBJS += tracefs-filter.o
- OBJS += tracefs-dynevents.o
+@@ -16,6 +16,7 @@ OBJS += tracefs-dynevents.o
  OBJS += tracefs-eprobes.o
-diff --git a/src/tracefs-stats.c b/src/tracefs-stats.c
+ OBJS += tracefs-uprobes.o
+ OBJS += tracefs-record.o
++OBJS += tracefs-mmap.o
+ ifeq ($(VSOCK_DEFINED), 1)
+ OBJS += tracefs-vsock.o
+ endif
+diff --git a/src/tracefs-mmap.c b/src/tracefs-mmap.c
 new file mode 100644
-index 000000000000..d43235bc0b38
+index 000000000000..5675028acc51
 --- /dev/null
-+++ b/src/tracefs-stats.c
-@@ -0,0 +1,162 @@
++++ b/src/tracefs-mmap.c
+@@ -0,0 +1,190 @@
 +// SPDX-License-Identifier: LGPL-2.1
 +/*
-+ * Copyright (C) 2023 Google LLC, Steven Rostedt <rostedt@goodmis.org>
++ * Copyright (C) 2023 Google Inc, Steven Rostedt <rostedt@goodmis.org>
 + */
 +#include <stdlib.h>
-+#include <ctype.h>
-+#include "tracefs.h"
++#include <unistd.h>
++#include <sys/mman.h>
++#include <sys/ioctl.h>
++#include <asm/types.h>
 +#include "tracefs-local.h"
 +
-+static long long convert_ts(char *value)
++struct trace_buffer_meta {
++	unsigned long	entries;
++	unsigned long	overrun;
++	unsigned long	read;
++
++	unsigned long	subbufs_touched;
++	unsigned long	subbufs_lost;
++	unsigned long	subbufs_read;
++
++	struct {
++		unsigned long	lost_events;	/* Events lost at the time of the reader swap */
++		__u32		id;		/* Reader subbuf ID from 0 to nr_subbufs - 1 */
++		__u32		read;		/* Number of bytes read on the reader subbuf */
++	} reader;
++
++	__u32		subbuf_size;		/* Size of each subbuf including the header */
++	__u32		nr_subbufs;		/* Number of subbufs in the ring-buffer */
++
++	__u32		meta_page_size;		/* Size of the meta-page */
++	__u32		meta_struct_len;	/* Len of this struct */
++};
++
++#define TRACE_MMAP_IOCTL_GET_READER		_IO('T', 0x1)
++
++struct trace_mmap {
++	struct trace_buffer_meta	*map;
++	struct kbuffer			*kbuf;
++	void				*data;
++	int				*data_pages;
++	int				fd;
++	int				last_idx;
++	int				last_read;
++	int				meta_len;
++	int				data_len;
++};
++
++/**
++ * trace_mmap - try to mmap the ring buffer
++ * @fd: The file descriptor to the trace_pipe_raw file
++ *
++ * Will try to mmap the ring buffer if it is supported, and
++ * if not, will return NULL, otherwise it returns a descriptor
++ * to handle the mapping.
++ */
++void *trace_mmap(int fd, struct kbuffer *kbuf)
 +{
-+	long long ts;
-+	char *saveptr;
-+	char *secs;
-+	char *usecs;
++	struct trace_mmap *tmap;
++	int page_size;
++	void *meta;
++	void *data;
 +
-+	secs = strtok_r(value, ".", &saveptr);
-+	if (!secs)
-+		return -1LL;
++	page_size = getpagesize();
++	meta = mmap(NULL, page_size, PROT_READ, MAP_SHARED, fd, 0);
++	if (meta == MAP_FAILED)
++		return NULL;
 +
-+	ts = strtoll(secs, NULL, 0);
++	tmap = calloc(1, sizeof(*tmap));
++	if (!tmap) {
++		munmap(meta, page_size);
++		return NULL;
++	}
 +
-+	usecs = strtok_r(NULL, ".", &saveptr);
-+	if (!usecs)
-+		return ts;
++	tmap->kbuf = kbuffer_dup(kbuf);
++	if (!tmap->kbuf) {
++		munmap(meta, page_size);
++		free(tmap);
++	}
 +
-+	/* Could be in nanoseconds */
-+	if (strlen(usecs) > 6)
-+		ts *= 1000000000LL;
-+	else
-+		ts *= 1000000LL;
++	tmap->fd = fd;
 +
-+	ts += strtoull(usecs, NULL, 0);
++	tmap->map = meta;
++	tmap->meta_len = tmap->map->meta_page_size;
 +
-+	return ts;
++	if (tmap->meta_len > page_size) {
++		munmap(meta, page_size);
++		meta = mmap(NULL, tmap->meta_len, PROT_READ, MAP_SHARED, fd, 0);
++		if (meta == MAP_FAILED) {
++			kbuffer_free(tmap->kbuf);
++			free(tmap);
++			return NULL;
++		}
++		tmap->map = meta;
++	}
++
++	tmap->data_pages = meta + tmap->meta_len;
++
++	tmap->data_len = tmap->map->subbuf_size * tmap->map->nr_subbufs;
++
++	tmap->data = mmap(NULL, tmap->data_len, PROT_READ, MAP_SHARED,
++			  fd, tmap->meta_len);
++	if (tmap->data == MAP_FAILED) {
++		munmap(meta, tmap->meta_len);
++		kbuffer_free(tmap->kbuf);
++		free(tmap);
++		return NULL;
++	}
++
++	tmap->last_idx = tmap->map->reader.id;
++
++	data = tmap->data + tmap->map->subbuf_size * tmap->last_idx;
++	kbuffer_load_subbuffer(kbuf, data);
++
++	return tmap;
 +}
 +
-+struct tracefs_buffer_stat *
-+tracefs_instance_get_stat(struct tracefs_instance *instance, int cpu)
++void trace_unmap(void *mapping)
 +{
-+	struct tracefs_buffer_stat *tstat;
-+	char *saveptr;
-+	char *value;
-+	char *field;
-+	char *path;
-+	char *line;
-+	char *next;
-+	char *buf;
-+	int len;
++	struct trace_mmap *tmap = mapping;
++
++	munmap(tmap->data, tmap->data_len);
++	munmap(tmap->map, tmap->meta_len);
++	kbuffer_free(tmap->kbuf);
++	free(tmap);
++}
++
++int trace_mmap_load_subbuf(void *mapping, struct kbuffer *kbuf)
++{
++	struct trace_mmap *tmap = mapping;
++	void *data;
++	int id;
++
++	id = tmap->map->reader.id;
++	data = tmap->data + tmap->map->subbuf_size * id;
++
++	/*
++	 * If kbuf doesn't point to the current sub-buffer
++	 * just load it and return.
++	 */
++	if (data != kbuffer_subbuffer(kbuf)) {
++		kbuffer_load_subbuffer(kbuf, data);
++		return 1;
++	}
++
++	/*
++	 * Perhaps the reader page had a write that added
++	 * more data.
++	 */
++	kbuffer_refresh(kbuf);
++
++	/* Are there still events to read? */
++	if (kbuffer_curr_size(kbuf))
++		return 1;
++
++	/* See if a new page is ready? */
++	if (ioctl(tmap->fd, TRACE_MMAP_IOCTL_GET_READER) < 0)
++		return -1;
++	id = tmap->map->reader.id;
++	data = tmap->data + tmap->map->subbuf_size * id;
++
++	/*
++	 * If the sub-buffer hasn't changed, then there's no more
++	 * events to read.
++	 */
++	if (data == kbuffer_subbuffer(kbuf))
++		return 0;
++
++	kbuffer_load_subbuffer(kbuf, data);
++	return 1;
++}
++
++int trace_mmap_read(void *mapping, void *buffer)
++{
++	struct trace_mmap *tmap = mapping;
++	struct kbuffer *kbuf;
 +	int ret;
 +
-+	ret = asprintf(&path, "per_cpu/cpu%d/stats", cpu);
-+	if (ret < 0)
++	if (!tmap)
++		return -1;
++
++	kbuf = tmap->kbuf;
++
++	ret = trace_mmap_load_subbuf(mapping, kbuf);
++	/* Return for error or no more events */
++	if (ret <= 0)
++		return ret;
++
++	/* Update the buffer */
++	return kbuffer_read_buffer(kbuf, buffer, tmap->map->subbuf_size);
++}
+diff --git a/src/tracefs-record.c b/src/tracefs-record.c
+index 1eede996631d..fcef89e527aa 100644
+--- a/src/tracefs-record.c
++++ b/src/tracefs-record.c
+@@ -36,6 +36,7 @@ struct tracefs_cpu {
+ 	int		splice_read_flags;
+ 	struct kbuffer	*kbuf;
+ 	void		*buffer;
++	void		*mapping;
+ };
+ 
+ /**
+@@ -155,6 +156,31 @@ tracefs_cpu_open(struct tracefs_instance *instance, int cpu, bool nonblock)
+ 	return NULL;
+ }
+ 
++/**
++ * tracefs_cpu_open_mapped - open an instance raw trace file and map it
++ * @instance: the instance (NULL for toplevel) of the cpu raw file to open
++ * @cpu: The CPU that the raw trace file is associated with
++ * @nonblock: If true, the file will be opened in O_NONBLOCK mode
++ *
++ * Return a descriptor that can read the tracefs trace_pipe_raw file
++ * for a give @cpu in a given @instance.
++ *
++ * Returns NULL on error.
++ */
++struct tracefs_cpu *
++tracefs_cpu_open_mapped(struct tracefs_instance *instance, int cpu, bool nonblock)
++{
++	struct tracefs_cpu *tcpu;
++
++	tcpu = tracefs_cpu_open(instance, cpu, nonblock);
++	if (!tcpu)
 +		return NULL;
 +
-+	buf = tracefs_instance_file_read(instance, path, &len);
-+	free(path);
++	tracefs_cpu_map(tcpu);
 +
-+	if (!buf)
-+		return NULL;
++	return tcpu;
++}
 +
-+	tstat = malloc(sizeof(*tstat));
-+	if (!tstat) {
-+		free(buf);
-+		return NULL;
+ static void close_fd(int fd)
+ {
+ 	if (fd < 0)
+@@ -211,6 +237,28 @@ int tracefs_cpu_read_size(struct tracefs_cpu *tcpu)
+ 	return tcpu->subbuf_size;
+ }
+ 
++bool tracefs_cpu_is_mapped(struct tracefs_cpu *tcpu)
++{
++	return tcpu->mapping != NULL;
++}
++
++int tracefs_cpu_map(struct tracefs_cpu *tcpu)
++{
++	if (tcpu->mapping)
++		return 0;
++
++	tcpu->mapping = trace_mmap(tcpu->fd, tcpu->kbuf);
++	return tcpu->mapping ? 0 : -1;
++}
++
++void tracefs_cpu_unmap(struct tracefs_cpu *tcpu)
++{
++	if (!tcpu->mapping)
++		return;
++
++	trace_unmap(tcpu->mapping);
++}
++
+ static void set_nonblock(struct tracefs_cpu *tcpu)
+ {
+ 	long flags;
+@@ -309,6 +357,9 @@ int tracefs_cpu_read(struct tracefs_cpu *tcpu, void *buffer, bool nonblock)
+ 	if (ret <= 0)
+ 		return ret;
+ 
++	if (tcpu->mapping)
++		return trace_mmap_read(tcpu->mapping, buffer);
++
+ 	ret = read(tcpu->fd, buffer, tcpu->subbuf_size);
+ 
+ 	/* It's OK if there's no data to read */
+@@ -353,6 +404,16 @@ struct kbuffer *tracefs_cpu_read_buf(struct tracefs_cpu *tcpu, bool nonblock)
+ {
+ 	int ret;
+ 
++	/* If mapping is enabled, just use it directly */
++	if (tcpu->mapping) {
++		ret = wait_on_input(tcpu, nonblock);
++		if (ret <= 0)
++			return NULL;
++
++		ret = trace_mmap_load_subbuf(tcpu->mapping, tcpu->kbuf);
++		return ret > 0 ? tcpu->kbuf : NULL;
 +	}
 +
-+	/* Set everything to -1 */
-+	memset(tstat, -1, sizeof(*tstat));
-+
-+	next = buf;
-+	while ((line = strtok_r(next, "\n", &saveptr))) {
-+		char *save2;
-+
-+		next = NULL;
-+
-+		field = strtok_r(line, ":", &save2);
-+		if (!field)
-+			break;
-+
-+		value = strtok_r(NULL, ":", &save2);
-+		if (!value)
-+			break;
-+
-+		while (isspace(*value))
-+			value++;
-+
-+		if (strcmp(field, "entries") == 0) {
-+			tstat->entries = strtoull(value, NULL, 0);
-+
-+		} else if (strcmp(field, "overrun") == 0) {
-+			tstat->overrun = strtoull(value, NULL, 0);
-+
-+		} else if (strcmp(field, "commit overrun") == 0) {
-+			tstat->commit_overrun = strtoull(value, NULL, 0);
-+
-+		} else if (strcmp(field, "bytes") == 0) {
-+			tstat->bytes = strtoull(value, NULL, 0);
-+
-+		} else if (strcmp(field, "oldest event ts") == 0) {
-+			tstat->oldest_ts = convert_ts(value);
-+
-+		} else if (strcmp(field, "now ts") == 0) {
-+			tstat->now_ts = convert_ts(value);
-+
-+		} else if (strcmp(field, "dropped events") == 0) {
-+			tstat->dropped_events = strtoull(value, NULL, 0);
-+
-+		} else if (strcmp(field, "read events") == 0) {
-+			tstat->read_events = strtoull(value, NULL, 0);
-+		}
-+	}
-+	free(buf);
-+
-+	return tstat;
-+}
-+
-+void tracefs_instance_put_stat(struct tracefs_buffer_stat *tstat)
-+{
-+	free(tstat);
-+}
-+
-+ssize_t tracefs_buffer_stat_entries(struct tracefs_buffer_stat *tstat)
-+{
-+	return tstat->entries;
-+}
-+
-+ssize_t tracefs_buffer_stat_overrun(struct tracefs_buffer_stat *tstat)
-+{
-+	return tstat->overrun;
-+}
-+
-+ssize_t tracefs_buffer_stat_commit_overrun(struct tracefs_buffer_stat *tstat)
-+{
-+	return tstat->commit_overrun;
-+}
-+
-+ssize_t tracefs_buffer_stat_bytes(struct tracefs_buffer_stat *tstat)
-+{
-+	return tstat->bytes;
-+}
-+
-+long long tracefs_buffer_stat_event_timestamp(struct tracefs_buffer_stat *tstat)
-+{
-+	return tstat->oldest_ts;
-+}
-+
-+long long tracefs_buffer_stat_timestamp(struct tracefs_buffer_stat *tstat)
-+{
-+	return tstat->now_ts;
-+}
-+
-+ssize_t tracefs_buffer_stat_dropped_events(struct tracefs_buffer_stat *tstat)
-+{
-+	return tstat->dropped_events;
-+}
-+
-+ssize_t tracefs_buffer_stat_read_events(struct tracefs_buffer_stat *tstat)
-+{
-+	return tstat->read_events;
-+}
-+
+ 	if (!get_buffer(tcpu))
+ 		return NULL;
+ 
 -- 
 2.42.0
 
