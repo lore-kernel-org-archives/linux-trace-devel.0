@@ -1,20 +1,20 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A814F10945
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5C23107BF
 	for <linux-trace-devel@vger.kernel.org>; Thu, 28 Dec 2023 20:36:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C58DC433B8;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05A42C43395;
 	Thu, 28 Dec 2023 20:36:26 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rIx7z-00000000Dtg-49nz;
+	id 1rIx7z-00000000Dt2-33Fj;
 	Thu, 28 Dec 2023 15:37:15 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 18/23] libtracefs: Add tracefs_instance_set/get_subbuf_size()
-Date: Thu, 28 Dec 2023 15:35:40 -0500
-Message-ID: <20231228203714.53294-19-rostedt@goodmis.org>
+Subject: [PATCH 08/23] libtracefs: Add API to remove followers from an instance or toplevel
+Date: Thu, 28 Dec 2023 15:35:30 -0500
+Message-ID: <20231228203714.53294-9-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231228203714.53294-1-rostedt@goodmis.org>
 References: <20231228203714.53294-1-rostedt@goodmis.org>
@@ -28,267 +28,516 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add API to retrieve and modify the current sub-buffer size.
+Add the APIs:
 
-  tracefs_instance_set_subbuf_size()
-  tracefs_instance_get_subbuf_size()
+ tracefs_follow_event_clear()
+ tracefs_follow_missed_events_clear()
+
+When adding some more tracefs unit tests, the follower callbacks were being
+called unexpectedly and causing failures and crashes, as the data used by
+the callbacks was already freed by the time it hit the other test.
+
+Add a way to remove the followers and do so in the unit tests.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/libtracefs-instances-subbuf.txt | 152 ++++++++++++++++++
- Documentation/libtracefs.txt                  |   4 +
- include/tracefs.h                             |   2 +
- samples/Makefile                              |   1 +
- src/tracefs-instance.c                        |  37 +++++
- 5 files changed, 196 insertions(+)
- create mode 100644 Documentation/libtracefs-instances-subbuf.txt
+ Documentation/libtracefs-iterator.txt |  30 +++-
+ include/tracefs.h                     |   4 +
+ src/tracefs-events.c                  | 103 ++++++++++++
+ utest/tracefs-utest.c                 | 230 ++++++++++++++++++++++++++
+ 4 files changed, 366 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/libtracefs-instances-subbuf.txt b/Documentation/libtracefs-instances-subbuf.txt
-new file mode 100644
-index 000000000000..8d5c3e0ed3bd
---- /dev/null
-+++ b/Documentation/libtracefs-instances-subbuf.txt
-@@ -0,0 +1,152 @@
-+libtracefs(3)
-+=============
-+
-+NAME
-+----
-+tracefs_instance_get_subbuf_size, tracefs_instance_set_subbuf_size - Helper functions for working with ring buffer sub buffers.
-+
-+SYNOPSIS
-+--------
-+[verse]
-+--
-+*#include <tracefs.h>*
-+
-+size_t *tracefs_instance_get_subbuf_size*(struct tracefs_instance pass:[*]_instance_);
-+int *tracefs_instance_set_subbuf_size*(struct tracefs_instance pass:[*]_instance_, size_t _size_);
-+--
-+
-+DESCRIPTION
-+-----------
-+Helper functions for working with the sub-buffers of the tracing ring buffer.
-+The tracing ring buffer is broken up into *sub-buffers*. An event can not be
-+bigger than the data section of the sub-buffer (see *tep_get_sub_buffer_data_size*(3)).
-+By default, the ring buffer uses the architectures *page_size* as the default
-+size of the sub-buffer, but this can be limiting if there is a need for large
-+events, for example, the application wants to write large strings into
-+the trace_marker file.
-+
-+The *tracefs_instance_get_subbuf_size()* returns the current size in kilobytes
-+fo the ring buffer sub-buffers.
-+
-+The *tracefs_instance_set_subbuf_size()* will write the size in kilobytes of
-+what the new sub-buffer size should be. Note, that this is only a hint to what
-+the minimum sub-buffer size should be. It also does not take into account the
-+meta-data that is used by the sub-buffer, so the size written should be no less
-+than 16 bytes more than the maximum event size that will be used. The kernel
-+will likely make the sub-buffer size larger than specified, as it may need to
-+align the size for implementation purposes.
-+
-+RETURN VALUE
-+------------
-+The *tracefs_instance_get_subbuf_size()* returns the size of the current
-+sub-buffer for the given _instance_ ring buffer or -1 on error.
-+
-+The *tracefs_instance_set_subbuf_size()* will return 0 if it successfully set
-+the _instance_ ring buffer sub-buffer size in kilobytes, or -1 on error.
-+
-+EXAMPLE
-+-------
-+[source,c]
-+--
-+#include <stdlib.h>
-+#include <tracefs.h>
-+#include <errno.h>
-+
-+int main(int argc, char **argv)
-+{
-+	struct tep_handle *tep;
-+	ssize_t save_subsize;
-+	ssize_t subsize;
-+	char *trace;
-+	char buf[3000];
-+	int meta_size;
-+	int ret;
-+	int i;
-+
-+	tep = tep_alloc();
-+	ret = tracefs_load_headers(NULL, tep);
-+	tep_free(tep);
-+
-+	if (ret < 0) {
-+		perror("reading headers");
-+		exit(-1);
-+	}
-+
-+	meta_size = tep_get_sub_buffer_size(tep) - tep_get_sub_buffer_data_size(tep);
-+
-+	save_subsize = tracefs_instance_get_subbuf_size(NULL);
-+	if (save_subsize < 0) {
-+		printf("Changing sub-buffer size not available\n");
-+		exit(-1);
-+	}
-+
-+	subsize = save_subsize * 1024;
-+
-+	/* Have at least 4 writes fit on a sub-buffer */
-+	if (subsize - meta_size < sizeof(buf) *4 ) {
-+		subsize = ((sizeof(buf) * 4 + meta_size) + 1023) / 1024;
-+		tracefs_instance_set_subbuf_size(NULL, subsize);
-+	}
-+
-+	for (i = 0; i < sizeof(buf) - 1; i++) {
-+		buf[i] = '0' + i % 10;
-+	}
-+	buf[i] = '\0';
-+
-+	tracefs_instance_clear(NULL);
-+
-+	for (i = 0; i < 4; i++) {
-+		ret = tracefs_printf(NULL, "%s\n", buf);
-+		if (ret < 0)
-+			perror("write");
-+	}
-+
-+	trace = tracefs_instance_file_read(NULL, "trace", NULL);
-+	printf("%s\n", trace);
-+	free(trace);
-+
-+	printf("Buffer size was: %zd * 1024\n",
-+	       tracefs_instance_get_subbuf_size(NULL));
-+
-+	tracefs_instance_set_subbuf_size(NULL, save_subsize);
-+}
-+--
-+FILES
-+-----
-+[verse]
-+--
-+*tracefs.h*
-+	Header file to include in order to have access to the library APIs.
-+*-ltracefs*
-+	Linker switch to add when building a program that uses the library.
-+--
-+
-+SEE ALSO
-+--------
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
-+
-+AUTHOR
-+------
-+[verse]
-+--
-+*Steven Rostedt* <rostedt@goodmis.org>
-+*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>
-+--
-+REPORTING BUGS
-+--------------
-+Report bugs to  <linux-trace-devel@vger.kernel.org>
-+
-+LICENSE
-+-------
-+libtracefs is Free Software licensed under the GNU LGPL 2.1
-+
-+RESOURCES
-+---------
-+https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-+
-+COPYING
-+-------
-+Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
-+the terms of the GNU Public License (GPL).
-diff --git a/Documentation/libtracefs.txt b/Documentation/libtracefs.txt
-index 6752ed3c9b98..1962b3b34622 100644
---- a/Documentation/libtracefs.txt
-+++ b/Documentation/libtracefs.txt
-@@ -324,6 +324,10 @@ Recording of trace_pipe_raw files:
- 	struct kbuffer pass:[*]*tracefs_cpu_buffered_read_buf*(struct tracefs_cpu pass:[*]_tcpu_, bool _nonblock_);
- 	struct kbuffer pass:[*]*tracefs_cpu_flush_buf*(struct tracefs_cpu pass:[*]_tcpu_);
+diff --git a/Documentation/libtracefs-iterator.txt b/Documentation/libtracefs-iterator.txt
+index b971bd0e10c5..c2b2be3f4c5c 100644
+--- a/Documentation/libtracefs-iterator.txt
++++ b/Documentation/libtracefs-iterator.txt
+@@ -3,7 +3,8 @@ libtracefs(3)
  
-+Helper functions for modifying the ring buffer sub-buffers:
-+	size_t *tracefs_instance_get_subbuf_size*(struct tracefs_instance pass:[*]_instance_);
-+	int *tracefs_instance_set_subbuf_size*(struct tracefs_instance pass:[*]_instance_, size_t _size_);
+ NAME
+ ----
+-tracefs_iterate_raw_events, tracefs_iterate_stop, tracefs_follow_event, tracefs_follow_missed_events - Iterate over events in the ring buffer
++tracefs_iterate_raw_events, tracefs_iterate_stop, tracefs_follow_event, tracefs_follow_missed_events,
++tracefs_follow_event_clear, tracefs_follow_missed_events_clear - Iterate over events in the ring buffer
+ 
+ SYNOPSIS
+ --------
+@@ -28,6 +29,10 @@ int *tracefs_follow_missed_events*(struct tracefs_instance pass:[*]_instance_,
+ 					  struct tep_record pass:[*],
+ 					  int, void pass:[*]),
+ 			  void pass:[*]_callback_data_);
 +
- Helper functions for guest tracing:
- 	char pass:[*]*tracefs_find_cid_pid*(int _cid_);
- 	char pass:[*]*tracefs_instance_find_cid_pid*(struct tracefs_instance pass:[*]_instance_, int _cid_);
++int *tracefs_follow_event_clear*(struct tracefs_instance pass:[*]_instance_,
++			  const char pass:[*]_system_, const char pass:[*]_event_name_);
++int *tracefs_follow_missed_events_clear*(struct tracefs_instance pass:[*]_instance_);
+ --
+ 
+ DESCRIPTION
+@@ -68,11 +73,24 @@ record that came after the missed events and _event_ will be of the type of
+ event _record_ is. _cpu_ will be set to the CPU that missed the events, and
+ _callback_data_ will be the content that was passed in to the function.
+ 
++The *tracefs_follow_event_clear()* will remove followers from _instance_ that
++match _system_ and _event_name_. If _system_ and _event_name_ are both NULL,
++then it will remove all event followers associated to _instance_. If just _system_
++is NULL, then it will remove all followers that follow events that match _event_name_. If just _event_name_
++is NULL, then it will remove all followers that are attached to events that are
++apart of a system that matches _system_.
++
++The *tracefs_follow_missed_events_clear()* will remove all followers for missed
++events.
++
+ RETURN VALUE
+ ------------
+ The *tracefs_iterate_raw_events()* function returns -1 in case of an error or
+ 0 otherwise.
+ 
++Both *tracefs_follow_event_clear()* and *tracefs_follow_missed_events_clear()* return
++0 on success and -1 on error, or if it found no followers that match and should be removed.
++
+ EXAMPLE
+ -------
+ [source,c]
+@@ -176,7 +194,17 @@ int main (int argc, char **argv, char **env)
+ 	tracefs_follow_missed_events(instance, missed_callback, NULL);
+ 	tracefs_follow_event(tep, instance, "sched", "sched_switch", sched_callback, &this_pid);
+ 	tracefs_iterate_raw_events(tep, instance, NULL, 0, callback, &my_data);
++
++	/* Note, the clear here is to show how to clear all followers
++	 * in case tracefs_iterate_raw_events() is called again, but
++	 * does not want to include the followers. It's not needed
++	 * here because tracefs_instance_free() will clean them up.
++	 */
++	tracefs_follow_event_clear(instance, NULL, NULL);
++	tracefs_follow_missed_events_clear(instance);
++
+ 	tracefs_instance_destroy(instance);
++	tracefs_instance_free(instance);
+ 
+ 	if (my_data.stopped) {
+ 		if (counter > MAX_COUNT)
 diff --git a/include/tracefs.h b/include/tracefs.h
-index 3ae78d4f3af7..c66bfd2edf0b 100644
+index 90df00f531ea..25429a30c028 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
-@@ -63,6 +63,8 @@ int tracefs_instance_get_affinity_set(struct tracefs_instance *instance,
- 				      cpu_set_t *set, size_t set_size);
- ssize_t tracefs_instance_get_buffer_size(struct tracefs_instance *instance, int cpu);
- int tracefs_instance_set_buffer_size(struct tracefs_instance *instance, size_t size, int cpu);
-+ssize_t tracefs_instance_get_subbuf_size(struct tracefs_instance *instance);
-+int tracefs_instance_set_subbuf_size(struct tracefs_instance *instance, size_t size);
- char **tracefs_instances(const char *regex);
+@@ -138,6 +138,10 @@ int tracefs_follow_missed_events(struct tracefs_instance *instance,
+ 						 struct tep_record *,
+ 						 int, void *),
+ 				 void *callback_data);
++int tracefs_follow_event_clear(struct tracefs_instance *instance,
++			  const char *system, const char *event_name);
++int tracefs_follow_missed_events_clear(struct tracefs_instance *instance);
++
  
- int tracefs_instance_get_buffer_percent(struct tracefs_instance *instance);
-diff --git a/samples/Makefile b/samples/Makefile
-index 787d28769051..77739c8b0aa7 100644
---- a/samples/Makefile
-+++ b/samples/Makefile
-@@ -25,6 +25,7 @@ EXAMPLES += cpu
- EXAMPLES += guest
- EXAMPLES += cpu-buf
- EXAMPLES += instances-stat
-+EXAMPLES += instances-subbuf
- 
- TARGETS :=
- TARGETS += sqlhist
-diff --git a/src/tracefs-instance.c b/src/tracefs-instance.c
-index 2162424ad3a7..8d9dd0e21498 100644
---- a/src/tracefs-instance.c
-+++ b/src/tracefs-instance.c
-@@ -441,6 +441,43 @@ int tracefs_instance_set_buffer_size(struct tracefs_instance *instance, size_t s
- 	return ret < 0 ? -1 : 0;
+ char *tracefs_event_get_file(struct tracefs_instance *instance,
+ 			     const char *system, const char *event,
+diff --git a/src/tracefs-events.c b/src/tracefs-events.c
+index c6b1d7637e72..2e87f9aa3af7 100644
+--- a/src/tracefs-events.c
++++ b/src/tracefs-events.c
+@@ -392,6 +392,109 @@ int tracefs_follow_event(struct tep_handle *tep, struct tracefs_instance *instan
+ 	return 0;
  }
  
 +/**
-+ * tracefs_instance_get_subbuf_size - return the sub-buffer size of the ring buffer
-+ * @instance: The instance to get the buffer size from
++ * tracefs_follow_event_clear - Remove callbacks for specific events for iterators
++ * @instance: The instance to follow
++ * @system: The system of the event to remove (NULL for all)
++ * @event_name: The name of the event to remove (NULL for all)
 + *
-+ * Returns the sub-buffer size in kilobytes.
-+ * Returns -1 on error.
++ * This removes all callbacks from an instance that matches a specific
++ * event. If @event_name is NULL, then it removes all followers that match
++ * @system. If @system is NULL, then it removes all followers that match
++ * @event_name. If both @system and @event_name are NULL then it removes all
++ * followers for all events.
++ *
++ * Returns 0 on success and -1 on error (which includes no followers found)
 + */
-+ssize_t tracefs_instance_get_subbuf_size(struct tracefs_instance *instance)
++int tracefs_follow_event_clear(struct tracefs_instance *instance,
++			       const char *system, const char *event_name)
 +{
-+	long long size;
-+	int ret;
++	struct follow_event **followers;
++	struct follow_event *follower;
++	int *nr_followers;
++	int nr;
++	int i, n;
 +
-+	ret = tracefs_instance_file_read_number(instance, "buffer_subbuf_size_kb", &size);
-+	if (ret < 0)
-+		return ret;
++	if (instance) {
++		followers = &instance->followers;
++		nr_followers = &instance->nr_followers;
++	} else {
++		followers = &root_followers;
++		nr_followers = &nr_root_followers;
++	}
 +
-+	return size;
++	if (!*nr_followers)
++		return -1;
++
++	/* If both system and event_name are NULL just remove all */
++	if (!system && !event_name) {
++		free(*followers);
++		*followers = NULL;
++		*nr_followers = 0;
++		return 0;
++	}
++
++	nr = *nr_followers;
++	follower = *followers;
++
++	for (i = 0, n = 0; i < nr; i++) {
++		if (event_name && strcmp(event_name, follower[n].event->name) != 0) {
++			n++;
++			continue;
++		}
++		if (system && strcmp(system, follower[n].event->system) != 0) {
++			n++;
++			continue;
++		}
++		/* If there are no more after this, continue to increment i */
++		if (i == nr - 1)
++			continue;
++		/* Remove this follower */
++		memmove(&follower[n], &follower[n + 1],
++			sizeof(*follower) * (nr - (n + 1)));
++	}
++
++	/* Did we find anything? */
++	if (n == i)
++		return -1;
++
++	/* NULL out the rest */
++	memset(&follower[n], 0, (sizeof(*follower)) * (nr - n));
++	*nr_followers = n;
++
++	return 0;
 +}
 +
 +/**
-+ * tracefs_instance_set_buffer_size - modify the ring buffer sub-buffer size
-+ * @instance: The instance to modify (NULL for the top level)
-+ * @size: The size in kilobytes to to set the sub-buffer size to
++ * tracefs_follow_missed_events_clear - Remove callbacks for missed events
++ * @instance: The instance to remove missed callback followers
 + *
-+ * Sets the sub-buffer size in kilobytes for the given ring buffer.
++ * This removes all callbacks from an instance that are for missed events.
 + *
-+ * Returns 0 on success and -1 on error.
++ * Returns 0 on success and -1 on error (which includes no followers found)
 + */
-+int tracefs_instance_set_subbuf_size(struct tracefs_instance *instance, size_t size)
++int tracefs_follow_missed_events_clear(struct tracefs_instance *instance)
 +{
-+	int ret;
++	struct follow_event **followers;
++	int *nr_followers;
 +
-+	ret = tracefs_instance_file_write_number(instance, "buffer_subbuf_size_kb", size);
++	if (instance) {
++		followers = &instance->missed_followers;
++		nr_followers = &instance->nr_missed_followers;
++	} else {
++		followers = &root_missed_followers;
++		nr_followers = &nr_root_missed_followers;
++	}
 +
-+	return ret < 0 ? -1 : 0;
++	if (!*nr_followers)
++		return -1;
++
++	free(*followers);
++	*followers = NULL;
++	*nr_followers = 0;
++	return 0;
 +}
 +
- /**
-  * tracefs_instance_get_trace_dir - return the top trace directory, where the instance is confuigred
-  * @instance: ftrace instance
+ static bool top_iterate_keep_going;
+ 
+ /*
+diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
+index 183f37cd133a..492e5c05551f 100644
+--- a/utest/tracefs-utest.c
++++ b/utest/tracefs-utest.c
+@@ -63,6 +63,16 @@ static struct test_sample test_array[TEST_ARRAY_SIZE];
+ static int test_found;
+ static unsigned long long last_ts;
+ 
++static void msleep(int ms)
++{
++	struct timespec tspec;
++
++	/* Sleep for 1ms */
++	tspec.tv_sec = 0;
++	tspec.tv_nsec = 1000000 * ms;
++	nanosleep(&tspec, NULL);
++}
++
+ static int test_callback(struct tep_event *event, struct tep_record *record,
+ 			  int cpu, void *context)
+ {
+@@ -608,10 +618,23 @@ static void test_trace_cpu_read(void)
+ struct follow_data {
+ 	struct tep_event *sched_switch;
+ 	struct tep_event *sched_waking;
++	struct tep_event *getppid;
+ 	struct tep_event *function;
+ 	int missed;
++	int switch_hit;
++	int waking_hit;
++	int getppid_hit;
++	int missed_hit;
+ };
+ 
++static void clear_hits(struct follow_data *fdata)
++{
++	fdata->switch_hit = 0;
++	fdata->waking_hit = 0;
++	fdata->getppid_hit = 0;
++	fdata->missed_hit = 0;
++}
++
+ static int switch_callback(struct tep_event *event, struct tep_record *record,
+ 			   int cpu, void *data)
+ {
+@@ -619,6 +642,7 @@ static int switch_callback(struct tep_event *event, struct tep_record *record,
+ 
+ 	CU_TEST(cpu == record->cpu);
+ 	CU_TEST(event->id == fdata->sched_switch->id);
++	fdata->switch_hit++;
+ 	return 0;
+ }
+ 
+@@ -629,6 +653,18 @@ static int waking_callback(struct tep_event *event, struct tep_record *record,
+ 
+ 	CU_TEST(cpu == record->cpu);
+ 	CU_TEST(event->id == fdata->sched_waking->id);
++	fdata->waking_hit++;
++	return 0;
++}
++
++static int getppid_callback(struct tep_event *event, struct tep_record *record,
++			    int cpu, void *data)
++{
++	struct follow_data *fdata = data;
++
++	CU_TEST(cpu == record->cpu);
++	CU_TEST(event->id == fdata->getppid->id);
++	fdata->getppid_hit++;
+ 	return 0;
+ }
+ 
+@@ -648,6 +684,7 @@ static int missed_callback(struct tep_event *event, struct tep_record *record,
+ 	struct follow_data *fdata = data;
+ 
+ 	fdata->missed = record->missed_events;
++	fdata->missed_hit++;
+ 	return 0;
+ }
+ 
+@@ -725,6 +762,11 @@ static void test_instance_follow_events(struct tracefs_instance *instance)
+ 	ret = tracefs_iterate_raw_events(tep, instance, NULL, 0, all_callback, &fdata);
+ 	CU_TEST(ret == 0);
+ 
++	ret = tracefs_follow_event_clear(instance, NULL, NULL);
++	CU_TEST(ret == 0);
++	ret = tracefs_follow_missed_events_clear(instance);
++	CU_TEST(ret == 0);
++
+ 	pthread_join(thread, NULL);
+ 
+ 	tracefs_tracer_clear(instance);
+@@ -737,6 +779,193 @@ static void test_follow_events(void)
+ 	test_instance_follow_events(test_instance);
+ }
+ 
++static void test_instance_follow_events_clear(struct tracefs_instance *instance)
++{
++	struct follow_data fdata;
++	struct tep_handle *tep;
++	char **list;
++	int ret;
++
++	memset(&fdata, 0, sizeof(fdata));
++
++	tep = test_tep;
++
++	fdata.sched_switch = tep_find_event_by_name(tep, "sched", "sched_switch");
++	CU_TEST(fdata.sched_switch != NULL);
++	if (!fdata.sched_switch)
++		return;
++
++	fdata.sched_waking = tep_find_event_by_name(tep, "sched", "sched_waking");
++	CU_TEST(fdata.sched_waking != NULL);
++	if (!fdata.sched_waking)
++		return;
++
++	fdata.getppid = tep_find_event_by_name(tep, EVENT_SYSTEM, EVENT_NAME);
++	CU_TEST(fdata.getppid != NULL);
++	if (!fdata.getppid)
++		return;
++
++	ret = tracefs_follow_event(tep, instance, "sched", "sched_switch",
++				   switch_callback, &fdata);
++	CU_TEST(ret == 0);
++
++	ret = tracefs_follow_event(tep, instance, "sched", "sched_waking",
++				   waking_callback, &fdata);
++	CU_TEST(ret == 0);
++
++	ret = tracefs_follow_event(tep, instance, EVENT_SYSTEM, EVENT_NAME,
++				   getppid_callback, &fdata);
++	CU_TEST(ret == 0);
++
++	ret = tracefs_follow_missed_events(instance, missed_callback, &fdata);
++	CU_TEST(ret == 0);
++
++	ret = tracefs_event_enable(instance, "sched", "sched_switch");
++	CU_TEST(ret == 0);
++
++	ret = tracefs_event_enable(instance, "sched", "sched_waking");
++	CU_TEST(ret == 0);
++
++	ret = tracefs_event_enable(instance, EVENT_SYSTEM, EVENT_NAME);
++	CU_TEST(ret == 0);
++
++	tracefs_trace_on(instance);
++	call_getppid(100);
++	msleep(100);
++	tracefs_trace_off(instance);
++
++	ret = tracefs_iterate_raw_events(tep, instance, NULL, 0, NULL, &fdata);
++	CU_TEST(ret == 0);
++
++	/* Make sure all are hit */
++	CU_TEST(fdata.switch_hit > 0);
++	CU_TEST(fdata.waking_hit > 0);
++	CU_TEST(fdata.getppid_hit == 100);
++	/* No missed events */
++	CU_TEST(fdata.missed_hit == 0);
++	clear_hits(&fdata);
++
++
++
++	/* Disable getppid and do the same thing */
++	ret = tracefs_follow_event_clear(instance, EVENT_SYSTEM, EVENT_NAME);
++	CU_TEST(ret == 0);
++
++	tracefs_trace_on(instance);
++	call_getppid(100);
++	msleep(100);
++	tracefs_trace_off(instance);
++
++	ret = tracefs_iterate_raw_events(tep, instance, NULL, 0, NULL, &fdata);
++	CU_TEST(ret == 0);
++
++	/* All but getppid should be hit */
++	CU_TEST(fdata.switch_hit > 0);
++	CU_TEST(fdata.waking_hit > 0);
++	CU_TEST(fdata.getppid_hit == 0);
++	/* No missed events */
++	CU_TEST(fdata.missed_hit == 0);
++	clear_hits(&fdata);
++
++
++
++	/* Add function and remove sched */
++	ret = tracefs_follow_event(tep, instance, "ftrace", "function",
++				   function_callback, &fdata);
++	CU_TEST(ret == 0);
++	ret = tracefs_follow_event_clear(instance, "sched", NULL);
++	CU_TEST(ret == 0);
++
++	tracefs_trace_on(instance);
++	call_getppid(100);
++	msleep(100);
++	tracefs_trace_off(instance);
++
++	ret = tracefs_iterate_raw_events(tep, instance, NULL, 0, NULL, &fdata);
++	CU_TEST(ret == 0);
++
++	/* Nothing should have been hit */
++	CU_TEST(fdata.switch_hit == 0);
++	CU_TEST(fdata.waking_hit == 0);
++	CU_TEST(fdata.getppid_hit == 0);
++	/* No missed events */
++	CU_TEST(fdata.missed_hit == 0);
++	clear_hits(&fdata);
++
++
++	/* Enable function tracing and see if we missed hits */
++	ret = tracefs_tracer_set(instance, TRACEFS_TRACER_FUNCTION);
++	CU_TEST(ret == 0);
++
++	fdata.function = tep_find_event_by_name(tep, "ftrace", "function");
++	CU_TEST(fdata.function != NULL);
++	if (!fdata.function)
++		return;
++
++	tracefs_trace_on(instance);
++	call_getppid(100);
++	/* Stir the kernel a bit */
++	list = tracefs_event_systems(NULL);
++	tracefs_list_free(list);
++	sleep(1);
++	tracefs_trace_off(instance);
++
++	ret = tracefs_iterate_raw_events(tep, instance, NULL, 0, NULL, &fdata);
++	CU_TEST(ret == 0);
++
++	/* Nothing should have been hit */
++	CU_TEST(fdata.switch_hit == 0);
++	CU_TEST(fdata.waking_hit == 0);
++	CU_TEST(fdata.getppid_hit == 0);
++	/* We should have missed events! */
++	CU_TEST(fdata.missed_hit > 0);
++	clear_hits(&fdata);
++
++
++	/* Now remove missed events follower */
++	ret = tracefs_follow_missed_events_clear(instance);
++	CU_TEST(ret == 0);
++
++	tracefs_trace_on(instance);
++	call_getppid(100);
++	sleep(1);
++	tracefs_trace_off(instance);
++
++	ret = tracefs_iterate_raw_events(tep, instance, NULL, 0, NULL, &fdata);
++	CU_TEST(ret == 0);
++
++	/* Nothing should have been hit */
++	CU_TEST(fdata.switch_hit == 0);
++	CU_TEST(fdata.waking_hit == 0);
++	CU_TEST(fdata.getppid_hit == 0);
++	/* No missed events either */
++	CU_TEST(fdata.missed_hit == 0);
++	clear_hits(&fdata);
++
++	/* Turn everything off */
++	tracefs_tracer_clear(instance);
++	tracefs_event_disable(instance, NULL, NULL);
++
++	tracefs_trace_on(instance);
++
++	/* Clear the function follower */
++	ret = tracefs_follow_event_clear(instance, NULL, "function");
++
++	/* Should not have any more followers */
++	ret = tracefs_follow_event_clear(instance, NULL, NULL);
++	CU_TEST(ret != 0);
++
++	/* Nor missed event followers */
++	ret = tracefs_follow_missed_events_clear(instance);
++	CU_TEST(ret != 0);
++}
++
++static void test_follow_events_clear(void)
++{
++	test_instance_follow_events_clear(NULL);
++	test_instance_follow_events_clear(test_instance);
++}
++
+ extern char *find_tracing_dir(bool debugfs, bool mount);
+ static void test_mounting(void)
+ {
+@@ -2570,6 +2799,7 @@ void test_tracefs_lib(void)
+ 
+ 	/* Follow events test must be after the iterate raw events above */
+ 	CU_add_test(suite, "Follow events", test_follow_events);
++	CU_add_test(suite, "Follow events clear", test_follow_events_clear);
+ 
+ 	CU_add_test(suite, "tracefs_tracers API",
+ 		    test_tracers);
 -- 
 2.42.0
 
