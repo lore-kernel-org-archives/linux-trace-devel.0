@@ -1,20 +1,20 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C3E910A0A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEA5610967
 	for <linux-trace-devel@vger.kernel.org>; Thu, 28 Dec 2023 21:53:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 417FBC433B8;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C411C433C8;
 	Thu, 28 Dec 2023 21:53:45 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rIyKp-00000000EJh-0kDy;
+	id 1rIyKp-00000000EK1-1Kqx;
 	Thu, 28 Dec 2023 16:54:35 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 17/22] libtracefs: Add API to extract ring buffer statistics
-Date: Thu, 28 Dec 2023 16:52:12 -0500
-Message-ID: <20231228215433.54854-18-rostedt@goodmis.org>
+Subject: [PATCH v2 22/22] libtracefs: Add updating and reading snapshot buffers
+Date: Thu, 28 Dec 2023 16:52:17 -0500
+Message-ID: <20231228215433.54854-23-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231228215433.54854-1-rostedt@goodmis.org>
 References: <20231228215433.54854-1-rostedt@goodmis.org>
@@ -28,482 +28,499 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add the API that reads the tracefs/per_cpu/cpu*/stats
+Add the API:
 
-  tracefs_instance_get_stat()
-  tracefs_instance_put_stat()
-  tracefs_buffer_stat_entries()
-  tracefs_buffer_stat_overrun()
-  tracefs_buffer_stat_commit_overrun()
-  tracefs_buffer_stat_bytes()
-  tracefs_buffer_stat_event_timestamp()
-  tracefs_buffer_stat_timestamp()
-  tracefs_buffer_stat_dropped_events()
-  tracefs_buffer_stat_read_events()
+  tracefs_cpu_snapshot_open()
+
+That will read the snapshot_raw file just like tracefs_cpu_open() does to
+the trace_pipe_raw file, except the blocking will block only if empty and
+until another snapshot occurs.
+
+Add blocking and see if a snapshot will unblock it!
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/libtracefs-instances-stat.txt | 183 ++++++++++++++++++++
- Documentation/libtracefs.txt                |  12 ++
- include/tracefs-local.h                     |  11 ++
- include/tracefs.h                           |  13 ++
- samples/Makefile                            |   1 +
- src/Makefile                                |   1 +
- src/tracefs-stats.c                         | 162 +++++++++++++++++
- 7 files changed, 383 insertions(+)
- create mode 100644 Documentation/libtracefs-instances-stat.txt
- create mode 100644 src/tracefs-stats.c
+ Documentation/libtracefs-cpu-open.txt |  16 +++-
+ Documentation/libtracefs-iterator.txt |  10 ++-
+ Documentation/libtracefs.txt          |   6 ++
+ include/tracefs.h                     |  13 ++++
+ src/tracefs-events.c                  |  97 +++++++++++++++++-------
+ src/tracefs-record.c                  | 102 ++++++++++++++++++++++----
+ utest/tracefs-utest.c                 |  42 +++++++++--
+ 7 files changed, 237 insertions(+), 49 deletions(-)
 
-diff --git a/Documentation/libtracefs-instances-stat.txt b/Documentation/libtracefs-instances-stat.txt
-new file mode 100644
-index 000000000000..d3bb3c93d9d1
---- /dev/null
-+++ b/Documentation/libtracefs-instances-stat.txt
-@@ -0,0 +1,183 @@
-+libtracefs(3)
-+=============
+diff --git a/Documentation/libtracefs-cpu-open.txt b/Documentation/libtracefs-cpu-open.txt
+index c5a900a06e8e..46667e83f7ff 100644
+--- a/Documentation/libtracefs-cpu-open.txt
++++ b/Documentation/libtracefs-cpu-open.txt
+@@ -3,7 +3,7 @@ libtracefs(3)
+ 
+ NAME
+ ----
+-tracefs_cpu_open, tracefs_cpu_close, tracefs_cpu_alloc_fd, tracefs_cpu_free_fd - Opening trace_pipe_raw data for reading
++tracefs_cpu_open, tracefs_cpu_close, tracefs_cpu_alloc_fd, tracefs_cpu_free_fd, tracefs_cpu_snapshot_open - Opening trace_pipe_raw data for reading
+ 
+ SYNOPSIS
+ --------
+@@ -17,6 +17,9 @@ void *tracefs_cpu_close*(struct tracefs_cpu pass:[*]_tcpu_);
+ 
+ struct tracefs_cpu pass:[*]*tracefs_cpu_alloc_fd*(int _fd_, int _subbuf_size_, bool _nonblock_);
+ void *tracefs_cpu_free_fd*(struct tracefs_cpu pass:[*]_tcpu_);
 +
-+NAME
-+----
-+tracefs_instance_get_stat, tracefs_instance_put_stat, tracefs_buffer_stat_entries, tracefs_buffer_stat_overrun,
-+tracefs_buffer_stat_commit_overrun, tracefs_buffer_stat_bytes, tracefs_buffer_stat_event_timestamp,
-+tracefs_buffer_stat_timestamp, tracefs_buffer_stat_dropped_events, tracefs_buffer_stat_read_events
-+- Handling tracing buffer stats
++struct tracefs_cpu pass:[*]*tracefs_cpu_snapshot-open*(struct tracefs_instance pass:[*]_instance_,
++					     int _cpu_, bool _nonblock_);
+ --
+ 
+ DESCRIPTION
+@@ -47,10 +50,17 @@ the file descriptor passed in. Note that *tracefs_cpu_free_fd()* should not be u
+ on the descriptor returned by *tracefs_cpu_open()* as it will not close the file descriptor
+ created by it.
+ 
++The *tracefs_cpu_snapshot_open()* is similar to *tracefs_cpu_open()* except that it
++opens the snapshot buffer (see *tracefs_snapshot_snap*(3)). The snapshot buffer
++does not have a writer to it, it is only created by a snapshot action that swaps
++the current ring buffer with the snapshot buffer. The _nonblock_, when false, acts a little
++differently here too. Reads are not affected by the "buffer_percent" file. If the
++snapshot buffer is empty, it will block until a new snapshot happens.
 +
-+SYNOPSIS
-+--------
-+[verse]
-+--
-+*#include <tracefs.h>*
+ RETURN VALUE
+ ------------
+-The *tracefs_cpu_open()* returns a struct tracefs_cpu descriptor that can be
+-used by the other functions or NULL on error.
++The *tracefs_cpu_open()* and *tracefs_cpu_snapshot_open() both return a struct
++tracefs_cpu descriptor that can be used by the other functions or NULL on error.
+ 
+ The *tracefs_cpu_alloc_fd()* returns a struct tracefs_cpu descriptor that can
+ be used by the *tracefs_cpu_read*(3) related functions, where the descriptor
+diff --git a/Documentation/libtracefs-iterator.txt b/Documentation/libtracefs-iterator.txt
+index c2b2be3f4c5c..b62f66aa2419 100644
+--- a/Documentation/libtracefs-iterator.txt
++++ b/Documentation/libtracefs-iterator.txt
+@@ -4,7 +4,7 @@ libtracefs(3)
+ NAME
+ ----
+ tracefs_iterate_raw_events, tracefs_iterate_stop, tracefs_follow_event, tracefs_follow_missed_events,
+-tracefs_follow_event_clear, tracefs_follow_missed_events_clear - Iterate over events in the ring buffer
++tracefs_follow_event_clear, tracefs_follow_missed_events_clear, tracefs_iterate_snapshot_events - Iterate over events in the ring buffer
+ 
+ SYNOPSIS
+ --------
+@@ -33,6 +33,11 @@ int *tracefs_follow_missed_events*(struct tracefs_instance pass:[*]_instance_,
+ int *tracefs_follow_event_clear*(struct tracefs_instance pass:[*]_instance_,
+ 			  const char pass:[*]_system_, const char pass:[*]_event_name_);
+ int *tracefs_follow_missed_events_clear*(struct tracefs_instance pass:[*]_instance_);
 +
-+struct tracefs_buffer_stat pass:[*]*tracefs_instance_get_stat*(struct tracefs_instance pass:[*]_instance_, int _cpu_);
-+void *tracefs_instance_put_stat*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+ssize_t *tracefs_buffer_stat_entries*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+ssize_t *tracefs_buffer_stat_overrun*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+ssize_t *tracefs_buffer_stat_commit_overrun*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+ssize_t *tracefs_buffer_stat_bytes*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+long long *tracefs_buffer_stat_event_timestamp*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+long long *tracefs_buffer_stat_timestamp*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+ssize_t *tracefs_buffer_stat_dropped_events*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+ssize_t *tracefs_buffer_stat_read_events*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+--
++int *tracefs_iterate_snapshot_events*(struct tep_handle pass:[*]_tep_, struct tracefs_instance pass:[*]_instance_,
++				 cpu_set_t pass:[*]_cpus_, int _cpu_size_,
++				 int (pass:[*]_callback_)(struct tep_event pass:[*], struct tep_record pass:[*], int, void pass:[*]),
++				 void pass:[*]_callback_context_);
+ --
+ 
+ DESCRIPTION
+@@ -54,6 +59,9 @@ record is; The record representing the event; The CPU that the event
+ occurred on; and a pointer to user specified _callback_context_. If the _callback_
+ returns non-zero, the iteration stops.
+ 
++The *tracefs_iterate_snapshot_events()* works the same as *tracefs_iterate_raw_events()*
++except that it works on the snapshot buffer.
 +
-+DESCRIPTION
-+-----------
-+This set of functions read and parse the tracefs/per_cpu/cpuX/stats file.
-+These files hold the statistics of the per CPU ring buffer, such as how
-+many events are in the ring buffer, how many have been read and so on.
-+
-+The *tracefs_instance_get_stat()* function will read and parse a given statistics
-+file for a given _instance_ and _cpu_. As the ring buffer is split into per_cpu buffers,
-+the information is only associated to the given _cpu_. The returned tracefs_buffer_stat
-+pointer can be used with the other *tracefs_buffer_stat* functions and must be freed with
-+*tracefs_instance_put_stat()*.
-+
-+The *tracefs_instance_put_stat()* will free the resources allocated for the given _stat_
-+that was created by *tracefs_instance_get_stat()*.
-+
-+The *tracefs_buffer_stat_entries()* returns the number of events that are currently
-+in the ring buffer associated with _tstat_.
-+
-+The *tracefs_buffer_stat_overrun()* returns the number of events that were lost by
-+the ring buffer writer overrunning the reader.
-+
-+The *tracefs_buffer_stat_commit_overrun()* returns the number of events that were
-+lost because the ring buffer was too small and an interrupt interrupted a lower
-+context event being recorded and it added more events than the ring buffer could
-+hold. Note this is not a common occurrence and when it happens it means that
-+something was not set up properly.
-+
-+The *tracefs_buffer_stat_bytes()* returns the number of bytes that the current events
-+take up. Note, it includes the meta data for the events, but does not include the
-+meta data for the sub-buffers.
-+
-+The *tracefs_buffer_stat_event_timestamp()* returns the timestamp of the last event in the
-+ring buffer.
-+
-+The *tracefs_buffer_stat_timestamp()* returns the current timestamp of the ring buffer.
-+Note, it is only read when *tracefs_instance_get_stat()* is called. It will have the
-+timestamp of the ring buffer when that function was called.
-+
-+The *tracefs_buffer_stat_dropped_events()* returns the number of events that were
-+dropped if overwrite mode is disabled. It will show the events that were lost because
-+the writer caught up to the reader and could not write any more events.
-+
-+The *tracefs_buffer_stat_read_events()* returns the number of events that were consumed
-+by a reader.
-+
-+
-+RETURN VALUE
-+------------
-+The *tracefs_instance_get_stat()* returns a tracefs_buffer_stat structure that can
-+be used to retrieve the statistics via the other functions. It must be freed with
-+*tracefs_instance_put_stat()*.
-+
-+The other functions that return different values from the tracefs_buffer_stat structure
-+all return the value, or -1 if the value was not found.
-+
-+
-+EXAMPLE
-+-------
-+[source,c]
-+--
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <tracefs.h>
-+
-+int main(int argc, char **argv)
-+{
-+	char *trace;
-+	char buf[1000];
-+	int ret;
-+	int i;
-+
-+	for (i = 0; i < sizeof(buf) - 1; i++) {
-+		buf[i] = '0' + i % 10;
-+	}
-+	buf[i] = '\0';
-+
-+	tracefs_instance_clear(NULL);
-+
-+	for (i = 0; i < 4; i++) {
-+		ret = tracefs_printf(NULL, "%s\n", buf);
-+		if (ret < 0)
-+			perror("write");
-+	}
-+
-+	trace = tracefs_instance_file_read(NULL, "trace", NULL);
-+	printf("%s\n", trace);
-+	free(trace);
-+
-+	for (i = 0; i < sysconf(_SC_NPROCESSORS_CONF); i++) {
-+		struct tracefs_buffer_stat *tstat;
-+		ssize_t entries, eread;
-+
-+		tstat = tracefs_instance_get_stat(NULL, i);
-+		if (!tstat)
-+			continue;
-+
-+		entries = tracefs_buffer_stat_entries(tstat);
-+		eread = tracefs_buffer_stat_read_events(tstat);
-+		if (!entries && !eread) {
-+			tracefs_instance_put_stat(tstat);
-+			continue;
-+		}
-+
-+		printf("CPU: %d\n", i);;
-+		printf("\tentries: %zd\n", entries);
-+		printf("\toverrun: %zd\n", tracefs_buffer_stat_overrun(tstat));
-+		printf("\tcommit_overrun: %zd\n", tracefs_buffer_stat_commit_overrun(tstat));
-+		printf("\tbytes: %zd\n", tracefs_buffer_stat_bytes(tstat));
-+		printf("\tevent_timestamp: %lld\n", tracefs_buffer_stat_event_timestamp(tstat));
-+		printf("\ttimestamp: %lld\n", tracefs_buffer_stat_timestamp(tstat));
-+		printf("\tdropped_events: %zd\n", tracefs_buffer_stat_dropped_events(tstat));
-+		printf("\tread_events: %zd\n", eread);
-+
-+		tracefs_instance_put_stat(tstat);
-+	}
-+}
-+--
-+FILES
-+-----
-+[verse]
-+--
-+*tracefs.h*
-+	Header file to include in order to have access to the library APIs.
-+*-ltracefs*
-+	Linker switch to add when building a program that uses the library.
-+--
-+
-+SEE ALSO
-+--------
-+*libtracefs*(3),
-+*libtraceevent*(3),
-+*trace-cmd*(1)
-+
-+AUTHOR
-+------
-+[verse]
-+--
-+*Steven Rostedt* <rostedt@goodmis.org>
-+--
-+REPORTING BUGS
-+--------------
-+Report bugs to  <linux-trace-devel@vger.kernel.org>
-+
-+LICENSE
-+-------
-+libtracefs is Free Software licensed under the GNU LGPL 2.1
-+
-+RESOURCES
-+---------
-+https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-+
-+COPYING
-+-------
-+Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
-+the terms of the GNU Public License (GPL).
+ Use *tracefs_iterate_stop()* to force a executing *tracefs_iterate_raw_events()*
+ to halt. This can be called from either a callback that is called by
+ the iterator (even though a return of non-zero will stop it), or from another
 diff --git a/Documentation/libtracefs.txt b/Documentation/libtracefs.txt
-index 70bd8116b2b1..6752ed3c9b98 100644
+index 3e73f12de2b5..b0aaa6222ec7 100644
 --- a/Documentation/libtracefs.txt
 +++ b/Documentation/libtracefs.txt
-@@ -155,6 +155,18 @@ Writing data in the trace buffer:
- Control library logs:
- 	int *tracefs_set_loglevel*(enum tep_loglevel _level_);
+@@ -94,6 +94,12 @@ Trace events:
+ 	bool *tracefs_event_file_exists*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_system_, const char pass:[*]_event_,
+ 			       const char pass:[*]_file_);
  
-+Read the ring buffer statistics:
-+	struct tracefs_buffer_stat pass:[*]*tracefs_instance_get_stat*(struct tracefs_instance pass:[*]_instance_, int _cpu_);
-+	void *tracefs_instance_put_stat*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+	ssize_t *tracefs_buffer_stat_entries*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+	ssize_t *tracefs_buffer_stat_overrun*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+	ssize_t *tracefs_buffer_stat_commit_overrun*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+	ssize_t *tracefs_buffer_stat_bytes*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+	long long *tracefs_buffer_stat_event_timestamp*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+	long long *tracefs_buffer_stat_timestamp*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+	ssize_t *tracefs_buffer_stat_dropped_events*(struct tracefs_buffer_stat pass:[*]_tstat_);
-+	ssize_t *tracefs_buffer_stat_read_events*(struct tracefs_buffer_stat pass:[*]_tstat_);
++Snapshot buffer:
++	int *tracefs_iterate_snapshot_events*(struct tep_handle pass:[*]_tep_, struct tracefs_instance pass:[*]_instance_,
++				 cpu_set_t pass:[*]_cpus_, int _cpu_size_,
++				 int (pass:[*]_callback_)(struct tep_event pass:[*], struct tep_record pass:[*], int, void pass:[*]),
++				 void pass:[*]_callback_context_);
 +
- Dynamic event generic APIs:
- 	struct *tracefs_dynevent*;
- 	enum *tracefs_dynevent_type*;
-diff --git a/include/tracefs-local.h b/include/tracefs-local.h
-index 9e5a568468b4..9cae73c8b806 100644
---- a/include/tracefs-local.h
-+++ b/include/tracefs-local.h
-@@ -51,6 +51,17 @@ struct tracefs_instance {
- 	bool				iterate_keep_going;
- };
- 
-+struct tracefs_buffer_stat {
-+	ssize_t				entries;
-+	ssize_t				overrun;
-+	ssize_t				commit_overrun;
-+	ssize_t				bytes;
-+	long long			oldest_ts;
-+	long long			now_ts;
-+	ssize_t				dropped_events;
-+	ssize_t				read_events;
-+};
-+
- extern const struct tep_format_field common_stacktrace;
- 
- extern pthread_mutex_t toplevel_lock;
+ Event filters:
+ 	int *tracefs_filter_string_append*(struct tep_event pass:[*]_event_, char pass:[**]_filter_,
+ 					 struct tracefs_filter _type_, const char pass:[*]_field_,
 diff --git a/include/tracefs.h b/include/tracefs.h
-index 95bff1f244f9..3ae78d4f3af7 100644
+index d91ab1d943eb..989112c851c8 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
-@@ -68,6 +68,19 @@ char **tracefs_instances(const char *regex);
- int tracefs_instance_get_buffer_percent(struct tracefs_instance *instance);
- int tracefs_instance_set_buffer_percent(struct tracefs_instance *instance, int val);
+@@ -680,6 +680,19 @@ struct kbuffer *tracefs_cpu_flush_buf(struct tracefs_cpu *tcpu);
+ int tracefs_cpu_flush_write(struct tracefs_cpu *tcpu, int wfd);
+ int tracefs_cpu_pipe(struct tracefs_cpu *tcpu, int wfd, bool nonblock);
  
-+struct tracefs_buffer_stat;
++struct tracefs_cpu *
++tracefs_cpu_snapshot_open(struct tracefs_instance *instance, int cpu, bool nonblock);
++int tracefs_iterate_snapshot_events(struct tep_handle *tep,
++				    struct tracefs_instance *instance,
++				    cpu_set_t *cpus, int cpu_size,
++				    int (*callback)(struct tep_event *,
++						    struct tep_record *,
++						    int, void *),
++				    void *callback_context);
++int tracefs_snapshot_snap(struct tracefs_instance *instance);
++int tracefs_snapshot_clear(struct tracefs_instance *instance);
++int tracefs_snapshot_free(struct tracefs_instance *instance);
 +
-+struct tracefs_buffer_stat *tracefs_instance_get_stat(struct tracefs_instance *instance, int cpu);
-+void tracefs_instance_put_stat(struct tracefs_buffer_stat *tstat);
-+ssize_t tracefs_buffer_stat_entries(struct tracefs_buffer_stat *tstat);
-+ssize_t tracefs_buffer_stat_overrun(struct tracefs_buffer_stat *tstat);
-+ssize_t tracefs_buffer_stat_commit_overrun(struct tracefs_buffer_stat *tstat);
-+ssize_t tracefs_buffer_stat_bytes(struct tracefs_buffer_stat *tstat);
-+long long tracefs_buffer_stat_event_timestamp(struct tracefs_buffer_stat *tstat);
-+long long tracefs_buffer_stat_timestamp(struct tracefs_buffer_stat *tstat);
-+ssize_t tracefs_buffer_stat_dropped_events(struct tracefs_buffer_stat *tstat);
-+ssize_t tracefs_buffer_stat_read_events(struct tracefs_buffer_stat *tstat);
-+
- bool tracefs_instance_exists(const char *name);
- bool tracefs_file_exists(struct tracefs_instance *instance, const char *name);
- bool tracefs_dir_exists(struct tracefs_instance *instance, const char *name);
-diff --git a/samples/Makefile b/samples/Makefile
-index 13ad99579ea3..787d28769051 100644
---- a/samples/Makefile
-+++ b/samples/Makefile
-@@ -24,6 +24,7 @@ EXAMPLES += instances-affinity
- EXAMPLES += cpu
- EXAMPLES += guest
- EXAMPLES += cpu-buf
-+EXAMPLES += instances-stat
+ /* Mapping vsocket cids to pids using tracing */
+ int tracefs_instance_find_cid_pid(struct tracefs_instance *instance, int cid);
+ int tracefs_find_cid_pid(int cid);
+diff --git a/src/tracefs-events.c b/src/tracefs-events.c
+index 413c2df19998..3c844b0ab408 100644
+--- a/src/tracefs-events.c
++++ b/src/tracefs-events.c
+@@ -280,7 +280,8 @@ static int read_cpu_pages(struct tep_handle *tep, struct tracefs_instance *insta
+ }
  
- TARGETS :=
- TARGETS += sqlhist
-diff --git a/src/Makefile b/src/Makefile
-index 90bd88df44c2..faa3b25c4002 100644
---- a/src/Makefile
-+++ b/src/Makefile
-@@ -10,6 +10,7 @@ OBJS += tracefs-tools.o
- OBJS += tracefs-marker.o
- OBJS += tracefs-kprobes.o
- OBJS += tracefs-hist.o
-+OBJS += tracefs-stats.o
- OBJS += tracefs-filter.o
- OBJS += tracefs-dynevents.o
- OBJS += tracefs-eprobes.o
-diff --git a/src/tracefs-stats.c b/src/tracefs-stats.c
-new file mode 100644
-index 000000000000..d43235bc0b38
---- /dev/null
-+++ b/src/tracefs-stats.c
-@@ -0,0 +1,162 @@
-+// SPDX-License-Identifier: LGPL-2.1
+ static int open_cpu_files(struct tracefs_instance *instance, cpu_set_t *cpus,
+-			  int cpu_size, struct cpu_iterate **all_cpus, int *count)
++			  int cpu_size, struct cpu_iterate **all_cpus, int *count,
++			  bool snapshot)
+ {
+ 	struct tracefs_cpu *tcpu;
+ 	struct cpu_iterate *tmp;
+@@ -294,7 +295,10 @@ static int open_cpu_files(struct tracefs_instance *instance, cpu_set_t *cpus,
+ 	for (cpu = 0; cpu < nr_cpus; cpu++) {
+ 		if (cpus && !CPU_ISSET_S(cpu, cpu_size, cpus))
+ 			continue;
+-		tcpu = tracefs_cpu_open(instance, cpu, true);
++		if (snapshot)
++			tcpu = tracefs_cpu_snapshot_open(instance, cpu, true);
++		else
++			tcpu = tracefs_cpu_open(instance, cpu, true);
+ 		tmp = realloc(*all_cpus, (i + 1) * sizeof(*tmp));
+ 		if (!tmp) {
+ 			i--;
+@@ -497,30 +501,13 @@ int tracefs_follow_missed_events_clear(struct tracefs_instance *instance)
+ 
+ static bool top_iterate_keep_going;
+ 
+-/*
+- * tracefs_iterate_raw_events - Iterate through events in trace_pipe_raw,
+- *				per CPU trace buffers
+- * @tep: a handle to the trace event parser context
+- * @instance: ftrace instance, can be NULL for the top instance
+- * @cpus: Iterate only through the buffers of CPUs, set in the mask.
+- *	  If NULL, iterate through all CPUs.
+- * @cpu_size: size of @cpus set
+- * @callback: A user function, called for each record from the file
+- * @callback_context: A custom context, passed to the user callback function
+- *
+- * If the @callback returns non-zero, the iteration stops - in that case all
+- * records from the current page will be lost from future reads
+- * The events are iterated in sorted order, oldest first.
+- *
+- * Returns -1 in case of an error, or 0 otherwise
+- */
+-int tracefs_iterate_raw_events(struct tep_handle *tep,
+-				struct tracefs_instance *instance,
+-				cpu_set_t *cpus, int cpu_size,
+-				int (*callback)(struct tep_event *,
+-						struct tep_record *,
++static int iterate_events(struct tep_handle *tep,
++			  struct tracefs_instance *instance,
++			  cpu_set_t *cpus, int cpu_size,
++			  int (*callback)(struct tep_event *,
++					  struct tep_record *,
+ 						int, void *),
+-				void *callback_context)
++			  void *callback_context, bool snapshot)
+ {
+ 	bool *keep_going = instance ? &instance->iterate_keep_going :
+ 				      &top_iterate_keep_going;
+@@ -542,7 +529,7 @@ int tracefs_iterate_raw_events(struct tep_handle *tep,
+ 	if (!callback && !followers)
+ 		return -1;
+ 
+-	ret = open_cpu_files(instance, cpus, cpu_size, &all_cpus, &count);
++	ret = open_cpu_files(instance, cpus, cpu_size, &all_cpus, &count, snapshot);
+ 	if (ret < 0)
+ 		goto out;
+ 	ret = read_cpu_pages(tep, instance, all_cpus, count,
+@@ -562,6 +549,64 @@ out:
+ 	return ret;
+ }
+ 
 +/*
-+ * Copyright (C) 2023 Google LLC, Steven Rostedt <rostedt@goodmis.org>
++ * tracefs_iterate_raw_events - Iterate through events in trace_pipe_raw,
++ *				per CPU trace buffers
++ * @tep: a handle to the trace event parser context
++ * @instance: ftrace instance, can be NULL for the top instance
++ * @cpus: Iterate only through the buffers of CPUs, set in the mask.
++ *	  If NULL, iterate through all CPUs.
++ * @cpu_size: size of @cpus set
++ * @callback: A user function, called for each record from the file
++ * @callback_context: A custom context, passed to the user callback function
++ *
++ * If the @callback returns non-zero, the iteration stops - in that case all
++ * records from the current page will be lost from future reads
++ * The events are iterated in sorted order, oldest first.
++ *
++ * Returns -1 in case of an error, or 0 otherwise
 + */
-+#include <stdlib.h>
-+#include <ctype.h>
-+#include "tracefs.h"
-+#include "tracefs-local.h"
-+
-+static long long convert_ts(char *value)
++int tracefs_iterate_raw_events(struct tep_handle *tep,
++				struct tracefs_instance *instance,
++				cpu_set_t *cpus, int cpu_size,
++				int (*callback)(struct tep_event *,
++						struct tep_record *,
++						int, void *),
++				void *callback_context)
 +{
-+	long long ts;
-+	char *saveptr;
-+	char *secs;
-+	char *usecs;
-+
-+	secs = strtok_r(value, ".", &saveptr);
-+	if (!secs)
-+		return -1LL;
-+
-+	ts = strtoll(secs, NULL, 0);
-+
-+	usecs = strtok_r(NULL, ".", &saveptr);
-+	if (!usecs)
-+		return ts;
-+
-+	/* Could be in nanoseconds */
-+	if (strlen(usecs) > 6)
-+		ts *= 1000000000LL;
-+	else
-+		ts *= 1000000LL;
-+
-+	ts += strtoull(usecs, NULL, 0);
-+
-+	return ts;
++	return iterate_events(tep, instance, cpus, cpu_size, callback,
++			      callback_context, false);
 +}
 +
-+struct tracefs_buffer_stat *
-+tracefs_instance_get_stat(struct tracefs_instance *instance, int cpu)
++/*
++ * tracefs_iterate_snapshot_events - Iterate through events in snapshot_raw,
++ *				per CPU trace buffers
++ * @tep: a handle to the trace event parser context
++ * @instance: ftrace instance, can be NULL for the top instance
++ * @cpus: Iterate only through the buffers of CPUs, set in the mask.
++ *	  If NULL, iterate through all CPUs.
++ * @cpu_size: size of @cpus set
++ * @callback: A user function, called for each record from the file
++ * @callback_context: A custom context, passed to the user callback function
++ *
++ * If the @callback returns non-zero, the iteration stops - in that case all
++ * records from the current page will be lost from future reads
++ * The events are iterated in sorted order, oldest first.
++ *
++ * Returns -1 in case of an error, or 0 otherwise
++ */
++int tracefs_iterate_snapshot_events(struct tep_handle *tep,
++				    struct tracefs_instance *instance,
++				    cpu_set_t *cpus, int cpu_size,
++				    int (*callback)(struct tep_event *,
++						    struct tep_record *,
++						    int, void *),
++				    void *callback_context)
 +{
-+	struct tracefs_buffer_stat *tstat;
-+	char *saveptr;
-+	char *value;
-+	char *field;
-+	char *path;
-+	char *line;
-+	char *next;
-+	char *buf;
-+	int len;
++	return iterate_events(tep, instance, cpus, cpu_size, callback,
++			      callback_context, true);
++}
++
+ /**
+  * tracefs_iterate_stop - stop the iteration over the raw events.
+  * @instance: ftrace instance, can be NULL for top tracing instance.
+diff --git a/src/tracefs-record.c b/src/tracefs-record.c
+index 1eede996631d..e8be3335070b 100644
+--- a/src/tracefs-record.c
++++ b/src/tracefs-record.c
+@@ -92,19 +92,8 @@ tracefs_cpu_alloc_fd(int fd, int subbuf_size, bool nonblock)
+ 	return NULL;
+ }
+ 
+-/**
+- * tracefs_cpu_open - open an instance raw trace file
+- * @instance: the instance (NULL for toplevel) of the cpu raw file to open
+- * @cpu: The CPU that the raw trace file is associated with
+- * @nonblock: If true, the file will be opened in O_NONBLOCK mode
+- *
+- * Return a descriptor that can read the tracefs trace_pipe_raw file
+- * for a give @cpu in a given @instance.
+- *
+- * Returns NULL on error.
+- */
+-struct tracefs_cpu *
+-tracefs_cpu_open(struct tracefs_instance *instance, int cpu, bool nonblock)
++static struct tracefs_cpu *cpu_open(struct tracefs_instance *instance,
++				    const char *path_fmt, int cpu, bool nonblock)
+ {
+ 	struct tracefs_cpu *tcpu;
+ 	struct tep_handle *tep;
+@@ -118,7 +107,7 @@ tracefs_cpu_open(struct tracefs_instance *instance, int cpu, bool nonblock)
+ 	if (nonblock)
+ 		mode |= O_NONBLOCK;
+ 
+-	sprintf(path, "per_cpu/cpu%d/trace_pipe_raw", cpu);
++	sprintf(path, path_fmt, cpu);
+ 
+ 	fd = tracefs_instance_file_open(instance, path, mode);
+ 	if (fd < 0)
+@@ -155,6 +144,91 @@ tracefs_cpu_open(struct tracefs_instance *instance, int cpu, bool nonblock)
+ 	return NULL;
+ }
+ 
++/**
++ * tracefs_cpu_open - open an instance raw trace file
++ * @instance: the instance (NULL for toplevel) of the cpu raw file to open
++ * @cpu: The CPU that the raw trace file is associated with
++ * @nonblock: If true, the file will be opened in O_NONBLOCK mode
++ *
++ * Return a descriptor that can read the tracefs trace_pipe_raw file
++ * for a give @cpu in a given @instance.
++ *
++ * Returns NULL on error.
++ */
++struct tracefs_cpu *
++tracefs_cpu_open(struct tracefs_instance *instance, int cpu, bool nonblock)
++{
++	return cpu_open(instance, "per_cpu/cpu%d/trace_pipe_raw", cpu, nonblock);
++}
++
++/**
++ * tracefs_cpu_snapshot_open - open an instance snapshot raw trace file
++ * @instance: the instance (NULL for toplevel) of the cpu raw file to open
++ * @cpu: The CPU that the raw trace file is associated with
++ * @nonblock: If true, the file will be opened in O_NONBLOCK mode
++ *
++ * Return a descriptor that can read the tracefs snapshot_raw file
++ * for a give @cpu in a given @instance.
++ *
++ * In nonblock mode, it will block if the snapshot is empty and wake up
++ * when there's a new snapshot.
++ *
++ * Returns NULL on error.
++ */
++struct tracefs_cpu *
++tracefs_cpu_snapshot_open(struct tracefs_instance *instance, int cpu, bool nonblock)
++{
++	return cpu_open(instance, "per_cpu/cpu%d/snapshot_raw", cpu, nonblock);
++}
++
++/**
++ * tracefs_snapshot_snap - takes a snapshot (allocates if necessary)
++ * @instance: The instance to take a snapshot on
++ *
++ * Takes a snapshot of the current ring buffer.
++ *
++ * Returns 0 on success, -1 on error.
++ */
++int tracefs_snapshot_snap(struct tracefs_instance *instance)
++{
 +	int ret;
 +
-+	ret = asprintf(&path, "per_cpu/cpu%d/stats", cpu);
-+	if (ret < 0)
-+		return NULL;
++	ret = tracefs_instance_file_write(instance, "snapshot", "1");
++	return ret < 0 ? -1 : 0;
++}
 +
-+	buf = tracefs_instance_file_read(instance, path, &len);
-+	free(path);
++/**
++ * tracefs_snapshot_clear - clears the snapshot
++ * @instance: The instance to clear the snapshot
++ *
++ * Clears the snapshot buffer for the @instance.
++ *
++ * Returns 0 on success, -1 on error.
++ */
++int tracefs_snapshot_clear(struct tracefs_instance *instance)
++{
++	int ret;
 +
-+	if (!buf)
-+		return NULL;
++	ret = tracefs_instance_file_write(instance, "snapshot", "2");
++	return ret < 0 ? -1 : 0;
++}
 +
-+	tstat = malloc(sizeof(*tstat));
-+	if (!tstat) {
-+		free(buf);
-+		return NULL;
++/**
++ * tracefs_snapshot_free - frees the snapshot
++ * @instance: The instance to free the snapshot
++ *
++ * Frees the snapshot for the given @instance.
++ *
++ * Returns 0 on success, -1 on error.
++ */
++int tracefs_snapshot_free(struct tracefs_instance *instance)
++{
++	int ret;
++
++	ret = tracefs_instance_file_write(instance, "snapshot", "0");
++	return ret < 0 ? -1 : 0;
++}
++
+ static void close_fd(int fd)
+ {
+ 	if (fd < 0)
+diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
+index 658e8c149a0f..f338a9153c0a 100644
+--- a/utest/tracefs-utest.c
++++ b/utest/tracefs-utest.c
+@@ -181,7 +181,7 @@ static void test_iter_write(struct tracefs_instance *instance)
+ }
+ 
+ 
+-static void iter_raw_events_on_cpu(struct tracefs_instance *instance, int cpu)
++static void iter_raw_events_on_cpu(struct tracefs_instance *instance, int cpu, bool snapshot)
+ {
+ 	int cpus = sysconf(_SC_NPROCESSORS_CONF);
+ 	cpu_set_t *cpuset = NULL;
+@@ -190,6 +190,9 @@ static void iter_raw_events_on_cpu(struct tracefs_instance *instance, int cpu)
+ 	int ret;
+ 	int i;
+ 
++	if (snapshot)
++		tracefs_instance_clear(instance);
++
+ 	if (cpu >= 0) {
+ 		cpuset = CPU_ALLOC(cpus);
+ 		cpu_size = CPU_ALLOC_SIZE(cpus);
+@@ -199,8 +202,15 @@ static void iter_raw_events_on_cpu(struct tracefs_instance *instance, int cpu)
+ 	test_found = 0;
+ 	last_ts = 0;
+ 	test_iter_write(instance);
+-	ret = tracefs_iterate_raw_events(test_tep, instance, cpuset, cpu_size,
+-					 test_callback, &cpu);
++
++	if (snapshot) {
++		tracefs_snapshot_snap(instance);
++		ret = tracefs_iterate_snapshot_events(test_tep, instance, cpuset, cpu_size,
++						      test_callback, &cpu);
++	} else {
++		ret = tracefs_iterate_raw_events(test_tep, instance, cpuset, cpu_size,
++						 test_callback, &cpu);
 +	}
-+
-+	/* Set everything to -1 */
-+	memset(tstat, -1, sizeof(*tstat));
-+
-+	next = buf;
-+	while ((line = strtok_r(next, "\n", &saveptr))) {
-+		char *save2;
-+
-+		next = NULL;
-+
-+		field = strtok_r(line, ":", &save2);
-+		if (!field)
-+			break;
-+
-+		value = strtok_r(NULL, ":", &save2);
-+		if (!value)
-+			break;
-+
-+		while (isspace(*value))
-+			value++;
-+
-+		if (strcmp(field, "entries") == 0) {
-+			tstat->entries = strtoull(value, NULL, 0);
-+
-+		} else if (strcmp(field, "overrun") == 0) {
-+			tstat->overrun = strtoull(value, NULL, 0);
-+
-+		} else if (strcmp(field, "commit overrun") == 0) {
-+			tstat->commit_overrun = strtoull(value, NULL, 0);
-+
-+		} else if (strcmp(field, "bytes") == 0) {
-+			tstat->bytes = strtoull(value, NULL, 0);
-+
-+		} else if (strcmp(field, "oldest event ts") == 0) {
-+			tstat->oldest_ts = convert_ts(value);
-+
-+		} else if (strcmp(field, "now ts") == 0) {
-+			tstat->now_ts = convert_ts(value);
-+
-+		} else if (strcmp(field, "dropped events") == 0) {
-+			tstat->dropped_events = strtoull(value, NULL, 0);
-+
-+		} else if (strcmp(field, "read events") == 0) {
-+			tstat->read_events = strtoull(value, NULL, 0);
-+		}
-+	}
-+	free(buf);
-+
-+	return tstat;
-+}
-+
-+void tracefs_instance_put_stat(struct tracefs_buffer_stat *tstat)
+ 	CU_TEST(ret == 0);
+ 	if (cpu < 0) {
+ 		CU_TEST(test_found == TEST_ARRAY_SIZE);
+@@ -234,16 +244,35 @@ static void test_instance_iter_raw_events(struct tracefs_instance *instance)
+ 	ret = tracefs_iterate_raw_events(test_tep, instance, NULL, 0, NULL, NULL);
+ 	CU_TEST(ret < 0);
+ 
+-	iter_raw_events_on_cpu(instance, -1);
++	iter_raw_events_on_cpu(instance, -1, false);
+ 	for (i = 0; i < cpus; i++)
+-		iter_raw_events_on_cpu(instance, i);
++		iter_raw_events_on_cpu(instance, i, false);
+ }
+ 
+ static void test_iter_raw_events(void)
+ {
++	test_instance_iter_raw_events(NULL);
+ 	test_instance_iter_raw_events(test_instance);
+ }
+ 
++static void test_instance_iter_snapshot_events(struct tracefs_instance *instance)
 +{
-+	free(tstat);
++	int cpus = sysconf(_SC_NPROCESSORS_CONF);
++	int i;
++
++	iter_raw_events_on_cpu(instance, -1, true);
++	for (i = 0; i < cpus; i++)
++		iter_raw_events_on_cpu(instance, i, true);
++	tracefs_snapshot_free(instance);
 +}
 +
-+ssize_t tracefs_buffer_stat_entries(struct tracefs_buffer_stat *tstat)
++static void test_iter_snapshot_events(void)
 +{
-+	return tstat->entries;
++	test_instance_iter_snapshot_events(NULL);
++	test_instance_iter_snapshot_events(test_instance);
 +}
 +
-+ssize_t tracefs_buffer_stat_overrun(struct tracefs_buffer_stat *tstat)
-+{
-+	return tstat->overrun;
-+}
 +
-+ssize_t tracefs_buffer_stat_commit_overrun(struct tracefs_buffer_stat *tstat)
-+{
-+	return tstat->commit_overrun;
-+}
+ #define RAND_STR_SIZE 20
+ #define RAND_ASCII "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+ static const char *get_rand_str(void)
+@@ -3218,6 +3247,9 @@ void test_tracefs_lib(void)
+ 		    test_instance_reset);
+ 	CU_add_test(suite, "systems and events APIs",
+ 		    test_system_event);
++	CU_add_test(suite, "tracefs_iterate_snapshot_events API",
++		    test_iter_snapshot_events);
 +
-+ssize_t tracefs_buffer_stat_bytes(struct tracefs_buffer_stat *tstat)
-+{
-+	return tstat->bytes;
-+}
-+
-+long long tracefs_buffer_stat_event_timestamp(struct tracefs_buffer_stat *tstat)
-+{
-+	return tstat->oldest_ts;
-+}
-+
-+long long tracefs_buffer_stat_timestamp(struct tracefs_buffer_stat *tstat)
-+{
-+	return tstat->now_ts;
-+}
-+
-+ssize_t tracefs_buffer_stat_dropped_events(struct tracefs_buffer_stat *tstat)
-+{
-+	return tstat->dropped_events;
-+}
-+
-+ssize_t tracefs_buffer_stat_read_events(struct tracefs_buffer_stat *tstat)
-+{
-+	return tstat->read_events;
-+}
-+
+ 	CU_add_test(suite, "tracefs_iterate_raw_events API",
+ 		    test_iter_raw_events);
+ 
 -- 
 2.42.0
 
