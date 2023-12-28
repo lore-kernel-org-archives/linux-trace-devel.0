@@ -1,20 +1,20 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 942E9101F8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9439C10799
 	for <linux-trace-devel@vger.kernel.org>; Thu, 28 Dec 2023 20:36:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE59BC433CD;
-	Thu, 28 Dec 2023 20:36:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10DF4C43397;
+	Thu, 28 Dec 2023 20:36:26 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rIx7z-00000000Dsq-2jdB;
+	id 1rIx7z-00000000Dt6-39xz;
 	Thu, 28 Dec 2023 15:37:15 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 05/23] libtracefs: Free tracing_dir in case of remount
-Date: Thu, 28 Dec 2023 15:35:27 -0500
-Message-ID: <20231228203714.53294-6-rostedt@goodmis.org>
+Subject: [PATCH 09/23] libtracefs: Increase splice to use pipe max size
+Date: Thu, 28 Dec 2023 15:35:31 -0500
+Message-ID: <20231228203714.53294-10-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231228203714.53294-1-rostedt@goodmis.org>
 References: <20231228203714.53294-1-rostedt@goodmis.org>
@@ -28,41 +28,40 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-On remount, the tracing directory may move, and the tracing_dir needs to be
-updated. If tracing_dir is the same it is simply returned, but if it is not,
-it has to be calculated again. This was fixed but if it was changed, the old
-tracing_dir was never freed.
+When a pipe is created for splicing to read the tracing ring buffer, instead
+of using the default size, which is usually around 65K, read
+/proc/sys/fs/pipe_max_size and try to set the pipe to use that size instead.
 
-Always free the tracing_dir before calculating a new one. This also requires
-changing the type by removing the "const" attribute.
-
-Fixes: 92c9292a ("libtracefs: Have tracefs_{tracing,debug}_dir() make sure it's still mounted")
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- src/tracefs-utils.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ src/tracefs-record.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/src/tracefs-utils.c b/src/tracefs-utils.c
-index ef90677cf617..e67b698f5b99 100644
---- a/src/tracefs-utils.c
-+++ b/src/tracefs-utils.c
-@@ -248,7 +248,7 @@ static int test_dir(const char *dir, const char *file)
-  */
- const char *tracefs_tracing_dir(void)
+diff --git a/src/tracefs-record.c b/src/tracefs-record.c
+index b078c8615194..8750fe7e0e29 100644
+--- a/src/tracefs-record.c
++++ b/src/tracefs-record.c
+@@ -319,6 +319,7 @@ int tracefs_cpu_read(struct tracefs_cpu *tcpu, void *buffer, bool nonblock)
+ 
+ static int init_splice(struct tracefs_cpu *tcpu)
  {
--	static const char *tracing_dir;
-+	static char *tracing_dir;
++	char *buf;
+ 	int ret;
  
- 	/* Do not check custom_tracing_dir */
- 	if (custom_tracing_dir)
-@@ -257,6 +257,7 @@ const char *tracefs_tracing_dir(void)
- 	if (tracing_dir && test_dir(tracing_dir, "trace"))
- 		return tracing_dir;
+ 	if (tcpu->splice_pipe[0] >= 0)
+@@ -328,6 +329,12 @@ static int init_splice(struct tracefs_cpu *tcpu)
+ 	if (ret < 0)
+ 		return ret;
  
-+	free(tracing_dir);
- 	tracing_dir = find_tracing_dir(false, true);
- 	return tracing_dir;
- }
++	if (str_read_file("/proc/sys/fs/pipe-max-size", &buf, false)) {
++		int size = atoi(buf);
++		fcntl(tcpu->splice_pipe[0], F_SETPIPE_SZ, &size);
++		free(buf);
++	}
++
+ 	ret = fcntl(tcpu->splice_pipe[0], F_GETPIPE_SZ, &tcpu->pipe_size);
+ 	/*
+ 	 * F_GETPIPE_SZ was introduced in 2.6.35, ftrace was introduced
 -- 
 2.42.0
 
