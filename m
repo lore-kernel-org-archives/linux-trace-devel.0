@@ -1,63 +1,85 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0BF310A05
-	for <linux-trace-devel@vger.kernel.org>; Thu, 28 Dec 2023 21:53:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61586C433C9;
-	Thu, 28 Dec 2023 21:53:45 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rIyKp-00000000EJx-1D2E;
-	Thu, 28 Dec 2023 16:54:35 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB2F11369
+	for <linux-trace-devel@vger.kernel.org>; Fri, 29 Dec 2023 01:11:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FFA5C433C7;
+	Fri, 29 Dec 2023 01:11:02 +0000 (UTC)
+Date: Thu, 28 Dec 2023 20:11:00 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-trace-devel@vger.kernel.org
-Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v2 21/22] libtracefs: Add PID filtering API
-Date: Thu, 28 Dec 2023 16:52:16 -0500
-Message-ID: <20231228215433.54854-22-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231228215433.54854-1-rostedt@goodmis.org>
-References: <20231228215433.54854-1-rostedt@goodmis.org>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc: Vincent Donnefort <vdonnefort@google.com>
+Subject: [PATCH] libtracefs: Add ring buffer memory mapping APIs
+Message-ID: <20231228201100.78aae259@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add an API that sets and clears PID filtering for functions and events.
+Add the following APIs:
 
-   tracefs_filter_pid_function()
-   tracefs_filter_pid_events()
-   tracefs_filter_pid_function_clear()
-   tracefs_filter_pid_events_clear()
+ tracefs_cpu_open_mapped()
+ tracefs_cpu_is_mapped()
+ tracefs_cpu_map()
+ tracefs_cpu_unmap()
+
+This will allow applications to choose to memory map the tracing ring buffer
+if it is supported. This will improve the performance of tracefs_cpu_read()
+and tracefs_cpu_read_buf(), but it is not done by default because it will
+also hurt the performance of tracefs_cpu_buffered_read() and
+tracefs_cpu_buffered_read_buf() as those use splicing, and with the ring
+buffer memory mapped, the splice has to do a copy instead of a copyless
+subbuffer move.
+
+Since this change relies on the libtraceevent APIs:
+
+   kbuffer_dup()
+   kbuffer_subbuffer()
+   kbuffer_refresh()
+   kbuffer_read_buffer()
+
+Which are available after version 1.8, up the minimum version to 1.8.
+
+Note, the samples and utest rely on:
+
+   tep_get_sub_buffer_data_size()
+
+which is in 1.8.1.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/libtracefs-filter-pid.txt | 181 +++++++++++++++++
- Documentation/libtracefs.txt            |   8 +
- include/tracefs.h                       |   7 +
- src/tracefs-filter.c                    | 132 ++++++++++++
- utest/tracefs-utest.c                   | 257 +++++++++++++++++++++++-
- 5 files changed, 577 insertions(+), 8 deletions(-)
- create mode 100644 Documentation/libtracefs-filter-pid.txt
+ Documentation/libtracefs-cpu-map.txt | 194 +++++++++++++++++++++++++++
+ Documentation/libtracefs.txt         |   7 +
+ Makefile                             |   3 +-
+ include/tracefs-local.h              |   6 +
+ include/tracefs.h                    |   7 +
+ samples/Makefile                     |   1 +
+ src/Makefile                         |   1 +
+ src/tracefs-mmap.c                   | 190 ++++++++++++++++++++++++++
+ src/tracefs-record.c                 |  61 +++++++++
+ 9 files changed, 469 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/libtracefs-cpu-map.txt
+ create mode 100644 src/tracefs-mmap.c
 
-diff --git a/Documentation/libtracefs-filter-pid.txt b/Documentation/libtracefs-filter-pid.txt
+diff --git a/Documentation/libtracefs-cpu-map.txt b/Documentation/libtracefs-cpu-map.txt
 new file mode 100644
-index 000000000000..fa56b0222df0
+index 000000000000..9bcd29715795
 --- /dev/null
-+++ b/Documentation/libtracefs-filter-pid.txt
-@@ -0,0 +1,181 @@
++++ b/Documentation/libtracefs-cpu-map.txt
+@@ -0,0 +1,194 @@
 +libtracefs(3)
 +=============
 +
 +NAME
 +----
-+tracefs_filter_pid_function, tracefs_filter_pid_events, tracefs_filter_pid_function_clear, tracefs_filter_pid_events_clear -
-+Add and remove PID filtering for functions and events
++tracefs_cpu_open_mapped, tracefs_cpu_is_mapped, tracefs_cpu_map, tracefs_cpu_unmap - Memory mapping of the ring buffer
 +
 +SYNOPSIS
 +--------
@@ -65,122 +87,142 @@ index 000000000000..fa56b0222df0
 +--
 +*#include <tracefs.h>*
 +
-+int *tracefs_filter_pid_function*(struct tracefs_instance pass:[*]_instance,_ int _pid_,
-+				bool _reset_, bool _notrace_);
-+int *tracefs_filter_pid_function_clear*(struct tracefs_instance pass:[*]_instance_, bool _notrace_);
-+int *tracefs_filter_pid_events*(struct tracefs_instance pass:[*]_instance_, int _pid_,
-+			     bool _reset_, bool _notrace_);
-+int *tracefs_filter_pid_events_clear*(struct tracefs_instance pass:[*]_instance_, bool _notrace_);
++bool *tracefs_cpu_is_mapped*(struct tracefs_cpu pass:[*]tcpu);
++int *tracefs_cpu_map*(struct tracefs_cpu pass:[*]tcpu);
++void *tracefs_cpu_unmap*(struct tracefs_cpu pass:[*]tcpu);
++struct tracefs_cpu pass:[*]*tracefs_cpu_open_mapped*(struct tracefs_instance pass:[*]instance,
++					    int cpu, bool nonblock);
 +--
 +
 +DESCRIPTION
 +-----------
-+Both events and functions can be filtered by PID, but they are done separately.
-+PID filtering for functions affect the function and function_graph tracer, where
-+as PID filtering for events affect all events such as _sched_switch_ and _sched_waking_.
-+If the *TRACEFS_OPTION_FUNCTION_FORK* is enabled (see *tracefs_option_enable*(3)),
-+any PID that is set as part of the function PID filtering will automatically
-+have its children added when they are spawned, as well as the PID removed when
-+they exit. If the *TRACEFS_OPTION_EVENT_FORK* is set, the same is true for
-+event PID filtering. This also includes the _notrace_ option where the child
-+threads and processes of PIDs that are labled as notrace will also not be
-+traced.
++If the trace_pipe_raw supports memory mapping, this is usually a more efficient
++method to stream data from the kernel ring buffer than by reading it, as it does
++not require copying the memory that is being read.
 +
-+The *tracefs_filter_pid_function()* affects function PID filtering and *tracefs_filter_pid_events()*
-+affects the PID event filtering. For both functions, they add a _pid_ to be filtered in the given _instance_.
-+If _reset_ is true, then any PIDs already being filtered will be removed, otherwise
-+the _pid_ is simply added to the filtering. If _notrace_ is true, then the PID
-+is added to the list of PIDs that are not to be traced. Note, that _reset_ only affects
-+the list associated with _notrace_. That is, if both _reset_ and _notrace_ are true,
-+then it will not affect PIDs that are to be traced. Same is if _reset_ is true and _notrace_
-+is false, it will not affect PIDs that are not to be traced.
++If memory mapping is supported by the kernel and the application asks to use the
++memory mapping via either *tracefs_cpu_map()* or by *tracefs_cpu_open_mapped()*
++then the functions *tracefs_cpu_read*(3) and *tracefs_cpu_read_buf*(3) will use
++the mapping directly instead of calling the read system call.
 +
-+The *tracefs_filter_pid_function_clear()* affects function PID filtering and
-+*tracefs_filter_pid_events_clear()* affects the PID event filtering. For both
-+functions it will clear all the PIDs that are being filtered for the given
-+filter. If _notrace_ is true it clears all the PIDs that are not to be traced
-+otherwise if it is false, it clears all the PIDs that are to be traced.
++Note, mapping can also slow down *tracefs_cpu_buffered_read*(3) and
++*tracefs_cpu_buffered_read_buf*(3), as those use splice piping and when the
++kernel ring buffer is memory mapped, splice does a copy instead of using the
++ring buffer directly. Thus care must be used when determining to map the
++ring buffer or not, and why it does not get mapped by default.
++
++The *tracefs_cpu_is_mapped()* function will return true if _tcpu_ currently has
++its ring buffer memory mapped and false otherwise. This does not return whether or
++not that the kernel supports memory mapping, but that can usually be determined
++by calling *tracefs_cpu_map()*.
++
++The *tracefs_cpu_map()* function will attempt to map the ring buffer associated
++to _tcpu_ if it is not already mapped.
++
++The *tracefs_cpu_unmap()* function will unmap the ring buffer associated to
++_tcpu_ if it is mapped.
++
++The *tracefs_cpu_open_mapped()* is equivalent to calling *tracefs_cpu_open*(3) followed
++by *tracefs_cpu_map()* on the returned _tcpu_ of *tracefs_cpu_open*(3). Note, this
++will still succeed if the mapping fails, in which case it acts the same as
++*tracefs_cpu_open*(3). If knowing if the mapping succeed or not, *tracefs_cpu_is_mapped()*
++should be called on the return _tcpu_.
 +
 +RETURN VALUE
 +------------
-+All the functions return 0 on success and -1 on error.
++*tracefs_cpu_is_mapped()* returns true if the given _tcpu_ has its ring buffer
++memory mapped or false otherwise.
++
++*tracefs_cpu_map()* returns 0 on success and -1 on error in mapping. If 0 is
++returned then *tracefs_cpu_is_mapped()* will return true afterward, or false
++if the mapping failed.
++
++*tracefs_cpu_open_mapped()* returns an allocated tracefs_cpu on success of creation
++regardless if it succeed in mapping the ring buffer or not. It returns NULL for
++the same reasons *tracefs_cpu_open*(3) returns NULL. If success of mapping is
++to be known, then calling *tracefs_cpu_is_mapped()* afterward is required.
 +
 +EXAMPLE
 +-------
 +[source,c]
 +--
 +#include <stdlib.h>
-+#include <stdio.h>
 +#include <ctype.h>
 +#include <tracefs.h>
 +
-+static void usage(char **argv)
++static void read_page(struct tep_handle *tep, struct kbuffer *kbuf)
 +{
-+	fprintf(stderr, "usage: %s [-e|-f][-c|-n] pid [pid ...]\n", argv[0]);
-+	fprintf(stderr, "   -e enable event filter\n");
-+	fprintf(stderr, "   -f enable function filter\n");
-+	fprintf(stderr, "     (default is both, function and event)\n");
-+	fprintf(stderr, "   -c clear the filter\n");
-+	fprintf(stderr, "   -n notrace filter\n");
-+	exit(-1);
++	static struct trace_seq seq;
++	struct tep_record record;
++
++	if (seq.buffer)
++		trace_seq_reset(&seq);
++	else
++		trace_seq_init(&seq);
++
++	while ((record.data = kbuffer_read_event(kbuf, &record.ts))) {
++		record.size = kbuffer_event_size(kbuf);
++		kbuffer_next_event(kbuf, NULL);
++		tep_print_event(tep, &seq, &record,
++				"%s-%d %9d\t%s: %s\n",
++				TEP_PRINT_COMM,
++				TEP_PRINT_PID,
++				TEP_PRINT_TIME,
++				TEP_PRINT_NAME,
++				TEP_PRINT_INFO);
++		trace_seq_do_printf(&seq);
++		trace_seq_reset(&seq);
++	}
 +}
 +
 +int main (int argc, char **argv)
 +{
-+	bool events = false;
-+	bool funcs = false;
-+	bool neg = false;
-+	bool clear = false;
-+	bool reset = true;
-+	int i;
++	struct tracefs_cpu *tcpu;
++	struct tep_handle *tep;
++	struct kbuffer *kbuf;
++	bool mapped;
++	int cpu;
 +
-+	for (i = 1; i < argc && argv[i][0] == '-'; i++) {
-+		char *arg = argv[i];
-+		int c;
-+		for (c = 1; arg[c]; c++) {
-+			switch (arg[c]) {
-+			case 'e': events = true; break;
-+			case 'f': funcs = true; break;
-+			case 'n': neg = true; break;
-+			case 'c': clear = true; break;
-+			default:
-+				usage(argv);
-+			}
-+		}
-+		if (c == 1)
-+			usage(argv);
++	if (argc < 2 || !isdigit(argv[1][0])) {
++		printf("usage: %s cpu\n\n", argv[0]);
++		exit(-1);
 +	}
 +
-+	if (i == argc && !clear)
-+		usage(argv);
++	cpu = atoi(argv[1]);
 +
-+	if (!events && !funcs) {
-+		events = true;
-+		funcs = true;
++	tep = tracefs_local_events(NULL);
++	if (!tep) {
++		perror("Reading trace event formats");
++		exit(-1);
 +	}
 +
-+	if (clear) {
-+		if (events)
-+			tracefs_filter_pid_events_clear(NULL, neg);
-+		if (funcs)
-+			tracefs_filter_pid_function_clear(NULL, neg);
-+		exit(0);
++	tcpu = tracefs_cpu_open_mapped(NULL, cpu, 0);
++	if (!tcpu) {
++		perror("Open CPU 0 file");
++		exit(-1);
 +	}
 +
-+	for (; i < argc; i++) {
-+		int pid = atoi(argv[i]);
-+
-+		if (events)
-+			tracefs_filter_pid_events(NULL, pid, reset, neg);
-+		if (funcs)
-+			tracefs_filter_pid_function(NULL, pid, reset, neg);
-+
-+		reset = false;
++	/*
++	 * If this kernel supports mapping, use normal read,
++	 * otherwise use the piped buffer read.
++	 */
++	mapped = tracefs_cpu_is_mapped(tcpu);
++	if (!mapped)
++		printf("Was not able to map, falling back to buffered read\n");
++	while ((kbuf = mapped ? tracefs_cpu_read_buf(tcpu, true) :
++			tracefs_cpu_buffered_read_buf(tcpu, true))) {
++		read_page(tep, kbuf);
 +	}
 +
-+	exit(0);
++	kbuf = tracefs_cpu_flush_buf(tcpu);
++	if (kbuf)
++		read_page(tep, kbuf);
++
++	tracefs_cpu_close(tcpu);
++	tep_free(tep);
++
++	return 0;
 +}
-+
 +--
 +
 +FILES
@@ -195,20 +237,14 @@ index 000000000000..fa56b0222df0
 +
 +SEE ALSO
 +--------
++*tracefs_cpu_open*(3),
++*tracefs_cpu_read*(3),
++*tracefs_cpu_read_buf*(3),
++*tracefs_cpu_buffered_read*(3),
++*tracefs_cpu_buffered_read_buf*(3),
 +*libtracefs*(3),
 +*libtraceevent*(3),
-+*trace-cmd*(1),
-+*tracefs_hist_alloc*(3),
-+*tracefs_hist_alloc_2d*(3),
-+*tracefs_hist_alloc_nd*(3),
-+*tracefs_hist_free*(3),
-+*tracefs_hist_add_key*(3),
-+*tracefs_hist_add_value*(3),
-+*tracefs_hist_add_name*(3),
-+*tracefs_hist_start*(3),
-+*tracefs_hist_destory*(3),
-+*tracefs_hist_add_sort_key*(3),
-+*tracefs_hist_sort_key_direction*(3)
++*trace-cmd*(1)
 +
 +AUTHOR
 +------
@@ -230,483 +266,402 @@ index 000000000000..fa56b0222df0
 +
 +COPYING
 +-------
-+Copyright \(C) 2023 Google, LLC. Free use of this software is granted under
++Copyright \(C) 2022 Google, Inc. Free use of this software is granted under
 +the terms of the GNU Public License (GPL).
 diff --git a/Documentation/libtracefs.txt b/Documentation/libtracefs.txt
-index 1962b3b34622..3e73f12de2b5 100644
+index b0aaa6222ec7..8dc3ba7386e3 100644
 --- a/Documentation/libtracefs.txt
 +++ b/Documentation/libtracefs.txt
-@@ -107,6 +107,14 @@ Function filters:
- 	int *tracefs_function_notrace*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_filter_, const char pass:[*]_module_, int _flags_);
- 	int *tracefs_filter_functions*(const char pass:[*]_filter_, const char pass:[*]_module_, char pass:[*]pass:[*]pass:[*]_list_);
+@@ -138,6 +138,13 @@ Trace stream:
+ 	ssize_t *tracefs_trace_pipe_print*(struct tracefs_instance pass:[*]_instance_, int _flags_);
+ 	void *tracefs_trace_pipe_stop*(struct tracefs_instance pass:[*]_instance_);
  
-+PID filters:
-+	int *tracefs_filter_pid_function*(struct tracefs_instance pass:[*]_instance,_ int _pid_,
-+				bool _reset_, bool _notrace_);
-+	int *tracefs_filter_pid_function_clear*(struct tracefs_instance pass:[*]_instance_, bool _notrace_);
-+	int *tracefs_filter_pid_events*(struct tracefs_instance pass:[*]_instance_, int _pid_,
-+				bool _reset_, bool _notrace_);
-+	int *tracefs_filter_pid_events_clear*(struct tracefs_instance pass:[*]_instance_, bool _notrace_);
++Memory mapping the ring buffer:
++	bool *tracefs_cpu_is_mapped*(struct tracefs_cpu pass:[*]tcpu);
++	int *tracefs_cpu_map*(struct tracefs_cpu pass:[*]tcpu);
++	void *tracefs_cpu_unmap*(struct tracefs_cpu pass:[*]tcpu);
++	struct tracefs_cpu pass:[*]*tracefs_cpu_open_mapped*(struct tracefs_instance pass:[*]instance,
++						int cpu, bool nonblock);
 +
- Trace helper functions:
- 	void *tracefs_list_free*(char pass:[*]pass:[*]_list_);
- 	char pass:[**]*tracefs_list_add*(char **_list_, const char *_string_);
-diff --git a/include/tracefs.h b/include/tracefs.h
-index c66bfd2edf0b..d91ab1d943eb 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -269,6 +269,13 @@ enum {
- 	TRACEFS_FL_FUTURE	= (1 << 2),
- };
+ Trace options:
+ 	const struct tracefs_options_mask pass:[*]*tracefs_options_get_supported*(struct tracefs_instance pass:[*]_instance_);
+ 	bool *tracefs_option_is_supported*(struct tracefs_instance pass:[*]_instance_, enum tracefs_option_id _id_);
+diff --git a/Makefile b/Makefile
+index 80076aa2cff3..e915e14b74e6 100644
+--- a/Makefile
++++ b/Makefile
+@@ -10,7 +10,8 @@ export TFS_PATCHLEVEL
+ export TFS_EXTRAVERSION
+ export TRACEFS_VERSION
  
-+int tracefs_filter_pid_function(struct tracefs_instance *instance, int pid,
-+				bool reset, bool notrace);
-+int tracefs_filter_pid_function_clear(struct tracefs_instance *instance, bool notrace);
-+int tracefs_filter_pid_events(struct tracefs_instance *instance, int pid,
-+			     bool reset, bool notrace);
-+int tracefs_filter_pid_events_clear(struct tracefs_instance *instance, bool notrace);
-+
- int tracefs_function_filter(struct tracefs_instance *instance, const char *filter,
- 			    const char *module, unsigned int flags);
- int tracefs_function_notrace(struct tracefs_instance *instance, const char *filter,
-diff --git a/src/tracefs-filter.c b/src/tracefs-filter.c
-index 3628eaed202f..afe3338c0bd8 100644
---- a/src/tracefs-filter.c
-+++ b/src/tracefs-filter.c
-@@ -801,6 +801,138 @@ int tracefs_event_filter_clear(struct tracefs_instance *instance,
- 					"filter", "0");
- }
+-LIBTRACEEVENT_MIN_VERSION = 1.3
++# Note, samples and utests need 1.8.1
++LIBTRACEEVENT_MIN_VERSION = 1.8
  
-+static int write_pid_file(struct tracefs_instance *instance, const char *file,
-+		      int pid, bool reset)
-+{
-+	char buf[64];
-+	int ret;
-+
-+	sprintf(buf, "%d", pid);
-+
-+	if (reset)
-+		ret = tracefs_instance_file_write(instance, file, buf);
-+	else
-+		ret = tracefs_instance_file_append(instance, file, buf);
-+
-+	return ret < 0 ? -1 : 0;
-+}
-+
-+/**
-+ * tracefs_filter_pid_function - set function tracing to filter the pid
-+ * @instance: The instance to set the filter to
-+ * @pid: The pid to filter on
-+ * @reset: If set, it will clear out all other pids being filtered
-+ * @notrace: If set, it will filter all but this pid
-+ *
-+ * Set the function tracing to trace or avoid tracing a given @pid.
-+ * If @notrace is set, then it will avoid tracing the @pid.
-+ * If @reset is set, it will clear the filter as well.
-+ *
-+ * Note, @reset only resets what pids will be traced, or what pids will
-+ *   not be traced. That is, if both @reset and @notrace is set, then
-+ *   it will not affect pids that are being traced. It will only clear
-+ *   the pids that are not being traced. To do both, The
-+ *   tracefs_filter_pid_function_clear() needs to be called with the
-+ *   inverse of @notrace.
-+ *
-+ * Returns -1 on error, 0 on success.
-+ */
-+int tracefs_filter_pid_function(struct tracefs_instance *instance, int pid,
-+				bool reset, bool notrace)
-+{
-+	const char *file;
-+
-+	if (notrace)
-+		file = "set_ftrace_notrace_pid";
-+	else
-+		file = "set_ftrace_pid";
-+
-+	return write_pid_file(instance, file, pid, reset);
-+}
-+
-+/**
-+ * tracefs_filter_pid_function_clear - reset pid function filtering
-+ * @instance: The instance to reset function filtering
-+ * @notrace: If set, it will filter reset the pids that are not to be traced
-+ *
-+ * This will clear the function filtering on pids. If @notrace is set,
-+ * it will clear the filtering on what pids should not be traced.
-+ *
-+ * Returns -1 on error, 0 on success.
-+ */
-+int tracefs_filter_pid_function_clear(struct tracefs_instance *instance, bool notrace)
-+{
-+	const char *file;
-+	int ret;
-+
-+	if (notrace)
-+		file = "set_ftrace_notrace_pid";
-+	else
-+		file = "set_ftrace_pid";
-+
-+	ret = tracefs_instance_file_write(instance, file, "");
-+
-+	return ret < 0 ? -1 : 0;
-+}
-+
-+/**
-+ * tracefs_filter_pid_events - set event filtering to a specific pid
-+ * @instance: The instance to set the filter to
-+ * @pid: The pid to filter on
-+ * @reset: If set, it will clear out all other pids being filtered
-+ * @notrace: If set, it will filter all but this pid
-+ *
-+ * Set the event filtering to trace or avoid tracing a given @pid.
-+ * If @notrace is set, then it will avoid tracing the @pid.
-+ * If @reset is set, it will clear the filter as well.
-+ *
-+ * Note, @reset only resets what pids will be traced, or what pids will
-+ *   not be traced. That is, if both @reset and @notrace is set, then
-+ *   it will not affect pids that are being traced. It will only clear
-+ *   the pids that are not being traced. To do both, The
-+ *   tracefs_filter_pid_events_clear() needs to be called with the
-+ *   inverse of @notrace.
-+ *
-+ * Returns -1 on error, 0 on success.
-+ */
-+int tracefs_filter_pid_events(struct tracefs_instance *instance, int pid,
-+			     bool reset, bool notrace)
-+{
-+	const char *file;
-+
-+	if (notrace)
-+		file = "set_event_notrace_pid";
-+	else
-+		file = "set_event_pid";
-+
-+	return write_pid_file(instance, file, pid, reset);
-+}
-+
-+/**
-+ * tracefs_filter_pid_events_clear - reset pid events filtering
-+ * @instance: The instance to reset function filtering
-+ * @notrace: If set, it will filter reset the pids that are not to be traced
-+ *
-+ * This will clear the function filtering on pids. If @notrace is set,
-+ * it will clear the filtering on what pids should not be traced.
-+ *
-+ * Returns -1 on error, 0 on success.
-+ */
-+int tracefs_filter_pid_events_clear(struct tracefs_instance *instance, bool notrace)
-+{
-+	const char *file;
-+	int ret;
-+
-+	if (notrace)
-+		file = "set_event_notrace_pid";
-+	else
-+		file = "set_event_pid";
-+
-+	ret = tracefs_instance_file_write(instance, file, "");
-+
-+	return ret < 0 ? -1 : 0;
-+}
-+
- /** Deprecated **/
- int tracefs_event_append_filter(struct tep_event *event, char **filter,
- 				enum tracefs_filter type,
-diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index a94a1f28258a..658e8c149a0f 100644
---- a/utest/tracefs-utest.c
-+++ b/utest/tracefs-utest.c
-@@ -16,12 +16,15 @@
+ # taken from trace-cmd
+ MAKEFLAGS += --no-print-directory
+diff --git a/include/tracefs-local.h b/include/tracefs-local.h
+index 9cae73c8b806..ffc9d33b1796 100644
+--- a/include/tracefs-local.h
++++ b/include/tracefs-local.h
+@@ -6,6 +6,7 @@
+ #ifndef _TRACE_FS_LOCAL_H
+ #define _TRACE_FS_LOCAL_H
+ 
++#include <tracefs.h>
  #include <pthread.h>
  
- #include <sys/mount.h>
-+#include <sys/syscall.h>
+ #define __hidden __attribute__((visibility ("hidden")))
+@@ -116,6 +117,11 @@ int trace_append_filter(char **filter, unsigned int *state,
+ 			enum tracefs_compare compare,
+ 			 const char *val);
  
- #include <CUnit/CUnit.h>
- #include <CUnit/Basic.h>
- 
- #include "tracefs.h"
- 
-+#define gettid() syscall(__NR_gettid)
++void *trace_mmap(int fd, struct kbuffer *kbuf);
++void trace_unmap(void *mapping);
++int trace_mmap_load_subbuf(void *mapping, struct kbuffer *kbuf);
++int trace_mmap_read(void *mapping, void *buffer);
 +
- #define TRACEFS_SUITE		"tracefs library"
- #define TEST_INSTANCE_NAME	"cunit_test_iter"
- #define TEST_TRACE_DIR		"/tmp/trace_utest.XXXXXX"
-@@ -438,6 +441,248 @@ static void test_trace_sql(void)
- 	test_instance_trace_sql(test_instance);
- }
+ struct tracefs_synth *synth_init_from(struct tep_handle *tep,
+ 				      const char *start_system,
+ 				      const char *start_event);
+diff --git a/include/tracefs.h b/include/tracefs.h
+index 989112c851c8..8569171247b7 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -693,6 +693,13 @@ int tracefs_snapshot_snap(struct tracefs_instance *instance);
+ int tracefs_snapshot_clear(struct tracefs_instance *instance);
+ int tracefs_snapshot_free(struct tracefs_instance *instance);
  
-+static void call_getppid(int cnt)
-+{
-+	int i;
++/* Memory mapping of ring buffer */
++bool tracefs_cpu_is_mapped(struct tracefs_cpu *tcpu);
++int tracefs_cpu_map(struct tracefs_cpu *tcpu);
++void tracefs_cpu_unmap(struct tracefs_cpu *tcpu);
++struct tracefs_cpu *tracefs_cpu_open_mapped(struct tracefs_instance *instance,
++					    int cpu, bool nonblock);
 +
-+	for (i = 0; i < cnt; i++)
-+		getppid();
-+}
+ /* Mapping vsocket cids to pids using tracing */
+ int tracefs_instance_find_cid_pid(struct tracefs_instance *instance, int cid);
+ int tracefs_find_cid_pid(int cid);
+diff --git a/samples/Makefile b/samples/Makefile
+index 77739c8b0aa7..81c8006f823e 100644
+--- a/samples/Makefile
++++ b/samples/Makefile
+@@ -26,6 +26,7 @@ EXAMPLES += guest
+ EXAMPLES += cpu-buf
+ EXAMPLES += instances-stat
+ EXAMPLES += instances-subbuf
++EXAMPLES += cpu-map
+ 
+ TARGETS :=
+ TARGETS += sqlhist
+diff --git a/src/Makefile b/src/Makefile
+index faa3b25c4002..be81059ce10a 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -16,6 +16,7 @@ OBJS += tracefs-dynevents.o
+ OBJS += tracefs-eprobes.o
+ OBJS += tracefs-uprobes.o
+ OBJS += tracefs-record.o
++OBJS += tracefs-mmap.o
+ ifeq ($(VSOCK_DEFINED), 1)
+ OBJS += tracefs-vsock.o
+ endif
+diff --git a/src/tracefs-mmap.c b/src/tracefs-mmap.c
+new file mode 100644
+index 000000000000..bc28caff91f3
+--- /dev/null
++++ b/src/tracefs-mmap.c
+@@ -0,0 +1,190 @@
++// SPDX-License-Identifier: LGPL-2.1
++/*
++ * Copyright (C) 2023 Google Inc, Steven Rostedt <rostedt@goodmis.org>
++ */
++#include <stdlib.h>
++#include <unistd.h>
++#include <sys/mman.h>
++#include <sys/ioctl.h>
++#include <asm/types.h>
++#include "tracefs-local.h"
 +
-+struct check_data {
-+	int	this_pid;
-+	int	other_pid;
-+	bool	trace_this;
-+	bool	trace_other;
-+	bool	trace_all;
-+	bool	hit;
-+	int (*filter_clear)(struct tracefs_instance *instance, bool notrace);
++struct trace_buffer_meta {
++	unsigned long	entries;
++	unsigned long	overrun;
++	unsigned long	read;
++
++	unsigned long	subbufs_touched;
++	unsigned long	subbufs_lost;
++	unsigned long	subbufs_read;
++
++	struct {
++		unsigned long	lost_events;	/* Events lost at the time of the reader swap */
++		__u32		id;		/* Reader subbuf ID from 0 to nr_subbufs - 1 */
++		__u32		read;		/* Number of bytes read on the reader subbuf */
++	} reader;
++
++	__u32		subbuf_size;		/* Size of each subbuf including the header */
++	__u32		nr_subbufs;		/* Number of subbufs in the ring-buffer */
++
++	__u32		meta_page_size;		/* Size of the meta-page */
++	__u32		meta_struct_len;	/* Len of this struct */
 +};
 +
-+static int check_callback(struct tep_event *event, struct tep_record *record,
-+			  int cpu, void *data)
++#define TRACE_MMAP_IOCTL_GET_READER		_IO('T', 0x1)
++
++struct trace_mmap {
++	struct trace_buffer_meta	*map;
++	struct kbuffer			*kbuf;
++	void				*data;
++	int				*data_pages;
++	int				fd;
++	int				last_idx;
++	int				last_read;
++	int				meta_len;
++	int				data_len;
++};
++
++/**
++ * trace_mmap - try to mmap the ring buffer
++ * @fd: The file descriptor to the trace_pipe_raw file
++ *
++ * Will try to mmap the ring buffer if it is supported, and
++ * if not, will return NULL, otherwise it returns a descriptor
++ * to handle the mapping.
++ */
++__hidden void *trace_mmap(int fd, struct kbuffer *kbuf)
 +{
-+	struct check_data *cdata = data;
-+	int pid;
++	struct trace_mmap *tmap;
++	int page_size;
++	void *meta;
++	void *data;
 +
-+	cdata->hit = true;
++	page_size = getpagesize();
++	meta = mmap(NULL, page_size, PROT_READ, MAP_SHARED, fd, 0);
++	if (meta == MAP_FAILED)
++		return NULL;
 +
-+	pid = tep_data_pid(event->tep, record);
-+
-+	if (pid == cdata->this_pid) {
-+		CU_TEST(cdata->trace_this);
-+		return cdata->trace_this ? 0 : -1;
++	tmap = calloc(1, sizeof(*tmap));
++	if (!tmap) {
++		munmap(meta, page_size);
++		return NULL;
 +	}
 +
-+	if (pid == cdata->other_pid) {
-+		CU_TEST(cdata->trace_other);
-+		return cdata->trace_other ? 0 : -1;
++	tmap->kbuf = kbuffer_dup(kbuf);
++	if (!tmap->kbuf) {
++		munmap(meta, page_size);
++		free(tmap);
 +	}
 +
-+	CU_TEST(cdata->trace_all);
-+	if (!cdata->trace_all) {
-+		printf(" (Traced %d but should not have", pid);
-+		if (cdata->trace_this)
-+			printf(", this_pid:%d", cdata->this_pid);
-+		if (cdata->trace_other)
-+			printf(", other_pid:%d", cdata->other_pid);
-+		printf(") ");
++	tmap->fd = fd;
++
++	tmap->map = meta;
++	tmap->meta_len = tmap->map->meta_page_size;
++
++	if (tmap->meta_len > page_size) {
++		munmap(meta, page_size);
++		meta = mmap(NULL, tmap->meta_len, PROT_READ, MAP_SHARED, fd, 0);
++		if (meta == MAP_FAILED) {
++			kbuffer_free(tmap->kbuf);
++			free(tmap);
++			return NULL;
++		}
++		tmap->map = meta;
 +	}
 +
-+	return cdata->trace_all ? 0 : -1;
++	tmap->data_pages = meta + tmap->meta_len;
++
++	tmap->data_len = tmap->map->subbuf_size * tmap->map->nr_subbufs;
++
++	tmap->data = mmap(NULL, tmap->data_len, PROT_READ, MAP_SHARED,
++			  fd, tmap->meta_len);
++	if (tmap->data == MAP_FAILED) {
++		munmap(meta, tmap->meta_len);
++		kbuffer_free(tmap->kbuf);
++		free(tmap);
++		return NULL;
++	}
++
++	tmap->last_idx = tmap->map->reader.id;
++
++	data = tmap->data + tmap->map->subbuf_size * tmap->last_idx;
++	kbuffer_load_subbuffer(kbuf, data);
++
++	return tmap;
 +}
 +
-+static int check_filtered_pid(struct tep_handle *tep, struct tracefs_instance *instance,
-+			      struct check_data *cdata)
++__hidden void trace_unmap(void *mapping)
 +{
++	struct trace_mmap *tmap = mapping;
++
++	munmap(tmap->data, tmap->data_len);
++	munmap(tmap->map, tmap->meta_len);
++	kbuffer_free(tmap->kbuf);
++	free(tmap);
++}
++
++__hidden int trace_mmap_load_subbuf(void *mapping, struct kbuffer *kbuf)
++{
++	struct trace_mmap *tmap = mapping;
++	void *data;
++	int id;
++
++	id = tmap->map->reader.id;
++	data = tmap->data + tmap->map->subbuf_size * id;
++
++	/*
++	 * If kbuf doesn't point to the current sub-buffer
++	 * just load it and return.
++	 */
++	if (data != kbuffer_subbuffer(kbuf)) {
++		kbuffer_load_subbuffer(kbuf, data);
++		return 1;
++	}
++
++	/*
++	 * Perhaps the reader page had a write that added
++	 * more data.
++	 */
++	kbuffer_refresh(kbuf);
++
++	/* Are there still events to read? */
++	if (kbuffer_curr_size(kbuf))
++		return 1;
++
++	/* See if a new page is ready? */
++	if (ioctl(tmap->fd, TRACE_MMAP_IOCTL_GET_READER) < 0)
++		return -1;
++	id = tmap->map->reader.id;
++	data = tmap->data + tmap->map->subbuf_size * id;
++
++	/*
++	 * If the sub-buffer hasn't changed, then there's no more
++	 * events to read.
++	 */
++	if (data == kbuffer_subbuffer(kbuf))
++		return 0;
++
++	kbuffer_load_subbuffer(kbuf, data);
++	return 1;
++}
++
++__hidden int trace_mmap_read(void *mapping, void *buffer)
++{
++	struct trace_mmap *tmap = mapping;
++	struct kbuffer *kbuf;
 +	int ret;
 +
-+	cdata->hit = false;
-+	ret = tracefs_iterate_raw_events(tep, instance, NULL, 0, check_callback, cdata);
++	if (!tmap)
++		return -1;
 +
-+	tracefs_instance_clear(instance);
++	kbuf = tmap->kbuf;
 +
-+	cdata->filter_clear(instance, false);
-+	cdata->filter_clear(instance, true);
++	ret = trace_mmap_load_subbuf(mapping, kbuf);
++	/* Return for error or no more events */
++	if (ret <= 0)
++		return ret;
 +
-+	return ret;
++	/* Update the buffer */
++	return kbuffer_read_buffer(kbuf, buffer, tmap->map->subbuf_size);
 +}
-+
-+struct spin_data {
-+	bool	stop;
-+	bool	done;
-+	int	tid;
-+};
-+
-+static void *trace_spin_thread(void *arg)
-+{
-+	struct spin_data *data = arg;
-+
-+	data->tid = gettid();
-+	pthread_barrier_wait(&trace_barrier);
-+
-+	while (!data->done) {
-+		pthread_barrier_wait(&trace_barrier);
-+		while (!data->stop && !data->done)
-+			getppid();
-+		pthread_barrier_wait(&trace_barrier);
-+	}
-+
-+	return NULL;
-+}
-+
-+static void run_test(struct tracefs_instance *instance, struct tep_handle *tep,
-+		     struct spin_data *data, struct check_data *cdata)
-+{
-+	tracefs_trace_on(instance);
-+
-+	/* Run a little */
-+	call_getppid(1000);
-+
-+	/* Start the spinner */
-+	data->stop = false;
-+	pthread_barrier_wait(&trace_barrier);
-+
-+	/* Allow the other threads run */
-+	msleep(100);
-+
-+	/* Stop the spinners */
-+	data->stop = true;
-+	pthread_barrier_wait(&trace_barrier);
-+	/* Run a little more  */
-+	call_getppid(10);
-+	tracefs_trace_off(instance);
-+
-+	check_filtered_pid(tep, instance, cdata);
-+}
-+
-+
-+static void test_instance_pid_filter(struct tracefs_instance *instance,
-+				     int (*filter_pid)(struct tracefs_instance *instance,
-+						       int pid, bool reset, bool notrace),
-+				     int (*filter_clear)(struct tracefs_instance *instance,
-+							 bool notrace))
-+{
-+	struct tep_handle *tep = test_tep;
-+	struct check_data cdata;
-+	struct spin_data data = { };
-+	pthread_t thread1;
-+	pthread_t thread2;
-+	int this_pid = getpid();
-+
-+	pthread_barrier_init(&trace_barrier, NULL, 3);
-+
-+	/* create two spinners, one will be used for tracing */
-+	pthread_create(&thread1, NULL, trace_spin_thread, &data);
-+	pthread_create(&thread2, NULL, trace_spin_thread, &data);
-+
-+	pthread_barrier_wait(&trace_barrier);
-+
-+	cdata.this_pid = this_pid;
-+	cdata.other_pid = data.tid;
-+	cdata.filter_clear = filter_clear;
-+
-+	/* Test 1 */
-+	cdata.trace_this = true;
-+	cdata.trace_other = false;
-+	cdata.trace_all = false;
-+
-+	/* Add the thread, but then reset it out */
-+	filter_pid(instance, data.tid, true, false);
-+	filter_pid(instance, this_pid, true, false);
-+
-+	/* Only this thread should be traced */
-+	run_test(instance, tep, &data, &cdata);
-+	CU_TEST(cdata.hit);
-+
-+
-+	/* Test 2 */
-+	cdata.trace_this = true;
-+	cdata.trace_other = true;
-+	cdata.trace_all = false;
-+
-+	/* Add the thread, but then reset it out */
-+	filter_pid(instance, data.tid, true, false);
-+	filter_pid(instance, this_pid, false, false);
-+
-+	/* Only this thread should be traced */
-+	run_test(instance, tep, &data, &cdata);
-+	CU_TEST(cdata.hit);
-+
-+
-+	/* Test 3 */
-+	cdata.trace_this = false;
-+	cdata.trace_other = true;
-+	cdata.trace_all = true;
-+
-+	/* Add the thread, but then reset it out */
-+	filter_pid(instance, data.tid, true, true);
-+	filter_pid(instance, this_pid, true, true);
-+
-+	/* Only this thread should be traced */
-+	run_test(instance, tep, &data, &cdata);
-+	CU_TEST(cdata.hit);
-+
-+
-+	/* Test 4 */
-+	cdata.trace_this = false;
-+	cdata.trace_other = false;
-+	cdata.trace_all = true;
-+
-+	/* Add the thread, but then reset it out */
-+	filter_pid(instance, data.tid, true, true);
-+	filter_pid(instance, this_pid, false, true);
-+
-+	/* Only this thread should be traced */
-+	run_test(instance, tep, &data, &cdata);
-+	CU_TEST(cdata.hit);
-+
-+	/* exit out */
-+	data.done = true;
-+	pthread_barrier_wait(&trace_barrier);
-+	pthread_barrier_wait(&trace_barrier);
-+
-+	pthread_join(thread1, NULL);
-+	pthread_join(thread2, NULL);
-+}
-+
-+static void test_function_pid_filter(struct tracefs_instance *instance)
-+{
-+	tracefs_trace_off(instance);
-+	tracefs_instance_clear(instance);
-+	tracefs_tracer_set(instance, TRACEFS_TRACER_FUNCTION);
-+	test_instance_pid_filter(instance,
-+				 tracefs_filter_pid_function,
-+				 tracefs_filter_pid_function_clear);
-+	tracefs_tracer_clear(instance);
-+	tracefs_trace_on(instance);
-+}
-+
-+static void test_trace_function_pid_filter(void)
-+{
-+	test_function_pid_filter(NULL);
-+	test_function_pid_filter(test_instance);
-+}
-+
-+static void test_events_pid_filter(struct tracefs_instance *instance)
-+{
-+	tracefs_trace_off(instance);
-+	tracefs_instance_clear(instance);
-+	tracefs_event_enable(instance, "syscalls", NULL);
-+	tracefs_event_enable(instance, "raw_syscalls", NULL);
-+	test_instance_pid_filter(instance,
-+				 tracefs_filter_pid_events,
-+				 tracefs_filter_pid_events_clear);
-+	tracefs_event_disable(instance, NULL, NULL);
-+	tracefs_trace_on(instance);
-+}
-+
-+static void test_trace_events_pid_filter(void)
-+{
-+	test_events_pid_filter(NULL);
-+	test_events_pid_filter(test_instance);
-+}
-+
- struct test_cpu_data {
- 	struct tracefs_instance		*instance;
- 	struct tracefs_cpu		*tcpu;
-@@ -593,14 +838,6 @@ static void reset_trace_cpu(struct test_cpu_data *data, bool nonblock)
- 	CU_TEST(data->tcpu != NULL);
+diff --git a/src/tracefs-record.c b/src/tracefs-record.c
+index e8be3335070b..f51e18420bc7 100644
+--- a/src/tracefs-record.c
++++ b/src/tracefs-record.c
+@@ -36,6 +36,7 @@ struct tracefs_cpu {
+ 	int		splice_read_flags;
+ 	struct kbuffer	*kbuf;
+ 	void		*buffer;
++	void		*mapping;
+ };
+ 
+ /**
+@@ -229,6 +230,31 @@ int tracefs_snapshot_free(struct tracefs_instance *instance)
+ 	return ret < 0 ? -1 : 0;
  }
  
--static void call_getppid(int cnt)
--{
--	int i;
--
--	for (i = 0; i < cnt; i++)
--		getppid();
--}
--
- static void test_cpu_read(struct test_cpu_data *data, int expect)
++/**
++ * tracefs_cpu_open_mapped - open an instance raw trace file and map it
++ * @instance: the instance (NULL for toplevel) of the cpu raw file to open
++ * @cpu: The CPU that the raw trace file is associated with
++ * @nonblock: If true, the file will be opened in O_NONBLOCK mode
++ *
++ * Return a descriptor that can read the tracefs trace_pipe_raw file
++ * for a give @cpu in a given @instance.
++ *
++ * Returns NULL on error.
++ */
++struct tracefs_cpu *
++tracefs_cpu_open_mapped(struct tracefs_instance *instance, int cpu, bool nonblock)
++{
++	struct tracefs_cpu *tcpu;
++
++	tcpu = tracefs_cpu_open(instance, cpu, nonblock);
++	if (!tcpu)
++		return NULL;
++
++	tracefs_cpu_map(tcpu);
++
++	return tcpu;
++}
++
+ static void close_fd(int fd)
  {
- 	struct tracefs_cpu *tcpu = data->tcpu;
-@@ -2965,6 +3202,10 @@ void test_tracefs_lib(void)
- 		    test_trace_cpu_read_buf_percent);
- 	CU_add_test(suite, "trace cpu pipe",
- 		    test_trace_cpu_pipe);
-+	CU_add_test(suite, "trace pid events filter",
-+		    test_trace_events_pid_filter);
-+	CU_add_test(suite, "trace pid function filter",
-+		    test_trace_function_pid_filter);
- 	CU_add_test(suite, "trace sql",
- 		    test_trace_sql);
- 	CU_add_test(suite, "tracing file / directory APIs",
+ 	if (fd < 0)
+@@ -285,6 +311,28 @@ int tracefs_cpu_read_size(struct tracefs_cpu *tcpu)
+ 	return tcpu->subbuf_size;
+ }
+ 
++bool tracefs_cpu_is_mapped(struct tracefs_cpu *tcpu)
++{
++	return tcpu->mapping != NULL;
++}
++
++int tracefs_cpu_map(struct tracefs_cpu *tcpu)
++{
++	if (tcpu->mapping)
++		return 0;
++
++	tcpu->mapping = trace_mmap(tcpu->fd, tcpu->kbuf);
++	return tcpu->mapping ? 0 : -1;
++}
++
++void tracefs_cpu_unmap(struct tracefs_cpu *tcpu)
++{
++	if (!tcpu->mapping)
++		return;
++
++	trace_unmap(tcpu->mapping);
++}
++
+ static void set_nonblock(struct tracefs_cpu *tcpu)
+ {
+ 	long flags;
+@@ -383,6 +431,9 @@ int tracefs_cpu_read(struct tracefs_cpu *tcpu, void *buffer, bool nonblock)
+ 	if (ret <= 0)
+ 		return ret;
+ 
++	if (tcpu->mapping)
++		return trace_mmap_read(tcpu->mapping, buffer);
++
+ 	ret = read(tcpu->fd, buffer, tcpu->subbuf_size);
+ 
+ 	/* It's OK if there's no data to read */
+@@ -427,6 +478,16 @@ struct kbuffer *tracefs_cpu_read_buf(struct tracefs_cpu *tcpu, bool nonblock)
+ {
+ 	int ret;
+ 
++	/* If mapping is enabled, just use it directly */
++	if (tcpu->mapping) {
++		ret = wait_on_input(tcpu, nonblock);
++		if (ret <= 0)
++			return NULL;
++
++		ret = trace_mmap_load_subbuf(tcpu->mapping, tcpu->kbuf);
++		return ret > 0 ? tcpu->kbuf : NULL;
++	}
++
+ 	if (!get_buffer(tcpu))
+ 		return NULL;
+ 
 -- 
 2.42.0
 
