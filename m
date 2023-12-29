@@ -1,23 +1,23 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22C7717D8
-	for <linux-trace-devel@vger.kernel.org>; Fri, 29 Dec 2023 03:10:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5798C433CB;
-	Fri, 29 Dec 2023 03:10:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5967517D1
+	for <linux-trace-devel@vger.kernel.org>; Fri, 29 Dec 2023 03:18:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26A4AC433CA;
+	Fri, 29 Dec 2023 03:18:18 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rJ3Hf-00000000HmI-0QxC;
-	Thu, 28 Dec 2023 22:11:39 -0500
+	id 1rJ3Ou-00000000I4j-2R42;
+	Thu, 28 Dec 2023 22:19:08 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 3/3] trace-cmd library: Add tracecmd_iterate_reset()
-Date: Thu, 28 Dec 2023 22:10:15 -0500
-Message-ID: <20231229031138.68313-4-rostedt@goodmis.org>
+Subject: [PATCH 3/4] trace-cmd show: Add option to read buffer_percent
+Date: Thu, 28 Dec 2023 22:16:46 -0500
+Message-ID: <20231229031907.69432-4-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231229031138.68313-1-rostedt@goodmis.org>
-References: <20231229031138.68313-1-rostedt@goodmis.org>
+In-Reply-To: <20231229031907.69432-1-rostedt@goodmis.org>
+References: <20231229031907.69432-1-rostedt@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -28,129 +28,78 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Currently there's no easy way to reset iterating over a trace.dat file if a
-tracecmd_iterate_events() was called. Add a helper function to do that:
-
- tracecmd_iterate_reset()
+Add trace-cmd show --buffer_percent to show the value of the buffer_percent
+file.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- .../libtracecmd/libtracecmd-iterate.txt       | 10 +++++-
- Documentation/libtracecmd/libtracecmd.txt     |  1 +
- include/trace-cmd/trace-cmd.h                 |  2 ++
- lib/trace-cmd/trace-input.c                   | 32 +++++++++++++++++++
- 4 files changed, 44 insertions(+), 1 deletion(-)
+ Documentation/trace-cmd/trace-cmd-show.1.txt | 8 ++++++++
+ tracecmd/trace-show.c                        | 6 ++++++
+ tracecmd/trace-usage.c                       | 1 +
+ 3 files changed, 15 insertions(+)
 
-diff --git a/Documentation/libtracecmd/libtracecmd-iterate.txt b/Documentation/libtracecmd/libtracecmd-iterate.txt
-index 12c54b2ce1a0..dc053ccbbade 100644
---- a/Documentation/libtracecmd/libtracecmd-iterate.txt
-+++ b/Documentation/libtracecmd/libtracecmd-iterate.txt
-@@ -4,7 +4,7 @@ libtracecmd(3)
- NAME
- ----
- tracecmd_iterate_events, tracecmd_iterate_events_multi, tracecmd_follow_event,
--tracecmd_follow_missed_events, tracecmd_filter_add - Read events from a trace file
-+tracecmd_follow_missed_events, tracecmd_filter_add, tracecmd_iterate_reset - Read events from a trace file
+diff --git a/Documentation/trace-cmd/trace-cmd-show.1.txt b/Documentation/trace-cmd/trace-cmd-show.1.txt
+index ac40dacf7061..f85c070b0598 100644
+--- a/Documentation/trace-cmd/trace-cmd-show.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-show.1.txt
+@@ -65,6 +65,14 @@ OPTIONS
+      The ring buffer is broken up into equal size sub-buffers were an event can only
+      be as big as the sub-buffer data section (the size minus its meta data).
  
- SYNOPSIS
- --------
-@@ -45,6 +45,7 @@ int *tracecmd_follow_missed_events*(struct tracecmd_input pass:[*]_handle_,
- 				   void pass:[*]_callback_data_);
- struct tracecmd_filter pass:[*]*tracecmd_filter_add*(struct tracecmd_input *_handle_,
- 					    const char pass:[*]_filter_str_, bool _neg_);
-+int *tracecmd_iterate_reset*(struct tracecmd_input pass:[*]_handle_);
- --
++*--buffer_percent*::
++    Show the percentage the buffer must be filled before a reader that is blocked
++    on the trace_pipe_raw file will be woken up.
++
++  0       : wake up immediately on any new data
++  1 - 99  : wake up on this percentage of the sub-buffers being full
++  100     : wake up after the buffer is full and the writer is on the last sub-buffer
++
+ *--ftrace_filter*::
+      Show what function filters are set.
  
- DESCRIPTION
-@@ -140,6 +141,10 @@ is defined by *tep_filter_add_filter_str(3)*. If _neg_ is true, then the events
- that match the filter will be skipped, otherwise the events that match will execute
- the _callback()_ function in the iterators.
- 
-+The *tracecmd_iterate_reset()* sets the _handle_ back to start at the beginning, so that
-+the next call to *tracecmd_iterate_events()* starts back at the first event again, instead
-+of continuing where it left off.
-+
- RETURN VALUE
- ------------
- Both *tracecmd_iterate_events()*, *tracecmd_iterate_events_reverse()* and
-@@ -147,6 +152,9 @@ Both *tracecmd_iterate_events()*, *tracecmd_iterate_events_reverse()* and
- (handling the follow and filters appropriately). Or an error value, which can include
- returning a non-zero result from the _callback()_ function.
- 
-+*tracecmd_iterate_reset()* returns 0 on success and -1 if an error occurred. Note,
-+if -1 is returned, a partial reset may have also happened.
-+
- EXAMPLE
- -------
- [source,c]
-diff --git a/Documentation/libtracecmd/libtracecmd.txt b/Documentation/libtracecmd/libtracecmd.txt
-index bbe6cc78b575..52d4e5994c14 100644
---- a/Documentation/libtracecmd/libtracecmd.txt
-+++ b/Documentation/libtracecmd/libtracecmd.txt
-@@ -61,6 +61,7 @@ Iterating over events in a trace file:
- 					   void pass:[*]_callback_data_);
- 	struct tracecmd_filter pass:[*]*tracecmd_filter_add*(struct tracecmd_input *_handle_,
- 						    const char pass:[*]_filter_str_, bool _neg_);
-+	int *tracecmd_iterate_reset*(struct tracecmd_input pass:[*]_handle_);
- 
- Read tracing instances from a trace file:
- 	int *tracecmd_buffer_instances*(struct tracecmd_input pass:[*]_handle_);
-diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index e6527b7116c1..55a0c51845b0 100644
---- a/include/trace-cmd/trace-cmd.h
-+++ b/include/trace-cmd/trace-cmd.h
-@@ -72,6 +72,8 @@ int tracecmd_follow_missed_events(struct tracecmd_input *handle,
- 						  int, void *),
- 				  void *callback_data);
- 
-+int tracecmd_iterate_reset(struct tracecmd_input *handle);
-+
- int tracecmd_iterate_events(struct tracecmd_input *handle,
- 			    cpu_set_t *cpus, int cpu_size,
- 			    int (*callback)(struct tracecmd_input *handle,
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index bf070f057ed0..88bef83f4fe0 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -2113,6 +2113,38 @@ tracecmd_read_cpu_first(struct tracecmd_input *handle, int cpu)
- 	return tracecmd_read_data(handle, cpu);
- }
- 
-+/**
-+ * tracecmd_iterate_reset - Set the handle to iterate from the beginning
-+ * @handle: input handle for the trace.dat file
-+ *
-+ * This causes tracecmd_iterate_events*() to start from the beginning
-+ * of the trace.dat file.
-+ */
-+int tracecmd_iterate_reset(struct tracecmd_input *handle)
-+{
-+	unsigned long long page_offset;
-+	int cpu;
-+	int ret = 0;
-+	int r;
-+
-+	for (cpu = 0; cpu < handle->cpus; cpu++) {
-+		page_offset = calc_page_offset(handle, handle->cpu_data[cpu].file_offset);
-+
-+		r = get_page(handle, cpu, page_offset);
-+		if (r < 0) {
-+			ret = -1;
-+			continue; /* ?? */
-+		}
-+
-+		/* If the page was already mapped, we need to reset it */
-+		if (r)
-+			update_page_info(handle, cpu);
-+
-+		free_next(handle, cpu);
-+	}
-+	return ret;
-+}
-+
- /**
-  * tracecmd_read_cpu_last - get the last record in a CPU
-  * @handle: input handle for the trace.dat file
+diff --git a/tracecmd/trace-show.c b/tracecmd/trace-show.c
+index 17eb098952f7..d91362e47c50 100644
+--- a/tracecmd/trace-show.c
++++ b/tracecmd/trace-show.c
+@@ -20,6 +20,7 @@ enum {
+ 	OPT_buffer_subbuf_size_kb,
+ 	OPT_buffer_total_size_kb,
+ 	OPT_buffer_size_kb,
++	OPT_buffer_percent,
+ 	OPT_current_tracer,
+ 	OPT_tracing_on,
+ };
+@@ -44,6 +45,7 @@ void trace_show(int argc, char **argv)
+ 		{"buffer_size", no_argument, NULL, OPT_buffer_size_kb},
+ 		{"buffer_total_size", no_argument, NULL, OPT_buffer_total_size_kb},
+ 		{"buffer_subbuf_size", no_argument, NULL, OPT_buffer_subbuf_size_kb},
++		{"buffer_percent", no_argument, NULL, OPT_buffer_percent},
+ 		{"ftrace_filter", no_argument, NULL, OPT_ftrace_filter},
+ 		{"ftrace_notrace", no_argument, NULL, OPT_ftrace_notrace},
+ 		{"ftrace_pid", no_argument, NULL, OPT_ftrace_pid},
+@@ -108,6 +110,10 @@ void trace_show(int argc, char **argv)
+ 			show_instance_file(instance, "buffer_subbuf_size_kb");
+ 			stop = 1;
+ 			break;
++		case OPT_buffer_percent:
++			show_instance_file(instance, "buffer_percent");
++			stop = 1;
++			break;
+ 		case OPT_ftrace_filter:
+ 			show_instance_file(instance, "set_ftrace_filter");
+ 			stop = 1;
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index 7dc9b1871398..3e5456d27e3d 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -181,6 +181,7 @@ static struct usage_help usage_help[] = {
+ 		"          --buffer_size (for buffer_size_kb)\n"
+ 		"          --buffer_total_size (for buffer_total_size_kb)\n"
+ 		"          --buffer_subbuf_size (for buffer_subbuf_size_kb)\n"
++		"          --buffer_percent (for buffer_percent)\n"
+ 		"          --ftrace_filter (for set_ftrace_filter)\n"
+ 		"          --ftrace_notrace (for set_ftrace_notrace)\n"
+ 		"          --ftrace_pid (for set_ftrace_pid)\n"
 -- 
 2.42.0
 
