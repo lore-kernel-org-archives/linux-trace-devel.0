@@ -1,196 +1,226 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D0A1C687
-	for <linux-trace-devel@vger.kernel.org>; Fri,  5 Jan 2024 05:20:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74770C433C8;
-	Fri,  5 Jan 2024 05:20:35 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rLceM-00000000xZu-3Iql;
-	Fri, 05 Jan 2024 00:21:42 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-trace-devel@vger.kernel.org
-Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 2/2] libtracefs synthetic: Handle hashed name variables
-Date: Fri,  5 Jan 2024 00:21:01 -0500
-Message-ID: <20240105052141.228999-3-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240105052141.228999-1-rostedt@goodmis.org>
-References: <20240105052141.228999-1-rostedt@goodmis.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8218A219F9
+	for <linux-trace-devel@vger.kernel.org>; Fri,  5 Jan 2024 09:17:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="me4C5bMY"
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40d60ad5f0bso15434755e9.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 05 Jan 2024 01:17:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704446277; x=1705051077; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XKXk6YU1OhYqKA8wumodgy1CMsyzMv176cXfS6QvBzY=;
+        b=me4C5bMY5g/Hih3E7Gqd/uuyY2tNQTInoeXD85871NBTg4eoUbFcCQ0O9D/SKpCz6o
+         ilcA58c1hmLT+E7/ELERs3T21bsjLXx9rxpmbVT+apxWqrIZ6e+4ArZ31uwdGxULFSCq
+         u1jWJyuP60PaZJ84yNSIOBZN9UxchOsGGLnpX8d2sJ/Bc3f6ayv2xwR/ZjAr3Hm2Y1BZ
+         kSi+NZP0evVCvG+SX0LKl/cQmpeZ6II1Vd9Q+N6Ct1FDFmSsMvSAYQQy9opJhWT39bwT
+         9Is9uCPmqhXmSDZ6kskwl6nZLg/W5aYqFa09Xry+Cw5DE9ZfiXTjgyEOyyic3wY7gNYJ
+         LoPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704446277; x=1705051077;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XKXk6YU1OhYqKA8wumodgy1CMsyzMv176cXfS6QvBzY=;
+        b=lYWYLrcWmR/5+kUR6A28O9baPQ1LdcPSOSob1ie4g7GXnUouDalJ7GRWMRoAtpqhN3
+         NkQkLIhsX+QP9XxV26HOkv88n9XLdYK2rviq4pBt9C8oKa+OPOGdNXrZ51iAK1YwjZdB
+         yM4mtzoalBFVVqOCiCqrAiQhESaR8r+JB54IEtbtGT8iZLgv7Ly4hlDp3LCiAiiKE5NI
+         BK1rGD6GszO1RYThNYaTZdLIg7SjFVQBeNtwlnNDP1n+2fzA/eTqdDQMvhH/PhwR8r7L
+         E9c1w7rOCdsrMtJ8JI/lhZZJvZPoQrKWPyyG6n0OCpsOnpc/JsSXKpETK0di5Zd8xkZQ
+         K3Sw==
+X-Gm-Message-State: AOJu0YwNbeA5/GrYkl7axfLZXY36Pw/I7ypBCMZ8IqbKAwSBtuImtb5s
+	3ealbqwtF+Nl/1ElfNnG0qECEHDIU5dS6Ejip5UXlIH3KLs4
+X-Google-Smtp-Source: AGHT+IF5aTPQEHvkHzRsoKJd3C/p9Ks7bcr8TgiswvHR4W1UZ9wyGdPlnI71rpc6asjg/jzcNAezlA==
+X-Received: by 2002:a05:600c:1f88:b0:40d:5c89:9dfc with SMTP id je8-20020a05600c1f8800b0040d5c899dfcmr1120218wmb.182.1704446277513;
+        Fri, 05 Jan 2024 01:17:57 -0800 (PST)
+Received: from google.com (185.83.140.34.bc.googleusercontent.com. [34.140.83.185])
+        by smtp.gmail.com with ESMTPSA id n4-20020a05600c4f8400b0040e34ca648bsm971493wmq.0.2024.01.05.01.17.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jan 2024 01:17:57 -0800 (PST)
+Date: Fri, 5 Jan 2024 09:17:53 +0000
+From: Vincent Donnefort <vdonnefort@google.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH] libtracefs: Add ring buffer memory mapping APIs
+Message-ID: <ZZfJQTOyl0dHiTU-@google.com>
+References: <20231228201100.78aae259@rorschach.local.home>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231228201100.78aae259@rorschach.local.home>
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+[...]
 
-When running:
+> +EXAMPLE
+> +-------
+> +[source,c]
+> +--
+> +#include <stdlib.h>
+> +#include <ctype.h>
+> +#include <tracefs.h>
+> +
+> +static void read_page(struct tep_handle *tep, struct kbuffer *kbuf)
 
- sqlhist -m delta -n 'wakeup' 'select start.pid, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as delta from sched_waking as start join sched_switch as end on start.pid = end.next_pid'
+read_subbuf?
 
-The '-m delta' is supposed to set the "onmax()" to the "delta" variable. But
-this fails because the output would be:
+> +{
+> +	static struct trace_seq seq;
+> +	struct tep_record record;
+> +
+> +	if (seq.buffer)
+> +		trace_seq_reset(&seq);
+> +	else
+> +		trace_seq_init(&seq);
+> +
+> +	while ((record.data = kbuffer_read_event(kbuf, &record.ts))) {
+> +		record.size = kbuffer_event_size(kbuf);
+> +		kbuffer_next_event(kbuf, NULL);
+> +		tep_print_event(tep, &seq, &record,
+> +				"%s-%d %9d\t%s: %s\n",
+> +				TEP_PRINT_COMM,
+> +				TEP_PRINT_PID,
+> +				TEP_PRINT_TIME,
+> +				TEP_PRINT_NAME,
+> +				TEP_PRINT_INFO);
+> +		trace_seq_do_printf(&seq);
+> +		trace_seq_reset(&seq);
+> +	}
+> +}
+> +
 
-  echo 'hist:keys=next_pid:__pid_17298_1=$__arg_17298_2,__delta_17298_4=common_timestamp.usecs-$__arg_17298_3:onmax($delta).trace(wakeup,$__pid_17298_1,$__delta_17298_4)'
+[...]
 
-As the "delta" was hashed to __delta_17298_4 and the "onmax()" has "$delta"
-unhashed. In actuality, it wouldn't even get that far as the "test_max_var()"
-will flag it as the variable does not exist (because it's not "delta" but
-"__delta_17298_4").
+> +__hidden void *trace_mmap(int fd, struct kbuffer *kbuf)
+> +{
+> +	struct trace_mmap *tmap;
+> +	int page_size;
+> +	void *meta;
+> +	void *data;
+> +
+> +	page_size = getpagesize();
+> +	meta = mmap(NULL, page_size, PROT_READ, MAP_SHARED, fd, 0);
+> +	if (meta == MAP_FAILED)
+> +		return NULL;
+> +
+> +	tmap = calloc(1, sizeof(*tmap));
+> +	if (!tmap) {
+> +		munmap(meta, page_size);
+> +		return NULL;
+> +	}
+> +
+> +	tmap->kbuf = kbuffer_dup(kbuf);
+> +	if (!tmap->kbuf) {
+> +		munmap(meta, page_size);
+> +		free(tmap);
+> +	}
+> +
+> +	tmap->fd = fd;
+> +
+> +	tmap->map = meta;
+> +	tmap->meta_len = tmap->map->meta_page_size;
+> +
+> +	if (tmap->meta_len > page_size) {
+> +		munmap(meta, page_size);
+> +		meta = mmap(NULL, tmap->meta_len, PROT_READ, MAP_SHARED, fd, 0);
+> +		if (meta == MAP_FAILED) {
+> +			kbuffer_free(tmap->kbuf);
+> +			free(tmap);
+> +			return NULL;
+> +		}
+> +		tmap->map = meta;
+> +	}
+> +
+> +	tmap->data_pages = meta + tmap->meta_len;
+> +
+> +	tmap->data_len = tmap->map->subbuf_size * tmap->map->nr_subbufs;
+> +
+> +	tmap->data = mmap(NULL, tmap->data_len, PROT_READ, MAP_SHARED,
+> +			  fd, tmap->meta_len);
+> +	if (tmap->data == MAP_FAILED) {
+> +		munmap(meta, tmap->meta_len);
+> +		kbuffer_free(tmap->kbuf);
+> +		free(tmap);
+> +		return NULL;
+> +	}
+> +
+> +	tmap->last_idx = tmap->map->reader.id;
+> +
+> +	data = tmap->data + tmap->map->subbuf_size * tmap->last_idx;
+> +	kbuffer_load_subbuffer(kbuf, data);
 
-Modify test_max_var() to check for hashed variables and return the one it
-found.
+Could it fast-forward to the event until tmap->map->reader.read? So we don't
+read again the same events.
 
-Fixe: 00c6b5f6 ("libtracefs: Use unique names for sql field variables")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- src/tracefs-hist.c | 80 ++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 70 insertions(+), 10 deletions(-)
+Something like
 
-diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index 5f32ec305409..2b4f17f2f6ec 100644
---- a/src/tracefs-hist.c
-+++ b/src/tracefs-hist.c
-@@ -13,6 +13,7 @@
- #include <errno.h>
- #include <fcntl.h>
- #include <limits.h>
-+#include <ctype.h>
- #include <sys/time.h>
- #include <sys/types.h>
- 
-@@ -1687,27 +1688,81 @@ int tracefs_synth_append_end_filter(struct tracefs_synth *synth,
- 				   type, field, compare, val);
- }
- 
--static int test_max_var(struct tracefs_synth *synth, const char *var)
-+static bool var_match(const char *match, const char *var, int match_len, int len)
-+{
-+	char copy[match_len + 1];
-+	char *p, *e;
-+
-+	strncpy(copy, match, match_len + 1);
-+	copy[match_len] = '\0';
-+
-+	p = copy;
-+
-+	if (*p == '$')
-+		p++;
-+
-+	if (strncmp(p, var, len) == 0)
-+		return true;
-+
-+	/* Check if this was hashed __<var>_<number>_<number> */
-+	if (p[0] != '_' || p[1] != '_')
-+		return false;
-+
-+	p += 2;
-+
-+	e = copy + match_len - 1;
-+	if (!isdigit(*e))
-+		return false;
-+	while (isdigit(*e) && e > p)
-+		e--;
-+	if (e == p || *e != '_')
-+		return false;
-+
-+	e--;
-+	if (!isdigit(*e))
-+		return false;
-+	while (isdigit(*e) && e > p)
-+		e--;
-+	if (e == p || *e != '_')
-+		return false;
-+
-+	if (e - p != len)
-+		return false;
-+
-+	*e = '\0';
-+
-+	return strncmp(p, var, len) == 0;
-+}
-+
-+static char *test_max_var(struct tracefs_synth *synth, const char *var)
- {
- 	char **vars = synth->end_vars;
-+	char *ret;
- 	char *p;
- 	int len;
- 	int i;
- 
- 	len = strlen(var);
-+	if (var[0] == '$') {
-+		var++;
-+		len--;
-+	}
- 
- 	/* Make sure the var is defined for the end event */
- 	for (i = 0; vars[i]; i++) {
- 		p = strchr(vars[i], '=');
- 		if (!p)
- 			continue;
--		if (p - vars[i] != len)
--			continue;
--		if (!strncmp(var, vars[i], len))
--			return 0;
-+
-+		if (var_match(vars[i], var, p - vars[i], len)) {
-+			i = asprintf(&ret, "%.*s", (int)(p - vars[i]), vars[i]);
-+			if (i < 0)
-+				return NULL;
-+			return ret;
-+		}
- 	}
- 	errno = ENODEV;
--	return -1;
-+	return NULL;
- }
- 
- static struct action *create_action(enum tracefs_synth_handler type,
-@@ -1715,14 +1770,16 @@ static struct action *create_action(enum tracefs_synth_handler type,
- 				    const char *var)
- {
- 	struct action *action;
-+	char *newvar = NULL;
- 	int ret;
- 
- 	switch (type) {
- 	case TRACEFS_SYNTH_HANDLE_MAX:
- 	case TRACEFS_SYNTH_HANDLE_CHANGE:
--		ret = test_max_var(synth, var);
--		if (ret < 0)
-+		newvar = test_max_var(synth, var);
-+		if (!newvar)
- 			return NULL;
-+		var = newvar;
- 		break;
- 	default:
- 		break;
-@@ -1730,15 +1787,18 @@ static struct action *create_action(enum tracefs_synth_handler type,
- 
- 	action = calloc(1, sizeof(*action));
- 	if (!action)
--		return NULL;
-+		goto out;
- 
- 	if (var) {
- 		ret = asprintf(&action->handle_field, "$%s", var);
--		if (!action->handle_field) {
-+		if (ret < 0) {
- 			free(action);
-+			free(newvar);
- 			return NULL;
- 		}
- 	}
-+ out:
-+	free(newvar);
- 	return action;
- }
- 
--- 
-2.42.0
+  while (kbuf->curr < tmap->map->reader.read)
+  	kbuffer_next_event(kbuf, NULL);
 
+> +
+> +	return tmap;
+> +}
+> +
+> +__hidden void trace_unmap(void *mapping)
+> +{
+> +	struct trace_mmap *tmap = mapping;
+> +
+> +	munmap(tmap->data, tmap->data_len);
+> +	munmap(tmap->map, tmap->meta_len);
+> +	kbuffer_free(tmap->kbuf);
+> +	free(tmap);
+> +}
+> +
+> +__hidden int trace_mmap_load_subbuf(void *mapping, struct kbuffer *kbuf)
+> +{
+> +	struct trace_mmap *tmap = mapping;
+> +	void *data;
+> +	int id;
+> +
+> +	id = tmap->map->reader.id;
+> +	data = tmap->data + tmap->map->subbuf_size * id;
+> +
+> +	/*
+> +	 * If kbuf doesn't point to the current sub-buffer
+> +	 * just load it and return.
+> +	 */
+> +	if (data != kbuffer_subbuffer(kbuf)) {
+> +		kbuffer_load_subbuffer(kbuf, data);
+> +		return 1;
+> +	}
+> +
+> +	/*
+> +	 * Perhaps the reader page had a write that added
+> +	 * more data.
+> +	 */
+> +	kbuffer_refresh(kbuf);
+> +
+> +	/* Are there still events to read? */
+> +	if (kbuffer_curr_size(kbuf))
+> +		return 1;
+
+It does not seem to be enough, only kbuf->size is updated in kbuffer_refresh()
+while kbuffer_curr_size is next - cur.
+
+> +
+> +	/* See if a new page is ready? */
+> +	if (ioctl(tmap->fd, TRACE_MMAP_IOCTL_GET_READER) < 0)
+> +		return -1;
+
+Maybe this ioctl should be called regardless if events are found on the current
+reader page. This would at least update the reader->read field and make sure
+subsequent readers are not getting the same events we already had here?
+
+> +	id = tmap->map->reader.id;
+> +	data = tmap->data + tmap->map->subbuf_size * id;
+> +
+
+[...]
