@@ -1,30 +1,30 @@
-Received: from smtpcmd10102.aruba.it (smtpcmd10102.aruba.it [62.149.156.102])
+Received: from smtpcmd01-sp1.aruba.it (smtpcmd01-sp1.aruba.it [62.149.158.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D618125A8
-	for <linux-trace-devel@vger.kernel.org>; Sun,  7 Jan 2024 23:10:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5352C13AE2
+	for <linux-trace-devel@vger.kernel.org>; Sun,  7 Jan 2024 23:11:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=benettiengineering.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=benettiengineering.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="gfxvU+h6"
+	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="Q7Sjwtg/"
 Received: from localhost.localdomain ([84.33.84.190])
 	by Aruba Outgoing Smtp  with ESMTPSA
-	id McEwrVFAs1f5IMcEwrAJPu; Mon, 08 Jan 2024 00:07:35 +0100
+	id McFGro73NPhz2McFGrkSN4; Mon, 08 Jan 2024 00:07:54 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-	t=1704668855; bh=xSh7UhaIe6XSQmVPANdaMFZWW6sJHCCYoEhVX48NTjg=;
+	t=1704668874; bh=GrzPyiZNDFWAYlM6xUeJ6eVJr2vYcUzcmLlyP1N2MxY=;
 	h=From:To:Subject:Date:MIME-Version;
-	b=gfxvU+h6yMiPX1qnsQO8d8dakHStQXaYqlTR/wTJa+NC3na2bLAuqnoqGBI/p3GY0
-	 oNtmqDZkxYG1OMebgFS3j525+lwgezeI6ECnhFfACfHeHkxoRk9IL0IHC8aGa59DYd
-	 bOae0uLxjnRyUo/8YXMDa2bp1oEAHakog7zzMbFUD6PkIBP1UQ6SI3cEFLlCdfej0R
-	 m2xx8OtvFoRhDBNed9h9IV7trAdVYV/rbd96aD/qkBQtGqliXnQldlRxS7uCUh/EE7
-	 SG8UhoFrsezGmw7OZqiKrRwBeFltQgZfjL9KvYDr/zb7szfHti1gYRufRKI/OImv4e
-	 jy+O8cIe7TH7w==
+	b=Q7Sjwtg/3YbIHxnBNYQkC3h62/uZOS0MU9OwpwqRtTMhl/fSh2O+oDm4WKBRjp7T5
+	 JOH67J4Yx/4BcdP88M45rw488QBLZzzxJwzfGBHNQFH9+X1xdwz1p8qcEGuj2IwG7D
+	 YS8BmQcso1JBSZ/8KEXMNIGEnganvucXc9Kk2sPzEE4O0uPnKzX0Y38GB8K/oesCiT
+	 zyUxNQc4qfSa6nKvVbSNx1HjvyHhGIQ0NX5rDmLga0EQvezPJIfoeNjgSoXIMDbEGc
+	 BbCiHBEwBVgpwM3mV+1TZJwAuJIZjaUsbsIlCnjQ1mPnDhcvQkZnbLeqDoSfG1beSN
+	 LHYDDnpI3nZmw==
 From: Giulio Benetti <giulio.benetti@benettiengineering.com>
 To: linux-trace-devel@vger.kernel.org
 Cc: Giulio Benetti <giulio.benetti@benettiengineering.com>
-Subject: [PATCH] libtracefs: add option to disable samples
-Date: Mon,  8 Jan 2024 00:07:33 +0100
-Message-Id: <20240107230733.456099-1-giulio.benetti@benettiengineering.com>
+Subject: [PATCH] libtraceevent: add libdl dependency to meson
+Date: Mon,  8 Jan 2024 00:07:53 +0100
+Message-Id: <20240107230753.461368-1-giulio.benetti@benettiengineering.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -33,45 +33,37 @@ List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfCOjVnrdehYyv/7IBQuTNy5zYKxtbMdll4I3LhTon3e6tH450t6nS/++nXaOEfodjmDCJCrXLw0fR9AputoaRdkoyZyV8iLGywMrcMu5m3w6h3mESFt+
- KWoA5mbNwm7ot369Ez2jB1C7XZXn5S9U8QAwdZQA9mGeG0zYK24Id74rmuetoLf4bUGnCivzQQifhEW+YONMEK3TadTCOF7vkl27QWOL8RMQ18j+rQpAPRM4
- x+dr9+Q0h199b4t4NSTyaudrfnkP48E+i23r2ZaCaFUOGCeeFamFGMgc7x7i4ilP
+X-CMAE-Envelope: MS4xfPepHTWTp9Q1l6wti5qeKZEJ/8ARsWlyU5YKT6BJBzHNuTiAzd+sygTQDJinY140pH7R1CNHcf9DFHwLRJpCYqO9WMsl6XToVxwL5JhjfEhntbijSKx4
+ BRN7oRRHf4+1FRL3eMwU6Q0oXiV5cvvPDM9gB19URZ0Gh9DHA94AdxrkQOWndlgz1/4Cje0i3sjzmM9/Q54nFm3151hcv2ZFPgvbANxLhZhLnlwXHvUrY2rq
+ KWI2SjoBzHe244oAoqpTySf0NEkRyWOSOYttS2eheclowcGSHGrJmVPMRRju3W85
 
-On some Linux environment builder(i.e. Buildroot) we don't want to produce
-sample to reduce size usage and dependencies count. So let's add samples
-option set to true by default to let the user to override it and not
-build samples.
+Libdl is mandatory since it's used by plugins, so let's add it to meson to
+prevent build failure where -ldl is not implicit.
 
 Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
 ---
- meson.build       | 2 ++
- meson_options.txt | 2 ++
- 2 files changed, 4 insertions(+)
+ src/meson.build | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/meson.build b/meson.build
-index 57ffe20..f7d3da6 100644
---- a/meson.build
-+++ b/meson.build
-@@ -38,7 +38,9 @@ subdir('include')
- if cunit_dep.found()
-     subdir('utest')
- endif
-+if get_option('samples')
- subdir('samples')
-+endif
+diff --git a/src/meson.build b/src/meson.build
+index 20b1b7b..cd48de7 100644
+--- a/src/meson.build
++++ b/src/meson.build
+@@ -13,10 +13,14 @@ sources= [
+    'trace-seq.c',
+ ]
  
- if get_option('doc')
- subdir('Documentation')
-diff --git a/meson_options.txt b/meson_options.txt
-index 5533a88..8450992 100644
---- a/meson_options.txt
-+++ b/meson_options.txt
-@@ -16,3 +16,5 @@ option('docbook-suppress-sp', type : 'boolean', value : false,
-        description : 'docbook suppress sp')
- option('doc', type : 'boolean', value: true,
-        description : 'produce documentation')
-+option('samples', type : 'boolean', value: true,
-+       description : 'build samples')
++cc = meson.get_compiler('c')
++dl_dep = cc.find_library('dl')
++
+ libtraceevent = library(
+     'traceevent',
+     sources,
+     version: library_version,
++    dependencies: [dl_dep],
+     include_directories: [incdir],
+     install: true)
+ 
 -- 
 2.34.1
 
