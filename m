@@ -1,108 +1,190 @@
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE5CB53E1F
-	for <linux-trace-devel@vger.kernel.org>; Mon,  8 Jan 2024 16:47:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jJ5vr/vT"
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3376ead25e1so688528f8f.3
-        for <linux-trace-devel@vger.kernel.org>; Mon, 08 Jan 2024 08:47:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704732448; x=1705337248; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CnifjIzisvQv7q2pNVpmZmrK4xtUhC2UuZ6lRNroiuw=;
-        b=jJ5vr/vTrGog4m1fnCLapm+w1blbEkklxfSHq8D5X25yTHRv/NNa3pS22sdrtcIR9E
-         8OQZCYd0Wil5ahvDd+OQ0xj+btubtqwJuFh+AWlCib4C8WhybdOLVxD4v6LfhKHhPoQn
-         Wyup5ZWgTd1ZMRxXk217DGMXgaGDrOcpllJex+iKOskJzSFDlihnBIaYF2Q7qVCxI/Co
-         HdZEg793QrQc8/8MaxlEquxku67WIqUrdgy2NfRpgWdICAGwL0SzkhZY9OwSvJpOLNcU
-         jccZ9HWQGsQT8OJy6b0vGlGKRv+Nu78/eNT56P0lZnoLfJrO9c5B/MoA1dksA4d8yaqd
-         qqzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704732448; x=1705337248;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CnifjIzisvQv7q2pNVpmZmrK4xtUhC2UuZ6lRNroiuw=;
-        b=W3XOzeCuujWTHdJFi1IzOn8Bgszsb1OSLdtjR0hLjhQu+eMtAHhv2T8VYt1OdWaclc
-         peSwHL6lZZxTPpxPTEJhBfRgS8gdxi3gAQJBoXp3IR2GJL3GAlY+T4RlEfGd4v5y/GPw
-         El2xQ7+C+jGx0UQ4uv5p9LARXhEgzMPaB7iKO0uM7oreKlMTHwRymr/SuyLZMPGEmrww
-         KkRpZ9cJHEkDPzirtE6N1eBEeeIsGcMGfKLmI6KscWCJEQz/fT4HrcsgrY4clryw5Xhs
-         H1+ayiIixZUa3oH7WXmJQiEGTrmYQfaFxVvcchJeYr/28QQkZSCtLpPlS4TUqs2E8Mrn
-         j/wQ==
-X-Gm-Message-State: AOJu0Yx7WIKWOJPi0w8xu1PnNpZEeHSDqjrQ0M/0pfQG3OVOKcYrdN/E
-	cV2ncujYRrviq/o/i5E3SOhWC1gZ5wkxiOuVUt5+DMqLld6S
-X-Google-Smtp-Source: AGHT+IEK4B0qunMoO0ufCJPjcVFL7wgnkCbafBsWwTJHQa1OmJwOPSDVBMnJ2+Vl06bfElfqkVWhpw==
-X-Received: by 2002:a05:6000:cd1:b0:336:ca94:3e00 with SMTP id dq17-20020a0560000cd100b00336ca943e00mr1905402wrb.69.1704732448077;
-        Mon, 08 Jan 2024 08:47:28 -0800 (PST)
-Received: from google.com (185.83.140.34.bc.googleusercontent.com. [34.140.83.185])
-        by smtp.gmail.com with ESMTPSA id z16-20020a5d4d10000000b0033686e8f02dsm101917wrt.45.2024.01.08.08.47.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 08:47:27 -0800 (PST)
-Date: Mon, 8 Jan 2024 16:47:23 +0000
-From: Vincent Donnefort <vdonnefort@google.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 3/3] kbuffer: Update kbuf->next in kbuffer_refresh()
-Message-ID: <ZZwnG9foWd7H4vfa@google.com>
-References: <20240105194015.253165-1-rostedt@goodmis.org>
- <20240105194015.253165-4-rostedt@goodmis.org>
- <ZZhuKFAkDHRLHlwt@google.com>
- <ZZvYYY5MI8l803Ad@google.com>
- <20240108112853.2574015e@gandalf.local.home>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D070153E0E
+	for <linux-trace-devel@vger.kernel.org>; Mon,  8 Jan 2024 17:15:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1682C433C8;
+	Mon,  8 Jan 2024 17:15:29 +0000 (UTC)
+Date: Mon, 8 Jan 2024 12:16:25 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Vincent Donnefort <vdonnefort@google.com>
+Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH] libtracefs: Add ring buffer memory mapping APIs
+Message-ID: <20240108121625.66729036@gandalf.local.home>
+In-Reply-To: <ZZwFvyGvm0C38eBh@google.com>
+References: <20240105152906.743d7e03@gandalf.local.home>
+	<ZZwFvyGvm0C38eBh@google.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240108112853.2574015e@gandalf.local.home>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 08, 2024 at 11:28:53AM -0500, Steven Rostedt wrote:
-> On Mon, 8 Jan 2024 11:11:29 +0000
-> Vincent Donnefort <vdonnefort@google.com> wrote:
-> 
-> > Yeah it seems that the update_pointers() is not enough. 
-> > 
-> > kbuffer_next_event(kbuf, NULL) will make sure curr is also up to date and will
-> > do the update until an event type we can read. With that change I don't see any
-> > spurious "mmiotrace_rw" on the output.
-> 
-> 
-> Ah you're right. Try this.
-> 
-> -- Steve
-> 
-> diff --git a/src/kbuffer-parse.c b/src/kbuffer-parse.c
-> index 1e1d168..5651797 100644
-> --- a/src/kbuffer-parse.c
-> +++ b/src/kbuffer-parse.c
-> @@ -180,6 +180,7 @@ static int calc_index(struct kbuffer *kbuf, void *ptr)
->  	return (unsigned long)ptr - (unsigned long)kbuf->data;
->  }
->  
-> +static int next_event(struct kbuffer *kbuf);
->  static int __next_event(struct kbuffer *kbuf);
->  
->  /*
-> @@ -323,12 +324,8 @@ int kbuffer_refresh(struct kbuffer *kbuf)
->  	kbuf->size = (unsigned int)flags & COMMIT_MASK;
->  
->  	/* Update next to be the next element */
-> -	if (kbuf->size != old_size && kbuf->curr == old_size) {
-> -		if (kbuf->flags & KBUFFER_FL_OLD_FORMAT)
-> -			old_update_pointers(kbuf);
-> -		else
-> -			update_pointers(kbuf);
-> -	}
-> +	if (kbuf->size != old_size && kbuf->curr == kbuf->next)
-> +		next_event(kbuf);
->  
->  	return 0;
->  }
+On Mon, 8 Jan 2024 14:25:03 +0000
+Vincent Donnefort <vdonnefort@google.com> wrote:
 
-That worked!
+> [...]
+> 
+> > +/**
+> > + * trace_mmap - try to mmap the ring buffer
+> > + * @fd: The file descriptor to the trace_pipe_raw file
+> > + * @kbuf: The kbuffer to load the subbuffer to
+> > + *
+> > + * Will try to mmap the ring buffer if it is supported, and
+> > + * if not, will return NULL, otherwise it returns a descriptor
+> > + * to handle the mapping.
+> > + */
+> > +__hidden void *trace_mmap(int fd, struct kbuffer *kbuf)
+> > +{
+> > +	struct trace_mmap *tmap;
+> > +	int page_size;
+> > +	void *meta;
+> > +	void *data;
+> > +
+> > +	page_size = getpagesize();
+> > +	meta = mmap(NULL, page_size, PROT_READ, MAP_SHARED, fd, 0);
+> > +	if (meta == MAP_FAILED)
+> > +		return NULL;
+> > +
+> > +	tmap = calloc(1, sizeof(*tmap));
+> > +	if (!tmap) {
+> > +		munmap(meta, page_size);
+> > +		return NULL;
+> > +	}
+> > +
+> > +	tmap->kbuf = kbuffer_dup(kbuf);
+> > +	if (!tmap->kbuf) {
+> > +		munmap(meta, page_size);
+> > +		free(tmap);
+> > +	}
+> > +
+> > +	tmap->fd = fd;
+> > +
+> > +	tmap->map = meta;
+> > +	tmap->meta_len = tmap->map->meta_page_size;
+> > +
+> > +	if (tmap->meta_len > page_size) {
+> > +		munmap(meta, page_size);
+> > +		meta = mmap(NULL, tmap->meta_len, PROT_READ, MAP_SHARED, fd, 0);
+> > +		if (meta == MAP_FAILED) {
+> > +			kbuffer_free(tmap->kbuf);
+> > +			free(tmap);
+> > +			return NULL;
+> > +		}
+> > +		tmap->map = meta;
+> > +	}
+> > +
+> > +	tmap->data_pages = meta + tmap->meta_len;
+> > +
+> > +	tmap->data_len = tmap->map->subbuf_size * tmap->map->nr_subbufs;
+> > +
+> > +	tmap->data = mmap(NULL, tmap->data_len, PROT_READ, MAP_SHARED,
+> > +			  fd, tmap->meta_len);
+> > +	if (tmap->data == MAP_FAILED) {
+> > +		munmap(meta, tmap->meta_len);
+> > +		kbuffer_free(tmap->kbuf);
+> > +		free(tmap);
+> > +		return NULL;
+> > +	}
+> > +
+> > +	tmap->last_idx = tmap->map->reader.id;
+> > +
+> > +	data = tmap->data + tmap->map->subbuf_size * tmap->last_idx;
+> > +	kbuffer_load_subbuffer(kbuf, data);
+> > +
+> > +	/*
+> > +	 * The page could have left over data on it that was already
+> > +	 * consumed. Move the "read" forward in that case.
+> > +	 */
+> > +	if (tmap->map->reader.read) {
+> > +		int size = kbuffer_start_of_data(kbuf) + tmap->map->reader.read;
+> > +		char tmpbuf[size];
+> > +		kbuffer_read_buffer(kbuf, tmpbuf, size);  
+> 
+> It does not seem to update the kbuf timestamp. To observe the problem I did:
+> 
+> ### Create few events on the page
+> 
+> $ echo 0 > /sys/kernel/tracing/trace
+> $ <read ring-buffer>
+> $ cat /proc/uptime | awk '{print $1}' > /sys/kernel/debug/tracing/trace_marker
+> <...>-2305 279515.453542096     print: tracing_mark_write: 279515.33
+> <...>-2307 279522.090413680     print: tracing_mark_write: 279521.97
+> <...>-2309 279522.960932976     print: tracing_mark_write: 279522.85
+> $ <unmap and close ring-buffer>
+> 
+> 
+> ### Re-map again the ring-buffer to trigger the fast-forward
+> 
+> $ <read ring-buffer>
+>   before fast-forward kbuf->timestamp=279515453542096
+>   after fast-forward kbuf->timestamp=279515453542096
+> $ cat /proc/uptime | awk '{print $1}' > /sys/kernel/debug/tracing/trace_marker
+> <...>-2312 279549.725524688     print: tracing_mark_write: 279557.12
+> 
+> The timestamp above is a few seconds off, which I believe might be due to an
+> outdated kbuf->timestamp.
+> 
+
+Bah, it looks like we can't just simply copy. Can you try this patch?
+
+-- Steve
+
+diff --git a/src/kbuffer-parse.c b/src/kbuffer-parse.c
+index 1e1d168..192925a 100644
+--- a/src/kbuffer-parse.c
++++ b/src/kbuffer-parse.c
+@@ -961,19 +961,12 @@ kbuffer_raw_get(struct kbuffer *kbuf, void *subbuf, struct kbuffer_raw_info *inf
+  */
+ int kbuffer_read_buffer(struct kbuffer *kbuf, void *buffer, int len)
+ {
+-	int subbuf_size = kbuf->start + kbuf->size;
+ 	unsigned long long ts;
+ 	unsigned int type_len_ts;
+ 	bool do_swap = false;
+ 	int last_next;
+ 	int save_curr;
+ 
+-	if (!kbuf->curr && len >= subbuf_size) {
+-		memcpy(buffer, kbuf->subbuffer, subbuf_size);
+-		set_curr_to_end(kbuf);
+-		return kbuf->size;
+-	}
+-
+ 	/* Are we at the end of the buffer */
+ 	if (kbuf->curr >= kbuf->size)
+ 		return 0;
+@@ -996,24 +989,13 @@ int kbuffer_read_buffer(struct kbuffer *kbuf, void *buffer, int len)
+ 
+ 	save_curr = kbuf->curr;
+ 
+-	/* Copy the rest of the buffer if it fits */
+-	if (len >= kbuf->size - kbuf->curr) {
+-		set_curr_to_end(kbuf);
+-		last_next = kbuf->size;
+-	} else {
+-		/*
+-		 * The length doesn't hold the rest,
+-		 * need to find the last that fits
+-		 */
++	/* Due to timestamps, we must save the current next to use */
++	last_next = kbuf->next;
+ 
+-		/* Due to timestamps, we must save the current next to use */
++	while (len >= kbuf->next - save_curr) {
+ 		last_next = kbuf->next;
+-
+-		while (len >= kbuf->next - save_curr) {
+-			last_next = kbuf->next;
+-			if (!kbuffer_next_event(kbuf, &ts))
+-				break;
+-		}
++		if (!kbuffer_next_event(kbuf, &ts))
++			break;
+ 	}
+ 
+ 	len = last_next - save_curr;
