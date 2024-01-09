@@ -1,15 +1,15 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDBF146456
-	for <linux-trace-devel@vger.kernel.org>; Mon,  8 Jan 2024 23:40:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52751C433C7
-	for <linux-trace-devel@vger.kernel.org>; Mon,  8 Jan 2024 23:40:27 +0000 (UTC)
-Date: Mon, 8 Jan 2024 18:41:23 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D279191
+	for <linux-trace-devel@vger.kernel.org>; Tue,  9 Jan 2024 00:17:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 890F3C433C7
+	for <linux-trace-devel@vger.kernel.org>; Tue,  9 Jan 2024 00:17:02 +0000 (UTC)
+Date: Mon, 8 Jan 2024 19:17:59 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2] trace-cmd stat: Add sub-buffer size
-Message-ID: <20240108184123.62f9be6b@gandalf.local.home>
+Subject: [PATCH] trace-cmd report: Add interrupt info in output
+Message-ID: <20240108191759.5fc4ecda@gandalf.local.home>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -22,74 +22,56 @@ Content-Transfer-Encoding: 7bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Show the sub-buffer size if the file system supports it and it is different
-than the architecture page size.
+In the Linux kernel version 3.3 the default output showed the irq information
+that is typically only for the latency format. That is, it shows:
 
-This requires libtracefs 1.8, so update the Makefile with that
-requirement.
+               <idle>-0     [000] d..2    49.309305: cpuidle_get_driver <-cpuidle_idle_call
+               <idle>-0     [000] d..2    49.309307: mwait_idle <-cpu_idle
+               <idle>-0     [000] d..2    49.309309: need_resched <-mwait_idle
+
+Instead of:
+
+               <idle>-0     [000]     49.309305: cpuidle_get_driver <-cpuidle_idle_call
+               <idle>-0     [000]     49.309307: mwait_idle <-cpu_idle
+               <idle>-0     [000]     49.309309: need_resched <-mwait_idle
+
+After 12 years, it's about time that the default trace-cmd report output did
+the same!
+
+This does change the output format and possibly can break anything that
+tries to parse it.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
-Changes since v1: https://lore.kernel.org/linux-trace-devel/20231228222008.2742615a@rorschach.local.home
+ tracecmd/trace-read.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-- Added requirement of libtracefs version 1.8 in Makefile and meson.build.
-
- Makefile              | 2 +-
- meson.build           | 2 +-
- tracecmd/trace-stat.c | 7 +++++++
- 3 files changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index 7058159cf51b..5429859760af 100644
---- a/Makefile
-+++ b/Makefile
-@@ -23,7 +23,7 @@ export LIBTRACECMD_VERSION
- VERSION_FILE = ltc_version.h
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index f645c053..1dea54c4 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -870,14 +870,13 @@ void trace_show_data(struct tracecmd_input *handle, struct tep_record *record)
+ 			TEP_PRINT_PID,
+ 			TEP_PRINT_CPU);
  
- LIBTRACEEVENT_MIN_VERSION = 1.5
--LIBTRACEFS_MIN_VERSION = 1.6
-+LIBTRACEFS_MIN_VERSION = 1.8
+-	if (latency_format) {
+-		if (raw_format)
+-			trace_seq_printf(&s, "-0x%x",
+-					 tep_data_flags(pevent, record));
+-		else
+-			tep_print_event(pevent, &s, record, "%s",
+-					TEP_PRINT_LATENCY);
+-	}
++	if (raw_format)
++		trace_seq_printf(&s, "-0x%x",
++				 tep_data_flags(pevent, record));
++	else
++		tep_print_event(pevent, &s, record,
++				latency_format ? "%s" : " %s",
++				TEP_PRINT_LATENCY);
  
- MAKEFLAGS += --no-print-directory
+ 	tep_print_event(pevent, &s, record, tfmt, TEP_PRINT_TIME);
  
-diff --git a/meson.build b/meson.build
-index fbdf016f67a7..aadfe277b5be 100644
---- a/meson.build
-+++ b/meson.build
-@@ -25,7 +25,7 @@ htmldir = join_paths(prefixdir, get_option('htmldir'))
- conf = configuration_data()
- 
- libtraceevent_dep = dependency('libtraceevent', version: '>= 1.5.0', required: true)
--libtracefs_dep = dependency('libtracefs', version: '>= 1.6.0', required: true)
-+libtracefs_dep = dependency('libtracefs', version: '>= 1.8.0', required: true)
- 
- threads_dep = dependency('threads', required: true)
- dl_dep = cc.find_library('dl', required : false)
-diff --git a/tracecmd/trace-stat.c b/tracecmd/trace-stat.c
-index 9a6e22254b48..1d95d9934b47 100644
---- a/tracecmd/trace-stat.c
-+++ b/tracecmd/trace-stat.c
-@@ -633,6 +633,8 @@ static void report_buffers(struct buffer_instance *instance)
- 	char *str;
- 	char *cont;
- 	char file[FILE_SIZE];
-+	int pagesize;
-+	int bufsize;
- 	int cpu;
- 
- 	str = tracefs_instance_file_read(instance->tracefs, "buffer_size_kb", NULL);
-@@ -678,6 +680,11 @@ static void report_buffers(struct buffer_instance *instance)
- 	printf("\nBuffer total size in kilobytes:\n");
- 	printf("   %s\n", str);
- 
-+	pagesize = getpagesize();
-+	bufsize = tracefs_instance_get_subbuf_size(instance->tracefs);
-+	if (bufsize > 0 && bufsize * 1024 != pagesize)
-+		printf("\nSub-buffer size in kilobytes:\n   %d\n", bufsize);
-+
-  out:
- 	free(str);
- }
 -- 
-2.43.0
+2.42.0
 
