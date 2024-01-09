@@ -1,15 +1,16 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D279191
-	for <linux-trace-devel@vger.kernel.org>; Tue,  9 Jan 2024 00:17:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 890F3C433C7
-	for <linux-trace-devel@vger.kernel.org>; Tue,  9 Jan 2024 00:17:02 +0000 (UTC)
-Date: Mon, 8 Jan 2024 19:17:59 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88C122E62C
+	for <linux-trace-devel@vger.kernel.org>; Tue,  9 Jan 2024 02:54:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C33A5C433F1
+	for <linux-trace-devel@vger.kernel.org>; Tue,  9 Jan 2024 02:54:07 +0000 (UTC)
+Date: Mon, 8 Jan 2024 21:55:04 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd report: Add interrupt info in output
-Message-ID: <20240108191759.5fc4ecda@gandalf.local.home>
+Subject: [PATCH] libtracefs sql: Rename TIMESTAMP_USECS_DELTA to
+ TIMESTAMP_DELTA_USECS
+Message-ID: <20240108215504.27208750@gandalf.local.home>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -22,56 +23,60 @@ Content-Transfer-Encoding: 7bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-In the Linux kernel version 3.3 the default output showed the irq information
-that is typically only for the latency format. That is, it shows:
+The few times I used the TIMESTAMP_USECS_DELTA I kept writing it as
+TIMESTAMP_DELTA_USECS. It makes more sense to add the USECS afterward, and
+it's just converting the TIMESTAMP_DELTA to use USECS.
 
-               <idle>-0     [000] d..2    49.309305: cpuidle_get_driver <-cpuidle_idle_call
-               <idle>-0     [000] d..2    49.309307: mwait_idle <-cpu_idle
-               <idle>-0     [000] d..2    49.309309: need_resched <-mwait_idle
+That is, we have:
 
-Instead of:
+ TIMESTAMP and TIMESTAMP_USECS
 
-               <idle>-0     [000]     49.309305: cpuidle_get_driver <-cpuidle_idle_call
-               <idle>-0     [000]     49.309307: mwait_idle <-cpu_idle
-               <idle>-0     [000]     49.309309: need_resched <-mwait_idle
+We should then have
 
-After 12 years, it's about time that the default trace-cmd report output did
-the same!
+ TIMSTAMP_DELTA and TIMESTAMP_DELTA_USECS
 
-This does change the output format and possibly can break anything that
-tries to parse it.
+which is just converting the TIMESTAMP_DELTA into microseconds from
+nanoseconds like TIMESTAMP_USECS converts TIMESTAMP into microseconds from
+nanoseconds.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- tracecmd/trace-read.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ Documentation/libtracefs-sql.txt | 4 ++--
+ src/tracefs-sqlhist.c            | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
-index f645c053..1dea54c4 100644
---- a/tracecmd/trace-read.c
-+++ b/tracecmd/trace-read.c
-@@ -870,14 +870,13 @@ void trace_show_data(struct tracecmd_input *handle, struct tep_record *record)
- 			TEP_PRINT_PID,
- 			TEP_PRINT_CPU);
+diff --git a/Documentation/libtracefs-sql.txt b/Documentation/libtracefs-sql.txt
+index 7921509f3825..806fbe466658 100644
+--- a/Documentation/libtracefs-sql.txt
++++ b/Documentation/libtracefs-sql.txt
+@@ -134,12 +134,12 @@ Because it is so common to have:
+    (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS)
+ --
  
--	if (latency_format) {
--		if (raw_format)
--			trace_seq_printf(&s, "-0x%x",
--					 tep_data_flags(pevent, record));
--		else
--			tep_print_event(pevent, &s, record, "%s",
--					TEP_PRINT_LATENCY);
--	}
-+	if (raw_format)
-+		trace_seq_printf(&s, "-0x%x",
-+				 tep_data_flags(pevent, record));
-+	else
-+		tep_print_event(pevent, &s, record,
-+				latency_format ? "%s" : " %s",
-+				TEP_PRINT_LATENCY);
+-The above can be represented with *TIMESTAMP_USECS_DELTA* or if nanoseconds are OK, you can
++The above can be represented with *TIMESTAMP_DELTA_USECS* or if nanoseconds are OK, you can
+ use *TIMESTAMP_DELTA*. That is, the previous select can also be represented by:
  
- 	tep_print_event(pevent, &s, record, tfmt, TEP_PRINT_TIME);
+ [source,c]
+ --
+-select start.pid, TIMESTAMP_USECS_DELTA as lat from sched_waking as start JOIN sched_switch as end ON start.pid = end.next_pid
++select start.pid, TIMESTAMP_DELTA_USECS as lat from sched_waking as start JOIN sched_switch as end ON start.pid = end.next_pid
+ --
  
+ 
+diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
+index e7a4158d1dc2..ecf09ce562ce 100644
+--- a/src/tracefs-sqlhist.c
++++ b/src/tracefs-sqlhist.c
+@@ -40,7 +40,7 @@ enum field_type {
+ 	for (expr = (table)->fields; expr; expr = (field)->next)
+ 
+ #define TIMESTAMP_COMPARE "TIMESTAMP_DELTA"
+-#define TIMESTAMP_USECS_COMPARE "TIMESTAMP_USECS_DELTA"
++#define TIMESTAMP_USECS_COMPARE "TIMESTAMP_DELTA_USECS"
+ #define EVENT_START	"__START_EVENT__"
+ #define EVENT_END	"__END_EVENT__"
+ #define TIMESTAMP_NSECS "TIMESTAMP"
 -- 
-2.42.0
+2.43.0
 
