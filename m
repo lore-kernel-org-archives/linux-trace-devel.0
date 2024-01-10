@@ -1,22 +1,24 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F893D98D
-	for <linux-trace-devel@vger.kernel.org>; Tue,  9 Jan 2024 20:50:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42C7EC433F1;
-	Tue,  9 Jan 2024 20:50:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B1461870
+	for <linux-trace-devel@vger.kernel.org>; Wed, 10 Jan 2024 03:00:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07B89C43399;
+	Wed, 10 Jan 2024 03:00:17 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rNJ45-00000000JKI-15NV;
-	Tue, 09 Jan 2024 15:51:13 -0500
+	id 1rNOqD-00000000LLe-2RFp;
+	Tue, 09 Jan 2024 22:01:17 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: Vincent Donnefort <vdonnefort@google.com>,
 	"Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 0/4] libtracefs: More updates and fixes to mmap code
-Date: Tue,  9 Jan 2024 15:48:55 -0500
-Message-ID: <20240109205112.74225-1-rostedt@goodmis.org>
+Subject: [PATCH 2/7] libtracefs: Have tracefs_mmap_read() include subbuf meta data
+Date: Tue,  9 Jan 2024 21:51:46 -0500
+Message-ID: <20240110030116.81837-3-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240110030116.81837-1-rostedt@goodmis.org>
+References: <20240110030116.81837-1-rostedt@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -27,19 +29,34 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Changed the iterator to use memory mapping when possible, which also
-triggered bugs in the unit tests. Those were fixed here too.
+The tracefs_cpu_read() returns tracefs_mmap_read() when the tcpu is mapped.
+But tracefs_cpu_read() is supposed to return the amount that was read, which
+includes the sub-buffer meta data. But kbuffer_read_buffer() only returns
+the amount of data that was read and does not include the sub-buffer meta
+data.
 
-Steven Rostedt (Google) (4):
-  libtracefs: Unmap mmap mapping on tracefs_cpu close
-  libtracefs: Use tracefs_cpu_*_buf() calls for iterator
-  libtracefs: Use mmapping for iterating raw events
-  libtracefs: Have tracefs_cpu_flush(_buf)() use mapping
+Fixes: 2ed14b59 ("libtracefs: Add ring buffer memory mapping APIs")
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ src/tracefs-mmap.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
- src/tracefs-events.c | 57 +++++++++++++-------------------------------
- src/tracefs-record.c | 11 +++++++++
- 2 files changed, 27 insertions(+), 41 deletions(-)
-
+diff --git a/src/tracefs-mmap.c b/src/tracefs-mmap.c
+index 0f90f51e9339..f481bda37eaf 100644
+--- a/src/tracefs-mmap.c
++++ b/src/tracefs-mmap.c
+@@ -207,5 +207,10 @@ __hidden int trace_mmap_read(void *mapping, void *buffer)
+ 		return ret;
+ 
+ 	/* Update the buffer */
+-	return kbuffer_read_buffer(kbuf, buffer, tmap->map->subbuf_size);
++	ret = kbuffer_read_buffer(kbuf, buffer, tmap->map->subbuf_size);
++	if (ret <= 0)
++		return ret;
++
++	/* This needs to include the size of the meta data too */
++	return ret + kbuffer_start_of_data(kbuf);
+ }
 -- 
 2.43.0
 
