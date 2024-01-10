@@ -1,58 +1,112 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A193626296
-	for <linux-trace-devel@vger.kernel.org>; Wed, 10 Jan 2024 20:55:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC13BC433F1;
-	Wed, 10 Jan 2024 20:55:28 +0000 (UTC)
-Date: Wed, 10 Jan 2024 15:56:29 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F2334F88A
+	for <linux-trace-devel@vger.kernel.org>; Wed, 10 Jan 2024 23:02:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26020C433F1;
+	Wed, 10 Jan 2024 23:02:03 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.97)
+	(envelope-from <rostedt@rostedt.homelinux.com>)
+	id 1rNhbE-00000000Ut3-2nol;
+	Wed, 10 Jan 2024 18:03:04 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Giulio Benetti <giulio.benetti@benettiengineering.com>
-Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH] libtracefs meson: build tracefs-mmap by default
-Message-ID: <20240110155629.05345bc8@gandalf.local.home>
-In-Reply-To: <20240110203925.266999-1-giulio.benetti@benettiengineering.com>
-References: <20240110203925.266999-1-giulio.benetti@benettiengineering.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To: linux-trace-devel@vger.kernel.org
+Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Subject: [PATCH 2/2] trace-cmd record: Reset buffer_size and subbuf_size when done
+Date: Wed, 10 Jan 2024 18:00:29 -0500
+Message-ID: <20240110230303.118668-3-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240110230303.118668-1-rostedt@goodmis.org>
+References: <20240110230303.118668-1-rostedt@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Wed, 10 Jan 2024 21:39:25 +0100
-Giulio Benetti <giulio.benetti@benettiengineering.com> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> Accordingly to Makefile let's add tracefs-mmap.c to build, this is needed
-> for linking by other object files.
-> 
-> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+Save the current buffer_size_kb and subbuf_size_kb files before updating
+them, and put them back to what they were when finished with recording.
 
-Bah! I need to start remembering to update the meson.build file when adding
-new files.
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ tracecmd/include/trace-local.h |  2 ++
+ tracecmd/trace-record.c        | 24 ++++++++++++++++++++++++
+ 2 files changed, 26 insertions(+)
 
-Thanks for the change. It'll go into 1.8.1 which I'll wait till next week
-to see what else may have broken.
-
--- Steve
-
-> ---
->  src/meson.build | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/src/meson.build b/src/meson.build
-> index 5b76554..f7a98b9 100644
-> --- a/src/meson.build
-> +++ b/src/meson.build
-> @@ -11,6 +11,7 @@ sources= [
->     'tracefs-instance.c',
->     'tracefs-kprobes.c',
->     'tracefs-marker.c',
-> +   'tracefs-mmap.c',
->     'tracefs-record.c',
->     'tracefs-sqlhist.c',
->     'tracefs-tools.c',
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index 03738c518aa8..55934f98aa32 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -286,7 +286,9 @@ struct buffer_instance {
+ 	int			tracing_on_init_val;
+ 	int			tracing_on_fd;
+ 	int			buffer_size;
++	int			old_buffer_size;
+ 	int			subbuf_size;
++	int			old_subbuf_size;
+ 	int			cpu_count;
+ 
+ 	int			proxy_fd;
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 4646d8eb41f6..762afba4703a 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -2522,6 +2522,26 @@ static void update_reset_triggers(void)
+ 	}
+ }
+ 
++static void reset_buffer_files_instance(struct buffer_instance *instance)
++{
++	if (instance->old_buffer_size != instance->buffer_size)
++		tracefs_instance_set_buffer_size(instance->tracefs,
++						 instance->old_buffer_size, -1);
++
++	if (instance->old_subbuf_size != instance->subbuf_size)
++		tracefs_instance_set_subbuf_size(instance->tracefs,
++						 instance->old_subbuf_size);
++}
++
++static void reset_buffer_files(void)
++{
++	struct buffer_instance *instance;
++
++	for_all_instances(instance) {
++		reset_buffer_files_instance(instance);
++	}
++}
++
+ static void update_reset_files(void)
+ {
+ 	struct reset_file *reset;
+@@ -2536,6 +2556,8 @@ static void update_reset_files(void)
+ 		free(reset->reset);
+ 		free(reset);
+ 	}
++
++	reset_buffer_files();
+ }
+ 
+ static void
+@@ -5110,6 +5132,7 @@ static void set_buffer_size_instance(struct buffer_instance *instance)
+ 	if (buffer_size < 0)
+ 		die("buffer size must be positive");
+ 
++	instance->old_buffer_size = tracefs_instance_get_buffer_size(instance->tracefs, 0);
+ 	ret = tracefs_instance_set_buffer_size(instance->tracefs, buffer_size, -1);
+ 	if (ret < 0)
+ 		warning("Can't set buffer size");
+@@ -5129,6 +5152,7 @@ static void set_subbuf_size_instance(struct buffer_instance *instance)
+ 	if (subbuf_size < 0)
+ 		die("sub-buffer size must be positive");
+ 
++	instance->old_subbuf_size = tracefs_instance_get_subbuf_size(instance->tracefs);
+ 	ret = tracefs_instance_set_subbuf_size(instance->tracefs, subbuf_size);
+ 	if (ret < 0)
+ 		warning("Can't set sub-buffer size");
+-- 
+2.43.0
 
