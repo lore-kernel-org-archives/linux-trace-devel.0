@@ -1,15 +1,16 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DAB86107
-	for <linux-trace-devel@vger.kernel.org>; Wed, 10 Jan 2024 04:16:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D5A7C433F1
-	for <linux-trace-devel@vger.kernel.org>; Wed, 10 Jan 2024 04:16:52 +0000 (UTC)
-Date: Tue, 9 Jan 2024 23:17:51 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78AFC4C3BD
+	for <linux-trace-devel@vger.kernel.org>; Wed, 10 Jan 2024 15:38:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A72AFC43390;
+	Wed, 10 Jan 2024 15:38:41 +0000 (UTC)
+Date: Wed, 10 Jan 2024 10:39:41 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd reset: Fix -d option
-Message-ID: <20240109231751.1e49addd@gandalf.local.home>
+Cc: pierre.gondois@arm.com
+Subject: [PATCH] libtracecmd rbtree: Fix deletion of leaf nodes
+Message-ID: <20240110103941.2e26da60@gandalf.local.home>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -22,40 +23,71 @@ Content-Transfer-Encoding: 7bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-There was a bug where a "trace-cmd record -B foo" would delete the foo
-instance when the record was finished even if that instance previously
-existed. But that fix was a bit too agreesive. It changed two places:
+In the rbtree deletion, the deletion had the logic:
 
-1) where the bug was, in remove_instance()
+	if (!node->left || !node->right)
+		y = node;
+	else
+		y = next_node(node);
 
-2) where the bug was not, in tracecmd_remove_instance() that uses the
-instance->flags to know if it should be deleted or not.
+	if (y->left)
+		x = y->left;
+	else
+		x = y->right;
 
-The "trace-cmd reset" uses the latter function and if the "-d" option is
-set, it is supposed to delete the instance. But because that function was
-changed to only delete it if it created it (which reset does not do), it
-broke it.
+	x->parent = y->parent;
 
-Fixes: 9d6f3baa3 ("trace-cmd record/extract: Do not destroy existing instances")
+Where if the node had both right and left, the y returned would not have
+children. This is fine, but the x would be NULL. In that case, do not update
+the parent of x. But instead, skip over and continue the work. As x->parent
+would be the same as y->parent, instead of checking the x->parent (where x
+could be NULL), check y->parent, which is already known to be the same as
+x->parent if x is not NULL.
+
+Also add another check_tree() at the end of the deletion routine.
+
+Fixes: 5274db32a ("libtracecmd: Use an rbtree for mapping of cache pages")
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=218357
+Reported-by: pierre.gondois@arm.com
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- tracecmd/trace-record.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ lib/trace-cmd/trace-rbtree.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 16b73776..3114a664 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -5419,8 +5419,7 @@ void tracecmd_remove_instances(void)
- 			close(instance->tracing_on_fd);
- 			instance->tracing_on_fd = 0;
- 		}
--		if (tracefs_instance_is_new(instance->tracefs))
--			tracefs_instance_destroy(instance->tracefs);
-+		tracefs_instance_destroy(instance->tracefs);
+diff --git a/lib/trace-cmd/trace-rbtree.c b/lib/trace-cmd/trace-rbtree.c
+index 24beabec..90671819 100644
+--- a/lib/trace-cmd/trace-rbtree.c
++++ b/lib/trace-cmd/trace-rbtree.c
+@@ -314,7 +314,7 @@ void trace_rbtree_delete(struct trace_rbtree *tree, struct trace_rbtree_node *no
+ 	struct trace_rbtree_node *x, *y;
+ 	bool do_fixup = false;
+ 
+-	if (!node->left && !node->right) {
++	if (!node->left && !node->right && !node->parent) {
+ 		tree->node = NULL;
+ 		goto out;
  	}
+@@ -329,9 +329,10 @@ void trace_rbtree_delete(struct trace_rbtree *tree, struct trace_rbtree_node *no
+ 	else
+ 		x = y->right;
+ 
+-	x->parent = y->parent;
++	if (x)
++		x->parent = y->parent;
+ 
+-	if (!x->parent) {
++	if (!y->parent) {
+ 		tree->node = x;
+ 	} else {
+ 		if (is_left(y))
+@@ -367,6 +368,7 @@ void trace_rbtree_delete(struct trace_rbtree *tree, struct trace_rbtree_node *no
+  out:
+ 	node->parent = node->left = node->right = NULL;
+ 	tree->nr_nodes--;
++	check_tree(tree);
  }
  
+ __hidden struct trace_rbtree_node *trace_rbtree_next(struct trace_rbtree *tree,
 -- 
 2.42.0
 
