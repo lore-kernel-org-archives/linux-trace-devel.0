@@ -1,111 +1,170 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F58258AAE
-	for <linux-trace-devel@vger.kernel.org>; Thu, 11 Jan 2024 22:20:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4DB7C43390;
-	Thu, 11 Jan 2024 22:20:57 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rO3R3-00000000eGd-3DFG;
-	Thu, 11 Jan 2024 17:22:01 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1F8F58AA6
+	for <linux-trace-devel@vger.kernel.org>; Thu, 11 Jan 2024 22:24:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 881ABC433C7
+	for <linux-trace-devel@vger.kernel.org>; Thu, 11 Jan 2024 22:24:27 +0000 (UTC)
+Date: Thu, 11 Jan 2024 17:25:30 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-trace-devel@vger.kernel.org
-Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 1/3] libtracecmd: Use cpu_data[cpu]->cpus and not ->max_cpu
-Date: Thu, 11 Jan 2024 17:15:36 -0500
-Message-ID: <20240111222201.154686-2-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240111222201.154686-1-rostedt@goodmis.org>
-References: <20240111222201.154686-1-rostedt@goodmis.org>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd utests: Add more tests to test the iterating
+Message-ID: <20240111172530.5a54859e@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The handle->cpu_data[cpu]->max_cpu is the largest number CPU that is
-recorded in the trace, where as cpu_data[cpu]->cpus is the number of
-handle->cpu_data[] entries.
+Add more tests to test tracecmd_iterate_events() and
+tracecmd_iterate_events_reverse(), as well as stopping and restarting.
 
-The iterator loops mistakenly used the max_cpu field instead of the cpus
-field and this can cause errors if the two are not the same. This is the
-case if one of the CPUs contained no data, it will not have a cpu_data[]
-entry and will be skipped.
-
-Fixes: 2cb6cc2f4 ("tracecmd library: Add tracecmd_iterate_events()")
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- lib/trace-cmd/trace-input.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ utest/tracecmd-utest.c | 110 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 110 insertions(+)
 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 6297e34bde38..0dc3dbdc676a 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -2819,11 +2819,11 @@ int tracecmd_iterate_events(struct tracecmd_input *handle,
- 		return -1;
- 	}
+diff --git a/utest/tracecmd-utest.c b/utest/tracecmd-utest.c
+index d67678e36554..5dce3e94df6a 100644
+--- a/utest/tracecmd-utest.c
++++ b/utest/tracecmd-utest.c
+@@ -461,6 +461,15 @@ static int read_events(struct tracecmd_input *handle, struct tep_record *record,
+ 	return 0;
+ }
  
--	records = calloc(handle->max_cpu, sizeof(*records));
-+	records = calloc(handle->cpus, sizeof(*records));
- 	if (!records)
- 		return -1;
++static int read_events_10(struct tracecmd_input *handle, struct tep_record *record,
++			  int cpu, void *data)
++{
++	struct callback_data *cd = data;
++
++	read_events(handle, record, cpu, data);
++	return  cd->counter < 10 ? 0 : 1;
++}
++
+ static void test_trace_library_read(void)
+ {
+ 	struct tracecmd_input *handle;
+@@ -488,6 +497,103 @@ static void test_trace_library_read(void)
+ 	trace_seq_destroy(&data.seq);
+ }
  
--	for (cpu = 0; cpu < handle->max_cpu; cpu++) {
-+	for (cpu = 0; cpu < handle->cpus; cpu++) {
- 		if (cpus && !CPU_ISSET_S(cpu, cpu_size, cpus))
- 			continue;
- 
-@@ -2832,7 +2832,7 @@ int tracecmd_iterate_events(struct tracecmd_input *handle,
- 
- 	do {
- 		next_cpu = -1;
--		for (cpu = 0; cpu < handle->max_cpu; cpu++) {
-+		for (cpu = 0; cpu < handle->cpus; cpu++) {
- 			record = records[cpu];
- 			if (!record)
- 				continue;
-@@ -2855,7 +2855,7 @@ int tracecmd_iterate_events(struct tracecmd_input *handle,
- 	} while (next_cpu >= 0 && ret == 0);
- 
- 	/* Need to unlock and free the records */
--	for (cpu = 0; cpu < handle->max_cpu; cpu++) {
-+	for (cpu = 0; cpu < handle->cpus; cpu++) {
- 		int offset;
- 
- 		if (!records[cpu])
-@@ -3025,7 +3025,7 @@ int tracecmd_iterate_events_reverse(struct tracecmd_input *handle,
- 	struct tep_record **records;
- 	struct tep_record *record;
- 	int next_cpu;
--	int max_cpus = handle->max_cpu;
-+	int max_cpus = handle->cpus;
- 	int cpu;
- 	int ret = 0;
- 
-@@ -3119,7 +3119,7 @@ int tracecmd_iterate_events_multi(struct tracecmd_input **handles,
- 
- 	for (i = 0; i < nr_handles; i++) {
- 		handle = handles[i];
--		cpus += handle->max_cpu;
-+		cpus += handle->cpus;
- 	}
- 
- 	records = calloc(cpus, sizeof(*records));
-@@ -3129,7 +3129,7 @@ int tracecmd_iterate_events_multi(struct tracecmd_input **handles,
- 	for (i = 0; i < nr_handles; i++) {
- 		handle = handles[i];
- 		handle->start_cpu = all_cpus;
--		for (cpu = 0; cpu < handle->max_cpu; cpu++) {
-+		for (cpu = 0; cpu < handle->cpus; cpu++) {
- 			records[all_cpus + cpu].record = tracecmd_peek_data(handle, cpu);
- 			records[all_cpus + cpu].handle = handle;
- 		}
++static void test_trace_library_read_inc(void)
++{
++	struct tracecmd_input *handle;
++	struct callback_data data;
++	struct stat st;
++	long save_count;
++	long total = 0;
++	int ret;
++
++	data.counter = 0;
++	trace_seq_init(&data.seq);
++
++	/* If the trace data is already created, just use it, otherwise make it again */
++	if (stat(TRACECMD_FILE, &st) < 0) {
++		ret = run_trace("record", TRACECMD_OUT, "-e", "sched", "sleep", "1", NULL);
++		CU_TEST(ret == 0);
++	}
++
++	/* First read all again */
++	handle = tracecmd_open(TRACECMD_FILE, 0);
++	CU_TEST(handle != NULL);
++	ret = tracecmd_iterate_events(handle, NULL, 0, read_events, &data);
++	CU_TEST(ret == 0);
++	CU_TEST(data.counter > 0);
++
++	/* Save the counter */
++	save_count = data.counter;
++
++	tracecmd_iterate_reset(handle);
++
++	/* Read 10 at a time */
++	do {
++		data.counter = 0;
++		ret = tracecmd_iterate_events(handle, NULL, 0, read_events_10, &data);
++		CU_TEST(ret >= 0);
++		CU_TEST(data.counter <= 10);
++		total += data.counter;
++	} while (data.counter);
++	CU_TEST(ret == 0);
++
++	CU_TEST(total == save_count);
++
++	trace_seq_destroy(&data.seq);
++	tracecmd_close(handle);
++}
++
++static void test_trace_library_read_back(void)
++{
++	struct tracecmd_input *handle;
++	struct callback_data data;
++	struct stat st;
++	long save_count;
++	int ret;
++
++	data.counter = 0;
++	trace_seq_init(&data.seq);
++
++	/* If the trace data is already created, just use it, otherwise make it again */
++	if (stat(TRACECMD_FILE, &st) < 0) {
++		ret = run_trace("record", TRACECMD_OUT, "-e", "sched", "sleep", "1", NULL);
++		CU_TEST(ret == 0);
++	}
++
++	/* First read all again */
++	handle = tracecmd_open(TRACECMD_FILE, 0);
++	CU_TEST(handle != NULL);
++	ret = tracecmd_iterate_events(handle, NULL, 0, read_events, &data);
++	CU_TEST(ret == 0);
++	CU_TEST(data.counter > 0);
++
++	/* Save the counter */
++	save_count = data.counter;
++
++	tracecmd_iterate_reset(handle);
++
++	/* Read backwards */
++	data.counter = 0;
++	ret = tracecmd_iterate_events_reverse(handle, NULL, 0, read_events, &data, false);
++	CU_TEST(ret == 0);
++	CU_TEST(data.counter == save_count);
++
++	/* Read forward again */
++	data.counter = 0;
++	ret = tracecmd_iterate_events(handle, NULL, 0, read_events, &data);
++	CU_TEST(ret == 0);
++	CU_TEST(data.counter == save_count);
++
++	/* Read backwards from where we left off */
++	data.counter = 0;
++	ret = tracecmd_iterate_events_reverse(handle, NULL, 0, read_events, &data, true);
++	CU_TEST(ret == 0);
++	CU_TEST(data.counter == save_count);
++
++	trace_seq_destroy(&data.seq);
++	tracecmd_close(handle);
++}
++
+ static int test_suite_destroy(void)
+ {
+ 	unlink(TRACECMD_FILE);
+@@ -540,6 +646,10 @@ void test_tracecmd_lib(void)
+ 		    test_trace_convert6);
+ 	CU_add_test(suite, "Use libraries to read file",
+ 		    test_trace_library_read);
++	CU_add_test(suite, "Use libraries to read file incremental",
++		    test_trace_library_read_inc);
++	CU_add_test(suite, "Use libraries to read file backwards",
++		    test_trace_library_read_back);
+ 	CU_add_test(suite, "Test max length",
+ 		    test_trace_record_max);
+ }
 -- 
 2.43.0
 
