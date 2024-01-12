@@ -1,21 +1,21 @@
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6622482F7
-	for <linux-trace-devel@vger.kernel.org>; Fri, 12 Jan 2024 08:40:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5A84537F1
+	for <linux-trace-devel@vger.kernel.org>; Fri, 12 Jan 2024 08:40:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BD44A1424;
-	Fri, 12 Jan 2024 00:40:46 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B144143D;
+	Fri, 12 Jan 2024 00:40:48 -0800 (PST)
 Received: from e126645.arm.com (unknown [10.57.77.163])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 82AEB3F64C;
-	Fri, 12 Jan 2024 00:39:59 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EDA563F64C;
+	Fri, 12 Jan 2024 00:40:00 -0800 (PST)
 From: Pierre Gondois <pierre.gondois@arm.com>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Pierre Gondois <pierre.gondois@arm.com>
-Subject: [PATCH 3/5] trace-cmd: split: Store instances in local list
-Date: Fri, 12 Jan 2024 09:39:43 +0100
-Message-Id: <20240112083945.1361293-4-pierre.gondois@arm.com>
+Subject: [PATCH 4/5] trace-cmd: split: Add functions to generate temp files
+Date: Fri, 12 Jan 2024 09:39:44 +0100
+Message-Id: <20240112083945.1361293-5-pierre.gondois@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240112083945.1361293-1-pierre.gondois@arm.com>
 References: <20240112083945.1361293-1-pierre.gondois@arm.com>
@@ -27,101 +27,133 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-To prepare handling of multiple instances, store instance
-handles in a local list, similarly to what is currently
-done in tracecmd/trace-read.c.
+To prepare handling of multiple instances and storing them
+in temporary files, add utility functions generating file names,
+removing files, creating files:
+- get_temp_file()
+- delete_temp_file()
+- put_temp_file()
+- touch_file()
 
-To help achieve this goal, add a 'struct handle_list' and a
-add_handle() function.
+Also make use these functions.
 
 Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
 ---
- tracecmd/trace-split.c | 44 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+ tracecmd/trace-split.c | 71 +++++++++++++++++++++++++++++++++---------
+ 1 file changed, 56 insertions(+), 15 deletions(-)
 
 diff --git a/tracecmd/trace-split.c b/tracecmd/trace-split.c
-index b6c056b5..f2edfbfc 100644
+index f2edfbfc..6ab138a2 100644
 --- a/tracecmd/trace-split.c
 +++ b/tracecmd/trace-split.c
-@@ -19,6 +19,7 @@
- #include <ctype.h>
- #include <errno.h>
+@@ -371,6 +371,52 @@ static int parse_cpu(struct tracecmd_input *handle,
+ 	return 0;
+ }
  
-+#include "list.h"
- #include "trace-local.h"
- 
- static unsigned int page_size;
-@@ -49,6 +50,26 @@ struct cpu_data {
- 	char				*file;
- };
- 
-+struct handle_list {
-+	struct list_head		list;
-+	const char			*name;
-+	struct tracecmd_input		*handle;
-+};
-+
-+static struct list_head handle_list;
-+
-+static void add_handle(struct tracecmd_input *handle, const char *name)
++static char *get_temp_file(const char *output_file, const char *name, int cpu)
 +{
-+	struct handle_list *item;
++	const char *dot;
++	char *file = NULL;
++	char *output;
++	char *base;
++	char *dir;
++	int ret;
 +
-+	item = calloc(1, sizeof(*item));
-+	if (!item)
-+		die("Failed ot allocate");
-+	item->handle = handle;
-+	item->name = name;
-+	list_add_tail(&item->list, &handle_list);
++	if (name)
++		dot = ".";
++	else
++		dot = name = "";
++
++	output = strdup(output_file);
++	/* Extract basename() first, as dirname() truncates output */
++	base = basename(output);
++	dir = dirname(output);
++
++	ret = asprintf(&file, "%s/.tmp.%s.%s%s%d", dir, base, name, dot, cpu);
++	if (ret < 0)
++		die("Failed to allocate file for %s %s %s %d", dir, base, name, cpu);
++	free(output);
++	return file;
 +}
 +
- static int create_type_len(struct tep_handle *pevent, int time, int len)
- {
- 	static int bigendian = -1;
-@@ -450,6 +471,7 @@ void trace_split (int argc, char **argv)
- 	char *output_file;
- 	enum split_types split_type = SPLIT_NONE;
- 	enum split_types type = SPLIT_NONE;
-+	int instances;
- 	int count;
- 	int repeat = 0;
- 	int percpu = 0;
-@@ -457,6 +479,8 @@ void trace_split (int argc, char **argv)
- 	int ac;
- 	int c;
- 
-+	list_head_init(&handle_list);
++static void delete_temp_file(const char *name)
++{
++	unlink(name);
++}
 +
- 	if (strcmp(argv[1], "split") != 0)
- 		usage(argv);
- 
-@@ -561,6 +585,26 @@ void trace_split (int argc, char **argv)
- 		die("Failed to allocate for %s", output);
- 	c = 1;
- 
-+	add_handle(handle, NULL);
-+	instances = tracecmd_buffer_instances(handle);
-+	if (instances) {
-+		struct tracecmd_input *new_handle;
-+		const char *name;
-+		int i;
++static void put_temp_file(char *file)
++{
++	free(file);
++}
 +
-+		for (i = 0; i < instances; i++) {
-+			name = tracecmd_buffer_instance_name(handle, i);
-+			if (!name)
-+				die("error in reading buffer instance");
-+			new_handle = tracecmd_buffer_instance_handle(handle, i);
-+			if (!new_handle) {
-+				warning("could not retrieve handle %s", name);
-+				continue;
-+			}
-+			add_handle(new_handle, name);
-+		}
++static void touch_file(const char *file)
++{
++	int fd;
++
++	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
++	if (fd < 0)
++		die("could not create file %s\n", file);
++	close(fd);
++}
++
+ static unsigned long long parse_file(struct tracecmd_input *handle,
+ 				     const char *output_file,
+ 				     unsigned long long start,
+@@ -384,19 +430,12 @@ static unsigned long long parse_file(struct tracecmd_input *handle,
+ 	struct cpu_data *cpu_data;
+ 	struct tep_record *record;
+ 	char **cpu_list;
+-	char *output;
+-	char *base;
+ 	char *file;
+-	char *dir;
+ 	int cpus;
+ 	int cpu;
++	int ret;
+ 	int fd;
+ 
+-	output = strdup(output_file);
+-	/* Extract basename() first, as dirname() truncates output */
+-	base = basename(output);
+-	dir = dirname(output);
+-
+ 	ohandle = tracecmd_copy(handle, output_file, TRACECMD_FILE_CMD_LINES, 0, NULL);
+ 
+ 	cpus = tracecmd_cpus(handle);
+@@ -405,11 +444,9 @@ static unsigned long long parse_file(struct tracecmd_input *handle,
+ 		die("Failed to allocate cpu_data for %d cpus", cpus);
+ 
+ 	for (cpu = 0; cpu < cpus; cpu++) {
+-		int ret;
++		file = get_temp_file(output_file, NULL, cpu);
++		touch_file(file);
+ 
+-		ret = asprintf(&file, "%s/.tmp.%s.%d", dir, base, cpu);
+-		if (ret < 0)
+-			die("Failed to allocate file for %s %s %d", dir, base, cpu);
+ 		fd = open(file, O_WRONLY | O_CREAT | O_TRUNC | O_LARGEFILE, 0644);
+ 		cpu_data[cpu].cpu = cpu;
+ 		cpu_data[cpu].fd = fd;
+@@ -448,12 +485,16 @@ static unsigned long long parse_file(struct tracecmd_input *handle,
+ 				current = record->ts + 1;
+ 			tracecmd_free_record(record);
+ 		}
+-		unlink(cpu_data[cpu].file);
+-		free(cpu_data[cpu].file);
 +	}
 +
- 	do {
- 		if (repeat)
- 			sprintf(output_file, "%s.%04d", output, c++);
++	for (cpu = 0; cpu < cpus; cpu++) {
++		close(cpu_data[cpu].fd);
++		delete_temp_file(cpu_data[cpu].file);
++		put_temp_file(cpu_data[cpu].file);
+ 	}
+ 	free(cpu_data);
+ 	free(cpu_list);
+-	free(output);
++
+ 	tracecmd_output_close(ohandle);
+ 
+ 	return current;
 -- 
 2.25.1
 
