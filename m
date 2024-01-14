@@ -1,26 +1,26 @@
 Received: from 3.mo552.mail-out.ovh.net (3.mo552.mail-out.ovh.net [178.33.254.192])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7119B569F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8159E5CB5
 	for <linux-trace-devel@vger.kernel.org>; Sun, 14 Jan 2024 17:17:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=benjarobin.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=benjarobin.fr
 Received: from mxplan5.mail.ovh.net (unknown [10.109.140.245])
-	by mo552.mail-out.ovh.net (Postfix) with ESMTPS id 0D3652A20E;
+	by mo552.mail-out.ovh.net (Postfix) with ESMTPS id 829AB29D99;
 	Sun, 14 Jan 2024 17:17:42 +0000 (UTC)
 Received: from benjarobin.fr (37.59.142.108) by DAG6EX2.mxp5.local
  (172.16.2.52) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Sun, 14 Jan
  2024 18:17:41 +0100
-Authentication-Results: garm.ovh; auth=pass (GARM-108S002ad225f34-48aa-4942-a5bb-5d72537b1652,
+Authentication-Results: garm.ovh; auth=pass (GARM-108S0028acce6ab-4b34-4ade-b892-476d5ae529bd,
                     5BE38D5D59959AD767059B58A5CDE138DFC9D9F8) smtp.auth=dev@benjarobin.fr
 X-OVh-ClientIp: 92.161.126.4
 From: Benjamin ROBIN <dev@benjarobin.fr>
 To: <y.karadz@gmail.com>
 CC: <linux-trace-devel@vger.kernel.org>, Benjamin ROBIN <dev@benjarobin.fr>
-Subject: [PATCH 22/34] kernelshark: Fix potential double free of histo->map, histo->bin_count
-Date: Sun, 14 Jan 2024 18:17:11 +0100
-Message-ID: <20240114171723.14092-23-dev@benjarobin.fr>
+Subject: [PATCH 23/34] kernelshark: Fix 'const' type qualifier on return type has no effect
+Date: Sun, 14 Jan 2024 18:17:12 +0100
+Message-ID: <20240114171723.14092-24-dev@benjarobin.fr>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240114171723.14092-1-dev@benjarobin.fr>
 References: <20240114171723.14092-1-dev@benjarobin.fr>
@@ -34,31 +34,129 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: DAG1EX2.mxp5.local (172.16.2.2) To DAG6EX2.mxp5.local
  (172.16.2.52)
-X-Ovh-Tracer-GUID: 31e71fcd-4109-4b2d-aeb3-17582277a2fc
-X-Ovh-Tracer-Id: 1672242837577293722
+X-Ovh-Tracer-GUID: be436c96-3e5f-4a39-850b-cfd545df8e1a
+X-Ovh-Tracer-Id: 1672524314129293210
 X-VR-SPAMSTATE: OK
 X-VR-SPAMSCORE: 0
 X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeiledgleelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffojghfggfgtghisehtkeertdertddtnecuhfhrohhmpeeuvghnjhgrmhhinhcutffquefkpfcuoeguvghvsegsvghnjhgrrhhosghinhdrfhhrqeenucggtffrrghtthgvrhhnpedtheetffeikedvjeegudelheelkeehheekgffgheehtdevjeffjedvgedtvefhjeenucfkphepuddvjedrtddrtddruddpfeejrdehledrudegvddruddtkedpledvrdduiedurdduvdeirdegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeouggvvhessggvnhhjrghrohgsihhnrdhfrheqpdhnsggprhgtphhtthhopedupdhrtghpthhtohephidrkhgrrhgrugiisehgmhgrihhlrdgtohhmpdhlihhnuhigqdhtrhgrtggvqdguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehhedvpdhmohguvgepshhmthhpohhuth
 
+Also fix clang build, which allow to execute Clang-Tidy and Clazy
+
 Signed-off-by: Benjamin ROBIN <dev@benjarobin.fr>
 ---
- src/libkshark-model.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ src/libkshark-tepdata.c | 12 ++++++------
+ src/libkshark.h         | 20 ++++++++++----------
+ tests/test-input.c      |  4 ++--
+ tests/test-input_ctrl.c |  4 ++--
+ 4 files changed, 20 insertions(+), 20 deletions(-)
 
-diff --git a/src/libkshark-model.c b/src/libkshark-model.c
-index 44f829d..4cd9f6a 100644
---- a/src/libkshark-model.c
-+++ b/src/libkshark-model.c
-@@ -104,7 +104,8 @@ static void ksmodel_set_in_range_bining(struct kshark_trace_histo *histo,
+diff --git a/src/libkshark-tepdata.c b/src/libkshark-tepdata.c
+index b780957..2d0fcb0 100644
+--- a/src/libkshark-tepdata.c
++++ b/src/libkshark-tepdata.c
+@@ -634,8 +634,8 @@ ssize_t kshark_load_tep_records(struct kshark_context *kshark_ctx, int sd,
+ 	return -ENOMEM;
+ }
  
- 		free(histo->bin_count);
- 		free(histo->map);
--
-+		histo->map = NULL;
-+		histo->bin_count = NULL;
- 		return;
- 	}
+-static const int tepdata_get_event_id(struct kshark_data_stream *stream,
+-				      const struct kshark_entry *entry)
++static int tepdata_get_event_id(struct kshark_data_stream *stream,
++				const struct kshark_entry *entry)
+ {
+ 	int event_id = KS_EMPTY_BIN;
+ 	struct tep_record *record;
+@@ -727,8 +727,8 @@ static char *tepdata_get_event_name(struct kshark_data_stream *stream,
+ 	return buffer;
+ }
  
+-static const int tepdata_get_pid(struct kshark_data_stream *stream,
+-				 const struct kshark_entry *entry)
++static int tepdata_get_pid(struct kshark_data_stream *stream,
++			   const struct kshark_entry *entry)
+ {
+ 	struct tep_record *record;
+ 	int pid = KS_EMPTY_BIN;
+@@ -1054,8 +1054,8 @@ static char *tepdata_dump_entry(struct kshark_data_stream *stream,
+ 	return entry_str;
+ }
+ 
+-static const int tepdata_find_event_id(struct kshark_data_stream *stream,
+-				       const char *event_name)
++static int tepdata_find_event_id(struct kshark_data_stream *stream,
++				 const char *event_name)
+ {
+ 	struct tep_event *event;
+ 	char *buffer, *system, *name;
+diff --git a/src/libkshark.h b/src/libkshark.h
+index 1514f33..97d3227 100644
+--- a/src/libkshark.h
++++ b/src/libkshark.h
+@@ -142,8 +142,8 @@ typedef char *(*stream_get_str_func) (struct kshark_data_stream *,
+ 				      const struct kshark_entry *);
+ 
+ /** A function type to be used by the method interface of the data stream. */
+-typedef const int (*stream_get_int_func) (struct kshark_data_stream *,
+-					  const struct kshark_entry *);
++typedef int (*stream_get_int_func) (struct kshark_data_stream *,
++				    const struct kshark_entry *);
+ 
+ /** A function type to be used by the method interface of the data stream. */
+ typedef int (*stream_find_id_func) (struct kshark_data_stream *,
+@@ -176,16 +176,16 @@ typedef kshark_event_field_format
+ 			    const char *);
+ 
+ /** A function type to be used by the method interface of the data stream. */
+-typedef const int (*stream_read_event_field) (struct kshark_data_stream *,
+-					      const struct kshark_entry *,
+-					      const char *,
+-					      int64_t *);
++typedef int (*stream_read_event_field) (struct kshark_data_stream *,
++					const struct kshark_entry *,
++					const char *,
++					int64_t *);
+ 
+ /** A function type to be used by the method interface of the data stream. */
+-typedef const int (*stream_read_record_field) (struct kshark_data_stream *,
+-					       void *,
+-					       const char *,
+-					       int64_t *);
++typedef int (*stream_read_record_field) (struct kshark_data_stream *,
++					 void *,
++					 const char *,
++					 int64_t *);
+ 
+ struct kshark_context;
+ 
+diff --git a/tests/test-input.c b/tests/test-input.c
+index 31620b9..c6a5fa2 100644
+--- a/tests/test-input.c
++++ b/tests/test-input.c
+@@ -69,8 +69,8 @@ bool KSHARK_INPUT_CHECK(const char *file, char **format)
+ 	return false;
+ }
+ 
+-static const int get_pid(struct kshark_data_stream *stream,
+-			 const struct kshark_entry *entry)
++static int get_pid(struct kshark_data_stream *stream,
++		   const struct kshark_entry *entry)
+ {
+ 	return entry->pid;
+ }
+diff --git a/tests/test-input_ctrl.c b/tests/test-input_ctrl.c
+index 3dcc92e..77abab1 100644
+--- a/tests/test-input_ctrl.c
++++ b/tests/test-input_ctrl.c
+@@ -71,8 +71,8 @@ bool KSHARK_INPUT_CHECK(const char *file, char **format)
+ 	return false;
+ }
+ 
+-static const int get_pid(struct kshark_data_stream *stream,
+-			 const struct kshark_entry *entry)
++static int get_pid(struct kshark_data_stream *stream,
++		   const struct kshark_entry *entry)
+ {
+ 	return entry->pid;
+ }
 -- 
 2.43.0
 
