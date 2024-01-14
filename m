@@ -1,26 +1,26 @@
-Received: from smtpout3.mo529.mail-out.ovh.net (smtpout3.mo529.mail-out.ovh.net [46.105.54.81])
+Received: from smtpout1.mo529.mail-out.ovh.net (smtpout1.mo529.mail-out.ovh.net [178.32.125.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8A40CA42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21719CA71
 	for <linux-trace-devel@vger.kernel.org>; Sun, 14 Jan 2024 17:25:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=benjarobin.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=benjarobin.fr
 Received: from mxplan5.mail.ovh.net (unknown [10.109.139.82])
-	by mo529.mail-out.ovh.net (Postfix) with ESMTPS id 9E91720459;
+	by mo529.mail-out.ovh.net (Postfix) with ESMTPS id DA63020380;
 	Sun, 14 Jan 2024 17:17:39 +0000 (UTC)
 Received: from benjarobin.fr (37.59.142.108) by DAG6EX2.mxp5.local
  (172.16.2.52) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Sun, 14 Jan
- 2024 18:17:38 +0100
-Authentication-Results: garm.ovh; auth=pass (GARM-108S0021ddf4046-7fdf-49a7-929c-c7272719cabc,
+ 2024 18:17:39 +0100
+Authentication-Results: garm.ovh; auth=pass (GARM-108S002ca9b1147-45c3-4dc3-8c70-e777ba93bede,
                     5BE38D5D59959AD767059B58A5CDE138DFC9D9F8) smtp.auth=dev@benjarobin.fr
 X-OVh-ClientIp: 92.161.126.4
 From: Benjamin ROBIN <dev@benjarobin.fr>
 To: <y.karadz@gmail.com>
 CC: <linux-trace-devel@vger.kernel.org>, Benjamin ROBIN <dev@benjarobin.fr>
-Subject: [PATCH 15/34] kernelshark: Fix moving a temp object prevents copy elision warning
-Date: Sun, 14 Jan 2024 18:17:04 +0100
-Message-ID: <20240114171723.14092-16-dev@benjarobin.fr>
+Subject: [PATCH 16/34] kernelshark: Add receiver object to connect() call
+Date: Sun, 14 Jan 2024 18:17:05 +0100
+Message-ID: <20240114171723.14092-17-dev@benjarobin.fr>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240114171723.14092-1-dev@benjarobin.fr>
 References: <20240114171723.14092-1-dev@benjarobin.fr>
@@ -34,11 +34,13 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: DAG1EX2.mxp5.local (172.16.2.2) To DAG6EX2.mxp5.local
  (172.16.2.52)
-X-Ovh-Tracer-GUID: 58406836-36c4-4ce8-847f-de5f7a050120
-X-Ovh-Tracer-Id: 1671679890814885786
+X-Ovh-Tracer-GUID: 69a60af2-e2ba-4a45-a4ac-bd83075e4c22
+X-Ovh-Tracer-Id: 1671679888791592858
 X-VR-SPAMSTATE: OK
 X-VR-SPAMSCORE: 0
 X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeiledgleelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffojghfggfgtghisehtkeertdertddtnecuhfhrohhmpeeuvghnjhgrmhhinhcutffquefkpfcuoeguvghvsegsvghnjhgrrhhosghinhdrfhhrqeenucggtffrrghtthgvrhhnpedtheetffeikedvjeegudelheelkeehheekgffgheehtdevjeffjedvgedtvefhjeenucfkphepuddvjedrtddrtddruddpfeejrdehledrudegvddruddtkedpledvrdduiedurdduvdeirdegnecuvehluhhsthgvrhfuihiivgepfeenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeouggvvhessggvnhhjrghrohgsihhnrdhfrheqpdhnsggprhgtphhtthhopedupdhrtghpthhtohephidrkhgrrhgrugiisehgmhgrihhlrdgtohhmpdhlihhnuhigqdhtrhgrtggvqdguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehvdelpdhmohguvgepshhmthhpohhuth
+
+When calling a lambda, this is recommended to pass the receiver object
 
 Signed-off-by: Benjamin ROBIN <dev@benjarobin.fr>
 ---
@@ -46,18 +48,18 @@ Signed-off-by: Benjamin ROBIN <dev@benjarobin.fr>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/KsTraceViewer.cpp b/src/KsTraceViewer.cpp
-index d4c9dd9..5eec312 100644
+index 5eec312..5e8e63f 100644
 --- a/src/KsTraceViewer.cpp
 +++ b/src/KsTraceViewer.cpp
-@@ -855,7 +855,7 @@ void KsTraceViewer::_searchItemsMT()
+@@ -139,7 +139,7 @@ KsTraceViewer::KsTraceViewer(QWidget *parent)
+ 		}
+ 	};
+ 	connect(&_selectionModel,	&QItemSelectionModel::selectionChanged,
+-		lamSelectionChanged);
++		this,			lamSelectionChanged);
  
- 	QVector<QList<int>> res;
- 	for (auto &m: maps)
--		res.append(std::move(m.get()));
-+		res.append(m.get());
+ 	_searchFSM.placeInToolBar(&_toolbar);
  
- 	lamSearchMerge(_matchList, res);
- }
 -- 
 2.43.0
 
