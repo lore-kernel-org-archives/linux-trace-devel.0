@@ -1,26 +1,26 @@
-Received: from smtpout3.mo529.mail-out.ovh.net (smtpout3.mo529.mail-out.ovh.net [46.105.54.81])
+Received: from smtpout1.mo529.mail-out.ovh.net (smtpout1.mo529.mail-out.ovh.net [178.32.125.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 237115396
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 271675397
 	for <linux-trace-devel@vger.kernel.org>; Sun, 14 Jan 2024 17:17:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=benjarobin.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=benjarobin.fr
-Received: from mxplan5.mail.ovh.net (unknown [10.109.139.23])
-	by mo529.mail-out.ovh.net (Postfix) with ESMTPS id C0F2020447;
-	Sun, 14 Jan 2024 17:17:35 +0000 (UTC)
+Received: from mxplan5.mail.ovh.net (unknown [10.108.17.201])
+	by mo529.mail-out.ovh.net (Postfix) with ESMTPS id 5FDDC20465;
+	Sun, 14 Jan 2024 17:17:41 +0000 (UTC)
 Received: from benjarobin.fr (37.59.142.108) by DAG6EX2.mxp5.local
  (172.16.2.52) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Sun, 14 Jan
- 2024 18:17:35 +0100
-Authentication-Results: garm.ovh; auth=pass (GARM-108S002ae047cc6-7b8d-49dc-83c0-17caf7244724,
+ 2024 18:17:40 +0100
+Authentication-Results: garm.ovh; auth=pass (GARM-108S002c619219f-2ce2-4631-9106-44e180301dd7,
                     5BE38D5D59959AD767059B58A5CDE138DFC9D9F8) smtp.auth=dev@benjarobin.fr
 X-OVh-ClientIp: 92.161.126.4
 From: Benjamin ROBIN <dev@benjarobin.fr>
 To: <y.karadz@gmail.com>
 CC: <linux-trace-devel@vger.kernel.org>, Benjamin ROBIN <dev@benjarobin.fr>
-Subject: [PATCH 05/34] kernelshark: Prevent potential detach of QMap container
-Date: Sun, 14 Jan 2024 18:16:54 +0100
-Message-ID: <20240114171723.14092-6-dev@benjarobin.fr>
+Subject: [PATCH 20/34] kernelshark: Fix potential memory leaks in libkshark-configio
+Date: Sun, 14 Jan 2024 18:17:09 +0100
+Message-ID: <20240114171723.14092-21-dev@benjarobin.fr>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240114171723.14092-1-dev@benjarobin.fr>
 References: <20240114171723.14092-1-dev@benjarobin.fr>
@@ -34,59 +34,158 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: DAG1EX2.mxp5.local (172.16.2.2) To DAG6EX2.mxp5.local
  (172.16.2.52)
-X-Ovh-Tracer-GUID: a0a5bfa1-caa2-439d-9ba5-123a1cf5b73c
-X-Ovh-Tracer-Id: 1670553989434204058
+X-Ovh-Tracer-GUID: e1855602-598b-4a92-8427-dccade22d7ec
+X-Ovh-Tracer-Id: 1672242839095566234
 X-VR-SPAMSTATE: OK
 X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeiledgleelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffojghfggfgtghisehtkeertdertddtnecuhfhrohhmpeeuvghnjhgrmhhinhcutffquefkpfcuoeguvghvsegsvghnjhgrrhhosghinhdrfhhrqeenucggtffrrghtthgvrhhnpedtheetffeikedvjeegudelheelkeehheekgffgheehtdevjeffjedvgedtvefhjeenucfkphepuddvjedrtddrtddruddpfeejrdehledrudegvddruddtkedpledvrdduiedurdduvdeirdegnecuvehluhhsthgvrhfuihiivgepfeenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeouggvvhessggvnhhjrghrohgsihhnrdhfrheqpdhnsggprhgtphhtthhopedupdhrtghpthhtohephidrkhgrrhgrugiisehgmhgrihhlrdgtohhmpdhlihhnuhigqdhtrhgrtggvqdguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehvdelpdhmohguvgepshhmthhpohhuth
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeiledgleelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffojghfggfgtghisehtkeertdertddtnecuhfhrohhmpeeuvghnjhgrmhhinhcutffquefkpfcuoeguvghvsegsvghnjhgrrhhosghinhdrfhhrqeenucggtffrrghtthgvrhhnpedtheetffeikedvjeegudelheelkeehheekgffgheehtdevjeffjedvgedtvefhjeenucfkphepuddvjedrtddrtddruddpfeejrdehledrudegvddruddtkedpledvrdduiedurdduvdeirdegnecuvehluhhsthgvrhfuihiivgepfeefnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoeguvghvsegsvghnjhgrrhhosghinhdrfhhrqedpnhgspghrtghpthhtohepuddprhgtphhtthhopeihrdhkrghrrgguiiesghhmrghilhdrtghomhdplhhinhhugidqthhrrggtvgdquggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhohedvledpmhhouggvpehsmhhtphhouhht
 
-Use const_iterator instead. Fix range-loop-detach Clazy warning
+Allocate a new kshark_config_doc only if the format is supported.
 
 Signed-off-by: Benjamin ROBIN <dev@benjarobin.fr>
 ---
- src/KsGLWidget.cpp             | 5 +++--
- src/plugins/KVMComboDialog.cpp | 6 ++++--
- 2 files changed, 7 insertions(+), 4 deletions(-)
+ src/libkshark-configio.c | 74 ++++++++++++++++++++++------------------
+ 1 file changed, 41 insertions(+), 33 deletions(-)
 
-diff --git a/src/KsGLWidget.cpp b/src/KsGLWidget.cpp
-index 9e3dac3..0a44e77 100644
---- a/src/KsGLWidget.cpp
-+++ b/src/KsGLWidget.cpp
-@@ -137,9 +137,10 @@ void KsGLWidget::paintGL()
- 	/* Draw the time axis. */
- 	_drawAxisX(size);
+diff --git a/src/libkshark-configio.c b/src/libkshark-configio.c
+index 9a1ba60..853e056 100644
+--- a/src/libkshark-configio.c
++++ b/src/libkshark-configio.c
+@@ -675,23 +675,25 @@ struct kshark_config_doc *
+ kshark_export_plugin_file(struct kshark_plugin_list *plugin,
+ 			  enum kshark_config_formats format)
+ {
+-	/*  Create a new Configuration document. */
+-	struct kshark_config_doc *conf =
+-		kshark_config_new("kshark.config.library", format);
+-
+-	if (!conf)
+-		return NULL;
++	struct kshark_config_doc *conf;
  
--	for (auto const &stream: _graphs)
--		for (auto const &g: stream)
-+	for (auto it = _graphs.cbegin(), end = _graphs.cend(); it != end; ++it) {
-+		for (auto const &g: it.value())
- 			g->draw(size);
-+	}
+ 	switch (format) {
+ 	case KS_CONFIG_JSON:
+-		kshark_plugin_to_json(plugin, conf->conf_doc);
+-		return conf;
++		break;
  
- 	for (auto const &s: _shapes) {
- 		if (!s)
-diff --git a/src/plugins/KVMComboDialog.cpp b/src/plugins/KVMComboDialog.cpp
-index 2b95a53..6be68d4 100644
---- a/src/plugins/KVMComboDialog.cpp
-+++ b/src/plugins/KVMComboDialog.cpp
-@@ -308,13 +308,15 @@ void KsComboPlotDialog::_applyPress()
- 	int nPlots(0);
- 
- 	_plotMap[guestId] = _streamCombos(guestId);
--	for (auto const &stream: _plotMap)
--		for (auto const &combo: stream) {
+ 	default:
+ 		fprintf(stderr, "Document format %d not supported\n",
+-			conf->format);
++			format);
+ 		return NULL;
+ 	}
 +
-+	for (auto it = _plotMap.cbegin(), end = _plotMap.cend(); it != end; ++it) {
-+			for (auto const &combo: it.value()) {
- 			allCombosVec.append(2);
- 			combo[0] >> allCombosVec;
- 			combo[1] >> allCombosVec;
- 			++nPlots;
- 		}
-+	}
- 
- 	emit apply(nPlots, allCombosVec);
++	/*  Create a new Configuration document. */
++	conf = kshark_config_new("kshark.config.library", format);
++	if (!conf)
++		return NULL;
++
++	kshark_plugin_to_json(plugin, conf->conf_doc);
++	return conf;
  }
+ 
+ static bool kshark_all_plugins_to_json(struct kshark_context *kshark_ctx,
+@@ -739,22 +741,24 @@ struct kshark_config_doc *
+ kshark_export_all_plugins(struct kshark_context *kshark_ctx,
+ 			  enum kshark_config_formats format)
+ {
+-	struct kshark_config_doc *conf =
+-		kshark_config_new("kshark.config.plugins", KS_CONFIG_JSON);
+-
+-	if (!conf)
+-		return NULL;
++	struct kshark_config_doc *conf;
+ 
+ 	switch (format) {
+ 	case KS_CONFIG_JSON:
+-		kshark_all_plugins_to_json(kshark_ctx, conf->conf_doc);
+-		return conf;
++		break;
+ 
+ 	default:
+ 		fprintf(stderr, "Document format %d not supported\n",
+-			conf->format);
++			format);
+ 		return NULL;
+ 	}
++
++	conf = kshark_config_new("kshark.config.plugins", format);
++	if (!conf)
++		return NULL;
++
++	kshark_all_plugins_to_json(kshark_ctx, conf->conf_doc);
++	return conf;
+ }
+ 
+ static bool kshark_plugin_from_json(struct kshark_context *kshark_ctx,
+@@ -867,22 +871,24 @@ struct kshark_config_doc *
+ kshark_export_stream_plugins(struct kshark_data_stream *stream,
+ 			     enum kshark_config_formats format)
+ {
+-	struct kshark_config_doc *conf =
+-		kshark_config_new("kshark.config.plugins", KS_CONFIG_JSON);
+-
+-	if (!conf)
+-		return NULL;
++	struct kshark_config_doc *conf;
+ 
+ 	switch (format) {
+ 	case KS_CONFIG_JSON:
+-		kshark_stream_plugins_to_json(stream, conf->conf_doc);
+-		return conf;
++		break;
+ 
+ 	default:
+ 		fprintf(stderr, "Document format %d not supported\n",
+-			conf->format);
++			format);
+ 		return NULL;
+ 	}
++
++	conf = kshark_config_new("kshark.config.plugins", KS_CONFIG_JSON);
++	if (!conf)
++		return NULL;
++
++	kshark_stream_plugins_to_json(stream, conf->conf_doc);
++	return conf;
+ }
+ 
+ static bool kshark_stream_plugins_from_json(struct kshark_context *kshark_ctx,
+@@ -1019,23 +1025,25 @@ struct kshark_config_doc *
+ kshark_export_model(struct kshark_trace_histo *histo,
+ 		    enum kshark_config_formats format)
+ {
+-	/*  Create a new Configuration document. */
+-	struct kshark_config_doc *conf =
+-		kshark_config_new("kshark.config.model", format);
+-
+-	if (!conf)
+-		return NULL;
++	struct kshark_config_doc *conf;
+ 
+ 	switch (format) {
+ 	case KS_CONFIG_JSON:
+-		kshark_model_to_json(histo, conf->conf_doc);
+-		return conf;
++		break;
+ 
+ 	default:
+ 		fprintf(stderr, "Document format %d not supported\n",
+ 			format);
+ 		return NULL;
+ 	}
++
++	/*  Create a new Configuration document. */
++	conf = kshark_config_new("kshark.config.model", format);
++	if (!conf)
++		return NULL;
++
++	kshark_model_to_json(histo, conf->conf_doc);
++	return conf;
+ }
+ 
+ static bool kshark_model_from_json(struct kshark_trace_histo *histo,
 -- 
 2.43.0
 
