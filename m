@@ -1,26 +1,26 @@
-Received: from smtpout1.mo529.mail-out.ovh.net (smtpout1.mo529.mail-out.ovh.net [178.32.125.2])
+Received: from smtpout3.mo529.mail-out.ovh.net (smtpout3.mo529.mail-out.ovh.net [46.105.54.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 271675397
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234DE538D
 	for <linux-trace-devel@vger.kernel.org>; Sun, 14 Jan 2024 17:17:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=benjarobin.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=benjarobin.fr
-Received: from mxplan5.mail.ovh.net (unknown [10.108.17.201])
-	by mo529.mail-out.ovh.net (Postfix) with ESMTPS id 5FDDC20465;
-	Sun, 14 Jan 2024 17:17:41 +0000 (UTC)
+Received: from mxplan5.mail.ovh.net (unknown [10.109.139.23])
+	by mo529.mail-out.ovh.net (Postfix) with ESMTPS id 88AE32044C;
+	Sun, 14 Jan 2024 17:17:36 +0000 (UTC)
 Received: from benjarobin.fr (37.59.142.108) by DAG6EX2.mxp5.local
  (172.16.2.52) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Sun, 14 Jan
- 2024 18:17:40 +0100
-Authentication-Results: garm.ovh; auth=pass (GARM-108S002c619219f-2ce2-4631-9106-44e180301dd7,
+ 2024 18:17:35 +0100
+Authentication-Results: garm.ovh; auth=pass (GARM-108S0028b7ceb55-890a-4d3b-a2e6-d918ba3e564f,
                     5BE38D5D59959AD767059B58A5CDE138DFC9D9F8) smtp.auth=dev@benjarobin.fr
 X-OVh-ClientIp: 92.161.126.4
 From: Benjamin ROBIN <dev@benjarobin.fr>
 To: <y.karadz@gmail.com>
 CC: <linux-trace-devel@vger.kernel.org>, Benjamin ROBIN <dev@benjarobin.fr>
-Subject: [PATCH 20/34] kernelshark: Fix potential memory leaks in libkshark-configio
-Date: Sun, 14 Jan 2024 18:17:09 +0100
-Message-ID: <20240114171723.14092-21-dev@benjarobin.fr>
+Subject: [PATCH 07/34] kernelshark: Fix potential memory leak in KsGLWidget
+Date: Sun, 14 Jan 2024 18:16:56 +0100
+Message-ID: <20240114171723.14092-8-dev@benjarobin.fr>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240114171723.14092-1-dev@benjarobin.fr>
 References: <20240114171723.14092-1-dev@benjarobin.fr>
@@ -34,158 +34,78 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: DAG1EX2.mxp5.local (172.16.2.2) To DAG6EX2.mxp5.local
  (172.16.2.52)
-X-Ovh-Tracer-GUID: e1855602-598b-4a92-8427-dccade22d7ec
-X-Ovh-Tracer-Id: 1672242839095566234
+X-Ovh-Tracer-GUID: 1674ac05-a141-461f-86be-d3efde018a96
+X-Ovh-Tracer-Id: 1670835463949279130
 X-VR-SPAMSTATE: OK
 X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeiledgleelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffojghfggfgtghisehtkeertdertddtnecuhfhrohhmpeeuvghnjhgrmhhinhcutffquefkpfcuoeguvghvsegsvghnjhgrrhhosghinhdrfhhrqeenucggtffrrghtthgvrhhnpedtheetffeikedvjeegudelheelkeehheekgffgheehtdevjeffjedvgedtvefhjeenucfkphepuddvjedrtddrtddruddpfeejrdehledrudegvddruddtkedpledvrdduiedurdduvdeirdegnecuvehluhhsthgvrhfuihiivgepfeefnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoeguvghvsegsvghnjhgrrhhosghinhdrfhhrqedpnhgspghrtghpthhtohepuddprhgtphhtthhopeihrdhkrghrrgguiiesghhmrghilhdrtghomhdplhhinhhugidqthhrrggtvgdquggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhohedvledpmhhouggvpehsmhhtphhouhht
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeiledgleelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffojghfggfgtghisehtkeertdertddtnecuhfhrohhmpeeuvghnjhgrmhhinhcutffquefkpfcuoeguvghvsegsvghnjhgrrhhosghinhdrfhhrqeenucggtffrrghtthgvrhhnpedtheetffeikedvjeegudelheelkeehheekgffgheehtdevjeffjedvgedtvefhjeenucfkphepuddvjedrtddrtddruddpfeejrdehledrudegvddruddtkedpledvrdduiedurdduvdeirdegnecuvehluhhsthgvrhfuihiivgepfeenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeouggvvhessggvnhhjrghrohgsihhnrdhfrheqpdhnsggprhgtphhtthhopedupdhrtghpthhtohephidrkhgrrhgrugiisehgmhgrihhlrdgtohhmpdhlihhnuhigqdhtrhgrtggvqdguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehvdelpdhmohguvgepshhmthhpohhuth
 
-Allocate a new kshark_config_doc only if the format is supported.
+In KsGLWidget::_newCPUGraph() and in KsGLWidget::_newTaskGraph()
+allocate KsPlot::Graph after getting data stream successfully.
+Also remove unused "name" local variable in both functions.
 
 Signed-off-by: Benjamin ROBIN <dev@benjarobin.fr>
 ---
- src/libkshark-configio.c | 74 ++++++++++++++++++++++------------------
- 1 file changed, 41 insertions(+), 33 deletions(-)
+ src/KsGLWidget.cpp | 25 +++++++++----------------
+ 1 file changed, 9 insertions(+), 16 deletions(-)
 
-diff --git a/src/libkshark-configio.c b/src/libkshark-configio.c
-index 9a1ba60..853e056 100644
---- a/src/libkshark-configio.c
-+++ b/src/libkshark-configio.c
-@@ -675,23 +675,25 @@ struct kshark_config_doc *
- kshark_export_plugin_file(struct kshark_plugin_list *plugin,
- 			  enum kshark_config_formats format)
+diff --git a/src/KsGLWidget.cpp b/src/KsGLWidget.cpp
+index 0a44e77..23485d2 100644
+--- a/src/KsGLWidget.cpp
++++ b/src/KsGLWidget.cpp
+@@ -794,13 +794,8 @@ void KsGLWidget::_makePluginShapes()
+ 
+ KsPlot::Graph *KsGLWidget::_newCPUGraph(int sd, int cpu)
  {
--	/*  Create a new Configuration document. */
--	struct kshark_config_doc *conf =
--		kshark_config_new("kshark.config.library", format);
+-	QString name;
+-	/* The CPU graph needs to know only the colors of the tasks. */
+-	KsPlot::Graph *graph = new KsPlot::Graph(_model.histo(),
+-						 &_pidColors,
+-						 &_pidColors);
 -
--	if (!conf)
--		return NULL;
-+	struct kshark_config_doc *conf;
+-	kshark_context *kshark_ctx(nullptr);
++	KsPlot::Graph *graph = nullptr;
++	kshark_context *kshark_ctx = nullptr;
+ 	kshark_data_stream *stream;
+ 	kshark_entry_collection *col;
  
- 	switch (format) {
- 	case KS_CONFIG_JSON:
--		kshark_plugin_to_json(plugin, conf->conf_doc);
--		return conf;
-+		break;
+@@ -811,6 +806,8 @@ KsPlot::Graph *KsGLWidget::_newCPUGraph(int sd, int cpu)
+ 	if (!stream)
+ 		return nullptr;
  
- 	default:
- 		fprintf(stderr, "Document format %d not supported\n",
--			conf->format);
-+			format);
- 		return NULL;
- 	}
-+
-+	/*  Create a new Configuration document. */
-+	conf = kshark_config_new("kshark.config.library", format);
-+	if (!conf)
-+		return NULL;
-+
-+	kshark_plugin_to_json(plugin, conf->conf_doc);
-+	return conf;
- }
++	/* The CPU graph needs to know only the colors of the tasks. */
++	graph = new KsPlot::Graph(_model.histo(), &_pidColors, &_pidColors);
+ 	graph->setIdleSuppressed(true, stream->idle_pid);
+ 	graph->setHeight(KS_GRAPH_HEIGHT);
+ 	graph->setLabelText(KsUtils::cpuPlotName(cpu).toStdString());
+@@ -827,15 +824,8 @@ KsPlot::Graph *KsGLWidget::_newCPUGraph(int sd, int cpu)
  
- static bool kshark_all_plugins_to_json(struct kshark_context *kshark_ctx,
-@@ -739,22 +741,24 @@ struct kshark_config_doc *
- kshark_export_all_plugins(struct kshark_context *kshark_ctx,
- 			  enum kshark_config_formats format)
+ KsPlot::Graph *KsGLWidget::_newTaskGraph(int sd, int pid)
  {
--	struct kshark_config_doc *conf =
--		kshark_config_new("kshark.config.plugins", KS_CONFIG_JSON);
--
--	if (!conf)
--		return NULL;
-+	struct kshark_config_doc *conf;
+-	QString name;
+-	/*
+-	 * The Task graph needs to know the colors of the tasks and the colors
+-	 * of the CPUs.
+-	 */
+-	KsPlot::Graph *graph = new KsPlot::Graph(_model.histo(),
+-						 &_pidColors,
+-						 &_cpuColors);
+-	kshark_context *kshark_ctx(nullptr);
++	KsPlot::Graph *graph = nullptr;
++	kshark_context *kshark_ctx = nullptr;
+ 	kshark_entry_collection *col;
+ 	kshark_data_stream *stream;
  
- 	switch (format) {
- 	case KS_CONFIG_JSON:
--		kshark_all_plugins_to_json(kshark_ctx, conf->conf_doc);
--		return conf;
-+		break;
+@@ -846,6 +836,9 @@ KsPlot::Graph *KsGLWidget::_newTaskGraph(int sd, int pid)
+ 	if (!stream)
+ 		return nullptr;
  
- 	default:
- 		fprintf(stderr, "Document format %d not supported\n",
--			conf->format);
-+			format);
- 		return NULL;
- 	}
-+
-+	conf = kshark_config_new("kshark.config.plugins", format);
-+	if (!conf)
-+		return NULL;
-+
-+	kshark_all_plugins_to_json(kshark_ctx, conf->conf_doc);
-+	return conf;
- }
++	/* The Task graph needs to know the colors of the tasks and the colors
++	 * of the CPUs */
++	graph = new KsPlot::Graph(_model.histo(), &_pidColors, &_cpuColors);
+ 	graph->setHeight(KS_GRAPH_HEIGHT);
+ 	graph->setLabelText(KsUtils::taskPlotName(sd, pid).toStdString());
  
- static bool kshark_plugin_from_json(struct kshark_context *kshark_ctx,
-@@ -867,22 +871,24 @@ struct kshark_config_doc *
- kshark_export_stream_plugins(struct kshark_data_stream *stream,
- 			     enum kshark_config_formats format)
- {
--	struct kshark_config_doc *conf =
--		kshark_config_new("kshark.config.plugins", KS_CONFIG_JSON);
--
--	if (!conf)
--		return NULL;
-+	struct kshark_config_doc *conf;
- 
- 	switch (format) {
- 	case KS_CONFIG_JSON:
--		kshark_stream_plugins_to_json(stream, conf->conf_doc);
--		return conf;
-+		break;
- 
- 	default:
- 		fprintf(stderr, "Document format %d not supported\n",
--			conf->format);
-+			format);
- 		return NULL;
- 	}
-+
-+	conf = kshark_config_new("kshark.config.plugins", KS_CONFIG_JSON);
-+	if (!conf)
-+		return NULL;
-+
-+	kshark_stream_plugins_to_json(stream, conf->conf_doc);
-+	return conf;
- }
- 
- static bool kshark_stream_plugins_from_json(struct kshark_context *kshark_ctx,
-@@ -1019,23 +1025,25 @@ struct kshark_config_doc *
- kshark_export_model(struct kshark_trace_histo *histo,
- 		    enum kshark_config_formats format)
- {
--	/*  Create a new Configuration document. */
--	struct kshark_config_doc *conf =
--		kshark_config_new("kshark.config.model", format);
--
--	if (!conf)
--		return NULL;
-+	struct kshark_config_doc *conf;
- 
- 	switch (format) {
- 	case KS_CONFIG_JSON:
--		kshark_model_to_json(histo, conf->conf_doc);
--		return conf;
-+		break;
- 
- 	default:
- 		fprintf(stderr, "Document format %d not supported\n",
- 			format);
- 		return NULL;
- 	}
-+
-+	/*  Create a new Configuration document. */
-+	conf = kshark_config_new("kshark.config.model", format);
-+	if (!conf)
-+		return NULL;
-+
-+	kshark_model_to_json(histo, conf->conf_doc);
-+	return conf;
- }
- 
- static bool kshark_model_from_json(struct kshark_trace_histo *histo,
 -- 
 2.43.0
 
