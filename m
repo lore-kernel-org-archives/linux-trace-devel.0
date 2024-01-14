@@ -1,26 +1,26 @@
-Received: from smtpout3.mo529.mail-out.ovh.net (smtpout3.mo529.mail-out.ovh.net [46.105.54.81])
+Received: from 8.mo552.mail-out.ovh.net (8.mo552.mail-out.ovh.net [46.105.37.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8EE55397
-	for <linux-trace-devel@vger.kernel.org>; Sun, 14 Jan 2024 17:17:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45188568C
+	for <linux-trace-devel@vger.kernel.org>; Sun, 14 Jan 2024 17:17:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=benjarobin.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=benjarobin.fr
-Received: from mxplan5.mail.ovh.net (unknown [10.109.139.82])
-	by mo529.mail-out.ovh.net (Postfix) with ESMTPS id 0CBE12044A;
-	Sun, 14 Jan 2024 17:17:39 +0000 (UTC)
+Received: from mxplan5.mail.ovh.net (unknown [10.108.9.223])
+	by mo552.mail-out.ovh.net (Postfix) with ESMTPS id 6BB2A2A39F;
+	Sun, 14 Jan 2024 17:17:46 +0000 (UTC)
 Received: from benjarobin.fr (37.59.142.108) by DAG6EX2.mxp5.local
  (172.16.2.52) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Sun, 14 Jan
- 2024 18:17:38 +0100
-Authentication-Results: garm.ovh; auth=pass (GARM-108S002f08b9de7-4b0e-4fe2-bdab-99c9f525f6bb,
+ 2024 18:17:45 +0100
+Authentication-Results: garm.ovh; auth=pass (GARM-108S00266303df0-95bb-406d-85fd-f132a868acd8,
                     5BE38D5D59959AD767059B58A5CDE138DFC9D9F8) smtp.auth=dev@benjarobin.fr
 X-OVh-ClientIp: 92.161.126.4
 From: Benjamin ROBIN <dev@benjarobin.fr>
 To: <y.karadz@gmail.com>
 CC: <linux-trace-devel@vger.kernel.org>, Benjamin ROBIN <dev@benjarobin.fr>
-Subject: [PATCH 13/34] kernelshark: Remove unused locals variables
-Date: Sun, 14 Jan 2024 18:17:02 +0100
-Message-ID: <20240114171723.14092-14-dev@benjarobin.fr>
+Subject: [PATCH 33/34] kernelshark: Allow to reduce a bit more the graph height
+Date: Sun, 14 Jan 2024 18:17:22 +0100
+Message-ID: <20240114171723.14092-34-dev@benjarobin.fr>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240114171723.14092-1-dev@benjarobin.fr>
 References: <20240114171723.14092-1-dev@benjarobin.fr>
@@ -34,54 +34,31 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: DAG1EX2.mxp5.local (172.16.2.2) To DAG6EX2.mxp5.local
  (172.16.2.52)
-X-Ovh-Tracer-GUID: d51ea551-61f6-495f-aebf-96cc3ef9f2d0
-X-Ovh-Tracer-Id: 1671398411719171994
+X-Ovh-Tracer-GUID: 92cd0f5d-2133-4375-b3b9-2283227f9647
+X-Ovh-Tracer-Id: 1673650212025556890
 X-VR-SPAMSTATE: OK
 X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeiledgleelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffojghfggfgtghisehtkeertdertddtnecuhfhrohhmpeeuvghnjhgrmhhinhcutffquefkpfcuoeguvghvsegsvghnjhgrrhhosghinhdrfhhrqeenucggtffrrghtthgvrhhnpedtheetffeikedvjeegudelheelkeehheekgffgheehtdevjeffjedvgedtvefhjeenucfkphepuddvjedrtddrtddruddpfeejrdehledrudegvddruddtkedpledvrdduiedurdduvdeirdegnecuvehluhhsthgvrhfuihiivgepfeenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeouggvvhessggvnhhjrghrohgsihhnrdhfrheqpdhnsggprhgtphhtthhopedupdhrtghpthhtohephidrkhgrrhgrugiisehgmhgrihhlrdgtohhmpdhlihhnuhigqdhtrhgrtggvqdguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehvdelpdhmohguvgepshhmthhpohhuth
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeiledgleelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffojghfggfgtghisehtkeertdertddtnecuhfhrohhmpeeuvghnjhgrmhhinhcutffquefkpfcuoeguvghvsegsvghnjhgrrhhosghinhdrfhhrqeenucggtffrrghtthgvrhhnpefhueelfeduleffvedtjeduteeffeevieduueevueetkedugeffteejleegtdduffenucffohhmrghinheptghonhhtvghnthhsmhgrrhhgihhnshdrthhophenucfkphepuddvjedrtddrtddruddpfeejrdehledrudegvddruddtkedpledvrdduiedurdduvdeirdegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeouggvvhessggvnhhjrghrohgsihhnrdhfrheqpdhnsggprhgtphhtthhopedupdhrtghpthhtohephidrkhgrrhgrugiisehgmhgrihhlrdgtohhmpdhlihhnuhigqdhtrhgrtggvqdguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehhedvpdhmohguvgepshhmthhpohhuth
 
-Signed-off-by: Benjamin ROBIN <dev@benjarobin.fr>
+With this configuration, at least one core on the graph can be seen
 ---
- src/KsTraceGraph.cpp           | 1 -
- src/KsUtils.cpp                | 1 -
- src/plugins/KVMComboDialog.cpp | 1 -
- 3 files changed, 3 deletions(-)
+ src/KsTraceGraph.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/src/KsTraceGraph.cpp b/src/KsTraceGraph.cpp
-index f80477d..bc910c8 100644
+index bc910c8..4599a12 100644
 --- a/src/KsTraceGraph.cpp
 +++ b/src/KsTraceGraph.cpp
-@@ -331,7 +331,6 @@ void KsTraceGraph::_setPointerInfo(size_t i)
- 	QString aux(lanMakeString(kshark_get_aux_info(e)));
- 	QString info(lanMakeString(kshark_get_info(e)));
- 	QString comm(lanMakeString(kshark_get_task(e)));
--	QString elidedText;
- 	int labelWidth;
- 	uint64_t sec, usec;
- 	char *pointer;
-diff --git a/src/KsUtils.cpp b/src/KsUtils.cpp
-index b84add4..fc1fc52 100644
---- a/src/KsUtils.cpp
-+++ b/src/KsUtils.cpp
-@@ -1414,7 +1414,6 @@ void KsPluginManager::updatePlugins(int sd, QVector<int> pluginStates)
- 	kshark_context *kshark_ctx(nullptr);
- 	kshark_data_stream *stream;
- 	kshark_dpi_list *plugin;
--	QVector<int> vec;
- 	int i(0);
+@@ -593,8 +593,8 @@ void KsTraceGraph::updateGeom()
+ 	       _layout.contentsMargins().top() +
+ 	       _layout.contentsMargins().bottom();
  
- 	if (!kshark_instance(&kshark_ctx))
-diff --git a/src/plugins/KVMComboDialog.cpp b/src/plugins/KVMComboDialog.cpp
-index 6be68d4..99113ed 100644
---- a/src/plugins/KVMComboDialog.cpp
-+++ b/src/plugins/KVMComboDialog.cpp
-@@ -342,7 +342,6 @@ void KsComboPlotDialog::_guestStreamChanged(int)
- 		return;
+-	if (hMin > KS_GRAPH_HEIGHT * 8)
+-		hMin = KS_GRAPH_HEIGHT * 8;
++	if (hMin > KS_GRAPH_HEIGHT * 6)
++		hMin = KS_GRAPH_HEIGHT * 6;
  
- 	int newGuestId = _guestStreamComboBox.currentData().toInt();
--	QVector<int> vcpuCBs(_guestMapCount, 0);
- 
- 	_plotMap[_currentGuestStream] = _streamCombos(_currentGuestStream);
+ 	setMinimumHeight(hMin);
  
 -- 
 2.43.0
