@@ -1,23 +1,25 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF8418EB3
-	for <linux-trace-devel@vger.kernel.org>; Mon, 15 Jan 2024 18:56:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 649FAC433C7;
-	Mon, 15 Jan 2024 18:56:55 +0000 (UTC)
-Date: Mon, 15 Jan 2024 13:56:53 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D43515B7
+	for <linux-trace-devel@vger.kernel.org>; Wed, 17 Jan 2024 02:13:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705457581; cv=none; b=D/+MfP9DaS1S5+hEYg2pepMgNE4k9invCqBZoyQoVyBPPPae11xMoZBukX3emfpevmY5omREtvocGB1fF4fJtPtjrH+QypsB6QQOI8QvSO647K4ifFiW3vvHH4VWQ6S+6MRVFJ2HV9Mbhge7siEqJw7czz4eRSwhW3trc84DK5I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705457581; c=relaxed/simple;
+	bh=nopaMMZmwsFcnNxKIbkrqktgr8BOC+SdMxXTaPYHS1o=;
+	h=Received:Date:From:To:Subject:Message-ID:X-Mailer:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding; b=WEb/vd3OFsdBCKbbZZWyKLNCFBHQrA8MiFmbxi17ycnKUUzJ1eJw0pwW/+vt/27y+3CtbanNkexn22lt23FzGhL5FoN+l9cOLD1Pz6f67H/i+trTHHl39A6JWR786dpyzWAM0s6pAwBA+8p2hZVUF/Qwf++vLKsMzH4FAGTt/Vg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07936C433F1
+	for <linux-trace-devel@vger.kernel.org>; Wed, 17 Jan 2024 02:13:00 +0000 (UTC)
+Date: Tue, 16 Jan 2024 21:14:15 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Pierre Gondois <pierre.gondois@arm.com>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH 5/5] trace-cmd: split: Handle splitting files with
- multiple instances
-Message-ID: <20240115135653.6c4ee8ff@rorschach.local.home>
-In-Reply-To: <7f3739f5-4e68-4cf4-81f2-99f342a884d7@arm.com>
-References: <20240112083945.1361293-1-pierre.gondois@arm.com>
-	<20240112083945.1361293-6-pierre.gondois@arm.com>
-	<20240112111816.26f2cd6b@gandalf.local.home>
-	<7f3739f5-4e68-4cf4-81f2-99f342a884d7@arm.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd split: Do not fail if cmdlines are not present
+Message-ID: <20240116211415.41b530e5@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -27,35 +29,32 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Mon, 15 Jan 2024 18:25:46 +0100
-Pierre Gondois <pierre.gondois@arm.com> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> >   
-> >> Make use of the previous patches to split all the instances of
-> >> a trace.  
-> > 
-> > This shouldn't be in the change log. As the change log is for history.
-> > Think about reading this 5 years from now. Would it make sense about
-> > "previous patches"?  
-> 
-> I thought it was acceptable to do so as the previous patches would
-> be just before in the git log, but ok I will write something better.
+If the input file that is being split does not contain a 'cmdline'
+section, do not fail. The section is optional.
 
-The thing is, what does the previous patches do that's important for
-this change? If I see this in a change log, I may look at the previous
-patches, but note that the order is not always the same. I could have
-imported a patch with a date on it that happens to go between the two
-and cause the history to be different. But that's usually in merged
-commits which I avoid here, but still.
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ lib/trace-cmd/trace-input.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Sometimes in a change log I'll put:
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index dae5b90d7da9..ce4ecf43de74 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -5722,9 +5722,8 @@ int tracecmd_copy_headers(struct tracecmd_input *in_handle,
+ 		if (end_state <= in_handle->file_state)
+ 			return 0;
+ 
+-		ret = copy_command_lines(in_handle, out_handle);
+-		if (ret < 0)
+-			goto out;
++		/* Optional */
++		copy_command_lines(in_handle, out_handle);
+ 
+ 		/* fallthrough */
+ 	case TRACECMD_FILE_CPU_COUNT:
+-- 
+2.43.0
 
- "Now that X was done, we can do Y"
-
-Where X is done by previous patches, and if someone is curious, they
-can go and see X. But just saying "Make use of previous patches"
-doesn't tell me what those previous patches did. And going back and
-looking at them, I still don't know exactly how those previous patches
-are related to this change, except that it did some clean up work.
-
--- Steve
