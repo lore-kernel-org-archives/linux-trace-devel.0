@@ -1,200 +1,171 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C041427F;
-	Wed, 17 Jan 2024 06:27:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12AA225770
+	for <linux-trace-devel@vger.kernel.org>; Thu, 18 Jan 2024 16:36:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705472825; cv=none; b=df6YEjFv1LN3Um3xpkciQQiybUGPo5BiA2heIfjqz46FqJodgwojr2NPvEEn5ddIJHHpkgVYu9CNM8Oy748Jx4Opcy7ukrqaXKWYvfhQxA8NuU9zPcpyPCNdNXCphbclZzyqgGt++vI5bWvqjE6hVwVFLdceSHs6syT8j2Nb0aQ=
+	t=1705595821; cv=none; b=RroIE3DxCrUn3g9QCa8a55pumE8QZ9410q0NyrdZMP/fuBpGWzN5y02WTdUDj48MnWoQWRKtywApsi8hBgkwCrJSzpE19E3Ee/rC+JFDwEt0RRPom1tjB5SgRkzkK8DJAveEpFCLmBbdNSpbeHH07bGlYiAzxv2L4rB9arWBlvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705472825; c=relaxed/simple;
-	bh=kGeOYRx8qI0US6bRFjuYIEStLY+yQsBJ4RwEajsebjM=;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
-	 X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding; b=L8LiiKOX9mAPHk6VxdYqAyumt4I8p7u62GnnVdCk/QEK0UmOagOzvxh2Md2qSwyJXwzGvHl9c09tiiHwHoo9ewz2f8F9Gi4MUEL1u6D4EGD90B5ZRnH1xAMLftvlA6UnsTfrMFYeI5FSbUbsN2N8jLqIuzdsu31Pdgt4WWuPnvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TcNDo9Gg; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1705595821; c=relaxed/simple;
+	bh=QEi1bAcrixkAKE8mmHyxwQZeg4rqRgAAYgcOVq4gBHU=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=c5d6tLIAPh5yz4TN+H/7d8aoe+JJh9WgkIERZElsBptB57KSl/oupmn7XTeyw2oMgQ9Wj/1AJoEt5EUUvYHpIGrUzg6dPr3f4k6FpR3KAESPppwcH9JOBy5dzuV8nwM98PShHv/RgGE8WZL9GYZHz6eux0zkLdW+b/Ps+7HxJGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pqc6+6EY; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TcNDo9Gg"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8346AC43390;
-	Wed, 17 Jan 2024 06:27:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705472825;
-	bh=kGeOYRx8qI0US6bRFjuYIEStLY+yQsBJ4RwEajsebjM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TcNDo9GgchQ6h3sAcUB3HGvOoDL1wvZMNA2FFGl3hJxhNvd8yoE4madZ0jJgsy2Mr
-	 ir4WWI25rX6R6/ZK0AQCJkEzHQa0MO1TpFAZbJCDgPksMII6V/d2P9HquXxjHJ+3Sv
-	 aJ/0dxnhTAzzP694bbIFEcVSRmQ1lZuq+tyVbEt5VdUjnCcrZqK0h1iJ90G4eE5JTu
-	 zK2hERqkYYyBMSJMTK2UkLJuvzN+MzaQkW4L1k6XWF2tpN+VPLBfoQmJjgTn7bLmyr
-	 ZOODXca52Ye8FdJVHY5fgm9dcElFIaSjY4uhYgKvvJ0jtHSuGRsahcEncXFXXzjlZv
-	 HPv3v9dNn4v0Q==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>
-Cc: Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Stephane Eranian <eranian@google.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-toolchains@vger.kernel.org,
-	linux-trace-devel@vger.kernel.org
-Subject: [PATCH 9/9] perf dwarf-aux: Check allowed DWARF Ops
-Date: Tue, 16 Jan 2024 22:26:57 -0800
-Message-ID: <20240117062657.985479-10-namhyung@kernel.org>
-X-Mailer: git-send-email 2.43.0.381.gb435a96ce8-goog
-In-Reply-To: <20240117062657.985479-1-namhyung@kernel.org>
-References: <20240117062657.985479-1-namhyung@kernel.org>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pqc6+6EY"
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d5ce88b51cso141215ad.0
+        for <linux-trace-devel@vger.kernel.org>; Thu, 18 Jan 2024 08:36:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705595819; x=1706200619; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5KlwC1tfLnVHaIlb0kP7VhmulPfiXSyngFVbxChaHqs=;
+        b=pqc6+6EYQbiMxocEdczrDYyTAQyx2v2n/mtp19Y/tP3QfB7DuZ5UiVtomwvA3Itjmz
+         N5ZPvPRKLTP+qvmKnyHx8fWwzYC5GIUaVZ1LADJkPf7Pxu1dk4IdVga9xoPzT76uaLnC
+         cDJ9Jc+eWveRBgZLe2s2NAbomTWNjHoMxu+NOhuvpVifFXKbDGDa1yHhc2wiU+Dye1fU
+         JOPclBsn9ZMAfRMIhLsJledaTsin+SWgMikjm8iJ3B37Q+yZlDcL0tPyX/LI5UDhsZcO
+         lYeTf0wjTOuABOhxOZfKxk7JfdALmZPvkt9JiZCgDyObBJn8eH1evI4yL0TCcYP5itKL
+         psJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705595819; x=1706200619;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5KlwC1tfLnVHaIlb0kP7VhmulPfiXSyngFVbxChaHqs=;
+        b=bCor1k0ngMfWmzo3AcC9+KShyVNADgzgmn/JLuYuzg5WT5IPQyKDetRRrG4kXJExEM
+         TZ1c5G6BdxmU9qWTUwWDiQWiS1lM/ar+GvUtRNg8YIKHK2v9WBBE7vRuZ63LI6ilML/+
+         LkvPCl71y3JqmFfXjecaMZ/00OcFxmuQmBm8hM7g1G66GgKMX5Z8/JJ8kdDmPA8iAQRZ
+         Z9q2nQPhQXqgVR2kEBSvXi/oSf2AzIC0gTjQ+3e/HNPgiG2IrGWk5XtNq1XCZlrr+1al
+         zXfc7qCrCN35jtdghbX3SvcOI9DtPpfKTwNn+aERgbuQY9mPdU6vRm8cuVvPAkHf4d0Q
+         raPg==
+X-Gm-Message-State: AOJu0YwmfHGQoVbUMM0aXAsQvNqopY3pmrOaa+uajRL3pcr1vSgjbRV4
+	H4GpQJjxCLb5BLG9D6eUCbpD5X7Pc0noqfoooM9ZfgDumkGP6IqTOh8yGl0398Kfp7/lnhoBDQI
+	zyz/UyDxvdguIiFDcC/OOcy5TlPDEAce2nJmd
+X-Google-Smtp-Source: AGHT+IGD/GqPBe8Ph0aRgX54BTNg+7Cx7Om23uKeYBKXXKyqAnh8rtc1TbLbq77oqgH5JOz/+4JdTGDixjXjdz17RFE=
+X-Received: by 2002:a17:903:2448:b0:1d6:fc45:d269 with SMTP id
+ l8-20020a170903244800b001d6fc45d269mr104204pls.23.1705595819130; Thu, 18 Jan
+ 2024 08:36:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240117062657.985479-1-namhyung@kernel.org>
+In-Reply-To: <20240117062657.985479-1-namhyung@kernel.org>
+From: Ian Rogers <irogers@google.com>
+Date: Thu, 18 Jan 2024 08:36:45 -0800
+Message-ID: <CAP-5=fVwPUBAXcGB=VYVVDPEkGm_W5qAFZSAWb4yuJ0msodu4w@mail.gmail.com>
+Subject: Re: [PATCHSET 0/9] perf tools: More updates on data type profiling (v4)
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
+	linux-trace-devel@vger.kernel.org, Ben Woodard <woodard@redhat.com>, 
+	Joe Mario <jmario@redhat.com>, Kees Cook <keescook@chromium.org>, 
+	David Blaikie <blaikie@google.com>, Xu Liu <xliuprof@google.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
+	Mark Wielaard <mark@klomp.org>, Jason Merrill <jason@redhat.com>, 
+	"Jose E . Marchesi" <jose.marchesi@oracle.com>, William Huang <williamjhuang@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The DWARF location expression can be fairly complex and it'd be hard
-to match it with the condition correctly.  So let's be conservative
-and only allow simple expressions.  For now it just checks the first
-operation in the list.  The following operations looks ok:
+On Tue, Jan 16, 2024 at 10:27=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
+ wrote:
+>
+> Hello,
+>
+> This is a continuation of the data type profiling series.  Now the basic
+> part (v3) which uses pointer variables is merged to the perf-tools-next
+> tree.  And this part is for memory accesses without pointers as well as
+> small updates to handle some corner cases.  Still mores to come to
+> complete the original series.
+>
+> There's no change from the previous version.  For background and usages,
+> pleaes refer the posting of previous version [1] and a LWN article [2].
+>
+> Basically most memory accesses happen with pointers, but there are cases
+> don't use pointers - direct accesses to global and local variables.
+>
+> Global variables are located in a static memory at a specific address.
+> So the DWARF location expression for the global vairable would also have
+> the static address.  And it's common to access them using PC-relative
+> addressing mode.  Thus it needs a special handling for global variables.
+>
+> On the other hand, local variables are located in the stack which varies
+> as program executes.  So the local variables are accessed either by the
+> (stack) frame pointer or (current) stack pointer.  But sometimes DWARF
+> location expression uses a frame base address (CFA) to specify location
+> of local variables.  So it may need to convert or normalize the location
+> extracted from the instruction to match DWARF expression.
+>
+> Lastly, there are some cases DWARF location expressions end up having
+> complex (or not straight-forward) location.  In that case, it cannot
+> simply match just the first expression with the instruction location.
+> It'd be safer to reject them.
+>
+> The code is available at 'perf/data-profile-update-v4' branch in the tree
+> below.  The full version of the code is in 'perf/data-profile-v4' branch.
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+>
+> Thanks,
+> Namhyung
+>
+>
+> Cc: Ben Woodard <woodard@redhat.com>
+> Cc: Joe Mario <jmario@redhat.com>
+> CC: Kees Cook <keescook@chromium.org>
+> Cc: David Blaikie <blaikie@google.com>
+> Cc: Xu Liu <xliuprof@google.com>
+> Cc: Kan Liang <kan.liang@linux.intel.com>
+> Cc: Ravi Bangoria <ravi.bangoria@amd.com>
+> Cc: Mark Wielaard <mark@klomp.org>
+> Cc: Jason Merrill <jason@redhat.com>
+> Cc: Jose E. Marchesi <jose.marchesi@oracle.com>
+> Cc: William Huang <williamjhuang@google.com>
+>
+> [1] https://lore.kernel.org/linux-perf-users/20231213001323.718046-1-namh=
+yung@kernel.org/
+> [2] https://lwn.net/Articles/955709/
+>
+>
+> Namhyung Kim (9):
+>   perf annotate-data: Parse 'lock' prefix from llvm-objdump
+>   perf annotate-data: Handle macro fusion on x86
+>   perf annotate-data: Handle array style accesses
+>   perf annotate-data: Add stack operation pseudo type
+>   perf annotate-data: Handle PC-relative addressing
+>   perf annotate-data: Support global variables
+>   perf dwarf-aux: Add die_get_cfa()
+>   perf annotate-data: Support stack variables
+>   perf dwarf-aux: Check allowed DWARF Ops
 
- * DW_OP_stack_value
- * DW_OP_deref_size
- * DW_OP_deref
- * DW_OP_piece
+Series:
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-To refuse complex (and unsupported) location expressions, add
-check_allowed_ops() to compare the rest of the list.  It seems earlier
-result contained those unsupported expressions.  For example, I found
-some local struct variable is placed like below.
+Thanks,
+Ian
 
- <2><43d1517>: Abbrev Number: 62 (DW_TAG_variable)
-    <43d1518>   DW_AT_location    : 15 byte block: 91 50 93 8 91 78 93 4 93 84 8 91 68 93 4
-        (DW_OP_fbreg: -48; DW_OP_piece: 8;
-         DW_OP_fbreg: -8; DW_OP_piece: 4;
-         DW_OP_piece: 1028;
-         DW_OP_fbreg: -24; DW_OP_piece: 4)
-
-Another example is something like this.
-
-    0057c8be ffffffffffffffff ffffffff812109f0 (base address)
-    0057c8ce ffffffff812112b5 ffffffff812112c8 (DW_OP_breg3 (rbx): 0;
-                                                DW_OP_constu: 18446744073709551612;
-                                                DW_OP_and;
-                                                DW_OP_stack_value)
-
-It should refuse them.  After the change, the stat shows:
-
-  Annotate data type stats:
-  total 294, ok 158 (53.7%), bad 136 (46.3%)
-  -----------------------------------------------------------
-          30 : no_sym
-          32 : no_mem_ops
-          53 : no_var
-          14 : no_typeinfo
-           7 : bad_offset
-
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/dwarf-aux.c | 44 +++++++++++++++++++++++++++++++++----
- 1 file changed, 40 insertions(+), 4 deletions(-)
-
-diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
-index 7caf52fdc255..2791126069b4 100644
---- a/tools/perf/util/dwarf-aux.c
-+++ b/tools/perf/util/dwarf-aux.c
-@@ -1305,6 +1305,34 @@ static bool match_var_offset(Dwarf_Die *die_mem, struct find_var_data *data,
- 	return true;
- }
- 
-+static bool check_allowed_ops(Dwarf_Op *ops, size_t nops)
-+{
-+	/* The first op is checked separately */
-+	ops++;
-+	nops--;
-+
-+	/*
-+	 * It needs to make sure if the location expression matches to the given
-+	 * register and offset exactly.  Thus it rejects any complex expressions
-+	 * and only allows a few of selected operators that doesn't change the
-+	 * location.
-+	 */
-+	while (nops) {
-+		switch (ops->atom) {
-+		case DW_OP_stack_value:
-+		case DW_OP_deref_size:
-+		case DW_OP_deref:
-+		case DW_OP_piece:
-+			break;
-+		default:
-+			return false;
-+		}
-+		ops++;
-+		nops--;
-+	}
-+	return true;
-+}
-+
- /* Only checks direct child DIEs in the given scope. */
- static int __die_find_var_reg_cb(Dwarf_Die *die_mem, void *arg)
- {
-@@ -1332,25 +1360,31 @@ static int __die_find_var_reg_cb(Dwarf_Die *die_mem, void *arg)
- 		/* Local variables accessed using frame base register */
- 		if (data->is_fbreg && ops->atom == DW_OP_fbreg &&
- 		    data->offset >= (int)ops->number &&
-+		    check_allowed_ops(ops, nops) &&
- 		    match_var_offset(die_mem, data, data->offset, ops->number))
- 			return DIE_FIND_CB_END;
- 
- 		/* Only match with a simple case */
- 		if (data->reg < DWARF_OP_DIRECT_REGS) {
--			if (ops->atom == (DW_OP_reg0 + data->reg) && nops == 1)
-+			/* pointer variables saved in a register 0 to 31 */
-+			if (ops->atom == (DW_OP_reg0 + data->reg) &&
-+			    check_allowed_ops(ops, nops))
- 				return DIE_FIND_CB_END;
- 
- 			/* Local variables accessed by a register + offset */
- 			if (ops->atom == (DW_OP_breg0 + data->reg) &&
-+			    check_allowed_ops(ops, nops) &&
- 			    match_var_offset(die_mem, data, data->offset, ops->number))
- 				return DIE_FIND_CB_END;
- 		} else {
-+			/* pointer variables saved in a register 32 or above */
- 			if (ops->atom == DW_OP_regx && ops->number == data->reg &&
--			    nops == 1)
-+			    check_allowed_ops(ops, nops))
- 				return DIE_FIND_CB_END;
- 
- 			/* Local variables accessed by a register + offset */
- 			if (ops->atom == DW_OP_bregx && data->reg == ops->number &&
-+			    check_allowed_ops(ops, nops) &&
- 			    match_var_offset(die_mem, data, data->offset, ops->number2))
- 				return DIE_FIND_CB_END;
- 		}
-@@ -1412,7 +1446,8 @@ static int __die_find_var_addr_cb(Dwarf_Die *die_mem, void *arg)
- 		if (data->addr < ops->number)
- 			continue;
- 
--		if (match_var_offset(die_mem, data, data->addr, ops->number))
-+		if (check_allowed_ops(ops, nops) &&
-+		    match_var_offset(die_mem, data, data->addr, ops->number))
- 			return DIE_FIND_CB_END;
- 	}
- 	return DIE_FIND_CB_SIBLING;
-@@ -1503,7 +1538,8 @@ int die_get_cfa(Dwarf *dwarf, u64 pc, int *preg, int *poffset)
- 		return -1;
- 
- 	if (!dwarf_cfi_addrframe(cfi, pc, &frame) &&
--	    !dwarf_frame_cfa(frame, &ops, &nops) && nops == 1) {
-+	    !dwarf_frame_cfa(frame, &ops, &nops) &&
-+	    check_allowed_ops(ops, nops)) {
- 		*preg = reg_from_dwarf_op(ops);
- 		*poffset = offset_from_dwarf_op(ops);
- 		return 0;
--- 
-2.43.0.381.gb435a96ce8-goog
-
+>  tools/perf/util/annotate-data.c | 119 ++++++++++++++++----
+>  tools/perf/util/annotate-data.h |   8 +-
+>  tools/perf/util/annotate.c      | 153 ++++++++++++++++++++++++--
+>  tools/perf/util/annotate.h      |  12 +-
+>  tools/perf/util/dwarf-aux.c     | 187 ++++++++++++++++++++++++++++----
+>  tools/perf/util/dwarf-aux.h     |  18 +++
+>  6 files changed, 439 insertions(+), 58 deletions(-)
+>
+>
+> base-commit: d988c9f511af71a3445b6a4f3a2c67208ff8e480
+> --
+> 2.43.0.381.gb435a96ce8-goog
+>
