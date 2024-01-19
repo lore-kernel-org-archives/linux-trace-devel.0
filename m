@@ -1,30 +1,23 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EB0C55E70
-	for <linux-trace-devel@vger.kernel.org>; Fri, 19 Jan 2024 17:29:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D73451E4BE
+	for <linux-trace-devel@vger.kernel.org>; Fri, 19 Jan 2024 21:26:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705685395; cv=none; b=dLtXP319MYyseCU+JY+vAWk68EzRhQVPqgf4/m3nUj32NT/xi/2My/IXB2BadmdFISoRDuWHUJVgGcRYGWWAG4lr/1cXqfZKcQadaidpRRJR0yIx6h5ihy7hk1vIsFSIQkwmxN28sqh8nXgbLSR4nLxsY4ryByLvtYMr2Lbwynk=
+	t=1705699582; cv=none; b=YoklCXR+sr1fIvvB/JDLcvxBq2ddOPsgyvJYjKZ5xoJh6YeduWOVFYqPZXv/HEoqlM15SjyWNlC5kK2zyvv200x93BFWQeadn8pPjdLDqzJ66yhquaX5gE3ZtMvb5KrXgoBWxo4AJcgZ5DdSs7UadHHycxuelaZ/FnJ/5VmrHCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705685395; c=relaxed/simple;
-	bh=htgvEnAzhaV45q2xWz8mbBUQbAfHVAbxQnvrlXJFqSU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=F6uFHaftVIFayZoaOp6zHP09bIeCZLPuNhQVVEMTr4Bzd3GhXswr4st919FrVpJ/3hU2fCyEVSfTbbqsM8cxeURfgMFgAQIw8BTaKVHPeaI4VNxQKBAAzo8cvEpsOQlBVXwNw90gKKq2iS/hYjx6oTyXBGpy3xYzbet/IxBzM5Y=
+	s=arc-20240116; t=1705699582; c=relaxed/simple;
+	bh=RlfqGx7CFaC8qyt5O7i3kp5LFG6X8PvpM2tR9NGWDaY=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=p/0tSh1rIU9Ueecq/Btu571Exw7XPsGlXRvZzyGK1/rVTpkep/uJNNb3BybxQGAFdWmtJJnQ4zcR9k+fT74rrrlY6VDn1/jZuaTuIyfwbOcmSPaJC+XO2kKATpsoyOKu1WEXMigpCJwN08HKZcfU665XPVkJYihsUdFp81KdFJU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ACF5C43390;
-	Fri, 19 Jan 2024 17:29:54 +0000 (UTC)
-Date: Fri, 19 Jan 2024 12:31:15 -0500
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17592C433F1
+	for <linux-trace-devel@vger.kernel.org>; Fri, 19 Jan 2024 21:26:21 +0000 (UTC)
+Date: Fri, 19 Jan 2024 16:27:43 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Pierre Gondois <pierre.gondois@arm.com>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH 2/5] trace-cmd: usage: Update usage for trace-cmd split
-Message-ID: <20240119123115.7494bf1e@gandalf.local.home>
-In-Reply-To: <efb02cc0-65d9-4b76-9ec6-030a6f39b1c5@arm.com>
-References: <20240112083945.1361293-1-pierre.gondois@arm.com>
-	<20240112083945.1361293-3-pierre.gondois@arm.com>
-	<20240112103731.36beb00c@gandalf.local.home>
-	<efb02cc0-65d9-4b76-9ec6-030a6f39b1c5@arm.com>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd record: Fix top_instance.output_file being NULL
+Message-ID: <20240119162743.1a107fa9@gandalf.local.home>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -35,18 +28,57 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Mon, 15 Jan 2024 18:22:15 +0100
-Pierre Gondois <pierre.gondois@arm.com> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> > The above looks like it has nothing to do with the usage, and was perhaps
-> > accidentally merged in this patch?  
-> 
-> Yes right,
-> something wrong happened while rebasing, sorry for that...
+If the -o comes after a -B, the output_file name will be associated to the
+trace instance of that -B, and the top_instance.output_file will be NULL.
+If recording is started in a location that is read-only, the temp file
+created for the top instance is going to try to be created in that read-only
+file system.
 
-Ah can you send a v2 on this patch series.
+ /sys/kernel/tracing# trace-cmd record -o /tmp/test.dat -B test -e sched
+ Hit Ctrl^C to stop recording
+ ^Ctrace-cmd: Permission denied
+   could not create file (null).cpu0
 
-For the fixes I can pull them immediately. The updates to the split
-functionality can come in a separate patch set.
+Make sure all instances, including the top_instance has their output_file
+correct.
 
--- Steve
+Also, because the output file could have been created under another
+instance, check if that instance already has the output file before
+assigning over it.
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ tracecmd/trace-record.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 762afba4..91cc90d4 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -7122,6 +7122,10 @@ static void record_trace(int argc, char **argv,
+ 	if (!ctx->output)
+ 		ctx->output = DEFAULT_INPUT_FILE;
+ 
++	/* Make sure top_instance.output_file exists */
++	if (!top_instance.output_file)
++		top_instance.output_file = strdup(ctx->output);
++
+ 	if (ctx->data_flags & (DATA_FL_GUEST | DATA_FL_PROXY))
+ 		set_tsync_params(ctx);
+ 
+@@ -7131,7 +7135,9 @@ static void record_trace(int argc, char **argv,
+ 	for_all_instances(instance) {
+ 		if (ctx->temp)
+ 			instance->temp_dir = ctx->temp;
+-		instance->output_file = strdup(ctx->output);
++		/* The -o could have been done after -B */
++		if (!instance->output_file)
++			instance->output_file = strdup(ctx->output);
+ 		if (!instance->output_file)
+ 			die("Failed to allocate output file name for instance");
+ 		if (!ctx->manual && instance->flags & BUFFER_FL_PROFILE)
+-- 
+2.43.0
+
