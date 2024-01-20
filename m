@@ -1,84 +1,82 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D73451E4BE
-	for <linux-trace-devel@vger.kernel.org>; Fri, 19 Jan 2024 21:26:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00A8D12B75
+	for <linux-trace-devel@vger.kernel.org>; Sat, 20 Jan 2024 20:51:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705699582; cv=none; b=YoklCXR+sr1fIvvB/JDLcvxBq2ddOPsgyvJYjKZ5xoJh6YeduWOVFYqPZXv/HEoqlM15SjyWNlC5kK2zyvv200x93BFWQeadn8pPjdLDqzJ66yhquaX5gE3ZtMvb5KrXgoBWxo4AJcgZ5DdSs7UadHHycxuelaZ/FnJ/5VmrHCk=
+	t=1705783879; cv=none; b=D4yfqJ7K0PCPXEfnXL4w/1kY7YU//hqXmAmyGwt2WRWd37UTQrd7xr76LikloM9B2LHpcAi71l9dC/n5z5xOXKmDF6Y6QJHDVzncoyNZXhIUKNGd4tV0frazyHXgFKutA5+VPwxGz8PXhkoxUvOCICM4KmpCllRdYGwrhKIaVaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705699582; c=relaxed/simple;
-	bh=RlfqGx7CFaC8qyt5O7i3kp5LFG6X8PvpM2tR9NGWDaY=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=p/0tSh1rIU9Ueecq/Btu571Exw7XPsGlXRvZzyGK1/rVTpkep/uJNNb3BybxQGAFdWmtJJnQ4zcR9k+fT74rrrlY6VDn1/jZuaTuIyfwbOcmSPaJC+XO2kKATpsoyOKu1WEXMigpCJwN08HKZcfU665XPVkJYihsUdFp81KdFJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17592C433F1
-	for <linux-trace-devel@vger.kernel.org>; Fri, 19 Jan 2024 21:26:21 +0000 (UTC)
-Date: Fri, 19 Jan 2024 16:27:43 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd record: Fix top_instance.output_file being NULL
-Message-ID: <20240119162743.1a107fa9@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1705783879; c=relaxed/simple;
+	bh=DSWanOeReofmn064ISBO7/un19rms+RhStzml7oO/YQ=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=EP/9YaOnDBTPuvFz4Pk3uElAtY0TyQemklzZ2+DPvoa3SGgJ0nXHl9IuYrxx1WSo4DrDO/81tVzwh1DkVzvKtIJchEWaobCx1JP9qeaJINmRBOKP0QQ9o2X1I/kJWFxrbh96aWw0pfMlD0Lg0tLvT2uL+ooywxiZQtxB97REw0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=auDeBW8o; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="auDeBW8o"
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a2cea0563cbso287341466b.3
+        for <linux-trace-devel@vger.kernel.org>; Sat, 20 Jan 2024 12:51:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705783876; x=1706388676; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=B0bKN+t/oL8u/gZGaME7ZXCK/xfqeR9/Ixhmd1zG3hQ=;
+        b=auDeBW8oxl8ATGQ7aUacf4lF9WYmkPRAyFRoPfxeie42FmCnAuVbNTLojd5AWb4uN+
+         dF/xLiyutz4Pwto2PMR3tjIlmB0/ZZ2nmG+A3TEen6dFcSODJFnNtlqp2HzF5WLvpVyu
+         L9ca52vRzJW9cu6VE1J42b6gV/8e58odkz/cu8IIWO6556IzTzrcXNmTwQ2TQcxA2LTN
+         lOoxlQn/Tf8MazmJi9If86r6lyWx2d5seL9SihAQJGCwyyyyqu/5M2k0eGxocWyqgNDt
+         JmZ77ICOVajtemJI7sDhyWaH3uMNhcNqwCTtODYxM910ZdBwCb3YMabltgKyMjtsBgJ/
+         jytg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705783876; x=1706388676;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B0bKN+t/oL8u/gZGaME7ZXCK/xfqeR9/Ixhmd1zG3hQ=;
+        b=V2slDpFoOdewHyUE43WcAeN5hS+tBroD9uZSpJxT6IP5greFQUfhVne6pYdyAjw/1M
+         kNR7pkSxHuaIlQvsljuaxShw+I/uEmClt08oPSuAj+ydxc2fhGxhLxurnTg2kXnMTMau
+         HG4Im06EtEQ3SpY1Mtux2PD7oSI++o91yisInYTvnyzT6MWikJ4gXgr2ig4A4JXBUhNB
+         rywf3LIpHVP6ljeNyiWKjpXCAX3XJ4SEcRCNWC9EoiJi6rN+LYbMByLES7b3tc8AyggD
+         czEaPypNrbg/U34v+nR0Pxnx6STbu1pGiHVbrc5yS2J2xmmPyh/aQHfXPQDdvCa32Aad
+         K3rA==
+X-Gm-Message-State: AOJu0YxxhqUGnrHPWTKO44K3hDWi9a7v1DIRQBqxvQThyCjWymi6RP5/
+	tSOSrnCbKYQQJi2+bJuhqxv8Ui2C+mYURwDb1QDHulL/3KG1fkz/W6qnOjW+jrSKXnP7OA5Uw4s
+	BVRc960gAnH9G2qAqbcoYf6EXgm4=
+X-Google-Smtp-Source: AGHT+IEeb+iI4B/Pdp6zmEY/kQ+qKhjHaC1UVascTYqhrHc+8ffctyoakdJYHu1/v8FMIQwdJWc1aeTbhw0QiAFwXNU=
+X-Received: by 2002:a17:906:745:b0:a2e:9835:d2e6 with SMTP id
+ z5-20020a170906074500b00a2e9835d2e6mr1020979ejb.144.1705783875763; Sat, 20
+ Jan 2024 12:51:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date: Sat, 20 Jan 2024 20:50:39 +0000
+Message-ID: <CADVatmNXhhn6xhL-=rYqDaHqp4Ct+_i5N42KpeJnnxwoH1Ee+A@mail.gmail.com>
+Subject: kernel-shark fails to display
+To: Steven Rostedt <rostedt@goodmis.org>, Yordan Karadzhov <y.karadz@gmail.com>
+Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Hi,
 
-If the -o comes after a -B, the output_file name will be associated to the
-trace instance of that -B, and the top_instance.output_file will be NULL.
-If recording is started in a location that is read-only, the temp file
-created for the top instance is going to try to be created in that read-only
-file system.
+I am seeing a problem with the latest version v2.3.0
+Steps to reproduce:
+1. start kernel-shark
+2. Go to Record in Tools menu
+3. Select Events: All
+4. Select "Display output"
+5. Click on Apply
+6. Click on Capture
 
- /sys/kernel/tracing# trace-cmd record -o /tmp/test.dat -B test -e sched
- Hit Ctrl^C to stop recording
- ^Ctrace-cmd: Permission denied
-   could not create file (null).cpu0
+It fails with:
+kernelshark: ./src/libkshark-model.c:249: ksmodel_set_upper_edge:
+Assertion `row != BSEARCH_ALL_GREATER' failed.
+Aborted
 
-Make sure all instances, including the top_instance has their output_file
-correct.
 
-Also, because the output file could have been created under another
-instance, check if that instance already has the output file before
-assigning over it.
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- tracecmd/trace-record.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 762afba4..91cc90d4 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -7122,6 +7122,10 @@ static void record_trace(int argc, char **argv,
- 	if (!ctx->output)
- 		ctx->output = DEFAULT_INPUT_FILE;
- 
-+	/* Make sure top_instance.output_file exists */
-+	if (!top_instance.output_file)
-+		top_instance.output_file = strdup(ctx->output);
-+
- 	if (ctx->data_flags & (DATA_FL_GUEST | DATA_FL_PROXY))
- 		set_tsync_params(ctx);
- 
-@@ -7131,7 +7135,9 @@ static void record_trace(int argc, char **argv,
- 	for_all_instances(instance) {
- 		if (ctx->temp)
- 			instance->temp_dir = ctx->temp;
--		instance->output_file = strdup(ctx->output);
-+		/* The -o could have been done after -B */
-+		if (!instance->output_file)
-+			instance->output_file = strdup(ctx->output);
- 		if (!instance->output_file)
- 			die("Failed to allocate output file name for instance");
- 		if (!ctx->manual && instance->flags & BUFFER_FL_PROFILE)
 -- 
-2.43.0
-
+Regards
+Sudip
