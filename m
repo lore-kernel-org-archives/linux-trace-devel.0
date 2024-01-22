@@ -1,30 +1,30 @@
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 271BE58135
-	for <linux-trace-devel@vger.kernel.org>; Mon, 22 Jan 2024 16:43:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C90F058137
+	for <linux-trace-devel@vger.kernel.org>; Mon, 22 Jan 2024 16:43:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705941834; cv=none; b=G8Dy9E/6mb7WLq8M8Ol63NuqhXmOpQMH4YK+x6A9rYHJ9mlZRUy2QpdYIWypbIpfK/5hp5KsFjle8JSbyVu1JSDPROQZxH/Ujop+bwCzyCLvSfoJ5r5owNJJEbFS/4utD9KR7WAwzLXZSKFS6Cdg5guqU0ds3lEOmRqhygTlsDE=
+	t=1705941834; cv=none; b=rRKcoGPp8HfcXyxjC75ByMfv1bmn5YkwscoMz2XizDJCNU0GjckEmHMCq+NU6/LRW0Itiy1jqAk2Ty0OzhkCPmlfrb6vmY4cWpMmIlkkZfPHgZKE1nMJvz6xJ0+jgCa+c9Pi7XjpQGLYEFhJJ+GH1BJsZ/TA80jmGs35pGoD0mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1705941834; c=relaxed/simple;
-	bh=i1Q+EyUhY8k4F+AYsYU5n2kIa2RdLHDm+9C+LXDefd0=;
+	bh=iZXaWAOQqHDReQYBp9p5x3xhSD1q2J+D5UqufRhqJnw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=u7RrZMjhwHK28uy+05DP8LOebnXw20CYpHh9TqKVfpTwVtqX8VLb6rCwOPj08f0/EKckR57xJG8ifcD9aCPyOkKMji7zEmNP59BRiMroD4mocJ9S78qw7Rebd3+EXqfxmHlgEoMMUojNfSfZwp58GMGi/sI87uZX1RtO2SPeBzE=
+	 MIME-Version; b=eobgEx2/lgt4JRhTttsHbNhXCS67v8Jumn+TeEnPqO0xrJX33mqt1Gl7s7k1JQXRUX88w5keL/46DdN4Pol0K7Q9rcHueSNNpNMufCZIw6byli0NiHRbr2FbM/mi4W7ENH98lj6RJ9Pm1Q6DFFVFUlP1dmMG+sEUQ2jKXquO+Oo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 83024106F;
-	Mon, 22 Jan 2024 08:44:37 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5BEE8113E;
+	Mon, 22 Jan 2024 08:44:38 -0800 (PST)
 Received: from e126645.nice.arm.com (e126645.nice.arm.com [10.34.100.129])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C47163F5A1;
-	Mon, 22 Jan 2024 08:43:50 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 9F9B63F5A1;
+	Mon, 22 Jan 2024 08:43:51 -0800 (PST)
 From: Pierre Gondois <pierre.gondois@arm.com>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Pierre Gondois <pierre.gondois@arm.com>
-Subject: [PATCH v2 2/7] trace-cmd split: Correctly split with start/end/time-window parameters
-Date: Mon, 22 Jan 2024 17:43:31 +0100
-Message-Id: <20240122164336.167256-3-pierre.gondois@arm.com>
+Subject: [PATCH v2 3/7] trace-cmd split: Store instances in local list
+Date: Mon, 22 Jan 2024 17:43:32 +0100
+Message-Id: <20240122164336.167256-4-pierre.gondois@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240122164336.167256-1-pierre.gondois@arm.com>
 References: <20240122164336.167256-1-pierre.gondois@arm.com>
@@ -36,105 +36,129 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-With a trace.dat file having events timestamped between
-[284443.0, 284448.0] seconds, the following command:
-  trace-cmd split -i trace.dat -o trace2.dat -r -m 100 284444 284445
-should produce ten trace2.dat.XXX files between [284444.0, 284445.0],
-each one lasting 100ms.
+To prepare handling of multiple instances, store instance
+handles in a local list, similarly to what is currently
+done in tracecmd/trace-read.c.
 
-Currently only one trace2.dat.001 file is produced, with events
-within the [284444.0, 284445.1] time window.
-
-Don't stop splitting the input file after the first iteration.
-Add a end_reached to detect when the end timestamp is reached.
+To help achieve this goal, add a 'struct handle_list' and
+add_handle()/free_handles() functions. 'struct handle' elements
+are added to the static list, but not used in this patch.
 
 Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
 ---
- tracecmd/trace-split.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+ tracecmd/trace-split.c | 60 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 60 insertions(+)
 
 diff --git a/tracecmd/trace-split.c b/tracecmd/trace-split.c
-index 6ccda2fc..b6c056b5 100644
+index b6c056b5..f46813d1 100644
 --- a/tracecmd/trace-split.c
 +++ b/tracecmd/trace-split.c
-@@ -198,7 +198,7 @@ static int parse_cpu(struct tracecmd_input *handle,
- 		     unsigned long long start,
- 		     unsigned long long end,
- 		     int count_limit, int percpu, int cpu,
--		     enum split_types type)
-+		     enum split_types type, bool *end_reached)
- {
- 	struct tep_record *record;
- 	struct tep_handle *pevent;
-@@ -325,6 +325,9 @@ static int parse_cpu(struct tracecmd_input *handle,
- 		}
- 	}
+@@ -19,10 +19,12 @@
+ #include <ctype.h>
+ #include <errno.h>
  
-+	if (record && (record->ts > end))
-+		*end_reached = true;
++#include "list.h"
+ #include "trace-local.h"
+ 
+ static unsigned int page_size;
+ static const char *default_input_file = DEFAULT_INPUT_FILE;
++static const char *default_top_instance_name = "top";
+ static const char *input_file;
+ 
+ enum split_types {
+@@ -49,6 +51,46 @@ struct cpu_data {
+ 	char				*file;
+ };
+ 
++struct handle_list {
++	struct list_head		list;
++	const char			*name;
++	int				index;
 +
- 	if (record)
- 		tracecmd_free_record(record);
- 
-@@ -352,7 +355,8 @@ static unsigned long long parse_file(struct tracecmd_input *handle,
- 				     unsigned long long start,
- 				     unsigned long long end, int percpu,
- 				     int only_cpu, int count,
--				     enum split_types type)
-+				     enum split_types type,
-+				     bool *end_reached)
- {
- 	unsigned long long current;
- 	struct tracecmd_output *ohandle;
-@@ -396,14 +400,14 @@ static unsigned long long parse_file(struct tracecmd_input *handle,
- 
- 	if (only_cpu >= 0) {
- 		parse_cpu(handle, cpu_data, start, end, count,
--			  1, only_cpu, type);
-+			  1, only_cpu, type, end_reached);
- 	} else if (percpu) {
- 		for (cpu = 0; cpu < cpus; cpu++)
- 			parse_cpu(handle, cpu_data, start,
--				  end, count, percpu, cpu, type);
-+				  end, count, percpu, cpu, type, end_reached);
- 	} else
- 		parse_cpu(handle, cpu_data, start,
--			  end, count, percpu, -1, type);
-+			  end, count, percpu, -1, type, end_reached);
- 
- 	cpu_list = malloc(sizeof(*cpu_list) * cpus);
- 	if (!cpu_list)
-@@ -415,7 +419,6 @@ static unsigned long long parse_file(struct tracecmd_input *handle,
- 	if (tracecmd_append_cpu_data(ohandle, cpus, cpu_list) < 0)
- 		die("Failed to append tracing data\n");
- 
--	current = end;
- 	for (cpu = 0; cpu < cpus; cpu++) {
- 		/* Set the tracecmd cursor to the next set of records */
- 		if (cpu_data[cpu].offset) {
-@@ -440,6 +443,7 @@ void trace_split (int argc, char **argv)
- 	struct tracecmd_input *handle;
- 	unsigned long long start_ns = 0, end_ns = 0;
- 	unsigned long long current;
-+	bool end_reached = false;
- 	double start, end;
- 	char *endptr;
- 	char *output = NULL;
-@@ -564,11 +568,12 @@ void trace_split (int argc, char **argv)
- 			strcpy(output_file, output);
- 			
- 		current = parse_file(handle, output_file, start_ns, end_ns,
--				     percpu, cpu, count, type);
-+				     percpu, cpu, count, type, &end_reached);
++	/* Identify the top instance in the input trace. */
++	bool				was_top_instance;
 +
- 		if (!repeat)
- 			break;
- 		start_ns = 0;
--	} while (current && (!end_ns || current < end_ns));
-+	} while (!end_reached && (current && (!end_ns || current < end_ns)));
++	/* Identify the top instance in each output trace. */
++	bool				is_top_instance;
++};
++
++static struct list_head handle_list;
++
++static void add_handle(const char *name, int index, bool was_top_instance)
++{
++	struct handle_list *item;
++
++	item = calloc(1, sizeof(*item));
++	if (!item)
++		die("Failed to allocate handle item");
++
++	item->name = strdup(name);
++	item->index = index;
++	item->was_top_instance = was_top_instance;
++	list_add_tail(&item->list, &handle_list);
++}
++
++static void free_handles(struct list_head *list)
++{
++	struct handle_list *item;
++
++	while (!list_empty(list)) {
++		item = container_of(list->next, struct handle_list, list);
++		list_del(&item->list);
++		free((char*)item->name);
++		free(item);
++	}
++}
++
+ static int create_type_len(struct tep_handle *pevent, int time, int len)
+ {
+ 	static int bigendian = -1;
+@@ -450,6 +492,7 @@ void trace_split (int argc, char **argv)
+ 	char *output_file;
+ 	enum split_types split_type = SPLIT_NONE;
+ 	enum split_types type = SPLIT_NONE;
++	int instances;
+ 	int count;
+ 	int repeat = 0;
+ 	int percpu = 0;
+@@ -457,6 +500,8 @@ void trace_split (int argc, char **argv)
+ 	int ac;
+ 	int c;
  
- 	free(output);
++	list_head_init(&handle_list);
++
+ 	if (strcmp(argv[1], "split") != 0)
+ 		usage(argv);
+ 
+@@ -561,6 +606,20 @@ void trace_split (int argc, char **argv)
+ 		die("Failed to allocate for %s", output);
+ 	c = 1;
+ 
++	add_handle(default_top_instance_name, -1, true);
++	instances = tracecmd_buffer_instances(handle);
++	if (instances) {
++		const char *name;
++		int i;
++
++		for (i = 0; i < instances; i++) {
++			name = tracecmd_buffer_instance_name(handle, i);
++			if (!name)
++				die("error in reading buffer instance");
++			add_handle(name, i, false);
++		}
++	}
++
+ 	do {
+ 		if (repeat)
+ 			sprintf(output_file, "%s.%04d", output, c++);
+@@ -579,6 +638,7 @@ void trace_split (int argc, char **argv)
  	free(output_file);
+ 
+ 	tracecmd_close(handle);
++	free_handles(&handle_list);
+ 
+ 	return;
+ }
 -- 
 2.25.1
 
