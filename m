@@ -1,119 +1,74 @@
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0EEF38397
-	for <linux-trace-devel@vger.kernel.org>; Sun, 21 Jan 2024 19:49:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E4345810A
+	for <linux-trace-devel@vger.kernel.org>; Mon, 22 Jan 2024 16:43:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705866599; cv=none; b=OCtOrJP2KNSrEu2CarEp/Kqo+BndFB0w0FdtLw4+f9OhjUHC3J+b1/+hNTrG4UR7YHrsm9Mr+vKRCA6Z5SpuFZohzOCIo3jHV94vgrQ/Boe7TFzgj5ldYfWXQs5zrGAw2H6deyWbzJYbadB0d83v5wYnOmIkXRXYuv4y25UIStQ=
+	t=1705941832; cv=none; b=b9nQWZUO/MWRvI+h8QIUqvpRLDDYrTRF9sAB0qY/CU8UsBli4lPIjEB+yvLStVFu6hb8eCSbgrMZ0C0KzL/xusB9CFiKjEBNz4PjrALtF/06aZbcKYXtzq7ErcLgExNAHxfA19kowwtWKA1kWmt95vLEOi+gmBpxaGeaapmzqNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705866599; c=relaxed/simple;
-	bh=sEPkS2QBvcFupp01BYDAYOI//zcQh3JgRd1Gt5ox5aI=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=f/tyjn6k0tcVtKJ3q2MPb22f6rVLdIuWRADKOvVEcEx+QmY87vSAsyfhFw67B/dV1zZGMrbdFhYtOQrUFHJwXtO8Vv6lreSDQOFNlPjLmW5+llJjXuqSeHJgL5fLuCSEJYAhpHy7T/wl0aNy717VapJj205a44/yyX/AIdm1QQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T6geWYv/; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T6geWYv/"
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-559cef15db5so6379297a12.0
-        for <linux-trace-devel@vger.kernel.org>; Sun, 21 Jan 2024 11:49:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705866596; x=1706471396; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=nzee3EjO1rDmJqIZ/Fnri6ledPPjSVyaGvGd04sridg=;
-        b=T6geWYv/nlvmozDDqZRcEKe2TmuSmZkE1RCNIPPcQyUBgUVunJIIyPwIiTzHXxhcoG
-         moX1gE+hDU1/bORN8kvf0r5KGUcyHvPDMI+aKzXdxlDrFEdn4/wd2/Kv32AxUdkRH+6v
-         MAoudnlB5KESD7sRJbLzclqEUzezG81+W4wR2TDIyspLgQI1msxGhIf99Yl2bIzGmGLc
-         rzMbRkZr0orr4fdipusFDmIlIym85jO5p9eu+ozTu6JicPJUlpsI1ox0uSDPVWKbc5uP
-         YuUlN9lpeylYfCAQx4QZOxGSt4ZkaAU3Di9jdVJOIOMd2y/sjSQu65UQgSb01kzR/S0p
-         nNkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705866596; x=1706471396;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nzee3EjO1rDmJqIZ/Fnri6ledPPjSVyaGvGd04sridg=;
-        b=VjnoTpDrgt6CsIabEpl/NP8wJD02AiZTXCCypwUtmKKDf0sbLHGIB7j17idoZJkh1f
-         IsL4Wmw+odvLpKmrikRHTu1GJBhd1imuZaOvjya0URkB/IQYZDVMqVO4acipk+r1JFgr
-         m5lzbQWRcHY0cFZcmX2vOwboVHyOLGeTqsfVo08DZQZ56j7eVL1nA11d70ig8FZmgSE7
-         EqAGHSuRwcH9dQIqSzHR/Gp/JPRb8DjrZRnVWhPR04fIlKYtKKINSwOwJ3xyRuHzJeLe
-         zUJmSM2w7+NHbXn6/mROv3/EuO6fnz+Md+mqJ8eV5mrosRwWDed2Ynb9Da3ZcEj9ewm2
-         dSEQ==
-X-Gm-Message-State: AOJu0Yxfqtu7npyTR0kaNgaKlWQWW/BjOV5tqqn0vKn1zImmKSDaxOkc
-	ji+LiSJGMZjkOGeyvw3j4AlHcLRiShoxIZ9qxFMPw5NENNnGOKeWELXScdbw
-X-Google-Smtp-Source: AGHT+IFhuOAXGqY2Z7Uq4lGN11m16goqCscW8hWtoitOMyz23lmZWXPgvRZ8mKeY6sGxfxI3UbvYKQ==
-X-Received: by 2002:a17:907:1011:b0:a2e:948f:2665 with SMTP id ox17-20020a170907101100b00a2e948f2665mr3087280ejb.50.1705866595691;
-        Sun, 21 Jan 2024 11:49:55 -0800 (PST)
-Received: from [192.168.0.107] (83-228-63-4.ip.btc-net.bg. [83.228.63.4])
-        by smtp.gmail.com with ESMTPSA id cw8-20020a170907160800b00a2cd72af9cesm11487819ejd.146.2024.01.21.11.49.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Jan 2024 11:49:55 -0800 (PST)
-Message-ID: <b6f83022-36f2-1115-2221-25f77be26332@gmail.com>
-Date: Sun, 21 Jan 2024 21:49:53 +0200
+	s=arc-20240116; t=1705941832; c=relaxed/simple;
+	bh=Fxr4Op40KkbCjFAbzIxTIyAtloA7F4LN3zJlEBisK3c=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pjGa8WvCJRra7m4QaxduAFPh/fZ+f1byAWndot+4dHp+aTHkE7ZXKWqywqPlz60SAYNAR8uYVJBuHzh6dBjxwTC540m93mK7C1OQtV1oZnin1gYQqGjtFLZoIk/XYys1yjkSh6ZgbZEjR7BiRltHoHo+RHqEQU75Xokj8Ayw7gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1EBE1FB;
+	Mon, 22 Jan 2024 08:44:35 -0800 (PST)
+Received: from e126645.nice.arm.com (e126645.nice.arm.com [10.34.100.129])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1004F3F5A1;
+	Mon, 22 Jan 2024 08:43:48 -0800 (PST)
+From: Pierre Gondois <pierre.gondois@arm.com>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Pierre Gondois <pierre.gondois@arm.com>
+Subject: [PATCH v2 0/7] trace-cmd: split: Handle splitting files with multiple instances
+Date: Mon, 22 Jan 2024 17:43:29 +0100
+Message-Id: <20240122164336.167256-1-pierre.gondois@arm.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-From: Yordan Karadzhov <y.karadz@gmail.com>
-Subject: Re: [PATCH 11/34] kernelshark: Prevent potential divide by zero in
- Shape::center()
-To: Benjamin ROBIN <dev@benjarobin.fr>
-Cc: linux-trace-devel@vger.kernel.org
-References: <20240114171723.14092-1-dev@benjarobin.fr>
- <20240114171723.14092-12-dev@benjarobin.fr>
-Content-Language: en-US
-In-Reply-To: <20240114171723.14092-12-dev@benjarobin.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+V2:
+- Add 'trace-cmd split: Enable support for buffer selection' to
+  handle instance selection with the 'trace-cmd' split command.
+- Rename patches as 'trace-cmd: split' -> 'trace-cmd split'.
+- Correctly free allocated memory in different lists.
 
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=218357
 
-On 1/14/24 19:17, Benjamin ROBIN wrote:
-> Signed-off-by: Benjamin ROBIN <dev@benjarobin.fr>
-> ---
->   src/KsPlotTools.cpp | 14 ++++++++------
->   1 file changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/src/KsPlotTools.cpp b/src/KsPlotTools.cpp
-> index 1d63a9b..8011329 100644
-> --- a/src/KsPlotTools.cpp
-> +++ b/src/KsPlotTools.cpp
-> @@ -318,13 +318,15 @@ ksplot_point Shape::center() const
->   {
->   	ksplot_point c = {0, 0};
->   
-> -	for (size_t i = 0; i < _nPoints; ++i) {
-> -		c.x += _points[i].x;
-> -		c.y += _points[i].y;
-> -	}
-> +	if (_nPoints > 0) {
+Splitting trace files having multiple buffer instances discards
+side-buffers . I.e., only the main buffer is preserved in the
+resulting split trace files. This patch-set intends to fix this.
 
-Can we just have
+As a continuation of the bugzilla, support to allow selecting
+buffer instances is added to the 'trace-cmd split' command [1].
+This support implies adding new '-B/--top' parameters.
 
-if (_nPoints == 0)
-	return c;
+Also:
+- Fix a side issue preventing to provide start/end timestamps
+  along with a time-window parameters.
+- Update trace-cmd split usage
 
+[1] https://lore.kernel.org/all/20240119122511.440d8f0a@gandalf.local.home/
 
-Thanks,
-Y.
+Pierre Gondois (7):
+  trace-cmd split: Small fixes
+  trace-cmd split: Correctly split with start/end/time-window parameters
+  trace-cmd split: Store instances in local list
+  trace-cmd split: Add functions to generate temp files
+  trace-cmd split: Handle splitting files with multiple instances
+  trace-cmd split: Enable support for buffer selection
+  trace-cmd split: Update usage
 
-> +		for (size_t i = 0; i < _nPoints; ++i) {
-> +			c.x += _points[i].x;
-> +			c.y += _points[i].y;
-> +		}
->   
-> -	c.x /= _nPoints;
-> -	c.y /= _nPoints;
-> +		c.x /= _nPoints;
-> +		c.y /= _nPoints;
-> +	}
->   
->   	return c;
->   }
+ tracecmd/trace-split.c | 517 +++++++++++++++++++++++++++++++++--------
+ tracecmd/trace-usage.c |   9 +-
+ 2 files changed, 434 insertions(+), 92 deletions(-)
+
+-- 
+2.25.1
+
