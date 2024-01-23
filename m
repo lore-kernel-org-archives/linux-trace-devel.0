@@ -1,29 +1,29 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24274137C23
-	for <linux-trace-devel@vger.kernel.org>; Tue, 23 Jan 2024 00:19:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 602F313475F
+	for <linux-trace-devel@vger.kernel.org>; Tue, 23 Jan 2024 00:22:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705969140; cv=none; b=rnJkVEnr8gOtNND/HUaM5dh+eNbX33ePZF0invuhVTIohe9wITbWCDRRS0edmIosQ6TkxCjIIHONLm1C8xP4nKZIu6ZslUU4AXrJxp33hMxZ3iit2on1Zu+TkrROXyRWohRimLCxN8NudhKTaSyhXgjyMNuQHX4sr2yjKpgjdlE=
+	t=1705969337; cv=none; b=R/QT+PrZimWNM0HFP2YfYwYbFiEccGVaEgH0z9q7/ZMjVd9Xsb3qG+bl3E/9cN6KqEdIVnwYRPlUT9l44Nylm5DdZD1lpoC1dhwzwrKWG504JXeWMr6U1BoHdAdbsa54LdhCChmUQFb0QcAVjC4aBYfk8cPhZycNovKG78nnjLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705969140; c=relaxed/simple;
-	bh=GGLmQsrpmCYU7oI+Q/3jIOerTUIhv9my1NV0e0iUixs=;
+	s=arc-20240116; t=1705969337; c=relaxed/simple;
+	bh=mq+fJ/lavc4wTUhOGV/7arl8Mqj8wh1ojgg54fJy2MI=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Pq8r1EhX4yv3VXyvzx1ZyuIfznlDZbBonGfIF3VnvoRLv1cHmC30nqpxz2yWksXIgJkHe73oQqJIW/RFQCyERMhJH3fJkK2MmiZBgwVPNu4eRork0Uz0jsOui4d+1o3HElVxL3JGMeI8562BsJFBXrm1Frit5XfHz/3r1iiKccs=
+	 MIME-Version:Content-Type; b=qbo/1Dep/bIy0K9vS/jqgxs5u6SfeawYVm8sO2fNtNq2kCmW0kyJb5Kd3r9DkdWZaTNlYdq0dhdSTMNHLDYXt3dXWW5EEpwRRntjZzsDfWRL2g4D+OOxpSrz3wL/MZaF9amEZITMrqE7K8JxWruvU7a6ainctV5jWA9fWCSEksM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84D97C433C7;
-	Tue, 23 Jan 2024 00:18:59 +0000 (UTC)
-Date: Mon, 22 Jan 2024 19:20:28 -0500
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8078C43394;
+	Tue, 23 Jan 2024 00:22:16 +0000 (UTC)
+Date: Mon, 22 Jan 2024 19:23:46 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Pierre Gondois <pierre.gondois@arm.com>
 Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH v2 4/7] trace-cmd split: Add functions to generate temp
- files
-Message-ID: <20240122192028.69e79570@gandalf.local.home>
-In-Reply-To: <20240122164336.167256-5-pierre.gondois@arm.com>
+Subject: Re: [PATCH v2 5/7] trace-cmd split: Handle splitting files with
+ multiple instances
+Message-ID: <20240122192346.5a9035e2@gandalf.local.home>
+In-Reply-To: <20240122164336.167256-6-pierre.gondois@arm.com>
 References: <20240122164336.167256-1-pierre.gondois@arm.com>
-	<20240122164336.167256-5-pierre.gondois@arm.com>
+	<20240122164336.167256-6-pierre.gondois@arm.com>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -34,65 +34,42 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Mon, 22 Jan 2024 17:43:33 +0100
+On Mon, 22 Jan 2024 17:43:34 +0100
 Pierre Gondois <pierre.gondois@arm.com> wrote:
 
-> To prepare handling of multiple instances and storing them
-> in temporary files, add utility functions generating file names,
-> removing files, creating files:
-> - get_temp_file()
-> - delete_temp_file()
-> - put_temp_file()
-> - touch_file()
+> trace-cmd can record events in multiple instances:
+>   $ trace-cmd record -e sched_wakeup -B test_instance -e sched_switch
 > 
-> Also make use these functions.
+> When trying to split a trace.dat file recorded with the above command,
+> only the events located in the main buffer seems to be split. The
+> events recorded in the test_instance buffer seem to be discarded:
+>   $ trace-cmd split -i trace.dat -o trace_2.dat 284443 284444
+>   $ trace-cmd report trace_2.dat
+>     cpus=8
+>            <...>-525991 [004] 284443.173879: sched_wakeup: [...]
+>            <...>-525991 [004] 284443.173879: sched_wakeup: [...]
+>            <...>-525990 [007] 284443.173885: sched_wakeup: [...]
+>            <...>-525990 [007] 284443.173885: sched_wakeup: [...]
+> (no sign of sched_switch events)
 > 
+> Keep all instances/buffers of a trace when it is split.
+> Also add a 'get_handle()' function.
+> 
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=218357
 > Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
 > ---
->  tracecmd/trace-split.c | 70 +++++++++++++++++++++++++++++++++---------
->  1 file changed, 55 insertions(+), 15 deletions(-)
-> 
-> diff --git a/tracecmd/trace-split.c b/tracecmd/trace-split.c
-> index f46813d1..5f3ed940 100644
-> --- a/tracecmd/trace-split.c
-> +++ b/tracecmd/trace-split.c
-> @@ -392,6 +392,52 @@ static int parse_cpu(struct tracecmd_input *handle,
->  	return 0;
->  }
->  
-> +static char *get_temp_file(const char *output_file, const char *name, int cpu)
-> +{
-> +	const char *dot;
-> +	char *file = NULL;
-> +	char *output;
-> +	char *base;
-> +	char *dir;
-> +	int ret;
-> +
-> +	if (name)
-> +		dot = ".";
-> +	else
-> +		dot = name = "";
-> +
-> +	output = strdup(output_file);
+>
 
-Nit on strdup() error checking again.
+I had two trace.dat files I was checking on. One that just had the top
+level instance being traced, and the other that only had an instance.
 
-I know that I have forgotten to do this too, but lets not add more ;-)
-and lets add the checks if they were missing when we modify that code.
+Until now, my instance trace.dat file did not have any output when doing a
+split. Now it does. BUT! I tried the command you had shown in a previous patch:
 
-Doing a clean up on that is on my todo list.
+  ./tracecmd/trace-cmd split -i trace.dat -o /tmp/trace2.dat -r -m 100 3122478 3122479
+
+and it it kept going!
+
+That is, this change broke the fix of the previous change.
 
 -- Steve
-
-
-> +	/* Extract basename() first, as dirname() truncates output */
-> +	base = basename(output);
-> +	dir = dirname(output);
-> +
-> +	ret = asprintf(&file, "%s/.tmp.%s.%s%s%d", dir, base, name, dot, cpu);
-> +	if (ret < 0)
-> +		die("Failed to allocate file for %s %s %s %d", dir, base, name, cpu);
-> +	free(output);
-> +	return file;
-> +}
