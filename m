@@ -1,132 +1,151 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C31C16EB4A
-	for <linux-trace-devel@vger.kernel.org>; Thu, 25 Jan 2024 15:16:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 359AC73177
+	for <linux-trace-devel@vger.kernel.org>; Thu, 25 Jan 2024 16:28:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706195808; cv=none; b=jAhZGMjppGxaWyLqz6tXWsM3/JiHfWOIHT/kgUdLiY2pVozxGOxifYANLWCy6aCafgUXT7MKJfLb5aVNe0yrRagGK8TWMe2fuII1LVrP23E60Rg/L/75KQ70+SAT2S80Aw5cZ5cO6Q+w71hBN7fdYr6hjwg5998OqRVhxTmvR04=
+	t=1706200115; cv=none; b=hvvhAwmPRTgTzJmYmb54zWjP+SPp8rEzLF7yvdG5vBx/GgUxWje9hjHVOz34vmrZem4a0RBB4M1ubENTJ3WXmBTECxQQsS8G/ylzYe0TTx2gPCFPSlUF/pTniAmvnepGYCksmzlMHacJeP4wEuc4kDEYtoG1JNrQGu/t+Bmc/ro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706195808; c=relaxed/simple;
-	bh=qHf7D3NHihuyRAYiNhdxvQ6tnnvI9ozyFTjDPYeu7oc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=E7Qd5XGb0wa1XZnT3G/yf1jYujcN7aAxCOKI9OzXeqWwh636gET9YdKhb3dJQnf+jeVDwqZzbl66uULDh1d2+itnxa8ibGsQUHllK8TTZSU5IbIsYrwthFh2KXiofs/c47h9aPnwyGVJpBMg2TQoQCLl2za96jqQy/6v73FIQro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6CDBF1FB;
-	Thu, 25 Jan 2024 07:17:29 -0800 (PST)
-Received: from [192.168.1.13] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 54DFF3F5A1;
-	Thu, 25 Jan 2024 07:16:44 -0800 (PST)
-Message-ID: <1122630e-838e-49fc-9210-55834129088c@arm.com>
-Date: Thu, 25 Jan 2024 16:16:42 +0100
+	s=arc-20240116; t=1706200115; c=relaxed/simple;
+	bh=k0+GVFodbaLxV3VTo6IM0XGjLu4XB0wcmMTZ8s8EAoo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cAF601UW9vYUhH+TsEWsSF00NxmfC92R0gyJVUn9CEn0Nt0tru+crhZxJtw/wF+R4BxEQ0UwdM++TMZEYBUriHioZO4TEXauwQqa4iFOeTpZ1nqtMg1mEbKypQ1Cf3ZaMcOlhMZgfc9kO/UsKIoVdSA7Pb5FRhJBk6Ff8upzMSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 395EBC433C7;
+	Thu, 25 Jan 2024 16:28:34 +0000 (UTC)
+Date: Thu, 25 Jan 2024 11:28:34 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Pierre Gondois <pierre.gondois@arm.com>
+Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH v3 4/5] trace-cmd split: Enable support for buffer
+ selection
+Message-ID: <20240125112834.2de4eedb@gandalf.local.home>
+In-Reply-To: <1122630e-838e-49fc-9210-55834129088c@arm.com>
+References: <20240123134215.385415-1-pierre.gondois@arm.com>
+	<20240123134215.385415-5-pierre.gondois@arm.com>
+	<20240124173740.6d9e2287@gandalf.local.home>
+	<1122630e-838e-49fc-9210-55834129088c@arm.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/5] trace-cmd split: Enable support for buffer
- selection
-Content-Language: en-US
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-References: <20240123134215.385415-1-pierre.gondois@arm.com>
- <20240123134215.385415-5-pierre.gondois@arm.com>
- <20240124173740.6d9e2287@gandalf.local.home>
-From: Pierre Gondois <pierre.gondois@arm.com>
-In-Reply-To: <20240124173740.6d9e2287@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hello Steven,
+On Thu, 25 Jan 2024 16:16:42 +0100
+Pierre Gondois <pierre.gondois@arm.com> wrote:
 
-On 1/24/24 23:37, Steven Rostedt wrote:
-> 
-> [ Replying to the correct version of the patch I tested ]
-> 
-> On Tue, 23 Jan 2024 14:42:14 +0100
-> Pierre Gondois <pierre.gondois@arm.com> wrote:
-> 
->> The 'trace-cmd split' command conserves all buffers/instances
->> of the input .dat file. Add support to select the instances to
->> keep and to place as the top instance in an output .dat file.
->>
->> Multiple .dat files can be generated with different combinations
->> of the instances to keep. The first instance in the command line
->> is selected as the top instance in an output .dat file.
->>
->> For example, with a trace recorded with:
->>    $ trace-cmd record -e sched_wakeup -B switch_instance \
->>      -e sched_switch -B timer_instance -e timer
-> 
-> I tried this with a trace.dat file that has a instance called "tast" and it
-> didn't work. Note, the top instance had no data.
-> 
->    $ trace-cmd split -i /work/traces/trace-tast.dat -o /tmp/trace-tast2.dat -B tast
+> >> For example, with a trace recorded with:
+> >>    $ trace-cmd record -e sched_wakeup -B switch_instance \
+> >>      -e sched_switch -B timer_instance -e timer =20
+> >=20
+> > I tried this with a trace.dat file that has a instance called "tast" an=
+d it
+> > didn't work. Note, the top instance had no data.
+> >=20
+> >    $ trace-cmd split -i /work/traces/trace-tast.dat -o /tmp/trace-tast2=
+.dat -B tast =20
+>=20
+> With this command, the expected behaviour should be:
+> trace-tast2.dat:
+> - Contains all the instances of the input trace-tast.dat file
 
-With this command, the expected behaviour should be:
-trace-tast2.dat:
-- Contains all the instances of the input trace-tast.dat file
-trace-tast.dat.1:
-- Contains the tast instance only, as the top instance
+Wait what? -i should *not* be used for output if -o is specified!
 
-If the 2 files don't match the above description, there is an issue.
+Now looking at it, I have a bunch of unwanted files in the /work/traces/
+directory. That directory is only for traces that I took from test boxes
+that I was debugging. All "split" output was suppose to go into /tmp!
 
----
+> trace-tast.dat.1:
+> - Contains the tast instance only, as the top instance
 
-Otherwise, I believe the command line should be parsed as:
-1-
-Select all the desired instances with -B or --top,
-the first instance is placed as the top instance.
-2-
-When parsing a '-o', select all the previously selected instances and
-put them in the output file.
-3-
-Start all over again from 1-. If there is no output file described
-at the end of the command line, place the result in [input_file].dat.X
+No, that makes no sense to me. The above is me saying:
 
-So placing the output file at the end of the command line is important
-here. If you think the command line should be parsed another way, please
-let me know,
+ "I want to split out the 'tast' instance and make it the top level
+ instance in trace-tast2.dat."
 
-> 
->    $ trace-cmd report /tmp/trace-tast2.dat
-> cpus=2
-> tast:        trace-cmd-3559  [001] 59413.154884: sched_waking:         comm=kworker/u4:2 pid=1324 prio=120 target_cpu=000
-> tast:        trace-cmd-3564  [000] 59413.154900: sched_switch:         trace-cmd:3564 [120] R ==> kworker/u4:2:1324 [120]
-> tast:        trace-cmd-3559  [001] 59413.154907: sched_switch:         trace-cmd:3559 [120] S ==> trace-cmd:3565 [120]
-> tast:     kworker/u4:2-1324  [000] 59413.154911: sched_waking:         comm=sshd pid=18725 prio=120 target_cpu=001
-> tast:     kworker/u4:2-1324  [000] 59413.154929: sched_switch:         kworker/u4:2:1324 [120] I ==> sshd:18725 [120]
-> tast:             sshd-18725 [000] 59413.155120: sched_waking:         comm=sslh-fork pid=18724 prio=120 target_cpu=001
-> tast:             sshd-18725 [000] 59413.155178: sched_waking:         comm=kworker/0:1 pid=815 prio=120 target_cpu=000
-> tast:             sshd-18725 [000] 59413.155189: sched_switch:         sshd:18725 [120] S ==> sslh-fork:18724 [120]
-> tast:        sslh-fork-18724 [000] 59413.155303: sched_switch:         sslh-fork:18724 [120] S ==> kworker/0:1:815 [120]
-> 
-> Still has "tast" as an instance and not the top.> 
-> -- Steve
-> 
->>
->> Creating a test.dat file containing the top instance and
->> the switch_instance:
->>    $ trace-cmd split --top -B switch_instance -o test.dat
->>
->> Creating a test.dat file containing the switch_instance as
->> the top instance, and the initial top instance as an instance
->> named 'old_top':
->>    $ trace-cmd split -B switch_instance --top=old_top -o test.dat
->>
->> Splitting all instances in different .dat files:
->>    $ trace-cmd split --top -o top.dat -B switch_instance \
->>      -o switch.dat -B timer_instance -o timer.dat
->>
->> To achieve this, new 'struct name_list', 'struct output_file_list'
->> structures are created, with associated functions.
->>
->> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
->> ---
+-i just mean "input source", and is only used if -o is not specified.
 
-Regards,
-Pierre
+=46rom the man page of 'trace-cmd split'
 
+ -i file
+       If this option is not specified, then the split command will look
+       for the file named trace.dat. This options will allow the reading of
+       another file other than trace.dat.
+
+  -o file
+       By default, the split command will use the input file name as a
+       basis of where to write the split files. The output file will be the
+       input file with an attached '.#\' to the end: trace.dat.1,
+       trace.dat.2, etc.
+
+           This option will change the name of the base file used.
+
+           -o file  will create file.1, file.2, etc.
+
+
+>=20
+> If the 2 files don't match the above description, there is an issue.
+
+No, it shouldn't do that. It did match your description, but I never
+noticed because it was writing files into my "input" directory, which I was
+never looking at. :-(
+
+Using your method means we can't use -i for just an input source.
+
+>=20
+> ---
+>=20
+> Otherwise, I believe the command line should be parsed as:
+> 1-
+> Select all the desired instances with -B or --top,
+> the first instance is placed as the top instance.
+> 2-
+> When parsing a '-o', select all the previously selected instances and
+> put them in the output file.
+
+
+
+> 3-
+> Start all over again from 1-. If there is no output file described
+> at the end of the command line, place the result in [input_file].dat.X
+
+No. input_file should only be used if no output file is specified. If it
+had done that before your patches, it was a bug and needs to be fixed.
+
+>=20
+> So placing the output file at the end of the command line is important
+> here. If you think the command line should be parsed another way, please
+> let me know,
+
+Now, placement can be important, and perhaps we can use the input_file as
+default as if the output file is specified later. I was thinking of doing
+this as a separate patch, but if we do allow for multiple output files,
+then we can have the commands to do for those files after that.
+
+That is if we have:
+
+  trace-cmd split -i trace.dat --top -o trace-foo.dat -B foo -o trace-bar.d=
+at -B bar
+
+It could then split out the top instance by itself in trace.dat.1, have
+trace-foo.dat have the 'foo' instance as its main instance, and
+trace-bar.dat have 'bar' instance as its main instance. So order would matt=
+er then.
+
+But if nothing is between -i and -o, then nothing should be done against
+-i. That is, if the above was:
+
+  trace-cmd split -i trace.dat -o trace-foo.dat -B foo -o trace-bar.dat -B =
+bar
+
+(removed --top) then it would not create the trace.dat.1 file.
+
+And we need to update the man pages and possibly the usage to explicitly
+state how order matters.
+
+-- Steve
