@@ -1,32 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16B2E13B791
-	for <linux-trace-devel@vger.kernel.org>; Thu, 25 Jan 2024 16:51:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89C2A1350E6
+	for <linux-trace-devel@vger.kernel.org>; Thu, 25 Jan 2024 17:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706201508; cv=none; b=YFLyuAgyj4V4cW4AkWZzU9YQNsnkEXH3a9OJzCnFNbyoBP8c74IknppZTL5HVXdiM6WKC0uI5oTt7rKiyxnN0QiPiKd81cwTvWa5J2L9wD1rnM2A7w3jvTX2X585Xbwt4uVynFSi9CvbxItp/YL3mkdBQJambu2nDCIhAtZ7g00=
+	t=1706202626; cv=none; b=IxXQJ6n84iiMD8GfcpHQX/PpPCIvWOv5RtXINCv1wVTX3vClgmoPjgDiuGEKDRZRzw6fQhNnZdyipswB7q4A9QGgvoUYxpHwdNPLayqSDVzDmeQBrUfC/As5praRSddx/nGIaGEDgDqua21bYaEM6xylt0BeelU0PqtkiZHJKNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706201508; c=relaxed/simple;
-	bh=uNmky2iaqvMtIogRNTXZVbQX+VHJ0vUj7URSBWmMqZA=;
+	s=arc-20240116; t=1706202626; c=relaxed/simple;
+	bh=u1aXKCZsJ8iM8XxYzBfGVkoD8FB8iuEgMkeziJMYvZM=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=R7Qy1NNtC5uM9LgxBMLoXGZGefWuARvtCa62rfDYR6ZKoXlXsUztGyg7d+e2I1GXHl/YM/6yCuFL8MU4Fr2ERoU3uQTXBhrwUWJZ7zGINA11X0oQ0ZwELwCS0CQxwST393SrVj/C71rj5B1WE5zYmY4OWq+p2PSrE0hwC9f281Q=
+	 MIME-Version:Content-Type; b=T5wV6NUop8esN6O1Ju7xOOaTtkGRmKflJl+R5C9ggrL0J4ad2z3TM4x3crEDnrUMp2qbAKi4btjSBawVAzQW/kOcxvdO1Ki8mM/967FYi0zhLyQAwxQ64/e+oGGVxqtojbA4LO09jR28/mc6O7fTpBIOHbFR8ov14p7+B0YNSS0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2117EC433C7;
-	Thu, 25 Jan 2024 16:51:47 +0000 (UTC)
-Date: Thu, 25 Jan 2024 11:51:47 -0500
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB98CC433C7;
+	Thu, 25 Jan 2024 17:10:25 +0000 (UTC)
+Date: Thu, 25 Jan 2024 12:10:25 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Pierre Gondois <pierre.gondois@arm.com>
 Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Subject: Re: [PATCH v3 4/5] trace-cmd split: Enable support for buffer
  selection
-Message-ID: <20240125115147.51bcce2a@gandalf.local.home>
-In-Reply-To: <20240125112834.2de4eedb@gandalf.local.home>
+Message-ID: <20240125121025.208a7012@gandalf.local.home>
+In-Reply-To: <20240125115147.51bcce2a@gandalf.local.home>
 References: <20240123134215.385415-1-pierre.gondois@arm.com>
 	<20240123134215.385415-5-pierre.gondois@arm.com>
 	<20240124173740.6d9e2287@gandalf.local.home>
 	<1122630e-838e-49fc-9210-55834129088c@arm.com>
 	<20240125112834.2de4eedb@gandalf.local.home>
+	<20240125115147.51bcce2a@gandalf.local.home>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -37,57 +38,47 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 25 Jan 2024 11:28:34 -0500
+On Thu, 25 Jan 2024 11:51:47 -0500
 Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> On Thu, 25 Jan 2024 16:16:42 +0100
-> Pierre Gondois <pierre.gondois@arm.com> wrote:
+> Now if I had had:
 > 
-> > >> For example, with a trace recorded with:
-> > >>    $ trace-cmd record -e sched_wakeup -B switch_instance \
-> > >>      -e sched_switch -B timer_instance -e timer    
-> > > 
-> > > I tried this with a trace.dat file that has a instance called "tast" and it
-> > > didn't work. Note, the top instance had no data.
-> > > 
-> > >    $ trace-cmd split -i /work/traces/trace-tast.dat -o /tmp/trace-tast2.dat -B tast    
-> > 
-> > With this command, the expected behaviour should be:
-> > trace-tast2.dat:
-> > - Contains all the instances of the input trace-tast.dat file  
+>   trace-cmd split -i /work/traces/trace-tast.dat --top  -B tast -o /tmp/trace-tast2.dat
 > 
-> Wait what? -i should *not* be used for output if -o is specified!
+> Then because there was a command "--top" before the -B but it had no -o
+> assigned for it, then the input_file would be considered the output file
+> and that should act like you described.
 
-OK, I see what you did.
+Of course then things get confusing if we were to have:
 
-As if I wrote:
+trace-cmd split -i /work/traces/trace-tast.dat  -B foo -o /tmp/trace-foo.dat -B bar
 
-trace-cmd split -i /work/traces/trace-tast.dat  -B tast -o /tmp/trace-tast2.dat
+We could specify that each -B will just use the top level by default. So
+the above would create:
 
-I got what I want.
+ /tmp/trace-foo.dat
 
-But once -o is used, it should repeat for the -B. the -B should *not* use
-the input file unless -o is not specified.
+With the instance "foo"
 
-  trace-cmd split -i /work/traces/trace-tast.dat -o /tmp/trace-tast2.dat -B tast
+But the "bar" would be in:
 
-What the above should have done the same. But if we added:
+ /work/traces/trace-tast.dat.bar
 
-  trace-cmd split -i /work/traces/trace-tast.dat --top -o /tmp/trace-tast2.dat -B tast
+because the top level didn't specify a -o.
 
-Then /tmp/trace-tast2.dat would just have the top instance, and it should create:
+So to make it more specific. Each -B will default to the toplevel output
+with ".<instance>" appended to it.
 
- /tmp/trace-tast2.dat.tast
+That is:
 
-to hold the tast image.
+  split <top-level-commands> -B instance1 <instance1-commands> -B <instance2-commands>
 
-Now if I had had:
+If a -o is specified in the <top-level-commands> it becomes the default top
+level output file.  If a -o is not specified in any of the
+<instance*-commands> then, it will default to the top level output file
+with ".<instance-name>" attached to it unless it has its own -o specified.
 
-  trace-cmd split -i /work/traces/trace-tast.dat --top  -B tast -o /tmp/trace-tast2.dat
-
-Then because there was a command "--top" before the -B but it had no -o
-assigned for it, then the input_file would be considered the output file
-and that should act like you described.
+For multi-file splits, it will append ".0001", ".0002", etc to that file.
 
 -- Steve
 
