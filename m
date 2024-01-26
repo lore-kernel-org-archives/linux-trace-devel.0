@@ -1,124 +1,100 @@
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CE9F41C8A;
-	Fri, 26 Jan 2024 22:14:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EB3C250F1
+	for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 22:26:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706307263; cv=none; b=NSORupO/Gdr+jpP2lyENO5mpVFV9DZo++gyouCyz3ajHwpUP4yzZ8F/O9xv9BYodJmFGYn65MVEQZ8Xm79qU7yrSdCFYdYPbYOMF9hEN2sjSMFqQBUZzBQXJnHFqlGt5c1HiQhvbZqu89kt/WDCRxDU4s3nX5WOMbO5J7GwhTQ8=
+	t=1706307989; cv=none; b=qV8McK1tChVBWRwAfPYTXLPNxlEYUb3IhjirmcJcyqLaMhceAbG3zPS+vp+g4R67m3suWvILjDidv67r283mvFP61uRkvPhuZ8CMg25NddfOW88+bwO3V0eqiivSwth3Xr1j7kChu0vvbIIg1bQLBbVYkEPqbISZIJHiFo+BEIc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706307263; c=relaxed/simple;
-	bh=Jdm33v2+FbE+eDx5lDB90ydl/s2iNfckbja6xWCLNck=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QGhXEt/u2qGL0o9TNlwT0PY5is6+3V9Zy4xBbIBqnkEY43Gv8KDIe9qEdeQTW7tOsX8PPQInA5pGK5zAkiintIZLP5faRkpQl0pD1c9sTGRBMRFciguHvB3uG/wC7BlNekAeOOOHYUABs5IwMvHX3ZEBOHt5IQgSPNgG6u/ca0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=cfkipyRs; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+	s=arc-20240116; t=1706307989; c=relaxed/simple;
+	bh=ulYxyMID4hoDqqkZq7ZMib690LO/V3+HiOYKu4iA5EY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=A6U85P08jjo6n7eU8TF6E/iAmf4GG3Ai/N2TOCrEx44nJ9O9uIKubDAT4S2iVFQH8MTVHaAV0i+61I4b9cct+vllZo4kzie7o0ahDnhxdGQ8tzbt/Z3Vdcs4/3SfIYJOaR8iuYCwk0vyjLt9+TVrKQlGbSZkVK70mtlq4aIUook=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=G0b+K8dK; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="cfkipyRs"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1706307254;
-	bh=Jdm33v2+FbE+eDx5lDB90ydl/s2iNfckbja6xWCLNck=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=cfkipyRsu2VHMJxlmbm3pCANQ19TSTz6YQmuyCbVeZ1qFT0OiAuXMZMHv/kCXDYV5
-	 Sqt5ASfUbdf9yStQP2jZ6RFX4HNh8fxfb3HAtOr5jq8vRQ8Ca1I6RvCUGN66g4Af3h
-	 QjCMbYjnwdMK2ZXud8gbIW9J0KEgQDOY8RRPVoaHnpvbHgtbcO1ZVHZn62GCgWS2+0
-	 pQNtpi1wU40f69L+cF/vpnPcRkB/SFSIX/wT6OrP2sIPHDVE/nWEgJ7OCsFERACT32
-	 Tlt9hTxL9LDX/6neQw8PeWympIe3TUM7STM9rFv+t0es/J9Ii2HxUmCzU5DJVg4hSq
-	 5Phhi3/pPJEog==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TMBn22rgWzVQ4;
-	Fri, 26 Jan 2024 17:14:14 -0500 (EST)
-Message-ID: <8547159a-0b28-4d75-af02-47fc450785fa@efficios.com>
-Date: Fri, 26 Jan 2024 17:14:12 -0500
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="G0b+K8dK"
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40e76109cdeso18665885e9.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 14:26:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1706307985; x=1706912785; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=T7RgCCRFdykhHgupnFCoE0SS5Tr46EimKI36cb0Txx4=;
+        b=G0b+K8dKSaXhtj/LF1iMD6wZqs1UnX2DuWYXjXfIXukLmUdh9ieE9HvalEHFleujju
+         hWEUmLs1vA9PrCLZLauOgOch+V9E4Shox7k9C9vcHDvmYJh6vIYYFcPBfE9MLH7hRhyg
+         H0U6DbaBApv8Z9eONS/HV+1Qa6sUSQ6dbIJ9A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706307985; x=1706912785;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T7RgCCRFdykhHgupnFCoE0SS5Tr46EimKI36cb0Txx4=;
+        b=opma91P+bh9lMx1YcTQe4v2q7F3ZQB1oy4Vt8PJtdMhA0dnB2ybX7tQE0zWc/zeuf0
+         yugYVxQmHq8OqF5wYdbAaQoAubvZAM5hyUo2Sw1cVMwcf+Us0Qv05vtDJ3X1EfjI+AC1
+         izXTZg8T+kBFO+hdGY/fJjmGH2P7eGiZqANbnHRHPqYAJ4FomK1kvif1w/UM6gNlRR27
+         e6puKsKIFQOI/zxmsaujb57X3Qsb7Ej4IrXOfFt93XdKZYOLDudi/UFyGIdwQQrMKDQF
+         HYIFHImK9IOCSvCAUcu0dvUxrCeUW1uIKUS37Lrp9mvKmR8K+2KchmgGzhaGLusTJUCj
+         ZoNg==
+X-Gm-Message-State: AOJu0Yz1UPwLRVUskvRL1B5CSV6LUwo6DpyMH/L4JiybKUH5eXZjR3mW
+	NOnkBiHoMheRNSP0+Poo8GevU3Rk+Wakn5XW8VfcyvsVf+PP3DxvFaBna40w3YH/Crnz2/agpVn
+	D5KOcGw==
+X-Google-Smtp-Source: AGHT+IEv32LrPIzOTFISuAY+89YClhMrbXND1uhIiGKe4qN+q9+WbLEUN5K38qDDknRn7BVmD8Z8nw==
+X-Received: by 2002:a05:600c:1988:b0:40e:ccf7:3618 with SMTP id t8-20020a05600c198800b0040eccf73618mr360779wmq.23.1706307985417;
+        Fri, 26 Jan 2024 14:26:25 -0800 (PST)
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
+        by smtp.gmail.com with ESMTPSA id p7-20020a17090628c700b00a3181cb98c7sm1056566ejd.198.2024.01.26.14.26.24
+        for <linux-trace-devel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Jan 2024 14:26:24 -0800 (PST)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55a8fb31fc2so739885a12.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 14:26:24 -0800 (PST)
+X-Received: by 2002:aa7:c64d:0:b0:55d:71d8:9dc1 with SMTP id
+ z13-20020aa7c64d000000b0055d71d89dc1mr232273edr.38.1706307984490; Fri, 26 Jan
+ 2024 14:26:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+References: <20240126150209.367ff402@gandalf.local.home> <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
+ <20240126162626.31d90da9@gandalf.local.home> <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
+ <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com> <0C9AF227-60F1-4D9B-9099-1A86502359BA@goodmis.org>
+In-Reply-To: <0C9AF227-60F1-4D9B-9099-1A86502359BA@goodmis.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 26 Jan 2024 14:26:08 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whDnGUm1zAhq7Oa+5BjzjChxObWdy4J4n2TAmMWb_RWtw@mail.gmail.com>
+Message-ID: <CAHk-=whDnGUm1zAhq7Oa+5BjzjChxObWdy4J4n2TAmMWb_RWtw@mail.gmail.com>
 Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
-Content-Language: en-US
-To: Linus Torvalds <torvalds@linux-foundation.org>,
- Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Christian Brauner <brauner@kernel.org>, Ajay Kaher
- <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <20240126150209.367ff402@gandalf.local.home>
- <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
- <20240126162626.31d90da9@gandalf.local.home>
- <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
- <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, 
+	Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner <brauner@kernel.org>, 
+	Ajay Kaher <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On 2024-01-26 16:49, Linus Torvalds wrote:
-> On Fri, 26 Jan 2024 at 13:36, Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-[...]
-> So please try to look at things to *fix* and simplify, not at things
-> to mess around with and make more complicated.
+On Fri, 26 Jan 2024 at 14:09, Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> I'm not at my computer, but when I tried deleting that, it caused issues with the lookup code.
 
-Hi Linus,
+The VSF layer should be serializing all lookups of the same name. If
+it didn't, we'd have serious issues on other filesystems.
 
-I'm all aboard with making things as simple as possible and
-making sure no complexity is added for the sake of micro-optimization
-of slow-paths.
+So you should never get more than one concurrent lookup of one
+particular entry, and as long as the dentry exists, you should then
+not get a new one. It's one of the things that the VFS layer does to
+make things simple for the filesystem.
 
-I do however have a concern with the approach of using the same
-inode number for various files on the same filesystem: AFAIU it
-breaks userspace ABI expectations. See inode(7) for instance:
+But it's worth noting that that is about *one* entry. You can get
+concurrent lookups in the same directory for different names.
 
-        Inode number
-               stat.st_ino; statx.stx_ino
+Another thing that worries me is that odd locking that releases the
+lock in the middle. I don't understand why you release the
+tracefs_mutex() over create_file(), for example. There's a lot of
+"take, drop, re-take, re-drop" of that mutex that seems strange.
 
-               Each  file in a filesystem has a unique inode number.  Inode numbers
-               are guaranteed to be unique only within a filesystem (i.e., the same
-               inode  numbers  may  be  used by different filesystems, which is the
-               reason that hard links may not cross filesystem  boundaries).   This
-               field contains the file's inode number.
-
-So user-space expecting inode numbers to be unique within a filesystem
-is not "legacy" in any way. Userspace is allowed to expect this from the
-ABI.
-
-I think that a safe approach to prevent ABI regressions, and just to prevent
-adding more ABI-corner cases that userspace will have to work-around, would
-be to issue unique numbers to files within eventfs, but in the
-simplest/obviously correct implementation possible. It is, after all, a slow
-path.
-
-The issue with the atomic_add_return without any kinds of checks is the
-scenarios of a userspace loop that would create/delete directories endlessly,
-thus causing inode re-use. This approach is simple, but it's unfortunately
-not obviously correct. Because eventfs allows userspace to do mkdir/rmdir,
-this is unfortunately possible. It would be OK if only the kernel had control
-over directory creation/removal, but it's not the case here.
-
-I would suggest this straightforward solution to this:
-
-a) define a EVENTFS_MAX_INODES (e.g. 4096 * 8),
-
-b) keep track of inode allocation in a bitmap (within a single page),
-
-c) disallow allocating more than "EVENTFS_MAX_INODES" in eventfs.
-
-This way even the mkdir/rmdir loop will work fine, but it will prevent
-keeping too many inodes alive at any given time. The cost is a single
-page (4K) per eventfs instance.
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+           Linus
