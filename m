@@ -1,266 +1,119 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4816D1E876;
-	Fri, 26 Jan 2024 20:02:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB4F3224C2
+	for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 20:25:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706299328; cv=none; b=HrjdMRaAdlqzq9Ic8HNLQ9YpWgix+Qobvc44Tb5Ti/m7Jny/O/bla13R2aJYBWi086CRiTSSu8Qz1KTcaperoqM3Nl/WggeyJbpW85vsiJJdntiL812MOU7nvf1Ib0xLOZFKq3S7/sTiP/upWnWV+LTJ3/GDzbXJee1RLlIuApA=
+	t=1706300728; cv=none; b=jPNxo3EW49r/DI93ohQ0Rqh/YqzbWkqRQ0KE/rMnHuSDKvIQyN4ltzuVuDYBLXo99P/CtqeRBffAndswhvjAgVKgfq92pWUpYp18viYcnc+BcTDVTO3rTDHz5jmAchpAPY168p1T7cpdEm4bDvjn70y0SAcWvul3MW8CciRqyY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706299328; c=relaxed/simple;
-	bh=iC0Vw1MUNFSZSDa2/2hGfEAsJpdJDjskecOmVObMa9k=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=e0Uu8X//qUlJYqPiWiyU5c3ANVur5hmlinR6IwX7/1TUha+mbwlinrzRu5VKc1zOMfBF8kUGQoxtxMoCh0ks399nL+7JxNzknbnXV0K+5OJl03QdEB3tTqXLhWMwy0K9v8oc/qo7KRlE7zRXlrrocw2hx5IioMjscIeZAudS2LA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BACFC433F1;
-	Fri, 26 Jan 2024 20:02:06 +0000 (UTC)
-Date: Fri, 26 Jan 2024 15:02:09 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Devel
- <linux-trace-devel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Christian Brauner <brauner@kernel.org>,
- Ajay Kaher  <ajay.kaher@broadcom.com>, Geert Uytterhoeven
- <geert@linux-m68k.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH] eventfs: Have inodes have unique inode numbers
-Message-ID: <20240126150209.367ff402@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706300728; c=relaxed/simple;
+	bh=9+OPO3V3SP3LRuHvDOl2Rmxreo2UCuuZVrw9wtlT3Qg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TxtdPmdHJ6mbEuEnxHX75HzmtjURd7hwLtzb0LwkTuPe6+46Puv9jSUleoNPt8DQ/ascVPIrNp4I7Ey3MtNf7KzwUBz3axQtT1kYrIUzxdFYCxVcFkgOCBE8d1j2DOuS/wCh1oL2EdrCU4Q2rCDeY9ZwiWWtg5FoPRI7q9bHT30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=QPj29jFc; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="QPj29jFc"
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2ccec119587so9484301fa.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 12:25:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1706300724; x=1706905524; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ANDDmreLZfT1WX/HwjJ1bWT4NTPKcyNOAiea0NIAPr0=;
+        b=QPj29jFcpalD29ebe+l7fwI6zsx6iWZyr4exXNH81BalNz4gryHcwEhChrhniGdzGp
+         qehZOWrGmpLXa/0STQwdHHZXqD81XWusm2Q49xTBhnuAQRQJH29VLBgGpTIQPeHpE4RJ
+         Jou1Q0Q99N9Nz/ByRY+91VA9z51AI9VZ9cChs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706300724; x=1706905524;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ANDDmreLZfT1WX/HwjJ1bWT4NTPKcyNOAiea0NIAPr0=;
+        b=Qvyu2HBv+g9xBKgiIhuYaVdPE+GGzJiy5eCPgZf0eaY93k5Rgua9n9fZuBjhhaJyNK
+         rploty2ITnryxxFI0ILprRpNySXU+Qp7O7ICGDX4xAxFMkbdHPJeJ2QGFdLzAcAOBpBM
+         eBxlmGo1afqSf5NGgWD7+oB8y1broiEpCAbw8kNYabykJ2cOSaD+ZFJ/QRV4t9GFVrYf
+         jjCXD9Hf0Z1HlO9jd2KWFq1nRiPo/XJMSrHqW1dmqBcYanfrdUJ4xqd+H6+D30GVywLC
+         Vli2KXji5McPwn3O6o+GPuNiMcmzz9GFpdK42ZRv1VSRy1u48ciRMMw4zBc3zaIIcRuA
+         6XXA==
+X-Gm-Message-State: AOJu0YycLw91P4mkuezhrLcBOUv5BBcSZD3hDPl2tZheAE2udf6+q4Lu
+	85e4EzI+FDSht8lMuYJ1/dyk3ud1AZVVYOMqnOLiKL0JW6CC9wXqhQWvy4aFE5awlHGnYtYnRlg
+	Zvd0Q5g==
+X-Google-Smtp-Source: AGHT+IF1R9TAXCqwoi0YNFZmdTk8TFxLqCUOhln7O9IGTqCpMguJN/szG7yC1RVAwEpGOqmZY9HQVw==
+X-Received: by 2002:a2e:7009:0:b0:2cd:1366:4aa9 with SMTP id l9-20020a2e7009000000b002cd13664aa9mr408454ljc.25.1706300723775;
+        Fri, 26 Jan 2024 12:25:23 -0800 (PST)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id bi32-20020a05651c232000b002cf1c5ec8c5sm256591ljb.50.2024.01.26.12.25.22
+        for <linux-trace-devel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Jan 2024 12:25:22 -0800 (PST)
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2cddb2c2b54so7609471fa.1
+        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 12:25:22 -0800 (PST)
+X-Received: by 2002:a05:651c:107b:b0:2cf:4170:d181 with SMTP id
+ y27-20020a05651c107b00b002cf4170d181mr392047ljm.7.1706300722280; Fri, 26 Jan
+ 2024 12:25:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240126150209.367ff402@gandalf.local.home>
+In-Reply-To: <20240126150209.367ff402@gandalf.local.home>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 26 Jan 2024 12:25:05 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
+Message-ID: <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
+Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, 
+	Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner <brauner@kernel.org>, 
+	Ajay Kaher <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Steven,
+ stop making things more complicated than they need to be.
 
-Linus suggested to use the same inode numbers to make it easier to
-implement getdents(), as it was creating inodes just for generating a
-unique and consistent inode number. Linus suggested to just use the same
-inode for all files and directories.
+And dammit, STOP COPYING VFS LAYER FUNCTIONS.
 
-Later it was discovered that having directories with the same inode number
-would mess up the "find" command, but Linus found that on 64 bit machines,
-there was a hole in the eventfs_inode structure due to alignment that
-could be used to store the inode numbers for directories. That fixed the
-directory issue, but the files still had their own inode number.
+It was a bad idea last time, it's a horribly bad idea this time too.
 
-The 'tar' command uses inode numbers for determining uniqueness between
-files, which this would break. Currently, tar is broken with tracefs
-because all files show a stat of zero size and tar doesn't copy anything.
-But because tar cares about inode numbers, there could be other
-applications that do too. It's best to have all files have unique inode
-numbers.
+I'm not taking this kind of crap.
 
-Copy the get_next_ino() to tracefs_get_next_ino() that takes a "files"
-parameter. As eventfs directories have a fixed number of files within
-them, the number of inodes needed for the eventfs directory files is known
-when the directory is created. The tracefs_get_next_ino() will return a
-new inode number but also reserve the next "files" inode numbers that the
-caller is free to use. Then when an inode for a file is created, its inode
-number will be its parent directory's inode number plus the index into the
-file array of that directory, giving each file a unique inode number that
-can be retrieved at any time.
+The whole "get_next_ino()" should be "atomic64_add_return()". End of story.
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- fs/tracefs/event_inode.c | 31 +++++++++++++++----------------
- fs/tracefs/inode.c       | 37 ++++++++++++++++++++++++++++++++++---
- fs/tracefs/internal.h    |  1 +
- 3 files changed, 50 insertions(+), 19 deletions(-)
+You arent' special. If the VFS functions don't work for you, you don't
+use them, but dammit, you also don't then steal them without
+understanding what they do, and why they were necessary.
 
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 6b211522a13e..7be7a694b106 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -32,14 +32,11 @@
-  */
- static DEFINE_MUTEX(eventfs_mutex);
- 
--/* Choose something "unique" ;-) */
--#define EVENTFS_FILE_INODE_INO		0x12c4e37
--
- /* Just try to make something consistent and unique */
--static int eventfs_dir_ino(struct eventfs_inode *ei)
-+static int eventfs_dir_ino(struct eventfs_inode *ei, int nr_files)
- {
- 	if (!ei->ino)
--		ei->ino = get_next_ino();
-+		ei->ino = tracefs_get_next_ino(nr_files);
- 
- 	return ei->ino;
- }
-@@ -327,6 +324,7 @@ void eventfs_update_gid(struct dentry *dentry, kgid_t gid)
-  * @parent: parent dentry for this file.
-  * @data: something that the caller will want to get to later on.
-  * @fop: struct file_operations that should be used for this file.
-+ * @ino: inode number for this file
-  *
-  * This function creates a dentry that represents a file in the eventsfs_inode
-  * directory. The inode.i_private pointer will point to @data in the open()
-@@ -335,7 +333,8 @@ void eventfs_update_gid(struct dentry *dentry, kgid_t gid)
- static struct dentry *create_file(const char *name, umode_t mode,
- 				  struct eventfs_attr *attr,
- 				  struct dentry *parent, void *data,
--				  const struct file_operations *fop)
-+				  const struct file_operations *fop,
-+				  unsigned int ino)
- {
- 	struct tracefs_inode *ti;
- 	struct dentry *dentry;
-@@ -363,9 +362,7 @@ static struct dentry *create_file(const char *name, umode_t mode,
- 	inode->i_op = &eventfs_file_inode_operations;
- 	inode->i_fop = fop;
- 	inode->i_private = data;
--
--	/* All files will have the same inode number */
--	inode->i_ino = EVENTFS_FILE_INODE_INO;
-+	inode->i_ino = ino;
- 
- 	ti = get_tracefs(inode);
- 	ti->flags |= TRACEFS_EVENT_INODE;
-@@ -377,12 +374,14 @@ static struct dentry *create_file(const char *name, umode_t mode,
- /**
-  * create_dir - create a dir in the tracefs filesystem
-  * @ei: the eventfs_inode that represents the directory to create
-- * @parent: parent dentry for this file.
-+ * @parent: parent dentry for this directory.
-+ * @nr_files: The number of files (not directories) this directory has
-  *
-  * This function will create a dentry for a directory represented by
-  * a eventfs_inode.
-  */
--static struct dentry *create_dir(struct eventfs_inode *ei, struct dentry *parent)
-+static struct dentry *create_dir(struct eventfs_inode *ei, struct dentry *parent,
-+				 int nr_files)
- {
- 	struct tracefs_inode *ti;
- 	struct dentry *dentry;
-@@ -404,7 +403,7 @@ static struct dentry *create_dir(struct eventfs_inode *ei, struct dentry *parent
- 	inode->i_fop = &eventfs_file_operations;
- 
- 	/* All directories will have the same inode number */
--	inode->i_ino = eventfs_dir_ino(ei);
-+	inode->i_ino = eventfs_dir_ino(ei, nr_files);
- 
- 	ti = get_tracefs(inode);
- 	ti->flags |= TRACEFS_EVENT_INODE;
-@@ -504,7 +503,7 @@ create_file_dentry(struct eventfs_inode *ei, int idx,
- 
- 	mutex_unlock(&eventfs_mutex);
- 
--	dentry = create_file(name, mode, attr, parent, data, fops);
-+	dentry = create_file(name, mode, attr, parent, data, fops, ei->ino + idx + 1);
- 
- 	mutex_lock(&eventfs_mutex);
- 
-@@ -598,7 +597,7 @@ create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
- 	}
- 	mutex_unlock(&eventfs_mutex);
- 
--	dentry = create_dir(ei, parent);
-+	dentry = create_dir(ei, parent, ei->nr_entries);
- 
- 	mutex_lock(&eventfs_mutex);
- 
-@@ -786,7 +785,7 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
- 		if (r <= 0)
- 			continue;
- 
--		ino = EVENTFS_FILE_INODE_INO;
-+		ino = ei->ino + i + 1;
- 
- 		if (!dir_emit(ctx, name, strlen(name), ino, DT_REG))
- 			goto out;
-@@ -810,7 +809,7 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
- 
- 		name = ei_child->name;
- 
--		ino = eventfs_dir_ino(ei_child);
-+		ino = eventfs_dir_ino(ei_child, ei_child->nr_entries);
- 
- 		if (!dir_emit(ctx, name, strlen(name), ino, DT_DIR))
- 			goto out_dec;
-diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
-index e1b172c0e091..2187be6d7b23 100644
---- a/fs/tracefs/inode.c
-+++ b/fs/tracefs/inode.c
-@@ -223,13 +223,41 @@ static const struct inode_operations tracefs_file_inode_operations = {
- 	.setattr	= tracefs_setattr,
- };
- 
-+/* Copied from get_next_ino() but adds allocation for multiple inodes */
-+#define LAST_INO_BATCH 1024
-+#define LAST_INO_MASK (~(LAST_INO_BATCH - 1))
-+static DEFINE_PER_CPU(unsigned int, last_ino);
-+
-+unsigned int tracefs_get_next_ino(int files)
-+{
-+	unsigned int *p = &get_cpu_var(last_ino);
-+	unsigned int res = *p;
-+
-+#ifdef CONFIG_SMP
-+	/* Check if adding files+1 overflows */
-+	if (unlikely(!res || (res & LAST_INO_MASK) != ((res + files + 1) & LAST_INO_MASK))) {
-+		static atomic_t shared_last_ino;
-+		int next = atomic_add_return(LAST_INO_BATCH, &shared_last_ino);
-+
-+		res = next - LAST_INO_BATCH;
-+	}
-+#endif
-+
-+	res++;
-+	/* get_next_ino should not provide a 0 inode number */
-+	if (unlikely(!res))
-+		res++;
-+	*p = res + files;
-+	put_cpu_var(last_ino);
-+	return res;
-+}
-+
- struct inode *tracefs_get_inode(struct super_block *sb)
- {
- 	struct inode *inode = new_inode(sb);
--	if (inode) {
--		inode->i_ino = get_next_ino();
-+	if (inode)
- 		simple_inode_init_ts(inode);
--	}
-+
- 	return inode;
- }
- 
-@@ -644,6 +672,8 @@ struct dentry *tracefs_create_file(const char *name, umode_t mode,
- 	inode->i_private = data;
- 	inode->i_uid = d_inode(dentry->d_parent)->i_uid;
- 	inode->i_gid = d_inode(dentry->d_parent)->i_gid;
-+	inode->i_ino = tracefs_get_next_ino(0);
-+
- 	d_instantiate(dentry, inode);
- 	fsnotify_create(d_inode(dentry->d_parent), dentry);
- 	return tracefs_end_creating(dentry);
-@@ -669,6 +699,7 @@ static struct dentry *__create_dir(const char *name, struct dentry *parent,
- 	inode->i_fop = &simple_dir_operations;
- 	inode->i_uid = d_inode(dentry->d_parent)->i_uid;
- 	inode->i_gid = d_inode(dentry->d_parent)->i_gid;
-+	inode->i_ino = tracefs_get_next_ino(0);
- 
- 	ti = get_tracefs(inode);
- 	ti->private = instance_inode(parent, inode);
-diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
-index 45397df9bb65..7dd6678229d0 100644
---- a/fs/tracefs/internal.h
-+++ b/fs/tracefs/internal.h
-@@ -75,6 +75,7 @@ static inline struct tracefs_inode *get_tracefs(const struct inode *inode)
- 	return container_of(inode, struct tracefs_inode, vfs_inode);
- }
- 
-+unsigned int tracefs_get_next_ino(int files);
- struct dentry *tracefs_start_creating(const char *name, struct dentry *parent);
- struct dentry *tracefs_end_creating(struct dentry *dentry);
- struct dentry *tracefs_failed_creating(struct dentry *dentry);
--- 
-2.43.0
+The reason get_next_ino() is critical is because it's used by things
+like pipes and sockets etc that get created at high rates, the the
+inode numbers most definitely do not get cached.
 
+You copied that function without understanding why it does what it
+does, and as a result your code IS GARBAGE.
+
+AGAIN.
+
+Honestly, kill this thing with fire. It was a bad idea. I'm putting my
+foot down, and you are *NOT* doing unique regular file inode numbers
+uintil somebody points to a real problem.
+
+Because this whole "I make up problems, and then I write overly
+complicated crap code to solve them" has to stop,.
+
+No more. This stops here.
+
+I don't want to see a single eventfs patch that doesn't have a real
+bug report associated with it. And the next time I see you copying VFS
+functions (or any other core functions) without udnerstanding what the
+f*ck they do, and why they do it, I'm going to put you in my
+spam-filter for a week.
+
+I'm done. I'm really *really* tired of having to look at eventfs garbage.
+
+              Linus
