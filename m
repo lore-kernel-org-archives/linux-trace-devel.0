@@ -1,136 +1,266 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 602852260A
-	for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 08:54:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4816D1E876;
+	Fri, 26 Jan 2024 20:02:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706259303; cv=none; b=EWX5NAsruwby+s6OnOc7jz4SlY3zUKHN/0H8xmHkJtGZfek5mbrsyu858AGEv/Wa7zgKtIV0tPlFGpm/fpAkEVlsXQDIW0VZ3V8P/ePkIwmbPG3RfNo9Q7kfFIF+Ffas4BfWm9fIN4HqFuUbtT5R9FJaMNz7rEaAfWv+eMqE8Ks=
+	t=1706299328; cv=none; b=HrjdMRaAdlqzq9Ic8HNLQ9YpWgix+Qobvc44Tb5Ti/m7Jny/O/bla13R2aJYBWi086CRiTSSu8Qz1KTcaperoqM3Nl/WggeyJbpW85vsiJJdntiL812MOU7nvf1Ib0xLOZFKq3S7/sTiP/upWnWV+LTJ3/GDzbXJee1RLlIuApA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706259303; c=relaxed/simple;
-	bh=BxTsUl0VQEo1e3B0LUhnLGM65MqTgeAEiw5uJdpwA4g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cga4DQREVQDl7Qh8zP9xVxfTlFuYQV3l/OGxJGExCzAwY3s+GsTizp9BKmQIbcL+xREhXI2y4MiBzL8/dpqeJXmj8Rymnb6xQ/0Xce1sLKnNPsmFlCH05FTNraHqMBVE0EmYY0rkYXgtEDn4WF4ugygjByqOSA3cM+BBnG0407M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A42741FB;
-	Fri, 26 Jan 2024 00:55:43 -0800 (PST)
-Received: from [192.168.1.25] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD75F3F762;
-	Fri, 26 Jan 2024 00:54:58 -0800 (PST)
-Message-ID: <eb976812-06e9-4a0a-93d1-1868ee9d19e1@arm.com>
-Date: Fri, 26 Jan 2024 09:54:53 +0100
+	s=arc-20240116; t=1706299328; c=relaxed/simple;
+	bh=iC0Vw1MUNFSZSDa2/2hGfEAsJpdJDjskecOmVObMa9k=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=e0Uu8X//qUlJYqPiWiyU5c3ANVur5hmlinR6IwX7/1TUha+mbwlinrzRu5VKc1zOMfBF8kUGQoxtxMoCh0ks399nL+7JxNzknbnXV0K+5OJl03QdEB3tTqXLhWMwy0K9v8oc/qo7KRlE7zRXlrrocw2hx5IioMjscIeZAudS2LA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BACFC433F1;
+	Fri, 26 Jan 2024 20:02:06 +0000 (UTC)
+Date: Fri, 26 Jan 2024 15:02:09 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Devel
+ <linux-trace-devel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Christian Brauner <brauner@kernel.org>,
+ Ajay Kaher  <ajay.kaher@broadcom.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH] eventfs: Have inodes have unique inode numbers
+Message-ID: <20240126150209.367ff402@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/5] trace-cmd split: Enable support for buffer
- selection
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-References: <20240123134215.385415-1-pierre.gondois@arm.com>
- <20240123134215.385415-5-pierre.gondois@arm.com>
- <20240124173740.6d9e2287@gandalf.local.home>
- <1122630e-838e-49fc-9210-55834129088c@arm.com>
- <20240125112834.2de4eedb@gandalf.local.home>
- <20240125115147.51bcce2a@gandalf.local.home>
- <20240125121025.208a7012@gandalf.local.home>
-Content-Language: en-US
-From: Pierre Gondois <pierre.gondois@arm.com>
-In-Reply-To: <20240125121025.208a7012@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-Hello Steven,
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-On 1/25/24 18:10, Steven Rostedt wrote:
-> On Thu, 25 Jan 2024 11:51:47 -0500
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
->> Now if I had had:
->>
->>    trace-cmd split -i /work/traces/trace-tast.dat --top  -B tast -o /tmp/trace-tast2.dat
->>
->> Then because there was a command "--top" before the -B but it had no -o
->> assigned for it, then the input_file would be considered the output file
->> and that should act like you described.
-> 
-> Of course then things get confusing if we were to have:
-> 
-> trace-cmd split -i /work/traces/trace-tast.dat  -B foo -o /tmp/trace-foo.dat -B bar
-> 
-> We could specify that each -B will just use the top level by default. So
-> the above would create:
-> 
->   /tmp/trace-foo.dat
-> 
-> With the instance "foo"
-> 
-> But the "bar" would be in:
-> 
->   /work/traces/trace-tast.dat.bar
-> 
-> because the top level didn't specify a -o.
-> 
-> So to make it more specific. Each -B will default to the toplevel output
-> with ".<instance>" appended to it.
-> 
-> That is:
-> 
->    split <top-level-commands> -B instance1 <instance1-commands> -B <instance2-commands>
-> 
-> If a -o is specified in the <top-level-commands> it becomes the default top
-> level output file.  If a -o is not specified in any of the
-> <instance*-commands> then, it will default to the top level output file
-> with ".<instance-name>" attached to it unless it has its own -o specified.
+Linus suggested to use the same inode numbers to make it easier to
+implement getdents(), as it was creating inodes just for generating a
+unique and consistent inode number. Linus suggested to just use the same
+inode for all files and directories.
 
-I also wanted to handle the case where multiple instances could be placed
-in an output file. Meaning that with the patches:
-- -B/--top options are parsed to select the instances to keep,
-- a -o option ends the parsing of instances and place them in the given output
-   file. If no -o option is parsed, then the default output file or the input
-   file is used as a base name for the last generated output file (i.e. trace.dat.1
-   if no input file is specified)
+Later it was discovered that having directories with the same inode number
+would mess up the "find" command, but Linus found that on 64 bit machines,
+there was a hole in the eventfs_inode structure due to alignment that
+could be used to store the inode numbers for directories. That fixed the
+directory issue, but the files still had their own inode number.
 
+The 'tar' command uses inode numbers for determining uniqueness between
+files, which this would break. Currently, tar is broken with tracefs
+because all files show a stat of zero size and tar doesn't copy anything.
+But because tar cares about inode numbers, there could be other
+applications that do too. It's best to have all files have unique inode
+numbers.
+
+Copy the get_next_ino() to tracefs_get_next_ino() that takes a "files"
+parameter. As eventfs directories have a fixed number of files within
+them, the number of inodes needed for the eventfs directory files is known
+when the directory is created. The tracefs_get_next_ino() will return a
+new inode number but also reserve the next "files" inode numbers that the
+caller is free to use. Then when an inode for a file is created, its inode
+number will be its parent directory's inode number plus the index into the
+file array of that directory, giving each file a unique inode number that
+can be retrieved at any time.
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
+ fs/tracefs/event_inode.c | 31 +++++++++++++++----------------
+ fs/tracefs/inode.c       | 37 ++++++++++++++++++++++++++++++++++---
+ fs/tracefs/internal.h    |  1 +
+ 3 files changed, 50 insertions(+), 19 deletions(-)
 
-For example, with a trace recorded with:
-	$ trace-cmd record -e sched_wakeup -B switch_instance -e sched_switch -B timer_instance -e timer
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index 6b211522a13e..7be7a694b106 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -32,14 +32,11 @@
+  */
+ static DEFINE_MUTEX(eventfs_mutex);
+ 
+-/* Choose something "unique" ;-) */
+-#define EVENTFS_FILE_INODE_INO		0x12c4e37
+-
+ /* Just try to make something consistent and unique */
+-static int eventfs_dir_ino(struct eventfs_inode *ei)
++static int eventfs_dir_ino(struct eventfs_inode *ei, int nr_files)
+ {
+ 	if (!ei->ino)
+-		ei->ino = get_next_ino();
++		ei->ino = tracefs_get_next_ino(nr_files);
+ 
+ 	return ei->ino;
+ }
+@@ -327,6 +324,7 @@ void eventfs_update_gid(struct dentry *dentry, kgid_t gid)
+  * @parent: parent dentry for this file.
+  * @data: something that the caller will want to get to later on.
+  * @fop: struct file_operations that should be used for this file.
++ * @ino: inode number for this file
+  *
+  * This function creates a dentry that represents a file in the eventsfs_inode
+  * directory. The inode.i_private pointer will point to @data in the open()
+@@ -335,7 +333,8 @@ void eventfs_update_gid(struct dentry *dentry, kgid_t gid)
+ static struct dentry *create_file(const char *name, umode_t mode,
+ 				  struct eventfs_attr *attr,
+ 				  struct dentry *parent, void *data,
+-				  const struct file_operations *fop)
++				  const struct file_operations *fop,
++				  unsigned int ino)
+ {
+ 	struct tracefs_inode *ti;
+ 	struct dentry *dentry;
+@@ -363,9 +362,7 @@ static struct dentry *create_file(const char *name, umode_t mode,
+ 	inode->i_op = &eventfs_file_inode_operations;
+ 	inode->i_fop = fop;
+ 	inode->i_private = data;
+-
+-	/* All files will have the same inode number */
+-	inode->i_ino = EVENTFS_FILE_INODE_INO;
++	inode->i_ino = ino;
+ 
+ 	ti = get_tracefs(inode);
+ 	ti->flags |= TRACEFS_EVENT_INODE;
+@@ -377,12 +374,14 @@ static struct dentry *create_file(const char *name, umode_t mode,
+ /**
+  * create_dir - create a dir in the tracefs filesystem
+  * @ei: the eventfs_inode that represents the directory to create
+- * @parent: parent dentry for this file.
++ * @parent: parent dentry for this directory.
++ * @nr_files: The number of files (not directories) this directory has
+  *
+  * This function will create a dentry for a directory represented by
+  * a eventfs_inode.
+  */
+-static struct dentry *create_dir(struct eventfs_inode *ei, struct dentry *parent)
++static struct dentry *create_dir(struct eventfs_inode *ei, struct dentry *parent,
++				 int nr_files)
+ {
+ 	struct tracefs_inode *ti;
+ 	struct dentry *dentry;
+@@ -404,7 +403,7 @@ static struct dentry *create_dir(struct eventfs_inode *ei, struct dentry *parent
+ 	inode->i_fop = &eventfs_file_operations;
+ 
+ 	/* All directories will have the same inode number */
+-	inode->i_ino = eventfs_dir_ino(ei);
++	inode->i_ino = eventfs_dir_ino(ei, nr_files);
+ 
+ 	ti = get_tracefs(inode);
+ 	ti->flags |= TRACEFS_EVENT_INODE;
+@@ -504,7 +503,7 @@ create_file_dentry(struct eventfs_inode *ei, int idx,
+ 
+ 	mutex_unlock(&eventfs_mutex);
+ 
+-	dentry = create_file(name, mode, attr, parent, data, fops);
++	dentry = create_file(name, mode, attr, parent, data, fops, ei->ino + idx + 1);
+ 
+ 	mutex_lock(&eventfs_mutex);
+ 
+@@ -598,7 +597,7 @@ create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
+ 	}
+ 	mutex_unlock(&eventfs_mutex);
+ 
+-	dentry = create_dir(ei, parent);
++	dentry = create_dir(ei, parent, ei->nr_entries);
+ 
+ 	mutex_lock(&eventfs_mutex);
+ 
+@@ -786,7 +785,7 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
+ 		if (r <= 0)
+ 			continue;
+ 
+-		ino = EVENTFS_FILE_INODE_INO;
++		ino = ei->ino + i + 1;
+ 
+ 		if (!dir_emit(ctx, name, strlen(name), ino, DT_REG))
+ 			goto out;
+@@ -810,7 +809,7 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
+ 
+ 		name = ei_child->name;
+ 
+-		ino = eventfs_dir_ino(ei_child);
++		ino = eventfs_dir_ino(ei_child, ei_child->nr_entries);
+ 
+ 		if (!dir_emit(ctx, name, strlen(name), ino, DT_DIR))
+ 			goto out_dec;
+diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
+index e1b172c0e091..2187be6d7b23 100644
+--- a/fs/tracefs/inode.c
++++ b/fs/tracefs/inode.c
+@@ -223,13 +223,41 @@ static const struct inode_operations tracefs_file_inode_operations = {
+ 	.setattr	= tracefs_setattr,
+ };
+ 
++/* Copied from get_next_ino() but adds allocation for multiple inodes */
++#define LAST_INO_BATCH 1024
++#define LAST_INO_MASK (~(LAST_INO_BATCH - 1))
++static DEFINE_PER_CPU(unsigned int, last_ino);
++
++unsigned int tracefs_get_next_ino(int files)
++{
++	unsigned int *p = &get_cpu_var(last_ino);
++	unsigned int res = *p;
++
++#ifdef CONFIG_SMP
++	/* Check if adding files+1 overflows */
++	if (unlikely(!res || (res & LAST_INO_MASK) != ((res + files + 1) & LAST_INO_MASK))) {
++		static atomic_t shared_last_ino;
++		int next = atomic_add_return(LAST_INO_BATCH, &shared_last_ino);
++
++		res = next - LAST_INO_BATCH;
++	}
++#endif
++
++	res++;
++	/* get_next_ino should not provide a 0 inode number */
++	if (unlikely(!res))
++		res++;
++	*p = res + files;
++	put_cpu_var(last_ino);
++	return res;
++}
++
+ struct inode *tracefs_get_inode(struct super_block *sb)
+ {
+ 	struct inode *inode = new_inode(sb);
+-	if (inode) {
+-		inode->i_ino = get_next_ino();
++	if (inode)
+ 		simple_inode_init_ts(inode);
+-	}
++
+ 	return inode;
+ }
+ 
+@@ -644,6 +672,8 @@ struct dentry *tracefs_create_file(const char *name, umode_t mode,
+ 	inode->i_private = data;
+ 	inode->i_uid = d_inode(dentry->d_parent)->i_uid;
+ 	inode->i_gid = d_inode(dentry->d_parent)->i_gid;
++	inode->i_ino = tracefs_get_next_ino(0);
++
+ 	d_instantiate(dentry, inode);
+ 	fsnotify_create(d_inode(dentry->d_parent), dentry);
+ 	return tracefs_end_creating(dentry);
+@@ -669,6 +699,7 @@ static struct dentry *__create_dir(const char *name, struct dentry *parent,
+ 	inode->i_fop = &simple_dir_operations;
+ 	inode->i_uid = d_inode(dentry->d_parent)->i_uid;
+ 	inode->i_gid = d_inode(dentry->d_parent)->i_gid;
++	inode->i_ino = tracefs_get_next_ino(0);
+ 
+ 	ti = get_tracefs(inode);
+ 	ti->private = instance_inode(parent, inode);
+diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
+index 45397df9bb65..7dd6678229d0 100644
+--- a/fs/tracefs/internal.h
++++ b/fs/tracefs/internal.h
+@@ -75,6 +75,7 @@ static inline struct tracefs_inode *get_tracefs(const struct inode *inode)
+ 	return container_of(inode, struct tracefs_inode, vfs_inode);
+ }
+ 
++unsigned int tracefs_get_next_ino(int files);
+ struct dentry *tracefs_start_creating(const char *name, struct dentry *parent);
+ struct dentry *tracefs_end_creating(struct dentry *dentry);
+ struct dentry *tracefs_failed_creating(struct dentry *dentry);
+-- 
+2.43.0
 
-Creating a test.dat file containing the top instance and
-the switch_instance:
-	$ trace-cmd split --top -B switch_instance -o test.dat
-
-Creating a test.dat file containing the switch_instance as
-the top instance, and the initial top instance as an instance
-named 'old_top':
-	$ trace-cmd split -B switch_instance --top=old_top -o test.dat
-
-Splitting all instances in different .dat files:
-	$ trace-cmd split --top -o top.dat -B switch_instance -o switch.dat -B timer_instance -o timer.dat
-
-And by default, if no -B/--top is specified for an output file,
-keep all the instances (but of course all the other options provided
-to the split command are applied, i.e. start/end timings):
-Keep all the instances and place them in test.dat:
-	$ trace-cmd split -o test.dat
-Keep all the instances and place them in the default file trace.dat.1:
-	$ trace-cmd split
-
----
-
-Maybe the list of generated files should be printed to avoid what happened
-to you, i.e. generating files that were not expected.
-I think that having a default name with a suffix being the top instance
-is a good idea, but I don't think it would be possible to parse the command
-line to have 2 instances in one file in such case.
-
-> 
-> For multi-file splits, it will append ".0001", ".0002", etc to that file.
-> 
-
-Regards,
-Pierre
