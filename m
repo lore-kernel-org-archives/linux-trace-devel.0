@@ -1,59 +1,59 @@
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B14E533090
-	for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 23:12:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9242533090
+	for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 23:17:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706310736; cv=none; b=MO+23Hn/2MWtxPfI44qhV5T1ZOpa06DrEWXm9PQlTBrNcxmm6t9BuzIgFmxKbz3SWSfWU8oVPftyB2cBoFY9nzoq8+KG8vB8ZUgbeHM4THKWKsyWNTBo/Q/eHRxv7nrs/QcRXVW876JzlwOg9aRQlGrUS9c2otJcNq8PqNLC6J0=
+	t=1706311055; cv=none; b=BntiXgtdqPo1QMSbHgKJokWQr0xqWzspEaJ7BYmDt4v2hn/olp71Pq+z30ug5ESLp3nVPiuhWCdUMfFHUELAHUYaN9pmoGexgupWhxNtiYoydw3oQ11jaBuLUBpQUDM411rp5BjLu5YLJs9gi6HhDiPWzkkriXbfePSb+6kGg6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706310736; c=relaxed/simple;
-	bh=2P1MSft8X93++r9/w92I/KK2xvEAgYJknw4bsWY3hGQ=;
+	s=arc-20240116; t=1706311055; c=relaxed/simple;
+	bh=QmVspYtlmSmjhcCoSiCpOR9/r0lxSB1GXdq7WVzBRp8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=F31wvBwTtSvS8Z2HWN6sbQiSPpoge8QKpW8nJTey31cER+GAQnt+kfpN6T1xHOT+EPSHrn6B1GBSTxjKEUabtPM+yyOQwrek4YSM+crmHK5zSWJIN6dFSxHHKrqyApcbeL2qC9T+RisqfHybDoLBzetR1YDeg1V/E26j6X3nxoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=gD5yQV2M; arc=none smtp.client-ip=209.85.128.51
+	 To:Cc:Content-Type; b=ST7VrvTHbbr3vdeiQuZAlJARsWKZRsgcnSWvnbdol1jkh46PeN2/mbHaPdrG/xlhKFkMd3buPCY5x3axvpWCiTjSvWU9T9UODdhFlSRLWkZ1FgO1hUekH68TkX7S3cePiiXLDNaE+ZqM1rGeXItlr6gsFPsyeSPrtv9Pao4F4Bk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=d40LHoIS; arc=none smtp.client-ip=209.85.167.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="gD5yQV2M"
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40ea5653f6bso16232235e9.3
-        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 15:12:14 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="d40LHoIS"
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5100fd7f71dso1961265e87.1
+        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 15:17:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706310733; x=1706915533; darn=vger.kernel.org;
+        d=linux-foundation.org; s=google; t=1706311051; x=1706915851; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bdf20BJ6O42hFp/1Syn6ytLGURr08JkqxpxmJ3QroSs=;
-        b=gD5yQV2Mc822Z8tzP+epYsC1S83NUsNBcuMoVKAw0TwfmXrAO9R6K3KlPk4F8Py4/0
-         XlgGS3bHaVcg/3skM+hjVcpfvIIyK0LFOiVfNaiX9t9V0vvKUyuB63tEyddLUhuc4pMb
-         +znmwpDrHpcQM+6gCkXklqSRijLaFqvt424ZI=
+        bh=VC+HuLvY2p6RWyDAc32xlp18wOorWJVU3mokVs6SBvk=;
+        b=d40LHoIS4y+T0ms9j1nzzyVJhsOKuneM/m4nxqnuR5Jq+f4eAIZwx9e0fm0IzFXn5C
+         71zCoHbsgLkJOuxtYPU6sg057jvH/CJpojhhi6+Rpt36EEhLR3VDxB/30pgWYn/uX/mg
+         ydJTuf7uoHSg/EurtQu+PtNhhjrPNXQIGuY8k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706310733; x=1706915533;
+        d=1e100.net; s=20230601; t=1706311051; x=1706915851;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Bdf20BJ6O42hFp/1Syn6ytLGURr08JkqxpxmJ3QroSs=;
-        b=gRE0niQqciO4Ijryv5ZXc8m5jKH9R22lKCNFehP4tAM8zUp6C1k42ZGNRx2qIubknp
-         Hxpcb0f7iBWH/4BSeL3WEdvqvv+W52PHshhx6ldoBpCJrRgzu5IAFN4cIpKY5qRtgY5b
-         D0m6tZlLkgnzDR69iKQFxyEhGXRVrQeDGkIInzpMjIq5FN/RMjnFGgXN/iIs6LZzfCdZ
-         LXbaU9WzYH/i+nC5Nskc9VFRRRn47tYrPWDFQPkrkW4CRztCZggYCpVm7oarXNhoA+3+
-         oFpiMx82ZCcxysnz+V25wDGcW8rNPqTbZ7T3gxM6nw7xqsMFLtbsQW1r1Q07yD8+VRHQ
-         RZKw==
-X-Gm-Message-State: AOJu0YwDEg5//4GG00kNB47WYMFWAixaPc+5f2boA0edmyF5z6BXn2vs
-	mvnaGvlpBrKP1LpcKdDPq/Jvy1fujIlfWDbnVT/6GFSGwQAyyp1QZeKhvO15HGYFdAO+5aXJl/3
-	G5WsEew==
-X-Google-Smtp-Source: AGHT+IE2RpbsrehgwuLYO7mryeC2Hu4Ar+QBg6GdJWuRK/CwVtXLfeVWkiID1TWrksRcGpPnAOG9qw==
-X-Received: by 2002:a05:600c:4f02:b0:40e:bfc5:f295 with SMTP id l2-20020a05600c4f0200b0040ebfc5f295mr363111wmq.125.1706310732622;
-        Fri, 26 Jan 2024 15:12:12 -0800 (PST)
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
-        by smtp.gmail.com with ESMTPSA id x6-20020a056402414600b0055d36e6f1a7sm908316eda.82.2024.01.26.15.12.11
+        bh=VC+HuLvY2p6RWyDAc32xlp18wOorWJVU3mokVs6SBvk=;
+        b=eCrNtdZjmwPGvO3fK8rxGBNdyVSQ5G7cEw+b1zZe5ql3R9Rs8IXIz3jsBNxPUhyJSn
+         WoLhAAoLheF2ZNRDrUEFPgc5BLSyx2HcUAYgIL5F7aCoNY18N9slnUputhte4wXqBHV0
+         vuLch+6s8tJf4xa+ww41sj8B5VuB6PlPRy40lXHyMG5w9KhT44SiPjSsN4oscIa2fxVs
+         oJ0YB4L3Np+hw2iSiLt8aEN+nNtVKO8//RHU+1kJ+Vn9bchF9Lwk3+CpYem0y3EpbgI5
+         E32qU0sArCOOOg6Eu4i/2QuMZOAEpfgGJrMvNIjnqRQ0LrQbiTg41QvE+G/GtRGDAZrY
+         RamA==
+X-Gm-Message-State: AOJu0YxRWuMIH5i86tOxtx8rhoctKoILF7pZAsna2vyUzgmcjESXxTmJ
+	dQXKVlKBK/1TxiqVItY9hZo7giiPS7FPUwnKDJXhBUv6G1TAB+2h3M1wV/exmlGH5jqZl9UU7Ma
+	fc6QDzA==
+X-Google-Smtp-Source: AGHT+IFa+8OzPfRkpczw3+IqF0ymmbpj/EWBaAOXU1950N5Z4tBJpF5ec6c7bTCBb03+oS8TJkHddg==
+X-Received: by 2002:ac2:4904:0:b0:510:253f:32dd with SMTP id n4-20020ac24904000000b00510253f32ddmr258756lfi.31.1706311051360;
+        Fri, 26 Jan 2024 15:17:31 -0800 (PST)
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
+        by smtp.gmail.com with ESMTPSA id v23-20020a197417000000b0051017b24ad2sm311424lfe.245.2024.01.26.15.17.30
         for <linux-trace-devel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 15:12:11 -0800 (PST)
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55a3a875f7fso523618a12.3
-        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 15:12:11 -0800 (PST)
-X-Received: by 2002:aa7:c3cc:0:b0:55c:f699:c393 with SMTP id
- l12-20020aa7c3cc000000b0055cf699c393mr269406edr.32.1706310731406; Fri, 26 Jan
- 2024 15:12:11 -0800 (PST)
+        Fri, 26 Jan 2024 15:17:30 -0800 (PST)
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2cf4fafa386so5523311fa.1
+        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 15:17:30 -0800 (PST)
+X-Received: by 2002:a2e:7c19:0:b0:2cf:4a53:90f with SMTP id
+ x25-20020a2e7c19000000b002cf4a53090fmr374339ljc.7.1706311050498; Fri, 26 Jan
+ 2024 15:17:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -64,12 +64,13 @@ References: <20240126150209.367ff402@gandalf.local.home> <CAHk-=wgZEHwFRgp2Q8_-O
  <20240126162626.31d90da9@gandalf.local.home> <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
  <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
  <8547159a-0b28-4d75-af02-47fc450785fa@efficios.com> <ZbQzXfqA5vK5JXZS@casper.infradead.org>
- <CAHk-=wiF0ATuuxJhwgm707izS=5q4xBUSh+06U2VwFEJj0FNRw@mail.gmail.com> <ZbQ6gkZ78kvbcF8A@casper.infradead.org>
-In-Reply-To: <ZbQ6gkZ78kvbcF8A@casper.infradead.org>
+ <CAHk-=wiF0ATuuxJhwgm707izS=5q4xBUSh+06U2VwFEJj0FNRw@mail.gmail.com>
+ <ZbQ6gkZ78kvbcF8A@casper.infradead.org> <CAHk-=wgSy9ozqC4YfySobH5vZNt9nEyAp2kGL3dW--=4OUmmfw@mail.gmail.com>
+In-Reply-To: <CAHk-=wgSy9ozqC4YfySobH5vZNt9nEyAp2kGL3dW--=4OUmmfw@mail.gmail.com>
 From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 26 Jan 2024 15:11:55 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgSy9ozqC4YfySobH5vZNt9nEyAp2kGL3dW--=4OUmmfw@mail.gmail.com>
-Message-ID: <CAHk-=wgSy9ozqC4YfySobH5vZNt9nEyAp2kGL3dW--=4OUmmfw@mail.gmail.com>
+Date: Fri, 26 Jan 2024 15:17:14 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whqu_21AnXM9_ohxONvmotGqE=98YS2pLZq+qcY8z85SQ@mail.gmail.com>
+Message-ID: <CAHk-=whqu_21AnXM9_ohxONvmotGqE=98YS2pLZq+qcY8z85SQ@mail.gmail.com>
 Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
 To: Matthew Wilcox <willy@infradead.org>
 Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Steven Rostedt <rostedt@goodmis.org>, 
@@ -79,24 +80,24 @@ Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Steven Rostedt <rostedt@
 	Geert Uytterhoeven <geert@linux-m68k.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 26 Jan 2024 at 15:04, Matthew Wilcox <willy@infradead.org> wrote:
+On Fri, 26 Jan 2024 at 15:11, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> Maybe we should take advantage of that historical oddity.  All files
-> in eventfs have inode number 0, problem solved.
+> On Fri, 26 Jan 2024 at 15:04, Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > Maybe we should take advantage of that historical oddity.  All files
+> > in eventfs have inode number 0, problem solved.
+>
+> That might not be a horrible idea.
 
-That might not be a horrible idea.
+Note the "might". I don't know why glibc would have special-cased
+st_ino of 0, but I suspect it's some internal oddity in the readdir()
+implementation.
 
-The same way "a directory with st_nlink 1 clearly cannot have a
-subdirectory count" (which tools like 'find' know about), maybe it
-would be a good idea to use a zero inode number for 'this file doesn't
-have an inode number".
+So considering that we do have that commit 2adc376c5519, I suspect it
+would just be more pain than its worth to try to teach user space
+about the whole "no inode number" thing.
 
-Now, presumably no tool knows that, but we could try to aim for that
-being some future standard thing.
-
-(And by "standard", I mean a practical one, not some POSIX thing. I
-think POSIX just mentions "numberr of hardlinks", and then the whole
-"a value of one means that we can't count subdirectories" is just a
-practical reality for things like FAT).
+It might be safer to pick something like -1 instead.
 
                Linus
