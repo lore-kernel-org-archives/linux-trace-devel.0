@@ -1,59 +1,59 @@
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EB3C250F1
-	for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 22:26:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 005BC24B22
+	for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 22:29:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706307989; cv=none; b=qV8McK1tChVBWRwAfPYTXLPNxlEYUb3IhjirmcJcyqLaMhceAbG3zPS+vp+g4R67m3suWvILjDidv67r283mvFP61uRkvPhuZ8CMg25NddfOW88+bwO3V0eqiivSwth3Xr1j7kChu0vvbIIg1bQLBbVYkEPqbISZIJHiFo+BEIc=
+	t=1706308162; cv=none; b=AV1nttyd9YvxYEJhqFq0G6gch4R7hYj9ZazT4Bf3l9jya0vBeWJXHFrSLWAvfY3vwwXTvnXMw1pcPy/e1ldbxUJkgMQ53PAFJAxENzMdxv3WyZURgDZ1zF0QhgZjlsvxRvquESYx3Eq5lWihPI1D8mYdSV9mHftvKkq8DdxHnpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706307989; c=relaxed/simple;
-	bh=ulYxyMID4hoDqqkZq7ZMib690LO/V3+HiOYKu4iA5EY=;
+	s=arc-20240116; t=1706308162; c=relaxed/simple;
+	bh=bnGLdwzstqH5AfSoLZdw6+SstBNNV6/ADu5DzEq61y8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A6U85P08jjo6n7eU8TF6E/iAmf4GG3Ai/N2TOCrEx44nJ9O9uIKubDAT4S2iVFQH8MTVHaAV0i+61I4b9cct+vllZo4kzie7o0ahDnhxdGQ8tzbt/Z3Vdcs4/3SfIYJOaR8iuYCwk0vyjLt9+TVrKQlGbSZkVK70mtlq4aIUook=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=G0b+K8dK; arc=none smtp.client-ip=209.85.128.41
+	 To:Cc:Content-Type; b=Uu+ABuonPHe6/pozpix8pOArX27Z3phMFJfA0oUTSrEo10EbtmYySglEStVhVVynPjrR2yInihJ028CMar2GWdtgtxI1N53UuwShlGXFPskVKZY9r+wkskjFK4AQwD/31vo6t2gCkoa3VDM4B2Io6Js1ApdB1ECjRA0ruwZWpvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=HMMmvQiZ; arc=none smtp.client-ip=209.85.221.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="G0b+K8dK"
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40e76109cdeso18665885e9.0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 14:26:27 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="HMMmvQiZ"
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-336c8ab0b20so933318f8f.1
+        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 14:29:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706307985; x=1706912785; darn=vger.kernel.org;
+        d=linux-foundation.org; s=google; t=1706308159; x=1706912959; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=T7RgCCRFdykhHgupnFCoE0SS5Tr46EimKI36cb0Txx4=;
-        b=G0b+K8dKSaXhtj/LF1iMD6wZqs1UnX2DuWYXjXfIXukLmUdh9ieE9HvalEHFleujju
-         hWEUmLs1vA9PrCLZLauOgOch+V9E4Shox7k9C9vcHDvmYJh6vIYYFcPBfE9MLH7hRhyg
-         H0U6DbaBApv8Z9eONS/HV+1Qa6sUSQ6dbIJ9A=
+        bh=tRiurWLUnvaCNMuWmJHCRa1/X+mumAqXgtZJfgR1jGc=;
+        b=HMMmvQiZpcgtqcBgmKLGP1OTAtqXFA5fFA1zn82JXWqVQdz05IFfEqaQtgeeSAdoCG
+         B80fFH/6MXRB1fcioh3BmndcuHCC+zV22aIWr0b1o8zPyt2MTVBf0CvRtlOhvffp7QOF
+         BPmGL2/okUnkrEyYQ0B7JKZ7I17BgPp78XZJk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706307985; x=1706912785;
+        d=1e100.net; s=20230601; t=1706308159; x=1706912959;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=T7RgCCRFdykhHgupnFCoE0SS5Tr46EimKI36cb0Txx4=;
-        b=opma91P+bh9lMx1YcTQe4v2q7F3ZQB1oy4Vt8PJtdMhA0dnB2ybX7tQE0zWc/zeuf0
-         yugYVxQmHq8OqF5wYdbAaQoAubvZAM5hyUo2Sw1cVMwcf+Us0Qv05vtDJ3X1EfjI+AC1
-         izXTZg8T+kBFO+hdGY/fJjmGH2P7eGiZqANbnHRHPqYAJ4FomK1kvif1w/UM6gNlRR27
-         e6puKsKIFQOI/zxmsaujb57X3Qsb7Ej4IrXOfFt93XdKZYOLDudi/UFyGIdwQQrMKDQF
-         HYIFHImK9IOCSvCAUcu0dvUxrCeUW1uIKUS37Lrp9mvKmR8K+2KchmgGzhaGLusTJUCj
-         ZoNg==
-X-Gm-Message-State: AOJu0Yz1UPwLRVUskvRL1B5CSV6LUwo6DpyMH/L4JiybKUH5eXZjR3mW
-	NOnkBiHoMheRNSP0+Poo8GevU3Rk+Wakn5XW8VfcyvsVf+PP3DxvFaBna40w3YH/Crnz2/agpVn
-	D5KOcGw==
-X-Google-Smtp-Source: AGHT+IEv32LrPIzOTFISuAY+89YClhMrbXND1uhIiGKe4qN+q9+WbLEUN5K38qDDknRn7BVmD8Z8nw==
-X-Received: by 2002:a05:600c:1988:b0:40e:ccf7:3618 with SMTP id t8-20020a05600c198800b0040eccf73618mr360779wmq.23.1706307985417;
-        Fri, 26 Jan 2024 14:26:25 -0800 (PST)
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
-        by smtp.gmail.com with ESMTPSA id p7-20020a17090628c700b00a3181cb98c7sm1056566ejd.198.2024.01.26.14.26.24
+        bh=tRiurWLUnvaCNMuWmJHCRa1/X+mumAqXgtZJfgR1jGc=;
+        b=t3DULm9i2gaMbzvD+2LyrUA1ZG39If3T1dQ+kYfYDHN9lxtB5Nv+ZCvSF0g2DSPzQM
+         99HflahwmeJ3SF60oO07u8rI6kut0tq+kksfg19z6wgzzjhyVqEyN9kg39w3qkN54Jt9
+         J/cHCWU9JKpfKpjF0Fy/LPo8WoxASvkSjcXKKPgf5523jwVQRpHY+EDibSrtLt7xvwKS
+         5NiTBUcrhDiA2/+Eh22fOnbKWApy3Nqm9tx5G5+yjx+dLrHhZhlbDZ3THfywrky7yREE
+         cgn05I1YdE0VK/82sOjzXE58c2v/YbSKd4VQAVAdGagrJt/8nMudLJ5n8+q8qjUdgI5V
+         JWWQ==
+X-Gm-Message-State: AOJu0YxinqMtLvxQXFIC1bPmiRRzW73QV79A4gQ976KNTATsh8U/WlhN
+	eFif9+ToMuvi1qBo4+XMpU7Zzie2hB332zQqAiNjw9q9P4VogLPgsr+2DmhlSANbfi1XhVQ5bYf
+	vzqpLxw==
+X-Google-Smtp-Source: AGHT+IH0yJrfHX15vG+jMJ9NcXHEXkb3tYVi+9lFzgDafQhXMyJjdkUy6er6Wm9hS8sgGRZJa15QEw==
+X-Received: by 2002:a5d:5cd0:0:b0:333:3dd:6cc3 with SMTP id cg16-20020a5d5cd0000000b0033303dd6cc3mr240878wrb.21.1706308159119;
+        Fri, 26 Jan 2024 14:29:19 -0800 (PST)
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com. [209.85.128.46])
+        by smtp.gmail.com with ESMTPSA id rs6-20020a170907890600b00a26d20a48dasm1070154ejc.125.2024.01.26.14.29.18
         for <linux-trace-devel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 14:26:24 -0800 (PST)
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55a8fb31fc2so739885a12.0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 14:26:24 -0800 (PST)
-X-Received: by 2002:aa7:c64d:0:b0:55d:71d8:9dc1 with SMTP id
- z13-20020aa7c64d000000b0055d71d89dc1mr232273edr.38.1706307984490; Fri, 26 Jan
- 2024 14:26:24 -0800 (PST)
+        Fri, 26 Jan 2024 14:29:18 -0800 (PST)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40eeadb7151so3757215e9.1
+        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 14:29:18 -0800 (PST)
+X-Received: by 2002:a7b:c5cc:0:b0:40e:c5fd:8ad2 with SMTP id
+ n12-20020a7bc5cc000000b0040ec5fd8ad2mr348816wmk.44.1706308158118; Fri, 26 Jan
+ 2024 14:29:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -62,39 +62,36 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240126150209.367ff402@gandalf.local.home> <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
  <20240126162626.31d90da9@gandalf.local.home> <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
- <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com> <0C9AF227-60F1-4D9B-9099-1A86502359BA@goodmis.org>
-In-Reply-To: <0C9AF227-60F1-4D9B-9099-1A86502359BA@goodmis.org>
+ <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com> <8547159a-0b28-4d75-af02-47fc450785fa@efficios.com>
+In-Reply-To: <8547159a-0b28-4d75-af02-47fc450785fa@efficios.com>
 From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 26 Jan 2024 14:26:08 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whDnGUm1zAhq7Oa+5BjzjChxObWdy4J4n2TAmMWb_RWtw@mail.gmail.com>
-Message-ID: <CAHk-=whDnGUm1zAhq7Oa+5BjzjChxObWdy4J4n2TAmMWb_RWtw@mail.gmail.com>
+Date: Fri, 26 Jan 2024 14:29:01 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whAG6TM6PgH0YnsRe6U=RzL+JMvCi=_f0Bhw+q_7SSZuw@mail.gmail.com>
+Message-ID: <CAHk-=whAG6TM6PgH0YnsRe6U=RzL+JMvCi=_f0Bhw+q_7SSZuw@mail.gmail.com>
 Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, 
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>, 
 	Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner <brauner@kernel.org>, 
-	Ajay Kaher <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>
+	Christian Brauner <brauner@kernel.org>, Ajay Kaher <ajay.kaher@broadcom.com>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 26 Jan 2024 at 14:09, Steven Rostedt <rostedt@goodmis.org> wrote:
+On Fri, 26 Jan 2024 at 14:14, Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
 >
-> I'm not at my computer, but when I tried deleting that, it caused issues with the lookup code.
+> I do however have a concern with the approach of using the same
+> inode number for various files on the same filesystem: AFAIU it
+> breaks userspace ABI expectations.
 
-The VSF layer should be serializing all lookups of the same name. If
-it didn't, we'd have serious issues on other filesystems.
+Virtual filesystems have always done that in various ways.
 
-So you should never get more than one concurrent lookup of one
-particular entry, and as long as the dentry exists, you should then
-not get a new one. It's one of the things that the VFS layer does to
-make things simple for the filesystem.
+Look at the whole discussion about the size of the file. Then look at /proc.
 
-But it's worth noting that that is about *one* entry. You can get
-concurrent lookups in the same directory for different names.
+And honestly, eventfs needs to be simplified. It's a mess. It's less
+of a mess than it used to be, but people should *NOT* think that it's
+a real filesystem.
 
-Another thing that worries me is that odd locking that releases the
-lock in the middle. I don't understand why you release the
-tracefs_mutex() over create_file(), for example. There's a lot of
-"take, drop, re-take, re-drop" of that mutex that seems strange.
+Don't use some POSIX standard as an expectation for things like /proc,
+/sys or tracefs.
 
-           Linus
+              Linus
