@@ -1,59 +1,59 @@
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 378C2249E3
-	for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 22:49:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 259D04595E
+	for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 22:49:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706309347; cv=none; b=fCmpy2VyZ69rLrUl/rkAW3d7id0CF7CygaDTmORSGKvSNClU7meAChuBFp5FKqk8le1Avx32BpA8bFbzsJeS1bh9T+awPBxO7jXAXPyhweQY+rsZVuelemgAuo0YdeuKRhXv2FtbyWjbHQ0L1NfodVKTXietFC3l5VP/yAgsGQE=
+	t=1706309388; cv=none; b=hhC6bcHKOehWo/rdh6aB1zpIZSx3QmsHw3pbEpLwRdF0A+uidAWgLnLKKf77L+GVa/dQJ1FsmZ4rMalzxC6NE/3lWhk7ZH3u/NYc//kS7/qif7/iKM+yxZBpjW1Vgg9DHIyfbc8CBeSf2PiqLh50c4Mz7HFOxHHzWLlklnJ4/wk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706309347; c=relaxed/simple;
-	bh=ZC8lIw6nkj5AkxyuI4xf/CiVElrJVya/QfDBrLgEqn0=;
+	s=arc-20240116; t=1706309388; c=relaxed/simple;
+	bh=nrNcgKqKEthh661LXbilbwqQcwL+DlDRnFwg8jZPBIE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AoVRQies9nDKt/jzFu0AFrFXjeSXdtWfPt6ScZsKM+JHvXs3UiLjuuKXbXMCyiLa314qCfnWEoFYVvDoj3Rm4aTvQ09v0dl6UuIThIkSxJlGhzXJ9MIwsQYlrV/OsCdNTW1eBIf7il6D229L+nnHfL6WpQCFS3FwPjBlhYZ7HUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=MScHVDiX; arc=none smtp.client-ip=209.85.218.51
+	 To:Cc:Content-Type; b=KwccDC9L9pArGIdcIWjlATxGm23qxNrKJQoI4NxMV3csTILygdZkvwz8wH2nIeSP2byw8yvDdYfMZWjXaday/cxrmKxyRehs5J/OKyL2JypOAWWzXIyNuOqe9JUnah3N9OzihjNAqEjqwQ6YuJmMDPozsIKNUe8xw0PCHMguWZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Elzshj3+; arc=none smtp.client-ip=209.85.208.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="MScHVDiX"
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a298accc440so133055666b.1
-        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 14:49:04 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Elzshj3+"
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55c2cf644f3so587645a12.1
+        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 14:49:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706309343; x=1706914143; darn=vger.kernel.org;
+        d=linux-foundation.org; s=google; t=1706309385; x=1706914185; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xrhM++a5OFTukQjh6bVd0EodL17OqMY2SHvdwAgkV3I=;
-        b=MScHVDiXM6oJ5JNU8P5D4csBM5lGEIPpPeJmXOcjVXbk+A/RrE7R9PFN9l8tR9Vx4B
-         HVZFCO0Ui/Rf8VDrgg0Do+wsmppw6CtG0caw9sUdZwk8aQ4uoo3CxTxcGi/+1YEM7nK1
-         Yjnpl1WWTrNMga7ZlyQPDjV0f7wiP0mJhMpAg=
+        bh=mat57ocNjJ+2j0yfyUONN2djrK+fYcTcdMIfJXsJdeg=;
+        b=Elzshj3+mtNXeaGiELhCIsZspMlq+JNzAmO+Dx8bMiTivsU5WSyxufsX0a2Hr9q7Bs
+         mlV9MXE8vVm1B9TUQ4B3/2q8jGKUmF6ttTAmnT+LCFecEFpJuKsuYCWvIT9o+6peeK7m
+         1fP1+kBrNncMRFRdDgA7sVxjjxcXbcHX2bs18=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706309343; x=1706914143;
+        d=1e100.net; s=20230601; t=1706309385; x=1706914185;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=xrhM++a5OFTukQjh6bVd0EodL17OqMY2SHvdwAgkV3I=;
-        b=GUU1m3cIiy0Cv9Zq/Io41ylhq83HWX9pJvzSQjDe7MnhvC7cTlyY+S+SNQhseOGWDl
-         pxAeOUIQBRdy6WsyJB4JpE7Atw9kT2ABZm2zAuLS/M2j8y6gnMRep6FZJ3SoxjHI/kfp
-         UXCvq2ZtPIr5dlkJV/7wGs4kERAX3nFMJxSC8rEB4RGaFF5vo+/YJgjtUlZgnlQHWJDE
-         /DoKQyS965Yi4UoZv+HdmEmp2yc/bB8C/xZ8gQqZ7T01YUljwSG1ztwl/oHaA2Eb2TnT
-         Ekv1QNgWN0HFuKjyTdqICwgsvTgNfRuwf2iXgdyVbb3wbR9wivjSORVd+x30QiViYRAl
-         afkQ==
-X-Gm-Message-State: AOJu0YwvJwZwOzpBS9idZsO/W6HYUt6oP4+wcsMiWJEb38ceWTC2xsRX
-	XOw//IKiorWu5Khcmd5qutX1h0a43lmRwTchR4tC6L68badGQAbg/H155PKlw8raJa/Rbt1HEG2
-	/oHNxmg==
-X-Google-Smtp-Source: AGHT+IHFn/AdqmPRy3X6Xv8wPTR4YUfGYaWMGyr7cIEW24OynLUzf4x9XVuGV51CocOfoMFp7225ow==
-X-Received: by 2002:a17:906:848:b0:a2c:b5a1:f8 with SMTP id f8-20020a170906084800b00a2cb5a100f8mr409867ejd.37.1706309343101;
-        Fri, 26 Jan 2024 14:49:03 -0800 (PST)
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
-        by smtp.gmail.com with ESMTPSA id o18-20020a1709061b1200b00a2e7d1b6042sm1074898ejg.196.2024.01.26.14.49.02
+        bh=mat57ocNjJ+2j0yfyUONN2djrK+fYcTcdMIfJXsJdeg=;
+        b=U520w3Gw5nrSgW9mkU+b3A9HAWeUBmYA+b10IFoe2dVnHEABx6iHR9sP9EWSrpwOg8
+         BUdlK486IRvxEbfuOjnssfYgiX2D8D06MW1kp63rz439u5qz3Hi+JOGDa+aaPzFMcIdH
+         eIsD+ge/7JMMCA0tm59o+BcnujMdA5H+atAn13RTxqjeSu3Dq0kGxfM+PrAb1ITNDSY7
+         dBXge44ZfXvZNNiIBOrBmSfo/qk2c8IRxdC0bq4duGMeVPUKwuxUyoz2rMxaP+3jtZB7
+         9OYFv+wDvPfUdimNExFuN8+4oHy35Fi3AG2rzxJh0tbC+WM/2JxesvWQlKxEUdU+yhjT
+         7zgQ==
+X-Gm-Message-State: AOJu0YzqtV2yu0omb1FKqbrFYq7TT/MQUEevuudFzswssE0BBBenB+OM
+	SR+k7IvfH3j3/GusAq54dNDZO9bsHoxcFAcXgXPWOBHBD8+rBzqCRNJi/RcOraM03kdE7BAEUfh
+	bRSaSLA==
+X-Google-Smtp-Source: AGHT+IGYuhB6MooefIHScwAEHuwL1T30yhSdxKmil/NmaLB5crVgfGrs/WglRA0Ynrgn9lNIfgjYOA==
+X-Received: by 2002:a05:6402:3482:b0:55e:7e8a:195d with SMTP id v2-20020a056402348200b0055e7e8a195dmr307061edc.5.1706309385118;
+        Fri, 26 Jan 2024 14:49:45 -0800 (PST)
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
+        by smtp.gmail.com with ESMTPSA id 15-20020a0564021f4f00b0055c60ba9640sm1054864edz.77.2024.01.26.14.49.44
         for <linux-trace-devel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jan 2024 14:49:02 -0800 (PST)
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55a45a453eeso1674963a12.0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 14:49:02 -0800 (PST)
-X-Received: by 2002:a05:6402:2709:b0:55d:31f8:920a with SMTP id
- y9-20020a056402270900b0055d31f8920amr513622edd.27.1706309342198; Fri, 26 Jan
- 2024 14:49:02 -0800 (PST)
+        Fri, 26 Jan 2024 14:49:44 -0800 (PST)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55c2cf644f3so587634a12.1
+        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Jan 2024 14:49:44 -0800 (PST)
+X-Received: by 2002:a05:6402:b51:b0:55d:37ed:c0f0 with SMTP id
+ bx17-20020a0564020b5100b0055d37edc0f0mr256645edb.2.1706309384299; Fri, 26 Jan
+ 2024 14:49:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -63,51 +63,27 @@ MIME-Version: 1.0
 References: <20240126150209.367ff402@gandalf.local.home> <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
  <20240126162626.31d90da9@gandalf.local.home> <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
  <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
- <8547159a-0b28-4d75-af02-47fc450785fa@efficios.com> <ZbQzXfqA5vK5JXZS@casper.infradead.org>
-In-Reply-To: <ZbQzXfqA5vK5JXZS@casper.infradead.org>
+ <8547159a-0b28-4d75-af02-47fc450785fa@efficios.com> <CAHk-=whAG6TM6PgH0YnsRe6U=RzL+JMvCi=_f0Bhw+q_7SSZuw@mail.gmail.com>
+ <29be300d-00c4-4759-b614-2523864c074b@efficios.com>
+In-Reply-To: <29be300d-00c4-4759-b614-2523864c074b@efficios.com>
 From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 26 Jan 2024 14:48:45 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiF0ATuuxJhwgm707izS=5q4xBUSh+06U2VwFEJj0FNRw@mail.gmail.com>
-Message-ID: <CAHk-=wiF0ATuuxJhwgm707izS=5q4xBUSh+06U2VwFEJj0FNRw@mail.gmail.com>
+Date: Fri, 26 Jan 2024 14:49:27 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjpyv+fhxzV+XEQgsC+-HaouKT7Ns8qT31jkpN_Jm84_g@mail.gmail.com>
+Message-ID: <CAHk-=wjpyv+fhxzV+XEQgsC+-HaouKT7Ns8qT31jkpN_Jm84_g@mail.gmail.com>
 Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>, 
 	Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
 	Christian Brauner <brauner@kernel.org>, Ajay Kaher <ajay.kaher@broadcom.com>, 
 	Geert Uytterhoeven <geert@linux-m68k.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 26 Jan 2024 at 14:34, Matthew Wilcox <willy@infradead.org> wrote:
+On Fri, 26 Jan 2024 at 14:41, Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
 >
-> On Fri, Jan 26, 2024 at 05:14:12PM -0500, Mathieu Desnoyers wrote:
-> > I would suggest this straightforward solution to this:
-> >
-> > a) define a EVENTFS_MAX_INODES (e.g. 4096 * 8),
-> >
-> > b) keep track of inode allocation in a bitmap (within a single page),
-> >
-> > c) disallow allocating more than "EVENTFS_MAX_INODES" in eventfs.
->
-> ... reinventing the IDA?
+> Yes, there is even a note about stat.st_size in inode(7) explaining
+> this:
 
-Guysm, this is a random number that is *so* interesting that I
-seriously think we shouldn't have it at all.
+Good. Send a patch to do the same for st_ino.
 
-End result: nobody should care. Even the general VFS layer doesn't care.
-
-It literally avoids inode number zero, not because it would be a bad
-inode number, but simply because of some random historical oddity.
-
-In fact, I don't think we even have a reason for it. We have a commit
-2adc376c5519 ("vfs: avoid creation of inode number 0 in get_next_ino")
-and that one calls out glibc for not deleting them. That makes no
-sense to me, but whatever.
-
-But note how the generic function does *not* try to make them unique,
-for example. They are just "unique enough".
-
-The generic function *does* care about being scalable in an SMP
-environment. To a disturbing degree. Oh well.
-
-                Linus
+             Linus
