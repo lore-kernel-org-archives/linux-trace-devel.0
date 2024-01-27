@@ -1,73 +1,84 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 621CF1E4BC;
-	Sat, 27 Jan 2024 14:47:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14BD828DD0
+	for <linux-trace-devel@vger.kernel.org>; Sat, 27 Jan 2024 15:27:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706366842; cv=none; b=bczmnJ0xowbzkTOZ5L2KX+/sprQL33Y25w8gO5mBuoOE1f3TEVx08VHf9f2E8m6TaFONd5SX8ijTnmjCTPzSuaxqV3v2+2EnfAQJq8RZHOYh4xDFvIjYLavr2eW51+AODEbNCN2t7m+FbocqASz+vb1T9coCTCx5UaX327K8vyA=
+	t=1706369236; cv=none; b=tI7tMrMJHmDNnQczOSBFKneyJTRwtq+92CAikCYjlnf1+m/OugVSpQZM47a1U6rCHe4DRqSNHC9NQ6jlviC6rets9PqLgKxBMs11zLgzj/o/t9na+RQ0d15xq7jyGM2iIhn6D4+gIYQEjREDn7Jc1pTkr5ZbMsudp1ZlWU3djes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706366842; c=relaxed/simple;
-	bh=FZLyxs2KTnrtcfMD37K8ga7IQTtn1kDf3zqroJHBu0I=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bEgrDhkjpnnGd7qFECr+IiV+mVhIcMUwjMav7nWHh1MLOr1b63V77wvAHqAx4FQwTYUUSr7pOoG3Z3rw8TnmFbl3SzGe/q6phCnetW14WzasR7sIFEqHooeM/20IFcOh2LZfhcfQb1eXoZSs50yJsVvZ8noGDDX44K4MLa5Of4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EA99C433C7;
-	Sat, 27 Jan 2024 14:47:20 +0000 (UTC)
-Date: Sat, 27 Jan 2024 09:47:17 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Devel
- <linux-trace-devel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Christian Brauner <brauner@kernel.org>, Ajay Kaher
- <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
-Message-ID: <20240127094717.63c09edb@rorschach.local.home>
-In-Reply-To: <CAHk-=whDnGUm1zAhq7Oa+5BjzjChxObWdy4J4n2TAmMWb_RWtw@mail.gmail.com>
+	s=arc-20240116; t=1706369236; c=relaxed/simple;
+	bh=iFW2ERuTEIYk+fmvTQBQjnNRLBqVcxtT7bSBGDVOQEQ=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=VcwSM9Kj14FHc38vg+dr8QwN8InlfjixNJ/S/tACUQ60gYKmttmAhYtQIFyJXYxHxDfUwhEalRRMG9Rx3hagtMh38PgpSCV5h919kprWShQKPFseNGAkiQ/dykWBA4aGPkhYQGInb7aT5vDhc/VhaarTrnEzuOjwwVrMvxM65oc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-87-hz-_3iJRN8aUc6HcCR5UTA-1; Sat, 27 Jan 2024 15:27:11 +0000
+X-MC-Unique: hz-_3iJRN8aUc6HcCR5UTA-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 27 Jan
+ 2024 15:26:51 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sat, 27 Jan 2024 15:26:51 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Linus Torvalds' <torvalds@linux-foundation.org>, Steven Rostedt
+	<rostedt@goodmis.org>
+CC: LKML <linux-kernel@vger.kernel.org>, Linux Trace Devel
+	<linux-trace-devel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner
+	<brauner@kernel.org>, Ajay Kaher <ajay.kaher@broadcom.com>, "Geert
+ Uytterhoeven" <geert@linux-m68k.org>, linux-fsdevel
+	<linux-fsdevel@vger.kernel.org>
+Subject: RE: [PATCH] eventfs: Have inodes have unique inode numbers
+Thread-Topic: [PATCH] eventfs: Have inodes have unique inode numbers
+Thread-Index: AQHaUJ+9Uz3INJwNPU61vvwJRYci6bDtx3zg
+Date: Sat, 27 Jan 2024 15:26:51 +0000
+Message-ID: <9b34c04465ff46dba90c81b4240fbbd1@AcuMS.aculab.com>
 References: <20240126150209.367ff402@gandalf.local.home>
-	<CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
-	<20240126162626.31d90da9@gandalf.local.home>
-	<CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
-	<CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
-	<0C9AF227-60F1-4D9B-9099-1A86502359BA@goodmis.org>
-	<CAHk-=whDnGUm1zAhq7Oa+5BjzjChxObWdy4J4n2TAmMWb_RWtw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+ <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
+ <20240126162626.31d90da9@gandalf.local.home>
+ <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
+In-Reply-To: <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-On Fri, 26 Jan 2024 14:26:08 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMjYgSmFudWFyeSAyMDI0IDIxOjM2DQo+IA0K
+PiBPbiBGcmksIDI2IEphbiAyMDI0IGF0IDEzOjI2LCBTdGV2ZW4gUm9zdGVkdCA8cm9zdGVkdEBn
+b29kbWlzLm9yZz4gd3JvdGU6DQo+ID4NCj4gPiBJJ2QgYmUgaGFwcHkgdG8gY2hhbmdlIHRoYXQg
+cGF0Y2ggdG8gd2hhdCBJIG9yaWdpbmFsbHkgZGlkIGJlZm9yZSBkZWNpZGluZw0KPiA+IHRvIGNv
+cHkgZ2V0X25leHRfaW5vKCk6DQo+ID4NCj4gPiB1bnNpZ25lZCBpbnQgdHJhY2Vmc19nZXRfbmV4
+dF9pbm8oaW50IGZpbGVzKQ0KPiA+IHsNCj4gPiAgICAgICAgIHN0YXRpYyBhdG9taWNfdCBuZXh0
+X2lub2RlOw0KPiA+ICAgICAgICAgdW5zaWduZWQgaW50IHJlczsNCj4gPg0KPiA+ICAgICAgICAg
+ZG8gew0KPiA+ICAgICAgICAgICAgICAgICByZXMgPSBhdG9taWNfYWRkX3JldHVybihmaWxlcyAr
+IDEsICZuZXh0X2lub2RlKTsNCj4gPg0KPiA+ICAgICAgICAgICAgICAgICAvKiBDaGVjayBmb3Ig
+b3ZlcmZsb3cgKi8NCj4gPiAgICAgICAgIH0gd2hpbGUgKHVubGlrZWx5KHJlcyA8IGZpbGVzICsg
+MSkpOw0KPiA+DQo+ID4gICAgICAgICByZXR1cm4gcmVzIC0gZmlsZXM7DQo+IA0KPiBTdGlsbCBl
+bnRpcmVseSBwb2ludGxlc3MuDQo+IA0KPiBJZiB5b3UgaGF2ZSBtb3JlIHRoYW4gNCBiaWxsaW9u
+IGlub2Rlcywgc29tZXRoaW5nIGlzIHJlYWxseSByZWFsbHkgd3JvbmcuDQo+IA0KPiBTbyB3aHkg
+aXMgaXQgdGVuIGxpbmVzIGluc3RlYWQgb2Ygb25lPw0KDQpEb2Vzbid0IExpbnV4IHN1cHBvcnQg
+NjRiaXQgaW5vZGUgbnVtYmVycz8NClRoZXkgc29sdmUgdGhlIHdyYXAgcHJvYmxlbS4uLg0KDQpJ
+IGFsc28gZG9uJ3Qga25vdyB3aGF0IGZpbGVzeXN0ZW1zIGxpa2UgTlRGUyB1c2UgLSB0aGV5IGRv
+bid0IGhhdmUNCnRoZSBjb25jZXB0IG9mIGlub2RlLg0KDQpJSVJDIE5GUyB1c2VkIHRvIHVzZSB0
+aGUgaW5vZGUgbnVtYmVyIGZvciBpdHMgJ2ZpbGUgaGFuZGxlJy4NClJhdGhlciBhIHBhaW4gd2hl
+biB0cnlpbmcgdG8gd3JpdGUgY29kZSB0byBleHBvcnQgYSBsYXllcmVkIEZTDQooZXNwZWNpYWxs
+eSBpZiBhIGxheWVyIG1pZ2h0IGJlIGFuIE5GUyBtb3VudCEpLg0KDQoJRGF2aWQNCg0KLQ0KUmVn
+aXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRv
+biBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-> nother thing that worries me is that odd locking that releases the
-> lock in the middle. I don't understand why you release the
-> tracefs_mutex() over create_file(), for example. There's a lot of
-> "take, drop, re-take, re-drop" of that mutex that seems strange.
-
-This was because the create_file/dir() would call into the VFS which
-would grab locks, and on a final dput() on a ei dentry that is to be
-freed, calls back into eventfs_set_ei_status_free() which also grabs
-the eventfs_mutex. But it gets called with the same VFS locks that are
-taken by create_file/dir() VFS calls. This was caught by lockdep. Hence
-the dropping of those locks.
-
-The eventfs_mutex is just protecting the ei list and also assigning and
-clearing the ei->dentry. Now that dentry is used to synchronize the last
-close, and also to know if the ei was ever referenced. If ei->dentry is
-NULL it can be freed immediately (after SRCU) when the directory is
-deleted. But if ei->dentry is set, it means that something may still
-have a reference to it and must be freed after the last dput() and SRCU.
-
-Now some of this was needed due to the way the dir wrapper worked so I
-may be able to revisit this and possibly just use an ei->ref counter.
-But I wasted enough time on this and I'm way behind in my other
-responsibilities, so this is not something I can work on now.
-
--- Steve
