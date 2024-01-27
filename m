@@ -1,84 +1,108 @@
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14BD828DD0
-	for <linux-trace-devel@vger.kernel.org>; Sat, 27 Jan 2024 15:27:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C3202E634
+	for <linux-trace-devel@vger.kernel.org>; Sat, 27 Jan 2024 20:01:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706369236; cv=none; b=tI7tMrMJHmDNnQczOSBFKneyJTRwtq+92CAikCYjlnf1+m/OugVSpQZM47a1U6rCHe4DRqSNHC9NQ6jlviC6rets9PqLgKxBMs11zLgzj/o/t9na+RQ0d15xq7jyGM2iIhn6D4+gIYQEjREDn7Jc1pTkr5ZbMsudp1ZlWU3djes=
+	t=1706385708; cv=none; b=hZM6GRrEQ5STidoWobLYhPXkoNMQcwjdEPgSAOgw130mndLlcl2wblXAIEK+HH7HjUHFs+9URSLf7XlOVXchVxBAqO/ySp3swyMMUTo96WR0InlksJfiafDjmSYyUw4f8HzQ3M5U+Ok5wuuecil6K7PuFNKN2iKd5O7k5wSCwKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706369236; c=relaxed/simple;
-	bh=iFW2ERuTEIYk+fmvTQBQjnNRLBqVcxtT7bSBGDVOQEQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=VcwSM9Kj14FHc38vg+dr8QwN8InlfjixNJ/S/tACUQ60gYKmttmAhYtQIFyJXYxHxDfUwhEalRRMG9Rx3hagtMh38PgpSCV5h919kprWShQKPFseNGAkiQ/dykWBA4aGPkhYQGInb7aT5vDhc/VhaarTrnEzuOjwwVrMvxM65oc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-87-hz-_3iJRN8aUc6HcCR5UTA-1; Sat, 27 Jan 2024 15:27:11 +0000
-X-MC-Unique: hz-_3iJRN8aUc6HcCR5UTA-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 27 Jan
- 2024 15:26:51 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sat, 27 Jan 2024 15:26:51 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Linus Torvalds' <torvalds@linux-foundation.org>, Steven Rostedt
-	<rostedt@goodmis.org>
-CC: LKML <linux-kernel@vger.kernel.org>, Linux Trace Devel
-	<linux-trace-devel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner
-	<brauner@kernel.org>, Ajay Kaher <ajay.kaher@broadcom.com>, "Geert
- Uytterhoeven" <geert@linux-m68k.org>, linux-fsdevel
-	<linux-fsdevel@vger.kernel.org>
-Subject: RE: [PATCH] eventfs: Have inodes have unique inode numbers
-Thread-Topic: [PATCH] eventfs: Have inodes have unique inode numbers
-Thread-Index: AQHaUJ+9Uz3INJwNPU61vvwJRYci6bDtx3zg
-Date: Sat, 27 Jan 2024 15:26:51 +0000
-Message-ID: <9b34c04465ff46dba90c81b4240fbbd1@AcuMS.aculab.com>
-References: <20240126150209.367ff402@gandalf.local.home>
- <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
- <20240126162626.31d90da9@gandalf.local.home>
- <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
-In-Reply-To: <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1706385708; c=relaxed/simple;
+	bh=N4yM4Sx3Bo4zjchytKwAIMFmf9vDnuWdHVbRYVkfw1E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ApNkTanM3Khn3eiD3YU3jlypnuTlSr5GE6/G6xHP4SBKxE3VVDm0uyv5wvIH+WVXN4IvXwDiefxvmQI7+GU66VhQGpisjz8PW44hc36pN9/JR1fy0BCjq62jiAp3LIQoo8clAZY4dOV6dl3q7fgtOCn93O0EP/2OhIqzvzNeIhI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=h/wNPzfV; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="h/wNPzfV"
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-510f37d673aso228622e87.0
+        for <linux-trace-devel@vger.kernel.org>; Sat, 27 Jan 2024 12:01:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1706385704; x=1706990504; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=IqDQR2DUv5doyugas4NFosE1WpuO2lGhHoJ/mTvORLE=;
+        b=h/wNPzfV9Q1rRDUoWVacLyh4Xt9/kpTkRIzNlMlkiSLGRVt0vsEsUuaN6xD1FtkSls
+         B9ib8hlnzQ1fbar84d7k99ecyQFLM1MxE4fTCDNwp/OWCzCAvVEG2/V/QjWJsfaba1Pp
+         ykv62JFHVRl6WomEqwO3TRcIDpjio6xXv3lpw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706385704; x=1706990504;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IqDQR2DUv5doyugas4NFosE1WpuO2lGhHoJ/mTvORLE=;
+        b=sZqTwhva0+dE/seO9W3vB9ldkMDAgYi5hGkOto8DpyvVh5EDmpmZdm0X4n7y+drfHu
+         gFTRod6T3uxC8LAR+qukLdJf+ch6cA/hueAOWs5QUTvup2VUNU+hCDu2BN0DRUHLwstH
+         dxUE6FGpX+xeRSSi7iykmUFfzlW6lLxqST/RSXWB5/6VmEmjI2+TwYZ1HhrRzZm20O3r
+         yb6iiCwP8J6lPtRSFKUieEfBZVvjByRzrbhVaclC5b0f8G4qWesPsPw7q9iUk24qeY/d
+         9XHjdIjSLZBKoXrfnx2ibfUk4ieYK3fMhVh/xM4JSJq23dtGdGtfogfAgYyD28akou+9
+         irmw==
+X-Gm-Message-State: AOJu0YwYmvbBlSSofCmnpmmf7vniadtMIGL7OrzMFfKLMh+JrZas3FsT
+	LQadqgpv9bj6JzO0QxfAaXvF8ta4oWAXvF7KoM4twLWilONtpdrQjWMcGL5Tbl1wpaa7iJ/FZyX
+	vuHze6g==
+X-Google-Smtp-Source: AGHT+IGnLjX4hWyQP6dVgypAoxDAIAXmAp2DlfRYNo1ePXiR+iQonqfj+3h1jlLygYruVnmpdbsKnQ==
+X-Received: by 2002:a05:6512:39ca:b0:50e:b5fc:bdcc with SMTP id k10-20020a05651239ca00b0050eb5fcbdccmr2470186lfu.63.1706385703900;
+        Sat, 27 Jan 2024 12:01:43 -0800 (PST)
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
+        by smtp.gmail.com with ESMTPSA id rg9-20020a1709076b8900b00a354e4d3449sm746936ejc.120.2024.01.27.12.01.43
+        for <linux-trace-devel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 27 Jan 2024 12:01:43 -0800 (PST)
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-55ed8578088so152109a12.2
+        for <linux-trace-devel@vger.kernel.org>; Sat, 27 Jan 2024 12:01:43 -0800 (PST)
+X-Received: by 2002:a05:6402:3137:b0:55e:b30c:e0db with SMTP id
+ dd23-20020a056402313700b0055eb30ce0dbmr1269613edb.35.1706385702705; Sat, 27
+ Jan 2024 12:01:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <20240126150209.367ff402@gandalf.local.home> <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
+ <20240126162626.31d90da9@gandalf.local.home> <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
+ <9b34c04465ff46dba90c81b4240fbbd1@AcuMS.aculab.com>
+In-Reply-To: <9b34c04465ff46dba90c81b4240fbbd1@AcuMS.aculab.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sat, 27 Jan 2024 12:01:26 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgX6VV4nEpC7+f=QZq6VDrJxVJd_7vVfJdhq5aWDHM0oQ@mail.gmail.com>
+Message-ID: <CAHk-=wgX6VV4nEpC7+f=QZq6VDrJxVJd_7vVfJdhq5aWDHM0oQ@mail.gmail.com>
+Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
+To: David Laight <David.Laight@aculab.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner <brauner@kernel.org>, 
+	Ajay Kaher <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMjYgSmFudWFyeSAyMDI0IDIxOjM2DQo+IA0K
-PiBPbiBGcmksIDI2IEphbiAyMDI0IGF0IDEzOjI2LCBTdGV2ZW4gUm9zdGVkdCA8cm9zdGVkdEBn
-b29kbWlzLm9yZz4gd3JvdGU6DQo+ID4NCj4gPiBJJ2QgYmUgaGFwcHkgdG8gY2hhbmdlIHRoYXQg
-cGF0Y2ggdG8gd2hhdCBJIG9yaWdpbmFsbHkgZGlkIGJlZm9yZSBkZWNpZGluZw0KPiA+IHRvIGNv
-cHkgZ2V0X25leHRfaW5vKCk6DQo+ID4NCj4gPiB1bnNpZ25lZCBpbnQgdHJhY2Vmc19nZXRfbmV4
-dF9pbm8oaW50IGZpbGVzKQ0KPiA+IHsNCj4gPiAgICAgICAgIHN0YXRpYyBhdG9taWNfdCBuZXh0
-X2lub2RlOw0KPiA+ICAgICAgICAgdW5zaWduZWQgaW50IHJlczsNCj4gPg0KPiA+ICAgICAgICAg
-ZG8gew0KPiA+ICAgICAgICAgICAgICAgICByZXMgPSBhdG9taWNfYWRkX3JldHVybihmaWxlcyAr
-IDEsICZuZXh0X2lub2RlKTsNCj4gPg0KPiA+ICAgICAgICAgICAgICAgICAvKiBDaGVjayBmb3Ig
-b3ZlcmZsb3cgKi8NCj4gPiAgICAgICAgIH0gd2hpbGUgKHVubGlrZWx5KHJlcyA8IGZpbGVzICsg
-MSkpOw0KPiA+DQo+ID4gICAgICAgICByZXR1cm4gcmVzIC0gZmlsZXM7DQo+IA0KPiBTdGlsbCBl
-bnRpcmVseSBwb2ludGxlc3MuDQo+IA0KPiBJZiB5b3UgaGF2ZSBtb3JlIHRoYW4gNCBiaWxsaW9u
-IGlub2Rlcywgc29tZXRoaW5nIGlzIHJlYWxseSByZWFsbHkgd3JvbmcuDQo+IA0KPiBTbyB3aHkg
-aXMgaXQgdGVuIGxpbmVzIGluc3RlYWQgb2Ygb25lPw0KDQpEb2Vzbid0IExpbnV4IHN1cHBvcnQg
-NjRiaXQgaW5vZGUgbnVtYmVycz8NClRoZXkgc29sdmUgdGhlIHdyYXAgcHJvYmxlbS4uLg0KDQpJ
-IGFsc28gZG9uJ3Qga25vdyB3aGF0IGZpbGVzeXN0ZW1zIGxpa2UgTlRGUyB1c2UgLSB0aGV5IGRv
-bid0IGhhdmUNCnRoZSBjb25jZXB0IG9mIGlub2RlLg0KDQpJSVJDIE5GUyB1c2VkIHRvIHVzZSB0
-aGUgaW5vZGUgbnVtYmVyIGZvciBpdHMgJ2ZpbGUgaGFuZGxlJy4NClJhdGhlciBhIHBhaW4gd2hl
-biB0cnlpbmcgdG8gd3JpdGUgY29kZSB0byBleHBvcnQgYSBsYXllcmVkIEZTDQooZXNwZWNpYWxs
-eSBpZiBhIGxheWVyIG1pZ2h0IGJlIGFuIE5GUyBtb3VudCEpLg0KDQoJRGF2aWQNCg0KLQ0KUmVn
-aXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRv
-biBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Sat, 27 Jan 2024 at 07:27, David Laight <David.Laight@aculab.com> wrote:
+>
+> Doesn't Linux support 64bit inode numbers?
+> They solve the wrap problem...
 
+Yes, but we've historically had issues with actually exposing them.
+
+The legacy stat() code has things like this:
+
+        tmp.st_ino = stat->ino;
+        if (sizeof(tmp.st_ino) < sizeof(stat->ino) && tmp.st_ino != stat->ino)
+                return -EOVERFLOW;
+
+so if you have really old 32-bit user space, you generally do not
+actually want to have 64-bit inode numbers.
+
+This is why "get_next_ino()" returns a strictly 32-bit only inode
+number. You don't want to error out on a 'fstat()' just because you're
+on a big system that has been running for a long time.
+
+Now, 'stat64' was introduced for this reason back in 2.3.34, so back
+in 1999. So any half-way modern 32-bit environment doesn't have that
+issue, and maybe it's time to just sunset all the old stat() calls.
+
+Of course, the *really* old stat has a 16-bit inode number. Search for
+__old_kernel_stat to still see that. That's more of a curiosity than
+anything else.
+
+          Linus
