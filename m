@@ -1,101 +1,85 @@
-Received: from 9.mo548.mail-out.ovh.net (9.mo548.mail-out.ovh.net [46.105.48.137])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BEDC3C461
-	for <linux-trace-devel@vger.kernel.org>; Sun, 28 Jan 2024 21:46:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.105.48.137
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00BEF3C461;
+	Sun, 28 Jan 2024 22:01:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706478421; cv=none; b=O44RiS7z17s5Bn/1F4uZ25XFOcxJIU5LBhEFFz4dlwEyVqClFYkqOs7pIU4Hy+lNpatQAECpNfT7/G9Kbk8Ky1TtwbeUIW6R/+PbrxI5XiXBaqhv2jl85FnzjLmSyUb55jDn5p3GuTRzW+4S6qLkyrNK2s7NC6o+QT4RmJNPHPY=
+	t=1706479290; cv=none; b=D+Hu7hKEsSvEyBmtS01VN5C2kksNyhUsU2IzEGxAhr/NSHCgdtA2cLXo/onFkmtDmt1tCkKm84F6+xR4KBlxuVAH5opD5HUNhyMSIis2o5jtrG+SQuiMx79W93qn2MIH5ISiXMOpGe2h1cHsWWS5f8EuyaGEW5nDIrmAFlICAFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706478421; c=relaxed/simple;
-	bh=IFBG0P7mP9n2k+k8Ynpo4Y88Be0YaG0FIG2NkLt8GCg=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BmjS5YYVf47gYmmccj4WqLZ+S/NSJPf5dmVdizCEjcqD4s0+wkL7XqEqtZZzUhoHhzbh5CSfVNOZQqjQOHcEGbqFjUxrL9CeNbYyDfKN3ISxXoEBrP5l13t5QiDmN4n0aqRKb7wBOYJdHi8qVY0xU14e/tsxJ1P7ukS46vborVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=benjarobin.fr; spf=pass smtp.mailfrom=benjarobin.fr; arc=none smtp.client-ip=46.105.48.137
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=benjarobin.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=benjarobin.fr
-Received: from mxplan5.mail.ovh.net (unknown [10.108.17.201])
-	by mo548.mail-out.ovh.net (Postfix) with ESMTPS id BEC98213AA;
-	Sun, 28 Jan 2024 21:30:13 +0000 (UTC)
-Received: from benjarobin.fr (37.59.142.108) by DAG6EX2.mxp5.local
- (172.16.2.52) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Sun, 28 Jan
- 2024 22:30:13 +0100
-Authentication-Results: garm.ovh; auth=pass (GARM-108S0028459b236-820d-41ab-865d-64c17000c3c2,
-                    F6BBF12166BF17D31185B0BF3C367C102A143481) smtp.auth=dev@benjarobin.fr
-X-OVh-ClientIp: 92.161.126.4
-Date: Sun, 28 Jan 2024 22:30:11 +0100
-From: Benjamin ROBIN <dev@benjarobin.fr>
-To: Yordan Karadzhov <y.karadz@gmail.com>
-CC: <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH 04/34] kernelshark: Do not create a temporary container
- for looping over QMap
-Message-ID: <7uyekhxkszucdofjsa23gqs4utdspx5u3vlhili6p72stbebux@djht53oakfff>
-References: <20240114171723.14092-1-dev@benjarobin.fr>
- <20240114171723.14092-5-dev@benjarobin.fr>
- <56c65e9b-7536-3246-5250-7a68e36daa36@gmail.com>
+	s=arc-20240116; t=1706479290; c=relaxed/simple;
+	bh=ssQbheLqlmCPZsjWzxOefn+0xp44vjzjY+8m+zuL42w=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=FYAgmmthmfzIuiEzbTyQvtoBnCp+RcwpjvWZzSgsiXv9D9/XcOoonKKkTI2dpXyl36+QOkl3jcJ04Mjq61+Adjb4nVy2/ySf7ZGBR3tsio8gi521zSR9hV2pC5FLjSDwRom611l6dtMHvTJ8KAtaMzajEsK+Uwr5fhwFgyvDn54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03E89C433F1;
+	Sun, 28 Jan 2024 22:01:27 +0000 (UTC)
+Date: Sun, 28 Jan 2024 17:01:25 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, LKML <linux-kernel@vger.kernel.org>,
+ Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Christian Brauner
+ <brauner@kernel.org>, Ajay Kaher <ajay.kaher@broadcom.com>, Geert
+ Uytterhoeven <geert@linux-m68k.org>, linux-fsdevel
+ <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
+Message-ID: <20240128170125.7d51aa8f@rorschach.local.home>
+In-Reply-To: <CAHk-=wiWo9Ern_MKkWJ-6MEh6fUtBtwU3avQRm=N51VsHevzQg@mail.gmail.com>
+References: <20240126150209.367ff402@gandalf.local.home>
+	<CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
+	<20240126162626.31d90da9@gandalf.local.home>
+	<CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
+	<CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
+	<CAHk-=wj+DsZZ=2iTUkJ-Nojs9fjYMvPs1NuoM3yK7aTDtJfPYQ@mail.gmail.com>
+	<20240128151542.6efa2118@rorschach.local.home>
+	<CAHk-=whKJ6dzQJX27gvL4Xug5bFRKW7_Cx4XpngMKmWxOtb+Qg@mail.gmail.com>
+	<CAHk-=wiWo9Ern_MKkWJ-6MEh6fUtBtwU3avQRm=N51VsHevzQg@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <56c65e9b-7536-3246-5250-7a68e36daa36@gmail.com>
-X-ClientProxiedBy: DAG4EX2.mxp5.local (172.16.2.32) To DAG6EX2.mxp5.local
- (172.16.2.52)
-X-Ovh-Tracer-GUID: 9f15d90a-4790-4ac0-a56e-79a361dfeebf
-X-Ovh-Tracer-Id: 14367890189595991962
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtvddgudegkecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjihesthdtsfdttddtvdenucfhrhhomhepuegvnhhjrghmihhnucftqfeukffpuceouggvvhessggvnhhjrghrohgsihhnrdhfrheqnecuggftrfgrthhtvghrnhepuddugefgkeeuteehfefhjedvheeludfhueeileegjefgtdevudfgvddtudeuuedvnecuffhomhgrihhnpegtphhprhgvfhgvrhgvnhgtvgdrtghomhenucfkphepuddvjedrtddrtddruddpfeejrdehledrudegvddruddtkedpledvrdduiedurdduvdeirdegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeouggvvhessggvnhhjrghrohgsihhnrdhfrheqpdhnsggprhgtphhtthhopedupdhrtghpthhtohephidrkhgrrhgrugiisehgmhgrihhlrdgtohhmpdhlihhnuhigqdhtrhgrtggvqdguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehgeekpdhmohguvgepshhmthhpohhuth
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Sun, Jan 21, 2024 at 07:16:01PM +0200, Yordan Karadzhov wrote:
-> 
-> 
-> On 1/14/24 19:16, Benjamin ROBIN wrote:
-> > Use const_iterator instead. Fix container-anti-pattern Clazy warning
-> > 
-> > Signed-off-by: Benjamin ROBIN <dev@benjarobin.fr>
-> > ---
-> >   src/KsAdvFilteringDialog.cpp | 6 +++---
-> >   1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/src/KsAdvFilteringDialog.cpp b/src/KsAdvFilteringDialog.cpp
-> > index 4683c3d..247f912 100644
-> > --- a/src/KsAdvFilteringDialog.cpp
-> > +++ b/src/KsAdvFilteringDialog.cpp
-> > @@ -276,8 +276,8 @@ void KsAdvFilteringDialog::_makeFilterTable()
-> >   	headers << "Delete" << "Stream" << "Event" << " Id" << "Filter";
-> >   	_table->init(headers, _filters.count());
-> > -	for(auto f : _filters.keys()) {
-> > -		QStringList thisFilter = _filters.value(f).split(":");
-> > +	for (auto it = _filters.cbegin(), end = _filters.cend(); it != end; ++it) {
-> 
-> Do we need to use iterator here?
-> Perhaps you can do something like:
-> 
-> for (const auto &[key, val] : _filters) {
+On Sun, 28 Jan 2024 13:08:55 -0800
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Unfortunately, you cannot do that, as far as I know (this not compile).
-C++ range-based for loop is using iterator behind the scene. See [1].
-And there is still the problem of range-loop-detach (see patch 0005).
-Using const iterator is the most explicit and safe way to iterate over a
-container in Qt, so why not using it?
-
-[1] https://en.cppreference.com/w/cpp/language/range-for
- 
-> Thanks!
-> Y.
+> On Sun, 28 Jan 2024 at 12:53, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > Now, the RCU delay may be needed if the lookup of said structure
+> > happens under RCU, but no, saying "I use SRCU to make sure the
+> > lifetime is at least X" is just broken.  
 > 
-> > +		QStringList thisFilter = it.value().split(":");
-> >   		i1 = new QTableWidgetItem(thisFilter[0]);
-> >   		_table->setItem(count, 1, i1);
-> > @@ -285,7 +285,7 @@ void KsAdvFilteringDialog::_makeFilterTable()
-> >   		i1 = new QTableWidgetItem(thisFilter[1]);
-> >   		_table->setItem(count, 2, i1);
-> > -		i2 = new QTableWidgetItem(tr("%1").arg(f));
-> > +		i2 = new QTableWidgetItem(tr("%1").arg(it.key()));
-> >   		_table->setItem(count, 3, i2);
-> >   		i3 = new QTableWidgetItem(thisFilter[2]);
+> Put another way, the only reason for any RCU should be that you don't
+> use locking at lookup, and the normal lookup routine should follow a
+> pattern something like this:
+> 
+>     rcu_read_lock();
+>     entry = find_entry(...);
+>     if (entry && !atomic_inc_not_zero(&entry->refcount))
+>         entry = NULL;
+>     rcu_read_unlock();
+> 
+> and the freeing should basically follow a pattern like
+> 
+>     if (atomic_dec_and_test(&entry->refcount))
+>         rcu_free(entry);
+
+Basically you are saying that when the ei is created, it should have a
+ref count of 1. If the lookup happens and does the
+atomic_inc_not_zero() it will only increment if the ref count is not 0
+(which is basically equivalent to is_freed).
+
+And then we can have deletion of the object happen in both where the
+caller (kprobes) deletes the directory and in the final iput()
+reference (can I use iput and not the d_release()?), that it does the
+same as well.
+
+Where whatever sees the refcount of zero calls rcu_free?
+
+-- Steve
