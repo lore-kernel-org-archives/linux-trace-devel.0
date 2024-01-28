@@ -1,59 +1,81 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtpout1.mo529.mail-out.ovh.net (smtpout1.mo529.mail-out.ovh.net [178.32.125.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40C6A23746;
-	Sun, 28 Jan 2024 14:42:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3CA226AE8
+	for <linux-trace-devel@vger.kernel.org>; Sun, 28 Jan 2024 19:06:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.32.125.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706452943; cv=none; b=QrhnPZjkYTRfDMsGix+ig0t06UJeYMnS7GZLFF6Y10V1duMgd1g7rnjAZL67DsRr9L4LueX0RSZlKaD/j9knAeoqijeNZCzUHESm87x8yw4AutIlmOHTAv3UzREnSiV27eEBTHWAvW1vz4eFsVG8n6fLVshlTZLKsZr9SDlD+AQ=
+	t=1706468793; cv=none; b=XuDtoaawpLKkMDxMT/fyZfXGxyn7q+5Hmtmq2mo/kZ3hWNz82xrs3lexAS3bOwn5vpa0FpJA9uVHl6iWln5HVuuLIFsK+UNweL7FM+gAx8uUHVyGGiyD1mvSUcXPRsjb0Os7fixvcDszfGNCz62YpDY1UaLsnY+8+j+TBmcNN70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706452943; c=relaxed/simple;
-	bh=FBRxdLBuITlKzDaTXnO/ff75eo4i2DldFirQAXk8jy8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=W3PNpsSS6IHteAxuGeNrAO2hmgPcdgrBxFd2N4+hOEjbozK5kF/5kphGqcM56xRmep8Ck9jv/AZUNzK/2VrcpFklEocwhUB9My+KWvIousMZjKiDQApqa1cEOt2YNxMFdEhS3tzBlvRBLFRx96NutFhQcuyZefeKcFz5zC1vToQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24FEAC433C7;
-	Sun, 28 Jan 2024 14:42:21 +0000 (UTC)
-Date: Sun, 28 Jan 2024 09:42:19 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Devel
- <linux-trace-devel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Christian Brauner <brauner@kernel.org>, Ajay Kaher
- <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
-Message-ID: <20240128094219.01e1ef1b@rorschach.local.home>
-In-Reply-To: <20240127094717.63c09edb@rorschach.local.home>
-References: <20240126150209.367ff402@gandalf.local.home>
-	<CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
-	<20240126162626.31d90da9@gandalf.local.home>
-	<CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
-	<CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
-	<0C9AF227-60F1-4D9B-9099-1A86502359BA@goodmis.org>
-	<CAHk-=whDnGUm1zAhq7Oa+5BjzjChxObWdy4J4n2TAmMWb_RWtw@mail.gmail.com>
-	<20240127094717.63c09edb@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706468793; c=relaxed/simple;
+	bh=t5NP3EmwwZztrifTiwz7BgOHBA8M4CwlZ7gW6qIWwQw=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Uz5P0NNqqs5J9LaJXDGzWuiDdWbFVGBtWMTDHLzoPI6i9T1QTs04tUZ3A9xmIkGBfo0ULQawdexV36avy5O0R+UHqQFNXdPPWXVy71jQt5Zu2tv7kalN+dT+MyK7TU8Q2kG1kYTNONRaXPJ7jEXB2AURRBWo1gi24fnGB/yLrEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=benjarobin.fr; spf=pass smtp.mailfrom=benjarobin.fr; arc=none smtp.client-ip=178.32.125.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=benjarobin.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=benjarobin.fr
+Received: from mxplan5.mail.ovh.net (unknown [10.108.9.16])
+	by mo529.mail-out.ovh.net (Postfix) with ESMTPS id 46AE120498;
+	Sun, 28 Jan 2024 19:00:31 +0000 (UTC)
+Received: from benjarobin.fr (37.59.142.98) by DAG6EX2.mxp5.local
+ (172.16.2.52) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Sun, 28 Jan
+ 2024 20:00:30 +0100
+Authentication-Results: garm.ovh; auth=pass (GARM-98R002a79391e6-9e20-4b6f-b0fa-8b5caa7702eb,
+                    F6BBF12166BF17D31185B0BF3C367C102A143481) smtp.auth=dev@benjarobin.fr
+X-OVh-ClientIp: 92.161.126.4
+From: Benjamin ROBIN <dev@benjarobin.fr>
+To: <y.karadz@gmail.com>
+CC: <linux-trace-devel@vger.kernel.org>, Benjamin ROBIN <dev@benjarobin.fr>
+Subject: [PATCH v2 33/34] kernelshark: Allow to reduce a bit more the graph height
+Date: Sun, 28 Jan 2024 19:59:48 +0100
+Message-ID: <20240128185948.54928-1-dev@benjarobin.fr>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <00e30015-f34b-e80f-bea3-a49d743f9ae2@gmail.com>
+References: <00e30015-f34b-e80f-bea3-a49d743f9ae2@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: DAG5EX2.mxp5.local (172.16.2.42) To DAG6EX2.mxp5.local
+ (172.16.2.52)
+X-Ovh-Tracer-GUID: 4962092b-1468-40a7-bb49-fad96e88f561
+X-Ovh-Tracer-Id: 11839400471348600730
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtvddguddukecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecunecujfgurhephffvvefufffkofgjfhgggfgtihesthekredtredttdenucfhrhhomhepuegvnhhjrghmihhnucftqfeukffpuceouggvvhessggvnhhjrghrohgsihhnrdhfrheqnecuggftrfgrthhtvghrnhephfeuleefudelffevtdejudetfeefveeiudeuveeuteekudegffetjeelgedtudffnecuffhomhgrihhnpegtohhnthgvnhhtshhmrghrghhinhhsrdhtohhpnecukfhppeduvdejrddtrddtrddupdefjedrheelrddugedvrdelkedpledvrdduiedurdduvdeirdegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeouggvvhessggvnhhjrghrohgsihhnrdhfrheqpdhnsggprhgtphhtthhopedupdhrtghpthhtohephidrkhgrrhgrugiisehgmhgrihhlrdgtohhmpdhlihhnuhigqdhtrhgrtggvqdguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehvdelpdhmohguvgepshhmthhpohhuth
 
-On Sat, 27 Jan 2024 09:47:17 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Reduce minimum height of the graph widget which allows the user (using the
+splitter widget) to expand a bit more the trace viewer (KsTraceViewer)
+which provide the table view (KsTableView).
+This is very useful when a user has a very small screen.
+With this configuration, at least one CPU core on the graph (KsTraceGraph)
+can be seen, so the graph widget is still perfectly usable.
 
-> Now some of this was needed due to the way the dir wrapper worked so I
-> may be able to revisit this and possibly just use an ei->ref counter.
-> But I wasted enough time on this and I'm way behind in my other
-> responsibilities, so this is not something I can work on now.
+Signed-off-by: Benjamin ROBIN <dev@benjarobin.fr>
+---
+ src/KsTraceGraph.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Ironically, one of the responsibilities that I've been putting off to
-fix up eventfs was writing that document on a support group for
-maintainer burnout. :-p
+diff --git a/src/KsTraceGraph.cpp b/src/KsTraceGraph.cpp
+index bc910c8..4599a12 100644
+--- a/src/KsTraceGraph.cpp
++++ b/src/KsTraceGraph.cpp
+@@ -593,8 +593,8 @@ void KsTraceGraph::updateGeom()
+ 	       _layout.contentsMargins().top() +
+ 	       _layout.contentsMargins().bottom();
+ 
+-	if (hMin > KS_GRAPH_HEIGHT * 8)
+-		hMin = KS_GRAPH_HEIGHT * 8;
++	if (hMin > KS_GRAPH_HEIGHT * 6)
++		hMin = KS_GRAPH_HEIGHT * 6;
+ 
+ 	setMinimumHeight(hMin);
+ 
+-- 
+2.43.0
 
--- Steve
