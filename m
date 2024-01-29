@@ -1,20 +1,20 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C28CF9D6;
-	Mon, 29 Jan 2024 02:32:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C1D110A03;
+	Mon, 29 Jan 2024 03:40:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706495573; cv=none; b=XET4rGEhxRoDjkNDV9WIcS7IzXgumrhLNzt8QPKfLAoiic+THDlzpKt4tzMEf2YqytnaoGPafofhF4QqHNw5hmqE6g/D+8nFk6iS0Jp2soiNxlfN6Be3A0/dReGrnB2FhhgZIkgljcV5fezWUJ9p3+Hr/05oCiwWSUvG84pJG6k=
+	t=1706499657; cv=none; b=obUl0Z0cyL9+gKtq+aYIZhL+b0W7IUYLtXDyp7fzgf6H1zKYr/U2WSV7hLP5UV/ZQtG7QU1cIqvg3LYfcdBpqfujMiHsHE9F5OT8+z7dnfpe2vCc6fGlRWLE2xQrfesMfnmrsGZ7a6vFRUL/w+vyd82iNydC7fS5w5AcAeL3Eyw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706495573; c=relaxed/simple;
-	bh=o63n5WMpln1TRFn0Kucd9NqGIM5xQz1xSMHbQaPz57Y=;
+	s=arc-20240116; t=1706499657; c=relaxed/simple;
+	bh=Oz2gMS5fifJ1NkkC+E9odJnrcDRFtlzSRsNITi9/COg=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GBgRREvlveqz6ArDd2d7oegSGdWZLNHL1NhUqAPOI1OQpvTOgfWlbDkktA0VlEP7/+tjzcDplNjFJ6Q0qPe7ydVb+4xOpLfdGrAPGxpQWG4puz/bdrSWZiSkvj/kKNMGXAy9pAebxjkREPShk8xsyhk84qGn1muHiYKl3fIcDAY=
+	 MIME-Version:Content-Type; b=hfI3gusuSHOHzqOigOb8sEaVVXkCgM6e0nKLi67y6gc4FuqZemv92GpwbhYJjyZp8+5pAtgl46n8a1xoswh7zbBROeVOp76LStB4NFPru5zFyUclXalpotwl8lMkQjKwBYXl1reCQja2+1+VsEsoQv9PvFB9vwqUDPwIgyLQ/Io=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18A10C43390;
-	Mon, 29 Jan 2024 02:32:50 +0000 (UTC)
-Date: Sun, 28 Jan 2024 21:32:49 -0500
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CF53C433C7;
+	Mon, 29 Jan 2024 03:40:56 +0000 (UTC)
+Date: Sun, 28 Jan 2024 22:40:54 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
@@ -24,8 +24,8 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
  Uytterhoeven <geert@linux-m68k.org>, linux-fsdevel
  <linux-fsdevel@vger.kernel.org>
 Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
-Message-ID: <20240128213249.605a7ade@rorschach.local.home>
-In-Reply-To: <CAHk-=wjKagcAh5rHuNPMqp9hH18APjF4jW7LQ06pNQwZ1Qp0Eg@mail.gmail.com>
+Message-ID: <20240128224054.0df489b8@rorschach.local.home>
+In-Reply-To: <20240128213249.605a7ade@rorschach.local.home>
 References: <20240126150209.367ff402@gandalf.local.home>
 	<CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
 	<20240126162626.31d90da9@gandalf.local.home>
@@ -38,6 +38,7 @@ References: <20240126150209.367ff402@gandalf.local.home>
 	<20240128192108.6875ecf4@rorschach.local.home>
 	<CAHk-=wg7tML8L+27j=7fh8Etk4Wvo0Ay3mS5U7JOTEGxjy1viA@mail.gmail.com>
 	<CAHk-=wjKagcAh5rHuNPMqp9hH18APjF4jW7LQ06pNQwZ1Qp0Eg@mail.gmail.com>
+	<20240128213249.605a7ade@rorschach.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -48,102 +49,88 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Sun, 28 Jan 2024 17:42:30 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+On Sun, 28 Jan 2024 21:32:49 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> On Sun, 28 Jan 2024 at 17:00, Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> >    mkdir dummy
-> >    cd dummy
-> >    echo "Hello" > hello
-> >    ( sleep 10; cat ) < hello &
-> >    rm hello
-> >    cd ..
-> >    rmdir dummy  
+>  # echo 'p:sched schedule' >> kprobe_events
+>  # ls events/kprobes
+> enable  filter  sched  timer
 > 
-> Note that it's worth repeating that simple_recursive_removal()
-> wouldn't change any of the above. It only unhashes things and makes
-> them *look* gone, doing things like clearing i_nlink etc.
-
-I know, but I already cover the above case. And that case is not what
-simple_recursive_removal() is covering.
-
-I'm worried about what can be opened after a deletion. Not what has
-already been opened. The simple_recrusive_removal() is the way to clear
-the dcache on those files and directories that are being removed so
-that no new references can happen on them.
-
-So, I removed the simple_recursive_removal() from the code to see what
-happened. Interesting, the opposite occurred.
-
- # cd /sys/kernel/tracing
- # echo 'p:sched schedule' > kprobe_events
- # ls events/kprobes
-enable  filter  sched
- # ls events/kprobes/sched
-enable  filter  format  hist  hist_debug  id  inject  trigger
- # cat events/kprobes/sched/enable
-0
-
- # echo 'p:timer read_current_timer' >> kprobe_events
- # ls events/kprobes
-enable  filter  sched  timer
-
-Now delete just one kprobe (keeping the kprobes directory around)
-
- # echo '-:sched schedule' >> kprobe_events
- # ls events/kprobes/
-enable  filter  timer
-
-Now recreate that kprobe
-
- # echo 'p:sched schedule' >> kprobe_events
- # ls events/kprobes
-enable  filter  sched  timer
-
- # ls events/kprobes/sched/
-ls: reading directory 'events/kprobes/sched/': Invalid argument
-
-I have no access to the directory that was deleted and recreated.
-
+>  # ls events/kprobes/sched/
+> ls: reading directory 'events/kprobes/sched/': Invalid argument
 > 
-> But those VFS data structures would still exist, and the files that
-> had them open would still continue to be open.
-> 
-> So if you thought that simple_recursive_removal() would make the above
-> kind of thing not able to happen, and that eventfs wouldn't have to
-> deal with dentries that point to event_inodes that are dead, you were
-> always wrong.
+> I have no access to the directory that was deleted and recreated.
 
-No but I want to shrink the dentries after the directory is removed.
+Ah, this was because the final iput() does dentry->d_fsdata = NULL, and
+in the lookup code I have:
 
-Perhaps something else is the error here.
 
-> 
-> simple_recursive_removal() is mostly just lipstick on a pig. It does
-> cause the cached dentries that have no active use be removed earlier,
-> so it has that "memory pressure" kind of effect, but it has no real
-> fundamental semantic effect.
+	mutex_lock(&eventfs_mutex);
+	ei = READ_ONCE(ti->private);
+	if (ei && ei->is_freed)
+		ei = NULL;
+	mutex_unlock(&eventfs_mutex);
 
-I was using it to "flush" the cache on that directory. Nothing more.
+	if (!ei) {
+		printk("HELLO no ei\n");
+		goto out;
+	}
 
-> 
-> Of course, for a filesystem where the dentry tree *is* the underlying
-> data (ie the 'tmpfs' kind, but also things like debugfs or ipathfs,
-> for example), then things are different.
+Where that printk() was triggering.
 
-Note, tracefs was built on debugfs. Only the "events" directory is
-"different". The rest of /sys/kernel/tracing behaves exactly like
-debugfs.
+So at least it's not calling back into the tracing code ;-)
 
-> 
-> There the dentries are the primary thing, and not just a cache in
-> front of the backing store.
-> 
-> But you didn't want that, and those days are long gone as far as
-> tracefs is concerned.
+Interesting that it still did the lookup, even though it was already
+referenced.
 
-Well, as long as eventfs is ;-)
+I'm still learning the internals of VFS.
+
+Anyway, after keeping the d_fsdata untouched (not going to NULL), just
+to see what would happen, I ran it again with KASAN and did trigger:
+
+[  106.255468] ==================================================================
+[  106.258400] BUG: KASAN: slab-use-after-free in tracing_open_file_tr+0x3a/0x120
+[  106.261228] Read of size 8 at addr ffff8881136f27b8 by task cat/868
+
+[  106.264506] CPU: 2 PID: 868 Comm: cat Not tainted 6.8.0-rc1-test-00008-gbee668990ac4-dirty #454
+[  106.267810] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[  106.271337] Call Trace:
+[  106.272406]  <TASK>
+[  106.273317]  dump_stack_lvl+0x5c/0xc0
+[  106.274750]  print_report+0xcf/0x670
+[  106.276173]  ? __virt_addr_valid+0x15a/0x330
+[  106.278807]  kasan_report+0xd8/0x110
+[  106.280172]  ? tracing_open_file_tr+0x3a/0x120
+[  106.281745]  ? tracing_open_file_tr+0x3a/0x120
+[  106.283343]  tracing_open_file_tr+0x3a/0x120
+[  106.284887]  do_dentry_open+0x3b7/0x950
+[  106.286284]  ? __pfx_tracing_open_file_tr+0x10/0x10
+[  106.287992]  path_openat+0xea8/0x11d0
+
+
+That was with just these commands:
+
+  cd /sys/kernel/tracing/
+  echo 'p:sched schedule' >> /sys/kernel/tracing/kprobe_events 
+  echo 'p:timer read_current_timer' >> kprobe_events 
+  ls events/kprobes/
+  cat events/kprobes/sched/enable
+  ls events/kprobes/sched
+  echo '-:sched schedule' >> /sys/kernel/tracing/kprobe_events 
+  ls events/kprobes/sched/enable
+  cat events/kprobes/sched/enable
+
+BTW, the ls after the deletion returned:
+
+ # ls events/kprobes/sched/enable
+ events/kprobes/sched/enable
+
+In a normal file system that would be equivalent to:
+
+ # mkdir events/kprobes/sched
+ # touch events/kprobes/sched/enable
+ # rm -rf events/kprobes/sched
+ # ls events/kprobes/sched/enable
+ events/kprobes/sched/enable
 
 -- Steve
