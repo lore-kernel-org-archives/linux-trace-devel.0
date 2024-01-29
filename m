@@ -1,137 +1,82 @@
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05FD82C1A2
-	for <linux-trace-devel@vger.kernel.org>; Mon, 29 Jan 2024 18:58:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A72913F9F3
+	for <linux-trace-devel@vger.kernel.org>; Mon, 29 Jan 2024 20:42:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706554733; cv=none; b=aTtRgOo90TT2tulMZZMwlVSWBcnom6qhDNgS635Z8npujv+NC5Y5Q9SfJQ9qYNnrR535rYoV+y6ebbNpxyFVMbU9JaLsMMCmGbiDnmS5DJSzny6DUbCrIMvqulVIxX9N1KHjSZCH/kT8VkXA5k1d4EhbxXlbKRVP+Zig+x5W0eA=
+	t=1706560965; cv=none; b=oK4au74tP7Nbb/7AmlOPNyBSk2NEnqllw6hs/RUz4tYJ8B/m7YdcXLcstI9AI/bKYBgUzpaPQHCjBZE3NHKewyO6KNJjYPX7D5crcZZKpMHzcaq4tPHOw4dNsR11q1h2ZLb/k5/BTeC2uh6hybf99pSI31tgjr2ML9BZZVFNM+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706554733; c=relaxed/simple;
-	bh=eKMFg7i7+7j+e8Iv0NW7ko6n3ZkbnwSwN9MN8KR3iQg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QFoMDXTNVTlOoDgFul4qZNnx/ds6spV8dT6NpG2iMNZXuDR5H6wU24evS2VNkCFoasyQWTkFA1UqoyWI0qMM70VZ05PgQ19xxa4yzUraJiUJUd/5ZuNtrDjdxIX3MTRyhunSd/jVNGpGuFgANq8XO9RNdkmvukeXNk+RbpwwRyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=OsOLphgX; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1706560965; c=relaxed/simple;
+	bh=tZW8CAIjhaf0mtfJqAGa5OlbOGlgQBHZzehX/rIoUCk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ZzLQ12Z1Li2hGeV9CfQl5LPY8Yeztuem/Bq4QY3xZNAyTVcqIWQyOd99ra/3ijkthomXVVNDujd2OSLIXRx/53IZ7b1w3EXGyDPM+q/ESVt6AC1JmkMmW7L9FlMVVpu90DL5pv1fISG3/tCPk2tFkGAqSsD9rv6mFis38g4eYu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Deznzyb2; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="OsOLphgX"
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-51114557c77so1230885e87.0
-        for <linux-trace-devel@vger.kernel.org>; Mon, 29 Jan 2024 10:58:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706554729; x=1707159529; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lAIeftpjE3O3z+PB+PSTo+RPyGVLY9cTuEJCruuNk/w=;
-        b=OsOLphgXcvY9l4lR1zql4yODBK9CiHilNprHE23ita63pWGQxXOny/0C4QEPHkJL4w
-         7nHUPf1MNloA2saNS/w1AKU5vBU6rqBmubOBGGuKZeypMJSUr/HtqU08a+kxfahD/FFS
-         xA7TZouk9GaxShnH83jZhmiIqb7JOItvxa1KM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706554729; x=1707159529;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lAIeftpjE3O3z+PB+PSTo+RPyGVLY9cTuEJCruuNk/w=;
-        b=K0qQHvLY5/Vg2haPbB0eeFhrq4CPLpOCrgdMjwzUP46Q357gcGcZDWoR2QdDbpYliF
-         lLfblr/+rbzIi6LepHCAoSCUkgPDzPaLOran6DzObQp6WKGLAPZPVhzSumrg0WH1/iHQ
-         hyioVNtIjUtjQUOCNZmDIp9vKh3oShDV/auPE1b+wwy6Js3SsKa6o4mhi5Upjoz54YQT
-         ins7EwOt29UB38D8wJTZuwqcuAaKcvIXrvOLBSV8IoERN0HwYNzl7ZU6Ebi3nxD4Moq5
-         q0w9RrQJpt0J1l3sBy2+rl8gwpvrpxxt1/UrNw5DMu7AIEEnFmLKBkS0wDP1Gozfo3z4
-         Bmmg==
-X-Gm-Message-State: AOJu0YyX4xbm6ouGNI+iK0L1ht7c051SeMaZuMbpwxKWILMCiOmeoULL
-	UGLaaqoTSAyOSSTuaMp1nkgEr0A+aPZV6h8mXI6HO28MExMEfZklRi3JPkfkOZAZZmP2qv3nmz/
-	ppBtf3Q==
-X-Google-Smtp-Source: AGHT+IED2KwTsPbscP1dhZb8E6rsPks+r2RjGTIw+dnyQGWjIi+CR26505hf4TJGrGZn8kpoTUJjrA==
-X-Received: by 2002:ac2:5b11:0:b0:50e:6c1d:5dee with SMTP id v17-20020ac25b11000000b0050e6c1d5deemr4140946lfn.33.1706554729315;
-        Mon, 29 Jan 2024 10:58:49 -0800 (PST)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
-        by smtp.gmail.com with ESMTPSA id eq6-20020a056512488600b0051021c54018sm1187731lfb.251.2024.01.29.10.58.48
-        for <linux-trace-devel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 10:58:48 -0800 (PST)
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d040a62a76so18043971fa.0
-        for <linux-trace-devel@vger.kernel.org>; Mon, 29 Jan 2024 10:58:48 -0800 (PST)
-X-Received: by 2002:a05:651c:150b:b0:2cc:9ec8:fc5a with SMTP id
- e11-20020a05651c150b00b002cc9ec8fc5amr5318335ljf.39.1706554727677; Mon, 29
- Jan 2024 10:58:47 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Deznzyb2"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706560962;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=uDB3zm3SlcGzM8Q/d+z8zKTK4YPnydA5CsGAUTQo8WM=;
+	b=Deznzyb2pj8i/Hckvw6O+skzo64uC7PUB18BFGhDI5MiFOl1c6yNDbZn2MRMEbGGzbwrwD
+	lgGBWGAjLm/+KYvumPX40IoYQ0EWtOli5/s8Ns++pKv26JUVhpAsH6V1O1XZJqd4mevHS7
+	tHtig4fwhkXFyF0oNqM81J0aMQBQ2Xs=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-345-pQZrbvXUNuuhaIoH6durHA-1; Mon, 29 Jan 2024 15:42:40 -0500
+X-MC-Unique: pQZrbvXUNuuhaIoH6durHA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6CBC1827D8E;
+	Mon, 29 Jan 2024 20:42:40 +0000 (UTC)
+Received: from tpad.localdomain (unknown [10.96.133.5])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 43B562166B34;
+	Mon, 29 Jan 2024 20:42:40 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+	id 910B2401E13AC; Mon, 29 Jan 2024 17:42:18 -0300 (-03)
+Date: Mon, 29 Jan 2024 17:42:18 -0300
+From: Marcelo Tosatti <mtosatti@redhat.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-trace-devel@vger.kernel.org
+Subject: [PATCH] trace-cmd: fix --poll trace recording
+Message-ID: <ZbgNqiyocHf/FEQw@tpad>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126150209.367ff402@gandalf.local.home> <CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
- <20240126162626.31d90da9@gandalf.local.home> <CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
- <CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
- <8547159a-0b28-4d75-af02-47fc450785fa@efficios.com> <CAHk-=whAG6TM6PgH0YnsRe6U=RzL+JMvCi=_f0Bhw+q_7SSZuw@mail.gmail.com>
- <29be300d-00c4-4759-b614-2523864c074b@efficios.com> <CAHk-=wjpyv+fhxzV+XEQgsC+-HaouKT7Ns8qT31jkpN_Jm84_g@mail.gmail.com>
- <3120f1f0-eaf8-4058-9a65-bdbee28c68c9@efficios.com>
-In-Reply-To: <3120f1f0-eaf8-4058-9a65-bdbee28c68c9@efficios.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 29 Jan 2024 10:58:30 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wg8BrZEzjJ5kUyZzHPZmFqH6ooMN1gRBCofxxCfucgjaw@mail.gmail.com>
-Message-ID: <CAHk-=wg8BrZEzjJ5kUyZzHPZmFqH6ooMN1gRBCofxxCfucgjaw@mail.gmail.com>
-Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Christian Brauner <brauner@kernel.org>, Ajay Kaher <ajay.kaher@broadcom.com>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-On Mon, 29 Jan 2024 at 08:00, Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
->
-> This breaks "cp -aH" and "cp -aL".
 
-Do we care? Do we have a user that cares? Has anybody ever hit it?
+When using --poll, move_data() returns -1 and errno is set to EAGAIN.
+This causes the record threads to stop recording.
 
-Why would you ever do anything like that to tracefs filesystem?
+Fix it by returning to the read loop in case EAGAIN, if --poll
+is specified.
 
-In other words: my point is that tracefs just isn't a regular
-filesystem. Never was, never will be.
+Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
 
-And people should be *aware* of that. We should not say "hey, if it
-doesn't work like a normal filesystem, it's a bug".
+diff --git a/lib/trace-cmd/trace-recorder.c b/lib/trace-cmd/trace-recorder.c
+index 70ce52e..0633edf 100644
+--- a/lib/trace-cmd/trace-recorder.c
++++ b/lib/trace-cmd/trace-recorder.c
+@@ -421,6 +421,9 @@ int tracecmd_start_recording(struct tracecmd_recorder *recorder, unsigned long s
+ 			if (ret < 0) {
+ 				if (errno == EINTR)
+ 					continue;
++				if ((recorder->flags & TRACECMD_RECORD_POLL) &&
++				    errno == EAGAIN)
++					continue;
+ 				return ret;
+ 			}
+ 			read += ret;
 
-Try "cp -aL" on /proc, and guess what? It won't work all that well
-either. For entirely *different* reasons. You'll get some variation of
-"Input/output error"s, and insanely big files and quite possibly
-you'll end up with recursive copying as you try to copy the file that
-is /proc/self/fd/<output>.
-
-It's just a nonsensical operation to do, and if somebody says "I can't
-copy /proc on my system" it's a PEBKAC, not a kernel problem.
-
-The "no regressions" rule is not about made-up "if I do this, behavior changes".
-
-The "no regressions" rule is about *users*.
-
-If you have an actual user that has been doing insane things, and we
-change something, and now the insane thing no longer works, at that
-point it's a regression, and we'll sigh, and go "Users are insane" and
-have to fix it.
-
-But if you have some random test that now behaves differently, it's
-not a regression. It's a *warning* sign, sure: tests are useful.
-
-So tests can show when something user-visible changed, and as such
-they are a "there be monsters here" sign that maybe some user
-experience will hit it too.
-
-So I agree that "just use the same inode number" changes behavior. I
-agree that it can be a bit of a danger. But these "look, I can see a
-difference" isn't an argument.
-
-And honestly, I have now spent *days* looking at tracefs, and I'm
-finding core fundamental bugs that would cause actual oopses and/or
-wild pointer accesses.
-
-All of which makes me go "this code needs to be simpler and *cleaner*
-and stop making problems".
-
-In other words: tracefs is such a complete mess that I do not care one
-*whit* about "cp -aL". I care about "this is actual kernel
-instability".
-
-           Linus
