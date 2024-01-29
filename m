@@ -1,59 +1,53 @@
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ED7C17991
-	for <linux-trace-devel@vger.kernel.org>; Mon, 29 Jan 2024 04:01:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 337DC4CDE0;
+	Mon, 29 Jan 2024 06:44:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706500902; cv=none; b=hScTkHZSwW3Bo5ExmCcyK/i1UpSAnOXz+iRKYcY7DmGL26tyLXU69GG+HH1bvvNajTS8cRxr2d+7NgSsFBTefrCJ7+UtqNbhFeLCdEbFJqbYvSAxFsPJGRf0IRNWD4M/FiZ3Dk+Q3U4jLj2tnkJNojmMxSANBOyfd7yNnIfZgTM=
+	t=1706510683; cv=none; b=aA/ZLsHtK/Jxb8ojZkt9xjvynyhivdM6Gqq4Vc1EJ60oLKHOviktFcDbdXpKfgjdvFgzqgAXZx01+ch4bFQHMhqJpxyXv/o/n9M4bH0XRLPEo9/Hp3Wz2qSxG8OCMlb/igeRP6JRtPn4hpKopZHckmZtbsdx5wc6LtDNU5ao6q4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706500902; c=relaxed/simple;
-	bh=xkL43O7OU7ppcLkBh7OlkPsjLq6ZFYIqsGEUJU4E5HM=;
+	s=arc-20240116; t=1706510683; c=relaxed/simple;
+	bh=OxoRCOkmkae41vCfWm0QMR2mN2otuI42kdEjLO9tyNk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RNAZsjUWMUIu9Al57/U6YHi8cLXya5CaEU9taIMS9/WdB0vDigasQjbsu909ChMyb9Pp/epJaK29tdQ5JmRYy4kjuUVGFhaF77AHNk7tLWBUe+r/qJ75mT0r9wZvJBDBOrGYNO5PxfeEi1C09HSSkTWzjMhoD9/b2q/2CdfOPH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=VqkPGPVk; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	 To:Cc:Content-Type; b=mtfRhtZ90dJTrc0xV3MsGAmXCVGDAM2s0lAZoPjVKK/KUWyU/GR5AsvsTZl7USnTSQgtAuOAn4p4PbO16UzFLRlpkGEIEjER1VzLwYIKjppw9tU8G6tVFvMdazfyjZH2j9eOovDvka8m+GO+Hkmt8SpQvdFBBids5skBFR0xOVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PWFgdv3Z; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="VqkPGPVk"
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cf328885b4so24838611fa.3
-        for <linux-trace-devel@vger.kernel.org>; Sun, 28 Jan 2024 20:01:40 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PWFgdv3Z"
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-68c3ac1fdb9so14734196d6.2;
+        Sun, 28 Jan 2024 22:44:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706500898; x=1707105698; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706510681; x=1707115481; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=n3rcnUVyGJZKxOB2+kTh5T1A/eFH+JMPmm6YXhef9ps=;
-        b=VqkPGPVkhy8EqpLeBANqz3+Rc7n0CByyEgJsKoo8153BBLEAGDwL606nmXm+QM7f1q
-         zWOt8Q3VKDgCxiRKmubYLiBxf4viwUfHNJMnZKyyECCDSTgImpqxBxT1uNAaokReumTn
-         QYW9IxrSLXDVLo3tDb7+/N+6uNimjKA7YOngA=
+        bh=3sIeOV9vvB6C8MqwdJNXvnHEjm5BSZtIFxk4IlFlbAE=;
+        b=PWFgdv3ZLyYn0BUBuz5b/IehZZKk7sUjSbMY2mQIt1axObMEUnzxY9oaskcv4hWZ+5
+         17GgHrWcDyWynFGpKUk0qaQmWK0aY7Nxdkp0ljZdFB6qa0TpyJoXEz5VvHIaRT5fPNbK
+         EXTWlZntxMgiPnX9YRh37VKMxcdW8fs1imj1q1nqXg0q7sqszG9p4S2ipY+ThhRvN0h1
+         bqiSHD0LP73BZxLrgS6u5s1Eu+sM/ueShLHbtw7ZOHfMwTZbKuGrQLnK/p+J3786m77l
+         uFRyR3qkqu537hPFwFcAP4Nkj020IX2yhrqIHNlwpN9V0bBC5ZxwQmnMxGbYkhxo7yD9
+         WxOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706500898; x=1707105698;
+        d=1e100.net; s=20230601; t=1706510681; x=1707115481;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=n3rcnUVyGJZKxOB2+kTh5T1A/eFH+JMPmm6YXhef9ps=;
-        b=sHQHm6Qo/tYtlEJu5bkyHZt6ZSF5meXy+GsfcQG/rMjYRdxy0b7OYVDip+PNHL4D3A
-         rv18KzOgZNW6MBJ55pH4N8EEI2pJT/uQi6E4i5DZ/3eyBju9czCfaNvLYyV2Kqwz6J7l
-         /inVyW2/L3WDT0TY3XuC14nL14tTR+ZPMyFeEO1ripjdS9JUT0MUcTLiR7mpzqFEfDKS
-         Yvm2GDjtJk4ivWzbsxBrxsGp/JlXIbP8O7fcHwSO6ooG/4A5RdhXiV8j8cKxjLNGIxNB
-         4+dBJSJ92X4iacUs/MlrW6jpCZOlffZ1KIt87/QtEvgUcvYwWQPCZlJWj4e0FnN/UPFs
-         v7BA==
-X-Gm-Message-State: AOJu0YwynKtwE1lX7h6lpXKu3b84y/k8pTqwU0O9s/ywk+j/jDMF+CD6
-	56q0FW1qKLzR8lqe3ynSe5vNHffz5v251lKH8M91l0HJmqmfT1uLKcUGnOJShEWOEeBKTpyX2yu
-	NYaRMvg==
-X-Google-Smtp-Source: AGHT+IEb7WbeIoyiT7fdulTKV4+xAI4HGI2ynl8DgM9MV+/pUgAfR++8tWhUvj8oFDrUChkpQpJ7Ew==
-X-Received: by 2002:a2e:b1c5:0:b0:2ce:dfc:db78 with SMTP id e5-20020a2eb1c5000000b002ce0dfcdb78mr2995326lja.29.1706500898659;
-        Sun, 28 Jan 2024 20:01:38 -0800 (PST)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id p17-20020a2e9a91000000b002cf114820dasm1019411lji.124.2024.01.28.20.01.37
-        for <linux-trace-devel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Jan 2024 20:01:37 -0800 (PST)
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-51028acdcf0so2622162e87.0
-        for <linux-trace-devel@vger.kernel.org>; Sun, 28 Jan 2024 20:01:37 -0800 (PST)
-X-Received: by 2002:a05:6512:12d1:b0:50e:6317:54ab with SMTP id
- p17-20020a05651212d100b0050e631754abmr2806079lfg.42.1706500896681; Sun, 28
- Jan 2024 20:01:36 -0800 (PST)
+        bh=3sIeOV9vvB6C8MqwdJNXvnHEjm5BSZtIFxk4IlFlbAE=;
+        b=AaCbTj07hVV+r1HfJ6byHHyh79y07TsWzhLI/Mffjb0sAqdf3OOPQgaukXSTT/4kUx
+         jFotg2j/t9f3t4jXwmAYsX2RSHH/xIVGI0U1HFhrmMAdZ7N3VB5iegppT00TJGVdpAhC
+         zvsT+8hSyE4Mlp0zbnSz8X8YfMnRdZ83h3iKOVxugv4uVpC4jg7rKU+dy0Sfi9DpRZ5E
+         VE+cHIgdz8SQzQcMU14fqnGKcDZ6EzEonSRnaEza6f41y0nTaqQ5a8foKpDvuwnpfPPy
+         wkv2miLyGfw1gKn7NFn4Idf9mkJ/2gTOKGG6xvMktvp3ue2cqhayCvqVJnjzCVuOq6uB
+         eTrQ==
+X-Gm-Message-State: AOJu0YwLo1LJX5tC4I2DZQOQP7mhGlqUSwMenwYbBfFd6QV9j1lg8CtE
+	V6pfQqHEQl1RXiy6B9VIciDNY/j47fOi2oziZhNgQWR1rlwkGSFhoxcJ5h5gbqgKCNl6ER7N84U
+	4/dQaf0J4JRakfrjE1ul6QZ3417Q=
+X-Google-Smtp-Source: AGHT+IFfnDR1hP2vNcK5/+uNBDfC+cRSdRdOBWtG/DpVWbvO1oPjEMoTq+dNVq51e1c6V3N7S06sP6xZmzYAK3sGg6M=
+X-Received: by 2002:ad4:576f:0:b0:681:7c2b:d86e with SMTP id
+ r15-20020ad4576f000000b006817c2bd86emr5735432qvx.114.1706510681049; Sun, 28
+ Jan 2024 22:44:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -66,36 +60,112 @@ References: <20240126150209.367ff402@gandalf.local.home> <CAHk-=wgZEHwFRgp2Q8_-O
  <CAHk-=wj+DsZZ=2iTUkJ-Nojs9fjYMvPs1NuoM3yK7aTDtJfPYQ@mail.gmail.com>
  <20240128175111.69f8b973@rorschach.local.home> <CAHk-=wjHc48QSGWtgBekej7F+Ln3b0j1tStcqyEf3S-Pj_MHHw@mail.gmail.com>
  <20240128185943.6920388b@rorschach.local.home> <20240128192108.6875ecf4@rorschach.local.home>
- <CAHk-=wg7tML8L+27j=7fh8Etk4Wvo0Ay3mS5U7JOTEGxjy1viA@mail.gmail.com>
- <CAHk-=wjKagcAh5rHuNPMqp9hH18APjF4jW7LQ06pNQwZ1Qp0Eg@mail.gmail.com>
- <20240128213249.605a7ade@rorschach.local.home> <20240128224054.0df489b8@rorschach.local.home>
-In-Reply-To: <20240128224054.0df489b8@rorschach.local.home>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 28 Jan 2024 20:01:19 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whjO4zAmoP8fQkHUQJANahFMZaviNu=Jfd36E=knLPVgQ@mail.gmail.com>
-Message-ID: <CAHk-=whjO4zAmoP8fQkHUQJANahFMZaviNu=Jfd36E=knLPVgQ@mail.gmail.com>
+ <CAHk-=wg7tML8L+27j=7fh8Etk4Wvo0Ay3mS5U7JOTEGxjy1viA@mail.gmail.com> <20240128210938.436fc3b4@rorschach.local.home>
+In-Reply-To: <20240128210938.436fc3b4@rorschach.local.home>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Mon, 29 Jan 2024 08:44:29 +0200
+Message-ID: <CAOQ4uxikMN9EapL5+6jtMn5Ahe4h7wGZOgEsdsjy87v72FxJDw@mail.gmail.com>
 Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
 To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	LKML <linux-kernel@vger.kernel.org>, 
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, LKML <linux-kernel@vger.kernel.org>, 
 	Linux Trace Devel <linux-trace-devel@vger.kernel.org>, Christian Brauner <brauner@kernel.org>, 
 	Ajay Kaher <ajay.kaher@broadcom.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>
 Content-Type: text/plain; charset="UTF-8"
 
-On Sun, 28 Jan 2024 at 19:40, Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > You need to deal with the realities of having made a filesystem. And
+> > one of those realities is that you don't control the dentries, and you
+> > can't randomly cache dentry state and then do things behind the VFS
+> > layer's back.
 >
-> [  106.258400] BUG: KASAN: slab-use-after-free in tracing_open_file_tr+0x3a/0x120
-> [  106.261228] Read of size 8 at addr ffff8881136f27b8 by task cat/868
+> I'm not. I'm trying to let VFS know a directory is deleted. Because
+> when you delete a kprobe, the directory that has the control files for
+> that kprobe (like enabling it) go away too. I have to let VFS know that
+> the directory is deleted, just like procfs has to tell it when a
+> directory for a process id is no more.
+>
+> You don't kill tasks with: rmdir /proc/1234
+>
+> And you don't delete kprobes with: rmdir events/kprobe/sched
+>
+> >
+> > So remove that broken function. Really.  You did a filesystem, and
+> > that means that you had better play by the VFS rules.
+> >
+> > End of discussion.
+>
+> And I do it just like debugfs when it deletes files outside of VFS or
+> procfs, and pretty much most virtual file systems.
+>
 
-Are you refcounting the pointers that you have in the dentries (and
-inodes)? Like we talked about you needing to do?
+I think it is better if we used the term "pseudo" file systems, because
+to me VFS already stands for "virtual file system".
 
-Every time you assign a pointer to d_fsdata, you need to kref_get() it.
+> >
+> > Now, you can then make your own "read" and "lookup" etc functions say
+> > "if the backing store data has been marked dead, I'll not do this".
+> > That's *YOUR* data structures, and that's your choice.
+> >
+> > But you need to STOP thinking you can play games with dentries.  And
+> > you need to stop making up BS arguments for why  you should be able
+> > to.
+> >
+> > So if you are thinking of a "Here's how to do a virtual filesystem"
+> > talk, I would suggest you start with one single word: "Don't".
+> >
+> > I'm convinced that we have made it much too easy to do a half-arsed
+> > virtual filesystem. And eventfs is way beyond half-arsed.
+> >
+> > It's now gone from half-arsed to "I told you how to do this right, and
+> > you are still arguing". That makes it full-arsed.
+> >
+> > So just stop the arsing around, and just get rid of those _broken_ dentry games.
+>
+> Sorry, but you didn't prove your point. The example you gave me is
+> already covered. Please tell me when a kprobe goes away, how do I let
+> VFS know? Currently the tracing code (like kprobes and synthetic
+> events) calls eventfs_remove_dir() with just a reference to that ei
+> eventfs_inode structure. I currently use the ei->dentry to tell VFS
+> "this directory is being deleted". What other means do I have to
+> accomplish the same thing?
+>
 
-You try to work around the tracefs weaknesses by trying to clean up
-the dentry data, but it's WRONG.
+Would kernfs_node_dentry() have been useful in that case?
+Just looking at kernfs_node and eventfs_inode gives a very strong
+smell of reinventing.
 
-You should refcount the data properly, so that you don't NEED to clean it out.
+Note that the fact that eventfs has no rename makes the whole dentry
+business a lot less complicated than it is in the general VFS case -
+IIUC, an eventfs path either exists or it does not exist, but if it exists,
+it conceptually always refers to the same underlying object (kprobe).
 
-               Linus
+I am not claiming that kernfs can do everything that eventfs needs  -
+I don't know, because I did not look into it.
+
+But the concept of detaching the pseudo filesystem backing objects
+from the vfs objects was already invented once and Greg has also
+said the same thing.
+
+My *feeling* at this point is that the best course of action is to use
+kernfs and to improve kernfs to meet eventfs needs, if anything needs
+improving at all.
+
+IMO, the length and content of this correspondence in itself
+is proof that virtual file systems should use an abstraction that
+is much less flexible than the VFS.
+
+Think of it this way - kernefs and VFS are both under-documented,
+but the chances of getting kernfs well documented are far better
+than ever being able to document all the subtleties of VFS for mortals.
+
+IOW, I would be happy if instead of the LSFMM topic
+"Making pseudo file systems inodes/dentries more like normal file systems"
+We would be talking about
+"Best practices for writing a pseudo filesystem" and/or
+"Missing kernfs functionality for writing pseudo filesystems"
+
+Thanks,
+Amir.
