@@ -1,199 +1,119 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFD155730E;
-	Mon, 29 Jan 2024 09:32:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A42A51482F9
+	for <linux-trace-devel@vger.kernel.org>; Mon, 29 Jan 2024 14:31:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706520778; cv=none; b=M2dCUsbmmBSLwJzccu0LTOBZ2JVM3OxUP4V3hSiFOkqAnYPhnWZGGrDQk0ZJY6YIGCelgXdMciqBIirlYVysE1LSYvRuNB4pUqPuRcNYROf1zDKCLqO0AIwrK6UXsCbSyoJiMjKWuOLow64e1B8cUbZm5cyveU9cM6XPCIJ9c6w=
+	t=1706538689; cv=none; b=G2088ZI7cQDRVgmka+lUVpstbFVuda2TNL0mhOybeotZF/Liy+c3sL1x79Mqrb7FQk/mnMFJ9VMjhtvRwgJeDrdFSGTxJLDB0JgTd8ScyPCmykhN9iNGy7+rhmw83a4pHSzvKBMayClVa2/yCFhkhmRlGfp/daTSPXM59wwLcag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706520778; c=relaxed/simple;
-	bh=RNCTIC1LHxN8TP52KyYN51dpjEvqeKfPe48AkEi5JGU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XIbN9FYk43nQ8XG1zXkUfuvXuUidTE2LJPrCUPescBRxlk3l7VL6Ud4nzmI2SsrBoc0Vb9Bm74fIb+8eay29ljnvFxlPcTpu6XltrzV/D3IXWhNLN7N6hO3NWAs6/nD+4tz1KY00cuLZQEvZQM8+0APOFmZBp8JAf/ZKe3i1ZIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05A35C43394;
-	Mon, 29 Jan 2024 09:32:56 +0000 (UTC)
-Date: Mon, 29 Jan 2024 04:32:55 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- LKML <linux-kernel@vger.kernel.org>, Linux Trace Devel
- <linux-trace-devel@vger.kernel.org>, Christian Brauner
- <brauner@kernel.org>, Ajay Kaher <ajay.kaher@broadcom.com>, Geert
- Uytterhoeven <geert@linux-m68k.org>, linux-fsdevel
- <linux-fsdevel@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Al
- Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH] eventfs: Have inodes have unique inode numbers
-Message-ID: <20240129043255.0487d864@rorschach.local.home>
-In-Reply-To: <CAOQ4uxikMN9EapL5+6jtMn5Ahe4h7wGZOgEsdsjy87v72FxJDw@mail.gmail.com>
-References: <20240126150209.367ff402@gandalf.local.home>
-	<CAHk-=wgZEHwFRgp2Q8_-OtpCtobbuFPBmPTZ68qN3MitU-ub=Q@mail.gmail.com>
-	<20240126162626.31d90da9@gandalf.local.home>
-	<CAHk-=wj8WygQNgoHerp-aKyCwFxHeyKMguQszVKyJfi-=Yfadw@mail.gmail.com>
-	<CAHk-=whNfNti-mn6vhL-v-WZnn0i7ZAbwSf_wNULJeyanhPOgg@mail.gmail.com>
-	<CAHk-=wj+DsZZ=2iTUkJ-Nojs9fjYMvPs1NuoM3yK7aTDtJfPYQ@mail.gmail.com>
-	<20240128175111.69f8b973@rorschach.local.home>
-	<CAHk-=wjHc48QSGWtgBekej7F+Ln3b0j1tStcqyEf3S-Pj_MHHw@mail.gmail.com>
-	<20240128185943.6920388b@rorschach.local.home>
-	<20240128192108.6875ecf4@rorschach.local.home>
-	<CAHk-=wg7tML8L+27j=7fh8Etk4Wvo0Ay3mS5U7JOTEGxjy1viA@mail.gmail.com>
-	<20240128210938.436fc3b4@rorschach.local.home>
-	<CAOQ4uxikMN9EapL5+6jtMn5Ahe4h7wGZOgEsdsjy87v72FxJDw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706538689; c=relaxed/simple;
+	bh=52t4wPYvMwpH/T/qp0ozGBQnsLqYao+8fNnpNS2VyFs=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=t2T62uSQfYWP+6agACHDilV1vt+F3maadKBptJyhYTLj5pBeJ/UPcB/YIaCuTuU1DhsF7o1mOJd+fOYyMMpOtNli++qFMEqOt28Vflu6VTrckjW0yrlMh5+sUCMAEq6wYlY4g9sOkXS+lWqRnw3U5wX5xDTVj0gp+61nsue/cjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=blO2ByFB; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="blO2ByFB"
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5fffb2798bfso44708807b3.2
+        for <linux-trace-devel@vger.kernel.org>; Mon, 29 Jan 2024 06:31:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706538686; x=1707143486; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=w9KeidiqR8MAtIfEdVgPdtMycQfPKrdz/yD8Mg07T4s=;
+        b=blO2ByFBAC8Le8/VP0Jl25wNYq1NnIKkAn6FnXblcpKzlTGWJaEMFKpzqMSWnlIGWj
+         nmOZHLxc3qigiEuuxpXVuyr3Z542IRZRvsGnhsLRGcphEJosLAKEQvMzuTMKanqKiVGz
+         8hnWCJ+6Z6TWUq7QK2VBC7qplku7WE/Q/GBUYMxkrBIYTrNOBoj2LJ6jZzyKqf21K7Cu
+         fn/0fsUpDCQaWwJBMYtkX/sbCdncqsgW5lXFFJ1pdCCrVIOS/o+iR3kKzzZME5mBOMNn
+         JQr3MLpuqq/w3LtHYMban0BzXbPM/ywQqbwj71UXvcjGLLE+ZOvcroXFMo8g7ZGDTWWE
+         uPZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706538686; x=1707143486;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=w9KeidiqR8MAtIfEdVgPdtMycQfPKrdz/yD8Mg07T4s=;
+        b=mOPXcA7O1NNgIDSM1Q98KGPhU8sRWkPysiRNPwPeP2qzpa6Um6r+tXQ5H/jnKPJmjO
+         iHA8rlzOZsLuLPPkA1Io431du7C6BgFwrklHncg8yexFrMKfhaDxiI9xuunBKtbU1KuL
+         fvX8dnN7rM4SC5OmuQ9+eAsoP39sHm/58+UV2C21Er+/EqyirUTTDX/rlnJ7yFlJZ5sI
+         WjOTYsgo+SC71vr8/ztDz3WjXYy/0RIUPpdKEBkr2Grdp6Ke1VZBUH+76YGtHEnLRVSA
+         +ME6unL1QrFi9UTdeOqVyxqKqjqDM/sl6TIeOR3lNXlrCTXbvZzn6tVDBLA/4ZyUmodv
+         4LjA==
+X-Gm-Message-State: AOJu0YyGuzCGvN853NK1KamjqIOANVG+0TdOEFOh+p6/Wu2EurU0Xn+r
+	XRd0y25bPRHe3BIFGP25xm8bnGLOpN7RUchcyOXGzIOFjitVj8DQb+v5zNqSsymS1sPjdz3EpRY
+	ElELaLfXMEidR/8uSY/VswK//MM6npA0JN42dfyfrSqK0ITQUqQfjtP936IZu+t2wMLppi+C7HT
+	d2RfKKdMV/YsLoGeJQng7XI76mzhTB+C+VJMwnqOPpgem5+NdD0MyXmLRKIWkWgHOM/qmK
+X-Google-Smtp-Source: AGHT+IFmNRpMm7T4SIif4y7DnOTK/iyPGRFisyac7gZjgg3Iyy89pjUokfmQzO9MI5sR1/OHmuhlU+CBOyB/mUCf
+X-Received: from vdonnefort.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:2eea])
+ (user=vdonnefort job=sendgmr) by 2002:a81:9854:0:b0:602:d17a:7f60 with SMTP
+ id p81-20020a819854000000b00602d17a7f60mr1840940ywg.10.1706538686451; Mon, 29
+ Jan 2024 06:31:26 -0800 (PST)
+Date: Mon, 29 Jan 2024 14:31:22 +0000
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240129143122.2149432-1-vdonnefort@google.com>
+Subject: [PATCH v2] libtracefs: Update trace_buffer_meta
+From: Vincent Donnefort <vdonnefort@google.com>
+To: linux-trace-devel@vger.kernel.org, rostedt@goodmis.org
+Cc: Vincent Donnefort <vdonnefort@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 29 Jan 2024 08:44:29 +0200
-Amir Goldstein <amir73il@gmail.com> wrote:
+The current version for struct trace_buffer_meta is taken from a work in
+progress Linux patch series. Update it.
 
-Hi Amir,
+Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
 
-[ Suffering a bit of insomnia, I made the mistake of reading email from
-  bed, and now I have to reply :-p ]
+diff --git a/src/tracefs-mmap.c b/src/tracefs-mmap.c
+index fac13df..17e6366 100644
+--- a/src/tracefs-mmap.c
++++ b/src/tracefs-mmap.c
+@@ -10,25 +10,26 @@
+ #include "tracefs-local.h"
+ 
+ struct trace_buffer_meta {
+-	unsigned long	entries;
+-	unsigned long	overrun;
+-	unsigned long	read;
++	__u32		meta_page_size;
++	__u32		meta_struct_len;
+ 
+-	unsigned long	subbufs_touched;
+-	unsigned long	subbufs_lost;
+-	unsigned long	subbufs_read;
++	__u32		subbuf_size;
++	__u32		nr_subbufs;
+ 
+ 	struct {
+-		unsigned long	lost_events;	/* Events lost at the time of the reader swap */
+-		__u32		id;		/* Reader subbuf ID from 0 to nr_subbufs - 1 */
+-		__u32		read;		/* Number of bytes read on the reader subbuf */
++		__u64	lost_events;
++		__u32	id;
++		__u32	read;
+ 	} reader;
+ 
+-	__u32		subbuf_size;		/* Size of each subbuf including the header */
+-	__u32		nr_subbufs;		/* Number of subbufs in the ring-buffer */
++	__u64	flags;
+ 
+-	__u32		meta_page_size;		/* Size of the meta-page */
+-	__u32		meta_struct_len;	/* Len of this struct */
++	__u64	entries;
++	__u64	overrun;
++	__u64	read;
++
++	__u64	Reserved1;
++	__u64	Reserved2;
+ };
+ 
+ #define TRACE_MMAP_IOCTL_GET_READER		_IO('T', 0x1)
 
-> >
-> > And I do it just like debugfs when it deletes files outside of VFS or
-> > procfs, and pretty much most virtual file systems.
-> >  
-> 
-> I think it is better if we used the term "pseudo" file systems, because
-> to me VFS already stands for "virtual file system".
+base-commit: 73ac9c192d058712993f9941927c924f2e206168
+-- 
+2.43.0.429.g432eaa2c6b-goog
 
-Oops, you are absolutely correct. I meant "pseudo" but somehow switch
-to saying "virtual". :-p
-
-> >
-> > Sorry, but you didn't prove your point. The example you gave me is
-> > already covered. Please tell me when a kprobe goes away, how do I let
-> > VFS know? Currently the tracing code (like kprobes and synthetic
-> > events) calls eventfs_remove_dir() with just a reference to that ei
-> > eventfs_inode structure. I currently use the ei->dentry to tell VFS
-> > "this directory is being deleted". What other means do I have to
-> > accomplish the same thing?
-> >  
-> 
-> Would kernfs_node_dentry() have been useful in that case?
-> Just looking at kernfs_node and eventfs_inode gives a very strong
-> smell of reinventing.
-
-Close, but looking at kernfs real quick, I think I see the difference
-and why eventfs relies on the dentry, and why it doesn't need to.
-
-> 
-> Note that the fact that eventfs has no rename makes the whole dentry
-> business a lot less complicated than it is in the general VFS case -
-> IIUC, an eventfs path either exists or it does not exist, but if it exists,
-> it conceptually always refers to the same underlying object (kprobe).
-> 
-> I am not claiming that kernfs can do everything that eventfs needs  -
-> I don't know, because I did not look into it.
-
-eventfs has one other major simplicity that kernfs does not. Not only
-does it not have renames, but files are not created or deleted
-individually. That is, when a directory is created, it will have a
-fixed number of files. It will have those same files until the
-directory is deleted.
-
-That means I have no meta data saving anything about the files, except
-a fixed array that that holds only a name and a callback for each file
-in that directory.
-
-> 
-> But the concept of detaching the pseudo filesystem backing objects
-> from the vfs objects was already invented once and Greg has also
-> said the same thing.
-> 
-> My *feeling* at this point is that the best course of action is to use
-> kernfs and to improve kernfs to meet eventfs needs, if anything needs
-> improving at all.
-> 
-> IMO, the length and content of this correspondence in itself
-> is proof that virtual file systems should use an abstraction that
-> is much less flexible than the VFS.
-> 
-> Think of it this way - kernefs and VFS are both under-documented,
-> but the chances of getting kernfs well documented are far better
-> than ever being able to document all the subtleties of VFS for mortals.
-> 
-> IOW, I would be happy if instead of the LSFMM topic
-> "Making pseudo file systems inodes/dentries more like normal file systems"
-> We would be talking about
-> "Best practices for writing a pseudo filesystem" and/or
-> "Missing kernfs functionality for writing pseudo filesystems"
-
-I'm fine with that, and I think I also understand how to solve the
-issue with Linus here.
-
-Linus hates the fact that eventfs_inode has a reference to the dentry.
-The reason I do that is because when the dentry is created, it happens
-in lookup with a given file name. The registered callback for the file
-name will return back a "data" pointer that gets assigned to the
-dentry's inode->i_private data. This gets returned directly to the
-open function calls.
-
-That is, the kprobe will register a handle that gets assigned to the
-inode->i_private data just like it did when it was in debugfs. Then the
-open() call would get the kprode data via the inode->i_private.
-
-This is why reference counters do not work here. If I don't make the
-dentry and inode go away after the last reference, it is possible to
-call that open function with the i_private data directly.
-
-I noticed that kernfs assigns the kernfs_inode to the i_private data.
-Thus it has some control over what's in the i_private.
-
-I use that simple_recursive_removal() to clear out any inodes that have
-a dentry ref count of zero so that there will be no inode->i_private
-references in the open.
-
-I'll have to look more at kernfs to see how it works. Perhaps it can
-give me some ideas on not having to use dentry.
-
-Hmm, I may have been looking at this all wrong. I don't need the
-dentry. I need the inode! Instead of keeping a pointer to the dentry in
-the eventfs_inode, I should just be keeping a pointer to the inode. As
-then I could remove the inode->i_private to NULL on the last reference.
-The open() calls will have to check for NULL in that case.
-
-Are inodes part of the VFS system like dentry is?
-
-I would think not as tracefs has a "container_of" around the inode to
-get to the tracefs_inode, just like many other file systems do.
-
-That would remove my need to have to keep around any dentry.
-
-I first need to know why I'm seeing "ghost" files. That is without that
-simple_recursive_removal() call, I get:
-
- # echo 'p:sched schedule' >> /sys/kernel/tracing/kprobe_events 
- # echo 'p:timer read_current_timer' >> kprobe_events 
- # ls events/kprobes/
-enable  filter  sched  timer
-
- # cat events/kprobes/sched/enable
-0
-
- # ls events/kprobes/sched
-enable  filter  format  hist  hist_debug  id  inject  trigger
-
- # echo '-:sched schedule' >> /sys/kernel/tracing/kprobe_events 
- # ls events/kprobes
-enable  filter  timer
-
- # ls events/kprobes/sched/enable
-events/kprobes/sched/enable
-
-  ??
-
-The sched directory has been deleted but I can still "ls" the files
-within it.
-
--- Steve
