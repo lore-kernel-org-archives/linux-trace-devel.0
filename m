@@ -1,253 +1,175 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 613BCBA25
-	for <linux-trace-devel@vger.kernel.org>; Fri,  2 Feb 2024 02:17:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3687681739;
+	Fri,  2 Feb 2024 22:05:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706840244; cv=none; b=qsmxAdnszvrrRM/TdglupsfM+nYQlBOMgGxxoB0WfHXyjIWPMs2skSUoYKhbf0172FsrdEDnm8mqkNGM9eupWRnbnvBxaZvzGZFZLdztUlEwlxPg09csahfwcvv8kl6j/Si5xYQ6P5R/N+qCmXhKivFTQt5vyWdqRTcen1+An5c=
+	t=1706911502; cv=none; b=cW7uf0Vz1602O6Jx63n2XYOp/8VgLOObwoBaNtZbAqmwB9yM/ALUl8OBEyAZg4qxWlpmYFvPxqL+o9zdsk5yY0jRxR4yTHcR/whR1tzgPH3xB31dGZpKMn6RWXL8ZLLmq+py0V7HjafSHpkXrUDxVJ2KhEZw1jAtHA9ZvR4rjJo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706840244; c=relaxed/simple;
-	bh=R5GLYWhzxhM6KrnwSc9ZSbLFC6+d8d3wCu6QIQL8ROs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UemYpvV6plDG9dm3qmOHwrxjKaGkpN38/pSYCtOpIm3FrRehlf0GhoBp7pGTiwdMmTxPISCQWwu+yaqryqQ34Artu5airMcEWZnV6sB2wnM4ajQkOpFPdZpZUOCNHB9b/nYVbBmEKz7VZ+EpQlw1mEFs9pQbP4BcmCMfjhL5s5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A077C433C7;
-	Fri,  2 Feb 2024 02:17:23 +0000 (UTC)
-Date: Thu, 1 Feb 2024 21:17:40 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Pierre Gondois <pierre.gondois@arm.com>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH v3 4/5] trace-cmd split: Enable support for buffer
- selection
-Message-ID: <20240201211740.33b43bcd@gandalf.local.home>
-In-Reply-To: <eb976812-06e9-4a0a-93d1-1868ee9d19e1@arm.com>
-References: <20240123134215.385415-1-pierre.gondois@arm.com>
-	<20240123134215.385415-5-pierre.gondois@arm.com>
-	<20240124173740.6d9e2287@gandalf.local.home>
-	<1122630e-838e-49fc-9210-55834129088c@arm.com>
-	<20240125112834.2de4eedb@gandalf.local.home>
-	<20240125115147.51bcce2a@gandalf.local.home>
-	<20240125121025.208a7012@gandalf.local.home>
-	<eb976812-06e9-4a0a-93d1-1868ee9d19e1@arm.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706911502; c=relaxed/simple;
+	bh=TtCatUXX54CpCPUlhHpPauZEMrRqJAFBr+hS8hCBFRQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mhGv6AMYrfVkYnIikIHQSPhEWxWJJ9jgFlnJfGZgEk+o8ot50lYYPd+YH+C1gJKEzKVCPNFJUK3nRlMCNHbsjdGabNGFpGNTkhB1g2PXh9wbMS9b8cZjCk1ZpvL9e5xAerT/hCAyz6EEphPdE2AJNmNVxiRIKgCPX/I5oioZAxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZP62jWyA; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZP62jWyA"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A38B7C433F1;
+	Fri,  2 Feb 2024 22:05:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706911501;
+	bh=TtCatUXX54CpCPUlhHpPauZEMrRqJAFBr+hS8hCBFRQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ZP62jWyAbrwzCAidfxlTdVO2bN6sXVxsdxU0i49taYN943OEwBV/+y7/ohbABc3h1
+	 FG2271tLeqqNuTgfyMO9vevV4e2jlOzgay5+OjKsxy+yrycefmCQWvQPAjR7wdTF+o
+	 m2DQWFIi6mbq+ry0OVTi9uiMUiG7lvI6wA/0IrT6EUaEuk1bHiT3eTu0Qh0mP9MVAd
+	 6jkbBVLUAxnH75ovmwX9B30szSeqP+DN8LGhclkHKU9tkFPrNLnkTJCXxTfHVqKDJh
+	 KkspmdFYGwFQF/D8aB3IqSB0IoCy+TxnpO0tzW5pQyO1lAHKS4eE5JOBpD8F2zUzlf
+	 QH1cWHlt7mlNA==
+From: Namhyung Kim <namhyung@kernel.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Stephane Eranian <eranian@google.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-toolchains@vger.kernel.org,
+	linux-trace-devel@vger.kernel.org,
+	Ben Woodard <woodard@redhat.com>,
+	Joe Mario <jmario@redhat.com>,
+	Kees Cook <keescook@chromium.org>,
+	David Blaikie <blaikie@google.com>,
+	Xu Liu <xliuprof@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Ravi Bangoria <ravi.bangoria@amd.com>,
+	Mark Wielaard <mark@klomp.org>,
+	Jason Merrill <jason@redhat.com>,
+	"Jose E . Marchesi" <jose.marchesi@oracle.com>,
+	William Huang <williamjhuang@google.com>
+Subject: [PATCHSET 00/14] perf tools: Remaining bits of data type profiling (v5)
+Date: Fri,  2 Feb 2024 14:04:45 -0800
+Message-ID: <20240202220459.527138-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Fri, 26 Jan 2024 09:54:53 +0100
-Pierre Gondois <pierre.gondois@arm.com> wrote:
+Hello,
 
-> Hello Steven,
-> 
+This is the last part of the data type profiling series.
+So far we added the basic pointer variable support, and direct access to
+global/local variables.  Now it's time to add instruction tracking. :)
 
-Hi Pierre,
+For the history and background, you can refer to the previous version
+[1] and the LWN article [2].
 
-Sorry for the late reply. I've been putting out fires (you can read LWN or
-The Register to see what exactly I was doing).
+Basically it needs to track variable (and its type) assignment to get
+a type of memory access at the sampled instruction.  Compilers don't
+generate DWARF information for every memory accesses so it cannot find
+all the necessary information from DWARF.  Therefore, it follows the
+path to the sample in the function, and update type information at
+each location when the instruction moves it.
 
-> On 1/25/24 18:10, Steven Rostedt wrote:
-> > On Thu, 25 Jan 2024 11:51:47 -0500
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> >   
-> >> Now if I had had:
-> >>
-> >>    trace-cmd split -i /work/traces/trace-tast.dat --top  -B tast -o /tmp/trace-tast2.dat
-> >>
-> >> Then because there was a command "--top" before the -B but it had no -o
-> >> assigned for it, then the input_file would be considered the output file
-> >> and that should act like you described.  
-> > 
-> > Of course then things get confusing if we were to have:
-> > 
-> > trace-cmd split -i /work/traces/trace-tast.dat  -B foo -o /tmp/trace-foo.dat -B bar
-> > 
-> > We could specify that each -B will just use the top level by default. So
-> > the above would create:
-> > 
-> >   /tmp/trace-foo.dat
-> > 
-> > With the instance "foo"
-> > 
-> > But the "bar" would be in:
-> > 
-> >   /work/traces/trace-tast.dat.bar
-> > 
-> > because the top level didn't specify a -o.
-> > 
-> > So to make it more specific. Each -B will default to the toplevel output
-> > with ".<instance>" appended to it.
-> > 
-> > That is:
-> > 
-> >    split <top-level-commands> -B instance1 <instance1-commands> -B <instance2-commands>
-> > 
-> > If a -o is specified in the <top-level-commands> it becomes the default top
-> > level output file.  If a -o is not specified in any of the
-> > <instance*-commands> then, it will default to the top level output file
-> > with ".<instance-name>" attached to it unless it has its own -o specified.  
-> 
-> I also wanted to handle the case where multiple instances could be placed
-> in an output file. Meaning that with the patches:
-> - -B/--top options are parsed to select the instances to keep,
-> - a -o option ends the parsing of instances and place them in the given output
->    file. If no -o option is parsed, then the default output file or the input
->    file is used as a base name for the last generated output file (i.e. trace.dat.1
->    if no input file is specified)
+For the DWARF search, it has a list of scope entries (subroutines or
+blocks) that covers the sample already.  So it can use the scopes to
+find the shortest path to the sample instruction.
 
-OK, I see what you want. You want to be able to have multiple buffers in a
-single file.
+Let's say we have this.  It got 5 scopes but couldn't find a matching
+variable for the sample.
 
-> 
-> ---
-> 
-> For example, with a trace recorded with:
-> 	$ trace-cmd record -e sched_wakeup -B switch_instance -e sched_switch -B timer_instance -e timer
-> 
-> Creating a test.dat file containing the top instance and
-> the switch_instance:
-> 	$ trace-cmd split --top -B switch_instance -o test.dat
-> 
-> Creating a test.dat file containing the switch_instance as
-> the top instance, and the initial top instance as an instance
-> named 'old_top':
-> 	$ trace-cmd split -B switch_instance --top=old_top -o test.dat
-> 
-> Splitting all instances in different .dat files:
-> 	$ trace-cmd split --top -o top.dat -B switch_instance -o switch.dat -B timer_instance -o timer.dat
-> 
-> And by default, if no -B/--top is specified for an output file,
-> keep all the instances (but of course all the other options provided
-> to the split command are applied, i.e. start/end timings):
-> Keep all the instances and place them in test.dat:
-> 	$ trace-cmd split -o test.dat
-> Keep all the instances and place them in the default file trace.dat.1:
-> 	$ trace-cmd split
-> 
-> ---
-> 
-> Maybe the list of generated files should be printed to avoid what happened
-> to you, i.e. generating files that were not expected.
-> I think that having a default name with a suffix being the top instance
-> is a good idea, but I don't think it would be possible to parse the command
-> line to have 2 instances in one file in such case.
-> 
-> > 
-> > For multi-file splits, it will append ".0001", ".0002", etc to that file.
+      +----------------  scope[0] subprogram
+      |
+      | +--------------  scope[1] lexical_block
+      | |
+      | | +------------  scope[2] inlined_subroutine
+      | | |
+      | | | +----------  scope[3] inlined_subroutine
+      | | | |
+      | | | | +--------  scope[4] lexical_block
+      | | | | |
+      | | | | |     ***  target instruction
+      ...
 
-So what I'm thinking is that the -B buffers default to the same buffer as
-the top buffer unless specified differently.
+Then it starts with the closest scope (at index 4), and find the
+shortest path from the start of the scope to the target instruction.
+Along the way, it updates type information in the scope and see if the
+location at the target instruction has the type.  If so, it can
+return with the type.
 
-Here's what I think would work. We add four new options.
+Otherwise, it goes to the scope[3] and find the shortest path from the
+start of scope[3] to the start of scope[4].  And then it can combine
+the existing shortest path from the scope[4] to the target with the
+new path.  Now it can start from the scope[3] with new variables and
+types.  It can repeat this algorithm for the outer scopes.
 
- --top
- -B <instance>
- -t
- -b
+I did it this way because mostly it was able to find a type in the
+closest scope.  So it can avoid unnecessary work for outer scopes.
 
-Where --top represents the "top" instance.
+And it added a basic per-cpu variable support for this CPU on x86_64
+which uses %gs segment register.  Also it can detect the stack-canary
+pattern which is added by compiler to detect stack overflow.
 
--B represents the <instance>
+The code is available at 'perf/data-profile-v5' branch in the tree
+below.  I've dropped the debug patch at the end in this series but you
+can find it in the git branch.
 
--t can be used after -B to make it a top instance.
+  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
 
--b can be used before any -B to make the top instance into its own instance.
+Thanks,
+Namhyung
 
-Rules:
 
-  --top can not come after -B.
-  -t must come after -B
-  -b must come before -B
+Cc: Ben Woodard <woodard@redhat.com>
+Cc: Joe Mario <jmario@redhat.com>
+CC: Kees Cook <keescook@chromium.org>
+Cc: David Blaikie <blaikie@google.com>
+Cc: Xu Liu <xliuprof@google.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Ravi Bangoria <ravi.bangoria@amd.com>
+Cc: Mark Wielaard <mark@klomp.org>
+Cc: Jason Merrill <jason@redhat.com>
+Cc: Jose E. Marchesi <jose.marchesi@oracle.com>
+Cc: William Huang <williamjhuang@google.com>
 
-There can only be one top instance, and all named instances must be unique.
-That is, you can't have two instances called "foo". 
 
-We have: trace-cmd split <TOP_COMMANDS> <INSTANCE_COMMANDS>
+[1] https://lore.kernel.org/linux-perf-users/20231110000012.3538610-1-namhyung@kernel.org/
+[2] https://lwn.net/Articles/955709/
 
-  TOP_COMMANDS :: nil | TOP_PARAMS
 
-  INSTANCE_COMMANDS :: nil | -B name INSTANCE_PARAMS INSTANCE_COMMANDS
+Namhyung Kim (14):
+  perf dwarf-aux: Add die_collect_vars()
+  perf dwarf-aux: Handle type transfer for memory access
+  perf annotate-data: Introduce struct data_loc_info
+  perf map: Add map__objdump_2rip()
+  perf annotate: Add annotate_get_basic_blocks()
+  perf annotate-data: Maintain variable type info
+  perf annotate-data: Add update_insn_state()
+  perf annotate-data: Handle global variable access
+  perf annotate-data: Handle call instructions
+  perf annotate-data: Implement instruction tracking
+  perf annotate: Parse x86 segment register location
+  perf annotate-data: Handle this-cpu variables in kernel
+  perf annotate-data: Track instructions with a this-cpu variable
+  perf annotate-data: Add stack canary type
 
-  TOP_PARAMS :: nil | TOP_OPTIONS TOP_PARAMS
+ tools/perf/util/annotate-data.c | 710 ++++++++++++++++++++++++++++++--
+ tools/perf/util/annotate-data.h |  87 +++-
+ tools/perf/util/annotate.c      | 366 ++++++++++++++--
+ tools/perf/util/annotate.h      |  38 ++
+ tools/perf/util/dwarf-aux.c     | 232 +++++++++--
+ tools/perf/util/dwarf-aux.h     |  23 ++
+ tools/perf/util/map.c           |  20 +
+ tools/perf/util/map.h           |   3 +
+ 8 files changed, 1373 insertions(+), 106 deletions(-)
 
-  TOP_OPTIONS :: --top | -b name | -o file
+-- 
+2.43.0.594.gd9cf4e227d-goog
 
-  INSTANCE_PARAMS :: nil | INSTANCE_OPTIONS INSTANCE_PARAMS
-
-  INSTANCE_OPTIONS :: nil | -t | -o file
-
-Examples:
-
- trace-cmd split --top -B foo
-
-Will make a trace.dat.1 that has top and foo in it.
-
- trace-cmd split --top
-
-Will make a trace.dat.1 that only has the top instance
-
- trace-cmd split -B foo
-
-Will make a trace.dat.1 that only has foo in it.
-
- trace-cmd split -B foo -t
-
-Will make a trace.dat.1 that only has foo in it. It will also promote the
-instance foo to the top instance (it will lose its "foo" name).
-
- trace-cmd split --top -o buba.dat -B foo
-
-Will create a buba.dat that has both top and foo in it
-
- trace-cmd split --top -B foo -o buba.dat
-
-Will create a trace-dat.1 with just top in it, and buba.dat with just foo
-in it.
-
- trace-cmd split --top -B foo -o buba.dat -t
-
-Will create a trace-dat.1 with just top in it, and buba.dat with just foo
-in it (promoting foo to top instance)
-
- trace-cmd split --top -b foo -B foo -t
-
-Will make a trace.dat.1 file where the top instance becomes "foo" and the
-foo instance becomes the top instance.
-
-  trace-cmd split -o buba.dat -B foo -t
-
-Will create just a buba.dat file with only foo in it, promoting it as the
-top instance.
-
-  trace-cmd split -o buba.dat --top -B foo -o fooba.dat
-
-Will create a buba.dat with just the top instance in it (note --top can
-come before or after -o and that does not make any difference, but the
-order of -B and -o does matter). It will also create a fooba.dat file with
-just foo in it.
-
-  trace-cmd split --top -B foo -t -o fooba.dat -B bar
-
-This will create a trace.dat.1 with the top instance and the bar instance,
-but also make a fooba.dat file with just "foo", and promoting it as the top
-instance.
-
-  trace-cmd split --top -o buba.dat -B foo -o foobar.dat -B bar -o foobar.dat
-
-This will make two files. One with buba.dat that holds the top instance,
-and foobar.dat that holds both the foo and bar instances.
-
-  trace-cmd split --top -o buba.dat -B foo -o foobar.dat -B bar -t -o foobar.dat
-
-This will make two files. One with buba.dat that holds just the top
-instance and a foobar.dat file that has both foo and bar, but bar gets
-promoted to the top instance.
-
-Does that make sense?
-
--- Steve
