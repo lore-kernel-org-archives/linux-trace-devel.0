@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 228F1130AD0;
-	Fri,  2 Feb 2024 22:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39757132467;
+	Fri,  2 Feb 2024 22:05:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706911509; cv=none; b=ZP0+nZx7n+l+rpjNugtQ9reEmb/EhGbF7l+NGtRTEytOdkLxnBxo+3qEaUr/E1P0nxwpgPeOBPxsUTzKfJ8Qtt1kiznDB+O2SGJpkt37+CqeE863fm7b8D4ukEk8Btrpd+Pw44nUa3urYWWpomQi9GfLkLNZJgo0CJqEzb164qM=
+	t=1706911510; cv=none; b=UbI1WJhzJOKzZa1QhY0d78D3p6dQubkeROlL9daBI4Oq8J9xo3cJCUe1iuJpjsJRYpuEaWSRzbxfWUUVUGxiopf3cBetNQUvL4eAsk0aWQMvCnQK3K90C7fV9tCyOXZo2VX8xrN74bZQTGZTVG8SP6iooEWr47N3QiePFKb9hLE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706911509; c=relaxed/simple;
-	bh=i+cKdwWRkc3VtQ3wGRnNjPZEDzZov+iNSpO+Ws+UzjA=;
+	s=arc-20240116; t=1706911510; c=relaxed/simple;
+	bh=8cuanY9nIKPUghP/dPMClAHP/3p1hi26K3nztrI2MFI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DMxGw2oR+YWeHJWW+IjbzId5mibAhEXvwhDV2J7P57BPVzl9hqnMEIDTEXncnQtBE51ATJvAgF8Yx0lJ25KtSDcTuS7cK/qHnBE++dZkdshiLTFoBJ22BgLXmShENfEB9gL7iU5xvEA6cfqFv7iehYU440aLNYTkQUqDiYrxuIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BqLKpGXh; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=agG8Z709yo0/mB1R4qPOdvJr5Hq2A6IX/b74DJz1+fpOFUJ3CvDhLhi45txagN54WgKYS3coX0k5xbCYC4xiXA6X/DzPWDLxXWw8AHuLGCMIvnYmneTfXkxbA8jSjGcEu8FXv1M2GOy7GQjm+zsmrrZdEuLMvylii0r8gpiOXtg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TxHn2IiH; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BqLKpGXh"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FE65C41679;
-	Fri,  2 Feb 2024 22:05:08 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TxHn2IiH"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5866CC43390;
+	Fri,  2 Feb 2024 22:05:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706911508;
-	bh=i+cKdwWRkc3VtQ3wGRnNjPZEDzZov+iNSpO+Ws+UzjA=;
+	s=k20201202; t=1706911509;
+	bh=8cuanY9nIKPUghP/dPMClAHP/3p1hi26K3nztrI2MFI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BqLKpGXhq8rFfojJ1pgADczuOdLkKNvIeoR/LVYkVr8+ZN6+aN/xXJ2oBkhTUI5/C
-	 5b48DsMgzZMkkdDfclDizZwt2OkZxK+92L33dI05CrPBJFCnBEMvBhZbFkueOTyNy0
-	 +NoVr0UGLWfofIN720AIZbD8lASOKBefTCvTbWI1yz7f2tlGPX7zWP0n2ferWkxlJG
-	 ivJPKCYVXxEa7sh2k5Y6OEwDT4CYCJK+55gMtsOw1NRVb2Tg3FClAB5IQBG/MpJBG2
-	 76//JXP+KV4KGc6oLhTSVqaE60dgdpiyJFsiotpAUeOIoEEKfMjjLEPMRomnoo5ZGN
-	 crA5j+EbrPbHw==
+	b=TxHn2IiHBRlypqccvr7R1y33hds9O14sWGIbCsicdHXkx2sdrIDnShKjbGjiY6x3O
+	 DOxLl3ppa9OEWw8+YoorLHC39SbSIedAHJiF/4IQwBXgQKe/FAdHEWRAqkcoUFVKaB
+	 9s5hrCQQiaLpasPfJCiaGOlbgpb4k6o6ZYrnLJLDP4PARu/upkAU/5CMY1kNLzBhSh
+	 2btZ6QO6LOCiW0JsDeZMgifISkpp3z4iraiN8Ka+qjhMFYfSPkhIzo1065+MjW0Z07
+	 RZJDcmrt/D0cA6Um6u1oToUlo4XkY4/RBKYTkSiwvWSqqeaLvdjRVmw4ATVcdhxtO5
+	 vLTKS3Z+Dtykg==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>
@@ -40,9 +40,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-toolchains@vger.kernel.org,
 	linux-trace-devel@vger.kernel.org
-Subject: [PATCH 11/14] perf annotate: Parse x86 segment register location
-Date: Fri,  2 Feb 2024 14:04:56 -0800
-Message-ID: <20240202220459.527138-12-namhyung@kernel.org>
+Subject: [PATCH 13/14] perf annotate-data: Track instructions with a this-cpu variable
+Date: Fri,  2 Feb 2024 14:04:58 -0800
+Message-ID: <20240202220459.527138-14-namhyung@kernel.org>
 X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
 In-Reply-To: <20240202220459.527138-1-namhyung@kernel.org>
 References: <20240202220459.527138-1-namhyung@kernel.org>
@@ -54,101 +54,139 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a segment field in the struct annotated_insn_loc and save it for the
-segment based addressing like %gs:0x28.  For simplicity it now handles
-%gs register only.
+Like global variables, this per-cpu variables should be tracked
+correctly.  Factor our get_global_var_type() to handle both global
+and per-cpu (for this cpu) variables in the same manner.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/annotate.c | 21 +++++++++++++++++++--
- tools/perf/util/annotate.h | 13 +++++++++++++
- 2 files changed, 32 insertions(+), 2 deletions(-)
+ tools/perf/util/annotate-data.c | 84 +++++++++++++++++++++++----------
+ 1 file changed, 60 insertions(+), 24 deletions(-)
 
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index 89a8d57b1bf7..86ac44c476bf 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -3557,6 +3557,12 @@ static int extract_reg_offset(struct arch *arch, const char *str,
- 	 * %gs:0x18(%rbx).  In that case it should skip the part.
- 	 */
- 	if (*str == arch->objdump.register_char) {
-+		if (arch__is(arch, "x86")) {
-+			/* FIXME: Handle other segment registers */
-+			if (!strncmp(str, "%gs:", 4))
-+				op_loc->segment = INSN_SEG_X86_GS;
-+		}
+diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
+index cebbe17de64a..9d6cc6ac431c 100644
+--- a/tools/perf/util/annotate-data.c
++++ b/tools/perf/util/annotate-data.c
+@@ -410,6 +410,37 @@ void update_var_state(struct type_state *state, struct data_loc_info *dloc,
+ 	}
+ }
+ 
++static bool get_global_var_type(Dwarf_Die *cu_die, struct map_symbol *ms, u64 ip,
++				u64 var_addr, const char *var_name, int var_offset,
++				Dwarf_Die *type_die)
++{
++	u64 pc;
++	int offset = var_offset;
++	bool is_pointer = false;
++	Dwarf_Die var_die;
 +
- 		while (*str && !isdigit(*str) &&
- 		       *str != arch->objdump.memory_ref_char)
- 			str++;
-@@ -3653,8 +3659,19 @@ int annotate_get_insn_location(struct arch *arch, struct disasm_line *dl,
- 			op_loc->multi_regs = multi_regs;
- 			extract_reg_offset(arch, insn_str, op_loc);
- 		} else {
--			char *s = strdup(insn_str);
-+			char *s;
++	pc = map__rip_2objdump(ms->map, ip);
 +
-+			if (arch__is(arch, "x86")) {
-+				/* FIXME: Handle other segment registers */
-+				if (!strncmp(insn_str, "%gs:", 4)) {
-+					op_loc->segment = INSN_SEG_X86_GS;
-+					op_loc->offset = strtol(insn_str + 4,
-+								NULL, 0);
-+					continue;
-+				}
-+			}
- 
-+			s = strdup(insn_str);
- 			if (s) {
- 				op_loc->reg1 = get_dwarf_regnum(s, 0);
- 				free(s);
-@@ -3875,7 +3892,7 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
- 			.op = op_loc,
- 		};
- 
--		if (!op_loc->mem_ref)
-+		if (!op_loc->mem_ref && op_loc->segment == INSN_SEG_NONE)
- 			continue;
- 
- 		/* Recalculate IP because of LOCK prefix or insn fusion */
-diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
-index b460785111a1..2bd654620de3 100644
---- a/tools/perf/util/annotate.h
-+++ b/tools/perf/util/annotate.h
-@@ -446,6 +446,7 @@ int annotate_check_args(void);
-  * @reg1: First register in the operand
-  * @reg2: Second register in the operand
-  * @offset: Memory access offset in the operand
-+ * @segment: Segment selector register
-  * @mem_ref: Whether the operand accesses memory
-  * @multi_regs: Whether the second register is used
-  */
-@@ -453,6 +454,7 @@ struct annotated_op_loc {
- 	int reg1;
- 	int reg2;
- 	int offset;
-+	u8 segment;
- 	bool mem_ref;
- 	bool multi_regs;
- };
-@@ -464,6 +466,17 @@ enum annotated_insn_ops {
- 	INSN_OP_MAX,
- };
- 
-+enum annotated_x86_segment {
-+	INSN_SEG_NONE = 0,
++	/* Try to get the variable by address first */
++	if (die_find_variable_by_addr(cu_die, pc, var_addr, &var_die, &offset) &&
++	    check_variable(&var_die, type_die, offset, is_pointer) == 0 &&
++	    die_get_member_type(type_die, offset, type_die))
++		return true;
 +
-+	INSN_SEG_X86_CS,
-+	INSN_SEG_X86_DS,
-+	INSN_SEG_X86_ES,
-+	INSN_SEG_X86_FS,
-+	INSN_SEG_X86_GS,
-+	INSN_SEG_X86_SS,
-+};
++	if (var_name == NULL)
++		return false;
++
++	offset = var_offset;
++
++	/* Try to get the name of global variable */
++	if (die_find_variable_at(cu_die, var_name, pc, &var_die) &&
++	    check_variable(&var_die, type_die, offset, is_pointer) == 0 &&
++	    die_get_member_type(type_die, offset, type_die))
++		return true;
++
++	return false;
++}
 +
  /**
-  * struct annotated_insn_loc - Location info of instruction
-  * @ops: Array of location info for source and target operands
+  * update_insn_state - Update type state for an instruction
+  * @state: type state table
+@@ -473,14 +504,36 @@ void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
+ 			fbreg = -1;
+ 	}
+ 
+-	/* Case 1. register to register transfers */
++	/* Case 1. register to register or segment:offset to register transfers */
+ 	if (!src->mem_ref && !dst->mem_ref) {
+ 		if (!has_reg_type(state, dst->reg1))
+ 			return;
+ 
+ 		if (has_reg_type(state, src->reg1))
+ 			state->regs[dst->reg1] = state->regs[src->reg1];
+-		else
++		else if (map__dso(dloc->ms->map)->kernel &&
++			 src->segment == INSN_SEG_X86_GS) {
++			struct map_symbol *ms = dloc->ms;
++			int offset = src->offset;
++			u64 ip = ms->sym->start + dl->al.offset;
++			const char *var_name = NULL;
++			u64 var_addr;
++
++			/*
++			 * In kernel, %gs points to a per-cpu region for the
++			 * current CPU.  Access with a constant offset should
++			 * be treated as a global variable access.
++			 */
++			var_addr = src->offset;
++			get_percpu_var_info(dloc->thread, ms, dloc->cpumode,
++					    var_addr, &var_name, &offset);
++
++			if (get_global_var_type(cu_die, ms, ip, var_addr,
++						var_name, offset, &type_die)) {
++				state->regs[dst->reg1].type = type_die;
++				state->regs[dst->reg1].ok = true;
++			}
++		} else
+ 			state->regs[dst->reg1].ok = false;
+ 	}
+ 	/* Case 2. memory to register transers */
+@@ -493,37 +546,20 @@ void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
+ retry:
+ 		/* Check if it's a global variable */
+ 		if (sreg == DWARF_REG_PC) {
+-			Dwarf_Die var_die;
+ 			struct map_symbol *ms = dloc->ms;
+ 			int offset = src->offset;
+ 			u64 ip = ms->sym->start + dl->al.offset;
+-			u64 pc, addr;
+ 			const char *var_name = NULL;
++			u64 var_addr;
+ 
+-			addr = annotate_calc_pcrel(ms, ip, offset, dl);
+-			pc = map__rip_2objdump(ms->map, ip);
+-
+-			if (die_find_variable_by_addr(cu_die, pc, addr,
+-						      &var_die, &offset) &&
+-			    check_variable(&var_die, &type_die, offset,
+-					   /*is_pointer=*/false) == 0 &&
+-			    die_get_member_type(&type_die, offset, &type_die)) {
+-				state->regs[dst->reg1].type = type_die;
+-				state->regs[dst->reg1].ok = true;
+-				return;
+-			}
++			var_addr = annotate_calc_pcrel(ms, ip, offset, dl);
+ 
+-			/* Try to get the name of global variable */
+-			offset = src->offset;
+ 			get_global_var_info(dloc->thread, ms, ip, dl,
+-					    dloc->cpumode, &addr,
++					    dloc->cpumode, &var_addr,
+ 					    &var_name, &offset);
+ 
+-			if (var_name && die_find_variable_at(cu_die, var_name,
+-							     pc, &var_die) &&
+-			    check_variable(&var_die, &type_die, offset,
+-					   /*is_pointer=*/false) == 0 &&
+-			    die_get_member_type(&type_die, offset, &type_die)) {
++			if (get_global_var_type(cu_die, ms, ip, var_addr,
++						var_name, offset, &type_die)) {
+ 				state->regs[dst->reg1].type = type_die;
+ 				state->regs[dst->reg1].ok = true;
+ 			} else
 -- 
 2.43.0.594.gd9cf4e227d-goog
 
