@@ -1,51 +1,66 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9F74132498;
-	Fri,  2 Feb 2024 22:05:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB7C5636;
+	Sat,  3 Feb 2024 00:16:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706911510; cv=none; b=B9XujTkVVcfeRZe5ZHM7RsuuemsGBPfw+KIBb3CQIO8rZKNPs3cwAUmEWjr0Azb4/0s1UpJj1tb6lMGCQtDcpWOIhYm92pEkWSbGGQ/dUdSPjz0zPEZXdbVRP5VpGrytQd3gMqtdFIANhsTgiiBEVk6ovxxzJzgBti2K+9lZ0m4=
+	t=1706919404; cv=none; b=mBazjiH5SZeeoP8QdAnhQmQ+WUA+yGmXUw7E2KZv4TvBecokI5BjBwM/u/dq8aWRrvb3QpAIdb1bHfhcs97SbKrrACeFu9UJvJ54ZzcNVmrF+o6AUabK513Rq4QdcQ0bcEG9vw/d+ZS7M7TlpK4OmSBsFn3CYa0l+4twpc4lYRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706911510; c=relaxed/simple;
-	bh=u+3b408czl7+mH8GeTAKvju9aWQhRxzD0hyW0Dr5iWE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oBJLpojbZbIoZ0Yc0ozK85KovEb4V7Y2NodPbDy0GB/dg19qkvKotcaEyrDBVhdaVhLs22L+l2eGE5/fsmFYryndUzVnioigkno4bVKnQqug5tNFsHKM+xJStAjgn8THs6XlOdrOVA49LXXWGnaO4YWP0mZxZA+DAI6qAcpMW08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rj1bKvcP; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1706919404; c=relaxed/simple;
+	bh=epzm4rKSoQDNoRiuIWpvjBk55Qy8kCJ5CzoSRUbMMws=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FcDbnq4boN3LvD1yI5gD+/Bmsncc/meIvvILezBBGNQ7i+QhvpHtJdU0r+PbZQX/5ir6vdFZEfbTKoZ7GOBVXs8afPOnusvtAZscMcyFBAV+UXS4OGmJJjfQKlIyZBTVfF5oEMq8CZNAUxCXt+Q9HpnHbXUW4CFKuo6Es8dvfhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YWDvwAaq; arc=none smtp.client-ip=209.85.222.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rj1bKvcP"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFFC0C433C7;
-	Fri,  2 Feb 2024 22:05:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706911510;
-	bh=u+3b408czl7+mH8GeTAKvju9aWQhRxzD0hyW0Dr5iWE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Rj1bKvcPX27x+4M1i+jYh7SuVlGttIBX9A5CC5LblU9hEvwGe2Od18VdDnFcbjFRk
-	 no3J1Xy5wkzm48aOCRzIo3KckxAdIxPqejNlRdZhTiAnV05sFv513YXo8N4sRXvNkc
-	 yc+SzlRdzjfBfA34VHkqBEWe0P6toRYi1gqtprXwEoJKSgtxfYXYe9gyyVK/u8gkcp
-	 zHn4niC9G0eo5JBaPs1Ib35wfDrhZjU769cjkQL+edF94vJBNMNwaBOdaKde9+v+ia
-	 L9d4L64ku4JADxIXdeXwwFnhW5HsYdcM9eaVLLWJxQwBESMMTkM1ZcHhL0gYCx2a1d
-	 fzw9QfMK+Ysdw==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Stephane Eranian <eranian@google.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-toolchains@vger.kernel.org,
-	linux-trace-devel@vger.kernel.org
-Subject: [PATCH 14/14] perf annotate-data: Add stack canary type
-Date: Fri,  2 Feb 2024 14:04:59 -0800
-Message-ID: <20240202220459.527138-15-namhyung@kernel.org>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-In-Reply-To: <20240202220459.527138-1-namhyung@kernel.org>
-References: <20240202220459.527138-1-namhyung@kernel.org>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YWDvwAaq"
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-783cd9ca29eso116801285a.1;
+        Fri, 02 Feb 2024 16:16:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706919401; x=1707524201; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=YE+GQEi4WgLdT6Ksz+vs2z8SJMiDC0kWDo1/vTv5WNc=;
+        b=YWDvwAaqWD0EcVaRjvS5Me4ikUVYEX42c+0D8hV9Qz/djz6l5SWsr7q9gw91zf4BCe
+         dc0uSddAhUFMEGI6Rzr7ZIcw8wemrkyVFDCmJx/xXueufdjMvOAa6YU4QV0y4GZ72NY2
+         6uygO3xt8iYEfXXwAFinf/PHgJj1GnvKnyby5wYDqULgK2/yIKMpBtKq6wiYOFVu+dA5
+         kAaugYDgrOagdwSG6fwcdsWmyMlAkPGw437n/dTE3w8o+RbbafY6IEgnCw+t5+6T93zc
+         NyhQCUIkD+m7O0IDEg0R7XjeVEXln2gfRhe9NTpVOev2G0K5w5NCggjGELPyY4MHkTeg
+         i/gQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706919401; x=1707524201;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YE+GQEi4WgLdT6Ksz+vs2z8SJMiDC0kWDo1/vTv5WNc=;
+        b=tKL3ZxEZzc8+T2qWrnAWi7mW84P1YdEeJBzRbcy45mbkIh0Ng47O0VBmDaj51s8lrQ
+         nnO8yFzJ3flwQTtSzeJ021n4iyFYHE2h3exfVbXwkgfiRJjiYR0wqcuDKgSLrUvWzsHt
+         qkmXBEURupA9dmYGyTWJ+Sd4DeiduMAXlM0YWqlPsuf4o1zxygiA1OnUmtZdg4MJvgHn
+         jfuXyYu7XPVl0hJY7MkrcoVnTomO86/yCsm3E+Wr4vzL4r5mqijT3IVQCFbJTzSu/1KV
+         +2i81eox0/IZW6NN73s+WrG6oU8ugPsYCcNyNgUeF3/7akN5UJL9muvQZxQAudWXJmtL
+         RU6Q==
+X-Gm-Message-State: AOJu0YxvSFGJmxgsIdsd05ahckvTE1rhBZl1WgpglgVSBnilR/1DtiyH
+	paqdWC+dimS3q+WsTJuN6ieFp0LEdP0eaeJ9ZUsPG2B4DZNroW6betoitTF+7wg=
+X-Google-Smtp-Source: AGHT+IEYgVRNZuQLJBlvxrjIwwkRNvRtBu/hLY6Ty1rwXqR6IjCnZxdYY0Tba4ughyz+cC16uF9wfw==
+X-Received: by 2002:a05:620a:1793:b0:785:5f4f:ac11 with SMTP id ay19-20020a05620a179300b007855f4fac11mr2061734qkb.48.1706919400696;
+        Fri, 02 Feb 2024 16:16:40 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCU4XFUDz0mGvcqhN1/c30v6kTI5dCkzFfvoWe+as2YoEGZDpDQwT52NFR3S4/TIMEvyhrY8gEQmzBVABw5SJqSkAZo57ZWuJdtz7NZrwoUv53KXfJUYOFaRs8NdEKspoVVGQPkAEpm2MM0EggyMLgFArYWZed8=
+Received: from fionn.home ([174.88.88.13])
+        by smtp.gmail.com with ESMTPSA id vq25-20020a05620a559900b0078553970530sm967422qkn.89.2024.02.02.16.16.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 16:16:39 -0800 (PST)
+Sender: John Kacur <jkacur@gmail.com>
+From: John Kacur <jkacur@redhat.com>
+To: linux-trace-devel@vger.kernel.org,
+	lkml <linux-kernel@vger.kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Daniel Bristot de Oliveria <bristot@kernel.org>
+Cc: John Kacur <jkacur@redhat.com>
+Subject: [PATCH] rtla: osnoise: timerlat: exit with EXIT_SUCCESS when help is invoked
+Date: Fri,  2 Feb 2024 19:16:07 -0500
+Message-ID: <20240203001607.69703-1-jkacur@redhat.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -54,82 +69,89 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When the stack protector is enabled, compiler would generate code to
-check stack overflow with a special value called 'stack carary' at
-runtime.  On x86_64, GCC hard-codes the stack canary as %gs:40.
+Fix rtla so that the following commands exit with 0 when help is invoked
 
-While there's a definition of fixed_percpu_data in asm/processor.h,
-it seems that the header is not included everywhere and many places
-it cannot find the type info.  As it's in the well-known location (at
-%gs:40), let's add a pseudo stack canary type to handle it specially.
+rtla osnoise top -h
+rtla osnoise hist -h
+rtla timerlat top -h
+rtla timerlat hist -h
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: John Kacur <jkacur@redhat.com>
 ---
- tools/perf/util/annotate-data.h |  1 +
- tools/perf/util/annotate.c      | 24 ++++++++++++++++++++++++
- 2 files changed, 25 insertions(+)
+ tools/tracing/rtla/src/osnoise_hist.c  | 6 +++++-
+ tools/tracing/rtla/src/osnoise_top.c   | 6 +++++-
+ tools/tracing/rtla/src/timerlat_hist.c | 6 +++++-
+ tools/tracing/rtla/src/timerlat_top.c  | 6 +++++-
+ 4 files changed, 20 insertions(+), 4 deletions(-)
 
-diff --git a/tools/perf/util/annotate-data.h b/tools/perf/util/annotate-data.h
-index 0bfef29fa52c..e293980eb11b 100644
---- a/tools/perf/util/annotate-data.h
-+++ b/tools/perf/util/annotate-data.h
-@@ -77,6 +77,7 @@ struct annotated_data_type {
+diff --git a/tools/tracing/rtla/src/osnoise_hist.c b/tools/tracing/rtla/src/osnoise_hist.c
+index 8f81fa007364..839257e5925d 100644
+--- a/tools/tracing/rtla/src/osnoise_hist.c
++++ b/tools/tracing/rtla/src/osnoise_hist.c
+@@ -480,7 +480,11 @@ static void osnoise_hist_usage(char *usage)
  
- extern struct annotated_data_type unknown_type;
- extern struct annotated_data_type stackop_type;
-+extern struct annotated_data_type canary_type;
- 
- /**
-  * struct data_loc_info - Data location information
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index 5f3136f57c62..f2683dadf3cf 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -116,6 +116,13 @@ struct annotated_data_type stackop_type = {
- 	},
- };
- 
-+struct annotated_data_type canary_type = {
-+	.self = {
-+		.type_name = (char *)"(stack canary)",
-+		.children = LIST_HEAD_INIT(canary_type.self.children),
-+	},
-+};
+ 	for (i = 0; msg[i]; i++)
+ 		fprintf(stderr, "%s\n", msg[i]);
+-	exit(1);
 +
- static int arch__grow_instructions(struct arch *arch)
- {
- 	struct ins *new_instructions;
-@@ -3764,6 +3771,17 @@ static bool is_stack_operation(struct arch *arch, struct disasm_line *dl)
- 	return false;
++	if (usage)
++		exit(EXIT_FAILURE);
++
++	exit(EXIT_SUCCESS);
  }
  
-+static bool is_stack_canary(struct arch *arch, struct annotated_op_loc *loc)
-+{
-+	/* On x86_64, %gs:40 is used for stack canary */
-+	if (arch__is(arch, "x86")) {
-+		if (loc->segment == INSN_SEG_X86_GS && loc->offset == 40)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- u64 annotate_calc_pcrel(struct map_symbol *ms, u64 ip, int offset,
- 			struct disasm_line *dl)
- {
-@@ -3938,6 +3956,12 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
- 		}
+ /*
+diff --git a/tools/tracing/rtla/src/osnoise_top.c b/tools/tracing/rtla/src/osnoise_top.c
+index f7c959be8677..457360db0767 100644
+--- a/tools/tracing/rtla/src/osnoise_top.c
++++ b/tools/tracing/rtla/src/osnoise_top.c
+@@ -331,7 +331,11 @@ static void osnoise_top_usage(struct osnoise_top_params *params, char *usage)
  
- 		mem_type = find_data_type(&dloc);
+ 	for (i = 0; msg[i]; i++)
+ 		fprintf(stderr, "%s\n", msg[i]);
+-	exit(1);
 +
-+		if (mem_type == NULL && is_stack_canary(arch, op_loc)) {
-+			mem_type = &canary_type;
-+			dloc.type_offset = 0;
-+		}
++	if (usage)
++		exit(EXIT_FAILURE);
 +
- 		if (mem_type)
- 			istat->good++;
- 		else
++	exit(EXIT_SUCCESS);
+ }
+ 
+ /*
+diff --git a/tools/tracing/rtla/src/timerlat_hist.c b/tools/tracing/rtla/src/timerlat_hist.c
+index 47d3d8b53cb2..81c6160d1757 100644
+--- a/tools/tracing/rtla/src/timerlat_hist.c
++++ b/tools/tracing/rtla/src/timerlat_hist.c
+@@ -546,7 +546,11 @@ static void timerlat_hist_usage(char *usage)
+ 
+ 	for (i = 0; msg[i]; i++)
+ 		fprintf(stderr, "%s\n", msg[i]);
+-	exit(1);
++
++	if (usage)
++		exit(EXIT_FAILURE);
++
++	exit(EXIT_SUCCESS);
+ }
+ 
+ /*
+diff --git a/tools/tracing/rtla/src/timerlat_top.c b/tools/tracing/rtla/src/timerlat_top.c
+index 1640f121baca..3e9af2c38688 100644
+--- a/tools/tracing/rtla/src/timerlat_top.c
++++ b/tools/tracing/rtla/src/timerlat_top.c
+@@ -375,7 +375,11 @@ static void timerlat_top_usage(char *usage)
+ 
+ 	for (i = 0; msg[i]; i++)
+ 		fprintf(stderr, "%s\n", msg[i]);
+-	exit(1);
++
++	if (usage)
++		exit(EXIT_FAILURE);
++
++	exit(EXIT_SUCCESS);
+ }
+ 
+ /*
 -- 
-2.43.0.594.gd9cf4e227d-goog
+2.43.0
 
