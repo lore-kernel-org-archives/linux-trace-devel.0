@@ -1,157 +1,146 @@
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB7C5636;
-	Sat,  3 Feb 2024 00:16:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14A8C23DE
+	for <linux-trace-devel@vger.kernel.org>; Sat,  3 Feb 2024 01:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706919404; cv=none; b=mBazjiH5SZeeoP8QdAnhQmQ+WUA+yGmXUw7E2KZv4TvBecokI5BjBwM/u/dq8aWRrvb3QpAIdb1bHfhcs97SbKrrACeFu9UJvJ54ZzcNVmrF+o6AUabK513Rq4QdcQ0bcEG9vw/d+ZS7M7TlpK4OmSBsFn3CYa0l+4twpc4lYRo=
+	t=1706924530; cv=none; b=mQReNRc7GBU0dGIYpBXUBOsUlSw5/iW2wRr42KjE+Yk7n2C3NFYMq1FIVUJTxCjBCyNiDtWzQMqGRw1TXIowQGod+zy1dneS8k4tBGnUI+dJOG8Efmqu7m8P7axHhNsQbofAAKylR9czpYn0wswxo5Aj43QwPwNsanAZu1cL9NI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706919404; c=relaxed/simple;
-	bh=epzm4rKSoQDNoRiuIWpvjBk55Qy8kCJ5CzoSRUbMMws=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FcDbnq4boN3LvD1yI5gD+/Bmsncc/meIvvILezBBGNQ7i+QhvpHtJdU0r+PbZQX/5ir6vdFZEfbTKoZ7GOBVXs8afPOnusvtAZscMcyFBAV+UXS4OGmJJjfQKlIyZBTVfF5oEMq8CZNAUxCXt+Q9HpnHbXUW4CFKuo6Es8dvfhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YWDvwAaq; arc=none smtp.client-ip=209.85.222.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1706924530; c=relaxed/simple;
+	bh=GL/NWsRNvwetg0ZgKm/CnIK8EZZYE3j8znwpXi+d+6k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Uy6ATtFkVxzLddvASQ61GZcOGZaf6v9eFUlpSH3wBkX8uOmEsyQvkp+3nnxe8uuKVqTzEaBx6ghGc7M/eTRQqSux2d/iWoH2dzD+X8sMLgH7jCU/Cenl43FlnZN2XvGgbw7UGFWNwVQl61teFZ+A1LyemF20lEBsocQbL1EV49k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=D/WBXHhD; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YWDvwAaq"
-Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-783cd9ca29eso116801285a.1;
-        Fri, 02 Feb 2024 16:16:42 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="D/WBXHhD"
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d5ce88b51cso101585ad.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 02 Feb 2024 17:42:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706919401; x=1707524201; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=YE+GQEi4WgLdT6Ksz+vs2z8SJMiDC0kWDo1/vTv5WNc=;
-        b=YWDvwAaqWD0EcVaRjvS5Me4ikUVYEX42c+0D8hV9Qz/djz6l5SWsr7q9gw91zf4BCe
-         dc0uSddAhUFMEGI6Rzr7ZIcw8wemrkyVFDCmJx/xXueufdjMvOAa6YU4QV0y4GZ72NY2
-         6uygO3xt8iYEfXXwAFinf/PHgJj1GnvKnyby5wYDqULgK2/yIKMpBtKq6wiYOFVu+dA5
-         kAaugYDgrOagdwSG6fwcdsWmyMlAkPGw437n/dTE3w8o+RbbafY6IEgnCw+t5+6T93zc
-         NyhQCUIkD+m7O0IDEg0R7XjeVEXln2gfRhe9NTpVOev2G0K5w5NCggjGELPyY4MHkTeg
-         i/gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706919401; x=1707524201;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1706924527; x=1707529327; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YE+GQEi4WgLdT6Ksz+vs2z8SJMiDC0kWDo1/vTv5WNc=;
-        b=tKL3ZxEZzc8+T2qWrnAWi7mW84P1YdEeJBzRbcy45mbkIh0Ng47O0VBmDaj51s8lrQ
-         nnO8yFzJ3flwQTtSzeJ021n4iyFYHE2h3exfVbXwkgfiRJjiYR0wqcuDKgSLrUvWzsHt
-         qkmXBEURupA9dmYGyTWJ+Sd4DeiduMAXlM0YWqlPsuf4o1zxygiA1OnUmtZdg4MJvgHn
-         jfuXyYu7XPVl0hJY7MkrcoVnTomO86/yCsm3E+Wr4vzL4r5mqijT3IVQCFbJTzSu/1KV
-         +2i81eox0/IZW6NN73s+WrG6oU8ugPsYCcNyNgUeF3/7akN5UJL9muvQZxQAudWXJmtL
-         RU6Q==
-X-Gm-Message-State: AOJu0YxvSFGJmxgsIdsd05ahckvTE1rhBZl1WgpglgVSBnilR/1DtiyH
-	paqdWC+dimS3q+WsTJuN6ieFp0LEdP0eaeJ9ZUsPG2B4DZNroW6betoitTF+7wg=
-X-Google-Smtp-Source: AGHT+IEYgVRNZuQLJBlvxrjIwwkRNvRtBu/hLY6Ty1rwXqR6IjCnZxdYY0Tba4ughyz+cC16uF9wfw==
-X-Received: by 2002:a05:620a:1793:b0:785:5f4f:ac11 with SMTP id ay19-20020a05620a179300b007855f4fac11mr2061734qkb.48.1706919400696;
-        Fri, 02 Feb 2024 16:16:40 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU4XFUDz0mGvcqhN1/c30v6kTI5dCkzFfvoWe+as2YoEGZDpDQwT52NFR3S4/TIMEvyhrY8gEQmzBVABw5SJqSkAZo57ZWuJdtz7NZrwoUv53KXfJUYOFaRs8NdEKspoVVGQPkAEpm2MM0EggyMLgFArYWZed8=
-Received: from fionn.home ([174.88.88.13])
-        by smtp.gmail.com with ESMTPSA id vq25-20020a05620a559900b0078553970530sm967422qkn.89.2024.02.02.16.16.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 16:16:39 -0800 (PST)
-Sender: John Kacur <jkacur@gmail.com>
-From: John Kacur <jkacur@redhat.com>
-To: linux-trace-devel@vger.kernel.org,
-	lkml <linux-kernel@vger.kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Daniel Bristot de Oliveria <bristot@kernel.org>
-Cc: John Kacur <jkacur@redhat.com>
-Subject: [PATCH] rtla: osnoise: timerlat: exit with EXIT_SUCCESS when help is invoked
-Date: Fri,  2 Feb 2024 19:16:07 -0500
-Message-ID: <20240203001607.69703-1-jkacur@redhat.com>
-X-Mailer: git-send-email 2.43.0
+        bh=W1tmXsSnp3camgDs1JiIWN7PNv+Db/yDFJhwZXZV06A=;
+        b=D/WBXHhDzyKrowiHj1GMrP31KK5M/OAnZsRTqSjBT438hdoJcLSiMQ8wGVoWjgBEKb
+         lCqzFLtXIHtrY/fuIhFYdy+9ledBCKhQMlPPMHMH+TAqoLn6kucLBW7aSNQsKrhLMYt1
+         Jv3iFm51hQ73wUqAkAJHa0ny1D7Bpbi6CkwhBeB6MlVKjcfzPtCP1doz/PL5F+iNR7yw
+         sK7QmlpUtBRuLPsuGZ4V/avM0VafKTgE+2A3gKy/vcq41XqLN5dCFc+XFh++Ig+R8JFr
+         9zI7SgNHzXOi/iFdWHAr+5vI7aVXesPoluqm87X8V8kiqHPznjJ7/SF0Pn0FnbKAWaNy
+         TG3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706924527; x=1707529327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=W1tmXsSnp3camgDs1JiIWN7PNv+Db/yDFJhwZXZV06A=;
+        b=PUgsBy4JshzBbBNqCH1Wvv6FEjF2j6JNdDrVwKTIwOz5X6O9bzhkYSB0wRh6+LZ2pd
+         mm1Y90Y+bNwRm/zvX1rG1+vj9fup1ZEOIzvSeTnFrwtaCCOVXCZnBUHRIzbSss+LUBoJ
+         HC/gmXzy1sZrsCkal9z45M2/PPdcICsxF5G5AgIdUzs41ANCUViMNadVvylhQtgLjcrN
+         6Ep7xrbyJwa1cNhQksMwLMF+GMDYW5AhLU0oC/Rs59KrEBp6wU1mNFGm8C/LPJyErJtt
+         IIRIRpp6+DC8KHwEPdsec5aNzOYGbuWFdWvsGfrm6oJc3Ia+N9w/CliVlyYol3UbfLlx
+         UEqg==
+X-Gm-Message-State: AOJu0YyBofjBChu+9RNTbdjRM8/4zuzntxmwBw45Xyh0InywUQlDf4+A
+	qr0tcN/iqxxk9nmZfcMXwMdz/StWEzZD3bmToReIqZu9XpZat/PCLuLmNyLMlDh7ZAv+mCMoNNp
+	KdjXq1hhM92REWXIHAminA+ii7OPbhu8OrnHY
+X-Google-Smtp-Source: AGHT+IFvVXrppMHSh7EsMSe+LktgAY1bvnADV80hP2rmsBLFLZkqA4D0C/pdQHOx+A5VfLjdqqxNYj4YHwkYqewRHaI=
+X-Received: by 2002:a17:902:b489:b0:1d7:48ef:e239 with SMTP id
+ y9-20020a170902b48900b001d748efe239mr72459plr.18.1706924527056; Fri, 02 Feb
+ 2024 17:42:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-5-namhyung@kernel.org>
+In-Reply-To: <20240202220459.527138-5-namhyung@kernel.org>
+From: Ian Rogers <irogers@google.com>
+Date: Fri, 2 Feb 2024 17:41:55 -0800
+Message-ID: <CAP-5=fU=P-ib+n+OfqJAbm8gS2RY-W-KcBskoSHkC+aCmXYcXQ@mail.gmail.com>
+Subject: Re: [PATCH 04/14] perf map: Add map__objdump_2rip()
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
+	linux-trace-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Fix rtla so that the following commands exit with 0 when help is invoked
+On Fri, Feb 2, 2024 at 2:05=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
+rote:
+>
+> Sometimes we want to convert an address in objdump output to
+> map-relative address to match with a sample data.  Let's add
+> map__objdump_2rip() for that.
 
-rtla osnoise top -h
-rtla osnoise hist -h
-rtla timerlat top -h
-rtla timerlat hist -h
+Hi Namhyung,
 
-Signed-off-by: John Kacur <jkacur@redhat.com>
----
- tools/tracing/rtla/src/osnoise_hist.c  | 6 +++++-
- tools/tracing/rtla/src/osnoise_top.c   | 6 +++++-
- tools/tracing/rtla/src/timerlat_hist.c | 6 +++++-
- tools/tracing/rtla/src/timerlat_top.c  | 6 +++++-
- 4 files changed, 20 insertions(+), 4 deletions(-)
+I think the naming can be better here. Aren't the objdump addresses
+DSO relative offsets? Is the relative IP relative to the map or the
+DSO?
 
-diff --git a/tools/tracing/rtla/src/osnoise_hist.c b/tools/tracing/rtla/src/osnoise_hist.c
-index 8f81fa007364..839257e5925d 100644
---- a/tools/tracing/rtla/src/osnoise_hist.c
-+++ b/tools/tracing/rtla/src/osnoise_hist.c
-@@ -480,7 +480,11 @@ static void osnoise_hist_usage(char *usage)
- 
- 	for (i = 0; msg[i]; i++)
- 		fprintf(stderr, "%s\n", msg[i]);
--	exit(1);
-+
-+	if (usage)
-+		exit(EXIT_FAILURE);
-+
-+	exit(EXIT_SUCCESS);
- }
- 
- /*
-diff --git a/tools/tracing/rtla/src/osnoise_top.c b/tools/tracing/rtla/src/osnoise_top.c
-index f7c959be8677..457360db0767 100644
---- a/tools/tracing/rtla/src/osnoise_top.c
-+++ b/tools/tracing/rtla/src/osnoise_top.c
-@@ -331,7 +331,11 @@ static void osnoise_top_usage(struct osnoise_top_params *params, char *usage)
- 
- 	for (i = 0; msg[i]; i++)
- 		fprintf(stderr, "%s\n", msg[i]);
--	exit(1);
-+
-+	if (usage)
-+		exit(EXIT_FAILURE);
-+
-+	exit(EXIT_SUCCESS);
- }
- 
- /*
-diff --git a/tools/tracing/rtla/src/timerlat_hist.c b/tools/tracing/rtla/src/timerlat_hist.c
-index 47d3d8b53cb2..81c6160d1757 100644
---- a/tools/tracing/rtla/src/timerlat_hist.c
-+++ b/tools/tracing/rtla/src/timerlat_hist.c
-@@ -546,7 +546,11 @@ static void timerlat_hist_usage(char *usage)
- 
- 	for (i = 0; msg[i]; i++)
- 		fprintf(stderr, "%s\n", msg[i]);
--	exit(1);
-+
-+	if (usage)
-+		exit(EXIT_FAILURE);
-+
-+	exit(EXIT_SUCCESS);
- }
- 
- /*
-diff --git a/tools/tracing/rtla/src/timerlat_top.c b/tools/tracing/rtla/src/timerlat_top.c
-index 1640f121baca..3e9af2c38688 100644
---- a/tools/tracing/rtla/src/timerlat_top.c
-+++ b/tools/tracing/rtla/src/timerlat_top.c
-@@ -375,7 +375,11 @@ static void timerlat_top_usage(char *usage)
- 
- 	for (i = 0; msg[i]; i++)
- 		fprintf(stderr, "%s\n", msg[i]);
--	exit(1);
-+
-+	if (usage)
-+		exit(EXIT_FAILURE);
-+
-+	exit(EXIT_SUCCESS);
- }
- 
- /*
--- 
-2.43.0
+Thanks,
+Ian
 
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/map.c | 20 ++++++++++++++++++++
+>  tools/perf/util/map.h |  3 +++
+>  2 files changed, 23 insertions(+)
+>
+> diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
+> index 54c67cb7ecef..66542864b7b5 100644
+> --- a/tools/perf/util/map.c
+> +++ b/tools/perf/util/map.c
+> @@ -594,6 +594,26 @@ u64 map__objdump_2mem(struct map *map, u64 ip)
+>         return ip + map__reloc(map);
+>  }
+>
+> +u64 map__objdump_2rip(struct map *map, u64 ip)
+> +{
+> +       const struct dso *dso =3D map__dso(map);
+> +
+> +       if (!dso->adjust_symbols)
+> +               return ip;
+> +
+> +       if (dso->rel)
+> +               return ip + map__pgoff(map);
+> +
+> +       /*
+> +        * kernel modules also have DSO_TYPE_USER in dso->kernel,
+> +        * but all kernel modules are ET_REL, so won't get here.
+> +        */
+> +       if (dso->kernel =3D=3D DSO_SPACE__USER)
+> +               return ip - dso->text_offset;
+> +
+> +       return map__map_ip(map, ip + map__reloc(map));
+> +}
+> +
+>  bool map__contains_symbol(const struct map *map, const struct symbol *sy=
+m)
+>  {
+>         u64 ip =3D map__unmap_ip(map, sym->start);
+> diff --git a/tools/perf/util/map.h b/tools/perf/util/map.h
+> index 49756716cb13..65e2609fa1b1 100644
+> --- a/tools/perf/util/map.h
+> +++ b/tools/perf/util/map.h
+> @@ -132,6 +132,9 @@ u64 map__rip_2objdump(struct map *map, u64 rip);
+>  /* objdump address -> memory address */
+>  u64 map__objdump_2mem(struct map *map, u64 ip);
+>
+> +/* objdump address -> rip */
+> +u64 map__objdump_2rip(struct map *map, u64 ip);
+> +
+>  struct symbol;
+>  struct thread;
+>
+> --
+> 2.43.0.594.gd9cf4e227d-goog
+>
