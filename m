@@ -1,66 +1,66 @@
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A397101C5
-	for <linux-trace-devel@vger.kernel.org>; Sat,  3 Feb 2024 03:09:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 076FD10976
+	for <linux-trace-devel@vger.kernel.org>; Sat,  3 Feb 2024 03:21:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706929759; cv=none; b=lI78PsLFYlbuRgj29ZcXKWv5uF508V4zZpU7py+cs7K1FHKvrzv7v/A92lsQy3lWx8iFGMVETEvF4M+AJUv+Qssm1tTGcoRi7g0im7d0XyFCOHJWfVcBIObZpo1omBGe8Ff2ZV7BE4k+p7HuavLFWWEZJM4CpJWsDtRpbyELaNc=
+	t=1706930483; cv=none; b=k9IUpi5SW7wb3/77UDyWWaasFpcSOnkrZfqUFMwC3AACHwrJy3K0qC4oMvhqdCIC9dC4RjdwNIK+ydH1KGBTa0qDLwa/nBRuqo62Tvr/pakMZF7IBKDbr69cxLKc5LxorUil7rE05kElxeHdVHVvNcDcDF7dsUdh+Meg1om+SF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706929759; c=relaxed/simple;
-	bh=KLM26Yfrtc8SeQCiqpSzGGfhWq7k+6JxiLtHj7A+bGk=;
+	s=arc-20240116; t=1706930483; c=relaxed/simple;
+	bh=9bbV8v/XesQnkV5S5/dZRkkgLTcqBfC/AF/L1stS04Q=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hafhT1yrAFmnGIfaYHkCYZJF9BknUnkIPVqc++MWFdR2KxyUW67hefJmuduph/m6BZ1pKJ1Nt88tlnGdiu9gGo4r+sF1Ubsaz9HoOMKPBKPtAYzxJUjdNbaWzP//XF164X0IMkUUZiaf0uURj/bj2lmzr1Y3LLSG9qLW8okKSac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hJ+thUtV; arc=none smtp.client-ip=209.85.166.170
+	 To:Cc:Content-Type; b=n3Sj2rA1itzQBAIMk/IaRKTvWfAAKky6jDMX2fihoF+dEJZKzML1mcpHCi82GT1BqPqJxhA5GnbMiIaZDVGCuuEHyMk19nl2iS71N7bfhIuzN4b2h9Iw1AeBuOT6pNIfSwvEtdtGp8vcnobCH8qu4OQFekftgYi/qigGyXdRuzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JsctIJA7; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hJ+thUtV"
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3638bd37107so52865ab.0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 02 Feb 2024 19:09:17 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JsctIJA7"
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d94691de1eso36415ad.1
+        for <linux-trace-devel@vger.kernel.org>; Fri, 02 Feb 2024 19:21:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706929756; x=1707534556; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1706930481; x=1707535281; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=b1DU4tok1X0r9bYtqZ6dNhjxfX0/7CKeHdYGkX55OSE=;
-        b=hJ+thUtVNbyUF1HPW0HiEbQmPcQUT9xO7AzHVMbe35f0DQD0WH8OXXfZrN+sfE+9Zy
-         hHucswnk+Z9laWpb9MD4LQ/8NSDHlJ5bU9ZKnM8mzJugG+WCdedOiVP7oz2JrJ9k4IlL
-         gbG6KAw5F/UrdBLFWqYnlILDcwRC+2Jv412iVdphCGUIbamOqVe7cPjkFssN4YWsT59L
-         Qsi3bwDtfrj33v3Z+s+9tyWM6JF4mL7ZgS3y/zM6N12tYSSfqgUBVfb9i3sQpGhQzIMU
-         vFMc+az0tOWt3W/LdKF9XOFN2bwcoZQohL9BVXOB33S5dRWqEIx8khaz4T6/gY4xnC6L
-         Jk0A==
+        bh=m2u//wf4yb5ku/Yg3213XLgXCGYC5NdB6fyXKhm401o=;
+        b=JsctIJA770hEhoTn+tX2kZW+85/L94kyXKR4J6PAd/9781p5dWpSBt43GBs7yekwEp
+         LXmcWXAnfgCyz02BhupzfLwOX31QthGnahmeOK98iijEjamYg3R9Q3TbyswCI07z8Qi6
+         iUiUZPtz/R8/J3TqVWz5TmZl9y8xBDqSCl+Ff9Dize0qFvv7PMwYZRNNeXxePNSL0k5o
+         9Z+cKWK8lF7ASPIjgZUS9UpUah8ajs0GcN2yZSShSnh6gCfu+kCbleyZPQwRl+2/g09d
+         KQ6M0yuAz3WUrTuu3YCmcr1bbrb4GACxlLNxsT9AMbMyUX85DkmkVwBO8vZeCFcb8RSO
+         fdEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706929756; x=1707534556;
+        d=1e100.net; s=20230601; t=1706930481; x=1707535281;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=b1DU4tok1X0r9bYtqZ6dNhjxfX0/7CKeHdYGkX55OSE=;
-        b=oxL2YVX4abrV/hvblUimCS/xWXxIIpDSucA2P9iu6MJCSEz/mDbmWaF7Bua+q2VdSj
-         V5N18df1wz72PewARGGK1hbn1GBOTB7/dxkG9pg1ZFAtA2Zw8G5k7rsYbEuZkr7G6mD8
-         xjnDVF+SmZ4J0NkqhoGnSd2ADKFpAlc/JxvKWElasIFX632An0gsVwmZN1OG2sbTBQaC
-         XZaZwGJ93WgLl9eUrr0EIVomuBfplNrBHk/DheWTdOBtoEHmcDRO+BcvfcqZEL/foe6R
-         tAlBsXkBv+Z6aXQObl1h+qZhkrNITiyJlDNbUiTD4MZB/37gySXodvZKK8sYjDU71MxR
-         bdEw==
-X-Gm-Message-State: AOJu0YydKN8xLq6PJFpsNmjZ88Vo9Aqp/KFMbHyVpgpOs4OOAP0D+F76
-	2AMjgpxB/3MemOClkPCzfwntbFzOyb657s1JAdQw+WGtqmyf/pA2urIGF5q1NB5ReycJC5AoZPb
-	fvsaCjBBRwujaKG9SbbrIs0PmP1TD9FojEZm5
-X-Google-Smtp-Source: AGHT+IG7wLGht0xNBz+bt/mG1e+4dxWnO7yhbSbVk/YuCf/7WkBuPoV05DoNtWLubTwidHCIpLEFOQAsMQDSUDgL4OA=
-X-Received: by 2002:a05:6e02:23c3:b0:363:8007:d7dd with SMTP id
- br3-20020a056e0223c300b003638007d7ddmr71455ilb.3.1706929756513; Fri, 02 Feb
- 2024 19:09:16 -0800 (PST)
+        bh=m2u//wf4yb5ku/Yg3213XLgXCGYC5NdB6fyXKhm401o=;
+        b=aXGn0n+HtKplPN+CQgETKwBSkX83tfGuKywvzIPRe97/qfLmRw2ZumjuGlrnS+7Scp
+         ur3+u6aSEr0murPeSuKfa/O2cQy01xD2tBGvdIwgSYt+dNqvnCKaQadP4/4o4LKdxUj0
+         lxSJPm3Kcv0giz0gq3kpf3gbyBNyHmETXpyirA9BJvxrvy6fYlVHbdx7Koke28S7vCcw
+         Zns3Hwgepb0P3kQ7OuWHxIbjR7jEvl4BfyPnZPYiv7Hx0uV6a1/GLyJDxhaEGuYui5LI
+         HwLde+/0iHD2HGCaDf/gMxAEisdFAcj4ORKXj/oFAPX2C5lqZuRorOQn4Mly8isRMeJc
+         mutQ==
+X-Gm-Message-State: AOJu0YyyltODoJnPOYKTYyWLoHLI0X6kgGJuXf1Vx6W/JUjuomQ1hSge
+	82o10sE6mpLrNaU168DgeC7vbsV/i8ZN4lPAQZ+vdPIBCJvJC4TdG9rg+aFHoKUdo5YL2jvxeKV
+	PY13Xx8t2+U7UpFFwMYYUWm0jct0oHT5ZRrgI
+X-Google-Smtp-Source: AGHT+IGAk0k1DBjlKTa3qXwHjikNO3DQIpo8PmfE1+IuKKtWK6lfiPhAVz0TF2wE8HETTzA62P0HIaMI9gbDNxccIdI=
+X-Received: by 2002:a17:903:608:b0:1d8:dd63:674f with SMTP id
+ kg8-20020a170903060800b001d8dd63674fmr70951plb.5.1706930480522; Fri, 02 Feb
+ 2024 19:21:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-10-namhyung@kernel.org>
-In-Reply-To: <20240202220459.527138-10-namhyung@kernel.org>
+References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-15-namhyung@kernel.org>
+In-Reply-To: <20240202220459.527138-15-namhyung@kernel.org>
 From: Ian Rogers <irogers@google.com>
-Date: Fri, 2 Feb 2024 19:09:05 -0800
-Message-ID: <CAP-5=fWhHb8iomEQ_rhwC50kGhPEVbDZv6X6riY_3pr787bhAQ@mail.gmail.com>
-Subject: Re: [PATCH 09/14] perf annotate-data: Handle call instructions
+Date: Fri, 2 Feb 2024 19:21:09 -0800
+Message-ID: <CAP-5=fUWaKW7d6_YkET0o26=fjBwX6PPJ1gXQ9wndQM_Oi2O3A@mail.gmail.com>
+Subject: Re: [PATCH 14/14] perf annotate-data: Add stack canary type
 To: Namhyung Kim <namhyung@kernel.org>
 Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
 	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
@@ -75,115 +75,95 @@ Content-Transfer-Encoding: quoted-printable
 On Fri, Feb 2, 2024 at 2:05=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
 rote:
 >
-> When updating instruction states, the call instruction should play a
-> role since it can change the register states.  For simplicity, mark some
-> registers as scratch registers (should be arch-dependent), and
-> invalidate them all after a function call.
+> When the stack protector is enabled, compiler would generate code to
+> check stack overflow with a special value called 'stack carary' at
+> runtime.  On x86_64, GCC hard-codes the stack canary as %gs:40.
+>
+> While there's a definition of fixed_percpu_data in asm/processor.h,
+> it seems that the header is not included everywhere and many places
+> it cannot find the type info.  As it's in the well-known location (at
+> %gs:40), let's add a pseudo stack canary type to handle it specially.
 
-nit: Volatile or caller-save would be a more conventional name than scratch=
-.
+I wonder if cases like this can be handled by debug info rather than
+special cases in the tool. Special cases are fine too, but are
+potentially less portable.
 
 Thanks,
 Ian
 
-> If the function returns something, the designated register (ret_reg)
-> will have the type info.
->
 > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 > ---
->  tools/perf/util/annotate-data.c | 45 +++++++++++++++++++++++++++++++--
->  1 file changed, 43 insertions(+), 2 deletions(-)
+>  tools/perf/util/annotate-data.h |  1 +
+>  tools/perf/util/annotate.c      | 24 ++++++++++++++++++++++++
+>  2 files changed, 25 insertions(+)
 >
-> diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-d=
-ata.c
-> index e46e162c783f..185cb896b9d6 100644
-> --- a/tools/perf/util/annotate-data.c
-> +++ b/tools/perf/util/annotate-data.c
-> @@ -23,10 +23,14 @@
->  #include "symbol.h"
->  #include "symbol_conf.h"
+> diff --git a/tools/perf/util/annotate-data.h b/tools/perf/util/annotate-d=
+ata.h
+> index 0bfef29fa52c..e293980eb11b 100644
+> --- a/tools/perf/util/annotate-data.h
+> +++ b/tools/perf/util/annotate-data.h
+> @@ -77,6 +77,7 @@ struct annotated_data_type {
 >
-> -/* Type information in a register, valid when ok is true */
-> +/*
-> + * Type information in a register, valid when @ok is true.
-> + * The @scratch registers are invalidated after a function call.
-> + */
->  struct type_state_reg {
->         Dwarf_Die type;
->         bool ok;
-> +       bool scratch;
+>  extern struct annotated_data_type unknown_type;
+>  extern struct annotated_data_type stackop_type;
+> +extern struct annotated_data_type canary_type;
+>
+>  /**
+>   * struct data_loc_info - Data location information
+> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+> index 5f3136f57c62..f2683dadf3cf 100644
+> --- a/tools/perf/util/annotate.c
+> +++ b/tools/perf/util/annotate.c
+> @@ -116,6 +116,13 @@ struct annotated_data_type stackop_type =3D {
+>         },
 >  };
 >
->  /* Type information in a stack location, dynamically allocated */
-> @@ -50,6 +54,7 @@ struct type_state_stack {
->  struct type_state {
->         struct type_state_reg regs[TYPE_STATE_MAX_REGS];
->         struct list_head stack_vars;
-> +       int ret_reg;
->  };
->
->  static bool has_reg_type(struct type_state *state, int reg)
-> @@ -57,10 +62,23 @@ static bool has_reg_type(struct type_state *state, in=
-t reg)
->         return (unsigned)reg < ARRAY_SIZE(state->regs);
->  }
->
-> -void init_type_state(struct type_state *state, struct arch *arch __maybe=
-_unused)
-> +void init_type_state(struct type_state *state, struct arch *arch)
+> +struct annotated_data_type canary_type =3D {
+> +       .self =3D {
+> +               .type_name =3D (char *)"(stack canary)",
+> +               .children =3D LIST_HEAD_INIT(canary_type.self.children),
+> +       },
+> +};
+> +
+>  static int arch__grow_instructions(struct arch *arch)
 >  {
->         memset(state, 0, sizeof(*state));
->         INIT_LIST_HEAD(&state->stack_vars);
-> +
-> +       if (arch__is(arch, "x86")) {
-> +               state->regs[0].scratch =3D true;
-> +               state->regs[1].scratch =3D true;
-> +               state->regs[2].scratch =3D true;
-> +               state->regs[4].scratch =3D true;
-> +               state->regs[5].scratch =3D true;
-> +               state->regs[8].scratch =3D true;
-> +               state->regs[9].scratch =3D true;
-> +               state->regs[10].scratch =3D true;
-> +               state->regs[11].scratch =3D true;
-> +               state->ret_reg =3D 0;
-> +       }
+>         struct ins *new_instructions;
+> @@ -3764,6 +3771,17 @@ static bool is_stack_operation(struct arch *arch, =
+struct disasm_line *dl)
+>         return false;
 >  }
 >
->  void exit_type_state(struct type_state *state)
-> @@ -417,6 +435,29 @@ void update_insn_state(struct type_state *state, str=
-uct data_loc_info *dloc,
->         int fbreg =3D dloc->fbreg;
->         int fboff =3D 0;
->
-> +       if (ins__is_call(&dl->ins)) {
-> +               Dwarf_Die func_die;
-> +
-> +               /* __fentry__ will preserve all registers */
-> +               if (dl->ops.target.sym &&
-> +                   !strcmp(dl->ops.target.sym->name, "__fentry__"))
-> +                       return;
-> +
-> +               /* Otherwise invalidate scratch registers after call */
-> +               for (unsigned i =3D 0; i < ARRAY_SIZE(state->regs); i++) =
-{
-> +                       if (state->regs[i].scratch)
-> +                               state->regs[i].ok =3D false;
-> +               }
-> +
-> +               /* Update register with the return type (if any) */
-> +               if (die_find_realfunc(cu_die, dl->ops.target.addr, &func_=
-die) &&
-> +                   die_get_real_type(&func_die, &type_die)) {
-> +                       state->regs[state->ret_reg].type =3D type_die;
-> +                       state->regs[state->ret_reg].ok =3D true;
-> +               }
-> +               return;
+> +static bool is_stack_canary(struct arch *arch, struct annotated_op_loc *=
+loc)
+> +{
+> +       /* On x86_64, %gs:40 is used for stack canary */
+> +       if (arch__is(arch, "x86")) {
+> +               if (loc->segment =3D=3D INSN_SEG_X86_GS && loc->offset =
+=3D=3D 40)
+> +                       return true;
 > +       }
 > +
->         /* FIXME: remove x86 specific code and handle more instructions l=
-ike LEA */
->         if (!strstr(dl->ins.name, "mov"))
->                 return;
+> +       return false;
+> +}
+> +
+>  u64 annotate_calc_pcrel(struct map_symbol *ms, u64 ip, int offset,
+>                         struct disasm_line *dl)
+>  {
+> @@ -3938,6 +3956,12 @@ struct annotated_data_type *hist_entry__get_data_t=
+ype(struct hist_entry *he)
+>                 }
+>
+>                 mem_type =3D find_data_type(&dloc);
+> +
+> +               if (mem_type =3D=3D NULL && is_stack_canary(arch, op_loc)=
+) {
+> +                       mem_type =3D &canary_type;
+> +                       dloc.type_offset =3D 0;
+> +               }
+> +
+>                 if (mem_type)
+>                         istat->good++;
+>                 else
 > --
 > 2.43.0.594.gd9cf4e227d-goog
 >
