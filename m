@@ -1,66 +1,66 @@
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 242F61079D
-	for <linux-trace-devel@vger.kernel.org>; Sat,  3 Feb 2024 02:49:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A397101C5
+	for <linux-trace-devel@vger.kernel.org>; Sat,  3 Feb 2024 03:09:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706928558; cv=none; b=QdTE9EV8Ua+3CvRfYpq9Xm0Tl8HL/tiXl/BrQdppXtCG2P5rAeUJIMYWky1qW25tw19NZ32M25XFq+o99OPOgB8B1w01XvCwkhrXjgw8z5R00pEA/PwlQbQyKvxab5BWQUAgo5OTIu7pbe+7nD8QNm9rLgcY1tRQtEI0emYnWIw=
+	t=1706929759; cv=none; b=lI78PsLFYlbuRgj29ZcXKWv5uF508V4zZpU7py+cs7K1FHKvrzv7v/A92lsQy3lWx8iFGMVETEvF4M+AJUv+Qssm1tTGcoRi7g0im7d0XyFCOHJWfVcBIObZpo1omBGe8Ff2ZV7BE4k+p7HuavLFWWEZJM4CpJWsDtRpbyELaNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706928558; c=relaxed/simple;
-	bh=vqfqX4Je0gQB6B1gJWda0z25IwH75ROT1dwdQ8kgeXQ=;
+	s=arc-20240116; t=1706929759; c=relaxed/simple;
+	bh=KLM26Yfrtc8SeQCiqpSzGGfhWq7k+6JxiLtHj7A+bGk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=u482+Ec/OU2z2R4DXUbGAxJhR1qCFz9LrSuxfxAShxLPj0c/A09RMucPq3WiGkJZqj0kuIbVWjCn4RVkBOG29wjUl4mqSlv4OIXFs+MTze2UnfUqKTYJOolcoIqgIfjp3cSLN32HOnFUoIjW8Aqe/9mrsT0wTMx2umXbdLlQaOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4RIekuo4; arc=none smtp.client-ip=209.85.214.172
+	 To:Cc:Content-Type; b=hafhT1yrAFmnGIfaYHkCYZJF9BknUnkIPVqc++MWFdR2KxyUW67hefJmuduph/m6BZ1pKJ1Nt88tlnGdiu9gGo4r+sF1Ubsaz9HoOMKPBKPtAYzxJUjdNbaWzP//XF164X0IMkUUZiaf0uURj/bj2lmzr1Y3LLSG9qLW8okKSac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hJ+thUtV; arc=none smtp.client-ip=209.85.166.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4RIekuo4"
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d5ce88b51cso106135ad.0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 02 Feb 2024 18:49:16 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hJ+thUtV"
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3638bd37107so52865ab.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 02 Feb 2024 19:09:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706928556; x=1707533356; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1706929756; x=1707534556; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nvsVXnyQc0YO6IUrb/2xe3r1pTADCgJR6S4V3R6UYko=;
-        b=4RIekuo40Rg57kSf25/JWvydGr2P1zivUJjYFjm9RsQqB3X0rGPOrwid4G8rPUNiUl
-         hEdZ/DBdNxy0Sz8zLLhsJFPp4/FsXWynIQsO3EmvyfxSZTT4o8DwkRaFH4dQM+XydZLO
-         m79MTl0/e/C3hg52AsV2QoGthtN8HmF51q+4NODgqxe9XFGS7alselxlSOEsaOqTMDLh
-         Mi8Sn3r7exigj2hDzlJsPLQkTurLCT4VjuM/fZZKvQW5vxP4uPaSJmUTamkbN5A1FDUt
-         tp25jKC5Sii/7xvGXRP8I2K2dvZu4BUp1Tn5dEqj5VEVESshk+eeyHGMp7vHNKkUivOH
-         F6xQ==
+        bh=b1DU4tok1X0r9bYtqZ6dNhjxfX0/7CKeHdYGkX55OSE=;
+        b=hJ+thUtVNbyUF1HPW0HiEbQmPcQUT9xO7AzHVMbe35f0DQD0WH8OXXfZrN+sfE+9Zy
+         hHucswnk+Z9laWpb9MD4LQ/8NSDHlJ5bU9ZKnM8mzJugG+WCdedOiVP7oz2JrJ9k4IlL
+         gbG6KAw5F/UrdBLFWqYnlILDcwRC+2Jv412iVdphCGUIbamOqVe7cPjkFssN4YWsT59L
+         Qsi3bwDtfrj33v3Z+s+9tyWM6JF4mL7ZgS3y/zM6N12tYSSfqgUBVfb9i3sQpGhQzIMU
+         vFMc+az0tOWt3W/LdKF9XOFN2bwcoZQohL9BVXOB33S5dRWqEIx8khaz4T6/gY4xnC6L
+         Jk0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706928556; x=1707533356;
+        d=1e100.net; s=20230601; t=1706929756; x=1707534556;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nvsVXnyQc0YO6IUrb/2xe3r1pTADCgJR6S4V3R6UYko=;
-        b=smXfVX4omWyBsNECN4phGdjSuiES/hJlpd2wL2HfyEoc4mD5xucRdq9CATINVevqaS
-         hri5USwTTf9+Xh5pBDKITLsxV+R/UUVjQGnDIq88otpXnpDZ9Ghfhfn8OshYSB32aSDC
-         lk0WBO9pgsPjQ1v1hFO1GkgCQBYqw4u3iF5zitp12anUqjMs4x3PH9jzWAdqkmMe47X+
-         CFpPAo9TeWwtgmW43D8bkOU1BuUr//D86DnLMXlqGCNypaTp5SfQidng17nm6oMwGEPY
-         Jo1jVYE2o+CDGchofu6QsYVbL2XAqlkAQFdhxSGiLy2zJGqm/vZ+zSYsgkMyuY8CbeO9
-         wuEg==
-X-Gm-Message-State: AOJu0Yw8AvtfUiGYQA0sivm+mupjTycb8dj6OF6stxQKCfrpcZ6BUrLQ
-	E1xahv2hwR45dJXtWMv0zpD+fLwmUplNBu5gQXRIFF0+rXQCLl/a4NFukA9RFu4fe1+qV47VS/K
-	KtFHxs626gJPtEq6C/cq1MjhR4rDJ1lO4oHA6
-X-Google-Smtp-Source: AGHT+IGbbgicdBm1h0d/v8sD2+ltNW742yQoOOvo5ZM08cWHQPOb2pTD1eq4PqCARehNRUriI+IzHbLkEW37lJN3X0k=
-X-Received: by 2002:a17:903:2284:b0:1d9:310c:73be with SMTP id
- b4-20020a170903228400b001d9310c73bemr66262plh.13.1706928556166; Fri, 02 Feb
- 2024 18:49:16 -0800 (PST)
+        bh=b1DU4tok1X0r9bYtqZ6dNhjxfX0/7CKeHdYGkX55OSE=;
+        b=oxL2YVX4abrV/hvblUimCS/xWXxIIpDSucA2P9iu6MJCSEz/mDbmWaF7Bua+q2VdSj
+         V5N18df1wz72PewARGGK1hbn1GBOTB7/dxkG9pg1ZFAtA2Zw8G5k7rsYbEuZkr7G6mD8
+         xjnDVF+SmZ4J0NkqhoGnSd2ADKFpAlc/JxvKWElasIFX632An0gsVwmZN1OG2sbTBQaC
+         XZaZwGJ93WgLl9eUrr0EIVomuBfplNrBHk/DheWTdOBtoEHmcDRO+BcvfcqZEL/foe6R
+         tAlBsXkBv+Z6aXQObl1h+qZhkrNITiyJlDNbUiTD4MZB/37gySXodvZKK8sYjDU71MxR
+         bdEw==
+X-Gm-Message-State: AOJu0YydKN8xLq6PJFpsNmjZ88Vo9Aqp/KFMbHyVpgpOs4OOAP0D+F76
+	2AMjgpxB/3MemOClkPCzfwntbFzOyb657s1JAdQw+WGtqmyf/pA2urIGF5q1NB5ReycJC5AoZPb
+	fvsaCjBBRwujaKG9SbbrIs0PmP1TD9FojEZm5
+X-Google-Smtp-Source: AGHT+IG7wLGht0xNBz+bt/mG1e+4dxWnO7yhbSbVk/YuCf/7WkBuPoV05DoNtWLubTwidHCIpLEFOQAsMQDSUDgL4OA=
+X-Received: by 2002:a05:6e02:23c3:b0:363:8007:d7dd with SMTP id
+ br3-20020a056e0223c300b003638007d7ddmr71455ilb.3.1706929756513; Fri, 02 Feb
+ 2024 19:09:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-8-namhyung@kernel.org>
-In-Reply-To: <20240202220459.527138-8-namhyung@kernel.org>
+References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-10-namhyung@kernel.org>
+In-Reply-To: <20240202220459.527138-10-namhyung@kernel.org>
 From: Ian Rogers <irogers@google.com>
-Date: Fri, 2 Feb 2024 18:49:05 -0800
-Message-ID: <CAP-5=fUWbe-owCHsjQfOuTyt8kEzM_M_4GqS_rqKwL9VY3tJOQ@mail.gmail.com>
-Subject: Re: [PATCH 07/14] perf annotate-data: Add update_insn_state()
+Date: Fri, 2 Feb 2024 19:09:05 -0800
+Message-ID: <CAP-5=fWhHb8iomEQ_rhwC50kGhPEVbDZv6X6riY_3pr787bhAQ@mail.gmail.com>
+Subject: Re: [PATCH 09/14] perf annotate-data: Handle call instructions
 To: Namhyung Kim <namhyung@kernel.org>
 Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
 	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
@@ -75,17 +75,115 @@ Content-Transfer-Encoding: quoted-printable
 On Fri, Feb 2, 2024 at 2:05=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
 rote:
 >
-> The update_insn_state() function is to update the type state table after
-> processing each instruction.  For now, it handles MOV (on x86) insn
-> to transfer type info from the source location to the target.
->
-> The location can be a register or a stack slot.  Check carefully when
-> memory reference happens and fetch the type correctly.  It basically
-> ignores write to a memory since it doesn't change the type info.  One
-> exception is writes to (new) stack slots for register spilling.
+> When updating instruction states, the call instruction should play a
+> role since it can change the register states.  For simplicity, mark some
+> registers as scratch registers (should be arch-dependent), and
+> invalidate them all after a function call.
 
-Just an aside, it seems a shame objdump can't do this tracking for us.
-objdump already augments its output with symbol and relocation data.
+nit: Volatile or caller-save would be a more conventional name than scratch=
+.
 
 Thanks,
 Ian
+
+> If the function returns something, the designated register (ret_reg)
+> will have the type info.
+>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/annotate-data.c | 45 +++++++++++++++++++++++++++++++--
+>  1 file changed, 43 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-d=
+ata.c
+> index e46e162c783f..185cb896b9d6 100644
+> --- a/tools/perf/util/annotate-data.c
+> +++ b/tools/perf/util/annotate-data.c
+> @@ -23,10 +23,14 @@
+>  #include "symbol.h"
+>  #include "symbol_conf.h"
+>
+> -/* Type information in a register, valid when ok is true */
+> +/*
+> + * Type information in a register, valid when @ok is true.
+> + * The @scratch registers are invalidated after a function call.
+> + */
+>  struct type_state_reg {
+>         Dwarf_Die type;
+>         bool ok;
+> +       bool scratch;
+>  };
+>
+>  /* Type information in a stack location, dynamically allocated */
+> @@ -50,6 +54,7 @@ struct type_state_stack {
+>  struct type_state {
+>         struct type_state_reg regs[TYPE_STATE_MAX_REGS];
+>         struct list_head stack_vars;
+> +       int ret_reg;
+>  };
+>
+>  static bool has_reg_type(struct type_state *state, int reg)
+> @@ -57,10 +62,23 @@ static bool has_reg_type(struct type_state *state, in=
+t reg)
+>         return (unsigned)reg < ARRAY_SIZE(state->regs);
+>  }
+>
+> -void init_type_state(struct type_state *state, struct arch *arch __maybe=
+_unused)
+> +void init_type_state(struct type_state *state, struct arch *arch)
+>  {
+>         memset(state, 0, sizeof(*state));
+>         INIT_LIST_HEAD(&state->stack_vars);
+> +
+> +       if (arch__is(arch, "x86")) {
+> +               state->regs[0].scratch =3D true;
+> +               state->regs[1].scratch =3D true;
+> +               state->regs[2].scratch =3D true;
+> +               state->regs[4].scratch =3D true;
+> +               state->regs[5].scratch =3D true;
+> +               state->regs[8].scratch =3D true;
+> +               state->regs[9].scratch =3D true;
+> +               state->regs[10].scratch =3D true;
+> +               state->regs[11].scratch =3D true;
+> +               state->ret_reg =3D 0;
+> +       }
+>  }
+>
+>  void exit_type_state(struct type_state *state)
+> @@ -417,6 +435,29 @@ void update_insn_state(struct type_state *state, str=
+uct data_loc_info *dloc,
+>         int fbreg =3D dloc->fbreg;
+>         int fboff =3D 0;
+>
+> +       if (ins__is_call(&dl->ins)) {
+> +               Dwarf_Die func_die;
+> +
+> +               /* __fentry__ will preserve all registers */
+> +               if (dl->ops.target.sym &&
+> +                   !strcmp(dl->ops.target.sym->name, "__fentry__"))
+> +                       return;
+> +
+> +               /* Otherwise invalidate scratch registers after call */
+> +               for (unsigned i =3D 0; i < ARRAY_SIZE(state->regs); i++) =
+{
+> +                       if (state->regs[i].scratch)
+> +                               state->regs[i].ok =3D false;
+> +               }
+> +
+> +               /* Update register with the return type (if any) */
+> +               if (die_find_realfunc(cu_die, dl->ops.target.addr, &func_=
+die) &&
+> +                   die_get_real_type(&func_die, &type_die)) {
+> +                       state->regs[state->ret_reg].type =3D type_die;
+> +                       state->regs[state->ret_reg].ok =3D true;
+> +               }
+> +               return;
+> +       }
+> +
+>         /* FIXME: remove x86 specific code and handle more instructions l=
+ike LEA */
+>         if (!strstr(dl->ins.name, "mov"))
+>                 return;
+> --
+> 2.43.0.594.gd9cf4e227d-goog
+>
