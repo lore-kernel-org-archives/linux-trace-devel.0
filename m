@@ -1,169 +1,138 @@
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 076FD10976
-	for <linux-trace-devel@vger.kernel.org>; Sat,  3 Feb 2024 03:21:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA1672561C
+	for <linux-trace-devel@vger.kernel.org>; Sun,  4 Feb 2024 18:34:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706930483; cv=none; b=k9IUpi5SW7wb3/77UDyWWaasFpcSOnkrZfqUFMwC3AACHwrJy3K0qC4oMvhqdCIC9dC4RjdwNIK+ydH1KGBTa0qDLwa/nBRuqo62Tvr/pakMZF7IBKDbr69cxLKc5LxorUil7rE05kElxeHdVHVvNcDcDF7dsUdh+Meg1om+SF0=
+	t=1707071685; cv=none; b=HCalT7KwrL8n3hrhlcaV8Vsg/stZ4uJwt4xGzf2qZUcjQJnIuQI6EjlJSmCqX8eg/i4U4i9WzcLDikRKW5e33T/thmETWL2SnQLb8Vsv43bdVjVD/SJGS8aIrV7LP8g/q0FAFCAYZ7j+TfARR7gYB/vs1ysUaJPOv/wSJcyJnC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706930483; c=relaxed/simple;
-	bh=9bbV8v/XesQnkV5S5/dZRkkgLTcqBfC/AF/L1stS04Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=n3Sj2rA1itzQBAIMk/IaRKTvWfAAKky6jDMX2fihoF+dEJZKzML1mcpHCi82GT1BqPqJxhA5GnbMiIaZDVGCuuEHyMk19nl2iS71N7bfhIuzN4b2h9Iw1AeBuOT6pNIfSwvEtdtGp8vcnobCH8qu4OQFekftgYi/qigGyXdRuzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JsctIJA7; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1707071685; c=relaxed/simple;
+	bh=dkyNAEnt6u3BZ2qF8ZwU86kLjJsQsN3nwGOQPtwwjyc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=p1cE8IWnNY+5HZj4ZU9WYa806UMuH56Vl7rJG3bom6bHAboGxHmnxT/gT7cQNJjK0lqegGNBc1s0zgouDQutG/w6mseB+Xqwe2+BoHeeZZKc0AuX9CuV6gwgnM2p8JwI4lLwkLRYJ7FnI4A54XcxvHz+v+rcX1QqgX72G35ipts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MQ6iYTef; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JsctIJA7"
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d94691de1eso36415ad.1
-        for <linux-trace-devel@vger.kernel.org>; Fri, 02 Feb 2024 19:21:21 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MQ6iYTef"
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a349ed467d9so440432566b.1
+        for <linux-trace-devel@vger.kernel.org>; Sun, 04 Feb 2024 10:34:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706930481; x=1707535281; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m2u//wf4yb5ku/Yg3213XLgXCGYC5NdB6fyXKhm401o=;
-        b=JsctIJA770hEhoTn+tX2kZW+85/L94kyXKR4J6PAd/9781p5dWpSBt43GBs7yekwEp
-         LXmcWXAnfgCyz02BhupzfLwOX31QthGnahmeOK98iijEjamYg3R9Q3TbyswCI07z8Qi6
-         iUiUZPtz/R8/J3TqVWz5TmZl9y8xBDqSCl+Ff9Dize0qFvv7PMwYZRNNeXxePNSL0k5o
-         9Z+cKWK8lF7ASPIjgZUS9UpUah8ajs0GcN2yZSShSnh6gCfu+kCbleyZPQwRl+2/g09d
-         KQ6M0yuAz3WUrTuu3YCmcr1bbrb4GACxlLNxsT9AMbMyUX85DkmkVwBO8vZeCFcb8RSO
-         fdEA==
+        d=gmail.com; s=20230601; t=1707071682; x=1707676482; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mdqDw8L8vHwAxA0eokjieFBTa5Bj+Ua+6ilSNqzWh1s=;
+        b=MQ6iYTef0tOxP2hEhPxU/JMwLXZmut0RK+tGV9W+oV7lE7smCCSIkuWKtR4fMln2x+
+         3MDH9YK5vDMlXWPKKsVRbVpds/WdkziJEWl/0r1TYHaOHB6BRUz6COjWo5JPEDKTFKj8
+         H0/8f+Gq8yaH8J2A568VupKYlfcqdJLkHPwfYn+9k798Bl2KQbLNR2ijaodSQn7VkaIF
+         Lo76m4EE1nXJr008eQ+OwV6eWpUmcX/2mOfiKYBrIwWXaGV3jJFlA7UkOVqi2I2SV8Xs
+         uByY+3ieNBdZ6JqRdav2kdCsEBV6V4GNLhY41JjktymT8pd0iermh/cp/V2Xrv+B/ryN
+         Byog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706930481; x=1707535281;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m2u//wf4yb5ku/Yg3213XLgXCGYC5NdB6fyXKhm401o=;
-        b=aXGn0n+HtKplPN+CQgETKwBSkX83tfGuKywvzIPRe97/qfLmRw2ZumjuGlrnS+7Scp
-         ur3+u6aSEr0murPeSuKfa/O2cQy01xD2tBGvdIwgSYt+dNqvnCKaQadP4/4o4LKdxUj0
-         lxSJPm3Kcv0giz0gq3kpf3gbyBNyHmETXpyirA9BJvxrvy6fYlVHbdx7Koke28S7vCcw
-         Zns3Hwgepb0P3kQ7OuWHxIbjR7jEvl4BfyPnZPYiv7Hx0uV6a1/GLyJDxhaEGuYui5LI
-         HwLde+/0iHD2HGCaDf/gMxAEisdFAcj4ORKXj/oFAPX2C5lqZuRorOQn4Mly8isRMeJc
-         mutQ==
-X-Gm-Message-State: AOJu0YyyltODoJnPOYKTYyWLoHLI0X6kgGJuXf1Vx6W/JUjuomQ1hSge
-	82o10sE6mpLrNaU168DgeC7vbsV/i8ZN4lPAQZ+vdPIBCJvJC4TdG9rg+aFHoKUdo5YL2jvxeKV
-	PY13Xx8t2+U7UpFFwMYYUWm0jct0oHT5ZRrgI
-X-Google-Smtp-Source: AGHT+IGAk0k1DBjlKTa3qXwHjikNO3DQIpo8PmfE1+IuKKtWK6lfiPhAVz0TF2wE8HETTzA62P0HIaMI9gbDNxccIdI=
-X-Received: by 2002:a17:903:608:b0:1d8:dd63:674f with SMTP id
- kg8-20020a170903060800b001d8dd63674fmr70951plb.5.1706930480522; Fri, 02 Feb
- 2024 19:21:20 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707071682; x=1707676482;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mdqDw8L8vHwAxA0eokjieFBTa5Bj+Ua+6ilSNqzWh1s=;
+        b=clgPid+VG3V3rvlfikkQd2L4SoHPJJ5PwoMdj4Xfw5EEXkYAM5um+E/k0wIsnVotxl
+         J4Gn55bbSulRe4+tFeY9zpy8uRlbIj7q+Wx0U5bBjHglF3lB5BKA2noDyFGLUXnALLDK
+         2FWVTkjMX4lWJ2ybfuk6UzgWvXwfU7HjynEmiP+Kn52WqeScaggYIqujn9rg1uIID0Gt
+         1KHpK8nZ98blv61sb2J/eAUgFedt2Agjc4ddb2nLT2FM292vOlubSN6hoCP7CuGJRqZR
+         t/yyZEBMB4mi66Z6o+jRpv5GHtUVkqKYvbU9tUIXE/6R8ZyWZd0m0GX4VsqCK3EUzmZv
+         NHSQ==
+X-Gm-Message-State: AOJu0YxwWfRNMWaJLsrV9Bpyjno2QyIvG6QEwNQTJ685v9NPf5N1YNEh
+	p7AkWaXzI2Z0xWjzPhqWSnyz7/DxK4tsCSGFoM6N4bRH6eHX/od0EGh6dnkU
+X-Google-Smtp-Source: AGHT+IHgVOFqyON/BCgqs2sF1x8epPIvLjjXyWHDPIVGKGbyoipkDHtA4Ka+uq/AZF6oMlj4Q9X3Tg==
+X-Received: by 2002:a17:906:19c4:b0:a30:fba8:8fe1 with SMTP id h4-20020a17090619c400b00a30fba88fe1mr5364539ejd.21.1707071681768;
+        Sun, 04 Feb 2024 10:34:41 -0800 (PST)
+Received: from [192.168.0.107] (83-228-63-4.ip.btc-net.bg. [83.228.63.4])
+        by smtp.gmail.com with ESMTPSA id cx10-20020a170907168a00b00a367bdce1fcsm3409147ejd.64.2024.02.04.10.34.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Feb 2024 10:34:41 -0800 (PST)
+Message-ID: <bc2f74e7-6e1b-7f2e-40e0-b40c842a7bb4@gmail.com>
+Date: Sun, 4 Feb 2024 20:34:39 +0200
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-15-namhyung@kernel.org>
-In-Reply-To: <20240202220459.527138-15-namhyung@kernel.org>
-From: Ian Rogers <irogers@google.com>
-Date: Fri, 2 Feb 2024 19:21:09 -0800
-Message-ID: <CAP-5=fUWaKW7d6_YkET0o26=fjBwX6PPJ1gXQ9wndQM_Oi2O3A@mail.gmail.com>
-Subject: Re: [PATCH 14/14] perf annotate-data: Add stack canary type
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
-	linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 04/34] kernelshark: Do not create a temporary container
+ for looping over QMap
+To: Benjamin ROBIN <dev@benjarobin.fr>
+Cc: linux-trace-devel@vger.kernel.org
+References: <20240114171723.14092-1-dev@benjarobin.fr>
+ <20240114171723.14092-5-dev@benjarobin.fr>
+ <56c65e9b-7536-3246-5250-7a68e36daa36@gmail.com>
+ <7uyekhxkszucdofjsa23gqs4utdspx5u3vlhili6p72stbebux@djht53oakfff>
+Content-Language: en-US
+From: Yordan Karadzhov <y.karadz@gmail.com>
+In-Reply-To: <7uyekhxkszucdofjsa23gqs4utdspx5u3vlhili6p72stbebux@djht53oakfff>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 2, 2024 at 2:05=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> When the stack protector is enabled, compiler would generate code to
-> check stack overflow with a special value called 'stack carary' at
-> runtime.  On x86_64, GCC hard-codes the stack canary as %gs:40.
->
-> While there's a definition of fixed_percpu_data in asm/processor.h,
-> it seems that the header is not included everywhere and many places
-> it cannot find the type info.  As it's in the well-known location (at
-> %gs:40), let's add a pseudo stack canary type to handle it specially.
 
-I wonder if cases like this can be handled by debug info rather than
-special cases in the tool. Special cases are fine too, but are
-potentially less portable.
+
+On 1/28/24 22:30, Benjamin ROBIN wrote:
+> On Sun, Jan 21, 2024 at 07:16:01PM +0200, Yordan Karadzhov wrote:
+>>
+>>
+>> On 1/14/24 19:16, Benjamin ROBIN wrote:
+>>> Use const_iterator instead. Fix container-anti-pattern Clazy warning
+>>>
+>>> Signed-off-by: Benjamin ROBIN <dev@benjarobin.fr>
+>>> ---
+>>>    src/KsAdvFilteringDialog.cpp | 6 +++---
+>>>    1 file changed, 3 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/src/KsAdvFilteringDialog.cpp b/src/KsAdvFilteringDialog.cpp
+>>> index 4683c3d..247f912 100644
+>>> --- a/src/KsAdvFilteringDialog.cpp
+>>> +++ b/src/KsAdvFilteringDialog.cpp
+>>> @@ -276,8 +276,8 @@ void KsAdvFilteringDialog::_makeFilterTable()
+>>>    	headers << "Delete" << "Stream" << "Event" << " Id" << "Filter";
+>>>    	_table->init(headers, _filters.count());
+>>> -	for(auto f : _filters.keys()) {
+>>> -		QStringList thisFilter = _filters.value(f).split(":");
+>>> +	for (auto it = _filters.cbegin(), end = _filters.cend(); it != end; ++it) {
+>>
+>> Do we need to use iterator here?
+>> Perhaps you can do something like:
+>>
+>> for (const auto &[key, val] : _filters) {
+> 
+> Unfortunately, you cannot do that, as far as I know (this not compile).
+> C++ range-based for loop is using iterator behind the scene. See [1].
+> And there is still the problem of range-loop-detach (see patch 0005).
+> Using const iterator is the most explicit and safe way to iterate over a
+> container in Qt, so why not using it?
+
+I see your point. I am applying this patch together with all v2 patches 
+you sent.
+
+Are you considering sending new version of the "[31/34] Fix comparison 
+of integers of different signs warnings"?
 
 Thanks,
-Ian
+Y.
 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/util/annotate-data.h |  1 +
->  tools/perf/util/annotate.c      | 24 ++++++++++++++++++++++++
->  2 files changed, 25 insertions(+)
->
-> diff --git a/tools/perf/util/annotate-data.h b/tools/perf/util/annotate-d=
-ata.h
-> index 0bfef29fa52c..e293980eb11b 100644
-> --- a/tools/perf/util/annotate-data.h
-> +++ b/tools/perf/util/annotate-data.h
-> @@ -77,6 +77,7 @@ struct annotated_data_type {
->
->  extern struct annotated_data_type unknown_type;
->  extern struct annotated_data_type stackop_type;
-> +extern struct annotated_data_type canary_type;
->
->  /**
->   * struct data_loc_info - Data location information
-> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-> index 5f3136f57c62..f2683dadf3cf 100644
-> --- a/tools/perf/util/annotate.c
-> +++ b/tools/perf/util/annotate.c
-> @@ -116,6 +116,13 @@ struct annotated_data_type stackop_type =3D {
->         },
->  };
->
-> +struct annotated_data_type canary_type =3D {
-> +       .self =3D {
-> +               .type_name =3D (char *)"(stack canary)",
-> +               .children =3D LIST_HEAD_INIT(canary_type.self.children),
-> +       },
-> +};
-> +
->  static int arch__grow_instructions(struct arch *arch)
->  {
->         struct ins *new_instructions;
-> @@ -3764,6 +3771,17 @@ static bool is_stack_operation(struct arch *arch, =
-struct disasm_line *dl)
->         return false;
->  }
->
-> +static bool is_stack_canary(struct arch *arch, struct annotated_op_loc *=
-loc)
-> +{
-> +       /* On x86_64, %gs:40 is used for stack canary */
-> +       if (arch__is(arch, "x86")) {
-> +               if (loc->segment =3D=3D INSN_SEG_X86_GS && loc->offset =
-=3D=3D 40)
-> +                       return true;
-> +       }
-> +
-> +       return false;
-> +}
-> +
->  u64 annotate_calc_pcrel(struct map_symbol *ms, u64 ip, int offset,
->                         struct disasm_line *dl)
->  {
-> @@ -3938,6 +3956,12 @@ struct annotated_data_type *hist_entry__get_data_t=
-ype(struct hist_entry *he)
->                 }
->
->                 mem_type =3D find_data_type(&dloc);
-> +
-> +               if (mem_type =3D=3D NULL && is_stack_canary(arch, op_loc)=
-) {
-> +                       mem_type =3D &canary_type;
-> +                       dloc.type_offset =3D 0;
-> +               }
-> +
->                 if (mem_type)
->                         istat->good++;
->                 else
-> --
-> 2.43.0.594.gd9cf4e227d-goog
->
+> 
+> [1] https://en.cppreference.com/w/cpp/language/range-for
+>   
+>> Thanks!
+>> Y.
+>>
+>>> +		QStringList thisFilter = it.value().split(":");
+>>>    		i1 = new QTableWidgetItem(thisFilter[0]);
+>>>    		_table->setItem(count, 1, i1);
+>>> @@ -285,7 +285,7 @@ void KsAdvFilteringDialog::_makeFilterTable()
+>>>    		i1 = new QTableWidgetItem(thisFilter[1]);
+>>>    		_table->setItem(count, 2, i1);
+>>> -		i2 = new QTableWidgetItem(tr("%1").arg(f));
+>>> +		i2 = new QTableWidgetItem(tr("%1").arg(it.key()));
+>>>    		_table->setItem(count, 3, i2);
+>>>    		i3 = new QTableWidgetItem(thisFilter[2]);
