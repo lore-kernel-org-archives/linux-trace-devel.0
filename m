@@ -1,55 +1,70 @@
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C823C8289E;
-	Wed,  7 Feb 2024 19:08:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A5E886AE2
+	for <linux-trace-devel@vger.kernel.org>; Wed,  7 Feb 2024 19:56:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707332908; cv=none; b=en0sy9cWSAo8WUQ4LhI0gvjd8qmRtlRTdSb+8P5ww7gAcgt1dZK4oZ9iH+jO+/5W+Ri+TjJJpnh0XRzTymrJowuiUU3tmekHBiqgf146qWtsD8R3+Ammfd051qjsT7weXcETPIU2lrKKsv5UgFCs++kYxYijchthTv8h/63VmVY=
+	t=1707335788; cv=none; b=kH/n/pIHRIPlg2fzRRCQeSPqU2Ms+6CSE7R605jeAG0AshszoCuE9EK9xcGlIkrk2sKq7ep083Vy/EzCSDTbdK0NWURJ82RoQnHN1opwy7qLjDcuWKgAMHr4VKDGz2kAcvoisr+QFEZMYLgf2EWlVF9xVNWK83AndIs/qifwd7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707332908; c=relaxed/simple;
-	bh=gppkMTLUZP2M0ir4y57co003yRnpqCBQwMrit6QAMRY=;
+	s=arc-20240116; t=1707335788; c=relaxed/simple;
+	bh=dzgYn4bp7nr3cKM50l3TAoVq8LCXbeNtvvcBhmI+5F4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oXDKTMpsa5nlQXTBWUu66zTguCcdtUKZIWl/6nYq0KAIXO7vsF8y4bwQ8bs8CoeDhOqU0262IAXKvnj5vmRI5bv2BKGbTaXgsEDaZQj6K7VP4i+aVFj8Ts3RT+B9zBj+vbyGWXpUaoh5G+OtEfYtvgC2n7szQed4IpmhcHMYqrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e06c06c0f6so111581b3a.0;
-        Wed, 07 Feb 2024 11:08:26 -0800 (PST)
+	 To:Cc:Content-Type; b=Q24mqTOqaen1pg662oTzroCXaxPMRmjC4k7shyOQPPR9Mov0wKx7z/Z6Df3pZ+L5MLKhMpqzntdKk9hp6df6uohR1Eb6v4vYQCqaZzp8PVyQqu0dP0x8mt782s2rNjp6oz1xCOUUXWwQPP8y1qJ+10OLiPntzeR+MzioSFbvb5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=X/LDMUNl; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="X/LDMUNl"
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d9daf74f41so17615ad.1
+        for <linux-trace-devel@vger.kernel.org>; Wed, 07 Feb 2024 11:56:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707335785; x=1707940585; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GOFmIdHcVZFpvdlv+SwpSo0Y7EY1nbkZlWlLRqBJt6I=;
+        b=X/LDMUNl7q9r6qduvQQvW4Ck0iiopQjs1f8lsQz4dzB3rd0araf0qa5JvuZ/kNfDFU
+         gviYn784uyuu80WBVvON8JAQm09zLX1op41GCtzyCeOus5dS8dURR/lrLE6eolBcmSYB
+         49DNlVVXW/ILEwmXVA6z4KHP2ZaisphbBxUJiMLoDCXa5tCfv/G2v46gu6pf8gHaRfKB
+         GIvmH3CzJroIAFEKJchqEUNYfrcaMfL/Yh7OPgZb4Kkc1RrMo7V4DDVzN/L+A46l5BuJ
+         Ed4n6OljKwUvXGR8pW4XTBYxq6fZjLT9Ys6H0QfSxcE4jyHZZJjQIgRj16MD+WLtPHiy
+         /iEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707332906; x=1707937706;
+        d=1e100.net; s=20230601; t=1707335785; x=1707940585;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=b5NAyJJk2M6nTouAkFWsG1u5nlnAwfDcNyiH/8GXd1c=;
-        b=C/4YYI5y9POb1PY8NMjbEC3mSjf2OBAwSBTqXjBZAnEYUiwPn1wPPFVWMi7FR9Lqjg
-         /MorQX9dPOW96VdhGztqQytC2RIL0eQOwtiMqm7ZrYriFW/ww3qaZ+XSur6TMC5xCfcC
-         PaWMVlvr6OLT0Dm2dhy6pLIIXrUot+3rv4T8JdK+0eW9t21sQeX0iEFalPf9b4nGiRat
-         Z1wWA7jDS2NO2tFhIIUrMytNUg8VtaETPB7T7p/UKqFY2DrlOBmjkjHcz3KaurYljpxT
-         uYA3BSRZhspXpTpNgwO8KNp7JeYZxitl2/U7tE4xjVBX0YbIaG04WbuMPy3EsSUefccY
-         OkBg==
-X-Gm-Message-State: AOJu0Yyp2kgXdPl6+Qgru1Jw8Dv8XlLP4tmVvE/FsEILSxWllwMqU5ll
-	LlhobANgiLzHTjHCEzGXjqR4Gh+Ga80rLd4Z+dfOCPw4wOPEFStHmm1kJBXtpoAKhVc+vT4Q9Ww
-	bZW19QDQH7e2yoGxJFD12HYDbjZ0=
-X-Google-Smtp-Source: AGHT+IFbDa1MkIhin+YrCea3UDRAWki+bDn7OQtqgtmEhvXnmb3mzN9FOwFGws3FiO87xF1vQI6cvCXFaGKdkJVwvJA=
-X-Received: by 2002:a05:6a20:438f:b0:19c:9e7d:3f4e with SMTP id
- i15-20020a056a20438f00b0019c9e7d3f4emr891189pzl.1.1707332906015; Wed, 07 Feb
- 2024 11:08:26 -0800 (PST)
+        bh=GOFmIdHcVZFpvdlv+SwpSo0Y7EY1nbkZlWlLRqBJt6I=;
+        b=UG3XymI4wU69407B2/aGamBI13CS7lnHnnp6oNvl939rDbibGhOcX2r+XRp8GdV/R/
+         apRVYw+YrfQMj/YR3pNrqdQ6VXY4EEn+QoVbqG1nbu0RCdnaesOD0c5LfsQF/ibN3m+0
+         rPjVpmo1qWKvC/eGE4Wd3VB77ZqvQ1Razky/SYoZ1QqB0sBF1E4H7+P95qQQOVM7lA3h
+         DTwb6W3m40nwv+c5eyG7iObONFN1pjIT2rYcKKhxGFu0xwIlqzcG7q0yocY3p049DbRs
+         TZ/oFGzVz1Th2pnZdGJLnODZ4KCzWORb6L6ETmza0BWBcJe+hQeOTwTQvpAPrPmV6dpn
+         7NBQ==
+X-Gm-Message-State: AOJu0YyGnmZ9iTBuPU9Umlxk4npHMLJdNWC06USz0k4jf9ILFkCLCYPK
+	Cp6/60bosVdiglYNTlGGCvmHqpuGF0PtAldGeS0coyjmTZz8A2Ved1UX/6YkhsNJDNKIw4vkM+e
+	JIKP4XElC58ZQ5fjsfpzMrrkOz/dyXfFGQX+c
+X-Google-Smtp-Source: AGHT+IFyDmN8vpC/DtDFuDdylPr5fqRKmrKple2kR7uMrqfpHKpOh5ImkTJJ2shCLtNsUJhOZnmu0pONfefEfmA+h98=
+X-Received: by 2002:a17:903:484:b0:1d8:da36:d0ae with SMTP id
+ jj4-20020a170903048400b001d8da36d0aemr215750plb.3.1707335785036; Wed, 07 Feb
+ 2024 11:56:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-15-namhyung@kernel.org>
- <CAP-5=fUWaKW7d6_YkET0o26=fjBwX6PPJ1gXQ9wndQM_Oi2O3A@mail.gmail.com>
- <CAM9d7cgF_PYm2fG1Vgu25u1hVZUK0wmFBqY7DHW2eVpRV=iERA@mail.gmail.com> <CAP-5=fV7fWHM53roUJOU+0vAYQJAbhdE1EkgzHLv7jPgeLc2HQ@mail.gmail.com>
-In-Reply-To: <CAP-5=fV7fWHM53roUJOU+0vAYQJAbhdE1EkgzHLv7jPgeLc2HQ@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Wed, 7 Feb 2024 11:08:15 -0800
-Message-ID: <CAM9d7cgV-c2bLE9KGSA2qTHNbzGriQo9NqYD5k177+46e51pJA@mail.gmail.com>
-Subject: Re: [PATCH 14/14] perf annotate-data: Add stack canary type
-To: Ian Rogers <irogers@google.com>
+References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-5-namhyung@kernel.org>
+ <CAP-5=fU=P-ib+n+OfqJAbm8gS2RY-W-KcBskoSHkC+aCmXYcXQ@mail.gmail.com>
+ <CAM9d7chvEw6r8_7agxOpWxufTo+dLaNForSFFShCFGd9KDBtoA@mail.gmail.com>
+ <CAP-5=fWx9Uub9uRgQJq_ekQScm4fJXMdr9_cr19vcckCPjPt9w@mail.gmail.com> <CAM9d7ciGna7tm5gxoVAQexj_to9sRSL-emmCTSkMbGZgY8mthw@mail.gmail.com>
+In-Reply-To: <CAM9d7ciGna7tm5gxoVAQexj_to9sRSL-emmCTSkMbGZgY8mthw@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Wed, 7 Feb 2024 11:56:13 -0800
+Message-ID: <CAP-5=fXWew4c-0zAAny-1R+6mZpfATUc8pEi0G6G79BebiaPuA@mail.gmail.com>
+Subject: Re: [PATCH 04/14] perf map: Add map__objdump_2rip()
+To: Namhyung Kim <namhyung@kernel.org>
 Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
 	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
 	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
@@ -60,43 +75,60 @@ Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 6, 2024 at 3:40=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
-e:
->
-> On Tue, Feb 6, 2024 at 3:19=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
- wrote:
-> >
-> > On Fri, Feb 2, 2024 at 7:21=E2=80=AFPM Ian Rogers <irogers@google.com> =
+On Wed, Feb 7, 2024 at 11:04=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> =
 wrote:
-> > >
-> > > On Fri, Feb 2, 2024 at 2:05=E2=80=AFPM Namhyung Kim <namhyung@kernel.=
-org> wrote:
-> > > >
-> > > > When the stack protector is enabled, compiler would generate code t=
-o
-> > > > check stack overflow with a special value called 'stack carary' at
-> > > > runtime.  On x86_64, GCC hard-codes the stack canary as %gs:40.
-> > > >
-> > > > While there's a definition of fixed_percpu_data in asm/processor.h,
-> > > > it seems that the header is not included everywhere and many places
-> > > > it cannot find the type info.  As it's in the well-known location (=
-at
-> > > > %gs:40), let's add a pseudo stack canary type to handle it speciall=
-y.
-> > >
-> > > I wonder if cases like this can be handled by debug info rather than
-> > > special cases in the tool. Special cases are fine too, but are
-> > > potentially less portable.
-> >
-> > Agreed, but I couldn't find anything special in DWARF.
 >
-> The fs and gs selectors are commonly used for thread local storage, so
-> could something like DW_OP_form_tls_address be used?
-> https://dwarfstd.org/issues/110803.1.html
+> On Tue, Feb 6, 2024 at 3:34=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
+> >
+> > On Tue, Feb 6, 2024 at 3:04=E2=80=AFPM Namhyung Kim <namhyung@kernel.or=
+g> wrote:
+> > >
+> > > Hi Ian,
+> > >
+> > > On Fri, Feb 2, 2024 at 5:42=E2=80=AFPM Ian Rogers <irogers@google.com=
+> wrote:
+> > > >
+> > > > On Fri, Feb 2, 2024 at 2:05=E2=80=AFPM Namhyung Kim <namhyung@kerne=
+l.org> wrote:
+> > > > >
+> > > > > Sometimes we want to convert an address in objdump output to
+> > > > > map-relative address to match with a sample data.  Let's add
+> > > > > map__objdump_2rip() for that.
+> > > >
+> > > > Hi Namhyung,
+> > > >
+> > > > I think the naming can be better here. Aren't the objdump addresses
+> > > > DSO relative offsets? Is the relative IP relative to the map or the
+> > > > DSO?
+> > >
+> > > AFAIK the objdump addresses are DSO-relative and rip is to map.
+> > > They are mostly the same but sometimes different due to kASLR
+> > > for the kernel.
+> >
+> > Perhaps we need to use names like map_rip for mapping relative and
+> > dso_rip to clean this up, or to add a different mapping_type to the
+> > enum. For non-kernel maps addresses for map are either the whole
+> > virtual address space (identity) or relative to a dso:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.gi=
+t/tree/tools/perf/util/map.h?h=3Dperf-tools-next#n115
+> > https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.gi=
+t/tree/tools/perf/util/map.h?h=3Dperf-tools-next#n20
+> > The dso addresses should work for objdump so perhaps the kernel
+> > addresses need map__pgoff fixing?
+>
+> I'm not sure about the vDSO case.
+>
+> By the way, I need to take a look if we can make this objdump-rip
+> thing simpler as you mentioned.  My feeling is that it can be done
+> but I'd like to do it in a separate work and to move this forward.
 
-I'm not sure if it's the same thing.  Maybe it's for variables with
-__thread annotation.  I don't know if compilers generate a
-(pseudo) variable for stack canary.
+Makes sense. Could we add a comment to the header file definition to
+capture some of this? Perhaps a "to be removed" to avoid later patches
+adding dependencies to the function.
 
 Thanks,
-Namhyung
+Ian
+
+> Thanks,
+> Namhyung
