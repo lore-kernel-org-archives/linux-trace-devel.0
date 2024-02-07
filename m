@@ -1,54 +1,54 @@
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD5FE85C49;
-	Wed,  7 Feb 2024 19:04:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C823C8289E;
+	Wed,  7 Feb 2024 19:08:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707332674; cv=none; b=vEiaIw9raCKp6MKUq5xAGWGaRYx1wsgyHPQejDRRjfZJDvgQRzAzCoQYn9iQ6h7WRn8klIPRnZXgidbtln/GF3WCbQxJpJ1JScFK1jjdeXpE1mGMb+2wriUkvVQaIQS2o0FMGa38l/PgA6MerpJr3ZrAo8O7bMT3LWT0ZJ44EzM=
+	t=1707332908; cv=none; b=en0sy9cWSAo8WUQ4LhI0gvjd8qmRtlRTdSb+8P5ww7gAcgt1dZK4oZ9iH+jO+/5W+Ri+TjJJpnh0XRzTymrJowuiUU3tmekHBiqgf146qWtsD8R3+Ammfd051qjsT7weXcETPIU2lrKKsv5UgFCs++kYxYijchthTv8h/63VmVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707332674; c=relaxed/simple;
-	bh=eSR8JlMnD37e2fdYBa8LzrVXfMjhsrYROPi+JXssO10=;
+	s=arc-20240116; t=1707332908; c=relaxed/simple;
+	bh=gppkMTLUZP2M0ir4y57co003yRnpqCBQwMrit6QAMRY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YZW35AGDosvNZFCRWqgCuQscBlza7Y44KwWCUoPzpqmG/2DfwopO4Naxdz9TRBAOeHgzV0O9RS8pBig4naRNBs3hqHx7LlK38oZZDxM2yHr0JZIKi3ZA3UUtroffF8iLU+wxpVy9jT8IuSFRU0jo9vzWxvgoRwo7TnEPsDD0IFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.174
+	 To:Cc:Content-Type; b=oXDKTMpsa5nlQXTBWUu66zTguCcdtUKZIWl/6nYq0KAIXO7vsF8y4bwQ8bs8CoeDhOqU0262IAXKvnj5vmRI5bv2BKGbTaXgsEDaZQj6K7VP4i+aVFj8Ts3RT+B9zBj+vbyGWXpUaoh5G+OtEfYtvgC2n7szQed4IpmhcHMYqrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5c6bd3100fcso760448a12.3;
-        Wed, 07 Feb 2024 11:04:32 -0800 (PST)
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e06c06c0f6so111581b3a.0;
+        Wed, 07 Feb 2024 11:08:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707332672; x=1707937472;
+        d=1e100.net; s=20230601; t=1707332906; x=1707937706;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8perGIw/BuKpMeus4TL5BLo9dzJJHqJwC6cZICjUEZI=;
-        b=aK7RsnYnSqV7O05ss6/mVNjs0PMuw9A559f4e/v5HVFBNWlQX1F2Bd8ElutVN7rdvo
-         1Obfv52Bpon6m7nTCDYmaaKF0xQ5zA7kwRUam2WvNJAZJfx/RrbR8RSQ8u5gOAr2Xltu
-         FRGQwpiO1MCY45ILnSPplcTYap0bo6CSIfZxyduL5gj0O+nAOLuMAXKvUmf8j06dcG66
-         LCOOB/Buf7cHYIunposKsUhFiv8Oi2d+huL35TYdTVc6wwT0+0GIGwZpWZvi8YyO0ror
-         pYb6dZKMlM1XO85a77+EhTbcQLtLY+Qa7DBPbYkF3W1MKjaM1MUzWVOxPFvwKmEwYDHk
-         smUA==
-X-Gm-Message-State: AOJu0Yyy4l5RhVZ3PxnL6pG+aLKhby1IBke9COwcQa2D+QpNCgcOtPpb
-	iHS14GRmqYo29wfAOBRm/8RUXjloyp54zNQODyc7b1C8esGCwv0pDDjNpmCTdGIKpP7JhZ3cwVV
-	+AFUzelkFZKPd0E+xpsKamg3idwBmY8QVvio=
-X-Google-Smtp-Source: AGHT+IEpyp2fgWRzjBrnEfTzgcQMrIKsdhE4SFkaDHOeGqt1nS1ocypZ3lJnDguuDQsSqNejp3oret8dwemQT9uusiY=
-X-Received: by 2002:a05:6a20:d49a:b0:19c:888b:b74e with SMTP id
- im26-20020a056a20d49a00b0019c888bb74emr7978073pzb.61.1707332671888; Wed, 07
- Feb 2024 11:04:31 -0800 (PST)
+        bh=b5NAyJJk2M6nTouAkFWsG1u5nlnAwfDcNyiH/8GXd1c=;
+        b=C/4YYI5y9POb1PY8NMjbEC3mSjf2OBAwSBTqXjBZAnEYUiwPn1wPPFVWMi7FR9Lqjg
+         /MorQX9dPOW96VdhGztqQytC2RIL0eQOwtiMqm7ZrYriFW/ww3qaZ+XSur6TMC5xCfcC
+         PaWMVlvr6OLT0Dm2dhy6pLIIXrUot+3rv4T8JdK+0eW9t21sQeX0iEFalPf9b4nGiRat
+         Z1wWA7jDS2NO2tFhIIUrMytNUg8VtaETPB7T7p/UKqFY2DrlOBmjkjHcz3KaurYljpxT
+         uYA3BSRZhspXpTpNgwO8KNp7JeYZxitl2/U7tE4xjVBX0YbIaG04WbuMPy3EsSUefccY
+         OkBg==
+X-Gm-Message-State: AOJu0Yyp2kgXdPl6+Qgru1Jw8Dv8XlLP4tmVvE/FsEILSxWllwMqU5ll
+	LlhobANgiLzHTjHCEzGXjqR4Gh+Ga80rLd4Z+dfOCPw4wOPEFStHmm1kJBXtpoAKhVc+vT4Q9Ww
+	bZW19QDQH7e2yoGxJFD12HYDbjZ0=
+X-Google-Smtp-Source: AGHT+IFbDa1MkIhin+YrCea3UDRAWki+bDn7OQtqgtmEhvXnmb3mzN9FOwFGws3FiO87xF1vQI6cvCXFaGKdkJVwvJA=
+X-Received: by 2002:a05:6a20:438f:b0:19c:9e7d:3f4e with SMTP id
+ i15-20020a056a20438f00b0019c9e7d3f4emr891189pzl.1.1707332906015; Wed, 07 Feb
+ 2024 11:08:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-5-namhyung@kernel.org>
- <CAP-5=fU=P-ib+n+OfqJAbm8gS2RY-W-KcBskoSHkC+aCmXYcXQ@mail.gmail.com>
- <CAM9d7chvEw6r8_7agxOpWxufTo+dLaNForSFFShCFGd9KDBtoA@mail.gmail.com> <CAP-5=fWx9Uub9uRgQJq_ekQScm4fJXMdr9_cr19vcckCPjPt9w@mail.gmail.com>
-In-Reply-To: <CAP-5=fWx9Uub9uRgQJq_ekQScm4fJXMdr9_cr19vcckCPjPt9w@mail.gmail.com>
+References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-15-namhyung@kernel.org>
+ <CAP-5=fUWaKW7d6_YkET0o26=fjBwX6PPJ1gXQ9wndQM_Oi2O3A@mail.gmail.com>
+ <CAM9d7cgF_PYm2fG1Vgu25u1hVZUK0wmFBqY7DHW2eVpRV=iERA@mail.gmail.com> <CAP-5=fV7fWHM53roUJOU+0vAYQJAbhdE1EkgzHLv7jPgeLc2HQ@mail.gmail.com>
+In-Reply-To: <CAP-5=fV7fWHM53roUJOU+0vAYQJAbhdE1EkgzHLv7jPgeLc2HQ@mail.gmail.com>
 From: Namhyung Kim <namhyung@kernel.org>
-Date: Wed, 7 Feb 2024 11:04:21 -0800
-Message-ID: <CAM9d7ciGna7tm5gxoVAQexj_to9sRSL-emmCTSkMbGZgY8mthw@mail.gmail.com>
-Subject: Re: [PATCH 04/14] perf map: Add map__objdump_2rip()
+Date: Wed, 7 Feb 2024 11:08:15 -0800
+Message-ID: <CAM9d7cgV-c2bLE9KGSA2qTHNbzGriQo9NqYD5k177+46e51pJA@mail.gmail.com>
+Subject: Re: [PATCH 14/14] perf annotate-data: Add stack canary type
 To: Ian Rogers <irogers@google.com>
 Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
 	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
@@ -60,50 +60,43 @@ Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 6, 2024 at 3:34=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
+On Tue, Feb 6, 2024 at 3:40=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
 e:
 >
-> On Tue, Feb 6, 2024 at 3:04=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
+> On Tue, Feb 6, 2024 at 3:19=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
  wrote:
 > >
-> > Hi Ian,
-> >
-> > On Fri, Feb 2, 2024 at 5:42=E2=80=AFPM Ian Rogers <irogers@google.com> =
+> > On Fri, Feb 2, 2024 at 7:21=E2=80=AFPM Ian Rogers <irogers@google.com> =
 wrote:
 > > >
 > > > On Fri, Feb 2, 2024 at 2:05=E2=80=AFPM Namhyung Kim <namhyung@kernel.=
 org> wrote:
 > > > >
-> > > > Sometimes we want to convert an address in objdump output to
-> > > > map-relative address to match with a sample data.  Let's add
-> > > > map__objdump_2rip() for that.
+> > > > When the stack protector is enabled, compiler would generate code t=
+o
+> > > > check stack overflow with a special value called 'stack carary' at
+> > > > runtime.  On x86_64, GCC hard-codes the stack canary as %gs:40.
+> > > >
+> > > > While there's a definition of fixed_percpu_data in asm/processor.h,
+> > > > it seems that the header is not included everywhere and many places
+> > > > it cannot find the type info.  As it's in the well-known location (=
+at
+> > > > %gs:40), let's add a pseudo stack canary type to handle it speciall=
+y.
 > > >
-> > > Hi Namhyung,
-> > >
-> > > I think the naming can be better here. Aren't the objdump addresses
-> > > DSO relative offsets? Is the relative IP relative to the map or the
-> > > DSO?
+> > > I wonder if cases like this can be handled by debug info rather than
+> > > special cases in the tool. Special cases are fine too, but are
+> > > potentially less portable.
 > >
-> > AFAIK the objdump addresses are DSO-relative and rip is to map.
-> > They are mostly the same but sometimes different due to kASLR
-> > for the kernel.
+> > Agreed, but I couldn't find anything special in DWARF.
 >
-> Perhaps we need to use names like map_rip for mapping relative and
-> dso_rip to clean this up, or to add a different mapping_type to the
-> enum. For non-kernel maps addresses for map are either the whole
-> virtual address space (identity) or relative to a dso:
-> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/=
-tree/tools/perf/util/map.h?h=3Dperf-tools-next#n115
-> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/=
-tree/tools/perf/util/map.h?h=3Dperf-tools-next#n20
-> The dso addresses should work for objdump so perhaps the kernel
-> addresses need map__pgoff fixing?
+> The fs and gs selectors are commonly used for thread local storage, so
+> could something like DW_OP_form_tls_address be used?
+> https://dwarfstd.org/issues/110803.1.html
 
-I'm not sure about the vDSO case.
-
-By the way, I need to take a look if we can make this objdump-rip
-thing simpler as you mentioned.  My feeling is that it can be done
-but I'd like to do it in a separate work and to move this forward.
+I'm not sure if it's the same thing.  Maybe it's for variables with
+__thread annotation.  I don't know if compilers generate a
+(pseudo) variable for stack canary.
 
 Thanks,
 Namhyung
