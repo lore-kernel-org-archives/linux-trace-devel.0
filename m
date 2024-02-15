@@ -1,37 +1,37 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C5A11B950
-	for <linux-trace-devel@vger.kernel.org>; Thu, 15 Feb 2024 09:02:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EE7A1B81F
+	for <linux-trace-devel@vger.kernel.org>; Thu, 15 Feb 2024 09:02:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707987766; cv=none; b=cIt+7xUYW/HwlSinuM5JQyfpRwNlwf3cikhDN3iE8H1cmBnaDlKQEa+j82fpKlFfb5svsqH8Dmxz4QZVRSofoEtytk4Ly6BEKJZBP0M5pnrBD1P8DcViernWlREN5Ft9Pw6pKKziXoNvDm6weFJVVLAIgWu4cobdlQAXizmP14Q=
+	t=1707987767; cv=none; b=N3csvjUa6aFvoWN7l0VJE9DbnOaoNUMtt6QuDsfxdkJqevh566HVV297+42WOQ79CrqDf1TjJnlPj4+bcnEsJZWZYZGS/MB95oNWGFR4wkTlBwK0Okjoh22uNlF0AMuDAqMK1SVEl9ZywlvHO97Gvy0mWJuDB0YtBAIxikGVmCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707987766; c=relaxed/simple;
-	bh=YCe3Qj2vHR0Dn0DXSLdzQyV0T3DSHb726U5hdBBB0GE=;
+	s=arc-20240116; t=1707987767; c=relaxed/simple;
+	bh=OxuGFqZU5RwXnupkf9nL/atOWJE3g/FF7zebax1S7Ac=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=DRZ3YkMlVT0cSeA4BO/L9G46ZfbwURJxsLk86B8+LlSMTTqAGekW/yGv3PRd19+yzU+g/BUGWZyMriu49jUH64zUxqcLkLR1WXrZsUTVJx/8f3/FY+/aGgr3VWgzZHIThfOIy25Xri45oTrQhTiUDKZwPFWcPuaHJHXf7TmHfck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DjAfn7AA; arc=none smtp.client-ip=10.30.226.201
+	 In-Reply-To:To:Cc; b=l/492ZN3NC/NXXg3ZC7IOsXO9ZW8+wjcPHohS0kQjpuCbax5HSFP7IdSb8E+RlhgAMNb1wuLpA9vPQSDbkt7YdB76OnDo4FPkinqjM9UESlDCz5Imn8ax5Ca7Or+8J52jqG/8nvDtrbdh0TRb2cWxOe16sZBlkxDecziZS/mqOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IPPzS6UY; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DjAfn7AA"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C5DF8C43394;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IPPzS6UY"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E16F7C43399;
 	Thu, 15 Feb 2024 09:02:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1707987765;
-	bh=YCe3Qj2vHR0Dn0DXSLdzQyV0T3DSHb726U5hdBBB0GE=;
+	bh=OxuGFqZU5RwXnupkf9nL/atOWJE3g/FF7zebax1S7Ac=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=DjAfn7AAJoDJ4f6D3i1QzPBXsqf23ML2mLGe2stNC+3TtA24bB0G/6b3S9v4HgTGC
-	 W49J/DoJBgQwd8RDXOPly4FZLaCN0n6PQJpKJQmH38hdOO/T7JQTiywh39wnHNMcxW
-	 3FUEe6u2UiqzE52M/2r+HHGN9C2KLzTbmPsW1xu6hd5E829o8VLLAT3Wkj25lKloAg
-	 Qfko5Od/+EAuhejLYmaKcAPeiLhRqbOjYsdNSHIrQGbGuDLQZ4fWDqhGi1AdSa0Dpl
-	 8eEAlnjB3U9Cmh2VY0ky9boCOKObU4oVd7iUbKNfEYBcNMW0MqT/sMocG+IG0cqcPn
-	 yjfM+NyaPWyTw==
+	b=IPPzS6UYwlViGefs56Iw5oi2NAalmVCY2hUOGc3KVOOTV0JtgSDv9qNw1nRJt3VMn
+	 7V9HdhMhTE8ejhw0Tcs6SS0CAP1WzXVFGVOX7ddropnVBOOlXcECDtAGIsJSMQpUAm
+	 pxN0/Yqi8QNZH2INYT+hjjh883xJNzYO3OwQsylTiLI7xmLBCo4fdecfHAlZ9dzBp/
+	 /o4VGTva9a79/NbovRL+iV+M49zyu9TX+PoWa638Lw80HeH9UYOpUMWFNbnUILdpPR
+	 F18bYs3ICz8xGDE3oxXx8iclKD3YZfkwgaxu3p7lcTi1p5JeWGbn4xm70UE3ZQlyxv
+	 URNgBZeUiS0bw==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6806C48BEB;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D19E7C4829E;
 	Thu, 15 Feb 2024 09:02:45 +0000 (UTC)
 From: Miko Larsson via B4 Relay <devnull+mikoxyzzz.gmail.com@kernel.org>
-Date: Thu, 15 Feb 2024 10:02:41 +0100
-Subject: [PATCH 1/3] utest/tracefs-utest: add missing include
+Date: Thu, 15 Feb 2024 10:02:43 +0100
+Subject: [PATCH 3/3] utest/trace-utest: add missing include
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -40,17 +40,17 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240215-utest-fixes-v1-1-24678d859de2@gmail.com>
+Message-Id: <20240215-utest-fixes-v1-3-24678d859de2@gmail.com>
 References: <20240215-utest-fixes-v1-0-24678d859de2@gmail.com>
 In-Reply-To: <20240215-utest-fixes-v1-0-24678d859de2@gmail.com>
 To: linux-trace-devel@vger.kernel.org
 Cc: Miko Larsson <mikoxyzzz@gmail.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1707987764; l=532;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707987764; l=549;
  i=mikoxyzzz@gmail.com; s=20240215; h=from:subject:message-id;
- bh=RzwubJwK0n2/ywZtJ5O3qrBEJeAAen2BvWlXzylk00w=;
- b=/aZm0dyIJkZyKx+5XKtxGdfUWZxc3VST5x4tvllBN67s1geqBaMRCQ+l74PD6cTkJ9y/Nhtaw
- 4EDmkPH49sJAu1wNcK4pR8aM6/X9t+Qvd/guWd8lO6hm3Bs9AnMie7Y
+ bh=kXkgaZM5Vzaw8MUgARUr0Feh2OE7CWrfGiYcTXTyl/8=;
+ b=P8Vq1ExOF+dEqttcdgMg92axx7De+HVFkNZDuJgY1lm0BBFbGKEMTneb4puXFXjE7386HCfRn
+ jjK7X91ODFoBCbPLgIuKjBk+aQf3uuVUCv+9dSIydtQ2+OcECejOlZO
 X-Developer-Key: i=mikoxyzzz@gmail.com; a=ed25519;
  pk=1WO6EuQa9ZdBA5vCl3bQNjIb6FdQDoTriJmTDrF5mFw=
 X-Endpoint-Received:
@@ -65,22 +65,21 @@ Fixes FTBFS with clang >=15
 Fixes: 845f16976929 ("libtracefs: Add unit tests")
 Signed-off-by: Miko Larsson <mikoxyzzz@gmail.com>
 ---
- utest/tracefs-utest.c | 2 ++
- 1 file changed, 2 insertions(+)
+ utest/trace-utest.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index 963fac7..a798ace 100644
---- a/utest/tracefs-utest.c
-+++ b/utest/tracefs-utest.c
-@@ -19,6 +19,8 @@
- #include <sys/mount.h>
- #include <sys/syscall.h>
- 
-+#include <linux/limits.h>
-+
- #include <CUnit/CUnit.h>
- #include <CUnit/Basic.h>
- 
+diff --git a/utest/trace-utest.c b/utest/trace-utest.c
+index 58d4d4e..39485a1 100644
+--- a/utest/trace-utest.c
++++ b/utest/trace-utest.c
+@@ -3,6 +3,7 @@
+  * Copyright (C) 2020, VMware, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+  *
+  */
++#include <libgen.h>
+ #include <stdio.h>
+ #include <unistd.h>
+ #include <getopt.h>
 
 -- 
 2.43.0
