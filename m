@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2407F14C5B7;
-	Fri, 16 Feb 2024 23:54:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D04E14E2C3;
+	Fri, 16 Feb 2024 23:54:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708127670; cv=none; b=csPh6MuXYkq6PGoasZc3KLHM8X9onvtuyrAiHIIDh4QCfsuC0J/FWevepGjGaMidE50AwUhEXzs0155+01nE5kbarmIpnRjOW+XE/Y7YvKacu7SMYNtdN31c/oPFLhOIr9XoMiRLlFkt8ZLeqISv7V1hWXy4O5/pJ6KqewavZwI=
+	t=1708127671; cv=none; b=lidHjEeH7QUvUrHailowGQFobxkcIkFphuo6qUiDkmcfhL3XORiinKiS2w9+zNC77FrQSqzkLzIFZ3M3HZcoUz0EOPclteNUwIGoSDiMQ4NyFmnr4JeFfsbnD9giGo21323ZIq7m2GKCd+9eAtOlXGmzL2mVP0eMYn9wwVWHJUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708127670; c=relaxed/simple;
-	bh=PrQxE5dvr8+mJjo6e46jyPhkqtx2vS84G0Ikoy+xe+0=;
+	s=arc-20240116; t=1708127671; c=relaxed/simple;
+	bh=mxQgos6l91axIiDZvKbOHQz0qaSv4aKPPA72xFNlJzY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hXpXa6eqRZqu7OfMsoBywoadCQGDDsezHwBzARn2ZxGrlfHss/Guhd74gaKVWSMmCCCjYBDE5MPAqxYhFHSYiTyj1ba+C5dIoertN0o3txkVvyswx0zalOTVJ+YU6pM6Jk/xwIqSwGGWradu4QNeHQGCGx6jnVQaAcKwTBAmGyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hO2TBk0Q; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=mZrEVG+BNVBEFqLDrQ0Sa3xaBDn85jQxzA471EYalHZf4HzaZRfNH+ZBs225qgDW2XwVIOjqLSwN5GwWvyxx4vJQJqyDb2e2Fki8wgbLTMQ6u4ae8mfBXLduM8fCVn2V9TrVGqWCW+Pfs69jRo9HuqW9jZYa6epHq0XE1jhQ9+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=svlHEZrA; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hO2TBk0Q"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E0CBC433C7;
-	Fri, 16 Feb 2024 23:54:29 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="svlHEZrA"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAE6CC43390;
+	Fri, 16 Feb 2024 23:54:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708127670;
-	bh=PrQxE5dvr8+mJjo6e46jyPhkqtx2vS84G0Ikoy+xe+0=;
+	s=k20201202; t=1708127671;
+	bh=mxQgos6l91axIiDZvKbOHQz0qaSv4aKPPA72xFNlJzY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hO2TBk0QA5Dkf4pTpyVPmUBRWot7k4ysGW1sHeSHa+2FMWZmHYcnNto2YdQ0MQZIl
-	 Z8IRUUNKeToP91HGcxZA44Y4eK3WC/uBKOy/UPfK34getv3G2TPhfsNZf1+U6VzHXY
-	 eSEx3ybnkL3aJ2fQNe0xREFItYRb2Fp7kNmuxcNlDfLtMoyGZWY7MWkBm6URRHec7r
-	 SbSraPy+w0kCV2SC5WBKyI6Z3hjp0/NHE8qWoV+7CeE7ZqPSzhxB//dg4yvDGIeE2R
-	 ZwfDwqjQgZ7pSCBne63+D9DbSg06iQmpU3vXJLHgmRBghHkrnS0CBaolauHX5zBR8X
-	 fffLsvMvMqUNQ==
+	b=svlHEZrAjad61GT4SGkJYPeohlJ4BH2qhvWmrxvxGrgSPgmm9VdPFU5c/003bc+Lj
+	 eMhbhdKn4D4Y26VTgamKR4HW3SC3Rc8rd0Wf4dDb8dJYMYwcDvctHtzVcbufYGNYrF
+	 Tomua08pSdvQxPRrm11AIxUZX4m8iB+8Ul9X+YZm1UAcLFT5Vk7LM/0iJeQSyeZ4Ej
+	 lVp9DhbMqZRnAoKF74yn7afwi9C6F2lJ4pVmg2g/XBZAmTJBLeGggBEEWEFDhphXkL
+	 ctbiVIxgfqYXE6XLZFE55rvrg+5O3QmHvhM/ey9+ZreCk8HVXH2L8eExGBss0utcrD
+	 QRMfg3imvQrXg==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>
@@ -40,9 +40,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-toolchains@vger.kernel.org,
 	linux-trace-devel@vger.kernel.org
-Subject: [PATCH 08/14] perf annotate-data: Handle global variable access
-Date: Fri, 16 Feb 2024 15:54:17 -0800
-Message-ID: <20240216235423.2343167-9-namhyung@kernel.org>
+Subject: [PATCH 10/14] perf annotate-data: Implement instruction tracking
+Date: Fri, 16 Feb 2024 15:54:19 -0800
+Message-ID: <20240216235423.2343167-11-namhyung@kernel.org>
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
 In-Reply-To: <20240216235423.2343167-1-namhyung@kernel.org>
 References: <20240216235423.2343167-1-namhyung@kernel.org>
@@ -54,237 +54,330 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When updating the instruction states, it also needs to handle global
-variable accesses.  Same as it does for PC-relative addressing, it can
-look up the type by address (if it's defined in the same file), or by
-name after finding the symbol by address (for declarations).
+If it failed to find a variable for the location directly, it might be
+due to a missing variable in the source code.  For example, accessing
+pointer variables in a chain can result in the case like below:
+
+  struct foo *foo = ...;
+
+  int i = foo->bar->baz;
+
+The DWARF debug information is created for each variable so it'd have
+one for 'foo'.  But there's no variable for 'foo->bar' and then it
+cannot know the type of 'bar' and 'baz'.
+
+The above source code can be compiled to the follow x86 instructions:
+
+  mov  0x8(%rax), %rcx
+  mov  0x4(%rcx), %rdx   <=== PMU sample
+  mov  %rdx, -4(%rbp)
+
+Let's say 'foo' is located in the %rax and it has a pointer to struct
+foo.  But perf sample is captured in the second instruction and there
+is no variable or type info for the %rcx.
+
+It'd be great if compiler could generate debug info for %rcx, but we
+should handle it on our side.  So this patch implements the logic to
+iterate instructions and update the type table for each location.
+
+As it already collected a list of scopes including the target
+instruction, we can use it to construct the type table smartly.
+
+  +----------------  scope[0] subprogram
+  |
+  | +--------------  scope[1] lexical_block
+  | |
+  | | +------------  scope[2] inlined_subroutine
+  | | |
+  | | | +----------  scope[3] inlined_subroutine
+  | | | |
+  | | | | +--------  scope[4] lexical_block
+  | | | | |
+  | | | | |     ***  target instruction
+  ...
+
+Image the target instruction has 5 scopes, each scope will have its own
+variables and parameters.  Then it can start with the innermost scope
+(4).  So it'd search the shortest path from the start of scope[4] to
+the target address and build a list of basic blocks.  Then it iterates
+the basic blocks with the variables in the scope and update the table.
+If it finds a type at the target instruction, then returns it.
+
+Otherwise, it moves to the upper scope[3].  Now it'd search the shortest
+path from the start of scope[3] to the start of scope[4].  Then connect
+it to the existing basic block list.  Then it'd iterate the blocks with
+variables for both scopes.  It can repeat this until it finds a type at
+the target instruction or reaches to the top scope[0].
+
+As the basic blocks contain the shortest path, it won't worry about
+branches and can update the table simply.
+
+With this change, the stat now looks like below:
+
+  Annotate data type stats:
+  total 294, ok 185 (62.9%), bad 109 (37.1%)
+  -----------------------------------------------------------
+          30 : no_sym
+          32 : no_mem_ops
+          27 : no_var
+          13 : no_typeinfo
+           7 : bad_offset
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/annotate-data.c | 45 ++++++++++++++++++++++++++++++---
- tools/perf/util/annotate-data.h | 10 ++++++--
- tools/perf/util/annotate.c      | 45 ++++++++++++++++++++-------------
- tools/perf/util/annotate.h      |  5 ++++
- 4 files changed, 83 insertions(+), 22 deletions(-)
+ tools/perf/util/annotate-data.c | 232 ++++++++++++++++++++++++++++++++
+ 1 file changed, 232 insertions(+)
 
 diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
-index b1e921663452..e46e162c783f 100644
+index e8e363fed8c2..9dab5cc5c842 100644
 --- a/tools/perf/util/annotate-data.c
 +++ b/tools/perf/util/annotate-data.c
-@@ -396,6 +396,7 @@ void update_var_state(struct type_state *state, struct data_loc_info *dloc,
-  * update_insn_state - Update type state for an instruction
-  * @state: type state table
-  * @dloc: data location info
-+ * @cu_die: compile unit debug entry
-  * @dl: disasm line for the instruction
-  *
-  * This function updates the @state table for the target operand of the
-@@ -407,7 +408,7 @@ void update_var_state(struct type_state *state, struct data_loc_info *dloc,
-  * are true.
-  */
- void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
--		       struct disasm_line *dl)
-+		       void *cu_die, struct disasm_line *dl)
- {
- 	struct annotated_insn_loc loc;
- 	struct annotated_op_loc *src = &loc.ops[INSN_OP_SOURCE];
-@@ -449,8 +450,46 @@ void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
- 			return;
- 
- retry:
--		/* Check stack variables with offset */
--		if (sreg == fbreg) {
-+		/* Check if it's a global variable */
-+		if (sreg == DWARF_REG_PC) {
-+			Dwarf_Die var_die;
-+			struct map_symbol *ms = dloc->ms;
-+			int offset = src->offset;
-+			u64 ip = ms->sym->start + dl->al.offset;
-+			u64 pc, addr;
-+			const char *var_name = NULL;
-+
-+			addr = annotate_calc_pcrel(ms, ip, offset, dl);
-+			pc = map__rip_2objdump(ms->map, ip);
-+
-+			if (die_find_variable_by_addr(cu_die, pc, addr,
-+						      &var_die, &offset) &&
-+			    check_variable(&var_die, &type_die, offset,
-+					   /*is_pointer=*/false) == 0 &&
-+			    die_get_member_type(&type_die, offset, &type_die)) {
-+				state->regs[dst->reg1].type = type_die;
-+				state->regs[dst->reg1].ok = true;
-+				return;
-+			}
-+
-+			/* Try to get the name of global variable */
-+			offset = src->offset;
-+			get_global_var_info(dloc->thread, ms, ip, dl,
-+					    dloc->cpumode, &addr,
-+					    &var_name, &offset);
-+
-+			if (var_name && die_find_variable_at(cu_die, var_name,
-+							     pc, &var_die) &&
-+			    check_variable(&var_die, &type_die, offset,
-+					   /*is_pointer=*/false) == 0 &&
-+			    die_get_member_type(&type_die, offset, &type_die)) {
-+				state->regs[dst->reg1].type = type_die;
-+				state->regs[dst->reg1].ok = true;
-+			} else
-+				state->regs[dst->reg1].ok = false;
-+		}
-+		/* And check stack variables with offset */
-+		else if (sreg == fbreg) {
- 			struct type_state_stack *stack;
- 			int offset = src->offset - fboff;
- 
-diff --git a/tools/perf/util/annotate-data.h b/tools/perf/util/annotate-data.h
-index ff9acf6ea808..0bfef29fa52c 100644
---- a/tools/perf/util/annotate-data.h
-+++ b/tools/perf/util/annotate-data.h
-@@ -14,6 +14,7 @@ struct die_var_type;
- struct disasm_line;
- struct evsel;
- struct map_symbol;
-+struct thread;
- struct type_state;
- 
- /**
-@@ -79,11 +80,13 @@ extern struct annotated_data_type stackop_type;
- 
- /**
-  * struct data_loc_info - Data location information
-- * @arch: architecture info
-+ * @arch: CPU architecture info
-+ * @thread: Thread info
-  * @ms: Map and Symbol info
-  * @ip: Instruction address
-  * @var_addr: Data address (for global variables)
-  * @var_name: Variable name (for global variables)
-+ * @cpumode: CPU execution mode
-  * @op: Instruction operand location (regs and offset)
-  * @di: Debug info
-  * @fbreg: Frame base register
-@@ -94,8 +97,10 @@ struct data_loc_info {
- 	/* These are input field, should be filled by caller */
- 	struct arch *arch;
- 	struct map_symbol *ms;
-+	struct thread *thread;
- 	u64 ip;
- 	u64 var_addr;
-+	u8 cpumode;
- 	const char *var_name;
- 	struct annotated_op_loc *op;
- 
-@@ -164,7 +169,7 @@ void update_var_state(struct type_state *state, struct data_loc_info *dloc,
- 
- /* Update type state table for an instruction */
- void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
--		       struct disasm_line *dl);
-+		       void *cu_die, struct disasm_line *dl);
- 
- #else /* HAVE_DWARF_SUPPORT */
- 
-@@ -206,6 +211,7 @@ static inline void update_var_state(struct type_state *state __maybe_unused,
- 
- static inline void update_insn_state(struct type_state *state __maybe_unused,
- 				     struct data_loc_info *dloc __maybe_unused,
-+				     void *cu_die __maybe_unused,
- 				     struct disasm_line *dl __maybe_unused)
- {
- }
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index 44574056d4bd..89a8d57b1bf7 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -3771,6 +3771,28 @@ u64 annotate_calc_pcrel(struct map_symbol *ms, u64 ip, int offset,
- 	return map__rip_2objdump(ms->map, addr);
+@@ -597,6 +597,231 @@ void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
+ 	/* Case 4. memory to memory transfers (not handled for now) */
  }
  
-+void get_global_var_info(struct thread *thread, struct map_symbol *ms, u64 ip,
-+			 struct disasm_line *dl, u8 cpumode, u64 *var_addr,
-+			 const char **var_name, int *poffset)
++/* Prepend this_list to full_list, removing duplicate disasm line */
++static void prepend_basic_blocks(struct list_head *this_blocks,
++				 struct list_head *full_blocks)
 +{
-+	struct addr_location al;
-+	struct symbol *var;
-+	u64 map_addr;
++	struct annotated_basic_block *first_bb, *last_bb;
 +
-+	*var_addr = annotate_calc_pcrel(ms, ip, *poffset, dl);
-+	/* Kernel symbols might be relocated */
-+	map_addr = *var_addr + map__reloc(ms->map);
++	last_bb = list_last_entry(this_blocks, typeof(*last_bb), list);
++	first_bb = list_first_entry(full_blocks, typeof(*first_bb), list);
 +
-+	addr_location__init(&al);
-+	var = thread__find_symbol_fb(thread, cpumode, map_addr, &al);
-+	if (var) {
-+		*var_name = var->name;
-+		/* Calculate type offset from the start of variable */
-+		*poffset = map_addr - map__unmap_ip(al.map, var->start);
++	if (list_empty(full_blocks))
++		goto out;
++
++	if (last_bb->end != first_bb->begin) {
++		pr_debug("prepend basic blocks: mismatched disasm line %lx -> %lx\n",
++			 last_bb->end->al.offset, first_bb->begin->al.offset);
++		goto out;
 +	}
-+	addr_location__exit(&al);
++
++	/* Is the basic block have only one disasm_line? */
++	if (last_bb->begin == last_bb->end) {
++		list_del(&last_bb->list);
++		free(last_bb);
++		goto out;
++	}
++
++	last_bb->end = list_prev_entry(last_bb->end, al.node);
++
++out:
++	list_splice(this_blocks, full_blocks);
 +}
 +
- /**
-  * hist_entry__get_data_type - find data type for given hist entry
-  * @he: hist entry
-@@ -3845,6 +3867,8 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
- 	for_each_insn_op_loc(&loc, i, op_loc) {
- 		struct data_loc_info dloc = {
- 			.arch = arch,
-+			.thread = he->thread,
-+			.cpumode = he->cpumode,
- 			.ms = ms,
- 			/* Recalculate IP for LOCK prefix or insn fusion */
- 			.ip = ms->sym->start + dl->al.offset,
-@@ -3859,23 +3883,10 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
- 
- 		/* PC-relative addressing */
- 		if (op_loc->reg1 == DWARF_REG_PC) {
--			struct addr_location al;
--			struct symbol *var;
--			u64 map_addr;
--
--			dloc.var_addr = annotate_calc_pcrel(ms, ip, op_loc->offset, dl);
--			/* Kernel symbols might be relocated */
--			map_addr = dloc.var_addr + map__reloc(ms->map);
--
--			addr_location__init(&al);
--			var = thread__find_symbol_fb(he->thread, he->cpumode,
--						     map_addr, &al);
--			if (var) {
--				dloc.var_name = var->name;
--				/* Calculate type offset from the start of variable */
--				dloc.type_offset = map_addr - map__unmap_ip(al.map, var->start);
--			}
--			addr_location__exit(&al);
-+			dloc.type_offset = op_loc->offset;
-+			get_global_var_info(he->thread, ms, ip, dl, he->cpumode,
-+					    &dloc.var_addr, &dloc.var_name,
-+					    &dloc.type_offset);
- 		}
- 
- 		mem_type = find_data_type(&dloc);
-diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
-index 83afbe294ab7..b460785111a1 100644
---- a/tools/perf/util/annotate.h
-+++ b/tools/perf/util/annotate.h
-@@ -23,6 +23,7 @@ struct option;
- struct perf_sample;
- struct evsel;
- struct symbol;
-+struct thread;
- struct annotated_data_type;
- 
- struct ins {
-@@ -495,6 +496,10 @@ extern struct list_head ann_insn_stat;
- u64 annotate_calc_pcrel(struct map_symbol *ms, u64 ip, int offset,
- 			struct disasm_line *dl);
- 
-+void get_global_var_info(struct thread *thread, struct map_symbol *ms, u64 ip,
-+			 struct disasm_line *dl, u8 cpumode, u64 *var_addr,
-+			 const char **var_name, int *poffset);
++static void delete_basic_blocks(struct list_head *basic_blocks)
++{
++	struct annotated_basic_block *bb, *tmp;
 +
- /**
-  * struct annotated_basic_block - Basic block of instructions
-  * @list: List node
++	list_for_each_entry_safe(bb, tmp, basic_blocks, list) {
++		list_del(&bb->list);
++		free(bb);
++	}
++}
++
++/* Make sure all variables have a valid start address */
++static void fixup_var_address(struct die_var_type *var_types, u64 addr)
++{
++	while (var_types) {
++		/*
++		 * Some variables have no address range meaning it's always
++		 * available in the whole scope.  Let's adjust the start
++		 * address to the start of the scope.
++		 */
++		if (var_types->addr == 0)
++			var_types->addr = addr;
++
++		var_types = var_types->next;
++	}
++}
++
++static void delete_var_types(struct die_var_type *var_types)
++{
++	while (var_types) {
++		struct die_var_type *next = var_types->next;
++
++		free(var_types);
++		var_types = next;
++	}
++}
++
++/* It's at the target address, check if it has a matching type */
++static bool find_matching_type(struct type_state *state,
++			       struct data_loc_info *dloc, int reg,
++			       Dwarf_Die *type_die)
++{
++	Dwarf_Word size;
++
++	if (state->regs[reg].ok) {
++		int tag = dwarf_tag(&state->regs[reg].type);
++
++		/*
++		 * Normal registers should hold a pointer (or array) to
++		 * dereference a memory location.
++		 */
++		if (tag != DW_TAG_pointer_type && tag != DW_TAG_array_type)
++			return false;
++
++		if (die_get_real_type(&state->regs[reg].type, type_die) == NULL)
++			return false;
++
++		dloc->type_offset = dloc->op->offset;
++
++		/* Get the size of the actual type */
++		if (dwarf_aggregate_size(type_die, &size) < 0 ||
++		    (unsigned)dloc->type_offset >= size)
++			return false;
++
++		return true;
++	}
++
++	if (reg == dloc->fbreg) {
++		struct type_state_stack *stack;
++
++		stack = find_stack_state(state, dloc->type_offset);
++		if (stack == NULL)
++			return false;
++
++		*type_die = stack->type;
++		/* Update the type offset from the start of slot */
++		dloc->type_offset -= stack->offset;
++		return true;
++	}
++
++	if (dloc->fb_cfa) {
++		struct type_state_stack *stack;
++		u64 pc = map__rip_2objdump(dloc->ms->map, dloc->ip);
++		int fbreg, fboff;
++
++		if (die_get_cfa(dloc->di->dbg, pc, &fbreg, &fboff) < 0)
++			fbreg = -1;
++
++		if (reg != fbreg)
++			return false;
++
++		stack = find_stack_state(state, dloc->type_offset - fboff);
++		if (stack == NULL)
++			return false;
++
++		*type_die = stack->type;
++		/* Update the type offset from the start of slot */
++		dloc->type_offset -= fboff + stack->offset;
++		return true;
++	}
++
++	return false;
++}
++
++/* Iterate instructions in basic blocks and update type table */
++static bool find_data_type_insn(struct data_loc_info *dloc, int reg,
++				struct list_head *basic_blocks,
++				struct die_var_type *var_types,
++				Dwarf_Die *cu_die, Dwarf_Die *type_die)
++{
++	struct type_state state;
++	struct symbol *sym = dloc->ms->sym;
++	struct annotation *notes = symbol__annotation(sym);
++	struct annotated_basic_block *bb;
++	bool found = false;
++
++	init_type_state(&state, dloc->arch);
++
++	list_for_each_entry(bb, basic_blocks, list) {
++		struct disasm_line *dl = bb->begin;
++
++		list_for_each_entry_from(dl, &notes->src->source, al.node) {
++			u64 this_ip = sym->start + dl->al.offset;
++			u64 addr = map__rip_2objdump(dloc->ms->map, this_ip);
++
++			/* Update variable type at this address */
++			update_var_state(&state, dloc, addr, var_types);
++
++			if (this_ip == dloc->ip) {
++				found = find_matching_type(&state, dloc, reg,
++							   type_die);
++				goto out;
++			}
++
++			/* Update type table after processing the instruction */
++			update_insn_state(&state, dloc, cu_die, dl);
++			if (dl == bb->end)
++				break;
++		}
++	}
++
++out:
++	exit_type_state(&state);
++	return found;
++}
++
++/*
++ * Construct a list of basic blocks for each scope with variables and try to find
++ * the data type by updating a type state table through instructions.
++ */
++static int find_data_type_block(struct data_loc_info *dloc, int reg,
++				Dwarf_Die *cu_die, Dwarf_Die *scopes,
++				int nr_scopes, Dwarf_Die *type_die)
++{
++	LIST_HEAD(basic_blocks);
++	struct die_var_type *var_types = NULL;
++	u64 src_ip, dst_ip;
++	int ret = -1;
++
++	dst_ip = dloc->ip;
++	for (int i = nr_scopes - 1; i >= 0; i--) {
++		Dwarf_Addr base, start, end;
++		LIST_HEAD(this_blocks);
++
++		if (dwarf_ranges(&scopes[i], 0, &base, &start, &end) < 0)
++			break;
++
++		src_ip = map__objdump_2rip(dloc->ms->map, start);
++
++		/* Get basic blocks for this scope */
++		if (annotate_get_basic_blocks(dloc->ms->sym, src_ip, dst_ip,
++					      &this_blocks) < 0)
++			continue;
++		prepend_basic_blocks(&this_blocks, &basic_blocks);
++
++		/* Get variable info for this scope and add to var_types list */
++		die_collect_vars(&scopes[i], &var_types);
++		fixup_var_address(var_types, start);
++
++		/* Find from start of this scope to the target instruction */
++		if (find_data_type_insn(dloc, reg, &basic_blocks, var_types,
++					cu_die, type_die)) {
++			ret = 0;
++			break;
++		}
++
++		/* Go up to the next scope and find blocks to the start */
++		dst_ip = src_ip;
++	}
++
++	delete_basic_blocks(&basic_blocks);
++	delete_var_types(var_types);
++	return ret;
++}
++
+ /* The result will be saved in @type_die */
+ static int find_data_type_die(struct data_loc_info *dloc, Dwarf_Die *type_die)
+ {
+@@ -697,6 +922,13 @@ static int find_data_type_die(struct data_loc_info *dloc, Dwarf_Die *type_die)
+ 		goto out;
+ 	}
+ 
++	if (reg != DWARF_REG_PC) {
++		ret = find_data_type_block(dloc, reg, &cu_die, scopes,
++					   nr_scopes, type_die);
++		if (ret == 0)
++			goto out;
++	}
++
+ 	if (loc->multi_regs && reg == loc->reg1 && loc->reg1 != loc->reg2) {
+ 		reg = loc->reg2;
+ 		goto retry;
 -- 
 2.44.0.rc0.258.g7320e95886-goog
 
