@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 902ED14E2C4;
-	Fri, 16 Feb 2024 23:54:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A7B714E2FA;
+	Fri, 16 Feb 2024 23:54:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708127671; cv=none; b=SwvFCNsX1TjIIR/gAJYIhd50mvtT+YbPwSIk9dKWMYtdPfSXq+9TaxZauzV6tPbKXvEGZcYWgkTOY5GZgZddZfw+P1WwhG/FyhUquBRF7emJyrGnEiUURRd7Fg9jmeLZBU6u1+cZCgxTO1Mxs3aLfixUz3gDayhtZ7xYZegKdPE=
+	t=1708127672; cv=none; b=lBehcsa7lNPc885g44idCkkUDCyT/CMToNMKqEQNhGXKNIzF1Ndi06xc9U7Ht3KW94nBxC3stP/0fF5j5ZZL+vXiOqgwhynT62QMtF8XGx5UYdgmg4fjnP6VN/tcac+c9fSOFB44A72S2hJ02t45BLYwYavAffiJg34zAJT2L/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708127671; c=relaxed/simple;
-	bh=zZHOIpCOQRvZUMTIDQX7NJi7rHNLMrUEbf5ATQRYfWI=;
+	s=arc-20240116; t=1708127672; c=relaxed/simple;
+	bh=hE1QOsjMoRBTV7VH3Rsm9gTxYJbWkglfagXVRxF52QA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JAxZDGh9xLbIVk7RbY55S+6brTpgQtaPFD7RwaKF6KXj3mbqYVdWEI2Eej2xU+zNc/nVihQrlyVLDhccdLkstwI4aYAGSqXlQOw+LNhAYJPWgUM1dVz18wRdn1Zh+21RkZeJlmO7vknLzwRhvVr1aaUhu20O3mQ4a4y5NjN6cEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tZVxGjD9; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=P6zUSR5G6xwuizTs36WrsJtSez6anWSpxk+VxpTQ1wAsvAVTLftOIomYW7H4rLBLUsqa5rUuqyca61DyI1FUvpILIt+9rXqsSU5HXuKChurSgWmViy8VjE/jnl34+YfHWfnBDj2EmPabapEx1Xi9UOnG4piP8j/tL6Nfo1nFKow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sFFfU0DK; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tZVxGjD9"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 215B6C433B1;
-	Fri, 16 Feb 2024 23:54:30 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sFFfU0DK"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E1C5C43601;
+	Fri, 16 Feb 2024 23:54:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708127670;
-	bh=zZHOIpCOQRvZUMTIDQX7NJi7rHNLMrUEbf5ATQRYfWI=;
+	s=k20201202; t=1708127672;
+	bh=hE1QOsjMoRBTV7VH3Rsm9gTxYJbWkglfagXVRxF52QA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tZVxGjD9fx55g/829dqU23cR9Np786MufZf4Yc5V7mqADC3/a+IuTCz2gRxEWzfhO
-	 M9QSXZnPQKiyslE/mGzNLg/0UoyBZsox0KCkEQnV54tIKBjukFdb29EnXfXahcqaSN
-	 kCzb5KBTY+SuyYADZPxf2V2oOiCtEEVithd3oP25ZfewJYx6UdtdpRrLiEr2kqayIa
-	 WqGWQ3+gca7KSH9b2bspj15L9eSz0/0sb686xOPqciCrlTbYUGEh3B7EW8MpFPMsDw
-	 An6T8jbnrK+LWBfKAwN32K6wccKsYCsA1WKgPPlxZCqmNXhin/HShdaG2Eyy+ZItYE
-	 mz7FSZcKt6MsA==
+	b=sFFfU0DKnsw016crE+V8gx1s8ss9Ik6x5huShitQFcFQ1lI1h/HQMAZ49c7zUA88d
+	 o5swo8klCxEgrQOJoTjsuATrV2FYcdHcXjvphKvGdCV0RHPLe8Xo2zngwVDGie5xdv
+	 Ek40jcGK4OZYgWZSrmHqCxotFM5i6caEFgQNxOAJwWTo6qkLpoAMrh40DOCBwywMaB
+	 UupHxBD3hSChVlL29j7XXDJmJMMd0o4lj7U1RKpIkmXoMzjdBzUNIJgRqVQasAH56h
+	 Vgas1hK5ue+aiInad8iHXyvS+Y/O8PncOsf9MyHT4nquTNrP9AkA+h1j09y9DK/L/c
+	 q75LuSv/HRdnA==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>
@@ -40,9 +40,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-toolchains@vger.kernel.org,
 	linux-trace-devel@vger.kernel.org
-Subject: [PATCH 09/14] perf annotate-data: Handle call instructions
-Date: Fri, 16 Feb 2024 15:54:18 -0800
-Message-ID: <20240216235423.2343167-10-namhyung@kernel.org>
+Subject: [PATCH 11/14] perf annotate: Parse x86 segment register location
+Date: Fri, 16 Feb 2024 15:54:20 -0800
+Message-ID: <20240216235423.2343167-12-namhyung@kernel.org>
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
 In-Reply-To: <20240216235423.2343167-1-namhyung@kernel.org>
 References: <20240216235423.2343167-1-namhyung@kernel.org>
@@ -54,102 +54,101 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When updating instruction states, the call instruction should play a
-role since it changes the register states.  For simplicity, mark some
-registers as caller-saved registers (should be arch-dependent), and
-invalidate them all after a function call.
-
-If the function returns something, the designated register (ret_reg)
-will have the type info.
+Add a segment field in the struct annotated_insn_loc and save it for the
+segment based addressing like %gs:0x28.  For simplicity it now handles
+%gs register only.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/annotate-data.c | 45 +++++++++++++++++++++++++++++++--
- 1 file changed, 43 insertions(+), 2 deletions(-)
+ tools/perf/util/annotate.c | 21 +++++++++++++++++++--
+ tools/perf/util/annotate.h | 13 +++++++++++++
+ 2 files changed, 32 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
-index e46e162c783f..e8e363fed8c2 100644
---- a/tools/perf/util/annotate-data.c
-+++ b/tools/perf/util/annotate-data.c
-@@ -23,10 +23,14 @@
- #include "symbol.h"
- #include "symbol_conf.h"
- 
--/* Type information in a register, valid when ok is true */
-+/*
-+ * Type information in a register, valid when @ok is true.
-+ * The @caller_saved registers are invalidated after a function call.
-+ */
- struct type_state_reg {
- 	Dwarf_Die type;
- 	bool ok;
-+	bool caller_saved;
- };
- 
- /* Type information in a stack location, dynamically allocated */
-@@ -50,6 +54,7 @@ struct type_state_stack {
- struct type_state {
- 	struct type_state_reg regs[TYPE_STATE_MAX_REGS];
- 	struct list_head stack_vars;
-+	int ret_reg;
- };
- 
- static bool has_reg_type(struct type_state *state, int reg)
-@@ -57,10 +62,23 @@ static bool has_reg_type(struct type_state *state, int reg)
- 	return (unsigned)reg < ARRAY_SIZE(state->regs);
- }
- 
--void init_type_state(struct type_state *state, struct arch *arch __maybe_unused)
-+void init_type_state(struct type_state *state, struct arch *arch)
- {
- 	memset(state, 0, sizeof(*state));
- 	INIT_LIST_HEAD(&state->stack_vars);
-+
-+	if (arch__is(arch, "x86")) {
-+		state->regs[0].caller_saved = true;
-+		state->regs[1].caller_saved = true;
-+		state->regs[2].caller_saved = true;
-+		state->regs[4].caller_saved = true;
-+		state->regs[5].caller_saved = true;
-+		state->regs[8].caller_saved = true;
-+		state->regs[9].caller_saved = true;
-+		state->regs[10].caller_saved = true;
-+		state->regs[11].caller_saved = true;
-+		state->ret_reg = 0;
-+	}
- }
- 
- void exit_type_state(struct type_state *state)
-@@ -417,6 +435,29 @@ void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
- 	int fbreg = dloc->fbreg;
- 	int fboff = 0;
- 
-+	if (ins__is_call(&dl->ins)) {
-+		Dwarf_Die func_die;
-+
-+		/* __fentry__ will preserve all registers */
-+		if (dl->ops.target.sym &&
-+		    !strcmp(dl->ops.target.sym->name, "__fentry__"))
-+			return;
-+
-+		/* Otherwise invalidate caller-saved registers after call */
-+		for (unsigned i = 0; i < ARRAY_SIZE(state->regs); i++) {
-+			if (state->regs[i].caller_saved)
-+				state->regs[i].ok = false;
+diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+index 89a8d57b1bf7..86ac44c476bf 100644
+--- a/tools/perf/util/annotate.c
++++ b/tools/perf/util/annotate.c
+@@ -3557,6 +3557,12 @@ static int extract_reg_offset(struct arch *arch, const char *str,
+ 	 * %gs:0x18(%rbx).  In that case it should skip the part.
+ 	 */
+ 	if (*str == arch->objdump.register_char) {
++		if (arch__is(arch, "x86")) {
++			/* FIXME: Handle other segment registers */
++			if (!strncmp(str, "%gs:", 4))
++				op_loc->segment = INSN_SEG_X86_GS;
 +		}
 +
-+		/* Update register with the return type (if any) */
-+		if (die_find_realfunc(cu_die, dl->ops.target.addr, &func_die) &&
-+		    die_get_real_type(&func_die, &type_die)) {
-+			state->regs[state->ret_reg].type = type_die;
-+			state->regs[state->ret_reg].ok = true;
-+		}
-+		return;
-+	}
+ 		while (*str && !isdigit(*str) &&
+ 		       *str != arch->objdump.memory_ref_char)
+ 			str++;
+@@ -3653,8 +3659,19 @@ int annotate_get_insn_location(struct arch *arch, struct disasm_line *dl,
+ 			op_loc->multi_regs = multi_regs;
+ 			extract_reg_offset(arch, insn_str, op_loc);
+ 		} else {
+-			char *s = strdup(insn_str);
++			char *s;
 +
- 	/* FIXME: remove x86 specific code and handle more instructions like LEA */
- 	if (!strstr(dl->ins.name, "mov"))
- 		return;
++			if (arch__is(arch, "x86")) {
++				/* FIXME: Handle other segment registers */
++				if (!strncmp(insn_str, "%gs:", 4)) {
++					op_loc->segment = INSN_SEG_X86_GS;
++					op_loc->offset = strtol(insn_str + 4,
++								NULL, 0);
++					continue;
++				}
++			}
+ 
++			s = strdup(insn_str);
+ 			if (s) {
+ 				op_loc->reg1 = get_dwarf_regnum(s, 0);
+ 				free(s);
+@@ -3875,7 +3892,7 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
+ 			.op = op_loc,
+ 		};
+ 
+-		if (!op_loc->mem_ref)
++		if (!op_loc->mem_ref && op_loc->segment == INSN_SEG_NONE)
+ 			continue;
+ 
+ 		/* Recalculate IP because of LOCK prefix or insn fusion */
+diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
+index b460785111a1..2bd654620de3 100644
+--- a/tools/perf/util/annotate.h
++++ b/tools/perf/util/annotate.h
+@@ -446,6 +446,7 @@ int annotate_check_args(void);
+  * @reg1: First register in the operand
+  * @reg2: Second register in the operand
+  * @offset: Memory access offset in the operand
++ * @segment: Segment selector register
+  * @mem_ref: Whether the operand accesses memory
+  * @multi_regs: Whether the second register is used
+  */
+@@ -453,6 +454,7 @@ struct annotated_op_loc {
+ 	int reg1;
+ 	int reg2;
+ 	int offset;
++	u8 segment;
+ 	bool mem_ref;
+ 	bool multi_regs;
+ };
+@@ -464,6 +466,17 @@ enum annotated_insn_ops {
+ 	INSN_OP_MAX,
+ };
+ 
++enum annotated_x86_segment {
++	INSN_SEG_NONE = 0,
++
++	INSN_SEG_X86_CS,
++	INSN_SEG_X86_DS,
++	INSN_SEG_X86_ES,
++	INSN_SEG_X86_FS,
++	INSN_SEG_X86_GS,
++	INSN_SEG_X86_SS,
++};
++
+ /**
+  * struct annotated_insn_loc - Location info of instruction
+  * @ops: Array of location info for source and target operands
 -- 
 2.44.0.rc0.258.g7320e95886-goog
 
