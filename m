@@ -1,37 +1,36 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B76F73F9F5
-	for <linux-trace-devel@vger.kernel.org>; Thu, 22 Feb 2024 10:12:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4A8D39867
+	for <linux-trace-devel@vger.kernel.org>; Thu, 22 Feb 2024 10:16:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708596766; cv=none; b=HgdQXgUkfUSiuwKG4C/eiLPR3FNP5fRBDk4w4a78+sNHy81XEENuFR1xqSnldWUHdZxjgnGNHK82DNJDCpwcXIkS4HPppVc9qz8HCWBKlglDVp2plvSbb/UmqVRh2faJSw2o8OOksm+7oZ4QBxKp8EOiKxI3TX9K4jjD/cWSUFE=
+	t=1708596982; cv=none; b=CHYV0Zn4OooYdgu2HtFD0Is/P+L+S7XPqjgAGNxhaVnvE7c/R6ZI1jjDS51I6yH0SCXaVwnh7OrSvFpziUE2ZfylsGHsPm8l4NuepHNfBN6BVZF0EXcwJ4THP9ENwaRFEkWhZOPyUQeVE5vh1RSKS/mnyZcn4Ku3wCxglqguwfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708596766; c=relaxed/simple;
-	bh=1sVpsr/KveokqtJD6tJodHE+uHJOk2SHtqKyA/DMj8c=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=g0DkD9gYr9p1Vvm4jFXr4Rlw5wNiNLFgO9oiK+UiFrAD1qRcj7WtMBBafuuOAv15DeR0D83QT950NHtmEKPBUZKqIk9pWUY58K2+GZC9ZBGYhESiyJ5eV0eRBFksUHCs7/hZ5oQ4IjwlQgW5gbfkflRsoBDldDJCMW+c/1dQtDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XMNNdloQ; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1708596982; c=relaxed/simple;
+	bh=COn/D6pLYDhwL6VPTjSglKlPSGIyImskAEyn6p68szk=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=D2AmV8eReX+F+60QzDzAteX+IlAJe9Exgb/mQnMB8c88fht+baCcegu4W0puzxSB2XCoNGI3Mo5wP15IhHFXrxCKyU+ejOucUzJsofeKmMmXE877lpuIIQjywBOLz7LxjK8R8kXuigzgocEHBuRZLZborJP4vyBA+BPQPKhMHo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oFezQJWM; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XMNNdloQ"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 78CFFC43399;
-	Thu, 22 Feb 2024 10:12:46 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oFezQJWM"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 65A2FC433F1;
+	Thu, 22 Feb 2024 10:16:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708596766;
-	bh=1sVpsr/KveokqtJD6tJodHE+uHJOk2SHtqKyA/DMj8c=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=XMNNdloQBfPQDtE5MJ/4Wlo9ogInNdyCrnW9rBb5g3Xta3A1dF4dyOQzRUMBuXv5n
-	 Y2jqTlXhxfHphNUFLMV62img4JAE19XIkNgvLwAyLjCEe+0cOjtcqPw+dkT+lwyXHe
-	 KRCn5WTAErnuQGW68vN80tLfYJlmUhfMvQF4+lEiSeSufD3Qtv4swLTanCdSFbZMCT
-	 OxKSyn0s7/KFslv3sfLDhvM/FL+foLNbsNhl82QEjqW8fdcIz6Q/vChcfr8rJmhsog
-	 Mfw/PfkZhcWTR20ZSH6OgYcuirgjmyw8p7QxkpUEIoXBAk/uB3pKEEhvNUwVdY5pag
-	 NZwabr5HIun0A==
+	s=k20201202; t=1708596982;
+	bh=COn/D6pLYDhwL6VPTjSglKlPSGIyImskAEyn6p68szk=;
+	h=From:Date:Subject:To:Cc:Reply-To:From;
+	b=oFezQJWMuOzf25HYsvjAcW9321XnyBOvGUr6bI4Tf+S4fXb5lcp3gF9vkpVZTw0Id
+	 M7kSMJzZorUtIgCT8iwvjrt5ZpGnRvPRS0BNv2opnF/95w7RPf3MqueFFhOFk3sHxH
+	 wWJkk+gj8NOlwBORvaq2eTjPe9vZWNGKqKc3MQmmHZW5Cd/v+Q6BnqZ7QWDPrUhwPU
+	 0fv7dIHEbOhEDrju2ciSKGG2+Su1dA633ZCQLRdCxVqmC6OWRL8R0B5ZsJZ0K6Vgbm
+	 dYJfBoZtloFtfJ6hX+t5R1v8wYDOPvaIm+xaxmJwWCS8inoHMiOBR/kbMRKXRijNJF
+	 2GeJYTgD4Hu1w==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68598C48BF8;
-	Thu, 22 Feb 2024 10:12:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54186C48BF8;
+	Thu, 22 Feb 2024 10:16:22 +0000 (UTC)
 From: Miko Larsson via B4 Relay <devnull+mikoxyzzz.gmail.com@kernel.org>
-Date: Thu, 22 Feb 2024 11:12:46 +0100
-Subject: [PATCH v2 3/3] utest/trace-utest: include libgen.h
+Date: Thu, 22 Feb 2024 11:16:21 +0100
+Subject: [PATCH v2] utest/trace-utest: include libgen.h
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -40,17 +39,18 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240222-utest-fixes-v2-3-ba9cd06b41d3@gmail.com>
-References: <20240222-utest-fixes-v2-0-ba9cd06b41d3@gmail.com>
-In-Reply-To: <20240222-utest-fixes-v2-0-ba9cd06b41d3@gmail.com>
+Message-Id: <20240222-utest-fixes-v2-1-7b8ee8dca0b7@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAPQe12UC/22MOw7CMBAFrxJtzSJ/MERU3AOlcOwlWYl8ZBsLF
+ PnumNSU855mNogUmCJcmw0CZY68zBXUoQE32nkgZF8ZlFAnoaTBV6KY8MFviui88c5pao3uoRp
+ roP2owr2rPHJMS/js8Sx/6/9OlihRu/5iVSuNOPvbMFl+Ht0yQVdK+QJ84vY9pgAAAA==
 To: linux-trace-devel@vger.kernel.org
 Cc: Miko Larsson <mikoxyzzz@gmail.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708596765; l=667;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708596981; l=995;
  i=mikoxyzzz@gmail.com; s=20240215; h=from:subject:message-id;
- bh=EetEr7KQnL5UP3Nk+LwH32FOuETzJwv3l+Uu0BV2+ng=;
- b=ApgoaBoIwbpv0szrNeoC41jE5sAhyPiQTQK71d+DGhAgbbyYbSeVpJzQSiMQDRKAgAiUL/5Yz
- 1sj8NL/YmR5CtOqz4xDsY4ROBeBSACZUEAvpvfWE+DHTOloiO/u55wL
+ bh=6Ny3lyrBgkhFAqGaBY9h9ovP4pU1KSlRzmaYH3L7vp4=;
+ b=g7no27a/CNeGdKT0TxMHMXmvcPkuv8xDcmAf7Rm698Hy/Vf3Rgk/TaxQLRN2KJuzvho4f7Ag7
+ YQhZh5hPRoaAemc78tSFkiE3yhglhaxS35QG3/2ZAYDxGKyjbaZdLlu
 X-Developer-Key: i=mikoxyzzz@gmail.com; a=ed25519;
  pk=1WO6EuQa9ZdBA5vCl3bQNjIb6FdQDoTriJmTDrF5mFw=
 X-Endpoint-Received:
@@ -60,22 +60,26 @@ Reply-To: <mikoxyzzz@gmail.com>
 
 From: Miko Larsson <mikoxyzzz@gmail.com>
 
-This fixes the build with musl + clang >=15; musl doesn't declare
+This fixes the build with musl + clang >=15; musl doesn't define
 basename() anywhere else, and clang >=15 doesn't allow implicit
 declarations.
 
-Fixes: 845f16976929 ("libtracefs: Add unit tests")
+Fixes: 58cbc1b2a84e ("libtraceevent: Add unit test framework for library commands")
 Signed-off-by: Miko Larsson <mikoxyzzz@gmail.com>
+---
+Changes in v2:
+- Better commit description, message
+- Link to v1: https://lore.kernel.org/r/20240215-utest-fixes-v1-1-3cb7a281506d@gmail.com
 ---
  utest/trace-utest.c | 1 +
  1 file changed, 1 insertion(+)
 
 diff --git a/utest/trace-utest.c b/utest/trace-utest.c
-index 58d4d4e..39485a1 100644
+index 1403c86..a26e42e 100644
 --- a/utest/trace-utest.c
 +++ b/utest/trace-utest.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2020, VMware, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+@@ -6,6 +6,7 @@
+  *   Copyright (C) 2021, VMware, Steven Rostedt <rostedt@goodmis.org>
   *
   */
 +#include <libgen.h>
@@ -83,6 +87,11 @@ index 58d4d4e..39485a1 100644
  #include <unistd.h>
  #include <getopt.h>
 
+---
+base-commit: 6f6d5802f31992e7527a4c32b43a32fda6bf6bdf
+change-id: 20240215-utest-fixes-cd5dcc3e853b
+
+Best regards,
 -- 
-2.43.0
+Miko Larsson <mikoxyzzz@gmail.com>
 
