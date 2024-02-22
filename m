@@ -1,37 +1,37 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B14893F9F1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B145C3F9F0
 	for <linux-trace-devel@vger.kernel.org>; Thu, 22 Feb 2024 10:12:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708596766; cv=none; b=kcJ08cSc7Cw2d2zVpvSkJyyOKo8N9c7Ftj4jhOMEd0vhWrLZ4p8Z8vfv9ZBfc+J0KglAB3fUrMBWR0oacWY159F7WLrDp160jgkv54o50+eIKITcfbPFm9+qR4bZLqVSIWUgmT7wQNz8u6cu2G5oLyXCic0urvsIhJ0lyjpsWus=
+	t=1708596766; cv=none; b=VYmiQEemuqURpfx9i2YSQLg4sjkMmGOWN1tH/jnOHGvecsbURs7UzyUSO9DFlh24kYnU9SFH5c3Cg2GmiaQnEWL1PfQFmYP7QmPU+yrdGYjSFFw9UA213OYsbdu9gjOkQCLi7xMTLsWdrCh9zok31f7Mjk3tL4cXMvrmH9Aa3BA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708596766; c=relaxed/simple;
-	bh=pf9GRBXf0zWEkISsxP/DHBNGtJ+jdtSV4tq+qMI8LGM=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=SSD21fq8O9rvZqi1Fw2huMO+dUM3QTfkFjS724PI4l02Rbl8vRz0h/Xq4pj8yzAApBqa6r8W3AgDmzYm0mhAbL1LJxr8qO4fGgu3+kOcm8oxwW6MujrFACwUkrOGVB2R3sOWsa1twSi27e4w8vIl/a/1tXUjEZ1K2nn65jqr2QY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ULd5P/rI; arc=none smtp.client-ip=10.30.226.201
+	bh=WYbaaROxJ8zpmPOenkC4a6YFj75YP20m2E1WeRaJY9c=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=GwrPzR8XaUHQoafWS/P5uUhWlwVwSLK6Y7mar/GoJn0Q8wA8PglZAaSHJGBT0eF+qeyJjMIlonnWciRHRR/hr48ZQFkm6oPkIxhqGu2fdil3V5IkYh8vwxhexJ8//MvVk+QLgB2N0BS/crgtuSAv/QM7MANTYlpKN7TgJeUfEGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EcwmieH8; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ULd5P/rI"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 51625C433C7;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EcwmieH8"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5F2C9C433F1;
 	Thu, 22 Feb 2024 10:12:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1708596766;
-	bh=pf9GRBXf0zWEkISsxP/DHBNGtJ+jdtSV4tq+qMI8LGM=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=ULd5P/rIMGT7POqdkjDz0iLhnEB9XeaZcGiU8HWr2Bgmg6Qo/I9cOdEM9QPjxdgsH
-	 9KdOwPMeEcDWUQWvzjB2+8B5LhlFi6n9rcRAl6b7OSSuyFlFweiJwsqwxMKiILukX6
-	 fXUfbcRUmHyLihFsInScX/2RHnriOn/T+XmXl3UjH0/aUy/uKDuk1LLjjYSiOZ9Oe7
-	 l5tOJ6KCWrSerBDGQXQsSPpppre8pZMwh9ZbtI0nnQB77AUhUWqW8YZg9lhqeXBtIq
-	 rdEL9R+4UKEKjbF1oTIkM+Er3VYoTTV1DZpih5Hm9xsEQFBB5cwf0vBpoUnodMDu9O
-	 W5v48R0l77fwQ==
+	bh=WYbaaROxJ8zpmPOenkC4a6YFj75YP20m2E1WeRaJY9c=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=EcwmieH8xUCDt26Kd/ZNvkmp822feLqX1cpqEIfFBNY8jB8NRmbb9Eg9s7VYI9c4o
+	 QEd7VmdsixVNXF9GO+aLaL5Ed1H/ffoyJ9PSQ4c/km5nY7ZH3izbxdWaUSllFXSSJD
+	 uNU85wXuYRs2RbV6656w9AmfyhKEu+Oa6UtfrynlHezWD32JL6UJ3F1P0Zrj5QzRVc
+	 RxTRZb9p+fhkdzzMZO5FR1BdyfPDh4YrdQX4pHMvsrcP0Y7Nx1z028TFgI3CfoEIwk
+	 e0FXSgFoptcf+sGp/q0TUUYpLD/JVQgwls9WVEayCvfN7LVLSqGws2rOfRhthqEQrr
+	 E2PYIX9+7Q8AA==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F24AC48BF8;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EAF4C48BEB;
 	Thu, 22 Feb 2024 10:12:46 +0000 (UTC)
 From: Miko Larsson via B4 Relay <devnull+mikoxyzzz.gmail.com@kernel.org>
-Subject: [PATCH v2 0/3] utest: fix build with musl + clang >=15
-Date: Thu, 22 Feb 2024 11:12:43 +0100
-Message-Id: <20240222-utest-fixes-v2-0-ba9cd06b41d3@gmail.com>
+Date: Thu, 22 Feb 2024 11:12:44 +0100
+Subject: [PATCH v2 1/3] utest/tracefs-utest: include linux/limits.h
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -40,17 +40,17 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIABse12UC/22MQQ6CMBBFr0JmbU07UC2uvIdhAXSESYSatjYa0
- rtbWbt8/+e9DQJ5pgCXagNPiQO7tQAeKhjnfp1IsC0MKLGRqLR4RQpR3PlNQZi2rpUeCFEPUIy
- np/0owq0rPHOIzn/2eFK/9X8nKSEFNqezsUa3lvA6LT0/jqNboMs5fwFWCOQfpgAAAA==
+Message-Id: <20240222-utest-fixes-v2-1-ba9cd06b41d3@gmail.com>
+References: <20240222-utest-fixes-v2-0-ba9cd06b41d3@gmail.com>
+In-Reply-To: <20240222-utest-fixes-v2-0-ba9cd06b41d3@gmail.com>
 To: linux-trace-devel@vger.kernel.org
 Cc: Miko Larsson <mikoxyzzz@gmail.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708596765; l=901;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708596765; l=871;
  i=mikoxyzzz@gmail.com; s=20240215; h=from:subject:message-id;
- bh=pf9GRBXf0zWEkISsxP/DHBNGtJ+jdtSV4tq+qMI8LGM=;
- b=SX0huGv671lRd1WtwcVr+j4+yIYmxOJ0fqSRb681X5sDzzl3GsD71Uf67TY3axSMZkvmVCaBZ
- 51TWAOyLy9gBJqBwlnOaOwxxy139O0ZfdpvslbBk65DCsEJI4+YVFGG
+ bh=fJxacPVoyFtCYtoqXqDtpb725G8Jw3FCfY22Xy5jABM=;
+ b=Idf+mPBK8Jeu1EXfl3woR8JPDGgjJ/7P643F1zkJzj9BaGQWJdzDMwDpUn7Uz/N5WMEn7ZlqF
+ 0Vb23hGg1TyDK2N3Yb23L8eahbKr77dX7Uei4zMEyEurSApH8ZOvF2y
 X-Developer-Key: i=mikoxyzzz@gmail.com; a=ed25519;
  pk=1WO6EuQa9ZdBA5vCl3bQNjIb6FdQDoTriJmTDrF5mFw=
 X-Endpoint-Received:
@@ -58,31 +58,37 @@ X-Endpoint-Received:
 X-Original-From: Miko Larsson <mikoxyzzz@gmail.com>
 Reply-To: <mikoxyzzz@gmail.com>
 
-Clang 15 onwards defaults to -Werror=implicit-function-declaration
-which, combined with musl not declaring all the stuff we need without
-the missing includes and defines, breaks the utest build. This series
-fixes thus by simply adding the missing stuff.
+From: Miko Larsson <mikoxyzzz@gmail.com>
 
+This fixes the build with musl + clang >=15; musl doesn't define
+PATH_MAX anywhere else, and clang >=15 doesn't allow implicit
+declarations with >=c99. Without this, the build fails due to PATH_MAX
+not being defined.
+
+We could include limits.h from the libc, but AFAIK the libc doesn't
+necessarily have to define PATH_MAX, so it's safer to just include
+linux/limits.h
+
+Fixes: 845f16976929 ("libtracefs: Add unit tests")
 Signed-off-by: Miko Larsson <mikoxyzzz@gmail.com>
 ---
-Changes in v2:
-- Better commit descriptions, messages
-- Link to v1: https://lore.kernel.org/r/20240215-utest-fixes-v1-0-24678d859de2@gmail.com
+ utest/tracefs-utest.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
----
-Miko Larsson (3):
-      utest/tracefs-utest: include linux/limits.h
-      utest/tracefs-utest: define _LARGEFILE64_SOURCE
-      utest/trace-utest: include libgen.h
+diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
+index 963fac7..70bcf3e 100644
+--- a/utest/tracefs-utest.c
++++ b/utest/tracefs-utest.c
+@@ -16,6 +16,8 @@
+ #include <kbuffer.h>
+ #include <pthread.h>
+ 
++#include <linux/limits.h>
++
+ #include <sys/mount.h>
+ #include <sys/syscall.h>
+ 
 
- utest/trace-utest.c   | 1 +
- utest/tracefs-utest.c | 4 ++++
- 2 files changed, 5 insertions(+)
----
-base-commit: 5f27b7f3fb7d88b29522baf3883cc0e2e28b1af0
-change-id: 20240215-utest-fixes-893315be225b
-
-Best regards,
 -- 
-Miko Larsson <mikoxyzzz@gmail.com>
+2.43.0
 
