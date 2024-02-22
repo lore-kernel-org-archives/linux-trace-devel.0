@@ -1,82 +1,88 @@
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3F3423747
-	for <linux-trace-devel@vger.kernel.org>; Thu, 22 Feb 2024 08:59:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B14893F9F1
+	for <linux-trace-devel@vger.kernel.org>; Thu, 22 Feb 2024 10:12:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708592362; cv=none; b=shZGVRBG/MN/fn4oouuCtYwhDcW0mexzOHLAvhvHZjeGifs0Bp/UZUli5sn5FS9tJLqVBgayy3yw8WvvhJbJjyli1OQkfbTMCCs5pCp4xoW6/H18S97jzXTqGovdnsJXHp1rqxxaQd0gUzof/6dF84pOaOe59uXboaue0DzPZ18=
+	t=1708596766; cv=none; b=kcJ08cSc7Cw2d2zVpvSkJyyOKo8N9c7Ftj4jhOMEd0vhWrLZ4p8Z8vfv9ZBfc+J0KglAB3fUrMBWR0oacWY159F7WLrDp160jgkv54o50+eIKITcfbPFm9+qR4bZLqVSIWUgmT7wQNz8u6cu2G5oLyXCic0urvsIhJ0lyjpsWus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708592362; c=relaxed/simple;
-	bh=sxys+kucC2TnuN9mb34Mv1h1RFwSCyzRl+qtbkS/9jA=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=SD3OwYLoPPWXK0q3OUuMnpAbjs5jdWAdZP2j8h77UDgL/e3wy2t72MjkUofrZxzITMKpU6NrgjiYymcX/VQVLhwsmkCV/klggG09LPWJjTECjwHK+68L1V2Qn6xnXbhqRUrbv9dpgtkrctInUA/Q0OqOZWeKYuCYQRPOqumHYV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DIInGM4O; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1708596766; c=relaxed/simple;
+	bh=pf9GRBXf0zWEkISsxP/DHBNGtJ+jdtSV4tq+qMI8LGM=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=SSD21fq8O9rvZqi1Fw2huMO+dUM3QTfkFjS724PI4l02Rbl8vRz0h/Xq4pj8yzAApBqa6r8W3AgDmzYm0mhAbL1LJxr8qO4fGgu3+kOcm8oxwW6MujrFACwUkrOGVB2R3sOWsa1twSi27e4w8vIl/a/1tXUjEZ1K2nn65jqr2QY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ULd5P/rI; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DIInGM4O"
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a3e5d82ad86so597861966b.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 22 Feb 2024 00:59:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708592359; x=1709197159; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sxys+kucC2TnuN9mb34Mv1h1RFwSCyzRl+qtbkS/9jA=;
-        b=DIInGM4O+3qScH7FGyy3c1lwtLeNEXpkBdJy6z9A9hI+XnESDBNXxQMuua5YAM1Fin
-         /DlYr/8JLpOViPCnEW3och/t8RJcpqfTCc6eDWu+sdxF0YngwLwcsclNNZ+GB0jkvwF0
-         hfibpoUEhNyWPnmqwkwhiQ+09kywFBoZB4mAv//ww7qWwWSSqRKfkWYA0m/2MyMQlDEh
-         6HQhm6UMdO5fPNrPBrrgxXUDR/Ou5I29dNEdLDzNZ0Gn+ddnhHqytyhFtnWRjFe5//X+
-         MdCOw2Gwogv57xtxkxMTR7/G7yYmrKAHqzkUFmdXN9ARIRvnX6RJ91Rd2iZkoUXZtAGC
-         akkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708592359; x=1709197159;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=sxys+kucC2TnuN9mb34Mv1h1RFwSCyzRl+qtbkS/9jA=;
-        b=s1E301l0BlDaIlOdVKhC6hkb5ysrOJM5S9cZz0Z5tJ136yvoEbiNbTgMyxkGZXljG1
-         hFr5g8KYWu/Nc645quXBDz6N9AbOeskbaCHH0AVFvTFh6NnyyFej/iA6VdL2B5LUisXI
-         9jkNzlh6mA1t3CD76GDv17D3HlsJYou4IxVjH46YzUBfpMsIlCqr8Bg/lDQ71oBTzsE6
-         BcCTxmSCzBTmkxgvDIAHPK+9OhFY5e7cUCSsaVlfXuwpyOP8qeWzlFku/thbWVH9FdGO
-         V+DDDzS+M+dlnbcFUgLXJoEvmdeOZUSqoP5s1S51EJgEHNUw3DUyQUBIjdXa/wEI+P3p
-         3o5Q==
-X-Gm-Message-State: AOJu0YyaoMVvFre/ZtUuNVE4rSmKPk1S5uvH3OZPo71IxQYd5wRPRZsi
-	ocFz6GZM5g6D5WhfsAjk7Ef/hrQhha83abL7/Whcw4M4WdHRp2ajLgaDL7x6
-X-Google-Smtp-Source: AGHT+IHiWIWGQ8UXTz5gqu7EYedx15S67nKgA9rJ+KITKkmA3u8CX9S3+36nnDwsQwO/92RlHjjAqg==
-X-Received: by 2002:a17:906:11d7:b0:a3e:8cb8:d819 with SMTP id o23-20020a17090611d700b00a3e8cb8d819mr10072910eja.51.1708592358772;
-        Thu, 22 Feb 2024 00:59:18 -0800 (PST)
-Received: from localhost (81-234-98-96-no2390.tbcn.telia.com. [81.234.98.96])
-        by smtp.gmail.com with ESMTPSA id ll5-20020a170907190500b00a3f0386dc96sm2263081ejc.89.2024.02.22.00.59.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 00:59:18 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ULd5P/rI"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 51625C433C7;
+	Thu, 22 Feb 2024 10:12:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708596766;
+	bh=pf9GRBXf0zWEkISsxP/DHBNGtJ+jdtSV4tq+qMI8LGM=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=ULd5P/rIMGT7POqdkjDz0iLhnEB9XeaZcGiU8HWr2Bgmg6Qo/I9cOdEM9QPjxdgsH
+	 9KdOwPMeEcDWUQWvzjB2+8B5LhlFi6n9rcRAl6b7OSSuyFlFweiJwsqwxMKiILukX6
+	 fXUfbcRUmHyLihFsInScX/2RHnriOn/T+XmXl3UjH0/aUy/uKDuk1LLjjYSiOZ9Oe7
+	 l5tOJ6KCWrSerBDGQXQsSPpppre8pZMwh9ZbtI0nnQB77AUhUWqW8YZg9lhqeXBtIq
+	 rdEL9R+4UKEKjbF1oTIkM+Er3VYoTTV1DZpih5Hm9xsEQFBB5cwf0vBpoUnodMDu9O
+	 W5v48R0l77fwQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F24AC48BF8;
+	Thu, 22 Feb 2024 10:12:46 +0000 (UTC)
+From: Miko Larsson via B4 Relay <devnull+mikoxyzzz.gmail.com@kernel.org>
+Subject: [PATCH v2 0/3] utest: fix build with musl + clang >=15
+Date: Thu, 22 Feb 2024 11:12:43 +0100
+Message-Id: <20240222-utest-fixes-v2-0-ba9cd06b41d3@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 22 Feb 2024 09:59:17 +0100
-Message-Id: <CZBHFXAPE375.14HREPXS870DV@sakura.myxoz.lan>
-Cc: <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH 2/3] utest/tracefs-utest: add missing define
-From: "Miko Larsson" <mikoxyzzz@gmail.com>
-To: "Steven Rostedt" <rostedt@goodmis.org>, "Miko Larsson via B4 Relay"
- <devnull+mikoxyzzz.gmail.com@kernel.org>
-X-Mailer: aerc 0.15.2
-References: <20240215-utest-fixes-v1-0-24678d859de2@gmail.com>
- <20240215-utest-fixes-v1-2-24678d859de2@gmail.com>
- <20240221184937.64d71df0@gandalf.local.home>
-In-Reply-To: <20240221184937.64d71df0@gandalf.local.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABse12UC/22MQQ6CMBBFr0JmbU07UC2uvIdhAXSESYSatjYa0
+ rtbWbt8/+e9DQJ5pgCXagNPiQO7tQAeKhjnfp1IsC0MKLGRqLR4RQpR3PlNQZi2rpUeCFEPUIy
+ np/0owq0rPHOIzn/2eFK/9X8nKSEFNqezsUa3lvA6LT0/jqNboMs5fwFWCOQfpgAAAA==
+To: linux-trace-devel@vger.kernel.org
+Cc: Miko Larsson <mikoxyzzz@gmail.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708596765; l=901;
+ i=mikoxyzzz@gmail.com; s=20240215; h=from:subject:message-id;
+ bh=pf9GRBXf0zWEkISsxP/DHBNGtJ+jdtSV4tq+qMI8LGM=;
+ b=SX0huGv671lRd1WtwcVr+j4+yIYmxOJ0fqSRb681X5sDzzl3GsD71Uf67TY3axSMZkvmVCaBZ
+ 51TWAOyLy9gBJqBwlnOaOwxxy139O0ZfdpvslbBk65DCsEJI4+YVFGG
+X-Developer-Key: i=mikoxyzzz@gmail.com; a=ed25519;
+ pk=1WO6EuQa9ZdBA5vCl3bQNjIb6FdQDoTriJmTDrF5mFw=
+X-Endpoint-Received:
+ by B4 Relay for mikoxyzzz@gmail.com/20240215 with auth_id=130
+X-Original-From: Miko Larsson <mikoxyzzz@gmail.com>
+Reply-To: <mikoxyzzz@gmail.com>
 
-On Thu Feb 22, 2024 at 12:49 AM CET, Steven Rostedt wrote:
-> FTBFS is a rather useless explanation (and I had to even look it up to fi=
-nd
-> out what it is ;-)
->
-> The change log should show the error and explain why the change fixes the
-> problem.
-Heh, yeah, you're right. Thanks.
+Clang 15 onwards defaults to -Werror=implicit-function-declaration
+which, combined with musl not declaring all the stuff we need without
+the missing includes and defines, breaks the utest build. This series
+fixes thus by simply adding the missing stuff.
+
+Signed-off-by: Miko Larsson <mikoxyzzz@gmail.com>
+---
+Changes in v2:
+- Better commit descriptions, messages
+- Link to v1: https://lore.kernel.org/r/20240215-utest-fixes-v1-0-24678d859de2@gmail.com
+
+---
+Miko Larsson (3):
+      utest/tracefs-utest: include linux/limits.h
+      utest/tracefs-utest: define _LARGEFILE64_SOURCE
+      utest/trace-utest: include libgen.h
+
+ utest/trace-utest.c   | 1 +
+ utest/tracefs-utest.c | 4 ++++
+ 2 files changed, 5 insertions(+)
+---
+base-commit: 5f27b7f3fb7d88b29522baf3883cc0e2e28b1af0
+change-id: 20240215-utest-fixes-893315be225b
+
+Best regards,
+-- 
+Miko Larsson <mikoxyzzz@gmail.com>
+
