@@ -1,28 +1,27 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06272A35
-	for <linux-trace-devel@vger.kernel.org>; Wed, 21 Feb 2024 23:47:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0400428EF
+	for <linux-trace-devel@vger.kernel.org>; Thu, 22 Feb 2024 00:47:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708559270; cv=none; b=c+jW6ZQ7a7KRq8l6xUfE9VEbBi740UfhdhRxDQ01NaF8qNpN9GXaR1yb642HKIYUyJ6OHuth8CP951uEux/eUmQkjc/1A+Q3dqG6yZeOc2o8vz/DsswYrPBi8n8ks9e9bOKbU7LI79AZmBWfWpPpALFHG224BTLaBsfM5FIa2/0=
+	t=1708562830; cv=none; b=martQV50a/9f6BkI3aG2+lQ+dgXHkyqW6E+TmOGxEjbOaWsNvL63Nw5Y+dbMK6DJyehRi+AzmGbSPsE4Gd89XbZ9l7ahCpTfq+vG3TFwWCzq4z7npJiPa+XYX8iaKfh0BIJVLZ4/l+G9ftcZ38SXd9ebCqmcg8157bHIzPDy+kQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708559270; c=relaxed/simple;
-	bh=K2TS9pes5sc077e8eiycA5OCgy8owl8WkqMxc1xXle8=;
+	s=arc-20240116; t=1708562830; c=relaxed/simple;
+	bh=jIP9KR+0MSz1cgigzzIFYhAXex0iwR5BkqGaH8HGogk=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rzxm7BhDeCwCslXGzQvSFUwjjJySFg90zzPssNtEuPo5Wk4vkPliZ+/C/1w7ljxpEJb7ZgTEzcwXGzIHqhb0xWtUaZhkho7q4vGsOK9MQeo9TivKAtHosxuHK/e3I9T2J6hXPiRPOJ4t+9SbEWnNEntU04aBum7xpbJRcjo454g=
+	 MIME-Version:Content-Type; b=IPy4ETuL8gfYe7/uOehXms37LUyuTfsor4RnAJurarsEPto1Pq4QK3ff8feg9mzyrKX8owXG8DKmD57d+YHbz4YG736k0UIjGPf8xUchLTGVQz6Un304mPpSd4DPqO90IDEwKNV+H4w9/NvEb12188zKlBuvxsDfr5qVo6DRGtM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2319AC433F1;
-	Wed, 21 Feb 2024 23:47:49 +0000 (UTC)
-Date: Wed, 21 Feb 2024 18:49:37 -0500
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20AE5C433C7;
+	Thu, 22 Feb 2024 00:47:09 +0000 (UTC)
+Date: Wed, 21 Feb 2024 19:48:57 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Miko Larsson via B4 Relay <devnull+mikoxyzzz.gmail.com@kernel.org>
-Cc: <mikoxyzzz@gmail.com>, linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 2/3] utest/tracefs-utest: add missing define
-Message-ID: <20240221184937.64d71df0@gandalf.local.home>
-In-Reply-To: <20240215-utest-fixes-v1-2-24678d859de2@gmail.com>
-References: <20240215-utest-fixes-v1-0-24678d859de2@gmail.com>
-	<20240215-utest-fixes-v1-2-24678d859de2@gmail.com>
+To: Pierre Gondois <pierre.gondois@arm.com>
+Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH v5] trace-cmd split: Enable support for buffer selection
+Message-ID: <20240221194857.084c6cc5@gandalf.local.home>
+In-Reply-To: <20240219164320.1100880-1-pierre.gondois@arm.com>
+References: <20240219164320.1100880-1-pierre.gondois@arm.com>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -33,43 +32,69 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 15 Feb 2024 10:02:42 +0100
-Miko Larsson via B4 Relay <devnull+mikoxyzzz.gmail.com@kernel.org> wrote:
+On Mon, 19 Feb 2024 17:43:20 +0100
+Pierre Gondois <pierre.gondois@arm.com> wrote:
 
-> From: Miko Larsson <mikoxyzzz@gmail.com>
-> 
-> Fixes FTBFS with clang >=15
+Hi Pierre,
 
-FTBFS is a rather useless explanation (and I had to even look it up to find
-out what it is ;-)
+This looks good, except I have on small nit ;-)
 
-The change log should show the error and explain why the change fixes the
-problem.
+> @@ -120,6 +116,50 @@ static void free_handles(struct list_head *list)
+>  	}
+>  }
+>  
+> +static struct list_head inst_list;
+> +
+> +struct inst_list {
+> +	struct list_head		list;
+> +	const char			*name;
 
-Thanks,
+Why "const char *name" and not just "char *name"?
+
+> +	struct handle_list		*handle;
+> +
+> +	/* Identify the top instance in the input trace. */
+> +	bool				was_top_instance;
+> +
+> +	/* Identify the top instance in the output trace. */
+> +	bool				is_top_instance;
+> +};
+> +
+> +static void free_inst(struct list_head *list)
+> +{
+> +	struct inst_list *item, *n;
+> +
+> +	list_for_each_entry_safe(item, n, list, list) {
+> +		list_del(&item->list);
+> +		free((char *)item->name);
+
+Then you don't need to do the typecast to free.
+
+> +		free(item);
+> +	}
+> +}
+> +
+> +static struct inst_list *add_inst(const char *name, bool was_top_instance,
+> +				  bool is_top_instance)
+> +{
+> +	struct inst_list *item;
+> +
+> +	item = calloc(1, sizeof(*item));
+> +	if (!item)
+> +		die("Failed to allocate output_file item");
+> +
+> +	item->name = strdup(name);
+
+You are using strdup(), which means "name" isn't pointing to a const.
 
 -- Steve
 
-
-> 
-> Fixes: 0f45e68cb04a ("libtracefs: Add unit tests for tracefs_cpu functions")
-> Signed-off-by: Miko Larsson <mikoxyzzz@gmail.com>
-> ---
->  utest/tracefs-utest.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-> index a798ace..e30e8e7 100644
-> --- a/utest/tracefs-utest.c
-> +++ b/utest/tracefs-utest.c
-> @@ -3,6 +3,8 @@
->   * Copyright (C) 2020, VMware, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
->   *
->   */
-> +#define _LARGEFILE64_SOURCE
+> +	if (!item->name)
+> +		die("Failed to duplicate %s", name);
 > +
->  #include <stdio.h>
->  #include <stdlib.h>
->  #include <sys/stat.h>
-> 
-
+> +	item->was_top_instance = was_top_instance;
+> +	item->is_top_instance = is_top_instance;
+> +	list_add_tail(&item->list, &inst_list);
+> +	return item;
+> +}
+> +
