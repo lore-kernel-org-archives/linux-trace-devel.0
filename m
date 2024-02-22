@@ -1,433 +1,52 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F05D154BE3
-	for <linux-trace-devel@vger.kernel.org>; Thu, 22 Feb 2024 16:55:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2CA6148FF2
+	for <linux-trace-devel@vger.kernel.org>; Thu, 22 Feb 2024 16:58:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708620912; cv=none; b=dRyG6vr+EA0qztA7qLgaOcRAvDn8IjF40uz/1cMll1fnYP5gvTXEyzdUnNLj5mSst10W7RYuIEU3MwVtYKWZtBS6/UoVqvKbl3eAaKejaYOG+X0syOfzFYRumZQTlpC5bqPjg2yiemD5hhuxWQzcl+FlWKGGdV9sBaLX3EpsteI=
+	t=1708621100; cv=none; b=NRGT/BMRcU9jHUESbIhR/7HiiJPUXXHQHJ58Fx7+Um93mnsaEmc+no4NYtx4CbcHW5M2hW/QAEtDPROVPxhvf3KS6aV3ns2BmI7DuLx/5gNZnyP6dZUc0njDCyBtQh/FsCbrwB+PfE/Su5+zNwhnRw8Xjo7bqdQfsQ0R8Awuc70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708620912; c=relaxed/simple;
-	bh=n/suKvDX1pVNP38A5R8cN/gd/1i7thbUeBI6wBZyXVY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=s1r42BLo5F0RSVxTXL/+qaTYBfuFUP42ioPCJO3Onhu4XMbEmgdoRVHLd72FcpQtlWye/3CO3x+Hm7x3RDyh28ls5T2tc8GeJ7bgRJptZ5dv0SAhPUwZV7H/rEC96mFJ0yCIsmlryv5R8leBjhFXtxxmZ5rnlvd4xUAsWMOtvEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 842841007;
-	Thu, 22 Feb 2024 08:55:47 -0800 (PST)
-Received: from e126645.arm.com (unknown [10.57.50.6])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E08623F73F;
-	Thu, 22 Feb 2024 08:55:07 -0800 (PST)
-From: Pierre Gondois <pierre.gondois@arm.com>
-To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Pierre Gondois <pierre.gondois@arm.com>
-Subject: [PATCH v6 2/2] trace-cmd split: Enable support for buffer selection
-Date: Thu, 22 Feb 2024 17:54:18 +0100
-Message-Id: <20240222165418.2153026-2-pierre.gondois@arm.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1708621100; c=relaxed/simple;
+	bh=yTFKHwgPOmAqyvjKBy4l2gCuNj0tT+WvLgeIbUGPD9g=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aqYg5lhWOVKlJcrstUjHL76Aa+qKOg+Hb6G/JRcxA01v7PrLs43NClAq/XUygVCmRR0pU89wsqoxOVFFBMe6tlLYtI2LpoYfv6FPBAfxWh7iUSsoh8dPJC1t86XkAaAfX9yfcFUHbA1jBjmuwzbsBAb8/7pnp1holPdacsu4pRo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 788A3C433C7;
+	Thu, 22 Feb 2024 16:58:19 +0000 (UTC)
+Date: Thu, 22 Feb 2024 12:00:09 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Pierre Gondois <pierre.gondois@arm.com>
+Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH v6 1/2] trace-cmd split: Remove const to (struct
+ handle_list).name
+Message-ID: <20240222120009.05cd39c3@gandalf.local.home>
 In-Reply-To: <20240222165418.2153026-1-pierre.gondois@arm.com>
 References: <20240222165418.2153026-1-pierre.gondois@arm.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-The 'trace-cmd split' command conserves all buffers/instances
-of the input .dat file. Add support to select the instances to
-keep:
-- '--top' to keep the top instance
-- '-b' top rename the top instance. Must follow '--top'.
-- '-B buffer' to keep a buffer/instance
-- t top promote a buffer to the top instance.
-  Must follow '-B'.
+On Thu, 22 Feb 2024 17:54:17 +0100
+Pierre Gondois <pierre.gondois@arm.com> wrote:
 
-For example, with a trace recorded with:
-  $ trace-cmd record -e sched_wakeup -B switch_instance \
-    -e sched_switch
+> (struct handle_list).name was unnecessarily made const in:
+> commit caa9eda091d6 ("trace-cmd split: Store instances in local list")
+> 
+> Remove it.
+> Also fix bad indentation.
+> 
+> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
 
-Creating a test.dat file containing the top instance and
-the switch_instance:
-  $ trace-cmd split --top -B switch_instance -o test.dat
+I figured I was guilty of that as well ;-)
 
-Creating a test.dat file containing the switch_instance as
-the top instance, and the initial top instance as an instance
-named 'old_top':
-  $ trace-cmd split --top -b old_top -B switch_instance -t \
-    -o test.dat
+Some of the code was probably copied and pasted from places that actually
+needed it to be const.
 
-Also update the trace-usage.c and the relevant documentation
-for the new options.
-
-Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
----
-
-Notes:
-    v4:
-    - Update the options as discussed at:
-    https://lore.kernel.org/all/20240212162800.3fe15000@gandalf.local.home/
-    
-    v5:
-    - Use list_for_each_entry_safe() instead of container_of()
-    
-    v6:
-    - Remove unnecessary const for (struct inst_list).name
-
- Documentation/trace-cmd/trace-cmd-split.1.txt |  25 +++
- tracecmd/trace-split.c                        | 184 ++++++++++++++++--
- tracecmd/trace-usage.c                        |   7 +
- 3 files changed, 203 insertions(+), 13 deletions(-)
-
-diff --git a/Documentation/trace-cmd/trace-cmd-split.1.txt b/Documentation/trace-cmd/trace-cmd-split.1.txt
-index 25385796..d2fea252 100644
---- a/Documentation/trace-cmd/trace-cmd-split.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-split.1.txt
-@@ -86,6 +86,31 @@ OPTIONS
- 
-     This will split out all the events for cpu 1 in the file.
- 
-+*--top*::
-+    This allows to keep the top buffer.
-+    The top buffer can be renamed using the '-b' option.
-+
-+    trace-cmd split --top
-+
-+    This will keep only the top buffer.
-+
-+    trace-cmd split --top -b old_top
-+
-+    This will keep only the top buffer and rename it 'old_top'.
-+
-+*-B* 'buffer'::
-+    This allows to keep the selected buffer.
-+    A buffer can be promoted to the top buffer using the '-t' option.
-+
-+    trace-cmd split -B timer -B sched
-+
-+    This will keep the 'timer' and 'sched' buffers.
-+
-+    trace-cmd split -B timer -t -B sched
-+
-+    This will keep the 'timer' and 'sched' buffers, with the events
-+    from the 'timer' buffer promoted to the top instance.
-+
- SEE ALSO
- --------
- trace-cmd(1), trace-cmd-record(1), trace-cmd-report(1), trace-cmd-start(1),
-diff --git a/tracecmd/trace-split.c b/tracecmd/trace-split.c
-index cb6242d8..13a10c89 100644
---- a/tracecmd/trace-split.c
-+++ b/tracecmd/trace-split.c
-@@ -59,9 +59,6 @@ struct handle_list {
- 
- 	/* Identify the top instance in the input trace. */
- 	bool				was_top_instance;
--
--	/* Identify the top instance in each output trace. */
--	bool				is_top_instance;
- };
- 
- static struct list_head handle_list;
-@@ -109,10 +106,9 @@ static void add_handle(const char *name, int index, bool was_top_instance)
- 
- static void free_handles(struct list_head *list)
- {
--	struct handle_list *item;
-+	struct handle_list *item, *n;
- 
--	while (!list_empty(list)) {
--		item = container_of(list->next, struct handle_list, list);
-+	list_for_each_entry_safe(item, n, list, list) {
- 		list_del(&item->list);
- 		free(item->name);
- 		tracecmd_close(item->handle);
-@@ -120,6 +116,50 @@ static void free_handles(struct list_head *list)
- 	}
- }
- 
-+static struct list_head inst_list;
-+
-+struct inst_list {
-+	struct list_head		list;
-+	char				*name;
-+	struct handle_list		*handle;
-+
-+	/* Identify the top instance in the input trace. */
-+	bool				was_top_instance;
-+
-+	/* Identify the top instance in the output trace. */
-+	bool				is_top_instance;
-+};
-+
-+static void free_inst(struct list_head *list)
-+{
-+	struct inst_list *item, *n;
-+
-+	list_for_each_entry_safe(item, n, list, list) {
-+		list_del(&item->list);
-+		free(item->name);
-+		free(item);
-+	}
-+}
-+
-+static struct inst_list *add_inst(const char *name, bool was_top_instance,
-+				  bool is_top_instance)
-+{
-+	struct inst_list *item;
-+
-+	item = calloc(1, sizeof(*item));
-+	if (!item)
-+		die("Failed to allocate output_file item");
-+
-+	item->name = strdup(name);
-+	if (!item->name)
-+		die("Failed to duplicate %s", name);
-+
-+	item->was_top_instance = was_top_instance;
-+	item->is_top_instance = is_top_instance;
-+	list_add_tail(&item->list, &inst_list);
-+	return item;
-+}
-+
- static int create_type_len(struct tep_handle *pevent, int time, int len)
- {
- 	static int bigendian = -1;
-@@ -481,8 +521,8 @@ static unsigned long long parse_file(struct tracecmd_input *handle,
- 				     bool *end_reached)
- {
- 	unsigned long long current = 0;
--	struct handle_list *handle_entry;
- 	struct tracecmd_output *ohandle;
-+	struct inst_list *inst_entry;
- 	struct cpu_data *cpu_data;
- 	struct tep_record *record;
- 	bool all_end_reached = true;
-@@ -496,18 +536,18 @@ static unsigned long long parse_file(struct tracecmd_input *handle,
- 	ohandle = tracecmd_copy(handle, output_file, TRACECMD_FILE_CMD_LINES, 0, NULL);
- 	tracecmd_set_out_clock(ohandle, tracecmd_get_trace_clock(handle));
- 
--	list_for_each_entry(handle_entry, &handle_list, list) {
-+	list_for_each_entry(inst_entry, &inst_list, list) {
- 		struct tracecmd_input *curr_handle;
- 		bool curr_end_reached = false;
- 
--		curr_handle = handle_entry->handle;
-+		curr_handle = inst_entry->handle->handle;
- 		cpus = tracecmd_cpus(curr_handle);
- 		cpu_data = malloc(sizeof(*cpu_data) * cpus);
- 		if (!cpu_data)
- 			die("Failed to allocate cpu_data for %d cpus", cpus);
- 
- 		for (cpu = 0; cpu < cpus; cpu++) {
--			file = get_temp_file(output_file, handle_entry->name, cpu);
-+			file = get_temp_file(output_file, inst_entry->name, cpu);
- 			touch_file(file);
- 
- 			fd = open(file, O_WRONLY | O_CREAT | O_TRUNC | O_LARGEFILE, 0644);
-@@ -540,10 +580,10 @@ static unsigned long long parse_file(struct tracecmd_input *handle,
- 		for (cpu = 0; cpu < cpus; cpu++)
- 			cpu_list[cpu] = cpu_data[cpu].file;
- 
--		if (handle_entry->was_top_instance)
-+		if (inst_entry->is_top_instance)
- 			ret = tracecmd_append_cpu_data(ohandle, cpus, cpu_list);
- 		else
--			ret = tracecmd_append_buffer_cpu_data(ohandle, handle_entry->name, cpus,
-+			ret = tracecmd_append_buffer_cpu_data(ohandle, inst_entry->name, cpus,
- 							      cpu_list);
- 		if (ret < 0)
- 			die("Failed to append tracing data\n");
-@@ -573,11 +613,80 @@ static unsigned long long parse_file(struct tracecmd_input *handle,
- 	return current;
- }
- 
-+/* Map the instance names to their handle. */
-+static void map_inst_handle(void)
-+{
-+	struct handle_list *handle_entry;
-+	struct inst_list *inst_entry;
-+
-+	/*
-+	 * No specific instance was given for this output file.
-+	 * Add all the available instances.
-+	 */
-+	if (list_empty(&inst_list)) {
-+		list_for_each_entry(handle_entry, &handle_list, list) {
-+			add_inst(handle_entry->name, handle_entry->was_top_instance,
-+				 handle_entry->was_top_instance);
-+		}
-+	}
-+
-+	list_for_each_entry(inst_entry, &inst_list, list) {
-+		list_for_each_entry(handle_entry, &handle_list, list) {
-+			if ((inst_entry->was_top_instance &&
-+			     handle_entry->was_top_instance) ||
-+			    (!inst_entry->was_top_instance &&
-+			     !strcmp(handle_entry->name, inst_entry->name))) {
-+				inst_entry->handle = handle_entry;
-+				goto found;
-+			}
-+		}
-+
-+		warning("Requested instance %s was not found in trace.", inst_entry->name);
-+		break;
-+found:
-+		continue;
-+	}
-+}
-+
-+static bool is_top_instance_unique(void)
-+{
-+	struct inst_list *inst_entry;
-+	bool has_top_buffer = false;
-+
-+	/* Check there is at most one top buffer. */
-+	list_for_each_entry(inst_entry, &inst_list, list) {
-+		if (inst_entry->is_top_instance) {
-+			if (has_top_buffer)
-+				return false;
-+			has_top_buffer = true;
-+		}
-+	}
-+
-+	return true;
-+}
-+
-+enum {
-+	OPT_top = 237,
-+};
-+
-+/*
-+ * Used to identify the arg. previously parsed.
-+ * E.g. '-b' can only follow '--top'.
-+ */
-+enum prev_arg_type {
-+	PREV_IS_NONE,
-+	PREV_IS_TOP,
-+	PREV_IS_BUFFER,
-+};
-+
- void trace_split (int argc, char **argv)
- {
- 	struct tracecmd_input *handle;
- 	unsigned long long start_ns = 0, end_ns = 0;
- 	unsigned long long current;
-+	enum prev_arg_type prev_arg_type;
-+	struct inst_list *prev_inst = NULL;
-+	int prev_arg_idx;
- 	bool end_reached = false;
- 	double start, end;
- 	char *endptr;
-@@ -593,12 +702,22 @@ void trace_split (int argc, char **argv)
- 	int ac;
- 	int c;
- 
-+	static struct option long_options[] = {
-+		{"top", optional_argument, NULL, OPT_top},
-+		{NULL, 0, NULL, 0},
-+	};
-+	int option_index = 0;
-+
-+	prev_arg_type = PREV_IS_NONE;
-+
- 	list_head_init(&handle_list);
-+	list_head_init(&inst_list);
- 
- 	if (strcmp(argv[1], "split") != 0)
- 		usage(argv);
- 
--	while ((c = getopt(argc-1, argv+1, "+ho:i:s:m:u:e:p:rcC:")) >= 0) {
-+	while ((c = getopt_long(argc - 1, argv + 1, "+ho:i:s:m:u:e:p:rcC:B:b:t",
-+				long_options, &option_index)) >= 0) {
- 		switch (c) {
- 		case 'h':
- 			usage(argv);
-@@ -641,11 +760,47 @@ void trace_split (int argc, char **argv)
- 		case 'i':
- 			input_file = optarg;
- 			break;
-+		case OPT_top:
-+			prev_arg_type = PREV_IS_TOP;
-+			prev_arg_idx = optind;
-+			prev_inst = add_inst(default_top_instance_name, true, true);
-+			break;
-+		case 'b':
-+			/* 1 as --top takes no argument. */
-+			if (prev_arg_type != PREV_IS_TOP &&
-+			    (prev_arg_idx != optind - 1))
-+				usage(argv);
-+			prev_arg_type = PREV_IS_NONE;
-+
-+			prev_inst->is_top_instance = false;
-+
-+			free(prev_inst->name);
-+			prev_inst->name = strdup(optarg);
-+			if (!prev_inst->name)
-+				die("Failed to duplicate %s", optarg);
-+			break;
-+		case 'B':
-+			prev_arg_type = PREV_IS_BUFFER;
-+			prev_arg_idx = optind;
-+			prev_inst = add_inst(optarg, false, false);
-+			break;
-+		case 't':
-+			/* 2 as -B takes an argument. */
-+			if (prev_arg_type != PREV_IS_BUFFER &&
-+			    (prev_arg_idx != optind - 2))
-+				usage(argv);
-+			prev_arg_type = PREV_IS_NONE;
-+
-+			prev_inst->is_top_instance = true;
-+			break;
- 		default:
- 			usage(argv);
- 		}
- 	}
- 
-+	if (!is_top_instance_unique())
-+		die("Can only have one top instance.");
-+
- 	ac = (argc - optind);
- 
- 	if (ac >= 2) {
-@@ -713,6 +868,8 @@ void trace_split (int argc, char **argv)
- 		}
- 	}
- 
-+	map_inst_handle();
-+
- 	do {
- 		if (repeat)
- 			sprintf(output_file, "%s.%04d", output, c++);
-@@ -732,6 +889,7 @@ void trace_split (int argc, char **argv)
- 
- 	tracecmd_close(handle);
- 	free_handles(&handle_list);
-+	free_inst(&inst_list);
- 
- 	return;
- }
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index 6944a2c7..8bbf2e3e 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -311,6 +311,13 @@ static struct usage_help usage_help[] = {
- 		"          -u n  split file up by n microseconds\n"
- 		"          -e n  split file up by n events\n"
- 		"          -p n  split file up by n pages\n"
-+		"          -C n  select CPU n\n"
-+		"          -B buffer  keep buffer in resulting .dat file\n"
-+		"                     Use -t to promote the buffer to the top instance.\n"
-+		"          -t    promote preceding buffer to the top instance.\n"
-+		"                Must follow -B.\n"
-+		"          --top keep top buffer in resulting .dat file.\n"
-+		"          -b    new name of the top instance. Must follow --top.\n"
- 		"          -r    repeat from start to end\n"
- 		"          -c    per cpu, that is -p 2 will be 2 pages for each CPU\n"
- 		"          if option is specified, it will split the file\n"
--- 
-2.25.1
-
+-- Steve
