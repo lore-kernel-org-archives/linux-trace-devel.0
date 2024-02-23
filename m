@@ -1,136 +1,94 @@
-Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A9133D6C
-	for <linux-trace-devel@vger.kernel.org>; Fri, 23 Feb 2024 22:47:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67E6014CAC3
+	for <linux-trace-devel@vger.kernel.org>; Fri, 23 Feb 2024 22:48:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708728456; cv=none; b=S2dF/jX7USgt+HcA2u2Rc4NCAoZH8nmSfch+hQFVJaCjZ4TOWDvby3XenB0+rtNlFaE5nYnfjg2VR16/KORfQK14hrw1sMthMRUPlgFs4+2xHlNGeodljvImQ7FO5AuZpyRT/MyeipP39fnS/BM8+0QpHVGkGTCR82w6tX4qAXg=
+	t=1708728493; cv=none; b=tVvg7PZfoWZe4D57IwbpTJN4W4b/grao0GgLPTBJz9rGxUVSzMEis3DLtpGWMNjMEYgTB957uW+C5JKiX7sWC3wy48hxIcT3fRvMX5czq32gUDYGMIO6Jyt/s5n+du+7qlyEeCnZLYcY+zkkOoxBfcWxucxlWWGpMaQppsjZb2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708728456; c=relaxed/simple;
-	bh=HB7NX9KLgfFMWgneyP8B4M2E9t6aHEle10uCwuKmF9U=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=MV8eWYB4PGoqibzKqIsB9YyR5b8/HmOePxPnD7ef+Q/2mYJ/w41q1L48BdkdsQauGZdCYmNoAt9Dl7lzIRw5/6K5b3HMgJpZx4CD7BE+zmkAzWgkvq0h1Uf0qTH0x14QaPHSf9rlzvBBk6guvQkE62mG6r6t1DUBM/4LoNZuTBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=c1hvwlNo; arc=none smtp.client-ip=209.85.128.73
+	s=arc-20240116; t=1708728493; c=relaxed/simple;
+	bh=7oQFi2aDPtqsfFGhrzcA8tx58mBQp+C1+m6xeTGo0Dg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=l7VkyQawKJazDcSzrzJgP6qbCC6Sj0BVdIPOZd//DKqej+ab05zS9/pQ7oTqHad7M1f397nxSwYHi803GFjn2Qql2vnioWtgFWOR0ymf0rMx9EC8OX0l/9g6YEUETlTJP/fQXCUAzYo1YVgKb1J1Vse+hnmGx9GMCXkNrIrnpgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tJeU24ip; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="c1hvwlNo"
-Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-4129653080aso3854355e9.3
-        for <linux-trace-devel@vger.kernel.org>; Fri, 23 Feb 2024 14:47:34 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tJeU24ip"
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33d9d43a1eeso902322f8f.2
+        for <linux-trace-devel@vger.kernel.org>; Fri, 23 Feb 2024 14:48:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708728453; x=1709333253; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=OWi1/as6Mzj+F66nZdvAMG0D8xaNQ1BmVWyRB1TAj/k=;
-        b=c1hvwlNoBgEDWSaTPs7I0xzDhLtYV9ugoxFsUo2iI99lE9WGEwuHtkgRfQVkWU5Hrf
-         oFWfTmpVx3NmfiYZQfupUkQyCNgdvJ2XIf2BAU/VaWe+7YNiukQJsLf/rWvKOlVEZDbc
-         je82Dq7KpcohgLWtsDl6Ka307ppDC0JwXfv3HGZgw1P0dnr4OO1NGx3J5v9apw+950AZ
-         DwFRlimrggCgzoKHEoK6bYNbOq4UEsjHAc6sHLaEK0l1I0VATRYGfiz5m01LOp3OvJ0I
-         zU73C54yuSfSXpfrsZHBKChsLsKfyCufZeNtbF4PnWeLdk4UGmoit9WEyJsYmYhcG+kK
-         cxsA==
+        d=google.com; s=20230601; t=1708728490; x=1709333290; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eDjTBZTXYbVkClWOmkr+7yz8ociL0dieL16xymYPNBI=;
+        b=tJeU24ipifiOKxMf9BGscdZNrlDCnyGiy+pbZSKj3duPByZqBL2CanV378h5+HHZWi
+         q0+7J8nsrB+Gj0j2vHrUeShTCzOkvfpyaxBbZAR9ojBBYVJwsnSkHhb65rgJGKlDnq5Z
+         gs0+pvJGZdx1iBQndvVEWmHeR3WA9cOWNtZw2ZiMF4e3rcCet8lodV26WcZG3cZCArlu
+         1C1ZZqR0hXKHezn6UrGs97GOx2qyV15PRB2pKX45wULkLoXXslZArbqH/8O7Og20f/0Z
+         71JUFxxppllWrL51kpV1T4spmyMLikRbzcMhC2UsM4HKJm+KfJHPRCh4MLHENdcfdSTJ
+         N8Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708728453; x=1709333253;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OWi1/as6Mzj+F66nZdvAMG0D8xaNQ1BmVWyRB1TAj/k=;
-        b=fa5QAO9DIw9Zbsmjr0SucWqVO7Z2rSpGpw2+swI6jdRZC2YBPEzkPCcnSHCa4uTpLc
-         jLo5NZASEBZr9k22Dic3w0+lQvTFdHhHq2rTLqMxWd+zeyoYW0Ho8Tye8yygdga7LzZL
-         ITqVvNGiEN2scchH5YMGNHM9jQ4hOOCVCS4hAC4Hip3+gXHbrB47NmffWGCQTVvJt6Ph
-         9hbeP/6dDbwqUKDWNsj1eCMtu+Rb5zzF0GJcJVO2Ugs4QHJN7fM+tH52DQCCF3byXEE3
-         sw2R/6XmPPxx0Afx+osivNg8ps0Dnd+fdBLTxM5eJssNauGQncdOPsVIQiDW9am3PHxe
-         jXxQ==
-X-Gm-Message-State: AOJu0Ywmm5Aw2e+Acgzbl4cNMIDm3cbt1m7fr2XgFFJsKhGORoOdS+PP
-	Z6H/QBm1klDa/8fI9Ze863hfyN7aQyWv/l8/lwa9yj3i7tfffZbC9KE+BXbu0DZqk5wYPB9knil
-	gvFXeC1DvToMpHOLyUiYHugHQ6ET8N/E/VbWp8fFm2ePQrAHd4Vr0WRSML/9oi/UQcwNK8Ik+6m
-	msbXZiZf+E4bXdn8p7UqBRdjOZIEntxqSaiSMhaJNWJfH/gTyPSGuiDS45OSN5ZiipHucK
-X-Google-Smtp-Source: AGHT+IHvfMa60Pa6svweK8AyqrPmV+GbgryMQfyyTB4ZHWmAyD7L9pTedyj4AIw88deXWCJwhL6YNocgbScjAtqU
-X-Received: from vdonnefort.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:2eea])
- (user=vdonnefort job=sendgmr) by 2002:a05:600c:1e12:b0:412:989d:6514 with
- SMTP id ay18-20020a05600c1e1200b00412989d6514mr2383wmb.2.1708728453114; Fri,
- 23 Feb 2024 14:47:33 -0800 (PST)
-Date: Fri, 23 Feb 2024 22:47:23 +0000
+        d=1e100.net; s=20230601; t=1708728490; x=1709333290;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eDjTBZTXYbVkClWOmkr+7yz8ociL0dieL16xymYPNBI=;
+        b=CtPR1rhW7Mhp286PInsfwN0aisLSV/4O6nQlMjmKjsedsWHHQxcp+EcvcBWavD8L6L
+         0HXwKo4/gZ0pSzf13l/Nl9WSlpn1ckEw9/Zhj/cJ8R3yi5+yWrweIvgwgoxNBZvP4tY3
+         4USosq5Z/qf/Ha3Hxm0/Co3mknl9y5YVmxVz2irwwlj6rHq+1qcErxFQRBpmna1ZZUko
+         cxFZafCClMRch0B3HqOeWUjqnZn6R3HaP6ZSyEEUh2Zpvsf+39KJW3Ww16zf+MGJfK3W
+         xNUdOYyxUczJ9CWxEpJiPvmmZykT7BjRttOEjHKJwHRCGxIehhLKWYlmUoIr3x/Wn1LN
+         DYsQ==
+X-Gm-Message-State: AOJu0YxBlCcLqQfy16fUAoBt4K2oMtUgdDnhdjHK7XQzuTVnhxdS7p8W
+	ziE0UtqhGePL5s/cixmDqwl+d5DZB8vcIifOYQGhG0Sb4tjihUyCN1n/CzsGgYX8I+q/Ng9iAHP
+	NMw==
+X-Google-Smtp-Source: AGHT+IHA6IRJJvE9fSs2ExzTZTtTHhnp/uJEwmxd2T1kUnEMW+u1cniTA8U3X2juK3/elVQsnD5r5g==
+X-Received: by 2002:adf:e703:0:b0:33d:3566:b5c5 with SMTP id c3-20020adfe703000000b0033d3566b5c5mr825822wrm.7.1708728489680;
+        Fri, 23 Feb 2024 14:48:09 -0800 (PST)
+Received: from google.com (44.232.78.34.bc.googleusercontent.com. [34.78.232.44])
+        by smtp.gmail.com with ESMTPSA id j3-20020a056000124300b0033cf5094fcesm4270359wrx.36.2024.02.23.14.48.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 14:48:09 -0800 (PST)
+Date: Fri, 23 Feb 2024 22:48:05 +0000
+From: Vincent Donnefort <vdonnefort@google.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v2] libtracefs: Update trace_buffer_meta
+Message-ID: <ZdkgpdtMthOOITx2@google.com>
+References: <20240129143122.2149432-1-vdonnefort@google.com>
+ <20240223163915.6a714b56@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <20240223224723.132673-1-vdonnefort@google.com>
-Subject: [PATCH v3] libtracefs: Update trace_buffer_meta
-From: Vincent Donnefort <vdonnefort@google.com>
-To: linux-trace-devel@vger.kernel.org, rostedt@goodmis.org
-Cc: Vincent Donnefort <vdonnefort@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240223163915.6a714b56@gandalf.local.home>
 
-The current version for struct trace_buffer_meta is taken from a work in
-progress Linux patch series. Update it.
+On Fri, Feb 23, 2024 at 04:39:15PM -0500, Steven Rostedt wrote:
+> On Mon, 29 Jan 2024 14:31:22 +0000
+> Vincent Donnefort <vdonnefort@google.com> wrote:
+> 
+> > The current version for struct trace_buffer_meta is taken from a work in
+> > progress Linux patch series. Update it.
+> > 
+> >
+> 
+> Since your code is now in linux-next, care to send an updated version of
+> this patch?
 
-Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
+Looking at the last version of trace_mmap.h the v2 looks already up-to-date. But
+I sent a v3 adding the comments.
 
-diff --git a/src/tracefs-mmap.c b/src/tracefs-mmap.c
-index fac13df..a0130bb 100644
---- a/src/tracefs-mmap.c
-+++ b/src/tracefs-mmap.c
-@@ -9,26 +9,43 @@
- #include <asm/types.h>
- #include "tracefs-local.h"
- 
-+/**
-+ * struct trace_buffer_meta - Ring-buffer Meta-page description
-+ * @meta_page_size:	Size of this meta-page.
-+ * @meta_struct_len:	Size of this structure.
-+ * @subbuf_size:	Size of each sub-buffer.
-+ * @nr_subbufs:		Number of subbfs in the ring-buffer, including the reader.
-+ * @reader.lost_events:	Number of events lost at the time of the reader swap.
-+ * @reader.id:		subbuf ID of the current reader. ID range [0 : @nr_subbufs - 1]
-+ * @reader.read:	Number of bytes read on the reader subbuf.
-+ * @flags:		Placeholder for now, 0 until new features are supported.
-+ * @entries:		Number of entries in the ring-buffer.
-+ * @overrun:		Number of entries lost in the ring-buffer.
-+ * @read:		Number of entries that have been read.
-+ * @Reserved1:		Reserved for future use.
-+ * @Reserved2:		Reserved for future use.
-+ */
- struct trace_buffer_meta {
--	unsigned long	entries;
--	unsigned long	overrun;
--	unsigned long	read;
-+	__u32		meta_page_size;
-+	__u32		meta_struct_len;
- 
--	unsigned long	subbufs_touched;
--	unsigned long	subbufs_lost;
--	unsigned long	subbufs_read;
-+	__u32		subbuf_size;
-+	__u32		nr_subbufs;
- 
- 	struct {
--		unsigned long	lost_events;	/* Events lost at the time of the reader swap */
--		__u32		id;		/* Reader subbuf ID from 0 to nr_subbufs - 1 */
--		__u32		read;		/* Number of bytes read on the reader subbuf */
-+		__u64	lost_events;
-+		__u32	id;
-+		__u32	read;
- 	} reader;
- 
--	__u32		subbuf_size;		/* Size of each subbuf including the header */
--	__u32		nr_subbufs;		/* Number of subbufs in the ring-buffer */
-+	__u64	flags;
-+
-+	__u64	entries;
-+	__u64	overrun;
-+	__u64	read;
- 
--	__u32		meta_page_size;		/* Size of the meta-page */
--	__u32		meta_struct_len;	/* Len of this struct */
-+	__u64	Reserved1;
-+	__u64	Reserved2;
- };
- 
- #define TRACE_MMAP_IOCTL_GET_READER		_IO('T', 0x1)
+--
+Vincent
 
-base-commit: 04505a07824592f039eac66fe565994635eb5d5d
--- 
-2.44.0.rc0.258.g7320e95886-goog
-
+> 
+> I'll still keep it disabled in the library until it gets released in a
+> stable tag (v6.9).
+> 
+> -- Steve
