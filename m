@@ -1,111 +1,107 @@
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84ED91DDF4
-	for <linux-trace-devel@vger.kernel.org>; Wed, 28 Feb 2024 20:40:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14A787CF05
+	for <linux-trace-devel@vger.kernel.org>; Thu, 29 Feb 2024 19:55:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709152821; cv=none; b=VmC6nya0LOa4V1myj5QyzloIZ6W9BcM0xNnqfsPimr9DitgdHt8XvVIEOVLT3isuYOypN4NcgNx4XrCMWl6De0D/s61pACClxbgINtUEdK9zWFvKpDZsCOygrGImtMy6y6mpbaJQmnNKrV2/4UcoIC2zU2dgLGU1POqsInNV8J8=
+	t=1709236552; cv=none; b=FZiedRMZnMp2FXSmnZeR8cPcROAvw6pgTqeSNOY7jcHMshFfn4AgOLA3tdTctXZf2Sa3zO8PxIdJBZrPXQkfbSKrFL8wp6KMVFztpkL+VkAF/RxXXwrGTZ8vJWdKpAHIqPIKK4vK18YEz3ra7BbutmVea/i0OCnd2PYmKtSr0Xk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709152821; c=relaxed/simple;
-	bh=LS19MRa6BAPhqtGtA9DgsO1jj3ESRBiERXnjAHdXjRk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SGuktco2b8u/C4Ef16BWHJ1Vv3Lno+57GQrqv1MCW5DAI07gljCzPKeTcLiieSKueelwxeRDjp2pqqhebTlHb4Z+NQYwr1Fz3kFHKcQD360Y4+GSg4jv6zsLVztY0UNm5CcvfzVtt/eVcYanrbnjPaQA6PMwMcuyBFbG1hkQjY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JTxKtNDo; arc=none smtp.client-ip=209.85.167.44
+	s=arc-20240116; t=1709236552; c=relaxed/simple;
+	bh=EbuN3M/l3huoxCs7GfV+v2XE2e4wNGKkVeEHZJsG1Ro=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NfzaFe38YnZjRnzg98xZx5Pa+/dNbSS1PDP3CzjCvzO7mitOulMhhwiPFcSBfYKhMOQqPR+kZW37HGXIBbxlR2uNn0boK3W7XepJ8+rTqwPOJiRvn0OyZZu4WkQdv8DZDO6VhQtmw3+DM1BvcjqHHtMiEojBhwNVo5S99EKh4g8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fwj8Xsa2; arc=none smtp.client-ip=209.85.218.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JTxKtNDo"
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-5101cd91017so96914e87.2
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Feb 2024 12:40:19 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fwj8Xsa2"
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so242010766b.0
+        for <linux-trace-devel@vger.kernel.org>; Thu, 29 Feb 2024 11:55:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709152818; x=1709757618; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dND8t+zFWrPTPnhEgRqMoakWZzLG8t/SoyMVi9W4FRI=;
-        b=JTxKtNDo9WJjFxKh5VLzmqmOvHFW4uS1DqVOmrfNHPhfXbKa+KhJfqmFgvSbUbHzO7
-         HW2uty2AvSi7P/4B8jzdxczz+zkkuQHsuNyDnO3dRc7DFuakvFYv22iKCuz0bRPPpOeP
-         Usfnc/Ac6BpG8fYxHQWQygGpdZTLDmnJpBgxhkChYT0LqMYUpWzCT4tHop0Csa6IiqOt
-         sdecUvioXjtl23PEIGJ7wYafO8kRn+OK8cKyeBwr6orvzF4Ey0xHbzgvWxuOy3KKDfDg
-         H966oJHfAX81Z/DbodNAujVY0Rrt8TSS2t/a06dFh6wk98/d6FjZFhc39BOFxS8aZflP
-         5czQ==
+        d=gmail.com; s=20230601; t=1709236549; x=1709841349; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kkTVGt2kRS6PYTAEHrah+kcNPpYexngVA/0ngpHykSo=;
+        b=Fwj8Xsa2T3PXcU/99ZRRW3I/mmEDjY6OhVZwVbZJl6qXC+8l0SKdSPfe30ffBPJuGB
+         ev+m4LWlbbJi5Uz4kTdLSb/gX/MnpIZGwYiSJ9TIFspZASYam126ZtOKuPWp6bQ63att
+         HZVvNhHDY4J3brIrphYUCeSPalnl+ZjosEAv8gtWu/yRiFxpkbxaKmSPXb1n8AhnQKTT
+         KBQCau2LKnf2DIT2M/+xRpcexy+GLVAWRLy/OmMl2hb1SHtx9KKFw9AWv+9thQuYljJT
+         H3XuMmPUH6mWRByth3DBkb71mWcdTg0PnFVO0OWwPAD5CBtW4QMx0IsVgNJOvpPtCgo9
+         rzgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709152818; x=1709757618;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dND8t+zFWrPTPnhEgRqMoakWZzLG8t/SoyMVi9W4FRI=;
-        b=O9WgPkQAocpmdILL3mvMCVmLdhmoCsFZxBiix/jJQyPyU0c5IfcImAUozEWuzs/Kzf
-         0WelTah53SvhzW8pemPApkStPulaqht4a3HZVY9i5Rz4BlAjYuJ07uREV9iPr2Yf5Jer
-         TMIMz+jtB4rMsIDhzbSgJkaeMmvT8dfbSxTSKEpDe5bhk5pzVJoKdelycam0P/+WSM5B
-         dC8dGmb7g/5sy76UDAGXQLYm5syUeFUOWMLmVfkaIiTFn9sN5NacndoQH4lTH26sT8yS
-         IwMIDIIXWQngBvy0Bgi5tPc/MCnQpeJ+1WgKYGQ7+rW42NLJZ/qZVIpUqflk+w0mRNnf
-         v1Iw==
-X-Gm-Message-State: AOJu0Yzu8rtxnjLRUgIaTNOqRcqluWmMICx2XO0i6urEG2nKG0tP0hJH
-	Z8xA7bk7KQwO8Luf34A3BWscWa8Gqrrm21FYGnRpDqKL8Of5l/MTv7s8CQhc
-X-Google-Smtp-Source: AGHT+IETCnfnELdy3v+szolxPaaVIoe2nXyjQDjUI0CqFL020Q/0YrHunaVX86qLuVJFoYEsCJNNuA==
-X-Received: by 2002:ac2:545a:0:b0:513:1c06:90e1 with SMTP id d26-20020ac2545a000000b005131c0690e1mr67801lfn.8.1709152817383;
-        Wed, 28 Feb 2024 12:40:17 -0800 (PST)
-Received: from [192.168.1.101] (95-43-240-214.ip.btc-net.bg. [95.43.240.214])
-        by smtp.gmail.com with ESMTPSA id bj20-20020a0560001e1400b0033db0c866f7sm15802157wrb.11.2024.02.28.12.40.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 12:40:16 -0800 (PST)
-Message-ID: <04601fe7-f487-c50c-1b8f-38662e92813f@gmail.com>
-Date: Wed, 28 Feb 2024 22:40:15 +0200
+        d=1e100.net; s=20230601; t=1709236549; x=1709841349;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kkTVGt2kRS6PYTAEHrah+kcNPpYexngVA/0ngpHykSo=;
+        b=RrOlfNZMxWEIiPFFX4YGIl2H78y93YU7dReUDQl34nBbJ5ZsrbQL782QuDkWZ02dZa
+         OlEYF37ZktInWA+x5X21bDHB6MQzOEsNA2KBsqfJHF+3NU/imXSjHsFrsS+7US5Fnuus
+         g9bHlsLCSJznwZzMePnHPHgj5J7M/Ai1KomKPlBwmkPkFY4v4isMEe5In3+zMB8aU9WR
+         nhFpI128y/93wu5C7T8gPVsR7P9+tOsgYA98j0+RRgHY7hDPzNc7yU9oq6bxUBX7nHvH
+         /v3T0brblWdnNlRNvyxsTjXrpPrnSYqzTuiERbLHyo8RgXaUD9eUz+cUCCGVhOO50/VJ
+         ZuKw==
+X-Forwarded-Encrypted: i=1; AJvYcCW2+v4UuUYqGLqTUZdrNvpRaJ4C4NoG4rpVmQ5DUHO7Qmb5qAAdxiolrs9A2tgX2jNM87FkH8VpLc+gycB4+fgJRm5RU1rXigSJZyTmufsZLWM=
+X-Gm-Message-State: AOJu0Ywq4yS2rDXZ6LXF+cvcc4PEIovlwfHr6Zv4PdjfFOAObAZwfhAO
+	4dMgqorvBE6Uj7lS9h/VqqzQjB25DqYNj4y350rztPH42jorZDRsrzHKqiu7yRWKYLdM9qSDooQ
+	/1Vdzm55UjfwT6OTnmX+ZXx1rXfM=
+X-Google-Smtp-Source: AGHT+IHn3zClIcpEsDVLPoP/xIMHXDenR9wFTFL12jkR1zoMEz70Pc32sSil6RCS9z6KHjgRWVWdSavSCuHlivriKqc=
+X-Received: by 2002:a17:906:4946:b0:a3f:1055:28b7 with SMTP id
+ f6-20020a170906494600b00a3f105528b7mr2293945ejt.63.1709236549224; Thu, 29 Feb
+ 2024 11:55:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: kernel-shark fails to display
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 References: <CADVatmNXhhn6xhL-=rYqDaHqp4Ct+_i5N42KpeJnnxwoH1Ee+A@mail.gmail.com>
-Content-Language: en-US
-From: Yordan Karadzhov <y.karadz@gmail.com>
-In-Reply-To: <CADVatmNXhhn6xhL-=rYqDaHqp4Ct+_i5N42KpeJnnxwoH1Ee+A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ <04601fe7-f487-c50c-1b8f-38662e92813f@gmail.com>
+In-Reply-To: <04601fe7-f487-c50c-1b8f-38662e92813f@gmail.com>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date: Thu, 29 Feb 2024 19:55:11 +0000
+Message-ID: <CADVatmPECgAXGF164YmbqExBA1PCKYJ8ia-UhxWYs+yUpKo7Mg@mail.gmail.com>
+Subject: Re: kernel-shark fails to display
+To: Yordan Karadzhov <y.karadz@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, 
+	Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Sudip,
+Hi Yordan,
 
-First of all, I am sorry for the very log time it took me to react to 
-the problem you found.
+On Wed, 28 Feb 2024 at 20:40, Yordan Karadzhov <y.karadz@gmail.com> wrote:
+>
+> Hi Sudip,
+>
+> First of all, I am sorry for the very log time it took me to react to
+> the problem you found.
 
-I tried reproducing it on few different machines, but I am not able to 
-see it. It would be great if you can help me a bit more, so that I can 
-figure out what went wrong in your case.
+No problem. I was also busy and did not get the time to debug the issue further.
 
-It seems that the recording itself was successful, but later KernelShark 
-fails to open the recorded file. Note that the file (trace.dat) must 
-remain in the directory where you started KernelShark even after the 
-abortion. Please try to open again this file in KS and check if this 
-gives you the same error. If this is the case, send me the trace.dat 
-file, so that I can investigate further.
+>
+> I tried reproducing it on few different machines, but I am not able to
+> see it. It would be great if you can help me a bit more, so that I can
+> figure out what went wrong in your case.
 
-Thanks!
-Yordan
+I am wondering if I have messed up something while updating the package.
 
-On 1/20/24 22:50, Sudip Mukherjee wrote:
-> Hi,
-> 
-> I am seeing a problem with the latest version v2.3.0
-> Steps to reproduce:
-> 1. start kernel-shark
-> 2. Go to Record in Tools menu
-> 3. Select Events: All
-> 4. Select "Display output"
-> 5. Click on Apply
-> 6. Click on Capture
-> 
-> It fails with:
-> kernelshark: ./src/libkshark-model.c:249: ksmodel_set_upper_edge:
-> Assertion `row != BSEARCH_ALL_GREATER' failed.
-> Aborted
-> 
-> 
+>
+> It seems that the recording itself was successful, but later KernelShark
+> fails to open the recorded file. Note that the file (trace.dat) must
+> remain in the directory where you started KernelShark even after the
+> abortion. Please try to open again this file in KS and check if this
+> gives you the same error. If this is the case, send me the trace.dat
+> file, so that I can investigate further.
+
+The trace.dat is working, I have been able to open the same trace.dat
+file with the previous version of kernelshark.
+Next, I tried to open an old trace.dat (created with old kernelshark)
+with the latest version  and that also failed.
+I can send you the trace.dat and also a .deb package for Debian which
+you can install and test, but it will take a few days. I can only do
+it after the t64 transition is over.
+
+
+-- 
+Regards
+Sudip
