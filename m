@@ -1,63 +1,63 @@
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57EEC1E863
-	for <linux-trace-devel@vger.kernel.org>; Sun, 10 Mar 2024 19:33:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95A521E863
+	for <linux-trace-devel@vger.kernel.org>; Sun, 10 Mar 2024 19:33:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710099213; cv=none; b=BRvv1xF5FFfpu9QehzlrAR41CtNacxh3u21sRrBHAd8CQyJ8T//rVG3/MVpifPGzb7cUxEAJ85CeMoTHXmqYKKCgdJB86Ml+ar8bra0U0oP0LLzkN73nqMH/mAuEIMendR7kA2hXruPon/Hn9ubVzNpuueu0nr0P3aUX3rW9Vk8=
+	t=1710099220; cv=none; b=g868LZR3Y/Hg7HErNHN5zOy3m9poiU4lQ6wyed3oKjWPgmsDs34/t9f+H0DrSy6CScpM2S0IHO+bYHXRIYonkor6u2x1nJTaNnkWUA6LUpvYA//kWME7nRjcdYEzDD7Y97Pt0fx2fhSI8NAym0z93U/MzobyiS9GKaNfkSSi90A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710099213; c=relaxed/simple;
-	bh=XzRquLDPU7GKzQMt3c/dXgBbeoSCdDmGxN4wIaCyZ8E=;
+	s=arc-20240116; t=1710099220; c=relaxed/simple;
+	bh=j+H2DUGrwhU+AAmHDW65gSl77IuW/6+k1eoNlgwIAwA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tGFFsfCLsJuruIhxpTWzoihtY+g0QOKEPno5d+tMJm32jjrhaD7/HHyjXNRgkuHhULRmnK3zBXugkXhL/CV7uhUcF8h76hE+17Vm/ACbZ6h+uHssAMUahcI/8V+y9qMbUMaiGSGFM6ZmDF2tfHsOr/ehx5/9UNZE+Of/ewfnDcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PhU6TWzV; arc=none smtp.client-ip=209.85.128.43
+	 MIME-Version; b=i5LQ89Ay3zYq+VmE0R9SfE7fzm5xOa2wpR2WGrFSAkrqGk8qSrkqp5XJmB5fTHUyDPUWWXSm52kVPY+DL0RRiRE1hNUW+wzF3xMjlj4y9GtUDnXcmfXG6fHFIrw1O6a4LLZXrOlA1a3F9AIntUHA9plGkN0IBPupnduByJCoaJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gMVpktUT; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PhU6TWzV"
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-41328aea25aso2104695e9.3
-        for <linux-trace-devel@vger.kernel.org>; Sun, 10 Mar 2024 12:33:30 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gMVpktUT"
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41329af9093so1780095e9.3
+        for <linux-trace-devel@vger.kernel.org>; Sun, 10 Mar 2024 12:33:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710099209; x=1710704009; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710099216; x=1710704016; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qoJos/hlbBG9wropO8iKJ0uSXxKsJgFNouzWkdridDg=;
-        b=PhU6TWzVYeLtTYY81zGqyozNEtKM8bRs/uYl7ZvNKGIAhva6DqRpR3AevC4YlHzIj3
-         n9xjUsRivB7ex6022VqkO1sH5cP7W0wdJeH8BHaZ/wScyKagcUItYgJSndEXv+nfKpof
-         NB2a5TWOQjI1xZy9M9JK6iDdtQOsW6CsDQ68fK/Ei1GCA+FbF6WL+DDjAewI0ewuJy73
-         dRVuvgc43CxwcxR210LpsPrKugtS4bL4RQaou7VdqAcTc3LwrO8fKztKvZmGZX10Dcri
-         bgL/O2RELykZzG0doHJ1x86abWxHYqLTS1uUAtdUQF//VxdEjfsQ8SRUH10noqm4QFLQ
-         GWxQ==
+        bh=2n48bqiVVb1kVqKMgNFucrdQvizbfNpAjLLj3wjL74k=;
+        b=gMVpktUTdLUY4Q6UBzZIjJZDQMQTNlvD/KoPY+Zc+yo16QEAX+85w6M9a30ku8H3jg
+         jSNMsSf21RfLQT5MiLTmb312006Z+rCzVQSNFNBi5vLeBZYiNcjufJcxSjjtpWir0hnM
+         qa2593rVkzCMPH8mp6rME0IMvuan0oKKMjTAtKCX5CHbqNoJfz/0yBm6AuiAGgMMSAQH
+         ZfOfdPHfzC5jB8fxL4vhV9oOjYwyjiAY/b2/ZZxRdEJGtYkmfeSvQLvgUPs3I4Y5ga+3
+         LJZnSrV7lKDkIUGfAQCyqVXMk9YggJxEN8h1DBCO1YIiwihEa2xO2LDRKv25tacMr7YA
+         uz2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710099209; x=1710704009;
+        d=1e100.net; s=20230601; t=1710099216; x=1710704016;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qoJos/hlbBG9wropO8iKJ0uSXxKsJgFNouzWkdridDg=;
-        b=TR/7sIbMseSYDQCZd0lOeSn9m4JGQdQcZrOyyijXw19r6Tpqr00fKPJZ0q+MPvgpxZ
-         3Ez0qEP02EbDf6O1AZ50N3EUuIV399usKYrBBpOVxe1FdkrHHwP0AhTyC7XsA/I+1RVB
-         12zEbdP0cPtc7ZcZKH2CPSDI0T+9GtShOFtyAEBgomjXUyyEK9QccGXmjJ/x8g/Hw8MS
-         4MUCVUDmxlBfsiQiiC18RdPbBPkKmt/46NZf9lR7SSU+ryK/aVCPHn0CMI0KHZxX8ZNI
-         N7oE5AUPA9VNsX1oF8xdMNomvd8UfgCLduvL2T0a69EbHSaVp4wvVWSScbBf5Kum2HYw
-         4SOA==
-X-Gm-Message-State: AOJu0YwGebv1SgSmSfsT8eBgokzZ4Fctah57vSOrd1MZYq4tVrlgczKm
-	uKB42iM6VLiV1GdWDC8ud6KVhFaT+1hDL+syZHLrNRwtMfS6WjqjcpMyuRWS
-X-Google-Smtp-Source: AGHT+IFXJPVg6TSWI+dDwGb5FwpGe+RQN1dZ2XQ4+3Tm8m5WQtBlDAELtJ2QKU9tcC70AFoCAmDbwA==
-X-Received: by 2002:a05:600c:4e43:b0:413:2868:e91e with SMTP id e3-20020a05600c4e4300b004132868e91emr1404260wmq.18.1710099208831;
-        Sun, 10 Mar 2024 12:33:28 -0700 (PDT)
+        bh=2n48bqiVVb1kVqKMgNFucrdQvizbfNpAjLLj3wjL74k=;
+        b=tSIEX0eLs0jtK/K79zj2U0S21ywm/7d67rzmMDdv9omfa2mXZ/4fivVXbtRRllQPEs
+         10DorK73YzOTfkY88imilbMw8iX69WdybJe0HFEy8xQlINaICX4qcctGh4IUQ/bMDNmV
+         mN/w5wzVtBOYBkEJyRCV9zlXxLawlzm7raOCw5Ts+1ZafESonAoaZl9/JDrLYHIsiDlj
+         D1E2KjUfh+RE7sSayUMf14bCPcmWnC0mb9d9+8h7fn6b6oZLG0+ne08DPvxXJnjwzHBk
+         EQv3NtlxM88UzVZHaGuDfPjAgnoBH7gXSZ8muWF1KIvOUirTEJURGr4iz30ltD+yL/wO
+         rHGQ==
+X-Gm-Message-State: AOJu0YwgNRPkOrAW/VDbf+/SkAP+WmMUPoyWXWMSuCO8nlY2tVQhydZc
+	oeX7cERVbVTOdVH1H1SuA7PEMk5hXEJEanQHvzFLjBrJCXgKMpvFS3C34JnS
+X-Google-Smtp-Source: AGHT+IFIRqNbzQW49D2RSh2JmES0lfuZTw8JXZGacUnnjGB44IHdl8o/VQK2YDXH79s7AKKEMrkirA==
+X-Received: by 2002:a05:600c:19d0:b0:413:128a:403 with SMTP id u16-20020a05600c19d000b00413128a0403mr4133862wmq.1.1710099216172;
+        Sun, 10 Mar 2024 12:33:36 -0700 (PDT)
 Received: from belmeken.. (83-228-63-4.ip.btc-net.bg. [83.228.63.4])
-        by smtp.gmail.com with ESMTPSA id ay5-20020a05600c1e0500b0041327ac5dbesm2422768wmb.48.2024.03.10.12.33.28
+        by smtp.gmail.com with ESMTPSA id ay5-20020a05600c1e0500b0041327ac5dbesm2422768wmb.48.2024.03.10.12.33.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Mar 2024 12:33:28 -0700 (PDT)
+        Sun, 10 Mar 2024 12:33:35 -0700 (PDT)
 From: Yordan Karadzhov <y.karadz@gmail.com>
 To: linux-trace-devel@vger.kernel.org
 Cc: dev@benjarobin.fr,
 	Yordan Karadzhov <y.karadz@gmail.com>
-Subject: [PATCH 2/3] kernelshark: Mute all "unused parameter" warnings
-Date: Sun, 10 Mar 2024 21:32:57 +0200
-Message-ID: <20240310193258.50899-2-y.karadz@gmail.com>
+Subject: [PATCH 3/3] kernel-shark: Fix various compile warnings
+Date: Sun, 10 Mar 2024 21:32:58 +0200
+Message-ID: <20240310193258.50899-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20240310193258.50899-1-y.karadz@gmail.com>
 References: <20240310193258.50899-1-y.karadz@gmail.com>
@@ -69,572 +69,496 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Non of this warnings is an actual bug.
+Those warnings started showing up after adding the "-Wextra"
+compiler flag.
 
 Signed-off-by: Yordan Karadzhov <y.karadz@gmail.com>
 ---
- src/KsMainWindow.cpp              |  5 +++--
- src/KsModels.cpp                  |  4 ++--
- src/KsModels.hpp                  |  3 ++-
- src/KsPlotTools.cpp               |  8 +++++---
- src/KsPlugins.cpp                 |  5 +++--
- src/KsSearchFSM.cpp               |  3 ++-
- src/KsTraceGraph.cpp              |  2 +-
- src/KsTraceViewer.cpp             | 10 +++++-----
- src/KsUtils.cpp                   |  2 +-
- src/KsWidgetsLib.cpp              |  4 ++--
- src/KsWidgetsLib.hpp              |  2 +-
- src/libkshark-model.c             |  4 ++--
- src/libkshark-tepdata.c           |  6 +++---
- src/libkshark.c                   | 10 +++++-----
- src/plugins/EventFieldDialog.cpp  |  2 +-
- src/plugins/LatencyPlotDialog.cpp |  2 +-
- tests/test-input.c                | 16 ++++++++--------
- tests/test-input_ctrl.c           | 18 +++++++++---------
- tests/test-plugin_dpi.c           |  4 ++--
- tests/test-plugin_dpi_ctrl.c      |  6 +++---
- tests/test-plugin_dpi_err.c       |  4 ++--
- 21 files changed, 63 insertions(+), 57 deletions(-)
+ examples/configio.c        |  3 ++-
+ examples/datafilter.c      |  4 ++--
+ examples/datahisto.c       |  2 +-
+ src/libkshark-collection.c | 42 ++++++++++++++++++++------------------
+ src/libkshark-configio.c   |  6 ++++--
+ src/libkshark-hash.c       |  7 +++----
+ src/libkshark-model.c      | 20 +++++++++---------
+ src/libkshark-model.h      |  4 ++--
+ src/libkshark-tepdata.c    |  3 +--
+ src/libkshark.c            | 28 ++++++++++++++++---------
+ src/libkshark.h            |  6 +++---
+ src/plugins/sched_events.c | 16 +++++++--------
+ 12 files changed, 76 insertions(+), 65 deletions(-)
 
-diff --git a/src/KsMainWindow.cpp b/src/KsMainWindow.cpp
-index 72f4280..d817469 100644
---- a/src/KsMainWindow.cpp
-+++ b/src/KsMainWindow.cpp
-@@ -1544,7 +1544,7 @@ void KsMainWindow::_captureFinished(int ret, QProcess::ExitStatus st)
- 		_captureErrorMessage(capture);
- }
+diff --git a/examples/configio.c b/examples/configio.c
+index 9710d53..575211d 100644
+--- a/examples/configio.c
++++ b/examples/configio.c
+@@ -8,7 +8,8 @@ int main(int argc, char **argv)
+ 	struct kshark_config_doc *conf, *filter, *hello;
+ 	struct kshark_context *kshark_ctx;
+ 	struct kshark_data_stream *stream;
+-	int sd, *ids = NULL, i;
++	int sd, *ids = NULL;
++	size_t i;
  
--void KsMainWindow::_captureError(QProcess::ProcessError error)
-+void KsMainWindow::_captureError([[maybe_unused]] QProcess::ProcessError error)
- {
- 	QProcess *capture = static_cast<QProcess*>(sender());
- 	_captureErrorMessage(capture);
-@@ -1595,7 +1595,8 @@ void KsMainWindow::_readSocket()
- 	loadDataFile(fileName);
- }
+ 	/* Create a new kshark session. */
+ 	kshark_ctx = NULL;
+diff --git a/examples/datafilter.c b/examples/datafilter.c
+index 8e86d9c..120c12e 100644
+--- a/examples/datafilter.c
++++ b/examples/datafilter.c
+@@ -17,11 +17,11 @@ const char *default_file = "trace.dat";
  
--void KsMainWindow::_splitterMoved(int pos, int index)
-+void KsMainWindow::_splitterMoved([[maybe_unused]] int pos,
-+				  [[maybe_unused]] int index)
+ int main(int argc, char **argv)
  {
- 	_session.saveSplitterSize(_splitter);
- }
-diff --git a/src/KsModels.cpp b/src/KsModels.cpp
-index e10f411..c8a6ba3 100644
---- a/src/KsModels.cpp
-+++ b/src/KsModels.cpp
-@@ -23,11 +23,11 @@ KsFilterProxyModel::KsFilterProxyModel(QObject *parent)
+-	size_t i, sd, n_rows, n_tasks, n_evts, count;
++	size_t i, n_rows, n_tasks, n_evts, count;
+ 	struct kshark_context *kshark_ctx;
+ 	struct kshark_data_stream *stream;
+ 	struct kshark_entry **data = NULL;
+-	int *pids, *evt_ids;
++	int sd, *pids, *evt_ids;
+ 	char *entry_str;
  
- /**
-  * Returns False if the item in the row indicated by the sourceRow and
-- * sourceParentshould be filtered out. Otherwise returns True.
-+ * sourceParent should be filtered out. Otherwise returns True.
-  */
- bool
- KsFilterProxyModel::filterAcceptsRow(int sourceRow,
--				     const QModelIndex &sourceParent) const
-+				     [[maybe_unused]] const QModelIndex &sourceParent) const
+ 	/* Create a new kshark session. */
+diff --git a/examples/datahisto.c b/examples/datahisto.c
+index 568072d..b54b9e9 100644
+--- a/examples/datahisto.c
++++ b/examples/datahisto.c
+@@ -70,7 +70,7 @@ void dump_bin(struct kshark_trace_histo *histo, int bin, int sd,
+ 
+ void dump_histo(struct kshark_trace_histo *histo, int sd, const char *type, int val)
  {
- 	if (_data[sourceRow]->visible & KS_TEXT_VIEW_FILTER_MASK)
- 		return true;
-diff --git a/src/KsModels.hpp b/src/KsModels.hpp
-index b95c6c1..4e89602 100644
---- a/src/KsModels.hpp
-+++ b/src/KsModels.hpp
-@@ -279,7 +279,8 @@ public:
- 	 * This dummy function is an implementation of the pure
- 	 * virtual method of the abstract model class.
+-	size_t bin;
++	int bin;
+ 
+ 	for (bin = 0; bin < histo->n_bins; ++bin)
+ 		dump_bin(histo, bin, sd, type, val);
+diff --git a/src/libkshark-collection.c b/src/libkshark-collection.c
+index 915983b..c44d579 100644
+--- a/src/libkshark-collection.c
++++ b/src/libkshark-collection.c
+@@ -120,7 +120,7 @@ kshark_data_collection_alloc(struct kshark_context *kshark_ctx,
+ 		temp->type = COLLECTION_IGNORE;
+ 	}
+ 
+-	for (i = first + margin; i < end; ++i) {
++	for (i = first + margin; i < (size_t) end; ++i) {
+ 		if (!cond(kshark_ctx, data[i], sd, values)) {
+ 			/*
+ 			 * The entry is irrelevant for this collection.
+@@ -161,9 +161,8 @@ kshark_data_collection_alloc(struct kshark_context *kshark_ctx,
+ 
+ 			/* Keep adding entries until the "next" record. */
+ 			for (j = i + 1;
+-			     j != end && last_vis_entry->next != data[j];
+-			     j++)
+-				;
++			     j != (size_t) end && last_vis_entry->next != data[j];
++			     j++);
+ 
+ 			/*
+ 			 * If the number of added entries is smaller than the
+@@ -322,8 +321,9 @@ map_collection_request_init(const struct kshark_entry_collection *col,
+ 			    bool front, size_t *end)
+ {
+ 	int col_index_flag;
+-	ssize_t col_index;
++	size_t col_index;
+ 	size_t req_end;
++	ssize_t ret;
+ 
+ 	if (req->next || col->size == 0) {
+ 		fprintf(stderr,
+@@ -338,19 +338,17 @@ map_collection_request_init(const struct kshark_entry_collection *col,
+ 	 * Find the first Resume Point of the collection which is equal or
+ 	 * greater than the first index of this request.
  	 */
--	QVariant data(const QModelIndex &index, int role) const override
-+	QVariant data([[maybe_unused]] const QModelIndex &index,
-+		      [[maybe_unused]] int role) const override
- 	{
- 		return {};
- 	}
-diff --git a/src/KsPlotTools.cpp b/src/KsPlotTools.cpp
-index f362eaa..8c702e6 100644
---- a/src/KsPlotTools.cpp
-+++ b/src/KsPlotTools.cpp
-@@ -261,7 +261,8 @@ Color getColor(const ColorTable *colors, int id)
-  * @param x: The X coordinate of the click.
-  * @param y: The Y coordinate of the click.
-  */
--double PlotObject::distance(int x, int y) const
-+double PlotObject::distance([[maybe_unused]] int x,
-+			    [[maybe_unused]] int y) const
- {
- 	return std::numeric_limits<double>::max();
- }
-@@ -652,7 +653,7 @@ void TextBox::setBoxAppearance(const Color &col, int l, int h)
- 	_box.setPoint(3, _box.pointX(0) + l,	_box.pointY(0));
- }
+-	col_index = map_collection_index_from_source(col,
+-						     req->first,
+-						     &col_index_flag);
++	ret = map_collection_index_from_source(col, req->first, &col_index_flag);
++	if (ret == KS_EMPTY_BIN) {
++		/* Empty collection. */
++		goto do_nothing;
++	}
++	col_index = ret;
  
--void TextBox::_draw(const Color &col, float size) const
-+void TextBox::_draw(const Color &col, [[maybe_unused]]float size) const
+ 	/*
+ 	 * The value of "col_index" is ambiguous. Use the "col_index_flag" to
+ 	 * deal with all possible cases.
+ 	 */
+-	if (col_index == KS_EMPTY_BIN) {
+-		/* Empty collection. */
+-		goto do_nothing;
+-	}
+-
+ 	if (col_index_flag == COLLECTION_AFTER) {
+ 		/*
+ 		 * This request starts after the end of interval "col_index".
+@@ -436,12 +434,14 @@ map_collection_back_request(const struct kshark_entry_collection *col,
+ 			    struct kshark_entry_request *req)
  {
- 	_box.draw();
- 	if (!_font || _text.empty())
-@@ -1518,7 +1519,8 @@ void Graph::draw(float size)
- 	}
- }
+ 	size_t req_first, req_end;
+-	ssize_t col_index;
++	size_t col_index;
+ 	int req_count;
++	ssize_t ret;
  
--void VirtGap::_draw(const Color &col, float size) const
-+void VirtGap::_draw([[maybe_unused]]const Color &col,
-+		    [[maybe_unused]] float size) const
+-	col_index = map_collection_request_init(col, req, false, &req_end);
+-	if (col_index == KS_EMPTY_BIN)
++	ret = map_collection_request_init(col, req, false, &req_end);
++	if (ret == KS_EMPTY_BIN)
+ 		return 0;
++	col_index = ret;
+ 
+ 	/*
+ 	 * Now loop over the intervals of the collection going backwards till
+@@ -449,7 +449,7 @@ map_collection_back_request(const struct kshark_entry_collection *col,
+ 	 * each of those interest.
+ 	 */
+ 	req_count = 1;
+-	while (col_index >= 0 && req_end <= col->break_points[col_index]) {
++	while (req_end <= col->break_points[col_index]) {
+ 		if (req_end >= col->resume_points[col_index]) {
+ 			/*
+ 			 * The last entry of the original request is inside
+@@ -519,12 +519,14 @@ map_collection_front_request(const struct kshark_entry_collection *col,
+ 			     struct kshark_entry_request *req)
  {
- 	if (_entryPoint.x() - _exitPoint.x() < 4)
+ 	size_t req_first, req_end;
+-	ssize_t col_index;
++	size_t col_index;
+ 	int req_count;
++	ssize_t ret;
+ 
+-	col_index = map_collection_request_init(col, req, true, &req_end);
+-	if (col_index == KS_EMPTY_BIN)
++	ret = map_collection_request_init(col, req, true, &req_end);
++	if (ret == KS_EMPTY_BIN)
+ 		return 0;
++	col_index = ret;
+ 
+ 	/*
+ 	 * Now loop over the intervals of the collection going forwards till
+diff --git a/src/libkshark-configio.c b/src/libkshark-configio.c
+index 038cb22..88c2c9a 100644
+--- a/src/libkshark-configio.c
++++ b/src/libkshark-configio.c
+@@ -1114,7 +1114,8 @@ static bool kshark_event_filter_to_json(struct kshark_data_stream *stream,
+ 	json_object *jfilter_data, *jname;
+ 	struct kshark_hash_id *filter;
+ 	char *name_str;
+-	int i, *ids;
++	int *ids;
++	size_t i;
+ 
+ 	filter = kshark_get_filter(stream, filter_type);
+ 	if (!filter)
+@@ -1283,7 +1284,8 @@ static bool kshark_filter_array_to_json(struct kshark_hash_id *filter,
+ 					struct json_object *jobj)
+ {
+ 	json_object *jfilter_data, *jpid = NULL;
+-	int i, *ids;
++	int *ids;
++	size_t i;
+ 
+ 	/*
+ 	 * If this Json document already contains a description of the filter,
+diff --git a/src/libkshark-hash.c b/src/libkshark-hash.c
+index 89c021b..8782883 100644
+--- a/src/libkshark-hash.c
++++ b/src/libkshark-hash.c
+@@ -168,8 +168,7 @@ void kshark_hash_id_remove(struct kshark_hash_id *hash, int id)
+ void kshark_hash_id_clear(struct kshark_hash_id *hash)
+ {
+ 	struct kshark_hash_id_item *item, *next;
+-	size_t size;
+-	int i;
++	size_t i, size;
+ 
+ 	if (!hash || ! hash->hash)
  		return;
-diff --git a/src/KsPlugins.cpp b/src/KsPlugins.cpp
-index f4fc35e..eda2f5c 100644
---- a/src/KsPlugins.cpp
-+++ b/src/KsPlugins.cpp
-@@ -125,8 +125,9 @@ getLastInBinEvents(kshark_trace_histo *histo, kshark_data_container *data,
- 	 * Do not resolve. This means that only the very last (in time)
- 	 * appearance of the event in the bin will be visualized.
- 	 */
--	resolveFunc resolve = [] (kshark_data_container *data, ssize_t i,
--				  PlotPointList *list) {};
-+	resolveFunc resolve = [] ([[maybe_unused]] kshark_data_container *data,
-+				  [[maybe_unused]] ssize_t i,
-+				  [[maybe_unused]] PlotPointList *list) {};
+@@ -211,8 +210,8 @@ static int compare_ids(const void* a, const void* b)
+ int *kshark_hash_ids(struct kshark_hash_id *hash)
+ {
+ 	struct kshark_hash_id_item *item;
+-	size_t size = hash_size(hash);
+-	int count = 0, i;
++	size_t i, size = hash_size(hash);
++	int count = 0;
+ 	int *ids;
  
- 	return getInBinEvents(histo, data, isApplicable, push, resolve);
- }
-diff --git a/src/KsSearchFSM.cpp b/src/KsSearchFSM.cpp
-index a5f3682..b9bd6b7 100644
---- a/src/KsSearchFSM.cpp
-+++ b/src/KsSearchFSM.cpp
-@@ -30,7 +30,8 @@ static bool matchCond(const QString &searchText, const QString &itemText)
- 	return (itemText.compare(searchText, Qt::CaseInsensitive) == 0);
- }
- 
--static bool noCond(const QString &searchText, const QString &itemText)
-+static bool noCond([[maybe_unused]] const QString &searchText,
-+		   [[maybe_unused]] const QString &itemText)
- {
- 	return false;
- }
-diff --git a/src/KsTraceGraph.cpp b/src/KsTraceGraph.cpp
-index 4599a12..6b21591 100644
---- a/src/KsTraceGraph.cpp
-+++ b/src/KsTraceGraph.cpp
-@@ -620,7 +620,7 @@ void KsTraceGraph::updateGeom()
-  * Reimplemented event handler used to update the geometry of the widget on
-  * resize events.
-  */
--void KsTraceGraph::resizeEvent(QResizeEvent* event)
-+void KsTraceGraph::resizeEvent([[maybe_unused]] QResizeEvent* event)
- {
- 	updateGeom();
- }
-diff --git a/src/KsTraceViewer.cpp b/src/KsTraceViewer.cpp
-index 93535a4..d4bf5f1 100644
---- a/src/KsTraceViewer.cpp
-+++ b/src/KsTraceViewer.cpp
-@@ -23,8 +23,8 @@
-  * Reimplemented handler for creating delegate widget.
-  */
- QWidget *KsTableItemDelegate::createEditor(QWidget *parent,
--					   const QStyleOptionViewItem &option,
--					   const QModelIndex &index) const {
-+					   [[maybe_unused]] const QStyleOptionViewItem &option,
-+					   [[maybe_unused]] const QModelIndex &index) const {
- 	QTextEdit *edit = new QTextEdit(parent);
- 	edit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
- 	edit->setReadOnly(true);
-@@ -295,12 +295,12 @@ void KsTraceViewer::_onCustomContextMenu(const QPoint &point)
- 	}
- }
- 
--void KsTraceViewer::_searchEdit(int index)
-+void KsTraceViewer::_searchEdit([[maybe_unused]] int index)
- {
- 	_searchReset(); // The search has been modified.
- }
- 
--void KsTraceViewer::_searchEditText(const QString &text)
-+void KsTraceViewer::_searchEditText([[maybe_unused]] const QString &text)
- {
- 	_searchReset(); // The search has been modified.
- }
-@@ -550,7 +550,7 @@ void KsTraceViewer::markSwitch()
-  * Reimplemented event handler used to update the geometry of the widget on
-  * resize events.
-  */
--void KsTraceViewer::resizeEvent(QResizeEvent* event)
-+void KsTraceViewer::resizeEvent([[maybe_unused]] QResizeEvent* event)
- {
- 	int nColumns = _model.header().count();
- 	int tableSize(0), viewSize, freeSpace;
-diff --git a/src/KsUtils.cpp b/src/KsUtils.cpp
-index 792678d..1f4068b 100644
---- a/src/KsUtils.cpp
-+++ b/src/KsUtils.cpp
-@@ -324,7 +324,7 @@ QCheckBox *addCheckBoxToMenu(QMenu *menu, QString name)
-  * @returns True if the CPU of the entry matches the value of "cpu" and
-  * 	    the entry is visibility in Graph. Otherwise false.
-  */
--bool matchCPUVisible(struct kshark_context *kshark_ctx,
-+bool matchCPUVisible([[maybe_unused]] struct kshark_context *kshark_ctx,
- 		     struct kshark_entry *e, int sd, int *cpu)
- {
- 	return (e->cpu == *cpu &&
-diff --git a/src/KsWidgetsLib.cpp b/src/KsWidgetsLib.cpp
-index 5191c9f..95402f7 100644
---- a/src/KsWidgetsLib.cpp
-+++ b/src/KsWidgetsLib.cpp
-@@ -621,7 +621,7 @@ void KsCheckBoxTable::mousePressEvent(QMouseEvent *event)
- 	QTableWidget::mousePressEvent(event);
- }
- 
--void KsCheckBoxTable::_doubleClicked(int row, int col)
-+void KsCheckBoxTable::_doubleClicked(int row, [[maybe_unused]] int col)
- {
- 	emit changeState(row);
- 	for (auto &i: selectedItems())
-@@ -854,7 +854,7 @@ void KsCheckBoxTreeWidget::_adjustSize()
- 			_topLayout.contentsMargins().right());
- }
- 
--void KsCheckBoxTreeWidget::_update(QTreeWidgetItem *item, int column)
-+void KsCheckBoxTreeWidget::_update(QTreeWidgetItem *item, [[maybe_unused]] int column)
- {
- 	/* Get the new state of the item. */
- 	Qt::CheckState state = item->checkState(0);
-diff --git a/src/KsWidgetsLib.hpp b/src/KsWidgetsLib.hpp
-index 48108cd..68c9f79 100644
---- a/src/KsWidgetsLib.hpp
-+++ b/src/KsWidgetsLib.hpp
-@@ -263,7 +263,7 @@ protected:
- 	 * Reimplemented event handler used to update the geometry of the widget on
- 	 * resize events.
- 	 */
--	void resizeEvent(QResizeEvent* event) override
-+	void resizeEvent([[maybe_unused]] QResizeEvent* event) override
- 	{
- 		KsUtils::setElidedText(&_streamLabel, _streamName,
- 				       Qt::ElideLeft, width());
+ 	if (!hash->count)
 diff --git a/src/libkshark-model.c b/src/libkshark-model.c
-index 4cd9f6a..e872784 100644
+index e872784..c6dce5e 100644
 --- a/src/libkshark-model.c
 +++ b/src/libkshark-model.c
-@@ -1274,14 +1274,14 @@ bool ksmodel_task_visible_event_exist(struct kshark_trace_histo *histo,
- 	return true;
+@@ -91,7 +91,7 @@ static bool ksmodel_histo_alloc(struct kshark_trace_histo *histo, size_t n)
  }
  
--static bool match_cpu_missed_events(struct kshark_context *kshark_ctx,
-+static bool match_cpu_missed_events(__attribute__ ((unused)) struct kshark_context *kshark_ctx,
- 				    struct kshark_entry *e, int sd, int *cpu)
+ static void ksmodel_set_in_range_bining(struct kshark_trace_histo *histo,
+-					size_t n, int64_t min, int64_t max,
++					int n, int64_t min, int64_t max,
+ 					bool force_in_range)
  {
- 	return e->event_id == KS_EVENT_OVERFLOW &&
- 	       e->cpu == *cpu && e->stream_id == sd;
+ 	int64_t corrected_range, delta_range, range = max - min;
+@@ -110,7 +110,7 @@ static void ksmodel_set_in_range_bining(struct kshark_trace_histo *histo,
+ 	}
+ 
+ 	/* The size of the bin must be >= 1, hence the range must be >= n. */
+-	if (range < n) {
++	if (range < (int64_t) n) {
+ 		range = n;
+ 		max = min + n;
+ 	}
+@@ -266,10 +266,10 @@ static size_t ksmodel_set_upper_edge(struct kshark_trace_histo *histo)
  }
  
--static bool match_pid_missed_events(struct kshark_context *kshark_ctx,
-+static bool match_pid_missed_events(__attribute__ ((unused)) struct kshark_context *kshark_ctx,
- 				    struct kshark_entry *e, int sd, int *pid)
+ static void ksmodel_set_next_bin_edge(struct kshark_trace_histo *histo,
+-				      size_t bin, size_t last_row)
++				      int bin, size_t last_row)
  {
- 	return e->event_id == KS_EVENT_OVERFLOW &&
+ 	int64_t time_min, time_max;
+-	size_t next_bin = bin + 1;
++	int next_bin = bin + 1;
+ 	ssize_t row;
+ 
+ 	/* Calculate the beginning and the end of the next bin. */
+@@ -463,12 +463,12 @@ size_t ksmodel_bin_count(struct kshark_trace_histo *histo, int bin)
+  * @param histo: Input location for the model descriptor.
+  * @param n: Number of bins to shift.
+  */
+-void ksmodel_shift_forward(struct kshark_trace_histo *histo, size_t n)
++void ksmodel_shift_forward(struct kshark_trace_histo *histo, int n)
+ {
+ 	size_t last_row = 0;
+ 	int bin;
+ 
+-	if (!histo->data_size)
++	if (!histo->data_size || histo->n_bins <= 0)
+ 		return;
+ 
+ 	if (histo->map[UOB(histo)] == KS_EMPTY_BIN) {
+@@ -541,12 +541,12 @@ void ksmodel_shift_forward(struct kshark_trace_histo *histo, size_t n)
+  * @param histo: Input location for the model descriptor.
+  * @param n: Number of bins to shift.
+  */
+-void ksmodel_shift_backward(struct kshark_trace_histo *histo, size_t n)
++void ksmodel_shift_backward(struct kshark_trace_histo *histo, int n)
+ {
+ 	size_t last_row = 0;
+ 	int bin;
+ 
+-	if (!histo->data_size)
++	if (!histo->data_size || histo->n_bins <= 0)
+ 		return;
+ 
+ 	if (histo->map[LOB(histo)] == KS_EMPTY_BIN) {
+@@ -649,7 +649,7 @@ void ksmodel_jump_to(struct kshark_trace_histo *histo, int64_t ts)
+ static void ksmodel_zoom(struct kshark_trace_histo *histo,
+ 			 double r, int mark, bool zoom_in)
+ {
+-	size_t range, min, max, delta_min;
++	int64_t range, min, max, delta_min;
+ 	double delta_tot;
+ 
+ 	if (!histo->data_size)
+@@ -668,7 +668,7 @@ static void ksmodel_zoom(struct kshark_trace_histo *histo,
+ 	 * Avoid overzooming. If needed, adjust the Scale factor to a the value
+ 	 * which provides bin_size >= 5.
+ 	 */
+-	if (zoom_in && (size_t) (range * (1. - r)) < histo->n_bins * 5)
++	if (zoom_in && (int64_t) (range * (1. - r)) < (int64_t) histo->n_bins * 5)
+ 		r = 1. - (histo->n_bins * 5.) / range;
+ 
+ 	/*
+diff --git a/src/libkshark-model.h b/src/libkshark-model.h
+index 8989ee0..bf4f1c4 100644
+--- a/src/libkshark-model.h
++++ b/src/libkshark-model.h
+@@ -85,9 +85,9 @@ void ksmodel_fill(struct kshark_trace_histo *histo,
+ 
+ size_t ksmodel_bin_count(struct kshark_trace_histo *histo, int bin);
+ 
+-void ksmodel_shift_forward(struct kshark_trace_histo *histo, size_t n);
++void ksmodel_shift_forward(struct kshark_trace_histo *histo, int n);
+ 
+-void ksmodel_shift_backward(struct kshark_trace_histo *histo, size_t n);
++void ksmodel_shift_backward(struct kshark_trace_histo *histo, int n);
+ 
+ void ksmodel_jump_to(struct kshark_trace_histo *histo, int64_t ts);
+ 
 diff --git a/src/libkshark-tepdata.c b/src/libkshark-tepdata.c
-index 8e90daf..4e572a1 100644
+index 4e572a1..ed508a9 100644
 --- a/src/libkshark-tepdata.c
 +++ b/src/libkshark-tepdata.c
-@@ -667,9 +667,9 @@ static int tepdata_get_event_id(struct kshark_data_stream *stream,
- 	return (event_id == -1)? -EFAULT : event_id;
+@@ -239,7 +239,7 @@ static int get_next_pid(struct kshark_data_stream *stream,
+ 	ret = tep_read_number_field(get_sched_next(stream),
+ 				    record->data, &val);
+ 
+-	return ret ? : val;
++	return ret ? : (int) val;
  }
  
--static char* missed_events_dump(struct kshark_data_stream *stream,
--				      const struct kshark_entry *entry,
--				      bool get_info)
-+static char* missed_events_dump(__attribute__ ((unused)) struct kshark_data_stream *stream,
-+				const struct kshark_entry *entry,
-+				bool get_info)
- {
- 	char *buffer;
- 	int size = 0;
+ static void register_command(struct kshark_data_stream *stream,
+@@ -312,7 +312,6 @@ static ssize_t get_records(struct kshark_context *kshark_ctx,
+ 		count = 0;
+ 		cpu_list[cpu] = NULL;
+ 		temp_next = &cpu_list[cpu];
+-
+ 		rec = tracecmd_read_cpu_first(kshark_get_tep_input(stream), cpu);
+ 		while (rec) {
+ 			*temp_next = temp_rec = calloc(1, sizeof(*temp_rec));
 diff --git a/src/libkshark.c b/src/libkshark.c
-index 44e553f..8443279 100644
+index 8443279..4909dd6 100644
 --- a/src/libkshark.c
 +++ b/src/libkshark.c
-@@ -1572,7 +1572,7 @@ ssize_t kshark_find_entry_by_time(int64_t time,
-  * @returns True if the Pid of the entry matches the value of "pid".
-  *	    Else false.
+@@ -1370,14 +1370,15 @@ void kshark_clear_all_filters(struct kshark_context *kshark_ctx,
+ 			      size_t n_entries)
+ {
+ 	struct kshark_data_stream *stream;
+-	int *stream_ids, i;
++	int *stream_ids, sd;
++	size_t i;
+ 
+ 	for (i = 0; i < n_entries; ++i)
+ 		set_all_visible(&data[i]->visible);
+ 
+ 	stream_ids = kshark_all_streams(kshark_ctx);
+-	for (i = 0; i < kshark_ctx->n_streams; i++) {
+-		stream = kshark_get_data_stream(kshark_ctx, stream_ids[i]);
++	for (sd = 0; sd < kshark_ctx->n_streams; sd++) {
++		stream = kshark_get_data_stream(kshark_ctx, stream_ids[sd]);
+ 		stream->filter_is_applied = false;
+ 	}
+ 
+@@ -1902,10 +1903,13 @@ void kshark_set_clock_offset(struct kshark_context *kshark_ctx,
+ 	kshark_data_qsort(entries, size);
+ }
+ 
+-static int first_in_time_entry(struct kshark_entry_data_set *buffer, int n_buffers, size_t *count)
++static int first_in_time_entry(struct kshark_entry_data_set *buffer,
++			       size_t n_buffers,
++			       ssize_t *count)
+ {
+ 	int64_t t_min = INT64_MAX;
+-	int i, min = -1;
++	int min = -1;
++	size_t i;
+ 
+ 	for (i = 0; i < n_buffers; ++i) {
+ 		if (count[i] == buffer[i].n_rows)
+@@ -1930,10 +1934,11 @@ static int first_in_time_entry(struct kshark_entry_data_set *buffer, int n_buffe
+  *	    responsible for freeing the elements of the outputted array.
   */
--bool kshark_match_pid(struct kshark_context *kshark_ctx,
-+bool kshark_match_pid(__attribute__ ((unused)) struct kshark_context *kshark_ctx,
- 		      struct kshark_entry *e, int sd, int *pid)
+ struct kshark_entry **
+-kshark_merge_data_entries(struct kshark_entry_data_set *buffers, int n_buffers)
++kshark_merge_data_entries(struct kshark_entry_data_set *buffers, size_t n_buffers)
  {
- 	if (e->stream_id == sd && e->pid == *pid)
-@@ -1592,7 +1592,7 @@ bool kshark_match_pid(struct kshark_context *kshark_ctx,
-  * @returns True if the Cpu of the entry matches the value of "cpu".
-  *	    Else false.
+ 	struct kshark_entry **merged_data;
+-	size_t i, tot = 0, count[n_buffers];
++	ssize_t count[n_buffers];
++	size_t i, tot = 0;
+ 	int i_first;
+ 
+ 	if (n_buffers < 2) {
+@@ -2078,7 +2083,9 @@ ssize_t kshark_append_all_entries(struct kshark_context *kshark_ctx,
+ 				merged_data);
+ }
+ 
+-static int first_in_time_row(struct kshark_matrix_data_set *buffers, int n_buffers, size_t *count)
++static int first_in_time_row(struct kshark_matrix_data_set *buffers,
++			     int n_buffers,
++			     ssize_t *count)
+ {
+ 	int64_t t_min = INT64_MAX;
+ 	int i, min = -1;
+@@ -2107,10 +2114,11 @@ static int first_in_time_row(struct kshark_matrix_data_set *buffers, int n_buffe
+  *	    matrix.
   */
--bool kshark_match_cpu(struct kshark_context *kshark_ctx,
-+bool kshark_match_cpu(__attribute__ ((unused)) struct kshark_context *kshark_ctx,
- 		      struct kshark_entry *e, int sd, int *cpu)
+ struct kshark_matrix_data_set
+-kshark_merge_data_matrices(struct kshark_matrix_data_set *buffers, int n_buffers)
++kshark_merge_data_matrices(struct kshark_matrix_data_set *buffers, size_t n_buffers)
  {
- 	if (e->stream_id == sd && e->cpu == *cpu)
-@@ -1612,7 +1612,7 @@ bool kshark_match_cpu(struct kshark_context *kshark_ctx,
-  * @returns True if the event Id of the entry matches the value of "event_id".
-  *	    Else false.
-  */
--bool kshark_match_event_id(struct kshark_context *kshark_ctx,
-+bool kshark_match_event_id(__attribute__ ((unused)) struct kshark_context *kshark_ctx,
- 			   struct kshark_entry *e, int sd, int *event_id)
+ 	struct kshark_matrix_data_set merged_data;
+-	size_t i, tot = 0, count[n_buffers];
++	ssize_t count[n_buffers];
++	size_t i, tot = 0;
+ 	int i_first;
+ 	bool status;
+ 
+diff --git a/src/libkshark.h b/src/libkshark.h
+index 97d3227..7656ce9 100644
+--- a/src/libkshark.h
++++ b/src/libkshark.h
+@@ -764,7 +764,7 @@ struct kshark_entry_collection {
+ 	int *values;
+ 
+ 	/** The suze of the array of matching condition values. */
+-	int n_val;
++	size_t n_val;
+ 
+ 	/**
+ 	 * Array of indexes defining the beginning of each individual data
+@@ -1071,7 +1071,7 @@ struct kshark_entry_data_set {
+ 
+ struct kshark_entry **
+ kshark_merge_data_entries(struct kshark_entry_data_set *buffers,
+-			  int n_buffers);
++			  size_t n_buffers);
+ 
+ ssize_t kshark_load_all_entries(struct kshark_context *kshark_ctx,
+ 				struct kshark_entry ***data_rows);
+@@ -1111,7 +1111,7 @@ struct kshark_matrix_data_set {
+ 
+ struct kshark_matrix_data_set
+ kshark_merge_data_matrices(struct kshark_matrix_data_set *buffers,
+-			   int n_buffers);
++			   size_t n_buffers);
+ 
+ /**
+  * Structure used to store the data of a kshark_entry plus one additional
+diff --git a/src/plugins/sched_events.c b/src/plugins/sched_events.c
+index c3a4f47..e7dd2b1 100644
+--- a/src/plugins/sched_events.c
++++ b/src/plugins/sched_events.c
+@@ -104,28 +104,28 @@ static void plugin_sched_swith_action(struct kshark_data_stream *stream,
  {
- 	return e->stream_id == sd && e->event_id == *event_id;
-@@ -1630,7 +1630,7 @@ bool kshark_match_event_id(struct kshark_context *kshark_ctx,
-  * @returns True if the event Id of the entry matches the values.
-  *	    Else false.
-  */
--bool kshark_match_event_and_pid(struct kshark_context *kshark_ctx,
-+bool kshark_match_event_and_pid(__attribute__ ((unused)) struct kshark_context *kshark_ctx,
- 				struct kshark_entry *e,
- 				int sd, int *values)
- {
-@@ -1651,7 +1651,7 @@ bool kshark_match_event_and_pid(struct kshark_context *kshark_ctx,
-  * @returns True if the event Id of the entry matches the values.
-  *	    Else false.
-  */
--bool kshark_match_event_and_cpu(struct kshark_context *kshark_ctx,
-+bool kshark_match_event_and_cpu(__attribute__ ((unused)) struct kshark_context *kshark_ctx,
- 				struct kshark_entry *e,
- 				int sd, int *values)
- {
-diff --git a/src/plugins/EventFieldDialog.cpp b/src/plugins/EventFieldDialog.cpp
-index fbfe4cc..7fdec8b 100644
---- a/src/plugins/EventFieldDialog.cpp
-+++ b/src/plugins/EventFieldDialog.cpp
-@@ -161,7 +161,7 @@ void KsEFPDialog::_reset()
- 	_gui_ptr->wipPtr()->hide(work);
+ 	struct tep_record *record = (struct tep_record *) rec;
+ 	struct plugin_sched_context *plugin_ctx;
+-	unsigned long long next_pid, prev_state;
++	unsigned long long next_pid_val, prev_state_val;
+ 	ks_num_field_t ks_field = 0;
+-	int ret;
++	int ret, pid;
+ 
+ 	plugin_ctx = __get_context(stream->stream_id);
+ 	if (!plugin_ctx)
+ 		return;
+ 
+ 	ret = tep_read_number_field(plugin_ctx->sched_switch_next_field,
+-				    record->data, &next_pid);
+-
+-	if (ret == 0 && next_pid >= 0) {
++				    record->data, &next_pid_val);
++	pid = next_pid_val;
++	if (ret == 0 && pid >= 0) {
+ 		plugin_sched_set_pid(&ks_field, entry->pid);
+ 
+ 		ret = tep_read_number_field(plugin_ctx->sched_switch_prev_state_field,
+-					    record->data, &prev_state);
++					    record->data, &prev_state_val);
+ 
+ 		if (ret == 0)
+-			plugin_sched_set_prev_state(&ks_field, prev_state);
++			plugin_sched_set_prev_state(&ks_field, prev_state_val);
+ 
+ 		kshark_data_container_append(plugin_ctx->ss_data, entry, ks_field);
+-		entry->pid = next_pid;
++		entry->pid = pid;
+ 	}
  }
  
--static void showDialog(KsMainWindow *ks)
-+static void showDialog([[maybe_unused]] KsMainWindow *ks)
- {
- 	efp_dialog->update();
- 	efp_dialog->show();
-diff --git a/src/plugins/LatencyPlotDialog.cpp b/src/plugins/LatencyPlotDialog.cpp
-index 1fe8c39..c2c9b52 100644
---- a/src/plugins/LatencyPlotDialog.cpp
-+++ b/src/plugins/LatencyPlotDialog.cpp
-@@ -162,7 +162,7 @@ void LatencyPlotDialog::_reset()
- 	_gui_ptr->wipPtr()->hide(work);
- }
- 
--static void showDialog(KsMainWindow *ks)
-+static void showDialog([[maybe_unused]] KsMainWindow *ks)
- {
- 	lp_dialog->update();
- 	lp_dialog->show();
-diff --git a/tests/test-input.c b/tests/test-input.c
-index c6a5fa2..a45d5b4 100644
---- a/tests/test-input.c
-+++ b/tests/test-input.c
-@@ -15,7 +15,7 @@
- #include "libkshark-plugin.h"
- 
- static ssize_t load_entries(struct kshark_data_stream *stream,
--			    struct kshark_context *kshark_ctx,
-+			    __attribute__ ((unused)) struct kshark_context *kshark_ctx,
- 			    struct kshark_entry ***data_rows)
- {
- 	struct kshark_entry **rows;
-@@ -36,7 +36,7 @@ static ssize_t load_entries(struct kshark_data_stream *stream,
- 	return total;
- }
- 
--static char *dump_entry(struct kshark_data_stream *stream,
-+static char *dump_entry(__attribute__ ((unused)) struct kshark_data_stream *stream,
- 			const struct kshark_entry *entry)
- {
- 	char *entry_str;
-@@ -59,7 +59,7 @@ const char *KSHARK_INPUT_FORMAT()
- 	return format_name;
- }
- 
--bool KSHARK_INPUT_CHECK(const char *file, char **format)
-+bool KSHARK_INPUT_CHECK(const char *file, __attribute__ ((unused)) char **format)
- {
- 	char *ext = strrchr(file, '.');
- 
-@@ -69,14 +69,14 @@ bool KSHARK_INPUT_CHECK(const char *file, char **format)
- 	return false;
- }
- 
--static int get_pid(struct kshark_data_stream *stream,
-+static int get_pid(__attribute__ ((unused)) struct kshark_data_stream *stream,
- 		   const struct kshark_entry *entry)
- {
- 	return entry->pid;
- }
- 
--static char *get_task(struct kshark_data_stream *stream,
--		      const struct kshark_entry *entry)
-+static char *get_task(__attribute__ ((unused)) struct kshark_data_stream *stream,
-+		      __attribute__ ((unused)) const struct kshark_entry *entry)
- {
- 	char *entry_str;
- 	int ret;
-@@ -89,7 +89,7 @@ static char *get_task(struct kshark_data_stream *stream,
- 	return entry_str;
- }
- 
--static char *get_event_name(struct kshark_data_stream *stream,
-+static char *get_event_name(__attribute__ ((unused)) struct kshark_data_stream *stream,
- 			    const struct kshark_entry *entry)
- {
- 	char *evt_str;
-@@ -130,5 +130,5 @@ int KSHARK_INPUT_INITIALIZER(struct kshark_data_stream *stream)
- 	return 0;
- }
- 
--void KSHARK_INPUT_DEINITIALIZER(struct kshark_data_stream *stream)
-+void KSHARK_INPUT_DEINITIALIZER(__attribute__ ((unused)) struct kshark_data_stream *stream)
- {}
-diff --git a/tests/test-input_ctrl.c b/tests/test-input_ctrl.c
-index 77abab1..9695ad9 100644
---- a/tests/test-input_ctrl.c
-+++ b/tests/test-input_ctrl.c
-@@ -15,7 +15,7 @@
- #include "libkshark-plugin.h"
- 
- static ssize_t load_entries(struct kshark_data_stream *stream,
--			    struct kshark_context *kshark_ctx,
-+			    __attribute__ ((unused)) struct kshark_context *kshark_ctx,
- 			    struct kshark_entry ***data_rows)
- {
- 	struct kshark_entry **rows;
-@@ -37,7 +37,7 @@ static ssize_t load_entries(struct kshark_data_stream *stream,
- 	return total;
- }
- 
--static char *dump_entry(struct kshark_data_stream *stream,
-+static char *dump_entry(__attribute__ ((unused)) struct kshark_data_stream *stream,
- 			const struct kshark_entry *entry)
- {
- 	char *entry_str;
-@@ -61,7 +61,7 @@ const char *KSHARK_INPUT_FORMAT()
- 	return format_name;
- }
- 
--bool KSHARK_INPUT_CHECK(const char *file, char **format)
-+bool KSHARK_INPUT_CHECK(const char *file, __attribute__ ((unused)) char **format)
- {
- 	char *ext = strrchr(file, '.');
- 
-@@ -71,14 +71,14 @@ bool KSHARK_INPUT_CHECK(const char *file, char **format)
- 	return false;
- }
- 
--static int get_pid(struct kshark_data_stream *stream,
-+static int get_pid(__attribute__ ((unused)) struct kshark_data_stream *stream,
- 		   const struct kshark_entry *entry)
- {
- 	return entry->pid;
- }
- 
--static char *get_task(struct kshark_data_stream *stream,
--		      const struct kshark_entry *entry)
-+static char *get_task(__attribute__ ((unused)) struct kshark_data_stream *stream,
-+		      __attribute__ ((unused)) const struct kshark_entry *entry)
- {
- 	char *entry_str;
- 	int ret;
-@@ -91,7 +91,7 @@ static char *get_task(struct kshark_data_stream *stream,
- 	return entry_str;
- }
- 
--static char *get_event_name(struct kshark_data_stream *stream,
-+static char *get_event_name(__attribute__ ((unused)) struct kshark_data_stream *stream,
- 			    const struct kshark_entry *entry)
- {
- 	char *evt_str;
-@@ -130,11 +130,11 @@ int KSHARK_INPUT_INITIALIZER(struct kshark_data_stream *stream)
- 	return 0;
- }
- 
--void KSHARK_INPUT_DEINITIALIZER(struct kshark_data_stream *stream)
-+void KSHARK_INPUT_DEINITIALIZER(__attribute__ ((unused)) struct kshark_data_stream *stream)
- {}
- 
- /** Initialize the control interface of the plugin. */
--void *KSHARK_MENU_PLUGIN_INITIALIZER(void *ptr)
-+void *KSHARK_MENU_PLUGIN_INITIALIZER(__attribute__ ((unused)) void *ptr)
- {
- 	return NULL;
- }
-diff --git a/tests/test-plugin_dpi.c b/tests/test-plugin_dpi.c
-index 82f94f3..29c4391 100644
---- a/tests/test-plugin_dpi.c
-+++ b/tests/test-plugin_dpi.c
-@@ -12,14 +12,14 @@
- #include "libkshark-plugin.h"
- 
- /** Load this plugin. */
--int KSHARK_PLOT_PLUGIN_INITIALIZER(struct kshark_data_stream *stream)
-+int KSHARK_PLOT_PLUGIN_INITIALIZER(__attribute__ ((unused)) struct kshark_data_stream *stream)
- {
- 	printf("--> plugin1\n");
- 	return 1;
- }
- 
- /** Unload this plugin. */
--int KSHARK_PLOT_PLUGIN_DEINITIALIZER(struct kshark_data_stream *stream)
-+int KSHARK_PLOT_PLUGIN_DEINITIALIZER(__attribute__ ((unused)) struct kshark_data_stream *stream)
- {
- 	printf("<-- plugin1\n");
- 	return 1;
-diff --git a/tests/test-plugin_dpi_ctrl.c b/tests/test-plugin_dpi_ctrl.c
-index 5fafd1d..940f2b1 100644
---- a/tests/test-plugin_dpi_ctrl.c
-+++ b/tests/test-plugin_dpi_ctrl.c
-@@ -12,21 +12,21 @@
- #include "libkshark-plugin.h"
- 
- /** Load this plugin. */
--int KSHARK_PLOT_PLUGIN_INITIALIZER(struct kshark_data_stream *stream)
-+int KSHARK_PLOT_PLUGIN_INITIALIZER(__attribute__ ((unused)) struct kshark_data_stream *stream)
- {
- 	printf("--> plugin2\n");
- 	return 2;
- }
- 
- /** Unload this plugin. */
--int KSHARK_PLOT_PLUGIN_DEINITIALIZER(struct kshark_data_stream *stream)
-+int KSHARK_PLOT_PLUGIN_DEINITIALIZER(__attribute__ ((unused)) struct kshark_data_stream *stream)
- {
- 	printf("<-- plugin2\n");
- 	return 2;
- }
- 
- /** Initialize the control interface of the plugin. */
--void *KSHARK_MENU_PLUGIN_INITIALIZER(void *ptr)
-+void *KSHARK_MENU_PLUGIN_INITIALIZER(__attribute__ ((unused)) void *ptr)
- {
- 	return NULL;
- }
-diff --git a/tests/test-plugin_dpi_err.c b/tests/test-plugin_dpi_err.c
-index 4148930..6b0aec4 100644
---- a/tests/test-plugin_dpi_err.c
-+++ b/tests/test-plugin_dpi_err.c
-@@ -12,14 +12,14 @@
- #include "libkshark-plugin.h"
- 
- /** Load this plugin. */
--int KSHARK_PLOT_PLUGIN_INITIALIZER(struct kshark_data_stream *stream)
-+int KSHARK_PLOT_PLUGIN_INITIALIZER(__attribute__ ((unused)) struct kshark_data_stream *stream)
- {
- 	printf("--> plugin_err\n");
- 	return 0;
- }
- 
- /** Unload this plugin. */
--int KSHARK_PLOT_PLUGIN_DEINITIALIZER(struct kshark_data_stream *stream)
-+int KSHARK_PLOT_PLUGIN_DEINITIALIZER(__attribute__ ((unused)) struct kshark_data_stream *stream)
- {
- 	printf("<-- plugin_err\n");
- 	return 0;
 -- 
 2.42.0
 
