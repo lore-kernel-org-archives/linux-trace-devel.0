@@ -1,144 +1,75 @@
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E80652E401;
-	Tue, 19 Mar 2024 18:10:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB12D2C6AE;
+	Tue, 19 Mar 2024 18:12:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710871811; cv=none; b=rvh9x0zFR4PJmeT4piKzbT6av48b3TDy57OMPpj9dYf2UTLAi5kvkPsvbf3o9r4BC/v7LYsFx7D7NHjMs/iF85hA2zFRyr5Ivd2U6sN7CYBlIxydjAx4RC1vgCKl4qWtV/MSZSzSVFxLe2KPMqWo4HYoesDxHoEVoqCL7IHsN2E=
+	t=1710871952; cv=none; b=cmpSXHz9qTY6RVGNmYXcnUiAiNrHTmlgQuCG2cMPCEO80tKaiZq20/8AzgdZd4pwI40l6ciKEyLFuZpQ09Zw5cCRrS4SNViN4ITIt2I7CDwysHx0GOwDV7zQrw4pvocEcIJhDx63iUQPT1qJIL4yjhqy21HC5DHbvZqknqhPGZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710871811; c=relaxed/simple;
-	bh=xD4aOHRhHuw1j3plQj9V4WOL6Uu7nCb+GdWr5HHMcyw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=unvJmKqBCjr8f7hYcTRbwtZ6S3dc/uV/2Zp0LXMIyylku+8HVZSUd4D/9ebB/Dt+DnQymdpBbuM/KmPVnT1m0zR3l5nL15B1y9Ed6+mbRcjdMq6PXVN7nHYlJR8dQwT6Rkv5fJbjMTiyi/O6zg39VLRs/H/wgHquSmdquAaBn+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6e6afb754fcso5585583b3a.3;
-        Tue, 19 Mar 2024 11:10:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710871809; x=1711476609;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mIMLYVE6CyTm+xoNKJoABJx7QmXwGTxTuG4FdhVieQQ=;
-        b=xFaXjMd/WzhMpfORKoRpa7kG31lnXij+VtqdZRWTnZE/ETJ/HEvKo2ntrKBdJ4j40s
-         clWDfKZGgQeHcrlxul9YFxZotIpkp79XOzx80s8z7tg3EF1lwtV4H5Vk0C1VHIDFTmEo
-         FBhT3DVWsanv9NhbdL1G8DVOUxQs89chET8Jk2vao16xATayRgf9OPmOtpgB1vRb2SVG
-         4Ti5fiUF2V0xhdKppMQ7sBxo55oNAYTXs/uYDT2CBrQfUj0JosvDau44wViorEEvaERP
-         WmTGsaEdgHvoPfRKI9TuDHcjcwbltRbfYWfHMntMf3610orqHE22XV+hArKMU7z0KVdU
-         IShA==
-X-Forwarded-Encrypted: i=1; AJvYcCWp1j/XgZaF3ZEmM6rGf8/WpBxagVk4vdkUtbBq+9cqYXp0yLLHnGVz0R8Q9NDcGiUYhHPYKAM9hPiSaTSomIJDpIXazjS/TwbMCbJEKRZQpXt+23GooYRfukOxE676xENfySi4LSjztKx1gLjjnaz2Yj2XIkR3fV7uG1oIyOe6a4rr//kjPh+HBg1ZIUGuCNV6CLCGQib+VjYKGeIEYFkxNfMo3m2Se4bl9DK11aNZPkdwQw==
-X-Gm-Message-State: AOJu0YwL8d+pJFe4oDMwjEN598nEzREZpQcLRpBe/2yc5dZ29PNNRLTS
-	uCeq4m59AJfc59bXvc9DbcqbI+USOEBtCtscnq4mqOnj4jDi6PE2hx3mF/l7MGJiN89YBoZiMA4
-	XDL0DXnF8EpTh/mWA5vwP0Cg1hXZ/EW3U
-X-Google-Smtp-Source: AGHT+IHL4Xp6Ooj5iBTZpOU9C02JjUT6srW4+kSCgeFpNRNnAeeZozZal+8OtwFsxCQJqYtt9Snc02of3tWOCY5C5o4=
-X-Received: by 2002:a05:6a20:dd86:b0:1a3:4670:fbbf with SMTP id
- kw6-20020a056a20dd8600b001a34670fbbfmr15636738pzb.50.1710871809147; Tue, 19
- Mar 2024 11:10:09 -0700 (PDT)
+	s=arc-20240116; t=1710871952; c=relaxed/simple;
+	bh=SftRlw25717KfraW/oJEXJbHD1EPneudXtNW4HSfDh0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JrTutZ2N5Gahv5f8vVXVzT10dVoKAOnIa0U+CLkO5dWUHmB4n7wZFPbN55UfziPUQk5mYdb1sqaAFtgvpImVAJby5s9/XSUiQNit3/Xdd6RDtQsyH9xC368+wrt2lXVjwClAeD9xPLE0UBQGiwmRq3r7njsVmilcsuv7i21c2oc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hE/QSKOE; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hE/QSKOE"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49514C433C7;
+	Tue, 19 Mar 2024 18:12:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710871952;
+	bh=SftRlw25717KfraW/oJEXJbHD1EPneudXtNW4HSfDh0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hE/QSKOELxDbrTwwKGHc86OuDRyhnMRz7p1Z0RNdTbSRZWM/rP0MmXmtqJlMrupoA
+	 Zz+eHvgHcC2Y8fIrYOanYS50LHQ/eaToRhT/u39AzQc9TcbQ0o16B1XvaJzqYAN3gX
+	 3OSdHpEIF4ngB1793CqW/QJX5L0Wu1LKVMsPg9TY61FlrVvYDCuuEYhnIEh/Tjl8Yg
+	 wlNsuarphgAZA5jbuJHntgptuVKVchJuEDkl+W0QIzoToQBnYnLpZ87L3Qc9UWn8Ol
+	 VsgWz10dOlKPlT/vxjVAKez1pAgAzk2cygGSpwfB5TjLWTHpZTL/saUNZjAraIIh7a
+	 0OpOHW1q87NJQ==
+Date: Tue, 19 Mar 2024 15:12:28 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Stephane Eranian <eranian@google.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 09/23] perf annotate-data: Maintain variable type info
+Message-ID: <ZfnVjPlo_L5l51Bq@x1>
+References: <20240319055115.4063940-1-namhyung@kernel.org>
+ <20240319055115.4063940-10-namhyung@kernel.org>
+ <ZfmcN4YuvQpVgJQN@x1>
+ <CAM9d7cjatKSH7hw_sC3MCmY1fYT+bDBgSpFWJg=RM2oqgL5X0A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319055115.4063940-1-namhyung@kernel.org> <20240319055115.4063940-23-namhyung@kernel.org>
- <CAM9d7cjhuxB_iWPPWgFxK1_oBaYqF=MgthV=EBG0HeyJ9-ONXg@mail.gmail.com> <ZfnUUqWozFf55eyx@x1>
-In-Reply-To: <ZfnUUqWozFf55eyx@x1>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 19 Mar 2024 11:09:58 -0700
-Message-ID: <CAM9d7ci1dqph=4genU7m+L85oHtVaXj4FR=aFZYNyuVtC1eAVg@mail.gmail.com>
-Subject: Re: [PATCH 22/23] perf annotate-data: Add a cache for global variable types
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
-	linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAM9d7cjatKSH7hw_sC3MCmY1fYT+bDBgSpFWJg=RM2oqgL5X0A@mail.gmail.com>
 
-On Tue, Mar 19, 2024 at 11:07=E2=80=AFAM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> On Tue, Mar 19, 2024 at 11:05:04AM -0700, Namhyung Kim wrote:
-> > On Mon, Mar 18, 2024 at 10:56=E2=80=AFPM Namhyung Kim <namhyung@kernel.=
-org> wrote:
-> > >
-> > > They are often searched by many different places.  Let's add a cache
-> > > for them to reduce the duplicate DWARF access.
-> > >
-> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > > ---
-> > >  tools/perf/util/annotate-data.c | 107 ++++++++++++++++++++++++++++++=
-+-
-> > >  tools/perf/util/annotate-data.h |   7 +++
-> > >  tools/perf/util/dso.c           |   2 +
-> > >  tools/perf/util/dso.h           |   6 +-
-> > >  4 files changed, 118 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annota=
-te-data.c
-> > > index 633fe125fcd8..4b3184b7c799 100644
-> > > --- a/tools/perf/util/annotate-data.c
-> > > +++ b/tools/perf/util/annotate-data.c
-> > > @@ -433,6 +433,91 @@ static struct type_state_stack *findnew_stack_st=
-ate(struct type_state *state,
-> > >         return stack;
-> > >  }
-> > >
-> > > +/* Maintain a cache for quick global variable lookup */
-> > > +struct global_var_entry {
-> > > +       struct rb_node node;
-> > > +       char *name;
-> > > +       u64 start;
-> > > +       u64 end;
-> > > +       u64 die_offset;
-> > > +};
-> > > +
-> > > +static int global_var_cmp(const void *_key, const struct rb_node *no=
-de)
+On Tue, Mar 19, 2024 at 10:44:31AM -0700, Namhyung Kim wrote:
+> On Tue, Mar 19, 2024 at 7:07 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > > +void exit_type_state(struct type_state *state)
 > > > +{
-> > > +       const u64 addr =3D (uintptr_t)_key;
-> > > +       struct global_var_entry *gvar;
+> > > +     struct type_state_stack *stack, *tmp;
 > > > +
-> > > +       gvar =3D rb_entry(node, struct global_var_entry, node);
-> > > +
-> > > +       if (gvar->start <=3D addr && addr < gvar->end)
-> > > +               return 0;
-> > > +       return gvar->start > addr ? -1 : 1;
-> > > +}
-> > > +
-> > > +static bool global_var_less(struct rb_node *node_a, const struct rb_=
-node *node_b)
-> > > +{
-> > > +       struct global_var_entry *gvar_a, *gvar_b;
-> > > +
-> > > +       gvar_a =3D rb_entry(node_a, struct global_var_entry, node);
-> > > +       gvar_b =3D rb_entry(node_b, struct global_var_entry, node);
-> > > +
-> > > +       return gvar_a->start < gvar_b->start;
-> > > +}
-> > > +
-> > > +static struct global_var_entry *global_var__find(struct data_loc_inf=
-o *dloc, u64 addr)
-> > > +{
-> > > +       struct dso *dso =3D map__dso(dloc->ms->map);
-> > > +       struct rb_node *node;
-> > > +
-> > > +       node =3D rb_find((void *)addr, &dso->global_vars, global_var_=
-cmp);
-> >
-> > It seems to cause a build error on 32-bit systems.  It needs one
-> > more cast to suppress the "pointer cast w/ different size" warning.
-> >
-> >     node =3D rb_find(void *)(uintptr_tr)addr, ...);
->
-> I can add that, to speed up the process, ok?
+> > > +     list_for_each_entry_safe(stack, tmp, &state->stack_vars, list) {
+> > > +             list_del(&stack->list);
 
-That would be great!
+> > list_del_init()?
+ 
+> Maybe.. but I'm not sure how much value it'd have as we free it right after.
 
-Thanks,
-Namhyung
+Usually the value is in catching use after free more quickly, i.e.
+someone may have a pointer to a freed list and then it would be able to
+traverse the list of freed elements.
+
+- Arnaldo
