@@ -1,54 +1,54 @@
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B906D208A1;
-	Tue, 19 Mar 2024 17:42:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7302B9CF;
+	Tue, 19 Mar 2024 17:44:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710870134; cv=none; b=HhMl6/2uaaFNQLUAz0jxAR3AEyJrDKe+Hs87E7sOAlx3WjoJCw/BG/edgcjACei5i2gtohVZNXv0pHk+RXkBG+z/A1oUkCT02yBicqs6lKWZGIaIpMCOBvt7IO6/WJkYcqKy//BmaMtquX6Kn3KjVmNViVwCP54Xo2jT0kE1OLs=
+	t=1710870285; cv=none; b=T19UgmrnTYlHZswjLUj2fJskbzKxBPwaRQ+y7fGRjGKF4eg2Qg4xNPD0+HCXVxU749rNitzasWmbckmP7KgxenaFWxgLWZf8IwlEtzrnEIxg5O/kuh/8lL/V2vPOzGQBdFsOlfhSNb45KWR6XubUNS0gIKFsyKyc+9VtVBDhM+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710870134; c=relaxed/simple;
-	bh=AgU9Svcnbf6Lfrp1ANDmtgj8B8waw/EZGq1NnqZGO4E=;
+	s=arc-20240116; t=1710870285; c=relaxed/simple;
+	bh=YNQG5gO9WlpU/AlVGMzkLhdH1gT/jgzXyquEnTHOZ+k=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EcDvZlLvbAVdJ6t1FwhKL1g1a59Lj/x+tgR3Scv7UqvIRS8uEakxsRdsragXVHU1BpyDxJuzxS/JkUF8XefPzkMVrDCcwgWosACZ3Dfw5q2aZ1w9LmPZlFnGOydM9QRs7UddvPINVtptKlTak0ZSMIzVdzCJUx3U4wslNvR/nPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.52
+	 To:Cc:Content-Type; b=VShQO6oHLksBO9IUDcUqSPcKhLFyTnlMWoheHtW7KOKi0t2UWiYilb5XxI7dm7EQu9S/6VnUdwXJCTDrpwzWHn+78M0wiAvHZMJadLjAZXuwGki5DJvR0jSXwKc8YOxe3mvLMjO7azlRYb0//9azPMZwY3YXqEB32+N+qRaqsks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-29dfad24f36so2735037a91.0;
-        Tue, 19 Mar 2024 10:42:12 -0700 (PDT)
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so4723730a12.1;
+        Tue, 19 Mar 2024 10:44:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710870132; x=1711474932;
+        d=1e100.net; s=20230601; t=1710870283; x=1711475083;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MVvQsj8IKYVDEIpv3zumpFbZSz5ooPpC4xOYdmheWIo=;
-        b=REHo9lvrT4DmiwVz+imZximn6DcsfRRxjVlxJPjoF6qXj0jQN/8Bqoz33lqs3kcdgb
-         EXTc/mmalgp22B0JWD+HrceqlFLuUy6Kggmdmku3S1RAG28F2IN+x5mlR4MyqxytZCeB
-         pslhkHzugkRMCilz54NKk4oq0QqhT+gQipEpya/ftaL5LyiIeLJWzRbLK6typmtWLt0Q
-         5Mfhs+ZWPXhaSZeMXyz2aY8RE75vXYpydt+YCPweIjHaKfAqd0Z1o+3mT7kSr3YAArrY
-         Ewyrk35UGxputD8r/TLii9c7gWMuJySw9zBc5Xzx1761w4GOx1SrQ+ROnAoRm2TRnGS/
-         UthQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWh6ycMSJJPxpavkMB9f7tUU82B9MMzUcXeqhsPcaD9ZRHAivKSBYBdr4xGPQcU2rh+adxI8FaiIhqmKCz1TpZTvXXd+aZKomv/UPEaoj6Y+JWMDJpU3GVMstKTqCakeg7NnTY/47HdH7MOSaCAhoMLSuTE1CNqe4bsT9YUhzzfD8yTb/L45Ib7kiqMCGFuA9p1hvfOaZo0LY0LN89N3rQ7YE5U/iqPXQm/FiZAWMOnFJ2o5g==
-X-Gm-Message-State: AOJu0YzpUrjafnxpfB46LVCjhyBwfKqoq/XryTCGST5eTqhLbtU+AMQW
-	JUL2Bx+owSzg4n8O4NjlHQIhzxcQj6+qm62bTYRvdMHuD2JD5NDOfB/eJttAmim6K5M9IqbmdXD
-	aQv9oEQHr9du1g32A87zL4Bh65BI=
-X-Google-Smtp-Source: AGHT+IHyJlZ4rJucpKnBC8DCvj4eCMKEgd05E859QaJGu3wsvLbSSvPpcTwXQxpMqy/r3LFHwtBNfpAyE+g3gw1luiI=
-X-Received: by 2002:a17:90b:3c6:b0:29f:f1f0:88c2 with SMTP id
- go6-20020a17090b03c600b0029ff1f088c2mr822891pjb.4.1710870132007; Tue, 19 Mar
- 2024 10:42:12 -0700 (PDT)
+        bh=LLidFdPPt+9QGX0eU+M4Nd/N7qIdu9ep3/M0iAS5xu8=;
+        b=cEWK4zAIUwliT+5wxQS3Z1UD6P4VM+fZd0H6tj4KfaPxtc/RVHUVZtE5SoSH1uoR5G
+         STHrut/XE+f2GfOuOdU7yMwRvL2Cg2PlAisv22XUpLxlJ1lytfO1I6FDF4n0V8yFI5zn
+         5XROr3DLVAVF6u6jq5artN4AmWQiCefWiyyItCDbUMErShMi7omQKXRgoJAd0tgZWTz4
+         pKblbxUbC3zbjPU2uYLMsi5QUXsCUmemaJNcCigvGyOV+1B/0iMEXkRiyKAt/2qnV8j7
+         ACdQtMrNe97CARH6tSbXhUxjEufXO46r/RMFpzN2oHlqAPxYmJ8tGVOJ5mjKO4wDD30M
+         hzlA==
+X-Forwarded-Encrypted: i=1; AJvYcCXpvTwIu0sAahrN0JWn9l2ygycNvikVgRmDWHKRH302434V/UMmIsfsJgVqogNqkdKENtss+Ectx72fCfnw8OF57ndRL/xSLX8lK2aLvLJAaiCNmMXMURVag6l5vj8zaoPEA+Q4s72Us/RNM6mymF+zYYB6fRhzmYNtfFBgQCqtTvbt/o48+xZlMghmjOiULhSUb0i6XZoxrBQQXUMUWAYud2L+DBEWokt7Ts5ACK/t7aIpUA==
+X-Gm-Message-State: AOJu0YyhumyqE3V+i9L4MK3YDrwv90TaRzBQmjyOreh97IhiR3K76q+l
+	GDrnp7kUp0hnN57KK8J4UMdSHl052XJQOm4WI6hc9W4dwbkh/F3/EGaDUqIpcngzzYo4eaZw9mc
+	HGrsjTXFCCmGK5U1Ng90dnrv1ClE=
+X-Google-Smtp-Source: AGHT+IEcwxRhZAINrFOhMoOKS6MDR9e+tjMHRVCgvgpferCGmN4fIMPxcMoI52RIPOXBxjAGEjlOyFbebnpE8YNdCn4=
+X-Received: by 2002:a17:90a:ce12:b0:29b:b485:f4f8 with SMTP id
+ f18-20020a17090ace1200b0029bb485f4f8mr12573838pju.20.1710870283313; Tue, 19
+ Mar 2024 10:44:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319055115.4063940-1-namhyung@kernel.org> <20240319055115.4063940-5-namhyung@kernel.org>
- <ZfmZobDmVFxEQ6hU@x1>
-In-Reply-To: <ZfmZobDmVFxEQ6hU@x1>
+References: <20240319055115.4063940-1-namhyung@kernel.org> <20240319055115.4063940-10-namhyung@kernel.org>
+ <ZfmcN4YuvQpVgJQN@x1>
+In-Reply-To: <ZfmcN4YuvQpVgJQN@x1>
 From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 19 Mar 2024 10:42:00 -0700
-Message-ID: <CAM9d7chdEcA7qFS3k=DGfeXcdZP1xWvdory_-Q0WFPfGi0St_Q@mail.gmail.com>
-Subject: Re: [PATCH 04/23] perf dwarf-aux: Add die_find_func_rettype()
+Date: Tue, 19 Mar 2024 10:44:31 -0700
+Message-ID: <CAM9d7cjatKSH7hw_sC3MCmY1fYT+bDBgSpFWJg=RM2oqgL5X0A@mail.gmail.com>
+Subject: Re: [PATCH 09/23] perf annotate-data: Maintain variable type info
 To: Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>, 
 	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
@@ -60,73 +60,103 @@ Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 19, 2024 at 6:56=E2=80=AFAM Arnaldo Carvalho de Melo
+On Tue, Mar 19, 2024 at 7:07=E2=80=AFAM Arnaldo Carvalho de Melo
 <acme@kernel.org> wrote:
 >
-> On Mon, Mar 18, 2024 at 10:50:56PM -0700, Namhyung Kim wrote:
-> > The die_find_func_rettype() is to find a debug entry for the given
-> > function name and sets the type information of the return value.  By
-> > convention, it'd return the pointer to the type die (should be the
-> > same as the given mem_die argument) if found, or NULL otherwise.
+> On Mon, Mar 18, 2024 at 10:51:01PM -0700, Namhyung Kim wrote:
+> > As it collected basic block and variable information in each scope, it
+> > now can build a state table to find matching variable at the location.
 > >
-> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> > The struct type_state is to keep the type info saved in each register
+> > and stack slot.  The update_var_state() updates the table when it finds
+> > variables in the current address.  It expects die_collect_vars() filled
+> > a list of variables with type info and starting address.
+> >
 > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 > > ---
-> >  tools/perf/util/dwarf-aux.c | 43 +++++++++++++++++++++++++++++++++++++
-> >  tools/perf/util/dwarf-aux.h |  4 ++++
-> >  2 files changed, 47 insertions(+)
+> >  tools/perf/util/annotate-data.c | 173 ++++++++++++++++++++++++++++++++
+> >  tools/perf/util/dwarf-aux.c     |   4 +
+> >  2 files changed, 177 insertions(+)
 > >
-> > diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
-> > index cd9364d296b6..9080119a258c 100644
-> > --- a/tools/perf/util/dwarf-aux.c
-> > +++ b/tools/perf/util/dwarf-aux.c
-> > @@ -696,6 +696,49 @@ Dwarf_Die *die_find_inlinefunc(Dwarf_Die *sp_die, =
-Dwarf_Addr addr,
-> >       return die_mem;
+> > diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate=
+-data.c
+> > index f482ccfdaa91..8eaa06f1cee5 100644
+> > --- a/tools/perf/util/annotate-data.c
+> > +++ b/tools/perf/util/annotate-data.c
+> > @@ -46,6 +46,62 @@ static void pr_debug_type_name(Dwarf_Die *die)
+> >       free(str);
 > >  }
 > >
-> > +static int __die_find_func_rettype_cb(Dwarf_Die *die_mem, void *data)
+> > +/* Type information in a register, valid when ok is true */
+> > +struct type_state_reg {
+> > +     Dwarf_Die type;
+> > +     bool ok;
+> > +};
+> > +
+> > +/* Type information in a stack location, dynamically allocated */
+> > +struct type_state_stack {
+> > +     struct list_head list;
+> > +     Dwarf_Die type;
+> > +     int offset;
+> > +     int size;
+> > +     bool compound;
+> > +};
+> > +
+> > +/* FIXME: This should be arch-dependent */
+> > +#define TYPE_STATE_MAX_REGS  16
+> > +
+> > +/*
+> > + * State table to maintain type info in each register and stack locati=
+on.
+> > + * It'll be updated when new variable is allocated or type info is mov=
+ed
+> > + * to a new location (register or stack).  As it'd be used with the
+> > + * shortest path of basic blocks, it only maintains a single table.
+> > + */
+> > +struct type_state {
+> > +     struct type_state_reg regs[TYPE_STATE_MAX_REGS];
+> > +     struct list_head stack_vars;
+> > +};
+> > +
+> > +static bool has_reg_type(struct type_state *state, int reg)
 > > +{
-> > +     const char *func_name;
-> > +
-> > +     if (dwarf_tag(die_mem) !=3D DW_TAG_subprogram)
-> > +             return DIE_FIND_CB_SIBLING;
-> > +
-> > +     func_name =3D dwarf_diename(die_mem);
-> > +     if (func_name && !strcmp(func_name, data))
-> > +             return DIE_FIND_CB_END;
-> > +
-> > +     return DIE_FIND_CB_SIBLING;
+> > +     return (unsigned)reg < ARRAY_SIZE(state->regs);
 > > +}
 > > +
-> > +/**
-> > + * die_find_func_rettype - Search a return type of function
-> > + * @cu_die: a CU DIE
-> > + * @name: target function name
-> > + * @die_mem: a buffer for result DIE
-> > + *
-> > + * Search a non-inlined function which matches to @name and stores the
-> > + * return type of the function to @die_mem and returns it if found.
-> > + * Returns NULL if failed.  Note that it doesn't needs to find a
-> > + * definition of the function, so it doesn't match with address.
-> > + * Most likely, it can find a declaration at the top level.  Thus the
-> > + * callback function continues to sibling entries only.
-> > + */
-> > +Dwarf_Die *die_find_func_rettype(Dwarf_Die *cu_die, const char *name,
-> > +                              Dwarf_Die *die_mem)
+> > +/* These declarations will be remove once they are changed to static *=
+/
+> > +void init_type_state(struct type_state *state, struct arch *arch __may=
+be_unused);
+> > +void exit_type_state(struct type_state *state);
+> > +void update_var_state(struct type_state *state, struct data_loc_info *=
+dloc,
+> > +                   u64 addr, u64 insn_offset, struct die_var_type *var=
+_types);
+> > +
+> > +void init_type_state(struct type_state *state, struct arch *arch __may=
+be_unused)
 > > +{
-> > +     Dwarf_Die tmp_die;
+> > +     memset(state, 0, sizeof(*state));
+> > +     INIT_LIST_HEAD(&state->stack_vars);
+> > +}
 > > +
-> > +     cu_die =3D die_find_child(cu_die, __die_find_func_rettype_cb,
-> > +                             (void *)name, &tmp_die);
-> > +     if (!cu_die)
-> > +             return NULL;
+> > +void exit_type_state(struct type_state *state)
+> > +{
+> > +     struct type_state_stack *stack, *tmp;
 > > +
-> > +     if (die_get_real_type(&tmp_die, die_mem) =3D=3D NULL)
-> > +             return NULL;
+> > +     list_for_each_entry_safe(stack, tmp, &state->stack_vars, list) {
+> > +             list_del(&stack->list);
 >
->
-> Here you check die_get_real_type() return, may I go and do the same for
-> the previous patch to address my review comment?
+> list_del_init()?
 
-Sure thing! :)
+Maybe.. but I'm not sure how much value it'd have as we free it right after=
+.
+
+Thanks,
+Namhyung
+
+>
+> > +             free(stack);
+> > +     }
+> > +}
+> > +
