@@ -1,32 +1,32 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB12D2C6AE;
-	Tue, 19 Mar 2024 18:12:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49AA339AE7;
+	Tue, 19 Mar 2024 18:19:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710871952; cv=none; b=cmpSXHz9qTY6RVGNmYXcnUiAiNrHTmlgQuCG2cMPCEO80tKaiZq20/8AzgdZd4pwI40l6ciKEyLFuZpQ09Zw5cCRrS4SNViN4ITIt2I7CDwysHx0GOwDV7zQrw4pvocEcIJhDx63iUQPT1qJIL4yjhqy21HC5DHbvZqknqhPGZQ=
+	t=1710872361; cv=none; b=U+8CBhikrHT+hJL1apq5r2Tel5O2oa3Nj6Fy58/26gdKQnWFUbfWuYqF17FxC94KioeDCWUsG21X/X7m2RUIMmVagZ+llHFCrssn3xJj8CCmRzuo0t5kbu6moy+6VblTv0vseQ/BMmr3tJS+XTApwcKA+m/XP180kJhHhiCZEQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710871952; c=relaxed/simple;
-	bh=SftRlw25717KfraW/oJEXJbHD1EPneudXtNW4HSfDh0=;
+	s=arc-20240116; t=1710872361; c=relaxed/simple;
+	bh=i0jJsj6QvM/T9Iar8vRpnhnFjXjdbecnQoMeRz8UCm4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JrTutZ2N5Gahv5f8vVXVzT10dVoKAOnIa0U+CLkO5dWUHmB4n7wZFPbN55UfziPUQk5mYdb1sqaAFtgvpImVAJby5s9/XSUiQNit3/Xdd6RDtQsyH9xC368+wrt2lXVjwClAeD9xPLE0UBQGiwmRq3r7njsVmilcsuv7i21c2oc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hE/QSKOE; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=sfQxJwrNiamyU1UGMwNrTNNQ1n7Z+CzbfR+rup0FQsl2Qa4XP4YqQlkeB84YR5FuDE6dtzvkTosnoYiQs6AYk769nhq5qQazG/Oqd/L+eWPgtlkbYULQ53SnjyIvotycWUKxU3j63amJwWhF6lCn6ccrU5oHk3apaUUM7RqRznk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zwt93e6S; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hE/QSKOE"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49514C433C7;
-	Tue, 19 Mar 2024 18:12:30 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zwt93e6S"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79037C433F1;
+	Tue, 19 Mar 2024 18:19:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710871952;
-	bh=SftRlw25717KfraW/oJEXJbHD1EPneudXtNW4HSfDh0=;
+	s=k20201202; t=1710872360;
+	bh=i0jJsj6QvM/T9Iar8vRpnhnFjXjdbecnQoMeRz8UCm4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hE/QSKOELxDbrTwwKGHc86OuDRyhnMRz7p1Z0RNdTbSRZWM/rP0MmXmtqJlMrupoA
-	 Zz+eHvgHcC2Y8fIrYOanYS50LHQ/eaToRhT/u39AzQc9TcbQ0o16B1XvaJzqYAN3gX
-	 3OSdHpEIF4ngB1793CqW/QJX5L0Wu1LKVMsPg9TY61FlrVvYDCuuEYhnIEh/Tjl8Yg
-	 wlNsuarphgAZA5jbuJHntgptuVKVchJuEDkl+W0QIzoToQBnYnLpZ87L3Qc9UWn8Ol
-	 VsgWz10dOlKPlT/vxjVAKez1pAgAzk2cygGSpwfB5TjLWTHpZTL/saUNZjAraIIh7a
-	 0OpOHW1q87NJQ==
-Date: Tue, 19 Mar 2024 15:12:28 -0300
+	b=Zwt93e6S4MGi6Vrjb8S0YIhp2ZYSCunZV3Trr1Vboq1hluAIDUahavKnyjRcyQCry
+	 PHneLxbf0VmHR3qJ6bi+kHv5U1762hmxc5zQ5VFwqbDZZhxvIb6yW6rs8vhTppnGLe
+	 1EceDQEfvKn10j9FBbYK+fWlKSpb67iuVQDHQiLnS1hYcnJoP9xlFvJ4R+Ssfz+36q
+	 ubaas5hxdwkL8SN439jyI3AP37QJ5A0ql6jBw8895asz00VwY/f45lok9Qpd4dcLO5
+	 nhZskBupYmH1D09K0i7C7xP+in004Y/V/nbfJKoFUR8HQIg9klAEQRitgnoNhXcpn1
+	 riD9iDGZZIE0A==
+Date: Tue, 19 Mar 2024 15:19:14 -0300
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
 To: Namhyung Kim <namhyung@kernel.org>
 Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
@@ -38,12 +38,12 @@ Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
 	Stephane Eranian <eranian@google.com>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 09/23] perf annotate-data: Maintain variable type info
-Message-ID: <ZfnVjPlo_L5l51Bq@x1>
+Subject: Re: [PATCH 04/23] perf dwarf-aux: Add die_find_func_rettype()
+Message-ID: <ZfnXIm2rRnzVcZ4n@x1>
 References: <20240319055115.4063940-1-namhyung@kernel.org>
- <20240319055115.4063940-10-namhyung@kernel.org>
- <ZfmcN4YuvQpVgJQN@x1>
- <CAM9d7cjatKSH7hw_sC3MCmY1fYT+bDBgSpFWJg=RM2oqgL5X0A@mail.gmail.com>
+ <20240319055115.4063940-5-namhyung@kernel.org>
+ <ZfmZobDmVFxEQ6hU@x1>
+ <CAM9d7chdEcA7qFS3k=DGfeXcdZP1xWvdory_-Q0WFPfGi0St_Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -53,23 +53,38 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM9d7cjatKSH7hw_sC3MCmY1fYT+bDBgSpFWJg=RM2oqgL5X0A@mail.gmail.com>
+In-Reply-To: <CAM9d7chdEcA7qFS3k=DGfeXcdZP1xWvdory_-Q0WFPfGi0St_Q@mail.gmail.com>
 
-On Tue, Mar 19, 2024 at 10:44:31AM -0700, Namhyung Kim wrote:
-> On Tue, Mar 19, 2024 at 7:07 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > > +void exit_type_state(struct type_state *state)
-> > > +{
-> > > +     struct type_state_stack *stack, *tmp;
+On Tue, Mar 19, 2024 at 10:42:00AM -0700, Namhyung Kim wrote:
+> On Tue, Mar 19, 2024 at 6:56 AM Arnaldo Carvalho de Melo
+> > > +             return NULL;
 > > > +
-> > > +     list_for_each_entry_safe(stack, tmp, &state->stack_vars, list) {
-> > > +             list_del(&stack->list);
+> > > +     if (die_get_real_type(&tmp_die, die_mem) == NULL)
+> > > +             return NULL;
+> >
+> >
+> > Here you check die_get_real_type() return, may I go and do the same for
+> > the previous patch to address my review comment?
+> 
+> Sure thing! :)
 
-> > list_del_init()?
- 
-> Maybe.. but I'm not sure how much value it'd have as we free it right after.
-
-Usually the value is in catching use after free more quickly, i.e.
-someone may have a pointer to a freed list and then it would be able to
-traverse the list of freed elements.
+Ack?
 
 - Arnaldo
+
+diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+index cd9364d296b6bf42..09fd6f1f0ed8eac3 100644
+--- a/tools/perf/util/dwarf-aux.c
++++ b/tools/perf/util/dwarf-aux.c
+@@ -1856,7 +1856,10 @@ static int __die_find_member_offset_cb(Dwarf_Die *die_mem, void *arg)
+ 	if (offset == loc)
+ 		return DIE_FIND_CB_END;
+ 
+-	die_get_real_type(die_mem, &type_die);
++	if (die_get_real_type(die_mem, &type_die) == NULL) {
++		// TODO: add a pr_debug_dtp() later for this unlikely failure
++		return DIE_FIND_CB_SIBLING;
++	}
+ 
+ 	if (dwarf_aggregate_size(&type_die, &size) < 0)
+ 		size = 0;
