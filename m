@@ -1,79 +1,201 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38F598120F;
-	Tue, 19 Mar 2024 14:17:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E0362B9BA;
+	Tue, 19 Mar 2024 17:40:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710857871; cv=none; b=cF8FWpbyHBx/BHNysVddXFPqJV8MnNwbz4LQGRC/s7u0JgD6yb4AFqEV61FUvmbc5q3muMct41uH7Eb6e1/hGZeHFn1MIxBTJpv3TnQ6/l/BcFruuhTH2a9dHvtjs+O9GpCws09Gmsf5n3/ngohq+O4f/5EH7cMaGXXNqEP4+P8=
+	t=1710870010; cv=none; b=Hm/zE/4y/8YoApzYhbA/pchQmIjra1wtdTLb4Th3ICKywTHt7UVxlXx6I1tZZh7xPuQj/IdTekz4URBeRqBBoeQlce4mPiaQoFqAqfR6x7bqPhy/wyrKqWU/hDBie6Z+vYAfFupHSI8ULSuhcFqwgwPGYkx+WHGP0R3RO7oRvIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710857871; c=relaxed/simple;
-	bh=Zeo3xa6Wim1i5dx56lNMKn/G39IRFtRUarZC1toA82Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lE1oBYAQFI9jaxJRmIVAqMzIrO2ZQQsvtQ3/b5xj7+ZRHwf8kI1cu4JxltKgXGZ2xwb0pSYLygpnIFzvTMUI/i0rRodZ7IAEyHmcXNd9t+3RndNXBblERGXX7WMMnhpUPmRrgfEl22QtxkZ7fFryApM6+Y/fYRvAKZw+fWppYiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eIZVVBoQ; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eIZVVBoQ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47C50C433F1;
-	Tue, 19 Mar 2024 14:17:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710857870;
-	bh=Zeo3xa6Wim1i5dx56lNMKn/G39IRFtRUarZC1toA82Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eIZVVBoQjbOsNuSe0G0TNLGcHJm6Z3LqNpfGMO1P/y7lwEy6lGeSBWmY03jmX+7lm
-	 0cy+AKCrU+5l/B0NJh36lcYaKDz4ojAJTXXTM/S3mPwe+k8Axc5a65Cc0qiniVygUO
-	 UlGBDZT3hWfuvuYOtlt2wcFsQnVU+SlTiMu9zjiZrnVxithqjAMgUFVoFIuf+YkNwB
-	 +d+4zV/+wCapNo0jVBF2kvNWlGiABNgxYrvbKAeAmB74anzvGBfimmnz5ndrD2rMtN
-	 nZ61uu716aoZEX/DGBpihDOOBV4aIV90RKobi0xqZIwJOPaebfxo0GQUwHPmyVltX2
-	 IarcXfqEDtysg==
-Date: Tue, 19 Mar 2024 11:17:47 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Stephane Eranian <eranian@google.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-	Ben Woodard <woodard@redhat.com>, Joe Mario <jmario@redhat.com>,
-	Kees Cook <keescook@chromium.org>,
-	David Blaikie <blaikie@google.com>, Xu Liu <xliuprof@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Ravi Bangoria <ravi.bangoria@amd.com>,
-	Mark Wielaard <mark@klomp.org>, Jason Merrill <jason@redhat.com>,
-	"Jose E . Marchesi" <jose.marchesi@oracle.com>,
-	William Huang <williamjhuang@google.com>
-Subject: Re: [PATCHSET 00/23] Remaining bits of data type profiling (v7)
-Message-ID: <ZfmeiyKSM7gfqXL4@x1>
-References: <20240319055115.4063940-1-namhyung@kernel.org>
+	s=arc-20240116; t=1710870010; c=relaxed/simple;
+	bh=MhtixsmRO9wFMNPa7fZ+A1C63+g4Vno5+EgJASe3E04=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Vq1kPDlX93B65XdY1DrOBvjICyTOyw6USZFtKqhdwmSYAvdB0J6W0riBGTLmQ+kg+oPg749Vy4FGfinckkQY29BalsA4u4pPvx+j1OxI//YuI8He5rgfrxla+w1re5vFgH4eZJaIw68hBkLmhL8U+Wkfx3YvjOMC42KTyEKVCWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-29de4e12d12so4147328a91.3;
+        Tue, 19 Mar 2024 10:40:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710870009; x=1711474809;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Wh275OKIsAYQ5o+GHxL9VNQG4dc3doJhtyP2ubPY/Z8=;
+        b=PlwWOiS0hu8V9MsEQZU6ID8Ew/CV0zr8FRgkiumAPMQFTdNQ4QG7JaPGf7EjxB8SmB
+         Xj+NPes5YR72SGsmBQonFO3HpwaJe9tiZuR/jTcBPiFL33oGYQUyNnFDcsh5JQbfgri3
+         V++96vKi2rU6HPIWOKiP5GzT6okDy4M0q+2UwXdmb/JMmwE71wdTsY107CDfhBeWbqRh
+         llDLrFWrxRAcJQTR/Dt1idZXTm3EAi1VBC3ZmMsS3r7CfBuFj4NDihVj7oWJVKcjDhaI
+         mIl5UEmRqQVr52dEmxmxl/XaMTf9NG+9iDABRr2gBfqBWqZzTHlYmT/bcj+elZWCsBT4
+         DdlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV8gggwmTdcVGzSPLWbFeg40KW06TdEenyoMAzHpFor1hs3eg8sMRQlTor4Acp5yFa9F3WcgfMia9QTqCzhmFDaqIK8wW40LhUYeDQ7fyGTskH1ViJ0o69D5P/H1hwq99JM2440kjEu05iaP2+7tjBYIi5mFmu+C7bb0stIAJCwQuLo59MYDqwVAsrXwgHkKy8kQBpc2i4Hy/DHWGydNeSyXDkxifJyFNUVSDxNrdHN9G9meg==
+X-Gm-Message-State: AOJu0Yyq4iOrAzIG8lygF8SlRX77mRTFrilFIhnTfPokLgmWnOiH5sVC
+	PTqbGMaF+neur46OItjvGsbAn7Hjl/TGGUaH4viM8W9RxQXRnSulnthJKk8IMYY8QOfs0EI5ugA
+	1lxbJFlOM5x75uxbpFUlDdo7fEyRsNw7f
+X-Google-Smtp-Source: AGHT+IFiRXVc5OoJ0hTZM0ANlRt2pYfdwl7srRGMkaCNCC9FY2P/oXFOO8VZ2L36SCVsBHcHH7PesVORwZ7PyNWqqVI=
+X-Received: by 2002:a17:90b:788:b0:29c:844:a91 with SMTP id
+ l8-20020a17090b078800b0029c08440a91mr11532418pjz.48.1710870008555; Tue, 19
+ Mar 2024 10:40:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240319055115.4063940-1-namhyung@kernel.org>
+References: <20240319055115.4063940-1-namhyung@kernel.org> <20240319055115.4063940-2-namhyung@kernel.org>
+ <ZfmWgbkApCMoeWHm@x1>
+In-Reply-To: <ZfmWgbkApCMoeWHm@x1>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Tue, 19 Mar 2024 10:39:56 -0700
+Message-ID: <CAM9d7cgm_-zyiZpCVoKH2dfqEESO5ohZYHYRnnBFWxagDiMrqA@mail.gmail.com>
+Subject: Re: [PATCH 01/23] perf dwarf-aux: Remove unused pc argument
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
+	linux-trace-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 18, 2024 at 10:50:52PM -0700, Namhyung Kim wrote:
-> 
-> Hello,
-> 
-> This is the last part of the data type profiling series.
-> So far we added the basic pointer variable support, and direct access to
-> global/local variables.  Now it's time to add instruction tracking. :)
-> 
-> For the history and background, you can refer to the previous version
-> [1] and the LWN article [2].
+On Tue, Mar 19, 2024 at 6:43=E2=80=AFAM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> On Mon, Mar 18, 2024 at 10:50:53PM -0700, Namhyung Kim wrote:
+> > It's not used, let's get rid of it.
+>
+> I looked for data->pc, there is usage somewhere else, but not via
+> __die_find_var_addr_cb() nor match_var_offset().
+>
+> I think renaming:
+>
+>   struct find_var_data data;
+>
+> to:
+>
+>   struct find_var_data var;
+>
+> And:
+>
+>   struct find_scope_data data;
+>
+> to:
+>
+>   struct find_scope_data scope;
+>
+> Helps with grepping for 'data->pc', but that can be left for later.
 
-Most of my comments are minor and can be addressed later, I've applied
-in my local repo, will go thru the usual build tests and then I'll do
-further usage tests.
+Ok, I can rename them later.
 
-Thanks,
+>
+> Reviewed-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-- Arnaldo
+Thanks for the review!
+Namhyung
+
+>
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >  tools/perf/util/annotate-data.c | 4 ++--
+> >  tools/perf/util/dwarf-aux.c     | 7 ++-----
+> >  tools/perf/util/dwarf-aux.h     | 6 ++----
+> >  3 files changed, 6 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate=
+-data.c
+> > index 30c4d19fcf11..59ce5f4f4a40 100644
+> > --- a/tools/perf/util/annotate-data.c
+> > +++ b/tools/perf/util/annotate-data.c
+> > @@ -263,7 +263,7 @@ static int find_data_type_die(struct debuginfo *di,=
+ u64 pc, u64 addr,
+> >       offset =3D loc->offset;
+> >
+> >       if (reg =3D=3D DWARF_REG_PC) {
+> > -             if (die_find_variable_by_addr(&cu_die, pc, addr, &var_die=
+, &offset)) {
+> > +             if (die_find_variable_by_addr(&cu_die, addr, &var_die, &o=
+ffset)) {
+> >                       ret =3D check_variable(&var_die, type_die, offset=
+,
+> >                                            /*is_pointer=3D*/false);
+> >                       loc->offset =3D offset;
+> > @@ -312,7 +312,7 @@ static int find_data_type_die(struct debuginfo *di,=
+ u64 pc, u64 addr,
+> >       /* Search from the inner-most scope to the outer */
+> >       for (i =3D nr_scopes - 1; i >=3D 0; i--) {
+> >               if (reg =3D=3D DWARF_REG_PC) {
+> > -                     if (!die_find_variable_by_addr(&scopes[i], pc, ad=
+dr,
+> > +                     if (!die_find_variable_by_addr(&scopes[i], addr,
+> >                                                      &var_die, &offset)=
+)
+> >                               continue;
+> >               } else {
+> > diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+> > index 2791126069b4..e84d0d6a7750 100644
+> > --- a/tools/perf/util/dwarf-aux.c
+> > +++ b/tools/perf/util/dwarf-aux.c
+> > @@ -1456,7 +1456,6 @@ static int __die_find_var_addr_cb(Dwarf_Die *die_=
+mem, void *arg)
+> >  /**
+> >   * die_find_variable_by_addr - Find variable located at given address
+> >   * @sc_die: a scope DIE
+> > - * @pc: the program address to find
+> >   * @addr: the data address to find
+> >   * @die_mem: a buffer to save the resulting DIE
+> >   * @offset: the offset in the resulting type
+> > @@ -1464,12 +1463,10 @@ static int __die_find_var_addr_cb(Dwarf_Die *di=
+e_mem, void *arg)
+> >   * Find the variable DIE located at the given address (in PC-relative =
+mode).
+> >   * This is usually for global variables.
+> >   */
+> > -Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die, Dwarf_Addr pc,
+> > -                                  Dwarf_Addr addr, Dwarf_Die *die_mem,
+> > -                                  int *offset)
+> > +Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die, Dwarf_Addr add=
+r,
+> > +                                  Dwarf_Die *die_mem, int *offset)
+> >  {
+> >       struct find_var_data data =3D {
+> > -             .pc =3D pc,
+> >               .addr =3D addr,
+> >       };
+> >       Dwarf_Die *result;
+> > diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
+> > index 85dd527ae1f7..9973801a20c1 100644
+> > --- a/tools/perf/util/dwarf-aux.h
+> > +++ b/tools/perf/util/dwarf-aux.h
+> > @@ -146,9 +146,8 @@ Dwarf_Die *die_find_variable_by_reg(Dwarf_Die *sc_d=
+ie, Dwarf_Addr pc, int reg,
+> >                                   Dwarf_Die *die_mem);
+> >
+> >  /* Find a (global) variable located in the 'addr' */
+> > -Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die, Dwarf_Addr pc,
+> > -                                  Dwarf_Addr addr, Dwarf_Die *die_mem,
+> > -                                  int *offset);
+> > +Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die, Dwarf_Addr add=
+r,
+> > +                                  Dwarf_Die *die_mem, int *offset);
+> >
+> >  #else /*  HAVE_DWARF_GETLOCATIONS_SUPPORT */
+> >
+> > @@ -170,7 +169,6 @@ static inline Dwarf_Die *die_find_variable_by_reg(D=
+warf_Die *sc_die __maybe_unus
+> >  }
+> >
+> >  static inline Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die _=
+_maybe_unused,
+> > -                                                Dwarf_Addr pc __maybe_=
+unused,
+> >                                                  Dwarf_Addr addr __mayb=
+e_unused,
+> >                                                  Dwarf_Die *die_mem __m=
+aybe_unused,
+> >                                                  int *offset __maybe_un=
+used)
+> > --
+> > 2.44.0.291.gc1ea87d7ee-goog
+> >
