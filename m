@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1620B7FBAF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5FB87FBDA;
 	Tue, 19 Mar 2024 05:51:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710827488; cv=none; b=tGuQ7JLrjw+XUkwQg6kG/WFaPnbo3T/hy40h07Fzy7WMOxsVxmubh6OCjqHF6+0beQcfuKMD7CAMfo9GLdedtbUgkNgDig2AmQHQM7ELDm622E7U+ykKsMHuf+gnKBe6N3kfyoQUh0f7gUGbXbe9aBxs2NAR92iJNkiBEqyzy3o=
+	t=1710827488; cv=none; b=S06hQFiZOLqlYPAoJ/dfqXxEKrnAo2yCGbChRc7sbjiuSST2suJ4tDu0o79noAo97lZcDGvbCdoJqoqZ4NZ45hUp1+igxAFxI+vhTWX4chK6aQk8v0lHWbfkhhjW2XhJhGXtmeN2qxDHHYCZBm0KW8q1Dtj5hohkByRhI/nhOvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710827488; c=relaxed/simple;
-	bh=uJSdghEGLKMsHLGxhc9BRL8wS6WYTQdxoEBPQ8UAYQ0=;
+	bh=QJ4b60uS7SiZLvE/zbDFsQPiZ25HBF3r++1i4MMpgTA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GoHNcoF+GmZjO9h3Iiii7PgUqe3fWH3gykKzeZVTCFHHgFsMgG3oA6u5gB8K9BXCPHRfmFrk/Txzk4gnTgACe/BYT5qI8Ke6CqgU0PaYC+lzzgUgonF3aSVhEP9IemxYTeekYC8WuDjuYSePOWVj0qOdwzxrHrITa3KRgLlupio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hInb/Drm; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=tZT+vrU+pPWOKZcIkctBxT+qFH3K5MoZ+hQzk/6y6DeirJzERi7AE2orKfMA6vMBr6gCYQDbGQeV3hrFhFKtmULC2w5h8C7l0j4Lg23jkPA8BGZ+KwnenAS4pHRmrmn51UE6TcxTiOGk5DSETwTOBj8Q2lM1vx19RnxU0jThwDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PYZ2Wykl; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hInb/Drm"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74F2AC43390;
-	Tue, 19 Mar 2024 05:51:27 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PYZ2Wykl"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16DEFC433B1;
+	Tue, 19 Mar 2024 05:51:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710827487;
-	bh=uJSdghEGLKMsHLGxhc9BRL8wS6WYTQdxoEBPQ8UAYQ0=;
+	s=k20201202; t=1710827488;
+	bh=QJ4b60uS7SiZLvE/zbDFsQPiZ25HBF3r++1i4MMpgTA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hInb/DrmioxpC/1b7/UzJjjH3S6SZXRm5+NvXmMkdpP7JdiNPwPzW/CgECrt99GvY
-	 WmuldXyzJMwtk40n/QQ2ONF2418mBqW7Zw0e7oLN0rkSB254XqIlWXDm0ABEP/OKU1
-	 6NV/YUeVNRoYlNJSYqtTMkii+8SKg338p+T2k8KZgm55W56DJdGSIfI92ByX2KowqZ
-	 M2m4bASKV0mDFFcA8HjVusbUrJ3e+Il9HH66nCq+yr0DerAksUJyT/N/NBzQqyiD6Q
-	 Jfye6q9ShAs8WdQZVBPQswKw1RpDun2pud2Maco9073Hvo9oQSfnUCZuhVWlqeExX6
-	 7zVJjx58hK0FA==
+	b=PYZ2Wyklr7jGA4Sm0WPc83O20209o9s4aDfl3HgrXKIkf2MviUUypU4oFm0vVvDNo
+	 ROSF97my3G2XcFfXGrpEzSo7e5ZLYsqBjN6bPXVoFoWq5BdpkUL1xqCxuioDJRYLCZ
+	 b4++XkS9k+wo+hxW2pjPuVCj95K2pbZ8k5DgBhcLHpW9FdQtVLl4/kdpWmPqfk25Gt
+	 PTjxRV1VFHtMrJ10kNExh8Pce7Ke/loo+J3rDMWcKAjNtBuTzGOk0Q8mmLUl5KKHxJ
+	 nneWuQo9IPtlV5/eJZ7gkFHKLUKl4AhXthVrptZ/iA/WT3p75T53N1kogNdBdSe3XK
+	 kZQfH7bFL2wtA==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>
@@ -40,9 +40,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-toolchains@vger.kernel.org,
 	linux-trace-devel@vger.kernel.org
-Subject: [PATCH 17/23] perf annotate-data: Handle this-cpu variables in kernel
-Date: Mon, 18 Mar 2024 22:51:09 -0700
-Message-ID: <20240319055115.4063940-18-namhyung@kernel.org>
+Subject: [PATCH 18/23] perf annotate-data: Track instructions with a this-cpu variable
+Date: Mon, 18 Mar 2024 22:51:10 -0700
+Message-ID: <20240319055115.4063940-19-namhyung@kernel.org>
 X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
 In-Reply-To: <20240319055115.4063940-1-namhyung@kernel.org>
 References: <20240319055115.4063940-1-namhyung@kernel.org>
@@ -54,103 +54,62 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On x86, the kernel gets the current task using the current macro like
-below:
-
-  #define current  get_current()
-
-  static __always_inline struct task_struct *get_current(void)
-  {
-      return this_cpu_read_stable(pcpu_hot.current_task);
-  }
-
-So it returns the current_task field of struct pcpu_hot which is the
-first member.  On my build, it's located at 0x32940.
-
-  $ nm vmlinux | grep pcpu_hot
-  0000000000032940 D pcpu_hot
-
-And the current macro generates the instructions like below:
-
-  mov  %gs:0x32940, %rcx
-
-So the %gs segment register points to the beginning of the per-cpu
-region of this cpu and it points the variable with a constant.
-
-Let's update the instruction location info to have a segment register
-and handle %gs in kernel to look up a global variable.  Pretend it as
-a global variable by changing the register number to DWARF_REG_PC.
+Like global variables, this per-cpu variables should be tracked
+correctly.  Factor our get_global_var_type() to handle both global
+and per-cpu (for this cpu) variables in the same manner.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/annotate-data.c | 21 +++++++++++++++++++--
- tools/perf/util/annotate.c      |  7 +++++++
- 2 files changed, 26 insertions(+), 2 deletions(-)
+ tools/perf/util/annotate-data.c | 31 ++++++++++++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
 
 diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
-index f5329a78a97d..d57622ddd5d3 100644
+index d57622ddd5d3..48fea0c716ef 100644
 --- a/tools/perf/util/annotate-data.c
 +++ b/tools/perf/util/annotate-data.c
-@@ -790,7 +790,7 @@ static void delete_var_types(struct die_var_type *var_types)
- /* It's at the target address, check if it has a matching type */
- static bool check_matching_type(struct type_state *state,
- 				struct data_loc_info *dloc, int reg,
--				Dwarf_Die *type_die)
-+				Dwarf_Die *cu_die, Dwarf_Die *type_die)
- {
- 	Dwarf_Word size;
- 	u32 insn_offset = dloc->ip - dloc->ms->sym->start;
-@@ -864,6 +864,23 @@ static bool check_matching_type(struct type_state *state,
- 		return true;
+@@ -553,12 +553,41 @@ static void update_insn_state_x86(struct type_state *state,
+ 			fbreg = -1;
  	}
  
-+	if (map__dso(dloc->ms->map)->kernel && arch__is(dloc->arch, "x86")) {
-+		u64 addr;
-+		int offset;
+-	/* Case 1. register to register transfers */
++	/* Case 1. register to register or segment:offset to register transfers */
+ 	if (!src->mem_ref && !dst->mem_ref) {
+ 		if (!has_reg_type(state, dst->reg1))
+ 			return;
+ 
+ 		tsr = &state->regs[dst->reg1];
++		if (map__dso(dloc->ms->map)->kernel &&
++		    src->segment == INSN_SEG_X86_GS && src->imm) {
++			u64 ip = dloc->ms->sym->start + dl->al.offset;
++			u64 var_addr;
++			int offset;
 +
-+		if (dloc->op->segment == INSN_SEG_X86_GS && dloc->op->imm) {
-+			pr_debug_dtp(" this-cpu var\n");
++			/*
++			 * In kernel, %gs points to a per-cpu region for the
++			 * current CPU.  Access with a constant offset should
++			 * be treated as a global variable access.
++			 */
++			var_addr = src->offset;
 +
-+			addr = dloc->op->offset;
-+
-+			if (get_global_var_type(cu_die, dloc, dloc->ip, addr,
-+						&offset, type_die)) {
-+				dloc->type_offset = offset;
-+				return true;
++			if (!get_global_var_type(cu_die, dloc, ip, var_addr,
++						 &offset, &type_die) ||
++			    !die_get_member_type(&type_die, offset, &type_die)) {
++				tsr->ok = false;
++				return;
 +			}
-+		}
-+	}
 +
- 	pr_debug_dtp("\n");
- 	return false;
- }
-@@ -897,7 +914,7 @@ static bool find_data_type_insn(struct data_loc_info *dloc, int reg,
- 
- 			if (this_ip == dloc->ip) {
- 				found = check_matching_type(&state, dloc, reg,
--							    type_die);
-+							    cu_die, type_die);
- 				goto out;
- 			}
- 
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index 3aa3a3b987ad..e4121acb4f88 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -3921,6 +3921,13 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
- 							    op_loc->offset, dl);
- 		}
- 
-+		/* This CPU access in kernel - pretend PC-relative addressing */
-+		if (map__dso(ms->map)->kernel && arch__is(arch, "x86") &&
-+		    op_loc->segment == INSN_SEG_X86_GS && op_loc->imm) {
-+			dloc.var_addr = op_loc->offset;
-+			op_loc->reg1 = DWARF_REG_PC;
++			tsr->type = type_die;
++			tsr->ok = true;
++
++			pr_debug_dtp("mov [%x] this-cpu addr=%#"PRIx64" -> reg%d",
++				     insn_offset, var_addr, dst->reg1);
++			pr_debug_type_name(&tsr->type);
++			return;
 +		}
 +
- 		mem_type = find_data_type(&dloc);
- 		if (mem_type)
- 			istat->good++;
+ 		if (!has_reg_type(state, src->reg1) ||
+ 		    !state->regs[src->reg1].ok) {
+ 			tsr->ok = false;
 -- 
 2.44.0.291.gc1ea87d7ee-goog
 
