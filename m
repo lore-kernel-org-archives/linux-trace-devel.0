@@ -1,42 +1,42 @@
 Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC74C1C0DF1
-	for <linux-trace-devel@vger.kernel.org>; Fri, 29 Mar 2024 13:53:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E8F369DF4
+	for <linux-trace-devel@vger.kernel.org>; Fri, 29 Mar 2024 14:26:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711720440; cv=none; b=uiRk/yYSdprYHgTJn69boBOVboz0L+A2GDgxUoLq7ujvrHYKihNFBlJdN7USg91Fxmtnod4X0GPJ5Bc/7Po7C0ys5vGxWG/gMOPD2uxkqt8DsO39xbNZqDSHQK3M3N3TPPEdetobTyyGc2hFpPTYWXY/QfXDmI30TDkwJQyQy0E=
+	t=1711722409; cv=none; b=dy9orIhCyrHTzsCxqo76kpm7zgGU8XV7VaGd5rxoYORCI7TaANAOi9pE9hotg1jaaJHlwiIETb7hSJPcYstYl041M3bXKmkgoZhDuv7iOrgay6Edtk8fEotatMjjCHpd/g9o5p6YM/9ysWzMcW5h1ZumWoqAZ0LrHq1gg/dQwDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711720440; c=relaxed/simple;
-	bh=zBA9QUYxR0X5gUeLape+DOcPhadGm5qdTNJgDF60n04=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=miGxMlgZUF/1o7ttaYfI9wThHoB1VvuWvbXYtC2y+YJOfoeUphwt99qu6kgTcOQ6ZmQ5Ob1CHlsbR58mFPrL8AgFS6/0mH4xE8Ex+MOeBtXHr/htyQEE8IZi68RleTptZIQBBe2jcYow4J4h0Uk9M9YQqJAeZo3wKpzyMZQi1S8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=H2qNJYAN; arc=none smtp.client-ip=185.125.188.120
+	s=arc-20240116; t=1711722409; c=relaxed/simple;
+	bh=tztx5YyBfw/ruNumCVfVQLfxQiWYrVFfbTvSwpkKi/k=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=L1bicebpCdxOluVSUSdRr1GlfNxzS0Xe3tRSItD9f1shbOWehf0F4QISDgDsu1axcvhEcvc6hVITQBO+67nuukAHxWz3viDFXhOkMhrpwMCNa69PbSb6llp60S3PqRxziY2lFJz7AfjiM/sE9p+74gGKl2EgKSrbOzpy6+Z5krM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=lbsUWyoQ; arc=none smtp.client-ip=185.125.188.120
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="H2qNJYAN"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="lbsUWyoQ"
 Received: from t14.. (unknown [82.66.221.119])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 13C464001E;
-	Fri, 29 Mar 2024 13:53:50 +0000 (UTC)
+	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 909C53F305;
+	Fri, 29 Mar 2024 14:26:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1711720430;
-	bh=YquP0tGjaXgBBdcgBP2U2Os07l9hewUUN1zx6b8Zvtg=;
+	s=20210705; t=1711722405;
+	bh=vhxMmfzlejL/BJcJ55+UzHexOfTzT/2XdIXH5ELLlZ8=;
 	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-	b=H2qNJYANHj/9tRlJ+pc5egVMBhdPXxzISKF/iplViTMGrahNBO/Xi6RPbKxKnIauD
-	 bPtblMJTyDcw/jiRfXamk8kWjVFE9V9PuTpp31EYvUboI6BCeybcYwNENpkR2hKh7+
-	 UAoF2Gkgfj6jR27OukHpDhV8kKTpOkKgVjxcLUA/I1V35WsbyFjhOMr0xTLnjDTb+L
-	 rS7Ed30yA3f3mI4fjKERvkxXMG8/WZJGRpJnmMI0D1cs/H7HNMe66UDAkOJHySs8Fl
-	 9YhEAuYcGStJBti/m6td9Qc0UXhkvA8OHmq/StEOin2GjR8HtoqYcmp7mI957+/2re
-	 JvtP2mpziAe7g==
+	b=lbsUWyoQyhRJAf8s/0tvWm7rxTzFSNC16c1N03p5oVNoxpbWulpoDLVqrUORgPxhj
+	 JNrYJ3EnWQ+5nANKbaOU5yVFJi7De0yBf3eGsMDnm5Re6FhBJ+IlFVPIrc7koJH9gy
+	 0ixRd4rHHv1teQmu6IVsAcZQQv5/0KQuR1io9M24IxDojQttkCKebcTg9LFlsHpWsw
+	 p6yORUJG2zNjhe5g5Px8TmYVv9mMoN/C0R7w3B46m+I3uZhVBisfBNkr77ZCJrsf85
+	 9AQkhHo22luIOSItHvkFsdW2ciZ0qAMV96+v5NrI1w4WPwUuwX+tDYkdJyNSmDSN+Z
+	 ts1fg1zTyLebw==
 From: Paul Mars <paul.mars@canonical.com>
 To: linux-trace-devel@vger.kernel.org
 Cc: Paul Mars <paul.mars@canonical.com>
-Subject: [PATCH] libtraceevent: Make sure unit test binary fails when tests fail
-Date: Fri, 29 Mar 2024 14:53:32 +0100
-Message-Id: <20240329135331.784707-1-paul.mars@canonical.com>
+Subject: [PATCH] libtraceevent: Fix tests running on big endian arch
+Date: Fri, 29 Mar 2024 15:25:45 +0100
+Message-Id: <20240329142544.845408-1-paul.mars@canonical.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -46,28 +46,41 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If tests in the trace-utest binary fails, it returns 0 anyway.
+Tests running on big endian arch (tested on s390x) where failing due to:
 
-So now make sure failing tests will be easily detected by returning 1.
+- a typo in CPUMASK_BYTEPN.
+- a missing call to tep_set_file_bigendian when initializing the test
+  suite.
+
+Thanks to Mate Kukri <mate.kukri@canonical.com>.
+
 ---
- utest/trace-utest.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ utest/traceevent-utest.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/utest/trace-utest.c b/utest/trace-utest.c
-index a26e42e..a0a45db 100644
---- a/utest/trace-utest.c
-+++ b/utest/trace-utest.c
-@@ -82,6 +82,10 @@ int main(int argc, char **argv)
+diff --git a/utest/traceevent-utest.c b/utest/traceevent-utest.c
+index 041843e..b95e478 100644
+--- a/utest/traceevent-utest.c
++++ b/utest/traceevent-utest.c
+@@ -216,7 +216,7 @@ DECL_CPUMASK_EVENT_DATA(bytep2, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x01);
+ #define CPUMASK_BYTEP2_FMT "cpumask=0,23"
  
- 	CU_basic_set_mode(verbose);
- 	CU_basic_run_tests();
-+	int failed_tests = CU_get_number_of_tests_failed();
- 	CU_cleanup_registry();
-+	if (failed_tests != 0){
-+		return 1;
-+	}
+ DECL_CPUMASK_EVENT_DATA(bytepn, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01);
+-#define CPUMASK_BYTEPN     "ARRAY[80, 00, 00, 00, 00, 00, 80, 01]"
++#define CPUMASK_BYTEPN     "ARRAY[80, 00, 00, 00, 00, 00, 00, 01]"
+ #define CPUMASK_BYTEPN_FMT "cpumask=0,63"
+ #endif
+ 
+@@ -392,6 +392,9 @@ static int test_suite_init(void)
+ 	test_tep = tep_alloc();
+ 	if (!test_tep)
+ 		return 1;
++#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
++	tep_set_file_bigendian(test_tep, TEP_BIG_ENDIAN);
++#endif
  	return 0;
  }
+ 
 -- 
 2.34.1
 
