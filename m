@@ -1,77 +1,91 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 292A02EAE6
-	for <linux-trace-devel@vger.kernel.org>; Mon, 15 Apr 2024 08:26:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A175029414
+	for <linux-trace-devel@vger.kernel.org>; Mon, 15 Apr 2024 15:49:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713169595; cv=none; b=P8+zCQq9kze8W9RiMUOtF+/L/tHT2NzJmEtJlrr55ykjylzq93xPXy/7jeIsohy1mPCTMeUTf7NPyAwJTg0BQuOMeEs5+OiOCblQ8GApSydkG7ZcIs/jKxKd8uNuf64FzZsfWE1yh86Rpk5h5YharqVt0h7y3tiWN9Jda4H9/lw=
+	t=1713196168; cv=none; b=u1zmT0duJm4MeOj2i6NwQINS1XyE7rSpz62EwRG2v/uDON68ISeJqQyjejPxlo7nIeYREoDFldEy92XbThaaHCBfXrxQkv8h9bARdL6vOE2qw6M2TpA3VOWIGTkYiEc4mUt7NIv0GhTsxNewGvkQf2BdRLH6qu7mHcgz/2l0TBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713169595; c=relaxed/simple;
-	bh=+1nIMw2cLF3uSlve7jKFHqdrmlwgIfUY+eSeggWuD5E=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=mO3FR1yPv7fab24wtUCOk3RMOtpfO1K6eJyA2Ey99GXodWhcucTMqn62NWvS7/W5rUXw20GtsAcow5gxYfBFYuUTxdk0YQKjnp/CThgmxEvKa1oJqqxsOC9k/DDvEpF5p/cgPkkw7vUSBLBIU0JeXBgkfudW3oL7EtcV5bCCRLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4604BC113CC;
-	Mon, 15 Apr 2024 08:26:34 +0000 (UTC)
-Date: Mon, 15 Apr 2024 04:26:31 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Subject: [PATCH] libtraceevent: Have single quotes represent characters
-Message-ID: <20240415042631.6310d78b@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713196168; c=relaxed/simple;
+	bh=R6ICAp9NHL7rJCpEuP7u1h5JlmUWMAcRn9Z98CFa74k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gtqyOKS93BL+cMCpJTWXl7WaGCyMPvZkX/9IERwWh9xJc2t1J5Zh04bIxSfQA+/LG+Wb1rEaEp6z/ZC3MDPbKi0MQKzWftZM+5Sk8BeB9ascri0yfy1HMXsudSfGQIPguT/Qp0FuAZeFSiQ5Qz+BvFmyC7vsY4CjwVtTBmKEH8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ik8U3XRw; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ik8U3XRw"
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43FDY8vD006603;
+	Mon, 15 Apr 2024 15:49:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=EBKRX3nWhaTSfnx9IQYYl0ecSQ1/i49tshvXS8Yw5kI=;
+ b=ik8U3XRwAbd8YgRHbKHpx5iOOw5qBy/X6mYzZWpk+JfXJwaKcXn39+ZfAfZXa60lCQ18
+ 5iuC1Ik408tPg2Rj7y9YkV1BEYo6TCuGUcgIPLPkR32zkCihAXXYXffOgms8Cq0TyoVI
+ 6ojGnNxN2bgjCp2HTEQJGTfOA1O1hR9yYXCUkLKIJZkxVfad1mdVxAK4hGzlUSjX+/0M
+ 2gwe8+EzV78wzl9OqfduEXiQ+NKjUS9mqjymo4jm5RG/wmKi2zoquVnJstCgsdyY6lqF
+ bbogQ8cc0wXLTWNUnWkyOdqYUN2mgyzlosUmeJEefP3R7f+7kCMbOoqw/be7qzeE3iEu MQ== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xfgffb5n0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 15 Apr 2024 15:49:24 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43FEpQxj012545;
+	Mon, 15 Apr 2024 15:49:23 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xgkwdu23w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 15 Apr 2024 15:49:23 +0000
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43FFnMuR028510;
+	Mon, 15 Apr 2024 15:49:22 GMT
+Received: from jfwang-mac.us.oracle.com (dhcp-10-65-136-194.vpn.oracle.com [10.65.136.194])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3xgkwdu238-1;
+	Mon, 15 Apr 2024 15:49:22 +0000
+From: Jianfeng Wang <jianfeng.w.wang@oracle.com>
+To: linux-trace-devel@vger.kernel.org
+Cc: rostedt@goodmis.org, jianfeng.w.wang@oracle.com
+Subject: [PATCH 0/2] trace-cmd ftrace: support function retval feature in function_graph
+Date: Mon, 15 Apr 2024 08:49:19 -0700
+Message-ID: <20240415154921.4998-1-jianfeng.w.wang@oracle.com>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-15_12,2024-04-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ suspectscore=0 adultscore=0 phishscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2404150103
+X-Proofpoint-ORIG-GUID: ag8drr1nszgXYa58Cb1-yqMsPQ2hQirh
+X-Proofpoint-GUID: ag8drr1nszgXYa58Cb1-yqMsPQ2hQirh
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+The upstream Linux kernel has introduced a funcgraph retval
+feature for the function_graph tracer. (Commit ID:
+a1be9ccc57f07d54278be34eed6bd679bc941c97). This feature can be
+useful for debugging kernel problems, such as root cause
+analysis for syscall errors.
 
-In parsing the print fmt parameters, the code currently treats both single
-and double quotes the same. But they are not. Double quotes represent
-strings and single quotes represent characters.
+This patch series is to utilize this feature to support
+printing each function's return value in 'trace-cmd report'.
+The default is off. Add a ftrace internal option so that
+users can turn this feature on if they'd like to request for
+the retval information in the function_graph tracer.
 
-A character could be used as a number as well, so it needs to be treated
-as such.
+Jianfeng Wang (2):
+  trace-cmd ftrace: print function retval in function_graph
+  trace-cmd: Add ftrace options with fgraph retval option
 
-Link: https://lore.kernel.org/all/20240315174900.14418f22@booty/
+ lib/trace-cmd/trace-ftrace.c | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-Fixes: 6582b0aea1cc ("tools/events: Add files to create libtraceevent.a")
-Reported-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- src/event-parse.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/src/event-parse.c b/src/event-parse.c
-index d607556ea1a9..61b09662f28f 100644
---- a/src/event-parse.c
-+++ b/src/event-parse.c
-@@ -3732,8 +3732,19 @@ process_arg_token(struct tep_event *event, struct tep_print_arg *arg,
- 		arg->atom.atom = atom;
- 		break;
- 
--	case TEP_EVENT_DQUOTE:
- 	case TEP_EVENT_SQUOTE:
-+		arg->type = TEP_PRINT_ATOM;
-+		/* Make characters into numbers */
-+		if (asprintf(&arg->atom.atom, "%d", token[0]) < 0) {
-+			free_token(token);
-+			*tok = NULL;
-+			arg->atom.atom = NULL;
-+			return TEP_EVENT_ERROR;
-+		}
-+		free_token(token);
-+		type = read_token_item(event->tep, &token);
-+		break;
-+	case TEP_EVENT_DQUOTE:
- 		arg->type = TEP_PRINT_ATOM;
- 		arg->atom.atom = token;
- 		type = read_token_item(event->tep, &token);
 -- 
-2.43.0
+2.42.1
 
