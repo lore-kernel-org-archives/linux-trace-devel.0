@@ -1,139 +1,194 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBE7E131192;
-	Fri, 10 May 2024 08:10:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3614E17556D;
+	Fri, 10 May 2024 16:26:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715328651; cv=none; b=orNP6AtHHKL7uDRaHLBrmmGUVj7fn7WpET0yFV2KvFqxZewppAafUNu8Til6bmMh4DA14ff1YZuOP/7iVl6o7g+IZ8fxAtpxF+yx1bzlXqTf07TzABtqPqVPj9maO4pIV5OzRlFvOjsLtonICdsIzNU2SxCtQAB2ypG1V/W5FBI=
+	t=1715358401; cv=none; b=J4Bd9ggDvIp51+YWVRq+/2HbnSph0tRURB7wwBdogU34Jliff85zIBgo28fLbFVht0J3JODla9DF/+ypEZ5mk7jOHp+ddszApFZuz8j4Oq9o3LgdWQAxB65gPkU3xB6FNkiiF7G+7LLvtUa1Z9RMiPBD0g8iD/dbSKzo0GPVTvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715328651; c=relaxed/simple;
-	bh=ssf9Iev4stgbN7TAdwZopVFc09VyaC1stjJzZv6XHi8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
-	 In-Reply-To:Content-Type; b=EbHNmkjzr3DlQzUAa7zALFABUSxNWuWEXTjGU5aMP+2XBa1I5MqBBcTAdeGEZ7Zgb2U3yxUiyVl2kXZHV6NYGvS3fjvVkDkFdPmrHAmbNLrdlkp0xseMje+OtzmMzsmwgZ3OXbSSfbJ4E4XWBJg0c4fMCHfgj+UhcT+znpuu4R4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tVZ9F3Gr; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1715358401; c=relaxed/simple;
+	bh=oonXHbg2KhBW9RZ+Rvo2vSdZHQiB0Wn1HguIuEl89Wg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=T9zb8PK5gBDrINAvwPc0ou0w1puHaQd36bMC8sRNBAsNksIZsQkAJ4vb5kmRt0Cm4yhk4Yl/3FxZBsmnQVhK0ljqpOb7Qk7N/kKGNbxpQ6xldi0y2WiRSNGGQAOpTM5z2sQL/hZg68ztZcGjlv/OT/nuRj6uBbDzHLLrvH2hi4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RaE2QnwU; arc=none smtp.client-ip=209.85.222.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tVZ9F3Gr"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8184C113CC;
-	Fri, 10 May 2024 08:10:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715328651;
-	bh=ssf9Iev4stgbN7TAdwZopVFc09VyaC1stjJzZv6XHi8=;
-	h=Date:Subject:To:References:From:Cc:In-Reply-To:From;
-	b=tVZ9F3Grp/f0quLHZq8e5wKEvMEIANtDPBzPn3iGEeocJHnT4tC4FB+7Y2waDQDsi
-	 NMAeydiMdfeT5/FbUA3v2sKWm3182DekxVbSer/5lcmJPxjyu1VUqMp89WgIUv5jO3
-	 2FKcJpoZMgwLZ8gdGb7ttA07Vyq26S6xlKOEGGk0fUo/zUjjRkhnEmPvom259BNDCe
-	 dzSMai9vqfVERa2WP9251MTlMBeeRY7LWFJdT6bqHno2m3FMCPiB6VDFq6KXa/NPk6
-	 dWOVGHmes4x8Op9RW9J/uDoa77xXdTEqgEFDkcVDsn9XmFw/CKkqIBXgLIpi9H1d1I
-	 hoKxVuiY0/63A==
-Message-ID: <bb4232d6-2387-425f-9b10-811163e74329@kernel.org>
-Date: Fri, 10 May 2024 10:10:48 +0200
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RaE2QnwU"
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-792b934de39so174301685a.3;
+        Fri, 10 May 2024 09:26:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1715358399; x=1715963199; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rz28DuNSZQjFl8RAwmtdo8KD28yac4guG+V7e+ZRJ4s=;
+        b=RaE2QnwUSnNe5kBSJRUTQEbVdQd79wlLOkfPFKLk3jl+Z0wigNlBgITT9W0Mkp4SCE
+         KVId5z/RoyUfaZ6ynFSdQEhr2wwjmaudHLvXJ5uG1HD5zRHNelDddxFrVgDHB9pymW+I
+         nl9KogyTkGz5o4FZPgrg1VDamlge/A9icGblYVc6WEMTrgJ1SUeUBFzKwKtV8sPLzXm4
+         ioU8HaTMk8VFHWxjUGnQAmf9Vscxyv+zz9ovT++b426CtT60KHrddmj6RIW/5+QJPxgA
+         WF78NGk2d9tjX7iPXrc73mXYhrKyA2MY8zM+Nvz2p0dtF2Z/oMQLjBpPr3ccfyEXosPd
+         mpTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715358399; x=1715963199;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Rz28DuNSZQjFl8RAwmtdo8KD28yac4guG+V7e+ZRJ4s=;
+        b=tpeGZedWrKmUs/6C2yq6/ISmwNAZXt/eYMjVVCaHhRTeBf5Cqu9lEzD3UXjZUhpLAR
+         ltfWpD0YZln2ZGq+ktm1cXdQa25/Z6Y2FboorkgNZuQnoc5j5k6McFA9S4BgBsOdylnZ
+         ORyJApqJA9h72A+9Yy+dY2O0YSh339ultlyKv15lJgmW+SmvdLqwzDKbZNSZCTWxroh6
+         O4UsUSI4kYvdPExm6JT6wmLWZjRa/2UGzkJ6/VDy3y0TBqvrtVEHZu9bWs1L7TI8aon6
+         hKwjGVKx5t3N3r9bR7qQvM+aKVOeQ56NHYBFuGSpcuRcdsgdbHvFXhJU0+MRoDRpOSO/
+         /0RQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVLtWZFCv6r53pt3xTFN3FCXmNWuheskWybMR+Mr5szKmHBQ+pA99Uv8Jk0KoN6g7+uncsH4VCGxbzTOVGX9sQfOdzY5lNfAe87gSY8J4Wmy5N5ho5Nw4XhTezSYB1auaAl5Vl0N7XmsYw=
+X-Gm-Message-State: AOJu0YykBZRfhFL5pEhgKUKejwrXZFli9hY96QDSUSis5g0lHz/2ysp9
+	3gLR2W3D3fMfJB2LPH/1TlOuVcjdvZabMr57Z27rmEHx+C29qs3Fijerjg==
+X-Google-Smtp-Source: AGHT+IFeJTPzixcTATWsrxoXajVTKdM3YJfH2cngx4/IBf6scasq3GLmbYBrpTEio3usBbWVItGNVg==
+X-Received: by 2002:a05:620a:e88:b0:790:c7f6:595f with SMTP id af79cd13be357-792c7574885mr297066285a.12.1715358399065;
+        Fri, 10 May 2024 09:26:39 -0700 (PDT)
+Received: from localhost.localdomain (bras-base-rdwyon0600w-grc-16-74-12-5-183.dsl.bell.ca. [74.12.5.183])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-792bf275b07sm194853985a.24.2024.05.10.09.26.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 May 2024 09:26:38 -0700 (PDT)
+Sender: John Kacur <jkacur@gmail.com>
+From: John Kacur <jkacur@redhat.com>
+To: Daniel Bristot de Oliveria <bristot@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	linux-trace-devel@vger.kernel.org
+Cc: lkml <linux-kernel@vger.kernel.org>,
+	stable@vger.kernel.org,
+	John Kacur <jkacur@redhat.com>
+Subject: [PATCH] Fix reporting when a cpu count is 0
+Date: Fri, 10 May 2024 12:26:05 -0400
+Message-ID: <20240510162605.28050-1-jkacur@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] rtla: Fix -t/--trace[=file]
-To: John Kacur <jkacur@redhat.com>
-References: <20240508212155.71946-1-jkacur@redhat.com>
-Content-Language: en-US, pt-BR, it-IT
-From: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, linux-trace-devel@vger.kernel.org,
- lkml <linux-kernel@vger.kernel.org>
-In-Reply-To: <20240508212155.71946-1-jkacur@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 5/8/24 23:21, John Kacur wrote:
-> Normally with a short option we don't provide an equals sign like this
-> -tfile.txt
-> -t file.txt
-> 
-> But we do provide an equals sign with the long option like this
-> --trace=file.txt
-> 
-> Also, a good parser should work with a space instead of an equals sign
-> --trace file.txt
-> 
-> Most of these are broken!
+On short runs it is possible to get no samples on a cpu, like this
 
-So, it is set to work _only_ with =file. It would be better to have
-it more robust... yes.
+rtla timerlat hist -P f:95 -u -c0-11 -E3500 -T50'
 
-> ./rtla timerlat hist -P f:95 -u -c0-11 -E3500 -T50 -tfile.txt
-> Saving trace to ile.txt
-> File name truncated
-> 
-> ./rtla timerlat hist -P f:95 -u -c0-11 -E3500 -T50 -t file.txt
-> Saving trace to timerlat_trace.txt
-> Default file name used instead of the requested one.
-> 
-> ./rtla timerlat hist -P f:95 -u -c0-11 -E3500 -T50 -t=file.txt
-> Saving trace to file.txt
-> This works, but people normally don't use '=' with a short option
-> 
-> /rtla timerlat hist -P f:95 -u -c0-11 -E3500 -T50 --trace=file.txt
-> Saving trace to ile.txt
-> File name truncated
-> 
-> ./rtla timerlat hist -P f:95 -u -c0-11 -E3500 -T50 --trace file.txt
-> timerlat_trace.txt
-> Default file name used instead of the requested one.
-> 
-> After the fix
-> 
-> ./rtla timerlat hist -P f:95 -u -c0-11 -E3500 -T50 -tfile.txt
-> Saving trace to file.txt
-> 
-> ./rtla timerlat hist -P f:95 -u -c0-11 -E3500 -T50 -t file.txt
-> Saving trace to file.txt
-> 
-> ./rtla timerlat hist -P f:95 -u -c0-11 -E3500 -T50 -t=file.txt
-> Saving trace to file.txt
-> 
-> ./rtla timerlat hist -P f:95 -u -c0-11 -E3500 -T50 --trace=file.txt
-> Saving trace to file.txt
-> 
-> ./rtla timerlat hist -P f:95 -u -c0-11 -E3500 -T50 --trace file.txt
-> Saving trace to file.txt
-> 
-> I also tested -t and --trace without providing a file name both as the
-> last requested option and with a following long and short option
-> 
-> For example
-> 
-> ./rtla timerlat hist -P f:95 -u -c0-11 -E3500 -T50 -t -u
-> ./rtla timerlat hist -P f:95 -u -c0-11 -E3500 -T50 --trace -u
-> ./rtla timerlat hist -P f:95 -u -c0-11 -E3500 -T50 -t
-> ./rtla timerlat hist -P f:95 -u -c0-11 -E3500 -T50 --trace
-> 
-> And all correctly do Saving trace to timerlat_trace.txt as expected
-> 
-> This fix is applied to both timerlat top and hist
-> and to osnoise top and hist.
+Index   IRQ-001   Thr-001   Usr-001   IRQ-002   Thr-002   Usr-002
+2             1         0         0         0         0         0
+33            0         1         0         0         0         0
+36            0         0         1         0         0         0
+49            0         0         0         1         0         0
+52            0         0         0         0         1         0
+over:         0         0         0         0         0         0
+count:        1         1         1         1         1         0
+min:          2        33        36        49        52 18446744073709551615
+avg:          2        33        36        49        52         -
+max:          2        33        36        49        52         0
+rtla timerlat hit stop tracing
+  IRQ handler delay:		(exit from idle)	    48.21 us (91.09 %)
+  IRQ latency:						    49.11 us
+  Timerlat IRQ duration:				     2.17 us (4.09 %)
+  Blocking thread:					     1.01 us (1.90 %)
+	               swapper/2:0        		     1.01 us
+------------------------------------------------------------------------
+  Thread latency:					    52.93 us (100%)Max timerlat IRQ latency from idle: 49.11 us in cpu 2
 
-Ok, code wise it is fine. But it is still missing the changes for the --help
-messages and man pages. Would you mind addressing them?
+Note, the value 18446744073709551615 is the same as ~0
+Fix this by reporting no results for the min, avg and max if the count
+is 0
 
-For instance, removing the need for the =...
+This solution came from Daniel Bristot de Oliveria <bristot@kernel.org>
 
-s/
--t/--trace[=file]: save the stopped trace to [file|timerlat_trace.txt]
-/
--t/--trace [file]: save the stopped trace to [file|timerlat_trace.txt]
-/
+Fixes: 1eeb6328e8b3 ("rtla/timerlat: Add timerlat hist mode")
+Tested-by: John Kacur <jkacur@redhat.com>
+Signed-off-by: John Kacur <jkacur@redhat.com>
+---
+ tools/tracing/rtla/src/timerlat_hist.c | 60 ++++++++++++++++++--------
+ 1 file changed, 42 insertions(+), 18 deletions(-)
 
-Also, for the man page we will have to move the -t option from common_options.rst
-to common_timerlat_options.rst and common_osnoise_options.rst to fix this in
-man rtla-timerlat-top:
-
-       -t, --trace[=file]
-          Save the stopped trace to [file|osnoise_trace.txt].
-
-(it is pointing to the wrong file)
-
-Thanks!
--- Daniel
+diff --git a/tools/tracing/rtla/src/timerlat_hist.c b/tools/tracing/rtla/src/timerlat_hist.c
+index 8bd51aab6513..5b869caed10d 100644
+--- a/tools/tracing/rtla/src/timerlat_hist.c
++++ b/tools/tracing/rtla/src/timerlat_hist.c
+@@ -324,17 +324,29 @@ timerlat_print_summary(struct timerlat_hist_params *params,
+ 		if (!data->hist[cpu].irq_count && !data->hist[cpu].thread_count)
+ 			continue;
+ 
+-		if (!params->no_irq)
+-			trace_seq_printf(trace->seq, "%9llu ",
+-					data->hist[cpu].min_irq);
++		if (!params->no_irq) {
++			if (data->hist[cpu].irq_count)
++				trace_seq_printf(trace->seq, "%9llu ",
++						data->hist[cpu].min_irq);
++			else
++				trace_seq_printf(trace->seq, "        - ");
++		}
+ 
+-		if (!params->no_thread)
+-			trace_seq_printf(trace->seq, "%9llu ",
+-					data->hist[cpu].min_thread);
++		if (!params->no_thread) {
++			if (data->hist[cpu].thread_count)
++				trace_seq_printf(trace->seq, "%9llu ",
++						data->hist[cpu].min_thread);
++			else
++				trace_seq_printf(trace->seq, "        - ");
++		}
+ 
+-		if (params->user_hist)
+-			trace_seq_printf(trace->seq, "%9llu ",
+-					data->hist[cpu].min_user);
++		if (params->user_hist) {
++			if (data->hist[cpu].user_count)
++				trace_seq_printf(trace->seq, "%9llu ",
++						data->hist[cpu].min_user);
++			else
++				trace_seq_printf(trace->seq, "        - ");
++		}
+ 	}
+ 	trace_seq_printf(trace->seq, "\n");
+ 
+@@ -384,17 +396,29 @@ timerlat_print_summary(struct timerlat_hist_params *params,
+ 		if (!data->hist[cpu].irq_count && !data->hist[cpu].thread_count)
+ 			continue;
+ 
+-		if (!params->no_irq)
+-			trace_seq_printf(trace->seq, "%9llu ",
+-					data->hist[cpu].max_irq);
++		if (!params->no_irq) {
++			if (data->hist[cpu].irq_count)
++				trace_seq_printf(trace->seq, "%9llu ",
++						 data->hist[cpu].max_irq);
++			else
++				trace_seq_printf(trace->seq, "        - ");
++		}
+ 
+-		if (!params->no_thread)
+-			trace_seq_printf(trace->seq, "%9llu ",
+-					data->hist[cpu].max_thread);
++		if (!params->no_thread) {
++			if (data->hist[cpu].thread_count)
++				trace_seq_printf(trace->seq, "%9llu ",
++						data->hist[cpu].max_thread);
++			else
++				trace_seq_printf(trace->seq, "        - ");
++		}
+ 
+-		if (params->user_hist)
+-			trace_seq_printf(trace->seq, "%9llu ",
+-					data->hist[cpu].max_user);
++		if (params->user_hist) {
++			if (data->hist[cpu].user_count)
++				trace_seq_printf(trace->seq, "%9llu ",
++						data->hist[cpu].max_user);
++			else
++				trace_seq_printf(trace->seq, "        - ");
++		}
+ 	}
+ 	trace_seq_printf(trace->seq, "\n");
+ 	trace_seq_do_printf(trace->seq);
+-- 
+2.44.0
 
