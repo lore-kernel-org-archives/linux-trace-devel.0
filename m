@@ -1,55 +1,55 @@
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3614E17556D;
-	Fri, 10 May 2024 16:26:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C8693D968;
+	Fri, 10 May 2024 19:03:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715358401; cv=none; b=J4Bd9ggDvIp51+YWVRq+/2HbnSph0tRURB7wwBdogU34Jliff85zIBgo28fLbFVht0J3JODla9DF/+ypEZ5mk7jOHp+ddszApFZuz8j4Oq9o3LgdWQAxB65gPkU3xB6FNkiiF7G+7LLvtUa1Z9RMiPBD0g8iD/dbSKzo0GPVTvI=
+	t=1715367834; cv=none; b=c0nEgWUbjRTqYTxbCJ61guZ/c6tW9BhyABKsHsFG912vYll0ZUitsfasmk87otUcwj9OcEhK7so3yyGnEVZ/sEuQea13jt0dTUCvgniWgQYOgICXPGUXKX8tOPosd5FUwdRbxwt6Hckh9BofBhEzo4+LCisVk9a0NNIegd3QJOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715358401; c=relaxed/simple;
-	bh=oonXHbg2KhBW9RZ+Rvo2vSdZHQiB0Wn1HguIuEl89Wg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=T9zb8PK5gBDrINAvwPc0ou0w1puHaQd36bMC8sRNBAsNksIZsQkAJ4vb5kmRt0Cm4yhk4Yl/3FxZBsmnQVhK0ljqpOb7Qk7N/kKGNbxpQ6xldi0y2WiRSNGGQAOpTM5z2sQL/hZg68ztZcGjlv/OT/nuRj6uBbDzHLLrvH2hi4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RaE2QnwU; arc=none smtp.client-ip=209.85.222.180
+	s=arc-20240116; t=1715367834; c=relaxed/simple;
+	bh=Y4vh2N4jqljg2BMvNoIwwrVvViw9wRY1YxdZzay6vbI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UGUdV9cDlhf9FzeK8SOiryUTAErJQn6H3BnP+Czl9t1NlQPtTsYB+sVJvEaV31H4y3x8RIX0FCD7eGigYnVmzhKsm8CxTHjqx+Lnl2++YmiET5g6mrCglYZA/ihc3Hp+OqFta2gK7faWmoDJA4mMldXUx5eQjORalQ+wIjzzppg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LQ4n766e; arc=none smtp.client-ip=209.85.160.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RaE2QnwU"
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-792b934de39so174301685a.3;
-        Fri, 10 May 2024 09:26:39 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LQ4n766e"
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-434c695ec3dso13729981cf.0;
+        Fri, 10 May 2024 12:03:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715358399; x=1715963199; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1715367831; x=1715972631; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rz28DuNSZQjFl8RAwmtdo8KD28yac4guG+V7e+ZRJ4s=;
-        b=RaE2QnwUSnNe5kBSJRUTQEbVdQd79wlLOkfPFKLk3jl+Z0wigNlBgITT9W0Mkp4SCE
-         KVId5z/RoyUfaZ6ynFSdQEhr2wwjmaudHLvXJ5uG1HD5zRHNelDddxFrVgDHB9pymW+I
-         nl9KogyTkGz5o4FZPgrg1VDamlge/A9icGblYVc6WEMTrgJ1SUeUBFzKwKtV8sPLzXm4
-         ioU8HaTMk8VFHWxjUGnQAmf9Vscxyv+zz9ovT++b426CtT60KHrddmj6RIW/5+QJPxgA
-         WF78NGk2d9tjX7iPXrc73mXYhrKyA2MY8zM+Nvz2p0dtF2Z/oMQLjBpPr3ccfyEXosPd
-         mpTQ==
+        bh=RpKObjyoYGAzF55h49XjF90ue0R++WjDXWQv+BTMvTc=;
+        b=LQ4n766eK+SK8MFsve2S4CDiE1A01q2aapi7cmshDMIeDdqX9iTKXM/8Vg+IR0PDy4
+         EQ8fKdxxZJbbsAqr9HbMay/j/mpRPF0G5MPYP8I0Sfql3cU+drCIzcwpCJIl3YFkZvDL
+         MiBaag9f1XvH5lhrhJlbmbNelIUiaT+OZroCwSau5GSfiPAhSYKd6jdhcLtZfotP+9iB
+         uQDvjEidUtaIDd1Hcn8gDF2n3Bcr/ri93V9/T6asgeviEPSmDkfmoBIE+5IEMD7R9Xj4
+         avK9qyGHNJrApy72tLW3VC1RCY0oaj9R0w/Mn4kzS+HEDyW276Nq5mEMUAQOCTeoBEK/
+         +UnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715358399; x=1715963199;
+        d=1e100.net; s=20230601; t=1715367831; x=1715972631;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:sender:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Rz28DuNSZQjFl8RAwmtdo8KD28yac4guG+V7e+ZRJ4s=;
-        b=tpeGZedWrKmUs/6C2yq6/ISmwNAZXt/eYMjVVCaHhRTeBf5Cqu9lEzD3UXjZUhpLAR
-         ltfWpD0YZln2ZGq+ktm1cXdQa25/Z6Y2FboorkgNZuQnoc5j5k6McFA9S4BgBsOdylnZ
-         ORyJApqJA9h72A+9Yy+dY2O0YSh339ultlyKv15lJgmW+SmvdLqwzDKbZNSZCTWxroh6
-         O4UsUSI4kYvdPExm6JT6wmLWZjRa/2UGzkJ6/VDy3y0TBqvrtVEHZu9bWs1L7TI8aon6
-         hKwjGVKx5t3N3r9bR7qQvM+aKVOeQ56NHYBFuGSpcuRcdsgdbHvFXhJU0+MRoDRpOSO/
-         /0RQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVLtWZFCv6r53pt3xTFN3FCXmNWuheskWybMR+Mr5szKmHBQ+pA99Uv8Jk0KoN6g7+uncsH4VCGxbzTOVGX9sQfOdzY5lNfAe87gSY8J4Wmy5N5ho5Nw4XhTezSYB1auaAl5Vl0N7XmsYw=
-X-Gm-Message-State: AOJu0YykBZRfhFL5pEhgKUKejwrXZFli9hY96QDSUSis5g0lHz/2ysp9
-	3gLR2W3D3fMfJB2LPH/1TlOuVcjdvZabMr57Z27rmEHx+C29qs3Fijerjg==
-X-Google-Smtp-Source: AGHT+IFeJTPzixcTATWsrxoXajVTKdM3YJfH2cngx4/IBf6scasq3GLmbYBrpTEio3usBbWVItGNVg==
-X-Received: by 2002:a05:620a:e88:b0:790:c7f6:595f with SMTP id af79cd13be357-792c7574885mr297066285a.12.1715358399065;
-        Fri, 10 May 2024 09:26:39 -0700 (PDT)
+        bh=RpKObjyoYGAzF55h49XjF90ue0R++WjDXWQv+BTMvTc=;
+        b=nabrRji2lXwganR/08u105duSL3UxBfyHNzGwgT8E6sA2ibk7J4A89XCNJFDv+VOMO
+         P2uvbBvvMNskjgtpaq2CkTJtnH/Df9VfHwAeqXV3KjP3jveNj+L+e+/TX+tMMwY/JwTu
+         x229m3VW9KcchrgCLKoacdEJxscFDEb/IJsm/1o2az5ZYQENvJhi2fK8F1EqWVCa40vD
+         1vRwOqkfTekUi+2GNr+bWt9/kND+RxlgrNHivyWtPuF8dT2oaokb1T1tWDaVrNQqaXaz
+         JVZPh9Ebc9w2+MOrsZPCMw2Yrj3ZZskPoQhvhXjrtx1WJg3eV9hQeZJSmU2ZbhZKvFfr
+         Bzbw==
+X-Forwarded-Encrypted: i=1; AJvYcCVPho3j1T1N5TyAh8pledcYSVI8yUjg3ZVGIBjJpBU/oORHQEORiK9OTk1GrA+6CDKAqKsxkHXj7bch385DzJOI/3UTaR+3drVpiYNENQBq2+ylPml5nRX53umnJRP16AN3UqpEk+izwaE=
+X-Gm-Message-State: AOJu0YxFsWfsTHYy2/qYEHgpz7x+DJCMpTkReoJPHYiea+NQC9i8+Iqk
+	NWlZdCWfJTexRkAuJKpQCEL7ZzIYF5uOwLwZk8+35jExhu7zqKoi
+X-Google-Smtp-Source: AGHT+IGnp0V9aDjqW2gQ1mmfcrtzBJcGOxcOWJpsBmWOddvm2DRQg8j8lUOoD7prJ1kBNLxYC5+ffg==
+X-Received: by 2002:a05:622a:4d1:b0:43a:ea67:fe91 with SMTP id d75a77b69052e-43dfdb7ff7amr30680151cf.52.1715367831535;
+        Fri, 10 May 2024 12:03:51 -0700 (PDT)
 Received: from localhost.localdomain (bras-base-rdwyon0600w-grc-16-74-12-5-183.dsl.bell.ca. [74.12.5.183])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-792bf275b07sm194853985a.24.2024.05.10.09.26.38
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-43e069a24basm4962671cf.67.2024.05.10.12.03.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 May 2024 09:26:38 -0700 (PDT)
+        Fri, 10 May 2024 12:03:51 -0700 (PDT)
 Sender: John Kacur <jkacur@gmail.com>
 From: John Kacur <jkacur@redhat.com>
 To: Daniel Bristot de Oliveria <bristot@kernel.org>,
@@ -58,9 +58,9 @@ To: Daniel Bristot de Oliveria <bristot@kernel.org>,
 Cc: lkml <linux-kernel@vger.kernel.org>,
 	stable@vger.kernel.org,
 	John Kacur <jkacur@redhat.com>
-Subject: [PATCH] Fix reporting when a cpu count is 0
-Date: Fri, 10 May 2024 12:26:05 -0400
-Message-ID: <20240510162605.28050-1-jkacur@redhat.com>
+Subject: [PATCH] rtla: Fix reporting when a cpu count is 0
+Date: Fri, 10 May 2024 15:03:18 -0400
+Message-ID: <20240510190318.44295-1-jkacur@redhat.com>
 X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -101,6 +101,7 @@ is 0
 This solution came from Daniel Bristot de Oliveria <bristot@kernel.org>
 
 Fixes: 1eeb6328e8b3 ("rtla/timerlat: Add timerlat hist mode")
+Cc: stable@vger.kernel.org
 Tested-by: John Kacur <jkacur@redhat.com>
 Signed-off-by: John Kacur <jkacur@redhat.com>
 ---
