@@ -1,95 +1,59 @@
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AF9A15820F
-	for <linux-trace-devel@vger.kernel.org>; Thu, 16 May 2024 22:09:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62DC72837B
+	for <linux-trace-devel@vger.kernel.org>; Thu, 16 May 2024 23:51:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715897394; cv=none; b=g5JrurUUp6bnceR24BLAWm0OstMTZ1KKXCQiWEmxQkHgUSqWQ6gdfFELeZpMDEonfZN/pr2wo5Nu8FVcTrHqOxVxzOMHzLl3fmTno9A7BTH0KCtQ1w/lL9yatjEsCxgV7nHok5GBGL5ecLSVD9W4xd6XcejuZlBQU+mN32NNCVo=
+	t=1715903474; cv=none; b=o3fIlOMA1Z1tkkBaKyG39dDVe983dmkffYr4IFgXePmyXrS09gKgkmJeiBSPG+V4yY8TaoVZ6PuAsIxns9GJJJGqIq//t54L76C/62NkdPKWnPUsnJB7j7E9EE4/0Y6SvYiwU9TDLXKaAEJdP9vyAoS5Vfr9/uNAsbt5caQ87S8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715897394; c=relaxed/simple;
-	bh=TtFZcj9fpoXLqpqJEGKDPaA2BkIvaOi5Um6DNfTKDNA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oJEFwUo9VIeF83Fj/YObTLN/Zm0Y37eTd5yvg5AMsgaN3vs8LnGzjvgRbmRdI565Jf7PzCTusZFhcqldA1wqpVSKv6lEftZsGODVN+7snFf4cp6r3jbueEvoXl4CO2uXMQd+aArpwQgvX6pdFPbkklTCvoCgQHjeT93SilSz13A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=O3VSsIJk; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="O3VSsIJk"
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-43dfa9a98d2so4541cf.1
-        for <linux-trace-devel@vger.kernel.org>; Thu, 16 May 2024 15:09:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1715897392; x=1716502192; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8tjbzu+eyrlrr78pEpRe1UTlykt3VsZwm1vg4xJVl0s=;
-        b=O3VSsIJk0Fm5rIR5qvRQkgDvwmuDWVv7GLqEKmPrLu3qIe61P9I5NdJeIQpY3EXLYH
-         eNDYmnInB8nW5Zjzna/DQHd1P6LOe4tFohmiPs6dFY5X9HWJsw4l5unwGe9uA7Djmiup
-         hDbWcamhXcM5k9waoAZym9gc5B2258dH1T2qrQQ6fHcwJKrbQ5Z3wPs8FmG3iupFWy7q
-         uLZDLDvyNYDFL6nlH3AmFb3k2PTjAVM5uOEMOY4nTCDn/tWgwlFHIkhPC2p1W1PDDy5d
-         eMgVq1YrCp5J+SV2aQZzjPtPL/eIlYI/+naz5++DMoLcXRLz/u9BABf6ZAt9Kg8yjf+z
-         uD5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715897392; x=1716502192;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8tjbzu+eyrlrr78pEpRe1UTlykt3VsZwm1vg4xJVl0s=;
-        b=aGLGH/8tFvj5LqU/VUzJjnqS0AgbJs16/qg5gscbYx0MkDNjlussQ9mZwRYFeOTbOn
-         tzAnztmZQa3xVFBO/1oQtV1oeWEVGRG939C/Qn7y8UBlqa9Vzlk3bGSJ8GbjxvbADHbG
-         itIgDCfJDNccrcyHGEbjDKQY1oqfU91xX4HUllN9IG0PAFb0+OVy59g2Th489uVQw4AV
-         2e3KWpHmrojh4wsaNpivObGAPmzdg3Bts4vrdazE47mKHlrpDjnKAMY00zn9xOIQQePW
-         tP3PnTssLADWGVS0Bb7pVNmsf89XEklrSwZrSduFsnW3x7nnwj6vBpF/ve4tG7oZ1dKD
-         5Ohw==
-X-Gm-Message-State: AOJu0YzfQ3QogF77ui5qxXUoGK42hEp+e5q3AUhfTVpiaFTSvWsD38kg
-	qA69Yxsu/mCJzPeGK1npRW1CELIq6RC0jlP8YXpalyYEmFswIQsRCoBXDRenkGfnzQdJPgWiEf5
-	e3rY7N8diSQ3FD7oBaO0rJHU9Y9xmn5foUt7RJ5YrfRbR1M42nIKR
-X-Google-Smtp-Source: AGHT+IF8pbsQjZolOf+34Ru/GlYQ6eSMbb/bIspjiGFfYKHeklstwERoFz3FkWxHZ8j0le4CnTPETw6uy2yEcwuaRKY=
-X-Received: by 2002:a05:622a:5888:b0:43d:fce9:684f with SMTP id
- d75a77b69052e-43e440d866cmr1131391cf.10.1715897392033; Thu, 16 May 2024
- 15:09:52 -0700 (PDT)
+	s=arc-20240116; t=1715903474; c=relaxed/simple;
+	bh=iFhZQJZcWzhAye7aDpwjmVdkOa/20MfmQf2xgB4/U8M=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pavSIJJENRJIZft68KwofaypNqbDMAzK9DmsC4hOo5uDl7vagf2UdZeLloSZPEsevQotsTOqdiP7mlhJTTAFfI7sTaFS9L365YntVz70PsNVp8fBKdQYeIwUcp9DgUEKSVxfHb8wYWUPq5ZFJDecYVWWB9vYheunoadUb1meOts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA876C113CC;
+	Thu, 16 May 2024 23:51:13 +0000 (UTC)
+Date: Thu, 16 May 2024 19:51:10 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Ian Rogers <irogers@google.com>
+Cc: linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v1] libtraceevent: Avoid a simple asprintf case
+Message-ID: <20240516195110.2b91d4d9@rorschach.local.home>
+In-Reply-To: <CAP-5=fUYxxmH8X0RVhdSWzKFT+WJO_UDULCtO4PK+VO-osXwGA@mail.gmail.com>
+References: <20240509051317.1913001-1-irogers@google.com>
+	<20240516180248.24aa5aeb@rorschach.local.home>
+	<CAP-5=fUYxxmH8X0RVhdSWzKFT+WJO_UDULCtO4PK+VO-osXwGA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240509051317.1913001-1-irogers@google.com> <20240516180248.24aa5aeb@rorschach.local.home>
-In-Reply-To: <20240516180248.24aa5aeb@rorschach.local.home>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 16 May 2024 15:09:40 -0700
-Message-ID: <CAP-5=fUYxxmH8X0RVhdSWzKFT+WJO_UDULCtO4PK+VO-osXwGA@mail.gmail.com>
-Subject: Re: [PATCH v1] libtraceevent: Avoid a simple asprintf case
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, May 16, 2024 at 3:03=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
->
-> On Wed,  8 May 2024 22:13:17 -0700
-> Ian Rogers <irogers@google.com> wrote:
->
-> > Avoid an asprintf for the single character TEP_EVENT_NEWLINE and
-> > TEP_EVENT_DELIM case.
->
-> This states what the patch does, but omits why. What's wrong with
-> asprintf() here?
+On Thu, 16 May 2024 15:09:40 -0700
+Ian Rogers <irogers@google.com> wrote:
 
-Nothing except overhead. I was tracking down an asprintf issue [1],
-asprintf breaking the sanitizer stack traces on my debian based linux,
-and using asprintf for the sake of copying a character was creating a
-huge amount of noise for me. 2 lines-of-code extra means this change
-is by one measure more complex but it removes special knowledge of
-asprintf return values and the meaning of %c, so on the other hand it
-is less complex. I won't be offended if it's not accepted.
+> > This states what the patch does, but omits why. What's wrong with
+> > asprintf() here?  
+> 
+> Nothing except overhead. I was tracking down an asprintf issue [1],
+> asprintf breaking the sanitizer stack traces on my debian based linux,
+> and using asprintf for the sake of copying a character was creating a
+> huge amount of noise for me. 2 lines-of-code extra means this change
+> is by one measure more complex but it removes special knowledge of
+> asprintf return values and the meaning of %c, so on the other hand it
+> is less complex. I won't be offended if it's not accepted.
+
+I don't mind taking the patch, but the above description is needed in
+the change log, as that explains the purpose of the patch.
+
+You don't need to resend, I'll just cut and paste what you wrote above
+to the commit message.
 
 Thanks,
-Ian
 
-[1] https://lore.kernel.org/lkml/20240509052015.1914670-1-irogers@google.co=
-m/
-
-> -- Steve
+-- Steve
