@@ -1,24 +1,24 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A755A32C60
-	for <linux-trace-devel@vger.kernel.org>; Tue, 28 May 2024 16:09:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 446962563
+	for <linux-trace-devel@vger.kernel.org>; Tue, 28 May 2024 18:52:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716912550; cv=none; b=FY8C6PtOhWpL5dQtEL6fsI/v0tErHllZas5vhMQtIC5gKt1f4Xq4ZzW5IFqjfx0sRhGJOseD/ipxS38/PLq3uhuHTbrTgwoNQK0kZRYsfElxk6kUbyHTMPkWGorUTmfX/mY5l8WNgn32OoGl11RbjcQHEzlpT2Pce7bHf/6lxCc=
+	t=1716922341; cv=none; b=EB7a1+PqV2/UqDF4l2Vmq11BrzAHP802T/cKt3dQfZ+IjkQBKBprIA+89JTnjR1c2u4etwZ5AmZ5OsabHvLEA0nZRRZIiqzKohbRnAVasnaDOdRoC+yCK5LXJ5jQ5FEY/RiRdSWKQlNx9YotfVsinjmuU2uaOKiXnyWMa9LC8j4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716912550; c=relaxed/simple;
-	bh=xy2dztAGIdQ23OzjneX7wrvXAH5oqDMzKz1ese0/9dM=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=bQDBxZwMykUHbemjxkop7toY6miQxfSd5PXdN743v0ussI7u9SIDKQca14U/jvtwAXHPP1B2mLgCz/0utUwFydE463e/A+qU5kI3D/1Sxn7PjYz0PPMXN0Acc7E96kSwo4ArKSSmw+H1UYl+uNkvGv8/e95cCh77xoPO1IxI/Co=
+	s=arc-20240116; t=1716922341; c=relaxed/simple;
+	bh=LxboLeQJzYpczHtu88w6h5w4vkQMK1fpqTHJ02MOPzM=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=MffSExTCqwErxtTiR30VFMweo5o/3LwSvdQLz/tRRusrQkJAEWAam0XqaSVGpkMMwQ+U2TlmrBVfZyDCecBCal5AsvBbJ9UgKWQtc4qyNfZt2HOwl1SGWw2JsL0wo8OL0Qg/r4UAf8+DtldmZM4qn/jVhHoOaaumK4qeLA2GZaI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C680BC3277B
-	for <linux-trace-devel@vger.kernel.org>; Tue, 28 May 2024 16:09:09 +0000 (UTC)
-Date: Tue, 28 May 2024 12:09:07 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B89CC3277B
+	for <linux-trace-devel@vger.kernel.org>; Tue, 28 May 2024 18:52:20 +0000 (UTC)
+Date: Tue, 28 May 2024 14:52:19 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Subject: [PATCH] libtracecmd: Optimize what cpus to check in
  tracecmd_iterate_events()
-Message-ID: <20240528120907.35746501@rorschach.local.home>
+Message-ID: <20240528145219.7cef53b0@rorschach.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -39,11 +39,11 @@ including those that are filtered out.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- lib/trace-cmd/trace-input.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ lib/trace-cmd/trace-input.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index ce4ecf43..36b367c8 100644
+index ce4ecf43..2d12ac33 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
 @@ -2813,9 +2813,12 @@ int tracecmd_iterate_events(struct tracecmd_input *handle,
@@ -59,13 +59,15 @@ index ce4ecf43..36b367c8 100644
  
  	if (!callback && !handle->nr_followers) {
  		errno = EINVAL;
-@@ -2826,17 +2829,26 @@ int tracecmd_iterate_events(struct tracecmd_input *handle,
+@@ -2826,17 +2829,28 @@ int tracecmd_iterate_events(struct tracecmd_input *handle,
  	if (!timestamps)
  		return -1;
  
 +	cpu_list = calloc(handle->cpus, sizeof(*cpu_list));
-+	if (!cpu_list)
++	if (!cpu_list) {
++		free(timestamps);
 +		return -1;
++	}
 +
  	for (cpu = 0; cpu < handle->cpus; cpu++) {
  		if (cpus && !CPU_ISSET_S(cpu, cpu_size, cpus))
@@ -87,7 +89,7 @@ index ce4ecf43..36b367c8 100644
  			ts = timestamps[cpu];
  			if (ts == -1ULL)
  				continue;
-@@ -2869,6 +2881,7 @@ int tracecmd_iterate_events(struct tracecmd_input *handle,
+@@ -2869,6 +2883,7 @@ int tracecmd_iterate_events(struct tracecmd_input *handle,
  	} while (next_cpu >= 0 && ret == 0);
  
  	free(timestamps);
