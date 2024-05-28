@@ -1,96 +1,99 @@
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 913EE171678
-	for <linux-trace-devel@vger.kernel.org>; Tue, 28 May 2024 15:51:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B38CD16DED4
+	for <linux-trace-devel@vger.kernel.org>; Tue, 28 May 2024 15:51:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716911464; cv=none; b=JM92VnqvP2gb3cHjFPXBQ7bVMtJkFj0MKZB8BQN1YgHW/CjqaDmBtdGGic9NZScNw+/u1zmOWbS2137Uv+JsfNFz9mgtVSrOIG8f8bB6aSuS35NfscmVLQ3Jqc1wHFe7Kt/NnRTXqaBYE64gKCQkOmJfkbNtxlr4e6Kr518GxXw=
+	t=1716911517; cv=none; b=XgnEwUlHbyQpdV80IKvAH4/wL6pMEOiFAXUEHvPh13jdYWVigcPjCcvf2jTZwaJ98bzlMW6OmswwfaNJLXC95swhpa1v7kDw6Hf9J7stzv1w3KyeQgYSW5V3fbnmvYfo/XYXzgVyufg+fFnkpkrx+A57+CmBVznKvj8G4c0iJic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716911464; c=relaxed/simple;
-	bh=hhPwvJOjXf3jc9iPbPcqNSJipckt+TH6z7Ut4MijP1w=;
+	s=arc-20240116; t=1716911517; c=relaxed/simple;
+	bh=egaaseC9Tk764UbW/+2JHwmr1VEVanmF3gGWl4wFBgc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=shFl5TBBBpVchK+p+LCWxEIdYb1ddt/DuRa7I+LLaJAziW7FwGdhnvGxe5md+RD3cFcUOFMEmv6Qhj+VThxQ0seod+BvKIu7dxNTe0by1+GstNVUm0YPYElNfQ1E35+WCt11i5tvkhuXF5Y3rAmBeMy8IPjjJhwKD0TdR6fHeM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xhCSuyMt; arc=none smtp.client-ip=209.85.166.177
+	 To:Cc:Content-Type; b=k+pxNQwXkBB8ZLii195qRErA84PYr8D4wF3xcflDSjfEV+4ELOA2BZjtCvWQuXEP/eVo4cDJ+Cs4FFujzUVV71ddWy2xqyN1Gd5dSFRI3lwzUFC1RW+aRm8zkxd2Wqn4Reo9fQPA1LxPZicvUJgEc5KsQ4bPKxADxlEcGbMaw7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Z/WCzZ2Y; arc=none smtp.client-ip=209.85.160.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xhCSuyMt"
-Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-36c6056f7bdso480695ab.0
-        for <linux-trace-devel@vger.kernel.org>; Tue, 28 May 2024 08:51:02 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Z/WCzZ2Y"
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-43f87dd6866so939131cf.0
+        for <linux-trace-devel@vger.kernel.org>; Tue, 28 May 2024 08:51:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1716911462; x=1717516262; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1716911514; x=1717516314; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hhPwvJOjXf3jc9iPbPcqNSJipckt+TH6z7Ut4MijP1w=;
-        b=xhCSuyMtKhtZxttZrhW1RyRkkRrsWNfR2GVdQPBbcBVpIj6o9FwHxA3UgI8dFfL5NS
-         xv7RB9rszMHvyXv0Wco2nzRg1d5t+iGa5JJmmVLYq+LCQGlxA4hkVJvfpRWZ2Sxs7WUm
-         sTHbyAmk8NE3g1+PLYQ2esY6c9DIqemKnDmuN3DTZ0A8nPSX+fLzKIRUf26KMlHd+lI3
-         o23AQiA+XVVb2b7PMlySxFE/WZHI2VLJe9nKOmrl5yKFIzSTlr5wlNJmW3DzH2M3uTY5
-         nDGD9Dro0r2zoXFrwCda9nX8r+r7NGesiJT8Wj1Bd0fNamte9rsO7mTG25EUwN0rPJhk
-         sEYA==
+        bh=egaaseC9Tk764UbW/+2JHwmr1VEVanmF3gGWl4wFBgc=;
+        b=Z/WCzZ2YzcfCBFBtlgzfOUA1fh1HoTJFo9FuvGotKe7OGimbrUA+xyJ8ipWjBEjaek
+         +KfSKF/tjeTWhX0V8+tndUppk2WkUA76fyps1IZ2LBmxNTGVcRPE7ybrQa/FuN3QJ2wP
+         AtOvFO9vVtkC1egveTWHFNrB1W3QO2eNpfMW7ho9EZR4rHPZ6NcICKCckLdBHRSFufUG
+         wVstDjnn09PGSvsmhy0Xd8COheaLO9SSycVXn5rH3xlwovD625A7pRPHvCQgkWMXL6xz
+         GGtlsVUyT4pZcFBlth234BMw9F9gwQmjELP/QatRA5A/QNx2uZnaBiCsb/lOH3QN2wUG
+         J3uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716911462; x=1717516262;
+        d=1e100.net; s=20230601; t=1716911514; x=1717516314;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hhPwvJOjXf3jc9iPbPcqNSJipckt+TH6z7Ut4MijP1w=;
-        b=OWEY/mC6YoTvI9JG/FCudL9QGJUEzqZn6pP7QplZFF4vdafz6akb3GkIJ6T2KYEHnq
-         Jh8GRj68bXHgNYFYhpP53hBpU1pP5dgigw/X/Q4omrXNRX7GFGerPlrulIWSV4oufcXI
-         VFMwvFhUMP9TmhPsgTMtvJbHaUgye7tVFDuKOXTmtUlPo3iafzoQzMBRMb+yheCf/YfZ
-         GnUNpw1dIjd9RK4ap2EqBXcd0Z3IpfFX9r5/NcDp1oGfnM52ylB4JbwWq/7kVaIQ4Jk4
-         JK0P8gNliLVEQmnIgs/rvpzvZCmRxWbbk8yQm+zknRVSxlls1fsD2y6uK2GVgmjVWWHP
-         ksCA==
-X-Gm-Message-State: AOJu0YzIMmgsYLD3QQ6nf+tUYI7Z2xWTUaK5iI/lZ7l5KOLyg+CxXUSf
-	dYcNaNjhbIFuWfKUr9FYLHaJAkn8By2suVrcBOcla0qTdtvHDEPKI+Y0R0GBjlGxOOz/DT1hOq9
-	zYFbGRXj9txFYM0r18PIBsQkCVApli7cXDA85p7Fhe9I+scdH96Ah
-X-Google-Smtp-Source: AGHT+IGOEMyzLPzslQXhlOs2Ev+44f0KcbBsGlSD7JgnJUmUGwuBVWu3alGpKqr5ysZHJ9CNJv3wZCFCyNKt6MlIKqM=
-X-Received: by 2002:a05:6e02:10d0:b0:374:5f1b:1127 with SMTP id
- e9e14a558f8ab-3745f1b1366mr2808765ab.24.1716911461474; Tue, 28 May 2024
- 08:51:01 -0700 (PDT)
+        bh=egaaseC9Tk764UbW/+2JHwmr1VEVanmF3gGWl4wFBgc=;
+        b=Smn9FEX4RQfAQ9x+UC78JsckvmHckyZnDoIBP/XqhdbIpoI9QtmDIoKW/1ZrP0IFJT
+         km4xFnO/716RedA2xr9hdM6miU9fNsSYNV11uE77g5X5EJ7FC9h25HJnZ9ge5BkOdJYS
+         B7M+p4xQ158XJonlTit6a3VDWex2ZJuor1ip9vsfHxHACeuWGQLAajq1PvJs0Jha3gh4
+         oTkcL6bXgc75tfou6O1b+3kFmH2JmSzf63jMvO6Dwtgod7CSVOyfYUrAVF5o5tNKHMOf
+         B7pahYTyfKbq1AkzMgfgX+nopPoSJ86HJNlF6IxPss0oqUiXjfAK4f5s04Kq1bzw5hBi
+         05fg==
+X-Gm-Message-State: AOJu0YxpjBqTnPShBHYnpJmFvLDb/VCGSnNC/lj2SSe8NnumESmi/H+5
+	lmBh9h7CxIVN/3pmx+Y7dbVamFVpZ1k6fkQKYddWlVndnm3IjtDMm8NKM64zZdpwADBWt9OJyco
+	DBGlS6bODD+gAOC5agQesT42qLc1G7BOobHL38Na2rVC9Vzi9rbNU
+X-Google-Smtp-Source: AGHT+IFW701iW9ic3qWtuMhS2jQiWX3Jt/d+1REJJrlGxDzIxzIfCooGcHVRznCb2gfGs8TAq+Fh/iGy6NxUmi0/3jo=
+X-Received: by 2002:a05:622a:6207:b0:43d:f9ec:2055 with SMTP id
+ d75a77b69052e-43fb9fab992mr5784401cf.26.1716911514394; Tue, 28 May 2024
+ 08:51:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240430073908.1706482-1-irogers@google.com> <CAP-5=fWQOB5QcrQ2rst0uq-B2A0BtNzSatFdtqG8+4Ba80G8MQ@mail.gmail.com>
- <20240516204041.63f986be@rorschach.local.home>
-In-Reply-To: <20240516204041.63f986be@rorschach.local.home>
+References: <20240509051317.1913001-1-irogers@google.com> <20240516180248.24aa5aeb@rorschach.local.home>
+ <CAP-5=fUYxxmH8X0RVhdSWzKFT+WJO_UDULCtO4PK+VO-osXwGA@mail.gmail.com> <20240516195110.2b91d4d9@rorschach.local.home>
+In-Reply-To: <20240516195110.2b91d4d9@rorschach.local.home>
 From: Ian Rogers <irogers@google.com>
-Date: Tue, 28 May 2024 08:50:49 -0700
-Message-ID: <CAP-5=fVN2JLOWjYJ=fi1LvW6+XJXrEDp6PHV3LOEDkdtxxYsjg@mail.gmail.com>
-Subject: Re: [PATCH v1] libtraceevent: Fix event-parse memory leak in process_cond
+Date: Tue, 28 May 2024 08:51:43 -0700
+Message-ID: <CAP-5=fXjJjLZ+wua-HuCKePs3WrOy+snzCjr-08cFgbb3OW-yg@mail.gmail.com>
+Subject: Re: [PATCH v1] libtraceevent: Avoid a simple asprintf case
 To: Steven Rostedt <rostedt@goodmis.org>
 Cc: linux-trace-devel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 16, 2024 at 5:40=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
+On Thu, May 16, 2024 at 4:51=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
 > wrote:
 >
-> On Tue, 30 Apr 2024 01:03:15 -0700
+> On Thu, 16 May 2024 15:09:40 -0700
 > Ian Rogers <irogers@google.com> wrote:
 >
-> > > print fmt: "%s%s%s%s%s", __print_symbolic(REC->exception, { 0, "#" "D=
-E" }, { 1, "#" "DB" }, { 3, "#" "BP" }, { 4, "#" "OF" }, { 5, "#" "BR" }, {=
- 6, "#" "UD" }, { 7, "#" "NM" }, { 8, "#" "DF" }, { 10, "#" "TS" }, { 11, "=
-#" "NP" }, { 12, "#" "SS" }, { 13, "#" "GP" }, { 14, "#" "PF" }, { 16, "#" =
-"MF" }, { 17, "#" "AC" }, { 18, "#" "MC" }), !REC->has_error ? "" : " (", !=
-REC->has_error ? "" : __print_symbolic(REC->error_code, { }), !REC->has_err=
-or ? "" : ")", REC->reinjected ? " [reinjected]" : ""
-> > > ```
+> > > This states what the patch does, but omits why. What's wrong with
+> > > asprintf() here?
 > >
-> > Some more context. The place in the input where the leak appears is of
-> > a string "?" read as a token at:
-> > ? "" : __print_symbolic(REC->error_code, { }), !REC->has_error ? "" :
-> > ")", REC->reinjected ? " [reinjected]" : ""
+> > Nothing except overhead. I was tracking down an asprintf issue [1],
+> > asprintf breaking the sanitizer stack traces on my debian based linux,
+> > and using asprintf for the sake of copying a character was creating a
+> > huge amount of noise for me. 2 lines-of-code extra means this change
+> > is by one measure more complex but it removes special knowledge of
+> > asprintf return values and the meaning of %c, so on the other hand it
+> > is less complex. I won't be offended if it's not accepted.
 >
-> That probably is the cause. That should get handled.
+> I don't mind taking the patch, but the above description is needed in
+> the change log, as that explains the purpose of the patch.
+>
+> You don't need to resend, I'll just cut and paste what you wrote above
+> to the commit message.
 
-Thanks for landing this, glad I got the logic right.
+Thanks, the commit message LGTM.
 
 Ian
 
+> Thanks,
+>
 > -- Steve
