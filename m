@@ -1,53 +1,54 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9916B19D8A8
-	for <linux-trace-devel@vger.kernel.org>; Wed,  5 Jun 2024 13:41:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EB261957E7
+	for <linux-trace-devel@vger.kernel.org>; Wed,  5 Jun 2024 13:41:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717594903; cv=none; b=Yh0xpGHIoOj34U50tr3IOslColT5fAC+m6BxXRPfxv6YGbv99i4Zcfz5svynJVRXkiX7E7qTU/fBWv/SXI+Pw4u8wGZUybNiw0186wiWtKA0UM8PBmMNPHBe7G0zMbIM/gEj4R4COq8wO6hAf+QVLaTTTM+gVgn9vPJ9wLxR724=
+	t=1717594905; cv=none; b=dgD0reupFa1LztvUEe5N1GIqRKuyzW7/GxtGp5IcHa37swkKmHU0ZoKkUKlFpEglvMUUcHiRbGCON7aeqrj9Cb4KJpfm4Dx7/1U1FM9eVMPS3+1qpntzTAVtCAENZV56vCTSRPKuNxy3o02x0l9KMPRPuZ1poBHMc1YYa/Q2ZxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717594903; c=relaxed/simple;
-	bh=jUZTiyebtc0dkMAzws81Zqq/oLOqIzsvf5vXNVHpc2k=;
+	s=arc-20240116; t=1717594905; c=relaxed/simple;
+	bh=0Ce7jOE5E/w4OCrMIZ6dOEH62F/LTxWBFmZY7fhjQRk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fk5nHi891IIV4ourvcCxmCkum7/cjHI+nkxEeSQPs2VU/8VY+//K8vqswtanBIgjI9kwFLOB4SLp+InbZH4ClNh45tVonX3nNrNoNtqoXOogo70RQfCIwqNUkmJZLZGgMZOIL9WRFCn8coxl8gsYDPPQU3oeN827uGTikmze3MU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hUA49nPj; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=prKgkVetziVb3vs5hz6zQuxD8R1zkwDoeqt2/9abDt1izhV1wA2SvD3yHqNtI8UI0N6JBbs05/fUhesPF+mihxaY2QO+RsbRucmhQ1TxKCL02OUCJokH1m5y/IPUnWI8JVglT0dPbBRO7ASt45zhc24EgEYEXI+5zXVAy+P3ws8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=R2r6pzGi; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hUA49nPj"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="R2r6pzGi"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1717594900;
+	s=mimecast20190719; t=1717594902;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FavApTEUCNvzUVqppKKtckL72ZSPWL/sIQjg9OzoyXA=;
-	b=hUA49nPjAWm4cy0W49wXv1RM5ddmQrEFJBE0FvarK+hot/scY51+tRJZ29renCpLdPPX5i
-	fC7wzWGLwJjF+5VfeyiQlg4aq5EyyQEOHeHo6kjCN+zLh309/6VJGIZVrdJdZApqrBqFqv
-	4ajBB0PqsPjJelF9tr0PxSHDx1oRUgw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-25-uPPo4JtRPB6VdfRdzZojMQ-1; Wed, 05 Jun 2024 09:41:37 -0400
-X-MC-Unique: uPPo4JtRPB6VdfRdzZojMQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	bh=obTzUGN5FVWNsyENElKmTg5DcPTYLmPR4sdzondgsNE=;
+	b=R2r6pzGij4QeDe0C7Qd40J7W+Lnm2XDmhWEpdu7k+e7b17fi69S3M2gwiadkLrTyX0HJ1c
+	OsYMPmUi6XB3m0OIdy2zaLd/n2vmavrOCzI44mi1CzBIILeM9GhdV9D0ug6UuqtNdK6RwC
+	HpFW8T7CJABLzWqtlnjKk1JX3AZWg5Y=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-48-xiiSjevdPxKYogKBmdoniA-1; Wed,
+ 05 Jun 2024 09:41:41 -0400
+X-MC-Unique: xiiSjevdPxKYogKBmdoniA-1
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C40C5811E85;
-	Wed,  5 Jun 2024 13:41:36 +0000 (UTC)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id AD1DD1955D68;
+	Wed,  5 Jun 2024 13:41:40 +0000 (UTC)
 Received: from fedora (unknown [10.45.225.116])
-	by smtp.corp.redhat.com (Postfix) with SMTP id B67FBC15970;
-	Wed,  5 Jun 2024 13:41:34 +0000 (UTC)
-Received: by fedora (sSMTP sendmail emulation); Wed, 05 Jun 2024 15:41:33 +0200
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 77DA619560A7;
+	Wed,  5 Jun 2024 13:41:38 +0000 (UTC)
+Received: by fedora (sSMTP sendmail emulation); Wed, 05 Jun 2024 15:41:37 +0200
 From: "Jerome Marchand" <jmarchan@redhat.com>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Jerome Marchand <jmarchan@redhat.com>
-Subject: [PATCH 10/38] trace-cmd: don't print a NULL string in append_pid_filter()
-Date: Wed,  5 Jun 2024 15:40:25 +0200
-Message-ID: <20240605134054.2626953-11-jmarchan@redhat.com>
+Subject: [PATCH 11/38] trace-cmd record: prevent possible memory coruption in get_pid_addr_maps()
+Date: Wed,  5 Jun 2024 15:40:26 +0200
+Message-ID: <20240605134054.2626953-12-jmarchan@redhat.com>
 In-Reply-To: <20240605134054.2626953-1-jmarchan@redhat.com>
 References: <20240605134054.2626953-1-jmarchan@redhat.com>
 Precedence: bulk
@@ -57,30 +58,40 @@ List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-In append_pid_filter() a NULL pointer is passed as the argument for a
-%s format. Change the error message to what is used in trace-record.c
-append_pid_filter.
+If strdup() fails the error path access original address of
+maps->lib_maps after it has been dereferenced. Make sure that
+maps->lib_maps contains the up-to-date pointer before calling calling
+a function that could fail.
+
+This was flagged as ressource leak (CWE-772) because map isn't freed
+in that scenario, but there is something worse going on that the
+static analysis missed.
 
 Signed-off-by: Jerome Marchand <jmarchan@redhat.com>
 ---
- tracecmd/trace-read.c | 2 +-
+ tracecmd/trace-record.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
-index beaf97a8..a5a0e10a 100644
---- a/tracecmd/trace-read.c
-+++ b/tracecmd/trace-read.c
-@@ -482,7 +482,7 @@ static char *append_pid_filter(char *curr_filter, char *pid)
- 	if (!curr_filter) {
- 		filter = malloc(len);
- 		if (!filter)
--			die("Failed to allocate for filter %s", curr_filter);
-+			die("Failed to allocate pid filter");
- 		sprintf(filter, ".*:" FILTER_FMT, pid, pid, pid);
- 	} else {
- 		curr_len = strlen(curr_filter);
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 91cc90d4..f05a58d1 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -1230,12 +1230,12 @@ static int get_pid_addr_maps(struct buffer_instance *instance, int pid)
+ 				      (maps->nr_lib_maps + 1) * sizeof(*map));
+ 			if (!map)
+ 				goto out_fail;
++			maps->lib_maps = map;
+ 			map[maps->nr_lib_maps].end = end;
+ 			map[maps->nr_lib_maps].start = begin;
+ 			map[maps->nr_lib_maps].lib_name = strdup(mapname);
+ 			if (!map[maps->nr_lib_maps].lib_name)
+ 				goto out_fail;
+-			maps->lib_maps = map;
+ 			maps->nr_lib_maps++;
+ 		}
+ 	}
 -- 
 2.44.0
 
