@@ -1,53 +1,54 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1889F1974F3
-	for <linux-trace-devel@vger.kernel.org>; Thu,  6 Jun 2024 15:39:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C30B1974EB
+	for <linux-trace-devel@vger.kernel.org>; Thu,  6 Jun 2024 15:39:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717688357; cv=none; b=UmLQrWBimadNXNOrzy+wVNrljezT5Yttva+1c7u9l5hKb7YGMNfKOgl70wZrpsU4jPQgXZzLQ3tDZaHlgAcCQa+kgzuESADI9vxpoAmYWWRI/uw/7CuP0kLzhb7Sl9CWXgf+CPbhE1euSLB2F5qWJL0N4+7tWDE6/YQkwRYxuN8=
+	t=1717688357; cv=none; b=kL+oMMP5azRCKW2ySceJY/PMNRjkQKFmc7OYUZOMrQxeviAQ/xdaTZKJKCAuJrZpr3WalJHrJLOCK2te6C8lDd26g88w2ds23rX8dVIr9S7CKNtx5ljkyrhyUd8J7R2faLarRk9XCVUYWGjSIgHrSDN2E3+Ai6hySNIoJEzO2cg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1717688357; c=relaxed/simple;
-	bh=gntECSRBiIbB760dVGvzw5GbzWB7/9C/0YHOD7hdKYM=;
+	bh=ixoFcq5Za3Kis52ofTp5WWflVDqpQo/p/OwVBlzwAGI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JIAA3S1PHi44h1c/AYKIVEXjToJoY8MloxlUxLte9f7SzK9KUF5yZuEBwikOynMTNQAHLoskNPBGzKn6l8QWjwqJ3cMup7dAa8lY9ulsHigjzSrsH84BRQd/bq+NlQ+n8AI2MMg2qk5F4Itbhd4uHjIN+XRD4jR+W5FqQVDcO+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QXC+WWJf; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=W8RwF5Za/u4HxrqurdtOtzQ2JGcIKoEw/Cszq9f1WuIrPfcDHOxuD+njrpBw9ky458oLX+/XKHvAMsnj5ZT48SVwnWFUt7X2W4WWVK9onL66ZrBPT63bXQJ0de7C0FzgfHBB+mKx1XnZa/IDLc66nCReqdYp+Og36JF2a04pnF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Rkgqyr4P; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QXC+WWJf"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Rkgqyr4P"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
 	s=mimecast20190719; t=1717688355;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mBhcsA3Ov3CAAQPCz4pGtUcTfYYi4vZNRs8juWNtZ5I=;
-	b=QXC+WWJfZ5AqJ6K7/jqnR1pbkqOryfOxOcB2E+crfz1rAccaBlrE4ncNYOQp+L01ch9T57
-	3uns9CwsTDorK1CY+ZED46P5M7bqiUsWPJNep75RygzV2H9P1ZXvzBIKWHDATZZwpYtgj7
-	6iJxR/Em8+kxRZJCbwSB7JbHuNeV050=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-122-axKibFk9NVemIZ9TOl0QxA-1; Thu,
- 06 Jun 2024 11:39:12 -0400
-X-MC-Unique: axKibFk9NVemIZ9TOl0QxA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	bh=Tb2t9eT+nSFKssGnBMHtIgoxY8BqFU3dYVJ5aFVCeJE=;
+	b=Rkgqyr4PSEu1cM4cdIQC0KH2MEiMFg9iJ9ZEHZVXrbeWy92JU53OmwuOGmL+lbcC4OmNwO
+	klEUko7B8i85j+lvSJvKhHXN86kXrfCFtNMq5xfaf3FIqJdxVm6xk1p4CPMT6oN9uSTohW
+	2kYemNWq8HU7gQ0FzPEC+7ZJkh4EtS0=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-257-QAWA5OhaNt2jxNOeMa67iQ-1; Thu,
+ 06 Jun 2024 11:39:13 -0400
+X-MC-Unique: QAWA5OhaNt2jxNOeMa67iQ-1
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B8AD729AA387;
-	Thu,  6 Jun 2024 15:39:11 +0000 (UTC)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E1AB518BF039;
+	Thu,  6 Jun 2024 15:39:12 +0000 (UTC)
 Received: from fedora (unknown [10.45.224.84])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 3DCAE37E0;
-	Thu,  6 Jun 2024 15:39:10 +0000 (UTC)
-Received: by fedora (sSMTP sendmail emulation); Thu, 06 Jun 2024 17:39:09 +0200
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 672B7197701E;
+	Thu,  6 Jun 2024 15:39:02 +0000 (UTC)
+Received: by fedora (sSMTP sendmail emulation); Thu, 06 Jun 2024 17:39:01 +0200
 From: "Jerome Marchand" <jmarchan@redhat.com>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Jerome Marchand <jmarchan@redhat.com>
-Subject: [PATCH 13/15] libtracefs: close dir in the error path in tracefs_system_events()
-Date: Thu,  6 Jun 2024 17:38:27 +0200
-Message-ID: <20240606153830.2666120-14-jmarchan@redhat.com>
+Subject: [PATCH 10/15] libtracefs: prevent memory leak in tracefs_instance_create()
+Date: Thu,  6 Jun 2024 17:38:24 +0200
+Message-ID: <20240606153830.2666120-11-jmarchan@redhat.com>
 In-Reply-To: <20240606153830.2666120-1-jmarchan@redhat.com>
 References: <20240606153830.2666120-1-jmarchan@redhat.com>
 Precedence: bulk
@@ -57,31 +58,29 @@ List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-In tracefs_system_events(), we don't close dir if add_list_string()
-fails. At this point, just breaking out of the loop fixes that.
+Free the path of the instance directory in the error path.
 
 Fixes a RESSOURCE_LEAK error (CWE-772)
 
 Signed-off-by: Jerome Marchand <jmarchan@redhat.com>
 ---
- src/tracefs-events.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ src/tracefs-instance.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/src/tracefs-events.c b/src/tracefs-events.c
-index 88325e1..1fa3f2f 100644
---- a/src/tracefs-events.c
-+++ b/src/tracefs-events.c
-@@ -922,7 +922,7 @@ char **tracefs_system_events(const char *tracing_dir, const char *system)
- 		free(event);
+diff --git a/src/tracefs-instance.c b/src/tracefs-instance.c
+index 9a26708..dd7decd 100644
+--- a/src/tracefs-instance.c
++++ b/src/tracefs-instance.c
+@@ -217,6 +217,7 @@ struct tracefs_instance *tracefs_instance_create(const char *name)
+ 	return inst;
  
- 		if (add_list_string(&events, name) < 0)
--			goto out_free;
-+			break;
- 	}
- 
- 	closedir(dir);
+ error:
++	tracefs_put_tracing_file(path);
+ 	tracefs_instance_free(inst);
+ 	return NULL;
+ }
 -- 
 2.44.0
 
