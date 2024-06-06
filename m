@@ -1,53 +1,53 @@
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A2A0196D87
-	for <linux-trace-devel@vger.kernel.org>; Thu,  6 Jun 2024 15:39:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF23F1974F3
+	for <linux-trace-devel@vger.kernel.org>; Thu,  6 Jun 2024 15:39:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717688344; cv=none; b=OniS1RTsoNhI2DE/JPLdvBVz6QP0YzbQElNSdEnX0MkN5ZLNS9yOO0bKO7YEKIYh48o+z0SuwU2xgkoJIfNGDAe9d0YHwY+dfNBAKQHQLncyb9Uj4i6Ubq2u8whCAk9jMkJs3vQfG+ogf5zFUTI6HZmQAUzAemWZgxirIkX6ZPo=
+	t=1717688351; cv=none; b=qiRHZvT+uc69bDoX05Rh54UPlGk1WFp47xbkR0sTE6ih2Z+AoCBBv5hSJQNcVmDhltfwO43yeyCD9ahzcSZJOmidunxXbtU33/VeAmjdNR9GBn11a9hmzox9BavYxQg8YxkV/ianL0rDzmREY58swK0LJf2sU8YI7l8zl01yRVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717688344; c=relaxed/simple;
-	bh=76EKUrRL1XamIUM8RujyYePYVhatPFCtxjDdQFrzIqY=;
+	s=arc-20240116; t=1717688351; c=relaxed/simple;
+	bh=yrX6kDRd2G8fU7XqzPjMOuSWSYzU68/qoF/fsG/YUTU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MXWswgx7tSVJEgCaLbRDYAW4QBu15jHSCybzZRHVK7VdGz2ca2z9brEAWEIqbODby42EWRBuSDl/dnhgFC7ATl441FI+FV6x/Fhg3UFu5oKH/tKupU8LyO/RezVxMC6/l29xmL+vV7chl6eR8LEuD+70ORwzr+kS5rFiW7kaL4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AC4D5V8G; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=ow1waVjHfDPmk1aNzU+h4NCboh9FZ6mygyD82k4484NnYhvsltixFXPg3TVIZApya/ueZUpStfDokNIYBbdauh9TY4V7Nc9cJBm4/yB6BILS5Cx5e/qdkTSUz3RgCJbQql6omZoEtG5SDQ9OpDahhrpNHDPoc9g9dCYMAKKfMTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JxYOyxR2; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AC4D5V8G"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JxYOyxR2"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1717688342;
+	s=mimecast20190719; t=1717688348;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JB+3lrO0vznp2Mfy985Tf1ZPgPBJ+0IFH15r+gGUUVI=;
-	b=AC4D5V8Gp2RlGkTwWY1mfTJD5Db1YJZWNtAVADaaQsYBTUZ7qGks7iWqWY2fvRVys4UeTf
-	h4VlSJd1ociMOCqg/Zw8+h04tEKujygKZdacU3Cn5+d5H8k77Jyh7vR+UqNHbeyrkQv4wl
-	06KzpFDwC2pYi8yl8Jhtc+mo5ioTtM0=
+	bh=LmYRpy4iSBTJwKNTfg19TEah0tV2QFO45n2YJW61IWY=;
+	b=JxYOyxR23WzIRDKMm/aT5HwADExXbOgErxs6btAJbRm/XYV2hhU9DKDePvOPbGGYPHE+4o
+	4woqjIADLy4qYhdPEYIMg4Rmjew+ru+mYsVTLiUHyFM7dQEmV86Z8mec2peiOjiP+COqW6
+	WeeGzMi/pbpjXswVicc4nl5H/WYjz84=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-656-RekuX3xfNe-q_8bHvzb5sw-1; Thu, 06 Jun 2024 11:39:01 -0400
-X-MC-Unique: RekuX3xfNe-q_8bHvzb5sw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+ us-mta-120-xQG8EOa_PAqxKn3xaLfKeA-1; Thu, 06 Jun 2024 11:39:07 -0400
+X-MC-Unique: xQG8EOa_PAqxKn3xaLfKeA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 07D27800074;
-	Thu,  6 Jun 2024 15:39:01 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3849A801F9C;
+	Thu,  6 Jun 2024 15:39:07 +0000 (UTC)
 Received: from fedora (unknown [10.45.224.84])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 8588640C94A8;
-	Thu,  6 Jun 2024 15:38:59 +0000 (UTC)
-Received: by fedora (sSMTP sendmail emulation); Thu, 06 Jun 2024 17:38:59 +0200
+	by smtp.corp.redhat.com (Postfix) with SMTP id B5AD517ABA;
+	Thu,  6 Jun 2024 15:39:05 +0000 (UTC)
+Received: by fedora (sSMTP sendmail emulation); Thu, 06 Jun 2024 17:39:05 +0200
 From: "Jerome Marchand" <jmarchan@redhat.com>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Jerome Marchand <jmarchan@redhat.com>
-Subject: [PATCH 09/15] libtracefs: prevent a memory leak in open_cpu_files()
-Date: Thu,  6 Jun 2024 17:38:23 +0200
-Message-ID: <20240606153830.2666120-10-jmarchan@redhat.com>
+Subject: [PATCH 11/15] libtracefs: my_yyinput() should return 0 when no data can be read
+Date: Thu,  6 Jun 2024 17:38:25 +0200
+Message-ID: <20240606153830.2666120-12-jmarchan@redhat.com>
 In-Reply-To: <20240606153830.2666120-1-jmarchan@redhat.com>
 References: <20240606153830.2666120-1-jmarchan@redhat.com>
 Precedence: bulk
@@ -57,53 +57,33 @@ List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-In open_cpu_files(), if realloc() fails the latest allocated tcpu
-isn't freed. Rearrange the loop to prevent that.
+YY_INPUT() is redefined in sqlhist.l and basically just call
+my_yyinput() to do the work. However, YY_INPUT is supposed to return
+YY_NULL (0 on Unix system) when no data can be read, not -1. This can
+cause an overflow error in the generated sqlhist-lex.c file.
+
+Have my_yyinput() returns zero when no buffer is found.
 
 Signed-off-by: Jerome Marchand <jmarchan@redhat.com>
 ---
- src/tracefs-events.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ src/tracefs-sqlhist.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/tracefs-events.c b/src/tracefs-events.c
-index d65837e..88325e1 100644
---- a/src/tracefs-events.c
-+++ b/src/tracefs-events.c
-@@ -275,9 +275,12 @@ static int open_cpu_files(struct tracefs_instance *instance, cpu_set_t *cpus,
- 			tcpu = tracefs_cpu_snapshot_open(instance, cpu, true);
- 		else
- 			tcpu = tracefs_cpu_open_mapped(instance, cpu, true);
-+		if (!tcpu)
-+			goto error;
-+
- 		tmp = realloc(*all_cpus, (i + 1) * sizeof(*tmp));
- 		if (!tmp) {
--			i--;
-+			tracefs_cpu_close(tcpu);
- 			goto error;
- 		}
+diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
+index c7b9eff..0f678c1 100644
+--- a/src/tracefs-sqlhist.c
++++ b/src/tracefs-sqlhist.c
+@@ -121,7 +121,7 @@ __hidden int my_yyinput(void *extra, char *buf, int max)
+ 	struct sqlhist_bison *sb = extra;
  
-@@ -285,9 +288,6 @@ static int open_cpu_files(struct tracefs_instance *instance, cpu_set_t *cpus,
+ 	if (!sb || !sb->buffer)
+-		return -1;
++		return 0;
  
- 		memset(tmp + i, 0, sizeof(*tmp));
- 
--		if (!tcpu)
--			goto error;
--
- 		tmp[i].tcpu = tcpu;
- 		tmp[i].cpu = cpu;
- 		i++;
-@@ -296,7 +296,7 @@ static int open_cpu_files(struct tracefs_instance *instance, cpu_set_t *cpus,
- 	return 0;
-  error:
- 	tmp = *all_cpus;
--	for (; i >= 0; i--) {
-+	for (i--; i >= 0; i--) {
- 		tracefs_cpu_close(tmp[i].tcpu);
- 	}
- 	free(tmp);
+ 	if (sb->buffer_idx + max > sb->buffer_size)
+ 		max = sb->buffer_size - sb->buffer_idx;
 -- 
 2.44.0
 
