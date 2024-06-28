@@ -1,51 +1,51 @@
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F01E33BB2E
-	for <linux-trace-devel@vger.kernel.org>; Thu, 27 Jun 2024 06:53:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF4C11755C
+	for <linux-trace-devel@vger.kernel.org>; Fri, 28 Jun 2024 01:52:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719471195; cv=none; b=SAJtOiJyVA1d0UwFeM2Xe3+0efdG56xvNDu9stJmr2TaKMADB3dHZPIBayJ7VtL9e83dgG9cKfa7nttTN+yrmraECwZswPpR5T+w6JrvsNXATpemctwfzVN1oq/eBxPtpfBGbSL7apmZRY4DtULWrJmt/tBztxAx0kwA9g7DRoU=
+	t=1719539563; cv=none; b=OSlhYvAFDFu2GfKY9Bg6+PLmKObvyUFLPASf5jhCO+0YbCAaa+4jbTSlJX2oMAfaWKT9TbfuyXpA7BY145VdY9WDzFvqmgvdzhSKcQpvZcbWrRKwloZa0OBHU2yhGNQT7zCw2ywC0Vl6MncY56+S/zOokM3ZJWQ4NV6WpP+t+7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719471195; c=relaxed/simple;
-	bh=f9XYbrXP+O7jxTEQU4N/tkWPVxH10/iGxP9lZD/BE4U=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=LpMZ/jeSTcAQ1J/iozRiyxNHQQAy8ymLdCKm+lPYDuswR2XL8bcAeemHABKCOzCH93VOYCZE8dbWLfJCeJbV7OzQAX9Fq8d8vic+lwF6U6AW3QMHopY1qwG0XW5sTUgRUplG8orK6OrkOrMrLJyz0RFj8i+RHMkf99izUUr/cHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vq8u/TEi; arc=none smtp.client-ip=209.85.219.181
+	s=arc-20240116; t=1719539563; c=relaxed/simple;
+	bh=rg1Q6gfjdEPrNLaqSsVe+ilLQPtcNgkMriYKipM75hk=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=YrivU/VR17D1V9Y7+3wPB9fQSLatiq5bVCSG5KF/K9GtCBpCBqR1eQ4RxZoQA7+uvtG6nAFhXUn6U6TcLkjZ8qIYzcyx+Xb8Hw5j2kFw0KETdMHQVZ/cHoXGTDyoOiItXynnR9EjVYOjeeix6BKFvGLoJi/6GwEki8vKYlU0eJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iVgS+oto; arc=none smtp.client-ip=209.85.219.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vq8u/TEi"
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-e02b79c6f21so7544658276.2
-        for <linux-trace-devel@vger.kernel.org>; Wed, 26 Jun 2024 23:53:13 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iVgS+oto"
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-e026a2238d8so65862276.0
+        for <linux-trace-devel@vger.kernel.org>; Thu, 27 Jun 2024 18:52:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719471193; x=1720075993; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+        d=gmail.com; s=20230601; t=1719539560; x=1720144360; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=TkunAp/MWizz+V8ZBB0Ycuq95mkaeBogkpxVgkrhi3o=;
-        b=Vq8u/TEihkAxKreFVf2//NiqquQVBdrdo2oB0zhHYmdGhD5T/hBcH1VPMOqKvgonim
-         SRmNHyxA6R40nBOFEtUNk2bW4q/sV+7QJOWzA11QA5kQZpxKftyDHX8OLIPtctDAYruU
-         M6CDEhWxlbjGim+RHkhSSVDCTJxOzl0Dh/GaYRtjigQPqiIpKgm1tPhk6/wsseNBlY3p
-         mFCOZHjJlbFm6L2lmlndQFRrBf20zLS6TxNgpRc+Vno48Jxrb0KeGGc4NQZejKlVKdhw
-         8WfbQjINE/lqmwhYvfi/7cb42AlxBiLT5qhg4e7Fyi3DxLiVK4B12vGekHMgcZMsfUGc
-         iHCQ==
+        bh=VBU1DmKfL3ToHAKIKSpiCLdwUieQSW5L4qnxbtfqUqM=;
+        b=iVgS+otoX3Ia8Enfz49Up6DNoJmg44Fa3kcBZ1L5KSTFP8BVGJMzspQ79dvreHeaZN
+         rPGYDvjll1nJ19UcHJcKGTGCsaMfvQxIUQZ+ddkzhtQhHvXZWoxDT5tnWPVts+SQMR+c
+         kzCMOXzlg0dYa9DI6YN5q/G02gTjg9c3KS+aKBkyXlT8asUQ9KvRZmnr45sjvLJktGId
+         8zMEJeH6i5AYVQBDfGHfOQgTnbdOfmZobMrv6mqBPMNgbyzMUgC2wYY7iJbLfjKdJMkd
+         oZMp4eDpsFOVm4qdDKVzCzdQz2VimdoRmKVMtsqrffPo02Vy3jcbi40fUJiCuD4NKcXe
+         M1/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719471193; x=1720075993;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+        d=1e100.net; s=20230601; t=1719539560; x=1720144360;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=TkunAp/MWizz+V8ZBB0Ycuq95mkaeBogkpxVgkrhi3o=;
-        b=jS9r3EMqHq0kokoBiSbsfDFwv9TPvp+UhGFMHtE3tD5JD7QeliSA+zeDHV0DoGA3M/
-         ADis8Y6ST3Bmzf9MZayWydqX8Xfq2LhUkCLk74p42hONGWDJnXae/PAj7DVSgXF1KPWn
-         PtmZXX75vAn3zdmSe8OzqSB3ksPAV6ld1jeyOuZMr4ofuMZNWWY7/O2yPxQLLavcFOD5
-         YX1qH7MWuf4/CHNQnV///nGm9DCzwUXjrrmiDiNP6B7XovpbAWoskovAdd8aVwmbjZVg
-         jJ3sZwNlTHJ/I2sjod0HZXHGxQ/r2z/h78mjiyOruXCixbtynfR+ySRNkafBM3Gy1iu/
-         8uJg==
-X-Gm-Message-State: AOJu0YwD0dNFBA6dAccgxY+2zmE5QmTNC6hZufKfoGAEtOk+fs8PFe9f
-	WeYBzPANSoRUwgS/eqtu94fzF3IgJ7zPwDBpIjS9iDI3TT+MnBlvw7jo5qgi8EuijfVtHUfwG10
-	P4hKbwnpMWbI/W5qe3iCDtYOJORoIDpoqgcsGzVEO
-X-Google-Smtp-Source: AGHT+IF3BVxIw5PPBY62KFcUdDIHNDL1c5mIv5OsNTP6ghHMtNtcHaoOHNqTF+p6vHzHztfh52F70WzpJ8FK/tfntsY=
-X-Received: by 2002:a25:dc4b:0:b0:e03:4b63:43ea with SMTP id
- 3f1490d57ef6-e034b6348cemr83342276.24.1719471192745; Wed, 26 Jun 2024
- 23:53:12 -0700 (PDT)
+        bh=VBU1DmKfL3ToHAKIKSpiCLdwUieQSW5L4qnxbtfqUqM=;
+        b=oUMAz6+NwRT06Qg290mjndHOrSWbwL9zzCjax7YYju4WJ+oPvPja+aVYiHXD9rzzEN
+         lV6cAjMlBafpIsqUAp0OSRtsvGm1xx827pamvg2mna2n4iSrWLK9i9BOXrXo1Pfjbowu
+         xuRc/GiJyU4+3+IZfRGbRElOtEblF3Ocv8EIHHtTQrdJDLepGygHBd1kalZQWhn5RjG6
+         kRVXk7jqeDoABMJUK0OwuYe+bi1fa3rG34xHuHWbZxMA4f6yLVOJKoNzb1MeFvlsuhrP
+         u61Oo/voYT3JvFTjKgCOQNbNQZN8cJeUg6Af2A17liAHVMKm4DeyJNhHWrx6CRj/tcBN
+         K6Kg==
+X-Gm-Message-State: AOJu0YysuNAyI3sVZo6SeLpYMQFFcU3nOZ2ZSsZxw9iZ3dq7mTOqkrCi
+	eR0rS99PLOaowzbVQsgDrAdp+pPuKEvV3Ia5wktkERMWcRRZObM5AGfCv7LFD0efmNuQqXv4X/+
+	vk6jP0zR3DmpAAlkMYtRdPzOUdmD1EQfbgggZJLnn
+X-Google-Smtp-Source: AGHT+IELh28JqewvD8DNwGHS9Ss8fyvn3sC6ZlVhgmMbF/18WSERTebWIH7rRxqB8SdBgMD0dNwdv1iAh7wacjj5zqg=
+X-Received: by 2002:a25:1f05:0:b0:e03:4b63:43ea with SMTP id
+ 3f1490d57ef6-e035d12620emr170348276.24.1719539560449; Thu, 27 Jun 2024
+ 18:52:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -53,58 +53,45 @@ List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 From: Totoro W <tw19881113@gmail.com>
-Date: Thu, 27 Jun 2024 14:51:42 +0800
-Message-ID: <CAFrM9ztDcGK4aP51uJEsQStyyf1tXebOKXiT-Ota2-gT3wVLyA@mail.gmail.com>
-Subject: [PATCH] fix double free issue in event_read_print_args
-To: linux-trace-devel@vger.kernel.org
+Date: Fri, 28 Jun 2024 09:51:10 +0800
+Message-ID: <CAFrM9zvV9oHvCpVmt3un-wMFJFoyXq7SOWTOENpDGrn_HQQDDQ@mail.gmail.com>
+Subject: Re: [PATCH] fix double free issue in event_read_print_args
+To: Totoro W <tw19881113@gmail.com>
+Cc: linux-trace-devel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-commit cb227dfc63346a23fd019f2146b4f9f4f5a58b6a (HEAD -> fix_double_free)
-Author: Tw <tw19881113@gmail.com>
-Date:   Thu Jun 27 14:40:09 2024 +0800
+Oops, missing the patch part, here it is:
 
-    Fix double free issue in event_read_print_args
+diff --git a/src/event-parse.c b/src/event-parse.c
+index 9f0522c..1f51ee9 100644
+--- a/src/event-parse.c
++++ b/src/event-parse.c
+@@ -2375,8 +2375,6 @@ process_op(struct tep_event *event, struct
+tep_print_arg *arg, char **tok)
 
-    The corner case is that when we encounter a invalid right argument
-of a condition operation.
-    Currently, we free token immediately, but it will also be freed
-when free `arg->op.op`.
+                /* it will set arg->op.right */
+                type = process_cond(event, arg, tok);
+-               if (type == TEP_EVENT_ERROR)
+-                       free(token);
 
-    BTW, the crash calltrace as follows:
+        } else if (strcmp(token, ">>") == 0 ||
+                   strcmp(token, "<<") == 0 ||
+@@ -3787,7 +3785,7 @@ static int event_read_print_args(struct
+tep_event *event, struct tep_print_arg *
+ {
+        enum tep_event_type type = TEP_EVENT_ERROR;
+        struct tep_print_arg *arg;
+-       char *token;
++       char *token = NULL;
+        int args = 0;
 
-    Program received signal SIGSEGV, Segmentation fault.
-    get_meta (p=<optimized out>) at
-/home/tw/code/zig/build/stage3/lib/zig/libc/musl/src/malloc/mallocng/meta.h:141
-    141     /home/tw/code/zig/build/stage3/lib/zig/libc/musl/src/malloc/mallocng/meta.h:
-No such file or directory.
-    (gdb) bt
-        at /home/tw/code/zig/build/stage3/lib/zig/libc/musl/src/malloc/mallocng/meta.h:141
-        at /home/tw/code/zig/build/stage3/lib/zig/libc/musl/src/malloc/mallocng/free.c:105
-        at /tmp/.cache/zig/p/12207a2e4477bf4414e7df3eb2172c698ab916695a0d3eefbf16f65b0c969dd81184/src/event-parse.c:1128
-        list@entry=0x7ff7b18768)
-        at /tmp/.cache/zig/p/12207a2e4477bf4414e7df3eb2172c698ab916695a0d3eefbf16f65b0c969dd81184/src/event-parse.c:1417
-        at /tmp/.cache/zig/p/12207a2e4477bf4414e7df3eb2172c698ab916695a0d3eefbf16f65b0c969dd81184/src/event-parse.c:3895
-        sys=<optimized out>)
-        at /tmp/.cache/zig/p/12207a2e4477bf4414e7df3eb2172c698ab916695a0d3eefbf16f65b0c969dd81184/src/event-parse.c:7824
-        size=<optimized out>, sys=sys@entry=0x7ff7ff51c0 "kvm")
-        at /tmp/.cache/zig/p/12207a2e4477bf4414e7df3eb2172c698ab916695a0d3eefbf16f65b0c969dd81184/src/event-parse.c:7882
-        buf=0x7ff7b0c610 "kvm_sys_access", size=549616874800,
-sys=0x7fffffe0b2 "me", sys@entry=0x7ff7ff51c0 "kvm")
-        at /tmp/.cache/zig/p/12207a2e4477bf4414e7df3eb2172c698ab916695a0d3eefbf16f65b0c969dd81184/src/event-parse.c:7945
-        tracing_dir=tracing_dir@entry=0x7ff7ffc660
-"/sys/kernel/tracing", system=system@entry=0x7ff7ff51c0 "kvm",
-        check=false)
-        at /tmp/.cache/zig/p/1220c1c006cbf05434d240b65f343c84f3d7f837fbef31f2cade733ec911cc3ed76b/src/tracefs-events.c:1062
-        system=0x7ff7ff51c0 "kvm")
-        at /tmp/.cache/zig/p/1220c1c006cbf05434d240b65f343c84f3d7f837fbef31f2cade733ec911cc3ed76b/src/tracefs-events.c:1084
-        tep=tep@entry=0x7ff7ffc830, sys_names=sys_names@entry=0x0,
-parsing_failures=0x0,
-        parsing_failures@entry=0x7fffffe7b0)
-        at /tmp/.cache/zig/p/1220c1c006cbf05434d240b65f343c84f3d7f837fbef31f2cade733ec911cc3ed76b/src/tracefs-events.c:1284
-        sys_names@entry=0x7ffffff880)
-        at /tmp/.cache/zig/p/1220c1c006cbf05434d240b65f343c84f3d7f837fbef31f2cade733ec911cc3ed76b/src/tracefs-events.c:1355
-        tracing_dir=0x6500006c6f6f62 <error: Cannot access memory at
-address 0x6500006c6f6f62>)
-        at /tmp/.cache/zig/p/1220c1c006cbf05434d240b65f343c84f3d7f837fbef31f2cade733ec911cc3ed76b/src/tracefs-events.c:1377
+        do {
+@@ -3817,6 +3815,7 @@ static int event_read_print_args(struct
+tep_event *event, struct tep_print_arg *
+                if (type == TEP_EVENT_OP) {
+                        type = process_op(event, arg, &token);
+                        free_token(token);
++                       token = NULL;
 
-    Signed-off-by: Tw <tw19881113@gmail.com>
+                        if (consolidate_op_arg(arg) < 0)
+                                type = TEP_EVENT_ERROR;
