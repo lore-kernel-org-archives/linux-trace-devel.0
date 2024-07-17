@@ -1,83 +1,112 @@
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E47A181D05;
-	Wed, 17 Jul 2024 20:17:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 937D01EA71
+	for <linux-trace-devel@vger.kernel.org>; Wed, 17 Jul 2024 20:27:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721247447; cv=none; b=erTTKKHBzijHDd7uUD++11XHkOJ6+Zg91NUjarsBAmBLZgQAD7H6X9QeakqvvTW5oRs6o78kKU/LXiV2q5pWTbMYf+SJ0FYhhH52RXPTEfKmuF3vu+RAWIQWssxatXz6pszS+C5pqRkDX1iU9j1NPlPmG58NrPAbjLu1Mg0yE3U=
+	t=1721248063; cv=none; b=k6sXjGVVS4D8EJ2UpbzBkcAj4sHqpdz/FfWVnIDNaoDT5hR81LbeZdqQNVJRkXSTON9Dz/uW5PT82Vp/N9GPQKra8Ohqh9f4eOrUFREdMkuyvNB4KKf9X6oOn6itQ+UD/Nv7ZGIV+WsZuQlZuLd68XsxthU944H01Aiq3TRPiLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721247447; c=relaxed/simple;
-	bh=JT3g53fcSmIbb0K1OvAoRy3KDMRTTQ9/L89HkJWtbY4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uf4uaVev7kIPlvmAE+N/v+2tT9cQ11MnaX5vig1GSnHF0tVXV6Sw5JbQ59kRHknfcrVFxmZlQHE3U0IITvWMg/bhhxo+XBhLm2/HbG+aOX7D7/jscqJvFqv3vk8Cgb9gY7Ui6ooMSLCuYipTQFuqPzxg+FrSBgWl/py5kqpIMQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1fc52394c92so1233765ad.1;
-        Wed, 17 Jul 2024 13:17:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721247446; x=1721852246;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JT3g53fcSmIbb0K1OvAoRy3KDMRTTQ9/L89HkJWtbY4=;
-        b=XUuSykTXh50H44jCd1yrcCcRrrUGDzFAaSnMI4WJPF6NtCA6dmS71Ddfmu+XU1bgn7
-         J6tA+1T28clmJcLp8zAYaIF3UlEK7lr+8JJY111vjGeH1vgM+fnwQeT4lYCIwNbjpU6Q
-         CJ21SC4KdjnEDfwGUyfhwcXX9KViwTtiQITdJS6Ag5rysDV9CkglmBnevcNCLe5qglyN
-         DVtn7Plr0VYnPFU/6hZnaxQuqwhgOTdNl993UlNJhbvDa3KvHA03AFMXABlrEzDwE+Vi
-         +RVYrHkZTFjI5powlTTYpVSJxcb2fLX6AbJIFEwW8ncIZoPZPWf0gUt9VhW7RljU37Qs
-         MvQA==
-X-Forwarded-Encrypted: i=1; AJvYcCVcPM7guQKL4aeeqfG10gIoGl+53OPPCTSPSH1dXCH0BBpxDjT/oUIxQKwiqVkmMGh02iT17iachsBRVvg7lAx9mW+qkc3fQCrKt4T/Wps8QEnnM5WFilrE9E6H/VhLoFHYGskLoZt0fNYGIrjm+4Kv42FF0i+IEOFNmfq5ngljXc3pSGCj8iVdWE7+DW5Jb1I7
-X-Gm-Message-State: AOJu0Yw0a/5IuP1tuQkYR5QIPzPlemXlFSMYI4R1qyTYFEsdE1IZVTq+
-	uWhTFn5McKm5OWSXH+DmPcLyIihm3Q8Rt5mVSisR2XxpC634aaeenfJ3DrieWf1xMmyNWWU12JW
-	ysqsK3Bq6LMTBEwSYGVUI8N30ywU=
-X-Google-Smtp-Source: AGHT+IF1DtZXkYokgsSPIEfnEBClwMlGpa3y53AVbDZplBgFirVuEW2ds4z6XwqPlGIt5ml/+agwaq/lVMxE3Y0ZCug=
-X-Received: by 2002:a17:902:d54f:b0:1fc:54f6:9f72 with SMTP id
- d9443c01a7336-1fc54f6a40fmr18980475ad.64.1721247445422; Wed, 17 Jul 2024
- 13:17:25 -0700 (PDT)
+	s=arc-20240116; t=1721248063; c=relaxed/simple;
+	bh=J/OWQyo92giRnavqsBKszmwu4Zj1TiqfyEBwb8x92kE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=FUoeRG8Q6C93tQca1DIYCKKyyrY+Fm6wWKfDRwD/AY8UdW34yax7EUH0ikoCmdv0vAI1LmUML2uQKtIldmCDNY25IjuDQhvY5JrAYbSmzmCOJzJgSaaTcgho5lr/YaU2ae7Nnn1lDzXaQ9f4Z+Knk3iRnsNcBzNx9Dl++NKJtrs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0165C2BD10;
+	Wed, 17 Jul 2024 20:27:42 +0000 (UTC)
+Date: Wed, 17 Jul 2024 16:27:41 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Jerome Marchand" <jmarchan@redhat.com>
+Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH 06/38] trace-cmd lib: prevent a memory leak in
+ handle_options()
+Message-ID: <20240717162741.030d8df0@rorschach.local.home>
+In-Reply-To: <20240605134054.2626953-7-jmarchan@redhat.com>
+References: <20240605134054.2626953-1-jmarchan@redhat.com>
+	<20240605134054.2626953-7-jmarchan@redhat.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240717123147.17169873@rorschach.local.home> <20240717174739.186988-1-amadio@gentoo.org>
- <20240717135759.37cf1bcf@rorschach.local.home>
-In-Reply-To: <20240717135759.37cf1bcf@rorschach.local.home>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Wed, 17 Jul 2024 13:17:13 -0700
-Message-ID: <CAM9d7ciaNB+dnhbqpSztd=O51mTXxvzr_bdA-NHzSCboUEyAMw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/5] perf build: libtraceevent, libtracefs feature
- check with pkg-config
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Guilherme Amadio <amadio@gentoo.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Thorsten Leemhuis <linux@leemhuis.info>, Leo Yan <leo.yan@arm.com>, linux-perf-users@vger.kernel.org, 
-	linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jul 17, 2024 at 10:58=E2=80=AFAM Steven Rostedt <rostedt@goodmis.or=
-g> wrote:
->
-> On Wed, 17 Jul 2024 19:47:34 +0200
-> Guilherme Amadio <amadio@gentoo.org> wrote:
->
-> > There is no change in this new submission relative to the last (which h=
-as been
-> > tested by Thorsten to fix the build issue in Fedora). The only change h=
-as been
-> > to add in CC Steven Rostedt and the list linux-trace-devel@vger.kernel.=
-org.
->
-> Thanks,
->
-> For the whole series:
->
-> Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
->
-> Feel free to take it through the perf tree.
+On Wed,  5 Jun 2024 15:40:21 +0200
+"Jerome Marchand" <jmarchan@redhat.com> wrote:
 
-Thanks, I'll add it to perf-tools and send out to v6.11 later.
+> Free buf in the error path.
+> 
+> Fixes a RESOURCE_LEAK error (CWE-772)
+> 
+> Signed-off-by: Jerome Marchand <jmarchan@redhat.com>
+> ---
+>  lib/trace-cmd/trace-input.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+> index ce4ecf43..2cf0d1c1 100644
+> --- a/lib/trace-cmd/trace-input.c
+> +++ b/lib/trace-cmd/trace-input.c
+> @@ -4030,7 +4030,7 @@ static int handle_options(struct tracecmd_input *handle)
+>  		}
+>  		ret = do_read_check(handle, buf, size);
+>  		if (ret)
+> -			goto out;
+> +			goto out_free;
+>  
+>  		switch (option) {
+>  		case TRACECMD_OPTION_DATE:
+> @@ -4084,7 +4084,7 @@ static int handle_options(struct tracecmd_input *handle)
+>  							     buf + 8, 4);
+>  			ret = tsync_cpu_offsets_load(handle, buf + 12, size - 12);
+>  			if (ret < 0)
+> -				goto out;
+> +				goto out_free;
+>  			tracecmd_enable_tsync(handle, true);
+>  			break;
+>  		case TRACECMD_OPTION_CPUSTAT:
+> @@ -4093,7 +4093,7 @@ static int handle_options(struct tracecmd_input *handle)
+>  					   handle->cpustats_size + size + 1);
+>  			if (!cpustats) {
+>  				ret = -ENOMEM;
+> -				goto out;
+> +				goto out_free;
+>  			}
+>  			memcpy(cpustats + handle->cpustats_size, buf, size);
+>  			handle->cpustats_size += size;
+> @@ -4104,7 +4104,7 @@ static int handle_options(struct tracecmd_input *handle)
+>  		case TRACECMD_OPTION_BUFFER_TEXT:
+>  			ret = handle_buffer_option(handle, option, buf, size);
+>  			if (ret < 0)
+> -				goto out;
+> +				goto out_free;
+>  			break;
+>  		case TRACECMD_OPTION_TRACECLOCK:
+>  			tracecmd_parse_trace_clock(handle, buf, size);
+> @@ -4183,6 +4183,8 @@ static int handle_options(struct tracecmd_input *handle)
+>  
+>  	ret = 0;
+>  
 
-Namhyung
+The for (;;) loop ends with a free(buf) and then in the next iteration it can do:
+
+		if (!HAS_SECTIONS(handle) && option == TRACECMD_OPTION_DONE)
+			break;
+
+> +out_free:
+> +	free(buf);
+
+Which will cause this to do a double free.
+
+I'm going to not pull this patch.
+
+-- Steve
+
+
+>  out:
+>  	if (compress)
+>  		in_uncompress_reset(handle);
+
