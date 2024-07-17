@@ -1,29 +1,27 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BF39111A8
-	for <linux-trace-devel@vger.kernel.org>; Wed, 17 Jul 2024 18:50:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9A1B171D8
+	for <linux-trace-devel@vger.kernel.org>; Wed, 17 Jul 2024 19:09:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721242233; cv=none; b=RXgF8c0zqAsxpfkshS7j2rjBk1FnSfEtObUxD6cqzeYZQW7Zryf3lvwsptVjo3SAaRi6P18B3s12vBcHZ3XnI2xSHF0TRqYW5O/prIEx0yRys40e1ovpPNie8ifqLpx51eDve+SkNIb33u7hMs5T8NoUQbRoSu2rCjH7mST6eHE=
+	t=1721243385; cv=none; b=hiPhmNEwak0sR0kMBZwUNytmTW5ezNpNdIpvohRnYkzw/496vy+64cpehPN0g8UPm6cw6Ap2JVQke1HelMYHr27tOJyL0njmPgf5hftryP3E5lFPSs+w1pzowHVzw19GE5/WdXC4c7uqmQ6tKM9d4qtsiTqeR4t3wAdhYeXEsuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721242233; c=relaxed/simple;
-	bh=t6dSuAkrRWREX5kp1Rc7yDN6txgXXVa0c2ZyqnBlUKA=;
+	s=arc-20240116; t=1721243385; c=relaxed/simple;
+	bh=ADE9mj71tY5AzReVA+MU3LkOjiRmUbJkn5aduunDzdY=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JynB1rPjNtPiEdy2LU/mk0HEh4pzO3nkQKqWqNibn0fYxU3uyq8IRvnHzcCKpMQFH9sPVZd5fdYYnQla4t7pwhyWjDwDGkuFs1HUsMMxXv6tQsLwdx6Bjt2xRoOjHglSB5rfHZCOjUwN+tKBpL7jdhmXZThKNJDDecUbJ49UGLc=
+	 MIME-Version:Content-Type; b=i9Sy/aog/+B36oPBf/qIxwOU67zIJRI8iWI/q6BrkrhPT3jjeVCEQCfZElJfgAxeiqJVG/kHpGwjWO4KQntQMIih574TruP8CWc4tumYalyw4CfzpsiYTheWz86ldTus+dkQ8cCEyaqtpCoGt05Q1A8EJmh5jyeVVPUOA+/Dc3E=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BC6FC2BD10;
-	Wed, 17 Jul 2024 18:50:30 +0000 (UTC)
-Date: Wed, 17 Jul 2024 14:50:28 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF652C2BD10;
+	Wed, 17 Jul 2024 19:09:44 +0000 (UTC)
+Date: Wed, 17 Jul 2024 15:09:43 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Jianfeng Wang <jianfeng.w.wang@oracle.com>
-Cc: linux-trace-devel@vger.kernel.org, junxiao.bi@oracle.com
-Subject: Re: [PATCH v2 2/2] trace-cmd: Add ftrace options for the fgraph
- retval feature
-Message-ID: <20240717145028.73683d09@rorschach.local.home>
-In-Reply-To: <20240521213730.67993-3-jianfeng.w.wang@oracle.com>
-References: <20240521213730.67993-1-jianfeng.w.wang@oracle.com>
-	<20240521213730.67993-3-jianfeng.w.wang@oracle.com>
+To: avidanborisov@gmail.com
+Cc: linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH] trace-cmd: ptp-timesync: Turn off Nagle for TCP sockets
+Message-ID: <20240717150943.458d3560@rorschach.local.home>
+In-Reply-To: <20240614132020.1797502-1-avidanborisov@gmail.com>
+References: <20240614132020.1797502-1-avidanborisov@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -34,87 +32,120 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue, 21 May 2024 14:37:30 -0700
-Jianfeng Wang <jianfeng.w.wang@oracle.com> wrote:
+On Fri, 14 Jun 2024 13:20:20 +0000
+avidanborisov@gmail.com wrote:
 
-> Add two internal options for fgraph: fgraph:retval-skip and
-> fgraph:retval-hex. By default, trace-cmd will print each function's
-> return value at the function_graph exit point, if the kernel supports
-> the fgraph-retval feature. If users want to skip the output of
-> functions' return values, then set fgraph:retval-skip. Alternatively,
-> users can set fgraph:retval-hex to force the return values to be
-> printed in hex format.
+> From: Avidan Borisov <avidanborisov@gmail.com>
 > 
-> Here are example commands:
-> > trace-cmd report -O fgraph:retval-skip
-> > trace-cmd report -O fgraph:retval-hex  
+> Currently, to establish a tracing session using PTP as a timestamp sync
+> protocol, trace-cmd sends overall PTP_SYNC_LOOP*NR_CPUS small messages
+> serially one after another. Due to the effects of the Nagle algorithm [1],
+> this will in effect send a message every ~200ms, resulting in
+> PTP_SYNC_LOOP(340)*200ms = ~68 seconds to process a single traced core.
+> 
+> Fix this by setting TCP_NODELAY on any TCP socket created by trace-cmd.
+> 
+> Example on a 32-core machine (host and agent on the same machine for
+> simplicity):
+> 
+> before:
+> $ sudo trace-cmd agent -N localhost -p 12345 -D
+> $ sudo time -p trace-cmd record -p nop -A 127.0.0.1:12345 --name
+> localhost -p nop -- sleep 0
+> Negotiated ptp time sync protocol with guest localhost
+> CPU31 data recorded at offset=0x245000
+>     0 bytes in size (0 uncompressed)
+> real 1968.48
+> user 19.15
+> sys 73.58
+> 
+> after:
+> $ sudo trace-cmd agent -N localhost -p 12345 -D
+> $ sudo time -p trace-cmd record -p nop -A 127.0.0.1:12345 --name
+> localhost -p nop -- sleep 0
+> Negotiated ptp time sync protocol with guest localhost
+> CPU31 data recorded at offset=0x245000
+>     0 bytes in size (0 uncompressed)
+> real 16.52
+> user 1.33
+> sys 1.52
+> 
+> This patch reduced the tracing time from 32 minutes to 16 seconds.
 
-I would like to see a -O fgraph:retval-dec
+Ouch!
 
-As by default most is shown in hex, having an option to do that would
-be great.
+Thanks, I'll go ahead and apply this.
 
 -- Steve
 
 
 > 
-> Signed-off-by: Jianfeng Wang <jianfeng.w.wang@oracle.com>
-> ---
->  lib/trace-cmd/trace-ftrace.c | 22 ++++++++++++++++++----
->  1 file changed, 18 insertions(+), 4 deletions(-)
+> [1]: https://brooker.co.za/blog/2024/05/09/nagle.html
 > 
-> diff --git a/lib/trace-cmd/trace-ftrace.c b/lib/trace-cmd/trace-ftrace.c
-> index 2b4e49a5..d2378833 100644
-> --- a/lib/trace-cmd/trace-ftrace.c
-> +++ b/lib/trace-cmd/trace-ftrace.c
-> @@ -26,6 +26,18 @@ struct tep_plugin_option trace_ftrace_options[] = {
->  		.description =
->  		"Show the depth of each entry",
->  	},
-> +	{
-> +		.name = "retval-skip",
-> +		.plugin_alias = "fgraph",
-> +		.description =
-> +		"Skip printing function retval in function graph",
-> +	},
-> +	{
-> +		.name = "retval-hex",
-> +		.plugin_alias = "fgraph",
-> +		.description =
-> +		"Print function retval in hex at function exit in function graph",
-> +	},
->  	{
->  		.name = NULL,
->  	}
-> @@ -33,6 +45,8 @@ struct tep_plugin_option trace_ftrace_options[] = {
+> Signed-off-by: Avidan Borisov <avidanborisov@gmail.com>
+> ---
+>  tracecmd/include/trace-local.h | 10 ++++++++++
+>  tracecmd/trace-listen.c        |  2 ++
+>  tracecmd/trace-record.c        |  2 ++
+>  3 files changed, 14 insertions(+)
+> 
+> diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+> index 55934f98..1515fbbe 100644
+> --- a/tracecmd/include/trace-local.h
+> +++ b/tracecmd/include/trace-local.h
+> @@ -11,6 +11,8 @@
+>  #include <ctype.h>	/* for isdigit() */
+>  #include <errno.h>
+>  #include <limits.h>
+> +#include <netinet/tcp.h>
+> +#include <netinet/in.h>
 >  
->  static struct tep_plugin_option *fgraph_tail = &trace_ftrace_options[0];
->  static struct tep_plugin_option *fgraph_depth = &trace_ftrace_options[1];
-> +static struct tep_plugin_option *fgraph_retval_skip = &trace_ftrace_options[2];
-> +static struct tep_plugin_option *fgraph_retval_hex = &trace_ftrace_options[3];
+>  #include "trace-cmd-private.h"
+>  #include "event-utils.h"
+> @@ -470,4 +472,12 @@ void make_pid_name(char *buf, const char *pidfile_basename);
+>  void remove_pid_file(const char *pidfile_basename);
+>  void make_pid_file(const char *pidfile_basename);
 >  
->  static int find_ret_event(struct tracecmd_ftrace *finfo, struct tep_handle *pevent)
->  {
-> @@ -235,8 +249,8 @@ print_graph_entry_leaf(struct trace_seq *s,
->  		ret = trace_seq_printf(s, " (%lld)", depth);
+> +static inline void set_tcp_no_delay(int sockfd, int socktype)
+> +{
+> +	int flag = 1;
+> +
+> +	if (socktype == SOCK_STREAM)
+> +		setsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY, &flag, sizeof(flag));
+> +}
+> +
+>  #endif /* __TRACE_LOCAL_H */
+> diff --git a/tracecmd/trace-listen.c b/tracecmd/trace-listen.c
+> index 5894a92d..308c1d9d 100644
+> --- a/tracecmd/trace-listen.c
+> +++ b/tracecmd/trace-listen.c
+> @@ -268,6 +268,7 @@ int trace_net_make(int port, enum port_type type)
+>  		if (sd < 0)
+>  			continue;
 >  
->  	/* Return Value */
-> -	if (ret && fgraph_retval_supported) {
-> -		if (!IS_LINUX_ERR_VALUE(retval))
-> +	if (ret && fgraph_retval_supported && !fgraph_retval_skip->set) {
-> +		if (fgraph_retval_hex->set || !IS_LINUX_ERR_VALUE(retval))
->  			ret = trace_seq_printf(s, " (ret=0x%llx)", retval);
->  		else
->  			ret = trace_seq_printf(s, " (ret=%lld)", retval);
-> @@ -385,8 +399,8 @@ fgraph_ret_handler(struct trace_seq *s, struct tep_record *record,
->  		trace_seq_printf(s, " (%lld)", depth);
+> +		set_tcp_no_delay(sd, rp->ai_socktype);
+>  		if (bind(sd, rp->ai_addr, rp->ai_addrlen) == 0)
+>  			break;
 >  
->  	/* Return Value */
-> -	if (fgraph_retval_supported) {
-> -		if (!IS_LINUX_ERR_VALUE(retval))
-> +	if (fgraph_retval_supported && !fgraph_retval_skip->set) {
-> +		if (fgraph_retval_hex->set || !IS_LINUX_ERR_VALUE(retval))
->  			trace_seq_printf(s, " (ret=0x%llx)", retval);
->  		else
->  			trace_seq_printf(s, " (ret=%lld)", retval);
+> @@ -1048,6 +1049,7 @@ static int get_network(char *port)
+>  		if (sfd < 0)
+>  			continue;
+>  
+> +		set_tcp_no_delay(sfd, rp->ai_socktype);
+>  		if (bind(sfd, rp->ai_addr, rp->ai_addrlen) == 0)
+>  			break;
+>  
+> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+> index 91cc90d4..7d03f9d7 100644
+> --- a/tracecmd/trace-record.c
+> +++ b/tracecmd/trace-record.c
+> @@ -3415,6 +3415,8 @@ static int connect_addr(struct addrinfo *results)
+>  			     rp->ai_protocol);
+>  		if (sfd == -1)
+>  			continue;
+> +
+> +		set_tcp_no_delay(sfd, rp->ai_socktype);
+>  		if (connect(sfd, rp->ai_addr, rp->ai_addrlen) != -1)
+>  			break;
+>  		close(sfd);
 
