@@ -1,29 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCD6D33997
-	for <linux-trace-devel@vger.kernel.org>; Wed, 17 Jul 2024 20:51:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50A1C187327
+	for <linux-trace-devel@vger.kernel.org>; Wed, 17 Jul 2024 20:58:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721249505; cv=none; b=QYPXv0iIHaYh67ire+SxCfObMEkvfQB0ewLrS59sfuTnK9/SVf83B58KJMe3mM2Xv8SD58vIos3QqpTxTxxsyoAPckGodT/IF/u8dbUf5kSwNR9fH+gA7rCH3phNY9krnbRG1tStc5yJb0U3sFYWxmBpbldspS8nTChgtMp2COI=
+	t=1721249911; cv=none; b=N7llkR8jo6pib9CjF4vHJr5r4R08f1AvBlempfnf2nyFXJfFdEPxSvyHSR3F/gYE6Bad6LsEum0oOQaZ8fZN1VRNC+IVzOe/FFNiI9nYpG8jNdMda0526J7J8pE3LpzkJBap+IGe6Y2Yv3h82nNPogKRCnU+uHrZP2+GMtmObGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721249505; c=relaxed/simple;
-	bh=G7jnedZBjXMBCr6jqHHX90zpasKmtitZYSHtGCS8lc4=;
+	s=arc-20240116; t=1721249911; c=relaxed/simple;
+	bh=dy4Jg3NUHHGmlR0vwh3nvixqW/CK6d802WIlRTe1jlk=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LunwPvoK8n8wygTyNnlzA/pX9E5zWs4Z9ExAGyv0Y5nLp/fs37HAOXagQz/dWd4euR6rPf2Bjs6r1N1YbmabGWmyTIoX0+a9j9UVCOhqeekwvavdOpqh9wr0PTGkX7+sJVjCPGP/WjFtgz68dZeMms97ENBVtJ/aCUp2ZB+39rA=
+	 MIME-Version:Content-Type; b=ahrcXT3UOZDJdJuMh26YJmVKaKP05lawzToSILcAgE6iscVAznahd6fUM6D6k4zJlk6FgzR8PKTVzh4Si9uY552ulAORF9+LeYSIvxLtJMuEtPSrTOEoRvML3NQVFIojm292dem/QkZnFCxS+aLiuYrmzhB5rTyjbu+wJbhU48o=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09C8DC2BD10;
-	Wed, 17 Jul 2024 20:51:44 +0000 (UTC)
-Date: Wed, 17 Jul 2024 16:51:43 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B579C2BD10;
+	Wed, 17 Jul 2024 20:58:30 +0000 (UTC)
+Date: Wed, 17 Jul 2024 16:58:28 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: "Jerome Marchand" <jmarchan@redhat.com>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH 13/38] trace-cmd record: prevent a memory leak in
- show_error()
-Message-ID: <20240717165143.7259d261@rorschach.local.home>
-In-Reply-To: <20240605134054.2626953-14-jmarchan@redhat.com>
-References: <20240605134054.2626953-1-jmarchan@redhat.com>
-	<20240605134054.2626953-14-jmarchan@redhat.com>
+To: Jianfeng Wang <jianfeng.w.wang@oracle.com>
+Cc: linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] trace-cmd: Add ftrace options for the fgraph
+ retval feature
+Message-ID: <20240717165828.61057625@rorschach.local.home>
+In-Reply-To: <228cdfa6-29a5-4647-aefb-7fa04c1b1a00@oracle.com>
+References: <20240521213730.67993-1-jianfeng.w.wang@oracle.com>
+	<20240521213730.67993-3-jianfeng.w.wang@oracle.com>
+	<20240717145028.73683d09@rorschach.local.home>
+	<228cdfa6-29a5-4647-aefb-7fa04c1b1a00@oracle.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -34,55 +36,96 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed,  5 Jun 2024 15:40:28 +0200
-"Jerome Marchand" <jmarchan@redhat.com> wrote:
+On Wed, 17 Jul 2024 13:44:43 -0700
+Jianfeng Wang <jianfeng.w.wang@oracle.com> wrote:
 
-> In show_error() the pointer p is used for several functions. At some
-> point it is used to contain the error log file. It's not freed before
-> being replaced by the result of read_file(path), which is not freed
-> either. Free p in both case.
+> On 7/17/24 11:50 AM, Steven Rostedt wrote:
+> > On Tue, 21 May 2024 14:37:30 -0700
+> > Jianfeng Wang <jianfeng.w.wang@oracle.com> wrote:
+> >   
+> >> Add two internal options for fgraph: fgraph:retval-skip and
+> >> fgraph:retval-hex. By default, trace-cmd will print each function's
+> >> return value at the function_graph exit point, if the kernel supports
+> >> the fgraph-retval feature. If users want to skip the output of
+> >> functions' return values, then set fgraph:retval-skip. Alternatively,
+> >> users can set fgraph:retval-hex to force the return values to be
+> >> printed in hex format.
+> >>
+> >> Here are example commands:  
+> >>> trace-cmd report -O fgraph:retval-skip
+> >>> trace-cmd report -O fgraph:retval-hex    
+> > 
+> > I would like to see a -O fgraph:retval-dec
+> > 
+> > As by default most is shown in hex, having an option to do that would
+> > be great.
+> > 
+> > -- Steve
+> > 
+> >   
+> 
+> Hi Steve,
+> 
+> Sorry, I am confused about this.
+> 
+> Do you suggesting adding one more option fgraph:retval-dec or
+> replacing fgraph:retval-hex with fgraph:retval-dec (and making the hex
+> format as the default)?
 
-This isn't that big of a deal as this is just an application that is
-about to exit anyway. But I'm fine with freeing it. That said:
+I'd be happy to add both.
 
 > 
-> Fixes a RESOURCE_LEAK error (CWE-772)
-> 
-> Signed-off-by: Jerome Marchand <jmarchan@redhat.com>
-> ---
->  tracecmd/trace-record.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-> index f05a58d1..3e29f922 100644
-> --- a/tracecmd/trace-record.c
-> +++ b/tracecmd/trace-record.c
-> @@ -2364,13 +2364,16 @@ static void show_error(const char *file,
-> const char *type) goto read_file;
->  		}
->  		read_error_log(p);
-> +		free(p);
->  		goto out;
->  	}
->  
->   read_file:
->  	p = read_file(path);
-> -	if (p)
-> +	if (p) {
->  		printf("%s", p);
-> +		free(p);
-> +	}
->  
->   out:
+> Currently, the patch prints return values in decimal by default
+> (without any input), while users can specify fgraph:retval-hex to let
+> numbers printed in hex.
 
-It would be much cleaner to just add:
+It does?
 
-	free(p);
+I don't see that:
 
-here, and remove the above two calls.
+ $ trace-cmd report
+[..]
+           sleep-898   [006] ...1.   206.855186: funcgraph_entry:                   |  mutex_unlock() {
+           sleep-898   [006] ...1.   206.855188: funcgraph_entry:        1.439 us   |    __mutex_unlock_slowpath(); (ret=0x0)
+           sleep-898   [006] .....   206.855191: funcgraph_exit:         4.828 us   |  } (ret=0x0)
+           sleep-898   [006] ...1.   206.855192: funcgraph_entry:        0.781 us   |  preempt_count_add(); (ret=0x202)
+           sleep-898   [006] ...2.   206.855193: funcgraph_entry:                   |  rcu_read_lock_any_held() {
+           sleep-898   [006] ...2.   206.855194: funcgraph_entry:        0.738 us   |    rcu_lockdep_current_cpu_online(); (ret=0x1)
+           sleep-898   [006] ...1.   206.855195: funcgraph_exit:         2.243 us   |  } (ret=0x1)
+           sleep-898   [006] ...2.   206.855196: funcgraph_entry:        0.814 us   |  preempt_count_sub(); (ret=0x2f3e8)
+           sleep-898   [006] ...1.   206.855198: funcgraph_entry:                   |  __f_unlock_pos() {
+           sleep-898   [006] ...1.   206.855199: funcgraph_entry:                   |    mutex_unlock() {
+           sleep-898   [006] ...1.   206.855199: funcgraph_entry:        0.851 us   |      __mutex_unlock_slowpath(); (ret=0x0)
+           sleep-898   [006] .....   206.855201: funcgraph_exit:         2.426 us   |    } (ret=0x0)
+           sleep-898   [006] .....   206.855202: funcgraph_exit:         3.994 us   |  } (ret=0x0)
 
->  	printf("Failed %s of %s\n", type, file);
+> >> @@ -235,8 +249,8 @@ print_graph_entry_leaf(struct trace_seq *s,
+> >>  		ret = trace_seq_printf(s, " (%lld)", depth);
+> >>  
+> >>  	/* Return Value */
+> >> -	if (ret && fgraph_retval_supported) {
+> >> -		if (!IS_LINUX_ERR_VALUE(retval))
+> >> +	if (ret && fgraph_retval_supported && !fgraph_retval_skip->set) {
+> >> +		if (fgraph_retval_hex->set || !IS_LINUX_ERR_VALUE(retval))
 
-I'll skip this patch too.
+It prints out hex if the value is not an error. Only errors show
+decimal output.
 
 -- Steve
+
+> >>  			ret = trace_seq_printf(s, " (ret=0x%llx)", retval);
+> >>  		else
+> >>  			ret = trace_seq_printf(s, " (ret=%lld)", retval);
+> >> @@ -385,8 +399,8 @@ fgraph_ret_handler(struct trace_seq *s, struct tep_record *record,
+> >>  		trace_seq_printf(s, " (%lld)", depth);
+> >>  
+> >>  	/* Return Value */
+> >> -	if (fgraph_retval_supported) {
+> >> -		if (!IS_LINUX_ERR_VALUE(retval))
+> >> +	if (fgraph_retval_supported && !fgraph_retval_skip->set) {
+> >> +		if (fgraph_retval_hex->set || !IS_LINUX_ERR_VALUE(retval))
+> >>  			trace_seq_printf(s, " (ret=0x%llx)", retval);
+> >>  		else
+> >>  			trace_seq_printf(s, " (ret=%lld)", retval);  
+> >   
+
