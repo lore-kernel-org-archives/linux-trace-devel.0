@@ -1,61 +1,85 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.gentoo.org (woodpecker.gentoo.org [140.211.166.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65F3B18EA82
-	for <linux-trace-devel@vger.kernel.org>; Mon, 15 Jul 2024 15:12:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63B03184F;
+	Wed, 17 Jul 2024 17:47:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721056373; cv=none; b=paeF5ZoZTkyskDAIG6GWQlRt2xyRH2B6FmnwptZqnHsG4pSYhJTeVwTvoJnzjqJzEDIDkC65uX/aW49EipX0zA6QPY6g/oagc5rbqHSwvPUMRPvNHpLuMo+gqM/BofqEDKjQn4RmAzcv5SDmBApVMDucPRIOA9U+yGBnueoyF8s=
+	t=1721238450; cv=none; b=WG1fayJwYp2VWJ3CG+1Y6oHEhDPr0V/6DZsnXTd973NEYxGv9zuVdBTtOwYjgoKxH9fCCgXqNTGPCeBuW1/BFQsPmSSiUqbwNzZCBt3kP/m3a7uozvb6fHAbHF0oFl/V1n1OxfK5kUKIEV8jG14Nt/sc5dOveU5+TFCEFGVAl3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721056373; c=relaxed/simple;
-	bh=hE7hUY7+Gn6Jd0eApOtjrrxXRkTgg2MXDrQTXkflB+8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lpTubSmTHWpepSAR4ZBXq7kwTZ/HKhBTxBpSRSfCoEpmaMLVxfEzoBcyeLHKtjvK+Mz2pYo/2UFx6ql8Kq9WIk6aJNtVZcCfaAIgecxcE4GEyiM1CArsnCArLf5V25fO2bOgmCRrXPRHqFstvhGb9U6ahXxpo/kB+KNB75P6kLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38DFDC32782;
-	Mon, 15 Jul 2024 15:12:52 +0000 (UTC)
-Date: Mon, 15 Jul 2024 11:12:50 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Schmidt, Adriaan" <adriaan.schmidt@siemens.com>
-Cc: Tejun Heo <tj@kernel.org>, "linux-trace-devel@vger.kernel.org"
- <linux-trace-devel@vger.kernel.org>, Johannes Berg
- <johannes@sipsolutions.net>, "yselkowi@redhat.com" <yselkowi@redhat.com>
-Subject: Re: [PATCH] trace-cmd: python: Update python module
-Message-ID: <20240715111250.2b2ba512@rorschach.local.home>
-In-Reply-To: <AS4PR10MB5318B6DCD04F15271B9360DCEDA12@AS4PR10MB5318.EURPRD10.PROD.OUTLOOK.COM>
-References: <Y+w51nOhNd+PGo/k@slm.duckdns.org>
-	<20230214205354.51f119c3@rorschach.local.home>
-	<AS4PR10MB5318B6DCD04F15271B9360DCEDA12@AS4PR10MB5318.EURPRD10.PROD.OUTLOOK.COM>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1721238450; c=relaxed/simple;
+	bh=tnjtNM4Sj/0t9WhNNHq9CQZPCLxHpd0e8rB1onf2S9g=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=hfxX4ERJ4WNz3kko5sazTrmG7AzxMLl+5flcfxJvAG/bKO0B4ZB2hm7T7tiFLFuFBhvmNuAKmfdDznPzVpiOMJdcsoXQIkbQxax+Q7y08G+Y2jTfvxVZDmIaxUQ4E8+cnWKeaK5lyCr//YBXxTNtpqQZdftHjktXMVJ2VLruGt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentoo.org; spf=pass smtp.mailfrom=gentoo.org; arc=none smtp.client-ip=140.211.166.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentoo.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentoo.org
+From: Guilherme Amadio <amadio@gentoo.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ian Rogers <irogers@google.com>,
+	Thorsten Leemhuis <linux@leemhuis.info>,
+	Leo Yan <leo.yan@arm.com>,
+	linux-perf-users@vger.kernel.org,
+	linux-trace-devel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/5] perf build: libtraceevent, libtracefs feature check with pkg-config
+Date: Wed, 17 Jul 2024 19:47:34 +0200
+Message-Id: <20240717174739.186988-1-amadio@gentoo.org>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20240717123147.17169873@rorschach.local.home>
+References: <20240717123147.17169873@rorschach.local.home>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Mon, 15 Jul 2024 12:11:57 +0000
-"Schmidt, Adriaan" <adriaan.schmidt@siemens.com> wrote:
+This patch series is a continuation of recent work to use pkg-config for feature
+checks for libtraceevent and libtracefs.
 
-> Hi,
-> 
-> Bumping this old-but-still-relevant patch...
-> There is a related item on Bugzilla [1], and there was also a more
-> recent proposal to touch the python bindings [2], and I believe the
-> issue addressed there (use old Python API) would also be fixed by
-> this patch.
-> 
+The original intention of the first patches was to fix build issues with
+libtracefs installed with its meson build system (used in Gentoo), which
+installs headers in a different directory as the make build system. This has
+been reported here: https://github.com/rostedt/libtracefs/issues/3
 
-Thanks for the bump. I'll try to get some time to get to it in the
-following weeks.
+In order to fix the feature check, instead of using #include <tracefs/tracefs.h>
+in tools/build/feature/test-libtracefs.c, we need to use #include <tracefs.h>
+and add the appropriate -I flag for the include directory, which is what is now
+done with pkg-config. An unintended consequence of this (reported by Thorsten)
+was that other tools which also perform the same feature check for libtracefs
+became broken, because the initial patch only set the include flag for perf in
+tools/perf/Makefile.config.
 
--- Steve
+This patch series fixes this issue by moving the feature check flags to the file
+tools/build/Makefile.feature, which ensures the flags get set for all tools that
+need them. I tried to write the new code in a way that would be easily extensible
+to other dependencies that may be used via pkg-config as well.
 
-> Thanks,
-> Adriaan
-> 
-> [1] https://bugzilla.kernel.org/show_bug.cgi?id=217104
-> [2] https://lore.kernel.org/all/20240623171109.691772-1-yselkowi@redhat.com/
-> 
+There is no change in this new submission relative to the last (which has been
+tested by Thorsten to fix the build issue in Fedora). The only change has been
+to add in CC Steven Rostedt and the list linux-trace-devel@vger.kernel.org.
+
+Best regards,
+-Guilherme
+
+Guilherme Amadio (5):
+  perf build: Warn if libtracefs is not found
+  tools: Make pkg-config dependency checks usable by other tools
+  tools/verification: Use pkg-config in lib_setup of Makefile.config
+  tools/rtla: Use pkg-config in lib_setup of Makefile.config
+  tools/latency: Use pkg-config in lib_setup of Makefile.config
+
+ tools/build/Makefile.feature          | 18 ++++++++++++++++++
+ tools/perf/Makefile.config            | 13 +++++--------
+ tools/tracing/latency/Makefile.config |  3 ++-
+ tools/tracing/rtla/Makefile.config    |  3 ++-
+ tools/verification/rv/Makefile.config |  3 ++-
+ 5 files changed, 29 insertions(+), 11 deletions(-)
+
+-- 
+2.39.3
+
