@@ -1,82 +1,101 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 433A055886
-	for <linux-trace-devel@vger.kernel.org>; Wed, 17 Jul 2024 22:55:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9555C45013
+	for <linux-trace-devel@vger.kernel.org>; Wed, 17 Jul 2024 23:17:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721256920; cv=none; b=kDGsIwW6qb7txsg7NPph/aePvQPvcGlpI5HrtfznYz1e1Jb4E/WQQV4kNkIvNJBdz4uMY9pptlwFJdxnLBl+mekO1iLxSbKHys4g+NIqCkUBA//WWvE3VJZO30RPqlbputzAdI0jaPF5d3kqn4YSM+5qb4pXzI9LBqRkegF5AiA=
+	t=1721258231; cv=none; b=KK2A0MbycB/8iAv9W29tDhY4I/IVpDUVpVHZ4xfLBbct1BKSmNK4eUzCL4C8qMhJXpyTsKN2XwvdWLQdxg0gau3Q8XOYoXM2CBslmEkSxctvro+ZHOkTooAFcvjj7vjYppxiSnocJNNsh3w7IK0MgTgWq9rVN/0gKJUzaHSBvVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721256920; c=relaxed/simple;
-	bh=zb2tzD9vXqnqjVrZQ9BeqZW7OjcUn5rYqfVm9Sz9eco=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QrAoizw2XwD3V/Iiihg/uMtfJkwZfRKbjY/t44gxNcgWvwoj2Hti+nbR5AguoEZP80SP61PqPXI1picsQ7R/AjZMrcBT2MR4RXdzgI6Ex1vNBUuzh+K50pOjohaP0X80r0/V95rRBLUXURGHnxDJvKXb/L3RI09VTZGu9y/J/NQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 837A1C2BD10;
-	Wed, 17 Jul 2024 22:55:19 +0000 (UTC)
-Date: Wed, 17 Jul 2024 18:55:21 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Jerome Marchand" <jmarchan@redhat.com>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH 22/38] trace-cmd dump: prevent buffer overrun in
- dump_clock()
-Message-ID: <20240717185521.0589659e@gandalf.local.home>
-In-Reply-To: <20240605134054.2626953-23-jmarchan@redhat.com>
-References: <20240605134054.2626953-1-jmarchan@redhat.com>
-	<20240605134054.2626953-23-jmarchan@redhat.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1721258231; c=relaxed/simple;
+	bh=mHPdD5kSzKl59xGiRNxzvwOOw/plFbGx7YpHbENbFlI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z2v5FrcP1eZMDsULB+VWk+GTXcu3lbwuy8e4JJK9bge5Qlxzhsl7YN/X9BuShVWUa7FVMp9hkxh6qyeK7Z1UUWlKbho++mrFMso/N3OjZrxQl1wH3HgWJ00SOxoWo/qq9yWoWl+kg8fEthROApjhOD/UcMmuZlI0iPHo8b/gWbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=dyVp7fHt; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="dyVp7fHt"
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46HN66Hk014680;
+	Wed, 17 Jul 2024 23:17:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=corp-2023-11-20; bh=boeaVyIBwmj//o
+	CHhJi6txp0b0RmUcye5sHpo5FWdf4=; b=dyVp7fHtwK4R3B9mYQXQw9by4zE6xC
+	mFQwxcR6pyQNTm2a/kLxf49fufvjov1pz9gBSXfD01rlVA4Qirb/FHQxbDXp/37m
+	ifiGdqeF7hSOSGOJVpRwQ3Hu4zS11QwaQvT+SRthPk0ZmkqwkGkhiOiYt1QB0rjm
+	iB9J3uhomIOBbmrfbgs2QJS77GvbtqcjW19EnCKfq6ABjjN2Be4zGsmLzALH5DwO
+	L/qsBKr1L/xFxNhXj9hMl6ZKvHPOmObPDGXxlE8SeifsVUUy63w+ISbMnkSUH+Uq
+	tpSLLs8tqhgzN4GseVyeWNY44WaAAyDkJQv5Bo/UzTEIbajAD41bl4fQ==
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 40eqapg0gs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 17 Jul 2024 23:17:05 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 46HMp4ok006695;
+	Wed, 17 Jul 2024 23:17:05 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 40dwey710v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 17 Jul 2024 23:17:05 +0000
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 46HNH4Lk013450;
+	Wed, 17 Jul 2024 23:17:04 GMT
+Received: from jfwang-mac.us.oracle.com (dhcp-10-65-155-38.vpn.oracle.com [10.65.155.38])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 40dwey7105-1;
+	Wed, 17 Jul 2024 23:17:04 +0000
+From: Jianfeng Wang <jianfeng.w.wang@oracle.com>
+To: linux-trace-devel@vger.kernel.org
+Cc: rostedt@goodmis.org, jianfeng.w.wang@oracle.com
+Subject: [PATCH v3 0/2] trace-cmd report: support function retval in function_graph
+Date: Wed, 17 Jul 2024 16:17:01 -0700
+Message-ID: <20240717231703.46744-1-jianfeng.w.wang@oracle.com>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-07-17_17,2024-07-17_02,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 mlxscore=0
+ malwarescore=0 adultscore=0 phishscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2407110000
+ definitions=main-2407170176
+X-Proofpoint-ORIG-GUID: a-ct_m4dc5b49PoP5dSIWtegp1Bz3qa7
+X-Proofpoint-GUID: a-ct_m4dc5b49PoP5dSIWtegp1Bz3qa7
 
+The upstream Linux kernel has introduced a funcgraph retval feature
+for the function_graph tracer. (Commit ID:
+a1be9ccc57f07d54278be34eed6bd679bc941c97). This patchset is to utilize
+this feature to support printing each function's return value in
+'trace-cmd report'. Add three fgraph options so that users can skip
+the printing, and force the return values to be printed in decimal
+or in hex format.
 
-Note, please start the subject with a capital letter:
+Change history:
+===============
+v3:
+- Fix code format.
+- Add fgraph:retval-dec option.
 
-  trace-cmd dump: Prevent buffer overrun in dump_clock()
+v2:
+- Check if a retval is an error code: if not, print it in hex.
+- Make this retval feature on by default.
+- Add fgraph:retval-skip and fgraph:retval-hex options.
 
-On Wed,  5 Jun 2024 15:40:37 +0200
-"Jerome Marchand" <jmarchan@redhat.com> wrote:
+v1: https://lore.kernel.org/linux-trace-devel/20240415154921.4998-1-jianfeng.w.wang@oracle.com
 
-> The clock isn't big enough to hold the string with the null
-> terminating character. Worse, clock[size], which is out of range, is
-> set to 0. Allocate a big enough buffer.
-> 
-> Fixes an OVERRUN error (CWE-119)
-> 
-> Signed-off-by: Jerome Marchand <jmarchan@redhat.com>
-> ---
->  tracecmd/trace-dump.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
-> index 11c1baf1..c0a282c9 100644
-> --- a/tracecmd/trace-dump.c
-> +++ b/tracecmd/trace-dump.c
-> @@ -961,7 +961,7 @@ static void dump_clock(int fd)
->  	}
->  	if (read_file_number(fd, &size, 8))
->  		die("cannot read clock size");
-> -	clock = calloc(1, size);
-> +	clock = calloc(1, size+1);
+Jianfeng Wang (2):
+  trace-cmd report: Print function retval in function_graph
+  trace-cmd report: Add options for the fgraph retval feature
 
-Also we follow the Linux kernel syntax. Please add spaces.
+ lib/trace-cmd/trace-ftrace.c | 72 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 72 insertions(+)
 
-	clock = calloc(1, size + 1);
-
-Care to resend. I'll skip this patch as well.
-
-Thanks,
-
--- Steve
-
-
-
->  	if (!clock)
->  		die("cannot allocate clock %lld bytes", size);
->  
+-- 
+2.42.1
 
