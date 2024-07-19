@@ -1,24 +1,27 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55D65A32
-	for <linux-trace-devel@vger.kernel.org>; Fri, 19 Jul 2024 01:48:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 227BD2BB05
+	for <linux-trace-devel@vger.kernel.org>; Fri, 19 Jul 2024 20:32:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721353682; cv=none; b=h2axh6A8qDDSNCFQZYnIulj7A/hbbWZsdetoYONPYURAVw/6qJQUBCM4JLSiu7eXCDcQ3Lkno71RCzPUM/QT9lwDvaQfB9SdClHjcHESP9SJOWhsT+jaYDYYwypw3qbRNbznj2AhPiN27Lsu9ZSXifV0qSfw6F1UQrGYkV3URbA=
+	t=1721421156; cv=none; b=BI/Q/dSvPoNB7T3NXRZb+b6JaCj9I6RfqTDyhTbeZ3E30RNyGG/SYZmu3gigfCxbyIG2e7Dbg1xg9NBVme4UiGXwUmAGgXwOfHlJqidQa+sscDrUeQEPuhZxEGXaQHblpnq2HjDrZ4e9w+bIukLoMVDUATB8/slITbp/EPH3Wpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721353682; c=relaxed/simple;
-	bh=6xzJxTWOvvNjxAZjapiKRHXU6zN8HAyK7INl3baD6k0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=OtX8b7GLqoI1b0Q8XoGH+iodUG+tgFf+PFVscO6gSLYvsz+7LPonCD366gv+VUUqlp2iWXNFrdM/YKKBxXp8mZrlmmPW0ZjNtvPvv6BF/xlDseGh6gy+cGeZdSN7OdIXRTiURxwRKUHGM1tVOuQ5Ohu60+nZasKf8xAibJaHKh0=
+	s=arc-20240116; t=1721421156; c=relaxed/simple;
+	bh=UN0jnWNCXx289nJ+bQWmeUJENTZ7sWAMJhYi2I2xK3I=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fHsUPHb49SS2YaZ/Ks9mM/iM20lEJeXWO6ecUC570zaJ+ys17SeW1ZjwHJWK+XmiJYnbtJNke2vNoAHyKJNfYn5dcDFxjVUgly2RREA0Cql9DofwMvnQZjZ4Lcz4c3iseRjqRg7GIO6r15dZnrsvAT3x84t4sAXcHg4Ohd+Zcoo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BDC7C116B1;
-	Fri, 19 Jul 2024 01:48:01 +0000 (UTC)
-Date: Thu, 18 Jul 2024 21:48:06 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45764C4AF0E;
+	Fri, 19 Jul 2024 20:32:35 +0000 (UTC)
+Date: Fri, 19 Jul 2024 16:32:41 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: Jerome Marchand <jmarchan@redhat.com>
-Subject: [PATCH] trace-cmd record: Do not remove instances with -v
-Message-ID: <20240718214806.27dfb413@gandalf.local.home>
+To: Namhyung Kim <namhyung@gmail.com>
+Cc: linux-trace-devel@vger.kernel.org, Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH] libtraceevent: Fix a double free in process_op()
+Message-ID: <20240719163242.690f4c0e@gandalf.local.home>
+In-Reply-To: <20240626033949.1017381-1-namhyung@google.com>
+References: <20240626033949.1017381-1-namhyung@google.com>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -29,36 +32,77 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Tue, 25 Jun 2024 20:39:49 -0700
+Namhyung Kim <namhyung@gmail.com> wrote:
 
-The -v option was extended to delete instances. But this does not make sense
-with the 'record' command. It only makes sense with the 'set' command.
-Make sure that the 'set' command is used when deleting an instance,
-otherwise it can cause adverse effects on the record side.
+> When process_cond() failed, it freed the token but didn't reset the
+> arg->op.op to NULL.  So it tried to free the arg->op.op again from
+> free_arg() from the caller and resulted in a double free.
+> 
+> Signed-off-by: Namhyung Kim <namhyung@google.com>
+> ---
+>  src/event-parse.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/src/event-parse.c b/src/event-parse.c
+> index 9f0522c..c327917 100644
+> --- a/src/event-parse.c
+> +++ b/src/event-parse.c
+> @@ -2375,8 +2375,11 @@ process_op(struct tep_event *event, struct tep_print_arg *arg, char **tok)
+>  
+>  		/* it will set arg->op.right */
+>  		type = process_cond(event, arg, tok);
+> -		if (type == TEP_EVENT_ERROR)
+> -			free(token);
+> +		if (type == TEP_EVENT_ERROR) {
+> +			/* arg->op.op (= token) will be freed at out_free */
+> +			arg->op.op = NULL;
+> +			goto out_free;
+> +		}
+>  
+>  	} else if (strcmp(token, ">>") == 0 ||
+>  		   strcmp(token, "<<") == 0 ||
 
-Link: https://lore.kernel.org/all/20240605134054.2626953-34-jmarchan@redhat.com/
+Hmm, so this fixes:
 
-Fixes: 2a3c58e75 ("trace-cmd: Extend option "-v" to delete an ftrace instance")
-Reported-by: Jerome Marchand <jmarchan@redhat.com>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- tracecmd/trace-record.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+76a0eb8d5a20c ("libtraceevent: Fix event-parse memory leak in process_cond")
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 4e9ac598..1527be11 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -6748,7 +6748,8 @@ static void parse_record_options(int argc,
- 			ctx->instance = allocate_instance(optarg);
- 			if (!ctx->instance)
- 				die("Failed to create instance");
--			ctx->instance->delete = negative;
-+			if (IS_CMDSET(ctx))
-+				ctx->instance->delete = negative;
- 			negative = 0;
- 			if (ctx->instance->delete) {
- 				ctx->instance->next = del_list;
--- 
-2.43.0
+Which added:
 
++               if (type == TEP_EVENT_ERROR)
++                       free(token);
+
+because of a memory leak. But if token is arg->op, and we should be freeing
+that arg, how did it end up being a leak?
+
+Because args->op.left is allocated. Whatever frees that, should also have
+freed args->op.op.
+
+I'm getting a feeling that we are missing the real bug.
+
+Perhaps the real fix was:
+
+diff --git a/src/event-parse.c b/src/event-parse.c
+index 9f0522c8d9e4..c7ffad116c3f 100644
+--- a/src/event-parse.c
++++ b/src/event-parse.c
+@@ -2375,8 +2375,6 @@ process_op(struct tep_event *event, struct tep_print_arg *arg, char **tok)
+ 
+ 		/* it will set arg->op.right */
+ 		type = process_cond(event, arg, tok);
+-		if (type == TEP_EVENT_ERROR)
+-			free(token);
+ 
+ 	} else if (strcmp(token, ">>") == 0 ||
+ 		   strcmp(token, "<<") == 0 ||
+@@ -2587,6 +2585,9 @@ static int alloc_and_process_delim(struct tep_event *event, char *next_token,
+ 	if (type == TEP_EVENT_OP) {
+ 		type = process_op(event, field, &token);
+ 
++		if (type == TEP_EVENT_ERROR)
++			goto out_error;
++
+ 		if (consolidate_op_arg(field) < 0)
+ 			type = TEP_EVENT_ERROR;
+ 
+-- Steve
