@@ -1,29 +1,29 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 094C914430D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0950B1448D8
 	for <linux-trace-devel@vger.kernel.org>; Tue, 23 Jul 2024 22:08:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721772518; cv=none; b=RMsYzu9mf5JE+VMIJ5xPVg/+2ra+vvzPUp7oNwk7AKDTBCb11BlR5z7otopWTqTQY97yumapghd+G3vNUzwWrSplv2jCKPTIha+Ush3zVpACZlDLVPBY8rT6ywFSiQndYJbvtxOFECBsocaN30GVpWRPG0+KlOQXs87jR4qm3YQ=
+	t=1721772518; cv=none; b=spROo9+tuFspNkXDX0CxWqdYxUqfOKHxnRMMgFkAMoLQG9MSQNNhdn/3JHkK/Rm8iY8UbI9iJux7yKYzsmF0Os5NXSXK8CQgFggGfbYzJ8bA4+Z8vPsBhAwpg+PiupFkJTELlPGslZFYyTNUbQ51DlMjU7NpWHA0Octaaof4RNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1721772518; c=relaxed/simple;
-	bh=Fca6sW65qSo/PW/fmQkM8UOqrKriRvFkOT5nMXiIwB0=;
+	bh=ICudxA5cKjcIndP05XQI+uWbSyR2pzGGZzY57Q61E2Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BmZAEKzsG2fYFDiLtG7L7hXNz9H05pBWhDo4rCd/NdIlCH4/O1xCTHc/opJCFzGSdbAXQ38vpUA8TRYZGHqYzFjH67TE3SHp6e7ejDYDBzIWQN+RCbpCPL0fdPbZ868fdlvyh0v3YWEaHsVPgA5Vvy+xUpJhBmFpYdhP9GUtK4w=
+	 MIME-Version; b=rNah3vksgRzKAzq6RkxLBUsXPB7nHvPRZKa/cD4oWye93MugtxG6KUZ/r/pNF7i06RHzfj0Z3CMDvViZkkb57uaRPYqJvzXK61UBNFzVRaQZ3stM92Sq5le2V8AVnJ/PaipQldXjIOr5W4WAtAEqmYbGLuCiUxSo64ezcU66Hpw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5BCCC4AF10;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3B12C4AF0A;
 	Tue, 23 Jul 2024 22:08:37 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.98)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1sWNgk-000000023G1-34VA;
+	id 1sWNgk-000000023Fy-2x1t;
 	Tue, 23 Jul 2024 18:08:54 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 2/3] libtracefs: Add cpu-map sample to trace mapped buffer
-Date: Tue, 23 Jul 2024 18:07:24 -0400
-Message-ID: <20240723220853.489058-3-rostedt@goodmis.org>
+Subject: [PATCH 1/3] libtracefs: Enable mmapped ring buffer
+Date: Tue, 23 Jul 2024 18:07:23 -0400
+Message-ID: <20240723220853.489058-2-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240723220853.489058-1-rostedt@goodmis.org>
 References: <20240723220853.489058-1-rostedt@goodmis.org>
@@ -37,124 +37,51 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add a sample program that reads the trace buffer with the mapped open.
+As of v6.10, ring buffer user space mapping is now supported by the Linux
+kernel. This also means that it is an official API. Copy the latest API from
+that kernel into the trace_mmap.h file and make it accessible to user space
+programs.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- samples/Makefile  |  2 ++
- samples/cpu-map.c | 90 +++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 92 insertions(+)
- create mode 100644 samples/cpu-map.c
+ src/tracefs-mmap.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/samples/Makefile b/samples/Makefile
-index 81c8006f823e..7b68ae7ad34c 100644
---- a/samples/Makefile
-+++ b/samples/Makefile
-@@ -67,6 +67,8 @@ $(EXAMPLES): $(patsubst %,$(sdir)/%,$(TARGETS))
- #
- # $(bdir)/XX.o: $(bdir)/XX.c
- #	$(CC) -g -Wall $(CFLAGS) -c -o $@ $^ -I../include/ $(LIBTRACEEVENT_INCLUDES)
-+$(bdir)/cpu-map.o: $(bdir)/cpu-map.c
-+	$(CC) -g -Wall $(CFLAGS) -c -o $@ $^ -I../include/ $(LIBTRACEEVENT_INCLUDES)
- $(bdir)/kprobes.o: $(bdir)/kprobes.c
- 	$(CC) -g -Wall $(CFLAGS) -c -o $@ $^ -I../include/ $(LIBTRACEEVENT_INCLUDES)
+diff --git a/src/tracefs-mmap.c b/src/tracefs-mmap.c
+index a0130bbc1cbe..44d1597f1ba5 100644
+--- a/src/tracefs-mmap.c
++++ b/src/tracefs-mmap.c
+@@ -22,8 +22,8 @@
+  * @entries:		Number of entries in the ring-buffer.
+  * @overrun:		Number of entries lost in the ring-buffer.
+  * @read:		Number of entries that have been read.
+- * @Reserved1:		Reserved for future use.
+- * @Reserved2:		Reserved for future use.
++ * @Reserved1:		Internal use only.
++ * @Reserved2:		Internal use only.
+  */
+ struct trace_buffer_meta {
+ 	__u32		meta_page_size;
+@@ -48,7 +48,7 @@ struct trace_buffer_meta {
+ 	__u64	Reserved2;
+ };
  
-diff --git a/samples/cpu-map.c b/samples/cpu-map.c
-new file mode 100644
-index 000000000000..b42742d8d073
---- /dev/null
-+++ b/samples/cpu-map.c
-@@ -0,0 +1,90 @@
-+#include <stdlib.h>
-+#include <ctype.h>
-+#include <tracefs.h>
-+
-+static void read_subbuf(struct tep_handle *tep, struct kbuffer *kbuf)
-+{
-+	static struct trace_seq seq;
-+	struct tep_record record;
-+	int missed_events;
-+
-+	if (seq.buffer)
-+		trace_seq_reset(&seq);
-+	else
-+		trace_seq_init(&seq);
-+
-+	while ((record.data = kbuffer_read_event(kbuf, &record.ts))) {
-+		record.size = kbuffer_event_size(kbuf);
-+		missed_events = kbuffer_missed_events(kbuf);
-+		if (missed_events) {
-+			printf("[MISSED EVENTS");
-+			if (missed_events > 0)
-+				printf(": %d]\n", missed_events);
-+			else
-+				printf("]\n");
-+		}
-+		kbuffer_next_event(kbuf, NULL);
-+		tep_print_event(tep, &seq, &record,
-+				"%s-%d %6.1000d\t%s: %s\n",
-+				TEP_PRINT_COMM,
-+				TEP_PRINT_PID,
-+				TEP_PRINT_TIME,
-+				TEP_PRINT_NAME,
-+				TEP_PRINT_INFO);
-+		trace_seq_do_printf(&seq);
-+		trace_seq_reset(&seq);
-+	}
-+}
-+
-+int main (int argc, char **argv)
-+{
-+	struct tracefs_cpu *tcpu;
-+	struct tep_handle *tep;
-+	struct kbuffer *kbuf;
-+	bool mapped;
-+	int cpu;
-+
-+	if (argc < 2 || !isdigit(argv[1][0])) {
-+		printf("usage: %s cpu\n\n", argv[0]);
-+		exit(-1);
-+	}
-+
-+	cpu = atoi(argv[1]);
-+
-+	tep = tracefs_local_events(NULL);
-+	if (!tep) {
-+		perror("Reading trace event formats");
-+		exit(-1);
-+	}
-+
-+	tcpu = tracefs_cpu_open_mapped(NULL, cpu, 0);
-+	if (!tcpu) {
-+		perror("Open CPU 0 file");
-+		exit(-1);
-+	}
-+
-+	/*
-+	 * If this kernel supports mapping, use normal read,
-+	 * otherwise use the piped buffer read, although if
-+	 * the mapping succeeded, tracefs_cpu_buffered_read_buf()
-+	 * acts the same as tracefs_cpu_read_buf(). But this is just
-+	 * an example on how to use tracefs_cpu_is_mapped().
-+	 */
-+	mapped = tracefs_cpu_is_mapped(tcpu);
-+	if (!mapped)
-+		printf("Was not able to map, falling back to buffered read\n");
-+	while ((kbuf = mapped ? tracefs_cpu_read_buf(tcpu, true) :
-+			tracefs_cpu_buffered_read_buf(tcpu, true))) {
-+		read_subbuf(tep, kbuf);
-+	}
-+
-+	kbuf = tracefs_cpu_flush_buf(tcpu);
-+	if (kbuf)
-+		read_subbuf(tep, kbuf);
-+
-+	tracefs_cpu_close(tcpu);
-+	tep_free(tep);
-+
-+	return 0;
-+}
-+
+-#define TRACE_MMAP_IOCTL_GET_READER		_IO('T', 0x1)
++#define TRACE_MMAP_IOCTL_GET_READER		_IO('R', 0x20)
+ 
+ struct trace_mmap {
+ 	struct trace_buffer_meta	*map;
+@@ -78,10 +78,6 @@ __hidden void *trace_mmap(int fd, struct kbuffer *kbuf)
+ 	void *meta;
+ 	void *data;
+ 
+-#ifndef FORCE_MMAP_ENABLE
+-	return NULL;
+-#endif
+-
+ 	page_size = getpagesize();
+ 	meta = mmap(NULL, page_size, PROT_READ, MAP_SHARED, fd, 0);
+ 	if (meta == MAP_FAILED)
 -- 
 2.43.0
 
