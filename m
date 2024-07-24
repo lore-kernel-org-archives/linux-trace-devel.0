@@ -1,108 +1,62 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0954C145A0F
-	for <linux-trace-devel@vger.kernel.org>; Tue, 23 Jul 2024 22:08:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E40815ECEC
+	for <linux-trace-devel@vger.kernel.org>; Wed, 24 Jul 2024 17:14:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721772518; cv=none; b=js1jY3hV1ZMYne/shBxDIRoOdSLJFf8Dh5bGptxdcD8uspxPHzaHLGx0wPPF1DFAQqBsZ8rHNA1MyFQ5tq4ceSPTSxPf0PXnNxf2rsAs1S8BANiMLLc9ZlN1g9ZVGM7XUAJwNfm7QrAOcGH/YUHCpIRlMwJt87MMpIrVCKHq2P8=
+	t=1721841251; cv=none; b=d1TTBPUCY52z+4sMNOqPm0k9osfKrauvglkFdesU5ds6L9Mx0+3Yu/ItgiwpqgM08+VwbMbJ38G3L3tMd7O6apj4f06BID3z5IdHRMQIQdf/Sw6wPPHgvYn43kK9mlmIokwtwps+177CLBsytUsJAz+g8k28i9WLsHtPCkwy5R0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721772518; c=relaxed/simple;
-	bh=dtBLdVSzJpLi/+M+5PbcpG0LVHsfLgEiy1w6nfQOc6A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mQtpXrLxo6crzlRD31mpopYvyWZYiXsnfSoEJToG0yK5XCZhnhRw1/P3bStPT5nffpQbIhIRuZBO+f3ypJqgYF4m/TR/uuoGWDQLUTZim/hmYYbAElFnZbo6cD+RW/hLuRwjL4DIl+2DHNmUQ0rBg1JgCSLK7yxl9OGFAreFzUM=
+	s=arc-20240116; t=1721841251; c=relaxed/simple;
+	bh=+Z2aOAxITIM2TOZ3IKrd8RJxOt07y7L0LL4QURGSExY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EURgPQMD/r+um0rf+teMTEbv4E2KyGwLn8juoB7agUHWCewjjhwZQBtFJfGY+9+lz5fj5q5m8CtXQsp7uG7yG6pG/ck+lBwRkTqOSQiS28D3QXem++KXYc7/4rS3Gkjt6ip9uO0Af2LJIRBOdEZTDbMfP6eo6iItXuxNv4xPMSM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE033C4AF09;
-	Tue, 23 Jul 2024 22:08:37 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.98)
-	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1sWNgk-000000023G4-3BNq;
-	Tue, 23 Jul 2024 18:08:54 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44FA6C32781;
+	Wed, 24 Jul 2024 17:14:10 +0000 (UTC)
+Date: Wed, 24 Jul 2024 13:14:28 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-trace-devel@vger.kernel.org
-Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 3/3] libtracefs utest: Add better logic to cause missed events
-Date: Tue, 23 Jul 2024 18:07:25 -0400
-Message-ID: <20240723220853.489058-4-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240723220853.489058-1-rostedt@goodmis.org>
-References: <20240723220853.489058-1-rostedt@goodmis.org>
+To: "Schmidt, Adriaan" <adriaan.schmidt@siemens.com>
+Cc: Tejun Heo <tj@kernel.org>, "linux-trace-devel@vger.kernel.org"
+ <linux-trace-devel@vger.kernel.org>, Johannes Berg
+ <johannes@sipsolutions.net>, "yselkowi@redhat.com" <yselkowi@redhat.com>
+Subject: Re: [PATCH] trace-cmd: python: Update python module
+Message-ID: <20240724131428.43b0d264@gandalf.local.home>
+In-Reply-To: <20240715111250.2b2ba512@rorschach.local.home>
+References: <Y+w51nOhNd+PGo/k@slm.duckdns.org>
+	<20230214205354.51f119c3@rorschach.local.home>
+	<AS4PR10MB5318B6DCD04F15271B9360DCEDA12@AS4PR10MB5318.EURPRD10.PROD.OUTLOOK.COM>
+	<20240715111250.2b2ba512@rorschach.local.home>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Mon, 15 Jul 2024 11:12:50 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-When the system is running without much debug, it is possible to run the
-function tracer without triggering missed events. As the tests are expecting
-to have missed events to test the missed events handler, it gfails the test
-because no missed events happen, and the missed events handler is correctly
-not called. But the tests expect it to be called.
+> On Mon, 15 Jul 2024 12:11:57 +0000
+> "Schmidt, Adriaan" <adriaan.schmidt@siemens.com> wrote:
+> 
+> > Hi,
+> > 
+> > Bumping this old-but-still-relevant patch...
+> > There is a related item on Bugzilla [1], and there was also a more
+> > recent proposal to touch the python bindings [2], and I believe the
+> > issue addressed there (use old Python API) would also be fixed by
+> > this patch.
+> >   
+> 
+> Thanks for the bump. I'll try to get some time to get to it in the
+> following weeks.
 
-Add more logic to force missed events.
+I finally got around to looking at this. I'm going to add it to trace-cmd v3.3.
 
- * Shrink the buffer to just 4 pages.
- * Run "ls -l /usr/bin > /dev/null" instead of sleep().
+Thanks!
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- utest/tracefs-utest.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
-
-diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index 737e54a4f7fe..b29525335116 100644
---- a/utest/tracefs-utest.c
-+++ b/utest/tracefs-utest.c
-@@ -1576,6 +1576,8 @@ static void test_instance_follow_events_clear(struct tracefs_instance *instance)
- {
- 	struct follow_data fdata;
- 	struct tep_handle *tep;
-+	unsigned long page_size;
-+	size_t save_size;
- 	char **list;
- 	int ret;
- 
-@@ -1671,7 +1673,7 @@ static void test_instance_follow_events_clear(struct tracefs_instance *instance)
- 
- 	tracefs_trace_on(instance);
- 	call_getppid(100);
--	msleep(100);
-+	system("ls -l /usr/bin > /dev/null");
- 	tracefs_trace_off(instance);
- 
- 	ret = tracefs_iterate_raw_events(tep, instance, NULL, 0, NULL, &fdata);
-@@ -1695,17 +1697,26 @@ static void test_instance_follow_events_clear(struct tracefs_instance *instance)
- 	if (!fdata.function)
- 		return;
- 
-+	/* Shrink the buffer to make sure we have missed events */
-+	page_size = getpagesize();
-+	save_size = tracefs_instance_get_buffer_size(instance, 0);
-+	ret = tracefs_instance_set_buffer_size(instance, page_size * 4, 0);
-+	CU_TEST(ret == 0);
-+
- 	tracefs_trace_on(instance);
- 	call_getppid(100);
- 	/* Stir the kernel a bit */
- 	list = tracefs_event_systems(NULL);
- 	tracefs_list_free(list);
--	sleep(1);
-+	system("ls -l /usr/bin > /dev/null");
- 	tracefs_trace_off(instance);
- 
- 	ret = tracefs_iterate_raw_events(tep, instance, NULL, 0, NULL, &fdata);
- 	CU_TEST(ret == 0);
- 
-+	ret = tracefs_instance_set_buffer_size(instance, save_size, 0);
-+	CU_TEST(ret == 0);
-+
- 	/* Nothing should have been hit */
- 	CU_TEST(fdata.switch_hit == 0);
- 	CU_TEST(fdata.waking_hit == 0);
--- 
-2.43.0
-
+-- Steve
