@@ -1,24 +1,25 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5678115B10D
-	for <linux-trace-devel@vger.kernel.org>; Wed, 24 Jul 2024 17:47:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A001B16D9A4
+	for <linux-trace-devel@vger.kernel.org>; Wed, 24 Jul 2024 18:38:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721843250; cv=none; b=BGgcWibr4iEvhXJui33QClVmQ8v10qsiZDag9yJWAeMKJ1BEC6cGs+Anw7sk/xRo3LQ8sKfv52laHPK+MeL1awfa9O5OX6BBKKuuZC0K49unAzc5S2BBputsIrurZkuNiyVgLgAZqtgRoJBXVvzL8r4XyLHDmCEA6pR31PRqbvk=
+	t=1721846281; cv=none; b=O3DdEsLNfs2WxBwI9vNifMDnSAhZ59dZDTaCwAtQ94hq8tr4wf9Zj4NfaGArONKjQjHHr2f0KQe1iCws59zktIK08H7NgZal1mGTpOJhijW/TB43mmvyMfqYv1ejmD/iPApz7oKOWPIKC6fzSKPLmvHl3uL5u/qFaFyQzb9RFHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721843250; c=relaxed/simple;
-	bh=6u6TkXkDLYADRbkx2CoweX8miCf0PXvMMeqTtwu5e78=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=j1tVoNSn4zD3jp52oTQdINj/vRtwFcYVA2m5JlZMhNQWGU8qMVBtMKZy0w1nV+iBb/n9YhVTSos25fkKHPszl+NnoupWdJVU6JcTC5/QM8Vm51o/dM00ui1U4u6HRWo0qWlgaGWwgll/S4A3HoCUssL5flB1QjA7SIu/Du8p9fk=
+	s=arc-20240116; t=1721846281; c=relaxed/simple;
+	bh=JrCW/bamDGrebXy0q5Qh/R3adrBDIWOpRzt6bFoRP/0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=mgfrJsLYxC3a1PYG8rgTMO1f/1mmgK/qsgYo6XhxMnKbSV96vp9EW7K+AkUtiuTBoa/RxfUSUHMiSOlBmU1zMKsjbBO1hCjxGz7FayE6E6OJkK1oe2vbRYCvLqXLgpipxSCsI7wQO3Dv7dJFE3e+NF0vZXP5+CqkzRaYEkihjjo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8E83C32781;
-	Wed, 24 Jul 2024 17:47:29 +0000 (UTC)
-Date: Wed, 24 Jul 2024 13:47:48 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2C0CC32781;
+	Wed, 24 Jul 2024 18:38:00 +0000 (UTC)
+Date: Wed, 24 Jul 2024 14:38:19 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: Daniel Wagner <wagi@monom.org>
-Subject: [PATCH] libtracefs: Add meson build targets to Makefile
-Message-ID: <20240724134748.52c18018@gandalf.local.home>
+Cc: Daniel Wagner <wagi@monom.org>, Tejun Heo <tj@kernel.org>, "Schmidt,
+ Adriaan" <adriaan.schmidt@siemens.com>
+Subject: [PATCH] trace-cmd meson: Fix include file for swig python build
+Message-ID: <20240724143819.073877b3@gandalf.local.home>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -31,98 +32,37 @@ Content-Transfer-Encoding: 7bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add make targets for building with meson:
+The header trace-cmd-private-python.h was recently moved to
+lib/trace-cmd/include/private. Change the meson.build file to reflect this
+change.
 
-  make meson
-  make meson_install
-  make meson_docs
+Link: https://lore.kernel.org/all/Y+w51nOhNd+PGo%2Fk@slm.duckdns.org/
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Makefile       | 15 ++++++++++++++-
- Makefile.meson | 40 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 54 insertions(+), 1 deletion(-)
- create mode 100644 Makefile.meson
+ python/meson.build | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Makefile b/Makefile
-index 7f4f5c3f752c..b0553c341c93 100644
---- a/Makefile
-+++ b/Makefile
-@@ -400,7 +400,7 @@ sqlhist: samples/sqlhist
- samples: libtracefs.a force
- 	$(Q)$(call descend,$(src)/samples,all)
+diff --git a/python/meson.build b/python/meson.build
+index 5a91ff63a326..d00948947030 100644
+--- a/python/meson.build
++++ b/python/meson.build
+@@ -22,13 +22,14 @@ if have_python_support
+             swig,
+             '-python',
+             '-I' + meson.current_source_dir() + '/../include/trace-cmd',
++            '-I' + meson.current_source_dir() + '/../lib/trace-cmd/include/private',
+             '-I' + libtraceevent_dep.get_pkgconfig_variable('prefix') + '/include/traceevent',
+             '-o', '@OUTPUT1@',
+             '@INPUT0@'],
+         install: true,
+         install_dir: [ python3.get_install_dir(pure: false, subdir: 'trace-cmd'), false])
  
--clean:
-+clean: clean_meson
- 	$(Q)$(call descend_clean,utest)
- 	$(Q)$(call descend_clean,src)
- 	$(Q)$(call descend_clean,samples)
-@@ -410,6 +410,19 @@ clean:
- 	  $(VERSION_FILE) \
- 	  $(BUILD_PREFIX))
+-    incdir_py = include_directories(['.', '../include/trace-cmd'])
++    incdir_py = include_directories(['.', '../include/trace-cmd', '../lib/trace-cmd/include/private'])
  
-+meson:
-+	$(MAKE) -f Makefile.meson
-+
-+meson_install:
-+	$(MAKE) -f Makefile.meson install
-+
-+meson_docs:
-+	$(MAKE) -f Makefile.meson docs
-+
-+PHONY += clean_meson
-+clean_meson:
-+	$(Q)$(MAKE) -f Makefile.meson $@
-+
- .PHONY: clean
- 
- # libtracefs.a and libtracefs.so would concurrently enter the same directory -
-diff --git a/Makefile.meson b/Makefile.meson
-new file mode 100644
-index 000000000000..71d6bf36c654
---- /dev/null
-+++ b/Makefile.meson
-@@ -0,0 +1,40 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+undefine CFLAGS
-+
-+# Makefiles suck: This macro sets a default value of $(2) for the
-+# variable named by $(1), unless the variable has been set by
-+# environment or command line. This is necessary for CC and AR
-+# because make sets default values, so the simpler ?= approach
-+# won't work as expected.
-+define allow-override
-+  $(if $(or $(findstring environment,$(origin $(1))),\
-+            $(findstring command line,$(origin $(1)))),,\
-+    $(eval $(1) = $(2)))
-+endef
-+
-+$(call allow-override,MESON,meson)
-+$(call allow-override,MESON_BUILD_DIR,build)
-+
-+
-+all: compile
-+
-+PHONY += compile
-+compile: $(MESON_BUILD_DIR) force
-+	$(MESON) compile -C $(MESON_BUILD_DIR)
-+
-+$(MESON_BUILD_DIR):
-+	$(MESON) setup --prefix=$(prefix) $(MESON_BUILD_DIR)
-+
-+install: compile
-+	$(MESON) install -C $(MESON_BUILD_DIR)
-+
-+docs: $(MESON_BUILD_DIR)
-+	$(MESON) compile -C build docs
-+
-+PHONY += clean_meson
-+clean_meson:
-+	$(Q)$(RM) -rf $(MESON_BUILD_DIR)
-+
-+PHONY += force
-+force:
+     pyctracecmd_clib = python3.extension_module(
+         '_ctracecmd',
 -- 
 2.43.0
 
