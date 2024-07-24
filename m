@@ -1,24 +1,24 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406EA200B7
-	for <linux-trace-devel@vger.kernel.org>; Wed, 24 Jul 2024 17:26:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5678115B10D
+	for <linux-trace-devel@vger.kernel.org>; Wed, 24 Jul 2024 17:47:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721841975; cv=none; b=Dz7noePEh7mq94czs/Sdrz/o3ksnTYvu6uQh/TC/gHLpYEKVok8CZQIkZm+zpCg1tMk4eAGk9ywLQaOFC42Qjj2HevakdVLYM3ZmUkOa62hxmtfHYcqVGmvukwLlOTY6GhQzJ605w5r32PttOYHRxVhUXjx4+B5U+f0+XX+Mfr8=
+	t=1721843250; cv=none; b=BGgcWibr4iEvhXJui33QClVmQ8v10qsiZDag9yJWAeMKJ1BEC6cGs+Anw7sk/xRo3LQ8sKfv52laHPK+MeL1awfa9O5OX6BBKKuuZC0K49unAzc5S2BBputsIrurZkuNiyVgLgAZqtgRoJBXVvzL8r4XyLHDmCEA6pR31PRqbvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721841975; c=relaxed/simple;
-	bh=Y4RA6rthxLwQAG2Omq6fIsQzXYwiEHLBYWRZ8isGbBo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=GB7YVn+4YZ6Ty8eSYu87oLhZvqDHHeW37PBOIH7/K1jVx+76sj0U++QXR+cJIal5P2zQQSOx13qCfBnbHlmXRdvqU/ZBlRLGmzV8FUJIpjqnRfEeZRmxfpezPpJZfQskP9eRP/Rbx4oR38JhAM/pffUZpfbdumivMKmqWStvbug=
+	s=arc-20240116; t=1721843250; c=relaxed/simple;
+	bh=6u6TkXkDLYADRbkx2CoweX8miCf0PXvMMeqTtwu5e78=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=j1tVoNSn4zD3jp52oTQdINj/vRtwFcYVA2m5JlZMhNQWGU8qMVBtMKZy0w1nV+iBb/n9YhVTSos25fkKHPszl+NnoupWdJVU6JcTC5/QM8Vm51o/dM00ui1U4u6HRWo0qWlgaGWwgll/S4A3HoCUssL5flB1QjA7SIu/Du8p9fk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72509C32781;
-	Wed, 24 Jul 2024 17:26:14 +0000 (UTC)
-Date: Wed, 24 Jul 2024 13:26:32 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8E83C32781;
+	Wed, 24 Jul 2024 17:47:29 +0000 (UTC)
+Date: Wed, 24 Jul 2024 13:47:48 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Cc: Daniel Wagner <wagi@monom.org>
-Subject: [PATCH v2] libtraceevent: Add meson build targets to Makefile
-Message-ID: <20240724132632.33d49bc2@gandalf.local.home>
+Subject: [PATCH] libtracefs: Add meson build targets to Makefile
+Message-ID: <20240724134748.52c18018@gandalf.local.home>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -39,31 +39,27 @@ Add make targets for building with meson:
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
-Changes since v1: https://lore.kernel.org/all/20231228215122.48c933ba@rorschach.local.home/
-
-- use "meson setup [options]" instead of deprecated "meson [options]"
-
  Makefile       | 15 ++++++++++++++-
  Makefile.meson | 40 ++++++++++++++++++++++++++++++++++++++++
  2 files changed, 54 insertions(+), 1 deletion(-)
  create mode 100644 Makefile.meson
 
 diff --git a/Makefile b/Makefile
-index 0ff8e9c3d981..fbb4422e4b3b 100644
+index 7f4f5c3f752c..b0553c341c93 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -352,7 +352,7 @@ install_headers:
+@@ -400,7 +400,7 @@ sqlhist: samples/sqlhist
+ samples: libtracefs.a force
+ 	$(Q)$(call descend,$(src)/samples,all)
  
- install: install_libs
- 
--clean: clean_plugins clean_src
-+clean: clean_plugins clean_src clean_meson
- 	$(Q)$(call do_clean,\
- 	    $(VERSION_FILE) $(obj)/tags $(obj)/TAGS $(PKG_CONFIG_FILE) \
- 	    $(LIBTRACEEVENT_STATIC) $(LIBTRACEEVENT_SHARED) \
-@@ -436,6 +436,19 @@ PHONY += clean_src
- clean_src:
+-clean:
++clean: clean_meson
+ 	$(Q)$(call descend_clean,utest)
  	$(Q)$(call descend_clean,src)
+ 	$(Q)$(call descend_clean,samples)
+@@ -410,6 +410,19 @@ clean:
+ 	  $(VERSION_FILE) \
+ 	  $(BUILD_PREFIX))
  
 +meson:
 +	$(MAKE) -f Makefile.meson
@@ -78,9 +74,9 @@ index 0ff8e9c3d981..fbb4422e4b3b 100644
 +clean_meson:
 +	$(Q)$(MAKE) -f Makefile.meson $@
 +
- force:
+ .PHONY: clean
  
- # Declare the contents of the .PHONY variable as phony.  We keep that
+ # libtracefs.a and libtracefs.so would concurrently enter the same directory -
 diff --git a/Makefile.meson b/Makefile.meson
 new file mode 100644
 index 000000000000..71d6bf36c654
