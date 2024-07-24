@@ -1,24 +1,27 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B36A4C62A
-	for <linux-trace-devel@vger.kernel.org>; Wed, 24 Jul 2024 19:45:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6143813C9B3
+	for <linux-trace-devel@vger.kernel.org>; Wed, 24 Jul 2024 22:17:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721850327; cv=none; b=QT1sK9tFWbSI9kiy1T+GGwUV/CsauFDg0X8PBTh9TSc6dGvv9dv/Af7S4WCk8u4oaLOOTarBWbbTxbULm8mIFWL2BflS+9CspsSP2+1HlIpCDsWnnRQnBKLzDcGkL6OLiw4JYTtlmmfPgZzGYBYzUOpx3ECyfC8b3PxNMehO+tU=
+	t=1721859460; cv=none; b=TWnYvHvwJhKXjYY5YuMUpRNs0R9UiZgqLGNpe8LMHVG161n4d3Xp9vkpvcxRO0SL8lBOv0B2NqEbYqL+yIi/0ZCzWc9qWxgkoGrKvT7Zh0sg5Aoh7dJ1+KgaERaspXWN9FTsbzpXeeVK6IlxCcdMs4YdnWvWXwiHIqfyXBpSc44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721850327; c=relaxed/simple;
-	bh=RGMuvHJD5IuJiqh+nQhvvXUQqjzzrT8quoKs8CDBGrk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=b8SUSCVH4oicy+RzFCD9x1HtZl7ObbAWLSB1CkQtP3iefPTEEoArYs7d7UZR6tQlij/iTiTnqEZFajX1+YkXOiefgs5baJkaN38YmPZhpcQFE+6o8ZURzR9pnFG+0ZJhjb4t6/G2vWaiyKDUaFdgrS5/m6PP+xYlR2h0asCxyM4=
+	s=arc-20240116; t=1721859460; c=relaxed/simple;
+	bh=2w+hAQB5CSUFtWfH2wb3/IhLprPFIbMXwXnmznzThV8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=T1YMF43ImaxmXir8bAWNcjVr4PWnl3WcJ7cqiXM2JODItGaDh7TFgSk1epdr2/7VUsMZH3SuJqLchQlV8585X01Y4d0GjIjXouXSdxhIom3qeyPArtgRVYoFTLItWOgb9/zmUahsw86JZLbt1Dh/CzWjgMw35lZBDQ+gGKZu/kE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 732C0C32781;
-	Wed, 24 Jul 2024 19:45:26 +0000 (UTC)
-Date: Wed, 24 Jul 2024 15:45:45 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A36F0C32781;
+	Wed, 24 Jul 2024 22:17:39 +0000 (UTC)
+Date: Wed, 24 Jul 2024 18:17:58 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: Daniel Wagner <wagi@monom.org>
-Subject: [PATCH] trace-cmd: Add meson build targets to Makefile
-Message-ID: <20240724154545.7a536a44@gandalf.local.home>
+To: Tw <tw19881113@gmail.com>
+Cc: linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v2] Fix double free issue in event_read_print_args
+Message-ID: <20240724181758.110168d9@gandalf.local.home>
+In-Reply-To: <20240701022446.23492-1-tw19881113@gmail.com>
+References: <20240701022446.23492-1-tw19881113@gmail.com>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -29,99 +32,145 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Mon,  1 Jul 2024 10:24:46 +0800
+Tw <tw19881113@gmail.com> wrote:
 
-Add make targets for building with meson:
+> The corner case is that when we encounter a invalid right argument of a condition operation.
+> Currently, we free token immediately, but it will also be freed when free `arg->op.op`.
+> 
+> BTW, the crash calltrace as follows:
 
-  make meson
-  make meson_install
-  make meson_docs
+OK, so someone else sent a patch for the same bug, but the cause of the bug
+ended up being something different.
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- Makefile       | 14 +++++++++++++-
- Makefile.meson | 40 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 53 insertions(+), 1 deletion(-)
- create mode 100644 Makefile.meson
+https://lore.kernel.org/linux-trace-devel/20240719163242.690f4c0e@gandalf.local.home/
+https://lore.kernel.org/linux-trace-devel/20240722161917.991077-1-namhyung@google.com
 
-diff --git a/Makefile b/Makefile
-index 6a30eaf0a330..897c972ff9b7 100644
---- a/Makefile
-+++ b/Makefile
-@@ -527,7 +527,7 @@ install_doc:
- check_doc: force
- 	$(Q)$(src)/check-manpages.sh $(src)/Documentation/libtracecmd
- 
--clean:
-+clean: clean_meson
- 	$(RM) *.o *~ *.a *.so .*.d
- 	$(RM) tags TAGS cscope* $(PKG_CONFIG_SOURCE_FILE) $(VERSION_FILE)
- 	$(MAKE) -C $(src)/lib/trace-cmd clean
-@@ -598,6 +598,18 @@ ctracecmd.so: force $(LIBTRACECMD_STATIC)
- PHONY += python
- python: $(PYTHON)
- 
-+meson:
-+	$(MAKE) -f Makefile.meson
-+
-+meson_install:
-+	$(MAKE) -f Makefile.meson install
-+
-+meson_docs:
-+	$(MAKE) -f Makefile.meson docs
-+
-+PHONY += clean_meson
-+clean_meson:
-+	$(Q)$(MAKE) -f Makefile.meson $@
- 
- dist:
- 	git archive --format=tar --prefix=trace-cmd-$(TRACECMD_VERSION)/ HEAD \
-diff --git a/Makefile.meson b/Makefile.meson
-new file mode 100644
-index 000000000000..71d6bf36c654
---- /dev/null
-+++ b/Makefile.meson
-@@ -0,0 +1,40 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+undefine CFLAGS
-+
-+# Makefiles suck: This macro sets a default value of $(2) for the
-+# variable named by $(1), unless the variable has been set by
-+# environment or command line. This is necessary for CC and AR
-+# because make sets default values, so the simpler ?= approach
-+# won't work as expected.
-+define allow-override
-+  $(if $(or $(findstring environment,$(origin $(1))),\
-+            $(findstring command line,$(origin $(1)))),,\
-+    $(eval $(1) = $(2)))
-+endef
-+
-+$(call allow-override,MESON,meson)
-+$(call allow-override,MESON_BUILD_DIR,build)
-+
-+
-+all: compile
-+
-+PHONY += compile
-+compile: $(MESON_BUILD_DIR) force
-+	$(MESON) compile -C $(MESON_BUILD_DIR)
-+
-+$(MESON_BUILD_DIR):
-+	$(MESON) setup --prefix=$(prefix) $(MESON_BUILD_DIR)
-+
-+install: compile
-+	$(MESON) install -C $(MESON_BUILD_DIR)
-+
-+docs: $(MESON_BUILD_DIR)
-+	$(MESON) compile -C build docs
-+
-+PHONY += clean_meson
-+clean_meson:
-+	$(Q)$(RM) -rf $(MESON_BUILD_DIR)
-+
-+PHONY += force
-+force:
--- 
-2.43.0
 
+> 
+> Program received signal SIGSEGV, Segmentation fault.
+> get_meta (p=<optimized out>) at /home/tw/code/zig/build/stage3/lib/zig/libc/musl/src/malloc/mallocng/meta.h:141
+> 141     /home/tw/code/zig/build/stage3/lib/zig/libc/musl/src/malloc/mallocng/meta.h: No such file or directory.
+> (gdb) bt
+>     at /home/tw/code/zig/build/stage3/lib/zig/libc/musl/src/malloc/mallocng/meta.h:141
+>     at /home/tw/code/zig/build/stage3/lib/zig/libc/musl/src/malloc/mallocng/free.c:105
+>     at /tmp/.cache/zig/p/12207a2e4477bf4414e7df3eb2172c698ab916695a0d3eefbf16f65b0c969dd81184/src/event-parse.c:1128
+>     list@entry=0x7ff7b18768)
+>     at /tmp/.cache/zig/p/12207a2e4477bf4414e7df3eb2172c698ab916695a0d3eefbf16f65b0c969dd81184/src/event-parse.c:1417
+>     at /tmp/.cache/zig/p/12207a2e4477bf4414e7df3eb2172c698ab916695a0d3eefbf16f65b0c969dd81184/src/event-parse.c:3895
+>     sys=<optimized out>)
+>     at /tmp/.cache/zig/p/12207a2e4477bf4414e7df3eb2172c698ab916695a0d3eefbf16f65b0c969dd81184/src/event-parse.c:7824
+>     size=<optimized out>, sys=sys@entry=0x7ff7ff51c0 "kvm")
+>     at /tmp/.cache/zig/p/12207a2e4477bf4414e7df3eb2172c698ab916695a0d3eefbf16f65b0c969dd81184/src/event-parse.c:7882
+>     buf=0x7ff7b0c610 "kvm_sys_access", size=549616874800, sys=0x7fffffe0b2 "me", sys@entry=0x7ff7ff51c0 "kvm")
+>     at /tmp/.cache/zig/p/12207a2e4477bf4414e7df3eb2172c698ab916695a0d3eefbf16f65b0c969dd81184/src/event-parse.c:7945
+>     tracing_dir=tracing_dir@entry=0x7ff7ffc660 "/sys/kernel/tracing", system=system@entry=0x7ff7ff51c0 "kvm",
+>     check=false)
+>     at /tmp/.cache/zig/p/1220c1c006cbf05434d240b65f343c84f3d7f837fbef31f2cade733ec911cc3ed76b/src/tracefs-events.c:1062
+>     system=0x7ff7ff51c0 "kvm")
+>     at /tmp/.cache/zig/p/1220c1c006cbf05434d240b65f343c84f3d7f837fbef31f2cade733ec911cc3ed76b/src/tracefs-events.c:1084
+>     tep=tep@entry=0x7ff7ffc830, sys_names=sys_names@entry=0x0, parsing_failures=0x0,
+>     parsing_failures@entry=0x7fffffe7b0)
+>     at /tmp/.cache/zig/p/1220c1c006cbf05434d240b65f343c84f3d7f837fbef31f2cade733ec911cc3ed76b/src/tracefs-events.c:1284
+>     sys_names@entry=0x7ffffff880)
+>     at /tmp/.cache/zig/p/1220c1c006cbf05434d240b65f343c84f3d7f837fbef31f2cade733ec911cc3ed76b/src/tracefs-events.c:1355
+>     tracing_dir=0x6500006c6f6f62 <error: Cannot access memory at address 0x6500006c6f6f62>)
+>     at /tmp/.cache/zig/p/1220c1c006cbf05434d240b65f343c84f3d7f837fbef31f2cade733ec911cc3ed76b/src/tracefs-events.c:1377
+> 
+> Signed-off-by: Tw <tw19881113@gmail.com>
+> ---
+>  src/event-parse.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/src/event-parse.c b/src/event-parse.c
+> index 9f0522c..1f51ee9 100644
+> --- a/src/event-parse.c
+> +++ b/src/event-parse.c
+> @@ -2375,8 +2375,6 @@ process_op(struct tep_event *event, struct tep_print_arg *arg, char **tok)
+>  
+>  		/* it will set arg->op.right */
+>  		type = process_cond(event, arg, tok);
+> -		if (type == TEP_EVENT_ERROR)
+> -			free(token);
+
+This should be removed, but how to fix the bug for the reason it was added
+in the first place must be done too.
+
+>  
+>  	} else if (strcmp(token, ">>") == 0 ||
+>  		   strcmp(token, "<<") == 0 ||
+> @@ -3787,7 +3785,7 @@ static int event_read_print_args(struct tep_event *event, struct tep_print_arg *
+>  {
+>  	enum tep_event_type type = TEP_EVENT_ERROR;
+>  	struct tep_print_arg *arg;
+> -	char *token;
+> +	char *token = NULL;
+
+This is unneeded because token is assigned later:
+
+		if (type == TEP_EVENT_NEWLINE) {
+			type = read_token_item(event->tep, &token);
+			continue;
+		}
+
+where read_token_item() has:
+
+  static enum tep_event_type read_token_item(struct tep_handle *tep, char **tok)
+  {
+	enum tep_event_type type;
+
+	for (;;) {
+		type = __read_token(tep, tok);
+
+
+And:
+
+  static enum tep_event_type __read_token(struct tep_handle *tep, char **tok)
+  {
+	char buf[BUFSIZ];
+	int ch, last_ch, quote_ch, next_ch;
+	int i = 0;
+	int tok_size = 0;
+	enum tep_event_type type;
+
+	*tok = NULL;
+
+So that does the "token = NULL", and if that first if doesn't get hit in
+event_read_print_args(), it then does:
+
+		type = process_arg(event, arg, &token);
+
+Where process_arg() is:
+
+  static enum tep_event_type
+  process_arg(struct tep_event *event, struct tep_print_arg *arg, char **tok)
+  {
+	enum tep_event_type type;
+	char *token;
+
+	type = read_token(event->tep, &token);
+
+Which assigns token.
+
+Hence, initializing "token" is not needed.
+
+>  	int args = 0;
+>  
+>  	do {
+> @@ -3817,6 +3815,7 @@ static int event_read_print_args(struct tep_event *event, struct tep_print_arg *
+>  		if (type == TEP_EVENT_OP) {
+>  			type = process_op(event, arg, &token);
+>  			free_token(token);
+> +			token = NULL;
+>  
+>  			if (consolidate_op_arg(arg) < 0)
+>  				type = TEP_EVENT_ERROR;
+
+Now this part does have the bug. But that's fixed in the links I showed.
+The key thing was to look at the result of "type". It was not about freeing
+token, because if the type returned was TEP_EVENT_ERROR, that
+consolidate_op_arg() should never had been called.
+
+Thanks,
+
+-- Steve
