@@ -1,39 +1,39 @@
 Received: from mail.nearlyone.de (mail.nearlyone.de [49.12.199.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 287831A619B
-	for <linux-trace-devel@vger.kernel.org>; Tue, 30 Jul 2024 16:40:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE85D78276
+	for <linux-trace-devel@vger.kernel.org>; Tue, 30 Jul 2024 16:45:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=49.12.199.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722357610; cv=none; b=p/3qrJSX9RdXQ2ui9XmTvUSe4FJvX7UZaDJAGWgzs3v/+xh5GmVPndIgmHYJSGz8OWrEXMRScJakl64j3Iry9nU4nwGYse8d4i882gGNUyjQURhsHkSQ0hzq6FclN3Guqx6nyUfX/CHRJkGnXR7WAyA/lAISRqY3wAuGs5f54gI=
+	t=1722357943; cv=none; b=Q9VFN6YjkCRjIDF5wQZxC/YfQLCUo2op6dm+mKXxH0VwNFMaXQ6vbqUUl2sf7qP5eKzY1Hj9V6RLwpIo4EXNIEMm9fXB+RtRWVQ9nXx8pz55CxQ6NsikUyTTCJ5TifALzX0e9EUh/6yUDICpxBmS5M4psVSnrxvsvnMqJqHbLPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722357610; c=relaxed/simple;
-	bh=NxW7r6yTsmvydZzcDm0I7e1cszJjBP2vm5PY7aWtJHY=;
+	s=arc-20240116; t=1722357943; c=relaxed/simple;
+	bh=8LKl6xocY/S4nEeYWcsGTF8H3fdWrgQl/P/InMNKtTs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=St5O4e4Ur2+4ALsbNLYZnY+MGB5sPvqnLDvYfMw27ArwHnxU2mi8W8WE/QJaJmxEa5TBq3Qsst9HxWjej3JW85v6UTqZQ9VfvbMFe7qMie6NSwgEice/7FUvOcRFM77TzFfRHgu31D4xzQR5SWzlyUfqo4UV1VMNeuJeD/vmGj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=monom.org; spf=pass smtp.mailfrom=monom.org; dkim=pass (2048-bit key) header.d=monom.org header.i=@monom.org header.b=ASG59yYj; arc=none smtp.client-ip=49.12.199.46
+	 Content-Type:Content-Disposition:In-Reply-To; b=Qs9vt+bWXrOvQASkWsdi2BgqdFzV3wjtEDiDqKEcwjE7yLxKNKZaMxJgXbwWDkKAhkKW15sgxNSZzVZGc8eH1g4uvs9lTfRoqr99YUCibynmM1MvzTLQ4dfUOlAVRwW1hYubSz99a+C2Y37yq4nxe2M+i2lqV9isRFCOREv3c2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=monom.org; spf=pass smtp.mailfrom=monom.org; dkim=pass (2048-bit key) header.d=monom.org header.i=@monom.org header.b=ByaUjfRZ; arc=none smtp.client-ip=49.12.199.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=monom.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=monom.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=monom.org header.i=@monom.org header.b="ASG59yYj"
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C60E1DACB4;
-	Tue, 30 Jul 2024 18:40:04 +0200 (CEST)
+	dkim=pass (2048-bit key) header.d=monom.org header.i=@monom.org header.b="ByaUjfRZ"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 71EF1DAC08;
+	Tue, 30 Jul 2024 18:36:11 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=monom.org; s=dkim;
-	t=1722357605; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 in-reply-to:references; bh=ojNmDnE8SPCydvnkSQ3GOA1W16ysm8fOV4xwNue1qwI=;
-	b=ASG59yYjs7+pw+ctvlCtucYAoYkD47snOOW9WIPlk5e7V14l1peCAHmI678lP9tPy/jYQ1
-	JgQ0DczVRGKrCzlJFw5i2+iqORvqGdHLtKEveZB8VSoXC1Ksd5G0HYYexeH43PnzLzehZd
-	9Aaju18n7UI+HTj5rmH2QDcCe1TeCuS9s9fdQW9ECMEkNjOlHHgk9Rb3ai3eDns12qMTi/
-	0+18CEpwuBy+u0rsXu9FfvgO7zsKYwwIbZdVU7eIXbLVVzPqjB6Z5Yht5IvVWdeDnGHU1Z
-	tw7rIMtgPGjXIjLeW/4Q7DuXm1IF8F5HhNJvmfW8fB4T4NFFsoE4/hzZRfXmSg==
-Date: Tue, 30 Jul 2024 18:40:04 +0200
+	t=1722357374; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 in-reply-to:references; bh=0u4FP4Mm91l99NHZsoZwaRX+n/Z0M0iX/Nte95eOYSU=;
+	b=ByaUjfRZZ9Ahq5BaIuml1KTBMjRhKiKh453i8b0GeeqSym2M1z1H1Yk+tXtmn0watwA0AX
+	c/uZ2UJ5uaEKHgwIeihu3FdUYfkp/RMs9UFAWfoqqu/ngAIelXr6ihmOng+KqGSgGKJ9iL
+	nQc37maBKN1E4S2/tBHV3kD/OtWmQoNWBbmbaqq8k2S3Ab63Z5m3gP0D9YifYs5vQQI6Ti
+	PbDarVujHG65x9/5UGN7qdYybhcMgtiRDM1HhXekaTUMrPrEJklnl5Zttul/LgjvEcMdPd
+	2Ussx2siwCCaiWGD1LbjczQ5m16sYm7yzxM7CPtrA/mtEGi/Tl1rB1mpe+vTsQ==
+Date: Tue, 30 Jul 2024 18:36:08 +0200
 From: Daniel Wagner <wagi@monom.org>
 To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH] trace-cmd documentation: Remove check-manpages.sh for
- trace-cmd in meson build
-Message-ID: <kpns6smx76jpzbxuf7zaqdrjmuevbb7zs6nqoewvde46ewots2@oljigi32qzra>
-References: <20240725112620.17c6d1b2@gandalf.local.home>
+Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>, 
+	Tejun Heo <tj@kernel.org>, "Schmidt, Adriaan" <adriaan.schmidt@siemens.com>
+Subject: Re: [PATCH] trace-cmd meson: Fix include file for swig python build
+Message-ID: <6y2lie344hch7mbcna4zrtxntzdr4bi3zkef2mbbpf5xjozsy7@ywt7iqo57hez>
+References: <20240724143819.073877b3@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -42,21 +42,20 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240725112620.17c6d1b2@gandalf.local.home>
+In-Reply-To: <20240724143819.073877b3@gandalf.local.home>
 X-Last-TLS-Session-Version: TLSv1.3
 
-On Thu, Jul 25, 2024 at 11:26:20AM GMT, Steven Rostedt wrote:
+On Wed, Jul 24, 2024 at 02:38:19PM GMT, Steven Rostedt wrote:
 > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
-> The creation of man pages for trace-cmd ran the check-manpages.sh script,
-> which is only used for the libtracecmd library, not the tools. This caused
-> the build to spit out warning of grep not finding libtracecmd.txt.
-
-Ah, okay, didn't noticed that back then.
-
-> Fixes: 736df0648d16b ("trace-cmd: Add initial support for meson")
+> The header trace-cmd-private-python.h was recently moved to
+> lib/trace-cmd/include/private. Change the meson.build file to reflect this
+> change.
+> 
+> Link: https://lore.kernel.org/all/Y+w51nOhNd+PGo%2Fk@slm.duckdns.org/
+> 
 > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-Anyway, looks good.
+looks good to me.
 
 Reviewed-by: Daniel Wagner <dwagner@suse.de>
