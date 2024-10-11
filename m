@@ -1,92 +1,78 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CC5F1C68BF
-	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Oct 2024 18:27:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB061D0DCB
+	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Oct 2024 19:47:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728671264; cv=none; b=DnecfIBxA1Z0ngb62Qs6y8rwzGORLJ0C1WC5N87PjNA42cE5SklwvyflpJNJND85FvhkgnWNPvna9kizw2r10HkbOdhnvGuWCv2Flw8yoNNNEEIlzsq6x3wlf9451vni2zp5Lr799FyH/YeJ4NnfWjLn8KkStzD6+jj7JPTrYj4=
+	t=1728676072; cv=none; b=feDYD64vqir7C5yC9+QqHHxF0vV51cynocEWeQaYf34LJY2bGfT90TjZ/x8HBkTqCDOzxrsiLES3IpkqgTSwzzbPkNtwfgb1pE9q2M8lfITB6sE6DuWnbV4OIZhslcz2w+VyVMw/MwKePTttdB1xbBDL5K7OvNz2yHAbpXpAWG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728671264; c=relaxed/simple;
-	bh=9fGvKar5twjECkK+6RsSjh+1jfdjInvrNC8nZJern+k=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WCMXh589vIja5j53ioR2Cg9VBgxGSlxsqap5SmYlIihYEs0w/DEH7ervLR5+RWaiYVU680gITNGDcPMmM5cSkr1MLOpLgw9d9VJ6k1TJkczmzOHJJ1yylpmXKS+icQavATn06QZ1u/8/B5NYNw7w06PiaUauyMMR4P2BNNkKCvY=
+	s=arc-20240116; t=1728676072; c=relaxed/simple;
+	bh=H26EmBp/rdIU4xd04GDYNNVqR6G2sNlMn1wIW0MWDp4=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=fKQ8BqS4gzAHcnEB6xy+vu+aXJCA9b4OniiApCrCMQnLTYUKCfZwnxQ5GhIw8bndrwvKst4Ad+2fQWhW8hYV6kT4O8318POFMYOdCC9zMUhv4T86ZXb4U9P24S5lEdu12/O4n0N+NIgeIYtsoWnOGNDPbCRg1WAS8wfJB6o9Yc8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E466C4CED2;
-	Fri, 11 Oct 2024 18:27:44 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.98)
-	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1szKMk-00000001V1N-2a6N;
-	Fri, 11 Oct 2024 14:27:54 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0F47C4CEC3
+	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Oct 2024 19:47:51 +0000 (UTC)
+Date: Fri, 11 Oct 2024 15:48:01 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-trace-devel@vger.kernel.org
-Cc: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 4/4] trace-cmd stat: Use tracefs_instances() instead of walking them
-Date: Fri, 11 Oct 2024 14:26:54 -0400
-Message-ID: <20241011182752.357499-5-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20241011182752.357499-1-rostedt@goodmis.org>
-References: <20241011182752.357499-1-rostedt@goodmis.org>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] libtraceevent: Have sizeof() parsing handle u8/s8 through
+ u64/s64
+Message-ID: <20241011154801.6e237662@gandalf.local.home>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Use the new tracefs_instances() function to retrieve a list of instances
-on the system instead of calling tracefs_instance_walk() and having a
-helper function do the printing. This simplifies the code a bit.
+The sizeof() may be used for common types like:
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+ __u8, __s8, u8, s8,
+ __u16, __s16, u16, s16,
+ __u32, __s32, u32, s32,
+ __u64, __s64, u64, s64
+
+Handle them.
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- tracecmd/trace-stat.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ src/event-parse.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/tracecmd/trace-stat.c b/tracecmd/trace-stat.c
-index 1d95d9934b47..7ac62f2a3076 100644
---- a/tracecmd/trace-stat.c
-+++ b/tracecmd/trace-stat.c
-@@ -113,23 +113,23 @@ static void report_file(struct buffer_instance *instance,
- 	free(str);
- }
- 
--static int report_instance(const char *name, void *data)
-+static void report_instances(void)
- {
--	bool *first = (bool *)data;
-+	char **list;
-+	int i;
- 
--	if (*first) {
--		*first = false;
--		printf("\nInstances:\n");
--	}
--	printf(" %s\n", name);
--	return 0;
--}
-+	list = tracefs_instances(NULL);
- 
--static void report_instances(void)
--{
--	bool first = true;
-+	if (!list || !list[0])
-+		goto out;
+diff --git a/src/event-parse.c b/src/event-parse.c
+index ddeb3b9909c0..73563c8e9dea 100644
+--- a/src/event-parse.c
++++ b/src/event-parse.c
+@@ -3571,6 +3571,23 @@ process_sizeof(struct tep_event *event, struct tep_print_arg *arg, char **tok)
+ 			/* The token is the next token */
+ 			token_has_paren = true;
+ 		}
 +
-+	printf("\nInstances:\n");
- 
--	tracefs_instances_walk(report_instance, &first);
-+	for (i = 0; list[i]; i++)
-+		printf(" %s\n", list[i]);
++	} else if (strcmp(token, "__u64") == 0 || strcmp(token, "u64") == 0 ||
++		   strcmp(token, "__s64") == 0 || strcmp(token, "s64") == 0) {
++		arg->atom.atom = strdup("8");
 +
-+ out:
-+	tracefs_list_free(list);
- }
++	} else if (strcmp(token, "__u32") == 0 || strcmp(token, "u32") == 0 ||
++		   strcmp(token, "__s32") == 0 || strcmp(token, "s32") == 0) {
++		arg->atom.atom = strdup("4");
++
++	} else if (strcmp(token, "__u16") == 0 || strcmp(token, "u16") == 0 ||
++		   strcmp(token, "__s16") == 0 || strcmp(token, "s16") == 0) {
++		arg->atom.atom = strdup("2");
++
++	} else if (strcmp(token, "__u8") == 0 || strcmp(token, "u8") == 0 ||
++		   strcmp(token, "__8") == 0 || strcmp(token, "s8") == 0) {
++		arg->atom.atom = strdup("1");
++
+ 	} else if (strcmp(token, "REC") == 0) {
  
- struct event_iter *trace_event_iter_alloc(const char *path)
+ 		free_token(token);
 -- 
 2.45.2
 
