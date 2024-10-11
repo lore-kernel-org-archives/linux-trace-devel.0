@@ -1,29 +1,29 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CB5038DF9
-	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Oct 2024 18:27:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CC5F1C68BF
+	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Oct 2024 18:27:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728671264; cv=none; b=LKfZHh7w+vRIqIpm9oMS2Z2mYsU5/x0eNtoBkv2qWRae34lYwhLQCw8pSmnwDbz9vsDXbn0RxRd6S7cODNe6MFUI2FjVuXLTs+25HmhCZRXwB3VFw8CTXqfDbXJRyz0osaZuVlGtw/jYGY+c8dA8WW7j05qgyQRjbcN4B0emdic=
+	t=1728671264; cv=none; b=DnecfIBxA1Z0ngb62Qs6y8rwzGORLJ0C1WC5N87PjNA42cE5SklwvyflpJNJND85FvhkgnWNPvna9kizw2r10HkbOdhnvGuWCv2Flw8yoNNNEEIlzsq6x3wlf9451vni2zp5Lr799FyH/YeJ4NnfWjLn8KkStzD6+jj7JPTrYj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1728671264; c=relaxed/simple;
-	bh=PBVuWp2josTlAriSnjIzdw4bSD/9qVgzDDV6iDPnfnI=;
+	bh=9fGvKar5twjECkK+6RsSjh+1jfdjInvrNC8nZJern+k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BtD7P1zYbLLqLChS+iyLW/XqC3d6f4DfPI2cf8e0339l4jIFAZyJ2TxA5icIbHu/m7/Qr3nlf0Czze6mmdC4FvDjmxqp9pG9bzL3WRc7goHasNC8yMnSVwGkJZd7eLS9vMf4yoJl/GKiH2OPJ0GtqX/mgs5HNwpkX5mdtraj4qM=
+	 MIME-Version; b=WCMXh589vIja5j53ioR2Cg9VBgxGSlxsqap5SmYlIihYEs0w/DEH7ervLR5+RWaiYVU680gITNGDcPMmM5cSkr1MLOpLgw9d9VJ6k1TJkczmzOHJJ1yylpmXKS+icQavATn06QZ1u/8/B5NYNw7w06PiaUauyMMR4P2BNNkKCvY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5ACFC4CEC3;
-	Fri, 11 Oct 2024 18:27:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E466C4CED2;
+	Fri, 11 Oct 2024 18:27:44 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.98)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1szKMk-00000001V1C-2EQX;
+	id 1szKMk-00000001V1N-2a6N;
 	Fri, 11 Oct 2024 14:27:54 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 1/4] trace-cmd list: Use tracefs_filter_functions()
-Date: Fri, 11 Oct 2024 14:26:51 -0400
-Message-ID: <20241011182752.357499-2-rostedt@goodmis.org>
+Subject: [PATCH 4/4] trace-cmd stat: Use tracefs_instances() instead of walking them
+Date: Fri, 11 Oct 2024 14:26:54 -0400
+Message-ID: <20241011182752.357499-5-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20241011182752.357499-1-rostedt@goodmis.org>
 References: <20241011182752.357499-1-rostedt@goodmis.org>
@@ -37,59 +37,56 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Instead of reading the available_filter_functions file and parsing it
-manually, simply call tarcefs_filter_functions() and report what it wrote
-as it does the work for us.
+Use the new tracefs_instances() function to retrieve a list of instances
+on the system instead of calling tracefs_instance_walk() and having a
+helper function do the printing. This simplifies the code a bit.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tracecmd/trace-list.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+ tracecmd/trace-stat.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/tracecmd/trace-list.c b/tracecmd/trace-list.c
-index fbf2882e1a83..0fbb8eabd44b 100644
---- a/tracecmd/trace-list.c
-+++ b/tracecmd/trace-list.c
-@@ -236,16 +236,6 @@ static void process_events(process_file_func func, const char *re, int flags)
- 		regfree(&event_reg);
+diff --git a/tracecmd/trace-stat.c b/tracecmd/trace-stat.c
+index 1d95d9934b47..7ac62f2a3076 100644
+--- a/tracecmd/trace-stat.c
++++ b/tracecmd/trace-stat.c
+@@ -113,23 +113,23 @@ static void report_file(struct buffer_instance *instance,
+ 	free(str);
  }
  
--static int show_file_write(char *buf, int len, int flags)
--{
--	return fwrite(buf, 1, len, stdout);
--}
--
--static void show_file_re(const char *name, const char *re)
--{
--	process_file_re(show_file_write, name, re, 0);
--}
--
- static char *get_event_file(const char *type, char *buf, int len)
+-static int report_instance(const char *name, void *data)
++static void report_instances(void)
  {
- 	char *system;
-@@ -476,10 +466,19 @@ static void show_clocks(void)
- 
- static void show_functions(const char *funcre)
- {
--	if (funcre)
--		show_file_re("available_filter_functions", funcre);
--	else
+-	bool *first = (bool *)data;
 +	char **list;
 +	int i;
+ 
+-	if (*first) {
+-		*first = false;
+-		printf("\nInstances:\n");
+-	}
+-	printf(" %s\n", name);
+-	return 0;
+-}
++	list = tracefs_instances(NULL);
+ 
+-static void report_instances(void)
+-{
+-	bool first = true;
++	if (!list || !list[0])
++		goto out;
 +
-+	if (!funcre) {
- 		show_file("available_filter_functions");
-+		return;
-+	}
-+
-+	if (tracefs_filter_functions(funcre, NULL, &list) < 0)
-+		die("Failed to read filte functions");
++	printf("\nInstances:\n");
+ 
+-	tracefs_instances_walk(report_instance, &first);
 +	for (i = 0; list[i]; i++)
-+		printf("%s\n", list[i]);
++		printf(" %s\n", list[i]);
++
++ out:
 +	tracefs_list_free(list);
  }
  
- 
+ struct event_iter *trace_event_iter_alloc(const char *path)
 -- 
 2.45.2
 
