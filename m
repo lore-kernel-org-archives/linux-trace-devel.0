@@ -1,29 +1,29 @@
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F05E1A3BCB
-	for <linux-trace-devel@vger.kernel.org>; Mon, 14 Oct 2024 12:31:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12BED7E574
+	for <linux-trace-devel@vger.kernel.org>; Mon, 14 Oct 2024 12:31:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728909110; cv=none; b=lNfuEH9WxykUQYOaIDtk+y/pBhHoc3szfX09dB+zvzoARzYlWUd7dloEEfxEGtXy1E1qjDJ6PP+LQsa0nyRgO+uNf1io8ykiANSdimZa2WEV2/+QoGyfDeuGpkZUmfsaW8Uc+Z/sdE9gbVJOPiX/ElTVn2+fGRA3R3xfgZEePko=
+	t=1728909111; cv=none; b=fJlCKlw80n9Yod/UTSs1c+a+aqvQ4i72OX/nkl3VNvVVvkgk2G43I2SBm1TTfYM1+JS/nsQRg7/xOAcAweFIZHHtWHyxeY0ritR35v++yvtChmNMxtZJkpql0L0/CoOZqprQVErxb/KkPudIYORoL13YqeLxUG3F45SWCXRcfFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728909110; c=relaxed/simple;
-	bh=sl/4oEy751i4WZZ6sI0qTlwQwhqnNo2SIYWkS8b0ujk=;
+	s=arc-20240116; t=1728909111; c=relaxed/simple;
+	bh=Vaac8EnoeanM/QhzlqKu+YL2y1e0ksBhKZV5ROrzMIY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ND/xUYlOtmr1VarkcLfJb+tUSlz5WtY/eIsDIhbD7rYbpu0qFiSziVlTH8RhHkVghhTkFyVBTA+qvzd6OqnMyi12IuTfLknMJ/hOIcygnRcy1rG2Um4yJDtGu4ZiCqxNB+dx52Jc/PMC1JcwjHPQVrnR/ztqt2r4SI6JD7PeAHg=
+	 MIME-Version; b=Hq2+zRZPjzLOtKuuz7sepkw3DJk1f9bKVex84hgBrRRitmgo5hAXWwQTE7VN4ucmgi+O/+UdMhTaDVY0VjjIBeM7vs1RC9yXCuRAMV/xR028LSRseeeCl3T/53mK15cB5DJQu+EI70tMuVU8A9vUulPFJbKjLuGuEGBGwNcATyc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CF221688;
-	Mon, 14 Oct 2024 05:32:18 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 119D7168F;
+	Mon, 14 Oct 2024 05:32:19 -0700 (PDT)
 Received: from e133381.cambridge.arm.com (e133381.arm.com [10.1.198.34])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 004743F71E;
-	Mon, 14 Oct 2024 05:31:47 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D8EE43F71E;
+	Mon, 14 Oct 2024 05:31:48 -0700 (PDT)
 From: Metin Kaya <metin.kaya@arm.com>
 To: linux-trace-devel@vger.kernel.org
 Cc: metin.kaya@arm.com
-Subject: [PATCH v2 3/4] trace-cmd reset: Update man page for -k option
-Date: Mon, 14 Oct 2024 13:31:35 +0100
-Message-Id: <20241014123136.3890807-4-metin.kaya@arm.com>
+Subject: [PATCH v2 4/4] trace-cmd reset: Add bash tab completion for -B and -k
+Date: Mon, 14 Oct 2024 13:31:36 +0100
+Message-Id: <20241014123136.3890807-5-metin.kaya@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20241014123136.3890807-1-metin.kaya@arm.com>
 References: <20241014123136.3890807-1-metin.kaya@arm.com>
@@ -35,53 +35,68 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Talk about the new -k command line parameter of "trace-cmd reset" in the
-trace-cmd man page.
+Implement the placeholder for tab completion of "trace-cmd reset".
 
-While we are here, fix typo 'immediatly'.
+Apparently trace-cmd.bash already has support for instance buffers
+lookup (which is show_instances()). Employ it for -B option.
+
+Regarding -k option, show the list of dynamic event types to ease
+trace-cmd user's job.
 
 Signed-off-by: Metin Kaya <metin.kaya@arm.com>
 ---
- Documentation/trace-cmd/trace-cmd-reset.1.txt | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ tracecmd/trace-cmd.bash | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-diff --git a/Documentation/trace-cmd/trace-cmd-reset.1.txt b/Documentation/trace-cmd/trace-cmd-reset.1.txt
-index eee86751..026232ac 100644
---- a/Documentation/trace-cmd/trace-cmd-reset.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-reset.1.txt
-@@ -60,7 +60,7 @@ significant. See EXAMPLES.
- *-d*::
-     This option deletes the instance buffer(s) specified by the most recently
-     preceding *-B* or *-a* option. Because the top-level instance buffer
--    cannot be deleted, it is invalid to use this immediatly following *-t* or
-+    cannot be deleted, it is invalid to use this immediately following *-t* or
-     prior to any *-B* or *-a* option on the command line.
+diff --git a/tracecmd/trace-cmd.bash b/tracecmd/trace-cmd.bash
+index 66bd6f4b..01a75578 100644
+--- a/tracecmd/trace-cmd.bash
++++ b/tracecmd/trace-cmd.bash
+@@ -215,6 +215,33 @@ __trace_cmd_report_complete()
+     esac
+ }
  
- *-t*::
-@@ -68,6 +68,12 @@ significant. See EXAMPLES.
-     this is the same as the default. But if *-B* or *-a* is used, this is
-     required if the top level instance buffer should also be reset.
- 
-+*-k* 'dynevent-name'::
-+    This option allows preserving specified dynamic event during reset. Valid
-+    parameters are *kprobe*, *kretprobe*, *uprobe*, *uretprobe*, *eprobe*,
-+    *synth* and *all* (for keeping all dynamic events). This may be used
-+    multiple times to specify different dynamic event types.
++dynevent_options()
++{
++    local cur="$1"
++    local opts=("kprobe" "kretprobe" "uprobe" "uretprobe" "eprobe" "synth" "all")
++    COMPREPLY=( $(compgen -W "${opts[*]}" -- "${cur}") )
++}
 +
- EXAMPLES
- --------
- 
-@@ -94,6 +100,10 @@ instance buffers exist, they will be unaffected:
- 
-     trace-cmd reset -b 1024
- 
-+Prevent *kprobes* and *kretprobes* from being destroyed during reset:
++__trace_cmd_reset_complete()
++{
++    local prev=$1
++    local cur=$2
++    shift 2
++    local words=("$@")
 +
-+    trace-cmd reset -k kprobe -k kretprobe
++    case "$prev" in
++        -B)
++            show_instances "$cur"
++            ;;
++        -k)
++            dynevent_options "$cur"
++            ;;
++        *)
++            cmd_options reset "$cur"
++            ;;
++    esac
++}
 +
- 
- SEE ALSO
- --------
+ __trace_cmd_dump_complete()
+ {
+     local prev=$1
+@@ -329,6 +356,10 @@ _trace_cmd_complete()
+ 	    __trace_cmd_report_complete "${prev}" "${cur}" ${words[@]}
+ 	    return 0
+ 	    ;;
++	reset)
++	    __trace_cmd_reset_complete "${prev}" "${cur}" "${words[@]}"
++	    return 0
++	    ;;
+ 	dump)
+ 	    __trace_cmd_dump_complete "${prev}" "${cur}" ${words[@]}
+ 	    return 0
 -- 
 2.34.1
 
