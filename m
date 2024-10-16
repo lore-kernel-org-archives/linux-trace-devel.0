@@ -1,25 +1,24 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38AB520C493
-	for <linux-trace-devel@vger.kernel.org>; Wed, 16 Oct 2024 14:47:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 140C918595F
+	for <linux-trace-devel@vger.kernel.org>; Wed, 16 Oct 2024 16:35:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729090038; cv=none; b=IIQTQI6gwkAlysJDs0QRhr63IJXx4w+bj7APbPCOxlxKVnQ4AYOWG9wVNrTRUb9ZhS6SFSBYWuOGM0JtinREOvT3Mu78hqVNKB9wTZgUnjlbKLZnzCMARHkEWEJlDHH1JGa6IYZa/15oy461VRUFzAgIDqJAoKkqvIz3RuXxKpc=
+	t=1729096532; cv=none; b=lzk7+aof/QHpGesg9LF86C0bAWETnfIZ4HijWXMNYLuDjyG3/hy/VmvL1IawwzjMMfXUzZkBUuLCRvZ8WF9hoq19WJLslPl87Z49bc01PBMy9C1LK2z3T7rOMrZzaCDXBXzpLkhjeI5WBHmdtkPVKtatQyTIx9fdZhvSl25yQRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729090038; c=relaxed/simple;
-	bh=+napVMo4ruCjxi0HY3Ws+G95l6icgxyfMBEARk+W0sM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Np5dWb3vz7HIisqRZ4zFsmcox5m/8uzzCO9h1b86ptqsTdHxED6puqn+JVaOrXDk+0EEXNSkH+cyDH6XdeaVJSMIpuT+YsQw9IkoSNaVJVe0q1q0MuA8z10KyUG/PVI4Ym+XXvR238+A32yzWQnkyc65YzJyUJWWYD51h0YdJWw=
+	s=arc-20240116; t=1729096532; c=relaxed/simple;
+	bh=gDUPsdHiUmfs6n+lQzgpCZhOd30o10VfpNjcCyZW6u0=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=luzACtxlxqDE99tGU8w3GJIYf9fdw5PjsCDKBg7+i/FdoVh+PhD2qHtxvhhFTSFOCoEliLdxDOOicekVYiFOj0ZgJr0ATD16OJ27+2Dn0iFXiXUJgZfLvC2zto/yls5NxM0Z151oGYsd5je2WiXyBvjj4OAyyvDb+raju/xmtQc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C061C4CEC5;
-	Wed, 16 Oct 2024 14:47:16 +0000 (UTC)
-Date: Wed, 16 Oct 2024 10:47:37 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AC53C4CEC5
+	for <linux-trace-devel@vger.kernel.org>; Wed, 16 Oct 2024 16:35:31 +0000 (UTC)
+Date: Wed, 16 Oct 2024 12:35:52 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: Metin Kaya <metin.kaya@arm.com>
-Subject: [PATCH v2] libtracefs: Have tracefs_dynevent_get_all() find kprobes
- and uprobes properly
-Message-ID: <20241016104737.6a00953a@gandalf.local.home>
+Subject: [PATCH] libtracefs: Destroy synthetic and eprobes before other
+ events
+Message-ID: <20241016123552.55efa78f@gandalf.local.home>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -32,224 +31,81 @@ Content-Transfer-Encoding: 7bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The function tracefs_dynevent_get_all() will only look at the
-dynamic_events file if it exists to find matching probes. But because
-uprobes and kprobes both use the same prefix "p" as well as uretprobes and
-kretprobes (with prefix "r"), it cannot use the dynamic_events file to
-differentiate between the two.
+Synthetic events can be based on eprobes and other dynamic events. When
+destroying multiple events via tracefs_dynevent_destroy() make sure to
+remove the synthetic events first, followed by eprobes (as they can be on
+other dynamic events as well), then the rest of the dynamic events.
 
-Have kprobes and uprobes always use their own files (kprobe_events and
-uprobe_events) even if dynamic_events file exists.
-
-Also cleaned up the code to be a bit more efficient.
-
-Link: https://lore.kernel.org/all/20241015123831.347ff0f4@gandalf.local.home/
-
-Fixes: b04f18b005c6b ("libtracefs: New APIs for dynamic events")
-Reported-by: Metin Kaya <metin.kaya@arm.com>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
-Changes since v1: https://lore.kernel.org/all/20241015151117.5562bd41@gandalf.local.home/
-
-- Fixed reading an empty kprobe_events or uprobe_events file
-
- src/tracefs-dynevents.c | 119 ++++++++++++++++++++++------------------
- 1 file changed, 65 insertions(+), 54 deletions(-)
+ src/tracefs-dynevents.c | 42 ++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 37 insertions(+), 5 deletions(-)
 
 diff --git a/src/tracefs-dynevents.c b/src/tracefs-dynevents.c
-index 85c1fcd9d5d5..6df7212fb38e 100644
+index 6df7212fb38e..77bdf94fdbfe 100644
 --- a/src/tracefs-dynevents.c
 +++ b/src/tracefs-dynevents.c
-@@ -34,23 +34,21 @@ static int dyn_generic_del(struct dyn_events_desc *, struct tracefs_dynevent *);
- static int dyn_synth_del(struct dyn_events_desc *, struct tracefs_dynevent *);
- 
- struct dyn_events_desc {
--	enum tracefs_dynevent_type type;
--	const char *file;
--	const char *prefix;
-+	enum tracefs_dynevent_type	type;
-+	const char			*file;
-+	const char			*prefix;
- 	int (*del)(struct dyn_events_desc *desc, struct tracefs_dynevent *dyn);
- 	int (*parse)(struct dyn_events_desc *desc, const char *group,
- 				char *line, struct tracefs_dynevent **ret_dyn);
- } dynevents[] = {
--	{TRACEFS_DYNEVENT_KPROBE, KPROBE_EVENTS, "p", dyn_generic_del, dyn_generic_parse},
-+	{TRACEFS_DYNEVENT_KPROBE,    KPROBE_EVENTS, "p", dyn_generic_del, dyn_generic_parse},
- 	{TRACEFS_DYNEVENT_KRETPROBE, KPROBE_EVENTS, "r", dyn_generic_del, dyn_generic_parse},
--	{TRACEFS_DYNEVENT_UPROBE, UPROBE_EVENTS, "p", dyn_generic_del, dyn_generic_parse},
-+	{TRACEFS_DYNEVENT_UPROBE,    UPROBE_EVENTS, "p", dyn_generic_del, dyn_generic_parse},
- 	{TRACEFS_DYNEVENT_URETPROBE, UPROBE_EVENTS, "r", dyn_generic_del, dyn_generic_parse},
--	{TRACEFS_DYNEVENT_EPROBE, "", "e", dyn_generic_del, dyn_generic_parse},
--	{TRACEFS_DYNEVENT_SYNTH, SYNTH_EVENTS, "", dyn_synth_del, dyn_synth_parse},
-+	{TRACEFS_DYNEVENT_EPROBE,    "",            "e", dyn_generic_del, dyn_generic_parse},
-+	{TRACEFS_DYNEVENT_SYNTH,     SYNTH_EVENTS, "", dyn_synth_del, dyn_synth_parse},
- };
- 
--
--
- static int dyn_generic_del(struct dyn_events_desc *desc, struct tracefs_dynevent *dyn)
- {
- 	char *str;
-@@ -280,8 +278,13 @@ static void init_devent_desc(void)
- 		return;
- 
- 	/* Use  ftrace dynamic_events, if available */
--	for (i = 0; i < EVENT_INDEX(TRACEFS_DYNEVENT_MAX); i++)
-+	for (i = 0; i < EVENT_INDEX(TRACEFS_DYNEVENT_MAX); i++) {
-+		/* kprobes and uprobes do not use default file */
-+		if (dynevents[i].prefix[0] == 'p' ||
-+		    dynevents[i].prefix[0] == 'r')
-+			continue;
- 		dynevents[i].file = DYNEVENTS_EVENTS;
-+	}
- 
- 	dynevents[EVENT_INDEX(TRACEFS_DYNEVENT_SYNTH)].prefix = "s";
- }
-@@ -480,24 +483,30 @@ int tracefs_dynevent_destroy(struct tracefs_dynevent *devent, bool force)
- 	return desc->del(desc, devent);
+@@ -654,6 +654,22 @@ tracefs_dynevent_get(enum tracefs_dynevent_type type, const char *system,
+ 	return devent;
  }
  
--static int get_all_dynevents(enum tracefs_dynevent_type type, const char *system,
--			     struct tracefs_dynevent ***ret_all)
-+static int get_dynevent(enum tracefs_dynevent_type type, const char *system,
-+			struct tracefs_dynevent ***ret_all, int count)
- {
- 	struct dyn_events_desc *desc;
--	struct tracefs_dynevent *devent, **tmp, **all = NULL;
-+	struct tracefs_dynevent *devent, **tmp, **all;
- 	char *content;
--	int count = 0;
- 	char *line;
- 	char *next;
--	int ret;
-+	int ret = -1;
- 
- 	desc = get_devent_desc(type);
- 	if (!desc)
- 		return -1;
- 
-+	if (!tracefs_file_exists(NULL, desc->file))
-+		return -1;
-+
- 	content = tracefs_instance_file_read(NULL, desc->file, NULL);
-+	/* File exists, but may be empty */
- 	if (!content)
--		return -1;
-+		return 0;
-+
-+	if (ret_all)
-+		all = *ret_all;
- 
- 	line = content;
- 	do {
-@@ -507,11 +516,12 @@ static int get_all_dynevents(enum tracefs_dynevent_type type, const char *system
- 		ret = desc->parse(desc, system, line, ret_all ? &devent : NULL);
- 		if (!ret) {
- 			if (ret_all) {
--				tmp = realloc(all, (count + 1) * sizeof(*tmp));
-+				tmp = realloc(all, (count + 2) * sizeof(*tmp));
- 				if (!tmp)
--					goto error;
-+					break;
- 				all = tmp;
- 				all[count] = devent;
-+				all[count + 1] = NULL;
- 			}
- 			count++;
- 		}
-@@ -521,12 +531,38 @@ static int get_all_dynevents(enum tracefs_dynevent_type type, const char *system
- 	free(content);
- 	if (ret_all)
- 		*ret_all = all;
-+
- 	return count;
-+}
- 
--error:
--	free(content);
--	free(all);
--	return -1;
-+static int get_all_dynevents(enum tracefs_dynevent_type type, const char *system,
-+			     struct tracefs_dynevent ***ret_all)
++static int destroy_dynevents(struct tracefs_dynevent **all, bool force)
 +{
-+	int count = 0;
++	int ret = 0;
 +	int i;
 +
-+	if (ret_all)
-+		*ret_all = NULL;
++	if (!all)
++		return 0;
 +
-+	for (i = 0; i < EVENT_INDEX(TRACEFS_DYNEVENT_MAX); i++) {
-+		if (!((1 << i) & type))
-+			continue;
-+
-+		count = get_dynevent((1 << i), system, ret_all, count);
-+		if (count < 0) {
-+			count = 0;
-+			break;
-+		}
++	for (i = 0; all[i]; i++) {
++		if (tracefs_dynevent_destroy(all[i], force))
++			ret = -1;
 +	}
 +
-+	if (!count) {
-+		if (ret_all) {
-+			free(*ret_all);
-+			*ret_all = NULL;
-+		}
-+		count = -1;
-+	}
-+	return count;
- }
- 
++	return ret;
++}
++
  /**
-@@ -561,41 +597,16 @@ void tracefs_dynevent_list_free(struct tracefs_dynevent **events)
- struct tracefs_dynevent **
- tracefs_dynevent_get_all(unsigned int types, const char *system)
+  * tracefs_dynevent_destroy_all - removes all dynamic events of given types from the system
+  * @types: Dynamic event type, or bitmask of dynamic event types. If 0 is passed, all types
+@@ -671,16 +687,32 @@ int tracefs_dynevent_destroy_all(unsigned int types, bool force)
  {
--	struct tracefs_dynevent **events, **tmp, **all_events = NULL;
--	int count, all = 0;
+ 	struct tracefs_dynevent **all;
+ 	int ret = 0;
 -	int i;
-+	struct tracefs_dynevent **events;
-+	int count;
  
--	for (i = 1; i < TRACEFS_DYNEVENT_MAX; i <<= 1) {
--		if (types) {
--			if (i > types)
--				break;
--			if (!(types & i))
--				continue;
--		}
--		count = get_all_dynevents(i, system, &events);
--		if (count > 0) {
--			tmp = realloc(all_events, (all + count + 1) * sizeof(*tmp));
--			if (!tmp)
--				goto error;
--			all_events = tmp;
--			memcpy(all_events + all, events, count * sizeof(*events));
--			all += count;
--			/* Add a NULL pointer at the end */
--			all_events[all] = NULL;
--			free(events);
--		}
-+	count = get_all_dynevents(types, system, &events);
-+	if (count <= 0) {
-+		free(events);
-+		return NULL;
- 	}
++	/*
++	 * Destroy synthetic events first, as they may depend on
++	 * other dynamic events.
++	 */
++	if (types & TRACEFS_DYNEVENT_SYNTH) {
++		all = tracefs_dynevent_get_all(TRACEFS_DYNEVENT_SYNTH, NULL);
++		ret = destroy_dynevents(all, force);
++		tracefs_dynevent_list_free(all);
++		types &= ~TRACEFS_DYNEVENT_SYNTH;
++	}
++
++	/* Eprobes may depend on other events as well */
++	if (types & TRACEFS_DYNEVENT_EPROBE) {
++		all = tracefs_dynevent_get_all(TRACEFS_DYNEVENT_EPROBE, NULL);
++		ret |= destroy_dynevents(all, force);
++		tracefs_dynevent_list_free(all);
++		types &= ~TRACEFS_DYNEVENT_EPROBE;
++	}
++
++	/* Destroy the rest */
+ 	all = tracefs_dynevent_get_all(types, NULL);
+ 	if (!all)
+ 		return 0;
  
--	return all_events;
--
--error:
--	free(events);
--	if (all_events) {
--		for (i = 0; i < all; i++)
--			free(all_events[i]);
--		free(all_events);
+-	for (i = 0; all[i]; i++) {
+-		if (tracefs_dynevent_destroy(all[i], force))
+-			ret = -1;
 -	}
--	return NULL;
-+	return events;
- }
++	ret |= destroy_dynevents(all, force);
  
- /**
+ 	tracefs_dynevent_list_free(all);
+ 
 -- 
 2.45.2
 
