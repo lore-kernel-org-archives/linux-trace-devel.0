@@ -1,30 +1,25 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9576207A2B
-	for <linux-trace-devel@vger.kernel.org>; Wed, 16 Oct 2024 13:45:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38AB520C493
+	for <linux-trace-devel@vger.kernel.org>; Wed, 16 Oct 2024 14:47:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729086349; cv=none; b=RQ5SWbv4V9H0U7iArCiSWxnSMDSgf0h3nGKhlEbxnIqsibiF4ZKZGOemTXwVRz/FyThBG0xLxVwKCbN3tW/Cq+xyAnBnaElkgTxQPuraNh4vVFJPq+9SrLABqNodyzLzYjYEGxqJ93/lHrMAympHb7eskCj0c5blY3jLTx4Amog=
+	t=1729090038; cv=none; b=IIQTQI6gwkAlysJDs0QRhr63IJXx4w+bj7APbPCOxlxKVnQ4AYOWG9wVNrTRUb9ZhS6SFSBYWuOGM0JtinREOvT3Mu78hqVNKB9wTZgUnjlbKLZnzCMARHkEWEJlDHH1JGa6IYZa/15oy461VRUFzAgIDqJAoKkqvIz3RuXxKpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729086349; c=relaxed/simple;
-	bh=tJl0aHBsu2ruo04xkRXm5bdaInEagx7TVSVBZP0UKnc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hnN5vJXtp90V1WEOKhbWaG6S7Fs4f/GcugqrEdNXFNj4zuUd3PeUGX5SsosxzYoreldQujbfFo+nQfPfB+4DXB6Zt2mltwGryO9ONE0pqs48x+o4VHbm0fVsnDhuFCsrTDtyA4J0D9xSNWtaWFmAMLtXwFJk+jajC966U6FFjV8=
+	s=arc-20240116; t=1729090038; c=relaxed/simple;
+	bh=+napVMo4ruCjxi0HY3Ws+G95l6icgxyfMBEARk+W0sM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Np5dWb3vz7HIisqRZ4zFsmcox5m/8uzzCO9h1b86ptqsTdHxED6puqn+JVaOrXDk+0EEXNSkH+cyDH6XdeaVJSMIpuT+YsQw9IkoSNaVJVe0q1q0MuA8z10KyUG/PVI4Ym+XXvR238+A32yzWQnkyc65YzJyUJWWYD51h0YdJWw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC048C4CEC7;
-	Wed, 16 Oct 2024 13:45:48 +0000 (UTC)
-Date: Wed, 16 Oct 2024 09:46:09 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C061C4CEC5;
+	Wed, 16 Oct 2024 14:47:16 +0000 (UTC)
+Date: Wed, 16 Oct 2024 10:47:37 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Metin Kaya <metin.kaya@arm.com>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH] libtracefs: Have tracefs_dynevent_get_all() find
- kprobes and uprobes properly
-Message-ID: <20241016094609.42deb093@gandalf.local.home>
-In-Reply-To: <6dbeb80b-03b2-4060-8737-3a08432590c6@arm.com>
-References: <20241015151117.5562bd41@gandalf.local.home>
-	<3c199734-5ece-4895-92b5-a15cc8b1edf1@arm.com>
-	<6dbeb80b-03b2-4060-8737-3a08432590c6@arm.com>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc: Metin Kaya <metin.kaya@arm.com>
+Subject: [PATCH v2] libtracefs: Have tracefs_dynevent_get_all() find kprobes
+ and uprobes properly
+Message-ID: <20241016104737.6a00953a@gandalf.local.home>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -32,167 +27,229 @@ List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, 16 Oct 2024 09:33:00 +0100
-Metin Kaya <metin.kaya@arm.com> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
+The function tracefs_dynevent_get_all() will only look at the
+dynamic_events file if it exists to find matching probes. But because
+uprobes and kprobes both use the same prefix "p" as well as uretprobes and
+kretprobes (with prefix "r"), it cannot use the dynamic_events file to
+differentiate between the two.
 
-> >=20
-> > I could successfully apply the patch on 4cbebed79b1f ("libtracefs:=20
-> > Documentation: Add missing documentation to meson.build").
-> > The unit tests at [1] passes with this patch.
-> >=20
-> > Just for the records, there are some unit test failures in libtracefs=20
-> > (they were there even before the patch):
-> >=20
-> > $ sudo ./utest/trace-utest
-> >  =C2=A0=C2=A0=C2=A0=C2=A0 CUnit - A unit testing framework for C - Vers=
-ion 2.1-3
-> >  =C2=A0=C2=A0=C2=A0=C2=A0 http://cunit.sourceforge.net/
-> >=20
-> > Memory mapped buffers not supported
-> >=20
-> > Suite: tracefs library
-> >  =C2=A0 Test: Test tracefs/debugfs mounting ...FAILED
-> >  =C2=A0=C2=A0=C2=A0 1. tracefs-utest.c:1806=C2=A0 - ret =3D=3D 0
+Have kprobes and uprobes always use their own files (kprobe_events and
+uprobe_events) even if dynamic_events file exists.
 
-Note, if you have anything in the /sys/kernel/tracing directory (including
-gdb instances of trace-cmd), it will fail to unmount. I tripped over this
-too.
+Also cleaned up the code to be a bit more efficient.
 
-> >  =C2=A0 Test: trace cpu read ...passed
-> >  =C2=A0 Test: trace cpu read_buf_percent ...passed
-> >  =C2=A0 Test: trace cpu pipe ...passed
-> >  =C2=A0 Test: trace pid events filter ...passed
-> >  =C2=A0 Test: trace pid function filter ...passed
-> >  =C2=A0 Test: trace sql ...passed
-> >  =C2=A0 Test: trace sql trace onmax ...passed
-> >  =C2=A0 Test: trace sql trace onchange ...passed
-> >  =C2=A0 Test: trace sql snapshot onmax ...passed
-> >  =C2=A0 Test: trace sql snapshot onchange ...passed
-> >  =C2=A0 Test: trace sql save onmax ...passed
-> >  =C2=A0 Test: trace sql save onchange ...passed
-> >  =C2=A0 Test: trace sql trace and snapshot onmax ...passed
-> >  =C2=A0 Test: trace sql trace and snapshot onchange ...passed
-> >  =C2=A0 Test: tracing file / directory APIs ...passed
-> >  =C2=A0 Test: instance file / directory APIs ...passed
-> >  =C2=A0 Test: instance file descriptor ...passed
-> >  =C2=A0 Test: instance reset ...passed
-> >  =C2=A0 Test: systems and events APIs ...passed
-> >  =C2=A0 Test: tracefs_iterate_snapshot_events API ...passed
-> >  =C2=A0 Test: tracefs_iterate_raw_events API ...FAILED
-> >  =C2=A0=C2=A0=C2=A0 1. tracefs-utest.c:235=C2=A0 - ret =3D=3D sizeof(st=
-ruct test_sample)
-> >  =C2=A0=C2=A0=C2=A0 2. tracefs-utest.c:235=C2=A0 - ret =3D=3D sizeof(st=
-ruct test_sample)
+Link: https://lore.kernel.org/all/20241015123831.347ff0f4@gandalf.local.home/
 
-Did you do a trace-cmd reset before running the tests?
+Fixes: b04f18b005c6b ("libtracefs: New APIs for dynamic events")
+Reported-by: Metin Kaya <metin.kaya@arm.com>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+Changes since v1: https://lore.kernel.org/all/20241015151117.5562bd41@gandalf.local.home/
 
-> >  =C2=A0 Test: Follow events ...passed
-> >  =C2=A0 Test: Follow events clear ...passed
-> >  =C2=A0 Test: tracefs_tracers API ...passed
-> >  =C2=A0 Test: tracefs_local events API ...passed
-> >  =C2=A0 Test: tracefs_instances_walk API ...passed
-> >  =C2=A0 Test: tracefs_get_clock API ...passed
-> >  =C2=A0 Test: tracing on / off ...passed
-> >  =C2=A0 Test: tracing options ...passed
-> >  =C2=A0 Test: custom system directory ...passed
-> >  =C2=A0 Test: ftrace marker ...passed
-> >  =C2=A0 Test: kprobes ...passed
-> >  =C2=A0 Test: synthetic events ...passed
-> >  =C2=A0 Test: eprobes ...passed
-> >  =C2=A0 Test: uprobes ...FAILED
-> >  =C2=A0=C2=A0=C2=A0 1. tracefs-utest.c:2222=C2=A0 - ret =3D=3D 0
-> >  =C2=A0=C2=A0=C2=A0 2. tracefs-utest.c:2222=C2=A0 - ret =3D=3D 0
+- Fixed reading an empty kprobe_events or uprobe_events file
 
-Did you have left over uprobes?
+ src/tracefs-dynevents.c | 119 ++++++++++++++++++++++------------------
+ 1 file changed, 65 insertions(+), 54 deletions(-)
 
-> >=20
-> > Run Summary:=C2=A0=C2=A0=C2=A0 Type=C2=A0=C2=A0=C2=A0 Total=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 Ran=C2=A0=C2=A0 Passed Failed Inactive
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 suites=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 n/a=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 tests=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 36=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 36=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 33=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 3=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 asserts 30341119 30341119 30341114=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 5=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 n/a
-> >=20
-> > Elapsed time =3D=C2=A0 124.937 seconds
-> >=20
-> > With that,
-> >=20
-> > Reviewed-by: Metin Kaya <metin.kaya@arm.com>
-> >=20
-> >=20
-> > Thanks a lot for fixing it promptly!
-> >=20
-> > [1]=20
-> > https://lore.kernel.org/all/20241015140840.4183007-1-metin.kaya@arm.com/
-> >=20
-> >  =20
->=20
-> Sorry, I need to revoke my Reviewed-by. Because, "trace-cmd reset"=20
-> cannot destroy uretprobes after this patch.
->=20
-> # cd /sys/kernel/tracing/
-> /sys/kernel/tracing # cat uprobe_events
-> /sys/kernel/tracing # echo 'r /bin/bash:0x4245c0' > uprobe_events
-> /sys/kernel/tracing # cat uprobe_events
-> r:uprobes/p_bash_0x4245c0 /bin/bash:0x00000000004245c0
-> /sys/kernel/tracing # trace-cmd reset
-> /sys/kernel/tracing # cat uprobe_events
-> r:uprobes/p_bash_0x4245c0 /bin/bash:0x00000000004245c0
->=20
-> OTOH, "trace-cmd reset" is able to destroy uretprobes if there is also a=
-=20
-> kprobe in addition to a uretprobe:
-
-Oops, I know why. I had a bug in the code that collects all the probes and
-looks at different files. It assumed that if the return of
-tracefs_instance_file_read() returns NULL from kprobe_events, it is an
-error. But that function also returns NULL if the file is empty. I changed
-the code from:
-
-	content =3D tracefs_instance_file_read(NULL, desc->file, NULL);
-	if (!content)
-		return -1;
-
-to:
-
-	if (!tracefs_file_exists(NULL, desc->file))
-		return -1;
-
-	content =3D tracefs_instance_file_read(NULL, desc->file, NULL);
-	/* File exists, but may be empty */
-	if (!content)
-		return 0;
-
-I'll send out a v2. Thanks for testing.
-
-I'll also add more tests to the libtracefs utest to check for this too.
-
--- Steve
-
-
->=20
-> /sys/kernel/tracing # cat dynamic_events
-> /sys/kernel/tracing # cat uprobe_events
-> /sys/kernel/tracing # echo 'p do_sys_open' > kprobe_events
-> /sys/kernel/tracing # echo 'r /bin/bash:0x4245c0' > uprobe_events
-> /sys/kernel/tracing # cat dynamic_events
-> p:kprobes/p_do_sys_open_0 do_sys_open
-> r:uprobes/p_bash_0x4245c0 /bin/bash:0x00000000004245c0
-> /sys/kernel/tracing # cat uprobe_events
-> r:uprobes/p_bash_0x4245c0 /bin/bash:0x00000000004245c0
-> /sys/kernel/tracing # trace-cmd reset
-> /sys/kernel/tracing # cat dynamic_events
-> /sys/kernel/tracing # cat uprobe_events
-> /sys/kernel/tracing #
+diff --git a/src/tracefs-dynevents.c b/src/tracefs-dynevents.c
+index 85c1fcd9d5d5..6df7212fb38e 100644
+--- a/src/tracefs-dynevents.c
++++ b/src/tracefs-dynevents.c
+@@ -34,23 +34,21 @@ static int dyn_generic_del(struct dyn_events_desc *, struct tracefs_dynevent *);
+ static int dyn_synth_del(struct dyn_events_desc *, struct tracefs_dynevent *);
+ 
+ struct dyn_events_desc {
+-	enum tracefs_dynevent_type type;
+-	const char *file;
+-	const char *prefix;
++	enum tracefs_dynevent_type	type;
++	const char			*file;
++	const char			*prefix;
+ 	int (*del)(struct dyn_events_desc *desc, struct tracefs_dynevent *dyn);
+ 	int (*parse)(struct dyn_events_desc *desc, const char *group,
+ 				char *line, struct tracefs_dynevent **ret_dyn);
+ } dynevents[] = {
+-	{TRACEFS_DYNEVENT_KPROBE, KPROBE_EVENTS, "p", dyn_generic_del, dyn_generic_parse},
++	{TRACEFS_DYNEVENT_KPROBE,    KPROBE_EVENTS, "p", dyn_generic_del, dyn_generic_parse},
+ 	{TRACEFS_DYNEVENT_KRETPROBE, KPROBE_EVENTS, "r", dyn_generic_del, dyn_generic_parse},
+-	{TRACEFS_DYNEVENT_UPROBE, UPROBE_EVENTS, "p", dyn_generic_del, dyn_generic_parse},
++	{TRACEFS_DYNEVENT_UPROBE,    UPROBE_EVENTS, "p", dyn_generic_del, dyn_generic_parse},
+ 	{TRACEFS_DYNEVENT_URETPROBE, UPROBE_EVENTS, "r", dyn_generic_del, dyn_generic_parse},
+-	{TRACEFS_DYNEVENT_EPROBE, "", "e", dyn_generic_del, dyn_generic_parse},
+-	{TRACEFS_DYNEVENT_SYNTH, SYNTH_EVENTS, "", dyn_synth_del, dyn_synth_parse},
++	{TRACEFS_DYNEVENT_EPROBE,    "",            "e", dyn_generic_del, dyn_generic_parse},
++	{TRACEFS_DYNEVENT_SYNTH,     SYNTH_EVENTS, "", dyn_synth_del, dyn_synth_parse},
+ };
+ 
+-
+-
+ static int dyn_generic_del(struct dyn_events_desc *desc, struct tracefs_dynevent *dyn)
+ {
+ 	char *str;
+@@ -280,8 +278,13 @@ static void init_devent_desc(void)
+ 		return;
+ 
+ 	/* Use  ftrace dynamic_events, if available */
+-	for (i = 0; i < EVENT_INDEX(TRACEFS_DYNEVENT_MAX); i++)
++	for (i = 0; i < EVENT_INDEX(TRACEFS_DYNEVENT_MAX); i++) {
++		/* kprobes and uprobes do not use default file */
++		if (dynevents[i].prefix[0] == 'p' ||
++		    dynevents[i].prefix[0] == 'r')
++			continue;
+ 		dynevents[i].file = DYNEVENTS_EVENTS;
++	}
+ 
+ 	dynevents[EVENT_INDEX(TRACEFS_DYNEVENT_SYNTH)].prefix = "s";
+ }
+@@ -480,24 +483,30 @@ int tracefs_dynevent_destroy(struct tracefs_dynevent *devent, bool force)
+ 	return desc->del(desc, devent);
+ }
+ 
+-static int get_all_dynevents(enum tracefs_dynevent_type type, const char *system,
+-			     struct tracefs_dynevent ***ret_all)
++static int get_dynevent(enum tracefs_dynevent_type type, const char *system,
++			struct tracefs_dynevent ***ret_all, int count)
+ {
+ 	struct dyn_events_desc *desc;
+-	struct tracefs_dynevent *devent, **tmp, **all = NULL;
++	struct tracefs_dynevent *devent, **tmp, **all;
+ 	char *content;
+-	int count = 0;
+ 	char *line;
+ 	char *next;
+-	int ret;
++	int ret = -1;
+ 
+ 	desc = get_devent_desc(type);
+ 	if (!desc)
+ 		return -1;
+ 
++	if (!tracefs_file_exists(NULL, desc->file))
++		return -1;
++
+ 	content = tracefs_instance_file_read(NULL, desc->file, NULL);
++	/* File exists, but may be empty */
+ 	if (!content)
+-		return -1;
++		return 0;
++
++	if (ret_all)
++		all = *ret_all;
+ 
+ 	line = content;
+ 	do {
+@@ -507,11 +516,12 @@ static int get_all_dynevents(enum tracefs_dynevent_type type, const char *system
+ 		ret = desc->parse(desc, system, line, ret_all ? &devent : NULL);
+ 		if (!ret) {
+ 			if (ret_all) {
+-				tmp = realloc(all, (count + 1) * sizeof(*tmp));
++				tmp = realloc(all, (count + 2) * sizeof(*tmp));
+ 				if (!tmp)
+-					goto error;
++					break;
+ 				all = tmp;
+ 				all[count] = devent;
++				all[count + 1] = NULL;
+ 			}
+ 			count++;
+ 		}
+@@ -521,12 +531,38 @@ static int get_all_dynevents(enum tracefs_dynevent_type type, const char *system
+ 	free(content);
+ 	if (ret_all)
+ 		*ret_all = all;
++
+ 	return count;
++}
+ 
+-error:
+-	free(content);
+-	free(all);
+-	return -1;
++static int get_all_dynevents(enum tracefs_dynevent_type type, const char *system,
++			     struct tracefs_dynevent ***ret_all)
++{
++	int count = 0;
++	int i;
++
++	if (ret_all)
++		*ret_all = NULL;
++
++	for (i = 0; i < EVENT_INDEX(TRACEFS_DYNEVENT_MAX); i++) {
++		if (!((1 << i) & type))
++			continue;
++
++		count = get_dynevent((1 << i), system, ret_all, count);
++		if (count < 0) {
++			count = 0;
++			break;
++		}
++	}
++
++	if (!count) {
++		if (ret_all) {
++			free(*ret_all);
++			*ret_all = NULL;
++		}
++		count = -1;
++	}
++	return count;
+ }
+ 
+ /**
+@@ -561,41 +597,16 @@ void tracefs_dynevent_list_free(struct tracefs_dynevent **events)
+ struct tracefs_dynevent **
+ tracefs_dynevent_get_all(unsigned int types, const char *system)
+ {
+-	struct tracefs_dynevent **events, **tmp, **all_events = NULL;
+-	int count, all = 0;
+-	int i;
++	struct tracefs_dynevent **events;
++	int count;
+ 
+-	for (i = 1; i < TRACEFS_DYNEVENT_MAX; i <<= 1) {
+-		if (types) {
+-			if (i > types)
+-				break;
+-			if (!(types & i))
+-				continue;
+-		}
+-		count = get_all_dynevents(i, system, &events);
+-		if (count > 0) {
+-			tmp = realloc(all_events, (all + count + 1) * sizeof(*tmp));
+-			if (!tmp)
+-				goto error;
+-			all_events = tmp;
+-			memcpy(all_events + all, events, count * sizeof(*events));
+-			all += count;
+-			/* Add a NULL pointer at the end */
+-			all_events[all] = NULL;
+-			free(events);
+-		}
++	count = get_all_dynevents(types, system, &events);
++	if (count <= 0) {
++		free(events);
++		return NULL;
+ 	}
+ 
+-	return all_events;
+-
+-error:
+-	free(events);
+-	if (all_events) {
+-		for (i = 0; i < all; i++)
+-			free(all_events[i]);
+-		free(all_events);
+-	}
+-	return NULL;
++	return events;
+ }
+ 
+ /**
+-- 
+2.45.2
 
