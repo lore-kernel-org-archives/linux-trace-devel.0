@@ -1,63 +1,87 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EDB433997
-	for <linux-trace-devel@vger.kernel.org>; Thu, 17 Oct 2024 20:00:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56B68227BAE
+	for <linux-trace-devel@vger.kernel.org>; Thu, 17 Oct 2024 20:05:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729195246; cv=none; b=bkp/5SiHCSQ6mPxycYSUFpl6GlnY3Es3L7ieWyORkD0Hnub8zgxYnZH9SbNDp4Fs2qQeFyFA6kiszgwnrL1v0PYeCoIZ2Q0L7Aa+qgS4Fo8idz463V1S4kAFWrrx1Ne2WHZl/XbzfCEvovEbkcLnQOxGi1EN32D4brav7w234CA=
+	t=1729195546; cv=none; b=Q5mLxDjUU/MwxGFyYex6utjcTDjKHW5icCtpugqJrSRA/OrgTM/ndyM07BNBQ1nhBSXdvyMHDnE746msoUrnjQdRv5LZwDTDNdJNg0VhyRIwhBb/CbL/x2QIFeMSTJvtV+jxWe1+g29UsEnx8xZ9J0paXCCqiOJlP+Pf+prLD30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729195246; c=relaxed/simple;
-	bh=s4W3x4OhEUuu9SuCml+PjWUMymq6c4B2N5XwL2137F4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UD5HFRqUdvf9/+nDLXYTOBnbpVWhR43yc5F0UA3czq4BOjbv9kckAcDSOGSRzO4twmJ4OAzksrn/5R5tB5hiQS5EIR0oGDPU432nBEQbtaUCluBZH/N3LXgkCgbmFbADiEdFESia4GUJxZgo/pswLB/L3xAe91ZZL9whN5SYDuQ=
+	s=arc-20240116; t=1729195546; c=relaxed/simple;
+	bh=mRvYD46HogsseOblnw3hLrunIP1w2ubXtC5e8MdXrDk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=eLZPzYodL9WvnoaFnLNGkKC3M9x8I5wlDU4m+SrR8g0OGZBFArpcM39XR0LR7zpj10yujqAQ12mCS7QLwbvLHf/+9YyxrJv5AV9+TKlyZYvd+wb7uVoW6fXdYgDhjxVnQVvUxbQ0GfEu96vpaJgalvshNkwjpZkSKdqCBgk5bIs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38685C4CEC3;
-	Thu, 17 Oct 2024 20:00:45 +0000 (UTC)
-Date: Thu, 17 Oct 2024 16:01:08 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED859C4CED2;
+	Thu, 17 Oct 2024 20:05:45 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.98)
+	(envelope-from <rostedt@rostedt.homelinux.com>)
+	id 1t1Wl8-00000003uhG-2Lr7;
+	Thu, 17 Oct 2024 16:06:10 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Metin Kaya <metin.kaya@arm.com>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH] libtracefs: Destroy synthetic and eprobes before other
- events
-Message-ID: <20241017160108.4f99c917@gandalf.local.home>
-In-Reply-To: <e6ddd9b6-ce83-451e-8344-24ff620245cc@arm.com>
-References: <20241016123552.55efa78f@gandalf.local.home>
-	<e6ddd9b6-ce83-451e-8344-24ff620245cc@arm.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To: linux-trace-devel@vger.kernel.org
+Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+	Adrien Nader <adrien@notk.org>
+Subject: [PATCH 3/3] libtracefs utest: Do not test more events than what the ring buffer can hold
+Date: Thu, 17 Oct 2024 16:03:24 -0400
+Message-ID: <20241017200609.932728-4-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20241017200609.932728-1-rostedt@goodmis.org>
+References: <20241017200609.932728-1-rostedt@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Thu, 17 Oct 2024 09:38:35 +0100
-Metin Kaya <metin.kaya@arm.com> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> I see one more failure in this section of unit tests:
-> 
->    Test: tracefs_iterate_snapshot_events API ...FAILED
->      1. tracefs-utest.c:235  - ret == sizeof(struct test_sample)
->      2. tracefs-utest.c:235  - ret == sizeof(struct test_sample)
->      3. tracefs-utest.c:235  - ret == sizeof(struct test_sample)
-> 
+The test_instance_cpu_read() will test events_per_buf * 50 events. But on
+PowerPC64 which has 64K size subbuffers, there may not be 50 subbuffers in
+a per CPU ring buffer. That means the test will overflow and it will read
+less events than expected.
 
-Does this occur without this patch? IOW, is this caused by this patch?
+Check to make sure that the number to test is not going to add more events
+than what a single ring buffer can hold.
 
-> I did run trace-cmd reset and unmounted my tracefs before running the 
-> unit tests.
-> Please feel free to ignore if something is weirdly wrong in my setup.
-> 
-> Other than that -kind of existing- failure, the patch looks good to me 
-> (e.g., trace-cmd unit tests are working fine).
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=219358
+Reported-by: Adrien Nader <adrien@notk.org>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ utest/tracefs-utest.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-
-Can you add a printf("ret = %d\n", ret) to find out what "ret" is?
-
-Thanks,
-
--- Steve
+diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
+index b5095a18bb16..46fa31c88cf6 100644
+--- a/utest/tracefs-utest.c
++++ b/utest/tracefs-utest.c
+@@ -1270,6 +1270,8 @@ static void test_cpu_read(struct test_cpu_data *data, int expect)
+ static void test_instance_trace_cpu_read(struct tracefs_instance *instance, bool map)
+ {
+ 	struct test_cpu_data data;
++	size_t buffer_size;
++	int big_num = 50;
+ 
+ 	if (setup_trace_cpu(instance, &data, true, map))
+ 		return;
+@@ -1278,7 +1280,14 @@ static void test_instance_trace_cpu_read(struct tracefs_instance *instance, bool
+ 	test_cpu_read(&data, data.events_per_buf / 2);
+ 	test_cpu_read(&data, data.events_per_buf);
+ 	test_cpu_read(&data, data.events_per_buf + 1);
+-	test_cpu_read(&data, data.events_per_buf * 50);
++
++	buffer_size = tracefs_instance_get_buffer_size(instance, 0) * 1024;
++	if (data.events_per_buf * big_num > (buffer_size - data.events_per_buf)) {
++		big_num = (buffer_size / data.events_per_buf);
++		big_num -= data.events_per_buf * 2;
++		CU_TEST(big_num > 0);
++	}
++	test_cpu_read(&data, data.events_per_buf * big_num);
+ 
+ 	shutdown_trace_cpu(&data);
+ }
+-- 
+2.45.2
 
